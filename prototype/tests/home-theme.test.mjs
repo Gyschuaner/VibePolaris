@@ -69,6 +69,36 @@ test('theme API, domain interaction, and logo replay are present without runtime
   assert.doesNotMatch(js, /openai|anthropic|generativelanguage/i);
 });
 
+test('domain motion stays restrained and respects reduced-motion', () => {
+  const js = read('assets/app.js');
+  const css = read('assets/style.css');
+  assert.match(js, /is-entering/);
+  assert.match(js, /is-leaving/);
+  assert.match(js, /setTimeout\([\s\S]*150/);
+  assert.match(js, /requestAnimationFrame/);
+  assert.match(js, /prefers-reduced-motion: reduce/);
+  assert.match(css, /flex-grow 420ms/);
+  assert.match(css, /opacity 240ms[\s\S]*80ms/);
+  assert.match(css, /transition-duration: 140ms/);
+  assert.match(css, /translateY\(-6px\)/);
+  assert.match(css, /translateY\(8px\)/);
+  assert.match(css, /\.domain-enter:hover span,[\s\S]*translateX\(5px\)/);
+});
+
+test('terms and detail pages remove the stage system completely', () => {
+  const terms = read('terms.html');
+  const detail = read('term-detail.html');
+  const js = read('assets/app.js');
+  const css = read('assets/style.css');
+  for (const source of [terms, detail, js, css]) {
+    assert.doesNotMatch(source, /stageSel|dStage|class="stage"|\.roadmap|data-stop=/);
+  }
+  assert.doesNotMatch(js, /stage:\s*['"]/);
+  assert.doesNotMatch(js, /state\.stage|t\.stage/);
+  assert.doesNotMatch(terms, /全部阶段|起步|进阶|熟练/);
+  assert.doesNotMatch(detail, /起步|进阶|熟练/);
+});
+
 test('theme API applies, persists, and safely falls back between built-in palettes', () => {
   const stored = new Map();
   const dispatched = [];
