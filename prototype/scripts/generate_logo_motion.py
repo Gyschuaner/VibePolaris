@@ -169,7 +169,7 @@ def build() -> None:
             scaled_star = base_star.resize((size, size), Image.Resampling.LANCZOS)
             scaled_star = scaled_star.point(lambda value: round(value * opacity))
             star_layer = colored(scaled_star, STAR_COLOR)
-            star_x = round(mark_x + 96 + move_x + 24 - size / 2)
+            star_x = round(mark_x + 100 + move_x + 24 - size / 2)
             star_y = round(mark_y - 6 + move_y + 24 - size / 2)
             board.alpha_composite(star_layer, (star_x, star_y))
 

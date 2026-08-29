@@ -91,3 +91,23 @@ final result: passed
 - `prefers-reduced-motion: reduce` 下取消两类动画，直接显示完整 Logo。
 
 final result: passed
+
+## BUG-722A6BD4 星体锚点复验
+
+### 视觉证据与状态归一化
+
+- 帧序列目标：`docs/design/qa/logo-motion-frameboard.png`，840×540 像素，浅色 `moss`、1× 密度。
+- 桌面实现：`docs/design/qa/logo-motion-implementation-mid.png`，1265×712 像素，对应 1265×712 CSS 视口、动画约 350ms。
+- 同屏聚焦对照：`docs/design/qa/logo-motion-comparison.png`，388×176 像素；左右均归一化到 118×104 标识槽位。
+- 移动端实现：`docs/design/qa/logo-motion-mobile-after.png`，390×844 像素，对应 390×844 CSS 视口、完整静止状态。
+
+### 比较与回归
+
+- 用户反馈：星体在轨迹末端的位置偏左，需要轻微右移，不改变现有曲线、尺寸或动画节奏。
+- 调整：118×104 首页标识中的 48×48 星体向右移动 4px；96×84 与 74×66 响应式标识分别右移 3px；导航与页脚小标识分别右移 2px 和 1px。
+- 连续性：星体的 9 个动效锚点相对最终布局计算，因此所有中间帧与静止终点整体同步右移，没有首尾跳位。重新生成的同屏对照未发现轨迹断裂或星体越界。
+- 五项表面检查：字体、字重、文案和主题色未变化；标识槽位与页面布局未变化；真实 PNG 蒙版保持清晰；仅星体横向定位发生调整。
+- 浏览器回归：桌面 clientWidth / scrollWidth 为 1250 / 1250，移动端为 375 / 375；导航 hover 只触发 `vp-star-glint`，轨迹动画为 `none`；控制台为空。
+- 结果：未发现可执行的 P0、P1 或 P2 问题。
+
+final result: passed
