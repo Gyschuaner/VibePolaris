@@ -37,6 +37,10 @@ test('theme tokens expose three palettes and preserve reduced-motion behavior', 
   assert.match(css, /translate3d/);
   assert.match(css, /steps\(31, end\)/);
   assert.match(css, /12\.5%[\s\S]*87\.5%/);
+  assert.match(css, /0%[^}]*scale\(\.22\); opacity: 0;/);
+  assert.match(css, /12\.5%[^}]*opacity: \.08;/);
+  assert.match(css, /87\.5%[^}]*opacity: \.985;/);
+  assert.match(css, /\.brand-mark--hero \.brand-star \{ width: 48px; height: 48px; right: -2px;/);
   assert.match(css, /meteor-trail-frames\.png/);
   assert.match(css, /polaris-star-mask\.png/);
 });
