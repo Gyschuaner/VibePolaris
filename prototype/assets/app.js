@@ -1,13 +1,88 @@
 /* VibePolaris 交互原型脚本 — 纯原生 JS，零运行时 AI / 零外部依赖 */
 
-/* ---------- 主题：默认跟随系统，手动切换持久化 ---------- */
+/* ---------- 主题：明暗模式与品牌配色分层持久化 ---------- */
 (function () {
+  var root = document.documentElement;
+  var palettes = {
+    moss: { label: '苔藓编辑', themeColor: '#F5F3E8' },
+    sprout: { label: '嫩芽墨色', themeColor: '#F8F7F1' },
+    pomelo: { label: '柚皮橄榄', themeColor: '#F7F3E8' }
+  };
+
+  function safePalette(name) { return palettes[name] ? name : 'moss'; }
+  function updateThemeColor() {
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    meta.setAttribute('content', root.dataset.theme === 'dark' ? '#10150F' : palettes[safePalette(root.dataset.palette)].themeColor);
+  }
+  function setPalette(name, persist) {
+    var next = safePalette(name);
+    root.dataset.palette = next;
+    if (persist !== false) {
+      try { localStorage.setItem('vp-palette', next); } catch (e) {}
+    }
+    updateThemeColor();
+    root.dispatchEvent(new CustomEvent('vp:palettechange', { detail: { palette: next } }));
+    return next;
+  }
+
+  setPalette(root.dataset.palette || 'moss', false);
+  window.VP_THEME = {
+    palettes: palettes,
+    getPalette: function () { return safePalette(root.dataset.palette); },
+    setPalette: setPalette
+  };
+
   var btn = document.getElementById('themeToggle');
-  if (!btn) return;
-  btn.addEventListener('click', function () {
-    var cur = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = cur;
+  if (btn) btn.addEventListener('click', function () {
+    var cur = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = cur;
     try { localStorage.setItem('vp-theme', cur); } catch (e) {}
+    updateThemeColor();
+  });
+  updateThemeColor();
+})();
+
+/* ---------- 流星品牌标识：首次进入一次，悬停/聚焦轻量重播 ---------- */
+(function () {
+  var marks = Array.prototype.slice.call(document.querySelectorAll('[data-logo-motion]'));
+  if (!marks.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  function replay(mark) {
+    mark.classList.remove('is-arriving');
+    void mark.offsetWidth;
+    mark.classList.add('is-arriving');
+  }
+
+  marks.forEach(function (mark) {
+    var link = mark.closest('a');
+    if (mark.dataset.logoMotion === 'intro') requestAnimationFrame(function () { replay(mark); });
+    if (!link) return;
+    link.addEventListener('pointerenter', function () { replay(mark); });
+    link.addEventListener('focus', function () { replay(mark); });
+  });
+})();
+
+/* ---------- 首页技术领域：数量可增减，点击切换展开状态 ---------- */
+(function () {
+  var grid = document.querySelector('.domain-grid');
+  if (!grid) return;
+  var domains = Array.prototype.slice.call(grid.querySelectorAll('.domain'));
+
+  function activate(target) {
+    domains.forEach(function (domain) {
+      var active = domain === target;
+      var trigger = domain.querySelector('.domain-trigger');
+      var detail = domain.querySelector('.domain-detail');
+      domain.classList.toggle('is-active', active);
+      if (trigger) trigger.setAttribute('aria-expanded', String(active));
+      if (detail) detail.hidden = !active;
+    });
+  }
+
+  domains.forEach(function (domain) {
+    var trigger = domain.querySelector('.domain-trigger');
+    if (trigger) trigger.addEventListener('click', function () { activate(domain); });
   });
 })();
 
