@@ -26,6 +26,17 @@ test('homepage keeps the dynamic featured-domain pattern and one expanded state'
   assert.match(html, /data-logo-motion="intro"/);
 });
 
+test('homepage removes redundant copy and keeps arrow-only accessible domain entries', () => {
+  const html = read('index.html');
+  assert.doesNotMatch(html, /Vibe 指北 · 技术术语与选型指南/);
+  assert.doesNotMatch(html, /从术语出发，把技术世界看清一点/);
+  assert.doesNotMatch(html, /首页精选领域会持续调整/);
+  assert.doesNotMatch(html, /精选 0[1-5]/);
+  assert.equal((html.match(/class="domain-enter"/g) || []).length, 5);
+  assert.equal((html.match(/class="domain-enter"[^>]+aria-label="进入[^\"]+章节"><span aria-hidden="true">→<\/span><\/a>/g) || []).length, 5);
+  assert.doesNotMatch(html, /class="domain-enter"[^>]*>进入/);
+});
+
 test('theme tokens expose three palettes and preserve reduced-motion behavior', () => {
   const css = read('assets/style.css');
   for (const palette of ['moss', 'sprout', 'pomelo']) {

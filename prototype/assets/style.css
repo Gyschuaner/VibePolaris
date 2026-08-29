@@ -243,27 +243,21 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .brand-stage {
   min-height: 220px;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
+  align-items: center;
   padding-top: 54px;
   padding-bottom: 42px;
 }
 .brand-stage-lockup { display: flex; align-items: center; gap: 38px; }
 .brand-stage h1 { font-size: clamp(50px, 6vw, 84px); line-height: .95; letter-spacing: -.045em; font-weight: 760; }
-.brand-stage-lockup p { margin-top: 16px; color: var(--muted); font-size: 15px; letter-spacing: .02em; }
-.brand-stage-note { max-width: 260px; padding-bottom: 8px; color: var(--muted); font-size: 14px; text-align: right; }
 
 .home-main { padding-bottom: 8px; }
 .domain-toolbar {
-  min-height: 72px;
+  min-height: 64px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  justify-content: flex-end;
   border-top: 1px solid var(--hairline);
 }
-.domain-toolbar p { color: var(--muted); font-size: 13.5px; }
 .domain-toolbar a { color: var(--accent); font-weight: 600; font-size: 14px; }
 .domain-toolbar a:hover { color: var(--accent-strong); text-decoration: underline; text-underline-offset: 4px; }
 
@@ -296,8 +290,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   cursor: pointer;
 }
 .domain-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 7px; }
-.domain-index { display: block; color: var(--muted); font-size: 12px; letter-spacing: .04em; }
-.domain-title { display: flex; align-items: center; gap: 10px; margin-top: 18px; font-size: clamp(24px, 2.05vw, 32px); line-height: 1.15; font-weight: 720; letter-spacing: -.025em; white-space: nowrap; }
+.domain-title { display: flex; align-items: center; gap: 10px; font-size: clamp(24px, 2.05vw, 32px); line-height: 1.15; font-weight: 720; letter-spacing: -.025em; white-space: nowrap; }
 .domain-copy { display: block; max-width: 330px; min-height: 52px; margin-top: 12px; color: var(--muted); font-size: 13.5px; line-height: 1.75; }
 .domain:not(.is-active) .domain-trigger:hover .domain-title { color: var(--accent); }
 .domain-summary { display: grid; gap: 0; margin-top: 46px; }
@@ -325,18 +318,18 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .context-flow b { color: var(--accent); font-weight: 500; }
 
 .domain-enter {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
   margin-top: auto;
-  padding-top: 28px;
+  margin-left: auto;
   color: var(--accent);
-  font-size: 13.5px;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 22px;
 }
-.domain-enter:hover { color: var(--accent-strong); text-decoration: underline; text-underline-offset: 4px; }
-.domain-enter span { font-size: 18px; font-weight: 400; }
+.domain-enter:hover { color: var(--accent-strong); }
+.domain-enter:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.domain-enter span { font-weight: 400; }
 
 .recent-strip { min-height: 82px; display: flex; align-items: center; gap: 56px; border-bottom: 1px solid var(--hairline); }
 .recent-strip h2 { font-size: 14px; font-weight: 720; white-space: nowrap; }
@@ -374,10 +367,9 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .home-nav .brand { font-size: 17px; gap: 7px; }
   .nav-search { width: auto; flex: 1; margin-left: auto; }
   .nav-search input { min-width: 0; }
-  .brand-stage { min-height: 190px; align-items: flex-start; flex-direction: column; justify-content: center; gap: 18px; padding-top: 34px; padding-bottom: 30px; }
+  .brand-stage { min-height: 190px; padding-top: 34px; padding-bottom: 30px; }
   .brand-stage-lockup { gap: 18px; }
   .brand-stage h1 { font-size: clamp(40px, 11vw, 52px); }
-  .brand-stage-note { padding: 0; text-align: left; }
   .brand-mark--hero {
     --motion-x0: -48.3px; --motion-y0: 43.3px;
     --motion-x1: -44.1px; --motion-y1: 36.1px;
@@ -391,7 +383,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
     height: 66px;
   }
   .brand-mark--hero .brand-star { width: 32px; height: 32px; right: -2px; top: -5px; }
-  .domain-toolbar { align-items: flex-start; flex-direction: column; gap: 6px; padding: 18px 0; }
+  .domain-toolbar { min-height: 58px; }
   .domain-grid { display: block; min-height: 0; background: transparent; }
   .domain, .domain.is-active { min-height: 0; padding: 24px 4px; border-left: 0; border-top: 1px solid var(--hairline); }
   .domain:first-child { border-top: 0; }
@@ -399,7 +391,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .domain-copy { min-height: 0; }
   .domain-summary { margin-top: 18px; grid-template-columns: 1fr 1fr; gap: 24px; }
   .domain-detail { margin-top: 20px; }
-  .domain-enter { margin-top: 24px; padding-top: 0; }
+  .domain-enter { margin-top: 24px; margin-left: auto; }
   .recent-strip { align-items: flex-start; flex-direction: column; gap: 10px; padding: 22px 0; }
   .recent-strip div { align-items: flex-start; flex-direction: column; gap: 8px; }
   .recent-strip div > span { display: none; }
