@@ -144,8 +144,8 @@ def build() -> None:
     anchors = [(x * scale_x + 24, y * scale_y) for x, y in anchors_native]
     end_x, end_y = anchors[-1]
     translations = [(x - end_x, y - end_y) for x, y in anchors]
-    scales = (0.72, 0.82, 0.90, 0.96, 0.99, 1.0, 1.0, 1.0, 1.0)
-    opacities = (0.0, 0.42, 0.82, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+    scales = (0.22, 0.34, 0.48, 0.62, 0.75, 0.86, 0.94, 0.98, 1.0)
+    opacities = (0.35, 0.55, 0.72, 0.86, 0.95, 1.0, 1.0, 1.0, 1.0)
 
     panel_width = 280
     panel_height = 180
@@ -169,7 +169,7 @@ def build() -> None:
             scaled_star = base_star.resize((size, size), Image.Resampling.LANCZOS)
             scaled_star = scaled_star.point(lambda value: round(value * opacity))
             star_layer = colored(scaled_star, STAR_COLOR)
-            star_x = round(mark_x + 100 + move_x + 24 - size / 2)
+            star_x = round(mark_x + 86 + move_x + 24 - size / 2)
             star_y = round(mark_y - 6 + move_y + 24 - size / 2)
             board.alpha_composite(star_layer, (star_x, star_y))
 
@@ -195,6 +195,30 @@ def build() -> None:
         compare_draw.text((208, 10), "BROWSER · ~350 ms", fill=BOARD_INK)
         compare_draw.line((194, 8, 194, 168), fill=(218, 220, 207, 255))
         comparison.save(QA / "logo-motion-comparison.png", optimize=True)
+
+    growth_samples = (
+        (2, "145 ms", QA / "logo-motion-implementation-145.png"),
+        (4, "290 ms", QA / "logo-motion-implementation-290.png"),
+        (6, "435 ms", QA / "logo-motion-implementation-435.png"),
+    )
+    if all(path.exists() for _, _, path in growth_samples):
+        row_height = 176
+        growth = Image.new("RGBA", (388, row_height * len(growth_samples)), BOARD_BG)
+        growth_draw = ImageDraw.Draw(growth)
+        for row, (frame_index, label, implementation_path) in enumerate(growth_samples):
+            column = frame_index % 3
+            frame_row = frame_index // 3
+            reference_crop = board.crop((column * panel_width + 60, frame_row * panel_height + 28,
+                                         column * panel_width + 240, frame_row * panel_height + 168))
+            implementation = Image.open(implementation_path).convert("RGBA")
+            implementation_crop = implementation.crop((32, 128, 212, 268))
+            y = row * row_height
+            growth.alpha_composite(reference_crop, (4, y + 32))
+            growth.alpha_composite(implementation_crop, (204, y + 32))
+            growth_draw.text((8, y + 10), f"FRAME TARGET · {label}", fill=BOARD_INK)
+            growth_draw.text((208, y + 10), "BROWSER SAMPLE", fill=BOARD_INK)
+            growth_draw.line((194, y + 8, 194, y + 168), fill=(218, 220, 207, 255))
+        growth.save(QA / "logo-growth-comparison.png", optimize=True)
 
     print("CSS anchor translations for the 118x104 hero mark:")
     for index, (move_x, move_y) in enumerate(translations):

@@ -111,3 +111,32 @@ final result: passed
 - 结果：未发现可执行的 P0、P1 或 P2 问题。
 
 final result: passed
+
+## BUG-72B17ECF 左移与成长动效复验
+
+### 视觉证据与状态归一化
+
+- 逐帧目标：`docs/design/qa/logo-motion-frameboard.png`，840×540 像素，九个等时间状态覆盖 0–580ms，星体由 22% 增长到 100%。
+- 浏览器逐帧证据：`docs/design/qa/logo-motion-implementation-145.png`、`logo-motion-implementation-290.png`、`logo-motion-implementation-435.png`，均为 1265×712 像素、1× 密度、浅色 `moss`。
+- 同屏聚焦对照：`docs/design/qa/logo-growth-comparison.png`，388×528 像素；三行分别对照前段、中段和后段，左右 Logo 均裁成 180×140 像素区域。
+- 静止响应式证据：桌面 `logo-motion-implementation-mid.png` 为 1265×712 像素；移动端 `logo-motion-mobile-after.png` 为 390×844 像素。
+
+### 比较历史
+
+**用户更正，前一轮通过结论被取代。** 星体不应向右微调，而应相对最初锚点向左移动 10px；原缩放在 25% 时已达 90%，视觉上缺少由小变大的过程。
+
+**本轮修复。** 桌面首页星体从当前版本向左 14px，最终落在相对最初锚点左移 10px 的位置；中屏、移动端、导航和页脚同比例调整。九个缩放节点改为 22%、34%、48%、62%、75%、86%、94%、98%、100%，透明度从 35% 连续提升到 100%，仍与 9 个等弧长位置共享 580ms 线性时间轴。
+
+**浏览器复验，结果 passed。** 以约 55ms 间隔连续采样，星体矩阵比例依次为 0.387、0.551、0.686、0.816、0.908、0.967、0.995、1.000，没有缩小、跳帧或 easing 重启。桌面最终定位为 `right: -12px`，移动端为 `right: -9px`；桌面 clientWidth / scrollWidth 为 1250 / 1250，移动端为 375 / 375。
+
+### 五项表面与交互检查
+
+- 字体与文案：未修改字体、字重、行高、字距或页面文案。
+- 间距与布局：首页标识仍为 118×104，星体仍为 48×48；位置左移未改变品牌区占位，桌面和移动端均无横向溢出。
+- 色彩与令牌：继续使用 `--brand-trail` 与 `--brand-star`，没有新增渐变、蓝紫色或硬编码业务色。
+- 资产质量：继续使用真实透明 PNG 蒙版；三段同屏对照未发现模糊、遮罩断裂或透明边缘异常。
+- 交互与无障碍：导航 hover 仍只触发 `vp-star-glint`，轨迹动画为 `none`；`prefers-reduced-motion` 静态回退未变；浏览器控制台为空。
+
+未发现可执行的 P0、P1 或 P2 问题。
+
+final result: passed
