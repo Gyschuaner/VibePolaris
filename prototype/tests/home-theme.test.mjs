@@ -34,6 +34,8 @@ test('theme tokens expose three palettes and preserve reduced-motion behavior', 
   assert.match(css, /--brand-trail:/);
   assert.match(css, /--brand-star:/);
   assert.match(css, /prefers-reduced-motion: reduce/);
+  assert.match(css, /translate3d/);
+  assert.doesNotMatch(css, /@keyframes vp-trail-arrive[\s\S]*clip-path/);
   assert.match(css, /meteor-trail-mask\.png/);
   assert.match(css, /polaris-star-mask\.png/);
 });

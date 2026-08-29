@@ -50,8 +50,7 @@
 
   function replay(mark) {
     mark.classList.remove('is-arriving');
-    void mark.offsetWidth;
-    mark.classList.add('is-arriving');
+    requestAnimationFrame(function () { mark.classList.add('is-arriving'); });
   }
 
   marks.forEach(function (mark) {
