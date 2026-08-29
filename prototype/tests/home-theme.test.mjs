@@ -35,8 +35,9 @@ test('theme tokens expose three palettes and preserve reduced-motion behavior', 
   assert.match(css, /--brand-star:/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(css, /translate3d/);
-  assert.doesNotMatch(css, /@keyframes vp-trail-arrive[\s\S]*clip-path/);
-  assert.match(css, /meteor-trail-mask\.png/);
+  assert.match(css, /steps\(31, end\)/);
+  assert.match(css, /12\.5%[\s\S]*87\.5%/);
+  assert.match(css, /meteor-trail-frames\.png/);
   assert.match(css, /polaris-star-mask\.png/);
 });
 
@@ -47,6 +48,7 @@ test('theme API, domain interaction, and logo replay are present without runtime
   assert.match(js, /vp:palettechange/);
   assert.match(js, /\.domain-grid/);
   assert.match(js, /is-arriving/);
+  assert.match(js, /is-glinting/);
   assert.doesNotMatch(js, /\bfetch\s*\(/);
   assert.doesNotMatch(js, /XMLHttpRequest/);
   assert.doesNotMatch(js, /openai|anthropic|generativelanguage/i);
@@ -91,8 +93,8 @@ test('theme API applies, persists, and safely falls back between built-in palett
   assert.equal(dispatched.at(-1).detail.palette, 'moss');
 });
 
-test('generated brand assets are stored in the project', () => {
-  for (const asset of ['assets/meteor-trail-mask.png', 'assets/polaris-star-mask.png']) {
+test('generated brand assets and motion frames are stored in the project', () => {
+  for (const asset of ['assets/meteor-trail-mask.png', 'assets/polaris-star-mask.png', 'assets/meteor-trail-frames.png']) {
     const path = join(root, asset);
     assert.ok(existsSync(path));
     assert.ok(statSync(path).size > 10_000);

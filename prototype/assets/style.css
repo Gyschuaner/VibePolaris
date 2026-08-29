@@ -102,14 +102,16 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .brand .zh { color: var(--accent); font-weight: 500; margin-left: 2px; }
 .brand-slash { color: var(--hairline); margin-left: 2px; }
 
-/* ---------- 品牌标识：ImageGen 资产蒙版 + 同路径归位动画 ---------- */
+/* ---------- 品牌标识：真实蒙版资产 + 逐帧轨迹动画 ---------- */
 .brand-mark {
-  --star-from-x: -40px;
-  --star-from-y: 28px;
-  --star-mid-x: -24px;
-  --star-mid-y: 17px;
-  --star-late-x: -10px;
-  --star-late-y: 8px;
+  --motion-x0: -32.6px; --motion-y0: 29.3px;
+  --motion-x1: -29.8px; --motion-y1: 24.4px;
+  --motion-x2: -26.4px; --motion-y2: 19.9px;
+  --motion-x3: -21.9px; --motion-y3: 16.5px;
+  --motion-x4: -16.9px; --motion-y4: 14px;
+  --motion-x5: -11.7px; --motion-y5: 11.9px;
+  --motion-x6: -6.9px;  --motion-y6: 8.9px;
+  --motion-x7: -3.2px;  --motion-y7: 4.6px;
   position: relative;
   display: inline-block;
   width: 50px;
@@ -133,12 +135,13 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   position: absolute;
   inset: 0;
   color: var(--brand-trail);
-  -webkit-mask-image: url("meteor-trail-mask.png");
-  mask-image: url("meteor-trail-mask.png");
-  -webkit-mask-size: 108% 108%;
-  mask-size: 108% 108%;
-  transform-origin: center;
-  will-change: transform, opacity;
+  -webkit-mask-image: url("meteor-trail-frames.png");
+  mask-image: url("meteor-trail-frames.png");
+  -webkit-mask-size: 3200% 100%;
+  mask-size: 3200% 100%;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  will-change: mask-position;
   backface-visibility: hidden;
 }
 .brand-star {
@@ -157,24 +160,20 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   backface-visibility: hidden;
 }
 .brand-mark--hero {
-  --star-from-x: -84px;
-  --star-from-y: 63px;
-  --star-mid-x: -48px;
-  --star-mid-y: 35px;
-  --star-late-x: -22px;
-  --star-late-y: 16px;
+  --motion-x0: -77px;   --motion-y0: 69.1px;
+  --motion-x1: -70.4px; --motion-y1: 57.6px;
+  --motion-x2: -62.4px; --motion-y2: 47px;
+  --motion-x3: -51.8px; --motion-y3: 38.9px;
+  --motion-x4: -39.8px; --motion-y4: 33.1px;
+  --motion-x5: -27.5px; --motion-y5: 28px;
+  --motion-x6: -16.2px; --motion-y6: 20.9px;
+  --motion-x7: -7.5px;  --motion-y7: 10.9px;
   width: 118px;
   height: 104px;
   transform: translateY(-2px);
 }
 .brand-mark--hero .brand-star { width: 48px; height: 48px; right: -22px; top: -6px; }
 .brand-mark--footer {
-  --star-from-x: -30px;
-  --star-from-y: 20px;
-  --star-mid-x: -18px;
-  --star-mid-y: 12px;
-  --star-late-x: -8px;
-  --star-late-y: 6px;
   width: 36px;
   height: 32px;
 }
@@ -186,17 +185,27 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   -webkit-mask-image: url("polaris-star-mask.png");
   mask-image: url("polaris-star-mask.png");
 }
-.brand-mark.is-arriving .brand-trail { animation: vp-trail-arrive .52s cubic-bezier(.22,.82,.24,1) both; }
-.brand-mark.is-arriving .brand-star { animation: vp-star-arrive .64s cubic-bezier(.22,.82,.24,1) both; }
+.brand-mark.is-arriving .brand-trail { animation: vp-trail-arrive .58s steps(31, end) both; }
+.brand-mark.is-arriving .brand-star { animation: vp-star-arrive .58s linear both; }
+.brand-mark.is-glinting .brand-star { animation: vp-star-glint .36s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes vp-trail-arrive {
-  0% { transform: translate3d(-8px, 8px, 0) scale(.96); opacity: 0; }
-  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+  0% { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
 }
 @keyframes vp-star-arrive {
-  0% { transform: translate3d(var(--star-from-x), var(--star-from-y), 0) scale(.46); opacity: 0; }
-  44% { transform: translate3d(var(--star-mid-x), var(--star-mid-y), 0) scale(.62); opacity: .82; }
-  74% { transform: translate3d(var(--star-late-x), var(--star-late-y), 0) scale(.78); opacity: 1; }
+  0% { transform: translate3d(var(--motion-x0), var(--motion-y0), 0) scale(.72); opacity: 0; }
+  12.5% { transform: translate3d(var(--motion-x1), var(--motion-y1), 0) scale(.82); opacity: .42; }
+  25% { transform: translate3d(var(--motion-x2), var(--motion-y2), 0) scale(.9); opacity: .82; }
+  37.5% { transform: translate3d(var(--motion-x3), var(--motion-y3), 0) scale(.96); opacity: 1; }
+  50% { transform: translate3d(var(--motion-x4), var(--motion-y4), 0) scale(.99); opacity: 1; }
+  62.5% { transform: translate3d(var(--motion-x5), var(--motion-y5), 0) scale(1); opacity: 1; }
+  75% { transform: translate3d(var(--motion-x6), var(--motion-y6), 0) scale(1); opacity: 1; }
+  87.5% { transform: translate3d(var(--motion-x7), var(--motion-y7), 0) scale(1); opacity: 1; }
   100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+@keyframes vp-star-glint {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  48% { transform: translate3d(0, 0, 0) scale(1.12); }
 }
 .nav-links { display: flex; gap: 28px; margin-left: auto; font-size: 14.5px; }
 .nav-right { display: flex; align-items: center; gap: 14px; }
@@ -344,12 +353,14 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .domain { min-height: 430px; border: 0; background: var(--bg); }
   .domain.is-active { grid-column: 1 / -1; }
   .brand-mark--hero {
-    --star-from-x: -67px;
-    --star-from-y: 50px;
-    --star-mid-x: -38px;
-    --star-mid-y: 28px;
-    --star-late-x: -18px;
-    --star-late-y: 13px;
+    --motion-x0: -62.6px; --motion-y0: 56.2px;
+    --motion-x1: -57.3px; --motion-y1: 46.9px;
+    --motion-x2: -50.8px; --motion-y2: 38.2px;
+    --motion-x3: -42.1px; --motion-y3: 31.6px;
+    --motion-x4: -32.4px; --motion-y4: 26.9px;
+    --motion-x5: -22.4px; --motion-y5: 22.8px;
+    --motion-x6: -13.2px; --motion-y6: 17px;
+    --motion-x7: -6.1px;  --motion-y7: 8.9px;
     width: 96px;
     height: 84px;
   }
@@ -368,12 +379,14 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .brand-stage h1 { font-size: clamp(40px, 11vw, 52px); }
   .brand-stage-note { padding: 0; text-align: left; }
   .brand-mark--hero {
-    --star-from-x: -52px;
-    --star-from-y: 39px;
-    --star-mid-x: -30px;
-    --star-mid-y: 22px;
-    --star-late-x: -14px;
-    --star-late-y: 10px;
+    --motion-x0: -48.3px; --motion-y0: 43.3px;
+    --motion-x1: -44.1px; --motion-y1: 36.1px;
+    --motion-x2: -39.1px; --motion-y2: 29.5px;
+    --motion-x3: -32.5px; --motion-y3: 24.4px;
+    --motion-x4: -25px;   --motion-y4: 20.8px;
+    --motion-x5: -17.2px; --motion-y5: 17.6px;
+    --motion-x6: -10.2px; --motion-y6: 13.1px;
+    --motion-x7: -4.7px;  --motion-y7: 6.8px;
     width: 74px;
     height: 66px;
   }
@@ -403,8 +416,9 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-  .brand-mark.is-arriving .brand-trail { transform: none; opacity: 1; }
-  .brand-mark.is-arriving .brand-star { transform: none; }
+  .brand-mark.is-arriving .brand-trail { animation: none; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  .brand-mark.is-arriving .brand-star,
+  .brand-mark.is-glinting .brand-star { animation: none; transform: none; opacity: 1; }
 }
 
 /* ---------- 首页 hero ---------- */

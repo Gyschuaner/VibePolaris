@@ -43,22 +43,22 @@
   updateThemeColor();
 })();
 
-/* ---------- 流星品牌标识：首次进入一次，悬停/聚焦轻量重播 ---------- */
+/* ---------- 流星品牌标识：首次进入逐帧抵达，悬停/聚焦只做星体闪烁 ---------- */
 (function () {
   var marks = Array.prototype.slice.call(document.querySelectorAll('[data-logo-motion]'));
   if (!marks.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  function replay(mark) {
-    mark.classList.remove('is-arriving');
-    requestAnimationFrame(function () { mark.classList.add('is-arriving'); });
+  function replay(mark, className) {
+    mark.classList.remove(className);
+    requestAnimationFrame(function () { mark.classList.add(className); });
   }
 
   marks.forEach(function (mark) {
     var link = mark.closest('a');
-    if (mark.dataset.logoMotion === 'intro') requestAnimationFrame(function () { replay(mark); });
+    if (mark.dataset.logoMotion === 'intro') requestAnimationFrame(function () { replay(mark, 'is-arriving'); });
     if (!link) return;
-    link.addEventListener('pointerenter', function () { replay(mark); });
-    link.addEventListener('focus', function () { replay(mark); });
+    link.addEventListener('pointerenter', function () { replay(mark, 'is-glinting'); });
+    link.addEventListener('focus', function () { replay(mark, 'is-glinting'); });
   });
 })();
 
