@@ -427,14 +427,30 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
                 ))}
               </div>
             </div>
-            <div className="term-authoritative-sources">
-              <span>继续查证</span>
-              <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" target="_blank" rel="noreferrer">
-                MDN · CSS styling basics <ArrowUpRight size={16} />
-              </a>
-              <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade" target="_blank" rel="noreferrer">
-                MDN · CSS cascade <ArrowUpRight size={16} />
-              </a>
+            <div className="term-course-entry">
+              <Link href="/guides/css">
+                <span className="brand-star-only term-course-star" aria-hidden="true" />
+                <span>
+                  <small>VibePolaris 系统教程</small>
+                  <strong>CSS 深度教程</strong>
+                  <em>6 章 · 约 35 分钟</em>
+                </span>
+                <ArrowRight size={22} />
+              </Link>
+            </div>
+            <div className="term-external-learning">
+              <span>外部学习</span>
+              <div>
+                <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" target="_blank" rel="noreferrer">
+                  <span><strong>MDN · CSS 基础</strong><small>结构化入门</small></span><ArrowUpRight size={16} />
+                </a>
+                <a href="https://web.dev/learn/css" target="_blank" rel="noreferrer">
+                  <span><strong>web.dev · Learn CSS</strong><small>现代布局与实践</small></span><ArrowUpRight size={16} />
+                </a>
+                <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade" target="_blank" rel="noreferrer">
+                  <span><strong>MDN · CSS 层叠</strong><small>理解最终样式</small></span><ArrowUpRight size={16} />
+                </a>
+              </div>
             </div>
           </section>
         ) : (
