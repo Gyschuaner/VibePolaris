@@ -26,7 +26,7 @@ test("CSS 深度教程包含六章、互动练习、自测与继续学习", asyn
   }
   assert.match(page, /<CssSelectorLab \/>/);
   assert.match(page, /<CssCourseQuiz \/>/);
-  assert.match(page, /<CssCourseToc chapters=\{chapters\} \/>/);
+  assert.match(page, /<CssCourseToc chapters=\{chapters\} label="CSS 教程章节" \/>/);
   assert.doesNotMatch(page, /不背属性表/);
   assert.doesNotMatch(page, /css-course-meta/);
   assert.match(practice, /aria-pressed/);

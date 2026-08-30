@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 type Chapter = readonly [id: string, number: string, title: string];
 
-export function CssCourseToc({ chapters }: { chapters: readonly Chapter[] }) {
+export function CssCourseToc({ chapters, label = "教程章节" }: { chapters: readonly Chapter[]; label?: string }) {
   const [activeId, setActiveId] = useState(chapters[0]?.[0] ?? "");
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function CssCourseToc({ chapters }: { chapters: readonly Chapter[] }) {
   }, [chapters]);
 
   return (
-    <aside className="css-course-toc" aria-label="CSS 教程章节">
+    <aside className="css-course-toc" aria-label={label}>
       <span>课程目录</span>
       <nav>
         {chapters.map(([id, number, title]) => {

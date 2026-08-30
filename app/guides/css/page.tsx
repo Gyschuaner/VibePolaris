@@ -43,7 +43,7 @@ export default function CssCoursePage() {
           </header>
 
           <div className="css-course-layout">
-            <CssCourseToc chapters={chapters} />
+            <CssCourseToc chapters={chapters} label="CSS 教程章节" />
 
             <article className="css-course-content">
               <section className="css-course-outcome" aria-labelledby="course-outcome-heading">
