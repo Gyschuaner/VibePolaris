@@ -67,10 +67,11 @@ test("首页使用可切换的极简技术星图", () => {
   assert.match(routeMotion, /router\.prefetch/);
   assert.match(routeMotion, /offsetPath: motionPath/);
   assert.match(routeMotion, /controlsForFlight/);
-  assert.match(routeMotion, /viewportWidth <= 560 \? 42 : 54/);
+  assert.match(routeMotion, /const size = mobile \? 44 : 52/);
+  assert.match(routeMotion, /const detailWidth = Math\.min\(940, viewportWidth - pagePadding \* 2\)/);
   assert.doesNotMatch(routeMotion, /viaA|viaB|measuredTarget/);
   assert.match(routeMotion, /prefers-reduced-motion: reduce/);
-  assert.match(read("app\/terms\/[slug]\/page.tsx"), /data-route-star-target/);
+  assert.match(read("components/TermDetailExperience.tsx"), /data-route-star-target/);
   assert.match(home, /MotionPhase/);
   assert.match(home, /aria-live="polite"/);
   assert.match(css, /is-collapsing[\s\S]*--active-enter-x/);

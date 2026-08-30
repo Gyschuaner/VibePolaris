@@ -1,3 +1,30 @@
+# CSS 词条页设计 QA
+
+- 视觉基准：`C:\Users\chuansgu\.codex\generated_images\01a04cd2-3ffd-71a3-9eca-5d7f98f45830\exec-f869a214-4d4c-490e-877c-2f47730d5293.png`
+- 同尺寸基准：`docs/design-qa/css-reference-1340x935.png`
+- 实现截图：`docs/design-qa/css-implementation-1340x935.png`
+- 对照视口：1340 × 935
+- 验收页面：`http://localhost:3000/terms/css?v=term-story-final`
+
+## 对照结论
+
+- P0：无。页面结构、内容层级、主要操作与基准一致，没有缺失的核心区块或不可用操作。
+- P1：无。首轮中标题、引导区和解释区纵向密度偏松，已缩小字阶和段间距，并将三态切换嵌入解释画布。
+- P2：保留两项有意差异：使用项目既有暖米白和黄绿色品牌 Token；示例植物采用 VibePolaris 自有透明插画资产。它们用于避免对参考站点的逐像素复制。
+
+## 浏览器验收
+
+- 三个解释状态均可切换，`aria-pressed` 与可见文案同步。
+- 判断题支持单选，并提供正确/错误即时反馈。
+- Markdown 与提示词复制按钮提供成功状态。
+- 术语朗读、前后词条导航、相关术语链接均有可访问名称。
+- 最终全新导航后的控制台错误和警告均为 0。
+- `prefers-reduced-motion` 下关闭解释区和页面转场动效。
+
+passed
+
+---
+
 # VibePolaris 设计 QA（最新：词条详情页“双栏词典”）
 
 ## 词条详情页“双栏词典”

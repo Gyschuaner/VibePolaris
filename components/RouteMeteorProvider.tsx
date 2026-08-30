@@ -41,12 +41,14 @@ const RouteMeteorContext = createContext<RouteMeteorContextValue | null>(null);
 
 function estimatedTermStarTarget(): { point: Point; size: number } {
   const viewportWidth = document.documentElement.clientWidth;
-  const size = viewportWidth <= 560 ? 42 : 54;
-  const detailWidth = Math.min(viewportWidth, 720);
+  const mobile = viewportWidth <= 760;
+  const pagePadding = mobile ? 20 : 32;
+  const size = mobile ? 44 : 52;
+  const detailWidth = Math.min(940, viewportWidth - pagePadding * 2);
   return {
     point: {
-      x: (viewportWidth - detailWidth) / 2 + 32 + size / 2,
-      y: 184,
+      x: (viewportWidth - detailWidth) / 2 + size / 2,
+      y: mobile ? 160 : 178,
     },
     size,
   };
