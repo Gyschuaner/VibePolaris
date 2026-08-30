@@ -4,20 +4,17 @@ import {
   ArrowCounterClockwise,
   ArrowLeft,
   ArrowRight,
+  ArrowUpRight,
   CheckCircle,
   ClipboardText,
   Pause,
   Play,
   SpeakerHigh,
 } from "@phosphor-icons/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Term } from "@/lib/content";
-
-type PreviewMode = "plain" | "styled" | "responsive";
-type CodeTarget = "canvas" | "title" | "links" | "spacing";
 
 type TermDetailExperienceProps = {
   term: Term;
@@ -26,30 +23,67 @@ type TermDetailExperienceProps = {
   related: Term[];
 };
 
-const previewModes: Array<{ id: PreviewMode; label: string }> = [
-  { id: "plain", label: "没有 CSS" },
-  { id: "styled", label: "基础样式" },
-  { id: "responsive", label: "响应式布局" },
-];
-
-const cssCodeSteps: Array<{
+const cssResponsiveSteps: Array<{
   selector: string;
   property: string;
   value: string;
-  target: CodeTarget;
+  innerSelector?: string;
   label: string;
+  source: string;
+  note: string;
+  computed: string;
+  layout: "desktop" | "squeezed" | "stacked";
 }> = [
-  { selector: "body", property: "background", value: "#F2EEDC", target: "canvas", label: "页面背景" },
-  { selector: "h1", property: "color", value: "#35502B", target: "title", label: "标题颜色" },
-  { selector: ".nav", property: "display", value: "flex", target: "links", label: "导航排列" },
-  { selector: ".hero", property: "padding", value: "40px", target: "spacing", label: "内容留白" },
+  {
+    selector: ".concept-orbit",
+    property: "grid-template-columns",
+    value: "repeat(3, 1fr)",
+    label: "桌面展开",
+    source: ".concept-orbit",
+    note: "桌面宽度足够，三颗概念星自然展开",
+    computed: "repeat(3, 1fr)",
+    layout: "desktop",
+  },
+  {
+    selector: "@media (max-width: 640px)",
+    property: "/* 缺少布局规则 */",
+    value: "",
+    label: "问题出现",
+    source: ".concept-orbit（桌面规则）",
+    note: "390px 仍沿用三列，星点和标签互相挤压",
+    computed: "repeat(3, 1fr)",
+    layout: "squeezed",
+  },
+  {
+    selector: "@media (max-width: 640px)",
+    innerSelector: ".concept-orbit",
+    property: "grid-template-columns",
+    value: "1fr",
+    label: "响应式修正",
+    source: "@media (max-width: 640px)",
+    note: "手机上改成一列，星点和标签回到清晰轨道",
+    computed: "1fr",
+    layout: "stacked",
+  },
 ];
 
 function CopyAction({ text, label }: { text: string; label: string }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const fallback = document.createElement("textarea");
+      fallback.value = text;
+      fallback.setAttribute("readonly", "");
+      fallback.style.position = "fixed";
+      fallback.style.opacity = "0";
+      document.body.appendChild(fallback);
+      fallback.select();
+      document.execCommand("copy");
+      fallback.remove();
+    }
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
   }
@@ -62,52 +96,19 @@ function CopyAction({ text, label }: { text: string; label: string }) {
   );
 }
 
-function MiniPage({
-  enhanced,
-  compact = false,
-  codeStep,
-  highlightTarget,
+function CssResponsiveMap({
+  activeStep,
+  isPlaying,
+  setActiveStep,
+  setIsPlaying,
 }: {
-  enhanced?: boolean;
-  compact?: boolean;
-  codeStep?: number;
-  highlightTarget?: CodeTarget;
+  activeStep: number;
+  isPlaying: boolean;
+  setActiveStep: (step: number) => void;
+  setIsPlaying: (playing: boolean) => void;
 }) {
-  const codeDemo = codeStep !== undefined;
-  const showSprig = enhanced || (codeDemo && codeStep >= 3);
-
-  return (
-    <div
-      className={`mini-page${enhanced ? " is-enhanced" : ""}${compact ? " is-compact" : ""}${codeDemo ? ` is-code-demo code-step-${codeStep}` : ""}${highlightTarget ? ` is-highlight-${highlightTarget}` : ""}`}
-      aria-hidden="true"
-    >
-      <div className="mini-page-browser">
-        <span /><span /><span />
-      </div>
-      <div className="mini-page-content">
-        {showSprig && (
-          <Image
-            className="mini-page-sprig"
-            src="/css-preview-sprig.png"
-            alt=""
-            width={180}
-            height={180}
-          />
-        )}
-        <small>MY FIRST PAGE</small>
-        <h3>我的小站</h3>
-        <p>欢迎来到我的小站<br />这里记录一些想法与分享。</p>
-        <div className="mini-page-links"><span>文章</span><span>关于</span><span>联系</span></div>
-      </div>
-    </div>
-  );
-}
-
-function CssCodeMap() {
-  const [activeStep, setActiveStep] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
   const mapRef = useRef<HTMLDivElement>(null);
-  const activeCode = cssCodeSteps[activeStep];
+  const activeCode = cssResponsiveSteps[activeStep];
 
   useEffect(() => {
     const element = mapRef.current;
@@ -121,8 +122,8 @@ function CssCodeMap() {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && timer === null) {
         timer = window.setInterval(() => {
-          setActiveStep((current) => (current + 1) % cssCodeSteps.length);
-        }, 1500);
+          setActiveStep((activeStep + 1) % cssResponsiveSteps.length);
+        }, 2000);
       } else if (!entry.isIntersecting) {
         stopTimer();
       }
@@ -133,7 +134,7 @@ function CssCodeMap() {
       stopTimer();
       observer.disconnect();
     };
-  }, [isPlaying]);
+  }, [activeStep, isPlaying, setActiveStep]);
 
   function selectStep(index: number) {
     setActiveStep(index);
@@ -141,14 +142,14 @@ function CssCodeMap() {
   }
 
   return (
-    <div className="term-code-map" ref={mapRef} aria-label="CSS 代码与页面变化映射">
+    <div className="term-code-map term-responsive-map" ref={mapRef} aria-label="CSS 响应式规则与技术星图布局">
       <div className="term-code-editor">
         <div className="term-code-editor-head">
           <span>styles.css</span>
           <div className="term-code-map-controls">
             <button
               type="button"
-              onClick={() => setIsPlaying((current) => !current)}
+              onClick={() => setIsPlaying(!isPlaying)}
               aria-label={isPlaying ? "暂停代码演示" : "播放代码演示"}
               title={isPlaying ? "暂停" : "播放"}
             >
@@ -165,74 +166,70 @@ function CssCodeMap() {
           </div>
         </div>
         <ol className="term-code-lines">
-          {cssCodeSteps.map((step, index) => (
+          {cssResponsiveSteps.map((step, index) => {
+            const isPast = index < activeStep;
+            const isFuture = index > activeStep;
+            return (
             <li key={`${step.selector}-${step.property}`}>
               <button
                 type="button"
-                className={activeStep === index ? "is-active" : ""}
+                className={`${activeStep === index ? "is-active" : ""}${isPast ? " is-past" : ""}${isFuture ? " is-future" : ""}`}
                 aria-pressed={activeStep === index}
                 onClick={() => selectStep(index)}
               >
                 <span className="term-code-number">{String(index + 1).padStart(2, "0")}</span>
                 <code>
-                  <span className="term-code-selector">{step.selector}</span>
-                  {" { "}
-                  <span className="term-code-property">{step.property}</span>
-                  {": "}
-                  <span className="term-code-value">{step.value}</span>
-                  {"; }"}
+                  <span><span className="term-code-selector">{step.selector}</span>{" {"}</span>
+                  {step.innerSelector && (
+                    <span className="term-code-indent"><span className="term-code-selector">{step.innerSelector}</span>{" {"}</span>
+                  )}
+                  <span className={step.innerSelector ? "term-code-indent term-code-indent-deep" : "term-code-indent"}>
+                    <span className="term-code-property">{step.property}</span>
+                    {step.value && (
+                      <>{": "}<span className="term-code-value">{step.value}</span>{";"}</>
+                    )}
+                  </span>
+                  {step.innerSelector && <span className="term-code-indent">{"}"}</span>}
+                  <span>{"}"}</span>
                 </code>
-                <span className="term-code-line-label">{step.label}</span>
               </button>
             </li>
-          ))}
+          )})}
         </ol>
       </div>
 
       <div className="term-code-preview">
-        <MiniPage codeStep={activeStep} highlightTarget={activeCode.target} />
-        <div className="term-code-status">
-          <span>正在修改</span>
-          <strong>{activeCode.label}</strong>
-          <small>{activeCode.selector} → {activeCode.property}</small>
+        <div className={`responsive-preview is-${activeCode.layout}`} aria-hidden="true">
+          <div className="responsive-preview-browser">
+            <span /><span /><span />
+            <small>{activeCode.layout === "desktop" ? "1280px" : "390px"}</small>
+          </div>
+          <div className="responsive-preview-canvas">
+            <span className="responsive-preview-kicker">技术星图</span>
+            <div className="responsive-preview-orbit">
+              {["HTML", "CSS", "JavaScript"].map((concept) => (
+                <span className="responsive-preview-node" key={concept}>
+                  <i className="brand-star-only" />
+                  <strong>{concept}</strong>
+                </span>
+              ))}
+            </div>
+            <small>{activeCode.note}</small>
+          </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function CssPreview({ mode }: { mode: PreviewMode }) {
-  if (mode === "responsive") {
-    return (
-      <div className="term-preview-pair is-responsive">
-        <div className="term-preview-cell">
-          <div className="term-preview-label"><span>桌面</span><strong>留白舒展</strong></div>
-          <MiniPage enhanced />
+        <div className="term-computed" aria-live="polite">
+          <span>Computed</span>
+          <code>grid-template-columns: {activeCode.computed}</code>
+          <small>来自 {activeCode.source}</small>
         </div>
-        <div className="term-preview-cell term-preview-mobile">
-          <div className="term-preview-label"><span>手机</span><strong>内容重排</strong></div>
-          <MiniPage enhanced compact />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="term-preview-pair">
-      <div className="term-preview-cell">
-        <div className="term-preview-label"><span>之前</span><strong>只有结构</strong></div>
-        <MiniPage />
-      </div>
-      <div className="term-preview-cell">
-        <div className="term-preview-label"><span>{mode === "plain" ? "仍然" : "之后"}</span><strong>{mode === "plain" ? "没有样式" : "有了 CSS"}</strong></div>
-        <MiniPage enhanced={mode === "styled"} />
       </div>
     </div>
   );
 }
 
 export function TermDetailExperience({ term, previous, next, related }: TermDetailExperienceProps) {
-  const [previewMode, setPreviewMode] = useState<PreviewMode>("styled");
+  const [responsiveStep, setResponsiveStep] = useState(0);
+  const [responsivePlaying, setResponsivePlaying] = useState(true);
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
   const isCss = term.slug === "css";
 
@@ -246,7 +243,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
   ].join("\n"), [term]);
 
   const prompt = isCss
-    ? "请只调整页面的 CSS：统一颜色、字体、间距与响应式布局，不改动 HTML 结构和现有功能。完成后列出改动范围，并分别检查桌面和手机尺寸。"
+    ? "请检查当前页面在桌面与手机宽度下的布局，找出重叠、溢出、过度拥挤或排列异常的元素。先通过 computed layout 和命中的 CSS 规则定位原因；保留 HTML 内容和交互逻辑，只修改必要的 CSS。完成后说明问题来源、改动的规则，并分别在 1280px 和 390px 宽度验收。"
     : `请围绕“${term.zh}”完成这次调整：${term.say} 请保留项目现有结构，完成后说明改动范围和验证方式。`;
 
   function pronounce() {
@@ -290,17 +287,17 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
 
         <section className="term-question" aria-labelledby="term-question-heading">
           <span>你可能会说</span>
-          <p id="term-question-heading">{isCss ? "AI 改了颜色和间距，这些变化到底写在哪里？" : `“${term.zh}”到底解决了什么问题？`}</p>
+          <p id="term-question-heading">{isCss ? "技术星图在桌面正常，为什么到了手机上标签全挤在一起？" : `“${term.zh}”到底解决了什么问题？`}</p>
         </section>
 
         <section className="term-story-intro" aria-labelledby="term-definition-heading">
           <h2 id="term-definition-heading">
             {isCss
-              ? "CSS 是用规则描述网页外观、布局和不同空间下变化方式的样式语言。"
+              ? "CSS 用选择器把样式规则交给页面，再通过层叠决定最终显示结果。"
               : term.say}
           </h2>
           <p>{isCss
-            ? "它决定页面如何被看见，但不负责页面里有什么。"
+            ? "它负责外观、布局和响应式；内容结构属于 HTML，点击后的业务逻辑属于 JavaScript。"
             : "先判断它负责什么、又不负责什么，再决定是否需要把它放进当前项目。"}</p>
           <div className="term-prerequisites">
             <span>{isCss ? "先知道 HTML ↗" : `所属领域 ${term.cat}`}</span>
@@ -315,30 +312,40 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
           <section className="term-explainer" aria-labelledby="term-explainer-heading">
             <div className="term-section-heading">
               <span>01</span>
-              <h2 id="term-explainer-heading">CSS 怎样改变同一份页面</h2>
+              <h2 id="term-explainer-heading">同一张技术星图，怎样适应不同屏幕</h2>
             </div>
             <div className="term-preview-tabs" role="group" aria-label="切换 CSS 演示状态">
-              {previewModes.map((mode) => (
+              {cssResponsiveSteps.map((step, index) => (
                 <button
-                  key={mode.id}
+                  key={step.label}
                   type="button"
-                  className={previewMode === mode.id ? "is-active" : ""}
-                  aria-pressed={previewMode === mode.id}
-                  onClick={() => setPreviewMode(mode.id)}
+                  className={responsiveStep === index ? "is-active" : ""}
+                  aria-pressed={responsiveStep === index}
+                  onClick={() => { setResponsiveStep(index); setResponsivePlaying(false); }}
                 >
-                  {mode.label}
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {step.label}
                 </button>
               ))}
             </div>
-            <div className={`term-preview-stage${previewMode === "styled" ? " has-code-map" : ""}`}>
-              {previewMode === "styled" ? <CssCodeMap /> : <CssPreview mode={previewMode} />}
+            <div className="term-preview-stage has-code-map">
+              <CssResponsiveMap
+                activeStep={responsiveStep}
+                isPlaying={responsivePlaying}
+                setActiveStep={setResponsiveStep}
+                setIsPlaying={setResponsivePlaying}
+              />
             </div>
-            {previewMode !== "styled" && (
-              <p className="term-preview-caption">
-                {previewMode === "plain" && "结构没有变化，所以两边看起来一样。"}
-                {previewMode === "responsive" && "CSS 还能根据屏幕宽度重排内容，不需要准备两套页面。"}
-              </p>
-            )}
+            <div className="term-responsive-notes">
+              <div>
+                <span>布局怎么变化</span>
+                <p><strong>视口变窄</strong><ArrowRight size={16} /><strong>媒体查询命中</strong><ArrowRight size={16} /><strong>星图重排</strong></p>
+              </div>
+              <div>
+                <span>别混淆</span>
+                <p><strong>CSS</strong> 管呈现；<strong>HTML</strong> 管结构；<strong>JavaScript</strong> 管行为。</p>
+              </div>
+            </div>
           </section>
         ) : (
           <section className="term-explainer term-explainer-simple" aria-labelledby="term-explainer-heading">
@@ -350,11 +357,11 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
         <section className="term-quiz" aria-labelledby="term-quiz-heading">
           <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">一分钟判断</h2></div>
           <fieldset>
-            <legend>{isCss ? "如果只想改颜色和间距，应该动哪里？" : `下面哪一句更适合描述“${term.zh}”？`}</legend>
+            <legend>{isCss ? "同一份星图在 390px 仍挤成三列，下一步最该做什么？" : `下面哪一句更适合描述“${term.zh}”？`}</legend>
             {(isCss ? [
-              ["css", "用 CSS 调整视觉样式"],
-              ["html", "修改 HTML 内容结构"],
-              ["database", "修改 JavaScript 业务逻辑"],
+              ["css", "确认当前布局规则，再用媒体查询调整列数"],
+              ["html", "删掉一部分概念，让标签少一点"],
+              ["database", "用 JavaScript 监听宽度并逐个搬动标签"],
             ] : [
               ["html", "先不看职责，直接引入"],
               ["css", term.say],
@@ -374,31 +381,75 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
           </fieldset>
           {quizAnswer && (
             <p className={`term-quiz-result${answerIsCorrect ? " is-correct" : ""}`} aria-live="polite">
-              {answerIsCorrect ? "对。职责对上了，改动才不会越界。" : "再想一下：内容结构、视觉样式和数据分别由不同部分负责。"}
+              {isCss
+                ? answerIsCorrect
+                  ? "对。先看当前列数来自哪条规则，再让媒体查询只在窄屏重排，桌面布局不会被破坏。"
+                  : "内容和交互都没有错；先让 CSS 根据视口改变布局，不要删内容或增加多余脚本。"
+                : answerIsCorrect
+                  ? "对。职责对上了，改动才不会越界。"
+                  : "再想一下：内容结构、视觉样式和数据分别由不同部分负责。"}
             </p>
           )}
         </section>
 
         <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
           <div>
-            <span>向 AI 这样说</span>
-            <h2 id="term-prompt-heading">把目标和边界一起说清楚</h2>
+            <span>{isCss ? "可直接复制 · 响应式排查" : "向 AI 这样说"}</span>
+            <h2 id="term-prompt-heading">{isCss ? "让 AI 自动定位布局问题" : "把目标和边界一起说清楚"}</h2>
           </div>
           <p>{prompt}</p>
           <CopyAction text={prompt} label="复制提示词" />
         </section>
 
-        <nav className="term-story-related" aria-label="相关术语">
-          <span>继续探索</span>
-          <div>
-            {related.map((item) => (
-              <Link key={item.slug} href={`/terms/${item.slug}`}>
-                <span className="brand-star-only term-related-star" aria-hidden="true" />
-                <span>{item.zh}{item.en ? <small>{item.en}</small> : null}</span>
+        {isCss ? (
+          <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
+            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">接下来学什么</h2></div>
+            <div className="term-path-list">
+              <Link href="/terms/html">
+                <span>01</span>
+                <strong>HTML <small>先分清结构与样式</small></strong>
+                <ArrowRight size={20} />
               </Link>
-            ))}
-          </div>
-        </nav>
+              <Link href="/terms/responsive">
+                <span>02</span>
+                <strong>响应式布局 <small>看规则如何随空间变化</small></strong>
+                <ArrowRight size={20} />
+              </Link>
+            </div>
+            <div className="term-related-orbit">
+              <span>周边概念</span>
+              <div>
+                {related.filter((item) => !["html", "responsive"].includes(item.slug)).slice(0, 4).map((item) => (
+                  <Link key={item.slug} href={`/terms/${item.slug}`}>
+                    <span className="brand-star-only term-related-star" aria-hidden="true" />
+                    {item.zh}{item.en ? <small>{item.en}</small> : null}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="term-authoritative-sources">
+              <span>继续查证</span>
+              <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" target="_blank" rel="noreferrer">
+                MDN · CSS styling basics <ArrowUpRight size={16} />
+              </a>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade" target="_blank" rel="noreferrer">
+                MDN · CSS cascade <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </section>
+        ) : (
+          <nav className="term-story-related" aria-label="相关术语">
+            <span>继续探索</span>
+            <div>
+              {related.map((item) => (
+                <Link key={item.slug} href={`/terms/${item.slug}`}>
+                  <span className="brand-star-only term-related-star" aria-hidden="true" />
+                  <span>{item.zh}{item.en ? <small>{item.en}</small> : null}</span>
+                </Link>
+              ))}
+            </div>
+          </nav>
+        )}
       </div>
     </main>
   );
