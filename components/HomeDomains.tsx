@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Concept = {
   id: string;
@@ -22,8 +22,39 @@ type StarStyle = CSSProperties & {
   "--y": string;
   "--mobile-x": string;
   "--mobile-y": string;
+  "--enter-x": string;
+  "--enter-y": string;
+  "--mobile-enter-x": string;
+  "--mobile-enter-y": string;
+  "--delay": string;
+  "--collapse-delay": string;
   "--scale": number;
 };
+
+type OrbitConcept = {
+  concept: Concept;
+  slotIndex: number;
+};
+
+type SwapFlight = {
+  slotIndex: number;
+  nextFocusId: string | null;
+};
+
+type FlightStyle = CSSProperties & {
+  "--flight-x": string;
+  "--flight-y": string;
+  "--flight-mid-x": string;
+  "--flight-mid-y": string;
+  "--mobile-flight-x": string;
+  "--mobile-flight-y": string;
+  "--mobile-flight-mid-x": string;
+  "--mobile-flight-mid-y": string;
+  "--flight-size": string;
+  "--mobile-flight-size": string;
+};
+
+type MotionPhase = "initial" | "idle" | "collapsing" | "entering" | "swapping" | "settling";
 
 const domains: Domain[] = [
   {
@@ -115,48 +146,119 @@ const specks = [
 export function HomeDomains() {
   const [activeSlug, setActiveSlug] = useState("ai-agent");
   const [focusId, setFocusId] = useState<string | null>(null);
-  const [motionKey, setMotionKey] = useState(0);
+  const [motionPhase, setMotionPhase] = useState<MotionPhase>("initial");
+  const [swapFlight, setSwapFlight] = useState<SwapFlight | null>(null);
+  const domainTimersRef = useRef<number[]>([]);
 
   const activeDomain = domains.find((domain) => domain.slug === activeSlug) ?? domains[2];
   const focusedConcept = activeDomain.concepts.find((concept) => concept.id === focusId) ?? null;
+  const rootConcept = useMemo<Concept>(() => ({
+    id: `${activeDomain.slug}-root`,
+    label: activeDomain.title,
+    href: `/terms?cat=${encodeURIComponent(activeDomain.category)}`,
+  }), [activeDomain]);
+  const centerIdentity = focusedConcept?.id ?? rootConcept.id;
 
-  const orbitConcepts = useMemo<Concept[]>(() => {
-    if (!focusedConcept) return activeDomain.concepts;
-    return [
-      {
-        id: `${activeDomain.slug}-root`,
-        label: activeDomain.title,
-        href: `/terms?cat=${encodeURIComponent(activeDomain.category)}`,
-      },
-      ...activeDomain.concepts.filter((concept) => concept.id !== focusedConcept.id),
-    ];
-  }, [activeDomain, focusedConcept]);
+  const orbitConcepts = useMemo<OrbitConcept[]>(() =>
+    activeDomain.concepts.map((concept, slotIndex) => ({
+      concept: focusedConcept?.id === concept.id ? rootConcept : concept,
+      slotIndex,
+    })), [activeDomain, focusedConcept, rootConcept]);
+
+  const clearDomainTimers = useCallback(() => {
+    domainTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    domainTimersRef.current = [];
+  }, []);
+
+  const beginFocusSwap = useCallback((nextFocusId: string | null, slotIndex: number) => {
+    clearDomainTimers();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setFocusId(nextFocusId);
+      setSwapFlight(null);
+      setMotionPhase("idle");
+      return;
+    }
+
+    setSwapFlight({ slotIndex, nextFocusId });
+    setMotionPhase("swapping");
+    const contentTimer = window.setTimeout(() => {
+      setFocusId(nextFocusId);
+      setMotionPhase("settling");
+    }, 210);
+    const finishTimer = window.setTimeout(() => {
+      setSwapFlight(null);
+      setMotionPhase("idle");
+    }, 470);
+    domainTimersRef.current.push(contentTimer, finishTimer);
+  }, [clearDomainTimers]);
 
   const chooseDomain = (slug: string) => {
-    if (slug === activeSlug && !focusId) return;
-    setActiveSlug(slug);
-    setFocusId(null);
-    setMotionKey((key) => key + 1);
+    if (slug === activeSlug) {
+      if (focusId && !swapFlight) {
+        const slotIndex = activeDomain.concepts.findIndex((concept) => concept.id === focusId);
+        if (slotIndex >= 0) beginFocusSwap(null, slotIndex);
+      }
+      return;
+    }
+
+    clearDomainTimers();
+    setSwapFlight(null);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setActiveSlug(slug);
+      setFocusId(null);
+      setMotionPhase("idle");
+      return;
+    }
+
+    setMotionPhase("collapsing");
+    const swapTimer = window.setTimeout(() => {
+      setActiveSlug(slug);
+      setFocusId(null);
+      setMotionPhase("entering");
+      const settleTimer = window.setTimeout(() => setMotionPhase("idle"), 560);
+      domainTimersRef.current.push(settleTimer);
+    }, 150);
+    domainTimersRef.current.push(swapTimer);
   };
 
-  const focusConcept = (concept: Concept) => {
+  const focusConcept = (concept: Concept, slotIndex: number) => {
+    if (swapFlight) return;
     const rootId = `${activeDomain.slug}-root`;
-    setFocusId(concept.id === rootId ? null : concept.id);
-    setMotionKey((key) => key + 1);
+    beginFocusSwap(concept.id === rootId ? null : concept.id, slotIndex);
   };
+
+  useEffect(() => {
+    const initialTimer = window.setTimeout(() => setMotionPhase("idle"), 700);
+    return () => {
+      window.clearTimeout(initialTimer);
+      domainTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, []);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      setFocusId((current) => {
-        if (!current) return current;
-        setMotionKey((key) => key + 1);
-        return null;
-      });
+      if (!focusId || swapFlight) return;
+      const slotIndex = activeDomain.concepts.findIndex((concept) => concept.id === focusId);
+      if (slotIndex >= 0) beginFocusSwap(null, slotIndex);
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, []);
+  }, [activeDomain, beginFocusSwap, focusId, swapFlight]);
+
+  const flightSlot = swapFlight ? starSlots[swapFlight.slotIndex] : null;
+  const flightStyle: FlightStyle | undefined = flightSlot ? {
+    "--flight-x": `${flightSlot.x}%`,
+    "--flight-y": `${flightSlot.y}%`,
+    "--flight-mid-x": `${(flightSlot.x + 50) / 2}%`,
+    "--flight-mid-y": `${(flightSlot.y + 49) / 2 - 3}%`,
+    "--mobile-flight-x": `${flightSlot.mobileX}%`,
+    "--mobile-flight-y": `${flightSlot.mobileY}%`,
+    "--mobile-flight-mid-x": `${(flightSlot.mobileX + 50) / 2}%`,
+    "--mobile-flight-mid-y": `${(flightSlot.mobileY + 40) / 2 - 2}%`,
+    "--flight-size": `${swapFlight?.slotIndex === 3 ? 31 : 22}px`,
+    "--mobile-flight-size": `${swapFlight?.slotIndex === 3 ? 21 : 16}px`,
+  } : undefined;
 
   return (
     <section className="constellation-shell" aria-labelledby="constellation-title">
@@ -179,7 +281,11 @@ export function HomeDomains() {
         })}
       </nav>
 
-      <div id="constellation-field" className="constellation-map" data-motion-key={motionKey}>
+      <div
+        id="constellation-field"
+        className={`constellation-map is-${motionPhase}`}
+        aria-busy={motionPhase !== "idle"}
+      >
         {specks.map(([x, y]) => (
           <span
             key={`${x}-${y}`}
@@ -189,35 +295,52 @@ export function HomeDomains() {
           />
         ))}
 
-        <div key={`center-${motionKey}`} className="constellation-center">
-          <span className="brand-star-only constellation-center-star" aria-hidden="true" />
+        {flightStyle && (
+          <div className="constellation-flight" style={flightStyle} aria-hidden="true">
+            <span className="brand-star-only constellation-flight-star is-to-center" />
+            <span className="brand-star-only constellation-flight-star is-to-orbit" />
+          </div>
+        )}
+
+        <div className="constellation-center">
+          <span
+            key={`center-star-${centerIdentity}`}
+            className="brand-star-only constellation-center-star"
+            aria-hidden="true"
+          />
           {focusedConcept ? (
-            <Link id="constellation-title" className="constellation-center-link" href={focusedConcept.href}>
+            <Link key={`center-label-${centerIdentity}`} id="constellation-title" className="constellation-center-link" href={focusedConcept.href}>
               <span>{focusedConcept.label}</span>
               {focusedConcept.en && <small>{focusedConcept.en}</small>}
             </Link>
           ) : (
-            <h1 id="constellation-title">{activeDomain.title}</h1>
+            <h1 key={`center-label-${centerIdentity}`} id="constellation-title">{activeDomain.title}</h1>
           )}
         </div>
 
-        <div key={`orbit-${motionKey}`} className="constellation-orbit" aria-label={`${activeDomain.title}相关概念`}>
-          {orbitConcepts.slice(0, starSlots.length).map((concept, index) => {
-            const slot = starSlots[index];
+        <div className="constellation-orbit" aria-label={`${activeDomain.title}相关概念`}>
+          {orbitConcepts.slice(0, starSlots.length).map(({ concept, slotIndex }) => {
+            const slot = starSlots[slotIndex];
             const style: StarStyle = {
               "--x": `${slot.x}%`,
               "--y": `${slot.y}%`,
               "--mobile-x": `${slot.mobileX}%`,
               "--mobile-y": `${slot.mobileY}%`,
+              "--enter-x": `${(50 - slot.x) * .085}vw`,
+              "--enter-y": `${(49 - slot.y) * .07}vh`,
+              "--mobile-enter-x": `${(50 - slot.mobileX) * .11}vw`,
+              "--mobile-enter-y": `${(40 - slot.mobileY) * .065}vh`,
+              "--delay": `${70 + slotIndex * 24}ms`,
+              "--collapse-delay": `${(starSlots.length - slotIndex - 1) * 7}ms`,
               "--scale": slot.scale,
             };
             return (
               <button
                 key={concept.id}
-                className={`concept-star concept-star--${index}${index === 3 ? " is-featured" : ""}`}
+                className={`concept-star concept-star--${slotIndex}${slotIndex === 3 ? " is-featured" : ""}${swapFlight?.slotIndex === slotIndex ? " is-swap-source" : ""}`}
                 style={style}
                 type="button"
-                onClick={() => focusConcept(concept)}
+                onClick={() => focusConcept(concept, slotIndex)}
                 aria-label={`聚焦${concept.label}`}
               >
                 <span className="brand-star-only concept-star-mark" aria-hidden="true" />

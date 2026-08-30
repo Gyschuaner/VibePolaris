@@ -45,10 +45,17 @@ test("首页使用可切换的极简技术星图", () => {
   const css = read("app/globals.css");
 
   assert.match(home, /className="domain-rail"/);
-  assert.match(home, /className="constellation-map"/);
+  assert.match(home, /className=\{`constellation-map is-\$\{motionPhase\}`\}/);
   assert.match(home, /setActiveSlug/);
   assert.match(home, /setFocusId/);
+  assert.match(home, /SwapFlight/);
+  assert.match(home, /beginFocusSwap/);
+  assert.match(home, /MotionPhase/);
   assert.match(home, /aria-live="polite"/);
+  assert.match(css, /is-collapsing[\s\S]*--active-enter-x/);
+  assert.match(css, /constellation-flight-to-center/);
+  assert.match(css, /constellation-flight-to-orbit/);
+  assert.match(css, /constellation-idle-glint/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.constellation-center/);
   assert.doesNotMatch(page, /brand-stage|domain-toolbar|recent-strip/);
   assert.doesNotMatch(home, /domain-copy|context-flow|domain-summary/);
