@@ -9,7 +9,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "JavaScript 深度教程",
-  description: "从值、函数、事件、状态到异步与调试，学会让网页交互保持可预测。",
+  description: "用变量、函数、事件、异步请求和浏览器调试工具，梳理网页交互的实际执行过程。",
 };
 
 const chapters = [
@@ -35,8 +35,8 @@ export default function JavaScriptCoursePage() {
               <div>
                 <span className="css-course-kicker">VibePolaris Course 03</span>
                 <h1>
-                  <span className="css-course-title-desktop">JavaScript：让交互发生，<br />让状态保持可预测</span>
-                  <span className="css-course-title-mobile">JavaScript，<br />让状态可预测</span>
+                  <span className="css-course-title-desktop">JavaScript：网页交互的<br />执行过程</span>
+                  <span className="css-course-title-mobile">JavaScript，<br />网页交互的执行过程</span>
                 </h1>
               </div>
             </div>
@@ -47,35 +47,35 @@ export default function JavaScriptCoursePage() {
 
             <article className="css-course-content">
               <section className="css-course-outcome" aria-labelledby="javascript-outcome-heading">
-                <span>学完以后</span>
-                <h2 id="javascript-outcome-heading">你不必背完所有 API，<br />但应该能沿着一次交互找到数据怎么变。</h2>
+                <span>课程目标</span>
+                <h2 id="javascript-outcome-heading">追踪事件、数据变化<br />和页面更新。</h2>
                 <div>
-                  <p><strong>01</strong>分清值、变量和数据类型</p>
-                  <p><strong>02</strong>把一段行为收进可复用函数</p>
-                  <p><strong>03</strong>追踪事件、状态和界面反馈</p>
+                  <p><strong>01</strong>看懂常见值和变量的变化</p>
+                  <p><strong>02</strong>用函数组织一段独立逻辑</p>
+                  <p><strong>03</strong>排查点击后页面没有更新的问题</p>
                 </div>
               </section>
 
               <section className="css-course-section" id="values">
                 <div className="css-course-section-head">
                   <span>01</span>
-                  <div><h2>先看数据是什么，再决定怎么处理</h2><p>字符串、数字和布尔值长得接近，能做的事情却不同。</p></div>
+                  <div><h2>值、变量和数据类型</h2><p>变量保存数据，数据类型决定它可以参与哪些运算。</p></div>
                 </div>
                 <div className="css-rule-anatomy foundation-code-anatomy" aria-label="JavaScript 变量结构">
                   <code><mark>const</mark> city = <i>&quot;杭州&quot;</i>;<br /><mark>let</mark> count = <b>0</b>;<br /><mark>const</mark> saved = <b>false</b>;</code>
                   <div><p><mark>const</mark> 不重新赋值</p><p><b>let</b> 允许状态变化</p><p><i>typeof</i> 检查类型</p></div>
                 </div>
                 <div className="css-course-principles">
-                  <p><strong>名字说明用途</strong><span>userCount 比 x 更容易追踪。</span></p>
-                  <p><strong>默认优先 const</strong><span>只有重新赋值时再使用 let。</span></p>
-                  <p><strong>不要靠隐式转换猜</strong><span>输入、计算和显示前确认类型。</span></p>
+                  <p><strong>名称写清用途</strong><span>userCount 比 x 更容易检查。</span></p>
+                  <p><strong>默认使用 const</strong><span>确实需要重新赋值时再用 let。</span></p>
+                  <p><strong>在边界检查类型</strong><span>表单输入和接口数据不一定符合预期。</span></p>
                 </div>
               </section>
 
               <section className="css-course-section" id="functions">
                 <div className="css-course-section-head">
                   <span>02</span>
-                  <div><h2>函数把“输入—处理—输出”收成一件事</h2><p>先让一段逻辑只负责一个目标，再讨论是否复用。</p></div>
+                  <div><h2>条件判断与函数</h2><p>函数接收参数，处理后返回结果；条件负责选择执行分支。</p></div>
                 </div>
                 <div className="css-cascade-demo">
                   <div className="css-cascade-rules">
@@ -83,33 +83,33 @@ export default function JavaScriptCoursePage() {
                     <p><small>02 · 处理</small><code>const total = price * discount</code></p>
                     <p className="is-winner"><small>03 · 输出</small><code>return Math.round(total)</code></p>
                   </div>
-                  <div className="css-computed-card"><span>调用结果</span><strong>getSalePrice(68, 0.8)</strong><code>54</code><small>相同输入得到可检查的结果</small></div>
+                  <div className="css-computed-card"><span>调用结果</span><strong>getSalePrice(68, 0.8)</strong><code>54</code><small>返回值可以继续交给其他代码使用</small></div>
                 </div>
                 <div className="css-course-principles">
-                  <p><strong>参数是输入口</strong><span>别让函数偷偷依赖太多外部变量。</span></p>
-                  <p><strong>return 是输出口</strong><span>结果明确，调用方才能继续处理。</span></p>
-                  <p><strong>条件只表达分支</strong><span>把“什么时候”与“做什么”分开。</span></p>
+                  <p><strong>参数提供输入</strong><span>把函数需要的数据明确传进去。</span></p>
+                  <p><strong>return 返回结果</strong><span>调用方可以保存、显示或继续计算。</span></p>
+                  <p><strong>条件选择分支</strong><span>不同输入可以执行不同处理。</span></p>
                 </div>
               </section>
 
               <section className="css-course-section" id="events">
                 <div className="css-course-section-head">
                   <span>03</span>
-                  <div><h2>一次点击，会穿过事件、状态和界面</h2><p>把这条路径拆开看，交互卡住时才知道该查哪里。</p></div>
+                  <div><h2>从点击事件到页面更新</h2><p>事件触发后，程序通常先修改数据，再更新界面。</p></div>
                 </div>
-                <h3 className="css-course-lab-title">切换三个阶段，看同一次收藏操作如何流动</h3>
+                <h3 className="css-course-lab-title">查看一次收藏操作的三个阶段</h3>
                 <JavaScriptStateLab />
                 <ol className="css-responsive-flow">
-                  <li><strong>事件</strong><span>用户做了什么，在哪里发生。</span></li>
-                  <li><strong>状态</strong><span>这次操作让哪份数据发生变化。</span></li>
-                  <li><strong>渲染</strong><span>界面如何把新状态反馈给用户。</span></li>
+                  <li><strong>接收事件</strong><span>确认点击发生在哪个元素上。</span></li>
+                  <li><strong>修改数据</strong><span>把 count 从 0 更新为 1。</span></li>
+                  <li><strong>更新页面</strong><span>把新数值写回计数区域。</span></li>
                 </ol>
               </section>
 
               <section className="css-course-section" id="async">
                 <div className="css-course-section-head">
                   <span>04</span>
-                  <div><h2>请求在路上时，界面也要有状态</h2><p>异步不是“晚一点执行”，而是结果到达前程序还会继续做别的事。</p></div>
+                  <div><h2>处理异步请求</h2><p>请求未完成、成功和失败时，页面需要分别显示对应状态。</p></div>
                 </div>
                 <div className="css-responsive-code">
                   <div><span>发起请求</span><code>status = &quot;loading&quot;;<br />const response = await fetch(&quot;/api/saves&quot;);</code></div>
@@ -117,53 +117,53 @@ export default function JavaScriptCoursePage() {
                   <div><span>处理结果</span><code>if (!response.ok) throw new Error();<br />status = &quot;success&quot;;</code></div>
                 </div>
                 <ol className="css-responsive-flow">
-                  <li><strong>loading</strong><span>阻止重复提交，并告诉用户正在处理。</span></li>
-                  <li><strong>success</strong><span>更新数据，同时给出明确反馈。</span></li>
-                  <li><strong>error</strong><span>保留上下文，允许用户安全重试。</span></li>
+                  <li><strong>loading</strong><span>禁止重复提交，并显示正在处理。</span></li>
+                  <li><strong>success</strong><span>使用响应数据更新页面。</span></li>
+                  <li><strong>error</strong><span>保留用户输入，并提供重试入口。</span></li>
                 </ol>
               </section>
 
               <section className="css-course-section" id="debug">
                 <div className="css-course-section-head">
                   <span>05</span>
-                  <div><h2>不要猜程序怎么跑，让证据把路径照亮</h2><p>从复现、输入、分支到输出，逐段缩小问题范围。</p></div>
+                  <div><h2>用浏览器调试 JavaScript</h2><p>按复现步骤检查控制台、变量和请求，找出第一处异常。</p></div>
                 </div>
                 <ol className="css-debug-list">
-                  <li><span>01</span><div><strong>稳定复现</strong><p>写下触发步骤、输入和实际结果。</p></div></li>
-                  <li><span>02</span><div><strong>看 Console</strong><p>先处理第一个真正的错误，而不是后续连锁反应。</p></div></li>
-                  <li><span>03</span><div><strong>设断点</strong><p>观察变量如何穿过条件和函数。</p></div></li>
-                  <li><span>04</span><div><strong>验证失败分支</strong><p>断网、空值和重复点击也要有可预期结果。</p></div></li>
+                  <li><span>01</span><div><strong>记录复现步骤</strong><p>保留触发动作、输入和实际结果。</p></div></li>
+                  <li><span>02</span><div><strong>查看第一个错误</strong><p>后面的报错可能只是连锁结果。</p></div></li>
+                  <li><span>03</span><div><strong>用断点检查变量</strong><p>确认参数、条件和返回值是否正确。</p></div></li>
+                  <li><span>04</span><div><strong>测试异常情况</strong><p>检查断网、空值和重复点击的处理。</p></div></li>
                 </ol>
               </section>
 
               <section className="css-course-section" id="practice">
                 <div className="css-course-section-head">
                   <span>06</span>
-                  <div><h2>最后，用一条可靠的数据路径收束</h2><p>页面没更新时，先判断事件、状态还是渲染断在了哪里。</p></div>
+                  <div><h2>知识检查</h2><p>根据事件和数据变化，判断页面没有更新的原因。</p></div>
                 </div>
                 <FoundationCourseQuiz
                   name="javascript-course-quiz"
-                  question="点击收藏后数字不变，最稳妥的第一步是什么？"
+                  question="点击收藏后数字没有变化，应该先检查什么？"
                   options={[
                     { id: "trace", label: "确认点击事件是否触发，再观察 count 是否更新" },
                     { id: "timeout", label: "加一个 setTimeout，让它晚一点再更新" },
                     { id: "reload", label: "每次点击都刷新整个页面" },
                   ]}
                   correctId="trace"
-                  correctText="对。沿着事件 → 状态 → 界面的路径检查，能最快确定断点。"
-                  wrongText="等待或刷新可能掩盖问题；先拿到事件和状态变化的证据。"
+                  correctText="先确认事件有没有触发，再检查 count 是否更新。这样可以判断问题出在事件处理还是页面更新。"
+                  wrongText="setTimeout 和刷新都不能说明问题出在哪里。先检查事件是否触发，以及 count 是否发生变化。"
                 />
                 <div className="css-course-next">
-                  <Link href="/terms/javascript"><span>回到词条</span><strong>复习 JavaScript 的 5 分钟版本</strong><ArrowRight size={20} /></Link>
-                  <Link href="/terms/dom"><span>下一颗星</span><strong>继续理解 DOM</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/javascript"><span>回到词条</span><strong>查看 JavaScript 简版说明</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/dom"><span>相关概念</span><strong>DOM：脚本如何修改页面</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
 
               <section className="css-course-sources" aria-labelledby="javascript-sources-heading">
-                <div><span>权威资料</span><h2 id="javascript-sources-heading">需要查语言和 Web API 时，从这里继续</h2></div>
+                <div><span>参考资料</span><h2 id="javascript-sources-heading">查语法和 Web API</h2></div>
                 <div>
-                  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" target="_blank" rel="noreferrer"><strong>MDN · JavaScript Guide</strong><small>系统学习语言基础</small><ArrowUpRight size={18} /></a>
-                  <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting" target="_blank" rel="noreferrer"><strong>MDN · Dynamic scripting</strong><small>从页面交互入门</small><ArrowUpRight size={18} /></a>
+                  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" target="_blank" rel="noreferrer"><strong>MDN · JavaScript Guide</strong><small>语言基础教程</small><ArrowUpRight size={18} /></a>
+                  <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting" target="_blank" rel="noreferrer"><strong>MDN · Dynamic scripting</strong><small>网页脚本入门</small><ArrowUpRight size={18} /></a>
                   <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference" target="_blank" rel="noreferrer"><strong>MDN · JavaScript Reference</strong><small>查语法与内置对象</small><ArrowUpRight size={18} /></a>
                 </div>
               </section>

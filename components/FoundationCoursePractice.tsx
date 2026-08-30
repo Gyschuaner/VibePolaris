@@ -76,24 +76,24 @@ export function HtmlStructureLab() {
 const javascriptSteps = [
   {
     id: "event",
-    label: "事件进入",
+    label: "接收事件",
     code: "button.addEventListener('click', () => {\n  // 用户刚刚点了一次\n});",
     count: 0,
-    status: "等待点击事件",
+    status: "等待用户点击",
   },
   {
     id: "state",
-    label: "状态变化",
+    label: "修改数据",
     code: "let count = 0;\ncount = count + 1;",
     count: 1,
-    status: "count 从 0 变成 1",
+    status: "count 已从 0 更新为 1",
   },
   {
     id: "render",
-    label: "界面反馈",
+    label: "更新页面",
     code: "counter.textContent = count;\nstatus.textContent = '已收藏';",
     count: 1,
-    status: "页面已经同步新状态",
+    status: "页面显示新的 count",
   },
 ] as const;
 
@@ -103,7 +103,7 @@ export function JavaScriptStateLab() {
 
   return (
     <div className="css-lab foundation-lab" aria-label="JavaScript 事件与状态练习">
-      <div className="css-lab-tabs" role="group" aria-label="查看一次交互的三个阶段">
+      <div className="css-lab-tabs" role="group" aria-label="查看收藏操作的三个阶段">
         {javascriptSteps.map((step, index) => (
           <button
             type="button"
@@ -121,7 +121,7 @@ export function JavaScriptStateLab() {
         <div className="css-lab-code">
           <span>interaction.js</span>
           <pre><code>{active.code}</code></pre>
-          <div><strong>当前阶段</strong><code>{active.label}</code></div>
+          <div><strong>当前步骤</strong><code>{active.label}</code></div>
         </div>
         <div className="css-lab-preview foundation-js-preview" aria-live="polite">
           <span className="css-lab-preview-label">界面状态</span>
