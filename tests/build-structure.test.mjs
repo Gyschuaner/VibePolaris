@@ -56,6 +56,10 @@ test("首页使用可切换的极简技术星图", () => {
   const routeMotion = read("components/RouteMeteorProvider.tsx");
   assert.match(routeMotion, /route-meteor/);
   assert.match(routeMotion, /router\.prefetch/);
+  assert.match(routeMotion, /offsetPath: motionPath/);
+  assert.match(routeMotion, /controlsForFlight/);
+  assert.match(routeMotion, /viewportWidth <= 560 \? 42 : 54/);
+  assert.doesNotMatch(routeMotion, /viaA|viaB|measuredTarget/);
   assert.match(routeMotion, /prefers-reduced-motion: reduce/);
   assert.match(read("app\/terms\/[slug]\/page.tsx"), /data-route-star-target/);
   assert.match(home, /MotionPhase/);
@@ -65,9 +69,12 @@ test("首页使用可切换的极简技术星图", () => {
   assert.match(css, /constellation-flight-to-orbit/);
   assert.match(css, /constellation-idle-glint/);
   assert.match(css, /route-meteor-flight/);
+  assert.match(css, /offset-distance: 0%[\s\S]*offset-distance: 100%/);
+  assert.doesNotMatch(css, /--route-via-|--route-angle-/);
   assert.match(css, /meteor-trail-mask\.png/);
   assert.match(css, /has-route-flight/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.constellation-center/);
   assert.doesNotMatch(page, /brand-stage|domain-toolbar|recent-strip/);
   assert.doesNotMatch(home, /domain-copy|context-flow|domain-summary/);
+  assert.match(home, /beginRouteFlight\(concept\.href, source\)/);
 });

@@ -75,7 +75,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; overflow-y: scroll; }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -540,12 +540,12 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
     transform 280ms cubic-bezier(.2, .78, .22, 1);
 }
 .route-page.is-departing main {
-  opacity: .12;
-  transform: translateY(9px) scale(.994);
+  opacity: .18;
+  transform: translateY(6px) scale(.996);
   pointer-events: none;
 }
 .route-page.is-arriving main {
-  animation: route-page-arrive 440ms 40ms cubic-bezier(.16, 1, .3, 1) both;
+  animation: route-page-arrive 360ms cubic-bezier(.16, 1, .3, 1) both;
 }
 
 .route-meteor-layer {
@@ -562,8 +562,12 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   width: 48px;
   height: 48px;
   isolation: isolate;
-  animation: route-meteor-flight 760ms cubic-bezier(.32, .02, .17, 1) both;
-  will-change: transform;
+  offset-anchor: center;
+  offset-rotate: auto;
+  animation: route-meteor-flight 820ms cubic-bezier(.42, .12, .58, .88) both;
+  backface-visibility: hidden;
+  contain: layout paint style;
+  will-change: offset-distance, transform;
 }
 .route-meteor-star {
   position: relative;
@@ -586,7 +590,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   transform-origin: right center;
   -webkit-mask: url("/meteor-trail-mask.png") center / contain no-repeat;
   mask: url("/meteor-trail-mask.png") center / contain no-repeat;
-  animation: route-meteor-tail 760ms cubic-bezier(.2, .78, .22, 1) both;
+  animation: route-meteor-tail 820ms linear both;
 }
 
 .term-heading {
@@ -608,28 +612,12 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 
 @keyframes route-meteor-flight {
   0% {
-    transform:
-      translate3d(var(--route-from-x), var(--route-from-y), 0)
-      rotate(var(--route-angle-a))
-      scale(var(--route-source-scale));
-  }
-  38% {
-    transform:
-      translate3d(var(--route-via-a-x), var(--route-via-a-y), 0)
-      rotate(var(--route-angle-b))
-      scale(1.08);
-  }
-  72% {
-    transform:
-      translate3d(var(--route-via-b-x), var(--route-via-b-y), 0)
-      rotate(var(--route-angle-c))
-      scale(.98);
+    offset-distance: 0%;
+    transform: scale(var(--route-source-scale));
   }
   100% {
-    transform:
-      translate3d(var(--route-target-x), var(--route-target-y), 0)
-      rotate(var(--route-angle-c))
-      scale(var(--route-target-scale));
+    offset-distance: 100%;
+    transform: scale(var(--route-target-scale));
   }
 }
 @keyframes route-meteor-tail {
@@ -640,7 +628,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   100% { opacity: 0; transform: translateY(-54%) rotate(-7deg) scaleX(.18); }
 }
 @keyframes route-page-arrive {
-  from { opacity: .12; transform: translateY(9px) scale(.994); }
+  from { opacity: .18; transform: translateY(6px) scale(.996); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 /* ---------- 选型指南 ---------- */

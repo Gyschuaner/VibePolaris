@@ -20,30 +20,16 @@ type RouteFlight = {
   href: string;
   targetPath: string;
   from: Point;
-  viaA: Point;
-  viaB: Point;
+  controlA: Point;
+  controlB: Point;
   target: Point;
   sourceScale: number;
   targetScale: number;
-  angleA: number;
-  angleB: number;
-  angleC: number;
 };
 
 type RouteMeteorStyle = CSSProperties & {
-  "--route-from-x": string;
-  "--route-from-y": string;
-  "--route-via-a-x": string;
-  "--route-via-a-y": string;
-  "--route-via-b-x": string;
-  "--route-via-b-y": string;
-  "--route-target-x": string;
-  "--route-target-y": string;
   "--route-source-scale": number;
   "--route-target-scale": number;
-  "--route-angle-a": string;
-  "--route-angle-b": string;
-  "--route-angle-c": string;
 };
 
 type RouteMeteorContextValue = {
@@ -53,24 +39,44 @@ type RouteMeteorContextValue = {
 
 const RouteMeteorContext = createContext<RouteMeteorContextValue | null>(null);
 
-function pointOnQuadratic(from: Point, control: Point, target: Point, t: number): Point {
-  const inverse = 1 - t;
+function estimatedTermStarTarget(): { point: Point; size: number } {
+  const viewportWidth = document.documentElement.clientWidth;
+  const size = viewportWidth <= 560 ? 42 : 54;
+  const detailWidth = Math.min(viewportWidth, 720);
   return {
-    x: inverse * inverse * from.x + 2 * inverse * t * control.x + t * t * target.x,
-    y: inverse * inverse * from.y + 2 * inverse * t * control.y + t * t * target.y,
+    point: {
+      x: (viewportWidth - detailWidth) / 2 + 32 + size / 2,
+      y: 184,
+    },
+    size,
   };
 }
 
-function angleBetween(from: Point, to: Point) {
-  return Math.atan2(to.y - from.y, to.x - from.x) * 180 / Math.PI;
+function controlsForFlight(from: Point, target: Point) {
+  const dx = target.x - from.x;
+  const dy = target.y - from.y;
+  const distance = Math.max(1, Math.hypot(dx, dy));
+  const unit = { x: dx / distance, y: dy / distance };
+  const normal = { x: -unit.y, y: unit.x };
+  const bend = Math.min(74, distance * .2);
+  const landingHandle = Math.min(88, distance * .24);
+  const horizontalDirection = Math.sign(dx) || 1;
+
+  return {
+    controlA: {
+      x: from.x + unit.x * distance * .26 + normal.x * bend,
+      y: from.y + unit.y * distance * .26 + normal.y * bend,
+    },
+    controlB: {
+      x: target.x - horizontalDirection * landingHandle,
+      y: target.y,
+    },
+  };
 }
 
-function estimatedTermStarTarget(): Point {
-  const detailWidth = Math.min(window.innerWidth, 720);
-  return {
-    x: (window.innerWidth - detailWidth) / 2 + 59,
-    y: 181,
-  };
+function motionPath(flight: RouteFlight) {
+  const n = (value: number) => value.toFixed(2);
+  return `path("M ${n(flight.from.x)} ${n(flight.from.y)} C ${n(flight.controlA.x)} ${n(flight.controlA.y)}, ${n(flight.controlB.x)} ${n(flight.controlB.y)}, ${n(flight.target.x)} ${n(flight.target.y)}")`;
 }
 
 export function RouteMeteorProvider({ children }: { children: ReactNode }) {
@@ -80,6 +86,8 @@ export function RouteMeteorProvider({ children }: { children: ReactNode }) {
   const [pagePhase, setPagePhase] = useState<"idle" | "departing" | "arriving">("idle");
   const navigationTimerRef = useRef<number | null>(null);
   const finishTimerRef = useRef<number | null>(null);
+  const motionDoneRef = useRef(false);
+  const routeArrivedRef = useRef(false);
 
   const clearTimers = useCallback(() => {
     if (navigationTimerRef.current !== null) window.clearTimeout(navigationTimerRef.current);
@@ -87,6 +95,14 @@ export function RouteMeteorProvider({ children }: { children: ReactNode }) {
     navigationTimerRef.current = null;
     finishTimerRef.current = null;
   }, []);
+
+  const finishFlight = useCallback((flightId: number) => {
+    clearTimers();
+    setFlight((current) => current?.id === flightId ? null : current);
+    setPagePhase("idle");
+    motionDoneRef.current = false;
+    routeArrivedRef.current = false;
+  }, [clearTimers]);
 
   const beginRouteFlight = useCallback((href: string, source: HTMLElement) => {
     if (flight) return;
@@ -97,81 +113,54 @@ export function RouteMeteorProvider({ children }: { children: ReactNode }) {
 
     const rect = source.getBoundingClientRect();
     const from = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    const target = estimatedTermStarTarget();
-    const distance = Math.hypot(target.x - from.x, target.y - from.y);
-    const control = {
-      x: (from.x + target.x) / 2 + Math.min(70, distance * .1),
-      y: Math.min(from.y, target.y) - Math.min(150, distance * .26),
-    };
-    const viaA = pointOnQuadratic(from, control, target, .38);
-    const viaB = pointOnQuadratic(from, control, target, .72);
+    const { point: target, size: targetSize } = estimatedTermStarTarget();
+    const { controlA, controlB } = controlsForFlight(from, target);
     const targetPath = new URL(href, window.location.href).pathname;
     const nextFlight: RouteFlight = {
       id: Date.now(),
       href,
       targetPath,
       from,
-      viaA,
-      viaB,
+      controlA,
+      controlB,
       target,
       sourceScale: Math.max(rect.width, rect.height) / 48,
-      targetScale: 54 / 48,
-      angleA: angleBetween(from, viaA),
-      angleB: angleBetween(viaA, viaB),
-      angleC: angleBetween(viaB, target),
+      targetScale: targetSize / 48,
     };
 
     clearTimers();
+    motionDoneRef.current = false;
+    routeArrivedRef.current = false;
     router.prefetch(href);
     setFlight(nextFlight);
     setPagePhase("departing");
-    navigationTimerRef.current = window.setTimeout(() => router.push(href), 280);
-    finishTimerRef.current = window.setTimeout(() => {
-      setFlight(null);
-      setPagePhase("idle");
-      clearTimers();
-    }, 760);
-  }, [clearTimers, flight, router]);
-
-  const flightId = flight?.id;
-  const flightTargetPath = flight?.targetPath;
+    navigationTimerRef.current = window.setTimeout(() => router.push(href), 120);
+    finishTimerRef.current = window.setTimeout(() => finishFlight(nextFlight.id), 1200);
+  }, [clearTimers, finishFlight, flight, router]);
 
   useEffect(() => {
-    if (!flightId || pathname !== flightTargetPath) return;
+    if (!flight || pathname !== flight.targetPath) return;
+    const flightId = flight.id;
     const frame = window.requestAnimationFrame(() => {
-      const targetElement = document.querySelector<HTMLElement>("[data-route-star-target]");
-      if (targetElement) {
-        const rect = targetElement.getBoundingClientRect();
-        const measuredTarget = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-        setFlight((current) => current?.id === flightId ? {
-          ...current,
-          target: measuredTarget,
-          targetScale: Math.max(rect.width, rect.height) / 48,
-          angleC: angleBetween(current.viaB, measuredTarget),
-        } : current);
-      }
+      routeArrivedRef.current = true;
       setPagePhase("arriving");
+      if (motionDoneRef.current) finishFlight(flightId);
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [flightId, flightTargetPath, pathname]);
+  }, [finishFlight, flight, pathname]);
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
   const style = useMemo<RouteMeteorStyle | undefined>(() => flight ? {
-    "--route-from-x": `${flight.from.x - 24}px`,
-    "--route-from-y": `${flight.from.y - 24}px`,
-    "--route-via-a-x": `${flight.viaA.x - 24}px`,
-    "--route-via-a-y": `${flight.viaA.y - 24}px`,
-    "--route-via-b-x": `${flight.viaB.x - 24}px`,
-    "--route-via-b-y": `${flight.viaB.y - 24}px`,
-    "--route-target-x": `${flight.target.x - 24}px`,
-    "--route-target-y": `${flight.target.y - 24}px`,
+    offsetPath: motionPath(flight),
     "--route-source-scale": flight.sourceScale,
     "--route-target-scale": flight.targetScale,
-    "--route-angle-a": `${flight.angleA}deg`,
-    "--route-angle-b": `${flight.angleB}deg`,
-    "--route-angle-c": `${flight.angleC}deg`,
   } : undefined, [flight]);
+
+  const handleFlightEnd = useCallback((flightId: number) => {
+    motionDoneRef.current = true;
+    if (routeArrivedRef.current) finishFlight(flightId);
+  }, [finishFlight]);
 
   const value = useMemo(() => ({ beginRouteFlight, isRouteFlying: Boolean(flight) }), [beginRouteFlight, flight]);
 
@@ -182,7 +171,16 @@ export function RouteMeteorProvider({ children }: { children: ReactNode }) {
       </div>
       {flight && (
         <div className="route-meteor-layer" aria-hidden="true">
-          <span key={flight.id} className="route-meteor" style={style}>
+          <span
+            key={flight.id}
+            className="route-meteor"
+            style={style}
+            onAnimationEnd={(event) => {
+              if (event.currentTarget === event.target && event.animationName === "route-meteor-flight") {
+                handleFlightEnd(flight.id);
+              }
+            }}
+          >
             <span className="route-meteor-tail" />
             <span className="brand-star-only route-meteor-star" />
           </span>

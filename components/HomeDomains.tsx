@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
@@ -146,6 +147,7 @@ const specks = [
 ];
 
 export function HomeDomains() {
+  const router = useRouter();
   const { beginRouteFlight, isRouteFlying } = useRouteMeteor();
   const [activeSlug, setActiveSlug] = useState("ai-agent");
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -227,14 +229,16 @@ export function HomeDomains() {
     domainTimersRef.current.push(swapTimer);
   };
 
-  const focusConcept = (concept: Concept, slotIndex: number) => {
+  const focusConcept = (concept: Concept, slotIndex: number, source: HTMLElement) => {
     if (swapFlight || isRouteFlying) return;
     const rootId = `${activeDomain.slug}-root`;
     const nextFocusId = concept.id === rootId ? null : concept.id;
     const hasDetailPage = nextFocusId !== null && concept.href.startsWith("/terms/") && !concept.href.includes("?");
-    beginFocusSwap(nextFocusId, slotIndex, hasDetailPage ? () => {
-      if (centerStarRef.current) beginRouteFlight(concept.href, centerStarRef.current);
-    } : undefined);
+    if (hasDetailPage) {
+      beginRouteFlight(concept.href, source);
+      return;
+    }
+    beginFocusSwap(nextFocusId, slotIndex);
   };
 
   useEffect(() => {
@@ -244,6 +248,14 @@ export function HomeDomains() {
       domainTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
+
+  useEffect(() => {
+    activeDomain.concepts.forEach((concept) => {
+      if (concept.href.startsWith("/terms/") && !concept.href.includes("?")) {
+        router.prefetch(concept.href);
+      }
+    });
+  }, [activeDomain, router]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -361,7 +373,10 @@ export function HomeDomains() {
                 className={`concept-star concept-star--${slotIndex}${slotIndex === 3 ? " is-featured" : ""}${swapFlight?.slotIndex === slotIndex ? " is-swap-source" : ""}`}
                 style={style}
                 type="button"
-                onClick={() => focusConcept(concept, slotIndex)}
+                onClick={(event) => {
+                  const source = event.currentTarget.querySelector<HTMLElement>(".concept-star-mark");
+                  if (source) focusConcept(concept, slotIndex, source);
+                }}
                 aria-label={concept.href.startsWith("/terms/") && !concept.href.includes("?") ? `打开${concept.label}术语` : `聚焦${concept.label}`}
               >
                 <span className="brand-star-only concept-star-mark" aria-hidden="true" />
