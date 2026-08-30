@@ -46,11 +46,18 @@ test("首页使用可切换的极简技术星图", () => {
   const css = read("app/globals.css");
 
   assert.match(home, /className="domain-rail"/);
-  assert.match(home, /className=\{`constellation-map is-\$\{motionPhase\}\$\{focusedConcept \? " has-concept-focus"/);
+  assert.match(home, /className=\{`constellation-map is-\$\{motionPhase\}\$\{focusedConcept \? ` has-concept-focus is-focus-\$\{focusPhase\}`/);
   assert.match(home, /setActiveSlug/);
   assert.match(home, /setFocusId/);
   assert.match(home, /has-concept-focus/);
   assert.match(home, /concept-focus-detail/);
+  assert.match(home, /type FocusPhase = "idle" \| "primed" \| "anchoring" \| "revealed"/);
+  assert.match(home, /setFocusPhase\("primed"\)/);
+  assert.match(home, /setFocusPhase\("anchoring"\), 120/);
+  assert.match(home, /setFocusPhase\("revealed"\), 520/);
+  assert.match(home, /它解决什么/);
+  assert.match(home, /怎么工作/);
+  assert.match(home, /相关概念/);
   assert.match(home, /focusId === concept\.id/);
   assert.doesNotMatch(home, /href: "\/terms\?q=/);
   assert.match(home, /beginRouteFlight/);
@@ -67,7 +74,10 @@ test("首页使用可切换的极简技术星图", () => {
   assert.match(home, /MotionPhase/);
   assert.match(home, /aria-live="polite"/);
   assert.match(css, /is-collapsing[\s\S]*--active-enter-x/);
-  assert.match(css, /has-concept-focus[\s\S]*is-focused/);
+  assert.match(css, /is-focus-primed[\s\S]*is-focus-anchoring[\s\S]*is-focus-revealed/);
+  assert.match(css, /--active-focus-x/);
+  assert.match(css, /is-focus-anchoring[\s\S]*\.concept-star\.is-focused[\s\S]*left: 23\.5%/);
+  assert.match(css, /concept-focus-line-in/);
   assert.match(css, /concept-focus-detail/);
   assert.doesNotMatch(css, /constellation-flight-to-center/);
   assert.doesNotMatch(css, /constellation-flight-to-orbit/);
