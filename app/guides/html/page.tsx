@@ -9,7 +9,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "HTML 深度教程",
-  description: "从文档骨架、语义标签、链接、表单到无障碍，学会让网页结构自己说话。",
+  description: "用文档结构、语义元素、链接、表单和无障碍规则组织网页内容。",
 };
 
 const chapters = [
@@ -35,8 +35,8 @@ export default function HtmlCoursePage() {
               <div>
                 <span className="css-course-kicker">VibePolaris Course 02</span>
                 <h1>
-                  <span className="css-course-title-desktop">HTML：让内容拥有结构，<br />让浏览器读懂页面</span>
-                  <span className="css-course-title-mobile">HTML，让结构<br />自己说话</span>
+                  <span className="css-course-title-desktop">HTML：网页内容的<br />结构与语义</span>
+                  <span className="css-course-title-mobile">HTML，<br />网页结构与语义</span>
                 </h1>
               </div>
             </div>
@@ -47,8 +47,8 @@ export default function HtmlCoursePage() {
 
             <article className="css-course-content">
               <section className="css-course-outcome" aria-labelledby="html-outcome-heading">
-                <span>学完以后</span>
-                <h2 id="html-outcome-heading">你不必背完所有标签，<br />但应该能读懂一页内容的骨架。</h2>
+                <span>课程目标</span>
+                <h2 id="html-outcome-heading">读懂文档层级，选择合适元素，<br />并完成可操作的表单。</h2>
                 <div>
                   <p><strong>01</strong>从标题层级读出页面结构</p>
                   <p><strong>02</strong>为内容选择有含义的标签</p>
@@ -59,36 +59,36 @@ export default function HtmlCoursePage() {
               <section className="css-course-section" id="skeleton">
                 <div className="css-course-section-head">
                   <span>01</span>
-                  <div><h2>先让浏览器知道这是一张什么页面</h2><p>文档声明、语言、标题和正文，是任何网页最小而完整的骨架。</p></div>
+                  <div><h2>HTML 文档的基本结构</h2><p>文档声明、语言、标题和正文组成一个完整页面。</p></div>
                 </div>
                 <div className="css-rule-anatomy foundation-code-anatomy" aria-label="HTML 文档骨架">
                   <code>{"<!doctype html>"}<br />{"<html lang=\"zh-CN\">"}<br />&nbsp;&nbsp;{"<head>…</head>"}<br />&nbsp;&nbsp;{"<body>…</body>"}<br />{"</html>"}</code>
                   <div><p><mark>doctype</mark> 使用现代 HTML</p><p><b>head</b> 描述页面</p><p><i>body</i> 放可见内容</p></div>
                 </div>
-                <h3 className="css-course-lab-title">点一个标签，看代码如何变成可理解的文档结构</h3>
+                <h3 className="css-course-lab-title">选择一个元素，查看它在文档中的语义</h3>
                 <HtmlStructureLab />
               </section>
 
               <section className="css-course-section" id="semantic">
                 <div className="css-course-section-head">
                   <span>02</span>
-                  <div><h2>标签不只负责包起来，还负责说明含义</h2><p>视觉上都能做成一块，但 header、main、article 和 div 传达的信息不同。</p></div>
+                  <div><h2>使用语义元素组织内容</h2><p>header、main、article 和 div 对应不同的文档职责。</p></div>
                 </div>
                 <div className="css-layout-compare">
                   <div><span>只有外形</span><h3>所有内容都塞进 div</h3><div className="foundation-stack-visual" aria-hidden="true"><i /><i /><i /></div><code>{"<div><div><div>…"}</code></div>
                   <div><span>结构清楚</span><h3>标签说明区域职责</h3><div className="foundation-stack-visual is-semantic" aria-hidden="true"><i /><i /><i /></div><code>{"<header><main><article>…"}</code></div>
                 </div>
                 <div className="css-course-principles">
-                  <p><strong>先问内容是什么</strong><span>文章、导航、按钮，先按职责命名。</span></p>
-                  <p><strong>没有合适语义再用 div</strong><span>div 是容器，不是默认答案。</span></p>
-                  <p><strong>别用标题只为放大字</strong><span>h1 到 h6 表达层级，不表达字号。</span></p>
+                  <p><strong>按内容职责选择元素</strong><span>文章、导航和按钮分别使用对应元素。</span></p>
+                  <p><strong>无对应语义时使用 div</strong><span>div 只表示通用容器。</span></p>
+                  <p><strong>标题元素表达层级</strong><span>h1 到 h6 不用于控制字号。</span></p>
                 </div>
               </section>
 
               <section className="css-course-section" id="content">
                 <div className="css-course-section-head">
                   <span>03</span>
-                  <div><h2>文本有层级，链接有去向</h2><p>标题帮助扫读，段落承载说明，链接让用户知道会去哪里。</p></div>
+                  <div><h2>标题、段落和链接</h2><p>标题建立层级，段落承载说明，链接文字标明目标。</p></div>
                 </div>
                 <div className="css-cascade-demo">
                   <div className="css-cascade-rules">
@@ -103,7 +103,7 @@ export default function HtmlCoursePage() {
               <section className="css-course-section" id="forms">
                 <div className="css-course-section-head">
                   <span>04</span>
-                  <div><h2>表单不是几个输入框，而是一段完整对话</h2><p>每个输入都要有标签，提交方式要明确，错误信息要能被理解。</p></div>
+                  <div><h2>表单控件及其关联信息</h2><p>输入需要标签，按钮需要明确类型，错误信息需要关联到对应控件。</p></div>
                 </div>
                 <div className="css-responsive-code">
                   <div><span>不够完整</span><code>{"<input placeholder=\"邮箱\">"}<br />{"<div>提交</div>"}</code></div>
@@ -120,20 +120,20 @@ export default function HtmlCoursePage() {
               <section className="css-course-section" id="accessibility">
                 <div className="css-course-section-head">
                   <span>05</span>
-                  <div><h2>先用原生 HTML，把基础无障碍做对</h2><p>能用正确标签解决的问题，不要急着用 aria 或脚本补丁。</p></div>
+                  <div><h2>使用原生 HTML 支持无障碍</h2><p>优先使用原生语义；原生元素无法表达时再补充 ARIA。</p></div>
                 </div>
                 <ol className="css-debug-list">
                   <li><span>01</span><div><strong>只用键盘走一遍</strong><p>确认所有操作都能聚焦、触发和退出。</p></div></li>
                   <li><span>02</span><div><strong>检查标题顺序</strong><p>页面大纲应当连续，不靠字号猜层级。</p></div></li>
                   <li><span>03</span><div><strong>检查控件名称</strong><p>按钮和输入在离开视觉后仍能被说清。</p></div></li>
-                  <li><span>04</span><div><strong>最后再补 aria</strong><p>只补原生语义无法表达的状态和关系。</p></div></li>
+                  <li><span>04</span><div><strong>必要时补充 ARIA</strong><p>只描述原生语义无法表达的状态和关系。</p></div></li>
                 </ol>
               </section>
 
               <section className="css-course-section" id="practice">
                 <div className="css-course-section-head">
                   <span>06</span>
-                  <div><h2>最后，用一个真实选择收束</h2><p>正确答案不是“更好看”，而是让结构和操作方式保持一致。</p></div>
+                  <div><h2>知识检查</h2><p>根据控件的行为选择对应的 HTML 元素。</p></div>
                 </div>
                 <FoundationCourseQuiz
                   name="html-course-quiz"
@@ -144,17 +144,17 @@ export default function HtmlCoursePage() {
                     { id: "heading", label: "h3，因为它看起来更醒目" },
                   ]}
                   correctId="button"
-                  correctText="对。button 自带操作语义、键盘支持和表单行为。"
-                  wrongText="外观可以用 CSS 调整；交互控件应先选择语义与行为都正确的元素。"
+                  correctText="button 自带操作语义、键盘支持和表单行为。"
+                  wrongText="交互控件需要使用语义和行为匹配的元素，外观可由 CSS 调整。"
                 />
                 <div className="css-course-next">
-                  <Link href="/terms/html"><span>回到词条</span><strong>复习 HTML 的 5 分钟版本</strong><ArrowRight size={20} /></Link>
-                  <Link href="/guides/css"><span>下一门课</span><strong>用 CSS 安排视觉与布局</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/html"><span>回到词条</span><strong>查看 HTML 简版说明</strong><ArrowRight size={20} /></Link>
+                  <Link href="/guides/css"><span>相关课程</span><strong>CSS：视觉与布局</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
 
               <section className="css-course-sources" aria-labelledby="html-sources-heading">
-                <div><span>权威资料</span><h2 id="html-sources-heading">需要查标签时，从这里继续</h2></div>
+                <div><span>参考资料</span><h2 id="html-sources-heading">查元素、语义和 HTML 标准</h2></div>
                 <div>
                   <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content" target="_blank" rel="noreferrer"><strong>MDN · Structuring content</strong><small>系统学习 HTML</small><ArrowUpRight size={18} /></a>
                   <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements" target="_blank" rel="noreferrer"><strong>MDN · HTML elements</strong><small>查元素与语义</small><ArrowUpRight size={18} /></a>

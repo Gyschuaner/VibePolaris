@@ -58,9 +58,9 @@ export function CssSelectorLab() {
           <span className="css-lab-preview-label">页面预览</span>
           <div className={`css-lab-card is-target-${active.id}`}>
             <small>CSS COURSE</small>
-            <h3>看懂一条样式规则</h3>
-            <p>选择器先找到元素，声明再告诉浏览器要改变什么。</p>
-            <span>继续学习</span>
+            <h3>CSS 规则示例</h3>
+            <p>选择器匹配元素，声明指定属性和值。</p>
+            <span>查看规则</span>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@ export function CssSelectorLab() {
 }
 
 const quizOptions = [
-  { id: "media", label: "先看 Computed，再用媒体查询覆盖窄屏布局" },
+  { id: "media", label: "检查 Computed，并用媒体查询调整窄屏布局" },
   { id: "delete", label: "删掉一部分内容，避免它们挤在一起" },
   { id: "script", label: "用 JavaScript 逐个计算并移动元素" },
 ];
@@ -81,7 +81,7 @@ export function CssCourseQuiz() {
   return (
     <div className="css-course-quiz">
       <fieldset>
-        <legend>一个三列区域在 390px 下溢出，最稳妥的第一步是什么？</legend>
+        <legend>一个三列区域在 390px 下溢出，应该先检查什么？</legend>
         {quizOptions.map((option) => (
           <label key={option.id} className={answer === option.id ? "is-selected" : ""}>
             <input
@@ -99,8 +99,8 @@ export function CssCourseQuiz() {
         <p className={isCorrect ? "is-correct" : "is-wrong"} aria-live="polite">
           {isCorrect ? <CheckCircle size={20} weight="fill" /> : <XCircle size={20} weight="fill" />}
           {isCorrect
-            ? "对。先确认当前值从哪里来，再用 CSS 在正确的断点重排。"
-            : "内容和交互没有错时，先不要删内容或增加脚本；从命中的布局规则查起。"}
+            ? "检查当前值的来源后，可以在对应断点调整布局。"
+            : "删除内容或增加脚本不能定位布局规则。应检查当前命中的 CSS。"}
         </p>
       )}
     </div>

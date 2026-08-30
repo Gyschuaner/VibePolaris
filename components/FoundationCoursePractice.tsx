@@ -10,7 +10,7 @@ const htmlSteps = [
     tag: "<header>",
     code: "<header>\n  <h1>周末市集</h1>\n</header>",
     role: "banner",
-    note: "告诉浏览器：这里是页面级页首。",
+    note: "header 在这里表示页面级页首。",
   },
   {
     id: "main",

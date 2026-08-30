@@ -40,7 +40,7 @@ const cssResponsiveSteps: Array<{
     value: "repeat(3, 1fr)",
     label: "桌面展开",
     source: ".concept-orbit",
-    note: "桌面宽度足够，三颗概念星自然展开",
+    note: "桌面宽度下，三个概念按三列排列",
     computed: "repeat(3, 1fr)",
     layout: "desktop",
   },
@@ -61,7 +61,7 @@ const cssResponsiveSteps: Array<{
     value: "1fr",
     label: "响应式修正",
     source: "@media (max-width: 640px)",
-    note: "手机上改成一列，星点和标签回到清晰轨道",
+    note: "手机宽度下改成一列，避免星点和标签重叠",
     computed: "1fr",
     layout: "stacked",
   },
@@ -70,30 +70,30 @@ const cssResponsiveSteps: Array<{
 const foundationTermConfig = {
   html: {
     question: "页面看起来没问题，为什么读屏和搜索引擎却不知道哪块是正文？",
-    definition: "HTML 用有含义的标签组织内容，让浏览器先理解页面是什么，再决定如何呈现。",
+    definition: "HTML 用语义元素组织内容，使浏览器和辅助技术能够识别页面结构。",
     boundary: "它负责内容和结构；视觉样式属于 CSS，点击后的状态变化属于 JavaScript。",
-    prerequisite: "先知道网页由文档组成 ↗",
-    explainerTitle: "同一份内容，标签如何改变浏览器的理解",
+    prerequisite: "前置概念：网页文档 ↗",
+    explainerTitle: "元素语义与浏览器识别结果",
     steps: [
       { label: "只有容器", code: "<div>周末市集</div>", result: "普通容器", note: "视觉上有一块内容，但没有说明它是什么。" },
-      { label: "标题层级", code: "<h1>周末市集</h1>", result: "一级标题", note: "浏览器和读屏知道：这是整页的主题。" },
+      { label: "标题层级", code: "<h1>周末市集</h1>", result: "一级标题", note: "浏览器和读屏软件会把它识别为页面主题。" },
       { label: "操作语义", code: "<button>收藏市集</button>", result: "可操作按钮", note: "键盘、鼠标和辅助技术都能触发同一个动作。" },
     ],
-    quizQuestion: "一段文字点击后要提交表单，最合适的第一步是什么？",
+    quizQuestion: "一段文字点击后要提交表单，应该使用什么元素？",
     quizOptions: [
       ["html", "使用 button，并明确它的提交类型"],
       ["css", "使用 div，再把它画得像按钮"],
       ["database", "使用 h3，因为标题更醒目"],
     ],
     correct: "html",
-    correctText: "对。先选择自带正确语义和键盘行为的元素，再用 CSS 调整外观。",
-    wrongText: "外观不是结构。能操作的内容应先使用原生交互元素。",
+    correctText: "button 自带提交语义、键盘支持和表单行为，外观可由 CSS 调整。",
+    wrongText: "可操作内容需要使用原生交互元素，外观不应决定元素语义。",
     promptEyebrow: "可直接复制 · 结构检查",
-    promptTitle: "让 AI 先检查语义，再改标签",
+    promptTitle: "检查 HTML 结构与语义",
     prompt: "请检查当前页面的 HTML 结构，重点找出标题层级跳跃、可点击 div、缺少 label 的输入框，以及可由 header、main、nav、article 或 button 替代的无语义容器。保留现有视觉样式和业务逻辑，只做必要的标签与关联属性调整；完成后说明每处语义变化，并用键盘走完关键操作。",
     path: [
-      { href: "/terms/css", title: "CSS", note: "让结构拥有清晰的视觉层级" },
-      { href: "/terms/a11y", title: "无障碍", note: "让不同操作方式都能使用" },
+      { href: "/terms/css", title: "CSS", note: "为文档结构添加视觉层级" },
+      { href: "/terms/a11y", title: "无障碍", note: "支持键盘和辅助技术" },
     ],
     relatedExcludes: ["css", "a11y"],
     courseHref: "/guides/html",
@@ -107,30 +107,30 @@ const foundationTermConfig = {
   },
   javascript: {
     question: "按钮明明被点了，为什么数字、提示和页面状态都没有变化？",
-    definition: "JavaScript 接收事件、更新数据，再把新的状态反馈到页面。",
+    definition: "JavaScript 接收事件、更新数据，并把新的状态写入页面。",
     boundary: "它负责行为和数据变化；内容结构属于 HTML，视觉呈现属于 CSS。",
-    prerequisite: "先知道 HTML 与 CSS ↗",
-    explainerTitle: "一次点击，如何走到最后的界面反馈",
+    prerequisite: "前置概念：HTML 与 CSS ↗",
+    explainerTitle: "点击事件、数据变化与页面更新",
     steps: [
-      { label: "事件进入", code: "button.addEventListener('click', save)", result: "收到 click", note: "先确认交互真的进入了程序。" },
-      { label: "状态变化", code: "count = count + 1", result: "count = 1", note: "数据先变化，界面才有新的依据。" },
-      { label: "界面反馈", code: "counter.textContent = count", result: "页面显示 1", note: "最后把新状态同步给用户。" },
+      { label: "接收事件", code: "button.addEventListener('click', save)", result: "收到 click", note: "事件处理程序收到一次点击。" },
+      { label: "修改数据", code: "count = count + 1", result: "count = 1", note: "count 从 0 更新为 1。" },
+      { label: "更新页面", code: "counter.textContent = count", result: "页面显示 1", note: "计数区域显示更新后的值。" },
     ],
-    quizQuestion: "点击收藏后数字不变，最稳妥的第一步是什么？",
+    quizQuestion: "点击收藏后数字不变，应该先检查什么？",
     quizOptions: [
       ["javascript", "确认点击事件是否触发，再观察状态是否更新"],
       ["css", "给数字加一个更明显的颜色"],
       ["database", "每次点击都刷新整个页面"],
     ],
     correct: "javascript",
-    correctText: "对。沿着事件、状态、界面的顺序检查，能快速确定问题断在哪里。",
-    wrongText: "视觉和刷新都可能掩盖问题；先拿到事件与状态变化的证据。",
+    correctText: "检查事件是否触发和状态是否更新，可以定位异常所在的阶段。",
+    wrongText: "改变颜色或刷新页面不能定位原因，需要检查事件和状态变化。",
     promptEyebrow: "可直接复制 · 交互排查",
-    promptTitle: "让 AI 沿着状态路径定位问题",
-    prompt: "请复现当前页面的交互问题，并按事件触发、输入数据、状态更新、界面渲染四个阶段逐步检查。不要先增加延时或重写组件；先标出断点发生在哪个阶段，再做最小修正。完成后说明根因，并验证正常、空值、重复点击和请求失败四种情况。",
+    promptTitle: "检查交互的执行过程",
+    prompt: "请复现当前页面的交互问题，并按事件触发、输入数据、状态更新、界面渲染四个阶段检查。标出最先出现异常的阶段，只对该阶段做最小修正，避免用延时或重写组件掩盖问题。完成后说明根因，并验证正常、空值、重复点击和请求失败四种情况。",
     path: [
       { href: "/terms/dom", title: "DOM", note: "理解脚本如何读取与更新页面" },
-      { href: "/terms/state", title: "状态", note: "让每次界面变化都有来源" },
+      { href: "/terms/state", title: "状态", note: "记录界面变化所依赖的数据" },
     ],
     relatedExcludes: ["dom", "state"],
     courseHref: "/guides/javascript",
@@ -361,7 +361,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
   ].join("\n"), [term]);
 
   const prompt = isCss
-    ? "请检查当前页面在桌面与手机宽度下的布局，找出重叠、溢出、过度拥挤或排列异常的元素。先通过 computed layout 和命中的 CSS 规则定位原因；保留 HTML 内容和交互逻辑，只修改必要的 CSS。完成后说明问题来源、改动的规则，并分别在 1280px 和 390px 宽度验收。"
+    ? "请检查当前页面在桌面与手机宽度下的布局，找出重叠、溢出、过度拥挤或排列异常的元素。通过 computed layout 和命中的 CSS 规则定位原因；保留 HTML 内容和交互逻辑，只修改必要的 CSS。完成后说明问题来源、改动的规则，并分别在 1280px 和 390px 宽度验收。"
     : foundationConfig?.prompt ?? `请围绕“${term.zh}”完成这次调整：${term.say} 请保留项目现有结构，完成后说明改动范围和验证方式。`;
 
   function pronounce() {
@@ -404,23 +404,23 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
         </header>
 
         <section className="term-question" aria-labelledby="term-question-heading">
-          <span>你可能会说</span>
+          <span>常见问题</span>
           <p id="term-question-heading">{isCss ? "技术星图在桌面正常，为什么到了手机上标签全挤在一起？" : foundationConfig?.question ?? `“${term.zh}”到底解决了什么问题？`}</p>
         </section>
 
         <section className="term-story-intro" aria-labelledby="term-definition-heading">
           <h2 id="term-definition-heading">
             {isCss
-              ? "CSS 用选择器把样式规则交给页面，再通过层叠决定最终显示结果。"
+              ? "CSS 使用选择器匹配元素，并通过层叠规则确定最终呈现结果。"
               : foundationConfig?.definition ?? term.say}
           </h2>
           <p>{isCss
             ? "它负责外观、布局和响应式；内容结构属于 HTML，点击后的业务逻辑属于 JavaScript。"
-            : foundationConfig?.boundary ?? "先判断它负责什么、又不负责什么，再决定是否需要把它放进当前项目。"}</p>
+            : foundationConfig?.boundary ?? "确认它的职责范围，再判断当前项目是否需要使用。"}</p>
           <div className="term-prerequisites">
-            <span>{isCss ? "先知道 HTML ↗" : foundationConfig?.prerequisite ?? `所属领域 ${term.cat}`}</span>
+            <span>{isCss ? "前置概念：HTML ↗" : foundationConfig?.prerequisite ?? `所属领域 ${term.cat}`}</span>
             <div>
-              {(isCss || foundationConfig) && <em>也常被叫作</em>}
+              {(isCss || foundationConfig) && <em>常见名称</em>}
               {(isCss ? ["层叠样式表", "Cascading Style Sheets"] : term.aliases).map((alias) => <span key={alias}>{alias}</span>)}
             </div>
           </div>
@@ -430,7 +430,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
           <section className="term-explainer" aria-labelledby="term-explainer-heading">
             <div className="term-section-heading">
               <span>01</span>
-              <h2 id="term-explainer-heading">同一张技术星图，怎样适应不同屏幕</h2>
+              <h2 id="term-explainer-heading">不同屏幕下的布局规则</h2>
             </div>
             <div className="term-preview-tabs" role="group" aria-label="切换 CSS 演示状态">
               {cssResponsiveSteps.map((step, index) => (
@@ -456,11 +456,11 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
             </div>
             <div className="term-responsive-notes">
               <div>
-                <span>布局怎么变化</span>
+                <span>规则变化</span>
                 <p><strong>视口变窄</strong><ArrowRight size={16} /><strong>媒体查询命中</strong><ArrowRight size={16} /><strong>星图重排</strong></p>
               </div>
               <div>
-                <span>别混淆</span>
+                <span>职责区分</span>
                 <p><strong>CSS</strong> 管呈现；<strong>HTML</strong> 管结构；<strong>JavaScript</strong> 管行为。</p>
               </div>
             </div>
@@ -474,24 +474,24 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
             <FoundationTermMap config={foundationConfig} />
             <div className="term-responsive-notes">
               <div>
-                <span>职责怎么传递</span>
+                <span>执行过程</span>
                 <p><strong>输入</strong><ArrowRight size={16} /><strong>浏览器理解</strong><ArrowRight size={16} /><strong>用户结果</strong></p>
               </div>
               <div>
-                <span>别混淆</span>
+                <span>职责区分</span>
                 <p><strong>HTML</strong> 管结构；<strong>CSS</strong> 管呈现；<strong>JavaScript</strong> 管行为。</p>
               </div>
             </div>
           </section>
         ) : (
           <section className="term-explainer term-explainer-simple" aria-labelledby="term-explainer-heading">
-            <div className="term-section-heading"><span>01</span><h2 id="term-explainer-heading">先抓住它的职责边界</h2></div>
+            <div className="term-section-heading"><span>01</span><h2 id="term-explainer-heading">职责范围</h2></div>
             <p>{term.say}</p>
           </section>
         )}
 
         <section className="term-quiz" aria-labelledby="term-quiz-heading">
-          <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">一分钟判断</h2></div>
+          <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">知识检查</h2></div>
           <fieldset>
             <legend>{isCss ? "同一份星图在 390px 仍挤成三列，下一步最该做什么？" : foundationConfig?.quizQuestion ?? `下面哪一句更适合描述“${term.zh}”？`}</legend>
             {(isCss ? [
@@ -519,21 +519,21 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
             <p className={`term-quiz-result${answerIsCorrect ? " is-correct" : ""}`} aria-live="polite">
               {isCss
                 ? answerIsCorrect
-                  ? "对。先看当前列数来自哪条规则，再让媒体查询只在窄屏重排，桌面布局不会被破坏。"
-                  : "内容和交互都没有错；先让 CSS 根据视口改变布局，不要删内容或增加多余脚本。"
+                  ? "检查当前列数的来源后，可用媒体查询只调整窄屏布局，桌面规则保持不变。"
+                  : "删除内容或增加脚本不能定位布局问题，应检查当前命中的 CSS 规则。"
                 : foundationConfig
                   ? answerIsCorrect ? foundationConfig.correctText : foundationConfig.wrongText
                 : answerIsCorrect
-                  ? "对。职责对上了，改动才不会越界。"
-                  : "再想一下：内容结构、视觉样式和数据分别由不同部分负责。"}
+                  ? "描述与该术语的职责范围一致。"
+                  : "内容结构、视觉样式和数据由不同部分负责，需要按职责判断。"}
             </p>
           )}
         </section>
 
         <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
           <div>
-            <span>{isCss ? "可直接复制 · 响应式排查" : foundationConfig?.promptEyebrow ?? "向 AI 这样说"}</span>
-            <h2 id="term-prompt-heading">{isCss ? "让 AI 自动定位布局问题" : foundationConfig?.promptTitle ?? "把目标和边界一起说清楚"}</h2>
+            <span>{isCss ? "可直接复制 · 响应式排查" : foundationConfig?.promptEyebrow ?? "可直接复制"}</span>
+            <h2 id="term-prompt-heading">{isCss ? "检查响应式布局" : foundationConfig?.promptTitle ?? "说明目标、范围和验证方式"}</h2>
           </div>
           <p>{prompt}</p>
           <CopyAction text={prompt} label="复制提示词" />
@@ -541,11 +541,11 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
 
         {isCss ? (
           <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
-            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">接下来学什么</h2></div>
+            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">相关内容</h2></div>
             <div className="term-path-list">
               <Link href="/terms/html">
                 <span>01</span>
-                <strong>HTML <small>先分清结构与样式</small></strong>
+                <strong>HTML <small>区分文档结构与视觉样式</small></strong>
                 <ArrowRight size={20} />
               </Link>
               <Link href="/terms/responsive">
@@ -555,7 +555,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </Link>
             </div>
             <div className="term-related-orbit">
-              <span>周边概念</span>
+              <span>相关概念</span>
               <div>
                 {related.filter((item) => !["html", "responsive"].includes(item.slug)).slice(0, 4).map((item) => (
                   <Link key={item.slug} href={`/terms/${item.slug}`}>
@@ -569,7 +569,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               <Link href="/guides/css">
                 <span className="brand-star-only term-course-star" aria-hidden="true" />
                 <span>
-                  <small>VibePolaris 系统教程</small>
+                  <small>VibePolaris 教程</small>
                   <strong>CSS 深度教程</strong>
                   <em>6 章 · 约 35 分钟</em>
                 </span>
@@ -577,7 +577,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </Link>
             </div>
             <div className="term-external-learning">
-              <span>外部学习</span>
+              <span>参考资料</span>
               <div>
                 <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" target="_blank" rel="noreferrer">
                   <span><strong>MDN · CSS 基础</strong><small>结构化入门</small></span><ArrowUpRight size={16} />
@@ -593,7 +593,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
           </section>
         ) : foundationConfig ? (
           <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
-            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">接下来学什么</h2></div>
+            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">相关内容</h2></div>
             <div className="term-path-list">
               {foundationConfig.path.map((item, index) => (
                 <Link href={item.href} key={item.href}>
@@ -604,7 +604,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               ))}
             </div>
             <div className="term-related-orbit">
-              <span>周边概念</span>
+              <span>相关概念</span>
               <div>
                 {related.filter((item) => !foundationConfig.relatedExcludes.includes(item.slug as never)).slice(0, 4).map((item) => (
                   <Link key={item.slug} href={`/terms/${item.slug}`}>
@@ -618,7 +618,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               <Link href={foundationConfig.courseHref}>
                 <span className="brand-star-only term-course-star" aria-hidden="true" />
                 <span>
-                  <small>VibePolaris 系统教程</small>
+                  <small>VibePolaris 教程</small>
                   <strong>{foundationConfig.courseTitle}</strong>
                   <em>{foundationConfig.courseMeta}</em>
                 </span>
@@ -626,7 +626,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </Link>
             </div>
             <div className="term-external-learning">
-              <span>外部学习</span>
+              <span>参考资料</span>
               <div>
                 {foundationConfig.external.map(([href, title, note]) => (
                   <a href={href} target="_blank" rel="noreferrer" key={href}>
@@ -638,7 +638,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
           </section>
         ) : (
           <nav className="term-story-related" aria-label="相关术语">
-            <span>继续探索</span>
+            <span>相关术语</span>
             <div>
               {related.map((item) => (
                 <Link key={item.slug} href={`/terms/${item.slug}`}>

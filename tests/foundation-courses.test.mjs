@@ -63,20 +63,43 @@ test("章节编号建立更清楚的视觉层级且不放大代码行号", async
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test("JavaScript 教程使用直接、可核验的技术表达", async () => {
-  const [page, practice, footer] = await Promise.all([
+test("三组基础词条和教程使用直接、可核验的技术表达", async () => {
+  const [cssPage, htmlPage, javascriptPage, termPage, cssPractice, foundationPractice, footer] = await Promise.all([
+    read("app/guides/css/page.tsx"),
+    read("app/guides/html/page.tsx"),
     read("app/guides/javascript/page.tsx"),
+    read("components/TermDetailExperience.tsx"),
+    read("components/CssCoursePractice.tsx"),
     read("components/FoundationCoursePractice.tsx"),
     read("components/SiteFooter.tsx"),
   ]);
 
-  for (const phrase of ["保持可预测", "你不必背完", "让证据把路径照亮", "可靠的数据路径收束", "从这里继续"]) {
-    assert.doesNotMatch(page, new RegExp(phrase));
+  const reviewedCopy = [cssPage, htmlPage, javascriptPage, termPage, cssPractice, foundationPractice].join("\n");
+  for (const phrase of [
+    "保持可预测",
+    "你不必",
+    "让证据把路径照亮",
+    "可靠的数据路径收束",
+    "从这里继续",
+    "自己说话",
+    "页面不听话",
+    "别混淆",
+    "下一颗星",
+    "学完以后",
+    "让 AI",
+  ]) {
+    assert.doesNotMatch(reviewedCopy, new RegExp(phrase));
   }
-  assert.match(page, /网页交互的/);
-  assert.match(page, /用浏览器调试 JavaScript/);
-  assert.match(practice, /接收事件/);
-  assert.match(practice, /修改数据/);
-  assert.match(practice, /更新页面/);
+  assert.match(cssPage, /CSS 规则的组成/);
+  assert.match(cssPage, /使用浏览器检查样式/);
+  assert.match(htmlPage, /HTML 文档的基本结构/);
+  assert.match(htmlPage, /使用原生 HTML 支持无障碍/);
+  assert.match(javascriptPage, /网页交互的/);
+  assert.match(javascriptPage, /用浏览器调试 JavaScript/);
+  assert.match(termPage, /常见问题/);
+  assert.match(termPage, /相关内容/);
+  assert.match(foundationPractice, /接收事件/);
+  assert.match(foundationPractice, /修改数据/);
+  assert.match(foundationPractice, /更新页面/);
   assert.match(footer, /静态内容，不在浏览器调用模型/);
 });

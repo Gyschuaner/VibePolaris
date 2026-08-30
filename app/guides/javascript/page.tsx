@@ -50,7 +50,7 @@ export default function JavaScriptCoursePage() {
                 <span>课程目标</span>
                 <h2 id="javascript-outcome-heading">追踪事件、数据变化<br />和页面更新。</h2>
                 <div>
-                  <p><strong>01</strong>看懂常见值和变量的变化</p>
+                  <p><strong>01</strong>识别常见值和变量的变化</p>
                   <p><strong>02</strong>用函数组织一段独立逻辑</p>
                   <p><strong>03</strong>排查点击后页面没有更新的问题</p>
                 </div>
@@ -95,7 +95,7 @@ export default function JavaScriptCoursePage() {
               <section className="css-course-section" id="events">
                 <div className="css-course-section-head">
                   <span>03</span>
-                  <div><h2>从点击事件到页面更新</h2><p>事件触发后，程序通常先修改数据，再更新界面。</p></div>
+                  <div><h2>点击事件、数据变化与页面更新</h2><p>事件处理程序修改数据，并把结果写回页面。</p></div>
                 </div>
                 <h3 className="css-course-lab-title">查看一次收藏操作的三个阶段</h3>
                 <JavaScriptStateLab />
@@ -150,8 +150,8 @@ export default function JavaScriptCoursePage() {
                     { id: "reload", label: "每次点击都刷新整个页面" },
                   ]}
                   correctId="trace"
-                  correctText="先确认事件有没有触发，再检查 count 是否更新。这样可以判断问题出在事件处理还是页面更新。"
-                  wrongText="setTimeout 和刷新都不能说明问题出在哪里。先检查事件是否触发，以及 count 是否发生变化。"
+                  correctText="检查事件是否触发和 count 是否更新，可以确定异常发生在事件处理还是页面更新。"
+                  wrongText="setTimeout 和刷新不能定位原因。需要检查事件是否触发，以及 count 是否发生变化。"
                 />
                 <div className="css-course-next">
                   <Link href="/terms/javascript"><span>回到词条</span><strong>查看 JavaScript 简版说明</strong><ArrowRight size={20} /></Link>
