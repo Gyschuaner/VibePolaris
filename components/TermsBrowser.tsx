@@ -49,7 +49,7 @@ export function TermsBrowser({ terms, categories }: { terms: Term[]; categories:
       <header className="browse-head wrap">
         <div className="searchbar" style={{ marginTop: 0 }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-          <input value={query} onChange={(event) => updateQuery(event.target.value)} aria-label="搜索术语" placeholder="搜术语：用你的大白话就行…" autoComplete="off" />
+          <input value={query} onChange={(event) => updateQuery(event.target.value)} aria-label="搜索术语" placeholder="搜索术语、英文名或常见叫法" autoComplete="off" />
         </div>
       </header>
       <main className="wrap">
@@ -74,7 +74,7 @@ export function TermsBrowser({ terms, categories }: { terms: Term[]; categories:
                   <div className="say">{term.say}</div>
                   <div className="meta"><span className="tag">{term.cat}</span></div>
                 </Link>
-              )) : <div className="empty">没搜到 —— 换个大白话说法试试，比如「点一下弹出来的小框」。</div>}
+              )) : <div className="empty">没有找到相关术语。换个名称或常见叫法再试一次。</div>}
             </section>
           </div>
         </div>

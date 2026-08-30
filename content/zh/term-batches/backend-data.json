@@ -1,0 +1,1010 @@
+[
+  {
+    "zh": "服务器", "en": "Server", "slug": "server", "cat": "后端",
+    "say": "网站打开后，接收请求、读取数据并返回结果的那台机器或程序。",
+    "aliases": ["服务端", "后端服务器", "主机"],
+    "question": "为什么我本地能打开，发给别人却访问不了？",
+    "definition": "服务器是在网络中接收客户端请求并提供数据或功能的计算机或程序。",
+    "boundary": "服务器不等于数据库；服务器可以调用数据库，但也能处理计算、文件和接口请求。",
+    "demoType": "request", "demoTitle": "一次页面请求怎样经过服务器",
+    "demoSteps": [
+      {"label": "请求到达", "value": "GET /products", "note": "浏览器把目标路径发送到服务器。"},
+      {"label": "服务处理", "value": "读取商品数据", "note": "程序校验请求并调用所需资源。"},
+      {"label": "返回结果", "value": "200 + HTML", "note": "服务器把状态码和内容发回浏览器。"}
+    ],
+    "quizQuestion": "下面哪项是服务器的主要职责？", "quizOptions": ["接收请求并返回数据或功能", "只负责显示页面颜色", "只保存用户密码"],
+    "correctText": "服务器处理来自客户端的请求，并返回对应结果。", "wrongText": "页面显示和数据保存只是部分场景，不是服务器的完整职责。",
+    "promptTitle": "检查服务器请求处理", "prompt": "请按请求到达、业务处理、结果返回三个环节检查这段服务端代码，指出失败点和可观察的日志。",
+    "relatedSlugs": ["request", "response", "endpoint"]
+  },
+  {
+    "zh": "请求", "en": "Request", "slug": "request", "cat": "后端",
+    "say": "浏览器向接口说明要访问什么、带了哪些参数和数据。",
+    "aliases": ["HTTP 请求", "接口请求", "调用"],
+    "question": "点了保存按钮以后，浏览器到底给后端发了什么？",
+    "definition": "请求是客户端发给服务器的一组信息，通常包含方法、地址、请求头和可选的请求体。",
+    "boundary": "请求描述客户端要做什么；响应是服务器处理后返回的结果。",
+    "demoType": "request", "demoTitle": "保存操作中的请求内容",
+    "demoSteps": [
+      {"label": "选择动作", "value": "POST", "note": "方法说明这次操作要提交数据。"},
+      {"label": "携带数据", "value": "{name: '小满'}", "note": "请求体带上需要保存的字段。"},
+      {"label": "发送接口", "value": "/api/users", "note": "请求被送到对应端点。"}
+    ],
+    "quizQuestion": "一条 HTTP 请求通常包含什么？", "quizOptions": ["方法、地址、请求头和可选请求体", "只有页面截图", "只有服务器状态码"],
+    "correctText": "这些信息共同说明请求目标和处理方式。", "wrongText": "状态码属于响应，截图也不是 HTTP 请求的固定组成。",
+    "promptTitle": "拆解接口请求", "prompt": "请拆解这条 HTTP 请求的 method、URL、headers、query 和 body，并说明每部分由谁读取。",
+    "relatedSlugs": ["response", "http-method", "http-header", "request-body"]
+  },
+  {
+    "zh": "响应", "en": "Response", "slug": "response", "cat": "后端",
+    "say": "后端处理完请求后，返回状态、数据和必要说明。",
+    "aliases": ["HTTP 响应", "接口返回", "返回结果"],
+    "question": "接口明明有返回，为什么页面仍然显示失败？",
+    "definition": "响应是服务器针对请求返回的信息，通常包含状态码、响应头和响应体。",
+    "boundary": "响应表示一次请求的处理结果，不等于页面最终呈现的界面状态。",
+    "demoType": "request", "demoTitle": "服务器怎样组成响应",
+    "demoSteps": [
+      {"label": "确定状态", "value": "201 Created", "note": "状态码表示资源已经创建。"},
+      {"label": "写入数据", "value": "{id: 42}", "note": "响应体提供新资源的信息。"},
+      {"label": "页面更新", "value": "显示保存成功", "note": "客户端根据响应更新界面。"}
+    ],
+    "quizQuestion": "哪一项属于 HTTP 响应？", "quizOptions": ["状态码和返回数据", "用户点击按钮的坐标", "数据库表的全部结构"],
+    "correctText": "响应通过状态码和内容说明处理结果。", "wrongText": "交互坐标和完整表结构不会自动成为响应内容。",
+    "promptTitle": "检查接口响应", "prompt": "请检查这段接口响应的状态码、响应头和响应体是否一致，并给出前端应如何处理成功与失败。",
+    "relatedSlugs": ["request", "status-code", "response-body", "response-header"]
+  },
+  {
+    "zh": "HTTP 方法", "en": "HTTP Method", "slug": "http-method", "cat": "后端",
+    "say": "用 GET、POST、PUT、PATCH、DELETE 表明这次请求想做哪类操作。",
+    "aliases": ["请求方法", "HTTP 动词", "Method"],
+    "question": "读取、修改和删除数据应该都用 POST 吗？",
+    "definition": "HTTP 方法表达请求意图，例如 GET 读取资源、POST 创建或触发处理、DELETE 删除资源。",
+    "boundary": "方法只表达语义，不能代替权限校验和参数校验。",
+    "demoType": "branch", "demoTitle": "同一个资源对应不同方法",
+    "demoSteps": [
+      {"label": "读取", "value": "GET /users/42", "note": "获取编号为 42 的用户。"},
+      {"label": "修改", "value": "PATCH /users/42", "note": "只提交需要变更的字段。"},
+      {"label": "删除", "value": "DELETE /users/42", "note": "请求移除指定资源。"}
+    ],
+    "quizQuestion": "读取一个资源通常使用哪个方法？", "quizOptions": ["GET", "DELETE", "PATCH"],
+    "correctText": "GET 通常用于读取资源。", "wrongText": "DELETE 用于删除，PATCH 常用于局部修改。",
+    "promptTitle": "检查接口方法", "prompt": "请检查这些接口的 HTTP 方法是否与读取、创建、修改、删除意图一致，并指出可能造成误用的设计。",
+    "relatedSlugs": ["request", "endpoint", "rest"]
+  },
+  {
+    "zh": "状态码", "en": "Status Code", "slug": "status-code", "cat": "后端",
+    "say": "接口用三位数字说明请求成功、需要跳转，还是发生了客户端或服务器错误。",
+    "aliases": ["HTTP 状态码", "返回码", "响应码"],
+    "question": "接口返回 200，但数据里写着失败，应该相信哪个？",
+    "definition": "HTTP 状态码是响应中的标准数字，用来概括请求处理结果。",
+    "boundary": "状态码只提供结果类别；具体错误原因仍需通过响应体和日志说明。",
+    "demoType": "branch", "demoTitle": "同一接口的三种处理结果",
+    "demoSteps": [
+      {"label": "成功", "value": "200", "note": "请求完成并返回所需内容。"},
+      {"label": "输入有误", "value": "400", "note": "客户端提交的数据不符合要求。"},
+      {"label": "服务异常", "value": "500", "note": "服务器处理时发生未完成的错误。"}
+    ],
+    "quizQuestion": "找不到资源通常使用哪个状态码？", "quizOptions": ["404", "201", "302"],
+    "correctText": "404 表示目标资源未找到。", "wrongText": "201 表示创建成功，302 表示临时重定向。",
+    "promptTitle": "校对接口状态码", "prompt": "请根据每个分支的实际结果选择合适的 HTTP 状态码，并说明前端应显示什么提示。",
+    "relatedSlugs": ["response", "response-body", "api-testing"]
+  },
+  {
+    "zh": "请求头", "en": "HTTP Header", "slug": "http-header", "cat": "后端",
+    "say": "请求头携带内容类型、身份凭证、语言偏好等附加信息。",
+    "aliases": ["Header", "HTTP 头", "请求元信息"],
+    "question": "为什么请求体一样，一个请求能通过，另一个却返回未授权？",
+    "definition": "请求头是随 HTTP 请求发送的键值信息，用于描述内容、身份、缓存和客户端能力。",
+    "boundary": "请求头适合元信息，不适合承载大量业务数据；敏感凭证也不能写进日志。",
+    "demoType": "request", "demoTitle": "请求头怎样影响接口处理",
+    "demoSteps": [
+      {"label": "声明格式", "value": "Content-Type: application/json", "note": "服务器据此解析请求体。"},
+      {"label": "携带凭证", "value": "Authorization: Bearer …", "note": "认证层读取令牌并识别调用者。"},
+      {"label": "选择语言", "value": "Accept-Language: zh-CN", "note": "服务可据此返回本地化内容。"}
+    ],
+    "quizQuestion": "Content-Type 请求头主要说明什么？", "quizOptions": ["请求体的数据格式", "数据库索引数量", "页面按钮颜色"],
+    "correctText": "Content-Type 告诉接收方如何解析请求体。", "wrongText": "它描述传输内容的媒体类型。",
+    "promptTitle": "检查请求头", "prompt": "请检查这条请求需要哪些 headers，标出缺失、重复或不应记录的敏感信息。",
+    "relatedSlugs": ["request", "request-body", "mime-type", "jwt"]
+  },
+  {
+    "zh": "查询参数", "en": "Query Parameter", "slug": "query-parameter", "cat": "后端",
+    "say": "放在网址问号后面，用来筛选、排序或分页。",
+    "aliases": ["Query", "URL 参数", "查询条件"],
+    "question": "商品列表要按价格筛选，参数应该放在哪里？",
+    "definition": "查询参数是 URL 中问号后的键值对，常用于可选的筛选、排序和分页条件。",
+    "boundary": "查询参数不适合传密码等敏感数据，因为 URL 可能进入历史记录和日志。",
+    "demoType": "request", "demoTitle": "筛选条件怎样进入查询参数",
+    "demoSteps": [
+      {"label": "原始列表", "value": "/products", "note": "接口返回默认商品集合。"},
+      {"label": "添加筛选", "value": "?category=book", "note": "结果只保留图书类别。"},
+      {"label": "添加分页", "value": "&page=2", "note": "服务返回第二页数据。"}
+    ],
+    "quizQuestion": "哪种信息适合放在查询参数中？", "quizOptions": ["商品筛选条件", "用户明文密码", "文件的完整二进制内容"],
+    "correctText": "筛选条件是查询参数的常见用途。", "wrongText": "敏感信息和大体积文件不适合放在 URL 中。",
+    "promptTitle": "设计查询参数", "prompt": "请为这个列表接口设计筛选、排序和分页的查询参数，并说明默认值与非法值处理。",
+    "relatedSlugs": ["request", "pagination", "url"]
+  },
+  {
+    "zh": "路径参数", "en": "Path Parameter", "slug": "path-parameter", "cat": "后端",
+    "say": "把资源编号放进 URL 路径，用来定位某一个具体对象。",
+    "aliases": ["路由参数", "Path Param", "动态路径"],
+    "question": "查看某个用户详情时，用户 ID 应该放查询参数还是路径里？",
+    "definition": "路径参数是 URL 路径中可变化的部分，通常用来标识具体资源或层级。",
+    "boundary": "路径参数通常是定位资源所必需的；可选筛选条件更适合查询参数。",
+    "demoType": "request", "demoTitle": "用户编号怎样匹配路由",
+    "demoSteps": [
+      {"label": "定义路由", "value": "/users/:id", "note": "冒号位置声明动态参数。"},
+      {"label": "发出请求", "value": "/users/42", "note": "42 被匹配为用户编号。"},
+      {"label": "读取资源", "value": "userId = 42", "note": "控制器据此查询目标用户。"}
+    ],
+    "quizQuestion": "哪个地址使用了路径参数定位资源？", "quizOptions": ["/orders/908", "/orders?page=2", "/orders#top"],
+    "correctText": "908 位于资源路径中，用来定位订单。", "wrongText": "page 是查询参数，#top 是页面片段。",
+    "promptTitle": "检查路由参数", "prompt": "请检查这些 API 路径中的资源层级和路径参数，指出命名不一致或定位含糊的地方。",
+    "relatedSlugs": ["endpoint", "query-parameter", "url"]
+  },
+  {
+    "zh": "请求体", "en": "Request Body", "slug": "request-body", "cat": "后端",
+    "say": "创建或修改数据时，把需要提交的字段放在请求体里。",
+    "aliases": ["Body", "请求数据", "提交内容"],
+    "question": "注册表单的姓名和邮箱应该怎样发给后端？",
+    "definition": "请求体是 HTTP 请求中承载业务数据的部分，常见格式有 JSON、表单和文件流。",
+    "boundary": "GET 请求通常不依赖请求体；请求体格式需要与 Content-Type 保持一致。",
+    "demoType": "request", "demoTitle": "表单数据怎样进入请求体",
+    "demoSteps": [
+      {"label": "收集字段", "value": "name + email", "note": "页面读取用户输入。"},
+      {"label": "编码内容", "value": "JSON", "note": "字段被序列化成约定格式。"},
+      {"label": "服务解析", "value": "req.body", "note": "后端校验并使用提交的数据。"}
+    ],
+    "quizQuestion": "JSON 请求体应搭配哪种 Content-Type？", "quizOptions": ["application/json", "image/png", "text/css"],
+    "correctText": "application/json 表明请求体需要按 JSON 解析。", "wrongText": "图片和 CSS 类型不能说明 JSON 数据格式。",
+    "promptTitle": "检查请求体结构", "prompt": "请根据接口目标检查请求体字段、类型、必填项和长度限制，并给出验证失败时的响应。",
+    "relatedSlugs": ["request", "json", "http-header"]
+  },
+  {
+    "zh": "JSON", "en": "JavaScript Object Notation", "slug": "json", "cat": "后端",
+    "say": "一种常见的文本数据格式，接口经常用它传对象和数组。",
+    "aliases": ["JSON 数据", "接口数据", "对象文本"],
+    "question": "为什么接口返回的内容看起来像 JavaScript 对象？",
+    "definition": "JSON 是用字符串、数字、布尔值、null、数组和对象表示结构化数据的文本格式。",
+    "boundary": "JSON 不是 JavaScript 代码，不支持注释、函数和 undefined。",
+    "demoType": "state", "demoTitle": "对象怎样转换为 JSON",
+    "demoSteps": [
+      {"label": "程序对象", "value": "{name: '云舟'}", "note": "内存中存在一个语言对象。"},
+      {"label": "序列化", "value": "{\"name\":\"云舟\"}", "note": "对象转换成可传输文本。"},
+      {"label": "解析", "value": "data.name", "note": "接收方把文本恢复为可读取的数据。"}
+    ],
+    "quizQuestion": "下面哪个值不能直接出现在标准 JSON 中？", "quizOptions": ["undefined", "null", "false"],
+    "correctText": "标准 JSON 不包含 undefined。", "wrongText": "null 和布尔值都属于 JSON 支持的数据类型。",
+    "promptTitle": "检查 JSON 数据", "prompt": "请验证这段 JSON 是否符合标准，标出类型不一致的字段，并给出修正后的有效 JSON。",
+    "relatedSlugs": ["request-body", "response-body", "data-validation"]
+  },
+  {
+    "zh": "端点", "en": "Endpoint", "slug": "endpoint", "cat": "后端",
+    "say": "一个可以被调用的具体接口地址，通常由方法和路径共同确定。",
+    "aliases": ["接口端点", "API 地址", "路由"],
+    "question": "同一个 /users 地址用 GET 和 POST，算一个接口还是两个？",
+    "definition": "端点是服务对外提供能力的具体入口，通常由 HTTP 方法、路径和协议约定共同识别。",
+    "boundary": "端点不是整个 API；一个 API 往往包含多个端点。",
+    "demoType": "hierarchy", "demoTitle": "用户 API 里的三个端点",
+    "demoSteps": [
+      {"label": "列表", "value": "GET /users", "note": "读取用户集合。"},
+      {"label": "详情", "value": "GET /users/:id", "note": "读取单个用户。"},
+      {"label": "创建", "value": "POST /users", "note": "提交并创建用户。"}
+    ],
+    "quizQuestion": "什么能最准确地标识一个 HTTP 端点？", "quizOptions": ["方法和路径", "按钮颜色", "数据库名称"],
+    "correctText": "方法和路径共同区分端点的操作语义。", "wrongText": "界面颜色和数据库名不能标识 HTTP 端点。",
+    "promptTitle": "整理 API 端点", "prompt": "请把这组业务操作整理成端点清单，列出 method、path、输入、成功响应和常见错误。",
+    "relatedSlugs": ["api", "http-method", "path-parameter", "rest"]
+  },
+  {
+    "zh": "API 网关", "en": "API Gateway", "slug": "api-gateway", "cat": "后端",
+    "say": "把多个后端服务放在统一入口后面，集中处理路由、认证和限流。",
+    "aliases": ["接口网关", "服务入口", "网关层"],
+    "question": "前端要调用十个服务，必须分别记住十个地址吗？",
+    "definition": "API 网关位于客户端和后端服务之间，负责统一接入、转发和公共策略。",
+    "boundary": "网关适合公共能力，不应塞入各服务独有的核心业务逻辑。",
+    "demoType": "flow", "demoTitle": "网关怎样把请求分给不同服务",
+    "demoSteps": [
+      {"label": "统一入口", "value": "api.example.com", "note": "客户端只访问一个域名。"},
+      {"label": "检查策略", "value": "认证 + 限流", "note": "网关执行公共规则。"},
+      {"label": "路由服务", "value": "/orders → 订单服务", "note": "请求被转发到对应后端。"}
+    ],
+    "quizQuestion": "哪项适合由 API 网关统一处理？", "quizOptions": ["限流和路由", "订单金额计算规则", "商品详情文案"],
+    "correctText": "限流和路由是多个服务常用的接入能力。", "wrongText": "具体业务规则通常应保留在所属服务中。",
+    "promptTitle": "规划网关职责", "prompt": "请区分这组需求中哪些应放在 API 网关，哪些应留在业务服务，并说明判断依据。",
+    "relatedSlugs": ["reverse-proxy", "rate-limiting", "authorization", "load-balancer"]
+  },
+  {
+    "zh": "反向代理", "en": "Reverse Proxy", "slug": "reverse-proxy", "cat": "后端",
+    "say": "代理服务器接收外部请求，再转发到内网里的实际服务。",
+    "aliases": ["反代", "代理入口", "Reverse Proxy"],
+    "question": "用户为什么只看到一个域名，却能访问多台服务器？",
+    "definition": "反向代理代表后端服务器接收客户端请求，并将请求转发给合适的上游服务。",
+    "boundary": "反向代理代表服务器一侧；正向代理代表客户端一侧访问外部资源。",
+    "demoType": "flow", "demoTitle": "外部请求怎样经过反向代理",
+    "demoSteps": [
+      {"label": "访问域名", "value": "example.com", "note": "客户端连接公开入口。"},
+      {"label": "匹配规则", "value": "/api → service-a", "note": "代理根据路径选择上游。"},
+      {"label": "返回内容", "value": "响应透传", "note": "上游结果经代理返回客户端。"}
+    ],
+    "quizQuestion": "反向代理主要代表哪一侧？", "quizOptions": ["后端服务器", "终端用户", "数据库表"],
+    "correctText": "客户端通常不知道反向代理背后的具体服务器。", "wrongText": "代表客户端访问外部资源的是正向代理。",
+    "promptTitle": "检查反向代理规则", "prompt": "请检查这组反向代理路径、上游地址和超时设置，指出冲突路由与失败时的响应。",
+    "relatedSlugs": ["api-gateway", "server", "load-balancer"]
+  },
+  {
+    "zh": "负载均衡", "en": "Load Balancer", "slug": "load-balancer", "cat": "后端",
+    "say": "把请求分到多台可用服务器，避免所有流量压在一台机器上。",
+    "aliases": ["流量分发", "负载均衡器", "Load Balancing"],
+    "question": "服务扩到三台机器后，请求应该发给哪一台？",
+    "definition": "负载均衡根据算法和健康状态，把进入的请求分配给多个服务实例。",
+    "boundary": "负载均衡能分散流量，但不能自动修复业务代码中的性能问题。",
+    "demoType": "queue", "demoTitle": "六个请求怎样分配给三台服务",
+    "demoSteps": [
+      {"label": "实例可用", "value": "A · B · C", "note": "健康检查确认三台实例可接收请求。"},
+      {"label": "轮流分发", "value": "1→A 2→B 3→C", "note": "请求按策略分配。"},
+      {"label": "实例下线", "value": "B 移出", "note": "后续请求只分给 A 和 C。"}
+    ],
+    "quizQuestion": "负载均衡发现某实例健康检查失败后应怎样处理？", "quizOptions": ["暂时停止向它分发请求", "把所有请求都发给它", "删除客户端数据"],
+    "correctText": "故障实例应暂时移出可用目标。", "wrongText": "继续发送请求会增加失败，删除客户端数据与此无关。",
+    "promptTitle": "设计流量分配", "prompt": "请为这组服务实例设计负载均衡与健康检查方案，说明实例失效和恢复时流量如何变化。",
+    "relatedSlugs": ["server", "smoke-test", "reverse-proxy"]
+  },
+  {
+    "zh": "会话", "en": "Session", "slug": "session", "cat": "后端",
+    "say": "服务端用会话编号认出连续访问的是同一个已登录用户。",
+    "aliases": ["登录会话", "Session ID", "会话状态"],
+    "question": "登录成功后，刷新页面为什么还能保持登录？",
+    "definition": "会话是在多次请求之间保存用户状态的一种机制，客户端通常只持有会话标识。",
+    "boundary": "会话标识不是用户密码；它需要安全传输、过期和撤销机制。",
+    "demoType": "lifecycle", "demoTitle": "登录会话的生命周期",
+    "demoSteps": [
+      {"label": "创建", "value": "session = a7f…", "note": "登录通过后服务端建立会话。"},
+      {"label": "使用", "value": "Cookie 携带标识", "note": "后续请求据此找到用户状态。"},
+      {"label": "结束", "value": "过期或退出", "note": "服务端不再接受该会话标识。"}
+    ],
+    "quizQuestion": "客户端在服务端会话方案中通常保存什么？", "quizOptions": ["会话标识", "服务端全部用户数据", "数据库备份"],
+    "correctText": "客户端携带标识，具体会话状态通常保存在服务端。", "wrongText": "客户端不需要保存服务端全部数据或数据库备份。",
+    "promptTitle": "检查会话安全", "prompt": "请检查这套登录会话的创建、Cookie 属性、过期、退出和撤销逻辑，列出可能的失效场景。",
+    "relatedSlugs": ["auth", "authorization", "jwt"]
+  },
+  {
+    "zh": "JWT", "en": "JSON Web Token", "slug": "jwt", "cat": "后端",
+    "say": "一种带签名的令牌格式，常用来传递身份和授权声明。",
+    "aliases": ["JSON Web Token", "JWT 令牌", "访问令牌"],
+    "question": "JWT 能看见内容，为什么还可以用来验证身份？",
+    "definition": "JWT 由头部、载荷和签名组成，接收方可验证内容是否被篡改。",
+    "boundary": "JWT 的载荷通常只是编码而非加密，不应放入密码等秘密数据。",
+    "demoType": "flow", "demoTitle": "JWT 怎样被签发和验证",
+    "demoSteps": [
+      {"label": "签发", "value": "header.payload.signature", "note": "认证服务用密钥生成签名。"},
+      {"label": "携带", "value": "Bearer token", "note": "客户端在请求中发送令牌。"},
+      {"label": "验证", "value": "签名 + exp", "note": "服务检查签名和过期时间。"}
+    ],
+    "quizQuestion": "JWT 载荷中的内容默认是什么状态？", "quizOptions": ["可解码读取但受签名保护", "全部自动加密", "只存在服务器内存"],
+    "correctText": "签名用于检测篡改，不会自动隐藏载荷。", "wrongText": "JWT 载荷默认可被解码，不应存放秘密。",
+    "promptTitle": "检查 JWT 使用", "prompt": "请检查这套 JWT 的签发、验证、过期、刷新与撤销策略，标出不应放入载荷的字段。",
+    "relatedSlugs": ["auth", "session", "authorization", "hashing"]
+  },
+  {
+    "zh": "OAuth", "en": "OAuth 2.0", "slug": "oauth", "cat": "后端",
+    "say": "让一个应用获得访问另一项服务的有限权限，不必持有对方的账号密码。",
+    "aliases": ["OAuth 2.0", "第三方授权", "授权登录"],
+    "question": "接入第三方平台时，能不能直接让用户把平台密码填进来？",
+    "definition": "OAuth 2.0 是授权框架，客户端可按不同授权方式取得范围受限的访问令牌。",
+    "boundary": "OAuth 负责授权，不直接定义用户身份；用户登录通常结合 OpenID Connect，机器间调用可使用客户端凭证等授权方式。",
+    "demoType": "flow", "demoTitle": "第三方授权怎样完成",
+    "demoSteps": [
+      {"label": "请求同意", "value": "读取头像", "note": "应用声明所需权限范围。"},
+      {"label": "用户授权", "value": "同意 scope", "note": "平台确认用户决定。"},
+      {"label": "换取令牌", "value": "access_token", "note": "应用用令牌访问获准资源。"}
+    ],
+    "quizQuestion": "OAuth 2.0 的主要用途是什么？", "quizOptions": ["委托有限权限", "加密所有数据库字段", "编写页面样式"],
+    "correctText": "OAuth 让应用在授权范围内访问资源。", "wrongText": "它不是数据库加密或页面样式方案。",
+    "promptTitle": "梳理 OAuth 流程", "prompt": "请按客户端类型梳理 OAuth 授权流程，列出 redirect URI、scope、state、令牌保存和撤销要求。",
+    "relatedSlugs": ["authorization", "auth", "api-key"]
+  },
+  {
+    "zh": "授权", "en": "Authorization", "slug": "authorization", "cat": "后端",
+    "say": "确认一个已经识别的用户，可以读取或修改哪些资源。",
+    "aliases": ["权限校验", "访问控制", "鉴权"],
+    "question": "用户已经登录，为什么还是不能进入管理员页面？",
+    "definition": "授权是在身份确认之后，根据规则决定主体是否可以执行某项操作。",
+    "boundary": "认证回答“是谁”，授权回答“能做什么”；两者不能互相替代。",
+    "demoType": "branch", "demoTitle": "同一请求怎样经过权限判断",
+    "demoSteps": [
+      {"label": "识别用户", "value": "user = 42", "note": "认证层确认调用者身份。"},
+      {"label": "检查权限", "value": "role = editor", "note": "规则判断是否允许编辑。"},
+      {"label": "执行分支", "value": "允许或 403", "note": "通过则继续，拒绝则返回明确状态。"}
+    ],
+    "quizQuestion": "用户已登录但无删除权限，服务应做什么？", "quizOptions": ["拒绝删除并返回 403", "自动提升为管理员", "忽略权限继续删除"],
+    "correctText": "身份有效不代表拥有所有操作权限。", "wrongText": "系统不能因为用户已登录就绕过权限规则。",
+    "promptTitle": "检查授权规则", "prompt": "请列出这个操作的主体、资源、动作和条件，检查服务端是否在执行前完成授权判断。",
+    "relatedSlugs": ["auth", "rbac", "least-privilege", "session"]
+  },
+  {
+    "zh": "基于角色的访问控制", "en": "Role-Based Access Control", "slug": "rbac", "cat": "后端",
+    "say": "把权限分配给角色，再让用户拥有一个或多个角色。",
+    "aliases": ["RBAC", "角色权限", "角色访问控制"],
+    "question": "几十个员工的权限需要逐个人配置吗？",
+    "definition": "RBAC 通过用户、角色和权限之间的关系管理访问控制。",
+    "boundary": "RBAC 适合稳定的岗位权限；依赖资源属性和上下文的复杂规则可能需要其他模型。",
+    "demoType": "hierarchy", "demoTitle": "用户怎样通过角色获得权限",
+    "demoSteps": [
+      {"label": "定义权限", "value": "article:edit", "note": "权限描述允许的具体动作。"},
+      {"label": "绑定角色", "value": "编辑 = edit + publish", "note": "角色汇总一组权限。"},
+      {"label": "分配用户", "value": "小林 → 编辑", "note": "用户获得角色包含的权限。"}
+    ],
+    "quizQuestion": "RBAC 中权限通常先分配给谁？", "quizOptions": ["角色", "每次 HTTP 响应", "数据库索引"],
+    "correctText": "用户通过角色间接获得权限。", "wrongText": "响应和索引不是 RBAC 的授权主体。",
+    "promptTitle": "设计角色权限", "prompt": "请把这些业务操作整理为权限点和角色矩阵，检查是否存在权限过大或职责冲突。",
+    "relatedSlugs": ["authorization", "least-privilege", "auth"]
+  },
+  {
+    "zh": "API 密钥", "en": "API Key", "slug": "api-key", "cat": "后端",
+    "say": "调用接口时用于识别应用或项目的一段凭证。",
+    "aliases": ["接口密钥", "访问密钥", "API Key"],
+    "question": "前端代码里可以直接写第三方 API 密钥吗？",
+    "definition": "API 密钥是服务发给调用方的凭证，用于识别来源、计量用量或控制访问。",
+    "boundary": "API 密钥不等同于用户登录；长期密钥也不应暴露在公开客户端代码中。",
+    "demoType": "lifecycle", "demoTitle": "API 密钥怎样安全使用",
+    "demoSteps": [
+      {"label": "创建", "value": "key_live_…", "note": "服务生成可追踪的密钥。"},
+      {"label": "服务端调用", "value": "环境变量读取", "note": "密钥不进入公开代码仓库。"},
+      {"label": "轮换", "value": "旧密钥撤销", "note": "泄露或到期时更换凭证。"}
+    ],
+    "quizQuestion": "公开网页需要调用带密钥的第三方 API 时应怎样做？", "quizOptions": ["由自己的服务端保管密钥并代为调用", "把密钥写进前端源码", "把密钥放进 URL 分享"],
+    "correctText": "服务端可避免长期密钥直接暴露给浏览器。", "wrongText": "前端源码和 URL 都容易暴露密钥。",
+    "promptTitle": "检查 API 密钥管理", "prompt": "请检查项目中 API 密钥的存储、注入、日志脱敏、权限范围和轮换方式，并列出整改项。",
+    "relatedSlugs": ["auth", "oauth", "least-privilege"]
+  },
+  {
+    "zh": "限流", "en": "Rate Limiting", "slug": "rate-limiting", "cat": "后端",
+    "say": "限制一段时间内的请求数量，防止接口被单个调用方占满。",
+    "aliases": ["频率限制", "请求限速", "Rate Limit"],
+    "question": "一个用户每秒请求几千次，服务应该全部处理吗？",
+    "definition": "限流按用户、密钥、IP 或接口统计请求，并在超过阈值时暂时拒绝或延迟处理。",
+    "boundary": "限流能控制流量，不等于完整的安全防护，也不能替代容量规划。",
+    "demoType": "queue", "demoTitle": "请求超过配额时怎样变化",
+    "demoSteps": [
+      {"label": "配额可用", "value": "8 / 10", "note": "请求在当前时间窗内正常通过。"},
+      {"label": "达到上限", "value": "10 / 10", "note": "剩余配额变为零。"},
+      {"label": "暂时拒绝", "value": "429", "note": "服务提示调用方稍后重试。"}
+    ],
+    "quizQuestion": "请求超过限流阈值时常用哪个状态码？", "quizOptions": ["429", "201", "304"],
+    "correctText": "429 表示请求过多。", "wrongText": "201 表示创建成功，304 与缓存验证有关。",
+    "promptTitle": "设计接口限流", "prompt": "请根据调用方、接口成本和峰值流量设计限流键、时间窗、阈值和 429 响应。",
+    "relatedSlugs": ["api-gateway", "retry", "timeout"]
+  },
+  {
+    "zh": "幂等性", "en": "Idempotency", "slug": "idempotency", "cat": "后端",
+    "say": "同一个操作重复执行后，系统的最终状态与只执行一次相同。",
+    "aliases": ["幂等", "防重复提交", "Idempotent"],
+    "question": "付款请求超时后重试，会不会扣两次钱？",
+    "definition": "幂等性表示相同操作执行一次或多次，对系统产生的最终效果一致。",
+    "boundary": "幂等不表示每次响应完全相同，也不表示所有接口天然支持安全重试。",
+    "demoType": "state", "demoTitle": "同一付款请求重复到达",
+    "demoSteps": [
+      {"label": "首次请求", "value": "key = pay-42", "note": "服务记录幂等键和处理结果。"},
+      {"label": "网络超时", "value": "客户端未收到响应", "note": "付款可能已经完成。"},
+      {"label": "重复请求", "value": "返回原结果", "note": "相同幂等键不会再次扣款。"}
+    ],
+    "quizQuestion": "支付创建接口支持安全重试的关键是什么？", "quizOptions": ["识别并复用相同幂等键", "每次生成不同订单", "忽略首次处理结果"],
+    "correctText": "稳定的幂等键让服务识别重复操作。", "wrongText": "产生新资源或忽略已有结果可能造成重复处理。",
+    "promptTitle": "检查接口幂等性", "prompt": "请分析这个写操作在超时重试、并发提交和服务重启时是否幂等，并设计幂等键与结果保存策略。",
+    "relatedSlugs": ["retry", "transaction", "request"]
+  },
+  {
+    "zh": "分页", "en": "Pagination", "slug": "pagination", "cat": "后端",
+    "say": "把大量列表拆成多页，每次只返回一部分数据。",
+    "aliases": ["分页查询", "Page", "分批加载"],
+    "question": "十万条订单为什么不能一次全发给浏览器？",
+    "definition": "分页通过页码、偏移量或游标限制单次返回的数据量，并提供继续读取的位置。",
+    "boundary": "分页改善单次传输和渲染成本，但仍需要索引与合理查询来保证性能。",
+    "demoType": "state", "demoTitle": "订单列表怎样按页读取",
+    "demoSteps": [
+      {"label": "第一页", "value": "1–20", "note": "接口返回前 20 条订单。"},
+      {"label": "请求下一页", "value": "page=2", "note": "客户端发送新的分页位置。"},
+      {"label": "合并结果", "value": "21–40", "note": "页面追加或替换第二批数据。"}
+    ],
+    "quizQuestion": "分页接口最直接解决什么问题？", "quizOptions": ["单次返回数据过多", "用户没有登录", "CSS 样式未加载"],
+    "correctText": "分页限制一次查询和传输的数据量。", "wrongText": "登录和样式问题不由分页解决。",
+    "promptTitle": "设计列表分页", "prompt": "请为这个列表接口选择页码分页或游标分页，给出参数、返回结构、排序规则和边界情况。",
+    "relatedSlugs": ["query-parameter", "index", "sql"]
+  },
+  {
+    "zh": "重试", "en": "Retry", "slug": "retry", "cat": "后端",
+    "say": "请求因为短暂故障失败时，按规则再次尝试。",
+    "aliases": ["重试机制", "再次请求", "Retry"],
+    "question": "接口超时后应该立刻无限重发吗？",
+    "definition": "重试是在满足条件的失败发生后，再次执行同一操作的可靠性策略。",
+    "boundary": "只应重试可能恢复且能安全重复的操作；永久错误和非幂等写入不能盲目重试。",
+    "demoType": "branch", "demoTitle": "不同失败怎样决定是否重试",
+    "demoSteps": [
+      {"label": "临时超时", "value": "可重试", "note": "等待一段时间后再次请求。"},
+      {"label": "参数错误", "value": "不重试", "note": "相同输入再次发送仍会失败。"},
+      {"label": "达到上限", "value": "记录失败", "note": "停止重试并交给补偿或人工处理。"}
+    ],
+    "quizQuestion": "哪个错误通常不适合直接重试？", "quizOptions": ["请求参数格式错误", "短暂网络中断", "服务临时过载"],
+    "correctText": "输入不变时，参数错误不会因重试自动恢复。", "wrongText": "短暂网络或过载问题可能在等待后恢复。",
+    "promptTitle": "设计重试规则", "prompt": "请按错误类型判断哪些请求可重试，设置次数、间隔、幂等要求和最终失败处理。",
+    "relatedSlugs": ["timeout", "idempotency", "rate-limiting"]
+  },
+  {
+    "zh": "超时", "en": "Timeout", "slug": "timeout", "cat": "后端",
+    "say": "请求等待超过设定时间后主动结束，避免资源一直被占用。",
+    "aliases": ["请求超时", "等待上限", "Timeout"],
+    "question": "下游服务一直不返回，上游需要永远等下去吗？",
+    "definition": "超时是对连接、读取或整个操作设置的最大等待时间，超过后按失败处理。",
+    "boundary": "超时不表示下游一定没有完成操作，写请求仍需结合幂等和状态查询。",
+    "demoType": "lifecycle", "demoTitle": "请求超过等待上限",
+    "demoSteps": [
+      {"label": "开始计时", "value": "0 ms", "note": "上游发出请求并占用资源。"},
+      {"label": "仍未返回", "value": "2900 ms", "note": "请求接近 3 秒上限。"},
+      {"label": "触发超时", "value": "3000 ms", "note": "上游中止等待并执行失败处理。"}
+    ],
+    "quizQuestion": "设置超时最直接的作用是什么？", "quizOptions": ["限制一次等待占用资源的时间", "保证所有请求成功", "自动修复下游代码"],
+    "correctText": "超时为等待设置明确上限。", "wrongText": "超时只能中止等待，不能保证成功或修复代码。",
+    "promptTitle": "检查超时设置", "prompt": "请列出这条调用链每一层的连接、读取和整体超时，检查上游超时是否覆盖下游最坏耗时。",
+    "relatedSlugs": ["retry", "idempotency", "request", "connection-pool"]
+  },
+  {
+    "zh": "关系型数据库", "en": "Relational Database", "slug": "relational-database", "cat": "后端",
+    "say": "把数据放进有列定义的表中，并用主键和外键表达关系。", "aliases": ["关系数据库", "SQL 数据库", "RDBMS"],
+    "question": "订单和用户之间的关系应该怎样保存？", "definition": "关系型数据库用表、行、列和约束组织数据，并通过 SQL 查询和修改。", "boundary": "关系型数据库适合结构明确且需要事务的数据，不表示所有数据都必须拆成表。",
+    "demoType": "hierarchy", "demoTitle": "用户和订单怎样形成关系",
+    "demoSteps": [{"label":"用户表","value":"users.id = 42","note":"主键标识一个用户。"},{"label":"订单表","value":"orders.user_id = 42","note":"外键保存订单所属用户。"},{"label":"关联查询","value":"JOIN users","note":"查询把两张表的相关数据组合起来。"}],
+    "quizQuestion": "关系型数据库主要怎样组织数据？", "quizOptions": ["表、行、列和关系", "只保存图片像素", "只按文件夹层级"], "correctText": "表结构和关系是其核心组织方式。", "wrongText": "它不只用于图片，也不以文件夹作为主要数据模型。",
+    "promptTitle": "设计关系数据结构", "prompt": "请把这些业务对象整理为表、主键、外键和必要约束，并说明高频查询需要哪些索引。", "relatedSlugs": ["sql", "table", "primary-key", "nosql"]
+  },
+  {
+    "zh": "SQL", "en": "Structured Query Language", "slug": "sql", "cat": "后端",
+    "say": "用统一语句读取、增加、修改和删除关系型数据库中的数据。", "aliases": ["结构化查询语言", "数据库查询", "SQL 语句"],
+    "question": "怎样找出本月金额最高的十笔订单？", "definition": "SQL 是操作关系型数据库的声明式语言，可定义结构、查询数据和控制事务。", "boundary": "SQL 是语言，不是某一个具体数据库；不同数据库的扩展语法可能不同。",
+    "demoType": "flow", "demoTitle": "一条查询怎样得到结果",
+    "demoSteps": [{"label":"选择数据","value":"SELECT id, total","note":"指定需要返回的列。"},{"label":"限定范围","value":"WHERE month = 8","note":"只保留本月订单。"},{"label":"排序限制","value":"ORDER BY total DESC LIMIT 10","note":"返回金额最高的十条。"}],
+    "quizQuestion": "SQL 中 WHERE 的常见作用是什么？", "quizOptions": ["筛选符合条件的行", "改变页面字体", "创建网络连接"], "correctText": "WHERE 用条件限制参与查询或修改的行。", "wrongText": "字体和网络连接不属于 SQL WHERE 的职责。",
+    "promptTitle": "检查 SQL 查询", "prompt": "请检查这条 SQL 的筛选、连接、排序和索引使用，给出正确且易读的改写。", "relatedSlugs": ["relational-database", "join", "index", "orm"]
+  },
+  {
+    "zh": "NoSQL", "en": "Not Only SQL", "slug": "nosql", "cat": "后端",
+    "say": "关系表之外的一组数据库类型，包括键值、文档、图和宽列数据库。", "aliases": ["非关系型数据库", "非关系数据库", "NoSQL 数据库"],
+    "question": "数据字段经常变化时，一定要使用关系表吗？", "definition": "NoSQL 泛指不以传统关系表为唯一模型的数据库，常针对特定读写和扩展需求设计。", "boundary": "NoSQL 不代表没有结构、没有查询语言或天然比关系数据库更快。",
+    "demoType": "comparison", "demoTitle": "同一商品的两种存储方式",
+    "demoSteps": [{"label":"关系表","value":"products + attributes","note":"属性拆入固定表和关联表。"},{"label":"文档模型","value":"product document","note":"变化字段可放在同一文档中。"},{"label":"按访问选择","value":"事务或灵活结构","note":"根据一致性和查询方式选择模型。"}],
+    "quizQuestion": "选择 NoSQL 数据库最合理的依据是什么？", "quizOptions": ["数据模型和访问模式", "名字听起来更新", "不想设计任何结构"], "correctText": "模型、查询、一致性和扩展要求应共同决定。", "wrongText": "NoSQL 仍需要数据设计，名称本身不是选择依据。",
+    "promptTitle": "比较存储模型", "prompt": "请根据数据结构、读写模式、事务、一致性和扩展需求比较关系型与 NoSQL 方案。", "relatedSlugs": ["relational-database", "json", "vector-database"]
+  },
+  {
+    "zh": "表", "en": "Table", "slug": "table", "cat": "后端",
+    "say": "关系型数据库中保存同类记录的结构，由列定义和多行数据组成。", "aliases": ["数据表", "数据库表", "Table"],
+    "question": "用户、订单和商品应该全部塞进一张表吗？", "definition": "表是关系型数据库中的数据集合，每一行代表一条记录，每一列代表一个字段。", "boundary": "表不是电子表格页面；它还受数据类型、键和约束控制。",
+    "demoType": "hierarchy", "demoTitle": "一张用户表的结构",
+    "demoSteps": [{"label":"定义列","value":"id · name · email","note":"列说明记录包含哪些字段。"},{"label":"写入行","value":"42 · 林舟 · l@example.com","note":"一行保存一个用户。"},{"label":"应用约束","value":"id 主键","note":"约束防止标识重复。"}],
+    "quizQuestion": "数据库表中的一行通常表示什么？", "quizOptions": ["一条记录", "一种字体", "一个网络端口"], "correctText": "一行保存一个实体或事件的记录。", "wrongText": "字体和端口不是表中行的固定含义。",
+    "promptTitle": "检查数据表", "prompt": "请检查这张表的列、类型、空值、主键和唯一约束，指出重复或混合职责的字段。", "relatedSlugs": ["row", "column", "database-schema", "primary-key"]
+  },
+  {
+    "zh": "行", "en": "Row", "slug": "row", "cat": "后端",
+    "say": "表中的一条完整记录，例如某个用户或某笔订单。", "aliases": ["记录", "数据行", "Tuple"],
+    "question": "修改一个用户邮箱时，数据库具体改的是哪里？", "definition": "行是关系表中按列结构保存的一组字段值，通常对应一个实体或事件。", "boundary": "行由表的列定义约束，不能随意增加表中不存在的字段。",
+    "demoType": "state", "demoTitle": "一行用户记录怎样被更新",
+    "demoSteps": [{"label":"原记录","value":"42 · old@example.com","note":"主键 42 定位目标行。"},{"label":"执行更新","value":"SET email = new@example.com","note":"只修改邮箱列。"},{"label":"新记录","value":"42 · new@example.com","note":"其他字段保持不变。"}],
+    "quizQuestion": "更新指定行最常用什么来定位？", "quizOptions": ["主键或唯一条件", "页面背景色", "随机选择"], "correctText": "稳定且唯一的条件可避免误改多行。", "wrongText": "样式和随机选择都不能可靠定位记录。",
+    "promptTitle": "检查行级更新", "prompt": "请检查这条 UPDATE 的定位条件和受影响行数，说明如何避免误更新整张表。", "relatedSlugs": ["table", "column", "primary-key", "sql"]
+  },
+  {
+    "zh": "列", "en": "Column", "slug": "column", "cat": "后端",
+    "say": "表中同一类字段的定义，例如邮箱列规定每行邮箱怎样保存。", "aliases": ["字段", "数据列", "Column"],
+    "question": "为什么年龄列不能存一段任意文字？", "definition": "列定义表中一个字段的名称、数据类型、默认值和约束。", "boundary": "列描述数据结构，不等同于某一行里的具体值。",
+    "demoType": "state", "demoTitle": "列定义怎样约束写入",
+    "demoSteps": [{"label":"定义类型","value":"age INTEGER","note":"年龄列要求整数。"},{"label":"提交文本","value":"'十八'","note":"输入与列类型不一致。"},{"label":"拒绝写入","value":"type error","note":"数据库或应用验证阻止无效值。"}],
+    "quizQuestion": "数据库列的数据类型主要约束什么？", "quizOptions": ["该字段可保存的值", "服务器的物理位置", "网页的导航顺序"], "correctText": "列类型定义字段的合法表示。", "wrongText": "服务器位置和网页导航不由列类型决定。",
+    "promptTitle": "检查字段定义", "prompt": "请检查这些列的名称、类型、长度、默认值和空值规则，指出可能造成脏数据的定义。", "relatedSlugs": ["table", "row", "database-schema"]
+  },
+  {
+    "zh": "数据库模式", "en": "Database Schema", "slug": "database-schema", "cat": "后端",
+    "say": "数据库里有哪些表、列、关系和约束的整体结构说明。", "aliases": ["Schema", "库表结构", "数据模式"],
+    "question": "新成员怎样知道数据库里能查到哪些数据？", "definition": "数据库模式定义数据对象及其结构，包括表、列、类型、键、约束和关系。", "boundary": "模式描述结构，不包含每条业务数据的具体值。",
+    "demoType": "hierarchy", "demoTitle": "订单系统的模式层级",
+    "demoSteps": [{"label":"数据库","value":"shop","note":"容纳业务相关的数据对象。"},{"label":"数据表","value":"users · orders","note":"按实体和职责拆分记录。"},{"label":"约束关系","value":"orders.user_id → users.id","note":"外键连接订单与用户。"}],
+    "quizQuestion": "哪项属于数据库模式？", "quizOptions": ["表和列的定义", "今天新增的某条订单", "用户浏览器缓存"], "correctText": "模式描述数据库结构。", "wrongText": "具体订单是数据，浏览器缓存不属于数据库模式。",
+    "promptTitle": "审查数据库模式", "prompt": "请审查这份 schema 的实体边界、字段类型、键和约束，指出命名不一致与迁移风险。", "relatedSlugs": ["table", "primary-key", "foreign-key", "database-migration"]
+  },
+  {
+    "zh": "主键", "en": "Primary Key", "slug": "primary-key", "cat": "后端",
+    "say": "为表中的每一行提供唯一且非空的标识。", "aliases": ["Primary Key", "主键 ID", "唯一标识"],
+    "question": "两个用户同名时，数据库怎样准确区分他们？", "definition": "主键是唯一标识表中每条记录的一列或一组列。", "boundary": "主键保证表内标识唯一，不代表这个值对外必须可见或有业务含义。",
+    "demoType": "state", "demoTitle": "主键怎样阻止重复记录",
+    "demoSteps": [{"label":"已有记录","value":"id = 42","note":"表中已经存在该主键。"},{"label":"再次写入","value":"id = 42","note":"新记录使用了相同主键。"},{"label":"约束拒绝","value":"duplicate key","note":"数据库阻止重复标识。"}],
+    "quizQuestion": "主键必须满足什么条件？", "quizOptions": ["唯一且非空", "可以任意重复", "只能使用姓名"], "correctText": "主键必须稳定地区分每条记录。", "wrongText": "重复值不能唯一定位记录，主键也不限定为姓名。",
+    "promptTitle": "选择主键", "prompt": "请为这些表选择主键，比较自然键和生成 ID 的稳定性、暴露风险与关联成本。", "relatedSlugs": ["table", "foreign-key", "unique-constraint"]
+  },
+  {
+    "zh": "外键", "en": "Foreign Key", "slug": "foreign-key", "cat": "后端",
+    "say": "让一张表的字段指向另一张表中存在的记录。", "aliases": ["Foreign Key", "关联键", "引用约束"],
+    "question": "怎样防止订单引用一个不存在的用户？", "definition": "外键约束要求引用值对应另一张表中的主键或唯一键。", "boundary": "外键维护引用完整性，但不会自动决定删除、更新和业务权限规则。",
+    "demoType": "branch", "demoTitle": "订单写入时怎样检查用户",
+    "demoSteps": [{"label":"提交订单","value":"user_id = 42","note":"订单声明所属用户。"},{"label":"检查引用","value":"users.id = 42","note":"数据库查找目标记录。"},{"label":"接受或拒绝","value":"存在 → 写入","note":"不存在时外键约束会阻止写入。"}],
+    "quizQuestion": "外键主要保证什么？", "quizOptions": ["引用的记录存在", "接口一定响应很快", "页面一定适配手机"], "correctText": "外键用于维护表之间的引用完整性。", "wrongText": "性能和页面布局不由外键保证。",
+    "promptTitle": "检查表间关系", "prompt": "请检查这些外键的引用目标、删除策略和索引，说明父记录删除时各子表应怎样处理。", "relatedSlugs": ["primary-key", "table", "join"]
+  },
+  {
+    "zh": "索引", "en": "Index", "slug": "index", "cat": "后端",
+    "say": "为常用查询建立额外的查找结构，减少扫描的数据量。", "aliases": ["数据库索引", "查询索引", "Index"],
+    "question": "按邮箱查用户为什么越来越慢？", "definition": "索引是数据库为一个或多个列维护的辅助数据结构，用于加速特定查询。", "boundary": "索引会占用空间并增加写入维护成本，不是建得越多越好。",
+    "demoType": "comparison", "demoTitle": "同一查询有无索引的差别",
+    "demoSteps": [{"label":"无索引","value":"扫描 100 万行","note":"数据库逐行比较邮箱。"},{"label":"建立索引","value":"INDEX(email)","note":"数据库维护有序查找结构。"},{"label":"命中索引","value":"读取少量页","note":"查询快速定位目标记录。"}],
+    "quizQuestion": "索引的主要代价是什么？", "quizOptions": ["占用空间并增加写入维护", "让所有查询失效", "删除原始数据"], "correctText": "索引需要存储，也会在写入时同步更新。", "wrongText": "索引不会必然让查询失效或删除原始数据。",
+    "promptTitle": "分析查询索引", "prompt": "请根据查询条件、排序和数据规模分析执行计划，建议必要索引并说明写入成本。", "relatedSlugs": ["sql", "pagination", "full-text-search"]
+  },
+  {
+    "zh": "唯一约束", "en": "Unique Constraint", "slug": "unique-constraint", "cat": "后端",
+    "say": "要求指定列或列组合不能出现重复值。", "aliases": ["唯一键", "UNIQUE", "唯一性约束"],
+    "question": "怎样保证同一个邮箱不能注册两个账号？", "definition": "唯一约束由数据库保证一列或一组列的值在表内不重复。", "boundary": "唯一约束不一定是主键；空值处理也会因数据库实现而不同。",
+    "demoType": "state", "demoTitle": "重复邮箱怎样被阻止",
+    "demoSteps": [{"label":"已有邮箱","value":"a@example.com","note":"表中已经保存该值。"},{"label":"重复注册","value":"a@example.com","note":"另一条记录提交相同邮箱。"},{"label":"拒绝写入","value":"unique violation","note":"数据库保持唯一性。"}],
+    "quizQuestion": "防止邮箱重复最可靠的数据库措施是什么？", "quizOptions": ["为规范化邮箱添加唯一约束", "只在按钮点击时检查", "依靠用户自觉"], "correctText": "数据库约束能覆盖并发写入。", "wrongText": "仅靠界面检查或用户行为无法覆盖所有写入入口。",
+    "promptTitle": "检查唯一性规则", "prompt": "请识别业务中必须唯一的字段或组合，说明值规范化、并发写入和冲突响应。", "relatedSlugs": ["primary-key", "database-schema", "transaction"]
+  },
+  {
+    "zh": "连接查询", "en": "Join", "slug": "join", "cat": "后端",
+    "say": "按照关联字段把两张或多张表的记录组合成查询结果。", "aliases": ["JOIN", "表连接", "关联查询"],
+    "question": "订单表只有 user_id，怎样一起显示用户姓名？", "definition": "连接查询根据指定条件组合不同表中的相关行。", "boundary": "JOIN 组合查询结果，不会把原表永久合并；不准确的条件可能产生重复或遗漏。",
+    "demoType": "flow", "demoTitle": "订单怎样关联用户姓名",
+    "demoSteps": [{"label":"读取订单","value":"orders.user_id = 42","note":"订单保存用户引用。"},{"label":"匹配用户","value":"users.id = 42","note":"JOIN 条件找到对应用户。"},{"label":"组合结果","value":"订单 908 · 林舟","note":"返回跨表字段。"}],
+    "quizQuestion": "LEFT JOIN 的常见特点是什么？", "quizOptions": ["保留左表所有匹配范围内的行", "删除两张表", "只返回右表主键"], "correctText": "即使右表没有匹配，左表行仍可出现在结果中。", "wrongText": "JOIN 是查询组合，不会删除表，也不限于右表主键。",
+    "promptTitle": "检查连接查询", "prompt": "请检查这条 JOIN 的连接键、连接类型和结果基数，指出可能的重复行与缺失行。", "relatedSlugs": ["sql", "foreign-key", "relational-database"]
+  },
+  {
+    "zh": "事务", "en": "Transaction", "slug": "transaction", "cat": "后端",
+    "say": "把多次数据库操作作为一个整体提交，失败时按规则回滚。", "aliases": ["数据库事务", "Transaction", "提交回滚"],
+    "question": "转账时扣款成功、入账失败怎么办？", "definition": "事务把一组读写操作放在同一工作单元中，通过提交或回滚维持数据规则。", "boundary": "事务范围越大，占用锁和连接的时间可能越长；跨系统一致性也不只靠单库事务。",
+    "demoType": "branch", "demoTitle": "转账事务的成功与失败",
+    "demoSteps": [{"label":"扣减余额","value":"A - 100","note":"事务内更新付款方。"},{"label":"增加余额","value":"B + 100","note":"事务内更新收款方。"},{"label":"提交或回滚","value":"两步都成功才提交","note":"任一步失败则撤销本次变更。"}],
+    "quizQuestion": "事务内第二步失败时通常应怎样处理？", "quizOptions": ["回滚本事务已做的变更", "保留一半结果", "删除整张表"], "correctText": "回滚避免留下违反业务规则的中间状态。", "wrongText": "保留一半结果会破坏一致性，删除表更不合理。",
+    "promptTitle": "划定事务边界", "prompt": "请识别这个业务操作中必须共同成功的数据库写入，设计事务边界、失败回滚和重试要求。", "relatedSlugs": ["acid", "idempotency", "sql"]
+  },
+  {
+    "zh": "ACID", "en": "Atomicity Consistency Isolation Durability", "slug": "acid", "cat": "后端",
+    "say": "ACID 用四项原则约束事务，避免失败、并发或故障留下难以判断的数据状态。", "aliases": ["事务四特性", "ACID 特性", "事务属性"],
+    "question": "怎样判断一个数据库事务是否可靠？", "definition": "它分别检查一组操作能否原子提交、数据约束能否保持、并发事务如何隔离，以及提交结果在故障后能否保留。", "boundary": "ACID 不代表应用不会出错；业务约束、隔离级别和恢复方案仍需正确设计。",
+    "demoType": "hierarchy", "demoTitle": "一笔事务的四项检查",
+    "demoSteps": [{"label":"原子与一致","value":"全成或全败","note":"事务不能留下违反规则的部分结果。"},{"label":"隔离","value":"并发互不误读","note":"并发事务按隔离级别控制可见性。"},{"label":"持久","value":"提交后可恢复","note":"已提交结果应在故障后保留。"}],
+    "quizQuestion": "“事务要么全部成功，要么全部失败”对应哪一项？", "quizOptions": ["原子性", "持久性", "隔离性"], "correctText": "原子性要求事务作为不可分割的整体。", "wrongText": "持久性关注提交后的保存，隔离性关注并发可见性。",
+    "promptTitle": "检查事务特性", "prompt": "请用 ACID 四项检查这个事务设计，指出业务一致性、并发和故障恢复中的缺口。", "relatedSlugs": ["transaction", "sql", "backup"]
+  },
+  {
+    "zh": "数据库迁移", "en": "Database Migration", "slug": "database-migration", "cat": "后端",
+    "say": "用可追踪脚本把数据库结构从一个版本变到下一个版本。", "aliases": ["Schema Migration", "迁移脚本", "库表升级"],
+    "question": "新增一列后，开发、测试和生产数据库怎样保持一致？", "definition": "数据库迁移以有序变更记录创建、修改或移除数据库结构和必要数据。", "boundary": "迁移不是普通备份；生产迁移还要评估锁表、兼容和回滚风险。",
+    "demoType": "lifecycle", "demoTitle": "新增字段怎样安全上线",
+    "demoSteps": [{"label":"添加兼容列","value":"nickname NULL","note":"旧代码仍可继续读写。"},{"label":"部署新代码","value":"读写 nickname","note":"应用开始使用新结构。"},{"label":"收紧约束","value":"补齐后设规则","note":"确认数据完整后完成迁移。"}],
+    "quizQuestion": "为什么迁移脚本需要版本顺序？", "quizOptions": ["确保各环境按相同步骤演进", "让页面颜色一致", "减少 DNS 查询"], "correctText": "有序迁移让结构变更可追踪和复现。", "wrongText": "页面样式和 DNS 不属于数据库迁移职责。",
+    "promptTitle": "审查数据库迁移", "prompt": "请检查这次 schema 变更的前后兼容、数据回填、锁表时间、回滚和发布顺序。", "relatedSlugs": ["database-schema", "backup", "data-validation"]
+  },
+  {
+    "zh": "ORM", "en": "Object-Relational Mapping", "slug": "orm", "cat": "后端",
+    "say": "把程序里的对象操作映射成数据库表和 SQL。", "aliases": ["对象关系映射", "ORM 框架", "数据模型层"],
+    "question": "不手写 SQL，也能查询数据库吗？", "definition": "ORM 用类、对象和方法表示关系数据及常见查询，并生成或执行对应 SQL。", "boundary": "ORM 减少样板代码，但不会消除数据库建模、索引和查询性能问题。",
+    "demoType": "flow", "demoTitle": "对象查询怎样变成 SQL",
+    "demoSteps": [{"label":"调用模型","value":"User.find(42)","note":"应用使用对象接口表达查询。"},{"label":"生成语句","value":"SELECT … WHERE id=42","note":"ORM 转换为数据库查询。"},{"label":"映射结果","value":"User object","note":"查询行被还原为程序对象。"}],
+    "quizQuestion": "使用 ORM 后还需要了解 SQL 吗？", "quizOptions": ["需要，生成查询仍会影响正确性和性能", "不需要，数据库细节全部消失", "只需要了解 CSS"], "correctText": "复杂查询和性能排查仍依赖数据库知识。", "wrongText": "ORM 没有消除数据库行为，也和 CSS 无关。",
+    "promptTitle": "检查 ORM 查询", "prompt": "请查看这段 ORM 调用可能生成的 SQL，检查 N+1 查询、缺失索引和事务边界。", "relatedSlugs": ["sql", "relational-database", "database-schema"]
+  },
+  {
+    "zh": "连接池", "en": "Connection Pool", "slug": "connection-pool", "cat": "后端",
+    "say": "复用一组已经建立的数据库连接，避免每个请求都重新连接。", "aliases": ["数据库连接池", "连接复用", "Pool"],
+    "question": "并发请求多时，为什么不能无限创建数据库连接？", "definition": "连接池维护有限数量的可复用连接，并负责借出、归还、超时和失效处理。", "boundary": "连接池不能提升数据库本身的容量；池太大反而可能压垮数据库。",
+    "demoType": "queue", "demoTitle": "五个请求怎样共享两个连接",
+    "demoSteps": [{"label":"连接可用","value":"C1 · C2","note":"池中有两个空闲连接。"},{"label":"请求借用","value":"R1→C1 R2→C2","note":"其余请求等待可用连接。"},{"label":"归还复用","value":"C1 → R3","note":"完成后的连接交给下一个请求。"}],
+    "quizQuestion": "连接池耗尽时合理的处理是什么？", "quizOptions": ["等待到超时并记录指标", "无限创建新连接", "静默丢弃数据库结果"], "correctText": "有限等待和监控能暴露容量问题。", "wrongText": "无限连接可能压垮数据库，静默丢弃结果会破坏正确性。",
+    "promptTitle": "配置数据库连接池", "prompt": "请根据应用并发、数据库连接上限和查询耗时评估池大小、等待超时、泄漏检测与监控指标。", "relatedSlugs": ["database", "timeout", "load-balancer"]
+  },
+  {
+    "zh": "复制", "en": "Replication", "slug": "replication", "cat": "后端",
+    "say": "把一份数据库数据同步到其他节点，用于读取扩展或故障恢复。", "aliases": ["数据库复制", "主从复制", "副本同步"],
+    "question": "一台数据库故障时，怎样减少服务中断？", "definition": "复制把源节点的数据变更传到一个或多个副本节点。", "boundary": "副本不等于备份；错误删除也可能同步到所有副本。",
+    "demoType": "flow", "demoTitle": "写入怎样同步到副本",
+    "demoSteps": [{"label":"主节点写入","value":"order 908 created","note":"源节点提交新数据。"},{"label":"发送变更","value":"log position +1","note":"复制流传递本次变更。"},{"label":"副本应用","value":"order 908 visible","note":"副本追上新的数据位置。"}],
+    "quizQuestion": "数据库副本能代替离线备份吗？", "quizOptions": ["不能，误删可能同步到副本", "能，副本永远不会出错", "能，因为副本不保存数据"], "correctText": "复制和备份应解决不同故障场景。", "wrongText": "副本会保存并同步数据，也可能同步错误操作。",
+    "promptTitle": "评估复制方案", "prompt": "请评估这套数据库复制的同步方式、延迟、故障切换、读一致性和备份边界。", "relatedSlugs": ["backup", "transaction", "database", "sharding"]
+  },
+  {
+    "zh": "分片", "en": "Sharding", "slug": "sharding", "cat": "后端",
+    "say": "按某个键把数据拆到多个数据库节点，各节点保存不同部分。", "aliases": ["数据库分片", "水平拆分", "Sharding"],
+    "question": "一张表大到单机放不下时，数据怎样分布？", "definition": "分片按照分片键和路由规则，把数据水平分散到多个独立存储节点。", "boundary": "分片会增加跨片查询、事务、扩容和热点处理的复杂度，不应过早使用。",
+    "demoType": "branch", "demoTitle": "用户数据怎样按编号分片",
+    "demoSteps": [{"label":"计算分片","value":"user_id % 2","note":"路由规则决定目标节点。"},{"label":"偶数用户","value":"→ shard A","note":"A 保存一部分用户。"},{"label":"奇数用户","value":"→ shard B","note":"B 保存另一部分用户。"}],
+    "quizQuestion": "选择分片键时需要重点避免什么？", "quizOptions": ["大量请求集中到少数分片", "每条记录都有主键", "查询返回状态码"], "correctText": "热点分片会抵消水平扩展效果。", "wrongText": "主键和状态码并不是分片键选择的主要风险。",
+    "promptTitle": "评估分片设计", "prompt": "请根据数据规模和查询模式评估是否需要分片，并分析分片键、热点、跨片查询和扩容方式。", "relatedSlugs": ["replication", "database", "index"]
+  },
+  {
+    "zh": "备份", "en": "Backup", "slug": "backup", "cat": "后端",
+    "say": "在独立位置保存可恢复的数据副本，用来应对误删、损坏或灾难。", "aliases": ["数据备份", "备份副本", "Backup"],
+    "question": "误删数据以后，数据库副本也跟着删了怎么办？", "definition": "备份是在特定时间保存数据和必要元信息，以便后续恢复。", "boundary": "备份只有经过恢复演练才有可用证据；创建成功的文件不等于一定可恢复。",
+    "demoType": "lifecycle", "demoTitle": "备份怎样变成可验证恢复点",
+    "demoSteps": [{"label":"生成备份","value":"2026-08-31 02:00","note":"保存数据和版本信息。"},{"label":"独立保存","value":"跨账号存储","note":"降低与生产同时受损的风险。"},{"label":"恢复演练","value":"校验订单数量","note":"用实际恢复验证备份完整性。"}],
+    "quizQuestion": "怎样确认备份可以恢复数据？", "quizOptions": ["定期恢复并校验数据", "只看文件名存在", "只依赖数据库副本"], "correctText": "恢复演练能验证文件、权限和流程。", "wrongText": "文件存在或有副本都不能单独证明可恢复。",
+    "promptTitle": "审查备份策略", "prompt": "请根据可接受的数据丢失和恢复时间，检查备份频率、保留期、隔离、加密和恢复演练。", "relatedSlugs": ["database-migration", "replication", "encryption-at-rest"]
+  },
+  {
+    "zh": "向量数据库", "en": "Vector Database", "slug": "vector-database", "cat": "后端",
+    "say": "保存向量表示，并按相似度找出距离最近的数据。", "aliases": ["向量库", "Embedding 数据库", "Vector Store"],
+    "question": "知识库怎样找出和用户问题意思接近的文档？", "definition": "向量数据库针对高维向量的写入、索引、过滤和近似相似搜索进行优化。", "boundary": "向量数据库擅长相似检索，不会自动保证结果真实，也不一定替代关系数据库。",
+    "demoType": "flow", "demoTitle": "问题怎样匹配相似文档",
+    "demoSteps": [{"label":"生成向量","value":"问题 → [0.12, …]","note":"嵌入模型把文本映射为向量。"},{"label":"相似搜索","value":"top 3","note":"索引寻找距离最近的文档向量。"},{"label":"返回片段","value":"文档 A · C · F","note":"应用继续过滤或交给模型使用。"}],
+    "quizQuestion": "向量数据库最适合哪类查询？", "quizOptions": ["查找语义相近的内容", "保证银行转账原子性", "编译 TypeScript"], "correctText": "向量距离可近似表达内容相似度。", "wrongText": "事务原子性和代码编译不是向量数据库的主要用途。",
+    "promptTitle": "设计向量检索", "prompt": "请检查文本切分、向量模型、索引、top-k、元数据过滤和结果评估，给出可复现的检索方案。", "relatedSlugs": ["rag", "full-text-search", "index", "chunking"]
+  },
+  {
+    "zh": "全文搜索", "en": "Full-Text Search", "slug": "full-text-search", "cat": "后端",
+    "say": "把文本拆成可查询的词项，并按匹配程度返回相关内容。", "aliases": ["全文检索", "文本搜索", "Full-Text Search"],
+    "question": "为什么用 SQL 的 LIKE 搜整篇文章越来越慢？", "definition": "全文搜索通过分词、倒排索引和相关性计算支持大规模文本查询。", "boundary": "全文搜索偏重词项匹配；语义相近但用词不同的查询可能需要向量搜索补充。",
+    "demoType": "flow", "demoTitle": "文章怎样进入搜索结果",
+    "demoSteps": [{"label":"建立索引","value":"文章 → 词项","note":"文本被分词并记录出现位置。"},{"label":"输入查询","value":"数据库 性能","note":"查询被转换为相同词项。"},{"label":"相关性排序","value":"文档 7 > 文档 2","note":"系统按匹配和权重返回结果。"}],
+    "quizQuestion": "全文搜索常用哪种索引结构？", "quizOptions": ["倒排索引", "主键自增值", "CSS 选择器"], "correctText": "倒排索引从词项定位包含它的文档。", "wrongText": "自增值和 CSS 选择器不能完成全文词项检索。",
+    "promptTitle": "检查全文检索", "prompt": "请设计字段分词、索引、查询语法、相关性和无结果处理，并说明何时结合模糊或向量搜索。", "relatedSlugs": ["index", "vector-database", "sql", "tokenization"]
+  },
+  {
+    "zh": "TCP", "en": "Transmission Control Protocol", "slug": "tcp", "cat": "技术栈",
+    "say": "一种可靠传输协议，会确认连接、按序交付并处理丢失的数据。", "aliases": ["传输控制协议", "TCP 协议", "可靠连接"],
+    "question": "网络偶尔丢包时，下载的文件为什么通常不会缺一块？", "definition": "TCP 在两端之间建立字节流连接，通过序号、确认和重传提供可靠有序传输。", "boundary": "TCP 保证传输机制，不保证应用内容正确，也不自动加密数据。",
+    "demoType": "flow", "demoTitle": "一个数据段丢失后怎样补回",
+    "demoSteps": [{"label":"发送数据","value":"1 · 2 · 3","note":"接收方按序收到 1 和 3。"},{"label":"发现缺口","value":"等待序号 2","note":"确认信息显示中间数据未到。"},{"label":"重传交付","value":"2 → 1·2·3","note":"缺失段补到后按顺序交给应用。"}],
+    "quizQuestion": "TCP 主要提供什么？", "quizOptions": ["可靠且有序的字节流", "自动加密所有内容", "永久保存数据"], "correctText": "TCP 负责连接中的可靠、有序传输。", "wrongText": "加密通常由 TLS 提供，持久保存由应用和存储负责。",
+    "promptTitle": "分析 TCP 连接", "prompt": "请根据连接建立、传输、重传和关闭过程分析这次 TCP 故障，并标出可查看的网络指标。", "relatedSlugs": ["udp", "packet", "network-port", "tls-handshake"]
+  },
+  {
+    "zh": "UDP", "en": "User Datagram Protocol", "slug": "udp", "cat": "技术栈",
+    "say": "直接发送独立数据报，不建立可靠字节流，也不自动重传。", "aliases": ["用户数据报协议", "UDP 协议", "数据报"],
+    "question": "实时语音为什么有时宁可少一小段，也不愿等重传？", "definition": "UDP 以数据报为单位发送数据，协议本身不保证到达、顺序或去重。", "boundary": "UDP 不等于一定更快；可靠性、拥塞控制和加密可由上层协议补充。",
+    "demoType": "comparison", "demoTitle": "实时语音遇到丢包时的选择",
+    "demoSteps": [{"label":"连续发送","value":"A · B · C","note":"三段语音分别作为数据报发送。"},{"label":"B 丢失","value":"A · _ · C","note":"接收方按时播放已到达内容。"},{"label":"继续播放","value":"C 不等待 B","note":"延迟保持较低，但出现短暂缺口。"}],
+    "quizQuestion": "UDP 协议本身不保证哪项能力？", "quizOptions": ["数据一定按序到达", "按数据报发送", "使用端口区分应用"], "correctText": "UDP 不保证到达顺序。", "wrongText": "UDP 使用数据报，也使用端口标识通信端点。",
+    "promptTitle": "判断是否使用 UDP", "prompt": "请根据延迟、可丢失比例、消息大小和上层补偿判断这个场景是否适合 UDP。", "relatedSlugs": ["tcp", "packet", "network-port"]
+  },
+  {
+    "zh": "TLS 握手", "en": "TLS Handshake", "slug": "tls-handshake", "cat": "技术栈",
+    "say": "客户端和服务器协商加密参数、验证证书并建立会话密钥。", "aliases": ["HTTPS 握手", "TLS 协商", "安全握手"],
+    "question": "浏览器访问 HTTPS 网站时，加密连接是怎样建立的？", "definition": "TLS 握手在应用数据传输前协商协议和算法、验证服务器身份并生成共享密钥。", "boundary": "TLS 降低传输被窃听或篡改的风险，但不保证服务器业务逻辑和页面内容可信。",
+    "demoType": "flow", "demoTitle": "HTTPS 连接怎样获得会话密钥",
+    "demoSteps": [{"label":"发起协商","value":"ClientHello","note":"客户端发送版本、算法和随机数。"},{"label":"验证服务","value":"证书 + ServerHello","note":"浏览器检查域名、有效期和签发链。"},{"label":"建立密钥","value":"加密通道可用","note":"后续 HTTP 内容以会话密钥保护。"}],
+    "quizQuestion": "TLS 握手中证书主要帮助验证什么？", "quizOptions": ["服务器所声明的身份", "数据库是否有索引", "页面是否没有缺陷"], "correctText": "证书把公钥与域名等身份信息关联起来。", "wrongText": "证书不检查数据库结构或应用缺陷。",
+    "promptTitle": "排查 TLS 握手", "prompt": "请按域名、证书链、有效期、协议版本和密码套件检查 TLS 握手失败原因。", "relatedSlugs": ["hostname", "encryption-in-transit", "tcp"]
+  },
+  {
+    "zh": "防火墙", "en": "Firewall", "slug": "firewall", "cat": "技术栈",
+    "say": "根据地址、端口、协议或应用规则允许和阻止网络流量。", "aliases": ["网络防火墙", "访问规则", "Firewall"],
+    "question": "数据库只给后端访问，怎样阻止公网直接连接？", "definition": "防火墙在网络边界或主机上检查流量，并按规则决定放行、拒绝或记录。", "boundary": "防火墙只是分层防护的一部分，不能替代身份认证、补丁和应用安全检查。",
+    "demoType": "branch", "demoTitle": "数据库端口怎样被边界规则过滤",
+    "demoSteps": [{"label":"内网请求","value":"10.0.1.8:5432","note":"来源位于允许的应用子网。"},{"label":"公网请求","value":"203.0.113.9:5432","note":"来源不符合放行规则。"},{"label":"执行策略","value":"内网通过 · 公网拒绝","note":"日志记录来源和命中规则。"}],
+    "quizQuestion": "数据库只供应用服务器使用时，合理的防火墙规则是什么？", "quizOptions": ["只允许应用子网访问数据库端口", "向整个公网开放端口", "删除所有访问日志"], "correctText": "限制来源能缩小网络暴露范围。", "wrongText": "公网开放会扩大风险，日志有助于排查和审计。",
+    "promptTitle": "审查防火墙规则", "prompt": "请按来源、目标、端口、方向和业务用途审查这些防火墙规则，标出过宽和失效规则。", "relatedSlugs": ["network-port", "least-privilege", "ip-address"]
+  },
+  {
+    "zh": "IP 地址", "en": "IP Address", "slug": "ip-address", "cat": "技术栈",
+    "say": "网络中用来标识接口并帮助数据包找到目标的数字地址。", "aliases": ["互联网协议地址", "网络地址", "IP"],
+    "question": "浏览器知道域名以后，怎样找到对应服务器？", "definition": "IP 地址标识网络接口所在的位置，路由设备据此转发数据包。", "boundary": "IP 地址不一定永久对应一台设备，也不能单独证明某个用户身份。",
+    "demoType": "flow", "demoTitle": "域名怎样变成可路由的地址",
+    "demoSteps": [{"label":"输入域名","value":"example.com","note":"浏览器只有易读名称。"},{"label":"DNS 解析","value":"203.0.113.10","note":"解析器返回服务器 IP。"},{"label":"发送数据包","value":"目标 203.0.113.10","note":"路由器根据地址转发。"}],
+    "quizQuestion": "IP 地址在网络传输中的主要作用是什么？", "quizOptions": ["标识目标并参与路由", "定义网页字体", "保存用户订单"], "correctText": "IP 地址帮助数据包到达目标网络接口。", "wrongText": "页面样式和订单存储不由 IP 地址负责。",
+    "promptTitle": "排查 IP 连通性", "prompt": "请按 DNS 结果、源和目标 IP、路由、防火墙与端口检查这次连接失败。", "relatedSlugs": ["dns-resolver", "network-port", "packet", "firewall"]
+  },
+  {
+    "zh": "端口", "en": "Network Port", "slug": "network-port", "cat": "技术栈",
+    "say": "同一台设备上用数字区分不同网络服务。", "aliases": ["网络端口", "Port", "服务端口"],
+    "question": "同一个 IP 上为什么能同时运行网站和数据库？", "definition": "网络端口是传输层中的数字标识，用于把到达主机的数据交给对应进程或服务。", "boundary": "端口不是物理插口；开放端口也不表示服务一定可用或已授权访问。",
+    "demoType": "branch", "demoTitle": "同一 IP 的流量怎样进入不同服务",
+    "demoSteps": [{"label":"HTTPS","value":"203.0.113.10:443","note":"流量交给 Web 服务。"},{"label":"SSH","value":"203.0.113.10:22","note":"流量交给远程登录服务。"},{"label":"未监听","value":"203.0.113.10:9000","note":"没有进程接收时连接失败。"}],
+    "quizQuestion": "IP 相同但端口不同通常表示什么？", "quizOptions": ["同一主机上的不同服务", "同一数据库的不同列", "不同页面颜色"], "correctText": "端口帮助主机区分网络服务。", "wrongText": "数据库列和页面颜色与网络端口无关。",
+    "promptTitle": "检查端口暴露", "prompt": "请列出这个服务实际监听、容器映射和防火墙开放的端口，指出不必要的公网暴露。", "relatedSlugs": ["ip-address", "tcp", "firewall"]
+  },
+  {
+    "zh": "数据包", "en": "Packet", "slug": "packet", "cat": "技术栈",
+    "say": "网络把数据分成带有地址和控制信息的小块进行传输。", "aliases": ["网络包", "Packet", "报文"],
+    "question": "一个大文件怎样穿过不同网络设备到达另一台机器？", "definition": "数据包是网络层传输单位，由头部和载荷组成，路由器根据头部信息转发。", "boundary": "一个应用消息可能拆成多个包，单个包也不代表完整业务请求。",
+    "demoType": "flow", "demoTitle": "大消息怎样拆包和重组",
+    "demoSteps": [{"label":"应用数据","value":"6 KB 消息","note":"内容超过单次链路承载大小。"},{"label":"分成数据包","value":"P1 · P2 · P3 · P4","note":"每个包带目标地址和部分载荷。"},{"label":"目标重组","value":"6 KB 完整消息","note":"传输层或应用按规则恢复内容。"}],
+    "quizQuestion": "数据包头部通常包含什么？", "quizOptions": ["用于转发和处理的控制信息", "完整数据库备份", "页面全部 CSS"], "correctText": "地址、协议等控制信息位于头部。", "wrongText": "大块应用内容通常不会全部塞进单个包头。",
+    "promptTitle": "分析网络数据包", "prompt": "请根据抓包中的源目标地址、端口、协议、序号和时间定位请求在哪一段中断。", "relatedSlugs": ["ip-address", "tcp", "udp", "network-port"]
+  },
+  {
+    "zh": "URL", "en": "Uniform Resource Locator", "slug": "url", "cat": "技术栈",
+    "say": "说明通过什么协议、到哪台主机、访问哪条路径和查询条件。", "aliases": ["网址", "资源地址", "统一资源定位符"],
+    "question": "一条完整网址里的 https、域名和问号参数分别表示什么？", "definition": "URL 是定位网络资源的地址，通常包含方案、主机、端口、路径、查询和片段。", "boundary": "URL 是 URI 的一种；片段通常只在客户端使用，不会随 HTTP 请求发送给服务器。",
+    "demoType": "hierarchy", "demoTitle": "一条 URL 怎样拆成各部分",
+    "demoSteps": [{"label":"连接目标","value":"https://example.com","note":"方案和主机决定怎样连接到哪里。"},{"label":"资源路径","value":"/articles/42","note":"服务器据此匹配内容或端点。"},{"label":"查询与片段","value":"?lang=zh#demo","note":"查询发给服务器，片段用于页内定位。"}],
+    "quizQuestion": "URL 中 # 后面的部分通常叫什么？", "quizOptions": ["片段", "请求体", "状态码"], "correctText": "片段用于标识资源内部位置。", "wrongText": "请求体和状态码不写在 URL 片段中。",
+    "promptTitle": "拆解 URL", "prompt": "请拆解这条 URL 的 scheme、host、port、path、query 和 fragment，并说明哪些部分会进入 HTTP 请求。", "relatedSlugs": ["hostname", "path-parameter", "query-parameter", "request"]
+  },
+  {
+    "zh": "主机名", "en": "Hostname", "slug": "hostname", "cat": "技术栈",
+    "say": "网络中用于指向某台主机或服务的可读名称。", "aliases": ["Hostname", "主机名称", "域名主机"],
+    "question": "URL 里的 api.example.com 这一段是什么？", "definition": "主机名是标识网络主机或服务的名称，在互联网中通常通过 DNS 解析为 IP 地址。", "boundary": "主机名不一定等于完整域名，也可能只在本地网络或 hosts 配置中有效。",
+    "demoType": "flow", "demoTitle": "主机名怎样找到服务",
+    "demoSteps": [{"label":"读取地址","value":"api.example.com","note":"浏览器从 URL 提取主机名。"},{"label":"查询 DNS","value":"→ 203.0.113.10","note":"解析器返回可连接的 IP。"},{"label":"建立连接","value":"203.0.113.10:443","note":"请求仍携带原主机名供服务识别。"}],
+    "quizQuestion": "主机名通常怎样转换为 IP 地址？", "quizOptions": ["通过 DNS 解析", "通过 CSS 计算", "通过数据库事务"], "correctText": "DNS 负责名称到地址的解析。", "wrongText": "页面样式和数据库事务不负责网络名称解析。",
+    "promptTitle": "排查主机名", "prompt": "请检查这条 URL 的主机名、DNS 记录、证书域名和服务虚拟主机配置是否一致。", "relatedSlugs": ["url", "dns-record", "dns-resolver", "ip-address"]
+  },
+  {
+    "zh": "DNS 记录", "en": "DNS Record", "slug": "dns-record", "cat": "技术栈",
+    "say": "DNS 区域中保存名称如何解析或验证的结构化条目。", "aliases": ["域名记录", "解析记录", "资源记录"],
+    "question": "域名要指向服务器或邮件服务，应该改哪里？", "definition": "DNS 记录为域名保存地址、别名、邮件路由和验证文本等信息，并带有缓存时间。", "boundary": "不同记录类型有不同含义；修改记录也不会让所有缓存立即失效。",
+    "demoType": "branch", "demoTitle": "不同 DNS 记录解决什么问题",
+    "demoSteps": [{"label":"网站地址","value":"A → 203.0.113.10","note":"域名解析到 IPv4 地址。"},{"label":"服务别名","value":"CNAME → host.example.net","note":"一个名称指向另一个名称。"},{"label":"邮件路由","value":"MX → mail.example.com","note":"邮件系统找到接收服务器。"}],
+    "quizQuestion": "让域名直接指向 IPv4 地址通常使用什么记录？", "quizOptions": ["A 记录", "MX 记录", "TXT 记录"], "correctText": "A 记录保存 IPv4 地址。", "wrongText": "MX 用于邮件路由，TXT 保存文本信息。",
+    "promptTitle": "检查 DNS 记录", "prompt": "请按网站、邮件和验证用途检查这些 DNS 记录的类型、名称、目标、TTL 和冲突。", "relatedSlugs": ["hostname", "ip-address", "dns-resolver", "cache"]
+  },
+  {
+    "zh": "DNS 解析器", "en": "DNS Resolver", "slug": "dns-resolver", "cat": "技术栈",
+    "say": "替客户端查询 DNS 层级并缓存名称解析结果的服务。", "aliases": ["递归解析器", "DNS 服务器", "Resolver"],
+    "question": "电脑不知道域名对应哪个 IP 时，会向谁询问？", "definition": "DNS 解析器接收名称查询，利用缓存或递归查询获得记录并返回给客户端。", "boundary": "解析器返回的是 DNS 记录结果，不负责确认目标应用是否正常运行。",
+    "demoType": "flow", "demoTitle": "缓存未命中时怎样完成解析",
+    "demoSteps": [{"label":"客户端询问","value":"api.example.com?","note":"本地系统把查询交给解析器。"},{"label":"逐级查询","value":"根 → 顶级域 → 权威","note":"解析器找到负责该域名的记录。"},{"label":"返回并缓存","value":"203.0.113.10 · 300s","note":"客户端得到 IP，解析器按 TTL 缓存。"}],
+    "quizQuestion": "DNS 解析器缓存记录多久主要由什么决定？", "quizOptions": ["TTL", "页面标题", "数据库主键"], "correctText": "TTL 指示记录可缓存的时长。", "wrongText": "页面和数据库结构不控制 DNS 缓存时长。",
+    "promptTitle": "排查 DNS 解析", "prompt": "请比较本地、递归和权威 DNS 的查询结果与 TTL，定位旧记录来自哪一层缓存。", "relatedSlugs": ["dns-record", "cache", "hostname", "ip-address"]
+  },
+  {
+    "zh": "缓存控制", "en": "Cache-Control", "slug": "cache-control", "cat": "技术栈",
+    "say": "用 HTTP 响应头说明内容能否缓存、缓存多久以及何时重新验证。", "aliases": ["Cache-Control", "HTTP 缓存策略", "缓存响应头"],
+    "question": "静态图片可以缓存一年，用户资料却不能共用缓存，怎样区分？", "definition": "Cache-Control 是 HTTP 缓存指令集合，用于控制浏览器和共享缓存对响应的存储与复用。", "boundary": "缓存指令影响缓存行为，但不能保证所有中间设备在异常配置下都按预期执行。",
+    "demoType": "state", "demoTitle": "资源从新鲜到重新验证",
+    "demoSteps": [{"label":"首次响应","value":"max-age=60","note":"浏览器保存响应 60 秒。"},{"label":"缓存新鲜","value":"30 秒","note":"页面直接使用本地副本，不发请求。"},{"label":"缓存过期","value":"60 秒后验证","note":"浏览器携带验证条件询问服务器。"}],
+    "quizQuestion": "max-age=60 通常表示什么？", "quizOptions": ["响应可在 60 秒内视为新鲜", "请求必须在 60 秒内完成", "服务器 60 秒后关闭"], "correctText": "缓存可在该时间内直接复用响应。", "wrongText": "它控制缓存新鲜度，不是请求超时或服务器寿命。",
+    "promptTitle": "设计 HTTP 缓存", "prompt": "请为静态资源、公开接口和用户私有数据分别设计 Cache-Control，并说明更新和重新验证方式。", "relatedSlugs": ["cache", "response", "response-header"]
+  },
+  {
+    "zh": "MIME 类型", "en": "Media Type", "slug": "mime-type", "cat": "技术栈",
+    "say": "用类似 application/json 的标识说明传输内容是什么格式。", "aliases": ["媒体类型", "Content-Type", "Media Type"],
+    "question": "浏览器怎样知道返回内容是 JSON、图片还是网页？", "definition": "MIME 类型由主类型和子类型组成，用于说明消息体的媒体格式和解析方式。", "boundary": "文件扩展名可以辅助判断，但 HTTP 客户端主要依据 Content-Type 等协议信息。",
+    "demoType": "branch", "demoTitle": "同一响应体怎样按类型处理",
+    "demoSteps": [{"label":"JSON","value":"application/json","note":"客户端把文本解析成结构化数据。"},{"label":"图片","value":"image/png","note":"浏览器按 PNG 图像解码。"},{"label":"类型错误","value":"text/plain","note":"内容可能被当作普通文本显示。"}],
+    "quizQuestion": "JSON 响应常用哪个 MIME 类型？", "quizOptions": ["application/json", "image/jpeg", "text/css"], "correctText": "application/json 表示 JSON 数据。", "wrongText": "image/jpeg 是图片，text/css 是样式表。",
+    "promptTitle": "检查内容类型", "prompt": "请检查这些请求和响应的 Content-Type、Accept 与实际内容是否一致，并说明错误类型造成的客户端表现。", "relatedSlugs": ["http-header", "response-header", "json"]
+  },
+  {
+    "zh": "响应体", "en": "Response Body", "slug": "response-body", "cat": "技术栈",
+    "say": "HTTP 响应中承载实际返回内容的部分，可以是 JSON、HTML、图片或文件。", "aliases": ["Response Body", "返回体", "响应内容"],
+    "question": "接口状态码是 200，具体商品数据放在哪里？", "definition": "响应体是服务器随 HTTP 响应发送的内容载荷，其解析方式由响应头说明。", "boundary": "有些响应没有响应体，例如 204；错误响应体也不应泄露敏感内部信息。",
+    "demoType": "request", "demoTitle": "商品查询怎样形成响应体",
+    "demoSteps": [{"label":"查询完成","value":"product id 42","note":"服务取得允许返回的字段。"},{"label":"序列化","value":"{\"id\":42,\"name\":\"灯\"}","note":"对象转换成 JSON 文本。"},{"label":"客户端解析","value":"data.name = 灯","note":"页面读取字段并更新商品名称。"}],
+    "quizQuestion": "204 No Content 响应通常有什么特点？", "quizOptions": ["没有响应体", "必须返回完整网页", "必须包含数据库密码"], "correctText": "204 表示请求成功但没有返回内容。", "wrongText": "204 不要求网页，更不能包含敏感密码。",
+    "promptTitle": "检查响应体", "prompt": "请检查这个响应体的字段、类型、空值、错误格式和敏感信息，给出稳定的前端处理约定。", "relatedSlugs": ["response", "status-code", "response-header", "json"]
+  },
+  {
+    "zh": "响应头", "en": "Response Header", "slug": "response-header", "cat": "技术栈",
+    "say": "服务器随响应返回的元信息，例如内容格式、缓存策略和追踪编号。", "aliases": ["Response Header", "HTTP 响应头", "返回头"],
+    "question": "接口内容一样，为什么一个被缓存，另一个每次都重新请求？", "definition": "响应头是 HTTP 响应中的键值元信息，用于说明内容、缓存、安全和连接等处理方式。", "boundary": "响应头适合元信息，不能替代业务响应体；自定义头也应保持必要和稳定。",
+    "demoType": "request", "demoTitle": "响应头怎样改变浏览器处理",
+    "demoSteps": [{"label":"说明类型","value":"Content-Type: application/json","note":"浏览器按 JSON 读取响应体。"},{"label":"设置缓存","value":"Cache-Control: max-age=60","note":"一分钟内可复用本地响应。"},{"label":"提供追踪","value":"X-Request-Id: ab12","note":"前后端可用编号关联日志。"}],
+    "quizQuestion": "哪项通常放在响应头中？", "quizOptions": ["缓存策略", "完整商品列表", "数据库全部数据"], "correctText": "Cache-Control 等缓存策略属于响应元信息。", "wrongText": "业务数据通常放响应体，也不应返回数据库全部内容。",
+    "promptTitle": "审查响应头", "prompt": "请检查这个接口的 Content-Type、缓存、跨域、安全和追踪响应头，删除重复或相互冲突的设置。", "relatedSlugs": ["response", "response-body", "cache-control", "mime-type"]
+  },
+  {
+    "zh": "数据帧", "en": "DataFrame", "slug": "dataframe", "cat": "技术栈",
+    "say": "分析代码中常用的二维表结构，按行列读取、筛选和计算数据。", "aliases": ["DataFrame", "二维数据表", "分析表"],
+    "question": "CSV 读进分析程序后，怎样按列计算平均值？", "definition": "数据帧是带行索引和列定义的二维数据结构，常用于清洗、转换和分析。", "boundary": "数据帧通常存在内存或分布式计算环境中，不等于持久化数据库表。",
+    "demoType": "state", "demoTitle": "原始订单怎样变成汇总数据",
+    "demoSteps": [{"label":"读入数据","value":"1000 行订单","note":"每列得到名称和数据类型。"},{"label":"筛选清洗","value":"去掉 12 行无效金额","note":"有效行数变为 988。"},{"label":"分组计算","value":"按城市求平均值","note":"结果收敛为每城一行。"}],
+    "quizQuestion": "数据帧最常见的形态是什么？", "quizOptions": ["带列定义的二维数据", "网络数据包", "加密证书"], "correctText": "数据帧按行列组织分析数据。", "wrongText": "网络包和证书不是数据帧。",
+    "promptTitle": "检查数据帧处理", "prompt": "请检查这段数据帧代码的类型转换、缺失值、过滤、分组和输出行数，并给出每步校验。", "relatedSlugs": ["dataset-data", "data-validation", "data-transformation"]
+  },
+  {
+    "zh": "数据集", "en": "Dataset", "slug": "dataset-data", "cat": "技术栈",
+    "say": "为分析、训练或业务处理收集的一组相关数据。", "aliases": ["Dataset", "数据集合", "样本集"],
+    "question": "同一份模型训练数据怎样确定范围和版本？", "definition": "数据集是围绕特定用途组织的数据集合，应说明来源、结构、时间范围和版本。", "boundary": "数据集不等于任意文件堆积；用途、质量、权限和更新规则需要明确。",
+    "demoType": "lifecycle", "demoTitle": "原始记录怎样成为可用数据集",
+    "demoSteps": [{"label":"确定范围","value":"2026 年订单","note":"时间和业务边界被固定。"},{"label":"清洗验证","value":"删除重复 218 条","note":"保留符合字段规则的记录。"},{"label":"发布版本","value":"orders-v3","note":"使用者可追踪本次内容和变更。"}],
+    "quizQuestion": "可复现的数据集至少需要什么？", "quizOptions": ["明确范围、来源和版本", "只写一个随意文件名", "隐藏所有字段说明"], "correctText": "这些信息让使用者知道数据从哪里来、包含什么。", "wrongText": "模糊文件名和缺失说明会妨碍复现。",
+    "promptTitle": "整理数据集说明", "prompt": "请为这个数据集补充用途、来源、时间范围、字段、版本、质量检查和访问限制。", "relatedSlugs": ["dataframe", "data-quality", "data-lineage", "fine-tuning"]
+  },
+  {
+    "zh": "批处理", "en": "Batch Processing", "slug": "batch-processing", "cat": "技术栈",
+    "say": "积累一批数据后按计划统一处理，适合日报、结算和离线转换。", "aliases": ["批量处理", "离线处理", "Batch"],
+    "question": "每天凌晨汇总前一天订单，需要每来一条就计算吗？", "definition": "批处理按有限数据范围一次处理一组记录，通常由时间或数据量触发。", "boundary": "批处理结果有等待时间，不适合要求每条事件立即生效的场景。",
+    "demoType": "queue", "demoTitle": "一天订单怎样生成日报",
+    "demoSteps": [{"label":"累计数据","value":"00:00–23:59","note":"当天产生 12 万条订单。"},{"label":"启动任务","value":"次日 01:00","note":"作业读取固定时间范围。"},{"label":"写入汇总","value":"365 行城市日报","note":"仪表盘读取新的汇总版本。"}],
+    "quizQuestion": "哪项更适合批处理？", "quizOptions": ["每日账单汇总", "毫秒级聊天消息提示", "鼠标悬停动画"], "correctText": "日报允许收集后集中计算。", "wrongText": "即时消息和界面动画需要更低延迟。",
+    "promptTitle": "设计批处理任务", "prompt": "请定义这项批处理的输入范围、调度时间、重复执行、失败重跑和输出校验。", "relatedSlugs": ["data-pipeline", "stream-processing", "queue"]
+  },
+  {
+    "zh": "数据接入", "en": "Data Ingestion", "slug": "data-ingestion", "cat": "技术栈",
+    "say": "把来自数据库、日志、文件或接口的数据接入处理系统。", "aliases": ["数据摄取", "Ingestion", "数据采集"],
+    "question": "业务库、埋点和第三方文件怎样进入同一分析平台？", "definition": "数据接入负责从源系统持续或批量读取数据，并可靠送入下游存储或处理。", "boundary": "接入关注把数据送进来，清洗、建模和指标定义属于后续环节。",
+    "demoType": "flow", "demoTitle": "三种来源怎样进入原始层",
+    "demoSteps": [{"label":"读取来源","value":"数据库 · 日志 · 文件","note":"连接器记录各自读取位置。"},{"label":"传输落地","value":"raw/events/date=0831","note":"原始数据按日期写入存储。"},{"label":"核对数量","value":"源 50,012 = 目标 50,012","note":"行数和校验值一致。"}],
+    "quizQuestion": "数据接入最直接的结果是什么？", "quizOptions": ["源数据进入下游系统", "所有指标自动正确", "页面自动完成设计"], "correctText": "数据接入建立源到目标的数据入口。", "wrongText": "指标和页面设计不会由接入过程自动完成。",
+    "promptTitle": "设计数据接入", "prompt": "请为这些数据源设计全量和增量接入，说明读取位置、去重、失败恢复和数量核对。", "relatedSlugs": ["data-pipeline", "replication", "data-validation"]
+  },
+  {
+    "zh": "数据管道", "en": "Data Pipeline", "slug": "data-pipeline", "cat": "技术栈",
+    "say": "把数据从来源送到目标，并串联清洗、转换和校验步骤。", "aliases": ["数据流水线", "Pipeline", "数据链路"],
+    "question": "日报数字出错时，怎样知道问题发生在哪一步？", "definition": "数据管道是数据在采集、传输、处理、校验和输出之间的自动化工作流。", "boundary": "管道只是执行结构，数据规则、质量标准和负责人仍需明确。",
+    "demoType": "flow", "demoTitle": "订单数据怎样进入报表",
+    "demoSteps": [{"label":"摄取","value":"50,012 条原始订单","note":"读取位置停在 23:59。"},{"label":"转换","value":"过滤测试订单 12 条","note":"有效订单变为 50,000 条。"},{"label":"发布","value":"城市日报 365 行","note":"校验通过后替换报表版本。"}],
+    "quizQuestion": "数据管道中为什么要记录每步输入输出数量？", "quizOptions": ["定位数据在哪一步丢失或膨胀", "改变网页主题色", "隐藏处理错误"], "correctText": "数量变化是排查数据异常的直接证据。", "wrongText": "主题色无关，隐藏错误也会降低可追踪性。",
+    "promptTitle": "审查数据管道", "prompt": "请画出这条数据管道的输入、转换、输出和质量门槛，并为每步补充数量与错误指标。", "relatedSlugs": ["data-ingestion", "data-transformation", "data-validation", "data-lineage"]
+  },
+  {
+    "zh": "数据质量", "en": "Data Quality", "slug": "data-quality", "cat": "技术栈",
+    "say": "判断数据是否完整、准确、一致、及时并符合使用要求。", "aliases": ["数据品质", "质量规则", "Data Quality"],
+    "question": "报表能正常打开，为什么数字仍可能不可信？", "definition": "数据质量用可测规则评估数据对特定用途的适用程度。", "boundary": "质量不是单一分数，也不是数据永远无错；标准必须结合业务用途和风险。",
+    "demoType": "state", "demoTitle": "一批订单怎样通过质量门槛",
+    "demoSteps": [{"label":"原始数据","value":"10,000 行","note":"发现 32 个空订单号。"},{"label":"执行规则","value":"完整率 99.68%","note":"低于约定的 99.9%。"},{"label":"阻止发布","value":"质量门槛失败","note":"旧报表继续服务并发出告警。"}],
+    "quizQuestion": "数据质量规则应该由什么决定？", "quizOptions": ["具体使用场景和可接受风险", "随机选择一个百分比", "只看文件大小"], "correctText": "不同用途对错误和延迟的容忍度不同。", "wrongText": "随机阈值和文件大小不能代表数据是否可用。",
+    "promptTitle": "制定数据质量规则", "prompt": "请为这份数据定义完整性、唯一性、范围、一致性和新鲜度规则，并说明失败后的处理。", "relatedSlugs": ["data-validation", "dataset-data", "data-pipeline"]
+  },
+  {
+    "zh": "数据转换", "en": "Data Transformation", "slug": "data-transformation", "cat": "技术栈",
+    "say": "把原始字段清洗、组合或聚合成下游需要的结构。", "aliases": ["Transform", "数据处理", "字段转换"],
+    "question": "三个系统的日期和金额格式不同，怎样统一分析？", "definition": "数据转换按照明确规则改变数据的格式、结构、粒度或取值。", "boundary": "转换不应悄悄修改业务含义；规则、版本和输入输出需要可追踪。",
+    "demoType": "state", "demoTitle": "三种金额怎样变成统一字段",
+    "demoSteps": [{"label":"原始值","value":"¥12 · CNY 12 · 1200 分","note":"三个来源的单位和格式不同。"},{"label":"应用规则","value":"统一为整数分","note":"币种和精度被明确记录。"},{"label":"标准结果","value":"amount_cents = 1200","note":"下游可直接比较和汇总。"}],
+    "quizQuestion": "数据转换最需要保留什么？", "quizOptions": ["明确的输入输出和转换规则", "只保留最终截图", "删除来源信息"], "correctText": "规则和来源使结果可解释、可复现。", "wrongText": "截图和丢失来源都无法解释数据如何变化。",
+    "promptTitle": "检查数据转换", "prompt": "请列出这段转换的输入字段、单位、空值、映射规则和输出类型，并设计前后数量校验。", "relatedSlugs": ["data-pipeline", "data-validation", "data-lineage"]
+  },
+  {
+    "zh": "数据验证", "en": "Data Validation", "slug": "data-validation", "cat": "技术栈",
+    "say": "按类型、范围、格式和关系规则检查数据是否可以继续处理。", "aliases": ["数据校验", "Validation", "字段验证"],
+    "question": "导入文件里有负数年龄和不存在的城市代码，应该什么时候发现？", "definition": "数据验证对输入或处理中间结果执行可判定规则，并处理不符合规则的记录。", "boundary": "验证只能检查已定义规则，不能证明没有任何未知问题。",
+    "demoType": "branch", "demoTitle": "导入记录怎样被接受或隔离",
+    "demoSteps": [{"label":"读取记录","value":"age = -2","note":"字段成功解析为数字。"},{"label":"执行范围规则","value":"0 ≤ age ≤ 120","note":"当前值不符合业务范围。"},{"label":"隔离错误","value":"rejects/row-18","note":"有效记录继续，错误原因被保存。"}],
+    "quizQuestion": "发现一条无效记录时合理的做法是什么？", "quizOptions": ["按规则拒绝或隔离并记录原因", "静默改成任意值", "删除整批数据"], "correctText": "处理方式应明确，并保留可排查证据。", "wrongText": "随意修改或删除整批数据都会造成新的问题。",
+    "promptTitle": "设计数据验证", "prompt": "请为这些字段定义类型、格式、范围、唯一性和关联规则，并说明无效记录如何反馈和重放。", "relatedSlugs": ["data-quality", "data-transformation", "database-schema"]
+  },
+  {
+    "zh": "流处理", "en": "Stream Processing", "slug": "stream-processing", "cat": "技术栈",
+    "say": "数据持续到达时逐条或按短时间窗口处理，快速产出结果。", "aliases": ["流式处理", "实时处理", "Streaming"],
+    "question": "风控规则需要在付款发生后几秒内响应，怎样处理事件？", "definition": "流处理对持续到达的事件执行转换、聚合和状态计算，输出延迟通常较低。", "boundary": "流处理不等于严格实时；乱序、重复、窗口和状态恢复仍需设计。",
+    "demoType": "flow", "demoTitle": "付款事件怎样触发风险提醒",
+    "demoSteps": [{"label":"事件到达","value":"payment 980 元","note":"事件带用户、金额和发生时间。"},{"label":"更新窗口","value":"10 分钟累计 4,800 元","note":"处理器合并该用户近期付款。"},{"label":"输出判断","value":"超过阈值 → review","note":"审核队列立即收到一条记录。"}],
+    "quizQuestion": "流处理需要特别处理什么？", "quizOptions": ["乱序和重复事件", "页面字体名称", "Git 提交标题"], "correctText": "到达顺序和投递次数会影响流式结果。", "wrongText": "字体和提交标题不是流处理的核心问题。",
+    "promptTitle": "设计流处理", "prompt": "请定义事件键、时间语义、窗口、乱序容忍、去重、状态和失败恢复，并给出可观察指标。", "relatedSlugs": ["data-pipeline", "batch-processing", "idempotency", "queue"]
+  },
+  {
+    "zh": "数据血缘", "en": "Data Lineage", "slug": "data-lineage", "cat": "技术栈",
+    "say": "记录一个字段或指标从哪些来源经过哪些处理得到。", "aliases": ["Lineage", "数据来源链", "字段血缘"],
+    "question": "报表金额异常时，怎样追到原始字段和转换步骤？", "definition": "数据血缘描述数据在来源、任务、表、字段和输出之间的依赖与变化。", "boundary": "血缘说明数据怎样流动，不自动判断每一步业务规则是否正确。",
+    "demoType": "flow", "demoTitle": "报表金额怎样追到订单字段",
+    "demoSteps": [{"label":"报表指标","value":"sales_total","note":"仪表盘显示值与预期不符。"},{"label":"追踪模型","value":"sum(net_amount)","note":"血缘指向汇总模型和转换公式。"},{"label":"定位来源","value":"orders.amount - discount","note":"排查落到原始字段和源表。"}],
+    "quizQuestion": "数据血缘最适合回答哪个问题？", "quizOptions": ["这个指标由哪些数据和任务生成", "按钮应该用什么颜色", "用户密码是什么"], "correctText": "血缘连接来源、处理和输出。", "wrongText": "界面颜色和密码不属于数据血缘用途。",
+    "promptTitle": "补充数据血缘", "prompt": "请为这个指标列出源表字段、转换任务、中间表和最终消费者，并标明负责人和更新时间。", "relatedSlugs": ["data-pipeline", "data-transformation", "dataset-data"]
+  },
+  {
+    "zh": "单元测试", "en": "Unit Test", "slug": "unit-test", "cat": "技术栈",
+    "say": "单独验证一个函数、类或小模块在给定输入下是否得到预期结果。", "aliases": ["Unit Test", "函数测试", "模块测试"],
+    "question": "金额计算函数改了以后，怎样快速确认边界条件没坏？", "definition": "单元测试隔离较小代码单元，控制输入和依赖，并对输出或行为作断言。", "boundary": "单元测试不能证明多个真实系统协作正常，集成和端到端场景仍需其他测试。",
+    "demoType": "branch", "demoTitle": "折扣函数怎样覆盖三个分支",
+    "demoSteps": [{"label":"普通订单","value":"100 → 100","note":"未达到门槛时金额不变。"},{"label":"达到门槛","value":"200 → 180","note":"满足规则后应用九折。"},{"label":"无效输入","value":"-1 → error","note":"负金额被明确拒绝。"}],
+    "quizQuestion": "单元测试最适合验证什么？", "quizOptions": ["一个函数的输入输出和边界", "整套生产网络是否可用", "所有浏览器真实登录流程"], "correctText": "单元测试聚焦小范围逻辑。", "wrongText": "真实网络和完整流程需要集成或端到端测试。",
+    "promptTitle": "补充单元测试", "prompt": "请为这个函数列出正常、边界、异常和依赖失败用例，并写出可读的断言。", "relatedSlugs": ["assertion", "mock", "integration-test", "test-case"]
+  },
+  {
+    "zh": "集成测试", "en": "Integration Test", "slug": "integration-test", "cat": "技术栈",
+    "say": "验证多个模块或真实依赖连接后能否按约定协作。", "aliases": ["Integration Test", "模块集成测试", "接口集成测试"],
+    "question": "代码单测都通过，为什么连上数据库后仍然报错？", "definition": "集成测试检查组件之间的接口、数据格式、配置和副作用。", "boundary": "集成测试范围通常大于单元测试，但不一定覆盖用户完整操作和生产环境。",
+    "demoType": "flow", "demoTitle": "创建订单怎样跨三个模块验证",
+    "demoSteps": [{"label":"调用接口","value":"POST /orders","note":"测试发送真实 JSON 请求。"},{"label":"写入数据库","value":"orders +1","note":"服务执行校验和持久化。"},{"label":"读取确认","value":"GET /orders/908","note":"返回字段与数据库记录一致。"}],
+    "quizQuestion": "哪项更适合集成测试？", "quizOptions": ["接口写入数据库后能被读取", "纯函数 2+2 的结果", "设计稿字体大小"], "correctText": "这里验证接口和数据库协作。", "wrongText": "纯函数适合单元测试，字体检查属于视觉验收。",
+    "promptTitle": "设计集成测试", "prompt": "请列出这条业务链涉及的真实依赖、准备数据、调用步骤、结果校验和清理方式。", "relatedSlugs": ["unit-test", "e2e-test", "api-testing", "mock"]
+  },
+  {
+    "zh": "端到端测试", "en": "End-to-End Test", "slug": "e2e-test", "cat": "技术栈",
+    "say": "从用户入口操作到最终结果，验证整条系统链路。", "aliases": ["E2E 测试", "全链路测试", "端到端"],
+    "question": "注册、收邮件、登录这一整套流程怎样自动验证？", "definition": "端到端测试以接近真实使用的方式跨越界面、接口、服务和存储验证关键流程。", "boundary": "端到端测试覆盖面大但运行慢且易受环境影响，不应替代所有低层测试。",
+    "demoType": "flow", "demoTitle": "注册流程怎样完成全链路检查",
+    "demoSteps": [{"label":"填写提交","value":"name + email","note":"浏览器真实触发注册请求。"},{"label":"服务处理","value":"用户创建 + 邮件入队","note":"后端和消息系统产生记录。"},{"label":"用户确认","value":"登录成功","note":"测试读取邮件链接并完成登录。"}],
+    "quizQuestion": "端到端测试最适合保护什么？", "quizOptions": ["少量关键用户流程", "每个函数的所有分支", "数据库所有内部实现"], "correctText": "关键流程值得承担较高运行成本。", "wrongText": "函数分支更适合单元测试，也不应绑定数据库全部内部细节。",
+    "promptTitle": "设计端到端测试", "prompt": "请为这个关键用户流程设计稳定的入口、数据准备、等待条件、结果断言和失败截图。", "relatedSlugs": ["integration-test", "smoke-test", "test-case"]
+  },
+  {
+    "zh": "冒烟测试", "en": "Smoke Test", "slug": "smoke-test", "cat": "技术栈",
+    "say": "发布后用少量检查确认系统能启动，关键入口没有直接失效。", "aliases": ["Smoke Test", "基础可用性检查", "发布冒烟"],
+    "question": "刚部署完成，应该优先检查哪些功能？", "definition": "冒烟测试快速覆盖系统最基础、最关键的可用路径，用于决定是否继续深入测试。", "boundary": "冒烟通过只说明基础路径可用，不能代替完整回归和性能检查。",
+    "demoType": "lifecycle", "demoTitle": "一次部署后的三项冒烟",
+    "demoSteps": [{"label":"健康接口","value":"/health = 200","note":"应用进程和基础依赖可响应。"},{"label":"关键页面","value":"首页可打开","note":"静态资源和服务端渲染正常。"},{"label":"核心操作","value":"登录成功","note":"最重要的身份链路可用。"}],
+    "quizQuestion": "冒烟测试通过后能说明什么？", "quizOptions": ["关键基础路径没有立即失败", "系统没有任何缺陷", "所有性能指标达标"], "correctText": "冒烟是快速基础检查。", "wrongText": "更广泛的功能和性能仍需后续验证。",
+    "promptTitle": "制定发布冒烟", "prompt": "请按服务启动、关键页面、核心接口和关键业务操作设计十分钟内可完成的冒烟清单。", "relatedSlugs": ["regression-test", "e2e-test", "server"]
+  },
+  {
+    "zh": "回归测试", "en": "Regression Test", "slug": "regression-test", "cat": "技术栈",
+    "say": "代码修改后重新检查原有功能，确认变更没有带来新的故障。", "aliases": ["Regression Test", "回归验证", "防回归测试"],
+    "question": "只修了优惠券，为什么还要测结算和退款？", "definition": "回归测试重复执行与变更相关的已有用例，以发现意外影响。", "boundary": "回归范围应基于影响分析和风险，不等于每次机械执行全部测试。",
+    "demoType": "flow", "demoTitle": "优惠券改动怎样确定回归范围",
+    "demoSteps": [{"label":"识别改动","value":"折扣计算模块","note":"变更会影响订单最终金额。"},{"label":"展开依赖","value":"结算 · 支付 · 退款","note":"三个流程读取同一金额字段。"},{"label":"执行回归","value":"18 个相关用例","note":"通过后记录覆盖范围和结果。"}],
+    "quizQuestion": "回归测试范围主要依据什么？", "quizOptions": ["变更影响和功能风险", "随机挑选页面", "只看代码行数"], "correctText": "依赖关系和失败后果决定重点。", "wrongText": "随机选择和行数都不能代表真实影响。",
+    "promptTitle": "制定回归范围", "prompt": "请根据这次代码变更列出直接功能、共享依赖、数据迁移和关键历史缺陷的回归用例。", "relatedSlugs": ["smoke-test", "test-case", "code-coverage"]
+  },
+  {
+    "zh": "测试用例", "en": "Test Case", "slug": "test-case", "cat": "技术栈",
+    "say": "写清前置条件、操作、输入和预期结果的一次可重复检查。", "aliases": ["Test Case", "测试场景", "用例"],
+    "question": "“测一下登录”为什么每个人测出的结果都不一样？", "definition": "测试用例描述一个具体场景的准备条件、执行步骤、输入和可判定预期。", "boundary": "用例不是笼统任务清单；预期结果必须能观察和判断。",
+    "demoType": "flow", "demoTitle": "模糊要求怎样变成可执行用例",
+    "demoSteps": [{"label":"准备条件","value":"账号已注册且未锁定","note":"测试从同一状态开始。"},{"label":"执行操作","value":"输入正确密码并提交","note":"步骤和输入可复现。"},{"label":"判断结果","value":"进入工作台且会话创建","note":"页面和服务端状态都可核对。"}],
+    "quizQuestion": "好的测试用例需要怎样的预期结果？", "quizOptions": ["具体且可观察", "只写“应该正常”", "完全不写结果"], "correctText": "可观察结果才能判定通过或失败。", "wrongText": "“正常”过于含糊，缺失结果也无法判定。",
+    "promptTitle": "编写测试用例", "prompt": "请把这个需求改写为正常、边界、权限和失败场景的测试用例，每条包含前置、步骤和可观察预期。", "relatedSlugs": ["assertion", "regression-test", "e2e-test"]
+  },
+  {
+    "zh": "模拟对象", "en": "Mock", "slug": "mock", "cat": "技术栈",
+    "say": "在测试中替代真实依赖，并检查代码怎样调用它。", "aliases": ["Mock", "测试模拟", "模拟依赖"],
+    "question": "测试付款逻辑时，必须真的请求支付平台吗？", "definition": "模拟对象按测试设定返回结果，并记录交互，用于隔离外部依赖和验证调用行为。", "boundary": "Mock 行为由测试编写者定义，可能与真实服务不一致，关键集成仍需真实依赖验证。",
+    "demoType": "branch", "demoTitle": "付款服务的两个模拟结果",
+    "demoSteps": [{"label":"设置成功","value":"charge → paid","note":"订单状态应更新为已支付。"},{"label":"设置拒绝","value":"charge → declined","note":"订单保持未支付并返回原因。"},{"label":"检查调用","value":"charge 调用 1 次","note":"断言金额和幂等键正确传入。"}],
+    "quizQuestion": "Mock 最适合验证什么？", "quizOptions": ["代码如何调用一个受控依赖", "第三方生产服务绝对可用", "真实网络延迟"], "correctText": "Mock 提供可控返回并记录调用。", "wrongText": "它不能证明真实服务和网络行为。",
+    "promptTitle": "设计测试模拟", "prompt": "请指出哪些依赖需要 mock，定义成功、失败和超时返回，并保留至少一项真实集成测试。", "relatedSlugs": ["unit-test", "test-case", "assertion", "integration-test"]
+  },
+  {
+    "zh": "断言", "en": "Assertion", "slug": "assertion", "cat": "技术栈",
+    "say": "把实际结果和预期条件比较，不符合时让测试明确失败。", "aliases": ["Assert", "预期检查", "测试断言"],
+    "question": "测试代码跑完没有报错，就算验证成功了吗？", "definition": "断言是测试中的可判定条件，用来验证值、状态、输出或交互是否符合预期。", "boundary": "断言只验证写出的条件；遗漏关键条件时，测试通过也可能没有意义。",
+    "demoType": "state", "demoTitle": "保存操作怎样通过三项断言",
+    "demoSteps": [{"label":"执行保存","value":"POST /notes","note":"接口返回 201。"},{"label":"检查结果","value":"id 存在 · title 相同","note":"响应字段符合约定。"},{"label":"检查副作用","value":"数据库增加 1 行","note":"持久化结果与响应一致。"}],
+    "quizQuestion": "哪种断言更有价值？", "quizOptions": ["检查明确业务结果和副作用", "只检查代码没有崩溃", "永远断言 true"], "correctText": "关键结果和副作用能证明行为符合需求。", "wrongText": "没有崩溃或固定为 true 都无法验证业务正确性。",
+    "promptTitle": "改进测试断言", "prompt": "请审查这些测试的断言是否覆盖返回值、状态变化和副作用，并删除与实现细节过度绑定的检查。", "relatedSlugs": ["test-case", "unit-test", "mock"]
+  },
+  {
+    "zh": "测试覆盖率", "en": "Code Coverage", "slug": "code-coverage", "cat": "技术栈",
+    "say": "统计测试运行时执行过哪些代码行、分支、函数或语句。", "aliases": ["Code Coverage", "代码覆盖率", "测试覆盖"],
+    "question": "覆盖率 100% 就能说明代码没有缺陷吗？", "definition": "测试覆盖率衡量测试执行触达的代码结构，用于发现尚未运行的区域。", "boundary": "高覆盖率不等于断言有效，也不能证明需求、并发和集成行为都正确。",
+    "demoType": "state", "demoTitle": "新增边界用例怎样改变分支覆盖",
+    "demoSteps": [{"label":"原有测试","value":"2 / 4 分支","note":"成功路径和普通失败已执行。"},{"label":"发现空白","value":"超时 · 重试耗尽","note":"报告标出两个未执行分支。"},{"label":"补充用例","value":"4 / 4 分支","note":"新用例触发并断言两种边界结果。"}],
+    "quizQuestion": "覆盖率报告最适合用来做什么？", "quizOptions": ["发现测试未触达的代码区域", "证明系统没有任何缺陷", "替代需求评审"], "correctText": "覆盖率提示空白，但仍需判断测试质量。", "wrongText": "覆盖率无法单独证明无缺陷，也不能替代需求判断。",
+    "promptTitle": "分析覆盖率空白", "prompt": "请查看行、分支和函数覆盖率，结合业务风险选择需要补测的路径，不以百分比本身作为完成标准。", "relatedSlugs": ["unit-test", "regression-test", "test-case"]
+  },
+  {
+    "zh": "API 测试", "en": "API Testing", "slug": "api-testing", "cat": "技术栈",
+    "say": "直接调用接口，验证状态码、数据结构、权限和副作用。", "aliases": ["接口测试", "API Test", "HTTP 测试"],
+    "question": "不打开浏览器，怎样确认创建订单接口工作正常？", "definition": "API 测试从协议层发送请求，并检查响应和系统状态是否符合接口约定。", "boundary": "API 测试不验证用户界面和浏览器交互，也不能替代生产监控。",
+    "demoType": "request", "demoTitle": "创建接口怎样被完整检查",
+    "demoSteps": [{"label":"发送请求","value":"POST /orders","note":"携带有效令牌和商品数据。"},{"label":"检查响应","value":"201 · orderId","note":"状态码和字段类型符合约定。"},{"label":"检查副作用","value":"库存 -1 · 订单 +1","note":"数据库变化与返回结果一致。"}],
+    "quizQuestion": "API 测试除了响应体还应检查什么？", "quizOptions": ["状态码、响应头和关键副作用", "页面字体是否好看", "设计稿图层名称"], "correctText": "协议和持久化结果都可能影响接口正确性。", "wrongText": "视觉和设计图层不属于 API 协议测试。",
+    "promptTitle": "设计 API 测试", "prompt": "请为这个接口补充正常、参数错误、未认证、无权限、冲突和服务失败测试，并检查副作用。", "relatedSlugs": ["request", "response", "status-code", "integration-test"]
+  },
+  {
+    "zh": "最小权限", "en": "Least Privilege", "slug": "least-privilege", "cat": "技术栈",
+    "say": "只授予完成当前任务所需的最少权限，并限制作用范围和时间。", "aliases": ["最小权限原则", "Least Privilege", "权限收敛"],
+    "question": "只读报表程序需要数据库删除权限吗？", "definition": "最小权限原则要求用户、服务和密钥只获得必要操作所需的权限。", "boundary": "最小权限能缩小误用和泄露影响，但不能替代认证、监控和修复漏洞。",
+    "demoType": "comparison", "demoTitle": "报表账号收窄权限前后",
+    "demoSteps": [{"label":"原权限","value":"SELECT · UPDATE · DELETE","note":"账号可修改和删除生产数据。"},{"label":"核对用途","value":"只读取销售视图","note":"运行记录没有写操作需求。"},{"label":"收窄权限","value":"SELECT sales_view","note":"误操作时无法改写底层表。"}],
+    "quizQuestion": "只读服务账号通常需要什么数据库权限？", "quizOptions": ["只授予所需对象的读取权限", "授予管理员权限", "允许删除全部表"], "correctText": "权限应与实际任务相匹配。", "wrongText": "管理员和删除权限扩大了不必要的风险。",
+    "promptTitle": "审查最小权限", "prompt": "请按主体、资源、动作、环境和有效期审查这些权限，列出可删除或缩小范围的授权。", "relatedSlugs": ["authorization", "rbac", "api-key", "firewall"]
+  },
+  {
+    "zh": "哈希", "en": "Hashing", "slug": "hashing", "cat": "技术栈",
+    "say": "把输入计算成固定长度摘要，用于完整性检查或密码验证等场景。", "aliases": ["散列", "Hash", "摘要算法"],
+    "question": "保存密码时，为什么不应该把原文直接存进数据库？", "definition": "哈希函数把任意长度输入映射为固定长度输出，设计用途不同的算法具有不同安全属性。", "boundary": "哈希通常不可直接还原，但弱算法、低成本参数或缺少盐仍可能被猜解；它也不是加密。",
+    "demoType": "state", "demoTitle": "密码怎样验证而不保存原文",
+    "demoSteps": [{"label":"注册输入","value":"user password","note":"服务生成随机盐并计算密码哈希。"},{"label":"保存记录","value":"salt + hash","note":"数据库不保存密码原文。"},{"label":"登录验证","value":"同参数重算并比较","note":"相同密码得到可比较结果。"}],
+    "quizQuestion": "密码哈希为什么要使用随机盐？", "quizOptions": ["让相同密码产生不同存储结果", "让密码可以直接解密", "让网页加载更快"], "correctText": "随机盐增加预计算和批量猜解的成本。", "wrongText": "盐不会让哈希可解密，也与网页速度无关。",
+    "promptTitle": "检查密码哈希", "prompt": "请检查密码存储使用的专用算法、随机盐、成本参数、升级策略和日志处理，避免保存或输出密码原文。", "relatedSlugs": ["auth", "database", "encryption-at-rest"]
+  },
+  {
+    "zh": "输入校验", "en": "Input Validation", "slug": "input-validation", "cat": "技术栈",
+    "say": "在数据进入业务逻辑前，检查类型、格式、长度、范围和允许值。", "aliases": ["输入验证", "参数校验", "Validation"],
+    "question": "前端已经限制了输入长度，后端还需要再检查吗？", "definition": "输入校验把外部数据与明确规则比较，不符合规则时拒绝或返回可处理的错误。", "boundary": "输入校验不能替代授权和上下文转义；客户端校验也不能替代服务端校验。",
+    "demoType": "branch", "demoTitle": "分页参数怎样被接受或拒绝",
+    "demoSteps": [{"label":"收到参数","value":"limit = 10000","note":"外部输入进入接口边界。"},{"label":"执行规则","value":"1 ≤ limit ≤ 100","note":"当前值超过允许上限。"},{"label":"拒绝处理","value":"400 · limit 超出范围","note":"查询没有进入数据库。"}],
+    "quizQuestion": "服务端为什么仍需校验前端提交的数据？", "quizOptions": ["客户端限制可以被绕过", "前端会自动修复后端", "校验只影响页面颜色"], "correctText": "请求可以脱离页面直接发送，服务端必须守住自己的输入边界。", "wrongText": "前端不能替服务端执行可信校验，页面颜色也与参数合法性无关。",
+    "promptTitle": "设计输入校验", "prompt": "请为这个接口的路径、查询、请求头和请求体定义类型、格式、长度、范围与错误响应。", "relatedSlugs": ["request-body", "data-validation", "api-testing", "authorization"]
+  },
+  {
+    "zh": "静态加密", "en": "Encryption at Rest", "slug": "encryption-at-rest", "cat": "技术栈",
+    "say": "数据写入磁盘、备份或对象存储后，以密文形式保存。", "aliases": ["存储加密", "落盘加密", "静态数据加密"],
+    "question": "硬盘或备份文件被拿走时，怎样降低数据直接被读取的风险？", "definition": "静态加密保护存储介质上的数据，通常由磁盘、数据库、对象存储或应用层实现。", "boundary": "数据被已授权应用解密后仍可能泄露；密钥管理、访问控制和备份策略同样重要。",
+    "demoType": "lifecycle", "demoTitle": "数据落盘和读取时怎样变化",
+    "demoSteps": [{"label":"应用写入","value":"用户资料明文","note":"数据在受控进程中准备保存。"},{"label":"存储加密","value":"磁盘保存密文","note":"介质上不再保存可直接查看的业务明文。"},{"label":"授权读取","value":"密钥解密后返回","note":"访问日志记录主体和对象。"}],
+    "quizQuestion": "静态加密主要保护哪个阶段？", "quizOptions": ["数据保存在磁盘或备份时", "数据在网络传输时", "用户输入表单样式"], "correctText": "它关注存储介质上的数据。", "wrongText": "网络传输通常由 TLS 等机制保护，表单样式无关。",
+    "promptTitle": "审查静态加密", "prompt": "请检查数据库、文件、备份和日志的静态加密范围，以及密钥保存、轮换、授权和恢复流程。", "relatedSlugs": ["encryption-in-transit", "backup", "least-privilege"]
+  },
+  {
+    "zh": "传输加密", "en": "Encryption in Transit", "slug": "encryption-in-transit", "cat": "技术栈",
+    "say": "数据在客户端、服务和数据库之间传输时使用加密连接。", "aliases": ["链路加密", "传输中加密", "In-Transit Encryption"],
+    "question": "登录信息经过公共网络时，怎样降低被直接读取或篡改的风险？", "definition": "传输加密使用 TLS 等协议保护通信内容的机密性和完整性，并验证通信端身份。", "boundary": "传输加密只保护链路；端点被攻破、证书配置错误或应用泄露仍需其他控制。",
+    "demoType": "flow", "demoTitle": "登录请求怎样通过加密链路",
+    "demoSteps": [{"label":"建立连接","value":"TLS 握手","note":"浏览器验证证书并协商会话密钥。"},{"label":"发送请求","value":"密文数据包","note":"网络中间节点看不到请求明文。"},{"label":"服务解密","value":"受控进程读取","note":"服务端记录访问并校验登录数据。"}],
+    "quizQuestion": "HTTPS 主要保护数据的哪个阶段？", "quizOptions": ["浏览器与服务器之间传输时", "数据库磁盘长期保存时", "开发者写代码时"], "correctText": "HTTPS 使用 TLS 保护网络链路。", "wrongText": "磁盘存储需要静态加密，写代码本身不是 HTTPS 的保护阶段。",
+    "promptTitle": "审查传输加密", "prompt": "请列出客户端、网关、服务和数据库之间的每段连接，检查 TLS、证书验证、协议版本和明文回退。", "relatedSlugs": ["tls-handshake", "encryption-at-rest", "hostname"]
+  }
+]

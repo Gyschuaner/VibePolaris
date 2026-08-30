@@ -1,0 +1,618 @@
+[
+  {
+    "slug": "component",
+    "mechanism": "一份可命名的界面定义接收 props 等输入，生成多个结构一致但数据独立的实例；修改定义后，所有实例遵循同一套新规则。",
+    "misconception": "组件化不是按文件大小或代码行数机械切分，也不是把任何重复片段都抽出来。边界是否清楚、输入是否稳定、能否独立理解和测试，比是否重复一次更重要。",
+    "demoSignature": "component-definition-to-three-instances: 4 frames; scene objects are one UserCard source definition, three prop calls, three rendered user-card instances, and one new action line; user can scrub phases; observable result is one definition change adding the same action to all three instances.",
+    "sourceUrls": [
+      "https://react.dev/learn/passing-props-to-a-component",
+      "https://react.dev/learn/keeping-components-pure",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Web_components"
+    ],
+    "rewriteRisk": "页面用 React 风格语法演示，但定义必须保持框架中立，不能暗示所有组件模型都遵循完全相同的状态和封装规则。",
+    "nearDuplicates": [
+      "props",
+      "state",
+      "web-component",
+      "design-system"
+    ]
+  },
+  {
+    "slug": "css",
+    "mechanism": "浏览器先用选择器匹配元素，再按来源、重要性、层叠层、优先级和源码顺序确定声明，最后把计算值交给布局与绘制。",
+    "misconception": "CSS 不是给 HTML 表面加颜色；层叠决定哪条声明生效，布局规则还会随容器与媒体条件改变。",
+    "demoSignature": "responsive-code-map: 3 frames; actors=CSS代码行/计算值/三列星图; phases=桌面展开→发现拥挤→媒体查询改单列; action=播放代码与布局同步变化",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"
+    ],
+    "rewriteRisk": "不要把 CSS 讲成属性清单；正式页面必须同时说明匹配、层叠、计算值和布局结果。",
+    "nearDuplicates": [
+      "css-selector",
+      "box-model",
+      "responsive"
+    ]
+  },
+  {
+    "slug": "html",
+    "mechanism": "HTML 元素与属性构成文档结构；浏览器据此建立 DOM 和可访问性语义，使标题、区域和原生控件能够被程序与辅助技术识别。",
+    "misconception": "HTML 不只是把内容显示出来；用 div 模仿按钮或标题会丢失原生语义与交互行为。",
+    "demoSignature": "semantic-node-recognition: 3 frames; actors=普通容器/标题层级/原生按钮/浏览器识别结果; phases=只有容器→标题被识别→操作可被键盘触发; action=切换元素语义",
+    "sourceUrls": [
+      "https://html.spec.whatwg.org/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content"
+    ],
+    "rewriteRisk": "不要只强调 SEO；正式页面要把文档结构、原生行为和辅助技术识别放在同一个例子中。",
+    "nearDuplicates": [
+      "semantic-html",
+      "dom",
+      "a11y"
+    ]
+  },
+  {
+    "slug": "javascript",
+    "mechanism": "JavaScript 接收事件，读取或修改程序数据，再通过浏览器 API 更新页面；异步任务完成后会在事件循环允许的时机继续执行。",
+    "misconception": "JavaScript 语言不等于 DOM、网络或文件系统 API；可调用能力由浏览器、Node.js 等运行时决定。",
+    "demoSignature": "event-state-render: 3 frames; actors=点击事件/count状态/计数节点; phases=事件进入→count加一→textContent更新; action=逐段执行一次点击",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events"
+    ],
+    "rewriteRisk": "不要把 JavaScript 写成‘让页面动起来’；正式页面要明确事件、数据变化和界面更新的先后。",
+    "nearDuplicates": [
+      "event",
+      "dom",
+      "async-await"
+    ]
+  },
+  {
+    "slug": "state",
+    "mechanism": "状态记录当前会影响下一步行为或界面呈现的数据；事件改变状态，界面再根据新值更新。",
+    "misconception": "能从 props 或其他状态直接算出的值不必再存一份，否则两份数据可能不同步。",
+    "demoSignature": "state-machine: 4 frames; actors=可提交/校验中/提交中/已保存; phases=等待输入→开始校验→正在提交→保存完成; action=推进状态",
+    "sourceUrls": [
+      "https://react.dev/learn/state-a-components-memory"
+    ],
+    "rewriteRisk": "正式页面需守住边界：能从 props 或其他状态直接算出的值不必再存一份，否则两份数据可能不同步。",
+    "nearDuplicates": [
+      "component",
+      "event",
+      "feedback"
+    ]
+  },
+  {
+    "slug": "responsive",
+    "mechanism": "响应式布局根据容器宽度、内容需要和输入方式调整结构，让同一份内容保持可读和可操作。",
+    "misconception": "响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
+    "demoSignature": "transform: 4 frames; actors=可用宽度/内容容器/主卡片/次卡片/操作区; phases=桌面三栏→开始拥挤→改单列→操作下移; action=收窄容器",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"
+    ],
+    "rewriteRisk": "正式页面需守住边界：响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
+    "nearDuplicates": [
+      "breakpoint",
+      "media-query",
+      "adaptive-layout"
+    ]
+  },
+  {
+    "slug": "form",
+    "mechanism": "表单把标签、输入、约束、错误反馈和提交行为组织在一起，收集一组有明确含义的数据。",
+    "misconception": "浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "demoSignature": "state-machine: 4 frames; actors=姓名/邮箱/浏览器校验/服务端校验/报名结果; phases=保留输入→前端拦截→修正后提交→确认成功; action=尝试提交",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation"
+    ],
+    "rewriteRisk": "正式页面需守住边界：浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "nearDuplicates": [
+      "html",
+      "focus-management",
+      "acceptance-criteria"
+    ]
+  },
+  {
+    "slug": "dom",
+    "mechanism": "DOM 是浏览器把文档解析成的节点对象树；脚本操作的是内存中的节点、属性和文本。",
+    "misconception": "DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "demoSignature": "tree: 4 frames; actors=document/main/h1/Text 节点/脚本; phases=解析文档→查询标题→修改文本→重新呈现; action=执行脚本",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting"
+    ],
+    "rewriteRisk": "正式页面需守住边界：DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "nearDuplicates": [
+      "html",
+      "javascript",
+      "event-bubbling"
+    ]
+  },
+  {
+    "slug": "api",
+    "mechanism": "API 是系统边界上的调用约定，明确操作入口、输入、身份要求、响应结构和失败状态。",
+    "misconception": "API 不是数据库表或某个页面；内部实现可以变化，只要对外约定保持兼容。",
+    "demoSignature": "contract: 4 frames; actors=订单页/接口约定/身份凭据/订单服务/响应; phases=查阅约定→附上身份→执行实现→返回结果; action=发送请求",
+    "sourceUrls": [
+      "https://spec.openapis.org/oas/latest.html"
+    ],
+    "rewriteRisk": "正式页面需守住边界：API 不是数据库表或某个页面；内部实现可以变化，只要对外约定保持兼容。",
+    "nearDuplicates": [
+      "request",
+      "response",
+      "endpoint"
+    ]
+  },
+  {
+    "slug": "database",
+    "mechanism": "数据库把数据写入受约束的持久结构，并协调查询、并发修改、恢复和访问权限。",
+    "misconception": "数据库不是任意文件目录，也不是缓存；表结构、约束、事务和备份需要共同保证数据可信。",
+    "demoSignature": "timeline: 4 frames; actors=订单服务/事务/约束检查/orders 表/持久日志; phases=开始事务→检查约束→写入记录→提交落盘; action=提交事务",
+    "sourceUrls": [
+      "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+      "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    ],
+    "rewriteRisk": "正式页面需守住边界：数据库不是任意文件目录，也不是缓存；表结构、约束、事务和备份需要共同保证数据可信。",
+    "nearDuplicates": [
+      "table",
+      "index",
+      "transaction"
+    ]
+  },
+  {
+    "slug": "auth",
+    "mechanism": "认证验证主体身份，并通过会话或令牌把后续请求关联到已经确认的用户。",
+    "misconception": "认证只回答“你是谁”；能否查看订单、修改成员等操作仍要单独做授权判断。",
+    "demoSignature": "route: 4 frames; actors=登录者/认证端点/会话/后续请求/个人资料; phases=提交凭据→核验身份→建立会话→识别请求; action=继续认证",
+    "sourceUrls": [
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html"
+    ],
+    "rewriteRisk": "正式页面需守住边界：认证只回答“你是谁”；能否查看订单、修改成员等操作仍要单独做授权判断。",
+    "nearDuplicates": [
+      "authorization",
+      "session",
+      "jwt"
+    ]
+  },
+  {
+    "slug": "cache",
+    "mechanism": "缓存把数据副本放在更快的位置，读取时按键和有效性判断能否复用，未命中才访问数据源。",
+    "misconception": "缓存不是唯一数据来源；必须明确允许旧值存在多久，以及源数据变化后如何失效。",
+    "demoSignature": "branch: 5 frames; actors=商品页/缓存/数据库/失效动作; phases=缓存命中→副本过期→回源读取→写回副本→主动失效; action=再次查询",
+    "sourceUrls": [
+      "https://www.rfc-editor.org/rfc/rfc9111.html",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching"
+    ],
+    "rewriteRisk": "正式页面需守住边界：缓存不是唯一数据来源；必须明确允许旧值存在多久，以及源数据变化后如何失效。",
+    "nearDuplicates": [
+      "cache-control",
+      "timeout",
+      "database"
+    ]
+  },
+  {
+    "slug": "queue",
+    "mechanism": "队列在生产者与消费者之间暂存消息，消费者按可承受的并发读取、确认、重试或转入死信。",
+    "misconception": "队列不会自动保证业务只执行一次；确认丢失或网络重试仍可能产生重复处理。",
+    "demoSignature": "queue: 5 frames; actors=活动系统/消息 001/消息 002/邮件消费者/重试队列/死信; phases=接住峰值→限制并发→确认成功→延迟重试→进入死信; action=消费下一批",
+    "sourceUrls": [
+      "https://www.rabbitmq.com/tutorials/tutorial-two-javascript"
+    ],
+    "rewriteRisk": "正式页面需守住边界：队列不会自动保证业务只执行一次；确认丢失或网络重试仍可能产生重复处理。",
+    "nearDuplicates": [
+      "retry",
+      "event-driven-architecture",
+      "batch-processing"
+    ]
+  },
+  {
+    "slug": "rest",
+    "mechanism": "REST 用资源标识、统一接口和无状态请求组织系统交互；HTTP API 常以 URL 表示资源，以方法表达操作语义。",
+    "misconception": "REST 是架构风格，不是固定接口模板；复杂业务动作不必硬塞成简单的数据库增删改查。",
+    "demoSignature": "matrix: 4 frames; actors=/orders/42/GET/POST /orders/PATCH/DELETE; phases=读取订单→创建订单→修改状态→删除资源; action=切换操作",
+    "sourceUrls": [
+      "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm"
+    ],
+    "rewriteRisk": "正式页面需守住边界：REST 是架构风格，不是固定接口模板；复杂业务动作不必硬塞成简单的数据库增删改查。",
+    "nearDuplicates": [
+      "http-method",
+      "status-code",
+      "endpoint"
+    ]
+  },
+  {
+    "slug": "webhook",
+    "mechanism": "Webhook 在事件发生后向登记地址发送 HTTP 请求；接收方验证来源、记录事件并按幂等规则更新状态。",
+    "misconception": "Webhook 不是可靠的单次回调，通知可能延迟、重复、乱序或失败，接收方需要补偿机制。",
+    "demoSignature": "loop: 5 frames; actors=支付平台/Webhook 端点/签名验证/事件记录/订单/重试; phases=收到通知→验证签名→登记事件→更新订单→重复到达; action=处理通知",
+    "sourceUrls": [
+      "https://docs.stripe.com/webhooks"
+    ],
+    "rewriteRisk": "正式页面需守住边界：Webhook 不是可靠的单次回调，通知可能延迟、重复、乱序或失败，接收方需要补偿机制。",
+    "nearDuplicates": [
+      "request",
+      "retry",
+      "idempotency"
+    ]
+  },
+  {
+    "slug": "llm",
+    "mechanism": "大语言模型根据当前输入和已学参数，为下一个 Token 计算概率，再把选出的 Token 继续放回序列生成后文。",
+    "misconception": "概率生成不等于事实核验；模型可能流畅地生成错误内容，关键任务需要资料、工具和评测约束。",
+    "demoSignature": "spectrum: 5 frames; actors=输入/“首都”/“城市”/“中心”/采样结果/输出序列; phases=读取上下文→形成分布→选择 Token→追加输出→继续预测; action=生成下一个",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+    ],
+    "rewriteRisk": "正式页面需守住边界：概率生成不等于事实核验；模型可能流畅地生成错误内容，关键任务需要资料、工具和评测约束。",
+    "nearDuplicates": [
+      "generative-ai",
+      "token",
+      "context",
+      "reasoning-model"
+    ]
+  },
+  {
+    "slug": "prompt",
+    "mechanism": "提示词把任务目标、可用材料、约束、受众、输出形式和判断标准组织成模型可执行的输入。",
+    "misconception": "提示词不能创造缺失事实、越过权限或替代结果验证；输入再完整也不等于输出必然正确。",
+    "demoSignature": "assembly: 5 frames; actors=模糊请求/目标/材料/约束/输出/可执行提示; phases=只有请求→明确目标→提供材料→写清约束→约定输出; action=补一项信息",
+    "sourceUrls": [
+      "https://platform.openai.com/docs/guides/prompt-engineering"
+    ],
+    "rewriteRisk": "正式页面需守住边界：提示词不能创造缺失事实、越过权限或替代结果验证；输入再完整也不等于输出必然正确。",
+    "nearDuplicates": [
+      "system-prompt",
+      "context",
+      "structured-output"
+    ]
+  },
+  {
+    "slug": "context",
+    "mechanism": "上下文是本次请求实际送入模型的信息，由系统说明、对话、文件片段、工具结果和当前任务共同组成。",
+    "misconception": "资料存在于外部系统不等于已进入上下文；上下文有容量和相关性限制，错误材料也会误导答案。",
+    "demoSignature": "layers: 5 frames; actors=系统说明/当前对话/制度片段/工具结果/当前任务/模型可见输入; phases=只有问题→加入规则→取回片段→补当前信息→按任务作答; action=加入一层",
+    "sourceUrls": [
+      "https://docs.anthropic.com/en/docs/build-with-claude/context-windows"
+    ],
+    "rewriteRisk": "正式页面需守住边界：资料存在于外部系统不等于已进入上下文；上下文有容量和相关性限制，错误材料也会误导答案。",
+    "nearDuplicates": [
+      "context-window",
+      "token",
+      "prompt"
+    ]
+  },
+  {
+    "slug": "token",
+    "mechanism": "分词器把文本切成词片段并映射为整数编号，模型读取和生成的基本序列单位就是 Token。",
+    "misconception": "Token 不是固定的字、词或字符；不同分词器会得到不同切分，输入与输出都会占用预算。",
+    "demoSignature": "transform: 5 frames; actors=原始文本/词片段/Token ID/上下文预算/模型输入; phases=读取文本→切成片段→映射编号→计算占用→送入模型; action=继续切分",
+    "sourceUrls": [
+      "https://platform.openai.com/tokenizer",
+      "https://github.com/openai/tiktoken"
+    ],
+    "rewriteRisk": "正式页面需守住边界：Token 不是固定的字、词或字符；不同分词器会得到不同切分，输入与输出都会占用预算。",
+    "nearDuplicates": [
+      "tokenization",
+      "context-window",
+      "llm"
+    ]
+  },
+  {
+    "slug": "agent",
+    "mechanism": "智能体围绕目标反复观察当前状态、选择下一动作、调用工具并检查结果，直到完成或需要停止。",
+    "misconception": "智能体不会自动获得权限或正确判断；工具范围、写操作规则、预算和停止条件必须明确。",
+    "demoSignature": "loop: 5 frames; actors=目标/观察/判断/工具动作/验证/停止条件; phases=读取现场→确定原因→执行修改→检查结果→满足停止条件; action=运行下一轮",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2210.03629"
+    ],
+    "rewriteRisk": "正式页面需守住边界：智能体不会自动获得权限或正确判断；工具范围、写操作规则、预算和停止条件必须明确。",
+    "nearDuplicates": [
+      "agent-loop",
+      "tools",
+      "memory"
+    ]
+  },
+  {
+    "slug": "tools",
+    "mechanism": "工具调用让模型按结构化约定提出工具名称和参数，由外部程序执行真实查询或操作，再返回结果。",
+    "misconception": "模型生成调用意图不等于操作成功；参数校验、权限、执行和失败处理属于工具系统。",
+    "demoSignature": "route: 5 frames; actors=用户问题/模型/工具约定/天气服务/工具结果/最终回答; phases=识别缺口→生成参数→执行查询→返回结果→组织回答; action=执行下一段",
+    "sourceUrls": [
+      "https://platform.openai.com/docs/guides/function-calling"
+    ],
+    "rewriteRisk": "正式页面需守住边界：模型生成调用意图不等于操作成功；参数校验、权限、执行和失败处理属于工具系统。",
+    "nearDuplicates": [
+      "function-calling",
+      "tool-choice",
+      "tool-result"
+    ]
+  },
+  {
+    "slug": "memory",
+    "mechanism": "智能体记忆把经过筛选和确认的信息保存到任务内或持久存储，并在相关场景中重新取回。",
+    "misconception": "对话内容不应全部自动保存；敏感信息、临时状态和模型推测需要排除，用户应能查看和删除。",
+    "demoSignature": "memory: 5 frames; actors=当前对话/记忆候选/用户确认/持久记忆/新会话取回/界面设置; phases=发现候选→确认范围→写入记忆→相关时取回→应用并可撤销; action=检查下一步",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2304.03442"
+    ],
+    "rewriteRisk": "正式页面需守住边界：对话内容不应全部自动保存；敏感信息、临时状态和模型推测需要排除，用户应能查看和删除。",
+    "nearDuplicates": [
+      "working-memory",
+      "agent-memory",
+      "context"
+    ]
+  },
+  {
+    "slug": "rag",
+    "mechanism": "RAG 在生成前检索外部资料，把相关片段与问题一起放入上下文，再要求模型依据这些证据回答。",
+    "misconception": "RAG 不自动保证正确；资料版本、检索召回、片段完整性和引用对应关系都可能出错。",
+    "demoSignature": "pipeline: 6 frames; actors=用户问题/检索器/制度库/相关片段/生成模型/回答与引用; phases=提出问题→生成检索词→查找制度→选择片段→依据生成→对应引用; action=运行下一段",
+    "sourceUrls": [
+      "https://arxiv.org/abs/2005.11401"
+    ],
+    "rewriteRisk": "正式页面需守住边界：RAG 不自动保证正确；资料版本、检索召回、片段完整性和引用对应关系都可能出错。",
+    "nearDuplicates": [
+      "retrieval",
+      "embedding",
+      "grounding"
+    ]
+  },
+  {
+    "slug": "mcp",
+    "mechanism": "MCP 规定客户端与服务器如何发现工具、资源和提示模板，并用结构化消息交换能力、参数与结果。",
+    "misconception": "MCP 解决接入协议，不替代业务认证、授权、数据质量和工具自身的安全检查。",
+    "demoSignature": "contract: 5 frames; actors=AI 客户端/MCP 连接/项目服务器/工具目录/业务处理器/结构化结果; phases=协商能力→发现工具→形成调用→执行业务检查→返回结果; action=推进协议",
+    "sourceUrls": [
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+    ],
+    "rewriteRisk": "正式页面需守住边界：MCP 解决接入协议，不替代业务认证、授权、数据质量和工具自身的安全检查。",
+    "nearDuplicates": [
+      "tools",
+      "json-schema",
+      "client-server"
+    ]
+  },
+  {
+    "slug": "framework",
+    "mechanism": "框架规定应用结构、生命周期和扩展位置，库提供由应用主动调用的特定能力；实际项目通常同时使用两者。",
+    "misconception": "框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
+    "demoSignature": "layers: 4 frames; actors=业务页面/Next.js/React/日期库/浏览器 / Node.js; phases=应用入口→框架驱动→调用日期库→依赖运行时; action=展开依赖层",
+    "sourceUrls": [
+      "https://nextjs.org/docs/app/getting-started/project-structure"
+    ],
+    "rewriteRisk": "正式页面需守住边界：框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
+    "nearDuplicates": [
+      "library",
+      "dependency",
+      "runtime"
+    ]
+  },
+  {
+    "slug": "ssg-ssr",
+    "mechanism": "SSG 在构建或再验证时生成可复用 HTML，SSR 在请求到达服务器时根据当前请求和数据生成 HTML。",
+    "misconception": "渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "demoSignature": "compare: 4 frames; actors=构建阶段/静态文件/文档访客/账户用户/请求时服务器/个性化 HTML; phases=提前生成文档→复用静态页→账户请求到达→请求时生成; action=发起访问",
+    "sourceUrls": [
+      "https://nextjs.org/docs/app/getting-started/caching-and-revalidating"
+    ],
+    "rewriteRisk": "正式页面需守住边界：渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "nearDuplicates": [
+      "ssg",
+      "ssr",
+      "hydration"
+    ]
+  },
+  {
+    "slug": "deploy",
+    "mechanism": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查和流量切换。",
+    "misconception": "命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "demoSignature": "pipeline: 6 frames; actors=提交版本/构建/不可变制品/dev 环境/健康检查/访问流量; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=推进发布",
+    "sourceUrls": [
+      "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions"
+    ],
+    "rewriteRisk": "正式页面需守住边界：命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "nearDuplicates": [
+      "cd",
+      "preview-deployment",
+      "rollback"
+    ]
+  },
+  {
+    "slug": "library",
+    "mechanism": "库把一组相关能力封装为可调用接口，项目通过依赖管理安装并在需要的位置主动使用。",
+    "misconception": "引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "demoSignature": "compare: 5 frames; actors=实际需求/Intl.DateTimeFormat/轻量日期库/通用工具包/维护面; phases=限定需求→检查原生能力→评估小库→发现过量能力→形成选择; action=比较方案",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat",
+      "https://docs.npmjs.com/about-audit-reports"
+    ],
+    "rewriteRisk": "正式页面需守住边界：引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "nearDuplicates": [
+      "framework",
+      "dependency",
+      "package"
+    ]
+  },
+  {
+    "slug": "runtime",
+    "mechanism": "运行时加载并执行语言代码，同时提供内存、调度、模块和宿主 API；不同环境提供的接口并不相同。",
+    "misconception": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "demoSignature": "compare: 4 frames; actors=同一段代码/浏览器运行时/DOM API/Node.js 运行时/文件系统 API; phases=检查语法→浏览器执行→Node.js 执行→使用本环境接口; action=换个环境运行",
+    "sourceUrls": [
+      "https://nodejs.org/api/globals.html",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Document"
+    ],
+    "rewriteRisk": "正式页面需守住边界：语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "nearDuplicates": [
+      "compiler",
+      "interpreter",
+      "browser-api"
+    ]
+  },
+  {
+    "slug": "package",
+    "mechanism": "包管理器读取依赖范围，解析完整依赖树，下载包并用锁文件记录确定版本与完整性。",
+    "misconception": "锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "demoSignature": "tree: 5 frames; actors=package.json/版本解析器/ui-kit 2.5.1/color-utils 1.4.2/package-lock.json/node_modules; phases=读取范围→选择直接依赖→展开间接依赖→写入锁文件→复现安装; action=继续安装",
+    "sourceUrls": [
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json"
+    ],
+    "rewriteRisk": "正式页面需守住边界：锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "nearDuplicates": [
+      "lockfile",
+      "dependency",
+      "library"
+    ]
+  },
+  {
+    "slug": "typescript",
+    "mechanism": "TypeScript 在 JavaScript 上增加静态类型检查，编译阶段分析变量、函数和对象的使用是否符合声明。",
+    "misconception": "类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
+    "demoSignature": "pipeline: 5 frames; actors=TypeScript 源码/函数声明/类型检查器/诊断/JavaScript 输出/运行时输入; phases=读取声明→检查调用→给出诊断→修正并输出→验证外部数据; action=运行检查",
+    "sourceUrls": [
+      "https://www.typescriptlang.org/docs/handbook/2/basic-types.html"
+    ],
+    "rewriteRisk": "正式页面需守住边界：类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
+    "nearDuplicates": [
+      "javascript",
+      "compiler",
+      "transpiler"
+    ]
+  },
+  {
+    "slug": "repo-commit",
+    "mechanism": "工作区保存正在编辑的文件；暂存区选择本次快照内容；提交把所选内容、父提交和说明写入仓库历史。",
+    "misconception": "本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
+    "demoSignature": "timeline: 5 frames; actors=工作区/差异/暂存区/提交对象/当前分支/远程仓库; phases=保存文件→检查差异→选择快照→创建提交→决定推送; action=推进修改",
+    "sourceUrls": [
+      "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"
+    ],
+    "rewriteRisk": "正式页面需守住边界：本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
+    "nearDuplicates": [
+      "working-tree",
+      "staging-area",
+      "diff"
+    ]
+  },
+  {
+    "slug": "branch",
+    "mechanism": "Git 分支是指向提交的可移动引用；在某分支创建提交只会移动该引用，其他分支仍指向原提交。",
+    "misconception": "分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
+    "demoSignature": "branch: 5 frames; actors=共同提交 A/dev/feat/VBP-001/提交 B/提交 C/合并结果; phases=共同起点→创建引用→功能线前进→主线也变化→验证后合并; action=创建下一提交",
+    "sourceUrls": [
+      "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html"
+    ],
+    "rewriteRisk": "正式页面需守住边界：分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
+    "nearDuplicates": [
+      "checkout-switch",
+      "merge",
+      "pull-request"
+    ]
+  },
+  {
+    "slug": "mvp",
+    "mechanism": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本，范围由要获得的证据决定。",
+    "misconception": "MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
+    "demoSignature": "assembly: 5 frames; actors=关键假设/互动课程/学习进度/学习社区/证书系统/验证证据; phases=写清假设→保留核心体验→加入必要记录→推迟旁支功能→收集证据; action=筛选下一项",
+    "sourceUrls": [
+      "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works"
+    ],
+    "rewriteRisk": "正式页面需守住边界：MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
+    "nearDuplicates": [
+      "scope",
+      "iteration",
+      "user-story"
+    ]
+  },
+  {
+    "slug": "user-flow",
+    "mechanism": "用户流程把入口、用户动作、系统反馈、条件分支和结束状态连接起来，描述完成一个目标的完整路径。",
+    "misconception": "用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "demoSignature": "branch: 6 frames; actors=邮件入口/链接校验/新密码表单/链接过期/输入不一致/重设成功; phases=从邮件进入→检查链接→过期恢复→填写新密码→修正不一致→完成并返回; action=走下一节点",
+    "sourceUrls": [
+      "https://www.nngroup.com/articles/user-journeys-vs-user-flows/"
+    ],
+    "rewriteRisk": "正式页面需守住边界：用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "nearDuplicates": [
+      "use-case",
+      "sitemap",
+      "prototype"
+    ]
+  },
+  {
+    "slug": "wireframe",
+    "mechanism": "线框图用低细节结构表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。",
+    "misconception": "线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "demoSignature": "transform: 5 frames; actors=内容清单/信息分组/视觉层级/操作位置/线框页面/最终视觉; phases=列出内容→建立分组→确定层级→放置操作→形成线框; action=增加一层结构",
+    "sourceUrls": [
+      "https://media.nngroup.com/media/articles/attachments/UX-Deliverables-Glossary-PDF-2.pdf"
+    ],
+    "rewriteRisk": "正式页面需守住边界：线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "nearDuplicates": [
+      "mockup",
+      "prototype",
+      "ia"
+    ]
+  },
+  {
+    "slug": "ia",
+    "mechanism": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能够预测信息位置。",
+    "misconception": "信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "demoSignature": "tree: 5 frames; actors=300 篇文章/账单与订阅/账户与安全/取消订阅/搜索词/交叉入口; phases=盘点内容→建立分类→放置任务内容→补搜索语言→建立交叉入口; action=整理下一层",
+    "sourceUrls": [
+      "https://www.usability.gov/what-and-why/information-architecture.html"
+    ],
+    "rewriteRisk": "正式页面需守住边界：信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "nearDuplicates": [
+      "sitemap",
+      "user-flow",
+      "design-system"
+    ]
+  },
+  {
+    "slug": "prototype",
+    "mechanism": "原型用可操作媒介模拟关键行为，用于验证流程理解、交互反馈或产品假设。",
+    "misconception": "原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "demoSignature": "loop: 6 frames; actors=待验证假设/可点击原型/测试任务/观察记录/原型调整/产品决定; phases=限定假设→模拟关键状态→给出真实任务→观察行为→修改原型→形成决定; action=进行下一轮",
+    "sourceUrls": [
+      "https://www.nngroup.com/articles/ux-prototype-hi-lo-fidelity/"
+    ],
+    "rewriteRisk": "正式页面需守住边界：原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "nearDuplicates": [
+      "wireframe",
+      "mockup",
+      "usability-testing"
+    ]
+  },
+  {
+    "slug": "design-system",
+    "mechanism": "设计系统把原则、令牌、组件、交互模式、内容规则和维护机制组织成可复用的产品决策。",
+    "misconception": "设计系统不只是组件展示页，也不要求所有业务页面完全一样；差异应通过明确变体和扩展规则表达。",
+    "demoSignature": "layers: 6 frames; actors=反馈原则/设计令牌/SuccessBanner/提交成功模式/三个业务页面/维护流程; phases=明确共同原则→统一基础值→形成组件变体→定义使用模式→同步三个页面→管理后续变化; action=更新一层",
+    "sourceUrls": [
+      "https://designsystem.digital.gov/components/alert/"
+    ],
+    "rewriteRisk": "正式页面需守住边界：设计系统不只是组件展示页，也不要求所有业务页面完全一样；差异应通过明确变体和扩展规则表达。",
+    "nearDuplicates": [
+      "design-token",
+      "component",
+      "visual-hierarchy"
+    ]
+  },
+  {
+    "slug": "a11y",
+    "mechanism": "无障碍让内容在不同视觉、听觉、行动和认知条件下仍可感知、可操作、可理解，并与辅助技术兼容。",
+    "misconception": "无障碍不是发布前补几个 ARIA 属性；语义、键盘顺序、对比度、错误反馈和动效都要从结构开始处理。",
+    "demoSignature": "route: 6 frames; actors=跳到正文/邮箱输入/密码输入/错误提示/登录按钮/登录结果; phases=进入页面→识别邮箱→按顺序移动→收到错误→回到问题处→完成登录; action=按下一次 Tab",
+    "sourceUrls": [
+      "https://www.w3.org/WAI/WCAG22/Understanding/focus-order",
+      "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/"
+    ],
+    "rewriteRisk": "正式页面需守住边界：无障碍不是发布前补几个 ARIA 属性；语义、键盘顺序、对比度、错误反馈和动效都要从结构开始处理。",
+    "nearDuplicates": [
+      "focus-management",
+      "reduced-motion",
+      "semantic-html"
+    ]
+  }
+]

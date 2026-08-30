@@ -61,3 +61,50 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.responsive-preview-node/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.term-code-map-controls \{ display: none; \}/);
 });
+
+test("正式路由不再回退到批量三步模板", () => {
+  const route = read("app/terms/[slug]/page.tsx");
+  const foundation = read("components/TermDetailExperience.tsx");
+  const experience = read("components/terms/TermExperiencePage.tsx");
+  const css = read("app/globals.css");
+
+  assert.match(route, /usesFoundationStory/);
+  assert.match(route, /TermExperiencePage/);
+  assert.doesNotMatch(route, /experience \? \(/);
+  assert.doesNotMatch(foundation, /TermConceptDemo/);
+  assert.doesNotMatch(foundation, /getExpandedTermContent/);
+  assert.match(experience, /IntersectionObserver/);
+  assert.match(experience, /SceneTopology/);
+  assert.match(experience, /edge\.from/);
+  assert.match(experience, /edge\.to/);
+  assert.match(experience, /type="range"/);
+  assert.match(experience, /<select/);
+  assert.doesNotMatch(experience, /\(current \+ 1\) % experience\.frames\.length/);
+  assert.match(experience, /暂停演示/);
+  assert.match(experience, /重新播放演示/);
+  assert.match(experience, /aria-pressed/);
+  assert.match(experience, /aria-live="polite"/);
+  assert.match(css, /\.term-scene-state-machine/);
+  assert.match(css, /\.term-scene-network/);
+  assert.match(css, /\.term-scene-terminal/);
+  assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.term-scene-actor/);
+});
+
+test("组件词条使用独立研究卡与四段专属分镜", () => {
+  const route = read("app/terms/[slug]/page.tsx");
+  const page = read("components/terms/ComponentTermPage.tsx");
+  const research = JSON.parse(read("content/zh/term-research/base.json"));
+  const component = research.find((item) => item.slug === "component");
+
+  assert.match(route, /term\.slug === "component"/);
+  assert.match(route, /ComponentTermPage/);
+  assert.match(page, /一份定义，三次调用/);
+  assert.match(page, /判断组件边界/);
+  assert.match(page, /1 个改动 → 3 个实例更新/);
+  assert.match(page, /componentPhases\.length/);
+  assert.match(page, /暂停组件演示/);
+  assert.match(page, /切换组件演示阶段/);
+  assert.match(page, /prefers-reduced-motion: reduce/);
+  assert.equal(component.demoSignature, "component-definition-to-three-instances: 4 frames; scene objects are one UserCard source definition, three prop calls, three rendered user-card instances, and one new action line; user can scrub phases; observable result is one definition change adding the same action to all three instances.");
+  assert.equal(component.sourceUrls.length, 3);
+});

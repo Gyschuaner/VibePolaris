@@ -1,0 +1,785 @@
+[
+  {
+    "slug": "semantic-html",
+    "mechanism": "浏览器解析元素时会把 nav、main、button 等角色带入文档与无障碍结构，辅助技术因此能按区域和控件类型导航。",
+    "misconception": "常被误解为“换个标签有利于 SEO”；核心差异是机器可识别的结构和原生交互行为，不只是搜索排名。",
+    "demoSignature": "建议 4 帧：画面左侧是全用 div 的文章，右侧是无障碍树；点击“语义化”后，nav/main/article/button 逐个替换原节点；树中的角色与可操作入口同步增加；最后用 Tab 走一遍新顺序，结果可直接对照。",
+    "sourceUrls": ["https://html.spec.whatwg.org/multipage/dom.html#semantics-2", "https://developer.mozilla.org/en-US/docs/Glossary/Semantics"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["html", "a11y", "dom"]
+  },
+  {
+    "slug": "deep-link",
+    "mechanism": "系统收到 URI 后，按应用清单中的匹配规则生成 Intent 并选择目标应用；应用再把路径和参数映射到内部页面。",
+    "misconception": "容易和普通网页链接混淆，也常忽略“应用未安装、未登录、链接失效”不是同一种失败。",
+    "demoSignature": "建议 5 帧：手机外是一条订单链接，手机内有系统路由、App、登录页和网页四层；点击链接并切换已安装、未安装、未登录状态，路径分别落到订单页、应用商店或登录暂存；登录完成后自动回到原订单，最终地址保持一致。",
+    "sourceUrls": ["https://developer.android.com/training/app-links/create-deeplinks"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["routing", "app-manifest", "webview"]
+  },
+  {
+    "slug": "app-manifest",
+    "mechanism": "构建工具和操作系统在安装、启动与组件调用时读取清单，获得组件、权限、特性和入口声明。",
+    "misconception": "清单声明权限不等于用户已经授权；声明相机能力也不代表运行时可以直接打开相机。",
+    "demoSignature": "建议 4 帧：左侧编辑 AndroidManifest.xml，右侧放启动图标、相机按钮和外部链接三个测试入口；依次删掉 activity、permission、intent-filter，点击对应入口；设备分别停在无法启动、权限异常和链接不匹配，恢复节点后逐项转绿。",
+    "sourceUrls": ["https://developer.android.com/guide/topics/manifest/manifest-intro"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["app-permission", "deep-link", "code-signing"]
+  },
+  {
+    "slug": "emulator",
+    "mechanism": "仿真器在主机上模拟目标处理器、硬件和系统镜像，并允许注入网络、位置和设备状态。",
+    "misconception": "容易与只模拟操作系统接口的 simulator 混淆，也不能把仿真器性能当作真机性能。",
+    "demoSignature": "建议 5 帧：虚拟设备与真机双栏运行同一相机页；拖动网络、定位和传感器滑块，两栏先给出相同业务结果；随后真机栏补出触觉、功耗与相机启动延迟；点击“仅模拟器验证”会高亮仍未覆盖的硬件项。",
+    "sourceUrls": ["https://developer.android.com/studio/run/emulator"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["adaptive-layout", "app-manifest", "safe-area"]
+  },
+  {
+    "slug": "code-signing",
+    "mechanism": "构建产物的摘要由私钥签名，设备用证书公钥验证发布者身份与文件完整性；应用更新还会检查签名连续性。",
+    "misconception": "签名不是加密整个应用，也不证明代码安全；它证明谁签发以及产物是否被改动。",
+    "demoSignature": "建议 5 帧：APK 文件先生成摘要，再由私钥签名，设备用证书公钥验签；用户拖动修改包内一个字节，文件摘要立即变化；验签连线断开并标出“签名不匹配”；换用另一证书时再显示身份不一致。",
+    "sourceUrls": ["https://developer.android.com/studio/publish/app-signing", "https://developer.apple.com/support/code-signing/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["app-manifest", "deploy", "build-tool"]
+  },
+  {
+    "slug": "gesture",
+    "mechanism": "识别器根据触点数量、位移、速度、方向和持续时间，把连续触摸样本判定为轻点、拖拽、滑动或缩放。",
+    "misconception": "手势不是单个 touch 事件；轻点和滑动在手指落下时尚未确定，还会与滚动和系统手势竞争。",
+    "demoSignature": "建议 4 帧：手指在画布上移动，轨迹旁实时累计 distance、velocity、duration；未过阈值时卡片保持 pending；快速短划切为 swipe，长按后移动切为 drag；松手后把本次判定参数固定在轨迹旁。",
+    "sourceUrls": ["https://developer.android.com/develop/ui/views/touch-and-input/gestures"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["event", "touch-target", "adaptive-layout"]
+  },
+  {
+    "slug": "haptic-feedback",
+    "mechanism": "系统把语义化触觉类型映射到设备执行器的波形、强度与时长，并受硬件能力和用户设置限制。",
+    "misconception": "不是所有点击都应振动，也不能用任意长振动代替确认、选择和警告的不同含义。",
+    "demoSignature": "建议 4 帧：选择、确认、警告三个按钮对应三条不同波形；按下按钮时手机轮廓轻缩，波形同步走完幅度和时长；关闭设备触觉能力后再次点击，波形置灰但按钮的视觉反馈仍完整出现。",
+    "sourceUrls": ["https://developer.android.com/develop/ui/views/haptics/haptic-feedback", "https://developer.apple.com/design/human-interface-guidelines/playing-haptics"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["feedback", "gesture", "reduced-motion"]
+  },
+  {
+    "slug": "touch-target",
+    "mechanism": "命中测试使用控件的可交互边界，而非图标可见像素；容器内边距可扩大目标，同时相邻目标必须保持分离。",
+    "misconception": "把图标放大不等于正确扩大点击区，透明热区若互相覆盖还会制造误触。",
+    "demoSignature": "建议 5 帧：16px 图标上显示真实命中框，用户连续点十次，落点散点记录命中与漏点；拖动 padding 把热区扩到 48dp，图标视觉尺寸不变；再次播放相同落点，漏点转为命中，同时标出与邻近按钮是否重叠。",
+    "sourceUrls": ["https://developer.android.com/develop/ui/compose/accessibility/api-defaults?hl=en", "https://developer.apple.com/design/human-interface-guidelines/accessibility"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["a11y", "form", "feedback"]
+  },
+  {
+    "slug": "offline-first",
+    "mechanism": "读取优先命中本地数据源，写入先记录本地变更与同步元数据；网络恢复后队列上传，并按版本或业务规则解决冲突。",
+    "misconception": "不是把接口响应缓存起来就完成离线，也不是所有操作都能在无服务器确认时承诺成功。",
+    "demoSignature": "建议 6 帧：断网开关切断服务器后编辑一条笔记，本地卡片立即更新并进入 pending 队列；另一设备改同一标题；恢复网络后队列上传，服务器返回版本冲突；两份字段并排选择，确认后 server ack 消掉待同步标记。",
+    "sourceUrls": ["https://developer.android.com/topic/architecture/data-layer/offline-first"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["local-storage", "retry", "browser-api"]
+  },
+  {
+    "slug": "adaptive-layout",
+    "mechanism": "布局根据当前窗口大小类别和姿态切换导航与内容关系，而不是只读取设备型号；窗口运行中变化时重新计算。",
+    "misconception": "常与响应式等比缩放混为一谈；自适应强调布局模式变化，例如列表与详情从分屏变为前后页。",
+    "demoSignature": "建议 5 帧：用户拖动窗口从 360 到 1200px，画布上保留同一任务；导航先是底栏，再变侧栏，详情从独立页并入双栏；一枚焦点光标跨布局跟随同一控件，最终显示内容未丢失、操作位置未重置。",
+    "sourceUrls": ["https://developer.android.com/develop/ui/compose/layouts/adaptive"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["responsive", "safe-area", "cross-platform-development"]
+  },
+  {
+    "slug": "safe-area",
+    "mechanism": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset；内容可延伸到屏幕边缘，关键控件需加上相应内边距。",
+    "misconception": "安全区不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；背景和可操作内容处理不同。",
+    "demoSignature": "建议 4 帧：切换刘海、圆角和横屏设备外形，四边 inset 以半透明色块进入画面；背景保持铺满，标题和底部按钮自动移入安全区；关闭 safe-area 适配后，两者被遮挡的位置用红框标出。",
+    "sourceUrls": ["https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area", "https://drafts.csswg.org/css-env-1/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["adaptive-layout", "touch-target", "app-lifecycle"]
+  },
+  {
+    "slug": "app-lifecycle",
+    "mechanism": "操作系统通过 onCreate/onStart/onResume/onPause/onStop/onDestroy 等回调驱动 Activity 状态；进程可能在后台被直接回收。",
+    "misconception": "后台不等于应用仍完整运行，onDestroy 也不是可靠的最终保存时机。",
+    "demoSignature": "建议 6 帧：状态机围绕一个正在编辑的草稿页；依次点击打开、切到后台、旋转、系统回收，实际生命周期回调沿路径点亮；保存策略可在 onPause 与 onDestroy 间切换；回到页面后，后者会出现草稿为空的可见结果。",
+    "sourceUrls": ["https://developer.android.com/guide/components/activities/activity-lifecycle"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["offline-first", "local-storage", "push-notification"]
+  },
+  {
+    "slug": "app-permission",
+    "mechanism": "应用先在清单声明受保护能力，运行时读取授权状态，并在用户触发相关任务时请求；结果可能是允许、拒绝或不再询问。",
+    "misconception": "权限弹窗不是启动时越早弹越好，也不能把拒绝理解为应用整体不可用。",
+    "demoSignature": "建议 5 帧：点击拍照按钮，权限卡从 unknown 进入用途说明和系统弹窗；选择允许后相机打开，选择拒绝后原位出现文件上传；第二次永久拒绝才出现设置入口；每次选择都同步改变下一次点击的路径。",
+    "sourceUrls": ["https://developer.android.com/training/permissions/requesting", "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["browser-api", "push-notification", "safe-area"]
+  },
+  {
+    "slug": "push-notification",
+    "mechanism": "应用从系统推送服务取得设备令牌，业务服务器把消息交给推送服务，设备再按前后台状态展示或交给应用处理。",
+    "misconception": "推送不是必达消息队列，设备令牌也不会永久不变；关键业务不能只靠通知到达。",
+    "demoSignature": "建议 6 帧：app token、业务服务器、FCM/APNs、设备组成四段投递管线；点击发送后消息逐段移动；切换令牌过期会在网关退回，应用前台会转成站内提示，用户点通知后再沿 deep link 进入指定页面。",
+    "sourceUrls": ["https://firebase.google.com/docs/cloud-messaging/fcm-architecture", "https://developer.apple.com/documentation/usernotifications"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["deep-link", "app-permission", "app-lifecycle"]
+  },
+  {
+    "slug": "cross-platform-development",
+    "mechanism": "共享层复用业务逻辑和部分界面，通过编译、运行时或平台通道调用 iOS/Android 原生能力；平台特有代码仍单独维护。",
+    "misconception": "跨平台不是“一份代码无需适配”，也不是 WebView 的同义词。",
+    "demoSignature": "建议 5 帧：代码树分 shared、ios、android 三个容器；用户把价格计算拖进 shared，两端测试同时通过；再把通知权限或相机调用拖进 shared，平台 API 标记冲突；移回各自 adapter 后公共逻辑比例与平台差异同时可见。",
+    "sourceUrls": ["https://docs.flutter.dev/resources/architectural-overview", "https://reactnative.dev/architecture/overview"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["webview", "app-manifest", "browser-api"]
+  },
+  {
+    "slug": "webview",
+    "mechanism": "原生应用创建内嵌浏览器视图加载 Web 内容，并通过受控消息桥让 JavaScript 请求少量原生能力。",
+    "misconception": "WebView 不是完整系统浏览器，也不等于原生页面；Cookie、导航、下载、权限和桥接安全由宿主处理。",
+    "demoSignature": "建议 4 帧：WebView 中点击分享，消息卡先穿过 origin 与 schema 两道校验，再抵达原生分享面板；用户篡改 origin 或 method 字段，消息停在对应闸门；网页收到结构化错误并显示可恢复提示。",
+    "sourceUrls": ["https://developer.android.com/develop/ui/views/layout/webapps/webview", "https://developer.apple.com/documentation/webkit/wkwebview"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["csr", "browser-api", "cors"]
+  },
+  {
+    "slug": "css-selector",
+    "mechanism": "选择器按元素、类、属性、关系和伪类条件匹配 DOM 节点，只有匹配声明才进入层叠计算。",
+    "misconception": "选择器具体不等于一定生效；匹配之后还要比较来源、重要性、层和优先级。",
+    "demoSignature": "建议 4 帧：DOM 树旁输入 selector，匹配节点逐个亮起；悬停选择器会画出组合关系，改一段语法后匹配集合即时收缩；打开层叠面板，另用划线状态区分“匹配成功”和“最终值被覆盖”。",
+    "sourceUrls": ["https://www.w3.org/TR/selectors-4/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["cascade", "specificity", "css"]
+  },
+  {
+    "slug": "box-model",
+    "mechanism": "布局尺寸由 content、padding、border、margin 分层计算；box-sizing 决定声明宽高覆盖 content box 还是 border box。",
+    "misconception": "width 不总是元素最终占用宽度，margin 也不属于元素可绘制背景范围。",
+    "demoSignature": "建议 4 帧：拖动 width、padding、border 三个滑块，content/padding/border/margin 四层盒子同步伸缩；计算式逐项累加占用宽度；切换到 border-box 后外框收回 200px，内容区数值相应缩小。",
+    "sourceUrls": ["https://www.w3.org/TR/css-box-4/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["css", "positioning", "css-grid"]
+  },
+  {
+    "slug": "cascade",
+    "mechanism": "浏览器先按来源和重要性筛选声明，再比较级联层、作用域邻近度、优先级和出现顺序，选出每个属性的级联值。",
+    "misconception": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
+    "demoSignature": "建议 5 帧：同一按钮收到 user-agent、作者层、layer、inline 四叠声明；用户逐个启用规则，候选先按来源与重要性分组，再按层、优先级、顺序淘汰；最终声明点亮，改层顺序后胜者随之变化。",
+    "sourceUrls": ["https://www.w3.org/TR/css-cascade-6/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["specificity", "css-selector", "css"]
+  },
+  {
+    "slug": "specificity",
+    "mechanism": "同一层叠来源中的选择器按 ID、类/属性/伪类、类型/伪元素三个列依次比较，而不是把所有字符简单相加。",
+    "misconception": "优先级不是 CSS 的全部权重，也不是选择器越长越高；:where() 甚至始终贡献零优先级。",
+    "demoSignature": "建议 4 帧：把 #app .button、.toolbar .button、main button 放入三列计分器；用户点击任一选择器，ID、类、元素三格分别计数；三组数值按位比较，胜者给按钮着色；补一个 !important 后提示它属于层叠而非权重。",
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["cascade", "css-selector", "css"]
+  },
+  {
+    "slug": "flexbox",
+    "mechanism": "Flex 容器沿主轴收集项目，计算 flex base size 与剩余空间，再按 grow/shrink 分配并在交叉轴对齐。",
+    "misconception": "justify-content 不固定等于水平对齐，方向由 flex-direction 决定；Flex 也不是二维网格。",
+    "demoSignature": "建议 5 帧：三个项目在可拖宽的 flex 容器中显示 base、grow、shrink；扩宽时剩余空间化成彩色条并按比例分配，缩窄时负空间反向压缩；切换 row/column，主轴箭头旋转且同一套分配过程重播。",
+    "sourceUrls": ["https://www.w3.org/TR/css-flexbox-1/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["css-grid", "responsive", "box-model"]
+  },
+  {
+    "slug": "css-grid",
+    "mechanism": "Grid 先生成显式与隐式轨道，再按放置算法安排项目，并通过 fr、minmax 和对齐规则分配行列空间。",
+    "misconception": "Grid 不是固定 12 列系统，也不等于把 Flex 换成二维；自动放置和隐式轨道会影响结果。",
+    "demoSignature": "建议 5 帧：轨道线先画出 3×2 网格，用户把五张不同跨度卡片拖入；普通 auto-flow 留下空洞，打开 dense 后后续小卡回填；再缩窄容器，minmax 触发列数减少，卡片按轨道重新排布。",
+    "sourceUrls": ["https://www.w3.org/TR/css-grid-2/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["flexbox", "responsive", "positioning"]
+  },
+  {
+    "slug": "positioning",
+    "mechanism": "定位元素先确定 positioning scheme 和 containing block，再用 inset 属性计算偏移；absolute/fixed 会改变其在普通流中的参与方式。",
+    "misconception": "position:absolute 不是相对最近父元素，而是相对最近建立定位包含块的祖先；sticky 还受滚动容器约束。",
+    "demoSignature": "建议 4 帧：角标起初贴在页面右上角，用户依次点击祖先盒；成为 containing block 的盒子高亮，角标飞回卡片角；移除父级 relative，参考框扩到视口，top/right 数值不变但最终位置明显改变。",
+    "sourceUrls": ["https://www.w3.org/TR/css-position-3/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["box-model", "css-grid", "css"]
+  },
+  {
+    "slug": "breakpoint",
+    "mechanism": "断点是媒体条件改变布局规则的临界值，通常通过连续缩放观察内容首次拥挤、溢出或操作距离失效的位置确定。",
+    "misconception": "不是 iPhone/Android 型号表，也不是 640/768/1024 三个固定答案。",
+    "demoSignature": "建议 5 帧：拖动页面宽度，标题换行、按钮相撞、卡片小于可读宽度依次出现红色故障标记；用户在首个故障前一像素钉下断点；新布局规则接管后标记消失，断点来源是内容变化而非设备型号。",
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["media-query", "responsive", "adaptive-layout"]
+  },
+  {
+    "slug": "media-query",
+    "mechanism": "用户代理持续评估 width、orientation、hover、prefers-reduced-motion 等媒体特征，条件真值变化时重新应用对应 CSS 规则。",
+    "misconception": "媒体查询不只检测屏幕宽度，也不直接创建布局；它只决定哪些样式规则参与计算。",
+    "demoSignature": "建议 5 帧：控制台有宽度、hover 能力、reduced-motion 三个输入；用户逐项切换，三张 @media 规则卡独立亮灭；页面列数、悬停提示和动画幅度分别变化，最后组合条件演示多项媒体特征同时成立。",
+    "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["breakpoint", "reduced-motion", "responsive"]
+  },
+  {
+    "slug": "event",
+    "mechanism": "用户代理创建带 type、target 和时间等数据的 Event，并沿事件路径依次执行捕获、目标和冒泡阶段的监听器。",
+    "misconception": "事件不是处理函数本身；preventDefault、stopPropagation 和状态更新控制的是不同环节。",
+    "demoSignature": "建议 6 帧：点击嵌套按钮，事件光点先从 window 向目标下行，再沿祖先上行；面板逐帧更新 phase、target、currentTarget；打开 preventDefault 只取消链接跳转，打开 stopPropagation 才截断后续路径，两个结果并排保留。",
+    "sourceUrls": ["https://dom.spec.whatwg.org/#interface-event"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["event-bubbling", "javascript", "dom"]
+  },
+  {
+    "slug": "event-bubbling",
+    "mechanism": "事件到达目标后按预先构建的事件路径向祖先传播，每个节点的冒泡监听器共享同一个事件对象。",
+    "misconception": "不是父元素重新触发一次新事件；event.target 保持初始目标，currentTarget 才随监听器变化。",
+    "demoSignature": "建议 5 帧：按钮、列表项、列表以三层透明盒展开；用户点最内层按钮，光点逐层向上冒泡；target 徽标始终钉在 button，currentTarget 随监听器移动；关闭子项监听器后，列表委托仍识别原始按钮。",
+    "sourceUrls": ["https://dom.spec.whatwg.org/#dispatching-events", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["event", "dom", "javascript"]
+  },
+  {
+    "slug": "props",
+    "mechanism": "React 在渲染子组件时把父组件提供的值作为只读快照传入；父级新渲染产生新 props，子组件据此重新计算界面。",
+    "misconception": "props 不是子组件自己的可变状态，直接改 props 既不会按预期通知父级，也破坏单向数据流。",
+    "demoSignature": "建议 5 帧：父组件输入 label 与 variant，值沿组件树箭头下传，按钮外观同步更新；用户在子组件里尝试直接改 prop，数据线变红并显示只读；点击按钮后回调箭头向上，父状态更新再触发一次下传。",
+    "sourceUrls": ["https://react.dev/learn/passing-props-to-a-component"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["component", "state", "hook"]
+  },
+  {
+    "slug": "hook",
+    "mechanism": "React 按组件每次渲染中 Hook 的调用顺序，把状态槽与 effect/ref 等能力对应到同一个组件实例；自定义 Hook 组合这些调用。",
+    "misconception": "Hook 不是普通工具函数，也不会让不同组件自动共享同一状态；条件调用会破坏槽位顺序。",
+    "demoSignature": "建议 4 帧：两次渲染轨道各有 Hook #1、#2、#3 与状态槽；正常点击时同序配对；用户打开 if 条件，第二次渲染跳过 #2，后续槽位错接；错误发生点和对应的 Rules of Hooks 同时高亮。",
+    "sourceUrls": ["https://react.dev/reference/react/hooks", "https://react.dev/reference/rules/rules-of-hooks"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["effect", "state", "component"]
+  },
+  {
+    "slug": "effect",
+    "mechanism": "React 提交界面后运行 Effect setup；依赖变化或卸载前先执行上一次 cleanup，再用新值重新建立外部同步。",
+    "misconception": "Effect 不是所有派生数据和事件处理的容器；没有外部系统时往往不需要 Effect。",
+    "demoSignature": "建议 5 帧：房间选择器驱动 commit→connect A→cleanup A→connect B 时间线；用户从 A 切到 B，旧连接先断开再建立新连接；关闭 cleanup 代码后重播，连接计数从 1 变 2，两路消息同时抵达。",
+    "sourceUrls": ["https://react.dev/learn/synchronizing-with-effects", "https://react.dev/learn/lifecycle-of-reactive-effects"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["hook", "event", "state"]
+  },
+  {
+    "slug": "browser-api",
+    "mechanism": "浏览器作为宿主向 JavaScript 暴露 DOM、网络、存储、设备等接口，并按安全上下文、权限和兼容性决定是否可用。",
+    "misconception": "Web API 不是 JavaScript 语言语法，也不是每个运行时都具备；Node.js 中常没有 document 或 navigator。",
+    "demoSignature": "建议 4 帧：同一段 clipboard/geolocation 调用在 HTTPS 浏览器、HTTP 浏览器和 Node.js 三栏准备运行；点击执行后分别出现需授权、安全上下文阻止、API 未定义；切换权限决定，只有允许的浏览器栏返回具体数据。",
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/API"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["javascript", "runtime", "fetch-api"]
+  },
+  {
+    "slug": "fetch-api",
+    "mechanism": "fetch 构造 Request 并运行 Fetch 算法，网络成功收到任意 HTTP 响应时通常兑现 Response；只有网络层等失败才拒绝 Promise。",
+    "misconception": "404/500 不会自动进入 catch，也不会自动解析 JSON、取消过期请求或验证业务结构。",
+    "demoSignature": "建议 5 帧：点击 200、404、500、offline 四个响应按钮，请求沿网络轨道前进；前三个 Promise 都落到 fulfilled，断网才落到 rejected；代码打开 response.ok 检查后，404/500 被分到业务错误面板，结果差异固定展示。",
+    "sourceUrls": ["https://fetch.spec.whatwg.org/", "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["promise", "async-await", "api"]
+  },
+  {
+    "slug": "promise",
+    "mechanism": "Promise 在 pending 状态保存 reaction；被 resolve/reject 后状态不可逆，并把 then/catch 回调排入微任务队列。",
+    "misconception": "Promise 不是后台线程，也不等于请求；resolve 另一个 Promise 时还会采用其最终状态。",
+    "demoSignature": "建议 5 帧：Promise 状态球从 pending 出发，用户选择 resolve 或 reject 后只能进入一个终态；对应 then/catch 回调进入 microtask 队列；同时加入 setTimeout task，点击运行后执行光标先清空 microtask，再进入下一轮 task。",
+    "sourceUrls": ["https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-promise-objects"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["async-await", "fetch-api", "queue"]
+  },
+  {
+    "slug": "async-await",
+    "mechanism": "async 函数总是返回 Promise；执行到 await 时挂起当前函数续体，待被等待值确定后通过微任务恢复，不阻塞整个线程。",
+    "misconception": "连续 await 会制造串行，不会自动并发；await 也不会自动捕获错误。",
+    "demoSignature": "建议 4 帧：A、B 两条 800ms 请求轴先按 await A 再 await B 串行填充，总长到 1600ms；点击“先创建再等待”，两轴同时起跑并在约 800ms 汇合；让 B 失败时，错误从第二条轴跳到 catch 的准确位置。",
+    "sourceUrls": ["https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html#sec-async-function-definitions", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["promise", "fetch-api", "queue"]
+  },
+  {
+    "slug": "module",
+    "mechanism": "模块加载器解析静态 import/export 形成依赖图，每个模块只求值一次，并用 live binding 连接导入与导出。",
+    "misconception": "import 不是复制值，也不是简单把文件文本拼接；循环依赖可能暴露尚未初始化的 binding。",
+    "demoSignature": "建议 5 帧：三个文件先解析 export/import，再连成依赖图并按顺序 evaluate；用户修改导出变量，导入模块的 live binding 同步变化；切换为手工复制值的对照栏，旧值保持不动；循环依赖时未初始化节点另行标红。",
+    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webappapis.html#integration-with-the-javascript-module-system", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["javascript", "bundler", "code-splitting"]
+  },
+  {
+    "slug": "code-splitting",
+    "mechanism": "构建器把动态 import 或入口边界切成独立 chunk，运行时只在代码路径命中时请求并执行相应模块。",
+    "misconception": "拆包不等于删除代码；分得过细会增加请求、加载状态和缓存协调成本。",
+    "demoSignature": "建议 5 帧：网络瀑布首次只出现 home.js，页面首页随即可用；用户点击编辑器，editor.js 才从路由边界下载并挂载；拖动分包粒度滑块，首包大小、请求数、点击后的等待三项指标同步变化，展示过粗与过碎两端代价。",
+    "sourceUrls": ["https://webpack.js.org/guides/code-splitting/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["lazy-loading", "bundler", "routing"]
+  },
+  {
+    "slug": "lazy-loading",
+    "mechanism": "资源请求被推迟到视口接近、路由进入或用户操作发生时；占位尺寸在真实资源到达前维持布局。",
+    "misconception": "首屏关键资源不应一律懒加载，延迟 LCP 图片反而变慢；懒加载也必须处理失败和布局占位。",
+    "demoSignature": "建议 5 帧：长页上有视口和提前 300px 的观察线；用户滚动，图片卡越过观察线才进入网络瀑布，抵达视口前完成解码；关闭预留宽高后重播，后续文字被图片顶开，CLS 位移轨迹清楚标出。",
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["code-splitting", "loading-state", "visual-hierarchy"]
+  },
+  {
+    "slug": "hydration",
+    "mechanism": "客户端框架在服务器已有 HTML 上重建组件与状态对应关系、注册事件并校验首轮输出，通常复用 DOM 而非全部重建。",
+    "misconception": "页面可见不等于已水合可交互；服务端与客户端首轮内容不同会产生 hydration mismatch。",
+    "demoSignature": "建议 5 帧：服务器 HTML 先落入页面，按钮可见但交互线为灰色；JS 下载并执行后，组件节点与事件逐个连接变绿；用户制造服务器与客户端时间不一致，文本节点闪动并标出 mismatch，改成稳定输入后连接正常。",
+    "sourceUrls": ["https://react.dev/reference/react-dom/client/hydrateRoot"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["ssr", "csr", "module"]
+  },
+  {
+    "slug": "csr",
+    "mechanism": "服务器返回页面壳和脚本，浏览器下载、解析、执行应用代码，再请求数据并生成主要 DOM；后续路由可在客户端更新。",
+    "misconception": "CSR 不是没有服务器，也不是 SPA 的唯一特征；初始内容、SEO 和可交互时间取决于完整请求链。",
+    "demoSignature": "建议 5 帧：CSR 瀑布依次出现 HTML 壳、JS、API、DOM，页面预览在最后一步才填入内容；用户调高 CPU slowdown，解析 JS 的空白段被拉长；右侧 SSR 对照先出现文章正文，最终用两条刻度标出内容可见与可交互时间。",
+    "sourceUrls": ["https://react.dev/reference/react-dom/client/createRoot"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["ssr", "hydration", "code-splitting"]
+  },
+  {
+    "slug": "ssr",
+    "mechanism": "服务器为每个请求读取上下文与数据并生成 HTML 流或字符串，浏览器先呈现内容，再加载客户端代码完成交互。",
+    "misconception": "SSR 不保证更快，也不自动减少客户端 JavaScript；慢数据依赖会推迟首字节。",
+    "demoSignature": "建议 5 帧：一次 SSR 请求被拆成 server data、render、HTML stream、hydrate；用户拖慢数据源，首字节与正文出现时间后移；打开流式边界时外壳先送达、慢内容后补；最终分别标记内容可见和按钮可用的时刻。",
+    "sourceUrls": ["https://react.dev/reference/react-dom/server/renderToPipeableStream"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["csr", "ssg", "hydration"]
+  },
+  {
+    "slug": "ssg",
+    "mechanism": "构建阶段枚举页面路径、读取内容并产出静态 HTML；访问时 CDN/服务器直接返回既有文件，内容更新依赖重新构建或再生成。",
+    "misconception": "SSG 不是“没有 JavaScript”的网站，也不适合必须按当前用户或每秒数据生成的页面。",
+    "demoSignature": "建议 4 帧：左侧内容文件从 v1 改成 v2，右侧 CDN 仍保存构建时生成的 v1 HTML；刷新页面结果不变；用户点击重新构建，产物版本戳更新并替换 CDN；下一次请求才显示 v2。",
+    "sourceUrls": ["https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["ssr", "deploy", "cache"]
+  },
+  {
+    "slug": "routing",
+    "mechanism": "路由器把 URL 的路径、参数和查询与规则表匹配，选择页面或处理器；客户端路由还通过 History API 改变地址而不整页刷新。",
+    "misconception": "路由不等于导航菜单，也不负责用户授权；URL 匹配成功后仍需加载数据和校验权限。",
+    "demoSignature": "建议 5 帧：地址栏输入 /products/42?tab=stock，路径令牌逐段进入路由树，提取 route、id、query 后点亮商品页；用户改成未知路径时落到 404；关闭登录态后同一路径先进入鉴权分支，并保存返回地址。",
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/API/History_API", "https://nextjs.org/docs/app/building-your-application/routing"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["user-flow", "ssr", "ssg"]
+  },
+  {
+    "slug": "cookie",
+    "mechanism": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的小数据，浏览器按匹配规则自动附到请求。",
+    "misconception": "Cookie 不只是前端存储；它会随请求发送。HttpOnly 只限制脚本读取，不会让 Cookie 自动免疫 CSRF。",
+    "demoSignature": "建议 5 帧：Cookie 罐中的每一行带 Domain、Path、Secure、SameSite 标签；用户切换请求域名、路径、HTTPS 和跨站场景，不满足条件的行被筛出请求头；打开 HttpOnly 后 document.cookie 读取按钮变灰，但符合条件的网络请求仍携带它。",
+    "sourceUrls": ["https://www.rfc-editor.org/rfc/rfc6265", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["auth", "local-storage", "session"]
+  },
+  {
+    "slug": "local-storage",
+    "mechanism": "浏览器按 origin 保存同步字符串键值，数据跨页面会话保留；同源其他文档的修改可触发 storage 事件。",
+    "misconception": "localStorage 不是安全保险箱，也不是数据库；同步读写会阻塞主线程，且对象需序列化。",
+    "demoSignature": "建议 5 帧：两个同源标签页共享一个 localStorage 盒，A 写入 theme 后 B 收到 storage 事件并换色；把 B 切到不同 origin，盒子分裂且不再同步；直接存对象时值变成 [object Object]，点击 JSON 序列化后恢复结构。",
+    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webstorage.html"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["cookie", "design-token", "app-permission"]
+  },
+  {
+    "slug": "websocket",
+    "mechanism": "客户端先通过 HTTP Upgrade 握手，随后在持久 TCP 连接上交换带边界的双向帧，并经历 CONNECTING/OPEN/CLOSING/CLOSED。",
+    "misconception": "WebSocket 不自动提供断线重连、消息确认和业务顺序；连接保持也不代表消息必达。",
+    "demoSignature": "建议 6 帧：WebSocket 状态机与客户端/服务器双向泳道联动；点击连接后从 CONNECTING 到 OPEN，消息双向穿行；拔网线进入 CLOSED，退避倒计时逐次拉长；恢复网络后携带 lastEventId 重连，遗漏的两条消息补入原顺序。",
+    "sourceUrls": ["https://www.rfc-editor.org/rfc/rfc6455", "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["event", "fetch-api", "queue"]
+  },
+  {
+    "slug": "cors",
+    "mechanism": "浏览器比较请求 origin 与目标 origin；非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应暴露给脚本。",
+    "misconception": "CORS 不是服务器防火墙或认证，命令行请求也不受浏览器同源读取限制；“关闭浏览器安全”不是修复。",
+    "demoSignature": "建议 6 帧：页面脚本、浏览器、跨域服务器三栏展开；用户选择非简单 method 或 header，浏览器先发送 OPTIONS 预检；服务器返回允许项后正式请求通过；删掉匹配的 ACAO 或 credentials 配置，响应抵达浏览器却被红色闸门挡在脚本外。",
+    "sourceUrls": ["https://fetch.spec.whatwg.org/#http-cors-protocol", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["fetch-api", "api", "auth"]
+  },
+  {
+    "slug": "focus-management",
+    "mechanism": "浏览器按可聚焦元素与 DOM 顺序建立顺序导航；脚本在对话框等上下文变化时移动焦点，并在关闭后恢复到触发点。",
+    "misconception": "焦点管理不只是画 outline，也不是给所有 div 加 tabindex；视觉顺序和键盘顺序需要保持可理解。",
+    "demoSignature": "建议 5 帧：用户连续按 Tab，焦点光环沿 DOM 顺序移动；打开对话框后背景控件淡出焦点序列，光环在弹窗内循环；按 Esc 关闭时光环返回触发按钮；开启错误 tabindex 后路线跨区跳跃，用折线显出问题。",
+    "sourceUrls": ["https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html", "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["a11y", "form", "touch-target"]
+  },
+  {
+    "slug": "working-tree",
+    "mechanism": "Git 把 HEAD 对应树写入文件系统形成工作树；编辑后，文件内容先只与索引和 HEAD 产生差异。",
+    "misconception": "保存文件不等于 git add 或 commit，工作树、索引和提交是三个独立快照位置。",
+    "demoSignature": "建议 4 帧：HEAD、index、working tree 是三层可叠合代码板；用户编辑一行，只有 working tree 变色；点击 git add，改动复制到 index；点击 commit，HEAD 生成新快照，三层重新对齐。",
+    "sourceUrls": ["https://git-scm.com/docs/gitglossary", "https://git-scm.com/docs/git-status"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["staging-area", "diff", "repo-commit"]
+  },
+  {
+    "slug": "staging-area",
+    "mechanism": "索引保存下一次提交的完整候选树；git add 把选中文件或 hunk 的当前内容写入索引，而工作树可以继续变化。",
+    "misconception": "暂存区不是待上传文件列表，也不是简单标记；它保存的是内容版本。",
+    "demoSignature": "建议 5 帧：同一文件有 bug 修复与格式化两块 hunk；用户运行 git add -p，只把修复块拖进 index；左右 diff 分别显示 staged 与 unstaged 内容；提交后修复进入历史，格式化仍留在工作区。",
+    "sourceUrls": ["https://git-scm.com/docs/git-add", "https://git-scm.com/docs/gitglossary#def_index"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["working-tree", "diff", "repo-commit"]
+  },
+  {
+    "slug": "diff",
+    "mechanism": "Git 的 diff 系列比较两个端点的 blob 与树，按行生成增删 hunk；不同参数选择 working tree、index、commit 或分支作为端点。",
+    "misconception": "git diff 默认不显示已暂存改动；diff 也只说明文本变化，不说明业务意图和运行结果。",
+    "demoSignature": "建议 4 帧：左右端点下拉可选 working、index、HEAD、origin；用户切换比较对象，同一行修改在新增、已暂存、已提交三种标签间变化；选择相同端点时 diff 清空，明确它描述的是两份快照之差。",
+    "sourceUrls": ["https://git-scm.com/docs/git-diff"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["working-tree", "staging-area", "code-review"]
+  },
+  {
+    "slug": "checkout-switch",
+    "mechanism": "git switch 移动 HEAD 到目标分支，并尝试把 index 与工作树更新为目标提交；可能覆盖本地修改时会停止。",
+    "misconception": "切换不是复制文件夹，也不会自动提交未完成工作；checkout 还承担恢复路径等旧式多重含义。",
+    "demoSignature": "建议 4 帧：分支指针从 feature 指向 dev，工作树文件按目标提交逐项换色；用户先加入未提交冲突修改，再尝试切换；闸门关闭并列出会被覆盖的文件，暂存或提交后才允许继续。",
+    "sourceUrls": ["https://git-scm.com/docs/git-switch", "https://git-scm.com/docs/git-checkout"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["branch", "working-tree", "stash"]
+  },
+  {
+    "slug": "remote",
+    "mechanism": "remote 是远程仓库 URL 与 fetch/push refspec 的命名配置；origin/main 等 remote-tracking ref 记录上次获取到的远程状态。",
+    "misconception": "origin 不是特殊中央服务器，remote-tracking 分支也不是实时读取远端的分支。",
+    "demoSignature": "建议 4 帧：本地仓库通过两条线连接 origin 与 upstream，远端各自新增提交；用户点击 fetch upstream，只有 upstream/main 指针前进；调整 refspec 后仅匹配的远程引用被带回，当前 main 和文件保持原位。",
+    "sourceUrls": ["https://git-scm.com/docs/git-remote", "https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["fetch", "push", "clone"]
+  },
+  {
+    "slug": "clone",
+    "mechanism": "clone 创建新仓库、获取远程对象与引用、配置 origin，并检出默认分支；depth/filter 参数会改变取得的历史和对象范围。",
+    "misconception": "clone 不等于下载 ZIP，后者没有对象历史和远程配置；clone 也不会安装项目依赖。",
+    "demoSignature": "建议 4 帧：Download ZIP、full clone、depth=1 三栏收到同一仓库；进度结束后三栏工作文件看似相同；点击“查看内部”，.git、origin、对象图和历史长度逐项亮起，ZIP 缺少仓库能力，浅克隆只保留有限历史。",
+    "sourceUrls": ["https://git-scm.com/docs/git-clone"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["remote", "fetch", "branch"]
+  },
+  {
+    "slug": "pull",
+    "mechanism": "pull 先执行 fetch 更新远程跟踪引用，再按配置用 merge、rebase 或仅快进把目标整合进当前分支。",
+    "misconception": "pull 不是“只下载最新代码”；它会改变当前分支，行为还取决于 pull.rebase 和 ff 配置。",
+    "demoSignature": "建议 5 帧：git pull 按钮展开成 FETCH 与整合两段；远程提交先进入 origin/main，当前分支暂不动；用户选择 merge 时生成合并节点，选择 rebase 时本地节点被重放；两种最终提交图并排保留。",
+    "sourceUrls": ["https://git-scm.com/docs/git-pull"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["fetch", "merge", "rebase"]
+  },
+  {
+    "slug": "fetch",
+    "mechanism": "fetch 与远程协商缺失对象并更新 remote-tracking refs，不移动当前本地分支，也不检出工作树。",
+    "misconception": "fetch 完成后当前 main 不会自动包含 origin/main 的提交；“已获取”与“已整合”是两种状态。",
+    "demoSignature": "建议 4 帧：远程 main 新增两个提交，本地 main 与 origin/main 仍重合；点击 fetch 后两个对象沿网络进入仓库，origin/main 前进；本地 main 和工作文件被锁定不动，比较区明确显示落后 2。",
+    "sourceUrls": ["https://git-scm.com/docs/git-fetch"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["pull", "remote", "merge"]
+  },
+  {
+    "slug": "push",
+    "mechanism": "push 传输远端缺失对象并请求按 refspec 更新远程引用；远端检查快进关系、权限和 hook 后接受或拒绝。",
+    "misconception": "push 不是“上传工作区”，只会发送可达提交对象；推送功能分支也不等于已经合并。",
+    "demoSignature": "建议 5 帧：工作区未提交行、已提交节点、远程分支分三层展示；点击 push 时未提交行留在原处，只有新提交沿网络移动；服务器先检查快进与保护规则；被拒时远程指针不动并返回具体原因。",
+    "sourceUrls": ["https://git-scm.com/docs/git-push"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["remote", "pull-request", "branch"]
+  },
+  {
+    "slug": "merge",
+    "mechanism": "Git 找到两个分支头的最佳共同祖先，进行三方合并；若目标是另一分支祖先可快进，否则生成合并结果。",
+    "misconception": "merge 不一定创建 merge commit，也不是按时间把两份文件简单覆盖。",
+    "demoSignature": "建议 5 帧：用户在 fast-forward、分叉、无共同历史三个提交图间切换；系统先寻找共同祖先，分叉场景展开 base/ours/theirs 三方输入；无冲突时生成合并节点，fast-forward 只移动指针，无共同祖先则停下。",
+    "sourceUrls": ["https://git-scm.com/docs/git-merge"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["rebase", "merge-conflict", "branch"]
+  },
+  {
+    "slug": "rebase",
+    "mechanism": "rebase 找出当前分支相对 upstream 的独有提交，重置到新基线，再逐个重放补丁，因父提交变化而生成新对象。",
+    "misconception": "它不是移动原提交；哈希会改变。对已共享历史变基会让协作者看到重复或分叉提交。",
+    "demoSignature": "建议 5 帧：F1、F2 挂在旧 dev 后，目标 dev 又新增提交；点击 rebase，两枚提交先被取下，再依次应用到新基线形成 F1′、F2′；原节点淡出，哈希和父指针变化被放大标注。",
+    "sourceUrls": ["https://git-scm.com/docs/git-rebase"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["merge", "pull", "push"]
+  },
+  {
+    "slug": "merge-conflict",
+    "mechanism": "三方合并发现两个分支相对共同祖先对同一区域作出不可自动组合的修改，于是写入冲突阶段和标记，等待人工生成最终内容。",
+    "misconception": "冲突不是选 ours 或 theirs 的格式题；两边可能实现不同需求，最终结果可能需要同时保留。",
+    "demoSignature": "建议 6 帧：base、ours、theirs 三窗锁定同一函数差异；用户逐块选择或拖拽“校验逻辑”和“新返回格式”到结果窗；删除冲突标记后运行测试；测试失败时具体行回红，通过后合并节点才转绿。",
+    "sourceUrls": ["https://git-scm.com/docs/git-merge", "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["merge", "rebase", "diff"]
+  },
+  {
+    "slug": "revert",
+    "mechanism": "revert 读取目标提交相对父提交的补丁，应用其反向变化并创建新提交，因此公共历史不被重写。",
+    "misconception": "revert 不是回到旧时间点，也不能自动撤销数据库写入和外部副作用。",
+    "demoSignature": "建议 5 帧：历史 A-B-C 中用户选择 B 并点击 revert；系统先计算 B 的反向补丁，再生成新提交 D(-B)；文件结果恢复但 B 仍留在时间线；旁边模拟的数据库写入不随 Git 回退，保持红色待补偿。",
+    "sourceUrls": ["https://git-scm.com/docs/git-revert"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["rollback", "repo-commit", "deploy"]
+  },
+  {
+    "slug": "stash",
+    "mechanism": "stash 保存工作树与索引状态为特殊提交对象，再把工作区恢复到基线；apply/pop 将差异合入当前工作树。",
+    "misconception": "stash 不是不可见剪贴板，也默认不一定包含未跟踪文件；pop 还可能因冲突无法删除记录。",
+    "demoSignature": "建议 5 帧：工作区中的已跟踪修改与未跟踪文件分别显示，用户选择包含范围后折叠进 stash 栈；切换分支再 apply，冲突文件弹回工作区但栈记录保留；解决后用 pop 重试，成功时该层才从栈中移除。",
+    "sourceUrls": ["https://git-scm.com/docs/git-stash"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["working-tree", "checkout-switch", "branch"]
+  },
+  {
+    "slug": "pull-request",
+    "mechanism": "托管平台把源分支与目标分支的提交差异组织为可持续更新的评审对象，汇聚评论、审批、检查与合并状态。",
+    "misconception": "PR 不是一个 Git 对象，也不是提交后自动合并；新 push 会改变同一个 PR 的比较结果。",
+    "demoSignature": "建议 5 帧：feature 分支每新增一次提交，PR 的 diff、讨论和检查状态同步刷新；评审者批准后审批灯转绿；用户故意让必需检查失败，Merge 按钮仍锁定；修复提交通过后按钮才解锁并记录合并目标。",
+    "sourceUrls": ["https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["code-review", "ci", "branch"]
+  },
+  {
+    "slug": "code-review",
+    "mechanism": "评审者把需求与差异、调用上下文和验证证据对应，提出可定位的问题，再以 comment/approve/request changes 表达决策。",
+    "misconception": "代码评审不是格式检查或个人偏好投票，也不能替代运行测试。",
+    "demoSignature": "建议 4 帧：同一处 diff 并排收到“这里不好”和“空数组触发 500，缺少测试”两条评论；作者点击评论，第一条没有下一步，第二条可直接运行复现用例；补测试并修改后，对应线程才进入 resolved。",
+    "sourceUrls": ["https://docs.github.com/en/pull-requests/how-tos/review-pull-requests", "https://docs.github.com/en/pull-requests/concepts/giving-reviews"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["pull-request", "diff", "acceptance-criteria"]
+  },
+  {
+    "slug": "ci",
+    "mechanism": "代码事件触发隔离运行环境，按依赖图执行构建、测试和静态检查，并把退出状态回写到提交或 PR。",
+    "misconception": "CI 绿灯只说明已配置任务通过，不证明未覆盖场景正确，也不等于已部署。",
+    "demoSignature": "建议 5 帧：一次提交触发 lint、unit test、build 三节点并行，日志与状态逐项回传；用户关闭浏览器测试节点后流水线仍显示绿色；覆盖矩阵随即出现空白格；重新启用并制造失败，总状态被准确拉红。",
+    "sourceUrls": ["https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-nodejs"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["pull-request", "cd", "build-tool"]
+  },
+  {
+    "slug": "cd",
+    "mechanism": "持续交付把通过验证的不可变制品依次提升到环境，使用门禁和审批控制生产发布，并保留同一版本的追踪记录。",
+    "misconception": "CD 既可能指 Delivery 也可能指 Deployment；自动完成发布准备不一定代表无需审批自动上生产。",
+    "demoSignature": "建议 5 帧：build 只生成一次 artifact #42 和校验指纹；用户批准后同一盒产物沿 dev、staging、production 移动；在生产前点击“重新构建”，新指纹与已测版本不一致，发布闸门阻止替换。",
+    "sourceUrls": ["https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["ci", "deploy", "rollback"]
+  },
+  {
+    "slug": "preview-deployment",
+    "mechanism": "分支或 PR 事件触发独立构建，部署到与提交绑定的临时 URL；新提交更新预览，关闭 PR 后环境被回收。",
+    "misconception": "预览环境不是生产副本，数据、权限、域名和第三方集成可能不同；预览通过不能替代生产冒烟。",
+    "demoSignature": "建议 4 帧：PR #18 每推进一个 commit，生成带哈希的独立预览快照；用户在评论中切换两个链接，对比对应版本；关闭 PR 后环境进入倒计时回收，支付与邮件连接始终显示沙箱徽标。",
+    "sourceUrls": ["https://vercel.com/docs/deployments/environments#preview-environment-pre-production"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["pull-request", "cd", "deploy"]
+  },
+  {
+    "slug": "rollback",
+    "mechanism": "发布系统把流量或工作负载指针切回已知可用制品，随后执行健康检查；数据模式和外部副作用需要兼容或补偿。",
+    "misconception": "回滚不是 git reset，也不一定撤销数据；重新构建旧源码还可能得到不同制品。",
+    "demoSignature": "建议 5 帧：生产流量先指向 v42，错误率曲线升高；用户点击回滚，流量权重逐步切回保留的 v41，指标恢复；数据库列迁移保持原状，兼容读取转绿，不兼容写入则进入单独补偿分支。",
+    "sourceUrls": ["https://kubernetes.io/docs/reference/kubectl/generated/kubectl_rollout/kubectl_rollout_undo/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["revert", "deploy", "cd"]
+  },
+  {
+    "slug": "user-story",
+    "mechanism": "用户故事把经研究确认的用户需要切成可交付工作项，并用验收条件连接需要、实现和测试。",
+    "misconception": "“作为用户我想要某功能”不是完整故事；角色、任务、结果若没有证据，只是套格式。",
+    "demoSignature": "建议 4 帧：画面从“增加导出按钮”便签开始；用户点击补全角色和任务，第三帧连接到用户需要证据，末帧展开验收条件，结果是故事从方案句变为可验证工作项。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs", "https://www.gov.uk/service-manual/agile-delivery/writing-user-stories"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["acceptance-criteria", "target-user", "use-case"]
+  },
+  {
+    "slug": "problem-statement",
+    "mechanism": "问题陈述把用户、触发场景、可观察阻碍与影响绑定，给多种方案留下比较空间。",
+    "misconception": "“我们需要智能搜索”已经是方案，不是问题；没有行为证据的痛点也只是猜测。",
+    "demoSignature": "建议 3 帧：用户拖动“AI 搜索”卡片到问题区时被弹回；加入“翻五页找订单”的录像证据后，卡片重组为场景—阻碍—影响，结果区出现多个可选方案。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs", "https://www.designcouncil.org.uk/our-resources/the-double-diamond/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["target-user", "use-case", "scope"]
+  },
+  {
+    "slug": "target-user",
+    "mechanism": "目标用户按共同任务、频率、权限和使用环境划定本期服务对象，让设计取舍有具体判断主体。",
+    "misconception": "不是人口统计标签或虚构人物传记，也不等于所有可能访问产品的人。",
+    "demoSignature": "建议 5 帧：20 张用户卡按年龄分组先显示无效；用户改按任务和频率拖拽，财务批量导出群组聚合；末帧界面字段与性能要求随目标组改变。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs", "https://www.gov.uk/service-manual/user-research/plan-user-research-for-your-service"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["user-story", "problem-statement", "scope"]
+  },
+  {
+    "slug": "use-case",
+    "mechanism": "Use Case 以参与者目标为中心，列出前置条件、触发、主成功场景、替代路径和完成后状态。",
+    "misconception": "它不是单张页面说明，也不是用户旅程；重点是系统与参与者在不同条件下如何交互。",
+    "demoSignature": "建议 6 帧：退款参与者进入，系统依次检查订单状态和期限；用户点击不同条件，画面分叉到受理、过期、接口失败，末帧各自显示订单数据是否改变。",
+    "sourceUrls": ["https://www.omg.org/spec/UML/2.5.1/PDF", "https://www.gov.uk/service-manual/service-standard/point-2-solve-a-whole-problem"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["user-flow", "acceptance-criteria", "problem-statement"]
+  },
+  {
+    "slug": "acceptance-criteria",
+    "mechanism": "验收标准把需求边界写成给定条件、动作和可观察结果，成为产品、开发和测试共享的完成判断。",
+    "misconception": "不是实现步骤，也不是“体验良好、运行正常”这样的主观要求。",
+    "demoSignature": "建议 4 帧：模糊句“登录顺畅”先无法点亮测试；用户逐项选择未登录、密码错误、成功三种条件，结果栏生成可执行检查并显示 pass/fail。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/agile-delivery/writing-user-stories", "https://www.agilealliance.org/glossary/acceptance/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["user-story", "use-case", "usability-testing"]
+  },
+  {
+    "slug": "scope",
+    "mechanism": "范围基线把目标、包含项、排除项和依赖组合成决策边界；新增工作先判断是否影响目标与承诺，再进入变更评估。",
+    "misconception": "范围不是功能清单越长越完整，也不是永远不可改变；变化需要显式交换成本、时间或其他工作。",
+    "demoSignature": "建议 4 帧：导出 CSV 目标圈在中央；图表、定时报表、字段筛选卡片被用户拖入圈内，容量计随之溢出；移出非必要项后验收与排期恢复绿色。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/agile-delivery/how-the-discovery-phase-works", "https://www.gov.uk/service-manual/design/scoping-your-service"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["mvp", "priority", "roadmap"]
+  },
+  {
+    "slug": "roadmap",
+    "mechanism": "路线图按目标、主题、阶段结果和依赖安排方向，并在证据或约束改变后更新，而不是锁死远期功能日期。",
+    "misconception": "路线图不是甘特排期或承诺清单；远期项目越精确，假确定性风险越高。",
+    "demoSignature": "建议 5 帧：功能清单先按日期堆满；用户切换“按目标组织”，卡片聚合为激活、留存主题；插入合规依赖后阶段自动重排，远期日期变为区间。",
+    "sourceUrls": ["https://www.atlassian.com/agile/product-management/product-roadmaps"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["priority", "iteration", "scope"]
+  },
+  {
+    "slug": "priority",
+    "mechanism": "优先级在同一目标下比较用户影响、时限、风险、依赖和成本，形成当前顺序；输入变化会让顺序重新计算。",
+    "misconception": "不是给每项贴永久 P0/P1，也不是提出者级别或单一打分决定。",
+    "demoSignature": "建议 5 帧：故障、合规、微调三张卡进入权衡板；用户拖动“截止日期”和“阻塞用户”滑块，卡片位置实时交换；点击某卡展开排序依据。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/agile-delivery/deciding-on-priorities", "https://www.atlassian.com/agile/product-management/prioritization-framework"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["scope", "roadmap", "iteration"]
+  },
+  {
+    "slug": "iteration",
+    "mechanism": "迭代交付一段可用增量，读取验证结果，再据此保持、修改或停止下一轮工作；每轮需有独立目标和完成判断。",
+    "misconception": "不是无止境地改界面，也不是把基本质量推给“下一版”。",
+    "demoSignature": "建议 6 帧：搜索首版发布，录像显示分类误解；用户点击“采用证据”，第二轮只增加分类筛选；指标面板比较前后任务完成率并决定继续或停止。",
+    "sourceUrls": ["https://scrumguides.org/scrum-guide.html", "https://www.gov.uk/service-manual/service-standard/point-8-iterate-and-improve-frequently"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["mvp", "roadmap", "acceptance-criteria"]
+  },
+  {
+    "slug": "conversion-rate",
+    "mechanism": "转化率用同一口径下完成目标的用户或事件数除以起始总体，结果受去重单位、时间窗和事件定义影响。",
+    "misconception": "12% 不是脱离口径的事实；按用户与按会话、到达页与开始表单会得到不同结果。",
+    "demoSignature": "建议 4 帧：1000 个用户点进入注册页，重复访问先被去重；切换完成事件从“提交”到“验证邮箱”，分子由 180 变 120，公式同步从 18% 变 12%。",
+    "sourceUrls": ["https://developers.google.com/analytics/devguides/reporting/data/v1/changelog", "https://developers.google.com/analytics/devguides/collection/ga4/events"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["funnel", "iteration", "usability-testing"]
+  },
+  {
+    "slug": "funnel",
+    "mechanism": "漏斗对同一用户队列按有序事件和完成窗口逐步过滤，可配置开放/封闭、是否允许直接进入中间步骤。",
+    "misconception": "漏斗显示流失位置，不直接解释原因；把独立事件总量相除也不是用户级漏斗。",
+    "demoSignature": "建议 5 帧：1000 个用户点流过到达、填表、验证三个闸门；切换封闭漏斗和 30 分钟窗口，部分用户回退到灰色，最终各步人数和流失率更新。",
+    "sourceUrls": ["https://developers.google.com/analytics/devguides/reporting/data/v1/funnels"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["conversion-rate", "user-flow", "target-user"]
+  },
+  {
+    "slug": "usability-testing",
+    "mechanism": "研究者给代表性用户一个目标而非操作指令，观察其实际行为、停顿与错误，再把重复现象关联到具体界面。",
+    "misconception": "不是问用户喜不喜欢，也不能用团队成员演示替代；少量测试擅长发现问题，不直接估计总体比例。",
+    "demoSignature": "建议 5 帧：参与者收到“下载上月发票”，鼠标轨迹在筛选器往返；主持人提示开关默认关闭；末帧把三位参与者相同停顿叠加为热区。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/user-research/using-moderated-usability-testing", "https://www.gov.uk/service-manual/user-research/plan-user-research-for-your-service"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["prototype", "user-flow", "target-user"]
+  },
+  {
+    "slug": "mockup",
+    "mechanism": "视觉稿把已确定的信息与布局映射为具体字体、颜色、图像和视觉层级，供团队评审外观与状态覆盖。",
+    "misconception": "视觉稿不是交互原型或生产页面；一张理想状态图不能说明响应式、错误和加载行为。",
+    "demoSignature": "建议 4 帧：灰阶线框逐层加入字体、颜色、真实内容；用户点击状态选择器，若只有默认态，错误/加载位置显示空洞，补齐后形成完整画板。",
+    "sourceUrls": ["https://www.gov.uk/service-manual/design/making-prototypes", "https://help.figma.com/hc/en-us/articles/360040314193-Guide-to-prototyping-in-Figma"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["wireframe", "prototype", "visual-hierarchy"]
+  },
+  {
+    "slug": "sitemap",
+    "mechanism": "站点地图把页面组织为父子层级与交叉入口，用于检查孤立页面、层级深度和导航命名；它不规定用户必须按树形顺序操作。",
+    "misconception": "容易与 XML sitemap 或用户流程混淆；这里研究的是信息结构，不是搜索引擎文件或任务步骤。",
+    "demoSignature": "建议 5 帧：24 个页面节点先散落；用户拖入账号/订单/支付三组，孤立节点闪红；点击一条退款内容，画出两个交叉入口而不复制页面。",
+    "sourceUrls": ["https://www.gov.uk/guidance/content-design/planning-content", "https://www.w3.org/WAI/tutorials/menus/structure/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["ia", "user-flow", "routing"]
+  },
+  {
+    "slug": "design-token",
+    "mechanism": "设计令牌用稳定名称和值表示设计决策，并可通过引用形成基础值—语义值—组件值的解析图，再转换到设计工具和代码平台。",
+    "misconception": "不是把每个色值都换成变量名；若令牌绑定页面或颜色外观，主题和跨平台复用仍会失败。",
+    "demoSignature": "建议 6 帧：green.700 节点连接 color.action.primary，再连接 button.background；用户切换暗色主题只改语义映射，三个组件颜色沿引用图同步变化。",
+    "sourceUrls": ["https://www.designtokens.org/tr/drafts/format/", "https://tr.designtokens.org/format/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["design-system", "css", "component"]
+  },
+  {
+    "slug": "visual-hierarchy",
+    "mechanism": "字号、字重、对比、位置、分组和留白共同改变注意顺序；层级效果来自相对差异，而非单个元素绝对大小。",
+    "misconception": "把所有内容加粗放大不会产生层级，只会让竞争更强；视觉层级也不能修复错误的信息结构。",
+    "demoSignature": "建议 4 帧：眼动光点在同权卡片上来回游移；用户逐次强化金额、标题并弱化说明，光点路径收敛为金额→标题→操作，阅读用时同步下降。",
+    "sourceUrls": ["https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"],
+    "rewriteRisk": "medium",
+    "nearDuplicates": ["mockup", "design-system", "css"]
+  },
+  {
+    "slug": "feedback",
+    "mechanism": "界面在动作被接收、处理中和完成后把系统状态映射为局部视觉、文字、声音或触觉信号，使用户能决定下一步。",
+    "misconception": "反馈不等于每次弹 Toast；若结果已经在原位置清楚变化，额外通知可能重复和打断。",
+    "demoSignature": "建议 5 帧：用户点击保存，按钮压下、进入保存中、内容旁出现时间戳；切换失败时保留输入并露出重试；对照模式只弹 Toast 后消失。",
+    "sourceUrls": ["https://www.nngroup.com/articles/visibility-system-status/", "https://www.w3.org/WAI/WCAG21/Understanding/status-messages"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["loading-state", "microinteraction", "event"]
+  },
+  {
+    "slug": "loading-state",
+    "mechanism": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
+    "misconception": "转圈不是通用答案；无限 spinner 会掩盖超时，内容占位也不适合所有短操作或结构未知的页面。",
+    "demoSignature": "建议 6 帧：同一列表延迟从 100ms 调到 8s；短等待不闪指示，中等待出现内容占位，长任务切为百分比；超时后指示停止并显示重试。",
+    "sourceUrls": ["https://www.nngroup.com/articles/progress-indicators/", "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["feedback", "async-await", "fetch-api"]
+  },
+  {
+    "slug": "microinteraction",
+    "mechanism": "微交互由触发、规则、局部反馈和持续状态组成；系统触发或用户动作改变单一任务的状态，并把结果立即呈现在上下文中。",
+    "misconception": "微交互不是小动画的同义词；没有状态或反馈含义的装饰运动不属于有效微交互。",
+    "demoSignature": "建议 5 帧：收藏心形从按下压缩、请求中描边旋转、成功填充并计数+1；模拟失败时逆向恢复并显示重试，减少动态模式改为颜色淡变。",
+    "sourceUrls": ["https://www.nngroup.com/articles/microinteractions/"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["feedback", "event", "reduced-motion"]
+  },
+  {
+    "slug": "reduced-motion",
+    "mechanism": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",
+    "misconception": "不是把所有动画设为 duration:0，也不是只降低速度；快速大位移仍可能造成不适。",
+    "demoSignature": "建议 4 帧：同一页面切换左右对照；默认星点沿曲线移动并缩放，用户打开减少动态后轨迹收起，标题用短淡入替代，焦点和完成状态保持。",
+    "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion", "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html"],
+    "rewriteRisk": "high",
+    "nearDuplicates": ["microinteraction", "media-query", "a11y"]
+  }
+]

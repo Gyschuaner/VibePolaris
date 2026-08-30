@@ -1,0 +1,4211 @@
+[
+  {
+    "zh": "生成式 AI",
+    "en": "Generative AI",
+    "slug": "generative-ai",
+    "cat": "AI·Agent",
+    "say": "根据输入生成文本、图像、音频或代码，而不是只给固定分类结果。",
+    "aliases": [
+      "生成模型",
+      "内容生成",
+      "AIGC"
+    ],
+    "question": "为什么同一句要求每次可能得到不同措辞？",
+    "definition": "生成式 AI 学习数据中的模式，再按输入和生成参数逐步产生新内容。",
+    "boundary": "它生成的是基于概率的结果，不等于已经核实的事实。",
+    "demoType": "flow",
+    "demoTitle": "一次文本生成如何完成",
+    "demoSteps": [
+      {
+        "label": "输入",
+        "value": "把说明压缩成 12 字标题",
+        "note": "输入卡片进入生成区，字数上限显示为 12。"
+      },
+      {
+        "label": "生成",
+        "value": "Vibe → Polaris → 使用指南",
+        "note": "预览区按顺序追加三个文本片段。"
+      },
+      {
+        "label": "输出",
+        "value": "VibePolaris 使用指南",
+        "note": "生成状态变为完成，标题仍可编辑。"
+      }
+    ],
+    "quizQuestion": "哪项最符合生成式 AI？",
+    "quizOptions": [
+      "根据输入生成新的内容",
+      "只从数据库读取固定答案",
+      "保证每次输出完全相同"
+    ],
+    "correctText": "生成式 AI 的核心是按输入生成内容。",
+    "wrongText": "固定查询和确定性输出不是生成模型的共同特征。",
+    "promptTitle": "说明生成任务",
+    "prompt": "请生成一段内容，并明确目标、受众、格式、事实边界和需要避免的内容。",
+    "relatedSlugs": [
+      "llm",
+      "prompt",
+      "temperature",
+      "multimodal"
+    ]
+  },
+  {
+    "zh": "多模态",
+    "en": "Multimodal",
+    "slug": "multimodal",
+    "cat": "AI·Agent",
+    "say": "同一次任务里处理文字、图片、音频等多种信息。",
+    "aliases": [
+      "多模态模型",
+      "图文理解",
+      "跨模态"
+    ],
+    "question": "上传截图后，模型为什么还能结合文字问题回答？",
+    "definition": "多模态模型能把不同类型的输入转换为可共同处理的表示，并生成相应结果。",
+    "boundary": "支持多种输入不表示每种能力都同样准确，也不表示模型能访问未提供的文件。",
+    "demoType": "flow",
+    "demoTitle": "图文问题的处理过程",
+    "demoSteps": [
+      {
+        "label": "接收",
+        "value": "按钮截图 + 颜色问题",
+        "note": "输入区同时显示图片缩略图和问题。"
+      },
+      {
+        "label": "对齐",
+        "value": "按钮区域被高亮",
+        "note": "蓝色边框落在截图中的提交按钮上。"
+      },
+      {
+        "label": "回答",
+        "value": "按钮是黄绿色",
+        "note": "回答旁保留对应区域的小图。"
+      }
+    ],
+    "quizQuestion": "多模态模型的主要特点是什么？",
+    "quizOptions": [
+      "能处理不止一种信息类型",
+      "一定能生成视频",
+      "可以读取任何本地文件"
+    ],
+    "correctText": "多模态指模型可处理多种输入或输出类型。",
+    "wrongText": "视频生成和文件权限都不是多模态的必然条件。",
+    "promptTitle": "分析多模态材料",
+    "prompt": "请结合我提供的图片和文字说明回答；看不清或无法确认的部分请明确指出。",
+    "relatedSlugs": [
+      "generative-ai",
+      "agent",
+      "tools"
+    ]
+  },
+  {
+    "zh": "推理模型",
+    "en": "Reasoning Model",
+    "slug": "reasoning-model",
+    "cat": "AI·Agent",
+    "say": "把更多计算用于分析多步骤问题，适合规划、数学和复杂判断。",
+    "aliases": [
+      "推理型模型",
+      "reasoning",
+      "深度推理"
+    ],
+    "question": "复杂任务为什么有时需要更长的响应时间？",
+    "definition": "推理模型会在回答前进行更充分的内部计算，以提高多步骤任务的完成质量。",
+    "boundary": "更多推理计算不保证答案正确，也不替代外部事实核验。",
+    "demoType": "comparison",
+    "demoTitle": "普通生成与推理任务",
+    "demoSteps": [
+      {
+        "label": "直接回答",
+        "value": "直接给出一个答案",
+        "note": "约束列表仍有两项未检查。"
+      },
+      {
+        "label": "增加推理",
+        "value": "逐项检查五个约束",
+        "note": "检查进度从 0/5 变为 5/5。"
+      },
+      {
+        "label": "检查结果",
+        "value": "一项结论标为待核验",
+        "note": "未找到证据的结论不会进入完成状态。"
+      }
+    ],
+    "quizQuestion": "什么时候更适合使用推理模型？",
+    "quizOptions": [
+      "需要处理多项约束的规划任务",
+      "只修改一个标点",
+      "要求零延迟的固定回复"
+    ],
+    "correctText": "多步骤、强约束任务更能利用额外推理。",
+    "wrongText": "简单固定任务通常不需要增加推理成本。",
+    "promptTitle": "描述复杂任务",
+    "prompt": "请列出目标、约束、已知信息和验收条件，再完成分析并检查关键结论。",
+    "relatedSlugs": [
+      "llm",
+      "eval",
+      "benchmark"
+    ]
+  },
+  {
+    "zh": "系统提示词",
+    "en": "System Prompt",
+    "slug": "system-prompt",
+    "cat": "AI·Agent",
+    "say": "在对话开始时规定模型的角色、边界和长期遵循的规则。",
+    "aliases": [
+      "系统指令",
+      "system message",
+      "全局指令"
+    ],
+    "question": "为什么用户一句话不能随意覆盖某些规则？",
+    "definition": "系统提示词由应用提供，优先规定模型在当前会话中的行为方式和限制。",
+    "boundary": "它能约束模型行为，但不能作为权限控制或安全隔离的唯一手段。",
+    "demoType": "hierarchy",
+    "demoTitle": "不同指令的作用层级",
+    "demoSteps": [
+      {
+        "label": "系统规则",
+        "value": "只读文件，不执行删除",
+        "note": "规则固定显示在最上层。"
+      },
+      {
+        "label": "用户请求",
+        "value": "删除日志目录",
+        "note": "请求卡片与上层规则产生冲突标记。"
+      },
+      {
+        "label": "模型输出",
+        "value": "拒绝删除并说明限制",
+        "note": "输出沿允许分支返回，不执行文件操作。"
+      }
+    ],
+    "quizQuestion": "系统提示词主要解决什么问题？",
+    "quizOptions": [
+      "规定会话中的行为边界",
+      "替代所有后端权限校验",
+      "自动补齐缺失业务数据"
+    ],
+    "correctText": "系统提示词用于设置模型的工作规则。",
+    "wrongText": "权限和业务数据仍需由系统提供并校验。",
+    "promptTitle": "编写系统提示词",
+    "prompt": "请写一段系统提示词，说明角色、允许范围、禁止事项、输出格式和信息不足时的处理方式。",
+    "relatedSlugs": [
+      "prompt",
+      "guardrail",
+      "prompt-injection"
+    ]
+  },
+  {
+    "zh": "少样本提示",
+    "en": "Few-Shot Prompting",
+    "slug": "few-shot-prompting",
+    "cat": "AI·Agent",
+    "say": "在提示词里放少量输入和输出示例，让模型照着模式完成新任务。",
+    "aliases": [
+      "few-shot",
+      "示例提示",
+      "少量示例"
+    ],
+    "question": "分类规则不好描述时，怎样让模型更快理解格式？",
+    "definition": "少样本提示通过若干示例展示任务边界、判断方式和期望输出。",
+    "boundary": "示例会占用上下文，而且错误或偏斜的示例会影响后续结果。",
+    "demoType": "flow",
+    "demoTitle": "示例如何影响新输入",
+    "demoSteps": [
+      {
+        "label": "示例一",
+        "value": "正常订单 → 可处理",
+        "note": "分类表新增第一条映射。"
+      },
+      {
+        "label": "示例二",
+        "value": "缺少地址 → 待补充",
+        "note": "第二条示例补上缺字段的处理。"
+      },
+      {
+        "label": "新输入",
+        "value": "缺少电话 → 待补充",
+        "note": "新输入按示例输出同一分类标签。"
+      }
+    ],
+    "quizQuestion": "少样本提示最关键的组成是什么？",
+    "quizOptions": [
+      "能代表任务规则的示例",
+      "大量无关背景",
+      "只写一个角色名称"
+    ],
+    "correctText": "代表性示例能直接展示期望模式。",
+    "wrongText": "背景和角色不能替代输入输出示例。",
+    "promptTitle": "准备少样本示例",
+    "prompt": "请根据任务整理 3 个代表性示例，包含正常情况、边界情况和对应输出。",
+    "relatedSlugs": [
+      "prompt",
+      "zero-shot-prompting",
+      "context-window"
+    ]
+  },
+  {
+    "zh": "零样本提示",
+    "en": "Zero-Shot Prompting",
+    "slug": "zero-shot-prompting",
+    "cat": "AI·Agent",
+    "say": "不给示例，直接用任务说明、约束和输出格式让模型完成工作。",
+    "aliases": [
+      "zero-shot",
+      "无示例提示",
+      "直接指令"
+    ],
+    "question": "一个新任务没有现成示例，还能怎样交给模型？",
+    "definition": "零样本提示依靠清楚的任务描述和通用能力完成任务，不在提示中提供示范样本。",
+    "boundary": "任务边界复杂时，只靠说明可能不如加入示例稳定。",
+    "demoType": "comparison",
+    "demoTitle": "无示例与有示例提示",
+    "demoSteps": [
+      {
+        "label": "零样本",
+        "value": "规则占 80 token",
+        "note": "提示区没有示例卡片。"
+      },
+      {
+        "label": "少样本",
+        "value": "规则加 3 个示例，占 260 token",
+        "note": "上下文条形图明显增长。"
+      },
+      {
+        "label": "评估",
+        "value": "零样本 8/10，少样本 10/10",
+        "note": "结果表同时显示准确数和 token 用量。"
+      }
+    ],
+    "quizQuestion": "哪种情况适合先尝试零样本提示？",
+    "quizOptions": [
+      "任务规则清楚且输出简单",
+      "分类边界完全无法描述",
+      "必须复制既有文风细节"
+    ],
+    "correctText": "规则明确时，可以先用直接指令验证效果。",
+    "wrongText": "复杂边界通常需要示例或其他约束。",
+    "promptTitle": "编写零样本指令",
+    "prompt": "请把任务写成目标、输入、限制和输出格式，不提供示例。",
+    "relatedSlugs": [
+      "prompt",
+      "few-shot-prompting",
+      "structured-output"
+    ]
+  },
+  {
+    "zh": "温度",
+    "en": "Temperature",
+    "slug": "temperature",
+    "cat": "AI·Agent",
+    "say": "控制生成时的随机程度；数值较低通常更稳定，较高通常更多样。",
+    "aliases": [
+      "temperature 参数",
+      "随机度",
+      "采样温度"
+    ],
+    "question": "为什么同一提示词会出现不同答案？",
+    "definition": "温度通过调整候选 token 的概率分布，影响输出的稳定性和多样性。",
+    "boundary": "温度不是准确率开关；低温也可能稳定地产生错误答案。",
+    "demoType": "comparison",
+    "demoTitle": "温度改变候选选择",
+    "demoSteps": [
+      {
+        "label": "低温",
+        "value": "A 82%，B 14%，C 4%",
+        "note": "A 的概率条最明显，连续运行结果接近。"
+      },
+      {
+        "label": "中温",
+        "value": "A 60%，B 28%，C 12%",
+        "note": "B 和 C 的概率条开始增长。"
+      },
+      {
+        "label": "高温",
+        "value": "A 42%，B 33%，C 25%",
+        "note": "三条概率更接近，多次运行出现不同候选。"
+      }
+    ],
+    "quizQuestion": "降低温度通常会怎样？",
+    "quizOptions": [
+      "让输出更稳定",
+      "自动查证事实",
+      "扩大上下文窗口"
+    ],
+    "correctText": "低温通常减少采样变化。",
+    "wrongText": "事实核验和上下文容量由其他机制决定。",
+    "promptTitle": "设置生成参数",
+    "prompt": "请根据任务说明更重视稳定还是多样，并建议温度范围及验证方法。",
+    "relatedSlugs": [
+      "generative-ai",
+      "prompt",
+      "eval"
+    ]
+  },
+  {
+    "zh": "上下文窗口",
+    "en": "Context Window",
+    "slug": "context-window",
+    "cat": "AI·Agent",
+    "say": "模型一次请求能处理的 token 总量，包括输入、历史和输出。",
+    "aliases": [
+      "上下文长度",
+      "窗口大小",
+      "context length"
+    ],
+    "question": "对话很长时，模型为什么会忘记前面的细节？",
+    "definition": "上下文窗口限制了单次推理可见的信息量，超出后必须截断、压缩或另行检索。",
+    "boundary": "窗口更大不代表模型能同等准确地利用每一处信息。",
+    "demoType": "queue",
+    "demoTitle": "上下文如何占用窗口",
+    "demoSteps": [
+      {
+        "label": "系统信息",
+        "value": "系统信息占 2k / 16k",
+        "note": "容量条先填满八分之一。"
+      },
+      {
+        "label": "用户材料",
+        "value": "材料加入后占 13k / 16k",
+        "note": "剩余区域缩小到 3k。"
+      },
+      {
+        "label": "输出预算",
+        "value": "为输出保留 2k，只剩 1k 可输入",
+        "note": "超出的旧消息进入裁剪提示。"
+      }
+    ],
+    "quizQuestion": "上下文窗口计算哪些内容？",
+    "quizOptions": [
+      "本次可见输入与输出 token",
+      "只计算用户最后一句话",
+      "只计算模型输出"
+    ],
+    "correctText": "窗口包含模型本次处理的全部 token。",
+    "wrongText": "只看单段文字会低估实际占用。",
+    "promptTitle": "整理长上下文",
+    "prompt": "请把材料分为必须保留、可以摘要和可以检索三类，并说明输出需要预留的空间。",
+    "relatedSlugs": [
+      "context",
+      "token",
+      "working-memory",
+      "prompt-caching"
+    ]
+  },
+  {
+    "zh": "分词",
+    "en": "Tokenization",
+    "slug": "tokenization",
+    "cat": "AI·Agent",
+    "say": "把文本拆成模型处理的 token；token 不一定等于一个汉字或一个单词。",
+    "aliases": [
+      "tokenizer",
+      "分词器",
+      "token 切分"
+    ],
+    "question": "同样字数的中英文为什么 token 数量不同？",
+    "definition": "分词器按词表和编码规则把文本切成 token，不同语言和字符组合的切分方式不同。",
+    "boundary": "token 是模型计算单位，不是稳定的自然语言字数换算。",
+    "demoType": "flow",
+    "demoTitle": "一段文本如何变成 token",
+    "demoSteps": [
+      {
+        "label": "原文",
+        "value": "VibePolaris 很快",
+        "note": "原文作为一个连续字符串显示。"
+      },
+      {
+        "label": "切分",
+        "value": "Vibe | Polaris | 很 | 快",
+        "note": "分隔线把原文切成四个片段。"
+      },
+      {
+        "label": "编号",
+        "value": "[3812, 9021, 588, 243]",
+        "note": "四个片段依次替换为编号。"
+      }
+    ],
+    "quizQuestion": "token 与字数是什么关系？",
+    "quizOptions": [
+      "有关系但不能固定换算",
+      "始终一字一个 token",
+      "只由字体大小决定"
+    ],
+    "correctText": "分词规则会让 token 数与字数不完全一致。",
+    "wrongText": "字体不会影响文本的 token 切分。",
+    "promptTitle": "估算 token 使用",
+    "prompt": "请按所用模型的分词器估算这段内容的 token 数，并区分输入与预留输出。",
+    "relatedSlugs": [
+      "token",
+      "context-window"
+    ]
+  },
+  {
+    "zh": "幻觉",
+    "en": "Hallucination",
+    "slug": "hallucination",
+    "cat": "AI·Agent",
+    "say": "模型生成看似合理但没有事实依据或与来源不符的内容。",
+    "aliases": [
+      "模型幻觉",
+      "编造信息",
+      "虚构答案"
+    ],
+    "question": "回答语气很肯定，为什么仍可能是错的？",
+    "definition": "模型按语言模式生成内容，并不自动判断每个陈述是否有可靠证据。",
+    "boundary": "幻觉不是简单的措辞问题，降低温度也不能完全消除。",
+    "demoType": "branch",
+    "demoTitle": "回答从证据到结论",
+    "demoSteps": [
+      {
+        "label": "有来源",
+        "value": "结论旁有来源 ①",
+        "note": "点击编号能定位到原文段落。"
+      },
+      {
+        "label": "缺来源",
+        "value": "新增一个材料中没有的日期",
+        "note": "日期被标成红色未证实字段。"
+      },
+      {
+        "label": "核验",
+        "value": "删除日期或补充来源",
+        "note": "未证实字段数量从 1 变为 0。"
+      }
+    ],
+    "quizQuestion": "哪项最能降低幻觉带来的风险？",
+    "quizOptions": [
+      "要求引用并核对关键事实",
+      "让回答语气更坚定",
+      "把温度固定为零"
+    ],
+    "correctText": "可追溯来源和事实核验能直接暴露错误。",
+    "wrongText": "语气和单一参数不能保证事实正确。",
+    "promptTitle": "核验模型回答",
+    "prompt": "请逐条列出回答中的可验证事实、来源和不确定项；无来源的内容不要写成结论。",
+    "relatedSlugs": [
+      "grounding",
+      "citation",
+      "eval"
+    ]
+  },
+  {
+    "zh": "基于证据回答",
+    "en": "Grounding",
+    "slug": "grounding",
+    "cat": "AI·Agent",
+    "say": "让模型依据指定资料、工具结果或可验证数据回答。",
+    "aliases": [
+      "grounded answer",
+      "依据材料回答",
+      "事实约束"
+    ],
+    "question": "怎样让回答只使用公司现有政策，而不是凭常识补充？",
+    "definition": "基于证据回答会把生成内容限制在提供或检索到的资料范围内，并保留可核对关系。",
+    "boundary": "提供资料不等于模型一定正确引用，仍需检查遗漏和误读。",
+    "demoType": "flow",
+    "demoTitle": "退款问题如何绑定政策原文",
+    "demoSteps": [
+      {
+        "label": "问题",
+        "value": "退款多久到账？",
+        "note": "回答区暂时为空，等待资料。"
+      },
+      {
+        "label": "取证",
+        "value": "退款政策：原路退回，3—5 个工作日",
+        "note": "政策第 12 行被高亮并加入证据栏。"
+      },
+      {
+        "label": "回答",
+        "value": "退款将在 3—5 个工作日内原路退回 ①",
+        "note": "无依据的手续费说明被排除。"
+      }
+    ],
+    "quizQuestion": "基于证据回答的核心是什么？",
+    "quizOptions": [
+      "让结论能对应到证据",
+      "让回答长度固定",
+      "让模型记住所有历史"
+    ],
+    "correctText": "关键结论需要受到可核验证据约束。",
+    "wrongText": "长度和长期记忆不是其核心。",
+    "promptTitle": "基于资料回答",
+    "prompt": "请只依据提供的资料回答，并在每个关键结论后标出对应来源；资料不足时明确说明。",
+    "relatedSlugs": [
+      "rag",
+      "retrieval",
+      "citation"
+    ]
+  },
+  {
+    "zh": "引用",
+    "en": "Citation",
+    "slug": "citation",
+    "cat": "AI·Agent",
+    "say": "标明回答依据的来源，方便读者检查原文和适用范围。",
+    "aliases": [
+      "出处",
+      "参考来源",
+      "引文标注"
+    ],
+    "question": "模型说引用了资料，怎样确认不是随便挂了一个链接？",
+    "definition": "引用应把具体结论与真实来源位置对应起来，必要时包含标题、链接或段落位置。",
+    "boundary": "有链接不等于结论被来源支持，必须检查内容是否直接对应。",
+    "demoType": "flow",
+    "demoTitle": "一句结论如何对应原文",
+    "demoSteps": [
+      {
+        "label": "结论",
+        "value": "退款需要 3—5 个工作日",
+        "note": "句末还没有来源编号。"
+      },
+      {
+        "label": "定位",
+        "value": "《退款政策》第 12 行",
+        "note": "原文中的时效数字被高亮。"
+      },
+      {
+        "label": "挂接",
+        "value": "退款需要 3—5 个工作日 ①",
+        "note": "点击 ① 会跳到第 12 行。"
+      }
+    ],
+    "quizQuestion": "有效引用需要满足什么？",
+    "quizOptions": [
+      "来源内容确实支持对应结论",
+      "链接数量越多越好",
+      "只写网站首页地址"
+    ],
+    "correctText": "引用价值来自结论与来源的准确对应。",
+    "wrongText": "数量和模糊链接不能替代内容核对。",
+    "promptTitle": "补充引用",
+    "prompt": "请为每个事实性结论找到直接来源，并标出具体页面或段落；无法支持的结论请删除或标为待确认。",
+    "relatedSlugs": [
+      "grounding",
+      "hallucination",
+      "retrieval"
+    ]
+  },
+  {
+    "zh": "结构化输出",
+    "en": "Structured Output",
+    "slug": "structured-output",
+    "cat": "AI·Agent",
+    "say": "让模型按固定字段和数据类型返回结果，便于程序直接处理。",
+    "aliases": [
+      "结构化响应",
+      "固定格式输出",
+      "schema 输出"
+    ],
+    "question": "为什么后台更适合接收 JSON，而不是一段自然语言？",
+    "definition": "结构化输出用预先定义的模式限制结果形状，使字段更稳定、可校验。",
+    "boundary": "结构正确不代表字段内容真实，也不能省去业务校验。",
+    "demoType": "flow",
+    "demoTitle": "无效文本变成可解析 JSON",
+    "demoSteps": [
+      {
+        "label": "首次输出",
+        "value": "{status: ok, items: \"3\"}",
+        "note": "解析器报错，items 类型也不正确。"
+      },
+      {
+        "label": "按结构修正",
+        "value": "status 为字符串，items 为整数",
+        "note": "错误计数从 2 变为 0。"
+      },
+      {
+        "label": "程序接收",
+        "value": "{\"status\":\"ok\",\"items\":3}",
+        "note": "结果卡片显示状态 ok、数量 3。"
+      }
+    ],
+    "quizQuestion": "结构化输出主要解决什么？",
+    "quizOptions": [
+      "让程序稳定读取字段",
+      "保证所有事实正确",
+      "自动获得数据库权限"
+    ],
+    "correctText": "固定结构便于解析和校验。",
+    "wrongText": "真实性和权限仍由其他机制负责。",
+    "promptTitle": "设计输出结构",
+    "prompt": "请把所需结果定义为 JSON 字段、类型、必填项和枚举值，并给出校验失败时的处理。",
+    "relatedSlugs": [
+      "json-schema",
+      "function-calling"
+    ]
+  },
+  {
+    "zh": "JSON Schema",
+    "en": "JSON Schema",
+    "slug": "json-schema",
+    "cat": "AI·Agent",
+    "say": "用一套规则描述 JSON 应有哪些字段、类型和约束。",
+    "aliases": [
+      "JSON 模式",
+      "数据模式",
+      "schema"
+    ],
+    "question": "怎样限制 status 只能是三个固定值？",
+    "definition": "JSON Schema 可以声明对象结构、字段类型、必填项、枚举和嵌套规则。",
+    "boundary": "它校验数据形状和约束，不负责判断业务事实是否正确。",
+    "demoType": "hierarchy",
+    "demoTitle": "候选数据通过 Schema 校验",
+    "demoSteps": [
+      {
+        "label": "候选数据",
+        "value": "{\"status\":\"done\",\"count\":-1}",
+        "note": "校验器显示两条红色错误。"
+      },
+      {
+        "label": "应用约束",
+        "value": "status∈[pending,success]，count≥0",
+        "note": "done 和 -1 分别命中枚举、最小值规则。"
+      },
+      {
+        "label": "修正通过",
+        "value": "{\"status\":\"success\",\"count\":0}",
+        "note": "错误列表清空，验证状态变为 valid。"
+      }
+    ],
+    "quizQuestion": "JSON Schema 能直接检查哪项？",
+    "quizOptions": [
+      "字段类型是否符合声明",
+      "新闻事实是否真实",
+      "用户是否有操作权限"
+    ],
+    "correctText": "Schema 适合检查数据结构。",
+    "wrongText": "事实和权限需要独立的数据源与校验。",
+    "promptTitle": "编写 JSON Schema",
+    "prompt": "请为这组数据写 JSON Schema，包含必填字段、类型、枚举、长度限制和额外字段策略。",
+    "relatedSlugs": [
+      "structured-output",
+      "evaluation-dataset",
+      "object"
+    ]
+  },
+  {
+    "zh": "函数调用",
+    "en": "Function Calling",
+    "slug": "function-calling",
+    "cat": "AI·Agent",
+    "say": "模型根据工具定义生成函数名和参数，由应用执行实际操作。",
+    "aliases": [
+      "函数工具调用",
+      "function call",
+      "工具参数生成"
+    ],
+    "question": "模型说已经查到订单，是否代表它真的访问了系统？",
+    "definition": "函数调用把模型的调用意图转换为结构化参数，应用执行函数后再把结果返回模型。",
+    "boundary": "模型本身通常不执行函数；权限、重试和副作用由应用控制。",
+    "demoType": "request",
+    "demoTitle": "订单问题触发一次函数调用",
+    "demoSteps": [
+      {
+        "label": "用户输入",
+        "value": "查一下订单 A102 到哪了",
+        "note": "模型识别到需要实时订单数据。"
+      },
+      {
+        "label": "函数参数",
+        "value": "get_order({\"orderId\":\"A102\"})",
+        "note": "应用校验参数后发起查询。"
+      },
+      {
+        "label": "工具结果",
+        "value": "{\"status\":\"shipped\"}",
+        "note": "页面显示 A102 已发货，不再猜测状态。"
+      }
+    ],
+    "quizQuestion": "谁负责实际执行函数？",
+    "quizOptions": [
+      "承载模型的应用或工具服务",
+      "模型生成的文字本身",
+      "浏览器字体渲染器"
+    ],
+    "correctText": "应用接收调用参数并执行对应函数。",
+    "wrongText": "文本输出不会自动产生外部操作。",
+    "promptTitle": "设计函数工具",
+    "prompt": "请定义工具名称、用途、参数、返回值、权限要求和可能失败的情况。",
+    "relatedSlugs": [
+      "tools",
+      "tool-choice",
+      "tool-result",
+      "mcp"
+    ]
+  },
+  {
+    "zh": "工具选择",
+    "en": "Tool Choice",
+    "slug": "tool-choice",
+    "cat": "AI·Agent",
+    "say": "决定模型是否调用工具，以及允许它调用哪个工具。",
+    "aliases": [
+      "工具路由",
+      "tool selection",
+      "调用策略"
+    ],
+    "question": "查询天气时应该直接回答，还是先调用天气工具？",
+    "definition": "工具选择结合用户意图、可用工具和调用策略，确定本轮是否需要外部能力。",
+    "boundary": "允许自动选择不等于允许执行所有高风险操作。",
+    "demoType": "branch",
+    "demoTitle": "三个工具中选择订单查询",
+    "demoSteps": [
+      {
+        "label": "任务",
+        "value": "查询 A102 的最新状态",
+        "note": "候选栏出现计算器、天气、订单查询。"
+      },
+      {
+        "label": "匹配",
+        "value": "订单查询 0.96，天气 0.03，计算器 0.01",
+        "note": "订单工具获得最高匹配分。"
+      },
+      {
+        "label": "选择",
+        "value": "调用 get_order，参数 A102",
+        "note": "另外两个工具保持未调用状态。"
+      }
+    ],
+    "quizQuestion": "何时应优先调用工具？",
+    "quizOptions": [
+      "答案依赖实时或私有数据",
+      "只是改写用户提供的句子",
+      "用户要求调整语气"
+    ],
+    "correctText": "外部数据或操作需要对应工具。",
+    "wrongText": "纯文本转换通常不需要外部调用。",
+    "promptTitle": "制定工具选择规则",
+    "prompt": "请按任务类型列出可用工具、触发条件、禁止条件和需要人工确认的操作。",
+    "relatedSlugs": [
+      "function-calling",
+      "tools",
+      "human-in-the-loop"
+    ]
+  },
+  {
+    "zh": "工具结果",
+    "en": "Tool Result",
+    "slug": "tool-result",
+    "cat": "AI·Agent",
+    "say": "工具执行后返回给模型的数据，包括成功结果、错误和必要元信息。",
+    "aliases": [
+      "工具返回",
+      "执行结果",
+      "tool output"
+    ],
+    "question": "工具报错后，模型为什么不能假装已经成功？",
+    "definition": "工具结果是模型继续判断的外部证据，应明确区分成功、失败和部分完成。",
+    "boundary": "结果格式正确不代表数据可信，仍要考虑来源、时效和权限。",
+    "demoType": "state",
+    "demoTitle": "工具调用的结果状态",
+    "demoSteps": [
+      {
+        "label": "执行中",
+        "value": "等待外部系统",
+        "note": "此时不能声称任务完成。"
+      },
+      {
+        "label": "成功",
+        "value": "返回所需数据",
+        "note": "模型可据此组织答案。"
+      },
+      {
+        "label": "失败",
+        "value": "返回错误信息",
+        "note": "需要重试、改参或说明阻塞。"
+      }
+    ],
+    "quizQuestion": "工具返回错误时应怎样处理？",
+    "quizOptions": [
+      "按错误状态处理并说明影响",
+      "把预期结果当成实际结果",
+      "忽略错误继续宣布成功"
+    ],
+    "correctText": "错误是执行状态的一部分，必须保留。",
+    "wrongText": "把失败改写成成功会造成错误结论。",
+    "promptTitle": "整理工具结果",
+    "prompt": "请把工具结果分为状态、数据、错误、时间和来源，并说明下一步处理。",
+    "relatedSlugs": [
+      "function-calling",
+      "agent-loop"
+    ]
+  },
+  {
+    "zh": "智能体循环",
+    "en": "Agent Loop",
+    "slug": "agent-loop",
+    "cat": "AI·Agent",
+    "say": "智能体反复观察当前状态、选择动作、执行并检查结果，直到满足停止条件。",
+    "aliases": [
+      "代理循环",
+      "观察行动循环",
+      "agent cycle"
+    ],
+    "question": "一个任务为什么可能连续调用几次工具？",
+    "definition": "智能体循环把长任务拆成多轮决策，每轮都根据最新结果决定下一步。",
+    "boundary": "循环必须有步数、时间、权限和停止条件，不能无限执行。",
+    "demoType": "lifecycle",
+    "demoTitle": "修复按钮后用测试决定是否停止",
+    "demoSteps": [
+      {
+        "label": "观察",
+        "value": "清单 0/2；按钮测试失败",
+        "note": "失败信息指向 disabled 状态没有更新。"
+      },
+      {
+        "label": "行动",
+        "value": "修改状态逻辑；清单 1/2",
+        "note": "智能体重新运行同一个测试。"
+      },
+      {
+        "label": "判断",
+        "value": "测试 1/1 通过；清单 2/2",
+        "note": "停止条件满足，循环结束。"
+      }
+    ],
+    "quizQuestion": "智能体循环必须具备哪项控制？",
+    "quizOptions": [
+      "明确的停止条件",
+      "无限重试",
+      "默认拥有所有权限"
+    ],
+    "correctText": "停止条件防止无界执行。",
+    "wrongText": "无限重试和过宽权限都会扩大风险。",
+    "promptTitle": "设计智能体循环",
+    "prompt": "请定义观察信息、可执行动作、成功条件、最大步数和失败退出方式。",
+    "relatedSlugs": [
+      "agent",
+      "plan-and-execute",
+      "tool-result"
+    ]
+  },
+  {
+    "zh": "规划与执行",
+    "en": "Plan and Execute",
+    "slug": "plan-and-execute",
+    "cat": "AI·Agent",
+    "say": "先形成可调整的任务计划，再逐项执行并根据结果更新计划。",
+    "aliases": [
+      "计划执行",
+      "plan-execute",
+      "任务规划"
+    ],
+    "question": "一个有多个依赖的任务怎样避免做到一半才发现顺序不对？",
+    "definition": "规划与执行把目标拆成有依赖关系的行动，并在执行证据变化时重新安排。",
+    "boundary": "计划不是完成证明，也不应把简单任务拆成过多步骤。",
+    "demoType": "flow",
+    "demoTitle": "测试失败后调整执行计划",
+    "demoSteps": [
+      {
+        "label": "计划",
+        "value": "改按钮文案 → 运行测试",
+        "note": "两项任务都处于待处理状态。"
+      },
+      {
+        "label": "执行",
+        "value": "文案已改；测试 0/1 失败",
+        "note": "旧断言仍在检查原文案。"
+      },
+      {
+        "label": "调整",
+        "value": "更新断言后测试 1/1 通过",
+        "note": "计划新增项完成，整体状态变为 done。"
+      }
+    ],
+    "quizQuestion": "计划完成是否等于任务完成？",
+    "quizOptions": [
+      "不等于，还需要执行结果",
+      "等于，计划就是交付物",
+      "只要步骤足够多就等于"
+    ],
+    "correctText": "计划描述未来动作，完成要靠执行证据。",
+    "wrongText": "步骤数量不能替代实际结果。",
+    "promptTitle": "拆解执行计划",
+    "prompt": "请按目标、依赖、可执行动作、验证证据和退出条件整理计划。",
+    "relatedSlugs": [
+      "agent-loop",
+      "handoff",
+      "tool-result"
+    ]
+  },
+  {
+    "zh": "智能体编排",
+    "en": "Agent Orchestration",
+    "slug": "agent-orchestration",
+    "cat": "AI·Agent",
+    "say": "安排多个模型、工具或智能体之间的任务顺序、数据传递和失败处理。",
+    "aliases": [
+      "Agent 编排",
+      "代理协调",
+      "orchestration"
+    ],
+    "question": "为什么多个智能体同时工作还需要一个协调层？",
+    "definition": "智能体编排负责分工、调度、共享必要上下文，并汇总可验证的结果。",
+    "boundary": "增加智能体会增加成本和协调难度，不一定比单一流程更好。",
+    "demoType": "hierarchy",
+    "demoTitle": "三批词条并行后统一去重",
+    "demoSteps": [
+      {
+        "label": "分派",
+        "value": "AI 86 条、前端 87 条、后端 87 条",
+        "note": "三个批次同时进入进行中。"
+      },
+      {
+        "label": "汇总",
+        "value": "合计 300 条，检测到 1 个重复 slug",
+        "note": "冲突项被标红，暂不写入总表。"
+      },
+      {
+        "label": "修正",
+        "value": "替换冲突词后 unique=300",
+        "note": "三个批次均通过引用校验。"
+      }
+    ],
+    "quizQuestion": "什么时候适合使用多智能体编排？",
+    "quizOptions": [
+      "任务可清楚拆分且能独立验证",
+      "一个简单字段改名",
+      "结果无法判断对错"
+    ],
+    "correctText": "可拆分、可验证的任务能从并行中获益。",
+    "wrongText": "简单任务会被额外协调成本拖慢。",
+    "promptTitle": "设计编排方案",
+    "prompt": "请说明任务如何拆分、各角色输入输出、共享上下文、汇总规则和失败处理。",
+    "relatedSlugs": [
+      "subagent",
+      "handoff",
+      "agent-loop"
+    ]
+  },
+  {
+    "zh": "交接",
+    "en": "Handoff",
+    "slug": "handoff",
+    "cat": "AI·Agent",
+    "say": "把当前任务、已知信息和未完成部分移交给另一个智能体或处理者。",
+    "aliases": [
+      "任务移交",
+      "agent handoff",
+      "上下文交接"
+    ],
+    "question": "换一个智能体继续做时，怎样避免它从头猜测？",
+    "definition": "交接通过结构化摘要传递目标、约束、进度、证据和下一步。",
+    "boundary": "交接不应无选择地复制全部历史，也不能丢失关键风险。",
+    "demoType": "flow",
+    "demoTitle": "一个未完成测试如何交给下一位",
+    "demoSteps": [
+      {
+        "label": "交出状态",
+        "value": "CSS 已修改；移动端测试未执行",
+        "note": "交接卡标明已完成 1 项、待办 1 项。"
+      },
+      {
+        "label": "接手验证",
+        "value": "390px 页面出现横向滚动",
+        "note": "接手者记录截图和复现尺寸。"
+      },
+      {
+        "label": "完成交接",
+        "value": "修复后滚动宽度=0",
+        "note": "待办归零，验证证据写回交接卡。"
+      }
+    ],
+    "quizQuestion": "交接内容最应包含什么？",
+    "quizOptions": [
+      "已验证进度与剩余工作",
+      "所有无关聊天记录",
+      "只写一句请继续"
+    ],
+    "correctText": "交接要让接手者知道事实状态和下一步。",
+    "wrongText": "过多噪声或信息不足都会增加误解。",
+    "promptTitle": "生成交接摘要",
+    "prompt": "请整理目标、已完成、证据、未完成、风险和下一步，不重复无关对话。",
+    "relatedSlugs": [
+      "agent-orchestration",
+      "subagent",
+      "context"
+    ]
+  },
+  {
+    "zh": "子智能体",
+    "en": "Subagent",
+    "slug": "subagent",
+    "cat": "AI·Agent",
+    "say": "由主智能体分派一个边界清楚的子任务，并将结果返回主流程。",
+    "aliases": [
+      "子代理",
+      "工作智能体",
+      "sub-agent"
+    ],
+    "question": "收集资料和编写页面可以同时进行吗？",
+    "definition": "子智能体适合独立、可并行且输出可检查的工作，主智能体负责整合。",
+    "boundary": "共享文件或强依赖任务若没有协调，容易产生冲突和重复工作。",
+    "demoType": "hierarchy",
+    "demoTitle": "两个独立文件并行审查",
+    "demoSteps": [
+      {
+        "label": "主任务",
+        "value": "审查 CSS 与 JavaScript 两页",
+        "note": "两个文件被分成互不重叠的子任务。"
+      },
+      {
+        "label": "子任务结果",
+        "value": "CSS 发现 3 处；JavaScript 发现 2 处",
+        "note": "两份结果各带文件位置和修改建议。"
+      },
+      {
+        "label": "主流程复核",
+        "value": "5 处修改后检查全部通过",
+        "note": "主任务合并结果并关闭两个子任务。"
+      }
+    ],
+    "quizQuestion": "什么样的任务适合交给子智能体？",
+    "quizOptions": [
+      "边界清楚且可独立验收的任务",
+      "需要频繁改同一文件的细小动作",
+      "无法说明完成标准的任务"
+    ],
+    "correctText": "独立边界可以减少协调冲突。",
+    "wrongText": "强耦合或无验收标准的任务不适合直接分派。",
+    "promptTitle": "编写子任务说明",
+    "prompt": "请写清目标、文件边界、输入来源、输出格式、验收条件和禁止修改范围。",
+    "relatedSlugs": [
+      "agent-orchestration",
+      "handoff"
+    ]
+  },
+  {
+    "zh": "人在回路",
+    "en": "Human in the Loop",
+    "slug": "human-in-the-loop",
+    "cat": "AI·Agent",
+    "say": "在关键节点由人审核、补充信息或批准后，系统才继续执行。",
+    "aliases": [
+      "人工介入",
+      "人工复核",
+      "HITL"
+    ],
+    "question": "删除数据或付款这类操作能不能让智能体直接执行？",
+    "definition": "人在回路把人工判断放在高风险、不可逆或证据不足的节点。",
+    "boundary": "人工确认不必每一步都弹窗，应放在操作变得不可逆或权限发生变化的位置。",
+    "demoType": "branch",
+    "demoTitle": "高风险操作的审批分支",
+    "demoSteps": [
+      {
+        "label": "准备",
+        "value": "系统生成操作预览",
+        "note": "列出对象、影响和可回退性。"
+      },
+      {
+        "label": "审批",
+        "value": "人确认或拒绝",
+        "note": "未批准时不执行。"
+      },
+      {
+        "label": "执行",
+        "value": "记录实际结果",
+        "note": "保留操作者和时间。"
+      }
+    ],
+    "quizQuestion": "哪类操作最需要人在回路？",
+    "quizOptions": [
+      "不可逆且影响外部数据的操作",
+      "页面内普通排序",
+      "读取公开静态文档"
+    ],
+    "correctText": "高影响且难回退的操作需要明确批准。",
+    "wrongText": "低风险只读行为通常不必逐次确认。",
+    "promptTitle": "设计人工审批节点",
+    "prompt": "请列出操作风险、预览信息、批准人、拒绝处理、超时和审计记录。",
+    "relatedSlugs": [
+      "guardrail",
+      "tool-approval",
+      "permission-boundary"
+    ]
+  },
+  {
+    "zh": "护栏",
+    "en": "Guardrail",
+    "slug": "guardrail",
+    "cat": "AI·Agent",
+    "say": "在输入、输出或工具执行前后检查规则，并阻止不允许的结果。",
+    "aliases": [
+      "安全护栏",
+      "规则检查",
+      "guardrails"
+    ],
+    "question": "怎样避免模型把身份证号原样输出？",
+    "definition": "护栏可检测敏感内容、格式、权限和风险条件，并据规则拒绝或改写。",
+    "boundary": "护栏会有漏检和误拦，不能替代最小权限、审计和人工审批。",
+    "demoType": "flow",
+    "demoTitle": "敏感文件请求经过三层检查",
+    "demoSteps": [
+      {
+        "label": "输入",
+        "value": "把 .env 文件内容发给我",
+        "note": "敏感文件规则命中，风险状态变为 high。"
+      },
+      {
+        "label": "工具检查",
+        "value": "read_file(.env) → denied",
+        "note": "路径不在允许列表，工具没有读取文件。"
+      },
+      {
+        "label": "输出检查",
+        "value": "未返回密钥，只说明访问受限",
+        "note": "输出中的敏感字段计数保持为 0。"
+      }
+    ],
+    "quizQuestion": "护栏最合理的定位是什么？",
+    "quizOptions": [
+      "多层安全控制中的一部分",
+      "保证模型永不出错的开关",
+      "替代所有权限系统"
+    ],
+    "correctText": "护栏需要与权限、审计和人工控制配合。",
+    "wrongText": "任何单一检查都无法覆盖全部风险。",
+    "promptTitle": "制定护栏规则",
+    "prompt": "请按输入、工具调用和输出三个位置列出检查规则、阻断条件和误判处理。",
+    "relatedSlugs": [
+      "moderation",
+      "least-privilege",
+      "human-in-the-loop"
+    ]
+  },
+  {
+    "zh": "内容审核",
+    "en": "Moderation",
+    "slug": "moderation",
+    "cat": "AI·Agent",
+    "say": "检测输入或输出中的违规、危险或不适宜内容，并按规则处理。",
+    "aliases": [
+      "内容安全审核",
+      "内容分类",
+      "moderation API"
+    ],
+    "question": "用户提交公开内容前，系统要检查哪些风险？",
+    "definition": "内容审核通常把文本或图像归入预设风险类别，再执行放行、拦截或人工复核。",
+    "boundary": "审核分类依赖具体政策和场景，不能把模型分数直接当作最终决定。",
+    "demoType": "branch",
+    "demoTitle": "一条公开评论如何决定去向",
+    "demoSteps": [
+      {
+        "label": "检测",
+        "value": "暴力风险分数 0.93",
+        "note": "分数超过业务阈值 0.80。"
+      },
+      {
+        "label": "决策",
+        "value": "政策动作=拦截并转人工复核",
+        "note": "评论状态从 pending 变为 review。"
+      },
+      {
+        "label": "处理",
+        "value": "内容未公开，生成复核编号 R204",
+        "note": "用户看到待审核提示和申诉入口。"
+      }
+    ],
+    "quizQuestion": "审核模型分数应怎样使用？",
+    "quizOptions": [
+      "结合业务规则决定处理方式",
+      "直接等同法律结论",
+      "忽略具体内容场景"
+    ],
+    "correctText": "分数需要进入明确的业务决策规则。",
+    "wrongText": "模型信号不能替代完整政策判断。",
+    "promptTitle": "设计审核流程",
+    "prompt": "请定义内容类别、阈值、处理动作、人工复核和申诉方式。",
+    "relatedSlugs": [
+      "guardrail",
+      "eval",
+      "human-in-the-loop"
+    ]
+  },
+  {
+    "zh": "评测",
+    "en": "Evaluation",
+    "slug": "eval",
+    "cat": "AI·Agent",
+    "say": "用固定数据、指标和评分规则检查模型或智能体是否满足任务要求。",
+    "aliases": [
+      "模型评测",
+      "AI 测试",
+      "evals"
+    ],
+    "question": "改了提示词后，怎样知道效果是真的变好？",
+    "definition": "评测在可重复的样本上运行同一任务，并记录质量、失败类型、延迟或成本。",
+    "boundary": "单次演示和少量主观体验不能代表整体效果。",
+    "demoType": "lifecycle",
+    "demoTitle": "同一评测集比较提示词改动",
+    "demoSteps": [
+      {
+        "label": "基线",
+        "value": "10 题通过 7 题，严重错误 1 个",
+        "note": "基线分数记录为 70%。"
+      },
+      {
+        "label": "新版本",
+        "value": "10 题通过 9 题，严重错误仍有 1 个",
+        "note": "总分升到 90%，但高风险项未通过。"
+      },
+      {
+        "label": "判定",
+        "value": "阈值≥80% 且严重错误=0",
+        "note": "新版本状态仍为 fail，不进入发布。"
+      }
+    ],
+    "quizQuestion": "一次可靠评测至少需要什么？",
+    "quizOptions": [
+      "固定样本和明确评分规则",
+      "只看一条成功示例",
+      "只比较回答长度"
+    ],
+    "correctText": "可重复样本和评分标准才能支持比较。",
+    "wrongText": "单条示例不能说明整体变化。",
+    "promptTitle": "设计评测方案",
+    "prompt": "请定义评测目标、样本分组、评分规则、通过阈值和失败分析方法。",
+    "relatedSlugs": [
+      "benchmark",
+      "grader"
+    ]
+  },
+  {
+    "zh": "基准测试",
+    "en": "Benchmark",
+    "slug": "benchmark",
+    "cat": "AI·Agent",
+    "say": "用统一任务和指标比较不同模型、版本或方案的表现。",
+    "aliases": [
+      "基准",
+      "benchmark test",
+      "模型排行"
+    ],
+    "question": "不同模型的公开分数能直接决定项目选型吗？",
+    "definition": "基准测试提供可重复的比较条件，但结果只代表特定数据和评测方式。",
+    "boundary": "公开榜单可能与实际业务分布不同，不能替代项目内评测。",
+    "demoType": "comparison",
+    "demoTitle": "两种模型在同一批任务上比较",
+    "demoSteps": [
+      {
+        "label": "统一输入",
+        "value": "50 条业务样本，超时上限 3 秒",
+        "note": "模型 A、B 使用同一数据版本。"
+      },
+      {
+        "label": "运行结果",
+        "value": "A=44/50、1.2s；B=46/50、2.8s",
+        "note": "表格同时显示正确数和平均延迟。"
+      },
+      {
+        "label": "按约束选择",
+        "value": "当前任务选择 A",
+        "note": "A 分数达标且延迟余量更大。"
+      }
+    ],
+    "quizQuestion": "公开基准最适合做什么？",
+    "quizOptions": [
+      "作为模型初筛参考",
+      "直接证明业务一定成功",
+      "替代所有线上监控"
+    ],
+    "correctText": "基准适合比较候选，但需要业务验证。",
+    "wrongText": "通用分数无法覆盖每个具体场景。",
+    "promptTitle": "比较模型方案",
+    "prompt": "请同时列出公开基准、业务样本、延迟、成本和已知限制，不只按总分排序。",
+    "relatedSlugs": [
+      "eval",
+      "evaluation-dataset",
+      "model-routing"
+    ]
+  },
+  {
+    "zh": "评分器",
+    "en": "Grader",
+    "slug": "grader",
+    "cat": "AI·Agent",
+    "say": "按照规则给模型输出打分或判定通过失败，可以由程序、人或模型执行。",
+    "aliases": [
+      "评测评分器",
+      "打分器",
+      "judge"
+    ],
+    "question": "没有唯一标准答案的回答怎样批量评估？",
+    "definition": "评分器把质量要求转成可执行的检查项，如格式校验、关键词、人工量表或模型判断。",
+    "boundary": "模型评分器也会偏差，应通过样本校准并保留人工抽检。",
+    "demoType": "hierarchy",
+    "demoTitle": "同一回答经过三种评分",
+    "demoSteps": [
+      {
+        "label": "规则评分",
+        "value": "JSON 格式正确，1/1",
+        "note": "格式项自动显示为绿色。"
+      },
+      {
+        "label": "模型评分",
+        "value": "内容完整度 3/5",
+        "note": "缺少退款时效这一要点。"
+      },
+      {
+        "label": "人工抽检",
+        "value": "复核为 2/5，标记需改进",
+        "note": "分差超过 1 分，样本进入校准集。"
+      }
+    ],
+    "quizQuestion": "开放式输出用模型评分器时还需要什么？",
+    "quizOptions": [
+      "用人工样本校准评分规则",
+      "默认评分器永远正确",
+      "取消失败样本复查"
+    ],
+    "correctText": "校准能发现评分器偏差和歧义。",
+    "wrongText": "未经验证的自动评分可能放大错误。",
+    "promptTitle": "编写评分规则",
+    "prompt": "请把质量要求拆成可判断条目，说明分值、通过条件、反例和人工复核范围。",
+    "relatedSlugs": [
+      "eval",
+      "benchmark",
+      "evaluation-dataset"
+    ]
+  },
+  {
+    "zh": "微调",
+    "en": "Fine-Tuning",
+    "slug": "fine-tuning",
+    "cat": "AI·Agent",
+    "say": "用一组训练样本继续调整已有模型，使其更适合特定任务或输出习惯。",
+    "aliases": [
+      "模型微调",
+      "fine tune",
+      "定制训练"
+    ],
+    "question": "提示词已经很长，是否该直接做微调？",
+    "definition": "微调通过训练数据改变模型参数，常用于稳定格式、领域行为或特定任务能力。",
+    "boundary": "微调不会自动注入实时知识，也不能替代清理数据和建立评测。",
+    "demoType": "lifecycle",
+    "demoTitle": "客服分类微调前后对比",
+    "demoSteps": [
+      {
+        "label": "基线",
+        "value": "100 条评测样本通过 74 条",
+        "note": "误分主要集中在退款与取消订单。"
+      },
+      {
+        "label": "训练",
+        "value": "加入 2,000 条已清洗示例",
+        "note": "重复和含隐私数据的样本已移除。"
+      },
+      {
+        "label": "复测",
+        "value": "同一评测集通过 86 条",
+        "note": "准确数增加 12 条，仍保留 14 条失败样本。"
+      }
+    ],
+    "quizQuestion": "开始微调前最需要什么？",
+    "quizOptions": [
+      "清楚的任务目标和评测集",
+      "只准备一条示例",
+      "假设训练后无需测试"
+    ],
+    "correctText": "目标和评测决定微调是否值得。",
+    "wrongText": "少量随意样本无法支持可靠判断。",
+    "promptTitle": "评估是否微调",
+    "prompt": "请比较提示词、RAG 和微调对本任务的适用性，列出数据需求、成本和验证方案。",
+    "relatedSlugs": [
+      "few-shot-prompting",
+      "eval",
+      "model-routing"
+    ]
+  },
+  {
+    "zh": "嵌入",
+    "en": "Embedding",
+    "slug": "embedding",
+    "cat": "AI·Agent",
+    "say": "把文本、图片等内容转换成向量，使语义相近的内容在向量空间中更接近。",
+    "aliases": [
+      "向量表示",
+      "embedding vector",
+      "语义向量"
+    ],
+    "question": "搜索“退款”为什么能找到写着“退费”的文档？",
+    "definition": "嵌入模型把内容映射为数字向量，向量距离可近似表示语义相似度。",
+    "boundary": "相似度不是事实关系，也会受模型、语言和数据分布影响。",
+    "demoType": "flow",
+    "demoTitle": "三个文档与查询的向量距离",
+    "demoSteps": [
+      {
+        "label": "查询",
+        "value": "怎么退费",
+        "note": "查询被转换为一条向量。"
+      },
+      {
+        "label": "比较",
+        "value": "退款流程 0.91；课程介绍 0.42；账户注销 0.18",
+        "note": "三条相似度条按分数长短显示。"
+      },
+      {
+        "label": "候选",
+        "value": "退款流程排在第 1 位",
+        "note": "原文和 0.91 分数一起返回。"
+      }
+    ],
+    "quizQuestion": "嵌入向量通常用来做什么？",
+    "quizOptions": [
+      "比较内容的语义相似度",
+      "直接保存完整原文含义且无损",
+      "保证检索结果事实正确"
+    ],
+    "correctText": "向量适合支持相似度检索。",
+    "wrongText": "向量是压缩表示，不是无损事实副本。",
+    "promptTitle": "规划嵌入检索",
+    "prompt": "请说明内容如何切分、使用哪个嵌入模型、相似度指标和如何验证召回结果。",
+    "relatedSlugs": [
+      "vector-store",
+      "semantic-search",
+      "retrieval"
+    ]
+  },
+  {
+    "zh": "向量存储",
+    "en": "Vector Store",
+    "slug": "vector-store",
+    "cat": "AI·Agent",
+    "say": "保存向量及其原文标识，并支持按相似度查找邻近内容。",
+    "aliases": [
+      "向量数据库",
+      "向量索引",
+      "vector database"
+    ],
+    "question": "大量文档向量放在哪里才能快速搜索？",
+    "definition": "向量存储为高维向量建立索引，并保留元数据以便过滤和定位原文。",
+    "boundary": "它不是知识自动更新系统；原文变更后需要重新同步相应向量。",
+    "demoType": "request",
+    "demoTitle": "一次向量查询",
+    "demoSteps": [
+      {
+        "label": "写入",
+        "value": "向量、文档 ID 和元数据",
+        "note": "索引建立在统一维度上。"
+      },
+      {
+        "label": "查询",
+        "value": "输入向量和过滤条件",
+        "note": "系统搜索相近候选。"
+      },
+      {
+        "label": "返回",
+        "value": "分数与原文位置",
+        "note": "应用再做重排或引用。"
+      }
+    ],
+    "quizQuestion": "向量存储除了向量还应保留什么？",
+    "quizOptions": [
+      "可定位原文的标识和元数据",
+      "模型的全部训练数据",
+      "用户所有浏览历史"
+    ],
+    "correctText": "原文标识和元数据支持过滤与引用。",
+    "wrongText": "无关或未经授权的数据不应随意保存。",
+    "promptTitle": "设计向量索引",
+    "prompt": "请定义向量字段、原文标识、过滤元数据、更新策略和删除同步规则。",
+    "relatedSlugs": [
+      "embedding",
+      "semantic-search",
+      "rag"
+    ]
+  },
+  {
+    "zh": "检索",
+    "en": "Retrieval",
+    "slug": "retrieval",
+    "cat": "AI·Agent",
+    "say": "根据查询从资料库找出可能相关的内容，供后续回答或处理。",
+    "aliases": [
+      "信息检索",
+      "召回",
+      "retrieve"
+    ],
+    "question": "知识库问答为什么要先找材料再生成？",
+    "definition": "检索负责从可用数据中召回候选内容，生成模型再基于这些内容组织答案。",
+    "boundary": "检索结果可能遗漏或不相关，需要用召回率、相关性和来源权限评估。",
+    "demoType": "flow",
+    "demoTitle": "一个退款问题召回前三条资料",
+    "demoSteps": [
+      {
+        "label": "查询",
+        "value": "退款多久到账",
+        "note": "检索请求同时保留“退款”和“时间”信号。"
+      },
+      {
+        "label": "召回",
+        "value": "退款政策 0.88；退订课程 0.76；账户注销 0.31",
+        "note": "候选列表按初始分数排序。"
+      },
+      {
+        "label": "筛选",
+        "value": "保留前 2 条，移除账户注销",
+        "note": "上下文区只加入与退款有关的资料。"
+      }
+    ],
+    "quizQuestion": "检索阶段的主要产物是什么？",
+    "quizOptions": [
+      "与查询相关的候选资料",
+      "已经写好的最终答案",
+      "模型训练后的新参数"
+    ],
+    "correctText": "检索返回候选证据，生成是后续步骤。",
+    "wrongText": "答案和模型参数不由普通检索直接产生。",
+    "promptTitle": "检查检索结果",
+    "prompt": "请列出查询、召回候选、相关性依据、遗漏风险和来源权限。",
+    "relatedSlugs": [
+      "rag",
+      "semantic-search",
+      "reranking"
+    ]
+  },
+  {
+    "zh": "分块",
+    "en": "Chunking",
+    "slug": "chunking",
+    "cat": "AI·Agent",
+    "say": "把长文档切成适合检索和放入上下文的小段，并保留必要结构。",
+    "aliases": [
+      "文本切块",
+      "文档分段",
+      "chunk"
+    ],
+    "question": "整篇文档直接做一个向量，为什么搜索结果不准？",
+    "definition": "分块控制每个检索单元的范围，使查询更容易命中具体内容。",
+    "boundary": "块太小会丢失上下文，太大会混入无关信息，没有通用固定长度。",
+    "demoType": "comparison",
+    "demoTitle": "不同分块大小的影响",
+    "demoSteps": [
+      {
+        "label": "过小",
+        "value": "命中具体但上下文不足",
+        "note": "容易切断标题和条件。"
+      },
+      {
+        "label": "适中",
+        "value": "主题相对完整",
+        "note": "便于检索后直接引用。"
+      },
+      {
+        "label": "过大",
+        "value": "上下文多但噪声增加",
+        "note": "相似度可能被无关内容稀释。"
+      }
+    ],
+    "quizQuestion": "选择分块大小主要依据什么？",
+    "quizOptions": [
+      "文档结构和实际查询方式",
+      "所有项目统一固定字数",
+      "页面背景颜色"
+    ],
+    "correctText": "分块应服务于内容结构和检索任务。",
+    "wrongText": "固定字数只能作为起点，不能替代评测。",
+    "promptTitle": "制定分块规则",
+    "prompt": "请根据文档层级、段落长度和常见查询设计分块、重叠和元数据规则。",
+    "relatedSlugs": [
+      "retrieval",
+      "embedding",
+      "context-window"
+    ]
+  },
+  {
+    "zh": "重排序",
+    "en": "Reranking",
+    "slug": "reranking",
+    "cat": "AI·Agent",
+    "say": "对检索出的候选再次评分，把更符合查询的内容排到前面。",
+    "aliases": [
+      "二次排序",
+      "rerank",
+      "相关性重排"
+    ],
+    "question": "向量搜索已经有相似度，为什么还要再排序？",
+    "definition": "重排序模型通常同时查看查询和候选正文，能比初步向量距离做更细的相关性判断。",
+    "boundary": "重排序只处理已召回候选，漏掉的内容无法在这一步恢复。",
+    "demoType": "flow",
+    "demoTitle": "初始前三名经过语义重排",
+    "demoSteps": [
+      {
+        "label": "初始排序",
+        "value": "退订课程 0.82；退款时效 0.78；账户注销 0.76",
+        "note": "向量分数让三个结果较接近。"
+      },
+      {
+        "label": "重新评分",
+        "value": "退款时效 0.94；退订课程 0.71；账户注销 0.12",
+        "note": "重排器同时比较问题和完整正文。"
+      },
+      {
+        "label": "新顺序",
+        "value": "退款时效升到第 1 位",
+        "note": "账户注销降到第 3 位并被截掉。"
+      }
+    ],
+    "quizQuestion": "重排序能解决哪个问题？",
+    "quizOptions": [
+      "改善候选内容的先后顺序",
+      "找回未被召回的全部文档",
+      "自动修正文档事实"
+    ],
+    "correctText": "重排优化候选排序。",
+    "wrongText": "未召回和原文错误不属于重排能力。",
+    "promptTitle": "评估重排序",
+    "prompt": "请用真实查询比较重排前后的前五结果，并记录相关性、延迟和漏召回。",
+    "relatedSlugs": [
+      "retrieval",
+      "semantic-search",
+      "hybrid-search"
+    ]
+  },
+  {
+    "zh": "语义搜索",
+    "en": "Semantic Search",
+    "slug": "semantic-search",
+    "cat": "AI·Agent",
+    "say": "按含义而不只按字面词匹配内容，常通过嵌入向量实现。",
+    "aliases": [
+      "语义检索",
+      "向量搜索",
+      "意思搜索"
+    ],
+    "question": "搜索“如何退费”能找到标题为“退款流程”的页面吗？",
+    "definition": "语义搜索把查询和内容映射到同一向量空间，再按相似度检索。",
+    "boundary": "它可能把主题相近但事实不同的内容混在一起，需要过滤和核对原文。",
+    "demoType": "comparison",
+    "demoTitle": "关键词与语义搜索",
+    "demoSteps": [
+      {
+        "label": "关键词",
+        "value": "匹配字面词",
+        "note": "精确但可能漏掉同义表达。"
+      },
+      {
+        "label": "语义",
+        "value": "匹配含义相近内容",
+        "note": "召回更广但可能引入相似噪声。"
+      },
+      {
+        "label": "组合",
+        "value": "按场景融合结果",
+        "note": "兼顾精确词和语义关系。"
+      }
+    ],
+    "quizQuestion": "语义搜索的主要优势是什么？",
+    "quizOptions": [
+      "能找到不同措辞但含义相近的内容",
+      "保证每条结果都完全正确",
+      "不需要任何索引"
+    ],
+    "correctText": "语义表示能跨越部分字面差异。",
+    "wrongText": "相关不等于正确，检索仍需索引。",
+    "promptTitle": "设计语义搜索",
+    "prompt": "请提供真实查询、相关文档和干扰文档，用它们验证召回率和前排相关性。",
+    "relatedSlugs": [
+      "embedding",
+      "retrieval",
+      "hybrid-search"
+    ]
+  },
+  {
+    "zh": "混合搜索",
+    "en": "Hybrid Search",
+    "slug": "hybrid-search",
+    "cat": "AI·Agent",
+    "say": "同时使用关键词和语义检索，再合并或重排两类结果。",
+    "aliases": [
+      "混合检索",
+      "关键词加向量",
+      "hybrid retrieval"
+    ],
+    "question": "产品型号要精确匹配，用户描述又常用近义词，怎么兼顾？",
+    "definition": "混合搜索结合字面匹配的精确性和向量检索的语义召回。",
+    "boundary": "两路结果需要合理归一化和排序，简单相加可能偏向某一路。",
+    "demoType": "flow",
+    "demoTitle": "两路结果如何合并",
+    "demoSteps": [
+      {
+        "label": "关键词路",
+        "value": "匹配名称、编号和术语",
+        "note": "适合精确字符串。"
+      },
+      {
+        "label": "向量路",
+        "value": "召回语义相近内容",
+        "note": "适合同义改写和自然语言。"
+      },
+      {
+        "label": "融合",
+        "value": "合并分数并重排",
+        "note": "按实际查询评测权重。"
+      }
+    ],
+    "quizQuestion": "混合搜索适合哪类资料？",
+    "quizOptions": [
+      "既有精确编号又有自然语言描述的资料",
+      "只有三条固定菜单项",
+      "完全不允许建立索引的数据"
+    ],
+    "correctText": "两类检索信号互补时最有价值。",
+    "wrongText": "简单固定列表无需复杂检索。",
+    "promptTitle": "配置混合搜索",
+    "prompt": "请区分必须精确匹配的字段和可语义匹配的正文，并设计融合与评测方法。",
+    "relatedSlugs": [
+      "semantic-search",
+      "reranking",
+      "retrieval"
+    ]
+  },
+  {
+    "zh": "提示缓存",
+    "en": "Prompt Caching",
+    "slug": "prompt-caching",
+    "cat": "AI·Agent",
+    "say": "复用重复出现的提示词前缀计算，减少后续请求的处理时间或费用。",
+    "aliases": [
+      "上下文缓存",
+      "prompt cache",
+      "前缀缓存"
+    ],
+    "question": "每次都发送同一份长规则，能不能减少重复计算？",
+    "definition": "提示缓存通常识别相同或稳定的输入前缀，并在后续请求中复用相应计算。",
+    "boundary": "命中条件、有效期和计费方式取决于具体服务，不应假设永久缓存。",
+    "demoType": "state",
+    "demoTitle": "同一 8k 前缀的三次请求",
+    "demoSteps": [
+      {
+        "label": "首次请求",
+        "value": "8k token 前缀；耗时 920ms",
+        "note": "缓存状态从 empty 变为 stored。"
+      },
+      {
+        "label": "重复请求",
+        "value": "前缀不变；耗时 230ms",
+        "note": "命中标记为 hit，重复部分被复用。"
+      },
+      {
+        "label": "修改前缀",
+        "value": "首段变化；耗时 910ms",
+        "note": "命中标记变为 miss，服务重新计算。"
+      }
+    ],
+    "quizQuestion": "什么最容易破坏提示缓存命中？",
+    "quizOptions": [
+      "频繁修改稳定前缀",
+      "把变化内容放在后部",
+      "复用相同系统说明"
+    ],
+    "correctText": "前缀变化会使缓存无法直接复用。",
+    "wrongText": "稳定内容保持一致更利于命中。",
+    "promptTitle": "优化缓存结构",
+    "prompt": "请区分稳定前缀和每次变化的输入，并说明缓存命中、失效和监控方法。",
+    "relatedSlugs": [
+      "system-prompt",
+      "context-window",
+      "streaming-output"
+    ]
+  },
+  {
+    "zh": "流式输出",
+    "en": "Streaming Output",
+    "slug": "streaming-output",
+    "cat": "AI·Agent",
+    "say": "模型生成一部分就发送一部分，让用户不必等待完整答案。",
+    "aliases": [
+      "流式响应",
+      "streaming",
+      "增量输出"
+    ],
+    "question": "长回答为什么能像打字一样逐段出现？",
+    "definition": "流式输出通过持续连接传输增量内容，客户端再把片段按顺序拼接显示。",
+    "boundary": "流式只改善等待感，通常不减少模型生成完整内容所需的总计算。",
+    "demoType": "lifecycle",
+    "demoTitle": "流式响应的显示过程",
+    "demoSteps": [
+      {
+        "label": "建立连接",
+        "value": "请求开始",
+        "note": "客户端准备接收增量事件。"
+      },
+      {
+        "label": "接收片段",
+        "value": "内容逐步到达",
+        "note": "按顺序追加并处理错误。"
+      },
+      {
+        "label": "结束",
+        "value": "收到完成或失败信号",
+        "note": "关闭连接并记录完整结果。"
+      }
+    ],
+    "quizQuestion": "流式输出主要改善什么？",
+    "quizOptions": [
+      "用户看到首段内容的等待时间",
+      "模型事实准确率",
+      "上下文窗口大小"
+    ],
+    "correctText": "流式让可见反馈更早出现。",
+    "wrongText": "准确率和窗口容量不由传输方式决定。",
+    "promptTitle": "设计流式交互",
+    "prompt": "请说明开始、增量片段、取消、错误和完成五种状态的界面反馈。",
+    "relatedSlugs": [
+      "generative-ai",
+      "tool-result",
+      "client-server"
+    ]
+  },
+  {
+    "zh": "模型路由",
+    "en": "Model Routing",
+    "slug": "model-routing",
+    "cat": "AI·Agent",
+    "say": "根据任务、质量、延迟或成本要求，把请求分配给合适的模型。",
+    "aliases": [
+      "模型分流",
+      "模型选择器",
+      "model router"
+    ],
+    "question": "简单分类和复杂分析需要使用同一个模型吗？",
+    "definition": "模型路由先识别请求特征，再按规则或评估结果选择模型。",
+    "boundary": "路由规则需要持续监控；错误分类可能让任务质量下降或成本上升。",
+    "demoType": "branch",
+    "demoTitle": "按任务约束选择模型",
+    "demoSteps": [
+      {
+        "label": "请求",
+        "value": "把 20 条评论分成正面或负面",
+        "note": "路由器识别为短文本分类、低风险。"
+      },
+      {
+        "label": "候选比较",
+        "value": "小模型 96%/180ms；大模型 97%/760ms",
+        "note": "两者都超过准确率阈值 95%。"
+      },
+      {
+        "label": "路由结果",
+        "value": "选择小模型",
+        "note": "请求在 180ms 完成，路由原因被记录。"
+      }
+    ],
+    "quizQuestion": "模型路由的主要目标是什么？",
+    "quizOptions": [
+      "按任务约束选择合适模型",
+      "保证所有请求都用最大模型",
+      "让调用完全没有成本"
+    ],
+    "correctText": "路由是在多项约束下做选择。",
+    "wrongText": "一律使用单一模型不属于路由。",
+    "promptTitle": "制定模型路由",
+    "prompt": "请按任务类型、风险、质量、延迟和成本列出路由规则及回退条件。",
+    "relatedSlugs": [
+      "model-fallback",
+      "benchmark",
+      "eval"
+    ]
+  },
+  {
+    "zh": "备用模型",
+    "en": "Model Fallback",
+    "slug": "model-fallback",
+    "cat": "AI·Agent",
+    "say": "主模型不可用或不满足条件时，按预设规则切换到另一个模型。",
+    "aliases": [
+      "模型降级",
+      "模型回退",
+      "fallback model"
+    ],
+    "question": "模型服务超时后，系统是报错还是换一个模型？",
+    "definition": "备用模型策略会在特定错误、超时或配额条件下切换请求，并处理能力差异。",
+    "boundary": "不同模型的格式、上下文和工具能力可能不同，不能无条件替换。",
+    "demoType": "branch",
+    "demoTitle": "主模型限流后切换备用模型",
+    "demoSteps": [
+      {
+        "label": "主模型",
+        "value": "请求返回 HTTP 429",
+        "note": "本次调用没有生成内容。"
+      },
+      {
+        "label": "回退判断",
+        "value": "策略允许 429 切换；重试等待 30s",
+        "note": "路由状态从 primary 变为 fallback。"
+      },
+      {
+        "label": "备用模型",
+        "value": "请求成功，fallback=true",
+        "note": "用户收到结果，监控新增一次回退记录。"
+      }
+    ],
+    "quizQuestion": "配置备用模型时必须检查什么？",
+    "quizOptions": [
+      "两种模型的能力和输出兼容性",
+      "只比较模型名称",
+      "默认错误都无限重试"
+    ],
+    "correctText": "回退后仍需满足任务和接口要求。",
+    "wrongText": "名称相近不代表能力与格式兼容。",
+    "promptTitle": "设计模型回退",
+    "prompt": "请列出可回退错误、备用模型差异、重试次数、用户提示和监控指标。",
+    "relatedSlugs": [
+      "model-routing",
+      "agent-loop"
+    ]
+  },
+  {
+    "zh": "智能体记忆",
+    "en": "Agent Memory",
+    "slug": "agent-memory",
+    "cat": "AI·Agent",
+    "say": "保存对后续任务有用的信息，并在需要时提供给智能体。",
+    "aliases": [
+      "代理记忆",
+      "智能体长期信息",
+      "agent memory"
+    ],
+    "question": "智能体下次怎样记住用户偏好，又不把所有聊天都带上？",
+    "definition": "智能体记忆把选择后的信息写入外部存储，并按任务检索使用。",
+    "boundary": "记忆需要授权、过期、纠错和删除机制，不能把全部对话默认永久保存。",
+    "demoType": "lifecycle",
+    "demoTitle": "一条记忆的生命周期",
+    "demoSteps": [
+      {
+        "label": "写入",
+        "value": "提取可复用信息",
+        "note": "先判断是否需要和允许保存。"
+      },
+      {
+        "label": "读取",
+        "value": "按当前任务检索",
+        "note": "只取相关且仍有效的内容。"
+      },
+      {
+        "label": "更新或删除",
+        "value": "用户纠正或信息过期",
+        "note": "避免旧信息持续影响结果。"
+      }
+    ],
+    "quizQuestion": "智能体记忆最需要哪项治理？",
+    "quizOptions": [
+      "允许用户查看、纠正和删除",
+      "默认永久保存所有内容",
+      "把记忆当成准确事实"
+    ],
+    "correctText": "可控的更新和删除能减少隐私与陈旧信息风险。",
+    "wrongText": "无限保存会扩大错误和隐私问题。",
+    "promptTitle": "设计记忆策略",
+    "prompt": "请说明哪些信息可保存、保存多久、何时读取、如何纠正和删除。",
+    "relatedSlugs": [
+      "memory",
+      "working-memory",
+      "context"
+    ]
+  },
+  {
+    "zh": "工作记忆",
+    "en": "Working Memory",
+    "slug": "working-memory",
+    "cat": "AI·Agent",
+    "say": "保存当前任务过程中暂时需要的中间状态，任务结束后通常不长期保留。",
+    "aliases": [
+      "短期记忆",
+      "任务内状态",
+      "scratchpad"
+    ],
+    "question": "多步骤操作怎样记住已经完成了哪一步？",
+    "definition": "工作记忆记录当前目标、计划、工具结果和未完成项，支持后续步骤继续判断。",
+    "boundary": "工作记忆不等于模型内部推理文本，也不适合保存长期用户资料。",
+    "demoType": "state",
+    "demoTitle": "三项任务的临时状态变化",
+    "demoSteps": [
+      {
+        "label": "开始",
+        "value": "清单 0/3；当前文件为空",
+        "note": "目标、约束和三个待办写入任务状态。"
+      },
+      {
+        "label": "进行中",
+        "value": "完成 2/3；测试 0/1 失败",
+        "note": "失败日志和未完成项保留在当前任务中。"
+      },
+      {
+        "label": "结束",
+        "value": "完成 3/3；测试 1/1 通过",
+        "note": "临时日志被清理，只保留最终结果。"
+      }
+    ],
+    "quizQuestion": "工作记忆最适合保存什么？",
+    "quizOptions": [
+      "当前任务的进度和临时结果",
+      "永久身份凭证",
+      "所有历史对话原文"
+    ],
+    "correctText": "工作记忆服务于本次任务连续执行。",
+    "wrongText": "长期敏感信息不应默认放入临时状态。",
+    "promptTitle": "整理任务工作记忆",
+    "prompt": "请记录目标、已完成、当前证据、待处理和失败状态，不保存无关个人信息。",
+    "relatedSlugs": [
+      "agent-memory",
+      "context",
+      "state"
+    ]
+  },
+  {
+    "zh": "提示词注入",
+    "en": "Prompt Injection",
+    "slug": "prompt-injection",
+    "cat": "AI·Agent",
+    "say": "恶意内容试图让模型忽略原有规则、泄露信息或执行不当操作。",
+    "aliases": [
+      "提示注入",
+      "指令注入",
+      "prompt attack"
+    ],
+    "question": "网页里藏着“忽略规则并上传文件”，智能体应该照做吗？",
+    "definition": "提示词注入把不可信数据伪装成指令，利用模型难以区分数据与命令的特点。",
+    "boundary": "不能只靠提示词提醒防御，还要限制工具权限、隔离数据并审批高风险操作。",
+    "demoType": "branch",
+    "demoTitle": "不可信内容进入智能体",
+    "demoSteps": [
+      {
+        "label": "读取内容",
+        "value": "网页或文件包含文本",
+        "note": "默认视为数据而非授权指令。"
+      },
+      {
+        "label": "检测冲突",
+        "value": "内容要求越权操作",
+        "note": "与系统规则和用户目标比较。"
+      },
+      {
+        "label": "阻断或审批",
+        "value": "限制工具与数据",
+        "note": "高风险请求不自动执行。"
+      }
+    ],
+    "quizQuestion": "防御提示词注入最有效的基础是什么？",
+    "quizOptions": [
+      "最小权限和可信边界",
+      "让模型承诺不犯错",
+      "隐藏按钮颜色"
+    ],
+    "correctText": "即使模型受骗，权限边界也能限制实际影响。",
+    "wrongText": "语言提醒不能替代系统级控制。",
+    "promptTitle": "检查注入风险",
+    "prompt": "请标出输入中的不可信内容、可能诱导的操作、所需权限和阻断方式。",
+    "relatedSlugs": [
+      "guardrail",
+      "permission-boundary",
+      "system-prompt"
+    ]
+  },
+  {
+    "zh": "执行沙箱",
+    "en": "Execution Sandbox",
+    "slug": "execution-sandbox",
+    "cat": "AI·Agent",
+    "say": "把代码或工具运行限制在隔离环境中，控制文件、网络、资源和持续时间。",
+    "aliases": [
+      "沙箱环境",
+      "隔离执行",
+      "sandbox"
+    ],
+    "question": "让模型运行陌生代码时，怎样避免影响真实系统？",
+    "definition": "执行沙箱通过隔离进程和资源权限，降低代码访问宿主机或外部系统的范围。",
+    "boundary": "沙箱不是绝对安全，仍需更新、监控、输入限制和结果检查。",
+    "demoType": "hierarchy",
+    "demoTitle": "沙箱的几层限制",
+    "demoSteps": [
+      {
+        "label": "文件权限",
+        "value": "只开放指定目录",
+        "note": "阻止读取无关数据。"
+      },
+      {
+        "label": "网络权限",
+        "value": "限制可访问地址",
+        "note": "减少外传和远程控制风险。"
+      },
+      {
+        "label": "资源限制",
+        "value": "时间、内存和进程数",
+        "note": "防止失控占用。"
+      }
+    ],
+    "quizQuestion": "执行陌生代码时最合理的做法是什么？",
+    "quizOptions": [
+      "在受限沙箱中运行并检查结果",
+      "直接使用生产管理员权限",
+      "只在提示词里写请小心"
+    ],
+    "correctText": "隔离和最小权限能限制代码影响范围。",
+    "wrongText": "文字提醒不能形成实际权限边界。",
+    "promptTitle": "定义沙箱策略",
+    "prompt": "请列出允许的文件、网络、命令、资源上限、超时和产物检查方式。",
+    "relatedSlugs": [
+      "permission-boundary",
+      "tool-approval",
+      "guardrail"
+    ]
+  },
+  {
+    "zh": "编译器",
+    "en": "Compiler",
+    "slug": "compiler",
+    "cat": "技术栈",
+    "say": "把源代码分析并转换成机器码、字节码或其他可执行形式。",
+    "aliases": [
+      "编译",
+      "编译程序",
+      "compiler tool"
+    ],
+    "question": "代码运行前为什么会先出现编译错误？",
+    "definition": "编译器读取整个程序或模块，检查语法和部分类型，再生成目标代码。",
+    "boundary": "编译器不同于解释器，也不等于负责全部项目流程的构建工具。",
+    "demoType": "flow",
+    "demoTitle": "源代码经过编译",
+    "demoSteps": [
+      {
+        "label": "分析",
+        "value": "读取语法与符号",
+        "note": "非法结构被标红，暂不生成文件。"
+      },
+      {
+        "label": "转换",
+        "value": "生成中间表示或目标代码",
+        "note": "通过检查的函数变成目标指令。"
+      },
+      {
+        "label": "输出",
+        "value": "产物或错误列表",
+        "note": "成功得到文件，失败得到源码位置。"
+      }
+    ],
+    "quizQuestion": "编译器的直接产物通常是什么？",
+    "quizOptions": [
+      "目标代码或编译错误",
+      "数据库中的业务数据",
+      "浏览器页面截图"
+    ],
+    "correctText": "编译器负责把源代码转换为目标形式。",
+    "wrongText": "业务数据和截图不是编译器的直接输出。",
+    "promptTitle": "排查编译错误",
+    "prompt": "请根据编译器错误定位源码位置，说明错误类型、触发条件和最小修改方案。",
+    "relatedSlugs": [
+      "interpreter",
+      "transpiler",
+      "build-tool"
+    ]
+  },
+  {
+    "zh": "解释器",
+    "en": "Interpreter",
+    "slug": "interpreter",
+    "cat": "技术栈",
+    "say": "在运行时读取程序并执行，不一定提前生成独立的机器码文件。",
+    "aliases": [
+      "解释执行",
+      "interpreter runtime",
+      "脚本解释器"
+    ],
+    "question": "脚本为什么保存后可以直接运行？",
+    "definition": "解释器在执行过程中解析代码或其中间形式，并立即完成相应操作。",
+    "boundary": "现代运行时可能同时使用解释、即时编译等技术，二者并非绝对互斥。",
+    "demoType": "lifecycle",
+    "demoTitle": "解释执行的过程",
+    "demoSteps": [
+      {
+        "label": "读取",
+        "value": "第 1 条语句",
+        "note": "运行位置停在当前语句。"
+      },
+      {
+        "label": "执行",
+        "value": "变量从 1 变为 2",
+        "note": "内存状态立即更新。"
+      },
+      {
+        "label": "继续",
+        "value": "进入下一条语句",
+        "note": "遇到错误时停在对应位置。"
+      }
+    ],
+    "quizQuestion": "解释器的错误常在什么时候出现？",
+    "quizOptions": [
+      "执行到相关代码时",
+      "一定在打包前全部发现",
+      "只在浏览器关闭后"
+    ],
+    "correctText": "解释执行常在运行到问题位置时报告错误。",
+    "wrongText": "它不保证提前检查所有执行分支。",
+    "promptTitle": "分析运行时错误",
+    "prompt": "请根据错误堆栈说明解释器执行到哪里、当时输入是什么以及怎样复现。",
+    "relatedSlugs": [
+      "compiler",
+      "runtime",
+      "javascript"
+    ]
+  },
+  {
+    "zh": "转译器",
+    "en": "Transpiler",
+    "slug": "transpiler",
+    "cat": "技术栈",
+    "say": "把一种源代码转换成另一种相近层级的源代码。",
+    "aliases": [
+      "源码转换器",
+      "transpile",
+      "源到源编译"
+    ],
+    "question": "旧浏览器不认识新语法时，项目怎样兼容？",
+    "definition": "转译器改写语法或语言形式，例如把较新的 JavaScript 或 TypeScript 转成目标环境可处理的代码。",
+    "boundary": "转译通常不提供缺失的运行时 API，那类兼容需要垫片或其他实现。",
+    "demoType": "flow",
+    "demoTitle": "新语法转成目标语法",
+    "demoSteps": [
+      {
+        "label": "输入",
+        "value": "可选链 user?.name",
+        "note": "目标环境暂不支持。"
+      },
+      {
+        "label": "转换",
+        "value": "改写为空值判断",
+        "note": "语义保持，语法换成旧写法。"
+      },
+      {
+        "label": "输出",
+        "value": "目标环境可解析的源码",
+        "note": "源映射仍能指回原文件。"
+      }
+    ],
+    "quizQuestion": "转译器主要改变什么？",
+    "quizOptions": [
+      "源代码的语法形式",
+      "生产数据库结构",
+      "用户的网络带宽"
+    ],
+    "correctText": "转译器处理源代码之间的转换。",
+    "wrongText": "它不直接修改业务数据或网络条件。",
+    "promptTitle": "配置转译目标",
+    "prompt": "请说明源码语言、目标运行环境、需要转换的语法和不由转译器处理的 API。",
+    "relatedSlugs": [
+      "compiler",
+      "typescript",
+      "source-map"
+    ]
+  },
+  {
+    "zh": "构建工具",
+    "en": "Build Tool",
+    "slug": "build-tool",
+    "cat": "技术栈",
+    "say": "组织编译、打包、资源处理和产物输出等项目构建任务。",
+    "aliases": [
+      "构建系统",
+      "build system",
+      "构建脚本"
+    ],
+    "question": "从源码到可部署目录，中间的任务由谁协调？",
+    "definition": "构建工具按配置和依赖关系执行一组任务，并生成部署或发布所需的产物。",
+    "boundary": "它可以调用编译器和打包器，但三者职责并不相同。",
+    "demoType": "flow",
+    "demoTitle": "一次前端构建",
+    "demoSteps": [
+      {
+        "label": "读取配置",
+        "value": "入口是 src/main.ts",
+        "note": "任务图显示编译后再打包。"
+      },
+      {
+        "label": "执行任务",
+        "value": "源码和样式依次处理",
+        "note": "进度从待处理变为完成。"
+      },
+      {
+        "label": "输出产物",
+        "value": "dist 出现 JS、CSS 和清单",
+        "note": "发布目录与本次源码对应。"
+      }
+    ],
+    "quizQuestion": "构建工具最核心的职责是什么？",
+    "quizOptions": [
+      "协调源码到产物的处理任务",
+      "托管生产数据库",
+      "设计页面交互"
+    ],
+    "correctText": "构建工具组织多个处理步骤。",
+    "wrongText": "数据库托管和产品设计属于其他系统。",
+    "promptTitle": "说明构建流程",
+    "prompt": "请列出入口、处理任务、环境差异、输出目录和构建失败时的诊断信息。",
+    "relatedSlugs": [
+      "bundler",
+      "compiler",
+      "deploy"
+    ]
+  },
+  {
+    "zh": "打包器",
+    "en": "Bundler",
+    "slug": "bundler",
+    "cat": "技术栈",
+    "say": "从入口分析模块依赖，并把代码和资源组合成可加载的产物。",
+    "aliases": [
+      "模块打包器",
+      "bundle tool",
+      "打包工具"
+    ],
+    "question": "项目有几百个模块，浏览器最终加载哪些文件？",
+    "definition": "打包器建立依赖图，对模块进行拆分、合并和优化，再输出一个或多个资源文件。",
+    "boundary": "打包不等同于压缩，也不负责决定应用的业务模块边界。",
+    "demoType": "hierarchy",
+    "demoTitle": "入口形成依赖图",
+    "demoSteps": [
+      {
+        "label": "入口",
+        "value": "main.ts",
+        "note": "依赖图从一个节点开始。"
+      },
+      {
+        "label": "依赖图",
+        "value": "main 指向 ui 和 data",
+        "note": "共享模块只保留一个节点。"
+      },
+      {
+        "label": "产物",
+        "value": "main.js 加按需分块",
+        "note": "浏览器按页面只取需要的文件。"
+      }
+    ],
+    "quizQuestion": "打包器需要先建立什么？",
+    "quizOptions": [
+      "模块依赖图",
+      "用户权限表",
+      "测试人员名单"
+    ],
+    "correctText": "依赖图决定哪些模块进入哪些产物。",
+    "wrongText": "业务权限和人员信息不属于打包输入。",
+    "promptTitle": "分析打包结果",
+    "prompt": "请说明入口、依赖图、代码分块、重复依赖和各产物大小。",
+    "relatedSlugs": [
+      "build-tool",
+      "dependency",
+      "source-map"
+    ]
+  },
+  {
+    "zh": "开发服务器",
+    "en": "Development Server",
+    "slug": "dev-server",
+    "cat": "技术栈",
+    "say": "在本地提供应用资源，并为开发过程提供重载、代理和错误提示。",
+    "aliases": [
+      "本地开发服务",
+      "dev server",
+      "开发环境服务器"
+    ],
+    "question": "修改源码后为什么刷新浏览器就能看到新页面？",
+    "definition": "开发服务器按当前源码提供页面和资源，并监听文件变化触发重新处理。",
+    "boundary": "它面向开发效率，默认配置通常不适合作为生产服务器。",
+    "demoType": "request",
+    "demoTitle": "浏览器请求本地页面",
+    "demoSteps": [
+      {
+        "label": "请求",
+        "value": "GET /products",
+        "note": "终端出现一条新的访问记录。"
+      },
+      {
+        "label": "处理",
+        "value": "按需构建 products 模块",
+        "note": "错误会显示文件和行号。"
+      },
+      {
+        "label": "响应",
+        "value": "返回最新页面资源",
+        "note": "浏览器状态从加载中变为可交互。"
+      }
+    ],
+    "quizQuestion": "开发服务器主要用于哪个阶段？",
+    "quizOptions": [
+      "本地开发和联调",
+      "长期生产托管",
+      "数据库冷备份"
+    ],
+    "correctText": "开发服务器为开发循环提供快速反馈。",
+    "wrongText": "生产托管需要独立的稳定性和安全配置。",
+    "promptTitle": "排查开发服务",
+    "prompt": "请检查监听地址、端口、代理规则、构建错误和浏览器请求状态。",
+    "relatedSlugs": [
+      "hot-reload",
+      "hmr",
+      "build-tool"
+    ]
+  },
+  {
+    "zh": "热重载",
+    "en": "Hot Reload",
+    "slug": "hot-reload",
+    "cat": "技术栈",
+    "say": "文件变化后自动重新加载页面或应用，使最新代码立即生效。",
+    "aliases": [
+      "自动刷新",
+      "热更新",
+      "live reload"
+    ],
+    "question": "每次改代码都手动刷新页面，能不能自动完成？",
+    "definition": "热重载监听源码变化，重新构建后通知客户端刷新运行中的应用。",
+    "boundary": "完整刷新会重置页面内存状态，与热模块替换不同。",
+    "demoType": "state",
+    "demoTitle": "源码变化触发页面重载",
+    "demoSteps": [
+      {
+        "label": "修改前",
+        "value": "计数器显示 3",
+        "note": "页面内存保存当前数字。"
+      },
+      {
+        "label": "检测变化",
+        "value": "开发服务完成新构建",
+        "note": "浏览器收到重新加载信号。"
+      },
+      {
+        "label": "重新加载",
+        "value": "计数器回到初始值 0",
+        "note": "新代码生效，未持久化状态丢失。"
+      }
+    ],
+    "quizQuestion": "热重载后页面状态通常怎样？",
+    "quizOptions": [
+      "完整刷新时会重新初始化",
+      "一定完整保留",
+      "自动写入数据库"
+    ],
+    "correctText": "页面重载会重新建立运行时状态。",
+    "wrongText": "状态保留需要额外机制。",
+    "promptTitle": "检查重载问题",
+    "prompt": "请确认文件监听、重新构建、客户端连接和刷新后的状态是否符合预期。",
+    "relatedSlugs": [
+      "dev-server",
+      "hmr",
+      "state"
+    ]
+  },
+  {
+    "zh": "热模块替换",
+    "en": "Hot Module Replacement",
+    "slug": "hmr",
+    "cat": "技术栈",
+    "say": "只替换变化的模块，尽量保留应用其他部分和当前状态。",
+    "aliases": [
+      "HMR",
+      "模块热替换",
+      "hot module reload"
+    ],
+    "question": "改一段样式时，为什么表单内容没有被清空？",
+    "definition": "HMR 在开发运行时接收更新模块，并让应用接受或重新执行局部代码。",
+    "boundary": "并非所有模块都能安全热替换，边界失败时仍可能退回完整刷新。",
+    "demoType": "state",
+    "demoTitle": "局部模块替换",
+    "demoSteps": [
+      {
+        "label": "修改前",
+        "value": "表单姓名是小林",
+        "note": "其他模块保持运行。"
+      },
+      {
+        "label": "接收更新",
+        "value": "只下载 Button 模块",
+        "note": "页面没有整体白屏。"
+      },
+      {
+        "label": "应用更新",
+        "value": "按钮变绿，姓名仍是小林",
+        "note": "局部代码更新且状态保留。"
+      }
+    ],
+    "quizQuestion": "HMR 与完整热重载的主要区别是什么？",
+    "quizOptions": [
+      "HMR 尝试保留未变部分和状态",
+      "HMR 只用于生产环境",
+      "HMR 不需要开发服务器"
+    ],
+    "correctText": "局部替换是 HMR 的主要特点。",
+    "wrongText": "HMR 通常依赖开发服务器，并主要用于开发阶段。",
+    "promptTitle": "分析 HMR 边界",
+    "prompt": "请说明哪个模块被替换、哪些状态需要保留、何时退回整页刷新。",
+    "relatedSlugs": [
+      "hot-reload",
+      "dev-server",
+      "component"
+    ]
+  },
+  {
+    "zh": "依赖",
+    "en": "Dependency",
+    "slug": "dependency",
+    "cat": "技术栈",
+    "say": "当前代码运行、构建或测试时需要的外部包、模块或服务。",
+    "aliases": [
+      "项目依赖",
+      "依赖包",
+      "dependency package"
+    ],
+    "question": "安装一个组件库后，为什么项目里会多出许多间接包？",
+    "definition": "依赖可以直接声明，也可能由直接依赖继续引用形成传递依赖。",
+    "boundary": "使用依赖能复用能力，但也带来版本、体积、许可和安全维护成本。",
+    "demoType": "hierarchy",
+    "demoTitle": "直接依赖与传递依赖",
+    "demoSteps": [
+      {
+        "label": "项目",
+        "value": "直接声明 ui-kit",
+        "note": "依赖树新增第一层节点。"
+      },
+      {
+        "label": "ui-kit",
+        "value": "继续依赖 color-utils",
+        "note": "第二层节点由包带入。"
+      },
+      {
+        "label": "安装结果",
+        "value": "锁定两个具体版本",
+        "note": "删除 ui-kit 后两层关系一起重算。"
+      }
+    ],
+    "quizQuestion": "传递依赖是什么？",
+    "quizOptions": [
+      "直接依赖继续需要的包",
+      "项目自己编写的业务代码",
+      "运行时用户输入"
+    ],
+    "correctText": "传递依赖来自依赖关系的下一层。",
+    "wrongText": "业务源码和用户数据不是包依赖。",
+    "promptTitle": "审查项目依赖",
+    "prompt": "请列出用途、直接或传递关系、版本、许可、体积和已知漏洞。",
+    "relatedSlugs": [
+      "package",
+      "lockfile",
+      "semantic-versioning"
+    ]
+  },
+  {
+    "zh": "语义化版本",
+    "en": "Semantic Versioning",
+    "slug": "semantic-versioning",
+    "cat": "技术栈",
+    "say": "用主版本、次版本和修订号表达兼容性变化，常写成 2.4.1。",
+    "aliases": [
+      "SemVer",
+      "语义版本号",
+      "major minor patch"
+    ],
+    "question": "一个修复版本和破坏兼容的版本，编号该怎样变化？",
+    "definition": "语义化版本约定主版本表示不兼容变化，次版本表示兼容新增，修订号表示兼容修复。",
+    "boundary": "只有维护者正确标注版本时，这套约定才可靠，预发布版本还有额外规则。",
+    "demoType": "comparison",
+    "demoTitle": "三种变更对应的版本",
+    "demoSteps": [
+      {
+        "label": "修复缺陷",
+        "value": "2.4.1 → 2.4.2",
+        "note": "兼容修复只增加修订号。"
+      },
+      {
+        "label": "新增兼容功能",
+        "value": "2.4.2 → 2.5.0",
+        "note": "次版本增加，修订号归零。"
+      },
+      {
+        "label": "破坏兼容",
+        "value": "2.5.0 → 3.0.0",
+        "note": "调用方需要评估迁移。"
+      }
+    ],
+    "quizQuestion": "不兼容 API 变化应增加哪部分？",
+    "quizOptions": [
+      "主版本号",
+      "只改修订号",
+      "不改版本号"
+    ],
+    "correctText": "主版本用于标识不兼容变化。",
+    "wrongText": "只改修订号会误导依赖方。",
+    "promptTitle": "判断版本变化",
+    "prompt": "请根据变更内容判断主、次或修订版本，并说明兼容性依据。",
+    "relatedSlugs": [
+      "dependency",
+      "lockfile",
+      "package"
+    ]
+  },
+  {
+    "zh": "锁文件",
+    "en": "Lockfile",
+    "slug": "lockfile",
+    "cat": "技术栈",
+    "say": "记录依赖解析后的确切版本和完整关系，使不同环境安装结果一致。",
+    "aliases": [
+      "依赖锁定文件",
+      "package lock",
+      "版本锁"
+    ],
+    "question": "同一个 package.json，为什么两台机器装出的间接依赖可能不同？",
+    "definition": "锁文件保存一次解析结果，包管理器可据此还原相同的依赖树。",
+    "boundary": "锁文件不能保证包本身安全，也不能替代依赖更新策略。",
+    "demoType": "state",
+    "demoTitle": "依赖从范围到确切版本",
+    "demoSteps": [
+      {
+        "label": "只看声明",
+        "value": "ui-kit 允许 2.x",
+        "note": "今天可解析多个版本。"
+      },
+      {
+        "label": "生成锁文件",
+        "value": "选定 ui-kit 2.4.1",
+        "note": "间接依赖也写入确切版本。"
+      },
+      {
+        "label": "另一台机器安装",
+        "value": "仍得到 2.4.1",
+        "note": "依赖树与首次安装一致。"
+      }
+    ],
+    "quizQuestion": "锁文件最直接解决什么问题？",
+    "quizOptions": [
+      "提高多环境安装的一致性",
+      "自动修复所有漏洞",
+      "减少源码行数"
+    ],
+    "correctText": "确切依赖树能减少环境差异。",
+    "wrongText": "安全修复仍需主动更新和测试。",
+    "promptTitle": "审查锁文件变化",
+    "prompt": "请说明哪些直接或传递依赖发生变化、变化原因和需要回归的范围。",
+    "relatedSlugs": [
+      "dependency",
+      "package",
+      "semantic-versioning"
+    ]
+  },
+  {
+    "zh": "单体仓库",
+    "en": "Monorepo",
+    "slug": "monorepo",
+    "cat": "技术栈",
+    "say": "在一个版本库中管理多个应用、包或服务，并共享工具与变更流程。",
+    "aliases": [
+      "单仓多项目",
+      "monorepository",
+      "大仓"
+    ],
+    "question": "前端、组件库和接口类型要一起修改，放在一个仓库有什么影响？",
+    "definition": "单体仓库让相关项目共享依赖、脚本和原子提交，同时需要清楚的边界和构建策略。",
+    "boundary": "它描述代码仓库组织方式，不等于单体架构。",
+    "demoType": "hierarchy",
+    "demoTitle": "单体仓库的目录关系",
+    "demoSteps": [
+      {
+        "label": "仓库",
+        "value": "apps 与 packages 两个分区",
+        "note": "统一保存版本历史。"
+      },
+      {
+        "label": "工作区",
+        "value": "web 依赖 ui 和 types",
+        "note": "依赖箭头跨目录但仍可追踪。"
+      },
+      {
+        "label": "受影响任务",
+        "value": "修改 ui 后只重建相关项目",
+        "note": "任务图把无关应用排除。"
+      }
+    ],
+    "quizQuestion": "Monorepo 与单体架构是什么关系？",
+    "quizOptions": [
+      "一个是代码组织，一个是系统架构",
+      "完全相同",
+      "只能一起使用"
+    ],
+    "correctText": "仓库布局与运行时架构是两个维度。",
+    "wrongText": "多项目仓库也可以部署多个服务。",
+    "promptTitle": "规划单体仓库",
+    "prompt": "请划分应用与共享包、依赖方向、构建缓存和受影响测试规则。",
+    "relatedSlugs": [
+      "repo-commit",
+      "dependency",
+      "build-tool"
+    ]
+  },
+  {
+    "zh": "环境变量",
+    "en": "Environment Variable",
+    "slug": "environment-variable",
+    "cat": "技术栈",
+    "say": "由运行环境提供的键值配置，让同一份代码使用不同地址、开关或凭据。",
+    "aliases": [
+      "env",
+      "环境配置",
+      "process env"
+    ],
+    "question": "开发和生产使用不同接口地址，是否需要改源码？",
+    "definition": "环境变量在进程启动或运行时注入配置，应用通过名称读取对应值。",
+    "boundary": "敏感值不能因为放进环境变量就自动安全，仍要使用秘密管理和最小暴露。",
+    "demoType": "state",
+    "demoTitle": "同一代码读取不同环境",
+    "demoSteps": [
+      {
+        "label": "开发环境",
+        "value": "API_URL 指向本地服务",
+        "note": "页面请求 localhost。"
+      },
+      {
+        "label": "生产部署",
+        "value": "API_URL 改为正式地址",
+        "note": "源码文件保持不变。"
+      },
+      {
+        "label": "缺少变量",
+        "value": "启动检查失败",
+        "note": "应用明确报告缺失配置。"
+      }
+    ],
+    "quizQuestion": "环境变量最适合保存什么？",
+    "quizOptions": [
+      "随环境变化的运行配置",
+      "需要提交的业务源码",
+      "用户上传的全部文件"
+    ],
+    "correctText": "环境变量用于注入部署差异。",
+    "wrongText": "源码和业务文件应由相应存储管理。",
+    "promptTitle": "检查环境变量",
+    "prompt": "请列出变量名、用途、是否必填、示例格式、敏感性和缺失时行为。",
+    "relatedSlugs": [
+      "runtime",
+      "deploy",
+      "build-tool"
+    ]
+  },
+  {
+    "zh": "源映射",
+    "en": "Source Map",
+    "slug": "source-map",
+    "cat": "技术栈",
+    "say": "把构建后的代码位置映射回原始源码，便于调试错误和断点。",
+    "aliases": [
+      "sourcemap",
+      "源码映射",
+      "映射文件"
+    ],
+    "question": "线上错误指向压缩文件第 1 行，怎样找到原来的 TypeScript 代码？",
+    "definition": "源映射记录生成代码与源码文件、行列之间的对应关系，调试工具据此还原位置。",
+    "boundary": "公开源映射可能暴露源码结构，应按部署和错误监控需求控制访问。",
+    "demoType": "flow",
+    "demoTitle": "错误位置如何还原",
+    "demoSteps": [
+      {
+        "label": "运行错误",
+        "value": "app.min.js 第 1 行 8240 列",
+        "note": "监控只看到生成代码位置。"
+      },
+      {
+        "label": "读取映射",
+        "value": "匹配本次构建的 map 文件",
+        "note": "该位置对应一个原始片段。"
+      },
+      {
+        "label": "定位源码",
+        "value": "src/cart.ts 第 48 行",
+        "note": "开发者直接查看原始语句。"
+      }
+    ],
+    "quizQuestion": "源映射主要帮助解决什么？",
+    "quizOptions": [
+      "把生成代码位置对应回源码",
+      "自动修复运行错误",
+      "压缩数据库数据"
+    ],
+    "correctText": "映射让调试信息回到可读源码。",
+    "wrongText": "它不修改程序逻辑。",
+    "promptTitle": "检查源映射",
+    "prompt": "请确认构建版本、映射文件可用性、错误行列和源码仓库版本一致。",
+    "relatedSlugs": [
+      "transpiler",
+      "bundler",
+      "runtime"
+    ]
+  },
+  {
+    "zh": "代码检查器",
+    "en": "Linter",
+    "slug": "linter",
+    "cat": "技术栈",
+    "say": "按静态规则检查代码中的错误风险、不一致写法和可维护性问题。",
+    "aliases": [
+      "lint",
+      "静态代码检查",
+      "代码规则检查"
+    ],
+    "question": "代码能运行，为什么提交前仍会被规则拦下？",
+    "definition": "代码检查器分析源码结构并报告违反规则的位置，部分问题可以自动修复。",
+    "boundary": "Linter 不执行完整业务流程，不能替代测试和运行时监控。",
+    "demoType": "flow",
+    "demoTitle": "一次代码检查",
+    "demoSteps": [
+      {
+        "label": "扫描",
+        "value": "发现未使用变量 total",
+        "note": "编辑器在该行显示警告。"
+      },
+      {
+        "label": "应用规则",
+        "value": "规则要求删除或使用变量",
+        "note": "报告包含规则名称。"
+      },
+      {
+        "label": "处理",
+        "value": "删除变量后警告归零",
+        "note": "CI 的 lint 状态从失败变为通过。"
+      }
+    ],
+    "quizQuestion": "Linter 最适合发现哪类问题？",
+    "quizOptions": [
+      "可由静态规则识别的代码问题",
+      "线上网络瞬时故障",
+      "用户实际满意度"
+    ],
+    "correctText": "Linter 在不运行代码时检查源码规则。",
+    "wrongText": "运行环境和用户体验需要其他验证。",
+    "promptTitle": "处理 lint 报告",
+    "prompt": "请按错误、警告和可自动修复项整理结果，并说明每条规则的实际风险。",
+    "relatedSlugs": [
+      "formatter",
+      "repo-commit",
+      "sast"
+    ]
+  },
+  {
+    "zh": "格式化器",
+    "en": "Formatter",
+    "slug": "formatter",
+    "cat": "技术栈",
+    "say": "按统一规则调整缩进、空格、换行等代码外观。",
+    "aliases": [
+      "代码格式化",
+      "format tool",
+      "排版工具"
+    ],
+    "question": "团队为什么不需要反复争论一行代码该怎样换行？",
+    "definition": "格式化器把源码重写成固定样式，减少纯排版差异和审查噪声。",
+    "boundary": "它通常不判断业务逻辑是否正确，也不同于检查潜在错误的 Linter。",
+    "demoType": "comparison",
+    "demoTitle": "同一代码经过不同检查",
+    "demoSteps": [
+      {
+        "label": "原始代码",
+        "value": "空格和换行不统一",
+        "note": "程序仍可能运行。"
+      },
+      {
+        "label": "格式化后",
+        "value": "排版自动统一",
+        "note": "逻辑和值保持不变。"
+      },
+      {
+        "label": "Lint 与测试",
+        "value": "继续检查规则和行为",
+        "note": "格式通过不代表功能通过。"
+      }
+    ],
+    "quizQuestion": "格式化器主要改变什么？",
+    "quizOptions": [
+      "代码排版",
+      "业务算法含义",
+      "数据库访问权限"
+    ],
+    "correctText": "格式化器聚焦可重复的代码外观。",
+    "wrongText": "逻辑和权限不是排版工具的职责。",
+    "promptTitle": "配置代码格式",
+    "prompt": "请确定统一格式规则、执行命令、编辑器保存行为和 CI 检查方式。",
+    "relatedSlugs": [
+      "linter",
+      "repo-commit"
+    ]
+  },
+  {
+    "zh": "表达式",
+    "en": "Expression",
+    "slug": "expression",
+    "cat": "技术栈",
+    "say": "由值、变量和运算组成，执行后会得到一个结果。",
+    "aliases": [
+      "运算表达式",
+      "计算式",
+      "expression value"
+    ],
+    "question": "price * count 这一段代码为什么能放在赋值号右边？",
+    "definition": "表达式求值后产生一个值，这个值可以继续参与赋值、调用或条件判断。",
+    "boundary": "不是每条语句都有可用返回值；表达式也可能产生副作用。",
+    "demoType": "flow",
+    "demoTitle": "表达式如何求值",
+    "demoSteps": [
+      {
+        "label": "读取",
+        "value": "price 是 20，count 是 3",
+        "note": "两个操作数进入运算。"
+      },
+      {
+        "label": "计算",
+        "value": "执行 20 × 3",
+        "note": "中间结果变为 60。"
+      },
+      {
+        "label": "使用",
+        "value": "total 接收 60",
+        "note": "右侧结果成为变量新值。"
+      }
+    ],
+    "quizQuestion": "表达式执行后最典型的结果是什么？",
+    "quizOptions": [
+      "产生一个值",
+      "创建一台服务器",
+      "自动提交代码"
+    ],
+    "correctText": "表达式的基本特征是可以求值。",
+    "wrongText": "外部系统操作不是表达式的共同特征。",
+    "promptTitle": "解释表达式",
+    "prompt": "请拆出操作数、运算符、求值顺序、结果类型和可能的副作用。",
+    "relatedSlugs": [
+      "javascript",
+      "conditional-branch",
+      "return-value"
+    ]
+  },
+  {
+    "zh": "函数",
+    "en": "Function",
+    "slug": "function",
+    "cat": "技术栈",
+    "say": "把一段可重复调用的逻辑封装起来，可以接收参数并返回结果。",
+    "aliases": [
+      "方法体",
+      "可调用代码",
+      "函数定义"
+    ],
+    "question": "同一段价格计算要在三个地方使用，怎样避免复制？",
+    "definition": "函数用名称和参数定义一项可调用行为，调用时建立本次执行所需的局部状态。",
+    "boundary": "函数不一定纯净；它也可能修改外部状态或执行 I/O。",
+    "demoType": "request",
+    "demoTitle": "一次函数调用",
+    "demoSteps": [
+      {
+        "label": "调用",
+        "value": "calculate(20, 3)",
+        "note": "两个实参进入函数。"
+      },
+      {
+        "label": "执行",
+        "value": "20 × 3",
+        "note": "函数内部得到 60。"
+      },
+      {
+        "label": "返回",
+        "value": "调用处收到 60",
+        "note": "外部代码继续显示总价。"
+      }
+    ],
+    "quizQuestion": "函数最直接解决什么？",
+    "quizOptions": [
+      "封装可重复调用的行为",
+      "保证代码没有副作用",
+      "自动部署应用"
+    ],
+    "correctText": "函数让同一逻辑可以被清楚调用。",
+    "wrongText": "副作用和部署由函数实现及工具链决定。",
+    "promptTitle": "说明函数行为",
+    "prompt": "请写清输入参数、返回值、可能副作用、错误和一个最小调用示例。",
+    "relatedSlugs": [
+      "parameter",
+      "return-value",
+      "expression"
+    ]
+  },
+  {
+    "zh": "参数",
+    "en": "Parameter",
+    "slug": "parameter",
+    "cat": "技术栈",
+    "say": "函数定义中用于接收调用数据的名称。",
+    "aliases": [
+      "形参",
+      "函数参数",
+      "parameter name"
+    ],
+    "question": "calculate(price, count) 里的 price 和 count 表示什么？",
+    "definition": "参数是函数声明的一部分，函数调用时由对应实参为它提供本次执行的值。",
+    "boundary": "参数是定义中的名称，实参是调用时传入的具体值。",
+    "demoType": "flow",
+    "demoTitle": "参数获得调用值",
+    "demoSteps": [
+      {
+        "label": "定义",
+        "value": "price 与 count 暂无具体值",
+        "note": "函数只声明两个输入位置。"
+      },
+      {
+        "label": "调用",
+        "value": "传入 20 与 3",
+        "note": "实参与参数按顺序对应。"
+      },
+      {
+        "label": "执行",
+        "value": "price=20，count=3",
+        "note": "本次函数使用这些实际值。"
+      }
+    ],
+    "quizQuestion": "参数和实参的区别是什么？",
+    "quizOptions": [
+      "参数在定义中，实参在调用时提供",
+      "两者始终是同一个词的不同拼写",
+      "参数只存在数据库里"
+    ],
+    "correctText": "定义位置和调用位置是两者的核心区别。",
+    "wrongText": "参数属于函数接口，不限于数据库。",
+    "promptTitle": "检查函数参数",
+    "prompt": "请列出每个参数的类型、是否必填、默认值、允许范围和非法输入处理。",
+    "relatedSlugs": [
+      "function",
+      "return-value",
+      "object"
+    ]
+  },
+  {
+    "zh": "返回值",
+    "en": "Return Value",
+    "slug": "return-value",
+    "cat": "技术栈",
+    "say": "函数执行后交回给调用方的结果。",
+    "aliases": [
+      "函数结果",
+      "return",
+      "返回结果"
+    ],
+    "question": "函数算出总价后，外部代码怎样拿到这个数？",
+    "definition": "返回语句结束当前函数的相应执行路径，并把一个值传回调用位置。",
+    "boundary": "输出到控制台不等于返回值；修改外部变量也不是同一件事。",
+    "demoType": "flow",
+    "demoTitle": "返回值回到调用处",
+    "demoSteps": [
+      {
+        "label": "调用前",
+        "value": "total 尚未赋值",
+        "note": "调用处等待函数结果。"
+      },
+      {
+        "label": "函数返回",
+        "value": "return 60",
+        "note": "当前函数执行结束。"
+      },
+      {
+        "label": "调用后",
+        "value": "total 变为 60",
+        "note": "结果进入后续表达式。"
+      }
+    ],
+    "quizQuestion": "console.log 的输出是否等于函数返回值？",
+    "quizOptions": [
+      "不等于，输出和返回是不同动作",
+      "等于，屏幕上看到的都是返回值",
+      "只有数字时才相等"
+    ],
+    "correctText": "返回值进入调用表达式，日志只是输出信息。",
+    "wrongText": "是否为数字不改变两者职责。",
+    "promptTitle": "说明返回结果",
+    "prompt": "请写清函数每条执行分支返回什么，以及调用方如何处理空值和错误。",
+    "relatedSlugs": [
+      "function",
+      "parameter",
+      "expression"
+    ]
+  },
+  {
+    "zh": "条件分支",
+    "en": "Conditional Branch",
+    "slug": "conditional-branch",
+    "cat": "技术栈",
+    "say": "根据条件结果选择执行不同代码路径。",
+    "aliases": [
+      "条件判断",
+      "if 分支",
+      "branch"
+    ],
+    "question": "只有登录用户才能进入页面，这个判断在代码里怎样表达？",
+    "definition": "条件分支先求值得到真或假，再执行匹配的分支并跳过其他路径。",
+    "boundary": "分支只决定程序路径，不能替代服务端权限校验。",
+    "demoType": "branch",
+    "demoTitle": "登录条件决定路径",
+    "demoSteps": [
+      {
+        "label": "未判断",
+        "value": "请求到达受保护页面",
+        "note": "两个分支都还没执行。"
+      },
+      {
+        "label": "条件为真",
+        "value": "会话有效",
+        "note": "进入内容页并跳过登录分支。"
+      },
+      {
+        "label": "条件为假",
+        "value": "会话无效",
+        "note": "跳到登录页，不读取受保护数据。"
+      }
+    ],
+    "quizQuestion": "条件分支依赖什么选择路径？",
+    "quizOptions": [
+      "条件表达式的结果",
+      "代码文件名长度",
+      "屏幕亮度"
+    ],
+    "correctText": "分支由条件求值结果决定。",
+    "wrongText": "界面外观与普通程序分支无关。",
+    "promptTitle": "检查条件逻辑",
+    "prompt": "请列出条件、真分支、假分支、边界输入和每条路径的结果。",
+    "relatedSlugs": [
+      "expression",
+      "state",
+      "auth"
+    ]
+  },
+  {
+    "zh": "循环",
+    "en": "Loop",
+    "slug": "loop",
+    "cat": "技术栈",
+    "say": "在条件满足或集合仍有元素时，重复执行一段代码。",
+    "aliases": [
+      "迭代",
+      "重复执行",
+      "loop statement"
+    ],
+    "question": "列表里有一百条记录，怎样逐条处理？",
+    "definition": "循环维护当前位置或条件，每轮执行循环体，直到退出条件成立。",
+    "boundary": "循环若没有可靠退出条件可能无限执行；异步任务还要考虑并发和错误。",
+    "demoType": "lifecycle",
+    "demoTitle": "一次遍历循环",
+    "demoSteps": [
+      {
+        "label": "初始化",
+        "value": "索引 0，结果为空",
+        "note": "当前项指向数组第一条。"
+      },
+      {
+        "label": "迭代",
+        "value": "处理后索引变为 1",
+        "note": "结果新增一条，继续下一项。"
+      },
+      {
+        "label": "结束",
+        "value": "索引到达数组长度",
+        "note": "循环停止并交出完整结果。"
+      }
+    ],
+    "quizQuestion": "循环最需要检查哪项？",
+    "quizOptions": [
+      "退出条件能否达到",
+      "变量名是否足够长",
+      "页面是否使用圆角"
+    ],
+    "correctText": "可达的退出条件防止无限循环。",
+    "wrongText": "命名和样式不决定循环是否结束。",
+    "promptTitle": "分析循环",
+    "prompt": "请说明初始化、每轮变化、退出条件、最大次数和单轮失败处理。",
+    "relatedSlugs": [
+      "array",
+      "conditional-branch",
+      "expression"
+    ]
+  },
+  {
+    "zh": "对象",
+    "en": "Object",
+    "slug": "object",
+    "cat": "技术栈",
+    "say": "用一组键和值描述同一个实体的相关数据和行为。",
+    "aliases": [
+      "对象值",
+      "键值对象",
+      "object value"
+    ],
+    "question": "用户姓名、邮箱和状态怎样放在一个变量里？",
+    "definition": "对象把相关属性组织在同一结构中，代码通过键读取或修改对应值。",
+    "boundary": "对象不是 JSON 的同义词；对象可以包含方法或运行时特性，JSON 只是数据格式。",
+    "demoType": "hierarchy",
+    "demoTitle": "用户对象的属性",
+    "demoSteps": [
+      {
+        "label": "初始对象",
+        "value": "name 与 status 两个键",
+        "note": "status 当前是 pending。"
+      },
+      {
+        "label": "更新属性",
+        "value": "status 改为 active",
+        "note": "name 保持不变。"
+      },
+      {
+        "label": "读取结果",
+        "value": "user.status 得到 active",
+        "note": "代码只访问指定键。"
+      }
+    ],
+    "quizQuestion": "对象适合组织哪类数据？",
+    "quizOptions": [
+      "属于同一实体的多项属性",
+      "必须按位置读取的纯序列",
+      "没有任何关系的全站文件"
+    ],
+    "correctText": "键值结构适合描述实体属性。",
+    "wrongText": "按位置的序列通常更适合数组。",
+    "promptTitle": "设计对象结构",
+    "prompt": "请定义对象字段、类型、必填项、默认值和哪些字段可以被修改。",
+    "relatedSlugs": [
+      "array",
+      "json-schema",
+      "state"
+    ]
+  },
+  {
+    "zh": "数组",
+    "en": "Array",
+    "slug": "array",
+    "cat": "技术栈",
+    "say": "按顺序保存多个值，并通过位置或遍历访问。",
+    "aliases": [
+      "列表数组",
+      "序列",
+      "array list"
+    ],
+    "question": "一组商品需要保持显示顺序，应该用什么结构？",
+    "definition": "数组用连续顺序组织元素，常通过索引访问，也可以遍历、筛选和映射。",
+    "boundary": "数组索引通常从零开始；按索引查找不等于按业务 ID 查找。",
+    "demoType": "state",
+    "demoTitle": "数组操作改变元素",
+    "demoSteps": [
+      {
+        "label": "初始",
+        "value": "[A, B]",
+        "note": "A 的索引是 0，B 是 1。"
+      },
+      {
+        "label": "追加",
+        "value": "加入 C",
+        "note": "长度从 2 变为 3。"
+      },
+      {
+        "label": "筛选",
+        "value": "去掉 B",
+        "note": "结果数组变为 [A, C]。"
+      }
+    ],
+    "quizQuestion": "数组最突出的结构特点是什么？",
+    "quizOptions": [
+      "元素有明确顺序",
+      "每个元素必须类型不同",
+      "不能遍历"
+    ],
+    "correctText": "数组按位置组织一组元素。",
+    "wrongText": "多数语言允许数组或类似序列被遍历。",
+    "promptTitle": "说明数组处理",
+    "prompt": "请给出输入数组、元素结构、排序规则、筛选条件和空数组处理。",
+    "relatedSlugs": [
+      "object",
+      "loop"
+    ]
+  },
+  {
+    "zh": "客户端—服务器",
+    "en": "Client-Server",
+    "slug": "client-server",
+    "cat": "技术栈",
+    "say": "客户端发起请求，服务器处理共享数据或能力并返回响应。",
+    "aliases": [
+      "客户端服务器架构",
+      "C/S",
+      "请求响应架构"
+    ],
+    "question": "浏览器打开商品页时，页面数据从哪里来？",
+    "definition": "客户端—服务器架构把交互界面与集中服务分开，双方通过网络协议交换请求和响应。",
+    "boundary": "客户端和服务器是运行角色，不一定对应两台固定机器。",
+    "demoType": "request",
+    "demoTitle": "一次商品查询请求",
+    "demoSteps": [
+      {
+        "label": "客户端",
+        "value": "发送 GET /products/42",
+        "note": "页面显示加载中。"
+      },
+      {
+        "label": "服务器",
+        "value": "校验并读取商品 42",
+        "note": "响应状态确定为 200 或错误。"
+      },
+      {
+        "label": "客户端更新",
+        "value": "显示商品或错误提示",
+        "note": "加载状态结束。"
+      }
+    ],
+    "quizQuestion": "谁通常发起请求？",
+    "quizOptions": [
+      "客户端",
+      "数据库索引",
+      "源代码格式化器"
+    ],
+    "correctText": "客户端请求服务器提供数据或操作。",
+    "wrongText": "索引和格式化器不是网络交互角色。",
+    "promptTitle": "描述请求流程",
+    "prompt": "请写清客户端输入、接口、服务端校验、响应状态和界面处理。",
+    "relatedSlugs": [
+      "api",
+      "rest",
+      "service-discovery"
+    ]
+  },
+  {
+    "zh": "单体架构",
+    "en": "Monolith",
+    "slug": "monolith",
+    "cat": "技术栈",
+    "say": "把多个业务模块作为一个应用构建和部署，通常共享同一运行进程或发布单元。",
+    "aliases": [
+      "单体应用",
+      "monolithic architecture",
+      "一体化服务"
+    ],
+    "question": "用户、订单和支付模块一定要拆成多个服务吗？",
+    "definition": "单体架构把相关模块放在一个部署单元中，模块之间通常可直接调用。",
+    "boundary": "单体并不等于没有模块边界，也不等于 Monorepo。",
+    "demoType": "hierarchy",
+    "demoTitle": "单体应用内部模块",
+    "demoSteps": [
+      {
+        "label": "应用边界",
+        "value": "一个部署包",
+        "note": "发布一次，三个模块一起更新。"
+      },
+      {
+        "label": "内部模块",
+        "value": "用户、订单、支付",
+        "note": "模块间用进程内调用。"
+      },
+      {
+        "label": "运行结果",
+        "value": "一个实例承载这些模块",
+        "note": "实例故障会一起受影响。"
+      }
+    ],
+    "quizQuestion": "单体架构的主要部署特点是什么？",
+    "quizOptions": [
+      "多个模块随一个应用单元部署",
+      "每个函数必须独立部署",
+      "代码必须分散到多个仓库"
+    ],
+    "correctText": "单体按一个应用单元交付。",
+    "wrongText": "仓库数量和函数数量不是其定义。",
+    "promptTitle": "评估单体架构",
+    "prompt": "请列出模块边界、部署频率、团队规模、故障影响和拆分成本。",
+    "relatedSlugs": [
+      "microservices",
+      "monorepo",
+      "client-server"
+    ]
+  },
+  {
+    "zh": "微服务",
+    "en": "Microservices",
+    "slug": "microservices",
+    "cat": "技术栈",
+    "say": "把系统拆成可独立部署的服务，每个服务负责清楚的业务能力。",
+    "aliases": [
+      "微服务架构",
+      "service architecture",
+      "服务拆分"
+    ],
+    "question": "订单和库存发布节奏不同，是否需要独立部署？",
+    "definition": "微服务通过网络接口协作，各服务可独立开发、发布和扩缩。",
+    "boundary": "服务数量增加会带来网络、数据一致性、监控和运维成本，不是越细越好。",
+    "demoType": "hierarchy",
+    "demoTitle": "拆分后的服务边界",
+    "demoSteps": [
+      {
+        "label": "拆分前",
+        "value": "订单与库存同一部署",
+        "note": "一次发布同时影响两项能力。"
+      },
+      {
+        "label": "拆分后",
+        "value": "两个独立服务和数据边界",
+        "note": "调用从进程内变为网络请求。"
+      },
+      {
+        "label": "独立扩缩",
+        "value": "库存服务实例从 2 增到 4",
+        "note": "订单服务实例数保持不变。"
+      }
+    ],
+    "quizQuestion": "微服务拆分最应依据什么？",
+    "quizOptions": [
+      "稳定的业务边界和独立变化需求",
+      "代码文件行数",
+      "页面颜色数量"
+    ],
+    "correctText": "业务职责和独立演进决定服务边界。",
+    "wrongText": "按表面规模拆分容易形成强耦合。",
+    "promptTitle": "评估服务拆分",
+    "prompt": "请说明候选服务的业务边界、数据归属、接口、独立发布收益和运维成本。",
+    "relatedSlugs": [
+      "monolith",
+      "distributed-system",
+      "api"
+    ]
+  },
+  {
+    "zh": "分布式系统",
+    "en": "Distributed System",
+    "slug": "distributed-system",
+    "cat": "技术栈",
+    "say": "多个独立节点通过网络协作，对外完成同一项系统任务。",
+    "aliases": [
+      "分布式架构",
+      "多节点系统",
+      "distributed computing"
+    ],
+    "question": "服务部署在多台机器后，为什么需要考虑超时和部分失败？",
+    "definition": "分布式系统中的节点没有共享的即时全局状态，网络延迟和单点故障会影响协作。",
+    "boundary": "增加节点不自动带来可靠性，必须设计一致性、重试、幂等和故障恢复。",
+    "demoType": "branch",
+    "demoTitle": "网络超时后的不确定状态",
+    "demoSteps": [
+      {
+        "label": "发送",
+        "value": "节点 A 请求节点 B 扣减库存",
+        "note": "B 可能已经收到。"
+      },
+      {
+        "label": "超时",
+        "value": "A 没有收到响应",
+        "note": "界面显示未知，而不是直接判定失败。"
+      },
+      {
+        "label": "核对或补偿",
+        "value": "查询操作 ID 后决定重试",
+        "note": "避免重复扣减。"
+      }
+    ],
+    "quizQuestion": "分布式系统常见的额外问题是什么？",
+    "quizOptions": [
+      "网络导致的延迟和部分失败",
+      "所有节点永远同步",
+      "无需监控"
+    ],
+    "correctText": "网络和独立节点会带来不确定状态。",
+    "wrongText": "分布式环境更需要观测与容错。",
+    "promptTitle": "分析分布式操作",
+    "prompt": "请列出节点、消息、超时、重试、幂等和失败恢复路径。",
+    "relatedSlugs": [
+      "microservices",
+      "agent-loop",
+      "observability"
+    ]
+  },
+  {
+    "zh": "事件驱动架构",
+    "en": "Event-Driven Architecture",
+    "slug": "event-driven-architecture",
+    "cat": "技术栈",
+    "say": "系统发布已经发生的事件，其他组件订阅后独立处理。",
+    "aliases": [
+      "事件驱动",
+      "EDA",
+      "发布订阅架构"
+    ],
+    "question": "订单创建后，通知和积分能不能各自处理？",
+    "definition": "事件驱动架构通过事件通道解耦生产者和消费者，允许异步扩展处理。",
+    "boundary": "事件表示已经发生的事实，不等于要求执行动作的命令；还要处理重复、顺序和失败。",
+    "demoType": "queue",
+    "demoTitle": "订单事件的传递",
+    "demoSteps": [
+      {
+        "label": "发布",
+        "value": "订单已创建事件进入队列",
+        "note": "生产者完成后无需等待所有消费者。"
+      },
+      {
+        "label": "消费",
+        "value": "通知成功，积分暂时失败",
+        "note": "两个消费者状态互不覆盖。"
+      },
+      {
+        "label": "重试",
+        "value": "只重新投递积分任务",
+        "note": "通知不会重复发送。"
+      }
+    ],
+    "quizQuestion": "事件驱动架构怎样降低直接耦合？",
+    "quizOptions": [
+      "生产者不必逐个调用所有消费者",
+      "所有服务共享一个数据库表",
+      "取消失败处理"
+    ],
+    "correctText": "事件通道让消费者独立订阅处理。",
+    "wrongText": "共享数据和忽略失败会增加耦合与风险。",
+    "promptTitle": "设计事件流程",
+    "prompt": "请定义事件名称、字段、生产者、消费者、顺序、重复处理和失败策略。",
+    "relatedSlugs": [
+      "queue",
+      "webhook",
+      "distributed-system"
+    ]
+  },
+  {
+    "zh": "无服务器架构",
+    "en": "Serverless",
+    "slug": "serverless",
+    "cat": "技术栈",
+    "say": "把代码交给云平台按请求或事件运行，基础服务器管理由平台负责。",
+    "aliases": [
+      "Serverless",
+      "无服务器计算",
+      "托管函数架构"
+    ],
+    "question": "一个低频定时任务是否需要长期运行一台服务器？",
+    "definition": "无服务器架构按事件启动托管计算，平台负责资源分配和部分扩缩容。",
+    "boundary": "并非没有服务器，也可能有冷启动、执行时长、状态和供应商限制。",
+    "demoType": "lifecycle",
+    "demoTitle": "一次托管函数执行",
+    "demoSteps": [
+      {
+        "label": "空闲",
+        "value": "当前没有运行实例",
+        "note": "不持续占用应用进程。"
+      },
+      {
+        "label": "触发",
+        "value": "定时事件启动函数",
+        "note": "冷启动时先加载运行环境。"
+      },
+      {
+        "label": "完成",
+        "value": "结果写入存储后实例释放或复用",
+        "note": "临时内存不作为持久状态。"
+      }
+    ],
+    "quizQuestion": "Serverless 中服务器消失了吗？",
+    "quizOptions": [
+      "没有，只是由平台管理",
+      "是，代码完全不需要计算资源",
+      "只有开发环境有服务器"
+    ],
+    "correctText": "物理和虚拟计算仍然存在。",
+    "wrongText": "变化的是资源管理责任。",
+    "promptTitle": "评估无服务器方案",
+    "prompt": "请比较触发频率、延迟要求、执行时长、状态、成本和平台限制。",
+    "relatedSlugs": [
+      "event-driven-architecture",
+      "runtime",
+      "observability"
+    ]
+  },
+  {
+    "zh": "容器",
+    "en": "Container",
+    "slug": "container",
+    "cat": "技术栈",
+    "say": "在隔离的进程环境中运行应用，并带上所需文件和依赖。",
+    "aliases": [
+      "应用容器",
+      "container runtime",
+      "容器化"
+    ],
+    "question": "同一个应用怎样在开发机和服务器上使用一致环境？",
+    "definition": "容器通过操作系统隔离机制运行镜像中的应用，同时共享宿主机内核。",
+    "boundary": "容器不同于完整虚拟机，也不能自动解决应用本身的安全和数据持久化。",
+    "demoType": "lifecycle",
+    "demoTitle": "容器从创建到停止",
+    "demoSteps": [
+      {
+        "label": "创建",
+        "value": "从镜像生成可写容器层",
+        "note": "端口和卷按配置挂载。"
+      },
+      {
+        "label": "运行",
+        "value": "应用进程状态变为 running",
+        "note": "外部请求可以到达暴露端口。"
+      },
+      {
+        "label": "停止并删除",
+        "value": "进程结束，临时层消失",
+        "note": "挂载卷中的数据仍保留。"
+      }
+    ],
+    "quizQuestion": "容器通常共享什么？",
+    "quizOptions": [
+      "宿主机内核",
+      "同一应用内存空间",
+      "所有数据库密码"
+    ],
+    "correctText": "容器是进程级隔离，通常共享宿主机内核。",
+    "wrongText": "应用内存和敏感配置不应无条件共享。",
+    "promptTitle": "设计容器运行参数",
+    "prompt": "请列出镜像、启动命令、端口、卷、环境变量、资源限制和健康检查。",
+    "relatedSlugs": [
+      "container-image",
+      "runtime",
+      "deploy"
+    ]
+  },
+  {
+    "zh": "容器镜像",
+    "en": "Container Image",
+    "slug": "container-image",
+    "cat": "技术栈",
+    "say": "包含应用文件、运行依赖和启动信息的只读分层模板，用来创建容器。",
+    "aliases": [
+      "镜像",
+      "Docker 镜像",
+      "image artifact"
+    ],
+    "question": "容器删除后还能不能用同一版本重新启动？",
+    "definition": "容器镜像由一组不可变层和元数据组成，运行时在其上增加临时可写层。",
+    "boundary": "镜像不是正在运行的容器，也不应写入运行时密钥。",
+    "demoType": "hierarchy",
+    "demoTitle": "镜像层与运行容器",
+    "demoSteps": [
+      {
+        "label": "基础层",
+        "value": "运行时和系统库",
+        "note": "构建后内容固定。"
+      },
+      {
+        "label": "应用层",
+        "value": "加入版本 1.4.0 代码",
+        "note": "镜像摘要随内容变化。"
+      },
+      {
+        "label": "容器层",
+        "value": "运行时写入临时文件",
+        "note": "删除容器后该层消失，镜像不变。"
+      }
+    ],
+    "quizQuestion": "镜像与容器的关系是什么？",
+    "quizOptions": [
+      "镜像是创建容器的模板",
+      "容器是创建镜像的唯一源码",
+      "两者完全相同"
+    ],
+    "correctText": "镜像是静态产物，容器是运行实例。",
+    "wrongText": "运行状态与构建模板需要区分。",
+    "promptTitle": "审查容器镜像",
+    "prompt": "请检查基础镜像版本、应用层、体积、漏洞、启动命令和是否包含敏感信息。",
+    "relatedSlugs": [
+      "container",
+      "build-tool",
+      "dependency"
+    ]
+  },
+  {
+    "zh": "服务发现",
+    "en": "Service Discovery",
+    "slug": "service-discovery",
+    "cat": "技术栈",
+    "say": "记录服务实例当前可访问的地址，让调用方不必写死机器位置。",
+    "aliases": [
+      "服务注册与发现",
+      "服务注册表",
+      "service registry"
+    ],
+    "question": "服务实例随时增减，调用方怎样找到当前可用地址？",
+    "definition": "服务发现维护服务名与实例地址的对应关系，并把当前可用端点提供给调用方。",
+    "boundary": "它负责找到实例，不等于负责把每个请求分配到具体实例。",
+    "demoType": "state",
+    "demoTitle": "实例列表随运行状态更新",
+    "demoSteps": [
+      {
+        "label": "注册",
+        "value": "A、B 上报地址",
+        "note": "服务列表出现两个可用端点。"
+      },
+      {
+        "label": "扩容",
+        "value": "C 上线并注册",
+        "note": "调用方下一次查询能看到三个端点。"
+      },
+      {
+        "label": "失效",
+        "value": "B 心跳超时",
+        "note": "B 从列表移除，不再返回给调用方。"
+      }
+    ],
+    "quizQuestion": "服务发现通常向调用方提供什么？",
+    "quizOptions": [
+      "当前可用的服务实例地址",
+      "用户页面的完整设计稿",
+      "数据库中所有业务记录"
+    ],
+    "correctText": "调用方通过服务名取得当前可用端点。",
+    "wrongText": "服务发现维护的是服务位置，不保存页面设计或全部业务数据。",
+    "promptTitle": "设计服务发现",
+    "prompt": "请说明服务如何注册、如何判断健康、地址何时更新，以及调用方查询失败时怎样处理。",
+    "relatedSlugs": [
+      "microservices",
+      "client-server",
+      "observability"
+    ]
+  },
+  {
+    "zh": "可观测性",
+    "en": "Observability",
+    "slug": "observability",
+    "cat": "技术栈",
+    "say": "通过日志、指标和追踪理解系统内部状态，并定位请求为什么失败或变慢。",
+    "aliases": [
+      "系统可观测",
+      "日志指标追踪",
+      "observability stack"
+    ],
+    "question": "接口突然变慢，怎样判断问题在网关、服务还是数据库？",
+    "definition": "可观测性把运行信号与请求上下文关联，使团队能从外部数据推断系统内部状态。",
+    "boundary": "收集更多数据不等于更可观测，信号需要结构、关联和明确问题。",
+    "demoType": "flow",
+    "demoTitle": "一次慢请求的信号关联",
+    "demoSteps": [
+      {
+        "label": "指标",
+        "value": "p95 延迟从 200ms 升到 1.8s",
+        "note": "异常时间和范围被确认。"
+      },
+      {
+        "label": "追踪",
+        "value": "数据库调用占 1.5s",
+        "note": "慢点从整条请求缩小到一个跨度。"
+      },
+      {
+        "label": "日志",
+        "value": "同一 trace ID 显示索引缺失",
+        "note": "告警转为可处理的原因。"
+      }
+    ],
+    "quizQuestion": "可观测性的目标是什么？",
+    "quizOptions": [
+      "用运行信号解释系统状态",
+      "只保存尽可能多的日志",
+      "替代所有测试"
+    ],
+    "correctText": "可观测性关注能否回答系统发生了什么。",
+    "wrongText": "数据量本身不能保证可理解。",
+    "promptTitle": "设计观测信号",
+    "prompt": "请为该请求定义关键指标、结构化日志字段、追踪范围、告警条件和保留周期。",
+    "relatedSlugs": [
+      "distributed-system",
+      "service-discovery",
+      "serverless"
+    ]
+  },
+  {
+    "zh": "静态应用安全测试",
+    "en": "Static Application Security Testing",
+    "slug": "sast",
+    "cat": "技术栈",
+    "say": "不运行程序，直接分析源代码或编译产物中的安全风险。",
+    "aliases": [
+      "SAST",
+      "静态安全扫描",
+      "源码安全检查"
+    ],
+    "question": "代码还没部署，能不能提前发现明显的注入风险？",
+    "definition": "SAST 根据语法、数据流和安全规则，检查不可信输入是否可能到达危险操作。",
+    "boundary": "静态扫描可能误报，也看不到真实运行配置，结果需要人工确认和其他测试补充。",
+    "demoType": "flow",
+    "demoTitle": "一条风险数据流被定位",
+    "demoSteps": [
+      {
+        "label": "扫描源码",
+        "value": "发现 request.input",
+        "note": "变量被标为不可信来源。"
+      },
+      {
+        "label": "追踪数据",
+        "value": "输入流向数据库查询",
+        "note": "路径上的三个函数依次高亮。"
+      },
+      {
+        "label": "报告位置",
+        "value": "第 48 行出现高风险告警",
+        "note": "报告同时显示来源、汇点和修复建议。"
+      }
+    ],
+    "quizQuestion": "SAST 在什么情况下工作？",
+    "quizOptions": [
+      "不运行应用时分析代码",
+      "只在真实用户登录后",
+      "只检查页面颜色"
+    ],
+    "correctText": "SAST 从代码结构和数据流发现潜在风险。",
+    "wrongText": "用户会话和视觉样式不是其必要条件。",
+    "promptTitle": "处理 SAST 告警",
+    "prompt": "请说明告警中的输入来源、危险操作、可利用条件、误报可能和修复后验证方式。",
+    "relatedSlugs": [
+      "linter",
+      "xss",
+      "input-validation"
+    ]
+  },
+  {
+    "zh": "密钥扫描",
+    "en": "Secret Scanning",
+    "slug": "secret-scanning",
+    "cat": "技术栈",
+    "say": "检查代码、提交记录和构建产物中是否出现密码、令牌或私钥。",
+    "aliases": [
+      "Secret Scan",
+      "凭据扫描",
+      "敏感密钥检查"
+    ],
+    "question": "开发者误把 API Key 提交到仓库，怎样在合并前发现？",
+    "definition": "密钥扫描通过已知格式、关键词和随机度特征识别可能泄露的凭据。",
+    "boundary": "发现后不能只删除最新文件；已经进入历史的密钥需要撤销、轮换并清理记录。",
+    "demoType": "state",
+    "demoTitle": "一次提交被密钥规则拦截",
+    "demoSteps": [
+      {
+        "label": "提交前",
+        "value": "diff 中出现 sk_live_…",
+        "note": "扫描器标记疑似 API Key。"
+      },
+      {
+        "label": "阻断",
+        "value": "推送状态变为失败",
+        "note": "报告显示文件和行号，不回显完整密钥。"
+      },
+      {
+        "label": "处置",
+        "value": "密钥撤销并改用秘密存储",
+        "note": "再次扫描后告警数量归零。"
+      }
+    ],
+    "quizQuestion": "发现已经提交的真实密钥后，首要动作是什么？",
+    "quizOptions": [
+      "立即撤销或轮换密钥",
+      "只把该行改成注释",
+      "等待下个版本再处理"
+    ],
+    "correctText": "密钥一旦进入仓库历史，就应按已经泄露处理。",
+    "wrongText": "修改显示形式不能让已有凭据失效。",
+    "promptTitle": "处理密钥泄露",
+    "prompt": "请列出密钥位置、影响系统、撤销或轮换动作、历史清理和防止再次提交的措施。",
+    "relatedSlugs": [
+      "repo-commit",
+      "permission-boundary",
+      "dependency-scanning"
+    ]
+  },
+  {
+    "zh": "依赖扫描",
+    "en": "Dependency Scanning",
+    "slug": "dependency-scanning",
+    "cat": "技术栈",
+    "say": "读取依赖清单和锁文件，检查所用版本是否有已知漏洞。",
+    "aliases": [
+      "依赖漏洞扫描",
+      "Dependency Audit",
+      "软件组成检查"
+    ],
+    "question": "业务代码没改，为什么旧依赖仍可能出现新的安全告警？",
+    "definition": "依赖扫描把包名和确切版本与漏洞数据源匹配，并给出受影响范围和修复版本。",
+    "boundary": "扫描只能发现已公开并可识别的漏洞，升级后还需要回归兼容性。",
+    "demoType": "flow",
+    "demoTitle": "锁文件变成漏洞报告",
+    "demoSteps": [
+      {
+        "label": "读取",
+        "value": "lockfile 中是 parser 2.3.0",
+        "note": "扫描器取得确切版本。"
+      },
+      {
+        "label": "匹配",
+        "value": "漏洞库命中 CVE 记录",
+        "note": "依赖节点从绿色变为红色。"
+      },
+      {
+        "label": "修复",
+        "value": "升级到 2.3.4 并重扫",
+        "note": "告警消失，回归测试进入待执行。"
+      }
+    ],
+    "quizQuestion": "依赖扫描最需要哪份信息？",
+    "quizOptions": [
+      "实际安装版本或锁文件",
+      "页面截图",
+      "用户的鼠标位置"
+    ],
+    "correctText": "确切版本才能与漏洞记录准确匹配。",
+    "wrongText": "视觉和交互位置与依赖漏洞无关。",
+    "promptTitle": "审查依赖漏洞",
+    "prompt": "请列出受影响包、直接或传递关系、漏洞条件、可用修复版本和升级回归范围。",
+    "relatedSlugs": [
+      "dependency",
+      "lockfile",
+      "sast"
+    ]
+  },
+  {
+    "zh": "威胁建模",
+    "en": "Threat Modeling",
+    "slug": "threat-modeling",
+    "cat": "技术栈",
+    "say": "在设计阶段梳理资产、信任边界、可能攻击路径和对应控制。",
+    "aliases": [
+      "安全威胁分析",
+      "Threat Model",
+      "攻击路径分析"
+    ],
+    "question": "新功能允许用户上传文件，开发前应该先检查哪些安全问题？",
+    "definition": "威胁建模从系统结构和数据流出发，识别谁可能攻击什么、通过哪条路径以及后果。",
+    "boundary": "它不是一次性清单；架构、数据和权限发生变化时需要更新。",
+    "demoType": "flow",
+    "demoTitle": "上传功能的威胁分析",
+    "demoSteps": [
+      {
+        "label": "画数据流",
+        "value": "浏览器 → 上传接口 → 对象存储",
+        "note": "两个信任边界显示在图上。"
+      },
+      {
+        "label": "标出威胁",
+        "value": "恶意文件与越权读取",
+        "note": "风险卡片连接到对应入口。"
+      },
+      {
+        "label": "加入控制",
+        "value": "类型校验、隔离扫描、授权下载",
+        "note": "每项高风险都有负责人和验证状态。"
+      }
+    ],
+    "quizQuestion": "威胁建模通常从什么开始？",
+    "quizOptions": [
+      "系统资产、数据流和信任边界",
+      "随机选择一种加密算法",
+      "等漏洞发生后再画页面"
+    ],
+    "correctText": "结构和边界能帮助定位攻击路径。",
+    "wrongText": "脱离场景选择控制容易遗漏实际风险。",
+    "promptTitle": "建立威胁模型",
+    "prompt": "请列出资产、参与者、数据流、信任边界、攻击路径、现有控制和剩余风险。",
+    "relatedSlugs": [
+      "permission-boundary",
+      "input-validation",
+      "xss"
+    ]
+  },
+  {
+    "zh": "工具审批",
+    "en": "Tool Approval",
+    "slug": "tool-approval",
+    "cat": "AI·Agent",
+    "say": "模型提出高影响工具调用后，先由人查看操作对象和影响，再决定是否执行。",
+    "aliases": [
+      "工具调用审批",
+      "人工批准",
+      "approval gate"
+    ],
+    "question": "智能体准备删除云端文件时，界面应该先显示什么？",
+    "definition": "工具审批把待执行的工具、参数和影响放入暂停状态，只有明确批准后才交给工具执行。",
+    "boundary": "审批必须绑定当前操作参数；批准一次不能自动授权后续不同操作。",
+    "demoType": "branch",
+    "demoTitle": "删除操作进入审批分支",
+    "demoSteps": [
+      {
+        "label": "待审批",
+        "value": "删除 report.csv，无法自动恢复",
+        "note": "执行按钮保持锁定。"
+      },
+      {
+        "label": "拒绝",
+        "value": "审批状态变为 rejected",
+        "note": "工具没有收到调用，文件仍存在。"
+      },
+      {
+        "label": "批准",
+        "value": "确认同一文件和参数",
+        "note": "工具开始执行并返回实际结果。"
+      }
+    ],
+    "quizQuestion": "一次工具审批应针对什么？",
+    "quizOptions": [
+      "明确的工具、参数和影响",
+      "未来所有同类操作",
+      "模型的一般自信程度"
+    ],
+    "correctText": "审批对象越具体，用户越能判断实际影响。",
+    "wrongText": "笼统授权会扩大后续操作范围。",
+    "promptTitle": "设计工具审批",
+    "prompt": "请展示工具名称、关键参数、影响范围、可回退性、批准或拒绝结果和审计记录。",
+    "relatedSlugs": [
+      "human-in-the-loop",
+      "function-calling",
+      "guardrail"
+    ]
+  },
+  {
+    "zh": "评测数据集",
+    "en": "Evaluation Dataset",
+    "slug": "evaluation-dataset",
+    "cat": "AI·Agent",
+    "say": "保存一组固定任务和参考信息，用来重复检查模型或智能体的表现。",
+    "aliases": [
+      "评测集",
+      "Eval Dataset",
+      "测试样本集"
+    ],
+    "question": "模型版本更新后，怎样用同一批问题比较前后差异？",
+    "definition": "评测数据集由代表性输入、必要上下文和预期结果或评分依据组成。",
+    "boundary": "它用于衡量表现，不应在评测前被反复用于调参，否则结果会偏高。",
+    "demoType": "state",
+    "demoTitle": "样本从收集到固定评测集",
+    "demoSteps": [
+      {
+        "label": "收集",
+        "value": "120 条真实任务样本",
+        "note": "列表同时包含常见情况和边界情况。"
+      },
+      {
+        "label": "整理",
+        "value": "去重后保留 100 条并补充评分依据",
+        "note": "每条样本获得固定 ID 和预期要点。"
+      },
+      {
+        "label": "运行",
+        "value": "模型 A 82 分，模型 B 87 分",
+        "note": "两次运行使用完全相同的样本版本。"
+      }
+    ],
+    "quizQuestion": "评测数据集为什么需要保持稳定？",
+    "quizOptions": [
+      "让不同模型或版本在相同条件下比较",
+      "让模型提前记住全部答案",
+      "让每次评测更换所有问题"
+    ],
+    "correctText": "固定样本能减少比较条件变化带来的干扰。",
+    "wrongText": "评测集不是给模型背答案，也不应每次随意更换。",
+    "promptTitle": "整理评测数据集",
+    "prompt": "请按真实任务、边界情况和高风险失败整理样本，并为每条补充输入、预期要点、评分规则和来源。",
+    "relatedSlugs": [
+      "eval",
+      "benchmark",
+      "grader"
+    ]
+  },
+  {
+    "zh": "权限边界",
+    "en": "Permission Boundary",
+    "slug": "permission-boundary",
+    "cat": "AI·Agent",
+    "say": "明确智能体或工具最多能访问哪些资源、执行哪些动作，超出范围就拒绝。",
+    "aliases": [
+      "访问边界",
+      "工具权限范围",
+      "permission scope"
+    ],
+    "question": "文件工具只应修改当前项目，怎样防止它写到其他目录？",
+    "definition": "权限边界由运行环境或授权系统执行，在模型请求之外独立限制资源和动作。",
+    "boundary": "提示词可以说明边界，但不能替代操作系统、沙箱或服务端的实际校验。",
+    "demoType": "branch",
+    "demoTitle": "写文件请求经过权限边界",
+    "demoSteps": [
+      {
+        "label": "允许范围",
+        "value": "D:/project/** 可读写",
+        "note": "当前项目路径显示为绿色。"
+      },
+      {
+        "label": "越界请求",
+        "value": "尝试写入 D:/private/key.txt",
+        "note": "权限检查返回 denied。"
+      },
+      {
+        "label": "允许请求",
+        "value": "写入 D:/project/readme.md",
+        "note": "文件变更记录包含工具和时间。"
+      }
+    ],
+    "quizQuestion": "权限边界应由谁实际执行？",
+    "quizOptions": [
+      "运行环境或授权系统",
+      "模型的自我承诺",
+      "页面上的说明文字"
+    ],
+    "correctText": "独立校验才能在模型判断失误时阻止越权。",
+    "wrongText": "文字说明本身不能限制文件或接口访问。",
+    "promptTitle": "定义权限边界",
+    "prompt": "请按主体、资源、动作、路径、有效期和越界处理列出授权范围。",
+    "relatedSlugs": [
+      "least-privilege",
+      "execution-sandbox",
+      "auth"
+    ]
+  },
+  {
+    "zh": "跨站脚本",
+    "en": "Cross-Site Scripting",
+    "slug": "xss",
+    "cat": "技术栈",
+    "say": "攻击者把恶意脚本注入网页内容，并在其他用户的浏览器中执行。",
+    "aliases": [
+      "XSS",
+      "脚本注入",
+      "跨站脚本攻击"
+    ],
+    "question": "评论内容里出现 script 标签，直接插入页面会发生什么？",
+    "definition": "XSS 利用应用把不可信输入当成可执行页面内容，可能读取会话信息或冒充用户操作。",
+    "boundary": "输入校验不能覆盖所有上下文，主要防护还包括按输出位置编码和内容安全策略。",
+    "demoType": "request",
+    "demoTitle": "恶意输入进入页面",
+    "demoSteps": [
+      {
+        "label": "提交",
+        "value": "评论包含脚本片段",
+        "note": "数据库把它当普通文本保存。"
+      },
+      {
+        "label": "危险渲染",
+        "value": "页面把文本插入可执行 HTML",
+        "note": "浏览器节点从文字变成脚本。"
+      },
+      {
+        "label": "安全渲染",
+        "value": "按文本输出并应用 CSP",
+        "note": "页面显示字符，脚本没有执行。"
+      }
+    ],
+    "quizQuestion": "防止把普通文本当脚本执行的关键是什么？",
+    "quizOptions": [
+      "按 HTML、属性或脚本上下文正确编码输出",
+      "只限制输入长度",
+      "把按钮改成灰色"
+    ],
+    "correctText": "上下文相关的输出编码能阻止浏览器解释为代码。",
+    "wrongText": "长度和视觉样式不能消除脚本执行。",
+    "promptTitle": "检查 XSS 风险",
+    "prompt": "请标出所有不可信数据的输入点和渲染位置，并为每种上下文给出编码或安全 API。",
+    "relatedSlugs": [
+      "dom",
+      "sast",
+      "threat-modeling"
+    ]
+  }
+]

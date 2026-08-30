@@ -23,4 +23,4 @@ npm run start
 - `npm run start`：运行生产构建。
 - `npm run check`：依次执行 ESLint、TypeScript、测试与生产构建。
 
-术语位于 `content/zh/terms.json`，分类位于 `content/taxonomy.json`，工具位于 `content/zh/tools.json`。构建时由 Zod 校验字段、分类和 slug 唯一性。
+基础术语位于 `content/zh/terms.json`，扩展词库按领域拆分在 `content/zh/term-batches/`；分类位于 `content/taxonomy.json`，工具位于 `content/zh/tools.json`。构建时由 Zod 校验字段、分类、动画步骤、关联词条和 slug 唯一性。

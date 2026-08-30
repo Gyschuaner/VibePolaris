@@ -146,6 +146,12 @@ const foundationTermConfig = {
 
 type FoundationTermSlug = keyof typeof foundationTermConfig;
 
+function orderQuizOptions(options: Array<[string, string]>, slug: string) {
+  if (options.length < 2) return options;
+  const offset = [...slug].reduce((total, character) => total + character.charCodeAt(0), 0) % options.length;
+  return [...options.slice(offset), ...options.slice(0, offset)];
+}
+
 function FoundationTermMap({ config }: { config: (typeof foundationTermConfig)[FoundationTermSlug] }) {
   const [activeStep, setActiveStep] = useState(0);
   const active = config.steps[activeStep];
@@ -351,6 +357,11 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
     ? foundationTermConfig[term.slug as FoundationTermSlug]
     : null;
 
+  if (!isCss && !foundationConfig) {
+    throw new Error(`TermDetailExperience 仅用于 CSS、HTML 和 JavaScript，收到：${term.slug}`);
+  }
+  const foundation = foundationConfig ?? foundationTermConfig.html;
+
   const markdown = useMemo(() => [
     `# ${term.zh}${term.en ? ` — ${term.en}` : ""}`,
     "",
@@ -362,7 +373,19 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
 
   const prompt = isCss
     ? "请检查当前页面在桌面与手机宽度下的布局，找出重叠、溢出、过度拥挤或排列异常的元素。通过 computed layout 和命中的 CSS 规则定位原因；保留 HTML 内容和交互逻辑，只修改必要的 CSS。完成后说明问题来源、改动的规则，并分别在 1280px 和 390px 宽度验收。"
-    : foundationConfig?.prompt ?? `请围绕“${term.zh}”完成这次调整：${term.say} 请保留项目现有结构，完成后说明改动范围和验证方式。`;
+    : foundation.prompt;
+
+  const correctQuizValue = isCss ? "css" : foundation.correct;
+  const quizOptions = orderQuizOptions(
+    isCss
+      ? [
+          ["css", "确认当前布局规则，再用媒体查询调整列数"],
+          ["html", "删掉一部分概念，让标签少一点"],
+          ["database", "用 JavaScript 监听宽度并逐个搬动标签"],
+        ]
+      : foundation.quizOptions.map(([value, label]) => [value, label]),
+    term.slug,
+  );
 
   function pronounce() {
     if (!("speechSynthesis" in window)) return;
@@ -373,7 +396,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
     window.speechSynthesis.speak(utterance);
   }
 
-  const answerIsCorrect = quizAnswer === (isCss ? "css" : foundationConfig?.correct ?? "css");
+  const answerIsCorrect = quizAnswer === correctQuizValue;
 
   return (
     <main className="term-story-page">
@@ -405,22 +428,22 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
 
         <section className="term-question" aria-labelledby="term-question-heading">
           <span>常见问题</span>
-          <p id="term-question-heading">{isCss ? "技术星图在桌面正常，为什么到了手机上标签全挤在一起？" : foundationConfig?.question ?? `“${term.zh}”到底解决了什么问题？`}</p>
+          <p id="term-question-heading">{isCss ? "技术星图在桌面正常，为什么到了手机上标签全挤在一起？" : foundation.question}</p>
         </section>
 
         <section className="term-story-intro" aria-labelledby="term-definition-heading">
           <h2 id="term-definition-heading">
             {isCss
               ? "CSS 使用选择器匹配元素，并通过层叠规则确定最终呈现结果。"
-              : foundationConfig?.definition ?? term.say}
+              : foundation.definition}
           </h2>
           <p>{isCss
             ? "它负责外观、布局和响应式；内容结构属于 HTML，点击后的业务逻辑属于 JavaScript。"
-            : foundationConfig?.boundary ?? "确认它的职责范围，再判断当前项目是否需要使用。"}</p>
+            : foundation.boundary}</p>
           <div className="term-prerequisites">
-            <span>{isCss ? "前置概念：HTML ↗" : foundationConfig?.prerequisite ?? `所属领域 ${term.cat}`}</span>
+            <span>{isCss ? "前置概念：HTML ↗" : foundation.prerequisite}</span>
             <div>
-              {(isCss || foundationConfig) && <em>常见名称</em>}
+              <em>常见名称</em>
               {(isCss ? ["层叠样式表", "Cascading Style Sheets"] : term.aliases).map((alias) => <span key={alias}>{alias}</span>)}
             </div>
           </div>
@@ -465,13 +488,13 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </div>
             </div>
           </section>
-        ) : foundationConfig ? (
+        ) : (
           <section className="term-explainer" aria-labelledby="term-explainer-heading">
             <div className="term-section-heading">
               <span>01</span>
-              <h2 id="term-explainer-heading">{foundationConfig.explainerTitle}</h2>
+              <h2 id="term-explainer-heading">{foundation.explainerTitle}</h2>
             </div>
-            <FoundationTermMap config={foundationConfig} />
+            <FoundationTermMap config={foundation} />
             <div className="term-responsive-notes">
               <div>
                 <span>执行过程</span>
@@ -483,26 +506,13 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </div>
             </div>
           </section>
-        ) : (
-          <section className="term-explainer term-explainer-simple" aria-labelledby="term-explainer-heading">
-            <div className="term-section-heading"><span>01</span><h2 id="term-explainer-heading">职责范围</h2></div>
-            <p>{term.say}</p>
-          </section>
         )}
 
         <section className="term-quiz" aria-labelledby="term-quiz-heading">
           <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">知识检查</h2></div>
           <fieldset>
-            <legend>{isCss ? "同一份星图在 390px 仍挤成三列，下一步最该做什么？" : foundationConfig?.quizQuestion ?? `下面哪一句更适合描述“${term.zh}”？`}</legend>
-            {(isCss ? [
-              ["css", "确认当前布局规则，再用媒体查询调整列数"],
-              ["html", "删掉一部分概念，让标签少一点"],
-              ["database", "用 JavaScript 监听宽度并逐个搬动标签"],
-            ] : foundationConfig?.quizOptions ?? [
-              ["html", "先不看职责，直接引入"],
-              ["css", term.say],
-              ["database", "它可以替代项目里的全部技术"],
-            ]).map(([value, label]) => (
+            <legend>{isCss ? "同一份星图在 390px 仍挤成三列，下一步最该做什么？" : foundation.quizQuestion}</legend>
+            {quizOptions.map(([value, label]) => (
               <label key={value} className={quizAnswer === value ? "is-selected" : ""}>
                 <input
                   type="radio"
@@ -521,19 +531,15 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
                 ? answerIsCorrect
                   ? "检查当前列数的来源后，可用媒体查询只调整窄屏布局，桌面规则保持不变。"
                   : "删除内容或增加脚本不能定位布局问题，应检查当前命中的 CSS 规则。"
-                : foundationConfig
-                  ? answerIsCorrect ? foundationConfig.correctText : foundationConfig.wrongText
-                : answerIsCorrect
-                  ? "描述与该术语的职责范围一致。"
-                  : "内容结构、视觉样式和数据由不同部分负责，需要按职责判断。"}
+                : answerIsCorrect ? foundation.correctText : foundation.wrongText}
             </p>
           )}
         </section>
 
         <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
           <div>
-            <span>{isCss ? "可直接复制 · 响应式排查" : foundationConfig?.promptEyebrow ?? "可直接复制"}</span>
-            <h2 id="term-prompt-heading">{isCss ? "检查响应式布局" : foundationConfig?.promptTitle ?? "说明目标、范围和验证方式"}</h2>
+            <span>{isCss ? "可直接复制 · 响应式排查" : foundation.promptEyebrow}</span>
+            <h2 id="term-prompt-heading">{isCss ? "检查响应式布局" : foundation.promptTitle}</h2>
           </div>
           <p>{prompt}</p>
           <CopyAction text={prompt} label="复制提示词" />
@@ -591,11 +597,11 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </div>
             </div>
           </section>
-        ) : foundationConfig ? (
+        ) : (
           <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
             <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">相关内容</h2></div>
             <div className="term-path-list">
-              {foundationConfig.path.map((item, index) => (
+              {foundation.path.map((item, index) => (
                 <Link href={item.href} key={item.href}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <strong>{item.title} <small>{item.note}</small></strong>
@@ -606,7 +612,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
             <div className="term-related-orbit">
               <span>相关概念</span>
               <div>
-                {related.filter((item) => !foundationConfig.relatedExcludes.includes(item.slug as never)).slice(0, 4).map((item) => (
+                {related.filter((item) => !foundation.relatedExcludes.includes(item.slug as never)).slice(0, 4).map((item) => (
                   <Link key={item.slug} href={`/terms/${item.slug}`}>
                     <span className="brand-star-only term-related-star" aria-hidden="true" />
                     {item.zh}{item.en ? <small>{item.en}</small> : null}
@@ -615,12 +621,12 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </div>
             </div>
             <div className="term-course-entry">
-              <Link href={foundationConfig.courseHref}>
+              <Link href={foundation.courseHref}>
                 <span className="brand-star-only term-course-star" aria-hidden="true" />
                 <span>
                   <small>VibePolaris 教程</small>
-                  <strong>{foundationConfig.courseTitle}</strong>
-                  <em>{foundationConfig.courseMeta}</em>
+                  <strong>{foundation.courseTitle}</strong>
+                  <em>{foundation.courseMeta}</em>
                 </span>
                 <ArrowRight size={22} />
               </Link>
@@ -628,7 +634,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
             <div className="term-external-learning">
               <span>参考资料</span>
               <div>
-                {foundationConfig.external.map(([href, title, note]) => (
+                {foundation.external.map(([href, title, note]) => (
                   <a href={href} target="_blank" rel="noreferrer" key={href}>
                     <span><strong>{title}</strong><small>{note}</small></span><ArrowUpRight size={16} />
                   </a>
@@ -636,18 +642,6 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
               </div>
             </div>
           </section>
-        ) : (
-          <nav className="term-story-related" aria-label="相关术语">
-            <span>相关术语</span>
-            <div>
-              {related.map((item) => (
-                <Link key={item.slug} href={`/terms/${item.slug}`}>
-                  <span className="brand-star-only term-related-star" aria-hidden="true" />
-                  <span>{item.zh}{item.en ? <small>{item.en}</small> : null}</span>
-                </Link>
-              ))}
-            </div>
-          </nav>
         )}
       </div>
     </main>
