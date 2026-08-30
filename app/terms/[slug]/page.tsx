@@ -32,32 +32,60 @@ export default async function TermPage({ params }: TermPageProps) {
 
   return (
     <>
-      <SiteHeader />
-      <main className="detail wrap">
-        <div className="crumb"><Link href="/terms">术语</Link> / <span>{term.cat}</span> / <span>{term.zh}</span></div>
-        <div className="term-heading">
-          <span className="brand-star-only term-route-star" data-route-star-target aria-hidden="true" />
-          <h1>{term.zh}{term.en && <span className="en">{term.en}</span>}</h1>
-        </div>
-        <div className="d-meta"><span className="chip">{term.cat}</span></div>
-        <section className="d-sect">
-          <h2>大白话</h2>
-          <p className="eyebrow">示例对话 · 发给 AI 的原话（来自外部对话工具，非本站功能）</p>
-          <div className="quote user">{term.say}</div>
-          <div className="quote ai">好的，我会先按你的目标处理，并把做法、影响范围和验证结果说清楚。</div>
-        </section>
-        <section className="d-sect">
-          <h2>它是什么</h2>
-          <div className="def"><p><strong>{term.zh}</strong>：{term.say} 在这里你能看到它的准确叫法、什么时候会用到，以及一段可以直接复制给 AI 的说法。想延伸可以继续浏览 <Link className="inline" href={`/terms?cat=${encodeURIComponent(term.cat)}`}>同类概念</Link>。</p></div>
-        </section>
-        <section className="d-sect">
-          <h2>向 AI 这样说</h2>
-          <div className="codecard"><CopyButton text={prompt} /><span>{prompt}</span></div>
-        </section>
-        <section className="d-sect">
+      <SiteHeader wide />
+      <main className="term-detail wrap">
+        <header className="term-identity">
+          <span
+            className="brand-star-only term-route-star term-identity-star"
+            data-route-star-target
+            aria-hidden="true"
+          />
+          <h1>
+            <span className="term-zh">{term.zh}</span>
+            {term.en && <span className="en">{term.en}</span>}
+          </h1>
+          <Link className="term-category" href={`/terms?cat=${encodeURIComponent(term.cat)}`}>
+            {term.cat}
+          </Link>
+          <p className="term-lede">{term.say}</p>
+        </header>
+
+        <article className="term-reading">
+          <section className="term-section term-plain-language">
+            <h2>大白话</h2>
+            <p className="term-note">示例对话 · 发给 AI 的原话（来自外部对话工具，非本站功能）</p>
+            <div className="term-dialogue">
+              <p className="term-quote term-quote-user">{term.say}</p>
+              <p className="term-quote term-quote-ai">好的，我会先按你的目标处理，并把做法、影响范围和验证结果说清楚。</p>
+            </div>
+          </section>
+
+          <section className="term-section">
+            <h2>它是什么</h2>
+            <p className="term-definition">
+              <strong>{term.zh}</strong>：{term.say} 在这里你能看到它的准确叫法、什么时候会用到，以及一段可以直接复制给 AI 的说法。想延伸可以继续浏览
+              {" "}<Link href={`/terms?cat=${encodeURIComponent(term.cat)}`}>同类概念</Link>。
+            </p>
+          </section>
+
+          <section className="term-section term-prompt">
+            <h2>向 AI 这样说</h2>
+            <p className="term-prompt-note">把下面这段话复制给 AI，可直接用于项目沟通或任务分配。</p>
+            <div className="codecard"><CopyButton text={prompt} /><span>{prompt}</span></div>
+          </section>
+        </article>
+
+        <nav className="term-related" aria-label="相关术语">
           <h2>相关术语</h2>
-          <div className="related">{related.map((item) => <Link key={item.slug} href={`/terms/${item.slug}`}>{item.zh}{item.en ? ` ${item.en}` : ""}</Link>)}</div>
-        </section>
+          <div className="term-related-list">
+            {related.map((item) => (
+              <Link key={item.slug} href={`/terms/${item.slug}`}>
+                <span className="brand-star-only term-related-star" aria-hidden="true" />
+                <span>{item.zh}{item.en ? ` ${item.en}` : ""}</span>
+              </Link>
+            ))}
+          </div>
+        </nav>
       </main>
       <SiteFooter />
     </>

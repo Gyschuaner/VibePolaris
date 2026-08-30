@@ -97,6 +97,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 /* ---------- 顶栏 ---------- */
 .nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--hairline); }
 .nav-inner { max-width: 1160px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; gap: 28px; }
+.wide-nav-inner { max-width: 1440px; }
 .brand { display: flex; align-items: center; gap: 10px; font-size: 19px; }
 .brand .logo { width: 26px; height: 26px; color: var(--accent); flex: none; }
 .brand strong { font-weight: 700; letter-spacing: -.01em; }
@@ -526,6 +527,203 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .related { display: flex; gap: 0; flex-wrap: wrap; }
 .related a { padding: 4px 16px; font-size: 14px; color: var(--accent); }
 .related a + a { border-left: 1px solid var(--hairline); }
+
+/* ---------- 术语详情：双栏词典 ---------- */
+.term-detail {
+  max-width: 1440px;
+  min-height: calc(100svh - 64px);
+  display: grid;
+  grid-template-columns: minmax(340px, 32%) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "identity reading"
+    "related reading";
+  padding: 0 32px;
+}
+.term-identity {
+  grid-area: identity;
+  padding: 80px 72px 34px 20px;
+}
+.term-route-star.term-identity-star {
+  width: 142px;
+  height: 142px;
+  -webkit-mask-size: 222% 188%;
+  mask-size: 222% 188%;
+  transform-origin: center;
+}
+.term-identity h1 {
+  margin-top: 28px;
+  letter-spacing: -.045em;
+  line-height: 1.04;
+}
+.term-identity .term-zh {
+  display: block;
+  font-size: clamp(48px, 4.25vw, 66px);
+  font-weight: 760;
+}
+.term-identity .en {
+  display: block;
+  margin-top: 14px;
+  color: var(--accent);
+  font-size: clamp(26px, 2.35vw, 36px);
+  font-weight: 430;
+  letter-spacing: -.025em;
+}
+.term-category {
+  display: inline-block;
+  margin-top: 18px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 2px 14px;
+  color: var(--accent);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.term-category:hover,
+.term-category:focus-visible {
+  background: var(--tint);
+  outline: none;
+}
+.term-lede {
+  max-width: 31ch;
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.9;
+}
+.term-reading {
+  grid-area: reading;
+  border-left: 1px solid var(--hairline);
+  padding: 70px 28px 74px 76px;
+}
+.term-section {
+  max-width: 800px;
+}
+.term-section + .term-section {
+  margin-top: 54px;
+}
+.term-section h2,
+.term-related h2 {
+  display: block;
+  color: var(--ink);
+  font-size: 24px;
+  font-weight: 730;
+  line-height: 1.35;
+}
+.term-section h2 {
+  width: 28px;
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 6px;
+  white-space: nowrap;
+}
+.term-note,
+.term-prompt-note {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.term-dialogue {
+  margin-top: 22px;
+}
+.term-quote {
+  max-width: 82%;
+  border-radius: 11px;
+  padding: 14px 20px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.term-quote + .term-quote { margin-top: 18px; }
+.term-quote-user {
+  margin-left: 24px;
+  background: var(--tint);
+}
+.term-quote-ai {
+  border: 1px solid var(--hairline);
+  color: var(--muted);
+}
+.term-definition {
+  max-width: 66ch;
+  margin-top: 30px;
+  color: var(--ink);
+  font-size: 15.5px;
+  line-height: 1.95;
+}
+.term-definition a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.term-prompt .codecard {
+  margin-top: 24px;
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: var(--tint);
+  color: var(--ink);
+  padding: 22px 116px 22px 28px;
+  font: 14px/1.8 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+.term-prompt .copy-btn {
+  top: 50%;
+  right: 24px;
+  border-color: transparent;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 650;
+  transform: translateY(-50%);
+}
+.term-prompt .copy-btn:hover,
+.term-prompt .copy-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+.term-related {
+  grid-area: related;
+  align-self: end;
+  padding: 18px 72px 58px 20px;
+}
+.term-related h2 {
+  width: auto;
+  border-bottom: 0;
+  padding-bottom: 0;
+  font-size: 17px;
+}
+.term-related-list {
+  display: grid;
+  gap: 17px;
+  margin-top: 22px;
+}
+.term-related-list a {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 10px;
+  color: var(--ink);
+  font-size: 14px;
+}
+.term-related-list a:hover,
+.term-related-list a:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  outline: none;
+}
+.term-related-star {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  -webkit-mask-size: 222% 188%;
+  mask-size: 222% 188%;
+  transition: transform 180ms cubic-bezier(.2, .8, .2, 1);
+}
+.term-related-list a:hover .term-related-star,
+.term-related-list a:focus-visible .term-related-star {
+  transform: scale(1.18) rotate(7deg);
+}
 
 /* ---------- 跨路由流星：星图概念 → 术语详情 ---------- */
 .route-page {
@@ -1237,6 +1435,25 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .t-item:nth-child(3n+2), .t-item:nth-child(3n+3) { border-left: none; }
   .t-item:nth-child(even) { border-left: 1px solid var(--hairline); }
   .nav-links { display: none; }
+  .term-detail {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "identity"
+      "reading"
+      "related";
+  }
+  .term-identity { padding: 54px 0 44px; }
+  .term-route-star.term-identity-star { width: 96px; height: 96px; }
+  .term-identity h1 { margin-top: 28px; }
+  .term-identity .term-zh { font-size: 52px; }
+  .term-identity .en { font-size: 30px; }
+  .term-lede { max-width: 48ch; }
+  .term-reading { border-left: 0; border-top: 1px solid var(--hairline); padding: 50px 0 0; }
+  .term-section { max-width: 720px; }
+  .term-related { padding: 58px 0 50px; }
+  .term-related-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
   .cats { grid-template-columns: 1fr; }
@@ -1255,10 +1472,32 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .detail h1 { font-size: 30px; }
   .detail h1 .en { display: block; margin: 3px 0 0; font-size: 19px; }
   .route-meteor-tail { width: 104px; height: 92px; }
+  .term-detail { padding: 0 22px; }
+  .term-identity { padding: 42px 0 34px; }
+  .term-route-star.term-identity-star { width: 82px; height: 82px; }
+  .term-identity h1 { margin-top: 24px; }
+  .term-identity .term-zh { font-size: 44px; }
+  .term-identity .en { margin-top: 9px; font-size: 24px; }
+  .term-category { margin-top: 18px; }
+  .term-lede { margin-top: 24px; padding-top: 22px; font-size: 15px; }
+  .term-reading { padding-top: 38px; }
+  .term-section + .term-section { margin-top: 48px; }
+  .term-section h2 { font-size: 21px; }
+  .term-note,
+  .term-prompt-note { margin-top: 26px; font-size: 12.5px; }
+  .term-dialogue { margin-top: 20px; }
+  .term-quote { max-width: 100%; padding: 13px 15px; font-size: 14px; }
+  .term-quote-user { margin-left: 0; }
+  .term-definition { margin-top: 26px; font-size: 14.5px; }
+  .term-prompt .codecard { padding: 52px 18px 18px; font-size: 13px; }
+  .term-prompt .copy-btn { top: 14px; right: 14px; transform: none; }
+  .term-related { padding: 48px 0 42px; }
+  .term-related-list { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .route-page main,
   .term-route-star { transition: none; animation: none !important; }
+  .term-related-star { transition: none; }
   .route-meteor-layer { display: none; }
 }

@@ -3,10 +3,10 @@ import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export function SiteHeader({ home = false }: { home?: boolean }) {
+export function SiteHeader({ home = false, wide = false }: { home?: boolean; wide?: boolean }) {
   return (
-    <nav className={`nav${home ? " home-nav" : ""}`}>
-      <div className={`nav-inner${home ? " home-nav-inner" : ""}`}>
+    <nav className={`nav${home ? " home-nav" : ""}${wide ? " wide-nav" : ""}`}>
+      <div className={`nav-inner${home ? " home-nav-inner" : ""}${wide ? " wide-nav-inner" : ""}`}>
         <Link className="brand" href="/" aria-label="VibePolaris 首页">
           <BrandMark size="nav" />
           <strong>VibePolaris</strong>
