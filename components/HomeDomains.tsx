@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useRouteMeteor } from "@/components/RouteMeteorProvider";
+
 type Concept = {
   id: string;
   label: string;
@@ -62,12 +64,12 @@ const domains: Domain[] = [
     title: "前端",
     category: "前端",
     concepts: [
-      { id: "component", label: "组件", en: "Component", href: "/terms?q=组件" },
-      { id: "state", label: "状态", en: "State", href: "/terms?q=状态" },
-      { id: "responsive", label: "响应式", en: "Responsive", href: "/terms?q=响应式" },
+      { id: "component", label: "组件", en: "Component", href: "/terms/component" },
+      { id: "state", label: "状态", en: "State", href: "/terms/state" },
+      { id: "responsive", label: "响应式", en: "Responsive", href: "/terms/responsive" },
       { id: "html", label: "HTML", href: "/terms?q=HTML" },
-      { id: "css", label: "CSS", href: "/terms?q=CSS" },
-      { id: "form", label: "表单", en: "Form", href: "/terms?q=表单" },
+      { id: "css", label: "CSS", href: "/terms/css" },
+      { id: "form", label: "表单", en: "Form", href: "/terms/form" },
       { id: "dom", label: "DOM", href: "/terms?q=DOM" },
     ],
   },
@@ -76,9 +78,9 @@ const domains: Domain[] = [
     title: "后端",
     category: "后端",
     concepts: [
-      { id: "api", label: "API 接口", href: "/terms?q=API" },
-      { id: "database", label: "数据库", en: "Database", href: "/terms?q=数据库" },
-      { id: "auth", label: "认证", en: "Authentication", href: "/terms?q=认证" },
+      { id: "api", label: "API 接口", href: "/terms/api" },
+      { id: "database", label: "数据库", en: "Database", href: "/terms/database" },
+      { id: "auth", label: "认证", en: "Authentication", href: "/terms/auth" },
       { id: "cache", label: "缓存", en: "Cache", href: "/terms?q=缓存" },
       { id: "queue", label: "队列", en: "Queue", href: "/terms?q=队列" },
       { id: "rest", label: "REST", href: "/terms?q=REST" },
@@ -144,11 +146,13 @@ const specks = [
 ];
 
 export function HomeDomains() {
+  const { beginRouteFlight, isRouteFlying } = useRouteMeteor();
   const [activeSlug, setActiveSlug] = useState("ai-agent");
   const [focusId, setFocusId] = useState<string | null>(null);
   const [motionPhase, setMotionPhase] = useState<MotionPhase>("initial");
   const [swapFlight, setSwapFlight] = useState<SwapFlight | null>(null);
   const domainTimersRef = useRef<number[]>([]);
+  const centerStarRef = useRef<HTMLSpanElement>(null);
 
   const activeDomain = domains.find((domain) => domain.slug === activeSlug) ?? domains[2];
   const focusedConcept = activeDomain.concepts.find((concept) => concept.id === focusId) ?? null;
@@ -170,12 +174,13 @@ export function HomeDomains() {
     domainTimersRef.current = [];
   }, []);
 
-  const beginFocusSwap = useCallback((nextFocusId: string | null, slotIndex: number) => {
+  const beginFocusSwap = useCallback((nextFocusId: string | null, slotIndex: number, onSettled?: () => void) => {
     clearDomainTimers();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setFocusId(nextFocusId);
       setSwapFlight(null);
       setMotionPhase("idle");
+      if (onSettled) window.requestAnimationFrame(onSettled);
       return;
     }
 
@@ -188,6 +193,7 @@ export function HomeDomains() {
     const finishTimer = window.setTimeout(() => {
       setSwapFlight(null);
       setMotionPhase("idle");
+      if (onSettled) window.requestAnimationFrame(onSettled);
     }, 470);
     domainTimersRef.current.push(contentTimer, finishTimer);
   }, [clearDomainTimers]);
@@ -222,9 +228,13 @@ export function HomeDomains() {
   };
 
   const focusConcept = (concept: Concept, slotIndex: number) => {
-    if (swapFlight) return;
+    if (swapFlight || isRouteFlying) return;
     const rootId = `${activeDomain.slug}-root`;
-    beginFocusSwap(concept.id === rootId ? null : concept.id, slotIndex);
+    const nextFocusId = concept.id === rootId ? null : concept.id;
+    const hasDetailPage = nextFocusId !== null && concept.href.startsWith("/terms/") && !concept.href.includes("?");
+    beginFocusSwap(nextFocusId, slotIndex, hasDetailPage ? () => {
+      if (centerStarRef.current) beginRouteFlight(concept.href, centerStarRef.current);
+    } : undefined);
   };
 
   useEffect(() => {
@@ -304,12 +314,23 @@ export function HomeDomains() {
 
         <div className="constellation-center">
           <span
+            ref={centerStarRef}
             key={`center-star-${centerIdentity}`}
             className="brand-star-only constellation-center-star"
             aria-hidden="true"
           />
           {focusedConcept ? (
-            <Link key={`center-label-${centerIdentity}`} id="constellation-title" className="constellation-center-link" href={focusedConcept.href}>
+            <Link
+              key={`center-label-${centerIdentity}`}
+              id="constellation-title"
+              className="constellation-center-link"
+              href={focusedConcept.href}
+              onClick={(event) => {
+                if (!focusedConcept.href.startsWith("/terms/") || focusedConcept.href.includes("?") || !centerStarRef.current) return;
+                event.preventDefault();
+                beginRouteFlight(focusedConcept.href, centerStarRef.current);
+              }}
+            >
               <span>{focusedConcept.label}</span>
               {focusedConcept.en && <small>{focusedConcept.en}</small>}
             </Link>
@@ -341,7 +362,7 @@ export function HomeDomains() {
                 style={style}
                 type="button"
                 onClick={() => focusConcept(concept, slotIndex)}
-                aria-label={`聚焦${concept.label}`}
+                aria-label={concept.href.startsWith("/terms/") && !concept.href.includes("?") ? `打开${concept.label}术语` : `聚焦${concept.label}`}
               >
                 <span className="brand-star-only concept-star-mark" aria-hidden="true" />
                 <span className="concept-star-label">

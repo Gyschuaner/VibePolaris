@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
+import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
+
 import "./globals.css";
 
 const themeBootstrap = `
@@ -41,7 +43,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
-      <body>{children}</body>
+      <body><RouteMeteorProvider>{children}</RouteMeteorProvider></body>
     </html>
   );
 }

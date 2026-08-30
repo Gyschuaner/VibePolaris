@@ -13,9 +13,10 @@ test("Next.js 构建脚本与 App Router 已启用", () => {
   assert.match(read("app/page.tsx"), /HomeDomains/);
 });
 
-test("结构化内容有 20 条术语且不含阶段字段", () => {
+test("结构化内容不少于首发 20 条且包含首页可直达术语", () => {
   const terms = JSON.parse(read("content/zh/terms.json"));
-  assert.equal(terms.length, 20);
+  assert.ok(terms.length >= 20);
+  assert.ok(terms.some((term) => term.slug === "css"));
   for (const term of terms) {
     assert.ok(term.slug);
     assert.ok(term.cat);
@@ -50,12 +51,22 @@ test("首页使用可切换的极简技术星图", () => {
   assert.match(home, /setFocusId/);
   assert.match(home, /SwapFlight/);
   assert.match(home, /beginFocusSwap/);
+  assert.match(home, /beginRouteFlight/);
+  assert.match(read("app/layout.tsx"), /RouteMeteorProvider/);
+  const routeMotion = read("components/RouteMeteorProvider.tsx");
+  assert.match(routeMotion, /route-meteor/);
+  assert.match(routeMotion, /router\.prefetch/);
+  assert.match(routeMotion, /prefers-reduced-motion: reduce/);
+  assert.match(read("app\/terms\/[slug]\/page.tsx"), /data-route-star-target/);
   assert.match(home, /MotionPhase/);
   assert.match(home, /aria-live="polite"/);
   assert.match(css, /is-collapsing[\s\S]*--active-enter-x/);
   assert.match(css, /constellation-flight-to-center/);
   assert.match(css, /constellation-flight-to-orbit/);
   assert.match(css, /constellation-idle-glint/);
+  assert.match(css, /route-meteor-flight/);
+  assert.match(css, /meteor-trail-mask\.png/);
+  assert.match(css, /has-route-flight/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.constellation-center/);
   assert.doesNotMatch(page, /brand-stage|domain-toolbar|recent-strip/);
   assert.doesNotMatch(home, /domain-copy|context-flow|domain-summary/);

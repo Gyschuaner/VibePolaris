@@ -35,7 +35,10 @@ export default async function TermPage({ params }: TermPageProps) {
       <SiteHeader />
       <main className="detail wrap">
         <div className="crumb"><Link href="/terms">术语</Link> / <span>{term.cat}</span> / <span>{term.zh}</span></div>
-        <h1>{term.zh}{term.en && <span className="en">{term.en}</span>}</h1>
+        <div className="term-heading">
+          <span className="brand-star-only term-route-star" data-route-star-target aria-hidden="true" />
+          <h1>{term.zh}{term.en && <span className="en">{term.en}</span>}</h1>
+        </div>
         <div className="d-meta"><span className="chip">{term.cat}</span></div>
         <section className="d-sect">
           <h2>大白话</h2>

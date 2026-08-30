@@ -526,6 +526,123 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .related { display: flex; gap: 0; flex-wrap: wrap; }
 .related a { padding: 4px 16px; font-size: 14px; color: var(--accent); }
 .related a + a { border-left: 1px solid var(--hairline); }
+
+/* ---------- 跨路由流星：星图概念 → 术语详情 ---------- */
+.route-page {
+  min-height: 100svh;
+}
+.route-page main {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transform-origin: center 18%;
+  transition:
+    opacity 210ms ease,
+    transform 280ms cubic-bezier(.2, .78, .22, 1);
+}
+.route-page.is-departing main {
+  opacity: .12;
+  transform: translateY(9px) scale(.994);
+  pointer-events: none;
+}
+.route-page.is-arriving main {
+  animation: route-page-arrive 440ms 40ms cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.route-meteor-layer {
+  position: fixed;
+  z-index: 120;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.route-meteor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  isolation: isolate;
+  animation: route-meteor-flight 760ms cubic-bezier(.32, .02, .17, 1) both;
+  will-change: transform;
+}
+.route-meteor-star {
+  position: relative;
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-star) 24%, transparent));
+}
+.route-meteor-tail {
+  position: absolute;
+  z-index: 1;
+  right: 22px;
+  top: 50%;
+  width: 128px;
+  height: 78px;
+  color: var(--brand-trail);
+  background: currentColor;
+  opacity: 0;
+  transform: translateY(-54%) rotate(-7deg) scaleX(.2);
+  transform-origin: right center;
+  -webkit-mask: url("/meteor-trail-mask.png") center / contain no-repeat;
+  mask: url("/meteor-trail-mask.png") center / contain no-repeat;
+  animation: route-meteor-tail 760ms cubic-bezier(.2, .78, .22, 1) both;
+}
+
+.term-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.term-route-star {
+  width: 54px;
+  height: 54px;
+  flex: none;
+  opacity: 1;
+  transition: opacity 160ms ease, transform 240ms cubic-bezier(.2, .8, .2, 1);
+}
+.route-page.has-route-flight .term-route-star {
+  opacity: 0;
+  transform: scale(.82);
+}
+
+@keyframes route-meteor-flight {
+  0% {
+    transform:
+      translate3d(var(--route-from-x), var(--route-from-y), 0)
+      rotate(var(--route-angle-a))
+      scale(var(--route-source-scale));
+  }
+  38% {
+    transform:
+      translate3d(var(--route-via-a-x), var(--route-via-a-y), 0)
+      rotate(var(--route-angle-b))
+      scale(1.08);
+  }
+  72% {
+    transform:
+      translate3d(var(--route-via-b-x), var(--route-via-b-y), 0)
+      rotate(var(--route-angle-c))
+      scale(.98);
+  }
+  100% {
+    transform:
+      translate3d(var(--route-target-x), var(--route-target-y), 0)
+      rotate(var(--route-angle-c))
+      scale(var(--route-target-scale));
+  }
+}
+@keyframes route-meteor-tail {
+  0% { opacity: 0; transform: translateY(-54%) rotate(-7deg) scaleX(.08); }
+  16% { opacity: .74; transform: translateY(-54%) rotate(-7deg) scaleX(.82); }
+  48% { opacity: .9; transform: translateY(-54%) rotate(-7deg) scaleX(1); }
+  84% { opacity: .48; transform: translateY(-54%) rotate(-7deg) scaleX(.68); }
+  100% { opacity: 0; transform: translateY(-54%) rotate(-7deg) scaleX(.18); }
+}
+@keyframes route-page-arrive {
+  from { opacity: .12; transform: translateY(9px) scale(.994); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 /* ---------- 选型指南 ---------- */
 .guide { max-width: 780px; margin: 0 auto; padding-top: 48px; }
 .guide h1 { font-size: 30px; font-weight: 700; letter-spacing: -.01em; }
@@ -1010,4 +1127,18 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .grid-terms { grid-template-columns: 1fr; }
   .t-item { border-left: none !important; }
   .wordmark { font-size: 56px; }
+}
+
+@media (max-width: 560px) {
+  .term-heading { gap: 12px; }
+  .term-route-star { width: 42px; height: 42px; }
+  .detail h1 { font-size: 30px; }
+  .detail h1 .en { display: block; margin: 3px 0 0; font-size: 19px; }
+  .route-meteor-tail { width: 96px; height: 62px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-page main,
+  .term-route-star { transition: none; animation: none !important; }
+  .route-meteor-layer { display: none; }
 }
