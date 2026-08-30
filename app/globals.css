@@ -579,18 +579,26 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .route-meteor-tail {
   position: absolute;
   z-index: 1;
-  right: 22px;
+  left: 50%;
   top: 50%;
-  width: 128px;
-  height: 78px;
+  width: 118px;
+  height: 104px;
   color: var(--brand-trail);
   background: currentColor;
   opacity: 0;
-  transform: translateY(-54%) rotate(-7deg) scaleX(.2);
-  transform-origin: right center;
-  -webkit-mask: url("/meteor-trail-mask.png") center / contain no-repeat;
-  mask: url("/meteor-trail-mask.png") center / contain no-repeat;
-  animation: route-meteor-tail 820ms linear both;
+  transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.22);
+  transform-origin: 81.4% 16.35%;
+  -webkit-mask-image: url("/meteor-trail-frames.png");
+  mask-image: url("/meteor-trail-frames.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 3200% 100%;
+  mask-size: 3200% 100%;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  animation:
+    route-meteor-tail-draw 320ms steps(31, end) both,
+    route-meteor-tail-life 820ms linear both;
 }
 
 .term-heading {
@@ -620,12 +628,16 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
     transform: scale(var(--route-target-scale));
   }
 }
-@keyframes route-meteor-tail {
-  0% { opacity: 0; transform: translateY(-54%) rotate(-7deg) scaleX(.08); }
-  16% { opacity: .74; transform: translateY(-54%) rotate(-7deg) scaleX(.82); }
-  48% { opacity: .9; transform: translateY(-54%) rotate(-7deg) scaleX(1); }
-  84% { opacity: .48; transform: translateY(-54%) rotate(-7deg) scaleX(.68); }
-  100% { opacity: 0; transform: translateY(-54%) rotate(-7deg) scaleX(.18); }
+@keyframes route-meteor-tail-draw {
+  from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  to { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+}
+@keyframes route-meteor-tail-life {
+  0% { opacity: 0; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.22); }
+  18% { opacity: .58; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.72); }
+  44% { opacity: .84; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(1); }
+  76% { opacity: .62; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.92); }
+  100% { opacity: 0; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.6); }
 }
 @keyframes route-page-arrive {
   from { opacity: .18; transform: translateY(6px) scale(.996); }
@@ -1122,7 +1134,7 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-route-star { width: 42px; height: 42px; }
   .detail h1 { font-size: 30px; }
   .detail h1 .en { display: block; margin: 3px 0 0; font-size: 19px; }
-  .route-meteor-tail { width: 96px; height: 62px; }
+  .route-meteor-tail { width: 104px; height: 92px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
