@@ -1,156 +1,239 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 
-type DomainItem = {
+type Concept = {
+  id: string;
   label: string;
-  href: string;
   en?: string;
-  current?: boolean;
-  arrow?: boolean;
-  note?: string;
+  href: string;
 };
 
 type Domain = {
   slug: string;
   title: string;
-  copy: string;
-  summary: string[];
   category: string;
-  brand?: boolean;
-  items: DomainItem[];
+  concepts: Concept[];
+};
+
+type StarStyle = CSSProperties & {
+  "--x": string;
+  "--y": string;
+  "--mobile-x": string;
+  "--mobile-y": string;
+  "--scale": number;
 };
 
 const domains: Domain[] = [
   {
-    slug: "frontend", title: "前端", copy: "网页在浏览器中的呈现与交互实现。", summary: ["HTML", "CSS"], category: "前端",
-    items: [
-      { label: "组件", en: "Component", href: "/terms?q=组件" },
-      { label: "状态", en: "State", href: "/terms?q=状态" },
-      { label: "响应式布局", en: "Responsive", href: "/terms?q=响应式" },
+    slug: "frontend",
+    title: "前端",
+    category: "前端",
+    concepts: [
+      { id: "component", label: "组件", en: "Component", href: "/terms?q=组件" },
+      { id: "state", label: "状态", en: "State", href: "/terms?q=状态" },
+      { id: "responsive", label: "响应式", en: "Responsive", href: "/terms?q=响应式" },
+      { id: "html", label: "HTML", href: "/terms?q=HTML" },
+      { id: "css", label: "CSS", href: "/terms?q=CSS" },
+      { id: "form", label: "表单", en: "Form", href: "/terms?q=表单" },
+      { id: "dom", label: "DOM", href: "/terms?q=DOM" },
     ],
   },
   {
-    slug: "backend", title: "后端", copy: "处理业务逻辑、数据与服务的工程实现。", summary: ["API 接口", "数据库"], category: "后端",
-    items: [
-      { label: "API 接口", href: "/terms?q=API" },
-      { label: "数据库", en: "Database", href: "/terms?q=数据库" },
-      { label: "认证", en: "Authentication", href: "/terms?q=认证" },
+    slug: "backend",
+    title: "后端",
+    category: "后端",
+    concepts: [
+      { id: "api", label: "API 接口", href: "/terms?q=API" },
+      { id: "database", label: "数据库", en: "Database", href: "/terms?q=数据库" },
+      { id: "auth", label: "认证", en: "Authentication", href: "/terms?q=认证" },
+      { id: "cache", label: "缓存", en: "Cache", href: "/terms?q=缓存" },
+      { id: "queue", label: "队列", en: "Queue", href: "/terms?q=队列" },
+      { id: "rest", label: "REST", href: "/terms?q=REST" },
+      { id: "webhook", label: "Webhook", href: "/terms?q=Webhook" },
     ],
   },
   {
-    slug: "ai-agent", title: "AI · Agent", copy: "模型怎样理解信息、调用工具并完成任务。", summary: ["上下文", "Token"], category: "AI·Agent", brand: true,
-    items: [
-      { label: "大模型", en: "LLM", href: "/terms?q=大模型" },
-      { label: "上下文", en: "Context", href: "/terms/context", current: true, note: "让模型知道之前说过什么、当前项目是什么样。" },
-      { label: "Token", href: "/terms/token", arrow: true },
-      { label: "智能体", en: "Agent", href: "/terms/agent", arrow: true },
+    slug: "ai-agent",
+    title: "AI · Agent",
+    category: "AI·Agent",
+    concepts: [
+      { id: "context", label: "上下文", en: "Context", href: "/terms/context" },
+      { id: "token", label: "Token", href: "/terms/token" },
+      { id: "agent", label: "智能体", en: "Agent", href: "/terms/agent" },
+      { id: "tools", label: "工具调用", en: "Tools", href: "/terms?q=工具调用" },
+      { id: "memory", label: "记忆", en: "Memory", href: "/terms?q=记忆" },
+      { id: "rag", label: "RAG", href: "/terms?q=RAG" },
+      { id: "mcp", label: "MCP", href: "/terms?q=MCP" },
     ],
   },
   {
-    slug: "stack", title: "技术栈", copy: "开发所用语言、框架与基础工具的组合。", summary: ["框架", "部署与托管"], category: "技术栈",
-    items: [
-      { label: "框架与库", en: "Framework", href: "/terms/framework" },
-      { label: "SSG / SSR", href: "/terms/ssg-ssr" },
-      { label: "部署与托管", en: "Deploy", href: "/terms/deploy" },
+    slug: "stack",
+    title: "技术栈",
+    category: "技术栈",
+    concepts: [
+      { id: "framework", label: "框架", en: "Framework", href: "/terms/framework" },
+      { id: "library", label: "库", en: "Library", href: "/terms/framework" },
+      { id: "rendering", label: "SSG / SSR", href: "/terms/ssg-ssr" },
+      { id: "deploy", label: "部署", en: "Deploy", href: "/terms/deploy" },
+      { id: "runtime", label: "运行时", en: "Runtime", href: "/terms?q=运行时" },
+      { id: "package", label: "包管理", href: "/terms?q=包管理" },
+      { id: "typescript", label: "TypeScript", href: "/terms?q=TypeScript" },
     ],
   },
   {
-    slug: "product", title: "产品与设计", copy: "从需求到体验，构建可用与可迭代的产品。", summary: ["用户流程", "信息架构"], category: "产品与设计",
-    items: [
-      { label: "MVP", href: "/terms/mvp" },
-      { label: "用户流程", en: "User Flow", href: "/terms/user-flow" },
-      { label: "线框图", en: "Wireframe", href: "/terms/wireframe" },
+    slug: "product",
+    title: "产品与设计",
+    category: "产品与设计",
+    concepts: [
+      { id: "mvp", label: "MVP", href: "/terms/mvp" },
+      { id: "flow", label: "用户流程", en: "User Flow", href: "/terms/user-flow" },
+      { id: "wireframe", label: "线框图", en: "Wireframe", href: "/terms/wireframe" },
+      { id: "ia", label: "信息架构", href: "/terms?q=信息架构" },
+      { id: "prototype", label: "原型", en: "Prototype", href: "/terms?q=原型" },
+      { id: "system", label: "设计系统", href: "/terms?q=设计系统" },
+      { id: "a11y", label: "无障碍", href: "/terms?q=无障碍" },
     ],
   },
 ];
 
+const starSlots = [
+  { x: 21, y: 19, mobileX: 14, mobileY: 18, scale: 1.18 },
+  { x: 67, y: 17, mobileX: 64, mobileY: 15, scale: .88 },
+  { x: 79, y: 55, mobileX: 66, mobileY: 61, scale: .98 },
+  { x: 58, y: 73, mobileX: 18, mobileY: 75, scale: 1.08 },
+  { x: 12, y: 62, mobileX: 12, mobileY: 50, scale: .72 },
+  { x: 32, y: 79, mobileX: 66, mobileY: 83, scale: .78 },
+  { x: 88, y: 34, mobileX: 72, mobileY: 36, scale: .72 },
+];
+
+const specks = [
+  [6, 13], [18, 44], [38, 8], [55, 87], [74, 31], [86, 12], [92, 73], [47, 57],
+];
+
 export function HomeDomains() {
-  const gridRef = useRef<HTMLElement>(null);
+  const [activeSlug, setActiveSlug] = useState("ai-agent");
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const [motionKey, setMotionKey] = useState(0);
+
+  const activeDomain = domains.find((domain) => domain.slug === activeSlug) ?? domains[2];
+  const focusedConcept = activeDomain.concepts.find((concept) => concept.id === focusId) ?? null;
+
+  const orbitConcepts = useMemo<Concept[]>(() => {
+    if (!focusedConcept) return activeDomain.concepts;
+    return [
+      {
+        id: `${activeDomain.slug}-root`,
+        label: activeDomain.title,
+        href: `/terms?cat=${encodeURIComponent(activeDomain.category)}`,
+      },
+      ...activeDomain.concepts.filter((concept) => concept.id !== focusedConcept.id),
+    ];
+  }, [activeDomain, focusedConcept]);
+
+  const chooseDomain = (slug: string) => {
+    if (slug === activeSlug && !focusId) return;
+    setActiveSlug(slug);
+    setFocusId(null);
+    setMotionKey((key) => key + 1);
+  };
+
+  const focusConcept = (concept: Concept) => {
+    const rootId = `${activeDomain.slug}-root`;
+    setFocusId(concept.id === rootId ? null : concept.id);
+    setMotionKey((key) => key + 1);
+  };
 
   useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    const domainNodes = Array.from(grid.querySelectorAll<HTMLElement>(".domain"));
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const cleanups: Array<() => void> = [];
-
-    const activate = (target: HTMLElement) => {
-      if (target.classList.contains("is-active")) return;
-      domainNodes.forEach((domain) => {
-        const active = domain === target;
-        const trigger = domain.querySelector<HTMLButtonElement>(".domain-trigger");
-        const detail = domain.querySelector<HTMLElement>(".domain-detail");
-        domain.classList.toggle("is-active", active);
-        trigger?.setAttribute("aria-expanded", String(active));
-        if (!detail) return;
-
-        window.clearTimeout(Number(detail.dataset.timer || 0));
-        if (active) {
-          const wasHidden = detail.hidden;
-          detail.hidden = false;
-          detail.setAttribute("aria-hidden", "false");
-          detail.classList.remove("is-leaving");
-          if (!reduceMotion && wasHidden) {
-            detail.classList.add("is-entering");
-            requestAnimationFrame(() => requestAnimationFrame(() => detail.classList.remove("is-entering")));
-          }
-        } else if (!detail.hidden) {
-          detail.setAttribute("aria-hidden", "true");
-          if (reduceMotion) {
-            detail.hidden = true;
-          } else {
-            domain.classList.add("is-leaving");
-            detail.classList.add("is-leaving");
-            const timer = window.setTimeout(() => {
-              if (!domain.classList.contains("is-active")) detail.hidden = true;
-              detail.classList.remove("is-leaving");
-              domain.classList.remove("is-leaving");
-            }, 150);
-            detail.dataset.timer = String(timer);
-          }
-        }
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setFocusId((current) => {
+        if (!current) return current;
+        setMotionKey((key) => key + 1);
+        return null;
       });
     };
-
-    domainNodes.forEach((domain) => {
-      const trigger = domain.querySelector<HTMLButtonElement>(".domain-trigger");
-      const handler = () => activate(domain);
-      trigger?.addEventListener("click", handler);
-      cleanups.push(() => trigger?.removeEventListener("click", handler));
-    });
-
-    return () => cleanups.forEach((cleanup) => cleanup());
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
   }, []);
 
   return (
-    <section ref={gridRef} className="domain-grid" aria-label="精选技术领域">
-      {domains.map((domain) => {
-        const active = domain.slug === "ai-agent";
-        return (
-          <article key={domain.slug} className={`domain${active ? " is-active" : ""}`} data-domain={domain.slug}>
-            <button className="domain-trigger" type="button" aria-expanded={active} aria-controls={`domain-detail-${domain.slug}`}>
-              <span className={`domain-title${domain.brand ? " domain-title--brand" : ""}`}>
-                {domain.brand && <span className="brand-star-only" aria-hidden="true" />}{domain.title}
-              </span>
-              <span className="domain-copy">{domain.copy}</span>
+    <section className="constellation-shell" aria-labelledby="constellation-title">
+      <nav className="domain-rail" aria-label="技术领域">
+        {domains.map((domain) => {
+          const active = domain.slug === activeSlug;
+          return (
+            <button
+              key={domain.slug}
+              className={`domain-rail-item${active ? " is-active" : ""}`}
+              type="button"
+              aria-pressed={active}
+              aria-controls="constellation-field"
+              onClick={() => chooseDomain(domain.slug)}
+            >
+              {active && <span className="brand-star-only domain-rail-star" aria-hidden="true" />}
+              <span>{domain.title}</span>
             </button>
-            <div className="domain-summary" aria-hidden="true">{domain.summary.map((item) => <span key={item}>{item}</span>)}</div>
-            <div className="domain-detail" id={`domain-detail-${domain.slug}`} hidden={!active} aria-hidden={!active}>
-              {domain.items.map((item) => (
-                <Fragment key={item.href}>
-                  <Link className={item.current ? "is-current" : undefined} href={item.href}>
-                    {item.label}{item.en && <span>{item.en}</span>}{(item.current || item.arrow) && <b>→</b>}
-                  </Link>
-                  {item.note && <><p>{item.note}</p><div className="context-flow" aria-label="上下文组成">之前的对话 <i>+</i> 当前文件 <i>+</i> 任务要求 <b>→</b> 上下文</div></>}
-                </Fragment>
-              ))}
-            </div>
-            <Link className="domain-enter" href={`/terms?cat=${encodeURIComponent(domain.category)}`} aria-label={`进入${domain.title}章节`}><span aria-hidden="true">→</span></Link>
-          </article>
-        );
-      })}
+          );
+        })}
+      </nav>
+
+      <div id="constellation-field" className="constellation-map" data-motion-key={motionKey}>
+        {specks.map(([x, y]) => (
+          <span
+            key={`${x}-${y}`}
+            className="brand-star-only constellation-speck"
+            style={{ "--x": `${x}%`, "--y": `${y}%` } as CSSProperties}
+            aria-hidden="true"
+          />
+        ))}
+
+        <div key={`center-${motionKey}`} className="constellation-center">
+          <span className="brand-star-only constellation-center-star" aria-hidden="true" />
+          {focusedConcept ? (
+            <Link id="constellation-title" className="constellation-center-link" href={focusedConcept.href}>
+              <span>{focusedConcept.label}</span>
+              {focusedConcept.en && <small>{focusedConcept.en}</small>}
+            </Link>
+          ) : (
+            <h1 id="constellation-title">{activeDomain.title}</h1>
+          )}
+        </div>
+
+        <div key={`orbit-${motionKey}`} className="constellation-orbit" aria-label={`${activeDomain.title}相关概念`}>
+          {orbitConcepts.slice(0, starSlots.length).map((concept, index) => {
+            const slot = starSlots[index];
+            const style: StarStyle = {
+              "--x": `${slot.x}%`,
+              "--y": `${slot.y}%`,
+              "--mobile-x": `${slot.mobileX}%`,
+              "--mobile-y": `${slot.mobileY}%`,
+              "--scale": slot.scale,
+            };
+            return (
+              <button
+                key={concept.id}
+                className={`concept-star concept-star--${index}${index === 3 ? " is-featured" : ""}`}
+                style={style}
+                type="button"
+                onClick={() => focusConcept(concept)}
+                aria-label={`聚焦${concept.label}`}
+              >
+                <span className="brand-star-only concept-star-mark" aria-hidden="true" />
+                <span className="concept-star-label">
+                  <strong>{concept.label}</strong>
+                  {concept.en && <small>{concept.en}</small>}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="sr-only" aria-live="polite">
+          当前中心主题：{focusedConcept ? `${focusedConcept.label}${focusedConcept.en ? ` ${focusedConcept.en}` : ""}` : activeDomain.title}
+        </p>
+      </div>
     </section>
   );
 }

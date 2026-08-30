@@ -1,4 +1,53 @@
-# VibePolaris 首页 R3 设计 QA
+# VibePolaris 设计 QA（最新：首页 R4）
+
+## 首页 R4 极简技术星图
+
+### 对照证据
+
+- 视觉真值：`C:\Users\chuansgu\.codex\generated_images\01a04cd2-3ffd-71a3-9eca-5d7f98f45830\exec-a9bfb52e-e607-4d4c-8e19-8ac8d2918652.png`；项目内副本 `docs/design/qa/homepage-star-map-reference.png`。
+- 视觉真值像素：1487×1058；生成目标画布为 1440×1024。
+- 桌面实现：`docs/design/qa/homepage-star-map-implementation-1280x720.png`；应用内浏览器 CSS 视口与截图像素均为 1280×720，浅色 `moss`、AI · Agent 默认中心态。
+- 同屏对照：`docs/design/qa/homepage-star-map-comparison.png`。两侧各放入 640×455 等大容器，使用 contain 等比缩放、不拉伸；由于应用内浏览器桌面视口固定为 1280×720，本轮按同一内容状态比较构图与层级，不做逐像素位置断言。
+- 聚焦状态：`docs/design/qa/homepage-star-map-context-focus.png`；上下文进入中心，AI · Agent 回到周边星点。
+- 分类状态：`docs/design/qa/homepage-star-map-backend.png`；后端成为唯一 `aria-pressed=true` 的分类，概念集合同步切换。
+- 暗色状态：`docs/design/qa/homepage-star-map-dark.png`；1280×720。
+- 移动端：`docs/design/qa/homepage-star-map-mobile-screen.png`；真实 390×844 iframe CSS 视口。应用内浏览器截图按 1.5 显示缩放得到 261×563 区域，随后归一化为 390×844；iframe 实测 `clientWidth=390`、`scrollWidth=390`、`clientHeight=844`、`scrollHeight=844`。
+
+### Findings
+
+未发现仍需处理的 P0、P1 或 P2。实现保留了参考图的横向技术分类、中心主题、无连线漂浮概念、暖骨白 / 苔藓绿 / 黄绿色北极星和大留白，同时把参考图右侧被裁切的概念收回安全区，保证真实页面无横向溢出。
+
+### 五项保真检查
+
+- 字体与层级：沿用项目系统中文字体；导航、分类、中心主题、概念四级字号清晰。中心标题在桌面 48–78px、移动端 35–48px，未出现截断或异常换行。
+- 间距与布局：桌面 1280×720 的 `scrollWidth/scrollHeight` 与视口一致；390×844 也无横向或纵向溢出。分类数量继续由数据数组驱动，移动端使用横向滚动而非压缩全部标签。
+- 色彩与令牌：只消费既有 `--bg`、`--ink`、`--muted`、`--accent`、`--brand-star`；浅色和暗色均保持足够对比，不引入蓝紫色、渐变、阴影或卡片表面。
+- 图像与图标：品牌轨迹和所有星体继续使用项目真实 PNG 蒙版资产；没有用 emoji、字符星号、内联 SVG 或 CSS 图形替代。搜索与主题图标沿用既有站点组件。
+- 文案与内容：首屏只保留品牌、技术分类、中心主题与概念名；旧 Hero、领域说明、列表解释、最近更新和 CTA 全部移除。
+
+### 交互与无障碍
+
+- 浏览器实际测试了分类切换、概念聚焦、中心术语详情链接、Escape 返回、搜索提交、明暗主题切换和移动端概念聚焦。
+- 分类使用原生按钮与 `aria-pressed`，概念使用原生按钮，中心概念使用真实链接；状态变化通过 `aria-live` 播报。
+- 桌面与移动端关键点击目标不小于 44px；键盘焦点有可见样式。
+- `prefers-reduced-motion` 由样式回退与自动化断言覆盖；本轮应用内浏览器未暴露系统级动效偏好切换入口。
+- 浏览器控制台日志为空。
+
+### 比较历史
+
+1. 初次实现为保证星图最小高度使用 610px，1280×720 下页面 `scrollHeight=854`，属于 P2 首屏比例漂移。将分类轨高度改为视口 clamp，并让星图高度取剩余视口空间；复验后 `scrollWidth=1280`、`scrollHeight=720`。
+2. 概念按钮点击后原节点卸载，焦点回到 body，局部 `onKeyDown` 无法接收 Escape，属于 P2 键盘返回失效。改为窗口级 Escape 监听，保留组件卸载清理；复验中心态可恢复。
+3. 移动端使用 390×844 iframe 实际渲染，复验分类横向浏览、星点不重叠、聚焦后仍为 `scrollWidth=390`、`scrollHeight=844`。
+
+### Follow-up Polish
+
+- P3：后续接入真实内容关系数据时，可用关联权重驱动星点距离与字号；当前使用固定的七个安全槽位，优先保证低噪与稳定排布。
+
+final result: passed
+
+---
+
+## 历史：VibePolaris 首页 R3 设计 QA
 
 ## 对照范围
 

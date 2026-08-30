@@ -38,3 +38,18 @@ test("产品页面没有运行时 AI SDK 或模型请求", () => {
   assert.doesNotMatch(source, /openai|anthropic|generateText|chat\.completions/i);
   assert.doesNotMatch(source, /fetch\s*\(/);
 });
+
+test("首页使用可切换的极简技术星图", () => {
+  const home = read("components/HomeDomains.tsx");
+  const page = read("app/page.tsx");
+  const css = read("app/globals.css");
+
+  assert.match(home, /className="domain-rail"/);
+  assert.match(home, /className="constellation-map"/);
+  assert.match(home, /setActiveSlug/);
+  assert.match(home, /setFocusId/);
+  assert.match(home, /aria-live="polite"/);
+  assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.constellation-center/);
+  assert.doesNotMatch(page, /brand-stage|domain-toolbar|recent-strip/);
+  assert.doesNotMatch(home, /domain-copy|context-flow|domain-summary/);
+});
