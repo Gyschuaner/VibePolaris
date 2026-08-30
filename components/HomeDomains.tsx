@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
+import termSnippets from "@/content/zh/terms.json";
 
 type Concept = {
   id: string;
@@ -32,32 +32,13 @@ type StarStyle = CSSProperties & {
   "--delay": string;
   "--collapse-delay": string;
   "--scale": number;
+  "--edge-x": string;
+  "--edge-y": string;
+  "--mobile-edge-x": string;
+  "--mobile-edge-y": string;
 };
 
-type OrbitConcept = {
-  concept: Concept;
-  slotIndex: number;
-};
-
-type SwapFlight = {
-  slotIndex: number;
-  nextFocusId: string | null;
-};
-
-type FlightStyle = CSSProperties & {
-  "--flight-x": string;
-  "--flight-y": string;
-  "--flight-mid-x": string;
-  "--flight-mid-y": string;
-  "--mobile-flight-x": string;
-  "--mobile-flight-y": string;
-  "--mobile-flight-mid-x": string;
-  "--mobile-flight-mid-y": string;
-  "--flight-size": string;
-  "--mobile-flight-size": string;
-};
-
-type MotionPhase = "initial" | "idle" | "collapsing" | "entering" | "swapping" | "settling";
+type MotionPhase = "initial" | "idle" | "collapsing" | "entering";
 
 const domains: Domain[] = [
   {
@@ -68,10 +49,10 @@ const domains: Domain[] = [
       { id: "component", label: "组件", en: "Component", href: "/terms/component" },
       { id: "state", label: "状态", en: "State", href: "/terms/state" },
       { id: "responsive", label: "响应式", en: "Responsive", href: "/terms/responsive" },
-      { id: "html", label: "HTML", href: "/terms?q=HTML" },
+      { id: "html", label: "HTML", href: "/terms/html" },
       { id: "css", label: "CSS", href: "/terms/css" },
       { id: "form", label: "表单", en: "Form", href: "/terms/form" },
-      { id: "dom", label: "DOM", href: "/terms?q=DOM" },
+      { id: "dom", label: "DOM", href: "/terms/dom" },
     ],
   },
   {
@@ -82,10 +63,10 @@ const domains: Domain[] = [
       { id: "api", label: "API 接口", href: "/terms/api" },
       { id: "database", label: "数据库", en: "Database", href: "/terms/database" },
       { id: "auth", label: "认证", en: "Authentication", href: "/terms/auth" },
-      { id: "cache", label: "缓存", en: "Cache", href: "/terms?q=缓存" },
-      { id: "queue", label: "队列", en: "Queue", href: "/terms?q=队列" },
-      { id: "rest", label: "REST", href: "/terms?q=REST" },
-      { id: "webhook", label: "Webhook", href: "/terms?q=Webhook" },
+      { id: "cache", label: "缓存", en: "Cache", href: "/terms/cache" },
+      { id: "queue", label: "队列", en: "Queue", href: "/terms/queue" },
+      { id: "rest", label: "REST", href: "/terms/rest" },
+      { id: "webhook", label: "Webhook", href: "/terms/webhook" },
     ],
   },
   {
@@ -96,10 +77,10 @@ const domains: Domain[] = [
       { id: "context", label: "上下文", en: "Context", href: "/terms/context" },
       { id: "token", label: "Token", href: "/terms/token" },
       { id: "agent", label: "智能体", en: "Agent", href: "/terms/agent" },
-      { id: "tools", label: "工具调用", en: "Tools", href: "/terms?q=工具调用" },
-      { id: "memory", label: "记忆", en: "Memory", href: "/terms?q=记忆" },
-      { id: "rag", label: "RAG", href: "/terms?q=RAG" },
-      { id: "mcp", label: "MCP", href: "/terms?q=MCP" },
+      { id: "tools", label: "工具调用", en: "Tools", href: "/terms/tools" },
+      { id: "memory", label: "记忆", en: "Memory", href: "/terms/memory" },
+      { id: "rag", label: "RAG", href: "/terms/rag" },
+      { id: "mcp", label: "MCP", href: "/terms/mcp" },
     ],
   },
   {
@@ -108,12 +89,12 @@ const domains: Domain[] = [
     category: "技术栈",
     concepts: [
       { id: "framework", label: "框架", en: "Framework", href: "/terms/framework" },
-      { id: "library", label: "库", en: "Library", href: "/terms/framework" },
+      { id: "library", label: "库", en: "Library", href: "/terms/library" },
       { id: "rendering", label: "SSG / SSR", href: "/terms/ssg-ssr" },
       { id: "deploy", label: "部署", en: "Deploy", href: "/terms/deploy" },
-      { id: "runtime", label: "运行时", en: "Runtime", href: "/terms?q=运行时" },
-      { id: "package", label: "包管理", href: "/terms?q=包管理" },
-      { id: "typescript", label: "TypeScript", href: "/terms?q=TypeScript" },
+      { id: "runtime", label: "运行时", en: "Runtime", href: "/terms/runtime" },
+      { id: "package", label: "包管理", href: "/terms/package" },
+      { id: "typescript", label: "TypeScript", href: "/terms/typescript" },
     ],
   },
   {
@@ -124,10 +105,10 @@ const domains: Domain[] = [
       { id: "mvp", label: "MVP", href: "/terms/mvp" },
       { id: "flow", label: "用户流程", en: "User Flow", href: "/terms/user-flow" },
       { id: "wireframe", label: "线框图", en: "Wireframe", href: "/terms/wireframe" },
-      { id: "ia", label: "信息架构", href: "/terms?q=信息架构" },
-      { id: "prototype", label: "原型", en: "Prototype", href: "/terms?q=原型" },
-      { id: "system", label: "设计系统", href: "/terms?q=设计系统" },
-      { id: "a11y", label: "无障碍", href: "/terms?q=无障碍" },
+      { id: "ia", label: "信息架构", href: "/terms/ia" },
+      { id: "prototype", label: "原型", en: "Prototype", href: "/terms/prototype" },
+      { id: "system", label: "设计系统", href: "/terms/design-system" },
+      { id: "a11y", label: "无障碍", href: "/terms/a11y" },
     ],
   },
 ];
@@ -146,71 +127,47 @@ const specks = [
   [6, 13], [18, 44], [38, 8], [55, 87], [74, 31], [86, 12], [92, 73], [47, 57],
 ];
 
+const summarySlugs: Record<string, string> = {
+  rendering: "ssg-ssr",
+  flow: "user-flow",
+  system: "design-system",
+};
+
+const termSummaryBySlug = new Map(termSnippets.map((term) => [term.slug, term.say]));
+
+function getConceptSummary(concept: Concept) {
+  const slug = summarySlugs[concept.id] ?? concept.id;
+  return termSummaryBySlug.get(slug) ?? `用一句话认识${concept.label}，再进入完整术语页继续阅读。`;
+}
+
+function hasDedicatedDetailPage(concept: Concept) {
+  return concept.href.startsWith("/terms/") && !concept.href.includes("?");
+}
+
 export function HomeDomains() {
   const router = useRouter();
   const { beginRouteFlight, isRouteFlying } = useRouteMeteor();
   const [activeSlug, setActiveSlug] = useState("ai-agent");
   const [focusId, setFocusId] = useState<string | null>(null);
   const [motionPhase, setMotionPhase] = useState<MotionPhase>("initial");
-  const [swapFlight, setSwapFlight] = useState<SwapFlight | null>(null);
   const domainTimersRef = useRef<number[]>([]);
-  const centerStarRef = useRef<HTMLSpanElement>(null);
+  const focusedStarRef = useRef<HTMLSpanElement>(null);
 
   const activeDomain = domains.find((domain) => domain.slug === activeSlug) ?? domains[2];
   const focusedConcept = activeDomain.concepts.find((concept) => concept.id === focusId) ?? null;
-  const rootConcept = useMemo<Concept>(() => ({
-    id: `${activeDomain.slug}-root`,
-    label: activeDomain.title,
-    href: `/terms?cat=${encodeURIComponent(activeDomain.category)}`,
-  }), [activeDomain]);
-  const centerIdentity = focusedConcept?.id ?? rootConcept.id;
-
-  const orbitConcepts = useMemo<OrbitConcept[]>(() =>
-    activeDomain.concepts.map((concept, slotIndex) => ({
-      concept: focusedConcept?.id === concept.id ? rootConcept : concept,
-      slotIndex,
-    })), [activeDomain, focusedConcept, rootConcept]);
 
   const clearDomainTimers = useCallback(() => {
     domainTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     domainTimersRef.current = [];
   }, []);
 
-  const beginFocusSwap = useCallback((nextFocusId: string | null, slotIndex: number, onSettled?: () => void) => {
-    clearDomainTimers();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setFocusId(nextFocusId);
-      setSwapFlight(null);
-      setMotionPhase("idle");
-      if (onSettled) window.requestAnimationFrame(onSettled);
-      return;
-    }
-
-    setSwapFlight({ slotIndex, nextFocusId });
-    setMotionPhase("swapping");
-    const contentTimer = window.setTimeout(() => {
-      setFocusId(nextFocusId);
-      setMotionPhase("settling");
-    }, 210);
-    const finishTimer = window.setTimeout(() => {
-      setSwapFlight(null);
-      setMotionPhase("idle");
-      if (onSettled) window.requestAnimationFrame(onSettled);
-    }, 470);
-    domainTimersRef.current.push(contentTimer, finishTimer);
-  }, [clearDomainTimers]);
-
   const chooseDomain = (slug: string) => {
     if (slug === activeSlug) {
-      if (focusId && !swapFlight) {
-        const slotIndex = activeDomain.concepts.findIndex((concept) => concept.id === focusId);
-        if (slotIndex >= 0) beginFocusSwap(null, slotIndex);
-      }
+      if (focusId) setFocusId(null);
       return;
     }
 
     clearDomainTimers();
-    setSwapFlight(null);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setActiveSlug(slug);
       setFocusId(null);
@@ -229,16 +186,22 @@ export function HomeDomains() {
     domainTimersRef.current.push(swapTimer);
   };
 
-  const focusConcept = (concept: Concept, slotIndex: number, source: HTMLElement) => {
-    if (swapFlight || isRouteFlying) return;
-    const rootId = `${activeDomain.slug}-root`;
-    const nextFocusId = concept.id === rootId ? null : concept.id;
-    const hasDetailPage = nextFocusId !== null && concept.href.startsWith("/terms/") && !concept.href.includes("?");
-    if (hasDetailPage) {
+  const openConcept = (concept: Concept, source: HTMLElement | null) => {
+    if (isRouteFlying) return;
+    if (hasDedicatedDetailPage(concept) && source) {
       beginRouteFlight(concept.href, source);
       return;
     }
-    beginFocusSwap(nextFocusId, slotIndex);
+    router.push(concept.href);
+  };
+
+  const focusConcept = (concept: Concept, source: HTMLElement | null) => {
+    if (isRouteFlying) return;
+    if (focusId === concept.id) {
+      openConcept(concept, source);
+      return;
+    }
+    setFocusId(concept.id);
   };
 
   useEffect(() => {
@@ -260,27 +223,12 @@ export function HomeDomains() {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (!focusId || swapFlight) return;
-      const slotIndex = activeDomain.concepts.findIndex((concept) => concept.id === focusId);
-      if (slotIndex >= 0) beginFocusSwap(null, slotIndex);
+      if (!focusId) return;
+      setFocusId(null);
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [activeDomain, beginFocusSwap, focusId, swapFlight]);
-
-  const flightSlot = swapFlight ? starSlots[swapFlight.slotIndex] : null;
-  const flightStyle: FlightStyle | undefined = flightSlot ? {
-    "--flight-x": `${flightSlot.x}%`,
-    "--flight-y": `${flightSlot.y}%`,
-    "--flight-mid-x": `${(flightSlot.x + 50) / 2}%`,
-    "--flight-mid-y": `${(flightSlot.y + 49) / 2 - 3}%`,
-    "--mobile-flight-x": `${flightSlot.mobileX}%`,
-    "--mobile-flight-y": `${flightSlot.mobileY}%`,
-    "--mobile-flight-mid-x": `${(flightSlot.mobileX + 50) / 2}%`,
-    "--mobile-flight-mid-y": `${(flightSlot.mobileY + 40) / 2 - 2}%`,
-    "--flight-size": `${swapFlight?.slotIndex === 3 ? 31 : 22}px`,
-    "--mobile-flight-size": `${swapFlight?.slotIndex === 3 ? 21 : 16}px`,
-  } : undefined;
+  }, [focusId]);
 
   return (
     <section className="constellation-shell" aria-labelledby="constellation-title">
@@ -305,7 +253,7 @@ export function HomeDomains() {
 
       <div
         id="constellation-field"
-        className={`constellation-map is-${motionPhase}`}
+        className={`constellation-map is-${motionPhase}${focusedConcept ? " has-concept-focus" : ""}`}
         aria-busy={motionPhase !== "idle"}
       >
         {specks.map(([x, y]) => (
@@ -317,43 +265,19 @@ export function HomeDomains() {
           />
         ))}
 
-        {flightStyle && (
-          <div className="constellation-flight" style={flightStyle} aria-hidden="true">
-            <span className="brand-star-only constellation-flight-star is-to-center" />
-            <span className="brand-star-only constellation-flight-star is-to-orbit" />
-          </div>
-        )}
-
         <div className="constellation-center">
           <span
-            ref={centerStarRef}
-            key={`center-star-${centerIdentity}`}
             className="brand-star-only constellation-center-star"
             aria-hidden="true"
           />
-          {focusedConcept ? (
-            <Link
-              key={`center-label-${centerIdentity}`}
-              id="constellation-title"
-              className="constellation-center-link"
-              href={focusedConcept.href}
-              onClick={(event) => {
-                if (!focusedConcept.href.startsWith("/terms/") || focusedConcept.href.includes("?") || !centerStarRef.current) return;
-                event.preventDefault();
-                beginRouteFlight(focusedConcept.href, centerStarRef.current);
-              }}
-            >
-              <span>{focusedConcept.label}</span>
-              {focusedConcept.en && <small>{focusedConcept.en}</small>}
-            </Link>
-          ) : (
-            <h1 key={`center-label-${centerIdentity}`} id="constellation-title">{activeDomain.title}</h1>
-          )}
+          <h1 id="constellation-title">{activeDomain.title}</h1>
         </div>
 
         <div className="constellation-orbit" aria-label={`${activeDomain.title}相关概念`}>
-          {orbitConcepts.slice(0, starSlots.length).map(({ concept, slotIndex }) => {
+          {activeDomain.concepts.slice(0, starSlots.length).map((concept, slotIndex) => {
             const slot = starSlots[slotIndex];
+            const focused = concept.id === focusId;
+            const muted = focusId !== null && !focused;
             const style: StarStyle = {
               "--x": `${slot.x}%`,
               "--y": `${slot.y}%`,
@@ -366,20 +290,29 @@ export function HomeDomains() {
               "--delay": `${70 + slotIndex * 24}ms`,
               "--collapse-delay": `${(starSlots.length - slotIndex - 1) * 7}ms`,
               "--scale": slot.scale,
+              "--edge-x": `${slot.x < 50 ? -4.5 : 4.5}vw`,
+              "--edge-y": `${slot.y < 49 ? -3.5 : 3.5}vh`,
+              "--mobile-edge-x": `${slot.mobileX < 50 ? -4 : 4}vw`,
+              "--mobile-edge-y": `${slot.mobileY < 40 ? -2.5 : 2.5}vh`,
             };
             return (
               <button
                 key={concept.id}
-                className={`concept-star concept-star--${slotIndex}${slotIndex === 3 ? " is-featured" : ""}${swapFlight?.slotIndex === slotIndex ? " is-swap-source" : ""}`}
+                className={`concept-star concept-star--${slotIndex}${slotIndex === 3 ? " is-featured" : ""}${focused ? " is-focused" : ""}${muted ? " is-muted" : ""}`}
                 style={style}
                 type="button"
                 onClick={(event) => {
                   const source = event.currentTarget.querySelector<HTMLElement>(".concept-star-mark");
-                  if (source) focusConcept(concept, slotIndex, source);
+                  focusConcept(concept, source);
                 }}
-                aria-label={concept.href.startsWith("/terms/") && !concept.href.includes("?") ? `打开${concept.label}术语` : `聚焦${concept.label}`}
+                aria-label={focused ? `进入${concept.label}详情` : `聚焦${concept.label}`}
+                aria-pressed={focused}
               >
-                <span className="brand-star-only concept-star-mark" aria-hidden="true" />
+                <span
+                  ref={focused ? focusedStarRef : undefined}
+                  className="brand-star-only concept-star-mark"
+                  aria-hidden="true"
+                />
                 <span className="concept-star-label">
                   <strong>{concept.label}</strong>
                   {concept.en && <small>{concept.en}</small>}
@@ -389,8 +322,24 @@ export function HomeDomains() {
           })}
         </div>
 
+        {focusedConcept && (
+          <div className="concept-focus-detail" key={`${activeDomain.slug}-${focusedConcept.id}`}>
+            <p>{getConceptSummary(focusedConcept)}</p>
+            <button
+              className="concept-focus-enter"
+              type="button"
+              aria-label={`进入${focusedConcept.label}详情`}
+              onClick={() => openConcept(focusedConcept, focusedStarRef.current)}
+            >
+              →
+            </button>
+          </div>
+        )}
+
         <p className="sr-only" aria-live="polite">
-          当前中心主题：{focusedConcept ? `${focusedConcept.label}${focusedConcept.en ? ` ${focusedConcept.en}` : ""}` : activeDomain.title}
+          {focusedConcept
+            ? `已聚焦${focusedConcept.label}。${getConceptSummary(focusedConcept)}再次点击可进入详情。`
+            : `当前中心主题：${activeDomain.title}`}
         </p>
       </div>
     </section>

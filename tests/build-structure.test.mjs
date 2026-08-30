@@ -46,11 +46,13 @@ test("首页使用可切换的极简技术星图", () => {
   const css = read("app/globals.css");
 
   assert.match(home, /className="domain-rail"/);
-  assert.match(home, /className=\{`constellation-map is-\$\{motionPhase\}`\}/);
+  assert.match(home, /className=\{`constellation-map is-\$\{motionPhase\}\$\{focusedConcept \? " has-concept-focus"/);
   assert.match(home, /setActiveSlug/);
   assert.match(home, /setFocusId/);
-  assert.match(home, /SwapFlight/);
-  assert.match(home, /beginFocusSwap/);
+  assert.match(home, /has-concept-focus/);
+  assert.match(home, /concept-focus-detail/);
+  assert.match(home, /focusId === concept\.id/);
+  assert.doesNotMatch(home, /href: "\/terms\?q=/);
   assert.match(home, /beginRouteFlight/);
   assert.match(read("app/layout.tsx"), /RouteMeteorProvider/);
   const routeMotion = read("components/RouteMeteorProvider.tsx");
@@ -65,8 +67,10 @@ test("首页使用可切换的极简技术星图", () => {
   assert.match(home, /MotionPhase/);
   assert.match(home, /aria-live="polite"/);
   assert.match(css, /is-collapsing[\s\S]*--active-enter-x/);
-  assert.match(css, /constellation-flight-to-center/);
-  assert.match(css, /constellation-flight-to-orbit/);
+  assert.match(css, /has-concept-focus[\s\S]*is-focused/);
+  assert.match(css, /concept-focus-detail/);
+  assert.doesNotMatch(css, /constellation-flight-to-center/);
+  assert.doesNotMatch(css, /constellation-flight-to-orbit/);
   assert.match(css, /constellation-idle-glint/);
   assert.match(css, /route-meteor-flight/);
   assert.match(css, /offset-distance: 0%[\s\S]*offset-distance: 100%/);

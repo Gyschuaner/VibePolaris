@@ -761,15 +761,14 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   align-items: center;
   gap: clamp(18px, 2.2vw, 34px);
   transform: translate(-50%, -50%);
-  transition: opacity 140ms ease, transform 200ms cubic-bezier(.2, .8, .2, 1);
+  transition: opacity 360ms ease, transform 460ms cubic-bezier(.16, 1, .3, 1), filter 360ms ease;
 }
 .constellation-center-star {
   width: clamp(48px, 5.2vw, 76px);
   height: clamp(48px, 5.2vw, 76px);
   flex: none;
 }
-.constellation-center h1,
-.constellation-center-link {
+.constellation-center h1 {
   color: var(--ink);
   font-size: clamp(48px, 5.3vw, 78px);
   font-weight: 780;
@@ -777,30 +776,15 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   letter-spacing: -.055em;
   white-space: nowrap;
   animation: constellation-label-settle 260ms 70ms cubic-bezier(.2, .8, .2, 1) both;
-  transition: opacity 150ms ease, transform 180ms ease;
-}
-.constellation-center-link {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-}
-.constellation-center-link small {
-  color: var(--accent);
-  font-size: .37em;
-  font-weight: 580;
-  letter-spacing: -.02em;
-}
-.constellation-center-link:hover span { color: var(--accent); }
-.constellation-center-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 10px;
-  border-radius: 4px;
+  transition: opacity 360ms ease, transform 460ms cubic-bezier(.16, 1, .3, 1);
 }
 
 .constellation-orbit { position: absolute; inset: 0; z-index: 3; }
 .concept-star {
   --active-enter-x: var(--enter-x);
   --active-enter-y: var(--enter-y);
+  --active-edge-x: var(--edge-x);
+  --active-edge-y: var(--edge-y);
   position: absolute;
   left: var(--x);
   top: var(--y);
@@ -817,7 +801,14 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   cursor: pointer;
   transform: translate(-50%, -50%) scale(var(--scale));
   transform-origin: center;
-  transition: opacity 140ms ease, color 180ms ease, transform 320ms cubic-bezier(.2, .8, .2, 1);
+  transition:
+    left 520ms cubic-bezier(.16, 1, .3, 1),
+    top 520ms cubic-bezier(.16, 1, .3, 1),
+    opacity 360ms ease,
+    color 180ms ease,
+    filter 360ms ease,
+    transform 520ms cubic-bezier(.16, 1, .3, 1);
+  will-change: left, top, opacity, transform;
 }
 .concept-star:hover,
 .concept-star:focus-visible {
@@ -861,6 +852,95 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 .concept-star.is-featured { color: var(--accent); }
 .concept-star.is-featured .concept-star-mark { width: 31px; height: 31px; }
 
+.constellation-map.has-concept-focus .constellation-center {
+  opacity: 0;
+  filter: blur(.8px);
+  transform: translate(-50%, -50%) scale(.86);
+}
+.constellation-map.has-concept-focus .concept-star.is-muted {
+  opacity: .18;
+  filter: saturate(.62);
+  transform:
+    translate(calc(-50% + var(--active-edge-x)), calc(-50% + var(--active-edge-y)))
+    scale(calc(var(--scale) * .84));
+}
+.constellation-map.has-concept-focus .concept-star.is-muted:hover,
+.constellation-map.has-concept-focus .concept-star.is-muted:focus-visible {
+  opacity: .58;
+  color: var(--accent);
+  filter: none;
+  transform:
+    translate(calc(-50% + var(--active-edge-x)), calc(-50% + var(--active-edge-y) - 3px))
+    scale(calc(var(--scale) * .92));
+}
+.constellation-map.has-concept-focus .concept-star.is-focused {
+  z-index: 7;
+  left: 50%;
+  top: 41.5%;
+  color: var(--ink);
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.72);
+}
+.constellation-map.has-concept-focus .concept-star.is-focused:hover,
+.constellation-map.has-concept-focus .concept-star.is-focused:focus-visible {
+  color: var(--accent);
+  transform: translate(-50%, calc(-50% - 3px)) scale(1.76);
+}
+.constellation-map.has-concept-focus .concept-star.is-focused:focus-visible {
+  outline: 0;
+}
+.constellation-map.has-concept-focus .concept-star.is-focused:focus-visible .concept-star-label strong {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+.constellation-map.has-concept-focus .concept-star.is-focused .concept-star-mark {
+  transform: scale(1.12) rotate(7deg);
+  filter: brightness(1.04) saturate(1.08);
+}
+.constellation-map.has-concept-focus .constellation-speck { opacity: .14; }
+
+.concept-focus-detail {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 56%;
+  width: min(520px, calc(100% - 48px));
+  text-align: center;
+  transform: translate(-50%, 0);
+  animation: concept-focus-detail-in 420ms 90ms cubic-bezier(.16, 1, .3, 1) both;
+}
+.concept-focus-detail p {
+  color: color-mix(in srgb, var(--ink) 72%, var(--surface));
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 470;
+  line-height: 1.75;
+  letter-spacing: -.01em;
+}
+.concept-focus-enter {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 42px;
+  margin-top: 15px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 31px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 180ms ease, transform 240ms cubic-bezier(.16, 1, .3, 1);
+}
+.concept-focus-enter:hover { color: var(--ink); transform: translateX(7px); }
+.concept-focus-enter:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .constellation-map.is-initial .constellation-center,
 .constellation-map.is-entering .constellation-center {
   animation: constellation-center-in 420ms cubic-bezier(.2, .8, .2, 1) both;
@@ -883,53 +963,6 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
     scale(calc(var(--scale) * .82));
   transition-delay: var(--collapse-delay);
 }
-.constellation-map.is-swapping .constellation-center h1,
-.constellation-map.is-swapping .constellation-center-link,
-.constellation-map.is-swapping .concept-star.is-swap-source .concept-star-label {
-  animation: none;
-  opacity: 0;
-  transform: translateY(-5px);
-}
-.constellation-map.is-swapping .concept-star.is-swap-source,
-.constellation-map.is-settling .concept-star.is-swap-source {
-  outline: 0;
-}
-.constellation-map.is-swapping .constellation-center-star,
-.constellation-map.is-settling .constellation-center-star,
-.constellation-map.is-swapping .concept-star.is-swap-source .concept-star-mark,
-.constellation-map.is-settling .concept-star.is-swap-source .concept-star-mark {
-  opacity: 0;
-}
-
-.constellation-flight {
-  --active-flight-x: var(--flight-x);
-  --active-flight-y: var(--flight-y);
-  --active-flight-mid-x: var(--flight-mid-x);
-  --active-flight-mid-y: var(--flight-mid-y);
-  --active-flight-size: var(--flight-size);
-  --active-center-y: 49%;
-  --active-center-size: clamp(48px, 5.2vw, 76px);
-  position: absolute;
-  z-index: 6;
-  inset: 0;
-  pointer-events: none;
-}
-.constellation-flight-star {
-  position: absolute;
-  left: var(--active-flight-x);
-  top: var(--active-flight-y);
-  width: var(--active-flight-size);
-  height: var(--active-flight-size);
-  transform: translate(-50%, -50%);
-  will-change: left, top, width, height, transform, opacity;
-}
-.constellation-flight-star.is-to-center {
-  animation: constellation-flight-to-center 470ms cubic-bezier(.2, .78, .22, 1) both;
-}
-.constellation-flight-star.is-to-orbit {
-  animation: constellation-flight-to-orbit 470ms cubic-bezier(.2, .78, .22, 1) both;
-}
-
 .constellation-speck {
   position: absolute;
   z-index: 1;
@@ -974,51 +1007,9 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes constellation-flight-to-center {
-  0% {
-    left: var(--active-flight-x);
-    top: var(--active-flight-y);
-    width: var(--active-flight-size);
-    height: var(--active-flight-size);
-    opacity: 1;
-  }
-  48% {
-    left: var(--active-flight-mid-x);
-    top: var(--active-flight-mid-y);
-    transform: translate(-50%, -50%) rotate(8deg);
-    opacity: .78;
-  }
-  100% {
-    left: 50%;
-    top: var(--active-center-y);
-    width: var(--active-center-size);
-    height: var(--active-center-size);
-    transform: translate(-50%, -50%) rotate(0);
-    opacity: 1;
-  }
-}
-@keyframes constellation-flight-to-orbit {
-  0% {
-    left: 50%;
-    top: var(--active-center-y);
-    width: var(--active-center-size);
-    height: var(--active-center-size);
-    opacity: 1;
-  }
-  52% {
-    left: var(--active-flight-mid-x);
-    top: var(--active-flight-mid-y);
-    transform: translate(-50%, -50%) rotate(-8deg);
-    opacity: .72;
-  }
-  100% {
-    left: var(--active-flight-x);
-    top: var(--active-flight-y);
-    width: var(--active-flight-size);
-    height: var(--active-flight-size);
-    transform: translate(-50%, -50%) rotate(0);
-    opacity: 1;
-  }
+@keyframes concept-focus-detail-in {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 @media (max-width: 1160px) {
@@ -1050,32 +1041,35 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .constellation-map { height: 700px; min-height: 700px; }
   .constellation-center { top: 40%; gap: 14px; }
   .constellation-center-star { width: 38px; height: 38px; }
-  .constellation-center h1,
-  .constellation-center-link { font-size: clamp(35px, 10vw, 48px); }
-  .constellation-center-link { align-items: flex-start; flex-direction: column; gap: 8px; }
-  .constellation-center-link small { font-size: 15px; }
+  .constellation-center h1 { font-size: clamp(35px, 10vw, 48px); }
   .concept-star {
     --active-enter-x: var(--mobile-enter-x);
     --active-enter-y: var(--mobile-enter-y);
+    --active-edge-x: var(--mobile-edge-x);
+    --active-edge-y: var(--mobile-edge-y);
     left: var(--mobile-x);
     top: var(--mobile-y);
     gap: 8px;
     padding: 7px;
-  }
-  .constellation-flight {
-    --active-flight-x: var(--mobile-flight-x);
-    --active-flight-y: var(--mobile-flight-y);
-    --active-flight-mid-x: var(--mobile-flight-mid-x);
-    --active-flight-mid-y: var(--mobile-flight-mid-y);
-    --active-flight-size: var(--mobile-flight-size);
-    --active-center-y: 40%;
-    --active-center-size: 38px;
   }
   .concept-star-mark { width: 16px; height: 16px; }
   .concept-star.is-featured .concept-star-mark { width: 21px; height: 21px; }
   .concept-star-label strong { font-size: clamp(14px, 4.3vw, 19px); }
   .concept-star-label small { font-size: 11px; }
   .constellation-speck { opacity: .34; }
+  .constellation-map.has-concept-focus .concept-star.is-focused {
+    top: 31%;
+    transform: translate(-50%, -50%) scale(1.48);
+  }
+  .constellation-map.has-concept-focus .concept-star.is-focused:hover,
+  .constellation-map.has-concept-focus .concept-star.is-focused:focus-visible {
+    transform: translate(-50%, calc(-50% - 2px)) scale(1.52);
+  }
+  .concept-focus-detail {
+    top: 43%;
+    width: min(420px, calc(100% - 32px));
+  }
+  .concept-focus-detail p { font-size: 15px; line-height: 1.7; }
 }
 
 @media (max-width: 480px) {
@@ -1094,11 +1088,11 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .constellation-speck,
   .concept-star-label,
   .constellation-center h1,
-  .constellation-center-link,
-  .constellation-flight-star { animation: none !important; }
+  .concept-focus-detail { animation: none !important; }
   .concept-star,
   .concept-star-mark,
   .constellation-center,
+  .concept-focus-enter,
   .domain-rail-item { transition: none; }
 }
 
