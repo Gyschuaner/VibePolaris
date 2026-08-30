@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { ArrowRight, ArrowUpRight, Clock, Crosshair, ListChecks } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
 import { CssCourseQuiz, CssSelectorLab } from "@/components/CssCoursePractice";
+import { CssCourseToc } from "@/components/CssCourseToc";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -39,23 +40,10 @@ export default function CssCoursePage() {
                 </h1>
               </div>
             </div>
-            <p>不背属性表。用规则、最终值和三个真实问题，建立一套能带到任何项目里的判断方法。</p>
-            <div className="css-course-meta" aria-label="课程信息">
-              <span><ListChecks size={18} />6 章</span>
-              <span><Clock size={18} />约 35 分钟</span>
-              <span><Crosshair size={18} />3 个动手节点</span>
-            </div>
           </header>
 
           <div className="css-course-layout">
-            <aside className="css-course-toc" aria-label="CSS 教程章节">
-              <span>课程目录</span>
-              <nav>
-                {chapters.map(([id, number, title]) => (
-                  <a key={id} href={`#${id}`}><small>{number}</small><strong>{title}</strong></a>
-                ))}
-              </nav>
-            </aside>
+            <CssCourseToc chapters={chapters} />
 
             <article className="css-course-content">
               <section className="css-course-outcome" aria-labelledby="course-outcome-heading">
