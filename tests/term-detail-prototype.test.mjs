@@ -30,6 +30,15 @@ test("CSS 解释器提供三种可操作状态和真实反馈", () => {
   assert.match(source, /navigator\.clipboard\.writeText/);
   assert.match(source, /speechSynthesis/);
   assert.match(source, /@phosphor-icons\/react/);
+  assert.match(source, /CSS 代码与页面变化映射/);
+  assert.match(source, /background.*#F2EEDC/);
+  assert.match(source, /h1.*color.*#35502B/);
+  assert.match(source, /\.nav.*display.*flex/);
+  assert.match(source, /\.hero.*padding.*40px/);
+  assert.match(source, /IntersectionObserver/);
+  assert.match(source, /1500/);
+  assert.match(source, /暂停代码演示/);
+  assert.match(source, /重新播放代码演示/);
 });
 
 test("词条原型覆盖移动端与减少动效偏好", () => {
@@ -39,4 +48,7 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.term-preview-pair/);
   assert.match(css, /@media \(max-width: 460px\)[\s\S]*\.term-story-related/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.term-preview-pair/);
+  assert.match(css, /term-code-target-pulse/);
+  assert.match(css, /term-code-spacing-pulse/);
+  assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.term-code-map-controls \{ display: none; \}/);
 });
