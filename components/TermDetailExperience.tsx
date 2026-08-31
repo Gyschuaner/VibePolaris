@@ -372,7 +372,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
   ].join("\n"), [term]);
 
   const prompt = isCss
-    ? "请检查当前页面在桌面与手机宽度下的布局，找出重叠、溢出、过度拥挤或排列异常的元素。通过 computed layout 和命中的 CSS 规则定位原因；保留 HTML 内容和交互逻辑，只修改必要的 CSS。完成后说明问题来源、改动的规则，并分别在 1280px 和 390px 宽度验收。"
+    ? "帮我排查这个响应式布局问题：桌面显示正常，但在 390px 宽度下，.concept-orbit 仍然保持三列，导致节点和标签拥挤。请先检查容器宽度、computed grid-template-columns 和实际命中的媒体查询，说明根因后再修改。约束：保留现有 HTML 和交互，不删内容，不用 JavaScript 监听宽度，只改必要的 CSS。完成后分别在 1280px 和 390px 验证没有重叠与横向溢出，并列出改动前后命中的规则。"
     : foundation.prompt;
 
   const correctQuizValue = isCss ? "css" : foundation.correct;
@@ -508,68 +508,69 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
           </section>
         )}
 
-        <section className="term-quiz" aria-labelledby="term-quiz-heading">
-          <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">知识检查</h2></div>
-          <fieldset>
-            <legend>{isCss ? "同一份星图在 390px 仍挤成三列，下一步最该做什么？" : foundation.quizQuestion}</legend>
-            {quizOptions.map(([value, label]) => (
-              <label key={value} className={quizAnswer === value ? "is-selected" : ""}>
-                <input
-                  type="radio"
-                  name="term-quiz"
-                  value={value}
-                  checked={quizAnswer === value}
-                  onChange={() => setQuizAnswer(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
-          </fieldset>
-          {quizAnswer && (
-            <p className={`term-quiz-result${answerIsCorrect ? " is-correct" : ""}`} aria-live="polite">
-              {isCss
-                ? answerIsCorrect
-                  ? "检查当前列数的来源后，可用媒体查询只调整窄屏布局，桌面规则保持不变。"
-                  : "删除内容或增加脚本不能定位布局问题，应检查当前命中的 CSS 规则。"
-                : answerIsCorrect ? foundation.correctText : foundation.wrongText}
-            </p>
-          )}
-        </section>
+        {!isCss && (
+          <section className="term-quiz" aria-labelledby="term-quiz-heading">
+            <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">知识检查</h2></div>
+            <fieldset>
+              <legend>{foundation.quizQuestion}</legend>
+              {quizOptions.map(([value, label]) => (
+                <label key={value} className={quizAnswer === value ? "is-selected" : ""}>
+                  <input
+                    type="radio"
+                    name="term-quiz"
+                    value={value}
+                    checked={quizAnswer === value}
+                    onChange={() => setQuizAnswer(value)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </fieldset>
+            {quizAnswer && (
+              <p className={`term-quiz-result${answerIsCorrect ? " is-correct" : ""}`} aria-live="polite">
+                {answerIsCorrect ? foundation.correctText : foundation.wrongText}
+              </p>
+            )}
+          </section>
+        )}
 
-        <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
-          <div>
-            <span>{isCss ? "可直接复制 · 响应式排查" : foundation.promptEyebrow}</span>
-            <h2 id="term-prompt-heading">{isCss ? "检查响应式布局" : foundation.promptTitle}</h2>
-          </div>
-          <p>{prompt}</p>
-          <CopyAction text={prompt} label="复制提示词" />
-        </section>
+        {isCss ? (
+          <section className="term-ai-guide" aria-labelledby="term-prompt-heading">
+            <div className="term-section-heading"><span>02</span><h2 id="term-prompt-heading">怎么向 AI 描述这个问题</h2></div>
+            <p className="term-ai-guide-intro">先给出现象、检查线索和修改边界，比只说“手机上坏了，帮我修一下”更容易得到可验证的结果。</p>
+            <div className="term-ai-brief">
+              <div><span>现象</span><p>桌面正常，390px 下仍是三列，节点与标签发生拥挤。</p></div>
+              <div><span>先检查</span><p>容器宽度、computed 列数，以及真正命中的媒体查询。</p></div>
+              <div><span>修改边界</span><p>保留 HTML 和交互，不删内容，不用脚本搬动布局。</p></div>
+              <div><span>验收</span><p>同时检查 1280px 与 390px，无重叠、无横向溢出。</p></div>
+            </div>
+            <div className="term-ai-prompt">
+              <span>组合后的提示词</span>
+              <p>{prompt}</p>
+              <CopyAction text={prompt} label="复制完整提示词" />
+            </div>
+          </section>
+        ) : (
+          <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
+            <div><span>{foundation.promptEyebrow}</span><h2 id="term-prompt-heading">{foundation.promptTitle}</h2></div>
+            <p>{prompt}</p>
+            <CopyAction text={prompt} label="复制提示词" />
+          </section>
+        )}
 
         {isCss ? (
           <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
-            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">相关内容</h2></div>
-            <div className="term-path-list">
-              <Link href="/terms/html">
-                <span>01</span>
-                <strong>HTML <small>区分文档结构与视觉样式</small></strong>
-                <ArrowRight size={20} />
-              </Link>
-              <Link href="/terms/responsive">
-                <span>02</span>
-                <strong>响应式布局 <small>看规则如何随空间变化</small></strong>
-                <ArrowRight size={20} />
-              </Link>
-            </div>
-            <div className="term-related-orbit">
-              <span>相关概念</span>
-              <div>
-                {related.filter((item) => !["html", "responsive"].includes(item.slug)).slice(0, 4).map((item) => (
-                  <Link key={item.slug} href={`/terms/${item.slug}`}>
-                    <span className="brand-star-only term-related-star" aria-hidden="true" />
-                    {item.zh}{item.en ? <small>{item.en}</small> : null}
-                  </Link>
-                ))}
-              </div>
+            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">继续学习</h2></div>
+            <div className="term-learning-unified">
+              <Link href="/terms/html"><span><small>基础</small>01</span><strong>HTML <small>区分文档结构与视觉样式</small></strong><ArrowRight size={20} /></Link>
+              <Link href="/terms/responsive"><span><small>实践</small>02</span><strong>响应式布局 <small>看规则如何随空间变化</small></strong><ArrowRight size={20} /></Link>
+              {related.filter((item) => !["html", "responsive"].includes(item.slug)).slice(0, 4).map((item, index) => (
+                <Link key={item.slug} href={`/terms/${item.slug}`}>
+                  <span><small>相关</small>{String(index + 3).padStart(2, "0")}</span>
+                  <strong>{item.zh}{item.en ? <small>{item.en}</small> : null}</strong>
+                  <ArrowRight size={20} />
+                </Link>
+              ))}
             </div>
             <div className="term-course-entry">
               <Link href="/guides/css">

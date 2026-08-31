@@ -1,3 +1,25 @@
+# CSS 词条模板收敛 QA（2026-08-31）
+
+## 修改范围
+
+- 删除 CSS 词条中的“知识检查”，保留核心解释器，不再用选择题打断阅读。
+- 原来的单块深绿色 Prompt 改为“怎么向 AI 描述这个问题”：先拆分现象、检查线索、修改边界与验收要求，再生成一段可复制的完整提示词。
+- “相关内容”和“相关概念”合并为统一的“继续学习”列表；基础、实践和相关词条使用同一种行项目，通过小标签区分关系。
+- CSS 深度教程和三条权威资料继续独立保留，不混入词条关系列表。
+
+## 证据与结果
+
+- 修改前：`docs/design/qa/css-template-refine-2026-08-31/01-before-quiz-and-prompt.png`、`02-before-related-split.png`。
+- 修改后桌面：`03-after-ai-guide.png`、`04-after-unified-learning.png`；修改后移动端：`05-mobile-ai-guide.png`、`06-mobile-unified-learning.png`。
+- 1265×720 和 390×844 下知识检查数量均为 0，页面 `scrollWidth` 与 `innerWidth` 一致；提示词复制按钮实测切换为“已复制”，浏览器 console error 为 0。
+- `npm run check` 通过 lint、TypeScript、33/33 测试和 312 个静态页面构建。
+
+当前 CSS 页可作为后续词条正文模板的候选基线；本轮只修改 CSS，尚未批量同步 HTML、JavaScript 或其他词条。
+
+final result: passed
+
+---
+
 # Rebase 大白话讲解器 QA（2026-08-31）
 
 ## 当前流程审计

@@ -3067,6 +3067,19 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   color: var(--accent-ink);
 }
 .term-prompt-card .term-copy-action:hover { background: color-mix(in srgb, var(--accent-ink) 12%, transparent); }
+.term-ai-guide { padding: 48px 0 58px; border-top: 1px solid var(--hairline); }
+.term-ai-guide-intro { max-width: 650px; margin-top: 14px; color: var(--muted); font-size: 14px; line-height: 1.75; }
+.term-ai-brief { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.term-ai-brief > div { min-height: 112px; padding: 22px 26px 22px 0; }
+.term-ai-brief > div:nth-child(even) { border-left: 1px solid var(--hairline); padding-left: 26px; }
+.term-ai-brief > div:nth-child(n + 3) { border-top: 1px solid var(--hairline); }
+.term-ai-brief span { color: var(--brand-star); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.term-ai-brief p { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.term-ai-prompt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 28px; align-items: end; margin-top: 24px; border-radius: 14px; padding: 26px 28px; background: var(--code-bg); color: var(--code-ink); }
+.term-ai-prompt > span { grid-column: 1 / -1; color: var(--brand-star); font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+.term-ai-prompt > p { font-size: 13px; line-height: 1.8; }
+.term-ai-prompt .term-copy-action { border-color: color-mix(in srgb, var(--code-ink) 24%, transparent); color: var(--code-ink); }
+.term-ai-prompt .term-copy-action:hover { background: color-mix(in srgb, var(--code-ink) 9%, transparent); }
 .term-story-related {
   padding: 72px 0 0;
 }
@@ -3096,6 +3109,15 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 .term-learning-path {
   padding: 72px 0 0;
 }
+.term-learning-unified { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 24px; }
+.term-learning-unified > a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 86px; border-radius: 13px; padding: 15px 18px; background: color-mix(in srgb, var(--surface) 70%, transparent); transition: color 180ms ease, background 180ms ease, transform 180ms ease; }
+.term-learning-unified > a:hover { background: var(--tint); color: var(--accent); transform: translateY(-2px); }
+.term-learning-unified > a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.term-learning-unified > a:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.term-learning-unified > a > span { display: grid; gap: 5px; color: var(--brand-star); font: 700 15px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+.term-learning-unified > a > span small { color: var(--faint); font: 700 9px/1 var(--font-sans, sans-serif); letter-spacing: .08em; }
+.term-learning-unified strong { font-size: 15px; }
+.term-learning-unified strong small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; font-weight: 450; }
 .term-path-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3480,8 +3502,16 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-quiz fieldset { grid-template-columns: 1fr; }
   .term-prompt-card { grid-template-columns: 1fr; gap: 18px; padding: 28px; }
   .term-prompt-card .term-copy-action { justify-self: start; }
+  .term-ai-guide { padding: 42px 0 50px; }
+  .term-ai-brief { grid-template-columns: 1fr; }
+  .term-ai-brief > div, .term-ai-brief > div:nth-child(even) { min-height: 0; border-left: 0; padding: 20px 0; }
+  .term-ai-brief > div + div { border-top: 1px solid var(--hairline); }
+  .term-ai-prompt { grid-template-columns: 1fr; padding: 24px; }
+  .term-ai-prompt .term-copy-action { justify-self: start; }
   .term-story-related > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .term-path-list { grid-template-columns: 1fr; }
+  .term-learning-unified { grid-template-columns: 1fr; }
+  .term-learning-unified > a:last-child:nth-child(odd) { grid-column: auto; }
 }
 @media (max-width: 460px) {
   .term-story-tools > a:first-child,

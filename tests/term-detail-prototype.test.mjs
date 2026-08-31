@@ -12,9 +12,11 @@ test("词条详情使用单栏故事式阅读结构", () => {
   assert.match(experience, /term-story-shell/);
   assert.match(experience, /常见问题/);
   assert.match(experience, /不同屏幕下的布局规则/);
-  assert.match(experience, /知识检查/);
-  assert.match(experience, /检查响应式布局/);
-  assert.match(experience, /相关内容/);
+  assert.match(experience, /\{!isCss && \([\s\S]*className="term-quiz"/);
+  assert.match(experience, /怎么向 AI 描述这个问题/);
+  assert.match(experience, /term-ai-brief/);
+  assert.match(experience, /继续学习/);
+  assert.match(experience, /term-learning-unified/);
   assert.doesNotMatch(page, /term-detail wrap/);
 });
 
@@ -41,9 +43,9 @@ test("CSS 解释器用三阶段响应式故事同步代码、星图与最终值"
   assert.match(source, /暂停代码演示/);
   assert.match(source, /重新播放代码演示/);
   assert.match(source, /确认当前布局规则，再用媒体查询调整列数/);
-  assert.match(source, /computed layout/);
-  assert.match(source, /请检查当前页面在桌面与手机宽度下的布局/);
-  assert.match(source, /检查响应式布局/);
+  assert.match(source, /computed grid-template-columns/);
+  assert.match(source, /桌面显示正常，但在 390px 宽度下/);
+  assert.match(source, /复制完整提示词/);
   assert.doesNotMatch(source, /【目标元素】|【问题宽度】/);
   assert.match(source, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);
 });
