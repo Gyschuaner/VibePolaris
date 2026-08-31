@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowCounterClockwise, CheckCircle, GitBranch, Play, ShieldCheck } from "@phosphor-icons/react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { BespokeTermPageProps, TermLabHeader, TermLabLearning } from "@/components/terms/BespokeTermScaffold";
 
@@ -22,39 +22,15 @@ type RebasePhase = 0 | 1 | 2 | 3;
 export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
   const [phase, setPhase] = useState<RebasePhase>(0);
   const [selected, setSelected] = useState<(typeof featureCommits)[number]["id"]>("F2");
-  const timers = useRef<number[]>([]);
   const current = featureCommits.find((commit) => commit.id === selected)!;
   const replayed = selected === "F1" ? phase >= 2 : phase >= 3;
   const detached = phase === 1 || (phase === 2 && selected === "F2");
   const copy = phaseCopy[phase];
-  const isRunning = phase === 1 || phase === 2;
-
-  function clearTimers() {
-    timers.current.forEach((timer) => window.clearTimeout(timer));
-    timers.current = [];
-  }
-
-  useEffect(() => () => clearTimers(), []);
-
-  function runRebase() {
-    clearTimers();
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      setPhase(3);
-      return;
-    }
-
-    const restartDelay = phase === 3 ? 320 : 0;
-    if (phase === 3) setPhase(0);
-    timers.current = [
-      window.setTimeout(() => setPhase(1), restartDelay),
-      window.setTimeout(() => setPhase(2), restartDelay + 760),
-      window.setTimeout(() => setPhase(3), restartDelay + 1520),
-    ];
+  function advanceRebase() {
+    setPhase((currentPhase) => currentPhase === 3 ? 0 : (currentPhase + 1) as RebasePhase);
   }
 
   function resetRebase() {
-    clearTimers();
     setPhase(0);
   }
 
@@ -67,7 +43,7 @@ export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
           <div className="rebase-commandbar">
             <div><GitBranch size={18} /><span>当前分支</span><strong>feature/search</strong></div>
             <code>$ git rebase dev</code>
-            <button type="button" className="lab-primary" onClick={runRebase} disabled={isRunning}><Play size={16} weight="fill" />{isRunning ? "变基中…" : phase === 3 ? "再次演示" : "执行 Rebase"}</button>
+            <button type="button" className="lab-primary" onClick={advanceRebase}><Play size={16} weight="fill" />{phase === 0 ? "开始 Rebase" : phase === 3 ? "重新开始" : "下一步"}</button>
             <button type="button" className="lab-icon-button" onClick={resetRebase} aria-label="重置 Rebase 实验" title="重置"><ArrowCounterClockwise size={18} /></button>
           </div>
 
@@ -85,10 +61,10 @@ export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
                 <button type="button" className={`graph-commit graph-feature-commit graph-f1${selected === "F1" ? " is-selected" : ""}`} onClick={() => setSelected("F1")} aria-pressed={selected === "F1"}>{phase >= 2 ? "F1′" : "F1"}</button>
                 <button type="button" className={`graph-commit graph-feature-commit graph-f2${selected === "F2" ? " is-selected" : ""}`} onClick={() => setSelected("F2")} aria-pressed={selected === "F2"}>{phase >= 3 ? "F2′" : "F2"}</button>
               </div>
-              <div className="rebase-explanation">
-                <span className={phase === 1 ? "is-current" : phase > 1 ? "is-done" : ""}><b>1</b>临时摘下 F1、F2</span>
-                <span className={phase === 2 ? "is-current" : phase > 2 ? "is-done" : ""}><b>2</b>在 D3 后生成 F1′</span>
-                <span className={phase === 3 ? "is-current" : ""}><b>3</b>在 F1′ 后生成 F2′</span>
+              <div className="rebase-explanation" role="group" aria-label="逐步查看 Rebase 过程">
+                <button type="button" className={phase === 1 ? "is-current" : phase > 1 ? "is-done" : ""} onClick={() => setPhase(1)} aria-pressed={phase === 1}><b>1</b><span>临时摘下 F1、F2</span></button>
+                <button type="button" className={phase === 2 ? "is-current" : phase > 2 ? "is-done" : ""} onClick={() => setPhase(2)} aria-pressed={phase === 2}><b>2</b><span>在 D3 后生成 F1′</span></button>
+                <button type="button" className={phase === 3 ? "is-current" : ""} onClick={() => setPhase(3)} aria-pressed={phase === 3}><b>3</b><span>在 F1′ 后生成 F2′</span></button>
               </div>
             </div>
 

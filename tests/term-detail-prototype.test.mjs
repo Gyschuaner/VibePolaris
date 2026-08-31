@@ -123,7 +123,8 @@ test("Rebase、RAG 与缓存分别使用独立交互模型", () => {
   assert.match(rebase, /摘下 F1、F2，变成等待重放的补丁/);
   assert.match(rebase, /在 D3 后重放 F1，生成 F1′/);
   assert.match(rebase, /继续重放 F2，生成一条线性的历史/);
-  assert.match(rebase, /prefers-reduced-motion: reduce/);
+  assert.match(rebase, /逐步查看 Rebase 过程/);
+  assert.match(rebase, /phase === 0 \? "开始 Rebase" : phase === 3 \? "重新开始" : "下一步"/);
   assert.match(rebase, /aria-pressed/);
   assert.match(rag, /检索并核对引用/);
   assert.match(rag, /证据覆盖/);
