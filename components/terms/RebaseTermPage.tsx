@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, CheckCircle, GitBranch, Play, ShieldCheck } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, CheckCircle, ClipboardText, GitBranch, Play, ShieldCheck } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { BespokeTermPageProps, TermLabHeader, TermLabLearning } from "@/components/terms/BespokeTermScaffold";
@@ -47,9 +47,12 @@ const phaseCopy = [
 
 type RebasePhase = 0 | 1 | 2 | 3;
 
+const rebasePrompt = "我现在在 feature/search 分支，目标分支是 dev。请先根据 git status、git branch -vv 和 git log --oneline --graph --decorate -12 判断我的本地提交是否已经共享，以及是否适合 Rebase；不要直接执行命令。确认安全后，再按获取最新 dev、执行 Rebase、逐个处理冲突、继续 Rebase、本地测试五个阶段给我命令。每一步都解释当前历史会怎样变化；如果最后必须更新远端分支，只能建议 git push --force-with-lease，并先说明风险。";
+
 export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
   const [phase, setPhase] = useState<RebasePhase>(0);
   const [selected, setSelected] = useState<(typeof featureCommits)[number]["id"]>("F2");
+  const [promptCopied, setPromptCopied] = useState(false);
   const current = featureCommits.find((commit) => commit.id === selected)!;
   const replayed = selected === "F1" ? phase >= 2 : phase >= 3;
   const detached = phase === 1 || (phase === 2 && selected === "F2");
@@ -62,10 +65,43 @@ export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
     setPhase(0);
   }
 
+  async function copyPrompt() {
+    try {
+      await navigator.clipboard.writeText(rebasePrompt);
+    } catch {
+      const fallback = document.createElement("textarea");
+      fallback.value = rebasePrompt;
+      fallback.setAttribute("readonly", "");
+      fallback.style.position = "fixed";
+      fallback.style.opacity = "0";
+      document.body.appendChild(fallback);
+      fallback.select();
+      document.execCommand("copy");
+      fallback.remove();
+    }
+    setPromptCopied(true);
+    window.setTimeout(() => setPromptCopied(false), 1600);
+  }
+
   return (
     <main className="bespoke-term-page rebase-term-page">
       <div className="bespoke-term-shell">
         <TermLabHeader term={term} eyebrow="版本历史实验" summary="当团队分支更新了，把你自己的改动依次接到最新位置。" />
+
+        <div className="rebase-editorial rebase-editorial-intro">
+          <section className="term-question" aria-labelledby="rebase-question-heading">
+            <span>常见问题</span>
+            <p id="rebase-question-heading">我已经在功能分支写了几个提交，dev 又更新了，怎么把自己的改动接到最新 dev 后面？</p>
+          </section>
+          <section className="term-story-intro" aria-labelledby="rebase-definition-heading">
+            <h2 id="rebase-definition-heading">Rebase 会换一个新的起点，把你已有的改动按原顺序重新生成。</h2>
+            <p>它整理的是提交历史，不是简单把圆点拖到另一条线上。因为每个新提交的父提交不同，提交哈希也会随之改变。</p>
+            <div className="term-prerequisites">
+              <span>先理解：分支与提交 ↗</span>
+              <div><em>常见名称</em><span>变基</span><span>重放提交</span><span>线性历史</span></div>
+            </div>
+          </section>
+        </div>
 
         <section className="rebase-workbench" aria-labelledby="rebase-workbench-title">
           <div className="rebase-commandbar">
@@ -115,6 +151,47 @@ export function RebaseTermPage({ term, related }: BespokeTermPageProps) {
           </div>
           <div className="rebase-safety"><ShieldCheck size={19} /><p><strong>安全边界</strong><span>只整理尚未共享的本地提交。已经推送并被别人使用的历史，不要随意 Rebase。</span></p></div>
         </section>
+
+        <div className="rebase-editorial rebase-reading">
+          <section className="rebase-reading-section" aria-labelledby="rebase-identity-heading">
+            <div className="term-section-heading"><span>01</span><h2 id="rebase-identity-heading">为什么 F1 会变成 F1′？</h2></div>
+            <div className="rebase-reading-copy">
+              <div>
+                <p>一个 Git 提交不只记录“改了哪些代码”，还记录它接在哪个父提交后面。Rebase 把 F1 从 D1 后面拿开，再把同一份改动应用到 D3 后面；代码内容可能一样，但父提交已经不同。</p>
+                <p>Git 会把提交内容、父提交、作者信息和提交说明等一起计算成提交对象。对象变化后，哈希自然也会变化，所以 F1′ 不是旧 F1 被搬家，而是根据同一份改动生成的新提交。</p>
+              </div>
+              <aside className="rebase-reading-note">
+                <span>记住这一句</span>
+                <strong>改动可以相同，提交不再是同一个提交。</strong>
+                <code>F1 + 新父提交 D3 → F1′</code>
+              </aside>
+            </div>
+          </section>
+
+          <section className="rebase-reading-section" aria-labelledby="rebase-compare-heading">
+            <div className="term-section-heading"><span>02</span><h2 id="rebase-compare-heading">Rebase 和 Merge 怎么选？</h2></div>
+            <div className="rebase-compare">
+              <article><span>整理自己的本地历史</span><h3>使用 Rebase</h3><p>把功能提交接到目标分支最新位置，历史更像一条直线；代价是这些提交会被重新生成。</p></article>
+              <article><span>保留已经发生的协作历史</span><h3>使用 Merge</h3><p>保留两条分支各自的提交，再用一次合并把它们接起来；不会改写原有提交身份。</p></article>
+            </div>
+            <p className="rebase-compare-summary"><strong>简单判断：</strong>还只在你本地、准备合入前想整理清楚，可以 Rebase；已经推送并有人基于它继续工作，优先 Merge。</p>
+          </section>
+
+          <section className="rebase-reading-section" aria-labelledby="rebase-boundary-heading">
+            <div className="term-section-heading"><span>03</span><h2 id="rebase-boundary-heading">什么时候适合用，什么时候先别用？</h2></div>
+            <div className="rebase-boundaries">
+              <div><span>适合</span><strong>功能分支还没共享</strong><p>同步最新 dev、整理提交顺序，或者在发起合并请求前让历史更清楚。</p></div>
+              <div><span>先别用</span><strong>别人已经基于这些提交工作</strong><p>改写后会出现两套不同哈希，其他人需要额外处理被分叉的历史。</p></div>
+              <div><span>遇到冲突</span><strong>一次只解决一个提交</strong><p>检查冲突内容，确认结果后继续 Rebase；不要只为了消除提示而盲目选择一侧。</p></div>
+            </div>
+          </section>
+
+          <section className="term-prompt-card rebase-prompt" aria-labelledby="rebase-prompt-heading">
+            <div><span>可直接复制 · 安全操作</span><h2 id="rebase-prompt-heading">让 AI 先判断，再指导 Rebase</h2></div>
+            <p>{rebasePrompt}</p>
+            <button className="term-copy-action" type="button" onClick={copyPrompt}>{promptCopied ? <CheckCircle size={18} weight="fill" /> : <ClipboardText size={18} />}<span>{promptCopied ? "已复制" : "复制提示词"}</span></button>
+          </section>
+        </div>
 
         <TermLabLearning related={related} sources={[
           { label: "Git · Rebase", note: "官方命令与冲突处理", url: "https://git-scm.com/docs/git-rebase" },

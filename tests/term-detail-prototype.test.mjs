@@ -126,6 +126,10 @@ test("Rebase、RAG 与缓存分别使用独立交互模型", () => {
   assert.match(rebase, /先认图/);
   assert.match(rebase, /本步大白话/);
   assert.match(rebase, /看图时注意/);
+  assert.match(rebase, /为什么 F1 会变成 F1′/);
+  assert.match(rebase, /Rebase 和 Merge 怎么选/);
+  assert.match(rebase, /什么时候适合用，什么时候先别用/);
+  assert.match(rebase, /让 AI 先判断，再指导 Rebase/);
   assert.match(rebase, /逐步查看 Rebase 过程/);
   assert.match(rebase, /开始：收起改动/);
   assert.match(rebase, /下一步：接回 F1/);
