@@ -1,3 +1,25 @@
+# 移除 CSS 词条独立验收清单（2026-08-31 同日修订）
+
+## 决策
+
+用户复核后判定"03 确认真改好了"整块没必要，理由成立：与 02 节提示词的"怎么确认"格子重复；文档页上的复选框不保存状态，是装饰性交互；批量铺开时会给每条词条强加凑数清单。
+
+## 改动
+
+- `foundationTermSchema` 删除 `checklist` 字段；`plainHits.target` 枚举去掉 `checklist`。
+- CSS 内容 JSON 删除 checklist 块；原指向清单的症状 chip"AI 改完了，我怎么确认真对了"改指 02 节；02 节引导语补一句"尤其「怎么确认」那一格——AI 说改好了不算完，得写成你自己看得懂、验得了的说法"，验收教育保留在提示词场景内。
+- 组件删除 `FoundationChecklist` 与 03 区块，选型指北与继续学习重排为 03、04；globals.css 删除 9 行清单样式。
+- 测试同步：断言清单不复存在（`doesNotMatch` 锁回归），改断言新的 02 节引导语。
+
+## 验证
+
+- `npm run check` 通过 lint、TypeScript、34/34 测试和 312 个静态页面构建。
+- 服务端 HTML 实测：`确认真改好了`/`term-checklist`/`id="checklist"` 出现 0 次；03=同样样式，先选哪种写法；04=继续学习；症状 chip 文案保留且 `id="ai-guide"` 锚点存在。
+
+final result: passed
+
+---
+
 # CSS 词条 Vibe Coder 重构与内容模型收敛 QA（2026-08-31）
 
 ## 本轮目标

@@ -8,7 +8,7 @@ import cssFoundationSource from "@/content/zh/foundation-terms/css.json";
 
 const plainHitSchema = z.object({
   text: z.string().min(1),
-  target: z.enum(["demo", "ai-guide", "checklist", "direction"]),
+  target: z.enum(["demo", "ai-guide", "direction"]),
 });
 
 const demoStepSchema = z.object({
@@ -77,11 +77,6 @@ export const foundationTermSchema = z.object({
     scenarios: z.array(aiScenarioSchema).min(2).max(3),
     promptCaption: z.string().min(1),
     copyLabel: z.string().min(1),
-  }),
-  checklist: z.object({
-    title: z.string().min(1),
-    note: z.string().min(1),
-    items: z.array(z.string().min(1)).min(3).max(6),
   }),
   direction: z.object({
     title: z.string().min(1),

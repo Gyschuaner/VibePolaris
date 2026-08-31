@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Check,
   CheckCircle,
   ClipboardText,
   Pause,
@@ -382,30 +381,6 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
   );
 }
 
-function FoundationChecklist({ checklist }: { checklist: FoundationTerm["checklist"] }) {
-  const [checked, setChecked] = useState<Record<number, boolean>>({});
-  const doneCount = checklist.items.filter((_, index) => checked[index]).length;
-
-  return (
-    <ul className="term-checklist" aria-live="polite">
-      {checklist.items.map((item, index) => (
-        <li key={item}>
-          <button
-            type="button"
-            className={checked[index] ? "is-checked" : ""}
-            aria-pressed={Boolean(checked[index])}
-            onClick={() => setChecked((current) => ({ ...current, [index]: !current[index] }))}
-          >
-            <span className="term-check-box" aria-hidden="true"><Check size={14} weight="bold" /></span>
-            <span>{item}</span>
-          </button>
-        </li>
-      ))}
-      <li className="term-checklist-progress">{doneCount === checklist.items.length ? "全部确认，可以交付" : `已确认 ${doneCount} / ${checklist.items.length}`}</li>
-    </ul>
-  );
-}
-
 function PlainHits({ hits }: { hits: PlainHit[] }) {
   function jump(target: PlainHit["target"]) {
     const element = document.getElementById(target);
@@ -534,14 +509,8 @@ function FoundationExperience({
           <FoundationAiGuide guide={data.aiGuide} />
         </section>
 
-        <section className="term-checklist-block" id="checklist" aria-labelledby="css-checklist-heading">
-          <div className="term-section-heading"><span>03</span><h2 id="css-checklist-heading">{data.checklist.title}</h2></div>
-          <p className="term-checklist-note">{data.checklist.note}</p>
-          <FoundationChecklist checklist={data.checklist} />
-        </section>
-
         <section className="term-direction" id="direction" aria-labelledby="css-direction-heading">
-          <div className="term-section-heading"><span>04</span><h2 id="css-direction-heading">{data.direction.title}</h2></div>
+          <div className="term-section-heading"><span>03</span><h2 id="css-direction-heading">{data.direction.title}</h2></div>
           <p className="term-direction-note">{data.direction.note}</p>
           <div className="term-direction-grid">
             {data.direction.options.map((option) => (
@@ -558,7 +527,7 @@ function FoundationExperience({
         </section>
 
         <section className="term-learning-path" aria-labelledby="css-learning-heading">
-          <div className="term-section-heading"><span>05</span><h2 id="css-learning-heading">继续学习</h2></div>
+          <div className="term-section-heading"><span>04</span><h2 id="css-learning-heading">继续学习</h2></div>
           <div className="term-learning-unified">
             {data.learning.path.map((item, index) => (
               <Link href={item.href} key={item.href}>

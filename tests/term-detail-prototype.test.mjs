@@ -49,7 +49,7 @@ test("CSS 解释器用三阶段响应式故事同步代码、内容卡片与最�
   assert.match(source, /暂停代码演示/);
   assert.match(source, /重新播放代码演示/);
   assert.match(source, /PlainHits/);
-  assert.match(source, /FoundationChecklist/);
+  assert.doesNotMatch(source, /FoundationChecklist/);
 
   // 内容层：三幕响应式故事改在通用内容卡片上，不再讲本站星图
   assert.match(css, /"label": "宽屏并排"/);
@@ -60,7 +60,7 @@ test("CSS 解释器用三阶段响应式故事同步代码、内容卡片与最�
   assert.match(css, /grid-template-columns/);
   assert.doesNotMatch(css, /技术星图|\.concept-orbit|【目标元素】|【问题宽度】/);
 
-  // Vibe Coder 正文：大白话入口、分场景提示词、检查清单、选型指北
+  // Vibe Coder 正文：大白话入口、分场景提示词、选型指北（验收要求融入提示词，不另设清单）
   assert.match(css, /你是不是想说的是|"plainHits"/);
   assert.match(css, /跟 AI 怎么说/);
   assert.match(css, /"label": "做出来"/);
@@ -69,7 +69,8 @@ test("CSS 解释器用三阶段响应式故事同步代码、内容卡片与最�
   assert.match(css, /这个页面在电脑上看着正常，但到了手机上/);
   assert.match(css, /把四格组合后的提示词/);
   assert.match(css, /复制完整提示词/);
-  assert.match(css, /确认真改好了/);
+  assert.match(css, /得写成你自己看得懂、验得了的说法/);
+  assert.doesNotMatch(css, /确认真改好了|checklist/i);
   assert.match(css, /同样样式，先选哪种写法/);
   assert.match(css, /Tailwind CSS/);
   assert.match(css, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);
