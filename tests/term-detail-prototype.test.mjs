@@ -43,8 +43,9 @@ test("CSS 解释器用三阶段响应式故事同步代码、星图与最终值"
   assert.match(source, /暂停代码演示/);
   assert.match(source, /重新播放代码演示/);
   assert.match(source, /确认当前布局规则，再用媒体查询调整列数/);
-  assert.match(source, /computed grid-template-columns/);
-  assert.match(source, /桌面显示正常，但在 390px 宽度下/);
+  assert.match(source, /不需要先知道选择器或属性名/);
+  assert.match(source, /这个页面在电脑上看着正常，但到了手机上/);
+  assert.match(source, /用大白话组合后的提示词/);
   assert.match(source, /复制完整提示词/);
   assert.doesNotMatch(source, /【目标元素】|【问题宽度】/);
   assert.match(source, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);

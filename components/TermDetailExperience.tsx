@@ -372,7 +372,7 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
   ].join("\n"), [term]);
 
   const prompt = isCss
-    ? "帮我排查这个响应式布局问题：桌面显示正常，但在 390px 宽度下，.concept-orbit 仍然保持三列，导致节点和标签拥挤。请先检查容器宽度、computed grid-template-columns 和实际命中的媒体查询，说明根因后再修改。约束：保留现有 HTML 和交互，不删内容，不用 JavaScript 监听宽度，只改必要的 CSS。完成后分别在 1280px 和 390px 验证没有重叠与横向溢出，并列出改动前后命中的规则。"
+    ? "这个页面在电脑上看着正常，但到了手机上，三个概念仍然挤在同一行，文字和图形都叠在一起了。请帮我找出是哪条布局规则造成的，并把手机上的排列改成一列，电脑上的样子保持不变。不要删除任何内容，也不要改变原来的点击效果。改完后请分别检查电脑和手机：内容不能重叠，页面不能左右滚动，并用大白话告诉我问题原因和你改了什么。"
     : foundation.prompt;
 
   const correctQuizValue = isCss ? "css" : foundation.correct;
@@ -537,15 +537,15 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
         {isCss ? (
           <section className="term-ai-guide" aria-labelledby="term-prompt-heading">
             <div className="term-section-heading"><span>02</span><h2 id="term-prompt-heading">怎么向 AI 描述这个问题</h2></div>
-            <p className="term-ai-guide-intro">先给出现象、检查线索和修改边界，比只说“手机上坏了，帮我修一下”更容易得到可验证的结果。</p>
+            <p className="term-ai-guide-intro">不需要先知道选择器或属性名。把你看到的现象、想要的结果和不能改动的部分说清楚就够了。</p>
             <div className="term-ai-brief">
-              <div><span>现象</span><p>桌面正常，390px 下仍是三列，节点与标签发生拥挤。</p></div>
-              <div><span>先检查</span><p>容器宽度、computed 列数，以及真正命中的媒体查询。</p></div>
-              <div><span>修改边界</span><p>保留 HTML 和交互，不删内容，不用脚本搬动布局。</p></div>
-              <div><span>验收</span><p>同时检查 1280px 与 390px，无重叠、无横向溢出。</p></div>
+              <div><span>我看到的</span><p>电脑上排列正常，手机上三个概念挤在同一行。</p></div>
+              <div><span>我想要的</span><p>手机上改成一列，电脑上的样子保持不变。</p></div>
+              <div><span>不要改的</span><p>不要删文字和图形，也不要改变原来的点击效果。</p></div>
+              <div><span>怎么确认</span><p>电脑和手机都检查一遍，不能重叠，也不能左右滚动。</p></div>
             </div>
             <div className="term-ai-prompt">
-              <span>组合后的提示词</span>
+              <span>用大白话组合后的提示词</span>
               <p>{prompt}</p>
               <CopyAction text={prompt} label="复制完整提示词" />
             </div>

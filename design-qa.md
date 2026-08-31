@@ -4,6 +4,7 @@
 
 - 删除 CSS 词条中的“知识检查”，保留核心解释器，不再用选择题打断阅读。
 - 原来的单块深绿色 Prompt 改为“怎么向 AI 描述这个问题”：先拆分现象、检查线索、修改边界与验收要求，再生成一段可复制的完整提示词。
+- 根据 Vibe Coder 的真实表达习惯继续降门槛：输入只保留“我看到的、我想要的、不要改的、怎么确认”，不再要求用户说出选择器、属性名、Computed、媒体查询或精确像素宽度；技术定位仍由页面讲解和 AI 完成。
 - “相关内容”和“相关概念”合并为统一的“继续学习”列表；基础、实践和相关词条使用同一种行项目，通过小标签区分关系。
 - CSS 深度教程和三条权威资料继续独立保留，不混入词条关系列表。
 
@@ -11,6 +12,7 @@
 
 - 修改前：`docs/design/qa/css-template-refine-2026-08-31/01-before-quiz-and-prompt.png`、`02-before-related-split.png`。
 - 修改后桌面：`03-after-ai-guide.png`、`04-after-unified-learning.png`；修改后移动端：`05-mobile-ai-guide.png`、`06-mobile-unified-learning.png`。
+- Vibe Coder 大白话提示词复核：桌面 `07-vibecoder-plain-prompt.png`，移动端 `08-vibecoder-plain-prompt-mobile.png`；最终提示词中没有 `.concept-orbit`、`grid-template-columns` 或 `Computed`。
 - 1265×720 和 390×844 下知识检查数量均为 0，页面 `scrollWidth` 与 `innerWidth` 一致；提示词复制按钮实测切换为“已复制”，浏览器 console error 为 0。
 - `npm run check` 通过 lint、TypeScript、33/33 测试和 312 个静态页面构建。
 
