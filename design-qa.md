@@ -1,3 +1,26 @@
+# CSS 词条 02 节重绘为手绘批注场景画布（2026-08-31 同日修订）
+
+## 决策
+
+用户提供参考稿：02 节不再是"要点列表 + 提示词块"的平铺结构，而是一张手绘批注感的场景画布——左右两张迷你页面截图（改前 → 改后）摆在中间，四个编号注解（我看到的 / 我想要的 / 不要改的 / 怎么确认）分居四角、用曲线引线指向对应画面；提示词单独放在画布下方的纸感引文卡里。四格槽位从此"看得见"：每条槽位文字都锚定在前后对比的具体差异上，而不是抽象定义。本段取代同日"CSS 提示词卡视觉修复"的深色工具栏成品卡方案（该段仅作历史保留）。
+
+## 改动
+
+- 内容模型（`lib/foundation-terms.ts`）：每个 `aiScenario` 新增 `scene`（`from`/`to` 两张 `miniPage` + `caption`）。`miniPage` 含 `width`（wide/phone）、`layout`（list/cards/tight/squeezed/stacked）、`title`、`link` 和恰好 3 条 `items`。导出 `FoundationScenePage`。
+- CSS 内容 JSON：三个场景各配一组对比（做出来=文字列表→三卡片；修好它=手机三列挤压→单列行卡；调细节=2px 挤缝→均匀空隙），场景 `caption` 一句话点明"提示词四格 = 两张图之间的差别"。
+- 组件（`components/TermDetailExperience.tsx`）：场景切换改为下划线 tab；新增 `MiniPage` 渲染迷你页面；画布 `figure.term-ai-canvas` 内为 `aria-hidden` 的场景图 + `ol.term-ai-notes`（4 条编号注解，各带 inline SVG 曲线引线）；下方 `Sparkle` 引导语 + 纸感 `figure.term-ai-prompt`（大引号、左侧 accent 边、复制胶囊）。删除旧 `term-ai-brief` 结构。
+- 样式（`app/globals.css`）：画布用不规则 border-radius 制造手绘纸感；注解 `display: contents` 挂进网格四角，右侧两条 row-reverse 右对齐；≤760 画布转纵向堆叠、引线隐藏、注解降级为分隔线列表。
+- QA 中发现并修复选择器缺陷：组件输出 `is-squeezed`/`is-stacked`，CSS 误写成 `.is-phone.squeezed`/`.is-phone.stacked`，导致"修好它"场景改前/改后两张手机小页渲染相同；已统一为 `is-` 前缀并重建验证。
+- 测试：断言改为锁定 `term-ai-canvas` 且 `doesNotMatch term-ai-brief`。
+
+## 验证
+
+- 证据：`docs/design/qa/css-ai-canvas-2026-08-31/`（桌面三场景 `canvas-make/fix/tweak.png`、整体 `canvas-full-make.png`、提示词卡 `canvas-prompt-make.png`、移动 `canvas-mobile-fix.png`、`canvas-mobile-prompt.png`）。
+- 桌面 1280 与移动 390 视口均无横向溢出（`scrollWidth == innerWidth`）；三场景 tab 切换下划线态、对比画面、注解引线均截图核对。
+- `npm run check` 通过 lint、TypeScript、34/34 测试和 312 个静态页面构建。
+
+---
+
 # CSS 提示词卡视觉修复（2026-08-31 同日修订）
 
 ## 问题

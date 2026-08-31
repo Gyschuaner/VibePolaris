@@ -13,7 +13,7 @@ test("词条详情使用单栏故事式阅读结构", () => {
   assert.match(experience, /function FoundationExperience/);
   assert.match(experience, /常见问题/);
   assert.match(experience, /className="term-quiz"/);
-  assert.match(experience, /term-ai-brief/);
+  assert.match(experience, /term-ai-canvas/);
   assert.match(experience, /继续学习/);
   assert.match(experience, /term-learning-unified/);
   assert.doesNotMatch(page, /term-detail wrap/);

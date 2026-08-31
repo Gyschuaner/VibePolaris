@@ -19,6 +19,7 @@ import type { Term } from "@/lib/content";
 import {
   getFoundationTerm,
   type FoundationDemoStep,
+  type FoundationScenePage,
   type FoundationScenario,
   type FoundationTerm,
   type PlainHit,
@@ -344,6 +345,29 @@ const slotCopy = [
   { key: "verify" as const, label: "怎么确认" },
 ];
 
+function MiniPage({ page }: { page: FoundationScenePage }) {
+  return (
+    <div className={`term-mini-page is-${page.width} is-${page.layout}`} aria-hidden="true">
+      <span className="term-mini-chrome"><i /><i /><i /></span>
+      <strong className="term-mini-title">{page.title}</strong>
+      {page.layout === "list" ? (
+        <ul className="term-mini-list">
+          {page.items.map((item) => (
+            <li key={item.title}><b>{item.title}</b><small>{item.meta}</small></li>
+          ))}
+        </ul>
+      ) : (
+        <div className="term-mini-cards">
+          {page.items.map((item) => (
+            <span key={item.title}><i /><strong>{item.title}</strong><small>{item.meta}</small></span>
+          ))}
+        </div>
+      )}
+      <small className="term-mini-link">{page.link} →</small>
+    </div>
+  );
+}
+
 function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
   const [activeKey, setActiveKey] = useState(guide.scenarios[0].key);
   const active: FoundationScenario = guide.scenarios.find((scenario) => scenario.key === activeKey) ?? guide.scenarios[0];
@@ -365,20 +389,34 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
           </button>
         ))}
       </div>
-      <div className="term-ai-brief" aria-live="polite">
-        {slotCopy.map((slot) => (
-          <div key={slot.key}>
-            <span>{slot.label}</span>
-            <p>{active.slots[slot.key]}</p>
-          </div>
-        ))}
-      </div>
+      <figure className="term-ai-canvas">
+        <div className="term-ai-scene" aria-hidden="true">
+          <MiniPage page={active.scene.from} />
+          <ArrowRight size={26} weight="bold" className="term-ai-scene-arrow" />
+          <MiniPage page={active.scene.to} />
+        </div>
+        <ol className="term-ai-notes" aria-live="polite">
+          {slotCopy.map((slot, index) => (
+            <li key={slot.key} className={`term-ai-note term-ai-note-${index + 1}`}>
+              <svg className="term-ai-note-line" viewBox="0 0 110 74" aria-hidden="true" focusable="false">
+                <path d="M8 8 C 34 14, 62 34, 94 64" />
+                <circle className="term-ai-note-dot-a" cx="8" cy="8" r="3.5" />
+                <circle className="term-ai-note-dot-b" cx="94" cy="64" r="3.5" />
+              </svg>
+              <i className="term-ai-note-no" aria-hidden="true">{index + 1}</i>
+              <div>
+                <strong>{slot.label}</strong>
+                <p>{active.slots[slot.key]}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <figcaption className="term-ai-scene-caption">{active.scene.caption}</figcaption>
+      </figure>
+      <p className="term-ai-prompt-caption"><Sparkle size={15} weight="fill" aria-hidden="true" />{guide.promptCaption}</p>
       <figure className="term-ai-prompt">
-        <figcaption className="term-ai-prompt-head">
-          <span className="term-ai-prompt-kicker"><Sparkle size={15} weight="fill" aria-hidden="true" />{guide.promptCaption}</span>
-          <CopyAction text={active.prompt} label={guide.copyLabel} />
-        </figcaption>
-        <blockquote className="term-ai-prompt-body">{active.prompt}</blockquote>
+        <blockquote>{active.prompt}</blockquote>
+        <CopyAction text={active.prompt} label={guide.copyLabel} />
       </figure>
     </>
   );

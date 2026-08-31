@@ -32,11 +32,31 @@ const aiSlotSchema = z.object({
   verify: z.string().min(1),
 });
 
+const miniItemSchema = z.object({
+  title: z.string().min(1),
+  meta: z.string().min(1),
+});
+
+const miniPageSchema = z.object({
+  width: z.enum(["wide", "phone"]),
+  layout: z.enum(["list", "cards", "tight", "squeezed", "stacked"]),
+  title: z.string().min(1),
+  link: z.string().min(1),
+  items: z.array(miniItemSchema).length(3),
+});
+
+const aiSceneSchema = z.object({
+  from: miniPageSchema,
+  to: miniPageSchema,
+  caption: z.string().min(1),
+});
+
 const aiScenarioSchema = z.object({
   key: z.string().regex(/^[a-z0-9-]+$/),
   label: z.string().min(1),
   tagline: z.string().min(1),
   slots: aiSlotSchema,
+  scene: aiSceneSchema,
   prompt: z.string().min(1),
 });
 
@@ -103,6 +123,7 @@ export const foundationTermSchema = z.object({
 export type FoundationTerm = z.infer<typeof foundationTermSchema>;
 export type FoundationDemoStep = FoundationTerm["demo"]["steps"][number];
 export type FoundationScenario = FoundationTerm["aiGuide"]["scenarios"][number];
+export type FoundationScenePage = FoundationScenario["scene"]["from"];
 export type PlainHit = FoundationTerm["plainHits"][number];
 
 const foundationTerms: FoundationTerm[] = [
