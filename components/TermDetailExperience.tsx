@@ -9,6 +9,7 @@ import {
   ClipboardText,
   Pause,
   Play,
+  Sparkle,
   SpeakerHigh,
 } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -372,11 +373,13 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
           </div>
         ))}
       </div>
-      <div className="term-ai-prompt">
-        <span>{guide.promptCaption}</span>
-        <p>{active.prompt}</p>
-        <CopyAction text={active.prompt} label={guide.copyLabel} />
-      </div>
+      <figure className="term-ai-prompt">
+        <figcaption className="term-ai-prompt-head">
+          <span className="term-ai-prompt-kicker"><Sparkle size={15} weight="fill" aria-hidden="true" />{guide.promptCaption}</span>
+          <CopyAction text={active.prompt} label={guide.copyLabel} />
+        </figcaption>
+        <blockquote className="term-ai-prompt-body">{active.prompt}</blockquote>
+      </figure>
     </>
   );
 }

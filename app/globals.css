@@ -3083,11 +3083,14 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 .term-ai-brief > div:nth-child(n + 3) { border-top: 1px solid var(--hairline); }
 .term-ai-brief span { color: var(--brand-star); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
 .term-ai-brief p { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.7; }
-.term-ai-prompt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 28px; align-items: end; margin-top: 24px; border-radius: 14px; padding: 26px 28px; background: var(--code-bg); color: var(--code-ink); }
-.term-ai-prompt > span { grid-column: 1 / -1; color: var(--brand-star); font-size: 11px; font-weight: 750; letter-spacing: .08em; }
-.term-ai-prompt > p { font-size: 13px; line-height: 1.8; }
-.term-ai-prompt .term-copy-action { border-color: color-mix(in srgb, var(--code-ink) 24%, transparent); color: var(--code-ink); }
-.term-ai-prompt .term-copy-action:hover { background: color-mix(in srgb, var(--code-ink) 9%, transparent); }
+.term-ai-prompt { margin: 24px 0 0; border: 1px solid color-mix(in srgb, var(--code-ink) 12%, var(--hairline)); border-radius: 16px; background: radial-gradient(130% 150% at 100% 0%, color-mix(in srgb, var(--brand-star) 9%, transparent) 0, transparent 45%), var(--code-bg); color: var(--code-ink); overflow: hidden; box-shadow: 0 22px 44px -30px color-mix(in srgb, var(--code-ink) 55%, transparent); }
+.term-ai-prompt-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 14px 13px 22px; border-bottom: 1px solid color-mix(in srgb, var(--code-ink) 14%, transparent); background: color-mix(in srgb, var(--code-ink) 5%, transparent); }
+.term-ai-prompt-kicker { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-star); font-size: 12px; font-weight: 800; letter-spacing: .06em; }
+.term-ai-prompt-kicker svg { flex: none; }
+.term-ai-prompt-body { margin: 0; position: relative; padding: 20px 26px 24px 28px; font-size: 14.5px; line-height: 1.9; letter-spacing: .01em; text-wrap: pretty; }
+.term-ai-prompt-body::before { content: ""; position: absolute; left: 12px; top: 24px; bottom: 26px; width: 3px; border-radius: 3px; background: linear-gradient(var(--brand-star), color-mix(in srgb, var(--brand-star) 25%, transparent)); }
+.term-ai-prompt .term-copy-action { border-color: color-mix(in srgb, var(--brand-star) 45%, transparent); background: color-mix(in srgb, var(--brand-star) 8%, transparent); color: var(--brand-star); }
+.term-ai-prompt .term-copy-action:hover { background: color-mix(in srgb, var(--brand-star) 16%, transparent); border-color: var(--brand-star); }
 .term-scenario-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .term-scenario-tabs button { display: flex; flex-direction: column; gap: 3px; text-align: left; min-height: 56px; padding: 10px 16px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--surface); color: var(--muted); font: inherit; cursor: pointer; transition: .18s ease; }
 .term-scenario-tabs button strong { color: var(--ink); font-size: 14px; }
@@ -3536,8 +3539,9 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-ai-brief { grid-template-columns: 1fr; }
   .term-ai-brief > div, .term-ai-brief > div:nth-child(even) { min-height: 0; border-left: 0; padding: 20px 0; }
   .term-ai-brief > div + div { border-top: 1px solid var(--hairline); }
-  .term-ai-prompt { grid-template-columns: 1fr; padding: 24px; }
-  .term-ai-prompt .term-copy-action { justify-self: start; }
+  .term-ai-prompt-head { flex-wrap: wrap; row-gap: 10px; padding: 13px 16px 13px 18px; }
+  .term-ai-prompt-body { padding: 18px 20px 22px 24px; }
+  .term-ai-prompt-body::before { left: 9px; }
   .term-story-related > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .term-path-list { grid-template-columns: 1fr; }
   .term-learning-unified { grid-template-columns: 1fr; }
