@@ -474,12 +474,19 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .rebase-commandbar > div span { color: var(--faint); font-size: 10px; letter-spacing: .08em; }
 .rebase-commandbar > div strong { font-size: 13px; }
 .rebase-commandbar code { min-height: 42px; padding: 10px 14px; border: 1px solid color-mix(in srgb, var(--code-bg) 70%, var(--hairline)); border-radius: 8px; background: var(--code-bg); color: var(--code-ink); font-size: 13px; }
-.rebase-workbench-body { display: grid; grid-template-columns: minmax(0, 1fr) 282px; min-height: 512px; }
-.rebase-canvas { min-width: 0; padding: 28px 34px 24px; background: color-mix(in srgb, var(--bg) 46%, var(--surface)); }
-.rebase-canvas-heading { min-height: 40px; display: grid; align-content: start; gap: 2px; }
+.rebase-primer { min-height: 60px; border-bottom: 1px solid var(--hairline); background: color-mix(in srgb, var(--brand-star) 6%, var(--surface)); display: grid; grid-template-columns: 1.45fr 1fr; }
+.rebase-primer > div { min-width: 0; padding: 11px 20px; display: grid; align-content: center; gap: 3px; }
+.rebase-primer > div + div { border-left: 1px solid var(--hairline); }
+.rebase-primer span { color: var(--faint); font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+.rebase-primer p { color: var(--muted); font-size: 11px; line-height: 1.55; }
+.rebase-primer b { color: var(--accent); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.rebase-workbench-body { display: grid; grid-template-columns: minmax(0, 1fr) 282px; min-height: 452px; }
+.rebase-canvas { min-width: 0; padding: 22px 34px 18px; background: color-mix(in srgb, var(--bg) 46%, var(--surface)); }
+.rebase-canvas-heading { min-height: 74px; display: grid; align-content: start; gap: 2px; }
 .rebase-canvas-heading span { color: var(--faint); font-size: 10px; font-weight: 700; letter-spacing: .1em; }
 .rebase-canvas-heading strong { font-size: 15px; }
-.commit-graph { position: relative; height: 324px; margin-top: 4px; overflow: hidden; }
+.rebase-canvas-heading p { max-width: 650px; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.commit-graph { position: relative; height: 250px; margin-top: 4px; overflow: hidden; }
 .graph-main-line, .graph-feature-line, .graph-fork-line { position: absolute; z-index: 0; height: 2px; background: color-mix(in srgb, var(--ink) 34%, var(--hairline)); transform-origin: left center; transition: width .56s cubic-bezier(.22,.8,.24,1), opacity .34s ease; }
 .graph-main-line { left: 8%; top: 28%; width: 46%; }
 .phase-2 .graph-main-line { width: 64%; }
@@ -510,13 +517,13 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .phase-1 .graph-holding-label, .phase-2 .graph-holding-label { opacity: 1; }
 .phase-2 .graph-holding-label { left: 58%; }
 .rebase-explanation { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.rebase-explanation button { min-height: 58px; padding: 10px; border: 0; border-top: 1px solid var(--hairline); background: transparent; color: var(--faint); font: inherit; font-size: 11px; display: flex; align-items: center; gap: 9px; text-align: left; cursor: pointer; transition: color .18s ease, border-color .18s ease, background .18s ease; }
+.rebase-explanation button { min-height: 54px; padding: 9px 10px; border: 0; border-top: 1px solid var(--hairline); background: transparent; color: var(--faint); font: inherit; font-size: 11px; display: flex; align-items: center; gap: 9px; text-align: left; cursor: pointer; transition: color .18s ease, border-color .18s ease, background .18s ease; }
 .rebase-explanation button:hover { color: var(--ink); background: color-mix(in srgb, var(--tint) 48%, transparent); }
 .rebase-explanation b { width: 22px; height: 22px; flex: none; border: 1px solid var(--hairline); border-radius: 50%; display: grid; place-items: center; }
 .rebase-explanation .is-current { color: var(--ink); border-color: var(--accent); }
 .rebase-explanation .is-current b { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .rebase-explanation .is-done b { background: var(--brand-star); color: #172008; border-color: var(--brand-star); }
-.commit-inspector { padding: 28px 24px; border-left: 1px solid var(--hairline); display: flex; flex-direction: column; }
+.commit-inspector { padding: 22px 22px; border-left: 1px solid var(--hairline); display: flex; flex-direction: column; }
 .commit-inspector > span { color: var(--faint); font-size: 10px; letter-spacing: .1em; }
 .commit-inspector-title { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; margin: 12px 0 24px; }
 .commit-inspector-title > i { width: 44px; height: 44px; border-radius: 50%; background: var(--brand-star); color: #172008; display: grid; place-items: center; font-style: normal; font-weight: 800; }
@@ -526,6 +533,20 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .commit-inspector dl div { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--hairline); font-size: 12px; }
 .commit-inspector dt { color: var(--faint); }
 .commit-inspector dd { font-weight: 700; }
+.rebase-guide-copy { margin-top: 12px; display: grid; grid-template-columns: 58px 1fr; gap: 12px; align-items: start; }
+.rebase-guide-copy > i { color: var(--brand-star); font: 800 30px/1 ui-monospace, SFMono-Regular, Consolas, monospace; font-style: normal; letter-spacing: -.08em; }
+.rebase-guide-copy small { margin-left: 3px; color: var(--faint); font-size: 10px; letter-spacing: 0; }
+.rebase-guide-copy strong { font-size: 13px; line-height: 1.65; }
+.rebase-watch { margin-top: 18px; padding: 15px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.rebase-watch span, .rebase-node-detail > span { color: var(--faint); font-size: 9px; font-weight: 800; letter-spacing: .09em; }
+.rebase-watch p { margin-top: 6px; color: var(--muted); font-size: 11px; line-height: 1.65; }
+.rebase-node-detail { padding-top: 15px; }
+.rebase-node-detail > div { margin-top: 9px; display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 9px; }
+.rebase-node-detail > div > i { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-star); color: #172008; display: grid; place-items: center; font-style: normal; font-size: 10px; font-weight: 800; }
+.rebase-node-detail > div > p { display: grid; }
+.rebase-node-detail > div code { color: var(--faint); font-size: 9px; }
+.rebase-node-detail dl { margin-top: 10px; border-top: 1px solid var(--hairline); }
+.rebase-node-detail dl div { padding: 8px 0; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; font-size: 10px; }
 .rebase-result { margin-top: auto; padding: 14px; border-radius: 10px; background: var(--tint); display: flex; gap: 10px; color: var(--accent); }
 .rebase-result p { display: grid; }
 .rebase-result span { color: var(--muted); font-size: 11px; }
@@ -665,8 +686,12 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .rebase-workbench, .rag-workbench, .cache-lab { border-radius: 12px; }
   .rebase-commandbar { grid-template-columns: 1fr 42px; padding: 11px; }
   .rebase-commandbar code { grid-column: 1 / -1; grid-row: 1; }
+  .rebase-primer { grid-template-columns: 1fr; }
+  .rebase-primer > div { padding: 11px 14px; }
+  .rebase-primer > div + div { border-left: 0; border-top: 1px solid var(--hairline); }
   .rebase-canvas { padding: 24px 18px; }
-  .commit-graph { height: 300px; }
+  .rebase-canvas-heading { min-height: 112px; }
+  .commit-graph { height: 260px; }
   .graph-commit { width: 36px; height: 36px; margin: -18px 0 0 -18px; font-size: 9px; }
   .graph-branch-label, .graph-holding-label { font-size: 9px; }
   .graph-main-line { left: 6%; width: 40%; }
