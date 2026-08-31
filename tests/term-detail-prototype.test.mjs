@@ -120,7 +120,10 @@ test("Rebase、RAG 与缓存分别使用独立交互模型", () => {
   assert.match(route, /rag: RagTermPage/);
   assert.match(route, /cache: CacheTermPage/);
   assert.match(rebase, /git rebase dev/);
-  assert.match(rebase, /重新生成 F1′、F2′/);
+  assert.match(rebase, /摘下 F1、F2，变成等待重放的补丁/);
+  assert.match(rebase, /在 D3 后重放 F1，生成 F1′/);
+  assert.match(rebase, /继续重放 F2，生成一条线性的历史/);
+  assert.match(rebase, /prefers-reduced-motion: reduce/);
   assert.match(rebase, /aria-pressed/);
   assert.match(rag, /检索并核对引用/);
   assert.match(rag, /证据覆盖/);

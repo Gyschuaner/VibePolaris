@@ -1,3 +1,30 @@
+# Rebase 动画语义修复 QA（2026-08-31）
+
+## 对照证据
+
+- 用户报告的修复前截图：`docs/design/qa/rebase-motion-fix-2026-08-31/01-user-reported-before.png`，1470×974 像素。
+- 修复后的阶段截图：`02-before-fixed-animation.png`、`03-detached-patches.png`、`04-replay-f1.png`、`05-linear-history.png`，均为 1470×974 CSS 视口下的 1× 输出。
+- 同屏对照：`06-before-after-comparison.png`；移动端完成态：`07-mobile-complete.png`，390×844 CSS 视口。
+
+## Findings 与修复
+
+修复前把“操作前”和“操作后”标题同时放在画布上，却只显示两条互不相连的横线；斜线没有稳定连接分叉点，节点也没有 D1/D2/F1/F2 身份。动画只是移动整条 feature 线，无法表达 Rebase 的摘取与逐个重放，属于会教错 Git 关系的 P1 语义问题。
+
+修复后改为一个连续的提交图和三个真实阶段：先从 D1 分叉的 F1/F2 变成待重放补丁；再在 D3 后生成 F1′；最后在 F1′ 后生成 F2′。节点移动、主线延长、分支标签、步骤标题、父提交、哈希和结果说明同步变化。减少动效偏好下直接进入完成态。
+
+## 浏览器验收
+
+- 初始态、摘取态、F1′ 重放态和最终线性历史四个状态均已截图并逐张检查。
+- CTA 在动画中显示“变基中…”，完成后显示“再次演示”；重置会取消未完成计时并回到初始分叉。
+- 390×844 下页面 `innerWidth=390`、`scrollWidth=390`；最终 `feature/search` 标签边界为 259.55–348.04px，位于画布 35–355px 内，没有裁切。
+- 浏览器控制台 error 为 0；`npm run check` 通过 lint、TypeScript、33/33 测试和 312 个静态页面构建。
+
+没有剩余 P0、P1 或 P2 问题。
+
+final result: passed
+
+---
+
 # 300 条词条独立体验设计 QA（最新：真实交互与拓扑）
 
 ## 对照证据与归一化

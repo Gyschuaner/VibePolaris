@@ -476,24 +476,39 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .rebase-commandbar code { min-height: 42px; padding: 10px 14px; border: 1px solid color-mix(in srgb, var(--code-bg) 70%, var(--hairline)); border-radius: 8px; background: var(--code-bg); color: var(--code-ink); font-size: 13px; }
 .rebase-workbench-body { display: grid; grid-template-columns: minmax(0, 1fr) 282px; min-height: 512px; }
 .rebase-canvas { min-width: 0; padding: 28px 34px 24px; background: color-mix(in srgb, var(--bg) 46%, var(--surface)); }
-.rebase-canvas-heading { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.rebase-canvas-heading div { display: grid; }
+.rebase-canvas-heading { min-height: 40px; display: grid; align-content: start; gap: 2px; }
 .rebase-canvas-heading span { color: var(--faint); font-size: 10px; font-weight: 700; letter-spacing: .1em; }
-.rebase-canvas-heading strong { font-size: 13px; }
-.commit-graph { position: relative; height: 324px; margin-top: 14px; overflow: hidden; }
-.graph-lane { position: absolute; left: 2%; right: 2%; height: 84px; border-top: 2px solid color-mix(in srgb, var(--ink) 30%, var(--hairline)); display: flex; align-items: flex-start; justify-content: space-around; padding-top: 0; transition: .35s ease; }
-.graph-lane > span { position: absolute; top: -30px; left: 0; padding: 2px 9px; border-radius: 99px; background: var(--ink); color: var(--bg); font-size: 10px; font-weight: 700; }
-.graph-lane i, .graph-lane button { width: 18px; height: 18px; margin-top: -10px; border: 3px solid var(--surface); border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 1px var(--accent); position: relative; z-index: 2; }
-.graph-lane b { position: absolute; right: 20%; top: 14px; color: var(--faint); font-size: 10px; }
-.graph-lane-feature { top: 160px; left: 13%; right: 46%; border-color: var(--brand-star); }
-.graph-lane-feature > span { background: var(--brand-star); color: #172008; }
-.graph-lane-feature button { appearance: none; padding: 0; border-color: var(--surface); background: var(--brand-star); color: transparent; cursor: pointer; transition: .2s ease; }
-.graph-lane-feature button::after { content: attr(aria-label); }
-.graph-lane-feature button.is-selected { transform: scale(1.32); box-shadow: 0 0 0 2px var(--brand-star), 0 0 0 8px color-mix(in srgb, var(--brand-star) 17%, transparent); }
-.graph-junction { position: absolute; left: 13%; top: 75px; width: 18%; height: 86px; border-left: 2px solid var(--brand-star); border-bottom: 2px solid var(--brand-star); transform: skewX(-34deg); transform-origin: bottom left; transition: .35s ease; }
-.commit-graph.is-rebased .graph-lane-feature { top: 0; left: 58%; right: 2%; }
-.commit-graph.is-rebased .graph-lane-feature > span { left: auto; right: 0; top: 23px; }
-.commit-graph.is-rebased .graph-junction { left: 54%; top: -2px; width: 8%; height: 2px; border-left: 0; transform: none; }
+.rebase-canvas-heading strong { font-size: 15px; }
+.commit-graph { position: relative; height: 324px; margin-top: 4px; overflow: hidden; }
+.graph-main-line, .graph-feature-line, .graph-fork-line { position: absolute; z-index: 0; height: 2px; background: color-mix(in srgb, var(--ink) 34%, var(--hairline)); transform-origin: left center; transition: width .56s cubic-bezier(.22,.8,.24,1), opacity .34s ease; }
+.graph-main-line { left: 8%; top: 28%; width: 52%; }
+.phase-2 .graph-main-line { width: 68%; }
+.phase-3 .graph-main-line { width: 86%; }
+.graph-feature-line { left: 40%; top: 72%; width: 18%; background: var(--brand-star); }
+.graph-fork-line { left: 18%; top: 28%; width: 27%; background: var(--brand-star); transform: rotate(34deg); }
+.phase-1 .graph-feature-line, .phase-1 .graph-fork-line,
+.phase-2 .graph-feature-line, .phase-2 .graph-fork-line,
+.phase-3 .graph-feature-line, .phase-3 .graph-fork-line { opacity: 0; }
+.graph-commit { position: absolute; z-index: 2; width: 42px; height: 42px; margin: -21px 0 0 -21px; border: 3px solid var(--surface); border-radius: 50%; background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 1px var(--accent); display: grid; place-items: center; font: 800 11px/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.graph-d1 { left: 18%; top: 28%; }
+.graph-d2 { left: 36%; top: 28%; }
+.graph-d3 { left: 54%; top: 28%; }
+.graph-feature-commit { appearance: none; padding: 0; background: var(--brand-star); color: #172008; box-shadow: 0 0 0 1px var(--brand-star); cursor: pointer; transition: left .64s cubic-bezier(.22,.8,.24,1), top .64s cubic-bezier(.22,.8,.24,1), transform .2s ease, box-shadow .2s ease, border-style .2s ease; }
+.graph-f1 { left: 40%; top: 72%; }
+.graph-f2 { left: 58%; top: 72%; }
+.phase-1 .graph-f1, .phase-1 .graph-f2, .phase-2 .graph-f2 { top: 50%; border-style: dashed; background: var(--surface); color: var(--accent); }
+.phase-2 .graph-f1, .phase-3 .graph-f1 { left: 72%; top: 28%; }
+.phase-3 .graph-f2 { left: 88%; top: 28%; }
+.graph-feature-commit.is-selected { transform: scale(1.12); box-shadow: 0 0 0 2px var(--brand-star), 0 0 0 8px color-mix(in srgb, var(--brand-star) 17%, transparent); }
+.graph-branch-label, .graph-holding-label { position: absolute; z-index: 3; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 800; white-space: nowrap; transition: left .64s cubic-bezier(.22,.8,.24,1), top .64s cubic-bezier(.22,.8,.24,1), opacity .24s ease; }
+.graph-dev-label { left: 54%; top: calc(28% + 30px); transform: translateX(-50%); background: var(--ink); color: var(--bg); }
+.graph-feature-label { left: 58%; top: calc(72% + 30px); transform: translateX(-50%); background: var(--brand-star); color: #172008; }
+.phase-1 .graph-feature-label { opacity: 0; }
+.phase-2 .graph-feature-label { left: 72%; top: calc(28% - 47px); }
+.phase-3 .graph-feature-label { left: 88%; top: calc(28% - 47px); }
+.graph-holding-label { left: 49%; top: calc(50% + 30px); transform: translateX(-50%); border: 1px dashed var(--accent); background: var(--surface); color: var(--accent); opacity: 0; }
+.phase-1 .graph-holding-label, .phase-2 .graph-holding-label { opacity: 1; }
+.phase-2 .graph-holding-label { left: 58%; }
 .rebase-explanation { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .rebase-explanation span { min-height: 58px; padding: 10px; border-top: 1px solid var(--hairline); color: var(--faint); font-size: 11px; display: flex; align-items: center; gap: 9px; }
 .rebase-explanation b { width: 22px; height: 22px; flex: none; border: 1px solid var(--hairline); border-radius: 50%; display: grid; place-items: center; }
@@ -650,9 +665,22 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .rebase-commandbar { grid-template-columns: 1fr 42px; padding: 11px; }
   .rebase-commandbar code { grid-column: 1 / -1; grid-row: 1; }
   .rebase-canvas { padding: 24px 18px; }
-  .rebase-canvas-heading { grid-template-columns: 1fr; gap: 8px; }
-  .rebase-canvas-heading div:last-child { display: none; }
-  .graph-lane-feature { right: 24%; }
+  .commit-graph { height: 300px; }
+  .graph-commit { width: 36px; height: 36px; margin: -18px 0 0 -18px; font-size: 9px; }
+  .graph-branch-label, .graph-holding-label { font-size: 9px; }
+  .graph-main-line { left: 6%; width: 46%; }
+  .phase-2 .graph-main-line { width: 64%; }
+  .phase-3 .graph-main-line { width: 82%; }
+  .graph-d1 { left: 14%; }
+  .graph-d2 { left: 30%; }
+  .graph-d3, .graph-dev-label { left: 46%; }
+  .graph-fork-line { left: 14%; width: 31%; }
+  .graph-f1 { left: 39%; }
+  .graph-f2, .graph-feature-label { left: 60%; }
+  .phase-2 .graph-f1, .phase-3 .graph-f1, .phase-2 .graph-feature-label { left: 66%; }
+  .phase-3 .graph-f2, .phase-3 .graph-feature-label { left: 84%; }
+  .graph-holding-label { left: 49%; }
+  .phase-2 .graph-holding-label { left: 60%; }
   .rebase-explanation { grid-template-columns: 1fr; }
   .commit-inspector { padding: 22px 18px; }
   .rebase-safety { align-items: flex-start; }
