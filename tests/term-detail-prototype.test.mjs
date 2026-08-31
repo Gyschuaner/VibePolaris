@@ -68,7 +68,7 @@ test("正式路由不再回退到批量三步模板", () => {
   const experience = read("components/terms/TermExperiencePage.tsx");
   const css = read("app/globals.css");
 
-  assert.match(route, /usesFoundationStory/);
+  assert.match(route, /dedicatedTermPages/);
   assert.match(route, /TermExperiencePage/);
   assert.doesNotMatch(route, /experience \? \(/);
   assert.doesNotMatch(foundation, /TermConceptDemo/);
@@ -96,7 +96,7 @@ test("组件词条使用独立研究卡与四段专属分镜", () => {
   const research = JSON.parse(read("content/zh/term-research/base.json"));
   const component = research.find((item) => item.slug === "component");
 
-  assert.match(route, /term\.slug === "component"/);
+  assert.match(route, /component: ComponentTermPage/);
   assert.match(route, /ComponentTermPage/);
   assert.match(page, /一份定义，三次调用/);
   assert.match(page, /判断组件边界/);
@@ -107,4 +107,29 @@ test("组件词条使用独立研究卡与四段专属分镜", () => {
   assert.match(page, /prefers-reduced-motion: reduce/);
   assert.equal(component.demoSignature, "component-definition-to-three-instances: 4 frames; scene objects are one UserCard source definition, three prop calls, three rendered user-card instances, and one new action line; user can scrub phases; observable result is one definition change adding the same action to all three instances.");
   assert.equal(component.sourceUrls.length, 3);
+});
+
+test("Rebase、RAG 与缓存分别使用独立交互模型", () => {
+  const route = read("app/terms/[slug]/page.tsx");
+  const rebase = read("components/terms/RebaseTermPage.tsx");
+  const rag = read("components/terms/RagTermPage.tsx");
+  const cache = read("components/terms/CacheTermPage.tsx");
+  const css = read("app/globals.css");
+
+  assert.match(route, /rebase: RebaseTermPage/);
+  assert.match(route, /rag: RagTermPage/);
+  assert.match(route, /cache: CacheTermPage/);
+  assert.match(rebase, /git rebase dev/);
+  assert.match(rebase, /重新生成 F1′、F2′/);
+  assert.match(rebase, /aria-pressed/);
+  assert.match(rag, /检索并核对引用/);
+  assert.match(rag, /证据覆盖/);
+  assert.match(rag, /缺少直接证据/);
+  assert.match(cache, /缓存中有副本/);
+  assert.match(cache, /数据库真实价格/);
+  assert.match(cache, /发送请求/);
+  assert.match(css, /\.rebase-workbench/);
+  assert.match(css, /\.rag-workbench/);
+  assert.match(css, /\.cache-lab/);
+  assert.match(css, /@media \(max-width: 680px\)[\s\S]*\.rag-workbench, \.cache-lab \{ grid-template-columns: 1fr/);
 });

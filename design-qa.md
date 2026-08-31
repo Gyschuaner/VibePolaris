@@ -34,6 +34,43 @@ final result: passed
 
 ---
 
+# Rebase / RAG / Cache 独立词条实验设计 QA（2026-08-31）
+
+## 对照证据与状态归一化
+
+- Rebase 视觉参考：`/Users/guyisheng/.codex/generated_images/01a046a1-2507-7622-b179-24da61a32c48/exec-e2e56e11-4ee7-44bb-95d3-083a50199fb3.png`；实现：`docs/design/qa/independent-term-experiences-2026-08-31/07-rebase-final.png`；同屏比较：`10-rebase-comparison.png`。
+- RAG 视觉参考：`/Users/guyisheng/.codex/generated_images/01a046a1-2507-7622-b179-24da61a32c48/exec-1161e77e-e4c6-4cf2-8912-ce13fe3dbda7.png`；实现：`docs/design/qa/independent-term-experiences-2026-08-31/08-rag-final.png`；同屏比较：`11-rag-comparison.png`。
+- Cache 视觉参考：`/Users/guyisheng/.codex/generated_images/01a046a1-2507-7622-b179-24da61a32c48/exec-0c3eaaa0-07cb-46ef-8a0b-81af524cbb90.png`；实现：`docs/design/qa/independent-term-experiences-2026-08-31/09-cache-final.png`；同屏比较：`12-cache-comparison.png`。
+- 三组参考与实现均为 1487×1058 像素；实现使用 1487×1058 CSS 视口，浏览器 `devicePixelRatio=2`，截图输出归一化为 1× CSS 像素。
+- Rebase 对照为未执行、F2 选中；RAG 对照为已核验、证据 A 选中、覆盖 2/3；Cache 对照为缓存存在且有效、数据库价格 ¥139、缓存返回 ¥129 的旧值状态。
+
+## Findings 与修复历史
+
+第一轮实现保留了旧模板的左右悬浮翻页圆钮，按钮压在三个实验台内容上，既不在原型中，也破坏了低噪阅读流，判定为 P2。已从三张专属页移除，相关词条和权威来源仍在实验台下方提供连续导航。
+
+最终实现延续站点的暖骨白、苔藓绿、黄绿色星体与 Phosphor 图标，但没有复用同一种卡片模板：Rebase 以可重写的提交图和提交检查器为中心；RAG 以问题、证据、逐句答案三栏建立可追溯关系；Cache 以实验条件、请求路径、返回结果与历史记录呈现命中/失效权衡。三页仅共享页头、学习尾部和设计令牌。
+
+## 五项保真检查
+
+- 字体与层级：标题、英文名、说明与实验台标题均沿用现有字体体系；三页的第一视觉焦点分别落在提交图、证据流和请求轨迹，没有截断或省略号。
+- 间距与布局：1487px 下三页均完整呈现实验台；390×844 下 Rebase、RAG、Cache 的 `innerWidth`、`scrollWidth` 与主内容宽度均为 390px，无页面级横向溢出。
+- 色彩与边界：只使用既有主题变量和一个语义警告色；卡片边框限于实验分区、可点击证据和状态结果，没有恢复高噪的卡片墙。
+- 图标与资产：交互图标均来自 Phosphor，品牌继续复用现有北极星蒙版；没有 emoji、字符图标、手绘 SVG 或占位素材。
+- 内容与状态：三种工作台使用不同的数据模型和真实术语边界。Rebase 会重写哈希与父提交，RAG 会标出缺少证据的答案句，Cache 会根据命中、过期和源价格切换路径、耗时、新鲜度与历史记录。
+
+## 交互与自动检查
+
+- 浏览器实测 Rebase 执行后按钮进入“已完成”，提交变为 F1′/F2′，父提交和结论同步改变；重置按钮可恢复初始状态。
+- 浏览器实测 RAG 可编辑问题、切换证据、执行引用核验，并显示当前证据与 2/3 覆盖率。
+- 浏览器实测 Cache 切到“已过期”后发送请求，请求路径进入数据库、返回 ¥139 / 82ms，并追加实验历史。
+- 三页浏览器控制台 error 为 0；`npm run check` 通过 lint、TypeScript、33/33 测试及 312 个静态页面构建。
+
+没有剩余 P0、P1 或 P2 视觉问题。
+
+final result: passed
+
+---
+
 # HTML / JavaScript 模板扩展设计 QA（最新：三件套课程与编号层级）
 
 ## 对照证据与归一化
