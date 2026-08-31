@@ -1,0 +1,156 @@
+{
+  "slug": "css",
+  "intro": {
+    "question": "同一份内容，怎样从一列变成并排卡片，手机上看又不挤？",
+    "definition": "CSS 用选择器找到元素，再用属性和值规定它长什么样。多个规则同时命中时，浏览器按层叠、继承和布局规则算出最终样式。",
+    "boundary": "CSS 只管外观：颜色、字体、间距、排版和不同屏幕下的呈现。内容结构属于 HTML，点击之后的数据和业务逻辑属于 JavaScript。",
+    "prerequisite": "前置概念：HTML ↗",
+    "aliases": ["层叠样式表", "Cascading Style Sheets", "样式"]
+  },
+  "plainHits": [
+    { "text": "页面在手机上挤成一团", "target": "demo" },
+    { "text": "卡片想并排，不要一个大块", "target": "demo" },
+    { "text": "改了一处，别的地方也变了", "target": "direction" },
+    { "text": "AI 改完了，我怎么确认真对了", "target": "checklist" }
+  ],
+  "demo": {
+    "eyebrow": "01",
+    "title": "一个属性，让卡片从三列变一列",
+    "ariaLabel": "CSS 布局规则与内容卡片重排演示",
+    "steps": [
+      {
+        "key": "desktop",
+        "label": "宽屏并排",
+        "selector": ".content-cards",
+        "property": "grid-template-columns",
+        "value": "repeat(3, 1fr)",
+        "note": "屏幕宽时，三张卡片并排，各占三分之一。",
+        "computed": "repeat(3, 1fr)",
+        "source": ".content-cards",
+        "widthLabel": "1280px",
+        "layout": "desktop"
+      },
+      {
+        "key": "problem",
+        "label": "问题出现",
+        "selector": "@media (max-width: 640px)",
+        "property": "/* 还没写手机规则 */",
+        "value": "",
+        "note": "到了手机宽度，仍沿用三列，图片和文字互相重叠。",
+        "computed": "repeat(3, 1fr)",
+        "source": "沿用 .content-cards 桌面规则",
+        "widthLabel": "390px",
+        "layout": "squeezed"
+      },
+      {
+        "key": "fix",
+        "label": "换成一列",
+        "selector": "@media (max-width: 640px)",
+        "innerSelector": ".content-cards",
+        "property": "grid-template-columns",
+        "value": "1fr",
+        "note": "手机宽度改成一列，每张卡片占满一整行，不再重叠。",
+        "computed": "1fr",
+        "source": "@media (max-width: 640px)",
+        "widthLabel": "390px",
+        "layout": "stacked"
+      }
+    ],
+    "chain": ["屏幕变窄", "媒体查询命中", "卡片换排法"],
+    "responsibility": "CSS 管呈现，HTML 管结构，JavaScript 管行为。"
+  },
+  "aiGuide": {
+    "title": "跟 AI 怎么说",
+    "intro": "同一个样式，三种时刻要说的话不一样。选一种，把四格填清楚，AI 就不用猜你的意思。",
+    "scenarios": [
+      {
+        "key": "make",
+        "label": "做出来",
+        "tagline": "从零加一个想要的效果",
+        "slots": {
+          "seen": "现在列表是一列一列的纯文字，看着单调。",
+          "want": "做成三张并排的卡片，每张上面放图、下面放标题和两行说明。",
+          "avoid": "别动我现有的文字内容，也别动里面的链接。",
+          "verify": "电脑看三张并排，手机看一列一张，图片不能压住文字。"
+        },
+        "prompt": "我想把现在的纯文字列表改成卡片。请把它们做成三张并排的卡片，每张上方放一张图，下方放标题和两行说明。不要改动我现有的文字内容，也不要改动里面的链接。电脑宽度下三张并排，手机宽度下每行一张，图片不能压住文字，页面不能左右滚动。做完用大白话说明你加了哪些样式、手机上是怎么变回一列的。"
+      },
+      {
+        "key": "fix",
+        "label": "修好它",
+        "tagline": "页面被改坏了，要定位原因",
+        "slots": {
+          "seen": "手机上三张卡片挤在同一行，图片和文字叠在一起。",
+          "want": "手机上卡片一列一张，电脑上的样子保持不变。",
+          "avoid": "不要删任何文字和图片，也不要改原来的点击效果。",
+          "verify": "手机和电脑都检查一遍：内容不重叠，页面不能左右滚动。"
+        },
+        "prompt": "这个页面在电脑上看着正常，但到了手机上，三张卡片挤在同一行，图片和文字都叠在一起了。请帮我找出是哪条布局规则造成的，并把手机上的排列改成一列，电脑上的样子保持不变。不要删除任何内容，也不要改变原来的点击效果。改完后请分别检查电脑和手机：内容不能重叠，页面不能左右滚动，并用大白话告诉我问题原因和你改了什么。"
+      },
+      {
+        "key": "tweak",
+        "label": "调细节",
+        "tagline": "大功能没问题，看着就是差一点",
+        "slots": {
+          "seen": "卡片之间挨得太紧，看着有点闷。",
+          "want": "卡片之间留出一点均匀的空隙，看起来更透气。",
+          "avoid": "只改空隙，别动卡片里的内容和颜色。",
+          "verify": "手机上看，空隙均匀、不超出屏幕，卡片没有错位。"
+        },
+        "prompt": "卡片的空隙太小，看起来太挤。请只在卡片之间留出均匀的空隙，不要改动卡片里的内容和颜色，也不要改变卡片数量。手机和电脑都检查一遍：空隙要均匀一致，卡片不能错位，也不能超出屏幕宽度。完成后说明你是用哪个属性控制空隙的。"
+      }
+    ],
+    "promptCaption": "把四格组合后的提示词",
+    "copyLabel": "复制完整提示词"
+  },
+  "checklist": {
+    "title": "确认真改好了",
+    "note": "让 AI 说完「改好了」不算完，逐条过一遍再信。",
+    "items": [
+      "用手机宽度打开，卡片没有挤成一团，也没有重叠。",
+      "电脑上的排版没被顺手动到，你说不要改的地方还在。",
+      "页面左右不能拖动，边缘没有空白或裁切。",
+      "原来的点击、跳转还能正常触发。",
+      "让 AI 用大白话讲清问题原因和改动点，前后能对上。"
+    ]
+  },
+  "direction": {
+    "title": "同样样式，先选哪种写法",
+    "note": "Vibe Coding 阶段的关键不是哪种语法更高级，而是 AI 能稳定接住、你之后也改得动。",
+    "options": [
+      {
+        "name": "直接写 CSS",
+        "verdict": "小白默认的起步选择",
+        "when": "页面不多，想在原文件里看到样式就改在哪。"
+      },
+      {
+        "name": "Tailwind CSS",
+        "verdict": "类名直接写在标签上",
+        "when": "页面已经不小，希望用统一的一套工具类控制样式。"
+      },
+      {
+        "name": "现成组件库",
+        "verdict": "用配好的积木拼界面",
+        "when": "想要现成、带无障碍支持的组件，愿意接受它的设计规范。"
+      }
+    ],
+    "link": { "label": "看《选型指南》", "href": "/guides" }
+  },
+  "learning": {
+    "path": [
+      { "kind": "基础", "title": "HTML", "note": "先分清文档结构和视觉样式", "href": "/terms/html" },
+      { "kind": "实践", "title": "响应式布局", "note": "看规则怎样随空间变化", "href": "/terms/responsive" }
+    ],
+    "course": {
+      "label": "VibePolaris 教程",
+      "title": "CSS 深度教程",
+      "meta": "6 章 · 约 35 分钟",
+      "href": "/guides/css"
+    },
+    "references": [
+      { "label": "MDN · CSS 基础", "note": "结构化入门", "href": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" },
+      { "label": "web.dev · Learn CSS", "note": "现代布局与实践", "href": "https://web.dev/learn/css" },
+      { "label": "MDN · CSS 层叠", "note": "理解最终样式", "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade" }
+    ]
+  }
+}

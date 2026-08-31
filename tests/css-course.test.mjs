@@ -4,14 +4,19 @@ import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("CSS 词条页连接站内深度教程与权威学习资源", async () => {
-  const source = await read("components/TermDetailExperience.tsx");
+test("CSS 基础词条从内容模型连接站内深度教程与权威学习资源", async () => {
+  const [source, css] = await Promise.all([
+    read("components/TermDetailExperience.tsx"),
+    read("content/zh/foundation-terms/css.json"),
+  ]);
 
-  assert.match(source, /href="\/guides\/css"/);
-  assert.match(source, /CSS 深度教程/);
-  assert.match(source, /developer\.mozilla\.org\/en-US\/docs\/Learn_web_development\/Core\/Styling_basics/);
-  assert.match(source, /web\.dev\/learn\/css/);
-  assert.match(source, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);
+  assert.match(source, /data\.learning\.course\.href/);
+  assert.match(source, /data\.learning\.references\.map/);
+  assert.match(css, /"href": "\/guides\/css"/);
+  assert.match(css, /CSS 深度教程/);
+  assert.match(css, /developer\.mozilla\.org\/en-US\/docs\/Learn_web_development\/Core\/Styling_basics/);
+  assert.match(css, /web\.dev\/learn\/css/);
+  assert.match(css, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);
 });
 
 test("CSS 深度教程包含六章、互动练习、自测与继续学习", async () => {

@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Check,
   CheckCircle,
   ClipboardText,
   Pause,
@@ -15,6 +16,13 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Term } from "@/lib/content";
+import {
+  getFoundationTerm,
+  type FoundationDemoStep,
+  type FoundationScenario,
+  type FoundationTerm,
+  type PlainHit,
+} from "@/lib/foundation-terms";
 
 type TermDetailExperienceProps = {
   term: Term;
@@ -22,50 +30,6 @@ type TermDetailExperienceProps = {
   next: Term;
   related: Term[];
 };
-
-const cssResponsiveSteps: Array<{
-  selector: string;
-  property: string;
-  value: string;
-  innerSelector?: string;
-  label: string;
-  source: string;
-  note: string;
-  computed: string;
-  layout: "desktop" | "squeezed" | "stacked";
-}> = [
-  {
-    selector: ".concept-orbit",
-    property: "grid-template-columns",
-    value: "repeat(3, 1fr)",
-    label: "桌面展开",
-    source: ".concept-orbit",
-    note: "桌面宽度下，三个概念按三列排列",
-    computed: "repeat(3, 1fr)",
-    layout: "desktop",
-  },
-  {
-    selector: "@media (max-width: 640px)",
-    property: "/* 缺少布局规则 */",
-    value: "",
-    label: "问题出现",
-    source: ".concept-orbit（桌面规则）",
-    note: "390px 仍沿用三列，星点和标签互相挤压",
-    computed: "repeat(3, 1fr)",
-    layout: "squeezed",
-  },
-  {
-    selector: "@media (max-width: 640px)",
-    innerSelector: ".concept-orbit",
-    property: "grid-template-columns",
-    value: "1fr",
-    label: "响应式修正",
-    source: "@media (max-width: 640px)",
-    note: "手机宽度下改成一列，避免星点和标签重叠",
-    computed: "1fr",
-    layout: "stacked",
-  },
-];
 
 const foundationTermConfig = {
   html: {
@@ -217,19 +181,49 @@ function CopyAction({ text, label }: { text: string; label: string }) {
   );
 }
 
-function CssResponsiveMap({
-  activeStep,
-  isPlaying,
-  setActiveStep,
-  setIsPlaying,
-}: {
-  activeStep: number;
-  isPlaying: boolean;
-  setActiveStep: (step: number) => void;
-  setIsPlaying: (playing: boolean) => void;
-}) {
+const cardLabels = [
+  { title: "周末市集", body: "三十家手作摊位" },
+  { title: "夜间放映", body: "露天老电影场" },
+  { title: "旧书交换", body: "带一本换一本" },
+];
+
+function FoundationDemoPreview({ step }: { step: FoundationDemoStep }) {
+  return (
+    <div className="term-code-preview">
+      <div className={`responsive-preview is-${step.layout}`} aria-hidden="true">
+        <div className="responsive-preview-browser">
+          <span /><span /><span />
+          <small>{step.widthLabel}</small>
+        </div>
+        <div className="responsive-preview-canvas">
+          <span className="responsive-preview-kicker">内容卡片</span>
+          <div className="responsive-preview-grid">
+            {cardLabels.map((card) => (
+              <span className="responsive-preview-node" key={card.title}>
+                <i className="pcard-media" />
+                <strong>{card.title}</strong>
+                <em>{card.body}</em>
+              </span>
+            ))}
+          </div>
+          <small>{step.note}</small>
+        </div>
+      </div>
+      <div className="term-computed" aria-live="polite">
+        <span>Computed</span>
+        <code>grid-template-columns: {step.computed}</code>
+        <small>来自 {step.source}</small>
+      </div>
+    </div>
+  );
+}
+
+function FoundationCssDemo({ data }: { data: FoundationTerm }) {
+  const [activeStep, setActiveStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
   const mapRef = useRef<HTMLDivElement>(null);
-  const activeCode = cssResponsiveSteps[activeStep];
+  const steps = data.demo.steps;
+  const active = steps[activeStep];
 
   useEffect(() => {
     const element = mapRef.current;
@@ -243,7 +237,7 @@ function CssResponsiveMap({
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && timer === null) {
         timer = window.setInterval(() => {
-          setActiveStep((activeStep + 1) % cssResponsiveSteps.length);
+          setActiveStep((current) => (current + 1) % steps.length);
         }, 2000);
       } else if (!entry.isIntersecting) {
         stopTimer();
@@ -255,7 +249,7 @@ function CssResponsiveMap({
       stopTimer();
       observer.disconnect();
     };
-  }, [activeStep, isPlaying, setActiveStep]);
+  }, [isPlaying, steps.length]);
 
   function selectStep(index: number) {
     setActiveStep(index);
@@ -263,7 +257,23 @@ function CssResponsiveMap({
   }
 
   return (
-    <div className="term-code-map term-responsive-map" ref={mapRef} aria-label="CSS 响应式规则与技术星图布局">
+    <>
+      <div className="term-preview-tabs" role="group" aria-label="切换布局演示状态">
+        {steps.map((step, index) => (
+          <button
+            key={step.key}
+            type="button"
+            className={activeStep === index ? "is-active" : ""}
+            aria-pressed={activeStep === index}
+            onClick={() => selectStep(index)}
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {step.label}
+          </button>
+        ))}
+      </div>
+      <div className="term-preview-stage has-code-map">
+      <div className="term-code-map term-responsive-map" ref={mapRef} aria-label={data.demo.ariaLabel}>
       <div className="term-code-editor">
         <div className="term-code-editor-head">
           <span>styles.css</span>
@@ -287,79 +297,319 @@ function CssResponsiveMap({
           </div>
         </div>
         <ol className="term-code-lines">
-          {cssResponsiveSteps.map((step, index) => {
+          {steps.map((step, index) => {
             const isPast = index < activeStep;
             const isFuture = index > activeStep;
             return (
-            <li key={`${step.selector}-${step.property}`}>
-              <button
-                type="button"
-                className={`${activeStep === index ? "is-active" : ""}${isPast ? " is-past" : ""}${isFuture ? " is-future" : ""}`}
-                aria-pressed={activeStep === index}
-                onClick={() => selectStep(index)}
-              >
-                <span className="term-code-number">{String(index + 1).padStart(2, "0")}</span>
-                <code>
-                  <span><span className="term-code-selector">{step.selector}</span>{" {"}</span>
-                  {step.innerSelector && (
-                    <span className="term-code-indent"><span className="term-code-selector">{step.innerSelector}</span>{" {"}</span>
-                  )}
-                  <span className={step.innerSelector ? "term-code-indent term-code-indent-deep" : "term-code-indent"}>
-                    <span className="term-code-property">{step.property}</span>
-                    {step.value && (
-                      <>{": "}<span className="term-code-value">{step.value}</span>{";"}</>
+              <li key={step.key}>
+                <button
+                  type="button"
+                  className={`${activeStep === index ? "is-active" : ""}${isPast ? " is-past" : ""}${isFuture ? " is-future" : ""}`}
+                  aria-pressed={activeStep === index}
+                  onClick={() => selectStep(index)}
+                >
+                  <span className="term-code-number">{String(index + 1).padStart(2, "0")}</span>
+                  <code>
+                    <span><span className="term-code-selector">{step.selector}</span>{" {"}</span>
+                    {step.innerSelector && (
+                      <span className="term-code-indent"><span className="term-code-selector">{step.innerSelector}</span>{" {"}</span>
                     )}
-                  </span>
-                  {step.innerSelector && <span className="term-code-indent">{"}"}</span>}
-                  <span>{"}"}</span>
-                </code>
-              </button>
-            </li>
-          )})}
+                    <span className={step.innerSelector ? "term-code-indent term-code-indent-deep" : "term-code-indent"}>
+                      <span className="term-code-property">{step.property}</span>
+                      {step.value && (
+                        <>{": "}<span className="term-code-value">{step.value}</span>{";"}</>
+                      )}
+                    </span>
+                    {step.innerSelector && <span className="term-code-indent">{"}"}</span>}
+                    <span>{"}"}</span>
+                  </code>
+                </button>
+              </li>
+            );
+          })}
         </ol>
       </div>
 
-      <div className="term-code-preview">
-        <div className={`responsive-preview is-${activeCode.layout}`} aria-hidden="true">
-          <div className="responsive-preview-browser">
-            <span /><span /><span />
-            <small>{activeCode.layout === "desktop" ? "1280px" : "390px"}</small>
+      <FoundationDemoPreview step={active} />
+      </div>
+      </div>
+    </>
+  );
+}
+
+const slotCopy = [
+  { key: "seen" as const, label: "我看到的" },
+  { key: "want" as const, label: "我想要的" },
+  { key: "avoid" as const, label: "不要改的" },
+  { key: "verify" as const, label: "怎么确认" },
+];
+
+function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
+  const [activeKey, setActiveKey] = useState(guide.scenarios[0].key);
+  const active: FoundationScenario = guide.scenarios.find((scenario) => scenario.key === activeKey) ?? guide.scenarios[0];
+
+  return (
+    <>
+      <p className="term-ai-guide-intro">{guide.intro}</p>
+      <div className="term-scenario-tabs" role="group" aria-label="选择要解决的时机">
+        {guide.scenarios.map((scenario) => (
+          <button
+            key={scenario.key}
+            type="button"
+            className={activeKey === scenario.key ? "is-active" : ""}
+            aria-pressed={activeKey === scenario.key}
+            onClick={() => setActiveKey(scenario.key)}
+          >
+            <strong>{scenario.label}</strong>
+            <small>{scenario.tagline}</small>
+          </button>
+        ))}
+      </div>
+      <div className="term-ai-brief" aria-live="polite">
+        {slotCopy.map((slot) => (
+          <div key={slot.key}>
+            <span>{slot.label}</span>
+            <p>{active.slots[slot.key]}</p>
           </div>
-          <div className="responsive-preview-canvas">
-            <span className="responsive-preview-kicker">技术星图</span>
-            <div className="responsive-preview-orbit">
-              {["HTML", "CSS", "JavaScript"].map((concept) => (
-                <span className="responsive-preview-node" key={concept}>
-                  <i className="brand-star-only" />
-                  <strong>{concept}</strong>
-                </span>
+        ))}
+      </div>
+      <div className="term-ai-prompt">
+        <span>{guide.promptCaption}</span>
+        <p>{active.prompt}</p>
+        <CopyAction text={active.prompt} label={guide.copyLabel} />
+      </div>
+    </>
+  );
+}
+
+function FoundationChecklist({ checklist }: { checklist: FoundationTerm["checklist"] }) {
+  const [checked, setChecked] = useState<Record<number, boolean>>({});
+  const doneCount = checklist.items.filter((_, index) => checked[index]).length;
+
+  return (
+    <ul className="term-checklist" aria-live="polite">
+      {checklist.items.map((item, index) => (
+        <li key={item}>
+          <button
+            type="button"
+            className={checked[index] ? "is-checked" : ""}
+            aria-pressed={Boolean(checked[index])}
+            onClick={() => setChecked((current) => ({ ...current, [index]: !current[index] }))}
+          >
+            <span className="term-check-box" aria-hidden="true"><Check size={14} weight="bold" /></span>
+            <span>{item}</span>
+          </button>
+        </li>
+      ))}
+      <li className="term-checklist-progress">{doneCount === checklist.items.length ? "全部确认，可以交付" : `已确认 ${doneCount} / ${checklist.items.length}`}</li>
+    </ul>
+  );
+}
+
+function PlainHits({ hits }: { hits: PlainHit[] }) {
+  function jump(target: PlainHit["target"]) {
+    const element = document.getElementById(target);
+    if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  return (
+    <section className="term-plain-card" aria-labelledby="term-plain-heading">
+      <span className="term-plain-kicker">你是不是想说的是</span>
+      <div className="term-plain-hits">
+        {hits.map((hit) => (
+          <button type="button" key={hit.text} onClick={() => jump(hit.target)}>
+            “{hit.text}”<ArrowRight size={16} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FoundationExperience({
+  term,
+  data,
+  previous,
+  next,
+  related,
+}: {
+  term: Term;
+  data: FoundationTerm;
+  previous: Term;
+  next: Term;
+  related: Term[];
+}) {
+  const [markdown] = useState(() => [
+    `# ${term.zh}${term.en ? ` — ${term.en}` : ""}`,
+    "",
+    `> ${data.intro.definition}`,
+    "",
+    `分类：${term.cat}`,
+    `别名：${data.intro.aliases.join("、")}`,
+  ].join("\n"));
+
+  function pronounce() {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(term.en || term.zh);
+    utterance.lang = term.en ? "en-US" : "zh-CN";
+    utterance.rate = 0.86;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  return (
+    <main className="term-story-page">
+      <Link className="term-page-step term-page-step-prev" href={`/terms/${previous.slug}`} aria-label={`上一个术语：${previous.zh}`} title={`上一个：${previous.zh}`}>
+        <ArrowLeft size={24} />
+      </Link>
+      <Link className="term-page-step term-page-step-next" href={`/terms/${next.slug}`} aria-label={`下一个术语：${next.zh}`} title={`下一个：${next.zh}`}>
+        <ArrowRight size={24} />
+      </Link>
+
+      <div className="term-story-shell">
+        <div className="term-story-tools">
+          <Link href="/terms">术语词典</Link>
+          <span aria-hidden="true">/</span>
+          <Link href={`/terms?cat=${encodeURIComponent(term.cat)}`}>{term.cat}</Link>
+          <span aria-hidden="true">/</span>
+          <span>{term.zh}</span>
+          <CopyAction text={markdown} label="复制为 Markdown" />
+        </div>
+
+        <header className="term-story-header">
+          <span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" />
+          <h1>{term.zh}</h1>
+          {term.en && <span className="term-story-en">{term.en}</span>}
+          <button className="term-speak" type="button" onClick={pronounce} aria-label={`朗读 ${term.en || term.zh}`} title="朗读术语">
+            <SpeakerHigh size={22} />
+          </button>
+        </header>
+
+        <PlainHits hits={data.plainHits} />
+
+        <section className="term-question" aria-labelledby="css-question-heading">
+          <span>先说清楚这件事</span>
+          <p id="css-question-heading">{data.intro.question}</p>
+        </section>
+
+        <section className="term-story-intro" aria-labelledby="css-definition-heading">
+          <h2 id="css-definition-heading">{data.intro.definition}</h2>
+          <p>{data.intro.boundary}</p>
+          <div className="term-prerequisites">
+            <span>{data.intro.prerequisite}</span>
+            <div>
+              <em>常见名称</em>
+              {data.intro.aliases.map((alias) => <span key={alias}>{alias}</span>)}
+            </div>
+          </div>
+        </section>
+
+        <section className="term-explainer" id="demo" aria-labelledby="css-explainer-heading">
+          <div className="term-section-heading">
+            <span>{data.demo.eyebrow}</span>
+            <h2 id="css-explainer-heading">{data.demo.title}</h2>
+          </div>
+          <FoundationCssDemo data={data} />
+          <div className="term-responsive-notes">
+            <div>
+              <span>发生了什么</span>
+              <p>
+                {data.demo.chain.map((node, index) => (
+                  <span key={node} className="term-chain-node">
+                    {index > 0 && <ArrowRight size={16} aria-hidden="true" />}
+                    <strong>{node}</strong>
+                  </span>
+                ))}
+              </p>
+            </div>
+            <div>
+              <span>职责区分</span>
+              <p>{data.demo.responsibility}</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="term-ai-guide" id="ai-guide" aria-labelledby="css-ai-heading">
+          <div className="term-section-heading"><span>02</span><h2 id="css-ai-heading">{data.aiGuide.title}</h2></div>
+          <FoundationAiGuide guide={data.aiGuide} />
+        </section>
+
+        <section className="term-checklist-block" id="checklist" aria-labelledby="css-checklist-heading">
+          <div className="term-section-heading"><span>03</span><h2 id="css-checklist-heading">{data.checklist.title}</h2></div>
+          <p className="term-checklist-note">{data.checklist.note}</p>
+          <FoundationChecklist checklist={data.checklist} />
+        </section>
+
+        <section className="term-direction" id="direction" aria-labelledby="css-direction-heading">
+          <div className="term-section-heading"><span>04</span><h2 id="css-direction-heading">{data.direction.title}</h2></div>
+          <p className="term-direction-note">{data.direction.note}</p>
+          <div className="term-direction-grid">
+            {data.direction.options.map((option) => (
+              <article key={option.name}>
+                <strong>{option.name}</strong>
+                <em>{option.verdict}</em>
+                <p>{option.when}</p>
+              </article>
+            ))}
+          </div>
+          <Link className="term-direction-link" href={data.direction.link.href}>
+            {data.direction.link.label}<ArrowRight size={18} aria-hidden="true" />
+          </Link>
+        </section>
+
+        <section className="term-learning-path" aria-labelledby="css-learning-heading">
+          <div className="term-section-heading"><span>05</span><h2 id="css-learning-heading">继续学习</h2></div>
+          <div className="term-learning-unified">
+            {data.learning.path.map((item, index) => (
+              <Link href={item.href} key={item.href}>
+                <span><small>{item.kind}</small>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{item.title}<small>{item.note}</small></strong>
+                <ArrowRight size={20} />
+              </Link>
+            ))}
+            {related.filter((item) => !data.learning.path.some((path) => path.href === `/terms/${item.slug}`)).slice(0, 4).map((item, index) => (
+              <Link key={item.slug} href={`/terms/${item.slug}`}>
+                <span><small>相关</small>{String(index + data.learning.path.length + 1).padStart(2, "0")}</span>
+                <strong>{item.zh}{item.en ? <small>{item.en}</small> : null}</strong>
+                <ArrowRight size={20} />
+              </Link>
+            ))}
+          </div>
+          <div className="term-course-entry">
+            <Link href={data.learning.course.href}>
+              <span className="brand-star-only term-course-star" aria-hidden="true" />
+              <span>
+                <small>{data.learning.course.label}</small>
+                <strong>{data.learning.course.title}</strong>
+                <em>{data.learning.course.meta}</em>
+              </span>
+              <ArrowRight size={22} />
+            </Link>
+          </div>
+          <div className="term-external-learning">
+            <span>参考资料</span>
+            <div>
+              {data.learning.references.map((reference) => (
+                <a href={reference.href} target="_blank" rel="noreferrer" key={reference.href}>
+                  <span><strong>{reference.label}</strong><small>{reference.note}</small></span><ArrowUpRight size={16} />
+                </a>
               ))}
             </div>
-            <small>{activeCode.note}</small>
           </div>
-        </div>
-        <div className="term-computed" aria-live="polite">
-          <span>Computed</span>
-          <code>grid-template-columns: {activeCode.computed}</code>
-          <small>来自 {activeCode.source}</small>
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
 export function TermDetailExperience({ term, previous, next, related }: TermDetailExperienceProps) {
-  const [responsiveStep, setResponsiveStep] = useState(0);
-  const [responsivePlaying, setResponsivePlaying] = useState(true);
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
   const isCss = term.slug === "css";
+  const cssData = isCss ? getFoundationTerm("css") : undefined;
   const foundationConfig = term.slug in foundationTermConfig
     ? foundationTermConfig[term.slug as FoundationTermSlug]
     : null;
 
-  if (!isCss && !foundationConfig) {
-    throw new Error(`TermDetailExperience 仅用于 CSS、HTML 和 JavaScript，收到：${term.slug}`);
-  }
   const foundation = foundationConfig ?? foundationTermConfig.html;
 
   const markdown = useMemo(() => [
@@ -371,19 +621,11 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
     `别名：${term.aliases.join("、")}`,
   ].join("\n"), [term]);
 
-  const prompt = isCss
-    ? "这个页面在电脑上看着正常，但到了手机上，三个概念仍然挤在同一行，文字和图形都叠在一起了。请帮我找出是哪条布局规则造成的，并把手机上的排列改成一列，电脑上的样子保持不变。不要删除任何内容，也不要改变原来的点击效果。改完后请分别检查电脑和手机：内容不能重叠，页面不能左右滚动，并用大白话告诉我问题原因和你改了什么。"
-    : foundation.prompt;
+  const prompt = foundation.prompt;
 
-  const correctQuizValue = isCss ? "css" : foundation.correct;
+  const correctQuizValue = foundation.correct;
   const quizOptions = orderQuizOptions(
-    isCss
-      ? [
-          ["css", "确认当前布局规则，再用媒体查询调整列数"],
-          ["html", "删掉一部分概念，让标签少一点"],
-          ["database", "用 JavaScript 监听宽度并逐个搬动标签"],
-        ]
-      : foundation.quizOptions.map(([value, label]) => [value, label]),
+    foundation.quizOptions.map(([value, label]) => [value, label]),
     term.slug,
   );
 
@@ -397,6 +639,10 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
   }
 
   const answerIsCorrect = quizAnswer === correctQuizValue;
+
+  if (isCss && cssData) {
+    return <FoundationExperience term={term} data={cssData} previous={previous} next={next} related={related} />;
+  }
 
   return (
     <main className="term-story-page">
@@ -428,222 +674,113 @@ export function TermDetailExperience({ term, previous, next, related }: TermDeta
 
         <section className="term-question" aria-labelledby="term-question-heading">
           <span>常见问题</span>
-          <p id="term-question-heading">{isCss ? "技术星图在桌面正常，为什么到了手机上标签全挤在一起？" : foundation.question}</p>
+          <p id="term-question-heading">{foundation.question}</p>
         </section>
 
         <section className="term-story-intro" aria-labelledby="term-definition-heading">
-          <h2 id="term-definition-heading">
-            {isCss
-              ? "CSS 使用选择器匹配元素，并通过层叠规则确定最终呈现结果。"
-              : foundation.definition}
-          </h2>
-          <p>{isCss
-            ? "它负责外观、布局和响应式；内容结构属于 HTML，点击后的业务逻辑属于 JavaScript。"
-            : foundation.boundary}</p>
+          <h2 id="term-definition-heading">{foundation.definition}</h2>
+          <p>{foundation.boundary}</p>
           <div className="term-prerequisites">
-            <span>{isCss ? "前置概念：HTML ↗" : foundation.prerequisite}</span>
+            <span>{foundation.prerequisite}</span>
             <div>
               <em>常见名称</em>
-              {(isCss ? ["层叠样式表", "Cascading Style Sheets"] : term.aliases).map((alias) => <span key={alias}>{alias}</span>)}
+              {term.aliases.map((alias) => <span key={alias}>{alias}</span>)}
             </div>
           </div>
         </section>
 
-        {isCss ? (
-          <section className="term-explainer" aria-labelledby="term-explainer-heading">
-            <div className="term-section-heading">
-              <span>01</span>
-              <h2 id="term-explainer-heading">不同屏幕下的布局规则</h2>
+        <section className="term-explainer" aria-labelledby="term-explainer-heading">
+          <div className="term-section-heading">
+            <span>01</span>
+            <h2 id="term-explainer-heading">{foundation.explainerTitle}</h2>
+          </div>
+          <FoundationTermMap config={foundation} />
+          <div className="term-responsive-notes">
+            <div>
+              <span>执行过程</span>
+              <p><strong>输入</strong><ArrowRight size={16} /><strong>浏览器理解</strong><ArrowRight size={16} /><strong>用户结果</strong></p>
             </div>
-            <div className="term-preview-tabs" role="group" aria-label="切换 CSS 演示状态">
-              {cssResponsiveSteps.map((step, index) => (
-                <button
-                  key={step.label}
-                  type="button"
-                  className={responsiveStep === index ? "is-active" : ""}
-                  aria-pressed={responsiveStep === index}
-                  onClick={() => { setResponsiveStep(index); setResponsivePlaying(false); }}
-                >
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  {step.label}
-                </button>
-              ))}
+            <div>
+              <span>职责区分</span>
+              <p><strong>HTML</strong> 管结构；<strong>CSS</strong> 管呈现；<strong>JavaScript</strong> 管行为。</p>
             </div>
-            <div className="term-preview-stage has-code-map">
-              <CssResponsiveMap
-                activeStep={responsiveStep}
-                isPlaying={responsivePlaying}
-                setActiveStep={setResponsiveStep}
-                setIsPlaying={setResponsivePlaying}
-              />
-            </div>
-            <div className="term-responsive-notes">
-              <div>
-                <span>规则变化</span>
-                <p><strong>视口变窄</strong><ArrowRight size={16} /><strong>媒体查询命中</strong><ArrowRight size={16} /><strong>星图重排</strong></p>
-              </div>
-              <div>
-                <span>职责区分</span>
-                <p><strong>CSS</strong> 管呈现；<strong>HTML</strong> 管结构；<strong>JavaScript</strong> 管行为。</p>
-              </div>
-            </div>
-          </section>
-        ) : (
-          <section className="term-explainer" aria-labelledby="term-explainer-heading">
-            <div className="term-section-heading">
-              <span>01</span>
-              <h2 id="term-explainer-heading">{foundation.explainerTitle}</h2>
-            </div>
-            <FoundationTermMap config={foundation} />
-            <div className="term-responsive-notes">
-              <div>
-                <span>执行过程</span>
-                <p><strong>输入</strong><ArrowRight size={16} /><strong>浏览器理解</strong><ArrowRight size={16} /><strong>用户结果</strong></p>
-              </div>
-              <div>
-                <span>职责区分</span>
-                <p><strong>HTML</strong> 管结构；<strong>CSS</strong> 管呈现；<strong>JavaScript</strong> 管行为。</p>
-              </div>
-            </div>
-          </section>
-        )}
+          </div>
+        </section>
 
-        {!isCss && (
-          <section className="term-quiz" aria-labelledby="term-quiz-heading">
-            <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">知识检查</h2></div>
-            <fieldset>
-              <legend>{foundation.quizQuestion}</legend>
-              {quizOptions.map(([value, label]) => (
-                <label key={value} className={quizAnswer === value ? "is-selected" : ""}>
-                  <input
-                    type="radio"
-                    name="term-quiz"
-                    value={value}
-                    checked={quizAnswer === value}
-                    onChange={() => setQuizAnswer(value)}
-                  />
-                  <span>{label}</span>
-                </label>
-              ))}
-            </fieldset>
-            {quizAnswer && (
-              <p className={`term-quiz-result${answerIsCorrect ? " is-correct" : ""}`} aria-live="polite">
-                {answerIsCorrect ? foundation.correctText : foundation.wrongText}
-              </p>
-            )}
-          </section>
-        )}
+        <section className="term-quiz" aria-labelledby="term-quiz-heading">
+          <div className="term-section-heading"><span>02</span><h2 id="term-quiz-heading">知识检查</h2></div>
+          <fieldset>
+            <legend>{foundation.quizQuestion}</legend>
+            {quizOptions.map(([value, label]) => (
+              <label key={value} className={quizAnswer === value ? "is-selected" : ""}>
+                <input
+                  type="radio"
+                  name="term-quiz"
+                  value={value}
+                  checked={quizAnswer === value}
+                  onChange={() => setQuizAnswer(value)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </fieldset>
+          {quizAnswer && (
+            <p className={`term-quiz-result${answerIsCorrect ? " is-correct" : ""}`} aria-live="polite">
+              {answerIsCorrect ? foundation.correctText : foundation.wrongText}
+            </p>
+          )}
+        </section>
 
-        {isCss ? (
-          <section className="term-ai-guide" aria-labelledby="term-prompt-heading">
-            <div className="term-section-heading"><span>02</span><h2 id="term-prompt-heading">怎么向 AI 描述这个问题</h2></div>
-            <p className="term-ai-guide-intro">不需要先知道选择器或属性名。把你看到的现象、想要的结果和不能改动的部分说清楚就够了。</p>
-            <div className="term-ai-brief">
-              <div><span>我看到的</span><p>电脑上排列正常，手机上三个概念挤在同一行。</p></div>
-              <div><span>我想要的</span><p>手机上改成一列，电脑上的样子保持不变。</p></div>
-              <div><span>不要改的</span><p>不要删文字和图形，也不要改变原来的点击效果。</p></div>
-              <div><span>怎么确认</span><p>电脑和手机都检查一遍，不能重叠，也不能左右滚动。</p></div>
-            </div>
-            <div className="term-ai-prompt">
-              <span>用大白话组合后的提示词</span>
-              <p>{prompt}</p>
-              <CopyAction text={prompt} label="复制完整提示词" />
-            </div>
-          </section>
-        ) : (
-          <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
-            <div><span>{foundation.promptEyebrow}</span><h2 id="term-prompt-heading">{foundation.promptTitle}</h2></div>
-            <p>{prompt}</p>
-            <CopyAction text={prompt} label="复制提示词" />
-          </section>
-        )}
+        <section className="term-prompt-card" aria-labelledby="term-prompt-heading">
+          <div><span>{foundation.promptEyebrow}</span><h2 id="term-prompt-heading">{foundation.promptTitle}</h2></div>
+          <p>{prompt}</p>
+          <CopyAction text={prompt} label="复制提示词" />
+        </section>
 
-        {isCss ? (
-          <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
-            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">继续学习</h2></div>
-            <div className="term-learning-unified">
-              <Link href="/terms/html"><span><small>基础</small>01</span><strong>HTML <small>区分文档结构与视觉样式</small></strong><ArrowRight size={20} /></Link>
-              <Link href="/terms/responsive"><span><small>实践</small>02</span><strong>响应式布局 <small>看规则如何随空间变化</small></strong><ArrowRight size={20} /></Link>
-              {related.filter((item) => !["html", "responsive"].includes(item.slug)).slice(0, 4).map((item, index) => (
+        <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
+          <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">相关内容</h2></div>
+          <div className="term-path-list">
+            {foundation.path.map((item, index) => (
+              <Link href={item.href} key={item.href}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{item.title} <small>{item.note}</small></strong>
+                <ArrowRight size={20} />
+              </Link>
+            ))}
+          </div>
+          <div className="term-related-orbit">
+            <span>相关概念</span>
+            <div>
+              {related.filter((item) => !foundation.relatedExcludes.includes(item.slug as never)).slice(0, 4).map((item) => (
                 <Link key={item.slug} href={`/terms/${item.slug}`}>
-                  <span><small>相关</small>{String(index + 3).padStart(2, "0")}</span>
-                  <strong>{item.zh}{item.en ? <small>{item.en}</small> : null}</strong>
-                  <ArrowRight size={20} />
+                  <span className="brand-star-only term-related-star" aria-hidden="true" />
+                  {item.zh}{item.en ? <small>{item.en}</small> : null}
                 </Link>
               ))}
             </div>
-            <div className="term-course-entry">
-              <Link href="/guides/css">
-                <span className="brand-star-only term-course-star" aria-hidden="true" />
-                <span>
-                  <small>VibePolaris 教程</small>
-                  <strong>CSS 深度教程</strong>
-                  <em>6 章 · 约 35 分钟</em>
-                </span>
-                <ArrowRight size={22} />
-              </Link>
-            </div>
-            <div className="term-external-learning">
-              <span>参考资料</span>
-              <div>
-                <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" target="_blank" rel="noreferrer">
-                  <span><strong>MDN · CSS 基础</strong><small>结构化入门</small></span><ArrowUpRight size={16} />
+          </div>
+          <div className="term-course-entry">
+            <Link href={foundation.courseHref}>
+              <span className="brand-star-only term-course-star" aria-hidden="true" />
+              <span>
+                <small>VibePolaris 教程</small>
+                <strong>{foundation.courseTitle}</strong>
+                <em>{foundation.courseMeta}</em>
+              </span>
+              <ArrowRight size={22} />
+            </Link>
+          </div>
+          <div className="term-external-learning">
+            <span>参考资料</span>
+            <div>
+              {foundation.external.map(([href, title, note]) => (
+                <a href={href} target="_blank" rel="noreferrer" key={href}>
+                  <span><strong>{title}</strong><small>{note}</small></span><ArrowUpRight size={16} />
                 </a>
-                <a href="https://web.dev/learn/css" target="_blank" rel="noreferrer">
-                  <span><strong>web.dev · Learn CSS</strong><small>现代布局与实践</small></span><ArrowUpRight size={16} />
-                </a>
-                <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade" target="_blank" rel="noreferrer">
-                  <span><strong>MDN · CSS 层叠</strong><small>理解最终样式</small></span><ArrowUpRight size={16} />
-                </a>
-              </div>
-            </div>
-          </section>
-        ) : (
-          <section className="term-learning-path" aria-labelledby="term-learning-path-heading">
-            <div className="term-section-heading"><span>03</span><h2 id="term-learning-path-heading">相关内容</h2></div>
-            <div className="term-path-list">
-              {foundation.path.map((item, index) => (
-                <Link href={item.href} key={item.href}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{item.title} <small>{item.note}</small></strong>
-                  <ArrowRight size={20} />
-                </Link>
               ))}
             </div>
-            <div className="term-related-orbit">
-              <span>相关概念</span>
-              <div>
-                {related.filter((item) => !foundation.relatedExcludes.includes(item.slug as never)).slice(0, 4).map((item) => (
-                  <Link key={item.slug} href={`/terms/${item.slug}`}>
-                    <span className="brand-star-only term-related-star" aria-hidden="true" />
-                    {item.zh}{item.en ? <small>{item.en}</small> : null}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div className="term-course-entry">
-              <Link href={foundation.courseHref}>
-                <span className="brand-star-only term-course-star" aria-hidden="true" />
-                <span>
-                  <small>VibePolaris 教程</small>
-                  <strong>{foundation.courseTitle}</strong>
-                  <em>{foundation.courseMeta}</em>
-                </span>
-                <ArrowRight size={22} />
-              </Link>
-            </div>
-            <div className="term-external-learning">
-              <span>参考资料</span>
-              <div>
-                {foundation.external.map(([href, title, note]) => (
-                  <a href={href} target="_blank" rel="noreferrer" key={href}>
-                    <span><strong>{title}</strong><small>{note}</small></span><ArrowUpRight size={16} />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+          </div>
+        </section>
       </div>
     </main>
   );

@@ -10,45 +10,69 @@ test("词条详情使用单栏故事式阅读结构", () => {
 
   assert.match(page, /TermDetailExperience/);
   assert.match(experience, /term-story-shell/);
+  assert.match(experience, /function FoundationExperience/);
   assert.match(experience, /常见问题/);
-  assert.match(experience, /不同屏幕下的布局规则/);
-  assert.match(experience, /\{!isCss && \([\s\S]*className="term-quiz"/);
-  assert.match(experience, /怎么向 AI 描述这个问题/);
+  assert.match(experience, /className="term-quiz"/);
   assert.match(experience, /term-ai-brief/);
   assert.match(experience, /继续学习/);
   assert.match(experience, /term-learning-unified/);
   assert.doesNotMatch(page, /term-detail wrap/);
 });
 
-test("CSS 解释器用三阶段响应式故事同步代码、星图与最终值", () => {
+test("CSS 基础词条从结构化内容模型渲染，不再把文案硬编码在组件里", () => {
   const source = read("components/TermDetailExperience.tsx");
+  const css = read("content/zh/foundation-terms/css.json");
 
-  assert.match(source, /桌面展开/);
-  assert.match(source, /问题出现/);
-  assert.match(source, /响应式修正/);
+  assert.match(source, /getFoundationTerm\("css"\)/);
+  assert.match(source, /href=\{data\.learning\.course\.href\}/);
+  // 旧的本站星图自嗨场景与硬编码文案必须全部退场
+  assert.doesNotMatch(source, /技术星图|\.concept-orbit|cssResponsiveSteps|用大白话组合后的提示词/);
+  assert.match(css, /"slug": "css"/);
+  assert.match(css, /一个属性，让卡片从三列变一列/);
+});
+
+test("CSS 解释器用三阶段响应式故事同步代码、内容卡片与最终值", () => {
+  const source = read("components/TermDetailExperience.tsx");
+  const css = read("content/zh/foundation-terms/css.json");
+
+  // 组件层：保留交互骨架与无障碍契约
   assert.match(source, /aria-pressed/);
   assert.match(source, /aria-live="polite"/);
   assert.match(source, /type="radio"/);
   assert.match(source, /navigator\.clipboard\.writeText/);
   assert.match(source, /speechSynthesis/);
   assert.match(source, /@phosphor-icons\/react/);
-  assert.match(source, /CSS 响应式规则与技术星图布局/);
-  assert.match(source, /\.concept-orbit/);
-  assert.match(source, /@media \(max-width: 640px\)/);
-  assert.match(source, /grid-template-columns/);
   assert.match(source, /Computed/);
   assert.match(source, /term-code-indent-deep/);
   assert.match(source, /IntersectionObserver/);
   assert.match(source, /2000/);
   assert.match(source, /暂停代码演示/);
   assert.match(source, /重新播放代码演示/);
-  assert.match(source, /确认当前布局规则，再用媒体查询调整列数/);
-  assert.match(source, /不需要先知道选择器或属性名/);
-  assert.match(source, /这个页面在电脑上看着正常，但到了手机上/);
-  assert.match(source, /用大白话组合后的提示词/);
-  assert.match(source, /复制完整提示词/);
-  assert.doesNotMatch(source, /【目标元素】|【问题宽度】/);
-  assert.match(source, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);
+  assert.match(source, /PlainHits/);
+  assert.match(source, /FoundationChecklist/);
+
+  // 内容层：三幕响应式故事改在通用内容卡片上，不再讲本站星图
+  assert.match(css, /"label": "宽屏并排"/);
+  assert.match(css, /"label": "问题出现"/);
+  assert.match(css, /"label": "换成一列"/);
+  assert.match(css, /\.content-cards/);
+  assert.match(css, /@media \(max-width: 640px\)/);
+  assert.match(css, /grid-template-columns/);
+  assert.doesNotMatch(css, /技术星图|\.concept-orbit|【目标元素】|【问题宽度】/);
+
+  // Vibe Coder 正文：大白话入口、分场景提示词、检查清单、选型指北
+  assert.match(css, /你是不是想说的是|"plainHits"/);
+  assert.match(css, /跟 AI 怎么说/);
+  assert.match(css, /"label": "做出来"/);
+  assert.match(css, /"label": "修好它"/);
+  assert.match(css, /"label": "调细节"/);
+  assert.match(css, /这个页面在电脑上看着正常，但到了手机上/);
+  assert.match(css, /把四格组合后的提示词/);
+  assert.match(css, /复制完整提示词/);
+  assert.match(css, /确认真改好了/);
+  assert.match(css, /同样样式，先选哪种写法/);
+  assert.match(css, /Tailwind CSS/);
+  assert.match(css, /developer\.mozilla\.org\/en-US\/docs\/Web\/CSS\/CSS_cascade/);
 });
 
 test("词条原型覆盖移动端与减少动效偏好", () => {

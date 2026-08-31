@@ -1,3 +1,39 @@
+# CSS 词条 Vibe Coder 重构与内容模型收敛 QA（2026-08-31）
+
+## 本轮目标
+
+- 上一轮把 CSS 定为"候选基线"后，本轮正式按 Vibe Coder 的真实使用路径重排 CSS 词条，并把新版式所需的字段沉淀进 Zod 内容模型，供后续词条批量复用。
+- 旧版 CSS 页仍是"面向开发者的科普"：演示对象是页面自己的星图、缺少"我该怎么跟 AI 说"和"改完怎么确认"两个环节。本轮把主线改为：症状入口 → 看懂机制 → 会描述 → 会验收 → 会选型 → 继续学。
+
+## 内容模型（新）
+
+- 新增 `lib/foundation-terms.ts`：`foundationTermSchema` 定义 `intro`（问题、定义、边界、前置、别名）、`plainHits`（大白话症状入口，指向演示/提示词/清单/选型四个落点）、`demo`（三阶段步骤 + 提示词链 + 责任归属）、`aiGuide`（2–3 个场景，每个含"我看到的/我想要的/不要改的/怎么确认"四格与完整提示词）、`checklist`（3–6 条验收项）、`direction`（3 个选型项 + 指北链接）、`learning`（路径、课程、权威资料）。
+- 新增 `content/zh/foundation-terms/css.json` 承载全部 CSS 文案；`getFoundationTerm(slug)` 统一解析。CSS 页早退渲染新组件；HTML、JavaScript 仍走原有硬编码路径，本轮未迁移。
+- 术语、复制按钮、朗读等既有能力保留；旧版 CSS 的"技术星图"自指演示（`.concept-orbit`、`cssResponsiveSteps`）已从 CSS 分支移除。
+
+## 页面结构（新）
+
+1. 顶部"说人话"卡：症状短句 chips，点击滚动到对应章节。
+2. 01 演示改用通用 `.content-cards`（周末市集/夜间放映/旧书交换）：宽屏并排 → 问题出现（390px 下三列挤压重叠，Computed 明确显示"沿用桌面规则"解释成因）→ 换成一列；代码行、预览宽度、Computed、说明同步，自动播放可暂停、可重播。
+3. 02 跟 AI 怎么说：做出来 / 修好它 / 调细节 三个场景 tab，四格简报组合出一段可直接复制的完整提示词（修好它场景开头即"这个页面在电脑上看着正常，但到了手机上…"）。
+4. 03 确认真改好了：5 条验收清单，可勾选，进度显示"已确认 X / 5"。
+5. 04 同样样式，先选哪种写法：直接写 CSS / Tailwind CSS / 现成组件库三个判断项，链接到选型指南。
+6. 05 继续学习：前置路径、CSS 深度教程课程卡、MDN 与 web.dev 权威资料。
+
+## 证据与结果
+
+- 桌面证据：`docs/design/qa/css-vibe-coder-2026-08-31/01-desktop-demo-desktop-step.png`（宽屏并排）、`02-desktop-demo-squeezed.png`（问题出现）、`03-desktop-ai-guide-fix-scenario.png`（修好它提示词）、`04-desktop-checklist-checked.png`、`05-desktop-direction-and-learning.png`。
+- 移动端证据：`06-mobile-demo.png`、`07-mobile-ai-guide.png`、`08-mobile-direction.png`。
+- 1280 与 390 视口实测 `scrollWidth == innerWidth`，无横向溢出；移动端选型区转单列。
+- 功能实测：演示步骤 2 后 Computed 为 `grid-template-columns: repeat(3, 1fr)` 且提示"到了手机宽度，仍沿用三列，图片和文字互相重叠。"；"修好它"提示词以用户症状句开头；勾选清单项后进度变"已确认 1 / 5"；症状 chip 点击可跳转；暂停/重播按钮与 `aria-pressed` 同步；控制台无报错。
+- `npm run check` 通过 lint、TypeScript、34/34 测试和 312 个静态页面构建；`term-detail-prototype.test.mjs` 改为断言结构化模型与新结构，`css-course.test.mjs` 改从内容 JSON 断言教程与权威链接。
+
+本轮只重构 CSS 一个词条，但它现在是内容模型驱动的候选基线；HTML、JavaScript 及 300 条通用词条尚未迁移。本轮方向同时呼应 BUG-F022EC45（词条内容与演示高度同质化）：新模型要求每条词条有专属症状入口、专属演示步骤与专属 AI 表达场景。
+
+final result: passed
+
+---
+
 # CSS 词条模板收敛 QA（2026-08-31）
 
 ## 修改范围
