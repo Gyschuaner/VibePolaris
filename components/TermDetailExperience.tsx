@@ -259,7 +259,7 @@ function FoundationCssDemo({ data }: { data: FoundationTerm }) {
   }
 
   return (
-    <>
+    <div className="term-responsive-demo-shell">
       <div className="term-preview-tabs" role="group" aria-label="切换布局演示状态">
         {steps.map((step, index) => (
           <button
@@ -335,7 +335,7 @@ function FoundationCssDemo({ data }: { data: FoundationTerm }) {
       <FoundationDemoPreview step={active} />
       </div>
       </div>
-    </>
+    </div>
   );
 }
 

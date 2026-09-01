@@ -101,12 +101,15 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.match(source, /term-ai-target-want/);
   assert.match(source, /term-ai-target-verify/);
   assert.match(source, /aria-pressed=\{highlightedSlot === slot\.key\}/);
+  assert.match(source, /term-responsive-demo-shell/);
   assert.doesNotMatch(css, /\.term-ai-note::after/);
   assert.match(css, /\.term-ai-desktop-flow \{[^}]*grid-template-columns: minmax\(0, \.72fr\) auto minmax\(0, 1\.4fr\)/);
   assert.match(css, /\.term-ai-target \{[^}]*max-width: 100%;[^}]*overflow: hidden/);
   assert.match(css, /\.term-responsive-map \{[\s\S]*--term-demo-preview-height: 294px;[\s\S]*--term-demo-computed-height: 48px/);
   assert.match(css, /\.term-responsive-map > \.term-code-editor,[\s\S]*height: var\(--term-demo-column-height\)/);
   assert.match(css, /\.term-responsive-map \.responsive-preview \{[\s\S]*align-self: center;[\s\S]*height: var\(--term-demo-preview-height\)/);
+  assert.match(css, /\.term-responsive-demo-shell > \.term-preview-tabs \{[\s\S]*position: absolute;[\s\S]*top: 12px;[\s\S]*left: 24px/);
+  assert.match(css, /\.term-responsive-demo-shell > \.term-preview-tabs button \{[\s\S]*min-height: 30px;[\s\S]*font-size: 11\.5px/);
 });
 
 test("正式路由不再回退到批量三步模板", () => {
