@@ -94,6 +94,9 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.doesNotMatch(css, /\.term-code-lines code[\s\S]{0,220}text-overflow: ellipsis/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.responsive-preview-node/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.term-code-map-controls \{ display: none; \}/);
+  assert.match(css, /\.term-ai-note-1::after \{ left: calc\(100% \+ 8px\)/);
+  assert.match(css, /\.term-ai-note-2::after \{ right: calc\(100% \+ 8px\)/);
+  assert.match(css, /\.term-ai-note::after \{ display: none; \}/);
 });
 
 test("正式路由不再回退到批量三步模板", () => {
