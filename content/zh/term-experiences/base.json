@@ -1,0 +1,7658 @@
+[
+  {
+    "slug": "state",
+    "lead": "按钮已经进入“处理中”，此时再点一次为什么不该重复提交？",
+    "definition": "状态记录当前会影响下一步行为或界面呈现的数据；事件改变状态，界面再根据新值更新。",
+    "boundary": "能从 props 或其他状态直接算出的值不必再存一份，否则两份数据可能不同步。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "一次提交经历的四个状态",
+    "actionLabel": "推进状态",
+    "actors": [
+      {
+        "id": "idle",
+        "label": "可提交",
+        "detail": "按钮可用",
+        "icon": "component",
+        "group": "界面"
+      },
+      {
+        "id": "validating",
+        "label": "校验中",
+        "detail": "检查输入",
+        "icon": "search",
+        "group": "本地"
+      },
+      {
+        "id": "submitting",
+        "label": "提交中",
+        "detail": "阻止重复点击",
+        "icon": "network",
+        "group": "请求"
+      },
+      {
+        "id": "success",
+        "label": "已保存",
+        "detail": "显示结果",
+        "icon": "spark",
+        "group": "完成"
+      }
+    ],
+    "edges": [
+      {
+        "id": "idle-validating",
+        "from": "idle",
+        "to": "validating",
+        "label": "点击提交"
+      },
+      {
+        "id": "validating-submitting",
+        "from": "validating",
+        "to": "submitting",
+        "label": "校验通过"
+      },
+      {
+        "id": "submitting-success",
+        "from": "submitting",
+        "to": "success",
+        "label": "请求成功"
+      }
+    ],
+    "frames": [
+      {
+        "label": "等待输入",
+        "note": "初始状态允许用户编辑和提交。",
+        "activeIds": [
+          "idle"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "validating",
+          "submitting",
+          "success"
+        ],
+        "values": {
+          "idle": "status = idle"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "开始校验",
+        "note": "点击后先检查必填项，不急着发送请求。",
+        "activeIds": [
+          "validating"
+        ],
+        "doneIds": [
+          "idle"
+        ],
+        "mutedIds": [
+          "submitting",
+          "success"
+        ],
+        "values": {
+          "validating": "status = validating"
+        },
+        "activeEdgeIds": [
+          "idle-validating"
+        ]
+      },
+      {
+        "label": "正在提交",
+        "note": "校验通过后锁住按钮，第二次点击不会再发请求。",
+        "activeIds": [
+          "submitting"
+        ],
+        "doneIds": [
+          "idle",
+          "validating"
+        ],
+        "mutedIds": [
+          "success"
+        ],
+        "values": {
+          "submitting": "status = submitting"
+        },
+        "activeEdgeIds": [
+          "validating-submitting"
+        ]
+      },
+      {
+        "label": "保存完成",
+        "note": "服务端返回成功，界面给出明确结果。",
+        "activeIds": [
+          "success"
+        ],
+        "doneIds": [
+          "idle",
+          "validating",
+          "submitting"
+        ],
+        "mutedIds": [],
+        "values": {
+          "success": "status = success"
+        },
+        "activeEdgeIds": [
+          "submitting-success"
+        ]
+      }
+    ],
+    "insight": "状态不是动画名称，而是程序判断此刻允许什么操作的依据。",
+    "quiz": {
+      "question": "总价可以由商品单价和数量直接算出，还需要单独保存 total 状态吗？",
+      "options": [
+        {
+          "label": "通常不需要，渲染时计算即可",
+          "correct": true
+        },
+        {
+          "label": "需要，所有显示值都必须是状态",
+          "correct": false
+        },
+        {
+          "label": "只有颜色变化才算状态",
+          "correct": false
+        }
+      ],
+      "success": "只保留最小状态，可以避免单价、数量和总价互相矛盾。",
+      "retry": "先判断这个值能否由现有输入稳定计算，而不是看它是否显示在页面上。"
+    },
+    "prompt": {
+      "title": "检查组件的状态设计",
+      "text": "请列出这个组件中会随事件变化的数据，标明每项状态的初始值、触发事件、允许的下一状态和失败状态。能由 props 或其他状态直接计算的值不要重复保存，并指出如何阻止重复提交或无效状态跳转。"
+    },
+    "sources": [
+      {
+        "url": "https://react.dev/learn/state-a-components-memory",
+        "label": "React · State: A Component's Memory",
+        "note": "React API 与运行机制"
+      }
+    ]
+  },
+  {
+    "slug": "responsive",
+    "lead": "桌面三栏放到 390px 宽的手机上，应该缩小内容还是改变布局？",
+    "definition": "响应式布局根据容器宽度、内容需要和输入方式调整结构，让同一份内容保持可读和可操作。",
+    "boundary": "响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
+    "sceneKind": "transform",
+    "sceneTitle": "三张卡片如何随可用宽度重排",
+    "actionLabel": "收窄容器",
+    "actors": [
+      {
+        "id": "viewport",
+        "label": "可用宽度",
+        "detail": "1280 px",
+        "icon": "browser",
+        "group": "环境"
+      },
+      {
+        "id": "container",
+        "label": "内容容器",
+        "detail": "三列网格",
+        "icon": "layout",
+        "group": "规则"
+      },
+      {
+        "id": "card-a",
+        "label": "主卡片",
+        "detail": "完整标题与摘要",
+        "icon": "component",
+        "group": "内容"
+      },
+      {
+        "id": "card-b",
+        "label": "次卡片",
+        "detail": "完整标题与摘要",
+        "icon": "component",
+        "group": "内容"
+      },
+      {
+        "id": "controls",
+        "label": "操作区",
+        "detail": "横向排列",
+        "icon": "gear",
+        "group": "操作"
+      }
+    ],
+    "edges": [
+      {
+        "id": "viewport-container",
+        "from": "viewport",
+        "to": "container",
+        "label": "容器条件"
+      },
+      {
+        "id": "container-cards",
+        "from": "container",
+        "to": "card-a",
+        "label": "重排内容"
+      }
+    ],
+    "frames": [
+      {
+        "label": "桌面三栏",
+        "note": "空间充足时，卡片并排展示，操作区保持一行。",
+        "activeIds": [
+          "viewport",
+          "container"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "viewport": "1280 px",
+          "container": "3 columns"
+        },
+        "activeEdgeIds": [
+          "viewport-container"
+        ]
+      },
+      {
+        "label": "开始拥挤",
+        "note": "宽度降到 760px，摘要先缩短，主卡片仍保留更多空间。",
+        "activeIds": [
+          "viewport",
+          "card-a",
+          "card-b"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "viewport": "760 px",
+          "container": "2 columns"
+        },
+        "activeEdgeIds": [
+          "viewport-container",
+          "container-cards"
+        ]
+      },
+      {
+        "label": "改单列",
+        "note": "390px 下卡片改为单列，不压缩字号和点击区域。",
+        "activeIds": [
+          "container",
+          "card-a",
+          "card-b"
+        ],
+        "doneIds": [
+          "viewport"
+        ],
+        "mutedIds": [],
+        "values": {
+          "viewport": "390 px",
+          "container": "1 column"
+        },
+        "activeEdgeIds": [
+          "container-cards"
+        ]
+      },
+      {
+        "label": "操作下移",
+        "note": "按钮换行并保持 44px 点击高度，内容仍可顺序阅读。",
+        "activeIds": [
+          "controls"
+        ],
+        "doneIds": [
+          "viewport",
+          "container",
+          "card-a",
+          "card-b"
+        ],
+        "mutedIds": [],
+        "values": {
+          "controls": "纵向 · 44px"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "响应式改变的是信息关系和排列，不是把所有东西一起缩小。",
+    "quiz": {
+      "question": "手机端标题已经挤成四行，第一步应检查什么？",
+      "options": [
+        {
+          "label": "容器与内容在哪个宽度开始失去可读性",
+          "correct": true
+        },
+        {
+          "label": "为每款手机写一个设备判断",
+          "correct": false
+        },
+        {
+          "label": "把全部字号统一缩成 10px",
+          "correct": false
+        }
+      ],
+      "success": "断点应该由内容何时需要重排决定。",
+      "retry": "设备名称不能说明内容是否已经拥挤，先观察布局失效点。"
+    },
+    "prompt": {
+      "title": "检查页面的响应式规则",
+      "text": "请在 360px、768px 和 1280px 三种宽度下检查当前页面，记录最先出现换行异常、横向滚动、点击区过小或层级混乱的位置。根据内容失效点调整容器、网格和操作区，不按设备型号添加规则，并验证键盘焦点与阅读顺序保持一致。"
+    },
+    "sources": [
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+        "label": "MDN · Responsive design",
+        "note": "浏览器行为与常见用法"
+      }
+    ]
+  },
+  {
+    "slug": "form",
+    "lead": "邮箱写错后，页面怎样指出具体问题，同时保留用户已经填好的姓名？",
+    "definition": "表单把标签、输入、约束、错误反馈和提交行为组织在一起，收集一组有明确含义的数据。",
+    "boundary": "浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "一封报名表的校验与提交",
+    "actionLabel": "尝试提交",
+    "actors": [
+      {
+        "id": "name",
+        "label": "姓名",
+        "detail": "顾言",
+        "icon": "user",
+        "group": "输入"
+      },
+      {
+        "id": "email",
+        "label": "邮箱",
+        "detail": "guyan@",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "client-check",
+        "label": "浏览器校验",
+        "detail": "等待提交",
+        "icon": "search",
+        "group": "前端"
+      },
+      {
+        "id": "server-check",
+        "label": "服务端校验",
+        "detail": "尚未收到",
+        "icon": "shield",
+        "group": "服务端"
+      },
+      {
+        "id": "result",
+        "label": "报名结果",
+        "detail": "未提交",
+        "icon": "spark",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "input-client",
+        "from": "email",
+        "to": "client-check",
+        "label": "检查格式"
+      },
+      {
+        "id": "client-server",
+        "from": "client-check",
+        "to": "server-check",
+        "label": "发送数据"
+      },
+      {
+        "id": "server-result",
+        "from": "server-check",
+        "to": "result",
+        "label": "返回结果"
+      }
+    ],
+    "frames": [
+      {
+        "label": "保留输入",
+        "note": "姓名和邮箱各自有标签，用户输入不会因为报错被清空。",
+        "activeIds": [
+          "name",
+          "email"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "server-check",
+          "result"
+        ],
+        "values": {
+          "email": "guyan@"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "前端拦截",
+        "note": "邮箱格式不完整，焦点回到邮箱并显示具体错误。",
+        "activeIds": [
+          "email",
+          "client-check"
+        ],
+        "doneIds": [
+          "name"
+        ],
+        "mutedIds": [
+          "server-check",
+          "result"
+        ],
+        "values": {
+          "email": "请输入完整邮箱",
+          "client-check": "invalid"
+        },
+        "activeEdgeIds": [
+          "input-client"
+        ]
+      },
+      {
+        "label": "修正后提交",
+        "note": "邮箱改为有效格式，浏览器把完整数据发送给服务端。",
+        "activeIds": [
+          "email",
+          "server-check"
+        ],
+        "doneIds": [
+          "name",
+          "client-check"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "email": "guyan@example.com",
+          "server-check": "校验业务规则"
+        },
+        "activeEdgeIds": [
+          "client-server"
+        ]
+      },
+      {
+        "label": "确认成功",
+        "note": "服务端接受数据，页面显示可被读屏识别的成功提示。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "name",
+          "email",
+          "client-check",
+          "server-check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "报名成功"
+        },
+        "activeEdgeIds": [
+          "server-result"
+        ]
+      }
+    ],
+    "insight": "一份好表单既要阻止无效数据，也要帮助用户知道下一步改哪里。",
+    "quiz": {
+      "question": "前端已经验证邮箱格式，服务端还需要再验证吗？",
+      "options": [
+        {
+          "label": "需要，客户端提交的数据不能直接信任",
+          "correct": true
+        },
+        {
+          "label": "不需要，浏览器验证不会被绕过",
+          "correct": false
+        },
+        {
+          "label": "只有输入框有颜色时才需要",
+          "correct": false
+        }
+      ],
+      "success": "服务端校验负责数据安全与业务规则，前端校验主要缩短反馈时间。",
+      "retry": "用户可以绕过页面直接发送请求，因此不能只依赖浏览器。"
+    },
+    "prompt": {
+      "title": "补全表单的输入与错误状态",
+      "text": "请检查当前表单的标签、必填规则、格式限制、提交中状态、字段级错误、整表错误和成功反馈。报错时保留有效输入，把焦点移到第一个需要处理的位置；同时列出服务端必须重复验证的字段和业务规则。"
+    },
+    "sources": [
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation",
+        "label": "MDN · Client-side form validation",
+        "note": "浏览器行为与常见用法"
+      }
+    ]
+  },
+  {
+    "slug": "dom",
+    "lead": "脚本修改标题以后，为什么源 HTML 文件里的文字没有跟着改变？",
+    "definition": "DOM 是浏览器把文档解析成的节点对象树；脚本操作的是内存中的节点、属性和文本。",
+    "boundary": "DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "sceneKind": "tree",
+    "sceneTitle": "标题文字在 DOM 树中的更新位置",
+    "actionLabel": "执行脚本",
+    "actors": [
+      {
+        "id": "document",
+        "label": "document",
+        "detail": "页面根对象",
+        "icon": "file",
+        "group": "根"
+      },
+      {
+        "id": "main",
+        "label": "main",
+        "detail": "正文区域",
+        "icon": "layout",
+        "group": "元素"
+      },
+      {
+        "id": "heading",
+        "label": "h1",
+        "detail": "旧标题",
+        "icon": "code",
+        "group": "元素"
+      },
+      {
+        "id": "text",
+        "label": "Text 节点",
+        "detail": "“旧标题”",
+        "icon": "message",
+        "group": "文本"
+      },
+      {
+        "id": "script",
+        "label": "脚本",
+        "detail": "querySelector + textContent",
+        "icon": "gear",
+        "group": "操作"
+      }
+    ],
+    "edges": [
+      {
+        "id": "document-main",
+        "from": "document",
+        "to": "main",
+        "label": "child"
+      },
+      {
+        "id": "main-heading",
+        "from": "main",
+        "to": "heading",
+        "label": "child"
+      },
+      {
+        "id": "heading-text",
+        "from": "heading",
+        "to": "text",
+        "label": "textContent"
+      },
+      {
+        "id": "script-heading",
+        "from": "script",
+        "to": "heading",
+        "label": "querySelector"
+      }
+    ],
+    "frames": [
+      {
+        "label": "解析文档",
+        "note": "浏览器读取 HTML，创建 document、main、h1 和文本节点。",
+        "activeIds": [
+          "document",
+          "main",
+          "heading",
+          "text"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "script"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "document-main",
+          "main-heading",
+          "heading-text"
+        ]
+      },
+      {
+        "label": "查询标题",
+        "note": "脚本通过选择器拿到 h1 节点引用。",
+        "activeIds": [
+          "script",
+          "heading"
+        ],
+        "doneIds": [
+          "document",
+          "main"
+        ],
+        "mutedIds": [],
+        "values": {
+          "script": "document.querySelector('h1')"
+        },
+        "activeEdgeIds": [
+          "script-heading"
+        ]
+      },
+      {
+        "label": "修改文本",
+        "note": "textContent 替换内存中标题节点的文本。",
+        "activeIds": [
+          "heading",
+          "text"
+        ],
+        "doneIds": [
+          "script"
+        ],
+        "mutedIds": [],
+        "values": {
+          "heading": "新标题",
+          "text": "“新标题”"
+        },
+        "activeEdgeIds": [
+          "heading-text"
+        ]
+      },
+      {
+        "label": "重新呈现",
+        "note": "浏览器把新节点内容画到页面，源文件仍保持原样。",
+        "activeIds": [
+          "document",
+          "heading"
+        ],
+        "doneIds": [
+          "script",
+          "text"
+        ],
+        "mutedIds": [],
+        "values": {
+          "document": "页面已更新",
+          "script": "源 HTML 未改"
+        },
+        "activeEdgeIds": [
+          "document-main",
+          "main-heading"
+        ]
+      }
+    ],
+    "insight": "脚本改的是浏览器当前持有的文档对象，不会自动回写服务器模板或源文件。",
+    "quiz": {
+      "question": "页面上出现两个同名按钮，querySelector 会返回什么？",
+      "options": [
+        {
+          "label": "第一个匹配到的元素",
+          "correct": true
+        },
+        {
+          "label": "自动返回两个元素组成的数组",
+          "correct": false
+        },
+        {
+          "label": "直接修改 HTML 源文件",
+          "correct": false
+        }
+      ],
+      "success": "需要多个结果时应使用 querySelectorAll，并明确遍历范围。",
+      "retry": "查询接口决定返回一个节点还是节点集合，与元素名称无关。"
+    },
+    "prompt": {
+      "title": "检查 DOM 查询与更新",
+      "text": "请标出这段交互查询的 DOM 节点、读取的属性、写入的内容和触发更新的事件。检查选择器是否可能匹配错节点、监听器是否重复绑定、更新后焦点与可访问名称是否仍正确，并说明源 HTML 与运行时 DOM 的差别。"
+    },
+    "sources": [
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",
+        "label": "MDN · DOM scripting introduction",
+        "note": "浏览器行为与常见用法"
+      }
+    ]
+  },
+  {
+    "slug": "api",
+    "lead": "前端要查订单，怎样知道该用哪个地址、传什么参数、会收到什么结果？",
+    "definition": "API 是系统边界上的调用约定，明确操作入口、输入、身份要求、响应结构和失败状态。",
+    "boundary": "API 不是数据库表或某个页面；内部实现可以变化，只要对外约定保持兼容。",
+    "sceneKind": "contract",
+    "sceneTitle": "查询订单前后都要遵守的接口约定",
+    "actionLabel": "发送请求",
+    "actors": [
+      {
+        "id": "client",
+        "label": "订单页",
+        "detail": "需要 order_42",
+        "icon": "browser",
+        "group": "调用方"
+      },
+      {
+        "id": "contract",
+        "label": "接口约定",
+        "detail": "GET /orders/{id}",
+        "icon": "file",
+        "group": "边界"
+      },
+      {
+        "id": "auth",
+        "label": "身份凭据",
+        "detail": "Bearer token",
+        "icon": "key",
+        "group": "边界"
+      },
+      {
+        "id": "server",
+        "label": "订单服务",
+        "detail": "读取并组装结果",
+        "icon": "server",
+        "group": "实现"
+      },
+      {
+        "id": "response",
+        "label": "响应",
+        "detail": "200 / 404 / 401",
+        "icon": "message",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "client-contract",
+        "from": "client",
+        "to": "contract",
+        "label": "按约定调用"
+      },
+      {
+        "id": "contract-server",
+        "from": "contract",
+        "to": "server",
+        "label": "路由请求"
+      },
+      {
+        "id": "server-response",
+        "from": "server",
+        "to": "response",
+        "label": "返回结构"
+      }
+    ],
+    "frames": [
+      {
+        "label": "查阅约定",
+        "note": "调用方先确认路径参数、方法和可能的状态码。",
+        "activeIds": [
+          "client",
+          "contract"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "server",
+          "response"
+        ],
+        "values": {
+          "contract": "GET /orders/order_42"
+        },
+        "activeEdgeIds": [
+          "client-contract"
+        ]
+      },
+      {
+        "label": "附上身份",
+        "note": "请求带上约定要求的认证信息。",
+        "activeIds": [
+          "client",
+          "auth",
+          "contract"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "response"
+        ],
+        "values": {
+          "auth": "Authorization: Bearer …"
+        },
+        "activeEdgeIds": [
+          "client-contract"
+        ]
+      },
+      {
+        "label": "执行实现",
+        "note": "服务内部可以查数据库或其他服务，但不把内部结构暴露给调用方。",
+        "activeIds": [
+          "server"
+        ],
+        "doneIds": [
+          "client",
+          "contract",
+          "auth"
+        ],
+        "mutedIds": [
+          "response"
+        ],
+        "values": {
+          "server": "查找 order_42"
+        },
+        "activeEdgeIds": [
+          "contract-server"
+        ]
+      },
+      {
+        "label": "返回结果",
+        "note": "订单存在时返回约定结构；不存在时明确返回 404。",
+        "activeIds": [
+          "response"
+        ],
+        "doneIds": [
+          "client",
+          "contract",
+          "auth",
+          "server"
+        ],
+        "mutedIds": [],
+        "values": {
+          "response": "200 · { id, status, total }"
+        },
+        "activeEdgeIds": [
+          "server-response"
+        ]
+      }
+    ],
+    "insight": "API 的稳定点是边界约定，不是服务内部永远采用同一种实现。",
+    "quiz": {
+      "question": "数据库把字段 order_amount 改为 total，必须要求所有前端同步改名吗？",
+      "options": [
+        {
+          "label": "不一定，API 可以继续返回兼容的 total 字段",
+          "correct": true
+        },
+        {
+          "label": "必须，API 就是数据库表的直接映射",
+          "correct": false
+        },
+        {
+          "label": "只要状态码是 200 就不需要字段",
+          "correct": false
+        }
+      ],
+      "success": "接口层可以隔离内部数据模型变化，避免调用方与数据库结构绑死。",
+      "retry": "先区分内部存储结构与公开响应约定。"
+    },
+    "prompt": {
+      "title": "审查一个 API 约定",
+      "text": "请列出这个接口的调用者、方法、路径、参数、认证方式、成功响应、可预期错误和幂等要求。检查响应是否泄露内部表结构、字段是否有稳定含义，并给出一个兼容已有调用方的最小修改方案。"
+    },
+    "sources": [
+      {
+        "url": "https://spec.openapis.org/oas/latest.html",
+        "label": "OpenAPI Specification",
+        "note": "接口描述规范"
+      }
+    ]
+  },
+  {
+    "slug": "database",
+    "lead": "订单已经提示保存成功，为什么服务器重启后仍然能把它查出来？",
+    "definition": "数据库把数据写入受约束的持久结构，并协调查询、并发修改、恢复和访问权限。",
+    "boundary": "数据库不是任意文件目录，也不是缓存；表结构、约束、事务和备份需要共同保证数据可信。",
+    "sceneKind": "timeline",
+    "sceneTitle": "一条订单从事务到持久记录",
+    "actionLabel": "提交事务",
+    "actors": [
+      {
+        "id": "app",
+        "label": "订单服务",
+        "detail": "创建 order_42",
+        "icon": "server",
+        "group": "应用"
+      },
+      {
+        "id": "transaction",
+        "label": "事务",
+        "detail": "BEGIN",
+        "icon": "shield",
+        "group": "一致性"
+      },
+      {
+        "id": "constraint",
+        "label": "约束检查",
+        "detail": "用户与金额有效",
+        "icon": "search",
+        "group": "规则"
+      },
+      {
+        "id": "table",
+        "label": "orders 表",
+        "detail": "尚无 order_42",
+        "icon": "database",
+        "group": "数据"
+      },
+      {
+        "id": "log",
+        "label": "持久日志",
+        "detail": "等待写入",
+        "icon": "file",
+        "group": "恢复"
+      }
+    ],
+    "edges": [
+      {
+        "id": "app-tx",
+        "from": "app",
+        "to": "transaction",
+        "label": "开始写入"
+      },
+      {
+        "id": "tx-constraint",
+        "from": "transaction",
+        "to": "constraint",
+        "label": "验证约束"
+      },
+      {
+        "id": "constraint-table",
+        "from": "constraint",
+        "to": "table",
+        "label": "写入记录"
+      },
+      {
+        "id": "table-log",
+        "from": "table",
+        "to": "log",
+        "label": "记录变更"
+      }
+    ],
+    "frames": [
+      {
+        "label": "开始事务",
+        "note": "订单服务把相关写入放进同一事务。",
+        "activeIds": [
+          "app",
+          "transaction"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "table",
+          "log"
+        ],
+        "values": {
+          "transaction": "BEGIN"
+        },
+        "activeEdgeIds": [
+          "app-tx"
+        ]
+      },
+      {
+        "label": "检查约束",
+        "note": "外键和金额规则不满足时，整次写入会被拒绝。",
+        "activeIds": [
+          "constraint"
+        ],
+        "doneIds": [
+          "app"
+        ],
+        "mutedIds": [
+          "table",
+          "log"
+        ],
+        "values": {
+          "constraint": "user 存在 · total ≥ 0"
+        },
+        "activeEdgeIds": [
+          "tx-constraint"
+        ]
+      },
+      {
+        "label": "写入记录",
+        "note": "检查通过后，订单行进入表结构。",
+        "activeIds": [
+          "table"
+        ],
+        "doneIds": [
+          "transaction",
+          "constraint"
+        ],
+        "mutedIds": [
+          "log"
+        ],
+        "values": {
+          "table": "order_42 · 129 元"
+        },
+        "activeEdgeIds": [
+          "constraint-table"
+        ]
+      },
+      {
+        "label": "提交落盘",
+        "note": "事务提交并留下恢复所需记录，重启后仍可重建已提交状态。",
+        "activeIds": [
+          "transaction",
+          "log"
+        ],
+        "doneIds": [
+          "app",
+          "constraint",
+          "table"
+        ],
+        "mutedIds": [],
+        "values": {
+          "transaction": "COMMIT",
+          "log": "已记录 order_42"
+        },
+        "activeEdgeIds": [
+          "table-log"
+        ]
+      }
+    ],
+    "insight": "持久化只是结果，约束与事务决定这条数据能否被可信地写进去。",
+    "quiz": {
+      "question": "创建订单和扣减库存必须同时成功，应该把它们放在哪里？",
+      "options": [
+        {
+          "label": "同一事务边界内",
+          "correct": true
+        },
+        {
+          "label": "两个互不检查的缓存键里",
+          "correct": false
+        },
+        {
+          "label": "只放到页面本地状态里",
+          "correct": false
+        }
+      ],
+      "success": "同一事务可以在其中一步失败时回滚相关修改。",
+      "retry": "这个问题关注多个写入的一致性，不是页面展示。"
+    },
+    "prompt": {
+      "title": "检查一张业务表的结构",
+      "text": "请根据业务规则检查这张表的主键、非空约束、唯一约束、外键、索引和事务边界。给出三条会被约束拒绝的示例数据，并说明备份恢复和最小访问权限如何验证。"
+    },
+    "sources": [
+      {
+        "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+        "label": "PostgreSQL · Transactions",
+        "note": "数据库行为与约束"
+      },
+      {
+        "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+        "label": "PostgreSQL · Constraints",
+        "note": "数据库行为与约束"
+      }
+    ]
+  },
+  {
+    "slug": "auth",
+    "lead": "账号密码校验通过后，系统凭什么认出后续请求仍然来自这个用户？",
+    "definition": "认证验证主体身份，并通过会话或令牌把后续请求关联到已经确认的用户。",
+    "boundary": "认证只回答“你是谁”；能否查看订单、修改成员等操作仍要单独做授权判断。",
+    "sceneKind": "route",
+    "sceneTitle": "登录凭据如何变成后续请求的身份",
+    "actionLabel": "继续认证",
+    "actors": [
+      {
+        "id": "user",
+        "label": "登录者",
+        "detail": "提交账号与密码",
+        "icon": "user",
+        "group": "主体"
+      },
+      {
+        "id": "login",
+        "label": "认证端点",
+        "detail": "校验凭据",
+        "icon": "key",
+        "group": "认证"
+      },
+      {
+        "id": "session",
+        "label": "会话",
+        "detail": "尚未建立",
+        "icon": "memory",
+        "group": "身份"
+      },
+      {
+        "id": "request",
+        "label": "后续请求",
+        "detail": "GET /me",
+        "icon": "network",
+        "group": "访问"
+      },
+      {
+        "id": "resource",
+        "label": "个人资料",
+        "detail": "等待身份确认",
+        "icon": "file",
+        "group": "资源"
+      }
+    ],
+    "edges": [
+      {
+        "id": "user-login",
+        "from": "user",
+        "to": "login",
+        "label": "提交凭据"
+      },
+      {
+        "id": "login-session",
+        "from": "login",
+        "to": "session",
+        "label": "建立身份"
+      },
+      {
+        "id": "session-request",
+        "from": "session",
+        "to": "request",
+        "label": "携带会话"
+      },
+      {
+        "id": "request-resource",
+        "from": "request",
+        "to": "resource",
+        "label": "读取本人资料"
+      }
+    ],
+    "frames": [
+      {
+        "label": "提交凭据",
+        "note": "密码通过受保护连接送到认证端点。",
+        "activeIds": [
+          "user",
+          "login"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "session",
+          "request",
+          "resource"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "user-login"
+        ]
+      },
+      {
+        "label": "核验身份",
+        "note": "服务端校验密码摘要和账户状态，不把原密码写入会话。",
+        "activeIds": [
+          "login"
+        ],
+        "doneIds": [
+          "user"
+        ],
+        "mutedIds": [
+          "request",
+          "resource"
+        ],
+        "values": {
+          "login": "凭据有效"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "建立会话",
+        "note": "登录成功后生成随机会话标识，并关联用户 ID。",
+        "activeIds": [
+          "session"
+        ],
+        "doneIds": [
+          "user",
+          "login"
+        ],
+        "mutedIds": [
+          "request",
+          "resource"
+        ],
+        "values": {
+          "session": "session → user_17"
+        },
+        "activeEdgeIds": [
+          "login-session"
+        ]
+      },
+      {
+        "label": "识别请求",
+        "note": "后续请求携带会话标识，服务端恢复当前用户身份。",
+        "activeIds": [
+          "session",
+          "request",
+          "resource"
+        ],
+        "doneIds": [
+          "login"
+        ],
+        "mutedIds": [],
+        "values": {
+          "request": "currentUser = user_17",
+          "resource": "返回本人资料"
+        },
+        "activeEdgeIds": [
+          "session-request",
+          "request-resource"
+        ]
+      }
+    ],
+    "insight": "登录只建立身份连续性，访问每项资源时仍要检查这个身份是否有权限。",
+    "quiz": {
+      "question": "用户已经登录，是否可以直接读取任意 orderId？",
+      "options": [
+        {
+          "label": "不可以，还要检查订单是否属于该用户或其角色可访问",
+          "correct": true
+        },
+        {
+          "label": "可以，认证成功等于拥有全部权限",
+          "correct": false
+        },
+        {
+          "label": "只要把按钮隐藏就可以",
+          "correct": false
+        }
+      ],
+      "success": "认证和授权必须在服务端分别成立。",
+      "retry": "隐藏界面不能阻止用户直接构造请求。"
+    },
+    "prompt": {
+      "title": "区分认证与授权检查",
+      "text": "请画出登录、建立会话、读取当前用户和访问业务资源四个节点。分别标明凭据校验、会话失效、权限判断和审计记录发生在哪里，并检查未登录、会话过期、跨用户访问与撤销权限四种结果。"
+    },
+    "sources": [
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+        "label": "OWASP · Authentication Cheat Sheet",
+        "note": "攻击面与防护检查"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+        "label": "OWASP · Authorization Cheat Sheet",
+        "note": "攻击面与防护检查"
+      }
+    ]
+  },
+  {
+    "slug": "cache",
+    "lead": "商品已经改价，为什么部分用户仍然看到上一版价格？",
+    "definition": "缓存把数据副本放在更快的位置，读取时按键和有效性判断能否复用，未命中才访问数据源。",
+    "boundary": "缓存不是唯一数据来源；必须明确允许旧值存在多久，以及源数据变化后如何失效。",
+    "sceneKind": "branch",
+    "sceneTitle": "商品查询的命中、回源与失效",
+    "actionLabel": "再次查询",
+    "actors": [
+      {
+        "id": "client",
+        "label": "商品页",
+        "detail": "请求 sku-42",
+        "icon": "browser",
+        "group": "请求"
+      },
+      {
+        "id": "cache",
+        "label": "缓存",
+        "detail": "key: sku-42",
+        "icon": "memory",
+        "group": "快速路径"
+      },
+      {
+        "id": "database",
+        "label": "数据库",
+        "detail": "价格 129 元",
+        "icon": "database",
+        "group": "数据源"
+      },
+      {
+        "id": "invalidator",
+        "label": "失效动作",
+        "detail": "价格更新事件",
+        "icon": "gear",
+        "group": "一致性"
+      }
+    ],
+    "edges": [
+      {
+        "id": "client-cache",
+        "from": "client",
+        "to": "cache",
+        "label": "先查副本"
+      },
+      {
+        "id": "cache-db",
+        "from": "cache",
+        "to": "database",
+        "label": "未命中回源"
+      },
+      {
+        "id": "db-cache",
+        "from": "database",
+        "to": "cache",
+        "label": "写回副本"
+      },
+      {
+        "id": "invalidator-cache",
+        "from": "invalidator",
+        "to": "cache",
+        "label": "删除旧值"
+      }
+    ],
+    "frames": [
+      {
+        "label": "缓存命中",
+        "note": "键存在且仍有效，请求在缓存层结束。",
+        "activeIds": [
+          "client",
+          "cache"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "database",
+          "invalidator"
+        ],
+        "values": {
+          "cache": "HIT · 129 元"
+        },
+        "activeEdgeIds": [
+          "client-cache"
+        ],
+        "metric": {
+          "label": "示例响应时间",
+          "value": "8 ms"
+        }
+      },
+      {
+        "label": "副本过期",
+        "note": "有效期结束，缓存不再返回旧副本。",
+        "activeIds": [
+          "cache"
+        ],
+        "doneIds": [
+          "client"
+        ],
+        "mutedIds": [
+          "invalidator"
+        ],
+        "values": {
+          "cache": "MISS"
+        },
+        "activeEdgeIds": [
+          "client-cache"
+        ]
+      },
+      {
+        "label": "回源读取",
+        "note": "未命中后访问数据库，取得当前价格。",
+        "activeIds": [
+          "cache",
+          "database"
+        ],
+        "doneIds": [
+          "client"
+        ],
+        "mutedIds": [
+          "invalidator"
+        ],
+        "values": {
+          "database": "129 元"
+        },
+        "activeEdgeIds": [
+          "cache-db"
+        ],
+        "metric": {
+          "label": "示例响应时间",
+          "value": "82 ms"
+        }
+      },
+      {
+        "label": "写回副本",
+        "note": "结果写入缓存，下一次读取可直接命中。",
+        "activeIds": [
+          "database",
+          "cache"
+        ],
+        "doneIds": [
+          "client"
+        ],
+        "mutedIds": [
+          "invalidator"
+        ],
+        "values": {
+          "cache": "HIT · TTL 5 min"
+        },
+        "activeEdgeIds": [
+          "db-cache"
+        ]
+      },
+      {
+        "label": "主动失效",
+        "note": "价格改为 99 元时，更新事件删除旧缓存键。",
+        "activeIds": [
+          "invalidator",
+          "cache",
+          "database"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "client"
+        ],
+        "values": {
+          "database": "99 元",
+          "cache": "已删除 sku-42"
+        },
+        "activeEdgeIds": [
+          "invalidator-cache"
+        ]
+      }
+    ],
+    "insight": "命中提高读取速度，失效规则决定旧数据会停留多久。",
+    "quiz": {
+      "question": "价格更新后最需要同步处理什么？",
+      "options": [
+        {
+          "label": "更新或删除对应缓存键",
+          "correct": true
+        },
+        {
+          "label": "增加页面加载动画",
+          "correct": false
+        },
+        {
+          "label": "把缓存改成唯一数据源",
+          "correct": false
+        }
+      ],
+      "success": "源数据变化与缓存失效对齐，才能控制旧值存在的时间。",
+      "retry": "问题在副本何时失效，不在页面外观。"
+    },
+    "prompt": {
+      "title": "设计一项数据的缓存策略",
+      "text": "请列出这项数据的权威来源、缓存键、写入时机、有效期、主动失效动作和允许的最大陈旧时间。补充未命中、热点键、缓存不可用和并发回源的处理，并说明如何监测命中率与旧数据。"
+    },
+    "sources": [
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+        "label": "RFC 9111 · HTTP Caching",
+        "note": "协议定义与报文语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+        "label": "MDN · HTTP caching",
+        "note": "浏览器行为与常见用法"
+      }
+    ]
+  },
+  {
+    "slug": "queue",
+    "lead": "一分钟突然来一万封邮件任务，怎样避免邮件服务同时处理到崩溃？",
+    "definition": "队列在生产者与消费者之间暂存消息，消费者按可承受的并发读取、确认、重试或转入死信。",
+    "boundary": "队列不会自动保证业务只执行一次；确认丢失或网络重试仍可能产生重复处理。",
+    "sceneKind": "queue",
+    "sceneTitle": "突发邮件任务如何被限速处理",
+    "actionLabel": "消费下一批",
+    "actors": [
+      {
+        "id": "producer",
+        "label": "活动系统",
+        "detail": "瞬间提交 10,000 项",
+        "icon": "server",
+        "group": "生产者"
+      },
+      {
+        "id": "job-a",
+        "label": "消息 001",
+        "detail": "等待发送",
+        "icon": "message",
+        "group": "队列"
+      },
+      {
+        "id": "job-b",
+        "label": "消息 002",
+        "detail": "等待发送",
+        "icon": "message",
+        "group": "队列"
+      },
+      {
+        "id": "consumer",
+        "label": "邮件消费者",
+        "detail": "并发 20",
+        "icon": "gear",
+        "group": "消费者"
+      },
+      {
+        "id": "retry",
+        "label": "重试队列",
+        "detail": "暂时失败",
+        "icon": "clock",
+        "group": "恢复"
+      },
+      {
+        "id": "dead",
+        "label": "死信",
+        "detail": "超过重试上限",
+        "icon": "file",
+        "group": "人工处理"
+      }
+    ],
+    "edges": [
+      {
+        "id": "producer-queue",
+        "from": "producer",
+        "to": "job-a",
+        "label": "写入消息"
+      },
+      {
+        "id": "queue-consumer",
+        "from": "job-a",
+        "to": "consumer",
+        "label": "按并发读取"
+      },
+      {
+        "id": "consumer-retry",
+        "from": "consumer",
+        "to": "retry",
+        "label": "暂时失败"
+      },
+      {
+        "id": "retry-consumer",
+        "from": "retry",
+        "to": "consumer",
+        "label": "延迟重试"
+      },
+      {
+        "id": "retry-dead",
+        "from": "retry",
+        "to": "dead",
+        "label": "超过上限"
+      }
+    ],
+    "frames": [
+      {
+        "label": "接住峰值",
+        "note": "生产者先把任务写入队列，不等待每封邮件发送完成。",
+        "activeIds": [
+          "producer",
+          "job-a",
+          "job-b"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "consumer",
+          "retry",
+          "dead"
+        ],
+        "values": {
+          "producer": "10,000 jobs",
+          "job-a": "ready",
+          "job-b": "ready"
+        },
+        "activeEdgeIds": [
+          "producer-queue"
+        ],
+        "metric": {
+          "label": "待处理",
+          "value": "10,000"
+        }
+      },
+      {
+        "label": "限制并发",
+        "note": "消费者一次只取 20 条，让邮件服务保持在可承受范围。",
+        "activeIds": [
+          "job-a",
+          "consumer"
+        ],
+        "doneIds": [
+          "producer"
+        ],
+        "mutedIds": [
+          "retry",
+          "dead"
+        ],
+        "values": {
+          "consumer": "20 in flight"
+        },
+        "activeEdgeIds": [
+          "queue-consumer"
+        ],
+        "metric": {
+          "label": "待处理",
+          "value": "9,980"
+        }
+      },
+      {
+        "label": "确认成功",
+        "note": "发送成功后确认消息，队列才把它移除。",
+        "activeIds": [
+          "consumer",
+          "job-a"
+        ],
+        "doneIds": [
+          "producer",
+          "job-a"
+        ],
+        "mutedIds": [
+          "retry",
+          "dead"
+        ],
+        "values": {
+          "job-a": "acknowledged"
+        },
+        "activeEdgeIds": [
+          "queue-consumer"
+        ]
+      },
+      {
+        "label": "延迟重试",
+        "note": "临时失败的消息等待一段时间再交给消费者。",
+        "activeIds": [
+          "consumer",
+          "retry"
+        ],
+        "doneIds": [
+          "producer"
+        ],
+        "mutedIds": [
+          "dead"
+        ],
+        "values": {
+          "retry": "retry #2 · 60 s"
+        },
+        "activeEdgeIds": [
+          "consumer-retry",
+          "retry-consumer"
+        ]
+      },
+      {
+        "label": "进入死信",
+        "note": "超过重试上限的消息单独保存，避免无限循环拖住队列。",
+        "activeIds": [
+          "retry",
+          "dead"
+        ],
+        "doneIds": [
+          "producer"
+        ],
+        "mutedIds": [
+          "job-a",
+          "job-b"
+        ],
+        "values": {
+          "dead": "message 947 · inspect"
+        },
+        "activeEdgeIds": [
+          "retry-dead"
+        ]
+      }
+    ],
+    "insight": "队列把到达速度与处理速度分开，但可靠性仍依赖确认、幂等和失败出口。",
+    "quiz": {
+      "question": "消费者发完邮件后、确认消息前断线，消息可能再次出现，应该怎样处理？",
+      "options": [
+        {
+          "label": "用业务幂等键识别并跳过重复发送",
+          "correct": true
+        },
+        {
+          "label": "假设队列永远只投递一次",
+          "correct": false
+        },
+        {
+          "label": "把重试次数改成无限",
+          "correct": false
+        }
+      ],
+      "success": "确认与业务结果不是同一个原子动作，消费者要能安全处理重复消息。",
+      "retry": "队列重投是正常恢复方式，不能把“可能重复”当作异常消失。"
+    },
+    "prompt": {
+      "title": "检查异步任务队列设计",
+      "text": "请标出生产者、消息内容、消费者并发、确认时机、重试间隔、重试上限、死信处理和业务幂等键。用消费者执行成功但确认丢失的场景验证重复消息不会造成重复扣款、重复发送或状态回退。"
+    },
+    "sources": [
+      {
+        "url": "https://www.rabbitmq.com/tutorials/tutorial-two-javascript",
+        "label": "RabbitMQ · Work Queues",
+        "note": "原始规范与实现说明"
+      }
+    ]
+  },
+  {
+    "slug": "rest",
+    "lead": "创建、查询、改状态和删除订单时，路径与 HTTP 方法怎样保持一致？",
+    "definition": "REST 用资源标识、统一接口和无状态请求组织系统交互；HTTP API 常以 URL 表示资源，以方法表达操作语义。",
+    "boundary": "REST 是架构风格，不是固定接口模板；复杂业务动作不必硬塞成简单的数据库增删改查。",
+    "sceneKind": "matrix",
+    "sceneTitle": "同一个订单资源对应的不同操作",
+    "actionLabel": "切换操作",
+    "actors": [
+      {
+        "id": "resource",
+        "label": "/orders/42",
+        "detail": "订单资源",
+        "icon": "file",
+        "group": "资源"
+      },
+      {
+        "id": "get",
+        "label": "GET",
+        "detail": "读取当前表示",
+        "icon": "search",
+        "group": "安全读取"
+      },
+      {
+        "id": "post",
+        "label": "POST /orders",
+        "detail": "创建新订单",
+        "icon": "spark",
+        "group": "创建"
+      },
+      {
+        "id": "patch",
+        "label": "PATCH",
+        "detail": "修改部分字段",
+        "icon": "gear",
+        "group": "更新"
+      },
+      {
+        "id": "delete",
+        "label": "DELETE",
+        "detail": "请求删除资源",
+        "icon": "shield",
+        "group": "删除"
+      }
+    ],
+    "edges": [
+      {
+        "id": "get-resource",
+        "from": "get",
+        "to": "resource",
+        "label": "读取"
+      },
+      {
+        "id": "post-resource",
+        "from": "post",
+        "to": "resource",
+        "label": "创建"
+      },
+      {
+        "id": "patch-resource",
+        "from": "patch",
+        "to": "resource",
+        "label": "更新"
+      },
+      {
+        "id": "delete-resource",
+        "from": "delete",
+        "to": "resource",
+        "label": "删除"
+      }
+    ],
+    "frames": [
+      {
+        "label": "读取订单",
+        "note": "GET 获取订单当前表示，不应产生业务修改。",
+        "activeIds": [
+          "get",
+          "resource"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "post",
+          "patch",
+          "delete"
+        ],
+        "values": {
+          "resource": "200 · status: paid"
+        },
+        "activeEdgeIds": [
+          "get-resource"
+        ]
+      },
+      {
+        "label": "创建订单",
+        "note": "POST 向订单集合提交新资源，成功后返回新标识。",
+        "activeIds": [
+          "post",
+          "resource"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "get",
+          "patch",
+          "delete"
+        ],
+        "values": {
+          "resource": "201 · /orders/43"
+        },
+        "activeEdgeIds": [
+          "post-resource"
+        ]
+      },
+      {
+        "label": "修改状态",
+        "note": "PATCH 只提交允许变更的字段，并验证状态转换。",
+        "activeIds": [
+          "patch",
+          "resource"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "get",
+          "post",
+          "delete"
+        ],
+        "values": {
+          "resource": "status: shipped"
+        },
+        "activeEdgeIds": [
+          "patch-resource"
+        ]
+      },
+      {
+        "label": "删除资源",
+        "note": "DELETE 表达删除意图，是否允许仍由业务规则决定。",
+        "activeIds": [
+          "delete",
+          "resource"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "get",
+          "post",
+          "patch"
+        ],
+        "values": {
+          "resource": "204 · no content"
+        },
+        "activeEdgeIds": [
+          "delete-resource"
+        ]
+      }
+    ],
+    "insight": "资源与方法提供一致语义，状态码和响应结构负责把结果说清楚。",
+    "quiz": {
+      "question": "GET /orders/42 被调用时顺便把浏览次数加一，是否仍是安全方法？",
+      "options": [
+        {
+          "label": "不是，客户端可观察的业务状态被修改了",
+          "correct": true
+        },
+        {
+          "label": "是，只要返回 200 就算安全",
+          "correct": false
+        },
+        {
+          "label": "是，因为 URL 没有变化",
+          "correct": false
+        }
+      ],
+      "success": "安全方法的关键是调用者不请求改变资源状态。",
+      "retry": "方法语义由实际副作用决定，不由路径长相决定。"
+    },
+    "prompt": {
+      "title": "整理一组资源接口",
+      "text": "请把这组业务操作整理为资源、方法、路径、请求体、成功状态码和失败状态码。检查 GET 是否存在业务副作用、PATCH 是否限制可改字段、重复请求是否安全，以及无法自然映射的业务动作是否需要独立子资源或动作端点。"
+    },
+    "sources": [
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "协议定义与报文语义"
+      },
+      {
+        "url": "https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+        "label": "Fielding · REST architectural style",
+        "note": "原始规范与实现说明"
+      }
+    ]
+  },
+  {
+    "slug": "webhook",
+    "lead": "支付平台通知“支付成功”时，订单系统怎样确认消息可信、重复收到也不会重复发货？",
+    "definition": "Webhook 在事件发生后向登记地址发送 HTTP 请求；接收方验证来源、记录事件并按幂等规则更新状态。",
+    "boundary": "Webhook 不是可靠的单次回调，通知可能延迟、重复、乱序或失败，接收方需要补偿机制。",
+    "sceneKind": "loop",
+    "sceneTitle": "一条支付通知从签名验证到幂等处理",
+    "actionLabel": "处理通知",
+    "actors": [
+      {
+        "id": "payment",
+        "label": "支付平台",
+        "detail": "event evt_902",
+        "icon": "cloud",
+        "group": "发送方"
+      },
+      {
+        "id": "endpoint",
+        "label": "Webhook 端点",
+        "detail": "接收原始请求体",
+        "icon": "network",
+        "group": "入口"
+      },
+      {
+        "id": "signature",
+        "label": "签名验证",
+        "detail": "时间戳 + 签名",
+        "icon": "shield",
+        "group": "可信性"
+      },
+      {
+        "id": "event-store",
+        "label": "事件记录",
+        "detail": "按 event_id 去重",
+        "icon": "database",
+        "group": "幂等"
+      },
+      {
+        "id": "order",
+        "label": "订单",
+        "detail": "待支付",
+        "icon": "file",
+        "group": "业务"
+      },
+      {
+        "id": "retry",
+        "label": "重试",
+        "detail": "等待确认",
+        "icon": "clock",
+        "group": "恢复"
+      }
+    ],
+    "edges": [
+      {
+        "id": "payment-endpoint",
+        "from": "payment",
+        "to": "endpoint",
+        "label": "POST 通知"
+      },
+      {
+        "id": "endpoint-signature",
+        "from": "endpoint",
+        "to": "signature",
+        "label": "验证来源"
+      },
+      {
+        "id": "signature-store",
+        "from": "signature",
+        "to": "event-store",
+        "label": "记录事件"
+      },
+      {
+        "id": "store-order",
+        "from": "event-store",
+        "to": "order",
+        "label": "更新一次"
+      },
+      {
+        "id": "retry-endpoint",
+        "from": "retry",
+        "to": "endpoint",
+        "label": "重复投递"
+      }
+    ],
+    "frames": [
+      {
+        "label": "收到通知",
+        "note": "端点保留原始请求体和签名头，不先按业务字段执行。",
+        "activeIds": [
+          "payment",
+          "endpoint"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "event-store",
+          "order",
+          "retry"
+        ],
+        "values": {
+          "endpoint": "evt_902 · payment.succeeded"
+        },
+        "activeEdgeIds": [
+          "payment-endpoint"
+        ]
+      },
+      {
+        "label": "验证签名",
+        "note": "使用平台密钥和时间戳检查请求确实来自支付平台。",
+        "activeIds": [
+          "endpoint",
+          "signature"
+        ],
+        "doneIds": [
+          "payment"
+        ],
+        "mutedIds": [
+          "order",
+          "retry"
+        ],
+        "values": {
+          "signature": "valid"
+        },
+        "activeEdgeIds": [
+          "endpoint-signature"
+        ]
+      },
+      {
+        "label": "登记事件",
+        "note": "用 event_id 写入唯一记录，第一次处理才能继续。",
+        "activeIds": [
+          "signature",
+          "event-store"
+        ],
+        "doneIds": [
+          "payment",
+          "endpoint"
+        ],
+        "mutedIds": [
+          "order",
+          "retry"
+        ],
+        "values": {
+          "event-store": "evt_902 · new"
+        },
+        "activeEdgeIds": [
+          "signature-store"
+        ]
+      },
+      {
+        "label": "更新订单",
+        "note": "订单从待支付进入已支付，处理结果与事件 ID 关联。",
+        "activeIds": [
+          "event-store",
+          "order"
+        ],
+        "doneIds": [
+          "signature"
+        ],
+        "mutedIds": [
+          "retry"
+        ],
+        "values": {
+          "order": "paid"
+        },
+        "activeEdgeIds": [
+          "store-order"
+        ]
+      },
+      {
+        "label": "重复到达",
+        "note": "平台未及时收到确认而重试，事件记录识别重复并直接返回成功。",
+        "activeIds": [
+          "retry",
+          "endpoint",
+          "event-store"
+        ],
+        "doneIds": [
+          "order"
+        ],
+        "mutedIds": [],
+        "values": {
+          "event-store": "evt_902 · duplicate",
+          "order": "仍为 paid"
+        },
+        "activeEdgeIds": [
+          "retry-endpoint",
+          "endpoint-signature",
+          "signature-store"
+        ]
+      }
+    ],
+    "insight": "Webhook 的可靠性来自签名验证、事件去重和可重试处理，不来自“只通知一次”的假设。",
+    "quiz": {
+      "question": "同一支付事件第二次到达，接收方应该怎样做？",
+      "options": [
+        {
+          "label": "识别 event_id 已处理并安全返回",
+          "correct": true
+        },
+        {
+          "label": "再次扣款或发货",
+          "correct": false
+        },
+        {
+          "label": "忽略所有后续 Webhook",
+          "correct": false
+        }
+      ],
+      "success": "幂等处理允许发送方安全重试，同时避免重复业务结果。",
+      "retry": "重试本身不是恶意请求，关键是同一事件不能重复产生副作用。"
+    },
+    "prompt": {
+      "title": "补全 Webhook 接收流程",
+      "text": "请检查这个 Webhook 的签名验证、时间戳容忍、事件 ID 去重、状态转换、快速确认、异步处理、重试和补偿查询。分别演练伪造签名、重复事件、乱序事件、处理超时和接收方停机五种情况。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.stripe.com/webhooks",
+        "label": "Stripe · Webhooks",
+        "note": "原始规范与实现说明"
+      }
+    ]
+  },
+  {
+    "slug": "llm",
+    "lead": "同一句问题多问几次，模型为什么会写出措辞不同、甚至结论不同的回答？",
+    "definition": "大语言模型根据当前输入和已学参数，为下一个 Token 计算概率，再把选出的 Token 继续放回序列生成后文。",
+    "boundary": "概率生成不等于事实核验；模型可能流畅地生成错误内容，关键任务需要资料、工具和评测约束。",
+    "sceneKind": "spectrum",
+    "sceneTitle": "一句回答在候选 Token 中逐步生成",
+    "actionLabel": "生成下一个",
+    "actors": [
+      {
+        "id": "input",
+        "label": "输入",
+        "detail": "北京是中国的",
+        "icon": "message",
+        "group": "上下文"
+      },
+      {
+        "id": "capital",
+        "label": "“首都”",
+        "detail": "概率 0.72",
+        "icon": "spark",
+        "group": "候选"
+      },
+      {
+        "id": "city",
+        "label": "“城市”",
+        "detail": "概率 0.16",
+        "icon": "spark",
+        "group": "候选"
+      },
+      {
+        "id": "center",
+        "label": "“中心”",
+        "detail": "概率 0.07",
+        "icon": "spark",
+        "group": "候选"
+      },
+      {
+        "id": "sample",
+        "label": "采样结果",
+        "detail": "尚未选择",
+        "icon": "brain",
+        "group": "生成"
+      },
+      {
+        "id": "sequence",
+        "label": "输出序列",
+        "detail": "北京是中国的…",
+        "icon": "file",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "input-candidates",
+        "from": "input",
+        "to": "capital",
+        "label": "计算概率"
+      },
+      {
+        "id": "candidate-sample",
+        "from": "capital",
+        "to": "sample",
+        "label": "选择 Token"
+      },
+      {
+        "id": "sample-sequence",
+        "from": "sample",
+        "to": "sequence",
+        "label": "追加序列"
+      },
+      {
+        "id": "sequence-input",
+        "from": "sequence",
+        "to": "input",
+        "label": "进入下一轮"
+      }
+    ],
+    "frames": [
+      {
+        "label": "读取上下文",
+        "note": "模型把已有文字转换为内部表示，准备预测下一个 Token。",
+        "activeIds": [
+          "input"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "capital",
+          "city",
+          "center",
+          "sample",
+          "sequence"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "形成分布",
+        "note": "多个候选都有非零概率，最高概率不等于唯一可能。",
+        "activeIds": [
+          "capital",
+          "city",
+          "center"
+        ],
+        "doneIds": [
+          "input"
+        ],
+        "mutedIds": [
+          "sample",
+          "sequence"
+        ],
+        "values": {
+          "capital": "0.72",
+          "city": "0.16",
+          "center": "0.07"
+        },
+        "activeEdgeIds": [
+          "input-candidates"
+        ]
+      },
+      {
+        "label": "选择 Token",
+        "note": "采样参数会影响从概率分布中选择哪一个候选。",
+        "activeIds": [
+          "capital",
+          "sample"
+        ],
+        "doneIds": [
+          "input"
+        ],
+        "mutedIds": [
+          "city",
+          "center",
+          "sequence"
+        ],
+        "values": {
+          "sample": "首都"
+        },
+        "activeEdgeIds": [
+          "candidate-sample"
+        ]
+      },
+      {
+        "label": "追加输出",
+        "note": "选中的 Token 加入序列，成为下一轮预测的一部分。",
+        "activeIds": [
+          "sample",
+          "sequence"
+        ],
+        "doneIds": [
+          "input",
+          "capital"
+        ],
+        "mutedIds": [
+          "city",
+          "center"
+        ],
+        "values": {
+          "sequence": "北京是中国的首都"
+        },
+        "activeEdgeIds": [
+          "sample-sequence"
+        ]
+      },
+      {
+        "label": "继续预测",
+        "note": "新序列再次进入模型，直到遇到停止条件。",
+        "activeIds": [
+          "sequence",
+          "input"
+        ],
+        "doneIds": [
+          "sample"
+        ],
+        "mutedIds": [
+          "city",
+          "center"
+        ],
+        "values": {
+          "input": "…首都 [next]"
+        },
+        "activeEdgeIds": [
+          "sequence-input"
+        ]
+      }
+    ],
+    "insight": "模型在每一步选择后续 Token，因此输出可以变化，也可能把不确定内容写得很确定。",
+    "quiz": {
+      "question": "模型把一段不存在的政策写得很完整，最合理的判断是什么？",
+      "options": [
+        {
+          "label": "流畅度不能证明事实，需要回到来源核验",
+          "correct": true
+        },
+        {
+          "label": "文字越长越可靠",
+          "correct": false
+        },
+        {
+          "label": "同样问第二遍就一定正确",
+          "correct": false
+        }
+      ],
+      "success": "生成质量和事实正确性是两项不同指标。",
+      "retry": "概率模型优化的是序列生成，不会自动访问权威数据库核实。"
+    },
+    "prompt": {
+      "title": "评估一个模型任务的可靠性要求",
+      "text": "请把这个模型任务拆成输入来源、允许的不确定性、必须引用的事实、可调用工具、输出格式和人工复核点。列出三类错误结果以及各自的检测方法，不把语言流畅或格式正确当成事实已经核验。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Attention Is All You Need",
+        "note": "原论文的方法与实验"
+      },
+      {
+        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+        "label": "NIST AI 600-1",
+        "note": "术语、风险与评估框架"
+      }
+    ]
+  },
+  {
+    "slug": "prompt",
+    "lead": "只写“帮我看看”时，模型该看什么、按什么标准判断、交付什么结果？",
+    "definition": "提示词把任务目标、可用材料、约束、受众、输出形式和判断标准组织成模型可执行的输入。",
+    "boundary": "提示词不能创造缺失事实、越过权限或替代结果验证；输入再完整也不等于输出必然正确。",
+    "sceneKind": "assembly",
+    "sceneTitle": "一个模糊请求怎样补成可执行任务",
+    "actionLabel": "补一项信息",
+    "actors": [
+      {
+        "id": "request",
+        "label": "模糊请求",
+        "detail": "帮我看看这个页面",
+        "icon": "message",
+        "group": "原始输入"
+      },
+      {
+        "id": "goal",
+        "label": "目标",
+        "detail": "找出阻塞注册的问题",
+        "icon": "spark",
+        "group": "任务"
+      },
+      {
+        "id": "material",
+        "label": "材料",
+        "detail": "页面截图与流程说明",
+        "icon": "file",
+        "group": "依据"
+      },
+      {
+        "id": "constraints",
+        "label": "约束",
+        "detail": "不改视觉风格",
+        "icon": "shield",
+        "group": "边界"
+      },
+      {
+        "id": "format",
+        "label": "输出",
+        "detail": "按严重程度列问题",
+        "icon": "layout",
+        "group": "交付"
+      },
+      {
+        "id": "model",
+        "label": "可执行提示",
+        "detail": "等待组装",
+        "icon": "brain",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "request-goal",
+        "from": "request",
+        "to": "goal",
+        "label": "补目标"
+      },
+      {
+        "id": "goal-material",
+        "from": "goal",
+        "to": "material",
+        "label": "补依据"
+      },
+      {
+        "id": "material-constraints",
+        "from": "material",
+        "to": "constraints",
+        "label": "补边界"
+      },
+      {
+        "id": "constraints-format",
+        "from": "constraints",
+        "to": "format",
+        "label": "补交付"
+      },
+      {
+        "id": "format-model",
+        "from": "format",
+        "to": "model",
+        "label": "组成任务"
+      }
+    ],
+    "frames": [
+      {
+        "label": "只有请求",
+        "note": "“帮我看看”没有说明对象、目标和交付结果。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "goal",
+          "material",
+          "constraints",
+          "format",
+          "model"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "明确目标",
+        "note": "先说明要判断注册流程中的阻塞点，而不是泛泛评价。",
+        "activeIds": [
+          "goal"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "material",
+          "constraints",
+          "format",
+          "model"
+        ],
+        "values": {
+          "goal": "定位注册阻塞"
+        },
+        "activeEdgeIds": [
+          "request-goal"
+        ]
+      },
+      {
+        "label": "提供材料",
+        "note": "加入实际页面和流程说明，让判断有具体依据。",
+        "activeIds": [
+          "material"
+        ],
+        "doneIds": [
+          "request",
+          "goal"
+        ],
+        "mutedIds": [
+          "constraints",
+          "format",
+          "model"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "goal-material"
+        ]
+      },
+      {
+        "label": "写清约束",
+        "note": "限定不改品牌风格，并要求区分事实与推测。",
+        "activeIds": [
+          "constraints"
+        ],
+        "doneIds": [
+          "request",
+          "goal",
+          "material"
+        ],
+        "mutedIds": [
+          "format",
+          "model"
+        ],
+        "values": {
+          "constraints": "保留风格 · 标注证据"
+        },
+        "activeEdgeIds": [
+          "material-constraints"
+        ]
+      },
+      {
+        "label": "约定输出",
+        "note": "指定按严重程度给出问题、证据和修改建议。",
+        "activeIds": [
+          "format",
+          "model"
+        ],
+        "doneIds": [
+          "request",
+          "goal",
+          "material",
+          "constraints"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model": "任务可执行"
+        },
+        "activeEdgeIds": [
+          "constraints-format",
+          "format-model"
+        ]
+      }
+    ],
+    "insight": "有效提示先减少任务歧义，再规定证据和结果；不是堆更多形容词。",
+    "quiz": {
+      "question": "让模型审查一份合同，哪项信息最不能省？",
+      "options": [
+        {
+          "label": "合同文本、审查目标和适用范围",
+          "correct": true
+        },
+        {
+          "label": "要求模型表现得非常聪明",
+          "correct": false
+        },
+        {
+          "label": "连续写十遍“务必准确”",
+          "correct": false
+        }
+      ],
+      "success": "材料与判断范围决定模型能依据什么工作。",
+      "retry": "强调语气不会补回缺失的材料和适用规则。"
+    },
+    "prompt": {
+      "title": "整理一个可执行的任务提示",
+      "text": "请把我的需求整理为目标、输入材料、必须遵守的约束、需要排除的内容、输出格式和完成标准。缺少事实时明确列出，不自行补写；若存在多个合理方向，先给出影响选择的差异。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+        "label": "OpenAI · Prompt engineering",
+        "note": "接口参数与调用行为"
+      }
+    ]
+  },
+  {
+    "slug": "context",
+    "lead": "公司制度就在知识库里，为什么模型回答时仍然像没见过？",
+    "definition": "上下文是本次请求实际送入模型的信息，由系统说明、对话、文件片段、工具结果和当前任务共同组成。",
+    "boundary": "资料存在于外部系统不等于已进入上下文；上下文有容量和相关性限制，错误材料也会误导答案。",
+    "sceneKind": "layers",
+    "sceneTitle": "一次回答实际能看到哪些信息",
+    "actionLabel": "加入一层",
+    "actors": [
+      {
+        "id": "system",
+        "label": "系统说明",
+        "detail": "回答必须引用制度",
+        "icon": "shield",
+        "group": "固定层"
+      },
+      {
+        "id": "conversation",
+        "label": "当前对话",
+        "detail": "询问年假结转",
+        "icon": "message",
+        "group": "对话层"
+      },
+      {
+        "id": "document",
+        "label": "制度片段",
+        "detail": "尚未取回",
+        "icon": "file",
+        "group": "资料层"
+      },
+      {
+        "id": "tool",
+        "label": "工具结果",
+        "detail": "当前日期 2026-08-31",
+        "icon": "gear",
+        "group": "结果层"
+      },
+      {
+        "id": "task",
+        "label": "当前任务",
+        "detail": "给出结论与出处",
+        "icon": "spark",
+        "group": "任务层"
+      },
+      {
+        "id": "model",
+        "label": "模型可见输入",
+        "detail": "缺少制度正文",
+        "icon": "brain",
+        "group": "合并结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "system-model",
+        "from": "system",
+        "to": "model",
+        "label": "规则"
+      },
+      {
+        "id": "conversation-model",
+        "from": "conversation",
+        "to": "model",
+        "label": "问题"
+      },
+      {
+        "id": "document-model",
+        "from": "document",
+        "to": "model",
+        "label": "依据"
+      },
+      {
+        "id": "tool-model",
+        "from": "tool",
+        "to": "model",
+        "label": "当前结果"
+      },
+      {
+        "id": "task-model",
+        "from": "task",
+        "to": "model",
+        "label": "交付要求"
+      }
+    ],
+    "frames": [
+      {
+        "label": "只有问题",
+        "note": "模型知道用户在问年假，但没有看到公司的具体制度。",
+        "activeIds": [
+          "conversation",
+          "model"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "document",
+          "tool"
+        ],
+        "values": {
+          "model": "依据不足"
+        },
+        "activeEdgeIds": [
+          "conversation-model"
+        ]
+      },
+      {
+        "label": "加入规则",
+        "note": "系统说明限制回答方式，但仍不能替代制度正文。",
+        "activeIds": [
+          "system",
+          "model"
+        ],
+        "doneIds": [
+          "conversation"
+        ],
+        "mutedIds": [
+          "document",
+          "tool"
+        ],
+        "values": {
+          "model": "必须引用 · 仍缺资料"
+        },
+        "activeEdgeIds": [
+          "system-model"
+        ]
+      },
+      {
+        "label": "取回片段",
+        "note": "检索把与年假结转相关的条款放进本次上下文。",
+        "activeIds": [
+          "document",
+          "model"
+        ],
+        "doneIds": [
+          "system",
+          "conversation"
+        ],
+        "mutedIds": [
+          "tool"
+        ],
+        "values": {
+          "document": "第 4.2 条：最多结转 5 天"
+        },
+        "activeEdgeIds": [
+          "document-model"
+        ]
+      },
+      {
+        "label": "补当前信息",
+        "note": "工具返回当前日期，模型可以判断条款是否已生效。",
+        "activeIds": [
+          "tool",
+          "model"
+        ],
+        "doneIds": [
+          "system",
+          "conversation",
+          "document"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "2026-08-31"
+        },
+        "activeEdgeIds": [
+          "tool-model"
+        ]
+      },
+      {
+        "label": "按任务作答",
+        "note": "任务要求把结论与条款编号一起给出。",
+        "activeIds": [
+          "task",
+          "model"
+        ],
+        "doneIds": [
+          "system",
+          "conversation",
+          "document",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model": "结转上限 5 天 · 引用 4.2"
+        },
+        "activeEdgeIds": [
+          "task-model"
+        ]
+      }
+    ],
+    "insight": "模型只会使用本次真正拿到的信息；“资料存在”与“资料在上下文中”是两件事。",
+    "quiz": {
+      "question": "把整份 500 页手册全部塞进上下文，是否一定比检索相关条款更好？",
+      "options": [
+        {
+          "label": "不一定，过多无关内容会占容量并稀释关键依据",
+          "correct": true
+        },
+        {
+          "label": "一定，内容越多答案越准",
+          "correct": false
+        },
+        {
+          "label": "一定，因为上下文没有长度限制",
+          "correct": false
+        }
+      ],
+      "success": "上下文需要完整，也需要相关和可定位。",
+      "retry": "容量和注意力都有限，信息数量不能替代相关性。"
+    },
+    "prompt": {
+      "title": "整理任务所需上下文",
+      "text": "请把完成这个任务所需的信息分成固定规则、用户问题、已有事实、待检索资料、工具结果和输出要求。删除与当前判断无关的历史内容，对每条关键事实标注来源；若材料仍不足，明确缺口而不是推测补齐。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+        "label": "Anthropic · Context windows",
+        "note": "原始规范与实现说明"
+      }
+    ]
+  },
+  {
+    "slug": "token",
+    "lead": "一千个汉字为什么不一定等于一千个 Token，换个模型数量还会变化？",
+    "definition": "分词器把文本切成词片段并映射为整数编号，模型读取和生成的基本序列单位就是 Token。",
+    "boundary": "Token 不是固定的字、词或字符；不同分词器会得到不同切分，输入与输出都会占用预算。",
+    "sceneKind": "transform",
+    "sceneTitle": "一段中英混合文本怎样变成 Token 序列",
+    "actionLabel": "继续切分",
+    "actors": [
+      {
+        "id": "text",
+        "label": "原始文本",
+        "detail": "部署 VibePolaris v2",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "segments",
+        "label": "词片段",
+        "detail": "等待分词",
+        "icon": "layout",
+        "group": "切分"
+      },
+      {
+        "id": "ids",
+        "label": "Token ID",
+        "detail": "等待映射",
+        "icon": "code",
+        "group": "编号"
+      },
+      {
+        "id": "budget",
+        "label": "上下文预算",
+        "detail": "8,192 可用",
+        "icon": "chart",
+        "group": "容量"
+      },
+      {
+        "id": "output",
+        "label": "模型输入",
+        "detail": "尚未组装",
+        "icon": "brain",
+        "group": "序列"
+      }
+    ],
+    "edges": [
+      {
+        "id": "text-segments",
+        "from": "text",
+        "to": "segments",
+        "label": "分词"
+      },
+      {
+        "id": "segments-ids",
+        "from": "segments",
+        "to": "ids",
+        "label": "查词表"
+      },
+      {
+        "id": "ids-budget",
+        "from": "ids",
+        "to": "budget",
+        "label": "占用容量"
+      },
+      {
+        "id": "budget-output",
+        "from": "budget",
+        "to": "output",
+        "label": "形成序列"
+      }
+    ],
+    "frames": [
+      {
+        "label": "读取文本",
+        "note": "原始内容同时包含中文、英文品牌名和版本号。",
+        "activeIds": [
+          "text"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "segments",
+          "ids",
+          "budget",
+          "output"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "切成片段",
+        "note": "分词器按自己的词表拆分，不保证一字或一词对应一个 Token。",
+        "activeIds": [
+          "segments"
+        ],
+        "doneIds": [
+          "text"
+        ],
+        "mutedIds": [
+          "ids",
+          "budget",
+          "output"
+        ],
+        "values": {
+          "segments": "部署 | Vibe | Polaris | v | 2"
+        },
+        "activeEdgeIds": [
+          "text-segments"
+        ]
+      },
+      {
+        "label": "映射编号",
+        "note": "每个片段被换成模型词表中的整数 ID。",
+        "activeIds": [
+          "ids"
+        ],
+        "doneIds": [
+          "text",
+          "segments"
+        ],
+        "mutedIds": [
+          "budget",
+          "output"
+        ],
+        "values": {
+          "ids": "[8821, 347, 9120, 85, 17]"
+        },
+        "activeEdgeIds": [
+          "segments-ids"
+        ]
+      },
+      {
+        "label": "计算占用",
+        "note": "系统说明、对话、资料和输出预留会共同消耗上下文容量。",
+        "activeIds": [
+          "budget"
+        ],
+        "doneIds": [
+          "text",
+          "segments",
+          "ids"
+        ],
+        "mutedIds": [
+          "output"
+        ],
+        "values": {
+          "budget": "已用 5 · 剩余 8,187"
+        },
+        "activeEdgeIds": [
+          "ids-budget"
+        ]
+      },
+      {
+        "label": "送入模型",
+        "note": "编号序列进入模型，生成的新 Token 也继续占用预算。",
+        "activeIds": [
+          "output"
+        ],
+        "doneIds": [
+          "text",
+          "segments",
+          "ids",
+          "budget"
+        ],
+        "mutedIds": [],
+        "values": {
+          "output": "5 input tokens"
+        },
+        "activeEdgeIds": [
+          "budget-output"
+        ]
+      }
+    ],
+    "insight": "Token 数量由分词器和具体文本共同决定，不能按字数或单词数直接替代。",
+    "quiz": {
+      "question": "同一段文本换一个模型后 Token 数可能变化，最直接的原因是什么？",
+      "options": [
+        {
+          "label": "模型使用的分词器或词表不同",
+          "correct": true
+        },
+        {
+          "label": "显示器分辨率不同",
+          "correct": false
+        },
+        {
+          "label": "文本颜色不同",
+          "correct": false
+        }
+      ],
+      "success": "预算评估应使用目标模型对应的分词器。",
+      "retry": "Token 是文本编码结果，与视觉样式无关。"
+    },
+    "prompt": {
+      "title": "估算任务的上下文预算",
+      "text": "请按目标模型估算系统说明、历史对话、检索材料、当前输入和最大输出分别占用的 Token。保留必要证据，删除重复材料，并为工具结果和输出预留容量；说明超出预算时先裁剪哪一部分以及理由。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.openai.com/tokenizer",
+        "label": "OpenAI Tokenizer",
+        "note": "接口参数与调用行为"
+      },
+      {
+        "url": "https://github.com/openai/tiktoken",
+        "label": "OpenAI · tiktoken",
+        "note": "原始规范与实现说明"
+      }
+    ]
+  },
+  {
+    "slug": "agent",
+    "lead": "模型要修复代码并确认问题真的消失，为什么一次文本回答还不够？",
+    "definition": "智能体围绕目标反复观察当前状态、选择下一动作、调用工具并检查结果，直到完成或需要停止。",
+    "boundary": "智能体不会自动获得权限或正确判断；工具范围、写操作规则、预算和停止条件必须明确。",
+    "sceneKind": "loop",
+    "sceneTitle": "一次代码修复怎样经过观察、动作与验证",
+    "actionLabel": "运行下一轮",
+    "actors": [
+      {
+        "id": "goal",
+        "label": "目标",
+        "detail": "修复移动端横向滚动",
+        "icon": "spark",
+        "group": "任务"
+      },
+      {
+        "id": "observe",
+        "label": "观察",
+        "detail": "读取页面与样式",
+        "icon": "search",
+        "group": "循环"
+      },
+      {
+        "id": "decide",
+        "label": "判断",
+        "detail": "定位溢出元素",
+        "icon": "brain",
+        "group": "循环"
+      },
+      {
+        "id": "tool",
+        "label": "工具动作",
+        "detail": "修改并启动页面",
+        "icon": "gear",
+        "group": "执行"
+      },
+      {
+        "id": "check",
+        "label": "验证",
+        "detail": "390px 实际操作",
+        "icon": "browser",
+        "group": "反馈"
+      },
+      {
+        "id": "stop",
+        "label": "停止条件",
+        "detail": "无溢出且测试通过",
+        "icon": "shield",
+        "group": "结束"
+      }
+    ],
+    "edges": [
+      {
+        "id": "goal-observe",
+        "from": "goal",
+        "to": "observe",
+        "label": "明确目标"
+      },
+      {
+        "id": "observe-decide",
+        "from": "observe",
+        "to": "decide",
+        "label": "形成判断"
+      },
+      {
+        "id": "decide-tool",
+        "from": "decide",
+        "to": "tool",
+        "label": "选择动作"
+      },
+      {
+        "id": "tool-check",
+        "from": "tool",
+        "to": "check",
+        "label": "读取结果"
+      },
+      {
+        "id": "check-observe",
+        "from": "check",
+        "to": "observe",
+        "label": "失败再观察"
+      },
+      {
+        "id": "check-stop",
+        "from": "check",
+        "to": "stop",
+        "label": "满足条件"
+      }
+    ],
+    "frames": [
+      {
+        "label": "读取现场",
+        "note": "先检查当前页面、视口和实际溢出节点。",
+        "activeIds": [
+          "goal",
+          "observe"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "tool",
+          "check",
+          "stop"
+        ],
+        "values": {
+          "observe": "scrollWidth 428 > 390"
+        },
+        "activeEdgeIds": [
+          "goal-observe"
+        ]
+      },
+      {
+        "label": "确定原因",
+        "note": "发现代码块使用固定宽度，而不是猜测整个页面重写。",
+        "activeIds": [
+          "observe",
+          "decide"
+        ],
+        "doneIds": [
+          "goal"
+        ],
+        "mutedIds": [
+          "tool",
+          "check",
+          "stop"
+        ],
+        "values": {
+          "decide": ".code-panel width: 420px"
+        },
+        "activeEdgeIds": [
+          "observe-decide"
+        ]
+      },
+      {
+        "label": "执行修改",
+        "note": "工具把固定宽度改为可收缩布局，并保留桌面呈现。",
+        "activeIds": [
+          "decide",
+          "tool"
+        ],
+        "doneIds": [
+          "observe"
+        ],
+        "mutedIds": [
+          "check",
+          "stop"
+        ],
+        "values": {
+          "tool": "min-width: 0; overflow-wrap"
+        },
+        "activeEdgeIds": [
+          "decide-tool"
+        ]
+      },
+      {
+        "label": "检查结果",
+        "note": "重新打开 390px 页面，滚动宽度已与视口相同。",
+        "activeIds": [
+          "tool",
+          "check"
+        ],
+        "doneIds": [
+          "decide"
+        ],
+        "mutedIds": [
+          "stop"
+        ],
+        "values": {
+          "check": "390 = 390"
+        },
+        "activeEdgeIds": [
+          "tool-check"
+        ]
+      },
+      {
+        "label": "满足停止条件",
+        "note": "移动端、桌面端和相关测试均通过，循环结束。",
+        "activeIds": [
+          "check",
+          "stop"
+        ],
+        "doneIds": [
+          "goal",
+          "observe",
+          "decide",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stop": "完成"
+        },
+        "activeEdgeIds": [
+          "check-stop"
+        ]
+      }
+    ],
+    "insight": "智能体的区别不在于会写更长答案，而在于能依据真实结果决定下一步。",
+    "quiz": {
+      "question": "工具修改代码后返回“成功”，智能体可以立即结束吗？",
+      "options": [
+        {
+          "label": "不能，还要按验收条件检查实际结果",
+          "correct": true
+        },
+        {
+          "label": "可以，工具返回成功就等于目标达成",
+          "correct": false
+        },
+        {
+          "label": "可以，只要回答写得完整",
+          "correct": false
+        }
+      ],
+      "success": "动作成功只说明命令执行完，不证明用户目标已经实现。",
+      "retry": "完成判断要基于最终状态和验收证据。"
+    },
+    "prompt": {
+      "title": "为智能体任务定义边界",
+      "text": "请把任务写成目标、可读取范围、允许的工具、禁止操作、验收证据、预算和停止条件。每次动作后必须读取实际结果；遇到权限不足、破坏性操作或需求分歧时停止并说明需要的决定。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2210.03629",
+        "label": "ReAct",
+        "note": "原论文的方法与实验"
+      }
+    ]
+  },
+  {
+    "slug": "tools",
+    "lead": "模型需要查询实时天气时，为什么不能只靠训练时见过的内容回答？",
+    "definition": "工具调用让模型按结构化约定提出工具名称和参数，由外部程序执行真实查询或操作，再返回结果。",
+    "boundary": "模型生成调用意图不等于操作成功；参数校验、权限、执行和失败处理属于工具系统。",
+    "sceneKind": "route",
+    "sceneTitle": "一次实时天气查询的工具往返",
+    "actionLabel": "执行下一段",
+    "actors": [
+      {
+        "id": "user",
+        "label": "用户问题",
+        "detail": "上海明天会下雨吗？",
+        "icon": "user",
+        "group": "输入"
+      },
+      {
+        "id": "model",
+        "label": "模型",
+        "detail": "需要实时信息",
+        "icon": "brain",
+        "group": "判断"
+      },
+      {
+        "id": "schema",
+        "label": "工具约定",
+        "detail": "weather(location,date)",
+        "icon": "file",
+        "group": "接口"
+      },
+      {
+        "id": "executor",
+        "label": "天气服务",
+        "detail": "尚未调用",
+        "icon": "cloud",
+        "group": "执行"
+      },
+      {
+        "id": "result",
+        "label": "工具结果",
+        "detail": "等待返回",
+        "icon": "chart",
+        "group": "证据"
+      },
+      {
+        "id": "answer",
+        "label": "最终回答",
+        "detail": "尚未生成",
+        "icon": "message",
+        "group": "输出"
+      }
+    ],
+    "edges": [
+      {
+        "id": "user-model",
+        "from": "user",
+        "to": "model",
+        "label": "提出问题"
+      },
+      {
+        "id": "model-schema",
+        "from": "model",
+        "to": "schema",
+        "label": "生成参数"
+      },
+      {
+        "id": "schema-executor",
+        "from": "schema",
+        "to": "executor",
+        "label": "实际调用"
+      },
+      {
+        "id": "executor-result",
+        "from": "executor",
+        "to": "result",
+        "label": "返回数据"
+      },
+      {
+        "id": "result-answer",
+        "from": "result",
+        "to": "answer",
+        "label": "依据结果回答"
+      }
+    ],
+    "frames": [
+      {
+        "label": "识别缺口",
+        "note": "问题涉及明天的天气，训练数据不能提供当前预报。",
+        "activeIds": [
+          "user",
+          "model"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "executor",
+          "result",
+          "answer"
+        ],
+        "values": {
+          "model": "需要 weather 工具"
+        },
+        "activeEdgeIds": [
+          "user-model"
+        ]
+      },
+      {
+        "label": "生成参数",
+        "note": "模型按工具 schema 提供城市和日期，而不是直接拼接请求。",
+        "activeIds": [
+          "model",
+          "schema"
+        ],
+        "doneIds": [
+          "user"
+        ],
+        "mutedIds": [
+          "executor",
+          "result",
+          "answer"
+        ],
+        "values": {
+          "schema": "{ location: 上海, date: 明天 }"
+        },
+        "activeEdgeIds": [
+          "model-schema"
+        ]
+      },
+      {
+        "label": "执行查询",
+        "note": "外部程序检查参数和权限后调用天气服务。",
+        "activeIds": [
+          "schema",
+          "executor"
+        ],
+        "doneIds": [
+          "model"
+        ],
+        "mutedIds": [
+          "result",
+          "answer"
+        ],
+        "values": {
+          "executor": "request sent"
+        },
+        "activeEdgeIds": [
+          "schema-executor"
+        ]
+      },
+      {
+        "label": "返回结果",
+        "note": "工具把结构化预报交回模型，并保留查询时间。",
+        "activeIds": [
+          "executor",
+          "result"
+        ],
+        "doneIds": [
+          "schema"
+        ],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "result": "降水概率 70% · 17:05 更新"
+        },
+        "activeEdgeIds": [
+          "executor-result"
+        ]
+      },
+      {
+        "label": "组织回答",
+        "note": "模型依据工具结果说明有降雨可能，并标出更新时间。",
+        "activeIds": [
+          "result",
+          "answer"
+        ],
+        "doneIds": [
+          "user",
+          "model",
+          "schema",
+          "executor"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "明天有较高降雨概率"
+        },
+        "activeEdgeIds": [
+          "result-answer"
+        ]
+      }
+    ],
+    "insight": "工具把模型的语言判断接到真实系统上，执行结果必须回到模型才能继续。",
+    "quiz": {
+      "question": "模型输出了正确的工具名称和参数，是否说明查询已经完成？",
+      "options": [
+        {
+          "label": "不说明，还要看执行器的真实返回或错误",
+          "correct": true
+        },
+        {
+          "label": "说明，生成 JSON 就等于调用成功",
+          "correct": false
+        },
+        {
+          "label": "说明，工具不需要权限检查",
+          "correct": false
+        }
+      ],
+      "success": "调用提议、实际执行和结果处理是三个不同阶段。",
+      "retry": "模型只生成结构化意图，外部系统才执行操作。"
+    },
+    "prompt": {
+      "title": "检查一个工具调用流程",
+      "text": "请列出工具名称、参数 schema、必填校验、调用权限、超时、重试和返回结构。用缺少参数、无权限、服务超时和返回空结果四种情况验证模型不会把调用意图当作成功结果。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.openai.com/docs/guides/function-calling",
+        "label": "OpenAI · Function calling",
+        "note": "接口参数与调用行为"
+      }
+    ]
+  },
+  {
+    "slug": "memory",
+    "lead": "用户上次选择中文界面，下次会话应该直接沿用，还是重新询问？",
+    "definition": "智能体记忆把经过筛选和确认的信息保存到任务内或持久存储，并在相关场景中重新取回。",
+    "boundary": "对话内容不应全部自动保存；敏感信息、临时状态和模型推测需要排除，用户应能查看和删除。",
+    "sceneKind": "memory",
+    "sceneTitle": "一条语言偏好怎样被确认、保存与复用",
+    "actionLabel": "检查下一步",
+    "actors": [
+      {
+        "id": "conversation",
+        "label": "当前对话",
+        "detail": "请以后都用中文",
+        "icon": "message",
+        "group": "来源"
+      },
+      {
+        "id": "candidate",
+        "label": "记忆候选",
+        "detail": "界面语言 = 中文",
+        "icon": "search",
+        "group": "筛选"
+      },
+      {
+        "id": "consent",
+        "label": "用户确认",
+        "detail": "允许跨会话保存",
+        "icon": "shield",
+        "group": "控制"
+      },
+      {
+        "id": "store",
+        "label": "持久记忆",
+        "detail": "尚未写入",
+        "icon": "database",
+        "group": "存储"
+      },
+      {
+        "id": "retrieval",
+        "label": "新会话取回",
+        "detail": "等待相关任务",
+        "icon": "memory",
+        "group": "复用"
+      },
+      {
+        "id": "response",
+        "label": "界面设置",
+        "detail": "默认语言未定",
+        "icon": "browser",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "conversation-candidate",
+        "from": "conversation",
+        "to": "candidate",
+        "label": "提取偏好"
+      },
+      {
+        "id": "candidate-consent",
+        "from": "candidate",
+        "to": "consent",
+        "label": "确认范围"
+      },
+      {
+        "id": "consent-store",
+        "from": "consent",
+        "to": "store",
+        "label": "保存"
+      },
+      {
+        "id": "store-retrieval",
+        "from": "store",
+        "to": "retrieval",
+        "label": "按需取回"
+      },
+      {
+        "id": "retrieval-response",
+        "from": "retrieval",
+        "to": "response",
+        "label": "应用偏好"
+      }
+    ],
+    "frames": [
+      {
+        "label": "发现候选",
+        "note": "系统从明确表达中提取“界面语言为中文”，不保存整段对话。",
+        "activeIds": [
+          "conversation",
+          "candidate"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "consent",
+          "store",
+          "retrieval",
+          "response"
+        ],
+        "values": {
+          "candidate": "language = zh-CN"
+        },
+        "activeEdgeIds": [
+          "conversation-candidate"
+        ]
+      },
+      {
+        "label": "确认范围",
+        "note": "跨会话保存前明确用途，并允许用户拒绝。",
+        "activeIds": [
+          "candidate",
+          "consent"
+        ],
+        "doneIds": [
+          "conversation"
+        ],
+        "mutedIds": [
+          "store",
+          "retrieval",
+          "response"
+        ],
+        "values": {
+          "consent": "允许保存语言偏好"
+        },
+        "activeEdgeIds": [
+          "candidate-consent"
+        ]
+      },
+      {
+        "label": "写入记忆",
+        "note": "只保存结构化偏好和来源时间，不保存无关聊天。",
+        "activeIds": [
+          "consent",
+          "store"
+        ],
+        "doneIds": [
+          "conversation",
+          "candidate"
+        ],
+        "mutedIds": [
+          "retrieval",
+          "response"
+        ],
+        "values": {
+          "store": "language: zh-CN"
+        },
+        "activeEdgeIds": [
+          "consent-store"
+        ]
+      },
+      {
+        "label": "相关时取回",
+        "note": "新会话需要界面语言时才检索这条记忆。",
+        "activeIds": [
+          "store",
+          "retrieval"
+        ],
+        "doneIds": [
+          "consent"
+        ],
+        "mutedIds": [
+          "response"
+        ],
+        "values": {
+          "retrieval": "matched: interface language"
+        },
+        "activeEdgeIds": [
+          "store-retrieval"
+        ]
+      },
+      {
+        "label": "应用并可撤销",
+        "note": "界面默认使用中文，同时提供查看和删除记忆的入口。",
+        "activeIds": [
+          "retrieval",
+          "response"
+        ],
+        "doneIds": [
+          "conversation",
+          "candidate",
+          "consent",
+          "store"
+        ],
+        "mutedIds": [],
+        "values": {
+          "response": "简体中文 · 可更改"
+        },
+        "activeEdgeIds": [
+          "retrieval-response"
+        ]
+      }
+    ],
+    "insight": "记忆的价值来自选择性保存和相关时取回，不是把全部聊天永久保留。",
+    "quiz": {
+      "question": "模型推测用户可能怀孕，是否适合自动保存为长期记忆？",
+      "options": [
+        {
+          "label": "不适合，敏感且未经用户明确确认",
+          "correct": true
+        },
+        {
+          "label": "适合，模型推测都应长期保存",
+          "correct": false
+        },
+        {
+          "label": "适合，只要以后可能有用",
+          "correct": false
+        }
+      ],
+      "success": "敏感信息和推测需要更严格的排除与确认。",
+      "retry": "“可能有用”不能覆盖隐私和准确性要求。"
+    },
+    "prompt": {
+      "title": "判断哪些信息适合记忆",
+      "text": "请把候选信息分为当前任务临时状态、可确认的长期偏好、敏感信息和模型推测。只为确有复用价值且得到许可的偏好设计保存字段、过期时间、取回条件、查看入口和删除方式。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2304.03442",
+        "label": "Generative Agents",
+        "note": "原论文的方法与实验"
+      }
+    ]
+  },
+  {
+    "slug": "rag",
+    "lead": "模型怎样依据今天更新的公司制度回答，并让人知道结论来自哪一段？",
+    "definition": "RAG 在生成前检索外部资料，把相关片段与问题一起放入上下文，再要求模型依据这些证据回答。",
+    "boundary": "RAG 不自动保证正确；资料版本、检索召回、片段完整性和引用对应关系都可能出错。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "制度问题从检索到带引用回答",
+    "actionLabel": "运行下一段",
+    "actors": [
+      {
+        "id": "question",
+        "label": "用户问题",
+        "detail": "年假最多结转几天？",
+        "icon": "user",
+        "group": "输入"
+      },
+      {
+        "id": "retriever",
+        "label": "检索器",
+        "detail": "查询 年假 + 结转",
+        "icon": "search",
+        "group": "查找"
+      },
+      {
+        "id": "documents",
+        "label": "制度库",
+        "detail": "2026 人事制度",
+        "icon": "database",
+        "group": "来源"
+      },
+      {
+        "id": "chunks",
+        "label": "相关片段",
+        "detail": "等待排序",
+        "icon": "file",
+        "group": "证据"
+      },
+      {
+        "id": "model",
+        "label": "生成模型",
+        "detail": "尚未看到证据",
+        "icon": "brain",
+        "group": "生成"
+      },
+      {
+        "id": "answer",
+        "label": "回答与引用",
+        "detail": "等待输出",
+        "icon": "message",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "question-retriever",
+        "from": "question",
+        "to": "retriever",
+        "label": "构造查询"
+      },
+      {
+        "id": "retriever-docs",
+        "from": "retriever",
+        "to": "documents",
+        "label": "搜索资料"
+      },
+      {
+        "id": "docs-chunks",
+        "from": "documents",
+        "to": "chunks",
+        "label": "返回片段"
+      },
+      {
+        "id": "chunks-model",
+        "from": "chunks",
+        "to": "model",
+        "label": "加入上下文"
+      },
+      {
+        "id": "model-answer",
+        "from": "model",
+        "to": "answer",
+        "label": "依据证据生成"
+      }
+    ],
+    "frames": [
+      {
+        "label": "提出问题",
+        "note": "系统先保留用户原问题，不让模型直接凭印象回答。",
+        "activeIds": [
+          "question"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "documents",
+          "chunks",
+          "model",
+          "answer"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "生成检索词",
+        "note": "检索器提取年假、结转和当前年份等限制。",
+        "activeIds": [
+          "question",
+          "retriever"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "chunks",
+          "model",
+          "answer"
+        ],
+        "values": {
+          "retriever": "年假 结转 2026"
+        },
+        "activeEdgeIds": [
+          "question-retriever"
+        ]
+      },
+      {
+        "label": "查找制度",
+        "note": "制度库返回多个版本，按生效日期和相关性排序。",
+        "activeIds": [
+          "retriever",
+          "documents"
+        ],
+        "doneIds": [
+          "question"
+        ],
+        "mutedIds": [
+          "model",
+          "answer"
+        ],
+        "values": {
+          "documents": "2026-01-01 生效"
+        },
+        "activeEdgeIds": [
+          "retriever-docs"
+        ]
+      },
+      {
+        "label": "选择片段",
+        "note": "只把直接回答结转上限的条款连同标题和版本送入上下文。",
+        "activeIds": [
+          "documents",
+          "chunks"
+        ],
+        "doneIds": [
+          "retriever"
+        ],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "chunks": "4.2 · 最多结转 5 天"
+        },
+        "activeEdgeIds": [
+          "docs-chunks"
+        ]
+      },
+      {
+        "label": "依据生成",
+        "note": "模型被要求只根据提供片段作答，缺少证据时明确说明。",
+        "activeIds": [
+          "chunks",
+          "model"
+        ],
+        "doneIds": [
+          "question",
+          "retriever",
+          "documents"
+        ],
+        "mutedIds": [
+          "answer"
+        ],
+        "values": {
+          "model": "grounded on 4.2"
+        },
+        "activeEdgeIds": [
+          "chunks-model"
+        ]
+      },
+      {
+        "label": "对应引用",
+        "note": "回答给出结论、条款号和资料版本，便于复核。",
+        "activeIds": [
+          "model",
+          "answer"
+        ],
+        "doneIds": [
+          "question",
+          "retriever",
+          "documents",
+          "chunks"
+        ],
+        "mutedIds": [],
+        "values": {
+          "answer": "最多 5 天 · 2026 制度 4.2"
+        },
+        "activeEdgeIds": [
+          "model-answer"
+        ]
+      }
+    ],
+    "insight": "RAG 的可靠性取决于证据是否被找到、是否适用，以及回答是否真的对应证据。",
+    "quiz": {
+      "question": "检索返回了 2024 和 2026 两版制度，下一步最重要的判断是什么？",
+      "options": [
+        {
+          "label": "确认当前生效版本并保留版本信息",
+          "correct": true
+        },
+        {
+          "label": "选文字最长的一段",
+          "correct": false
+        },
+        {
+          "label": "把两版混在一起让模型自行决定",
+          "correct": false
+        }
+      ],
+      "success": "相关性之外还要判断时效与适用范围。",
+      "retry": "检索命中不代表片段对当前问题仍然有效。"
+    },
+    "prompt": {
+      "title": "检查一条 RAG 回答的证据",
+      "text": "请逐句标出回答对应的资料片段、文档标题、版本和生效时间。检查查询是否遗漏同义词、片段是否截断条件、引用是否支持结论；没有直接证据的句子删除或标为待确认。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2005.11401",
+        "label": "Retrieval-Augmented Generation",
+        "note": "原论文的方法与实验"
+      }
+    ]
+  },
+  {
+    "slug": "mcp",
+    "lead": "三个 AI 客户端都要读取同一项目数据，怎样避免分别维护三套私有接入代码？",
+    "definition": "MCP 规定客户端与服务器如何发现工具、资源和提示模板，并用结构化消息交换能力、参数与结果。",
+    "boundary": "MCP 解决接入协议，不替代业务认证、授权、数据质量和工具自身的安全检查。",
+    "sceneKind": "contract",
+    "sceneTitle": "客户端发现并调用一个 MCP 工具",
+    "actionLabel": "推进协议",
+    "actors": [
+      {
+        "id": "client",
+        "label": "AI 客户端",
+        "detail": "尚不知道服务能力",
+        "icon": "browser",
+        "group": "客户端"
+      },
+      {
+        "id": "transport",
+        "label": "MCP 连接",
+        "detail": "JSON-RPC 消息",
+        "icon": "network",
+        "group": "协议"
+      },
+      {
+        "id": "server",
+        "label": "项目服务器",
+        "detail": "暴露受控能力",
+        "icon": "server",
+        "group": "服务器"
+      },
+      {
+        "id": "catalog",
+        "label": "工具目录",
+        "detail": "search_issues(schema)",
+        "icon": "file",
+        "group": "发现"
+      },
+      {
+        "id": "handler",
+        "label": "业务处理器",
+        "detail": "检查权限与参数",
+        "icon": "shield",
+        "group": "执行"
+      },
+      {
+        "id": "result",
+        "label": "结构化结果",
+        "detail": "等待返回",
+        "icon": "message",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "client-server",
+        "from": "client",
+        "to": "server",
+        "label": "初始化"
+      },
+      {
+        "id": "server-catalog",
+        "from": "server",
+        "to": "catalog",
+        "label": "列出能力"
+      },
+      {
+        "id": "client-handler",
+        "from": "client",
+        "to": "handler",
+        "label": "调用工具"
+      },
+      {
+        "id": "handler-result",
+        "from": "handler",
+        "to": "result",
+        "label": "返回内容"
+      },
+      {
+        "id": "result-client",
+        "from": "result",
+        "to": "client",
+        "label": "继续处理"
+      }
+    ],
+    "frames": [
+      {
+        "label": "协商能力",
+        "note": "客户端与服务器确认协议版本和可用能力。",
+        "activeIds": [
+          "client",
+          "transport",
+          "server"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "catalog",
+          "handler",
+          "result"
+        ],
+        "values": {
+          "transport": "initialize"
+        },
+        "activeEdgeIds": [
+          "client-server"
+        ]
+      },
+      {
+        "label": "发现工具",
+        "note": "服务器返回工具名称、说明和输入 schema。",
+        "activeIds": [
+          "server",
+          "catalog"
+        ],
+        "doneIds": [
+          "transport"
+        ],
+        "mutedIds": [
+          "handler",
+          "result"
+        ],
+        "values": {
+          "catalog": "search_issues(query, status)"
+        },
+        "activeEdgeIds": [
+          "server-catalog"
+        ]
+      },
+      {
+        "label": "形成调用",
+        "note": "客户端选择工具并按 schema 发送参数。",
+        "activeIds": [
+          "client",
+          "catalog"
+        ],
+        "doneIds": [
+          "server"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "client": "tools/call · status=open"
+        },
+        "activeEdgeIds": [
+          "client-handler"
+        ]
+      },
+      {
+        "label": "执行业务检查",
+        "note": "服务器在真正查询前验证身份、权限和参数。",
+        "activeIds": [
+          "handler"
+        ],
+        "doneIds": [
+          "client",
+          "catalog"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "handler": "authorized · valid"
+        },
+        "activeEdgeIds": [
+          "client-handler"
+        ]
+      },
+      {
+        "label": "返回结果",
+        "note": "结构化内容通过协议回到客户端，模型再决定如何使用。",
+        "activeIds": [
+          "handler",
+          "result",
+          "client"
+        ],
+        "doneIds": [
+          "server",
+          "catalog"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "3 open issues"
+        },
+        "activeEdgeIds": [
+          "handler-result",
+          "result-client"
+        ]
+      }
+    ],
+    "insight": "MCP 统一的是能力发现和消息交换，业务系统仍负责决定谁能做什么。",
+    "quiz": {
+      "question": "MCP 客户端发现了 delete_project 工具，是否意味着当前用户可以调用？",
+      "options": [
+        {
+          "label": "不意味着，服务器仍要验证身份、权限和参数",
+          "correct": true
+        },
+        {
+          "label": "意味着，能发现就自动有权限",
+          "correct": false
+        },
+        {
+          "label": "意味着，协议会跳过业务规则",
+          "correct": false
+        }
+      ],
+      "success": "能力可见性与执行授权是两层控制。",
+      "retry": "协议描述怎样调用，不替业务系统授予权限。"
+    },
+    "prompt": {
+      "title": "设计一个受控的 MCP 工具",
+      "text": "请定义工具名称、用途、输入 schema、返回结构和错误类型，并标出身份来源、授权检查、破坏性操作确认、审计日志与超时。用无权限、参数缺失和下游失败三种情况验证服务器返回可判断的错误。"
+    },
+    "sources": [
+      {
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "label": "MCP Specification · Tools",
+        "note": "协议角色与消息行为"
+      }
+    ]
+  },
+  {
+    "slug": "framework",
+    "lead": "React、Next.js 和日期格式化工具都属于依赖，它们为什么会对项目产生不同程度的约束？",
+    "definition": "框架规定应用结构、生命周期和扩展位置，库提供由应用主动调用的特定能力；实际项目通常同时使用两者。",
+    "boundary": "框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
+    "sceneKind": "layers",
+    "sceneTitle": "一个 Web 应用中的框架、库与运行环境",
+    "actionLabel": "展开依赖层",
+    "actors": [
+      {
+        "id": "product",
+        "label": "业务页面",
+        "detail": "路由、表单与数据展示",
+        "icon": "layout",
+        "group": "应用"
+      },
+      {
+        "id": "framework",
+        "label": "Next.js",
+        "detail": "路由、构建与渲染约定",
+        "icon": "component",
+        "group": "框架"
+      },
+      {
+        "id": "react",
+        "label": "React",
+        "detail": "组件与更新模型",
+        "icon": "component",
+        "group": "框架能力"
+      },
+      {
+        "id": "date-lib",
+        "label": "日期库",
+        "detail": "format(date)",
+        "icon": "package",
+        "group": "库"
+      },
+      {
+        "id": "runtime",
+        "label": "浏览器 / Node.js",
+        "detail": "执行与宿主 API",
+        "icon": "gear",
+        "group": "运行环境"
+      }
+    ],
+    "edges": [
+      {
+        "id": "product-framework",
+        "from": "product",
+        "to": "framework",
+        "label": "进入框架流程"
+      },
+      {
+        "id": "framework-react",
+        "from": "framework",
+        "to": "react",
+        "label": "使用组件模型"
+      },
+      {
+        "id": "product-library",
+        "from": "product",
+        "to": "date-lib",
+        "label": "主动调用"
+      },
+      {
+        "id": "framework-runtime",
+        "from": "framework",
+        "to": "runtime",
+        "label": "运行"
+      }
+    ],
+    "frames": [
+      {
+        "label": "应用入口",
+        "note": "页面代码写在框架规定的路由和生命周期中。",
+        "activeIds": [
+          "product",
+          "framework"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "date-lib",
+          "runtime"
+        ],
+        "values": {
+          "framework": "控制路由与构建"
+        },
+        "activeEdgeIds": [
+          "product-framework"
+        ]
+      },
+      {
+        "label": "框架驱动",
+        "note": "请求进入时，框架决定加载、渲染和数据获取顺序。",
+        "activeIds": [
+          "framework",
+          "react"
+        ],
+        "doneIds": [
+          "product"
+        ],
+        "mutedIds": [
+          "date-lib"
+        ],
+        "values": {
+          "react": "渲染组件树"
+        },
+        "activeEdgeIds": [
+          "framework-react"
+        ]
+      },
+      {
+        "label": "调用日期库",
+        "note": "业务代码在需要的位置主动调用日期格式化函数。",
+        "activeIds": [
+          "product",
+          "date-lib"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "framework",
+          "react"
+        ],
+        "values": {
+          "date-lib": "format(2026-08-31)"
+        },
+        "activeEdgeIds": [
+          "product-library"
+        ]
+      },
+      {
+        "label": "依赖运行时",
+        "note": "框架和库最终都只能使用目标运行环境提供的能力。",
+        "activeIds": [
+          "framework",
+          "date-lib",
+          "runtime"
+        ],
+        "doneIds": [
+          "product",
+          "react"
+        ],
+        "mutedIds": [],
+        "values": {
+          "runtime": "browser + Node.js"
+        },
+        "activeEdgeIds": [
+          "framework-runtime"
+        ]
+      }
+    ],
+    "insight": "判断依赖影响时，看它控制了多少应用流程，比争论名称更有用。",
+    "quiz": {
+      "question": "更换日期格式化库和更换应用框架，哪项通常影响范围更大？",
+      "options": [
+        {
+          "label": "更换控制路由、构建和生命周期的框架",
+          "correct": true
+        },
+        {
+          "label": "两者影响永远完全相同",
+          "correct": false
+        },
+        {
+          "label": "只看安装包名字长度",
+          "correct": false
+        }
+      ],
+      "success": "框架占据的控制点更多，替换时需要迁移的边界通常更广。",
+      "retry": "应比较依赖控制的流程和接口，而不是名称。"
+    },
+    "prompt": {
+      "title": "评估项目中的框架和库",
+      "text": "请列出项目的框架、运行时和关键库，分别标明它们控制的流程、调用方向、替换接口、升级影响和维护状态。优先检查控制路由、构建、数据层或组件模型的依赖，不把所有 package.json 条目按同一风险处理。"
+    },
+    "sources": [
+      {
+        "url": "https://nextjs.org/docs/app/getting-started/project-structure",
+        "label": "Next.js · Project structure",
+        "note": "渲染模式与框架行为"
+      }
+    ]
+  },
+  {
+    "slug": "ssg-ssr",
+    "lead": "公开文档和登录后的账户余额，为什么不该使用完全相同的页面生成时机？",
+    "definition": "SSG 在构建或再验证时生成可复用 HTML，SSR 在请求到达服务器时根据当前请求和数据生成 HTML。",
+    "boundary": "渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "sceneKind": "compare",
+    "sceneTitle": "公开文档与账户页的两种生成时机",
+    "actionLabel": "发起访问",
+    "actors": [
+      {
+        "id": "build",
+        "label": "构建阶段",
+        "detail": "生成 /docs/css.html",
+        "icon": "gear",
+        "group": "SSG"
+      },
+      {
+        "id": "cdn",
+        "label": "静态文件",
+        "detail": "所有访客复用",
+        "icon": "cloud",
+        "group": "SSG"
+      },
+      {
+        "id": "public-user",
+        "label": "文档访客",
+        "detail": "GET /docs/css",
+        "icon": "user",
+        "group": "SSG"
+      },
+      {
+        "id": "private-user",
+        "label": "账户用户",
+        "detail": "GET /account",
+        "icon": "user",
+        "group": "SSR"
+      },
+      {
+        "id": "server",
+        "label": "请求时服务器",
+        "detail": "读取会话与余额",
+        "icon": "server",
+        "group": "SSR"
+      },
+      {
+        "id": "private-html",
+        "label": "个性化 HTML",
+        "detail": "只对应本次请求",
+        "icon": "file",
+        "group": "SSR"
+      }
+    ],
+    "edges": [
+      {
+        "id": "build-cdn",
+        "from": "build",
+        "to": "cdn",
+        "label": "提前生成"
+      },
+      {
+        "id": "cdn-public",
+        "from": "cdn",
+        "to": "public-user",
+        "label": "直接复用"
+      },
+      {
+        "id": "private-server",
+        "from": "private-user",
+        "to": "server",
+        "label": "携带会话"
+      },
+      {
+        "id": "server-html",
+        "from": "server",
+        "to": "private-html",
+        "label": "请求时生成"
+      }
+    ],
+    "frames": [
+      {
+        "label": "提前生成文档",
+        "note": "构建阶段读取内容并产出公开文档 HTML。",
+        "activeIds": [
+          "build",
+          "cdn"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "private-user",
+          "server",
+          "private-html"
+        ],
+        "values": {
+          "cdn": "/docs/css.html ready"
+        },
+        "activeEdgeIds": [
+          "build-cdn"
+        ]
+      },
+      {
+        "label": "复用静态页",
+        "note": "不同访客直接获得同一份文档文件，不必每次运行页面服务器。",
+        "activeIds": [
+          "cdn",
+          "public-user"
+        ],
+        "doneIds": [
+          "build"
+        ],
+        "mutedIds": [
+          "private-user",
+          "server",
+          "private-html"
+        ],
+        "values": {
+          "public-user": "200 · cached HTML"
+        },
+        "activeEdgeIds": [
+          "cdn-public"
+        ]
+      },
+      {
+        "label": "账户请求到达",
+        "note": "账户页需要识别当前会话，不能把一位用户的 HTML 复用给另一位。",
+        "activeIds": [
+          "private-user",
+          "server"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "build",
+          "cdn",
+          "public-user"
+        ],
+        "values": {
+          "server": "session = user_17"
+        },
+        "activeEdgeIds": [
+          "private-server"
+        ]
+      },
+      {
+        "label": "请求时生成",
+        "note": "服务器读取当前余额并生成只对应这次请求的 HTML。",
+        "activeIds": [
+          "server",
+          "private-html"
+        ],
+        "doneIds": [
+          "private-user"
+        ],
+        "mutedIds": [
+          "build",
+          "cdn",
+          "public-user"
+        ],
+        "values": {
+          "private-html": "user_17 · ¥328"
+        },
+        "activeEdgeIds": [
+          "server-html"
+        ]
+      }
+    ],
+    "insight": "选择 SSG 或 SSR 的关键是数据何时变化、是否因用户而异，以及可否安全缓存。",
+    "quiz": {
+      "question": "每天更新一次、所有人内容相同的帮助文档更适合先考虑什么？",
+      "options": [
+        {
+          "label": "构建生成或定时再验证的静态页面",
+          "correct": true
+        },
+        {
+          "label": "每次请求都读取用户会话后生成",
+          "correct": false
+        },
+        {
+          "label": "把每位访客的文档存在独立数据库行",
+          "correct": false
+        }
+      ],
+      "success": "低频更新且公开一致的内容适合提前生成和缓存。",
+      "retry": "先看内容更新频率和个性化要求。"
+    },
+    "prompt": {
+      "title": "为页面选择生成方式",
+      "text": "请按页面列出数据更新时间、是否依赖用户身份、首屏是否可缓存、允许的陈旧时间和服务器成本。分别判断构建生成、请求时生成、客户端获取或组合方案，并说明缓存键与失效条件。"
+    },
+    "sources": [
+      {
+        "url": "https://nextjs.org/docs/app/getting-started/caching-and-revalidating",
+        "label": "Next.js · Caching and revalidating",
+        "note": "渲染模式与框架行为"
+      }
+    ]
+  },
+  {
+    "slug": "deploy",
+    "lead": "本地能打开的网站，怎样变成团队可访问、出问题还能退回上一版的服务？",
+    "definition": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查和流量切换。",
+    "boundary": "命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "一个版本从提交到接收真实流量",
+    "actionLabel": "推进发布",
+    "actors": [
+      {
+        "id": "commit",
+        "label": "提交版本",
+        "detail": "v1.8.0 · a31f2c",
+        "icon": "git",
+        "group": "来源"
+      },
+      {
+        "id": "build",
+        "label": "构建",
+        "detail": "安装、测试、打包",
+        "icon": "gear",
+        "group": "流水线"
+      },
+      {
+        "id": "artifact",
+        "label": "不可变制品",
+        "detail": "等待生成",
+        "icon": "package",
+        "group": "制品"
+      },
+      {
+        "id": "environment",
+        "label": "dev 环境",
+        "detail": "等待部署",
+        "icon": "cloud",
+        "group": "环境"
+      },
+      {
+        "id": "health",
+        "label": "健康检查",
+        "detail": "尚未运行",
+        "icon": "shield",
+        "group": "验证"
+      },
+      {
+        "id": "traffic",
+        "label": "访问流量",
+        "detail": "仍指向 v1.7.2",
+        "icon": "network",
+        "group": "切换"
+      }
+    ],
+    "edges": [
+      {
+        "id": "commit-build",
+        "from": "commit",
+        "to": "build",
+        "label": "触发构建"
+      },
+      {
+        "id": "build-artifact",
+        "from": "build",
+        "to": "artifact",
+        "label": "产出制品"
+      },
+      {
+        "id": "artifact-env",
+        "from": "artifact",
+        "to": "environment",
+        "label": "部署同一制品"
+      },
+      {
+        "id": "env-health",
+        "from": "environment",
+        "to": "health",
+        "label": "检查服务"
+      },
+      {
+        "id": "health-traffic",
+        "from": "health",
+        "to": "traffic",
+        "label": "通过后切流"
+      }
+    ],
+    "frames": [
+      {
+        "label": "锁定版本",
+        "note": "发布记录明确提交号，后续构建和回滚都有可追踪来源。",
+        "activeIds": [
+          "commit"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "artifact",
+          "environment",
+          "health",
+          "traffic"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "构建制品",
+        "note": "流水线安装锁定依赖、运行检查并生成不可变包。",
+        "activeIds": [
+          "commit",
+          "build",
+          "artifact"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "environment",
+          "health",
+          "traffic"
+        ],
+        "values": {
+          "artifact": "v1.8.0 ready"
+        },
+        "activeEdgeIds": [
+          "commit-build",
+          "build-artifact"
+        ]
+      },
+      {
+        "label": "写入环境",
+        "note": "同一制品进入 dev，配置从环境安全注入。",
+        "activeIds": [
+          "artifact",
+          "environment"
+        ],
+        "doneIds": [
+          "commit",
+          "build"
+        ],
+        "mutedIds": [
+          "health",
+          "traffic"
+        ],
+        "values": {
+          "environment": "v1.8.0 running"
+        },
+        "activeEdgeIds": [
+          "artifact-env"
+        ]
+      },
+      {
+        "label": "实际验证",
+        "note": "健康检查和核心流程冒烟确认服务已启动并能正常工作。",
+        "activeIds": [
+          "environment",
+          "health"
+        ],
+        "doneIds": [
+          "commit",
+          "build",
+          "artifact"
+        ],
+        "mutedIds": [
+          "traffic"
+        ],
+        "values": {
+          "health": "HTTP 200 · login ok"
+        },
+        "activeEdgeIds": [
+          "env-health"
+        ]
+      },
+      {
+        "label": "切换流量",
+        "note": "验证通过才把访问流量指向新版本，并保留上一制品。",
+        "activeIds": [
+          "health",
+          "traffic"
+        ],
+        "doneIds": [
+          "commit",
+          "build",
+          "artifact",
+          "environment"
+        ],
+        "mutedIds": [],
+        "values": {
+          "traffic": "100% → v1.8.0"
+        },
+        "activeEdgeIds": [
+          "health-traffic"
+        ]
+      },
+      {
+        "label": "准备回滚",
+        "note": "若关键指标异常，流量可以退回已验证的 v1.7.2。",
+        "activeIds": [
+          "traffic",
+          "artifact"
+        ],
+        "doneIds": [
+          "commit",
+          "build",
+          "environment",
+          "health"
+        ],
+        "mutedIds": [],
+        "values": {
+          "artifact": "v1.7.2 retained",
+          "traffic": "rollback ready"
+        },
+        "activeEdgeIds": [
+          "artifact-env",
+          "health-traffic"
+        ]
+      }
+    ],
+    "insight": "可发布版本必须同时具备可追踪制品、真实验证和明确回滚路径。",
+    "quiz": {
+      "question": "构建完成且进程已启动，可以直接宣布上线成功吗？",
+      "options": [
+        {
+          "label": "不能，还要完成健康检查和核心流程冒烟",
+          "correct": true
+        },
+        {
+          "label": "可以，进程存在就代表业务可用",
+          "correct": false
+        },
+        {
+          "label": "可以，只要日志里没有红字",
+          "correct": false
+        }
+      ],
+      "success": "部署状态和用户可用性需要不同证据。",
+      "retry": "启动只证明进程运行，不证明依赖、权限和业务流程正确。"
+    },
+    "prompt": {
+      "title": "整理一次可回滚的部署流程",
+      "text": "请列出本次发布的提交号、构建制品、目标环境、配置差异、数据库迁移、健康检查、核心冒烟、流量切换、监控指标和回滚触发条件。每个阶段写明可验证证据，不把命令返回成功当成最终上线结论。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions",
+        "label": "GitHub Docs · Deploying with Actions",
+        "note": "协作流程与平台行为"
+      }
+    ]
+  },
+  {
+    "slug": "library",
+    "lead": "只需要格式化一个日期，是否值得引入一个覆盖时区、日历和国际化的大工具包？",
+    "definition": "库把一组相关能力封装为可调用接口，项目通过依赖管理安装并在需要的位置主动使用。",
+    "boundary": "引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "sceneKind": "assembly",
+    "sceneTitle": "同一个日期需求的三种实现成本",
+    "actionLabel": "比较方案",
+    "actors": [
+      {
+        "id": "need",
+        "label": "实际需求",
+        "detail": "显示 2026-08-31",
+        "icon": "clock",
+        "group": "需求"
+      },
+      {
+        "id": "native",
+        "label": "Intl.DateTimeFormat",
+        "detail": "运行时原生能力",
+        "icon": "gear",
+        "group": "原生方案"
+      },
+      {
+        "id": "small-lib",
+        "label": "轻量日期库",
+        "detail": "新增 8 kB 示例",
+        "icon": "package",
+        "group": "小库"
+      },
+      {
+        "id": "large-lib",
+        "label": "通用工具包",
+        "detail": "新增 72 kB 示例",
+        "icon": "package",
+        "group": "大库"
+      },
+      {
+        "id": "maintenance",
+        "label": "维护面",
+        "detail": "升级与漏洞检查",
+        "icon": "shield",
+        "group": "长期成本"
+      }
+    ],
+    "edges": [
+      {
+        "id": "need-native",
+        "from": "need",
+        "to": "native",
+        "label": "原生满足"
+      },
+      {
+        "id": "need-small",
+        "from": "need",
+        "to": "small-lib",
+        "label": "小库满足"
+      },
+      {
+        "id": "need-large",
+        "from": "need",
+        "to": "large-lib",
+        "label": "通用实现"
+      },
+      {
+        "id": "libs-maintenance",
+        "from": "large-lib",
+        "to": "maintenance",
+        "label": "持续维护"
+      }
+    ],
+    "frames": [
+      {
+        "label": "限定需求",
+        "note": "当前只要求按中文格式显示一个日期，不处理复杂时区运算。",
+        "activeIds": [
+          "need"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "native",
+          "small-lib",
+          "large-lib",
+          "maintenance"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "检查原生能力",
+        "note": "目标运行时已经提供 Intl.DateTimeFormat，可以满足当前格式化。",
+        "activeIds": [
+          "need",
+          "native"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "small-lib",
+          "large-lib",
+          "maintenance"
+        ],
+        "values": {
+          "native": "无需新增依赖"
+        },
+        "activeEdgeIds": [
+          "need-native"
+        ]
+      },
+      {
+        "label": "评估小库",
+        "note": "若随后需要日期计算，小库可能提供更清楚的 API，但仍要评估更新状态。",
+        "activeIds": [
+          "need",
+          "small-lib"
+        ],
+        "doneIds": [
+          "native"
+        ],
+        "mutedIds": [
+          "large-lib"
+        ],
+        "values": {
+          "small-lib": "满足计算 · 新增依赖"
+        },
+        "activeEdgeIds": [
+          "need-small"
+        ]
+      },
+      {
+        "label": "发现过量能力",
+        "note": "通用包的大部分能力不会使用，却进入下载和升级范围。",
+        "activeIds": [
+          "large-lib",
+          "maintenance"
+        ],
+        "doneIds": [
+          "need"
+        ],
+        "mutedIds": [
+          "native",
+          "small-lib"
+        ],
+        "values": {
+          "large-lib": "仅用 1 个函数",
+          "maintenance": "新增供应链检查"
+        },
+        "activeEdgeIds": [
+          "need-large",
+          "libs-maintenance"
+        ]
+      },
+      {
+        "label": "形成选择",
+        "note": "当前采用原生 API，并把未来需要时区计算列为重新评估条件。",
+        "activeIds": [
+          "native",
+          "maintenance"
+        ],
+        "doneIds": [
+          "need"
+        ],
+        "mutedIds": [
+          "large-lib"
+        ],
+        "values": {
+          "maintenance": "触发条件：复杂时区需求"
+        },
+        "activeEdgeIds": [
+          "need-native"
+        ]
+      }
+    ],
+    "insight": "选择库要比较实际缺口和长期成本，不以“现成”替代适用性判断。",
+    "quiz": {
+      "question": "一个库功能合适，但两年没有维护且有未修复漏洞，应该怎样处理？",
+      "options": [
+        {
+          "label": "评估替代方案或把必要能力收敛到可维护范围",
+          "correct": true
+        },
+        {
+          "label": "只要安装成功就继续使用",
+          "correct": false
+        },
+        {
+          "label": "把版本号隐藏起来",
+          "correct": false
+        }
+      ],
+      "success": "维护状态与供应链风险属于依赖选择的一部分。",
+      "retry": "功能可用不能覆盖已知安全和维护问题。"
+    },
+    "prompt": {
+      "title": "判断是否需要新增依赖库",
+      "text": "请说明当前能力缺口，比较运行时原生 API、少量自有实现和候选库。对候选库检查实际使用范围、包体积、维护频率、许可证、漏洞、间接依赖和替换成本，并写明何种需求变化会触发重新选择。"
+    },
+    "sources": [
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat",
+        "label": "MDN · Intl.DateTimeFormat",
+        "note": "浏览器行为与常见用法"
+      },
+      {
+        "url": "https://docs.npmjs.com/about-audit-reports",
+        "label": "npm Docs · Audit reports",
+        "note": "包管理命令与文件语义"
+      }
+    ]
+  },
+  {
+    "slug": "runtime",
+    "lead": "同一行 document.querySelector 在浏览器可用，放到 Node.js 为什么会报 document 未定义？",
+    "definition": "运行时加载并执行语言代码，同时提供内存、调度、模块和宿主 API；不同环境提供的接口并不相同。",
+    "boundary": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "sceneKind": "compare",
+    "sceneTitle": "同一段 JavaScript 在两个运行时中的可用接口",
+    "actionLabel": "换个环境运行",
+    "actors": [
+      {
+        "id": "code",
+        "label": "同一段代码",
+        "detail": "document.querySelector('h1')",
+        "icon": "code",
+        "group": "语言"
+      },
+      {
+        "id": "browser",
+        "label": "浏览器运行时",
+        "detail": "提供 window 与 document",
+        "icon": "browser",
+        "group": "浏览器"
+      },
+      {
+        "id": "dom",
+        "label": "DOM API",
+        "detail": "找到 h1 节点",
+        "icon": "layout",
+        "group": "浏览器"
+      },
+      {
+        "id": "node",
+        "label": "Node.js 运行时",
+        "detail": "没有页面 document",
+        "icon": "server",
+        "group": "服务端"
+      },
+      {
+        "id": "filesystem",
+        "label": "文件系统 API",
+        "detail": "fs.readFile 可用",
+        "icon": "file",
+        "group": "服务端"
+      }
+    ],
+    "edges": [
+      {
+        "id": "code-browser",
+        "from": "code",
+        "to": "browser",
+        "label": "在浏览器执行"
+      },
+      {
+        "id": "browser-dom",
+        "from": "browser",
+        "to": "dom",
+        "label": "调用 Web API"
+      },
+      {
+        "id": "code-node",
+        "from": "code",
+        "to": "node",
+        "label": "在 Node 执行"
+      },
+      {
+        "id": "node-fs",
+        "from": "node",
+        "to": "filesystem",
+        "label": "调用宿主 API"
+      }
+    ],
+    "frames": [
+      {
+        "label": "检查语法",
+        "note": "这行 JavaScript 语法本身合法，问题不在解析阶段。",
+        "activeIds": [
+          "code"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "browser",
+          "dom",
+          "node",
+          "filesystem"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "浏览器执行",
+        "note": "浏览器提供 document，查询能返回当前页面的 h1。",
+        "activeIds": [
+          "code",
+          "browser",
+          "dom"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "node",
+          "filesystem"
+        ],
+        "values": {
+          "dom": "<h1>VibePolaris</h1>"
+        },
+        "activeEdgeIds": [
+          "code-browser",
+          "browser-dom"
+        ]
+      },
+      {
+        "label": "Node.js 执行",
+        "note": "Node.js 没有页面文档，运行到 document 时抛出 ReferenceError。",
+        "activeIds": [
+          "code",
+          "node"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "browser",
+          "dom",
+          "filesystem"
+        ],
+        "values": {
+          "node": "ReferenceError: document is not defined"
+        },
+        "activeEdgeIds": [
+          "code-node"
+        ]
+      },
+      {
+        "label": "使用本环境接口",
+        "note": "Node.js 可以读文件，但这项能力不是 JavaScript 语言统一提供的。",
+        "activeIds": [
+          "node",
+          "filesystem"
+        ],
+        "doneIds": [
+          "code"
+        ],
+        "mutedIds": [
+          "browser",
+          "dom"
+        ],
+        "values": {
+          "filesystem": "fs.readFile('./index.html')"
+        },
+        "activeEdgeIds": [
+          "node-fs"
+        ]
+      }
+    ],
+    "insight": "先区分语言能力和宿主能力，才能判断代码能否在目标环境运行。",
+    "quiz": {
+      "question": "fetch 在新版本 Node.js 可用，是否说明所有 Node.js 版本都可直接调用？",
+      "options": [
+        {
+          "label": "不说明，还要检查目标版本和兼容范围",
+          "correct": true
+        },
+        {
+          "label": "说明，运行时版本不会影响 API",
+          "correct": false
+        },
+        {
+          "label": "说明，因为 fetch 属于 CSS",
+          "correct": false
+        }
+      ],
+      "success": "运行时能力会随版本变化，部署环境必须明确。",
+      "retry": "同一种运行时的不同版本也可能提供不同 API。"
+    },
+    "prompt": {
+      "title": "检查代码的运行时依赖",
+      "text": "请标出这段代码使用的语言内置对象、浏览器 API、Node.js API和第三方库，并核对目标运行时版本。对缺失能力说明应改为条件加载、服务端/客户端边界调整、polyfill 或替代接口中的哪一种。"
+    },
+    "sources": [
+      {
+        "url": "https://nodejs.org/api/globals.html",
+        "label": "Node.js · Globals",
+        "note": "Node.js 运行时行为"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document",
+        "label": "MDN · Document",
+        "note": "浏览器行为与常见用法"
+      }
+    ]
+  },
+  {
+    "slug": "package",
+    "lead": "两台电脑都运行 npm install，为什么没有锁文件时可能得到不同的间接依赖版本？",
+    "definition": "包管理器读取依赖范围，解析完整依赖树，下载包并用锁文件记录确定版本与完整性。",
+    "boundary": "锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "sceneKind": "tree",
+    "sceneTitle": "package.json 怎样解析成可复现的依赖树",
+    "actionLabel": "继续安装",
+    "actors": [
+      {
+        "id": "manifest",
+        "label": "package.json",
+        "detail": "ui-kit: ^2.3.0",
+        "icon": "file",
+        "group": "声明"
+      },
+      {
+        "id": "resolver",
+        "label": "版本解析器",
+        "detail": "查询可用版本",
+        "icon": "search",
+        "group": "解析"
+      },
+      {
+        "id": "direct",
+        "label": "ui-kit 2.5.1",
+        "detail": "直接依赖",
+        "icon": "package",
+        "group": "树"
+      },
+      {
+        "id": "transitive",
+        "label": "color-utils 1.4.2",
+        "detail": "间接依赖",
+        "icon": "package",
+        "group": "树"
+      },
+      {
+        "id": "lockfile",
+        "label": "package-lock.json",
+        "detail": "尚未记录",
+        "icon": "key",
+        "group": "锁定"
+      },
+      {
+        "id": "install",
+        "label": "node_modules",
+        "detail": "等待安装",
+        "icon": "database",
+        "group": "落地"
+      }
+    ],
+    "edges": [
+      {
+        "id": "manifest-resolver",
+        "from": "manifest",
+        "to": "resolver",
+        "label": "读取范围"
+      },
+      {
+        "id": "resolver-direct",
+        "from": "resolver",
+        "to": "direct",
+        "label": "选择版本"
+      },
+      {
+        "id": "direct-transitive",
+        "from": "direct",
+        "to": "transitive",
+        "label": "继续解析"
+      },
+      {
+        "id": "resolver-lock",
+        "from": "resolver",
+        "to": "lockfile",
+        "label": "记录精确树"
+      },
+      {
+        "id": "lock-install",
+        "from": "lockfile",
+        "to": "install",
+        "label": "按锁文件安装"
+      }
+    ],
+    "frames": [
+      {
+        "label": "读取范围",
+        "note": "清单允许安装 2.x 中满足 ^2.3.0 的版本。",
+        "activeIds": [
+          "manifest",
+          "resolver"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "direct",
+          "transitive",
+          "lockfile",
+          "install"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "manifest-resolver"
+        ]
+      },
+      {
+        "label": "选择直接依赖",
+        "note": "解析器根据仓库当前内容选择 ui-kit 2.5.1。",
+        "activeIds": [
+          "resolver",
+          "direct"
+        ],
+        "doneIds": [
+          "manifest"
+        ],
+        "mutedIds": [
+          "transitive",
+          "lockfile",
+          "install"
+        ],
+        "values": {
+          "direct": "2.5.1"
+        },
+        "activeEdgeIds": [
+          "resolver-direct"
+        ]
+      },
+      {
+        "label": "展开间接依赖",
+        "note": "ui-kit 自己依赖 color-utils，项目也会把它带进依赖树。",
+        "activeIds": [
+          "direct",
+          "transitive"
+        ],
+        "doneIds": [
+          "manifest",
+          "resolver"
+        ],
+        "mutedIds": [
+          "lockfile",
+          "install"
+        ],
+        "values": {
+          "transitive": "1.4.2"
+        },
+        "activeEdgeIds": [
+          "direct-transitive"
+        ]
+      },
+      {
+        "label": "写入锁文件",
+        "note": "精确版本、来源和完整性摘要被记录，后续安装不再重新漂移。",
+        "activeIds": [
+          "resolver",
+          "lockfile"
+        ],
+        "doneIds": [
+          "direct",
+          "transitive"
+        ],
+        "mutedIds": [
+          "install"
+        ],
+        "values": {
+          "lockfile": "ui-kit 2.5.1 → color-utils 1.4.2"
+        },
+        "activeEdgeIds": [
+          "resolver-lock"
+        ]
+      },
+      {
+        "label": "复现安装",
+        "note": "另一台电脑读取锁文件，安装同一棵依赖树。",
+        "activeIds": [
+          "lockfile",
+          "install"
+        ],
+        "doneIds": [
+          "manifest",
+          "resolver",
+          "direct",
+          "transitive"
+        ],
+        "mutedIds": [],
+        "values": {
+          "install": "tree verified"
+        },
+        "activeEdgeIds": [
+          "lock-install"
+        ]
+      }
+    ],
+    "insight": "清单表达允许范围，锁文件记录一次解析出的完整精确结果。",
+    "quiz": {
+      "question": "package.json 没变，只提交了更新后的锁文件，是否仍可能影响运行结果？",
+      "options": [
+        {
+          "label": "可能，间接依赖或精确版本已经变化",
+          "correct": true
+        },
+        {
+          "label": "不可能，锁文件从不参与安装",
+          "correct": false
+        },
+        {
+          "label": "不可能，只有源码文件会影响结果",
+          "correct": false
+        }
+      ],
+      "success": "锁文件是实际依赖树的重要变更，应与代码一样评审。",
+      "retry": "安装器会按锁文件选择精确包版本。"
+    },
+    "prompt": {
+      "title": "检查一次依赖升级",
+      "text": "请比较升级前后的直接依赖、间接依赖、锁文件、许可证、漏洞和运行时要求。指出真正进入生产包的版本变化，运行相关测试，并说明出现兼容问题时如何恢复上一棵依赖树。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
+        "label": "npm Docs · package-lock.json",
+        "note": "包管理命令与文件语义"
+      }
+    ]
+  },
+  {
+    "slug": "typescript",
+    "lead": "函数声明只接收数字，却被传入字符串时，怎样在代码运行前发现？",
+    "definition": "TypeScript 在 JavaScript 上增加静态类型检查，编译阶段分析变量、函数和对象的使用是否符合声明。",
+    "boundary": "类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "一个参数错误在编译阶段被拦住",
+    "actionLabel": "运行检查",
+    "actors": [
+      {
+        "id": "source",
+        "label": "TypeScript 源码",
+        "detail": "add('2', 3)",
+        "icon": "code",
+        "group": "输入"
+      },
+      {
+        "id": "declaration",
+        "label": "函数声明",
+        "detail": "add(a: number, b: number)",
+        "icon": "file",
+        "group": "类型"
+      },
+      {
+        "id": "checker",
+        "label": "类型检查器",
+        "detail": "比较实参与形参",
+        "icon": "search",
+        "group": "编译"
+      },
+      {
+        "id": "diagnostic",
+        "label": "诊断",
+        "detail": "等待结果",
+        "icon": "message",
+        "group": "反馈"
+      },
+      {
+        "id": "javascript",
+        "label": "JavaScript 输出",
+        "detail": "尚未生成",
+        "icon": "gear",
+        "group": "产物"
+      },
+      {
+        "id": "runtime",
+        "label": "运行时输入",
+        "detail": "API 数据未知",
+        "icon": "server",
+        "group": "运行"
+      }
+    ],
+    "edges": [
+      {
+        "id": "source-checker",
+        "from": "source",
+        "to": "checker",
+        "label": "检查调用"
+      },
+      {
+        "id": "declaration-checker",
+        "from": "declaration",
+        "to": "checker",
+        "label": "提供约束"
+      },
+      {
+        "id": "checker-diagnostic",
+        "from": "checker",
+        "to": "diagnostic",
+        "label": "报告错误"
+      },
+      {
+        "id": "checker-js",
+        "from": "checker",
+        "to": "javascript",
+        "label": "通过后输出"
+      },
+      {
+        "id": "runtime-js",
+        "from": "runtime",
+        "to": "javascript",
+        "label": "运行时进入"
+      }
+    ],
+    "frames": [
+      {
+        "label": "读取声明",
+        "note": "检查器知道两个参数都必须是 number。",
+        "activeIds": [
+          "declaration",
+          "checker"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "diagnostic",
+          "javascript",
+          "runtime"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "declaration-checker"
+        ]
+      },
+      {
+        "label": "检查调用",
+        "note": "第一个实参是 string，与 number 约束不一致。",
+        "activeIds": [
+          "source",
+          "checker"
+        ],
+        "doneIds": [
+          "declaration"
+        ],
+        "mutedIds": [
+          "javascript",
+          "runtime"
+        ],
+        "values": {
+          "source": "'2' is string"
+        },
+        "activeEdgeIds": [
+          "source-checker"
+        ]
+      },
+      {
+        "label": "给出诊断",
+        "note": "错误定位到调用位置，在程序运行前暴露。",
+        "activeIds": [
+          "checker",
+          "diagnostic"
+        ],
+        "doneIds": [
+          "source",
+          "declaration"
+        ],
+        "mutedIds": [
+          "javascript",
+          "runtime"
+        ],
+        "values": {
+          "diagnostic": "TS2345 · string 不能赋给 number"
+        },
+        "activeEdgeIds": [
+          "checker-diagnostic"
+        ]
+      },
+      {
+        "label": "修正并输出",
+        "note": "把参数改为数字后通过检查，类型标记不会进入最终 JavaScript。",
+        "activeIds": [
+          "source",
+          "javascript"
+        ],
+        "doneIds": [
+          "checker",
+          "diagnostic"
+        ],
+        "mutedIds": [
+          "runtime"
+        ],
+        "values": {
+          "source": "add(2, 3)",
+          "javascript": "add(2, 3)"
+        },
+        "activeEdgeIds": [
+          "checker-js"
+        ]
+      },
+      {
+        "label": "验证外部数据",
+        "note": "API 返回值绕过静态假设进入运行时，仍需 schema 校验。",
+        "activeIds": [
+          "runtime",
+          "javascript"
+        ],
+        "doneIds": [
+          "source",
+          "declaration",
+          "checker"
+        ],
+        "mutedIds": [],
+        "values": {
+          "runtime": "unknown → validate"
+        },
+        "activeEdgeIds": [
+          "runtime-js"
+        ]
+      }
+    ],
+    "insight": "TypeScript 能检查代码中的类型关系，但不能替代运行时对外部数据的验证。",
+    "quiz": {
+      "question": "把 API 响应直接断言为 User，是否证明运行时数据一定符合 User？",
+      "options": [
+        {
+          "label": "不能，断言不会验证真实数据",
+          "correct": true
+        },
+        {
+          "label": "能，类型在服务器上会自动校验",
+          "correct": false
+        },
+        {
+          "label": "能，只要编辑器没有红线",
+          "correct": false
+        }
+      ],
+      "success": "外部输入应先作为 unknown，再通过运行时规则验证。",
+      "retry": "静态类型信息在运行时通常不存在。"
+    },
+    "prompt": {
+      "title": "检查一组 TypeScript 类型边界",
+      "text": "请标出数据从用户输入、网络响应、存储或环境变量进入程序的位置。内部结构使用精确类型，外部数据先按 unknown 处理并补运行时校验；删除掩盖问题的 any 和无依据断言，再说明检查能在编译期还是运行期发现错误。"
+    },
+    "sources": [
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/basic-types.html",
+        "label": "TypeScript Handbook · The Basics",
+        "note": "类型系统与编译行为"
+      }
+    ]
+  },
+  {
+    "slug": "repo-commit",
+    "lead": "文件已经保存到磁盘，为什么还要暂存并创建一次 Git 提交？",
+    "definition": "工作区保存正在编辑的文件；暂存区选择本次快照内容；提交把所选内容、父提交和说明写入仓库历史。",
+    "boundary": "本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
+    "sceneKind": "timeline",
+    "sceneTitle": "一次 CSS 修改怎样成为可追踪提交",
+    "actionLabel": "推进修改",
+    "actors": [
+      {
+        "id": "working",
+        "label": "工作区",
+        "detail": "styles.css 已修改",
+        "icon": "code",
+        "group": "编辑"
+      },
+      {
+        "id": "diff",
+        "label": "差异",
+        "detail": "+8 / -2",
+        "icon": "search",
+        "group": "检查"
+      },
+      {
+        "id": "staging",
+        "label": "暂存区",
+        "detail": "尚未选择",
+        "icon": "package",
+        "group": "选择"
+      },
+      {
+        "id": "commit",
+        "label": "提交对象",
+        "detail": "等待创建",
+        "icon": "git",
+        "group": "历史"
+      },
+      {
+        "id": "branch",
+        "label": "当前分支",
+        "detail": "feat/VBP-001",
+        "icon": "git",
+        "group": "引用"
+      },
+      {
+        "id": "remote",
+        "label": "远程仓库",
+        "detail": "尚未推送",
+        "icon": "cloud",
+        "group": "同步"
+      }
+    ],
+    "edges": [
+      {
+        "id": "working-diff",
+        "from": "working",
+        "to": "diff",
+        "label": "查看变化"
+      },
+      {
+        "id": "diff-staging",
+        "from": "diff",
+        "to": "staging",
+        "label": "选择文件"
+      },
+      {
+        "id": "staging-commit",
+        "from": "staging",
+        "to": "commit",
+        "label": "创建快照"
+      },
+      {
+        "id": "commit-branch",
+        "from": "commit",
+        "to": "branch",
+        "label": "移动引用"
+      },
+      {
+        "id": "branch-remote",
+        "from": "branch",
+        "to": "remote",
+        "label": "另行推送"
+      }
+    ],
+    "frames": [
+      {
+        "label": "保存文件",
+        "note": "修改存在于工作区，Git 能看到变化，但历史还没有新节点。",
+        "activeIds": [
+          "working"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "staging",
+          "commit",
+          "branch",
+          "remote"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "检查差异",
+        "note": "逐段确认这次修改只包含当前任务。",
+        "activeIds": [
+          "working",
+          "diff"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "commit",
+          "remote"
+        ],
+        "values": {
+          "diff": "响应式规则 + 测试"
+        },
+        "activeEdgeIds": [
+          "working-diff"
+        ]
+      },
+      {
+        "label": "选择快照",
+        "note": "把相关文件加入暂存区，无关调试改动仍留在工作区。",
+        "activeIds": [
+          "diff",
+          "staging"
+        ],
+        "doneIds": [
+          "working"
+        ],
+        "mutedIds": [
+          "commit",
+          "remote"
+        ],
+        "values": {
+          "staging": "2 files staged"
+        },
+        "activeEdgeIds": [
+          "diff-staging"
+        ]
+      },
+      {
+        "label": "创建提交",
+        "note": "Git 记录暂存内容、父提交和可追踪的任务说明。",
+        "activeIds": [
+          "staging",
+          "commit",
+          "branch"
+        ],
+        "doneIds": [
+          "working",
+          "diff"
+        ],
+        "mutedIds": [
+          "remote"
+        ],
+        "values": {
+          "commit": "a31f2c · fix(VBP-001)",
+          "branch": "→ a31f2c"
+        },
+        "activeEdgeIds": [
+          "staging-commit",
+          "commit-branch"
+        ]
+      },
+      {
+        "label": "决定推送",
+        "note": "提交仍只在本地；推送是把分支引用同步到远程的独立动作。",
+        "activeIds": [
+          "branch",
+          "remote"
+        ],
+        "doneIds": [
+          "working",
+          "diff",
+          "staging",
+          "commit"
+        ],
+        "mutedIds": [],
+        "values": {
+          "remote": "origin/feat/VBP-001"
+        },
+        "activeEdgeIds": [
+          "branch-remote"
+        ]
+      }
+    ],
+    "insight": "保存、暂存、提交和推送是四个不同边界，分别回答修改在哪里、选了什么、如何记录和是否共享。",
+    "quiz": {
+      "question": "工作区同时有文案修改和数据库迁移，本次只修文案，应该怎样提交？",
+      "options": [
+        {
+          "label": "只暂存文案相关差异，并单独创建提交",
+          "correct": true
+        },
+        {
+          "label": "把所有变化一次提交，说明里不提迁移",
+          "correct": false
+        },
+        {
+          "label": "删除整个工作区后重做",
+          "correct": false
+        }
+      ],
+      "success": "提交应形成可理解、可回退的任务单位。",
+      "retry": "同一目录中的变化不一定属于同一提交。"
+    },
+    "prompt": {
+      "title": "整理一次可追踪的提交",
+      "text": "请先查看工作区状态和逐段差异，只选择与当前任务相关的文件或代码块。提交说明包含对应任务编号和实际变化；提交后重新检查剩余未提交内容，并说明是否需要推送或创建评审。"
+    },
+    "sources": [
+      {
+        "url": "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
+        "label": "Pro Git · Recording Changes",
+        "note": "命令语义与状态变化"
+      }
+    ]
+  },
+  {
+    "slug": "branch",
+    "lead": "新功能尚未完成时，怎样让主线继续稳定，同时保留与最新开发代码合并的能力？",
+    "definition": "Git 分支是指向提交的可移动引用；在某分支创建提交只会移动该引用，其他分支仍指向原提交。",
+    "boundary": "分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
+    "sceneKind": "branch",
+    "sceneTitle": "功能分支怎样离开主线并合回",
+    "actionLabel": "创建下一提交",
+    "actors": [
+      {
+        "id": "base",
+        "label": "共同提交 A",
+        "detail": "稳定起点",
+        "icon": "git",
+        "group": "历史"
+      },
+      {
+        "id": "dev",
+        "label": "dev",
+        "detail": "指向 A",
+        "icon": "git",
+        "group": "主线"
+      },
+      {
+        "id": "feature",
+        "label": "feat/VBP-001",
+        "detail": "从 A 创建",
+        "icon": "git",
+        "group": "功能线"
+      },
+      {
+        "id": "commit-b",
+        "label": "提交 B",
+        "detail": "页面改动",
+        "icon": "code",
+        "group": "功能线"
+      },
+      {
+        "id": "commit-c",
+        "label": "提交 C",
+        "detail": "测试修正",
+        "icon": "shield",
+        "group": "功能线"
+      },
+      {
+        "id": "merge",
+        "label": "合并结果",
+        "detail": "等待验证",
+        "icon": "network",
+        "group": "回到主线"
+      }
+    ],
+    "edges": [
+      {
+        "id": "base-dev",
+        "from": "base",
+        "to": "dev",
+        "label": "主线引用"
+      },
+      {
+        "id": "base-feature",
+        "from": "base",
+        "to": "feature",
+        "label": "创建分支"
+      },
+      {
+        "id": "feature-b",
+        "from": "feature",
+        "to": "commit-b",
+        "label": "提交修改"
+      },
+      {
+        "id": "b-c",
+        "from": "commit-b",
+        "to": "commit-c",
+        "label": "继续提交"
+      },
+      {
+        "id": "c-merge",
+        "from": "commit-c",
+        "to": "merge",
+        "label": "评审后合并"
+      }
+    ],
+    "frames": [
+      {
+        "label": "共同起点",
+        "note": "dev 和新功能都从已验证的提交 A 开始。",
+        "activeIds": [
+          "base",
+          "dev"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "commit-b",
+          "commit-c",
+          "merge"
+        ],
+        "values": {
+          "dev": "A"
+        },
+        "activeEdgeIds": [
+          "base-dev"
+        ]
+      },
+      {
+        "label": "创建引用",
+        "note": "功能分支只是新增一个指向 A 的可移动名称，不复制仓库。",
+        "activeIds": [
+          "base",
+          "feature"
+        ],
+        "doneIds": [
+          "dev"
+        ],
+        "mutedIds": [
+          "commit-b",
+          "commit-c",
+          "merge"
+        ],
+        "values": {
+          "feature": "A"
+        },
+        "activeEdgeIds": [
+          "base-feature"
+        ]
+      },
+      {
+        "label": "功能线前进",
+        "note": "提交 B 和 C 只推动功能分支，dev 仍停在 A。",
+        "activeIds": [
+          "feature",
+          "commit-b",
+          "commit-c"
+        ],
+        "doneIds": [
+          "base"
+        ],
+        "mutedIds": [
+          "merge"
+        ],
+        "values": {
+          "feature": "C",
+          "dev": "A"
+        },
+        "activeEdgeIds": [
+          "feature-b",
+          "b-c"
+        ]
+      },
+      {
+        "label": "主线也变化",
+        "note": "若 dev 出现新的提交，两个分支会形成分叉，需要先处理差异。",
+        "activeIds": [
+          "dev",
+          "feature",
+          "commit-c"
+        ],
+        "doneIds": [
+          "base"
+        ],
+        "mutedIds": [
+          "merge"
+        ],
+        "values": {
+          "dev": "D",
+          "feature": "C"
+        },
+        "activeEdgeIds": [
+          "base-dev",
+          "b-c"
+        ]
+      },
+      {
+        "label": "验证后合并",
+        "note": "处理冲突并通过测试后，合并结果同时包含主线和功能修改。",
+        "activeIds": [
+          "commit-c",
+          "merge",
+          "dev"
+        ],
+        "doneIds": [
+          "base",
+          "feature",
+          "commit-b"
+        ],
+        "mutedIds": [],
+        "values": {
+          "dev": "M · contains C + D",
+          "merge": "tests passed"
+        },
+        "activeEdgeIds": [
+          "c-merge"
+        ]
+      }
+    ],
+    "insight": "分支隔离的是提交引用，不隔离共同历史；合并前仍要面对双方真实差异。",
+    "quiz": {
+      "question": "功能分支和 dev 修改了同一行，Git 会自动判断哪一边业务正确吗？",
+      "options": [
+        {
+          "label": "不会，需要开发者理解差异并解决冲突",
+          "correct": true
+        },
+        {
+          "label": "会，分支名更长的一方获胜",
+          "correct": false
+        },
+        {
+          "label": "会，总是使用最后修改时间",
+          "correct": false
+        }
+      ],
+      "success": "Git 能发现文本冲突，但业务取舍仍需人工判断和测试。",
+      "retry": "版本控制不知道哪一份改动符合产品要求。"
+    },
+    "prompt": {
+      "title": "根据任务规划分支流程",
+      "text": "请从当前 dev 的明确提交创建包含任务编号的功能分支。开发期间记录主线变化，合并前检查提交差异、冲突区域和测试结果；说明采用 merge 或 rebase 的理由，并保留可追踪历史，不直接向保护分支推送。"
+    },
+    "sources": [
+      {
+        "url": "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html",
+        "label": "Pro Git · Branches in a Nutshell",
+        "note": "命令语义与状态变化"
+      }
+    ]
+  },
+  {
+    "slug": "mvp",
+    "lead": "课程产品第一版要验证“有人愿意学”，是否需要先做社区、排行榜和证书？",
+    "definition": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本，范围由要获得的证据决定。",
+    "boundary": "MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
+    "sceneKind": "assembly",
+    "sceneTitle": "一项课程假设怎样收敛成首版范围",
+    "actionLabel": "筛选下一项",
+    "actors": [
+      {
+        "id": "hypothesis",
+        "label": "关键假设",
+        "detail": "初学者愿意完成 15 分钟互动课",
+        "icon": "spark",
+        "group": "要验证"
+      },
+      {
+        "id": "lesson",
+        "label": "互动课程",
+        "detail": "讲解 + 练习 + 结果",
+        "icon": "layout",
+        "group": "核心"
+      },
+      {
+        "id": "progress",
+        "label": "学习进度",
+        "detail": "记录完成位置",
+        "icon": "chart",
+        "group": "核心"
+      },
+      {
+        "id": "community",
+        "label": "学习社区",
+        "detail": "讨论与关注",
+        "icon": "message",
+        "group": "候选"
+      },
+      {
+        "id": "certificate",
+        "label": "证书系统",
+        "detail": "模板与验证页",
+        "icon": "file",
+        "group": "候选"
+      },
+      {
+        "id": "evidence",
+        "label": "验证证据",
+        "detail": "完成率与访谈",
+        "icon": "search",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "hypothesis-lesson",
+        "from": "hypothesis",
+        "to": "lesson",
+        "label": "直接提供价值"
+      },
+      {
+        "id": "lesson-progress",
+        "from": "lesson",
+        "to": "progress",
+        "label": "记录完成"
+      },
+      {
+        "id": "progress-evidence",
+        "from": "progress",
+        "to": "evidence",
+        "label": "产生证据"
+      },
+      {
+        "id": "community-evidence",
+        "from": "community",
+        "to": "evidence",
+        "label": "非首轮必要"
+      },
+      {
+        "id": "certificate-evidence",
+        "from": "certificate",
+        "to": "evidence",
+        "label": "非首轮必要"
+      }
+    ],
+    "frames": [
+      {
+        "label": "写清假设",
+        "note": "要验证的是初学者是否愿意完成一次短课，而不是“产品是否受欢迎”。",
+        "activeIds": [
+          "hypothesis"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "lesson",
+          "progress",
+          "community",
+          "certificate",
+          "evidence"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "保留核心体验",
+        "note": "互动课程直接提供学习价值，必须能从开始走到结果。",
+        "activeIds": [
+          "hypothesis",
+          "lesson"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "community",
+          "certificate"
+        ],
+        "values": {
+          "lesson": "15 分钟完整流程"
+        },
+        "activeEdgeIds": [
+          "hypothesis-lesson"
+        ]
+      },
+      {
+        "label": "加入必要记录",
+        "note": "进度记录让用户能够继续，也能观察是否完成。",
+        "activeIds": [
+          "lesson",
+          "progress"
+        ],
+        "doneIds": [
+          "hypothesis"
+        ],
+        "mutedIds": [
+          "community",
+          "certificate"
+        ],
+        "values": {
+          "progress": "started → completed"
+        },
+        "activeEdgeIds": [
+          "lesson-progress"
+        ]
+      },
+      {
+        "label": "推迟旁支功能",
+        "note": "社区和证书不影响当前假设，进入后续候选而非首版。",
+        "activeIds": [
+          "community",
+          "certificate"
+        ],
+        "doneIds": [
+          "hypothesis",
+          "lesson",
+          "progress"
+        ],
+        "mutedIds": [],
+        "values": {
+          "community": "later",
+          "certificate": "later"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "收集证据",
+        "note": "完成率说明行为，访谈补充未完成的原因。",
+        "activeIds": [
+          "progress",
+          "evidence"
+        ],
+        "doneIds": [
+          "hypothesis",
+          "lesson"
+        ],
+        "mutedIds": [
+          "community",
+          "certificate"
+        ],
+        "values": {
+          "evidence": "完成率 + 5 次访谈"
+        },
+        "activeEdgeIds": [
+          "progress-evidence"
+        ]
+      }
+    ],
+    "insight": "MVP 的“最小”由验证目标决定，而不是把所有模块都做成缩水版。",
+    "quiz": {
+      "question": "首版支付流程可以因为是 MVP 而省略金额校验吗？",
+      "options": [
+        {
+          "label": "不可以，数据正确和安全属于核心完成度",
+          "correct": true
+        },
+        {
+          "label": "可以，MVP 不需要可用",
+          "correct": false
+        },
+        {
+          "label": "可以，只要按钮能点击",
+          "correct": false
+        }
+      ],
+      "success": "范围可以小，核心流程的基本质量不能省。",
+      "retry": "MVP 缩小的是验证范围，不是把风险留给用户。"
+    },
+    "prompt": {
+      "title": "确定一个 MVP 的验证范围",
+      "text": "请写出本次要验证的唯一关键假设、目标用户、核心使用场景和可观察证据。把功能分为直接产生核心价值、收集验证证据、必须满足的安全与正确性、可推迟四组，并说明每个保留项如何服务当前假设。"
+    },
+    "sources": [
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
+        "label": "GOV.UK Service Manual · Alpha phase",
+        "note": "服务设计与无障碍要求"
+      }
+    ]
+  },
+  {
+    "slug": "user-flow",
+    "lead": "用户从邮件链接进入重设密码后，链接过期、两次密码不一致和成功返回分别怎么走？",
+    "definition": "用户流程把入口、用户动作、系统反馈、条件分支和结束状态连接起来，描述完成一个目标的完整路径。",
+    "boundary": "用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "sceneKind": "branch",
+    "sceneTitle": "重设密码流程中的成功与恢复分支",
+    "actionLabel": "走下一节点",
+    "actors": [
+      {
+        "id": "email",
+        "label": "邮件入口",
+        "detail": "点击重设链接",
+        "icon": "message",
+        "group": "入口"
+      },
+      {
+        "id": "token-check",
+        "label": "链接校验",
+        "detail": "检查有效期与是否使用",
+        "icon": "shield",
+        "group": "系统"
+      },
+      {
+        "id": "form",
+        "label": "新密码表单",
+        "detail": "输入两次密码",
+        "icon": "layout",
+        "group": "操作"
+      },
+      {
+        "id": "expired",
+        "label": "链接过期",
+        "detail": "申请新邮件",
+        "icon": "clock",
+        "group": "恢复"
+      },
+      {
+        "id": "mismatch",
+        "label": "输入不一致",
+        "detail": "保留焦点并修改",
+        "icon": "search",
+        "group": "恢复"
+      },
+      {
+        "id": "success",
+        "label": "重设成功",
+        "detail": "返回登录并提示完成",
+        "icon": "spark",
+        "group": "结束"
+      }
+    ],
+    "edges": [
+      {
+        "id": "email-check",
+        "from": "email",
+        "to": "token-check",
+        "label": "打开链接"
+      },
+      {
+        "id": "check-form",
+        "from": "token-check",
+        "to": "form",
+        "label": "有效"
+      },
+      {
+        "id": "check-expired",
+        "from": "token-check",
+        "to": "expired",
+        "label": "过期"
+      },
+      {
+        "id": "form-mismatch",
+        "from": "form",
+        "to": "mismatch",
+        "label": "不一致"
+      },
+      {
+        "id": "mismatch-form",
+        "from": "mismatch",
+        "to": "form",
+        "label": "修正"
+      },
+      {
+        "id": "form-success",
+        "from": "form",
+        "to": "success",
+        "label": "提交成功"
+      }
+    ],
+    "frames": [
+      {
+        "label": "从邮件进入",
+        "note": "流程起点不是首页，而是带一次性 token 的邮件链接。",
+        "activeIds": [
+          "email"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "form",
+          "expired",
+          "mismatch",
+          "success"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "检查链接",
+        "note": "系统先判断 token 是否存在、未过期且未被使用。",
+        "activeIds": [
+          "email",
+          "token-check"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "mismatch",
+          "success"
+        ],
+        "values": {
+          "token-check": "valid"
+        },
+        "activeEdgeIds": [
+          "email-check"
+        ]
+      },
+      {
+        "label": "过期恢复",
+        "note": "过期时不展示无效表单，直接提供重新发送入口。",
+        "activeIds": [
+          "token-check",
+          "expired"
+        ],
+        "doneIds": [
+          "email"
+        ],
+        "mutedIds": [
+          "form",
+          "mismatch",
+          "success"
+        ],
+        "values": {
+          "expired": "发送新链接"
+        },
+        "activeEdgeIds": [
+          "check-expired"
+        ]
+      },
+      {
+        "label": "填写新密码",
+        "note": "有效链接进入表单，要求和错误在输入附近显示。",
+        "activeIds": [
+          "token-check",
+          "form"
+        ],
+        "doneIds": [
+          "email"
+        ],
+        "mutedIds": [
+          "expired",
+          "success"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "check-form"
+        ]
+      },
+      {
+        "label": "修正不一致",
+        "note": "两次输入不一致时保留已填内容，并把焦点放到确认字段。",
+        "activeIds": [
+          "form",
+          "mismatch"
+        ],
+        "doneIds": [
+          "token-check"
+        ],
+        "mutedIds": [
+          "expired",
+          "success"
+        ],
+        "values": {
+          "mismatch": "两次密码不同"
+        },
+        "activeEdgeIds": [
+          "form-mismatch",
+          "mismatch-form"
+        ]
+      },
+      {
+        "label": "完成并返回",
+        "note": "成功后 token 失效，用户回到登录并看到明确确认。",
+        "activeIds": [
+          "form",
+          "success"
+        ],
+        "doneIds": [
+          "email",
+          "token-check"
+        ],
+        "mutedIds": [
+          "expired",
+          "mismatch"
+        ],
+        "values": {
+          "success": "密码已更新 · 去登录"
+        },
+        "activeEdgeIds": [
+          "form-success"
+        ]
+      }
+    ],
+    "insight": "用户流程的价值在于把目标、系统判断和恢复路径放到同一张图里。",
+    "quiz": {
+      "question": "只画“邮件 → 表单 → 成功”是否足够评审重设密码？",
+      "options": [
+        {
+          "label": "不够，还缺链接过期、输入错误和返回路径",
+          "correct": true
+        },
+        {
+          "label": "足够，失败不属于用户流程",
+          "correct": false
+        },
+        {
+          "label": "足够，只要页面数量正确",
+          "correct": false
+        }
+      ],
+      "success": "异常分支决定用户能否从问题中恢复并完成目标。",
+      "retry": "页面列表不能替代条件与反馈。"
+    },
+    "prompt": {
+      "title": "补全一个用户流程",
+      "text": "请从用户真实入口开始，列出每个动作、系统判断、即时反馈、失败分支、取消、返回和完成状态。对每条中断路径补恢复入口，并检查最终是否回到用户原本要完成的任务。"
+    },
+    "sources": [
+      {
+        "url": "https://www.nngroup.com/articles/user-journeys-vs-user-flows/",
+        "label": "Nielsen Norman Group · Task Flows and User Flows",
+        "note": "用户研究与交互原则"
+      }
+    ]
+  },
+  {
+    "slug": "wireframe",
+    "lead": "品牌颜色还没确定，团队能否先判断页面应该放什么、谁先看到什么、从哪里继续？",
+    "definition": "线框图用低细节结构表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。",
+    "boundary": "线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "sceneKind": "transform",
+    "sceneTitle": "详情页从内容清单到可评审线框",
+    "actionLabel": "增加一层结构",
+    "actors": [
+      {
+        "id": "requirements",
+        "label": "内容清单",
+        "detail": "标题、价格、库存、购买",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "groups",
+        "label": "信息分组",
+        "detail": "商品信息 / 交易操作",
+        "icon": "layout",
+        "group": "结构"
+      },
+      {
+        "id": "hierarchy",
+        "label": "视觉层级",
+        "detail": "标题与价格先读",
+        "icon": "chart",
+        "group": "结构"
+      },
+      {
+        "id": "actions",
+        "label": "操作位置",
+        "detail": "主按钮靠近价格",
+        "icon": "component",
+        "group": "交互"
+      },
+      {
+        "id": "wireframe",
+        "label": "线框页面",
+        "detail": "可讨论的低细节布局",
+        "icon": "browser",
+        "group": "结果"
+      },
+      {
+        "id": "visual",
+        "label": "最终视觉",
+        "detail": "颜色、字体与图片未定",
+        "icon": "spark",
+        "group": "后续"
+      }
+    ],
+    "edges": [
+      {
+        "id": "requirements-groups",
+        "from": "requirements",
+        "to": "groups",
+        "label": "整理关系"
+      },
+      {
+        "id": "groups-hierarchy",
+        "from": "groups",
+        "to": "hierarchy",
+        "label": "确定先后"
+      },
+      {
+        "id": "hierarchy-actions",
+        "from": "hierarchy",
+        "to": "actions",
+        "label": "放置操作"
+      },
+      {
+        "id": "actions-wireframe",
+        "from": "actions",
+        "to": "wireframe",
+        "label": "组成页面"
+      },
+      {
+        "id": "wireframe-visual",
+        "from": "wireframe",
+        "to": "visual",
+        "label": "后续细化"
+      }
+    ],
+    "frames": [
+      {
+        "label": "列出内容",
+        "note": "先确认页面必须承载的真实信息和操作。",
+        "activeIds": [
+          "requirements"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "hierarchy",
+          "actions",
+          "wireframe",
+          "visual"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "建立分组",
+        "note": "把商品事实与购买操作分开，避免同一层级平铺。",
+        "activeIds": [
+          "requirements",
+          "groups"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "actions",
+          "wireframe",
+          "visual"
+        ],
+        "values": {
+          "groups": "信息区 + 操作区"
+        },
+        "activeEdgeIds": [
+          "requirements-groups"
+        ]
+      },
+      {
+        "label": "确定层级",
+        "note": "标题、价格和库存按决策顺序建立阅读重点。",
+        "activeIds": [
+          "groups",
+          "hierarchy"
+        ],
+        "doneIds": [
+          "requirements"
+        ],
+        "mutedIds": [
+          "visual"
+        ],
+        "values": {
+          "hierarchy": "标题 → 价格 → 库存"
+        },
+        "activeEdgeIds": [
+          "groups-hierarchy"
+        ]
+      },
+      {
+        "label": "放置操作",
+        "note": "主操作靠近会影响购买判断的信息，次操作降低强调。",
+        "activeIds": [
+          "hierarchy",
+          "actions"
+        ],
+        "doneIds": [
+          "groups"
+        ],
+        "mutedIds": [
+          "visual"
+        ],
+        "values": {
+          "actions": "购买主按钮 + 收藏次按钮"
+        },
+        "activeEdgeIds": [
+          "hierarchy-actions"
+        ]
+      },
+      {
+        "label": "形成线框",
+        "note": "团队可以评审结构和流程，但不把灰色框当成最终尺寸。",
+        "activeIds": [
+          "actions",
+          "wireframe"
+        ],
+        "doneIds": [
+          "requirements",
+          "groups",
+          "hierarchy"
+        ],
+        "mutedIds": [
+          "visual"
+        ],
+        "values": {
+          "wireframe": "结构可评审",
+          "visual": "尚未定稿"
+        },
+        "activeEdgeIds": [
+          "actions-wireframe"
+        ]
+      }
+    ],
+    "insight": "线框图先固定信息关系和操作位置，把视觉风格留到结构成立之后。",
+    "quiz": {
+      "question": "线框里用两行占位文字，能否证明最终中文标题不会换成五行？",
+      "options": [
+        {
+          "label": "不能，还要用真实或极端长度文案验证",
+          "correct": true
+        },
+        {
+          "label": "能，占位文字长度代表所有内容",
+          "correct": false
+        },
+        {
+          "label": "能，只要线框是灰色",
+          "correct": false
+        }
+      ],
+      "success": "线框适合讨论结构，但真实内容仍要单独验证。",
+      "retry": "占位块不能代表真实内容密度。"
+    },
+    "prompt": {
+      "title": "把需求整理成线框结构",
+      "text": "请先列出页面的真实信息、用户判断顺序、主要操作和异常状态，再按分组与层级组织为低细节线框。使用接近真实长度的文案，标出仍需验证的数据密度、响应式变化和动效，不提前确定品牌视觉。"
+    },
+    "sources": [
+      {
+        "url": "https://media.nngroup.com/media/articles/attachments/UX-Deliverables-Glossary-PDF-2.pdf",
+        "label": "Nielsen Norman Group · UX Deliverables Glossary",
+        "note": "用户研究方法与证据"
+      }
+    ]
+  },
+  {
+    "slug": "ia",
+    "lead": "帮助中心有三百篇文章，用户凭什么预测“取消订阅”应该在哪一类？",
+    "definition": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能够预测信息位置。",
+    "boundary": "信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "sceneKind": "tree",
+    "sceneTitle": "三百篇帮助文章怎样形成可预测入口",
+    "actionLabel": "整理下一层",
+    "actors": [
+      {
+        "id": "content",
+        "label": "300 篇文章",
+        "detail": "标题和主题混杂",
+        "icon": "file",
+        "group": "内容库"
+      },
+      {
+        "id": "billing",
+        "label": "账单与订阅",
+        "detail": "付款、发票、套餐",
+        "icon": "package",
+        "group": "一级分类"
+      },
+      {
+        "id": "account",
+        "label": "账户与安全",
+        "detail": "登录、成员、权限",
+        "icon": "shield",
+        "group": "一级分类"
+      },
+      {
+        "id": "cancel",
+        "label": "取消订阅",
+        "detail": "套餐管理 > 取消",
+        "icon": "component",
+        "group": "任务内容"
+      },
+      {
+        "id": "search",
+        "label": "搜索词",
+        "detail": "退订 / 停止续费",
+        "icon": "search",
+        "group": "查找"
+      },
+      {
+        "id": "crosslink",
+        "label": "交叉入口",
+        "detail": "账单页与套餐页都可进入",
+        "icon": "network",
+        "group": "路径"
+      }
+    ],
+    "edges": [
+      {
+        "id": "content-billing",
+        "from": "content",
+        "to": "billing",
+        "label": "按用户任务分类"
+      },
+      {
+        "id": "content-account",
+        "from": "content",
+        "to": "account",
+        "label": "分开身份问题"
+      },
+      {
+        "id": "billing-cancel",
+        "from": "billing",
+        "to": "cancel",
+        "label": "放入可预测位置"
+      },
+      {
+        "id": "search-cancel",
+        "from": "search",
+        "to": "cancel",
+        "label": "同义词命中"
+      },
+      {
+        "id": "crosslink-cancel",
+        "from": "crosslink",
+        "to": "cancel",
+        "label": "多入口指向同一内容"
+      }
+    ],
+    "frames": [
+      {
+        "label": "盘点内容",
+        "note": "先识别文章实际回答的用户任务，而不是按内部团队归属分类。",
+        "activeIds": [
+          "content"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "billing",
+          "account",
+          "cancel",
+          "search",
+          "crosslink"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "建立分类",
+        "note": "账单与账户分开，让用户能从问题性质预测入口。",
+        "activeIds": [
+          "content",
+          "billing",
+          "account"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "cancel",
+          "search",
+          "crosslink"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "content-billing",
+          "content-account"
+        ]
+      },
+      {
+        "label": "放置任务内容",
+        "note": "“取消订阅”进入账单与订阅下的套餐管理，而不是公司内部的留存团队。",
+        "activeIds": [
+          "billing",
+          "cancel"
+        ],
+        "doneIds": [
+          "content"
+        ],
+        "mutedIds": [
+          "account",
+          "search",
+          "crosslink"
+        ],
+        "values": {
+          "cancel": "账单与订阅 / 套餐管理"
+        },
+        "activeEdgeIds": [
+          "billing-cancel"
+        ]
+      },
+      {
+        "label": "补搜索语言",
+        "note": "把用户常用的“退订”和“停止续费”映射到同一篇内容。",
+        "activeIds": [
+          "search",
+          "cancel"
+        ],
+        "doneIds": [
+          "billing"
+        ],
+        "mutedIds": [
+          "account"
+        ],
+        "values": {
+          "search": "退订 · 停止续费"
+        },
+        "activeEdgeIds": [
+          "search-cancel"
+        ]
+      },
+      {
+        "label": "建立交叉入口",
+        "note": "账单页和套餐设置都链接到同一内容，不复制两篇不同版本。",
+        "activeIds": [
+          "crosslink",
+          "cancel"
+        ],
+        "doneIds": [
+          "content",
+          "billing",
+          "search"
+        ],
+        "mutedIds": [
+          "account"
+        ],
+        "values": {
+          "crosslink": "2 个入口 · 1 份正文"
+        },
+        "activeEdgeIds": [
+          "crosslink-cancel"
+        ]
+      }
+    ],
+    "insight": "好的信息架构让用户按自己的任务语言找到内容，而不是学习组织内部结构。",
+    "quiz": {
+      "question": "“API 密钥”文章应该只放在开发团队所属分类下吗？",
+      "options": [
+        {
+          "label": "不一定，还要考虑用户从安全、集成和账户设置进入的路径",
+          "correct": true
+        },
+        {
+          "label": "应该，组织架构就是最佳导航",
+          "correct": false
+        },
+        {
+          "label": "应该，而且每个入口复制一篇",
+          "correct": false
+        }
+      ],
+      "success": "同一内容可以有多个可预测入口，不必复制正文。",
+      "retry": "用户通常不知道内部团队怎样分工。"
+    },
+    "prompt": {
+      "title": "整理内容的信息架构",
+      "text": "请按用户任务盘点内容，提出一级分类、二级标签和命名规则。用五个真实查找任务测试用户会先去哪里，补充同义搜索词和交叉入口，并标出重复、孤立和无法归类的内容。"
+    },
+    "sources": [
+      {
+        "url": "https://www.usability.gov/what-and-why/information-architecture.html",
+        "label": "Usability.gov · Information Architecture",
+        "note": "可用性方法与实践"
+      }
+    ]
+  },
+  {
+    "slug": "prototype",
+    "lead": "正式开发前，怎样让用户实际走一遍新流程，并尽早发现他们不知道下一步点哪里？",
+    "definition": "原型用可操作媒介模拟关键行为，用于验证流程理解、交互反馈或产品假设。",
+    "boundary": "原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "sceneKind": "loop",
+    "sceneTitle": "一个注册假设怎样经过原型测试修正",
+    "actionLabel": "进行下一轮",
+    "actors": [
+      {
+        "id": "assumption",
+        "label": "待验证假设",
+        "detail": "用户知道邀请码在哪里",
+        "icon": "spark",
+        "group": "问题"
+      },
+      {
+        "id": "prototype",
+        "label": "可点击原型",
+        "detail": "注册三步流程",
+        "icon": "browser",
+        "group": "模拟"
+      },
+      {
+        "id": "task",
+        "label": "测试任务",
+        "detail": "加入朋友的空间",
+        "icon": "user",
+        "group": "情境"
+      },
+      {
+        "id": "observation",
+        "label": "观察记录",
+        "detail": "等待操作",
+        "icon": "search",
+        "group": "证据"
+      },
+      {
+        "id": "revision",
+        "label": "原型调整",
+        "detail": "尚未修改",
+        "icon": "gear",
+        "group": "迭代"
+      },
+      {
+        "id": "decision",
+        "label": "产品决定",
+        "detail": "等待证据",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "assumption-prototype",
+        "from": "assumption",
+        "to": "prototype",
+        "label": "做成可操作状态"
+      },
+      {
+        "id": "prototype-task",
+        "from": "prototype",
+        "to": "task",
+        "label": "交给用户"
+      },
+      {
+        "id": "task-observation",
+        "from": "task",
+        "to": "observation",
+        "label": "记录行为"
+      },
+      {
+        "id": "observation-revision",
+        "from": "observation",
+        "to": "revision",
+        "label": "修正问题"
+      },
+      {
+        "id": "revision-prototype",
+        "from": "revision",
+        "to": "prototype",
+        "label": "进入下一轮"
+      },
+      {
+        "id": "observation-decision",
+        "from": "observation",
+        "to": "decision",
+        "label": "形成判断"
+      }
+    ],
+    "frames": [
+      {
+        "label": "限定假设",
+        "note": "本轮只验证用户是否能找到并正确填写邀请码。",
+        "activeIds": [
+          "assumption"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "prototype",
+          "task",
+          "observation",
+          "revision",
+          "decision"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "模拟关键状态",
+        "note": "原型覆盖入口、填写、错误和成功，不实现真实账户系统。",
+        "activeIds": [
+          "assumption",
+          "prototype"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "observation",
+          "revision",
+          "decision"
+        ],
+        "values": {
+          "prototype": "入口 + 输入 + 错误 + 成功"
+        },
+        "activeEdgeIds": [
+          "assumption-prototype"
+        ]
+      },
+      {
+        "label": "给出真实任务",
+        "note": "让用户“加入朋友的空间”，不提示具体按钮名称。",
+        "activeIds": [
+          "prototype",
+          "task"
+        ],
+        "doneIds": [
+          "assumption"
+        ],
+        "mutedIds": [
+          "revision",
+          "decision"
+        ],
+        "values": {},
+        "activeEdgeIds": [
+          "prototype-task"
+        ]
+      },
+      {
+        "label": "观察行为",
+        "note": "三位用户都停在首页寻找“加入”入口，假设没有被支持。",
+        "activeIds": [
+          "task",
+          "observation"
+        ],
+        "doneIds": [
+          "prototype"
+        ],
+        "mutedIds": [
+          "revision",
+          "decision"
+        ],
+        "values": {
+          "observation": "3/3 未发现邀请码入口"
+        },
+        "activeEdgeIds": [
+          "task-observation"
+        ]
+      },
+      {
+        "label": "修改原型",
+        "note": "把入口改为“用邀请码加入”，再跑同一个任务。",
+        "activeIds": [
+          "observation",
+          "revision",
+          "prototype"
+        ],
+        "doneIds": [
+          "assumption"
+        ],
+        "mutedIds": [
+          "decision"
+        ],
+        "values": {
+          "revision": "按钮文案与位置调整"
+        },
+        "activeEdgeIds": [
+          "observation-revision",
+          "revision-prototype"
+        ]
+      },
+      {
+        "label": "形成决定",
+        "note": "新一轮 3/3 完成任务，团队获得继续开发该入口的证据。",
+        "activeIds": [
+          "observation",
+          "decision"
+        ],
+        "doneIds": [
+          "assumption",
+          "prototype",
+          "task",
+          "revision"
+        ],
+        "mutedIds": [],
+        "values": {
+          "decision": "保留明确入口"
+        },
+        "activeEdgeIds": [
+          "observation-decision"
+        ]
+      }
+    ],
+    "insight": "原型通过真实操作暴露理解问题，重点是获得决策证据，不是看起来像成品。",
+    "quiz": {
+      "question": "高保真原型中的付款按钮可以点击，是否证明支付系统已可上线？",
+      "options": [
+        {
+          "label": "不能，它只证明模拟流程可操作",
+          "correct": true
+        },
+        {
+          "label": "能，按钮能点就代表真实支付过程已经完成",
+          "correct": false
+        },
+        {
+          "label": "能，只要视觉和正式页面一致",
+          "correct": false
+        }
+      ],
+      "success": "技术、安全和真实数据能力需要独立验证。",
+      "retry": "交互保真度不能替代生产系统证据。"
+    },
+    "prompt": {
+      "title": "规划一个验证目标明确的原型",
+      "text": "请写出本轮唯一待验证假设、目标用户、真实任务和观察指标。只实现完成该任务所需的入口、关键状态、错误与结果，并明确哪些数据和后端行为是模拟的；测试后按实际行为记录证据和下一轮修改。"
+    },
+    "sources": [
+      {
+        "url": "https://www.nngroup.com/articles/ux-prototype-hi-lo-fidelity/",
+        "label": "Nielsen Norman Group · Prototype Testing",
+        "note": "用户研究与交互原则"
+      }
+    ]
+  },
+  {
+    "slug": "design-system",
+    "lead": "同一种成功提示在三个页面颜色、间距和关闭方式都不同，应该改页面还是改共同规则？",
+    "definition": "设计系统把原则、令牌、组件、交互模式、内容规则和维护机制组织成可复用的产品决策。",
+    "boundary": "设计系统不只是组件展示页，也不要求所有业务页面完全一样；差异应通过明确变体和扩展规则表达。",
+    "sceneKind": "layers",
+    "sceneTitle": "一个成功提示从令牌到三个产品页面",
+    "actionLabel": "更新一层",
+    "actors": [
+      {
+        "id": "principle",
+        "label": "反馈原则",
+        "detail": "说明结果与下一步",
+        "icon": "file",
+        "group": "原则"
+      },
+      {
+        "id": "tokens",
+        "label": "设计令牌",
+        "detail": "success color / spacing",
+        "icon": "code",
+        "group": "基础"
+      },
+      {
+        "id": "component",
+        "label": "SuccessBanner",
+        "detail": "默认、可关闭、带操作",
+        "icon": "component",
+        "group": "组件"
+      },
+      {
+        "id": "pattern",
+        "label": "提交成功模式",
+        "detail": "位置与出现时机",
+        "icon": "layout",
+        "group": "模式"
+      },
+      {
+        "id": "products",
+        "label": "三个业务页面",
+        "detail": "订单 / 设置 / 邀请",
+        "icon": "browser",
+        "group": "使用"
+      },
+      {
+        "id": "governance",
+        "label": "维护流程",
+        "detail": "提案、评审、版本与迁移",
+        "icon": "gear",
+        "group": "治理"
+      }
+    ],
+    "edges": [
+      {
+        "id": "principle-tokens",
+        "from": "principle",
+        "to": "tokens",
+        "label": "约束基础值"
+      },
+      {
+        "id": "tokens-component",
+        "from": "tokens",
+        "to": "component",
+        "label": "组成组件"
+      },
+      {
+        "id": "component-pattern",
+        "from": "component",
+        "to": "pattern",
+        "label": "进入交互模式"
+      },
+      {
+        "id": "pattern-products",
+        "from": "pattern",
+        "to": "products",
+        "label": "被页面采用"
+      },
+      {
+        "id": "governance-component",
+        "from": "governance",
+        "to": "component",
+        "label": "管理变更"
+      }
+    ],
+    "frames": [
+      {
+        "label": "明确共同原则",
+        "note": "成功反馈必须说明完成结果，并给出仍需执行的下一步。",
+        "activeIds": [
+          "principle"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "tokens",
+          "component",
+          "pattern",
+          "products",
+          "governance"
+        ],
+        "values": {},
+        "activeEdgeIds": []
+      },
+      {
+        "label": "统一基础值",
+        "note": "颜色、圆角、间距和文字级别由语义令牌提供。",
+        "activeIds": [
+          "principle",
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "pattern",
+          "products"
+        ],
+        "values": {
+          "tokens": "color.success · space.4"
+        },
+        "activeEdgeIds": [
+          "principle-tokens"
+        ]
+      },
+      {
+        "label": "形成组件变体",
+        "note": "组件提供默认、可关闭和带后续操作三种受控变体。",
+        "activeIds": [
+          "tokens",
+          "component"
+        ],
+        "doneIds": [
+          "principle"
+        ],
+        "mutedIds": [
+          "products"
+        ],
+        "values": {
+          "component": "default | dismissible | action"
+        },
+        "activeEdgeIds": [
+          "tokens-component"
+        ]
+      },
+      {
+        "label": "定义使用模式",
+        "note": "表单成功放在提交区附近，异步完成使用页面级通知。",
+        "activeIds": [
+          "component",
+          "pattern"
+        ],
+        "doneIds": [
+          "principle",
+          "tokens"
+        ],
+        "mutedIds": [
+          "products"
+        ],
+        "values": {
+          "pattern": "inline vs page-level"
+        },
+        "activeEdgeIds": [
+          "component-pattern"
+        ]
+      },
+      {
+        "label": "同步三个页面",
+        "note": "订单、设置和邀请页面选择合适变体，样式与行为保持一致。",
+        "activeIds": [
+          "pattern",
+          "products"
+        ],
+        "doneIds": [
+          "principle",
+          "tokens",
+          "component"
+        ],
+        "mutedIds": [],
+        "values": {
+          "products": "3 pages · same rules"
+        },
+        "activeEdgeIds": [
+          "pattern-products"
+        ]
+      },
+      {
+        "label": "管理后续变化",
+        "note": "新增变体先说明通用需求，评审后发布版本并给出迁移说明。",
+        "activeIds": [
+          "governance",
+          "component",
+          "products"
+        ],
+        "doneIds": [
+          "principle",
+          "tokens",
+          "pattern"
+        ],
+        "mutedIds": [],
+        "values": {
+          "governance": "proposal → review → release"
+        },
+        "activeEdgeIds": [
+          "governance-component",
+          "pattern-products"
+        ]
+      }
+    ],
+    "insight": "设计系统复用的是经过维护的决策，不只是复制一段组件代码。",
+    "quiz": {
+      "question": "某页面需要紫色成功提示，但系统成功语义是绿色，应该直接覆盖颜色吗？",
+      "options": [
+        {
+          "label": "先确认这是业务语义差异还是视觉偏好，再决定变体或修正页面",
+          "correct": true
+        },
+        {
+          "label": "直接写局部样式，不记录原因",
+          "correct": false
+        },
+        {
+          "label": "禁止所有页面出现任何差异",
+          "correct": false
+        }
+      ],
+      "success": "差异需要被命名和解释，才能判断是合理扩展还是规则漂移。",
+      "retry": "设计系统既不鼓励随意覆盖，也不是取消业务差异。"
+    },
+    "prompt": {
+      "title": "检查设计系统的重复与缺口",
+      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本和迁移范围。"
+    },
+    "sources": [
+      {
+        "url": "https://designsystem.digital.gov/components/alert/",
+        "label": "U.S. Web Design System · Alert",
+        "note": "设计系统与组件原则"
+      }
+    ]
+  },
+  {
+    "slug": "a11y",
+    "lead": "不用鼠标、看不清低对比文字或需要读屏时，用户还能否完成登录？",
+    "definition": "无障碍让内容在不同视觉、听觉、行动和认知条件下仍可感知、可操作、可理解，并与辅助技术兼容。",
+    "boundary": "无障碍不是发布前补几个 ARIA 属性；语义、键盘顺序、对比度、错误反馈和动效都要从结构开始处理。",
+    "sceneKind": "route",
+    "sceneTitle": "只用键盘完成一次登录",
+    "actionLabel": "按下一次 Tab",
+    "actors": [
+      {
+        "id": "skip",
+        "label": "跳到正文",
+        "detail": "第一个可见焦点",
+        "icon": "network",
+        "group": "导航"
+      },
+      {
+        "id": "email",
+        "label": "邮箱输入",
+        "detail": "label 与输入关联",
+        "icon": "message",
+        "group": "表单"
+      },
+      {
+        "id": "password",
+        "label": "密码输入",
+        "detail": "要求可被读屏理解",
+        "icon": "key",
+        "group": "表单"
+      },
+      {
+        "id": "error",
+        "label": "错误提示",
+        "detail": "尚未出现",
+        "icon": "shield",
+        "group": "反馈"
+      },
+      {
+        "id": "submit",
+        "label": "登录按钮",
+        "detail": "键盘可触发",
+        "icon": "component",
+        "group": "操作"
+      },
+      {
+        "id": "result",
+        "label": "登录结果",
+        "detail": "等待反馈",
+        "icon": "spark",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "skip-email",
+        "from": "skip",
+        "to": "email",
+        "label": "逻辑焦点顺序"
+      },
+      {
+        "id": "email-password",
+        "from": "email",
+        "to": "password",
+        "label": "继续 Tab"
+      },
+      {
+        "id": "password-submit",
+        "from": "password",
+        "to": "submit",
+        "label": "进入操作"
+      },
+      {
+        "id": "submit-error",
+        "from": "submit",
+        "to": "error",
+        "label": "失败反馈"
+      },
+      {
+        "id": "error-email",
+        "from": "error",
+        "to": "email",
+        "label": "回到错误字段"
+      },
+      {
+        "id": "submit-result",
+        "from": "submit",
+        "to": "result",
+        "label": "成功反馈"
+      }
+    ],
+    "frames": [
+      {
+        "label": "进入页面",
+        "note": "第一个焦点提供跳到正文入口，避免重复穿过整组导航。",
+        "activeIds": [
+          "skip"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "error",
+          "result"
+        ],
+        "values": {
+          "skip": "focus visible"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "识别邮箱",
+        "note": "焦点到邮箱时，读屏同时读出标签、输入类型和必填状态。",
+        "activeIds": [
+          "skip",
+          "email"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "error",
+          "result"
+        ],
+        "values": {
+          "email": "邮箱 · 必填"
+        },
+        "activeEdgeIds": [
+          "skip-email"
+        ]
+      },
+      {
+        "label": "按顺序移动",
+        "note": "Tab 从邮箱进入密码，再进入登录按钮，顺序与视觉阅读一致。",
+        "activeIds": [
+          "email",
+          "password",
+          "submit"
+        ],
+        "doneIds": [
+          "skip"
+        ],
+        "mutedIds": [
+          "error",
+          "result"
+        ],
+        "values": {
+          "password": "密码 · 必填",
+          "submit": "focus visible"
+        },
+        "activeEdgeIds": [
+          "email-password",
+          "password-submit"
+        ]
+      },
+      {
+        "label": "收到错误",
+        "note": "提交空邮箱时，错误用文字说明并通过状态通知辅助技术。",
+        "activeIds": [
+          "submit",
+          "error"
+        ],
+        "doneIds": [
+          "skip"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "error": "请输入邮箱地址"
+        },
+        "activeEdgeIds": [
+          "submit-error"
+        ]
+      },
+      {
+        "label": "回到问题处",
+        "note": "焦点移回邮箱，用户无需重新寻找出错位置。",
+        "activeIds": [
+          "error",
+          "email"
+        ],
+        "doneIds": [
+          "skip",
+          "password"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "email": "focus · invalid"
+        },
+        "activeEdgeIds": [
+          "error-email"
+        ]
+      },
+      {
+        "label": "完成登录",
+        "note": "修正后按 Enter 提交，成功结果以文字和焦点变化明确呈现。",
+        "activeIds": [
+          "submit",
+          "result"
+        ],
+        "doneIds": [
+          "skip",
+          "email",
+          "password"
+        ],
+        "mutedIds": [
+          "error"
+        ],
+        "values": {
+          "result": "已登录 · 前往账户"
+        },
+        "activeEdgeIds": [
+          "submit-result"
+        ]
+      }
+    ],
+    "insight": "可访问性不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作能力。",
+    "quiz": {
+      "question": "自定义 div 做的按钮加上 role=button 后，是否自动支持键盘？",
+      "options": [
+        {
+          "label": "不会，还要实现焦点、Enter/Space 行为和状态",
+          "correct": true
+        },
+        {
+          "label": "会，role 会自动补齐所有交互",
+          "correct": false
+        },
+        {
+          "label": "会，只要鼠标能点击",
+          "correct": false
+        }
+      ],
+      "success": "优先使用原生 button；自定义控件需要自己实现完整键盘模型。",
+      "retry": "ARIA 描述角色，但不会自动提供浏览器原生行为。"
+    },
+    "prompt": {
+      "title": "审查页面的无障碍基础",
+      "text": "请只用键盘走完页面主要任务，记录焦点顺序、可见焦点、键盘陷阱和无法触发的操作。再检查语义标签、可访问名称、颜色对比、字段错误、动态通知和减少动效偏好；每个问题给出可复现步骤与最小修正。"
+    },
+    "sources": [
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-order",
+        "label": "W3C WAI · Focus Order",
+        "note": "Web 标准与无障碍要求"
+      },
+      {
+        "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+        "label": "WAI ARIA APG · Keyboard Interface",
+        "note": "Web 标准与无障碍要求"
+      }
+    ]
+  }
+]
