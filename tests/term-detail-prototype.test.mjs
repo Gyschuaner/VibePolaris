@@ -101,6 +101,10 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.match(source, /term-ai-target-want/);
   assert.match(source, /term-ai-target-verify/);
   assert.match(source, /aria-pressed=\{highlightedSlot === slot\.key\}/);
+  assert.match(source, /term-ai-note-index/);
+  assert.match(css, /\.term-ai-canvas \{[^}]*grid-template-columns: minmax\(190px, 220px\) minmax\(0, 1fr\)/);
+  assert.match(css, /\.term-ai-notes \{[^}]*grid-area: notes;[^}]*display: grid/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.term-ai-notes \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(source, /term-responsive-demo-shell/);
   assert.doesNotMatch(css, /\.term-ai-note::after/);
   assert.match(css, /\.term-ai-desktop-flow \{[^}]*grid-template-columns: minmax\(0, \.72fr\) auto minmax\(0, 1\.4fr\)/);

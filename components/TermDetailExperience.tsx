@@ -403,6 +403,29 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
         ))}
       </div>
       <figure className="term-ai-canvas" data-highlighted-slot={highlightedSlot ?? undefined}>
+        <ol className="term-ai-notes" aria-label="四格提示说明">
+          {slotCopy.map((slot, index) => (
+            <li key={slot.key} className={`term-ai-note term-ai-note-${index + 1}`}>
+              <button
+                type="button"
+                className="term-ai-note-trigger"
+                aria-pressed={highlightedSlot === slot.key}
+                aria-controls={slot.key === "seen" ? "term-ai-target-seen" : slot.key === "want" ? "term-ai-target-want" : slot.key === "verify" ? "term-ai-target-verify" : undefined}
+                onPointerEnter={() => setHighlightedSlot(slot.key)}
+                onPointerLeave={() => setHighlightedSlot(null)}
+                onFocus={() => setHighlightedSlot(slot.key)}
+                onBlur={() => setHighlightedSlot(null)}
+                onClick={() => setHighlightedSlot(slot.key)}
+              >
+                <i className="term-ai-note-index" aria-hidden="true">{index + 1}</i>
+                <span>
+                  <strong>{slot.label}</strong>
+                  <span className="term-ai-note-copy">{active.slots[slot.key]}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
         <div className="term-ai-scene" aria-label="页面修改前、修改后与手机效果示意">
           <div className="term-ai-desktop-flow">
             <div className="term-ai-target term-ai-target-seen" id="term-ai-target-seen">
@@ -418,34 +441,6 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
             <MiniPage page={phonePreview} images={guide.images} />
           </div>
         </div>
-        <ol className="term-ai-notes">
-          {slotCopy.map((slot, index) => (
-            <li
-              key={slot.key}
-              className={`term-ai-note term-ai-note-${index + 1}`}
-              onPointerEnter={() => setHighlightedSlot(slot.key)}
-              onPointerLeave={(event) => {
-                if (!event.currentTarget.contains(document.activeElement)) setHighlightedSlot(null);
-              }}
-            >
-              <button
-                type="button"
-                className="term-ai-note-trigger"
-                aria-pressed={highlightedSlot === slot.key}
-                aria-controls={slot.key === "seen" ? "term-ai-target-seen" : slot.key === "want" ? "term-ai-target-want" : slot.key === "verify" ? "term-ai-target-verify" : undefined}
-                onFocus={() => setHighlightedSlot(slot.key)}
-                onBlur={() => setHighlightedSlot(null)}
-                onClick={() => setHighlightedSlot(slot.key)}
-              >
-                <i className="term-ai-note-no" aria-hidden="true">{index + 1}</i>
-                <span>
-                  <strong>{slot.label}</strong>
-                  <span className="term-ai-note-copy">{active.slots[slot.key]}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ol>
         <p className="sr-only" aria-live="polite">
           {highlightedSlot ? `正在强调：${slotCopy.find((slot) => slot.key === highlightedSlot)?.label}` : "未选择强调区域"}
         </p>
