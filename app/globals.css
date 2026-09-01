@@ -3090,6 +3090,7 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 .term-ai-canvas { position: relative; display: grid; grid-template-columns: minmax(150px, 190px) minmax(0, 1fr) minmax(150px, 190px); grid-template-areas: "note1 scene note2" "note3 scene note4" "caption caption caption"; grid-template-rows: auto auto auto; gap: 20px 16px; align-items: center; margin-top: 32px; min-height: 500px; padding: 36px 24px 24px; background-color: var(--surface); background-image: url("/images/css-ai-guide/paper-texture.jpg"); background-size: cover; border: 1px solid color-mix(in srgb, var(--hairline) 82%, transparent); border-radius: 5px; box-shadow: 0 16px 42px -34px color-mix(in srgb, var(--ink) 42%, transparent); }
 .term-ai-scene { grid-area: scene; display: grid; grid-template-columns: minmax(0, 1fr) 126px; gap: 14px; align-items: center; min-width: 0; }
 .term-ai-desktop-flow { display: grid; grid-template-columns: minmax(118px, .72fr) auto minmax(244px, 1.4fr); gap: 12px; align-items: center; min-width: 0; border: 1px solid color-mix(in srgb, var(--hairline) 90%, transparent); border-radius: 7px; padding: 18px; background: color-mix(in srgb, var(--surface) 80%, transparent); }
+.term-ai-desktop-flow > .term-ai-target { min-width: 0; }
 .term-ai-scene-arrow { flex: none; color: color-mix(in srgb, var(--accent) 48%, var(--faint)); }
 .term-ai-phone-preview { display: grid; gap: 8px; justify-items: center; }
 .term-ai-phone-preview > span { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .04em; }
@@ -3119,20 +3120,39 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 .term-mini-page.is-phone.is-stacked .term-mini-cards > span strong { font-size: 7px; }
 .term-mini-page.is-phone.is-stacked .term-mini-cards > span small { font-size: 6.5px; }
 .term-mini-link { font-size: 9.5px; color: var(--accent); }
+.term-ai-target { position: relative; border-radius: 10px; transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease; }
+.term-ai-canvas[data-highlighted-slot] .term-ai-target { opacity: .34; filter: saturate(.6); }
+.term-ai-canvas[data-highlighted-slot="seen"] .term-ai-target-seen,
+.term-ai-canvas[data-highlighted-slot="want"] .term-ai-target-want,
+.term-ai-canvas[data-highlighted-slot="verify"] .term-ai-target-verify { opacity: 1; filter: none; transform: translateY(-2px); background: color-mix(in srgb, var(--brand-star) 8%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-star) 54%, transparent), 0 12px 30px -24px color-mix(in srgb, var(--accent) 65%, transparent); }
+.term-ai-canvas[data-highlighted-slot="avoid"] .term-ai-target { opacity: .78; filter: none; }
+.term-ai-canvas[data-highlighted-slot="avoid"] .term-mini-cards img { opacity: .28; }
+.term-ai-canvas[data-highlighted-slot="avoid"] .term-mini-title,
+.term-ai-canvas[data-highlighted-slot="avoid"] .term-mini-list b,
+.term-ai-canvas[data-highlighted-slot="avoid"] .term-mini-cards strong,
+.term-ai-canvas[data-highlighted-slot="avoid"] .term-mini-link { border-radius: 3px; background: var(--tint); color: var(--accent); box-shadow: 0 0 0 3px var(--tint); }
+.term-mini-cards img,
+.term-mini-title,
+.term-mini-list b,
+.term-mini-cards strong,
+.term-mini-link { transition: opacity 180ms ease, color 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
 .term-ai-notes { list-style: none; display: contents; }
-.term-ai-note { position: relative; display: flex; align-items: flex-start; gap: 9px; }
-.term-ai-note::after { content: ""; position: absolute; width: 48px; border-top: 1px solid color-mix(in srgb, var(--accent) 65%, transparent); pointer-events: none; }
+.term-ai-note { position: relative; }
+.term-ai-note-trigger { display: flex; align-items: flex-start; gap: 9px; width: 100%; min-height: 44px; margin: -8px; padding: 8px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer; transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, transform 160ms ease; }
+.term-ai-note-trigger:hover,
+.term-ai-note-trigger:focus-visible,
+.term-ai-note-trigger[aria-pressed="true"] { border-color: color-mix(in srgb, var(--accent) 38%, transparent); background: color-mix(in srgb, var(--tint) 70%, transparent); transform: translateY(-1px); outline: none; }
+.term-ai-note-trigger[aria-pressed="true"] .term-ai-note-no { background: var(--brand-star); color: #1a250d; }
+.term-ai-note-trigger > span { min-width: 0; }
 .term-ai-note-no { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--surface); font-size: 12px; font-style: normal; font-weight: 800; }
 .term-ai-note strong { display: block; color: var(--ink); font-size: 13.5px; }
-.term-ai-note p { margin: 3px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; text-wrap: pretty; }
+.term-ai-note-copy { display: block; margin-top: 3px; color: var(--muted); font-size: 12.5px; line-height: 1.55; text-wrap: pretty; }
 .term-ai-note-1 { grid-area: note1; align-self: start; padding-top: 12px; }
-.term-ai-note-2 { grid-area: note2; align-self: start; flex-direction: row-reverse; text-align: right; padding-top: 12px; }
+.term-ai-note-2 { grid-area: note2; align-self: start; padding-top: 12px; }
 .term-ai-note-3 { grid-area: note3; align-self: end; }
-.term-ai-note-4 { grid-area: note4; align-self: end; flex-direction: row-reverse; text-align: right; }
-.term-ai-note-1::after { left: calc(100% + 8px); top: 62px; transform: rotate(22deg); transform-origin: left center; }
-.term-ai-note-2::after { right: calc(100% + 8px); top: 72px; transform: rotate(-22deg); transform-origin: right center; }
-.term-ai-note-3::after { left: calc(100% + 8px); bottom: 42px; transform: rotate(-20deg); transform-origin: left center; }
-.term-ai-note-4::after { right: calc(100% + 8px); bottom: 42px; transform: rotate(20deg); transform-origin: right center; }
+.term-ai-note-4 { grid-area: note4; align-self: end; }
+.term-ai-note-2 .term-ai-note-trigger,
+.term-ai-note-4 .term-ai-note-trigger { flex-direction: row-reverse; text-align: right; }
 .term-ai-prompt-caption { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .05em; }
 .term-ai-prompt-caption svg { flex: none; }
 .term-ai-prompt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 24px; align-items: end; margin-top: 22px; padding: 18px 22px 12px; background: color-mix(in srgb, var(--surface) 72%, var(--tint)); border: 1px solid var(--hairline); border-left: 3px solid var(--brand-star); border-radius: 4px 10px 10px 4px; }
@@ -3590,9 +3610,11 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-ai-phone-preview .term-mini-page.is-phone { width: min(100%, 180px); }
   .term-ai-scene-caption { margin-top: 16px; }
   .term-ai-notes { display: grid; gap: 4px; margin-top: 18px; border-top: 1px solid var(--hairline); }
-  .term-ai-note, .term-ai-note-2, .term-ai-note-4 { grid-area: auto; flex-direction: row; text-align: left; align-self: auto; align-items: flex-start; padding: 14px 0; }
+  .term-ai-note, .term-ai-note-2, .term-ai-note-4 { grid-area: auto; text-align: left; align-self: auto; padding: 14px 0; }
   .term-ai-note + .term-ai-note { border-top: 1px solid var(--hairline); }
-  .term-ai-note::after { display: none; }
+  .term-ai-note-trigger,
+  .term-ai-note-2 .term-ai-note-trigger,
+  .term-ai-note-4 .term-ai-note-trigger { flex-direction: row; text-align: left; }
   .term-ai-prompt { grid-template-columns: 1fr; padding: 16px 16px 12px; }
   .term-ai-prompt blockquote { padding: 10px 2px 4px 28px; }
   .term-ai-prompt .term-copy-action { justify-self: start; margin-left: 28px; }
@@ -3665,6 +3687,13 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .concept-demo-comparison > div,
   .concept-demo-caption,
   .concept-demo-tabs button,
+  .term-ai-target,
+  .term-ai-note-trigger,
+  .term-mini-cards img,
+  .term-mini-title,
+  .term-mini-list b,
+  .term-mini-cards strong,
+  .term-mini-link,
   .term-path-list > a { animation: none !important; transition: none !important; }
   .term-code-map-controls { display: none; }
   .concept-demo-head > div { display: none; }

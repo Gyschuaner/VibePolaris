@@ -374,6 +374,7 @@ function MiniPage({ page, images }: { page: FoundationScenePage; images: readonl
 
 function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
   const [activeKey, setActiveKey] = useState(guide.scenarios[0].key);
+  const [highlightedSlot, setHighlightedSlot] = useState<(typeof slotCopy)[number]["key"] | null>(null);
   const active: FoundationScenario = guide.scenarios.find((scenario) => scenario.key === activeKey) ?? guide.scenarios[0];
   const phonePreview: FoundationScenePage = {
     ...active.scene.to,
@@ -391,36 +392,63 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
             type="button"
             className={activeKey === scenario.key ? "is-active" : ""}
             aria-pressed={activeKey === scenario.key}
-            onClick={() => setActiveKey(scenario.key)}
+            onClick={() => {
+              setActiveKey(scenario.key);
+              setHighlightedSlot(null);
+            }}
           >
             <strong>{scenario.label}</strong>
             <small>{scenario.tagline}</small>
           </button>
         ))}
       </div>
-      <figure className="term-ai-canvas">
+      <figure className="term-ai-canvas" data-highlighted-slot={highlightedSlot ?? undefined}>
         <div className="term-ai-scene" aria-label="页面修改前、修改后与手机效果示意">
           <div className="term-ai-desktop-flow">
-            <MiniPage page={active.scene.from} images={guide.images} />
+            <div className="term-ai-target term-ai-target-seen" id="term-ai-target-seen">
+              <MiniPage page={active.scene.from} images={guide.images} />
+            </div>
             <ArrowRight size={24} weight="bold" className="term-ai-scene-arrow" aria-hidden="true" />
-            <MiniPage page={active.scene.to} images={guide.images} />
+            <div className="term-ai-target term-ai-target-want" id="term-ai-target-want">
+              <MiniPage page={active.scene.to} images={guide.images} />
+            </div>
           </div>
-          <div className="term-ai-phone-preview">
+          <div className="term-ai-phone-preview term-ai-target term-ai-target-verify" id="term-ai-target-verify">
             <span>手机效果</span>
             <MiniPage page={phonePreview} images={guide.images} />
           </div>
         </div>
-        <ol className="term-ai-notes" aria-live="polite">
+        <ol className="term-ai-notes">
           {slotCopy.map((slot, index) => (
-            <li key={slot.key} className={`term-ai-note term-ai-note-${index + 1}`}>
-              <i className="term-ai-note-no" aria-hidden="true">{index + 1}</i>
-              <div>
-                <strong>{slot.label}</strong>
-                <p>{active.slots[slot.key]}</p>
-              </div>
+            <li
+              key={slot.key}
+              className={`term-ai-note term-ai-note-${index + 1}`}
+              onPointerEnter={() => setHighlightedSlot(slot.key)}
+              onPointerLeave={(event) => {
+                if (!event.currentTarget.contains(document.activeElement)) setHighlightedSlot(null);
+              }}
+            >
+              <button
+                type="button"
+                className="term-ai-note-trigger"
+                aria-pressed={highlightedSlot === slot.key}
+                aria-controls={slot.key === "seen" ? "term-ai-target-seen" : slot.key === "want" ? "term-ai-target-want" : slot.key === "verify" ? "term-ai-target-verify" : undefined}
+                onFocus={() => setHighlightedSlot(slot.key)}
+                onBlur={() => setHighlightedSlot(null)}
+                onClick={() => setHighlightedSlot(slot.key)}
+              >
+                <i className="term-ai-note-no" aria-hidden="true">{index + 1}</i>
+                <span>
+                  <strong>{slot.label}</strong>
+                  <span className="term-ai-note-copy">{active.slots[slot.key]}</span>
+                </span>
+              </button>
             </li>
           ))}
         </ol>
+        <p className="sr-only" aria-live="polite">
+          {highlightedSlot ? `正在强调：${slotCopy.find((slot) => slot.key === highlightedSlot)?.label}` : "未选择强调区域"}
+        </p>
         <figcaption className="term-ai-scene-caption">{active.scene.caption}</figcaption>
       </figure>
       <figure className="term-ai-prompt">
