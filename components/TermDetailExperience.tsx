@@ -12,6 +12,7 @@ import {
   Sparkle,
   SpeakerHigh,
 } from "@phosphor-icons/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -345,10 +346,9 @@ const slotCopy = [
   { key: "verify" as const, label: "怎么确认" },
 ];
 
-function MiniPage({ page }: { page: FoundationScenePage }) {
+function MiniPage({ page, images }: { page: FoundationScenePage; images: readonly string[] }) {
   return (
     <div className={`term-mini-page is-${page.width} is-${page.layout}`} aria-hidden="true">
-      <span className="term-mini-chrome"><i /><i /><i /></span>
       <strong className="term-mini-title">{page.title}</strong>
       {page.layout === "list" ? (
         <ul className="term-mini-list">
@@ -358,8 +358,12 @@ function MiniPage({ page }: { page: FoundationScenePage }) {
         </ul>
       ) : (
         <div className="term-mini-cards">
-          {page.items.map((item) => (
-            <span key={item.title}><i /><strong>{item.title}</strong><small>{item.meta}</small></span>
+          {page.items.map((item, index) => (
+            <span key={item.title}>
+              <Image src={images[index]} alt="" width={240} height={180} sizes="(max-width: 760px) 132px, 180px" />
+              <strong>{item.title}</strong>
+              <small>{item.meta}</small>
+            </span>
           ))}
         </div>
       )}
@@ -371,6 +375,11 @@ function MiniPage({ page }: { page: FoundationScenePage }) {
 function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
   const [activeKey, setActiveKey] = useState(guide.scenarios[0].key);
   const active: FoundationScenario = guide.scenarios.find((scenario) => scenario.key === activeKey) ?? guide.scenarios[0];
+  const phonePreview: FoundationScenePage = {
+    ...active.scene.to,
+    width: "phone",
+    layout: "stacked",
+  };
 
   return (
     <>
@@ -390,19 +399,20 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
         ))}
       </div>
       <figure className="term-ai-canvas">
-        <div className="term-ai-scene" aria-hidden="true">
-          <MiniPage page={active.scene.from} />
-          <ArrowRight size={26} weight="bold" className="term-ai-scene-arrow" />
-          <MiniPage page={active.scene.to} />
+        <div className="term-ai-scene" aria-label="页面修改前、修改后与手机效果示意">
+          <div className="term-ai-desktop-flow">
+            <MiniPage page={active.scene.from} images={guide.images} />
+            <ArrowRight size={24} weight="bold" className="term-ai-scene-arrow" aria-hidden="true" />
+            <MiniPage page={active.scene.to} images={guide.images} />
+          </div>
+          <div className="term-ai-phone-preview">
+            <span>手机效果</span>
+            <MiniPage page={phonePreview} images={guide.images} />
+          </div>
         </div>
         <ol className="term-ai-notes" aria-live="polite">
           {slotCopy.map((slot, index) => (
             <li key={slot.key} className={`term-ai-note term-ai-note-${index + 1}`}>
-              <svg className="term-ai-note-line" viewBox="0 0 110 74" aria-hidden="true" focusable="false">
-                <path d="M8 8 C 34 14, 62 34, 94 64" />
-                <circle className="term-ai-note-dot-a" cx="8" cy="8" r="3.5" />
-                <circle className="term-ai-note-dot-b" cx="94" cy="64" r="3.5" />
-              </svg>
               <i className="term-ai-note-no" aria-hidden="true">{index + 1}</i>
               <div>
                 <strong>{slot.label}</strong>
@@ -413,10 +423,11 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
         </ol>
         <figcaption className="term-ai-scene-caption">{active.scene.caption}</figcaption>
       </figure>
-      <p className="term-ai-prompt-caption"><Sparkle size={15} weight="fill" aria-hidden="true" />{guide.promptCaption}</p>
       <figure className="term-ai-prompt">
+        <figcaption className="term-ai-prompt-caption"><Sparkle size={15} weight="fill" aria-hidden="true" />{guide.promptCaption}</figcaption>
         <blockquote>{active.prompt}</blockquote>
         <CopyAction text={active.prompt} label={guide.copyLabel} />
+        <small className="term-ai-prompt-help">一张图 + 四句说明，比背属性名更容易说清楚</small>
       </figure>
     </>
   );

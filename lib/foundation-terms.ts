@@ -94,6 +94,7 @@ export const foundationTermSchema = z.object({
   aiGuide: z.object({
     title: z.string().min(1),
     intro: z.string().min(1),
+    images: z.array(z.string().startsWith("/")).length(3),
     scenarios: z.array(aiScenarioSchema).min(2).max(3),
     promptCaption: z.string().min(1),
     copyLabel: z.string().min(1),

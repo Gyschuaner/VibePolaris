@@ -67,9 +67,15 @@ test("CSS 解释器用三阶段响应式故事同步代码、内容卡片与最�
   assert.match(css, /"label": "修好它"/);
   assert.match(css, /"label": "调细节"/);
   assert.match(css, /这个页面在电脑上看着正常，但到了手机上/);
+  assert.match(css, /不会写代码也能改样式/);
+  assert.match(css, /\/images\/css-ai-guide\/valley\.jpg/);
+  assert.match(css, /\/images\/css-ai-guide\/lighthouse\.jpg/);
+  assert.match(css, /\/images\/css-ai-guide\/white-house\.jpg/);
   assert.match(css, /把四格组合后的提示词/);
   assert.match(css, /复制完整提示词/);
-  assert.match(css, /得写成你自己看得懂、验得了的说法/);
+  assert.match(source, /next\/image/);
+  assert.match(source, /term-ai-phone-preview/);
+  assert.doesNotMatch(source, /term-ai-note-line/);
   assert.doesNotMatch(css, /确认真改好了|checklist/i);
   assert.match(css, /同样样式，先选哪种写法/);
   assert.match(css, /Tailwind CSS/);
