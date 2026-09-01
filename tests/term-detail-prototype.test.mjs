@@ -104,6 +104,9 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.doesNotMatch(css, /\.term-ai-note::after/);
   assert.match(css, /\.term-ai-desktop-flow \{[^}]*grid-template-columns: minmax\(0, \.72fr\) auto minmax\(0, 1\.4fr\)/);
   assert.match(css, /\.term-ai-target \{[^}]*max-width: 100%;[^}]*overflow: hidden/);
+  assert.match(css, /\.term-responsive-map \{[\s\S]*--term-demo-preview-height: 294px;[\s\S]*--term-demo-computed-height: 48px/);
+  assert.match(css, /\.term-responsive-map > \.term-code-editor,[\s\S]*height: var\(--term-demo-column-height\)/);
+  assert.match(css, /\.term-responsive-map \.responsive-preview \{[\s\S]*align-self: center;[\s\S]*height: var\(--term-demo-preview-height\)/);
 });
 
 test("正式路由不再回退到批量三步模板", () => {

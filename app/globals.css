@@ -2778,6 +2778,30 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   align-items: stretch;
   animation: term-preview-enter 280ms cubic-bezier(.2, .8, .2, 1) both;
 }
+.term-responsive-map {
+  --term-demo-preview-height: 294px;
+  --term-demo-computed-height: 48px;
+  --term-demo-column-height: calc(var(--term-demo-preview-height) + var(--term-demo-computed-height) + 10px);
+  min-height: var(--term-demo-column-height);
+}
+.term-responsive-map > .term-code-editor,
+.term-responsive-map > .term-code-preview { height: var(--term-demo-column-height); }
+.term-responsive-map .responsive-preview {
+  align-self: center;
+  height: var(--term-demo-preview-height);
+  min-height: var(--term-demo-preview-height);
+}
+.term-responsive-map .responsive-preview-canvas {
+  height: calc(var(--term-demo-preview-height) - 32px);
+  min-height: 0;
+  overflow: hidden;
+}
+.term-responsive-map .term-computed {
+  width: 100%;
+  height: var(--term-demo-computed-height);
+  min-height: var(--term-demo-computed-height);
+  overflow: hidden;
+}
 .term-code-editor {
   min-width: 0;
   border-radius: 10px;
@@ -3589,6 +3613,9 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .concept-demo .concept-demo-diagram.step-2 .concept-demo-signal { top: 84%; left: 50%; }
   .concept-demo-comparison { min-height: 360px; grid-template-columns: 1fr; }
   .term-code-map { grid-template-columns: 1fr; gap: 18px; }
+  .term-responsive-map {
+    --term-demo-computed-height: 64px;
+  }
   .responsive-preview { min-height: 240px; }
   .responsive-preview.is-squeezed,
   .responsive-preview.is-stacked { width: min(82%, 310px); }
