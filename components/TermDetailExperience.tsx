@@ -427,18 +427,27 @@ function FoundationAiGuide({ guide }: { guide: FoundationTerm["aiGuide"] }) {
           ))}
         </ol>
         <div className="term-ai-scene" aria-label="页面修改前、修改后与手机效果示意">
-          <div className="term-ai-desktop-flow">
-            <div className="term-ai-target term-ai-target-seen" id="term-ai-target-seen">
-              <MiniPage page={active.scene.from} images={guide.images} />
+          <div className="term-ai-desktop-device">
+            <div className="term-ai-device-bar" aria-hidden="true">
+              <span className="term-ai-device-dots"><i /><i /><i /></span>
+              <span>电脑网页效果</span>
+              <i />
             </div>
-            <ArrowRight size={24} weight="bold" className="term-ai-scene-arrow" aria-hidden="true" />
-            <div className="term-ai-target term-ai-target-want" id="term-ai-target-want">
-              <MiniPage page={active.scene.to} images={guide.images} />
+            <div className="term-ai-desktop-flow">
+              <div className="term-ai-target term-ai-target-seen" id="term-ai-target-seen">
+                <MiniPage page={active.scene.from} images={guide.images} />
+              </div>
+              <ArrowRight size={24} weight="bold" className="term-ai-scene-arrow" aria-hidden="true" />
+              <div className="term-ai-target term-ai-target-want" id="term-ai-target-want">
+                <MiniPage page={active.scene.to} images={guide.images} />
+              </div>
             </div>
           </div>
           <div className="term-ai-phone-preview term-ai-target term-ai-target-verify" id="term-ai-target-verify">
             <span>手机效果</span>
-            <MiniPage page={phonePreview} images={guide.images} />
+            <div className="term-ai-phone-device">
+              <MiniPage page={phonePreview} images={guide.images} />
+            </div>
           </div>
         </div>
         <p className="sr-only" aria-live="polite">

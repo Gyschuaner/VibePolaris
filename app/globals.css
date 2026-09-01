@@ -3132,16 +3132,24 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
 .term-scenario-tabs button.is-active { border-bottom-color: var(--accent); }
 .term-scenario-tabs button.is-active strong { color: var(--accent); }
 .term-ai-canvas { position: relative; display: grid; grid-template-columns: minmax(190px, 220px) minmax(0, 1fr); grid-template-areas: "notes scene" "caption caption"; gap: 24px; align-items: center; margin-top: 32px; min-height: 500px; padding: 36px 28px 24px; background-color: var(--surface); background-image: url("/images/css-ai-guide/paper-texture.jpg"); background-size: cover; border: 1px solid color-mix(in srgb, var(--hairline) 82%, transparent); border-radius: 5px; box-shadow: 0 16px 42px -34px color-mix(in srgb, var(--ink) 42%, transparent); }
-.term-ai-scene { grid-area: scene; display: grid; grid-template-columns: minmax(0, 1fr) 126px; gap: 14px; align-items: center; min-width: 0; }
-.term-ai-desktop-flow { display: grid; grid-template-columns: minmax(0, .72fr) auto minmax(0, 1.4fr); gap: 12px; align-items: center; min-width: 0; overflow: hidden; border: 1px solid color-mix(in srgb, var(--hairline) 90%, transparent); border-radius: 7px; padding: 18px; background: color-mix(in srgb, var(--surface) 80%, transparent); }
+.term-ai-scene { grid-area: scene; display: grid; grid-template-columns: minmax(0, 1fr) 134px; gap: 14px; align-items: center; min-width: 0; }
+.term-ai-desktop-device { min-width: 0; overflow: hidden; border: 1px solid color-mix(in srgb, var(--hairline) 90%, transparent); border-radius: 11px; background: color-mix(in srgb, var(--surface) 80%, transparent); box-shadow: 0 14px 30px -28px color-mix(in srgb, var(--ink) 45%, transparent); }
+.term-ai-device-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 28px; padding: 0 11px; border-bottom: 1px solid color-mix(in srgb, var(--hairline) 80%, transparent); background: color-mix(in srgb, var(--surface) 72%, var(--tint)); color: var(--faint); font-size: 9px; font-weight: 700; letter-spacing: .04em; }
+.term-ai-device-bar > i { width: 24px; }
+.term-ai-device-dots { display: flex; gap: 4px; }
+.term-ai-device-dots i { width: 5px; height: 5px; border-radius: 50%; background: color-mix(in srgb, var(--faint) 62%, transparent); }
+.term-ai-desktop-flow { display: grid; grid-template-columns: minmax(0, .72fr) auto minmax(0, 1.4fr); gap: 12px; align-items: center; min-width: 0; overflow: hidden; padding: 16px 18px 18px; }
 .term-ai-desktop-flow > .term-ai-target { min-width: 0; }
 .term-ai-scene-arrow { flex: none; color: color-mix(in srgb, var(--accent) 48%, var(--faint)); }
 .term-ai-phone-preview { display: grid; gap: 8px; justify-items: center; }
 .term-ai-phone-preview > span { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+.term-ai-phone-device { position: relative; width: 126px; padding: 15px 5px 13px; border: 1.5px solid color-mix(in srgb, var(--accent) 42%, var(--hairline)); border-radius: 22px; background: color-mix(in srgb, var(--surface) 92%, transparent); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--surface) 70%, transparent), 0 14px 30px -24px color-mix(in srgb, var(--ink) 56%, transparent); }
+.term-ai-phone-device::before { content: ""; position: absolute; top: 6px; left: 50%; width: 25px; height: 3px; border-radius: 999px; background: color-mix(in srgb, var(--faint) 62%, transparent); transform: translateX(-50%); }
+.term-ai-phone-device::after { content: ""; position: absolute; bottom: 5px; left: 50%; width: 28px; height: 2px; border-radius: 999px; background: color-mix(in srgb, var(--faint) 52%, transparent); transform: translateX(-50%); }
 .term-ai-scene-caption { grid-area: caption; margin: 2px 0 0; color: var(--faint); font-size: 12px; line-height: 1.65; text-align: center; }
 .term-mini-page { display: grid; gap: 8px; min-width: 0; border-radius: 7px; padding: 10px; background: color-mix(in srgb, var(--surface) 88%, transparent); }
 .term-mini-page.is-wide { width: 100%; }
-.term-mini-page.is-phone { width: 118px; border: 1px solid var(--hairline); border-radius: 13px; padding: 9px 8px 10px; box-shadow: 0 10px 24px -20px color-mix(in srgb, var(--ink) 55%, transparent); }
+.term-mini-page.is-phone { width: 100%; border: 0; border-radius: 14px; padding: 9px 8px 10px; box-shadow: none; }
 .term-mini-title { font-size: 12px; color: var(--ink); }
 .term-mini-list { list-style: none; display: grid; gap: 0; }
 .term-mini-list li { display: grid; gap: 2px; border-bottom: 1px solid color-mix(in srgb, var(--hairline) 72%, transparent); padding: 7px 0; }
@@ -3657,7 +3665,7 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-ai-desktop-flow .term-ai-scene-arrow { justify-self: center; transform: rotate(90deg); }
   .term-ai-desktop-flow .term-mini-page.is-wide { width: 100%; }
   .term-ai-phone-preview { border-top: 1px solid color-mix(in srgb, var(--hairline) 76%, transparent); padding-top: 16px; }
-  .term-ai-phone-preview .term-mini-page.is-phone { width: min(100%, 180px); }
+  .term-ai-phone-device { width: min(100%, 194px); padding: 17px 7px 15px; border-radius: 28px; }
   .term-ai-scene-caption { margin-top: 16px; }
   .term-ai-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-content: start; }
   .term-ai-note-trigger { height: 100%; min-height: 94px; padding: 10px 8px; }
