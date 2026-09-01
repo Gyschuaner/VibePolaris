@@ -102,6 +102,8 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.match(source, /term-ai-target-verify/);
   assert.match(source, /aria-pressed=\{highlightedSlot === slot\.key\}/);
   assert.doesNotMatch(css, /\.term-ai-note::after/);
+  assert.match(css, /\.term-ai-desktop-flow \{[^}]*grid-template-columns: minmax\(0, \.72fr\) auto minmax\(0, 1\.4fr\)/);
+  assert.match(css, /\.term-ai-target \{[^}]*max-width: 100%;[^}]*overflow: hidden/);
 });
 
 test("正式路由不再回退到批量三步模板", () => {
