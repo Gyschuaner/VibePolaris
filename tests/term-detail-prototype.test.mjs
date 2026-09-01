@@ -105,6 +105,8 @@ test("词条原型覆盖移动端与减少动效偏好", () => {
   assert.match(source, /term-ai-desktop-device/);
   assert.match(source, /term-ai-device-bar/);
   assert.match(source, /term-ai-phone-device/);
+  assert.match(css, /\.term-ai-desktop-device \{[^}]*aspect-ratio: 16 \/ 9/);
+  assert.match(css, /\.term-ai-phone-device \{[^}]*aspect-ratio: 9 \/ 19\.5/);
   assert.match(css, /\.term-ai-canvas \{[^}]*grid-template-columns: minmax\(190px, 220px\) minmax\(0, 1fr\)/);
   assert.match(css, /\.term-ai-notes \{[^}]*grid-area: notes;[^}]*display: grid/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.term-ai-notes \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
