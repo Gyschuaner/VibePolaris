@@ -1,6 +1,17 @@
 # VBP-004 现有星图交互基线与 Harness 词条页 R1
 
-日期：2026-09-05。阶段：图像原型制作完成，待用户视觉评审。本轮仅电脑端。
+日期：2026-09-05。用户已确认实施，桌面可交互初版已实现并在本地验证；下面的原型评审内容保留为历史。尚未做 dev 集成或生产部署。
+
+## 当前实现
+
+- 首页保留原有星图、选中反馈、分类聚散及跨页星轨，新增 Harness 星点。仅将 Harness 摘要入口对齐左侧，避让外围星点文字。
+- `/terms/agent-harness` 包含定义、短表达和全文复制、四步双轨演示、边界与真实来源；支持无/有 Harness、播放暂停、单步、重来、减少动态及复制失败反馈。
+- 代码分支：`feat/VBP-004-desktop-harness`。`npm run check` 通过 38 项测试、ESLint、TypeScript 和生产构建。浏览器验证 1440/1280 桌面、明暗、导航搜索、播放、键盘、复制及异常条件。
+- [最终首屏](implementation/08-harness-final-top.png)、[首页聚焦](implementation/14-home-focus-final.png)、[同图对照](implementation/11-comparison-final.png)、[QA 记录](../../../design-qa.md)。
+- 本地运行：`npm run build` 后 `npm run start -- --hostname 127.0.0.1`。异常验证夹具：保持 3000 服务运行，执行 `node tests/fixtures/harness-browser-server.mjs`，在 3001 检查剪贴板被拒绝和模拟减少动态反馈；验收后停止夹具。
+- 本轮不做手机端专项验收。VBP-002 的完整范围不因本次桌面初版而关闭；系统级减少动态开关和屏幕阅读器实机未测，具体限制见 QA。
+
+## 历史原型评审
 
 - [现有首页默认态（当前基线）](existing-motion/01-idle.png)
 - [现有 MCP 聚焦展开（当前基线）](existing-motion/03-mcp-focused.png)

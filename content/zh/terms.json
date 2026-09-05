@@ -1,5 +1,26 @@
 [
   {
+    "zh": "智能体运行框架", "en": "Agent Harness", "slug": "agent-harness", "cat": "AI·Agent",
+    "say": "围绕模型组织上下文、工具权限、执行循环与验收，让任务能持续执行，并留下可检查的结果。",
+    "aliases": ["Harness", "Agent Harness", "智能体运行框架", "智能体框架"],
+    "question": "同一个模型，怎样从给出建议走到完成任务并留下证据？",
+    "definition": "围绕模型组织上下文、工具权限、执行循环与验收的运行框架。让任务能持续执行，并留下可检查的结果。",
+    "boundary": "Harness 不等于模型本身，也不只是测试脚本。它约束工具权限、停止条件与验收规则，但不能保证模型每次判断都正确。",
+    "demoType": "comparison", "demoTitle": "同一模型、同一任务的双轨对照",
+    "demoSteps": [
+      {"label":"只给模型","value":"建议先读取反馈","note":"没有反馈正文和读取工具时，无法核对实际反馈。"},
+      {"label":"接入 Harness","value":"读取资料并循环归纳","note":"依次装入上下文、开放工具，并按预算控制执行。"},
+      {"label":"检查交付","value":"3 类要点，12/12 覆盖","note":"教学示例中检查原文编号，并保留总结与轨迹。"}
+    ],
+    "quizQuestion": "模型给出总结后，哪项工作属于 Harness 的验收环节？",
+    "quizOptions": ["核对来源与标准，并记录执行结果", "更换模型的训练参数", "只把回答改成更长的文字"],
+    "correctText": "验收将交付与标准对齐，并留下可以复查的证据。",
+    "wrongText": "Harness 负责围绕模型组织执行；不能靠回答长度或修改训练参数替代验收。",
+    "promptTitle": "可以这样向 AI 表达",
+    "prompt": "请为这个任务设计 Harness：明确上下文来源、可用工具与权限、停止条件，并保留执行记录和验收结果。",
+    "relatedSlugs": ["context", "tools", "agent-loop"]
+  },
+  {
     "zh": "组件", "en": "Component", "slug": "component", "cat": "前端",
     "say": "组件把一块界面和它的行为封装起来，可在不同页面重复使用。",
     "aliases": ["控件", "界面模块", "可复用模块", "重复的部分"],
@@ -267,7 +288,7 @@
     "correctText": "模型只能处理当前上下文和可调用工具取得的信息。",
     "wrongText": "未连接的系统不会被自动读取，只写文件名也没有提供文件内容。",
     "promptTitle": "整理任务所需上下文", "prompt": "请根据下面任务列出必须提供的事实、文件、当前状态和约束，删除无关历史，并标出需要通过工具取得的信息。",
-    "relatedSlugs": ["context-window", "token", "prompt"]
+    "relatedSlugs": ["context-window", "token", "prompt", "agent-harness"]
   },
   {
     "zh": "Token", "en": "Token", "slug": "token", "cat": "AI·Agent",
@@ -297,7 +318,7 @@
     "correctText": "涉及权限边界或会改变方向的选择时，应由用户提供授权或决策。",
     "wrongText": "工具返回一次结果不代表任务完成，任务刚开始也不是正常停止条件。",
     "promptTitle": "为智能体任务定义边界", "prompt": "请为下面任务写清目标、可用工具、允许修改范围、验证方法、停止条件和需要用户确认的操作。",
-    "relatedSlugs": ["agent-loop", "tools", "memory"]
+    "relatedSlugs": ["agent-loop", "tools", "memory", "agent-harness"]
   },
   {
     "zh": "工具调用", "en": "Tool Calling", "slug": "tools", "cat": "AI·Agent",

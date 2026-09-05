@@ -95,6 +95,7 @@ const domains: Domain[] = [
       { id: "memory", label: "记忆", en: "Memory", href: "/terms/memory" },
       { id: "rag", label: "RAG", href: "/terms/rag" },
       { id: "mcp", label: "MCP", href: "/terms/mcp" },
+      { id: "agent-harness", label: "Harness", en: "智能体运行框架", href: "/terms/agent-harness" },
     ],
   },
   {
@@ -135,6 +136,7 @@ const starSlots = [
   { x: 12, y: 62, mobileX: 12, mobileY: 50, focusX: 6, focusY: 76, mobileFocusX: 5, mobileFocusY: 71, scale: .72 },
   { x: 32, y: 79, mobileX: 66, mobileY: 83, focusX: 48, focusY: 94, mobileFocusX: 38, mobileFocusY: 94, scale: .78 },
   { x: 88, y: 34, mobileX: 72, mobileY: 36, focusX: 95, focusY: 24, mobileFocusX: 88, mobileFocusY: 25, scale: .72 },
+  { x: 44, y: 10, mobileX: 39, mobileY: 8, focusX: 43, focusY: 5, mobileFocusX: 41, mobileFocusY: 4, scale: .92 },
 ];
 
 const specks = [
@@ -151,6 +153,11 @@ const termSummaryBySlug = new Map(termSnippets.map((term) => [term.slug, term.sa
 const termBySlug = new Map(termSnippets.map((term) => [term.slug, term]));
 
 const focusDetailsById: Record<string, Omit<ConceptFocusDetail, "definition">> = {
+  "agent-harness": {
+    why: "把模型的回答组织成持续执行的任务，并按明确标准检查交付。",
+    steps: ["装入上下文", "开放工具", "控制循环", "验收证据"],
+    related: ["上下文", "工具调用", "智能体循环"],
+  },
   context: {
     why: "让模型理解当前对话、项目资料和这一次任务的边界。",
     steps: ["历史对话", "当前资料", "任务要求"],
@@ -426,6 +433,7 @@ export function HomeDomains() {
         {focusedConcept && focusedDetail && (
           <div
             className={`concept-focus-detail${focusPhase === "revealed" ? " is-visible" : ""}`}
+            data-concept={focusedConcept.id}
             key={`${activeDomain.slug}-${focusedConcept.id}`}
           >
             <p className="concept-focus-kicker">
