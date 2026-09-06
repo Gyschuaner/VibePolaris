@@ -1,0 +1,77 @@
+{
+  "idempotency_key": "VBP-004-r6-component-prototype-20260906",
+  "requirement": {
+    "ref": "VBP-004",
+    "expected_version": 17,
+    "update": {
+      "description": "按 R5 连续六格制作 Harness 桌面本地可点击原型。用户明确取消网页涂鸦，采用标准图标、真实文本、复用组件和状态驱动动画，保留主页星图。主线为读取 todo.txt，支持逐步推进、回退、重播；本轮不做手机端或部署。R4/R5 记录保留为研究与分镜历史。",
+      "acceptance_criteria": "1. 六步主线讲清输入、模型请求、工具执行、回传、再次调用和回答。2. 工具结果不可提前出现，回退/重播清除未来内容，连续点击不跳步。3. 不使用涂鸦图、图片化文案和截图切页，复用状态与组件。4. 1440/1280 桌面、明暗主题、键盘与减少动态效果可用。5. 首页星图回归、本地自动检查和浏览器验证，记录当前限制。仅本地原型验收，不含 dev/生产发布。"
+    }
+  },
+  "test_cases": [
+    {
+      "client_key": "six_step",
+      "title": "R6 六步读取与真实数据状态",
+      "owner": {
+        "id": "7e7e0776-5a5f-4935-bc09-acc95156fd62"
+      },
+      "steps": [
+        {
+          "action": "逐步点击六次状态，从收到任务到最终回答",
+          "expected_result": "第一次调用时没有文件内容，工具先读取再回传，第二次调用后回答寄快递与给绿植浇水"
+        },
+        {
+          "action": "读取阶段观察出发与返回动画",
+          "expected_result": "执行方向 Harness→工具，结果方向工具→Harness；模型尚未收到正文"
+        }
+      ]
+    },
+    {
+      "client_key": "navigation",
+      "title": "R6 回退重播、计时边界与减少动态效果",
+      "owner": {
+        "id": "7e7e0776-5a5f-4935-bc09-acc95156fd62"
+      },
+      "steps": [
+        {
+          "action": "动画中连续推进，回退，结束后重播；运行状态单元测试",
+          "expected_result": "不跳步、不接收旧定时事件，回退清除未来内容，初始不可再回退"
+        },
+        {
+          "action": "键盘左右方向操作；执行减少动态效果分支测试",
+          "expected_result": "键盘可推进回退，减少动态效果立即完成当前步但不跳过六步"
+        }
+      ]
+    },
+    {
+      "client_key": "desktop",
+      "title": "R6 桌面布局、主题与首页回归",
+      "owner": {
+        "id": "7e7e0776-5a5f-4935-bc09-acc95156fd62"
+      },
+      "steps": [
+        {
+          "action": "1440×900、1280×800，浅色和深色检查控件与结果",
+          "expected_result": "无横向溢出，操作按钮与信息可读，图标方向和正文一致"
+        },
+        {
+          "action": "返回星图，选择 Harness 并进入词条，检查控制台",
+          "expected_result": "首页交互保留，路由到六步页面，生产模式本地预览无控制台错误"
+        }
+      ]
+    }
+  ],
+  "test_plan": {
+    "name": "VBP-004 R6 六步组件原型本地验证",
+    "environment": "local",
+    "owner": {
+      "id": "7e7e0776-5a5f-4935-bc09-acc95156fd62"
+    },
+    "case_client_keys": [
+      "six_step",
+      "navigation",
+      "desktop"
+    ],
+    "mode": "ensure"
+  }
+}
