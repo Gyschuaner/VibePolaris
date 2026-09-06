@@ -36,7 +36,10 @@ export function AgentHarnessTermPage({ related }: BespokeTermPageProps) {
       <span>AI · Agent</span>
     </div>
     <header className={styles.hero}>
-      <h1>Harness <span>智能体运行框架</span></h1>
+      <div className={styles.titleRow}>
+        <span className={`brand-star-only term-route-star ${styles.heroStar}`} data-route-star-target aria-hidden="true" />
+        <h1>Harness <span>智能体运行框架</span></h1>
+      </div>
       <p>围绕模型运行的一层程序：准备输入，执行模型发出的工具请求，把结果交回模型，并管理任务如何继续或停止。</p>
     </header>
     <HarnessLesson />

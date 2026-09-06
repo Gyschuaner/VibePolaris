@@ -8,6 +8,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -52,6 +53,20 @@ function estimatedTermStarTarget(): { point: Point; size: number } {
     },
     size,
   };
+}
+
+function actualTermStarTarget() {
+  const star = document.querySelector<HTMLElement>("[data-route-star-target]");
+  if (!star) return null;
+
+  // Layout offsets exclude the page arrival transform and the hidden star's scale.
+  let x = star.offsetWidth / 2;
+  let y = star.offsetHeight / 2;
+  for (let element: HTMLElement | null = star; element; element = element.offsetParent as HTMLElement | null) {
+    x += element.offsetLeft + element.clientLeft;
+    y += element.offsetTop + element.clientTop;
+  }
+  return { point: { x: x - window.scrollX, y: y - window.scrollY }, size: star.offsetWidth };
 }
 
 function controlsForFlight(from: Point, target: Point) {
@@ -140,11 +155,20 @@ export function RouteMeteorProvider({ children }: { children: ReactNode }) {
     finishTimerRef.current = window.setTimeout(() => finishFlight(nextFlight.id), 1200);
   }, [clearTimers, finishFlight, flight, router]);
 
-  useEffect(() => {
-    if (!flight || pathname !== flight.targetPath) return;
+  useLayoutEffect(() => {
+    if (!flight || pathname !== flight.targetPath || routeArrivedRef.current) return;
     const flightId = flight.id;
     const frame = window.requestAnimationFrame(() => {
       routeArrivedRef.current = true;
+      const destination = actualTermStarTarget();
+      if (destination) {
+        setFlight(current => current?.id === flightId ? {
+          ...current,
+          target: destination.point,
+          targetScale: destination.size / 48,
+          ...controlsForFlight(current.from, destination.point),
+        } : current);
+      }
       setPagePhase("arriving");
       if (motionDoneRef.current) finishFlight(flightId);
     });

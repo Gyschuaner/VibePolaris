@@ -1,8 +1,11 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ArrowCounterClockwise, Brain, FileText, MagnifyingGlass, NotePencil, User, Wrench, CheckSquare, Square } from "@phosphor-icons/react";
-import { useEffect, useReducer, useSyncExternalStore } from "react";
-import { initialLesson, isSettled, lessonReducer, lessonSteps, lessonTask, lessonView, todoItems } from "@/lib/harness-lesson";
+import { ArrowLeft, ArrowRight, ArrowCounterClockwise, FileText, MagnifyingGlass, Wrench, CheckSquare, Square } from "@phosphor-icons/react";
+import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
+import { initialLesson, isSettled, lessonReducer, lessonSteps, lessonView, todoItems } from "@/lib/harness-lesson";
+import intro from "@/content/zh/terms/agent-harness/lesson-intro.json";
+import { HarnessUserMessage } from "./HarnessUserMessage";
+import { HarnessChat } from "./HarnessChat";
 import styles from "./HarnessLesson.module.css";
 
 function subscribeMotion(onChange: () => void) {
@@ -13,9 +16,6 @@ function subscribeMotion(onChange: () => void) {
 function motionSnapshot() { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
 function serverMotionSnapshot() { return false; }
 
-function Caption({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <p className={styles.caption + " " + className}>{children}</p>;
-}
 function TodoRows({ highlight = false }: { highlight?: boolean }) {
   return <ul className={styles.todoRows}>{todoItems.map(item => <li key={item.text} data-highlight={highlight && !item.done}>
     {item.done ? <CheckSquare size={20} aria-label="已完成" /> : <Square size={20} aria-label="未完成" />}
@@ -24,12 +24,12 @@ function TodoRows({ highlight = false }: { highlight?: boolean }) {
 }
 function Flow({ side, direction, label, active = true, lower = false }: { side: "model" | "tool"; direction: "left" | "right"; label: string; active?: boolean; lower?: boolean }) {
   return <div className={[styles.flow, styles[side + "Flow"], lower ? styles.lowerFlow : "", active ? styles.activeFlow : ""].join(" ")} data-direction={direction} aria-label={label}>
-    <span>{label}</span>
     {direction === "left" ? <ArrowLeft weight="regular" size={116} preserveAspectRatio="none" /> : <ArrowRight weight="regular" size={116} preserveAspectRatio="none" />}
   </div>;
 }
 
 export function HarnessLesson() {
+  const [mode, setMode] = useState<"chat" | "harness">("harness");
   const [state, dispatch] = useReducer(lessonReducer, initialLesson);
   const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, serverMotionSnapshot);
   const { step, beat, revision } = state;
@@ -37,49 +37,53 @@ export function HarnessLesson() {
   const settled = isSettled(state);
   const current = lessonSteps[step];
   useEffect(() => {
-    if (settled) return;
+    if (settled || mode === "chat") return;
     const timer = setTimeout(() => dispatch(reduced ? { type: "settle" } : { type: "tick", revision }), reduced ? 0 : current.beats[beat]);
     return () => clearTimeout(timer);
-  }, [beat, current, reduced, revision, settled]);
+  }, [beat, current, reduced, revision, settled, mode]);
   const next = () => dispatch({ type: "next", reduced });
 
-  return <section id="harness-demo" className={styles.lesson} data-step={step + 1} data-beat={beat} data-settled={settled}
+  return <section id="harness-demo" className={styles.lesson} data-mode={mode} data-step={step + 1} data-beat={beat} data-settled={settled}
     aria-labelledby="lesson-title" onKeyDown={event => {
-      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      if (event.altKey || event.ctrlKey || event.metaKey || mode === "chat") return;
       if (event.key === "ArrowRight") { event.preventDefault(); next(); }
       if (event.key === "ArrowLeft") { event.preventDefault(); dispatch({ type: "previous" }); }
     }}>
-    <div className={styles.heading}><span className={styles.number}>{String(step + 1).padStart(2, "0")}</span><h2 id="lesson-title">{current.title}</h2></div>
-    <p className={styles.task}>{lessonTask}</p>
+    <div className={styles.heading}>
+      {mode === "harness" && <span className={styles.number}>{String(step + 1).padStart(2, "0")}</span>}
+      <h2 id="lesson-title">{mode === "chat" ? intro.chatTitle : current.title}</h2>
+      <div className={styles.modeSwitch} role="group" aria-label={intro.modesLabel} onKeyDown={event => event.stopPropagation()}>
+        <button type="button" aria-pressed={mode === "chat"} onClick={() => setMode("chat")}>Chat</button>
+        <button type="button" aria-pressed={mode === "harness"} onClick={() => setMode("harness")}>Harness</button>
+      </div>
+    </div>
+
+    {mode === "chat" ? <HarnessChat reduced={reduced} /> : <>
 
     <div className={styles.scene} key={revision} data-step={step + 1} data-beat={beat}>
       <div className={styles.model}>
         <h3>模型</h3>
         <div className={styles.characterWrap}>
-          <div className={styles.modelIcon + (step === 3 ? " " + styles.quiet : "")}><Brain size={78} weight="thin" aria-hidden="true" /></div>
+          <div className={styles.modelIcon + (step === 3 ? " " + styles.quiet : "")}><span className={styles.claudeIcon} role="img" aria-label={intro.model} /></div>
         </div>
-        {step === 0 && <Caption>尚未读取文件</Caption>}
       </div>
 
       <div className={styles.runtime}>
         <h3>Harness</h3>
         <div className={styles.runtimeBox}>
-          {step === 0 && <div className={styles.slip + " " + styles.userSlip}><User size={22} /><p>任务已收到，等待调用模型</p></div>}
+          {step === 0 && <HarnessUserMessage />}
           {step === 1 && <div className={styles.inputGroup}>
-            <div className={styles.slip}><NotePencil size={22} /><p>任务：找出 todo.txt 中的未完成事项</p></div>
-            <div className={styles.slip}><Wrench size={22} /><p>工具：<code>read_file(path)</code><small>读取指定文件</small></p></div>
+            <HarnessUserMessage />
+            <div className={styles.slip}><Wrench size={22} /><p>工具：<code>read_file(path)</code></p></div>
           </div>}
           {step === 2 && <div className={styles.requestGroup} data-visible={beat >= 1}>
             <div className={styles.slip}><Wrench size={24} /><div><strong>工具请求</strong><code>{'read_file(path="todo.txt")'}</code></div></div>
           </div>}
           {step === 3 && <>
             <div className={styles.slip}><Wrench size={23} /><div><strong>工具请求</strong><code>{'read_file("todo.txt")'}</code></div></div>
-            <p className={styles.permission}>读取已允许</p>
             {view.toolReturned && <div className={styles.slip + " " + styles.resultSlip}><div><strong><FileText size={20} />工具结果</strong><TodoRows /></div></div>}
           </>}
           {step === 4 && <>
-            <div className={styles.history}><NotePencil size={19} /><span>任务 + 工具说明</span></div>
-            <div className={styles.history}><Wrench size={19} /><span>刚才的读取请求</span></div>
             <div className={styles.resultGroup}>
               <div className={styles.slip + " " + styles.resultSlip}><div><strong><FileText size={20} />新增：工具结果</strong><TodoRows /></div></div>
             </div>
@@ -88,7 +92,6 @@ export function HarnessLesson() {
             <div className={styles.slip + " " + styles.answer}><div><strong><FileText size={21} />还有两件事：</strong><ul>{todoItems.filter(item => !item.done).map(item => <li key={item.text}>{item.text}</li>)}</ul></div></div>
           </div>}
         </div>
-        {view.notes && step > 0 && <Caption className={styles.runtimeNote}>{current.note}</Caption>}
       </div>
 
       <div className={styles.fileTool}>
@@ -98,8 +101,6 @@ export function HarnessLesson() {
           <MagnifyingGlass className={styles.magnifier} size={38} weight="light" aria-hidden="true" />
           <span className={styles.filename}>todo.txt</span>
         </div>
-        {view.notes && current.fileNote && <Caption>{current.fileNote}</Caption>}
-        {view.answered && <span className={styles.finished}>本轮结束</span>}
       </div>
 
       {step === 1 && <Flow side="model" direction="left" label="第一次调用" active={!settled} />}
@@ -118,5 +119,6 @@ export function HarnessLesson() {
           : <button className={styles.primary} type="button" disabled={!settled} onClick={next}>下一步<ArrowRight size={20} /></button>}
       </div>
     </div>
+    </>}
   </section>;
 }
