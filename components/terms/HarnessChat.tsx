@@ -26,6 +26,5 @@ export function HarnessChat({ reduced }: { reduced: boolean }) {
         </div>
       </div>
     </div>
-    <p className={styles.chatBoundary}>{intro.chatBoundary}</p>
   </>;
 }

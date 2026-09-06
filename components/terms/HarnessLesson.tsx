@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ArrowCounterClockwise, FileText, MagnifyingGlass, NotePencil, Wrench, CheckSquare, Square } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, ArrowCounterClockwise, FileText, MagnifyingGlass, Wrench, CheckSquare, Square } from "@phosphor-icons/react";
 import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
 import { initialLesson, isSettled, lessonReducer, lessonSteps, lessonView, todoItems } from "@/lib/harness-lesson";
 import intro from "@/content/zh/terms/agent-harness/lesson-intro.json";
@@ -16,9 +16,6 @@ function subscribeMotion(onChange: () => void) {
 function motionSnapshot() { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
 function serverMotionSnapshot() { return false; }
 
-function Caption({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <p className={styles.caption + " " + className}>{children}</p>;
-}
 function TodoRows({ highlight = false }: { highlight?: boolean }) {
   return <ul className={styles.todoRows}>{todoItems.map(item => <li key={item.text} data-highlight={highlight && !item.done}>
     {item.done ? <CheckSquare size={20} aria-label="已完成" /> : <Square size={20} aria-label="未完成" />}
@@ -27,7 +24,6 @@ function TodoRows({ highlight = false }: { highlight?: boolean }) {
 }
 function Flow({ side, direction, label, active = true, lower = false }: { side: "model" | "tool"; direction: "left" | "right"; label: string; active?: boolean; lower?: boolean }) {
   return <div className={[styles.flow, styles[side + "Flow"], lower ? styles.lowerFlow : "", active ? styles.activeFlow : ""].join(" ")} data-direction={direction} aria-label={label}>
-    <span>{label}</span>
     {direction === "left" ? <ArrowLeft weight="regular" size={116} preserveAspectRatio="none" /> : <ArrowRight weight="regular" size={116} preserveAspectRatio="none" />}
   </div>;
 }
@@ -78,19 +74,16 @@ export function HarnessLesson() {
           {step === 0 && <HarnessUserMessage />}
           {step === 1 && <div className={styles.inputGroup}>
             <HarnessUserMessage />
-            <div className={styles.slip}><Wrench size={22} /><p>工具：<code>read_file(path)</code><small>读取指定文件</small></p></div>
+            <div className={styles.slip}><Wrench size={22} /><p>工具：<code>read_file(path)</code></p></div>
           </div>}
           {step === 2 && <div className={styles.requestGroup} data-visible={beat >= 1}>
             <div className={styles.slip}><Wrench size={24} /><div><strong>工具请求</strong><code>{'read_file(path="todo.txt")'}</code></div></div>
           </div>}
           {step === 3 && <>
             <div className={styles.slip}><Wrench size={23} /><div><strong>工具请求</strong><code>{'read_file("todo.txt")'}</code></div></div>
-            <p className={styles.permission}>读取已允许</p>
             {view.toolReturned && <div className={styles.slip + " " + styles.resultSlip}><div><strong><FileText size={20} />工具结果</strong><TodoRows /></div></div>}
           </>}
           {step === 4 && <>
-            <div className={styles.history}><NotePencil size={19} /><span>任务 + 工具说明</span></div>
-            <div className={styles.history}><Wrench size={19} /><span>刚才的读取请求</span></div>
             <div className={styles.resultGroup}>
               <div className={styles.slip + " " + styles.resultSlip}><div><strong><FileText size={20} />新增：工具结果</strong><TodoRows /></div></div>
             </div>
@@ -99,7 +92,6 @@ export function HarnessLesson() {
             <div className={styles.slip + " " + styles.answer}><div><strong><FileText size={21} />还有两件事：</strong><ul>{todoItems.filter(item => !item.done).map(item => <li key={item.text}>{item.text}</li>)}</ul></div></div>
           </div>}
         </div>
-        {view.notes && step > 0 && <Caption className={styles.runtimeNote}>{current.note}</Caption>}
       </div>
 
       <div className={styles.fileTool}>
@@ -109,8 +101,6 @@ export function HarnessLesson() {
           <MagnifyingGlass className={styles.magnifier} size={38} weight="light" aria-hidden="true" />
           <span className={styles.filename}>todo.txt</span>
         </div>
-        {step > 0 && view.notes && current.fileNote && <Caption>{current.fileNote}</Caption>}
-        {view.answered && <span className={styles.finished}>本轮结束</span>}
       </div>
 
       {step === 1 && <Flow side="model" direction="left" label="第一次调用" active={!settled} />}
