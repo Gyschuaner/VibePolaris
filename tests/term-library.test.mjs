@@ -69,8 +69,8 @@ test("全部 300 条词条均有独立研究卡、权威来源与唯一分镜", 
   }
 });
 
-test("除四个专属页面外，每个词条都有可验证的独立互动体验", () => {
-  const specialSlugs = new Set(["component", "css", "html", "javascript"]);
+test("除专属页面外，每个词条都有可验证的独立互动体验", () => {
+  const specialSlugs = new Set(["component", "css", "html", "javascript", "agent-harness"]);
   const expectedSlugs = new Set(allTerms.filter((term) => !specialSlugs.has(term.slug)).map((term) => term.slug));
   const experienceSlugs = new Set(experiences.map((experience) => experience.slug));
   const fingerprints = new Set();

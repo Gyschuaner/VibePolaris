@@ -1,0 +1,68 @@
+.lesson { padding: 25px 28px 0; border: 1px solid var(--hairline); border-radius: 12px; background: var(--surface); scroll-margin-top: 90px; }
+.heading { display: flex; gap: 15px; align-items: center; min-height: 40px; }
+.heading h2 { margin: 0; font-size: 24px; line-height: 1.4; letter-spacing: -.025em; font-weight: 620; }
+.number { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border-radius: 6px; color: var(--accent-ink); background: var(--accent); font-size: 21px; line-height: 1; font-weight: 550; font-variant-numeric: tabular-nums; }
+.task { margin: 13px 0 0; font-size: 15px; color: var(--muted); }
+.scene { position: relative; display: grid; grid-template-columns: 21% 34% 25%; justify-content: space-between; min-height: 365px; padding-top: 27px; }
+.scene h3 { margin: 0 0 18px; font-size: 18px; font-weight: 600; color: var(--accent); text-align: center; }
+.model, .runtime, .fileTool { min-width: 0; position: relative; }
+.characterWrap { height: 214px; display: flex; justify-content: center; align-items: center; position: relative; }
+.quiet { opacity: .38; }
+.runtimeBox { border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 7px; min-height: 242px; padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+.slip { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 13px 14px; border: 1px solid color-mix(in srgb, var(--ink) 47%, transparent); border-radius: 6px; background: var(--surface); font-size: 14px; line-height: 1.65; animation: slipIn .45s ease both; }
+.slip > svg { flex-shrink: 0; margin-top: 3px; }
+.slip p { margin: 0; }
+.slip strong { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.slip code { display: block; font-size: 13px; white-space: nowrap; letter-spacing: -.03em; font-family: ui-monospace, "Cascadia Code", monospace; }
+.slip p code { display: inline; }
+.slip small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.userSlip { margin-top: -70px; }
+.inputGroup, .requestGroup, .resultGroup, .answerGroup { position: relative; }
+.inputGroup { display: grid; gap: 10px; }
+.requestGroup[data-visible="false"] { visibility: hidden; }
+.fileWrap { position: relative; min-height: 214px; display: flex; align-items: center; flex-direction: column; justify-content: center; }
+.closedFile { margin-top: 6px; height: 132px; width: 132px; }
+.filename { font-size: 20px; display: block; margin-top: 10px; font-weight: 500; }
+.magnifier { position: absolute; right: 18%; bottom: 39px; background: var(--bg); }
+.openFile { background: var(--surface); border: 1px solid var(--ink); border-radius: 5px; width: 184px; min-height: 177px; padding: 12px 12px 17px; animation: fileIn .5s ease both; }
+.openFile > svg { margin-bottom: 7px; }
+.todoRows { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.todoRows li { display: flex; gap: 8px; align-items: center; font-size: 14px; white-space: nowrap; }
+.todoRows svg { flex: none; }
+.todoRows li[data-highlight="true"] span { background: var(--tint); box-shadow: 4px 0 var(--tint), -3px 0 var(--tint); }
+.resultSlip { padding: 10px 13px; }
+.resultSlip > div { width: 100%; }
+.permission { text-align: center; color: var(--accent); font-size: 12px; margin: -1px 0; }
+.history { display: flex; gap: 10px; align-items: center; padding: 5px 8px; color: var(--muted); font-size: 13px; }
+.answer ul { padding-left: 29px; margin: 9px 0 3px; font-size: 18px; display: grid; gap: 6px; }
+.flow { position: absolute; top: 145px; width: 10%; display: flex; flex-direction: column; align-items: center; z-index: 2; pointer-events: none; }
+.modelFlow { left: 20.5%; width: 8.4%; }
+.toolFlow { left: 63.5%; width: 11%; top: 145px; }
+.lowerFlow { top: 248px; }
+.flow span { font-size: 12px; white-space: nowrap; font-weight: 500; }
+.flow svg { width: 100%; height: 35px; overflow: visible; }
+.activeFlow svg { animation: travelRight .8s ease both; }
+.activeFlow[data-direction="left"] svg { animation-name: travelLeft; }
+.controls { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-top: 1px solid var(--hairline); }
+.progress { font-size: 21px; font-weight: 550; font-variant-numeric: tabular-nums; }
+.progress > span { color: var(--muted); font-size: 17px; font-weight: 400; }
+.buttons { display: flex; gap: 14px; }
+.buttons button { display: inline-flex; align-items: center; justify-content: center; gap: 11px; min-width: 126px; height: 46px; padding: 0 19px; border: 1px solid var(--accent); border-radius: 5px; color: var(--accent); background: transparent; font-size: 16px; cursor: pointer; transition: background .15s, transform .15s; }
+.buttons button:hover:not(:disabled) { background: var(--tint); transform: translateY(-1px); }
+.buttons .primary { background: var(--accent); color: var(--accent-ink); }
+.buttons .primary:hover:not(:disabled) { background: var(--accent-strong); }
+.buttons button:disabled { opacity: .3; cursor: default; }
+.buttons button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@keyframes slipIn { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fileIn { from { opacity: 0; transform: translateY(6px) rotate(-3deg); } to { opacity: 1; transform: none; } }
+@keyframes noteIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes travelRight { from { opacity: 0; transform: translateX(-25px); clip-path: inset(0 100% 0 0); } to { opacity: 1; transform: translateX(0); clip-path: inset(0 0 0 0); } }
+@keyframes travelLeft { from { opacity: 0; transform: translateX(25px); clip-path: inset(0 0 0 100%); } to { opacity: 1; transform: translateX(0); clip-path: inset(0 0 0 0); } }
+@media (max-width: 1100px) { .scene { grid-template-columns: 20% 36% 24%; } .runtimeBox { padding: 15px; } .slip { padding: 10px; gap: 7px; } .modelFlow { left: 20%; width: 10%; } .toolFlow { left: 66%; width: 10%; } }
+@media (prefers-reduced-motion: reduce) { .lesson *, .lesson *::before, .lesson *::after { animation: none !important; transition: none !important; } }
+
+.modelIcon { width: 146px; height: 146px; display: grid; place-items: center; border: 1px solid var(--hairline); border-radius: 50%; background: var(--surface); color: var(--ink); transition: opacity .25s; }
+.caption { color: var(--muted); font-size: 14px; line-height: 1.6; text-align: center; white-space: pre-line; margin: 8px 0 0; animation: noteIn .35s ease both; }
+.runtimeNote { color: var(--accent); margin-top: 16px; }
+.finished { color: var(--accent); font-size: 14px; display: block; text-align: center; margin-top: 24px; }
