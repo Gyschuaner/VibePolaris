@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { BrandMark } from "@/components/BrandMark";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeStudio } from "@/components/ThemeStudio";
 
 export function SiteHeader({ home = false, wide = false }: { home?: boolean; wide?: boolean }) {
   return (
@@ -30,7 +30,7 @@ export function SiteHeader({ home = false, wide = false }: { home?: boolean; wid
               <input name="q" aria-label="搜索术语或技术领域" placeholder="搜索术语或技术领域" autoComplete="off" />
             </form>
           )}
-          <ThemeToggle />
+          <ThemeStudio />
         </div>
       </div>
     </nav>

@@ -6,13 +6,18 @@ import "./globals.css";
 
 const themeBootstrap = `
 (function () {
-  var mode, palette;
+  var mode, palette, background;
   try {
     mode = localStorage.getItem('vp-theme');
     palette = localStorage.getItem('vp-palette');
+    background = localStorage.getItem('vp-background');
   } catch (error) {}
-  var palettes = { moss: true, sprout: true, pomelo: true };
+  var backgrounds = { paper: true, oat: true, limestone: true, pearl: true, mist: true };
+  var palettes = { moss: true, indigo: true, clay: true, pine: true, plum: true };
+  var legacyPalettes = { sprout: 'pine', pomelo: 'moss' };
+  if (!palettes[palette] && legacyPalettes[palette]) palette = legacyPalettes[palette];
   document.documentElement.dataset.theme = mode || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.background = backgrounds[background] ? background : 'paper';
   document.documentElement.dataset.palette = palettes[palette] ? palette : 'moss';
 })();`;
 
@@ -34,7 +39,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#F5F3E8",
+  themeColor: "#F7F3E8",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

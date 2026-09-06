@@ -8,6 +8,7 @@ import { TermDetailExperience } from "@/components/TermDetailExperience";
 import type { BespokeTermPageProps } from "@/components/terms/BespokeTermScaffold";
 import { ComponentTermPage } from "@/components/terms/ComponentTermPage";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
+import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { RagTermPage } from "@/components/terms/RagTermPage";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
@@ -17,6 +18,7 @@ import { getTermExperience } from "@/lib/term-experiences";
 type TermPageProps = { params: Promise<{ slug: string }> };
 
 const dedicatedTermPages = {
+  "agent-harness": AgentHarnessTermPage,
   component: ComponentTermPage,
   rebase: RebaseTermPage,
   rag: RagTermPage,
