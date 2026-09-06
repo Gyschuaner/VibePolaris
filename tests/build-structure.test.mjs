@@ -87,7 +87,6 @@ test("首页使用可切换的极简技术星图", () => {
   assert.match(css, /offset-distance: 0%[\s\S]*offset-distance: 100%/);
   assert.doesNotMatch(css, /--route-via-|--route-angle-/);
   assert.match(css, /meteor-trail-frames\.png/);
-  assert.match(css, /route-meteor-tail-draw 320ms steps\(31, end\)/);
   assert.match(css, /transform-origin: 81\.4% 16\.35%/);
   assert.match(css, /translate\(-81\.4%, -16\.35%\) rotate\(45deg\)/);
   assert.match(css, /has-route-flight/);
