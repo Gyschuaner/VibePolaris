@@ -49,12 +49,12 @@ export function HarnessLesson() {
       if (event.key === "ArrowRight") { event.preventDefault(); next(); }
       if (event.key === "ArrowLeft") { event.preventDefault(); dispatch({ type: "previous" }); }
     }}>
-    <div className={styles.heading}><span className={styles.number}>{String(step + 1).padStart(2, "0")}</span><h1 id="lesson-title">{current.title}</h1></div>
+    <div className={styles.heading}><span className={styles.number}>{String(step + 1).padStart(2, "0")}</span><h2 id="lesson-title">{current.title}</h2></div>
     <p className={styles.task}>{lessonTask}</p>
 
     <div className={styles.scene} key={revision} data-step={step + 1} data-beat={beat}>
       <div className={styles.model}>
-        <h2>模型</h2>
+        <h3>模型</h3>
         <div className={styles.characterWrap}>
           <div className={styles.modelIcon + (step === 3 ? " " + styles.quiet : "")}><Brain size={78} weight="thin" aria-hidden="true" /></div>
         </div>
@@ -62,9 +62,9 @@ export function HarnessLesson() {
       </div>
 
       <div className={styles.runtime}>
-        <h2>Harness</h2>
+        <h3>Harness</h3>
         <div className={styles.runtimeBox}>
-          {step === 0 && <div className={styles.slip + " " + styles.userSlip}><User size={22} /><p>{lessonTask}</p></div>}
+          {step === 0 && <div className={styles.slip + " " + styles.userSlip}><User size={22} /><p>任务已收到，等待调用模型</p></div>}
           {step === 1 && <div className={styles.inputGroup}>
             <div className={styles.slip}><NotePencil size={22} /><p>任务：找出 todo.txt 中的未完成事项</p></div>
             <div className={styles.slip}><Wrench size={22} /><p>工具：<code>read_file(path)</code><small>读取指定文件</small></p></div>
@@ -92,7 +92,7 @@ export function HarnessLesson() {
       </div>
 
       <div className={styles.fileTool}>
-        <h2>文件工具</h2>
+        <h3>文件工具</h3>
         <div className={styles.fileWrap}>
           {view.fileRead ? <div className={styles.openFile}><FileText size={26} weight="light" /><TodoRows highlight={view.answered} /></div> : <FileText className={styles.closedFile} size={132} weight="thin" />}
           <MagnifyingGlass className={styles.magnifier} size={38} weight="light" aria-hidden="true" />
@@ -118,9 +118,5 @@ export function HarnessLesson() {
           : <button className={styles.primary} type="button" disabled={!settled} onClick={next}>下一步<ArrowRight size={20} /></button>}
       </div>
     </div>
-    <details className={styles.explanation}><summary>这六步里的 Harness 做了什么？</summary>
-      <p>它准备上下文、调用模型、调度工具，再把工具结果交给下一次模型调用。模型选择动作，文件工具执行读取。</p>
-      <p>这里用固定待办演示，不会读取你的文件。按钮控制讲解节奏；真实运行由程序连续推进。权限、长任务恢复和验收是后续能力，结束回答不等于通过验收。</p>
-    </details>
   </section>;
 }
