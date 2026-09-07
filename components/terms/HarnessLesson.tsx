@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ArrowCounterClockwise, FileText, MagnifyingGlass, Wrench, CheckSquare, Square } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, ArrowCounterClockwise, FileText, MagnifyingGlass, Pause, Play, Wrench, CheckSquare, Square } from "@phosphor-icons/react";
 import { useEffect, useReducer, useState, useSyncExternalStore } from "react";
 import { initialLesson, isSettled, lessonReducer, lessonSteps, lessonView, todoItems } from "@/lib/harness-lesson";
 import intro from "@/content/zh/terms/agent-harness/lesson-intro.json";
@@ -30,6 +30,7 @@ function Flow({ side, direction, label, active = true, lower = false }: { side: 
 
 export function HarnessLesson() {
   const [mode, setMode] = useState<"chat" | "harness">("harness");
+  const [autoPlay, setAutoPlay] = useState(false);
   const [state, dispatch] = useReducer(lessonReducer, initialLesson);
   const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, serverMotionSnapshot);
   const { step, beat, revision } = state;
@@ -41,20 +42,52 @@ export function HarnessLesson() {
     const timer = setTimeout(() => dispatch(reduced ? { type: "settle" } : { type: "tick", revision }), reduced ? 0 : current.beats[beat]);
     return () => clearTimeout(timer);
   }, [beat, current, reduced, revision, settled, mode]);
-  const next = () => dispatch({ type: "next", reduced });
+  useEffect(() => {
+    if (!autoPlay || mode === "chat" || !settled) return;
+    const complete = step === lessonSteps.length - 1;
+    const timer = setTimeout(() => {
+      if (complete) setAutoPlay(false);
+      else dispatch({ type: "next", reduced });
+    }, reduced ? 900 : 1100);
+    return () => clearTimeout(timer);
+  }, [autoPlay, mode, reduced, settled, step]);
+  const next = () => {
+    setAutoPlay(false);
+    dispatch({ type: "next", reduced });
+  };
+  const previous = () => {
+    setAutoPlay(false);
+    dispatch({ type: "previous" });
+  };
+  const replay = () => {
+    setAutoPlay(false);
+    dispatch({ type: "replay" });
+  };
+  const changeMode = (nextMode: "chat" | "harness") => {
+    setAutoPlay(false);
+    setMode(nextMode);
+  };
+  const toggleAutoPlay = () => {
+    if (autoPlay) {
+      setAutoPlay(false);
+      return;
+    }
+    if (step === lessonSteps.length - 1) dispatch({ type: "replay" });
+    setAutoPlay(true);
+  };
 
   return <section id="harness-demo" className={styles.lesson} data-mode={mode} data-step={step + 1} data-beat={beat} data-settled={settled}
     aria-labelledby="lesson-title" onKeyDown={event => {
       if (event.altKey || event.ctrlKey || event.metaKey || mode === "chat") return;
       if (event.key === "ArrowRight") { event.preventDefault(); next(); }
-      if (event.key === "ArrowLeft") { event.preventDefault(); dispatch({ type: "previous" }); }
+      if (event.key === "ArrowLeft") { event.preventDefault(); previous(); }
     }}>
     <div className={styles.heading}>
       {mode === "harness" && <span className={styles.number}>{String(step + 1).padStart(2, "0")}</span>}
       <h2 id="lesson-title">{mode === "chat" ? intro.chatTitle : current.title}</h2>
       <div className={styles.modeSwitch} role="group" aria-label={intro.modesLabel} onKeyDown={event => event.stopPropagation()}>
-        <button type="button" aria-pressed={mode === "chat"} onClick={() => setMode("chat")}>Chat</button>
-        <button type="button" aria-pressed={mode === "harness"} onClick={() => setMode("harness")}>Harness</button>
+        <button type="button" aria-pressed={mode === "chat"} onClick={() => changeMode("chat")}>Chat</button>
+        <button type="button" aria-pressed={mode === "harness"} onClick={() => changeMode("harness")}>Harness</button>
       </div>
     </div>
 
@@ -114,8 +147,11 @@ export function HarnessLesson() {
       <span className={styles.progress} aria-live="polite">{step + 1}<span> / 6</span></span>
       <span role="status" className={styles.srOnly}>{current.title}{settled ? "。可以继续。" : "。正在演示。"}</span>
       <div className={styles.buttons}>
-        <button type="button" disabled={step === 0} onClick={() => dispatch({ type: "previous" })}><ArrowLeft size={20} />上一步</button>
-        {step === 5 ? <button className={styles.primary} type="button" onClick={() => dispatch({ type: "replay" })}>重播<ArrowCounterClockwise size={20} /></button>
+        <button className={styles.autoPlay} type="button" aria-pressed={autoPlay} onClick={toggleAutoPlay}>
+          {autoPlay ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" />}{autoPlay ? "暂停" : "自动播放"}
+        </button>
+        <button type="button" disabled={step === 0} onClick={previous}><ArrowLeft size={20} />上一步</button>
+        {step === 5 ? <button className={styles.primary} type="button" onClick={replay}>重播<ArrowCounterClockwise size={20} /></button>
           : <button className={styles.primary} type="button" disabled={!settled} onClick={next}>下一步<ArrowRight size={20} /></button>}
       </div>
     </div>
