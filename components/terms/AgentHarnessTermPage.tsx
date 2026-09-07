@@ -44,10 +44,6 @@ export function AgentHarnessTermPage({ related }: BespokeTermPageProps) {
     </header>
     <HarnessLesson />
     <div className={styles.reading}>
-      <nav className={styles.contents} aria-label="本页内容">
-        <a href="#harness-how">理解原理</a><a href="#harness-questions">真实任务</a><a href="#harness-concepts">概念对照</a><a href="#harness-use">实际使用</a>
-      </nav>
-
       <section className={styles.section} id="harness-how" aria-labelledby="how-title">
         <h2 id="how-title">模型决定下一步，<br />Harness 把这一步运行起来。</h2>
         <p>刚才，模型提出读取 <code>todo.txt</code> 的请求，文件工具实际打开文件。Harness 把请求交给工具，再把读取结果放进下一次模型输入。</p>
