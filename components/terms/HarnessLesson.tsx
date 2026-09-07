@@ -93,7 +93,7 @@ export function HarnessLesson() {
 
     {mode === "chat" ? <HarnessChat reduced={reduced} /> : <>
 
-    <div className={styles.scene} key={revision} data-step={step + 1} data-beat={beat}>
+    <div className={styles.scene} data-step={step + 1} data-beat={beat}>
       <div className={styles.model}>
         <h3>模型</h3>
         <div className={styles.characterWrap}>
