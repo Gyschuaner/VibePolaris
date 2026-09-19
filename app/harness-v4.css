@@ -328,3 +328,22 @@
  .vp-reading-links .vp-related-link small { grid-column:1; grid-row:2; }
  .vp-reading-links .vp-related-link>svg { grid-column:2; grid-row:1/3; }
 }
+
+/* Keep the chapter directory beside the reading column on wide screens. */
+.vp-page-layout{display:grid;grid-template-columns:170px minmax(0,760px);gap:56px;align-items:start;max-width:986px;margin:0 auto}
+.vp-reading-content{min-width:0}
+.vp-page-layout .vp-toc{position:sticky;top:92px;display:grid;align-content:start;gap:2px;max-width:none;margin:35px 0 0;padding:10px 0 10px 14px;border:0;border-left:1px solid var(--hairline);background:transparent;backdrop-filter:none;overflow-y:auto;overflow-x:visible;max-height:calc(100vh - 122px);font-size:12px;scrollbar-width:thin}
+.vp-page-layout .vp-toc-label{padding:0 10px 9px;color:var(--muted);font-size:11px}
+.vp-page-layout .vp-toc a{display:block;padding:8px 10px;border-left:2px solid transparent;margin-left:-15px;color:var(--muted);line-height:1.45;white-space:normal}
+.vp-page-layout .vp-toc a.active{border-left-color:var(--accent);background:var(--tint);color:var(--accent-text);font-weight:650}
+.vp-page-layout .vp-toc a:hover{color:var(--accent-text);background:color-mix(in srgb,var(--tint) 60%,transparent)}
+
+@media(max-width:900px){
+ .vp-page-layout{display:block;max-width:760px}
+ .vp-page-layout .vp-toc{position:sticky;top:65px;z-index:30;display:flex;align-items:center;gap:20px;margin:0;padding:14px 0;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);background:color-mix(in srgb,var(--bg) 96%,transparent);backdrop-filter:blur(8px);overflow-x:auto;overflow-y:hidden;max-height:none;scrollbar-width:none}
+ .vp-page-layout .vp-toc-label{padding:0 2px 0 0;flex:none}
+ .vp-page-layout .vp-toc a{padding:0;border:0;margin:0;flex:none;white-space:nowrap;background:transparent}
+ .vp-page-layout .vp-toc a.active{background:transparent}
+}
+
+@media print{.vp-page-layout{display:block}.vp-page-layout .vp-toc{display:none!important}}
