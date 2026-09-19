@@ -1,21 +1,21 @@
 [
   {
     "zh": "智能体运行框架", "en": "Agent Harness", "slug": "agent-harness", "cat": "AI·Agent",
-    "say": "围绕模型组织上下文、工具权限、执行循环与验收，让任务能持续执行，并留下可检查的结果。",
+    "say": "让模型提出下一步，Harness 负责检查请求、执行工具、带回结果并决定继续或停止。",
     "aliases": ["Harness", "Agent Harness", "智能体运行框架", "智能体框架"],
-    "question": "同一个模型，怎样从给出建议走到完成任务并留下证据？",
-    "definition": "围绕模型组织上下文、工具权限、执行循环与验收的运行框架。让任务能持续执行，并留下可检查的结果。",
-    "boundary": "Harness 不等于模型本身，也不只是测试脚本。它约束工具权限、停止条件与验收规则，但不能保证模型每次判断都正确。",
-    "demoType": "comparison", "demoTitle": "同一模型、同一任务的双轨对照",
+    "question": "模型会给出修复建议，谁负责把建议变成执行并把结果带回下一轮？",
+    "definition": "围绕模型组织输入、工具调用、权限边界、执行循环与结果检查的运行系统。",
+    "boundary": "Harness 不等于模型，也不等于某个单独工具；它组织模型和工具之间的请求、执行、反馈与停止，但不能保证模型每次判断都正确。",
+    "demoType": "comparison", "demoTitle": "服务修复：模型、Harness 与工具的行动和反馈",
     "demoSteps": [
-      {"label":"只给模型","value":"建议先读取反馈","note":"没有反馈正文和读取工具时，无法核对实际反馈。"},
-      {"label":"接入 Harness","value":"读取资料并循环归纳","note":"依次装入上下文、开放工具，并按预算控制执行。"},
-      {"label":"检查交付","value":"3 类要点，12/12 覆盖","note":"教学示例中检查原文编号，并保留总结与轨迹。"}
+      {"label":"提出请求","value":"read_file(\"server.log\")","note":"模型只提出工具请求，文件还没有被打开。"},
+      {"label":"检查并执行","value":"Harness → Tool","note":"Harness 检查参数和权限，工具才真正读取或修改。"},
+      {"label":"返回并复测","value":"结果 → 下一轮模型","note":"新结果进入下一次输入，检查通过后才报告完成。"}
     ],
-    "quizQuestion": "模型给出总结后，哪项工作属于 Harness 的验收环节？",
-    "quizOptions": ["核对来源与标准，并记录执行结果", "更换模型的训练参数", "只把回答改成更长的文字"],
-    "correctText": "验收将交付与标准对齐，并留下可以复查的证据。",
-    "wrongText": "Harness 负责围绕模型组织执行；不能靠回答长度或修改训练参数替代验收。",
+    "quizQuestion": "模型返回 read_file(\"server.log\") 时，哪件事已经发生？",
+    "quizOptions": ["模型提出了读取请求", "文件工具已经读完日志", "日志已经进入下一次模型输入"],
+    "correctText": "这时只生成了请求；Harness 还要检查并调用工具，返回结果后才进入下一轮输入。",
+    "wrongText": "请求、执行和回传是三个不同时间点，不能把模型输出的工具请求当作已完成操作。",
     "promptTitle": "可以这样向 AI 表达",
     "prompt": "请为这个任务设计 Harness：明确上下文来源、可用工具与权限、停止条件，并保留执行记录和验收结果。",
     "relatedSlugs": ["context", "tools", "agent-loop"]

@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
 
 import "./globals.css";
+import "./harness-v4.css";
 
 const themeBootstrap = `
 (function () {
