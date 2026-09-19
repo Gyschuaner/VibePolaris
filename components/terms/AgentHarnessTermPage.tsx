@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Plus } from "@phosphor-icons/react
 
 import type { BespokeTermPageProps } from "./BespokeTermScaffold";
 import { HarnessV4Lesson } from "./HarnessV4Lesson";
+import { HarnessV4Toc } from "./HarnessV4Toc";
 
 const sources = [
   ["ref-1", "Building effective agents", "https://www.anthropic.com/engineering/building-effective-agents", "Anthropic · Agent、工具反馈与停止条件"],
@@ -25,13 +26,15 @@ export function AgentHarnessTermPage({ related }: BespokeTermPageProps) {
   const contextHref = `/terms/${related.find((item) => item.slug === "context")?.slug ?? "context"}`;
   return (
     <main className="vp-concept" id="main-content">
-      <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/terms"><ArrowLeft size={14} aria-hidden="true" />术语</Link><em>/</em><Link href="/terms?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
-      <header className="vp-hero">
-        <div className="vp-hero-top"><h1>Harness <span>让模型真正动手的运行系统</span></h1></div>
-        <p className="vp-hero-lead"><strong>模型负责“想”，Harness 负责让模型“真正干活”。</strong></p>
-        <p className="vp-hero-intro">一个模型会告诉你怎么修服务，但它怎么打开日志、修改文件，再根据测试结果接着做？这篇从一次普通问答开始，把中间的过程一层层拆开。先不用懂 MCP、Skills 或 Memory。</p>
-      </header>
-      <nav aria-label="本页目录" className="vp-toc"><span className="vp-toc-label">本页</span><a href="#why" className="active">只有模型时</a><a href="#need">加上 Harness</a><a href="#practice">磁盘例子</a><a href="#boundary">谁在执行</a><a href="#tools">工具</a><a href="#inside">内部组成</a><a href="#harness-demo">修服务实验</a><a href="#compare">概念区别</a><a href="#roadmap">接下来学什么</a></nav>
+      <div className="vp-page-layout">
+        <HarnessV4Toc />
+        <div className="vp-reading-content">
+          <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/terms"><ArrowLeft size={14} aria-hidden="true" />术语</Link><em>/</em><Link href="/terms?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
+          <header className="vp-hero">
+            <div className="vp-hero-top"><h1>Harness <span>让模型真正动手的运行系统</span></h1></div>
+            <p className="vp-hero-lead"><strong>模型负责“想”，Harness 负责让模型“真正干活”。</strong></p>
+            <p className="vp-hero-intro">一个模型会告诉你怎么修服务，但它怎么打开日志、修改文件，再根据测试结果接着做？这篇从一次普通问答开始，把中间的过程一层层拆开。先不用懂 MCP、Skills 或 Memory。</p>
+          </header>
 
       <section className="vp-chapter" id="why"><div className="vp-chapter-content"><h2>1. 先看只有模型时，会发生什么</h2>
         <p>假设你现在只有一个大语言模型，比如 Qwen、DeepSeek、GPT 或 Claude。这里说的是模型本身，还没有给它接上文件工具、浏览器或命令行。</p><p>你给它一句话：</p><blockquote className="vp-dialogue">帮我看看这个项目为什么运行失败。</blockquote><p>这次调用的过程很简单：</p>
@@ -97,6 +100,8 @@ else:
       <section className="vp-chapter" id="check"><div className="vp-chapter-content"><details className="vp-selfcheck"><summary><h2>两道小题</h2><span>展开 <Plus size={14} /></span></summary><p>关于读取请求和测试结果。</p><div className="vp-quiz"><h3>模型返回 read_file(&quot;server.log&quot;)，此时发生了什么？</h3><p>答案：模型提出了读取请求。Harness 还需要检查并调用文件工具。</p><h3>补丁写入成功，但健康检查返回新错误，下一步怎么做？</h3><p>答案：把检查错误交给模型继续判断；写入成功不代表任务完成。</p></div></details></div></section>
 
       <section className="vp-chapter" id="related"><div className="vp-chapter-content"><h2>相关词条</h2><div className="vp-reading-links"><Link className="vp-related-link" href="/terms?q=工具调用"><span>工具调用</span><small>先看一个请求怎样变成执行</small><ArrowRight size={16} /></Link><Link className="vp-related-link" href="/terms?q=Agent+Loop"><span>Agent Loop</span><small>再把一次执行接成循环</small><ArrowRight size={16} /></Link><Link className="vp-related-link" href={contextHref}><span>Context / 上下文</span><small>看哪些信息进入了下一次调用</small><ArrowRight size={16} /></Link></div><details className="vp-reference" id="references"><summary><span>参考资料与说明</span><Plus size={15} /></summary><p className="vp-reference-note">概念边界参考以下文档；服务修复、磁盘输出和流程分解为教学示例，不是实际运行记录。</p><ol className="vp-reference-list">{sources.map(([id, title, url, note]) => <li id={id} key={id}><a href={url} rel="noopener noreferrer" target="_blank">[{id.replace("ref-", "")}] {title} <ArrowUpRight size={13} /></a><span>{note}</span></li>)}</ol></details></div></section>
+        </div>
+      </div>
     </main>
   );
 }
