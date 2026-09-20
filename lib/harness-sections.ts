@@ -11,6 +11,5 @@ export const harnessSectionTitles = {
   compare: "10. 最后分清 Model、Harness 和 Agent",
   code: "再往里看：循环可以写成什么样？",
   roadmap: "接下来怎么学",
-  check: "两道小题",
-  related: "相关词条",
+  related: "参考资料",
 } as const;
