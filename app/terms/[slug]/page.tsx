@@ -12,6 +12,7 @@ import { EventTermPage, BubblingTermPage, HookTermPage } from "@/components/term
 import { EffectTermPage, BrowserApiTermPage } from "@/components/terms/BrowserConceptPages";
 import { FetchTermPage, PromiseTermPage, AwaitTermPage } from "@/components/terms/AsyncConceptPages";
 import { JsonTermPage, JsonSchemaTermPage } from "@/components/terms/DataConceptPages";
+import { RequestTermPage, ResponseTermPage, HttpMethodTermPage, StatusCodeTermPage, HttpHeaderTermPage } from "@/components/terms/HttpConceptPages";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
@@ -51,6 +52,11 @@ const articleTermPages = {
   "async-await": AwaitTermPage,
   json: JsonTermPage,
   "json-schema": JsonSchemaTermPage,
+  request: RequestTermPage,
+  response: ResponseTermPage,
+  "http-method": HttpMethodTermPage,
+  "status-code": StatusCodeTermPage,
+  "http-header": HttpHeaderTermPage,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 const dedicatedTermPages = {
