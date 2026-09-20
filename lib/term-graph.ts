@@ -39,7 +39,7 @@ export function nudgeGraph(nodes: MovingGraphNode[], x: number, y: number, radiu
     const dy = node.y - y;
     const distance = Math.hypot(dx, dy);
     if (distance < 1 || distance >= radius) continue;
-    const impulse = (1 - distance / radius) * 2;
+    const impulse = (1 - distance / radius) * .7;
     node.vx = (node.vx || 0) + dx / distance * impulse;
     node.vy = (node.vy || 0) + dy / distance * impulse;
     moved = true;
