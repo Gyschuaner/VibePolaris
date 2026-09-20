@@ -16,6 +16,12 @@ export type GraphEdge = { source: string; target: string };
 export type MovingGraphNode = GraphNode & SimulationNodeDatum;
 type GraphLayoutOptions = { centerSlug?: string };
 
+export function searchGraphNodes<T extends GraphTerm>(nodes: T[], query: string, category = "") {
+  const words = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  return nodes.filter(node => (!category || node.cat === category) && words.every(word =>
+    [node.zh, node.en, node.slug, node.cat, ...node.aliases].join(" ").toLocaleLowerCase().includes(word)));
+}
+
 // Share the same forces between the build-time layout and the interactive graph.
 // D3 mutates its nodes and links, so neither may alias the source content.
 export function createGraphSimulation(nodes: GraphNode[], edges: GraphEdge[], { centerSlug }: GraphLayoutOptions = {}) {

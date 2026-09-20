@@ -66,7 +66,7 @@ export default async function TermPage({ params }: TermPageProps) {
       ) : (
         <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} />
       )}
-      {term.slug !== "agent-harness" && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/graph?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
+      {term.slug !== "agent-harness" && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
       <SiteFooter />
     </>
   );

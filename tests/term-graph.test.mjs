@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import test from "node:test";
-import { buildTermGraph, graphNeighbors } from "../lib/term-graph.ts";
+import { buildTermGraph, graphNeighbors, searchGraphNodes } from "../lib/term-graph.ts";
 
 test("星图覆盖真实词条关系，双向关系去重且布局可复现", () => {
   const read = path => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
@@ -25,4 +25,14 @@ test("星图覆盖真实词条关系，双向关系去重且布局可复现", ()
   assert.equal(harness.relatedSlugs.length, 8);
   assert.deepEqual(buildTermGraph(terms), graph);
   assert.deepEqual(buildTermGraph([]), { nodes: [], edges: [] });
+});
+
+test("统一入口兼容英文、别名、多关键词及领域内搜索", () => {
+  const terms = JSON.parse(readFileSync(new URL("../content/zh/terms.json", import.meta.url), "utf8"));
+  assert.deepEqual(searchGraphNodes(terms, "  AGENT   HARNESS ").map(node => node.slug), ["agent-harness"]);
+  const harness = terms.find(node => node.slug === "agent-harness");
+  assert.ok(searchGraphNodes(terms, harness.aliases[0]).includes(harness));
+  assert.equal(searchGraphNodes(terms, "harness", "前端").length, 0);
+  assert.equal(searchGraphNodes(terms, "不存在的概念xyz").length, 0);
+  assert.ok(searchGraphNodes(terms, "", "前端").every(node => node.cat === "前端"));
 });

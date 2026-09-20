@@ -1,17 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { ArrowUpRight, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
-import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphNode, type GraphEdge } from "@/lib/term-graph";
+import { createGraphSimulation, graphNeighbors, nudgeGraph, searchGraphNodes, type GraphNode, type GraphEdge } from "@/lib/term-graph";
 import styles from "./ConceptGraph.module.css";
 
 type Point = { x: number; y: number };
 type View = Point & { scale: number };
 
-export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", centerSlug }: {
-  nodes: GraphNode[]; edges: GraphEdge[]; variant?: "page" | "inline"; centerSlug?: string;
+function GraphLocation({ onChange }: { onChange: (search: string) => void }) {
+  const params = useSearchParams();
+  useEffect(() => onChange(params.toString()), [params, onChange]);
+  return null;
+}
+
+export function ConceptGraph({ nodes: initialNodes, edges, categories, variant = "page", centerSlug }: {
+  nodes: GraphNode[]; edges: GraphEdge[]; categories?: string[]; variant?: "page" | "inline"; centerSlug?: string;
 }) {
   const inline = variant === "inline";
   const Root = inline ? "section" : "main";
@@ -19,8 +26,14 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
   const nodes = initialNodes;
   const [selected, setSelected] = useState("");
   const selection = useRef("");
+  const location = useRef("");
+  const restoreLocation = useRef<(() => void) | null>(null);
+  const onLocationChange = useCallback((search: string) => {
+    if (search !== location.current) restoreLocation.current?.();
+  }, []);
   const [hovered, setHovered] = useState("");
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("");
   const [showLines, setShowLines] = useState(false);
   const [view, setView] = useState<View>({ x: 0, y: 0, scale: .5 });
   const [ready, setReady] = useState(false);
@@ -43,7 +56,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
   const selectedNeighbors = useMemo(() => graphNeighbors(selected, edges), [selected, edges]);
   const current = bySlug.get(selected);
   const needle = query.trim().toLocaleLowerCase();
-  const matches = needle ? initialNodes.filter(node => [node.zh, node.en, node.slug, ...node.aliases].some(text => text.toLocaleLowerCase().includes(needle))).slice(0, 12) : [];
+  const matches = needle ? searchGraphNodes(nodes, query, category).slice(0, 12) : [];
 
   // Physics owns coordinates; React owns content and interaction state.
   // Updating transforms avoids 301 React renders and layout work on every tick.
@@ -124,13 +137,24 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
   useEffect(() => {
     const element = canvas.current;
     if (!element) return;
-    const restore = () => {
-      const slug = inline ? selection.current : new URL(window.location.href).searchParams.get("term") || "";
+    const restore = (openSearch = false) => {
+      const params = new URL(window.location.href).searchParams;
+      location.current = params.toString();
+      const slug = inline ? selection.current : params.get("term") || "";
+      const nextCategory = !inline && categories?.includes(params.get("cat") || "") ? params.get("cat")! : "";
+      const nextQuery = inline ? "" : params.get("q") || "";
       const positions = simulation.current?.nodes() || initialNodes;
       const node = positions.find(item => item.slug === slug);
       setSelected(node?.slug || "");
+      setCategory(nextCategory);
+      if (openSearch && !inline) {
+        setQuery(nextQuery);
+        if (nextQuery) searchPanel.current?.showPopover();
+        else searchPanel.current?.hidePopover();
+      }
       const linked = graphNeighbors(slug, edges);
-      frame(node ? positions.filter(item => item.slug === slug || linked.has(item.slug)) : positions, Boolean(node));
+      const scoped = searchGraphNodes(positions, nextQuery, nextCategory);
+      frame(node ? positions.filter(item => item.slug === slug || linked.has(item.slug)) : scoped.length ? scoped : positions, Boolean(node));
     };
     const observer = new ResizeObserver(([entry]) => {
       const previous = size.current;
@@ -138,7 +162,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
       size.current = next;
       if (!element.dataset.ready) {
         element.dataset.ready = "true";
-        restore();
+        restore(true);
         setReady(true);
       } else {
         setReframing(false);
@@ -147,9 +171,35 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
       }
     });
     observer.observe(element);
-    window.addEventListener("popstate", restore);
-    return () => { observer.disconnect(); window.removeEventListener("popstate", restore); };
-  }, [edges, frame, initialNodes, inline]);
+    restoreLocation.current = () => restore(true);
+    return () => { observer.disconnect(); restoreLocation.current = null; };
+  }, [edges, frame, initialNodes, inline, categories]);
+
+  function writeLocation(url: URL) {
+    location.current = url.searchParams.toString();
+    window.history.replaceState(null, "", url);
+  }
+
+  function updateQuery(next: string) {
+    setQuery(next);
+    const url = new URL(window.location.href);
+    if (next.trim()) url.searchParams.set("q", next);
+    else url.searchParams.delete("q");
+    writeLocation(url);
+  }
+
+  function selectCategory(next: string) {
+    setCategory(next); setQuery("");
+    clearSelection();
+    searchPanel.current?.hidePopover();
+    frame(searchGraphNodes(positions(), "", next));
+    if (inline) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("q");
+    if (next) url.searchParams.set("cat", next);
+    else url.searchParams.delete("cat");
+    writeLocation(url);
+  }
 
   function selectNode(slug: string) {
     selection.current = slug;
@@ -160,7 +210,8 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
     if (inline) return;
     const url = new URL(window.location.href);
     url.searchParams.set("term", slug);
-    window.history.replaceState(null, "", url);
+    url.searchParams.delete("q");
+    writeLocation(url);
   }
 
   function clearSelection() {
@@ -169,7 +220,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
     if (inline) return;
     const url = new URL(window.location.href);
     url.searchParams.delete("term");
-    window.history.replaceState(null, "", url);
+    writeLocation(url);
   }
 
   const zoom = useCallback((factor: number, point = { x: size.current.width / 2, y: size.current.height / 2 }) => {
@@ -267,15 +318,21 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
     if (!pointers.current.size) { gesture.current = null; pinch.current = null; }
   }
 
-  return <Root className={`${styles.page} ${inline ? styles.inline : ""}`} id={inline ? undefined : "main-content"} aria-label={inline ? "Harness 相关词条星图" : undefined}>
+  return <Root className={`${styles.page} ${inline ? styles.inline : ""} ${categories ? styles.withDomains : ""}`} id={inline ? undefined : "main-content"} aria-label={inline ? "Harness 相关词条星图" : undefined}>
     {!inline && <h1 className={styles.visuallyHidden}>概念星图</h1>}
-    <div className={styles.workspace}>
-      {!inline && <><button className={styles.searchToggle} type="button" popoverTarget="graph-search" aria-label="打开概念搜索" title="搜索概念"><MagnifyingGlass size={23} /></button>
+    {!inline && <Suspense fallback={null}><GraphLocation onChange={onLocationChange} /></Suspense>}
+    {!inline && categories && <nav className={styles.domains} aria-label="星图领域">
+      {["", ...categories].map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => selectCategory(item)}>
+        <span className="brand-star-only" aria-hidden="true" />{item === "" ? "全部" : item === "AI·Agent" ? "AI · Agent" : item}
+      </button>)}
+    </nav>}
+    {!inline && <><button className={styles.searchToggle} type="button" popoverTarget="graph-search" aria-label="打开概念搜索" title="搜索概念"><MagnifyingGlass size={23} /></button>
       <div ref={searchPanel} className={styles.searchPanel} id="graph-search" popover="auto" onToggle={event => { if (event.newState === "closed") setQuery(""); }}>
-        <input autoFocus aria-label="搜索概念" placeholder="搜索概念、英文或别名" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && matches[0]) { event.preventDefault(); selectNode(matches[0].slug); } }} />
+        <input autoFocus aria-label="搜索概念" placeholder="搜索概念、英文或别名" value={query} onChange={event => updateQuery(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && matches[0]) { event.preventDefault(); selectNode(matches[0].slug); } }} />
         {needle && <div className={styles.results} aria-label="搜索结果">{matches.length ? matches.map(node => <button type="button" key={node.slug} onClick={() => selectNode(node.slug)}><strong>{node.zh}</strong><span>{node.en || node.cat}</span></button>) : <p>没有找到这个概念</p>}</div>}
       </div>
-      </>}
+    </>}
+    <div className={styles.workspace}>
       <div ref={canvas} className={styles.canvas} role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
         onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => setHovered("")}
         onKeyDown={event => {
@@ -304,12 +361,13 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
             const highlighted = node.slug === selected || connected;
             const central = node.slug === centerSlug;
             const named = node.slug === hovered || highlighted || central;
+            const muted = selected ? !named : category && node.cat !== category && !named;
             const starSize = inline ? central ? 64 : 44 : Math.min(52, Math.max(23 + node.degree, 20 / view.scale));
             return <button type="button" key={node.slug} ref={element => {
               if (element) nodeElements.current.set(node.slug, element);
               else nodeElements.current.delete(node.slug);
             }} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
-              className={`${styles.node} ${central ? styles.center : ""} ${node.slug === selected ? styles.selected : ""} ${node.slug === hovered ? styles.hovered : ""} ${selected && !named ? styles.dimmed : ""}`}
+              className={`${styles.node} ${central ? styles.center : ""} ${node.slug === selected ? styles.selected : ""} ${node.slug === hovered ? styles.hovered : ""} ${muted ? styles.dimmed : ""}`}
               style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }}
               onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
               onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
@@ -321,7 +379,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, variant = "page", cen
       <div className={styles.controls} aria-label="星图视图控制">
         <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.3); }}><Plus size={18} /></button>
         <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(1 / 1.3); }}><Minus size={18} /></button>
-        <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { clearSelection(); frame(positions()); }}><CornersOut size={18} /></button>
+        <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => selectCategory("")}><CornersOut size={18} /></button>
         {!inline && <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>}
       </div>
       {current && <aside className={styles.detail} aria-label={`${current.zh}概念详情`}>
