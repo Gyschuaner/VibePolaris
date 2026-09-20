@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowLeft, ArrowRight, CaretRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft, ArrowRight, Brain, Circuitry, HardDrives, LinkSimple, Plus, Robot, Wrench } from "@phosphor-icons/react/dist/ssr";
 import { getRelatedTerms, getTerm } from "@/lib/content";
 import { InlineTerm } from "./InlineTerm";
 import { HarnessV4Lesson } from "./HarnessV4Lesson";
@@ -41,17 +41,27 @@ export function AgentHarnessTermPage() {
           <HarnessRequestFlow />
           <p id="cite-tool-request" className="vp-citation-target">模型说出 <code>read_file("server.log")</code> 时，文件还没有打开。经过 Harness 检查、工具执行，日志才真正返回。</p>
           <details className={styles.supplement} id="compare">
-            <summary>模型、工具和运行系统，各自做什么？<CaretRight size={16} /></summary>
+            <summary><Circuitry size={22} aria-hidden="true" /><span>角色分工</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
+            <div className={styles.supplementBody}>
             <span id="tools" className={styles.alias} /><span id="inside" className={styles.alias} />
-            <dl className="vp-responsibilities">
-              {[["Model · 模型", "提出下一步", "看到日志后，决定查看 app.py。"], ["Harness · 运行系统", "把请求变成行动", "检查权限、调度工具、保存结果。"], ["Tool · 工具", "执行具体操作", "读取文件、写入补丁、运行检查。"], ["Agent · 智能体", "围绕目标持续行动", "模型、运行系统与工具一起完成修复。"]].map(([name, role, example]) => <div key={name}><dt>{name}</dt><dd><strong>{role}</strong><p>{example}</p></dd></div>)}
+            <dl className={styles.roles}>
+              {[
+                { name: "Model · 模型", role: "提出下一步", example: "看到日志后，决定查看 app.py。", Icon: Brain },
+                { name: "Harness · 运行系统", role: "把请求变成行动", example: "检查权限、调度工具、保存结果。", Icon: Circuitry },
+                { name: "Tool · 工具", role: "执行具体操作", example: "读取文件、写入补丁、运行检查。", Icon: Wrench },
+                { name: "Agent · 智能体", role: "围绕目标持续行动", example: "模型、运行系统与工具一起完成修复。", Icon: Robot },
+              ].map(({ name, role, example, Icon }) => <div key={name}><dt><Icon size={26} aria-hidden="true" />{name}</dt><dd><strong>{role}</strong><p>{example}</p></dd></div>)}
             </dl>
             <p id="cite-tools" className="vp-citation-target">工具接收<Term slug="parameter">参数</Term>，完成一次具体操作，返回内容或错误。是否查别的文件、换方法或询问用户，由模型根据结果决定，再交给 Harness 推进。</p>
             <p id="cite-state" className="vp-citation-target"><Term slug="prompt">指令</Term>规定工作要求，<Term slug="permission-boundary">权限检查</Term>限制实际操作。<Term slug="state">运行状态</Term>保存做过什么、得到什么结果，其中需要的信息会被整理进下一轮上下文。</p>
+            </div>
           </details>
           <details className={styles.supplement} id="name">
-            <summary>为什么叫 Harness？<CaretRight size={16} /></summary>
+            <summary><LinkSimple size={22} aria-hidden="true" /><span>词义由来</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
+            <div className={styles.supplementBody}>
+            <div className={styles.connection} aria-hidden="true"><Brain /><i /><LinkSimple /><i /><Wrench /></div>
             <p id="cite-word" className="vp-citation-target">Harness 原指马具、系带一类连接装置。借这个比喻：模型提供能力，Harness 把它接到工具和环境上，并约束操作范围。</p>
+            </div>
           </details>
         </div></section>
 
@@ -61,7 +71,8 @@ export function AgentHarnessTermPage() {
           <HarnessContextFlow />
           <p id="cite-loop" className="vp-citation-target">“判断 → 执行 → 看结果 → 再判断”，组成了 <Term slug="agent-loop">Agent Loop（智能体循环）</Term>。每一轮带着新结果继续，直到任务完成或需要停下。</p>
           <details className={styles.supplement} id="practice">
-            <summary>换个例子：磁盘为什么满了？<CaretRight size={16} /></summary>
+            <summary><HardDrives size={22} aria-hidden="true" /><span>换个案例 · 磁盘空间</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
+            <div className={styles.supplementBody}>
             <div className="vp-disk-story">
               <div className="vp-disk-round">
                 <div id="cite-df" className="vp-disk-request vp-citation-target"><h3>先查哪块磁盘满了</h3><code>df -h</code><p>工具返回：/data 已用 99%。</p></div>
@@ -71,6 +82,7 @@ export function AgentHarnessTermPage() {
                 <div id="cite-du" className="vp-disk-request vp-citation-target"><h3>再查谁占得最多</h3><code>du -sh /data/*</code><p>模型根据上一轮结果，继续定位目录。</p></div>
                 <div className="vp-disk-bars" aria-label="logs 82 GB，models 12 GB，cache 4 GB">{[["logs", 82], ["models", 12], ["cache", 4]].map(([name, size]) => <div key={name}><code>{name}</code><span><i style={{ width: `${size}%` }} /></span><b>{size} GB</b></div>)}</div>
               </div>
+            </div>
             </div>
           </details>
         </div></section>

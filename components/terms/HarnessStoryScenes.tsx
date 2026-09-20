@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowCounterClockwise, ArrowRight, Check, FileText, LockSimple, Pause, Play } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Brain, Check, CheckCircle, Circuitry, FileText, LockSimple, Pause, PencilLine, Play, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import styles from "./HarnessStory.module.css";
 
 // One short, finite sequence at a time; never hold the reader's scroll position.
@@ -70,9 +70,9 @@ export function HarnessRequestFlow() {
       <svg className={styles.orbits} viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
         {current.path && <g key={scene.step}><path d={current.path} className={styles.trail} /><circle r="5" className={styles.packet} style={{ offsetPath: `path('${current.path}')` } as CSSProperties} /></g>}
       </svg>
-      <div className={styles.actorModel} data-active={current.active === "model"}><span className="brand-star-only" aria-hidden="true" /><strong>Model</strong><span>提出下一步</span></div>
-      <div className={styles.actorHarness} data-active={current.active === "harness"}><span className="brand-star-only" aria-hidden="true" /><strong>Harness</strong><span>{scene.step === 2 ? <><Check size={15} /> 读取已允许</> : "检查 · 调度 · 保存"}</span></div>
-      <div className={styles.actorTool} data-active={current.active === "tool"}><span className="brand-star-only" aria-hidden="true" /><strong>Tool</strong><span>读取文件</span></div>
+      <div className={styles.actorModel} data-active={current.active === "model"}><Brain className={styles.actorIcon} aria-hidden="true" /><strong>Model</strong><span>提出下一步</span></div>
+      <div className={styles.actorHarness} data-active={current.active === "harness"}><Circuitry className={styles.actorIcon} aria-hidden="true" /><strong>Harness</strong><span>{scene.step === 2 ? <><Check size={15} /> 读取已允许</> : "检查 · 调度 · 保存"}</span></div>
+      <div className={styles.actorTool} data-active={current.active === "tool"}><FileText className={styles.actorIcon} aria-hidden="true" /><strong>Tool</strong><span>读取文件</span></div>
     </div>
     <div className={styles.sceneCaption} aria-live="polite"><div key={scene.step} className={styles.reveal}><h3>{current.title}</h3><code>{current.code}</code><p>{current.caption}</p></div></div>
   </div>;
@@ -95,7 +95,7 @@ export function HarnessContextFlow() {
         </div>
       </div>
       <div className={styles.contextAnswer}>
-        <span className="brand-star-only" aria-hidden="true" />
+        <Brain className={styles.actorIcon} aria-hidden="true" />
         <strong>Model</strong>
         <p key={scene.step} className={styles.reveal}>{scene.step === 2 ? "我看到了报错。\n接下来，打开 app.py。" : scene.step === 1 ? "新的日志，\n进入下一轮输入。" : "还没有读到日志，\n先提出读取请求。"}</p>
       </div>
@@ -104,9 +104,9 @@ export function HarnessContextFlow() {
 }
 
 const outcomes = {
-  success: { label: "检查通过", stages: ["写入补丁", "运行检查", "验证完成"], title: "检查通过，才报告完成。", code: "GET /health → 200 OK", description: "本例中，服务成功启动并返回了预期响应。" },
-  retry: { label: "检查失败", stages: ["运行检查", "带回错误", "继续修正"], title: "错误带回来，循环接着走。", code: "GET /health → 500 · NameError", description: "补上冒号后还有返回值错误。模型看到新结果，再提出修改。" },
-  denied: { label: "权限不足", stages: ["提出修改", "检查权限", "工具未执行"], title: "没有写入授权，就停在这里。", code: "PermissionDenied · app.py 未修改", description: "Harness 返回拒绝原因，模型说明还需要什么授权。" },
+  success: { label: "检查通过", stages: ["写入补丁", "运行检查", "验证完成"], icons: [PencilLine, ShieldCheck, CheckCircle], title: "检查通过，才报告完成。", code: "GET /health → 200 OK", description: "本例中，服务成功启动并返回了预期响应。" },
+  retry: { label: "检查失败", stages: ["运行检查", "带回错误", "继续修正"], icons: [ShieldCheck, WarningCircle, PencilLine], title: "错误带回来，循环接着走。", code: "GET /health → 500 · NameError", description: "补上冒号后还有返回值错误。模型看到新结果，再提出修改。" },
+  denied: { label: "权限不足", stages: ["提出修改", "检查权限", "工具未执行"], icons: [PencilLine, ShieldCheck, LockSimple], title: "没有写入授权，就停在这里。", code: "PermissionDenied · app.py 未修改", description: "Harness 返回拒绝原因，模型说明还需要什么授权。" },
 };
 
 export function HarnessOutcomeFlow() {
@@ -117,11 +117,11 @@ export function HarnessOutcomeFlow() {
     <div className={styles.outcomeTabs} role="group" aria-label="选择执行结果">{Object.entries(outcomes).map(([key, value]) => <button key={key} type="button" aria-pressed={scenario === key} onClick={() => { setScenario(key as keyof typeof outcomes); scene.seek(0); }}>{value.label}</button>)}</div>
     <SceneControls scene={scene} labels={current.stages} />
     <div className={styles.outcomeTrack} data-scenario={scenario}>
-      {current.stages.map((label, index) => <div key={label} className={styles.outcomeNode} data-active={index <= scene.step} data-blocked={scenario === "denied" && index === 2}>
-        {scenario === "denied" && index === 2 ? <LockSimple size={28} /> : <span className="brand-star-only" aria-hidden="true" />}
+      {current.stages.map((label, index) => { const Icon = current.icons[index]; return <div key={`${scenario}-${label}`} className={styles.outcomeNode} data-active={index <= scene.step} data-blocked={scenario === "denied" && index === 2}>
+        <Icon className={styles.actorIcon} aria-hidden="true" />
         <strong>{label}</strong>
         {index < 2 && <span className={styles.outcomeLine} data-lit={scene.step > index} aria-hidden="true" />}
-      </div>)}
+      </div>; })}
       {scenario === "retry" && scene.step === 2 && <span className={styles.returnLoop} aria-hidden="true"><ArrowCounterClockwise size={28} /></span>}
     </div>
     <div className={styles.outcomeCaption} aria-live="polite"><div key={`${scenario}-${scene.step}`} className={styles.reveal}>
