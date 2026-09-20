@@ -4,8 +4,8 @@ import { useState } from "react";
 import { ArrowUp, ArrowUpRight, CaretRight } from "@phosphor-icons/react";
 
 const sources = [
-  { publisher: "Erik S.、Barry Zhang · Anthropic", title: "Building effective agents", date: "2024-12-19", url: "https://www.anthropic.com/engineering/building-effective-agents", citations: ["cite-loop"] },
-  { publisher: "Microsoft Learn", title: "Agent Harness", date: "", url: "https://learn.microsoft.com/en-us/agent-framework/concepts/harness", citations: ["cite-harness", "cite-state"] },
+  { publisher: "Erik S.、Barry Zhang · Anthropic", title: "Building effective agents", date: "2024-12-19", url: "https://www.anthropic.com/engineering/building-effective-agents", citations: ["cite-loop", "cite-stopping"] },
+  { publisher: "Microsoft Learn", title: "Agent Harness", date: "", url: "https://learn.microsoft.com/en-us/agent-framework/concepts/harness", citations: ["cite-harness", "cite-state", "cite-harness-config"] },
   { publisher: "Anthropic · Claude Docs", title: "Tool use with Claude", date: "", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", citations: ["cite-tool-request", "cite-tools"] },
   { publisher: "Model Context Protocol", title: "Architecture overview", date: "", url: "https://modelcontextprotocol.io/docs/learn/architecture", citations: ["cite-mcp"] },
   { publisher: "Justin Young · Anthropic", title: "Effective harnesses for long-running agents", date: "2025-11-26", url: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", citations: ["cite-verification"] },
