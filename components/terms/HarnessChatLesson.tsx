@@ -3,8 +3,8 @@
 import { ArrowUp } from "@phosphor-icons/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 
-const modelQuestion = "帮我看看这个项目为什么运行失败。";
-const modelAnswer = "可能是端口冲突，你可以运行 lsof -i :8000 看一下。";
+import { harnessTask } from "@/lib/harness-v4";
+const modelAnswer = "你可以先查看 server.log，确认报错位置，再修改代码并运行 /health 检查。";
 
 export function GptMark({ size = 17 }: { size?: number }) {
   return (
@@ -15,7 +15,7 @@ export function GptMark({ size = 17 }: { size?: number }) {
 }
 
 export function HarnessModelChat({ reduced }: { reduced: boolean }) {
-  const [questions, setQuestions] = useState([modelQuestion]);
+  const [questions, setQuestions] = useState([harnessTask]);
   const [draft, setDraft] = useState("");
   const [answerLength, setAnswerLength] = useState(0);
   const threadRef = useRef<HTMLDivElement>(null);
