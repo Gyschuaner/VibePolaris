@@ -84,7 +84,7 @@ export function HarnessV4Lesson() {
         ) : null}
         <div aria-live="polite" className="vp-sr">{state.mode === "model" ? "只用模型：给出排错建议，但没有执行操作。" : `第 ${state.step + 1} 步，${frame.title}。${frame.insight}`}</div>
       </section>
-      <div className="vp-loop-comment"><p>可以先从“检查通过”走一遍，再切到“测试失败”。第二个分支里，补好冒号后还会遇到返回值错误：上一处修改已完成，但任务没完成。模型需要新错误，才能决定再改哪里。</p><p>“未获写入授权”会停在修改前。Harness 已经允许读文件，不意味着也允许写文件；它会把拒绝原因交回去，报告等待授权。</p><p>演示里的返回值是预先编排的教学数据，不连接服务器。真实 Agent 的下一步由模型动态产生，这里只是把可能发生的一段过程慢放给你看。</p></div>
+      <div className="vp-loop-comment"><p>切换场景，可以观察检查失败后继续修正，以及未获授权时停止写入。这里使用预设数据演示流程。</p></div>
     </>
   );
 }
