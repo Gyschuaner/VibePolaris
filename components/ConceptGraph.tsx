@@ -333,7 +333,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
       </div>
     </>}
     <div className={styles.workspace}>
-      <div ref={canvas} className={styles.canvas} role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
+      <div ref={canvas} className={styles.canvas} data-pointer-native role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
         onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => setHovered("")}
         onKeyDown={event => {
           if (event.key === "Escape") { clearSelection(); return; }
