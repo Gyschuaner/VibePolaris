@@ -8,6 +8,7 @@ import { HarnessV4Toc } from "./HarnessV4Toc";
 import { HarnessLearningMap } from "./HarnessLearningMap";
 import { HarnessReferences } from "./HarnessReferences";
 import { HarnessContextFlow, HarnessOutcomeFlow, HarnessRequestFlow } from "./HarnessStoryScenes";
+import { HarnessHeroOverview } from "./HarnessHeroOverview";
 import { harnessSectionTitles } from "@/lib/harness-sections";
 import styles from "./HarnessStory.module.css";
 
@@ -24,7 +25,10 @@ export function AgentHarnessTermPage() {
       <div className="vp-reading-content">
         <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/"><ArrowLeft size={14} aria-hidden="true" />星图</Link><em>/</em><Link href="/?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
         <header className="vp-hero">
+          <div className={styles.heroComposition}>
           <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness<span>智能体运行框架</span></h1></div>
+          <HarnessHeroOverview />
+          </div>
           <p className="vp-hero-intro">Harness 是围绕<Term slug="llm">模型</Term>运行的一层程序。它准备模型要看的信息，处理工具请求，保存执行结果，并按规则继续或结束任务。</p>
         </header>
 

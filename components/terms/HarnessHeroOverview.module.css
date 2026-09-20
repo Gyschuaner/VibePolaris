@@ -1,0 +1,20 @@
+.overview { width: 100%; max-width: 360px; margin: 0 0 0 auto; }
+.diagram { position: relative; aspect-ratio: 8 / 5; }
+.connections { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.path { fill: none; stroke: var(--brand-star); stroke-width: 1; opacity: .2; transition: opacity .2s; }
+.path[data-active="true"] { opacity: .75; }
+.packet { fill: var(--accent-text); offset-distance: 0%; animation: travel .85s ease-in-out both; }
+.node { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 56px; padding: 0 3px 5px; transform: translate(-50%, -24px); color: var(--muted); font-size: 13px; line-height: 1.5; text-decoration: none; transition: color .2s; }
+.icon { display: grid; place-items: center; width: 48px; height: 48px; }
+.icon svg { width: 30px; height: 30px; transition: transform .2s; }
+.node[data-node="harness"] { color: var(--accent-text); }
+.node[data-node="harness"] .icon svg { width: 39px; height: 39px; }
+.node[data-active="true"], .node:hover { color: var(--accent-text); }
+.node[data-active="true"] .icon svg { transform: translateY(-2px); }
+.node:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; border-radius: 5px; }
+.caption { min-height: 42px; margin: 4px -8px 0; text-align: center; font-size: 13px; line-height: 1.7; color: var(--accent-text); }
+.caption span { display: inline-block; animation: appear .2s ease both; }
+@keyframes travel { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes appear { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+@media(max-width:650px) { .overview { max-width: 320px; margin: 16px auto 0; } }
+@media(prefers-reduced-motion:reduce) { .packet { display: none; }.node,.icon svg,.path { transition: none; }.caption span { animation: none; } }
