@@ -14,21 +14,22 @@ export type GraphNode = GraphTerm & { x: number; y: number; degree: number };
 export type GraphEdge = { source: string; target: string };
 
 export type MovingGraphNode = GraphNode & SimulationNodeDatum;
+type GraphLayoutOptions = { centerSlug?: string };
 
 // Share the same forces between the build-time layout and the interactive graph.
 // D3 mutates its nodes and links, so neither may alias the source content.
-export function createGraphSimulation(nodes: GraphNode[], edges: GraphEdge[]) {
+export function createGraphSimulation(nodes: GraphNode[], edges: GraphEdge[], { centerSlug }: GraphLayoutOptions = {}) {
   const categories = [...new Set(nodes.map(node => node.cat))];
   const angle = (node: GraphNode) => categories.indexOf(node.cat) * Math.PI * 2 / categories.length - Math.PI / 2;
-  return forceSimulation<MovingGraphNode>(nodes.map(node => ({ ...node })))
+  return forceSimulation<MovingGraphNode>(nodes.map(node => node.slug === centerSlug ? { ...node, x: 0, y: 0, fx: 0, fy: 0 } : { ...node }))
     .stop()
     .alphaDecay(.04)
     .velocityDecay(.38)
-    .force("charge", forceManyBody<MovingGraphNode>().strength(-520).distanceMax(700))
-    .force("links", forceLink<MovingGraphNode, GraphEdge>(edges.map(edge => ({ ...edge }))).id(node => node.slug).distance(115).strength(.12))
+    .force("charge", forceManyBody<MovingGraphNode>().strength(centerSlug ? -700 : -520).distanceMax(700))
+    .force("links", forceLink<MovingGraphNode, GraphEdge>(edges.map(edge => ({ ...edge }))).id(node => node.slug).distance(centerSlug ? 190 : 115).strength(.12))
     .force("collision", forceCollide<MovingGraphNode>().radius(node => 22 + Math.min(node.degree, 12)).strength(.8))
-    .force("x", forceX<MovingGraphNode>(node => Math.cos(angle(node)) * 780).strength(.018))
-    .force("y", forceY<MovingGraphNode>(node => Math.sin(angle(node)) * 380).strength(.025));
+    .force("x", forceX<MovingGraphNode>(node => centerSlug ? 0 : Math.cos(angle(node)) * 780).strength(centerSlug ? .035 : .018))
+    .force("y", forceY<MovingGraphNode>(node => centerSlug ? 0 : Math.sin(angle(node)) * 380).strength(centerSlug ? .035 : .025));
 }
 
 export function nudgeGraph(nodes: MovingGraphNode[], x: number, y: number, radius: number, exclude?: string) {
@@ -48,9 +49,14 @@ export function nudgeGraph(nodes: MovingGraphNode[], x: number, y: number, radiu
 }
 
 // Pre-settle a deterministic layout so the page can frame it before animation starts.
-export function buildTermGraph(terms: GraphTerm[]) {
+export function buildTermGraph(terms: GraphTerm[], options: GraphLayoutOptions = {}) {
   const categories = [...new Set(terms.map(term => term.cat))];
   const nodes: GraphNode[] = terms.map((term, index) => {
+    if (options.centerSlug) {
+      const angle = index * 2.399963229728653;
+      const radius = term.slug === options.centerSlug ? 0 : 190 + (index * 37) % 90;
+      return { ...term, x: Math.cos(angle) * radius, y: Math.sin(angle) * radius, degree: 0 };
+    }
     const cluster = categories.indexOf(term.cat) * Math.PI * 2 / categories.length - Math.PI / 2;
     const angle = index * 2.399963229728653;
     const radius = 65 + Math.sqrt(index % 53) * 37;
@@ -72,7 +78,7 @@ export function buildTermGraph(terms: GraphTerm[]) {
     }
   }
 
-  const simulation = createGraphSimulation(nodes, edges);
+  const simulation = createGraphSimulation(nodes, edges, options);
   simulation.tick(180);
   simulation.nodes().forEach((node, index) => { nodes[index].x = node.x; nodes[index].y = node.y; });
   return { nodes, edges };
