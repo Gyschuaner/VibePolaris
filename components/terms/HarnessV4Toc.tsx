@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { harnessSectionTitles } from "@/lib/harness-sections";
 
 const items = Object.entries(harnessSectionTitles);
 
 export function HarnessV4Toc() {
+  const navigation = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState<string>(items[0][0]);
 
   useEffect(() => {
@@ -33,8 +34,31 @@ export function HarnessV4Toc() {
     };
   }, []);
 
+  useEffect(() => {
+    function revealActive() {
+      const nav = navigation.current;
+      const link = nav?.querySelector<HTMLElement>('[aria-current="location"]');
+      if (!nav || !link) return;
+      const bounds = nav.getBoundingClientRect();
+      const item = link.getBoundingClientRect();
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
+      // Scroll this container only; scrollIntoView would also move the article.
+      if (window.matchMedia("(min-width: 901px)").matches) {
+        if (item.top < bounds.top + 12 || item.bottom > bounds.bottom - 12) {
+          nav.scrollTo({ top: nav.scrollTop + item.top - bounds.top - (nav.clientHeight - item.height) / 2, behavior });
+        }
+      } else if (item.left < bounds.left + 12 || item.right > bounds.right - 12) {
+        nav.scrollTo({ left: nav.scrollLeft + item.left - bounds.left - (nav.clientWidth - item.width) / 2, behavior });
+      }
+    }
+
+    revealActive();
+    window.addEventListener("resize", revealActive);
+    return () => window.removeEventListener("resize", revealActive);
+  }, [activeId]);
+
   return (
-    <nav aria-label="本页目录" className="vp-toc">
+    <nav ref={navigation} aria-label="本页目录" className="vp-toc">
       <span className="vp-toc-label"><i className="vp-toc-star" aria-hidden="true" />本页</span>
       {items.map(([id, label]) => (
         <a href={`#${id}`} className={activeId === id ? "active" : undefined} aria-current={activeId === id ? "location" : undefined} onClick={() => setActiveId(id)} key={id}>

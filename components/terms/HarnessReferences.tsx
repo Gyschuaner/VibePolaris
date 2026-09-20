@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUp, ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUp, ArrowUpRight, CaretRight } from "@phosphor-icons/react";
 
 const sources = [
   { publisher: "Erik S.、Barry Zhang · Anthropic", title: "Building effective agents", date: "2024-12-19", url: "https://www.anthropic.com/engineering/building-effective-agents", citations: ["cite-loop"] },
@@ -37,20 +37,15 @@ export function HarnessReferences() {
     <ol className="vp-bibliography" id="references">
       {sources.map((source, index) => (
         <li key={source.url} id={`ref-${index + 1}`}
-          onPointerEnter={(event) => { if (event.pointerType === "mouse") show(index); }}
-          onPointerLeave={(event) => { if (event.pointerType === "mouse" && !event.currentTarget.contains(document.activeElement)) setPreview(null); }}
-          onFocusCapture={(event) => { if (!(event.target instanceof HTMLButtonElement)) show(index); }}
-          onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPreview(null); }}
           onKeyDown={(event) => { if (event.key === "Escape") { setPreview(null); event.stopPropagation(); } }}
         >
           <span className="vp-bib-number" aria-hidden="true">[{index + 1}]</span>
           <div className="vp-bib-entry">
-            <div className="vp-bib-meta"><span>{source.publisher}{source.date && <> · <time dateTime={source.date}>{source.date}</time></>}</span><button type="button" aria-label={`查看 ${source.title} 的正文引用`} aria-expanded={preview?.index === index} aria-controls={`ref-preview-${index}`} onClick={() => { if (preview?.index === index) setPreview(null); else show(index); }}>本文 {source.citations.length} 处 <ArrowUp size={13} aria-hidden="true" /></button></div>
+            <div className="vp-bib-meta"><span>{source.publisher}{source.date && <> · <time dateTime={source.date}>{source.date}</time></>}</span><button type="button" className="vp-bib-toggle" aria-label={`查看 ${source.title} 的正文引用`} aria-expanded={preview?.index === index} aria-controls={`ref-preview-${index}`} onClick={() => { if (preview?.index === index) setPreview(null); else show(index); }}><CaretRight size={12} weight="fill" aria-hidden="true" /></button></div>
             <a className="vp-bib-title" href={source.url} target="_blank" rel="noopener noreferrer"><cite>{source.title}</cite><ArrowUpRight size={17} aria-hidden="true" /></a>
             <a className="vp-bib-url" href={source.url} target="_blank" rel="noopener noreferrer" tabIndex={-1}>{source.url}</a>
           </div>
           {preview?.index === index && <div className="vp-bib-preview" id={`ref-preview-${index}`} role="region" aria-label={`${source.title} 在本文中的引用`}>
-            <div className="vp-bib-preview-label">本文引用</div>
             {preview.excerpts.map((excerpt) => <a key={excerpt.id} href={`#${excerpt.id}`} onClick={() => setPreview(null)}><span>{excerpt.heading}<ArrowUp size={15} aria-hidden="true" /></span><blockquote>{excerpt.text}</blockquote></a>)}
           </div>}
         </li>
