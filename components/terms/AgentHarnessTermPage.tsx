@@ -22,7 +22,7 @@ export function AgentHarnessTermPage() {
       <div className="vp-page-layout">
         <HarnessV4Toc />
         <div className="vp-reading-content">
-          <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/terms"><ArrowLeft size={14} aria-hidden="true" />术语</Link><em>/</em><Link href="/terms?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
+          <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/"><ArrowLeft size={14} aria-hidden="true" />星图</Link><em>/</em><Link href="/?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
           <header className="vp-hero">
             <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness <span>让模型真正动手的运行系统</span></h1></div>
             <p className="vp-hero-lead"><strong>模型负责“想”，Harness 负责让模型“真正干活”。</strong></p>
@@ -148,7 +148,7 @@ export function AgentHarnessTermPage() {
           <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.roadmap}</h2>
             <HarnessLearningMap terms={getRelatedTerms(getTerm("agent-harness")!, 8)} />
-            <Link className="term-graph-link" href="/graph?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />在完整星图中探索<ArrowRight size={16} aria-hidden="true" /></Link>
+            <Link className="term-graph-link" href="/?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />在完整星图中探索<ArrowRight size={16} aria-hidden="true" /></Link>
           </div></section>
 
           <section className="vp-chapter" id="related"><div className="vp-chapter-content">
