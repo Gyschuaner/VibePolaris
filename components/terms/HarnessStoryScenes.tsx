@@ -5,7 +5,7 @@ import { ArrowCounterClockwise, ArrowRight, Brain, Check, CheckCircle, Circuitry
 import styles from "./HarnessStory.module.css";
 
 // One short, finite sequence at a time; never hold the reader's scroll position.
-function useScene(length: number) {
+export function useScene(length: number) {
   const ref = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -50,7 +50,7 @@ const requestSteps = [
   { title: "模型根据日志继续判断", caption: "模型看到日志，决定接着查看 app.py。", active: "model", path: "M 480 200 Q 235 260 170 95", code: 'read_file("app.py")' },
 ];
 
-function SceneControls({ scene, labels }: { scene: ReturnType<typeof useScene>; labels: string[] }) {
+export function SceneControls({ scene, labels }: { scene: ReturnType<typeof useScene>; labels: string[] }) {
   return <div className={styles.sceneControls}>
     <button type="button" className={styles.play} aria-pressed={scene.playing} onClick={scene.toggle} aria-label={scene.playing ? "暂停原理演示" : scene.step === labels.length - 1 ? "重播原理演示" : "播放原理演示"}>
       {scene.playing ? <Pause size={17} weight="fill" /> : scene.step === labels.length - 1 ? <ArrowCounterClockwise size={17} /> : <Play size={17} weight="fill" />}

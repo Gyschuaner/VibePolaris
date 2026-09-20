@@ -321,7 +321,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
     if (!pointers.current.size) { gesture.current = null; pinch.current = null; }
   }
 
-  return <Root className={`${styles.page} ${inline ? styles.inline : ""} ${categories ? styles.withDomains : ""}`} id={inline ? undefined : "main-content"} aria-label={inline ? "Harness 相关词条星图" : undefined}>
+  return <Root className={`${styles.page} ${inline ? styles.inline : ""} ${categories ? styles.withDomains : ""}`} id={inline ? undefined : "main-content"} aria-label={inline ? "相关词条星图" : undefined}>
     {!inline && <h1 className={styles.visuallyHidden}>概念星图</h1>}
     {!inline && <Suspense fallback={null}><GraphLocation onChange={onLocationChange} /></Suspense>}
     {!inline && categories && <nav className={styles.domains} aria-label="星图领域">
@@ -374,7 +374,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
               style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }}
               onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
               onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
-              <span className="brand-star-only" aria-hidden="true" style={{ width: starSize, height: starSize }} /><span className={styles.label} style={{ fontSize: (central ? 22 : 14) / view.scale, opacity: named ? 1 : labelOpacity }}>{central ? "Harness" : node.zh}</span>
+              <span className="brand-star-only" aria-hidden="true" style={{ width: starSize, height: starSize }} /><span className={styles.label} style={{ fontSize: (central ? 22 : 14) / view.scale, opacity: named ? 1 : labelOpacity }}>{central && node.slug === "agent-harness" ? "Harness" : node.zh}</span>
             </button>;
           })}
         </div>

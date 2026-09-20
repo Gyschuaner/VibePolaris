@@ -3,9 +3,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { harnessSectionTitles } from "@/lib/harness-sections";
 
-const items = Object.entries(harnessSectionTitles);
+const defaultItems = Object.entries(harnessSectionTitles);
 
-export function HarnessV4Toc() {
+export function HarnessV4Toc({ items = defaultItems }: { items?: [string, string][] }) {
   const navigation = useRef<HTMLElement>(null);
   const star = useRef<HTMLSpanElement>(null);
   const [activeId, setActiveId] = useState<string>(items[0][0]);
@@ -33,7 +33,7 @@ export function HarnessV4Toc() {
       window.removeEventListener("scroll", updateActive);
       window.removeEventListener("resize", updateActive);
     };
-  }, []);
+  }, [items]);
 
   useLayoutEffect(() => {
     function revealActive() {

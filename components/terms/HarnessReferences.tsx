@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { ArrowUp, ArrowUpRight, CaretRight } from "@phosphor-icons/react";
 
-import { harnessSources as sources } from "@/lib/harness-references";
+import { harnessSources } from "@/lib/harness-references";
 
 type Excerpt = { id: string; heading: string; text: string };
 
-export function HarnessReferences() {
+export function HarnessReferences({ sources = harnessSources }: { sources?: typeof harnessSources }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [excerptsBySource, setExcerptsBySource] = useState<Record<number, Excerpt[]>>({});
 
