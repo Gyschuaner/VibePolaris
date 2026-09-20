@@ -11,8 +11,9 @@
 | 001 | 大模型、Token、智能体 | VBP-013 · [本批研究与 review](VBP-013-foundation-concepts.md) |
 | 002 | 组件、Props、状态 | VBP-014 · [本批研究与 review](VBP-014-ui-concepts.md) |
 | 003 | 事件、事件冒泡、Hook、副作用、浏览器 API | VBP-015 · [本批研究与 review](VBP-015-events-hooks.md) |
+| 004 | Fetch API、Promise、async/await、JSON、JSON Schema | VBP-016 · [本批研究与 review](VBP-016-async-concepts.md) |
 
-下一批可继续 `fetch-api`、`promise`、`async-await`，仍需先检查现状和一手资料。当前新流程已完成 11 页，另有 9 页历史基准；其余 281 页待处理，新增候选不计入完成数。
+后续继续围绕请求与响应选择三个未处理词条，仍需先检查现状和一手资料。当前新流程已完成 16 页，另有 9 页历史基准；其余 276 页待处理，新增候选不计入完成数。
 
 ## 补充候选
 
@@ -111,9 +112,9 @@
 | hook | Hook | 前端 | 003 · 本地验收及 review 通过 |
 | effect | 副作用 | 前端 | 003 · 本地验收及 review 通过 |
 | browser-api | 浏览器 API | 前端 | 003 · 本地验收及 review 通过 |
-| fetch-api | Fetch API | 前端 | 待处理 |
-| promise | Promise | 前端 | 待处理 |
-| async-await | 异步等待 | 前端 | 待处理 |
+| fetch-api | Fetch API | 前端 | 004 · 本地验收及 review 通过 |
+| promise | Promise | 前端 | 004 · 本地验收及 review 通过 |
+| async-await | 异步等待 | 前端 | 004 · 本地验收及 review 通过 |
 | module | 模块 | 前端 | 待处理 |
 | code-splitting | 代码分割 | 前端 | 待处理 |
 | lazy-loading | 懒加载 | 前端 | 待处理 |
@@ -176,7 +177,7 @@
 | query-parameter | 查询参数 | 后端 | 待处理 |
 | path-parameter | 路径参数 | 后端 | 待处理 |
 | request-body | 请求体 | 后端 | 待处理 |
-| json | JSON | 后端 | 待处理 |
+| json | JSON | 后端 | 004 · 本地验收及 review 通过 |
 | endpoint | 端点 | 后端 | 待处理 |
 | api-gateway | API 网关 | 后端 | 待处理 |
 | reverse-proxy | 反向代理 | 后端 | 待处理 |
@@ -267,7 +268,7 @@
 | grounding | 基于证据回答 | AI·Agent | 待处理 |
 | citation | 引用 | AI·Agent | 待处理 |
 | structured-output | 结构化输出 | AI·Agent | 待处理 |
-| json-schema | JSON Schema | AI·Agent | 待处理 |
+| json-schema | JSON Schema | AI·Agent | 004 · 本地验收及 review 通过 |
 | function-calling | 函数调用 | AI·Agent | 待处理 |
 | tool-choice | 工具选择 | AI·Agent | 待处理 |
 | tool-result | 工具结果 | AI·Agent | 待处理 |
