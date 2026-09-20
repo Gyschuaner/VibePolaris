@@ -1,14 +1,15 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ArrowLeft, ArrowRight, CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { getRelatedTerms, getTerm } from "@/lib/content";
 import { InlineTerm } from "./InlineTerm";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowsClockwise, Check } from "@phosphor-icons/react/dist/ssr";
-
 import { HarnessV4Lesson } from "./HarnessV4Lesson";
 import { HarnessV4Toc } from "./HarnessV4Toc";
 import { HarnessLearningMap } from "./HarnessLearningMap";
 import { HarnessReferences } from "./HarnessReferences";
+import { HarnessContextFlow, HarnessOutcomeFlow, HarnessRequestFlow } from "./HarnessStoryScenes";
 import { harnessSectionTitles } from "@/lib/harness-sections";
+import styles from "./HarnessStory.module.css";
 
 function Term({ slug, children, description }: { slug: string; children: ReactNode; description?: string }) {
   const term = getTerm(slug);
@@ -17,146 +18,78 @@ function Term({ slug, children, description }: { slug: string; children: ReactNo
 }
 
 export function AgentHarnessTermPage() {
-  return (
-    <main className="vp-concept" id="main-content">
-      <div className="vp-page-layout">
-        <HarnessV4Toc />
-        <div className="vp-reading-content">
-          <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/"><ArrowLeft size={14} aria-hidden="true" />星图</Link><em>/</em><Link href="/?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
-          <header className="vp-hero">
-            <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness <span>让模型真正动手的运行系统</span></h1></div>
-            <p className="vp-hero-lead"><strong>模型负责“想”，Harness 负责让模型“真正干活”。</strong></p>
-            <p className="vp-hero-intro"><Term slug="llm" description="这里的模型指大语言模型：根据当前输入生成回答，也可以提出工具请求。读取文件、执行命令等操作需要外部程序来完成。">模型</Term>会告诉你怎么修服务。让它打开<InlineTerm title="日志" english="Log" description="程序运行时留下的记录。服务没有启动时，错误日志往往能指出出错的文件、行号和原因。">日志</InlineTerm>、修改文件，再根据测试结果接着做，需要一套围绕模型运行的系统。</p>
-          </header>
+  return <main className={`vp-concept ${styles.page}`} id="main-content">
+    <div className="vp-page-layout">
+      <HarnessV4Toc />
+      <div className="vp-reading-content">
+        <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/"><ArrowLeft size={14} aria-hidden="true" />星图</Link><em>/</em><Link href="/?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
+        <header className="vp-hero">
+          <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness<span>让模型的下一步，真正发生。</span></h1></div>
+          <p className="vp-hero-intro"><Term slug="llm">模型</Term>提出下一步，Harness 把它接到工具和环境上。读日志、改文件、看结果，再继续。</p>
+        </header>
 
-          <section className="vp-chapter" id="why"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.why}</h2>
-            <p>先看一个没有连接工具的模型。你问它：</p>
-            <blockquote className="vp-dialogue">帮我看看这个项目为什么运行失败。</blockquote>
-            <div className="vp-reading-flow" aria-label="普通模型调用">
-              <span>你的问题</span><ArrowRight aria-hidden="true" /><strong>模型</strong><ArrowRight aria-hidden="true" /><span>一段回答</span>
-            </div>
-            <p>它可能建议：“检查一下 8000 <Term slug="network-port" description="可以把端口号理解为同一台电脑上不同服务的门牌号。例子里的 8000 被其他进程占用时，当前服务可能无法在这个端口启动。">端口</Term>是否被占用。”但打开项目、运行命令、把结果贴回来，仍要你自己做。<strong>生成排查建议，并不等于执行排查。</strong></p>
-          </div></section>
-
-          <section className="vp-chapter" id="need"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.need}</h2>
-            <p id="cite-harness" className="vp-citation-target"><strong>Agent Harness 是围绕模型运行的程序：</strong>把任务交给模型，检查并执行<Term slug="tools">工具请求</Term>，再把结果送回去，让模型决定下一步。</p>
-            <figure className="vp-teach-figure" aria-label="Agent 内部的模型、Harness 与工具分工">
-              <div className="vp-agent-outline">
-                <span className="vp-frame-title">Agent · 整个智能体</span>
-                <div className="vp-system-model"><b>Model / 模型</b><span>根据当前信息，提出下一步</span></div>
-                <div className="vp-double-link"><span>↓ 工具请求</span><span>↑ 执行结果</span></div>
-                <div className="vp-system-harness"><b>Harness / 运行程序</b><p>检查请求 · 调用工具 · 保存结果</p></div>
-                <div className="vp-system-stem" aria-hidden="true">↕</div>
-                <div className="vp-system-tools"><div><b>文件</b></div><div><b>命令行</b></div><div><b>浏览器</b></div></div>
-              </div>
-            </figure>
-            <p>模型选择“做什么”，Harness 负责“能不能做、怎样执行、结果怎么交回”。下一步来自模型对新结果的判断。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="name"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.name}</h2>
-            <p><span id="cite-word" className="vp-citation-target">Harness 原指马具、系带一类连接装置。</span>借这个比喻：模型提供能力，Harness 把它接到工具和环境上，并约束操作范围。</p>
-            <div className="vp-inline-equation"><Term slug="agent">Agent</Term> ≈ Model + Harness</div>
-            <p>这是一种便于理解的分工：模型与运行系统，再加上工具和环境，共同组成能围绕目标行动的智能体。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="practice"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.practice}</h2>
-            <blockquote className="vp-dialogue">我的服务器磁盘为什么满了？</blockquote>
-            <p>只有模型时，它会建议你运行 <InlineTerm title="df -h" english="文件系统空间" description="查看各个文件系统的已用空间和可用空间。-h 让容量以 KB、MB、GB 等易读单位显示，适合先判断哪块磁盘快满了。"><code>df -h</code></InlineTerm>。接上 Harness 后，请求、执行和结果可以连续往下走：</p>
-            <figure className="vp-disk-story" aria-label="两轮磁盘排查：先发现 data 分区已满，再定位 logs 目录">
-              <div className="vp-disk-round">
-                <div className="vp-disk-request"><div id="cite-df" className="vp-citation-target"><h3>模型：先看哪个分区满了</h3><code>df -h</code></div><span><ArrowDown size={18} aria-hidden="true" />Harness 检查并执行</span></div>
-                <div className="vp-disk-result"><div className="vp-disk-total"><code>/data</code><strong>99%</strong></div><div className="vp-disk-meter" role="img" aria-label="data 分区已用 99%，99 GB，共 100 GB"><i /></div><p>100 GB 中已用 99 GB</p></div>
-              </div>
-              <div className="vp-result-bridge"><ArrowsClockwise size={20} aria-hidden="true" /><span>结果交回模型，决定继续查 <code>/data</code></span></div>
-              <div className="vp-disk-round">
-                <div className="vp-disk-request"><div id="cite-du" className="vp-citation-target"><h3>模型：再看谁占得最多</h3><InlineTerm title="du -sh /data/*" english="目录占用" description="统计 /data 下各个可见项目占用的空间。-s 汇总每一项的大小，-h 使用易读单位，帮助找出占空间最多的目录。"><code>du -sh /data/*</code></InlineTerm></div><span><ArrowDown size={18} aria-hidden="true" />Harness 检查并执行</span></div>
-                <div className="vp-disk-bars" aria-label="目录占用：logs 82 GB，models 12 GB，cache 4 GB">
-                  {[["logs", 82], ["models", 12], ["cache", 4]].map(([name, size]) => <div key={name}><code>{name}</code><span><i style={{ width: `${size}%` }} /></span><b>{size} GB</b></div>)}
-                </div>
-              </div>
-              <div className="vp-disk-finding"><Check size={20} aria-hidden="true" /><p>定位到 <code>/data/logs</code> 占用最多，接下来可继续查看日志。</p></div>
-            </figure>
-            <p id="cite-loop" className="vp-citation-target">这个“判断 → 执行 → 看结果 → 再判断”的过程，就是 <strong><Term slug="agent-loop">Agent Loop（智能体循环）</Term></strong>。任务完成、遇到权限限制或达到轮数上限时，循环停止。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="boundary"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.boundary}</h2>
-            <p id="cite-tool-request" className="vp-citation-target">模型输出 <code>read_file("server.log")</code>，只是提出读取请求。真正拿到日志，还要经过这些步骤：</p>
-            <ol className="vp-request-path" aria-label="工具请求的执行顺序">
-              {[["检查请求", "找到工具，核对参数与权限"], ["执行工具", "打开 server.log，读取内容"], ["保存结果", "关联这次请求与返回值"], ["再问模型", "带上日志，判断下一步"]].map(([title, body], index) => <li key={title}><span className="vp-path-index">{index + 1}</span><h3>{title}</h3><p>{body}</p>{index < 3 && <ArrowRight className="vp-path-arrow" size={20} aria-hidden="true" />}</li>)}
-            </ol>
-            <p>检查不通过，就返回拒绝原因；工具执行失败，就返回错误。模型拿到结果后，才能决定是否继续。</p>
-            <h3><Term slug="context">上下文</Term>，就是模型这一次拿到的信息</h3>
-            <div className="vp-context-shift">
-              <div><h4>读取前</h4><ul><li>用户任务</li><li>工作规则</li><li>可用工具</li></ul></div>
-              <ArrowRight size={24} aria-hidden="true" />
-              <div><h4>读取后</h4><ul><li>原有信息</li><li className="is-new">本次读取请求</li><li className="is-new">日志：第一行缺少冒号</li></ul></div>
-            </div>
-            <p id="cite-context" className="vp-citation-target">Harness 把新结果放进下一次输入，模型才“看见”了日志。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="tools"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.tools}</h2>
-            <p id="cite-tools" className="vp-citation-target"><strong><InlineTerm title="工具" english="Tool" description="供程序调用的一项具体能力，例如读取文件、修改文本或运行命令。模型提出请求后，由工具实际完成操作并返回结果。" href="/terms/tools">Tool</InlineTerm> 负责一个具体操作，Harness 负责把这些操作组织起来。</strong>工具接收<Term slug="parameter" description="调用工具时需要提供的具体信息。例如 read_file(path) 中，path 指定要读取的文件路径。">参数</Term>，执行工作，返回内容或错误。</p>
-            <div className="vp-table-wrap"><table className="vp-teaching-table" aria-label="常见工具与能力"><thead><tr><th>工具</th><th>做什么</th><th>返回什么</th></tr></thead><tbody>
-              {[["read_file(path)", "读取文件", "文件正文"], ["edit_file(…)", "修改内容", "补丁结果"], ["run_shell(command)", "执行命令", "输出与退出状态"], ["search_web(query)", "检索网页", "资料与来源"]].map(([name, action, result]) => <tr key={name}><td><code>{name}</code></td><td>{action}</td><td>{result}</td></tr>)}
-            </tbody></table></div>
-            <p>例如，文件工具返回“server.log 不存在”，这次操作就结束了。要不要查目录、换路径或询问用户，由模型根据这个结果决定，再交给 Harness 推进。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="inside"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.inside}</h2>
-            <p>它们是六种职责，可以写在同一个程序里，也可以分成多个模块。</p>
-            <dl className="vp-responsibilities">
-              {[["Model · 模型", "判断下一步", "根据日志，决定查看 app.py"], ["Instructions · 指令", "规定工作要求", "先检查，修改后必须测试"], ["Tools · 工具", "执行具体操作", "读日志、写补丁、运行检查"], ["Context · 上下文", "提供本次信息", "任务、规则、源码与工具结果"], ["Agent Loop · 循环", "继续或停止", "测试失败，带着错误再问模型"], ["Runtime / State · 运行与状态", "保留任务进度", "改了什么，授权了什么，走到哪一步"]].map(([name, role, example]) => <div key={name}><dt>{name.startsWith("Runtime") ? <><Term slug="runtime" description="让代码实际运行起来的环境和支撑能力。在这里，它负责执行工具、处理中断和超时，并与任务状态一起保留运行进度。">Runtime</Term> / State · 运行与状态</> : name}</dt><dd><strong>{role}</strong><p>{example}</p></dd></div>)}
-            </dl>
-            <p id="cite-state" className="vp-citation-target"><strong><Term slug="prompt">指令</Term>是要求，<Term slug="permission-boundary">权限检查</Term>是执行时的限制。</strong>同样，<Term slug="context">Context</Term> 是这次给模型看的信息，<Term slug="state" description="程序保存的当前任务情况，例如已执行的步骤、工具结果、修改记录和授权。它可以用来恢复进度，其中一部分信息会被整理进模型的上下文。">State</Term> 是程序保存的运行状态；两者不必完全相同。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="service"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.service}</h2>
-            <p>演示项目的 <code>app.py</code> 少了一个冒号，服务无法启动。观察模型怎样读日志、查源码、修改，再通过 <InlineTerm title="健康检查" english="Health check" description="向服务发起一个简单请求，确认它是否正常响应。这里的 /health 是演示项目的检查路径；修改文件后，还要检查服务确实恢复了。"><code>/health</code></InlineTerm> 检查结果。</p>
-          </div></section>
+        <section className="vp-chapter" id="service"><div className="vp-chapter-content">
+          <span id="why" className={styles.alias} />
+          <h2>{harnessSectionTitles.service}</h2>
+          <p>一个服务启动失败了。把同一项任务交给模型，看看接上 Harness 后，会发生什么。</p>
           <HarnessV4Lesson />
+        </div></section>
 
-          <section className="vp-chapter" id="quality"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.quality}</h2>
-            <p>同一个模型、同一个<InlineTerm title="补丁" english="Patch" description="对文件的一组具体修改，例如补上缺失的冒号。写入补丁只说明修改已保存，还需要运行检查来确认问题解决。" href="/terms/diff">补丁</InlineTerm>，是否继续验证，会产生不同结果：</p>
-            <figure className="vp-verification-paths" aria-label="不验证与持续验证的执行路径对比">
-              <div><h3>修改后就结束</h3><div className="vp-verification-track"><span>写入补丁</span><ArrowRight size={20} aria-hidden="true" /><span>报告完成</span></div><p>文件改了，服务是否恢复仍未知。</p></div>
-              <div><h3>验证后再结束</h3><div className="vp-verification-track"><span>写入补丁</span><ArrowRight size={20} aria-hidden="true" /><span>运行检查</span><ArrowRight size={20} aria-hidden="true" /><strong>通过后完成</strong></div><div className="vp-verification-retry"><ArrowsClockwise size={20} aria-hidden="true" /><span>失败：错误交回模型，继续修正</span></div></div>
-            </figure>
-            <p id="cite-verification" className="vp-citation-target">Harness 决定结果是否被记录、检查是否执行、失败后能否接着做。能力要看任务实际完成得怎样。</p>
-          </div></section>
+        <section className="vp-chapter" id="need"><div className="vp-chapter-content">
+          <h2>{harnessSectionTitles.need}</h2>
+          <p id="cite-harness" className="vp-citation-target"><strong>Harness 是围绕模型运行的程序。</strong>它检查请求、调用<Term slug="tools">工具</Term>，再把结果交回模型。下面，跟着一份读取请求走一遍。</p>
+          <HarnessRequestFlow />
+          <p id="cite-tool-request" className="vp-citation-target">模型说出 <code>read_file("server.log")</code> 时，文件还没有打开。经过 Harness 检查、工具执行，日志才真正返回。</p>
+          <details className={styles.supplement} id="compare">
+            <summary>模型、工具和运行系统，各自做什么？<CaretRight size={16} /></summary>
+            <span id="tools" className={styles.alias} /><span id="inside" className={styles.alias} />
+            <dl className="vp-responsibilities">
+              {[["Model · 模型", "提出下一步", "看到日志后，决定查看 app.py。"], ["Harness · 运行系统", "把请求变成行动", "检查权限、调度工具、保存结果。"], ["Tool · 工具", "执行具体操作", "读取文件、写入补丁、运行检查。"], ["Agent · 智能体", "围绕目标持续行动", "模型、运行系统与工具一起完成修复。"]].map(([name, role, example]) => <div key={name}><dt>{name}</dt><dd><strong>{role}</strong><p>{example}</p></dd></div>)}
+            </dl>
+            <p id="cite-tools" className="vp-citation-target">工具接收<Term slug="parameter">参数</Term>，完成一次具体操作，返回内容或错误。是否查别的文件、换方法或询问用户，由模型根据结果决定，再交给 Harness 推进。</p>
+            <p id="cite-state" className="vp-citation-target"><Term slug="prompt">指令</Term>规定工作要求，<Term slug="permission-boundary">权限检查</Term>限制实际操作。<Term slug="state">运行状态</Term>保存做过什么、得到什么结果，其中需要的信息会被整理进下一轮上下文。</p>
+          </details>
+          <details className={styles.supplement} id="name">
+            <summary>为什么叫 Harness？<CaretRight size={16} /></summary>
+            <p id="cite-word" className="vp-citation-target">Harness 原指马具、系带一类连接装置。借这个比喻：模型提供能力，Harness 把它接到工具和环境上，并约束操作范围。</p>
+          </details>
+        </div></section>
 
-          <section className="vp-chapter" id="compare"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.compare}</h2>
-            <div className="vp-table-wrap"><table className="vp-teaching-table" aria-label="Model、Harness、Tool 和 Agent 的分工"><thead><tr><th>概念</th><th>修服务时的职责</th></tr></thead><tbody>
-              <tr><td>Model / 模型</td><td>判断先查哪里、怎样修改。</td></tr>
-              <tr><td>Harness / 运行系统</td><td>调度请求、检查权限、保存结果、继续循环。</td></tr>
-              <tr><td>Tool / 工具</td><td>实际读取日志、写补丁、运行测试。</td></tr>
-              <tr><td>Agent / 智能体</td><td>把这些部分组合起来，完成“修好服务”。</td></tr>
-            </tbody></table></div>
-            <h3>MCP 和 Skill 放在哪里？</h3>
-            <p><span id="cite-mcp" className="vp-citation-target"><strong><Term slug="mcp">MCP</Term></strong> 约定应用怎样连接工具与数据</span>；<span id="cite-skills" className="vp-citation-target"><strong><InlineTerm title="技能" english="Agent Skill" description="把某类任务的操作说明和相关资源放在一起，供智能体按需使用。通常包含 SKILL.md，也可以附带脚本、模板和参考材料。">Skill</InlineTerm></strong> 提供某类任务的说明和资源。</span>它们都可以被 Harness 使用，帮助整个 Agent 工作。</p>
-          </div></section>
+        <section className="vp-chapter" id="boundary"><div className="vp-chapter-content">
+          <h2>{harnessSectionTitles.boundary}</h2>
+          <p id="cite-context" className="vp-citation-target"><Term slug="context">上下文</Term>，就是这一次给模型看的信息。Harness 把刚读到的日志放进去，下一次判断才有了新的依据。</p>
+          <HarnessContextFlow />
+          <p id="cite-loop" className="vp-citation-target">“判断 → 执行 → 看结果 → 再判断”，组成了 <Term slug="agent-loop">Agent Loop（智能体循环）</Term>。每一轮带着新结果继续，直到任务完成或需要停下。</p>
+          <details className={styles.supplement} id="practice">
+            <summary>换个例子：磁盘为什么满了？<CaretRight size={16} /></summary>
+            <div className="vp-disk-story">
+              <div className="vp-disk-round">
+                <div id="cite-df" className="vp-disk-request vp-citation-target"><h3>先查哪块磁盘满了</h3><code>df -h</code><p>工具返回：/data 已用 99%。</p></div>
+                <div className="vp-disk-result"><div className="vp-disk-total"><code>/data</code><strong>99%</strong></div><div className="vp-disk-meter" role="img" aria-label="data 分区使用率 99%"><i /></div></div>
+              </div>
+              <div className="vp-disk-round">
+                <div id="cite-du" className="vp-disk-request vp-citation-target"><h3>再查谁占得最多</h3><code>du -sh /data/*</code><p>模型根据上一轮结果，继续定位目录。</p></div>
+                <div className="vp-disk-bars" aria-label="logs 82 GB，models 12 GB，cache 4 GB">{[["logs", 82], ["models", 12], ["cache", 4]].map(([name, size]) => <div key={name}><code>{name}</code><span><i style={{ width: `${size}%` }} /></span><b>{size} GB</b></div>)}</div>
+              </div>
+            </div>
+          </details>
+        </div></section>
 
-          <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.roadmap}</h2>
-            <HarnessLearningMap terms={getRelatedTerms(getTerm("agent-harness")!, 8)} />
-            <Link className="term-graph-link" href="/?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />在完整星图中探索<ArrowRight size={16} aria-hidden="true" /></Link>
-          </div></section>
+        <section className="vp-chapter" id="quality"><div className="vp-chapter-content">
+          <h2>{harnessSectionTitles.quality}</h2>
+          <p id="cite-verification" className="vp-citation-target">文件改了，还要验证服务是否恢复。Harness 保存检查结果；失败时把错误带回，权限不足时阻止执行。</p>
+          <HarnessOutcomeFlow />
+        </div></section>
 
-          <section className="vp-chapter" id="related"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.related}</h2>
-            <HarnessReferences />
-          </div></section>
-        </div>
+        <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
+          <h2>{harnessSectionTitles.roadmap}</h2>
+          <p>从 Harness 出发，看看它与工具调用、上下文和循环怎样相连。</p>
+          <HarnessLearningMap terms={getRelatedTerms(getTerm("agent-harness")!, 8)} />
+          <Link className="term-graph-link" href="/?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />在完整星图中探索<ArrowRight size={16} aria-hidden="true" /></Link>
+          <p><span id="cite-mcp" className="vp-citation-target"><Term slug="mcp">MCP</Term> 约定应用怎样连接工具与数据。</span><span id="cite-skills" className="vp-citation-target"> <InlineTerm title="技能" english="Agent Skill" description="把某类任务的操作说明和相关资源放在一起，供智能体按需使用。通常包含 SKILL.md，也可以附带脚本、模板和参考材料。">Skill</InlineTerm> 提供特定任务的说明和资源。</span>它们都可以被 Harness 使用。</p>
+        </div></section>
+        <section className="vp-chapter" id="related"><div className="vp-chapter-content"><h2>{harnessSectionTitles.related}</h2><HarnessReferences /></div></section>
       </div>
-    </main>
-  );
+    </div>
+  </main>;
 }

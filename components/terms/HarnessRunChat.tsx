@@ -24,7 +24,7 @@ function HarnessReply({ text, reduced, speed, active, step, onComplete, children
   onComplete: (step: number) => void;
   children?: ReactNode;
 }) {
-  const [length, setLength] = useState(0);
+  const [length, setLength] = useState(active ? 0 : text.length);
   const complete = reduced || length >= text.length;
 
   useEffect(() => {
@@ -51,7 +51,10 @@ function HarnessReply({ text, reduced, speed, active, step, onComplete, children
 export function HarnessRunChat({ state, reduced, onReplyComplete }: { state: HarnessState; reduced: boolean; onReplyComplete: (step: number) => void }) {
   const threadRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
   const frames = harnessStory[state.scenario].slice(0, state.step + 1);
+
+  const latestRequest = frames.findLastIndex(frame => frame.edge === "mh");
 
   useEffect(() => {
     const thread = threadRef.current;
@@ -69,13 +72,14 @@ export function HarnessRunChat({ state, reduced, onReplyComplete }: { state: Har
 
   return (
     <div className="vp-model-chat vp-harness-chat" aria-label="Harness 对话演示">
+      {latestRequest > 1 && <button className="vp-history-toggle" type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? "收起记录，只看当前一轮" : "展开完整对话记录"}</button>}
       <div className="vp-model-chat-thread" ref={threadRef} role="log" aria-label="Harness 对话消息" aria-live="polite">
         <div ref={messagesRef}>
         <article className="vp-model-message is-user" aria-label="你的任务">
           <div className="vp-model-message-content"><div className="vp-model-bubble">{harnessTask}</div></div>
         </article>
         {frames.map((request, index) => {
-          if (request.edge !== "mh") return null;
+          if (request.edge !== "mh" || (!expanded && index !== latestRequest)) return null;
           const action = frames[index + 1];
           const result = frames[index + 2];
           const denied = Boolean(action?.denied);

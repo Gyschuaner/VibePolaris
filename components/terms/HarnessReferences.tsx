@@ -46,7 +46,11 @@ export function HarnessReferences() {
             <a className="vp-bib-url" href={source.url} target="_blank" rel="noopener noreferrer" tabIndex={-1}>{source.url}</a>
           </div>
           {preview?.index === index && <div className="vp-bib-preview" id={`ref-preview-${index}`} role="region" aria-label={`${source.title} 在本文中的引用`}>
-            {preview.excerpts.map((excerpt) => <a key={excerpt.id} href={`#${excerpt.id}`} onClick={() => setPreview(null)}><span>{excerpt.heading}<ArrowUp size={15} aria-hidden="true" /></span><blockquote>{excerpt.text}</blockquote></a>)}
+            {preview.excerpts.map((excerpt) => <a key={excerpt.id} href={`#${excerpt.id}`} onClick={() => {
+              let parent = document.getElementById(excerpt.id)?.parentElement;
+              while (parent) { if (parent instanceof HTMLDetailsElement) parent.open = true; parent = parent.parentElement; }
+              setPreview(null);
+            }}><span>{excerpt.heading}<ArrowUp size={15} aria-hidden="true" /></span><blockquote>{excerpt.text}</blockquote></a>)}
           </div>}
         </li>
       ))}
