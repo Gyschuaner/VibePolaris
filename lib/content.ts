@@ -38,7 +38,7 @@ const termSchema = z.object({
   wrongText: z.string().min(1),
   promptTitle: z.string().min(1),
   prompt: z.string().min(1),
-  relatedSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(2).max(4),
+  relatedSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(2).max(8),
 });
 
 const toolSchema = z.object({
@@ -100,15 +100,5 @@ export function getRelatedTerms(term: Term, count = 4) {
   const explicitlyRelated = term.relatedSlugs
     ?.map((slug) => getTerm(slug))
     .filter((candidate): candidate is Term => Boolean(candidate)) ?? [];
-  const sameCategory = terms.filter(
-    (candidate) => candidate.slug !== term.slug
-      && candidate.cat === term.cat
-      && !explicitlyRelated.some((related) => related.slug === candidate.slug),
-  );
-  const others = terms.filter(
-    (candidate) => candidate.slug !== term.slug
-      && candidate.cat !== term.cat
-      && !explicitlyRelated.some((related) => related.slug === candidate.slug),
-  );
-  return [...explicitlyRelated, ...sameCategory, ...others].slice(0, count);
+  return explicitlyRelated.slice(0, count);
 }

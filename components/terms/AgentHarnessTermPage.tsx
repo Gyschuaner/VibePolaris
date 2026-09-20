@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { getTerm } from "@/lib/content";
+import { getRelatedTerms, getTerm } from "@/lib/content";
 import { InlineTerm } from "./InlineTerm";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowsClockwise, Check } from "@phosphor-icons/react/dist/ssr";
 
@@ -147,7 +147,8 @@ export function AgentHarnessTermPage() {
 
           <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.roadmap}</h2>
-            <HarnessLearningMap />
+            <HarnessLearningMap terms={getRelatedTerms(getTerm("agent-harness")!, 8)} />
+            <Link className="term-graph-link" href="/graph?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />在完整星图中探索<ArrowRight size={16} aria-hidden="true" /></Link>
           </div></section>
 
           <section className="vp-chapter" id="related"><div className="vp-chapter-content">
