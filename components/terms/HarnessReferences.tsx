@@ -25,7 +25,10 @@ export function HarnessReferences() {
     // Read the rendered article so excerpts always match the current wording.
     const excerpts = sources[index].citations.flatMap((id) => {
       const target = document.getElementById(id);
-      return target ? [{ id, heading: target.closest("section")?.querySelector("h2")?.textContent ?? "正文", text: target.innerText }] : [];
+      if (!target) return [];
+      const excerpt = target.cloneNode(true) as HTMLElement;
+      excerpt.querySelectorAll(".vp-term-card").forEach((card) => card.remove());
+      return [{ id, heading: target.closest("section")?.querySelector("h2")?.textContent ?? "正文", text: excerpt.textContent ?? "" }];
     });
     setPreview({ index, excerpts });
   }
