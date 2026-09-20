@@ -186,7 +186,7 @@ export function HarnessV4Lesson() {
         </div>
         <div className="vp-lab-content" data-mode={state.mode}>
           <div className="vp-lab-main">
-            {state.mode === "model" ? <HarnessModelChat state={state} reduced={reduced} /> : (
+            {state.mode === "model" ? <HarnessModelChat key={state.scenario} reduced={reduced} /> : (
               <>
                 <div className="vp-task"><span>任务</span><div><p>{harnessTaskText}</p><small>目标：启动服务，并通过健康检查。</small></div></div>
                 <div aria-label="模型、Harness 与工具之间的行动和反馈" className="vp-graph" data-mode={state.mode} data-step={state.step}>
@@ -224,7 +224,6 @@ export function HarnessV4Lesson() {
         ) : null}
         <div aria-live="polite" className="vp-sr">{state.mode === "model" ? "只用模型：给出排错建议，但没有执行操作。" : `第 ${state.step + 1} 步，${frame.title}。${frame.insight}`}</div>
       </section>
-      <div className="vp-lab-notice"><span><i className={`vp-live-dot ${state.playing || state.mode === "model" ? "" : "stopped"}`} />{state.mode === "model" ? "只用模型 · 自动流式回答" : state.playing ? "正在自动播放" : state.step === max ? "本轮演示已停止" : "手动播放"} · 预先编排的教学演示，不连接服务器或读写文件</span><span className="vp-key-hint">{state.mode === "model" ? "模型只会给出建议" : "键盘：← → 切换步骤，空格播放"}</span></div>
       <div className="vp-loop-comment"><p>可以先从“检查通过”走一遍，再切到“测试失败”。第二个分支里，补好冒号后还会遇到返回值错误：上一处修改已完成，但任务没完成。模型需要新错误，才能决定再改哪里。</p><p>“未获写入授权”会停在修改前。Harness 已经允许读文件，不意味着也允许写文件；它会把拒绝原因交回去，报告等待授权。</p><p>演示里的返回值是预先编排的教学数据，不连接服务器。真实 Agent 的下一步由模型动态产生，这里只是把可能发生的一段过程慢放给你看。</p></div>
     </>
   );

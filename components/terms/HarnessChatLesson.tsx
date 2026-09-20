@@ -1,38 +1,10 @@
 "use client";
 
 import { ArrowUp } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
-
-import type { HarnessState } from "@/lib/harness-v4";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 const modelQuestion = "帮我看看这个项目为什么运行失败。";
 const modelAnswer = "可能是端口冲突，你可以运行 lsof -i :8000 看一下。";
-
-type ModelChatPhase = "question" | "thinking" | "answer";
-
-function useStreamText(text: string, active: boolean, reduced: boolean) {
-  const [length, setLength] = useState(active && !reduced ? 0 : text.length);
-
-  useEffect(() => {
-    if (!active || reduced) {
-      setLength(text.length);
-      return;
-    }
-    setLength(0);
-    const timer = window.setInterval(() => {
-      setLength((current) => {
-        if (current >= text.length) {
-          window.clearInterval(timer);
-          return current;
-        }
-        return current + 1;
-      });
-    }, 32);
-    return () => window.clearInterval(timer);
-  }, [active, reduced, text]);
-
-  return text.slice(0, length);
-}
 
 function GptMark({ size = 17 }: { size?: number }) {
   return (
@@ -42,44 +14,62 @@ function GptMark({ size = 17 }: { size?: number }) {
   );
 }
 
-export function HarnessModelChat({ state, reduced }: { state: HarnessState; reduced: boolean }) {
-  const [phase, setPhase] = useState<ModelChatPhase>(reduced ? "answer" : "question");
-  const streamedAnswer = useStreamText(modelAnswer, phase === "answer", reduced);
+export function HarnessModelChat({ reduced }: { reduced: boolean }) {
+  const [questions, setQuestions] = useState([modelQuestion]);
+  const [draft, setDraft] = useState("");
+  const [answerLength, setAnswerLength] = useState(0);
+  const threadRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const answering = !reduced && answerLength < modelAnswer.length;
+  const streamedAnswer = reduced ? modelAnswer : modelAnswer.slice(0, answerLength);
 
   useEffect(() => {
-    if (reduced) {
-      setPhase("answer");
-      return;
-    }
-    setPhase("question");
-    const thinkingTimer = window.setTimeout(() => setPhase("thinking"), 900);
-    const answerTimer = window.setTimeout(() => setPhase("answer"), 1750);
-    return () => {
-      window.clearTimeout(thinkingTimer);
-      window.clearTimeout(answerTimer);
-    };
-  }, [reduced, state.scenario]);
+    if (!answering) return;
+    const timer = window.setTimeout(() => setAnswerLength((length) => length + 1), answerLength === 0 ? 900 : 32);
+    return () => window.clearTimeout(timer);
+  }, [answering, answerLength, questions.length]);
+
+  useEffect(() => {
+    const thread = threadRef.current;
+    if (thread) thread.scrollTop = thread.scrollHeight;
+  }, [questions.length, streamedAnswer]);
+
+  function sendMessage(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const question = draft.trim();
+    if (!question || answering) return;
+    setQuestions((previous) => [...previous, question]);
+    setDraft("");
+    setAnswerLength(0);
+    inputRef.current?.focus();
+  }
 
   return (
     <div className="vp-model-chat" aria-label="只用模型的对话演示">
-      <div className="vp-model-chat-thread" aria-live="polite">
-        <div className="vp-model-chat-date">新建对话 · 没有工具连接</div>
-        <article className="vp-model-message is-user">
-          <div className="vp-model-message-content"><div className="vp-model-bubble">{modelQuestion}</div></div>
-        </article>
-        {phase === "thinking" ? (
-          <div className="vp-model-thinking"><div className="vp-model-avatar" aria-hidden="true"><GptMark size={17} /></div><div className="vp-model-thinking-bubble"><span /><span /><span />模型正在生成回答</div></div>
-        ) : (
-          <article className="vp-model-message is-model">
-            <div className="vp-model-avatar is-model" aria-hidden="true"><GptMark size={17} /></div>
-            <div className="vp-model-message-content"><span className="vp-model-message-label">模型</span><div className="vp-model-bubble">{streamedAnswer}{phase === "answer" && streamedAnswer.length < modelAnswer.length ? <span className="vp-model-caret" aria-hidden="true" /> : null}</div></div>
-          </article>
-        )}
+      <div className="vp-model-chat-thread" ref={threadRef} role="log" aria-label="对话消息" aria-live="polite">
+        {questions.map((question, index) => {
+          const latest = index === questions.length - 1;
+          return (
+            <Fragment key={index}>
+              <article className="vp-model-message is-user" aria-label="你的消息">
+                <div className="vp-model-message-content"><div className="vp-model-bubble">{question}</div></div>
+              </article>
+              {latest && answering && answerLength === 0 ? (
+                <div className="vp-model-thinking"><div className="vp-model-avatar" aria-hidden="true"><GptMark size={17} /></div><div className="vp-model-thinking-bubble"><span /><span /><span />模型正在生成回答</div></div>
+              ) : (
+                <article className="vp-model-message is-model" aria-label="模型回答" aria-busy={latest && answering}>
+                  <div className="vp-model-avatar is-model" aria-hidden="true"><GptMark size={17} /></div>
+                  <div className="vp-model-message-content"><span className="vp-model-message-label">模型</span><div className="vp-model-bubble">{latest ? streamedAnswer : modelAnswer}{latest && answering ? <span className="vp-model-caret" aria-hidden="true" /> : null}</div></div>
+                </article>
+              )}
+            </Fragment>
+          );
+        })}
       </div>
-      <div className="vp-model-composer" aria-label="继续提问">
-        <span>继续问模型……</span>
-        <button type="button" disabled aria-label="发送消息"><ArrowUp size={18} weight="bold" /></button>
-      </div>
+      <form className="vp-model-composer" aria-label="继续提问" onSubmit={sendMessage}>
+        <input ref={inputRef} aria-label="继续问模型" placeholder="继续问模型……" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.nativeEvent.isComposing || event.keyCode === 229)) event.preventDefault(); }} />
+        <button type="submit" disabled={!draft.trim() || answering} aria-label="发送消息"><ArrowUp size={18} weight="bold" /></button>
+      </form>
     </div>
   );
 }
