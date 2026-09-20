@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { ArrowUpRight, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphNode, type GraphEdge } from "@/lib/term-graph";
@@ -11,7 +11,7 @@ type Point = { x: number; y: number };
 type View = Point & { scale: number };
 
 export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[]; edges: GraphEdge[] }) {
-  const [nodes, setNodes] = useState(initialNodes);
+  const nodes = initialNodes;
   const [selected, setSelected] = useState("");
   const [hovered, setHovered] = useState("");
   const [query, setQuery] = useState("");
@@ -21,6 +21,8 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
   const [reframing, setReframing] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
   const searchPanel = useRef<HTMLDivElement>(null);
+  const nodeElements = useRef(new Map<string, HTMLButtonElement>());
+  const lineElements = useRef(new Map<string, { element: SVGLineElement; source: string; target: string }>());
   const size = useRef({ width: 1000, height: 700 });
   const gesture = useRef<{ start: Point; view: View; slug?: string; point?: Point } | null>(null);
   const pointers = useRef(new Map<number, Point>());
@@ -32,18 +34,39 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
   const labelOpacity = Math.max(0, Math.min(1, (view.scale - 1.05) / .45));
   const { beginRouteFlight } = useRouteMeteor();
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
-  const active = hovered || selected;
-  const neighbors = useMemo(() => graphNeighbors(active, edges), [active, edges]);
   const selectedNeighbors = useMemo(() => graphNeighbors(selected, edges), [selected, edges]);
   const current = bySlug.get(selected);
   const needle = query.trim().toLocaleLowerCase();
   const matches = needle ? initialNodes.filter(node => [node.zh, node.en, node.slug, ...node.aliases].some(text => text.toLocaleLowerCase().includes(needle))).slice(0, 12) : [];
 
+  // Physics owns coordinates; React owns content and interaction state.
+  // Updating transforms avoids 301 React renders and layout work on every tick.
+  const paintPositions = useCallback(() => {
+    const moving = simulation.current?.nodes();
+    if (!moving) return;
+    const positions = new Map(moving.map(node => [node.slug, node]));
+    for (const node of moving) {
+      const element = nodeElements.current.get(node.slug);
+      if (element) element.style.transform = `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)`;
+    }
+    for (const { element, source, target } of lineElements.current.values()) {
+      const from = positions.get(source)!;
+      const to = positions.get(target)!;
+      element.setAttribute("x1", String(from.x)); element.setAttribute("y1", String(from.y));
+      element.setAttribute("x2", String(to.x)); element.setAttribute("y2", String(to.y));
+    }
+  }, []);
+
+  // Newly revealed lines must use the live coordinates before the next paint,
+  // even when the simulation has already settled.
+  useLayoutEffect(paintPositions, [paintPositions, selected, showLines]);
+
+  function positions() { return simulation.current?.nodes() || initialNodes; }
+
   useEffect(() => {
     const engine = createGraphSimulation(initialNodes, edges);
     simulation.current = engine;
-    const publish = () => setNodes(engine.nodes().map(node => ({ ...node })));
-    engine.on("tick", publish);
+    engine.on("tick", paintPositions);
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncMotion = () => {
       reducedMotion.current = preference.matches;
@@ -60,15 +83,16 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
       preference.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncMotion);
     };
-  }, [initialNodes, edges]);
+  }, [initialNodes, edges, paintPositions]);
 
   function releaseNode() {
     const engine = simulation.current;
-    const node = engine?.nodes().find(item => item.slug === gesture.current?.slug);
-    if (!node) return;
+    if (!engine) return;
+    const node = engine.nodes().find(item => item.slug === gesture.current?.slug);
+    if (!node || node.fx == null && node.fy == null) return;
     node.fx = null; node.fy = null;
-    engine!.alphaTarget(0);
-    if (!reducedMotion.current && !document.hidden) engine!.restart();
+    engine.alphaTarget(0);
+    if (!reducedMotion.current && !document.hidden) engine.restart();
   }
 
   const frame = useCallback((items: GraphNode[], detail = false) => {
@@ -119,7 +143,7 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
     setSelected(slug); setHovered(""); setQuery("");
     searchPanel.current?.hidePopover();
     const linked = graphNeighbors(slug, edges);
-    frame(nodes.filter(node => node.slug === slug || linked.has(node.slug)), true);
+    frame(positions().filter(node => node.slug === slug || linked.has(node.slug)), true);
     const url = new URL(window.location.href);
     url.searchParams.set("term", slug);
     window.history.replaceState(null, "", url);
@@ -132,13 +156,28 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
     window.history.replaceState(null, "", url);
   }
 
-  function zoom(factor: number, point = { x: size.current.width / 2, y: size.current.height / 2 }) {
+  const zoom = useCallback((factor: number, point = { x: size.current.width / 2, y: size.current.height / 2 }) => {
     setView(previous => {
       const scale = Math.max(.12, Math.min(3, previous.scale * factor));
       const ratio = scale / previous.scale;
       return { x: point.x - (point.x - previous.x) * ratio, y: point.y - (point.y - previous.y) * ratio, scale };
     });
-  }
+  }, []);
+
+  useEffect(() => {
+    const element = canvas.current;
+    if (!element) return;
+    const wheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const rect = element.getBoundingClientRect();
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
+      setReframing(false);
+      zoom(Math.exp(-delta * .002), { x: event.clientX - rect.left, y: event.clientY - rect.top });
+    };
+    // React delegates wheel events passively; the canvas must own wheel/pinch zoom.
+    element.addEventListener("wheel", wheel, { passive: false });
+    return () => element.removeEventListener("wheel", wheel);
+  }, [zoom]);
 
   function localPoint(event: { clientX: number; clientY: number }) {
     const rect = canvas.current!.getBoundingClientRect();
@@ -159,7 +198,8 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
       return;
     }
     const slug = (event.target as HTMLElement).closest<HTMLElement>("[data-graph-node]")?.dataset.graphNode;
-    gesture.current = { start: point, view, slug, point: slug ? bySlug.get(slug) : undefined };
+    const node = slug ? positions().find(item => item.slug === slug) : undefined;
+    gesture.current = { start: point, view, slug, point: node ? { x: node.x, y: node.y } : undefined };
     dragged.current = false;
   }
 
@@ -167,10 +207,13 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
     const point = localPoint(event);
     const engine = simulation.current;
     if (!pointers.current.has(event.pointerId)) {
-      if (event.pointerType !== "mouse" || event.buttons || reducedMotion.current || !engine || event.timeStamp - lastNudge.current < 32) return;
+      if (event.pointerType !== "mouse" || event.buttons) return;
+      const target = (event.target as HTMLElement).closest<HTMLElement>("[data-graph-node]")?.dataset.graphNode || "";
+      // Only a real pointer movement changes hover; moving stars cannot flicker it.
+      setHovered(target);
+      if (target || reducedMotion.current || !engine || event.timeStamp - lastNudge.current < 64) return;
       lastNudge.current = event.timeStamp;
-      const target = (event.target as HTMLElement).closest<HTMLElement>("[data-graph-node]")?.dataset.graphNode;
-      if (nudgeGraph(engine.nodes(), (point.x - view.x) / view.scale, (point.y - view.y) / view.scale, 75 / view.scale, target)) engine.alpha(Math.max(.08, engine.alpha())).restart();
+      if (nudgeGraph(engine.nodes(), (point.x - view.x) / view.scale, (point.y - view.y) / view.scale, 65 / view.scale)) engine.alpha(Math.max(.025, engine.alpha())).restart();
       return;
     }
     pointers.current.set(event.pointerId, point);
@@ -194,8 +237,8 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
       node.x = node.fx = origin.x + dx / start.view.scale;
       node.y = node.fy = origin.y + dy / start.view.scale;
       node.vx = 0; node.vy = 0;
-      setNodes(engine!.nodes().map(item => ({ ...item })));
-      if (!reducedMotion.current) engine!.alphaTarget(.25).restart();
+      if (reducedMotion.current) paintPositions();
+      else engine!.alphaTarget(.25).restart();
     } else setView({ ...start.view, x: start.view.x + dx, y: start.view.y + dy });
   }
 
@@ -217,7 +260,6 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
       </div>
       <div ref={canvas} className={styles.canvas} role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
         onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => setHovered("")}
-        onWheel={event => { setReframing(false); zoom(Math.exp(-event.deltaY * .002), localPoint(event)); }}
         onKeyDown={event => {
           if (event.key === "Escape") { clearSelection(); return; }
           if (event.target !== event.currentTarget) return;
@@ -225,25 +267,33 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
           setReframing(false);
           if (event.key === "+" || event.key === "=") zoom(1.25);
           if (event.key === "-") zoom(.8);
-          if (event.key === "0") frame(nodes);
+          if (event.key === "0") frame(positions());
           if (event.key.startsWith("Arrow")) setView(value => ({ ...value, x: value.x + (event.key === "ArrowLeft" ? 50 : event.key === "ArrowRight" ? -50 : 0), y: value.y + (event.key === "ArrowUp" ? 50 : event.key === "ArrowDown" ? -50 : 0) }));
         }}>
         <div className={`${styles.world} ${reframing ? styles.reframing : ""}`} style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, opacity: ready ? 1 : 0 }}>
           <svg className={styles.lines} aria-hidden="true">{edges.map(edge => {
-            const connected = edge.source === active || edge.target === active;
+            const connected = edge.source === selected || edge.target === selected;
             if (!showLines && !connected) return null;
             const from = bySlug.get(edge.source)!; const to = bySlug.get(edge.target)!;
-            return <line key={`${edge.source}|${edge.target}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className={connected ? styles.connectedLine : styles.quietLine} />;
+            return <line key={`${edge.source}|${edge.target}`} ref={element => {
+              const key = `${edge.source}|${edge.target}`;
+              if (element) lineElements.current.set(key, { element, ...edge });
+              else lineElements.current.delete(key);
+            }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className={connected ? styles.connectedLine : styles.quietLine} />;
           })}</svg>
           {nodes.map(node => {
-            const connected = neighbors.has(node.slug);
-            const highlighted = node.slug === active || connected;
-            return <button type="button" key={node.slug} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
-              className={`${styles.node} ${node.slug === selected ? styles.selected : ""} ${active && !highlighted ? styles.dimmed : ""}`}
-              style={{ left: node.x, top: node.y }} onPointerEnter={() => setHovered(node.slug)} onPointerLeave={() => setHovered("")}
+            const connected = selectedNeighbors.has(node.slug);
+            const highlighted = node.slug === selected || connected;
+            const named = node.slug === hovered || highlighted;
+            return <button type="button" key={node.slug} ref={element => {
+              if (element) nodeElements.current.set(node.slug, element);
+              else nodeElements.current.delete(node.slug);
+            }} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
+              className={`${styles.node} ${node.slug === selected ? styles.selected : ""} ${node.slug === hovered ? styles.hovered : ""} ${selected && !named ? styles.dimmed : ""}`}
+              style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }}
               onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
               onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
-              <span className="brand-star-only" aria-hidden="true" style={{ width: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)), height: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)) }} /><span className={styles.label} style={{ fontSize: Math.min(32, 14 / view.scale), opacity: labelOpacity }}>{node.zh}</span>
+              <span className="brand-star-only" aria-hidden="true" style={{ width: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)), height: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)) }} /><span className={styles.label} style={{ fontSize: 14 / view.scale, opacity: named ? 1 : labelOpacity }}>{node.zh}</span>
             </button>;
           })}
         </div>
@@ -251,7 +301,7 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
       <div className={styles.controls} aria-label="星图视图控制">
         <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.3); }}><Plus size={18} /></button>
         <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(1 / 1.3); }}><Minus size={18} /></button>
-        <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { clearSelection(); frame(nodes); }}><CornersOut size={18} /></button>
+        <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { clearSelection(); frame(positions()); }}><CornersOut size={18} /></button>
         <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>
       </div>
       {current && <aside className={styles.detail} aria-label={`${current.zh}概念详情`}>
