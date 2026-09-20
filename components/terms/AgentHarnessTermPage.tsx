@@ -1,23 +1,11 @@
 import Link from "next/link";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, ArrowsClockwise, Check, Plus } from "@phosphor-icons/react/dist/ssr";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowsClockwise, Check, Plus } from "@phosphor-icons/react/dist/ssr";
 
 import { HarnessV4Lesson } from "./HarnessV4Lesson";
 import { HarnessV4Toc } from "./HarnessV4Toc";
 import { HarnessLearningMap } from "./HarnessLearningMap";
+import { HarnessReferences } from "./HarnessReferences";
 import { harnessSectionTitles } from "@/lib/harness-sections";
-
-const sources = [
-  ["ref-1", "Building effective agents", "https://www.anthropic.com/engineering/building-effective-agents", "Anthropic · Agent、工具反馈与停止条件"],
-  ["ref-2", "Agent Harness", "https://learn.microsoft.com/en-us/agent-framework/concepts/harness", "Microsoft Learn · 运行程序的组成"],
-  ["ref-3", "Tool use with Claude", "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", "Anthropic · 请求、执行和工具返回"],
-  ["ref-4", "MCP architecture overview", "https://modelcontextprotocol.io/docs/learn/architecture", "Model Context Protocol · 协议范围与工具"],
-  ["ref-5", "Effective harnesses for long-running agents", "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", "Anthropic · 状态交接、长任务与验证"],
-  ["ref-6", "Agent Skills overview", "https://agentskills.io/home", "Agent Skills · 指令、脚本和资源"],
-  ["ref-7", "Context windows", "https://platform.claude.com/docs/en/build-with-claude/context-windows", "Anthropic · 上下文与工具交互"],
-  ["ref-8", "Harness · 词义", "https://www.merriam-webster.com/dictionary/harness", "Merriam-Webster · 普通词义"],
-  ["ref-9", "df(1)", "https://man7.org/linux/man-pages/man1/df.1.html", "GNU df 手册 · 文件系统空间"],
-  ["ref-10", "du(1)", "https://man7.org/linux/man-pages/man1/du.1.html", "GNU du 手册 · 文件与目录占用"],
-] as const;
 
 export function AgentHarnessTermPage() {
   return (
@@ -44,7 +32,7 @@ export function AgentHarnessTermPage() {
 
           <section className="vp-chapter" id="need"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.need}</h2>
-            <p><strong>Agent Harness 是围绕模型运行的程序：</strong>把任务交给模型，检查并执行工具请求，再把结果送回去，让模型决定下一步。</p>
+            <p id="cite-harness" className="vp-citation-target"><strong>Agent Harness 是围绕模型运行的程序：</strong>把任务交给模型，检查并执行工具请求，再把结果送回去，让模型决定下一步。</p>
             <figure className="vp-teach-figure" aria-label="Agent 内部的模型、Harness 与工具分工">
               <div className="vp-agent-outline">
                 <span className="vp-frame-title">Agent · 整个智能体</span>
@@ -60,7 +48,7 @@ export function AgentHarnessTermPage() {
 
           <section className="vp-chapter" id="name"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.name}</h2>
-            <p>Harness 原指马具、系带一类连接装置。借这个比喻：模型提供能力，Harness 把它接到工具和环境上，并约束操作范围。</p>
+            <p><span id="cite-word" className="vp-citation-target">Harness 原指马具、系带一类连接装置。</span>借这个比喻：模型提供能力，Harness 把它接到工具和环境上，并约束操作范围。</p>
             <div className="vp-inline-equation">Agent ≈ Model + Harness</div>
             <p>这是一种便于理解的分工：模型与运行系统，再加上工具和环境，共同组成能围绕目标行动的智能体。</p>
           </div></section>
@@ -71,24 +59,24 @@ export function AgentHarnessTermPage() {
             <p>只有模型时，它会建议你运行 <code>df -h</code>。接上 Harness 后，请求、执行和结果可以连续往下走：</p>
             <figure className="vp-disk-story" aria-label="两轮磁盘排查：先发现 data 分区已满，再定位 logs 目录">
               <div className="vp-disk-round">
-                <div className="vp-disk-request"><h3>模型：先看哪个分区满了</h3><code>df -h</code><span><ArrowDown size={18} aria-hidden="true" />Harness 检查并执行</span></div>
+                <div className="vp-disk-request"><div id="cite-df" className="vp-citation-target"><h3>模型：先看哪个分区满了</h3><code>df -h</code></div><span><ArrowDown size={18} aria-hidden="true" />Harness 检查并执行</span></div>
                 <div className="vp-disk-result"><div className="vp-disk-total"><code>/data</code><strong>99%</strong></div><div className="vp-disk-meter" role="img" aria-label="data 分区已用 99%，99 GB，共 100 GB"><i /></div><p>100 GB 中已用 99 GB</p></div>
               </div>
               <div className="vp-result-bridge"><ArrowsClockwise size={20} aria-hidden="true" /><span>结果交回模型，决定继续查 <code>/data</code></span></div>
               <div className="vp-disk-round">
-                <div className="vp-disk-request"><h3>模型：再看谁占得最多</h3><code>du -sh /data/*</code><span><ArrowDown size={18} aria-hidden="true" />Harness 检查并执行</span></div>
+                <div className="vp-disk-request"><div id="cite-du" className="vp-citation-target"><h3>模型：再看谁占得最多</h3><code>du -sh /data/*</code></div><span><ArrowDown size={18} aria-hidden="true" />Harness 检查并执行</span></div>
                 <div className="vp-disk-bars" aria-label="目录占用：logs 82 GB，models 12 GB，cache 4 GB">
                   {[["logs", 82], ["models", 12], ["cache", 4]].map(([name, size]) => <div key={name}><code>{name}</code><span><i style={{ width: `${size}%` }} /></span><b>{size} GB</b></div>)}
                 </div>
               </div>
               <div className="vp-disk-finding"><Check size={20} aria-hidden="true" /><p>定位到 <code>/data/logs</code> 占用最多，接下来可继续查看日志。</p></div>
             </figure>
-            <p>这个“判断 → 执行 → 看结果 → 再判断”的过程，就是 <strong>Agent Loop（智能体循环）</strong>。任务完成、遇到权限限制或达到轮数上限时，循环停止。</p>
+            <p id="cite-loop" className="vp-citation-target">这个“判断 → 执行 → 看结果 → 再判断”的过程，就是 <strong>Agent Loop（智能体循环）</strong>。任务完成、遇到权限限制或达到轮数上限时，循环停止。</p>
           </div></section>
 
           <section className="vp-chapter" id="boundary"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.boundary}</h2>
-            <p>模型输出 <code>read_file("server.log")</code>，只是提出读取请求。真正拿到日志，还要经过这些步骤：</p>
+            <p id="cite-tool-request" className="vp-citation-target">模型输出 <code>read_file("server.log")</code>，只是提出读取请求。真正拿到日志，还要经过这些步骤：</p>
             <ol className="vp-request-path" aria-label="工具请求的执行顺序">
               {[["检查请求", "找到工具，核对参数与权限"], ["执行工具", "打开 server.log，读取内容"], ["保存结果", "关联这次请求与返回值"], ["再问模型", "带上日志，判断下一步"]].map(([title, body], index) => <li key={title}><span className="vp-path-index">{index + 1}</span><h3>{title}</h3><p>{body}</p>{index < 3 && <ArrowRight className="vp-path-arrow" size={20} aria-hidden="true" />}</li>)}
             </ol>
@@ -99,12 +87,12 @@ export function AgentHarnessTermPage() {
               <ArrowRight size={24} aria-hidden="true" />
               <div><h4>读取后</h4><ul><li>原有信息</li><li className="is-new">本次读取请求</li><li className="is-new">日志：第一行缺少冒号</li></ul></div>
             </div>
-            <p>Harness 把新结果放进下一次输入，模型才“看见”了日志。</p>
+            <p id="cite-context" className="vp-citation-target">Harness 把新结果放进下一次输入，模型才“看见”了日志。</p>
           </div></section>
 
           <section className="vp-chapter" id="tools"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.tools}</h2>
-            <p><strong>Tool 负责一个具体操作，Harness 负责把这些操作组织起来。</strong>工具接收参数，执行工作，返回内容或错误。</p>
+            <p id="cite-tools" className="vp-citation-target"><strong>Tool 负责一个具体操作，Harness 负责把这些操作组织起来。</strong>工具接收参数，执行工作，返回内容或错误。</p>
             <div className="vp-table-wrap"><table className="vp-teaching-table" aria-label="常见工具与能力"><thead><tr><th>工具</th><th>做什么</th><th>返回什么</th></tr></thead><tbody>
               {[["read_file(path)", "读取文件", "文件正文"], ["edit_file(…)", "修改内容", "补丁结果"], ["run_shell(command)", "执行命令", "输出与退出状态"], ["search_web(query)", "检索网页", "资料与来源"]].map(([name, action, result]) => <tr key={name}><td><code>{name}</code></td><td>{action}</td><td>{result}</td></tr>)}
             </tbody></table></div>
@@ -117,7 +105,7 @@ export function AgentHarnessTermPage() {
             <dl className="vp-responsibilities">
               {[["Model · 模型", "判断下一步", "根据日志，决定查看 app.py"], ["Instructions · 指令", "规定工作要求", "先检查，修改后必须测试"], ["Tools · 工具", "执行具体操作", "读日志、写补丁、运行检查"], ["Context · 上下文", "提供本次信息", "任务、规则、源码与工具结果"], ["Agent Loop · 循环", "继续或停止", "测试失败，带着错误再问模型"], ["Runtime / State · 运行与状态", "保留任务进度", "改了什么，授权了什么，走到哪一步"]].map(([name, role, example]) => <div key={name}><dt>{name}</dt><dd><strong>{role}</strong><p>{example}</p></dd></div>)}
             </dl>
-            <p><strong>指令是要求，权限检查是执行时的限制。</strong>同样，Context 是这次给模型看的信息，State 是程序保存的运行状态；两者不必完全相同。</p>
+            <p id="cite-state" className="vp-citation-target"><strong>指令是要求，权限检查是执行时的限制。</strong>同样，Context 是这次给模型看的信息，State 是程序保存的运行状态；两者不必完全相同。</p>
           </div></section>
 
           <section className="vp-chapter" id="service"><div className="vp-chapter-content">
@@ -133,7 +121,7 @@ export function AgentHarnessTermPage() {
               <div><h3>修改后就结束</h3><div className="vp-verification-track"><span>写入补丁</span><ArrowRight size={20} aria-hidden="true" /><span>报告完成</span></div><p>文件改了，服务是否恢复仍未知。</p></div>
               <div><h3>验证后再结束</h3><div className="vp-verification-track"><span>写入补丁</span><ArrowRight size={20} aria-hidden="true" /><span>运行检查</span><ArrowRight size={20} aria-hidden="true" /><strong>通过后完成</strong></div><div className="vp-verification-retry"><ArrowsClockwise size={20} aria-hidden="true" /><span>失败：错误交回模型，继续修正</span></div></div>
             </figure>
-            <p>Harness 决定结果是否被记录、检查是否执行、失败后能否接着做。能力要看任务实际完成得怎样。</p>
+            <p id="cite-verification" className="vp-citation-target">Harness 决定结果是否被记录、检查是否执行、失败后能否接着做。能力要看任务实际完成得怎样。</p>
           </div></section>
 
           <section className="vp-chapter" id="compare"><div className="vp-chapter-content">
@@ -145,7 +133,7 @@ export function AgentHarnessTermPage() {
               <tr><td>Agent / 智能体</td><td>把这些部分组合起来，完成“修好服务”。</td></tr>
             </tbody></table></div>
             <h3>MCP 和 Skill 放在哪里？</h3>
-            <p><strong>MCP</strong> 约定应用怎样连接工具与数据；<strong>Skill</strong> 提供某类任务的说明和资源。它们都可以被 Harness 使用，帮助整个 Agent 工作。</p>
+            <p><span id="cite-mcp" className="vp-citation-target"><strong>MCP</strong> 约定应用怎样连接工具与数据</span>；<span id="cite-skills" className="vp-citation-target"><strong>Skill</strong> 提供某类任务的说明和资源。</span>它们都可以被 Harness 使用，帮助整个 Agent 工作。</p>
           </div></section>
 
           <section className="vp-chapter" id="code"><div className="vp-chapter-content">
@@ -176,13 +164,12 @@ else:
 
           <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.roadmap}</h2>
-            <p>先走通模型调用、工具调用和循环，再按需要补上上下文、记忆与权限。沿着星星，继续读下一篇。</p>
             <HarnessLearningMap />
           </div></section>
 
           <section className="vp-chapter" id="related"><div className="vp-chapter-content">
             <h2>{harnessSectionTitles.related}</h2>
-            <details className="vp-reference" id="references"><summary><span>查看原始资料</span><Plus size={16} aria-hidden="true" /></summary><ol className="vp-reference-list">{sources.map(([id, title, url]) => <li id={id} key={id}><a href={url} rel="noopener noreferrer" target="_blank">{title}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}</ol></details>
+            <HarnessReferences />
           </div></section>
         </div>
       </div>
