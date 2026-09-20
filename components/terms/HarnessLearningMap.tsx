@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { useRouteMeteor } from "@/components/RouteMeteorProvider";
 
 const stars = [
   { slug: "llm", label: "模型调用", x: 15, y: 27, mobileX: 18, mobileY: 24, size: 28 },
@@ -13,6 +16,8 @@ const stars = [
 ];
 
 export function HarnessLearningMap() {
+  const { beginRouteFlight } = useRouteMeteor();
+
   return (
     <nav className="vp-learning-map" aria-label="Harness 相关词条星图">
       <div className="vp-learning-center" aria-label="当前词条：Harness">
@@ -28,7 +33,13 @@ export function HarnessLearningMap() {
             <svg className="vp-learning-lines is-mobile" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
               <line x1="50" y1="48" x2={mobileX} y2={mobileY} />
             </svg>
-            <Link href={`/terms/${slug}`}>
+            <Link href={`/terms/${slug}`} onClick={(event) => {
+              if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              const star = event.currentTarget.querySelector<HTMLElement>(".brand-star-only");
+              if (!star) return;
+              event.preventDefault();
+              beginRouteFlight(`/terms/${slug}`, star);
+            }}>
               <span className="brand-star-only" aria-hidden="true" />
               <span>{label}</span>
             </Link>
