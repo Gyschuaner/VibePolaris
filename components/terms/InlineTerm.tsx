@@ -32,7 +32,7 @@ export function InlineTerm({ title, english, description, href, children }: {
     card.style.top = `${Math.max(edge, Math.min(top, window.innerHeight - height - edge))}px`;
 
     function dismiss(event: Event) {
-      if (!(event.target instanceof Node) || !card.contains(event.target)) card.hidePopover();
+      if (event.target === window || (event.target instanceof Node && event.target.contains(trigger.current))) card.hidePopover();
     }
     window.addEventListener("scroll", dismiss, true);
     window.addEventListener("resize", dismiss);
