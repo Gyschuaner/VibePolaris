@@ -12,6 +12,7 @@ import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
 import { MemoryTermPage, ContextWindowTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
+import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
 import { RagTermPage } from "@/components/terms/RagTermPage";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
@@ -20,7 +21,7 @@ import { getTermExperience } from "@/lib/term-experiences";
 
 type TermPageProps = { params: Promise<{ slug: string }> };
 
-const dedicatedTermPages = {
+const articleTermPages = {
   "agent-harness": AgentHarnessTermPage,
   tools: ToolCallingTermPage,
   context: ContextTermPage,
@@ -30,6 +31,13 @@ const dedicatedTermPages = {
   prompt: PromptTermPage,
   mcp: McpTermPage,
   "execution-sandbox": SandboxTermPage,
+  llm: LlmTermPage,
+  token: TokenTermPage,
+  agent: AgentTermPage,
+} satisfies Record<string, ComponentType<BespokeTermPageProps>>;
+
+const dedicatedTermPages = {
+  ...articleTermPages,
   component: ComponentTermPage,
   rebase: RebaseTermPage,
   rag: RagTermPage,
@@ -76,7 +84,7 @@ export default async function TermPage({ params }: TermPageProps) {
       ) : (
         <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} />
       )}
-      {!["agent-harness", "tools", "context", "agent-loop", "memory", "context-window", "prompt", "mcp", "execution-sandbox"].includes(term.slug) && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
+      {!(term.slug in articleTermPages) && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
       <SiteFooter />
     </>
   );

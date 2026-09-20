@@ -5,10 +5,10 @@ import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText,
 import { useScene } from "./HarnessStoryScenes";
 import styles from "./ExtendedConcepts.module.css";
 
-function Reveal({ open, children }: { open: boolean; children: ReactNode }) {
+export function Reveal({ open, children }: { open: boolean; children: ReactNode }) {
   return <div className={styles.reveal} data-open={open} aria-hidden={!open} inert={!open}><div>{children}</div></div>;
 }
-function States({ index, children }: { index: number; children: ReactNode[] }) {
+export function States({ index, children }: { index: number; children: ReactNode[] }) {
   return <div className={styles.states}>{children.map((child, i) => <div key={i} data-current={i === index} aria-hidden={i !== index} inert={i !== index}>{child}</div>)}</div>;
 }
 const progressNote = "已补上 app.py 的冒号。/health 仍返回 500，下一步检查返回值。";
