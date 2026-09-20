@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { getTerm } from "@/lib/content";
 import { InlineTerm } from "./InlineTerm";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowsClockwise, Check, Plus } from "@phosphor-icons/react/dist/ssr";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowsClockwise, Check } from "@phosphor-icons/react/dist/ssr";
 
 import { HarnessV4Lesson } from "./HarnessV4Lesson";
 import { HarnessV4Toc } from "./HarnessV4Toc";
@@ -143,32 +143,6 @@ export function AgentHarnessTermPage() {
             </tbody></table></div>
             <h3>MCP 和 Skill 放在哪里？</h3>
             <p><span id="cite-mcp" className="vp-citation-target"><strong><Term slug="mcp">MCP</Term></strong> 约定应用怎样连接工具与数据</span>；<span id="cite-skills" className="vp-citation-target"><strong><InlineTerm title="技能" english="Agent Skill" description="把某类任务的操作说明和相关资源放在一起，供智能体按需使用。通常包含 SKILL.md，也可以附带脚本、模板和参考材料。">Skill</InlineTerm></strong> 提供某类任务的说明和资源。</span>它们都可以被 Harness 使用，帮助整个 Agent 工作。</p>
-          </div></section>
-
-          <section className="vp-chapter" id="code"><div className="vp-chapter-content">
-            <h2>{harnessSectionTitles.code}</h2>
-            <details className="vp-code-details"><summary><span>展开最小循环</span><Plus size={16} aria-hidden="true" /></summary><div className="vp-code-panel"><pre><code>{`context = [工作规则, 用户任务, 工具说明]
-
-for step in range(最大轮数):
-    reply = 调用模型(context)
-    context.append(reply)
-
-    if reply.是最终回答:
-        核对证据并报告当前结果(reply, context)
-        break
-
-    if not reply.有工具请求:
-        报告无法继续并保存状态()
-        break
-
-    for call in reply.工具请求:
-        if not 参数合法且已获授权(call):
-            result = 说明拒绝原因(call)
-        else:
-            result = 带超时和异常处理地执行工具(call)
-        context.append(关联请求与结果(call, result))
-else:
-    报告达到轮数上限并保存状态()`}</code></pre></div></details>
           </div></section>
 
           <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
