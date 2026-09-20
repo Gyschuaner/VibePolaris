@@ -9,7 +9,6 @@ export const harnessSectionTitles = {
   service: "8. 现在，再让它修好一个服务",
   quality: "9. 同一个模型，为什么换一套 Harness 就可能不同？",
   compare: "10. 最后分清 Model、Harness 和 Agent",
-  code: "再往里看：循环可以写成什么样？",
   roadmap: "接下来怎么学",
   related: "参考资料",
 } as const;
