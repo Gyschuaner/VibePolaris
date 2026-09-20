@@ -36,6 +36,7 @@ export type HarnessState = {
   step: number;
   playing: boolean;
   speed: 1 | 1.5 | 2;
+  replyComplete: boolean;
 };
 
 type ScenarioMeta = { label: string; status: string };
@@ -337,6 +338,7 @@ export function createHarnessState(options: Partial<HarnessState> = {}): Harness
     step: clamp(options.step, harnessStory[scenario].length - 1),
     playing: mode === "harness" && options.playing === true,
     speed: options.speed === 1.5 || options.speed === 2 ? options.speed : 1,
+    replyComplete: false,
   };
 }
 
@@ -350,31 +352,35 @@ type HarnessAction =
   | { type: "play"; reduced?: boolean }
   | { type: "pause" }
   | { type: "tick" }
-  | { type: "speed" };
+  | { type: "speed" }
+  | { type: "reply-complete"; step: number };
 
 export function harnessReducer(state: HarnessState, action: HarnessAction): HarnessState {
   const max = harnessStory[state.scenario].length - 1;
+  const awaitingReply = harnessStory[state.scenario][state.step].edge === "mh" && !state.replyComplete;
   switch (action.type) {
+    case "reply-complete":
+      return action.step === state.step && !state.replyComplete ? { ...state, replyComplete: true } : state;
     case "next":
-      return { ...state, step: Math.min(max, state.step + 1), playing: false };
+      return awaitingReply ? state : { ...state, step: Math.min(max, state.step + 1), playing: false, replyComplete: false };
     case "previous":
-      return { ...state, step: Math.max(0, state.step - 1), playing: false };
+      return { ...state, step: Math.max(0, state.step - 1), playing: false, replyComplete: false };
     case "seek":
-      return { ...state, step: clamp(action.step, max), playing: false };
+      return { ...state, step: clamp(action.step, max), playing: false, replyComplete: false };
     case "reset":
-      return { ...state, step: 0, playing: false };
+      return { ...state, step: 0, playing: false, replyComplete: false };
     case "scenario":
-      return validScenario(action.value) ? { ...state, scenario: action.value, step: 0, playing: false } : state;
+      return validScenario(action.value) ? { ...state, scenario: action.value, step: 0, playing: false, replyComplete: false } : state;
     case "mode":
-      return { ...state, mode: action.value, step: 0, playing: false };
+      return { ...state, mode: action.value, step: 0, playing: false, replyComplete: false };
     case "play":
       if (state.mode === "model") return state;
       if (action.reduced) return { ...state, step: max, playing: false };
-      return { ...state, step: state.step === max ? 0 : state.step, playing: !state.playing };
+      return { ...state, step: state.step === max ? 0 : state.step, playing: !state.playing, replyComplete: state.step === max ? false : state.replyComplete };
     case "pause":
       return { ...state, playing: false };
     case "tick":
-      return !state.playing ? state : { ...state, step: Math.min(max, state.step + 1), playing: state.step < max - 1 };
+      return !state.playing || awaitingReply ? state : { ...state, step: Math.min(max, state.step + 1), playing: state.step < max - 1, replyComplete: false };
     case "speed":
       return { ...state, speed: state.speed === 1 ? 1.5 : state.speed === 1.5 ? 2 : 1 };
     default:
