@@ -17,7 +17,7 @@ export function ToolCallingTermPage() {
       <ToolCallingLesson />
       <p id="tools-contract" className="vp-citation-target">本文的文件工具由应用执行。工具也可以托管在服务提供方，例如平台内置的搜索；两种情况下，都需要有实际的执行系统完成操作。<strong>回复里出现一个函数名，不能证明工具已经运行。</strong><Cite id="tools-contract" /></p>
     </ArticleSection>
-    <ArticleSection id="request" title="工具名称与参数">
+    <ArticleSection id="request" title="工具名称与参数" className={styles.splitSection}>
       <p id="tools-definition" className="vp-citation-target">调用之前，应用先告诉模型有哪些工具可用。一份工具定义通常包含名称、用途和输入格式。例如 <code>read_file</code> 用于读取文件，参数 <code>path</code> 指定路径。用途说明帮助模型选择工具，参数约定帮助程序理解请求。<Cite id="tools-definition" /></p>
       <div className={styles.contract} role="group" aria-label="读取工具的定义"><div><Wrench size={24} /><h3>read_file</h3><p>读取指定路径的文本文件</p></div><div><span>输入参数</span><code>path: string</code><p>例如 server.log</p></div></div>
       <p>收到“排查启动失败”的任务后，模型可以提出 <code>{'{ "path": "server.log" }'}</code>。路径来自当前任务或已有信息；如果还不知道日志放在哪里，应用应当允许它查询目录或询问用户。</p>
@@ -50,7 +50,7 @@ export function ContextTermPage() {
       <p id="context-input" className="vp-citation-target">一次请求的上下文可以包含指令、对话、文件内容、工具定义和工具结果。应用决定本轮实际发送哪些内容。<strong>对话界面里保留的历史，与某次请求实际携带的内容，不一定完全相同。</strong><Cite id="context-input" /></p>
       <p>把本次日志加入后，回答才有了“第一行缺少冒号”这个依据。再加入“修改后检查 /health”的要求，回答就能对应验收条件。上周的端口问题可以作为背景，但不足以解释这次报错。</p>
     </ArticleSection>
-    <ArticleSection id="window" title="窗口与外部资料">
+    <ArticleSection id="window" title="窗口与外部资料" className={styles.windowSection}>
       <p><ConceptTerm slug="context-window">上下文窗口</ConceptTerm>是容量限制，上下文则是这次放进去的内容。两者经常一起出现，但一个说的是“最多能容纳多少”，另一个说的是“当前具体有哪些信息”。</p>
       <div className={styles.distinctions}><div><Database size={28} weight="light" /><h3>保存在外部</h3><p>项目文件、完整日志、历史记录</p></div><div><Brain size={28} weight="light" /><h3>这次提供给模型</h3><p>当前任务、相关片段、必要约束</p></div></div>
       <p id="context-budget" className="vp-citation-target">窗口通常按 <ConceptTerm slug="token">Token</ConceptTerm> 计量。除了输入，还要考虑输出所需的空间；具体如何计数和限制，取决于模型与接口。超出预算时，需要减少、整理或分批提供材料，不能假设所有内容都会被自动保留。<Cite id="context-budget" /></p>
@@ -84,8 +84,8 @@ export function AgentLoopTermPage() {
     </ArticleSection>
     <ArticleSection id="round" title="一轮里发生的事">
       <p>从模型这边看，一轮调用接收当前输入，生成回复或工具请求。从运行程序这边看，还要处理请求、等待执行完成，再把结果放回后续<ConceptTerm slug="context">上下文</ConceptTerm>。一次请求可以包含多个工具调用，所以“模型轮数”和“工具调用次数”不一定相等。</p>
-      <div className={styles.resultFlow} aria-label="循环中的反馈路径"><Brain size={30} weight="light" /><span>提出动作</span><ArrowRight size={19} /><Wrench size={27} weight="light" /><span>取得结果</span><ArrowRight size={19} /><FileText size={28} weight="light" /></div>
-      <p id="loop-observation" className="vp-citation-target">ReAct 研究讨论了判断与行动交替进行的方式：行动取得外部信息，新的观察帮助模型调整后续计划。这里最值得注意的是反馈这一步。<strong>执行结果必须影响下一轮，而不是原样重发同一个请求。</strong><Cite id="loop-observation" /></p>
+      <p id="loop-observation" className="vp-citation-target">ReAct 研究讨论了判断与行动交替进行的方式：行动取得外部信息，新的观察帮助模型调整后续计划。这里最值得注意的是反馈这一步。<Cite id="loop-observation" /></p>
+      <p className={styles.pullquote}><strong>执行结果必须影响下一轮，而不是原样重发同一个请求。</strong></p>
       <p id="loop-evidence" className="vp-citation-target">Hugging Face 的课程把观察解释为环境带回的反馈，例如接口数据、错误消息和执行日志。对应到修服务：模型说“已经改好”，还只是它的回复；实际启动与检查返回了什么，才是判断任务状态的依据。运行程序要把这些结果带回下一轮，而不只是再次询问模型“成功了吗”。<Cite id="loop-evidence" /></p>
       <p>在演示里，500 响应应该推动模型继续查返回值。如果它仍不断读取相同日志，却不修改代码、不取得新证据，轮数虽然增加，任务状态并没有推进。</p>
       <ArticleAside title="执行记录里要能看见什么"><div className={styles.inputExample}><p><strong>这一轮依据</strong>上次检查返回 500，还未满足验收条件。</p><p><strong>请求的操作</strong>查看并修正健康检查函数的返回值。</p><p><strong>实际结果</strong>修改已保存，重新检查返回 200。</p><p><strong>后续状态</strong>验收通过，可以结束任务。</p></div><p id="loop-react" className="vp-citation-target">ReAct 是研究这类交替过程的一种方法，不能把所有智能体循环都等同于同一种提示格式。本文演示展示的是简化的操作依据与结果，没有展示模型内部思考。<Cite id="loop-react" /></p></ArticleAside>
