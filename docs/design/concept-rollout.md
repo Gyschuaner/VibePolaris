@@ -12,8 +12,9 @@
 | 002 | 组件、Props、状态 | VBP-014 · [本批研究与 review](VBP-014-ui-concepts.md) |
 | 003 | 事件、事件冒泡、Hook、副作用、浏览器 API | VBP-015 · [本批研究与 review](VBP-015-events-hooks.md) |
 | 004 | Fetch API、Promise、async/await、JSON、JSON Schema | VBP-016 · [本批研究与 review](VBP-016-async-concepts.md) |
+| 005 | 请求、响应、HTTP 方法、状态码、请求头 | VBP-017 · [本批研究与 review](VBP-017-http-concepts.md) |
 
-后续继续围绕请求与响应选择三个未处理词条，仍需先检查现状和一手资料。当前新流程已完成 16 页，另有 9 页历史基准；其余 276 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 21 页，另有 9 页历史基准；其余 271 页待处理，新增候选不计入完成数。
 
 ## 补充候选
 
@@ -169,11 +170,11 @@
 | microinteraction | 微交互 | 产品与设计 | 待处理 |
 | reduced-motion | 减少动态效果 | 产品与设计 | 待处理 |
 | server | 服务器 | 后端 | 待处理 |
-| request | 请求 | 后端 | 待处理 |
-| response | 响应 | 后端 | 待处理 |
-| http-method | HTTP 方法 | 后端 | 待处理 |
-| status-code | 状态码 | 后端 | 待处理 |
-| http-header | 请求头 | 后端 | 待处理 |
+| request | 请求 | 后端 | 005 · 本地验收及 review 通过 |
+| response | 响应 | 后端 | 005 · 本地验收及 review 通过 |
+| http-method | HTTP 方法 | 后端 | 005 · 本地验收及 review 通过 |
+| status-code | 状态码 | 后端 | 005 · 本地验收及 review 通过 |
+| http-header | 请求头 | 后端 | 005 · 本地验收及 review 通过 |
 | query-parameter | 查询参数 | 后端 | 待处理 |
 | path-parameter | 路径参数 | 后端 | 待处理 |
 | request-body | 请求体 | 后端 | 待处理 |
