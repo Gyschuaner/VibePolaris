@@ -1,23 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { harnessSectionTitles } from "@/lib/harness-sections";
 
-const items = [
-  ["why", "只有模型时"],
-  ["need", "加上 Harness"],
-  ["name", "为什么叫 Harness"],
-  ["practice", "磁盘例子"],
-  ["boundary", "谁在执行"],
-  ["tools", "工具"],
-  ["inside", "内部组成"],
-  ["service", "修服务实验"],
-  ["quality", "同一个模型"],
-  ["compare", "概念区别"],
-  ["code", "循环代码"],
-  ["roadmap", "接下来学什么"],
-  ["check", "自测"],
-  ["related", "相关词条"],
-] as const;
+const items = Object.entries(harnessSectionTitles);
 
 export function HarnessV4Toc() {
   const [activeId, setActiveId] = useState<string>(items[0][0]);

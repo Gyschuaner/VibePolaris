@@ -4,24 +4,21 @@ import {
   ArrowCounterClockwise,
   ArrowLeft,
   ArrowRight,
-  Brain,
-  FileText,
   Pause,
   Play,
   Wrench,
 } from "@phosphor-icons/react";
-import { useEffect, useMemo, useReducer, useState, useSyncExternalStore } from "react";
+import { useEffect, useReducer, useSyncExternalStore } from "react";
 
 import {
   createHarnessState,
-  harnessChapters,
   harnessFrame,
   harnessReducer,
   harnessScenarios,
   type HarnessMode,
-  type HarnessState,
 } from "@/lib/harness-v4";
 import { HarnessModelChat } from "@/components/terms/HarnessChatLesson";
+import { HarnessRunChat } from "./HarnessRunChat";
 
 function subscribeMotion(onChange: () => void) {
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -35,128 +32,10 @@ function serverMotionSnapshot() {
   return false;
 }
 
-const edgePaths = {
-  hm: "M 40 42 C 35 42, 30 42, 24 42",
-  mh: "M 24 58 C 30 58, 35 58, 40 58",
-  ht: "M 60 42 C 65 42, 70 42, 76 42",
-  th: "M 76 58 C 70 58, 65 58, 60 58",
-} as const;
-
-function ActorIcon({ type }: { type: "model" | "tool" }) {
-  return type === "model" ? <Brain size={32} weight="duotone" aria-hidden="true" /> : <FileText size={32} weight="duotone" aria-hidden="true" />;
-}
-
-function Actor({
-  type,
-  frame,
-  onClick,
-}: {
-  type: "model" | "tool";
-  frame: ReturnType<typeof harnessFrame>;
-  onClick: () => void;
-}) {
-  const model = type === "model";
-  return (
-    <button
-      type="button"
-      className={`vp-actor vp-${model ? "model" : "tool"}`}
-      data-active={frame.active === type}
-      aria-label={model ? "查看模型在这一步做什么" : "查看工具在这一步做什么"}
-      onClick={onClick}
-    >
-      <small>{model ? "MODEL" : "TOOL"}</small>
-      <span className="vp-actor-icon"><ActorIcon type={type} /></span>
-      <span className="vp-actor-title">{model ? "模型" : "工具"}</span>
-      {model ? (
-        <span className="vp-actor-status vp-model-reply">{frame.modelText}</span>
-      ) : (
-        <>
-          <span className="vp-file-name">读文件 · 修改 · 测试</span>
-          {frame.fileVisible ? (
-            <span className="vp-file-content" aria-live="polite">
-              {frame.fileLines.map((line) => <span key={line}>{line}</span>)}
-            </span>
-          ) : (
-            <span className="vp-file-placeholder" aria-hidden="true"><i /><i /><i /></span>
-          )}
-          <span className="vp-actor-status">{frame.toolText}</span>
-        </>
-      )}
-    </button>
-  );
-}
-
-function RuntimeActor({ frame, onClick }: { frame: ReturnType<typeof harnessFrame>; onClick: () => void }) {
-  const row = frame.edge === "ht" ? "dispatch" : frame.edge === "th" || frame.final ? "loop" : "context";
-  return (
-    <button type="button" className="vp-actor vp-runtime" data-active={frame.active === "harness"} aria-label="查看 Harness 在这一步做什么" onClick={onClick}>
-      <small>RUNTIME</small>
-      <span className="vp-runtime-title">Harness</span>
-      <span className="vp-runtime-rows">
-        {[["context", "准备输入"], ["dispatch", "检查调用"], ["loop", "收集结果"]].map(([key, label]) => (
-          <span className={`vp-runtime-row ${row === key ? "is-active" : ""}`} key={key}><i />{label}</span>
-        ))}
-      </span>
-      <span className="vp-actor-status">{frame.runtimeText}</span>
-    </button>
-  );
-}
-
-function Inspector({
-  state,
-  frame,
-  tab,
-  setTab,
-}: {
-  state: HarnessState;
-  frame: ReturnType<typeof harnessFrame>;
-  tab: "explanation" | "context" | "trace";
-  setTab: (tab: "explanation" | "context" | "trace") => void;
-}) {
-  const tabs = ["explanation", "context", "trace"] as const;
-  return (
-    <aside aria-label="观察当前步骤" className="vp-inspector">
-      <div aria-label="观察视角" className="vp-inspector-tabs" role="tablist">
-        {tabs.map((item) => (
-          <button
-            key={item}
-            type="button"
-            role="tab"
-            aria-selected={tab === item}
-            aria-controls="harness-inspector-body"
-            onClick={() => setTab(item)}
-          >
-            {item === "explanation" ? "这一步" : item === "context" ? "上下文" : "轨迹"}
-          </button>
-        ))}
-      </div>
-      <div className="vp-inspector-body" id="harness-inspector-body" role="tabpanel" aria-live="polite">
-        {tab === "explanation" ? (
-          <>
-            <div className="vp-inspector-step">步骤 {String(state.step + 1).padStart(2, "0")} / {String(frame.total).padStart(2, "0")}</div>
-            <h3>{frame.title}</h3>
-            <p>{frame.description}</p>
-            <div className="vp-insight"><Wrench size={14} aria-hidden="true" />{frame.insight}</div>
-          </>
-        ) : tab === "context" ? (
-          <>
-            {frame.context.map((item, index) => <div className="vp-context-row" key={`${item.role}-${index}`}><span>{item.role}</span><div>{item.text}</div></div>)}
-            <p className="vp-context-footnote">这些记录供后续模型调用使用，省略了协议字段。</p>
-          </>
-        ) : (
-          frame.trace.map((item, index) => <div className="vp-trace-row" key={`${item.what}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{item.who}</strong><p>{item.what}</p><code>{item.value}</code></div></div>)
-        )}
-      </div>
-    </aside>
-  );
-}
-
 export function HarnessV4Lesson() {
   const [state, dispatch] = useReducer(harnessReducer, undefined, () => createHarnessState());
-  const [tab, setTab] = useState<"explanation" | "context" | "trace">("explanation");
   const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, serverMotionSnapshot);
   const frame = harnessFrame(state);
-  const chapters = useMemo(() => harnessChapters(state), [state]);
   const max = frame.total - 1;
 
   useEffect(() => {
@@ -186,33 +65,12 @@ export function HarnessV4Lesson() {
         </div>
         <div className="vp-lab-content" data-mode={state.mode}>
           <div className="vp-lab-main">
-            {state.mode === "model" ? <HarnessModelChat key={state.scenario} reduced={reduced} /> : (
-              <>
-                <div className="vp-task"><span>任务</span><div><p>{harnessTaskText}</p><small>目标：启动服务，并通过健康检查。</small></div></div>
-                <div aria-label="模型、Harness 与工具之间的行动和反馈" className="vp-graph" data-mode={state.mode} data-step={state.step}>
-                  <svg aria-hidden="true" className="vp-edges" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <defs><marker id="harness-arrow-normal" markerHeight="6" markerWidth="6" orient="auto" refX="5" refY="3"><path d="M0 0 L6 3 L0 6" fill="var(--hairline)" /></marker><marker id="harness-arrow-active" markerHeight="6" markerWidth="6" orient="auto" refX="5" refY="3"><path d="M0 0 L6 3 L0 6" fill="var(--accent)" /></marker></defs>
-                    {(Object.entries(edgePaths) as Array<[keyof typeof edgePaths, string]>).map(([edge, path]) => <path className="vp-edge" data-active={frame.edge === edge} id={`harness-edge-${edge}`} key={edge} d={path} markerEnd={`url(#harness-arrow-${frame.edge === edge ? "active" : "normal"})`} />)}
-                    {frame.edge && !reduced && <circle className="vp-flow-dot active" r="1.6"><animateMotion dur="900ms" repeatCount="1" path={edgePaths[frame.edge]} /></circle>}
-                  </svg>
-                  <Actor type="model" frame={frame} onClick={() => setTab("explanation")} />
-                  <RuntimeActor frame={frame} onClick={() => setTab("explanation")} />
-                  <Actor type="tool" frame={frame} onClick={() => setTab("trace")} />
-                  <span className="vp-click-hint">点击模块可查看说明</span>
-                </div>
-                <nav aria-label="选择演示步骤" className="vp-phase-rail" style={{ "--phase-count": chapters.length } as React.CSSProperties}>
-                  {chapters.map((chapter, index) => { const current = state.step >= chapter.step && (index === chapters.length - 1 || state.step < chapters[index + 1].step); return <button key={chapter.step} type="button" data-step-button={chapter.step} aria-current={current ? "step" : undefined} className={!current && state.step > chapter.step ? "done" : ""} onClick={() => dispatch({ type: "seek", step: chapter.step })}><span>{String(index + 1).padStart(2, "0")}</span>{chapter.name}</button>; })}
-                </nav>
-              </>
-            )}
+            {state.mode === "model" ? <HarnessModelChat key={state.scenario} reduced={reduced} /> : <HarnessRunChat state={state} />}
           </div>
-          {state.mode !== "model" ? <Inspector state={state} frame={frame} tab={tab} setTab={setTab} /> : null}
         </div>
-        {state.mode !== "model" ? <div className="vp-evidence"><div><span>环境状态</span><strong>{frame.environment}</strong></div><p>{frame.insight}</p></div> : null}
         {state.mode !== "model" ? (
           <div className="vp-lab-controls">
             <div className="vp-step-count"><strong>{String(state.step + 1).padStart(2, "0")}</strong><span>/ {String(frame.total).padStart(2, "0")}</span></div>
-            <div className="vp-sim-metrics"><span>模型调用<b>{frame.modelCalls}</b></span><span>工具执行<b>{frame.toolCalls}</b></span><span>{frame.status}</span></div>
             <div className="vp-lab-buttons">
               <button className="vp-button vp-play" type="button" aria-pressed={state.playing} onClick={togglePlay}>{state.playing ? <Pause size={16} weight="fill" /> : <Play size={16} weight="fill" />}<span>{state.playing ? "暂停播放" : "自动播放"}</span></button>
               <button className="vp-speed" type="button" onClick={() => dispatch({ type: "speed" })} aria-label={`播放速度，当前 ${state.speed} 倍`}>{state.speed}×</button>
@@ -228,5 +86,3 @@ export function HarnessV4Lesson() {
     </>
   );
 }
-
-const harnessTaskText = "帮我修好这个服务。";
