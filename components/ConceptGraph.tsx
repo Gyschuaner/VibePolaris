@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { ArrowUpRight, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
-import { graphNeighbors, type GraphNode, type GraphEdge } from "@/lib/term-graph";
+import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphNode, type GraphEdge } from "@/lib/term-graph";
 import styles from "./ConceptGraph.module.css";
 
 type Point = { x: number; y: number };
@@ -26,6 +26,10 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
   const pointers = useRef(new Map<number, Point>());
   const pinch = useRef<{ distance: number; center: Point; view: View } | null>(null);
   const dragged = useRef(false);
+  const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
+  const reducedMotion = useRef(false);
+  const lastNudge = useRef(0);
+  const labelOpacity = Math.max(0, Math.min(1, (view.scale - 1.05) / .45));
   const { beginRouteFlight } = useRouteMeteor();
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
   const active = hovered || selected;
@@ -34,6 +38,38 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
   const current = bySlug.get(selected);
   const needle = query.trim().toLocaleLowerCase();
   const matches = needle ? initialNodes.filter(node => [node.zh, node.en, node.slug, ...node.aliases].some(text => text.toLocaleLowerCase().includes(needle))).slice(0, 12) : [];
+
+  useEffect(() => {
+    const engine = createGraphSimulation(initialNodes, edges);
+    simulation.current = engine;
+    const publish = () => setNodes(engine.nodes().map(node => ({ ...node })));
+    engine.on("tick", publish);
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotion = () => {
+      reducedMotion.current = preference.matches;
+      if (preference.matches || document.hidden) engine.stop();
+      else if (engine.alpha() >= engine.alphaMin()) engine.restart();
+    };
+    engine.alpha(.18);
+    syncMotion();
+    preference.addEventListener("change", syncMotion);
+    document.addEventListener("visibilitychange", syncMotion);
+    return () => {
+      engine.stop();
+      simulation.current = null;
+      preference.removeEventListener("change", syncMotion);
+      document.removeEventListener("visibilitychange", syncMotion);
+    };
+  }, [initialNodes, edges]);
+
+  function releaseNode() {
+    const engine = simulation.current;
+    const node = engine?.nodes().find(item => item.slug === gesture.current?.slug);
+    if (!node) return;
+    node.fx = null; node.fy = null;
+    engine!.alphaTarget(0);
+    if (!reducedMotion.current && !document.hidden) engine!.restart();
+  }
 
   const frame = useCallback((items: GraphNode[], detail = false) => {
     if (!items.length) return;
@@ -54,10 +90,11 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
     if (!element) return;
     const restore = () => {
       const slug = new URL(window.location.href).searchParams.get("term") || "";
-      const node = initialNodes.find(item => item.slug === slug);
+      const positions = simulation.current?.nodes() || initialNodes;
+      const node = positions.find(item => item.slug === slug);
       setSelected(node?.slug || "");
       const linked = graphNeighbors(slug, edges);
-      frame(node ? initialNodes.filter(item => item.slug === slug || linked.has(item.slug)) : initialNodes, Boolean(node));
+      frame(node ? positions.filter(item => item.slug === slug || linked.has(item.slug)) : positions, Boolean(node));
     };
     const observer = new ResizeObserver(([entry]) => {
       const previous = size.current;
@@ -115,6 +152,7 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
     event.currentTarget.setPointerCapture(event.pointerId);
     setReframing(false);
     if (pointers.current.size === 2) {
+      releaseNode();
       const [a, b] = [...pointers.current.values()];
       pinch.current = { distance: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), center: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, view };
       dragged.current = true;
@@ -126,8 +164,15 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
   }
 
   function moveDrag(event: PointerEvent<HTMLDivElement>) {
-    if (!pointers.current.has(event.pointerId)) return;
     const point = localPoint(event);
+    const engine = simulation.current;
+    if (!pointers.current.has(event.pointerId)) {
+      if (event.pointerType !== "mouse" || event.buttons || reducedMotion.current || !engine || event.timeStamp - lastNudge.current < 32) return;
+      lastNudge.current = event.timeStamp;
+      const target = (event.target as HTMLElement).closest<HTMLElement>("[data-graph-node]")?.dataset.graphNode;
+      if (nudgeGraph(engine.nodes(), (point.x - view.x) / view.scale, (point.y - view.y) / view.scale, 75 / view.scale, target)) engine.alpha(Math.max(.08, engine.alpha())).restart();
+      return;
+    }
     pointers.current.set(event.pointerId, point);
     if (pinch.current && pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
@@ -144,11 +189,18 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
     dragged.current = true;
     if (start.slug && start.point) {
       const origin = start.point;
-      setNodes(items => items.map(node => node.slug === start.slug ? { ...node, x: origin.x + dx / start.view.scale, y: origin.y + dy / start.view.scale } : node));
+      const node = engine?.nodes().find(item => item.slug === start.slug);
+      if (!node) return;
+      node.x = node.fx = origin.x + dx / start.view.scale;
+      node.y = node.fy = origin.y + dy / start.view.scale;
+      node.vx = 0; node.vy = 0;
+      setNodes(engine!.nodes().map(item => ({ ...item })));
+      if (!reducedMotion.current) engine!.alphaTarget(.25).restart();
     } else setView({ ...start.view, x: start.view.x + dx, y: start.view.y + dy });
   }
 
   function stopDrag(event: PointerEvent<HTMLDivElement>) {
+    releaseNode();
     if (event.type === "pointerup" && pointers.current.size === 1 && !dragged.current && gesture.current?.slug) selectNode(gesture.current.slug);
     pointers.current.delete(event.pointerId);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
@@ -164,7 +216,7 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
         {needle && <div className={styles.results} aria-label="搜索结果">{matches.length ? matches.map(node => <button type="button" key={node.slug} onClick={() => selectNode(node.slug)}><strong>{node.zh}</strong><span>{node.en || node.cat}</span></button>) : <p>没有找到这个概念</p>}</div>}
       </div>
       <div ref={canvas} className={styles.canvas} role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
-        onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag}
+        onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => setHovered("")}
         onWheel={event => { setReframing(false); zoom(Math.exp(-event.deltaY * .002), localPoint(event)); }}
         onKeyDown={event => {
           if (event.key === "Escape") { clearSelection(); return; }
@@ -187,11 +239,11 @@ export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[
             const connected = neighbors.has(node.slug);
             const highlighted = node.slug === active || connected;
             return <button type="button" key={node.slug} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
-              className={`${styles.node} ${node.slug === selected ? styles.selected : ""} ${active && !highlighted ? styles.dimmed : ""} ${highlighted || !active && (node.degree >= 9 || view.scale >= 1.1) ? styles.labeled : ""}`}
+              className={`${styles.node} ${node.slug === selected ? styles.selected : ""} ${active && !highlighted ? styles.dimmed : ""}`}
               style={{ left: node.x, top: node.y }} onPointerEnter={() => setHovered(node.slug)} onPointerLeave={() => setHovered("")}
               onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
               onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
-              <span className="brand-star-only" aria-hidden="true" style={{ width: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)), height: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)) }} /><span className={styles.label} style={{ fontSize: Math.min(32, 14 / view.scale) }}>{node.zh}</span>
+              <span className="brand-star-only" aria-hidden="true" style={{ width: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)), height: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)) }} /><span className={styles.label} style={{ fontSize: Math.min(32, 14 / view.scale), opacity: labelOpacity }}>{node.zh}</span>
             </button>;
           })}
         </div>

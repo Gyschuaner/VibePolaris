@@ -1,3 +1,5 @@
+import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY, type SimulationNodeDatum } from "d3-force";
+
 export type GraphTerm = {
   slug: string;
   zh: string;
@@ -11,7 +13,41 @@ export type GraphTerm = {
 export type GraphNode = GraphTerm & { x: number; y: number; degree: number };
 export type GraphEdge = { source: string; target: string };
 
-// Stable positions are calculated at build time; moving a node never changes its relationships.
+export type MovingGraphNode = GraphNode & SimulationNodeDatum;
+
+// Share the same forces between the build-time layout and the interactive graph.
+// D3 mutates its nodes and links, so neither may alias the source content.
+export function createGraphSimulation(nodes: GraphNode[], edges: GraphEdge[]) {
+  const categories = [...new Set(nodes.map(node => node.cat))];
+  const angle = (node: GraphNode) => categories.indexOf(node.cat) * Math.PI * 2 / categories.length - Math.PI / 2;
+  return forceSimulation<MovingGraphNode>(nodes.map(node => ({ ...node })))
+    .stop()
+    .alphaDecay(.04)
+    .velocityDecay(.38)
+    .force("charge", forceManyBody<MovingGraphNode>().strength(-520).distanceMax(700))
+    .force("links", forceLink<MovingGraphNode, GraphEdge>(edges.map(edge => ({ ...edge }))).id(node => node.slug).distance(115).strength(.12))
+    .force("collision", forceCollide<MovingGraphNode>().radius(node => 22 + Math.min(node.degree, 12)).strength(.8))
+    .force("x", forceX<MovingGraphNode>(node => Math.cos(angle(node)) * 780).strength(.018))
+    .force("y", forceY<MovingGraphNode>(node => Math.sin(angle(node)) * 380).strength(.025));
+}
+
+export function nudgeGraph(nodes: MovingGraphNode[], x: number, y: number, radius: number, exclude?: string) {
+  let moved = false;
+  for (const node of nodes) {
+    if (node.slug === exclude || node.fx != null || node.fy != null) continue;
+    const dx = node.x - x;
+    const dy = node.y - y;
+    const distance = Math.hypot(dx, dy);
+    if (distance < 1 || distance >= radius) continue;
+    const impulse = (1 - distance / radius) * 2;
+    node.vx = (node.vx || 0) + dx / distance * impulse;
+    node.vy = (node.vy || 0) + dy / distance * impulse;
+    moved = true;
+  }
+  return moved;
+}
+
+// Pre-settle a deterministic layout so the page can frame it before animation starts.
 export function buildTermGraph(terms: GraphTerm[]) {
   const categories = [...new Set(terms.map(term => term.cat))];
   const nodes: GraphNode[] = terms.map((term, index) => {
@@ -36,39 +72,9 @@ export function buildTermGraph(terms: GraphTerm[]) {
     }
   }
 
-  const anchors = nodes.map(node => ({ x: node.x, y: node.y }));
-  const indices = new Map(nodes.map((node, i) => [node.slug, i]));
-  for (let step = 0; step < 160; step++) {
-    const forces = nodes.map((node, i) => ({ x: (anchors[i].x - node.x) * .008, y: (anchors[i].y - node.y) * .008 }));
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[j].x - nodes[i].x;
-        const dy = nodes[j].y - nodes[i].y;
-        const distance = Math.max(1, Math.hypot(dx, dy));
-        if (distance > 380) continue;
-        const strength = Math.min(12, 2500 / (distance * distance));
-        const x = dx / distance * strength;
-        const y = dy / distance * strength;
-        forces[i].x -= x; forces[i].y -= y;
-        forces[j].x += x; forces[j].y += y;
-      }
-    }
-    for (const edge of edges) {
-      const a = indices.get(edge.source)!;
-      const b = indices.get(edge.target)!;
-      const dx = nodes[b].x - nodes[a].x;
-      const dy = nodes[b].y - nodes[a].y;
-      const distance = Math.max(1, Math.hypot(dx, dy));
-      const strength = (distance - 130) * .012;
-      forces[a].x += dx / distance * strength; forces[a].y += dy / distance * strength;
-      forces[b].x -= dx / distance * strength; forces[b].y -= dy / distance * strength;
-    }
-    const cooling = 1 - step / 180;
-    nodes.forEach((node, i) => {
-      node.x += Math.max(-16, Math.min(16, forces[i].x)) * cooling;
-      node.y += Math.max(-16, Math.min(16, forces[i].y)) * cooling;
-    });
-  }
+  const simulation = createGraphSimulation(nodes, edges);
+  simulation.tick(180);
+  simulation.nodes().forEach((node, index) => { nodes[index].x = node.x; nodes[index].y = node.y; });
   return { nodes, edges };
 }
 
