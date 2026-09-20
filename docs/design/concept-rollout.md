@@ -14,8 +14,9 @@
 | 004 | Fetch API、Promise、async/await、JSON、JSON Schema | VBP-016 · [本批研究与 review](VBP-016-async-concepts.md) |
 | 005 | 请求、响应、HTTP 方法、状态码、请求头 | VBP-017 · [本批研究与 review](VBP-017-http-concepts.md) |
 | 006 | 查询参数、路径参数、请求体 | VBP-018 · [本批研究与 review](VBP-018-request-inputs.md) |
+| 007 | API 接口、端点、REST、分页、限流 | VBP-019 · [本批研究与 review](VBP-012-api-concepts-preparation.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 24 页，另有 9 页历史基准；其余 268 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 29 页，另有 9 页历史基准；其余 263 页待处理，新增候选不计入完成数。
 
 ## 补充候选
 
@@ -51,12 +52,12 @@
 | html | HTML | 前端 | 待处理 |
 | javascript | JavaScript | 前端 | 待处理 |
 | dom | DOM | 前端 | 待处理 |
-| api | API 接口 | 后端 | 待处理 |
+| api | API 接口 | 后端 | 007 · 本地验收及 review 通过 |
 | database | 数据库 | 后端 | 待处理 |
 | auth | 认证 | 后端 | 待处理 |
 | cache | 缓存 | 后端 | 待处理 |
 | queue | 队列 | 后端 | 待处理 |
-| rest | REST | 后端 | 待处理 |
+| rest | REST | 后端 | 007 · 本地验收及 review 通过 |
 | webhook | Webhook | 后端 | 待处理 |
 | llm | 大模型 | AI·Agent | 001 · 本地验收及 review 通过 |
 | prompt | 提示词 | AI·Agent | 基准 · 待最终复核 |
@@ -180,7 +181,7 @@
 | path-parameter | 路径参数 | 后端 | 006 · 本地验收及 review 通过 |
 | request-body | 请求体 | 后端 | 006 · 本地验收及 review 通过 |
 | json | JSON | 后端 | 004 · 本地验收及 review 通过 |
-| endpoint | 端点 | 后端 | 待处理 |
+| endpoint | 端点 | 后端 | 007 · 本地验收及 review 通过 |
 | api-gateway | API 网关 | 后端 | 待处理 |
 | reverse-proxy | 反向代理 | 后端 | 待处理 |
 | load-balancer | 负载均衡 | 后端 | 待处理 |
@@ -190,9 +191,9 @@
 | authorization | 授权 | 后端 | 待处理 |
 | rbac | 基于角色的访问控制 | 后端 | 待处理 |
 | api-key | API 密钥 | 后端 | 待处理 |
-| rate-limiting | 限流 | 后端 | 待处理 |
+| rate-limiting | 限流 | 后端 | 007 · 本地验收及 review 通过 |
 | idempotency | 幂等性 | 后端 | 待处理 |
-| pagination | 分页 | 后端 | 待处理 |
+| pagination | 分页 | 后端 | 007 · 本地验收及 review 通过 |
 | retry | 重试 | 后端 | 待处理 |
 | timeout | 超时 | 后端 | 待处理 |
 | relational-database | 关系型数据库 | 后端 | 待处理 |
