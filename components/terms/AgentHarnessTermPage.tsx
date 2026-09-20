@@ -29,7 +29,7 @@ export function AgentHarnessTermPage() {
           <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness<span>智能体运行框架</span></h1></div>
           <HarnessHeroOverview />
           </div>
-          <p className="vp-hero-intro">Harness 是围绕<Term slug="llm">模型</Term>运行的一层程序。它准备模型要看的信息，处理工具请求，保存执行结果，并按规则继续或结束任务。</p>
+          <p className="vp-hero-intro">Harness 是围绕<Term slug="llm">模型</Term>搭建的运行系统。它准备模型要看的信息，处理工具请求，保存任务进度，让多次判断和操作能接着进行。</p>
         </header>
 
         <section className="vp-chapter" id="service"><div className="vp-chapter-content">
@@ -48,7 +48,7 @@ export function AgentHarnessTermPage() {
           <HarnessRequestFlow />
           <p id="cite-tool-request" className="vp-citation-target">图中的 <code>read_file("server.log")</code> 表示模型提出的工具请求。实际接口通常把工具名和参数放在结构化数据里；普通回复里出现这段文字，并不等于文件已经被读取。应用处理请求、执行工具后，才会产生结果。</p>
           <p id="cite-tools" className="vp-citation-target">工具只负责这次操作。例如读取工具返回“文件不存在”，它的工作就结束了。接下来换路径、查询目录还是询问用户，需要模型结合错误继续判断，由 Harness 接着处理新的请求。</p>
-          <p>本文把模型、Harness 和工具协作完成任务的系统称为 Agent（智能体）。Harness 指其中负责组织运行的程序，可以自行编写，也可以用现成框架搭建。</p>
+          <p>本文把模型、Harness 和工具协作完成任务的系统称为 Agent（智能体）。Harness 指其中组织运行的程序及配置：用哪些指令、开放哪些工具、怎样保存进度，都在它的设计范围内。一个简单的任务可以从几次模型调用和工具执行开始，按需要补上这些能力。</p>
           <details className={styles.supplement} id="compare">
             <summary><Circuitry size={22} aria-hidden="true" /><span>角色分工</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
             <div className={styles.supplementBody}>
@@ -63,6 +63,7 @@ export function AgentHarnessTermPage() {
             </dl>
             </div>
           </details>
+          <p id="cite-terminology" className="vp-citation-target">阅读其他资料时，会看到“框架”“运行时”和“Harness”有重叠。LangChain 的一种分法是：框架提供搭建智能体的组件，运行时处理持久化、恢复等执行问题，Harness 则把工具、指令和默认行为配成一套可用的系统。本文侧重这套系统在运行中做什么；这些名称并没有统一的严格边界。</p>
           <details className={styles.supplement} id="name">
             <summary><LinkSimple size={22} aria-hidden="true" /><span>词义由来</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
             <div className={styles.supplementBody}>
@@ -77,8 +78,13 @@ export function AgentHarnessTermPage() {
           <p id="cite-context" className="vp-citation-target"><Term slug="context">上下文</Term>是模型这次生成回复时能参考的信息，包括任务、<Term slug="prompt">指令</Term>、对话记录和工具结果。工具在外部读到日志后，需要把结果加入后续调用，模型才能依据它继续判断。</p>
           <p>第一次调用时，模型只知道“服务启动失败”，所以先请求日志。下一次调用带上了“第一行缺少冒号”的报错，模型才有依据去检查 <code>app.py</code>。这两次调用可以使用同一个模型，变化的是它收到的信息。</p>
           <HarnessContextFlow />
-          <p id="cite-state" className="vp-citation-target">Harness 保存的<Term slug="state">运行状态</Term>可以包含已经执行的请求、返回结果和任务进度；上下文是其中这次交给模型的部分。记录变长后，可以选取相关片段或整理摘要。完整日志留在外部记录里，也不意味着模型每轮都能看到它。</p>
+          <p id="cite-state" className="vp-citation-target">Harness 保存的<Term slug="state">运行状态</Term>可以包含已经执行的请求、返回结果和任务进度。上下文则是本轮实际提供给模型的信息：外部可以保存完整日志，每次调用只取其中需要的部分。下次要用到某条旧记录时，还得把它重新带进输入。</p>
+          <p id="cite-context-selection" className="vp-citation-target">例如日志有几万行，可以先搜索报错位置，再读附近的内容；已经处理过的旧输出可以整理成摘要，保留当前错误和未完成事项。这样能把有限的上下文留给眼前的问题。摘要也可能遗漏细节，所以关键文件和原始结果仍要能查回。</p>
           <p id="cite-loop" className="vp-citation-target">模型提出请求，工具执行，结果进入下一次输入，模型再判断下一步。这个反复进行的过程叫 <Term slug="agent-loop">Agent Loop（智能体循环）</Term>。单次调用负责生成这一轮的回复或请求，Harness 负责把多轮调用和执行过程接起来。</p>
+          <p id="cite-workflow" className="vp-citation-target">演示把一次修复的路线固定下来，方便观察。实际任务中，读哪个文件、要不要再查日志，可以由模型根据新结果选择。如果步骤始终由程序预先排好，通常称为工作流；这类做法适合路径明确的任务。Harness 可以支持其中的固定规则，也可以容纳模型临时决定的操作。</p>
+          <h3>跨会话继续任务</h3>
+          <p id="cite-handoff" className="vp-citation-target">任务做得久了，还会遇到上下文放不下、需要换一次会话继续的情况。Anthropic 在长任务实验中把它比作工程师交班：下一班要知道目标、进度和遗留问题。他们让智能体留下进度文件和 Git 提交，下一次先读取这些记录，再选择未完成的工作。这些记录使新会话有依据接着做。</p>
+          <p id="cite-handoff-example" className="vp-citation-target">放到修服务的例子里，交接记录可以是：“已补上 <code>app.py</code> 的冒号；服务能启动；<code>/health</code> 仍返回 500；下一步检查健康检查函数。”恢复后先核对文件与检查结果，再继续处理。只保存一句“正在修复服务”，不足以说明哪些操作已经做过。</p>
           <details className={styles.supplement} id="practice">
             <summary><HardDrives size={22} aria-hidden="true" /><span>磁盘占用示例</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
             <div className={styles.supplementBody}>
@@ -101,8 +107,10 @@ export function AgentHarnessTermPage() {
           <p id="cite-verification" className="vp-citation-target">文件写入成功，只能说明修改已经保存。要判断服务是否修好，还需要事先明确检查条件。本例要求服务能启动，并且健康检查 <code>/health</code> 返回正常响应；模型说“修好了”不能代替这些检查。</p>
           <p>如果检查失败，Harness 把错误交回模型，让它继续修正。如果操作没有获得授权，则应在执行前由<Term slug="permission-boundary">权限检查</Term>拦住。把“不要修改文件”写在指令里可以指导模型，但实际能否写入，还需要由程序或运行环境限制。</p>
           <HarnessOutcomeFlow />
+          <p id="cite-environment" className="vp-citation-target">检查要有工具能够执行，结果也要让模型读到。OpenAI 的 Harness 工程实践就包括把浏览器操作、日志和指标接入工作环境，让智能体能够复现问题并验证修改。沿用这个思路，修服务时应让模型拿到实际启动日志和健康检查响应，才能依据结果继续处理。</p>
           <p id="cite-stopping" className="vp-citation-target">循环也需要停止条件：检查通过后返回结果，缺少信息或授权时等待用户，达到设定的轮数或时间上限时结束。这样即使模型反复尝试同一种无效操作，系统也有办法停下来，而不是一直消耗资源。</p>
-          <p id="cite-harness-config" className="vp-citation-target">同一个模型接入不同的 Harness，表现也可能不同。工具是否可用、错误有没有传回来、哪些信息被保留、修改后是否运行检查，都会影响后续过程。因此评估一个智能体时，需要同时看模型能力和这些运行安排。</p>
+          <p id="cite-failures" className="vp-citation-target">排查智能体失败时，可以顺着执行记录往回找：请求了不存在的工具，说明工具选择出了问题；路径和参数正确却读取超时，要查执行环节；一直重复读同一份日志，则要看是否缺少进展判断。Chip Huyen 在《AI Engineering》的公开书摘中，分别讨论了规划、工具执行和效率方面的失败，这种分法有助于找准需要改的部分。</p>
+          <p id="cite-harness-config" className="vp-citation-target">同一个模型接入不同的 Harness，表现也可能不同。工具是否可用、错误有没有传回来、哪些信息被保留，都会影响后续过程。评估时既要看任务有没有完成，也要看用了多少轮、花了多久。对简单任务，先把少量工具和一次检查接好，再根据实际失败补充机制。</p>
         </div></section>
 
         <section className="vp-chapter" id="roadmap"><div className="vp-chapter-content">
