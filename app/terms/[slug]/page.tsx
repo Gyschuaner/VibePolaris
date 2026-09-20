@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TermDetailExperience } from "@/components/TermDetailExperience";
 import type { BespokeTermPageProps } from "@/components/terms/BespokeTermScaffold";
-import { ComponentTermPage } from "@/components/terms/ComponentTermPage";
+import { ComponentTermPage, PropsTermPage, StateTermPage } from "@/components/terms/UiConceptPages";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
@@ -34,11 +34,13 @@ const articleTermPages = {
   llm: LlmTermPage,
   token: TokenTermPage,
   agent: AgentTermPage,
+  component: ComponentTermPage,
+  props: PropsTermPage,
+  state: StateTermPage,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 const dedicatedTermPages = {
   ...articleTermPages,
-  component: ComponentTermPage,
   rebase: RebaseTermPage,
   rag: RagTermPage,
   cache: CacheTermPage,
