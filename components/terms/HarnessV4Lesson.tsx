@@ -8,7 +8,7 @@ import {
   Play,
   Wrench,
 } from "@phosphor-icons/react";
-import { useEffect, useReducer, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useReducer, useSyncExternalStore } from "react";
 
 import {
   createHarnessState,
@@ -37,12 +37,14 @@ export function HarnessV4Lesson() {
   const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, serverMotionSnapshot);
   const frame = harnessFrame(state);
   const max = frame.total - 1;
+  const awaitingReply = frame.edge === "mh" && !state.replyComplete;
+  const onReplyComplete = useCallback((step: number) => dispatch({ type: "reply-complete", step }), []);
 
   useEffect(() => {
-    if (!state.playing || state.mode === "model") return;
+    if (!state.playing || state.mode === "model" || awaitingReply) return;
     const timer = window.setTimeout(() => dispatch({ type: "tick" }), 2600 / state.speed);
     return () => window.clearTimeout(timer);
-  }, [state.playing, state.mode, state.speed, state.step]);
+  }, [state.playing, state.mode, state.speed, state.step, awaitingReply]);
 
   const move = (action: "next" | "previous") => dispatch({ type: action });
   const togglePlay = () => dispatch({ type: "play", reduced });
@@ -65,7 +67,7 @@ export function HarnessV4Lesson() {
         </div>
         <div className="vp-lab-content" data-mode={state.mode}>
           <div className="vp-lab-main">
-            {state.mode === "model" ? <HarnessModelChat key={state.scenario} reduced={reduced} /> : <HarnessRunChat state={state} />}
+            {state.mode === "model" ? <HarnessModelChat key={state.scenario} reduced={reduced} /> : <HarnessRunChat key={state.scenario} state={state} reduced={reduced} onReplyComplete={onReplyComplete} />}
           </div>
         </div>
         {state.mode !== "model" ? (
@@ -76,7 +78,7 @@ export function HarnessV4Lesson() {
               <button className="vp-speed" type="button" onClick={() => dispatch({ type: "speed" })} aria-label={`播放速度，当前 ${state.speed} 倍`}>{state.speed}×</button>
               <button className="vp-icon-btn" type="button" onClick={() => dispatch({ type: "reset" })} aria-label="重置演示" title="重置"><ArrowCounterClockwise size={17} /></button>
               <button className="vp-button" type="button" disabled={state.step === 0} onClick={() => move("previous")}><ArrowLeft size={16} />上一步</button>
-              <button className="vp-button vp-button-primary" type="button" onClick={() => state.step === max ? dispatch({ type: "reset" }) : move("next")}>{state.step === max ? "重新开始" : "下一步"}{state.step === max ? <ArrowCounterClockwise size={16} /> : <ArrowRight size={16} />}</button>
+              <button className="vp-button vp-button-primary" type="button" disabled={awaitingReply} onClick={() => state.step === max ? dispatch({ type: "reset" }) : move("next")}>{state.step === max ? "重新开始" : "下一步"}{state.step === max ? <ArrowCounterClockwise size={16} /> : <ArrowRight size={16} />}</button>
             </div>
           </div>
         ) : null}

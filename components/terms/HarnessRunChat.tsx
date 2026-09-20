@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, CircleNotch, Clock, WarningCircle, Wrench } from "@phosphor-icons/react";
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { harnessStory, harnessTask, type HarnessState } from "@/lib/harness-v4";
 import { GptMark } from "./HarnessChatLesson";
@@ -15,9 +15,52 @@ const replies: Record<string, string> = {
   "请求复测": "返回值已修正，再运行一次检查。",
 };
 
-export function HarnessRunChat({ state }: { state: HarnessState }) {
+function HarnessReply({ text, reduced, speed, active, step, onComplete, children }: {
+  text: string;
+  reduced: boolean;
+  speed: number;
+  active: boolean;
+  step: number;
+  onComplete: (step: number) => void;
+  children?: ReactNode;
+}) {
+  const [length, setLength] = useState(0);
+  const complete = reduced || length >= text.length;
+
+  useEffect(() => {
+    if (complete) return;
+    const timer = window.setTimeout(() => setLength((current) => current + 1), 32 / speed);
+    return () => window.clearTimeout(timer);
+  }, [complete, length, speed]);
+
+  useEffect(() => {
+    if (complete && active) onComplete(step);
+  }, [complete, active, step, onComplete]);
+
+  return (
+    <>
+    <article className="vp-model-message is-model" aria-label="模型回复" aria-busy={!complete}>
+      <div className="vp-model-avatar is-model" aria-hidden="true"><GptMark /></div>
+      <div className="vp-model-message-content"><span className="vp-model-message-label">模型</span><div className="vp-model-bubble">{complete ? text : text.slice(0, length)}{!complete && <span className="vp-model-caret" aria-hidden="true" />}</div></div>
+    </article>
+    {complete && children}
+    </>
+  );
+}
+
+export function HarnessRunChat({ state, reduced, onReplyComplete }: { state: HarnessState; reduced: boolean; onReplyComplete: (step: number) => void }) {
   const threadRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const frames = harnessStory[state.scenario].slice(0, state.step + 1);
+
+  useEffect(() => {
+    const thread = threadRef.current;
+    const messages = messagesRef.current;
+    if (!thread || !messages) return;
+    const observer = new ResizeObserver(() => { thread.scrollTop = thread.scrollHeight; });
+    observer.observe(messages);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const thread = threadRef.current;
@@ -27,6 +70,7 @@ export function HarnessRunChat({ state }: { state: HarnessState }) {
   return (
     <div className="vp-model-chat vp-harness-chat" aria-label="Harness 对话演示">
       <div className="vp-model-chat-thread" ref={threadRef} role="log" aria-label="Harness 对话消息" aria-live="polite">
+        <div ref={messagesRef}>
         <article className="vp-model-message is-user" aria-label="你的任务">
           <div className="vp-model-message-content"><div className="vp-model-bubble">{harnessTask}</div></div>
         </article>
@@ -40,11 +84,7 @@ export function HarnessRunChat({ state }: { state: HarnessState }) {
           const StatusIcon = denied || failed ? WarningCircle : result ? Check : action ? CircleNotch : Clock;
           const call = request.context.at(-1)?.text ?? "";
           return (
-            <Fragment key={index}>
-              <article className="vp-model-message is-model" aria-label="模型回复">
-                <div className="vp-model-avatar is-model" aria-hidden="true"><GptMark /></div>
-                <div className="vp-model-message-content"><span className="vp-model-message-label">模型</span><div className="vp-model-bubble">{request.final ? request.outcome : replies[request.title] ?? request.modelText}</div></div>
-              </article>
+            <HarnessReply key={index} text={request.final ? request.outcome ?? request.modelText : replies[request.title] ?? request.modelText} reduced={reduced} speed={state.speed} active={index === state.step} step={index} onComplete={onReplyComplete}>
               {!request.final && (
                 <article className="vp-harness-tool" aria-label={`Harness 工具调用：${call}`} data-status={denied || failed ? "blocked" : result ? "returned" : action ? "running" : "pending"}>
                   <div className="vp-harness-tool-header">
@@ -55,9 +95,10 @@ export function HarnessRunChat({ state }: { state: HarnessState }) {
                   {result && <pre className="vp-harness-tool-result">{result.latest}</pre>}
                 </article>
               )}
-            </Fragment>
+            </HarnessReply>
           );
         })}
+        </div>
       </div>
     </div>
   );

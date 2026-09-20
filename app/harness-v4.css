@@ -73,7 +73,7 @@
 /* Article revision: prose has one measure; diagrams and controls keep their own space.
    No new color palette or branding. Loaded after concept.css. */
 .vp-concept{max-width:1180px;padding:0 38px}
-.vp-meta,.vp-hero,.vp-toc,.vp-chapter,.vp-lab-intro,.vp-loop-comment,.vp-footer{max-width:760px;margin-left:auto;margin-right:auto}
+.vp-meta,.vp-hero,.vp-toc,.vp-chapter,.vp-lab,.vp-lab-intro,.vp-loop-comment,.vp-footer{max-width:760px;margin-left:auto;margin-right:auto}
 .vp-meta{padding-top:34px}
 .vp-hero{padding:30px 0 25px}
 .vp-hero h1{font-size:54px;line-height:1.2;letter-spacing:-1.7px;font-weight:660}
@@ -181,7 +181,7 @@
  .vp-chapter{padding:35px 0 5px}.vp-chapter h2,.vp-lab-intro h2{font-size:22px;letter-spacing:-.2px}
  .vp-chapter-content>p{font-size:16px;line-height:1.95;margin-top:15px}.vp-chapter-content>.vp-note{font-size:12px;line-height:1.9}
  .vp-lab-intro{margin-top:35px;margin-bottom:17px}.vp-lab-intro p{font-size:14px;line-height:1.9}
- .vp-lab{margin-left:-7px;margin-right:-7px}.vp-lab-header{padding:12px 13px;gap:11px}.vp-lab-heading{width:100%}
+.vp-lab-header{padding:12px 13px;gap:11px}.vp-lab-heading{width:100%}
  .vp-lab-heading h2{font-size:14px}.vp-mode-segment{margin-left:0}.vp-scenario{margin-left:auto;gap:4px}.vp-scenario select{font-size:11px;padding:6px 5px;max-width:128px}
  .vp-lab-main{padding:15px 13px 0}.vp-task{padding-bottom:12px;gap:9px}.vp-task p{font-size:14px}.vp-task small{font-size:11px}
  .vp-graph{height:268px;gap:17px;padding-top:15px}.vp-actor{padding:12px 5px;min-height:170px}.vp-actor-status{font-size:10px}.vp-runtime-title{font-size:17px}.vp-runtime-row{font-size:9px;padding:5px 3px;gap:3px}.vp-runtime-rows{width:100%}
@@ -385,3 +385,9 @@
 @keyframes vp-tool-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.vp-harness-tool-status svg{animation:none!important}}
 @media(max-width:650px){.vp-harness-tool{margin-left:40px;padding:11px 12px}.vp-harness-tool-call,.vp-harness-tool-result{font-size:11px}}
+
+.vp-harness-chat .vp-model-message,.vp-harness-tool{animation:vp-harness-in 280ms cubic-bezier(.2,.7,.2,1) both}
+.vp-harness-tool-result{animation:vp-harness-in 220ms ease-out both}
+.vp-harness-tool-status{transition:color 180ms ease}
+@keyframes vp-harness-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.vp-harness-chat .vp-model-message,.vp-harness-tool,.vp-harness-tool-result{animation:none!important}.vp-harness-tool-status{transition:none}}

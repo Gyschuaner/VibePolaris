@@ -31,3 +31,19 @@ test("模式、播放和边界动作保持可预测", () => {
   assert.equal(harnessReducer(state, { type: "play" }), state);
   assert.equal(harnessFrame(harnessReducer(createHarnessState(), { type: "next" })).title, "请求读取日志");
 });
+
+test("回复输出完成前，手动和自动播放都不能进入工具执行", () => {
+  let state = harnessReducer(createHarnessState(), { type: "play" });
+  state = harnessReducer(state, { type: "tick" });
+  assert.equal(state.step, 1);
+  assert.equal(harnessReducer(state, { type: "next" }), state);
+  assert.equal(harnessReducer(state, { type: "tick" }), state);
+  assert.equal(harnessReducer(state, { type: "reply-complete", step: 4 }), state);
+  state = harnessReducer(state, { type: "reply-complete", step: 1 });
+  assert.equal(harnessReducer(state, { type: "next" }).step, 2);
+  assert.equal(harnessReducer(state, { type: "tick" }).step, 2);
+  state = harnessReducer(state, { type: "reset" });
+  state = harnessReducer(state, { type: "next" });
+  assert.equal(state.replyComplete, false);
+  assert.equal(harnessReducer(state, { type: "next" }), state);
+});
