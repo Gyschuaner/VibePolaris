@@ -4,16 +4,20 @@ import { useState } from "react";
 import { ArrowUp, ArrowUpRight, CaretRight } from "@phosphor-icons/react";
 
 const sources = [
-  { publisher: "Erik S.、Barry Zhang · Anthropic", title: "Building effective agents", date: "2024-12-19", url: "https://www.anthropic.com/engineering/building-effective-agents", citations: ["cite-loop", "cite-stopping"] },
-  { publisher: "Microsoft Learn", title: "Agent Harness", date: "", url: "https://learn.microsoft.com/en-us/agent-framework/concepts/harness", citations: ["cite-harness", "cite-state", "cite-harness-config"] },
+  { publisher: "Erik S.、Barry Zhang · Anthropic", title: "Building effective agents", date: "2024-12-19", url: "https://www.anthropic.com/engineering/building-effective-agents", citations: ["cite-loop", "cite-workflow", "cite-stopping", "cite-harness-config"] },
+  { publisher: "Microsoft Learn", title: "Agent Harness", date: "", url: "https://learn.microsoft.com/en-us/agent-framework/concepts/harness", citations: ["cite-harness", "cite-state"] },
   { publisher: "Anthropic · Claude Docs", title: "Tool use with Claude", date: "", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", citations: ["cite-tool-request", "cite-tools"] },
   { publisher: "Model Context Protocol", title: "Architecture overview", date: "", url: "https://modelcontextprotocol.io/docs/learn/architecture", citations: ["cite-mcp"] },
-  { publisher: "Justin Young · Anthropic", title: "Effective harnesses for long-running agents", date: "2025-11-26", url: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", citations: ["cite-verification"] },
+  { publisher: "Justin Young · Anthropic", title: "Effective harnesses for long-running agents", date: "2025-11-26", url: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", citations: ["cite-handoff", "cite-handoff-example", "cite-verification"] },
   { publisher: "Agent Skills", title: "Agent Skills Overview", date: "", url: "https://agentskills.io/home", citations: ["cite-skills"] },
   { publisher: "Anthropic · Claude Docs", title: "Context windows", date: "", url: "https://platform.claude.com/docs/en/build-with-claude/context-windows", citations: ["cite-context"] },
   { publisher: "Merriam-Webster", title: "Harness", date: "", url: "https://www.merriam-webster.com/dictionary/harness", citations: ["cite-word"] },
   { publisher: "GNU Coreutils · man7.org", title: "df(1) — Linux manual page", date: "", url: "https://man7.org/linux/man-pages/man1/df.1.html", citations: ["cite-df"] },
   { publisher: "GNU Coreutils · man7.org", title: "du(1) — Linux manual page", date: "", url: "https://man7.org/linux/man-pages/man1/du.1.html", citations: ["cite-du"] },
+  { publisher: "Harrison Chase · LangChain", title: "Agent Frameworks, Runtimes, and Harnesses- oh my!", date: "2025-10-25", url: "https://www.langchain.com/blog/agent-frameworks-runtimes-and-harnesses-oh-my", citations: ["cite-terminology"] },
+  { publisher: "Prithvi Rajasekaran 等 · Anthropic", title: "Effective context engineering for AI agents", date: "2025-09-29", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", citations: ["cite-state", "cite-context-selection"] },
+  { publisher: "Ryan Lopopolo · OpenAI", title: "Harness engineering: leveraging Codex in an agent-first world", date: "2026-02-11", url: "https://openai.com/index/harness-engineering/", citations: ["cite-environment"] },
+  { publisher: "Chip Huyen ·《AI Engineering》Agents 部分公开改编", title: "Agents", date: "2025-01-07", url: "https://huyenchip.com/2025/01/07/agents.html", citations: ["cite-failures", "cite-harness-config"] },
 ];
 
 type Excerpt = { id: string; heading: string; text: string };
