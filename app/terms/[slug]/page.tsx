@@ -8,6 +8,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { TermDetailExperience } from "@/components/TermDetailExperience";
 import type { BespokeTermPageProps } from "@/components/terms/BespokeTermScaffold";
 import { ComponentTermPage, PropsTermPage, StateTermPage } from "@/components/terms/UiConceptPages";
+import { EventTermPage, BubblingTermPage, HookTermPage } from "@/components/terms/EventConceptPages";
+import { EffectTermPage, BrowserApiTermPage } from "@/components/terms/BrowserConceptPages";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
@@ -37,6 +39,11 @@ const articleTermPages = {
   component: ComponentTermPage,
   props: PropsTermPage,
   state: StateTermPage,
+  event: EventTermPage,
+  "event-bubbling": BubblingTermPage,
+  hook: HookTermPage,
+  effect: EffectTermPage,
+  "browser-api": BrowserApiTermPage,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 const dedicatedTermPages = {
