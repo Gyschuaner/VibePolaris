@@ -304,7 +304,10 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   background: color-mix(in srgb, var(--surface) 96%, transparent);
   box-shadow: 0 20px 55px color-mix(in srgb, var(--ink) 12%, transparent);
   backdrop-filter: blur(12px);
-  animation: theme-panel-in 170ms cubic-bezier(.2, .8, .2, 1) both;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 240ms ease, transform 280ms ease, visibility 0s 280ms;
 }
 @keyframes theme-panel-in {
   from { opacity: 0; transform: translateY(-5px); }
@@ -4414,3 +4417,6 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-scene-frames button,
   .term-scene-caption button { animation: none !important; transition: none !important; }
 }
+
+.theme-studio-panel[data-open="true"] { opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 0s; }
+@media (prefers-reduced-motion: reduce) { .theme-studio-panel { transition: none; } }

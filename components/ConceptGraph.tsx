@@ -25,6 +25,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const Title = inline ? "h3" : "h2";
   const nodes = initialNodes;
   const [selected, setSelected] = useState("");
+  const [lastSelected, setLastSelected] = useState("");
   const selection = useRef("");
   const location = useRef("");
   const restoreLocation = useRef<(() => void) | null>(null);
@@ -54,7 +55,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const { beginRouteFlight } = useRouteMeteor();
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
   const selectedNeighbors = useMemo(() => graphNeighbors(selected, edges), [selected, edges]);
-  const current = bySlug.get(selected);
+  const current = bySlug.get(selected || lastSelected);
   const needle = query.trim().toLocaleLowerCase();
   const matches = needle ? searchGraphNodes(nodes, query, category).slice(0, 12) : [];
 
@@ -146,6 +147,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
       const positions = simulation.current?.nodes() || initialNodes;
       const node = positions.find(item => item.slug === slug);
       setSelected(node?.slug || "");
+      if (node) setLastSelected(node.slug);
       setCategory(nextCategory);
       if (openSearch && !inline) {
         setQuery(nextQuery);
@@ -202,6 +204,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   }
 
   function selectNode(slug: string) {
+    setLastSelected(slug);
     selection.current = slug;
     setSelected(slug); setHovered(""); setQuery("");
     searchPanel.current?.hidePopover();
@@ -348,9 +351,9 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
         <div className={`${styles.world} ${reframing ? styles.reframing : ""}`} style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, opacity: ready ? 1 : 0 }}>
           <svg className={styles.lines} aria-hidden="true">{edges.map(edge => {
             const connected = edge.source === selected || edge.target === selected;
-            if (!showLines && !connected) return null;
+            if (!inline && !showLines && !connected) return null;
             const from = bySlug.get(edge.source)!; const to = bySlug.get(edge.target)!;
-            return <line key={`${edge.source}|${edge.target}`} ref={element => {
+            return <line key={`${edge.source}|${edge.target}`} style={{ strokeOpacity: !showLines && !connected ? 0 : undefined }} ref={element => {
               const key = `${edge.source}|${edge.target}`;
               if (element) lineElements.current.set(key, { element, ...edge });
               else lineElements.current.delete(key);
@@ -382,7 +385,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
         <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => selectCategory("")}><CornersOut size={18} /></button>
         {!inline && <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>}
       </div>
-      {current && <aside className={styles.detail} aria-label={`${current.zh}概念详情`}>
+      {current && <aside className={styles.detail} data-open={Boolean(selected)} inert={!selected} aria-hidden={!selected} aria-label={`${current.zh}概念详情`}>
         <button className={styles.close} type="button" aria-label="关闭概念详情" onClick={clearSelection}><X size={18} /></button>
         {!inline && <span className={styles.category}>{current.cat}</span>}
         <Title>{current.zh}</Title>{!inline && current.en && <span className={styles.english}>{current.en}</span>}

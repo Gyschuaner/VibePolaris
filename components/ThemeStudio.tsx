@@ -222,9 +222,11 @@ export function ThemeStudio() {
         <Palette size={21} weight="regular" aria-hidden="true" />
       </button>
 
-      {open && (
         <div
           className="theme-studio-panel"
+          data-open={open}
+          inert={!open}
+          aria-hidden={!open}
           id="theme-studio-panel"
           role="dialog"
           aria-label="主题画板"
@@ -246,7 +248,6 @@ export function ThemeStudio() {
           <ThemeScale label="背景" options={BACKGROUNDS} value={background} onChange={chooseBackground} />
           <ThemeScale label="主题色" options={ACCENTS} value={accent} onChange={chooseAccent} />
         </div>
-      )}
     </div>
   );
 }

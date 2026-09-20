@@ -79,7 +79,8 @@ export function HarnessRunChat({ state, reduced, onReplyComplete }: { state: Har
           <div className="vp-model-message-content"><div className="vp-model-bubble">{harnessTask}</div></div>
         </article>
         {frames.map((request, index) => {
-          if (request.edge !== "mh" || (!expanded && index !== latestRequest)) return null;
+          if (request.edge !== "mh") return null;
+          const visible = expanded || index === latestRequest;
           const action = frames[index + 1];
           const result = frames[index + 2];
           const denied = Boolean(action?.denied);
@@ -88,7 +89,8 @@ export function HarnessRunChat({ state, reduced, onReplyComplete }: { state: Har
           const StatusIcon = denied || failed ? WarningCircle : result ? Check : action ? CircleNotch : Clock;
           const call = request.context.at(-1)?.text ?? "";
           return (
-            <HarnessReply key={index} text={request.final ? request.outcome ?? request.modelText : replies[request.title] ?? request.modelText} reduced={reduced} speed={state.speed} active={index === state.step} step={index} onComplete={onReplyComplete}>
+            <div key={index} className="vp-harness-turn" data-open={visible} inert={!visible} aria-hidden={!visible}><div className="vp-harness-turn-clip">
+            <HarnessReply text={request.final ? request.outcome ?? request.modelText : replies[request.title] ?? request.modelText} reduced={reduced} speed={state.speed} active={index === state.step} step={index} onComplete={onReplyComplete}>
               {!request.final && (
                 <article className="vp-harness-tool" aria-label={`Harness 工具调用：${call}`} data-status={denied || failed ? "blocked" : result ? "returned" : action ? "running" : "pending"}>
                   <div className="vp-harness-tool-header">
@@ -100,6 +102,7 @@ export function HarnessRunChat({ state, reduced, onReplyComplete }: { state: Har
                 </article>
               )}
             </HarnessReply>
+            </div></div>
           );
         })}
         </div>

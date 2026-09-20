@@ -45,7 +45,7 @@ export function InlineTerm({ title, english, description, href, children }: {
   return (
     <span className="vp-inline-term">
       <button ref={trigger} type="button" className="vp-term-trigger" popoverTarget={id} aria-haspopup="dialog" aria-expanded={open}>{children}</button>
-      <span ref={panel} id={id} popover="auto" role="dialog" aria-labelledby={`${id}-title`} className="vp-term-card" style={{ visibility: open ? "visible" : "hidden" }} onToggle={(event) => setOpen(event.newState === "open")}>
+      <span ref={panel} id={id} popover="auto" role="dialog" aria-labelledby={`${id}-title`} className="vp-term-card" onToggle={(event) => setOpen(event.newState === "open")}>
         <span className="vp-term-card-heading"><span className="brand-star-only" aria-hidden="true" /><strong id={`${id}-title`}>{title}</strong><button type="button" popoverTarget={id} popoverTargetAction="hide" aria-label={`关闭${title}解释`}><X size={16} aria-hidden="true" /></button></span>
         {english && <span className="vp-term-card-english">{english}</span>}
         <span className="vp-term-card-description">{description}</span>

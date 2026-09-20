@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { harnessSectionTitles } from "@/lib/harness-sections";
 
 const items = Object.entries(harnessSectionTitles);
 
 export function HarnessV4Toc() {
   const navigation = useRef<HTMLElement>(null);
+  const star = useRef<HTMLSpanElement>(null);
   const [activeId, setActiveId] = useState<string>(items[0][0]);
 
   useEffect(() => {
@@ -34,13 +35,17 @@ export function HarnessV4Toc() {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     function revealActive() {
       const nav = navigation.current;
       const link = nav?.querySelector<HTMLElement>('[aria-current="location"]');
       if (!nav || !link) return;
       const bounds = nav.getBoundingClientRect();
       const item = link.getBoundingClientRect();
+      if (star.current) {
+        star.current.style.transform = `translateY(${nav.scrollTop + item.top - bounds.top + (item.height - 16) / 2}px)`;
+        star.current.style.opacity = "1";
+      }
       const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
       // Scroll this container only; scrollIntoView would also move the article.
       if (window.matchMedia("(min-width: 901px)").matches) {
@@ -53,14 +58,16 @@ export function HarnessV4Toc() {
     }
 
     revealActive();
-    window.addEventListener("resize", revealActive);
-    return () => window.removeEventListener("resize", revealActive);
+    const observer = new ResizeObserver(revealActive);
+    if (navigation.current) observer.observe(navigation.current);
+    return () => observer.disconnect();
   }, [activeId]);
 
   return (
     <nav ref={navigation} aria-label="本页目录" className="vp-toc">
+      <span ref={star} className="vp-toc-marker brand-star-only" aria-hidden="true" />
       {items.map(([id, label]) => (
-        <a href={`#${id}`} className={activeId === id ? "active" : undefined} aria-current={activeId === id ? "location" : undefined} onClick={() => setActiveId(id)} key={id}>
+        <a href={`#${id}`} className={activeId === id ? "active" : undefined} aria-current={activeId === id ? "location" : undefined} key={id}>
           {label}
         </a>
       ))}
