@@ -10,6 +10,7 @@ import type { BespokeTermPageProps } from "@/components/terms/BespokeTermScaffol
 import { ComponentTermPage } from "@/components/terms/ComponentTermPage";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
+import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
 import { RagTermPage } from "@/components/terms/RagTermPage";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
@@ -20,6 +21,9 @@ type TermPageProps = { params: Promise<{ slug: string }> };
 
 const dedicatedTermPages = {
   "agent-harness": AgentHarnessTermPage,
+  tools: ToolCallingTermPage,
+  context: ContextTermPage,
+  "agent-loop": AgentLoopTermPage,
   component: ComponentTermPage,
   rebase: RebaseTermPage,
   rag: RagTermPage,
@@ -66,7 +70,7 @@ export default async function TermPage({ params }: TermPageProps) {
       ) : (
         <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} />
       )}
-      {term.slug !== "agent-harness" && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
+      {!["agent-harness", "tools", "context", "agent-loop"].includes(term.slug) && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
       <SiteFooter />
     </>
   );
