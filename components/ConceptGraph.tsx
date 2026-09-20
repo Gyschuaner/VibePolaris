@@ -1,0 +1,219 @@
+"use client";
+
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { ArrowUpRight, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
+import { useRouteMeteor } from "@/components/RouteMeteorProvider";
+import { graphNeighbors, type GraphNode, type GraphEdge } from "@/lib/term-graph";
+import styles from "./ConceptGraph.module.css";
+
+type Point = { x: number; y: number };
+type View = Point & { scale: number };
+
+export function ConceptGraph({ nodes: initialNodes, edges }: { nodes: GraphNode[]; edges: GraphEdge[] }) {
+  const [nodes, setNodes] = useState(initialNodes);
+  const [selected, setSelected] = useState("");
+  const [hovered, setHovered] = useState("");
+  const [query, setQuery] = useState("");
+  const [showLines, setShowLines] = useState(false);
+  const [view, setView] = useState<View>({ x: 0, y: 0, scale: .5 });
+  const [ready, setReady] = useState(false);
+  const [reframing, setReframing] = useState(false);
+  const canvas = useRef<HTMLDivElement>(null);
+  const searchPanel = useRef<HTMLDivElement>(null);
+  const size = useRef({ width: 1000, height: 700 });
+  const gesture = useRef<{ start: Point; view: View; slug?: string; point?: Point } | null>(null);
+  const pointers = useRef(new Map<number, Point>());
+  const pinch = useRef<{ distance: number; center: Point; view: View } | null>(null);
+  const dragged = useRef(false);
+  const { beginRouteFlight } = useRouteMeteor();
+  const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
+  const active = hovered || selected;
+  const neighbors = useMemo(() => graphNeighbors(active, edges), [active, edges]);
+  const selectedNeighbors = useMemo(() => graphNeighbors(selected, edges), [selected, edges]);
+  const current = bySlug.get(selected);
+  const needle = query.trim().toLocaleLowerCase();
+  const matches = needle ? initialNodes.filter(node => [node.zh, node.en, node.slug, ...node.aliases].some(text => text.toLocaleLowerCase().includes(needle))).slice(0, 12) : [];
+
+  const frame = useCallback((items: GraphNode[], detail = false) => {
+    if (!items.length) return;
+    const { width, height } = size.current;
+    const availableWidth = width - (detail && width > 760 ? 350 : 0);
+    const availableHeight = height - (detail && width <= 760 ? Math.min(290, height * .43) : 0);
+    const minX = Math.min(...items.map(node => node.x));
+    const maxX = Math.max(...items.map(node => node.x));
+    const minY = Math.min(...items.map(node => node.y));
+    const maxY = Math.max(...items.map(node => node.y));
+    const scale = Math.max(.12, Math.min(detail ? 1.5 : 1, (availableWidth - 100) / (maxX - minX + 160), (availableHeight - 100) / (maxY - minY + 160)));
+    setView({ x: availableWidth / 2 - (minX + maxX) / 2 * scale, y: availableHeight / 2 - (minY + maxY) / 2 * scale, scale });
+    setReframing(true);
+  }, []);
+
+  useEffect(() => {
+    const element = canvas.current;
+    if (!element) return;
+    const restore = () => {
+      const slug = new URL(window.location.href).searchParams.get("term") || "";
+      const node = initialNodes.find(item => item.slug === slug);
+      setSelected(node?.slug || "");
+      const linked = graphNeighbors(slug, edges);
+      frame(node ? initialNodes.filter(item => item.slug === slug || linked.has(item.slug)) : initialNodes, Boolean(node));
+    };
+    const observer = new ResizeObserver(([entry]) => {
+      const previous = size.current;
+      const next = { width: entry.contentRect.width, height: entry.contentRect.height };
+      size.current = next;
+      if (!element.dataset.ready) {
+        element.dataset.ready = "true";
+        restore();
+        setReady(true);
+      } else {
+        setReframing(false);
+        if ((previous.width > 760) !== (next.width > 760)) restore();
+        else setView(value => ({ ...value, x: value.x + (next.width - previous.width) / 2, y: value.y + (next.height - previous.height) / 2 }));
+      }
+    });
+    observer.observe(element);
+    window.addEventListener("popstate", restore);
+    return () => { observer.disconnect(); window.removeEventListener("popstate", restore); };
+  }, [edges, frame, initialNodes]);
+
+  function selectNode(slug: string) {
+    setSelected(slug); setHovered(""); setQuery("");
+    searchPanel.current?.hidePopover();
+    const linked = graphNeighbors(slug, edges);
+    frame(nodes.filter(node => node.slug === slug || linked.has(node.slug)), true);
+    const url = new URL(window.location.href);
+    url.searchParams.set("term", slug);
+    window.history.replaceState(null, "", url);
+  }
+
+  function clearSelection() {
+    setSelected(""); setHovered("");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("term");
+    window.history.replaceState(null, "", url);
+  }
+
+  function zoom(factor: number, point = { x: size.current.width / 2, y: size.current.height / 2 }) {
+    setView(previous => {
+      const scale = Math.max(.12, Math.min(3, previous.scale * factor));
+      const ratio = scale / previous.scale;
+      return { x: point.x - (point.x - previous.x) * ratio, y: point.y - (point.y - previous.y) * ratio, scale };
+    });
+  }
+
+  function localPoint(event: { clientX: number; clientY: number }) {
+    const rect = canvas.current!.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  function startDrag(event: PointerEvent<HTMLDivElement>) {
+    if (event.button !== 0) return;
+    const point = localPoint(event);
+    pointers.current.set(event.pointerId, point);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setReframing(false);
+    if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      pinch.current = { distance: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), center: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, view };
+      dragged.current = true;
+      return;
+    }
+    const slug = (event.target as HTMLElement).closest<HTMLElement>("[data-graph-node]")?.dataset.graphNode;
+    gesture.current = { start: point, view, slug, point: slug ? bySlug.get(slug) : undefined };
+    dragged.current = false;
+  }
+
+  function moveDrag(event: PointerEvent<HTMLDivElement>) {
+    if (!pointers.current.has(event.pointerId)) return;
+    const point = localPoint(event);
+    pointers.current.set(event.pointerId, point);
+    if (pinch.current && pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      const original = pinch.current;
+      const scale = Math.max(.12, Math.min(3, original.view.scale * Math.hypot(a.x - b.x, a.y - b.y) / original.distance));
+      setView({ x: (a.x + b.x) / 2 - (original.center.x - original.view.x) * scale / original.view.scale, y: (a.y + b.y) / 2 - (original.center.y - original.view.y) * scale / original.view.scale, scale });
+      return;
+    }
+    const start = gesture.current;
+    if (!start || pinch.current) return;
+    const dx = point.x - start.start.x;
+    const dy = point.y - start.start.y;
+    if (Math.hypot(dx, dy) < 4 && !dragged.current) return;
+    dragged.current = true;
+    if (start.slug && start.point) {
+      const origin = start.point;
+      setNodes(items => items.map(node => node.slug === start.slug ? { ...node, x: origin.x + dx / start.view.scale, y: origin.y + dy / start.view.scale } : node));
+    } else setView({ ...start.view, x: start.view.x + dx, y: start.view.y + dy });
+  }
+
+  function stopDrag(event: PointerEvent<HTMLDivElement>) {
+    if (event.type === "pointerup" && pointers.current.size === 1 && !dragged.current && gesture.current?.slug) selectNode(gesture.current.slug);
+    pointers.current.delete(event.pointerId);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (!pointers.current.size) { gesture.current = null; pinch.current = null; }
+  }
+
+  return <main className={styles.page} id="main-content">
+    <h1 className={styles.visuallyHidden}>概念星图</h1>
+    <div className={styles.workspace}>
+      <button className={styles.searchToggle} type="button" popoverTarget="graph-search" aria-label="打开概念搜索" title="搜索概念"><MagnifyingGlass size={23} /></button>
+      <div ref={searchPanel} className={styles.searchPanel} id="graph-search" popover="auto" onToggle={event => { if (event.newState === "closed") setQuery(""); }}>
+        <input autoFocus aria-label="搜索概念" placeholder="搜索概念、英文或别名" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && matches[0]) { event.preventDefault(); selectNode(matches[0].slug); } }} />
+        {needle && <div className={styles.results} aria-label="搜索结果">{matches.length ? matches.map(node => <button type="button" key={node.slug} onClick={() => selectNode(node.slug)}><strong>{node.zh}</strong><span>{node.en || node.cat}</span></button>) : <p>没有找到这个概念</p>}</div>}
+      </div>
+      <div ref={canvas} className={styles.canvas} role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
+        onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag}
+        onWheel={event => { setReframing(false); zoom(Math.exp(-event.deltaY * .002), localPoint(event)); }}
+        onKeyDown={event => {
+          if (event.key === "Escape") { clearSelection(); return; }
+          if (event.target !== event.currentTarget) return;
+          if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "+", "=", "-", "0"].includes(event.key)) event.preventDefault();
+          setReframing(false);
+          if (event.key === "+" || event.key === "=") zoom(1.25);
+          if (event.key === "-") zoom(.8);
+          if (event.key === "0") frame(nodes);
+          if (event.key.startsWith("Arrow")) setView(value => ({ ...value, x: value.x + (event.key === "ArrowLeft" ? 50 : event.key === "ArrowRight" ? -50 : 0), y: value.y + (event.key === "ArrowUp" ? 50 : event.key === "ArrowDown" ? -50 : 0) }));
+        }}>
+        <div className={`${styles.world} ${reframing ? styles.reframing : ""}`} style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, opacity: ready ? 1 : 0 }}>
+          <svg className={styles.lines} aria-hidden="true">{edges.map(edge => {
+            const connected = edge.source === active || edge.target === active;
+            if (!showLines && !connected) return null;
+            const from = bySlug.get(edge.source)!; const to = bySlug.get(edge.target)!;
+            return <line key={`${edge.source}|${edge.target}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className={connected ? styles.connectedLine : styles.quietLine} />;
+          })}</svg>
+          {nodes.map(node => {
+            const connected = neighbors.has(node.slug);
+            const highlighted = node.slug === active || connected;
+            return <button type="button" key={node.slug} data-graph-node={node.slug} aria-label={`${node.zh}${node.en ? ` · ${node.en}` : ""}`} aria-pressed={node.slug === selected}
+              className={`${styles.node} ${node.slug === selected ? styles.selected : ""} ${active && !highlighted ? styles.dimmed : ""} ${highlighted || !active && (node.degree >= 9 || view.scale >= 1.1) ? styles.labeled : ""}`}
+              style={{ left: node.x, top: node.y }} onPointerEnter={() => setHovered(node.slug)} onPointerLeave={() => setHovered("")}
+              onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
+              onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
+              <span className="brand-star-only" aria-hidden="true" style={{ width: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)), height: Math.min(52, Math.max(23 + node.degree, 20 / view.scale)) }} /><span className={styles.label} style={{ fontSize: Math.min(32, 14 / view.scale) }}>{node.zh}</span>
+            </button>;
+          })}
+        </div>
+      </div>
+      <div className={styles.controls} aria-label="星图视图控制">
+        <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.3); }}><Plus size={18} /></button>
+        <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(1 / 1.3); }}><Minus size={18} /></button>
+        <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { clearSelection(); frame(nodes); }}><CornersOut size={18} /></button>
+        <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>
+      </div>
+      {current && <aside className={styles.detail} aria-label={`${current.zh}概念详情`}>
+        <button className={styles.close} type="button" aria-label="关闭概念详情" onClick={clearSelection}><X size={18} /></button>
+        <span className={styles.category}>{current.cat}</span>
+        <h2>{current.zh}</h2>{current.en && <span className={styles.english}>{current.en}</span>}
+        <p>{current.definition}</p>
+        <Link className={styles.enter} href={`/terms/${current.slug}`} onClick={event => {
+          if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          const star = canvas.current?.querySelector<HTMLElement>(`[data-graph-node="${current.slug}"] .brand-star-only`);
+          if (star) { event.preventDefault(); beginRouteFlight(`/terms/${current.slug}`, star); }
+        }}>阅读词条<ArrowUpRight size={18} /></Link>
+        <div className={styles.neighbors}><h3>相连的概念</h3>{nodes.filter(node => selectedNeighbors.has(node.slug)).map(node => <button key={node.slug} type="button" onClick={() => selectNode(node.slug)}><span className="brand-star-only" aria-hidden="true" />{node.zh}</button>)}</div>
+      </aside>}
+    </div>
+  </main>;
+}

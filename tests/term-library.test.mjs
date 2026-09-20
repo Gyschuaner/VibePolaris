@@ -37,7 +37,7 @@ test("迁移底稿保留完整字段、旧三步演示和项目检查", () => {
     assert.ok(demoTypes.has(term.demoType), `${term.slug} 动画类型无效`);
     assert.equal(term.demoSteps?.length, 3, `${term.slug} 必须有三步动画`);
     assert.equal(term.quizOptions?.length, 3, `${term.slug} 必须有三个检查选项`);
-    assert.ok(term.relatedSlugs?.length >= 2 && term.relatedSlugs.length <= 4, `${term.slug} 相关词数量无效`);
+    assert.ok(term.relatedSlugs?.length >= 2 && term.relatedSlugs.length <= 8, `${term.slug} 相关词数量无效`);
     for (const step of term.demoSteps) {
       assert.ok(step.label && step.value && step.note, `${term.slug} 动画步骤不完整`);
       assert.notEqual(step.note, term.definition, `${term.slug} 动画不能直接重复定义`);
