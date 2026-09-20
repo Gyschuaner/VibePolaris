@@ -49,7 +49,7 @@ export function HarnessV4Toc() {
 
   return (
     <nav aria-label="本页目录" className="vp-toc">
-      <span className="vp-toc-label">本页</span>
+      <span className="vp-toc-label"><i className="vp-toc-star" aria-hidden="true" />本页</span>
       {items.map(([id, label]) => (
         <a href={`#${id}`} className={activeId === id ? "active" : undefined} aria-current={activeId === id ? "location" : undefined} onClick={() => setActiveId(id)} key={id}>
           {label}

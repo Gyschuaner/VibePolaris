@@ -31,7 +31,7 @@ export function AgentHarnessTermPage({ related }: BespokeTermPageProps) {
         <div className="vp-reading-content">
           <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/terms"><ArrowLeft size={14} aria-hidden="true" />术语</Link><em>/</em><Link href="/terms?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
           <header className="vp-hero">
-            <div className="vp-hero-top"><h1>Harness <span>让模型真正动手的运行系统</span></h1></div>
+            <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness <span>让模型真正动手的运行系统</span></h1></div>
             <p className="vp-hero-lead"><strong>模型负责“想”，Harness 负责让模型“真正干活”。</strong></p>
             <p className="vp-hero-intro">一个模型会告诉你怎么修服务，但它怎么打开日志、修改文件，再根据测试结果接着做？这篇从一次普通问答开始，把中间的过程一层层拆开。先不用懂 MCP、Skills 或 Memory。</p>
           </header>
