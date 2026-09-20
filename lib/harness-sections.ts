@@ -1,8 +1,8 @@
 export const harnessSectionTitles = {
-  service: "从一句请求开始",
-  need: "谁在真正执行？",
-  boundary: "结果，变成下一步",
-  quality: "做好，和做完不一样",
-  roadmap: "沿着星星，继续探索",
+  service: "修复一个启动失败的服务",
+  need: "模型、Harness 和工具",
+  boundary: "工具结果与下一轮输入",
+  quality: "测试与权限检查",
+  roadmap: "相关概念",
   related: "参考资料",
 } as const;

@@ -24,7 +24,7 @@ export function AgentHarnessTermPage() {
       <div className="vp-reading-content">
         <div className="vp-meta"><nav aria-label="面包屑" className="vp-crumb"><Link href="/"><ArrowLeft size={14} aria-hidden="true" />星图</Link><em>/</em><Link href="/?cat=AI%C2%B7Agent">AI · Agent</Link><em>/</em><span>Harness</span></nav></div>
         <header className="vp-hero">
-          <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness<span>让模型的下一步，真正发生。</span></h1></div>
+          <div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>Harness<span>智能体运行框架</span></h1></div>
           <p className="vp-hero-intro"><Term slug="llm">模型</Term>提出下一步，Harness 把它接到工具和环境上。读日志、改文件、看结果，再继续。</p>
         </header>
 
@@ -71,7 +71,7 @@ export function AgentHarnessTermPage() {
           <HarnessContextFlow />
           <p id="cite-loop" className="vp-citation-target">“判断 → 执行 → 看结果 → 再判断”，组成了 <Term slug="agent-loop">Agent Loop（智能体循环）</Term>。每一轮带着新结果继续，直到任务完成或需要停下。</p>
           <details className={styles.supplement} id="practice">
-            <summary><HardDrives size={22} aria-hidden="true" /><span>换个案例 · 磁盘空间</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
+            <summary><HardDrives size={22} aria-hidden="true" /><span>磁盘占用示例</span><Plus className={styles.supplementToggle} size={18} aria-hidden="true" /></summary>
             <div className={styles.supplementBody}>
             <div className="vp-disk-story">
               <div className="vp-disk-round">
@@ -97,7 +97,7 @@ export function AgentHarnessTermPage() {
           <h2>{harnessSectionTitles.roadmap}</h2>
           <p>从 Harness 出发，看看它与工具调用、上下文和循环怎样相连。</p>
           <HarnessLearningMap terms={getRelatedTerms(getTerm("agent-harness")!, 8)} />
-          <Link className="term-graph-link" href="/?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />在完整星图中探索<ArrowRight size={16} aria-hidden="true" /></Link>
+          <Link className="term-graph-link" href="/?term=agent-harness"><span className="brand-star-only" aria-hidden="true" />打开完整星图<ArrowRight size={16} aria-hidden="true" /></Link>
           <p><span id="cite-mcp" className="vp-citation-target"><Term slug="mcp">MCP</Term> 约定应用怎样连接工具与数据。</span><span id="cite-skills" className="vp-citation-target"> <InlineTerm title="技能" english="Agent Skill" description="把某类任务的操作说明和相关资源放在一起，供智能体按需使用。通常包含 SKILL.md，也可以附带脚本、模板和参考材料。">Skill</InlineTerm> 提供特定任务的说明和资源。</span>它们都可以被 Harness 使用。</p>
         </div></section>
         <section className="vp-chapter" id="related"><div className="vp-chapter-content"><h2>{harnessSectionTitles.related}</h2><HarnessReferences /></div></section>
