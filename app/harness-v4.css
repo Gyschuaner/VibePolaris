@@ -494,3 +494,22 @@
  .vp-learning-lines.is-desktop{display:none}.vp-learning-lines.is-mobile{display:block}
 }
 @media(prefers-reduced-motion:reduce){.vp-learning-map .brand-star-only,.vp-learning-lines line{transition:none}}
+
+/* Inline explanations stay in the top layer without changing article layout. */
+.vp-term-trigger{display:inline;padding:0;border:0;border-radius:0;background:none;font:inherit;color:inherit;letter-spacing:inherit;line-height:inherit;text-align:inherit;cursor:pointer;text-decoration-line:underline;text-decoration-style:dashed;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:5px}
+.vp-term-trigger:hover,.vp-term-trigger[aria-expanded="true"]{color:var(--accent-text)}
+.vp-term-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
+.vp-term-card{position:fixed;inset:auto;margin:0;width:320px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;padding:22px;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--hairline));border-radius:10px;background:var(--surface);color:var(--ink);box-shadow:0 8px 32px color-mix(in srgb,var(--ink) 12%,transparent);font-size:15px;line-height:1.8;font-weight:400;font-family:inherit;letter-spacing:normal;text-align:left;overscroll-behavior:contain}
+.vp-term-card:popover-open{display:block;animation:vp-term-reveal .16s ease-out}
+.vp-term-card-heading{display:flex;align-items:center;gap:9px}
+.vp-term-card-heading strong{font-size:19px;line-height:1.5;font-weight:600;color:var(--ink)}
+.vp-term-card .brand-star-only{width:20px;height:20px;flex:none}
+.vp-term-card-heading button{display:grid;place-items:center;flex:none;margin-left:auto;width:30px;height:30px;border:0;border-radius:4px;background:none;color:var(--muted);cursor:pointer}
+.vp-term-card-heading button:hover{background:var(--tint);color:var(--accent-text)}
+.vp-term-card-english{display:block;margin-top:3px;font-size:13px;line-height:1.6;color:var(--muted)}
+.vp-term-card-description{display:block;margin-top:14px;font-size:15px;font-weight:400;line-height:1.85;color:var(--ink)}
+.vp-term-card-link{display:flex;align-items:center;gap:5px;width:fit-content;margin-top:16px;font-size:14px;line-height:1.7;font-weight:500;color:var(--accent-text);text-decoration:none}
+.vp-term-card-link:hover{text-decoration:underline;text-underline-offset:4px}
+.vp-term-card :is(a,button):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@keyframes vp-term-reveal{from{opacity:0}to{opacity:1}}
+@media print{.vp-term-card{display:none!important}.vp-term-trigger{text-decoration:none}}
