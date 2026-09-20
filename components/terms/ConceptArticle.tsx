@@ -28,8 +28,8 @@ export function ArticleAside({ title, children }: { title: string; children: Rea
   return <details className={story.supplement}><summary><FolderOpen size={21} aria-hidden="true" /><span>{title}</span><Plus className={story.supplementToggle} size={18} aria-hidden="true" /></summary><div className={story.supplementBody}>{children}</div></details>;
 }
 
-export function ConceptArticle({ slug, title, intro, sections, sources, children, hero }: {
-  slug: string; title: string; intro: ReactNode; sections: [string, string][]; sources: typeof harnessSources; children: ReactNode; hero?: ReactNode;
+export function ConceptArticle({ slug, title, intro, sections, sources, children, hero, subtitle }: {
+  slug: string; title: string; intro: ReactNode; sections: [string, string][]; sources: typeof harnessSources; children: ReactNode; hero?: ReactNode; subtitle?: string;
 }) {
   const term = getTerm(slug)!;
   return <main className={`vp-concept ${story.page} ${styles.article}`} data-concept={slug} id="main-content"><div className="vp-page-layout">
@@ -37,7 +37,7 @@ export function ConceptArticle({ slug, title, intro, sections, sources, children
     <div className="vp-reading-content">
       <div className="vp-meta"><nav className="vp-crumb" aria-label="面包屑"><Link href="/"><ArrowLeft size={15} aria-hidden="true" />星图</Link><em>/</em><Link href={`/?cat=${encodeURIComponent(term.cat)}`}>AI · Agent</Link><em>/</em><span>{term.zh}</span></nav></div>
       <header className="vp-hero">
-        <div className={styles.hero}><div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>{title}<span>{title === term.zh ? term.en : term.zh}</span></h1></div>{hero ?? <ConceptHero slug={slug} />}</div>
+        <div className={styles.hero}><div className="vp-hero-top"><span className="brand-star-only term-route-star term-story-star" data-route-star-target aria-hidden="true" /><h1>{title}<span>{subtitle ?? (title === term.zh ? term.en : term.zh)}</span></h1></div>{hero ?? <ConceptHero slug={slug} />}</div>
         <p className="vp-hero-intro">{intro}</p>
       </header>
       {children}

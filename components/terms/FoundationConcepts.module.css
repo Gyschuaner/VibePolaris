@@ -1,0 +1,132 @@
+.anchor{display:block;height:0;scroll-margin-top:125px}
+.lab{min-width:0;margin:40px 0;color:var(--ink)}
+.lab button{font:inherit;color:var(--accent-text);cursor:pointer;border:0;background:transparent;min-height:44px;border-radius:6px;transition:background .25s,opacity .25s}
+.lab button:hover:not(:disabled){background:var(--tint)}
+.lab button:disabled{opacity:.35;cursor:default}
+.lab button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.lab p{font-size:16px;line-height:1.9}
+.lab svg{flex:none}
+.actions{display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin-top:24px}
+.actions button{display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 15px;font-size:14px}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choices button{padding:9px 14px;font-size:14px}
+.choices button[aria-pressed="true"]{background:var(--tint);color:var(--accent-text)}
+
+/* Generation is a growing sentence with selectable candidate bars. */
+.generation{padding:20px 0 10px}
+.sentence{min-height:115px;display:grid;align-items:center;padding:12px 4px 28px}
+.sentence p{font-size:clamp(25px,3.5vw,40px);letter-spacing:-.8px;line-height:1.5;margin:0}
+.sentence strong{color:var(--accent-text);font-weight:500}
+.caret{display:inline-block;vertical-align:baseline;height:1em;width:2px;margin-left:7px;background:var(--accent)}
+.candidateDesk{display:grid;grid-template-columns:150px minmax(0,1fr);gap:30px;padding:28px;background:color-mix(in srgb,var(--surface) 55%,transparent);border-radius:8px}
+.deskLabel{font-size:14px;line-height:1.8;color:var(--muted);padding:10px 0}
+.candidates{display:flex;flex-direction:column;gap:13px;min-height:125px;justify-content:center}
+.candidates button{position:relative;isolation:isolate;display:flex;align-items:center;gap:15px;padding:12px 15px;text-align:left;overflow:hidden;background:color-mix(in srgb,var(--surface) 75%,transparent);min-height:52px}
+.candidates button i{position:absolute;inset:0 auto 0 0;background:var(--tint);z-index:-1;transition:width .5s}
+.candidates button code{font:20px ui-monospace,monospace;color:var(--ink);flex:1}
+.candidates button span{font-size:14px;font-variant-numeric:tabular-nums}
+.finished{display:flex;gap:15px;align-items:center;color:var(--accent-text);margin:0}
+
+/* Token pieces turn over to reveal their vocabulary IDs. */
+.typeDesk{padding:28px;background:color-mix(in srgb,var(--surface) 45%,transparent);border-radius:9px}
+.sampleControls{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.sampleControls>.choices:first-child button{font:17px ui-monospace,monospace}
+.tokenRows{margin:42px 0 30px;perspective:800px}
+.tokenStrip{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;min-height:92px;align-items:center}
+.tokenTile{position:relative;display:grid;min-width:47px;height:72px;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,1,.36,1);border-radius:5px;background:var(--surface);box-shadow:0 8px 20px color-mix(in srgb,var(--ink) 5%,transparent)}
+.tokenTile>span,.tokenTile>code{grid-area:1/1;display:flex;align-items:center;justify-content:center;padding:12px 18px;backface-visibility:hidden;font:27px ui-monospace,monospace}
+.tokenTile>code{transform:rotateY(180deg);color:var(--accent-text);background:var(--tint);border-radius:5px}
+.tokenRows[data-ids="true"] .tokenTile{transform:rotateY(180deg)}
+.tokenMeta{display:flex;justify-content:space-between;gap:20px;align-items:center}
+.tokenMeta>strong{font-size:33px;font-weight:450;color:var(--accent-text)}
+.tokenMeta>strong>span{font-size:14px;color:var(--muted)}
+.tokenMeta button{display:flex;align-items:center;gap:9px;font-size:14px;padding:8px 12px}
+.vocabulary{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin:28px 0 0}
+.vocabulary>div{display:flex;align-items:baseline;gap:10px;font:14px ui-monospace,monospace;padding:7px 10px;color:var(--muted)}
+.vocabulary dd{margin:0;color:var(--accent-text)}
+.decoded{display:flex;justify-content:center;gap:22px;align-items:center;padding-top:20px;margin:0!important;flex-wrap:wrap}
+.decoded code{font:15px ui-monospace,monospace;overflow-wrap:anywhere}
+.decoded strong{font:27px ui-monospace,monospace;color:var(--accent-text)}
+
+/* An agent works against calendars and leaves an actual task artifact. */
+.agenda{padding:10px 0}
+.goal{display:flex;gap:18px;align-items:center;margin-bottom:25px;color:var(--accent-text)}
+.goal p{font-size:21px;line-height:1.65;margin:0;color:var(--ink)}
+.goal strong{font-weight:550}
+.calendar{margin:28px 0 25px}
+.hours,.calendarRow{display:grid;grid-template-columns:56px repeat(4,minmax(0,1fr));gap:10px;align-items:center}
+.hours{color:var(--muted);font:13px ui-monospace,monospace;text-align:center;margin-bottom:10px}
+.calendarRow{margin:12px 0}
+.calendarRow>strong{font-size:15px;font-weight:500}
+.calendarRow>div{display:grid;place-items:center;height:75px;background:color-mix(in srgb,var(--surface) 70%,transparent);border-radius:5px;transition:background .45s,box-shadow .45s,transform .45s}
+.calendarRow>div>span{grid-area:1/1;font-size:14px;transition:opacity .4s,transform .4s}
+.unknown{color:var(--muted)}
+.availability{opacity:0;transform:translateY(6px)}
+.calendar[data-read="true"] .unknown{opacity:0;transform:translateY(-6px)}
+.calendar[data-read="true"] .availability{opacity:1;transform:none}
+.calendar[data-read="true"] [data-busy="true"]{background:repeating-linear-gradient(-45deg,transparent,transparent 5px,color-mix(in srgb,var(--ink) 5%,transparent) 5px,color-mix(in srgb,var(--ink) 5%,transparent) 6px);color:var(--muted)}
+.calendar[data-read="true"] [data-busy="false"]{background:var(--tint);color:var(--accent-text)}
+.calendar [data-selected="true"]{box-shadow:inset 0 0 0 2px var(--accent);transform:translateY(-3px)}
+.decision{padding:15px 0;min-height:152px;display:grid;align-items:center}
+.decision p{display:flex;gap:14px;align-items:center;margin:0}
+.invitation{display:flex;align-items:flex-start;gap:20px;padding:25px 28px;background:var(--surface);box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 5%,transparent);border-radius:4px;transform:rotate(-.7deg);max-width:520px;margin:0 auto}
+.invitation svg{color:var(--accent-text);margin-top:3px}
+.invitation h3{font-size:21px;font-weight:550;margin:0 0 13px}
+.invitation p{font-size:15px!important;line-height:1.8}
+.invitation strong{display:block;font-size:14px;font-weight:500;color:var(--accent-text);margin-top:14px}
+.agenda .actions>button:first-child{background:var(--tint)}
+
+/* Editorial rhythm: comparison, specimen, and a compact task brief. */
+.twoTimes{display:grid;grid-template-columns:1fr 1fr;gap:46px;margin:40px 0}
+.twoTimes h3{font-size:25px;font-weight:550;margin:0 0 15px;color:var(--accent-text)}
+.twoTimes p{font-size:17px;line-height:1.9;margin:0}
+.pullquote{font-size:clamp(24px,3vw,34px);font-weight:500;line-height:1.65;color:var(--accent-text);margin:46px 0;max-width:620px}
+.pairDefinition{display:grid;gap:25px;margin:35px 0}
+.pairDefinition>div{display:grid;grid-template-columns:120px 1fr;gap:28px;align-items:baseline}
+.pairDefinition dt{font-size:22px;color:var(--accent-text)}
+.pairDefinition dd{margin:0;font-size:17px;line-height:1.9}
+.taskBrief{display:grid;grid-template-columns:1fr 1fr;gap:24px 44px;background:color-mix(in srgb,var(--surface) 55%,transparent);padding:30px 34px;border-radius:5px;margin:35px 0}
+.taskBrief dt{font-size:15px;color:var(--accent-text);margin-bottom:10px}
+.taskBrief dd{font-size:18px;line-height:1.8;margin:0}
+.roleList{display:grid;gap:25px;margin:35px 0}
+.roleList>div{display:grid;grid-template-columns:30px 100px 1fr;gap:20px;align-items:baseline}
+.roleList svg{color:var(--accent-text);align-self:center}
+.roleList dt{font-size:20px;font-weight:500}
+.roleList dd{font-size:16px;line-height:1.9;margin:0}
+.offset :global(.vp-chapter-content)>p{max-width:660px;margin-left:auto}
+.offset :global(.vp-chapter-content)>h2{max-width:660px;margin-left:auto}
+
+/* Finite hero animations: shared ConceptHero pauses them offscreen. */
+.probabilityHero{padding:25px 8px;width:100%;max-width:330px;margin:auto}
+.probabilityHero p{font:22px ui-monospace,monospace;margin:0 0 30px;white-space:nowrap}
+.probabilityHero strong{font-weight:500;animation:heroAppend 3.8s ease both;color:var(--accent-text)}
+.probabilityHero>div{display:grid;grid-template-columns:46px 1fr 40px;gap:12px;align-items:center;margin:18px 0;font:13px ui-monospace,monospace}
+.probabilityHero i{height:14px;width:var(--probability);background:var(--accent);border-radius:3px;animation:growBar 2.7s ease both}
+.probabilityHero code{color:var(--muted);font-size:12px}
+.tokenHero{display:flex;align-items:center;justify-content:center;height:205px;gap:12px;perspective:800px}
+.tokenHero>div{display:grid;place-items:center;width:100px;height:110px;background:var(--surface);box-shadow:0 12px 24px color-mix(in srgb,var(--ink) 5%,transparent);border-radius:4px;animation:tokenUnfold 3.8s ease both;transform:rotate(-5deg)}
+.tokenHero>div:nth-child(2){transform:translateY(23px) rotate(7deg);animation-delay:.3s}
+.tokenHero strong{font:32px ui-monospace,monospace;color:var(--ink)}
+.tokenHero span{color:var(--accent-text);font:14px ui-monospace,monospace;animation:heroAppend 3.8s ease both}
+.agendaHero{height:205px;position:relative;max-width:300px;margin:8px auto;display:flex;align-items:center;padding:0 25px}
+.heroCalendar{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:180px;padding:18px;background:var(--surface);border-radius:5px;transform:rotate(-6deg)}
+.heroCalendar svg{grid-column:1/-1;margin-bottom:6px}
+.heroCalendar i{height:28px;background:var(--tint);border-radius:3px}
+.heroCalendar i:nth-of-type(2),.heroCalendar i:nth-of-type(5){background:var(--accent);animation:heroSlot 3.5s ease both}
+.heroInvite{position:absolute;right:0;bottom:7px;display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--surface);box-shadow:0 10px 30px color-mix(in srgb,var(--ink) 7%,transparent);border-radius:4px;transform:rotate(5deg);animation:inviteArrive 4.5s ease both}
+.heroInvite strong{font-size:16px;font-weight:500}.heroInvite span{font-size:12px;color:var(--muted)}
+@keyframes growBar{0%{width:0}65%,100%{width:var(--probability)}}
+@keyframes heroAppend{0%,45%{opacity:0}85%,100%{opacity:1}}
+@keyframes tokenUnfold{0%{opacity:0;transform:translateY(-15px) rotateY(-60deg)}75%,100%{opacity:1}}
+@keyframes heroSlot{0%,35%{opacity:.25}65%,100%{opacity:1}}
+@keyframes inviteArrive{0%,45%{opacity:0;transform:translate(-20px,20px) rotate(-4deg)}85%,100%{opacity:1;transform:rotate(5deg)}}
+@media(max-width:600px){
+  .candidateDesk{grid-template-columns:1fr;gap:10px;padding:20px}.sentence{min-height:110px}.deskLabel{padding:0}
+  .typeDesk{padding:20px 14px}.tokenStrip{gap:6px}.tokenTile{min-width:34px;height:61px}.tokenTile>span,.tokenTile>code{font-size:22px;padding:10px 11px}.tokenRows{margin:28px 0 20px}
+  .vocabulary{gap:2px}.tokenMeta{gap:6px}.tokenMeta button{padding:8px}.tokenMeta>strong{font-size:29px}
+  .hours,.calendarRow{grid-template-columns:37px repeat(4,minmax(0,1fr));gap:6px}.hours{font-size:11px}.calendarRow>div{height:62px}.calendarRow>strong,.calendarRow>div>span{font-size:13px}
+  .goal p{font-size:18px}.decision{min-height:165px}.invitation{padding:21px 17px;gap:12px}.invitation h3{font-size:19px}
+  .twoTimes{grid-template-columns:1fr;gap:30px}.pairDefinition>div{grid-template-columns:80px 1fr;gap:20px}.pairDefinition dt{font-size:19px}
+  .taskBrief{grid-template-columns:1fr;padding:25px;gap:23px}.roleList>div{grid-template-columns:28px 1fr;gap:12px}.roleList dd{grid-column:2}
+}
+@media(prefers-reduced-motion:reduce){.lab *{transition:none!important;animation:none!important}.tokenTile{transform:none!important}.tokenRows[data-ids="true"] .tokenTile>span{visibility:hidden}.tokenRows[data-ids="true"] .tokenTile>code{transform:none}.tokenRows[data-ids="false"] .tokenTile>code{visibility:hidden}}
