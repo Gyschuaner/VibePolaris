@@ -329,21 +329,47 @@
  .vp-reading-links .vp-related-link>svg { grid-column:2; grid-row:1/3; }
 }
 
+/* The route meteor lands on the star beside the Harness headline; the hero gap already provides spacing. */
+.vp-hero-top .term-route-star.term-story-star { margin-right: 0; align-self: flex-start; margin-top: 6px; }
+
 /* Keep the chapter directory beside the reading column on wide screens. */
-.vp-page-layout{display:grid;grid-template-columns:170px minmax(0,760px);gap:56px;align-items:start;max-width:986px;margin:0 auto}
-.vp-reading-content{min-width:0}
-.vp-page-layout .vp-toc{position:sticky;top:92px;display:grid;align-content:start;gap:2px;max-width:none;margin:35px 0 0;padding:10px 0 10px 14px;border:0;border-left:1px solid var(--hairline);background:transparent;backdrop-filter:none;overflow-y:auto;overflow-x:visible;max-height:calc(100vh - 122px);font-size:12px;scrollbar-width:thin}
-.vp-page-layout .vp-toc-label{padding:0 10px 9px;color:var(--muted);font-size:11px}
-.vp-page-layout .vp-toc a{display:block;padding:8px 10px;border-left:2px solid transparent;margin-left:-15px;color:var(--muted);line-height:1.45;white-space:normal}
-.vp-page-layout .vp-toc a.active{border-left-color:var(--accent);background:var(--tint);color:var(--accent-text);font-weight:650}
+.vp-page-layout{display:grid;grid-template-columns:minmax(0,1fr) 190px;grid-template-areas:"content toc";gap:64px;align-items:start;margin:0 calc(50% - 50vw);padding:0 48px}
+.vp-reading-content{min-width:0;grid-area:content}
+.vp-page-layout .vp-toc{grid-area:toc;position:sticky;top:92px;display:grid;align-content:start;gap:3px;max-width:none;margin:35px 0 0;padding:10px 16px 10px 0;background:transparent;backdrop-filter:none;overflow-y:auto;overflow-x:visible;max-height:calc(100vh - 122px);font-size:12px;scrollbar-width:thin}
+.vp-page-layout .vp-toc:before{content:"";position:absolute;top:0;bottom:0;right:0;width:1px;background:linear-gradient(180deg,transparent,var(--hairline) 14%,var(--hairline) 86%,transparent)}
+.vp-page-layout .vp-toc-label{display:flex;align-items:center;gap:7px;padding:0 12px 10px;color:var(--muted);font-size:11px}
+.vp-toc-star{width:12px;height:12px;flex:none;display:block;background:var(--accent-text);opacity:.85;-webkit-mask-image:url("/polaris-star-mask.png");mask-image:url("/polaris-star-mask.png");-webkit-mask-size:222% 188%;mask-size:222% 188%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+.vp-page-layout .vp-toc a{display:block;position:relative;padding:8px 12px;border-radius:6px;color:var(--muted);line-height:1.45;white-space:normal;transition:background .2s,color .2s}
 .vp-page-layout .vp-toc a:hover{color:var(--accent-text);background:color-mix(in srgb,var(--tint) 60%,transparent)}
+.vp-page-layout .vp-toc a.active{background:var(--tint);color:var(--accent-text);font-weight:650}
+.vp-page-layout .vp-toc a.active:after{content:"";position:absolute;right:-14px;top:50%;width:10px;height:10px;transform:translateY(-50%);background:var(--accent);-webkit-mask-image:url("/polaris-star-mask.png");mask-image:url("/polaris-star-mask.png");-webkit-mask-size:222% 188%;mask-size:222% 188%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;animation:vp-toc-star-pulse 2.6s ease-in-out infinite}
+@keyframes vp-toc-star-pulse{0%,100%{opacity:.55;transform:translateY(-50%) scale(.9)}50%{opacity:1;transform:translateY(-50%) scale(1.12)}}
 
 @media(max-width:900px){
- .vp-page-layout{display:block;max-width:760px}
+ .vp-page-layout{display:block;max-width:760px;margin:0 auto;padding:0}
  .vp-page-layout .vp-toc{position:sticky;top:65px;z-index:30;display:flex;align-items:center;gap:20px;margin:0;padding:14px 0;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);background:color-mix(in srgb,var(--bg) 96%,transparent);backdrop-filter:blur(8px);overflow-x:auto;overflow-y:hidden;max-height:none;scrollbar-width:none}
+ .vp-page-layout .vp-toc:before{display:none}
  .vp-page-layout .vp-toc-label{padding:0 2px 0 0;flex:none}
  .vp-page-layout .vp-toc a{padding:0;border:0;margin:0;flex:none;white-space:nowrap;background:transparent}
  .vp-page-layout .vp-toc a.active{background:transparent}
+ .vp-page-layout .vp-toc a.active:after{display:none}
 }
 
 @media print{.vp-page-layout{display:block}.vp-page-layout .vp-toc{display:none!important}}
+
+/* Model-only mode uses a conversation surface so the difference from Harness is visible in one glance. */
+.vp-lab-content[data-mode="model"]{grid-template-columns:minmax(0,1fr)}
+.vp-model-chat{margin:-20px -24px 0 auto;max-width:812px;background:var(--surface)}
+.vp-model-chat-thread{min-height:382px;max-height:480px;overflow-y:auto;padding:25px 29px 20px;background:color-mix(in srgb,var(--bg) 34%,var(--surface));scrollbar-width:thin}
+.vp-model-chat-date{margin:0 auto 27px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:.02em}
+.vp-model-message{display:flex;align-items:flex-start;gap:10px;margin-top:22px}.vp-model-message.is-user{justify-content:flex-end;flex-direction:row-reverse}.vp-model-message-content{display:flex;flex-direction:column;align-items:flex-start;max-width:min(82%,520px)}.vp-model-message.is-user .vp-model-message-content{align-items:flex-end}
+.vp-model-avatar{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--hairline);border-radius:50%;background:var(--surface);color:var(--muted);font-size:11px}.vp-model-avatar.is-model{color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 35%,var(--hairline));background:var(--tint)}
+.vp-model-message-label{display:flex;align-items:center;gap:8px;color:var(--muted);font:11px ui-monospace,Consolas,monospace;margin:0 0 7px}
+.vp-model-bubble{padding:12px 15px;border:1px solid var(--hairline);border-radius:3px;background:var(--surface);color:var(--ink);font-size:15px;line-height:1.85;white-space:pre-wrap}.vp-model-message.is-user .vp-model-bubble{border-color:color-mix(in srgb,var(--accent) 35%,var(--hairline));background:var(--tint);text-align:left}.vp-model-caret{display:inline-block;width:2px;height:1.05em;margin-left:3px;background:var(--accent);vertical-align:-.13em;animation:vp-chat-blink .9s step-end infinite}
+.vp-model-thinking{display:flex;align-items:center;gap:10px;margin-top:22px}.vp-model-thinking-bubble{display:flex;align-items:center;gap:5px;padding:12px 15px;border:1px solid var(--hairline);background:var(--surface);color:var(--muted);font-size:13px}.vp-model-thinking-bubble span{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:vp-chat-bounce 1.1s ease-in-out infinite}.vp-model-thinking-bubble span:nth-child(2){animation-delay:.13s}.vp-model-thinking-bubble span:nth-child(3){animation-delay:.26s}
+.vp-model-composer{display:flex;align-items:center;gap:12px;margin:0 20px;padding:12px 14px;border:1px solid var(--hairline);border-radius:6px;background:var(--surface)}.vp-model-composer>span{flex:1;color:var(--muted);font-size:13px}.vp-model-composer button{width:31px;height:31px;border:0;border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--hairline);color:var(--surface)}
+@keyframes vp-chat-blink{0%,45%{opacity:1}46%,100%{opacity:0}}
+@keyframes vp-chat-bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
+@media(max-width:650px){
+ .vp-model-chat{margin:-15px -13px 0}.vp-model-chat-thread{min-height:365px;max-height:430px;padding:20px 14px 17px}.vp-model-chat-date{margin-bottom:21px;font-size:10px}.vp-model-message-content{max-width:84%}.vp-model-bubble{font-size:14px;line-height:1.8;padding:10px 12px}.vp-model-message-label{font-size:10px}.vp-model-composer{margin:0 13px;padding:10px 11px}.vp-model-composer>span{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.vp-model-caret,.vp-model-thinking-bubble span{animation:none!important}}
