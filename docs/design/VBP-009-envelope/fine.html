@@ -1,0 +1,20 @@
+<!doctype html>
+<!-- Assumption: compare one continuous, merging water contour in the existing mist/clay palette. This is a design prototype, not production integration. -->
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>连续水痕 · 方向预览</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css"></head>
+<body data-mode="fine"><main>
+<header><div><h1>连续水痕</h1><p class="intro">按住拖动，让整条轮廓随手势流动。</p></div><div class="tools"><button id="replay" type="button">播放示范</button><button id="freeze" type="button" aria-pressed="false">定格</button></div></header>
+<nav aria-label="动效方向"><a data-mode="water" href="water.html">A 水面包络<span>推荐</span></a><a data-mode="fine" href="fine.html">B 轻细水线</a><a data-mode="silk" href="silk.html">C 柔软拖尾</a></nav>
+<section class="stage" aria-label="按住鼠标拖动，体验连续水痕"><div class="sample"><h2>让动作连成一片。</h2><p>移动时，水痕沿途延展；转弯时，轮廓跟着弯曲。<br>松开后，留下的形状轻轻舒展开，再慢慢回到平静。</p></div>
+<svg aria-hidden="true"><defs><filter id="water-edge" x="-20%" y="-35%" width="140%" height="170%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="blur"/>
+<feColorMatrix in="blur" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 20 -9" result="body"/>
+<feMorphology in="body" operator="erode" radius="1.3" result="inside"/>
+<feComposite in="body" in2="inside" operator="out" result="edge"/>
+<feFlood flood-color="#9A6248" result="ink"/><feComposite in="ink" in2="edge" operator="in" result="line"/>
+<feFlood flood-color="#C98D69" flood-opacity=".045" result="tint"/><feComposite in="tint" in2="body" operator="in" result="fill"/>
+<feMerge><feMergeNode in="fill"/><feMergeNode in="line"/></feMerge>
+</filter></defs><path id="water-shape" fill="white" filter="url(#water-edge)"/>
+<g id="demo-pointer" opacity="0"><circle r="3.5" fill="#9A6248"/></g></svg>
+<p class="hint">按住鼠标拖动，也可以试着画个弯</p></section>
+<p class="caption" aria-live="polite"></p>
+</main><script src="envelope.js"></script></body></html>
