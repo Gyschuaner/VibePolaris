@@ -1282,22 +1282,15 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   z-index: 1;
   left: 50%;
   top: 50%;
-  width: 118px;
-  height: 104px;
+  width: 160px;
+  height: 6px;
   color: var(--brand-trail);
-  background: currentColor;
+  background: linear-gradient(90deg, transparent, currentColor);
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
   opacity: 0;
-  transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.22);
-  transform-origin: 81.4% 16.35%;
-  -webkit-mask-image: url("/meteor-trail-frames.png");
-  mask-image: url("/meteor-trail-frames.png");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 3200% 100%;
-  mask-size: 3200% 100%;
-  /* Keep the full tail attached at its head; grow and retract from that anchor. */
-  -webkit-mask-position: 100% 0;
-  mask-position: 100% 0;
+  /* The parent follows the path tangent; anchor the straight tail at the star. */
+  transform: translate(-100%, -50%) scaleX(0);
+  transform-origin: 100% 50%;
   animation: route-meteor-tail-life 820ms linear both;
 }
 
@@ -1329,12 +1322,12 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   }
 }
 @keyframes route-meteor-tail-life {
-  0% { opacity: 0; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(0); }
-  18% { opacity: .58; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.45); }
-  44% { opacity: .84; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(1); }
-  62% { opacity: .84; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.75); }
-  84% { opacity: .72; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(.25); }
-  100% { opacity: 0; transform: translate(-81.4%, -16.35%) rotate(45deg) scale(0); }
+  0% { opacity: 0; transform: translate(-100%, -50%) scaleX(0); }
+  18% { opacity: .5; transform: translate(-100%, -50%) scaleX(.45); }
+  44% { opacity: .75; transform: translate(-100%, -50%) scaleX(1); }
+  62% { opacity: .68; transform: translate(-100%, -50%) scaleX(.8); }
+  84% { opacity: .3; transform: translate(-100%, -50%) scaleX(.25); }
+  100% { opacity: 0; transform: translate(-100%, -50%) scaleX(0); }
 }
 @keyframes route-page-arrive {
   from { opacity: .18; transform: translateY(6px) scale(.996); }
@@ -1972,7 +1965,7 @@ table.cmp td:first-child, table.cmp th:first-child { color: var(--ink); font-wei
   .term-route-star { width: 42px; height: 42px; }
   .detail h1 { font-size: 30px; }
   .detail h1 .en { display: block; margin: 3px 0 0; font-size: 19px; }
-  .route-meteor-tail { width: 104px; height: 92px; }
+  .route-meteor-tail { width: 112px; height: 5px; }
   .term-detail { padding: 0 22px; }
   .term-identity { padding: 42px 0 34px; }
   .term-route-star.term-identity-star { width: 82px; height: 82px; }
