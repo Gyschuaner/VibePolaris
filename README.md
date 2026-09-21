@@ -1,6 +1,6 @@
 # VibePolaris
 
-VibePolaris（Vibe 指北）是面向 Vibe Coder 的术语词典与选型指北。
+VibePolaris（Vibe 指北）是面向 Vibe Coder 的术语词典与概念星图。
 
 ## 本地开发
 
@@ -50,3 +50,5 @@ Harness 正文中的局部星图复用 `ConceptGraph` 的 inline 模式：仅加
 词条和 HTML、CSS、JavaScript 教程支持本地笔记：选中正文后划线或写批注，桌面批注对齐原文，手机使用底部面板。导航中的“我的笔记”可搜索、随手记、删除撤销及导入导出 JSON 备份。数据只写入当前浏览器的原生 IndexedDB，不上传服务器，不预置示例；清除网站数据会删除笔记，不同域名、端口或浏览器需用备份迁移。实现与验证见 [VBP-020 本地笔记](docs/design/VBP-020-local-notes/README.md)。
 
 记忆、上下文窗口、提示词、MCP、执行沙箱在 `ExtendedConceptPages` 中扩展：分别使用跨会话存取、容量尺、任务稿编辑、连接与发现、空间访问边界。`ExtendedConceptHeroes` 提供独立首图，复用 `ConceptHero` 的可见性与重播控制；`ExtendedConceptLessons` 保存本地状态，`lib/extended-concept-sources.ts` 维护来源与引用锚点。窗口的 100 格为示意配额；所有示例均不调用模型、读写用户文件或连接真实 MCP 服务器。
+
+桌面阅读页的目录／批注侧栏可收起为小按钮，正文随之扩展；收起偏好保存在当前浏览器，写批注或点击高亮会展开侧栏。选型指南与工具模块暂时下线，站内入口及站点地图已移除，旧 `/guides`、`/tools` 地址临时跳回首页；HTML、CSS、JavaScript 深度教程继续从词条进入。

@@ -29,7 +29,7 @@ export default function JavaScriptCoursePage() {
       <ReadingNotes path="/guides/javascript" title="JavaScript 深度教程" layout="course">
       <main className="css-course-page">
         <div className="css-course-shell">
-          <div className="crumb css-course-crumb"><Link href="/guides">学习与指南</Link> / JavaScript 深度教程</div>
+          <div className="crumb css-course-crumb"><Link href="/terms/javascript">JavaScript</Link> / JavaScript 深度教程</div>
 
           <header className="css-course-hero">
             <div className="css-course-hero-lockup">

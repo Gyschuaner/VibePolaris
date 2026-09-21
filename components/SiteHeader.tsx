@@ -15,8 +15,6 @@ export function SiteHeader({ wide = false, termSlug }: { wide?: boolean; termSlu
         </Link>
         <div className="nav-links">
           <Link href={termSlug ? `/?term=${termSlug}` : "/"}>星图</Link>
-          <Link href="/guides">选型指南</Link>
-          <Link href="/tools">工具</Link>
           <NotesButton />
           <Link href="/about">关于</Link>
         </div>

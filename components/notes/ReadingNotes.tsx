@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { ArrowSquareOut, Highlighter, NotePencil, Plus, Trash, X } from "@phosphor-icons/react";
+import { ArrowSquareOut, CaretLeft, CaretRight, Highlighter, NotePencil, Plus, Trash, X } from "@phosphor-icons/react";
 import type { NoteAnchor, NoteSource, ReadingNote } from "@/lib/reading-notes";
 import { captureNoteSelection, prepareBlocks, rangeForAnchor } from "@/lib/reading-note-anchors";
 import { NoteEditor, NoteTime, useNotes } from "./NotesProvider";
@@ -11,10 +11,12 @@ import styles from "./ReadingNotes.module.css";
 type ReaderContextValue = {
   notes: ReadingNote[]; selected: string | null; missing: string[]; tab: "toc" | "notes"; panel: boolean;
   setTab: (tab: "toc" | "notes") => void; setPanel: (open: boolean) => void;
+  collapsed: boolean; setCollapsed: (collapsed: boolean) => void;
   activate: (note: ReadingNote) => void; goTo: (note: ReadingNote) => void; quickNote: () => void;
 };
 const ReaderContext = createContext<ReaderContextValue | null>(null);
 const desktop = "(min-width: 1101px)";
+const collapsedPreference = "vp-reading-sidebar-collapsed";
 
 export function ReadingNotes({ path, title, layout = "concept", children }: { path: string; title: string; layout?: "concept" | "course" | "standalone"; children: ReactNode }) {
   const store = useNotes(), root = useRef<HTMLDivElement>(null);
@@ -23,8 +25,16 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
   const revealed = useRef("");
   const [selected, setSelected] = useState<string | null>(null), [missing, setMissing] = useState<string[]>([]);
   const [tab, setTab] = useState<"toc" | "notes">("toc"), [panel, setPanel] = useState(false);
+  const [collapsed, updateCollapsed] = useState(false);
+  const setCollapsed = useCallback((value: boolean) => {
+    updateCollapsed(value);
+    try { localStorage.setItem(collapsedPreference, String(value)); } catch { /* Keep the toggle usable when storage is unavailable. */ }
+  }, []);
+  useLayoutEffect(() => {
+    try { updateCollapsed(localStorage.getItem(collapsedPreference) === "true"); } catch { /* Default to expanded. */ }
+  }, []);
   const [selection, setSelection] = useState<{ anchor: NoteAnchor; rect: DOMRect } | null>(null);
-  const activate = useCallback((note: ReadingNote) => { setSelected(note.id); setTab("notes"); setPanel(true); }, []);
+  const activate = useCallback((note: ReadingNote) => { setCollapsed(false); setSelected(note.id); setTab("notes"); setPanel(true); }, [setCollapsed]);
   const goTo = useCallback((note: ReadingNote) => {
     if (!root.current || !note.anchor) return;
     const range = rangeForAnchor(root.current, note.anchor);
@@ -123,6 +133,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
         CSS.highlights.set("vp-reading-active", new Highlight(...(selected && ranges.has(selected) ? [ranges.get(selected)!] : [])));
       }
       const links = article.querySelector<SVGSVGElement>("[data-note-links]");
+      if (collapsed && matchMedia(desktop).matches) return;
       links?.querySelectorAll<SVGGElement>("g").forEach(link => { link.style.display = "none"; });
       const canvas = article.querySelector<HTMLElement>("[data-note-canvas]");
       if (!canvas) return;
@@ -173,14 +184,14 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
     changes.observe(article, {subtree:true,childList:true,characterData:true});
     article.addEventListener("toggle",schedule,true); window.addEventListener("resize",schedule); void document.fonts.ready.then(schedule);
     return () => { disposed=true;cancelAnimationFrame(frame);resize.disconnect();changes.disconnect();article.removeEventListener("toggle",schedule,true);window.removeEventListener("resize",schedule);if("highlights" in CSS){CSS.highlights.delete("vp-reading-notes");CSS.highlights.delete("vp-reading-active");} };
-  }, [notes, selected, tab, panel]);
+  }, [notes, selected, tab, panel, collapsed]);
 
   function clickHighlight(event: React.MouseEvent) {
     if (!root.current || window.getSelection()?.toString() || (event.target as Element).closest("[data-note-ui]")) return;
     const found = notes.find(note => { const range=rangeForAnchor(root.current!,note.anchor!);return range && [...range.getClientRects()].some(rect=>event.clientX>=rect.left&&event.clientX<=rect.right&&event.clientY>=rect.top&&event.clientY<=rect.bottom); });
     if (found) activate(found);
   }
-  return <ReaderContext.Provider value={{notes,selected,missing,tab,panel,setTab,setPanel,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} onClick={clickHighlight}>
+  return <ReaderContext.Provider value={{notes,selected,missing,tab,panel,setTab,setPanel,collapsed,setCollapsed,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} data-rail-collapsed={collapsed} onClick={clickHighlight}>
     <style>{`::highlight(vp-reading-notes){background:color-mix(in srgb,var(--accent) 23%,var(--bg));color:var(--ink)}::highlight(vp-reading-active){background:color-mix(in srgb,var(--accent) 34%,var(--bg));color:var(--ink)}`}</style>
     {children}{layout === "standalone" && <ArticleNotesRail/>}
     <svg className={styles.connectors} data-note-links data-note-ui aria-hidden="true">{notes.map(note=><g key={note.id} data-connector-id={note.id} data-active={selected === note.id}><path/><circle r="2"/><circle r="2"/></g>)}</svg>
@@ -191,6 +202,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
 
 export function ArticleNotesRail({ children }: { children?: ReactNode }) {
   const reader = useContext(ReaderContext), store = useNotes();
+  const railId = useId();
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
     const media = matchMedia(desktop), update = () => setMobile(!media.matches);
@@ -198,9 +210,10 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
     return () => media.removeEventListener("change", update);
   }, []);
   if (!reader) return children;
-  const {notes, selected, missing, tab, panel, setTab, setPanel, goTo, quickNote} = reader;
-  const rail = <aside data-note-ui className={`${styles.rail} ${panel && tab === "notes" ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
-    <div className={styles.railHead}><div role="tablist" aria-label="阅读侧栏">{children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}<button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button></div><button onClick={quickNote} disabled={!store.ready}><Plus size={17}/>记一条</button><button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button></div>
+  const {notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, goTo, quickNote} = reader;
+  const toggleLabel = collapsed ? "展开阅读侧栏" : "收起阅读侧栏";
+  const rail = <aside id={railId} data-note-ui className={`${styles.rail} ${panel && tab === "notes" ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
+    <div className={styles.railHead}><div role="tablist" aria-label="阅读侧栏">{children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}<button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button></div><button onClick={quickNote} disabled={!store.ready}><Plus size={17}/>记一条</button><button className={styles.railToggle} aria-label={toggleLabel} title={toggleLabel} aria-expanded={!collapsed} aria-controls={railId} onClick={()=>setCollapsed(!collapsed)}>{collapsed ? <CaretLeft size={18}/> : <CaretRight size={18}/>}</button><button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button></div>
     {store.storageError && <p className={styles.error}>本地存储暂不可用。<button onClick={store.reload}>重试</button></p>}
     {tab === "toc" && children ? <div className={styles.directory}>{children}</div> : <><div data-note-canvas className={styles.canvas} role="tabpanel" aria-label="批注">{notes.map(note=><section className={`${styles.note} ${selected === note.id ? styles.active : ""}`} data-note-id={note.id} key={note.id} hidden={missing.includes(note.id)}>
       <div className={styles.noteHead}><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>

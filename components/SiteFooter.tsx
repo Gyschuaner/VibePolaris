@@ -11,11 +11,11 @@ export function SiteFooter({ home = false }: { home?: boolean }) {
             <BrandMark size="footer" />
             <strong>VibePolaris</strong><span className="brand-slash">/</span><span className="zh">Vibe指北</span>
           </Link>
-          <div className="ftag">面向 Vibe Coder 的术语词典与选型指北</div>
+          <div className="ftag">面向 Vibe Coder 的术语词典与概念星图</div>
         </div>
         <div className="fright">
           <div className="fnav">
-            <Link href="/">星图</Link><Link href="/guides">选型指南</Link><Link href="/tools">工具</Link><Link href="/about">关于</Link>
+            <Link href="/">星图</Link><Link href="/about">关于</Link>
           </div>
           © {new Date().getFullYear()} VibePolaris · 静态内容，不在浏览器调用模型
         </div>
