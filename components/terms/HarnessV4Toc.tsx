@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ArticleNotesRail } from "@/components/notes/ReadingNotes";
 import { harnessSectionTitles } from "@/lib/harness-sections";
 
 const defaultItems = Object.entries(harnessSectionTitles);
@@ -64,13 +65,13 @@ export function HarnessV4Toc({ items = defaultItems }: { items?: [string, string
   }, [activeId]);
 
   return (
-    <nav ref={navigation} aria-label="本页目录" className="vp-toc">
+    <ArticleNotesRail><nav ref={navigation} aria-label="本页目录" className="vp-toc">
       <span ref={star} className="vp-toc-marker brand-star-only" aria-hidden="true" />
       {items.map(([id, label]) => (
         <a href={`#${id}`} className={activeId === id ? "active" : undefined} aria-current={activeId === id ? "location" : undefined} key={id}>
           {label}
         </a>
       ))}
-    </nav>
+    </nav></ArticleNotesRail>
   );
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ComponentType } from "react";
 
+import { ReadingNotes } from "@/components/notes/ReadingNotes";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TermDetailExperience } from "@/components/TermDetailExperience";
@@ -111,11 +112,13 @@ export default async function TermPage({ params }: TermPageProps) {
   return (
     <>
       <SiteHeader wide termSlug={term.slug} />
+      <ReadingNotes key={term.slug} path={`/terms/${term.slug}`} title={term.zh} layout={term.slug in articleTermPages ? "concept" : "standalone"}>
       {DedicatedTermPage ? (
         <DedicatedTermPage term={term} previous={previous} next={next} related={related} />
       ) : (
         <TermExperiencePage term={term} experience={experience!} previous={previous} next={next} related={related} />
       )}
+      </ReadingNotes>
       {!(term.slug in articleTermPages) && <aside className="term-graph-entry"><Link className="term-graph-link" href={`/?term=${term.slug}`}><span className="brand-star-only" aria-hidden="true" />在星图中探索「{term.zh}」<span aria-hidden="true">↗</span></Link></aside>}
       <SiteFooter />
     </>

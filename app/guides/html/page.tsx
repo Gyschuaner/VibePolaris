@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { FoundationCourseQuiz, HtmlStructureLab } from "@/components/FoundationCoursePractice";
 import { CssCourseToc } from "@/components/CssCourseToc";
+import { ReadingNotes } from "@/components/notes/ReadingNotes";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -25,6 +26,7 @@ export default function HtmlCoursePage() {
   return (
     <>
       <SiteHeader wide />
+      <ReadingNotes path="/guides/html" title="HTML 深度教程" layout="course">
       <main className="css-course-page">
         <div className="css-course-shell">
           <div className="crumb css-course-crumb"><Link href="/guides">学习与指南</Link> / HTML 深度教程</div>
@@ -165,6 +167,7 @@ export default function HtmlCoursePage() {
           </div>
         </div>
       </main>
+      </ReadingNotes>
       <SiteFooter />
     </>
   );
