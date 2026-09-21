@@ -1,51 +1,111 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import styles from "./PointerFeedback.module.css";
 
 const nativeTargets = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [data-pointer-native], :disabled, [aria-disabled="true"]';
 const interactiveTargets = 'a[href], button, summary, [role="button"], [role="link"]';
-const rippleSlots = Array.from({ length: 16 }, (_, index) => index);
+type Point = { x: number; y: number; time: number };
+const smoothstep = (t: number) => t * t * (3 - 2 * t);
+
+// Merge the filled surface before outlining it; samples have no visible rings.
+function envelopePath(points: Point[], progress: number) {
+  const samples: { x: number; y: number }[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = points[Math.max(0, i - 1)], b = points[i], c = points[i + 1], d = points[Math.min(points.length - 1, i + 2)];
+    const steps = Math.max(1, Math.ceil(Math.hypot(c.x - b.x, c.y - b.y) / 4));
+    for (let j = 0; j < steps; j++) {
+      const t = j / steps;
+      const value = (key: "x" | "y") => .5 * (2 * b[key] + (-a[key] + c[key]) * t + (2 * a[key] - 5 * b[key] + 4 * c[key] - d[key]) * t * t + (-a[key] + 3 * b[key] - 3 * c[key] + d[key]) * t * t * t);
+      samples.push({ x: value("x"), y: value("y") });
+    }
+  }
+  samples.push(points[points.length - 1]);
+  const format = (n: number) => n.toFixed(2);
+  return samples.map((point, i) => {
+    const u = samples.length > 1 ? i / (samples.length - 1) : 1;
+    const taper = .12 + .88 * smoothstep(Math.min(1, u * 3));
+    const radius = (23 * taper * (1 + .42 * Math.sin(Math.PI * u)) + 17 * smoothstep(progress)) * (samples.length === 1 ? .8 : 1);
+    return `M${format(point.x - radius)},${format(point.y)}a${format(radius)},${format(radius)} 0 1 0 ${format(2 * radius)},0a${format(radius)},${format(radius)} 0 1 0 ${format(-2 * radius)},0Z`;
+  }).join("");
+}
 
 export function PointerFeedback() {
   const halo = useRef<HTMLDivElement>(null);
-  const ripples = useRef<HTMLDivElement>(null);
+  const water = useRef<SVGPathElement>(null);
+  const filterId = useId();
 
   useEffect(() => {
-    const light = halo.current!;
-    const rings = Array.from(ripples.current!.children) as HTMLDivElement[];
+    const light = halo.current!, shape = water.current!;
     const media = matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
-    let frame = 0;
-    const pulses: Animation[] = [];
-    let nextRing = 0;
+    let haloFrame = 0, waterFrame = 0;
     let pressed = false;
-    let lastRipple: { x: number; y: number; time: number } | undefined;
+    let points: Point[] = [];
+    let pending: Point | undefined;
+    let releasedAt: number | undefined;
     let removeListeners = () => {};
 
     const hideHalo = () => {
-      cancelAnimationFrame(frame);
-      frame = 0;
+      cancelAnimationFrame(haloFrame);
+      haloFrame = 0;
       light.dataset.visible = "false";
       light.dataset.pressed = "false";
     };
-    const hide = () => {
-      hideHalo();
-      pressed = false;
-      lastRipple = undefined;
-      pulses.forEach(pulse => pulse.cancel());
+    const clearWater = () => {
+      cancelAnimationFrame(waterFrame);
+      waterFrame = 0;
+      pending = undefined;
+      releasedAt = undefined;
+      points = [];
+      shape.setAttribute("d", "");
     };
+    const hide = () => { hideHalo(); clearWater(); pressed = false; };
 
-    const emitRipple = (event: PointerEvent) => {
-      const index = nextRing++ % rings.length, ring = rings[index];
-      pulses[index]?.cancel();
-      ring.style.left = `${event.clientX}px`;
-      ring.style.top = `${event.clientY}px`;
-      pulses[index] = ring.animate([
-        { transform: "scale(.35)", opacity: .7, offset: 0 },
-        { transform: "scale(1.25)", opacity: .45, offset: .6 },
-        { transform: "scale(1.75)", opacity: 0, offset: 1 },
-      ], { duration: 650, easing: "ease-out" });
-      lastRipple = { x: event.clientX, y: event.clientY, time: event.timeStamp };
+    const drawWater = (now: number) => {
+      waterFrame = 0;
+      if (pending) {
+        const last = points[points.length - 1];
+        if (!last || Math.hypot(pending.x - last.x, pending.y - last.y) > 2) points.push(pending);
+        pending = undefined;
+        // Bound source history and total distance, including fast pointer jumps.
+        let distance = 0;
+        for (let i = points.length - 1; i > 0; i--) {
+          const a = points[i - 1], b = points[i];
+          const length = Math.hypot(b.x - a.x, b.y - a.y);
+          if (distance + length > 900 || points.length - i >= 96) {
+            const ratio = Math.min(1, (900 - distance) / Math.max(1, length));
+            points = [{ x: b.x + (a.x - b.x) * ratio, y: b.y + (a.y - b.y) * ratio, time: b.time + (a.time - b.time) * ratio }, ...points.slice(i)];
+            break;
+          }
+          distance += length;
+        }
+      }
+      if (!points.length) return;
+      if (releasedAt === undefined) {
+        const cutoff = now - 840;
+        while (points.length > 1 && points[1].time <= cutoff) points.shift();
+        if (points.length > 1 && points[0].time < cutoff) {
+          const a = points[0], b = points[1];
+          const ratio = (cutoff - a.time) / Math.max(1, b.time - a.time);
+          points[0] = { x: a.x + (b.x - a.x) * ratio, y: a.y + (b.y - a.y) * ratio, time: cutoff };
+        }
+      }
+      const progress = releasedAt === undefined ? 0 : Math.min(1, (now - releasedAt) / 780);
+      if (progress === 1) { clearWater(); return; }
+      shape.setAttribute("d", envelopePath(points, progress));
+      shape.setAttribute("opacity", String(.76 * (1 - smoothstep(progress))));
+      if (releasedAt !== undefined || points.length > 1) waterFrame = requestAnimationFrame(drawWater);
+    };
+    const queueWater = () => { if (!waterFrame) waterFrame = requestAnimationFrame(drawWater); };
+    const extendWater = (event: PointerEvent) => {
+      pending = { x: event.clientX, y: event.clientY, time: performance.now() };
+      queueWater();
+    };
+    const finishWater = () => {
+      if (!pressed) return;
+      pressed = false;
+      releasedAt = performance.now();
+      queueWater();
     };
 
     const configure = () => {
@@ -54,45 +114,36 @@ export function PointerFeedback() {
       if (!media.matches) return;
       const controller = new AbortController();
       const options = { signal: controller.signal, passive: true, capture: true };
-      let x = 0;
-      let y = 0;
-
+      let x = 0, y = 0;
       const usesNativePointer = (event: PointerEvent) => event.pointerType !== "mouse" || !(event.target instanceof Element) || Boolean(event.target.closest(nativeTargets));
       const show = (event: PointerEvent) => {
         x = event.clientX;
         y = event.clientY;
         light.dataset.pressed = String(pressed);
         light.dataset.interactive = String(Boolean((event.target as Element).closest(interactiveTargets)));
-        if (!frame) frame = requestAnimationFrame(() => {
+        if (!haloFrame) haloFrame = requestAnimationFrame(() => {
           light.style.transform = `translate3d(${x}px, ${y}px, 0)`;
           light.dataset.visible = "true";
-          frame = 0;
+          haloFrame = 0;
         });
       };
-
       const move = (event: PointerEvent) => {
-        if (usesNativePointer(event)) { hideHalo(); return; }
-        if (event.buttons & 1 && pressed) {
-          show(event);
-          // Bound emission while allowing each ring to finish independently.
-          if (lastRipple && event.timeStamp-lastRipple.time >= 45 && Math.hypot(event.clientX-lastRipple.x,event.clientY-lastRipple.y) >= 8) emitRipple(event);
-          return;
-        }
-        pressed = false;
+        if (usesNativePointer(event)) { hide(); return; }
+        if (event.buttons & 1 && pressed) { show(event); extendWater(event); return; }
+        finishWater();
         if (event.buttons || window.getSelection()?.isCollapsed === false) { hideHalo(); return; }
         show(event);
       };
-
       const press = (event: PointerEvent) => {
         if (event.button !== 0 || usesNativePointer(event)) { hide(); return; }
+        clearWater();
         pressed = true;
         show(event);
-        emitRipple(event);
+        extendWater(event);
       };
-
       const release = (event: PointerEvent) => {
-        pressed = false;
-        light.dataset.pressed = "false";
+        if (event.button !== 0) return;
+        finishWater();
         move(event);
       };
       const leave = (event: PointerEvent) => { if (!event.relatedTarget) hide(); };
@@ -103,24 +154,35 @@ export function PointerFeedback() {
       document.addEventListener("pointercancel", hide, options);
       document.addEventListener("pointerout", leave, options);
       document.addEventListener("keydown", hide, options);
-      document.addEventListener("scroll", hideHalo, options);
+      document.addEventListener("scroll", hide, options);
       document.addEventListener("visibilitychange", hide, options);
-      // Only leaving the window cancels feedback, not focus moving between controls.
       window.addEventListener("blur", hide, { signal: controller.signal, passive: true });
+      window.addEventListener("resize", hide, { signal: controller.signal, passive: true });
       removeListeners = () => controller.abort();
     };
 
     configure();
     media.addEventListener("change", configure);
-    return () => {
-      removeListeners();
-      media.removeEventListener("change", configure);
-      hide();
-    };
+    return () => { removeListeners(); media.removeEventListener("change", configure); hide(); };
   }, []);
 
   return <div className={styles.layer} aria-hidden="true">
     <div ref={halo} className={styles.halo}><span /></div>
-    <div ref={ripples}>{rippleSlots.map(slot => <div key={slot} className={styles.ripple} />)}</div>
+    <svg className={styles.water}>
+      <defs>
+        <filter id={filterId} x="-20%" y="-35%" width="140%" height="170%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="blur" />
+          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 20 -9" result="body" />
+          <feMorphology in="body" operator="erode" radius="1.3" result="inside" />
+          <feComposite in="body" in2="inside" operator="out" result="edge" />
+          <feFlood floodColor="var(--accent)" result="ink" />
+          <feComposite in="ink" in2="edge" operator="in" result="line" />
+          <feFlood floodColor="var(--brand-star)" floodOpacity=".045" result="tint" />
+          <feComposite in="tint" in2="body" operator="in" result="fill" />
+          <feMerge><feMergeNode in="fill" /><feMergeNode in="line" /></feMerge>
+        </filter>
+      </defs>
+      <path ref={water} data-pointer-water="" fill="white" filter={`url(#${filterId})`} />
+    </svg>
   </div>;
 }
