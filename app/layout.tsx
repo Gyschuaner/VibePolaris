@@ -30,10 +30,10 @@ export const metadata: Metadata = {
     default: "VibePolaris Vibe指北",
     template: "%s — VibePolaris Vibe指北",
   },
-  description: "按技术领域浏览 Vibe Coding 术语、选型知识与工具。零运行时 AI，内容由构建生成。",
+  description: "按技术领域探索 Vibe Coding 概念星图、术语与教程。零运行时 AI，内容由构建生成。",
   openGraph: {
     title: "VibePolaris Vibe指北",
-    description: "面向 Vibe Coder 的术语词典与选型指北。",
+    description: "面向 Vibe Coder 的术语词典与概念星图。",
     locale: "zh_CN",
     type: "website",
   },
