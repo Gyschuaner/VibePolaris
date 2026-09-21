@@ -177,13 +177,16 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
       canvas.style.minHeight = `${Math.max(bottom+20, 100)}px`;
     };
     const schedule = () => { cancelAnimationFrame(frame); frame=requestAnimationFrame(update); };
+    const settleRail = (event: TransitionEvent) => {
+      if (event.propertyName === "transform" && event.target instanceof Element && event.target.hasAttribute("data-note-canvas")) schedule();
+    };
     update();
     const resize = new ResizeObserver(schedule); resize.observe(article);
     article.querySelectorAll<HTMLElement>("[data-note-id]").forEach(card => resize.observe(card));
     const changes = new MutationObserver(records => { if (records.some(record => !(record.target instanceof Element ? record.target : record.target.parentElement)?.closest("[data-note-ui]"))) schedule(); });
     changes.observe(article, {subtree:true,childList:true,characterData:true});
-    article.addEventListener("toggle",schedule,true); window.addEventListener("resize",schedule); void document.fonts.ready.then(schedule);
-    return () => { disposed=true;cancelAnimationFrame(frame);resize.disconnect();changes.disconnect();article.removeEventListener("toggle",schedule,true);window.removeEventListener("resize",schedule);if("highlights" in CSS){CSS.highlights.delete("vp-reading-notes");CSS.highlights.delete("vp-reading-active");} };
+    article.addEventListener("toggle",schedule,true); article.addEventListener("transitionend",settleRail); window.addEventListener("resize",schedule); void document.fonts.ready.then(schedule);
+    return () => { disposed=true;cancelAnimationFrame(frame);resize.disconnect();changes.disconnect();article.removeEventListener("toggle",schedule,true);article.removeEventListener("transitionend",settleRail);window.removeEventListener("resize",schedule);if("highlights" in CSS){CSS.highlights.delete("vp-reading-notes");CSS.highlights.delete("vp-reading-active");} };
   }, [notes, selected, tab, panel, collapsed]);
 
   function clickHighlight(event: React.MouseEvent) {
