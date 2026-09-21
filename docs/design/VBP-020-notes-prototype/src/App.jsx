@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowSquareOut, Brain, Check, DownloadSimple, FileCode, FileText, Highlighter, MagnifyingGlass, NotePencil, Palette, Plus, Trash, UploadSimple, X } from '@phosphor-icons/react';
+import { ArrowRight, ArrowSquareOut, Brain, DownloadSimple, FileCode, FileText, Highlighter, MagnifyingGlass, NotePencil, Palette, Plus, Trash, UploadSimple, X } from '@phosphor-icons/react';
 import { placeMarginNotes } from './margin';
 import { captureSelection, rangeForAnchor } from './anchors';
 import { deleteNote, importNotes, loadNotes, parseBackup, putNote } from './storage';
@@ -25,6 +25,12 @@ const examples = [
   { ...newNote('工具返回结果后，模型才能继续判断。', anchorFor('context', '需要把结果加入后续调用，模型才能依据它继续判断。')), id: 'example-result', example: true },
 ];
 const date = value => new Date(value).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
+function NoteTime({ value }) {
+  const timestamp = new Date(value);
+  const day = timestamp.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+  const time = timestamp.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+  return <time className="note-time" dateTime={value} tabIndex={0} aria-label={`${day} ${time}`}><span className="note-date" aria-hidden="true">{day}</span>{time}</time>;
+}
 const smooth = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
 
 export function App() {
@@ -213,7 +219,7 @@ export function App() {
   const filtered = notes.filter(note => `${note.body} ${note.anchor?.exact ?? ''}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
   function paragraph(block) {
     const marked = notes.some(note => note.anchor?.block === block);
-    return <div className="paragraph" key={block}><p data-anchor={block} id={block}>{paragraphs[block]}</p><button className={`paragraph-action ${marked ? 'marked' : ''}`} aria-label={marked ? `查看此段批注：${block}` : `为此段写笔记：${block}`} title={marked ? '查看此段批注' : '为此段写笔记'} onClick={() => paragraphAction(block)} disabled={!ready}><NotePencil size={21} /></button></div>;
+    return <div className="paragraph" key={block}><p data-anchor={block} id={block}>{paragraphs[block]}</p>{!marked && <button className="paragraph-action" aria-label={`为此段写笔记：${block}`} title="为此段写笔记" onClick={() => paragraphAction(block)} disabled={!ready}><NotePencil size={21} /></button>}</div>;
   }
   return <>
     <header className="topbar"><button className="brand" aria-label="回到文章开头" onClick={() => window.scrollTo({ top: 0, behavior: smooth() })}><span className="brand-mark" aria-hidden="true"><span className="brand-trail" /><span className="brand-star" /></span><b>VibePolaris</b><span className="slash">/</span><span className="chinese">Vibe指北</span></button><nav className="nav" aria-label="主导航"><span className="desktop-only">星图</span><span className="desktop-only">选型指南</span><span className="desktop-only">工具</span><button className="selected" onClick={openLibrary}>我的笔记</button><span className="desktop-only">关于</span><button className="palette" aria-label="切换纸面颜色" onClick={togglePalette}><Palette size={22}/></button></nav></header>
@@ -234,12 +240,13 @@ export function App() {
         {!ready && !storageError && <div className="empty">正在读取本地笔记…</div>}
         {ready && !ordered.length && <div className="empty">选中一句话，留下你的想法。<button onClick={() => add()}>也可以直接记一条</button></div>}
         {ordered.map(note => <section className={`note ${selected === note.id ? 'active' : ''}`} key={note.id} data-note-id={note.id}><i className="margin-link" aria-hidden="true"/>
-          {selected === note.id ? <><div className="note-header"><span>{note.anchor ? '我的想法' : '随手记'}</span><div className="note-actions">{note.anchor && <button className="icon-button" aria-label="回到这条笔记的原文" title="回到原文" onClick={() => goTo(note)}><ArrowSquareOut size={17}/></button>}<button className="icon-button" aria-label="删除这条笔记" title="删除笔记" onClick={() => remove(note)}><Trash size={17}/></button></div></div>
+          <div className="note-header"><button className="icon-button" aria-label={`编辑笔记：${note.body.slice(0,18) || '划线摘录'}`} title={note.example ? '示例笔记 · 点击编辑' : '编辑笔记'} onClick={() => activate(note,true)}><NotePencil size={21}/></button>{selected === note.id && <div className="note-actions"><button className="icon-button" aria-label="回到这条笔记的原文" title="回到原文" onClick={() => goTo(note)}><ArrowSquareOut size={17}/></button><button className="icon-button" aria-label="删除这条笔记" title="删除笔记" onClick={() => remove(note)}><Trash size={17}/></button></div>}</div>
+          {selected === note.id ? <>
             {unmatched.has(note.id) && <button className="excerpt" onClick={() => goTo(note)}>{note.anchor.exact}</button>}
-            <textarea className="note-body" ref={editor} aria-label="我的想法" placeholder={note.anchor ? '写下你的理解…' : '此刻想记住什么？'} value={note.body} maxLength={20000} rows={2} onChange={event => update(note,event.target.value)} onBlur={() => { const current = pending.current.get(note.id); if(current) save(current); }} />
+            <textarea className="note-body" ref={editor} aria-label="笔记内容" placeholder="写下你的理解…" value={note.body} maxLength={20000} rows={2} onChange={event => update(note,event.target.value)} onBlur={() => { const current = pending.current.get(note.id); if(current) save(current); }} />
             {unmatched.has(note.id) && <div className="unmatched">原文位置已变化，摘录仍保留。</div>}
-            <div className="note-footer"><span className={`saved ${statuses[note.id] === 'error' ? 'save-error' : ''}`} aria-live="polite">{statuses[note.id] === 'error' ? <><span>未保存</span><button className="retry" onClick={() => save(latest.current.get(note.id))}>重试</button></> : statuses[note.id] === 'saving' ? '保存中…' : note.example ? <><FileText size={14}/>示例笔记</> : <><Check size={15}/>已保存在此浏览器</>}</span><time dateTime={note.updatedAt}>{date(note.updatedAt)}</time></div>
-          </> : <><button className="note-text" onClick={() => { activate(note); if (note.anchor) goTo(note); }}><FileText size={21}/><span className="note-body">{note.body || note.anchor?.exact || '空白随手记'}</span></button><div className="note-footer"><span>{note.example ? '示例笔记' : note.anchor ? 'Harness' : '随手记'}</span><time dateTime={note.updatedAt}>{date(note.updatedAt)}</time></div></>}
+          </> : <button className="note-text" onClick={() => { activate(note); goTo(note); }}><span className="note-body">{note.body || note.anchor.exact}</span></button>}
+          <div className="note-footer">{statuses[note.id] === 'error' && <span className="saved save-error" role="alert">未保存<button className="retry" onClick={() => save(latest.current.get(note.id))}>重试</button></span>}<NoteTime value={note.updatedAt}/></div>
         </section>)}
       </div>}
       <div className="rail-foot"><span>仅保存在此浏览器</span><button onClick={openLibrary}>全部笔记 <ArrowRight size={12}/></button></div>
