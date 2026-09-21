@@ -95,6 +95,8 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
         CSS.highlights.set("vp-reading-notes", new Highlight(...ranges.values()));
         CSS.highlights.set("vp-reading-active", new Highlight(...(selected && ranges.has(selected) ? [ranges.get(selected)!] : [])));
       }
+      const links = article.querySelector<SVGSVGElement>("[data-note-links]");
+      links?.querySelectorAll<SVGGElement>("g").forEach(link => { link.style.display = "none"; });
       const canvas = article.querySelector<HTMLElement>("[data-note-canvas]");
       if (!canvas) return;
       const cards = [...canvas.querySelectorAll<HTMLElement>("[data-note-id]")];
@@ -108,13 +110,31 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
         let inset: number;
         if (body instanceof HTMLTextAreaElement) { const css = getComputedStyle(body); inset = body.getBoundingClientRect().top - card.getBoundingClientRect().top + Math.max(0, (parseFloat(css.lineHeight) - parseFloat(css.fontSize) * 1.2) / 2); }
         else { const text = document.createRange();text.selectNodeContents(body);inset=(text.getClientRects()[0]?.top ?? body.getBoundingClientRect().top)-card.getBoundingClientRect().top; }
-        return [{card, y: target.top - base, desired: target.top - base - inset, x: target.left}];
+        return [{card, range: range!, body, inset, y: target.top - base, desired: target.top - base - inset, x: target.left}];
       }).sort((a,b) => a.y-b.y || a.x-b.x);
       let bottom = -44;
-      for (const {card,y,desired} of placed) {
+      const origin = article.getBoundingClientRect();
+      for (const {card,range,body,inset,desired} of placed) {
         const top = Math.max(36, desired, bottom + 44);
-        card.style.top = `${top}px`; card.style.setProperty("--note-line-y", `${y-top+9}px`); card.style.setProperty("--note-line-rise", `${Math.max(0,top-desired)}px`);
+        card.style.top = `${top}px`;
         bottom = top + card.offsetHeight;
+        const link = [...(links?.querySelectorAll<SVGGElement>("g") ?? [])].find(item => item.dataset.connectorId === card.dataset.noteId);
+        if (!link) continue;
+        const rects = [...range.getClientRects()].filter(rect => rect.width > 0 && rect.height > 0), first = rects[0];
+        const line = rects.filter(rect => Math.abs(rect.top-first.top) < Math.max(4,first.height/4));
+        const right = Math.max(...line.map(rect => rect.right)), lineBottom = Math.max(...line.map(rect => rect.bottom));
+        const block = range.startContainer.parentElement?.closest<HTMLElement>("[data-note-block]");
+        const blockRight = block?.getBoundingClientRect().right ?? right;
+        const x1 = right + 4 - origin.left;
+        // Leave a partial line through its lower edge so the dash does not cross the following words.
+        const y1 = (blockRight-right > 32 ? lineBottom+5 : (first.top+lineBottom)/2) - origin.top;
+        const x2 = body.getBoundingClientRect().left - 10 - origin.left;
+        const textHeight = body instanceof HTMLTextAreaElement ? parseFloat(getComputedStyle(body).fontSize)*1.2 : first.height;
+        const y2 = card.getBoundingClientRect().top + inset + textHeight/2 - origin.top;
+        const bend = Math.max(x1, Math.min(blockRight+18-origin.left,x2-28));
+        link.querySelector("path")?.setAttribute("d", `M ${x1} ${y1} H ${bend} C ${bend+18} ${y1}, ${x2-22} ${y2}, ${x2} ${y2}`);
+        link.querySelectorAll("circle").forEach((dot,index) => {dot.setAttribute("cx",String(index ? x2 : x1));dot.setAttribute("cy",String(index ? y2 : y1));});
+        link.style.display = "";
       }
       canvas.style.minHeight = `${Math.max(bottom+20, 100)}px`;
     };
@@ -136,6 +156,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
   return <ReaderContext.Provider value={{notes,selected,missing,tab,panel,setTab,setPanel,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} onClick={clickHighlight}>
     <style>{`::highlight(vp-reading-notes){background:color-mix(in srgb,var(--accent) 23%,var(--bg));color:var(--ink)}::highlight(vp-reading-active){background:color-mix(in srgb,var(--accent) 34%,var(--bg));color:var(--ink)}`}</style>
     {children}{layout === "standalone" && <ArticleNotesRail/>}
+    <svg className={styles.connectors} data-note-links data-note-ui aria-hidden="true">{notes.map(note=><g key={note.id} data-connector-id={note.id} data-active={selected === note.id}><path/><circle r="2"/><circle r="2"/></g>)}</svg>
     <button data-note-ui className={styles.mobileToggle} onClick={()=>{setPanel(true);setTab("notes");}} aria-keyshortcuts="Alt+N"><NotePencil size={20}/>笔记{notes.length ? ` ${notes.length}` : ""}</button>
     {selection && <div className={styles.selection} data-note-ui data-selection-toolbar role="toolbar" aria-label="选中文字操作" style={{left:Math.max(12,Math.min(window.innerWidth-230,selection.rect.right-220)),top:Math.max(78,selection.rect.top-58)}} onPointerDown={event=>event.preventDefault()}><button disabled={!store.ready} onClick={()=>add(selection.anchor,false)}><Highlighter size={18}/>划线</button><button disabled={!store.ready} onClick={()=>add(selection.anchor)} title="写笔记（Alt+N）"><NotePencil size={18}/>写笔记</button></div>}
   </div></ReaderContext.Provider>;
@@ -155,7 +176,7 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
     <div className={styles.railHead}><div role="tablist" aria-label="阅读侧栏">{children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}<button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button></div><button onClick={quickNote} disabled={!store.ready}><Plus size={17}/>记一条</button><button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button></div>
     {store.storageError && <p className={styles.error}>本地存储暂不可用。<button onClick={store.reload}>重试</button></p>}
     {tab === "toc" && children ? <div className={styles.directory}>{children}</div> : <><div data-note-canvas className={styles.canvas} role="tabpanel" aria-label="批注">{notes.map(note=><section className={`${styles.note} ${selected === note.id ? styles.active : ""}`} data-note-id={note.id} key={note.id} hidden={missing.includes(note.id)}>
-      <i className={styles.connector} aria-hidden="true"/><div className={styles.noteHead}><button onClick={()=>activate(note)} aria-label={`编辑笔记：${note.body.slice(0,18)||"划线摘录"}`} title="编辑笔记"><NotePencil size={21}/></button><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>
+      <div className={styles.noteHead}><button onClick={()=>activate(note)} aria-label={`编辑笔记：${note.body.slice(0,18)||"划线摘录"}`} title="编辑笔记"><NotePencil size={21}/></button><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>
       {selected === note.id ? <NoteEditor note={note} autoFocus/> : <button className={styles.noteText} onClick={()=>goTo(note)}><span data-note-body>{note.body || note.anchor!.exact}</span></button>}
       <footer><NoteTime value={note.updatedAt}/></footer>
     </section>)}{!notes.length && <p className={styles.empty}>{store.ready ? "选中一句话，留下你的想法。" : "正在读取本地笔记…"}</p>}</div>{missing.length>0&&<button className={styles.missing} onClick={()=>store.open(missing[0])}>有 {missing.length} 条原文位置已变化，查看保留的摘录</button>}</>}
