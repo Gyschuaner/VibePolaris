@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef } from "react";
 import styles from "./PointerFeedback.module.css";
 
-const nativeTargets = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [data-pointer-native], :disabled, [aria-disabled="true"]';
+const nativeTargets = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [data-pointer-native], [data-selection-toolbar], :disabled, [aria-disabled="true"]';
 const interactiveTargets = 'a[href], button, summary, [role="button"], [role="link"]';
 type Point = { x: number; y: number; time: number };
 const smoothstep = (t: number) => t * t * (3 - 2 * t);
@@ -37,6 +37,7 @@ export function PointerFeedback() {
 
   useEffect(() => {
     const light = halo.current!, shape = water.current!;
+    const surface = shape.ownerSVGElement!;
     const media = matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
     let haloFrame = 0, waterFrame = 0;
     let pressed = false;
@@ -58,11 +59,20 @@ export function PointerFeedback() {
       releasedAt = undefined;
       points = [];
       shape.setAttribute("d", "");
+      surface.dataset.selecting = "false";
     };
     const hide = () => { hideHalo(); clearWater(); pressed = false; };
+    const hasTextSelection = () => Boolean(window.getSelection()?.toString().trim());
+    const softenSelection = () => {
+      if (!hasTextSelection()) return;
+      // Keep water throughout this gesture, with selection as the primary cue.
+      surface.dataset.selecting = "true";
+      hideHalo();
+    };
 
     const drawWater = (now: number) => {
       waterFrame = 0;
+      softenSelection();
       if (pending) {
         const last = points[points.length - 1];
         if (!last || Math.hypot(pending.x - last.x, pending.y - last.y) > 2) points.push(pending);
@@ -117,6 +127,7 @@ export function PointerFeedback() {
       let x = 0, y = 0;
       const usesNativePointer = (event: PointerEvent) => event.pointerType !== "mouse" || !(event.target instanceof Element) || Boolean(event.target.closest(nativeTargets));
       const show = (event: PointerEvent) => {
+        if (hasTextSelection()) { hideHalo(); return; }
         x = event.clientX;
         y = event.clientY;
         light.dataset.pressed = String(pressed);
@@ -131,7 +142,7 @@ export function PointerFeedback() {
         if (usesNativePointer(event)) { hide(); return; }
         if (event.buttons & 1 && pressed) { show(event); extendWater(event); return; }
         finishWater();
-        if (event.buttons || window.getSelection()?.isCollapsed === false) { hideHalo(); return; }
+        if (event.buttons || hasTextSelection()) { hideHalo(); return; }
         show(event);
       };
       const press = (event: PointerEvent) => {
@@ -153,6 +164,7 @@ export function PointerFeedback() {
       document.addEventListener("pointerdown", press, options);
       document.addEventListener("pointercancel", hide, options);
       document.addEventListener("pointerout", leave, options);
+      document.addEventListener("selectionchange", softenSelection, options);
       document.addEventListener("keydown", hide, options);
       document.addEventListener("scroll", hide, options);
       document.addEventListener("visibilitychange", hide, options);
