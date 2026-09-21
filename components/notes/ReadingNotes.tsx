@@ -59,8 +59,10 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
+    let selecting = false;
     const read = () => {
       clearTimeout(timer);
+      if (selecting) return;
       timer = setTimeout(() => {
         if (!root.current) return;
         const captured = captureNoteSelection(root.current);
@@ -70,6 +72,18 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
       }, 80);
     };
     const hide = () => setSelection(null);
+    const startSelection = (event: PointerEvent) => {
+      if (event.button !== 0 || (event.target instanceof Element && event.target.closest('[data-selection-toolbar]'))) return;
+      selecting = true;
+      clearTimeout(timer);
+      hide();
+    };
+    const finishSelection = (event: PointerEvent) => {
+      if (event.button !== 0 || !selecting) return;
+      selecting = false;
+      read();
+    };
+    const cancelSelection = () => { selecting = false; clearTimeout(timer); hide(); };
     const keydown = (event: KeyboardEvent) => {
       if (event.key === "Escape") { setSelection(null); setPanel(false); }
       if (event.altKey && event.key.toLowerCase() === "n" && !event.repeat && !document.querySelector("dialog[open]")) {
@@ -77,8 +91,21 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
         if (captured && "anchor" in captured) add(captured.anchor); else quickNote();
       }
     };
-    document.addEventListener("selectionchange", read); window.addEventListener("scroll", hide, { passive: true }); window.addEventListener("resize", hide); window.addEventListener("keydown", keydown);
-    return () => { clearTimeout(timer); document.removeEventListener("selectionchange", read); window.removeEventListener("scroll", hide); window.removeEventListener("resize", hide); window.removeEventListener("keydown", keydown); };
+    document.addEventListener("selectionchange", read);
+    document.addEventListener("pointerdown", startSelection, true);
+    document.addEventListener("pointerup", finishSelection, true);
+    document.addEventListener("pointercancel", cancelSelection, true);
+    window.addEventListener("blur", cancelSelection);
+    window.addEventListener("scroll", hide, { passive: true }); window.addEventListener("resize", hide); window.addEventListener("keydown", keydown);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("selectionchange", read);
+      document.removeEventListener("pointerdown", startSelection, true);
+      document.removeEventListener("pointerup", finishSelection, true);
+      document.removeEventListener("pointercancel", cancelSelection, true);
+      window.removeEventListener("blur", cancelSelection);
+      window.removeEventListener("scroll", hide); window.removeEventListener("resize", hide); window.removeEventListener("keydown", keydown);
+    };
   }, [add, quickNote, store.notify]);
 
   useLayoutEffect(() => {
