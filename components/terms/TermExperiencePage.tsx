@@ -350,7 +350,7 @@ export function TermExperiencePage({ term, experience, previous, next, related }
 
       <div className="term-story-shell">
         <div className="term-story-tools">
-          <Link href="/terms">术语词典</Link><span aria-hidden="true">/</span><Link href={`/terms?cat=${encodeURIComponent(term.cat)}`}>{term.cat}</Link><span aria-hidden="true">/</span><span>{term.zh}</span>
+          <Link href="/">星图</Link><span aria-hidden="true">/</span><Link href={`/?cat=${encodeURIComponent(term.cat)}`}>{term.cat}</Link><span aria-hidden="true">/</span><span>{term.zh}</span>
           <CopyAction text={markdown} label="复制为 Markdown" />
         </div>
 

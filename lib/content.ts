@@ -4,6 +4,7 @@ import taxonomySource from "@/content/taxonomy.json";
 import aiStackTermsSource from "@/content/zh/term-batches/ai-stack.json";
 import backendDataTermsSource from "@/content/zh/term-batches/backend-data.json";
 import frontendProductTermsSource from "@/content/zh/term-batches/frontend-product.json";
+import publishedTermSlugsSource from "@/content/zh/published-terms.json";
 import termsSource from "@/content/zh/terms.json";
 import toolsSource from "@/content/zh/tools.json";
 
@@ -38,7 +39,7 @@ const termSchema = z.object({
   wrongText: z.string().min(1),
   promptTitle: z.string().min(1),
   prompt: z.string().min(1),
-  relatedSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(2).max(4),
+  relatedSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(2).max(8),
 });
 
 const toolSchema = z.object({
@@ -54,6 +55,7 @@ export const terms = z.array(termSchema).parse([
   ...backendDataTermsSource,
   ...aiStackTermsSource,
 ]);
+export const publishedTermSlugs = z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).parse(publishedTermSlugsSource);
 export const tools = z.array(toolSchema).parse(toolsSource);
 
 const categoryNames = new Set(taxonomy.map((item) => item.name));
@@ -72,6 +74,18 @@ const duplicateNames = terms.filter(
 if (duplicateNames.length) {
   throw new Error(`术语中文名重复：${duplicateNames.map((term) => term.zh).join(", ")}`);
 }
+
+if (new Set(publishedTermSlugs).size !== publishedTermSlugs.length) {
+  throw new Error("公开词条 slug 不能重复");
+}
+
+const unknownPublishedSlugs = publishedTermSlugs.filter((slug) => !terms.some((term) => term.slug === slug));
+if (unknownPublishedSlugs.length) {
+  throw new Error(`公开词条不存在：${unknownPublishedSlugs.join(", ")}`);
+}
+
+const publishedTermSlugSet = new Set(publishedTermSlugs);
+export const publishedTerms = terms.filter((term) => publishedTermSlugSet.has(term.slug));
 
 for (const term of terms) {
   if (!categoryNames.has(term.cat)) {
@@ -96,19 +110,17 @@ export function getTerm(slug: string) {
   return terms.find((term) => term.slug === slug);
 }
 
+export function getPublishedTerm(slug: string) {
+  return publishedTermSlugSet.has(slug) ? getTerm(slug) : undefined;
+}
+
+export function isPublishedTerm(slug: string) {
+  return publishedTermSlugSet.has(slug);
+}
+
 export function getRelatedTerms(term: Term, count = 4) {
   const explicitlyRelated = term.relatedSlugs
     ?.map((slug) => getTerm(slug))
-    .filter((candidate): candidate is Term => Boolean(candidate)) ?? [];
-  const sameCategory = terms.filter(
-    (candidate) => candidate.slug !== term.slug
-      && candidate.cat === term.cat
-      && !explicitlyRelated.some((related) => related.slug === candidate.slug),
-  );
-  const others = terms.filter(
-    (candidate) => candidate.slug !== term.slug
-      && candidate.cat !== term.cat
-      && !explicitlyRelated.some((related) => related.slug === candidate.slug),
-  );
-  return [...explicitlyRelated, ...sameCategory, ...others].slice(0, count);
+    .filter((candidate): candidate is Term => Boolean(candidate && publishedTermSlugSet.has(candidate.slug))) ?? [];
+  return explicitlyRelated.slice(0, count);
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { CssCourseQuiz, CssSelectorLab } from "@/components/CssCoursePractice";
 import { CssCourseToc } from "@/components/CssCourseToc";
+import { ReadingNotes } from "@/components/notes/ReadingNotes";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -25,9 +26,10 @@ export default function CssCoursePage() {
   return (
     <>
       <SiteHeader wide />
+      <ReadingNotes path="/guides/css" title="CSS 深度教程" layout="course">
       <main className="css-course-page">
         <div className="css-course-shell">
-          <div className="crumb css-course-crumb"><Link href="/guides">学习与指南</Link> / CSS 深度教程</div>
+          <div className="crumb css-course-crumb"><Link href="/terms/css">CSS</Link> / CSS 深度教程</div>
 
           <header className="css-course-hero">
             <div className="css-course-hero-lockup">
@@ -158,8 +160,8 @@ export default function CssCoursePage() {
                 </div>
                 <CssCourseQuiz />
                 <div className="css-course-next">
-                  <Link href="/terms/css"><span>回到词条</span><strong>查看 CSS 简版说明</strong><ArrowRight size={20} /></Link>
-                  <Link href="/terms/responsive"><span>相关概念</span><strong>响应式布局</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/component"><span>相关词条</span><strong>组件：复用界面结构</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/props"><span>相关词条</span><strong>Props：传入组件的数据</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
 
@@ -175,6 +177,7 @@ export default function CssCoursePage() {
           </div>
         </div>
       </main>
+      </ReadingNotes>
       <SiteFooter />
     </>
   );

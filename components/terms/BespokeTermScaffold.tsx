@@ -14,7 +14,7 @@ export function TermLabHeader({ term, eyebrow, summary }: Pick<BespokeTermPagePr
   return (
     <header className="bespoke-term-header">
       <nav aria-label="面包屑">
-        <Link href="/terms">术语词典</Link><span>/</span><Link href={`/terms?cat=${encodeURIComponent(term.cat)}`}>{term.cat}</Link><span>/</span><b>{term.zh}</b>
+        <Link href="/">星图</Link><span>/</span><Link href={`/?cat=${encodeURIComponent(term.cat)}`}>{term.cat}</Link><span>/</span><b>{term.zh}</b>
       </nav>
       <p>{eyebrow}</p>
       <h1>{term.zh}<span>{term.en}</span></h1>

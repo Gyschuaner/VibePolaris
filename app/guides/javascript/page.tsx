@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { FoundationCourseQuiz, JavaScriptStateLab } from "@/components/FoundationCoursePractice";
 import { CssCourseToc } from "@/components/CssCourseToc";
+import { ReadingNotes } from "@/components/notes/ReadingNotes";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -25,9 +26,10 @@ export default function JavaScriptCoursePage() {
   return (
     <>
       <SiteHeader wide />
+      <ReadingNotes path="/guides/javascript" title="JavaScript 深度教程" layout="course">
       <main className="css-course-page">
         <div className="css-course-shell">
-          <div className="crumb css-course-crumb"><Link href="/guides">学习与指南</Link> / JavaScript 深度教程</div>
+          <div className="crumb css-course-crumb"><Link href="/terms/javascript">JavaScript</Link> / JavaScript 深度教程</div>
 
           <header className="css-course-hero">
             <div className="css-course-hero-lockup">
@@ -154,8 +156,8 @@ export default function JavaScriptCoursePage() {
                   wrongText="setTimeout 和刷新不能定位原因。需要检查事件是否触发，以及 count 是否发生变化。"
                 />
                 <div className="css-course-next">
-                  <Link href="/terms/javascript"><span>回到词条</span><strong>查看 JavaScript 简版说明</strong><ArrowRight size={20} /></Link>
-                  <Link href="/terms/dom"><span>相关概念</span><strong>DOM：脚本如何修改页面</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/event"><span>相关词条</span><strong>事件：交互怎样触发代码</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/state"><span>相关词条</span><strong>状态：界面依据什么更新</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
 
@@ -171,6 +173,7 @@ export default function JavaScriptCoursePage() {
           </div>
         </div>
       </main>
+      </ReadingNotes>
       <SiteFooter />
     </>
   );

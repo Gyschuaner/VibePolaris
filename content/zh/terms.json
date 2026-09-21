@@ -18,7 +18,7 @@
     "wrongText": "请求、执行和回传是三个不同时间点，不能把模型输出的工具请求当作已完成操作。",
     "promptTitle": "可以这样向 AI 表达",
     "prompt": "请为这个任务设计 Harness：明确上下文来源、可用工具与权限、停止条件，并保留执行记录和验收结果。",
-    "relatedSlugs": ["context", "tools", "agent-loop"]
+    "relatedSlugs": ["llm", "tools", "agent-loop", "context", "memory", "prompt", "mcp", "execution-sandbox"]
   },
   {
     "zh": "组件", "en": "Component", "slug": "component", "cat": "前端",
@@ -142,10 +142,10 @@
   },
   {
     "zh": "API 接口", "en": "Application Programming Interface", "slug": "api", "cat": "后端",
-    "say": "API 规定系统之间怎样发请求、传参数和返回结果。",
+    "say": "软件向其他软件提供功能，并约定如何调用、传入和返回数据。",
     "aliases": ["接口", "对接", "前后端通信", "应用程序接口"],
     "question": "前端要查询订单，怎样知道地址、参数和返回格式？",
-    "definition": "API 是系统对外提供的调用约定，通常明确端点、方法、参数、认证、响应结构和错误状态。",
+    "definition": "API 定义软件之间的交互方式，包括可调用的能力、输入和返回约定；HTTP 接口只是其中一种形式。",
     "boundary": "API 不等于某个页面或数据库表。它是系统边界上的交互约定，内部实现可以独立变化。",
     "demoType": "request", "demoTitle": "查询订单接口的往返",
     "demoSteps": [{"label":"发送请求","value":"GET /orders/42","note":"请求包含会话和订单编号。"},{"label":"服务端处理","value":"验证身份并查询数据","note":"无权限时返回明确状态。"},{"label":"返回响应","value":"200 与订单 JSON","note":"前端据此显示订单详情。"}],
@@ -217,10 +217,10 @@
   },
   {
     "zh": "REST", "en": "Representational State Transfer", "slug": "rest", "cat": "后端",
-    "say": "REST 用资源和 HTTP 方法组织接口，让前后端用统一方式交换数据。",
+    "say": "围绕资源及其表示，组织网络应用交互的一种架构风格。",
     "aliases": ["restful", "资源接口", "http api", "接口规范"],
     "question": "创建、读取和删除订单时，接口路径和方法怎样保持一致？",
-    "definition": "REST 是面向资源的接口风格，常用 URL 表示资源，用 GET、POST、PATCH、DELETE 等 HTTP 方法表达操作。",
+    "definition": "REST 通过客户端与服务端分离、无状态、缓存、统一接口与分层等约束组织交互；资源的表示用于传递状态和后续选择。",
     "boundary": "REST 不是强制的接口标准，也不要求所有操作都能自然映射为简单增删改查。",
     "demoType": "comparison", "demoTitle": "同一订单资源的不同操作",
     "demoSteps": [{"label":"读取订单","value":"GET /orders/42","note":"成功时返回订单表示。"},{"label":"修改地址","value":"PATCH /orders/42","note":"请求体只包含要改的字段。"},{"label":"取消订单","value":"DELETE /orders/42","note":"服务端仍按业务规则判断能否取消。"}],
@@ -288,7 +288,7 @@
     "correctText": "模型只能处理当前上下文和可调用工具取得的信息。",
     "wrongText": "未连接的系统不会被自动读取，只写文件名也没有提供文件内容。",
     "promptTitle": "整理任务所需上下文", "prompt": "请根据下面任务列出必须提供的事实、文件、当前状态和约束，删除无关历史，并标出需要通过工具取得的信息。",
-    "relatedSlugs": ["context-window", "token", "prompt", "agent-harness"]
+    "relatedSlugs": ["context-window", "token", "prompt", "agent-harness", "tools", "agent-loop", "memory"]
   },
   {
     "zh": "Token", "en": "Token", "slug": "token", "cat": "AI·Agent",
@@ -333,7 +333,7 @@
     "correctText": "权限错误是明确边界，不能通过猜测或重复调用规避。",
     "wrongText": "假装成功会误导用户，反复换参数绕过权限也违反操作边界。",
     "promptTitle": "检查一个工具调用流程", "prompt": "请检查下面工具定义、参数、权限和返回结构，列出调用成功、参数错误、权限不足和服务失败时的处理。",
-    "relatedSlugs": ["function-calling", "tool-choice", "tool-result"]
+    "relatedSlugs": ["function-calling", "tool-choice", "tool-result", "agent-harness", "context", "agent-loop"]
   },
   {
     "zh": "记忆", "en": "Memory", "slug": "memory", "cat": "AI·Agent",

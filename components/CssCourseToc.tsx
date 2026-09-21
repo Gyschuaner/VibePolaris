@@ -1,5 +1,6 @@
 "use client";
 
+import { ArticleNotesRail } from "@/components/notes/ReadingNotes";
 import { useEffect, useState } from "react";
 
 type Chapter = readonly [id: string, number: string, title: string];
@@ -37,7 +38,7 @@ export function CssCourseToc({ chapters, label = "教程章节" }: { chapters: r
   }, [chapters]);
 
   return (
-    <aside className="css-course-toc" aria-label={label}>
+    <ArticleNotesRail><aside className="css-course-toc" aria-label={label}>
       <span>课程目录</span>
       <nav>
         {chapters.map(([id, number, title]) => {
@@ -56,6 +57,6 @@ export function CssCourseToc({ chapters, label = "教程章节" }: { chapters: r
           );
         })}
       </nav>
-    </aside>
+    </aside></ArticleNotesRail>
   );
 }

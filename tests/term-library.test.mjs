@@ -8,6 +8,7 @@ const batchFiles = readdirSync(new URL("../content/zh/term-batches/", import.met
   .filter((name) => name.endsWith(".json"));
 const batches = batchFiles.flatMap((name) => readJson(`content/zh/term-batches/${name}`));
 const allTerms = [...baseTerms, ...batches];
+const publishedSlugs = readJson("content/zh/published-terms.json");
 const researchFiles = readdirSync(new URL("../content/zh/term-research/", import.meta.url))
   .filter((name) => name.endsWith(".json"));
 const researchCards = researchFiles.flatMap((name) => readJson(`content/zh/term-research/${name}`));
@@ -18,6 +19,21 @@ const demoTypes = new Set(["flow", "state", "comparison", "hierarchy", "lifecycl
 const categories = new Set(["前端", "后端", "AI·Agent", "技术栈", "Git", "产品与设计"]);
 const sceneKinds = new Set(["route", "pipeline", "transform", "compare", "layers", "tree", "network", "timeline", "queue", "state-machine", "memory", "contract", "branch", "loop", "matrix", "spectrum", "assembly", "terminal"]);
 const actorIcons = new Set(["browser", "server", "database", "file", "code", "user", "robot", "brain", "gear", "package", "git", "shield", "key", "cloud", "clock", "queue", "search", "chart", "layout", "component", "message", "network", "memory", "spark"]);
+
+test("公开词条与已完成升级清单一致", () => {
+  const rollout = readFileSync(new URL("../docs/design/concept-rollout.md", import.meta.url), "utf8").split("## 既有词条逐项覆盖")[1];
+  const coveredSlugs = [...rollout.matchAll(/^\| ([a-z0-9][a-z0-9-]*) \| [^|]+ \| [^|]+ \| ([^|]+) \|$/gm)]
+    .filter(([, slug, status]) => slug !== "slug" && status.trim() !== "待处理")
+    .map(([, slug]) => slug);
+  const termPage = readFileSync(new URL("../app/terms/[slug]/page.tsx", import.meta.url), "utf8");
+  const articlePages = termPage.match(/const articleTermPages = \{([\s\S]*?)\n\} satisfies/)?.[1] ?? "";
+  const articleSlugs = [...articlePages.matchAll(/^\s+(?:"([^"]+)"|([a-z][a-z0-9-]*)):/gm)]
+    .map(([, quoted, bare]) => quoted ?? bare);
+
+  assert.deepEqual(new Set(publishedSlugs), new Set(coveredSlugs));
+  assert.deepEqual(new Set(publishedSlugs), new Set(articleSlugs));
+  assert.equal(new Set(publishedSlugs).size, publishedSlugs.length, "公开词条不能重复");
+});
 
 test("核心词库保持在约 300 条且标识唯一", () => {
   assert.ok(allTerms.length >= 290 && allTerms.length <= 310, `当前共有 ${allTerms.length} 条`);
@@ -37,7 +53,7 @@ test("迁移底稿保留完整字段、旧三步演示和项目检查", () => {
     assert.ok(demoTypes.has(term.demoType), `${term.slug} 动画类型无效`);
     assert.equal(term.demoSteps?.length, 3, `${term.slug} 必须有三步动画`);
     assert.equal(term.quizOptions?.length, 3, `${term.slug} 必须有三个检查选项`);
-    assert.ok(term.relatedSlugs?.length >= 2 && term.relatedSlugs.length <= 4, `${term.slug} 相关词数量无效`);
+    assert.ok(term.relatedSlugs?.length >= 2 && term.relatedSlugs.length <= 8, `${term.slug} 相关词数量无效`);
     for (const step of term.demoSteps) {
       assert.ok(step.label && step.value && step.note, `${term.slug} 动画步骤不完整`);
       assert.notEqual(step.note, term.definition, `${term.slug} 动画不能直接重复定义`);
