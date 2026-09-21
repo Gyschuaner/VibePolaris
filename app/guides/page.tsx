@@ -64,7 +64,7 @@ export default function GuidesPage() {
         </section>
         <section className="g-sect">
           <h2>相关术语</h2>
-          <div className="related"><Link href="/terms/llm">大模型 LLM</Link><Link href="/terms/prompt">提示词 Prompt</Link><Link href="/terms/agent">智能体 Agent</Link><Link href="/terms/deploy">部署与托管</Link></div>
+          <div className="related"><Link href="/terms/llm">大模型 LLM</Link><Link href="/terms/prompt">提示词 Prompt</Link><Link href="/terms/agent">智能体 Agent</Link><Link href="/terms/api">API 接口</Link></div>
         </section>
       </main>
       <SiteFooter />

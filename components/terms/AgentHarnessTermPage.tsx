@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Brain, Circuitry, HardDrives, LinkSimple, Plus, Robot, Wrench } from "@phosphor-icons/react/dist/ssr";
-import { getRelatedTerms, getTerm } from "@/lib/content";
+import { getRelatedTerms, getTerm, isPublishedTerm } from "@/lib/content";
 import { InlineTerm } from "./InlineTerm";
 import { HarnessV4Lesson } from "./HarnessV4Lesson";
 import { HarnessV4Toc } from "./HarnessV4Toc";
@@ -16,7 +16,7 @@ import styles from "./HarnessStory.module.css";
 function Term({ slug, children, description }: { slug: string; children: ReactNode; description?: string }) {
   const term = getTerm(slug);
   if (!term) throw new Error(`Missing inline term: ${slug}`);
-  return <InlineTerm title={term.zh} english={term.en} description={description ?? term.definition} href={`/terms/${slug}`}>{children}</InlineTerm>;
+  return <InlineTerm title={term.zh} english={term.en} description={description ?? term.definition} href={isPublishedTerm(slug) ? `/terms/${slug}` : undefined}>{children}</InlineTerm>;
 }
 
 function Citation({ id }: { id: string }) {

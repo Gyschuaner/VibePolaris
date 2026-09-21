@@ -158,8 +158,8 @@ export default function CssCoursePage() {
                 </div>
                 <CssCourseQuiz />
                 <div className="css-course-next">
-                  <Link href="/terms/css"><span>回到词条</span><strong>查看 CSS 简版说明</strong><ArrowRight size={20} /></Link>
-                  <Link href="/terms/responsive"><span>相关概念</span><strong>响应式布局</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/component"><span>相关词条</span><strong>组件：复用界面结构</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/props"><span>相关词条</span><strong>Props：传入组件的数据</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
 

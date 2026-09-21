@@ -148,7 +148,7 @@ export default function HtmlCoursePage() {
                   wrongText="交互控件需要使用语义和行为匹配的元素，外观可由 CSS 调整。"
                 />
                 <div className="css-course-next">
-                  <Link href="/terms/html"><span>回到词条</span><strong>查看 HTML 简版说明</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/component"><span>相关词条</span><strong>组件：组织可复用界面</strong><ArrowRight size={20} /></Link>
                   <Link href="/guides/css"><span>相关课程</span><strong>CSS：视觉与布局</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
