@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
 import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
+import { NotesProvider } from "@/components/notes/NotesProvider";
 import { PointerFeedback } from "@/components/PointerFeedback";
 
 import "./globals.css";
@@ -50,7 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
-      <body><RouteMeteorProvider>{children}</RouteMeteorProvider><PointerFeedback /></body>
+      <body><NotesProvider><RouteMeteorProvider>{children}</RouteMeteorProvider><PointerFeedback /></NotesProvider></body>
     </html>
   );
 }

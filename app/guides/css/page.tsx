@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { CssCourseQuiz, CssSelectorLab } from "@/components/CssCoursePractice";
 import { CssCourseToc } from "@/components/CssCourseToc";
+import { ReadingNotes } from "@/components/notes/ReadingNotes";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -25,6 +26,7 @@ export default function CssCoursePage() {
   return (
     <>
       <SiteHeader wide />
+      <ReadingNotes path="/guides/css" title="CSS 深度教程" layout="course">
       <main className="css-course-page">
         <div className="css-course-shell">
           <div className="crumb css-course-crumb"><Link href="/guides">学习与指南</Link> / CSS 深度教程</div>
@@ -175,6 +177,7 @@ export default function CssCoursePage() {
           </div>
         </div>
       </main>
+      </ReadingNotes>
       <SiteFooter />
     </>
   );
