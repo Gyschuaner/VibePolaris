@@ -171,16 +171,15 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
     return () => media.removeEventListener("change", update);
   }, []);
   if (!reader) return children;
-  const {notes, selected, missing, tab, panel, setTab, setPanel, activate, goTo, quickNote} = reader;
+  const {notes, selected, missing, tab, panel, setTab, setPanel, goTo, quickNote} = reader;
   const rail = <aside data-note-ui className={`${styles.rail} ${panel && tab === "notes" ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
     <div className={styles.railHead}><div role="tablist" aria-label="阅读侧栏">{children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}<button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button></div><button onClick={quickNote} disabled={!store.ready}><Plus size={17}/>记一条</button><button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button></div>
     {store.storageError && <p className={styles.error}>本地存储暂不可用。<button onClick={store.reload}>重试</button></p>}
     {tab === "toc" && children ? <div className={styles.directory}>{children}</div> : <><div data-note-canvas className={styles.canvas} role="tabpanel" aria-label="批注">{notes.map(note=><section className={`${styles.note} ${selected === note.id ? styles.active : ""}`} data-note-id={note.id} key={note.id} hidden={missing.includes(note.id)}>
-      <div className={styles.noteHead}><button onClick={()=>activate(note)} aria-label={`编辑笔记：${note.body.slice(0,18)||"划线摘录"}`} title="编辑笔记"><NotePencil size={21}/></button><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>
+      <div className={styles.noteHead}><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>
       {selected === note.id ? <NoteEditor note={note} autoFocus/> : <button className={styles.noteText} onClick={()=>goTo(note)}><span data-note-body>{note.body || note.anchor!.exact}</span></button>}
       <footer><NoteTime value={note.updatedAt}/></footer>
     </section>)}{!notes.length && <p className={styles.empty}>{store.ready ? "选中一句话，留下你的想法。" : "正在读取本地笔记…"}</p>}</div>{missing.length>0&&<button className={styles.missing} onClick={()=>store.open(missing[0])}>有 {missing.length} 条原文位置已变化，查看保留的摘录</button>}</>}
-    <div className={styles.railFoot}><span>仅保存在此浏览器</span><button onClick={()=>store.open()}>全部笔记 ↗</button></div>
   </aside>;
   // Keep the mobile sheet outside article animations that create fixed-position containing blocks.
   return mobile && panel && tab === "notes" ? createPortal(rail, document.body) : rail;
