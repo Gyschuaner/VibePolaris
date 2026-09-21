@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, FolderOpen, Plus } from "@phosphor-icons/react/dist/ssr";
-import { getRelatedTerms, getTerm } from "@/lib/content";
+import { getRelatedTerms, getTerm, isPublishedTerm } from "@/lib/content";
 import type { harnessSources } from "@/lib/harness-references";
 import { InlineTerm } from "./InlineTerm";
 import { HarnessV4Toc } from "./HarnessV4Toc";
@@ -13,7 +13,7 @@ import styles from "./ConceptArticle.module.css";
 
 export function ConceptTerm({ slug, children }: { slug: string; children?: ReactNode }) {
   const term = getTerm(slug)!;
-  return <InlineTerm title={term.zh} english={term.en} description={term.definition} href={`/terms/${slug}`}>{children ?? term.zh}</InlineTerm>;
+  return <InlineTerm title={term.zh} english={term.en} description={term.definition} href={isPublishedTerm(slug) ? `/terms/${slug}` : undefined}>{children ?? term.zh}</InlineTerm>;
 }
 
 export function ArticleCitation({ id, sources }: { id: string; sources: typeof harnessSources }) {

@@ -154,8 +154,8 @@ export default function JavaScriptCoursePage() {
                   wrongText="setTimeout 和刷新不能定位原因。需要检查事件是否触发，以及 count 是否发生变化。"
                 />
                 <div className="css-course-next">
-                  <Link href="/terms/javascript"><span>回到词条</span><strong>查看 JavaScript 简版说明</strong><ArrowRight size={20} /></Link>
-                  <Link href="/terms/dom"><span>相关概念</span><strong>DOM：脚本如何修改页面</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/event"><span>相关词条</span><strong>事件：交互怎样触发代码</strong><ArrowRight size={20} /></Link>
+                  <Link href="/terms/state"><span>相关词条</span><strong>状态：界面依据什么更新</strong><ArrowRight size={20} /></Link>
                 </div>
               </section>
 

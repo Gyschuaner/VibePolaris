@@ -23,7 +23,7 @@ import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/Fo
 import { RagTermPage } from "@/components/terms/RagTermPage";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
-import { getRelatedTerms, getTerm, terms } from "@/lib/content";
+import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
 import { getTermExperience } from "@/lib/term-experiences";
 
 type TermPageProps = { params: Promise<{ slug: string }> };
@@ -82,11 +82,11 @@ const dedicatedTermPages = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return terms.map((term) => ({ slug: term.slug }));
+  return publishedTerms.map((term) => ({ slug: term.slug }));
 }
 
 export async function generateMetadata({ params }: TermPageProps): Promise<Metadata> {
-  const term = getTerm((await params).slug);
+  const term = getPublishedTerm((await params).slug);
   if (!term) return {};
   return {
     title: `${term.zh}${term.en ? ` ${term.en}` : ""}`,
@@ -95,12 +95,12 @@ export async function generateMetadata({ params }: TermPageProps): Promise<Metad
 }
 
 export default async function TermPage({ params }: TermPageProps) {
-  const term = getTerm((await params).slug);
+  const term = getPublishedTerm((await params).slug);
   if (!term) notFound();
   const related = getRelatedTerms(term);
-  const currentIndex = terms.findIndex((candidate) => candidate.slug === term.slug);
-  const previous = terms[(currentIndex - 1 + terms.length) % terms.length];
-  const next = terms[(currentIndex + 1) % terms.length];
+  const currentIndex = publishedTerms.findIndex((candidate) => candidate.slug === term.slug);
+  const previous = publishedTerms[(currentIndex - 1 + publishedTerms.length) % publishedTerms.length];
+  const next = publishedTerms[(currentIndex + 1) % publishedTerms.length];
   const experience = getTermExperience(term.slug);
   const DedicatedTermPage = term.slug in dedicatedTermPages
     ? dedicatedTermPages[term.slug as keyof typeof dedicatedTermPages]
