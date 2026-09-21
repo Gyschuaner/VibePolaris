@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { ArrowUpRight, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
+import { ArrowUpRight, CaretDown, CornersOut, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react";
 import { useRouteMeteor } from "@/components/RouteMeteorProvider";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, searchGraphNodes, type GraphNode, type GraphEdge } from "@/lib/term-graph";
 import styles from "./ConceptGraph.module.css";
@@ -55,6 +55,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const { beginRouteFlight } = useRouteMeteor();
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
   const selectedNeighbors = useMemo(() => graphNeighbors(selected, edges), [selected, edges]);
+  const relatedNodes = nodes.filter(node => selectedNeighbors.has(node.slug));
   const current = bySlug.get(selected || lastSelected);
   const needle = query.trim().toLocaleLowerCase();
   const matches = needle ? searchGraphNodes(nodes, query, category).slice(0, 12) : [];
@@ -385,7 +386,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
         <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => selectCategory("")}><CornersOut size={18} /></button>
         {!inline && <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>}
       </div>
-      {current && <aside className={styles.detail} data-open={Boolean(selected)} inert={!selected} aria-hidden={!selected} aria-label={`${current.zh}概念详情`}>
+      {current && <aside className={`${styles.detail} ${inline ? "" : styles.compact}`} data-open={Boolean(selected)} inert={!selected} aria-hidden={!selected} aria-label={`${current.zh}概念详情`}>
         <button className={styles.close} type="button" aria-label="关闭概念详情" onClick={clearSelection}><X size={18} /></button>
         {!inline && <span className={styles.category}>{current.cat}</span>}
         <Title>{current.zh}</Title>{!inline && current.en && <span className={styles.english}>{current.en}</span>}
@@ -395,7 +396,10 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
           const star = canvas.current?.querySelector<HTMLElement>(`[data-graph-node="${current.slug}"] .brand-star-only`);
           if (star) { event.preventDefault(); beginRouteFlight(`/terms/${current.slug}`, star); }
         }}>阅读词条<ArrowUpRight size={18} /></Link>
-        {!inline && <div className={styles.neighbors}><h3>相连的概念</h3>{nodes.filter(node => selectedNeighbors.has(node.slug)).map(node => <button key={node.slug} type="button" onClick={() => selectNode(node.slug)}><span className="brand-star-only" aria-hidden="true" />{node.zh}</button>)}</div>}
+        {!inline && relatedNodes.length > 0 && <details key={selected} className={styles.neighbors}>
+          <summary><span>相关概念 <span className={styles.count}>{relatedNodes.length}</span></span><CaretDown size={16} aria-hidden="true" /></summary>
+          <div className={styles.relatedList}>{relatedNodes.map(node => <button key={node.slug} type="button" onClick={() => selectNode(node.slug)}>{node.zh}</button>)}</div>
+        </details>}
       </aside>}
     </div>
   </Root>;
