@@ -10,26 +10,27 @@
 .standalone{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:60px;max-width:1600px;margin:auto;padding:0 40px}
 .standalone>main{min-width:0;align-self:start}
 .standalone :global(.term-story-shell),.standalone :global(.bespoke-term-shell){width:100%;margin:0;padding-left:0;padding-right:0}
-.rail{position:relative;grid-column:2;grid-row:1;border-left:1px solid var(--hairline);padding-left:25px;margin-top:38px;min-width:0;align-self:stretch}
-.railHead{position:sticky;top:76px;z-index:25;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--hairline);background:var(--bg);height:52px;font-size:14px}
-.railHead>div{display:flex;gap:20px}
-.railHead [role=tab]{height:52px;color:var(--muted);border-bottom:2px solid transparent}
-.railHead [aria-selected=true]{color:var(--accent-text);border-color:var(--accent)}
-.railHead>button{display:flex;align-items:center;gap:5px;margin-left:auto;color:var(--accent-text);white-space:nowrap}
-.railHead>.railToggle{justify-content:center;flex:none;width:32px;height:32px;margin-left:0;border-radius:6px}
-.railToggle:hover{background:var(--tint)}
+.rail{position:relative;grid-column:2;grid-row:1;padding-left:26px;margin-top:38px;min-width:0;align-self:stretch}
+.railHead{position:sticky;top:76px;z-index:25;display:grid;grid-template-columns:1fr 32px;grid-template-rows:38px 32px;align-items:center;gap:8px 16px;padding:4px 0 6px;background:var(--bg);height:88px;font-size:14px}
+.railHead>[role=tablist]{display:flex;justify-self:start;gap:2px;padding:3px;border-radius:9px;background:color-mix(in srgb,var(--hairline) 40%,var(--bg))}
+.railHead [role=tab]{height:30px;min-width:58px;padding:0 15px;border-radius:6px;color:var(--muted);transition:background 180ms ease,color 180ms ease}
+.railHead [role=tab]:hover{color:var(--ink)}
+.railHead [aria-selected=true]{background:var(--surface);color:var(--accent-text);font-weight:500}
+.railHead>button{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--muted);white-space:nowrap;border-radius:6px;transition:background 180ms ease,color 180ms ease}
+.railHead>.quickNote{grid-row:2;grid-column:1/-1;justify-self:end;min-height:32px;padding:0 6px;font-size:13px}
+.railHead>.railToggle,.railHead>.closePanel{grid-row:1;grid-column:2;width:32px;height:32px}
+.railHead>button:hover{color:var(--ink);background:color-mix(in srgb,var(--hairline) 35%,var(--bg))}
 @media(min-width:1101px){
- .rail{overflow:clip;transition:border-color 240ms ease}
- .railHead{padding-right:40px;transition:background 240ms ease,border-color 240ms ease}
- .railHead>.railToggle{position:absolute;right:4px;top:10px}
+ .rail{overflow:clip}
+ .railHead{transition:background 240ms ease}
  .rail>:not(.railHead),.railHead>:not(.railToggle){opacity:1;visibility:visible;transform:translateX(0);transition:transform 360ms cubic-bezier(.4,0,.2,1),opacity 240ms ease,visibility 0s}
- .scope[data-rail-collapsed=true] .rail{border-color:transparent}
- .scope[data-rail-collapsed=true] .railHead{border-color:transparent;background:transparent}
+ .scope[data-rail-collapsed=true] .railHead{background:transparent}
  .scope[data-rail-collapsed=true] .rail>:not(.railHead),.scope[data-rail-collapsed=true] .railHead>:not(.railToggle){opacity:0;visibility:hidden;pointer-events:none;transform:translateX(18px);transition:transform 360ms cubic-bezier(.4,0,.2,1),opacity 240ms ease,visibility 0s 360ms}
  .scope[data-rail-collapsed=true] .connectors{opacity:0;visibility:hidden;transition:opacity 140ms ease,visibility 0s 140ms}
 }
-.directory{position:sticky;top:141px;padding:17px 0 25px}
+.directory{position:sticky;top:177px;padding:17px 0 25px}
 .scope .directory :global(.vp-toc),.scope .directory :global(.css-course-toc){position:relative;top:auto;display:grid;gap:6px;padding:0 0 0 20px;margin:0;border:0;max-height:calc(100dvh - 230px);background:none;overflow:auto}
+.scope .rail .directory :global(.vp-toc){margin-top:0}
 .scope .directory :global(.vp-toc a){padding:8px 5px;font-size:14px}
 .scope .directory :global(.css-course-toc)>span{display:none}
 .canvas{position:relative;min-height:100px}
@@ -98,8 +99,7 @@
  .standalone{display:block;padding:0 24px}
  .scope :global(.vp-concept){padding:0 24px}
  .rail{position:static;border:0;padding:0;margin:0}
- .railHead{position:relative;top:0;z-index:1;padding-top:0;margin-top:16px;height:48px}
- .railHead [role=tab]{height:48px}
+ .railHead{position:relative;top:0;z-index:1;margin-top:16px}
  .directory{position:relative;top:0;padding:8px 0}
  .scope .directory :global(.vp-toc),.scope .directory :global(.css-course-toc){display:flex;overflow:auto;max-height:none;padding:0;gap:18px;margin:0}
  .scope .directory :global(.vp-toc a){white-space:nowrap;flex:none;font-size:12px;padding:8px 0}

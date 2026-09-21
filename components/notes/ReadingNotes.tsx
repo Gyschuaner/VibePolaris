@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { ArrowSquareOut, CaretLeft, CaretRight, Highlighter, NotePencil, Plus, Trash, X } from "@phosphor-icons/react";
+import { ArrowSquareOut, CaretLeft, CaretRight, Highlighter, NotePencil, Trash, X } from "@phosphor-icons/react";
 import type { NoteAnchor, NoteSource, ReadingNote } from "@/lib/reading-notes";
 import { captureNoteSelection, prepareBlocks, rangeForAnchor } from "@/lib/reading-note-anchors";
 import { NoteEditor, NoteTime, useNotes } from "./NotesProvider";
@@ -216,7 +216,15 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
   const {notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, goTo, quickNote} = reader;
   const toggleLabel = collapsed ? "展开阅读侧栏" : "收起阅读侧栏";
   const rail = <aside id={railId} data-note-ui className={`${styles.rail} ${panel && tab === "notes" ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
-    <div className={styles.railHead}><div role="tablist" aria-label="阅读侧栏">{children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}<button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button></div><button onClick={quickNote} disabled={!store.ready}><Plus size={17}/>记一条</button><button className={styles.railToggle} aria-label={toggleLabel} title={toggleLabel} aria-expanded={!collapsed} aria-controls={railId} onClick={()=>setCollapsed(!collapsed)}>{collapsed ? <CaretLeft size={18}/> : <CaretRight size={18}/>}</button><button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button></div>
+    <div className={styles.railHead}>
+      <div role="tablist" aria-label="阅读侧栏">
+        {children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}
+        <button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button>
+      </div>
+      <button className={styles.quickNote} onClick={quickNote} disabled={!store.ready}><NotePencil size={17}/>记一条</button>
+      <button className={styles.railToggle} aria-label={toggleLabel} title={toggleLabel} aria-expanded={!collapsed} aria-controls={railId} onClick={()=>setCollapsed(!collapsed)}>{collapsed ? <CaretLeft size={18}/> : <CaretRight size={18}/>}</button>
+      <button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button>
+    </div>
     {store.storageError && <p className={styles.error}>本地存储暂不可用。<button onClick={store.reload}>重试</button></p>}
     {tab === "toc" && children ? <div className={styles.directory}>{children}</div> : <><div data-note-canvas className={styles.canvas} role="tabpanel" aria-label="批注">{notes.map(note=><section className={`${styles.note} ${selected === note.id ? styles.active : ""}`} data-note-id={note.id} key={note.id} hidden={missing.includes(note.id)}>
       <div className={styles.noteHead}><div className={styles.noteActions}><button onClick={()=>goTo(note)} aria-label="回到这条笔记的原文" title="回到原文"><ArrowSquareOut size={17}/></button><button onClick={()=>store.remove(note)} aria-label="删除这条笔记" title="删除笔记"><Trash size={17}/></button></div></div>
