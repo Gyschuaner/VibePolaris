@@ -332,7 +332,10 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
     </nav>}
     {!inline && <><button className={styles.searchToggle} type="button" popoverTarget="graph-search" aria-label="打开概念搜索" title="搜索概念"><MagnifyingGlass size={23} /></button>
       <div ref={searchPanel} className={styles.searchPanel} id="graph-search" popover="auto" onToggle={event => { if (event.newState === "closed") setQuery(""); }}>
-        <input autoFocus aria-label="搜索概念" placeholder="搜索概念、英文或别名" value={query} onChange={event => updateQuery(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && matches[0]) { event.preventDefault(); selectNode(matches[0].slug); } }} />
+        <label className={styles.searchField}>
+          <MagnifyingGlass size={20} aria-hidden="true" />
+          <input autoFocus aria-label="搜索概念" placeholder="搜索概念、英文或别名" value={query} onChange={event => updateQuery(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && matches[0]) { event.preventDefault(); selectNode(matches[0].slug); } }} />
+        </label>
         {needle && <div className={styles.results} aria-label="搜索结果">{matches.length ? matches.map(node => <button type="button" key={node.slug} onClick={() => selectNode(node.slug)}><strong>{node.zh}</strong><span>{node.en || node.cat}</span></button>) : <p>没有找到这个概念</p>}</div>}
       </div>
     </>}
