@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { ArrowSquareOut, CaretLeft, CaretRight, Highlighter, NotePencil, Trash, X } from "@phosphor-icons/react";
+import { ArrowSquareOut, BookOpen, CaretLeft, CaretRight, Highlighter, NotePencil, Trash, X } from "@phosphor-icons/react";
 import type { NoteAnchor, NoteSource, ReadingNote } from "@/lib/reading-notes";
 import { captureNoteSelection, prepareBlocks, rangeForAnchor } from "@/lib/reading-note-anchors";
 import { NoteEditor, NoteTime, useNotes } from "./NotesProvider";
@@ -12,11 +12,13 @@ type ReaderContextValue = {
   notes: ReadingNote[]; selected: string | null; missing: string[]; tab: "toc" | "notes"; panel: boolean;
   setTab: (tab: "toc" | "notes") => void; setPanel: (open: boolean) => void;
   collapsed: boolean; setCollapsed: (collapsed: boolean) => void;
+  readerMode: "reading" | "notes"; setReaderMode: (mode: "reading" | "notes") => void;
   activate: (note: ReadingNote) => void; goTo: (note: ReadingNote) => void; quickNote: () => void;
 };
 const ReaderContext = createContext<ReaderContextValue | null>(null);
 const desktop = "(min-width: 1101px)";
 const collapsedPreference = "vp-reading-sidebar-collapsed";
+const modePreference = "vp-reading-mode";
 
 export function ReadingNotes({ path, title, layout = "concept", children }: { path: string; title: string; layout?: "concept" | "course" | "standalone"; children: ReactNode }) {
   const store = useNotes(), root = useRef<HTMLDivElement>(null);
@@ -26,6 +28,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
   const [selected, setSelected] = useState<string | null>(null), [missing, setMissing] = useState<string[]>([]);
   const [tab, setTab] = useState<"toc" | "notes">("toc"), [panel, setPanel] = useState(false);
   const [collapsed, updateCollapsed] = useState(false);
+  const [readerMode, updateReaderMode] = useState<"reading" | "notes">("reading");
   const setCollapsed = useCallback((value: boolean) => {
     updateCollapsed(value);
     try { localStorage.setItem(collapsedPreference, String(value)); } catch { /* Keep the toggle usable when storage is unavailable. */ }
@@ -34,6 +37,20 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
     try { updateCollapsed(localStorage.getItem(collapsedPreference) === "true"); } catch { /* Default to expanded. */ }
   }, []);
   const [selection, setSelection] = useState<{ anchor: NoteAnchor; rect: DOMRect } | null>(null);
+  const setReaderMode = useCallback((mode: "reading" | "notes") => {
+    updateReaderMode(mode);
+    if (mode === "reading") { setSelection(null); window.getSelection()?.removeAllRanges(); }
+    try { localStorage.setItem(modePreference, mode); } catch { /* Keep the mode usable when storage is unavailable. */ }
+  }, []);
+  useLayoutEffect(() => {
+    try {
+      const saved = localStorage.getItem(modePreference);
+      if (saved === "reading" || saved === "notes") {
+        const frame = requestAnimationFrame(() => updateReaderMode(saved));
+        return () => cancelAnimationFrame(frame);
+      }
+    } catch { /* Default to reading mode. */ }
+  }, []);
   const activate = useCallback((note: ReadingNote) => { setCollapsed(false); setSelected(note.id); setTab("notes"); setPanel(true); }, [setCollapsed]);
   const goTo = useCallback((note: ReadingNote) => {
     if (!root.current || !note.anchor) return;
@@ -47,7 +64,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
       window.scrollTo({ top: window.scrollY + rect.top - window.innerHeight * .34, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     });
   }, [activate, store.open, store.notify]);
-  const quickNote = useCallback(() => { const note = store.add(source); if (note) store.open(note.id); }, [store.add, store.open, source]);
+  const quickNote = useCallback(() => { setReaderMode("notes"); const note = store.add(source); if (note) store.open(note.id); }, [setReaderMode, store.add, store.open, source]);
   const add = useCallback((anchor: NoteAnchor, write = true) => {
     const note = store.add(source, anchor);
     if (note) { if (write) activate(note); else { setTab("notes"); store.notify("已添加划线"); } }
@@ -68,6 +85,10 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
   }, [notes, goTo]);
 
   useEffect(() => {
+    if (readerMode !== "notes") {
+      window.getSelection()?.removeAllRanges();
+      return;
+    }
     let timer: ReturnType<typeof setTimeout>;
     let selecting = false;
     const read = () => {
@@ -116,7 +137,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
       window.removeEventListener("blur", cancelSelection);
       window.removeEventListener("scroll", hide); window.removeEventListener("resize", hide); window.removeEventListener("keydown", keydown);
     };
-  }, [add, quickNote, store.notify]);
+  }, [add, quickNote, readerMode, store.notify]);
 
   useLayoutEffect(() => {
     const article = root.current;
@@ -194,7 +215,7 @@ export function ReadingNotes({ path, title, layout = "concept", children }: { pa
     const found = notes.find(note => { const range=rangeForAnchor(root.current!,note.anchor!);return range && [...range.getClientRects()].some(rect=>event.clientX>=rect.left&&event.clientX<=rect.right&&event.clientY>=rect.top&&event.clientY<=rect.bottom); });
     if (found) activate(found);
   }
-  return <ReaderContext.Provider value={{notes,selected,missing,tab,panel,setTab,setPanel,collapsed,setCollapsed,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} data-rail-collapsed={collapsed} onClick={clickHighlight}>
+  return <ReaderContext.Provider value={{notes,selected,missing,tab,panel,setTab,setPanel,collapsed,setCollapsed,readerMode,setReaderMode,activate,goTo,quickNote}}><div ref={root} className={`${styles.scope} ${layout === "standalone" ? styles.standalone : ""}`} data-reader-layout={layout} data-reader-mode={readerMode} data-rail-collapsed={collapsed} onClick={clickHighlight}>
     <style>{`::highlight(vp-reading-notes){background:color-mix(in srgb,var(--accent) 23%,var(--bg));color:var(--ink)}::highlight(vp-reading-active){background:color-mix(in srgb,var(--accent) 34%,var(--bg));color:var(--ink)}`}</style>
     {children}{layout === "standalone" && <ArticleNotesRail/>}
     <svg className={styles.connectors} data-note-links data-note-ui aria-hidden="true">{notes.map(note=><g key={note.id} data-connector-id={note.id} data-active={selected === note.id}><path/><circle r="2"/><circle r="2"/></g>)}</svg>
@@ -213,7 +234,7 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
     return () => media.removeEventListener("change", update);
   }, []);
   if (!reader) return children;
-  const {notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, goTo, quickNote} = reader;
+  const {notes, selected, missing, tab, panel, setTab, setPanel, collapsed, setCollapsed, readerMode, setReaderMode, goTo, quickNote} = reader;
   const toggleLabel = collapsed ? "展开阅读侧栏" : "收起阅读侧栏";
   const rail = <aside id={railId} data-note-ui className={`${styles.rail} ${panel && tab === "notes" ? styles.panelOpen : ""}`} aria-label="阅读侧栏">
     <div className={styles.railHead}>
@@ -221,7 +242,13 @@ export function ArticleNotesRail({ children }: { children?: ReactNode }) {
         {children && <button role="tab" aria-selected={tab === "toc"} onClick={()=>setTab("toc")}>目录</button>}
         <button role="tab" aria-selected={tab === "notes" || !children} onClick={()=>{setTab("notes");setPanel(true);}}>批注</button>
       </div>
-      <button className={styles.quickNote} onClick={quickNote} disabled={!store.ready}><NotePencil size={17}/>记一条</button>
+      <div className={styles.railTools}>
+        <div className={styles.modeSwitch} role="group" aria-label="阅读模式">
+          <button type="button" aria-pressed={readerMode === "reading"} onClick={() => setReaderMode("reading")}><BookOpen size={15}/>阅读</button>
+          <button type="button" aria-pressed={readerMode === "notes"} onClick={() => setReaderMode("notes")}><NotePencil size={15}/>笔记</button>
+        </div>
+        <button className={styles.quickNote} onClick={quickNote} disabled={!store.ready}><NotePencil size={17}/>记一条</button>
+      </div>
       <button className={styles.railToggle} aria-label={toggleLabel} title={toggleLabel} aria-expanded={!collapsed} aria-controls={railId} onClick={()=>setCollapsed(!collapsed)}>{collapsed ? <CaretLeft size={18}/> : <CaretRight size={18}/>}</button>
       <button className={styles.closePanel} aria-label="收起笔记" onClick={()=>setPanel(false)}><X size={21}/></button>
     </div>
