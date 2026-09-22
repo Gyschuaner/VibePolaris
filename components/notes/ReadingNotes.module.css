@@ -17,7 +17,12 @@
 .railHead [role=tab]:hover{color:var(--ink)}
 .railHead [aria-selected=true]{background:var(--surface);color:var(--accent-text);font-weight:500}
 .railHead>button{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--muted);white-space:nowrap;border-radius:6px;transition:background 180ms ease,color 180ms ease}
-.railHead>.quickNote{grid-row:2;grid-column:1/-1;justify-self:end;min-height:32px;padding:0 6px;font-size:13px}
+.railTools{grid-row:2;grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.modeSwitch{display:flex;align-items:center;gap:2px;padding:3px;border:1px solid color-mix(in srgb,var(--hairline) 68%,transparent);border-radius:8px;color:var(--muted)}
+.modeSwitch button{display:flex;align-items:center;gap:5px;min-height:25px;padding:0 8px;border-radius:5px;font-size:12px;transition:background 180ms ease,color 180ms ease}
+.modeSwitch button:hover{color:var(--ink)}
+.modeSwitch button[aria-pressed=true]{background:var(--surface);color:var(--accent-text);box-shadow:0 1px 3px color-mix(in srgb,var(--ink) 8%,transparent)}
+.railHead>.railTools .quickNote{min-height:32px;padding:0 6px;font-size:13px}
 .railHead>.railToggle,.railHead>.closePanel{grid-row:1;grid-column:2;width:32px;height:32px}
 .railHead>button:hover{color:var(--ink);background:color-mix(in srgb,var(--hairline) 35%,var(--bg))}
 @media(min-width:1101px){
@@ -26,8 +31,15 @@
  .rail>:not(.railHead),.railHead>:not(.railToggle){opacity:1;visibility:visible;transform:translateX(0);transition:transform 360ms cubic-bezier(.4,0,.2,1),opacity 240ms ease,visibility 0s}
  .scope[data-rail-collapsed=true] .railHead{background:transparent}
  .scope[data-rail-collapsed=true] .rail>:not(.railHead),.scope[data-rail-collapsed=true] .railHead>:not(.railToggle){opacity:0;visibility:hidden;pointer-events:none;transform:translateX(18px);transition:transform 360ms cubic-bezier(.4,0,.2,1),opacity 240ms ease,visibility 0s 360ms}
- .scope[data-rail-collapsed=true] .connectors{opacity:0;visibility:hidden;transition:opacity 140ms ease,visibility 0s 140ms}
+.scope[data-rail-collapsed=true] .connectors{opacity:0;visibility:hidden;transition:opacity 140ms ease,visibility 0s 140ms}
 }
+/* Reading keeps the page calm; selection is an intentional note-taking action. */
+.scope[data-reader-mode="reading"] :global(main),
+.scope[data-reader-mode="reading"] :global(.vp-reading-content),
+.scope[data-reader-mode="reading"] :global(.css-course-content){user-select:none;-webkit-user-select:none}
+.scope[data-reader-mode="reading"] :global(main input),
+.scope[data-reader-mode="reading"] :global(main textarea),
+.scope[data-reader-mode="reading"] :global(main [contenteditable="true"]){user-select:text;-webkit-user-select:text}
 .directory{position:sticky;top:177px;padding:17px 0 25px}
 .scope .directory :global(.vp-toc),.scope .directory :global(.css-course-toc){position:relative;top:auto;display:grid;gap:6px;padding:0 0 0 20px;margin:0;border:0;max-height:calc(100dvh - 230px);background:none;overflow:auto}
 .scope .rail .directory :global(.vp-toc){margin-top:0}
