@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { cosine, compareEmbedding, semanticSearch, ragPacket, ragAnswer } from '../lib/semantic-teaching.ts';
+test('表示空间、候选集合与答复依据保持一致', () => {
+  assert.equal(cosine([0,0,0], [1,0,0]), null);
+  assert.ok(Math.abs(compareEmbedding(1,0) - .96) < 1e-10);
+  assert.equal(compareEmbedding(1,1), null);
+  const all = semanticSearch(0,false,2,.2);
+  assert.deepEqual(all.hits.map(d => d.id), ['B','A']);
+  assert.equal(all.precision,.5); assert.equal(all.recall,1);
+  assert.deepEqual(semanticSearch(0,true,1,.2).hits.map(d => d.id), ['A']);
+  assert.deepEqual(semanticSearch(1,true,1,.2).hits.map(d => d.id), ['C']);
+  assert.deepEqual(semanticSearch(0,true,3,.95).hits.map(d => d.id), ['A']);
+  const empty = semanticSearch(2,false,2,.2);
+  assert.deepEqual(empty.hits,[]); assert.equal(empty.precision,null); assert.equal(empty.recall,null);
+  assert.deepEqual(ragAnswer(ragPacket(0)).claims[1].sources,['A','B']);
+  assert.equal(ragAnswer(ragPacket(1)).claims.length,1);
+  assert.match(ragAnswer(ragPacket(1)).conclusion,/缺少/);
+  assert.equal(ragAnswer(ragPacket(2)).claims.length,1);
+  assert.match(ragAnswer(ragPacket(2)).conclusion,/冲突/);
+  assert.equal(ragAnswer([]).claims.length,0);
+});

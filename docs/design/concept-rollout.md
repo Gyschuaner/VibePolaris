@@ -27,12 +27,13 @@
 | 017 | 数据接入、数据转换、数据验证 | VBP-032 · [本批研究与 review](VBP-032-dataflow-concepts.md) |
 | 018 | 数据集、数据质量、数据血缘 | VBP-033 · [本批研究与 review](VBP-033-provenance-concepts.md) |
 | 019 | 数据帧、全文搜索、向量数据库 | VBP-034 · [本批研究与 review](VBP-034-retrieval-concepts.md) |
+| 020 | 嵌入、语义搜索、RAG | VBP-035 · [本批研究与 review](VBP-035-semantic-concepts.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 65 页，另有 9 页历史基准；其余 227 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 68 页，另有 9 页历史基准；其余 224 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
 
-2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -82,7 +83,7 @@
 | agent | 智能体 | AI·Agent | 001 · 本地验收及 review 通过 |
 | tools | 工具调用 | AI·Agent | 基准 · 待最终复核 |
 | memory | 记忆 | AI·Agent | 基准 · 待最终复核 |
-| rag | RAG | AI·Agent | 待处理 |
+| rag | RAG | AI·Agent | 020 · 本地验收及 review 通过 |
 | mcp | MCP | AI·Agent | 基准 · 待最终复核 |
 | framework | 框架与库 | 技术栈 | 待处理 |
 | ssg-ssr | 静态站点与服务器渲染 | 技术栈 | 待处理 |
@@ -303,12 +304,12 @@
 | benchmark | 基准测试 | AI·Agent | 待处理 |
 | grader | 评分器 | AI·Agent | 待处理 |
 | fine-tuning | 微调 | AI·Agent | 待处理 |
-| embedding | 嵌入 | AI·Agent | 待处理 |
+| embedding | 嵌入 | AI·Agent | 020 · 本地验收及 review 通过 |
 | vector-store | 向量存储 | AI·Agent | 待处理 |
 | retrieval | 检索 | AI·Agent | 待处理 |
 | chunking | 分块 | AI·Agent | 待处理 |
 | reranking | 重排序 | AI·Agent | 待处理 |
-| semantic-search | 语义搜索 | AI·Agent | 待处理 |
+| semantic-search | 语义搜索 | AI·Agent | 020 · 本地验收及 review 通过 |
 | hybrid-search | 混合搜索 | AI·Agent | 待处理 |
 | prompt-caching | 提示缓存 | AI·Agent | 待处理 |
 | streaming-output | 流式输出 | AI·Agent | 待处理 |
