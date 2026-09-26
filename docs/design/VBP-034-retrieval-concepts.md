@@ -52,3 +52,7 @@ VBP-012 的第十九批。2026-09-27，以 `dev` 的 `8de498dd61600e57c1f5aa0c1c
 桌面Chrome 1470×956：数据帧B/D、2×2、0×2、Enter重置4×3；全文AND A/E、OR A/B/C/E、短语A、未知词无匹配；向量全部B/A距离0.28/1.00，公开A/C距离1.00/2.83，更新后C/D距离2.83/4.00，归档0条及Enter重置。第四来源摘录均手动展开并回跳 `frame-execution` / `text-configuration` / `vector-filter`，顶部分别约129.8/129.8/129.9px，未被页头遮住。
 
 390px数据帧：首图内容底624.3px、图底666.3px、正文始688.3px，无横向溢出；B/D投影2×2、空表0×2与Enter重置4×3、第四资料回跳261.94px。390px全文：首图内容底624.1px、图底666.3px、正文始688.3px；AND/OR/短语/未知词均一致，键盘全选删除后空输入Enter提示“请输入至少一个词项”，旧报告有inert，重置恢复默认查询。浏览器工具fill空字符串未清空控件，通过真实键盘核对，不把工具动作未发生记作产品Bug。390px向量：五字标题正常，图内文字底628.7px、图底663.2px、正文始685.2px；全部B/A、公开A/C、更新C/D、第二查询E/A与距离0/1.41、归档空候选、Enter重置均一致。三页窄屏第四来源回跳约262px。review补齐结果表头row语义与任意长查询报告换行，最终build再次通过；其余模型未变未重复机制测试。dev集成后仅核对三页核心流程与这两项小修正。当前Obsidian指定路径 `D:/Obsidian/gysnote` 在此Mac不存在，跳过同步。未创建空正式文档或飞书索引。
+
+## dev 集成归档
+
+PR [#78](https://github.com/Gyschuaner/VibePolaris/pull/78) 已合并 dev，提交 `1774bcaff3ca918924dd45164f2e6f75822cae3f`。合并后本地3001预览重新启动，三页核心流程通过；VBP-034 为 ready_for_release，研发任务 done、计划 completed，3/3 实际执行通过。DP 本地部署 `e72e7e6a-aa55-4a2f-b610-bfcef43e9607`，批次 local-dev-20260927-vbp034-1774bca，备份基线 `8de498dd61600e57c1f5aa0c1c51946ce44f36ea`。仅本机 dev 预览，未远端或生产发布。回滚通过 PR 撤销 #78，再构建并重启本地预览。

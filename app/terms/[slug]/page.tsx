@@ -25,7 +25,7 @@ import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
 import { MemoryTermPage, ContextWindowTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
 import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
-import { RagTermPage } from "@/components/terms/RagTermPage";
+import { EmbeddingTermPage, SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
@@ -45,6 +45,9 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
 const articleTermPages = {
+  embedding: EmbeddingTermPage,
+  "semantic-search": SemanticSearchTermPage,
+  rag: RagConceptTermPage,
   dataframe: FrameTermPage,
   "full-text-search": FullTextTermPage,
   "vector-database": VectorDatabaseTermPage,
@@ -124,7 +127,6 @@ const articleTermPages = {
 const dedicatedTermPages = {
   ...articleTermPages,
   rebase: RebaseTermPage,
-  rag: RagTermPage,
   css: TermDetailExperience,
   html: TermDetailExperience,
   javascript: TermDetailExperience,
