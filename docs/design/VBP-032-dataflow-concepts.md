@@ -50,3 +50,7 @@
 Git/dev集成与最终DP阶段完成后记录，以上本地证据不代表生产发布或用户视觉确认。
 
 最后局部复核：转换Reveal收起后报告高度0、inert，重新执行分配置4条/4920分；验证390px首图末字665.3px在figure666.3px内，导语从688.3px开始，三页无横向溢出。捕获本批localhost浏览器日志无warn/error。
+
+## 最终 dev 集成
+
+PR #76 合并 dev，提交 69067a01c9f61fe4564d8b66b395c0e9ddaeaf42。重启本地 Next 后，接入位置2/原始层2、转换分配置4条/4920分、验证1通过3隔离与城市原值再次确认。DP任务完成、测试计划3/3通过并完成、VBP-032待发布（ready_for_release）。部署记录local-dev-20260927-vbp032-69067a0仅为localhost:3001本地dev；未合main或远端/生产发布。回滚经功能分支PR撤销合并、重建并重启dev；基准备份git-5c9450d21acfe4b26fa08b14a4a6c0f6df61dd0f。

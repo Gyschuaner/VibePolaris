@@ -40,8 +40,12 @@ import { BackupTermPage, ShardingTermPage, QueueTermPage } from "@/components/te
 import { BatchTermPage, StreamTermPage, EventDrivenTermPage } from "@/components/terms/ProcessingConceptPages";
 import { PipelineTermPage, WebhookTermPage, DistributedTermPage } from "@/components/terms/CoordinationConceptPages";
 import { IngestionTermPage, TransformationTermPage, ValidationTermPage } from "@/components/terms/DataFlowConceptPages";
+import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/terms/ProvenanceConceptPages";
 
 const articleTermPages = {
+  "dataset-data": DatasetTermPage,
+  "data-quality": QualityTermPage,
+  "data-lineage": LineageTermPage,
   "data-ingestion": IngestionTermPage,
   "data-transformation": TransformationTermPage,
   "data-validation": ValidationTermPage,
