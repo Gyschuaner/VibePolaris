@@ -55,4 +55,4 @@ DP：VBP-024，父需求 VBP-012。顾毅盛负责研究、设计、实现、rev
 
 ## 集成范围
 
-本批经功能分支PR合入dev；最终提交及本地部署事实记录在DP。仅部署本机 `http://127.0.0.1:3001`，没有远端dev或生产部署。回退基线为 `0e5ae0776a1db92d9c6e6f8fa429596c141a9c41`：在该提交的独立工作区构建并替换预览进程，保留当前代码。
+实现提交 `040751844ab5baa42c2bb01ea94a9efaed8ae057`；[PR #67](https://github.com/Gyschuaner/VibePolaris/pull/67) 从 `feat/VBP-024-storage-concepts` 集成 dev。最终合并提交及部署事实以 DP 的 VBP-024 与 local-dev 部署记录为准。仅部署本机 `http://127.0.0.1:3001`，没有远端dev或生产部署。回退基线为 `0e5ae0776a1db92d9c6e6f8fa429596c141a9c41`：在该提交的独立工作区构建并替换预览进程，保留当前代码。
