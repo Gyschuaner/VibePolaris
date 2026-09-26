@@ -19,6 +19,7 @@ import { ApiTermPage, EndpointTermPage, RestTermPage, PaginationTermPage, RateLi
 import { TimeoutTermPage, RetryTermPage, IdempotencyTermPage } from "@/components/terms/ReliabilityConceptPages";
 import { DatabaseTermPage, IndexTermPage, TransactionTermPage } from "@/components/terms/StorageConceptPages";
 import { TableTermPage, PrimaryKeyTermPage, ForeignKeyTermPage } from "@/components/terms/RelationalConceptPages";
+import { DatabaseSchemaTermPage, JoinTermPage, UniqueConstraintTermPage } from "@/components/terms/StructureConceptPages";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
@@ -33,6 +34,9 @@ import { getTermExperience } from "@/lib/term-experiences";
 type TermPageProps = { params: Promise<{ slug: string }> };
 
 const articleTermPages = {
+  "database-schema": DatabaseSchemaTermPage,
+  join: JoinTermPage,
+  "unique-constraint": UniqueConstraintTermPage,
   "agent-harness": AgentHarnessTermPage,
   tools: ToolCallingTermPage,
   context: ContextTermPage,
