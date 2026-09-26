@@ -42,7 +42,12 @@ import { PipelineTermPage, WebhookTermPage, DistributedTermPage } from "@/compon
 import { IngestionTermPage, TransformationTermPage, ValidationTermPage } from "@/components/terms/DataFlowConceptPages";
 import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/terms/ProvenanceConceptPages";
 
+import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
+
 const articleTermPages = {
+  dataframe: FrameTermPage,
+  "full-text-search": FullTextTermPage,
+  "vector-database": VectorDatabaseTermPage,
   "dataset-data": DatasetTermPage,
   "data-quality": QualityTermPage,
   "data-lineage": LineageTermPage,

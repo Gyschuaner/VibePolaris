@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { frameRows, frameSelection, textSearch, vectorSearch, vectorPoints } from '../lib/retrieval-teaching.ts';
+test('selection dimensions, posting positions, and filtered exact neighbours remain consistent', () => {
+  assert.deepEqual(frameSelection(1, true).rows.map(r => r.label), ['B', 'D']);
+  assert.deepEqual(frameSelection(1, false).shape, [2, 2]);
+  assert.deepEqual(frameSelection(10, false).shape, [0, 2]);
+  assert.equal(frameRows.length, 4);
+  assert.deepEqual(textSearch('借阅 续借', 'and').ids, ['A', 'E']);
+  assert.deepEqual(textSearch('借阅 续借', 'or').ids, ['A', 'B', 'C', 'E']);
+  assert.deepEqual(textSearch('借阅 续借', 'phrase').ids, ['A']);
+  assert.deepEqual(textSearch('续借 借阅', 'phrase').ids, ['E']);
+  assert.deepEqual(textSearch('预约', 'or').ids, []);
+  assert.deepEqual(textSearch('  ', 'and').ids, []);
+  assert.deepEqual(vectorSearch(0, 'all', false).hits.map(r => r.id), ['B', 'A']);
+  assert.deepEqual(vectorSearch(0, 'public', false).hits.map(r => r.id), ['A', 'C']);
+  assert.deepEqual(vectorSearch(0, 'public', true).hits.map(r => r.id), ['C', 'D']);
+  assert.deepEqual(vectorSearch(1, 'public', true).hits.map(r => r.id), ['E', 'A']);
+  assert.deepEqual(vectorSearch(0, 'archived', true).hits, []);
+  assert.equal(vectorPoints(false)[0].x, 3);
+  assert.equal(vectorSearch(0, 'public', false).hits[0].distance, 1);
+});
