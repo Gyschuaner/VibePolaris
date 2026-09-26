@@ -22,12 +22,13 @@
 | 012 | SQL、数据库迁移、ORM | VBP-027 · [本批研究与 review](VBP-027-query-concepts.md) |
 | 013 | 缓存、连接池、复制 | VBP-028 · [本批研究与 review](VBP-028-reuse-concepts.md) |
 | 014 | 备份、分片、队列 | VBP-029 · [本批研究与 review](VBP-029-distribution-concepts.md) |
+| 015 | 批处理、流处理、事件驱动架构 | VBP-030 · [本批研究与 review](VBP-030-processing-concepts.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 50 页，另有 9 页历史基准；其余 242 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 53 页，另有 9 页历史基准；其余 239 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
 
-2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -246,13 +247,13 @@
 | response-header | 响应头 | 技术栈 | 待处理 |
 | dataframe | 数据帧 | 技术栈 | 待处理 |
 | dataset-data | 数据集 | 技术栈 | 待处理 |
-| batch-processing | 批处理 | 技术栈 | 待处理 |
+| batch-processing | 批处理 | 技术栈 | 015 · 本地验收及 review 通过 |
 | data-ingestion | 数据接入 | 技术栈 | 待处理 |
 | data-pipeline | 数据管道 | 技术栈 | 待处理 |
 | data-quality | 数据质量 | 技术栈 | 待处理 |
 | data-transformation | 数据转换 | 技术栈 | 待处理 |
 | data-validation | 数据验证 | 技术栈 | 待处理 |
-| stream-processing | 流处理 | 技术栈 | 待处理 |
+| stream-processing | 流处理 | 技术栈 | 015 · 本地验收及 review 通过 |
 | data-lineage | 数据血缘 | 技术栈 | 待处理 |
 | unit-test | 单元测试 | 技术栈 | 待处理 |
 | integration-test | 集成测试 | 技术栈 | 待处理 |
@@ -341,7 +342,7 @@
 | monolith | 单体架构 | 技术栈 | 待处理 |
 | microservices | 微服务 | 技术栈 | 待处理 |
 | distributed-system | 分布式系统 | 技术栈 | 待处理 |
-| event-driven-architecture | 事件驱动架构 | 技术栈 | 待处理 |
+| event-driven-architecture | 事件驱动架构 | 技术栈 | 015 · 本地验收及 review 通过 |
 | serverless | 无服务器架构 | 技术栈 | 待处理 |
 | container | 容器 | 技术栈 | 待处理 |
 | container-image | 容器镜像 | 技术栈 | 待处理 |

@@ -37,7 +37,12 @@ import { SqlTermPage, MigrationTermPage, OrmTermPage } from "@/components/terms/
 
 import { BackupTermPage, ShardingTermPage, QueueTermPage } from "@/components/terms/DistributionConceptPages";
 
+import { BatchTermPage, StreamTermPage, EventDrivenTermPage } from "@/components/terms/ProcessingConceptPages";
+
 const articleTermPages = {
+  "batch-processing": BatchTermPage,
+  "stream-processing": StreamTermPage,
+  "event-driven-architecture": EventDrivenTermPage,
   backup: BackupTermPage,
   sharding: ShardingTermPage,
   queue: QueueTermPage,
