@@ -39,8 +39,12 @@ import { BackupTermPage, ShardingTermPage, QueueTermPage } from "@/components/te
 
 import { BatchTermPage, StreamTermPage, EventDrivenTermPage } from "@/components/terms/ProcessingConceptPages";
 import { PipelineTermPage, WebhookTermPage, DistributedTermPage } from "@/components/terms/CoordinationConceptPages";
+import { IngestionTermPage, TransformationTermPage, ValidationTermPage } from "@/components/terms/DataFlowConceptPages";
 
 const articleTermPages = {
+  "data-ingestion": IngestionTermPage,
+  "data-transformation": TransformationTermPage,
+  "data-validation": ValidationTermPage,
   "data-pipeline": PipelineTermPage,
   webhook: WebhookTermPage,
   "distributed-system": DistributedTermPage,
