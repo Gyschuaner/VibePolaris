@@ -51,3 +51,9 @@
 - 首屏review另发现结构首图的 Blueprint 被纵向 flex 收缩至5.6px；局部调整行高、间距并禁止 SVG 收缩，桌面标题已收为52.92px的一整行。BUG-93807975 跟踪本页首屏布局修复，实际回归后已关闭（图标28×28，标题整行）。源码未修改其他文章的字号或全站图标样式。
 
 Obsidian 的 Windows 路径在当前 Mac 不存在，跳过。没有生成需要关联飞书的正式方案正文；本次代码相关研究与 review 保留在此，业务状态及实际测试记录在 DP。
+
+## Git 与本机运行索引
+
+实现提交 `64be9515c4e02570581341509a3df703e070c9f1`；[PR #69](https://github.com/Gyschuaner/VibePolaris/pull/69) 目标为 dev。来源、正文与演示已完成本地 review 和限定验收，测试计划三个实际结果记录于 DP。dev 最终合并提交与集成后的本机运行结果保存在 DP 部署记录，不能将它理解成远端 dev 或生产上线。
+
+阅读入口：`http://localhost:3001/terms/database-schema`、`/terms/join`、`/terms/unique-constraint`。回退基线为 `06ebb248c7d91e7070e2ea69120ff9976bd355ff`；若需撤销本批，在新分支 revert 本批 dev 合并，重新构建并通过 PR 集成。main 与生产未在本批范围。
