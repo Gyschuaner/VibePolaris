@@ -15,10 +15,14 @@
 | 005 | 请求、响应、HTTP 方法、状态码、请求头 | VBP-017 · [本批研究与 review](VBP-017-http-concepts.md) |
 | 006 | 查询参数、路径参数、请求体 | VBP-018 · [本批研究与 review](VBP-018-request-inputs.md) |
 | 007 | API 接口、端点、REST、分页、限流 | VBP-019 · [本批研究与 review](VBP-012-api-concepts-preparation.md) |
+| 008 | 超时、重试、幂等 | VBP-023 · [本批研究与 review](VBP-012-reliability-concepts.md) |
+| 009 | 数据库、索引、事务 | VBP-024 · [本批研究与 review](VBP-024-storage-concepts.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 32 页，另有 9 页历史基准；其余 260 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 35 页，另有 9 页历史基准；其余 257 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
+
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -55,7 +59,7 @@
 | javascript | JavaScript | 前端 | 待处理 |
 | dom | DOM | 前端 | 待处理 |
 | api | API 接口 | 后端 | 007 · 本地验收及 review 通过 |
-| database | 数据库 | 后端 | 待处理 |
+| database | 数据库 | 后端 | 009 · 本地验收及 review 通过 |
 | auth | 认证 | 后端 | 待处理 |
 | cache | 缓存 | 后端 | 待处理 |
 | queue | 队列 | 后端 | 待处理 |
@@ -207,10 +211,10 @@
 | database-schema | 数据库模式 | 后端 | 待处理 |
 | primary-key | 主键 | 后端 | 待处理 |
 | foreign-key | 外键 | 后端 | 待处理 |
-| index | 索引 | 后端 | 待处理 |
+| index | 索引 | 后端 | 009 · 本地验收及 review 通过 |
 | unique-constraint | 唯一约束 | 后端 | 待处理 |
 | join | 连接查询 | 后端 | 待处理 |
-| transaction | 事务 | 后端 | 待处理 |
+| transaction | 事务 | 后端 | 009 · 本地验收及 review 通过 |
 | acid | ACID | 后端 | 待处理 |
 | database-migration | 数据库迁移 | 后端 | 待处理 |
 | orm | ORM | 后端 | 待处理 |

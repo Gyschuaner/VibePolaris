@@ -17,6 +17,7 @@ import { RequestTermPage, ResponseTermPage, HttpMethodTermPage, StatusCodeTermPa
 import { QueryParameterTermPage, PathParameterTermPage, RequestBodyTermPage } from "@/components/terms/RequestInputPages";
 import { ApiTermPage, EndpointTermPage, RestTermPage, PaginationTermPage, RateLimitingTermPage } from "@/components/terms/ApiConceptPages";
 import { TimeoutTermPage, RetryTermPage, IdempotencyTermPage } from "@/components/terms/ReliabilityConceptPages";
+import { DatabaseTermPage, IndexTermPage, TransactionTermPage } from "@/components/terms/StorageConceptPages";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
@@ -72,6 +73,9 @@ const articleTermPages = {
   timeout: TimeoutTermPage,
   retry: RetryTermPage,
   idempotency: IdempotencyTermPage,
+  database: DatabaseTermPage,
+  index: IndexTermPage,
+  transaction: TransactionTermPage,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 const dedicatedTermPages = {
