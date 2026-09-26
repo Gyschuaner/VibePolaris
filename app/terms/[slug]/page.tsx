@@ -38,8 +38,12 @@ import { SqlTermPage, MigrationTermPage, OrmTermPage } from "@/components/terms/
 import { BackupTermPage, ShardingTermPage, QueueTermPage } from "@/components/terms/DistributionConceptPages";
 
 import { BatchTermPage, StreamTermPage, EventDrivenTermPage } from "@/components/terms/ProcessingConceptPages";
+import { PipelineTermPage, WebhookTermPage, DistributedTermPage } from "@/components/terms/CoordinationConceptPages";
 
 const articleTermPages = {
+  "data-pipeline": PipelineTermPage,
+  webhook: WebhookTermPage,
+  "distributed-system": DistributedTermPage,
   "batch-processing": BatchTermPage,
   "stream-processing": StreamTermPage,
   "event-driven-architecture": EventDrivenTermPage,
