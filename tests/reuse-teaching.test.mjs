@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { initialCache, readCache, expireCache, initialPool, borrowConnection, returnConnection, timeoutWaiting, initialReplica, replicate } from '../lib/reuse-teaching.ts';
+test('data reuse, exclusive leases and ordered replication retain their boundaries', () => {
+  const empty=initialCache(); let cache=readCache(empty);
+  assert.equal(cache.hit,false); assert.equal(empty.entry,null);
+  cache=readCache({...cache.state,source:1}); assert.equal(cache.hit,true); assert.equal(cache.version,0);
+  const refreshed=readCache(expireCache(cache.state)); assert.equal(refreshed.hit,false); assert.equal(refreshed.version,1);
+  let pool=initialPool(); for(const id of ['A','B','C'])pool=borrowConnection(pool,id);
+  assert.deepEqual(pool.slots,['A','B']); assert.equal(pool.clients.C,'waiting');
+  const handed=returnConnection(pool,0); assert.deepEqual(handed.slots,['C','B']); assert.equal(handed.clients.A,'done');
+  const timed=returnConnection(timeoutWaiting(pool),0); assert.deepEqual(timed.slots,[null,'B']); assert.equal(timed.clients.C,'timedout');
+  assert.deepEqual(borrowConnection(timed,'C'),timed); assert.deepEqual(initialPool().slots,[null,null]);
+  let copy=initialReplica(); assert.deepEqual(replicate(copy,'apply'),copy);
+  copy=replicate(copy,'rename'); assert.equal(copy.applied,0);
+  copy=replicate(copy,'send'); assert.equal(copy.received,1); assert.equal(copy.applied,0);
+  copy=replicate(copy,'apply'); assert.equal(copy.applied,1);
+  copy=replicate(copy,'delete'); assert.equal(copy.head,2); assert.equal(copy.applied,1);
+  copy=replicate(copy,'send'); copy=replicate(copy,'apply'); assert.equal(copy.applied,2);
+  assert.deepEqual(replicate(copy,'apply'),copy); assert.deepEqual(initialReplica(),{head:0,received:0,applied:0});
+});

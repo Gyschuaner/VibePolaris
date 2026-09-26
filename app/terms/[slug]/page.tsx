@@ -20,7 +20,7 @@ import { TimeoutTermPage, RetryTermPage, IdempotencyTermPage } from "@/component
 import { DatabaseTermPage, IndexTermPage, TransactionTermPage } from "@/components/terms/StorageConceptPages";
 import { TableTermPage, PrimaryKeyTermPage, ForeignKeyTermPage } from "@/components/terms/RelationalConceptPages";
 import { DatabaseSchemaTermPage, JoinTermPage, UniqueConstraintTermPage } from "@/components/terms/StructureConceptPages";
-import { CacheTermPage } from "@/components/terms/CacheTermPage";
+import { CacheTermPage, PoolTermPage, ReplicationTermPage } from "@/components/terms/ReuseConceptPages";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
 import { MemoryTermPage, ContextWindowTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
@@ -36,6 +36,9 @@ type TermPageProps = { params: Promise<{ slug: string }> };
 import { SqlTermPage, MigrationTermPage, OrmTermPage } from "@/components/terms/QueryConceptPages";
 
 const articleTermPages = {
+  cache: CacheTermPage,
+  "connection-pool": PoolTermPage,
+  replication: ReplicationTermPage,
   sql: SqlTermPage,
   "database-migration": MigrationTermPage,
   orm: OrmTermPage,
@@ -95,7 +98,6 @@ const dedicatedTermPages = {
   ...articleTermPages,
   rebase: RebaseTermPage,
   rag: RagTermPage,
-  cache: CacheTermPage,
   css: TermDetailExperience,
   html: TermDetailExperience,
   javascript: TermDetailExperience,
