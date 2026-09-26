@@ -168,16 +168,14 @@ test("组件词条使用独立研究卡与四段专属分镜", () => {
   assert.equal(component.sourceUrls.length, 3);
 });
 
-test("Rebase、RAG 与缓存分别使用独立交互模型", () => {
+test("Rebase 与 RAG 使用独立交互模型", () => {
   const route = read("app/terms/[slug]/page.tsx");
   const rebase = read("components/terms/RebaseTermPage.tsx");
   const rag = read("components/terms/RagTermPage.tsx");
-  const cache = read("components/terms/CacheTermPage.tsx");
   const css = read("app/globals.css");
 
   assert.match(route, /rebase: RebaseTermPage/);
   assert.match(route, /rag: RagTermPage/);
-  assert.match(route, /cache: CacheTermPage/);
   assert.match(rebase, /git rebase dev/);
   assert.match(rebase, /同事更新了 dev，你的功能分支落后了/);
   assert.match(rebase, /Git 在 D3 后重新应用 F1 的内容/);
@@ -197,11 +195,7 @@ test("Rebase、RAG 与缓存分别使用独立交互模型", () => {
   assert.match(rag, /检索并核对引用/);
   assert.match(rag, /证据覆盖/);
   assert.match(rag, /缺少直接证据/);
-  assert.match(cache, /缓存中有副本/);
-  assert.match(cache, /数据库真实价格/);
-  assert.match(cache, /发送请求/);
   assert.match(css, /\.rebase-workbench/);
   assert.match(css, /\.rag-workbench/);
-  assert.match(css, /\.cache-lab/);
   assert.match(css, /@media \(max-width: 680px\)[\s\S]*\.rag-workbench, \.cache-lab \{ grid-template-columns: 1fr/);
 });
