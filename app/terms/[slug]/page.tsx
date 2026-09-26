@@ -33,7 +33,12 @@ import { getTermExperience } from "@/lib/term-experiences";
 
 type TermPageProps = { params: Promise<{ slug: string }> };
 
+import { SqlTermPage, MigrationTermPage, OrmTermPage } from "@/components/terms/QueryConceptPages";
+
 const articleTermPages = {
+  sql: SqlTermPage,
+  "database-migration": MigrationTermPage,
+  orm: OrmTermPage,
   "database-schema": DatabaseSchemaTermPage,
   join: JoinTermPage,
   "unique-constraint": UniqueConstraintTermPage,
