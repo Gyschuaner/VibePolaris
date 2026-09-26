@@ -18,6 +18,7 @@ import { QueryParameterTermPage, PathParameterTermPage, RequestBodyTermPage } fr
 import { ApiTermPage, EndpointTermPage, RestTermPage, PaginationTermPage, RateLimitingTermPage } from "@/components/terms/ApiConceptPages";
 import { TimeoutTermPage, RetryTermPage, IdempotencyTermPage } from "@/components/terms/ReliabilityConceptPages";
 import { DatabaseTermPage, IndexTermPage, TransactionTermPage } from "@/components/terms/StorageConceptPages";
+import { TableTermPage, PrimaryKeyTermPage, ForeignKeyTermPage } from "@/components/terms/RelationalConceptPages";
 import { CacheTermPage } from "@/components/terms/CacheTermPage";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
@@ -76,6 +77,9 @@ const articleTermPages = {
   database: DatabaseTermPage,
   index: IndexTermPage,
   transaction: TransactionTermPage,
+  table: TableTermPage,
+  "primary-key": PrimaryKeyTermPage,
+  "foreign-key": ForeignKeyTermPage,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 const dedicatedTermPages = {

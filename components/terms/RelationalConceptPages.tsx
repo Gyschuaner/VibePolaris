@@ -1,0 +1,119 @@
+import { BookOpen, Key, LinkSimple, Table as TableIcon } from "@phosphor-icons/react/dist/ssr";
+import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
+import { ConceptHero } from "./ConceptHero";
+import { TableLesson, PrimaryKeyLesson, ForeignKeyLesson } from "./RelationalConceptLessons";
+import { tableSources, primaryKeySources, foreignKeySources } from "@/lib/relational-sources";
+import s from "./RelationalConcepts.module.css";
+import base from "./EventConcepts.module.css";
+
+function Legacy({ slug, names }: { slug: string; names: string[] }) {
+  return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true" />)}</>;
+}
+
+export function TableTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tableSources} />;
+  return <ConceptArticle slug="table" title="表" sources={tableSources}
+    sections={[["shape", "一行书目，几列信息"], ["view", "只取需要的行与列"], ["order", "位置不代表身份"], ["design", "先确定一行是什么"]]}
+    intro={<>图书室要保存书目：每本书有编号、书名和可借状态。把这些信息放在同一种结构里，才能问“有哪些书可借”，也能只取编号与书名交给页面显示。</>}
+    hero={<ConceptHero slug="table" label="同一套列定义下，三条书目逐行填入表格"><div className={s.tableHero}><TableIcon size={26} /><div><span>编号</span><span>书名</span><span>可借</span>{[[42,"山间来信","是"],[12,"河流手记","否"],[78,"夜空地图","是"]].map((row,i) => <div key={i} style={{ animationDelay: `${i * .6}s` }}>{row.map((value,j) => <span key={j}>{value}</span>)}</div>)}</div></div></ConceptHero>}>
+    <ArticleSection id="shape" title="一行书目，几列信息">
+      <Legacy slug="table" names={["question", "definition"]} />
+      <p id="table-shape" className="vp-citation-target"><strong>表用命名的列组织数据，每一行按这套列定义保存一条记录。</strong>书目表中，编号是一列，书名是另一列；#42 的编号、书名与状态放在同一行。列描述要保存哪些信息，行承载具体对象的数据。表可以暂时没有任何行，列定义仍然存在。<Cite id="table-shape" /></p>
+      <p id="table-types" className="vp-citation-target">以 PostgreSQL 为例，建表时要指定列名和类型：编号可以用整数，书名用文本，可借状态用布尔值。类型会限制允许的值，也决定怎样计算和比较；其他数据库的类型规则可能不同。一个文本类型不会自动理解“这是不是一本真实的书”，业务规则还需要另外定义。<Cite id="table-types" /></p>
+      <pre className={base.code}>{'CREATE TABLE books (\n  book_id integer,\n  title text,\n  available boolean\n);'}</pre>
+      <p>这里只定义结构，还没有插入书目，也没有声明编号唯一。要避免两条记录使用同一编号，需要继续添加 <ConceptTerm slug="primary-key">主键</ConceptTerm>或相应唯一约束。不能因为列叫 <code>book_id</code>，就认为数据库已经会检查它。</p>
+    </ArticleSection>
+    <ArticleSection id="view" title="只取需要的行与列">
+      <Legacy slug="table" names={["scene-heading"]} />
+      <p id="table-filter" className="vp-citation-target">查询可借书目时，<code>WHERE available = true</code>逐行判断条件，只有符合条件的行进入结果。被排除的是本次查询中的候选行，原表里的已借出记录仍然保留。<strong>筛选是一种读取，删除是另一种修改。</strong><Cite id="table-filter" /></p>
+      <p id="table-columns" className="vp-citation-target"><code>SELECT book_id, title</code>决定返回哪些列。这通常叫投影：从符合条件的记录里，取出需要的部分。还可以计算新的结果列；它们也不等于给原表新增了列。下面的模型只演示字段选择、筛选和排序，不执行真实 SQL。<Cite id="table-columns" /></p>
+      <TableLesson />
+      <p>上面的原始书目始终是三条。取消“可借状态”只会缩窄结果的列；查询 #65 得到零行，表示没有符合条件的书，不表示表不存在。修改查询条件后，需要重新查询，才能获得这次条件下的结果。</p>
+    </ArticleSection>
+    <ArticleSection id="order" title="位置不代表身份" className={base.offset}>
+      <Legacy slug="table" names={["quiz-heading"]} />
+      <p id="table-order" className="vp-citation-target">SQL 不保证没有明确排序的查询按某种固定次序返回。想按编号排列，就写 <code>ORDER BY book_id</code>；如果排序字段会重复，还需补足能确定先后的条件。因此“画面上的第二行”不适合用来指认同一本书。排序影响结果的位置，记录的编号仍是 #42、#12、#78。<Cite id="table-order" /></p>
+      <p>演示为方便对照，把未排序结果保留为样例输入顺序。真实数据库可以采用其他顺序。无论排序、分页还是重新查询，修改书目时都应依据合适的记录标识，而不是依据当前屏幕位置。</p>
+    </ArticleSection>
+    <ArticleSection id="design" title="先确定一行是什么">
+      <Legacy slug="table" names={["prompt-heading"]} />
+      <p>同一本书有三册时，“一种书一行”和“一册书一行”会得到不同结构。本例把每条书目当成一册可单独借出的书；如果要管理版本、作者和库存，就要先确定各自记录的含义，再安排表与关联。</p>
+      <ArticleAside title="与 AI 讨论表结构">
+        <p>可以这样说明：每册书有独立编号，书名可能重复；一位读者可以借多册书，每次借阅有自己的日期。请分别说明每张表的一行代表什么、需要哪些列、怎样标识，以及借阅记录引用哪条书目。</p>
+      </ArticleAside>
+      <p><ConceptTerm slug="database-schema">数据库结构</ConceptTerm>描述表、列与约束等安排；查询结果是依据这些结构得到的一份输出。把页面上显示的表格和数据库里的表分清，讨论新增字段、筛选和修改时就更容易说准确。</p>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function PrimaryKeyTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={primaryKeySources} />;
+  return <ConceptArticle slug="primary-key" title="主键" sources={primaryKeySources}
+    sections={[["identity", "同名的书，不同的记录"], ["write", "编号已经被谁使用"], ["combination", "一个主键，可以包含多列"], ["generation", "约束与生成编号分开看"]]}
+    intro={<>图书室有两册《山间来信》。读者借走其中一册，不能只记书名；以后书名修订了，借阅记录也仍要指向原来那一册。记录需要一个能够准确指认它的标识。</>}
+    hero={<ConceptHero slug="primary-key" label="两册同名书具有不同主键，42号书改名后编号不变"><div className={s.keyHero}>{[42,78].map(id => <div key={id}><BookOpen size={27} /><strong><Key size={16} />#{id}</strong><div>{id === 42 ? <><span>山间来信</span><span>山间来信 · 修订版</span></> : <span>山间来信</span>}</div></div>)}</div></ConceptHero>}>
+    <ArticleSection id="identity" title="同名的书，不同的记录">
+      <Legacy slug="primary-key" names={["question", "definition"]} />
+      <p id="primary-key-identity" className="vp-citation-target"><strong>主键是一列或一组列，用唯一且非空的值标识表里的每一条记录。</strong>在 PostgreSQL 中，声明 <code>PRIMARY KEY</code>会要求这些值唯一、非空。一张表至多有一个主键约束，但可以有其他唯一约束。主键值的唯一范围是这张表，不是所有系统中的所有记录。<Cite id="primary-key-identity" /></p>
+      <p>这里选 <code>book_id</code>作主键，书名允许相同。#42 改名，只是那一条记录的内容改变，#78 仍是另一册。选择不随书名修订而变化的编号，是本例的设计决定：主键约束本身并不禁止修改编号；如果要修改，还必须处理已有引用。</p>
+    </ArticleSection>
+    <ArticleSection id="write" title="编号已经被谁使用">
+      <Legacy slug="primary-key" names={["scene-heading"]} />
+      <p>先尝试插入一个同样使用 #42 的新书目，再试一个空编号；最后改成未使用的 #65。新书名仍然可以叫《山间来信》。这个教学模型检查的是编号，不是书名，不会把插入错误解释成修改了原记录。</p>
+      <PrimaryKeyLesson />
+      <p><strong>重复编号被拒绝，意味着本次新增没有发生。</strong>原来的 #42 不会被第二条记录覆盖。新编号 #65 可以通过，因为本例没有对书名施加唯一约束。改名按钮只修改 #42：对照编号，可以确认修改的是谁。</p>
+      <pre className={base.code}>{'CREATE TABLE books (\n  book_id integer PRIMARY KEY,\n  title text NOT NULL\n);'}</pre>
+    </ArticleSection>
+    <ArticleSection id="combination" title="一个主键，可以包含多列" className={base.offset}>
+      <Legacy slug="primary-key" names={["quiz-heading"]} />
+      <p id="primary-key-composite" className="vp-citation-target">也可以把两列合成一个主键。例如一张“读者收藏书目”表使用 <code>PRIMARY KEY (reader_id, book_id)</code>：同一读者可以收藏多本书，同一本书也可以被多人收藏，但同一个二元组合不能重复。这是<strong>一个包含两列的主键</strong>，不是两个各自独立的主键。<Cite id="primary-key-composite" /></p>
+      <div className={s.pairs}><div><code>林舟 / #42</code><span>一条收藏</span></div><div><code>林舟 / #78</code><span>另一条收藏</span></div><div><code>陈禾 / #42</code><span>另一位读者</span></div></div>
+      <p>是否选择这种组合，要看你希望什么东西只能出现一次。如果同一个读者可以多次借同一本书，就不能简单把“读者＋书”作为借阅历史的唯一标识，还需区分每一次借阅。</p>
+    </ArticleSection>
+    <ArticleSection id="generation" title="约束与生成编号分开看">
+      <Legacy slug="primary-key" names={["prompt-heading"]} />
+      <p id="primary-key-generated" className="vp-citation-target">主键不要求自增，也不要求列名叫 <code>id</code>。以 PostgreSQL 为例，identity 列负责从序列生成值，但它本身并不保证唯一；仍需主键或唯一约束来检查。<strong>“怎样得到编号”和“哪些编号允许写入”是两项职责。</strong><Cite id="primary-key-generated" /></p>
+      <p id="primary-key-autoincrement" className="vp-citation-target">SQLite 普通表的 <code>INTEGER PRIMARY KEY</code>有特殊行为：它是 rowid 的别名，省略值时可以自动分配整数。加上 <code>AUTOINCREMENT</code>改变的是避免重用已删除编号的分配规则，还会带来额外开销；它不是所有主键都必须附带的关键字。<Cite id="primary-key-autoincrement" /></p>
+      <ArticleAside title="SQLite 中需要核对的兼容行为">
+        <p id="primary-key-sqlite" className="vp-citation-target">SQLite 普通 rowid 表因历史兼容，在一些主键声明中仍可能允许 NULL；WITHOUT ROWID 表则对主键各列执行非空要求。上面的空值拒绝模型按 PostgreSQL 的主键规则演示。把概念移到具体数据库时，要核对实际表定义，不能只凭字段上写着 PRIMARY KEY 就跳过实现差异。<Cite id="primary-key-sqlite" /></p>
+      </ArticleAside>
+      <p>接着读 <ConceptTerm slug="foreign-key">外键</ConceptTerm>，可以看到这份记录标识怎样被另一张表引用。编号只负责标识；它是不是公开、能不能被某个用户读取，还需要应用的权限规则。</p>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function ForeignKeyTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={foreignKeySources} />;
+  return <ConceptArticle slug="foreign-key" title="外键" sources={foreignKeySources}
+    sections={[["reference", "借阅记录指向哪本书"], ["change", "写入与删除都要守住关系"], ["scope", "存在不等于可以借"], ["check", "确认约束真的在执行"]]}
+    intro={<>借阅表记下“林舟借了 #42”。书目表里必须能找到 #42，才能知道他借的是哪册书。如果有人录入 #65，而书目中根本没有这个编号，就会留下一条找不到对象的借阅记录。</>}
+    hero={<ConceptHero slug="foreign-key" label="两条借阅引用同一本42号书，存在的书目让关联有效"><div className={s.foreignHero}><div><BookOpen size={28} /><strong>books · #42</strong></div><LinkSimple size={31} /><div><span>借阅 1 → #42</span><span>借阅 2 → #42</span></div></div></ConceptHero>}>
+    <ArticleSection id="reference" title="借阅记录指向哪本书">
+      <Legacy slug="foreign-key" names={["question", "definition"]} />
+      <p id="foreign-key-reference" className="vp-citation-target"><strong>外键约束要求引用值能够匹配被引用表中的有效键，维护记录之间的引用关系。</strong>本例让 <code>loans.book_id</code>引用 <code>books.book_id</code>，目标是书目表的主键。借阅表是引用方，书目表是被引用方；也可以定义指向同一张表其他记录的自引用关系。<Cite id="foreign-key-reference" /></p>
+      <p>同一本书可以在借阅历史中被多次引用。因此借阅表里的 <code>book_id</code>不必唯一，每次借阅仍有自己的 <code>loan_id</code>。外键的目标通常是主键或适合引用的唯一键；如果目标值对应多条不同记录，就无法据此明确指认对象。</p>
+      <pre className={base.code}>{'CREATE TABLE loans (\n  loan_id integer PRIMARY KEY,\n  book_id integer NOT NULL\n    REFERENCES books(book_id) ON DELETE RESTRICT,\n  reader text NOT NULL\n);'}</pre>
+    </ArticleSection>
+    <ArticleSection id="change" title="写入与删除都要守住关系">
+      <Legacy slug="foreign-key" names={["scene-heading"]} />
+      <p>模型从两本书、一条引用 #42 的借阅开始。尝试插入指向 #65 与 #42 的新借阅，再删除被引用的 #42。切换删除策略会恢复样例数据，以便在相同起点比较；这里不访问真实数据库。</p>
+      <ForeignKeyLesson />
+      <p id="foreign-key-delete" className="vp-citation-target">本例显式选择 <code>RESTRICT</code>时，有借阅引用 #42，就拒绝删除它。改为 <code>CASCADE</code>后，删除 #42 会一并删除引用它的借阅行。删除策略是开发者的选择，不能把“有外键”理解成“一定级联删除”。PostgreSQL 默认使用 NO ACTION，允许延迟检查时，它与 RESTRICT 的时机还可能不同。<Cite id="foreign-key-delete" /></p>
+      <p>图书室通常要保留借阅历史，直接级联删除可能不合适。可以禁止删除、把书标记为停用，或按明确的保留方案迁移数据。演示提供两种策略来比较结果，不是在建议历史记录都跟着书目删除。</p>
+    </ArticleSection>
+    <ArticleSection id="scope" title="存在不等于可以借" className={base.offset}>
+      <Legacy slug="foreign-key" names={["quiz-heading"]} />
+      <p>外键能证明 #42 存在，不能单独证明它现在可借、读者有权限，或者借阅日期正确。这些条件还需要其他约束和业务检查。外键也不会自动把书名填进借阅查询；要合并两表内容，可以继续看 <ConceptTerm slug="join">JOIN</ConceptTerm>。</p>
+      <p id="foreign-key-null" className="vp-citation-target">如果单列外键允许 NULL，空值通常可以表示“未引用对象”，不需要匹配一行目标。这里的借阅必须属于一本书，所以额外声明 <code>NOT NULL</code>。<strong>必须有值与值必须指向有效记录，是两个条件。</strong>多列外键的空值匹配还有自己的规则，需要按定义核对。<Cite id="foreign-key-null" /></p>
+    </ArticleSection>
+    <ArticleSection id="check" title="确认约束真的在执行">
+      <Legacy slug="foreign-key" names={["prompt-heading"]} />
+      <p id="foreign-key-enforcement" className="vp-citation-target">在支持外键的 SQLite 中，应用需要确认每个连接的检查配置；可以用 <code>PRAGMA foreign_keys = ON</code>启用，再查询状态。不应假定默认值一定符合要求。写了 REFERENCES，但当前连接没有执行外键检查，仍可能写出无效引用。<Cite id="foreign-key-enforcement" /></p>
+      <p id="foreign-key-existing" className="vp-citation-target">给已有表补约束，也要检查旧数据。PostgreSQL 的常规 <code>ALTER TABLE … ADD FOREIGN KEY</code>会检查现有记录，违反约束时不能直接添加成功。先查清缺失目标的记录，再决定补对象、改引用或移除无效数据，不要把“加了一行定义”当作已经清理完成。<Cite id="foreign-key-existing" /></p>
+      <ArticleAside title="约束与索引的实现差异">
+        <p id="foreign-key-indexes" className="vp-citation-target">MySQL 8.4 要求外键引用列有可用索引，缺少时会自动创建。PostgreSQL 则不会因为声明外键就自动给引用方建立索引。约束决定哪些数据有效；索引决定如何更快查找。核对迁移脚本时，要分别检查两者的实际定义。<Cite id="foreign-key-indexes" /></p>
+      </ArticleAside>
+      <p>确认关系时，依次看引用哪列、是否可空、删除与更新策略、当前数据库是否执行检查。再把相关写入放进适当的 <ConceptTerm slug="transaction">事务</ConceptTerm>，保证一次业务操作的各部分按预期一起完成。</p>
+    </ArticleSection>
+  </ConceptArticle>;
+}
