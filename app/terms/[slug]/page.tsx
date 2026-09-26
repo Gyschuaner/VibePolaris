@@ -35,7 +35,12 @@ type TermPageProps = { params: Promise<{ slug: string }> };
 
 import { SqlTermPage, MigrationTermPage, OrmTermPage } from "@/components/terms/QueryConceptPages";
 
+import { BackupTermPage, ShardingTermPage, QueueTermPage } from "@/components/terms/DistributionConceptPages";
+
 const articleTermPages = {
+  backup: BackupTermPage,
+  sharding: ShardingTermPage,
+  queue: QueueTermPage,
   cache: CacheTermPage,
   "connection-pool": PoolTermPage,
   replication: ReplicationTermPage,
