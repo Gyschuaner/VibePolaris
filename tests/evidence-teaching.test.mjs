@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { fuseRanks, refundRecord, printingRecord, upsertRecord, queryStore, checkCitation } from '../lib/evidence-teaching.ts';
+test('rank fusion, stable record replacement, and support boundaries', () => {
+  const fused = fuseRanks(true, true, 3);
+  assert.deepEqual(fused.map(x => x.id), ['B', 'A', 'D', 'C']);
+  assert.equal(fused[0].score, 1 / 62 + 1 / 61);
+  assert.deepEqual(fuseRanks(true, false, 3).map(x => x.id), ['A', 'B', 'C']);
+  assert.deepEqual(fuseRanks(true, true, 1).map(x => x.id), ['A', 'B']);
+  assert.deepEqual(fuseRanks(false, false, 3), []);
+  let records = [refundRecord(1), printingRecord];
+  assert.equal(queryStore(records, 2, false)[0].stale, true);
+  assert.deepEqual(queryStore(records, 2, true), []);
+  records = upsertRecord(records, refundRecord(2));
+  assert.equal(records.length, 2);
+  assert.equal(queryStore(records, 2, true)[0].score, .96);
+  assert.deepEqual(queryStore(records.filter(x => x.id !== 'A'), 2, false), []);
+  assert.equal(checkCitation(0, 0).kind, 'full');
+  assert.equal(checkCitation(1, 0).kind, 'partial');
+  assert.equal(checkCitation(2, 0).kind, 'none');
+  assert.equal(checkCitation(0, 1).kind, 'none');
+});
