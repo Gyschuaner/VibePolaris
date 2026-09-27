@@ -66,7 +66,7 @@ export function SemanticSearchTermPage() {
 
 export function RagConceptTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ragSources}/>;
-  return <ConceptArticle slug="rag" title="RAG" subtitle="检索增强生成" sources={ragSources} sections={[["retrieval", "回答前，先取回资料"], ["evidence", "资料怎样进入本轮回答"], ["context", "选择与更新可用内容"], ["checking", "核对回答，也核对资料"]]}
+  return <ConceptArticle slug="rag" title="RAG" subtitle="检索增强生成" sources={ragSources} sections={[["retrieval", "回答前，先取回资料"], ["evidence", "检索资料进入本轮回答"], ["context", "选择与更新可用内容"], ["checking", "核对回答，也核对资料"]]}
     intro={<>“这本书能续借吗？”需要本馆规则和当前预约状态。RAG 在生成回答时加入检索得到的资料，让模型能利用参数之外的信息；这些资料是否充分、有效，仍然要检查。</>}
     hero={<ConceptHero slug="rag" label="续借规则A与预约状态B一起支持不能续借的回答"><div className={s.ragHero}><div><code>A · 规则</code><strong>未被预约才可续借</strong></div><div><code>B · 状态</code><strong>已有预约</strong></div><p>当前不能续借。<span>[A] [B]</span></p></div></ConceptHero>}>
     <ArticleSection id="retrieval" title="回答前，先取回资料"><Legacy slug="rag" names={["question", "definition"]}/>
@@ -74,7 +74,7 @@ export function RagConceptTermPage() {
       <p>常见应用把过程分成准备资料、检索候选、组织本轮输入、生成回答。资料先有来源与版本，检索找到相关片段，本轮输入保留回答所需的内容，模型再组织文字。<strong>上传文件、找到片段与正确回答，是三个不同的结果。</strong></p>
       <p id="rag-original" className="vp-citation-target">原始论文研究了 RAG-Sequence 与 RAG-Token，并对检索器与生成器进行联合微调。今天使用现成检索服务和模型拼接输入的应用，不必复现这套训练架构。<strong>名字相同，仍要核对具体实现怎样取资料、怎样使用资料。</strong><Cite id="rag-original"/></p>
     </ArticleSection>
-    <ArticleSection id="evidence" title="资料怎样进入本轮回答"><Legacy slug="rag" names={["scene-heading"]}/>
+    <ArticleSection id="evidence" title="检索资料进入本轮回答"><Legacy slug="rag" names={["scene-heading"]}/>
       <p>A 规定只有未被预约的书才可续借，每次延长 14 天；B 说书目 #42 已有预约。先取回资料，再按资料组织预设答复。点击某一句，会突出它依赖的资料；把场景改成缺规则或规则冲突，旧答复会收起。</p>
       <RagLesson/>
       <p>完整资料下，不能续借的结论同时依赖 A 的条件和 B 的状态。只取到 B，只能说明已有预约，不能凭空补出续借政策。取到互相矛盾的 A、C，则先确认有效规则。<strong>缺资料或资料冲突时，回答应明确缺口，而不是挑一个数字继续说。</strong></p>

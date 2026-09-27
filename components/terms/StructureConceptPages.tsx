@@ -40,7 +40,7 @@ export function DatabaseSchemaTermPage() {
     </ArticleSection>
     <ArticleSection id="namespace" title="schema 的另一种用法">
       <p id="schema-namespace" className="vp-citation-target">在 PostgreSQL 的具体语法中，schema 还指<strong>数据库内部的命名空间</strong>。例如 <code>sales.orders</code>和 <code>archive.orders</code>可以是不同的表。省略前缀时，<code>search_path</code>影响名称解析；因此看到 CREATE SCHEMA 或 schema 前缀，要先判断文档正在谈结构定义，还是对象的归属与名称。<Cite id="schema-namespace" /></p>
-      <p><ConceptTerm slug="json-schema">JSON Schema</ConceptTerm>也使用 schema 这个词，但描述的是 JSON 数据的验证规则。它不会替你在关系数据库中建表。向 AI 提需求时，直接列出数据库、表、字段与所需规则，比只说“加一个 schema”清楚。</p>
+      <p><ConceptTerm slug="json-schema">JSON Schema</ConceptTerm>也使用 schema 这个词，但描述的是 JSON 数据的验证规则。它不会替你在关系数据库中建表。说明数据库、表、字段与所需规则，比只说“加一个 schema”清楚。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -72,7 +72,7 @@ export function JoinTermPage() {
     <ArticleSection id="filter" title="连接之后还可以筛选" className={base.offset}>
       <Legacy slug="join" names={["prompt-heading"]} />
       <p id="join-where" className="vp-citation-target">外连接中，ON 决定配对，WHERE 再筛结果。若在书目 LEFT JOIN 借阅之后加 <code>WHERE l.reader = '林舟'</code>，#78 补出的 NULL 不满足条件，就会消失。SQLite 文档明确说明补行发生在 ON 之后、WHERE 之前；把条件挪到 ON 中，结果可能不同。<Cite id="join-where" /></p>
-      <ArticleAside title="与 AI 核对一条连接查询">
+      <ArticleAside title="连接查询的核对材料">
         <p>说明每张表的一行代表什么、匹配用哪些列、每边可能匹配几行、是否要保留没有对象的记录，再给一组包含缺失和多次引用的样例。要求它列出预期结果，而不只是写出一段能运行的 SQL。</p>
       </ArticleAside>
       <p>排查 JOIN 时，从配对条件、两侧数量和未匹配行开始。单独检查列名、索引或语法，无法替代这些语义判断。确认结果正确后，再讨论数据库怎样更快执行。</p>
@@ -83,7 +83,7 @@ export function JoinTermPage() {
 export function UniqueConstraintTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={uniqueSources} />;
   return <ConceptArticle slug="unique-constraint" title="唯一约束" sources={uniqueSources}
-    sections={[["rule", "邮箱只能属于一条注册记录"], ["race", "预查通过，写入仍可能冲突"], ["scope", "先确定什么不能重复"], ["null", "没有值时怎样检查"]]}
+    sections={[["rule", "邮箱只能属于一条注册记录"], ["race", "预查通过，写入仍可能冲突"], ["scope", "明确唯一性的范围"], ["null", "空值的唯一性规则"]]}
     intro={<>两个注册请求使用同一个邮箱，编号却各不相同。它们都先查了一遍，都发现邮箱还没被使用。若数据库允许两次写入，页面再严谨的检查也挡不住这次冲突。</>}
     hero={<ConceptHero slug="unique-constraint" label="两个相同邮箱的请求进入注册表，第二次写入被唯一约束挡住"><div className={s.uniqueHero}><div><EnvelopeSimple size={24} /><span>lin@example.com</span></div><div><XCircle size={24} /><span>lin@example.com · 冲突</span></div><div><strong>UNIQUE</strong><span>101 · lin@example.com</span></div></div></ConceptHero>}>
     <ArticleSection id="rule" title="邮箱只能属于一条注册记录">
@@ -99,7 +99,7 @@ export function UniqueConstraintTermPage() {
       <p id="unique-race" className="vp-citation-target"><strong>预查是过去某一时刻的观察，唯一性必须在写入时守住。</strong>PostgreSQL 把冲突检查纳入唯一索引的插入过程。遇到其他事务尚未提交的冲突行时，可能先等待其结束，再检查是否冲突；不能简单把“先查、后写”两步当成不可分割的一步。<Cite id="unique-race" /></p>
       <p>预查仍有用，可以提前提示用户。但应用也要处理最后的写入冲突，让用户换邮箱或确认已有账户；拒绝第二次新增不会自动修改第一条注册记录。模型把每次成功写入视为已经提交，省略真实数据库的等待与回滚过程。</p>
     </ArticleSection>
-    <ArticleSection id="scope" title="先确定什么不能重复">
+    <ArticleSection id="scope" title="明确唯一性的范围">
       <Legacy slug="unique-constraint" names={["quiz-heading"]} />
       <p id="unique-composite" className="vp-citation-target">如果一个邮箱可以分别加入不同组织，可以考虑 <code>UNIQUE (organization_id, email)</code>。检查的是整个组合：同一组织内不能重复，不同组织可以使用相同邮箱。它不要求每列单独唯一；约束的范围要对应你想阻止的那一种重复。<Cite id="unique-composite" /></p>
       <p id="unique-index" className="vp-citation-target">在 PostgreSQL 中，声明唯一约束会自动建立相应的唯一 B-tree 索引。约束表达有效数据的规则，索引是执行它的一种机制；已有约束时，不需要为了同一项检查再手工创建一份相同的唯一索引。<Cite id="unique-index" /></p>
@@ -109,11 +109,11 @@ export function UniqueConstraintTermPage() {
         <p>这段写法是扩展示例，假定表已有 active 列；上面的注册模型没有实现账户停用功能。</p>
       </ArticleAside>
     </ArticleSection>
-    <ArticleSection id="null" title="没有值时怎样检查" className={base.offset}>
+    <ArticleSection id="null" title="空值的唯一性规则" className={base.offset}>
       <Legacy slug="unique-constraint" names={["prompt-heading"]} />
       <p id="unique-null" className="vp-citation-target">PostgreSQL 的普通 UNIQUE 默认允许多个 NULL；加 <code>NULLS NOT DISTINCT</code>可以把 NULL 也按相同值检查。需要邮箱必填，还应声明 NOT NULL。<strong>不重复与不能为空是两项要求。</strong>NULL 也不是空字符串。其他数据库的 NULL 唯一性规则可能不同，不能把这个默认行为当成所有实现的统一规则。<Cite id="unique-null" /></p>
       <p>可以回到演示切换 NULL，比较默认规则与 NULLS NOT DISTINCT。同一对请求只改这一项规则，便能看到第二次写入的结果改变；两个不同的记录编号始终没有冲突。</p>
-      <p>与 AI 讨论唯一性时，说明列或组合、数据范围、空值要求与输入比较规则，并要求保留数据库最后的冲突处理。只说“注册前检查一下”，还没有把整个规则交代完整。</p>
+      <p>定义唯一性时，要确定单列还是列组合、适用范围、空值和比较规则。数据库仍需处理最后的写入冲突；单靠注册前预查无法守住这个约束。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

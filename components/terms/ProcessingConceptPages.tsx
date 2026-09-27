@@ -8,10 +8,10 @@ import s from './ProcessingConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 export function BatchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={batchSources}/>;
-  return <ConceptArticle slug="batch-processing" title="批处理" sources={batchSources} sections={[["bounded", "先确定这一批包含什么"], ["chunks", "分块执行，完成后再汇总"], ["compute", "描述计算与触发执行"], ["schedule", "安排作业，也核对结果"]]}
+  return <ConceptArticle slug="batch-processing" title="批处理" sources={batchSources} sections={[["bounded", "确定本批输入范围"], ["chunks", "分块执行，完成后再汇总"], ["compute", "描述计算与触发执行"], ["schedule", "安排作业，也核对结果"]]}
     intro={<>图书馆要统计一份已经截取好的借阅记录，可以把这组记录交给一个作业处理，再得到每本书的借阅次数。批处理面对的是有明确范围的一组输入。新借阅还在发生，并不妨碍这一次只处理已经确定的记录。</>}
     hero={<ConceptHero slug="batch-processing" label="四条借阅记录汇总为书目42三次、书目78一次"><div className={s.batchHero}><div className={s.heroRows}>{[42,42,78,42].map((id,i)=><code key={i}>#{id}</code>)}</div><div className={s.heroBars}><div><span/><code>#42 · 3</code></div><div><span/><code>#78 · 1</code></div></div></div></ConceptHero>}>
-    <ArticleSection id="bounded" title="先确定这一批包含什么"><Legacy slug="batch-processing" names={["question", "definition"]}/>
+    <ArticleSection id="bounded" title="确定本批输入范围"><Legacy slug="batch-processing" names={["question", "definition"]}/>
       <p id="batch-bounded" className="vp-citation-target"><strong>批处理把一个有界的数据集合交给作业，按规则计算结果。</strong>Apache Beam 将有界集合描述为大小固定、不会继续增长的输入；无界集合则会持续接收新记录。区别在这次计算的输入范围，不在机器数量，也不在是否恰好凌晨执行。框架可以在同一种编程模型中支持两类输入。<Cite id="batch-bounded"/></p>
       <p>“昨天的借阅”需要说明采用哪个时间字段、截止点和数据版本。事后补录一条昨天发生的借阅，是否进入下一次补算，也是输入约定的一部分。<strong>先给这一批划清范围，才能判断结果缺了什么、重跑应当读什么。</strong></p>
     </ArticleSection>
@@ -29,13 +29,13 @@ export function BatchTermPage() {
     <ArticleSection id="schedule" title="安排作业，也核对结果" className={base.offset}><Legacy slug="batch-processing" names={["prompt-heading"]}/>
       <p id="batch-schedule" className="vp-citation-target">批作业可以按时间、条件或前置任务完成情况启动；有依赖的工作需要安排执行次序。AWS 的批处理介绍同时强调监控成功与失败、日志和历史记录。<strong>定时器按时触发，并不能证明输入完整或结果正确。</strong>还要核对本次实际读取的数据范围、完成块、输出数量和失败原因。<Cite id="batch-schedule"/></p>
       <ArticleAside title="批处理与流处理可以一起使用"><p>连续借阅可以先用于实时看板，再用有明确范围的批作业核对日汇总。两条路径要约定时间口径、晚到数据与结果覆盖方式。换一种执行方式，不会自动消除口径差异。</p></ArticleAside>
-      <p>请 AI 帮忙设计作业时，提供输入范围与版本、计算规则、任务依赖、失败重跑方式以及输出提交条件。要求它说清“哪些输入已经处理，哪些结果可以使用”，再考虑并行度与运行时长。</p>
+      <p>批处理作业先固定输入范围与版本、计算规则、任务依赖、失败重跑方式和提交条件。只有处理范围与可用结果清楚，才有依据调整并行度和运行时长。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
 export function StreamTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={streamSources}/>;
-  return <ConceptArticle slug="stream-processing" title="流处理" sources={streamSources} sections={[["flow", "持续到来的借阅记录"], ["time", "发生时间与收到时间"], ["windows", "窗口何时可以给出结果"], ["late", "晚到以后怎样处理"]]}
+  return <ConceptArticle slug="stream-processing" title="流处理" sources={streamSources} sections={[["flow", "持续到来的借阅记录"], ["time", "发生时间与收到时间"], ["windows", "窗口何时可以给出结果"], ["late", "晚到记录的处理"]]}
     intro={<>借阅记录不断到来，看板可以持续更新。麻烦的是，较早发生的记录也可能较晚才收到。流处理除了计算，还要决定记录属于哪一段时间、何时输出结果，以及输出以后收到旧记录该怎么办。</>}
     hero={<ConceptHero slug="stream-processing" label="t2、t12、t4乱序到达，按事件时间进入两个窗口，得到2次和1次借阅"><div className={s.streamHero}><div className={s.heroArrivals}>{[2,12,4].map(t=><code key={t}>t{t}</code>)}</div><div className={s.heroWindows}><div><span>[0, 10)</span><strong>2 次</strong></div><div><span>[10, 20)</span><strong>1 次</strong></div></div></div></ConceptHero>}>
     <ArticleSection id="flow" title="持续到来的借阅记录"><Legacy slug="stream-processing" names={["question", "definition"]}/>
@@ -52,17 +52,17 @@ export function StreamTermPage() {
       <StreamLesson/>
       <p id="stream-watermark" className="vp-citation-target">Flink 的水位声明事件时间已经推进到某个位置；乱序与传输延迟可能让旧事件后来才出现。<strong>水位不是“以后绝不会再来旧数据”的事实证明。</strong>推进得早能减少等待，却需要接受或处理更晚的记录；多输入情况下，进度还受较慢输入影响。<Cite id="stream-watermark"/></p>
     </ArticleSection>
-    <ArticleSection id="late" title="晚到以后怎样处理" className={base.offset}><Legacy slug="stream-processing" names={["prompt-heading"]}/>
+    <ArticleSection id="late" title="晚到记录的处理" className={base.offset}><Legacy slug="stream-processing" names={["prompt-heading"]}/>
       <p id="stream-late" className="vp-citation-target">Flink 的默认迟到容忍为 0；超过窗口处理期限的数据会被丢弃，晚到旁路需要显式配置。增加容忍时间可以保留窗口状态，让晚到事件参与后续结果；再次输出也需要下游处理更新或重复结果。<strong>本文的旁路是特意选择的策略，不是所有引擎默认都会替你保存晚到记录。</strong><Cite id="stream-late"/></p>
       <p>旁路里的 t4 仍是一条有效借阅，只是没有进入已经发布的这次计数。业务可以复核、补算或更新结果，但必须约定谁负责修正，以及看板怎样识别更新后的版本。</p>
       <ArticleAside title="计数状态需要保留与恢复"><p id="stream-state" className="vp-citation-target">Kafka Streams 的聚合与关联等有状态操作，需要状态存储；它支持持久或内存存储，并提供相应恢复机制。窗口里的计数也占用状态。记录保留多久、进程重启怎样恢复，都是持续计算的一部分。本例重置会清空浏览器内存，没有实际状态恢复。<Cite id="stream-state"/></p></ArticleAside>
-      <p>请 AI 设计流处理时，提供时间戳来源、窗口范围、水位与触发规则、迟到容忍、结果更新方式以及恢复要求。先确认“结果何时可用、后来如何修正”，再比较延迟与资源开销。</p>
+      <p>流处理方案需要写明时间戳来源、窗口、水位与触发规则、迟到容忍、结果更新和恢复要求。先明确结果何时可用、晚到记录如何修正，再比较延迟与资源开销。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
 export function EventDrivenTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventDrivenSources}/>;
-  return <ConceptArticle slug="event-driven-architecture" title="事件驱动架构" sources={eventDrivenSources} sections={[["fact", "把已发生的借阅发布出来"], ["subscribers", "不同订阅者各自响应"], ["envelope", "事件里需要哪些信息"], ["failures", "重试与重复交付"]]}
+  return <ConceptArticle slug="event-driven-architecture" title="事件驱动架构" sources={eventDrivenSources} sections={[["fact", "把已发生的借阅发布出来"], ["subscribers", "不同订阅者各自响应"], ["envelope", "事件需要的字段"], ["failures", "重试与重复交付"]]}
     intro={<>一次借阅记录成功后，书架需要更新状态，统计需要累加次数。借阅服务可以发布“书已被借出”的事件，让不同订阅者响应。同一件事可以引发多项工作，各项工作的进度与失败也需要分别观察。</>}
     hero={<ConceptHero slug="event-driven-architecture" label="一条借阅事件复制给书架与统计两个独立订阅者"><div className={s.edaHero}><div className={s.heroFact}><EnvelopeSimple size={23}/><strong>借阅已发生</strong></div><div className={s.heroCopies}><div><code>loan-001</code><Books size={26}/><span>更新书架</span></div><div><code>loan-001</code><ChartBar size={26}/><span>更新统计</span></div></div></div></ConceptHero>}>
     <ArticleSection id="fact" title="把已发生的借阅发布出来"><Legacy slug="event-driven-architecture" names={["question", "definition"]}/>
@@ -75,7 +75,7 @@ export function EventDrivenTermPage() {
       <p id="eda-fanout" className="vp-citation-target">RabbitMQ 的 fanout 交换器将消息复制给各个已绑定队列；不同订阅者各用一个队列，才能分别收到副本。<strong>两项工作都需要这件事，与两个工作进程争取同一项任务，是不同的交付关系。</strong>共享一个工作队列通常是在分担任务，而不是保证每个工作进程都收到。<Cite id="eda-fanout"/></p>
       <p id="eda-independent" className="vp-citation-target">事件发布者不必逐个知道所有消费者，独立消费者可以分别处理自己的工作。AWS 将这种解耦用于说明事件架构的适用场景。<strong>统计暂时失败，不应把书架已完成的变化自动抹掉。</strong>但共享的路由服务、存储或资源仍可能形成共同故障点，架构名称不会消除这些依赖。<Cite id="eda-independent"/></p>
     </ArticleSection>
-    <ArticleSection id="envelope" title="事件里需要哪些信息"><Legacy slug="event-driven-architecture" names={["quiz-heading"]}/>
+    <ArticleSection id="envelope" title="事件需要的字段"><Legacy slug="event-driven-architecture" names={["quiz-heading"]}/>
       <p id="eda-envelope" className="vp-citation-target">CloudEvents 定义了通用事件封装，必填属性包括 id、source、specversion 和 type。<strong>消费者需要知道是什么事件、来自哪里，以及怎样识别这一次发生。</strong>下面展示 JSON 封装；规范 v1.0.2 的 specversion 值仍是 "1.0"，不是文档补丁版本号。<Cite id="eda-envelope"/></p>
       <pre className={base.code}>{'{\n  "specversion": "1.0",\n  "id": "loan-001",\n  "source": "/library",\n  "type": "com.example.book.borrowed",\n  "datacontenttype": "application/json",\n  "data": { "book_id": 42 }\n}'}</pre>
       <p>事件字段怎样演进、消费者能否理解旧版本，也要形成约定。某个服务只需要书目编号，另一个可能还需要借阅时间；缺少业务必需的信息，采用统一封装也不能让它正确计算。</p>
@@ -84,7 +84,7 @@ export function EventDrivenTermPage() {
       <p id="eda-retry" className="vp-citation-target">EventBridge 会按配置，对目标交付中的可重试错误再次尝试；时间或次数耗尽后可能丢弃事件，死信队列需要配置。<strong>发布过一次，不能直接推导出所有目标都已处理成功。</strong>需要分别观察交付、失败与后续去向。这也不表示任何消费者的业务错误都会自动得到相同重试。<Cite id="eda-retry"/></p>
       <p id="eda-duplicate" className="vp-citation-target">CloudEvents 要求 source 与 id 的组合标识一次事件；同一事件重发可以沿用这个组合，消费者可以据此识别重复。本例让两个订阅者各自记住已处理的 loan-001，重复交付不再次累计。<strong>封装提供标识，防重仍要由消费处理实现。</strong>真实系统还要处理持久化、并发以及业务写入与防重记录的一致性。<Cite id="eda-duplicate"/></p>
       <ArticleAside title="借阅已记录，事件还没发布"><p>演示故意将记录与发布分成两个按钮：在两步之间，借阅已经存在，订阅者却不知道。如果进程在这里停止，需要能发现并补发遗漏；反过来，也要避免对未完成的借阅发布成功事件。实际方案应明确数据与事件怎样保持一致，不能靠两次操作通常都成功来保证。</p></ArticleAside>
-      <p>请 AI 评估事件方案时，提供生产者、订阅关系、事件字段、确认与重试规则、失败去向以及防重记录。要求它区分“事实已记录”“事件已交付”和“消费者业务已完成”，并说明每一项怎样验证。</p>
+      <p>事件方案应列明生产者、订阅关系、字段、确认与重试规则、失败去向和防重记录。事实写入、事件交付与消费者业务完成要分别观察，并各自保留验证证据。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

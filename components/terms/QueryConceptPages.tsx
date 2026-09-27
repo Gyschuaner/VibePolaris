@@ -10,7 +10,7 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function SqlTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={sqlSources} />;
   return <ConceptArticle slug="sql" title="SQL" sources={sqlSources}
-    sections={[["read","从书目中取出可借的书"],["write","读数据与改数据"],["scope","先确定影响哪些行"],["plan","语句与执行计划"]]}
+    sections={[["read","从书目中取出可借的书"],["write","读数据与改数据"],["scope","限定受影响的行"],["plan","语句与执行计划"]]}
     intro={<>馆员想看哪些书可以借出，也要记录借出、上架和移除。数据仍在同一张书目表里，操作目的不同，发给数据库的语句就不同。先分清返回了什么、原表改了什么，再讨论查询速度。</>}
     hero={<ConceptHero slug="sql" label="SELECT 从两条书目中筛选 available 为 true 的42号书，原表保留两行"><div className={s.sqlHero}><Terminal size={27} /><code>SELECT title<br />FROM books<br />WHERE available = true</code><div><span>#42 · true</span><span>#78 · false</span></div><strong>山间来信</strong></div></ConceptHero>}>
     <ArticleSection id="read" title="从书目中取出可借的书">
@@ -27,7 +27,7 @@ export function SqlTermPage() {
       <p id="sql-insert" className="vp-citation-target">INSERT 新增记录。例子明确列出 book_id、title、available，再按同一顺序提供值。再次插入 #65 会遇到已有主键，不能把它当作修改原记录；PostgreSQL 的 ON CONFLICT 可以另行指定冲突处理，本例没有使用。<Cite id="sql-insert" /></p>
       <div className={base.contrast}><div><h3>返回结果</h3><p>SELECT 的结果供程序或人读取；选择的列、条件和排序决定它的内容。</p></div><div><h3>保存的记录</h3><p>INSERT、UPDATE、DELETE 会改变表中的数据。反馈行数与返回书名承担不同职责。</p></div></div>
     </ArticleSection>
-    <ArticleSection id="scope" title="先确定影响哪些行">
+    <ArticleSection id="scope" title="限定受影响的行">
       <Legacy slug="sql" names={["quiz-heading"]} />
       <p id="sql-update" className="vp-citation-target">UPDATE 的 SET 指定改哪些列，WHERE 指定改哪些行。<code>SET available = false WHERE book_id = 42</code>只针对 #42，其余列保留原值。去掉 WHERE，范围就覆盖全表。PostgreSQL 的 UPDATE 行数包含匹配但值没有变化的行，所以 #78 原本就是 false，也可以计入这次 UPDATE 2。<Cite id="sql-update" /></p>
       <p id="sql-delete" className="vp-citation-target">DELETE 删除符合条件的行，<strong>没有 WHERE 会删除表中所有行，表本身仍存在</strong>。重复删除已经不存在的 #42 得到 DELETE 0，不是语法错误，也不证明刚才删除过。实际操作前，要核对目标库、条件和预期行数；本例的“恢复”按钮只恢复教学输入。<Cite id="sql-delete" /></p>
@@ -39,7 +39,7 @@ export function SqlTermPage() {
       <ArticleAside title="EXPLAIN ANALYZE 会执行语句">
         <p id="sql-analyze" className="vp-citation-target">加上 ANALYZE 后，PostgreSQL 会实际执行语句并记录运行信息。对 UPDATE、DELETE 使用它，也会发生相应数据修改；不能把它误认为只查看计划的开关。分析真实写操作时，应根据具体环境安排事务、回滚与风险评估。<Cite id="sql-analyze" /></p>
       </ArticleAside>
-      <p>与 AI 核对 SQL 时，给出表结构、一行代表什么、包含缺失和重复情况的样例，以及预期结果或影响范围。复杂查询再检查 <ConceptTerm slug="join">JOIN</ConceptTerm>、<ConceptTerm slug="index">索引</ConceptTerm>与计划。先有正确的目标，再谈怎样更快得到它。</p>
+      <p>核对 SQL 时，先写清表结构、一行代表什么、包含缺失和重复情况的样例，以及预期结果或影响范围。复杂查询再检查 <ConceptTerm slug="join">JOIN</ConceptTerm>、<ConceptTerm slug="index">索引</ConceptTerm>与计划。先有正确的目标，再谈怎样更快得到它。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -73,7 +73,7 @@ export function MigrationTermPage() {
       <Legacy slug="database-migration" names={["prompt-heading"]} />
       <p id="migration-backends" className="vp-citation-target">失败能否整体回滚，取决于数据库和操作。Django 文档区分支持 DDL 事务的后端与不支持这种回滚的后端，例如 MySQL 的某些结构变更失败后，需要检查已经发生的变化并人工处理。演示的失败发生在执行前，结构与记录均不变，不能据此推断所有迁移失败都如此。<Cite id="migration-backends" /></p>
       <p id="migration-reverse" className="vp-citation-target">“有反向操作”也不保证找回原数据。Django 的 RunPython 需要提供 reverse_code 才能反向执行；删掉一列再加回来，已经丢掉的值不会凭空恢复。迁移前要明确数据恢复来源、不可逆步骤和失败后如何继续。<Cite id="migration-reverse" /></p>
-      <ArticleAside title="请 AI 审查迁移时给哪些信息">
+      <ArticleAside title="迁移审查所需材料">
         <p>提供数据库与版本、当前和目标结构、迁移依赖、数据量、持续读写情况，以及新旧程序读写哪些列。要求它说明执行顺序、验证依据、可能持锁的步骤和恢复方法，再核对生成的具体 SQL 或脚本。不要只让它“生成 migration”。</p>
       </ArticleAside>
       <p>上线前至少对上三件事：文件记录的步骤、数据库的实际结构与数据、仍在运行的应用版本。迁移执行成功只是其中一项，业务读取和写入仍需验证。</p>
@@ -84,8 +84,8 @@ export function MigrationTermPage() {
 export function OrmTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ormSources} />;
   return <ConceptArticle slug="orm" title="ORM" sources={ormSources}
-    sections={[["mapping","对象属性对应表里的列"],["write","改对象之后发生什么"],["session","Session 保存哪些状态"],["loading","访问属性也可能查询"]]}
-    intro={<>在 Python 里拿到一册 Book，修改 book.title，看起来只是改了对象属性。数据库什么时候收到 UPDATE？这次修改何时提交，又能否撤回？ORM 让调用更接近程序中的对象，但写入过程仍然需要说清。</>}
+    sections={[["mapping","对象属性对应表里的列"],["write","对象修改到数据库写入"],["session","Session 管理的状态"],["loading","访问属性也可能查询"]]}
+    intro={<>在 Python 里拿到一册 Book 并修改 book.title，只能看到对象属性变了。还要弄清数据库何时收到 UPDATE、修改何时提交，以及能否撤回。ORM 让调用更接近程序中的对象，写入过程仍需核对。</>}
     hero={<ConceptHero slug="orm" label="Book类的id与title分别对应books表的book_id与title，值从行映射到对象"><div className={s.ormHero}><div><strong>Book</strong><code>id = 42</code><code>title = 山间来信</code></div><ArrowsLeftRight size={28} /><div><Database size={25} /><strong>books</strong><code>book_id: 42</code><code>title: 山间来信</code></div></div></ConceptHero>}>
     <ArticleSection id="mapping" title="对象属性对应表里的列">
       <Legacy slug="orm" names={["question","definition"]} />
@@ -95,7 +95,7 @@ export function OrmTermPage() {
       <p>这是 SQLAlchemy 2.0 的映射片段，假定已定义 DeclarativeBase 的子类 Base，并导入 Mapped、mapped_column。字段定义交代对象如何对应数据；数据库结构的实际变更另由建表或迁移操作执行。</p>
       <p id="orm-query" className="vp-citation-target">查询 ORM 实体时，可以使用 <code>session.scalars(select(Book)).all()</code>取得 Book 实例。普通 SQL 查询返回的行与程序里的实例不是同一种接口；选择普通列、实体或不同结果方法，会影响返回形式，不能把所有 ORM 查询都当成“直接返回对象列表”。<Cite id="orm-query" /></p>
     </ArticleSection>
-    <ArticleSection id="write" title="改对象之后发生什么">
+    <ArticleSection id="write" title="对象修改到数据库写入">
       <Legacy slug="orm" names={["scene-heading"]} />
       <p id="orm-flush" className="vp-citation-target">SQLAlchemy 的 Session 跟踪对象变化，flush 把待处理变化转换为本事务中的数据库操作。<strong>flush 已经发出 SQL，但还没有完成事务提交。</strong>默认配置还可能在查询前自动 flush。演示把这一步单独交给按钮，便于比较；不同 ORM 的自动保存与事务行为需要查各自文档。<Cite id="orm-flush" /></p>
       <p>对象已从 #42 加载，先改书名，再选择 flush 后回滚，或直接 commit。对照对象、本事务的写入和已提交的值，查看下方 SQL 记录。本例是一条记录、一次有限修改的状态模型，不运行 Python 或真实数据库，也不模拟其他连接的隔离级别。</p>
@@ -103,7 +103,7 @@ export function OrmTermPage() {
       <p id="orm-commit" className="vp-citation-target">SQLAlchemy 的 commit 会先 flush 剩余变化，再提交事务。因此可以修改对象后直接 commit，不必手工先调用一次 flush；这时也应在记录中看到 UPDATE 出现在 COMMIT 之前。<strong>赋值、发出更新、提交完成是不同的时刻。</strong><Cite id="orm-commit" /></p>
       <p id="orm-rollback" className="vp-citation-target">默认 Session 在 commit 后会让对象属性过期，rollback 也会使保留下来的对象过期；后续访问需要重新读取。本例回滚后显示“属性已过期”，重新读取才看见原书名。若 flush 本身失败，还要调用 rollback 才能继续使用该 Session；不能吞掉异常后假装提交成功。<Cite id="orm-rollback" /></p>
     </ArticleSection>
-    <ArticleSection id="session" title="Session 保存哪些状态">
+    <ArticleSection id="session" title="Session 管理的状态">
       <Legacy slug="orm" names={["quiz-heading"]} />
       <p id="orm-identity" className="vp-citation-target">Session 的身份映射按主键维护已加载对象。SQLAlchemy 的 <code>Session.get()</code>会先检查当前身份映射，再根据需要查询数据库。这有助于同一会话中的对象一致性，<strong>不是整个系统的共享缓存</strong>，也不保证所有查询都能免发 SQL。<Cite id="orm-identity" /></p>
       <div className={base.contrast}><div><h3>ORM 的映射</h3><p>把对象属性、查询表达式和数据库列对应起来，组织对象的读写。</p></div><div><h3>数据库的规则</h3><p>继续执行主键、外键、唯一性与事务约束。对象写起来方便，不会让这些要求消失。</p></div></div>
@@ -116,7 +116,7 @@ export function OrmTermPage() {
         <pre className={base.code}>{'authors = session.scalars(select(Author)).all()\nfor author in authors:\n    print(author.books)'}</pre>
         <p>这里假定 Author.books 是尚未加载的关系集合。这不是上面 Book 映射片段已定义的功能。检查实际 SQL 日志，再决定是否预加载、用连接或分批查询；不要只凭代码行数估计数据库工作量。</p>
       </ArticleAside>
-      <p>请 AI 检查 ORM 调用时，给出框架版本、映射关系、返回形式、实际 SQL 与事务范围。它减少重复调用代码，但 <ConceptTerm slug="sql">SQL</ConceptTerm>、<ConceptTerm slug="index">索引</ConceptTerm>和 <ConceptTerm slug="transaction">事务</ConceptTerm>仍决定正确性与性能。</p>
+      <p>检查 ORM 调用时，需要框架版本、映射关系、返回形式、实际 SQL 与事务范围。ORM 减少重复调用代码，但 <ConceptTerm slug="sql">SQL</ConceptTerm>、<ConceptTerm slug="index">索引</ConceptTerm>和 <ConceptTerm slug="transaction">事务</ConceptTerm>仍决定正确性与性能。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

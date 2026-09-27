@@ -12,7 +12,7 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) {
 
 export function ApiTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={apiSources} />;
-  return <ConceptArticle slug="api" title="API" sources={apiSources} sections={[["contract", "程序之间的约定"], ["mapping", "内部变化，接口保持稳定"], ["compatibility", "调用方依赖了什么"]]}
+  return <ConceptArticle slug="api" title="API" sources={apiSources} sections={[["contract", "程序之间的约定"], ["mapping", "内部变化，接口保持稳定"], ["compatibility", "调用方的依赖"]]}
     intro={<>页面要显示一本书，不必知道书名存在哪张表里。但它必须知道怎样请求、返回字段叫什么、失败时怎样处理。API 把这些交互规则明确下来。</>}
     hero={<ConceptHero slug="api" label="不同内部字段经过映射，输出同一份图书数据"><div className={s.apiHero}><div><code>title</code><code>display_name</code></div><PlugsConnected size={31} weight="light" /><div className={s.heroBookmark}><BookBookmark size={32} weight="light" /><strong>星空手记</strong><code>id · title</code></div></div></ConceptHero>}>
     <ArticleSection id="contract" title="程序之间的约定">
@@ -27,11 +27,11 @@ export function ApiTermPage() {
       <p id="api-mapping" className="vp-citation-target">结构 B 把书名保存在 <code>display_name</code> 中。服务可以在输出前把它映射回约定的 <code>title</code>，让内部重构不影响调用方。直接把存储结构透传出去，才会让这次字段改名穿过接口边界。Microsoft 的接口设计建议同样强调业务表示与内部存储的分离。<Cite id="api-mapping" /></p>
       <p>这个实验只做浏览器内的数据转换，没有访问真实书库。它检验的是字段契约；能解析 <ConceptTerm slug="json">JSON</ConceptTerm> 或拿到成功状态码，都不能单独证明字段符合约定。</p>
     </ArticleSection>
-    <ArticleSection id="compatibility" title="调用方依赖了什么" className={base.offset}>
+    <ArticleSection id="compatibility" title="调用方的依赖" className={base.offset}>
       <Legacy slug="api" names={["quiz-heading", "prompt-heading"]} />
       <div className={s.compatibility}><div><code>title → display_name</code><p>旧调用方仍然读取 title，改名会打断它。</p></div><div><code>title + subtitle</code><p>如果旧调用方忽略未知字段，新增字段通常能共存。</p></div></div>
       <p id="api-compatibility" className="vp-citation-target"><strong>兼容性要看已有调用方依赖的行为。</strong>删除字段、改变类型或含义，都可能破坏依赖；新增字段也要考虑客户端是否严格拒绝额外字段。接口演进应有明确的兼容或版本策略，而不是只检查新页面能否运行。<Cite id="api-compatibility" /></p>
-      <ArticleAside title="成功样例以外还要写什么"><p>图书不存在、调用方无权读取、输入格式错误，后续处理各不相同。约定失败状态和错误结构，调用方才能决定显示空态、请求登录还是修正输入。前往 <ConceptTerm slug="endpoint">端点</ConceptTerm>，可以继续看一个操作怎样对应到具体入口。</p></ArticleAside>
+      <ArticleAside title="失败情况也要写入约定"><p>图书不存在、调用方无权读取、输入格式错误，后续处理各不相同。约定失败状态和错误结构，调用方才能决定显示空态、请求登录还是修正输入。前往 <ConceptTerm slug="endpoint">端点</ConceptTerm>，可以继续看一个操作怎样对应到具体入口。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -77,7 +77,7 @@ export function RestTermPage() {
       <p>先获取预约表示，再确认或取消。也可以先让服务端的预约过期，再点击客户端手里的旧选择，观察实际结果。下面的 actions、rel 是本例约定的表示格式；演示只覆盖这部分机制，不代表完整实现了 REST。</p>
       <RestLesson />
       <p>过期操作只改变服务端资源，客户端保留旧表示。旧确认到达时，服务按当前状态拒绝，返回本例选择的 409 和已过期表示；客户端收到结果才撤下旧操作。确认成功后，同样以返回的新表示为准。</p>
-      <ArticleAside title="真实文档里怎样使用返回链接"><p id="rest-links-example" className="vp-citation-target">GitHub API 的使用建议要求直接使用响应里提供的 URL，不手动拆解或猜测未来地址；分页也通过 Link 中的关系继续。这是一个具体平台的使用约定，能帮助理解“沿返回链接前进”，不意味着仅做到这一点就满足全部 REST 约束。<Cite id="rest-links-example" /></p></ArticleAside>
+      <ArticleAside title="按返回链接继续操作"><p id="rest-links-example" className="vp-citation-target">GitHub API 的使用建议要求直接使用响应里提供的 URL，不手动拆解或猜测未来地址；分页也通过 Link 中的关系继续。这是一个具体平台的使用约定，能帮助理解“沿返回链接前进”，不意味着仅做到这一点就满足全部 REST 约束。<Cite id="rest-links-example" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stateless" title="无状态与持久数据" className={base.offset}>
       <Legacy slug="rest" names={["quiz-heading"]} />
@@ -121,15 +121,15 @@ export function PaginationTermPage() {
 
 export function RateLimitingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rateSources} />;
-  return <ConceptArticle slug="rate-limiting" title="限流" sources={rateSources} sections={[["budget", "流量需要一个预算"], ["buckets", "额度由谁共享"], ["rejection", "被拒绝之后"]]}
-    intro={<>两位调用方使用同一个接口。一位突然发出大量请求，另一位还能不能正常访问？答案既取决于限额，也取决于它们是否在消耗同一份额度。</>}
+  return <ConceptArticle slug="rate-limiting" title="限流" sources={rateSources} sections={[["budget", "流量需要一个预算"], ["buckets", "额度共享的范围"], ["rejection", "被拒绝之后"]]}
+    intro={<>两位调用方使用同一个接口，其中一位突然发出大量请求。另一位能否继续访问，取决于限额如何分配，以及它们是否共用额度。</>}
     hero={<ConceptHero slug="rate-limiting" label="五枚令牌进入桶中，三个请求消耗三枚，剩余两枚"><div className={s.rateHero}><div>{[0, 1, 2, 3, 4].map(id => <i key={id} />)}</div><strong>2 / 5</strong><code>补充速率 1 枚 / 秒</code></div></ConceptHero>}>
     <ArticleSection id="budget" title="流量需要一个预算">
       <Legacy slug="rate-limiting" names={["question", "definition"]} />
       <p><strong>限流按照选定的规则，限制一段时间内接受的请求量。</strong>它可以保护容量、控制成本，也可以减少一位调用方占用过多资源。超额后是拒绝还是延后处理，取决于系统设计；下面选择直接拒绝。</p>
       <p id="rate-bucket" className="vp-citation-target">令牌桶是一种实现：桶有最大容量，令牌按速率补充，每次请求需要消耗令牌。积存的令牌允许短时突发，补充速率决定持续流量。AWS API Gateway 使用这类算法，并分别配置持续速率和突发容量。<Cite id="rate-bucket" /></p>
     </ArticleSection>
-    <ArticleSection id="buckets" title="额度由谁共享">
+    <ArticleSection id="buckets" title="额度共享的范围">
       <Legacy slug="rate-limiting" names={["scene-heading"]} />
       <p>桶最多容纳 5 枚令牌，每个请求消耗 1 枚，每秒补充 1 枚。先让 A 连发 7 次，再让 B 请求一次；换成独立桶再比较。这里的时间由“推进 1 秒”控制，不会在阅读时偷偷消耗额度。</p>
       <RateLimitLesson />
@@ -140,7 +140,7 @@ export function RateLimitingTermPage() {
       <Legacy slug="rate-limiting" names={["quiz-heading", "prompt-heading"]} />
       <p id="rate-response" className="vp-citation-target">HTTP 的 429 表示一段时间内请求过多，响应可以带 Retry-After 提示等待多久；这个头不是必有字段，规范也不强制某一种计数算法。实验选择等待 1 秒，是因为空桶到下一枚令牌需要这么久；不保证下一批所有请求都能通过。<Cite id="rate-response" /></p>
       <p><strong>通过限流检查，不等于业务执行成功。</strong>请求之后仍可能因为无权访问、输入错误或服务故障失败。收到限流响应也不应无限立即重发，客户端需要控制重试节奏，并先判断操作能否安全重复。</p>
-      <ArticleAside title="令牌桶不提供哪些保证"><p id="rate-limits" className="vp-citation-target">这个本地实验使用一个确定的计数器。真实网关可能跨多个节点协调；AWS 明确将其节流与配额视为尽力而为的目标，而非绝对请求上限。限流还不能代替权限检查、整体容量规划或完整的反滥用防护。<Cite id="rate-limits" /></p></ArticleAside>
+      <ArticleAside title="令牌桶的保证边界"><p id="rate-limits" className="vp-citation-target">这个本地实验使用一个确定的计数器。真实网关可能跨多个节点协调；AWS 明确将其节流与配额视为尽力而为的目标，而非绝对请求上限。限流还不能代替权限检查、整体容量规划或完整的反滥用防护。<Cite id="rate-limits" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

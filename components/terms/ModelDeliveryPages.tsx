@@ -38,7 +38,7 @@ export function ModelRoutingTermPage() {
 
 export function ModelFallbackTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={fallbackSources}/>;
-  return <ConceptArticle slug="model-fallback" title="备用模型" sources={fallbackSources} sections={[["replacement","主调用之后的备用路径"],["attempts","错误、兼容性与调用次数"],["policy","什么时候切换，什么时候停止"],["limits","接替后的结果仍要检查"]]}
+  return <ConceptArticle slug="model-fallback" title="备用模型" sources={fallbackSources} sections={[["replacement","主调用之后的备用路径"],["attempts","错误、兼容性与调用次数"],["policy","切换条件与停止条件"],["limits","接替后的结果仍要检查"]]}
     intro={<>备用模型是在主调用不可用或触发指定条件时，用来接替处理的候选。准备另一名字还不够：系统需要决定哪些情况允许切换、备用能否接收相同任务，以及最多继续尝试多少次。</>}
     hero={<ConceptHero slug="model-fallback" label="主调用收到429后，备用路径出现第二次调用并返回金额字段120"><div className={s.fallbackHero}><div><span>01 · 主调用</span><strong>429 <X size={19}/></strong></div><ArrowDown size={23}/><div><span>02 · 备用调用</span><strong><code>amount: 120</code><Check size={19}/></strong></div></div></ConceptHero>}>
     <ArticleSection id="replacement" title="主调用之后的备用路径"><Legacy slug="model-fallback" names={["question","definition"]}/>
@@ -52,7 +52,7 @@ export function ModelFallbackTermPage() {
       <p>主调用成功就结束；失败后，也要检查预算和备用能力。不支持所需结构化输出时，不发起第二次调用；支持结构化 JSON 却返回 total 而不是 amount 时，虽然有回复，任务仍没有通过本例判据。</p>
       <p id="fallback-errors" className="vp-citation-target">RFC 6585 规定 429 表示一定时间内请求过多，响应可以带 Retry-After，说明建议等待多久。<strong>超时是没有及时收到响应，不等于收到了 429。</strong>需要分别记录已观察到的状态码与等待结束；不能凭超时猜定服务拒绝了请求。<Cite id="fallback-errors"/></p>
     </ArticleSection>
-    <ArticleSection id="policy" title="什么时候切换，什么时候停止"><Legacy slug="model-fallback" names={["quiz-heading"]}/>
+    <ArticleSection id="policy" title="切换条件与停止条件"><Legacy slug="model-fallback" names={["quiz-heading"]}/>
       <p id="fallback-policy" className="vp-citation-target">Portkey 的归档示例按目标顺序配置备用，并展示只在指定状态码出现时切换的配置。<strong>是否切换是策略，不是所有错误的统一答案。</strong>该历史示例说明机制，不能当成当前 SDK、模型清单或默认行为的配置指南。<Cite id="fallback-policy"/></p>
       <div className={s.policyNotes}><div><h3>暂时不可用</h3><p>限流或临时连接问题，可以考虑等待、重试或切换；结合剩余时间和服务容量决定。</p></div><div><h3>要求没有满足</h3><p>不兼容的输入、身份验证或权限问题，应先核查原因；备用不能用来绕过访问限制。</p></div></div>
       <p>流式回答已显示一半再失败时，还要决定保留部分内容、重新生成，还是说明中断。把另一个模型的回复直接接在半句话后面，容易造成重复或矛盾。用户看到什么，与系统发出了几次调用，应保持对应。</p>

@@ -29,7 +29,7 @@ export function CacheTermPage() {
     <ArticleSection id="capacity" title="过期与容量淘汰" className={base.offset}><Legacy slug="cache" names={["prompt-heading"]}/>
       <p id="cache-expiry" className="vp-citation-target">Redis 的 EXPIRE 为键设置存活时间，期限到达后键会被删除。<strong>到期移除副本，不是自动把副本改成数据库的新值。</strong>本例到期后要再读取，应用才回源并回填。期限长短需要结合变化频率与读取成本决定，不能从“设置了 TTL”推断每次读取都最新。<Cite id="cache-expiry"/></p>
       <ArticleAside title="容量不足也会让副本消失"><p id="cache-eviction" className="vp-citation-target">即使还没到期，缓存也可能因容量策略淘汰键。Redis 的 maxmemory-policy 可以选择 LRU、LFU 等策略；noeviction 不淘汰键，而可能拒绝新增数据的命令。Redis 的 LRU 是近似算法。过期、主动失效与容量淘汰触发条件不同，应用应能处理下一次未命中。<Cite id="cache-eviction"/></p></ArticleAside>
-      <p>让 AI 评估缓存时，提供键的组成、数据变化方式、可接受的旧值时长、失效动作、容量与未命中路径。检查真实命中率、回源压力和错误，再判断缓存是否值得保留；本站没有给出固定“快多少倍”的结论。</p>
+      <p>缓存是否值得保留，要看键的组成、数据变化、可接受的旧值时长、失效方式、容量与未命中路径。再核对实际命中率、回源压力和错误；本页没有给出固定的提速倍数。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -58,7 +58,7 @@ export function PoolTermPage() {
     <ArticleSection id="limit" title="池大小与数据库容量" className={base.offset}><Legacy slug="connection-pool" names={["prompt-heading"]}/>
       <p id="pool-capacity" className="vp-citation-target">PostgreSQL 的 max_connections 限制同时连接数量，增大配置也会增加相应资源分配。一个服务部署多个实例时，要把各实例的连接池、临时扩容和其他客户端一起算进预算。<strong>扩大某一个池，不能凭空增加数据库处理能力。</strong><Cite id="pool-capacity"/></p>
       <div className={base.contrast}><div><h3>先看借用</h3><p>请求是否及时归还、是否把慢外部调用放在持有连接的期间、有没有长事务。</p></div><div><h3>再看容量</h3><p>等待人数、借用时长、超时、数据库负载和实例数量一起决定调整方向。</p></div></div>
-      <p>让 AI 排查连接池时，给出驱动版本、池大小与扩容设置、借用等待上限、实例数量、连接生命周期和真实异常。区分拿不到连接、建连失败、查询缓慢与连接断开，才知道应该修改哪一处。</p>
+      <p>连接池排查先记录驱动版本、池大小、借用等待上限、实例数量、连接生命周期和真实异常。拿不到连接、建连失败、查询缓慢与连接断开对应不同环节，需要分别定位。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -85,7 +85,7 @@ export function ReplicationTermPage() {
     <ArticleSection id="recovery" title="副本会接收正确操作，也会接收误删" className={base.offset}><Legacy slug="replication" names={["prompt-heading"]}/>
       <p>在主库删除 #42，副本最初还留着旧记录；等删除也应用完，两边都成为 0 行。副本跟随数据变化，不负责判断这一次删除是否符合业务意图。延迟期间碰巧还有一份旧值，不能当成已经安排好的恢复方案。</p>
       <p id="replica-recovery" className="vp-citation-target"><strong>复制与备份解决的故障范围不同。</strong>PostgreSQL 的时间点恢复需要适用的基础备份与保留的 WAL，恢复时可选择在某个目标点停止重放。保留历史与验证恢复过程，才有机会找回误删之前的状态；一个持续跟随最新变更的副本不能代替这套安排。<Cite id="replica-recovery"/></p>
-      <ArticleAside title="请 AI 评估复制时提供哪些事实"><p>提供数据库版本、物理或逻辑复制方式、复制范围、确认条件、主库和副本进度、允许丢失或延迟的范围、实际故障与切换办法。让它区分延迟读取、复制中断和应用冲突，不要只回答“加一台从库”。</p></ArticleAside>
+      <ArticleAside title="评估复制需要的事实"><p>提供数据库版本、物理或逻辑复制方式、复制范围、确认条件、主库和副本进度、允许丢失或延迟的范围、实际故障与切换办法。让它区分延迟读取、复制中断和应用冲突，不要只回答“加一台从库”。</p></ArticleAside>
       <p>接着可读 <ConceptTerm slug="backup">备份</ConceptTerm>与 <ConceptTerm slug="transaction">事务</ConceptTerm>。复制保留多处数据；这些节点之间如何传播，历史状态怎样恢复，是两项分别需要设计和验收的能力。</p>
     </ArticleSection>
   </ConceptArticle>;

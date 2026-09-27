@@ -31,8 +31,8 @@ export function DatasetTermPage() {
     </ArticleSection>
     <ArticleSection id="use" title="先判断是否适合这次用途" className={base.offset}><Legacy slug="dataset-data" names={["prompt-heading"]}/>
       <p>九月前两天的三条记录，可以解释本例快照，却不能当成全月借阅量。样本多、文件大，也不能直接证明覆盖完整或符合实际分布。<strong>先匹配任务所需范围，再检查质量与使用约定。</strong>这些判断连接到 <ConceptTerm slug="data-quality">数据质量</ConceptTerm>。</p>
-      <ArticleAside title="说明书也有它的边界"><p id="dataset-limits" className="vp-citation-target">《Datasheets for Datasets》明确指出，文档不能完整解决偏差、风险或所有潜在用途；数据更新较少时，更新版本也应有更新的说明。<strong>文档提供判断依据，不替使用者做完判断。</strong>缺少收集过程或适用范围时，不能让 AI 根据文件名猜一个答案。<Cite id="dataset-limits"/></p></ArticleAside>
-      <p>请 AI 处理一份数据集时，提供用途、字段含义、范围与具体版本，让它列出会读取哪些记录、如何保留原始值、输出怎样追到输入。发布结果前核对记录身份与数量，并保留这次实际使用的版本。</p>
+      <ArticleAside title="说明书也有它的边界"><p id="dataset-limits" className="vp-citation-target">《Datasheets for Datasets》明确指出，文档不能完整解决偏差、风险或所有潜在用途；数据更新较少时，更新版本也应有更新的说明。<strong>文档提供判断依据，不替使用者做完判断。</strong>缺少收集过程或适用范围时，文件名不足以支持使用结论。<Cite id="dataset-limits"/></p></ArticleAside>
+      <p>使用一份数据集前，先确定用途、字段含义、范围和具体版本。处理过程应交代读取了哪些记录、是否保留原始值，以及输出怎样追到输入。发布前核对记录身份与数量，并保存实际使用的版本。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -59,16 +59,16 @@ export function QualityTermPage() {
     </ArticleSection>
     <ArticleSection id="evidence" title="规则通过，还要看事实" className={base.offset}><Legacy slug="data-quality" names={["prompt-heading"]}/>
       <p id="quality-fact" className="vp-citation-target">政府框架区分完整性与准确性：所有字段都有值，仍然可能是错误值。<strong>检测值是否符合规则，与核对它是否反映真实业务，是不同的证据。</strong>借阅系统可能要与实际事件或权威来源核对；关掉一项检查，也不能让原来的问题自动消失。<Cite id="quality-fact"/></p>
-      <ArticleAside title="总分代表什么"><p id="quality-score" className="vp-citation-target">AWS Glue Data Quality 把质量分数定义为检查规则中判断为真的比例。因此，90 分不能直接解读为 90% 的记录真实或准确。<strong>先看分子的规则是什么，再看关键规则有没有失败。</strong>本例逐项展示门槛，不把时效失败藏进一个平均分。<Cite id="quality-score"/></p></ArticleAside>
-      <p>请 AI 设计质量检查时，给出具体用途、数据版本、观察时刻、每项指标的分子分母与门槛。要求报告失败位置和处理方式，区分缺失、未检查与检查失败，再解释哪些结论还需要外部事实核对。</p>
+      <ArticleAside title="总分遮住的质量差异"><p id="quality-score" className="vp-citation-target">AWS Glue Data Quality 把质量分数定义为检查规则中判断为真的比例。因此，90 分不能直接解读为 90% 的记录真实或准确。<strong>先看分子的规则是什么，再看关键规则有没有失败。</strong>本例逐项展示门槛，不把时效失败藏进一个平均分。<Cite id="quality-score"/></p></ArticleAside>
+      <p>质量报告应写明用途、数据版本、观察时刻，以及每项指标的分子、分母和门槛。失败记录需要定位位置与处理方式；缺失、未检查和检查失败分别统计。对现实情况的判断仍要补充外部证据。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
 
 export function LineageTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={lineageSources}/>;
-  return <ConceptArticle slug="data-lineage" title="数据血缘" sources={lineageSources} sections={[["relations", "从结果找到来源与过程"], ["trace", "同一份输入，两个报表值"], ["impact", "字段变化，哪些输出要复查"], ["history", "当前关系与历史记录要分开"]]}
-    intro={<>报表的合计从 2000 分变成 1800 分，是输入增加了，还是规则改了？数据血缘把来源、处理过程和结果关联起来，让一个数字有可以向上追查的路径。</>}
+  return <ConceptArticle slug="data-lineage" title="数据血缘" sources={lineageSources} sections={[["relations", "从结果找到来源与过程"], ["trace", "同一份输入，两个报表值"], ["impact", "字段变化影响的下游输出"], ["history", "当前关系与历史记录要分开"]]}
+    intro={<>报表的合计从 2000 分变成 1800 分，需要查明是输入变化还是规则变化。数据血缘把来源、处理过程和结果关联起来，让一个数字有可以向上追查的路径。</>}
     hero={<ConceptHero slug="data-lineage" label="1800分输出关联run43、减去优惠的规则和amount与discount两个输入字段"><div className={s.lineageHero}><div className={s.heroOutput}><strong>1800 分</strong><span>daily.total · v2</span></div><div className={s.heroRun}><code>run-43 · 规则 v2</code><code>sum(amount − discount)</code></div><div className={s.heroInputs}><code>amount</code><code>discount</code></div></div></ConceptHero>}>
     <ArticleSection id="relations" title="从结果找到来源与过程"><Legacy slug="data-lineage" names={["question", "definition"]}/>
       <p id="lineage-relations" className="vp-citation-target"><strong>数据血缘记录数据与处理之间的依赖，帮助追查一个结果怎样产生、哪些后续结果依赖它。</strong>W3C PROV 的通用来源模型区分实体、活动和参与者，也描述使用、生成与派生关系。借到数据场景，输入表、处理任务与输出表各有不同身份；知道两个表相关，还需要知道中间实际做了什么。<Cite id="lineage-relations"/></p>
@@ -81,7 +81,7 @@ export function LineageTermPage() {
       <p id="lineage-run" className="vp-citation-target">OpenLineage 把 Job 看作定义好的工作，把 Run 看作它某次实际发生的执行；运行事件可携带输入、输出与变化状态，也有不关联 Run 的设计期元数据事件。<strong>任务定义与某次运行记录不能混成一件事。</strong>追查昨日结果，应找到昨日实际使用的输入与规则，而不是只打开今天的代码。<Cite id="lineage-run"/></p>
       <div className={s.lineageComparison}><div><strong>2000 分</strong><code>run-42 · 规则 v1<br/>sum(amount)</code><p>只使用金额字段。优惠存在于输入中，却没有参与这次合计。</p></div><div><strong>1800 分</strong><code>run-43 · 规则 v2<br/>sum(amount − discount)</code><p>金额与优惠共同参与。结果变化来自规则变化，不是新增记录。</p></div></div>
     </ArticleSection>
-    <ArticleSection id="impact" title="字段变化，哪些输出要复查"><Legacy slug="data-lineage" names={["quiz-heading"]}/>
+    <ArticleSection id="impact" title="字段变化影响的下游输出"><Legacy slug="data-lineage" names={["quiz-heading"]}/>
       <p id="lineage-columns" className="vp-citation-target">OpenLineage 的列级血缘可以描述输出列使用了哪些输入列及其转换方式。表级关系只能告诉你“这份报表依赖费用表”；<strong>字段级关系进一步区分金额与优惠是否参与合计。</strong>本例 v1 不读取 discount，v2 则读取它，因此同一个字段在两版规则下的影响范围不同。<Cite id="lineage-columns"/></p>
       <p>展开下游影响，选 discount：旧版的两个合计没有使用它，新版的日合计及依赖日合计的月合计可能受影响。这个列表表示应复查的输出；字段数值还没有被修改，报表也没有在后台重新计算。</p>
       <p id="lineage-impact" className="vp-citation-target">DataHub 可以查看上下游资产，也可以把视图聚焦到一个字段。血缘来自支持采集的来源、接口登记或人工维护，覆盖能力取决于实际接入。<strong>看不到一条边，不足以证明现实中没有依赖。</strong>先检查采集范围、更新时间和手工维护情况，再决定调查是否完整。<Cite id="lineage-impact"/></p>
@@ -89,7 +89,7 @@ export function LineageTermPage() {
     <ArticleSection id="history" title="当前关系与历史记录要分开" className={base.offset}><Legacy slug="data-lineage" names={["prompt-heading"]}/>
       <p id="lineage-history" className="vp-citation-target">DataHub 的这份文档说明，默认 UI 显示最新血缘；时间选择器过滤最新图中关系的更新时间，不会因此还原历史图。<strong>“查看旧日期”与“拿到旧运行的真实依赖”并不总是一回事。</strong>具体系统支持哪种历史能力，需要核对文档和实际保存的记录。<Cite id="lineage-history"/></p>
       <ArticleAside title="有路径，还需要可重现的输入"><p>run-42 指向一个已经被覆盖的文件，仍不能复算昨日的 2000 分。血缘说明关系，<ConceptTerm slug="dataset-data">数据集</ConceptTerm> 版本保留相应输入，规则版本说明当时做了什么。它们要能对应起来，调查才不止于一张图。</p></ArticleAside>
-      <p>请 AI 解释异常结果时，提供输出版本、运行记录、输入快照和规则版本。让它逐段列出数据如何变化，区分已记录的依赖与推测，再明确哪些下游需要重新计算、验证或人工确认。</p>
+      <p>追查异常结果时，先固定输出版本、运行记录、输入快照和规则版本。沿实际记录逐段核对数据变化，标出尚属推测的依赖，再列出需要重新计算、验证或人工确认的下游输出。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
