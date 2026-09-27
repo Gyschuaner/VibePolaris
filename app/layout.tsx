@@ -3,14 +3,15 @@ import type { Metadata, Viewport } from "next";
 import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
 import { NotesProvider } from "@/components/notes/NotesProvider";
 import { PointerFeedback } from "@/components/PointerFeedback";
-import { deriveCustomPaletteTokens } from "@/lib/custom-palette";
+import { deriveCustomPaletteTokens, fieldLightness } from "@/lib/custom-palette";
 
 import "./globals.css";
 import "./harness-v4.css";
 
-// deriveCustomPaletteTokens 必须自包含：这里取其运行时源码内联，保证与组件内实现一致。
+// deriveCustomPaletteTokens / fieldLightness 必须自包含：这里取其运行时源码内联，保证与组件内实现一致。
 const themeBootstrap = `
 var __vpDeriveCustomPaletteTokens = (${deriveCustomPaletteTokens.toString()});
+var __vpFieldLightness = (${fieldLightness.toString()});
 (function () {
   var mode, palette, dayBackground, nightBackground, customAccent;
   try {
@@ -28,7 +29,9 @@ var __vpDeriveCustomPaletteTokens = (${deriveCustomPaletteTokens.toString()});
   var isDark = mode ? mode === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   if (palette === 'custom') {
     var customParts = (customAccent || '').split(',');
-    var customTokens = __vpDeriveCustomPaletteTokens(Number(customParts[0]), Number(customParts[1]), isDark ? 'dark' : 'light');
+    var sliderLight = customParts.length > 2 && customParts[2] !== '' ? Number(customParts[2]) : 55;
+    var finalLight = __vpFieldLightness(Number(customParts[1]), sliderLight);
+    var customTokens = __vpDeriveCustomPaletteTokens(Number(customParts[0]), Number(customParts[1]), isDark ? 'dark' : 'light', finalLight);
     if (customTokens) {
       Object.keys(customTokens).forEach(function (tokenName) {
         document.documentElement.style.setProperty(tokenName, customTokens[tokenName]);

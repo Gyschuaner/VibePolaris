@@ -92,14 +92,28 @@ test("色带使用离散单选语义、罗盘刻度和完整键盘操作", () =>
 });
 
 test("夜晚往返各自保留背景选择并持久化，旧配色安全迁移", () => {
-  assert.match(component, /persist\(nextMode, lightBackground, nightBackground, accent, customHue, customSat\)/);
+  assert.match(component, /persist\(nextMode, lightBackground, nightBackground, accent, customHue, customSat, customLight\)/);
   assert.match(component, /localStorage\.setItem\("vp-background"/);
   assert.match(component, /localStorage\.setItem\("vp-background-night"/);
   assert.match(component, /localStorage\.setItem\("vp-palette-custom"/);
-  // 自定义取色入口：点击色带尾部图标弹出六边形蜂窝调色盘。
+  // 自定义取色入口：连续六边形色域、明度滑条及 H/S/L 本地持久化。
   assert.match(component, /theme-hex-wheel/);
-  assert.match(component, /theme-hex-swatch/);
-  assert.match(css, /\.theme-hex-swatch/);
+  assert.match(component, /theme-hex-field/);
+  assert.match(component, /hexFieldPoint/);
+  assert.match(component, /hexFieldPosition/);
+  assert.match(component, /theme-hex-light-slider/);
+  assert.match(component, /aria-valuenow=\{customLight\}/);
+  assert.match(component, /role="application"/);
+  assert.match(component, /role="slider"/);
+  assert.match(component, /fieldRef\.current\?\.focus\(\)/);
+  assert.match(component, /customOptionRef\.current\?\.focus\(\)/);
+  assert.match(component, /nextHue\},\$\{nextSat\},\$\{nextCustomLight\}/);
+  assert.match(css, /\.theme-hex-canvas/);
+  assert.match(css, /\.theme-hex-light-slider/);
+  assert.match(css, /\.theme-hex-light-slider\s*\{[^}]*height:\s*44px/);
+  assert.match(css, /\.theme-hex-close\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px/);
+  assert.doesNotMatch(component, /theme-hex-swatch/);
+  assert.doesNotMatch(css, /\.theme-hex-swatch/);
   assert.doesNotMatch(component, /type="range"/);
   assert.match(component, /localStorage\.setItem\("vp-palette"/);
   assert.match(component, /localStorage\.setItem\("vp-theme"/);
