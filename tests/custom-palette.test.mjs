@@ -3,37 +3,20 @@ import test from "node:test";
 
 import { CUSTOM_TOKEN_NAMES, deriveCustomPaletteTokens, fieldLightness } from "../lib/custom-palette.ts";
 
-function luminance(hex) {
-  const channels = hex.slice(1).match(/../g).map((value) => Number.parseInt(value, 16) / 255);
-  const linear = channels.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
-  return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
-}
-
-function contrast(first, second) {
-  const values = [luminance(first), luminance(second)].sort((a, b) => b - a);
-  return (values[0] + 0.05) / (values[1] + 0.05);
-}
-
-test("自定义主题色在完整色相、饱和度和明度范围内满足对比度", () => {
-  for (let hue = 0; hue < 360; hue += 15) {
-    for (const sat of [0, 25, 50, 75, 100]) {
-      for (const sliderLight of [0, 25, 50, 75, 100]) {
-        const lightChoice = fieldLightness(sat, sliderLight);
-        const light = deriveCustomPaletteTokens(hue, sat, "light", lightChoice);
-        assert.ok(light, `light ${hue}/${sat}/${sliderLight} 应能推导`);
-        for (const name of CUSTOM_TOKEN_NAMES) assert.match(light[name], /^#[0-9a-f]{6}$/);
-        assert.ok(
-          contrast(light["--accent-text"], "#E7E4DC") >= 4.5,
-          `light ${hue}/${sat}/${sliderLight}：${light["--accent-text"]} 与最暗亮色底对比度不足`,
-        );
-        const dark = deriveCustomPaletteTokens(hue, sat, "dark", lightChoice);
-        assert.ok(dark, `dark ${hue}/${sat}/${sliderLight} 应能推导`);
-        for (const name of CUSTOM_TOKEN_NAMES) assert.match(dark[name], /^#[0-9a-f]{6}$/);
-        assert.ok(
-          contrast(dark["--accent-text"], "#1F1A13") >= 4.5,
-          `dark ${hue}/${sat}/${sliderLight}：${dark["--accent-text"]} 与最亮夜间底对比度不足`,
-        );
-      }
+test("自定义主题主色在昼夜模式和明度端点都严格保留所选值", () => {
+  const selections = [
+    [300, 80, 0, "#000000"],
+    [300, 80, 50, "#e619e6"],
+    [210, 65, 40, "#2466a8"],
+    [300, 80, 100, "#ffffff"],
+  ];
+  for (const mode of ["light", "dark"]) {
+    for (const [hue, sat, light, expected] of selections) {
+      const tokens = deriveCustomPaletteTokens(hue, sat, mode, light);
+      assert.ok(tokens, `${mode} ${hue}/${sat}/${light} 应能推导`);
+      assert.equal(tokens["--accent"], expected);
+      assert.equal(tokens["--accent-text"], expected);
+      for (const name of CUSTOM_TOKEN_NAMES) assert.match(tokens[name], /^#[0-9a-f]{6}$/);
     }
   }
 });
