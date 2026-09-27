@@ -55,8 +55,10 @@ import { StreamingOutputTermPage, StructuredOutputTermPage, FunctionCallingTermP
 import { ServerTermPage, ApiGatewayTermPage, ReverseProxyTermPage } from '@/components/terms/EdgeConceptPages';
 import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/components/terms/AccessConceptPages';
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
+import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 
 const articleTermPages = {
+  skill: SkillTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
