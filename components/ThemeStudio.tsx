@@ -1,10 +1,10 @@
 "use client";
 
 import { CaretDown, Moon, Palette, Plus, Sun, X } from "@phosphor-icons/react";
-import type { CSSProperties, KeyboardEvent } from "react";
+import type { CSSProperties, KeyboardEvent, PointerEvent as ReactPointerEvent, Ref } from "react";
 import { useEffect, useRef, useState } from "react";
 
-import { CUSTOM_TOKEN_NAMES, deriveCustomPaletteTokens } from "@/lib/custom-palette";
+import { CUSTOM_TOKEN_NAMES, deriveCustomPaletteTokens, fieldLightness } from "@/lib/custom-palette";
 
 const BACKGROUNDS = [
   { id: "paper", name: "纸白", color: "#F7F3E8", indicator: "#74674B" },
@@ -42,49 +42,92 @@ const DEFAULT_NIGHT_BACKGROUND: NightBackgroundId = "obsidian";
 const DEFAULT_ACCENT: AccentId = "moss";
 const DEFAULT_CUSTOM_HUE = 82;
 const DEFAULT_CUSTOM_SAT = 65;
+const DEFAULT_CUSTOM_LIGHT = 55;
+const LIGHT_MIN = 0;
+const LIGHT_MAX = 100;
 
-/* 六边形调色盘：外轮廓为平顶大六边形，角度映射色相、距圆心距离映射饱和度、亮度由对比度规则推导。 */
-const HEX_SIZE = 15;
-const HEX_WIDTH = 19;
-const HEX_HEIGHT = 22;
-const HEX_RINGS = 4;
+/* 连续六边形色域：平顶六边形轮廓，彩虹色相沿边缘顺时针分布（顶部为红）；
+ * 饱和度按六边形范数从边缘的 100% 线性降到圆心的 0；滑条值即中心明度（0–100 全量程，
+ * 端点=黑/白），边缘按 fieldLightness 剖面 ×(1−0.6·sat/100) 比例变暗，中心始终最亮。
+ * Canvas 像素级绘制、指针映射、当前色显示、对比度保护与持久化恢复共用同一组公式，保证“看到即选到”。 */
+const FIELD_W = 192;
+const HEX_CIRCUM_R = FIELD_W / 2;
+const FIELD_H = Math.round(HEX_CIRCUM_R * Math.sqrt(3));
+const SQRT3 = Math.sqrt(3);
 
-type HexSwatch = { id: string; hue: number; sat: number; left: number; top: number };
+/** 像素偏移 → (色相, 饱和度)：色相为自顶部顺时针的角度，饱和度为六边形范数（0–100）。 */
+function hexFieldPoint(px: number, py: number): { hue: number; sat: number } {
+  const q = px / HEX_CIRCUM_R - py / (HEX_CIRCUM_R * SQRT3);
+  const r = (2 * py) / (HEX_CIRCUM_R * SQRT3);
+  const norm = Math.min(1, (Math.abs(q) + Math.abs(r) + Math.abs(q + r)) / 2);
+  const hue = Math.round((((Math.atan2(px, -py) * 180) / Math.PI) % 360 + 360) % 360);
+  return { hue, sat: Math.round(norm * 100) };
+}
 
-const HEX_WHEEL = (() => {
-  const sqrt3 = Math.sqrt(3);
-  const raw: { q: number; r: number; px: number; py: number; dist: number }[] = [];
-  let farthest = 0;
-  for (let q = -HEX_RINGS; q <= HEX_RINGS; q += 1) {
-    for (let r = Math.max(-HEX_RINGS, -q - HEX_RINGS); r <= Math.min(HEX_RINGS, -q + HEX_RINGS); r += 1) {
-      const px = HEX_SIZE * sqrt3 * (q + r / 2);
-      const py = HEX_SIZE * 1.5 * r;
-      const dist = Math.hypot(px, py);
-      farthest = Math.max(farthest, dist);
-      raw.push({ q, r, px, py, dist });
+/** (色相, 饱和度) → 像素位置：hexFieldPoint 的逆变换，边缘半径按到边法线的夹角余弦修正。 */
+function hexFieldPosition(hue: number, sat: number): { x: number; y: number } {
+  const phi = (hue * Math.PI) / 180;
+  const edgeNormalAngle = ((90 - hue) % 60 + 60) % 60 - 30;
+  const edgeRadius = ((HEX_CIRCUM_R * SQRT3) / 2) / Math.cos((edgeNormalAngle * Math.PI) / 180);
+  const radius = (sat / 100) * edgeRadius;
+  return { x: FIELD_W / 2 + radius * Math.sin(phi), y: FIELD_H / 2 - radius * Math.cos(phi) };
+}
+
+function hslToRgb255(h: number, s: number, l: number): [number, number, number] {
+  const sn = Math.min(100, Math.max(0, s)) / 100;
+  const ln = Math.min(100, Math.max(0, l)) / 100;
+  const chroma = (1 - Math.abs(2 * ln - 1)) * sn;
+  const sector = (((h % 360) + 360) % 360) / 60;
+  const secondary = chroma * (1 - Math.abs((sector % 2) - 1));
+  const match = ln - chroma / 2;
+  let rgb: [number, number, number] = [0, 0, 0];
+  if (sector < 1) rgb = [chroma, secondary, 0];
+  else if (sector < 2) rgb = [secondary, chroma, 0];
+  else if (sector < 3) rgb = [0, chroma, secondary];
+  else if (sector < 4) rgb = [0, secondary, chroma];
+  else if (sector < 5) rgb = [secondary, 0, chroma];
+  else rgb = [chroma, 0, secondary];
+  return [
+    Math.round(Math.min(1, Math.max(0, rgb[0] + match)) * 255),
+    Math.round(Math.min(1, Math.max(0, rgb[1] + match)) * 255),
+    Math.round(Math.min(1, Math.max(0, rgb[2] + match)) * 255),
+  ];
+}
+
+/** 按当前明度把连续色域画进 canvas：逐像素 HSL，六边形边缘做 alpha 抗锯齿。 */
+function paintHexField(canvas: HTMLCanvasElement, lightness: number) {
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  const width = Math.round(FIELD_W * dpr);
+  const height = Math.round(FIELD_H * dpr);
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  const image = ctx.createImageData(width, height);
+  const data = image.data;
+  for (let y = 0; y < height; y += 1) {
+    const py = (y + 0.5) / dpr - FIELD_H / 2;
+    for (let x = 0; x < width; x += 1) {
+      const idx = (y * width + x) * 4;
+      const px = (x + 0.5) / dpr - FIELD_W / 2;
+      const q = px / HEX_CIRCUM_R - py / (HEX_CIRCUM_R * SQRT3);
+      const r = (2 * py) / (HEX_CIRCUM_R * SQRT3);
+      const norm = (Math.abs(q) + Math.abs(r) + Math.abs(q + r)) / 2;
+      if (norm > 1.012) {
+        data[idx + 3] = 0;
+        continue;
+      }
+      const hue = (Math.atan2(px, -py) * 180) / Math.PI;
+      const radiusSat = Math.min(1, norm) * 100;
+      const [cr, cg, cb] = hslToRgb255(hue, radiusSat, fieldLightness(radiusSat, lightness));
+      data[idx] = cr;
+      data[idx + 1] = cg;
+      data[idx + 2] = cb;
+      data[idx + 3] = Math.round(255 * Math.min(1, Math.max(0, (1.012 - norm) / 0.024)));
     }
   }
-  const halfWidth = Math.max(...raw.map((cell) => Math.abs(cell.px)));
-  const halfHeight = Math.max(...raw.map((cell) => Math.abs(cell.py)));
-  const width = halfWidth * 2 + HEX_WIDTH;
-  const height = halfHeight * 2 + HEX_HEIGHT;
-  const swatches: HexSwatch[] = raw
-    .map(({ q, r, px, py, dist }) => {
-      const isCenter = dist === 0;
-      const angle = (Math.atan2(-py, px) * 180) / Math.PI;
-      const hue = isCenter ? 0 : Math.round((((90 - angle) % 360) + 360) % 360);
-      const sat = isCenter ? 0 : Math.round((dist / farthest) * 100);
-      return {
-        id: `${q},${r}`,
-        hue,
-        sat,
-        left: width / 2 + px - HEX_WIDTH / 2,
-        top: height / 2 + py - HEX_HEIGHT / 2,
-      };
-    })
-    .sort((a, b) => a.sat - b.sat || a.hue - b.hue);
-  return { swatches, width, height };
-})();
+  ctx.putImageData(image, 0, 0);
+}
 
 function isBackground(value: string | undefined | null): value is BackgroundId {
   return BACKGROUNDS.some((option) => option.id === value);
@@ -98,14 +141,17 @@ function isAccent(value: string | undefined | null): value is AccentId {
   return ACCENTS.some((option) => option.id === value);
 }
 
-/** 从 "H,S" 存储串恢复自定义色相与饱和度；无效时返回 null。 */
-function parseCustomAccent(value: string | null): { hue: number; sat: number } | null {
-  const [hueText, satText] = (value ?? "").split(",");
+/** 从 "H,S[,L]" 存储串恢复自定义色相、饱和度与明度；无效时返回 null。旧两段串明度回默认值。 */
+function parseCustomAccent(value: string | null): { hue: number; sat: number; light: number } | null {
+  const [hueText, satText, lightText] = (value ?? "").split(",");
   const hue = Number(hueText);
   const sat = Number(satText);
   if (hueText === undefined || satText === undefined) return null;
   if (!Number.isFinite(hue) || !Number.isFinite(sat) || hue < 0 || hue > 360 || sat < 0 || sat > 100) return null;
-  return { hue, sat };
+  if (lightText === undefined || lightText === "") return { hue, sat, light: DEFAULT_CUSTOM_LIGHT };
+  const light = Number(lightText);
+  if (!Number.isFinite(light) || light < 0 || light > 100) return null;
+  return { hue, sat, light };
 }
 
 function applyTheme(
@@ -115,11 +161,15 @@ function applyTheme(
   accent: AccentChoice,
   customHue: number,
   customSat: number,
+  customLight: number,
 ) {
   const root = document.documentElement;
   const background = mode === "dark" ? nightBackground : lightBackground;
   const options = mode === "dark" ? NIGHT_BACKGROUNDS : BACKGROUNDS;
-  const derived = accent === "custom" ? deriveCustomPaletteTokens(customHue, customSat, mode) : null;
+  // customLight 是滑条明度（色域边缘基准）；派生输入必须用色域剖面混合后的最终明度。
+  const derived = accent === "custom"
+    ? deriveCustomPaletteTokens(customHue, customSat, mode, fieldLightness(customSat, customLight))
+    : null;
   root.dataset.theme = mode;
   root.dataset.background = background;
   root.dataset.palette = accent === "custom" && !derived ? DEFAULT_ACCENT : accent;
@@ -140,11 +190,13 @@ function ThemeScale({
   options,
   value,
   onChange,
+  customOptionRef,
 }: {
   label: string;
   options: readonly ThemeOption[];
   value: string;
   onChange: (next: string) => void;
+  customOptionRef?: Ref<HTMLButtonElement>;
 }) {
   const selectedIndex = Math.max(0, options.findIndex((option) => option.id === value));
   const selected = options[selectedIndex];
@@ -186,6 +238,7 @@ function ThemeScale({
               key={option.id}
               className="theme-scale-option"
               type="button"
+              ref={option.id === "custom" ? customOptionRef : undefined}
               role="radio"
               aria-checked={index === selectedIndex}
               aria-label={`${label}：${option.name}，第 ${index + 1} 项，共 ${options.length} 项`}
@@ -218,11 +271,17 @@ export function ThemeStudio() {
   const [accent, setAccent] = useState<AccentChoice>(DEFAULT_ACCENT);
   const [customHue, setCustomHue] = useState(DEFAULT_CUSTOM_HUE);
   const [customSat, setCustomSat] = useState(DEFAULT_CUSTOM_SAT);
+  const [customLight, setCustomLight] = useState(DEFAULT_CUSTOM_LIGHT);
   const [wheelOpen, setWheelOpen] = useState(false);
   const studioRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const customOptionRef = useRef<HTMLButtonElement | null>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const fieldCanvasRef = useRef<HTMLCanvasElement>(null);
   const focusPanelOnOpenRef = useRef(false);
+  const draggingFieldRef = useRef(false);
+  const draggingLightRef = useRef(false);
 
   useEffect(() => {
     const syncFrame = window.requestAnimationFrame(() => {
@@ -253,20 +312,30 @@ export function ThemeStudio() {
         : (isAccent(root.dataset.palette) ? root.dataset.palette : DEFAULT_ACCENT);
       const nextHue = storedCustomAccent ? storedCustomAccent.hue : DEFAULT_CUSTOM_HUE;
       const nextSat = storedCustomAccent ? storedCustomAccent.sat : DEFAULT_CUSTOM_SAT;
+      const nextCustomLight = storedCustomAccent ? storedCustomAccent.light : DEFAULT_CUSTOM_LIGHT;
       setMode(nextMode);
       setLightBackground(nextLight);
       setNightBackground(nextNight);
       setAccent(nextAccent);
       setCustomHue(nextHue);
       setCustomSat(nextSat);
-      applyTheme(nextMode, nextLight, nextNight, nextAccent, nextHue, nextSat);
+      setCustomLight(nextCustomLight);
+      applyTheme(nextMode, nextLight, nextNight, nextAccent, nextHue, nextSat, nextCustomLight);
     });
     return () => window.cancelAnimationFrame(syncFrame);
   }, []);
 
   useEffect(() => {
-    if (!open) setWheelOpen(false);
-  }, [open]);
+    if (accent === "custom" && wheelOpen && fieldCanvasRef.current) {
+      paintHexField(fieldCanvasRef.current, customLight);
+    }
+  }, [accent, wheelOpen, customLight]);
+
+  useEffect(() => {
+    if (!wheelOpen) return;
+    const focusFrame = window.requestAnimationFrame(() => fieldRef.current?.focus());
+    return () => window.cancelAnimationFrame(focusFrame);
+  }, [wheelOpen]);
 
   useEffect(() => {
     if (!open) return;
@@ -278,13 +347,17 @@ export function ThemeStudio() {
       : 0;
 
     function handlePointerDown(event: PointerEvent) {
-      if (!studioRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!studioRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+        setWheelOpen(false);
+      }
     }
 
     function handleKeyDown(event: globalThis.KeyboardEvent) {
       if (event.key !== "Escape") return;
       if (wheelOpen) {
         setWheelOpen(false);
+        window.requestAnimationFrame(() => customOptionRef.current?.focus());
         return;
       }
       setOpen(false);
@@ -300,14 +373,22 @@ export function ThemeStudio() {
     };
   }, [open, wheelOpen]);
 
-  function persist(nextMode: ThemeMode, nextLight: BackgroundId, nextNight: NightBackgroundId, nextAccent: AccentChoice, nextHue: number, nextSat: number) {
-    applyTheme(nextMode, nextLight, nextNight, nextAccent, nextHue, nextSat);
+  function persist(
+    nextMode: ThemeMode,
+    nextLight: BackgroundId,
+    nextNight: NightBackgroundId,
+    nextAccent: AccentChoice,
+    nextHue: number,
+    nextSat: number,
+    nextCustomLight: number,
+  ) {
+    applyTheme(nextMode, nextLight, nextNight, nextAccent, nextHue, nextSat, nextCustomLight);
     try {
       localStorage.setItem("vp-theme", nextMode);
       localStorage.setItem("vp-background", nextLight);
       localStorage.setItem("vp-background-night", nextNight);
       localStorage.setItem("vp-palette", nextAccent);
-      if (nextAccent === "custom") localStorage.setItem("vp-palette-custom", `${nextHue},${nextSat}`);
+      if (nextAccent === "custom") localStorage.setItem("vp-palette-custom", `${nextHue},${nextSat},${nextCustomLight}`);
     } catch {
       // Theme selection still works for this page when storage is unavailable.
     }
@@ -317,12 +398,12 @@ export function ThemeStudio() {
     if (mode === "dark") {
       if (!isNightBackground(next)) return;
       setNightBackground(next);
-      persist("dark", lightBackground, next, accent, customHue, customSat);
+      persist("dark", lightBackground, next, accent, customHue, customSat, customLight);
       return;
     }
     if (!isBackground(next)) return;
     setLightBackground(next);
-    persist("light", next, nightBackground, accent, customHue, customSat);
+    persist("light", next, nightBackground, accent, customHue, customSat, customLight);
   }
 
   function chooseAccent(next: string) {
@@ -333,29 +414,71 @@ export function ThemeStudio() {
       }
       setAccent("custom");
       setWheelOpen(true);
-      persist(mode, lightBackground, nightBackground, "custom", customHue, customSat);
+      persist(mode, lightBackground, nightBackground, "custom", customHue, customSat, customLight);
       return;
     }
     if (!isAccent(next)) return;
     setAccent(next);
     setWheelOpen(false);
-    persist(mode, lightBackground, nightBackground, next, customHue, customSat);
+    persist(mode, lightBackground, nightBackground, next, customHue, customSat, customLight);
   }
 
-  function chooseCustomAccent(nextHue: number, nextSat: number) {
+  function chooseCustomAccent(nextHue: number, nextSat: number, nextLight: number) {
     setCustomHue(nextHue);
     setCustomSat(nextSat);
-    persist(mode, lightBackground, nightBackground, "custom", nextHue, nextSat);
+    setCustomLight(nextLight);
+    persist(mode, lightBackground, nightBackground, "custom", nextHue, nextSat, nextLight);
+  }
+
+  function pickFromField(event: ReactPointerEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const point = hexFieldPoint(
+      ((event.clientX - rect.left) / rect.width) * FIELD_W - FIELD_W / 2,
+      ((event.clientY - rect.top) / rect.height) * FIELD_H - FIELD_H / 2,
+    );
+    chooseCustomAccent(point.hue, point.sat, customLight);
+  }
+
+  function pickFromLightSlider(event: ReactPointerEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    chooseCustomAccent(customHue, customSat, Math.round(LIGHT_MIN + ratio * (LIGHT_MAX - LIGHT_MIN)));
+  }
+
+  function fieldKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const fast = event.shiftKey ? 4 : 1;
+    let nextHue = customHue;
+    let nextSat = customSat;
+    if (event.key === "ArrowLeft") nextHue = (customHue - 4 * fast + 360) % 360;
+    else if (event.key === "ArrowRight") nextHue = (customHue + 4 * fast) % 360;
+    else if (event.key === "ArrowUp") nextSat = Math.min(100, customSat + 4 * fast);
+    else if (event.key === "ArrowDown") nextSat = Math.max(0, customSat - 4 * fast);
+    else return;
+    event.preventDefault();
+    chooseCustomAccent(nextHue, nextSat, customLight);
+  }
+
+  function lightKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const fast = event.shiftKey ? 10 : 2;
+    let nextLight = customLight;
+    if (event.key === "ArrowLeft" || event.key === "ArrowDown") nextLight = Math.max(LIGHT_MIN, customLight - fast);
+    else if (event.key === "ArrowRight" || event.key === "ArrowUp") nextLight = Math.min(LIGHT_MAX, customLight + fast);
+    else if (event.key === "Home") nextLight = LIGHT_MIN;
+    else if (event.key === "End") nextLight = LIGHT_MAX;
+    else return;
+    event.preventDefault();
+    chooseCustomAccent(customHue, customSat, nextLight);
   }
 
   function toggleNightMode() {
     const nextMode = mode === "dark" ? "light" : "dark";
     setMode(nextMode);
-    persist(nextMode, lightBackground, nightBackground, accent, customHue, customSat);
+    persist(nextMode, lightBackground, nightBackground, accent, customHue, customSat, customLight);
   }
 
   function toggleStudio(fromKeyboard = false) {
     if (!open && fromKeyboard) focusPanelOnOpenRef.current = true;
+    if (open) setWheelOpen(false);
     setOpen((current) => !current);
   }
 
@@ -409,51 +532,112 @@ export function ThemeStudio() {
           />
           <ThemeScale
             label="主题色"
+            customOptionRef={customOptionRef}
             options={[...ACCENTS, {
               id: "custom",
               name: "自定义",
               color: accent === "custom"
-                ? `hsl(${customHue} ${customSat}% 45%)`
+                ? `hsl(${customHue} ${customSat}% ${fieldLightness(customSat, customLight)}%)`
                 : "conic-gradient(from 0deg, hsl(0 70% 55%), hsl(60 70% 55%), hsl(120 70% 55%), hsl(180 70% 55%), hsl(240 70% 55%), hsl(300 70% 55%), hsl(360 70% 55%))",
               indicator: accent === "custom"
-                ? `hsl(${customHue} ${customSat}% 35%)`
+                ? `hsl(${customHue} ${customSat}% ${Math.max(20, fieldLightness(customSat, customLight) - 30)}%)`
                 : "var(--muted)",
             }]}
             value={accent}
             onChange={chooseAccent}
           />
-          {accent === "custom" && wheelOpen && (
-            <div className="theme-hex-wheel" role="group" aria-label="六边形调色盘">
-              <button
-                className="theme-hex-close"
-                type="button"
-                onClick={() => setWheelOpen(false)}
-                aria-label="关闭调色盘"
-              >
-                <X size={15} weight="bold" aria-hidden="true" />
-              </button>
-              <div className="theme-hex-plate">
-              <div className="theme-hex-grid" style={{ width: HEX_WHEEL.width, height: HEX_WHEEL.height }}>
-                {HEX_WHEEL.swatches.map((swatch) => {
-                  const selected = swatch.hue === customHue && swatch.sat === customSat;
-                  return (
-                    <button
-                      key={swatch.id}
-                      type="button"
-                      className={`theme-hex-swatch${selected ? " is-selected" : ""}`}
-                      style={{ left: swatch.left, top: swatch.top, background: `hsl(${swatch.hue} ${swatch.sat}% 55%)` }}
-                      aria-label={swatch.sat === 0
-                        ? "调色盘：中性灰"
-                        : `调色盘：色相 ${swatch.hue} 度，饱和度 ${swatch.sat}%`}
-                      aria-pressed={selected}
-                      onClick={() => chooseCustomAccent(swatch.hue, swatch.sat)}
-                    />
-                  );
-                })}
+          {accent === "custom" && wheelOpen && (() => {
+            const cursor = hexFieldPosition(customHue, customSat);
+            const finalLight = fieldLightness(customSat, customLight);
+            const rawColor = `hsl(${customHue} ${customSat}% ${finalLight}%)`;
+            const [rawR, rawG, rawB] = hslToRgb255(customHue, customSat, finalLight);
+            const rawHex = `#${[rawR, rawG, rawB].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+            const appliedTokens = deriveCustomPaletteTokens(customHue, customSat, mode, finalLight);
+            const appliedColor = appliedTokens?.["--accent"] ?? rawColor;
+            const protectedDiffers = Boolean(appliedTokens && appliedTokens["--accent"] !== rawHex);
+            const sliderPosition = ((customLight - LIGHT_MIN) / (LIGHT_MAX - LIGHT_MIN)) * 100;
+            return (
+              <div className="theme-hex-wheel" role="group" aria-label="六边形调色盘">
+                <button
+                  className="theme-hex-close"
+                  type="button"
+                  onClick={() => {
+                    setWheelOpen(false);
+                    window.requestAnimationFrame(() => customOptionRef.current?.focus());
+                  }}
+                  aria-label="关闭调色盘"
+                >
+                  <X size={15} weight="bold" aria-hidden="true" />
+                </button>
+                <div
+                  className="theme-hex-field"
+                  style={{ width: FIELD_W, height: FIELD_H }}
+                  ref={fieldRef}
+                  role="application"
+                  aria-label="连续色域：色相沿六边形边缘分布，向中心饱和度递减。方向键左右调色相、上下调饱和度，Shift 加速"
+                  tabIndex={0}
+                  onPointerDown={(event) => {
+                    draggingFieldRef.current = true;
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                    pickFromField(event);
+                  }}
+                  onPointerMove={(event) => {
+                    if (draggingFieldRef.current) pickFromField(event);
+                  }}
+                  onPointerUp={() => { draggingFieldRef.current = false; }}
+                  onPointerCancel={() => { draggingFieldRef.current = false; }}
+                  onKeyDown={fieldKeyDown}
+                >
+                  <canvas
+                    ref={fieldCanvasRef}
+                    className="theme-hex-canvas"
+                    style={{ width: FIELD_W, height: FIELD_H }}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="theme-hex-cursor"
+                    style={{ left: cursor.x, top: cursor.y, borderColor: rawColor }}
+                    aria-hidden="true"
+                  />
+                </div>
+                <div
+                  className="theme-hex-light-slider"
+                  role="slider"
+                  aria-label="明度"
+                  aria-valuemin={LIGHT_MIN}
+                  aria-valuemax={LIGHT_MAX}
+                  aria-valuenow={customLight}
+                  aria-valuetext={`明度 ${customLight}%`}
+                  tabIndex={0}
+                  onPointerDown={(event) => {
+                    draggingLightRef.current = true;
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                    pickFromLightSlider(event);
+                  }}
+                  onPointerMove={(event) => {
+                    if (draggingLightRef.current) pickFromLightSlider(event);
+                  }}
+                  onPointerUp={() => { draggingLightRef.current = false; }}
+                  onPointerCancel={() => { draggingLightRef.current = false; }}
+                  onKeyDown={lightKeyDown}
+                >
+                  <span className="theme-hex-light-thumb" style={{ left: `${sliderPosition}%`, background: rawColor }} aria-hidden="true" />
+                </div>
+                <div className="theme-hex-current" aria-live="polite">
+                  <span className="theme-hex-current-swatches" aria-hidden="true">
+                    <i style={{ background: rawColor }} title={`原始选色 ${rawHex}`} />
+                    <i style={{ background: appliedColor }} title={`主题色（对比度保护后）${appliedColor}`} />
+                  </span>
+                  <span className="theme-hex-current-text">
+                    {`选色 ${rawHex}`}
+                    <em aria-hidden="true"> → </em>
+                    <strong>{`主题色 ${appliedColor}`}</strong>
+                    {protectedDiffers ? <span className="theme-hex-current-note">（已保护）</span> : null}
+                  </span>
+                </div>
               </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
     </div>
   );
