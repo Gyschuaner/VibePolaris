@@ -12,7 +12,7 @@ function Anchors({ ids }: { ids: string[] }) {
 export function ComponentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={componentSources} />;
   return <ConceptArticle slug="component" title="组件" sources={componentSources}
-    sections={[["definition", "一份定义，多处使用"], ["instances", "每个实例的状态"], ["composition", "组件也能组合"], ["boundary", "怎样划分组件"]]}
+    sections={[["definition", "一份定义，多处使用"], ["instances", "每个实例的状态"], ["composition", "组件也能组合"], ["boundary", "按职责划分组件"]]}
     hero={<ConceptHero slug="component" label="同一份 MemberCard 定义展开为三个成员卡片"><div className={styles.componentHero}><code>MemberCard</code>{[0, 1, 2].map(i => <div className={styles.miniMember} key={i}><UserCircle size={29} weight="light" /><span /></div>)}</div></ConceptHero>}
     intro={<>组件把一块界面的结构和行为组织在一起。<strong>定义写一份，使用时传入不同数据，页面就能得到多个遵循相同规则的实例。</strong></>}
     relatedIntro={<>用 <ConceptTerm slug="props">Props</ConceptTerm> 配置每次使用的输入，用 <ConceptTerm slug="state">状态</ConceptTerm> 记录交互中的变化。跨页面复用的规范，还可以整理进设计系统。</>}>
@@ -36,12 +36,12 @@ export function ComponentTermPage() {
       <p>外层列表负责拿到成员数据并排列卡片，卡片负责呈现一个人。这样修改头像的展示方式时，可以检查 Avatar；修改整个列表的排序时，则从列表着手，不必把职责塞进每一张卡片。</p>
       <ArticleAside title="组件与 HTML 标签"><p>在 React 的 JSX 中，<code>&lt;article&gt;</code> 这样的内置标签描述浏览器元素，<code>&lt;MemberCard /&gt;</code> 则指向你定义的组件。组件最终仍要产生浏览器能展示的内容。组件不等于自定义一个新的 HTML 标准标签；其他框架的组件语法也可能不同。</p></ArticleAside>
     </ArticleSection>
-    <ArticleSection id="boundary" title="怎样划分组件">
+    <ArticleSection id="boundary" title="按职责划分组件">
       <Anchors ids={["component-quiz-heading", "component-prompt-heading"]} />
       <p id="component-boundary" className="vp-citation-target">React 的设计教程建议结合职责、视觉层次和数据结构拆分界面。一个部分变复杂、拥有清晰职责时，可以继续拆；简单且紧密相关的内容也可以先放在一起。这里没有“超过多少行必须拆”的统一标准。<Cite id="component-boundary" /></p>
       <blockquote className={styles.callout}>先说清这一块负责什么，<br />再决定它的边界。</blockquote>
       <p>成员卡片的输入可以列清：姓名、角色、头像。它的行为也可以列清：关注、打开资料。相反，把三个毫不相关的页面只因颜色相似而合成一个“万能卡片”，往往会引入大量难理解的开关。</p>
-      <p>复用是一个理由，组织复杂界面也是一个理由；只出现一次的页面区域也可以成为组件。真正要检查的是：名称是否表达职责，输入是否容易理解，修改这一块时是否需要同时猜测许多别处的规则。</p>
+      <p>复用是一个理由，组织复杂界面也是一个理由；只出现一次的页面区域也可以成为组件。检查组件边界时，看名称能否表达职责、输入是否容易理解，以及修改这一块是否牵动许多无关规则。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -95,7 +95,7 @@ export function StateTermPage() {
       <Anchors ids={["state-question", "state-definition"]} />
       <p>写一条会议笔记时，界面需要记住正在编辑的文字。点保存之后，它还要知道请求正在等待，才能暂时阻止重复操作；收到失败结果，又要保留输入并提供重试入口。</p>
       <p id="state-memory" className="vp-citation-target">在 React 中，组件可以用 useState 保存渲染之间需要记住的数据。它提供当前值和更新函数：更新函数请求下一次渲染，组件再用新的值计算界面。普通局部变量不会替你完成这件事。本文用 React 演示，状态这个概念也存在于其他界面框架和程序中。<Cite id="state-memory" /></p>
-      <p>这里至少有两类数据：笔记内容 text，以及保存进度 status。按钮上的“保存中”不是程序额外记下的一句话，而是根据 status 推导出来的显示结果。</p>
+      <p>这里至少有两类数据：笔记内容 text，以及保存进度 status。按钮上的“保存中”由 status 推导，不需要另存一份文字状态。</p>
     </ArticleSection>
     <ArticleSection id="saving" title="一次保存的变化">
       <p>试着改写笔记，再保存。为了让等待过程可观察，本例由你点击“返回成功”或“返回失败”来模拟响应，不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>

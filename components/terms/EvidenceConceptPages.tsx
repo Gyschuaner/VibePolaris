@@ -9,7 +9,7 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 
 export function HybridSearchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hybridSources}/>;
-  return <ConceptArticle slug="hybrid-search" title="混合搜索" sources={hybridSources} sections={[["routes", "一次查询，两种检索信号"], ["fusion", "把两路排名合成一份"], ["scores", "分数为什么不能直接相加"], ["limits", "候选范围决定能合并什么"]]}
+  return <ConceptArticle slug="hybrid-search" title="混合搜索" sources={hybridSources} sections={[["routes", "一次查询，两种检索信号"], ["fusion", "把两路排名合成一份"], ["scores", "两路分数不能直接相加"], ["limits", "候选范围决定融合结果"]]}
     intro={<>查“MX-42 经常断开连接”，型号适合按字面匹配，“断开连接”又可能在文档里写成“掉线”或“重连”。混合搜索组合不同的检索信号，再把候选汇成一份结果。</>}
     hero={<ConceptHero slug="hybrid-search" label="关键词与语义两路排名，共同出现的B只保留一条并合计排名贡献"><div className={s.fusionHero}><div><span>关键词 A → B → C</span></div><div><span>语义 B → D → A</span></div><strong>B · 两路贡献相加</strong></div></ConceptHero>}>
     <ArticleSection id="routes" title="一次查询，两种检索信号"><Legacy slug="hybrid-search" names={["question", "definition"]}/>
@@ -23,15 +23,15 @@ export function HybridSearchTermPage() {
       <HybridLesson/>
       <p>默认 B 得到 1/62 + 1/61，A 得到 1/61 + 1/63，所以 B 略高。D 只在语义路线排第二，仍能进入合并结果。<strong>同一文档被两路找到，会合计贡献，但不会复制成两条。</strong>同分时本例按 ID 排序，这只是确定展示顺序的约定。</p>
     </ArticleSection>
-    <ArticleSection id="scores" title="分数为什么不能直接相加"><Legacy slug="hybrid-search" names={["quiz-heading"]}/>
+    <ArticleSection id="scores" title="两路分数不能直接相加"><Legacy slug="hybrid-search" names={["quiz-heading"]}/>
       <p id="hybrid-scales" className="vp-citation-target">全文分数与向量相似度可能使用不同尺度。Weaviate 文档对比基于排名的融合与先归一化再加权的融合：前者主要保留顺序，后者还保留分数间的相对差距。<strong>融合规则决定保留哪种信息。</strong>归一化加权需要相应尺度处理，RRF 则不要求把原始分数先变成同一种单位。<Cite id="hybrid-scales"/></p>
       <div className={s.pair}><div><h3>按排名融合</h3><p>第一与第二差一点还是差很多，都只通过名次体现。参数 k 改变名次差异的影响，本页固定为 60。</p></div><div><h3>按归一分数融合</h3><p>先处理每路分数尺度，再按权重相加。归一方式、异常高分与权重会影响结果，需要用实际问题评估。</p></div></div>
       <p>融合分数表达这套规则下的排序贡献，<strong>不是答案正确率，也不是资料真实度。</strong>无论怎样融合，仍要读取原文，核对型号、版本、条件和问题是否对应。</p>
     </ArticleSection>
-    <ArticleSection id="limits" title="候选范围决定能合并什么" className={base.offset}><Legacy slug="hybrid-search" names={["prompt-heading"]}/>
+    <ArticleSection id="limits" title="候选范围决定融合结果" className={base.offset}><Legacy slug="hybrid-search" names={["prompt-heading"]}/>
       <p id="hybrid-window" className="vp-citation-target">候选窗口与最终显示数量是两个步骤。Elastic 先取各路窗口中的结果参与融合，再截取最终数量。<strong>不在任何一路窗口里的资料，不会凭空进入合并结果。</strong>把本例窗口改成 1，只剩 A、B；D 即使有用，也没有参与这次计算。<Cite id="hybrid-window"/></p>
       <p id="hybrid-evaluation" className="vp-citation-target">RRF 原始论文用多个 TREC 与 LETOR 实验考察排名融合，并在研究中选择 k = 60。结果支持它在这些实验中的效果，<strong>不能由此推断所有资料库都必然改善。</strong>自己的问题集仍需检查关键资料是否进入前排、型号不符的内容是否被误选，以及增加路线的成本。<Cite id="hybrid-evaluation"/></p>
-      <ArticleAside title="融合之后还要做什么"><p>需要更细地比较查询与候选时，可以继续做 <ConceptTerm slug="reranking">重排序</ConceptTerm>。它处理已经选出的候选；融合扩大了可比较的范围，但两者都无法代替资料本身的质量。</p></ArticleAside>
+      <ArticleAside title="融合后的核对"><p>需要更细地比较查询与候选时，可以继续做 <ConceptTerm slug="reranking">重排序</ConceptTerm>。它处理已经选出的候选；融合扩大了可比较的范围，但两者都无法代替资料本身的质量。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -87,7 +87,7 @@ export function CitationTermPage() {
     </ArticleSection>
     <ArticleSection id="identifiers" title="链接、版本与检查时间" className={base.offset}><Legacy slug="citation" names={["prompt-heading"]}/>
       <p id="citation-identifiers" className="vp-citation-target">Crossref 建议把它的 DOI 显示为完整的 https://doi.org/ 地址；出版方维护目标网址后，标识符能继续导向材料的新位置。<strong>稳定入口解决的是去哪找，不是内容是否正确。</strong>本页参考资料保留完整网址与机构，研究论文注明年份；会变化的技术文档还需要结合实际版本阅读。<Cite id="citation-identifiers"/></p>
-      <ArticleAside title="读到一条引用，可以检查什么"><p>先看原文是否真的存在，再看渠道、对象、时间和结论是否对应。如果系统只 <ConceptTerm slug="retrieval">检索</ConceptTerm> 到一个标题，还没有读到支持段落，就不能据此声称这句话已有依据。材料缺失时，可以缩小结论或继续查找。</p></ArticleAside>
+      <ArticleAside title="沿引用核对结论"><p>先看原文是否真的存在，再看渠道、对象、时间和结论是否对应。如果系统只 <ConceptTerm slug="retrieval">检索</ConceptTerm> 到一个标题，还没有读到支持段落，就不能据此声称这句话已有依据。材料缺失时，可以缩小结论或继续查找。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

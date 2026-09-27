@@ -48,7 +48,7 @@ export function PromiseTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={promiseSources} />;
   return <ConceptArticle slug="promise" title="Promise" subtitle="记录一次异步操作的结果" sources={promiseSources}
     intro={<>请求发出后，结果未必马上回来。Promise 先代表这份尚未取得的结果；拿到值或遇到错误以后，登记好的处理函数再接着工作。</>}
-    sections={[["result", "一份结果，三种状态"], ["order", "让一份订单落定"], ["timing", "回调什么时候执行"], ["chain", "把结果交给下一步"]]}
+    sections={[["result", "一份结果，三种状态"], ["order", "让一份订单落定"], ["timing", "回调执行的时机"], ["chain", "把结果交给下一步"]]}
     hero={<ConceptHero slug="promise" label="取餐凭条从等待变成A17，盖上已落定印章"><div className={styles.promiseHero}><div className={styles.miniTicket}><Receipt size={24} weight="light" /><span>取餐凭条</span><strong>A17</strong><b><Check size={20} /></b><span>fulfilled</span></div></div></ConceptHero>}>
     <ArticleSection id="result" title="一份结果，三种状态">
       <AsyncLegacyAnchors slug="promise" names={["question", "definition"]} />
@@ -62,7 +62,7 @@ export function PromiseTermPage() {
       <PromiseLesson />
       <p>先交付 A17，随后报告售罄，凭条仍然是 A17。反过来先报告售罄，也不能再把同一份 Promise 改成成功。业务确实需要重试时，应发起新的操作、取得新的 Promise；“再试一次”不是改写上一次的结果。</p>
     </ArticleSection>
-    <ArticleSection id="timing" title="回调什么时候执行" className={base.offset}>
+    <ArticleSection id="timing" title="回调执行的时机" className={base.offset}>
       <p id="promise-timing" className="vp-citation-target">then 登记的处理函数不会插进当前同步代码中途执行。即使 Promise 已经落定，处理函数也会在当前执行结束后的微任务阶段运行。晚一点登记处理函数，仍然能收到已有结果。<Cite id="promise-timing" /></p>
       <p>打开上面的执行记录。按下“交付取餐号”后，记录先出现调用 resolve、同步代码结束，随后才出现成功回调。状态落定与读取结果的回调执行，是两个需要分清的时刻。</p>
       <pre className={base.code}>{'Promise.resolve("A17").then(value => {\n  console.log(value);\n});\nconsole.log("先执行这里");\n\n// 先执行这里\n// A17'}</pre>
@@ -83,7 +83,7 @@ export function AwaitTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={awaitSources} />;
   return <ConceptArticle slug="async-await" title="async / await" subtitle="等到结果，再接着执行" sources={awaitSources}
     intro={<>文章卡片需要标题和封面。await 让一段代码在结果回来以后继续，写起来像按行往下走；任务什么时候开始，仍由函数调用的位置决定。</>}
-    sections={[["function", "暂停的是当前函数"], ["assemble", "等两份材料到齐"], ["start", "先开始，再谈等待"], ["failure", "失败后还剩什么"]]}
+    sections={[["function", "暂停的是当前函数"], ["assemble", "等两份材料到齐"], ["start", "先开始，再谈等待"], ["failure", "失败后的剩余工作"]]}
     hero={<ConceptHero slug="async-await" label="标题和封面分别移动，汇合后成为文章卡片"><div className={styles.awaitHero}><div className={styles.heroTrack}><FileText size={24} /><span>小岛上的灯塔</span></div><div className={styles.heroTrack}><ImageIcon size={30} /><span>封面</span></div><BookOpen className={styles.heroJoined} size={35} weight="light" /></div></ConceptHero>}>
     <ArticleSection id="function" title="暂停的是当前函数">
       <AsyncLegacyAnchors slug="async-await" names={["question", "definition"]} />
@@ -102,7 +102,7 @@ export function AwaitTermPage() {
       <p><strong>连续写两个 await，不足以判断任务是不是串行开始。</strong>如果此前已经调用两个函数并保存了 Promise，它们可能早就在并发进行。检查的关键是调用位置，而不只是 await 的数量。</p>
       <p>实际任务也不一定适合一起开始。例如先查用户资料，再根据其中的头像地址加载图片，第二步确实依赖第一步。为了看起来更快而强行并发，可能连请求参数都还没拿到。</p>
     </ArticleSection>
-    <ArticleSection id="failure" title="失败后还剩什么" className={base.offset}>
+    <ArticleSection id="failure" title="失败后的剩余工作" className={base.offset}>
       <AsyncLegacyAnchors slug="async-await" names={["quiz-heading", "prompt-heading"]} />
       <p id="await-error" className="vp-citation-target">等待的 Promise 被拒绝时，await 会在所在位置抛出拒绝原因。可以用 try/catch 显示错误或选择后续处理；若不处理，就让调用这段异步函数的代码接住失败。<Cite id="await-error" /></p>
       <p id="await-reject" className="vp-citation-target">一起发起时，让封面先失败。Promise.all 会拒绝，但<strong>不会自动取消还在运行的标题任务</strong>。你仍然可以让标题返回；只不过这一次汇合已经失败，不能再凭一份标题宣称卡片完整。<Cite id="await-reject" /></p>

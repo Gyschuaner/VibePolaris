@@ -32,7 +32,7 @@ export function PipelineTermPage() {
     <ArticleSection id="trace" title="留下结果的来路" className={base.offset}><Legacy slug="data-pipeline" names={["prompt-heading"]}/>
       <p id="pipeline-provenance" className="vp-citation-target">W3C 的 PROV-DM 用实体、活动与参与者描述来源关系，例如活动使用了哪份实体，哪份输出由该活动产生。借阅快照、校验活动与报表版本可以沿这样的关系记录。<strong>来源模型帮助说明结果怎样产生，本身不执行任务，也不能证明数据一定正确。</strong><Cite id="pipeline-provenance"/></p>
       <div className={base.contrast}><div><h3>执行记录</h3><p>run-42 哪一步成功、哪一步失败？发布的两个前置任务是否完成？用于判断这次运行是否结束。</p></div><div><h3>来源关系</h3><p>报表使用快照 s1 和规则 q2，三条有效、一条隔离。用于解释这个结果来自哪里，以及重算应读取什么。</p></div></div>
-      <p>请 AI 帮忙设计管道时，提供输入版本、校验规则、任务依赖、输出提交条件与失败恢复方式。让它说明哪些任务可以独立继续、哪些必须重算，以及怎样识别同一批数据的重复写入。</p>
+      <p>一条管道的设计要交代输入版本、校验规则、任务依赖、输出提交条件和失败恢复方式。恢复时据此判断哪些任务可以继续、哪些必须重算，并识别同一批数据的重复写入。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -61,7 +61,7 @@ export function WebhookTermPage() {
       <p id="webhook-redelivery" className="vp-citation-target">GitHub 不会自动重新交付失败通知，可以从投递记录手动重投，或用脚本安排补交。Stripe 则为失败通知提供自动重试，并允许手动重发。<strong>Webhook 本身不承诺一套统一的重试策略，要核对所用平台的规则。</strong><Cite id="webhook-redelivery"/></p>
       <p id="webhook-order" className="vp-citation-target">Stripe 也不保证事件按生成顺序交付。不能因为“已取消”的通知先到，就认定后来收到的“已创建”应覆盖当前状态。必要时查询平台对象的最新状态，或按业务版本规则处理更新；事件中的时间戳不能单独解决所有顺序问题。<Cite id="webhook-order"/></p>
       <ArticleAside title="投递成功以后，后台仍可能失败"><p>接收端已经返回 2xx，随后后台任务更新订单失败，发送平台未必知道。受理记录需要保留处理状态，后台失败要有重试与告警。入口确认丢失导致的重新投递，与已受理工作的失败恢复，是两条不同路径。</p></ArticleAside>
-      <p>请 AI 接入 Webhook 时，提供平台文档、订阅事件、原始请求体验签要求、确认时限与补交规则。要求它分别说明验签失败、重复事件、顺序变化、后台失败与确认丢失怎样处理，而不是只生成一个收到 JSON 就修改订单的接口。</p>
+      <p>接入 Webhook 先核对平台文档、订阅事件、原始请求体验签要求、确认时限与补交规则。验签失败、重复或乱序事件、后台失败和确认丢失都要有明确处理；收到 JSON 只是入口，不能直接认定订单状态已改变。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -89,7 +89,7 @@ export function DistributedTermPage() {
     <ArticleSection id="ordering" title="顺序与重试需要共同约定" className={base.offset}><Legacy slug="distributed-system" names={["prompt-heading"]}/>
       <p id="distributed-order" className="vp-citation-target">Lamport 用“先发生”关系描述因果：同一进程内的先后、发送在接收之前，以及这些关系的传递。没有这种关系的事件可以并发。<strong>仅比较两台机器上的时间戳，不能单独证明业务的因果关系。</strong>逻辑时钟也不能自行代替库存事务或幂等保护。<Cite id="distributed-order"/></p>
       <ArticleAside title="恢复通信，也要限制重试规模"><p id="distributed-budget" className="vp-citation-target">AWS 提醒重试可能加重过载，多层同时重试会放大请求量；退避、次数限制和抖动用于减少集中的重复请求。它们控制尝试节奏，却不替代副作用的幂等设计。先明确可以重试什么，再决定重试多少次与等待多久。<Cite id="distributed-budget"/></p></ArticleAside>
-      <p>请 AI 拆分服务时，说明谁保管权威状态、每条消息承载什么、操作 ID 如何记录，以及超时后如何核对。要求它把“未收到确认”“远端未执行”“确认已执行”区分开，再讨论 <ConceptTerm slug="microservices">微服务</ConceptTerm> 或其他部署方式。</p>
+      <p>拆分服务前，先确定谁保管权威状态、消息内容、操作 ID 和超时后的核对方法。区分“未收到确认”“远端未执行”与“确认已执行”，再讨论 <ConceptTerm slug="microservices">微服务</ConceptTerm> 或其他部署方式。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

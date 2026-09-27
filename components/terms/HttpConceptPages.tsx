@@ -138,7 +138,7 @@ export function HttpHeaderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={headerSources} />;
   return <ConceptArticle slug="http-header" title="请求头" sources={headerSources}
     intro={<>同样请求 /books/42，有的客户端想要 JSON，有的只需要纯文本。请求头可以把这些偏好告诉服务器，地址和书的内容都不必因此改变。</>}
-    sections={[["fields", "内容之外的信息"], ["negotiate", "同一本书，两种表示"], ["directions", "Accept 与 Content-Type"], ["limits", "字段由谁控制"]]}
+    sections={[["fields", "内容之外的信息"], ["negotiate", "同一本书，两种表示"], ["directions", "Accept 与 Content-Type"], ["limits", "字段的控制者"]]}
     hero={<ConceptHero slug="http-header" label="Accept选择JSON表示，纯文本表示退后"><div className={s.headerHero}><code>Accept: application/json</code><div><FileText size={31} /><strong>JSON</strong></div><div><FileText size={31} /><strong>TXT</strong></div></div></ConceptHero>}>
     <ArticleSection id="fields" title="内容之外的信息">
       <Legacy slug="http-header" names={["question", "definition"]} />
@@ -155,7 +155,7 @@ export function HttpHeaderTermPage() {
       <div className={s.paired}><div><h3>希望收到什么</h3><p id="header-accept" className="vp-citation-target">请求中的 <code>Accept</code> 列出客户端能够理解的媒体类型。它可以包含多种候选及权重，不要求只填一种。本例为了看清选择过程，只使用一个精确类型。<Cite id="header-accept" /></p></div><div><h3>这份内容是什么</h3><p id="header-content" className="vp-citation-target"><code>Content-Type</code> 描述随消息携带的内容类型。请求体是 JSON 时可声明 application/json；响应也用它说明实际返回的类型。这个字段不会把一段普通文本自动变成 JSON。<Cite id="header-content" /></p></div></div>
       <p id="header-vary" className="vp-citation-target">当服务器按 Accept 选择表示，响应可以用 <code>Vary: Accept</code> 告诉缓存：判断能否复用这份响应，还要考虑原请求的 Accept。否则，相同 URL 的纯文本和 JSON 可能被误当成可以互换的结果。<Cite id="header-vary" /></p>
     </ArticleSection>
-    <ArticleSection id="limits" title="字段由谁控制" className={base.offset}>
+    <ArticleSection id="limits" title="字段的控制者" className={base.offset}>
       <Legacy slug="http-header" names={["quiz-heading", "prompt-heading"]} />
       <p id="header-browser" className="vp-citation-target">浏览器会保留部分请求头的控制权。例如 Host、Content-Length 和 Cookie，不能像普通自定义字段一样任意用脚本设置。不要把命令行工具里能够指定的所有字段，直接照搬到浏览器 fetch。<Cite id="header-browser" /></p>
       <p>请求头还可能包含身份凭证。排查时记录字段是否存在、格式是否正确，往往已经足够；共享截图或日志前，应移除真实令牌。把凭证从请求体移进请求头，也不代表请求已经获得权限。</p>

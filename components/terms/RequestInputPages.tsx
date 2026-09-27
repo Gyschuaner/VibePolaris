@@ -14,7 +14,7 @@ export function QueryParameterTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={queryParameterSources} />;
   return <ConceptArticle slug="query-parameter" title="查询参数" sources={queryParameterSources}
     intro={<>书店还是那家书店，列表可以只看科学书，也可以同时看艺术书。地址里的查询参数把这些条件带给程序，让它知道这次要返回哪一组结果。</>}
-    sections={[["conditions", "地址中的条件"], ["selection", "一条查询怎样改变集合"], ["encoding", "特殊字符怎样保留"], ["contract", "共享地址与接口约定"]]}
+    sections={[["conditions", "地址中的条件"], ["selection", "用查询条件筛选集合"], ["encoding", "特殊字符的编码"], ["contract", "共享地址与接口约定"]]}
     hero={<ConceptHero slug="query-parameter" label="同一组书目按条件筛选后只保留两本"><div className={s.queryHero}><code>/books?tag=science</code><div className={s.heroBooks}>{["A", "B", "C", "D", "E", "F"].map(letter => <span key={letter}>{letter}</span>)}</div></div></ConceptHero>}>
     <ArticleSection id="conditions" title="地址中的条件">
       <Legacy slug="query-parameter" names={["question", "definition"]} />
@@ -22,14 +22,14 @@ export function QueryParameterTermPage() {
       <div className={s.urlExample}><code>/books</code><span>?</span><code><mark>tag=science</mark></code></div>
       <p>本页约定：tag 指定图书分类，多次出现表示“任一分类都可以”；q 按书名包含的文字筛选。不提供 tag 就不过滤分类，提供一个不存在的分类就得到空集合。这些是这家示例书店的规则，换一个接口需要重新看它的说明。</p>
     </ArticleSection>
-    <ArticleSection id="selection" title="一条查询怎样改变集合">
+    <ArticleSection id="selection" title="用查询条件筛选集合">
       <Legacy slug="query-parameter" names={["scene-heading"]} />
       <p>先应用“科学”，再试“科学或艺术”和“逗号写法”。这里会实际解析输入并筛选下方六本示例书；淡下去的是未命中的书，不是被删除的数据。也可以直接编辑查询串，例如 <code>q=星空</code>。演示不向服务器发送请求。</p>
       <QueryParameterLesson />
       <p id="query-reading" className="vp-citation-target"><code>URLSearchParams.get("tag")</code> 只读取第一个值，<code>getAll("tag")</code> 读取全部同名值。<strong>逗号不会自动把一个值拆成两个值。</strong>所以本例中 <code>tag=science,art</code> 找不到分类；服务若希望支持这种写法，必须另外约定并解析。<Cite id="query-reading" /></p>
       <div className={s.compare}><div><h3>缺失</h3><p><code>/books</code><br />没有 tag，本例展示所有分类。</p></div><div><h3>空值</h3><p id="query-empty" className="vp-citation-target"><code>/books?tag=</code><br />存在 tag，值是空字符串。URLSearchParams 也把单独的 <code>tag</code> 解析为空字符串；没有这个键时，get 返回 null。<Cite id="query-empty" /></p></div></div>
     </ArticleSection>
-    <ArticleSection id="encoding" title="特殊字符怎样保留">
+    <ArticleSection id="encoding" title="特殊字符的编码">
       <p id="query-encoding" className="vp-citation-target">搜索词里也可能有加号、空格和 &amp;。把原值交给 URLSearchParams，它会在序列化时编码：空格变成 <code>+</code>，原本的加号变成 <code>%2B</code>。不要先手工编码一次再传入，否则百分号还会被再次编码。<Cite id="query-encoding" /></p>
       <QueryEncodingLesson />
       <p>看最后解析回来的 q 是否与原值一致。编码解决的是字符边界，不是保密；<code>%26</code> 可以还原为 &amp;，不能因为地址看起来难读就把它当成加密。</p>
@@ -47,13 +47,13 @@ export function PathParameterTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={pathParameterSources} />;
   return <ConceptArticle slug="path-parameter" title="路径参数" sources={pathParameterSources}
     intro={<>打开 42 号读者的资料，地址是 /readers/42；换成 43，就请求另一位读者。同一条路径模板接收不同的值，程序再据此寻找对象。</>}
-    sections={[["template", "模板里的可替换位置"], ["matching", "请求落在哪条路由"], ["checks", "匹配之后还有检查"], ["framework", "路径规则属于谁"]]}
+    sections={[["template", "模板里的可替换位置"], ["matching", "请求落在哪条路由"], ["checks", "匹配之后还有检查"], ["framework", "路由决定路径规则"]]}
     hero={<ConceptHero slug="path-parameter" label="42进入路径槽位，定位42号读者"><div className={s.pathHero}><code>/readers/<em>42</em></code><div><User size={35} weight="light" /><strong>42</strong></div><span>一段路径 · 一个定位值</span></div></ConceptHero>}>
     <ArticleSection id="template" title="模板里的可替换位置">
       <Legacy slug="path-parameter" names={["question", "definition"]} />
       <p id="path-template" className="vp-citation-target"><strong>路径参数是路由从 URL 路径的可变位置提取出的值。</strong>在 OpenAPI 文档中，<code>{"/readers/{id}"}</code> 用花括号标出模板槽位；实际请求把它替换为 <code>42</code>。id 是参数名，42 是本次的值，花括号不用随请求发送。<Cite id="path-template" /></p>
       <div className={s.urlExample}><code>{"/readers/{id}"}</code><ArrowRight size={22} aria-hidden="true" /><code>/readers/<mark>42</mark></code></div>
-      <p>它不是请求中额外增加的一段消息，而是应用对路径的解释。同样的路径字符串，在没有声明相应路由的服务里，可能完全找不到入口。<ConceptTerm slug="endpoint">端点</ConceptTerm>还要结合 HTTP 方法和服务地址来理解。</p>
+      <p>它是应用对请求路径的解释，并非请求中新加的消息字段。同样的路径字符串，在没有声明相应路由的服务里，可能完全找不到入口。<ConceptTerm slug="endpoint">端点</ConceptTerm>还要结合 HTTP 方法和服务地址来理解。</p>
     </ArticleSection>
     <ArticleSection id="matching" title="请求落在哪条路由">
       <Legacy slug="path-parameter" names={["scene-heading"]} />
@@ -66,7 +66,7 @@ export function PathParameterTermPage() {
       <blockquote className={s.quote}>路径提供定位线索，<br />不提供访问许可。</blockquote>
       <p>本例把无权限显示为 403，允许访问后再查不到对象显示为 404，编号格式不符显示为 422。实际服务可以为避免暴露对象存在性而采取不同的错误策略。这里要区分的是匹配、校验、授权和查询四个判断，不能把一次匹配当作全部通过。</p>
     </ArticleSection>
-    <ArticleSection id="framework" title="路径规则属于谁">
+    <ArticleSection id="framework" title="路由决定路径规则">
       <Legacy slug="path-parameter" names={["quiz-heading", "prompt-heading"]} />
       <p id="path-spec" className="vp-citation-target">OpenAPI 3.1.1 对接口文档的匹配约定是具体路径先于模板路径。同一层级的 <code>{"/readers/{id}"}</code> 和 <code>{"/readers/{name}"}</code> 被视为相同的模板，不能靠变量改名把它们变成不同入口。<Cite id="path-spec" /></p>
       <p><strong>文档的模板约定，需要与实际框架的行为一致。</strong>不同路由系统可能采用声明顺序、路径优先级或显式匹配规则。设计固定路径与动态路径时，要检查当前实现，而不是假定所有框架都会自动避免冲突。</p>

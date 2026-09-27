@@ -13,7 +13,7 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) {
 export function TableTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tableSources} />;
   return <ConceptArticle slug="table" title="表" sources={tableSources}
-    sections={[["shape", "一行书目，几列信息"], ["view", "只取需要的行与列"], ["order", "位置不代表身份"], ["design", "先确定一行是什么"]]}
+    sections={[["shape", "一行书目，几列信息"], ["view", "只取需要的行与列"], ["order", "位置不代表身份"], ["design", "一行对应的业务对象"]]}
     intro={<>图书室要保存书目：每本书有编号、书名和可借状态。把这些信息放在同一种结构里，才能问“有哪些书可借”，也能只取编号与书名交给页面显示。</>}
     hero={<ConceptHero slug="table" label="同一套列定义下，三条书目逐行填入表格"><div className={s.tableHero}><TableIcon size={26} /><div><span>编号</span><span>书名</span><span>可借</span>{[[42,"山间来信","是"],[12,"河流手记","否"],[78,"夜空地图","是"]].map((row,i) => <div key={i} style={{ animationDelay: `${i * .6}s` }}>{row.map((value,j) => <span key={j}>{value}</span>)}</div>)}</div></div></ConceptHero>}>
     <ArticleSection id="shape" title="一行书目，几列信息">
@@ -35,10 +35,10 @@ export function TableTermPage() {
       <p id="table-order" className="vp-citation-target">SQL 不保证没有明确排序的查询按某种固定次序返回。想按编号排列，就写 <code>ORDER BY book_id</code>；如果排序字段会重复，还需补足能确定先后的条件。因此“画面上的第二行”不适合用来指认同一本书。排序影响结果的位置，记录的编号仍是 #42、#12、#78。<Cite id="table-order" /></p>
       <p>演示为方便对照，把未排序结果保留为样例输入顺序。真实数据库可以采用其他顺序。无论排序、分页还是重新查询，修改书目时都应依据合适的记录标识，而不是依据当前屏幕位置。</p>
     </ArticleSection>
-    <ArticleSection id="design" title="先确定一行是什么">
+    <ArticleSection id="design" title="一行对应的业务对象">
       <Legacy slug="table" names={["prompt-heading"]} />
       <p>同一本书有三册时，“一种书一行”和“一册书一行”会得到不同结构。本例把每条书目当成一册可单独借出的书；如果要管理版本、作者和库存，就要先确定各自记录的含义，再安排表与关联。</p>
-      <ArticleAside title="与 AI 讨论表结构">
+      <ArticleAside title="表结构需要写清的关系">
         <p>可以这样说明：每册书有独立编号，书名可能重复；一位读者可以借多册书，每次借阅有自己的日期。请分别说明每张表的一行代表什么、需要哪些列、怎样标识，以及借阅记录引用哪条书目。</p>
       </ArticleAside>
       <p><ConceptTerm slug="database-schema">数据库结构</ConceptTerm>描述表、列与约束等安排；查询结果是依据这些结构得到的一份输出。把页面上显示的表格和数据库里的表分清，讨论新增字段、筛选和修改时就更容易说准确。</p>
@@ -49,7 +49,7 @@ export function TableTermPage() {
 export function PrimaryKeyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={primaryKeySources} />;
   return <ConceptArticle slug="primary-key" title="主键" sources={primaryKeySources}
-    sections={[["identity", "同名的书，不同的记录"], ["write", "编号已经被谁使用"], ["combination", "一个主键，可以包含多列"], ["generation", "约束与生成编号分开看"]]}
+    sections={[["identity", "同名的书，不同的记录"], ["write", "编号的唯一性检查"], ["combination", "一个主键，可以包含多列"], ["generation", "约束与生成编号分开看"]]}
     intro={<>图书室有两册《山间来信》。读者借走其中一册，不能只记书名；以后书名修订了，借阅记录也仍要指向原来那一册。记录需要一个能够准确指认它的标识。</>}
     hero={<ConceptHero slug="primary-key" label="两册同名书具有不同主键，42号书改名后编号不变"><div className={s.keyHero}>{[42,78].map(id => <div key={id}><BookOpen size={27} /><strong><Key size={16} />#{id}</strong><div>{id === 42 ? <><span>山间来信</span><span>山间来信 · 修订版</span></> : <span>山间来信</span>}</div></div>)}</div></ConceptHero>}>
     <ArticleSection id="identity" title="同名的书，不同的记录">
@@ -57,7 +57,7 @@ export function PrimaryKeyTermPage() {
       <p id="primary-key-identity" className="vp-citation-target"><strong>主键是一列或一组列，用唯一且非空的值标识表里的每一条记录。</strong>在 PostgreSQL 中，声明 <code>PRIMARY KEY</code>会要求这些值唯一、非空。一张表至多有一个主键约束，但可以有其他唯一约束。主键值的唯一范围是这张表，不是所有系统中的所有记录。<Cite id="primary-key-identity" /></p>
       <p>这里选 <code>book_id</code>作主键，书名允许相同。#42 改名，只是那一条记录的内容改变，#78 仍是另一册。选择不随书名修订而变化的编号，是本例的设计决定：主键约束本身并不禁止修改编号；如果要修改，还必须处理已有引用。</p>
     </ArticleSection>
-    <ArticleSection id="write" title="编号已经被谁使用">
+    <ArticleSection id="write" title="编号的唯一性检查">
       <Legacy slug="primary-key" names={["scene-heading"]} />
       <p>先尝试插入一个同样使用 #42 的新书目，再试一个空编号；最后改成未使用的 #65。新书名仍然可以叫《山间来信》。这个教学模型检查的是编号，不是书名，不会把插入错误解释成修改了原记录。</p>
       <PrimaryKeyLesson />

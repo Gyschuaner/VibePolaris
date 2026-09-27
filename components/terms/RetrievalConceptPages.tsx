@@ -8,7 +8,7 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 
 export function FrameTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={frameSources}/>;
-  return <ConceptArticle slug="dataframe" title="数据帧" sources={frameSources} sections={[["shape", "行与列有各自的含义"], ["selection", "选哪些记录，保留哪些字段"], ["operations", "计算会改变结果的形状"], ["execution", "表格接口与执行方式"]]}
+  return <ConceptArticle slug="dataframe" title="数据帧" sources={frameSources} sections={[["shape", "行与列有各自的含义"], ["selection", "筛选记录与选择字段"], ["operations", "计算会改变结果的形状"], ["execution", "表格接口与执行方式"]]}
     intro={<>把借阅记录读进程序后，先筛出逾期的两条，再只保留需要的字段。DataFrame 把这些操作放到一张有列名的二维表里，让程序按列选择、按行筛选和计算。</>}
     hero={<ConceptHero slug="dataframe" label="原始四行三列筛出B与D，输出仍是有列定义的二维表"><div className={s.frameHero}><div className={s.heroSheet}><strong>4 × 3</strong><code>A　42　0　北</code><code>B　78　3　南</code><code>C　42　0　南</code><code>D　91　7　北</code></div><div className={s.heroSheet}><strong>2 × 3</strong><code>逾期 ≥ 1 天</code><code>B　78　3　南</code><code>D　91　7　北</code></div></div></ConceptHero>}>
     <ArticleSection id="shape" title="行与列有各自的含义"><Legacy slug="dataframe" names={["question", "definition"]}/>
@@ -16,7 +16,7 @@ export function FrameTermPage() {
       <p id="frame-selection" className="vp-citation-target">pandas 的教程区分两种选择：用一个列名取列，得到一维 Series；用列名列表选择，得到二维 DataFrame。<strong>结果有多少行、多少列，是理解一次操作的基本证据。</strong>只剩一列的 DataFrame 与 Series 也不完全相同；本例一直使用列列表，保留二维结果。<Cite id="frame-selection"/></p>
       <div className={s.columns}><div><h3>数据集</h3><p>关心数据的收录范围、版本与使用说明。它可以由多份文件构成。</p></div><div><h3>数据帧</h3><p>关心程序怎样组织与计算这些记录。装载其中一部分，不代表覆盖了整份数据集。</p></div></div>
     </ArticleSection>
-    <ArticleSection id="selection" title="选哪些记录，保留哪些字段"><Legacy slug="dataframe" names={["scene-heading"]}/>
+    <ArticleSection id="selection" title="筛选记录与选择字段"><Legacy slug="dataframe" names={["scene-heading"]}/>
       <p>原始表有四行、三列。A、C 没有逾期，B 逾期三天，D 七天。筛选天数至少为 1 的记录，得到 B、D 两行；再取消书目列，变成两行、两列。<strong>筛选行与选择列分别控制结果的两个方向。</strong></p>
       <FrameLesson/>
       <p>这里用固定浏览器对象计算结果，没有运行 pandas。标签 A—D 单独显示，不计入三列字段。筛选与投影没有改写原始表；严格到至少 10 天时，结果是零行，但仍知道选择了哪些列。零行不等于读取失败。</p>
@@ -31,7 +31,7 @@ export function FrameTermPage() {
     <ArticleSection id="execution" title="表格接口与执行方式" className={base.offset}><Legacy slug="dataframe" names={["prompt-heading"]}/>
       <p id="frame-execution" className="vp-citation-target">Spark 把 DataFrame 描述为按命名列组织的 Dataset，背后使用分布式执行与优化引擎；不同语言和接口可以表达同一计算。<strong>叫 DataFrame，不说明它一定完整装在一台机器的内存里。</strong>同样的筛选式，在本地库与分布式引擎中，执行成本、类型和支持的操作可能不同。<Cite id="frame-execution"/></p>
       <ArticleAside title="与数据库表怎么配合"><p>数据库表负责持久保存和约束；数据帧可装载查询结果进行分析，也可能由引擎继续读取外部来源。这里的筛选结果不会写回数据库。需要持久化时，说明写到哪里、覆盖还是追加、失败如何处理，再核对相应接口。</p></ArticleAside>
-      <p>请 AI 处理数据时，给出库与版本、每行含义、字段类型和期望结果。先用几条样例核对标签、维度与空结果，再执行完整计算；不要只看输出“像一张表”。</p>
+      <p>核对一次 DataFrame 计算，先明确库与版本、每行含义、字段类型和预期结果。用少量样例检查标签、维度与空结果，再执行完整数据；表格外观不能证明计算正确。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -66,7 +66,7 @@ export function FullTextTermPage() {
 
 export function VectorDatabaseTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={vectorSources}/>;
-  return <ConceptArticle slug="vector-database" title="向量数据库" sources={vectorSources} sections={[["records", "向量与记录一起保存"], ["neighbours", "限定候选，再比较距离"], ["indexing", "数据变多后，怎样减少搜索量"], ["limits", "相似结果仍要核对内容"]]}
+  return <ConceptArticle slug="vector-database" title="向量数据库" sources={vectorSources} sections={[["records", "向量与记录一起保存"], ["neighbours", "限定候选，再比较距离"], ["indexing", "数据增长时的检索开销"], ["limits", "相似结果仍要核对内容"]]}
     intro={<>查询和文档都可以用向量表示。向量数据库保存这些向量及对应记录，帮助找出相近的候选；标题、原文、范围与版本仍然要和它们一起管理。</>}
     hero={<ConceptHero slug="vector-database" label="二维查询q连接距离较近的B与A，其他候选保持在各自坐标"><div className={s.vectorHero}><svg viewBox="0 0 290 210" aria-hidden="true"><path className={s.heroLink} d="M65 145L88 132M65 145L132 150"/><circle className={s.heroQuery} cx="65" cy="145" r="14"/><text x="40" y="180">q</text><g className={s.heroNear}><circle cx="88" cy="132" r="6"/><text x="95" y="125">B</text><circle cx="132" cy="150" r="6"/><text x="140" y="175">A</text></g><g className={s.heroFar}><circle cx="170" cy="74" r="5"/><text x="179" y="68">C</text><circle cx="245" cy="45" r="5"/><text x="252" y="40">E</text><circle cx="228" cy="160" r="5"/><text x="238" y="176">D</text></g></svg></div></ConceptHero>}>
     <ArticleSection id="records" title="向量与记录一起保存"><Legacy slug="vector-database" names={["question", "definition"]}/>
@@ -80,7 +80,7 @@ export function VectorDatabaseTermPage() {
       <p id="vector-distance" className="vp-citation-target">Faiss 的入门例子用 IndexFlatL2 对全部候选做精确 L2 检索，返回近邻 ID 及距离平方。本页为阅读方便展示欧氏距离本身，排序相同，数值口径不同。<strong>比较分数前，要知道距离定义、排序方向和实际返回值。</strong>Faiss 是相似性检索库，完整数据库还需管理数据和服务生命周期。<Cite id="vector-distance"/></p>
       <p id="vector-filter" className="vp-citation-target">Qdrant 可以按 payload 或 ID 限定搜索与读取条件，用来表达库存、价格范围等不能仅靠向量表示的要求。<strong>距离近，不会自动满足业务条件。</strong>本例“公开”只是教学字段；真实访问权限还必须由可信服务端强制执行，不能依赖前端下拉框。<Cite id="vector-filter"/></p>
     </ArticleSection>
-    <ArticleSection id="indexing" title="数据变多后，怎样减少搜索量"><Legacy slug="vector-database" names={["quiz-heading"]}/>
+    <ArticleSection id="indexing" title="数据增长时的检索开销"><Legacy slug="vector-database" names={["quiz-heading"]}/>
       <p>六条记录可以逐条比较；百万条高维向量，每次都计算全部距离就有明显成本。检索索引会组织候选，尝试减少需要查看的对象。精确与近似方案有不同代价，不能把“使用索引”直接等同于一定返回全局最近邻。</p>
       <p id="vector-index" className="vp-citation-target">Malkov 与 Yashunin 提出的 HNSW 建立多层邻近图，从上层逐步进入下层，再扩展候选。它是近似近邻方法；搜索参数 ef 控制候选探索，论文比较了召回率与时间等代价。<strong>更快的候选搜索，需要用真实样例检查漏掉了哪些近邻。</strong>本页没有实现 HNSW，二维全量计算只提供可核对的精确基线。<Cite id="vector-index"/></p>
       <div className={s.columns}><div><h3>精确基线</h3><p>按同一距离定义、同一候选范围取最近 k 条，用来核对近似结果。</p></div><div><h3>近似检索</h3><p>用索引与搜索预算减少探索，衡量延迟、内存和召回，再选适合任务的配置。</p></div></div>
@@ -88,7 +88,7 @@ export function VectorDatabaseTermPage() {
     <ArticleSection id="limits" title="相似结果仍要核对内容" className={base.offset}><Legacy slug="vector-database" names={["prompt-heading"]}/>
       <p><strong>近邻是按当前表示和距离得到的候选，不是事实核验结论。</strong>一篇过期说明可能很近，一篇关键规则可能被切分后漏掉。文档检索需要回到原文，检查内容、时间、范围与引用，再判断能否用于回答。这一步与 <ConceptTerm slug="rag">RAG</ConceptTerm> 的证据使用相连。</p>
       <ArticleAside title="同一个名字，不代表同一种检索"><p>全文搜索中的词项表示也可能叫 vector，例如 PostgreSQL 的 tsvector，但不能因此把它当成这里的二维或高维稠密坐标。还要区分精确关键词、稀疏表示、稠密表示和混合检索，按实际类型与查询接口核对。</p></ArticleAside>
-      <p>请 AI 设计向量检索时，先明确表示模型、距离定义、文档版本、候选过滤和 k 值。更新内容后维护对应向量与索引，使用标注样例核对检索结果；相似性存储也不能替代借阅、付款等关系数据的约束与事务。</p>
+      <p>设计向量检索需要确定表示模型、距离定义、文档版本、候选过滤和 k 值。内容更新后，同步维护向量与索引，再用标注样例核对结果。借阅和付款等业务仍需关系数据的约束与事务。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

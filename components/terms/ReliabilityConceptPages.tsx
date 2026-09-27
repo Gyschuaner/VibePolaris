@@ -14,7 +14,7 @@ export function TimeoutTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={timeoutSources} />;
   return <ConceptArticle slug="timeout" title="超时" sources={timeoutSources}
     sections={[["waiting", "等待有一个上限"], ["clocks", "客户端与服务端的时间"], ["deadline", "给等待分配时间"]]}
-    intro={<>你提交了一次阅览室预约，页面转了两秒，然后显示超时。预约究竟失败了，还是已经成功、只是消息没传回来？单靠超时提示，还分不清。</>}
+    intro={<>提交阅览室预约后，页面等待两秒便显示超时。此时只能确定客户端没有及时收到结果，预约是否已经建立还要另行核对。</>}
     hero={<ConceptHero slug="timeout" label="客户端在2秒停止等待，服务端在3秒完成预约"><div className={s.timeoutHero}><Clock size={28} weight="light" /><div><span>等待</span><i /><b>2 s</b></div><div><span>执行</span><i /><b>3 s</b></div></div></ConceptHero>}>
     <ArticleSection id="waiting" title="等待有一个上限">
       <Legacy slug="timeout" names={["question", "definition"]} />
@@ -34,7 +34,7 @@ export function TimeoutTermPage() {
       <p id="timeout-budget" className="vp-citation-target">配置之前，先确认计时覆盖哪里：建立连接、等待读取，还是整个调用。DNS、TLS 等步骤未必都包含在某个超时选项里。设置过短会把正常的慢请求误判为失败，过长又会拖住资源；应结合实际延迟和调用方可等待的时间来定。<Cite id="timeout-budget" /></p>
       <div className={s.budget}><div><strong>一次尝试</strong><p>给每个请求留多少等待时间。</p></div><div><strong>整个任务</strong><p>把多次尝试、间隔和处理时间一起算进去。</p></div></div>
       <p>例如整个查询只允许等待 5 秒，不能让三次尝试各等 5 秒，再额外加上退避。剩余预算不够时，应停止继续尝试。具体数值需要业务决定，这里的秒数只是为了看清时序。</p>
-      <ArticleAside title="浏览器里怎样停止等待">
+      <ArticleAside title="浏览器端中止等待">
         <p id="timeout-browser" className="vp-citation-target"><ConceptTerm slug="fetch-api">Fetch API</ConceptTerm> 可以接收 <code>AbortSignal.timeout(2000)</code>。信号到期后以 TimeoutError 中止；这里按活跃时间计时，文档进入往返缓存等情况下会暂停，不能直接当作始终前进的墙上时钟。<Cite id="timeout-browser" /></p>
         <pre className={base.code}>{'await fetch("/reservations/42", {\n  signal: AbortSignal.timeout(2000)\n});'}</pre>
         <p>这段代码控制浏览器端的请求等待。服务端若需要停止工作，还得有相应的取消协议和检查点；已经提交的业务操作不会因为浏览器中止就自动撤销。</p>
@@ -69,7 +69,7 @@ export function RetryTermPage() {
       <Legacy slug="retry" names={["quiz-heading", "prompt-heading"]} />
       <p><strong>达到尝试上限，表示放弃继续尝试，不能显示“操作成功”。</strong>应保存已有错误和业务标识，再按业务选择查询状态、稍后恢复或交给人工处理。明确拒绝的结果与尚未确认的写入结果，也要分别处理。</p>
       <p id="retry-load" className="vp-citation-target">多个调用层各自重试，次数会层层相乘。AWS 建议留意这种负载放大，并为具体调用链选择合适的重试位置。配置 SDK 前，先查它已经做了哪些重试。<Cite id="retry-load" /></p>
-      <ArticleAside title="与超时、限流分别管什么"><p><ConceptTerm slug="timeout">超时</ConceptTerm>限制等待；重试决定是否再发；<ConceptTerm slug="rate-limiting">限流</ConceptTerm>决定接受多少请求。即使操作可安全重复，也不代表可以无限发送。总耗时要包含每次等待和退避，服务明确提供等待提示时还要遵守对应约定。</p></ArticleAside>
+      <ArticleAside title="超时、重试与限流的分工"><p><ConceptTerm slug="timeout">超时</ConceptTerm>限制等待；重试决定是否再发；<ConceptTerm slug="rate-limiting">限流</ConceptTerm>决定接受多少请求。即使操作可安全重复，也不代表可以无限发送。总耗时要包含每次等待和退避，服务明确提供等待提示时还要遵守对应约定。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

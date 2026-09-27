@@ -37,7 +37,7 @@ export function DatabaseTermPage() {
     <ArticleSection id="where" title="数据放在哪里">
       <Legacy slug="database" names={["prompt-heading"]} />
       <p id="database-embedded" className="vp-citation-target">数据库不一定是一台远程服务器。SQLite 可以嵌入应用，管理本机的数据库文件；PostgreSQL 这类服务则常用于多个客户端共享数据。前者适合许多本地应用，后者便于集中管理与并发访问。要根据谁读写、从哪里访问、怎样运维来选择，而不是把“数据库”一概理解成云服务。<Cite id="database-embedded" /></p>
-      <ArticleAside title="让 AI 帮忙设计数据时，先交代这些">
+      <ArticleAside title="数据设计前的必要信息">
         <p>说明要保存哪些对象、哪些编号必须唯一、对象怎样关联，以及哪几次写入必须一起成功。图书室还需要区分“书的品种”与“可借出的具体一本”。先把这些关系说清，再讨论表结构和查询，不要只发一句“加个数据库”。</p>
       </ArticleAside>
     </ArticleSection>
@@ -47,7 +47,7 @@ export function DatabaseTermPage() {
 export function IndexTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={indexSources} />;
   return <ConceptArticle slug="index" title="索引" sources={indexSources}
-    sections={[["lookup", "给记录多一条查找路径"], ["search", "先定位，再读记录"], ["tradeoff", "读得更快，也要多维护"], ["plan", "确认查询实际怎样执行"]]}
+    sections={[["lookup", "给记录多一条查找路径"], ["search", "先定位，再读记录"], ["tradeoff", "读得更快，也要多维护"], ["plan", "用执行计划核对路径"]]}
     intro={<>按编号找一本书，可以逐条检查书目，也可以先查一份有序目录。两种方法应该找到同一本书，差别在于为了找到它，要检查多少不相关的内容。</>}
     hero={<ConceptHero slug="index" label="有序目录缩小候选范围，定位编号64的记录"><div className={s.indexHero}><MagnifyingGlass size={28} /><div>{[8, 12, 29, 37, 42, 51, 64, 78, 90].map((id, i) => <span key={id} data-order={i}>{id}</span>)}</div><p><BookOpen size={24} />64 · 设计札记</p></div></ConceptHero>}>
     <ArticleSection id="lookup" title="给记录多一条查找路径">
@@ -67,7 +67,7 @@ export function IndexTermPage() {
       <p id="index-cost" className="vp-citation-target">索引占用额外空间，相关数据插入、修改或删除时，也需要维护对应结构。给很少查询的列加索引，可能付出了写入成本却没得到读性能收益。优先围绕实际频繁、昂贵的查询设计，再核对收益。<Cite id="index-cost" /></p>
       <div className={s.tradeoff}><div><MagnifyingGlass size={28} weight="light" /><h3>一次查询</h3><p>希望少读无关记录。</p></div><div><Files size={28} weight="light" /><h3>一次修改</h3><p>可能同时维护表与索引。</p></div></div>
     </ArticleSection>
-    <ArticleSection id="plan" title="确认查询实际怎样执行">
+    <ArticleSection id="plan" title="用执行计划核对路径">
       <Legacy slug="index" names={["prompt-heading"]} />
       <p id="index-plan" className="vp-citation-target">在 PostgreSQL 中，可以用 <code>EXPLAIN</code> 查看执行计划。统计信息会影响估算；表很小，或查询需要取回很多行时，顺序扫描可能更合适。应使用接近真实的数据分布检查，而不是看见计划没有索引就认定出错。<Cite id="index-plan" /></p>
       <ArticleAside title="一个检查入口">
@@ -81,7 +81,7 @@ export function IndexTermPage() {
 export function TransactionTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={transactionSources} />;
   return <ConceptArticle slug="transaction" title="事务" sources={transactionSources}
-    sections={[["unit", "一次借书，两处修改"], ["borrow", "一起提交，或者撤回"], ["visibility", "别人什么时候能读到"], ["recovery", "提交之后与事务之外"]]}
+    sections={[["unit", "一次借书，两处修改"], ["borrow", "一起提交，或者撤回"], ["visibility", "并发事务的可见性"], ["recovery", "提交之后与事务之外"]]}
     intro={<>借出一本书，要减少可借数量，还要新增借阅记录。如果第一步成功，第二步失败，就会出现“书少了一本，却找不到谁借走”的情况。这两次写入需要共同的完成边界。</>}
     hero={<ConceptHero slug="transaction" label="减少一本可借数量与新增借阅记录合成同一个提交包"><div className={s.transactionHero}><div><span><BookOpen size={23} />可借 −1</span><span><Files size={23} />借阅 +1</span></div><p><Check size={24} />一起提交</p></div></ConceptHero>}>
     <ArticleSection id="unit" title="一次借书，两处修改">
@@ -96,7 +96,7 @@ export function TransactionTermPage() {
       <p>同一事务里，减少数量只是中间状态。写入借阅记录成功后，提交才把“可借 1 本、借阅 1 条”一起留下；失败后回滚，则仍是“2 本、0 条”。分开提交时，第一步已经留下“1 本、0 条”，不能用后来失败的事务把它顺带撤回。</p>
       <p id="transaction-autocommit" className="vp-citation-target">“分开提交”并不是完全没有事务。PostgreSQL 在显式事务块之外，会把单条语句作为一个隐式事务处理；客户端库也可能替你开启事务。这里比较的是<strong>两步共用一个事务，还是各自提交</strong>。排查真实代码时，要核对连接与客户端的自动提交行为。<Cite id="transaction-autocommit" /></p>
     </ArticleSection>
-    <ArticleSection id="visibility" title="别人什么时候能读到" className={base.offset}>
+    <ArticleSection id="visibility" title="并发事务的可见性" className={base.offset}>
       <Legacy slug="transaction" names={["quiz-heading"]} />
       <p id="transaction-visible" className="vp-citation-target">演示的下层表示“此时另一个客户端发起新查询能看到什么”。以 PostgreSQL 默认的 Read Committed 为例，一次普通查询读取开始时已经提交的数据，不读取其他事务尚未提交的修改；事务内部可以读到自己的修改。更强的隔离级别可能继续使用较早的快照，因此不能说所有读者会在提交瞬间自动看到新值。<Cite id="transaction-visible" /></p>
       <p>原子性回答“一组改动是否整体生效”，隔离性回答“并发操作怎样相互影响”。两个人同时借最后一本书，还要用合适的更新条件、约束与并发控制来处理；单纯包上 BEGIN 和 COMMIT 并不能证明业务正确。</p>

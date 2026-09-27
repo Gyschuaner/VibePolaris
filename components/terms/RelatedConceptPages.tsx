@@ -6,7 +6,7 @@ import styles from "./ConceptArticle.module.css";
 
 const toolSections: [string, string][] = [["read-log", "一次日志读取"], ["request", "工具名称与参数"], ["result", "结果回到模型"], ["failures", "失败与操作权限"]];
 const contextSections: [string, string][] = [["assemble", "组合本轮输入"], ["window", "窗口与外部资料"], ["selection", "选择需要的信息"], ["handoff", "换一次会话继续"]];
-const loopSections: [string, string][] = [["repair-loop", "任务怎样逐轮推进"], ["round", "一轮里发生的事"], ["stopping", "循环何时结束"], ["workflow", "固定流程与临场判断"]];
+const loopSections: [string, string][] = [["repair-loop", "任务的逐轮推进"], ["round", "一轮里发生的事"], ["stopping", "循环何时结束"], ["workflow", "固定流程与临场判断"]];
 
 export function ToolCallingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation sources={toolCallingSources} id={id} />;
@@ -62,7 +62,7 @@ export function ContextTermPage() {
       <p id="context-retrieval" className="vp-citation-target">文件很大时，可以先搜索关键词，再读取命中位置附近的片段。检索和<ConceptTerm slug="tools">工具调用</ConceptTerm>负责取得材料；取得的内容还要加入本轮输入，才成为模型继续判断的依据。<Cite id="context-retrieval" /></p>
       <p id="context-strategies" className="vp-citation-target">LangChain 把常见做法归纳为保存、选择、压缩和隔离。放到这个排错任务中，可以这样理解：<Cite id="context-strategies" /></p>
       <dl className={styles.contextStrategies}><div><dt>保存进度</dt><dd>把已做的修改与未解决问题写到外部记录。</dd></div><div><dt>选择材料</dt><dd>这一轮先读报错行附近的代码，需要时再取其他文件。</dd></div><div><dt>压缩历史</dt><dd>旧轮次整理成摘要，保留关键错误与检查结果。</dd></div><div><dt>分开任务</dt><dd>若把日志分析交给单独的智能体，只提供它需要的材料，再带回结论与依据。</dd></div></dl>
-      <ArticleAside title="一份排错输入可以怎样整理"><div className={styles.inputExample}><p><strong>目标</strong>服务成功启动，/health 返回 200。</p><p><strong>现状</strong>启动失败，尚未改动文件。</p><p><strong>证据</strong>最近一次日志，以及报错行附近的代码。</p><p><strong>约束</strong>保留原配置，修改后运行检查。</p></div><p>材料之间如果互相冲突，标出时间和来源。例如“上周端口占用”与“这次缺少冒号”属于两次运行，不能混成同一个事实。</p></ArticleAside>
+      <ArticleAside title="一份排错输入"><div className={styles.inputExample}><p><strong>目标</strong>服务成功启动，/health 返回 200。</p><p><strong>现状</strong>启动失败，尚未改动文件。</p><p><strong>证据</strong>最近一次日志，以及报错行附近的代码。</p><p><strong>约束</strong>保留原配置，修改后运行检查。</p></div><p>材料之间如果互相冲突，标出时间和来源。例如“上周端口占用”与“这次缺少冒号”属于两次运行，不能混成同一个事实。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="handoff" title="换一次会话继续">
       <p id="context-handoff" className="vp-citation-target">长任务可能需要换一次会话继续。Anthropic 的长任务实验使用进度文件和 Git 记录交接工作，让新的会话先读取当前状态，再处理未完成事项。<strong>把进度保存下来之后，还要在恢复时重新读入。</strong><Cite id="context-handoff" /></p>
@@ -76,7 +76,7 @@ export function ContextTermPage() {
 export function AgentLoopTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation sources={agentLoopSources} id={id} />;
   return <ConceptArticle slug="agent-loop" title="Agent loop" sections={loopSections} sources={agentLoopSources} intro={<>智能体循环把多次判断和操作接起来：执行一个动作，取得结果，更新任务状态，再决定下一步。<strong>每一轮都应该有继续或停止的依据。</strong></>}>
-    <ArticleSection id="repair-loop" title="任务怎样逐轮推进">
+    <ArticleSection id="repair-loop" title="任务的逐轮推进">
       <p>服务没启动。第一轮读日志，发现少了冒号；第二轮补上冒号，检查却返回 500；第三轮根据新错误修正返回值，检查才通过。第一次修改解决了一个问题，但任务还没有结束。</p>
       <p>下面把这个过程压缩成三个预设回合。每轮包含一次模型判断，以及它请求的一组工具操作。可以改变轮数上限，或切换成反复读取同一份日志，观察系统停在哪里。</p>
       <AgentLoopLesson />
@@ -88,7 +88,7 @@ export function AgentLoopTermPage() {
       <p className={styles.pullquote}><strong>执行结果必须影响下一轮，而不是原样重发同一个请求。</strong></p>
       <p id="loop-evidence" className="vp-citation-target">Hugging Face 的课程把观察解释为环境带回的反馈，例如接口数据、错误消息和执行日志。对应到修服务：模型说“已经改好”，还只是它的回复；实际启动与检查返回了什么，才是判断任务状态的依据。运行程序要把这些结果带回下一轮，而不只是再次询问模型“成功了吗”。<Cite id="loop-evidence" /></p>
       <p>在演示里，500 响应应该推动模型继续查返回值。如果它仍不断读取相同日志，却不修改代码、不取得新证据，轮数虽然增加，任务状态并没有推进。</p>
-      <ArticleAside title="执行记录里要能看见什么"><div className={styles.inputExample}><p><strong>这一轮依据</strong>上次检查返回 500，还未满足验收条件。</p><p><strong>请求的操作</strong>查看并修正健康检查函数的返回值。</p><p><strong>实际结果</strong>修改已保存，重新检查返回 200。</p><p><strong>后续状态</strong>验收通过，可以结束任务。</p></div><p id="loop-react" className="vp-citation-target">ReAct 是研究这类交替过程的一种方法，不能把所有智能体循环都等同于同一种提示格式。本文演示展示的是简化的操作依据与结果，没有展示模型内部思考。<Cite id="loop-react" /></p></ArticleAside>
+      <ArticleAside title="可追溯的执行记录"><div className={styles.inputExample}><p><strong>这一轮依据</strong>上次检查返回 500，还未满足验收条件。</p><p><strong>请求的操作</strong>查看并修正健康检查函数的返回值。</p><p><strong>实际结果</strong>修改已保存，重新检查返回 200。</p><p><strong>后续状态</strong>验收通过，可以结束任务。</p></div><p id="loop-react" className="vp-citation-target">ReAct 是研究这类交替过程的一种方法，不能把所有智能体循环都等同于同一种提示格式。本文演示展示的是简化的操作依据与结果，没有展示模型内部思考。<Cite id="loop-react" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stopping" title="循环何时结束">
       <p id="loop-stop" className="vp-citation-target">循环需要明确的结束方式。完成目标时返回结果；缺少信息或授权时等待用户；到达预先设定的轮数或时间上限时停下。Anthropic 的实践文章也将环境反馈、人工检查点和停止条件视为运行智能体时需要考虑的部分。<Cite id="loop-stop" /></p>

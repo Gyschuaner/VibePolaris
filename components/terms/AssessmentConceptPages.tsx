@@ -37,7 +37,7 @@ export function BenchmarkTermPage() {
 
 export function GraderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={graderSources}/>;
-  return <ConceptArticle slug="grader" title="评分器" sources={graderSources} sections={[["criterion", "把要求变成可检查的判据"], ["evidence", "回复与实际结果"], ["rubric", "开放回答怎样评分"], ["review", "检查评分器的判断"]]}
+  return <ConceptArticle slug="grader" title="评分器" sources={graderSources} sections={[["criterion", "把要求变成可检查的判据"], ["evidence", "回复与实际结果"], ["rubric", "开放回答的评分依据"], ["review", "检查评分器的判断"]]}
     intro={<>评分器根据判据检查一次尝试，输出分数、通过与否或其他评价。判据写错，评测就可能奖励错误行为。需要文件写入成功时，“回答里出现完成”与“目标文件存在且内容正确”检查的是两件事。</>}
     hero={<ConceptHero slug="grader" label="助手说已完成，但文件检查未发现answer.json，回复措辞与任务结果分开"><div className={s.gradeHero}><div><span>助手回复</span><strong>已完成。</strong></div><div><FileText size={25}/><code>answer.json</code><X size={22}/><span>文件不存在</span></div></div></ConceptHero>}>
     <ArticleSection id="criterion" title="把要求变成可检查的判据"><Legacy slug="grader" names={["question", "definition"]}/>
@@ -52,11 +52,11 @@ export function GraderTermPage() {
       <p>“已完成”却没有文件，会通过关键词判据；“文件已保存”且内容正确，反而不通过它。关键词检查不是没有用途，它只是<strong>没有测到这个任务的完成条件</strong>。文件存在也不够，还要检查内容里的金额。</p>
       <p id="grader-unscored" className="vp-citation-target">Inspect 的评分策略区分如何处理运行失败，包括保留未评分状态。检查环境不可读时，需要先辨别评测设施问题与任务本身失败。<strong>未评分不应悄悄变成通过，也不能随意当作系统失败。</strong>具体错误怎样计入指标，必须在评测规则中声明；本例选择未评分。<Cite id="grader-unscored"/></p>
     </ArticleSection>
-    <ArticleSection id="rubric" title="开放回答怎样评分"><Legacy slug="grader" names={["quiz-heading"]}/>
+    <ArticleSection id="rubric" title="开放回答的评分依据"><Legacy slug="grader" names={["quiz-heading"]}/>
       <p id="grader-rubric" className="vp-citation-target">G-Eval 研究用模型依据任务说明、评价标准与评价步骤，对生成文本打分。<strong>把“好不好”拆成明确维度，会让评分更容易核对。</strong>论文针对特定摘要与对话任务，和人工评分的相关性不等于任意任务都能正确判分。<Cite id="grader-rubric"/></p>
       <div className={s.rubric}><h3>例：解释退款规则</h3><dl><dt>事实</dt><dd>天数、渠道和费用与提供资料一致。</dd><dt>条件</dt><dd>保留“审核通过后”和“通常”等重要限定。</dd><dt>缺口</dt><dd>资料没有费用时，不自行承诺免费。</dd></dl></div>
       <p>这些是需要分别检查的维度，不能只给评分模型一句“请给出 1 到 5 分”。评分说明还应写清各档意味着什么、遇到缺资料怎样处理，并用人工确认的样本核对评分行为。参考答案有帮助，但不应让合理的不同措辞全都失分。</p>
-      <ArticleAside title="代码、模型与人工怎样配合"><p>明确字段与可执行测试优先交给代码。含义、写作质量等难以枚举的判断可以用模型或人工。人工样本也需要清楚判据；把分歧记录下来，比默认某一方永远正确更有助于修正标准。</p></ArticleAside>
+      <ArticleAside title="代码、模型与人工的分工"><p>明确字段与可执行测试优先交给代码。含义、写作质量等难以枚举的判断可以用模型或人工。人工样本也需要清楚判据；把分歧记录下来，比默认某一方永远正确更有助于修正标准。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="review" title="检查评分器的判断" className={base.offset}><Legacy slug="grader" names={["prompt-heading"]}/>
       <p id="grader-bias" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究检查了模型裁判的位置、长度和自我偏好等偏差。<strong>模型评分也有需要验证的行为。</strong>交换候选回答的顺序、抽样与人工对照，可以发现评分信号是否受无关因素影响；这些检查本身不保证消除全部偏差。<Cite id="grader-bias"/></p>
@@ -68,10 +68,10 @@ export function GraderTermPage() {
 
 export function EvalDatasetTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={evalDatasetSources}/>;
-  return <ConceptArticle slug="evaluation-dataset" title="评测数据集" sources={evalDatasetSources} sections={[["case", "一条样本要交代什么"], ["split", "把关联样本放在同一组"], ["holdout", "留出集要测新的输入"], ["record", "记录范围与版本"]]}
+  return <ConceptArticle slug="evaluation-dataset" title="评测数据集" sources={evalDatasetSources} sections={[["case", "一条样本的必要信息"], ["split", "把关联样本放在同一组"], ["holdout", "留出集要测新的输入"], ["record", "记录范围与版本"]]}
     intro={<>评测数据集收集用来检查系统表现的输入、必要背景与评价信息。选哪些案例、怎样划分开发与留出样本，决定分数能够说明什么。把几百条问题放在一起，还不足以证明它代表真实任务。</>}
     hero={<ConceptHero slug="evaluation-dataset" label="工单A的两条不同问题作为同一组移动进入开发区，不分散到留出区"><div className={s.dataHero}><div><span>工单 A · 同一背景</span><div><FileText size={17}/>A1 · 配送时间</div><div><FileText size={17}/>A2 · 物流入口</div></div><p><span>开发</span><span>留出</span></p></div></ConceptHero>}>
-    <ArticleSection id="case" title="一条样本要交代什么"><Legacy slug="evaluation-dataset" names={["question", "definition"]}/>
+    <ArticleSection id="case" title="一条样本的必要信息"><Legacy slug="evaluation-dataset" names={["question", "definition"]}/>
       <p id="evaldata-definition" className="vp-citation-target"><strong>评测数据集组织一组可检查的任务样本。</strong>Anthropic 的智能体评测文章强调任务描述与成功标准应明确。只有一句问题，往往无法重现当时的资料、环境和预期行为。<Cite id="evaldata-definition"/></p>
       <div className={s.caseSheet}><span>示例 · 一条退款案例</span><dl><dt>输入</dt><dd>退款多久到账？</dd><dt>背景</dt><dd>线上退款规则：审核通过后，通常三个工作日。</dd><dt>预期行为</dt><dd>回答保留审核条件与通常时效，不新增费用保证。</dd></dl></div>
       <p>有些任务有唯一标准答案，有些更适合记录期望行为与约束；不能为了方便计分，把所有任务改成精确字符串匹配。数据集保存案例，<ConceptTerm slug="grader">评分器</ConceptTerm> 根据这些信息检查尝试，它们承担不同职责。</p>

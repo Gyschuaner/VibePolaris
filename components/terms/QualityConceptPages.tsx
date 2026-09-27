@@ -9,10 +9,10 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 
 export function GroundingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={groundingSources}/>;
-  return <ConceptArticle slug="grounding" title="基于证据回答" sources={groundingSources} sections={[["basis", "回答依据哪份材料"], ["scope", "条件不能在改写中丢掉"], ["data", "资料怎样进入本轮输入"], ["missing", "资料没说的部分"]]}
+  return <ConceptArticle slug="grounding" title="基于证据回答" sources={groundingSources} sections={[["basis", "回答对应的依据"], ["scope", "条件不能在改写中丢掉"], ["data", "资料进入本轮输入"], ["missing", "资料没说的部分"]]}
     intro={<>问退款多久能到账，回答要依据适用的退款规则。Grounding 把指定资料、检索内容或工具结果引入生成过程，让结论有可核对的依据。它不会自动保证模型只用这些资料，也不会自动保证资料正确。</>}
     hero={<ConceptHero slug="grounding" label="审核通过后与通常两个条件保留在退款时效的回答中"><div className={s.groundHero}><FileText size={25}/><div><span>审核通过后</span><span>通常</span><strong>三个工作日</strong></div><p>条件与结论一起保留</p></div></ConceptHero>}>
-    <ArticleSection id="basis" title="回答依据哪份材料"><Legacy slug="grounding" names={["question", "definition"]}/>
+    <ArticleSection id="basis" title="回答对应的依据"><Legacy slug="grounding" names={["question", "definition"]}/>
       <p id="ground-definition" className="vp-citation-target"><strong>Grounding 让生成过程连接到具体资料，为回答提供依据。</strong>Microsoft 对 Copilot 的说明区分模型训练时获得的知识与当前提示可用的工作资料、网页和附件；这些额外信息影响回答，但仍需检查生成内容。这里讲的是更一般的概念，具体系统怎样取资料、是否搜索网页，要看实际设置。<Cite id="ground-definition"/></p>
       <p>“知道退款一般要几天”与“读到这家公司的退款规则”承担不同作用。前者可能来自模型已有知识，后者可以指出出处与适用条件。回答这家公司的现行政策时，需要能解释<strong>这句话由哪份材料支持</strong>。</p>
       <p>资料也不只是网页。用户上传的说明、刚查到的订单状态、工具返回的日志，都可能成为本轮依据。<ConceptTerm slug="citation">引用</ConceptTerm> 负责标明出处；提供依据、正确使用依据、让读者找到依据，是相互关联的几项工作。</p>
@@ -23,7 +23,7 @@ export function GroundingTermPage() {
       <p>线上时效来自 A，门店时效来自 B；两份文件都在，也不能交换使用。费用说明 C 只适用于线上。<strong>关于同一主题的材料，不一定支持同一个对象的结论。</strong>门店退款不能因为线上免费，就被写成免费。</p>
       <p>“审核通过后”限定起点，“通常”限定确定程度。删掉它们，就把有条件的时效变成了无条件保证。回答可以压缩句子，但要保留会影响读者判断的限定；出处标得再完整，也弥补不了这种改写错误。</p>
     </ArticleSection>
-    <ArticleSection id="data" title="资料怎样进入本轮输入"><Legacy slug="grounding" names={["quiz-heading"]}/>
+    <ArticleSection id="data" title="资料进入本轮输入"><Legacy slug="grounding" names={["quiz-heading"]}/>
       <p id="ground-retrieval" className="vp-citation-target"><ConceptTerm slug="rag">RAG</ConceptTerm> 是引入外部资料的一种方法。Lewis 等的论文把检索到的段落与生成模型结合，在研究任务中考察答案质量。<strong>检索增强是实现路径，Grounding 关注回答的依据关系。</strong>直接提供附件或工具结果，也可以给生成过程补充资料；不能把所有这种操作都当成论文里的 RAG 架构。<Cite id="ground-retrieval"/></p>
       <div className={s.readingSteps}><div><span>01</span><h3>找到适用资料</h3><p>问题、渠道、对象和时间要对应。找到“退款”两个字还不够。</p></div><div><span>02</span><h3>提供可用内容</h3><p>让本轮输入包含相关段落与来源信息，不只放一个未读取的网址。</p></div><div><span>03</span><h3>核对具体结论</h3><p>逐项检查回答是否保留条件，是否补出了资料没有的内容。</p></div></div>
       <p id="ground-data" className="vp-citation-target">Azure 的设计文档讨论资料相关性、更新与访问范围：有些信息需要随文档更新同步索引，有些适合在请求时从实时系统取得，并按用户权限过滤。<strong>把旧资料放进输入，可能得到有依据却已经过时的回答。</strong>具体更新方式要依据数据来源和系统设计决定。<Cite id="ground-data"/></p>
@@ -38,7 +38,7 @@ export function GroundingTermPage() {
 
 export function HallucinationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hallucinationSources}/>;
-  return <ConceptArticle slug="hallucination" title="幻觉" sources={hallucinationSources} sections={[["meaning", "句子通顺，事实仍可能不对"], ["checks", "与来源一致，与事实相符"], ["causes", "错误怎样进入回答"], ["uncertainty", "不确定性只是核查信号"]]}
+  return <ConceptArticle slug="hallucination" title="幻觉" sources={hallucinationSources} sections={[["meaning", "句子通顺，事实仍可能不对"], ["checks", "与来源一致，与事实相符"], ["causes", "错误进入回答的路径"], ["uncertainty", "不确定性只是核查信号"]]}
     intro={<>回答写得具体、语气笃定，仍可能改错数字、扩大条件，或补上没有依据的细节。检查这类问题，要分清回答是否忠于材料，以及材料和回答是否符合实际情况。</>}
     hero={<ConceptHero slug="hallucination" label="旧规则三个工作日与当前规则七个工作日分别显示，忠于旧资料仍可能过时"><div className={s.hallHero}><div><FileText size={22}/><span>提供原文 · v1</span><strong>3<small>工作日</small></strong></div><div><Clock size={22}/><span>当前规则 · v2</span><strong>7<small>工作日</small></strong></div></div></ConceptHero>}>
     <ArticleSection id="meaning" title="句子通顺，事实仍可能不对"><Legacy slug="hallucination" names={["question", "definition"]}/>
@@ -54,7 +54,7 @@ export function HallucinationTermPage() {
       <p className={s.pullquote}><strong>“无法核实”保留的是信息缺口，不能直接替换成“错误”或“正确”。</strong></p>
       <p>费用在两份规则里都没有出现。本例没有足够材料判断“完全免费”真假，矩阵就不替它放入一个已确定的格子。需要继续查费用说明，才能获得更多依据。</p>
     </ArticleSection>
-    <ArticleSection id="causes" title="错误怎样进入回答"><Legacy slug="hallucination" names={["quiz-heading"]}/>
+    <ArticleSection id="causes" title="错误进入回答的路径"><Legacy slug="hallucination" names={["quiz-heading"]}/>
       <p id="hall-imitation" className="vp-citation-target">TruthfulQA 用容易诱发常见误解的问题研究模型如何模仿人类错误说法。训练材料中的流行表达并不都真实，生成一个熟悉的说法也不等于已经验证它。<strong>这项研究说明了一种错误来源，不能把所有生成错误都归因于同一个机制。</strong><Cite id="hall-imitation"/></p>
       <div className={s.causeNotes}><div><h3>依据本身有问题</h3><p>旧规则、错误记录或互相冲突的材料，可能被忠实地写进回答。检查来源与版本。</p></div><div><h3>从依据到回答时出错</h3><p>原文限定被删、数字被改、相邻条目被混用。检查每项陈述的支持范围。</p></div></div>
       <p>缺材料时让模型继续补全，也可能出现没有依据的细节。<ConceptTerm slug="grounding">基于证据回答</ConceptTerm> 与引用能提供核查入口，但仍要读原文。只有一个引用编号，无法说明这里的数字就是从那段原文正确得到的。</p>
@@ -62,17 +62,17 @@ export function HallucinationTermPage() {
     <ArticleSection id="uncertainty" title="不确定性只是核查信号" className={base.offset}><Legacy slug="hallucination" names={["prompt-heading"]}/>
       <p id="hall-detection" className="vp-citation-target">Farquhar 等研究“语义熵”：多次生成后，比较答案含义的差异，用于检测一部分会随采样变化的错误。他们明确说明，方法<strong>不保证事实正确，也无法解决系统性地重复同一错误</strong>。措辞不同可能表达同一含义；回答始终一致，也可能始终错。<Cite id="hall-detection"/></p>
       <p>实际检查可以围绕关键陈述找当前有效来源，核对对象、时间与限定条件，并明确哪些仍然未知。涉及工具动作时，还要检查实际返回与最终状态；模型说“已完成”，不等于操作确实完成。</p>
-      <ArticleAside title="为什么不能只看回答的自信程度"><p>语气是输出文字的一部分。需要核对的是陈述与可验证资料之间的关系。让回答更犹豫，并不能自动纠正错误；让它说得更肯定，也没有增加证据。</p></ArticleAside>
+      <ArticleAside title="语气不能代替证据"><p>语气是输出文字的一部分。需要核对的是陈述与可验证资料之间的关系。让回答更犹豫，并不能自动纠正错误；让它说得更肯定，也没有增加证据。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
 
 export function EvaluationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={evaluationSources}/>;
-  return <ConceptArticle slug="eval" title="评测" sources={evaluationSources} sections={[["task", "先说明怎样才算完成"], ["compare", "同一组案例比较改动"], ["coverage", "总分没有包含的变化"], ["trust", "评分结果也需要核对"]]}
+  return <ConceptArticle slug="eval" title="评测" sources={evaluationSources} sections={[["task", "先确定完成判据"], ["compare", "同一组案例比较改动"], ["coverage", "总分没有包含的变化"], ["trust", "评分结果也需要核对"]]}
     intro={<>改了提示词、模型或工具流程，单看一条漂亮回答很难知道效果。评测把目标变成可执行的案例，记录实际结果，再按明确规则评分。比较版本时，既要看整体变化，也要找出哪些案例变差。</>}
     hero={<ConceptHero slug="eval" label="B与C都通过六例中的五例，但B在关键案例失败，C在普通案例失败"><div className={s.evalHero}>{['B', 'C'].map(version => <div key={version}><strong>{version} · 5/6</strong><div>{Array.from({ length: 6 }, (_, i) => <span key={i} data-critical={i === 5} data-failed={i === (version === 'B' ? 5 : 2)}>{i === (version === 'B' ? 5 : 2) ? <X size={16}/> : <Check size={16}/>}</span>)}</div></div>)}<p>相同总分，失败位置不同</p></div></ConceptHero>}>
-    <ArticleSection id="task" title="先说明怎样才算完成"><Legacy slug="eval" names={["question", "definition"]}/>
+    <ArticleSection id="task" title="先确定完成判据"><Legacy slug="eval" names={["question", "definition"]}/>
       <p id="eval-task" className="vp-citation-target"><strong>评测用明确输入、成功标准和评分方式，检查系统在一组任务上的表现。</strong>Anthropic 把单个任务、一次尝试、评分器、完整记录与实际结果分开：回答说完成了，还需要检查环境中的结果。当对象是智能体时，模型与 <ConceptTerm slug="agent-harness">Harness</ConceptTerm> 一起影响表现。<Cite id="eval-task"/></p>
       <p>例如“处理退款问题”太宽。可以改成：给出这份线上退款规则，询问时效，回答应保留审核条件与通常时效。另一条案例检查资料缺费用时是否承认缺口；再一条检查是否拒绝提供他人的订单。每条输入和预期行为都应具体。</p>
       <p>比较版本时，案例、判据与运行条件要对应，并记录究竟改了什么。若新版本换了模型又换了资料，结果可能变化，但不能把变化单独归功于其中一项。</p>

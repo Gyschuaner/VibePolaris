@@ -65,7 +65,7 @@ export function ChunkingTermPage() {
 
 export function RerankingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rerankingSources}/>;
-  return <ConceptArticle slug="reranking" title="重排序" sources={rerankingSources} sections={[["second-pass", "对已有候选再排一次"], ["pairs", "带着查询逐篇核对"], ["models", "规则与模型怎样给出新顺序"], ["window", "候选以外的资料不会出现"]]}
+  return <ConceptArticle slug="reranking" title="重排序" sources={rerankingSources} sections={[["second-pass", "对已有候选再排一次"], ["pairs", "带着查询逐篇核对"], ["models", "规则与模型给出的新顺序"], ["window", "候选以外的资料不会出现"]]}
     intro={<>三篇候选都谈退款，用户却问“线上退款审核通过后，多久到账”。重新读取查询与候选，可以让真正覆盖这些条件的资料排到前面；没有进入候选的资料，无法靠重排找回来。</>}
     hero={<ConceptHero slug="reranking" label="查询条件逐项核对线上退款文档，三个条件一起决定优先阅读"><div className={s.rerankHero}><ListChecks size={27}/><strong>线上退款时效</strong><div>{['线上', '审核通过', '到账时间'].map((text, i) => <span key={text} style={{ '--check': i } as CSSProperties}>✓ {text}</span>)}</div><p>优先读取 B</p></div></ConceptHero>}>
     <ArticleSection id="second-pass" title="对已有候选再排一次"><Legacy slug="reranking" names={["question", "definition"]}/>
@@ -78,7 +78,7 @@ export function RerankingTermPage() {
       <RerankingLesson/>
       <p>只取 A、C 时，重排得到 C、A；C 覆盖审核与时效，却不适用于线上。扩大到三篇，B 才进入候选并排到首位。改问申请入口，A 又优先。<strong>这些是明确的手工标注与计数，没有运行重排模型。</strong>缺失的条件不会因为排到第一就自动得到补齐。</p>
     </ArticleSection>
-    <ArticleSection id="models" title="规则与模型怎样给出新顺序"><Legacy slug="reranking" names={["quiz-heading"]}/>
+    <ArticleSection id="models" title="规则与模型给出的新顺序"><Legacy slug="reranking" names={["quiz-heading"]}/>
       <p id="rerank-learning" className="vp-citation-target">Nogueira 与 Cho 的 BERT 重排论文，把查询和段落作为成对输入，用标注过的查询—段落训练相关性判断，再对初始检索结果重新排序。<strong>模型分数来自训练任务和数据。</strong>论文在特定检索数据集上的结果，不能直接替代对自己的退款资料、语言与查询分布的评估。<Cite id="rerank-learning"/></p>
       <p id="rerank-index" className="vp-citation-target">Cohere 的 Rerank 接口接收查询和一组文档，返回原始文档列表中的索引及相关性分数。<strong>新顺序需要对应回原文。</strong>调用方仍需按索引读取正确内容、保存出处；不能把分数当成事实正确率，也不能把新列表的位置误认为原文的编号。<Cite id="rerank-index"/></p>
       <div className={s.ruleNote}><h3>相关，不等于可靠</h3><p>过期规则、错误陈述也可能非常贴题。可以另设版本、权限或出处条件，筛掉不可用材料；排序承担的是先看哪篇，不是替文档证明真假。</p></div>
