@@ -15,7 +15,7 @@
     "quizQuestion": "下面哪项是服务器的主要职责？", "quizOptions": ["接收请求并返回数据或功能", "只负责显示页面颜色", "只保存用户密码"],
     "correctText": "服务器处理来自客户端的请求，并返回对应结果。", "wrongText": "页面显示和数据保存只是部分场景，不是服务器的完整职责。",
     "promptTitle": "检查服务器请求处理", "prompt": "请按请求到达、业务处理、结果返回三个环节检查这段服务端代码，指出失败点和可观察的日志。",
-    "relatedSlugs": ["request", "response", "endpoint"]
+    "relatedSlugs": ["request", "response", "endpoint", "reverse-proxy", "api-gateway"]
   },
   {
     "zh": "请求", "en": "Request", "slug": "request", "cat": "后端",
@@ -271,18 +271,18 @@
   },
   {
     "zh": "JWT", "en": "JSON Web Token", "slug": "jwt", "cat": "后端",
-    "say": "一种带签名的令牌格式，常用来传递身份和授权声明。",
-    "aliases": ["JSON Web Token", "JWT 令牌", "访问令牌"],
-    "question": "JWT 能看见内容，为什么还可以用来验证身份？",
-    "definition": "JWT 由头部、载荷和签名组成，接收方可验证内容是否被篡改。",
-    "boundary": "JWT 的载荷通常只是编码而非加密，不应放入密码等秘密数据。",
-    "demoType": "flow", "demoTitle": "JWT 怎样被签发和验证",
+    "say": "一种承载声明的紧凑格式，可以受签名或加密保护。",
+    "aliases": ["JSON Web Token", "JWT 令牌"],
+    "question": "签名 JWT 的载荷可读，接收方怎样发现内容被改过？",
+    "definition": "JWT 是承载声明的紧凑格式；签名 JWT 可验证内容完整性，加密 JWT 可保护内容保密性。",
+    "boundary": "三段式结构只适用于签名 JWT；签名载荷通常可解码读取，JWT 也不必然是访问令牌。",
+    "demoType": "flow", "demoTitle": "签名 JWT 怎样被签发和验证",
     "demoSteps": [
       {"label": "签发", "value": "header.payload.signature", "note": "认证服务用密钥生成签名。"},
-      {"label": "携带", "value": "Bearer token", "note": "客户端在请求中发送令牌。"},
-      {"label": "验证", "value": "签名 + exp", "note": "服务检查签名和过期时间。"}
+      {"label": "携带", "value": "header.payload.signature", "note": "客户端在请求中发送已签发的令牌。"},
+      {"label": "验证", "value": "签名 + 声明", "note": "服务按用途检查签名、签发者、受众和有效期。"}
     ],
-    "quizQuestion": "JWT 载荷中的内容默认是什么状态？", "quizOptions": ["可解码读取但受签名保护", "全部自动加密", "只存在服务器内存"],
+    "quizQuestion": "签名 JWT 的载荷通常是什么状态？", "quizOptions": ["可解码读取但受签名保护", "全部自动加密", "只存在服务器内存"],
     "correctText": "签名用于检测篡改，不会自动隐藏载荷。", "wrongText": "JWT 载荷默认可被解码，不应存放秘密。",
     "promptTitle": "检查 JWT 使用", "prompt": "请检查这套 JWT 的签发、验证、过期、刷新与撤销策略，标出不应放入载荷的字段。",
     "relatedSlugs": ["auth", "session", "authorization", "hashing"]
@@ -290,7 +290,7 @@
   {
     "zh": "OAuth", "en": "OAuth 2.0", "slug": "oauth", "cat": "后端",
     "say": "让一个应用获得访问另一项服务的有限权限，不必持有对方的账号密码。",
-    "aliases": ["OAuth 2.0", "第三方授权", "授权登录"],
+    "aliases": ["OAuth 2.0", "第三方授权"],
     "question": "接入第三方平台时，能不能直接让用户把平台密码填进来？",
     "definition": "OAuth 2.0 是授权框架，客户端可按不同授权方式取得范围受限的访问令牌。",
     "boundary": "OAuth 负责授权，不直接定义用户身份；用户登录通常结合 OpenID Connect，机器间调用可使用客户端凭证等授权方式。",
@@ -379,10 +379,10 @@
   },
   {
     "zh": "幂等性", "en": "Idempotency", "slug": "idempotency", "cat": "后端",
-    "say": "同一个操作重复执行后，系统的最终状态与只执行一次相同。",
+    "say": "同一操作重复到达，约定的业务效果与执行一次相同。",
     "aliases": ["幂等", "防重复提交", "Idempotent"],
     "question": "付款请求超时后重试，会不会扣两次钱？",
-    "definition": "幂等性表示相同操作执行一次或多次，对系统产生的最终效果一致。",
+    "definition": "幂等性表示相同请求重复执行，预期的服务端效果与执行一次相同；不要求每次响应或日志都一样。",
     "boundary": "幂等不表示每次响应完全相同，也不表示所有接口天然支持安全重试。",
     "demoType": "state", "demoTitle": "同一付款请求重复到达",
     "demoSteps": [
@@ -422,7 +422,7 @@
     "boundary": "只应重试可能恢复且能安全重复的操作；永久错误和非幂等写入不能盲目重试。",
     "demoType": "branch", "demoTitle": "不同失败怎样决定是否重试",
     "demoSteps": [
-      {"label": "临时超时", "value": "可重试", "note": "等待一段时间后再次请求。"},
+      {"label": "临时超时", "value": "先判断能否安全重复", "note": "按接口约定确认可重试，再等待并再次请求。"},
       {"label": "参数错误", "value": "不重试", "note": "相同输入再次发送仍会失败。"},
       {"label": "达到上限", "value": "记录失败", "note": "停止重试并交给补偿或人工处理。"}
     ],
@@ -433,10 +433,10 @@
   },
   {
     "zh": "超时", "en": "Timeout", "slug": "timeout", "cat": "后端",
-    "say": "请求等待超过设定时间后主动结束，避免资源一直被占用。",
+    "say": "给一次等待设定上限；停止等待，不代表远端操作没有完成。",
     "aliases": ["请求超时", "等待上限", "Timeout"],
     "question": "下游服务一直不返回，上游需要永远等下去吗？",
-    "definition": "超时是对连接、读取或整个操作设置的最大等待时间，超过后按失败处理。",
+    "definition": "超时为连接、读取或整个调用的等待设置上限，超过后停止相应等待并处理失败；远端是否完成还需确认。",
     "boundary": "超时不表示下游一定没有完成操作，写请求仍需结合幂等和状态查询。",
     "demoType": "lifecycle", "demoTitle": "请求超过等待上限",
     "demoSteps": [

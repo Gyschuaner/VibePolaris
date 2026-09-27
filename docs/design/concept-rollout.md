@@ -15,10 +15,34 @@
 | 005 | 请求、响应、HTTP 方法、状态码、请求头 | VBP-017 · [本批研究与 review](VBP-017-http-concepts.md) |
 | 006 | 查询参数、路径参数、请求体 | VBP-018 · [本批研究与 review](VBP-018-request-inputs.md) |
 | 007 | API 接口、端点、REST、分页、限流 | VBP-019 · [本批研究与 review](VBP-012-api-concepts-preparation.md) |
+| 008 | 超时、重试、幂等 | VBP-023 · [本批研究与 review](VBP-012-reliability-concepts.md) |
+| 009 | 数据库、索引、事务 | VBP-024 · [本批研究与 review](VBP-024-storage-concepts.md) |
+| 010 | 表、主键、外键 | VBP-025 · [本批研究与 review](VBP-025-relational-concepts.md) |
+| 011 | 数据库模式、连接查询、唯一约束 | VBP-026 · [本批研究与 review](VBP-026-structure-concepts.md) |
+| 012 | SQL、数据库迁移、ORM | VBP-027 · [本批研究与 review](VBP-027-query-concepts.md) |
+| 013 | 缓存、连接池、复制 | VBP-028 · [本批研究与 review](VBP-028-reuse-concepts.md) |
+| 014 | 备份、分片、队列 | VBP-029 · [本批研究与 review](VBP-029-distribution-concepts.md) |
+| 015 | 批处理、流处理、事件驱动架构 | VBP-030 · [本批研究与 review](VBP-030-processing-concepts.md) |
+| 016 | 数据管道、Webhook、分布式系统 | VBP-031 · [本批研究与 review](VBP-031-coordination-concepts.md) |
+| 017 | 数据接入、数据转换、数据验证 | VBP-032 · [本批研究与 review](VBP-032-dataflow-concepts.md) |
+| 018 | 数据集、数据质量、数据血缘 | VBP-033 · [本批研究与 review](VBP-033-provenance-concepts.md) |
+| 019 | 数据帧、全文搜索、向量数据库 | VBP-034 · [本批研究与 review](VBP-034-retrieval-concepts.md) |
+| 020 | 嵌入、语义搜索、RAG | VBP-035 · [本批研究与 review](VBP-035-semantic-concepts.md) |
+| 021 | 检索、分块、重排序 | VBP-036 · [本批研究与 review](VBP-036-selection-concepts.md) |
+| 022 | 混合搜索、向量存储、引用 | VBP-037 · [本批研究与 review](VBP-037-evidence-concepts.md) |
+| 023 | 基于证据回答、幻觉、评测 | VBP-038 · [本批研究与 review](VBP-038-quality-concepts.md) |
+| 024 | 基准测试、评分器、评测数据集 | VBP-039 · [本批研究与 review](VBP-039-assessment-concepts.md) |
+| 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [本批研究与 review](VBP-040-model-delivery-concepts.md) |
+| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [本批研究与 review](VBP-041-output-concepts.md) |
+| 027 | 服务器、API 网关、反向代理 | VBP-043 · [本批研究与 review](VBP-043-edge-concepts.md) |
+| 028 | 负载均衡、认证、授权 | VBP-044 · [本批研究与 review](VBP-044-access-concepts.md) |
+| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [本批研究与 review](VBP-045-identity-concepts.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 29 页，另有 9 页历史基准；其余 263 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 95 页，另有 9 页历史基准；其余 197 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
+
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023、024、025、026、027、028、029 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -55,12 +79,12 @@
 | javascript | JavaScript | 前端 | 待处理 |
 | dom | DOM | 前端 | 待处理 |
 | api | API 接口 | 后端 | 007 · 本地验收及 review 通过 |
-| database | 数据库 | 后端 | 待处理 |
-| auth | 认证 | 后端 | 待处理 |
-| cache | 缓存 | 后端 | 待处理 |
-| queue | 队列 | 后端 | 待处理 |
+| database | 数据库 | 后端 | 009 · 本地验收及 review 通过 |
+| auth | 认证 | 后端 | 028 · 本地验收及 review 通过 |
+| cache | 缓存 | 后端 | 013 · 本地验收及 review 通过 |
+| queue | 队列 | 后端 | 014 · 本地验收及 review 通过 |
 | rest | REST | 后端 | 007 · 本地验收及 review 通过 |
-| webhook | Webhook | 后端 | 待处理 |
+| webhook | Webhook | 后端 | 016 · 本地验收及 review 通过 |
 | llm | 大模型 | AI·Agent | 001 · 本地验收及 review 通过 |
 | prompt | 提示词 | AI·Agent | 基准 · 待最终复核 |
 | context | 上下文 | AI·Agent | 基准 · 待最终复核 |
@@ -68,7 +92,7 @@
 | agent | 智能体 | AI·Agent | 001 · 本地验收及 review 通过 |
 | tools | 工具调用 | AI·Agent | 基准 · 待最终复核 |
 | memory | 记忆 | AI·Agent | 基准 · 待最终复核 |
-| rag | RAG | AI·Agent | 待处理 |
+| rag | RAG | AI·Agent | 020 · 本地验收及 review 通过 |
 | mcp | MCP | AI·Agent | 基准 · 待最终复核 |
 | framework | 框架与库 | 技术栈 | 待处理 |
 | ssg-ssr | 静态站点与服务器渲染 | 技术栈 | 待处理 |
@@ -173,7 +197,7 @@
 | loading-state | 加载状态 | 产品与设计 | 待处理 |
 | microinteraction | 微交互 | 产品与设计 | 待处理 |
 | reduced-motion | 减少动态效果 | 产品与设计 | 待处理 |
-| server | 服务器 | 后端 | 待处理 |
+| server | 服务器 | 后端 | 027 · 本地验收及 review 通过 |
 | request | 请求 | 后端 | 005 · 本地验收及 review 通过 |
 | response | 响应 | 后端 | 005 · 本地验收及 review 通过 |
 | http-method | HTTP 方法 | 后端 | 005 · 本地验收及 review 通过 |
@@ -184,42 +208,42 @@
 | request-body | 请求体 | 后端 | 006 · 本地验收及 review 通过 |
 | json | JSON | 后端 | 004 · 本地验收及 review 通过 |
 | endpoint | 端点 | 后端 | 007 · 本地验收及 review 通过 |
-| api-gateway | API 网关 | 后端 | 待处理 |
-| reverse-proxy | 反向代理 | 后端 | 待处理 |
-| load-balancer | 负载均衡 | 后端 | 待处理 |
-| session | 会话 | 后端 | 待处理 |
-| jwt | JWT | 后端 | 待处理 |
-| oauth | OAuth | 后端 | 待处理 |
-| authorization | 授权 | 后端 | 待处理 |
+| api-gateway | API 网关 | 后端 | 027 · 本地验收及 review 通过 |
+| reverse-proxy | 反向代理 | 后端 | 027 · 本地验收及 review 通过 |
+| load-balancer | 负载均衡 | 后端 | 028 · 本地验收及 review 通过 |
+| session | 会话 | 后端 | 029 · 本地验收及 review 通过 |
+| jwt | JWT | 后端 | 029 · 本地验收及 review 通过 |
+| oauth | OAuth | 后端 | 029 · 本地验收及 review 通过 |
+| authorization | 授权 | 后端 | 028 · 本地验收及 review 通过 |
 | rbac | 基于角色的访问控制 | 后端 | 待处理 |
 | api-key | API 密钥 | 后端 | 待处理 |
 | rate-limiting | 限流 | 后端 | 007 · 本地验收及 review 通过 |
-| idempotency | 幂等性 | 后端 | 待处理 |
+| idempotency | 幂等性 | 后端 | 008 · 本地验收及 review 通过 |
 | pagination | 分页 | 后端 | 007 · 本地验收及 review 通过 |
-| retry | 重试 | 后端 | 待处理 |
-| timeout | 超时 | 后端 | 待处理 |
+| retry | 重试 | 后端 | 008 · 本地验收及 review 通过 |
+| timeout | 超时 | 后端 | 008 · 本地验收及 review 通过 |
 | relational-database | 关系型数据库 | 后端 | 待处理 |
-| sql | SQL | 后端 | 待处理 |
+| sql | SQL | 后端 | 012 · 本地验收及 review 通过 |
 | nosql | NoSQL | 后端 | 待处理 |
-| table | 表 | 后端 | 待处理 |
+| table | 表 | 后端 | 010 · 本地验收及 review 通过 |
 | row | 行 | 后端 | 待处理 |
 | column | 列 | 后端 | 待处理 |
-| database-schema | 数据库模式 | 后端 | 待处理 |
-| primary-key | 主键 | 后端 | 待处理 |
-| foreign-key | 外键 | 后端 | 待处理 |
-| index | 索引 | 后端 | 待处理 |
-| unique-constraint | 唯一约束 | 后端 | 待处理 |
-| join | 连接查询 | 后端 | 待处理 |
-| transaction | 事务 | 后端 | 待处理 |
+| database-schema | 数据库模式 | 后端 | 本地验收及 review 通过 · VBP-026 |
+| primary-key | 主键 | 后端 | 010 · 本地验收及 review 通过 |
+| foreign-key | 外键 | 后端 | 010 · 本地验收及 review 通过 |
+| index | 索引 | 后端 | 009 · 本地验收及 review 通过 |
+| unique-constraint | 唯一约束 | 后端 | 本地验收及 review 通过 · VBP-026 |
+| join | 连接查询 | 后端 | 本地验收及 review 通过 · VBP-026 |
+| transaction | 事务 | 后端 | 009 · 本地验收及 review 通过 |
 | acid | ACID | 后端 | 待处理 |
-| database-migration | 数据库迁移 | 后端 | 待处理 |
-| orm | ORM | 后端 | 待处理 |
-| connection-pool | 连接池 | 后端 | 待处理 |
-| replication | 复制 | 后端 | 待处理 |
-| sharding | 分片 | 后端 | 待处理 |
-| backup | 备份 | 后端 | 待处理 |
-| vector-database | 向量数据库 | 后端 | 待处理 |
-| full-text-search | 全文搜索 | 后端 | 待处理 |
+| database-migration | 数据库迁移 | 后端 | 012 · 本地验收及 review 通过 |
+| orm | ORM | 后端 | 012 · 本地验收及 review 通过 |
+| connection-pool | 连接池 | 后端 | 013 · 本地验收及 review 通过 |
+| replication | 复制 | 后端 | 013 · 本地验收及 review 通过 |
+| sharding | 分片 | 后端 | 014 · 本地验收及 review 通过 |
+| backup | 备份 | 后端 | 014 · 本地验收及 review 通过 |
+| vector-database | 向量数据库 | 后端 | 019 · 本地验收及 review 通过 |
+| full-text-search | 全文搜索 | 后端 | 019 · 本地验收及 review 通过 |
 | tcp | TCP | 技术栈 | 待处理 |
 | udp | UDP | 技术栈 | 待处理 |
 | tls-handshake | TLS 握手 | 技术栈 | 待处理 |
@@ -235,16 +259,16 @@
 | mime-type | MIME 类型 | 技术栈 | 待处理 |
 | response-body | 响应体 | 技术栈 | 待处理 |
 | response-header | 响应头 | 技术栈 | 待处理 |
-| dataframe | 数据帧 | 技术栈 | 待处理 |
-| dataset-data | 数据集 | 技术栈 | 待处理 |
-| batch-processing | 批处理 | 技术栈 | 待处理 |
-| data-ingestion | 数据接入 | 技术栈 | 待处理 |
-| data-pipeline | 数据管道 | 技术栈 | 待处理 |
-| data-quality | 数据质量 | 技术栈 | 待处理 |
-| data-transformation | 数据转换 | 技术栈 | 待处理 |
-| data-validation | 数据验证 | 技术栈 | 待处理 |
-| stream-processing | 流处理 | 技术栈 | 待处理 |
-| data-lineage | 数据血缘 | 技术栈 | 待处理 |
+| dataframe | 数据帧 | 技术栈 | 019 · 本地验收及 review 通过 |
+| dataset-data | 数据集 | 技术栈 | 018 · 本地验收及 review 通过 |
+| batch-processing | 批处理 | 技术栈 | 015 · 本地验收及 review 通过 |
+| data-ingestion | 数据接入 | 技术栈 | 017 · 本地验收及 review 通过 |
+| data-pipeline | 数据管道 | 技术栈 | 016 · 本地验收及 review 通过 |
+| data-quality | 数据质量 | 技术栈 | 018 · 本地验收及 review 通过 |
+| data-transformation | 数据转换 | 技术栈 | 017 · 本地验收及 review 通过 |
+| data-validation | 数据验证 | 技术栈 | 017 · 本地验收及 review 通过 |
+| stream-processing | 流处理 | 技术栈 | 015 · 本地验收及 review 通过 |
+| data-lineage | 数据血缘 | 技术栈 | 018 · 本地验收及 review 通过 |
 | unit-test | 单元测试 | 技术栈 | 待处理 |
 | integration-test | 集成测试 | 技术栈 | 待处理 |
 | e2e-test | 端到端测试 | 技术栈 | 待处理 |
@@ -269,12 +293,12 @@
 | temperature | 温度 | AI·Agent | 待处理 |
 | context-window | 上下文窗口 | AI·Agent | 基准 · 待最终复核 |
 | tokenization | 分词 | AI·Agent | 待处理 |
-| hallucination | 幻觉 | AI·Agent | 待处理 |
-| grounding | 基于证据回答 | AI·Agent | 待处理 |
-| citation | 引用 | AI·Agent | 待处理 |
-| structured-output | 结构化输出 | AI·Agent | 待处理 |
+| hallucination | 幻觉 | AI·Agent | 023 · 本地验收及 review 通过 |
+| grounding | 基于证据回答 | AI·Agent | 023 · 本地验收及 review 通过 |
+| citation | 引用 | AI·Agent | 022 · 本地验收及 review 通过 |
+| structured-output | 结构化输出 | AI·Agent | 026 · 本地验收及 review 通过 |
 | json-schema | JSON Schema | AI·Agent | 004 · 本地验收及 review 通过 |
-| function-calling | 函数调用 | AI·Agent | 待处理 |
+| function-calling | 函数调用 | AI·Agent | 026 · 本地验收及 review 通过 |
 | tool-choice | 工具选择 | AI·Agent | 待处理 |
 | tool-result | 工具结果 | AI·Agent | 待处理 |
 | agent-loop | 智能体循环 | AI·Agent | 基准 · 待最终复核 |
@@ -285,21 +309,21 @@
 | human-in-the-loop | 人在回路 | AI·Agent | 待处理 |
 | guardrail | 护栏 | AI·Agent | 待处理 |
 | moderation | 内容审核 | AI·Agent | 待处理 |
-| eval | 评测 | AI·Agent | 待处理 |
-| benchmark | 基准测试 | AI·Agent | 待处理 |
-| grader | 评分器 | AI·Agent | 待处理 |
+| eval | 评测 | AI·Agent | 023 · 本地验收及 review 通过 |
+| benchmark | 基准测试 | AI·Agent | 024 · 本地验收及 review 通过 |
+| grader | 评分器 | AI·Agent | 024 · 本地验收及 review 通过 |
 | fine-tuning | 微调 | AI·Agent | 待处理 |
-| embedding | 嵌入 | AI·Agent | 待处理 |
-| vector-store | 向量存储 | AI·Agent | 待处理 |
-| retrieval | 检索 | AI·Agent | 待处理 |
-| chunking | 分块 | AI·Agent | 待处理 |
-| reranking | 重排序 | AI·Agent | 待处理 |
-| semantic-search | 语义搜索 | AI·Agent | 待处理 |
-| hybrid-search | 混合搜索 | AI·Agent | 待处理 |
-| prompt-caching | 提示缓存 | AI·Agent | 待处理 |
-| streaming-output | 流式输出 | AI·Agent | 待处理 |
-| model-routing | 模型路由 | AI·Agent | 待处理 |
-| model-fallback | 备用模型 | AI·Agent | 待处理 |
+| embedding | 嵌入 | AI·Agent | 020 · 本地验收及 review 通过 |
+| vector-store | 向量存储 | AI·Agent | 022 · 本地验收及 review 通过 |
+| retrieval | 检索 | AI·Agent | 021 · 本地验收及 review 通过 |
+| chunking | 分块 | AI·Agent | 021 · 本地验收及 review 通过 |
+| reranking | 重排序 | AI·Agent | 021 · 本地验收及 review 通过 |
+| semantic-search | 语义搜索 | AI·Agent | 020 · 本地验收及 review 通过 |
+| hybrid-search | 混合搜索 | AI·Agent | 022 · 本地验收及 review 通过 |
+| prompt-caching | 提示缓存 | AI·Agent | 025 · 本地验收及 review 通过 |
+| streaming-output | 流式输出 | AI·Agent | 026 · 本地验收及 review 通过 |
+| model-routing | 模型路由 | AI·Agent | 025 · 本地验收及 review 通过 |
+| model-fallback | 备用模型 | AI·Agent | 025 · 本地验收及 review 通过 |
 | agent-memory | 智能体记忆 | AI·Agent | 待处理 |
 | working-memory | 工作记忆 | AI·Agent | 待处理 |
 | prompt-injection | 提示词注入 | AI·Agent | 待处理 |
@@ -331,8 +355,8 @@
 | client-server | 客户端—服务器 | 技术栈 | 待处理 |
 | monolith | 单体架构 | 技术栈 | 待处理 |
 | microservices | 微服务 | 技术栈 | 待处理 |
-| distributed-system | 分布式系统 | 技术栈 | 待处理 |
-| event-driven-architecture | 事件驱动架构 | 技术栈 | 待处理 |
+| distributed-system | 分布式系统 | 技术栈 | 016 · 本地验收及 review 通过 |
+| event-driven-architecture | 事件驱动架构 | 技术栈 | 015 · 本地验收及 review 通过 |
 | serverless | 无服务器架构 | 技术栈 | 待处理 |
 | container | 容器 | 技术栈 | 待处理 |
 | container-image | 容器镜像 | 技术栈 | 待处理 |
@@ -343,6 +367,6 @@
 | dependency-scanning | 依赖扫描 | 技术栈 | 待处理 |
 | threat-modeling | 威胁建模 | 技术栈 | 待处理 |
 | tool-approval | 工具审批 | AI·Agent | 待处理 |
-| evaluation-dataset | 评测数据集 | AI·Agent | 待处理 |
+| evaluation-dataset | 评测数据集 | AI·Agent | 024 · 本地验收及 review 通过 |
 | permission-boundary | 权限边界 | AI·Agent | 待处理 |
 | xss | 跨站脚本 | 技术栈 | 待处理 |

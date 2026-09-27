@@ -11,7 +11,7 @@ export function JsonTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={jsonSources} />;
   return <ConceptArticle slug="json" title="JSON" subtitle="用文本传递结构化数据" sources={jsonSources}
     intro={<>接口返回的一串大括号，需要先读成程序里的数据，才能拿出书名、数量和是否可借。JSON 规定这段文本怎么写，让不同程序可以交换相同结构的信息。</>}
-    sections={[["text", "文本和对象"], ["parse", "把文本读成值"], ["types", "引号改变了类型"], ["exchange", "交换时还要约定什么"]]}
+    sections={[["text", "文本和对象"], ["parse", "把文本读成值"], ["types", "引号改变了类型"], ["exchange", "交换数据的约定"]]}
     hero={<ConceptHero slug="json" label="JSON文本拆成字符串、数字和布尔值"><div className={styles.jsonHero}><code>{'["灯塔",2,true]'}</code><div className={styles.heroValues}><div><strong>灯塔</strong><span>string</span></div><div><strong>2</strong><span>number</span></div><div><strong>true</strong><span>boolean</span></div></div></div></ConceptHero>}>
     <ArticleSection id="text" title="文本和对象">
       <AsyncLegacyAnchors slug="json" names={["question", "definition"]} />
@@ -32,7 +32,7 @@ export function JsonTermPage() {
       <p id="json-grammar" className="vp-citation-target">JSON 的字段名和字符串使用双引号，不接受单引号、注释或尾逗号，也没有 undefined、函数、NaN 这样的值。它的写法来自 JavaScript，却不等于任意 JavaScript 对象代码。<Cite id="json-grammar" /></p>
       <div className={styles.comparison}><div><h3>字段不存在</h3><pre className={base.code}>{'{ "title": "灯塔" }'}</pre><p>这份对象没有 copies。接收方需要决定它是可省略字段，还是遗漏了必须的信息。</p></div><div><h3>字段值是 null</h3><pre className={base.code}>{'{ "title": "灯塔", "copies": null }'}</pre><p>copies 在对象里，值明确写为 null。它不是数字 0；是否表示“未知”，要由双方约定。</p></div></div>
     </ArticleSection>
-    <ArticleSection id="exchange" title="交换时还要约定什么">
+    <ArticleSection id="exchange" title="交换数据的约定">
       <AsyncLegacyAnchors slug="json" names={["quiz-heading", "prompt-heading"]} />
       <p>对书单来说，双方还要约定字段叫 title 还是 name，copies 可不可以省略，以及空数组代表没有书还是尚未查询。把这些约定写成 <ConceptTerm slug="json-schema">JSON Schema</ConceptTerm>，接收方就能重复检查，而不用每次靠人读字符串。</p>
       <p id="json-precision" className="vp-citation-target">JSON 文本能写出很长的数字，但接收程序未必能精确表示它。RFC 8259 特别提醒了数字范围和精度的互操作问题。对于很长的编号，可以明确约定用字符串传递，避免它在 JavaScript 数字中被舍入。<Cite id="json-precision" /></p>
@@ -46,7 +46,7 @@ export function JsonSchemaTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={schemaSources} />;
   return <ConceptArticle slug="json-schema" title="JSON Schema" subtitle="把数据约定写成可检查的规则" sources={schemaSources}
     intro={<>一段 JSON 没有语法错误，仍可能漏了数量、写错状态，或者把数字放进引号。JSON Schema 描述哪些结构和取值可以接受，校验时再把实际数据与这些规则对照。</>}
-    sections={[["contract", "数据之外的那份约定"], ["validate", "找出不合约定的字段"], ["keywords", "规则分别管什么"], ["boundary", "通过校验之后"]]}
+    sections={[["contract", "数据之外的那份约定"], ["validate", "找出不合约定的字段"], ["keywords", "规则的不同职责"], ["boundary", "通过校验之后"]]}
     hero={<ConceptHero slug="json-schema" label="status和count分别对齐枚举与整数约束，显示通过"><div className={styles.schemaHero}><div><code>pending</code><span>enum</span><Check size={20} /></div><div><code>2</code><span>integer ≥ 0</span><Check size={20} /></div></div></ConceptHero>}
     relatedIntro={<>在 <ConceptTerm slug="structured-output">结构化输出</ConceptTerm> 中，Schema 帮助约束结果的形状；回到 <ConceptTerm slug="tools">工具调用</ConceptTerm>，同样要区分“参数符合约定”和“操作已经成功”。</>}>
     <ArticleSection id="contract" title="数据之外的那份约定">
@@ -61,7 +61,7 @@ export function JsonSchemaTermPage() {
       <SchemaLesson />
       <p>把 done 改成 success，只修正了 status；count 为 −1 仍然失败。把数量改成 0 后可以通过，但勾选“写成字符串”，同样的字符又不符合整数要求。错误位置告诉你改哪个字段，规则名称解释为什么需要改。</p>
     </ArticleSection>
-    <ArticleSection id="keywords" title="规则分别管什么">
+    <ArticleSection id="keywords" title="规则的不同职责">
       <p id="schema-required" className="vp-citation-target"><code>properties</code> 描述字段出现时应满足的规则，<strong>不会自动把它变成必填项</strong>。必须出现的字段另写进 required。字段缺失和字段存在但为 null 也不同：前者涉及是否出现，后者还要看允许的类型。<Cite id="schema-required" /></p>
       <div className={styles.comparison}><div><h3>限定候选值</h3><p id="schema-enum" className="vp-citation-target">enum 列出允许的取值。本例只接受 pending、success，所以 done 即使能表达相似意思，也不在这份约定里。<Cite id="schema-enum" /></p></div><div><h3>限定数值</h3><p id="schema-numeric" className="vp-citation-target">integer 要求整数，minimum: 0 允许 0 及更大的值；字符串 "2" 不会自动变成整数。数值 2.0 仍是整数，小数 2.5 则不是。<Cite id="schema-numeric" /></p></div></div>
       <p id="schema-extra" className="vp-citation-target">默认可以带额外字段。本例明确写了 <code>additionalProperties: false</code>，因此 debug 会被拒绝。是否封闭字段，应由接口约定决定；列出 properties 本身不会禁止其他字段。<Cite id="schema-extra" /></p>

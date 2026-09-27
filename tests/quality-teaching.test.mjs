@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { composeGroundedAnswer, auditClaim, scoreEvaluation } from '../lib/quality-teaching.ts';
+test('scope-preserving evidence, independent checks, and score coverage', () => {
+  assert.deepEqual(composeGroundedAnswer('online', ['A', 'B']).parts.map(x => x.source), ['A', null]);
+  assert.deepEqual(composeGroundedAnswer('store', ['A', 'C']).parts.map(x => x.source), [null, null]);
+  assert.deepEqual(composeGroundedAnswer('store', ['B', 'C']).parts.map(x => x.source), ['B', null]);
+  assert.deepEqual(composeGroundedAnswer('online', ['A', 'C']).parts.map(x => x.source), ['A', 'C']);
+  assert.ok(composeGroundedAnswer('online', ['A']).parts[0].text.includes('审核通过后，通常'));
+  assert.ok(composeGroundedAnswer('online', []).parts.every(x => x.source === null));
+  assert.deepEqual([auditClaim(0, 1).source, auditClaim(0, 1).fact], ['consistent', 'wrong']);
+  assert.deepEqual([auditClaim(1, 1).source, auditClaim(1, 1).fact], ['conflict', 'correct']);
+  assert.deepEqual([auditClaim(1, 2).source, auditClaim(1, 2).fact], ['consistent', 'correct']);
+  assert.deepEqual([auditClaim(2, 2).source, auditClaim(2, 2).fact], ['unknown', 'unknown']);
+  const b = scoreEvaluation('B', 'all'), c = scoreEvaluation('C', 'all');
+  assert.equal(b.baselinePassed, 3); assert.equal(b.passed, 5); assert.equal(c.passed, 5);
+  assert.equal(b.criticalFailures, 1); assert.equal(c.criticalFailures, 0);
+  assert.equal(c.rows.find(x => x.id === 'entry').baselinePass, true);
+  assert.equal(c.rows.find(x => x.id === 'entry').candidatePass, false);
+  assert.equal(scoreEvaluation('B', 'ordinary').percent, 100);
+  assert.equal(scoreEvaluation('B', 'ordinary').covered, false);
+  assert.equal(scoreEvaluation('C', 'none').percent, null);
+  assert.equal(scoreEvaluation('C', 'none').rows.length, 0);
+});

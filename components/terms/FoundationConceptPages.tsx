@@ -13,9 +13,9 @@ export function LlmTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={llmSources} />;
   return <ConceptArticle slug="llm" title="LLM" sources={llmSources}
     hero={<ConceptHero slug="llm" label="已有文字之后出现不同候选，选中的片段加入句子"><ProbabilityHeroArt /></ConceptHero>}
-    sections={[["generation", "文字怎样接着生成"], ["training", "训练与这次回答"], ["choice", "同一句话的不同续写"], ["evidence", "回答仍需要依据"]]}
+    sections={[["generation", "逐步生成文字"], ["training", "训练与这次回答"], ["choice", "同一句话的不同续写"], ["evidence", "回答仍需要依据"]]}
     intro={<>大语言模型从大量数据中学习语言的规律，用学到的参数处理新的输入。对常见的生成式 LLM 来说，<strong>回答是根据前文逐步生成的 Token 序列。</strong></>}>
-    <ArticleSection id="generation" title="文字怎样接着生成">
+    <ArticleSection id="generation" title="逐步生成文字">
       <OldAnchor slug="llm" part="definition" />
       <p>给出“The sky is”，后面可以接 blue，也可以接 gray。哪种续写更合适，取决于已经给出的文字，以及模型在训练中学到的规律。若前文提到阴云，后面的选择也可能改变。</p>
       <p id="llm-generation" className="vp-citation-target">常见的自回归生成过程会先计算候选 <ConceptTerm slug="token">Token</ConceptTerm> 的概率，再选出一个接到序列后面。<strong>下一次预测会使用更新后的前文，包括刚刚生成的内容。</strong>这一步反复进行，才得到你看到的整段回答。<Cite id="llm-generation" /></p>
@@ -48,7 +48,7 @@ export function TokenTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tokenSources} />;
   return <ConceptArticle slug="token" title="Token" subtitle="词元" sources={tokenSources}
     hero={<ConceptHero slug="token" label="lower 被分为 low 与 er，再对应到编号 1 与 2"><div className={styles.tokenHero}><div><strong>low</strong><span>01</span></div><div><strong>er</strong><span>02</span></div></div></ConceptHero>}
-    sections={[["pieces", "文字与编号"], ["vocabulary", "边界由词表决定"], ["decode", "从编号回到文字"], ["budget", "实际请求怎样计数"]]}
+    sections={[["pieces", "文字与编号"], ["vocabulary", "边界由词表决定"], ["decode", "从编号回到文字"], ["budget", "按分词器核算请求"]]}
     intro={<>Token 是语言模型处理序列时使用的单位。文本先经过分词器，变成一串编号；<strong>一个 Token 可能对应一个词、词的一部分，或更小的片段。</strong></>}>
     <ArticleSection id="pieces" title="文字与编号">
       <OldAnchor slug="token" part="definition" />
@@ -69,7 +69,7 @@ export function TokenTermPage() {
       <blockquote className={styles.pullquote}>编号让文本可以被计算；<br />编号的大小不代表词义的大小。</blockquote>
       <p>后续模型会把编号映射到内部表示，再进行计算。Token 与<ConceptTerm slug="embedding">嵌入</ConceptTerm>有关，但不是同一件事：前者是序列里的离散单位，后者是模型使用的数值表示。</p>
     </ArticleSection>
-    <ArticleSection id="budget" title="实际请求怎样计数">
+    <ArticleSection id="budget" title="按分词器核算请求">
       <OldAnchor slug="token" part="quiz-heading" /><OldAnchor slug="token" part="prompt-heading" />
       <p id="token-counting" className="vp-citation-target">以 Claude 的计数接口为例，可以在发送消息前估算请求的输入 Token；请求中的系统说明、工具和多模态内容也需要考虑。官方将计数结果称为估计，实际用量可能略有不同。因此，应同时查看对应接口的计数规则和实际请求返回的用量。<Cite id="token-counting" /></p>
       <p>你粘贴的正文只是输入的一部分。应用还可能加入历史消息、工具定义或检索资料；生成的回答也有自己的长度限制。规划<ConceptTerm slug="context-window">上下文窗口</ConceptTerm>时，应给输出和后续工具结果留出空间。</p>

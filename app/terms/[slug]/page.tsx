@@ -16,12 +16,18 @@ import { JsonTermPage, JsonSchemaTermPage } from "@/components/terms/DataConcept
 import { RequestTermPage, ResponseTermPage, HttpMethodTermPage, StatusCodeTermPage, HttpHeaderTermPage } from "@/components/terms/HttpConceptPages";
 import { QueryParameterTermPage, PathParameterTermPage, RequestBodyTermPage } from "@/components/terms/RequestInputPages";
 import { ApiTermPage, EndpointTermPage, RestTermPage, PaginationTermPage, RateLimitingTermPage } from "@/components/terms/ApiConceptPages";
-import { CacheTermPage } from "@/components/terms/CacheTermPage";
+import { TimeoutTermPage, RetryTermPage, IdempotencyTermPage } from "@/components/terms/ReliabilityConceptPages";
+import { DatabaseTermPage, IndexTermPage, TransactionTermPage } from "@/components/terms/StorageConceptPages";
+import { TableTermPage, PrimaryKeyTermPage, ForeignKeyTermPage } from "@/components/terms/RelationalConceptPages";
+import { DatabaseSchemaTermPage, JoinTermPage, UniqueConstraintTermPage } from "@/components/terms/StructureConceptPages";
+import { CacheTermPage, PoolTermPage, ReplicationTermPage } from "@/components/terms/ReuseConceptPages";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
 import { MemoryTermPage, ContextWindowTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
 import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
-import { RagTermPage } from "@/components/terms/RagTermPage";
+import { EmbeddingTermPage, SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
+import { HybridSearchTermPage, VectorStoreTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
+import { RetrievalTermPage, ChunkingTermPage, RerankingTermPage } from "@/components/terms/SelectionConceptPages";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
@@ -29,7 +35,85 @@ import { getTermExperience } from "@/lib/term-experiences";
 
 type TermPageProps = { params: Promise<{ slug: string }> };
 
+import { SqlTermPage, MigrationTermPage, OrmTermPage } from "@/components/terms/QueryConceptPages";
+
+import { BackupTermPage, ShardingTermPage, QueueTermPage } from "@/components/terms/DistributionConceptPages";
+
+import { BatchTermPage, StreamTermPage, EventDrivenTermPage } from "@/components/terms/ProcessingConceptPages";
+import { PipelineTermPage, WebhookTermPage, DistributedTermPage } from "@/components/terms/CoordinationConceptPages";
+import { IngestionTermPage, TransformationTermPage, ValidationTermPage } from "@/components/terms/DataFlowConceptPages";
+import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/terms/ProvenanceConceptPages";
+
+import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
+
+import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
+import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage } from '@/components/terms/AssessmentConceptPages';
+
+import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
+
+import { StreamingOutputTermPage, StructuredOutputTermPage, FunctionCallingTermPage } from '@/components/terms/ModelOutputPages';
+import { ServerTermPage, ApiGatewayTermPage, ReverseProxyTermPage } from '@/components/terms/EdgeConceptPages';
+import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/components/terms/AccessConceptPages';
+import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
+
 const articleTermPages = {
+  session: SessionTermPage,
+  jwt: JwtTermPage,
+  oauth: OAuthTermPage,
+  'load-balancer': LoadBalancerTermPage,
+  auth: AuthTermPage,
+  authorization: AuthorizationTermPage,
+  server: ServerTermPage,
+  'api-gateway': ApiGatewayTermPage,
+  'reverse-proxy': ReverseProxyTermPage,
+  'streaming-output': StreamingOutputTermPage,
+  'structured-output': StructuredOutputTermPage,
+  'function-calling': FunctionCallingTermPage,
+  'model-routing': ModelRoutingTermPage,
+  'model-fallback': ModelFallbackTermPage,
+  'prompt-caching': PromptCachingTermPage,
+  benchmark: BenchmarkTermPage,
+  grader: GraderTermPage,
+  'evaluation-dataset': EvalDatasetTermPage,
+  grounding: GroundingTermPage,
+  hallucination: HallucinationTermPage,
+  eval: EvaluationTermPage,
+  "hybrid-search": HybridSearchTermPage,
+  "vector-store": VectorStoreTermPage,
+  citation: CitationTermPage,
+  retrieval: RetrievalTermPage,
+  chunking: ChunkingTermPage,
+  reranking: RerankingTermPage,
+  embedding: EmbeddingTermPage,
+  "semantic-search": SemanticSearchTermPage,
+  rag: RagConceptTermPage,
+  dataframe: FrameTermPage,
+  "full-text-search": FullTextTermPage,
+  "vector-database": VectorDatabaseTermPage,
+  "dataset-data": DatasetTermPage,
+  "data-quality": QualityTermPage,
+  "data-lineage": LineageTermPage,
+  "data-ingestion": IngestionTermPage,
+  "data-transformation": TransformationTermPage,
+  "data-validation": ValidationTermPage,
+  "data-pipeline": PipelineTermPage,
+  webhook: WebhookTermPage,
+  "distributed-system": DistributedTermPage,
+  "batch-processing": BatchTermPage,
+  "stream-processing": StreamTermPage,
+  "event-driven-architecture": EventDrivenTermPage,
+  backup: BackupTermPage,
+  sharding: ShardingTermPage,
+  queue: QueueTermPage,
+  cache: CacheTermPage,
+  "connection-pool": PoolTermPage,
+  replication: ReplicationTermPage,
+  sql: SqlTermPage,
+  "database-migration": MigrationTermPage,
+  orm: OrmTermPage,
+  "database-schema": DatabaseSchemaTermPage,
+  join: JoinTermPage,
+  "unique-constraint": UniqueConstraintTermPage,
   "agent-harness": AgentHarnessTermPage,
   tools: ToolCallingTermPage,
   context: ContextTermPage,
@@ -68,13 +152,20 @@ const articleTermPages = {
   rest: RestTermPage,
   pagination: PaginationTermPage,
   "rate-limiting": RateLimitingTermPage,
+  timeout: TimeoutTermPage,
+  retry: RetryTermPage,
+  idempotency: IdempotencyTermPage,
+  database: DatabaseTermPage,
+  index: IndexTermPage,
+  transaction: TransactionTermPage,
+  table: TableTermPage,
+  "primary-key": PrimaryKeyTermPage,
+  "foreign-key": ForeignKeyTermPage,
 } satisfies Record<string, ComponentType<BespokeTermPageProps>>;
 
 const dedicatedTermPages = {
   ...articleTermPages,
   rebase: RebaseTermPage,
-  rag: RagTermPage,
-  cache: CacheTermPage,
   css: TermDetailExperience,
   html: TermDetailExperience,
   javascript: TermDetailExperience,

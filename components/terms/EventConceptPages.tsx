@@ -12,11 +12,11 @@ function Anchors({ slug, names }: { slug: string; names: string[] }) {
 export function EventTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventSources} />;
   return <ConceptArticle slug="event" title="事件" sources={eventSources}
-    sections={[["notification", "动作怎样到达代码"], ["listener", "接上一个处理函数"], ["object", "事件带来了什么"], ["result", "默认行为与业务结果"]]}
+    sections={[["notification", "动作进入处理函数"], ["listener", "接上一个处理函数"], ["object", "事件携带的信息"], ["result", "默认行为与业务结果"]]}
     hero={<ConceptHero slug="event" label="开关被按下后，阅读灯照亮下方区域"><div className={styles.eventHero}><Lightbulb size={58} weight="light" /><div className={styles.heroBeam} /><span className={styles.heroSwitch}><Power size={22} /></span></div></ConceptHero>}
     intro={<>事件是程序获知“发生了什么”的方式。在网页中，点击、输入、提交和加载完成都能产生事件。<strong>监听器把这些通知交给处理函数，由代码决定接下来做什么。</strong></>}
     relatedIntro={<>处理事件的代码通常用 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 编写；它可以修改 <ConceptTerm slug="state">状态</ConceptTerm>。同一次点击怎样到达父容器，则由事件传播规则决定。</>}>
-    <ArticleSection id="notification" title="动作怎样到达代码">
+    <ArticleSection id="notification" title="动作进入处理函数">
       <Anchors slug="event" names={["question", "definition"]} />
       <p>网页上画一个开关，还不会自动让阅读灯亮起来。你需要说明：收到这个开关的点击时，执行哪段代码。这段联系建立后，用户的一次操作才会改变界面里的灯。</p>
       <p id="event-notification" className="vp-citation-target">浏览器用事件通知代码发生了某种变化；代码可以通过 <code>addEventListener</code> 注册处理函数。<strong>事件、监听器和处理函数是不同的角色：</strong>事件携带这次发生的事情，监听器建立接收关系，处理函数负责响应。本文讨论浏览器中的 DOM 事件；服务器和其他系统也有事件机制，接口不一定相同。<Cite id="event-notification" /></p>
@@ -31,7 +31,7 @@ export function EventTermPage() {
       <p>假如每次打开弹窗都添加一个新的监听，却从不移除，之后一次点击可能执行多次业务处理。排查这种问题时，要检查注册和清理的位置，而不只是给按钮加一层防连点。</p>
       <p id="event-keyboard" className="vp-citation-target">click 不只对应鼠标。原生按钮获得焦点后，按 Enter 或空格也能激活它并产生 click。使用正确的按钮元素，能保留浏览器已经提供的键盘行为；把普通 div 画成按钮，并不会自动得到这些能力。<Cite id="event-keyboard" /></p>
     </ArticleSection>
-    <ArticleSection id="object" title="事件带来了什么">
+    <ArticleSection id="object" title="事件携带的信息">
       <p id="event-object" className="vp-citation-target">处理函数会收到事件对象。<code>type</code> 表示事件类型，<code>target</code> 指向发生事件的目标；键盘事件还可以提供按下的键。代码应该读取当前任务需要的信息，不必把整个事件对象保存成业务数据。<Cite id="event-object" /></p>
       <div className={styles.contrast}><div><h3>这次发生了什么</h3><p>本例的 type 是 click，目标是灯的开关按钮。</p></div><div><h3>现在界面是什么样</h3><p>灯是否亮着属于状态；它可以在这次事件结束后继续保留。</p></div></div>
       <p>这一区别对表单也有用：input 事件告诉你输入发生了变化，当前文字需要另行保存在输入控件或应用状态里。不要把“收到过输入事件”当成“已经保存用户内容”。</p>
@@ -56,7 +56,7 @@ export function BubblingTermPage() {
     <ArticleSection id="path" title="一次点击经过几层">
       <Anchors slug="event-bubbling" names={["question", "definition"]} />
       <p>一个阅读列表里有文章卡片，卡片里又有收藏按钮。你想收藏文章，却发现外层卡片的点击处理也运行了。要理解原因，先看这三个元素的嵌套关系。</p>
-      <p id="bubble-order" className="vp-citation-target">对于本例的 click，先执行按钮上的目标阶段处理，再经过卡片和列表上的冒泡处理。<strong>不是父元素重新制造了几次点击，而是同一次事件经过不同位置。</strong>监听器是否注册、事件是否继续传播，共同决定哪些函数会运行。<Cite id="bubble-order" /></p>
+      <p id="bubble-order" className="vp-citation-target">对于本例的 click，先执行按钮上的目标阶段处理，再经过卡片和列表上的冒泡处理。<strong>同一次点击事件依次到达这些位置，父元素没有重新制造新的点击。</strong>监听器是否注册、事件是否继续传播，共同决定哪些函数会运行。<Cite id="bubble-order" /></p>
       <p>下面是真实的三层 DOM。点击收藏，右侧按浏览器实际回调顺序留下记录；淡入只是慢放展示，真实执行并不会等动画播完。打开“在按钮处停止传播”，再比较一次。</p>
       <Anchors slug="event-bubbling" names={["scene-heading"]} /><BubblingLesson />
       <p id="bubble-capture" className="vp-citation-target">记录捕获阶段后，列表和卡片的捕获监听会先于按钮执行：从外层向目标靠近，随后才是目标和向外冒泡。注册监听器时指定 <code>capture: true</code>，就是选择在捕获阶段接收。只记录冒泡时，看不到捕获日志，不代表事件没有经过这条路径。<Cite id="bubble-capture" /></p>
