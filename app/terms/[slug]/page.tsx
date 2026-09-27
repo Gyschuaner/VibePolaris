@@ -52,8 +52,12 @@ import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage } from '@/compon
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
 
 import { StreamingOutputTermPage, StructuredOutputTermPage, FunctionCallingTermPage } from '@/components/terms/ModelOutputPages';
+import { ServerTermPage, ApiGatewayTermPage, ReverseProxyTermPage } from '@/components/terms/EdgeConceptPages';
 
 const articleTermPages = {
+  server: ServerTermPage,
+  'api-gateway': ApiGatewayTermPage,
+  'reverse-proxy': ReverseProxyTermPage,
   'streaming-output': StreamingOutputTermPage,
   'structured-output': StructuredOutputTermPage,
   'function-calling': FunctionCallingTermPage,
