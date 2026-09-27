@@ -1,0 +1,24 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { streamEvents, receiveEvents, attemptOutput, functionRequest, executeFunction } from '../lib/model-output-teaching.ts';
+test('incremental completion, constrained shape and application execution remain separate', () => {
+  const events = streamEvents('normal');
+  assert.equal(receiveEvents(events, 2).text, '订单 A102 ');
+  assert.equal(receiveEvents(events, 6).complete, false);
+  assert.equal(receiveEvents(events, 7).complete, true);
+  assert.equal(receiveEvents(events, 3, true).terminal, true);
+  assert.equal(receiveEvents(events, 3, true).complete, false);
+  assert.equal(receiveEvents(streamEvents('error'), 4).complete, false);
+  assert.equal(receiveEvents(streamEvents('empty'), 2).text, '');
+  assert.equal(attemptOutput('schema', 0, 'normal').fact, true);
+  assert.equal(attemptOutput('schema', 1, 'normal').shape, true);
+  assert.equal(attemptOutput('schema', 1, 'normal').fact, false);
+  assert.equal(attemptOutput('schema', 2, 'normal').text, '');
+  assert.equal(attemptOutput('json', 2, 'normal').parsed, true);
+  assert.equal(attemptOutput('json', 2, 'normal').shape, false);
+  for (const end of ['truncated', 'refused', 'empty']) assert.equal(attemptOutput('schema', 0, end).fact, false);
+  assert.equal(executeFunction(functionRequest('get_order', '{"order_id":"A102"}', true)).executions, 1);
+  for (const [name, args, allowed] of [['other', '{}', true], ['get_order','',true], ['get_order','[]',true], ['get_order','{"order_id":102}',true], ['get_order','{"order_id":"A102","x":1}',true], ['get_order','{"order_id":"A102"}',false]]) assert.equal(executeFunction(functionRequest(name,args,allowed)).executions, 0);
+  const missing = executeFunction(functionRequest('get_order','{"order_id":"A999"}',true));
+  assert.equal(missing.executions, 1); assert.equal(missing.pass, false); assert.equal(missing.call_id,'call_01');
+});

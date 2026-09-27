@@ -51,7 +51,12 @@ import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage } from '@/compon
 
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
 
+import { StreamingOutputTermPage, StructuredOutputTermPage, FunctionCallingTermPage } from '@/components/terms/ModelOutputPages';
+
 const articleTermPages = {
+  'streaming-output': StreamingOutputTermPage,
+  'structured-output': StructuredOutputTermPage,
+  'function-calling': FunctionCallingTermPage,
   'model-routing': ModelRoutingTermPage,
   'model-fallback': ModelFallbackTermPage,
   'prompt-caching': PromptCachingTermPage,
