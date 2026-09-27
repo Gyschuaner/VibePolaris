@@ -64,3 +64,8 @@ A/B成绩、延迟、四次文件记录、三工单六条问题均为虚构教�
 ## 集成入口
 
 实现提交 `5c51a780f568588979f6da951e8ae149f8076142`；PR [#83](https://github.com/Gyschuaner/VibePolaris/pull/83) 目标dev，已关联当前任务。此处记录本地验收完成；最终合并、DP状态、重启后核心复查及本地部署记录以实时对象为准。部署仅为localhost:3001，不含远端dev与生产。回滚入口是PR #83 revert，再构建并重启；集成前dev为 `4659a7cd6a6ffe56e0edd526ee52afecc40902dc`。
+
+
+## 集成最终结果（第025批核实补记）
+
+PR #83 已于2026-09-27合入dev，合并提交 `8711b38e996167300546e71ee04eb1e780f7ab1e`。实现与docs-only跟进树匹配，复用已验证构建，localhost:3001重启Ready并真实复查三页核心默认结果。VBP-039 ready_for_release version6，任务done3、计划completed3/3通过；BUG-82611EA1 closed5。LOCAL ONLY部署 `local-dev-20260927-vbp039-8711b38`，记录UUID `af0cc9db-dc71-4ec1-b6be-964ce6101fcc`；无远端dev/生产部署。回滚PR83 revert后构建重启，备份dev `4659a7cd6a6ffe56e0edd526ee52afecc40902dc`。

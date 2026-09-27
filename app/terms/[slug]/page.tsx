@@ -49,7 +49,12 @@ import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/compo
 import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
 import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage } from '@/components/terms/AssessmentConceptPages';
 
+import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
+
 const articleTermPages = {
+  'model-routing': ModelRoutingTermPage,
+  'model-fallback': ModelFallbackTermPage,
+  'prompt-caching': PromptCachingTermPage,
   benchmark: BenchmarkTermPage,
   grader: GraderTermPage,
   'evaluation-dataset': EvalDatasetTermPage,
