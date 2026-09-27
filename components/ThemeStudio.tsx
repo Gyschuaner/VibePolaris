@@ -50,7 +50,7 @@ const LIGHT_MAX = 100;
  * 饱和度按六边形范数从边缘的 100% 线性降到圆心的 0；滑条值即中心明度（0–100 全量程，
  * 端点=黑/白），边缘按 fieldLightness 剖面 ×(1−0.6·sat/100) 比例变暗，中心始终最亮。
  * Canvas 像素级绘制、指针映射、当前色显示、对比度保护与持久化恢复共用同一组公式，保证“看到即选到”。 */
-const FIELD_W = 192;
+const FIELD_W = 180;
 const HEX_CIRCUM_R = FIELD_W / 2;
 const FIELD_H = Math.round(HEX_CIRCUM_R * Math.sqrt(3));
 const SQRT3 = Math.sqrt(3);
