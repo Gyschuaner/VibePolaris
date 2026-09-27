@@ -271,18 +271,18 @@
   },
   {
     "zh": "JWT", "en": "JSON Web Token", "slug": "jwt", "cat": "后端",
-    "say": "一种带签名的令牌格式，常用来传递身份和授权声明。",
-    "aliases": ["JSON Web Token", "JWT 令牌", "访问令牌"],
-    "question": "JWT 能看见内容，为什么还可以用来验证身份？",
-    "definition": "JWT 由头部、载荷和签名组成，接收方可验证内容是否被篡改。",
-    "boundary": "JWT 的载荷通常只是编码而非加密，不应放入密码等秘密数据。",
-    "demoType": "flow", "demoTitle": "JWT 怎样被签发和验证",
+    "say": "一种承载声明的紧凑格式，可以受签名或加密保护。",
+    "aliases": ["JSON Web Token", "JWT 令牌"],
+    "question": "签名 JWT 的载荷可读，接收方怎样发现内容被改过？",
+    "definition": "JWT 是承载声明的紧凑格式；签名 JWT 可验证内容完整性，加密 JWT 可保护内容保密性。",
+    "boundary": "三段式结构只适用于签名 JWT；签名载荷通常可解码读取，JWT 也不必然是访问令牌。",
+    "demoType": "flow", "demoTitle": "签名 JWT 怎样被签发和验证",
     "demoSteps": [
       {"label": "签发", "value": "header.payload.signature", "note": "认证服务用密钥生成签名。"},
-      {"label": "携带", "value": "Bearer token", "note": "客户端在请求中发送令牌。"},
-      {"label": "验证", "value": "签名 + exp", "note": "服务检查签名和过期时间。"}
+      {"label": "携带", "value": "header.payload.signature", "note": "客户端在请求中发送已签发的令牌。"},
+      {"label": "验证", "value": "签名 + 声明", "note": "服务按用途检查签名、签发者、受众和有效期。"}
     ],
-    "quizQuestion": "JWT 载荷中的内容默认是什么状态？", "quizOptions": ["可解码读取但受签名保护", "全部自动加密", "只存在服务器内存"],
+    "quizQuestion": "签名 JWT 的载荷通常是什么状态？", "quizOptions": ["可解码读取但受签名保护", "全部自动加密", "只存在服务器内存"],
     "correctText": "签名用于检测篡改，不会自动隐藏载荷。", "wrongText": "JWT 载荷默认可被解码，不应存放秘密。",
     "promptTitle": "检查 JWT 使用", "prompt": "请检查这套 JWT 的签发、验证、过期、刷新与撤销策略，标出不应放入载荷的字段。",
     "relatedSlugs": ["auth", "session", "authorization", "hashing"]
@@ -290,7 +290,7 @@
   {
     "zh": "OAuth", "en": "OAuth 2.0", "slug": "oauth", "cat": "后端",
     "say": "让一个应用获得访问另一项服务的有限权限，不必持有对方的账号密码。",
-    "aliases": ["OAuth 2.0", "第三方授权", "授权登录"],
+    "aliases": ["OAuth 2.0", "第三方授权"],
     "question": "接入第三方平台时，能不能直接让用户把平台密码填进来？",
     "definition": "OAuth 2.0 是授权框架，客户端可按不同授权方式取得范围受限的访问令牌。",
     "boundary": "OAuth 负责授权，不直接定义用户身份；用户登录通常结合 OpenID Connect，机器间调用可使用客户端凭证等授权方式。",
