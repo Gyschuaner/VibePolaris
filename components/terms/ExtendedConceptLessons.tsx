@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, PlugsConnected, Terminal, Trash, Play, Pause } from "@phosphor-icons/react";
 import { useScene } from "./HarnessStoryScenes";
 import styles from "./ExtendedConcepts.module.css";
 
 export function Reveal({ open, children }: { open: boolean; children: ReactNode }) {
-  return <div className={styles.reveal} data-open={open} aria-hidden={!open} inert={!open}><div>{children}</div></div>;
+  const lastVisible = useRef(children);
+  useLayoutEffect(() => {
+    if (open) lastVisible.current = children;
+  }, [open, children]);
+  return <div className={styles.reveal} data-open={open} aria-hidden={!open} inert={!open}><div>{open ? children : lastVisible.current}</div></div>;
 }
 export function States({ index, children }: { index: number; children: ReactNode[] }) {
   return <div className={styles.states}>{children.map((child, i) => <div key={i} data-current={i === index} aria-hidden={i !== index} inert={i !== index}>{child}</div>)}</div>;
