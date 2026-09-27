@@ -37,6 +37,7 @@
 | 027 | 服务器、API 网关、反向代理 | VBP-043 · [本批研究与 review](VBP-043-edge-concepts.md) |
 | 028 | 负载均衡、认证、授权 | VBP-044 · [本批研究与 review](VBP-044-access-concepts.md) |
 | 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [本批研究与 review](VBP-045-identity-concepts.md) |
+| 030 | 技能（Agent Skill，单页新增词条，不计入基线完成数） | VBP-046 · [本批研究与 review](VBP-046-skill-concepts.md) |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 95 页，另有 9 页历史基准；其余 197 页待处理，新增候选不计入完成数。
 
@@ -367,6 +368,7 @@
 | dependency-scanning | 依赖扫描 | 技术栈 | 待处理 |
 | threat-modeling | 威胁建模 | 技术栈 | 待处理 |
 | tool-approval | 工具审批 | AI·Agent | 待处理 |
+| skill | 技能 | AI·Agent | 030 · 本地验收及 review 通过（新增词条） |
 | evaluation-dataset | 评测数据集 | AI·Agent | 024 · 本地验收及 review 通过 |
 | permission-boundary | 权限边界 | AI·Agent | 待处理 |
 | xss | 跨站脚本 | 技术栈 | 待处理 |

@@ -4210,5 +4210,56 @@
       "sast",
       "threat-modeling"
     ]
+  },
+  {
+    "zh": "技能",
+    "en": "Skill",
+    "slug": "skill",
+    "cat": "AI·Agent",
+    "say": "把一类任务的操作说明和相关资源打包成目录，智能体在任务匹配时按需加载。",
+    "aliases": [
+      "Agent Skill",
+      "SKILL.md",
+      "智能体技能"
+    ],
+    "question": "装完技能之后，为什么不改提示词智能体就会做新任务了？",
+    "definition": "技能是包含 SKILL.md 文件的目录，打包了一类任务的说明、元数据与可选的脚本、资源，供智能体在任务匹配时按需加载。",
+    "boundary": "技能提供做法和材料，不增加模型自身的能力，也不提供新的执行接口；它依赖宿主读取文件与运行代码，只应安装可信来源的技能。",
+    "demoType": "hierarchy",
+    "demoTitle": "技能按需加载的三层",
+    "demoSteps": [
+      {
+        "label": "元数据",
+        "value": "name + description ≈ 100 token",
+        "note": "启动时，所有已装技能的元数据常驻系统提示。"
+      },
+      {
+        "label": "正文",
+        "value": "SKILL.md 正文",
+        "note": "描述与当前任务匹配之后，正文才被读取进入上下文。"
+      },
+      {
+        "label": "资源",
+        "value": "脚本与参考文件",
+        "note": "详细文档按需读取，脚本执行后只有输出进入上下文。"
+      }
+    ],
+    "quizQuestion": "智能体依据什么决定要不要读取某份技能的正文？",
+    "quizOptions": [
+      "当前任务与该技能 name、description 的匹配",
+      "SKILL.md 的行数长短",
+      "技能安装的先后顺序"
+    ],
+    "correctText": "启动时只有元数据常驻，任务与描述匹配才会继续读取正文。",
+    "wrongText": "正文读取由任务与 name、description 的匹配决定，与行数或安装顺序无关。",
+    "promptTitle": "给技能写一段描述",
+    "prompt": "我要做一个处理 PDF 表单的技能：提取字段、填写并合并文件。请帮我写 SKILL.md 的 name 和 description，让智能体在用户提到表单或 PDF 时能匹配到它。",
+    "relatedSlugs": [
+      "prompt",
+      "context",
+      "tools",
+      "mcp",
+      "memory"
+    ]
   }
 ]

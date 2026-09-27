@@ -9,7 +9,7 @@
 @media(max-width:900px){.nav-graph-mobile{display:grid;place-items:center;width:32px;height:40px}}
 
 /* VibePolaris 构建版 — VBP-003 主题画板
-   背景与品牌色可独立选择；夜晚模式始终使用一组固定配色。 */
+   背景与品牌色可独立选择；白天与夜晚各有一套背景，切换时互相顶替，主题色沿用同一选择。 */
 
 :root, [data-theme="light"] {
   --bg: #F7F3E8;
@@ -97,7 +97,7 @@
   --tint: #EBE3E9;
 }
 
-/* 夜晚只有一组预设；保留 data-background / data-palette 仅用于返回时恢复。 */
+/* 夜晚中性色基线；背景与主题色各自可独立选择。 */
 [data-theme="dark"] {
   --bg: #191C18;
   --surface: #222720;
@@ -107,13 +107,78 @@
   --hairline: #394036;
   --code-bg: #0E110E;
   --code-ink: #EEEBDD;
+  --accent-ink: #191C18;
+}
+
+/* 五档夜间底色：只改变中性色语义，与白天底色互相独立、切换时互相顶替。 */
+[data-theme="dark"][data-background="obsidian"],
+[data-theme="dark"]:not([data-background]) {
+  --bg: #191C18;
+  --surface: #222720;
+  --hairline: #394036;
+}
+[data-theme="dark"][data-background="umber"] {
+  --bg: #1F1A13;
+  --surface: #2A241B;
+  --hairline: #453C2C;
+}
+[data-theme="dark"][data-background="graphite"] {
+  --bg: #1B1C1E;
+  --surface: #26282B;
+  --hairline: #3E4145;
+}
+[data-theme="dark"][data-background="spruce"] {
+  --bg: #161D1A;
+  --surface: #202926;
+  --hairline: #37423D;
+}
+[data-theme="dark"][data-background="abyss"] {
+  --bg: #161A22;
+  --surface: #212733;
+  --hairline: #38404F;
+}
+
+/* 夜间主题色：沿用白天选中的色相，按深色底提亮。 */
+[data-theme="dark"][data-palette="moss"],
+[data-theme="dark"]:not([data-palette]) {
   --accent: #B6CC32;
   --accent-text: #B6CC32;
   --accent-strong: #D1E45B;
-  --accent-ink: #191C18;
   --brand-trail: #91A42A;
   --brand-star: #C9DE45;
   --tint: #2B321D;
+}
+[data-theme="dark"][data-palette="indigo"] {
+  --accent: #93A4D8;
+  --accent-text: #93A4D8;
+  --accent-strong: #B2C0EA;
+  --brand-trail: #7488C4;
+  --brand-star: #A9BCEC;
+  --tint: #232839;
+}
+[data-theme="dark"][data-palette="clay"] {
+  --accent: #D9997A;
+  --accent-text: #D9997A;
+  --accent-strong: #ECB597;
+  --brand-trail: #BE7F5F;
+  --brand-star: #E8B392;
+  --tint: #33241B;
+}
+[data-theme="dark"][data-palette="pine"] {
+  --accent: #6FB9A8;
+  --accent-text: #6FB9A8;
+  --accent-strong: #92D2C2;
+  --brand-trail: #4E9C8B;
+  --brand-star: #8FD0BE;
+  --tint: #1C302B;
+}
+[data-theme="dark"][data-palette="plum"] {
+  --accent: #C0A2BB;
+  --accent-text: #C0A2BB;
+  --accent-strong: #D8BFD2;
+  --brand-trail: #A184A0;
+  --brand-star: #D2B4CC;
+  --tint: #2C2330;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -392,6 +457,121 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .theme-scale-needle { position: absolute; top: 11px; left: 0; width: 1px; height: 27px; background: currentColor; }
 .theme-scale-tick { position: absolute; top: 43px; left: 0; width: 1px; height: 6px; background: currentColor; }
 [data-theme="dark"] .theme-scale-indicator { filter: drop-shadow(0 0 1px var(--ink)); }
+
+/* 自定义主题色：色带尾部的“+”图标 + 弹出式连续六边形取色器（边缘=色相，中心=灰，下方明度滑条）。 */
+.theme-scale-option { position: relative; }
+.theme-scale-custom-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  pointer-events: none;
+  filter: drop-shadow(0 0 1.5px rgba(0, 0, 0, .65));
+}
+.theme-hex-wheel {
+  position: absolute;
+  z-index: 3;
+  inset: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 18px;
+  /* 完全遮蔽下层的主题色色带，避免毛玻璃透出旧指示环形成鬼影。 */
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--ink) 18%, transparent);
+  animation: theme-hex-in 200ms cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes theme-hex-in {
+  from { opacity: 0; transform: scale(.93); }
+  to { opacity: 1; transform: scale(1); }
+}
+.theme-hex-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.theme-hex-close:hover { color: var(--accent-text); }
+.theme-hex-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.theme-hex-field {
+  position: relative;
+  flex: none;
+  cursor: crosshair;
+  touch-action: none;
+  outline-offset: 5px;
+}
+.theme-hex-field:focus-visible { outline: 2px solid var(--accent); }
+.theme-hex-canvas {
+  display: block;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  filter: drop-shadow(0 8px 20px color-mix(in srgb, var(--ink) 26%, transparent));
+}
+.theme-hex-cursor {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(255, 255, 255, .6);
+  pointer-events: none;
+}
+.theme-hex-light-slider {
+  position: relative;
+  flex: none;
+  width: 180px;
+  height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: none;
+  outline-offset: 3px;
+}
+.theme-hex-light-slider::before {
+  content: "";
+  position: absolute;
+  inset: 13px 0;
+  border-radius: 999px;
+  background: linear-gradient(to right, #000 0%, #fff 100%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 22%, transparent);
+}
+.theme-hex-light-slider:focus-visible { outline: 2px solid var(--accent); }
+.theme-hex-light-thumb {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, .4), 0 1px 3px rgba(0, 0, 0, .35);
+  pointer-events: none;
+}
+.theme-hex-current { display: flex; align-items: center; gap: 8px; }
+.theme-hex-current-swatches { display: flex; }
+.theme-hex-current-swatches i {
+  width: 15px;
+  height: 15px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 20%, transparent), 0 0 0 1.5px var(--surface);
+}
+.theme-hex-current-text { font-size: 11.5px; color: var(--muted); letter-spacing: .01em; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-hex-wheel { animation: none; }
+}
 
 /* ---------- 首页 R3：品牌舞台 + 可增减技术领域列 ---------- */
 .home-wrap { max-width: 1480px; margin: 0 auto; padding-left: 52px; padding-right: 52px; }
