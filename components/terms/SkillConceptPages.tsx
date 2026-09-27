@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Terminal } from '@phosphor-icons/react/dist/ssr';
+import { BookOpen, FileText, Folder, Terminal } from '@phosphor-icons/react/dist/ssr';
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { SkillLesson } from './SkillConceptLessons';
@@ -8,37 +8,56 @@ import s from './SkillConcepts.module.css';
 export function SkillTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={skillSources}/>;
   return <ConceptArticle slug="skill" title="技能" subtitle="Agent Skill" sources={skillSources}
-    intro={<>阿青给智能体装了三份技能：一份教它填 PDF 表单，一份教它分析数据表，一份教它写提交说明。智能体没有一次读完这三份材料，只在任务对上时打开那一份。</>}
-    sections={[["package", "可复用的经验怎样打包"], ["disclosure", "用到才进入上下文"], ["trigger", "技能怎样被选中"], ["scripts", "运行代码，不读代码"], ["boundary", "相邻概念与安全"]]}
-    hero={<ConceptHero slug="skill" label="技能分三层：常驻的元数据、命中后加载的正文、需要时读取或运行的资源"><div className={s.heroLayers}>
-      <div data-layer={1}><BookOpen size={20} weight="light"/><span>name + description · 启动时常驻</span></div>
-      <div data-layer={2}><FileText size={20} weight="light"/><span>SKILL.md 正文 · 命中后加载</span></div>
-      <div data-layer={3}><Terminal size={20} weight="light"/><span>scripts/ 与 references/ · 需要时才读取或运行</span></div>
+    intro={<>Agent Skill 是一个可复用的目录，用来打包工作步骤和可选资源。宿主可以按需向智能体提供这些内容；目录格式相通，具体怎么触发和读取则取决于宿主。</>}
+    sections={[['package', '把流程装进目录'], ['disclosure', '需要哪页，就读哪页'], ['trigger', '模型怎样选中它'], ['scripts', '指令与执行环境'], ['boundary', '相邻概念与安全']]}
+    hero={<ConceptHero slug="skill" label="Skill 是留在上下文外的目录，需要的说明和资源再逐步进入"><div className={s.heroPackage}>
+      <div className={s.heroFolder}>
+        <div className={s.heroFolderTitle}><Folder size={20} weight="light"/><strong>hotel-invoices/</strong></div>
+        <div className={s.heroFile}><FileText size={17} weight="light"/><span>SKILL.md</span><small>步骤说明</small></div>
+        <div className={s.heroFile}><BookOpen size={17} weight="light"/><span>references/</span><small>核对规则</small></div>
+        <div className={s.heroFile}><Terminal size={17} weight="light"/><span>scripts/</span><small>提取字段</small></div>
+      </div>
+      <div className={s.heroWindow}><span>上下文窗口</span><b>name + description</b><small>其余文件仍在目录中</small></div>
     </div></ConceptHero>}>
-    <ArticleSection id="package" title="可复用的经验怎样打包">
-      <p id="skill-purpose" className="vp-citation-target"><strong>技能是把做一类任务所需的说明和材料放进一个目录，让智能体按需取用。</strong>Anthropic 把它描述为可复用、基于文件系统的资源：目录里打包指令、元数据，以及可选的脚本与模板，在任务相关时自动使用。发布公告用的类比是给新员工的入职材料——一套工作流程不必每次都在对话里重新交代，装一次就一直在那里。<Cite id="skill-purpose"/></p>
-      <p id="skill-structure" className="vp-citation-target">开放的 Agent Skills 规范给这个目录定了结构：<code>SKILL.md</code> 必需，frontmatter 至少写 <code>name</code> 和 <code>description</code>；习惯上再放 <code>scripts/</code>（可执行代码）、<code>references/</code>（按需读取的详细文档）、<code>assets/</code>（模板与资源）。<code>name</code> 最长 64 个字符，只用小写字母、数字和连字符，并且与目录同名；<code>description</code> 最长 1024 个字符，要写清做什么、什么时候用。<Cite id="skill-structure"/></p>
-      <pre className={s.snippet}><code>{`---\nname: pdf-forms\ndescription: Extract and fill PDF form fields. Use when the user mentions PDFs or forms.\n---`}</code></pre>
+    <ArticleSection id="package" title="把流程装进目录">
+      <p id="skill-purpose" className="vp-citation-target"><strong>Skill 把重复要交代的流程收进一个文件夹，供智能体在相似任务中复用。</strong>核心是可读的工作说明；目录还可以带参考资料、模板和脚本。它包装的是做事的方法与材料，不是训练出一种新模型能力。<Cite id="skill-purpose"/></p>
+      <p id="skill-structure" className="vp-citation-target">开放的 Agent Skills 规范要求目录里有 <code>SKILL.md</code>，文件以 YAML frontmatter 开头，至少包含 <code>name</code> 和 <code>description</code>，后面接 Markdown 指令正文。<code>scripts/</code>、<code>references/</code>、<code>assets/</code> 都是可选目录：放可运行代码、按需查阅的材料、模板或数据。是否能执行脚本，要看宿主是否提供相应环境。<Cite id="skill-structure"/></p>
+      <div className={s.packageGrid}>
+        <pre className={s.snippet}><code>{`hotel-invoices/\n├── SKILL.md                 # 必需：元数据 + 步骤\n├── references/               # 可选：详细规则\n│   └── 报销规则.md\n├── scripts/                  # 可选：可执行代码\n│   └── 提取字段.py\n└── assets/                   # 可选：模板、资源`}</code></pre>
+        <div className={s.frontmatter}>
+          <p>SKILL.md 的开头</p>
+          <pre><code>{`---\nname: hotel-invoices\ndescription: 提取住宿发票字段并按报销规则核对。用户要求检查住宿发票、核对费用凭证时使用。\n---\n\n# 核对住宿发票\n1. 提取发票字段。\n2. 按需查阅报销规则。\n3. 标出缺项，交由用户复核。`}</code></pre>
+        </div>
+      </div>
+      <p id="skill-description" className="vp-citation-target">规范给 <code>name</code> 和 <code>description</code> 设了格式边界：<code>name</code> 为 1–64 个小写字母、数字或连字符，不能以连字符开头/结尾、不能连写，并且与父目录同名；<code>description</code> 为 1–1024 个字符，要说明技能做什么、什么时候使用，并包含有助识别任务的关键词。<Cite id="skill-description"/></p>
     </ArticleSection>
-    <ArticleSection id="disclosure" title="用到才进入上下文">
-      <p id="skill-disclosure" className="vp-citation-target"><strong>技能的三层内容在不同时刻进入上下文。</strong>启动时，智能体把每个已装技能的 <code>name</code> 和 <code>description</code> 注入系统提示，每份大约一百个 token；任务命中某个描述之后，它才读取 <code>SKILL.md</code> 正文进入上下文——规范建议正文控制在 500 行、约 5,000 token 以内；正文引用的详细文档继续放在 <code>references/</code> 里按需读取。这种渐进式披露是技能的核心设计：资料可以加得很多，因为其中大部分平时不占窗口。<Cite id="skill-disclosure"/></p>
-      <p>下面的演示对比两种装载方式。教学预算设为 6,000 token 的上下文，系统提示占 800，三份技能的正文分别是 2,400、2,600 和 1,600 token；这些数字是教学样例，不是对某个真实产品的测量。逐步点按钮，盯住右侧哪些条目进入窗口。</p>
+    <ArticleSection id="disclosure" title="需要哪页，就读哪页">
+      <p id="skill-disclosure" className="vp-citation-target">规范建议渐进披露：运行时先暴露各 Skill 的 <code>name</code> 与 <code>description</code>；选用某项技能后再读完整的 <code>SKILL.md</code>；它引用的其他材料只有在任务需要时才读取。规范还建议元数据约一百个 token、正文少于五千 token 和五百行。这些是写作与组织建议，不代表所有宿主都有完全相同的计量方式或装载时机。<Cite id="skill-disclosure"/></p>
+      <p>下面用一张住宿发票走一遍目录与上下文的边界。示意一个支持按需读文件、并有脚本运行环境的宿主；真实产品如何发现和调用 Skill、是否支持脚本，都由宿主实现决定。</p>
       <SkillLesson/>
     </ArticleSection>
-    <ArticleSection id="trigger" title="技能怎样被选中">
-      <p id="skill-trigger" className="vp-citation-target">技能没有“装好就全程生效”的开关。触发发生在模型自己的判断里：当前任务摆在那里，系统提示中各技能的元数据一直可见，智能体据此决定要不要去读某份正文。读正文之前，它对这份技能的全部了解就只有那两行元数据——这正是 <code>description</code> 承担的责任。<Cite id="skill-trigger"/></p>
-      <p id="skill-description" className="vp-citation-target">规范因此要求描述里带上用户真正会说出的关键词，并直接给了反例：一句 <code>Helps with PDFs.</code> 不合格。这样的描述既对不上“帮我填这个表单”，也对不上“合并两个 PDF”，技能装了也一直轮不到它。<Cite id="skill-description"/></p>
-      <ArticleAside title="没有任何技能匹配时？"><p>演示里选“写一份周报”，三份技能的描述都对不上。智能体不读取任何正文，用一般能力完成任务。技能靠匹配出场，不是靠安装数量；装了三十份，也意味着元数据里多了三十行常驻内容。</p></ArticleAside>
+    <ArticleSection id="trigger" title="模型怎样选中它">
+      <p id="skill-trigger" className="vp-citation-target"><code>description</code> 帮模型判断一项技能和当前任务是否相关，但它不是所有产品通用的关键词路由规则。以 OpenAI 的 API 文档为例，模型可以按元数据决定是否使用 Skill；如果希望更确定，也能在提示里明确要求使用。模型判断的路径因此取决于宿主和请求方式。<Cite id="skill-trigger"/></p>
+      <div className={s.descriptionCompare}>
+        <div><span>信息不足</span><code>Helps with PDFs.</code><p>没有说清要处理哪类文件、完成什么操作。</p></div>
+        <div><span>可供判断</span><code>提取住宿发票字段，并按报销规则检查缺项。用户要求核对住宿费用凭证时使用。</code><p>明确任务和适用场景；仍不保证模型每次都会调用。</p></div>
+      </div>
+      <p id="skill-description-example" className="vp-citation-target">开放规范把 <code>Helps with PDFs.</code> 列作较差示例，因为它没有具体说明技能能做什么、何时使用。写清用户的目标比写“擅长某个领域”更有助于发现相关技能，但最终是否触发仍由具体运行时决定。<Cite id="skill-description-example"/></p>
+      <ArticleAside title="没有匹配的技能时？"><p>当前任务可以继续用智能体已有的一般能力处理，也可以转向其他工具或技能。安装一个目录本身不会让每个请求都加载它的正文。</p></ArticleAside>
     </ArticleSection>
-    <ArticleSection id="scripts" title="运行代码，不读代码">
-      <p id="skill-scripts" className="vp-citation-target">脚本走的是另一条路：智能体在代码执行环境里运行 <code>scripts/</code> 中的文件，脚本代码本身不进入上下文，只有输出消耗 token。官方示例是 PDF 技能自带的 Python 脚本提取表单字段——代码运行结果确定、可复现，比让模型逐 token 抄写每个字段可靠。这同时交代了技能的边界：<strong>它依赖宿主有读取文件和执行代码的能力</strong>，不具备这些能力的产品跑不动捆绑脚本。<Cite id="skill-scripts"/></p>
+    <ArticleSection id="scripts" title="指令与执行环境">
+      <p id="skill-scripts" className="vp-citation-target">说明正文告诉智能体怎么做；参考文件补充细节；脚本则可能把重复操作交给可执行程序。开放规范允许 Skill 带脚本，但支持的语言和运行方式由宿主决定。Anthropic 描述的 Claude VM 示例会通过 shell 运行脚本，模型收到的是运行结果而不是源码；这是该环境的行为示例，不能推成所有 Skill 都能这样执行。<Cite id="skill-scripts"/></p>
     </ArticleSection>
     <ArticleSection id="boundary" title="相邻概念与安全">
-      <p id="skill-prompt-diff" className="vp-citation-target">与提示词的差别在存续方式：提示词是对话级指令，这次会话说过就这次生效；技能是放在文件系统里的持久资源，命中任务才加载，不必每次重复同一段交代。<Cite id="skill-prompt-diff"/></p>
-      <div className={s.contrast}><div><h3>提示词</h3><p>随对话提出、随对话结束。适合一次性要求，重复的流程说明会反复占用输入。</p></div><div><h3>工具调用</h3><p>给智能体对外操作的接口。技能不新增接口，它教智能体怎样按顺序组合已有的操作。</p></div><div><h3>MCP</h3><p>规定外部系统与智能体怎样连接。官方工程博客把两者说成互补：MCP 接通数据与工具，技能教更完整的工作流程。<Cite id="skill-mcp"/></p></div></div>
-      <blockquote className={s.quote}>技能不改模型，<br/>只改模型手头有什么资料。</blockquote>
-      <p id="skill-security" className="vp-citation-target"><strong>安装技能要像安装软件一样谨慎。</strong>技能可以指挥智能体运行捆绑脚本、访问外部资源；Anthropic 的文档明确警告恶意技能可能引入漏洞、诱导数据外泄或未授权访问，即使来源可信，技能引用的外部依赖之后变更也可能让它变得危险。安装前审阅 <code>SKILL.md</code> 和脚本内容，是使用者自己的事。<Cite id="skill-security"/></p>
-      <p>站内的<ConceptTerm slug="tools">工具调用</ConceptTerm>解释一次调用怎样发出与返回，<ConceptTerm slug="mcp">MCP</ConceptTerm>解释外部能力怎样被发现和接入；技能回答的是另一个问题——怎么让智能体长期“会做某件事”。上下文窗口的容量细节见<ConceptTerm slug="context">上下文</ConceptTerm>。</p>
+      <div className={s.contrast}>
+        <div><h3>提示词</h3><p id="skill-prompt-diff" className="vp-citation-target">提示词表达当前请求或对话的要求；Skill 把可重复的流程整理成可复用文件夹。<Cite id="skill-prompt-diff"/></p></div>
+        <div><h3>工具调用</h3><p id="skill-tools" className="vp-citation-target">工具提供一次具体操作的接口，例如读文件、运行代码或查询服务。Skill 可以指导智能体何时、按什么顺序使用现有工具，但不会因此自动增加接口。<Cite id="skill-tools"/></p></div>
+        <div><h3>MCP</h3><p id="skill-mcp" className="vp-citation-target">MCP 连接模型与外部数据、工具和受控操作；Skill 复用围绕这些能力的工作步骤。两者可以配合：一个接通能力，一个说明如何完成流程。<Cite id="skill-mcp"/></p></div>
+        <div><h3>记忆</h3><p id="skill-memory" className="vp-citation-target">记忆通常保存以后还可能用到的事实、偏好或先前决定；Skill 保存反复执行的步骤和配套资源。产品里的记忆机制各不相同，例如 ChatGPT Memory 和 Claude memory tool 都能在后续对话提供相关信息。<Cite id="skill-memory"/></p></div>
+      </div>
+      <blockquote className={s.quote}>Skill 装的是“怎么做”；<br/>记忆留的是“之前知道什么”。</blockquote>
+      <p id="skill-security" className="vp-citation-target"><strong>把 Skill 当作需要审阅的代码与指令。</strong>它可能影响模型的规划和工具使用，也可能带有脚本或外部依赖；安装前应检查整个目录，而不只看 <code>SKILL.md</code>。实际可做的操作仍受宿主提供的工具、沙箱和权限策略限制。<Cite id="skill-security"/></p>
+      <p>站内的<ConceptTerm slug="tools">工具调用</ConceptTerm>解释一次操作怎样发出与返回，<ConceptTerm slug="mcp">MCP</ConceptTerm>解释外部能力怎样被连接；<ConceptTerm slug="context">上下文</ConceptTerm>说明模型当前能读取哪些内容。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

@@ -1,93 +1,101 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowCounterClockwise, ArrowRight, Brain, FileText, Play, TextT } from '@phosphor-icons/react';
-import { Reveal } from './ExtendedConceptLessons';
+import { ArrowCounterClockwise, ArrowRight, Brain, FileText, FolderOpen, Play, Terminal, TextT } from '@phosphor-icons/react';
 import s from './SkillConcepts.module.css';
 
-const SYSTEM = 800, TASK = 25, BUDGET = 6000, OUTPUT = 45;
-const skills = [
-  { id: 'pdf-forms', desc: '提取并填写 PDF 表单字段', meta: 95, body: 2400 },
-  { id: 'data-analysis', desc: '分析表格数据并生成图表', meta: 110, body: 2600 },
-  { id: 'commit-helper', desc: '把代码改动写成提交说明', meta: 80, body: 1600 },
-];
-const META = skills.reduce((sum, skill) => sum + skill.meta, 0);
-const BODIES = skills.reduce((sum, skill) => sum + skill.body, 0);
-const PDF_BODY = skills[0].body;
-const fmt = (n: number) => n.toLocaleString('en-US');
-
-type Mode = 'progressive' | 'eager';
-type Stage = 'idle' | 'booted' | 'sent' | 'body' | 'ran';
+type Stage = 'idle' | 'booted' | 'sent' | 'decided' | 'body' | 'ref' | 'exec' | 'output' | 'done' | 'general';
+type Task = 'invoice' | 'report';
 
 export function SkillLesson() {
-  const [mode, setMode] = useState<Mode>('progressive');
   const [stage, setStage] = useState<Stage>('idle');
-  const [task, setTask] = useState<'pdf' | 'report' | null>(null);
+  const [task, setTask] = useState<Task | null>(null);
   const reset = () => { setStage('idle'); setTask(null); };
-  const switchMode = (next: Mode) => { setMode(next); reset(); };
 
-  const used = stage === 'idle' ? SYSTEM
-    : SYSTEM + (mode === 'eager' ? BODIES : META) + (stage === 'sent' || stage === 'body' || stage === 'ran' ? TASK : 0)
-      + (mode === 'progressive' && (stage === 'body' || stage === 'ran') ? PDF_BODY : 0)
-      + (stage === 'ran' ? OUTPUT : 0);
-  const matched = task === 'pdf';
-  const entries = [
-    { label: '系统提示', tokens: SYSTEM, always: true },
-    ...(stage !== 'idle' ? (mode === 'eager'
-      ? skills.map(skill => ({ label: `${skill.id} 正文`, tokens: skill.body, always: true }))
-      : [{ label: '3 × name + description', tokens: META, always: true }]) : []),
-    ...(stage === 'sent' || stage === 'body' || stage === 'ran' ? [{ label: task === 'pdf' ? '任务 · 填写 PDF 表单' : '任务 · 写一份周报', tokens: TASK, always: true }] : []),
-    ...(mode === 'progressive' && (stage === 'body' || stage === 'ran') ? [{ label: 'pdf-forms 正文', tokens: PDF_BODY, always: true }] : []),
-    ...(stage === 'ran' ? [{ label: '脚本输出 · output.pdf', tokens: OUTPUT, always: true }] : []),
+  const reached = (list: Stage[]) => list.includes(stage);
+  const invoice = task === 'invoice';
+  const metaIn = stage !== 'idle';
+  const bodyIn = reached(['body', 'ref', 'exec', 'output', 'done']);
+  const refIn = reached(['ref', 'exec', 'output', 'done']);
+  const execRunning = stage === 'exec';
+  const execDone = reached(['output', 'done']);
+
+  const files = [
+    { id: 'skill', Icon: FileText, name: 'SKILL.md', desc: 'name 与 description 写在前言，下面是做法步骤', lit: bodyIn,
+      chips: [{ on: metaIn, label: '元数据已注入窗口' }, { on: bodyIn, label: '正文已进入窗口' }] },
+    { id: 'ref', Icon: FileText, name: 'references/报销规则.md', desc: '规则细节，正文提到、需要时才读', lit: refIn,
+      chips: [{ on: refIn, label: '已按需读入窗口' }] },
+    { id: 'script', Icon: Terminal, name: 'scripts/提取字段.py', desc: '可执行代码，由宿主运行', lit: false,
+      chips: [{ on: execRunning || execDone, label: execRunning ? '正在执行环境运行' : execDone ? '已运行 · 源码未进窗口' : '未运行' }] },
   ];
-  const feedback = {
-    idle: '窗口里只有系统提示。三份技能安静地待在文件目录里。',
-    booted: mode === 'progressive'
-      ? `启动完成：${fmt(META)} token 的元数据常驻，正文一行未读。`
-      : `还没执行任何任务，三份正文共 ${fmt(BODIES)} token 已把窗口挤到预算之外。`,
-    sent: matched ? '任务与 pdf-forms 的描述匹配。另外两份技能的正文仍未进入窗口。' : '三份描述都对不上“周报”。没有正文被读取，智能体用一般能力处理。',
-    body: mode === 'progressive'
-      ? `读取 pdf-forms 正文：+${fmt(PDF_BODY)} token，窗口仍有一多半余量。`
-      : '正文早已在启动时进入——渐进模式下，这一步才花掉这 2,400 token。',
-    ran: '脚本已在执行环境运行：代码不进上下文，输出只加 45 token——表单已填写，保存为 output.pdf。',
+
+  const rows = [
+    { label: '已有上下文', tag: '' },
+    ...(metaIn ? [{ label: 'hotel-invoices · name + description', tag: '启动时注入' }] : []),
+    ...(reached(['sent', 'decided', 'body', 'ref', 'exec', 'output', 'done', 'general'])
+      ? [{ label: invoice ? '任务 · 核对住宿发票' : '任务 · 写一份周报', tag: '' }] : []),
+    ...(reached(['decided', 'body', 'ref', 'exec', 'output', 'done']) ? [{ label: '决定使用 hotel-invoices', tag: '模型与宿主的判断' }] : []),
+    ...(bodyIn ? [{ label: 'SKILL.md 正文', tag: '按需读取' }] : []),
+    ...(refIn ? [{ label: 'references/报销规则.md', tag: '按需读取' }] : []),
+    ...(execDone ? [{ label: '示例输出 · 发票号 0831 · ¥860 · 9月18日', tag: '脚本返回' }] : []),
+    ...(stage === 'done' ? [{ label: '整理结果 · 报销核对清单', tag: '' }] : []),
+    ...(stage === 'general' ? [{ label: '周报草稿', tag: '未使用技能' }] : []),
+  ];
+
+  const feedback: Record<Stage, string> = {
+    idle: '窗口里只有已有上下文。hotel-invoices 目录留在窗口外，三份文件一页未读。',
+    booted: '启动完成：此示意宿主把 name 和 description 提供给模型。正文、规则和脚本都没有进入窗口。',
+    sent: invoice
+      ? '任务摆在那里。是否使用技能，由模型根据这份元数据判断，或由提示明确要求——不是必然的关键字命中。'
+      : '“周报”与这份技能的描述对不上。模型可以不使用技能，直接用一般能力继续。',
+    decided: '此示意路径决定使用这项技能。到现在，SKILL.md 正文才第一次被读取。',
+    body: 'SKILL.md 正文进入窗口，其中提到细节在 references/报销规则.md。',
+    ref: '规则文档按需读取——这是第二份进入窗口的文件，目录本身仍在窗口外。',
+    exec: '脚本停在执行环境里运行：源码不进入这个示例的上下文，模型只等待它的输出。',
+    output: '执行结束：示例字段清单回到窗口；脚本源码仍留在 scripts/。',
+    done: '流程结束。目录一直留在窗口外；本示例里的元数据、任务、正文、参考规则和输出依次进入上下文。',
+    general: '周报用一般能力完成。技能正文与资源全程留在目录里，一页未读。',
   };
 
-  return <div className={s.lab} aria-label="技能渐进加载与上下文占用演示">
+  return <div className={s.lab} aria-label="技能目录按需加载演示">
     <div className={s.lessonGrid}>
-      <div className={s.skillList} aria-label="已安装技能">
-        <p className={s.panelLabel}>已安装的三份技能</p>
-        {skills.map(skill => {
-          const lit = mode === 'eager' ? stage !== 'idle' : skill.id === 'pdf-forms' && (stage === 'body' || stage === 'ran');
-          return <div key={skill.id} className={s.skillCard} data-lit={lit} data-match={skill.id === 'pdf-forms' && matched && stage === 'sent'}>
-            <FileText size={19} weight="light"/><strong>{skill.id}</strong><span>{skill.desc}</span>
-            <div className={s.chips}>
-              <i data-on={stage !== 'idle'}>元数据 {fmt(skill.meta)}</i>
-              <i data-on={lit}>正文 {fmt(skill.body)}</i>
-              {skill.id === 'pdf-forms' && <i data-on={stage === 'ran'}>脚本输出 45</i>}
-            </div>
-          </div>;
-        })}
+      <div className={s.dirCol}>
+        <div className={s.dirPanel}>
+          <p className={s.panelLabel}><FolderOpen size={18} weight="light"/>hotel-invoices · 技能目录 · 留在上下文窗口外</p>
+          <ul className={s.fileList}>
+            {files.map(({ id, Icon, name, desc, lit, chips }) => <li key={id} className={s.fileRow} data-lit={lit}>
+              <Icon size={19} weight="light" aria-hidden="true"/><strong>{name}</strong><span>{desc}</span>
+              <div className={s.chips}>{chips.map(chip => <i key={chip.label} data-on={chip.on}>{chip.label}</i>)}</div>
+            </li>)}
+          </ul>
+        </div>
+        <div className={s.execPanel} aria-label="执行环境">
+          <p className={s.panelLabel}><Terminal size={18} weight="light"/>执行环境 · 同样在窗口外</p>
+          {execRunning || execDone
+            ? <p className={s.execState} data-done={execDone}><code>scripts/提取字段.py</code><span>{execRunning ? '正在运行，等待输出…' : '运行完成，输出已交回窗口 · 源码未进入上下文'}</span></p>
+            : <p className={s.execIdle}>尚未运行任何脚本。</p>}
+        </div>
       </div>
-      <div className={s.ctxPanel}>
-        <p className={s.panelLabel}><Brain size={18} weight="light"/>上下文窗口 · 教学预算 {fmt(BUDGET)} token</p>
-        <div className={s.bar} aria-hidden="true"><div className={s.barFill} data-over={used > BUDGET} style={{ width: `${Math.min(used / BUDGET, 1) * 100}%` }}/></div>
-        <p className={s.usedLine} data-over={used > BUDGET}>{fmt(used)} / {fmt(BUDGET)} token{used > BUDGET ? ` · 超出 ${fmt(used - BUDGET)}` : ''}</p>
-        <ul className={s.ctxList}>
-          {entries.map(entry => <li key={entry.label}><span>{entry.label}</span><code>+{fmt(entry.tokens)}</code></li>)}
+      <div className={s.winPanel} aria-label="上下文窗口">
+        <p className={s.panelLabel}><Brain size={18} weight="light"/>上下文窗口 · 本示例</p>
+        <ul className={s.winList} aria-live="polite">
+          {rows.map(row => <li key={row.label}><span>{row.label}</span>{row.tag && <em>{row.tag}</em>}</li>)}
         </ul>
+        <p className={s.note}>示意：这是一个支持按需读取文件、执行脚本的宿主。真实的技能发现、触发方式与脚本行为都由宿主实现决定，不是关键字命中。</p>
       </div>
-    </div>
-    <div className={s.actions} role="group" aria-label="装载方式">
-      <button type="button" aria-pressed={mode === 'progressive'} onClick={() => switchMode('progressive')}>渐进加载</button>
-      <button type="button" aria-pressed={mode === 'eager'} onClick={() => switchMode('eager')}>全部塞进提示词</button>
     </div>
     <div className={s.actions}>
       {stage === 'idle' && <button type="button" onClick={() => setStage('booted')}>启动智能体</button>}
-      {stage === 'booted' && <><button type="button" aria-pressed={task === 'pdf'} onClick={() => setTask('pdf')}>填写 PDF 表单</button><button type="button" aria-pressed={task === 'report'} onClick={() => setTask('report')}>写一份周报</button><button type="button" disabled={task === null} onClick={() => setStage('sent')}>发送任务 <ArrowRight size={18}/></button></>}
-      {stage === 'sent' && matched && <button type="button" onClick={() => setStage('body')}>读取 pdf-forms 正文 <TextT size={18}/></button>}
-      {stage === 'body' && <button type="button" onClick={() => setStage('ran')}><Play size={16}/>运行 scripts/fill_form.py</button>}
+      {stage === 'booted' && <><button type="button" aria-pressed={invoice} onClick={() => setTask('invoice')}>核对住宿发票</button><button type="button" aria-pressed={task === 'report'} onClick={() => setTask('report')}>写一份周报</button><button type="button" disabled={task === null} onClick={() => setStage('sent')}>发送任务 <ArrowRight size={18}/></button></>}
+      {stage === 'sent' && invoice && <button type="button" onClick={() => setStage('decided')}>决定使用 hotel-invoices <ArrowRight size={18}/></button>}
+      {stage === 'sent' && !invoice && <button type="button" onClick={() => setStage('general')}>用一般能力完成周报 <ArrowRight size={18}/></button>}
+      {stage === 'decided' && <button type="button" onClick={() => setStage('body')}>读取 SKILL.md 正文 <TextT size={18}/></button>}
+      {stage === 'body' && <button type="button" onClick={() => setStage('ref')}>按需读取 references/报销规则.md <TextT size={18}/></button>}
+      {stage === 'ref' && <button type="button" onClick={() => setStage('exec')}><Play size={16}/>运行 scripts/提取字段.py</button>}
+      {stage === 'exec' && <button type="button" onClick={() => setStage('output')}>脚本执行完成 <ArrowRight size={18}/></button>}
+      {stage === 'output' && <button type="button" onClick={() => setStage('done')}>整理结果并回复 <ArrowRight size={18}/></button>}
       <button type="button" onClick={reset} aria-label="重置技能演示"><ArrowCounterClockwise size={18}/></button>
     </div>
-    <Reveal open={stage !== 'idle'}><p className={s.feedback} role="status">{feedback[stage]}</p></Reveal>
+    {stage !== 'idle' && <p className={s.feedback} role="status">{feedback[stage]}</p>}
   </div>;
 }
