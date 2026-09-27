@@ -1,0 +1,28 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { retrieve, splitCharacters, splitParagraphs, chunkDocument, chunkSummary, rerank, rerankCandidates, rerankQueries } from '../lib/selection-teaching.ts';
+test('候选边界、原文区间与排序依据一致', () => {
+  assert.deepEqual(retrieve(0,false,3).map(d=>d.id), ['A','B']);
+  assert.deepEqual(retrieve(0,true,3).map(d=>d.id), ['A','B','D']);
+  assert.deepEqual(retrieve(1,false,2).map(d=>d.id), ['C']);
+  assert.deepEqual(retrieve(2,true,3), []);
+  assert.deepEqual(splitCharacters('',24,8), []);
+  assert.throws(()=>splitCharacters('abc',2,2), RangeError);
+  assert.deepEqual(splitCharacters('甲😀乙丁',2,1).map(c=>c.text), ['甲😀','😀乙','乙丁']);
+  const chars=Array.from(chunkDocument), blocks=splitCharacters(chunkDocument,24,8);
+  for (const b of blocks) assert.equal(b.text,chars.slice(b.start,b.end).join(''));
+  assert.equal(blocks.at(-1).end,chars.length);
+  assert.equal(chunkSummary(blocks).duplicated,(blocks.length-1)*8);
+  assert.equal(chunkSummary(blocks).completeCondition,0);
+  const paragraphs=splitParagraphs(chunkDocument);
+  assert.equal(paragraphs.length,3);
+  assert.equal(paragraphs.map(c=>c.text).join(''),chunkDocument);
+  assert.equal(chunkSummary(paragraphs).duplicated,0);
+  assert.equal(chunkSummary(paragraphs).completeCondition,1);
+  assert.deepEqual(rerank(2,0).map(d=>d.id),['C','A']);
+  assert.deepEqual(rerank(3,0).map(d=>d.id),['B','C','A']);
+  assert.deepEqual(rerank(3,1).map(d=>d.id),['A','B','C']);
+  assert.equal(rerank(2,0).some(d=>d.matched===rerankQueries[0].needs.length),false);
+  for (const doc of rerank(3,0)) assert.equal(doc.text,rerankCandidates(3).find(d=>d.id===doc.id).text);
+  assert.deepEqual(rerank(0,0),[]);
+});
