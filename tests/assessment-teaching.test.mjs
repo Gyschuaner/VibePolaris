@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { compareBenchmark, gradeRecord, splitEvalSamples } from '../lib/assessment-teaching.ts';
+test('comparison conditions, outcome grading, and grouped holdout', () => {
+  assert.equal(compareBenchmark('general', 'same').winner, 'B');
+  assert.equal(compareBenchmark('business', 'same').winner, 'A');
+  assert.deepEqual(compareBenchmark('general', 'changed').differences, ['version', 'total']);
+  assert.equal(compareBenchmark('business', 'changed').winner, null);
+  assert.equal(compareBenchmark('general', 'none').comparable, false);
+  assert.equal(gradeRecord(0, 'keyword').pass, true); assert.equal(gradeRecord(0, 'outcome').pass, false);
+  assert.equal(gradeRecord(1, 'keyword').pass, false); assert.equal(gradeRecord(1, 'outcome').pass, true);
+  assert.equal(gradeRecord(2, 'outcome').pass, false); assert.equal(gradeRecord(3, 'outcome').pass, null);
+  const row = splitEvalSamples(['A', 'B', 'C'], 'rows'), grouped = splitEvalSamples(['A', 'B', 'C'], 'groups');
+  assert.deepEqual(row.overlap, ['A', 'B', 'C']); assert.equal(row.separated, false);
+  assert.deepEqual(grouped.overlap, []); assert.equal(grouped.separated, true);
+  assert.equal(grouped.development.length, 4); assert.equal(grouped.heldout.length, 2);
+  assert.deepEqual(grouped.missing, ['普通', '边界']);
+  assert.equal(splitEvalSamples(['A'], 'groups').heldout.length, 0);
+  assert.equal(splitEvalSamples(['A'], 'rows').separated, false);
+  assert.equal(splitEvalSamples([], 'groups').rows.length, 0);
+});

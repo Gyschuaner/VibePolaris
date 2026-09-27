@@ -47,8 +47,12 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
 import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
+import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage } from '@/components/terms/AssessmentConceptPages';
 
 const articleTermPages = {
+  benchmark: BenchmarkTermPage,
+  grader: GraderTermPage,
+  'evaluation-dataset': EvalDatasetTermPage,
   grounding: GroundingTermPage,
   hallucination: HallucinationTermPage,
   eval: EvaluationTermPage,
