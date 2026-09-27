@@ -59,3 +59,7 @@
 实现提交 `832d1f64bd7e7d62e1e4dc5fdd352cb996277f98`，PR [#82](https://github.com/Gyschuaner/VibePolaris/pull/82) 以 dev 为目标；已关联当前任务。DP任务 `1a43c3b0-bc1e-4b99-a9e4-624406b1c1cd` done；VBP-038 testing，实际计划 `d0ede003-93d6-47ff-96a3-be77ec6cd4c5` 三项 passed，执行记录分别 `9b3d0caf-6ccd-4a62-aa45-5e967e32ebd9`、`2168e65c-c94e-4535-b0ce-0d0cde785b4d`、`79f62f4d-9336-4d48-9d80-536d4d71d028`。最终集成状态以DP与PR实时记录为准。
 
 当前累计77页新流程加9页历史基准，共86页公开，215页待处理；早期与历史页仍需最终四来源复核。未维护空飞书文档。规则指定的Windows Obsidian库在本机不存在，跳过该库记录。
+
+## 集成闭环（第024批开始时回查）
+
+PR #82 已于2026-09-27合入dev，merge `4659a7cd6a6ffe56e0edd526ee52afecc40902dc`。文档补记提交 `e2ff57f02188e35e1b3aebd058ccd0a8d04567b6` 只改文档，集成树与已验证实现一致；本地生产构建预览重启后，三页核心操作复查通过。VBP-038已ready_for_release（version6），任务done，计划三项passed/completed，无新Bug；本地dev部署记录 `8b9825ec-26eb-45ed-a5a5-6fbe438eb931`，backup `b6c24b192d926163f27a83cf17f06a6d384c4901`，回滚为PR #82 revert后重新构建/启动。该记录仅表示localhost:3001本地预览，不代表远端dev或生产部署。

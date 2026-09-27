@@ -31,12 +31,13 @@
 | 021 | 检索、分块、重排序 | VBP-036 · [本批研究与 review](VBP-036-selection-concepts.md) |
 | 022 | 混合搜索、向量存储、引用 | VBP-037 · [本批研究与 review](VBP-037-evidence-concepts.md) |
 | 023 | 基于证据回答、幻觉、评测 | VBP-038 · [本批研究与 review](VBP-038-quality-concepts.md) |
+| 024 | 基准测试、评分器、评测数据集 | VBP-039 · [本批研究与 review](VBP-039-assessment-concepts.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 77 页，另有 9 页历史基准；其余 215 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 80 页，另有 9 页历史基准；其余 212 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
 
-2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023、024 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -304,8 +305,8 @@
 | guardrail | 护栏 | AI·Agent | 待处理 |
 | moderation | 内容审核 | AI·Agent | 待处理 |
 | eval | 评测 | AI·Agent | 023 · 本地验收及 review 通过 |
-| benchmark | 基准测试 | AI·Agent | 待处理 |
-| grader | 评分器 | AI·Agent | 待处理 |
+| benchmark | 基准测试 | AI·Agent | 024 · 本地验收及 review 通过 |
+| grader | 评分器 | AI·Agent | 024 · 本地验收及 review 通过 |
 | fine-tuning | 微调 | AI·Agent | 待处理 |
 | embedding | 嵌入 | AI·Agent | 020 · 本地验收及 review 通过 |
 | vector-store | 向量存储 | AI·Agent | 022 · 本地验收及 review 通过 |
@@ -361,6 +362,6 @@
 | dependency-scanning | 依赖扫描 | 技术栈 | 待处理 |
 | threat-modeling | 威胁建模 | 技术栈 | 待处理 |
 | tool-approval | 工具审批 | AI·Agent | 待处理 |
-| evaluation-dataset | 评测数据集 | AI·Agent | 待处理 |
+| evaluation-dataset | 评测数据集 | AI·Agent | 024 · 本地验收及 review 通过 |
 | permission-boundary | 权限边界 | AI·Agent | 待处理 |
 | xss | 跨站脚本 | 技术栈 | 待处理 |
