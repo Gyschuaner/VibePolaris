@@ -8,8 +8,10 @@ const css = read("app/globals.css");
 const layout = read("app/layout.tsx");
 
 const backgroundColors = ["#F7F3E8", "#EFE5D2", "#E7E4DC", "#EEF0EE", "#E8EDF2"];
+const nightBackgrounds = ["#191C18", "#1F1A13", "#1B1C1E", "#161D1A", "#161A22"];
 const accentColors = ["#52683F", "#58627C", "#9A6248", "#355D57", "#6C5A68"];
 const accentTextColors = ["#52683F", "#58627C", "#8C5942", "#355D57", "#6C5A68"];
+const darkAccentTextColors = ["#B6CC32", "#93A4D8", "#D9997A", "#6FB9A8", "#C0A2BB"];
 
 function luminance(hex) {
   const channels = hex.slice(1).match(/../g).map((value) => Number.parseInt(value, 16) / 255);
@@ -24,6 +26,9 @@ function contrast(first, second) {
 
 test("主题画板使用指定的五档背景与五档主题色", () => {
   for (const color of [...backgroundColors, ...accentColors]) {
+    assert.match(component, new RegExp(color, "i"));
+  }
+  for (const color of nightBackgrounds) {
     assert.match(component, new RegExp(color, "i"));
   }
   assert.match(css, /#191C18/);
@@ -49,6 +54,29 @@ test("正文与全部亮色背景满足 WCAG AA，主题色作为非文本 UI �
   assert.ok(contrast("#B6CC32", "#191C18") >= 3);
 });
 
+test("夜间背景独立成套，主题色沿用白天选择且满足 WCAG AA", () => {
+  assert.match(css, /\[data-theme="dark"\]\[data-background="umber"\]/);
+  assert.match(css, /\[data-theme="dark"\]\[data-background="graphite"\]/);
+  assert.match(css, /\[data-theme="dark"\]\[data-background="spruce"\]/);
+  assert.match(css, /\[data-theme="dark"\]\[data-background="abyss"\]/);
+  for (const palette of ["moss", "indigo", "clay", "pine", "plum"]) {
+    assert.match(css, new RegExp(`\\[data-theme="dark"\\]\\[data-palette="${palette}"\\]`));
+  }
+  for (const background of nightBackgrounds) {
+    assert.ok(contrast("#EEEBDD", background) >= 4.5, `#EEEBDD 与 ${background} 的正文对比度不足`);
+    for (const [accentIndex, accent] of darkAccentTextColors.entries()) {
+      assert.ok(
+        contrast(accent, background) >= 4.5,
+        `${accent} 与 ${background} 的主题色文本对比度不足`,
+      );
+      assert.ok(
+        contrast(darkAccentTextColors[accentIndex], background) >= 3,
+        `${accent} 与 ${background} 的非文本对比度不足`,
+      );
+    }
+  }
+});
+
 test("色带使用离散单选语义、罗盘刻度和完整键盘操作", () => {
   assert.match(component, /role="radiogroup"/);
   assert.match(component, /role="radio"/);
@@ -63,14 +91,25 @@ test("色带使用离散单选语义、罗盘刻度和完整键盘操作", () =>
   assert.match(component, /theme-scale-tick/);
 });
 
-test("夜晚往返保留亮色选择并持久化，旧配色安全迁移", () => {
-  assert.match(component, /persist\(nextMode, background, accent\)/);
+test("夜晚往返各自保留背景选择并持久化，旧配色安全迁移", () => {
+  assert.match(component, /persist\(nextMode, lightBackground, nightBackground, accent, customHue, customSat\)/);
   assert.match(component, /localStorage\.setItem\("vp-background"/);
+  assert.match(component, /localStorage\.setItem\("vp-background-night"/);
+  assert.match(component, /localStorage\.setItem\("vp-palette-custom"/);
+  // 自定义取色入口：点击色带尾部图标弹出六边形蜂窝调色盘。
+  assert.match(component, /theme-hex-wheel/);
+  assert.match(component, /theme-hex-swatch/);
+  assert.match(css, /\.theme-hex-swatch/);
+  assert.doesNotMatch(component, /type="range"/);
   assert.match(component, /localStorage\.setItem\("vp-palette"/);
   assert.match(component, /localStorage\.setItem\("vp-theme"/);
   assert.match(layout, /legacyPalettes = \{ sprout: 'pine', pomelo: 'moss' \}/);
-  assert.match(layout, /backgrounds\[background\] \? background : 'paper'/);
+  assert.match(layout, /dayBackgrounds\[dayBackground\] \? dayBackground : 'paper'/);
+  assert.match(layout, /nightBackgrounds\[nightBackground\] \? nightBackground : 'obsidian'/);
   assert.match(layout, /matchMedia\('\(prefers-color-scheme: dark\)'\)/);
+  // 选择背景与主题色都不再强制切回白天模式。
+  assert.doesNotMatch(component, /function chooseBackground[\s\S]*?setMode\("light"\)/);
+  assert.doesNotMatch(component, /function chooseAccent[\s\S]*?setMode\("light"\)/);
 });
 
 test("昼夜图标无可见按钮框并以 240ms 变换，低动效即时降级", () => {
