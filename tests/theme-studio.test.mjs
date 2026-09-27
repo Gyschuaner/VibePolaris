@@ -102,6 +102,8 @@ test("夜晚往返各自保留背景选择并持久化，旧配色安全迁移",
   assert.match(component, /hexFieldPoint/);
   assert.match(component, /hexFieldPosition/);
   assert.match(component, /theme-hex-light-slider/);
+  assert.match(component, /当前主题色 \$\{rawHex\}/);
+  assert.doesNotMatch(component, /已保护|对比度保护/);
   assert.match(component, /aria-valuenow=\{customLight\}/);
   assert.match(component, /role="application"/);
   assert.match(component, /role="slider"/);

@@ -49,7 +49,7 @@ const LIGHT_MAX = 100;
 /* 连续六边形色域：平顶六边形轮廓，彩虹色相沿边缘顺时针分布（顶部为红）；
  * 饱和度按六边形范数从边缘的 100% 线性降到圆心的 0；滑条值即中心明度（0–100 全量程，
  * 端点=黑/白），边缘按 fieldLightness 剖面 ×(1−0.6·sat/100) 比例变暗，中心始终最亮。
- * Canvas 像素级绘制、指针映射、当前色显示、对比度保护与持久化恢复共用同一组公式，保证“看到即选到”。 */
+ * Canvas 像素级绘制、指针映射、当前色显示、主题 Token 推导与持久化恢复共用同一组公式，保证“看到即选到”。 */
 const FIELD_W = 180;
 const HEX_CIRCUM_R = FIELD_W / 2;
 const FIELD_H = Math.round(HEX_CIRCUM_R * Math.sqrt(3));
@@ -552,9 +552,6 @@ export function ThemeStudio() {
             const rawColor = `hsl(${customHue} ${customSat}% ${finalLight}%)`;
             const [rawR, rawG, rawB] = hslToRgb255(customHue, customSat, finalLight);
             const rawHex = `#${[rawR, rawG, rawB].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
-            const appliedTokens = deriveCustomPaletteTokens(customHue, customSat, mode, finalLight);
-            const appliedColor = appliedTokens?.["--accent"] ?? rawColor;
-            const protectedDiffers = Boolean(appliedTokens && appliedTokens["--accent"] !== rawHex);
             const sliderPosition = ((customLight - LIGHT_MIN) / (LIGHT_MAX - LIGHT_MIN)) * 100;
             return (
               <div className="theme-hex-wheel" role="group" aria-label="六边形调色盘">
@@ -625,14 +622,10 @@ export function ThemeStudio() {
                 </div>
                 <div className="theme-hex-current" aria-live="polite">
                   <span className="theme-hex-current-swatches" aria-hidden="true">
-                    <i style={{ background: rawColor }} title={`原始选色 ${rawHex}`} />
-                    <i style={{ background: appliedColor }} title={`主题色（对比度保护后）${appliedColor}`} />
+                    <i style={{ background: rawColor }} title={`当前主题色 ${rawHex}`} />
                   </span>
                   <span className="theme-hex-current-text">
-                    {`选色 ${rawHex}`}
-                    <em aria-hidden="true"> → </em>
-                    <strong>{`主题色 ${appliedColor}`}</strong>
-                    {protectedDiffers ? <span className="theme-hex-current-note">（已保护）</span> : null}
+                    {`当前主题色 ${rawHex}`}
                   </span>
                 </div>
               </div>
