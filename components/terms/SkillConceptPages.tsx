@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Folder, Terminal } from '@phosphor-icons/react/dist/ssr';
+import { BookOpen, FileText, Terminal } from '@phosphor-icons/react/dist/ssr';
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { SkillLesson } from './SkillConceptLessons';
@@ -10,14 +10,10 @@ export function SkillTermPage() {
   return <ConceptArticle slug="skill" title="技能" subtitle="Agent Skill" sources={skillSources}
     intro={<>Agent Skill 是一个可复用的目录，用来打包工作步骤和可选资源。宿主可以按需向智能体提供这些内容；目录格式相通，具体怎么触发和读取则取决于宿主。</>}
     sections={[['package', '把流程装进目录'], ['disclosure', '需要哪页，就读哪页'], ['trigger', '模型怎样选中它'], ['scripts', '指令与执行环境'], ['boundary', '相邻概念与安全']]}
-    hero={<ConceptHero slug="skill" label="Skill 是留在上下文外的目录，需要的说明和资源再逐步进入"><div className={s.heroPackage}>
-      <div className={s.heroFolder}>
-        <div className={s.heroFolderTitle}><Folder size={20} weight="light"/><strong>hotel-invoices/</strong></div>
-        <div className={s.heroFile}><FileText size={17} weight="light"/><span>SKILL.md</span><small>步骤说明</small></div>
-        <div className={s.heroFile}><BookOpen size={17} weight="light"/><span>references/</span><small>核对规则</small></div>
-        <div className={s.heroFile}><Terminal size={17} weight="light"/><span>scripts/</span><small>提取字段</small></div>
-      </div>
-      <div className={s.heroWindow}><span>上下文窗口</span><b>name + description</b><small>其余文件仍在目录中</small></div>
+    hero={<ConceptHero slug="skill" label="Skill 的内容分层进入模型上下文：宿主先提供元数据，选用后读取正文，再按需读取引用材料"><div className={s.heroLayers}>
+      <div data-layer="metadata"><BookOpen size={20} weight="light"/><span><strong>name + description</strong><small>宿主发现后提供给模型</small></span></div>
+      <div data-layer="instructions"><FileText size={20} weight="light"/><span><strong>SKILL.md 正文</strong><small>模型选用后，通过宿主读取</small></span></div>
+      <div data-layer="resources"><Terminal size={20} weight="light"/><span><strong>references/ 与 scripts/</strong><small>按需读取；脚本由宿主执行</small></span></div>
     </div></ConceptHero>}>
     <ArticleSection id="package" title="把流程装进目录">
       <p id="skill-purpose" className="vp-citation-target"><strong>Skill 把重复要交代的流程收进一个文件夹，供智能体在相似任务中复用。</strong>核心是可读的工作说明；目录还可以带参考资料、模板和脚本。它包装的是做事的方法与材料，不是训练出一种新模型能力。<Cite id="skill-purpose"/></p>
@@ -32,8 +28,8 @@ export function SkillTermPage() {
       <p id="skill-description" className="vp-citation-target">规范给 <code>name</code> 和 <code>description</code> 设了格式边界：<code>name</code> 为 1–64 个小写字母、数字或连字符，不能以连字符开头/结尾、不能连写，并且与父目录同名；<code>description</code> 为 1–1024 个字符，要说明技能做什么、什么时候使用，并包含有助识别任务的关键词。<Cite id="skill-description"/></p>
     </ArticleSection>
     <ArticleSection id="disclosure" title="需要哪页，就读哪页">
-      <p id="skill-disclosure" className="vp-citation-target">规范建议渐进披露：运行时先暴露各 Skill 的 <code>name</code> 与 <code>description</code>；选用某项技能后再读完整的 <code>SKILL.md</code>；它引用的其他材料只有在任务需要时才读取。规范还建议元数据约一百个 token、正文少于五千 token 和五百行。这些是写作与组织建议，不代表所有宿主都有完全相同的计量方式或装载时机。<Cite id="skill-disclosure"/></p>
-      <p>下面用一张住宿发票走一遍目录与上下文的边界。示意一个支持按需读文件、并有脚本运行环境的宿主；真实产品如何发现和调用 Skill、是否支持脚本，都由宿主实现决定。</p>
+      <p id="skill-disclosure" className="vp-citation-target">Agent Skills 规范约定目录格式，并建议渐进披露：兼容的运行时发现可用技能后，先让模型看到各项 <code>name</code> 与 <code>description</code>；模型选用某项技能后，再通过宿主提供的能力读取完整 <code>SKILL.md</code>；正文引用的其他材料，等任务需要时再读取。规范建议元数据约一百个 token、正文少于五千 token 和五百行。这些是组织建议；具体怎样发现目录、提供元数据、访问文件及安排时机，取决于宿主。<Cite id="skill-disclosure"/></p>
+      <p>下面用一张住宿发票走一遍目录与上下文的边界。示意路径会显示一个兼容的宿主如何发现目录、把读取请求落实为文件访问，并在支持时运行脚本；Agent Skills 格式本身不规定这些运行接口。</p>
       <SkillLesson/>
     </ArticleSection>
     <ArticleSection id="trigger" title="模型怎样选中它">
