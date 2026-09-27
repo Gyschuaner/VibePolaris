@@ -46,7 +46,12 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
+import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
+
 const articleTermPages = {
+  grounding: GroundingTermPage,
+  hallucination: HallucinationTermPage,
+  eval: EvaluationTermPage,
   "hybrid-search": HybridSearchTermPage,
   "vector-store": VectorStoreTermPage,
   citation: CitationTermPage,
