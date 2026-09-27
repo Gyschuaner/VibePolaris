@@ -14,7 +14,7 @@ export function ServerTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={serverSources} />;
   return <ConceptArticle slug="server" title="服务器" sources={serverSources}
     intro={<>浏览器输入地址后，另一端要有程序接住请求，并决定返回什么。同一台电脑可以运行不止一个服务；能否连上某个地址，还要看相应程序是否在监听。</>}
-    sections={[["role", "服务器是连接中的角色"], ["listen", "监听、匹配与回应"], ["host", "程序与主机"], ["diagnose", "失败发生在哪一步"]]}
+    sections={[["role", "服务器是连接中的角色"], ["listen", "监听、匹配与回应"], ["host", "程序与主机"], ["diagnose", "区分连接失败与 404"]]}
     hero={<ConceptHero slug="server" label="浏览器请求到达8000端口的HTTP程序并收到200响应"><div className={s.serverHero}><div><Globe size={23} /><code>GET /books</code></div><div><HardDrives size={23} /><code>:8000 → 200</code></div><span>请求到达监听程序，程序生成响应</span></div></ConceptHero>}>
     <ArticleSection id="role" title="服务器是连接中的角色"><Legacy slug="server" names={['question', 'definition']} />
       <p id="server-role" className="vp-citation-target"><strong>在 HTTP 连接中，服务器是接受连接、处理请求并发出响应的程序角色。</strong>同一个程序在不同连接中也可能充当客户端，例如它再去请求另一项服务。这个称呼描述的是一次通信中的职责。<Cite id="server-role" /></p>
@@ -31,7 +31,7 @@ export function ServerTermPage() {
       <div className={s.paired}><div><h3>主机</h3><p>提供计算、网络与存储资源。知道机器开着，不等于指定服务已经启动。</p></div><div><h3>服务程序</h3><p>在特定地址和端口接收连接，按请求决定处理方式。它可能读取文件，也可能访问数据库。</p></div></div>
       <p id="server-port" className="vp-citation-target">Python 的 HTTPServer 示例用主机地址与端口建立监听；<code>--bind 127.0.0.1</code> 则只绑定本机地址。网页在自己电脑上能打开，却无法从其他设备访问时，应先检查绑定地址、端口和网络可达性，而不只检查页面代码。<Cite id="server-port" /></p>
     </ArticleSection>
-    <ArticleSection id="diagnose" title="失败发生在哪一步"><Legacy slug="server" names={['prompt-heading']} />
+    <ArticleSection id="diagnose" title="区分连接失败与 404"><Legacy slug="server" names={['prompt-heading']} />
       <blockquote className={s.quote}>先确认连接到哪台主机、哪个端口；<br />再检查程序怎样处理路径。</blockquote>
       <p>如果根本连不上，检查程序是否运行、监听地址是否对外可达，以及中间的网络限制。如果拿到 404，说明已经有一方回应，应继续核对路径和处理规则。若前面还有 <ConceptTerm slug="reverse-proxy">反向代理</ConceptTerm>，返回的错误也可能由代理产生，需要看具体响应和日志。</p>
       <ArticleAside title="服务器一定连接数据库吗？"><p>不一定。静态文件服务可以直接读文件；计算服务可以根据输入生成结果；应用服务才可能为了这次请求访问数据库。数据库是可选的依赖，不是“服务器”这个词的定义条件。</p></ArticleAside>
@@ -43,17 +43,17 @@ export function ApiGatewayTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={gatewaySources} />;
   return <ConceptArticle slug="api-gateway" title="API 网关" sources={gatewaySources}
     intro={<>一个应用要调用订单和用户两项服务。客户端可以走同一个 API 入口；入口按约定检查请求、选择目标，再把可转交的请求送往后端。</>}
-    sections={[["entry", "统一入口接住多项 API"], ["policy", "请求在哪一层停下"], ["route", "把通过的请求交给服务"], ["scope", "公共策略与业务处理"]]}
+    sections={[["entry", "统一入口接住多项 API"], ["policy", "认证与限流先于后端"], ["route", "把通过的请求交给服务"], ["scope", "公共策略与业务处理"]]}
     hero={<ConceptHero slug="api-gateway" label="请求经过认证和配额后进入订单服务"><div className={s.gatewayHero}><div><Globe size={24} /><span>客户端请求</span></div><div><LockKey size={23} /><span>认证 · 配额</span></div><div><HardDrives size={24} /><span>订单服务</span></div></div></ConceptHero>}>
     <ArticleSection id="entry" title="统一入口接住多项 API"><Legacy slug="api-gateway" names={['question', 'definition']} />
       <p id="gateway-role" className="vp-citation-target"><strong>API 网关给客户端一个集中入口，并按配置把请求送到相应应用服务。</strong>它可以承担认证、限流等跨服务的接入规则。Azure 架构文档把它描述为一种反向代理，但也提醒各产品支持的附加能力并不相同。<Cite id="gateway-role" /></p>
       <p>客户端访问 <code>api.example.com/orders</code>，不必直接知道订单服务的内部地址。网关改变服务部署方式时，可以更新入口后的路由，而不要求所有调用方同时改地址。不过多了一层入口，也意味着入口自身需要监控和故障处理。</p>
     </ArticleSection>
-    <ArticleSection id="policy" title="请求在哪一层停下"><Legacy slug="api-gateway" names={['scene-heading']} />
+    <ArticleSection id="policy" title="认证与限流先于后端"><Legacy slug="api-gateway" names={['scene-heading']} />
       <p id="gateway-auth" className="vp-citation-target">在 AWS 的 HTTP API 中，可以给路由配置授权器，决定请求是否获准继续。这里用“有效／无效凭据”演示这一分支，并不模拟真实签名或令牌解析。未通过时，后端服务的调用计数保持不变。<Cite id="gateway-auth" /></p>
-      <p>本例把配额简化为两次成功转交。换请求路径、改凭据，或连续发到配额用尽，观察请求停在哪一层。数字只用于教学，不代表某个产品的默认阈值。</p>
+      <p>本例用两次成功转交的固定额度，代替真实的时间窗口和突发速率规则。换请求路径、改凭据，或连续发到额度用尽，观察请求停在哪一层。</p>
       <GatewayLesson />
-      <p id="gateway-limit" className="vp-citation-target">AWS 文档说明，超过其配置的请求速率与突发限制时，客户端可能收到 429；这些限制是尽力而为的目标，不应当成绝对精确的计数器。本例的“2 次”是离散教学规则，重点是看见请求在进入后端前被阻止。<Cite id="gateway-limit" /></p>
+      <p id="gateway-limit" className="vp-citation-target">AWS 文档说明，超过其配置的请求速率与突发限制时，客户端可能收到 429；这些限制是尽力而为的目标。本例的固定额度只演示请求在进入后端前被阻止，不模拟 AWS 的令牌桶。<Cite id="gateway-limit" /></p>
     </ArticleSection>
     <ArticleSection id="route" title="把通过的请求交给服务" className={base.offset}><Legacy slug="api-gateway" names={['quiz-heading']} />
       <p id="gateway-route" className="vp-citation-target">AWS HTTP API 用方法与资源路径确定路由，例如 <code>GET /pets</code>；没有匹配规则时，可能走默认路由，也可能直接返回未找到。<strong>认证通过只解决“能不能进入”，路由才决定“交给谁”。</strong><Cite id="gateway-route" /></p>
@@ -71,7 +71,7 @@ export function ReverseProxyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={proxySources} />;
   return <ConceptArticle slug="reverse-proxy" title="反向代理" sources={proxySources}
     intro={<>访客只看到一个公开域名，图片和应用页面却由不同上游提供。反向代理在公开入口接收请求，按规则转交，再把上游结果送回访客。</>}
-    sections={[["position", "公开入口与背后的上游"], ["forward", "请求转交，响应返回"], ["headers", "转发头不是天然可信"], ["limits", "代理能做什么，不能保证什么"]]}
+    sections={[["position", "公开入口与背后的上游"], ["forward", "请求转交，响应返回"], ["headers", "转发头不是天然可信"], ["limits", "附加能力与上游故障"]]}
     hero={<ConceptHero slug="reverse-proxy" label="公开代理把图片请求转交给静态资源服务，再把响应带回客户端"><div className={s.proxyHero}><span>客户端</span><span><CloudArrowDown size={23} /> proxy.example</span><span>静态资源服务</span></div></ConceptHero>}>
     <ArticleSection id="position" title="公开入口与背后的上游"><Legacy slug="reverse-proxy" names={['question', 'definition']} />
       <p id="proxy-role" className="vp-citation-target"><strong>反向代理作为服务端的公开入口接收请求，再向后方服务发起请求。</strong>HTTP 规范也把这类中间方称作 gateway；它对外像源站，对内再与真实处理方通信。这里的“反向”是相对于替客户端出门访问的正向代理而言。<Cite id="proxy-role" /></p>
@@ -87,7 +87,7 @@ export function ReverseProxyTermPage() {
       <p id="proxy-headers" className="vp-citation-target">NGINX 可以用 <code>proxy_set_header</code> 给上游请求设置 Host 等字段，也能传递代理看到的来源地址。应用要识别最初的客户端，往往要结合可信代理链与连接来源，而不能只看一条请求头字符串。<Cite id="proxy-headers" /></p>
       <p id="proxy-trust" className="vp-citation-target">Envoy 文档提醒，客户端可以伪造 <code>X-Forwarded-For</code>；只有可信代理加入的地址才可作为可信依据。本例中的 <code>1.2.3.4</code> 是伪造值，<code>198.51.100.8</code> 是预设的客户端地址。勾选错误信任后，应用读到伪造值，演示的是配置风险，不是真实 IP 探测。<Cite id="proxy-trust" /></p>
     </ArticleSection>
-    <ArticleSection id="limits" title="代理能做什么，不能保证什么"><Legacy slug="reverse-proxy" names={['prompt-heading']} />
+    <ArticleSection id="limits" title="附加能力与上游故障"><Legacy slug="reverse-proxy" names={['prompt-heading']} />
       <p id="proxy-redirect" className="vp-citation-target">上游如果返回指向内部地址的 <code>Location</code>，Apache 常用 <code>ProxyPassReverse</code> 改写响应头里的地址，使客户端继续走公开入口。代理转交的不止请求正文；响应字段也可能需要配置。<Cite id="proxy-redirect" /></p>
       <blockquote className={s.quote}>公开入口可以转交请求，<br />上游是否健康仍需另行判断。</blockquote>
       <p>反向代理可以再配置缓存、TLS 终止或负载分配，但页面里的两条路径没有自动具备这些功能。若上游没响应，代理也不能凭空造出业务成功；排查时把代理日志、上游日志和返回状态对应起来。</p>
