@@ -58,3 +58,7 @@ RAG：
 390×844：三页首图与终态正常，无横向溢出。嵌入续借0.96、打印0.12、B停止、Enter重置；搜索B/A评估、打印k1返回C、健身房空指标、Enter重置；RAG完整资料支持高亮、缺规则及冲突保持未知、Enter重置。第四来源回跳 embedding-config / semantic-evaluation / rag-evaluation，顶部262.23/262.19/262.19px，不被手机阅读栏遮挡。搜索修复后桌面也观察过淡入中间态：88px行高、100px步距，四行不互穿。
 
 dev 合并和重启后的核心核对尚待本次交付，实际状态以 DP 记录为准。当前 Mac 无 `D:/Obsidian/gysnote`，跳过该库同步。没有产生正式飞书文档，不建空索引。未部署远端或生产。
+
+## dev 集成闭环
+
+PR [#79](https://github.com/Gyschuaner/VibePolaris/pull/79) 已合并 dev；提交 `786b3cb54486f347bf37cbfff0a663890514c84d`，合并树与已验收构建一致。生产构建预览在 `http://localhost:3001` 重启后，三页核心交互复验通过。DP VBP-035 为 ready_for_release，任务 done，计划 3/3 passed，BUG-9ACB6744 closed。dev 部署记录 `96803d7f-68ed-460f-bcf1-4c019c278133` 仅指本机预览，无远端或生产部署；备份为 `1774bcaff3ca918924dd45164f2e6f75822cae3f`，回滚通过 revert PR #79 后构建与重启。

@@ -26,6 +26,7 @@ import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/compo
 import { MemoryTermPage, ContextWindowTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
 import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
 import { EmbeddingTermPage, SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
+import { RetrievalTermPage, ChunkingTermPage, RerankingTermPage } from "@/components/terms/SelectionConceptPages";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
@@ -45,6 +46,9 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
 const articleTermPages = {
+  retrieval: RetrievalTermPage,
+  chunking: ChunkingTermPage,
+  reranking: RerankingTermPage,
   embedding: EmbeddingTermPage,
   "semantic-search": SemanticSearchTermPage,
   rag: RagConceptTermPage,
