@@ -53,8 +53,12 @@ import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } fr
 
 import { StreamingOutputTermPage, StructuredOutputTermPage, FunctionCallingTermPage } from '@/components/terms/ModelOutputPages';
 import { ServerTermPage, ApiGatewayTermPage, ReverseProxyTermPage } from '@/components/terms/EdgeConceptPages';
+import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/components/terms/AccessConceptPages';
 
 const articleTermPages = {
+  'load-balancer': LoadBalancerTermPage,
+  auth: AuthTermPage,
+  authorization: AuthorizationTermPage,
   server: ServerTermPage,
   'api-gateway': ApiGatewayTermPage,
   'reverse-proxy': ReverseProxyTermPage,
