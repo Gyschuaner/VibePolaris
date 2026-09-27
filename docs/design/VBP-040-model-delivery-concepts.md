@@ -66,3 +66,10 @@ VBP-012 的三个既有词条；顾毅盛负责研究、设计、实现、review
 ## 集成入口
 
 实现提交 `74f26ff202b3e3743b290d1e30fe153d9df71c0f`。PR [#84](https://github.com/Gyschuaner/VibePolaris/pull/84) 目标dev，已关联当前任务；此处记录本地验收完成，最终合并、重启核心复查与DP状态按实际结果补记。集成前dev/备份为 `8711b38e996167300546e71ee04eb1e780f7ab1e`；回滚入口PR84 revert后构建重启。部署范围仅localhost:3001，无远端dev与生产。
+
+
+## 已核实的 dev 集成闭环
+
+PR84于2026-09-27T02:00:17Z合并dev，提交 `1dc5c83ff89545a65584e35fd24c53fe77b82bb3`，本地工作区干净。功能分支已删除；合并树与已验收功能树一致。重启本地生产预览Ready70ms后，三页默认核心流程再次实际通过。VBP-040已核实ready_for_release/version6，研发任务done/version3；计划aa6fab41-2d7c-43c5-ac28-fe8cf4cbbb6d已completed，3/3passed。
+
+本地部署4c273c8c-02b7-471d-a194-2154186dff2c（local-dev-20260927-vbp040-1dc5c83）关联VBP-040与VBP-012，环境dev/状态released仅指localhost:3001预览。没有远端dev或生产部署。备份/回滚基线8711b38e996167300546e71ee04eb1e780f7ab1e；必要时PR84 revert再构建重启。此记录依据真实DP/Git结果，在下一功能分支附带更新，未用未发生阶段补写完成。
