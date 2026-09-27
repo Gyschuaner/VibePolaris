@@ -3,25 +3,45 @@ import type { Metadata, Viewport } from "next";
 import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
 import { NotesProvider } from "@/components/notes/NotesProvider";
 import { PointerFeedback } from "@/components/PointerFeedback";
+import { deriveCustomPaletteTokens } from "@/lib/custom-palette";
 
 import "./globals.css";
 import "./harness-v4.css";
 
+// deriveCustomPaletteTokens 必须自包含：这里取其运行时源码内联，保证与组件内实现一致。
 const themeBootstrap = `
+var __vpDeriveCustomPaletteTokens = (${deriveCustomPaletteTokens.toString()});
 (function () {
-  var mode, palette, background;
+  var mode, palette, dayBackground, nightBackground, customAccent;
   try {
     mode = localStorage.getItem('vp-theme');
     palette = localStorage.getItem('vp-palette');
-    background = localStorage.getItem('vp-background');
+    dayBackground = localStorage.getItem('vp-background');
+    nightBackground = localStorage.getItem('vp-background-night');
+    customAccent = localStorage.getItem('vp-palette-custom');
   } catch (error) {}
-  var backgrounds = { paper: true, oat: true, limestone: true, pearl: true, mist: true };
+  var dayBackgrounds = { paper: true, oat: true, limestone: true, pearl: true, mist: true };
+  var nightBackgrounds = { obsidian: true, umber: true, graphite: true, spruce: true, abyss: true };
   var palettes = { moss: true, indigo: true, clay: true, pine: true, plum: true };
   var legacyPalettes = { sprout: 'pine', pomelo: 'moss' };
   if (!palettes[palette] && legacyPalettes[palette]) palette = legacyPalettes[palette];
-  document.documentElement.dataset.theme = mode || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  document.documentElement.dataset.background = backgrounds[background] ? background : 'paper';
-  document.documentElement.dataset.palette = palettes[palette] ? palette : 'moss';
+  var isDark = mode ? mode === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  if (palette === 'custom') {
+    var customParts = (customAccent || '').split(',');
+    var customTokens = __vpDeriveCustomPaletteTokens(Number(customParts[0]), Number(customParts[1]), isDark ? 'dark' : 'light');
+    if (customTokens) {
+      Object.keys(customTokens).forEach(function (tokenName) {
+        document.documentElement.style.setProperty(tokenName, customTokens[tokenName]);
+      });
+    } else {
+      palette = 'moss';
+    }
+  }
+  document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  document.documentElement.dataset.background = isDark
+    ? (nightBackgrounds[nightBackground] ? nightBackground : 'obsidian')
+    : (dayBackgrounds[dayBackground] ? dayBackground : 'paper');
+  document.documentElement.dataset.palette = palettes[palette] || palette === 'custom' ? palette : 'moss';
 })();`;
 
 export const metadata: Metadata = {
