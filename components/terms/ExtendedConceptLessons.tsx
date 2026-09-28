@@ -66,9 +66,9 @@ export function WindowLesson() {
 }
 
 const promptClauses = [
-  { name: "提供材料", text: "启动日志：app.py 第 1 行，SyntaxError: expected ':'。" },
-  { name: "说明结果", text: "请按「位置、修改、验证」三项回答。" },
-  { name: "限定范围", text: "只分析日志；缺少代码时说明需要补充什么，不声称已经修复。" },
+  { name: "提供材料", text: "启动日志：app.py:1 · SyntaxError: expected ':'" },
+  { name: "说明结果", text: "按「位置、修改、验证」三项回答。" },
+  { name: "限定范围", text: "只分析日志；没读代码或运行检查就说明。" },
 ];
 export function PromptLesson() {
   const [clauses, setClauses] = useState([false, false, false]);
@@ -76,11 +76,12 @@ export function PromptLesson() {
   const [answer, setAnswer] = useState(0);
   const [answerScoped, setAnswerScoped] = useState(false);
   const run = () => { setAnswer((clauses[0] ? 1 : 0) + (clauses[1] ? 2 : 0)); setAnswerScoped(clauses[2]); setOpen(true); };
-  const replies = ["还缺少启动日志或错误信息，暂时无法定位原因。请提供这次运行的报错。", "日志指向 app.py 第 1 行缺少冒号。需要查看对应代码，再修改并重新运行检查；这里尚未实际修复。", "位置：信息不足。\n修改：请先提供启动日志。\n验证：拿到错误信息后再确定检查方法。", "位置：app.py 第 1 行，日志提示缺少冒号。\n修改：查看该行代码，确认并补上缺少的冒号。\n验证：重新启动，再检查 /health；目前尚未执行。"];
+  const hasMaterial = answer % 2 === 1;
+  const hasFormat = answer >= 2;
   return <div className={`${styles.lab} ${styles.promptLab}`} aria-label="提示词改写演示">
     <div className={styles.promptDraft}><span className={styles.draftLabel}>任务稿</span><p className={styles.requestTitle}>帮我分析服务为什么启动失败。</p>{promptClauses.map((clause, i) => <Reveal key={clause.name} open={clauses[i]}><p className={styles.clause}>{clause.text}</p></Reveal>)}</div>
-    <div className={styles.promptEdits}>{promptClauses.map((clause, i) => <button key={clause.name} aria-pressed={clauses[i]} onClick={() => { setClauses(values => values.map((value, j) => i === j ? !value : value)); setOpen(false); }}><span>{clauses[i] ? <Check size={16} /> : `0${i + 1}`}</span>{clause.name}</button>)}<button className={styles.runPrompt} disabled={open} onClick={run}>查看回答样例<ArrowRight size={20} /></button></div>
-    <div className={styles.promptReply}><Reveal open={open}><div role="status"><span>回答样例</span><p>{replies[answer]}{answerScoped ? answer % 2 === 1 ? "\n依据仅为这段日志，下一步需要报错行附近的代码。" : "\n目前没有提供日志，不能声称已经定位或修复。" : ""}</p></div></Reveal></div>
+    <div className={styles.promptEdits}>{promptClauses.map((clause, i) => <button key={clause.name} aria-pressed={clauses[i]} onClick={() => { setClauses(values => values.map((value, j) => i === j ? !value : value)); setOpen(false); }}><span>{clauses[i] ? <Check size={16} /> : `0${i + 1}`}</span>{clause.name}</button>)}<button className={styles.runPrompt} disabled={open} onClick={run}>查看这版样例<ArrowRight size={20} /></button></div>
+    <div className={styles.promptReply}><Reveal open={open}><div className={styles.promptSample} role="status"><span className={styles.draftLabel}>固定回答样例</span>{hasFormat ? <dl><div><dt>位置</dt><dd>{hasMaterial ? "日志指向 app.py 第 1 行，提示缺少冒号。" : "未提供启动日志，暂时无法定位。"}</dd></div><div><dt>修改</dt><dd>{hasMaterial ? "查看该行代码，核对并补上缺少的冒号。" : "请先提供这次运行的报错。"}</dd></div><div><dt>验证</dt><dd>{hasMaterial ? "修改后重新启动，再检查服务能否正常响应；目前尚未执行。" : "拿到日志后再确定检查方法。"}</dd></div></dl> : <p>{hasMaterial ? "启动日志指向 app.py 第 1 行缺少冒号。先查看对应代码，再修改并运行检查；目前尚未执行。" : "还缺少启动日志或错误信息，暂时无法定位原因。请提供这次运行的报错。"}</p>}{answerScoped && <p className={styles.promptScopeNote}>{hasMaterial ? "只依据这段日志分析；没有读取代码或运行检查。" : "没有提供日志，不能声称已经定位或修复。"}</p>}</div></Reveal></div>
   </div>;
 }
 
