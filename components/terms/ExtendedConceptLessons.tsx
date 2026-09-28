@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, PlugsConnected, Terminal, Trash, Play, Pause } from "@phosphor-icons/react";
+import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, Terminal, Trash } from "@phosphor-icons/react";
 import { useScene } from "./HarnessStoryScenes";
 import styles from "./ExtendedConcepts.module.css";
 
@@ -71,16 +71,6 @@ export function PromptLesson() {
     <div className={styles.promptDraft}><span className={styles.draftLabel}>任务稿</span><p className={styles.requestTitle}>帮我分析服务为什么启动失败。</p>{promptClauses.map((clause, i) => <Reveal key={clause.name} open={clauses[i]}><p className={styles.clause}>{clause.text}</p></Reveal>)}</div>
     <div className={styles.promptEdits}>{promptClauses.map((clause, i) => <button key={clause.name} aria-pressed={clauses[i]} onClick={() => { setClauses(values => values.map((value, j) => i === j ? !value : value)); setOpen(false); }}><span>{clauses[i] ? <Check size={16} /> : `0${i + 1}`}</span>{clause.name}</button>)}<button className={styles.runPrompt} disabled={open} onClick={run}>查看回答样例<ArrowRight size={20} /></button></div>
     <div className={styles.promptReply}><Reveal open={open}><div role="status"><span>回答样例</span><p>{replies[answer]}{answerScoped ? answer % 2 === 1 ? "\n依据仅为这段日志，下一步需要报错行附近的代码。" : "\n目前没有提供日志，不能声称已经定位或修复。" : ""}</p></div></Reveal></div>
-  </div>;
-}
-
-const mcpLabels = ["连接日志服务器", "发现工具", "调用 read_log", "接收工具结果", "重新开始"];
-export function McpLesson() {
-  const scene = useScene(5);
-  return <div ref={scene.ref} className={`${styles.lab} ${styles.mcpLab}`} aria-label="MCP 连接演示">
-    <div className={styles.connectionBoard} data-connected={scene.step > 0}><div className={styles.host}><Terminal size={29} weight="light" /><h3>AI 应用</h3><span>MCP 客户端</span></div><div className={styles.socket}><PlugsConnected size={34} weight="light" /><i /></div><div className={styles.server}><Archive size={29} weight="light" /><h3>日志服务器</h3><span>提供 read_log</span></div></div>
-    <div className={styles.protocolDesk}><div className={styles.toolRegistry}><span>应用已发现的工具</span><Reveal open={scene.step >= 2}><div className={styles.discoveredTool}><FileText size={20} /><code>read_log(path)</code></div></Reveal><Reveal open={scene.step < 2}><p>还没有工具定义</p></Reveal></div><div className={styles.protocolMessage} aria-live="polite"><States index={scene.step}>{[<p key="0">等待连接</p>,<p key="1">连接可用。下一步向服务器查询工具。</p>,<div key="2"><code>tools/list</code><p>收到 read_log 的用途与参数定义。</p></div>,<div key="3"><code>tools/call</code><pre>{'{ name: "read_log",\n  arguments: { path: "server.log" } }'}</pre><p>请求已发送，等待结果。</p></div>,<div key="4"><code>工具返回</code><pre>app.py:1 — SyntaxError: expected &apos;:&apos;</pre></div>]}</States></div></div>
-    <div className={styles.actions}><button onClick={() => scene.seek((scene.step + 1) % 5)}>{mcpLabels[scene.step]}<ArrowRight size={18} /></button><button aria-label={scene.playing ? "暂停 MCP 演示" : "自动播放 MCP 演示"} onClick={scene.toggle}>{scene.playing ? <Pause size={19} /> : <Play size={19} />}</button><button disabled={scene.step === 0} onClick={() => scene.seek(0)}>断开</button></div>
   </div>;
 }
 
