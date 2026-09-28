@@ -1,6 +1,9 @@
 export const memorySources = [
   { publisher: "LangChain · LangGraph Docs", title: "Memory overview", date: "", url: "https://docs.langchain.com/oss/python/concepts/memory", citations: ["memory-scope", "memory-retrieval", "memory-maintenance"] },
   { publisher: "Justin Young · Anthropic", title: "Effective harnesses for long-running agents", date: "2025-11-26", url: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", citations: ["memory-handoff"] },
+  { publisher: "Anthropic Engineering", title: "Effective context engineering for AI agents", date: "2025-09-29", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", citations: ["memory-selection"] },
+  { publisher: "OpenAI Agents SDK", title: "Sessions", date: "", url: "https://openai.github.io/openai-agents-python/sessions/", citations: ["memory-session"] },
+  { publisher: "IETF · HTTP Semantics", title: "RFC 9110 · 500 Internal Server Error", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error", citations: ["memory-status"] },
 ];
 export const windowSources = [
   { publisher: "Anthropic · Claude Docs", title: "Context windows", date: "", url: "https://platform.claude.com/docs/en/build-with-claude/context-windows", citations: ["window-budget", "window-count"] },

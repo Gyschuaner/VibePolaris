@@ -24,17 +24,24 @@ export function MemoryLesson() {
   const reset = () => { setSaved(false); setSession(1); setRecalled(false); };
   return <div className={`${styles.lab} ${styles.memoryLab}`} aria-label="记忆存取演示">
     <div className={styles.memoryDesk}>
-      <div className={styles.sessionPaper}><div className={styles.objectTitle}><FileText size={21} /><h3>会话 {session}</h3></div><p>继续修复服务</p><States index={session === 1 ? 0 : recalled ? 2 : 1}>{[<p key="current" className={styles.noteText}>{progressNote}</p>,<p key="empty" className={styles.empty}>这次还没有上次的进度。</p>,<p key="recall" className={styles.noteText}>{progressNote}</p>]}</States></div>
-      <div className={styles.archiveShelf} data-saved={saved}><Archive size={32} weight="light" /><h3>外部记录</h3><div className={styles.storedNote} data-saved={saved} aria-hidden={!saved}><FileText size={21} /><strong>服务修复进度</strong><span>app.py · 待检查 /health</span></div><p className={styles.archiveEmpty} data-hidden={saved}>尚未保存</p></div>
+      <div className={styles.sessionPaper} data-recalled={recalled}><div className={styles.objectTitle}><FileText size={21} /><h3>会话 {session}</h3></div><p>继续修复服务</p><States index={session === 1 ? 0 : recalled ? 2 : 1}>{[<p key="current" className={styles.noteText}>{progressNote}</p>,<p key="empty" className={styles.empty}>这次还没有上次的进度。</p>,<p key="recall" className={styles.noteText}>{progressNote}</p>]}</States></div>
+      <div className={styles.archiveShelf}>
+        <div className={styles.archiveHeading}><Archive size={25} weight="light" /><h3>项目记录</h3></div>
+        <div className={styles.archiveOther}><span>首页配色</span><strong>淡紫</strong></div>
+        <div className={styles.archiveSlot}>
+          <p className={styles.archiveEmpty} data-hidden={saved} aria-hidden={saved}>服务修复 · 尚未保存</p>
+          <div className={styles.storedNote} data-saved={saved} data-selected={recalled} aria-hidden={!saved} inert={!saved}><strong>服务修复</strong><span>冒号已补 · /health 仍返回 500</span></div>
+        </div>
+      </div>
     </div>
     <div className={styles.actions}>
       <button disabled={saved || session !== 1} onClick={() => setSaved(true)}><Archive size={18} />保存进度</button>
       <button onClick={() => { setSession(n => n + 1); setRecalled(false); }}>新会话<ArrowRight size={18} /></button>
-      <button disabled={!saved || session === 1 || recalled} onClick={() => setRecalled(true)}><ArrowDown size={18} />取回进度</button>
+      <button disabled={!saved || session === 1 || recalled} onClick={() => setRecalled(true)}><ArrowDown size={18} />让应用取回</button>
       <button disabled={!saved} aria-label="删除保存的进度" onClick={() => { setSaved(false); setRecalled(false); }}><Trash size={18} /></button>
       <button aria-label="重置记忆演示" onClick={reset}><ArrowCounterClockwise size={18} /></button>
     </div>
-    <p className={styles.status} role="status">{recalled ? "已把保存的进度加入这次输入。" : session > 1 ? saved ? "记录还在外部，新会话需要重新读取。" : "没有可取回的记录，可以重置后先保存。" : saved ? "进度已保存，试着开始一次新会话。" : "先保存这次进度，再切换会话。"}</p>
+    <p className={styles.status} role="status">{recalled ? "应用选出服务修复记录，加入本轮输入。" : session > 1 ? saved ? "记录仍在外部，本轮尚未读取。" : "本任务没有保存的记录。" : saved ? "已保存本任务进度，当前会话的内容仍在。" : "保存本任务进度，再切换会话。"}</p>
   </div>;
 }
 
