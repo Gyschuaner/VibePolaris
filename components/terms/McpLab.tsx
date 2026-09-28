@@ -12,12 +12,11 @@ function ToolCard() {
 export function McpHero() {
   return <ConceptHero slug="mcp-r2" label="同一份工具说明，经 MCP 分别交给聊天助手和写作助手">
     <div className={styles.heroArt}>
-      <svg className={styles.heroLines} viewBox="0 0 400 230" preserveAspectRatio="none"><path d="M 285 115 C 205 115 210 55 95 55 M 285 115 C 205 115 210 175 95 175" /></svg>
+      <svg className={styles.heroLines} viewBox="0 0 400 230" preserveAspectRatio="none"><path d="M 285 115 C 205 115 210 55 95 55" /><path d="M 285 115 C 205 115 210 175 95 175" /></svg>
       <div className={styles.heroApp}><ChatCircleText size={21} /><b>聊天助手</b><span><Check size={12} />搜索指南</span></div>
       <div className={`${styles.heroApp} ${styles.heroWriter}`}><PencilLine size={21} /><b>写作助手</b><span><Check size={12} />搜索指南</span></div>
       <div className={styles.heroServer}><BookOpen size={28} weight="light" /><strong>图书馆资料服务</strong><div><Wrench size={13} />搜索指南</div></div>
       <span className={styles.heroProtocol}>MCP</span>
-      <div className={styles.heroCopy}><Wrench size={12} />工具说明</div><div className={`${styles.heroCopy} ${styles.heroCopyTwo}`}><Wrench size={12} />工具说明</div>
     </div>
   </ConceptHero>;
 }
