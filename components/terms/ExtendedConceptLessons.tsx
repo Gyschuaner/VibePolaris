@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, Terminal, Trash } from "@phosphor-icons/react";
+import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, LockSimpleOpen, Terminal, Trash } from "@phosphor-icons/react";
 import { useScene } from "./HarnessStoryScenes";
 import styles from "./ExtendedConcepts.module.css";
 
@@ -86,7 +86,7 @@ export function PromptLesson() {
 }
 
 const operations = [
-  { name: "修改工作区文件", target: "/workspace/app.py", icon: FileText, result: "允许写入工作区，文件修改完成。" },
+  { name: "读取工作区文件", target: "/workspace/app.py", icon: FileText, result: "允许读取工作区文件，已取得 app.py 的内容。" },
   { name: "读取外部密钥", target: "~/.ssh/id_rsa", icon: LockSimple, result: "拒绝访问：此路径不在允许读取的范围。" },
   { name: "访问文档站点", target: "docs.example.com", icon: Globe, result: "允许访问指定站点，收到文档内容。" },
 ];
@@ -97,11 +97,12 @@ export function SandboxLesson() {
   const current = operations[operation];
   const allowed = operation === 0 || (operation === 2 && network);
   const Icon = current.icon;
+  const GateIcon = operation === 2 && network ? LockSimpleOpen : LockSimple;
   return <div ref={scene.ref} className={`${styles.lab} ${styles.sandboxLab}`} aria-label="沙箱边界演示">
     <div className={styles.operationChoices}>{operations.map((op, i) => <button key={op.name} aria-pressed={operation === i} onClick={() => { setOperation(i); scene.seek(0); }}>{op.name}</button>)}</div>
     <div className={styles.sandboxStage} data-step={scene.step} data-allowed={allowed} data-internal={operation === 0}>
       <div className={styles.workspace}><Terminal size={28} weight="light" /><strong>执行沙箱</strong><span>/workspace 可读写</span></div>
-      <div className={styles.gate}><LockSimple size={24} /><span>访问边界</span></div>
+      <div className={styles.gate}><GateIcon size={24} /><span>访问边界</span></div>
       <div className={styles.operationObject}><Icon size={25} /><code>{current.target}</code></div>
       <span className={styles.hostLabel}>外部环境</span>
     </div>
