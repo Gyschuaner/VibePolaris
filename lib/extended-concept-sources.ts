@@ -31,4 +31,6 @@ export const mcpSources = [
 export const sandboxSources = [
   { publisher: "David Dworken、Oliver Weller-Davies · Anthropic", title: "Making Claude Code more secure and autonomous with sandboxing", date: "2025-10-20", url: "https://www.anthropic.com/engineering/claude-code-sandboxing", citations: ["sandbox-enforcement", "sandbox-dimensions", "sandbox-approval"] },
   { publisher: "gVisor · 项目文档", title: "What is gVisor?", date: "", url: "https://gvisor.dev/docs/", citations: ["sandbox-implementation"] },
+  { publisher: "Linux Kernel · Landlock", title: "Landlock: unprivileged access control", date: "2026-03", url: "https://www.kernel.org/doc/html/v7.1/userspace-api/landlock.html", citations: ["sandbox-access"] },
+  { publisher: "Docker Docs", title: "Resource constraints", date: "", url: "https://docs.docker.com/engine/containers/resource_constraints/", citations: ["sandbox-resources"] },
 ];
