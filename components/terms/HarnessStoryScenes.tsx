@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowCounterClockwise, ArrowRight, Brain, Check, CheckCircle, Circuitry, FileText, LockSimple, Pause, PencilLine, Play, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Brain, Check, CheckCircle, Circuitry, FileText, LockSimple, Pause, Play, WarningCircle } from "@phosphor-icons/react";
 import styles from "./HarnessStory.module.css";
 
 // One short, finite sequence at a time; never hold the reader's scroll position.
@@ -104,30 +104,35 @@ export function HarnessContextFlow() {
 }
 
 const outcomes = {
-  success: { label: "检查通过", stages: ["写入补丁", "运行检查", "验证完成"], icons: [PencilLine, ShieldCheck, CheckCircle], title: "服务恢复正常", code: "GET /health → 200 OK", description: "本例中，服务成功启动并返回了预期响应。" },
-  retry: { label: "检查失败", stages: ["运行检查", "带回错误", "继续修正"], icons: [ShieldCheck, WarningCircle, PencilLine], title: "检查失败，继续修复", code: "GET /health → 500 · NameError", description: "补上冒号后还有返回值错误。模型看到新结果，再提出修改。" },
-  denied: { label: "权限不足", stages: ["提出修改", "检查权限", "工具未执行"], icons: [PencilLine, ShieldCheck, LockSimple], title: "缺少写入权限", code: "PermissionDenied · app.py 未修改", description: "Harness 返回拒绝原因，模型说明还需要什么授权。" },
+  success: { label: "检查通过", stages: ["提出修改", "写入后检查", "验证完成"], title: "本次检查通过，结束修复", response: "200 OK" },
+  retry: { label: "检查失败", stages: ["提出修改", "写入后检查", "继续修正"], title: "检查仍有错误，交回模型继续修正", response: "500 · NameError" },
+  denied: { label: "权限不足", stages: ["提出修改", "检查权限", "工具未执行"], title: "写入被拦下，等待所需授权", response: "未运行" },
 };
 
 export function HarnessOutcomeFlow() {
   const [scenario, setScenario] = useState<keyof typeof outcomes>("success");
   const scene = useScene(3);
   const current = outcomes[scenario];
+  const saved = scenario !== "denied" && scene.step > 0;
+  const finished = scene.step === 2;
+  const ResultIcon = scenario === "success" ? CheckCircle : scenario === "retry" ? WarningCircle : LockSimple;
   return <div className={styles.outcomeScene} ref={scene.ref} role="region" aria-label="完成、重试与权限边界">
     <div className={styles.outcomeTabs} role="group" aria-label="选择执行结果">{Object.entries(outcomes).map(([key, value]) => <button key={key} type="button" aria-pressed={scenario === key} onClick={() => { setScenario(key as keyof typeof outcomes); scene.seek(0); }}>{value.label}</button>)}</div>
     <SceneControls scene={scene} labels={current.stages} />
-    <div className={styles.outcomeTrack} data-scenario={scenario}>
-      {current.stages.map((label, index) => { const Icon = current.icons[index]; return <div key={`${scenario}-${label}`} className={styles.outcomeNode} data-active={index <= scene.step} data-blocked={scenario === "denied" && index === 2}>
-        <Icon className={styles.actorIcon} aria-hidden="true" />
-        <strong>{label}</strong>
-        {index < 2 && <span className={styles.outcomeLine} data-lit={scene.step > index} aria-hidden="true" />}
-      </div>; })}
-      {scenario === "retry" && scene.step === 2 && <span className={styles.returnLoop} aria-hidden="true"><ArrowCounterClockwise size={28} /></span>}
+    <div className={styles.proofWorkbench} data-saved={saved} data-finished={finished}>
+      <div className={styles.proofFile}>
+        <div className={styles.proofHeading}><FileText size={24} aria-hidden="true" /><strong>app.py</strong><span>{saved ? "已保存修改" : "尚未修改"}</span></div>
+        <pre><code>def health()<span className={styles.proofColon} data-visible={saved} aria-hidden={!saved}>:</span>{"\n"}    return <span>{saved && scenario === "success" ? '"ok"' : "health_status"}</span></code></pre>
+        <div className={styles.proofSeal} aria-hidden="true"><Check size={30} /></div>
+      </div>
+      <div className={styles.proofService}>
+        <span>服务检查</span>
+        <code>GET /health</code>
+        <div className={styles.proofWindow} data-waiting={scene.step === 1 && scenario !== "denied"}>
+          <strong>{finished ? current.response : scene.step === 1 && scenario !== "denied" ? "检查中…" : "尚无结果"}</strong>
+        </div>
+      </div>
     </div>
-    <div className={styles.outcomeCaption} aria-live="polite"><div key={`${scenario}-${scene.step}`} className={styles.reveal}>
-      <h3>{scene.step === 2 ? current.title : current.stages[scene.step]}</h3>
-      <p>{scene.step === 2 ? current.description : scenario === "denied" ? "修改请求需要经过写入权限检查。" : "写入补丁以后，仍需要检查服务是否恢复。"}</p>
-      {scene.step === 2 && <code>{current.code}</code>}
-    </div></div>
+    <div className={styles.proofResult} data-finished={finished} aria-live="polite"><ResultIcon size={23} aria-hidden="true" /><p>{finished ? current.title : scene.step === 0 ? "模型提出修改请求，文件还没有变化。" : scenario === "denied" ? "正在检查写入权限，尚未修改文件。" : "文件已修改，等待服务检查返回结果。"}</p></div>
   </div>;
 }
