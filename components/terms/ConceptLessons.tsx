@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowRight, Brain, Check, CheckCircle, Circuitry, FileText, LockSimple, Plus, Terminal } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ConceptArticle.module.css";
 import toolStyles from "./ToolCallingLesson.module.css";
+import contextStyles from "./ContextLesson.module.css";
 
 function Layers({ current, children }: { current: number; children: ReactNode[] }) {
   return <div className={styles.layers} aria-live="polite">{children.map((child, index) => <div key={index} className={styles.layer} data-current={current === index} inert={current !== index} aria-hidden={current !== index}>{child}</div>)}</div>;
@@ -74,13 +75,21 @@ export function ContextLesson() {
       : `${has("history") ? "上周曾有端口占用，但还没有本次启动日志，不能确定这次也是同一个原因。" : "目前只有启动失败的描述，还不能确定原因。请提供本次启动日志。"}${has("rule") ? "我会保留修改后检查 /health 的要求。" : ""}`);
     setAnswered(true);
   }
-  return <div className={`${styles.lab} ${styles.contextLab}`} role="region" aria-label="选择本轮上下文的演示">
-    <div className={styles.materialBoard}>
-      <span className={styles.shelfTitle}>待选资料</span>
-      <div className={styles.inputTray}><div><Brain size={22} weight="light" /><h3>本轮输入</h3></div><p>服务启动失败，帮我排查。</p></div>
-      {materials.map(({ id, label, text, Icon }, index) => <button key={id} type="button" className={styles.materialCard} style={{ "--index": index, "--tilt": `${[-3, 2, -1][index]}deg` } as CSSProperties} aria-pressed={selected.includes(id)} onClick={() => toggle(id)}>
-        <Icon size={23} weight="light" aria-hidden="true" /><strong>{label}</strong><span>{text}</span><span className={styles.materialAction}>{selected.includes(id) ? <><Check size={14} />已加入</> : <><Plus size={14} />加入</>}</span>
+  return <div className={`${styles.lab} ${contextStyles.lab}`} role="region" aria-label="选择本轮上下文的演示">
+    <div className={contextStyles.selection} role="group" aria-label="选择已备好的材料">
+      {materials.map(({ id, label, Icon }) => <button key={id} type="button" aria-pressed={selected.includes(id)} onClick={() => toggle(id)}>
+        <Icon size={19} weight="light" aria-hidden="true" /><span>{label}</span>{selected.includes(id) ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}
       </button>)}
+    </div>
+    <div className={contextStyles.input} role="group" aria-label="本轮提供给模型的内容">
+      <h3><Brain size={24} weight="light" aria-hidden="true" />本轮输入</h3>
+      <p className={contextStyles.question}>服务启动失败，帮我排查。</p>
+      <div className={contextStyles.field}>
+        {materials.map(({ id, label, text }) => <div key={id} className={contextStyles.aperture} data-included={selected.includes(id)}>
+          <div className={contextStyles.material} aria-hidden={!selected.includes(id)}><span>{label}</span><p>{text}</p></div>
+          <div className={contextStyles.mask} aria-hidden="true"><span /><span /></div>
+        </div>)}
+      </div>
     </div>
     <button className={styles.answerButton} type="button" onClick={respond}>用这些资料回答<ArrowRight size={18} /></button>
     <div className={styles.answerReveal} data-open={answered} inert={!answered} aria-hidden={!answered}><div><div className={styles.contextReply} role="status"><Brain size={26} weight="light" /><p>{answer}</p></div></div></div>
