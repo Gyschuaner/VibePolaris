@@ -104,3 +104,13 @@ reader-v1 审读期间产品文件冻结。对方明确首图、重置、断开�
 - 本轮 DP 用例 `337e6970-bb00-436e-897a-70ac35d9d4ab`，计划 `2eec12f2-700e-4dd8-96e4-a0219fbf8f44` 已 completed，执行 `f67032bc-a4bc-40b4-a19a-eedf7f99b70b` passed，1/1。
 - 未实测系统减少动态偏好、后台切换、深色主题；代码包含相应暂停/静态显示处理，不把未执行项写成已通过。未新增目标读者审读，视觉改善仍需用户评价。
 - 文件散列另存 `motion-files.json`，原成稿快照不覆盖。仅提交当前本地候选分支，不合并、推送或远端部署；原 VBP-011 状态不变。指定 Obsidian 路径本机仍不可用，未创建飞书正式文档。
+
+## 采纳为主产品（2026-09-28）
+
+用户选定这版 MCP，并明确授权合入主产品、清理其他候选和生产部署。本轮移除原日志版未再引用的首图、演示及专属样式，README 指向图书馆版本；清理后构建通过。对应 DP 任务 `79cdb375-e2f5-41a1-810d-7d44c0e5a581` 记录集成与发布。
+
+旧 Astra（含取消的初始分支）、Sol、Luna 已从活动工作区删除；旧预览 3106/3107 停止。恢复包位于本机 `/Users/guyisheng/.codex/backups/VibePolaris/mcp-candidates-20260928`：Git bundle 包含四个旧分支，Luna 另保存未提交差异及全部未跟踪源文件。恢复包已验证，当前 R2 工作区和非 MCP 工作区不受影响。
+
+上线前核对：`ubuntu@124.156.103.213` 私钥可登录；应用通过 Docker Compose 接入共享 Caddy，正式地址为 `https://vibe.chuansgu.top`。原生产为 `182c6ea50c4cf3c18b2fa9eb9b6844b48278f6c7`，镜像 `vibepolaris:182c6ea50c4cf3c18b2fa9eb9b6844b48278f6c7`，发布目录 `/opt/vibepolaris/releases/20260922T035043Z-182c6ea50c4c`。保留该镜像和目录，回滚时用该镜像标签在旧目录执行 Compose 更新，并将 `current` 链接恢复到此目录。
+
+最终 dev / production 的精确提交、URL、测试结果、部署批次和备份位置以本轮 DP 部署及测试执行记录为准。本段是发布准备记录，不把尚未发生的部署标作成功。
