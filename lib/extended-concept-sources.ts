@@ -21,11 +21,12 @@ export const promptSources = [
 ];
 export const mcpSources = [
   { publisher: "Anthropic", title: "Introducing the Model Context Protocol", date: "2024-11-25", url: "https://www.anthropic.com/news/model-context-protocol", citations: ["mcp-standard", "mcp-reuse"] },
-  { publisher: "Model Context Protocol · 2025-11-25 规范", title: "Tools", date: "", url: "https://modelcontextprotocol.io/specification/2025-11-25/server/tools", citations: ["mcp-discovery", "mcp-messages", "mcp-tools", "mcp-control"] },
-  { publisher: "Model Context Protocol · 2025-11-25 规范", title: "Architecture", date: "", url: "https://modelcontextprotocol.io/specification/2025-11-25/architecture", citations: ["mcp-roles", "mcp-primitives", "mcp-boundary"] },
-  { publisher: "Model Context Protocol · 2025-11-25 规范", title: "Transports", date: "", url: "https://modelcontextprotocol.io/specification/2025-11-25/basic/transports", citations: ["mcp-transport"] },
-  { publisher: "Model Context Protocol · 2025-11-25 规范", title: "Resources", date: "", url: "https://modelcontextprotocol.io/specification/2025-11-25/server/resources", citations: ["mcp-resources"] },
-  { publisher: "Model Context Protocol · 2025-11-25 规范", title: "Prompts", date: "", url: "https://modelcontextprotocol.io/specification/2025-11-25/server/prompts", citations: ["mcp-prompts"] },
+  { publisher: "Model Context Protocol · 2026-07-28 规范", title: "Tools", date: "", url: "https://modelcontextprotocol.io/specification/2026-07-28/server/tools", citations: ["mcp-discovery", "mcp-messages", "mcp-tools", "mcp-control"] },
+  { publisher: "Model Context Protocol · 2026-07-28 规范", title: "Architecture", date: "", url: "https://modelcontextprotocol.io/specification/2026-07-28/architecture", citations: ["mcp-roles", "mcp-primitives", "mcp-boundary"] },
+  { publisher: "Model Context Protocol · 2026-07-28 规范", title: "Transports", date: "", url: "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports", citations: ["mcp-transport"] },
+  { publisher: "Model Context Protocol · 2026-07-28 规范", title: "Resources", date: "", url: "https://modelcontextprotocol.io/specification/2026-07-28/server/resources", citations: ["mcp-resources"] },
+  { publisher: "Model Context Protocol · 2026-07-28 规范", title: "Prompts", date: "", url: "https://modelcontextprotocol.io/specification/2026-07-28/server/prompts", citations: ["mcp-prompts"] },
+  { publisher: "Model Context Protocol · 2026-07-28 规范", title: "Key Changes", date: "", url: "https://modelcontextprotocol.io/specification/2026-07-28/changelog", citations: ["mcp-version"] },
 ];
 export const sandboxSources = [
   { publisher: "David Dworken、Oliver Weller-Davies · Anthropic", title: "Making Claude Code more secure and autonomous with sandboxing", date: "2025-10-20", url: "https://www.anthropic.com/engineering/claude-code-sandboxing", citations: ["sandbox-enforcement", "sandbox-dimensions", "sandbox-approval"] },
