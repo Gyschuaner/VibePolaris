@@ -1,8 +1,8 @@
-import { Archive, ArrowRight, FileText, Globe, LockSimple, PlugsConnected, ShieldCheck, Wrench } from "@phosphor-icons/react/dist/ssr";
+import { Archive, ArrowRight, FileText, Globe, LockSimple, ShieldCheck, Wrench } from "@phosphor-icons/react/dist/ssr";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
-import { MemoryHero, WindowHero, PromptHero, McpHero, SandboxHero } from "./ExtendedConceptHeroes";
-import { MemoryLesson, WindowLesson, PromptLesson, McpLesson, SandboxLesson } from "./ExtendedConceptLessons";
-import { memorySources, windowSources, promptSources, mcpSources, sandboxSources } from "@/lib/extended-concept-sources";
+import { MemoryHero, WindowHero, PromptHero, SandboxHero } from "./ExtendedConceptHeroes";
+import { MemoryLesson, WindowLesson, PromptLesson, SandboxLesson } from "./ExtendedConceptLessons";
+import { memorySources, windowSources, promptSources, sandboxSources } from "@/lib/extended-concept-sources";
 import styles from "./ExtendedConcepts.module.css";
 
 // Keep the useful entry points from the former generated pages.
@@ -38,15 +38,7 @@ export function PromptTermPage() {
   </ConceptArticle>;
 }
 
-export function McpTermPage() {
-  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={mcpSources} />;
-  return <ConceptArticle slug="mcp" title="MCP" hero={<McpHero />} sources={mcpSources} sections={[["connect", "接入一个日志服务器"], ["roles", "应用、客户端与服务器"], ["primitives", "工具、资源与提示模板"], ["boundary", "连接之后的工作"]]} intro={<>MCP，全称 Model Context Protocol，为 AI 应用连接外部能力约定了一套接口。<strong>应用可以发现服务器提供的能力，并按约定取得数据或调用工具。</strong></>}>
-    <ArticleSection id="connect" title="接入一个日志服务器"><OldAnchor slug="mcp" part="definition" /><p>你希望不同 AI 应用都能查询同一套项目日志。如果每个应用都单独适配一遍，连接方式很容易各不相同。MCP 把这种连接中的发现、调用和结果交换标准化。</p><p>下面按顺序连接、发现工具，再读取日志。演示只保留理解过程需要的信息，省略完整协议报文；不会连接真实服务器。</p><OldAnchor slug="mcp" part="scene-heading" /><McpLesson /><p id="mcp-discovery" className="vp-citation-target">服务器通过 <code>tools/list</code> 提供工具定义，客户端通过 <code>tools/call</code> 请求执行具体工具。定义包含用途与参数格式，调用结果则属于一次实际操作。<strong>发现了工具，还不等于工具已经运行。</strong><Cite id="mcp-discovery" /></p></ArticleSection>
-    <ArticleSection id="roles" title="应用、客户端与服务器"><p id="mcp-roles" className="vp-citation-target">MCP 架构区分三个角色：Host 是用户使用的 AI 应用；Client 是应用内部与服务器通信的客户端；Server 提供具体能力。一个应用可以管理多个客户端，分别连接不同服务器。<Cite id="mcp-roles" /></p><div className={styles.roleDiagram}><div><strong>AI 应用</strong><span>模型、界面与运行逻辑</span><div><PlugsConnected size={20} />日志客户端<ArrowRight size={18} /><span>日志服务器</span></div><div><PlugsConnected size={20} />文档客户端<ArrowRight size={18} /><span>文档服务器</span></div></div></div><p id="mcp-transport" className="vp-citation-target">服务器不一定在远端。MCP 支持通过标准输入输出连接本地进程，也支持基于 HTTP 的通信方式。它们是传输选择；上层仍然围绕协议定义的请求和结果工作。<Cite id="mcp-transport" /></p><p>因此，“装了一个 MCP”通常省略了很多具体信息：哪个应用接入了哪个服务器、服务器提供什么能力、当前连接是否可用。排查问题时，先把这几件事分清楚。</p></ArticleSection>
-    <ArticleSection id="primitives" title="工具、资源与提示模板"><OldAnchor slug="mcp" part="prompt-heading" /><p id="mcp-primitives" className="vp-citation-target">服务器可以提供三类常见能力：Tools 用于执行操作；Resources 提供可读取的资料；Prompts 提供可复用的提示模板。应用按需要使用它们，服务器也不必三类都实现。<Cite id="mcp-primitives" /></p><dl className={styles.primitiveList}><div><Wrench size={25} /><dt>Tools</dt><dd>调用 <code>read_log(path)</code>，执行一次日志读取。</dd></div><div><FileText size={25} /><dt>Resources</dt><dd>读取项目说明，取得可加入上下文的资料。</dd></div><div><Archive size={25} /><dt>Prompts</dt><dd>选用“排查启动失败”模板，再补入本次参数和材料。</dd></div></dl><p>服务器给出资源地址，仍需要应用去读并选择内容；取回模板，也不表示任务已经完成。传过来的信息还需要进入实际任务流程。</p></ArticleSection>
-    <ArticleSection id="boundary" title="连接之后的工作" className={styles.offsetSection}><OldAnchor slug="mcp" part="quiz-heading" /><p id="mcp-boundary" className="vp-citation-target">MCP 约定连接与信息交换，不负责规定模型如何思考，也不替代应用自身的运行逻辑。应用仍要选择材料、调用模型、处理工具结果，并决定继续还是结束。<Cite id="mcp-boundary" /></p><p>在服务排错任务中，MCP 可以连接日志工具；<ConceptTerm slug="agent-harness">Harness</ConceptTerm> 负责把结果放回<ConceptTerm slug="context">上下文</ConceptTerm>，再推进<ConceptTerm slug="agent-loop">循环</ConceptTerm>。不用 MCP 也能接工具；是否采用它，取决于连接与复用的需要。</p><p id="mcp-control" className="vp-citation-target">应用还要处理权限、用户控制与执行记录。MCP 官方文档列出了工具可见性、操作批准和活动日志等控制方式。<strong>采用同一协议，不表示服务器天然可信，也不表示所有操作都已获准。</strong><Cite id="mcp-control" /></p><ArticleAside title="连接可用，调用仍失败"><p>可能是服务器没有提供该工具、参数不符合定义、资源已不存在，或底层系统拒绝访问。先确认失败发生在连接、能力发现还是操作执行，不要把所有错误都归结为模型没有理解提示词。</p></ArticleAside></ArticleSection>
-  </ConceptArticle>;
-}
+export { McpTermPage } from "./McpTermPage";
 
 export function SandboxTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={sandboxSources} />;
