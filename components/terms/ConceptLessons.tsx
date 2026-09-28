@@ -97,8 +97,8 @@ export function ContextLesson() {
 }
 
 const repairRounds = [
-  { decision: "先读启动日志", action: 'read_file("server.log")', result: "SyntaxError: expected ':'", fact: "SyntaxError" },
-  { decision: "补上冒号，再检查服务", action: "edit_file → run_checks", result: "GET /health → 500\nNameError: name 'status' is not defined", fact: "HTTP 500" },
+  { decision: "先读启动日志", action: 'read_file("server.log")', result: "app.py : 1\nSyntaxError: expected ':'", fact: "SyntaxError" },
+  { decision: "补上冒号，再检查服务", action: "edit_file → run_checks", result: "GET /health → 500\napp.py : 2\nNameError: name 'status' is not defined", fact: "HTTP 500" },
   { decision: "修正返回值，再检查", action: "edit_file → run_checks", result: 'GET /health → 200\n{ "status": "ok" }', fact: "HTTP 200" },
 ];
 
@@ -115,15 +115,16 @@ export function AgentLoopLesson() {
   const labels = ["任务与停止条件", ...Array.from({ length: limit }, (_, index) => ["判断", "执行", "观察"].map(label => `第 ${index + 1} 轮：${label}`)).flat()];
   const rounds = Array.from({ length: limit }, (_, index) => repeating ? { ...repairRounds[0], decision: index === 0 ? "读取启动日志" : "再次读取同一份日志" } : repairRounds[index]);
   const revision = repeating || scene.step < 5 ? 0 : scene.step < 8 ? 1 : 2;
+  const errorLine = scene.step >= 3 && (repeating || scene.step < 5) ? 1 : scene.step >= 6 && scene.step < 8 ? 2 : 0;
   return <div className={`${styles.lab} ${styles.loopLab}`} ref={scene.ref} role="region" aria-label="反馈驱动的智能体循环演示">
     <div className={styles.loopOptions}><div className={styles.choices} role="group" aria-label="选择循环场景"><button aria-pressed={!repeating} type="button" onClick={() => { setScenario("repair"); scene.seek(0); }}>逐轮修正</button><button aria-pressed={repeating} type="button" onClick={() => { setScenario("repeat"); scene.seek(0); }}>重复同一操作</button></div><label>最多进行<select value={limit} onChange={event => { setLimit(Number(event.target.value)); scene.seek(0); }} aria-label="循环轮数上限"><option value={1}>1 轮</option><option value={2}>2 轮</option><option value={3}>3 轮</option></select></label></div>
     <div className={styles.repairWorkspace}>
       <div className={styles.roundRail} aria-label="选择修复轮次">{rounds.map((item, index) => <button type="button" key={index} aria-pressed={round === index + 1} onClick={() => scene.seek(index * 3 + 1)} aria-label={`查看第 ${index + 1} 轮`}><span>{String(index + 1).padStart(2, "0")}</span><strong>{repeating ? "读日志" : ["读日志", "补冒号", "改返回值"][index]}</strong><span className={styles.roundFact} data-seen={scene.step >= (index + 1) * 3}>{scene.step >= (index + 1) * 3 ? item.fact : "待检查"}</span></button>)}</div>
       <div className={styles.editor}>
         <div className={styles.fileName}><FileText size={17} /><span>app.py</span></div>
-        <Layers current={revision}>{[0, 1, 2].map(version => <pre key={version} className={styles.sourceCode}><span><i>1</i>def health_check(){version > 0 && <mark>:</mark>}</span><span><i>2</i>{'    return {"status": '}{version > 1 ? <mark>{'"ok"'}</mark> : "status"}{'}'}</span></pre>)}</Layers>
-        <div className={styles.terminal}><div><Terminal size={17} /><span>执行与检查</span></div><Layers current={scene.step}>{[<pre key="initial">尚未执行</pre>, ...rounds.flatMap((item, index) => [
-          <pre key={`${index}-ready`}>{index === 0 ? "等待读取日志" : `上次结果：${rounds[index - 1].fact}`}</pre>,
+        <Layers current={revision}>{[0, 1, 2].map(version => <pre key={version} className={styles.sourceCode}><span data-feedback={errorLine === 1}><i>1</i>def health_check(){version > 0 && <mark>:</mark>}</span><span data-feedback={errorLine === 2}><i>2</i>{'    return {"status": '}{version > 1 ? <mark>{'"ok"'}</mark> : "status"}{'}'}</span></pre>)}</Layers>
+        <div className={styles.terminal} data-feedback={errorLine > 0}><div><Terminal size={17} /><span>执行与检查</span></div><Layers current={scene.step}>{[<pre key="initial">尚未执行</pre>, ...rounds.flatMap((item, index) => [
+          <pre key={`${index}-ready`}>{index === 0 ? "等待读取日志" : `上次结果：\n${rounds[index - 1].result}`}</pre>,
           <pre key={`${index}-running`}>{item.action}{'\n'}正在执行…</pre>,
           <pre key={`${index}-result`}>{item.result}</pre>,
         ])]}</Layers></div>

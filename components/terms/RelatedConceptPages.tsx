@@ -82,26 +82,28 @@ export function ContextTermPage() {
 
 export function AgentLoopTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation sources={agentLoopSources} id={id} />;
-  return <ConceptArticle slug="agent-loop" title="Agent loop" sections={loopSections} sources={agentLoopSources} intro={<>智能体循环把多次判断和操作接起来：执行一个动作，取得结果，更新任务状态，再决定下一步。<strong>每一轮都应该有继续或停止的依据。</strong></>}>
+  return <ConceptArticle slug="agent-loop" title="Agent loop" sections={loopSections} sources={agentLoopSources} intro={<>AI 助手接到任务后，可以先操作、看结果，再决定下一步。把这样的多轮判断和行动接起来，就是智能体循环。<strong>每一轮都应该有继续或停止的依据。</strong></>}>
     <ArticleSection id="repair-loop" title="任务的逐轮推进">
-      <p>服务没启动。第一轮读日志，发现少了冒号；第二轮补上冒号，检查却返回 500；第三轮根据新错误修正返回值，检查才通过。第一次修改解决了一个问题，但任务还没有结束。</p>
-      <p>下面把这个过程压缩成三个预设回合。每轮包含一次模型判断，以及它请求的一组工具操作。可以改变轮数上限，或切换成反复读取同一份日志，观察系统停在哪里。</p>
+      <p>假设你让 AI 修好一个网页服务，也就是负责给网页提供数据的程序。服务启动失败，报错记在日志里。第一轮先读日志，发现代码缺少冒号；第二轮补上冒号，服务能启动了，检查却遇到新的错误。模型要根据这个新结果决定接下来改哪里。</p>
+      <p>这里的“工具”是读文件、改代码、运行检查这类可调用的程序。下面把修复过程压缩成预设的三轮，每轮包含一次模型判断，以及它请求的一组工具操作。改变轮数上限，或切换为重复读日志，可以看到不同的停止结果；网页只播放固定样例，不会运行真实模型或修改文件。切换场景或轮数会重新演示，不代表撤销现实中的修改。</p>
+      <p id="loop-check-codes" className="vp-citation-target"><code>/health</code> 是本例服务报告自身状态的检查地址。<code>200</code> 表示这次请求成功，<code>500</code> 表示请求遇到服务端错误。本例要看到服务正常启动、检查返回 200 才算修好。<Cite id="loop-check-codes" /></p>
       <AgentLoopLesson />
-      <p id="loop-feedback" className="vp-citation-target">实际运行中，模型根据工具返回的结果选择后续动作，<ConceptTerm slug="agent-harness">Harness</ConceptTerm>负责执行、保存状态并组织下一次调用。新的错误、成功结果或缺少的信息，都可能改变接下来的路径。<Cite id="loop-feedback" /></p>
+      <p>两行代码用 Python 编写：第一行定义了 <code>health_check</code> 函数，也就是一段可以调用的代码。末尾少了必需的冒号，会出现语法错误（SyntaxError）。补好后，第二行又用了尚未定义的 <code>status</code>，出现名称错误（NameError）。把它改成示例需要返回的文字 <code>"ok"</code>，再运行检查，才能知道修改是否有效。</p>
+      <p id="loop-feedback" className="vp-citation-target">实际运行中，模型根据工具返回的结果提出下一步要用的工具和操作。应用中负责组织运行的部分称为 <ConceptTerm slug="agent-harness">Harness</ConceptTerm>，它按权限和运行规则安排工具执行、保存状态，再把结果交给模型。没有触发停止条件时，这个过程可以自动继续，不需要用户每一轮都再发一条消息。<Cite id="loop-feedback" /></p>
     </ArticleSection>
     <ArticleSection id="round" title="一轮里发生的事">
-      <p>从模型这边看，一轮调用接收当前输入，生成回复或工具请求。从运行程序这边看，还要处理请求、等待执行完成，再把结果放回后续<ConceptTerm slug="context">上下文</ConceptTerm>。一次请求可以包含多个工具调用，所以“模型轮数”和“工具调用次数”不一定相等。</p>
-      <p id="loop-observation" className="vp-citation-target">ReAct 研究讨论了判断与行动交替进行的方式：行动取得外部信息，新的观察帮助模型调整后续计划。这里最值得注意的是反馈这一步。<Cite id="loop-observation" /></p>
-      <p className={styles.pullquote}><strong>执行结果必须影响下一轮，而不是原样重发同一个请求。</strong></p>
-      <p id="loop-evidence" className="vp-citation-target">Hugging Face 的课程把观察解释为环境带回的反馈，例如接口数据、错误消息和执行日志。对应到修服务：模型说“已经改好”，还只是它的回复；实际启动与检查返回了什么，才是判断任务状态的依据。运行程序要把这些结果带回下一轮，而不只是再次询问模型“成功了吗”。<Cite id="loop-evidence" /></p>
-      <p>在演示里，500 响应应该推动模型继续查返回值。如果它仍不断读取相同日志，却不修改代码、不取得新证据，轮数虽然增加，任务状态并没有推进。</p>
-      <ArticleAside title="可追溯的执行记录"><div className={styles.inputExample}><p><strong>这一轮依据</strong>上次检查返回 500，还未满足验收条件。</p><p><strong>请求的操作</strong>查看并修正健康检查函数的返回值。</p><p><strong>实际结果</strong>修改已保存，重新检查返回 200。</p><p><strong>后续状态</strong>验收通过，可以结束任务。</p></div><p id="loop-react" className="vp-citation-target">ReAct 是研究这类交替过程的一种方法，不能把所有智能体循环都等同于同一种提示格式。本文演示展示的是简化的操作依据与结果，没有展示模型内部思考。<Cite id="loop-react" /></p></ArticleAside>
+      <p id="loop-round" className="vp-citation-target">一次模型调用，是应用把当前输入交给模型，拿回回复或工具请求。本页把“这次调用、执行模型请求的操作、收回结果”算作一轮；结果交给下一次模型调用，就进入新一轮。Harness 会把结果加入后续<ConceptTerm slug="context">上下文</ConceptTerm>，也就是下一次给模型参考的材料。一轮里可能有多个工具操作，所以“模型轮数”和“工具调用次数”不一定相等。<Cite id="loop-round" /></p>
+      <p id="loop-observation" className="vp-citation-target">ReAct 是一项研究提出的方法，把判断与行动交替进行：行动取得外部信息，新的观察帮助模型调整后续计划。在这个过程里，观察就是操作实际带回的结果。<Cite id="loop-observation" /></p>
+      <p className={styles.pullquote}><strong>下一轮先看上次的结果，再决定继续做什么。</strong></p>
+      <p id="loop-evidence" className="vp-citation-target">Hugging Face 的课程把观察解释为环境带回的反馈，例如从其他程序取得的数据、错误消息和执行日志。对应到修服务：模型说“已经改好”，还只是它的回复；实际启动与检查返回了什么，才是判断任务状态的依据。Harness 要把这些结果带回下一轮，而不只是再次询问模型“成功了吗”。<Cite id="loop-evidence" /></p>
+      <p>在演示里，第二轮的 500 和名称错误把排查方向指向返回值。“重复同一操作”分支人为固定为重复读日志，用来展示停滞：一直读到原来的语法错误，没有修改代码，也没有新证据；轮数增加了，故障仍停在原处。</p>
+      <ArticleAside title="可追溯的执行记录"><div className={styles.inputExample}><p><strong>这一轮依据</strong>上次检查返回 500，还未满足验收条件。</p><p><strong>请求的操作</strong>查看并修正健康检查函数的返回值。</p><p><strong>实际结果</strong>修改已保存，重新检查返回 200。</p><p><strong>后续状态</strong>验收通过，可以结束任务。</p></div><p id="loop-react" className="vp-citation-target">ReAct 只是研究这类交替过程的一种方法，不能把所有智能体循环都等同于同一种提示格式。本文只演示简化的操作依据与结果，没有展示模型内部思考。<Cite id="loop-react" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stopping" title="循环何时结束">
-      <p id="loop-stop" className="vp-citation-target">循环需要明确的结束方式。完成目标时返回结果；缺少信息或授权时等待用户；到达预先设定的轮数或时间上限时停下。Anthropic 的实践文章也将环境反馈、人工检查点和停止条件视为运行智能体时需要考虑的部分。<Cite id="loop-stop" /></p>
+      <p id="loop-stop" className="vp-citation-target">循环需要明确的结束方式。完成目标时返回结果；缺少信息或授权时等待用户；到达预先设定的轮数或时间上限时停下。Anthropic 的实践文章也强调要考虑环境反馈、人工检查点和停止条件。<Cite id="loop-stop" /></p>
       <div className={styles.stopConditions}><div><strong>完成</strong><p>检查通过，返回结果与依据。</p></div><div><strong>等待</strong><p>缺少必要信息或操作授权。</p></div><div><strong>暂停</strong><p>到达上限，或连续没有进展。</p></div></div>
       <p><strong>达到上限只能说明这次运行结束，不能说明任务成功。</strong>例如演示最多进行两轮时，服务仍返回 500，应保留这个未完成状态，而不是给出“已经修好”的结论。</p>
-      <p>还可以记录每轮有没有取得新证据、错误是否变化、同一请求重复了几次。重试应有目的和次数限制；需要额外权限时，就把请求交回用户处理。</p>
+      <p>Harness 还可以记录每轮有没有新证据、错误是否变化，以及同一请求重复了几次。本例重复读日志三轮后暂停；三次只是本例的设定，不是所有智能体通用的上限。偶发连接失败时，重试可能有用，但要有依据，并事先限定次数。需要额外权限时，把请求交回用户处理。</p>
     </ArticleSection>
     <ArticleSection id="workflow" title="固定流程与临场判断">
       <p id="loop-workflow" className="vp-citation-target">预先写好“读取、修改、检查”的固定路径，通常属于工作流。如果模型能根据结果临时决定读哪个文件、是否继续排查，就包含了动态决策。实际系统可以结合这两种方式：路径允许变化，权限与验收规则保持明确。<Cite id="loop-workflow" /></p>
