@@ -14,7 +14,10 @@ export const windowSources = [
 ];
 export const promptSources = [
   { publisher: "Google · Gemini API", title: "Prompt design strategies", date: "", url: "https://ai.google.dev/gemini-api/docs/prompting-strategies", citations: ["prompt-specific", "prompt-examples", "prompt-format"] },
-  { publisher: "Anthropic · Claude Docs", title: "Prompting best practices", date: "", url: "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices", citations: ["prompt-material", "prompt-evaluation"] },
+  { publisher: "Anthropic · Claude Docs", title: "Prompting best practices", date: "", url: "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices", citations: ["prompt-specific", "prompt-material", "prompt-evaluation"] },
+  { publisher: "OpenAI · API Docs", title: "Prompt engineering", date: "", url: "https://developers.openai.com/api/docs/guides/prompt-engineering", citations: ["prompt-material", "prompt-examples", "prompt-evaluation"] },
+  { publisher: "OWASP · Gen AI Security Project", title: "LLM01:2025 Prompt Injection", date: "", url: "https://genai.owasp.org/llmrisk/llm01-prompt-injection/", citations: ["prompt-trust"] },
+  { publisher: "Google · Gemini API", title: "Structured outputs", date: "", url: "https://ai.google.dev/gemini-api/docs/structured-output", citations: ["prompt-format"] },
 ];
 export const mcpSources = [
   { publisher: "Anthropic", title: "Introducing the Model Context Protocol", date: "2024-11-25", url: "https://www.anthropic.com/news/model-context-protocol", citations: ["mcp-standard", "mcp-reuse"] },
