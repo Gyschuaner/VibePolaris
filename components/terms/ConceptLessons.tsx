@@ -4,6 +4,7 @@ import { useState, type CSSProperties, type ReactNode } from "react";
 import { ArrowRight, Brain, Check, CheckCircle, Circuitry, FileText, LockSimple, Plus, Terminal } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ConceptArticle.module.css";
+import toolStyles from "./ToolCallingLesson.module.css";
 
 function Layers({ current, children }: { current: number; children: ReactNode[] }) {
   return <div className={styles.layers} aria-live="polite">{children.map((child, index) => <div key={index} className={styles.layer} data-current={current === index} inert={current !== index} aria-hidden={current !== index}>{child}</div>)}</div>;
@@ -21,29 +22,33 @@ export function ToolCallingLesson() {
   const result = toolResults[scenario];
   const denied = scenario === "denied";
   const labels = ["收到任务", "生成工具请求", "校验与授权", denied ? "拦截请求" : "执行读取", "带回结果", "依据结果回复"];
-  const station = scene.step < 2 || scene.step === 5 ? 0 : scene.step === 3 && !denied ? 2 : 1;
   const captions = ["帮我看看服务为什么启动失败。", "模型写出名称与参数，文件还没有被打开。", denied ? "读取没有获得授权。" : "工具和参数有效，允许读取。", denied ? "请求被拦截，文件工具未执行。" : "文件工具正在打开 server.log。", "把实际结果加入下一次模型调用。", result.answer];
-  return <div className={`${styles.lab} ${styles.toolLab}`} ref={scene.ref} role="region" aria-label="读取日志的工具调用演示">
+  const opened = scene.step >= 3 && scenario === "success";
+  const absent = scene.step >= 4 && scenario === "missing";
+  return <div className={`${styles.lab} ${toolStyles.lab}`} ref={scene.ref} role="region" aria-label="读取日志的工具调用演示">
     <div className={styles.choices} role="group" aria-label="选择读取结果">{Object.entries(toolResults).map(([key, value]) => <button type="button" key={key} aria-pressed={scenario === key} onClick={() => { setScenario(key as keyof typeof toolResults); scene.seek(0); }}>{value.label}</button>)}</div>
-    <div className={styles.dispatchStage}>
-      <div className={styles.stations}>
-        {[[Brain, "模型"], [Circuitry, "Harness"], [FileText, "文件工具"]].map(([Component, name], index) => {
-          const Icon = Component as typeof Brain;
-          return <div key={String(name)} data-active={station === index}><Icon size={32} weight="light" aria-hidden="true" /><strong>{String(name)}</strong></div>;
-        })}
-      </div>
-      <div className={styles.transitLane}>
-        <div className={styles.envelope} style={{ "--station": station } as CSSProperties} data-returning={scene.step >= 4} data-blocked={denied && scene.step === 3}>
-          <Layers current={scene.step === 0 ? 0 : scene.step < 4 ? 1 : 2}>{[
-            <div key="task"><Brain size={18} /><span>收到任务</span><p>排查启动失败</p></div>,
-            <div key="request"><ArrowRight size={18} /><span>读取请求</span><code>read_file</code><p>path: server.log</p></div>,
-            <div key="result"><FileText size={18} /><span>实际返回</span><pre>{result.result}</pre></div>,
-          ]}</Layers>
-          <span className={styles.seal} data-visible={scene.step === 2 || (denied && scene.step === 3)} aria-hidden="true">{denied ? <LockSimple size={19} /> : <Check size={19} />}</span>
+    <div className={toolStyles.workspace}>
+      <div className={toolStyles.request}>
+        <h3><Brain size={23} weight="light" aria-hidden="true" />模型的请求</h3>
+        <div className={toolStyles.parameters} data-ready={scene.step >= 1} aria-hidden={scene.step < 1}>
+          <span>工具名</span><code>read_file</code><span>文件位置</span><code>server.log</code>
         </div>
+        <p className={toolStyles.permission} data-checked={scene.step >= 2} aria-hidden={scene.step < 2}>{denied ? <LockSimple size={17} aria-hidden="true" /> : <Check size={17} aria-hidden="true" />}Harness：{denied ? "未获授权" : "允许读取"}</p>
+      </div>
+      <div className={toolStyles.fileArea}>
+        <h3><FileText size={23} weight="light" aria-hidden="true" />文件工具</h3>
+        <div className={toolStyles.file} data-open={opened} data-absent={absent}>
+          <div className={toolStyles.contents} aria-hidden={scene.step < 3 || scenario !== "success"}>
+            <code>server.log</code>
+            {scene.step >= 4 && scenario === "success" ? <pre>{toolResults.success.result}</pre> : <span>正在读取…</span>}
+          </div>
+          <div className={toolStyles.cover} aria-hidden={opened || absent}><FileText size={35} weight="light" /><code>server.log</code>{denied && scene.step >= 2 && <LockSimple size={21} />}</div>
+          {absent && <span className={toolStyles.missing}>没有找到文件</span>}
+        </div>
+        <p className={toolStyles.returned} aria-live="polite">{scene.step >= 4 && (scenario === "success" ? "已把日志交回模型" : scenario === "missing" ? result.result : "Harness 返回：未获授权")}</p>
       </div>
     </div>
-    <Layers current={scene.step}>{captions.map((caption, index) => <div key={index} className={styles.dispatchCaption}><span>{labels[index]}</span><p>{caption}</p></div>)}</Layers>
+    <Layers current={scene.step}>{captions.map((caption, index) => <div key={index} className={toolStyles.caption}><span>{labels[index]}</span><p>{caption}</p></div>)}</Layers>
     <div className={styles.controlsWrap}><SceneControls scene={scene} labels={labels} /></div>
   </div>;
 }

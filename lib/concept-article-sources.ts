@@ -1,8 +1,9 @@
 export const toolCallingSources = [
   { publisher: "Anthropic · Claude Docs", title: "Tool use with Claude", date: "", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", citations: ["tools-contract", "tools-execution"] },
   { publisher: "Anthropic · Claude Docs", title: "Define tools", date: "", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools", citations: ["tools-definition"] },
-  { publisher: "Anthropic · Claude Docs", title: "Handle tool calls", date: "", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls", citations: ["tools-result", "tools-errors", "tools-untrusted"] },
+  { publisher: "Anthropic · Claude Docs", title: "Handle tool calls", date: "", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls", citations: ["tools-result", "tools-errors"] },
   { publisher: "Hugging Face · Agents Course", title: "Actions: Enabling the Agent to Engage with Its Environment", date: "", url: "https://huggingface.co/learn/agents-course/unit1/actions", citations: ["tools-handoff"] },
+  { publisher: "Hugging Face · smolagents", title: "Secure code execution", date: "", url: "https://huggingface.co/docs/smolagents/tutorials/secure_code_execution", citations: ["tools-untrusted"] },
 ];
 
 export const contextSources = [

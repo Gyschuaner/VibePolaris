@@ -10,32 +10,35 @@ const loopSections: [string, string][] = [["repair-loop", "任务的逐轮推进
 
 export function ToolCallingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation sources={toolCallingSources} id={id} />;
-  return <ConceptArticle slug="tools" title="Tool calling" sections={toolSections} sources={toolCallingSources} intro={<>工具调用把模型提出的请求接到真实操作上。<strong>模型生成工具名称和参数，运行程序执行操作，再把结果交回模型。</strong></>}>
+  return <ConceptArticle slug="tools" title="Tool calling" sections={toolSections} sources={toolCallingSources} intro={<>工具调用把模型提出的请求和真实操作接起来。<strong>模型生成工具名称和参数，运行程序执行操作，再把结果交回模型。</strong></>}>
     <ArticleSection id="read-log" title="一次日志读取">
-      <p>你让模型排查一个启动失败的服务。它说“我先读一下日志”，这时文件还没有被打开。接下来必须有人接收读取请求、找到文件工具，并把实际读到的内容带回来。</p>
+      <p>一个给网页提供数据的程序启动失败了，这类程序常叫“服务”。它会把运行过程和报错写进日志文件。你请 AI 查原因，它说“我先读一下日志”——仅凭这句话，文件还没有被打开。</p>
+      <p>工具是应用提供给模型使用的程序能力，例如读文件、查天气或计算总额。要读日志，模型得提出读取请求，应用再调用文件工具，把实际内容取回来。工具调用连接了模型的判断和这些具体操作。</p>
       <p>下面沿着 <code>server.log</code> 走一遍。可以切换读取结果，观察同一个请求怎样得到不同的后续处理。演示使用固定样例，不会读取你的文件。</p>
       <ToolCallingLesson />
-      <p id="tools-contract" className="vp-citation-target">本文的文件工具由应用执行。工具也可以托管在服务提供方，例如平台内置的搜索；两种情况下，都需要有实际的执行系统完成操作。<strong>回复里出现一个函数名，不能证明工具已经运行。</strong><Cite id="tools-contract" /></p>
+      <p id="tools-contract" className="vp-citation-target">这里的“应用”就是你使用的 AI 软件，文件工具由它接入并调用。另一些工具由提供模型的服务平台运行，例如平台内置的搜索。两者可以出现在同一个聊天窗口里，但在哪儿执行、能访问什么资料，取决于工具的接入方式和权限。<strong>聊天回复里写出工具名，不能证明工具已经运行。</strong><Cite id="tools-contract" /></p>
     </ArticleSection>
     <ArticleSection id="request" title="工具名称与参数" className={styles.splitSection}>
-      <p id="tools-definition" className="vp-citation-target">调用之前，应用先告诉模型有哪些工具可用。一份工具定义通常包含名称、用途和输入格式。例如 <code>read_file</code> 用于读取文件，参数 <code>path</code> 指定路径。用途说明帮助模型选择工具，参数约定帮助程序理解请求。<Cite id="tools-definition" /></p>
-      <div className={styles.contract} role="group" aria-label="读取工具的定义"><div><Wrench size={24} /><h3>read_file</h3><p>读取指定路径的文本文件</p></div><div><span>输入参数</span><code>path: string</code><p>例如 server.log</p></div></div>
-      <p>收到“排查启动失败”的任务后，模型可以提出 <code>{'{ "path": "server.log" }'}</code>。路径来自当前任务或已有信息；如果还不知道日志放在哪里，应用应当允许它查询目录或询问用户。</p>
-      <p id="tools-execution" className="vp-citation-target"><ConceptTerm slug="agent-harness">Harness</ConceptTerm> 根据工具名称找到对应的程序，检查参数和操作范围，然后执行。即使请求格式正确，文件仍可能不存在，运行时也可能没有读取权限。<strong>格式正确与操作成功是两件需要分别确认的事。</strong><Cite id="tools-execution" /></p>
-      <p id="tools-handoff" className="vp-citation-target">这里有一次控制权交接：模型生成完整请求后，运行程序接手执行，取得结果后才继续调用模型。Hugging Face 的公开课程用“停止生成、解析动作”解释这一步。请求既可以用结构化数据表达，也可以采用由外部环境执行的代码；都不能靠模型自行续写一个结果来代替执行。<Cite id="tools-handoff" /></p>
-      <ArticleAside title="看一份简化的调用记录"><pre className={styles.code}>{`请求 #17\nname: read_file\ninput: { path: "server.log" }\n\n结果 → 请求 #17\napp.py:1 — SyntaxError: expected ':'`}</pre><p>这里用同一个编号把请求和结果对应起来。实际接口的字段名可能不同；阅读日志时，先确认看到的结果属于哪一次调用。</p></ArticleAside>
+      <p id="tools-definition" className="vp-citation-target">调用之前，应用先告诉模型有哪些工具可用。每个工具都要说明名称、用途，以及需要什么输入。这里把读取工具命名为 <code>read_file</code>；<strong>参数就是调用时补充的具体信息</strong>，例如这次要读哪个文件。<Cite id="tools-definition" /></p>
+      <div className={styles.contract} role="group" aria-label="读取工具的定义"><div><Wrench size={24} /><h3>read_file</h3><p>读取指定位置的文本文件</p></div><div><span>参数：文件在哪里</span><code>path</code><p>填写一段表示文件位置的文字，例如 server.log</p></div></div>
+      <p><code>path</code> 表示文件路径，也就是文件在什么位置。<code>server.log</code> 是这个例子里的日志文件名，工具约定从项目文件夹里找它；如果放在里面的 logs 文件夹，就要写成 <code>logs/server.log</code>。模型得从任务或已有资料中取得位置，不知道时需要先查找或询问。</p>
+      <p>请求中可以写成 <code>{'{ "path": "server.log" }'}</code>。把它读成“文件位置是 server.log”就行，不用先学这段格式。工具定义像一份使用说明；真正打开文件的程序，需要由应用另外接好。</p>
+      <p id="tools-execution" className="vp-citation-target">开发者会在应用里实现一部分运行管理程序，让模型与工具配合工作，这部分通常叫 <ConceptTerm slug="agent-harness">Harness</ConceptTerm>。它根据工具名找到对应程序，检查参数和操作范围，再决定是否执行。即使格式正确、允许读取，文件也可能已经被移走。<strong>收到读取成功的结果之前，还不能说读到了日志。</strong><Cite id="tools-execution" /></p>
+      <p id="tools-handoff" className="vp-citation-target">在这次读取中，模型发出请求后先停下来，由应用接手执行，再把结果交给模型继续处理。Hugging Face 的公开课程把这一步称为“停止生成、解析动作”。这里需要确实执行并取回结果，不能让模型接着编一份日志充数。<Cite id="tools-handoff" /></p>
+      <ArticleAside title="看一份简化的调用记录"><pre className={styles.code}>{`请求 #17\nname: read_file\ninput: { path: "server.log" }\n\n结果 → 请求 #17\napp.py:1 — SyntaxError: expected ':'`}</pre><p>这份记录用同一个编号把请求和结果对应起来。实际接口的字段名可能不同；阅读日志时，先确认看到的结果属于哪一次调用。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="result" title="结果回到模型">
-      <p id="tools-result" className="vp-citation-target">工具完成后，应用把返回内容与这次请求关联，再加入后续模型调用。以 Claude 的接口为例，请求中的调用 ID 会对应结果里的 <code>tool_use_id</code>，失败时还可以标明错误状态。模型收到结果后，才能依据日志继续回答或提出下一次操作。<Cite id="tools-result" /></p>
+      <p id="tools-result" className="vp-citation-target">工具完成后，应用给模型提供返回内容，并标明它对应哪次请求。例如给读取请求编上号，再让结果带上同一个编号，就能把两者对应起来。读取失败时，也要把失败原因交回来。<Cite id="tools-result" /></p>
       <div className={styles.resultFlow} aria-label="日志进入下一轮输入"><FileText size={30} weight="light" /><span>实际日志</span><ArrowRight size={20} /><span>下一轮上下文</span><ArrowRight size={20} /><Brain size={30} weight="light" /></div>
-      <p>在这个例子里，模型看到“第一行缺少冒号”，才有依据查看并修改 <code>app.py</code>。如果应用把日志读出来，却没有带入下一轮<ConceptTerm slug="context">上下文</ConceptTerm>，模型仍然缺少这份信息。</p>
-      <p>一次调用只完成一次具体操作。读取日志、修改代码、运行检查，是几次不同的工具操作；把它们根据返回结果接起来，就会用到<ConceptTerm slug="agent-loop">智能体循环</ConceptTerm>。</p>
+      <p>日志里的 <code>app.py:1</code> 指代码文件的第一行，后面的报错说这里缺少冒号。这个例子用 Python 编程语言写代码，按它的语法，这一行需要以冒号结尾；漏掉它，程序就无法读懂这行代码，服务也没能启动。日志给了模型一个排查方向，还需要查看代码来确认怎么改。</p>
+      <p>如果应用读出日志，却没有放进模型下一轮能参考的<ConceptTerm slug="context">上下文</ConceptTerm>，模型仍然缺少这份信息。应用可以提供完整内容，也可以选取相关片段；模型能依据的，是这一次实际交给它的材料。</p>
+      <p>读到日志也不等于服务修好了。这个工具只负责读取；修改代码和运行检查，还要继续调用相应工具。把这些操作根据返回结果接起来，就会用到<ConceptTerm slug="agent-loop">智能体循环</ConceptTerm>。</p>
     </ArticleSection>
     <ArticleSection id="failures" title="失败与操作权限">
       <p id="tools-errors" className="vp-citation-target">失败也是一种结果。文件不存在时，要保留路径和错误原因；服务超时时，要说明没有获得有效响应。<strong>不能把失败替换成一份看起来合理的成功结果。</strong>明确的错误能帮助模型补充信息、调整请求，或向用户说明当前无法继续。<Cite id="tools-errors" /></p>
       <div className={styles.distinctions}><div><FileText size={25} /><h3>没有这个文件</h3><p>确认路径，或查找实际日志位置。</p></div><div><ShieldCheck size={25} /><h3>没有操作权限</h3><p>等待授权，或请用户提供可用内容。</p></div></div>
       <p>读取和写入还应有各自的权限范围。允许查看日志，不等于允许修改配置；模型提出删除或写入请求后，运行程序仍然需要按既定规则检查。</p>
-      <p id="tools-untrusted" className="vp-citation-target">工具结果也可能来自网页、用户上传的文件或第三方接口。其中的文字是待处理的资料，可能夹带错误或恶意指令。接收结果时，应保留其来源和边界，避免把外部内容直接当成系统指令。<Cite id="tools-untrusted" /></p>
+      <p id="tools-untrusted" className="vp-citation-target">工具结果也可能来自网页、用户上传的文件或第三方接口。其中的文字是待处理的资料，可能夹带错误或恶意指令。接收结果时，要标明内容来自哪里，并把这些外部资料与应用原本的指令分开。<Cite id="tools-untrusted" /></p>
     </ArticleSection>
   </ConceptArticle>;
 }
