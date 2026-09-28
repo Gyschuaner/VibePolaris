@@ -13,4 +13,5 @@ export const harnessSources = [
   { publisher: "Prithvi Rajasekaran 等 · Anthropic", title: "Effective context engineering for AI agents", date: "2025-09-29", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", citations: ["cite-state", "cite-context-selection"] },
   { publisher: "Ryan Lopopolo · OpenAI", title: "Harness engineering: leveraging Codex in an agent-first world", date: "2026-02-11", url: "https://openai.com/index/harness-engineering/", citations: ["cite-environment"] },
   { publisher: "Chip Huyen ·《AI Engineering》Agents 部分公开改编", title: "Agents", date: "2025-01-07", url: "https://huyenchip.com/2025/01/07/agents.html", citations: ["cite-failures", "cite-harness-config"] },
+  { publisher: "IETF · RFC 9110", title: "HTTP Semantics · Status Codes", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes", citations: ["cite-verification"] },
 ];
