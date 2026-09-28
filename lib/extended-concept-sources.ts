@@ -8,6 +8,9 @@ export const memorySources = [
 export const windowSources = [
   { publisher: "Anthropic · Claude Docs", title: "Context windows", date: "", url: "https://platform.claude.com/docs/en/build-with-claude/context-windows", citations: ["window-budget", "window-count"] },
   { publisher: "Anthropic Engineering", title: "Effective context engineering for AI agents", date: "2025-09-29", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", citations: ["window-quality", "window-compression"] },
+  { publisher: "Google · Gemini API", title: "Understand and count tokens", date: "", url: "https://ai.google.dev/gemini-api/docs/tokens", citations: ["window-budget", "window-count"] },
+  { publisher: "Nelson F. Liu et al.", title: "Lost in the Middle: How Language Models Use Long Contexts", date: "2023-11", url: "https://arxiv.org/abs/2307.03172", citations: ["window-quality"] },
+  { publisher: "IETF · HTTP Semantics", title: "RFC 9110 · 500 Internal Server Error", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error", citations: ["window-scene"] },
 ];
 export const promptSources = [
   { publisher: "Google · Gemini API", title: "Prompt design strategies", date: "", url: "https://ai.google.dev/gemini-api/docs/prompting-strategies", citations: ["prompt-specific", "prompt-examples", "prompt-format"] },

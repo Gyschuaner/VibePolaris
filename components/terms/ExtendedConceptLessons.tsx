@@ -49,16 +49,19 @@ export function WindowLesson() {
   const [history, setHistory] = useState(40);
   const [output, setOutput] = useState(20);
   const [compressed, setCompressed] = useState(false);
+  const [sampled, setSampled] = useState(false);
   const usedHistory = compressed ? Math.ceil(history / 4) : history;
   const total = 20 + usedHistory + output;
+  const over = Math.max(0, total - 100);
+  const sampleOutput = Math.min(12, output);
   const segments = [{ name: "任务与工具", value: 20 }, { name: compressed ? "历史摘要" : "对话历史", value: usedHistory }, { name: "预留输出", value: output }];
   return <div className={`${styles.lab} ${styles.windowLab}`} aria-label="上下文容量演示">
-    <div className={styles.budgetHeadline}><strong>{total}<span> / 100</span></strong><span role="status">{total > 100 ? `超出 ${total - 100} 格` : `剩余 ${100 - total} 格`}</span></div>
-    <div className={styles.ruler} aria-label={`容量100格，已分配${total}格`}><div className={styles.capacityBoundary} /><div className={styles.capacityTrack}>{segments.map((part, i) => <div key={i} style={{ width: `${part.value / 1.3}%` }}><span>{part.value}</span></div>)}</div><span className={styles.limitMark}>100</span></div>
+    <div className={styles.budgetHeadline}><strong>{total}<span> / 100</span></strong><span role="status">{over ? sampled ? `超出 ${over} 格，样例占用未显示` : `超出 ${over} 格，先调低历史或输出预留` : sampled ? sampleOutput < 12 ? `样例需 12 格，只预留了 ${output} 格` : `样例用了 12 格，预留仍有 ${output - 12} 格未用` : `剩余 ${100 - total} 格`}</span></div>
+    <div className={styles.ruler} aria-label={`容量100格，已安排${total}格${over ? `，超出${over}格` : ""}`}><div className={styles.capacityBoundary} /><div className={styles.capacityTrack}>{segments.map((part, i) => <div key={i} style={{ width: `${part.value / 1.3}%` }}>{i === 2 && <i className={styles.outputFill} style={{ width: sampled && !over ? `${sampleOutput / output * 100}%` : "0%" }} aria-hidden="true" />}<span>{part.value}</span></div>)}</div><div className={styles.capacityOverrun} data-visible={over > 0} style={{ width: `${over / 1.3}%` }} /><span className={styles.limitMark}>100</span></div>
     <div className={styles.legend}>{segments.map((part, i) => <span key={i}><i data-color={i} />{part.name}</span>)}</div>
-    <div className={styles.budgetControls}><label>对话历史 <output>{history} 格</output><input aria-label="对话历史容量" type="range" min="20" max="70" step="5" value={history} onChange={e => setHistory(Number(e.target.value))} /></label><label>预留输出 <output>{output} 格</output><input aria-label="预留输出容量" type="range" min="10" max="40" step="5" value={output} onChange={e => setOutput(Number(e.target.value))} /></label></div>
-    <button className={styles.textButton} aria-pressed={compressed} onClick={() => setCompressed(!compressed)}><FileText size={18} />{compressed ? "恢复完整历史" : "把历史整理成摘要"}<ArrowRight size={18} /></button>
-    <Reveal open={compressed}><p className={styles.compactNote}>保留：已补冒号、/health 返回 500、尚未验收。原始日志仍留在外部。</p></Reveal>
+    <div className={styles.budgetControls}><label>对话历史 <output>{history} 格</output><input aria-label="对话历史容量" type="range" min="20" max="70" step="5" value={history} onChange={e => { setHistory(Number(e.target.value)); setSampled(false); }} /></label><label>预留输出 <output>{output} 格</output><input aria-label="预留输出容量" type="range" min="10" max="40" step="5" value={output} onChange={e => { setOutput(Number(e.target.value)); setSampled(false); }} /></label></div>
+    <div className={styles.windowActions}><button className={styles.textButton} aria-pressed={compressed} onClick={() => { setCompressed(!compressed); setSampled(false); }}><FileText size={18} />{compressed ? "恢复完整历史" : "把历史整理成摘要"}<ArrowRight size={18} /></button><button className={styles.textButton} onClick={() => setSampled(true)}>查看样例占用<ArrowRight size={18} /></button></div>
+    <Reveal open={compressed}><p className={styles.compactNote}>摘要只留下：已补冒号，服务能启动。/health 仍返回 500；下一步检查返回值。原始日志的细节不在这轮摘要里，仍可从外部查回。</p></Reveal>
   </div>;
 }
 
