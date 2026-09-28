@@ -45,33 +45,37 @@ export function ToolCallingTermPage() {
 
 export function ContextTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation sources={contextSources} id={id} />;
-  return <ConceptArticle slug="context" title="Context" sections={contextSections} sources={contextSources} intro={<>上下文是模型<strong>这一轮实际能参考的信息</strong>。你说的话、任务要求、被选中的文件和工具结果，共同影响这一次回答。</>}>
+  return <ConceptArticle slug="context" title="Context" sections={contextSections} sources={contextSources} intro={<>上下文是模型<strong>这一轮直接参考的信息</strong>。除了你刚发的话，还可以有之前的对话、任务要求，以及应用提供的文件内容和工具结果。</>}>
     <ArticleSection id="assemble" title="组合本轮输入">
-      <p>同样问“服务为什么启动失败”，只给一句描述，与同时提供启动日志，模型能依据的信息很不一样。日志存放在电脑里，并不表示模型已经读到了它。</p>
-      <p>试着把下面的材料加入本轮输入，再查看回答。这里的回复是预设教学样例，用来观察资料变化带来的差别。</p>
+      <p>假设你做了一个网页，负责给网页提供数据的程序启动失败了。这类程序常叫“服务”，它会把运行过程和报错记在日志里。你问 AI“服务为什么启动失败”，只说这句话，和同时给出最近的日志，模型判断的依据就很不一样。</p>
+      <p>日志即使保存在电脑里，也要由应用读出并提供给模型，才能成为这次回答的依据。这里把“应用这一次交给模型的材料”叫作本轮输入。选了哪些材料，决定了模型这次能看到哪些具体信息。</p>
+      <p>下面已经备好了三份材料，让你代替应用选入本轮输入。改选后，演示会收起旧回答，等你用新输入再生成一次。移出材料不会删除原文件，也不代表撤销真实聊天中的历史回答。这里使用固定样例，没有调用真实模型。</p>
       <ContextLesson />
-      <p id="context-input" className="vp-citation-target">一次请求的上下文可以包含指令、对话、文件内容、工具定义和工具结果。应用决定本轮实际发送哪些内容。<strong>对话界面里保留的历史，与某次请求实际携带的内容，不一定完全相同。</strong><Cite id="context-input" /></p>
-      <p>把本次日志加入后，回答才有了“第一行缺少冒号”这个依据。再加入“修改后检查 /health”的要求，回答就能对应验收条件。上周的端口问题可以作为背景，但不足以解释这次报错。</p>
+      <p id="context-input" className="vp-citation-target">应用决定本轮实际发送哪些内容，包括指令、对话和文件内容。它还可以告诉模型有哪些工具可用，以及工具执行后得到了什么。“工具”是搜索、读取文件这类可调用的程序。<strong>对话界面里保留的历史，与某次请求实际携带的内容，不一定完全相同。</strong>例如，旧对话仍显示在界面里，应用这次可能只发送了整理后的摘要。<Cite id="context-input" /></p>
+      <p>本次日志给出的线索是“第一行缺少冒号”。这个例子中的代码用 Python 编写，该位置漏写冒号会违反语法，使程序无法启动。日志只指出排查方向，还需要查看实际代码来确认。</p>
+      <p id="context-health" className="vp-citation-target">任务要求中的 <code>/health</code> 是本例服务用来报告自身状态的检查地址，<code>200</code> 表示这次请求成功。把这项要求也加进输入，模型才知道你希望怎样算检查通过。<Cite id="context-health" /></p>
+      <p>上周的“端口占用”则是另一次故障：当时服务要用的连接入口被别的程序占了。上次是端口问题，不能据此断定这次也是。</p>
     </ArticleSection>
     <ArticleSection id="window" title="窗口与外部资料" className={styles.windowSection}>
       <p><ConceptTerm slug="context-window">上下文窗口</ConceptTerm>是容量限制，上下文则是这次放进去的内容。两者经常一起出现，但一个说的是“最多能容纳多少”，另一个说的是“当前具体有哪些信息”。</p>
       <div className={styles.distinctions}><div><Database size={28} weight="light" /><h3>保存在外部</h3><p>项目文件、完整日志、历史记录</p></div><div><Brain size={28} weight="light" /><h3>这次提供给模型</h3><p>当前任务、相关片段、必要约束</p></div></div>
-      <p id="context-budget" className="vp-citation-target">窗口通常按 <ConceptTerm slug="token">Token</ConceptTerm> 计量。除了输入，还要考虑输出所需的空间；具体如何计数和限制，取决于模型与接口。超出预算时，需要减少、整理或分批提供材料，不能假设所有内容都会被自动保留。<Cite id="context-budget" /></p>
-      <p>这里也要区分训练中学到的知识。模型可能知道 Python 函数定义需要冒号，但你电脑上的哪一行缺了冒号，需要这次提供的代码或日志来确定。</p>
+      <p id="context-budget" className="vp-citation-target">窗口通常按 <ConceptTerm slug="token">Token</ConceptTerm> 计量，Token 是模型处理文字时划分出的单位，不等于一个字或一个单词。窗口里除了输入，还要留出生成回答的空间；具体如何计数和限制，取决于模型与接口。材料放不下时，需要减少、整理或分批提供，不能假设应用会自动保留你在意的内容。继续重要任务前，可以把关键要求和当前进度明确放进新输入。<Cite id="context-budget" /></p>
+      <p>模型在训练中学到的知识也不同于本轮上下文。它可能已经知道 Python 的语法，却不能仅凭这些通用知识判断你电脑上的哪一行写错了。你这次提供的代码和日志，才把问题落实到具体文件。</p>
     </ArticleSection>
     <ArticleSection id="selection" title="选择需要的信息">
-      <p id="context-selection" className="vp-citation-target">上下文变长，不保证回答更好。Anthropic 在上下文工程的实践中建议围绕任务选择相关信息，控制工具说明、历史消息和检索内容的规模。<strong>保留足够依据，同时让当前问题容易被找到。</strong><Cite id="context-selection" /></p>
+      <p id="context-selection" className="vp-citation-target">材料越多，模型要从中分辨的信息也越多。Anthropic 的上下文工程实践建议围绕当前任务选择相关内容，减少无关的工具说明、旧消息和搜索结果。<strong>先给出足够判断问题的依据，需要更多时再补充。</strong>这样做是为了让当前问题更清楚，并不保证每次回答都正确。<Cite id="context-selection" /></p>
       <p>修这个服务时，可以先给出启动命令、最近的错误和相关代码。几万行历史访问日志、已经解决的旧问题、与服务无关的文档，可以先留在外部，需要时再取。</p>
-      <p id="context-retrieval" className="vp-citation-target">文件很大时，可以先搜索关键词，再读取命中位置附近的片段。检索和<ConceptTerm slug="tools">工具调用</ConceptTerm>负责取得材料；取得的内容还要加入本轮输入，才成为模型继续判断的依据。<Cite id="context-retrieval" /></p>
+      <p id="context-retrieval" className="vp-citation-target">文件很大时，可以先搜索关键词，再读取找到的位置附近的片段。这样查找并取回相关资料的过程叫检索，可以通过<ConceptTerm slug="tools">工具调用</ConceptTerm>完成。取得的内容还要加入本轮输入，才成为模型继续判断的依据。<Cite id="context-retrieval" /></p>
       <p id="context-strategies" className="vp-citation-target">LangChain 把常见做法归纳为保存、选择、压缩和隔离。放到这个排错任务中，可以这样理解：<Cite id="context-strategies" /></p>
-      <dl className={styles.contextStrategies}><div><dt>保存进度</dt><dd>把已做的修改与未解决问题写到外部记录。</dd></div><div><dt>选择材料</dt><dd>这一轮先读报错行附近的代码，需要时再取其他文件。</dd></div><div><dt>压缩历史</dt><dd>旧轮次整理成摘要，保留关键错误与检查结果。</dd></div><div><dt>分开任务</dt><dd>若把日志分析交给单独的智能体，只提供它需要的材料，再带回结论与依据。</dd></div></dl>
+      <dl className={styles.contextStrategies}><div><dt>保存进度</dt><dd>把已做的修改与未解决问题写到外部记录。</dd></div><div><dt>选择材料</dt><dd>这一轮先读报错行附近的代码，需要时再取其他文件。</dd></div><div><dt>压缩历史</dt><dd>旧轮次整理成摘要，保留关键错误与检查结果。</dd></div><div><dt>分开任务</dt><dd>若把日志分析交给另一个 AI 助手，只提供它需要的材料，再带回结论与依据。</dd></div></dl>
       <ArticleAside title="一份排错输入"><div className={styles.inputExample}><p><strong>目标</strong>服务成功启动，/health 返回 200。</p><p><strong>现状</strong>启动失败，尚未改动文件。</p><p><strong>证据</strong>最近一次日志，以及报错行附近的代码。</p><p><strong>约束</strong>保留原配置，修改后运行检查。</p></div><p>材料之间如果互相冲突，标出时间和来源。例如“上周端口占用”与“这次缺少冒号”属于两次运行，不能混成同一个事实。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="handoff" title="换一次会话继续">
-      <p id="context-handoff" className="vp-citation-target">长任务可能需要换一次会话继续。Anthropic 的长任务实验使用进度文件和 Git 记录交接工作，让新的会话先读取当前状态，再处理未完成事项。<strong>把进度保存下来之后，还要在恢复时重新读入。</strong><Cite id="context-handoff" /></p>
+      <p id="context-handoff" className="vp-citation-target">开一个新聊天继续旧任务时，新会话需要重新取得相关材料。Anthropic 的长任务实验把进度写进文件，并用 Git 这种代码版本管理工具记录改动，让新的会话先读取当前状态，再处理未完成事项。<strong>保存进度是为了下次能取用，保存本身并不等于已经交给模型。</strong><Cite id="context-handoff" /></p>
       <div className={styles.handoff}><FileText size={28} weight="light" /><blockquote>已补上 app.py 的冒号。服务能启动，/health 仍返回 500。下一步检查返回值，尚未完成验收。</blockquote></div>
-      <p id="context-summary" className="vp-citation-target">摘要可以保留当前目标、决策和未完成事项，减少重复历史占用；它也可能漏掉细节。原始文件和关键结果仍应能查回，恢复工作时还要确认摘要是否过时。<Cite id="context-summary" /></p>
-      <p><ConceptTerm slug="memory">记忆</ConceptTerm>可以把信息保存在多次会话之外；<ConceptTerm slug="agent-harness">Harness</ConceptTerm>负责选择什么时候读取。读回并进入当前请求的那一部分，才是模型此刻能参考的上下文。</p>
+      <p id="context-check-result" className="vp-citation-target">这份摘要里的 <code>500</code> 表示检查请求遇到了服务端错误，所以还不能宣布任务完成。<Cite id="context-check-result" /></p>
+      <p id="context-summary" className="vp-citation-target">摘要留下了已做的修改和未解决的问题，减少了重新翻阅全部历史的需要；它也可能漏掉细节或已经过时。继续工作时，仍应能查回原文件和检查结果。<Cite id="context-summary" /></p>
+      <p><ConceptTerm slug="memory">记忆</ConceptTerm>可以让有用的信息在多次会话之间保留下来。应用负责运行管理的部分，也就是 <ConceptTerm slug="agent-harness">Harness</ConceptTerm>，安排什么时候把它读回来。读回并放入当前请求的内容，才进入了这次回答的上下文。你能否查看或调整这些安排，取决于具体应用；不能只凭“已经保存”就认定这次一定用上了。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

@@ -11,6 +11,7 @@ export const contextSources = [
   { publisher: "Prithvi Rajasekaran 等 · Anthropic", title: "Effective context engineering for AI agents", date: "2025-09-29", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", citations: ["context-selection", "context-retrieval", "context-summary"] },
   { publisher: "Justin Young · Anthropic", title: "Effective harnesses for long-running agents", date: "2025-11-26", url: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", citations: ["context-handoff"] },
   { publisher: "The LangChain Team", title: "Context Engineering", date: "2025-07-02", url: "https://www.langchain.com/blog/context-engineering-for-agents", citations: ["context-strategies"] },
+  { publisher: "IETF · RFC 9110", title: "HTTP Semantics · Status Codes", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes", citations: ["context-health", "context-check-result"] },
 ];
 
 export const agentLoopSources = [
