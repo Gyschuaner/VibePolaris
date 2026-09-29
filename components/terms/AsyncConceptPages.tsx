@@ -71,7 +71,7 @@ export function PromiseTermPage() {
       <p>先交付 A17，随后报告售罄，凭条仍然是 A17。反过来先报告售罄，也不能再把同一份 Promise 改成成功。业务确实需要重试时，应发起新的操作、取得新的 Promise；“再试一次”不是改写上一次的结果。</p>
     </ArticleSection>
     <ArticleSection id="timing" title="回调执行的时机" className={base.offset}>
-      <p id="promise-timing" className="vp-citation-target"><code>then</code> 是在 Promise 上登记后续处理的方法。登记的函数会排进微任务队列，等当前这段同步代码执行完才运行，不会插进中间；即使 Promise 早已落定也是如此。这样，无论处理函数是在结果到来前还是之后登记，当前代码都不会被它打断。<Cite id="promise-timing" /></p>
+      <p id="promise-timing" className="vp-citation-target"><code>then</code> 是在 Promise 上登记后续处理的方法。Promise 还在等待时，处理函数也先等着；结果落定后，对应的处理函数才排进微任务队列，等当前这段同步代码执行完再运行。如果登记时结果早已落定，处理函数同样要排队，不会立刻插进当前代码中间。<Cite id="promise-timing" /></p>
       <p>打开上面的执行记录。按下“交付取餐号”后，记录先出现调用 resolve、同步代码结束，随后才出现成功回调。状态落定是一个时刻，回调真正执行是另一个时刻。</p>
       <pre className={base.code}>{'Promise.resolve("A17").then(value => {\n  console.log(value);\n});\nconsole.log("先执行这里");\n\n// 先执行这里\n// A17'}</pre>
       <p>Promise 安排的是“何时接着处理”，不会自动把计算搬到另一个线程。回调仍可能占用页面运行脚本的时间；如果它执行很久的同步计算，浏览器就不能及时响应点击，页面仍会卡住。</p>
