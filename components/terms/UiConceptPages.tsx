@@ -13,39 +13,39 @@ export function ComponentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={componentSources} />;
   return <ConceptArticle slug="component" title="组件" sources={componentSources}
     sections={[["definition", "一份定义，多处使用"], ["instances", "每个实例的状态"], ["composition", "组件也能组合"], ["boundary", "按职责划分组件"]]}
-    hero={<ConceptHero slug="component" label="头像、姓名与关注按钮合成一份 MemberCard 结构，成员列表依此出现三张不同成员卡片"><div className={styles.componentHero}>
+    hero={<ConceptHero slug="component" label="头像、姓名与关注按钮合成一份 MemberCard 结构，成员列表按这份结构显示三张不同成员的卡片"><div className={styles.componentHero}>
       <div className={styles.componentBlueprint}><code>MemberCard</code><div className={styles.componentFrame}><UserCircle size={27} weight="light" /><span className={styles.componentNameLines}><i /><i /></span><span className={styles.componentFollow}>＋</span></div></div>
       <div className={styles.componentList}><code>MemberList</code>{["阿青", "林墨", "陈屿"].map(name => <div className={styles.componentInstance} key={name}><UserCircle size={23} weight="light" /><span>{name}</span><b>＋</b></div>)}</div>
     </div></ConceptHero>}
     intro={<>组件把一块界面的结构和行为组织在一起。<strong>定义写一份，使用时传入不同数据，页面就能得到多个遵循相同规则的实例。</strong></>}
-    relatedIntro={<>用 <ConceptTerm slug="props">Props</ConceptTerm> 配置每次使用的输入，用 <ConceptTerm slug="state">状态</ConceptTerm> 记录交互中的变化。跨页面复用的规范，还可以整理进设计系统。</>}>
+    relatedIntro={<>用 <ConceptTerm slug="props">Props</ConceptTerm> 配置每次使用的输入，用 <ConceptTerm slug="state">状态</ConceptTerm> 记录交互中的变化。</>}>
     <ArticleSection id="definition" title="一份定义，多处使用">
       <Anchors ids={["component-question-heading", "component-definition-heading", "component-question", "component-definition"]} />
       <p>成员列表里有阿青、林墨和陈屿。三张卡片都显示头像、姓名和关注按钮，只是内容不同。如果每张都复制一份代码，后来要加入角色信息，就容易出现两张改了、一张漏掉的情况。</p>
-      <p id="component-definition-source" className="vp-citation-target">可以先定义一个成员卡片，再在列表里使用三次。React 官方把组件作为可组合、可复用的界面单元；在本文采用的函数组件写法中，一个 JavaScript 函数接收输入，返回描述界面的 JSX。<strong>复用的是界面规则，不是把三个成员变成同一个人。</strong><Cite id="component-definition-source" /></p>
-      <p>下面的开关模拟在公共定义里加入或移除角色行。观察三张卡片怎样一起变化，再分别点击关注。所有操作都只发生在这个演示里，不会访问任何真实账号。</p>
+      <p id="component-definition-source" className="vp-citation-target">可以先把成员卡片写成一个组件，再在列表里使用三次。在本文采用的 React 写法里，这份定义是一个 JavaScript 函数：它接收姓名等数据，返回用 JSX 写出的界面描述。JSX 是在代码里写界面标签的一种语法。<strong>复用的是界面规则，不是把三个成员变成同一个人。</strong><Cite id="component-definition-source" /></p>
+      <p>下面的开关模拟在公共定义里加入或移除角色行。示意代码中的 <code>&lt;article&gt;</code> 是容纳整张卡片的网页标签，Avatar 和 FollowButton 分别代表头像和关注按钮。观察三张卡片怎样一起变化，再分别点击关注。所有操作都只发生在这个演示里，不会访问任何真实账号。</p>
       <Anchors ids={["component-workshop-heading", "component-scene-heading"]} /><ComponentLesson />
-      <p>加入角色后，前端开发、产品设计和后端开发各自出现在对应姓名下面。共同结构来自 MemberCard，具体内容来自每次调用的输入。以后修改同一份定义，使用它的位置就会遵循新的结构。</p>
+      <p>加入角色后，前端开发、产品设计和后端开发各自出现在对应姓名下面。共同结构来自 MemberCard，具体内容来自每次使用时传入的数据。以后修改同一份定义，列表里的三张卡片都会按新结构显示。</p>
     </ArticleSection>
     <ArticleSection id="instances" title="每个实例的状态">
-      <p id="component-instances" className="vp-citation-target">点“关注阿青”，林墨不会同时被关注。这是因为本例把关注标记放在每个卡片实例自己的 <ConceptTerm slug="state">state</ConceptTerm> 里。<strong>同一组件出现多次，并不意味着它们共享同一份局部状态。</strong>React 会分别保存这些实例的状态。<Cite id="component-instances" /></p>
+      <p id="component-instances" className="vp-citation-target">点“关注阿青”，林墨不会同时被关注。这是因为本例让每张卡自己记住是否已关注，这份数据叫作它的 <ConceptTerm slug="state">状态（state）</ConceptTerm>。<strong>同一组件出现多次，并不意味着它们共享同一份局部状态。</strong>React 会分别保存这些实例的状态。<Cite id="component-instances" /></p>
       <div className={styles.comparison}><div><Code size={26} /><h3>修改公共定义</h3><p>改变每张卡片的共同规则，例如增加角色这一行。</p></div><div><CursorClick size={26} /><h3>操作一个实例</h3><p>改变当前卡片的关注标记，其他卡片仍保持原状。</p></div></div>
-      <p>这两种变化看起来都发生在界面上，原因却不同。排查“为什么所有卡片一起变了”时，要先看改的是公共输入、组件定义，还是某个实例的内部数据。</p>
-      <p>实际产品的关注关系通常还要保存到服务器。本页只演示局部状态，因此刷新页面会恢复初始值。组件帮助组织交互，但不会自动替你持久化数据或处理账号权限。</p>
+      <p>这两种变化看起来都发生在界面上，原因却不同。所有卡片一起变时，要看是公共定义变了，还是列表给每张卡传来了同一个新值；只变一张时，再看它自己记住的状态。</p>
+      <p>实际产品的关注关系通常还要保存到服务器。本页只演示局部状态，因此刷新页面会恢复初始值；组件也不会替你处理账号权限。</p>
     </ArticleSection>
     <ArticleSection id="composition" title="组件也能组合" className={styles.offset}>
-      <p id="component-composition" className="vp-citation-target">一个组件可以使用其他组件。成员列表使用 MemberCard，卡片又可以使用 Avatar 和 FollowButton；父子关系描述的是它们在界面中的组合。React 文档中的页面、导航和正文也用这种方式组织。<Cite id="component-composition" /></p>
+      <p id="component-composition" className="vp-citation-target">一个组件可以使用其他组件。在示意图里，MemberList 表示成员列表，它使用 MemberCard；卡片里的头像和关注按钮又可以分别写成 Avatar 与 FollowButton。React 文档中的页面、导航和正文也用这种方式组织。<Cite id="component-composition" /></p>
       <ul className={styles.structure} aria-label="成员列表的组件层次"><li><Stack size={21} />MemberList</li><li><ArrowElbowDownRight size={20} />MemberCard × 3</li><li><ArrowElbowDownRight size={20} />Avatar · FollowButton</li></ul>
-      <p>外层列表负责拿到成员数据并排列卡片，卡片负责呈现一个人。这样修改头像的展示方式时，可以检查 Avatar；修改整个列表的排序时，则从列表着手，不必把职责塞进每一张卡片。</p>
+      <p>外层列表负责拿到成员数据并排列卡片，卡片负责呈现一个人。如果把头像拆成 Avatar，以后改头像样式就从 Avatar 着手；要调整整个列表的排序，就从 MemberList 着手，不必把排序规则塞进每一张卡片。</p>
       <ArticleAside title="组件与 HTML 标签"><p>在 React 的 JSX 中，<code>&lt;article&gt;</code> 这样的内置标签描述浏览器元素，<code>&lt;MemberCard /&gt;</code> 则指向你定义的组件。组件最终仍要产生浏览器能展示的内容。组件不等于自定义一个新的 HTML 标准标签；其他框架的组件语法也可能不同。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="boundary" title="按职责划分组件">
       <Anchors ids={["component-quiz-heading", "component-prompt-heading"]} />
-      <p id="component-boundary" className="vp-citation-target">React 的设计教程建议结合职责、视觉层次和数据结构拆分界面。一个部分变复杂、拥有清晰职责时，可以继续拆；简单且紧密相关的内容也可以先放在一起。这里没有“超过多少行必须拆”的统一标准。<Cite id="component-boundary" /></p>
+      <p id="component-boundary" className="vp-citation-target">React 的设计教程建议结合职责、视觉层次和数据结构拆分界面。如果某一块的职责清楚、内容又逐渐变复杂，就可以继续拆；简单且紧密相关的内容也可以先放在一起。这里没有“超过多少行必须拆”的统一标准。<Cite id="component-boundary" /></p>
       <p id="component-files" className="vp-citation-target">拆成组件，不等于每个组件都得单独建一个文件。React 的教程先把 Profile 和 Gallery 写在一起；需要从别处使用时，再把组件导出、在使用处导入。屏幕上出现三个 MemberCard，也不需要写三份定义。<Cite id="component-files" /></p>
       <blockquote className={styles.callout}>先说清这一块负责什么，<br />再决定它的边界。</blockquote>
-      <p>成员卡片的输入可以列清：姓名、角色、头像。它的行为也可以列清：关注、打开资料。相反，把三个毫不相关的页面只因颜色相似而合成一个“万能卡片”，往往会引入大量难理解的开关。</p>
-      <p>复用是一个理由，组织复杂界面也是一个理由；只出现一次的页面区域也可以成为组件。检查组件边界时，看名称能否表达职责、输入是否容易理解，以及修改这一块是否牵动许多无关规则。</p>
+      <p>成员卡片的输入可以列清：姓名、角色、头像。它的行为也可以列清：关注、打开资料。把职责不同的界面区域仅因配色相似而合成一张“万能卡片”，往往会引入大量难理解的开关。</p>
+      <p>复用是一个理由，组织复杂界面也是一个理由；只出现一次的页面区域也可以成为组件。例如结账页的收货地址区域，可以单独负责地址输入和错误提示，让外层页面处理订单汇总；若只有一个简单输入框，先留在页面里也可以。检查组件边界时，看名称能否表达职责、输入是否容易理解，以及修改这一块是否牵动许多无关规则。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
