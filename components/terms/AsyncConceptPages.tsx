@@ -1,4 +1,4 @@
-import { BookOpen, Check, FileText, Image as ImageIcon, X } from "@phosphor-icons/react/dist/ssr";
+import { BookOpen, BookmarkSimple, Check, Image as ImageIcon, X } from "@phosphor-icons/react/dist/ssr";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { AwaitLesson, FetchLesson, PromiseLesson } from "./AsyncConceptLessons";
@@ -90,7 +90,11 @@ export function AwaitTermPage() {
   return <ConceptArticle slug="async-await" title="async / await" subtitle="等到结果，再接着执行" sources={awaitSources}
     intro={<>文章卡片需要标题和封面。await 让一段代码在结果回来以后继续，写起来像按行往下走；任务什么时候开始，仍由函数调用的位置决定。</>}
     sections={[["function", "暂停的是当前函数"], ["assemble", "等两份材料到齐"], ["start", "先开始，再谈等待"], ["failure", "失败后的剩余工作"]]}
-    hero={<ConceptHero slug="async-await" label="标题和封面分别移动，汇合后成为文章卡片"><div className={styles.awaitHero}><div className={styles.heroTrack}><FileText size={24} /><span>小岛上的灯塔</span></div><div className={styles.heroTrack}><ImageIcon size={30} /><span>封面</span></div><BookOpen className={styles.heroJoined} size={35} weight="light" /></div></ConceptHero>}>
+    hero={<ConceptHero slug="async-await" label="当前函数执行到 await 后停住，旁边的收藏操作照常完成；封面任务返回时，函数从停点继续"><div className={styles.awaitHero}>
+      <span className={styles.awaitPath} /><span className={styles.awaitMarker} /><span className={styles.awaitGate} /><code className={styles.awaitWord}>await</code><BookOpen className={styles.awaitBook} size={29} weight="light" /><span className={styles.awaitFunctionLabel}>当前函数</span>
+      <div className={styles.awaitSource}><ImageIcon size={28} /><span>封面任务</span></div><span className={styles.awaitReturnDot} />
+      <div className={styles.awaitBookmark}><BookmarkSimple size={23} weight="regular" /><BookmarkSimple size={23} weight="fill" /><span>收藏文章</span></div>
+    </div></ConceptHero>}>
     <ArticleSection id="function" title="暂停的是当前函数">
       <AsyncLegacyAnchors slug="async-await" names={["question", "definition"]} />
       <p id="await-function" className="vp-citation-target">async 声明异步函数。每次调用它都会得到一个 Promise，用来表示这次函数执行的结果；函数返回的值成为履行值，没有处理的异常成为拒绝原因。<Cite id="await-function" /></p>
