@@ -21,7 +21,7 @@ export function DatabaseLesson() {
     <div className={s.catalogueDesk}>
       <div className={s.editor}><BookOpen size={30} weight="light" /><h3>山间来信 <code>#42</code></h3><label className={base.option}><input type="checkbox" checked={draft} onChange={e => setDraft(e.target.checked)} />草稿：可借</label>
         <button disabled={draft === records[0].available} onClick={() => { setRecords(saveBook(records, 42, draft)); setVersion(v => v + 1); }}><FloppyDisk size={18} />保存修改</button>
-        <button className={s.quiet} onClick={() => { setDraft(records[0].available); setQueried(false); }}>重开编辑界面<ArrowCounterClockwise size={17} /></button>
+        <button className={s.quiet} onClick={() => setDraft(records[0].available)}>重开编辑界面<ArrowCounterClockwise size={17} /></button>
       </div>
       <div className={s.catalogue}><h3><Database size={21} />已保存书目</h3><div className={s.savedRows}>{records.map(book => <div key={book.id}><code>{book.id}</code><span>{book.title}</span><States index={book.available ? 0 : 1}>{[<span key="yes">可借</span>, <span key="no">已借出</span>]}</States></div>)}</div></div>
     </div>

@@ -3,6 +3,7 @@ const sqlite = (title: string, page: string, citations: string[]) => ({ publishe
 
 export const databaseSources = [
   pg("Concepts", "tutorial-concepts", ["database-relations"]),
+  pg("Querying a Table", "tutorial-select", ["database-query"]),
   pg("Architectural Fundamentals", "tutorial-arch", ["database-service"]),
   pg("Constraints", "ddl-constraints", ["database-rules"]),
   sqlite("Appropriate Uses For SQLite", "whentouse", ["database-embedded"]),

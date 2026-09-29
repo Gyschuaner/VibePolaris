@@ -14,31 +14,41 @@ export function DatabaseTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={databaseSources} />;
   return <ConceptArticle slug="database" title="数据库" sources={databaseSources}
     sections={[["records", "界面背后的记录"], ["catalogue", "保存一次，再查一次"], ["rules", "数据也有规则"], ["where", "数据放在哪里"]]}
-    intro={<>图书室把一本书标成“已借出”，关掉页面再打开，状态还应该在。另一个人查询书目，也应该能读到这次修改。页面只是查看和编辑的入口，记录需要有自己的存放与管理方式。</>}
-    hero={<ConceptHero slug="database" label="书目数据保留在表中，可借查询只返回符合条件的记录"><div className={s.databaseHero}><div className={s.heroTable}><Database size={24} /><span>书目</span><p>42　可借</p><p>12　已借出</p><p>78　可借</p></div><div className={s.heroQuery}><MagnifyingGlass size={20} /><span>可借</span><strong>42　78</strong></div></div></ConceptHero>}>
+    intro={<>在下面的图书室演示里，把 #42 的草稿改成“已借出”但不保存，重开编辑界面时，草稿又会变回“可借”。点“保存修改”后，书目里的记录才改成“已借出”；另一位读者若通过同一个图书室服务访问这份书目，重新查询也能看到新状态。数据库负责组织、保存和取回记录，页面只是入口。实际网站若会自动保存，草稿的表现可能不同。</>}
+    hero={<ConceptHero slug="database" label="编辑页将42号书改为已借出并保存；编辑页关闭后，书目记录保留，重新打开或另一位读者查询都能读到已借出状态"><div className={s.databaseHero}>
+      <div className={s.heroEditor}>
+        <div className={s.heroDraft}><span>编辑 #42</span><strong>已借出</strong></div>
+        <div className={s.heroReopen}><span>重新打开</span><strong>#42　已借出</strong></div>
+      </div>
+      <span className={s.heroSave}>保存</span>
+      <div className={s.heroTable}><div><Database size={21} /><span>书目</span></div><p>#42 <span className={s.heroOld}>可借</span><strong className={s.heroNew}>已借出</strong></p><p>#78 <span>可借</span></p></div>
+      <div className={s.heroQuery}><MagnifyingGlass size={18} /><span>另一位读者查 #42</span><strong>已借出</strong></div>
+    </div></ConceptHero>}>
     <ArticleSection id="records" title="界面背后的记录">
       <Legacy slug="database" names={["question", "definition"]} />
-      <p id="database-relations" className="vp-citation-target"><strong>数据库是按一定结构组织的数据集合；管理这些数据的软件叫数据库管理系统，简称 DBMS。</strong>日常说“用 PostgreSQL 做数据库”，往往把两者放在一起说。本文以关系型数据库为例：书目是一张表，一行是一条记录，编号、书名、可借状态是列。其他数据库也可能按文档、键值等方式组织数据。<Cite id="database-relations" /></p>
-      <p>查询得到的是符合条件的结果。把“全部书目”切成“仅看可借”，只会改变取出的记录，不会删掉已借出的书。界面中的一份查询结果，也不会因为别处刚保存了修改就自动变成最新内容；应用需要重新查询或订阅变化。</p>
-      <p id="database-service" className="vp-citation-target">在 PostgreSQL 的客户端与服务端结构中，数据库服务管理数据文件，接受多个客户端的操作。网页通常先把请求交给应用后端，再由后端访问数据库。关闭网页不会要求数据库服务删除书目；这种职责分离，让不同界面能够使用同一份记录。<Cite id="database-service" /></p>
+      <p id="database-relations" className="vp-citation-target"><strong>数据库是按一定结构组织的数据集合；管理这些数据的软件叫数据库管理系统，简称 DBMS。</strong>日常说“用 PostgreSQL 做数据库”，往往把两者放在一起说。本文以关系型数据库为例，这里的“关系”可以先理解为表：书目是一张表，一行是一条记录，编号、书名、可借状态是列。<Cite id="database-relations" /></p>
+      <p id="database-query" className="vp-citation-target">查询是向数据库提出条件，取回符合条件的记录。比如“只看可借”，#42 已借出后就不会出现在新结果里，但记录并没有被删掉；查全部书目时仍能找到它。<Cite id="database-query" /></p>
+      <p>本演示已经显示的上次查询结果不会自动改写，需要再查一次。真实应用若想让结果随记录变化，还得另外实现自动更新。</p>
+      <p id="database-service" className="vp-citation-target">在 PostgreSQL 的客户端与服务端结构中，数据库服务管理数据文件，处理多个客户端的请求。网页通常先把操作交给网站自己的服务程序（也叫后端），再由它访问数据库。这个图书室例子假定两位读者都通过同一服务读写同一份书目，所以一人保存成功，另一人重新查询就能看到新状态；如果各自打开的是本机的一份书目副本，就不能这样共享。<Cite id="database-service" /></p>
+      <p>不用数据库，也能把书目写进普通文件，离开页面后再打开；只是应用得自己处理记录的组织、查找和修改。数据库把这些常见工作做成可复用的能力，还能按事先定义的规则检查写入。它不是“数据能留下”的唯一办法。</p>
     </ArticleSection>
     <ArticleSection id="catalogue" title="保存一次，再查一次">
       <Legacy slug="database" names={["scene-heading"]} />
-      <p>先修改 #42 的可借状态，不急着保存；查询一次，再保存并重新查询，比较结果。还可以重开编辑界面，看看草稿和已保存记录各自留下了什么。下面是浏览器内的教学模型，整页刷新会重置，不连接真实数据库。</p>
+      <p>下面从 #42“可借”开始。先取消草稿里的“可借”勾选，再查一次可借书目：#42 仍在结果里，因为还没保存。点“保存修改”，已保存书目中的 #42 才变为“已借出”；刚才那份查询结果仍是旧的。再次查询，#42 才从可借结果里消失。点“重开编辑界面”，草稿会从已保存记录重新填入“已借出”，上次查询结果仍留在原处。</p>
       <DatabaseLesson />
-      <p><strong>草稿、已保存记录、上次查询结果，是三份不同的信息。</strong>修改草稿还没有发出写入；保存成功才改变记录；查询把当时的数据带回界面。演示中“重开界面”只重建客户端状态，因此保存的记录仍在。真实应用能否在进程重启后恢复数据，还要看存储方式和持久化配置。</p>
+      <p><strong>草稿、已保存记录、上次查询结果，是三份不同的信息。</strong>修改草稿不会改变书目；保存才更新记录；查询把当次结果带回页面。这个演示只在当前浏览器页面内保存状态：“重开编辑界面”不会丢掉已经保存的修改，整页刷新却会把演示数据恢复原样。它不连接真实数据库；真实应用重启后能否恢复，还取决于存储方式和配置。</p>
     </ArticleSection>
     <ArticleSection id="rules" title="数据也有规则" className={base.offset}>
       <Legacy slug="database" names={["quiz-heading"]} />
-      <p id="database-rules" className="vp-citation-target">保存不只是把内容放进去。数据库可以用约束拒绝不符合规则的写入：主键标识唯一且非空的记录，检查约束可以限制可借数量不为负，外键可以要求借阅记录引用的书确实存在。<strong>这些规则需要开发者定义，数据库不会自动猜出业务含义。</strong><Cite id="database-rules" /></p>
-      <div className={s.ruleList}><div><strong>哪本书</strong><code>book_id = 42</code><p>用稳定编号引用，书名修改后仍是同一条记录。</p></div><div><strong>借出了几本</strong><code>available &gt;= 0</code><p>让数据库拒绝负数；应用同时检查操作结果。</p></div></div>
-      <p>如果一次借书要同时减少可借数量、增加借阅记录，就需要继续考虑 <ConceptTerm slug="transaction">事务</ConceptTerm>。如果书目很多、查询变慢，则要看 <ConceptTerm slug="index">索引</ConceptTerm>。它们分别处理一组操作的边界与查找路径。</p>
+      <p id="database-rules" className="vp-citation-target">数据库可以用约束拒绝不符合规则的写入：把编号设为主键，就不能有两条记录使用同一个编号；再定义检查约束，还能拒绝负数。<strong>这些规则需要开发者定义，数据库不会自动猜出业务含义。</strong>上面的演示只有“可借／已借出”两个状态；如果实际书目还保存可借本数，才需要数量规则。<Cite id="database-rules" /></p>
+      <div className={s.ruleList}><div><strong>编号不能重复</strong><code>book_id = 42</code><p>把 book_id 设为主键后，另一条记录就不能也用 42；书名变了，仍是这条记录。</p></div><div><strong>还剩几本</strong><code>copies_available &gt;= 0</code><p>为另设的可借本数字段定义规则，拒绝负数。</p></div></div>
+      <p>如果一次借书要同时减少可借数量、增加借阅记录，就需要继续考虑 <ConceptTerm slug="transaction">事务</ConceptTerm>：怎样让两次修改一起成功或一起撤销。书目很多、查询变慢时，则要看 <ConceptTerm slug="index">索引</ConceptTerm>：怎样少翻无关记录，尽快找到目标。</p>
     </ArticleSection>
     <ArticleSection id="where" title="数据放在哪里">
       <Legacy slug="database" names={["prompt-heading"]} />
-      <p id="database-embedded" className="vp-citation-target">数据库不一定是一台远程服务器。SQLite 可以嵌入应用，管理本机的数据库文件；PostgreSQL 这类服务则常用于多个客户端共享数据。前者适合许多本地应用，后者便于集中管理与并发访问。要根据谁读写、从哪里访问、怎样运维来选择，而不是把“数据库”一概理解成云服务。<Cite id="database-embedded" /></p>
+      <p id="database-embedded" className="vp-citation-target">数据库不一定是一台远程服务器。SQLite 可以嵌入应用，管理设备上的数据库文件；PostgreSQL 这类服务常用于多个客户端访问同一份数据。比如离线记事应用可以把笔记存在本机数据库里；换台设备能否看到笔记，还要看应用有没有设计同步或共同访问的服务。光是把笔记存进 SQLite，不会自动同步到平板。<Cite id="database-embedded" /></p>
       <ArticleAside title="数据设计前的必要信息">
-        <p>说明要保存哪些对象、哪些编号必须唯一、对象怎样关联，以及哪几次写入必须一起成功。图书室还需要区分“书的品种”与“可借出的具体一本”。先把这些关系说清，再讨论表结构和查询，不要只发一句“加个数据库”。</p>
+        <p>本演示把 #42 当作一本可借的实物。真实图书室可能有好几本《山间来信》：书名相同，每本实物却各有编号，还可能单独记录这个书名剩下几本可借。设计数据时要说明哪些编号必须唯一、哪些记录要关联、哪几次写入必须一起成功。把这些问题说清，再讨论表结构与查询。</p>
       </ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
