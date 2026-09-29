@@ -1,10 +1,9 @@
 import { XiaobeiError, type Identity, type Usage, type XiaobeiStore } from "./store.ts";
+import { CONTEXT_WINDOW } from "./events.ts";
+export { CONTEXT_WINDOW, CONTEXT_WARNING, type AgentEvent } from "./events.ts";
 
 export type ToolCall = { id: string; type: "function"; function: { name: string; arguments: string } };
 export type Message = { role: "system" | "user" | "assistant" | "tool"; content: string | null; reasoning_content?: string; tool_calls?: ToolCall[]; tool_call_id?: string };
-export type AgentEvent = { type: "status" | "delta" | "context" | "balance" | "error" | "done"; text?: string; tokens?: number; estimated?: boolean; credits?: number; status?: number };
-export const CONTEXT_WINDOW = 256_000;
-export const CONTEXT_WARNING = 175_000;
 export function estimateTokens(value: unknown) {
   const text = JSON.stringify(value);
   const wide = text.match(/[^\x00-\x7f]/g)?.length || 0;
@@ -33,6 +32,7 @@ export function modelConfig() {
 export async function callModel(options: {
   store: XiaobeiStore; identity: Identity; run: string; messages: Message[]; signal: AbortSignal;
   tools?: unknown[]; json?: boolean; projectedTokens?: number; onDelta?: (text: string) => void;
+  onReasoning?: (text: string) => void; onToolCall?: () => void;
 }) {
   const { store, identity, run, messages, signal } = options;
   const config = modelConfig();
@@ -86,8 +86,9 @@ export async function callModel(options: {
           const choice = item.choices?.[0];
           if (choice?.finish_reason) finishReason = choice.finish_reason;
           const delta = choice?.delta;
+          if (typeof delta?.reasoning_content === "string") { message.reasoning_content += delta.reasoning_content; options.onReasoning?.(delta.reasoning_content); }
           if (typeof delta?.content === "string") { message.content += delta.content; options.onDelta?.(delta.content); }
-          if (typeof delta?.reasoning_content === "string") message.reasoning_content += delta.reasoning_content;
+          if (delta?.tool_calls?.length) options.onToolCall?.();
           for (const call of delta?.tool_calls ?? []) {
             const current = calls.get(call.index) ?? { id: "", type: "function", function: { name: "", arguments: "" } };
             if (call.id) current.id = call.id;

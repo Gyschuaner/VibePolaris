@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import test from "node:test";
 import { DAILY_CREDITS, XiaobeiStore, dayKey, digest, usageCost } from "../lib/xiaobei/store.ts";
 import { callModel, normalizeUsage } from "../lib/xiaobei/model.ts";
+import { applyEvent, finishActivities } from "../lib/xiaobei/events.ts";
 
 test("小北鉴权、并发、精确积分和跨日账本", () => {
   const store = new XiaobeiStore(":memory:");
@@ -55,9 +56,9 @@ test("百炼思考协议、SSE 用量、失败预留和取消", async () => {
       return sse([{ choices: [{ delta: { reasoning_content: "private thought" } }] }, { choices: [{ delta: { content: "公开回答" }, finish_reason: "stop" }] }, { choices: [], usage: { prompt_tokens: 10000, completion_tokens: 2000, prompt_tokens_details: { cached_tokens: 8000 } } }, "[DONE]"]);
     };
     const options = { store, identity, run, messages: [{ role: "user", content: "解释 API" }], signal: new AbortController().signal };
-    let visible = "";
-    const result = await callModel({ ...options, onDelta: text => { visible += text; } });
-    assert.equal(visible, "公开回答"); assert.equal(result.message.reasoning_content, "private thought");
+    let visible = "", thinking = "";
+    const result = await callModel({ ...options, onDelta: text => { visible += text; }, onReasoning: text => { thinking += text; } });
+    assert.equal(visible, "公开回答"); assert.equal(result.message.reasoning_content, "private thought"); assert.equal(thinking, "private thought");
     assert.equal(store.balance(invite.id), DAILY_CREDITS - 96_000);
     mode = "reject"; await assert.rejects(callModel(options), /暂不可用/); assert.equal(store.balance(invite.id), DAILY_CREDITS - 96_000);
     mode = "missing"; await assert.rejects(callModel(options), /待结算/); const afterMissing = store.balance(invite.id); assert.ok(afterMissing < DAILY_CREDITS - 96_000);
@@ -70,4 +71,31 @@ test("百炼思考协议、SSE 用量、失败预留和取消", async () => {
     if (urlOriginal === undefined) delete process.env.DASHSCOPE_BASE_URL; else process.env.DASHSCOPE_BASE_URL = urlOriginal;
     store.close();
   }
+});
+
+test("思考、外显文字、工具与最终答案保持顺序，中断仅结束未完成活动", () => {
+  let blocks = [];
+  const events = [
+    { type: "think", id: "think1", text: "先查资料", state: "running", timestamp: 10 },
+    { type: "think", id: "think1", text: "再比较", state: "running", timestamp: 20 },
+    { type: "think", id: "think1", state: "complete", timestamp: 30 },
+    { type: "delta", id: "text1", text: "我先看两个词条。" },
+    { type: "text_end", id: "text1", phase: "commentary" },
+    { type: "tool", id: "tool1", name: "read_term", summary: "harness", input: '{"slug":"harness"}', state: "running", timestamp: 40 },
+    { type: "tool", id: "tool1", name: "read_term", summary: "运行框架", input: '{"slug":"harness"}', output: "正文", state: "complete", timestamp: 50 },
+    { type: "think", id: "think2", text: "已获得资料", state: "running", timestamp: 60 },
+    { type: "think", id: "think2", state: "complete", timestamp: 70 },
+    { type: "delta", id: "text2", text: "答案" },
+    { type: "delta", id: "text2", text: "与链接" },
+    { type: "text_end", id: "text2", phase: "answer" },
+    { type: "tool", id: "tool2", name: "read_term", summary: "tools", input: "{}", state: "running", timestamp: 80 },
+  ];
+  for (const event of events) blocks = applyEvent(blocks, event);
+  assert.deepEqual(blocks.map(b => b.kind), ["think", "text", "tool", "think", "text", "tool"]);
+  assert.equal(blocks[0].text, "先查资料再比较"); assert.equal(blocks[0].startedAt, 10); assert.equal(blocks[0].finishedAt, 30);
+  assert.equal(blocks[1].phase, "commentary"); assert.equal(blocks[2].output, "正文");
+  assert.equal(blocks[4].text, "答案与链接"); assert.equal(blocks[4].phase, "answer");
+  const stopped = finishActivities(blocks, "stopped", 90);
+  assert.equal(stopped[2].state, "complete"); assert.equal(stopped[5].state, "stopped"); assert.equal(stopped[5].finishedAt, 90);
+  assert.equal(finishActivities(blocks, "error", 90)[5].state, "error");
 });
