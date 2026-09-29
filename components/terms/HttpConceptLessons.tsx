@@ -23,7 +23,7 @@ export function RequestLesson() {
       const url = new URL("https://example.com/books");
       if (method === "GET") url.searchParams.set("q", name);
       const request = new Request(url, { method, headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify({ title: name }) : undefined });
-      const text = await request.text();
+      const text = await request.clone().text();
       if (id !== generation.current) return;
       setResult([request.method, request.url, request.headers.get("content-type") ?? "未设置", text || "无请求体"]);
       setPhase("ready");

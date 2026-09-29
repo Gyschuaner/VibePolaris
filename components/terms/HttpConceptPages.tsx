@@ -13,7 +13,7 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) {
 export function RequestTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={requestSources} />;
   return <ConceptArticle slug="request" title="请求" sources={requestSources}
-    intro={<>在书店里搜索一本书和新增一本书，都可能访问 /books。服务器需要知道你想做什么、找哪一项、带了哪些内容。请求把这些信息组合成一条可以处理的消息。</>}
+    intro={<>你在网上书店点了“搜索”，页面却没有显示想找的书。AI 让你“检查发出去的请求”。它要看的，是浏览器向书店服务发送的那条消息：想做什么、去哪个地址、带了什么内容。</>}
     sections={[["message", "从按钮到一条消息"], ["compose", "组装一次请求"], ["positions", "参数放在哪里"], ["boundary", "构造、发送与完成"]]}
     hero={<ConceptHero slug="request" label="一条 HTTP/1.1 请求的结构示意：首行写 POST 和 /books，请求头写 Content-Type，空行后是书名 JSON 正文；尚未显示发送或处理结果"><div className={s.requestHero}><div className={s.requestPaper}>
       <span>HTTP/1.1 · 结构示意</span>
@@ -24,25 +24,30 @@ export function RequestTermPage() {
     </div></div></ConceptHero>}>
     <ArticleSection id="message" title="从按钮到一条消息">
       <Legacy slug="request" names={["question", "definition"]} />
-      <p id="request-message" className="vp-citation-target"><strong>HTTP 请求是客户端发给服务器的消息。</strong><ConceptTerm slug="http-method">方法</ConceptTerm>表达操作语义，目标地址确定资源，<ConceptTerm slug="http-header">请求头</ConceptTerm>补充处理信息，必要时再用请求体携带数据。它们共同说明一次操作，URL 只是其中一部分。<Cite id="request-message" /></p>
-      <p>用户点击“搜索”，页面把书名放进地址；点击“新增”，页面把书名写进提交内容。服务器并不知道按钮长什么样，只能按收到的消息和接口约定处理。定位问题时，应检查页面最后生成了什么，而不只看按钮文案。</p>
+      <p id="request-message" className="vp-citation-target"><strong>HTTP 请求是客户端发给服务器的消息。</strong>在这个例子里，浏览器是发消息的客户端；接收消息、查询或保存书目的程序是服务器。HTTP 是双方收发这类消息时遵守的一套规则。网站开发者提前写好程序，把你在页面上的操作转换成请求，你不用自己填写每一行。<Cite id="request-message" /></p>
+      <p id="request-method" className="vp-citation-target">一条请求先要说明去哪里、做什么。目标地址（URL）指向要访问的内容，例如书目列表；<ConceptTerm slug="http-method">方法</ConceptTerm>说明操作的种类。GET 用于读取，POST 把内容交给目标服务处理。本例约定用 GET 搜索书目、用 POST 新增书目，但 POST 也可以用于提交表单等操作，不是看到 POST 就一定在新增。<Cite id="request-method" /></p>
+      <p id="request-format" className="vp-citation-target">消息还可以带上<ConceptTerm slug="http-header">请求头</ConceptTerm>和请求体。请求头补充处理所需的信息，比如 <code>Content-Type: application/json</code> 告诉接收方正文采用 JSON 格式；请求体则放具体内容，例如 <code>{'{"title":"海边的书店"}'}</code>，其中 title 是这个接口约定的书名字段。地址、方法、头和体一起说明这次请求，URL 只是其中一部分。<Cite id="request-format" /></p>
+      <p>服务器看不到你点的按钮，只能按消息和接口约定处理。“接口约定”就是服务说明自己接受什么方法、从哪里读取哪些参数。因此排查搜索问题时，要看程序实际发了什么：按钮即使写着“搜索”，程序也可能漏掉书名，或把它放在服务不会读取的位置。</p>
     </ArticleSection>
     <ArticleSection id="compose" title="组装一次请求">
       <Legacy slug="request" names={["scene-heading"]} />
-      <p>先用 GET 搜索书名，再切到 POST 提交书名。这里用浏览器原生对象检查组装结果，example.com 只是示例地址，不会发出网络请求。试试让 GET 也附加请求体，看看浏览器会接受什么。</p>
+      <p>下面用浏览器自带的 Request 对象组装消息。先保留 GET，输入书名并点“构造 Request”；再切到 POST，对比同一个书名出现在什么位置。example.com 只是示例地址，这个实验不会发出网络请求。</p>
       <RequestLesson />
-      <p>GET 的书名进入 q 参数，空格和中文由 URL 工具编码；POST 的书名放进 JSON 文本。勾选请求体只是改变消息的一部分，不会自动修改方法，也不会替服务器保存一本书。</p>
-      <p id="request-object" className="vp-citation-target"><code>new Request(url, options)</code> 构造的是请求对象。程序之后还可以将它交给 fetch。把这两步分开，可以先检查 method、url、headers 和内容，再决定是否发送。<Cite id="request-object" /></p>
+      <p>GET 结果中，书名跟在地址的 <code>?q=</code> 后面；中文会自动编码成带 % 的字符，这仍然表示输入的书名。切到 POST 时，演示会帮你勾上“附加 JSON 请求体”，于是地址不再带 q，书名出现在 body 一行。这是本例的配置方式：你可以取消勾选，POST 仍然是 POST，只是不再携带书名。</p>
+      <p id="request-object" className="vp-citation-target">代码里的 <code>new Request(url, options)</code> 把地址和选项组装成请求对象，供程序检查 method（方法）、url（地址）等信息。程序之后调用 <code>fetch(request)</code>，才进入发送和取得响应的过程。也可以直接写 <code>fetch(url, options)</code>，不单独创建 Request 对象；这仍然会发起请求。<Cite id="request-object" /></p>
+      <ArticleAside title="先看正文，再发送"><p id="request-inspect" className="vp-citation-target">读取方法、地址和请求头不会读走正文，但 <code>request.text()</code> 会消耗这份正文，读完后不能再把同一份正文直接交给 fetch 使用。因此本演示先复制请求，再用 <code>request.clone().text()</code> 读取副本里的短 JSON 文本，原请求的正文仍可用于后续发送。复制要在读取之前做；这一步也没有把请求发出去。<Cite id="request-inspect" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="positions" title="参数放在哪里">
-      <div className={s.paired}><div><h3>地址里的条件</h3><p id="request-target" className="vp-citation-target"><code>/books?q=海边</code> 用查询参数携带筛选条件。路径标识资源，查询部分进一步限定目标；具体参数叫什么，由这个接口约定。<Cite id="request-target" /></p></div><div><h3>消息里的内容</h3><p id="request-body-rule" className="vp-citation-target">请求体可以装 JSON、表单或文件，并不只接受对象。在 Fetch API 中，GET、HEAD 不允许携带 body；传入 JSON 时，需要先把对象序列化成文本。<Cite id="request-body-rule" /></p></div></div>
+      <div className={s.paired}><div><h3>地址里的条件</h3><p id="request-target" className="vp-citation-target"><code>/books?q=海边</code> 中，路径 <code>/books</code> 指向书目，问号后面的 <code>q=海边</code> 是查询参数，表示用“海边”筛选。q 这个名字由书店接口约定；换一个服务，搜索词可能就要叫 keyword。<Cite id="request-target" /></p></div><div><h3>消息里的内容</h3><p id="request-body-rule" className="vp-citation-target">请求体可以携带 JSON 文本、表单或文件。本例先用 <code>JSON.stringify</code> 把书名数据写成 JSON 文本，再放进 body。浏览器的 Fetch API 不允许 GET、HEAD 携带 body：在上面的 GET 模式勾上请求体再构造，会抛出 TypeError，页面显示“未能构造请求”，不会悄悄改成 POST。<Cite id="request-body-rule" /></p></div></div>
       <p><strong>把同一个值换个位置，不一定还是同一个请求。</strong>如果接口只从 JSON 的 title 读取书名，把 title 改放在 URL 里，服务器未必会去找。以接口文档和实际接收代码为准，不依赖“后端应该能猜到”。</p>
     </ArticleSection>
     <ArticleSection id="boundary" title="构造、发送与完成" className={base.offset}>
       <Legacy slug="request" names={["quiz-heading", "prompt-heading"]} />
       <blockquote className={s.quote}>请求说明想做什么。<br />结果要从响应里找证据。</blockquote>
-      <p>对象构造成功，只证明浏览器接受了这份配置。网络是否连通、服务是否接受参数、写入是否成功，都发生在后续。收到 <ConceptTerm slug="response">响应</ConceptTerm> 后，还要检查状态与内容，最后才更新页面。</p>
-      <ArticleAside title="开发者工具里看到的请求"><p id="request-wire" className="vp-citation-target">Network 面板把请求整理成易读字段。HTTP/1.1 的文本行适合解释结构；HTTP/2 等版本在线路上的表示不同，但方法、目标、字段和内容的语义仍然适用。页面里的字段列表不是完整网络抓包。<Cite id="request-wire" /></p></ArticleAside>
+      <p>对象构造成功，只说明浏览器能按这些选项创建请求对象。服务是否收到了消息、是否接受书名、是否真的保存了书目，还没有答案。收到 <ConceptTerm slug="response">响应</ConceptTerm> 后，要看表示处理结果的状态码，以及返回的书目或错误说明，再决定页面显示什么。</p>
+      <p>换成查天气也是一样。服务要求 <code>GET /weather?city=上海</code>，就应按约定把城市放在地址里；构造出这条请求，并不会让你得到上海今天的气温。气温要从服务返回的结果里读取，不能拿自己刚填的请求当答案。</p>
+      <p>也不是每次点“搜索”都需要新请求。如果完整书目已经在页面里，程序可以直接在本地筛选；需要从书店服务取得新的信息时，才需要向它发消息。判断有没有请求，要看程序实际做了什么。</p>
+      <ArticleAside title="开发者工具里看到的请求"><p id="request-wire" className="vp-citation-target">浏览器开发者工具中的 Network（网络）面板会把请求整理成易读字段。首图用 HTTP/1.1 的文本行解释结构；HTTP/2 等版本传输消息的格式不同，方法、目标地址、请求头和内容这些含义仍然保留。这里省略了其他字段，没有展示完整的网络传输数据。<Cite id="request-wire" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
