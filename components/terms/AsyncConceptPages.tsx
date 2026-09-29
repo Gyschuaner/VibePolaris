@@ -59,29 +59,30 @@ export function PromiseTermPage() {
     </div></ConceptHero>}>
     <ArticleSection id="result" title="一份结果，三种状态">
       <AsyncLegacyAnchors slug="promise" names={["question", "definition"]} />
-      <p>拿到取餐凭条时，食物还没有做好，但你已经知道到哪里取结果。程序也可以先拿到一个 Promise，把成功后要做的事、失败时怎么办登记进去，再让当前代码继续执行。</p>
+      <p id="promise-receipt" className="vp-citation-target">拿到取餐凭条时，食物还没有做好，但你已经知道到哪里取结果。程序也可以先拿到一个 Promise，把成功后要做的事、失败时怎么办登记进去，再让当前代码继续执行。凭条不是厨房：取餐任务由下单动作启动，Promise 只让程序跟踪它的结果。<Cite id="promise-receipt" /></p>
+      <p id="promise-alternative" className="vp-citation-target">不用 Promise，旧式接口也能在发起操作时直接交代“成功后做什么、失败时怎么办”。Promise 则先交回一份代表未来结果的对象；后续处理可以登记在这份对象上，即使结果已经到达，再登记也能收到。<Cite id="promise-alternative" /></p>
       <p id="promise-states" className="vp-citation-target">Promise 有 pending（等待）、fulfilled（履行）和 rejected（拒绝）三种状态。等待中的 Promise 最终可以带着一个值履行，或者带着一个原因拒绝。<strong>进入任一终态后，就不能再变成另一个终态。</strong>这也叫 settled，已经落定。<Cite id="promise-states" /></p>
       <blockquote className={styles.leadQuote}>拿到 Promise，<br />还不等于拿到里面的值。</blockquote>
     </ArticleSection>
     <ArticleSection id="order" title="让一份订单落定">
       <AsyncLegacyAnchors slug="promise" names={["scene-heading"]} />
-      <p>新建一单，再由你决定是交付取餐号还是报告售罄。落定后继续按另一个按钮，观察结果是否改变。这份演示使用原生 Promise；按钮只控制结果何时交付。</p>
+      <p>新建一单，再由你决定是交付取餐号还是报告售罄。落定后再按另一个按钮，观察结果是否改变。这份演示使用原生 Promise；按钮只控制结果何时交付。</p>
       <PromiseLesson />
       <p>先交付 A17，随后报告售罄，凭条仍然是 A17。反过来先报告售罄，也不能再把同一份 Promise 改成成功。业务确实需要重试时，应发起新的操作、取得新的 Promise；“再试一次”不是改写上一次的结果。</p>
     </ArticleSection>
     <ArticleSection id="timing" title="回调执行的时机" className={base.offset}>
-      <p id="promise-timing" className="vp-citation-target">then 登记的处理函数不会插进当前同步代码中途执行。即使 Promise 已经落定，处理函数也会在当前执行结束后的微任务阶段运行。晚一点登记处理函数，仍然能收到已有结果。<Cite id="promise-timing" /></p>
-      <p>打开上面的执行记录。按下“交付取餐号”后，记录先出现调用 resolve、同步代码结束，随后才出现成功回调。状态落定与读取结果的回调执行，是两个需要分清的时刻。</p>
+      <p id="promise-timing" className="vp-citation-target"><code>then</code> 是在 Promise 上登记后续处理的方法。登记的函数会排进微任务队列，等当前这段同步代码执行完才运行，不会插进中间；即使 Promise 早已落定也是如此。这样，无论处理函数是在结果到来前还是之后登记，当前代码都不会被它打断。<Cite id="promise-timing" /></p>
+      <p>打开上面的执行记录。按下“交付取餐号”后，记录先出现调用 resolve、同步代码结束，随后才出现成功回调。状态落定是一个时刻，回调真正执行是另一个时刻。</p>
       <pre className={base.code}>{'Promise.resolve("A17").then(value => {\n  console.log(value);\n});\nconsole.log("先执行这里");\n\n// 先执行这里\n// A17'}</pre>
-      <p>异步回调让执行顺序可安排，但不会把回调里的计算自动搬到后台线程。处理函数里若做很久的同步计算，页面仍然可能卡住。</p>
+      <p>Promise 安排的是“何时接着处理”，不会自动把计算搬到另一个线程。回调仍可能占用页面运行脚本的时间；如果它执行很久的同步计算，浏览器就不能及时响应点击，页面仍会卡住。</p>
     </ArticleSection>
     <ArticleSection id="chain" title="把结果交给下一步">
       <AsyncLegacyAnchors slug="promise" names={["quiz-heading", "prompt-heading"]} />
-      <p id="promise-chain" className="vp-citation-target">then 会返回一个<strong>新的 Promise</strong>：处理函数返回普通值，后面的步骤就收到该值；返回另一个 Promise，后面会等它落定；抛出错误，则沿拒绝分支继续。忘记 return，下一步拿到的可能就是 undefined。<Cite id="promise-chain" /></p>
+      <p id="promise-chain" className="vp-citation-target"><code>then</code> 会返回一个<strong>新的 Promise</strong>：处理函数返回普通值，后面的步骤就收到该值；返回另一个 Promise，后面会等它落定；抛出错误，就是告诉后续步骤这一步失败，让它沿拒绝分支继续。像下面带花括号的写法，漏掉 <code>return</code>，下一步就会拿到 <code>undefined</code>，表示这一步没有交回值。<Cite id="promise-chain" /></p>
       <pre className={base.code}>{'fetch("/books.json")\n  .then(response => {\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);\n    return response.json();\n  })\n  .then(data => showBooks(data))\n  .catch(error => showError(error));'}</pre>
-      <p>这里先检查 HTTP 状态，再把解析内容的 Promise 返回给链条。下一步等到解析结束才得到 data。把同一段顺序写成 <ConceptTerm slug="async-await">async/await</ConceptTerm>，改变的是代码组织方式，仍然要处理成功值与失败原因。</p>
-      <p id="promise-cancel" className="vp-citation-target">Promise 本身没有通用的“取消”方法。是否能停止底层工作，要看那项操作提供什么能力，例如 fetch 接受 AbortSignal。停止显示结果、拒绝 Promise 和取消实际请求，不能混为一件事。<Cite id="promise-cancel" /></p>
-      <ArticleAside title="resolve 也可能接住另一份 Promise"><p id="promise-resolved" className="vp-citation-target">本例 resolve 的是字符串，所以会履行。如果传给 resolve 的是另一份仍在等待的 Promise，外层会跟随它的最终结果，这时还不能说已经 fulfilled。因此，resolved 与 fulfilled 并非在所有情况下都同义。<Cite id="promise-resolved" /></p></ArticleAside>
+      <p>这里先检查 HTTP 状态，再把解析内容的 Promise 返回给链条。下一步等到解析结束才得到 data。把同一段顺序写成 <ConceptTerm slug="async-await">async/await</ConceptTerm>，也就是另一种等待 Promise 的写法；代码排法变了，仍然要处理成功值与失败原因。</p>
+      <p id="promise-cancel" className="vp-citation-target">Promise 本身没有通用的“取消”方法。能否停止底层工作，要看那项操作提供什么能力，例如 fetch 接受 AbortSignal。关掉上传进度显示，只是让页面不再展示结果；把 Promise 标为拒绝，也不会凭这一步停止上传。只有上传所用的操作提供取消能力并调用它，实际工作才可能停下。<Cite id="promise-cancel" /></p>
+      <ArticleAside title="resolve 也可能接住另一份 Promise"><p id="promise-resolved" className="vp-citation-target">本例把字符串 A17 交给 resolve，所以 Promise 履行。如果交给 resolve 的是另一份仍在等待的 Promise，当前这份就锁定为跟随它：对方后来履行，它才履行；对方拒绝，它也拒绝。在等待期间，当前这份还没有 fulfilled。所以 resolved（去向已锁定）和 fulfilled（已经履行）并不总是等同。<Cite id="promise-resolved" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

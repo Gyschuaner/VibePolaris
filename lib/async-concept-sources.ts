@@ -5,8 +5,8 @@ export const fetchSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "Response: json() method", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Response/json", citations: ["fetch-json"] },
 ];
 export const promiseSources = [
-  { publisher: "MDN Web Docs · 贡献者", title: "Promise", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise", citations: ["promise-states", "promise-resolved", "promise-cancel"] },
-  { publisher: "MDN Web Docs · 贡献者", title: "Using promises", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises", citations: ["promise-timing"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Promise", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise", citations: ["promise-receipt", "promise-states", "promise-resolved", "promise-cancel"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Using promises", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises", citations: ["promise-alternative", "promise-timing"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Promise.prototype.then()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then", citations: ["promise-chain"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Using microtasks in JavaScript with queueMicrotask()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide", citations: ["promise-timing"] },
 ];
