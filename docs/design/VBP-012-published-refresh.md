@@ -538,6 +538,12 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_c60ffb
 
 2026-09-29 集成：提交经 [PR #124](https://github.com/Gyschuaner/VibePolaris/pull/124) 合入 `dev`，merge `d717901322f85690cc159b82fea24520352b30e0`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用同一 Git 树与构建产物，`http://localhost:3219/terms/fetch-api` 在真实浏览器复核响应面板、书目读取、旧锚点和四份来源，应用错误为空。DP 部署 `115788a9-1f67-4bb8-b6b4-4fd767359a7c` 已回查；前版 `7c23902` 构建备份在 `/tmp/vbp012-dev-next-7c23902`。未部署远端 dev 或生产。DP VBP-012 更新至 21/105、版本 30；下一条 promise。
 
+2026-09-29 完整正文补审：按当前 Skill 的正文验收补做一轮独立审读，不把原先的技术集成当作读者验收。读者面对的任务是从另一地址取书单并决定能否显示；不用 Fetch 时可把固定书名写在页面里，但更新书单就要改页面。四份 MDN 原文重新实际打开并核对：`fetch-response` 对应响应头先到、正文可随后传输；`fetch-http` 对应 404/500 不因状态码本身拒绝；`fetch-ok` 对应 200–299；`fetch-json` 对应读完、解析与已读正文不能再直接读取。`fetch-cancel` 由 Using the Fetch API 的 AbortController 与正文取消时机段支持。既有平面 Response 首图和主演示分别强调状态先出现、正文后读取，保留先前三种视觉候选的选择，不因文案补审重启已验收的动效设计。
+
+ZCode CLI 独立模拟读者会话 `sess_68545bc3-c739-4823-995a-c0187baf6152` 只读完整的读者可见页面材料，指出 Promise 未就地解释、Response 到手时正文到齐与否不清、取消与过期结果校验的分工不明；但可据原稿判断天气页收到 200 和合法 JSON 却缺 `temperature` 时不能显示温度。独立语言会话 `sess_35ba1f83-eb51-487c-bfec-f8797a0b2fa4` 另读 partner Skill、humanizer-zh 与本页源码，指出“回应/响应”“解释/解析”混用、重复消费与未解释的“幂等”。主助手据来源和演示代码修订：就地说明 Promise 和 HTTP 响应、正文可能仍在传输及 `json()` 的等候与解析、重置得到新 Response、AbortController 与请求序号双重防护，并移除无关的幂等术语。ZCode 是模型模拟，未接触真人零基础读者。
+
+修订提交 `8486149` 经 [PR #162](https://github.com/Gyschuaner/VibePolaris/pull/162) 合入 `dev`，merge `67d232a146fb1382a31028b1fc6dc9335b0a93dc`。`npm run build` 编译、TypeScript 与 117/117 静态页通过。真实浏览器在构建预览及本地 dev 预览中确认 200 响应先于两本书、404 已有 Response 但不显示书目；390px 无横向溢出，来源摘录回链落点约 130px，应用错误日志为空。DP 补审任务 `66b6c9af-a259-44a5-92bf-0eaf0aa637e0` done；用例 `a438e626-620f-455f-9987-159d5a8ed6d3`、本地计划 `a638d3d4-aa2f-42de-b8e9-e3dd09745a47` completed、执行 `75f6db41-ea57-4ec2-9b3b-4f2f7de54b03` passed，部署记录 `83024758-2ab6-40c1-bf6b-3e97a65f37bc` 已回查。仅本机 dev 预览，远端 dev 与生产未部署；可用前版构建备份 `/tmp/vbp012-dev-next-2ed1515` 恢复本机预览。至此完整正文补审 21/105，下一条 promise。
+
 ## 22 · promise
 
 读者入口：“请求已经发出但没结果时，手里先拿到什么？后来报错，还能把同一份结果改成成功吗？”保留现有取餐订单的原生 Promise 主演示和从状态、回调时机到链式处理的正文。原首图只把一张纸质凭条变成 A17，未呈现拒绝出口，且与前一页 Fetch 的原信封形态相近。现在先展示一份空结果舱，A17 从上方进入并封口；随后新的一份空舱落定为“售罄”，第一份保持 A17。这两份是独立 Promise，不是一次 Promise 先成功再失败。主演示仍允许对同一份订单先后调用 resolve/reject，以真实结果不变验证不可反悔；新建一单才取得新 Promise。
