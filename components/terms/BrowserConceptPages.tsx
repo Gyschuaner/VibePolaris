@@ -1,4 +1,4 @@
-import { Broadcast, CloudSun, MusicNote, Ruler } from "@phosphor-icons/react/dist/ssr";
+import { Broadcast, CloudSun, MusicNote } from "@phosphor-icons/react/dist/ssr";
 import { browserApiSources, effectSources } from "@/lib/browser-concept-sources";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
@@ -54,7 +54,11 @@ export function BrowserApiTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={browserApiSources} />;
   return <ConceptArticle slug="browser-api" title="浏览器 API" sources={browserApiSources}
     sections={[["host", "语言之外的浏览器能力"], ["measure", "让浏览器测量一块区域"], ["limits", "存在，不代表一定能用"], ["responsibility", "接口能力与业务责任"]]}
-    hero={<ConceptHero slug="browser-api" label="页面区域展开，刻度尺展示浏览器测量尺寸的能力"><div className={styles.browserHero}><div><Ruler size={37} weight="light" /></div><div className={styles.ruler} /><span>ResizeObserver</span></div></ConceptHero>}
+    hero={<ConceptHero slug="browser-api" label="浏览器窗口中的页面区域变宽，测量括号贴住内容区，随后 JavaScript 收到内容宽度读数"><div className={styles.browserHero}>
+      <div className={styles.browserWindow}><span className={styles.browserWindowLabel}>浏览器</span><div className={styles.browserTarget}>页面区域<i aria-hidden="true" /></div></div>
+      <div className={styles.browserTransfer} aria-hidden="true">↓</div>
+      <div className={styles.browserReadout}><span>JS 收到</span><code>contentRect.width</code><strong>200 px</strong></div>
+    </div></ConceptHero>}
     intro={<>计算、判断和循环由 JavaScript 表达。读取页面尺寸、发起网络请求、操作剪贴板，则需要<strong>浏览器向代码提供的接口</strong>。</>}
     relatedIntro={<>浏览器 API 扩展 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 在网页中的能力。网络请求看 <ConceptTerm slug="fetch-api">Fetch API</ConceptTerm>，本地保存看 <ConceptTerm slug="local-storage">本地存储</ConceptTerm>，持续连接看 <ConceptTerm slug="websocket">WebSocket</ConceptTerm>。</>}>
     <ArticleSection id="host" title="语言之外的浏览器能力">
@@ -65,7 +69,8 @@ export function BrowserApiTermPage() {
       <p>React 等库帮你组织界面，但不会凭空生成浏览器没有提供的能力。看到一段代码时，先分清它在做普通计算、调用库，还是请求运行环境做一件事。</p>
     </ArticleSection>
     <ArticleSection id="measure" title="让浏览器测量一块区域">
-      <p id="browser-measure" className="vp-citation-target">ResizeObserver 可以观察元素的尺寸变化。下面改变的是页面里这一块区域，不是整个窗口；读数来自浏览器回调中的 contentRect.width，并四舍五入显示。内容宽度不包含边框和内边距。<Cite id="browser-measure" /></p>
+      <p id="browser-measure" className="vp-citation-target">ResizeObserver 可以观察元素的尺寸变化。下面改变的是页面里这一块区域，不是整个窗口；读数来自浏览器回调中的 contentRect.width，并四舍五入显示。<Cite id="browser-measure" /></p>
+      <p id="browser-content-box" className="vp-citation-target">这里量的是区域里放内容的宽度，内边距和边框在它外面，不计入这次读数。规范把 contentRect 定义为这个内容区的尺寸；如果给目标加上内边距，外框会比读数更宽。<Cite id="browser-content-box" /></p>
       <p>拖动滑块，观察区域和像素读数一起变化。再关掉“观察尺寸”后调节：区域仍能伸缩，但读数停留在最后一次测量。这里实际调用浏览器接口，不使用预填的宽度结果。</p>
       <Anchors slug="browser-api" names={["scene-heading"]} /><BrowserApiLesson />
       <div className={styles.sideExplanation}><div><p id="browser-disconnect" className="vp-citation-target">observe 开始观察目标，disconnect 停止这份观察器。页面恢复观察后会重新收到当前尺寸；不需要假装逐条补回暂停期间的变化。离开页面时也应清理不再需要的观察。<Cite id="browser-disconnect" /></p></div><pre className={shared.code}>{'const observer = new ResizeObserver(\n  ([entry]) => {\n    showWidth(entry.contentRect.width);\n  }\n);\nobserver.observe(element);\n// 不再需要时\nobserver.disconnect();'}</pre></div>
