@@ -33,7 +33,7 @@ export function matchReader(path: string, staticFirst: boolean, allowOther: bool
   if (staticFirst && path === "/readers/me") return { route: "static", value: "当前登录者", status: 200, message: "读取当前读者", reader: { id: 42, name: "林舟" } };
   let value: string;
   try { value = decodeURIComponent(match[1]); }
-  catch { return { route: "dynamic", value: match[1], status: 400, message: "路径编码不完整" }; }
+  catch { return { route: "dynamic", value: match[1], status: 400, message: "路径编码无效" }; }
   const base = { route: "dynamic" as const, value };
   if (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value))) return { ...base, status: 422, message: "id 必须是可安全表示的正整数" };
   const id = Number(value);

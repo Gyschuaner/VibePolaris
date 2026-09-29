@@ -60,7 +60,7 @@ export function QueryParameterTermPage() {
 export function PathParameterTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={pathParameterSources} />;
   return <ConceptArticle slug="path-parameter" title="路径参数" sources={pathParameterSources}
-    intro={<>打开 42 号读者的资料，地址是 /readers/42；换成 43，就请求另一位读者。同一条路径模板能接收不同的值。路由先取到这个值；它是否合法、能不能用来查看资料，还要往下检查。</>}
+    intro={<>AI 帮你做读者资料页，给出的地址里有 /readers/42。把 42 换成 43，就改成请求另一位读者的资料。这一段数字怎样交给程序？为什么改对了数字，仍可能看不到资料？路径参数从这里开始起作用。</>}
     sections={[["template", "模板里的可替换位置"], ["matching", "请求落在哪条路由"], ["checks", "匹配之后还有检查"], ["framework", "路由决定路径规则"]]}
     hero={<ConceptHero slug="path-parameter" label="固定路径 /readers/ 后有可替换的 id 槽位；42 和 43 先后占据槽位，最终只捕获到 id 等于 43，尚未读取读者资料"><div className={s.pathHero}>
       <div className={s.pathFrame}>
@@ -71,26 +71,32 @@ export function PathParameterTermPage() {
     </div></ConceptHero>}>
     <ArticleSection id="template" title="模板里的可替换位置">
       <Legacy slug="path-parameter" names={["question", "definition"]} />
-      <p id="path-template" className="vp-citation-target"><strong>路径参数是路由从 URL 路径的可变位置提取出的值。</strong>在 OpenAPI 文档中，<code>{"/readers/{id}"}</code> 用花括号标出模板槽位；实际请求把它替换为 <code>42</code>。id 是参数名，42 是本次的值，花括号不用随请求发送。<Cite id="path-template" /></p>
+      <p>URL 就是网页或服务的地址。比如 <code>https://example.com/readers/42</code> 中，<code>/readers/42</code> 是路径。程序用一组规则决定“这种请求交给哪段代码处理”，这组规则叫路由；检查路径是否符合某条规则，就是匹配。</p>
+      <p id="path-template" className="vp-citation-target">路由规则可以约定路径里有一个可变的位置。<strong>路径参数，就是这个位置在实际请求里填入、由程序提取的值。</strong>OpenAPI 是描述接口的文档规范，里面用 <code>{"/readers/{id}"}</code> 这样的模板标出可变位置，也就是演示里的“槽位”。<code>/readers/</code> 保持不变，花括号里的 id 是参数名；实际请求写成 <code>/readers/42</code>，程序就能取到这次的值 42。花括号和 id 不用原样发出去。<Cite id="path-template" /></p>
       <div className={s.urlExample}><code>{"/readers/{id}"}</code><ArrowRight size={22} aria-hidden="true" /><code>/readers/<mark>42</mark></code></div>
-      <p>它是应用对请求路径的解释，并非请求中新加的消息字段。同样的路径字符串，在没有声明相应路由的服务里，可能完全找不到入口。<ConceptTerm slug="endpoint">端点</ConceptTerm>还要结合 HTTP 方法和服务地址来理解。</p>
+      <p>这个模板让不同编号共用一条处理规则，不必为 42、43 和以后每位读者分别写一个入口。编号也可以约定放在 <ConceptTerm slug="query-parameter">查询参数</ConceptTerm>里，例如 <code>/readers?id=42</code>；两种写法都能设计成按编号读取，但各要有对应的程序支持，光改地址不会让另一种写法自动生效。</p>
+      <p>数字出现在地址里，还不够证明它是路径参数：程序得先定义相应的路由。请求还带有 GET 这样的“方法名”，告诉服务想做什么；它不是地址中的一段文字。本例固定用 GET 请求读取资料。如果程序发出的是提交或删除请求，就要看对应方法的处理规则。完整的 <ConceptTerm slug="endpoint">端点</ConceptTerm>还要结合服务地址和请求方法来判断。</p>
     </ArticleSection>
     <ArticleSection id="matching" title="请求落在哪条路由">
       <Legacy slug="path-parameter" names={["scene-heading"]} />
-      <p>下面模拟按从上到下顺序检查的两条路由。当前读者是 42，资料库只有 42 和 43。先匹配 42，再试 me；交换路由顺序后，观察 me 是否落入了 id 槽位。所有资料和权限开关都是本地教学数据。</p>
+      <p>下面假定你以 42 号读者林舟的身份登录，资料库另有 43 号读者许青。<code>/readers/me</code> 是专门读取当前登录者的固定路径；<code>{"/readers/{id}"}</code> 按传入的编号读取。匹配时，程序从列表顶部往下逐条检查规则。你可以先选 42 并点击“匹配路径”，再试 me 和交换顺序。数据与权限开关都是本地模拟，不会访问真实读者资料。</p>
       <PathParameterLesson />
-      <p id="path-runtime" className="vp-citation-target">这个顺序实验对应 FastAPI 文档描述的处理方式：固定路径 <code>/users/me</code> 需要先于 <code>{"/users/{user_id}"}</code> 声明，否则 me 可能被当作变量值。演示改用了 readers，但仍保留“先匹配到哪条，就交给哪条处理”的关键差异。<Cite id="path-runtime" /></p>
+      <p><code>/readers/42</code> 不符合固定的 me 路径，却符合带 id 的模板，于是取到 42，再完成后续检查，显示林舟的资料。换成 <code>/readers/me</code> 时，固定路由在前就直接按当前登录者读取，仍得到林舟；这次没有从路径里取出数字编号。</p>
+      <p>交换顺序后，带 id 的模板先接住了 me，得到 <code>id = "me"</code>。接下来的规则却要求 id 是正整数，me 不符合，于是显示 422，表示本例的编号校验失败。程序已经选中了这条路由，不会因为校验失败，再退回去尝试下面的固定路由。</p>
+      <p id="path-runtime" className="vp-citation-target">这个顺序实验参考 FastAPI——一种编写服务程序的框架——的处理方式。它的官方例子要求先声明固定的 <code>/users/me</code>，再声明 <code>{"/users/{user_id}"}</code>，否则后者也会把 me 当成参数值。本页换成 readers 来演示同样的顺序问题，并另加了编号和权限检查。<Cite id="path-runtime" /></p>
     </ArticleSection>
     <ArticleSection id="checks" title="匹配之后还有检查">
-      <div className={s.compare}><div><h3>值是否合法</h3><p id="path-types" className="vp-citation-target">匹配到一个位置，只得到输入值。路由可以进一步要求它是整数；FastAPI 能依据类型声明转换或拒绝输入。本例限制为正整数，所以 abc、me 或解码后包含斜杠的值不会成为读者编号。<Cite id="path-types" /></p></div><div><h3>调用者能否读取</h3><p id="path-access" className="vp-citation-target">编号格式正确，也不代表调用者能查看对应资料。权限检查应针对每次请求和具体对象执行；不能只因为地址里写了 43，就交出 43 号读者的信息。<Cite id="path-access" /></p></div></div>
-      <blockquote className={s.quote}>路径提供定位线索，<br />不提供访问许可。</blockquote>
-      <p>本例把无权限显示为 403，允许访问后再查不到对象显示为 404，编号格式不符显示为 422。实际服务可以为避免暴露对象存在性而采取不同的错误策略。这里要区分的是匹配、校验、授权和查询四个判断，不能把一次匹配当作全部通过。</p>
+      <div className={s.compare}><div><h3>值是否合法</h3><p id="path-types" className="vp-citation-target">地址是一串文字，取出来的 42 最初也是两个字符。程序要按整数使用它，得先做转换；碰到 abc，就转不成整数。FastAPI 能依据接口声明的类型要求完成转换或拒绝输入。哪些值有效，要看具体接口，不是所有路径参数都必须填数字。<Cite id="path-types" /></p><p>本例要求正整数，而且不能在前面补 0。因此 42 可以继续，abc、042 或落入 id 槽位的 me 都会停在校验这一步。特别长的数字还可能超出程序能精确表示的范围，本例也会拒绝，避免把编号读错；这些都是本例的编号约定。</p></div><div><h3>调用者能否读取</h3><p id="path-access" className="vp-citation-target">编号格式正确，也不代表发起请求的人能查看对应资料。权限检查应针对每次请求和具体对象执行；不能只因为地址里写了 43，就交出 43 号读者的信息。你请求谁的资料，与系统确认你是谁，是两回事。<Cite id="path-access" /></p></div></div>
+      <p>默认情况下，请求 43 会显示 403，因为当前身份没有读取其他读者的权限。勾选“允许读取其他读者”后重新匹配，才会显示许青；改成 99 并匹配，即使允许访问，也只得到 404，因为资料库没有这位读者。开关只改变演示中的权限条件，不会修改真实账号的权限。</p>
+      <p>这些数字是本例用来区分结果的状态码：422 是编号校验失败，403 是权限不足，404 是没有匹配路径或查询不到资料。实际服务可能为了不暴露对象是否存在，选择不同的错误返回方式。应分别看程序选中了哪条路由、输入是否合规、权限是否允许、资料是否存在，不能凭“地址匹配上了”就认定全部通过。</p>
     </ArticleSection>
     <ArticleSection id="framework" title="路由决定路径规则">
       <Legacy slug="path-parameter" names={["quiz-heading", "prompt-heading"]} />
-      <p id="path-spec" className="vp-citation-target">OpenAPI 3.1.1 对接口文档的匹配约定是具体路径先于模板路径。同一层级的 <code>{"/readers/{id}"}</code> 和 <code>{"/readers/{name}"}</code> 被视为相同的模板，不能靠变量改名把它们变成不同入口。<Cite id="path-spec" /></p>
+      <p id="path-spec" className="vp-citation-target">OpenAPI 3.1.1 对接口文档的匹配约定是具体路径先于模板路径。这是在规定怎样理解文档，不会替 FastAPI 调整程序里的声明顺序。同一层级的 <code>{"/readers/{id}"}</code> 和 <code>{"/readers/{name}"}</code> 被视为相同的模板，不能靠变量改名把它们变成不同入口。<Cite id="path-spec" /></p>
       <p><strong>文档的模板约定，需要与实际框架的行为一致。</strong>不同路由系统可能采用声明顺序、路径优先级或显式匹配规则。设计固定路径与动态路径时，要检查当前实现，而不是假定所有框架都会自动避免冲突。</p>
-      <ArticleAside title="一个参数里能不能含有斜杠"><p id="path-slash" className="vp-citation-target">普通单段参数与跨多段路径是不同需求。FastAPI 提供专门的 path 转换器来捕获余下路径；并不是任意 id 都能随意包含斜杠。涉及编码斜杠时，还应核对代理、服务器和路由器怎样解码。本页只演示单段正整数，不模拟跨层路径。<Cite id="path-slash" /></p></ArticleAside>
+      <ArticleAside title="一个参数里能不能含有斜杠"><p id="path-slash" className="vp-citation-target">普通单段参数与跨多段路径是不同需求。FastAPI 提供专门的 path 转换器来捕获余下路径；并不是任意 id 都能随意包含斜杠。涉及编码斜杠时，还应核对代理、服务器和路由器怎样解码。本页只演示单段正整数，不模拟代理、服务器各层的解码差异。<Cite id="path-slash" /></p></ArticleAside>
+      <ArticleAside title="输入编码有误时"><p id="path-decoding" className="vp-citation-target">地址中的一些字符会写成带百分号的编码，读取时再还原。本例使用 decodeURIComponent 解码；单独的 % 缺少后续字符，%FF 则不是它能还原的有效 UTF-8 字符编码，两者都会被拒绝，显示 400“路径编码无效”。此时停在解码这一步，还没开始检查编号是不是正整数。<Cite id="path-decoding" /></p></ArticleAside>
+      <p>换成订单页 <code>/orders/87</code>，同样可以用 <code>{"/orders/{orderId}"}</code> 取出订单编号。把 87 改成 88，改变的是想读取的订单，不会把订单改号，也不会让当前账号自动获得查看权限。让 AI 实现这样的页面时，除路径模板外，还要说清编号规则、谁能访问，以及订单不存在时怎么处理。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

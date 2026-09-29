@@ -10,6 +10,7 @@ export const pathParameterSources = [
   { publisher: "FastAPI · 官方文档", title: "Path Parameters", date: "", url: "https://fastapi.tiangolo.com/tutorial/path-params/", citations: ["path-runtime", "path-types", "path-slash"] },
   { publisher: "OWASP Cheat Sheet Series", title: "Authorization Cheat Sheet", date: "", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html", citations: ["path-access"] },
   { publisher: "OWASP Cheat Sheet Series", title: "Insecure Direct Object Reference Prevention Cheat Sheet", date: "", url: "https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html", citations: ["path-access"] },
+  mdn("decodeURIComponent() · Exceptions", "Web/JavaScript/Reference/Global_Objects/decodeURIComponent#exceptions", ["path-decoding"]),
 ];
 export const requestBodySources = [
   mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["body-content", "body-method", "body-stream"]),
