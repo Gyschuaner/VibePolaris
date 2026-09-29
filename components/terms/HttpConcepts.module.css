@@ -16,7 +16,13 @@
 .requestHeader{animation:requestHeader 4.5s both}
 .requestGap{height:16px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);animation:requestGap 4.5s both}
 .requestBody{min-height:37px;animation:requestBody 4.5s both}
-.responseHero{height:100%;position:relative}.heroMessage{position:absolute;left:6%;top:25px;background:var(--surface);padding:18px 23px;display:flex;flex-direction:column;gap:8px;border-radius:5px;transform:rotate(-6deg);animation:messageIn 3.8s both}.heroMessage strong{font-size:36px;font-weight:450}.heroMessage code{font-size:12px}.heroView{position:absolute;right:6%;bottom:26px;background:var(--tint);padding:21px 26px;border-radius:7px;display:flex;gap:15px;align-items:center;animation:viewIn 3.8s both}.heroView span{font-size:14px}
+.responseHero{height:100%;display:grid;grid-template-columns:minmax(0,1.1fr) 32px minmax(0,.9fr);align-items:center;gap:8px;padding:5px}
+.responseMessage,.responseApp{min-width:0;min-height:170px;background:var(--surface);border-radius:6px;padding:11px 12px;animation:responseMaterial 5s both}
+.responseMessage>span,.responseApp>span{font-size:10px;color:var(--muted)}
+.responseStatus{display:flex;align-items:baseline;gap:6px;margin:7px 0 9px}.responseStatus strong{font-size:34px;font-weight:500;line-height:1}.responseStatus small{font-size:10px;color:var(--muted)}
+.responsePayload{display:grid;gap:4px;padding-top:8px;border-top:1px solid var(--border)}.responsePayload small{font-size:10px;color:var(--muted)}.responsePayload code{font-size:10px;white-space:nowrap}.responsePayload b{font-weight:550;animation:responseSource 5s both}
+.responseBridge{display:grid;justify-items:center;gap:8px;color:var(--accent-text);animation:responseBridge 5s both}.responseBridge span,.responseBridge small{font-size:10px;white-space:nowrap}.responseBridge i{display:block;width:100%;height:2px;background:var(--accent-text);transform-origin:left;animation:responseLine 5s both}
+.responseApp{background:color-mix(in srgb,var(--surface) 55%,transparent)}.responseBookmark{display:grid;align-content:center;justify-items:center;gap:8px;min-height:113px;margin-top:13px;border:1px dashed var(--border);border-radius:5px;color:var(--accent-text);animation:responseSlot 5s both}.responseBookmark strong{font-size:12px;font-weight:550;text-align:center;animation:responseTitle 5s both}
 .methodHero{height:100%;position:relative;display:flex;align-items:center;justify-content:center;gap:11px}.methodHero>div{width:73px;height:110px;background:var(--surface);display:flex;align-items:center;flex-direction:column;justify-content:center;gap:15px;border-radius:5px}.methodHero>div:nth-child(2){animation:copyOne 4s both}.methodHero>div:nth-child(3){animation:copyTwo 4s both}.methodHero>code{position:absolute;left:12%;top:21px;font-size:13px}.methodHero>span{position:absolute;bottom:21px;right:14%;font-size:13px}
 .statusHero{height:100%;display:flex;flex-direction:column;justify-content:center;gap:15px;padding:0 25px}.statusHero strong{font-size:83px;line-height:1;font-weight:450;letter-spacing:-5px;animation:accepted 3s both}.statusHero span{font-size:14px}.statusHero i{display:block;width:100%;height:5px;background:var(--tint);border-radius:8px;overflow:hidden}.statusHero i::after{content:"";display:block;width:37%;height:100%;background:var(--accent);border-radius:8px;animation:partialProgress 4s both}
 .headerHero{height:100%;position:relative;display:flex;align-items:center;justify-content:space-around;padding-top:30px}.headerHero>code{position:absolute;top:22px;left:12%;font-size:12px}.headerHero>div{width:100px;padding:21px 8px;text-align:center;display:flex;gap:13px;align-items:center;flex-direction:column;border-radius:9px;background:var(--surface);font-size:20px}.headerHero>div:nth-child(2){animation:chooseFormat 3.6s both}.headerHero>div:nth-child(3){opacity:.25;transform:scale(.9);animation:declineFormat 3.6s both}
@@ -25,8 +31,12 @@
 @keyframes requestHeader{0%,42%{opacity:0;transform:translateX(-10px)}60%,100%{opacity:1;transform:none}}
 @keyframes requestGap{0%,60%{opacity:0}72%,100%{opacity:1}}
 @keyframes requestBody{0%,68%{opacity:0;transform:translateY(-8px)}90%,100%{opacity:1;transform:none}}
-@keyframes messageIn{0%,15%{opacity:0;transform:translateY(-15px) rotate(-6deg)}45%,100%{opacity:1;transform:rotate(-6deg)}}
-@keyframes viewIn{0%,50%{opacity:0;transform:translateY(20px)}90%,100%{opacity:1;transform:none}}
+@keyframes responseMaterial{0%,8%{opacity:0;transform:translateY(9px)}22%,100%{opacity:1;transform:none}}
+@keyframes responseSource{0%,38%{background:transparent}55%,70%{background:var(--tint)}85%,100%{background:transparent}}
+@keyframes responseBridge{0%,40%{opacity:0}55%,100%{opacity:1}}
+@keyframes responseLine{0%,48%{transform:scaleX(0)}72%,100%{transform:scaleX(1)}}
+@keyframes responseSlot{0%,50%{border-style:dashed}75%,100%{border-style:solid}}
+@keyframes responseTitle{0%,70%{opacity:0;transform:translateY(6px)}92%,100%{opacity:1;transform:none}}
 @keyframes copyOne{0%,20%{opacity:0;transform:translateX(-80px) rotate(-8deg)}65%,100%{opacity:1;transform:none}}
 @keyframes copyTwo{0%,50%{opacity:0;transform:translateX(-160px) rotate(8deg)}90%,100%{opacity:1;transform:none}}
 @keyframes accepted{0%,20%{opacity:0;transform:translateY(10px)}60%,100%{opacity:1;transform:none}}
