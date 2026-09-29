@@ -23,10 +23,12 @@ export const methodSources = [
   mdn("PUT request method", "Web/HTTP/Reference/Methods/PUT", ["method-purpose", "method-repeat"]),
 ];
 export const statusSources = [
-  mdn("HTTP response status codes", "Web/HTTP/Reference/Status", ["status-classes", "status-other"]),
+  mdn("HTTP response status codes", "Web/HTTP/Reference/Status", ["status-classes", "status-categories", "status-other"]),
   mdn("202 Accepted", "Web/HTTP/Reference/Status/202", ["status-accepted"]),
   mdn("422 Unprocessable Content", "Web/HTTP/Reference/Status/422", ["status-correct"]),
   mdn("503 Service Unavailable", "Web/HTTP/Reference/Status/503", ["status-unavailable"]),
+  mdn("Retry-After header", "Web/HTTP/Reference/Headers/Retry-After", ["status-retry"]),
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke（编）", title: "RFC 9110 — HTTP Semantics · §15.5", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5", citations: ["status-other"] },
 ];
 export const headerSources = [
   mdn("HTTP headers", "Web/HTTP/Reference/Headers", ["header-fields"]),

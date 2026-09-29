@@ -137,34 +137,42 @@ export function HttpMethodTermPage() {
 export function StatusCodeTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={statusSources} />;
   return <ConceptArticle slug="status-code" title="状态码" sources={statusSources}
-    intro={<>导出任务返回 202，界面却立刻显示“下载完成”，用户找不到文件。数字本身没错，问题出在把“已接受”理解成了“所有工作都结束”。</>}
-    sections={[["classes", "先读类别，再读具体含义"], ["export", "一次导出，两次请求"], ["errors", "错误之后的动作"], ["business", "HTTP 状态与业务状态"]]}
+    intro={<>你让 AI 给书目网页做一个导出按钮。提交后，服务器返回 202，页面就显示“下载完成”，却没有文件可下载。要找出哪里判断错了，得先看这个数字究竟说明了哪一步。</>}
+    sections={[["classes", "先读类别，再读具体含义"], ["export", "提交之后，还要查询结果"], ["errors", "错误之后的动作"], ["business", "HTTP 状态与业务状态"]]}
     hero={<ConceptHero slug="status-code" label="提交导出请求得到 202 已受理；另一层导出任务的结果仍未确定，202 不表示文件已生成"><div className={s.statusHero}>
       <div className={s.statusTask}><span>导出任务</span><div className={s.statusOutcome}><strong>?</strong><span>结果待确认</span></div></div>
       <div className={s.statusReceipt}><code>POST /exports</code><div><strong>202</strong><span>已受理</span></div></div>
     </div></ConceptHero>}>
     <ArticleSection id="classes" title="先读类别，再读具体含义">
       <Legacy slug="status-code" names={["question", "definition"]} />
-      <p id="status-classes" className="vp-citation-target"><strong>HTTP 状态码是响应里的三位数字，表达这次请求的处理结果。</strong>第一位给出类别，具体代码再细分含义。它让浏览器、代理和应用有共同的判断依据，不必从错误文案猜测成功或失败。<Cite id="status-classes" /></p>
+      <p>网页要从服务器导出书目，会先发出一条请求。服务器发回的回复叫响应，状态码就是响应的一部分。发请求的网页程序在这里叫客户端；HTTP 是双方交换这些消息所遵守的协议。在这个例子中，数字由服务器给出，页面程序再根据它和响应正文里的数据决定显示什么。</p>
+      <p id="status-classes" className="vp-citation-target"><strong>HTTP 状态码是响应里的三位数字，表达这条请求的处理情况。</strong>例如 200 通常表示请求成功，404 表示没有找到目标。第一位先把情况分成大类，后两位再区分具体含义。下面的 <code>xx</code> 是另外两位数字的占位写法，例如 2xx 包括 200、201、202。<Cite id="status-classes" /></p>
       <div className={s.matrix}>{[["1xx","信息性响应"],["2xx","成功"],["3xx","重定向类"],["4xx","客户端错误"],["5xx","服务端错误"]].map(([code,label]) => <div key={code}><strong>{code}</strong><span>{label}</span></div>)}</div>
-      <p>分类只是入口。201 是已创建，204 是成功且没有内容，202 则是接受了处理请求。不能只看“2 开头”就把三个分支都显示成同一个完成页。</p>
+      <p id="status-categories" className="vp-citation-target">1xx 是处理过程中的临时信息，还不是最终响应；2xx 表示当前请求处理成功；3xx 属于重定向类，需要进一步动作，例如转向另一个地址，也包括让客户端继续使用已缓存内容的 304。4xx 指向请求方面的问题，5xx 指向服务器无法完成请求的情况。类别帮助缩小范围，并不能单凭它断定是哪位用户或开发者做错了。<Cite id="status-categories" /></p>
+      <p>也可以只在响应正文里写“成功”“失败”等提示，但每个程序都要读懂这些自定义文字。状态码提供共同的数字约定，浏览器和监控程序能据此判断请求的处理情况，正文再解释具体原因。监控程序会收集这些结果，帮助维护网站的人发现服务异常。</p>
+      <p>即使同属 2xx，也要看具体代码。201 表示已经创建新资源；204 表示请求成功，但响应没有正文，例如删除成功后不再附带其他内容；202 表示已经接受处理请求。它们都不能一概翻译成“文件已经下载到你的电脑”。</p>
     </ArticleSection>
-    <ArticleSection id="export" title="一次导出，两次请求">
+    <ArticleSection id="export" title="提交之后，还要查询结果">
       <Legacy slug="status-code" names={["scene-heading"]} />
       <p id="status-accepted" className="vp-citation-target">202 表示请求已被接受，处理可能尚未开始，也可能在后面失败；这个状态码本身不给出完成比例。若服务返回任务地址，客户端可以再查询进展。第一次提交的响应已经结束，后续查询是另一条请求。<Cite id="status-accepted" /></p>
-      <p>本地示例接受 1 到 5 的整数。提交后先查询一次，再手动让模拟后台完成，最后重新查询。完成按钮控制教学任务，不代表真实耗时；下载的是一份固定书目示例。</p>
+      <p>在下面的书目示例中，<code>POST /exports</code> 是“提交一次导出”，<code>GET /exports/7</code> 是“读取 7 号导出任务现在怎么样了”。POST 和 GET 是请求的方法，斜杠后面是地址路径。提交响应中的 <code>task</code> 字段给出查询地址 <code>/exports/7</code>，它是这个接口约定的数据，不是 202 这个数字自带的内容。</p>
+      <p>实验初始数量为 2，“服务可用”已经勾选。这时点击“提交导出”，再点击“GET /exports/7”。随后点击“让后台完成生成”，观察旧查询结果，最后再查一次。按这个顺序，你会模拟一次提交和两次查询。所有状态都在本页本地演算，没有向服务器发送导出请求；后台完成由按钮控制，不代表真实等待时间。</p>
+      <p>数量用于练习输入检查，允许 1 到 5 的整数，不会改变下载样例里的书目条数。修改数量或切换服务开关，会清掉提交响应和查询结果；再次提交会显示新的提交响应，重新开始这一轮任务演示。“重置实验”还会把数量设回 2、恢复服务可用。这只是重置教学场景，不表示真实系统中改一下输入就会撤销后台任务。</p>
       <StatusLesson />
-      <p>第一次查询得到 200 和 pending，说明“查询任务”成功了，导出却仍未完成。后台生成文件后，页面也不会自动知道；它要通过下一次查询拿到 done，才展示文件入口。</p>
+      <p>第一次查询得到 <code>200 OK</code> 和 <code>state: pending</code>：200 表示这次查询成功，<code>state</code> 是响应正文里的任务状态字段，<code>pending</code> 在本例表示尚未完成。后台生成文件后，已显示的查询结果仍然是旧的；再查一次才得到 <code>state: done</code>，表示本例任务已完成，并出现“下载示例文件”。</p>
+      <p><code>pending</code>、<code>done</code> 是这个接口自己约定的任务状态，不是 HTTP 状态码。提交响应的 202 也没有变成 200；页面上保留的是不同请求各自得到的响应。文件就绪后还要点击下载入口，本例下载的是固定的一条书目 CSV 文件，也就是能用表格软件打开的文本数据。</p>
     </ArticleSection>
     <ArticleSection id="errors" title="错误之后的动作">
-      <div className={s.paired}><div><h3>先修改输入</h3><p id="status-correct" className="vp-citation-target">把数量设为 0，示例返回 422：输入的语法可以解析，内容却不能被处理。此时需要改数量，原样重复提交没有解决原因。<Cite id="status-correct" /></p></div><div><h3>先处理不可用</h3><p id="status-unavailable" className="vp-citation-target">关闭“服务可用”，示例返回 503。它表示服务暂时无法处理请求，可能是维护或过载；Retry-After 可提示建议等待时间，但不保证届时一定恢复。是否重试还要看操作本身。<Cite id="status-unavailable" /></p></div></div>
-      <p id="status-other" className="vp-citation-target">其他错误也不能一概重试：401 涉及认证，403 表示拒绝执行，404 表示未找到目标资源，409 指向与当前资源状态的冲突。状态码把排查范围缩小，具体问题仍要结合响应内容。<Cite id="status-other" /></p>
+      <div className={s.paired}><div><h3>先修改输入</h3><p id="status-correct" className="vp-citation-target">保持服务可用，把数量设为 0 后提交，示例返回 422。服务器理解内容类型，写法也能解析，但内容中的要求无法处理；本例是数量超出了允许范围。应先改成 1 到 5 的整数；数量仍是 0 就再次提交，还会得到 422。<Cite id="status-correct" /></p></div><div><h3>先处理不可用</h3><p id="status-unavailable" className="vp-citation-target">取消勾选“服务可用”后提交，示例返回 503，表示服务暂时无法处理请求，可能是维护或负载太高。这里改数量不能恢复服务，要先等待服务恢复，再判断能否重试。并不是每个服务故障都会返回 503。<Cite id="status-unavailable" /></p></div></div>
+      <p id="status-retry" className="vp-citation-target">示例的 <code>Retry-After: 60</code> 是响应头，也就是响应中附带的说明字段，建议收到响应后等待 60 秒再发后续请求。它不保证 60 秒后一定恢复，也不会自动替页面重试。本地演示没有倒计时，恢复由“服务可用”开关控制；真实应用是否重试，还要判断再次提交是否会重复创建任务。<Cite id="status-retry" /></p>
+      <div id="status-other" className="vp-citation-target"><p>其他错误也需要不同的处理：</p><dl className={s.definitions}><dt>401</dt><dd>这次请求缺少有效的身份凭据，应检查登录状态或请求携带的凭据。</dd><dt>403</dt><dd>服务器理解请求，但拒绝执行。应检查权限或拒绝原因，重新登录未必能解决。</dd><dt>404</dt><dd>没有找到目标，也可能是不愿透露目标是否存在，例如不向无权访问的人确认一份私有文件存在。先核对地址和所用账号能访问的范围。</dd><dt>409</dt><dd>请求与当前资源状态冲突，应根据返回说明处理冲突，再决定是否重新提交。</dd></dl><Cite id="status-other" /></div>
     </ArticleSection>
     <ArticleSection id="business" title="HTTP 状态与业务状态" className={base.offset}>
       <Legacy slug="status-code" names={["quiz-heading", "prompt-heading"]} />
       <blockquote className={s.quote}>先明确：<br />成功的是哪一条请求？</blockquote>
-      <p>查询一个失败的导出任务，可以成功返回 200 和 failed，因为任务查询本身正常完成。如果提交接口明明拒绝了输入，却一直返回 200，只在 JSON 里写自定义错误码，调用方和通用监控就更难区分结果。</p>
-      <p>项目可能有既定的业务码约定，客户端需要遵守；设计新接口时，则应让 HTTP 状态表达对应请求的结果，再让响应体补充字段位置、业务原因和恢复办法。不要用一个层面的“成功”覆盖另一个层面的失败。</p>
+      <p>如果真实导出任务生成失败，查询它仍可能返回 200，同时在响应正文写 <code>state: failed</code>。200 表示成功取到了任务记录，<code>failed</code> 才说明记录中的导出任务失败。如果这次查询得到 503，只能知道查询暂时无法完成，不能据此判断导出任务成功还是失败。上面的简化演示只提供 pending 和 done，没有模拟任务失败或查询暂不可用的分支。</p>
+      <p>反过来，如果提交请求因输入不合法而被拒绝，却总返回 200，只在正文里写自定义错误码，只看 HTTP 状态的调用方和监控就无法分辨这次拒绝。业务码是某个项目在响应数据里自定义的标记，与 HTTP 状态码属于不同约定。接入已有接口要遵守它的文档；设计新接口时，应让 HTTP 状态表达当前请求的情况，再用正文补充具体原因。</p>
+      <p>换成视频转码：提交视频得到 202，之后查询得到 200 和“转换失败”，就应显示转换失败，而不是可播放。让 AI 排查这类页面时，把是哪一次请求、返回的状态码、任务状态和页面提示一起提供，比只说“明明返回成功了”更容易找到错误判断。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
