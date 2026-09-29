@@ -16,4 +16,6 @@ export const tokenSources = [
 export const agentSources = [
   { publisher: "Hugging Face · Agents Course", title: "What is an Agent?", date: "", url: "https://huggingface.co/learn/agents-course/en/unit1/what-are-agents", citations: ["agent-definition-source", "agent-parts"] },
   { publisher: "Erik S.、Barry Zhang · Anthropic", title: "Building effective agents", date: "2024-12-19", url: "https://www.anthropic.com/engineering/building-effective-agents", citations: ["agent-feedback", "agent-workflow", "agent-stopping"] },
+  { publisher: "Hugging Face · Agents Course", title: "Understanding AI Agents through the Thought-Action-Observation Cycle", date: "", url: "https://huggingface.co/learn/agents-course/en/unit1/agent-steps-and-structure", citations: ["agent-feedback"] },
+  { publisher: "OpenAI · Agents SDK", title: "Running agents", date: "", url: "https://openai.github.io/openai-agents-python/running_agents/", citations: ["agent-stopping"] },
 ];

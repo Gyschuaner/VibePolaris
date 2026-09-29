@@ -1,4 +1,4 @@
-import { Brain, CalendarBlank, EnvelopeSimple, GearSix, Wrench } from "@phosphor-icons/react/dist/ssr";
+import { Brain, CalendarBlank, ChatCircleText, EnvelopeSimple, GearSix, Wrench } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleCitation, ArticleAside, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { AgentLesson, LlmLesson, TokenLesson, ProbabilityHeroArt } from "./FoundationConceptLessons";
@@ -81,7 +81,24 @@ export function TokenTermPage() {
 export function AgentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={agentSources} />;
   return <ConceptArticle slug="agent" title="Agent" sources={agentSources}
-    hero={<ConceptHero slug="agent" label="两人的日历找到共同时间，形成尚未发送的邀请草稿"><div className={styles.agendaHero}><div className={styles.heroCalendar}><CalendarBlank size={23} />{Array.from({ length: 6 }, (_, i) => <i key={i} />)}</div><div className={styles.heroInvite}><EnvelopeSimple size={23} /><strong>10:00—10:30</strong><span>邀请草稿 · 未发送</span></div></div></ConceptHero>}
+    hero={<ConceptHero slug="agent" label="同一目标下，两人有共同空档时准备未发送草稿；没有共同空档时询问其他时间，任务未完成">
+      <div className={styles.agentForkHero}>
+        <div className={styles.agentGoal}><CalendarBlank size={18} /><span>找共同空档</span></div>
+        <div className={styles.agentForkLine} />
+        <div className={styles.agentBranches}>
+          <div className={styles.agentBranch}>
+            <div className={styles.agentSlots}><i /><i /></div>
+            <span>10:00 两人空闲</span>
+            <div className={styles.agentOutcome}><EnvelopeSimple size={18} /><strong>草稿 · 未发送</strong></div>
+          </div>
+          <div className={`${styles.agentBranch} ${styles.agentNoSlot}`}>
+            <div className={styles.agentSlots}><i /><i /></div>
+            <span>没有共同空档</span>
+            <div className={styles.agentOutcome}><ChatCircleText size={18} /><strong>询问 · 未完成</strong></div>
+          </div>
+        </div>
+      </div>
+    </ConceptHero>}
     sections={[["goal", "从一个目标开始"], ["calendar", "根据查到的结果行动"], ["roles", "模型与运行程序"], ["workflow", "固定步骤与自主选择"], ["stop", "完成和停止"]]}
     intro={<>智能体围绕目标，让模型选择接下来做什么，并通过工具与环境交互。<strong>它要根据实际结果继续判断，直到完成任务，或遇到需要停下的条件。</strong></>}>
     <ArticleSection id="goal" title="从一个目标开始">
@@ -94,7 +111,7 @@ export function AgentTermPage() {
     <ArticleSection id="calendar" title="根据查到的结果行动">
       <p>先让日历结果回来，再决定下一步。下面是两条固定的教学路径，点击按钮只是逐步查看动作；没有连接真实日历、调用模型或发送邀请。</p>
       <OldAnchor slug="agent" part="scene-heading" /><AgentLesson />
-      <p id="agent-feedback" className="vp-citation-target">实际运行的智能体需要从工具和环境取得反馈，用来判断进度。Anthropic 的实践文章强调，应依据真实工具返回或执行结果继续，而非只依据模型先前的计划。<strong>计划要查日历，与已经查到空档，是两件事。</strong><Cite id="agent-feedback" /></p>
+      <p id="agent-feedback" className="vp-citation-target">实际运行的智能体需要从工具和环境取得反馈，用来判断进度。Hugging Face 的课程把决定下一步、调用工具、观察结果连在一起；Anthropic 的实践文章也强调，应依据真实工具返回或执行结果继续，而非只依据模型先前的计划。<strong>计划要查日历，与已经查到空档，是两件事。</strong><Cite id="agent-feedback" /></p>
       <p>切到“没有共同空档”，继续执行会得到一个补充询问，而不是一张虚构的邀请。目标没有变，下一步却因为证据不同而改变。把缺少的信息说明白，也是这个系统应当具备的能力。</p>
     </ArticleSection>
     <ArticleSection id="roles" title="模型与运行程序">
@@ -109,7 +126,7 @@ export function AgentTermPage() {
     </ArticleSection>
     <ArticleSection id="stop" title="完成和停止">
       <OldAnchor slug="agent" part="quiz-heading" /><OldAnchor slug="agent" part="prompt-heading" />
-      <p id="agent-stopping" className="vp-citation-target">智能体既可以在目标完成后结束，也可以在遇到阻碍时等待人类反馈。运行系统还常设置最大轮数等停止条件，限制持续执行的成本。<strong>停止是一种运行状态，不一定意味着任务成功。</strong><Cite id="agent-stopping" /></p>
+      <p id="agent-stopping" className="vp-citation-target">智能体既可以在目标完成后结束，也可以在遇到阻碍时等待人类反馈。运行系统还会设置停止条件：例如 OpenAI Agents SDK 的 Runner 超出设定的最大轮数时会报错退出。<strong>停止是一种运行状态，不一定意味着任务成功。</strong><Cite id="agent-stopping" /></p>
       <p>本例中，草稿准备完成就是已达到这次目标；没有空档则是等待新信息。两种情况都停止，却只有前者完成了任务。发送邀请超出了本次授权，不能因为工具可用就顺手发出。</p>
       <p>真正检查一个智能体时，可以沿着同一条证据线看：它读到了什么、据此选择了什么、实际发生了什么、结果是否满足目标。若没有这些记录，一段自信的总结无法证明它做对了事。</p>
     </ArticleSection>
