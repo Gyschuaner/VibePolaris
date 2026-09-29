@@ -96,8 +96,7 @@ ${platformGuide}\n平台目录：\n${catalog}` },
       let output: unknown;
       const toolId = randomUUID();
       let summary = call.function.name;
-      const trace = (state: "running" | "complete" | "error" | "stopped") => emit({ type: "tool", id: toolId, name: call.function.name, summary,
-        input: call.function.arguments, output: output === undefined ? undefined : JSON.stringify(output, null, 2), state, timestamp: Date.now() });
+      const trace = (state: "running" | "complete" | "error" | "stopped") => emit({ type: "tool", id: toolId, name: call.function.name, summary, state, timestamp: Date.now() });
       emit({ type: "status", text: "" });
       try {
         signal.throwIfAborted(); store.checkIdentity(identity);
