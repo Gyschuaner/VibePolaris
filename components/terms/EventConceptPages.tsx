@@ -13,39 +13,39 @@ export function EventTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventSources} />;
   return <ConceptArticle slug="event" title="事件" sources={eventSources}
     sections={[["notification", "动作进入处理函数"], ["listener", "接上一个处理函数"], ["object", "事件携带的信息"], ["result", "默认行为与业务结果"]]}
-    hero={<ConceptHero slug="event" label="第一次点击被记录并点亮阅读灯；开灯监听断开后第二次点击仍被记录，灯保持原状"><div className={styles.eventHero}>
+    hero={<ConceptHero slug="event" label="第一次点击会被记录，同时点亮阅读灯；开灯监听断开后第二次点击仍被记录，灯保持原状"><div className={styles.eventHero}>
       <Lightbulb size={58} weight="light" /><div className={styles.heroBeam} /><span className={styles.heroSwitch}><Power size={22} /><i className={styles.heroClickPulse} /></span>
       <div className={styles.heroClick}><code>click</code><span><b>0</b><b>1</b><b>2</b></span></div>
       <div className={styles.heroListener}><code>开灯监听</code><span>连接</span><span>断开</span></div>
     </div></ConceptHero>}
-    intro={<>事件是程序获知“发生了什么”的方式。在网页中，点击、输入、提交和加载完成都能产生事件。<strong>监听器把这些通知交给处理函数，由代码决定接下来做什么。</strong></>}
-    relatedIntro={<>处理事件的代码通常用 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 编写；它可以修改 <ConceptTerm slug="state">状态</ConceptTerm>。同一次点击怎样到达父容器，则由事件传播规则决定。</>}>
+    intro={<>事件让程序知道“发生了什么”。在网页中，点击、输入、提交和加载完成都能产生事件。<strong>事件发生，不等于事情已经处理好；代码要先为它登记处理函数。</strong></>}
+    relatedIntro={<>处理事件的代码通常用 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 编写；它可以修改 <ConceptTerm slug="state">状态</ConceptTerm>。至于同一次点击怎样到达父元素，由事件传播规则决定。</>}>
     <ArticleSection id="notification" title="动作进入处理函数">
       <Anchors slug="event" names={["question", "definition"]} />
       <p>网页上画一个开关，还不会自动让阅读灯亮起来。你需要说明：收到这个开关的点击时，执行哪段代码。这段联系建立后，用户的一次操作才会改变界面里的灯。</p>
-      <p id="event-notification" className="vp-citation-target">浏览器用事件通知代码发生了某种变化；代码可以通过 <code>addEventListener</code> 注册处理函数。<strong>事件、监听器和处理函数是不同的角色：</strong>事件携带这次发生的事情，监听器建立接收关系，处理函数负责响应。本文讨论浏览器中的 DOM 事件；服务器和其他系统也有事件机制，接口不一定相同。<Cite id="event-notification" /></p>
-      <p>试着按一下下面的电源按钮，再断开开灯监听器后继续按。记录区仍然观察 click 事件，但灯的变化只由那个可以断开的监听器处理。这是一盏网页里的灯，不会控制真实设备。</p>
+      <p id="event-notification" className="vp-citation-target">浏览器用事件通知代码发生了什么。<code>addEventListener</code> 可以把一个函数登记到按钮的 <code>click</code> 上；以后按钮收到点击事件，浏览器就调用这个函数。这段函数常叫监听器或处理函数。事件是这次发生的点击及其信息，不是函数本身。本文讨论浏览器中的 DOM 事件；服务器和其他系统也有事件机制，接口不一定相同。<Cite id="event-notification" /></p>
+      <p>试着按一下下面的电源按钮。然后取消勾选“连接开灯监听器”，再按一次。这个演示还添加了另一个监听函数，专门记录点击次数；取消勾选只移除改变灯的函数，所以计数仍会增加。这是一盏网页里的灯，不会控制真实设备。</p>
       <Anchors slug="event" names={["scene-heading"]} /><EventLesson />
-      <p>断开之后，灯保留上一次的亮灭状态。按钮并没有失效，click 也仍然发生，只是改变灯的处理函数不再运行。重新连接后，再次操作开关，灯才继续变化。</p>
+      <p>断开之后，灯保留上一次的亮灭状态。电源按钮并没有失效，click 也仍然发生，只是那个改变灯的函数不再运行。重新勾选后，再次按电源按钮，灯才继续变化。记录区的 <code>target: button</code> 表示这次点击发生在按钮上，后面会解释事件带来的信息。</p>
     </ArticleSection>
     <ArticleSection id="listener" title="接上一个处理函数" className={styles.offset}>
-      <p>注册时需要选定接收事件的对象、事件类型和函数。下面的代码只建立联系，不会因为运行到这一行就立刻调用 toggleLight。用户之后触发 click，浏览器才调用它。</p>
-      <pre className={styles.code}>{'button.addEventListener("click", toggleLight);\n\n// 不再需要时解除同一个监听\nbutton.removeEventListener("click", toggleLight);'}</pre>
-      <p id="event-cleanup" className="vp-citation-target">移除监听器时，要匹配事件类型、原先的函数引用和捕获选项。重新写一个看起来相同的匿名函数，仍然是另一个函数，不能用它移除原来的监听。组件离开页面后，也要清理自己不再需要的外部监听。<Cite id="event-cleanup" /></p>
-      <p>假如每次打开弹窗都添加一个新的监听，却从不移除，之后一次点击可能执行多次业务处理。排查这种问题时，要检查注册和清理的位置，而不只是给按钮加一层防连点。</p>
+      <p>添加监听时需要选定接收事件的对象、事件类型和函数。下面的注册代码只建立联系，不会立刻调用 <code>toggleLight</code>；用户之后触发 click，浏览器才调用它。</p>
+      <pre className={styles.code}>{'button.addEventListener("click", toggleLight);\n\n// 不再需要时移除同一个监听\nbutton.removeEventListener("click", toggleLight);'}</pre>
+      <p id="event-cleanup" className="vp-citation-target">移除监听时，要用添加时相同的事件类型和同一个函数。即使重新写一个内容相同的函数，浏览器也会把它当成另一个函数，没法用它移除原来的监听。如果添加时还指定了 <code>capture: true</code>（在事件到达目标前接收），移除时也要指定相同的捕获设置。页面切换或弹窗关闭后，也要清理不再需要的监听。<Cite id="event-cleanup" /></p>
+      <p>假如每次打开弹窗都添加一个新的监听，却从不移除，之后一次点击可能执行多次业务处理。排查这种问题时，要检查添加和移除监听的位置，而不只是让按钮忽略连续的重复点击。</p>
       <p id="event-keyboard" className="vp-citation-target">click 不只对应鼠标。原生按钮获得焦点后，按 Enter 或空格也能激活它并产生 click。使用正确的按钮元素，能保留浏览器已经提供的键盘行为；把普通 div 画成按钮，并不会自动得到这些能力。<Cite id="event-keyboard" /></p>
     </ArticleSection>
     <ArticleSection id="object" title="事件携带的信息">
-      <p id="event-object" className="vp-citation-target">处理函数会收到事件对象。<code>type</code> 表示事件类型，<code>target</code> 指向发生事件的目标；键盘事件还可以提供按下的键。代码应该读取当前任务需要的信息，不必把整个事件对象保存成业务数据。<Cite id="event-object" /></p>
+      <p id="event-object" className="vp-citation-target">处理函数会收到事件对象。<code>type</code> 表示事件类型，<code>target</code> 指向事件发生在哪个元素上，比如本例被点击的电源按钮；键盘事件还可以提供按下的键。代码应该读取当前任务需要的信息，不必把整个事件对象保存成业务数据。<Cite id="event-object" /></p>
       <div className={styles.contrast}><div><h3>这次发生了什么</h3><p>本例的 type 是 click，目标是灯的开关按钮。</p></div><div><h3>现在界面是什么样</h3><p>灯是否亮着属于状态；它可以在这次事件结束后继续保留。</p></div></div>
       <p>这一区别对表单也有用：input 事件告诉你输入发生了变化，当前文字需要另行保存在输入控件或应用状态里。不要把“收到过输入事件”当成“已经保存用户内容”。</p>
     </ArticleSection>
     <ArticleSection id="result" title="默认行为与业务结果">
       <Anchors slug="event" names={["quiz-heading", "prompt-heading"]} />
-      <p id="event-default" className="vp-citation-target">有些操作还有浏览器提供的默认行为，例如点击链接导航、提交表单。对于允许取消的事件，<code>preventDefault()</code> 可以阻止默认行为；它不会自动停止事件传播。不可取消的事件不受它影响，passive 监听器也不能靠它取消默认行为。<Cite id="event-default" /></p>
+      <p id="event-default" className="vp-citation-target">有些操作还有浏览器自带的默认行为，例如点击链接后的跳转、点击提交按钮后的表单提交。对于允许取消默认行为的事件（例如链接的 click），<code>preventDefault()</code> 可以阻止这个默认动作，但不会让事件停止向父元素传播。并非所有事件都允许取消；若监听器被设为 <code>passive</code>（承诺不阻止默认行为），也不能在其中用这个方法取消默认行为。<Cite id="event-default" /></p>
       <blockquote className={styles.callout}>收到点击，说明用户发起了操作。<br />操作是否成功，要看后续结果。</blockquote>
-      <p>“提交订单”按钮的 click 只能启动处理。输入是否有效、请求是否到达服务器、订单是否真正创建，都需要独立检查。界面可以先显示等待，只有得到确认后才显示成功；失败则保留必要输入，让用户继续处理。</p>
-      <ArticleAside title="框架里的事件写法"><p>在 React 中常见 <code>{"onClick={handleClick}"}</code>。这是框架提供的声明方式，底层仍与浏览器交互。本页直接注册原生监听器，是为了让“接上与解除”可观察；实际 React 页面通常直接使用框架事件属性，不必为普通按钮手动订阅。</p></ArticleAside>
+      <p>“提交订单”按钮的 click 只能启动处理。输入是否有效、请求是否到达服务器、订单是否真正创建，都需要独立检查。界面可以先显示“处理中”，得到确认后再显示成功；失败时保留用户已填的内容，方便修改或重试。</p>
+      <ArticleAside title="框架里的事件写法"><p>在 React 中常见 <code>{"onClick={handleClick}"}</code>。这是框架提供的写法，最终对应的仍是浏览器的点击事件。本页直接添加原生监听，是为了让“接上与移除”可观察；实际 React 页面通常直接使用框架事件属性，不必为普通按钮手动添加和移除监听。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
