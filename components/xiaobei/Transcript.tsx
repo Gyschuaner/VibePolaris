@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BookOpen, Brain, CaretRight, MagnifyingGlass } from "@phosphor-icons/react";
-import { CONTEXT_WARNING, CONTEXT_WINDOW, type ActivityBlock } from "@/lib/xiaobei/events";
+import { CONTEXT_WARNING, CONTEXT_WINDOW, partitionTranscript, type ActivityBlock, type ChatBlock } from "@/lib/xiaobei/events";
 
 export function Answer({ text, close }: { text: string; close: () => void }) {
   return <div className="xb-answer"><Markdown remarkPlugins={[remarkGfm]} skipHtml components={{
@@ -26,22 +26,43 @@ function Elapsed({ block }: { block: ActivityBlock }) {
   return <span className="xb-elapsed">{(Math.max(0, (block.finishedAt ?? now) - block.startedAt) / 1000).toFixed(1)}s</span>;
 }
 
-export function Activity({ block }: { block: ActivityBlock }) {
+function Activity({ block }: { block: ActivityBlock }) {
   const think = block.kind === "think";
   const label = think ? "Think" : block.name === "search_terms" ? "搜索词条" : block.name === "read_term" ? "读取词条" : "工具";
   const preview = think ? (block.state === "running" ? block.text.trim().split("\n").at(-1) : block.text.split("\n")[0]) : block.summary;
   const stateLabel = { running: "进行中", complete: "已完成", error: "未完成", stopped: "已停止" }[block.state];
   const Icon = think ? Brain : block.name === "search_terms" ? MagnifyingGlass : BookOpen;
+  if (!think) return <div className="xb-activity xb-tool" data-state={block.state} role="group" aria-label={`${label} · ${stateLabel} · ${preview || ""}`}>
+    <Icon size={15} /><span className="xb-activity-label">{label}</span><span className="xb-activity-preview">{preview}</span>
+    {(block.state === "error" || block.state === "stopped") && <span>{stateLabel}</span>}
+  </div>;
   return <details className="xb-activity" data-state={block.state}>
     <summary aria-label={`${label} · ${stateLabel} · ${preview || ""}`}>
       <Icon size={15} /><span className="xb-activity-label">{label}</span><Elapsed block={block} />
       <span className="xb-activity-preview">{block.state === "error" || block.state === "stopped" ? stateLabel : preview}</span><CaretRight size={12} className="xb-chevron" />
     </summary>
-    <div className="xb-activity-body">{think ? <p>{block.text}</p> : <>
-      <span className="xb-tool-name">{block.name}</span><h4>参数</h4><pre>{block.input}</pre>
-      {block.output && <><h4>结果</h4><pre>{block.output}</pre></>}
-    </>}</div>
+    <div className="xb-activity-body"><p>{block.text}</p></div>
   </details>;
+}
+
+export function Transcript({ blocks, close }: { blocks: ChatBlock[]; close: () => void }) {
+  const { process, answer } = partitionTranscript(blocks);
+  const [expandedAnswer, setExpandedAnswer] = useState("");
+  const processId = useId();
+  // Tie the choice to this answer, so subsequent tokens never re-collapse it.
+  const expanded = !answer || expandedAnswer === answer.id;
+  const render = (block: ChatBlock) => block.kind === "text"
+    ? <div className="xb-text-block" data-phase={block.phase} key={block.id}><Answer text={block.text} close={close} /></div>
+    : <Activity block={block} key={block.id} />;
+  return <>
+    {process.length > 0 && <>
+      {answer && <button type="button" className="xb-process-toggle" aria-expanded={expanded} aria-controls={processId} onClick={() => setExpandedAnswer(expanded ? "" : answer.id)}>
+        <CaretRight size={13} className="xb-chevron" />{expanded ? "收起过程" : "查看过程"}
+      </button>}
+      <div id={processId} className="xb-process" hidden={!expanded}>{process.map(render)}</div>
+    </>}
+    {answer && render(answer)}
+  </>;
 }
 
 const tokens = (value: number) => `${(value / 1000).toFixed(1)}K`;

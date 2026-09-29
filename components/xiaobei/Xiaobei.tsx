@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ArrowUp, Plus, Square, X } from "@phosphor-icons/react";
 import { applyEvent, finishActivities, CONTEXT_WARNING, type AgentEvent, type ChatBlock } from "@/lib/xiaobei/events";
-import { Activity, Answer, ContextMeter } from "./Transcript";
+import { Transcript, ContextMeter } from "./Transcript";
 
 type ChatMessage = { role: "user" | "assistant"; text: string; page?: string; blocks: ChatBlock[] };
 function Star() {
@@ -113,9 +113,7 @@ export function Xiaobei() {
         <header className="xb-header"><div className="xb-identity"><Star /><div><h2 id="xb-title">小北</h2><p>把概念聊明白</p></div></div><div className="xb-actions"><button type="button" disabled={busy} title="新对话" aria-label="新对话" onClick={newConversation}><Plus size={19} /></button><button type="button" title="关闭小北" aria-label="关闭小北" onClick={() => setOpen(false)}><X size={20} /></button></div></header>
         <div className="xb-log" ref={log} aria-label="对话记录" onScroll={() => { const el = log.current; if (el) shouldScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80; }}>
           {!messages.length && <div className="xb-welcome"><Star /><h3>哪一个概念，<br />还差一点就懂了？</h3><p>从当前词条开始聊，也可以把两个概念放在一起比较。</p><div className="xb-suggestions">{["用一个例子解释当前词条", "Agent 和 Harness 有什么区别？"].map(text => <button key={text} onClick={() => { setDraft(text); input.current?.focus(); }}>{text}<ArrowUp size={15} /></button>)}</div></div>}
-          {messages.map((message, index) => <article className={`xb-message xb-${message.role}`} key={index}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : message.blocks.length > 0 && <><span className="xb-speaker">小北</span>{message.blocks.map(block => block.kind === "text"
-            ? <div className="xb-text-block" data-phase={block.phase} key={block.id}><Answer text={block.text} close={() => setOpen(false)} /></div>
-            : <Activity block={block} key={block.id} />)}</>}</article>)}
+          {messages.map((message, index) => <article className={`xb-message xb-${message.role}`} key={index}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : message.blocks.length > 0 && <><span className="xb-speaker">小北</span><Transcript blocks={message.blocks} close={() => setOpen(false)} /></>}</article>)}
           <div role="status" aria-live="polite" className="xb-status">{busy && status && <><i />{status}</>}</div>
           {error && <p className="xb-error" role="alert">{error}</p>}
           {!active && open && <p className="xb-error">授权已失效，请联系邀请人重新激活。</p>}
