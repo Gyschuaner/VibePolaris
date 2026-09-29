@@ -13,7 +13,7 @@ export function AsyncLegacyAnchors({ slug, names }: { slug: string; names: strin
 export function FetchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={fetchSources} />;
   return <ConceptArticle slug="fetch-api" title="Fetch API" subtitle="发出请求，接住响应" sources={fetchSources}
-    intro={<>页面要显示一份书单，数据却在另一个地址。Fetch API 负责发出请求，把收到的响应交给程序；这份响应能不能成为书单，还要接着检查。</>}
+    intro={<>页面要显示一份书单。如果把书名直接写在页面里，每次改书单都得改页面；当书单放在另一个地址时，浏览器就需要去取。Fetch API 负责发出请求，把收到的响应交给程序；这份响应能不能成为书单，还要接着检查。</>}
     sections={[["response", "从地址到响应"], ["inspect", "拆开一份书目响应"], ["checks", "三种不同的失败"], ["cancel", "请求过期以后"]]}
     hero={<ConceptHero slug="fetch-api" label="同一份 Response 先显示 200 状态与内容类型，正文仍未读取；随后读取并解析正文，书名才显现"><div className={styles.fetchHero}><div className={styles.fetchPanel}>
       <div className={styles.fetchStatus}><span>Response</span><strong>200</strong><code>application/json</code></div>
@@ -22,26 +22,27 @@ export function FetchTermPage() {
     relatedIntro={<>请求过程用 <ConceptTerm slug="promise">Promise</ConceptTerm> 表示；<ConceptTerm slug="async-await">await</ConceptTerm> 让程序等到这一轮结果，再继续处理。</>}>
     <ArticleSection id="response" title="从地址到响应">
       <AsyncLegacyAnchors slug="fetch-api" names={["question", "definition"]} />
-      <p id="fetch-response" className="vp-citation-target"><code>fetch(url)</code> 发起一次请求，返回一个 Promise。它履行时，程序拿到的是 <strong>Response 响应对象</strong>，可以查看状态码和响应头；响应体可能还没读完，更没有自动变成页面需要的数据。<Cite id="fetch-response" /></p>
-      <p>可以把 Response 看作刚收到的信封。信封上写着处理状态和内容类型，里面可能是 JSON、图片，也可能是一页错误说明。应用要根据这份回应决定下一步，不能只凭“信封到了”就显示“书目加载成功”。</p>
+      <p id="fetch-response" className="vp-citation-target"><code>fetch(url)</code> 向指定地址发起请求，先返回一个 Promise：它记录这次请求稍后能否取得响应。浏览器收到响应的状态码和响应头时，这个 Promise 就会交出 <strong>Response 响应对象</strong>；即使状态码是 404，也算收到了响应。此时正文可能还在传输，程序也尚未把它读成页面需要的数据。<Cite id="fetch-response" /></p>
+      <p>可以把 Response 看作一份带有封面的回件：先看见状态和内容类型，再读内文。封面出现时，内文可能还在传过来；<code>response.json()</code> 会等正文到齐，再把 JSON 文本解析成程序可用的值。它可能是一份书单，也可能是错误说明。不能只凭“回件到了”就显示“书目加载成功”。</p>
       <pre className={base.code}>{'const response = await fetch("/books.json");\nif (!response.ok) throw new Error(`HTTP ${response.status}`);\nconst data = await response.json();'}</pre>
     </ArticleSection>
     <ArticleSection id="inspect" title="拆开一份书目响应">
       <AsyncLegacyAnchors slug="fetch-api" names={["scene-heading"]} />
       <p>先取回响应，观察状态码；再按按钮读取内容。这里会真实请求本站的几份教学文件，书目约定为 <code>books</code> 数组，每一项是书名。试着换成不存在的文件，或者格式不对的内容。</p>
       <FetchLesson />
-      <p>正常文件经过两次操作才出现书名：一次拿到 Response，一次读取并解释响应体。分开按钮是为了看清两件事；实际页面可以在同一个异步函数里连续完成它们，不需要读者手动拆封。</p>
+      <p>正常文件经过两次操作才出现书名：一次拿到 Response，一次读取正文（如果还在传输，就等它到齐）并解析。分开按钮是为了看清两件事；第二个按钮不代表正文到那时才开始传输。实际页面可以在同一个异步函数里连续完成它们，不需要读者手动拆封。重置后再获取，会发起新请求，并非重读旧响应。</p>
     </ArticleSection>
     <ArticleSection id="checks" title="三种不同的失败">
-      <p id="fetch-http" className="vp-citation-target"><strong>404 仍然是一份 HTTP 响应。</strong>fetch 通常不会因为 404 或 500 自动拒绝 Promise；网络错误、无效地址等才可能让请求在取得 Response 前失败。因而只写 catch，并不能接住所有“不应该显示书目”的情况。<Cite id="fetch-http" /></p>
-      <div className={styles.comparison}><div><h3>服务器怎样回应</h3><p id="fetch-ok" className="vp-citation-target"><code>response.ok</code> 在状态码为 200–299 时为 true。它帮助应用先检查 HTTP 层是否成功；它没有检查这份内容里是不是书单。<Cite id="fetch-ok" /></p></div><div><h3>内容能否被读取</h3><p id="fetch-json" className="vp-citation-target"><code>response.json()</code> 读取响应体并解析 JSON，返回的也是 Promise。内容不符合 JSON 语法时会报错；同一份响应体通常不能重复消费。<Cite id="fetch-json" /></p></div></div>
+      <p id="fetch-http" className="vp-citation-target"><strong>404 仍然是一份 HTTP 响应。</strong>服务器返回 404 或 500 时，<code>fetch</code> 不会仅因为这个状态码就拒绝 Promise；请求在收到响应前因网络故障、地址无效等原因失败，才没有 Response 可检查。所以拿到响应后仍要看状态码，不能把“收到”当成“书目可用”。<Cite id="fetch-http" /></p>
+      <div className={styles.comparison}><div><h3>服务器怎样回应</h3><p id="fetch-ok" className="vp-citation-target"><code>response.ok</code> 在状态码为 200–299 时为 true。它只判断响应状态是否在成功范围；内容里是不是书单，还要继续检查。<Cite id="fetch-ok" /></p></div><div><h3>内容能否被读取</h3><p id="fetch-json" className="vp-citation-target"><code>response.json()</code> 等响应体传完，读取并解析 JSON，返回的也是 Promise。内容不符合 JSON 语法时会报错；同一份 Response 的正文读过后，不能再直接读一次。<Cite id="fetch-json" /></p></div></div>
       <p>还有第三层：内容能解析，却把 books 写成了一段字符串。JSON 解析器接受这份合法文本，但我们的页面要的是数组。字段检查属于应用的数据约定，复杂时可以交给 <ConceptTerm slug="json-schema">JSON Schema</ConceptTerm> 等验证规则处理。</p>
     </ArticleSection>
     <ArticleSection id="cancel" title="请求过期以后" className={base.offset}>
       <AsyncLegacyAnchors slug="fetch-api" names={["quiz-heading", "prompt-heading"]} />
       <p>搜索框里先输入“灯”，又改成“海”，旧请求可能比新请求更晚返回。即便两次都是 200，也不应该用旧书单覆盖新书单。页面需要识别当前请求，丢弃已经过期的结果。</p>
-      <p id="fetch-cancel" className="vp-citation-target">AbortController 可以通过 signal 关联请求，再调用 abort 取消它。取消也可能发生在收到响应之后、读取响应体之前。本页切换资源和重置时会取消旧请求，并检查结果仍属于当前一轮。<Cite id="fetch-cancel" /></p>
-      <p>取消浏览器等待，不代表撤销服务器已经完成的业务操作。创建订单、付款这类请求需要另行处理幂等、状态查询与撤销；不能把“用户离开页面”当成服务器什么也没做。</p>
+      <p id="fetch-cancel" className="vp-citation-target">AbortController 把 signal 交给请求，再调用 abort 取消它。即使已经拿到 Response，只要正文尚未读完，取消仍可能让后续读取失败。本页切换资源或重置时，会取消旧请求，免得继续等待它。<Cite id="fetch-cancel" /></p>
+      <p>光取消还不够：旧结果可能已经到达，或者正在被处理。页面给每次请求一个序号；只有结果的序号与最新一次请求相同，才允许显示。这样即使旧书单最后才返回，也不会覆盖新书单。</p>
+      <p>取消浏览器等待，不代表撤销服务器已经完成的操作。例如提交订单后离开页面，不能断定订单没有生成；应先查询实际状态，再决定是否重试或撤销。</p>
       <ArticleAside title="内容类型不替你检查字段"><p>Content-Type 是服务器声明的内容类型。声明 application/json 并不保证实际响应能解析，更不保证 books 存在。需要的是分层处理：收到响应、确认状态、读取内容、检查应用需要的结构。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
