@@ -28,8 +28,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 14 props | 外部给组件的输入 | 调用处的 label、tone 依次改变，同一 ActionButton 原位改字、变色 | 本地与 dev 集成完成 · PR #117 |
 | 15 state | 记住变化并更新界面 | 一张笔记卡内的 text、status 先变，卡面与按钮随后原位更新；等待时无回执 | 本地与 dev 集成完成 · PR #118 |
 | 16 event | 操作触发处理 | 同一阅读灯两次点击：click 继续计数，断开开灯监听后灯保持上次亮度 | 本地与 dev 集成完成 · PR #119 |
-| 17 event-bubbling | 父子层级传播 | 两组嵌套轮廓对照：一次点击逐层向外，另一次在按钮处停止 | 本地验收完成 · 待 dev 集成 |
-| 18 hook | 组件使用 React 能力 | 渲染与状态槽对齐；保持调用次序 | 待更新 |
+| 17 event-bubbling | 父子层级传播 | 两组嵌套轮廓对照：一次点击逐层向外，另一次在按钮处停止 | 本地与 dev 集成完成 · PR #120 |
+| 18 hook | 复用逻辑，各有状态 | 两条相同刻度轨道：咖啡 2→3，门票维持 0；单独操作不改另一实例 | 本地验收完成 · 待 dev 集成 |
 | 19 effect | 与外部系统同步 | 页面内状态与外部连接双区；切换先清理后连接 | 待更新 |
 | 20 browser-api | 浏览器提供能力 | 浏览器外壳中展开对应原生能力和许可边界 | 待更新 |
 | 21 fetch-api | 发请求并读取响应 | 时间线上分开响应头到达与内容读取 | 待更新 |
@@ -403,6 +403,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_f58346
 资料：实际阅读 MDN [Event bubbling](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling)（目标后向外、捕获反向、委托与 target/currentTarget）、[Event: stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation)（停止继续传播，不撤销默认行为或同节点其他处理）、[Event: preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault)（取消可取消的默认行为而不自动截断传播）、[Event: bubbles property](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles)（能否在 DOM 树冒泡）。正文现有四份书目和具体角标已涵盖本轮论断，不新增引用编号。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器桌面首图呈现左三层依次亮起、右仅按钮亮，终态与无动画基样式一致；390×844 构图完整，clientWidth/scrollWidth 均为 390。主演示默认点击留下“按钮目标→卡片冒泡→列表冒泡”，开启停止后仅按钮；再开启捕获得到“列表捕获→卡片捕获→按钮目标”，收藏动作照常切换。重置后 Enter 激活恢复默认顺序；五个旧锚点与四份来源存在，第二份书目摘录与正文及回链一致，应用错误日志为空。VBP-015 用例 `8481cc08-6276-4c83-b067-fbd65d6b0c5e`，本地计划 `5513d503-dece-4aee-95ea-8f91ee2ee8fe` completed、执行 `1699aec1-f695-4db3-81db-c140a75322aa` passed。没有真人零基础读者观察。
+
+2026-09-29 集成：提交 `f35b12d` 经 [PR #120](https://github.com/Gyschuaner/VibePolaris/pull/120) 合入 `dev`，merge `ee54f914019dec44829b0fb02db45e0d8a27469f`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/event-bubbling` 在真实浏览器核对首图、旧锚点、四份来源、默认冒泡与停止后的回调顺序，应用错误为空。DP 部署 `7307e660-079c-47ba-96b8-25f27556d9e6` 已回查；前一版 `0d23297` 构建备份在 `/tmp/vbp012-dev-next-0d23297`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 17/105、版本 26；下一条 hook。
+
+## 18 · hook
+
+读者入口：“咖啡和门票都用了 useCounter，给咖啡加一，门票为什么不跟着变？”已有正文说明 Hook 调用位置、复用逻辑而非共享状态，主演示也用真实的两个 Hook 实例分别增减、调步长和重置；这部分保留。原首图只把初值 2 与 0 淡入，看不到一次操作只改变一个实例。
+
+视觉候选：① 两条相同刻度规则的横向轨道，仅咖啡的标记从第二格走到第三格，门票标记停在零位；采用，保留一个 `useCounter()` 标识，但数值、标记和轨道都属于各自实例。② 半透明模板依次覆盖两块数字；ZCode 推荐，但“模板覆盖咖啡时 2→3”容易让人误以为每次点击时又调用 Hook，与正文的顶层调用规则冲突，不采用这段动作。③ 同模描出两个独立圆章，再让一枚跳格；能说明复用，圆章从母体分离却可能被看作继承/原型关系，且 234px 内节奏拥挤，不采用。刻度表示本例每次加一的规则，不表示容量百分比、共享配额或 Hook 之间的数据通道。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_73c82e73-88b7-4f2f-a205-1227504e1f3d`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 和动画灵感参考；主助手提供 React 官方核实事实、现有首图和相邻页限制。ZCode 给刻度横条、移动模板、描章三案并推荐模板。主助手检查调用时机后改选刻度轨道，避免“点击时调用 Hook”的误导。ZCode 未看实际页面或运行浏览器。
+
+资料：实际阅读 React 官方 [Reusing Logic with Custom Hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)（复用含状态逻辑而不自动共享状态、命名）、[useState](https://react.dev/reference/react/useState)（初值只在初始化使用、函数式更新）、[Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks)（顶层与调用位置）、[useEffect](https://react.dev/reference/react/useEffect)（依赖改变与组件离开时的清理）。正文现有四份书目和角标已覆盖本轮论断，不新增引用编号。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器桌面与 390×844 首图可见同形轨道、咖啡终态 3 与门票 0，移动端 clientWidth/scrollWidth 均为 390；离屏或非前台时动画暂停，不能把暂停帧当成终态。主演示给咖啡加一后门票仍 0；步长改为 5 不清空咖啡 3，门票随后加到 5；单独重置门票保留咖啡，整体重置回 2/0，Enter 可操作，减法停在 0 并禁用继续减少。五个旧锚点与四份 React 来源在页面，第一份书目摘录和正文/回链一致，应用错误日志为空。VBP-015 用例 `56fdf904-f297-4d27-a1b8-10232efa123d`，本地计划 `72e22352-7afc-453d-9937-ce23be0f5ec5` completed、执行 `7defc3d4-0bc0-49fa-bc24-c80810970137` passed。没有真人零基础读者观察。
 
 ## 01 · Harness
 

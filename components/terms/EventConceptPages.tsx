@@ -1,4 +1,4 @@
-import { BookmarkSimple, Lightbulb, Power } from "@phosphor-icons/react/dist/ssr";
+import { BookmarkSimple, Coffee, Lightbulb, Power, Ticket } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleCitation, ArticleAside, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { EventLesson, BubblingLesson, HookLesson } from "./EventConceptLessons";
@@ -93,7 +93,13 @@ export function HookTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hookSources} />;
   return <ConceptArticle slug="hook" title="Hook" subtitle="React 中的可复用逻辑" sources={hookSources}
     sections={[["reuse", "把重复的逻辑提取出来"], ["independent", "同一段逻辑，两份状态"], ["rules", "调用位置有规则"], ["effects", "订阅也要负责清理"]]}
-    hero={<ConceptHero slug="hook" label="同一个 useCounter 函数被调用两次，得到各自独立的数值"><div className={styles.hookHero}><code>useCounter()</code><div><span><strong>2</strong>咖啡</span><span><strong>0</strong>门票</span></div></div></ConceptHero>}
+    hero={<ConceptHero slug="hook" label="咖啡和门票分别调用 useCounter；咖啡沿相同计数规则从2走到3，门票停在0"><div className={styles.hookHero}>
+      <code>useCounter()</code>
+      <div className={styles.hookTracks}>
+        <div className={`${styles.hookTrack} ${styles.hookCoffee}`}><span><Coffee size={18} />咖啡</span><div className={styles.hookTrackBody}><div className={styles.hookTicks}><i /><i /><i /><i /><b className={styles.hookSlider} /></div><strong><b>2</b><b>3</b></strong></div></div>
+        <div className={`${styles.hookTrack} ${styles.hookTicket}`}><span><Ticket size={18} />门票</span><div className={styles.hookTrackBody}><div className={styles.hookTicks}><i /><i /><i /><i /><b className={styles.hookSlider} /></div><strong>0</strong></div></div>
+      </div>
+    </div></ConceptHero>}
     intro={<>本文的 Hook 指 React Hook：函数组件借助它使用状态、同步外部系统等能力。自定义 Hook 可以组合这些能力，<strong>把一段有状态的逻辑交给不同组件复用。</strong></>}
     relatedIntro={<>Hook 在 <ConceptTerm slug="component">组件</ConceptTerm> 中使用，<ConceptTerm slug="state">状态</ConceptTerm> 保存变化，<ConceptTerm slug="effect">Effect</ConceptTerm> 同步外部系统；输入则可以通过 Props 传入。</>}>
     <ArticleSection id="reuse" title="把重复的逻辑提取出来">
