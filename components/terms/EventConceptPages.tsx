@@ -54,7 +54,10 @@ export function BubblingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={bubblingSources} />;
   return <ConceptArticle slug="event-bubbling" title="事件冒泡" sources={bubblingSources}
     sections={[["path", "一次点击经过几层"], ["targets", "目标与当前处理位置"], ["stopping", "停止传播的边界"], ["delegation", "把处理放在父容器"]]}
-    hero={<ConceptHero slug="event-bubbling" label="按钮位于卡片和列表内部，响应从内层扩散到外层"><div className={styles.bubbleHero}><div><code>列表</code><div><BookmarkSimple size={35} weight="light" /></div></div></div></ConceptHero>}
+    hero={<ConceptHero slug="event-bubbling" label="左侧一次点击从按钮依次到达卡片和列表；右侧点击在按钮处停止，外层不响应"><div className={styles.bubbleHero}>
+      <div className={`${styles.bubbleScene} ${styles.bubblePass}`}><span className={styles.bubbleCaption}>继续冒泡</span><div className={styles.bubbleList}><span>列表</span><div className={styles.bubbleCard}><span>卡片</span><div className={styles.bubbleButton}><BookmarkSimple size={22} weight="fill" /></div></div></div><i className={styles.bubbleMarker} /></div>
+      <div className={`${styles.bubbleScene} ${styles.bubbleStop}`}><span className={styles.bubbleCaption}>按钮处停止</span><div className={styles.bubbleList}><span>列表</span><div className={styles.bubbleCard}><span>卡片</span><div className={styles.bubbleButton}><BookmarkSimple size={22} weight="fill" /></div></div></div><i className={styles.bubbleMarker} /></div>
+    </div></ConceptHero>}
     intro={<>点击卡片里的按钮时，父容器的监听器也可能执行。因为<strong>同一个事件到达目标后，可以沿着 DOM 祖先继续向上传播</strong>，这个阶段叫冒泡。</>}
     relatedIntro={<>先用 <ConceptTerm slug="dom">DOM</ConceptTerm> 看清嵌套关系，再沿着 <ConceptTerm slug="event">事件</ConceptTerm> 的传播路径检查处理函数。页面上的视觉位置，不一定等于 DOM 中的父子关系。</>}>
     <ArticleSection id="path" title="一次点击经过几层">
