@@ -2,6 +2,8 @@ export const llmSources = [
   { publisher: "Hugging Face · LLM Course", title: "Deep dive into Text Generation Inference with LLMs", date: "", url: "https://huggingface.co/learn/llm-course/en/chapter1/8", citations: ["llm-generation", "llm-sampling", "llm-stopping"] },
   { publisher: "Hugging Face · LLM Course", title: "How do Transformers work?", date: "", url: "https://huggingface.co/learn/llm-course/en/chapter1/4", citations: ["llm-training"] },
   { publisher: "Google · Machine Learning Crash Course", title: "LLMs: What's a large language model?", date: "", url: "https://developers.google.com/machine-learning/crash-course/llm/transformers", citations: ["llm-evidence"] },
+  { publisher: "Google · Machine Learning Crash Course", title: "LLMs: Fine-tuning, distillation, and prompt engineering", date: "2025-12-03", url: "https://developers.google.com/machine-learning/crash-course/llm/tuning", citations: ["llm-training"] },
+  { publisher: "Hugging Face · Transformers Docs", title: "Text generation", date: "", url: "https://huggingface.co/docs/transformers/main/llm_tutorial", citations: ["llm-sampling", "llm-stopping"] },
 ];
 
 export const tokenSources = [

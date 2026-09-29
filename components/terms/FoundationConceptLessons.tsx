@@ -88,5 +88,9 @@ export function AgentLesson() {
 }
 
 export function ProbabilityHeroArt() {
-  return <div className={styles.probabilityHero}><p>The sky is <strong>blue.</strong></p>{[["blue", 65], ["gray", 35]].map(([word, probability]) => <div key={word} style={{ "--probability": `${probability}%` } as CSSProperties}><span>{word}</span><i /><code>{probability}%</code></div>)}</div>;
+  const rounds = [[ ["blue", 65], ["gray", 35] ], [ [".", 60], ["today", 40] ]] as const;
+  return <div className={styles.probabilityHero}>
+    <p>The sky is<strong className={styles.heroWordOne}> gray</strong></p>
+    <div className={styles.heroCandidateSets}>{rounds.map((choices, round) => <div className={styles.heroCandidateSet} key={round}>{choices.map(([word, probability]) => <div className={styles.heroCandidate} key={word} style={{ "--probability": `${probability}%` } as CSSProperties}><span>{word}</span><i /></div>)}</div>)}</div>
+  </div>;
 }
