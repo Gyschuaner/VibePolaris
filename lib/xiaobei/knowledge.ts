@@ -6,7 +6,8 @@ import { XiaobeiError } from "./store.ts";
 
 export const platformGuide = `VibePolaris（Vibe指北）是技术概念词典与概念星图。首页可搜索、按分类探索和打开词条。
 词条支持关联阅读及互动演示，HTML/CSS/JavaScript词条可进入对应教程。导航“我的笔记”按钮打开抽屉，管理当前浏览器本地笔记（没有独立的笔记网址），选中文字可划线或批注；笔记不会上传，不跨设备同步。
-主题入口可调整背景及主题色。小北是内部邀请码激活的全站悬浮星星，每码每天100积分，每日北京时间零点恢复。`;
+主题入口可调整背景及主题色。小北是内部邀请码激活的全站悬浮星星，每码每天100积分，每日北京时间零点恢复。
+小北右上角可以新建对话或打开历史，切回旧对话可继续聊。历史按邀请码与当前浏览器隔离，刷新后可恢复；换浏览器或清除网站Cookie不能找回原历史，同码不同使用者不共享对话。`;
 export const catalog = publishedTerms.map(t => `${t.slug}：${t.zh} ${t.en}`).join("\n");
 export const toolDefinitions = [
   { type: "function", function: { name: "search_terms", description: "搜索已发布的技术词条，返回摘要及可读取的slug。可换用词名、同义词或短关键词。", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"], additionalProperties: false } } },

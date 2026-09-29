@@ -1,7 +1,20 @@
-import { NextResponse } from "next/server";
-import { XiaobeiError } from "./store.ts";
+import { NextRequest, NextResponse } from "next/server";
+import { BROWSER_COOKIE, SESSION_COOKIE, digest, getStore, XiaobeiError, type HistoryIdentity } from "./store.ts";
 
 export const privateHeaders = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow", "Vary": "Cookie" };
+export function browserToken(request: NextRequest) {
+  const token = request.cookies.get(BROWSER_COOKIE)?.value;
+  return token && /^[\w-]{43}$/.test(token) ? token : undefined;
+}
+export function historyIdentity(request: NextRequest): HistoryIdentity {
+  const identity = getStore().identity(request.cookies.get(SESSION_COOKIE)?.value);
+  const browser = browserToken(request);
+  if (!browser) throw new XiaobeiError("请刷新页面后再打开小北。", 401);
+  return { ...identity, browser: digest(browser) };
+}
+export function setBrowserCookie(request: NextRequest, response: NextResponse, token: string) {
+  response.cookies.set(BROWSER_COOKIE, token, { httpOnly: true, sameSite: "strict", secure: siteOrigin(request).startsWith("https:"), path: "/", maxAge: 365 * 24 * 60 * 60 });
+}
 export function siteOrigin(request: Request) {
   if (process.env.XIAOBEI_SITE_ORIGIN) return new URL(process.env.XIAOBEI_SITE_ORIGIN).origin;
   // Next may normalize request.url to localhost; the browser's actual Host stays on the request.

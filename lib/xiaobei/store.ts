@@ -2,15 +2,20 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { chmodSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { finishActivities } from "./events.ts";
+import { pairInterruptedTools, type ConversationState, type ConversationSummary, type ConversationDetail } from "./history.ts";
 
 export const DAILY_CREDITS = 100_000_000; // Integer millionths of one credit.
 export const SESSION_COOKIE = "vp-xiaobei";
+export const BROWSER_COOKIE = "vp-xiaobei-browser";
 export const SESSION_SECONDS = 30 * 24 * 60 * 60;
 export class XiaobeiError extends Error {
   status: number;
   constructor(message: string, status = 400) { super(message); this.status = status; }
 }
 export type Identity = { session: string; invite: string };
+export type HistoryIdentity = Identity & { browser: string };
+type ConversationRow = { id: string; title: string; updated: number; active_run: string | null; data: string; running: number };
 export type Usage = { input: number; cached: number; output: number };
 export const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 export const dayKey = (now = Date.now()) => new Intl.DateTimeFormat("en-CA", {
@@ -36,7 +41,10 @@ export class XiaobeiStore {
       CREATE INDEX IF NOT EXISTS active_runs ON runs(invite, done, lease);
       CREATE TABLE IF NOT EXISTS usage (id TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), day TEXT NOT NULL, reserved INTEGER NOT NULL, cost INTEGER, input INTEGER, cached INTEGER, output INTEGER);
       CREATE INDEX IF NOT EXISTS daily_usage ON usage(invite, day);
-      CREATE TABLE IF NOT EXISTS activation_attempts (key TEXT PRIMARY KEY, count INTEGER NOT NULL, until INTEGER NOT NULL);`);
+      CREATE TABLE IF NOT EXISTS activation_attempts (key TEXT PRIMARY KEY, count INTEGER NOT NULL, until INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS conversations (id TEXT PRIMARY KEY, invite TEXT NOT NULL REFERENCES invites(id), browser TEXT NOT NULL,
+        title TEXT NOT NULL, updated INTEGER NOT NULL, active_run TEXT, data TEXT NOT NULL);
+      CREATE INDEX IF NOT EXISTS conversation_history ON conversations(invite,browser,updated DESC,id DESC);`);
   }
   transaction<T>(fn: () => T): T {
     this.db.exec("BEGIN IMMEDIATE");
@@ -115,6 +123,63 @@ export class XiaobeiStore {
     this.db.prepare("UPDATE usage SET cost=?,input=?,cached=?,output=? WHERE id=? AND cost IS NULL").run(cost, usage.input, usage.cached, usage.output, id);
   }
   release(id: string) { this.settle(id, { input: 0, cached: 0, output: 0 }); }
+  listConversations(identity: HistoryIdentity, offset = 0, now = Date.now()) {
+    this.checkIdentity(identity, now);
+    const rows = this.db.prepare(`SELECT c.id,c.title,c.updated, EXISTS(SELECT 1 FROM runs r WHERE r.id=c.active_run AND r.done=0 AND r.lease>?) AS running
+      FROM conversations c WHERE c.invite=? AND c.browser=? ORDER BY c.updated DESC,c.id DESC LIMIT 31 OFFSET ?`).all(now, identity.invite, identity.browser, offset) as unknown as ConversationRow[];
+    return { items: rows.slice(0, 30).map(row => this.conversationSummary(row)), nextOffset: rows.length > 30 ? offset + 30 : null };
+  }
+  private conversationSummary(row: ConversationRow): ConversationSummary {
+    return { id: row.id, title: row.title, updatedAt: row.updated, running: !!row.running };
+  }
+  private conversationRow(identity: HistoryIdentity, id: string, now: number) {
+    return this.db.prepare(`SELECT c.*, EXISTS(SELECT 1 FROM runs r WHERE r.id=c.active_run AND r.done=0 AND r.lease>?) AS running
+      FROM conversations c WHERE c.id=? AND c.invite=? AND c.browser=?`).get(now, id, identity.invite, identity.browser) as ConversationRow | undefined;
+  }
+  private recoverConversation(row: ConversationRow) {
+    const state = JSON.parse(row.data) as ConversationState;
+    if (row.active_run && !row.running) {
+      state.model.messages = pairInterruptedTools(state.model.messages);
+      if (state.pendingText) state.model.messages.push({ role: "assistant", content: state.pendingText });
+      state.pendingText = "";
+      const last = state.messages.at(-1);
+      if (last?.role === "assistant") {
+        last.blocks = finishActivities(last.blocks, "stopped");
+        last.error = "上次回答已中断，已保存的内容保留在这里，可以继续提问。";
+      }
+      this.db.prepare("UPDATE conversations SET data=?,active_run=NULL WHERE id=? AND active_run=?").run(JSON.stringify(state), row.id, row.active_run);
+    }
+    return state;
+  }
+  getConversation(identity: HistoryIdentity, id: string, now = Date.now()): ConversationDetail {
+    return this.transaction(() => {
+      this.checkIdentity(identity, now);
+      const row = this.conversationRow(identity, id, now);
+      if (!row) throw new XiaobeiError("找不到这段对话。", 404);
+      const state = this.recoverConversation(row);
+      return { ...this.conversationSummary(row), messages: state.messages, context: state.context };
+    });
+  }
+  beginConversation(identity: HistoryIdentity, id: string, run: string, text: string, page: string, continuing: boolean, now = Date.now()): ConversationState {
+    return this.transaction(() => {
+      this.checkIdentity(identity, now);
+      if (!this.db.prepare("SELECT 1 FROM runs WHERE id=? AND invite=? AND session=? AND done=0 AND lease>?").get(run, identity.invite, identity.session, now)) throw new XiaobeiError("本次请求已结束，请重新提问。", 409);
+      const row = this.conversationRow(identity, id, now);
+      if (!row && (continuing || this.db.prepare("SELECT 1 FROM conversations WHERE id=?").get(id))) throw new XiaobeiError("找不到这段对话。", 404);
+      if (row?.running) throw new XiaobeiError("这段对话还在回答，请稍后再试。", 409);
+      const state = row ? this.recoverConversation(row) : { model: { messages: [] }, messages: [], context: null };
+      state.messages.push({ id: `${run}-user`, role: "user", text, page, blocks: [] }, { id: `${run}-assistant`, role: "assistant", text: "", blocks: [] });
+      if (row) this.db.prepare("UPDATE conversations SET data=?,active_run=?,updated=? WHERE id=?").run(JSON.stringify(state), run, now, id);
+      else this.db.prepare("INSERT INTO conversations VALUES(?,?,?,?,?,?,?)").run(id, identity.invite, identity.browser, Array.from(text.replace(/\s+/g, " ")).slice(0, 40).join(""), now, run, JSON.stringify(state));
+      return state;
+    });
+  }
+  saveConversation(identity: HistoryIdentity, id: string, run: string, state: ConversationState, finish = false, now = Date.now()) {
+    // Fence old writers after a lease expires; they cannot overwrite a newer turn.
+    const result = this.db.prepare(`UPDATE conversations SET data=?,updated=?,active_run=? WHERE id=? AND invite=? AND browser=? AND active_run=?
+      AND EXISTS(SELECT 1 FROM runs WHERE id=? AND session=? AND done=0 AND lease>?)`).run(JSON.stringify(state), now, finish ? null : run, id, identity.invite, identity.browser, run, run, identity.session, now);
+    if (!result.changes) throw new XiaobeiError("本次回答已结束，请重新打开对话。", 409);
+  }
   close() { this.db.close(); }
 }
 
