@@ -4,6 +4,7 @@ import { RouteMeteorProvider } from "@/components/RouteMeteorProvider";
 import { NotesProvider } from "@/components/notes/NotesProvider";
 import { PointerFeedback } from "@/components/PointerFeedback";
 import { Xiaobei } from "@/components/xiaobei/Xiaobei";
+import { publishedTerms } from "@/lib/content";
 import { deriveCustomPaletteTokens, fieldLightness } from "@/lib/custom-palette";
 
 import "./globals.css";
@@ -76,7 +77,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
-      <body><NotesProvider><RouteMeteorProvider>{children}<Xiaobei /></RouteMeteorProvider><PointerFeedback /></NotesProvider></body>
+      <body><NotesProvider><RouteMeteorProvider>{children}<Xiaobei termNames={Object.fromEntries(publishedTerms.map(term => [`/terms/${term.slug}`, term.zh]))} /></RouteMeteorProvider><PointerFeedback /></NotesProvider></body>
     </html>
   );
 }
