@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomBytes } from "node:crypto";
 import { z } from "zod";
-import { errorResponse, privateHeaders, readBody, sameOrigin, siteOrigin } from "@/lib/xiaobei/http";
+import { browserToken, setBrowserCookie, errorResponse, privateHeaders, readBody, sameOrigin, siteOrigin } from "@/lib/xiaobei/http";
 import { digest, getStore, SESSION_COOKIE, XiaobeiError } from "@/lib/xiaobei/store";
 
 export const runtime = "nodejs";
@@ -10,7 +11,10 @@ export async function GET(request: NextRequest) {
     const token = request.cookies.get(SESSION_COOKIE)?.value;
     if (!token) return NextResponse.json({ active: false }, { headers: privateHeaders });
     const store = getStore(); const identity = store.identity(token);
-    return NextResponse.json({ active: true, credits: store.balance(identity.invite) / 1e6 }, { headers: privateHeaders });
+    const browser = browserToken(request) || randomBytes(32).toString("base64url");
+    const response = NextResponse.json({ active: true, credits: store.balance(identity.invite) / 1e6, historyScope: digest(`${identity.invite}:${digest(browser)}`) }, { headers: privateHeaders });
+    setBrowserCookie(request, response, browser);
+    return response;
   } catch (error) {
     if (error instanceof XiaobeiError && error.status === 401) return NextResponse.json({ active: false }, { headers: privateHeaders });
     return errorResponse(error);
@@ -26,6 +30,7 @@ export async function POST(request: NextRequest) {
     const session = store.activate(parsed.data.code, digest("activation"));
     const response = NextResponse.json({ active: true }, { headers: privateHeaders });
     response.cookies.set(SESSION_COOKIE, session.token, { httpOnly: true, sameSite: "strict", secure: siteOrigin(request).startsWith("https:"), path: "/", expires: new Date(session.expires) });
+    setBrowserCookie(request, response, browserToken(request) || randomBytes(32).toString("base64url"));
     return response;
   } catch (error) { return errorResponse(error); }
 }
