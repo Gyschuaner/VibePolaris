@@ -1,4 +1,4 @@
-import { BookOpen, Check, Database, Files, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { ArrowCounterClockwise, BookOpen, Database, Files, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { DatabaseLesson, IndexLesson, TransactionLesson } from "./StorageConceptLessons";
@@ -93,31 +93,43 @@ export function TransactionTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={transactionSources} />;
   return <ConceptArticle slug="transaction" title="事务" sources={transactionSources}
     sections={[["unit", "一次借书，两处修改"], ["borrow", "一起提交，或者撤回"], ["visibility", "并发事务的可见性"], ["recovery", "提交之后与事务之外"]]}
-    intro={<>借出一本书，要减少可借数量，还要新增借阅记录。如果第一步成功，第二步失败，就会出现“书少了一本，却找不到谁借走”的情况。这两次写入需要共同的完成边界。</>}
-    hero={<ConceptHero slug="transaction" label="减少一本可借数量与新增借阅记录合成同一个提交包"><div className={s.transactionHero}><div><span><BookOpen size={23} />可借 −1</span><span><Files size={23} />借阅 +1</span></div><p><Check size={24} />一起提交</p></div></ConceptHero>}>
+    intro={<>借出一本书，要减少可借数量，还要新增借阅记录。如果第一步成功，第二步失败，就会出现“书少了一本，却找不到谁借走”的情况。把两次写入放在同一事务里，第二步失败时就能回滚整组，不留下半成品。</>}
+    hero={<ConceptHero slug="transaction" label="一次借书先把事务内可借数量从2改到1，借阅记录写入失败后回滚为2本、0条；另一客户端的新查询始终只看到已提交的2本、0条"><div className={s.transactionHero}>
+      <div className={s.transactionHeroWork}>
+        <span>本次事务内</span>
+        <div className={s.transactionHeroFigures}>
+          <div><BookOpen size={20} /><span>可借</span><strong><span className={s.transactionHeroOriginal}>2</span><span className={s.transactionHeroChanged}>1</span></strong></div>
+          <div><Files size={20} /><span>借阅</span><strong>0</strong></div>
+        </div>
+        <span className={s.transactionHeroError}>借阅写入失败</span>
+        <span className={s.transactionHeroRollback}><ArrowCounterClockwise size={17} />回滚</span>
+      </div>
+      <div className={s.transactionHeroOutside}><span>新查询可见</span><strong>可借 2 · 借阅 0</strong></div>
+    </div></ConceptHero>}>
     <ArticleSection id="unit" title="一次借书，两处修改">
       <Legacy slug="transaction" names={["question", "definition"]} />
       <p id="transaction-unit" className="vp-citation-target"><strong>事务把一组数据库操作放在同一个工作单元中：提交使整组改动生效，回滚撤销这组尚未提交的改动。</strong>这体现了原子性。对于这里的借书业务，只成功减少数量还不算完成，借阅记录也必须写入。<Cite id="transaction-unit" /></p>
-      <p>事务范围要由应用划定。它不会自动识别“这两条 SQL 属于同一次借书”，也不会修正写错的条件。开始事务之后，应用仍需检查每一步的结果，再决定提交还是回滚。</p>
+      <p>事务范围要由应用划定。事务本身不会自动识别“减少数量和新增借阅记录属于同一次借书”，也不会修正写错的更新条件。第一步写入成功还只是事务内的中间结果；应用要检查第二步，全部成功才提交，否则回滚。</p>
     </ArticleSection>
     <ArticleSection id="borrow" title="一起提交，或者撤回">
       <Legacy slug="transaction" names={["scene-heading"]} />
-      <p>样例从可借 2 本、借阅 0 条开始。先走通一次借书，再让第二步失败；最后取消“一起提交”，比较第一步是否已经对外生效。模型只演示这两项状态，时间由操作推进，不执行真实 SQL。</p>
+      <p>样例从可借 2 本、借阅 0 条开始。先走通一次借书，再让第二步失败；最后关掉“两步放在同一事务”开关，看第一步会不会先对外生效。演示有“本次事务内”和“新查询可见”两组读数；每点一次按钮推进一步，不执行真实 SQL。</p>
       <TransactionLesson />
-      <p>同一事务里，减少数量只是中间状态。写入借阅记录成功后，提交才把“可借 1 本、借阅 1 条”一起留下；失败后回滚，则仍是“2 本、0 条”。分开提交时，第一步已经留下“1 本、0 条”，不能用后来失败的事务把它顺带撤回。</p>
-      <p id="transaction-autocommit" className="vp-citation-target">“分开提交”并不是完全没有事务。PostgreSQL 在显式事务块之外，会把单条语句作为一个隐式事务处理；客户端库也可能替你开启事务。这里比较的是<strong>两步共用一个事务，还是各自提交</strong>。排查真实代码时，要核对连接与客户端的自动提交行为。<Cite id="transaction-autocommit" /></p>
+      <p>同一事务里，“可借 1 本、借阅 0 条”只是中间状态。写入借阅记录成功后，提交才把“可借 1 本、借阅 1 条”一起留下；失败后回滚，则仍是“2 本、0 条”。分开提交时，第一步已经留下“1 本、0 条”，不能用后来失败的事务把它顺带撤回。</p>
+      <p id="transaction-autocommit" className="vp-citation-target">“分开提交”也不是完全没有事务。在 PostgreSQL 中，即使没有先写 BEGIN（开始事务），成功执行的单条语句也会作为一笔事务提交。网站程序使用的数据库客户端库（连接数据库并发送操作的代码）也可能自动开启和提交事务。这里比较的是<strong>两步共用一笔事务，还是各自提交</strong>，不能只看页面上点了几次按钮。<Cite id="transaction-autocommit" /></p>
     </ArticleSection>
     <ArticleSection id="visibility" title="并发事务的可见性" className={base.offset}>
       <Legacy slug="transaction" names={["quiz-heading"]} />
-      <p id="transaction-visible" className="vp-citation-target">演示的下层表示“此时另一个客户端发起新查询能看到什么”。以 PostgreSQL 默认的 Read Committed 为例，一次普通查询读取开始时已经提交的数据，不读取其他事务尚未提交的修改；事务内部可以读到自己的修改。更强的隔离级别可能继续使用较早的快照，因此不能说所有读者会在提交瞬间自动看到新值。<Cite id="transaction-visible" /></p>
+      <p id="transaction-visible" className="vp-citation-target">演示的下层表示“此时另一个客户端发起新查询能看到什么”。以 PostgreSQL 默认的 Read Committed 为例，一次普通查询开始执行时，会看到此前已经提交的数据，不会读到其他事务尚未提交的修改；事务内部也能读到自己的修改。更强的隔离级别可能继续使用较早的快照，因此不能说所有读者会在提交瞬间自动看到新值。<Cite id="transaction-visible" /></p>
       <p>原子性回答“一组改动是否整体生效”，隔离性回答“并发操作怎样相互影响”。两个人同时借最后一本书，还要用合适的更新条件、约束与并发控制来处理；单纯包上 BEGIN 和 COMMIT 并不能证明业务正确。</p>
-      <p id="transaction-engines" className="vp-citation-target">具体行为还取决于数据库。SQLite 允许多个读事务，但同时只允许一个写事务；写入或提交可能遇到忙碌错误。错误是否自动回滚也有条件。应用需要根据驱动返回的真实结果结束或重试事务，不能把“执行过提交语句”当作“提交已成功”。<Cite id="transaction-engines" /></p>
+      <p id="transaction-engines" className="vp-citation-target">具体行为还取决于数据库。SQLite 允许多个读事务，但同时只允许一个写事务；写入或提交可能遇到忙碌错误。出错后会不会自动回滚整笔事务，还取决于错误类型和发生阶段。应用需要根据驱动返回的真实结果结束或重试事务，不能把“执行过提交语句”当作“提交已成功”。<Cite id="transaction-engines" /></p>
     </ArticleSection>
     <ArticleSection id="recovery" title="提交之后与事务之外">
       <Legacy slug="transaction" names={["prompt-heading"]} />
-      <p id="transaction-recovery" className="vp-citation-target">已提交数据的故障恢复需要存储机制支持。PostgreSQL 使用预写日志 WAL：描述改动的日志先写入持久存储，数据页可以稍后写入；崩溃恢复时，再按日志重放必要改动。因此提交不等于每个数据页都已经逐一写回，持久性也不能脱离具体配置与存储条件来谈。<Cite id="transaction-recovery" /></p>
-      <p id="transaction-boundary" className="vp-citation-target">回滚也不是“撤销程序刚才做过的一切”。例如 PostgreSQL 的序列编号增长不会随事务中止而回退。已经发出的邮件、另一个系统完成的操作，更不在这组普通数据库写入的回滚范围内。<Cite id="transaction-boundary" /></p>
-      <p>一次借书提交后，如果客户端没有等到响应又重发请求，还需要 <ConceptTerm slug="idempotency">幂等性</ConceptTerm>避免重复借出。事务处理一次执行内部的整体性，幂等处理同一意图重复到达时的效果；一个请求可能同时需要两者。</p>
+      <p id="transaction-recovery" className="vp-citation-target">已提交数据的故障恢复需要存储机制支持。PostgreSQL 使用预写日志 WAL：描述改动的日志先写入持久存储，数据页可以稍后写入；崩溃恢复时，再按日志重放必要改动。因此提交不等于每个数据页都已经逐一写回，持久性还取决于具体配置和存储条件。<Cite id="transaction-recovery" /></p>
+      <p id="transaction-boundary" className="vp-citation-target">回滚也不是“撤销程序刚才做过的一切”。如果用 PostgreSQL 的序列给借阅记录自动编号，事务中领走的编号不会因回滚而退回，下一条记录可能跳号；这不表示失败的借阅记录已经保存。<Cite id="transaction-boundary" /></p>
+      <p id="transaction-external" className="vp-citation-target">已经发出的邮件、另一个系统完成的操作，不在这组数据库写入的回滚范围内。若借书成功后还要发通知，可以先在同一事务里保存“待发送通知”，确认提交后再由另一个程序发送；已经发出去的通知仍收不回来，重复发送也要单独处理。<Cite id="transaction-external" /></p>
+      <p>一次借书提交后，如果客户端没有等到响应又重发请求，还需要 <ConceptTerm slug="idempotency">幂等性</ConceptTerm>避免重复借出。事务让一次借书内部的两次写入一起生效；幂等让同一次借书请求重发时不再多借一本。一个请求可能同时需要两者。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

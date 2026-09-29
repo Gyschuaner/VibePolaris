@@ -21,4 +21,6 @@ export const transactionSources = [
   pg("Transaction Isolation", "transaction-iso", ["transaction-visible", "transaction-boundary"]),
   pg("Write-Ahead Logging", "wal-intro", ["transaction-recovery"]),
   sqlite("Transaction", "lang_transaction", ["transaction-engines"]),
+  { publisher: "Amazon Web Services", title: "Transactional outbox pattern", date: "", url: "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html", citations: ["transaction-external"] },
+  pg("CREATE SEQUENCE", "sql-createsequence", ["transaction-boundary"]),
 ];
