@@ -460,6 +460,12 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_f58346
 
 2026-09-29 集成：提交 `f35b12d` 经 [PR #120](https://github.com/Gyschuaner/VibePolaris/pull/120) 合入 `dev`，merge `ee54f914019dec44829b0fb02db45e0d8a27469f`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/event-bubbling` 在真实浏览器核对首图、旧锚点、四份来源、默认冒泡与停止后的回调顺序，应用错误为空。DP 部署 `7307e660-079c-47ba-96b8-25f27556d9e6` 已回查；前一版 `0d23297` 构建备份在 `/tmp/vbp012-dev-next-0d23297`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 17/105、版本 26；下一条 hook。
 
+2026-09-29 Skill 补审：按完整正文无动画通读，重新实际阅读四份 MDN 原始资料。Event bubbling 对应三层元素的默认冒泡顺序、反向捕获、事件委托及 `target/currentTarget`；stopPropagation 对应只停止后续传播、不取消默认行为或同节点其他监听；preventDefault 对应取消默认行为但继续传播；bubbles 对应事件是否沿 DOM 向祖先冒泡。原首图的并排对照、真实三层 DOM 和已比较过的三个视觉候选仍准确，保留。旧正文未先解释元素嵌套与监听，写“按钮先执行”时也没交代捕获阶段，且勾选保持、收藏状态切换会让读者把第二次“取消收藏”误看成停止传播撤销动作。修订在原段落补齐这些前提、`button/article/div` 的对应和待办列表中过滤删除按钮的迁移例子，不改演示机制、旧锚点或引文编号。
+
+ZCode CLI 独立 reader 会话 `sess_e1359c5a-bf74-4d91-9d78-7bce8f1a64bf` 实际读取 partner Skill 与整页读者可见文字/实际操作配对状态，不看源码、作者记录或资料。它能解释同一点击为何到达三层、停止传播为何不撤销按钮动作，并迁移到待办列表；卡在“祖先/监听器”的前提、按钮与捕获先后、勾选项保持和“重新划分交互区域”的空泛表达。独立 language 会话 `sess_d38c95f9-1b83-46e4-8347-2bec4a3e8bfe` 实际读取 partner、humanizer-zh 与修订中的 `BubblingTermPage`，指出“右侧记录”在首图旁的指代冲突、未定义的“回调”、表格代码名缺对应、“点击/勾选”指代、Shadow DOM 边界用语等。主助手逐条核对真实组件与浏览器，保留必要边界并局部改写；两个会话都是模型模拟，不算真人读者验收。
+
+提交 `55297ad` 经 [PR #151](https://github.com/Gyschuaner/VibePolaris/pull/151) 合入 `dev`，merge `b5c75a451e96bb3a736640073c3b37d4b4950eb2`。审核分支先通过 `npm run build`（117/117）；合入前另一个 VBP-047 PR 更新了依赖，因此在最新 dev Git 树按锁文件重新安装并再次构建，编译、TypeScript、117/117 均通过，`git diff --check` 通过。真实浏览器 3220 验证默认“目标按钮→冒泡卡片→冒泡列表”、停止后只有按钮且收藏照常切换、捕获加停止“捕获列表→捕获卡片→目标按钮”；390×844 下 `clientWidth`/`scrollWidth` 均为 390，错误日志为空。本机 dev worktree 3219 使用合入后的构建复核新版全文与默认/停止流程，错误日志为空。DP 补审任务 `c78a5d19-cf1f-4e01-91b5-d1e3177dcd16` done，用例 `e1e0d14a-ea8e-4a15-bf99-e8a6aaf007f4` 执行 `677bd23b-513b-4b3b-8713-eb4466b12c61` passed，计划 `c259ec58-c7d5-40a1-906f-80f906021bb2` completed；本机 dev 部署记录 `36b161f1-4633-4038-9409-45d10a8b4a33` 已回查，前版构建备份 `/tmp/vbp012-dev-next-ceb5f6d`。VBP-015 仍 testing，VBP-012 仍 in_development（版本 50）；技术集成 32/105、完整内容审读 17/105。下一条 Hook；没有真人读者、远端 dev 或生产部署。
+
 ## 18 · hook
 
 读者入口：“咖啡和门票都用了 useCounter，给咖啡加一，门票为什么不跟着变？”已有正文说明 Hook 调用位置、复用逻辑而非共享状态，主演示也用真实的两个 Hook 实例分别增减、调步长和重置；这部分保留。原首图只把初值 2 与 0 淡入，看不到一次操作只改变一个实例。
