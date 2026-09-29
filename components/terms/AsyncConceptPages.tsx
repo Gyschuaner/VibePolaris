@@ -91,35 +91,40 @@ export function AwaitTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={awaitSources} />;
   return <ConceptArticle slug="async-await" title="async / await" subtitle="等到结果，再接着执行" sources={awaitSources}
     intro={<>文章卡片需要标题和封面。await 让一段代码在结果回来以后继续，写起来像按行往下走；任务什么时候开始，仍由函数调用的位置决定。</>}
-    sections={[["function", "暂停的是当前函数"], ["assemble", "等两份材料到齐"], ["start", "先开始，再谈等待"], ["failure", "失败后的剩余工作"]]}
-    hero={<ConceptHero slug="async-await" label="当前函数执行到 await 后停住，旁边的收藏操作照常完成；封面任务返回时，函数从停点继续"><div className={styles.awaitHero}>
+    sections={[["function", "暂停的是当前函数"], ["assemble", "等两份材料到齐"], ["start", "先开始，再谈等待"], ["failure", "失败后的剩余工作"], ["compute", "等待和计算是两回事"]]}
+    hero={<ConceptHero slug="async-await" label="当前函数执行到 await 后停住，旁边的收藏操作照常完成；封面任务返回时，函数从暂停的位置继续"><div className={styles.awaitHero}>
       <span className={styles.awaitPath} /><span className={styles.awaitMarker} /><span className={styles.awaitGate} /><code className={styles.awaitWord}>await</code><BookOpen className={styles.awaitBook} size={29} weight="light" /><span className={styles.awaitFunctionLabel}>当前函数</span>
       <div className={styles.awaitSource}><ImageIcon size={28} /><span>封面任务</span></div><span className={styles.awaitReturnDot} />
       <div className={styles.awaitBookmark}><BookmarkSimple size={23} weight="regular" /><BookmarkSimple size={23} weight="fill" /><span>收藏文章</span></div>
     </div></ConceptHero>}>
     <ArticleSection id="function" title="暂停的是当前函数">
       <AsyncLegacyAnchors slug="async-await" names={["question", "definition"]} />
-      <p id="await-function" className="vp-citation-target">async 声明异步函数。每次调用它都会得到一个 Promise，用来表示这次函数执行的结果；函数返回的值成为履行值，没有处理的异常成为拒绝原因。<Cite id="await-function" /></p>
-      <p id="await-resume" className="vp-citation-target">在异步函数里，await 等待一个值或 Promise。遇到未落定的 Promise，<strong>当前函数后面的代码暂停</strong>；履行后再取出值，安排继续执行。等待期间，浏览器仍可以处理其他事件。即使等待的已经是履行值，后续代码也不会在当前同步步骤中立刻接上。<Cite id="await-resume" /></p>
+      <p>函数是一组可以按名字调用的步骤。比如“加载文章”这组步骤，要先取得标题和封面，再把它们放到卡片里。加载任务先交回一个 Promise，也就是代表这次操作结果的对象；真正的标题或图片可能稍后才回来。</p>
+      <p id="await-function" className="vp-citation-target">在函数前写上 <code>async</code>，就把它声明为异步函数，可以在里面用 <code>await</code> 等待结果。调用它时，外面的代码先拿到一份 Promise。函数返回普通值，这份 Promise 就成功交回该值；返回另一份 Promise，就跟随那份 Promise 的最终结果；函数里的错误若没有被处理，这份 Promise 就以该错误为原因拒绝，表示本次执行失败。<Cite id="await-function" /></p>
+      <p id="await-alternative" className="vp-citation-target">不用 async/await，也能在 Promise 上用 <code>then</code> 登记“结果回来以后做什么”。async/await 让这些后续步骤留在同一个函数里，按先后顺序写下来；它没有替换 Promise，也不会让原来的任务自动变快。<Cite id="await-alternative" /></p>
+      <p id="await-resume" className="vp-citation-target">代码走到 <code>await loadTitle()</code>，会先调用加载标题的函数，再等待它交回的 Promise。结果尚未到达时，<strong>暂停的是当前函数后面的代码</strong>；结果成功回来（也叫“履行”）后，取出标题，再安排这段函数继续执行。等待期间，浏览器仍可以处理收藏等其他点击。即使结果早已到达，await 后面的代码也要稍后继续，不会插进当前这段同步代码中间。<Cite id="await-resume" /></p>
+      <p>这里的“同步代码”，就是当前正在一条接一条执行、还没交出执行机会的那段代码。例如标题已经读好了，await 等的是一份已经成功的 Promise，显示标题的后续步骤仍要排队，等眼前这段代码先执行完。这样，读代码时可以按同样的规则理解：走过 await 后，后续步骤总要稍后继续。</p>
       <p>所以“这里要等”不等于“整个页面不能动”。下面加载文章时，试着收藏文章：那是独立的点击操作，不必等封面回来。</p>
     </ArticleSection>
     <ArticleSection id="assemble" title="等两份材料到齐">
       <AsyncLegacyAnchors slug="async-await" names={["scene-heading"]} />
-      <p>标题和封面地址已经知道，两项任务互不依赖。选择发起方式，再手动让它们返回；只有两份材料都成功，才能拼成阅读卡片。按钮代替了网络返回时机，便于观察先后关系，不是在测量请求速度。</p>
+      <p>本例已经知道从哪里加载标题、从哪里加载封面，但还没拿到标题内容和封面图片，两项任务互不依赖。选择发起方式，再手动让它们返回；只有两份材料都成功，才能拼成阅读卡片。这里由按钮决定结果什么时候返回，便于观察先后关系，不是在测量请求速度。下面的代码摘自加载文章的异步函数：<code>loadTitle()</code> 加载标题，<code>loadCover()</code> 加载封面，<code>showArticle()</code> 把两者显示到卡片上。</p>
       <AwaitLesson />
     </ArticleSection>
     <ArticleSection id="start" title="先开始，再谈等待">
-      <div className={styles.comparison}><div><h3>依次发起</h3><p>调用 loadTitle 后等待。它完成，程序才走到 loadCover。封面任务这时才开始，因此前面那段等待无法被封面的工作利用。</p></div><div><h3>一起发起</h3><p>先调用两项任务，再等待它们共同完成。封面可以先回来，但卡片仍要等标题；谁先返回，不改变标题和封面的用途。</p></div></div>
-      <p id="await-all" className="vp-citation-target">Promise.all 把多个结果合在一起：所有输入都履行，它才履行，结果数组与输入顺序一致。这适合“缺一份就不能完成”的汇合任务。<Cite id="await-all" /></p>
-      <p><strong>连续写两个 await，不足以判断任务是不是串行开始。</strong>如果此前已经调用两个函数并保存了 Promise，它们可能早就在并发进行。检查的关键是调用位置，而不只是 await 的数量。</p>
+      <div className={styles.comparison}><div><h3>依次发起</h3><p>调用 loadTitle 后等待。标题成功返回，程序才走到 loadCover，封面任务这时才开始。等待标题时，封面任务还没有动起来。</p></div><div><h3>一起发起</h3><p>先发起两项任务，再等两份结果都回来。两项等待时间可以重叠，这叫并发。封面可以先回来，但卡片仍要等标题；谁先返回，不改变标题和封面的用途。</p></div></div>
+      <p id="await-all" className="vp-citation-target">Promise.all 返回一份代表共同结果的新 Promise。所有输入都成功，它才成功，交回的结果按输入顺序排列：本例先放标题任务、再放封面任务，拿到的就依次是标题、封面，即使封面先回来也不会调换。这适合“缺一份就不能完成”的汇合任务。<Cite id="await-all" /></p>
+      <p id="await-start" className="vp-citation-target"><strong>连续写两个 await，不足以判断任务是不是依次开始。</strong>例如先写 <code>const titleTask = loadTitle()</code>，再写 <code>const coverTask = loadCover()</code>，就把两项任务发起了，也分别保存了它们的 Promise。后面即使依次写 <code>await titleTask</code>、<code>await coverTask</code>，两项任务也早已开始。要看调用位置，而不只是 await 的数量。不过，先启动再逐个 await，第二项可能在等待第一项时就失败，后面的 await 还没来得及处理它。像本例这样两项缺一不可，用 Promise.all 一起等待和处理失败更合适。<Cite id="await-start" /></p>
       <p>实际任务也不一定适合一起开始。例如先查用户资料，再根据其中的头像地址加载图片，第二步确实依赖第一步。为了看起来更快而强行并发，可能连请求参数都还没拿到。</p>
     </ArticleSection>
     <ArticleSection id="failure" title="失败后的剩余工作" className={base.offset}>
       <AsyncLegacyAnchors slug="async-await" names={["quiz-heading", "prompt-heading"]} />
-      <p id="await-error" className="vp-citation-target">等待的 Promise 被拒绝时，await 会在所在位置抛出拒绝原因。可以用 try/catch 显示错误或选择后续处理；若不处理，就让调用这段异步函数的代码接住失败。<Cite id="await-error" /></p>
-      <p id="await-reject" className="vp-citation-target">一起发起时，让封面先失败。Promise.all 会拒绝，但<strong>不会自动取消还在运行的标题任务</strong>。你仍然可以让标题返回；只不过这一次汇合已经失败，不能再凭一份标题宣称卡片完整。<Cite id="await-reject" /></p>
+      <p id="await-error" className="vp-citation-target">等待的 Promise 被拒绝时，await 会在所在位置报出这个失败原因，代码里叫“抛出”。下面把加载过程放进 <code>try</code>；如果其中一步失败，就跳到 <code>catch</code> 执行错误处理，而不会继续显示完整卡片。显示哪句错误、是否重试，仍要自己编写；try/catch 不会自动补好缺失的封面。如果这里没有处理，失败就交给调用这个异步函数的代码处理。<Cite id="await-error" /></p>
+      <p id="await-reject" className="vp-citation-target">一起发起时，让封面先失败。Promise.all 会拒绝，但<strong>不会自动取消还在运行的标题任务</strong>。你仍然可以让标题返回，标题一栏会保留已取得的内容；但这次汇合已经失败，缺少封面，卡片仍然拼不出来。<Cite id="await-reject" /></p>
       <pre className={base.code}>{'try {\n  const [title, cover] = await Promise.all([\n    loadTitle(), loadCover(),\n  ]);\n  showArticle(title, cover);\n} catch (error) {\n  showError(error);\n}'}</pre>
-      <p id="await-cpu" className="vp-citation-target">async 函数在第一个 await 之前，仍按普通同步代码执行。把耗时循环放进 async 函数，不会自动获得另一条线程；长计算需要单独考虑拆分或 Worker。<Cite id="await-cpu" /></p>
+    </ArticleSection>
+    <ArticleSection id="compute" title="等待和计算是两回事">
+      <p id="await-cpu" className="vp-citation-target">async 函数在第一个 await 之前，仍按普通同步代码执行；恢复执行后，长时间计算也照样会占用页面运行脚本的时间，让点击得不到及时响应。async 不会自动另开线程。需要把计算移到后台时，可以考虑 Web Worker：它在另一个线程执行脚本，再用消息把结果送回页面，这需要另外安排。<Cite id="await-cpu" /></p>
     </ArticleSection>
   </ConceptArticle>;
 }
