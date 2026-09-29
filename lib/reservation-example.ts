@@ -19,7 +19,7 @@ export function validateReservation(data: Record<string, unknown>) {
     issues.push({ field: "status", rule: "enum", message: "只接受 pending 或 success" });
   }
   if (Object.hasOwn(data, "count")) {
-    if (typeof data.count !== "number" || !Number.isInteger(data.count)) issues.push({ field: "count", rule: "type", message: "需要整数，不能是字符串或小数" });
+    if (typeof data.count !== "number" || !Number.isInteger(data.count)) issues.push({ field: "count", rule: "type", message: "需要整数，例如 0、1、2" });
     else if (data.count < reservationSchema.properties.count.minimum) issues.push({ field: "count", rule: "minimum", message: "数量不能小于 0" });
   }
   for (const field of Object.keys(data)) {

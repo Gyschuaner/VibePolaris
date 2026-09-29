@@ -25,7 +25,7 @@ export const jsonSources = [
 ];
 export const schemaSources = [
   { publisher: "JSON Schema · Austin Wright、Henry Andrews、Ben Hutton、Greg Dennis", title: "JSON Schema Validation — Draft 2020-12", date: "", url: "https://json-schema.org/draft/2020-12/json-schema-validation", citations: ["schema-definition", "schema-boundary"] },
-  { publisher: "JSON Schema · 官方文档", title: "Understanding JSON Schema — object", date: "", url: "https://json-schema.org/understanding-json-schema/reference/object", citations: ["schema-required", "schema-extra"] },
+  { publisher: "JSON Schema · 官方文档", title: "Understanding JSON Schema — object", date: "", url: "https://json-schema.org/understanding-json-schema/reference/object", citations: ["schema-required", "schema-null", "schema-extra"] },
   { publisher: "JSON Schema · 官方文档", title: "Numeric types", date: "", url: "https://json-schema.org/understanding-json-schema/reference/numeric", citations: ["schema-numeric"] },
   { publisher: "JSON Schema · 官方文档", title: "Enumerated values", date: "", url: "https://json-schema.org/understanding-json-schema/reference/enum", citations: ["schema-enum"] },
   { publisher: "JSON Schema · 官方文档", title: "Dialect and vocabulary declaration", date: "", url: "https://json-schema.org/understanding-json-schema/reference/schema", citations: ["schema-dialect"] },
