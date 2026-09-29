@@ -13,7 +13,11 @@ export function EventTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventSources} />;
   return <ConceptArticle slug="event" title="事件" sources={eventSources}
     sections={[["notification", "动作进入处理函数"], ["listener", "接上一个处理函数"], ["object", "事件携带的信息"], ["result", "默认行为与业务结果"]]}
-    hero={<ConceptHero slug="event" label="开关被按下后，阅读灯照亮下方区域"><div className={styles.eventHero}><Lightbulb size={58} weight="light" /><div className={styles.heroBeam} /><span className={styles.heroSwitch}><Power size={22} /></span></div></ConceptHero>}
+    hero={<ConceptHero slug="event" label="第一次点击被记录并点亮阅读灯；开灯监听断开后第二次点击仍被记录，灯保持原状"><div className={styles.eventHero}>
+      <Lightbulb size={58} weight="light" /><div className={styles.heroBeam} /><span className={styles.heroSwitch}><Power size={22} /><i className={styles.heroClickPulse} /></span>
+      <div className={styles.heroClick}><code>click</code><span><b>0</b><b>1</b><b>2</b></span></div>
+      <div className={styles.heroListener}><code>开灯监听</code><span>连接</span><span>断开</span></div>
+    </div></ConceptHero>}
     intro={<>事件是程序获知“发生了什么”的方式。在网页中，点击、输入、提交和加载完成都能产生事件。<strong>监听器把这些通知交给处理函数，由代码决定接下来做什么。</strong></>}
     relatedIntro={<>处理事件的代码通常用 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 编写；它可以修改 <ConceptTerm slug="state">状态</ConceptTerm>。同一次点击怎样到达父容器，则由事件传播规则决定。</>}>
     <ArticleSection id="notification" title="动作进入处理函数">

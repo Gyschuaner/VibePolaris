@@ -26,8 +26,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 12 agent | 目标驱动选择行动 | 同一找空档目标分出有空档与无空档两条结果，下一步分别是草稿与询问 | 本地与 dev 集成完成 · PR #115 |
 | 13 component | 可复用的界面组成 | 头像、姓名和关注位聚成 MemberCard 结构；MemberList 依次显出三个实例 | 本地与 dev 集成完成 · PR #116 |
 | 14 props | 外部给组件的输入 | 调用处的 label、tone 依次改变，同一 ActionButton 原位改字、变色 | 本地与 dev 集成完成 · PR #117 |
-| 15 state | 记住变化并更新界面 | 一张笔记卡内的 text、status 先变，卡面与按钮随后原位更新；等待时无回执 | 本地验收完成 · 待 dev 集成 |
-| 16 event | 操作触发处理 | 点击真实控件，局部触点引发一次响应 | 待更新 |
+| 15 state | 记住变化并更新界面 | 一张笔记卡内的 text、status 先变，卡面与按钮随后原位更新；等待时无回执 | 本地与 dev 集成完成 · PR #118 |
+| 16 event | 操作触发处理 | 同一阅读灯两次点击：click 继续计数，断开开灯监听后灯保持上次亮度 | 本地验收完成 · 待 dev 集成 |
 | 17 event-bubbling | 父子层级传播 | 嵌套轮廓逐层响应，中途停止后外层静止 | 待更新 |
 | 18 hook | 组件使用 React 能力 | 渲染与状态槽对齐；保持调用次序 | 待更新 |
 | 19 effect | 与外部系统同步 | 页面内状态与外部连接双区；切换先清理后连接 | 待更新 |
@@ -375,6 +375,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_699fe5
 资料：实际阅读 React 官方 [State: A Component’s Memory](https://react.dev/learn/state-a-components-memory)（普通局部变量既不保留跨渲染值，也不触发新渲染；`useState` 提供这两项）、[State as a Snapshot](https://react.dev/learn/state-as-a-snapshot)（设置状态请求新渲染，不改写当前事件处理函数已经读到的快照）、[Choosing the State Structure](https://react.dev/learn/choosing-the-state-structure)（避免矛盾状态和重复存储可推导值）与 [Sharing State Between Components](https://react.dev/learn/sharing-state-between-components)（共同父级持有需协同的状态）。原正文引文映射足以覆盖这些论断，无须新增书目。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器在桌面看到首图空笔记→内部 `text` 更新→卡面出现文字→内部 `status` 进入 pending→按钮变“保存中”，终态没有成功回执；390×844 卡片完整，clientWidth/scrollWidth 均为 390。主演示编辑后等待时输入与保存禁用，返回失败保留文字并能重试，成功后新编辑使旧成功结果失效；空输入不可提交、重置恢复，键盘 Enter 可保存。旧锚点存在，第3份书目的摘录与正文一致、回跳可见，应用错误日志为空。VBP-014 用例 `7ca9c4a8-8e2d-4658-8521-ca8f0c67814e`，本地计划 `473bf6f6-17a2-489c-b9d4-a8afc3adbe0a` completed、执行 `290a2667-e565-4e20-9e82-a259a83dc61f` passed。没有真人零基础读者观察。
+
+2026-09-29 集成：提交 `beb9cc0` 经 [PR #118](https://github.com/Gyschuaner/VibePolaris/pull/118) 合入 `dev`，merge `4e6796676a00b86723e877861cd6d6e26044f469`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/state` 在真实浏览器核对首图、旧锚点、四份来源及等待时无成功回执，应用错误为空。DP 部署 `bb09598a-56d1-4a59-a605-c652dd096bdc` 已回查；前一版 `4e2e7b2` 构建备份在 `/tmp/vbp012-dev-next-4e2e7b2`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。VBP-014 的三条用例都已通过，子需求转 `ready_for_release`（版本 6），并非已经发布。DP VBP-012 描述更新至 15/105、版本 24；下一条 event。
+
+## 16 · event
+
+读者入口：“按网页电源按钮，是 click 让灯亮，还是代码让灯亮？断开开灯监听之后，按钮的点击还算发生过吗？”已有正文与主演示用真实 `addEventListener` 把观察点击和开灯处理分成两个监听器，断开后记录仍加、灯保留上次状态；这部分保留。原首图只有开关缩一下、灯随即亮起，缺少“click 发生”和“特定处理被移除”的区别。此轮仍用阅读灯，但补出两次点击形成分叉的瞬间。
+
+视觉候选：① 两个并联接收端，把计数与灯分别做成结果；能解释两个监听器，但额外连线容易把事件误画成电流，不采用完整方案。② 上层播报牌与下层开灯钥匙；读数与执行分层清楚，但钥匙会暗示物理权限或灯具零件，不照搬。采用它“独立计数与灯反应”的关系，简化为同一首图两侧的 `click` 计数、开灯监听状态，以及中央的灯与开关：第一次按压计数到 1 且灯亮；监听状态变“断开”；第二次按压计数到 2，灯仍亮。③ 拟人化听众离席，需过多角色、在 234px 首图里拥挤，不采用。画面不画传导电线或网络路径；计数是演示中另一个观察监听器的记录，不是事件天然持久存档。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_d46317d0-b6cd-46a5-bd8f-3a78009ac620`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 和动画灵感参考。主助手给出经核实的 MDN 事实、现有首图与相邻页面的描述；ZCode 生成并联双接收端、播报牌与钥匙、听众离席三案，推荐第二案。主助手保留已有灯与开关，舍弃“钥匙”，让第二次按压只有计数改变，灯的亮度保持，这是本条区别于 State 原位更新和 Event Bubbling 层层传播的关键动作。ZCode 未看实际页面，结果由主助手整合和验收。
+
+资料：实际阅读 MDN [Introduction to events](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events)（浏览器事件、注册处理、多个监听器和解除）、[Element: click event](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)（原生按钮的鼠标和键盘激活）、[EventTarget: removeEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)（移除同一监听的匹配条件）以及 [Event: preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault)（默认行为与监听/传播的区别）。正文与原书目已涵盖本轮论断，不新增引用编号。首图的两个计数只对应两个示意 click，不能被读成真实业务成功。
+
+2026-09-29 本地验收：最终 `npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器桌面和 390×844 已观察首图从初始 click 0、灯灭、监听连接，到第一次 click 1、灯亮，再到监听断开、第二次 click 2、灯仍亮；移动端 clientWidth/scrollWidth 均为 390，构图无横向溢出。主演示实际点击后灯亮/计数 1；断开后再点计数 2、灯仍亮；重连再点计数 3、灯关，未重复处理；重置后 Enter 激活仍正常。离屏时首图脉冲暂停，可见时运行。旧锚点与四份来源在页面，第二份书目摘录和正文、回跳均核对，应用错误日志为空。VBP-015 用例 `dcf4aebe-9d9e-40f0-b12f-ad31d32f6817`，本地计划 `8031387a-ae8c-47ad-b3cb-1f9decad3765` completed、执行 `fbb42204-6c0f-49b8-84f7-64db543c4b00` passed。没有真人零基础读者观察。
 
 ## 01 · Harness
 
