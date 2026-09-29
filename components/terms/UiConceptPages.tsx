@@ -54,40 +54,42 @@ export function PropsTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={propsSources} />;
   return <ConceptArticle slug="props" title="Props" sources={propsSources}
     sections={[["input", "由调用者提供输入"], ["readonly", "只读不等于不变"], ["callback", "把操作交回父组件"], ["contract", "让参数容易理解"]]}
-    hero={<ConceptHero slug="props" label="调用处先修改 label，再修改 tone；同一个 ActionButton 随后改字并变为轻量样式"><div className={styles.propsHero}>
+    hero={<ConceptHero slug="props" label="调用处先修改 label，再修改 tone；同一个 ActionButton 的文字和外观依次变化"><div className={styles.propsHero}>
       <div className={styles.propsCall}><code>调用处</code><div className={styles.propsInputs}><div><code>label</code><span className={styles.propsInputValue}><span>保存草稿</span><span>确认修改</span></span></div><div><code>tone</code><span className={styles.propsInputValue}><span>primary</span><span>quiet</span></span></div></div></div>
       <svg className={styles.propsThreads} viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true"><path d="M75 0 C75 43 140 29 140 70" /><path d="M225 0 C225 43 160 29 160 70" /><path className={styles.propsLabelThread} d="M75 0 C75 43 140 29 140 70" /><path className={styles.propsToneThread} d="M225 0 C225 43 160 29 160 70" /></svg>
       <div className={styles.propsButtonBox}><code>ActionButton</code><div className={styles.propsButton}><span>保存草稿</span><span>确认修改</span><PaperPlaneTilt size={18} /></div></div>
     </div></ConceptHero>}
-    intro={<>Props 是调用者传给组件的输入。文字、数据、样式选项和回调函数，都可以通过 Props 交给组件，<strong>让同一份实现按不同配置工作。</strong></>}
-    relatedIntro={<>把结构交给 <ConceptTerm slug="component">组件</ConceptTerm>，通过 Props 提供输入，再由数据拥有者管理 <ConceptTerm slug="state">状态</ConceptTerm>。Hook 是 React 组件使用状态等能力的接口。</>}>
+    intro={<>Props 是使用组件时，从外层传给它的输入。按钮文字、样式、能否点击等设置，连同“点击后该做什么”的函数（回调函数），都可以通过 Props 交给组件，<strong>让同一份实现按不同配置工作。</strong></>}
+    relatedIntro={<>一个 <ConceptTerm slug="component">组件</ConceptTerm> 规定按钮怎样呈现和响应操作；Props 是外层传来的输入，<ConceptTerm slug="state">状态</ConceptTerm> 是组件或外层记住、会随操作变化的数据。</>}>
     <ArticleSection id="input" title="由调用者提供输入">
       <Anchors ids={["props-question", "props-definition"]} />
-      <p>编辑器需要“保存草稿”，设置页需要“确认修改”。两个按钮的间距、焦点效果和点击方式可以一致，文字和用途却不同。把这些差异作为参数传入，就不用再复制一个几乎相同的按钮。</p>
-      <p id="props-input" className="vp-citation-target">在 React 中，父组件使用子组件时提供 Props，子组件读取这些值来生成界面。它们可以是字符串、数字、布尔值，也可以是对象、数组或函数；并不只限于 HTML 中常见的文本属性。<Cite id="props-input" /></p>
-      <p>下面左侧代表父组件。修改文字或样式，右侧的 ActionButton 就接收到新的输入。点击按钮后，父组件会记录一次回调。这里没有真正保存草稿；清空文字时，本例约定显示“按钮”。</p>
+      <p>编辑器需要“保存草稿”，设置页需要“确认修改”。两个按钮的基本结构和点击方式可以一致，文字和用途却不同。把这些差异作为参数传入，就不用再复制一个几乎相同的按钮。</p>
+      <p id="props-input" className="vp-citation-target">在 React 中，外层页面使用 ActionButton 时，外层页面是父组件，ActionButton 是子组件。父组件提供 Props，子组件读取这些值来生成界面。除了文字，Props 还可以是数字、开关值、对象、数组或函数。<Cite id="props-input" /></p>
+      <p>下面左侧代表父组件。修改文字或样式，右侧的 ActionButton 就按新输入更新。点击按钮后，父组件提供的函数被调用一次，左侧计数加一。这里没有真正保存草稿；清空文字时，本例约定显示“按钮”。</p>
+      <p>右侧示意代码里，<code>label="保存草稿"</code> 是文字，<code>disabled={'{false}'}</code> 是开关值，<code>onAction={'{handleAction}'}</code> 是点击后要调用的函数；花括号表示这里传入的不是普通文字。</p>
       <Anchors ids={["props-scene-heading"]} /><PropsLesson />
-      <p id="props-disabled" className="vp-citation-target">把样式切到 quiet，按钮变轻；把 disabled 设为 true，按钮仍然存在，但不能触发点击。本例的子组件把 disabled 传给原生 button，浏览器按 HTML 标准阻止它派发用户点击事件。两个变化都沿用同一套按钮实现。<Cite id="props-disabled" /></p>
+      <p id="props-disabled" className="vp-citation-target">把样式切到 quiet，按钮变轻；把 disabled 设为 true，按钮仍在，但用户点击不会调用操作。本例的子组件把 disabled 传给原生 button，浏览器按 HTML 标准阻止它派发用户点击事件。两个变化都沿用同一套按钮实现。<Cite id="props-disabled" /></p>
     </ArticleSection>
     <ArticleSection id="readonly" title="只读不等于不变">
-      <p id="props-readonly" className="vp-citation-target"><strong>对接收它的组件来说，Props 是只读输入。</strong>父组件可以在后续渲染时传来新值，所以“只读”不表示第一次传入后永远固定。需要改变输入时，应让数据的拥有者更新，再把新值传下来，而不是直接改写收到的 Props 对象。<Cite id="props-readonly" /></p>
+      <p id="props-readonly" className="vp-citation-target"><strong>对接收它的组件来说，Props 是只读输入。</strong>父组件之后重新渲染（按数据生成界面）时可以传来新值，所以“只读”不表示第一次传入后永远固定。本例要改变按钮文字，由记录这段文字的父组件先更新，再把新值传下来；按钮不直接改写收到的 Props。<Cite id="props-readonly" /></p>
       <p>刚才输入“确认修改”时，父组件先更新自己记录的文字，随后把新的 label 传给 ActionButton。按钮读取新值，于是画面改变。输入来源与使用位置虽然不同，变化仍然可以沿着一条清楚的路径追踪。</p>
-      <blockquote className={styles.callout}>外部传来的值可以更新；<br />接收方应通过约定请求变化。</blockquote>
+      <p>左侧记录的文字是父组件的状态；传到 ActionButton 后，同一个值就是按钮接收的 Props。在这个演示里，状态是父组件记住的当前值，Props 是子组件收到的输入。</p>
+      <blockquote className={styles.callout}>外部传来的值可以更新；<br />接收方若想改变它，可以请父组件更新。</blockquote>
       <p>例如一张商品卡片收到 price，它不能为了显示折扣就直接把父级商品对象改掉。可以根据价格计算展示值，或在用户操作时调用父级提供的函数，由父级决定是否更新商品数据。</p>
     </ArticleSection>
     <ArticleSection id="callback" title="把操作交回父组件">
-      <p id="props-callback" className="vp-citation-target">函数也能作为 Props。父组件把 handleAction 交给子按钮，子按钮在点击时调用它，父组件再更新计数。<strong>传入函数本身，与在渲染时立刻调用函数，是两件事。</strong>React 的事件教程用这种方式让复用按钮触发不同的业务动作。<Cite id="props-callback" /></p>
+      <p id="props-callback" className="vp-citation-target">函数也能作为 Props。父组件把 handleAction 交给子按钮，子按钮在点击时调用它，父组件再更新计数。同一款按钮因此能用于不同页面，具体操作由外层页面决定。<Cite id="props-callback" /></p>
       <pre className={styles.code}>{'function ActionButton({ onAction, label }) {\n  return <button onClick={onAction}>{label}</button>;\n}'}</pre>
-      <p>这里的 onAction 是自定义组件的接口名称，内部再接到原生按钮的 onClick。按钮不需要知道父组件把计数放在哪里；父组件也不必知道按钮用了什么间距。两者通过明确的输入和回调合作。</p>
-      <p id="props-owner" className="vp-citation-target">如果两个组件需要同步使用同一份数据，常见做法是让它们最近的共同父组件持有这份状态，再把值和更新用的回调传下去。每份数据有明确的拥有者，不代表整个应用只能有一处状态。<Cite id="props-owner" /></p>
-      <p>这也能帮助定位问题：按钮没变化，就核对父级是否更新、子级是否收到新值；点击没反应，则核对回调是否传入、是否被调用，以及按钮是否被禁用。</p>
+      <p>这段代码只画出文字和点击，省略了样式与禁用。onAction 是 ActionButton 自己约定的输入名称，内部再接到原生按钮的 onClick。写 <code>onClick={'{onAction}'}</code> 是把函数交给按钮，等点击时才执行；写成 <code>onClick={'{onAction()}'}</code> 则会在渲染界面时立即执行。按钮不需要知道父组件把计数放在哪里；父组件也不必知道按钮用了什么间距。</p>
+      <p id="props-owner" className="vp-citation-target">如果两个组件要用同一份数据，还要求显示一致，常见做法是让它们最近的共同父组件持有这份状态，再把值和更新用的回调传下去。每份数据有明确的拥有者，不代表整个应用只能有一处状态。<Cite id="props-owner" /></p>
+      <p>这也能帮助定位问题：按钮没变化，就核对父组件是否更新、子组件是否收到新值；点击没反应，则核对回调是否传入、是否被调用，以及按钮是否被禁用。</p>
     </ArticleSection>
     <ArticleSection id="contract" title="让参数容易理解" className={styles.offset}>
       <Anchors ids={["props-quiz-heading", "props-prompt-heading"]} />
-      <p id="props-defaults" className="vp-citation-target">参数可以有默认值。React 函数组件常用 <code>size = 100</code> 这样的解构写法；只有没有传入或值为 undefined 时，才使用这个默认值。传入 0 或 null 不会自动触发它，接口需要说明这些值各自代表什么。<Cite id="props-defaults" /></p>
-      <p>本页选择了 primary 和 quiet 两个明确的样式值。实际项目也应把允许的选项说清楚，避免同时出现 isPrimary、isQuiet、isDanger 等互相冲突的开关。参数多到难以组合时，往往需要重新检查组件承担的职责。</p>
-      <p id="props-children" className="vp-citation-target">若变化的是一整块内容，可以通过 children 传入嵌套的 JSX。外层组件负责容器，调用者提供里面放什么。这比为每一种内容增加一个专用参数更适合某些组合场景。<Cite id="props-children" /></p>
-      <ArticleAside title="Props 不是自动安全校验"><p>名字写成 disabled 只是一个约定，组件仍需把它用于实际行为。本页最终传给原生 button，浏览器才会禁用按钮。真实系统还要在处理请求的地方检查权限与输入，不能只靠页面上的灰色按钮。</p></ArticleAside>
+      <p id="props-defaults" className="vp-citation-target">参数可以有默认值。例如头像组件可以把尺寸写成 <code>size = 100</code>：使用它的地方没传 size，或传入 undefined（表示没有值的特殊标记）时，才用 100。0 和 null 虽然可能不适合作为尺寸，却都是已经传入的值，不会触发这个默认。组件应说明这些值各自代表什么。<Cite id="props-defaults" /></p>
+      <p>本页选择了 primary 和 quiet 两个明确的样式值。实际项目也应把允许的选项说清楚，避免 isPrimary、isQuiet、isDanger 这样的多个开关同时为真，让按钮不知道该用哪种样式。参数多到难以组合时，往往需要重新检查组件承担的职责。</p>
+      <p id="props-children" className="vp-citation-target">若变化的是一整块内容，可以通过 children 传入嵌套的 JSX（React 用来描述界面的标签写法）。外层组件负责容器，调用者提供里面放什么。在某些场景里，这比为每种内容单独设一个参数更合适。<Cite id="props-children" /></p>
+      <ArticleAside title="Props 不是自动安全校验"><p>名字写成 disabled 只是一个约定，组件仍要真正根据它改变行为。本页最终传给原生 button，浏览器才会禁用按钮。真实系统还要在处理请求的地方检查权限与输入，不能只靠页面上的灰色按钮。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

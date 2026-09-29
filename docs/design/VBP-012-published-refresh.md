@@ -394,6 +394,12 @@ ZCode：通过本机 `zcode.cjs app-server` CLI 建立只读 inspiration 会话 
 
 2026-09-29 集成：提交 `8bd8ce8` 经 [PR #117](https://github.com/Gyschuaner/VibePolaris/pull/117) 合入 `dev`，merge `4e2e7b25ab100fcb7699fed863d9264a2bc56f61`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/props` 在真实浏览器复核同一按钮、输入回调与第四份来源，应用错误为空。DP 部署 `b0d7e93f-b9d6-4966-9c4a-924e69e49c1e` 已回查；前一版 `bc6fce2` 构建备份在 `/tmp/vbp012-dev-next-bc6fce2`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 14/105、版本 23；下一条 state。
 
+2026-09-29 Skill 自查后的逐条内容补审（本地）：读者在编辑器和设置页看到同款按钮却有不同文字，需要判断是谁提供差异、子按钮会不会自己改外部数据，以及点按钮后的动作由谁决定。无 Props 时也能复制按钮实现，但文字、外观和行为要分别维护。无动画通读发现旧文在解释前就提“回调”、父子组件与 JSX 代码，并把示意调用里的引号和花括号留给读者猜；默认值一节突然使用 `size = 100`，未说明 0、null 与缺省的区别；Props 与 State 的关系直到末尾仍不清楚。重新实际阅读四份原始资料：React [Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component) 对应输入类型、只读但后续可更新、默认值和 children；[Responding to Events](https://react.dev/learn/responding-to-events) 对应传函数与渲染时误调用；[Sharing State Between Components](https://react.dev/learn/sharing-state-between-components) 对应共同父组件持有状态；[WHATWG HTML Standard](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute) 仅支撑本例把 disabled 传到原生按钮后阻止用户 click。四份资料对应七处正文角标，来源 1 支撑多处；发布日期未见则保留空值。
+
+ZCode 独立只读 reader 会话 `sess_978038f2-1fd8-403d-8a3c-26c3c0c8ad51` 只读 partner Skill、完整页面文字与按操作配对的演示状态，未看源码或资料正文；它能据正文判断新“提交订单”场景的输入更新、禁用和回调边界，也定位了回调先用后释、`onAction` 传入与立即调用无结果解释、代码引号/花括号、默认值及 Props/State 关系。主助手复核后在首次出现处解释父子关系、代码记号和点击后函数，明确 `onClick={onAction}` 与 `onClick={onAction()}` 的时机，并用演示中的同一值说明父组件状态与按钮 Props。独立 language 会话 `sess_f7612bf0-6461-4095-80e0-690949fe4e11` 实际读取 partner、humanizer-zh 与当前 PropsTermPage 源码；采纳角色称呼、指代、禁用效果、渲染术语、默认值和多个样式开关冲突原因等局部修订。它的事实疑点按原始资料及实际 ActionButton 实现核对；没有把七处角标误记成七份资料。两次均是模型模拟审读，非真人读者验收。
+
+原有两路输入牵线→同一按钮原位改字和外观的首图及主演示继续准确表达 Props，与 Component 的结构显影、State 的笔记状态转换在主体和动作上不同；原三种视觉候选与取舍仍适用。本轮仅改正文与首图说明标签，未改互动状态逻辑。`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。`http://localhost:3220/terms/props` 浏览器核对新版正文及代码示意；390×844 截图文字可读，文档宽与 `scrollWidth` 均为 390，错误日志为空。原互动在 PR #117 已验收，本轮未改其实现。DP VBP-014 补审任务 `d1a56469-cd2e-4b8b-a934-e901e065678b` in_progress，需求仍 testing；dev 集成另记。
+
 ## 15 · state
 
 读者入口：“笔记里刚输入的文字为什么下一次画面还在？按保存以后，界面为什么先显示等待，而不是直接给成功回执？”现页正文和主演示已有可编辑笔记、四个互斥状态、失败重试、成功回执、快照与派生值的解释；首图却是一张纸页，过几秒自动飞入“已保存”，没有操作和等待，容易把界面状态误当成已经持久保存。此轮保留正文主线与主演示，只改首图及一处衔接句。
