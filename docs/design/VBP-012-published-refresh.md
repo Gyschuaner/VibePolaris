@@ -480,6 +480,12 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_73c82e
 
 2026-09-29 集成：提交经 [PR #121](https://github.com/Gyschuaner/VibePolaris/pull/121) 合入 `dev`，merge `d43ae37f0c36c5232afd5537171ba1b593213d58`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/hook` 在真实浏览器复核首图、四份来源与两实例独立状态，应用错误为空。DP 部署 `5a8e0ebf-88cd-4e35-826a-1510be43bc7a` 已回查；前一版 `ee54f91` 的构建备份在 `/tmp/vbp012-dev-next-ee54f91`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 18/105、版本 27；下一条 effect。
 
+2026-09-29 Skill 补审：按完整正文无动画通读，重新实际阅读上列四份 React 官方原始资料并核对论断位置：自定义 Hook 复用逻辑、每次调用独立和命名对应 `hook-reuse`、`hook-independent`、`hook-naming`；`useState` 的初值与更新函数对应 `hook-initial`、`hook-update`；调用位置对应 `hook-rules`；Effect 清理与开发期额外检查对应 `hook-cleanup`。现有双刻度首图与两个真实 Hook 实例准确表达“同样做法、各自存数”，旧视觉候选已经比较，本轮是正文修订，保留演示。旧稿让零基础读者先遇到未解释的函数组件、状态与 `useState`，再以“闭包”“共同的数据拥有者”代替必要因果；修订在原段落补齐这些前提、提取前后为何仍是两份数、更新函数如何使用前次数值、初值何时生效，以及共享数值需要怎样改变数据来源。四份书目编号和旧锚点未变。
+
+ZCode CLI 独立 reader 会话 `sess_cd21b8b1-8827-4df3-927f-60c24ae3b354` 只读取 partner Skill、整页读者可见文字及实际操作的配对状态，不读源码、研究资料或作者笔记；它能迁移判断购物车和愿望单各自计数，却指出开头前提、`闭包`、清理动作主语和共同数值来源的断点。首轮读者材料带了一句额外解释，已删除并新建干净会话，上述会话才作为盲读依据。独立 language 会话 `sess_7f46c3c4-d749-458a-9378-5ede601a7084` 实际读取 partner、humanizer-zh 与修订中的 `HookTermPage`，指出“交还”“点击时执行它”“待更新的数量”“设置函数”及关联区 Props 缺链接等具体问题；主助手逐条核对组件和 React 原文，局部采纳，保留必要的初值与调用顺序解释。两轮都只是模型模拟，不算真人读者验收。
+
+补审提交 `5e02630` 经 [PR #154](https://github.com/Gyschuaner/VibePolaris/pull/154) 合入 `dev`，merge `c686d050437a5a6dbf665cc9a379b1e7564a838c`；与同期 VBP-047 PR #153 的最新 dev 合并后重新 `npm run build`，编译、TypeScript、117/117 静态页通过，`git diff --check` 通过。真实浏览器在补审构建和本机 dev 3219 上核对全文、首图终态与两个实例：咖啡 2→3 时门票仍 0，步长改 5 不清空，门票加到 5 后单独重置仍保留咖啡 3；390×844 下 `clientWidth`/`scrollWidth` 均为 390，首图、正文和演示可读。第一份书目摘录来自修订段落，回链落在 `#hook-independent`，应用错误日志为空。DP 补审任务 `88bee1b7-69ca-4c6e-8a46-f9d2e6981392` done；用例 `000e8443-5058-4e12-962d-c8d755d458e4` 执行 `f83228c1-5cf4-4838-867b-922a30f3d1b0` passed，计划 `8c0967a3-8d79-4f29-96a7-0e2f2ecf70ba` completed。仅本机 dev 部署 `a9563685-c1bb-483a-a496-340f407fdce1` 已回查，前一版本构建备份 `/tmp/vbp012-dev-next-613ec39`；未部署远端 dev 或生产。VBP-015 仍 testing，VBP-012 仍 in_development（版本 51）；技术集成 32/105、完整内容审读 18/105，下一条 Effect。
+
 ## 19 · effect
 
 读者入口：“界面已经切到天气，为什么音乐消息还会进来？组件没有离开页面，旧订阅也需要清理吗？”已有正文和主演示用浏览器内真实消息源展示 `useEffect` 订阅、清理、依赖变化、关闭与重开；保留这个可操作机制。原首图是旋钮从音乐转向天气后几乎同时显露两端，无法看出旧连接先结束。此轮改为两路来源到固定接收器的弯曲路径：音乐的路径完整收回，然后天气的路径接通。它展示同步关系的先后，不把动画当成 React 的执行记录；真实次序仍由主演示的订阅记录验证。
