@@ -47,7 +47,7 @@ export function LlmTermPage() {
 export function TokenTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tokenSources} />;
   return <ConceptArticle slug="token" title="Token" subtitle="词元" sources={tokenSources}
-    hero={<ConceptHero slug="token" label="lower 被分为 low 与 er，再对应到编号 1 与 2"><div className={styles.tokenHero}><div><strong>low</strong><span>01</span></div><div><strong>er</strong><span>02</span></div></div></ConceptHero>}
+    hero={<ConceptHero slug="token" label="lower 沿 low 与 er 的分界拆开，两段分别对应编号 1 与 2"><div className={styles.tokenHero}><div className={styles.tokenPieces}><span>low<small>1</small></span><span>er<small>2</small></span></div></div></ConceptHero>}
     sections={[["pieces", "文字与编号"], ["vocabulary", "边界由词表决定"], ["decode", "从编号回到文字"], ["budget", "按分词器核算请求"]]}
     intro={<>Token 是语言模型处理序列时使用的单位。文本先经过分词器，变成一串编号；<strong>一个 Token 可能对应一个词、词的一部分，或更小的片段。</strong></>}>
     <ArticleSection id="pieces" title="文字与编号">
@@ -61,7 +61,7 @@ export function TokenTermPage() {
       <p id="token-boundaries" className="vp-citation-target">按完整单词切分，遇到不常见的词可能无从表示；按字符切分，序列又容易变长。子词方法在这两者之间取舍，让常见片段可以合在一起，其他内容拆成更小的单位。<strong>所以字数、单词数和 Token 数并不是同一个数。</strong><Cite id="token-boundaries" /></p>
       <dl className={styles.pairDefinition}><div><dt>Token</dt><dd>切分后得到的一个单位，以及它在词表中的编号。</dd></div><div><dt>分词器</dt><dd>负责切分和编号转换的程序；它的词表与规则会影响结果。</dd></div></dl>
       <p id="token-vocabulary" className="vp-citation-target">BPE 是一种常见方法：训练分词器时，逐步合并经常相邻出现的片段；处理新文本时，再按学到的合并规则切分。字节级 BPE 从字节出发，因此显示成一个字符的内容也可能涉及多个单位。分词器的训练与语言模型本身的训练是不同环节。<Cite id="token-vocabulary" /></p>
-      <p>这也解释了为什么换模型时不能照搬旧的计数。词表和切分规则可能不同；空格、标点、代码里的符号也可能影响边界。想知道一份材料实际占多少，应使用目标模型对应的分词器。</p>
+      <p id="token-model-count" className="vp-citation-target">即使原文不变，换用的分词器或词表不同，边界和编号也可能改变。OpenAI 的 tiktoken 就提供了按模型选择编码的接口。想知道一份材料实际占多少，应使用目标模型对应的分词器，把空格、标点和代码符号也连同原文一起输入。<Cite id="token-model-count" /></p>
     </ArticleSection>
     <ArticleSection id="decode" title="从编号回到文字" className={styles.offset}>
       <p id="token-decoding" className="vp-citation-target">解码按词表把编号转换回可显示的文字。Hugging Face 的课程特别提醒，解码也需要处理空格和子词连接方式，并非简单地在每个片段之间插入空格。真实分词器还可能涉及规范化或特殊标记，不能一概假设所有输入都逐字节原样返回。<Cite id="token-decoding" /></p>

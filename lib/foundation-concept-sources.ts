@@ -10,6 +10,7 @@ export const tokenSources = [
   { publisher: "Hugging Face · LLM Course", title: "Tokenizers", date: "", url: "https://huggingface.co/learn/llm-course/en/chapter2/4", citations: ["token-encoding", "token-boundaries", "token-decoding"] },
   { publisher: "Hugging Face · LLM Course", title: "Byte-Pair Encoding tokenization", date: "", url: "https://huggingface.co/learn/llm-course/en/chapter6/5", citations: ["token-vocabulary", "token-decoding"] },
   { publisher: "Anthropic · Claude Docs", title: "Token counting", date: "", url: "https://platform.claude.com/docs/en/build-with-claude/token-counting", citations: ["token-counting"] },
+  { publisher: "OpenAI · tiktoken", title: "tiktoken", date: "", url: "https://github.com/openai/tiktoken", citations: ["token-model-count"] },
 ];
 
 export const agentSources = [
