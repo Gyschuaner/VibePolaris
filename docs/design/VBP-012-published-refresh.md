@@ -25,8 +25,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 11 token | 文本按编码单位计数 | lower 先作为整体出现，沿 low/er 分界打开后各显编号 | 本地与 dev 集成完成 · PR #114 |
 | 12 agent | 目标驱动选择行动 | 同一找空档目标分出有空档与无空档两条结果，下一步分别是草稿与询问 | 本地与 dev 集成完成 · PR #115 |
 | 13 component | 可复用的界面组成 | 头像、姓名和关注位聚成 MemberCard 结构；MemberList 依次显出三个实例 | 本地与 dev 集成完成 · PR #116 |
-| 14 props | 外部给组件的输入 | 调用处的 label、tone 依次改变，同一 ActionButton 原位改字、变色 | 本地验收完成 · 待 dev 集成 |
-| 15 state | 记住变化并更新界面 | 同一计数器内部数值带动可见数量 | 待更新 |
+| 14 props | 外部给组件的输入 | 调用处的 label、tone 依次改变，同一 ActionButton 原位改字、变色 | 本地与 dev 集成完成 · PR #117 |
+| 15 state | 记住变化并更新界面 | 一张笔记卡内的 text、status 先变，卡面与按钮随后原位更新；等待时无回执 | 本地验收完成 · 待 dev 集成 |
 | 16 event | 操作触发处理 | 点击真实控件，局部触点引发一次响应 | 待更新 |
 | 17 event-bubbling | 父子层级传播 | 嵌套轮廓逐层响应，中途停止后外层静止 | 待更新 |
 | 18 hook | 组件使用 React 能力 | 渲染与状态槽对齐；保持调用次序 | 待更新 |
@@ -361,6 +361,20 @@ ZCode：通过本机 `zcode.cjs app-server` CLI 建立只读 inspiration 会话 
 资料：实际阅读 React 官方 [Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component)（父级传入任意 JavaScript 值、接收方只读、后续可更新）、[Responding to Events](https://react.dev/learn/responding-to-events)（传函数作回调，而非渲染时调用）、[Sharing State Between Components](https://react.dev/learn/sharing-state-between-components)（共同父级持有共享状态），以及 [WHATWG HTML Standard 的 disabled 规则](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute)（禁用控件阻止用户交互队列中的 click 事件派发）。新增第四份引文只支撑本例把 disabled 交给原生 button 后的浏览器行为；正文仍区分这个例子与任意自定义组件的实现。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页生成通过。真实浏览器桌面与 390×844 看见两次输入依次改变同一个按钮，移动端文档宽与 scrollWidth 都是 390。主演示中改 label、切 quiet、点击、禁用、重置和键盘 Enter 均按预期；清空文字显示本例约定的“按钮”。第四份书目展开后摘录和正文一致，回跳动画稳定后落在 `#props-disabled` 约 130px；旧锚点仍在，浏览器应用错误为空。没有真人零基础读者观察。VBP-014 用例 `fa210b8c-4b60-4675-bd0f-aff1f8d2793a`，本地计划 `0c2de643-dc19-499c-838d-ca966d9ef58e` completed、执行 `a2121341-3ae8-41f4-9a9a-a39283b27991` passed。
+
+2026-09-29 集成：提交 `8bd8ce8` 经 [PR #117](https://github.com/Gyschuaner/VibePolaris/pull/117) 合入 `dev`，merge `4e2e7b25ab100fcb7699fed863d9264a2bc56f61`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/props` 在真实浏览器复核同一按钮、输入回调与第四份来源，应用错误为空。DP 部署 `b0d7e93f-b9d6-4966-9c4a-924e69e49c1e` 已回查；前一版 `bc6fce2` 构建备份在 `/tmp/vbp012-dev-next-bc6fce2`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 14/105、版本 23；下一条 state。
+
+## 15 · state
+
+读者入口：“笔记里刚输入的文字为什么下一次画面还在？按保存以后，界面为什么先显示等待，而不是直接给成功回执？”现页正文和主演示已有可编辑笔记、四个互斥状态、失败重试、成功回执、快照与派生值的解释；首图却是一张纸页，过几秒自动飞入“已保存”，没有操作和等待，容易把界面状态误当成已经持久保存。此轮保留正文主线与主演示，只改首图及一处衔接句。
+
+视觉候选：① 笔记卡内嵌两枚记忆读数 `text`、`status`，值先改变，卡面与按钮随后原位更新；采用。主助手把 ZCode 提议的自动成功收尾改为停在 `pending`，因为首图没有真实或模拟的响应动作，不能自行出现“已保存”。② 独立的机械翻牌计数器直观，但与整页会议笔记脱节，也易把状态窄化为数字，不采用。③ 四态刻度盘能表明互斥，却容易被看作下载进度或用户拨动选择状态，并漏掉文字内容，不采用。最终图只有一张卡：初始空笔记、按钮未就绪；`text` 记入“首页导航”后卡面显出文字、按钮可用；保存动作压下按钮，`status` 从 idle 到 pending，按钮显示“保存中”，不显示结果。它与 Component 的结构聚合/多个实例、Props 的外部两路输入牵线，主体与空间关系不同。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_699fe564-84b5-41f9-99d3-c115ca7660f1`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill。主助手提供经核实的 React 原文要点、现状和相邻页面的准确描述；ZCode 给出内嵌记忆标签、机械翻牌、四态刻度盘三案，建议首案。主助手采用值与卡面先后更新的构图，舍弃它建议的无响应动作却自动出现成功态；模型未看源码或实际页面，视觉效果由真实浏览器核对。
+
+资料：实际阅读 React 官方 [State: A Component’s Memory](https://react.dev/learn/state-a-components-memory)（普通局部变量既不保留跨渲染值，也不触发新渲染；`useState` 提供这两项）、[State as a Snapshot](https://react.dev/learn/state-as-a-snapshot)（设置状态请求新渲染，不改写当前事件处理函数已经读到的快照）、[Choosing the State Structure](https://react.dev/learn/choosing-the-state-structure)（避免矛盾状态和重复存储可推导值）与 [Sharing State Between Components](https://react.dev/learn/sharing-state-between-components)（共同父级持有需协同的状态）。原正文引文映射足以覆盖这些论断，无须新增书目。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器在桌面看到首图空笔记→内部 `text` 更新→卡面出现文字→内部 `status` 进入 pending→按钮变“保存中”，终态没有成功回执；390×844 卡片完整，clientWidth/scrollWidth 均为 390。主演示编辑后等待时输入与保存禁用，返回失败保留文字并能重试，成功后新编辑使旧成功结果失效；空输入不可提交、重置恢复，键盘 Enter 可保存。旧锚点存在，第3份书目的摘录与正文一致、回跳可见，应用错误日志为空。VBP-014 用例 `7ca9c4a8-8e2d-4658-8521-ca8f0c67814e`，本地计划 `473bf6f6-17a2-489c-b9d4-a8afc3adbe0a` completed、执行 `290a2667-e565-4e20-9e82-a259a83dc61f` passed。没有真人零基础读者观察。
 
 ## 01 · Harness
 

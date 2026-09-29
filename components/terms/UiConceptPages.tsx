@@ -1,4 +1,4 @@
-import { ArrowElbowDownRight, Check, Code, CursorClick, FileText, PaperPlaneTilt, SlidersHorizontal, Stack, UserCircle } from "@phosphor-icons/react/dist/ssr";
+import { ArrowElbowDownRight, Code, CursorClick, FileText, PaperPlaneTilt, SlidersHorizontal, Stack, UserCircle } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleCitation, ArticleAside, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { ComponentLesson, PropsLesson, StateLesson } from "./UiConceptLessons";
@@ -96,7 +96,12 @@ export function StateTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={stateSources} />;
   return <ConceptArticle slug="state" title="状态" sources={stateSources}
     sections={[["memory", "界面需要记住的数据"], ["saving", "一次保存的变化"], ["snapshot", "更新与本次渲染"], ["structure", "只保存必要的数据"]]}
-    hero={<ConceptHero slug="state" label="编辑中的笔记收到成功结果后，出现保存回执"><div className={styles.stateHero}><div className={styles.heroDraft}><FileText size={25} /><i /><i /><i /></div><div className={styles.heroReceipt}><Check size={24} /><span>已保存</span></div></div></ConceptHero>}
+    hero={<ConceptHero slug="state" label="笔记先记住输入，界面显示新文字；保存后状态变为等待，按钮显示保存中，不提前出现成功回执"><div className={styles.stateHero}><div className={styles.stateCard}>
+      <div className={styles.stateCardTitle}><FileText size={18} /><span>会议笔记</span></div>
+      <div className={styles.stateNote}><span className={styles.statePlaceholder}>写一条笔记…</span><span className={styles.stateWritten}>首页导航</span></div>
+      <div className={styles.stateSave}><span>保存草稿</span><span>保存中</span></div>
+      <div className={styles.stateMemory}><div><code>text</code><span className={styles.stateTextOld}>&quot;&quot;</span><span className={styles.stateTextNew}>&quot;首页导航&quot;</span></div><div><code>status</code><span className={styles.stateStatusOld}>idle</span><span className={styles.stateStatusNew}>pending</span></div></div>
+    </div></div></ConceptHero>}
     intro={<>状态记录此刻影响界面和行为的数据。输入了什么、是否正在保存、请求有没有失败，都可以属于状态。<strong>事件改变数据，界面再按新值呈现。</strong></>}
     relatedIntro={<>一个 <ConceptTerm slug="event">事件</ConceptTerm> 可以触发状态更新，<ConceptTerm slug="component">组件</ConceptTerm> 负责呈现结果，而清楚的反馈让用户知道操作到了哪一步。</>}>
     <ArticleSection id="memory" title="界面需要记住的数据">
@@ -106,7 +111,7 @@ export function StateTermPage() {
       <p>这里至少有两类数据：笔记内容 text，以及保存进度 status。按钮上的“保存中”由 status 推导，不需要另存一份文字状态。</p>
     </ArticleSection>
     <ArticleSection id="saving" title="一次保存的变化">
-      <p>试着改写笔记，再保存。为了让等待过程可观察，本例由你点击“返回成功”或“返回失败”来模拟响应，不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>
+      <p>首图停在等待，结果还没回来。下面试着改写笔记，再保存。为了让等待过程可观察，本例由你点击“返回成功”或“返回失败”来模拟响应，不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>
       <Anchors ids={["state-scene-heading"]} /><StateLesson />
       <p>等待期间，文字暂时不可编辑，保存按钮也不能再点。失败后，输入仍在；成功后，回执显示这次保存的内容。再次编辑时，“已保存”会失效，因为新文字还没有完成新一轮保存。</p>
       <dl className={styles.stateRules}><dt>idle</dt><dd>可以编辑；内容不为空时可以发起保存。</dd><dt>pending</dt><dd>已经发起，仍在等待结果。</dd><dt>error</dt><dd>这次保存失败，保留输入以便重试。</dd><dt>success</dt><dd>这次内容已得到成功响应。</dd></dl>
