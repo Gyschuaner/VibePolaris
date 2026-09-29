@@ -1,4 +1,4 @@
-import { CalendarBlank, Check, Clock, Copy } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, CalendarBlank, Check, Clock, Copy } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleAside, ArticleCitation, ArticleSection, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { TimeoutLesson, RetryLesson, IdempotencyLesson } from "./ReliabilityConceptLessons";
@@ -81,32 +81,37 @@ export function RetryTermPage() {
 export function IdempotencyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={idempotencySources} />;
   return <ConceptArticle slug="idempotency" title="幂等性" sources={idempotencySources}
-    sections={[["effect", "重复操作的效果"], ["ledger", "给同一次意图一个编号"], ["scope", "键的范围与期限"], ["concurrency", "请求同时到达时"]]}
-    intro={<>一次预约已经建立，确认消息却丢了。用户再次提交时，系统需要认出这是上次那件事，才能把原预约交回来，而不是又建立一条。</>}
-    hero={<ConceptHero slug="idempotency" label="两次带A键的请求对应同一张42号预约"><div className={s.idemHero}><div><span><Copy size={18} />key A</span><span><Copy size={18} />key A</span></div><div className={s.heroTicket}><CalendarBlank size={30} weight="light" /><strong>#42</strong><span>一条预约</span></div></div></ConceptHero>}>
-    <ArticleSection id="effect" title="重复操作的效果">
+    sections={[["effect", "重复后，业务结果会变吗"], ["ledger", "给同一次申请留个编号"], ["scope", "键在哪儿、能用多久"], ["concurrency", "两份请求同时到达时"]]}
+    intro={<>预约页面提交了创建申请，却没有收到确认。预约可能已经建立，也可能根本没送到。要不要再提交一次？如果服务能认出这是同一份申请，重发才不会多建一条。</>}
+    hero={<ConceptHero slug="idempotency" label="第一次以A键申请14点预约，服务端账本记下A对应42号预约；首次回信丢失，再用同键同内容提交，仍得到42号，账本只有一条预约"><div className={s.idemHero}><div className={s.idemRequests}><span className={s.idemFirst}><Copy size={16} />A · 14:00<ArrowRight size={15} /></span><small className={s.idemLost}>第一次回信丢失</small><span className={s.idemSecond}><Copy size={16} />A · 14:00<ArrowRight size={15} /></span><small className={s.idemReturned}>收到 #42</small></div><div className={s.idemLedger}><span>服务端账本</span><div className={s.idemEntry}><CalendarBlank size={21} weight="light" /><code>A · 14:00</code><strong>#42</strong></div><small>预约 1 条</small></div></div></ConceptHero>}>
+    <ArticleSection id="effect" title="重复后，业务结果会变吗">
       <Legacy slug="idempotency" names={["question", "definition"]} />
-      <p id="idempotency-effect" className="vp-citation-target"><strong>幂等性关心：相同请求重复执行，预期的服务端效果是否与一次相同。</strong>HTTP 中的 PUT、DELETE 和安全方法具有幂等语义。服务仍可以记录每次请求的日志，这些附带记录不意味着业务操作不幂等。<Cite id="idempotency-effect" /></p>
-      <div className={s.effectPair}><div><code>把人数设为 2</code><strong>2 → 2 → 2</strong><p>重复设置，目标值不变。</p></div><div><code>人数增加 2</code><strong>0 → 2 → 4</strong><p>重复增加，效果累积。</p></div></div>
-      <p>创建预约默认更接近第二种：每调用一次就可能新建一条。要安全处理重试，需要给“同一次创建意图”稳定的身份，并让服务按这个身份协调处理。前端暂时禁用提交按钮，只能减少误点，不能处理网络重发。</p>
+      <p id="idempotency-effect" className="vp-citation-target"><strong>幂等性看的是预期的业务效果：同一操作做两次或更多次，效果仍和做一次一样。</strong>它不表示请求只发出一次。提供预约功能的服务可以分别记录每次到来的请求；只要服务按这项预约接口的规则只建一条，额外日志不改变这里讨论的业务结果。HTTP 规范也用“预期效果”界定幂等，而不要求每次回信完全一样。<Cite id="idempotency-effect" /></p>
+      <p>先不谈网络。假设一份预约当前是 0 人：“把人数<strong>设为</strong> 2”和“让人数<strong>增加</strong> 2”第一次做都得到 2，第二次的结果却不同。</p>
+      <div className={s.effectPair}><div><code>把人数设为 2</code><strong>0 → 2 → 2</strong><p>第二次仍设成 2。</p></div><div><code>人数增加 2</code><strong>0 → 2 → 4</strong><p>第二次又增加 2。</p></div></div>
+      <p>创建预约通常像后一种：每做一次，就可能多一条。页面暂时禁用提交按钮能减少误点，却挡不住连接中断后的自动重发，或者用户重新打开页面再提交。服务要识别“还是刚才那一份申请”，才有办法只创建一次。</p>
+      <ArticleAside title="HTTP 方法里的幂等语义"><p id="idempotency-methods" className="vp-citation-target">HTTP 规范把读取用的安全方法，以及 <code>PUT</code>、<code>DELETE</code> 列为幂等方法。这里说的是规范对这些方法的约定；某个接口是否真的照做，还要看它实际怎样处理请求。创建预约常用的 <code>POST</code> 不能仅凭方法名就当成可安全重发。<Cite id="idempotency-methods" /></p></ArticleAside>
     </ArticleSection>
-    <ArticleSection id="ledger" title="给同一次意图一个编号">
+    <ArticleSection id="ledger" title="给同一次申请留个编号">
       <Legacy slug="idempotency" names={["scene-heading"]} />
-      <p id="idempotency-key" className="vp-citation-target">一种做法是幂等键：客户端为这次操作生成键，重发时继续使用它。以 Stripe 为例，服务会保存首次开始执行后的状态码和响应体，同键请求复用结果；同键却传不同参数，会被判为错误。<Cite id="idempotency-key" /></p>
-      <p>这个本地实验把预约与键保存在右侧账本。第一次创建后故意丢失响应。继续用 A 提交、把时间换掉，或改用新键 B，看看预约数量和回执怎样变化。</p>
+      <p id="idempotency-key" className="vp-citation-target">一种办法是<strong>幂等键</strong>：发请求的页面或应用在首次提交前给这份申请生成一个独有编号，并保存下来；如果没收到确认，重发时继续带着<strong>同一键和同一内容</strong>。服务把键与处理结果对应起来。Stripe 的接口会核对重发的参数，也就是时段等提交内容；同键却改了参数，它会报错，避免把另一份申请误认成原申请。<Cite id="idempotency-key" /></p>
+      <p>下面把键简写成 A，时段定为 14:00。第一次提交后，服务建立 #42 并记下“A、14:00 对应 #42”，但这次回信在途中丢了。页面不知道结果，于是再用 A 和 14:00 提交。服务查到已保存的对应关系，交回 #42，预约仍只有一条。现实中键通常由应用管理，用户不用亲手抄写；本地实验才把 A 和 B 做成可选项，让你看到换键的后果。右侧账本代表服务内部保存的记录，真实预约页面不一定看得到它。</p>
       <IdempotencyLesson />
-      <p>同键同参数返回 #42，不新增预约。换成 B 表示另一份创建意图，即使时段一样，也会得到 #43。<strong>幂等去重与“同一时段能不能订两次”是两条业务规则。</strong>本例允许重复时段，用来单独观察幂等键的作用。</p>
+      <p>在本地实验里，保持键 A、只把时段改成 16:00，服务不会悄悄沿用 #42，也不会再建一条：它拒绝这份参数不一致的请求。这不是替原预约改时段。改用 B、仍选 14:00，本例会建 #43，因为 B 表示另一份申请。<strong>同一时段能否订两次是另一条业务规则。</strong>本地实验允许两个相同时段，只为看清幂等键的作用；真实预约系统可能另行拒绝。</p>
     </ArticleSection>
-    <ArticleSection id="scope" title="键的范围与期限" className={base.offset}>
-      <p>键要跟随业务意图保存，不能每次重发都重新生成，也不能让不同意图共用同一个键。设计接口时还要写清：在哪个调用方和操作范围内识别这个键，重启后记录是否仍在，多久之后不再保证去重。</p>
-      <p id="idempotency-retention" className="vp-citation-target">Stripe 的记录在至少 24 小时后可以清理；清理后再用旧键会产生新请求。它还可能复用失败结果，包括 500。<strong>“继续用同一个键”不保证这次会成功。</strong>这些是 Stripe 的具体约定，不是所有服务共有的固定期限或错误策略。<Cite id="idempotency-retention" /></p>
-      <p id="idempotency-response" className="vp-citation-target">幂等也不要求每次响应字节完全相同。例如重复删除同一个资源，只要没有重复增加预期业务效果，后一次响应可以和前一次不同。不能只比较响应文本来判定是否幂等。<Cite id="idempotency-response" /></p>
+    <ArticleSection id="scope" title="键在哪儿、能用多久" className={base.offset}>
+      <p id="idempotency-unique" className="vp-citation-target">服务不一定永久保存每一枚键。应用得为另一份申请生成新键，又得在同一申请需要重发时找回原键。这里的 A、B 只是为了让实验容易看懂；实际使用时得选足够独特的键，不能让每位用户都提交字母 A。还要看服务在哪些请求中承认这枚键，以及保存多久。<Cite id="idempotency-unique" /></p>
+      <p id="idempotency-scope" className="vp-citation-target">范围由接口决定。AWS EC2 的某些创建操作用一枚“客户端令牌”识别重发；同一令牌在不同部署地区，或同一地区的不同可用区，可能分别生效。可用区是 EC2 在同一地区内划分部署位置的方式。一枚键只在服务承诺的范围内防重，不能假设它走到哪里都有效。<Cite id="idempotency-scope" /></p>
+      <p id="idempotency-retention" className="vp-citation-target">保存期限也由服务决定。Stripe 的键记录至少满 24 小时后可以清理；清理后再用旧键会被当作新请求。Stripe 会把首次开始处理后的结果再次返回，连表示服务出错的 <code>500</code> 回信也可能重复。<strong>同键可防止重复创建，却不保证这次回信成功。</strong>这些都是 Stripe 的具体规则，不是所有服务共有的期限或错误处理。<Cite id="idempotency-retention" /></p>
+      <p id="idempotency-response" className="vp-citation-target">幂等也不要求每次回信一字不差。HTTP 规范允许重复调用返回不同响应；判断重点仍是预期效果有没有重复累积。<Cite id="idempotency-response" /></p>
+      <p id="idempotency-current" className="vp-citation-target">不同服务会作不同选择：Stripe 保存首次请求的状态码和响应体；PayPal 的示例会返回之前那次请求的<strong>当前状态</strong>；AWS EC2 的重复创建回信也可能带上更新后的资源状态。读到“幂等”时，要看接口具体承诺了什么，不能把本页的“再得 #42”理解为所有回信都要完全一样。<Cite id="idempotency-current" /></p>
     </ArticleSection>
-    <ArticleSection id="concurrency" title="请求同时到达时">
+    <ArticleSection id="concurrency" title="两份请求同时到达时">
       <Legacy slug="idempotency" names={["quiz-heading", "prompt-heading"]} />
-      <p>实验按顺序处理请求，真实服务可能同时收到两份 A。如果它们都先查到“没有记录”，再分别创建预约，就仍会重复。记录占位、业务写入与结果保存需要协调，不能只在成功之后补一行键。</p>
-      <ArticleAside title="幂等与事务的分工"><p><ConceptTerm slug="transaction">事务</ConceptTerm>可以帮助一组数据库操作一起提交或回滚；幂等性回答的是重复调用的业务效果。如果操作还跨越外部服务，一次本地数据库事务不能包住所有效果，需要再约定各段的身份、失败恢复与查询方式。本例没有模拟并发、崩溃或跨服务事务，不把顺序去重当作生产实现。</p></ArticleAside>
-      <p>回到最初的超时：有稳定的键和明确的服务约定，调用方才知道怎样重发；有可查询的业务状态，调用方才有办法核实未收到的结果。<ConceptTerm slug="retry">重试</ConceptTerm>负责再次尝试，幂等性使重复尝试不额外累积约定的业务效果。</p>
+      <p id="idempotency-atomic" className="vp-citation-target">本地实验按顺序处理，真实服务可能同时收到两份带键 A 的请求。倘若两份请求都先看到“还没有 A 的记录”，接着各建一条，幂等键就失效了。服务必须把占住这枚键、创建预约、保存结果这几步协调好：不能已经建了 #42 却漏记 A，也不能记了 A 却没完成对应的创建。AWS 这篇文章的作者把这种协调列为服务端实现幂等的必要条件。<Cite id="idempotency-atomic" /></p>
+      <p id="idempotency-concurrent" className="vp-citation-target">所以，同键同时到达也不保证两边马上都拿到 #42。PayPal 把这枚键称为请求 ID；它的接口说明中，先来的请求会被处理，另一份同时到达的同 ID 请求<strong>可能失败</strong>，而且并非所有 PayPal API 都支持这个请求 ID。遇到这种情况要按具体接口约定查询或重试，不能仅凭键相同就宣称两份都成功。<Cite id="idempotency-concurrent" /></p>
+      <ArticleAside title="幂等与事务的分工"><p><ConceptTerm slug="transaction">事务</ConceptTerm>帮助一组数据库操作一起提交或回滚；幂等性管的是重复调用会不会重复产生业务效果。如果操作还跨越外部服务，一次本地数据库事务包不住所有效果，还得为每一段另外约定：怎么认出同一笔操作、失败后怎么恢复、去哪里查结果。本例没有模拟并发、崩溃或跨服务事务；实验里按顺序去重的做法不能直接当成生产实现。</p></ArticleAside>
+      <p>回到开头的预约：在服务承诺的范围和期限内，保持同一个键和同一份内容，同一创建申请才不会重复产生业务效果；但幂等仍不保证请求一定成功。若服务没给这种保证，应先查预约记录或联系服务方核对。想改时段也不等于重发原申请：先确认原预约是否存在，再用服务提供的修改或取消办法。换成付款后没收到回信，也不能为了“再试一次”生成一枚新键。<ConceptTerm slug="retry">重试</ConceptTerm>决定是否再发；幂等性约束再发后的业务效果。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
