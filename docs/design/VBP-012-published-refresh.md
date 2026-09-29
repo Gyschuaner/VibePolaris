@@ -416,6 +416,14 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_699fe5
 
 2026-09-29 集成：提交 `beb9cc0` 经 [PR #118](https://github.com/Gyschuaner/VibePolaris/pull/118) 合入 `dev`，merge `4e6796676a00b86723e877861cd6d6e26044f469`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/state` 在真实浏览器核对首图、旧锚点、四份来源及等待时无成功回执，应用错误为空。DP 部署 `bb09598a-56d1-4a59-a605-c652dd096bdc` 已回查；前一版 `4e2e7b2` 构建备份在 `/tmp/vbp012-dev-next-4e2e7b2`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。VBP-014 的三条用例都已通过，子需求转 `ready_for_release`（版本 6），并非已经发布。DP VBP-012 描述更新至 15/105、版本 24；下一条 event。
 
+2026-09-29 Skill 自查后的逐条内容补审（本地）：读者编辑会议笔记时，需要判断什么值由界面记住，什么显示可以依已有值计算，以及“画面还在”是否等于已保存。没有 React 的状态接口也可自行存值并逐处改页面，但需自己协调输入框、按钮与回执。重新实际打开四份 React 原始资料：[State: A Component’s Memory](https://react.dev/learn/state-a-components-memory) 支撑 `useState` 与普通变量的区别；[Choosing the State Structure](https://react.dev/learn/choosing-the-state-structure) 支撑互斥阶段和可推导值；[State as a Snapshot](https://react.dev/learn/state-as-a-snapshot) 支撑一次点击内读到旧值和下一次渲染；[Sharing State Between Components](https://react.dev/learn/sharing-state-between-components) 支撑最近共同父组件持有并通过 Props 传值。四份书目仍对应六处正文角标；来源日期未见则留空。无动画通读发现原文把组件、渲染、普通变量、快照和父组件作为已知前提，首图与主演示用两条不同初始笔记却没有交代彼此独立，对照卡又漏列回执保留的已确认文字。
+
+ZCode 独立只读 reader 会话 `sess_d1deb85c-c82c-4e8c-8504-1f33d4843ce8` 实际读取 partner Skill 和当前整篇读者可见文字材料；首图与演示按真实浏览器操作配对提供，未给源码、研究资料或作者判断。模型能用文中依据判断购物车数量要记、总价可由数量与单价计算，并指出上述三个理解断点。主助手采纳后在首次出现处解释组件、渲染、普通变量；明确首图与主演示互不共享进度；用“保存草稿”同一次点击解释快照；让已确认文字进入“需要记住”对照卡，并用具体输入框与保存按钮说明状态如何变为子组件 Props。它对旧响应版本、其他入口重复请求与渲染局部更新的进一步追问属于进阶兴趣，本页保留必要边界，不展开实现细节。模型只读文字材料，非真人读者或实际页面试用。
+
+独立 language 会话 `sess_fe5a2ddd-91de-48ab-9779-6e310dd15fb9` 实际读取 partner、humanizer-zh 与当前 `StateTermPage`，只检查具体用语；采纳“组件函数每次渲染重新执行”的缺失前提、`pending` 在“等待”首现处对齐、旧回执的实际隐藏行为、四态只有一个当前值、迟到响应所对应的旧版文字、输入框称呼及可推导值的完整句子。它指出“返回成功/返回失败”可能被读成返回上一页；主助手核对主演示按钮原文后，将按钮和正文统一改为“模拟成功/模拟失败”。其事实疑点逐一核对：继续编辑确实使 `status` 回到 idle 并隐藏旧回执；`canSave` 只在非空且非 pending/success 时为真。复核时另发现初稿“输入框和回执共用同一份文字”会混淆当前草稿与已确认文字，改为输入框和保存按钮共用 `status`。两次审读均是模型模拟，不计真人验收。
+
+原有一张笔记卡内 `text`、`status` 先后变化的首图和可操作保存演示准确表达 State，三个视觉候选及与 Component、Props 的形式比较仍成立；本轮只改正文和模拟响应按钮称呼，未改状态转换。`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。`http://localhost:3220/terms/state` 真实浏览器检查新版正文与按钮：保存进入 pending 且输入禁用，模拟失败保留文字并可重试，模拟成功显示原文回执，随后编辑使按钮恢复并隐藏旧回执；错误日志为空。390×844 视口文字与演示保持可读，`clientWidth`/`scrollWidth` 都是 390。旧锚点、引用与原动画逻辑未改，不扩大整站回归。DP VBP-014 补审任务 `99426ab3-2388-4337-8cc0-b128b503c441` in_progress，需求仍 testing；dev 集成另记。
+
 ## 16 · event
 
 读者入口：“按网页电源按钮，是 click 让灯亮，还是代码让灯亮？断开开灯监听之后，按钮的点击还算发生过吗？”已有正文与主演示用真实 `addEventListener` 把观察点击和开灯处理分成两个监听器，断开后记录仍加、灯保留上次状态；这部分保留。原首图只有开关缩一下、灯随即亮起，缺少“click 发生”和“特定处理被移除”的区别。此轮仍用阅读灯，但补出两次点击形成分叉的瞬间。
