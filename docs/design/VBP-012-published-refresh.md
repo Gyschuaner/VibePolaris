@@ -30,8 +30,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 16 event | 操作触发处理 | 同一阅读灯两次点击：click 继续计数，断开开灯监听后灯保持上次亮度 | 本地与 dev 集成完成 · PR #119 |
 | 17 event-bubbling | 父子层级传播 | 两组嵌套轮廓对照：一次点击逐层向外，另一次在按钮处停止 | 本地与 dev 集成完成 · PR #120 |
 | 18 hook | 复用逻辑，各有状态 | 两条相同刻度轨道：咖啡 2→3，门票维持 0；单独操作不改另一实例 | 本地与 dev 集成完成 · PR #121 |
-| 19 effect | 与外部系统同步 | 两路消息源与固定接收器；音乐订阅完整收回后，天气订阅才接通 | 本地验收完成 · 待 dev 集成 |
-| 20 browser-api | 浏览器提供能力 | 浏览器外壳中展开对应原生能力和许可边界 | 待更新 |
+| 19 effect | 与外部系统同步 | 两路消息源与固定接收器；音乐订阅完整收回后，天气订阅才接通 | 本地与 dev 集成完成 · PR #122 |
+| 20 browser-api | 浏览器提供能力 | 浏览器内的区域变宽、测量括号显现，JS 随后收到内容宽度 | 本地验收完成 · 待 dev 集成 |
 | 21 fetch-api | 发请求并读取响应 | 时间线上分开响应头到达与内容读取 | 待更新 |
 | 22 promise | 尚未完成的结果 | 一个待定容器只落入成功或失败的一个终态 | 待更新 |
 | 23 async-await | 当前流程等待 | 并行时间轨迹；当前轨道停驻，其他轨道前进 | 待更新 |
@@ -431,6 +431,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_b26f45
 资料：实际阅读 React 官方 [Synchronizing with Effects](https://react.dev/learn/synchronizing-with-effects)（渲染、事件和外部同步的分工）、[useEffect](https://react.dev/reference/react/useEffect)（新设置前运行旧清理、依赖变化及开发模式额外执行）、[You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)（可计算值与事件处理通常不需要 Effect）以及 [Lifecycle of Reactive Effects](https://react.dev/learn/lifecycle-of-reactive-effects)（组件仍在时旧连接也可结束）。新增第 4 份引文并映射 `effect-lifecycle`，明确旧订阅结束不等于组件卸载。正文其余引文沿用既有编号。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器逐帧观察首图：音乐线收回至零后，天气线才开始显现；桌面和 390×844 的构图完整，移动端文档宽与 scrollWidth 均为 390，主演示宽 342、左右留白 24。主演示先播报音乐得到计数 1，切天气后的实际记录为“订阅音乐→取消音乐→订阅天气”；再播报音乐计数不变，播报天气变 2。关闭接收后记录取消天气，双频道播报都不增加计数；重开只重新订阅天气、不补发离线消息，新播报可接收；重置回音乐/0，Enter 可触发播报。新增第 4 份书目展开、摘录和 `#effect-lifecycle` 回链正确；应用错误日志为空。VBP-015 用例 `68ea1183-18e0-44c4-984b-3b5515134060`，本地计划 `67312d13-f6be-47ff-9828-3e3fead50c51` completed、执行 `a8bfb0df-cdcd-4fc1-ab33-156ab026bc42` passed。没有真人零基础读者观察。
+
+2026-09-29 集成：提交 `677ddaa` 经 [PR #122](https://github.com/Gyschuaner/VibePolaris/pull/122) 合入 `dev`，merge `6c81f16f77358082137121dffac0de3cc9e8db85`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/effect` 在真实浏览器复核新增首图、四份来源和旧频道取消后不再收消息，应用错误为空。DP 部署 `d1852506-25b7-47c8-be24-710ebbeab35c` 已回查；前一版 `d43ae37` 的构建备份在 `/tmp/vbp012-dev-next-d43ae37`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 19/105、版本 28；下一条 browser-api。
+
+## 20 · browser-api
+
+读者入口：“一块页面区域变宽以后，JavaScript 怎么知道现在有多宽？代码自己算出的数为什么不等于浏览器实际布局？”已有正文区分语言、浏览器环境与应用职责，主演示使用真实 ResizeObserver 监听区域的 `contentRect.width`，包含停止、恢复和重置；保留。原首图只是自动拉伸的矩形、旁边刻度与 Ruler 图标，容易被读作普通 CSS 响应式，没有表现测量发生在浏览器一侧、数值交给代码的关系。
+
+视觉候选：① 浏览器域与代码域分隔，数字胶囊越界交付；关系清晰，但分隔墙会暗示网络/沙箱边界，不采用。② 一个简化浏览器窗口内，目标区域变宽、测量括号贴住内容区，读数随后落到下方的 JS 接收行；采用。ZCode 建议更完整的盒模型叠层，主助手删去灰色边框层，避免它像浏览器默认可见的检查器，也避免 234px 高度里文字和双数字拥挤；首图是机制示意，不假称浏览器会自动显示这些括号。③ 卡尺附着、脱离后与继续变宽的元素拉开缝隙，再扣合读取当前值；断开很直观，但重复主演示的停止/恢复情节、首图节奏过满，不采用。最终只演一次测量交付；示意宽度 `200 px` 与页面内真实演示读数是不同场景，不拿首图假数冒充实时测量。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_31fe7294-d0d6-4756-b63f-aea10af5872c`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 和动画灵感参考。主助手提供已经核实的 MDN/W3C 事实、现页和相邻页限制；ZCode 给两域剖面、浏览器测量叠层、卡尺脱离三案并推荐第二案。主助手保留“浏览器内测量→JS 收到”的空间关系，简化可视叠层；ZCode 未看页面或执行浏览器验收。
+
+资料：实际阅读 MDN [Introduction to web APIs](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction)（浏览器 API 与 JavaScript 语言/库/第三方 API 的边界）、[ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)（观察、断开及测量回调）、[Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API)（安全上下文和因浏览器、操作不同而异的权限与用户动作条件），以及 W3C [Resize Observer](https://www.w3.org/TR/resize-observer-1/)（`contentRect` 对应内容盒尺寸）。新增第 4 份引文及 `browser-content-box` 段落；没有把内容宽度、外框宽度、窗口宽度混用，也没有声称所有 API 都要用户批准。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器桌面和 390×844 首图可见浏览器窗口内的区域变宽、测量括号及下方 JS 读数，移动端首图宽 330、主演示宽 342，clientWidth/scrollWidth 均为 390。主演示用键盘把滑块 65% 调到 100%，目标宽与实测读数同为 760px；停止观察后调至 45%，目标变 342px 但读数停在 760px；恢复后直接更新为 342px；重置稳定回 65% 与 494px。五个旧锚点、四份书目在页面，第 4 份 W3C 书目展开的正文摘录与 `#browser-content-box` 回链落点约 130px，应用错误日志为空。未模拟没有 ResizeObserver 的浏览器，也没有真人零基础读者观察。VBP-015 用例 `090ed8c1-a023-4f33-a3bb-795136fb67f9`，本地计划 `1789a40d-6de6-4b6f-b60d-2c04d274a03b` completed、执行 `04e86649-9503-4a69-aed9-3bd0602000d7` passed。
 
 ## 01 · Harness
 
