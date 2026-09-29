@@ -2,8 +2,10 @@ const mdn = (title: string, path: string, citations: string[]) => ({ publisher: 
 export const requestSources = [
   mdn("HTTP messages", "Web/HTTP/Guides/Messages", ["request-message", "request-target", "request-wire"]),
   mdn("Request: Request() constructor", "Web/API/Request/Request", ["request-object"]),
-  mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["request-body-rule"]),
-  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke（编）", title: "RFC 9110 — HTTP Semantics · §3.4", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-3.4", citations: ["request-message"] },
+  mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["request-format", "request-object", "request-body-rule"]),
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke（编）", title: "RFC 9110 — HTTP Semantics · §3.4、§9.3", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-3.4", citations: ["request-message", "request-method"] },
+  mdn("Request: clone() method", "Web/API/Request/clone", ["request-inspect"]),
+  { publisher: "WHATWG", title: "Fetch Standard — Request constructor", date: "", url: "https://fetch.spec.whatwg.org/#dom-request", citations: ["request-body-rule"] },
 ];
 export const responseSources = [
   mdn("HTTP messages", "Web/HTTP/Guides/Messages", ["response-parts"]),
