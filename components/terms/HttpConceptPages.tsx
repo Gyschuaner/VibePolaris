@@ -52,7 +52,11 @@ export function ResponseTermPage() {
   return <ConceptArticle slug="response" title="响应" sources={responseSources}
     intro={<>保存书签后，服务器可能返回新书签，也可能指出书名缺失。响应带回这次请求的结果；页面再根据结果决定显示什么。</>}
     sections={[["receipt", "读懂一份返回结果"], ["project", "把响应用到页面"], ["empty", "没有内容也有结果"], ["handling", "错误留在哪一层"]]}
-    hero={<ConceptHero slug="response" label="201响应提供新资源，页面将它显示为书签"><div className={s.responseHero}><div className={s.heroMessage}><strong>201</strong><code>/bookmarks/42</code></div><div className={s.heroView}><BookOpen size={27} /><span>海边的书店</span></div></div></ConceptHero>}>
+    hero={<ConceptHero slug="response" label="左侧响应保留状态 201 和正文里的书名；客户端处理后，右侧页面新增写着同一书名的书签，响应本身没有变成界面"><div className={s.responseHero}>
+      <div className={s.responseMessage}><span>响应</span><div className={s.responseStatus}><strong>201</strong><small>Created</small></div><div className={s.responsePayload}><small>body</small><code>id: 42</code><code>title: <b>海边的书店</b></code></div></div>
+      <div className={s.responseBridge}><span>客户端</span><i /><small>处理</small></div>
+      <div className={s.responseApp}><span>页面</span><div className={s.responseBookmark}><BookOpen size={23} /><strong>海边的书店</strong></div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="receipt" title="读懂一份返回结果">
       <Legacy slug="response" names={["question", "definition"]} />
       <p id="response-parts" className="vp-citation-target"><strong>响应是服务器针对请求返回的消息，响应体只是其中的内容。</strong><ConceptTerm slug="status-code">状态码</ConceptTerm>概括处理结果，响应头补充类型和位置等信息，响应体再提供资源数据或错误说明。只复制一段 JSON，可能漏掉决定处理方式的部分。<Cite id="response-parts" /></p>
