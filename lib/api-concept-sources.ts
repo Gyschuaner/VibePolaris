@@ -28,4 +28,6 @@ export const paginationSources = [
 export const rateSources = [
   { publisher: "Amazon Web Services", title: "Throttle requests to your REST APIs for better throughput in API Gateway", date: "", url: "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html", citations: ["rate-bucket", "rate-scope", "rate-limits"] },
   { publisher: "IETF · Mark Nottingham、Roy Fielding", title: "RFC 6585 — Additional HTTP Status Codes · §4", date: "2012-04", url: "https://www.rfc-editor.org/rfc/rfc6585.html#section-4", citations: ["rate-response"] },
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke", title: "RFC 9110 — HTTP Semantics · §10.2.3", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-10.2.3", citations: ["rate-retry-wait"] },
+  { publisher: "OpenAI · API 文档", title: "Rate limits", date: "", url: "https://developers.openai.com/api/docs/guides/rate-limits", citations: ["rate-ai"] },
 ];
