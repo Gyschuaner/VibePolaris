@@ -93,40 +93,40 @@ export function HookTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={hookSources} />;
   return <ConceptArticle slug="hook" title="Hook" subtitle="React 中的可复用逻辑" sources={hookSources}
     sections={[["reuse", "把重复的逻辑提取出来"], ["independent", "同一段逻辑，两份状态"], ["rules", "调用位置有规则"], ["effects", "订阅也要负责清理"]]}
-    hero={<ConceptHero slug="hook" label="咖啡和门票分别调用 useCounter；咖啡沿相同计数规则从2走到3，门票停在0"><div className={styles.hookHero}>
+    hero={<ConceptHero slug="hook" label="咖啡和门票分别调用 useCounter；咖啡沿相同计数规则从 2 走到 3，门票停在 0"><div className={styles.hookHero}>
       <code>useCounter()</code>
       <div className={styles.hookTracks}>
         <div className={`${styles.hookTrack} ${styles.hookCoffee}`}><span><Coffee size={18} />咖啡</span><div className={styles.hookTrackBody}><div className={styles.hookTicks}><i /><i /><i /><i /><b className={styles.hookSlider} /></div><strong><b>2</b><b>3</b></strong></div></div>
         <div className={`${styles.hookTrack} ${styles.hookTicket}`}><span><Ticket size={18} />门票</span><div className={styles.hookTrackBody}><div className={styles.hookTicks}><i /><i /><i /><i /><b className={styles.hookSlider} /></div><strong>0</strong></div></div>
       </div>
     </div></ConceptHero>}
-    intro={<>本文的 Hook 指 React Hook：函数组件借助它使用状态、同步外部系统等能力。自定义 Hook 可以组合这些能力，<strong>把一段有状态的逻辑交给不同组件复用。</strong></>}
-    relatedIntro={<>Hook 在 <ConceptTerm slug="component">组件</ConceptTerm> 中使用，<ConceptTerm slug="state">状态</ConceptTerm> 保存变化，<ConceptTerm slug="effect">Effect</ConceptTerm> 同步外部系统；输入则可以通过 Props 传入。</>}>
+    intro={<>React 用组件组成界面；函数组件就是用函数写出的界面部分。咖啡数量这类值会变化，界面更新后还要保留下来。这种值叫状态。本文的 Hook 指 React Hook：它是一类供函数组件使用的特殊函数。React 提供 <code>useState</code> 等内置 Hook，我们也可以写自定义 Hook，<strong>让不同组件复用处理状态的逻辑。</strong></>}
+    relatedIntro={<>Hook 在 <ConceptTerm slug="component">组件</ConceptTerm> 中使用；<ConceptTerm slug="state">状态</ConceptTerm> 记住会变化的数据，<ConceptTerm slug="effect">Effect</ConceptTerm> 负责与浏览器等外部系统同步。组件还可以通过 <ConceptTerm slug="props">Props</ConceptTerm> 接收外层传来的数据。</>}>
     <ArticleSection id="reuse" title="把重复的逻辑提取出来">
       <Anchors slug="hook" names={["question", "definition"]} />
       <p>活动页面要统计咖啡和门票。两处都需要当前数量、增加、减少和重置。如果分别写两遍，后来要调整“最少为零”的规则，就容易只改其中一处。</p>
-      <p id="hook-reuse" className="vp-citation-target">可以把这组操作提取成 useCounter。它内部调用 useState，再把当前数量和操作函数返回给调用方。React 的自定义 Hook 用来复用这种逻辑；组件仍然负责决定这些值画成什么样，并把操作函数接到哪个按钮。<Cite id="hook-reuse" /></p>
-      <p>分别操作下面两个计数器，再改变每次增减的步长。它们实际调用同一份 Hook；当前数值各自保存在自己的组件中。演示只保存在当前页面，刷新后恢复初值。</p>
+      <p id="hook-reuse" className="vp-citation-target">可以把这组操作提取成 <code>useCounter</code>。它内部调用 React 提供的 <code>useState</code>，让组件记住当前数量，并取得修改数量的函数；<code>useCounter</code> 再把数量和加、减、重置的方法交给组件。组件决定怎样显示数量，例如把 <code>add</code> 交给自己的加号按钮，点击按钮时就执行 <code>add</code>。<Cite id="hook-reuse" /></p>
+      <p>分别操作下面两个计数器，再改变每次增减的步长。它们实际调用同一份 Hook；当前数值各自保存在自己的组件中。演示里的数值只保存在当前页面，刷新后回到初值。</p>
       <Anchors slug="hook" names={["scene-heading"]} /><HookLesson />
-      <p>咖啡从 2 开始，门票从 0 开始。步长改成 5 后，下一次增加会多出 5，但已有数值不会被清空。减少到不足一个步长时，本例约定停在 0，而不出现负数。</p>
+      <p>咖啡从 2 开始，门票从 0 开始。步长改成 5 后，下一次增加会多出 5，但已有数值不会被清空。减少到不足一个步长时，这个演示会停在 0，不出现负数。</p>
     </ArticleSection>
     <ArticleSection id="independent" title="同一段逻辑，两份状态">
-      <p id="hook-independent" className="vp-citation-target"><strong>自定义 Hook 复用状态相关的逻辑，不会自动共享同一份状态。</strong>本例中，给咖啡加一不会改变门票，重置门票也不会重置咖啡。两次 useCounter 调用各自使用自己的状态。需要同步一份数据时，应另外确定共同的数据拥有者。<Cite id="hook-independent" /></p>
+      <p id="hook-independent" className="vp-citation-target"><strong>自定义 Hook 复用状态相关的逻辑，不会自动共享同一份状态。</strong>提取前，咖啡和门票组件可以各写一次 <code>useState</code>；提取后，它们各调用一次 <code>useCounter</code>，也就各有自己的数量。给咖啡加一不会改变门票，重置门票也不会重置咖啡。如果页头角标和购物车页面必须显示同一个数量，就应让两处读取同一份状态，而不是各自再调用一次计数 Hook。<Cite id="hook-independent" /></p>
       <pre className={styles.code}>{'function useCounter(initial, step) {\n  const [count, setCount] = useState(initial);\n  return {\n    count,\n    add: () => setCount(n => n + step),\n    subtract: () => setCount(n => Math.max(0, n - step)),\n    reset: () => setCount(initial),\n  };\n}'}</pre>
-      <p id="hook-update" className="vp-citation-target">增加和减少使用函数式更新：把上一份数值交给计算函数，返回新的数值。这样代码明确表达“基于之前的数量更新”，而不是误把闭包里读到的旧值当成每次更新的起点。<Cite id="hook-update" /></p>
-      <p id="hook-initial" className="vp-citation-target"><code>useState(initial)</code> 只在初始化时使用这个初值。之后组件重新渲染、Hook 再次执行，React 会取回已保存的状态。本例的重置会明确调用 setCount；它不是靠再执行一次 Hook 就把状态清空。<Cite id="hook-initial" /></p>
+      <p id="hook-update" className="vp-citation-target">代码里的 <code>n =&gt; n + step</code> 是更新函数：第一次计算时，React 把当前数量作为 <code>n</code> 交给它；如果一次操作接连加好几次，下一次收到的就是上一次算出的结果，因此能逐次增加，不会反复拿同一个旧数相加。减少时同理，再用 <code>Math.max</code> 保证结果不低于 0。<Cite id="hook-update" /></p>
+      <p id="hook-initial" className="vp-citation-target"><code>useState(initial)</code> 只在组件第一次显示时采用初值。数量改变后，React 会重新执行组件函数来更新画面，<code>useCounter</code> 也会跟着执行；但它里面的 <code>useState(initial)</code> 此时取的是已经保存的数量，不会再把 <code>initial</code> 当成新值。本例点击重置会明确调用 <code>setCount(initial)</code>，才回到 2 或 0。<Cite id="hook-initial" /></p>
     </ArticleSection>
     <ArticleSection id="rules" title="调用位置有规则" className={styles.offset}>
-      <p id="hook-rules" className="vp-citation-target">useState、useEffect 和本例的 useCounter 应在函数组件或自定义 Hook 的顶层调用，放在提前返回之前；不要塞进条件分支、循环或点击处理函数。条件改变而导致调用顺序不同，会让 React 无法按原先的顺序对应这些状态。<Cite id="hook-rules" /></p>
-      <blockquote className={styles.callout}>渲染时调用 Hook 取得能力，<br />操作时调用它返回的函数。</blockquote>
+      <p id="hook-rules" className="vp-citation-target"><code>useState</code>、<code>useEffect</code> 和本例的 <code>useCounter</code> 应固定写在函数组件或自定义 Hook 的顶层，不能放进条件分支、循环或按钮点击函数。如果函数会在某种情况下提早结束，也要把 Hook 放在这个出口之前。如果这次执行了某个 Hook，下次却因为条件变化跳过它，React 就无法稳定地把之前保存的状态对应回原来的调用位置。<Cite id="hook-rules" /></p>
+      <blockquote className={styles.callout}>组件计算画面时调用 <code>useCounter</code>，得到数量和 <code>add</code>；<br />点击加号时执行的是 <code>add</code>。</blockquote>
       <p>比如点击加号时执行 add，而不是在点击后才调用 useCounter。如果某一块界面只在特定条件出现，可以把它做成独立组件，在那个组件的顶层使用 Hook；条件控制组件是否出现，不控制同一组件里的 Hook 调用顺序。</p>
-      <p id="hook-naming" className="vp-citation-target">自定义 Hook 用 use 加大写字母开头，帮助读者和检查工具识别里面可能使用了 React 能力。一个只做排序或格式化、没有调用其他 Hook 的普通函数，不必为了统一名字就加上 use；函数名前缀也不会凭空带来状态。<Cite id="hook-naming" /></p>
+      <p id="hook-naming" className="vp-citation-target">自定义 Hook 的名字以 <code>use</code> 开头，后面单词的首字母大写，例如 <code>useCounter</code>。这样读代码的人和检查工具能认出：它里面可能调用 <code>useState</code> 等 React Hook。只做排序或格式化的普通函数不必加上 <code>use</code>；函数名前缀本身也不会产生状态。<Cite id="hook-naming" /></p>
     </ArticleSection>
     <ArticleSection id="effects" title="订阅也要负责清理">
       <Anchors slug="hook" names={["quiz-heading", "prompt-heading"]} />
-      <p>计数器只需要状态，不需要 Effect。另一种常见 Hook 是读取窗口尺寸：组件要保存宽度，并监听浏览器的 resize。提取它时，应把订阅与清理一起带走，不能只封装“添加监听”那一半。</p>
-      <p id="hook-cleanup" className="vp-citation-target">useEffect 可以让组件与外部系统保持同步。设置函数返回清理函数；相关依赖改变后，React 先清理旧连接，再设置新连接，组件移除时也会清理。开发环境的严格模式还会额外做一轮设置与清理，帮助暴露不对称的订阅。<Cite id="hook-cleanup" /></p>
-      <p>判断一段代码是否值得提成 Hook，可以问：它封装了什么能力，输入和返回值是否清楚，调用者是否还需要了解里面每一个细节。只把几行代码搬到名字以 use 开头的文件里，却让调用方承担所有清理工作，并没有改善这个边界。</p>
+      <p>计数器只需要保存数量，不需要 Effect。另一个自定义 Hook 的例子是记录窗口宽度：组件先保存宽度，再监听浏览器的 <code>resize</code> 事件，窗口变化时更新数值。提取这种逻辑时，除了开始监听，还要写好停止监听的动作。</p>
+      <p id="hook-cleanup" className="vp-citation-target"><code>useEffect</code> 可以负责这类与浏览器的同步：在里面开始监听，并返回一个取消监听的函数。如果监听的对象或其他条件变了，React 会先执行旧的清理，再开始新的监听；组件从页面移除时也会清理。启用 Strict Mode（React 开发时的检查模式）后，React 还会额外执行一轮开始与清理，帮助发现只开始、不取消的问题。<Cite id="hook-cleanup" /></p>
+      <p>判断一段代码是否值得提成 Hook，可以问：它封装了什么能力，输入和返回值是否清楚，调用者是否还需要了解里面每一个细节。只把几行代码搬到名字以 <code>use</code> 开头的文件里，却让调用方承担所有清理工作，并没有让职责划分变得清楚。</p>
       <ArticleAside title="Hook 不是后台任务"><p>自定义 Hook 的函数体会随组件渲染执行，不是自动启动一个独立线程。耗时计算、请求取消、缓存和错误处理仍需要按实际任务设计；不能因为换成 Hook，就假定这些问题已经解决。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
