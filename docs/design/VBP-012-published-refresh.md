@@ -558,6 +558,12 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_52d04e
 
 2026-09-29 集成：提交 `62a39e7` 经 [PR #125](https://github.com/Gyschuaner/VibePolaris/pull/125) 合入 `dev`，merge `62c355330e068baad31fdd1f856a539b42f25e4b`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/promise` 在真实浏览器复核新首图、拒绝分支、第四份来源与旧锚点，应用错误为空。DP 部署 `027d66c4-fe99-439b-9eb7-e3724c2756e1` 已回查；前版 `d717901` 构建备份在 `/tmp/vbp012-dev-next-d717901`。未部署远端 dev 或生产。DP VBP-012 描述更新至 22/105、版本 32；下一条 async-await。
 
+2026-09-29 Skill 补审：不播放动画通读完整正文，并实际重读上述四份 MDN 原文。第 1 份对应 `promise-receipt`、三态、resolved 与 fulfilled、取消边界，并补充 `promise-timing`：等待中的处理函数先登记，Promise 落定后才将对应回调排队；第 2 份支撑新增 `promise-alternative`（旧式接口直接接收回调，Promise 返回结果对象后再登记）与时序；第 3 份支撑链式返回值、缺少 return 得到 undefined 和抛错传播；第 4 份支撑当前同步执行完成后处理微任务。正文补足任务与结果凭据的区别、then 的用途和同步计算仍可能卡住页面的原因。沿用已比较过三种视觉候选的双结果舱首图与原生 Promise 演示，本轮仅修正文与引用，不重做已验收动画。
+
+独立 ZCode CLI `reader` 会话 `sess_b9791af6-7901-44a9-88fd-3061eb559a24` 只读取 partner Skill 与完整可见文本及状态描述，能复述状态不可反悔、上传失败重试应新建操作，但指出微任务、undefined、抛错、另一份 Promise 和取消边界缺乏解释。独立 `language` 会话 `sess_bbbe9e21-17e3-444f-b33a-adc0090a07ab` 读取 partner、humanizer-zh 与本页源文，未读 reader 报告；指出“状态落定与读取结果的回调执行”“让执行顺序可安排”等名词化和生硬语序。主助手据原文修订，以关掉上传显示、拒绝结果和停止上传三个具体动作解释取消边界，保留有实际含义的 then 三分支说明。交付前另由 Codex 内部代理做事实复核，确认必须补上“Promise 先落定、回调才入队”；这不是 ZCode 审读的替代。修订后主助手不看动画复读定义、时序、链条与边界；模型对上传重试/取消的迁移判断只作编辑证据，没有真人读者参与。
+
+补审提交 `96eeff8`、`6819508` 经 [PR #165](https://github.com/Gyschuaner/VibePolaris/pull/165) 合入 dev，merge `1e1b113b68e0c756190db6f55530b89dab925d35`。合并同期 VBP-048 后 `npm run build` 编译、TypeScript、117/117 静态页通过，`git diff --check` 通过，构建与合入提交 Git 树一致。真实浏览器审读构建实测先拒绝再尝试履行仍 rejected、无成功回调；执行记录先同步结束再处理回调；390×844 文档宽与滚动宽均 390。第 2 份新增替代方式摘录回链约 130px；最终第 1 份新增时序引用可展开并返回正文。仅本机 dev 集成预览 `http://localhost:3219/terms/promise` 确认最终正文、pending→fulfilled A17 与 resolve→同步结束→then 顺序，错误日志为空。前版构建备份 `/tmp/vbp012-dev-next-c7afcae`；回滚可独立检出此前 `c7afcae`，重新构建启动本机预览，勿覆盖其他工作区。DP 补审任务 `10813fd7-755c-4db2-834a-136ee4a50524`、用例 `150caf32-2c8f-46cf-9de4-61094db8556c` 与计划 `dd725b66-5e7c-4f3d-ba8e-2dc1f4e9882b` 保存实际结果。本轮没有远端 dev 或生产部署，不创建外部部署记录。完整内容补审达到 22/105，下一条 async-await；VBP-016 仍有三页待补审。
+
 ## 23 · async-await
 
 读者入口：“写了 await，是整个浏览器都要等吗？连续写两个 await 就一定是串行吗？”现页正文已经把函数暂停、任务何时发起、Promise.all 的汇合与失败分别讲明，主演示用原生 Promise 可切换依次/一起发起并在等待中收藏文章，保留。原首图只把标题、封面沿两条轨道合成书本，突出的是材料汇合，没回答“谁在暂停”。新首图让当前函数的执行线长到 await 夹口时停住；旁边收藏标记独立变实；封面任务返回圆点后，执行线从同一停点继续。首图不拿两段路径冒充两条线程，也不把收藏动作画成触发封面返回的原因。
