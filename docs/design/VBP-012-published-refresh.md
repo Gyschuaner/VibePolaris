@@ -440,6 +440,12 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_d46317
 
 2026-09-29 集成：提交 `c1358da` 经 [PR #119](https://github.com/Gyschuaner/VibePolaris/pull/119) 合入 `dev`，merge `0d23297de0e6b2f91a73254ca26a5046668c438a`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/event` 在真实浏览器核对首图、四份来源、监听断开后的第二次点击仍计数且灯不变，应用错误为空。DP 部署 `ca0b87ad-4150-4654-aa34-c0a93eaee03c` 已回查；前一版 `4e67966` 的构建备份在 `/tmp/vbp012-dev-next-4e67966`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 16/105、版本 25；下一条 event-bubbling。
 
+2026-09-29 Skill 补审：按完整页面无动画通读，重新实际阅读四份 MDN 原始资料，论断对应为 Introduction to events 的事件、处理函数、事件对象与同一事件多个监听函数；Element: click event 的按钮键盘激活；removeEventListener 的事件类型、原函数和 capture 匹配；preventDefault 的默认行为、不可取消事件、passive 与传播边界。旧正文把“监听器”和“处理函数”说成两个运行层次，且没有解释计数为何在断开开灯监听后继续增加。现在明确两段独立的 click 监听函数、事件与函数的区别，并在原位置解释 `target`、移除匹配和默认行为；原有阅读灯首图与交互保留，因其三个视觉候选和差异化机制已经验证。图标不再接收指针命中，保证演示里 `target: button` 对应实际点击目标。
+
+ZCode CLI 独立 reader 会话 `sess_1174d448-a57f-4ff4-8bbf-78729cc8032b` 实际读取 partner Skill 与整页读者可见文字/配对操作状态，只看读者材料，不看源码和作者提示。它能解释“点击发生”和“处理成功”不同，也能迁移到下载失败场景；卡在原文的函数引用、捕获选项、passive、首图“断开”与主演示勾选称呼，以及 `target` 先出现后解释。主助手据此修正文内跳步，未照搬其电话线比喻。独立 language 会话 `sess_8473cff1-2756-4a0e-aae4-689527726af3` 实际读取 partner、humanizer-zh 和修订中的 `EventTermPage`，指出“改变灯的处理函数”断句、组件/外部监听前提、target 循环释义、注册/添加称呼漂移和默认行为例句问题；逐条筛选后做局部修改。复核三处事实疑点：演示重新勾选确会再添加开灯函数；勾选框和记录区称呼对应真实组件；删去“普通的链接点击”这个不明确限定。两次均为模型模拟，不作真人读者验证。
+
+最终 `npm run build` 编译、TypeScript、117/117 静态页通过，`git diff --check` 通过。审核工作树 3220 的真实浏览器显示点击计数 0→1→2→3，灯关→亮→保持亮→关，重新连接没有重复回调；390×844 下 `clientWidth`/`scrollWidth` 都是 390，错误日志为空。代码提交 `0914edb` 经 [PR #148](https://github.com/Gyschuaner/VibePolaris/pull/148) 合入 `dev`，merge `19026bfc3da32c660bf2913af33965d1d1a79804`；本机 dev worktree 使用相同构建产物在 3219 核对新版正文、四份来源及断开后的第二次点击，错误日志为空。DP 补审任务 `ba06e14c-4391-47c5-b591-65af3b2d254c` done，用例 `336987b5-7629-461d-954f-033caa2e066b` 执行 `bded454a-0e2e-49b6-bb28-f96c66a1d612` passed，计划 `f83f1249-3f99-495f-8c55-d33979d12464` completed；本机 dev 部署记录 `0de46423-7c77-44e7-addf-3bc875f6d01d` 已回查，前版构建备份 `/tmp/vbp012-dev-next-f9bcbcf`。VBP-015 保持 testing，VBP-012 保持 in_development（版本 49）；技术集成 32/105、完整内容审读 16/105。下一条 event-bubbling；没有真人读者、远端 dev 或生产部署。
+
 ## 17 · event-bubbling
 
 读者入口：“我只按了卡片里的收藏，为什么列表也处理了这一次点击？如果按钮处停止，收藏会不会也被撤销？”已有正文与主演示已经使用真实三层 DOM，保留捕获、目标、冒泡顺序，以及停止传播与默认行为的边界。原首图仅两层淡入，没有明确的按钮目标，也看不出由内到外的顺序与停止后的外层静止。
