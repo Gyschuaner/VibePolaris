@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；当前进度 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第38条rate-limiting现已完成，技术集成与完整内容均38/105，下一条timeout。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout现已完成，技术集成与完整内容均39/105，下一条retry。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -56,7 +56,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 36 rest | 资源的当前状态与网页上次收到的表示可分叉 | 固定预约标识下分置服务端状态与收到的卡片；前者过期后，后者仍留待确认和旧选择，主体实验处理409拒绝 | 完整内容与dev集成完成 · PR #197 |
 | 37 pagination | 按当前列表继续读取会受插入影响 | 首图按顺序显已读9/8/7、插入10后的列表与跳过三条所得7/6/5；主体比较同次插入下offset重复与cursor从边界续读 | 完整内容与dev集成完成 · PR #199 |
 | 38 rate-limiting | 限制时间内请求量 | 令牌桶由5/5耗尽、第6/7次429到一秒仅恢复1/5；主体比较A/B共享与独立桶 | 完整内容与dev集成完成 · PR #201 |
-| 39 timeout | 等待到期停止等 | 等待线与截止线交会，晚到结果单独表示 | 待更新 |
+| 39 timeout | 客户端到期不裁决服务端结果 | 等待线在2秒截止；同一次申请的服务端线继续到3秒建立#42，4秒回信；R7新查询与原超时分开 | 内容补审及dev集成完成 · 代码PR #203；详见本节 |
 | 40 retry | 失败后再次尝试 | 多次尝试间距展开；次数上限后停止 | 待更新 |
 | 41 idempotency | 重复执行效果一致 | 多次相同操作落到同一个结果凹槽 | 待更新 |
 | 42 database | 持久组织与查询 | 信息在存储结构中保留；关界面后再次查回 | 待更新 |
@@ -820,6 +820,14 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - 真实ZCode CLI inspiration `sess_e7740bff-15f9-4a94-b9d6-205b409354ad`读取partner Skill与已核实事实，未看本页源码或正文；主助手采纳它对等待提示和模型token口径的边界提醒。独立reader `sess_d77b24c0-8da4-4029-beb8-dfa098fa1c6f`只读partner与完整冻结正文/互斥状态文字 SHA256 `74ce19af3065a46aa853a70a61a21d8265e0bf61464b8e060459f37b814b7093`，未看网页；它指出首图6次与主体7次对不上、失败计数与不扣模拟令牌看似冲突，并问一次聊天怎样变成多次调用、去哪里看重试说明。主助手把首图统一为7次，补页面动作触发不同调用的例子、两套计数的界线与响应/接口文档入口。独立language `sess_9eaaee7f-1f5b-4d45-8255-db6ac09ff6da`读partner、humanizer-zh与修订全稿 SHA256 `ad3c555f6daa9641a31d4eb805581bce6d2c377fef63b51026ddc29652678c59`，未读读者报告或网页；采纳请求主体、分桶、Retry-After、回执与AWS保证边界的局部中文修改。两轮仅为文字模拟审读，不能称真人理解或网页试读。
 - 最终`npm run build`编译、TypeScript与117/117静态页、已有`tests/api-teaching.test.mjs`令牌计算断言及`git diff --check`通过。3220真实IAB桌面看首图初/拒绝中/恢复终、重播和离屏暂停；键盘共享A7放行5拒2、B1拒1，推进1秒后B重试放行1；独立A7后B1放行。测试发现切换/重置时旧回执短暂淡出并贴在新实验旁，改为重置即撤下旧回执后重新build和浏览器复核。390px首图、正文和实验无横溢；四源角标、ref4书目回链、补充折叠可用，浏览器error为空。缩动只核CSS终态，未切系统偏好；无真人目标读者。
 - 代码`6fbefb4443b04955f562a4f5fcff4ec63a364d35`经[PR #201](https://github.com/Gyschuaner/VibePolaris/pull/201)合入dev，merge`1c6aa6650c1558e4df111d5dda33d5e9caef7969`，源码树同为`565f7b239bb7bf1642ef3606481030fbddb6e06a`，构建ID`hD1lczDb055B4vZEhxdYs`。3219在该树与构建的本机dev预览复核新正文与共享B被拒，error为空；前版构建备份`/tmp/vbp019-rate-dev-prev-gfwrEe/next`，本机回退需停止3219、检出`4bff499ebea9396e80819350853abf6f44d158d3`并恢复备份后重启。DP用例`42f52c3e-1773-4ae1-8c3f-7709bbfc4881`、计划`7ccb0f2a-1b61-4b6d-aef6-219f56a35503` completed、执行`f6409c01-317e-4f33-9994-4b6054e98d3a` passed、任务`2a1c05e3-a5c0-4582-aedc-a3bb7431f880`。项目未配置远端dev目标，故只完成本机预览，未作远端dev或生产部署；指定Windows Obsidian库在本机不存在。VBP-012继续研发，进度38/105，下一条timeout。
+
+## 39 · timeout
+
+- 读者入口：“预约页面两秒报超时，我能直接再按一次创建吗？”默认会用浏览器与AI聊天，没有编程经验。旧页文字已区分等待与远端结果，但仅有两份来源；首图只有两根进度条，没有截止后服务端继续完成的事件；主体查询成功还把原请求状态改写成成功，而且客户端从未取得过用于查询的标识。现在以提交前保存的申请号R7贯穿：第2秒原请求超时、第3秒服务端建立#42并关联R7、第4秒回信才准备好；只有仍在等待的5秒分支收到原确认。2秒分支按R7发起新查询后，原请求仍显示超时。正文常驻解释请求也可能根本没送到、真实页面看不到服务端进度、查询入口并非通用能力；没有查询或明确去重重试约定时保留待确认并核对，不盲目再建。补足DNS/TLS、整体期限与取消信号的前提；浏览器代码保留在可展开补充。迁移到下单无订单号的场景，文章给出“不要立即再提交，先核对”的依据，但不假称所有网站都支持R7。
+- 主助手逐篇实际阅读[Marc Brooker的AWS超时原文PDF](https://d1.awsstatic.com/builderslibrary/pdfs/timeouts-retries-and-backoff-with-jitter.pdf)中的等待资源、远端副作用、超时选项范围与取值权衡；[Malcolm Featonby的AWS幂等API文章](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)中的网络超时未知结果、调用方标识和重复调用风险；[MDN AbortSignal.timeout](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static)中的TimeoutError与活跃时间；[Go官方取消操作文档](https://go.dev/doc/database/cancel-operations)中的取消传递和数据库响应。四源分别对应`timeout-wait`/`timeout-budget`、`timeout-unknown`/`timeout-followup`、`timeout-browser`、`timeout-cancel`，厂商示例不冒充所有系统保证。首图采用两条共用刻度的线：初始两端待开始→有限播放→客户端2秒截止，服务端3秒出现#42、4秒回信→停在两端不同结果；用户可重播，离屏/后台暂停，缩动样式显示终态。主体保留2/5秒切换、手动推进和独立查询。与相邻重试的尝试间隔及幂等性的去重账本在对象与操作上不同。
+- 真实ZCode CLI inspiration `sess_116dceee-2e37-42ed-b1c7-dcd8d1670df6`读取partner Skill与派发事实，并自主查看旧源码，未看网页；采纳双轨截止/迟到事件的建议，未采用“回信弹开”动作，因为它可能误示服务端拒绝或实际网络传输。独立reader `sess_2bda1b91-cf7e-4ba9-b111-984e6a044281`只读partner Skill与冻结完整正文/互斥状态文字 SHA256 `0c337a3ab42545a3577499af4c512de50d724dd18f734fab2185a4f86db1d184`，未看源码、网页或其他审读；能据文判断下单超时不能立即再提交，指出DNS/TLS、Go Context、活跃时间缺前提，并发现“没有已知编号却可查询#42”的因果漏洞。主助手据此引入提交前已知R7、说明查询能力边界，补必要释义；“#42后来是否取消”属后续业务规则，未在本词条虚构。独立language `sess_9eeb7884-894d-4c1b-adaa-37524c7a129c`读取partner、humanizer-zh和修订全稿 SHA256 `fb85dc7916476a044bac904530d53a60f3e53bbc2172cf2e8c66b6f0094b7f3e`，未看读者报告或网页；采纳主语、取消信号和TimeoutError的局部措辞，状态文字记法意见只涉及审读材料且已与实际UI核对。两轮均为文字模拟反馈，不称真人试读或页面操作。
+- 最终`npm run build`编译、TypeScript、117/117静态页通过；既有`tests/reliability-teaching.test.mjs` 1/1通过、`git diff --check`通过。3220真实IAB浏览器桌面检查首图初/终/重播、2秒超时→3秒#42→4秒回信→R7新查询而原状态不变、5秒原确认、切换/重置清旧状态；第4源角标、书目展开回到`timeout-cancel`、旧`timeout-scene-heading`锚点和补充Enter展开/收起可用。390px首图、正文和实验可读，文档与视口宽均390；离屏`data-playing=false`、动画暂停，浏览器error为空。缩动终态核CSS，未改系统偏好；无真人目标读者。
+- 代码`055ca83731d9c25d90dcaed7e239f5fcbd174bdc`经[PR #203](https://github.com/Gyschuaner/VibePolaris/pull/203)合入dev，merge`9961f702b5991abf3f66e2aed794be31a2d7740d`，源码树同为`0c780421677557fef05755668e5c8aac0b309a13`，构建ID`RmFRNKYSbZ-C2t4lNPiAS`。3219在该树与同构建的本机dev预览复核新正文及R7查询，error为空；前版构建备份`/tmp/vbp023-timeout-dev-prev-XbPTfg/next`，本机回退需停止3219、检出`1c6aa6650c1558e4df111d5dda33d5e9caef7969`并恢复备份后重启。DP用例`0acfb37c-8b65-4764-9b4e-8ffbee0e25f3`、计划`869f7586-1f82-46a7-a624-fac21bbeb672` completed、执行`a6328a44-a8a9-4b29-a108-ebca7e3182da` passed、任务`179a0565-45f1-4018-b8e8-5d0c687d5250` done。VBP-023暂留testing：项目未配置远端dev目标，故只完成本机预览，未作远端dev或生产部署；指定Windows Obsidian库在本机不存在。VBP-012继续研发，进度39/105，下一条retry。
 
 ## 01 · Harness
 
