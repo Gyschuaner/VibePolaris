@@ -53,37 +53,39 @@ export function JsonTermPage() {
 export function JsonSchemaTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={schemaSources} />;
   return <ConceptArticle slug="json-schema" title="JSON Schema" subtitle="把数据约定写成可检查的规则" sources={schemaSources}
-    intro={<>一段 JSON 没有语法错误，仍可能漏了数量、写错状态，或者把数字放进引号。JSON Schema 描述哪些结构和取值可以接受，校验时再把实际数据与这些规则对照。</>}
+    intro={<>JSON 能把状态、数量等数据写成程序可以读取的文本，但写法正确不代表内容符合要求：数量可能漏了，也可能被写成带引号的文字。JSON Schema 用来写下数据应遵守的规则，再交给程序检查实际收到的数据。</>}
     sections={[["contract", "数据之外的那份约定"], ["validate", "找出不合约定的字段"], ["keywords", "规则的不同职责"], ["boundary", "通过校验之后"]]}
-    hero={<ConceptHero slug="json-schema" label="左侧规则与右侧数据逐字段对照：done 不在 status 的候选值中，count 的 -1 低于下限；两份数据都没有被自动改写"><div className={styles.schemaHero}>
+    hero={<ConceptHero slug="json-schema" label="左侧规则与右侧数据逐字段对照：done 不在 status 的候选值中，count 的 -1 低于下限；规则和数据都没有被自动改写"><div className={styles.schemaHero}>
       <div className={styles.schemaHeroSheet}><span>规则</span><div className={styles.schemaHeroField}><code>status</code><strong>pending / success</strong></div><div className={styles.schemaHeroField}><code>count</code><strong>整数 ≥ 0</strong></div></div>
       <div className={styles.schemaHeroBridge}><div><i /><b>×</b><i /></div><div><i /><b>×</b><i /></div></div>
       <div className={styles.schemaHeroInstance}><span>数据</span><div className={styles.schemaHeroField}><code>status</code><strong>done</strong><small>不在候选</small></div><div className={styles.schemaHeroField}><code>count</code><strong>-1</strong><small>低于 0</small></div></div>
     </div></ConceptHero>}
-    relatedIntro={<>在 <ConceptTerm slug="structured-output">结构化输出</ConceptTerm> 中，Schema 帮助约束结果的形状；回到 <ConceptTerm slug="tools">工具调用</ConceptTerm>，同样要区分“参数符合约定”和“操作已经成功”。</>}>
+    relatedIntro={<>在 <ConceptTerm slug="structured-output">结构化输出</ConceptTerm> 中，Schema 帮助约束结果的结构；回到 <ConceptTerm slug="tools">工具调用</ConceptTerm>，同样要区分“参数符合约定”和“操作已经成功”。</>}>
     <ArticleSection id="contract" title="数据之外的那份约定">
       <AsyncLegacyAnchors slug="json-schema" names={["question", "definition"]} />
-      <p id="schema-definition" className="vp-citation-target"><strong>Schema 写规则，实例装数据，校验器比较二者。</strong>JSON Schema 用关键字描述实例应满足的约束；所有适用约束都满足，才能说这份实例对这份 Schema 有效。换一份规则，同一份数据可能得到不同结论。<Cite id="schema-definition" /></p>
-      <p>假设书店用 status 表示一次书目整理的状态，允许 pending 或 success；count 表示已经整理的数量，必须是非负整数。这些含义由书店自己约定，JSON Schema 把其中可检查的部分写下来。</p>
+      <p>假设书店要保存一次书目整理的结果。它用 <code>status</code> 表示状态：<code>pending</code> 是待处理，<code>success</code> 是已完成；<code>count</code> 表示已经整理的数量，必须是 0 或更大的整数。这两项带名字的内容叫字段，名字和含义由书店自己约定。</p>
+      <p id="schema-definition" className="vp-citation-target">书店把要求写成一份 Schema，也就是数据规则。本例的规则本身也用 JSON 写成，其中 <code>enum</code>、<code>minimum</code> 这类有特定含义的名字叫关键字，分别表达“从这些值里选”和“数值下限”。待检查的数据叫实例；读取规则并检查数据的程序叫校验器。<strong>规则文件不会自己执行，仍要由程序拿它来检查数据。</strong>数据满足这份规则对它提出的所有要求，才算通过；换一份规则，结论可能不同。<Cite id="schema-definition" /></p>
+      <p>不用 JSON Schema，也可以让程序分别判断“状态在不在允许的名单里”“数量是不是整数”。只是网页、服务器等地方都要维护这些判断。把规则单独写成 Schema 后，支持同一套规则的工具便能读取它，不必在每处重新描述一次要求；实际检查仍需在合适的位置接入。</p>
       <blockquote className={styles.leadQuote}>“这是合法 JSON”与<br />“这符合我们的数据约定”，是两次检查。</blockquote>
     </ArticleSection>
     <ArticleSection id="validate" title="找出不合约定的字段">
       <AsyncLegacyAnchors slug="json-schema" names={["scene-heading"]} />
-      <p>左侧约定固定，右侧是准备提交的对象。先校验原始数据，再逐项修改。这里专门检查这一份示例规则；展开 Schema 可以看到对应关键字，不会自动修正你的输入。</p>
+      <p>左侧是固定的规则，右侧是准备提交的数据。先按“校验当前数据”，再一次只改一项并重新检查。这个实验只按书店的这几条规则检查数据；“查看 Schema”能展开规则的完整写法。校验会指出问题，不会替你改好输入。</p>
       <SchemaLesson />
-      <p>把 done 改成 success，只修正了 status；count 为 −1 仍然失败。把数量改成 0 后可以通过，但勾选“写成字符串”，同样的字符又不符合整数要求。错误位置告诉你改哪个字段，规则名称解释为什么需要改。</p>
+      <p>把 done 改成 success，只修正了 status；count 为 −1 仍然失败。接着把数量改成 0，就能通过。但勾选“把数量写成字符串”后，数据中的 <code>0</code> 变为 <code>"0"</code>，又不满足整数要求。错误中的 <code>/count</code> 指出问题在 count 字段，旁边的 <code>type</code>、<code>minimum</code> 等名字说明没有满足哪条规则。</p>
     </ArticleSection>
     <ArticleSection id="keywords" title="规则的不同职责">
-      <p id="schema-required" className="vp-citation-target"><code>properties</code> 描述字段出现时应满足的规则，<strong>不会自动把它变成必填项</strong>。必须出现的字段另写进 required。字段缺失和字段存在但为 null 也不同：前者涉及是否出现，后者还要看允许的类型。<Cite id="schema-required" /></p>
-      <div className={styles.comparison}><div><h3>限定候选值</h3><p id="schema-enum" className="vp-citation-target">enum 列出允许的取值。本例只接受 pending、success，所以 done 即使能表达相似意思，也不在这份约定里。<Cite id="schema-enum" /></p></div><div><h3>限定数值</h3><p id="schema-numeric" className="vp-citation-target">integer 要求整数，minimum: 0 允许 0 及更大的值；字符串 "2" 不会自动变成整数。数值 2.0 仍是整数，小数 2.5 则不是。<Cite id="schema-numeric" /></p></div></div>
-      <p id="schema-extra" className="vp-citation-target">默认可以带额外字段。本例明确写了 <code>additionalProperties: false</code>，因此 debug 会被拒绝。是否封闭字段，应由接口约定决定；列出 properties 本身不会禁止其他字段。<Cite id="schema-extra" /></p>
+      <p id="schema-required" className="vp-citation-target"><code>properties</code> 写的是：数据里如果有某个字段，这个字段要满足什么规则。<strong>在这里列出 count，不代表数据必须带上 count。</strong>要让它成为必填项，还得把它列进 <code>required</code> 的名单。前一条管“写了以后要怎样”，后一条管“可不可以不写”。<Cite id="schema-required" /></p>
+      <p id="schema-null" className="vp-citation-target">字段缺失和空值也要分开看。本例不勾选“把数量写成字符串”时，清空数量框会保留 <code>count</code>，但把值写成 <code>null</code>。null 表示空值，不是整数，因此不满足类型要求；勾选“去掉 count 字段”则会让整个字段消失，违反必填要求。两次都不通过，原因却不同。<Cite id="schema-null" /></p>
+      <div className={styles.comparison}><div><h3>限定候选值</h3><p id="schema-enum" className="vp-citation-target"><code>enum</code> 列出允许的取值。本例只列了 pending、success；done 在日常语言里也可能表示完成，但校验器只按名单比较，不会把意思相近的词当成同一个值。<Cite id="schema-enum" /></p></div><div><h3>限定数值</h3><p id="schema-numeric" className="vp-citation-target"><code>type: "integer"</code> 要求值为整数，<code>minimum: 0</code> 再把下限设为 0。字符串 <code>"2"</code> 不会自动转成整数；<code>2.0</code> 的小数部分为 0，与整数 2 是同一个值，因此符合整数要求，<code>2.5</code> 则不符合。<Cite id="schema-numeric" /></p></div></div>
+      <p id="schema-extra" className="vp-citation-target">只写 properties，不会禁止数据带上其他字段。本例另外写了 <code>additionalProperties: false</code>，所以勾选“多带一个 debug 字段”会让校验失败。debug 是这次演示多加的一项调试信息，不是规则里的关键字。要不要接受额外字段，应由使用这份数据的双方约定。<Cite id="schema-extra" /></p>
     </ArticleSection>
     <ArticleSection id="boundary" title="通过校验之后" className={base.offset}>
       <AsyncLegacyAnchors slug="json-schema" names={["quiz-heading", "prompt-heading"]} />
-      <p id="schema-boundary" className="vp-citation-target">校验结论针对的是 Schema 声明的结构与取值约束。它能检查 count 是不是非负整数；<strong>不能仅凭这份规则证明书店真的整理了这么多本书。</strong>后者需要业务记录或实际检查来提供证据。<Cite id="schema-boundary" /></p>
-      <p>同样，一份工具参数可以格式正确，却没有执行权限；模型生成的摘要可以符合字段结构，却写错事实。通过 Schema 校验只是流程中的一步，后面仍要判断权限、执行结果和内容依据。</p>
-      <p id="schema-dialect" className="vp-citation-target">Schema 也有方言和版本。<code>$schema</code> 声明这份规则采用哪种方言，帮助工具正确解释关键字。本例采用 Draft 2020-12；接入其他工具时，应核对它支持的版本与关键字范围。<Cite id="schema-dialect" /></p>
-      <ArticleAside title="修改规则，也是在修改接口约定"><p>如果过去允许省略 count，后来将它加入 required，旧客户端仍可能发出不带 count 的数据。规则更严格不一定自动让系统更好；发布新规则前，要确认已有数据和调用方能否满足它，再安排迁移。</p></ArticleAside>
+      <p id="schema-boundary" className="vp-citation-target">校验回答的是：数据是否符合 Schema 写下的规则。它能检查 count 是不是 0 或更大的整数；<strong>不能仅凭这份规则证明书店真的整理了这么多本书。</strong>后者需要查看整理记录，或实际清点。<Cite id="schema-boundary" /></p>
+      <p>比如 AI 让工具修改一本书的信息，传入的书名和编号都符合规则，执行程序却可能没有修改权限。模型生成的摘要也可能字段齐全，内容却写错了。通过 Schema 校验后，程序还要检查能否执行、执行是否成功，以及内容有没有事实依据。</p>
+      <p id="schema-dialect" className="vp-citation-target">JSON Schema 有不同版本，每版规定了可以用哪些关键字、怎样解释它们，这样的一套规定叫方言。<code>$schema</code> 用来声明采用哪套规定。本例写的是 Draft 2020-12；把规则交给其他工具时，要确认工具支持这个版本和用到的关键字，不能只改一个版本标记就认为兼容了。<Cite id="schema-dialect" /></p>
+      <ArticleAside title="修改规则，也是在修改数据约定"><p>如果过去允许省略 count，后来将它加入 required，按旧约定工作的程序仍可能发来不带 count 的数据。规则更严格不一定自动让系统更好；发布新规则前，要确认已有数据能否通过、发送数据的程序是否需要调整，再安排新旧约定的过渡。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
