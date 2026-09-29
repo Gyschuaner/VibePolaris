@@ -29,8 +29,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 15 state | 记住变化并更新界面 | 一张笔记卡内的 text、status 先变，卡面与按钮随后原位更新；等待时无回执 | 本地与 dev 集成完成 · PR #118 |
 | 16 event | 操作触发处理 | 同一阅读灯两次点击：click 继续计数，断开开灯监听后灯保持上次亮度 | 本地与 dev 集成完成 · PR #119 |
 | 17 event-bubbling | 父子层级传播 | 两组嵌套轮廓对照：一次点击逐层向外，另一次在按钮处停止 | 本地与 dev 集成完成 · PR #120 |
-| 18 hook | 复用逻辑，各有状态 | 两条相同刻度轨道：咖啡 2→3，门票维持 0；单独操作不改另一实例 | 本地验收完成 · 待 dev 集成 |
-| 19 effect | 与外部系统同步 | 页面内状态与外部连接双区；切换先清理后连接 | 待更新 |
+| 18 hook | 复用逻辑，各有状态 | 两条相同刻度轨道：咖啡 2→3，门票维持 0；单独操作不改另一实例 | 本地与 dev 集成完成 · PR #121 |
+| 19 effect | 与外部系统同步 | 两路消息源与固定接收器；音乐订阅完整收回后，天气订阅才接通 | 本地验收完成 · 待 dev 集成 |
 | 20 browser-api | 浏览器提供能力 | 浏览器外壳中展开对应原生能力和许可边界 | 待更新 |
 | 21 fetch-api | 发请求并读取响应 | 时间线上分开响应头到达与内容读取 | 待更新 |
 | 22 promise | 尚未完成的结果 | 一个待定容器只落入成功或失败的一个终态 | 待更新 |
@@ -417,6 +417,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_73c82e
 资料：实际阅读 React 官方 [Reusing Logic with Custom Hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)（复用含状态逻辑而不自动共享状态、命名）、[useState](https://react.dev/reference/react/useState)（初值只在初始化使用、函数式更新）、[Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks)（顶层与调用位置）、[useEffect](https://react.dev/reference/react/useEffect)（依赖改变与组件离开时的清理）。正文现有四份书目和角标已覆盖本轮论断，不新增引用编号。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器桌面与 390×844 首图可见同形轨道、咖啡终态 3 与门票 0，移动端 clientWidth/scrollWidth 均为 390；离屏或非前台时动画暂停，不能把暂停帧当成终态。主演示给咖啡加一后门票仍 0；步长改为 5 不清空咖啡 3，门票随后加到 5；单独重置门票保留咖啡，整体重置回 2/0，Enter 可操作，减法停在 0 并禁用继续减少。五个旧锚点与四份 React 来源在页面，第一份书目摘录和正文/回链一致，应用错误日志为空。VBP-015 用例 `56fdf904-f297-4d27-a1b8-10232efa123d`，本地计划 `72e22352-7afc-453d-9937-ce23be0f5ec5` completed、执行 `7defc3d4-0bc0-49fa-bc24-c80810970137` passed。没有真人零基础读者观察。
+
+2026-09-29 集成：提交经 [PR #121](https://github.com/Gyschuaner/VibePolaris/pull/121) 合入 `dev`，merge `d43ae37f0c36c5232afd5537171ba1b593213d58`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/hook` 在真实浏览器复核首图、四份来源与两实例独立状态，应用错误为空。DP 部署 `5a8e0ebf-88cd-4e35-826a-1510be43bc7a` 已回查；前一版 `ee54f91` 的构建备份在 `/tmp/vbp012-dev-next-ee54f91`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 18/105、版本 27；下一条 effect。
+
+## 19 · effect
+
+读者入口：“界面已经切到天气，为什么音乐消息还会进来？组件没有离开页面，旧订阅也需要清理吗？”已有正文和主演示用浏览器内真实消息源展示 `useEffect` 订阅、清理、依赖变化、关闭与重开；保留这个可操作机制。原首图是旋钮从音乐转向天气后几乎同时显露两端，无法看出旧连接先结束。此轮改为两路来源到固定接收器的弯曲路径：音乐的路径完整收回，然后天气的路径接通。它展示同步关系的先后，不把动画当成 React 的执行记录；真实次序仍由主演示的订阅记录验证。
+
+视觉候选：① 两条独立弯曲订阅线先后撤出、生长；采用。固定接收器突出“组件仍在”，也与 Hook 的并行刻度轨道和 Event Bubbling 的层级轮廓明显不同。② 插头和插座能显露拆旧再接新，但会让订阅像用户手动拔插，也暗示物理资源，未采用。③ 组件墙打开、旧通道消失再开新通道；表达范围过大，在窄首图里容易把组件卸载和 Effect 清理混为一谈，未采用。首图静止终态和减少动态效果时均只显示天气路径；音乐路径已经收回，不以淡色残线表示仍连接。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_b26f4568-f0e3-4a3d-aa8a-fecd0b9c3faf`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 和动画灵感参考。主助手给出核实过的 React 机制、原首图和相邻页边界；ZCode 给出弯曲路径、插拔结构、组件墙三案并建议首案。主助手采纳先清理后建立的关系，检查首图和真实交互，未让模型负责实现或验收。
+
+资料：实际阅读 React 官方 [Synchronizing with Effects](https://react.dev/learn/synchronizing-with-effects)（渲染、事件和外部同步的分工）、[useEffect](https://react.dev/reference/react/useEffect)（新设置前运行旧清理、依赖变化及开发模式额外执行）、[You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)（可计算值与事件处理通常不需要 Effect）以及 [Lifecycle of Reactive Effects](https://react.dev/learn/lifecycle-of-reactive-effects)（组件仍在时旧连接也可结束）。新增第 4 份引文并映射 `effect-lifecycle`，明确旧订阅结束不等于组件卸载。正文其余引文沿用既有编号。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器逐帧观察首图：音乐线收回至零后，天气线才开始显现；桌面和 390×844 的构图完整，移动端文档宽与 scrollWidth 均为 390，主演示宽 342、左右留白 24。主演示先播报音乐得到计数 1，切天气后的实际记录为“订阅音乐→取消音乐→订阅天气”；再播报音乐计数不变，播报天气变 2。关闭接收后记录取消天气，双频道播报都不增加计数；重开只重新订阅天气、不补发离线消息，新播报可接收；重置回音乐/0，Enter 可触发播报。新增第 4 份书目展开、摘录和 `#effect-lifecycle` 回链正确；应用错误日志为空。VBP-015 用例 `68ea1183-18e0-44c4-984b-3b5515134060`，本地计划 `67312d13-f6be-47ff-9828-3e3fead50c51` completed、执行 `a8bfb0df-cdcd-4fc1-ab33-156ab026bc42` passed。没有真人零基础读者观察。
 
 ## 01 · Harness
 
