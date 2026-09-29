@@ -10,8 +10,10 @@ export const databaseSources = [
 ];
 export const indexSources = [
   pg("Introduction to Indexes", "indexes-intro", ["index-purpose", "index-cost"]),
-  sqlite("Query Planning · Lookup By Index", "queryplanner", ["index-directory"]),
+  sqlite("Query Planning · Lookup By Index", "queryplanner", ["index-directory", "index-order", "index-plan"]),
+  sqlite("SELECT · ORDER BY clause", "lang_select", ["index-order"]),
   pg("Index Types", "indexes-types", ["index-types"]),
+  pg("B-Tree Indexes", "btree", ["index-types"]),
   pg("Examining Index Usage", "indexes-examine", ["index-plan"]),
 ];
 export const transactionSources = [

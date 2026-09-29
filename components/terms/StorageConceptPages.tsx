@@ -58,31 +58,32 @@ export function IndexTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={indexSources} />;
   return <ConceptArticle slug="index" title="索引" sources={indexSources}
     sections={[["lookup", "给记录多一条查找路径"], ["search", "先定位，再读记录"], ["tradeoff", "读得更快，也要多维护"], ["plan", "用执行计划核对路径"]]}
-    intro={<>按编号找一本书，可以逐条检查书目，也可以先查一份有序目录。两种方法应该找到同一本书，差别在于为了找到它，要检查多少不相关的内容。</>}
-    hero={<ConceptHero slug="index" label="有序目录缩小候选范围，定位编号64的记录"><div className={s.indexHero}><MagnifyingGlass size={28} /><div>{[8, 12, 29, 37, 42, 51, 64, 78, 90].map((id, i) => <span key={id} data-order={i}>{id}</span>)}</div><p><BookOpen size={24} />64 · 设计札记</p></div></ConceptHero>}>
+    intro={<>按编号找一本书，可以逐条检查书目，也可以先查一份按编号排列的目录。目录告诉我们书目中的位置，再去那里读书名。两种方法找到的是同一本书，区别在于中途翻查了多少无关内容。</>}
+    hero={<ConceptHero slug="index" label="查找64号书：先比较目录中间的42，排除左半；再找到64号对应的原书目位置5，读取设计札记"><div className={s.indexHero}><div className={s.indexTarget}><MagnifyingGlass size={21} />找 #64</div><div className={s.indexDirectory}>{[8, 12, 29, 37, 42, 51, 64, 78, 90].map(id => <span key={id}>{id}</span>)}</div><div className={s.indexRecord}><BookOpen size={23} /><span>原书目位置 5</span><strong>#64 · 设计札记</strong></div></div></ConceptHero>}>
     <ArticleSection id="lookup" title="给记录多一条查找路径">
       <Legacy slug="index" names={["question", "definition"]} />
-      <p id="index-purpose" className="vp-citation-target"><strong>索引是数据库额外维护的查找结构，用来更快地定位特定查询需要的数据。</strong>没有合适的索引时，数据库可能逐行扫描；有索引时，可以沿着另一条路径找到候选记录。索引是否被采用，由查询条件和执行成本等因素共同决定。<Cite id="index-purpose" /></p>
-      <p id="index-directory" className="vp-citation-target">以 SQLite 官方文档中的普通索引查询为例，先按索引里的键找到条目，取得记录标识，再读取原表的其他字段。有序的是这份查找结构，并不意味着所有原始记录都被按同样顺序重新摆放。<strong>索引改变寻找答案的过程，不能改变查询应得到的答案。</strong><Cite id="index-directory" /></p>
+      <p id="index-purpose" className="vp-citation-target"><strong>索引是数据库额外维护的查找结构，用来更快地定位特定查询需要的数据。</strong>没有合适的索引时，数据库可能逐行扫描；有索引时，可以沿着另一条路径找到候选记录。是否走索引，要看查询条件和预计花费的工作量，并非建了就一定用。<Cite id="index-purpose" /></p>
+      <p id="index-directory" className="vp-citation-target">这份演示目录按编号排列，只记编号和原书目位置：#64 对应位置 5。先在目录中定位 #64，再去书目的第 5 条读“设计札记”。SQLite 官方文档里的普通索引查找也分两步：先按查询值取得指向原记录的标识，再据此读取表中的其他字段；这里的标识不是演示中的“第 5 条”序号。<strong>只有索引本身有序，原表不会因为建了索引就跟着重排。</strong>演示里的目录不记书名，所以定位之后还要回原书目读；如果某个索引连书名也存了，而查询只需要编号和书名，就可能直接从索引取结果。这种情况叫覆盖索引。<Cite id="index-directory" /></p>
+      <p id="index-order" className="vp-citation-target">同一份书目、同一个查询条件下，走哪条路都该找到同一批记录；但目录有序，不代表查询结果自动按编号显示。要指定返回顺序，查询还需要写明排序条件。<Cite id="index-order" /></p>
     </ArticleSection>
     <ArticleSection id="search" title="先定位，再读记录">
       <Legacy slug="index" names={["scene-heading"]} />
-      <p>同一组九条书目，试着查 #64，再查不存在的 #65。这里把索引简化为有序数组，用二分比较展示范围怎样缩小；它不是 B-tree 存储引擎，也不是性能测试。图中的次数只计算本模型的比较操作。</p>
+      <p>这九本书各有唯一编号，查找期间书目不变，找到一本便可以停。先查 #64，再查不存在的 #65；也试试书目第一条 #42。目录从小到大排列，拿中间的 #42 与目标 #64 比：42 更小，它和左边的编号便都不可能是 64；剩下只需查右边。每次按大小缩小候选范围，这里叫二分查找。演示把索引简化成有序数组，比较次数只针对这个小模型，不是真实的 B-tree 索引或性能测试。</p>
       <IndexLesson />
-      <p>查 #64 时，顺序扫描要检查到第 5 条；目录先比较 #42，再比较 #64，随后按记录位置读取书名。换成 #42，顺序扫描第一条就能找到。<strong>少量样本不能证明某种方案永远更快。</strong>查 #65 时，两种路径都必须在范围耗尽后明确返回“未找到”。</p>
-      <p id="index-types" className="vp-citation-target">真实索引有不同结构。PostgreSQL 默认的 B-tree 支持等值和范围查询，Hash 索引只支持简单等值比较。演示里的“每次排除一半”是在解释有序查找，不能套到所有索引上。一个索引能帮助哪些查询，要看它的类型、列和运算方式。<Cite id="index-types" /></p>
+      <p>查 #64 时，顺序扫描要检查到第 5 条；目录先比较 #42，再比较 #64，随后按原书目位置读取书名。换成 #42，顺序扫描第一条就能找到。<strong>少量样本不能证明某种方案永远更快。</strong>查 #65 时，两种路径都必须在范围耗尽后明确返回“未找到”。</p>
+      <p id="index-types" className="vp-citation-target">真实索引有不同结构。PostgreSQL 默认的 B-tree 是多层树状结构，不是演示里平铺的九个数；它可帮助查“编号等于 64”，也可帮助查“编号在 60 到 80 之间”。Hash 索引只支持前一种等值比较。演示里的逐次排除只是解释有序查找，不能当成所有索引的工作方式。<Cite id="index-types" /></p>
     </ArticleSection>
     <ArticleSection id="tradeoff" title="读得更快，也要多维护" className={base.offset}>
       <Legacy slug="index" names={["quiz-heading"]} />
-      <p id="index-cost" className="vp-citation-target">索引占用额外空间，相关数据插入、修改或删除时，也需要维护对应结构。给很少查询的列加索引，可能付出了写入成本却没得到读性能收益。优先围绕实际频繁、昂贵的查询设计，再核对收益。<Cite id="index-cost" /></p>
+      <p id="index-cost" className="vp-citation-target">开发者按查询需要选择列、建立索引；建好后，数据库会随表的修改更新它，不用每次手工改目录。索引占用额外空间，数据插入、修改或删除时，相关索引也得跟着更新。给很少查询的列加索引，可能付出了写入成本却没得到读性能收益。优先围绕实际频繁、昂贵的查询设计，再核对收益。<Cite id="index-cost" /></p>
       <div className={s.tradeoff}><div><MagnifyingGlass size={28} weight="light" /><h3>一次查询</h3><p>希望少读无关记录。</p></div><div><Files size={28} weight="light" /><h3>一次修改</h3><p>可能同时维护表与索引。</p></div></div>
     </ArticleSection>
     <ArticleSection id="plan" title="用执行计划核对路径">
       <Legacy slug="index" names={["prompt-heading"]} />
-      <p id="index-plan" className="vp-citation-target">在 PostgreSQL 中，可以用 <code>EXPLAIN</code> 查看执行计划。统计信息会影响估算；表很小，或查询需要取回很多行时，顺序扫描可能更合适。应使用接近真实的数据分布检查，而不是看见计划没有索引就认定出错。<Cite id="index-plan" /></p>
+      <p id="index-plan" className="vp-citation-target">在 PostgreSQL 中，可以用 <code>EXPLAIN</code> 查看数据库打算怎样查。数据库参考表的行数和取值的大致分布，估计每条查找路线的成本。表很小时，直接读完可能省事；如果查询要取回大部分记录，沿索引找到许多位置再逐条回表，也可能不如顺着表读。拿接近实际的数据量和分布去试，不要一看计划没走索引就认定出错。<Cite id="index-plan" /></p>
       <ArticleAside title="一个检查入口">
         <pre className={base.code}>{'EXPLAIN\nSELECT title FROM books WHERE book_id = 64;'}</pre>
-        <p>先看走了哪条路径、预计返回多少行，再决定是否调整索引。这里没有运行这条 SQL，也没有提供虚构的毫秒数。实际测量还会受到缓存、存储和并发负载影响。</p>
+        <p>先看它打算走哪条路径、预计返回多少行，再决定是否调整索引。这里没有运行这条 SQL，也没有提供虚构的毫秒数。实际测量还会受到缓存、存储和并发负载影响。</p>
       </ArticleAside>
     </ArticleSection>
   </ConceptArticle>;

@@ -56,7 +56,7 @@ export function IndexLesson() {
     </div>
     <div className={s.searchReadout} aria-live="polite"><States index={read && indexed ? trace.steps.length + 1 : step}>{[<p key="start">目标 <strong>#{target}</strong> · 等待第一次比较</p>, ...trace.steps.map((frame, i) => <p key={i}>第 {i + 1} 次比较 · <strong>#{frame.id}</strong>{frame.found ? indexed ? " 命中目录，等待读取记录" : " 匹配，已读取记录" : i === trace.steps.length - 1 ? " 不匹配，范围耗尽：未找到" : indexed ? frame.id < target ? " 小于目标，继续右侧" : " 大于目标，继续左侧" : " 不匹配，继续下一条"}</p>), <p key="read">目录比较 {readCount} 次 · 已读取 <strong>#{receipt?.id}</strong> 的记录</p>]}</States></div>
     <div className={s.actions}><button disabled={ended} onClick={next}>比较下一项<ArrowRight size={18} /></button><button disabled={!indexed || !found || read} onClick={() => { setReceipt(books.find(book => book.id === current.id)!); setReadCount(step); setRead(true); }}><BookOpen size={18} />读取记录</button><button aria-label="重置查找" onClick={clear}><ArrowCounterClockwise size={18} /></button></div>
-    <div className={s.recordLocations}><h3>原记录位置</h3><div>{books.map((book, i) => <span key={book.id} data-selected={read && receipt?.id === book.id}><small>{i + 1}</small><code>#{book.id}</code></span>)}</div></div>
+    <div className={s.recordLocations}><h3>原书目位置</h3><div>{books.map((book, i) => <span key={book.id} data-selected={read && receipt?.id === book.id}><small>{i + 1}</small><code>#{book.id}</code></span>)}</div></div>
     <Reveal open={read}><div className={s.searchReceipt} role="status"><BookOpen size={26} /><div><strong>{receipt?.title}</strong><span>#{receipt?.id} · {receipt?.available ? "可借" : "已借出"}</span></div></div></Reveal>
   </div>;
 }
