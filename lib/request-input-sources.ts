@@ -1,7 +1,7 @@
 const mdn = (title: string, path: string, citations: string[]) => ({ publisher: "MDN Web Docs · 贡献者", title, date: "", url: `https://developer.mozilla.org/en-US/docs/${path}`, citations });
 export const queryParameterSources = [
   { publisher: "IETF · Tim Berners-Lee、Roy Fielding、Larry Masinter", title: "RFC 3986 — URI Generic Syntax · §3.4", date: "2005-01", url: "https://www.rfc-editor.org/rfc/rfc3986.html#section-3.4", citations: ["query-component"] },
-  mdn("URLSearchParams", "Web/API/URLSearchParams", ["query-reading", "query-empty", "query-encoding"]),
+  mdn("URLSearchParams", "Web/API/URLSearchParams", ["query-reading", "query-empty", "query-encoding", "query-input", "query-raw"]),
   { publisher: "OWASP · Robert Gilbert；Michal Biesiada", title: "Information exposure through query strings in URL", date: "", url: "https://community.owasp.org/vulnerabilities/Information_exposure_through_query_strings_in_url", citations: ["query-secrets"] },
   mdn("URLSearchParams: getAll() method", "Web/API/URLSearchParams/getAll", ["query-reading"]),
 ];

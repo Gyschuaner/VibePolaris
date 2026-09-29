@@ -14,35 +14,45 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) {
 export function QueryParameterTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={queryParameterSources} />;
   return <ConceptArticle slug="query-parameter" title="查询参数" sources={queryParameterSources}
-    intro={<>书店还是那家书店，列表可以只看科学书，也可以同时看艺术书。地址里的查询参数把这些条件带给程序，让它知道这次要返回哪一组结果。</>}
+    intro={<>你在书店网页上选择“科学”，AI 写的程序把地址改成了 /books?tag=science。问号后面这段是在做什么？它把这次筛选条件留在地址里，让读取地址的程序知道你想看哪些书。</>}
     sections={[["conditions", "地址中的条件"], ["selection", "用查询条件筛选集合"], ["encoding", "特殊字符的编码"], ["contract", "共享地址与接口约定"]]}
-    hero={<ConceptHero slug="query-parameter" label="本例中，路径 /books 不变；应用读取 ?tag=science 后，六本书仍在原位，科学类别的星空手记与潮汐与月亮突出显示，其他类别变淡但未删除"><div className={s.queryHero}>
+    hero={<ConceptHero slug="query-parameter" label="本例中，路径 /books 不变；应用读取 ?tag=science 后，六本书仍在原位，科学类别的《星空手记》《潮汐与月亮》突出显示，其他类别变淡但未删除"><div className={s.queryHero}>
       <div className={s.queryAddress}><code>/books</code><code>?tag=science</code></div>
       <div className={s.queryCatalog}><span>本例 tag 对照分类</span><div className={s.queryCards}>{queryBooks.map(book => <div key={book.id} data-match={book.tag === "science"}><strong>{book.title}</strong><code>{book.tag}</code></div>)}</div></div>
     </div></ConceptHero>}>
     <ArticleSection id="conditions" title="地址中的条件">
       <Legacy slug="query-parameter" names={["question", "definition"]} />
-      <p id="query-component" className="vp-citation-target"><strong>查询参数是应用放在 URL 查询部分中的命名输入。</strong>查询部分从第一个 <code>?</code> 开始，到 <code>#</code> 或地址末尾结束。常见写法是 <code>键=值</code>，多项用 <code>&amp;</code> 连接；URI 规范定义这个位置，却不规定 <code>tag</code> 要筛选什么。<Cite id="query-component" /></p>
+      <p>URL 就是网页或其他资源的地址。这里省略了网站域名，只看 <code>/books?tag=science</code>：/books 是路径，指向书目列表；问号后面的 tag=science 是本次附带的输入。</p>
+      <p id="query-component" className="vp-citation-target"><strong>查询参数是在地址的查询部分中，用名称和值表达的输入。</strong>通常写成 <code>键=值</code>：“键”就是参数名，例如 tag；science 是它的值。路径之后用 <code>?</code> 引出查询部分，多项用 <code>&amp;</code> 连接；若后面出现 <code>#</code>，查询部分就到这里结束。# 引出的部分叫片段，常用于定位页面内的位置。地址规范定义了这些部分的位置，却不规定 tag 要筛选什么。<Cite id="query-component" /></p>
       <div className={s.urlExample}><code>/books</code><span>?</span><code><mark>tag=science</mark></code></div>
-      <p>本页约定：tag 指定图书分类，多次出现表示“任一分类都可以”；q 按书名包含的文字筛选。不提供 tag 就不过滤分类，提供一个不存在的分类就得到空集合。这些是这家示例书店的规则，换一个接口需要重新看它的说明。</p>
+      <p>本页约定 tag 指定分类：science 是科学，art 是艺术，nature 是自然。写 <code>tag=science</code>，程序就从六本书里选出两本科学书。可以由服务器读这个条件后返回结果，也可以由网页程序读取后筛选已有数据；本页演示采用后一种做法。</p>
+      <p>不用查询参数也能筛书：页面可以只在内部记住你选了“科学”。但如果没有把条件写进地址，也没有另外保存，复制链接给别人时，对方未必能看到同样的筛选条件。把条件留在地址里，通常更方便收藏和分享。</p>
     </ArticleSection>
     <ArticleSection id="selection" title="用查询条件筛选集合">
       <Legacy slug="query-parameter" names={["scene-heading"]} />
-      <p>先应用“科学”，再试“科学或艺术”和“逗号写法”。这里会实际解析输入并筛选下方六本示例书；淡下去的是未命中的书，不是被删除的数据。也可以直接编辑查询串，例如 <code>q=星空</code>。演示不向服务器发送请求。</p>
+      <p>默认已经填好科学分类，但还没有筛选。点击“应用查询”会突出两本命中的书，其他书留在原位并变淡，方便对照；它们没有从书店数据中被删除。点击“科学或艺术”等示例只是填写条件，还要再点“应用查询”。编辑输入会撤下旧结果，点“重置筛选”则恢复科学条件，等待重新应用。</p>
+      <p id="query-input" className="vp-citation-target">输入框只接收问号后、片段之前的查询字符串，例如 <code>tag=science</code>；不要粘贴完整地址、/books 路径或 # 片段。这里用浏览器自带的 <code>URLSearchParams</code> 读取参数，它负责解析这种键和值的写法，并不负责拆分完整 URL，也不决定怎样筛书。演示不会修改浏览器地址或向服务器发送请求。<Cite id="query-input" /></p>
       <QueryParameterLesson />
-      <p id="query-reading" className="vp-citation-target"><code>URLSearchParams.get("tag")</code> 只读取第一个值，<code>getAll("tag")</code> 读取全部同名值。<strong>逗号不会自动把一个值拆成两个值。</strong>所以本例中 <code>tag=science,art</code> 找不到分类；服务若希望支持这种写法，必须另外约定并解析。<Cite id="query-reading" /></p>
-      <div className={s.compare}><div><h3>缺失</h3><p><code>/books</code><br />没有 tag，本例展示所有分类。</p></div><div><h3>空值</h3><p id="query-empty" className="vp-citation-target"><code>/books?tag=</code><br />存在 tag，值是空字符串。URLSearchParams 也把单独的 <code>tag</code> 解析为空字符串；没有这个键时，get 返回 null。<Cite id="query-empty" /></p></div></div>
+      <p id="query-reading" className="vp-citation-target">“科学或艺术”填入的是 <code>tag=science&amp;tag=art</code>，同一个参数名出现了两次。演示里的 <code>get("tag")</code> 表示取第一个 tag 值，得到 science；<code>getAll("tag")</code> 取全部同名值，得到 <code>["science","art"]</code>，方括号表示这是一组值。<strong>逗号不会自动把一个值拆成两个值。</strong><code>tag=science,art</code> 读出来只有一个值 science,art。<Cite id="query-reading" /></p>
+      <p>接下来才轮到书店的筛选规则。本例使用全部 tag 值，约定命中任意一个分类就保留，所以科学或艺术共选出四本。逗号写法只是在找名字叫“science,art”的分类，这里没有，结果是 0 本；六本书的原始数据仍然保留。别的接口也可以约定逗号分隔，但要由它的程序另外处理。</p>
+      <div className={s.compare}><div><h3>缺失</h3><p><code>/books</code><br />没有 tag。本例不限制分类，六本都命中；点击“全部”后再应用，就能看到这个结果。</p></div><div><h3>空值</h3><p id="query-empty" className="vp-citation-target"><code>/books?tag=</code><br />有 tag，但等号后没有文字，这个值叫空字符串，显示为 <code>""</code>。本例没有空名称的分类，所以命中 0 本。URLSearchParams 也把单独的 <code>tag</code> 读成空字符串；完全没有这个键时，get 返回 <code>null</code>，表示没找到这个值。<Cite id="query-empty" /></p></div></div>
+      <p>本例还识别 q，意思是书名里要包含的文字。<code>q=星空</code> 只命中《星空手记》；<code>tag=science&amp;q=星空</code> 则要求既是科学书，书名又包含“星空”。q 不填或留空时，不按书名筛选。参数是否必填、重复后取几个值、几个条件怎样组合，都需要看接收它的程序约定。</p>
     </ArticleSection>
     <ArticleSection id="encoding" title="特殊字符的编码">
-      <p id="query-encoding" className="vp-citation-target">搜索词里也可能有加号、空格和 &amp;。把原值交给 URLSearchParams，它会在序列化时编码：空格变成 <code>+</code>，原本的加号变成 <code>%2B</code>。不要先手工编码一次再传入，否则百分号还会被再次编码。<Cite id="query-encoding" /></p>
+      <p>假如搜索词本身是 <code>A+B &amp; C</code>，直接拼成 <code>q=A+B &amp; C</code> 就有歧义：&amp; 会被读成下一项参数的分隔符，+ 也可能不再代表加号。需要把一个值里的特殊字符编码，避免它们被误读成查询串的结构。</p>
+      <p id="query-encoding" className="vp-citation-target">下面默认填入“星空 + 艺术 &amp; 自然”。程序把原始文字作为 q 的<strong>单个值</strong>交给 URLSearchParams，再生成查询串，这一步也叫序列化。它按自己的编码规则把空格写成 <code>+</code>，字面加号写成 <code>%2B</code>，&amp; 写成 <code>%26</code>；解析后能还原出原值。不是所有 URL 编码方式都把空格写成 +，你也可能见到 <code>%20</code>。<Cite id="query-encoding" /></p>
       <QueryEncodingLesson />
-      <p>看最后解析回来的 q 是否与原值一致。编码解决的是字符边界，不是保密；<code>%26</code> 可以还原为 &amp;，不能因为地址看起来难读就把它当成加密。</p>
+      <p>把上面的原始搜索词改成 <code>A+B &amp; C</code>，查询串会是 <code>q=A%2BB+%26+C</code>，“解析得到 q”一行仍是原来的文字。这里输入的是一个值；前一个筛选实验输入的却是已经组织好的查询串，两者不同。</p>
+      <p id="query-raw" className="vp-citation-target">例如，解析查询串 <code>q=A+B</code> 会得到“A B”，因为其中的 + 被当作空格；要保留加号，查询串应写 <code>q=A%2BB</code>。但在“原始搜索词”框里，应直接填 A+B，不要先改成 A%2BB：这个框会把百分号也作为原文编码：% 变成 %25，所以结果变成 A%252BB。需要搜索字面 # 时同理，应让生成查询串的工具将它编码为 <code>%23</code>，不要把它混同于完整地址里的片段开头。<Cite id="query-raw" /></p>
+      <p>看最后解析回来的 q 是否与原值一致。编码解决的是字符边界，不是保密；%26 可以还原为 &amp;，不能因为地址看起来难读就把它当成加密。</p>
     </ArticleSection>
     <ArticleSection id="contract" title="共享地址与接口约定" className={base.offset}>
       <Legacy slug="query-parameter" names={["quiz-heading", "prompt-heading"]} />
-      <p>查询参数常用来表达搜索、排序和<ConceptTerm slug="pagination">分页</ConceptTerm>，方便保存或分享同一组条件。参数名称、默认值、数字范围、重复键的处理方式，都应由接口约定。字符串 <code>page=2</code> 也需要程序转换和校验，不能只因为写了数字就相信它有效。</p>
+      <p>查询参数常用来表达搜索、排序和<ConceptTerm slug="pagination">分页</ConceptTerm>。参数的默认值、取值范围等，都应由接口约定。字符串 <code>page=2</code> 也需要程序转换和校验，不能只因为写了数字就相信它有效。</p>
+      <p>分享的是条件，不一定是当时那份结果的副本。后来书店新增了科学书，同一个 tag=science 链接就可能查出更多书。程序还必须真的读取并使用参数；如果接口没有约定 price 的含义，在地址里加上 price=10 也不会自动出现价格筛选。</p>
       <p id="query-secrets" className="vp-citation-target"><strong>不要把密码或长期凭据放进查询参数。</strong>完整地址可能进入历史记录、服务日志或被复制分享；使用 HTTPS 也不会自动清除这些记录。<Cite id="query-secrets" /></p>
       <ArticleAside title="查询条件与路径定位"><p><code>/books/42</code> 常用于定位一本书，<code>/books?tag=science</code> 常用于查找一组书。它们是常见接口设计方式，并非 HTTP 规定“查询只能筛选”。判断输入放在哪里时，先确定资源、操作和接口契约。</p></ArticleAside>
+      <p>换成活动列表：<code>/events?city=杭州&amp;page=2</code> 可以按这个网站的约定表示“杭州活动的第二页”。改 city 是换筛选输入，不等于修改某场活动的举办城市。让 AI 接入这样的列表时，应说明参数名、可用值、没填时怎么处理，以及页面怎样把选项写进地址；只说“支持查询参数”，还不足以确定行为。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
