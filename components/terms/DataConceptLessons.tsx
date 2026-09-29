@@ -7,18 +7,19 @@ import { Reveal, States } from "./ExtendedConceptLessons";
 import base from "./EventConcepts.module.css";
 import styles from "./AsyncConcepts.module.css";
 
+const jsonBookText = '{\n  "title": "小岛上的灯塔",\n  "copies": 2,\n  "available": true\n}';
 const jsonExamples = [
-  { name: "书目对象", text: '{\n  "title": "小岛上的灯塔",\n  "copies": 2,\n  "available": true\n}' },
-  { name: "数量加上引号", text: '{"title":"小岛上的灯塔","copies":"2"}' },
-  { name: "多一个尾逗号", text: '{"title":"小岛上的灯塔",}' },
+  { name: "书目对象", text: jsonBookText },
+  { name: "数量加上引号", text: jsonBookText.replace('"copies": 2', '"copies": "2"') },
+  { name: "多一个尾逗号", text: jsonBookText.replace('true\n}', 'true,\n}') },
   { name: "单独一个 null", text: 'null' },
 ];
-function ValueTree({ value, name = "$", depth = 0 }: { value: unknown; name?: string; depth?: number }) {
+function ValueTree({ value, name = "整体", depth = 0 }: { value: unknown; name?: string; depth?: number }) {
   const type = value === null ? "null" : Array.isArray(value) ? "array" : typeof value;
   const isContainer = value !== null && typeof value === "object";
   const entries = isContainer ? Object.entries(value) : [];
   return <div className={styles.treeNode}>
-    <div className={styles.treeValue}><code>{name}</code><span>{type}</span>{!isContainer && <strong>{(typeof value === "number" ? String(value) : String(JSON.stringify(value))).slice(0,160)}</strong>}</div>
+    <div className={styles.treeValue}><code>{name}</code><span>{type}</span>{!isContainer && <strong>{typeof value === "number" ? String(value) : String(JSON.stringify(value))}</strong>}</div>
     {isContainer && (depth < 4 ? <div className={styles.treeChildren}>{entries.slice(0,12).map(([key, child]) => <ValueTree key={key} name={key} value={child} depth={depth + 1} />)}{entries.length > 12 && <p>还有 {entries.length - 12} 项，预览已省略</p>}{entries.length === 0 && <p>{type === "array" ? "空数组" : "空对象"}</p>}</div> : <p>更深层内容已省略</p>)}
   </div>;
 }

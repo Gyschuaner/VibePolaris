@@ -17,10 +17,11 @@ export const awaitSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "Using Web Workers", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers", citations: ["await-cpu"] },
 ];
 export const jsonSources = [
-  { publisher: "IETF · Tim Bray（编）", title: "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format", date: "2017-12", url: "https://www.rfc-editor.org/rfc/rfc8259.html", citations: ["json-values", "json-precision"] },
+  { publisher: "IETF · Tim Bray（编）", title: "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format", date: "2017-12", url: "https://www.rfc-editor.org/rfc/rfc8259.html", citations: ["json-purpose", "json-values", "json-precision"] },
   { publisher: "MDN Web Docs · 贡献者", title: "JSON", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON", citations: ["json-grammar"] },
-  { publisher: "MDN Web Docs · 贡献者", title: "JSON.parse()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse", citations: ["json-parse"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "JSON.parse()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse", citations: ["json-parse", "json-precision"] },
   { publisher: "MDN Web Docs · 贡献者", title: "JSON.stringify()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify", citations: ["json-stringify", "json-loss"] },
+  { publisher: "JSON Schema · 官方文档", title: "What is JSON Schema?", date: "", url: "https://json-schema.org/overview/what-is-jsonschema", citations: ["json-contract"] },
 ];
 export const schemaSources = [
   { publisher: "JSON Schema · Austin Wright、Henry Andrews、Ben Hutton、Greg Dennis", title: "JSON Schema Validation — Draft 2020-12", date: "", url: "https://json-schema.org/draft/2020-12/json-schema-validation", citations: ["schema-definition", "schema-boundary"] },
