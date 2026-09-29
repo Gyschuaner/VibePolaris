@@ -81,7 +81,7 @@ export function RequestBodyLesson() {
   const [format, setFormat] = useState<BodyFormat>("json");
   const [wrongType, setWrongType] = useState(false);
   const [broken, setBroken] = useState(false);
-  const [wire, setWire] = useState({ text: "", type: "", bytes: 0 });
+  const [wire, setWire] = useState({ text: "", type: "" });
   const [encoded, setEncoded] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof receiveBooking> | null>(null);
   const [received, setReceived] = useState(false);
@@ -89,7 +89,7 @@ export function RequestBodyLesson() {
   const encode = () => {
     const value = encodeBooking(title, seats, format);
     const text = broken && format === "json" ? value.text.slice(0, -1) : value.text;
-    setWire({ text, type: wrongType ? "text/plain" : value.type, bytes: new TextEncoder().encode(text).length });
+    setWire({ text, type: wrongType ? "text/plain" : value.type });
     setEncoded(true); setReceived(false);
   };
   return <div className={`${base.lab} ${s.lab}`} aria-label="请求体编码与接收实验">
@@ -103,7 +103,7 @@ export function RequestBodyLesson() {
       </form>
       <div className={s.bodyWire} aria-live="polite"><code>POST /bookings</code><States index={encoded ? 1 : 0}>{[
         <div key="idle" className={s.wireIdle}><PaperPlaneTilt size={38} weight="light" /><p>等待内容编码</p></div>,
-        <div key="wire"><span>Content-Type</span><code>{wire.type}</code><pre>{wire.text}</pre><span>{wire.bytes} 字节 · UTF-8</span></div>,
+        <div key="wire"><span>Content-Type</span><code>{wire.type}</code><pre>{wire.text}</pre></div>,
       ]}</States></div>
     </div>
     <div className={s.faults}><label className={base.option}><input type="checkbox" checked={wrongType} onChange={e => { setWrongType(e.target.checked); invalidate(); }} />把类型错标为 text/plain</label><Reveal open={format === "json"}><label className={base.option}><input type="checkbox" checked={broken} onChange={e => { setBroken(e.target.checked); invalidate(); }} />去掉 JSON 末尾花括号</label></Reveal></div>
