@@ -13,7 +13,7 @@ export function ApiContractLesson() {
   const [result, setResult] = useState(bookContract("A", true));
   const [shown, setShown] = useState(false);
   const current = bookContract(storage, mapping);
-  return <div className={`${base.lab} ${s.lab}`} aria-label="接口契约实验">
+  return <div className={`${base.lab} ${s.lab}`} aria-label="接口约定实验">
     <div className={s.choices} role="group" aria-label="内部存储结构">{(["A", "B"] as const).map(value => <button key={value} aria-pressed={storage === value} onClick={() => { setStorage(value); setShown(false); }}>内部结构 {value}</button>)}</div>
     <div className={s.contractDesk}>
       <div><h3><Database size={21} />服务内部</h3><States index={storage === "A" ? 0 : 1}>{["A", "B"].map(value => <pre key={value}>{JSON.stringify(bookContract(value as "A" | "B", true).internal, null, 2)}</pre>)}</States></div>
@@ -24,9 +24,9 @@ export function ApiContractLesson() {
     <div className={s.bookReceiver} aria-live="polite"><States index={!shown ? 0 : result.valid ? 1 : 2}>{[
       <p key="idle">调用方需要整数 id 和非空字符串 title。</p>,
       <div key="book" className={s.bookmark}><BookBookmark size={36} weight="light" /><div><strong>{result.valid ? String(result.output.title) : "星空手记"}</strong><span>图书 #{result.valid ? String(result.output.id) : "42"}</span></div><Check size={22} /></div>,
-      <div key="error" className={s.failure}><strong>无法生成书签</strong><p>收到合法 JSON，但缺少约定的 id、title 字段。</p></div>,
+      <div key="error" className={s.failure}><strong>无法生成书签</strong><p>这份数据没有约定的 id、title 字段。</p></div>,
     ]}</States></div>
-    <button className={base.reset} onClick={() => { setStorage("A"); setMapping(true); setShown(false); }}><ArrowCounterClockwise size={17} />重置契约</button>
+    <button className={base.reset} onClick={() => { setStorage("A"); setMapping(true); setShown(false); }}><ArrowCounterClockwise size={17} />重置演示</button>
   </div>;
 }
 

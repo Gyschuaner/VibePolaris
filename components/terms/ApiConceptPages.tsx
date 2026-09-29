@@ -1,4 +1,4 @@
-import { BookBookmark, Check, PlugsConnected, CalendarBlank } from "@phosphor-icons/react/dist/ssr";
+import { BookBookmark, Check, CalendarBlank } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { ApiContractLesson, EndpointLesson, RestLesson, PaginationLesson, RateLimitLesson } from "./ApiConceptLessons";
@@ -12,26 +12,37 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) {
 
 export function ApiTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={apiSources} />;
-  return <ConceptArticle slug="api" title="API" sources={apiSources} sections={[["contract", "程序之间的约定"], ["mapping", "内部变化，接口保持稳定"], ["compatibility", "调用方的依赖"]]}
-    intro={<>页面要显示一本书，不必知道书名存在哪张表里。但它必须知道怎样请求、返回字段叫什么、失败时怎样处理。API 把这些交互规则明确下来。</>}
-    hero={<ConceptHero slug="api" label="不同内部字段经过映射，输出同一份图书数据"><div className={s.apiHero}><div><code>title</code><code>display_name</code></div><PlugsConnected size={31} weight="light" /><div className={s.heroBookmark}><BookBookmark size={32} weight="light" /><strong>星空手记</strong><code>id · title</code></div></div></ConceptHero>}>
+  return <ConceptArticle slug="api" title="API" sources={apiSources} sections={[["contract", "程序之间的约定"], ["mapping", "内部变化，对外约定不变"], ["compatibility", "调用方的依赖"]]}
+    intro={<>你让 AI 给读书会做一张书签，书名要从图书服务取得。AI 说需要接 API：页面该向谁要书、怎样提问、收到什么，得先与提供图书的程序约好。</>}
+    hero={<ConceptHero slug="api" label="左侧调用方的书签与中间对外约定保持不变；右侧服务内部从 id、title 翻转为 book_id、display_name，表示内部变化仍可按原约定输出"><div className={s.apiHero}>
+      <div className={s.apiCaller}><BookBookmark size={27} weight="light" /><strong>星空手记</strong><span>调用方</span></div>
+      <div className={s.apiPort}><span>对外约定</span><code>id<br />title</code></div>
+      <div className={s.apiService}><span>服务内部</span><div className={s.apiInternal}>
+        <div className={s.apiLayerA}><code>id</code><code>title</code></div>
+        <div className={s.apiLayerB}><code>book_id</code><code>display_name</code></div>
+      </div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="contract" title="程序之间的约定">
       <Legacy slug="api" names={["question", "definition"]} />
-      <p id="api-scope" className="vp-citation-target"><strong>API 是软件向其他软件提供功能的交互接口。</strong>库中的函数、浏览器提供的能力，以及通过网络访问的服务，都可以有 API。这里用图书服务的 HTTP 接口举例；不能因此把 API 理解成一个网址。<Cite id="api-scope" /></p>
-      <p id="api-contract" className="vp-citation-target">一份可对接的约定，需要说明能调用什么、接受哪些输入、成功与失败返回什么，以及调用需要的身份和权限。OpenAPI 可以把 HTTP 操作的参数、请求体、响应与安全要求写成机器可读的描述；<strong>写好描述，还需要实现并验证服务行为。</strong><Cite id="api-contract" /></p>
+      <p>这里有两个程序：读书会网页是调用方，图书服务是提供方。网页向服务发出“给我编号 42 的书”这样的请求，服务查找后把书的信息交回来，网页再用书名画出书签。若把书名预先写死在网页里，也能显示这张书签；书库里的书名后来变了，网页却不会从服务取得新值。</p>
+      <p id="api-scope" className="vp-citation-target"><strong>API 是软件向其他代码开放功能时，供调用方使用的操作和规则。</strong>它告诉调用方可以做什么、怎样给出信息，以及会得到什么；提供方负责在内部完成工作。代码库提供的函数、浏览器内置的操作、网络服务的请求方式，都可以是 API 的一部分。本页先看图书服务的 HTTP API，API 本身不是某个网址。<Cite id="api-scope" /></p>
+      <p>在本例的约定中，网页用 <code>GET /books/42</code> 读取这本书。GET 是这次的读取操作，<code>/books/42</code> 是图书服务中的位置；服务返回 <code>{'{"id":42,"title":"星空手记"}'}</code>。这里 <code>id</code> 是数字编号，<code>title</code> 是书名文字；这种带字段名的文本写法叫 <ConceptTerm slug="json">JSON</ConceptTerm>。网页用 <code>title</code> 显示书名，用 <code>id</code> 标明是哪本书，再画出书签；它无须知道服务内部把书名放在哪张表、哪个字段里。</p>
+      <p id="api-contract" className="vp-citation-target">真正对接时，还要约定输入有哪些限制、书不存在或无权读取时会返回什么，以及调用前是否需要登录或凭证。OpenAPI 可以把 HTTP 操作、输入、响应和安全要求写成可供工具读取的描述；<strong>文档说明了预期，服务仍要实际实现这些行为。</strong><Cite id="api-contract" /></p>
+      <p id="api-browser" className="vp-citation-target">浏览器提供的音频处理能力也有 API。例如网页代码调用浏览器开放的音频操作，调整一段声音的音量；这里调用的是浏览器自带的功能，不需要图书服务的网址。它与前面的 HTTP API 形式不同，共同点是调用方按提供方开放的操作和规则使用能力。<Cite id="api-browser" /></p>
     </ArticleSection>
-    <ArticleSection id="mapping" title="内部变化，接口保持稳定">
+    <ArticleSection id="mapping" title="内部变化，对外约定不变">
       <Legacy slug="api" names={["scene-heading"]} />
-      <p>本例调用方只认识整数 <code>id</code> 和非空字符串 <code>title</code>。切换服务内部的存储结构，再试着关闭映射：同一本书，为什么有时能生成书签，有时不能？</p>
+      <p>下面只检查这份约定中的输出字段。网页要求整数 <code>id</code> 和非空文字 <code>title</code>。服务内部先用结构 A 保存 <code>id</code> 和 <code>title</code>；切到结构 B 后，内部字段改成 <code>book_id</code> 和 <code>display_name</code>，书仍是编号 42 的《星空手记》。</p>
       <ApiContractLesson />
-      <p id="api-mapping" className="vp-citation-target">结构 B 把书名保存在 <code>display_name</code> 中。服务可以在输出前把它映射回约定的 <code>title</code>，让内部重构不影响调用方。直接把存储结构透传出去，才会让这次字段改名穿过接口边界。Microsoft 的接口设计建议同样强调业务表示与内部存储的分离。<Cite id="api-mapping" /></p>
-      <p>这个实验只做浏览器内的数据转换，没有访问真实书库。它检验的是字段契约；能解析 <ConceptTerm slug="json">JSON</ConceptTerm> 或拿到成功状态码，都不能单独证明字段符合约定。</p>
+      <p id="api-mapping" className="vp-citation-target">勾着“按约定映射”时，服务把 B 的 <code>book_id</code>、<code>display_name</code> 分别整理成对外的 <code>id</code>、<code>title</code>。网页仍收到编号 42 和“星空手记”，可以生成同一张书签。关闭映射再交给调用方，B 的内部字段直接出现在外部数据里，网页找不到约定的 <code>id</code>、<code>title</code>，书签就不能生成。A 的字段原本与对外约定相同，关闭映射仍能通过本例检查；这不代表所有内部结构都能直接公开。Microsoft 的 Web API 设计建议也强调不要让外部数据直接照搬内部存储。<Cite id="api-mapping" /></p>
+      <p>实验只在浏览器内转换教学数据，没有访问真实书库或发送网络请求。它检查的是字段约定：即使内容能写成格式正确的 JSON，也不能单凭这一点断定网页会读到需要的字段。</p>
     </ArticleSection>
     <ArticleSection id="compatibility" title="调用方的依赖" className={base.offset}>
       <Legacy slug="api" names={["quiz-heading", "prompt-heading"]} />
-      <div className={s.compatibility}><div><code>title → display_name</code><p>旧调用方仍然读取 title，改名会打断它。</p></div><div><code>title + subtitle</code><p>如果旧调用方忽略未知字段，新增字段通常能共存。</p></div></div>
-      <p id="api-compatibility" className="vp-citation-target"><strong>兼容性要看已有调用方依赖的行为。</strong>删除字段、改变类型或含义，都可能破坏依赖；新增字段也要考虑客户端是否严格拒绝额外字段。接口演进应有明确的兼容或版本策略，而不是只检查新页面能否运行。<Cite id="api-compatibility" /></p>
-      <ArticleAside title="失败情况也要写入约定"><p>图书不存在、调用方无权读取、输入格式错误，后续处理各不相同。约定失败状态和错误结构，调用方才能决定显示空态、请求登录还是修正输入。前往 <ConceptTerm slug="endpoint">端点</ConceptTerm>，可以继续看一个操作怎样对应到具体入口。</p></ArticleAside>
+      <div className={s.compatibility}><div><code>对外 title → display_name</code><p>服务如果把对外的 title 改成别的名字，仍然读取 title 的旧调用方就会出错。</p></div><div><code>对外 title + subtitle</code><p>如果旧调用方忽略未知字段，新增字段通常能共存。</p></div></div>
+      <p id="api-compatibility" className="vp-citation-target"><strong>兼容性要看已有调用方依赖的行为。</strong>删除字段、改变类型或含义，都可能让已有调用方出错。如果旧页面只接受 <code>id</code> 和 <code>title</code> 两个字段，新加 <code>subtitle</code> 也会使它拒绝整份数据；允许未知字段的页面则可以继续读。对外约定每次变化，都应有明确的兼容或版本策略，不能只检查新页面能否运行。<Cite id="api-compatibility" /></p>
+      <p>再换个例子：天气网页向服务取温度。如果服务内部把温度的存储字段改了，却仍按约定向网页返回原来的温度字段，旧页面可以继续读；如果对外字段也改名，旧页面仍按原名取值，就需要同步修改页面或保留旧接口。是否兼容，要从调用方实际读取的内容判断。</p>
+      <ArticleAside title="失败情况也要写入约定"><p>图书不存在、调用方无权读取、输入格式错误，后续处理各不相同。约定失败状态和错误结构，调用方才能决定显示空态、请求登录还是修正输入。想看一个操作怎样对应到具体入口，可以接着读<ConceptTerm slug="endpoint">端点</ConceptTerm>。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

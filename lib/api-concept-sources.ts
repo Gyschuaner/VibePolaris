@@ -4,6 +4,7 @@ export const apiSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "API — Glossary", date: "", url: "https://developer.mozilla.org/en-US/docs/Glossary/API", citations: ["api-scope"] },
   openapi(["api-contract"]),
   { publisher: "Microsoft · Azure Architecture Center", title: "Web API design best practices", date: "", url: "https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design", citations: ["api-mapping", "api-compatibility"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Introduction to web APIs", date: "", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction", citations: ["api-browser"] },
 ];
 export const endpointSources = [
   openapi(["endpoint-address", "endpoint-operation"]),
