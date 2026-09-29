@@ -49,23 +49,24 @@ export function TokenTermPage() {
   return <ConceptArticle slug="token" title="Token" subtitle="词元" sources={tokenSources}
     hero={<ConceptHero slug="token" label="lower 沿 low 与 er 的分界拆开，两段分别对应编号 1 与 2"><div className={styles.tokenHero}><div className={styles.tokenPieces}><span>low<small>1</small></span><span>er<small>2</small></span></div></div></ConceptHero>}
     sections={[["pieces", "文字与编号"], ["vocabulary", "边界由词表决定"], ["decode", "从编号回到文字"], ["budget", "按分词器核算请求"]]}
-    intro={<>Token 是语言模型处理序列时使用的单位。文本先经过分词器，变成一串编号；<strong>一个 Token 可能对应一个词、词的一部分，或更小的片段。</strong></>}>
+    intro={<>你输入的文字先经过分词器，变成一串编号，再由语言模型处理。<strong>一个 Token 是其中的一个单位，可能对应一个词、词的一部分，或更小的片段。</strong></>}>
     <ArticleSection id="pieces" title="文字与编号">
       <OldAnchor slug="token" part="definition" />
-      <p id="token-encoding" className="vp-citation-target">分词器先把文字拆成片段，再通过词表把片段映射为整数编号。这些编号让模型能够使用同一套离散词表处理输入。我们平时看到的彩色文字块，是编号对应内容的一种显示方式。<Cite id="token-encoding" /></p>
-      <p>先用一套很小的教学词表看清这件事。切换按字符或按子词，再把文字翻到编号一面。这里的两套词表和编号都是自定义样例，只覆盖 lower 与 lowest，不代表任何真实模型。</p>
+      <p id="token-encoding" className="vp-citation-target">分词器先把文字拆成片段，再通过词表把片段映射为整数编号。模型收到的是这些编号；分词演示把片段单独画出来，是为了让我们看清切分位置，普通聊天仍显示连续文字。<Cite id="token-encoding" /></p>
+      <p>先用两套很小的教学词表看清这件事。切换按字符或按子词，再把文字翻到编号一面。这里的两套词表和编号都是自定义样例，只覆盖 lower 与 lowest，不代表任何真实模型。</p>
       <OldAnchor slug="token" part="scene-heading" /><TokenLesson />
       <p>lower 按字符拆成 5 个单位，按这里的子词表拆成 low 和 er 两个单位。原文没有变，表示它的编号序列变了。编号 1 在一套词表里是 l，在另一套里是 low，离开对应词表就不能直接比较。</p>
+      <p>中文也不能直接按字数推算。假如教学词表里分别收录了“日”和“志”，那么“日志”会占两个单位；若词表收录的是“日志”这一整段，它又可能只占一个。这只是用来说明词表差异的假设，不是任何真实模型对“日志”的计数。</p>
     </ArticleSection>
     <ArticleSection id="vocabulary" title="边界由词表决定">
       <p id="token-boundaries" className="vp-citation-target">按完整单词切分，遇到不常见的词可能无从表示；按字符切分，序列又容易变长。子词方法在这两者之间取舍，让常见片段可以合在一起，其他内容拆成更小的单位。<strong>所以字数、单词数和 Token 数并不是同一个数。</strong><Cite id="token-boundaries" /></p>
-      <dl className={styles.pairDefinition}><div><dt>Token</dt><dd>切分后得到的一个单位，以及它在词表中的编号。</dd></div><div><dt>分词器</dt><dd>负责切分和编号转换的程序；它的词表与规则会影响结果。</dd></div></dl>
+      <dl className={styles.pairDefinition}><div><dt>Token</dt><dd>切分后得到的一个单位；模型使用它在词表中对应的编号。</dd></div><div><dt>分词器</dt><dd>负责切分和编号转换的程序；它的词表与规则会影响结果。</dd></div></dl>
       <p id="token-vocabulary" className="vp-citation-target">BPE 是一种常见方法：训练分词器时，逐步合并经常相邻出现的片段；处理新文本时，再按学到的合并规则切分。字节级 BPE 从字节出发，因此显示成一个字符的内容也可能涉及多个单位。分词器的训练与语言模型本身的训练是不同环节。<Cite id="token-vocabulary" /></p>
-      <p id="token-model-count" className="vp-citation-target">即使原文不变，换用的分词器或词表不同，边界和编号也可能改变。OpenAI 的 tiktoken 就提供了按模型选择编码的接口。想知道一份材料实际占多少，应使用目标模型对应的分词器，把空格、标点和代码符号也连同原文一起输入。<Cite id="token-model-count" /></p>
+      <p id="token-model-count" className="vp-citation-target">即使原文不变，分词器或词表一换，边界和编号也可能改变。OpenAI 的 tiktoken 就提供了按模型选择编码的接口。想知道一份材料实际占多少，应使用目标模型对应的分词器，把空格、标点和代码符号也连同原文一起输入。<Cite id="token-model-count" /></p>
     </ArticleSection>
     <ArticleSection id="decode" title="从编号回到文字" className={styles.offset}>
-      <p id="token-decoding" className="vp-citation-target">解码按词表把编号转换回可显示的文字。Hugging Face 的课程特别提醒，解码也需要处理空格和子词连接方式，并非简单地在每个片段之间插入空格。真实分词器还可能涉及规范化或特殊标记，不能一概假设所有输入都逐字节原样返回。<Cite id="token-decoding" /></p>
-      <p>在本页这个没有规范化步骤的小词表里，[1, 2] 可以还原成 lower。你点击“按编号还原”，看到的是查回 low、er 后拼接的结果；它没有查询词典，也没有理解 lower 的含义。</p>
+      <p id="token-decoding" className="vp-citation-target">解码按词表把编号转换回可显示的文字。Hugging Face 的课程特别提醒，解码也需要处理空格和子词连接方式，并非简单地在每个片段之间插入空格。不同分词器怎样还原文字，还要看各自的规则，不能把本页的小词表照搬到所有模型。<Cite id="token-decoding" /></p>
+      <p>在本页的小词表里，[1, 2] 可以还原成 lower。你点击“按编号还原”，看到的是按编号查回 low、er，再把它们接在一起；程序没有判断 lower 是什么意思。</p>
       <blockquote className={styles.pullquote}>编号让文本可以被计算；<br />编号的大小不代表词义的大小。</blockquote>
       <p>后续模型会把编号映射到内部表示，再进行计算。Token 与<ConceptTerm slug="embedding">嵌入</ConceptTerm>有关，但不是同一件事：前者是序列里的离散单位，后者是模型使用的数值表示。</p>
     </ArticleSection>
@@ -73,7 +74,8 @@ export function TokenTermPage() {
       <OldAnchor slug="token" part="quiz-heading" /><OldAnchor slug="token" part="prompt-heading" />
       <p id="token-counting" className="vp-citation-target">以 Claude 的计数接口为例，可以在发送消息前估算请求的输入 Token；请求中的系统说明、工具和多模态内容也需要考虑。官方将计数结果称为估计，实际用量可能略有不同。因此，应同时查看对应接口的计数规则和实际请求返回的用量。<Cite id="token-counting" /></p>
       <p>你粘贴的正文只是输入的一部分。应用还可能加入历史消息、工具定义或检索资料；生成的回答也有自己的长度限制。规划<ConceptTerm slug="context-window">上下文窗口</ConceptTerm>时，应给输出和后续工具结果留出空间。</p>
-      <p>更短的编号序列不自动意味着回答更好。删掉重复日志可能有帮助，删掉唯一的错误位置则可能让模型失去依据。控制数量时，仍要保留当前任务真正需要的内容。</p>
+      <p>如果聊天应用没有显示完整请求或用量，你只能估算，不能凭输入框里的字数断定还剩多少空间。</p>
+      <p>编号序列更短，不代表回答更好。删掉重复日志可能有帮助，删掉唯一的错误位置则可能让模型失去依据。控制数量时，仍要保留当前任务真正需要的内容。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
