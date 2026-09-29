@@ -26,7 +26,7 @@ test("结构化内容不少于首发 20 条且包含首页可直达术语", () =
   }
 });
 
-test("产品页面没有运行时 AI SDK 或模型请求", () => {
+test("公开内容页面不直接发起模型请求", () => {
   const files = [
     "app/page.tsx",
     "app/terms/[slug]/page.tsx",

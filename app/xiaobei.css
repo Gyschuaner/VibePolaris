@@ -1,0 +1,71 @@
+.xb-trigger { position: fixed; right: 28px; bottom: max(28px, env(safe-area-inset-bottom)); z-index: 80; width: 56px; height: 56px; padding: 5px; border: 1px solid var(--hairline); border-radius: 50%; background: var(--surface); color: var(--accent-text); cursor: pointer; box-shadow: 0 5px 24px #00000012; transition: transform .2s, box-shadow .2s; }
+.xb-trigger:hover { transform: translateY(-3px) rotate(8deg); box-shadow: 0 8px 32px #00000020; }
+.xb-trigger svg { width: 100%; height: 100%; }
+.xb-trigger span { position: absolute; right: 68px; top: 15px; width: max-content; padding: 4px 9px; border: 1px solid var(--hairline); border-radius: 6px; background: var(--surface); color: var(--ink); font-size: 12px; opacity: 0; pointer-events: none; transform: rotate(-8deg); }
+.xb-trigger:is(:hover,:focus-visible) span { opacity: 1; }
+.xb-trigger:focus-visible, .xb-panel button:focus-visible, .xb-activation-form :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.xb-dialog { position: fixed; inset: auto 24px 24px auto; width: min(440px, calc(100vw - 48px)); height: min(730px, calc(100dvh - 48px)); max-width: none; max-height: none; padding: 0; margin: 0; overflow: hidden; background: var(--surface); color: var(--ink); border: 1px solid var(--hairline); border-radius: 22px; box-shadow: 0 22px 80px #00000022; }
+.xb-dialog::backdrop { background: #00000012; }
+.xb-panel { display: flex; flex-direction: column; height: 100%; font-size: 14px; line-height: 1.7; }
+.xb-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 16px; }
+.xb-identity { display: flex; align-items: center; gap: 11px; }
+.xb-identity svg { width: 36px; height: 36px; color: var(--accent-text); }
+.xb-identity h2 { margin: 0; font-size: 19px; font-weight: 650; line-height: 1.4; }
+.xb-identity p { margin: 1px 0 0; font-size: 11px; color: var(--muted); }
+.xb-actions { display: flex; gap: 5px; }
+.xb-actions button { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; }
+.xb-actions button:hover { background: var(--bg); color: var(--ink); }
+.xb-panel button:disabled { opacity: .4; cursor: default; }
+.xb-meta { display: flex; justify-content: space-between; gap: 12px; padding: 10px 22px; border-block: 1px solid var(--hairline); font-size: 11px; color: var(--muted); background: var(--bg); }
+.xb-meta span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xb-meta span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.xb-log { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 22px; scrollbar-width: thin; }
+.xb-welcome { margin: 35px 0 24px; }
+.xb-welcome > svg { width: 38px; height: 38px; color: var(--accent-text); margin-bottom: 13px; }
+.xb-welcome h3 { margin: 0; font-size: 26px; font-weight: 550; line-height: 1.55; letter-spacing: -.7px; }
+.xb-welcome > p { max-width: 280px; color: var(--muted); font-size: 13px; margin: 15px 0 25px; }
+.xb-suggestions { display: grid; gap: 9px; }
+.xb-suggestions button { display: flex; align-items: center; justify-content: space-between; padding: 12px 13px; text-align: left; border: 1px solid var(--hairline); border-radius: 10px; background: transparent; color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
+.xb-suggestions button:hover { border-color: var(--accent-text); }
+.xb-message { margin: 0 0 24px; overflow-wrap: anywhere; }
+.xb-message:empty { display: none; }
+.xb-user { margin-left: 35px; padding: 12px 15px; border-radius: 14px 14px 3px 14px; background: var(--bg); border: 1px solid var(--hairline); }
+.xb-user p { margin: 3px 0 0; white-space: pre-wrap; }
+.xb-message-page, .xb-speaker { font-size: 10px; color: var(--muted); }
+.xb-speaker { display: block; margin-bottom: 8px; color: var(--accent-text); }
+.xb-answer { white-space: pre-wrap; line-height: 1.85; }
+.xb-answer a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.xb-answer code { border-radius: 4px; background: var(--bg); padding: 2px 4px; font-size: .9em; }
+.xb-answer pre { max-width: 100%; overflow-x: auto; padding: 13px; border: 1px solid var(--hairline); border-radius: 10px; background: var(--bg); white-space: pre; }
+.xb-answer pre code { padding: 0; }
+.xb-status { color: var(--muted); font-size: 12px; }
+.xb-status i { display: inline-block; width: 5px; height: 5px; margin-right: 8px; background: var(--accent-text); border-radius: 50%; }
+.xb-error { font-size: 12px; color: var(--ink); padding: 10px 12px; background: var(--bg); border-left: 2px solid var(--accent-text); }
+.xb-compose { border-top: 1px solid var(--hairline); padding: 15px 18px 13px; }
+.xb-compose form { position: relative; }
+.xb-compose textarea { display: block; width: 100%; resize: none; min-height: 84px; max-height: 180px; padding: 12px 46px 12px 13px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; font-size: 13px; line-height: 1.6; }
+.xb-compose textarea:focus { outline: 1px solid var(--accent-text); outline-offset: 0; }
+.xb-compose textarea::placeholder { color: var(--muted); }
+.xb-send { position: absolute; bottom: 10px; right: 10px; display: grid; place-items: center; width: 31px; height: 31px; border: 0; border-radius: 8px; background: var(--accent-text); color: var(--surface); cursor: pointer; }
+.xb-footnote { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3px 10px; margin-top: 8px; font-size: 10px; color: var(--muted); }
+.xb-warning { padding: 0 0 10px; margin: 0; font-size: 11px; color: var(--accent-text); }
+.xb-activation { min-height: 100dvh; display: grid; place-items: center; padding: 32px 24px; }
+.xb-activation-card { width: min(100%, 360px); }
+.xb-activation-star { font-size: 46px; line-height: 1; color: var(--accent-text); }
+.xb-eyebrow { margin: 23px 0 14px; color: var(--muted); font-size: 10px; letter-spacing: 1.5px; }
+.xb-activation h1 { font-size: 34px; line-height: 1.5; font-weight: 550; letter-spacing: -1px; }
+.xb-activation-intro { color: var(--muted); margin: 15px 0 35px; font-size: 13px; }
+.xb-activation-form { display: grid; gap: 10px; }
+.xb-activation-form label { font-size: 12px; }
+.xb-activation-form input { width: 100%; padding: 14px; background: var(--surface); color: var(--ink); border: 1px solid var(--hairline); border-radius: 9px; font: inherit; font-size: 14px; }
+.xb-activation-form button { padding: 13px; margin-top: 3px; background: var(--accent-text); color: var(--surface); border: 0; border-radius: 9px; font: inherit; font-size: 13px; cursor: pointer; }
+.xb-activation-form button:disabled { opacity: .5; cursor: default; }
+.xb-activation-form > p { font-size: 12px; color: var(--muted); }
+@media (max-width: 600px) {
+  .xb-trigger { right: 18px; bottom: max(22px, env(safe-area-inset-bottom)); width: 50px; height: 50px; }
+  .xb-dialog { inset: 0; width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+  .xb-header { padding-top: max(18px, env(safe-area-inset-top)); }
+  .xb-compose { padding-bottom: max(13px, env(safe-area-inset-bottom)); }
+  .xb-compose textarea { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .xb-trigger { transition: none; } }
