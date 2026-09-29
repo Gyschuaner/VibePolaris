@@ -41,8 +41,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 27 response | 服务端返回消息，客户端更新页面 | 响应保留 201 与正文 title；客户端处理后页面书签原地出现 | 本地与 dev 集成完成 · PR #130 |
 | 28 http-method | 对资源的操作意图 | 同一资源依不同动作读取、创建、替换或删除 | 本地与 dev 集成完成 · PR #131 |
 | 29 status-code | 响应结果类别 | 同一请求在不同条件下落入不同结果出口 | 本地与 dev 集成完成 · PR #132 |
-| 30 http-header | 消息附加信息 | 同一资源可有不同表示，请求头表达偏好 | 本地完成 · 待 dev 集成 |
-| 31 query-parameter | URL 中附加的选项 | 地址尾部条件变动，实际列表筛选或排序 | 待更新 |
+| 30 http-header | 消息附加信息 | 同一资源可有不同表示，请求头表达偏好 | 本地与 dev 集成完成 · PR #133 |
+| 31 query-parameter | URL 中附加的选项 | 地址尾部条件变动，实际列表筛选或排序 | 本地验收通过 · 待 dev 集成 |
 | 32 path-parameter | 路径定位具体资源 | 地址中的位置槽变化，镜头定位不同实体 | 待更新 |
 | 33 request-body | 发送的内容 | 正文载荷剖面展开，不混入地址栏 | 待更新 |
 | 34 api | 程序间约定的入口 | 天气界面与提供方分区，固定入口承接不同城市 | 待更新 |
@@ -561,6 +561,16 @@ ZCode CLI inspiration 会话 `sess_e0a04c6f-e0f8-43da-b003-76099f2a70b9` 实际�
 ZCode CLI inspiration 会话 `sess_12f0ce0f-5fd1-4ff4-8aca-9ece1448c1b2` 实际读取协作 Skill 与动画参考，提出同一资源双显影、请求挂牌与备货窗口、同轨两轮三个方案；取第一个的“一份资源、两份表示”空间结构。未采用影像剥离回程，避免暗示两份表示必须事先存成实体文件，或 Accept 自身执行转换；本例只是服务器支持两种返回形式。已实际核实 MDN HTTP headers、Accept header、Content-Type header、Content negotiation、Forbidden request header 五份来源；沿用现有正文论断和引用映射，不把本地协商算法当成 HTTP 的固定规则。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图终帧仍有一份书名资源与两种表示，JSON 被选中而 TXT 保留；390×844 首图 330×225，页面宽度 390 无溢出。主演示默认 JSON 协商得 200、Content-Type application/json 与 JSON 正文；切成 text/plain 先清旧结果，再得 200、纯文本正文；application/xml 得 406 且两种格式都不选中；重置恢复初始，Enter 可触发协商。五个旧锚点与五份来源在页，Content negotiation 书目摘录回链落到正文目标，应用错误日志为空。未做人类读者试读。VBP-017 用例 `a5c2ed2c-dffb-4e1f-9c69-62dff8b5865e`，本地计划 `95a154c7-a61a-4d20-9d84-21e31f378dde` completed、执行 `53b55067-a484-4900-9c32-79fffe1f3963` passed。VBP-017 从 ready_for_release 按允许流转进入 testing 完成本条复测登记，待 dev 集成后复核质量门禁。
+
+2026-09-29 集成：提交 `52cae40` 经 [PR #133](https://github.com/Gyschuaner/VibePolaris/pull/133) 合入 `dev`，merge `1a57f5f322e28d7f0b600a3f96350ea7c3d010b1`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用相同 Git 树和构建产物，`http://localhost:3219/terms/http-header` 在真实浏览器复核新首图、JSON 协商结果、五份来源与旧锚点，应用错误为空。DP 部署 `bac9b09e-5678-46f7-8c11-d1d521ff59d1` 已回查；前版 `477ad54` 构建备份在 `/tmp/vbp012-dev-next-477ad54`。未部署远端 dev 或生产。VBP-017 从 testing 经质量门禁返回 ready_for_release（版本17）；DP VBP-012 描述更新至 30/105、版本40；下一条 query-parameter。
+
+## 31 · query-parameter
+
+读者入口：“我只是给 `/books` 加了 `?tag=science`，书店里的其他书是被删了吗？重复写两个 tag 和在一个值里写逗号一样吗？”原正文与可编辑主演示已经讲清查询位置、示例接口的分类约定、`get`/`getAll`、空值、编码和敏感信息风险，保留。原首图只有 A–F 六个无语义书脊，筛选后四本下移并接近消失，容易误会数据被删除。新首图显示同一 `/books` 和分开的查询条件，六本带书名和实际 tag 的书保持原位；条件出现后科学 tag 与两本书突出，其他四本仅变淡。筛选结果是否返回四本、空集合以及编码边界留给主演示。
+
+ZCode CLI inspiration 会话 `sess_bbdcc259-a549-4efb-88b3-9c5bc9ebb9b8` 实际读取协作 Skill 与动画参考，提出静置六本书、可见分类标签、条件显现后匹配标签先亮再突出书的方案；采用这条机制。没有加入扫描指针，因为真实 URL 查询并不是一根指针逐本巡检；也不让未命中书离开或缩小，避免和删除混淆。实际核实 RFC 3986 §3.4、MDN URLSearchParams、MDN getAll()、OWASP query string exposure 四份来源；为 `getAll()` 增补独立来源和正文回链，维持其余书目映射。`tag` 的匹配是本例书店约定，不声称 URI 标准规定这种筛法。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图终帧六本书仍在原位，科学两本突出；390×844 首图 330×225，页面宽度 390 无溢出。主演示 `tag=science` 命中两本，重复键 `science&art` 命中四本，逗号单值和空值都得空集合，缺失 tag 得六本，`q=星空` 通过 Enter 命中一本；编辑条件撤销旧结果，重置回未应用态。编码 `A+B & C` 得 `q=A%2BB+%26+C` 并回读原值。五个旧锚点、四份来源与 getAll() 书目回链在页，应用错误日志为空。未做人类读者试读。VBP-018 用例 `2263a9e0-f2c1-4241-9744-9cb7334eeba7`，本地计划 `69470efd-9290-4c75-bc89-3eb79fb21231` completed、执行 `9e989676-7ded-406f-b8ef-d4dd84ecb5e5` passed。VBP-018 从 ready_for_release 按允许流转进入 testing 完成本条复测登记，待 dev 集成后复核质量门禁。
 
 ## 01 · Harness
 

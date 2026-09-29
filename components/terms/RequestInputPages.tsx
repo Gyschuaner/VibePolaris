@@ -3,6 +3,7 @@ import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptT
 import { ConceptHero } from "./ConceptHero";
 import { QueryParameterLesson, QueryEncodingLesson, PathParameterLesson, RequestBodyLesson } from "./RequestInputLessons";
 import { queryParameterSources, pathParameterSources, requestBodySources } from "@/lib/request-input-sources";
+import { queryBooks } from "@/lib/request-input-teaching";
 import base from "./EventConcepts.module.css";
 import s from "./RequestInputs.module.css";
 
@@ -15,7 +16,10 @@ export function QueryParameterTermPage() {
   return <ConceptArticle slug="query-parameter" title="查询参数" sources={queryParameterSources}
     intro={<>书店还是那家书店，列表可以只看科学书，也可以同时看艺术书。地址里的查询参数把这些条件带给程序，让它知道这次要返回哪一组结果。</>}
     sections={[["conditions", "地址中的条件"], ["selection", "用查询条件筛选集合"], ["encoding", "特殊字符的编码"], ["contract", "共享地址与接口约定"]]}
-    hero={<ConceptHero slug="query-parameter" label="同一组书目按条件筛选后只保留两本"><div className={s.queryHero}><code>/books?tag=science</code><div className={s.heroBooks}>{["A", "B", "C", "D", "E", "F"].map(letter => <span key={letter}>{letter}</span>)}</div></div></ConceptHero>}>
+    hero={<ConceptHero slug="query-parameter" label="本例中，路径 /books 不变；应用读取 ?tag=science 后，六本书仍在原位，科学类别的星空手记与潮汐与月亮突出显示，其他类别变淡但未删除"><div className={s.queryHero}>
+      <div className={s.queryAddress}><code>/books</code><code>?tag=science</code></div>
+      <div className={s.queryCatalog}><span>本例 tag 对照分类</span><div className={s.queryCards}>{queryBooks.map(book => <div key={book.id} data-match={book.tag === "science"}><strong>{book.title}</strong><code>{book.tag}</code></div>)}</div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="conditions" title="地址中的条件">
       <Legacy slug="query-parameter" names={["question", "definition"]} />
       <p id="query-component" className="vp-citation-target"><strong>查询参数是应用放在 URL 查询部分中的命名输入。</strong>查询部分从第一个 <code>?</code> 开始，到 <code>#</code> 或地址末尾结束。常见写法是 <code>键=值</code>，多项用 <code>&amp;</code> 连接；URI 规范定义这个位置，却不规定 <code>tag</code> 要筛选什么。<Cite id="query-component" /></p>
