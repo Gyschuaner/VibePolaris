@@ -157,7 +157,11 @@ export function HttpHeaderTermPage() {
   return <ConceptArticle slug="http-header" title="请求头" sources={headerSources}
     intro={<>同样请求 /books/42，有的客户端想要 JSON，有的只需要纯文本。请求头可以把这些偏好告诉服务器，地址和书的内容都不必因此改变。</>}
     sections={[["fields", "内容之外的信息"], ["negotiate", "同一本书，两种表示"], ["directions", "Accept 与 Content-Type"], ["limits", "字段的控制者"]]}
-    hero={<ConceptHero slug="http-header" label="Accept选择JSON表示，纯文本表示退后"><div className={s.headerHero}><code>Accept: application/json</code><div><FileText size={31} /><strong>JSON</strong></div><div><FileText size={31} /><strong>TXT</strong></div></div></ConceptHero>}>
+    hero={<ConceptHero slug="http-header" label="同一资源 /books/42 有 JSON 和纯文本两种可提供的表示；请求头 Accept: application/json 表达偏好后，本例选择 JSON 表示，书名和资源地址不变"><div className={s.headerHero}>
+      <div className={s.headerSource}><BookOpen size={22} /><code>/books/42</code><strong>海边的书店</strong></div>
+      <div className={s.headerPreference}><span>请求头</span><code>Accept: application/json</code></div>
+      <div className={s.headerVariants}><span>本例可提供</span><div><span>JSON</span><code>{'{"title":"海边的书店"}'}</code></div><div><span>TXT</span><strong>海边的书店</strong></div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="fields" title="内容之外的信息">
       <Legacy slug="http-header" names={["question", "definition"]} />
       <p id="header-fields" className="vp-citation-target"><strong>请求头是随请求发送的字段，用来补充内容、客户端和处理条件等信息。</strong>HTTP 头也可以出现在响应中。字段名不区分大小写，但字段值如何解释，要看每个字段的定义；不能把所有值都转成小写。<Cite id="header-fields" /></p>
