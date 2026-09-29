@@ -350,6 +350,12 @@ ZCode 独立只读会话 `sess_9f893752-f2e0-489d-9bbd-3c5a6c9cd8ef`，reader，
 
 2026-09-29 集成：提交 `b5143ff` 经 [PR #115](https://github.com/Gyschuaner/VibePolaris/pull/115) 合入 `dev`，merge `37ea76d9a1337d1dc86f0c39b5a06acd1e9f85ca`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/agent` 在真实浏览器再核对分叉首图、第四份来源与无应用错误。DP 部署 `32dd2070-b4c5-4e1c-a0c8-2c9d14a05694` 已回查；前一版 `0bfb6cc` 构建备份在 `/tmp/vbp012-dev-next-0bfb6cc`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 12/105、版本 21；下一条 component。
 
+2026-09-29 自查补审：遇词情境是“AI 帮我写邀请，与它去查日历安排会议有什么不同”；读完应判断何时需要模型据外部结果选择下一步，并能区分计划、工具实际结果与成功证据。无动画通读可从“目标与边界→日历反馈→模型/运行程序/工具职责→固定流程对照→完成或停止”解释主线；与工具调用、智能体循环和 Harness 的关系已有正文区分。重新实际阅读四份原始资料：[Hugging Face 的 Agent 定义](https://huggingface.co/learn/agents-course/en/unit1/what-are-agents) 支持模型与能力分工，[Anthropic 工程文章](https://www.anthropic.com/engineering/building-effective-agents) 支持动态 Agent/固定工作流及环境反馈、停止条件，[Hugging Face 行动与观察章节](https://huggingface.co/learn/agents-course/en/unit1/agent-steps-and-structure) 支持决定、调用、返回的循环，[OpenAI Agents SDK Running agents](https://openai.github.io/openai-agents-python/running_agents/) 支持 `max_turns` 超限抛错；分别对应 `agent-definition-source`、`agent-parts`、`agent-feedback`、`agent-workflow`、`agent-stopping`，SDK 行为只写成实例。
+
+ZCode 独立只读会话 `sess_792c6b6f-6ea8-4b7a-934e-ebb209978e39`，reader，只读 partner Skill、完整常驻正文和按操作配对的演示文字，没有访问网页、源码或作者意图。模拟读者能据正文判断“全由预设代码转 CSV、发邮件”的新场景并非本页定义的 Agent；它指出写文案与 Agent 的边界、Harness 的具体职责和真实日历结果何时进入下一步不够明确，以及 SDK 轮数术语影响顺读。主助手把必要解释移到常驻正文：模型先提出读日历，运行程序核对并调用工具，结果返回后才决定草稿或追问；明确 Harness 是组织模型与工具往返的运行程序，范围内只准备不发送。继续同一任务还是新任务、长期授权等进阶追问不属于本页必需前提，未据模拟反馈扩写。另一独立会话 `sess_b22793af-b1f0-498c-92fb-40eaa6462694`，language，实际读取 partner、humanizer-zh 和当前 Agent 成稿源码；采纳引言、演示边界、询问句和停止句的局部措辞修正；按 Anthropic 原文把“统一叫法”改成“统一定义”，按 OpenAI SDK 文档把“报错退出”限定为本次运行抛错停止。模型审读均非真人读者验收。
+
+补审仅改正文与首图说明标签，不改动画、主演示、锚点和来源编号。首次新 worktree 构建因 `node_modules` 跨目录符号链接被 Turbopack 拒绝，按相同 lockfile 在该 worktree 执行 `npm ci` 后重试；最终 `npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。`http://localhost:3220/terms/agent` 真实浏览器桌面确认新正文和原首图，390×844 长段落可读且页面 `scrollWidth` 为 390，无横向溢出，应用错误日志为空。此处为本地补审结果，dev 集成另记。
+
 ## 13 · component
 
 读者入口：“同一个成员卡片用在三个人身上，到底复用的是什么？”原页正文、成员卡互动已经说明公共定义、不同输入与各实例的局部关注状态；首图原本只有三张相同占位纸卡依次飞入，读者看不到卡片如何由头像、姓名和关注位组成，也难分清定义和屏幕上的实例。本轮保留已有互动和正文主线，重做这一处视觉，把部件先在同一轮廓内合成 MemberCard，再在 MemberList 内显出三张姓名各异、结构一致的实例；首图是教学示意，不画成实际 React 的渲染步骤或三个定义。

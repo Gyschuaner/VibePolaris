@@ -83,7 +83,7 @@ export function TokenTermPage() {
 export function AgentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={agentSources} />;
   return <ConceptArticle slug="agent" title="Agent" sources={agentSources}
-    hero={<ConceptHero slug="agent" label="同一目标下，两人有共同空档时准备未发送草稿；没有共同空档时询问其他时间，任务未完成">
+    hero={<ConceptHero slug="agent" label="同一目标下，两人有共同空档时准备草稿但不发送；没有共同空档时询问其他时间，任务未完成">
       <div className={styles.agentForkHero}>
         <div className={styles.agentGoal}><CalendarBlank size={18} /><span>找共同空档</span></div>
         <div className={styles.agentForkLine} />
@@ -102,35 +102,35 @@ export function AgentTermPage() {
       </div>
     </ConceptHero>}
     sections={[["goal", "从一个目标开始"], ["calendar", "根据查到的结果行动"], ["roles", "模型与运行程序"], ["workflow", "固定步骤与自主选择"], ["stop", "完成和停止"]]}
-    intro={<>智能体围绕目标，让模型选择接下来做什么，并通过工具与环境交互。<strong>它要根据实际结果继续判断，直到完成任务，或遇到需要停下的条件。</strong></>}>
+    intro={<>智能体围绕目标工作：模型选择下一步，运行程序调用工具获取外部信息或执行动作。<strong>它要根据实际结果继续判断，直到完成任务，或遇到需要停下的条件。</strong></>}>
     <ArticleSection id="goal" title="从一个目标开始">
       <OldAnchor slug="agent" part="definition" />
-      <p>“帮我写一封会议邀请”和“查两人的日历，找 30 分钟共同空档，只准备邀请”是两种不同的任务。后一种任务需要读到现在的安排，决定有没有合适的时间，再产生符合要求的草稿。</p>
+      <p>“帮我写一封会议邀请”和“查两人的日历，找 30 分钟共同空档，只准备邀请”是两种不同的任务。前者可以只根据你给的要求写出文字，不知道双方那天是否有空；后者必须读到现在的安排，再根据查到的结果决定下一步：准备草稿，还是询问其他时间。</p>
       <p id="agent-definition-source" className="vp-citation-target">Hugging Face 的课程把智能体定义为利用 AI 模型与环境交互、实现用户目标的系统。这里谈的是基于语言模型的智能体；规划和判断依靠模型，能采取哪些动作则取决于接入的能力。<Cite id="agent-definition-source" /></p>
       <dl className={styles.taskBrief}><div><dt>目标</dt><dd>找到两人的共同空档。</dd></div><div><dt>完成证据</dt><dd>日历结果与邀请时间一致。</dd></div><div><dt>可用能力</dt><dd>读取日历、准备草稿。</dd></div><div><dt>本次边界</dt><dd>不发送邀请。</dd></div></dl>
       <p>这些条件决定什么值得去查、什么算完成。“安排好了”只是一个说法；真正能核对的结果是时间是否可用、草稿是否已准备，以及有没有越过用户给出的范围。</p>
     </ArticleSection>
     <ArticleSection id="calendar" title="根据查到的结果行动">
-      <p>先让日历结果回来，再决定下一步。下面是两条固定的教学路径，点击按钮只是逐步查看动作；没有连接真实日历、调用模型或发送邀请。</p>
+      <p>先让日历结果回来，再决定下一步。下面是两条固定的教学路径，点击按钮只是逐步查看动作；这里没有连接真实日历，没有调用模型，也不会发送邀请。</p>
       <OldAnchor slug="agent" part="scene-heading" /><AgentLesson />
-      <p id="agent-feedback" className="vp-citation-target">实际运行的智能体需要从工具和环境取得反馈，用来判断进度。Hugging Face 的课程把决定下一步、调用工具、观察结果连在一起；Anthropic 的实践文章也强调，应依据真实工具返回或执行结果继续，而非只依据模型先前的计划。<strong>计划要查日历，与已经查到空档，是两件事。</strong><Cite id="agent-feedback" /></p>
-      <p>切到“没有共同空档”，继续执行会得到一个补充询问，而不是一张虚构的邀请。目标没有变，下一步却因为证据不同而改变。把缺少的信息说明白，也是这个系统应当具备的能力。</p>
+      <p id="agent-feedback" className="vp-citation-target">实际运行的智能体需要从工具和环境取得反馈，用来判断进度。在这个例子里，模型先提出读取日历，运行程序核对后调用日历工具，把结果交回模型。模型据此选择准备草稿或询问其他时间；若要写草稿，程序还需确认没有越过“只准备邀请”的范围。Hugging Face 的课程把决定下一步、调用工具、观察结果串成一个循环；Anthropic 的实践文章也强调，应依据真实工具返回或执行结果继续，而非只依据模型先前的计划。<strong>计划要查日历，与已经查到空档，是两件事。</strong><Cite id="agent-feedback" /></p>
+      <p>切到“没有共同空档”，继续执行时，页面会询问你能否换个时间，而不会编出一张邀请。目标没有变，下一步却因为证据不同而改变。把缺少的信息说明白，也是这个系统应当具备的能力。</p>
     </ArticleSection>
     <ArticleSection id="roles" title="模型与运行程序">
       <p id="agent-parts" className="vp-citation-target">模型可以根据任务和已有信息决定使用哪种能力，但实际动作需要有相应工具。Hugging Face 用“模型”和“能力”来区分这两部分：没有接入的能力，不能仅靠一句指令自动获得。<Cite id="agent-parts" /></p>
-      <dl className={styles.roleList}><div><Brain size={25} /><dt>模型</dt><dd>看到日历后，提出选择 10:00，或者询问其他时间。</dd></div><div><GearSix size={25} /><dt>Harness</dt><dd>准备本轮输入、检查请求、安排执行，并把结果送回。</dd></div><div><Wrench size={25} /><dt>工具</dt><dd>读取具体日历，或写入一份邀请草稿。</dd></div></dl>
-      <p>Agent 是这些部分围绕目标一起工作的系统。<ConceptTerm slug="agent-loop">智能体循环</ConceptTerm>描述它怎样反复处理结果；<ConceptTerm slug="agent-harness">Harness</ConceptTerm>提供运行时的组织与约束。它们不是三个可以互相替换的名称。</p>
+      <dl className={styles.roleList}><div><Brain size={25} /><dt>模型</dt><dd>看到日历后，提出选择 10:00，或者询问其他时间。</dd></div><div><GearSix size={25} /><dt>Harness</dt><dd>把目标和日历结果交给模型，核对下一步是否在本次允许的范围内，再安排工具执行。</dd></div><div><Wrench size={25} /><dt>工具</dt><dd>读取具体日历，或写入一份邀请草稿。</dd></div></dl>
+      <p>这里把组织模型和工具往返的运行程序称为 <ConceptTerm slug="agent-harness">Harness</ConceptTerm>。Agent 是这些部分围绕目标一起工作的系统；<ConceptTerm slug="agent-loop">智能体循环</ConceptTerm>描述它怎样反复利用结果决定下一步。三者分别是系统、运行程序和反复行动的过程。</p>
     </ArticleSection>
     <ArticleSection id="workflow" title="固定步骤与自主选择" className={styles.offset}>
-      <p id="agent-workflow" className="vp-citation-target">“Agent”并没有一种覆盖所有产品的统一叫法。Anthropic 在其工程文章中区分：工作流按预先写好的代码路径组织操作；智能体则让模型动态决定过程和工具使用。对路径明确的任务，固定工作流往往更容易预测。<Cite id="agent-workflow" /></p>
+      <p id="agent-workflow" className="vp-citation-target">“Agent”并没有一种覆盖所有产品的统一定义。Anthropic 在其工程文章中区分：工作流按预先写好的代码路径组织操作；智能体则让模型动态决定过程和工具使用。对路径明确的任务，固定工作流往往更容易预测。<Cite id="agent-workflow" /></p>
       <p>比如每天把同一份报表转换格式再存档，规则已经清楚，未必需要模型临场规划。若要调查原因不明的服务故障，下一次该读哪个文件取决于刚发现的线索，才更需要动态选择。</p>
       <ArticleAside title="本页演示与真实智能体"><p>本页用写好的分支让结果稳定可复现，它本身是教学程序。真实的语言模型智能体由模型提出动作，运行程序检查和执行；模型也可能选错，所以不能把演示中两条正确路径当作实际可靠性的证明。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stop" title="完成和停止">
       <OldAnchor slug="agent" part="quiz-heading" /><OldAnchor slug="agent" part="prompt-heading" />
-      <p id="agent-stopping" className="vp-citation-target">智能体既可以在目标完成后结束，也可以在遇到阻碍时等待人类反馈。运行系统还会设置停止条件：例如 OpenAI Agents SDK 的 Runner 超出设定的最大轮数时会报错退出。<strong>停止是一种运行状态，不一定意味着任务成功。</strong><Cite id="agent-stopping" /></p>
+      <p id="agent-stopping" className="vp-citation-target">智能体既可以在目标完成后结束，也可以在遇到阻碍时等待人类反馈。运行程序还会限制模型最多能被调用多少次；例如 OpenAI Agents SDK 的 Runner 在调用轮数超过设定上限时会抛错，本次运行随之停止。<strong>停止是一种运行状态，不一定意味着任务成功。</strong><Cite id="agent-stopping" /></p>
       <p>本例中，草稿准备完成就是已达到这次目标；没有空档则是等待新信息。两种情况都停止，却只有前者完成了任务。发送邀请超出了本次授权，不能因为工具可用就顺手发出。</p>
-      <p>真正检查一个智能体时，可以沿着同一条证据线看：它读到了什么、据此选择了什么、实际发生了什么、结果是否满足目标。若没有这些记录，一段自信的总结无法证明它做对了事。</p>
+      <p>真正检查一个智能体时，可以沿着同一条证据线看：它读到了什么、据此选择了什么、实际发生了什么、结果是否满足目标。若没有这些记录，一段自信的总结无法证明它把事情做对了。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
