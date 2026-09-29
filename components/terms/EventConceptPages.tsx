@@ -58,32 +58,32 @@ export function BubblingTermPage() {
       <div className={`${styles.bubbleScene} ${styles.bubblePass}`}><span className={styles.bubbleCaption}>继续冒泡</span><div className={styles.bubbleList}><span>列表</span><div className={styles.bubbleCard}><span>卡片</span><div className={styles.bubbleButton}><BookmarkSimple size={22} weight="fill" /></div></div></div><i className={styles.bubbleMarker} /></div>
       <div className={`${styles.bubbleScene} ${styles.bubbleStop}`}><span className={styles.bubbleCaption}>按钮处停止</span><div className={styles.bubbleList}><span>列表</span><div className={styles.bubbleCard}><span>卡片</span><div className={styles.bubbleButton}><BookmarkSimple size={22} weight="fill" /></div></div></div><i className={styles.bubbleMarker} /></div>
     </div></ConceptHero>}
-    intro={<>点击卡片里的按钮时，父容器的监听器也可能执行。因为<strong>同一个事件到达目标后，可以沿着 DOM 祖先继续向上传播</strong>，这个阶段叫冒泡。</>}
+    intro={<>点击卡片里的按钮时，卡片和列表上预先登记的处理函数也可能执行。网页元素可以一层包着一层；<strong>同一次点击到达按钮后，还能沿着外层元素继续传播</strong>，这个阶段叫冒泡。</>}
     relatedIntro={<>先用 <ConceptTerm slug="dom">DOM</ConceptTerm> 看清嵌套关系，再沿着 <ConceptTerm slug="event">事件</ConceptTerm> 的传播路径检查处理函数。页面上的视觉位置，不一定等于 DOM 中的父子关系。</>}>
     <ArticleSection id="path" title="一次点击经过几层">
       <Anchors slug="event-bubbling" names={["question", "definition"]} />
-      <p>一个阅读列表里有文章卡片，卡片里又有收藏按钮。你想收藏文章，却发现外层卡片的点击处理也运行了。要理解原因，先看这三个元素的嵌套关系。</p>
-      <p id="bubble-order" className="vp-citation-target">对于本例的 click，先执行按钮上的目标阶段处理，再经过卡片和列表上的冒泡处理。<strong>同一次点击事件依次到达这些位置，父元素没有重新制造新的点击。</strong>监听器是否注册、事件是否继续传播，共同决定哪些函数会运行。<Cite id="bubble-order" /></p>
-      <p>下面是真实的三层 DOM。点击收藏，右侧按浏览器实际回调顺序留下记录；淡入只是慢放展示，真实执行并不会等动画播完。打开“在按钮处停止传播”，再比较一次。</p>
+      <p>一个阅读列表里有文章卡片，卡片里又有收藏按钮。你想收藏文章，却发现外层卡片上登记的点击处理函数也运行了。要理解原因，先看这三个元素的嵌套关系。</p>
+      <p id="bubble-order" className="vp-citation-target">默认只记录冒泡时，按钮、卡片、列表上的处理函数会依次执行。<strong>这是同一次点击到达了三个位置，外层元素没有重新制造点击。</strong>浏览器此前还会经过从外向内的捕获阶段；本例初始不显示那段记录，后面可以勾选显示。哪些函数真正运行，还取决于该位置是否添加了监听、事件是否被提前停止。<Cite id="bubble-order" /></p>
+      <p>下面是三层 DOM（浏览器记录的网页元素层级）：按钮是 <code>button</code>，在卡片 <code>article</code> 里；卡片又在列表 <code>div</code> 里。收藏按钮每按一次会在“收藏”和“已收藏”之间切换。点击后，记录区会按浏览器实际执行处理函数的顺序留下记录；淡入只是慢放，真实执行不等动画。勾选“在按钮处停止传播”后再点一次，看按钮动作和外层记录各有什么变化。勾选状态会保留，除非再点勾选框取消，或按“重置传播演示”。</p>
       <Anchors slug="event-bubbling" names={["scene-heading"]} /><BubblingLesson />
-      <p id="bubble-capture" className="vp-citation-target">记录捕获阶段后，列表和卡片的捕获监听会先于按钮执行：从外层向目标靠近，随后才是目标和向外冒泡。注册监听器时指定 <code>capture: true</code>，就是选择在捕获阶段接收。只记录冒泡时，看不到捕获日志，不代表事件没有经过这条路径。<Cite id="bubble-capture" /></p>
+      <p id="bubble-capture" className="vp-citation-target">勾选“记录捕获阶段”后，记录区会先显示列表和卡片的捕获记录：事件从外层向按钮靠近，随后才到按钮并向外冒泡。添加监听时指定 <code>capture: true</code>，就是选择在捕获阶段接收。即使没勾选，本次点击仍经过捕获路径，只是记录区不显示它。如果“在按钮处停止传播”仍勾着，捕获记录和按钮记录都会出现，之后的冒泡记录不会出现。<Cite id="bubble-capture" /></p>
     </ArticleSection>
     <ArticleSection id="targets" title="目标与当前处理位置" className={styles.offset}>
       <p id="bubble-targets" className="vp-citation-target">在本页这个普通 DOM 例子里，<code>target</code> 始终指向最初点击的按钮，<code>currentTarget</code> 则是当前监听器所在的元素。传播过程中变的是处理位置，不是最初点击的位置。<Cite id="bubble-targets" /></p>
       <table className={styles.targetTable}><thead><tr><th>执行中的监听器</th><th>target</th><th>currentTarget</th></tr></thead><tbody><tr><td>按钮</td><td><code>button</code></td><td><code>button</code></td></tr><tr><td>卡片</td><td><code>button</code></td><td><code>article</code></td></tr><tr><td>列表</td><td><code>button</code></td><td><code>div</code></td></tr></tbody></table>
-      <p>例如列表需要判断“这次点了哪篇文章”，应从目标向上找到所属文章；如果把 currentTarget 当成点击目标，就只会拿到整个列表。这个表只描述当前例子，不讨论跨 Shadow DOM 边界的目标重定向。</p>
+      <p>例如列表需要判断“这次点了哪篇文章”，应从目标向外层找到所属文章；如果把 <code>currentTarget</code> 当成点击目标，就只会拿到整个列表。这个表只对应本页的普通嵌套结构；跨 Shadow DOM 等特殊边界时，对外看到的 <code>target</code> 可能改变，本页不展开。</p>
     </ArticleSection>
     <ArticleSection id="stopping" title="停止传播的边界">
-      <p id="bubble-stop" className="vp-citation-target"><code>stopPropagation()</code> 阻止事件继续传播，但不会撤销已经执行的监听器，也不会阻止当前元素上的其他监听器。于是本例在按钮处停止时，之前的捕获日志仍然存在，之后卡片和列表的冒泡日志消失。<Cite id="bubble-stop" /></p>
-      <div className={styles.contrast}><div><h3>停止传播</h3><p>控制事件是否继续经过其他节点。</p></div><div><h3>取消默认行为</h3><p>控制浏览器是否执行导航、表单提交等默认动作。</p></div></div>
-      <p id="bubble-default" className="vp-citation-target">这两个动作互不替代。<code>preventDefault()</code> 不会自动截断传播；而仅仅停止一个链接点击的传播，也不会自动阻止链接导航。先明确要阻止的是哪件事，再选择方法。<Cite id="bubble-default" /></p>
-      <p>停止传播也可能影响外层需要观察点击的功能。若外层只是不该处理收藏按钮，可以在外层过滤目标，或重新划分交互区域；不必把所有内层按钮一律设成“不许冒泡”。</p>
+      <p id="bubble-stop" className="vp-citation-target"><code>stopPropagation()</code> 阻止事件继续传播，但不会撤销按钮已经完成的收藏切换，也不会阻止当前元素上的其他监听器。本例在按钮处停止时，先前的捕获记录仍在，之后卡片和列表的冒泡记录消失。按钮从“已收藏”变回“收藏”，是因为你又按了一次，而非停止传播撤销了上次收藏。<Cite id="bubble-stop" /></p>
+      <div className={styles.contrast}><div><h3>停止传播</h3><p>控制事件是否继续经过外层元素。</p></div><div><h3>取消默认行为</h3><p>控制浏览器是否执行链接跳转、表单提交等默认动作。</p></div></div>
+      <p id="bubble-default" className="vp-citation-target">这两个动作互不替代。<code>preventDefault()</code> 不会自动停止传播；而仅仅停止一个链接点击的传播，也不会自动阻止链接跳转。先明确要阻止的是哪件事，再选择方法。<Cite id="bubble-default" /></p>
+      <p>停止传播也可能影响外层需要观察点击的功能。若卡片只是不该把收藏当成“打开文章”，可以让卡片处理函数先排除收藏按钮；也可以只让文章标题链接负责打开文章，让收藏按钮负责收藏。不必把所有内层按钮一律设成“不许冒泡”。</p>
     </ArticleSection>
     <ArticleSection id="delegation" title="把处理放在父容器">
       <Anchors slug="event-bubbling" names={["quiz-heading", "prompt-heading"]} />
-      <p id="bubble-delegation" className="vp-citation-target">冒泡还能让一批子元素共用父容器上的监听器，这叫事件委托。父容器收到事件后，根据目标判断该处理哪一项；后来增加的子元素也能走这条路径，不必逐个复制相同监听逻辑。<Cite id="bubble-delegation" /></p>
+      <p id="bubble-delegation" className="vp-citation-target">冒泡还能让一批子元素共用外层列表上的监听器，这叫事件委托。列表收到点击后，查看最初点到了哪个元素，再找到它属于哪篇文章；后来增加的文章也能走这条路径，不必给每张卡片复制同一段处理代码。<Cite id="bubble-delegation" /></p>
       <pre className={styles.code}>{'list.addEventListener("click", (event) => {\n  if (!(event.target instanceof Element)) return;\n  const item = event.target.closest("[data-item]");\n  if (!item || !list.contains(item)) return;\n  // 按 item 对应的数据处理\n});'}</pre>
-      <p>寻找最近的目标元素，可以应对用户点在按钮内部图标上的情况。仍要过滤无关区域，并检查这项操作是否真的属于当前容器；“只写一个监听器”本身不是正确性的保证。</p>
+      <p>代码里的 <code>list</code> 是外层列表，<code>data-item</code> 是文章卡片上的标记；<code>closest</code> 从实际点到的元素向外找标记，所以点在按钮图标上也能找到所属文章。还要过滤无关区域，并确认找到的卡片确实在这个列表中。比如待办列表的删除按钮若不该触发“选中任务”，列表处理函数就要先识别这个按钮并跳过选中；“只写一个监听器”本身不保证处理正确。</p>
       <ArticleAside title="不是每一种事件都会冒泡"><p id="bubble-scope" className="vp-citation-target">事件对象的 <code>bubbles</code> 表示它是否会在冒泡阶段向祖先传播。不要因为 click 可以委托，就假定任意事件都一样；设计某个交互时，应先核对具体事件的文档。<Cite id="bubble-scope" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
