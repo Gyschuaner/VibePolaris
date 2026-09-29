@@ -4,6 +4,7 @@ import { z } from "zod";
 import { catalog, pageContext, platformGuide, readTerm, searchTerms, toolDefinitions } from "./knowledge";
 import { callModel, estimateTokens, type AgentEvent, type Message } from "./model.ts";
 import { XiaobeiError, type Identity, type XiaobeiStore } from "./store.ts";
+import type { ConversationState } from "./history.ts";
 
 const system = `你是 VibePolaris 内置的“小北”，用简洁中文帮助初学者理解当前词条、比较和关联概念。
 只回答本平台使用及与平台学习范围明确相关的技术知识，相关延伸不要求已有独立词条。混合请求只处理相关部分。
@@ -14,26 +15,17 @@ const system = `你是 VibePolaris 内置的“小北”，用简洁中文帮助
 不提供原始思考过程。你只有站内只读工具，不可执行代码、联网、访问笔记、读密钥或修改积分。
 ${platformGuide}\n已发布目录：\n${catalog}`;
 
-type Conversation = { messages: Message[]; touched: number; measured?: { input: number; estimate: number } };
-// ponytail: one Node process keeps transient conversations; use a shared store if deploying multiple replicas.
-const state = globalThis as typeof globalThis & { xiaobeiConversations?: Map<string, Conversation> };
-const conversations = state.xiaobeiConversations ??= new Map<string, Conversation>();
 const intentSchema = z.object({ intent: z.enum(["related", "unclear", "unrelated"]) });
 
 export async function runAgent(options: {
-  store: XiaobeiStore; identity: Identity; run: string; conversation: string; continuing: boolean;
+  store: XiaobeiStore; identity: Identity; run: string; state: ConversationState; checkpoint: () => void;
   text: string; page: string; signal: AbortSignal; emit: (event: AgentEvent) => void;
 }) {
   const { store, identity, run, signal, emit } = options;
-  for (const [key, value] of conversations) if (Date.now() - value.touched > 86_400_000) conversations.delete(key);
-  const key = `${identity.session}:${options.conversation}`;
-  let conversation = conversations.get(key);
-  if (!conversation && options.continuing) throw new XiaobeiError("这段对话的服务端上下文已失效。画面中的记录已保留，请新建对话后继续。", 409);
-  if (!conversation) {
-    conversation = { messages: [{ role: "system", content: system }], touched: Date.now() };
-    conversations.set(key, conversation);
-  }
-  conversation.touched = Date.now();
+  const conversation = options.state.model;
+  // Apply the current platform instructions while preserving this conversation's context.
+  if (conversation.messages[0]?.role === "system") conversation.messages[0].content = system;
+  else conversation.messages.unshift({ role: "system", content: system });
   const page = pageContext(options.page);
   const question: Message = { role: "user", content: JSON.stringify({ currentPage: page, question: options.text }) };
   const context = () => {
@@ -45,6 +37,8 @@ export async function runAgent(options: {
   const say = (text: string) => { const id = randomUUID(); conversation.messages.push({ role: "assistant", content: text }); emit({ type: "delta", id, text }); emit({ type: "text_end", id, phase: "answer" }); };
   emit({ type: "status", text: "正在理解问题" });
   const recent = conversation.messages.filter(m => m.role === "user" || (m.role === "assistant" && !m.tool_calls)).slice(-8).map(m => ({ role: m.role, content: m.content }));
+  conversation.messages.push(question);
+  options.checkpoint();
   const intent = await callModel({ store, identity, run, signal, json: true, messages: [
     { role: "system", content: `你只做意图分类，不回答用户问题。输出JSON，且仅包含intent字段，值为related、unclear或unrelated。
 related：VibePolaris使用问题，或与其目录明确相关的技术知识（包括必要延伸）。承接相关对话的追问也相关。混合问题含有实质相关内容可判related，后续只回答相关部分。
@@ -56,7 +50,6 @@ ${platformGuide}\n平台目录：\n${catalog}` },
   let decision: z.infer<typeof intentSchema>;
   try { decision = intentSchema.parse(JSON.parse(intent.message.content || "")); }
   catch { throw new XiaobeiError("暂时无法理解这个问题，请稍后重试。", 502); }
-  conversation.messages.push(question);
   if (decision.intent === "unrelated") { say("小北只回答 VibePolaris 的使用问题和相关技术知识。你可以问我某个词条的含义、区别或用法。"); context(); return; }
   if (decision.intent === "unclear") { say("你想了解哪个概念或平台功能？可以告诉我词条名，或贴出想解释的那句话。"); context(); return; }
 
@@ -77,18 +70,20 @@ ${platformGuide}\n平台目录：\n${catalog}` },
     try {
       result = await callModel({ store, identity, run, signal, messages: conversation.messages, tools: toolDefinitions, projectedTokens,
         onReasoning(text) { if (!text) return; thinking = true; emit({ type: "status", text: "" }); emit({ type: "think", id: `${id}-think`, text, state: "running", timestamp: Date.now() }); },
-        onDelta(text) { if (!text) return; finishThinking(); partial += text; emit({ type: "delta", id, text }); },
+        onDelta(text) { if (!text) return; finishThinking(); partial += text; options.state.pendingText = partial; emit({ type: "delta", id, text }); },
         onToolCall() { finishThinking(); emit({ type: "status", text: "正在准备查阅资料" }); },
       });
     } catch (error) {
       finishThinking(signal.aborted ? "stopped" : "error");
       if (partial) conversation.messages.push({ role: "assistant", content: partial });
+      options.state.pendingText = "";
       throw error;
     }
     finishThinking();
     conversation.measured = { input: result.usage.input, estimate };
     conversation.messages.push(result.message);
-    conversation.touched = Date.now();
+    options.state.pendingText = "";
+    options.checkpoint();
     const calls = result.message.tool_calls;
     emit({ type: "text_end", id, phase: calls?.length ? "commentary" : "answer" });
     if (!calls?.length) { context(); return; }
@@ -115,6 +110,7 @@ ${platformGuide}\n平台目录：\n${catalog}` },
       trace(signal.aborted ? "stopped" : output && typeof output === "object" && "error" in output ? "error" : "complete");
       // Even interrupted tools get a paired result, keeping the next user turn valid.
       conversation.messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(output) });
+      options.checkpoint();
     }
   }
 }
