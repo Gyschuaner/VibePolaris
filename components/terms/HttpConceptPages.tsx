@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Hash, PaperPlaneTilt } from "@phosphor-icons/react/dist/ssr";
+import { BookOpen, FileText } from "@phosphor-icons/react/dist/ssr";
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { RequestLesson, ResponseLesson, MethodLesson, StatusLesson, HeaderLesson } from "./HttpConceptLessons";
@@ -15,7 +15,13 @@ export function RequestTermPage() {
   return <ConceptArticle slug="request" title="请求" sources={requestSources}
     intro={<>在书店里搜索一本书和新增一本书，都可能访问 /books。服务器需要知道你想做什么、找哪一项、带了哪些内容。请求把这些信息组合成一条可以处理的消息。</>}
     sections={[["message", "从按钮到一条消息"], ["compose", "组装一次请求"], ["positions", "参数放在哪里"], ["boundary", "构造、发送与完成"]]}
-    hero={<ConceptHero slug="request" label="方法、目标和内容组合成一条请求"><div className={s.requestHero}><div><PaperPlaneTilt size={20} /><strong>POST /books</strong></div><div><Hash size={20} /><code>application/json</code></div><div><FileText size={20} /><code>{'{"title":"海边的书店"}'}</code></div></div></ConceptHero>}>
+    hero={<ConceptHero slug="request" label="一条 HTTP/1.1 请求的结构示意：首行写 POST 和 /books，请求头写 Content-Type，空行后是书名 JSON 正文；尚未显示发送或处理结果"><div className={s.requestHero}><div className={s.requestPaper}>
+      <span>HTTP/1.1 · 结构示意</span>
+      <div className={s.requestStart}><code><strong>POST</strong> /books HTTP/1.1</code></div>
+      <div className={s.requestHeader}><code>Content-Type: application/json</code></div>
+      <div className={s.requestGap} />
+      <div className={s.requestBody}><code>{'{"title":"海边的书店"}'}</code></div>
+    </div></div></ConceptHero>}>
     <ArticleSection id="message" title="从按钮到一条消息">
       <Legacy slug="request" names={["question", "definition"]} />
       <p id="request-message" className="vp-citation-target"><strong>HTTP 请求是客户端发给服务器的消息。</strong><ConceptTerm slug="http-method">方法</ConceptTerm>表达操作语义，目标地址确定资源，<ConceptTerm slug="http-header">请求头</ConceptTerm>补充处理信息，必要时再用请求体携带数据。它们共同说明一次操作，URL 只是其中一部分。<Cite id="request-message" /></p>

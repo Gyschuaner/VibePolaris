@@ -3,6 +3,7 @@ export const requestSources = [
   mdn("HTTP messages", "Web/HTTP/Guides/Messages", ["request-message", "request-target", "request-wire"]),
   mdn("Request: Request() constructor", "Web/API/Request/Request", ["request-object"]),
   mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["request-body-rule"]),
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke（编）", title: "RFC 9110 — HTTP Semantics · §3.4", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-3.4", citations: ["request-message"] },
 ];
 export const responseSources = [
   mdn("HTTP messages", "Web/HTTP/Guides/Messages", ["response-parts"]),

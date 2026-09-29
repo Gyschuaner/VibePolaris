@@ -36,8 +36,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 22 promise | 尚未完成的结果 | 两份独立 Promise 先空后落定：一份 A17，一份售罄，第一份保持不变 | 本地与 dev 集成完成 · PR #125 |
 | 23 async-await | 当前函数等待 | 执行线在 await 处停住，收藏独立完成；封面返回后从停点续长 | 本地与 dev 集成完成 · PR #126 |
 | 24 json | 文本表示与程序值 | 一条 JSON 文本退为底稿，对象轮廓和带类型的 title/copies 原地展开 | 本地与 dev 集成完成 · PR #127 |
-| 25 json-schema | 数据与另一份规则逐字段对照 | 规则栏与数据栏分立；status 和 count 对照线留下两处断点与字段诊断 | 本地验收完成 · 待 dev 集成 |
-| 26 request | 客户端提出一次要求 | 消息剖面依次展开方法、位置、附加信息与内容 | 待更新 |
+| 25 json-schema | 数据与另一份规则逐字段对照 | 规则栏与数据栏分立；status 和 count 对照线留下两处断点与字段诊断 | 本地与 dev 集成完成 · PR #128 |
+| 26 request | 客户端提出一次要求 | 一张连续的 HTTP/1.1 结构示意逐段显出首行、请求头、空行与正文 | 本地验收完成 · 待 dev 集成 |
 | 27 response | 服务端回答请求 | 返回消息分层显露状态与内容；对应原请求 | 待更新 |
 | 28 http-method | 对资源的操作意图 | 同一资源依不同动作读取、创建、替换或删除 | 待更新 |
 | 29 status-code | 响应结果类别 | 同一请求在不同条件下落入不同结果出口 | 待更新 |
@@ -511,6 +511,16 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_14844f
 ZCode CLI inspiration 会话 `sess_c1b8bf4e-cc0a-475f-adc2-b3567ec0c719` 实际读取协作 Skill 与动画参考，提出透明模板、双栏断线和允许区域三个空间方案；选择双栏断线，因为它与下方规则/数据对照的实物关系一致，也能在首图点出字段级缺口。舍弃模板的“压进去会成型”暗示；未加入换规则第二轮，以保持首图只讲当前规则。技术资料沿用现页五份 JSON Schema 官方来源（Draft 2020-12 Validation、object、numeric、enum、dialect），本轮未改变规则判断或正文事实。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图终帧中规则/数据仍是独立材料，done 与 -1 未被改写；390×844 时首图 330×225，文档宽度没有溢出。主演示原数据分别产生 `/status enum` 与 `/count minimum`；status 改 success 后只剩 minimum，count 改 0 后通过；数量改字符串报 `/count type`，删 count 报 `/count required`，加 debug 报 `/debug additionalProperties`。修改后待校验状态复位，Enter 可触发校验。Schema 展开可见 Draft 2020-12 的 required、properties、enum、minimum、additionalProperties；五份来源及旧锚点在页，object 来源回链落到正文目标，应用错误日志为空。未做人类读者试读。VBP-016 用例 `99a8d673-0ba1-4c3d-851d-88c572b7633d`，本地计划 `970a7ef1-9c63-490d-a261-ce62dac42696` completed、执行 `d4b49a1b-ed72-414c-ae08-e610e8a6d14e` passed。
+
+2026-09-29 集成：提交 `a6086f9` 经 [PR #128](https://github.com/Gyschuaner/VibePolaris/pull/128) 合入 `dev`，merge `bb4f9e13fd7aa0e4ca36669a9438488361f5186f`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用相同 Git 树和构建产物，`http://localhost:3219/terms/json-schema` 在真实浏览器复核首图、初始两条字段诊断、五份来源与旧锚点，应用错误为空。DP 部署 `f34cc6bd-9864-44d6-872c-8a30f36bb45a` 已回查；前版 `be8a6f1` 构建备份在 `/tmp/vbp012-dev-next-be8a6f1`。未部署远端 dev 或生产。DP VBP-012 描述更新至 25/105、版本 35；下一条 request。VBP-016 五项本地用例均已完成且通过，仍在 testing：旧 Bug `BUG-DE4F8DAC` 已修复并曾通过回归执行，但 DP 的 ready_for_retest 状态没有允许直接流转，未擅自更改。
+
+## 26 · request
+
+读者入口：“点了新增后，浏览器到底说了什么？书名为什么没放在地址里？”现页正文已把方法、目标、请求头、请求体与结果边界说清，主演示用原生 Request 对照 GET 查询参数和 POST JSON 正文，并展示 GET body 被浏览器拒绝；保留。原首图让 POST、application/json 和 JSON 文本作为三张错位卡片陆续出现，容易看成三条消息。新首图只保留一张连续纸面，按 HTTP/1.1 的可读结构依次显影起始行 `POST /books HTTP/1.1`、`Content-Type: application/json`、空行和 JSON 正文。终帧能直接看出 URL 只在首行，书名位于正文；没有服务器节点或成功回执。纸面标为“结构示意”，不冒充完整网络抓包或 HTTP/2 在线路上的文本格式。
+
+ZCode CLI inspiration 会话 `sess_7f9c41dc-0dba-47b7-ba51-c05dadc99312` 实际读取协作 Skill 与动画参考，提出单张消息纵向显影、固定空槽填写、横向卷轴三个方案；选第一种，是因为同一外框与头/体之间的空行能直观给出“同一条消息的不同位置”。未采用横向卷轴，避免向右运动暗示已经发出或到达服务器。实际核实并用于本页的资料是 MDN HTTP messages、Request 构造器、Using the Fetch API 和 RFC 9110 §3.4；新增 RFC 正文引用，说明方法、目标、头字段与内容都属于请求结构。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图初段仅首行清晰，中段请求头加入，末段正文在空行后出现；终帧仍为一张纸面。原生 Request 的 GET 构造显示编码后的 q 参数、无 Content-Type 与 body；给 GET 附加 body 报 TypeError；切 POST 并修改书名后生成 JSON 正文，编辑即时清除旧结果，重置恢复 GET，Enter 可触发构造。390×844 首图 330×225，文档宽度 390 无溢出；六个旧锚点与四份来源在页，新增 RFC 书目摘录回链落至正文，应用错误日志为空。未做人类读者试读。VBP-017 用例 `39021c35-0b7a-47c9-bc3f-80c692426741`，本地计划 `806f38ea-8d26-43cf-b7ea-f78de903be13` completed、执行 `86722906-2b6e-479a-8d83-473bc70b9835` passed。DP 要求测试计划仅在 testing/已交付状态执行；VBP-017 从 ready_for_release 按允许流转进入 testing 后完成本次复测登记，待本条 dev 集成后再核对质量门禁。
 
 ## 01 · Harness
 
