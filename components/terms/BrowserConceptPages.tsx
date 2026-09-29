@@ -1,4 +1,4 @@
-import { Broadcast, Ruler } from "@phosphor-icons/react/dist/ssr";
+import { Broadcast, CloudSun, MusicNote, Ruler } from "@phosphor-icons/react/dist/ssr";
 import { browserApiSources, effectSources } from "@/lib/browser-concept-sources";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
@@ -14,7 +14,12 @@ export function EffectTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={effectSources} />;
   return <ConceptArticle slug="effect" title="副作用" subtitle="React Effect" sources={effectSources}
     sections={[["sync", "让订阅跟上当前频道"], ["cleanup", "先撤销，再建立"], ["dependencies", "依赖描述同步的条件"], ["choice", "不需要 Effect 的计算"]]}
-    hero={<ConceptHero slug="effect" label="接收器的调谐指针从一个频道移动到另一个频道"><div className={styles.effectHero}><span>音乐 · 天气</span><div className={styles.heroDial}><i /></div><div><Broadcast size={40} weight="light" /><span>切换订阅</span></div></div></ConceptHero>}
+    hero={<ConceptHero slug="effect" label="接收器保持原位；音乐订阅先完全收回，天气订阅随后接通，最终只连接天气"><div className={styles.effectHero}>
+      <svg className={styles.effectPaths} viewBox="0 0 330 234" preserveAspectRatio="none" aria-hidden="true"><path className={styles.effectOldPath} pathLength="100" d="M75 57 C145 57 175 120 245 120" /><path className={styles.effectNewPath} pathLength="100" d="M75 177 C145 177 175 120 245 120" /></svg>
+      <div className={`${styles.effectSource} ${styles.effectMusic}`}><MusicNote size={27} weight="light" /><span>音乐</span></div>
+      <div className={`${styles.effectSource} ${styles.effectWeather}`}><CloudSun size={27} weight="light" /><span>天气</span></div>
+      <div className={styles.effectReceiver}><Broadcast size={34} weight="light" /><span>接收器</span></div>
+    </div></ConceptHero>}
     intro={<>界面选择了新的频道，消息订阅也要随之切换。React 的 Effect 用来<strong>让组件与外部系统保持同步</strong>；建立连接时，也要考虑何时撤销它。</>}
     relatedIntro={<>Effect 是一种 <ConceptTerm slug="hook">Hook</ConceptTerm>。它读取 <ConceptTerm slug="state">状态</ConceptTerm>，按需要调用 <ConceptTerm slug="browser-api">浏览器 API</ConceptTerm> 或其他外部系统，而不是代替所有事件处理。 </>}>
     <ArticleSection id="sync" title="让订阅跟上当前频道">
@@ -27,6 +32,7 @@ export function EffectTermPage() {
     </ArticleSection>
     <ArticleSection id="cleanup" title="先撤销，再建立">
       <p id="effect-cleanup" className="vp-citation-target"><strong>依赖变化时，React 先运行上一次的清理函数，再用新值建立同步。</strong>组件从页面移除时，也会清理最后一份订阅。清理关闭的是那次设置建立的连接，不应误关后来创建的另一份。<Cite id="effect-cleanup" /></p>
+      <p id="effect-lifecycle" className="vp-citation-target">组件还在页面上，旧订阅也可能已经到期。把每次订阅看作一段有起止的同步：频道从音乐变成天气，就结束音乐的那一段，再开始天气的这一段。<Cite id="effect-lifecycle" /></p>
       <div className={styles.sideExplanation}><pre className={shared.code}>{'useEffect(() => {\n  const receive = message => {\n    setMessage(message);\n  };\n  source.subscribe(channel, receive);\n  return () => {\n    source.unsubscribe(channel, receive);\n  };\n}, [source, channel]);'}</pre><div><p>这段示意代码把消息源的接口简化为 subscribe / unsubscribe；setMessage 是 useState 的更新函数。订阅函数和取消函数使用同一个频道与回调引用，成对出现。</p><p>在演示里打开“实际订阅记录”，能看见旧频道的取消发生在新频道订阅之前。记录来自 Effect 与清理函数，动画不决定执行顺序。</p></div></div>
       <ArticleAside title="开发模式中的额外执行"><p id="effect-strict" className="vp-citation-target">开启严格模式后，React 在开发环境会额外执行一轮设置与清理，帮助检查它们是否对称。用“只运行一次”的标记遮住重复日志，会掩盖漏清理；应检查一次、撤销、再一次之后是否仍只有有效的连接。<Cite id="effect-strict" /></p></ArticleAside>
     </ArticleSection>
