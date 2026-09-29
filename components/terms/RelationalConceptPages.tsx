@@ -14,34 +14,34 @@ export function TableTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={tableSources} />;
   return <ConceptArticle slug="table" title="表" sources={tableSources}
     sections={[["shape", "一行书目，几列信息"], ["view", "只取需要的行与列"], ["order", "位置不代表身份"], ["design", "一行对应的业务对象"]]}
-    intro={<>图书室要保存书目：每本书有编号、书名和可借状态。把这些信息放在同一种结构里，才能问“有哪些书可借”，也能只取编号与书名交给页面显示。</>}
+    intro={<>图书室要记录每一册可单独借出的书。本例每册占一行，写下编号、书名和可借状态；两册同名书也会占两行。以后既能查“哪些书可借”，也能让页面只列出编号和书名。</>}
     hero={<ConceptHero slug="table" label="同一套列定义下，三条书目逐行填入表格"><div className={s.tableHero}><TableIcon size={26} /><div><span>编号</span><span>书名</span><span>可借</span>{[[42,"山间来信","是"],[12,"河流手记","否"],[78,"夜空地图","是"]].map((row,i) => <div key={i} style={{ animationDelay: `${i * .6}s` }}>{row.map((value,j) => <span key={j}>{value}</span>)}</div>)}</div></div></ConceptHero>}>
     <ArticleSection id="shape" title="一行书目，几列信息">
       <Legacy slug="table" names={["question", "definition"]} />
-      <p id="table-shape" className="vp-citation-target"><strong>表用命名的列组织数据，每一行按这套列定义保存一条记录。</strong>书目表中，编号是一列，书名是另一列；#42 的编号、书名与状态放在同一行。列描述要保存哪些信息，行承载具体对象的数据。表可以暂时没有任何行，列定义仍然存在。<Cite id="table-shape" /></p>
+      <p id="table-shape" className="vp-citation-target"><strong>表用命名的列组织数据，每一行按这套列定义保存一条记录。</strong>书目表中，编号是一列，书名是另一列；#42 的编号、书名与状态放在同一行。列规定每条书目有哪些信息，行则填入某一册书的具体值。即使还没录入书目，表也可以先有列定义。<Cite id="table-shape" /></p>
       <p id="table-types" className="vp-citation-target">以 PostgreSQL 为例，建表时要指定列名和类型：编号可以用整数，书名用文本，可借状态用布尔值。类型会限制允许的值，也决定怎样计算和比较；其他数据库的类型规则可能不同。一个文本类型不会自动理解“这是不是一本真实的书”，业务规则还需要另外定义。<Cite id="table-types" /></p>
       <pre className={base.code}>{'CREATE TABLE books (\n  book_id integer,\n  title text,\n  available boolean\n);'}</pre>
-      <p>这里只定义结构，还没有插入书目，也没有声明编号唯一。要避免两条记录使用同一编号，需要继续添加 <ConceptTerm slug="primary-key">主键</ConceptTerm>或相应唯一约束。不能因为列叫 <code>book_id</code>，就认为数据库已经会检查它。</p>
+      <p>这里只定义结构，还没有插入书目，也没有声明编号唯一。样例中的三册书恰好用了不同编号；要让数据库阻止重号，还需添加 <ConceptTerm slug="primary-key">主键</ConceptTerm>或唯一约束。光把列命名为 <code>book_id</code>，数据库不会自动检查编号是否重复。</p>
     </ArticleSection>
     <ArticleSection id="view" title="只取需要的行与列">
       <Legacy slug="table" names={["scene-heading"]} />
-      <p id="table-filter" className="vp-citation-target">查询可借书目时，<code>WHERE available = true</code>逐行判断条件，只有符合条件的行进入结果。被排除的是本次查询中的候选行，原表里的已借出记录仍然保留。<strong>筛选是一种读取，删除是另一种修改。</strong><Cite id="table-filter" /></p>
-      <p id="table-columns" className="vp-citation-target"><code>SELECT book_id, title</code>决定返回哪些列。这通常叫投影：从符合条件的记录里，取出需要的部分。还可以计算新的结果列；它们也不等于给原表新增了列。下面的模型只演示字段选择、筛选和排序，不执行真实 SQL。<Cite id="table-columns" /></p>
+      <p id="table-filter" className="vp-citation-target">查询可借书目时，<code>WHERE available = true</code>逐行判断条件，只有符合条件的行进入结果。没进入结果的行只是这次没被选中，原表里的已借出记录仍然保留。<strong>筛选只读取，不改动原表；删除才会修改原表。</strong><Cite id="table-filter" /></p>
+      <p id="table-columns" className="vp-citation-target"><code>SELECT book_id, title</code>决定返回哪些列。这通常叫投影：从符合条件的记录里，取出需要的部分。查询还可以计算新的结果列，这也不会让原表真的多出列。下面的演示只做选列、筛选和排序，不执行真实 SQL。<Cite id="table-columns" /></p>
       <TableLesson />
-      <p>上面的原始书目始终是三条。取消“可借状态”只会缩窄结果的列；查询 #65 得到零行，表示没有符合条件的书，不表示表不存在。修改查询条件后，需要重新查询，才能获得这次条件下的结果。</p>
+      <p>上面的原始书目始终是三行。取消“可借状态”只会让结果少一列；查询 #65 得到零行，表示没有符合条件的书，不表示表不存在。修改查询条件后，需要重新查询，才能得到新条件下的结果。</p>
     </ArticleSection>
     <ArticleSection id="order" title="位置不代表身份" className={base.offset}>
       <Legacy slug="table" names={["quiz-heading"]} />
-      <p id="table-order" className="vp-citation-target">SQL 不保证没有明确排序的查询按某种固定次序返回。想按编号排列，就写 <code>ORDER BY book_id</code>；如果排序字段会重复，还需补足能确定先后的条件。因此“画面上的第二行”不适合用来指认同一本书。排序影响结果的位置，记录的编号仍是 #42、#12、#78。<Cite id="table-order" /></p>
-      <p>演示为方便对照，把未排序结果保留为样例输入顺序。真实数据库可以采用其他顺序。无论排序、分页还是重新查询，修改书目时都应依据合适的记录标识，而不是依据当前屏幕位置。</p>
+      <p id="table-order" className="vp-citation-target">查询没有写排序条件时，SQL 不保证返回行的先后顺序。想按编号排列，就写 <code>ORDER BY book_id</code>；如果用来排序的列可能出现相同的值，还需补足能确定先后的条件。不能靠“画面上的第几行”来确定拿到的是哪一册书。排序影响结果的位置，记录的编号仍是 #42、#12、#78。<Cite id="table-order" /></p>
+      <p>演示为了方便对照，把未排序的结果按样例输入顺序显示。真实数据库可以采用其他顺序。修改书目时，要依据已设为主键的编号等记录标识，而不是依据当前屏幕上的位置。</p>
     </ArticleSection>
     <ArticleSection id="design" title="一行对应的业务对象">
       <Legacy slug="table" names={["prompt-heading"]} />
-      <p>同一本书有三册时，“一种书一行”和“一册书一行”会得到不同结构。本例把每条书目当成一册可单独借出的书；如果要管理版本、作者和库存，就要先确定各自记录的含义，再安排表与关联。</p>
+      <p>假如图书室有两册《山间来信》，每册都能单独借出，表里就会出现两行：书名相同，编号不同。如果只想统计这种书还剩几册，也可以用一行表示一种书，另设数量列。先定好一行代表什么，才能决定表该有哪些列，以及借阅记录该指向哪一行。</p>
       <ArticleAside title="表结构需要写清的关系">
-        <p>可以这样说明：每册书有独立编号，书名可能重复；一位读者可以借多册书，每次借阅有自己的日期。请分别说明每张表的一行代表什么、需要哪些列、怎样标识，以及借阅记录引用哪条书目。</p>
+        <p>可以这样说明：每册书有独立编号，书名可能重复；一位读者可以借多册书，每次借阅有自己的日期。请分别说明每张表的一行代表什么、需要哪些列、怎样标识，以及借阅记录该指向哪一行。</p>
       </ArticleAside>
-      <p><ConceptTerm slug="database-schema">数据库结构</ConceptTerm>描述表、列与约束等安排；查询结果是依据这些结构得到的一份输出。把页面上显示的表格和数据库里的表分清，讨论新增字段、筛选和修改时就更容易说准确。</p>
+      <p><ConceptTerm slug="database-schema">数据库结构</ConceptTerm>描述表、列与约束等安排；查询结果是依据这些结构得到的一份输出。把页面上显示的表格和数据库里的表分清，讨论新增列、筛选和修改时就更容易说准确。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
