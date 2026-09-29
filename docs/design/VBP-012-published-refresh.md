@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第43条index现已按顺序完成，技术集成与完整内容均43/105，下一条transaction。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第44条transaction现已按顺序完成，技术集成与完整内容均44/105，下一条table。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -61,7 +61,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 41 idempotency | 同一申请重发不重复创建 | A·14:00首次建#42、回信丢失、同键同内容重发仍#42；服务端账本只记1条 | 完整内容与dev集成完成 · 代码PR #207；详见本节 |
 | 42 database | 结构化记录与重新查询 | 草稿保存后改书目；关闭编辑页再开或另一读者重查都读取同一记录，旧查询保留 | 完整内容与dev集成完成 · 代码PR #209；详见本节 |
 | 43 index | 缩小查找范围 | 比较#42后排除左半、命中#64，再按位置5读原书目；主体对照逐条扫描与缺失目标 | 完整内容与dev集成完成 · 代码PR #211；详见本节 |
-| 44 transaction | 多步一起提交或撤销 | 相互关联的余额在提交前合拢，失败一起退回 | 待更新 |
+| 44 transaction | 多步一起提交或撤销 | #42借阅先改库存、后写借阅；失败时事务内短暂为1/0、新查询仍2/0，显式回滚后同回2/0 | 完整内容与dev集成完成 · 代码PR #213；详见本节 |
 | 45 table | 按行列组织同类数据 | 同类实体压成行，列垂直对齐同种属性 | 待更新 |
 | 46 primary-key | 唯一识别一行 | 固定身份点跟随行移动，重复值被阻挡 | 待更新 |
 | 47 foreign-key | 引用另一表的行 | 关系连线锚定已有身份，悬空引用无法落下 | 待更新 |
@@ -865,6 +865,15 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - 独立语言会话 `sess_f2af63f2-de33-4bde-a3f4-fccf4b2bdcef` 读 partner、humanizer-zh 与修订后的全文 `/tmp/vbp024-index-language-material.md`（SHA256 `3e970d3e23567b30e8c4e26fdb905c5eaed172f96479165f6f6d709389ae4573`）；采纳“书目第一条#42”、原书目位置的统一称呼、EXPLAIN 的计划时态与更具体的统计用语。它误报正文把“目录”写成“书目”，核对实际原句后未采纳；它提出把 SQLite 标识等同演示位置编号也未照搬，反而明确两者不同。两轮均为文字模型反馈，不是真人目标读者试读，语言会话未验证网页。
 - 最终 `npm run build` 的编译、TypeScript 与 117/117 静态页及 `git diff --check` 通过；仅改首图 CSS 和一个互动标题，未增加镜像实现的自动化测试。3220 真实 IAB 桌面观察首图初始、比较中间帧、终态和重播，390px 观察终态与主体；主体实操目录 #64 比较2次再读原记录，顺序 #42 首条命中，目录 #65 比较3次与顺序 #65 比较9次后均明确未找到、不能读取，切换重置旧回执。文献2角标展开与正文回跳、手机 `scrollWidth=innerWidth=390`、浏览器 error 日志空。最终文案后只复核受影响正文与引用，未重复全套交互。真实读者与系统缩动偏好未验。
 - 代码 `6d720859d48f5f5bc32f2ee931b93953d3d5efdb` 经 [PR #211](https://github.com/Gyschuaner/VibePolaris/pull/211) 合入 dev，merge `f6d88fd18fd0087bee84cec3a18caa81d8c58171`，源码树同为 `bf453be56521f38d297f5a656f2a7014f45aa74f`，BUILD_ID `i5PSZlzIg8l6vLBDaipiJ`。3219 本机 dev 预览在同一源码树与构建复核目录 #64 与顺序 #64 第5条命中，浏览器 error 日志空；上版构建备份 `/tmp/vbp024-index-dev-prev-f6d88/next`。本机回退需停 3219，检出旧 `427b35163ea723032b786456f88fcbda6bb675e5`，恢复备份后重启。DP VBP-024 在本条验收时为 testing；专项用例 `0e81292d-521d-4821-b3b2-1d03d7d1591a`、计划 `095c538b-ec12-4ef4-a3dc-1703c2c6ceea` completed、执行 `a5f32eb8-c0b8-4382-9ded-e9b00d99b315` passed、任务 `93351c0a-a0f8-4940-9063-34529a937967` done。技术集成与完整内容 43/105，下一条 transaction。未部署远端 dev 或生产，未改飞书；指定 Windows Obsidian 库在本机不存在。
+
+## 44 · transaction
+
+- 读者入口：“借一本书要同时减库存和写借阅记录；第二步失败时，别人会看到怎样的结果？”读完应能判断同一事务的内部暂态、新查询可见的已提交状态与失败后的回滚，并将判断迁移到下单扣库存。旧页把事务说成多个动作“要么全成功、要么全失败”，但首图静态展示两张读数，缺少第一步成功却尚未提交的可见差异；主体交互的失败分支又把“等待回滚”的按钮写为“本次已结束”。现在首图按库存/借阅 `2/0 → 1/0 → 写入失败 → 回滚到2/0` 展示，旁边新查询始终 `2/0`；主体按钮改为“写入失败”，允许下一步回滚。正文明确事务边界由应用确定，`BEGIN` 开始本组操作；两步若分别提交，第二步失败不会撤销第一步。开关名称、客户端库、Read Committed 与幂等性的区别都给出必要前提；不把“请求重试不会重复执行”误写成事务保证。
+- 主助手逐篇阅读并核对六份公开一手资料：[PostgreSQL 18 Transactions](https://www.postgresql.org/docs/18/tutorial-transactions.html) 对应 `transaction-unit` 与 `transaction-autocommit`，支持显式开始/提交/回滚、默认单语句事务及客户端库细节；[Transaction Isolation](https://www.postgresql.org/docs/18/transaction-iso.html) 对应 `transaction-visible` 与 `transaction-boundary`，支持 Read Committed 的新查询可见范围，并标出序列号回滚例外；[Write-Ahead Logging](https://www.postgresql.org/docs/18/wal-intro.html) 对应 `transaction-recovery`；[SQLite Transaction](https://www.sqlite.org/lang_transaction.html) 对应 `transaction-engines`，注明单写者及错误时是否已回滚取决于情形；[AWS Transactional outbox pattern](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html) 对应 `transaction-external`，说明数据库事务不自动撤销已发的外部通知；[PostgreSQL 18 CREATE SEQUENCE](https://www.postgresql.org/docs/18/sql-createsequence.html) 再对应 `transaction-boundary`，支持序列号消耗不能回滚的具体例外。正文六个角标与书目映射经检查，未把 WAL 写成所有数据页在提交瞬间完成写入。
+- 视觉候选比较过失败的借阅卡、并列的事务内/外两窗口，以及一张卡上先失败再自动成功。选择有限的失败卡与内外两读数：第一次写入仅变事务内库存；第二次失败后停留供读者看出“尚未回滚”，随后显式回滚；终态可重播。拒绝无条件自动回滚和同段动画紧接成功，因为 SQLite 与应用错误处理并不允许把所有失败写成一种自动结局。主体保留分组成功、分组失败与分别提交的可操作对照；与索引页的缩小候选、数据库页的草稿/保存/查询动作不同。缩动 CSS 给出终态，未实切系统偏好。
+- 真实 ZCode CLI 灵感会话 `sess_5442c1b6-b89d-4e93-9599-59e40dba69da` 读 partner Skill 与核实后的事实简报，建议失败借阅卡和其他轮廓；主助手采纳内部/外部可见性，未采纳自动回滚的暗示。独立模拟读者 `sess_b407b1b9-b07c-440b-8a6e-5290f9f0bdaa` 只读 partner 与冻结全文和配对状态 `/tmp/vbp024-transaction-reader-material.md`（SHA256 `0af1e3b6aa7f6576b3a047dabd1f2b1d243a186c2293d73878fbb00228e0750e`），不读代码、来源或作者计划；能推断分组失败回到2/0、分别提交留下1/0，并迁移到订单库存。它指出“序列号”和“客户端库”初次出现没有铺垫，主助手补足。它又误称分组失败立即显示内部2/0，冻结状态与真实浏览器均显示内部先为1/0，故不采纳。另一独立语言会话 `sess_2e9cfa19-530c-4d30-ab3d-c3d994fd4b4d` 读 partner、humanizer-zh 与修订全文 `/tmp/vbp024-transaction-language-material.md`（SHA256 `72fa10944bdcab2f1cebf8fa03d10acf898c75faa832f3efad630ddce9acb5e1`）；主助手采纳明确主语、开关原名、两个读数、`BEGIN`、SQLite 条件回滚、WAL 与幂等性措辞。序列号疑问另读官方 CREATE SEQUENCE 并加第六来源。两轮是文字模型反馈，不是真人读者或网页试读。
+- 最终 `npm run build` 编译、TypeScript 与 117/117 静态页及 `git diff --check` 通过；未增加镜像实现的测试。3220 真实浏览器桌面/390px 检查首图初态、事务内1/0而新查询2/0、写入失败、显式回滚2/0和重播；主体分组成功提交前外部2/0、提交后1/1，分组失败等待回滚后两边2/0，分别提交失败保留1/0且无法假回滚，切换开关清旧结果。第5/6来源角标展开与回跳、390px 页面无横向溢出，浏览器 error 日志空。最终按钮修订后复核对应失败路径；没有真人目标读者及系统缩动偏好实测。
+- 代码 `553d9cc` 经 [PR #213](https://github.com/Gyschuaner/VibePolaris/pull/213) 合入 dev，merge `c3dc0522e2f430f8c2c3484465c20d26982f6bca`，源码树同为 `65fb604a1a46cd83b4e0215d6d2437dc3d10ed8b`，BUILD_ID `2ia1DbXrMDxlqOI-QepGa`。3219 本机 dev 预览用同一构建复核失败等待回滚、执行回滚及重新实验，error 日志空。上一版 `.next` 备份 `/tmp/vbp024-transaction-dev-prev-f6d88-next`；本机回退需停 3219、检出旧 `f6d88fd18fd0087bee84cec3a18caa81d8c58171`、恢复备份后重启。DP VBP-024 为 testing，专项用例 `d5a605eb-d56f-4026-9fe2-4b8a846616c9`、计划 `0c651a59-d00c-4e42-b699-5dcd1d7ff2d3` completed、执行 `9b924272-dcd6-4c3b-8c84-41f6db813e60` passed、任务 `f779ec86-5b1b-4cb2-bbad-f2eca57b5b3a` done。技术集成与完整内容44/105，下一条table。未部署远端 dev 或生产，未改飞书；指定 Windows Obsidian 库在本机不存在。
 
 ## 01 · Harness
 
