@@ -112,7 +112,8 @@ export function RateLimitLesson() {
   const [time, setTime] = useState(0);
   const [receipt, setReceipt] = useState({ who: "A", allowed: 0, rejected: 0, time: 0 });
   const [shown, setShown] = useState(false);
-  const reset = (split = separate) => { setSeparate(split); setBuckets({ shared: 5, A: 5, B: 5 }); setTime(0); setShown(false); };
+  const [experiment, setExperiment] = useState(0);
+  const reset = (split = separate) => { setSeparate(split); setBuckets({ shared: 5, A: 5, B: 5 }); setTime(0); setShown(false); setExperiment(value => value + 1); };
   const send = (who: "A" | "B", count: number) => {
     const key = separate ? who : "shared";
     const result = spendTokens(buckets[key], count);
@@ -126,7 +127,7 @@ export function RateLimitLesson() {
       <div className={s.caller}><strong>B</strong><button onClick={() => send("B", 1)}><PaperPlaneTilt size={19} />B 发送 1 次</button></div>
     </div>
     <div className={s.simClock}><span>模拟时间 <strong>{time}s</strong></span><button onClick={() => { setTime(value => value + 1); setBuckets(value => ({ shared: refillTokens(value.shared, 1), A: refillTokens(value.A, 1), B: refillTokens(value.B, 1) })); }}><Clock size={18} />推进 1 秒</button></div>
-    <Reveal open={shown}><div className={s.rateReceipt} aria-live="polite"><span>{receipt.time}s · {receipt.who} 的这批请求</span><strong>放行 {receipt.allowed}</strong><strong>拒绝 {receipt.rejected}</strong><code>{receipt.rejected ? "429 · Retry-After: 1" : "已通过限流检查"}</code></div></Reveal>
+    <Reveal key={experiment} open={shown}><div className={s.rateReceipt} aria-live="polite"><span>{receipt.time}s · {receipt.who} 的这批请求</span><strong>放行 {receipt.allowed}</strong><strong>拒绝 {receipt.rejected}</strong><code>{receipt.rejected ? "被拒请求：429 · Retry-After: 1" : "已通过限流检查"}</code></div></Reveal>
     <button className={base.reset} onClick={() => reset()}><ArrowCounterClockwise size={17} />重置令牌桶</button>
   </div>;
 }

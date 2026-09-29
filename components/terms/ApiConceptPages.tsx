@@ -145,25 +145,33 @@ export function PaginationTermPage() {
 export function RateLimitingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rateSources} />;
   return <ConceptArticle slug="rate-limiting" title="限流" sources={rateSources} sections={[["budget", "流量需要一个预算"], ["buckets", "额度共享的范围"], ["rejection", "被拒绝之后"]]}
-    intro={<>两位调用方使用同一个接口，其中一位突然发出大量请求。另一位能否继续访问，取决于限额如何分配，以及它们是否共用额度。</>}
-    hero={<ConceptHero slug="rate-limiting" label="五枚令牌进入桶中，三个请求消耗三枚，剩余两枚"><div className={s.rateHero}><div>{[0, 1, 2, 3, 4].map(id => <i key={id} />)}</div><strong>2 / 5</strong><code>补充速率 1 枚 / 秒</code></div></ConceptHero>}>
+    intro={<>A 和 B 在同一个项目中调用 AI 接口。A 连发 7 次，B 随后只发 1 次，却也收到表示“请求过多”的 429。B 再试时能否通过限流检查，取决于两者是否共用额度，以及服务还设置了哪些限额。</>}
+    hero={<ConceptHero slug="rate-limiting" label="容量五枚的桶起初装满；A 连发七次，前五次耗尽额度，第六、七次收到429；一秒后只补回一枚，先前被拒的请求不会自动通过"><div className={s.rateHero}>
+      <div className={s.rateHeroRequest}><span>A 发 7 次</span><span>第 6、7 次 · 429</span></div>
+      <div className={s.rateHeroBucket}>{[0, 1, 2, 3, 4].map(id => <i key={id} />)}</div>
+      <div className={s.rateHeroCount}><span>5 / 5</span><span>0 / 5</span><strong>1 / 5</strong></div>
+      <code>+ 1 秒 · 补回 1 枚</code>
+    </div></ConceptHero>}>
     <ArticleSection id="budget" title="流量需要一个预算">
       <Legacy slug="rate-limiting" names={["question", "definition"]} />
-      <p><strong>限流按照选定的规则，限制一段时间内接受的请求量。</strong>它可以保护容量、控制成本，也可以减少一位调用方占用过多资源。超额后是拒绝还是延后处理，取决于系统设计；下面选择直接拒绝。</p>
-      <p id="rate-bucket" className="vp-citation-target">令牌桶是一种实现：桶有最大容量，令牌按速率补充，每次请求需要消耗令牌。积存的令牌允许短时突发，补充速率决定持续流量。AWS API Gateway 使用这类算法，并分别配置持续速率和突发容量。<Cite id="rate-bucket" /></p>
+      <p><strong>限流按事先定好的规则，限制一段时间内接受的请求量。</strong>一次请求是应用向接口发起的一次调用。比如你点一次“生成”，应用可能先查资料，再请求 AI 接口；这已经是两次不同的调用，是否共用额度还得看服务的规则。限制请求进入的节奏，可以避免大量调用同时压到服务上，也能控制成本，减少调用方之间争抢额度。服务也可以排队或增加容量来应对突发；本页只看超额后直接拒绝的做法。</p>
+      <p id="rate-bucket" className="vp-citation-target">令牌桶是限流的一种实现：桶有最大容量，按固定速率补充。在下面的实验里，每放行一次请求就消耗一枚令牌。桶里提前存下的额度允许短时连续请求；桶空时，新来的请求会被拒绝，过一段时间又有新额度。AWS API Gateway 用令牌桶配置持续速率和突发容量，令牌在这里代表一次请求的通行额度。<Cite id="rate-bucket" /></p>
+      <p>桶里的“令牌”只是这套计数方法的名字，既不是登录用的 API 密钥，也不是 AI 模型计算文字量时说的 token。后一种 token 会在真实 AI 服务的另一类限额中出现。</p>
     </ArticleSection>
     <ArticleSection id="buckets" title="额度共享的范围">
       <Legacy slug="rate-limiting" names={["scene-heading"]} />
-      <p>桶最多容纳 5 枚令牌，每个请求消耗 1 枚，每秒补充 1 枚。先让 A 连发 7 次，再让 B 请求一次；换成独立桶再比较。这里的时间由“推进 1 秒”控制，不会在阅读时偷偷消耗额度。</p>
+      <p>下面只模拟一道限流检查：桶最多容纳 5 枚令牌，每个请求消耗 1 枚，每秒补充 1 枚。先让 A 连发 7 次，再让 B 请求一次；换成独立桶再比较。这里的时间由“推进 1 秒”控制，不会在阅读时自行变化。</p>
       <RateLimitLesson />
-      <p>共享桶里，A 用掉 5 枚后，A 的剩余 2 次与 B 的请求都会被拒绝。独立桶里，A 用完自己的额度，B 仍有 5 枚。切换策略会重开实验；回执保留的是标注时刻那一批请求的结果。</p>
-      <p id="rate-scope" className="vp-citation-target">真实系统可以同时设置客户端、方法、账户等多层限制。独立额度解决调用方之间的争抢，整体容量仍需要总量约束。AWS 的客户端限制也受更高层账户与区域限制影响。<Cite id="rate-scope" /></p>
+      <p>共享桶起初有 5 枚，A 的前 5 次通过检查、后 2 次被拒；B 紧接着请求，桶还是空的，也被拒。推进 1 秒只补回 1 枚：如果 B 在 A 再发请求前先重试，这枚令牌就够 B 通过检查；A 那 2 次被拒的请求不会自动排队或补发。独立桶里，A 用完自己的额度，B 的桶仍有 5 枚。切换策略会重开实验；回执标着时间，记录的是当时那批请求的结果。</p>
+      <p id="rate-scope" className="vp-citation-target">真实系统可以同时设置客户端、接口方法、账户等多层限制。给 B 单独分桶后，A 的请求不会再扣 B 桶里的令牌；但 B 仍可能碰到上层总限额。AWS API Gateway 的客户端限额也受账户和区域等更高层限制。<Cite id="rate-scope" /></p>
     </ArticleSection>
     <ArticleSection id="rejection" title="被拒绝之后" className={base.offset}>
       <Legacy slug="rate-limiting" names={["quiz-heading", "prompt-heading"]} />
-      <p id="rate-response" className="vp-citation-target">HTTP 的 429 表示一段时间内请求过多，响应可以带 Retry-After 提示等待多久；这个头不是必有字段，规范也不强制某一种计数算法。实验选择等待 1 秒，是因为空桶到下一枚令牌需要这么久；不保证下一批所有请求都能通过。<Cite id="rate-response" /></p>
-      <p><strong>通过限流检查，不等于业务执行成功。</strong>请求之后仍可能因为无权访问、输入错误或服务故障失败。收到限流响应也不应无限立即重发，客户端需要控制重试节奏，并先判断操作能否安全重复。</p>
-      <ArticleAside title="令牌桶的保证边界"><p id="rate-limits" className="vp-citation-target">这个本地实验使用一个确定的计数器。真实网关可能跨多个节点协调；AWS 明确将其节流与配额视为尽力而为的目标，而非绝对请求上限。限流还不能代替权限检查、整体容量规划或完整的反滥用防护。<Cite id="rate-limits" /></p></ArticleAside>
+      <p id="rate-response" className="vp-citation-target">HTTP 的 429 表示一段时间内请求过多。响应可以带 <code>Retry-After</code> 提示何时再试，但不一定带；定义 429 的 HTTP 规范也没有规定必须按什么身份或算法计数。实验里的 <code>429 · Retry-After: 1</code> 是本站模拟的响应，只出现在被拒的请求上，不代表所有服务都会这样返回。<Cite id="rate-response" /></p>
+      <p id="rate-retry-wait" className="vp-citation-target"><code>Retry-After: 1</code> 里的数字表示收到响应后建议等待 1 秒；它也可以是一个日期。即使等足时间，也可能有别的请求先用掉新额度，或碰到另一层限额。等满提示时间可以再试，仍不能保证下一次通过。<Cite id="rate-retry-wait" /></p>
+      <p id="rate-ai" className="vp-citation-target">换到真实 AI 接口，限额还可能同时按请求次数和模型消耗的 token 量计算。OpenAI API 文档分别列出每分钟请求数（RPM）和每分钟 token 数（TPM）等指标，限额涉及组织、项目和具体模型；文档还提醒，失败请求也会计入每分钟额度。本站实验中被拒的请求不扣模拟桶令牌，那是另一套简化规则。哪怕你只发了一次，或页面上的模拟桶还剩一枚，也不能断定真实项目还有额度。<Cite id="rate-ai" /></p>
+      <p><strong>通过限流检查，不等于业务执行成功。</strong>后面的操作仍可能因为无权访问、输入错误或服务故障失败。收到 429 时先看响应里有没有等待提示，再查接口文档中的限额与重试规则，不要立即反复重发；对会修改数据的操作，还要先判断重复请求是否安全。</p>
+      <ArticleAside title="令牌桶的保证边界"><p id="rate-limits" className="vp-citation-target">这个本地实验按固定规则计数。真实网关可能跨多个节点协调；AWS 明确说，它的节流与配额是尽力而为的目标，不是绝对的请求上限。限流还不能代替权限检查、整体容量规划或完整的反滥用防护。<Cite id="rate-limits" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
