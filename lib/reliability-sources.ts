@@ -6,7 +6,13 @@ export const timeoutSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "AbortSignal: timeout() static method", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static", citations: ["timeout-browser"] },
   { publisher: "Go 项目", title: "Canceling in-progress operations", date: "", url: "https://go.dev/doc/database/cancel-operations", citations: ["timeout-cancel"] },
 ];
-export const retrySources = [backoff(["retry-backoff", "retry-jitter", "retry-load"]), semantics(["retry-safe"])];
+export const retrySources = [
+  { publisher: "Google Cloud · Cloud Storage 文档", title: "Retry strategy", date: "", url: "https://docs.cloud.google.com/storage/docs/retry-strategy", citations: ["retry-decision", "retry-sdk"] },
+  semantics(["retry-safe"]),
+  backoff(["retry-backoff", "retry-load"]),
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke", title: "RFC 9110 — HTTP Semantics · §10.2.3", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-10.2.3", citations: ["retry-after"] },
+  { publisher: "Marc Brooker · AWS Architecture Blog", title: "Exponential Backoff And Jitter", date: "2015-03-04，2023-05 更新", url: "https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/", citations: ["retry-jitter"] },
+];
 export const idempotencySources = [
   semantics(["idempotency-effect", "idempotency-response"]),
   { publisher: "Stripe · API Reference", title: "Idempotent requests", date: "", url: "https://docs.stripe.com/api/idempotent_requests", citations: ["idempotency-key", "idempotency-retention"] },

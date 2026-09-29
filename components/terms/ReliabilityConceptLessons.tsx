@@ -24,14 +24,15 @@ export function TimeoutLesson() {
   </div>;
 }
 
-const retryScenarios: [RetryScenario, string][] = [["temporary", "短暂故障"], ["persistent", "持续故障"], ["invalid", "参数错误"]];
+const retryScenarios: [RetryScenario, string][] = [["temporary", "短暂故障"], ["persistent", "持续故障"], ["invalid", "请求有误"]];
 export function RetryLesson() {
   const [scenario, setScenario] = useState<RetryScenario>("temporary");
   const [attempts, setAttempts] = useState<{ time: number; status: number }[]>([]);
   const [ready, setReady] = useState(false);
   const [time, setTime] = useState(0);
+  const [run, setRun] = useState(0);
   const last = attempts.length ? retryAttempt(scenario, attempts.length) : null;
-  const reset = () => { setAttempts([]); setTime(0); setReady(false); };
+  const reset = () => { setAttempts([]); setTime(0); setReady(false); setRun(value => value + 1); };
   const send = () => {
     if (last?.stop || (last && !ready)) return;
     const result = retryAttempt(scenario, attempts.length + 1);
@@ -42,7 +43,7 @@ export function RetryLesson() {
   return <div className={`${base.lab} ${s.lab}`} aria-label="有上限的重试实验">
     <div className={s.toolbar}>{retryScenarios.map(([value, label]) => <button key={value} aria-pressed={scenario === value} onClick={() => { setScenario(value); reset(); }}>{label}</button>)}</div>
     <div className={s.attemptStage}><div className={s.attemptBudget}><strong>{attempts.length}<span> / 3</span></strong><span>总尝试次数</span><code>t = {time} s</code></div><div className={s.attemptTrail}>{[0, 1, 2].map(i => <div key={i} className={s.attempt} data-filled={i < attempts.length} data-success={attempts[i]?.status === 200} style={{ marginLeft: `${i * 18}px` }}><span>0{i + 1}</span><strong>{attempts[i]?.status ?? "—"}</strong><code>{attempts[i] ? `${attempts[i].time} s` : "未发送"}</code></div>)}</div></div>
-    <div className={s.retryStatus} role="status"><States index={statusIndex}>{[<p key="0">GET /reservations/42</p>, <p key="1"><Hourglass size={19} />等待 {last?.wait || 1} 秒后，才允许下一次尝试。</p>, <p key="2">等待已结束，可以再次发送。</p>, <p key="3"><Check size={19} />收到预约 #42，停止重试。</p>, <p key="4">输入格式错误，停止重发相同请求。</p>, <p key="5">三次尝试都失败，停止重试。</p>]}</States></div>
+    <div className={s.retryStatus} role="status"><States key={run} index={statusIndex}>{[<p key="0">GET /reservations/{scenario === "invalid" ? "abc" : "42"}</p>, <p key="1"><Hourglass size={19} />等待 {last?.wait || 1} 秒后，才允许下一次尝试。</p>, <p key="2">等待已结束，可以再次发送。</p>, <p key="3"><Check size={19} />收到预约 #42，停止重试。</p>, <p key="4">预约号格式不对，停止重发相同请求。</p>, <p key="5">三次尝试都失败，停止重试。</p>]}</States></div>
     <div className={s.toolbar}><button disabled={Boolean(last?.stop) || Boolean(last && !ready)} onClick={send}><PaperPlaneTilt size={18} />{attempts.length === 0 ? "发送首次查询" : "再次查询"}</button><button disabled={!last || Boolean(last.stop) || ready} onClick={() => { setTime(time + (last?.wait ?? 0)); setReady(true); }}>推进 {last?.wait || 1} 秒</button><button className={s.iconButton} aria-label="重置重试实验" onClick={reset}><ArrowCounterClockwise size={19} /></button></div>
   </div>;
 }

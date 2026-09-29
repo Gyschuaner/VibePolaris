@@ -47,30 +47,33 @@ export function TimeoutTermPage() {
 export function RetryTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={retrySources} />;
   return <ConceptArticle slug="retry" title="重试" sources={retrySources}
-    sections={[["decision", "先判断能不能再试"], ["attempts", "一次失败之后"], ["spacing", "把重试错开"], ["stop", "停止也是结果"]]}
-    intro={<>查询预约时碰到短暂故障，再试一次可能就成功了。但服务忙不过来时，每个客户端都立刻重发，只会让队伍更长。重试需要条件，也需要节奏。</>}
-    hero={<ConceptHero slug="retry" label="三次尝试之间，等待从1秒增加到2秒"><div className={s.retryHero}><span>503</span><i /><span>503</span><i /><span><Check size={23} />200</span><small>1 s</small><small>2 s</small></div></ConceptHero>}>
-    <ArticleSection id="decision" title="先判断能不能再试">
+    sections={[["decision", "先看失败的是哪件事"], ["attempts", "同一查询再试一次"], ["spacing", "等一等，也要错开"], ["stop", "什么时候停"]]}
+    intro={<>你已经有 #42 号预约，点开详情却看到“服务暂时不可用”。服务回信里的数字编号是 503，页面不一定把这个编号直接显示出来。再点一次查看也许有用，但一直点不会让服务更快恢复。重试要先看做的是什么、失败能否恢复，再决定等多久、试几次。</>}
+    hero={<ConceptHero slug="retry" label="查询42号预约：第一次在0秒收到503；等1秒第二次仍是503；再等2秒，第三次在3秒收到200并停止"><div className={s.retryHero}><div className={s.retryHeroQuery}>查询同一笔预约 <strong>#42</strong></div><div className={s.retryHeroRun}><span><small>第1次</small><strong>503</strong><small>0 s</small></span><i><small>等 1 s</small></i><span><small>第2次</small><strong>503</strong><small>1 s</small></span><i><small>等 2 s</small></i><span><small>第3次</small><strong><Check size={17} />200</strong><small>3 s</small></span></div><div className={s.retryHeroEnd}>收到结果，停止</div></div></ConceptHero>}>
+    <ArticleSection id="decision" title="先看失败的是哪件事">
       <Legacy slug="retry" names={["question", "definition"]} />
-      <p><strong>重试是在一次尝试失败后，按条件再次执行同一操作。</strong>它适合有机会恢复的故障。参数写错了，原封不动再发一次通常没有帮助；服务临时不可用，等待之后则可能恢复。</p>
-      <p id="retry-safe" className="vp-citation-target">还要判断重复执行会不会多做一次业务操作。HTTP 规范要求：对于非幂等方法，客户端不应盲目自动重试，除非能确认该操作实际是幂等的，或原请求未被应用。收到错误或没有收到响应，都不能省略这个判断。<Cite id="retry-safe" /></p>
+      <p><strong>重试是一次尝试没有得到所需结果后，按条件再做同一操作。</strong>它只增加获得结果的机会，不能修好故障。再次发送前，先看故障会不会过一会儿消失，还要看重复执行会不会多做一件事。</p>
+      <p id="retry-decision" className="vp-citation-target">页面发出一次读取请求，服务用<strong>状态码</strong>回答，也就是用数字说明这次处理的结果：<code>200</code> 表示查询拿到了结果；<code>503</code> 表示服务眼下无法处理，过一会儿可能恢复。另一种情况是 <code>400</code>：本例模拟页面把本该是数字的预约号写成了 <code>abc</code>，服务认为请求有误。你并不需要亲手输入这个错误的预约号；照原样再发仍会错。具体服务可重试哪些错误，要看它的约定；Google Cloud Storage 的重试文档也要求同时判断收到的响应和操作能否安全重复。<Cite id="retry-decision" /></p>
+      <p id="retry-safe" className="vp-citation-target">查 #42 不会要求服务再建一条预约，所以本例可以在可恢复的故障后重复查询。换成<strong>创建预约</strong>就不同：如果只是等不到回信，原申请可能已经生效。同一创建请求再做一次，可能再生成一条预约；这种重复后业务结果可能变成两条的操作，HTTP 规范称为“非幂等”，不建议客户端盲目自动重试，除非能确认服务会把重复申请认作同一次，或原请求根本没生效。此时应先凭已保存的申请号查结果，或按服务明确提供的去重规则处理。<Cite id="retry-safe" /></p>
     </ArticleSection>
-    <ArticleSection id="attempts" title="一次失败之后">
+    <ArticleSection id="attempts" title="同一查询再试一次">
       <Legacy slug="retry" names={["scene-heading"]} />
-      <p>下面只做只读的预约查询，最多尝试 3 次，包含首次。失败后分别等待 1 秒和 2 秒，再发下一次；时间由你手动推进。换一个故障条件，观察它在哪里停下。</p>
+      <p>“短暂故障”和“持续故障”都查询同一个 <code>GET /reservations/42</code>；“请求有误”场景则把末尾预约号改成 <code>abc</code>。<code>GET</code> 在这里表示读取，而非创建。最多发 3 次，<strong>第一次也算在内</strong>。第一次 503 后先等 1 秒；第二次仍是 503，就再等 2 秒。这里由你手动推进时间，等待结束之前不能发送下一次。</p>
       <RetryLesson />
-      <p>“短暂故障”在第三次返回 200；“持续故障”用完三次机会后仍是 503；“参数错误”第一次就返回 400，直接停止。这里的状态码和恢复时刻是教学设定，真实客户端应使用服务约定的可重试错误分类，不能机械地把所有 4xx 或 5xx 归为一类。</p>
+      <p>选“短暂故障”，三次回信依次是 503、503、200，最后才显示 #42，随后停止。改选“持续故障”，同样的等待并没有换来恢复：三次都是 503，到上限就停。“请求有误”第一次得到 400，继续发送相同查询也不会修正地址，所以立即停。状态码、恢复时刻和秒数都是教学设定；真实客户端不能把所有 4xx 或 5xx 机械地归为同一类。</p>
     </ArticleSection>
-    <ArticleSection id="spacing" title="把重试错开" className={base.offset}>
-      <p id="retry-backoff" className="vp-citation-target">退避让后续尝试之间留出间隔。指数退避逐次增加等待，通常还需要上限和次数预算，防止一直重试。它不会修好服务，只是改变调用方施加负载的方式。<Cite id="retry-backoff" /></p>
-      <p id="retry-jitter" className="vp-citation-target">如果许多调用方一起失败，又等待完全相同的时间，它们可能再次一起到达。抖动为等待加入随机变化，把请求分散开。下图是三个调用方一次重试的固定采样示意，点的位置表示发出时刻。<Cite id="retry-jitter" /></p>
-      <div className={s.jitterComparison}><div><h3>相同间隔</h3>{["A", "B", "C"].map(name => <div className={s.jitterLane} key={name}><span>{name}</span><i style={{ left: "65%" }} /></div>)}</div><div><h3>加入抖动</h3>{[30, 72, 47].map((left, i) => <div className={s.jitterLane} key={left}><span>{["A", "B", "C"][i]}</span><i style={{ left: `${left}%` }} /></div>)}</div></div>
+    <ArticleSection id="spacing" title="等一等，也要错开" className={base.offset}>
+      <p id="retry-backoff" className="vp-citation-target">服务正在忙时，所有页面立刻再发会加重它的负担。退避就是在下一次尝试前留出间隔；本例把两次等待设为 1 秒、2 秒，让你看清间隔在变长。实际实现还要限制等待上限、总尝试次数和整个任务可用的时间。等待不会修好服务，却能避免页面毫无节制地给它加压。<Cite id="retry-backoff" /></p>
+      <p id="retry-after" className="vp-citation-target">本例的 503 没带服务建议的等待时间。如果真实服务在 503 回信里给出 <code>Retry-After</code>，它告诉发出请求的页面要等多久才能重发，不能照搬本例的 1 秒。若整个任务剩下的时间不够等，就停止本轮重试，再把未取到结果如实显示出来。<Cite id="retry-after" /></p>
+      <p id="retry-jitter" className="vp-citation-target">如果大家等的时间完全一样，仍可能撞在一起：许多页面同时失败，又在相同时间重发。抖动是在等待里加入随机变化，让它们分散。下图的 A、B、C 是三个同时遇到故障的页面；点表示它们<strong>下一次</strong>发出查询的时刻。右边只画出其中一次随机排开的结果，每次的位置都可能不同。<Cite id="retry-jitter" /></p>
+      <div className={s.jitterComparison} role="img" aria-label="三个调用方在相同间隔后一起重试；加入抖动后，A、B、C在不同时间重试"><div><h3>相同间隔</h3>{["A", "B", "C"].map(name => <div className={s.jitterLane} key={name}><span>{name}</span><i style={{ left: "65%" }} /></div>)}</div><div><h3>加入抖动</h3>{[30, 72, 47].map((left, i) => <div className={s.jitterLane} key={left}><span>{["A", "B", "C"][i]}</span><i style={{ left: `${left}%` }} /></div>)}</div></div>
     </ArticleSection>
-    <ArticleSection id="stop" title="停止也是结果">
+    <ArticleSection id="stop" title="什么时候停">
       <Legacy slug="retry" names={["quiz-heading", "prompt-heading"]} />
-      <p><strong>达到尝试上限，表示放弃继续尝试，不能显示“操作成功”。</strong>应保存已有错误和业务标识，再按业务选择查询状态、稍后恢复或交给人工处理。明确拒绝的结果与尚未确认的写入结果，也要分别处理。</p>
-      <p id="retry-load" className="vp-citation-target">多个调用层各自重试，次数会层层相乘。AWS 建议留意这种负载放大，并为具体调用链选择合适的重试位置。配置 SDK 前，先查它已经做了哪些重试。<Cite id="retry-load" /></p>
-      <ArticleAside title="超时、重试与限流的分工"><p><ConceptTerm slug="timeout">超时</ConceptTerm>限制等待；重试决定是否再发；<ConceptTerm slug="rate-limiting">限流</ConceptTerm>决定接受多少请求。即使操作可安全重复，也不代表可以无限发送。总耗时要包含每次等待和退避，服务明确提供等待提示时还要遵守对应约定。</p></ArticleAside>
+      <p><strong>拿到结果、遇到不能照原样再试的错误、用完次数或时间，都该停。</strong>三次 503 后，页面只能说“还没查到 #42 的状态”，不能把它写成“预约不存在”，更不能写成“查询成功”。手动再点也是新请求，不能靠重置按钮绕过线上服务的次数或时间限制。什么时候值得再查，要看服务提示和这件事还能等多久，没有通用的间隔。若失败的是创建预约，没收到回信仍属于结果待确认，应先查明是否已创建。</p>
+      <p id="retry-load" className="vp-citation-target">页面发请求时可能借助客户端库。假设页面自己试 3 次，这层库收到页面的每次调用后也各试 3 次，服务最多可能收到 9 次请求。层层重试会把负载相乘，故障时尤其容易拖慢恢复。AWS 这篇文章建议为调用链选择重试位置，而不是每层都加一套。<Cite id="retry-load" /></p>
+      <p id="retry-sdk" className="vp-citation-target">现成的客户端库有时作为 SDK（软件开发工具包）的一部分提供。使用前先看它是否已自动重试、会重试哪些错误、上限是多少，再决定页面是否还要加重试。以 Google Cloud Storage 为例，不同客户端库各有自己的重试策略和配置，并不存在所有 SDK 共用的一组默认值。<Cite id="retry-sdk" /></p>
+      <ArticleAside title="超时、重试与限流的分工"><p><ConceptTerm slug="timeout">超时</ConceptTerm>限制一段等待；重试判断能否、何时再发；<ConceptTerm slug="rate-limiting">限流</ConceptTerm>控制一段时间里接受多少请求。一次查询可以允许重试，但仍要受等待和次数上限约束。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
