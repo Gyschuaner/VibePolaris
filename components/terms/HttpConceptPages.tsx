@@ -180,7 +180,7 @@ export function StatusCodeTermPage() {
 export function HttpHeaderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={headerSources} />;
   return <ConceptArticle slug="http-header" title="请求头" sources={headerSources}
-    intro={<>同样请求 /books/42，有的客户端想要 JSON，有的只需要纯文本。请求头可以把这些偏好告诉服务器，地址和书的内容都不必因此改变。</>}
+    intro={<>AI 让你在请求头里加上 Accept: application/json。它是在指定要查哪本书，还是让服务器把书名写成另一种格式？请求头传达的是这次请求的补充信息；服务器如何使用，还要看双方的约定。</>}
     sections={[["fields", "内容之外的信息"], ["negotiate", "同一本书，两种表示"], ["directions", "Accept 与 Content-Type"], ["limits", "字段的控制者"]]}
     hero={<ConceptHero slug="http-header" label="同一资源 /books/42 有 JSON 和纯文本两种可提供的表示；请求头 Accept: application/json 表达偏好后，本例选择 JSON 表示，书名和资源地址不变"><div className={s.headerHero}>
       <div className={s.headerSource}><BookOpen size={22} /><code>/books/42</code><strong>海边的书店</strong></div>
@@ -189,24 +189,33 @@ export function HttpHeaderTermPage() {
     </div></ConceptHero>}>
     <ArticleSection id="fields" title="内容之外的信息">
       <Legacy slug="http-header" names={["question", "definition"]} />
-      <p id="header-fields" className="vp-citation-target"><strong>请求头是随请求发送的字段，用来补充内容、客户端和处理条件等信息。</strong>HTTP 头也可以出现在响应中。字段名不区分大小写，但字段值如何解释，要看每个字段的定义；不能把所有值都转成小写。<Cite id="header-fields" /></p>
-      <p>“书名是海边的书店”属于业务内容；“希望收到 JSON”则描述客户端能接收什么。把两者分开，服务器才能先决定处理规则，再读取或生成对应内容。</p>
+      <p>网页向服务器要一条书目信息时，发出去的消息叫请求，服务器发回的消息叫响应。发起请求的一方是客户端，处理请求的一方是服务器。HTTP 约定了这类消息的结构和含义；请求头就是其中一部分。</p>
+      <p id="header-fields" className="vp-citation-target"><strong>请求头由字段名和值组成，随请求补充说明发送的内容、客户端的偏好或处理条件。</strong>例如 <code>Accept: application/json</code>，按这里的写法，冒号前的 Accept 是字段名，后面的 application/json 是值。响应也有自己的头字段，称为响应头。<Cite id="header-fields" /></p>
+      <p>先看这条请求：<code>GET /books/42</code> 表示读取编号 42 的书目。地址指出要查哪条书目，Accept 则表达希望收到的内容格式。服务器可以参考这个偏好，从自己能提供的格式中选择；书名“海边的书店”放在返回的正文里。</p>
+      <p>双方也可以约定这个地址永远只返回 JSON，不让客户端选择格式；或者为不同格式提供不同地址。使用 Accept 的好处是，同一地址可以按约定返回 JSON 或纯文本，供不同客户端读取。它不是每个接口都必须支持的格式切换功能。</p>
     </ArticleSection>
     <ArticleSection id="negotiate" title="同一本书，两种表示">
       <Legacy slug="http-header" names={["scene-heading"]} />
-      <p id="header-negotiation" className="vp-citation-target">内容协商允许服务器参考请求头选择资源的表示。这里模拟的服务器只提供 JSON 和纯文本，并约定在无法满足偏好时返回 406；它不是完整协商算法，真实服务的选择与回退策略需看实现。<Cite id="header-negotiation" /></p>
+      <p>这里的“表示”，指同一条书目以什么样的数据交给客户端。JSON 把书名放在 title 这个名称下面，像 <code>{'{"title":"海边的书店"}'}</code>，方便程序按名称取值；纯文本只返回“海边的书店”。两种写法都在说这本书，并没有改动保存的书名。</p>
+      <p id="header-negotiation" className="vp-citation-target">服务器参考请求中的偏好来选择表示，这个过程叫<strong>内容协商</strong>。下面的本地演示只提供 JSON 和纯文本，并约定无法满足偏好时返回 406，表示没有可接受的表示。真实服务也可能采用自己的回退策略；发出 Accept 并不保证服务器一定照选项返回。<Cite id="header-negotiation" /></p>
+      <p>下拉框默认是 application/json，也就是 JSON 的媒体类型名称；text/plain 表示纯文本。媒体类型用约定的名字说明内容格式。点击“协商格式”后，选中的表示会突出显示，下面出现本次响应。这里没有向外部服务器发送请求。</p>
       <HeaderLesson />
-      <p>两种表示说的是同一本书，但接收方要用不同方式读取。选 XML 时，服务器不会因为看见一个类型名字就自动转换数据；本例没有这种表示，因此明确拒绝。</p>
+      <p>选择 JSON 或纯文本，都得到表示请求成功的 200，但响应正文和 Content-Type 不同。纯文本类型后面的 <code>charset=utf-8</code> 还说明文字采用 UTF-8 编码，帮助接收方正确读取字符。切换选项会收起旧响应，需再次点击才得到新结果；点“重置协商”会恢复 JSON 选项并清除结果。</p>
+      <p>XML 是另一种数据格式。本例不提供它，所以选 application/xml 后得到 406，意思是没有可接受的表示，两张卡都不会被选中。把类型名字写进请求头，不会让服务器自动具备生成那种格式的能力。</p>
     </ArticleSection>
     <ArticleSection id="directions" title="Accept 与 Content-Type">
-      <div className={s.paired}><div><h3>希望收到什么</h3><p id="header-accept" className="vp-citation-target">请求中的 <code>Accept</code> 列出客户端能够理解的媒体类型。它可以包含多种候选及权重，不要求只填一种。本例为了看清选择过程，只使用一个精确类型。<Cite id="header-accept" /></p></div><div><h3>这份内容是什么</h3><p id="header-content" className="vp-citation-target"><code>Content-Type</code> 描述随消息携带的内容类型。请求体是 JSON 时可声明 application/json；响应也用它说明实际返回的类型。这个字段不会把一段普通文本自动变成 JSON。<Cite id="header-content" /></p></div></div>
-      <p id="header-vary" className="vp-citation-target">当服务器按 Accept 选择表示，响应可以用 <code>Vary: Accept</code> 告诉缓存：判断能否复用这份响应，还要考虑原请求的 Accept。否则，相同 URL 的纯文本和 JSON 可能被误当成可以互换的结果。<Cite id="header-vary" /></p>
+      <div className={s.paired}><div><h3>希望收到什么</h3><p id="header-accept" className="vp-citation-target">请求中的 <code>Accept</code> 列出客户端能够理解的媒体类型。可以列出多个候选，用权重表达更偏好哪一种；本例只比较一个精确类型，没有实现多候选和权重的计算。<Cite id="header-accept" /></p></div><div><h3>这份内容是什么</h3><p id="header-content" className="vp-citation-target"><code>Content-Type</code> 说明当前消息携带的正文是什么类型。请求里的它描述发给服务器的内容，响应里的它描述服务器发回的内容。它不会把普通文本自动变成 JSON，正文也要按所声明的格式组织。<Cite id="header-content" /></p></div></div>
+      <p>例如，新增书目时，请求正文用 JSON 写入书名，就可以带 <code>Content-Type: application/json</code>；同时带 <code>Accept: text/plain</code>，表达希望服务器用纯文本回复。一个说“我发的是 JSON”，另一个说“我希望收纯文本”，两者并不冲突。是否支持这种组合，仍由接口约定。</p>
+      <p id="header-vary" className="vp-citation-target">缓存会保存以前的响应；如果这次请求可以复用旧响应，就不用再向服务器索取一次。当同一地址按 Accept 返回不同表示，服务器发出的响应头 <code>Vary: Accept</code> 提醒缓存：判断旧响应能不能用于新请求，还要比较 Accept。否则，想读 JSON 的客户端可能拿到先前保存的纯文本。Vary 参与复用判断，不是开启缓存或转换格式的开关；本演示只展示这个响应字段，没有模拟缓存。<Cite id="header-vary" /></p>
     </ArticleSection>
     <ArticleSection id="limits" title="字段的控制者" className={base.offset}>
       <Legacy slug="http-header" names={["quiz-heading", "prompt-heading"]} />
-      <p id="header-browser" className="vp-citation-target">浏览器会保留部分请求头的控制权。例如 Host、Content-Length 和 Cookie，不能像普通自定义字段一样任意用脚本设置。不要把命令行工具里能够指定的所有字段，直接照搬到浏览器 fetch。<Cite id="header-browser" /></p>
+      <p id="header-auto" className="vp-citation-target">请求头不一定要由你逐个填写。浏览器加载网页、图片等内容时，会根据请求场景设置 Accept；用脚本发请求时，也可以按接口约定指定它。<Cite id="header-auto" /></p>
+      <p>字段名不区分大小写，Accept 和 accept 指同一个字段；字段值怎样解释，则要看各自的定义，不能把所有值都转成小写。字段名拼对，也不意味着它一定能从网页脚本中发出去。</p>
+      <p id="header-browser" className="vp-citation-target">浏览器会保留部分请求头的控制权。例如 Host、Content-Length 和 Cookie，不能像普通自定义字段一样任意用脚本设置。fetch 是网页脚本发请求的常用方法，但它仍受浏览器限制；不要把命令行工具里能指定的所有字段直接照搬过来。<Cite id="header-browser" /></p>
       <p>请求头还可能包含身份凭证。排查时记录字段是否存在、格式是否正确，往往已经足够；共享截图或日志前，应移除真实令牌。把凭证从请求体移进请求头，也不代表请求已经获得权限。</p>
-      <ArticleAside title="看见字段，不代表业务使用了它"><p>自定义一个 X-Book-Mode 字段，只是发送了名字和值。如果服务端、代理和缓存都没有处理它，它就不会自动改变业务逻辑。先确认谁读取字段、按什么规则执行，再判断这个字段是否必要。</p></ArticleAside>
+      <ArticleAside title="看见字段，不代表业务使用了它"><p>在请求头里添加自定义字段 X-Book-Mode，只是把它的名字和值发出去。如果服务端、代理和缓存都没有处理它，它就不会自动改变业务逻辑。先确认谁读取字段、按什么规则执行，再判断这个字段是否必要。</p></ArticleAside>
+      <p>换成读取天气：某个服务约定同一地址可返回 JSON 数据或一段文字播报，Accept 就能表达你要哪种表示。如果你希望加一个“只返回明天”的条件，则应先看服务对筛选条件的约定，不能凭空写一个头字段就期待它生效。让 AI 帮你接接口时，要一起确认字段放在哪条消息里、表达什么、接收方是否处理它。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

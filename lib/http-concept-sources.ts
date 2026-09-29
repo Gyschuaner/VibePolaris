@@ -32,8 +32,9 @@ export const statusSources = [
 ];
 export const headerSources = [
   mdn("HTTP headers", "Web/HTTP/Reference/Headers", ["header-fields"]),
-  mdn("Accept header", "Web/HTTP/Reference/Headers/Accept", ["header-accept"]),
+  mdn("Accept header", "Web/HTTP/Reference/Headers/Accept", ["header-accept", "header-auto"]),
   mdn("Content-Type header", "Web/HTTP/Reference/Headers/Content-Type", ["header-content"]),
   mdn("Content negotiation", "Web/HTTP/Guides/Content_negotiation", ["header-negotiation", "header-vary"]),
   mdn("Forbidden request header", "Glossary/Forbidden_request_header", ["header-browser"]),
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke（编）", title: "RFC 9110 — HTTP Semantics · §12.5.5 Vary", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-12.5.5", citations: ["header-vary"] },
 ];
