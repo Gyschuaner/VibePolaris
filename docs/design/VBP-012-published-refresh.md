@@ -32,8 +32,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 18 hook | 复用逻辑，各有状态 | 两条相同刻度轨道：咖啡 2→3，门票维持 0；单独操作不改另一实例 | 本地与 dev 集成完成 · PR #121 |
 | 19 effect | 与外部系统同步 | 两路消息源与固定接收器；音乐订阅完整收回后，天气订阅才接通 | 本地与 dev 集成完成 · PR #122 |
 | 20 browser-api | 浏览器提供能力 | 浏览器内的区域变宽、测量括号显现，JS 随后收到内容宽度 | 本地与 dev 集成完成 · PR #123 |
-| 21 fetch-api | 发请求并读取响应 | 同一份 Response 面板先亮状态，正文仍未读；随后书目显现 | 本地验收完成 · 待 dev 集成 |
-| 22 promise | 尚未完成的结果 | 一个待定容器只落入成功或失败的一个终态 | 待更新 |
+| 21 fetch-api | 发请求并读取响应 | 同一份 Response 面板先亮状态，正文仍未读；随后书目显现 | 本地与 dev 集成完成 · PR #124 |
+| 22 promise | 尚未完成的结果 | 两份独立 Promise 先空后落定：一份 A17，一份售罄，第一份保持不变 | 本地验收完成 · 待 dev 集成 |
 | 23 async-await | 当前流程等待 | 并行时间轨迹；当前轨道停驻，其他轨道前进 | 待更新 |
 | 24 json | 结构化文本表示 | 同一对象在文本与树状层级间展开 | 待更新 |
 | 25 json-schema | 描述允许的数据 | 结构轮廓套合；缺字段或错误类型露出缺口 | 待更新 |
@@ -459,6 +459,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_c60ffb
 资料：实际阅读 MDN [Using the Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)（状态和响应头可先于 body 完整接收，Response 读取方法、AbortController）、[Window: fetch() method](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch)（404/504 不自动拒绝）、[Response: ok property](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok)（200–299）和 [Response: json() method](https://developer.mozilla.org/en-US/docs/Web/API/Response/json)（读完响应体再解析，返回 Promise）。现有四份书目与角标足以支持正文论断，不新增无关来源；仍把 HTTP 成功、JSON 可解析和 `books` 符合应用约定分开。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器重播首图后，中间帧面板和“未读取”均可见、书目透明；完成帧书名显现。390×844 面板宽 280、主演示宽 342，文档 clientWidth/scrollWidth 均为 390。主演示正常资源先收到 Response 200、`ok:true`、内容类型且正文未读，第二步才显示两本书；404 仍收到 Response、检查时报 HTTP 404；200 的非 JSON 报解析失败，200 的合法 JSON 但 `books` 非数组报结构不符。切换资源与重置后旧书目视觉隐藏，Enter 可发请求与读取；五个旧锚点及四份来源存在，第一份书目正文摘录与回链落点约 130px，应用错误日志为空。没有刻意模拟请求仍在途时的竞态，也没有真人零基础读者观察。VBP-016 用例 `7fee90a4-b0c7-4be8-8044-52b4663b2deb`，本地计划 `a7e5dde5-9ca0-462f-ac31-70be14c8d686` completed、执行 `865a7fbc-5eca-4226-ac21-8c7a070139df` passed。
+
+2026-09-29 集成：提交经 [PR #124](https://github.com/Gyschuaner/VibePolaris/pull/124) 合入 `dev`，merge `d717901322f85690cc159b82fea24520352b30e0`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用同一 Git 树与构建产物，`http://localhost:3219/terms/fetch-api` 在真实浏览器复核响应面板、书目读取、旧锚点和四份来源，应用错误为空。DP 部署 `115788a9-1f67-4bb8-b6b4-4fd767359a7c` 已回查；前版 `7c23902` 构建备份在 `/tmp/vbp012-dev-next-7c23902`。未部署远端 dev 或生产。DP VBP-012 更新至 21/105、版本 30；下一条 promise。
+
+## 22 · promise
+
+读者入口：“请求已经发出但没结果时，手里先拿到什么？后来报错，还能把同一份结果改成成功吗？”保留现有取餐订单的原生 Promise 主演示和从状态、回调时机到链式处理的正文。原首图只把一张纸质凭条变成 A17，未呈现拒绝出口，且与前一页 Fetch 的原信封形态相近。现在先展示一份空结果舱，A17 从上方进入并封口；随后新的一份空舱落定为“售罄”，第一份保持 A17。这两份是独立 Promise，不是一次 Promise 先成功再失败。主演示仍允许对同一份订单先后调用 resolve/reject，以真实结果不变验证不可反悔；新建一单才取得新 Promise。
+
+视觉候选：① 单轨道岔，结果只进入一侧，另一侧焊死；容易看成按时间滑向既定终点，也与相邻 async/await 轨道相近。② 空舱交割，先有空结果凭据，结果从外部进入后边框由虚线封为实线；采用，画面只保留两份结果舱与必要状态，不加作业区字幕。③ 雾中双影，选中结果结晶、另一影消散；虚影轮替容易被误读成同一份结果在两种状态间反复变化。未采用 ZCode 提议的“舱中再嵌套 pending 舱”彩蛋：resolved 与 fulfilled 的细节继续由正文旁注承担，避免首图过载。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_52d04ef0-ad36-49b4-8229-e0cff5954085`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 和动画灵感参考。主助手提供已核实的 MDN 机制与相邻页边界；ZCode 提供上述三案并推荐空舱，未读源码、访问网页或验收页面。主助手把建议收敛成两份独立 Promise 的有限时首图。
+
+资料：实际阅读 MDN [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)（三种状态、落定不可改、resolved 不总等于 fulfilled、没有通用取消）、[Using promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises)（处理函数与链条）、[Promise.prototype.then()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)（新 Promise 及返回值）和 [Using microtasks in JavaScript with queueMicrotask()](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)（Promise 回调使用微任务，当前同步代码完成后才执行）。第 4 份新增书目并关联 `promise-timing`，保留前三份编号。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器重播首图，约 0.95s 时第一舱 pending、结果不可见且边框为虚线；约 2.25s 时第一舱已呈 A17、第二舱未出现；终帧两舱分别 A17/售罄，边框实线且第一舱未改变。390×844 首图宽 330、两舱都在视口内，文档 clientWidth/scrollWidth 均为 390；主演示按钮宽 342/166/166px。真实原生 Promise 先成功再尝试拒绝时仍 fulfilled，日志按“resolve、同步代码结束、then 成功回调、reject”排列且没有拒绝回调；新建一单后先拒绝再尝试履行，仍 rejected 且没有成功回调。Enter 可交付取餐号，五个旧锚点与四份来源在页；第 4 份书目正文摘录回链落点约 130px，应用错误日志为空。没有真人零基础读者观察。VBP-016 用例 `f4673bd3-512f-4d41-90ff-e90319f8c17c`，本地计划 `d13f29e9-624c-4f2c-815c-9634999515b3` completed、执行 `2a1b8394-1a23-4b79-b286-007991fb989e` passed。
 
 ## 01 · Harness
 

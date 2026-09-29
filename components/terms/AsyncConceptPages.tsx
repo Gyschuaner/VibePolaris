@@ -1,4 +1,4 @@
-import { BookOpen, Check, FileText, Image as ImageIcon, Receipt } from "@phosphor-icons/react/dist/ssr";
+import { BookOpen, Check, FileText, Image as ImageIcon, X } from "@phosphor-icons/react/dist/ssr";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { AwaitLesson, FetchLesson, PromiseLesson } from "./AsyncConceptLessons";
@@ -52,7 +52,10 @@ export function PromiseTermPage() {
   return <ConceptArticle slug="promise" title="Promise" subtitle="记录一次异步操作的结果" sources={promiseSources}
     intro={<>请求发出后，结果未必马上回来。Promise 先代表这份尚未取得的结果；拿到值或遇到错误以后，登记好的处理函数再接着工作。</>}
     sections={[["result", "一份结果，三种状态"], ["order", "让一份订单落定"], ["timing", "回调执行的时机"], ["chain", "把结果交给下一步"]]}
-    hero={<ConceptHero slug="promise" label="取餐凭条从等待变成A17，盖上已落定印章"><div className={styles.promiseHero}><div className={styles.miniTicket}><Receipt size={24} weight="light" /><span>取餐凭条</span><strong>A17</strong><b><Check size={20} /></b><span>fulfilled</span></div></div></ConceptHero>}>
+    hero={<ConceptHero slug="promise" label="第一份 Promise 从等待变成成功 A17 并封口；第二份独立 Promise 从等待变成拒绝售罄，第一份保持不变"><div className={styles.promiseHero}>
+      <div className={styles.promiseCell}><span>Promise 01</span><div className={styles.promiseWindow}><i>···</i><strong><Check size={19} />A17</strong></div><small>fulfilled</small></div>
+      <div className={styles.promiseCell}><span>Promise 02</span><div className={styles.promiseWindow}><i>···</i><strong><X size={19} />售罄</strong></div><small>rejected</small></div>
+    </div></ConceptHero>}>
     <ArticleSection id="result" title="一份结果，三种状态">
       <AsyncLegacyAnchors slug="promise" names={["question", "definition"]} />
       <p>拿到取餐凭条时，食物还没有做好，但你已经知道到哪里取结果。程序也可以先拿到一个 Promise，把成功后要做的事、失败时怎么办登记进去，再让当前代码继续执行。</p>
