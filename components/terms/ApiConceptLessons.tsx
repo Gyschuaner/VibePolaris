@@ -40,14 +40,14 @@ export function EndpointLesson() {
     <label className={s.host}>服务基址<select value={host} onChange={e => { setHost(e.target.value); setShown(false); }}><option>https://api.example.com</option><option>https://test.example.com</option></select></label>
     <div className={s.matrix}>{["/books", "/books/42", "/authors"].map(location => <div key={location} className={s.pathColumn}><code>{location}</code>{["GET", "POST", "DELETE"].map(verb => <button key={verb} aria-label={`${verb} ${location}`} aria-pressed={path === location && method === verb} data-declared={operations.some(op => op.path === location && op.method === verb)} onClick={() => { setPath(location); setMethod(verb); setShown(false); }}><strong>{verb}</strong><span>{operations.find(op => op.path === location && op.method === verb)?.name ?? "未声明"}</span></button>)}</div>)}</div>
     <div className={s.address}><strong>{method}</strong><code>{host}{path}</code></div>
-    <button onClick={() => { setResult(matchOperation(method, path)); setShown(true); }}>匹配入口<ArrowRight size={18} /></button>
+    <button onClick={() => { setResult(matchOperation(method, path)); setShown(true); }}>查找处理程序<ArrowRight size={18} /></button>
     <div className={s.matchResult} aria-live="polite"><States index={!shown ? 0 : result.kind === "matched" ? 1 : result.kind === "method" ? 2 : 3}>{[
-      <p key="idle">选择方法和路径，查看对应的处理入口。</p>,
-      <div key="match"><span>入口已找到</span><strong>{result.name ?? "listBooks"}</strong><p>尚未执行该操作。</p></div>,
+      <p key="idle">选择方法和路径，查看是否有对应的处理程序。</p>,
+      <div key="match"><span>处理程序已找到</span><strong>{result.name ?? "listBooks"}</strong><p>尚未执行该操作。</p></div>,
       <div key="method"><strong>该路径未声明此方法</strong><p>已声明：{result.allowed.join("、")}</p></div>,
       <div key="path"><strong>路径不存在</strong><p>这份路由表没有声明这个位置。</p></div>,
     ]}</States></div>
-    <button className={base.reset} onClick={() => { setMethod("GET"); setPath("/books"); setHost("https://api.example.com"); setShown(false); }}><ArrowCounterClockwise size={17} />重置入口</button>
+    <button className={base.reset} onClick={() => { setMethod("GET"); setPath("/books"); setHost("https://api.example.com"); setShown(false); }}><ArrowCounterClockwise size={17} />重置选择</button>
   </div>;
 }
 
