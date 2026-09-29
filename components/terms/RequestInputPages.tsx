@@ -50,9 +50,15 @@ export function QueryParameterTermPage() {
 export function PathParameterTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={pathParameterSources} />;
   return <ConceptArticle slug="path-parameter" title="路径参数" sources={pathParameterSources}
-    intro={<>打开 42 号读者的资料，地址是 /readers/42；换成 43，就请求另一位读者。同一条路径模板接收不同的值，程序再据此寻找对象。</>}
+    intro={<>打开 42 号读者的资料，地址是 /readers/42；换成 43，就请求另一位读者。同一条路径模板能接收不同的值。路由先取到这个值；它是否合法、能不能用来查看资料，还要往下检查。</>}
     sections={[["template", "模板里的可替换位置"], ["matching", "请求落在哪条路由"], ["checks", "匹配之后还有检查"], ["framework", "路由决定路径规则"]]}
-    hero={<ConceptHero slug="path-parameter" label="42进入路径槽位，定位42号读者"><div className={s.pathHero}><code>/readers/<em>42</em></code><div><User size={35} weight="light" /><strong>42</strong></div><span>一段路径 · 一个定位值</span></div></ConceptHero>}>
+    hero={<ConceptHero slug="path-parameter" label="固定路径 /readers/ 后有可替换的 id 槽位；42 和 43 先后占据槽位，最终只捕获到 id 等于 43，尚未读取读者资料"><div className={s.pathHero}>
+      <div className={s.pathFrame}>
+        <div className={s.pathFixed}><span>固定部分</span><code>/readers/</code></div>
+        <div className={s.pathSlot}><span>槽位 {"{id}"}</span><div className={s.pathWindow}><div className={s.pathRoll}><code>42</code><code>43</code></div></div></div>
+      </div>
+      <div className={s.pathCaptured}><span>匹配后捕获</span><code>id = 43</code></div>
+    </div></ConceptHero>}>
     <ArticleSection id="template" title="模板里的可替换位置">
       <Legacy slug="path-parameter" names={["question", "definition"]} />
       <p id="path-template" className="vp-citation-target"><strong>路径参数是路由从 URL 路径的可变位置提取出的值。</strong>在 OpenAPI 文档中，<code>{"/readers/{id}"}</code> 用花括号标出模板槽位；实际请求把它替换为 <code>42</code>。id 是参数名，42 是本次的值，花括号不用随请求发送。<Cite id="path-template" /></p>
