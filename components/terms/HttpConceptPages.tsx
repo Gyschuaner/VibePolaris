@@ -96,9 +96,9 @@ export function ResponseTermPage() {
 export function HttpMethodTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={methodSources} />;
   return <ConceptArticle slug="http-method" title="HTTP 方法" sources={methodSources}
-    intro={<>同样是 /notes/42，GET 是读取，PUT 是用提交的内容建立或替换，DELETE 是移除。地址确定对象，方法表达这次请求对它做什么。</>}
+    intro={<>让 AI 给便笺网页加一个“保存”按钮，它却开始讨论用 PUT 还是 POST。按钮都叫保存，为什么还要选？因为网页要告诉服务器：这次是设置指定便笺的内容，还是另建一条便笺。</>}
     sections={[["resource", "方法与目标一起读"], ["repeat", "让同一条请求再执行一次"], ["properties", "安全与幂等"], ["others", "其他方法与实现边界"]]}
-    hero={<ConceptHero slug="http-method" label="本例中，同一份 PUT /notes/42 执行两次仍只修改 42 号便笺；同一份 POST /notes 执行两次，在同一个资源集合新增 43 和 44 号便笺"><div className={s.methodHero}>
+    hero={<ConceptHero slug="http-method" label="本例中，同一条 PUT /notes/42 执行两次仍只修改 42 号便笺；同一条 POST /notes 执行两次，在同一个资源集合新增 43 和 44 号便笺"><div className={s.methodHero}>
       <code className={s.methodPut}>PUT /notes/42 <b>× 2</b></code>
       <div className={s.methodLens}><code>/42</code><span className={s.methodDraft}>草稿</span><strong className={s.methodEdited}>已校对</strong></div>
       <code className={s.methodPost}>POST /notes <b>× 2</b></code>
@@ -106,24 +106,30 @@ export function HttpMethodTermPage() {
     </div></ConceptHero>}>
     <ArticleSection id="resource" title="方法与目标一起读">
       <Legacy slug="http-method" names={["question", "definition"]} />
-      <p id="method-purpose" className="vp-citation-target"><strong>方法声明请求的语义，不是给 URL 加一个随意的标签。</strong>GET 取得资源的表示，PUT 以请求内容建立或替换目标资源，POST 把内容交给目标处理，DELETE 请求移除目标。POST 常被用来创建，但也可以提交一次处理任务。<Cite id="method-purpose" /></p>
-      <p>便笺接口可以用 POST /notes 创建新便笺，让服务分配编号；用 PUT /notes/42 设置指定便笺的内容。两者都可能“保存成功”，但目标和重复调用后的效果不同。</p>
+      <p>假设便笺保存在网站的服务器上。你在网页里点击保存，网页程序负责发出请求，服务器处理后发回响应。这里发请求的一方叫客户端；HTTP 是双方交换请求和响应时遵守的协议。</p>
+      <p id="method-purpose" className="vp-citation-target"><strong>HTTP 方法是请求里表示操作目的的名称，例如 GET、PUT、POST、DELETE。</strong>地址告诉服务器要找什么，方法说明希望对它做什么。GET 请求读取目标的数据，PUT 请求用提交的内容建立或替换指定目标，DELETE 请求移除目标；POST 则把内容交给目标按约定处理，常用于创建，也可以提交一次导出任务。<Cite id="method-purpose" /></p>
+      <p>在这个便笺接口中，<code>/notes</code> 是便笺集合的地址路径，<code>/notes/42</code> 指向编号为 42 的那条便笺。示例省略了网站域名。这样能通过地址指定的对象叫“资源”。服务器传回的是描述便笺的数据，例如它的编号和标题；HTTP 文档把这种可传送的数据形式称为资源的“表示”。</p>
+      <p>这个接口约定：<code>POST /notes</code> 新建便笺，由服务器分配编号；<code>PUT /notes/42</code> 则把 42 号便笺设成提交的内容，如果还没有这条便笺，就按提交的内容新建它。下面提交的 <code>title</code> 是标题，值为“已校对”。这份简化便笺只有标题可设置；真实接口里 PUT 要提交哪些完整内容，应查它的约定。</p>
+      <p>也可以把新增和修改都交给一个 POST 入口，再在请求内容里注明这次要新增还是修改。这仍然可以工作，只是调用方需要了解额外约定。按 HTTP 方法的含义设计接口，可以让不同客户端依据共同规则区分读取、替换等操作，尤其是判断一条请求能否重试。</p>
     </ArticleSection>
     <ArticleSection id="repeat" title="让同一条请求再执行一次">
       <Legacy slug="http-method" names={["scene-heading"]} />
-      <p>这是一组可重置的本地便笺。先连续执行两次 PUT，再试两次 POST。切换方法时保留资源，方便继续读取或删除；“恢复初始资源”才把集合恢复到一条草稿。这里的 POST 约定为每次新增，最多保留七条用于观察。</p>
+      <p>下面用本地便笺模拟服务器上的资源，没有向真实服务器发送请求。先选 PUT，连续点击两次“执行同一条请求”，再切到 POST 连点两次。请求下方的便笺和条数显示操作后的资源状态，再往下显示最近一次响应：三位数字是状态码，后面的内容是响应体。</p>
+      <p>切换方法会清掉上次响应和计数，已经改变的便笺会保留。“恢复初始资源”才把集合恢复为一条标题是“草稿”的 42 号便笺，同时清掉结果，选中的方法不变。演示提供六次 POST 新增机会，用完后可恢复初始资源重新试；这只是演示的容量限制。</p>
       <MethodLesson />
-      <p id="method-delete" className="vp-citation-target">删除 42 后再删除一次，示例第二次返回 404，集合里依然没有 42。<strong>幂等比较的是预期的资源效果，不要求每次返回相同的状态码或内容。</strong><Cite id="method-delete" /></p>
+      <p>连续两次 PUT 都把同一条 42 号便笺设为“已校对”，所以仍是一条；本例连续两次 POST 则分别新建 43、44 号便笺，加上原有的 42，一共三条。本例用 200 表示已有便笺更新成功，用 201 表示新便笺创建成功。标题相同，并不代表它们是同一条便笺。换成 GET，只会读取 42，不会再添一条。</p>
+      <p id="method-delete" className="vp-citation-target">再试两次 DELETE：第一次移除 42，示例返回 204，表示成功且没有响应体；第二次返回 404，表示找不到它。第一次执行后 42 就不存在，第二次执行后仍然如此；前面新建的 43、44 不受影响。<strong>幂等比较的是重复请求对目标的预期效果，不要求每次返回相同的状态码或内容。</strong><Cite id="method-delete" /></p>
     </ArticleSection>
     <ArticleSection id="properties" title="安全与幂等">
-      <div className={s.paired}><div><h3>是否请求改变状态</h3><p id="method-safe" className="vp-citation-target">安全方法的语义是只读，客户端没有请求改变服务端状态。GET 属于这一类；服务器记录访问日志，并不会让 GET 因此变成不安全方法。不能用 GET 链接来执行删除。<Cite id="method-safe" /></p></div><div><h3>重复是否叠加效果</h3><p id="method-repeat" className="vp-citation-target">幂等意味着多次相同请求与一次请求的预期效果相同。PUT、DELETE 及安全方法具有这一语义；POST 和 PATCH 不保证幂等。PUT 会写数据，所以幂等不等于只读。<Cite id="method-repeat" /></p></div></div>
-      <p id="method-retry" className="vp-citation-target">当连接中断、没有读到响应时，客户端不一定知道第一次是否执行过。幂等语义帮助判断能否重复请求；对非幂等操作，不应未经判断自动重试。是否有去重机制、是否能确认未执行，要结合接口约定。<Cite id="method-retry" /></p>
+      <div className={s.paired}><div><h3>是否要求改动数据</h3><p id="method-safe" className="vp-citation-target">HTTP 中的“安全方法”指约定用途是只读：客户端发出这类请求时，并不要求修改服务器上的数据。GET 属于这一类，服务器顺带记录访问日志不改变这个分类。这里的“安全”不保证数据保密或人人有权访问。GET 不应执行删除，否则浏览器预先读取链接、搜索程序访问链接时，都可能误删数据。<Cite id="method-safe" /></p></div><div><h3>重复是否叠加效果</h3><p id="method-repeat" className="vp-citation-target">“幂等”是说：多次发送相同请求，与只发送一次，对服务器产生的预期效果相同。PUT、DELETE 和安全方法按约定都满足这一点。PUT 会写数据，所以幂等不等于只读，也不表示服务器只执行了一次。POST 和 PATCH 不保证幂等，要看具体操作。<Cite id="method-repeat" /></p></div></div>
+      <p id="method-retry" className="vp-citation-target">假如保存时连接断了，网页没有收到响应，服务器可能已经保存成功。原样重试 PUT，仍是把指定便笺设成同样的内容；重试本例的 POST，却可能多建一条。因此，客户端在没有读到响应时可以依据幂等约定判断能否重试；对不保证幂等的操作，不能仅凭“没收到”就自动再发，除非接口有明确的重复请求去重约定，或能确认第一次没有执行。<Cite id="method-retry" /></p>
+      <p id="method-identical" className="vp-citation-target">判断时还要确认是同一个目标、相同的请求内容。把提交的标题从“草稿”改为“已校对”，请求内容就不再相同；幂等并不要求两种标题产生相同结果。GET 两次返回的标题也可能不同，因为别人可能在中途修改了便笺。<Cite id="method-identical" /></p>
     </ArticleSection>
     <ArticleSection id="others" title="其他方法与实现边界">
       <Legacy slug="http-method" names={["quiz-heading", "prompt-heading"]} />
-      <div id="method-others" className="vp-citation-target"><dl className={s.definitions}><dt>PATCH</dt><dd>应用局部修改；补丁内容由具体接口约定。</dd><dt>HEAD</dt><dd>取得类似 GET 的响应元信息，但不返回响应体。</dd><dt>OPTIONS</dt><dd>了解目标支持的通信选项。</dd></dl><Cite id="method-others" /></div>
-      <p id="method-implementation" className="vp-citation-target">这些语义需要服务器正确实现。把一个每次加一的操作命名为 PUT，并不能自动获得幂等性；接口的实际行为仍要检查。方法也不能代替身份、权限和输入校验。<Cite id="method-implementation" /></p>
-      <p>下一次设计接口时，把目标资源、请求内容、第一次结果和原样重复后的结果一起写下来。比只列一排 GET、POST、DELETE，更容易发现调用方可能误用的地方。</p>
+      <div id="method-others" className="vp-citation-target"><dl className={s.definitions}><dt>PATCH</dt><dd>提交对资源的局部修改，修改指令的写法由接口约定。例如“把标题设为某个值”，原样重复效果不变；“在末尾追加一段文字”，每重复一次就多一段。</dd><dt>HEAD</dt><dd>读取类似 GET 响应中的状态码和响应头，但不返回响应体。响应头是数据类型、长度等附带信息；具体返回哪些字段要看服务器。</dd><dt>OPTIONS</dt><dd>询问目标支持哪些通信选项，例如哪些方法可用。</dd></dl><Cite id="method-others" /></div>
+      <p id="method-implementation" className="vp-citation-target">这些约定需要服务器正确实现。把一个每次加一的操作命名为 PUT，并不能自动获得幂等性；接口的实际行为仍要检查。方法也不能代替身份、权限和输入校验。<Cite id="method-implementation" /></p>
+      <p>换成灯光设置也一样：反复把同一盏灯的目标亮度设为 50%，预期仍是 50%；每次“再增加 10%”，效果就会累积。让 AI 设计接口时，可以让它写清楚目标地址、提交内容、第一次结果和原样重复后的结果，再判断所选方法是否符合这些行为。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
