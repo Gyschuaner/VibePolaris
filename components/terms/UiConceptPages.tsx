@@ -13,7 +13,10 @@ export function ComponentTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={componentSources} />;
   return <ConceptArticle slug="component" title="组件" sources={componentSources}
     sections={[["definition", "一份定义，多处使用"], ["instances", "每个实例的状态"], ["composition", "组件也能组合"], ["boundary", "按职责划分组件"]]}
-    hero={<ConceptHero slug="component" label="同一份 MemberCard 定义展开为三个成员卡片"><div className={styles.componentHero}><code>MemberCard</code>{[0, 1, 2].map(i => <div className={styles.miniMember} key={i}><UserCircle size={29} weight="light" /><span /></div>)}</div></ConceptHero>}
+    hero={<ConceptHero slug="component" label="头像、姓名与关注按钮合成一份 MemberCard 结构，成员列表依此出现三张不同成员卡片"><div className={styles.componentHero}>
+      <div className={styles.componentBlueprint}><code>MemberCard</code><div className={styles.componentFrame}><UserCircle size={27} weight="light" /><span className={styles.componentNameLines}><i /><i /></span><span className={styles.componentFollow}>＋</span></div></div>
+      <div className={styles.componentList}><code>MemberList</code>{["阿青", "林墨", "陈屿"].map(name => <div className={styles.componentInstance} key={name}><UserCircle size={23} weight="light" /><span>{name}</span><b>＋</b></div>)}</div>
+    </div></ConceptHero>}
     intro={<>组件把一块界面的结构和行为组织在一起。<strong>定义写一份，使用时传入不同数据，页面就能得到多个遵循相同规则的实例。</strong></>}
     relatedIntro={<>用 <ConceptTerm slug="props">Props</ConceptTerm> 配置每次使用的输入，用 <ConceptTerm slug="state">状态</ConceptTerm> 记录交互中的变化。跨页面复用的规范，还可以整理进设计系统。</>}>
     <ArticleSection id="definition" title="一份定义，多处使用">
@@ -39,6 +42,7 @@ export function ComponentTermPage() {
     <ArticleSection id="boundary" title="按职责划分组件">
       <Anchors ids={["component-quiz-heading", "component-prompt-heading"]} />
       <p id="component-boundary" className="vp-citation-target">React 的设计教程建议结合职责、视觉层次和数据结构拆分界面。一个部分变复杂、拥有清晰职责时，可以继续拆；简单且紧密相关的内容也可以先放在一起。这里没有“超过多少行必须拆”的统一标准。<Cite id="component-boundary" /></p>
+      <p id="component-files" className="vp-citation-target">拆成组件，不等于每个组件都得单独建一个文件。React 的教程先把 Profile 和 Gallery 写在一起；需要从别处使用时，再把组件导出、在使用处导入。屏幕上出现三个 MemberCard，也不需要写三份定义。<Cite id="component-files" /></p>
       <blockquote className={styles.callout}>先说清这一块负责什么，<br />再决定它的边界。</blockquote>
       <p>成员卡片的输入可以列清：姓名、角色、头像。它的行为也可以列清：关注、打开资料。相反，把三个毫不相关的页面只因颜色相似而合成一个“万能卡片”，往往会引入大量难理解的开关。</p>
       <p>复用是一个理由，组织复杂界面也是一个理由；只出现一次的页面区域也可以成为组件。检查组件边界时，看名称能否表达职责、输入是否容易理解，以及修改这一块是否牵动许多无关规则。</p>

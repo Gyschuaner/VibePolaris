@@ -2,9 +2,9 @@
 
 2026-09-28 用户授权：使用真实 ZCode 协作，一次更新一条，直至本轮全部完成。从当前 main 新建分支。固定范围为基线 `4eaa4b5` 的 `content/zh/published-terms.json` 中 105 条；未公开的词条不加入本轮。分支 `feat/VBP-012-published-terms-zcode`。
 
-DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，含内容、视觉、实现、审读、验证与 dev 集成。DP 状态是事实来源；此处记录代码侧顺序、视觉取舍和证据。用户已有的四处 concept-pages Skill 修改保持原样，不混入产品提交。
+DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，含内容、视觉、实现、审读、验证与 dev 集成。DP 状态是事实来源；此处记录代码侧顺序、视觉取舍和证据。用户对 concept-pages Skill 的未提交修改保持原样，不混入产品提交。
 
-每条依次执行现状检查、必要资料核实、正文与机制更新、ZCode 成稿读者及语言审读、build、受影响的浏览器验收、提交与 dev 集成。只有当前条完成相应步骤，才更新下一条。模型试读不等于真实零基础读者验证。生产未获授权。
+每条依次执行现状检查、必要资料核实、正文与机制更新、按本条范围选择 ZCode 灵感或审读、build、受影响的浏览器验收、提交与 dev 集成。只有当前条完成相应步骤，才更新下一条。模型试读不等于真实零基础读者验证。生产未获授权。
 
 ## 机制与表现形式差异草案
 
@@ -23,8 +23,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 09 execution-sandbox | 操作可达范围 | 两次读取同动作不同目标；站点放行不开放密钥，边界按所选操作显闭锁或开锁 | 本地与 dev 集成完成 · PR #112 |
 | 10 llm | 基于输入逐步生成 | 先显前文与候选，接入 gray 后更新下一轮；手选分支可撤回 | 本地与 dev 集成完成 · PR #113 |
 | 11 token | 文本按编码单位计数 | lower 先作为整体出现，沿 low/er 分界打开后各显编号 | 本地与 dev 集成完成 · PR #114 |
-| 12 agent | 目标驱动选择行动 | 同一找空档目标分出有空档与无空档两条结果，下一步分别是草稿与询问 | 正在更新 |
-| 13 component | 可复用的界面组成 | 实际页面分离成可重组部件，再组合成整体 | 待更新 |
+| 12 agent | 目标驱动选择行动 | 同一找空档目标分出有空档与无空档两条结果，下一步分别是草稿与询问 | 本地与 dev 集成完成 · PR #115 |
+| 13 component | 可复用的界面组成 | 头像、姓名和关注位聚成 MemberCard 结构；MemberList 依次显出三个实例 | 本地验收完成，待 dev 集成 |
 | 14 props | 外部给组件的输入 | 同一种实体轮廓按输入长出不同内容 | 待更新 |
 | 15 state | 记住变化并更新界面 | 同一计数器内部数值带动可见数量 | 待更新 |
 | 16 event | 操作触发处理 | 点击真实控件，局部触点引发一次响应 | 待更新 |
@@ -333,6 +333,20 @@ ZCode 独立新任务 `检查 LlmTermPage 中文成稿生硬与套话`，languag
 一手资料补足：实际阅读 [Hugging Face Agents Course 的 Thought-Action-Observation 章节](https://huggingface.co/learn/agents-course/en/unit1/agent-steps-and-structure)，其下一步决定、调用工具、观察返回的顺序对应“根据查到的结果行动”段；阅读 [OpenAI Agents SDK Running agents](https://openai.github.io/openai-agents-python/running_agents/)，其中 Runner 超过 `max_turns` 抛错对应“停止不一定成功”。两处均添加正文角标与书目，Agent 页现有 Hugging Face 定义、Anthropic 工程文章与本轮两份资料共四份；Runner 的行为只作为这个 SDK 的例子，不写成所有 Agent 的统一规则。
 
 2026-09-29 本地验收：首图初态只有共享目标，路径由目标向两支生长；中间态先看到“10:00 两人空闲”但尚无草稿结果，随后另一支“没有共同空档”与各自后续结果才完成；终态保持“草稿 · 未发送”和“询问 · 未完成”。桌面与 390×844 均可辨认两条时间条是否对齐，移动端文档宽度与 scrollWidth 都是 390，无横向溢出；减少动态的终态由公共 `ConceptHero` 的 CSS 禁止动画后保留。主演示有空档分支在读取后才显示 10:00–10:30 草稿，最终未发送；切成无空档会清空旧结果，Enter 键逐步推进到“任务未完成 · 已停止”。新增两份书目角标与摘录均可展开，OpenAI 摘录可回跳 `agent-stopping`，浏览器应用错误为空。最终 `npm run build` 编译、TypeScript 与 116/116 静态页通过；`git diff --check` 通过。复用 VBP-013 智能体用例 `b7d5761c-7a99-49a5-95fb-f24531268c22`；本地计划 `98af830d-e617-4cc9-8124-76c522cbdb3b` completed，执行 `be02c205-2afd-4ba4-8f91-5fad8b37b350` passed。无真人零基础读者观察，不声称完成读者验证。
+
+2026-09-29 集成：提交 `b5143ff` 经 [PR #115](https://github.com/Gyschuaner/VibePolaris/pull/115) 合入 `dev`，merge `37ea76d9a1337d1dc86f0c39b5a06acd1e9f85ca`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/agent` 在真实浏览器再核对分叉首图、第四份来源与无应用错误。DP 部署 `32dd2070-b4c5-4e1c-a0c8-2c9d14a05694` 已回查；前一版 `0bfb6cc` 构建备份在 `/tmp/vbp012-dev-next-0bfb6cc`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 12/105、版本 21；下一条 component。
+
+## 13 · component
+
+读者入口：“同一个成员卡片用在三个人身上，到底复用的是什么？”原页正文、成员卡互动已经说明公共定义、不同输入与各实例的局部关注状态；首图原本只有三张相同占位纸卡依次飞入，读者看不到卡片如何由头像、姓名和关注位组成，也难分清定义和屏幕上的实例。本轮保留已有互动和正文主线，重做这一处视觉，把部件先在同一轮廓内合成 MemberCard，再在 MemberList 内显出三张姓名各异、结构一致的实例；首图是教学示意，不画成实际 React 的渲染步骤或三个定义。
+
+视觉候选：① “模具冲压”能表达单一定义产生多个实例，但容易暗示实例是不能再变化的死副本，不采用。② 类 X 光的结构展开：头像、姓名线与关注位先在左侧散开，再收入一副可见的共同轮廓；右侧三个实在的成员条依次从结构轮廓中显影，左侧定义保留。采用其拆解与保留定义的关键关系，简化为原位聚合与逐条揭示，不做实际卡片横飞或大量文字输入流入，以免与下一页 Props 重复。③ 三张成品先叠成一份共同结构，强调相同点，但把先定义后复用的叙事倒置，也没展示内部组成，不采用。画面终态左边是一份清晰的结构、右边是三个成员，和相邻 Props 的父级参数→按钮、State 的保存回执在主体形态、空间组织与动作上都不同。
+
+ZCode：通过本机 `zcode.cjs app-server` CLI 建立只读任务 `sess_58f7dec9-01b7-4f2f-83ec-5e500c06d233`，显式选 `Qwen3.8-Flash-Next-FP8` / xhigh，`Read` 工具实际完成 partner Skill 读取；模式 inspiration。输入是主助手核实的 React 机制、三个原始资料论断与当前/相邻首图的准确描述，不给外网检索任务。其候选为模具冲压、X 光拆解、三框叠一，建议第二案；主助手采用结构拆解与实例定格，放弃“不同内容流水流入”的 Props 类隐喻。它只读过派发内容和 partner Skill，没有看页面或实际效果，不能作为视觉验收。
+
+资料：实际逐条阅读 React 官方 [Your First Component](https://react.dev/learn/your-first-component)（函数组件、一次定义多次使用和嵌套）、[State: A Component’s Memory](https://react.dev/learn/state-a-components-memory)（各实例的状态隔离）、[Thinking in React](https://react.dev/learn/thinking-in-react)（按职责和视觉层次划分）以及本轮补入的 [Importing and Exporting Components](https://react.dev/learn/importing-and-exporting-components)（同文件可写多个组件，需要跨文件复用时再导入导出）。新增段落回答“每个组件是否必须单独建文件”，引用只挂到 `component-files`，不把目录与文件等同于组件实例。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页生成通过，`git diff --check` 通过。真实浏览器桌面和 390×844 看到首图分散部件→共同轮廓→三个实例的过渡及终态；390px 文档宽度与 scrollWidth 均为 390。既有主演示中公共角色行让三人都出现对应角色，阿青和林墨独立关注时陈屿仍未关注，重置后三人和代码行均恢复；旧 `component-question` 锚点存在，前端面包屑正确。新增第4份书目可展开正文摘录并回跳 `component-files`，平滑滚动稳定后落在视口顶约 130px；浏览器应用错误为空。VBP-014 用例 `7cda6eab-d2c9-4363-bc1a-84b61f16a393`，本地计划 `50789722-15c3-40b6-99a1-b9653ce4c21a` completed，执行 `e00d5555-59e0-4f3c-b314-582229569d32` passed。没有真人零基础读者观察。
 
 ## 01 · Harness
 
