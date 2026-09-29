@@ -11,6 +11,8 @@ npm run dev
 
 打开 `http://localhost:3000`。旧版 `prototype/` 仅作为视觉评审基线，不再承载正式页面。
 
+内部受邀助手“小北”的百炼配置、邀请码和积分持久化说明见 [VBP-047 开发与运行说明](docs/development/VBP-047-xiaobei.md)。公开页面无需模型配置即可阅读。
+
 ## 验证与构建
 
 ```bash
