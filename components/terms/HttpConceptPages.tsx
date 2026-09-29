@@ -122,7 +122,10 @@ export function StatusCodeTermPage() {
   return <ConceptArticle slug="status-code" title="状态码" sources={statusSources}
     intro={<>导出任务返回 202，界面却立刻显示“下载完成”，用户找不到文件。数字本身没错，问题出在把“已接受”理解成了“所有工作都结束”。</>}
     sections={[["classes", "先读类别，再读具体含义"], ["export", "一次导出，两次请求"], ["errors", "错误之后的动作"], ["business", "HTTP 状态与业务状态"]]}
-    hero={<ConceptHero slug="status-code" label="202表示已接受，进度停在未完成状态"><div className={s.statusHero}><strong>202</strong><span>Accepted · 等待处理</span><i aria-hidden="true" /></div></ConceptHero>}>
+    hero={<ConceptHero slug="status-code" label="提交导出请求得到 202 已受理；另一层导出任务的结果仍未确定，202 不表示文件已生成"><div className={s.statusHero}>
+      <div className={s.statusTask}><span>导出任务</span><div className={s.statusOutcome}><strong>?</strong><span>结果待确认</span></div></div>
+      <div className={s.statusReceipt}><code>POST /exports</code><div><strong>202</strong><span>已受理</span></div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="classes" title="先读类别，再读具体含义">
       <Legacy slug="status-code" names={["question", "definition"]} />
       <p id="status-classes" className="vp-citation-target"><strong>HTTP 状态码是响应里的三位数字，表达这次请求的处理结果。</strong>第一位给出类别，具体代码再细分含义。它让浏览器、代理和应用有共同的判断依据，不必从错误文案猜测成功或失败。<Cite id="status-classes" /></p>
@@ -131,7 +134,7 @@ export function StatusCodeTermPage() {
     </ArticleSection>
     <ArticleSection id="export" title="一次导出，两次请求">
       <Legacy slug="status-code" names={["scene-heading"]} />
-      <p id="status-accepted" className="vp-citation-target">202 表示请求已被接受，处理可能尚未开始，也可能在后面失败。若服务返回任务地址，客户端可以再查询进展。第一次提交的响应已经结束，后续查询是另一条请求。<Cite id="status-accepted" /></p>
+      <p id="status-accepted" className="vp-citation-target">202 表示请求已被接受，处理可能尚未开始，也可能在后面失败；这个状态码本身不给出完成比例。若服务返回任务地址，客户端可以再查询进展。第一次提交的响应已经结束，后续查询是另一条请求。<Cite id="status-accepted" /></p>
       <p>本地示例接受 1 到 5 的整数。提交后先查询一次，再手动让模拟后台完成，最后重新查询。完成按钮控制教学任务，不代表真实耗时；下载的是一份固定书目示例。</p>
       <StatusLesson />
       <p>第一次查询得到 200 和 pending，说明“查询任务”成功了，导出却仍未完成。后台生成文件后，页面也不会自动知道；它要通过下一次查询拿到 done，才展示文件入口。</p>
