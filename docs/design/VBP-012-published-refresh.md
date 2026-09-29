@@ -33,8 +33,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 19 effect | 与外部系统同步 | 两路消息源与固定接收器；音乐订阅完整收回后，天气订阅才接通 | 本地与 dev 集成完成 · PR #122 |
 | 20 browser-api | 浏览器提供能力 | 浏览器内的区域变宽、测量括号显现，JS 随后收到内容宽度 | 本地与 dev 集成完成 · PR #123 |
 | 21 fetch-api | 发请求并读取响应 | 同一份 Response 面板先亮状态，正文仍未读；随后书目显现 | 本地与 dev 集成完成 · PR #124 |
-| 22 promise | 尚未完成的结果 | 两份独立 Promise 先空后落定：一份 A17，一份售罄，第一份保持不变 | 本地验收完成 · 待 dev 集成 |
-| 23 async-await | 当前流程等待 | 并行时间轨迹；当前轨道停驻，其他轨道前进 | 待更新 |
+| 22 promise | 尚未完成的结果 | 两份独立 Promise 先空后落定：一份 A17，一份售罄，第一份保持不变 | 本地与 dev 集成完成 · PR #125 |
+| 23 async-await | 当前函数等待 | 执行线在 await 处停住，收藏独立完成；封面返回后从停点续长 | 本地验收完成 · 待 dev 集成 |
 | 24 json | 结构化文本表示 | 同一对象在文本与树状层级间展开 | 待更新 |
 | 25 json-schema | 描述允许的数据 | 结构轮廓套合；缺字段或错误类型露出缺口 | 待更新 |
 | 26 request | 客户端提出一次要求 | 消息剖面依次展开方法、位置、附加信息与内容 | 待更新 |
@@ -473,6 +473,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_52d04e
 资料：实际阅读 MDN [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)（三种状态、落定不可改、resolved 不总等于 fulfilled、没有通用取消）、[Using promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises)（处理函数与链条）、[Promise.prototype.then()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)（新 Promise 及返回值）和 [Using microtasks in JavaScript with queueMicrotask()](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)（Promise 回调使用微任务，当前同步代码完成后才执行）。第 4 份新增书目并关联 `promise-timing`，保留前三份编号。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器重播首图，约 0.95s 时第一舱 pending、结果不可见且边框为虚线；约 2.25s 时第一舱已呈 A17、第二舱未出现；终帧两舱分别 A17/售罄，边框实线且第一舱未改变。390×844 首图宽 330、两舱都在视口内，文档 clientWidth/scrollWidth 均为 390；主演示按钮宽 342/166/166px。真实原生 Promise 先成功再尝试拒绝时仍 fulfilled，日志按“resolve、同步代码结束、then 成功回调、reject”排列且没有拒绝回调；新建一单后先拒绝再尝试履行，仍 rejected 且没有成功回调。Enter 可交付取餐号，五个旧锚点与四份来源在页；第 4 份书目正文摘录回链落点约 130px，应用错误日志为空。没有真人零基础读者观察。VBP-016 用例 `f4673bd3-512f-4d41-90ff-e90319f8c17c`，本地计划 `d13f29e9-624c-4f2c-815c-9634999515b3` completed、执行 `2a1b8394-1a23-4b79-b286-007991fb989e` passed。
+
+2026-09-29 集成：提交 `62a39e7` 经 [PR #125](https://github.com/Gyschuaner/VibePolaris/pull/125) 合入 `dev`，merge `62c355330e068baad31fdd1f856a539b42f25e4b`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/promise` 在真实浏览器复核新首图、拒绝分支、第四份来源与旧锚点，应用错误为空。DP 部署 `027d66c4-fe99-439b-9eb7-e3724c2756e1` 已回查；前版 `d717901` 构建备份在 `/tmp/vbp012-dev-next-d717901`。未部署远端 dev 或生产。DP VBP-012 描述更新至 22/105、版本 32；下一条 async-await。
+
+## 23 · async-await
+
+读者入口：“写了 await，是整个浏览器都要等吗？连续写两个 await 就一定是串行吗？”现页正文已经把函数暂停、任务何时发起、Promise.all 的汇合与失败分别讲明，主演示用原生 Promise 可切换依次/一起发起并在等待中收藏文章，保留。原首图只把标题、封面沿两条轨道合成书本，突出的是材料汇合，没回答“谁在暂停”。新首图让当前函数的执行线长到 await 夹口时停住；旁边收藏标记独立变实；封面任务返回圆点后，执行线从同一停点继续。首图不拿两段路径冒充两条线程，也不把收藏动作画成触发封面返回的原因。
+
+视觉候选：① 单条生长路径 + 暂停夹钳，旁边收藏独立完成，封面回信后续长；采用。② 竖井电梯等待乘客，旁边候车区盖章；竖向结构适配窄屏，但排队隐喻容易反向暗示页面其他事情都被挡住。③ 双层剖面上层函数定格、下层界面继续；容易被看成 async 函数进入了另一线程。首图只演示一处 await，串行与并发由主演示的真实任务发起顺序解释。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_cf423fba-2336-47f2-9742-42f41e3808b3`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 与动画灵感参考。主助手提供 MDN 已核实的机制、现有演示和相邻页边界；ZCode 给上述三案并推荐第一案，未读源码、访问网页或验收画面。
+
+资料：实际阅读 MDN [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)（调用返回 Promise、首个 await 前同步执行、逐段恢复）、[await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)（暂停的是当前函数后续代码、拒绝处理）、[Promise.all()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)（结果汇合及提前拒绝）和 [Using Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)（Worker 另开线程处理计算）。新增第 4 份书目并关联 `await-cpu`，不移动前三份编号。await 本身不会把同步计算自动移到 Worker，也不会自动取消 Promise.all 的其他输入。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器重播首图：约 1.8s 路径到 await 后停在 76px；等待帧仍为 76px、收藏图标已填实、终点书本未出现；约 4.2s 封面回信圆点向夹口移动，路径由 76px 续长至 98px，终帧 154px 且书本出现。390×844 首图宽 330、封面与收藏两处均在视口内，文档 clientWidth/scrollWidth 均为 390。串行先标题 pending、封面 idle，等待中可收藏；标题返回后封面才 pending，两项成功卡片才完成。并发两项先都 pending，封面先回时卡片仍未完成；封面先失败时标题依旧可返回而卡片不会伪成功。重置回 idle，Enter 可开始；五个旧锚点、四份资料及第 4 份正文回链有效，应用错误日志为空。未做人类读者试读。VBP-016 用例 `501a6ae3-fc30-4391-ab08-411aedbab111`，本地计划 `b3e66858-6c73-4f01-907d-1d970644abd8` completed、执行 `0030eca1-bba9-40ce-a483-690c175fcd28` passed。
 
 ## 01 · Harness
 
