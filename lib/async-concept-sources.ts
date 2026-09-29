@@ -11,7 +11,7 @@ export const promiseSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "Using microtasks in JavaScript with queueMicrotask()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide", citations: ["promise-timing"] },
 ];
 export const awaitSources = [
-  { publisher: "MDN Web Docs · 贡献者", title: "async function", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function", citations: ["await-function", "await-cpu"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "async function", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function", citations: ["await-function", "await-alternative", "await-start", "await-cpu"] },
   { publisher: "MDN Web Docs · 贡献者", title: "await", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await", citations: ["await-resume", "await-error"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Promise.all()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all", citations: ["await-all", "await-reject"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Using Web Workers", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers", citations: ["await-cpu"] },
