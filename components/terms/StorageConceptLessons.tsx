@@ -77,7 +77,7 @@ export function TransactionLesson() {
     </div>
     <div className={s.commitBridge} data-committed={state.phase === "committed"}><ArrowDown size={25} /><span>{grouped ? "提交后对外生效" : "每一步各自生效"}</span></div>
     <div className={s.committedValues} aria-label="新查询可见的已提交数据"><span>新查询可见</span><div><span>可借</span><States index={state.committed.available === 2 ? 0 : 1}>{[<strong key="two">2 本</strong>,<strong key="one">1 本</strong>]}</States></div><div><span>借阅</span><States index={state.committed.loans}>{[<strong key="zero">0 条</strong>,<strong key="one">1 条</strong>]}</States></div></div>
-    <div className={s.actions}><button disabled={done} onClick={() => setState(advanceLoan(state, "next", grouped, fail))}>{done ? "本次已结束" : nextLabel}<ArrowRight size={18} /></button><button disabled={!grouped || ["idle", "committed", "rolledback"].includes(state.phase)} onClick={() => setState(advanceLoan(state, "rollback", grouped, fail))}>回滚</button><button onClick={() => setState(initialLoan())}><ArrowCounterClockwise size={18} />重新实验</button></div>
+    <div className={s.actions}><button disabled={done} onClick={() => setState(advanceLoan(state, "next", grouped, fail))}>{state.phase === "failed" ? "写入失败" : done ? "本次已结束" : nextLabel}<ArrowRight size={18} /></button><button disabled={!grouped || ["idle", "committed", "rolledback"].includes(state.phase)} onClick={() => setState(advanceLoan(state, "rollback", grouped, fail))}>回滚</button><button onClick={() => setState(initialLoan())}><ArrowCounterClockwise size={18} />重新实验</button></div>
     <div className={s.transactionStatus} aria-live="polite"><States index={phases.indexOf(state.phase)}>{statuses.map((text, i) => <p key={i}>{text}</p>)}</States></div>
   </div>;
 }
