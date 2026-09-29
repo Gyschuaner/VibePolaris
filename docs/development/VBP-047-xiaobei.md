@@ -40,6 +40,12 @@ npm run xiaobei:invites -- disable 邀请码ID
 
 `npm run build`；`node --experimental-strip-types --test tests/xiaobei.test.mjs`。
 
-本地模拟百炼 SSE 验证过隐藏激活、同源/权限、9 次工具调用后继续、真实词条正文读取、跨页会话、175K 提醒、停止、手机全屏、同码会话隔离。模拟模型证明协议与程序流程，不能证明真实百炼权限、实际模型意图分类或回答质量；这部分需配置 Key 和 Base URL 后验证相关问题、无关问题、承接追问与真实 usage。
+2026-09-29：功能提交 `a127741` 经 [PR #145](https://github.com/Gyschuaner/VibePolaris/pull/145) 合入 dev，合并提交 `d3656f099a5f194ea6814ee314ca7cf1c956e226`。功能分支和 dev 合并版本的生产构建通过，专项测试 2/2 通过。独立 worktree 在本机 `http://127.0.0.1:3047` 运行 dev 预览，未发布生产。
+
+本地模拟百炼 SSE 验证过隐藏激活、同源/权限、9 次工具调用后继续、真实词条正文读取、跨页会话、175K 提醒、停止、390px 手机全屏、同码会话隔离。测试中发现的本地 Host/Origin 误判 `BUG-63A843B9` 已修复并回归关闭。
+
+随后使用真实百炼 `https://dashscope.aliyuncs.com/compatible-mode/v1` 验证 4 个问题：Harness 与 Agent 关系（读取两篇正文）、承接图书馆比喻、拒绝天气问题、混合问题只解释 API/工具调用并不写生日贺词。共 9 次模型调用，全部返回有效 usage 并结算，总消耗 0.29685 积分，包含真实缓存命中，没有待结算记录。Key 仅保存在本机未跟踪的权限 600 环境文件；无配置或密钥入库。
+
+DP 需求 `VBP-047`、研发任务、3 项验收用例和计划已关联；本地 dev 部署批次为 `vbp047-dev-d3656f0-20260929`。程序回滚可停止本次 3047 进程，运行此前 dev 提交 `f9bcbcf`，保留 SQLite 账本。飞书 CLI 未配置，正式云文档索引待同步；配置的 Windows Obsidian 路径在本机不存在，未写入知识库。
 
 参考：[百炼 DeepSeek API](https://help.aliyun.com/zh/model-studio/deepseek-api)、[百炼缓存 usage](https://help.aliyun.com/zh/model-studio/context-cache)。Harness 参考 DeepTrace 知识问答与 Developer Platform 的权限、意图门控、预算和工具配对设计，只保留本次必要功能。
