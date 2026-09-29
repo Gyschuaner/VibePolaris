@@ -87,7 +87,12 @@ export function HttpMethodTermPage() {
   return <ConceptArticle slug="http-method" title="HTTP 方法" sources={methodSources}
     intro={<>同样是 /notes/42，GET 是读取，PUT 是用提交的内容建立或替换，DELETE 是移除。地址确定对象，方法表达这次请求对它做什么。</>}
     sections={[["resource", "方法与目标一起读"], ["repeat", "让同一条请求再执行一次"], ["properties", "安全与幂等"], ["others", "其他方法与实现边界"]]}
-    hero={<ConceptHero slug="http-method" label="POST重复创建产生不同编号的资源"><div className={s.methodHero}><code>POST /notes</code>{[42,43,44].map(id => <div key={id}><FileText size={26} /><span>{id}</span></div>)}<span>重复创建 · 不同资源</span></div></ConceptHero>}>
+    hero={<ConceptHero slug="http-method" label="本例中，同一份 PUT /notes/42 执行两次仍只修改 42 号便笺；同一份 POST /notes 执行两次，在同一个资源集合新增 43 和 44 号便笺"><div className={s.methodHero}>
+      <code className={s.methodPut}>PUT /notes/42 <b>× 2</b></code>
+      <div className={s.methodLens}><code>/42</code><span className={s.methodDraft}>草稿</span><strong className={s.methodEdited}>已校对</strong></div>
+      <code className={s.methodPost}>POST /notes <b>× 2</b></code>
+      <div className={s.methodHeroShelf}><div><FileText size={21} /><code>42</code></div><div><FileText size={21} /><code>43</code></div><div><FileText size={21} /><code>44</code></div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="resource" title="方法与目标一起读">
       <Legacy slug="http-method" names={["question", "definition"]} />
       <p id="method-purpose" className="vp-citation-target"><strong>方法声明请求的语义，不是给 URL 加一个随意的标签。</strong>GET 取得资源的表示，PUT 以请求内容建立或替换目标资源，POST 把内容交给目标处理，DELETE 请求移除目标。POST 常被用来创建，但也可以提交一次处理任务。<Cite id="method-purpose" /></p>

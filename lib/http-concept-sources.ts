@@ -16,6 +16,7 @@ export const methodSources = [
   mdn("HTTP request methods", "Web/HTTP/Reference/Methods", ["method-purpose", "method-others"]),
   { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke（编）", title: "RFC 9110 — HTTP Semantics · §9.2", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2", citations: ["method-safe", "method-retry"] },
   mdn("Idempotent", "Glossary/Idempotent", ["method-repeat", "method-delete", "method-implementation"]),
+  mdn("PUT request method", "Web/HTTP/Reference/Methods/PUT", ["method-purpose", "method-repeat"]),
 ];
 export const statusSources = [
   mdn("HTTP response status codes", "Web/HTTP/Reference/Status", ["status-classes", "status-other"]),
