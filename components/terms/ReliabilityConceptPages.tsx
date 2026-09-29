@@ -14,30 +14,31 @@ export function TimeoutTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={timeoutSources} />;
   return <ConceptArticle slug="timeout" title="超时" sources={timeoutSources}
     sections={[["waiting", "等待有一个上限"], ["clocks", "客户端与服务端的时间"], ["deadline", "给等待分配时间"]]}
-    intro={<>提交阅览室预约后，页面等待两秒便显示超时。此时只能确定客户端没有及时收到结果，预约是否已经建立还要另行核对。</>}
-    hero={<ConceptHero slug="timeout" label="客户端在2秒停止等待，服务端在3秒完成预约"><div className={s.timeoutHero}><Clock size={28} weight="light" /><div><span>等待</span><i /><b>2 s</b></div><div><span>执行</span><i /><b>3 s</b></div></div></ConceptHero>}>
+    intro={<>在预约页面提交请求，两秒后却显示“超时”。你只知道这次等待没有拿到确认；预约可能已经建立，不能直接再创建一条。</>}
+    hero={<ConceptHero slug="timeout" label="同一笔预约：客户端第2秒超时，服务端第3秒建立42号预约，第4秒准备好回信"><div className={s.timeoutHero}><div className={s.timeoutHeroAxis}><span>0</span><span>2 s</span><span>3 s</span><span>4 s</span></div><div className={s.timeoutHeroLane}><span><Clock size={18} />等待</span><div className={s.timeoutHeroTrack}><i className={s.timeoutHeroClient} /><b className={s.timeoutHeroClientEvent}>超时</b></div></div><div className={s.timeoutHeroLane}><span><CalendarBlank size={18} />预约</span><div className={s.timeoutHeroTrack}><i className={s.timeoutHeroServer} /><b className={s.timeoutHeroServerEvent}>#42</b><b className={s.timeoutHeroResponse}>回信</b></div></div></div></ConceptHero>}>
     <ArticleSection id="waiting" title="等待有一个上限">
       <Legacy slug="timeout" names={["question", "definition"]} />
-      <p id="timeout-wait" className="vp-citation-target"><strong>超时为一段等待设置上限。</strong>到达上限还没得到所需结果，调用方就停止这次等待，转入失败处理。它能限制等待占用的资源，但不能证明远端没有产生业务效果。AWS 的工程文章专门提醒了这个边界。<Cite id="timeout-wait" /></p>
-      <p>这里至少有两件事：服务端有没有建立预约，客户端有没有收到确认。它们之间隔着网络。确认可能晚到，也可能丢失；服务端完成操作的时刻，并不等于客户端知道结果的时刻。</p>
+      <p id="timeout-wait" className="vp-citation-target"><strong>超时是给一次等待设上限。</strong>到期还没有拿到所需结果，等待的一方就结束这次等待，按超时处理。在这个例子里，预约页面是等待的一方；若没有上限，它可能一直占着连接等回信。超时让页面及时停下，却不能替服务端撤销已做的事。<Cite id="timeout-wait" /></p>
+      <p id="timeout-unknown" className="vp-citation-target">要分开看两件事：服务端有没有建立预约，页面有没有收到确认。两端之间还有网络。请求可能没送到；也可能预约已经建立，只是回信延迟或丢失。两种情况在页面上都可能显示超时。AWS 对网络超时后的资源创建给过同样的例子。<Cite id="timeout-unknown" /></p>
     </ArticleSection>
     <ArticleSection id="clocks" title="客户端与服务端的时间">
       <Legacy slug="timeout" names={["scene-heading"]} />
-      <p>在这个本地样例中，服务第 3 秒建立预约，响应第 4 秒到达。选择等待上限，再推进时间，看看哪一侧先停下来。图里展示了两端的状态；实际客户端看不到服务端内部进度。</p>
+      <p>这个本地样例中，页面提交前先保存申请号 R7。服务端在第 3 秒建立 #42 预约，并把它与 R7 对应；如果页面还在等，第 4 秒可以收到确认。先选页面最多等多久，再推进时间。实验同时画出两端，是为了看清先后；真实页面不会直接看见服务端内部进度。</p>
       <TimeoutLesson />
-      <p>上限为 2 秒时，客户端先超时，服务端随后仍建立 #42 预约。第 4 秒到达的原响应，不会把已经结束的那次等待改成成功。需要另一次状态查询，客户端才能确认结果。上限改成 5 秒，则在第 4 秒正常收到确认。</p>
-      <div className={s.pullQuote}><strong>“没有等到”是确定的。<br />“没有完成”还需要证据。</strong></div>
-      <p>所以写操作超时后，界面可以先显示“结果待确认”，再用业务编号查询，或按接口约定使用同一个幂等键重试。直接当作失败再创建一次，可能得到两条预约。<ConceptTerm slug="idempotency">幂等性</ConceptTerm>处理的就是重复到达时的业务效果。</p>
+      <p>上限为 2 秒时，页面先结束原请求；服务端随后仍建立 #42。第 4 秒即使准备好回信，也赶不上这次已结束的等待。上限改成 5 秒，同一过程就能在第 4 秒收到原确认。改变的是页面等待的时长，并没有提前或推迟服务端建立预约。</p>
+      <div className={s.pullQuote}><strong>页面结束了等待，<br />预约仍可能继续。</strong></div>
+      <p id="timeout-followup" className="vp-citation-target">两秒那一轮要先记作“结果待确认”。本例服务支持按申请号查询，所以页面能用自己保存的 R7 发起<strong>新查询</strong>，找到服务端生成的 #42；原请求仍是超时。真实服务未必提供这种查询。如果查不到，也没有明确的去重重试约定，就应保留待确认状态，联系服务方核对，不能把再次点击“创建”当成安全操作。<ConceptTerm slug="idempotency">幂等性</ConceptTerm>是指服务按同一次申请的标识避免重复效果；是否支持、标识是什么，需看具体接口。<Cite id="timeout-followup" /></p>
     </ArticleSection>
     <ArticleSection id="deadline" title="给等待分配时间" className={base.offset}>
       <Legacy slug="timeout" names={["quiz-heading", "prompt-heading"]} />
-      <p id="timeout-budget" className="vp-citation-target">配置之前，先确认计时覆盖哪里：建立连接、等待读取，还是整个调用。DNS、TLS 等步骤未必都包含在某个超时选项里。设置过短会把正常的慢请求误判为失败，过长又会拖住资源；应结合实际延迟和调用方可等待的时间来定。<Cite id="timeout-budget" /></p>
+      <p id="timeout-budget" className="vp-citation-target">配置之前，先看它从哪里开始计时：找到并连上服务器时才算，还是从发起请求起覆盖整个过程。有些选项不包括查找网站地址对应服务器的时间（DNS），或建立加密连接的时间（TLS）。设得过短，会把正常的慢请求当成失败；设得过长，又会让页面和连接白等。要结合实际耗时和这件事最多能等多久来定。<Cite id="timeout-budget" /></p>
       <div className={s.budget}><div><strong>一次尝试</strong><p>给每个请求留多少等待时间。</p></div><div><strong>整个任务</strong><p>把多次尝试、间隔和处理时间一起算进去。</p></div></div>
-      <p>例如整个查询只允许等待 5 秒，不能让三次尝试各等 5 秒，再额外加上退避。剩余预算不够时，应停止继续尝试。具体数值需要业务决定，这里的秒数只是为了看清时序。</p>
+      <p>例如整个查询只允许等待 5 秒，就不能让三次尝试各等 5 秒，再额外加上间隔。每次请求还要受剩余时间约束；时间不够，就停止继续尝试。这里的秒数只为看清时序，不是所有请求都该使用的配置。</p>
+      <p id="timeout-cancel" className="vp-citation-target">页面自己到期，不会替服务端的每一步按下停止键。服务端若要让数据库停止尚未完成的工作，得把取消信号传过去，数据库操作也要配合。Go 编程语言的 <code>Context</code> 是一种传递办法，官方示例演示了怎样把取消信号送到数据库。已经写入的预约不会因为后来停止等待而自动消失。<Cite id="timeout-cancel" /></p>
       <ArticleAside title="浏览器端中止等待">
-        <p id="timeout-browser" className="vp-citation-target"><ConceptTerm slug="fetch-api">Fetch API</ConceptTerm> 可以接收 <code>AbortSignal.timeout(2000)</code>。信号到期后以 TimeoutError 中止；这里按活跃时间计时，文档进入往返缓存等情况下会暂停，不能直接当作始终前进的墙上时钟。<Cite id="timeout-browser" /></p>
+        <p id="timeout-browser" className="vp-citation-target"><ConceptTerm slug="fetch-api">Fetch API</ConceptTerm> 可以接收 <code>AbortSignal.timeout(2000)</code>。时间到后，信号会中止请求，这次 <code>fetch</code> 会因 TimeoutError 报错。这里的两秒按页面活跃的时间算；若浏览器暂存了页面、稍后再恢复，暂停期间不计入这两秒。<Cite id="timeout-browser" /></p>
         <pre className={base.code}>{'await fetch("/reservations/42", {\n  signal: AbortSignal.timeout(2000)\n});'}</pre>
-        <p>这段代码控制浏览器端的请求等待。服务端若需要停止工作，还得有相应的取消协议和检查点；已经提交的业务操作不会因为浏览器中止就自动撤销。</p>
+        <p>这段代码控制浏览器端的请求等待；它本身没有替服务端撤销预约。这里访问的是已知编号的预约查询，和上面的创建请求不是同一次操作。</p>
       </ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
