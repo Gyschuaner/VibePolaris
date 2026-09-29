@@ -24,8 +24,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 10 llm | 基于输入逐步生成 | 先显前文与候选，接入 gray 后更新下一轮；手选分支可撤回 | 本地与 dev 集成完成 · PR #113 |
 | 11 token | 文本按编码单位计数 | lower 先作为整体出现，沿 low/er 分界打开后各显编号 | 本地与 dev 集成完成 · PR #114 |
 | 12 agent | 目标驱动选择行动 | 同一找空档目标分出有空档与无空档两条结果，下一步分别是草稿与询问 | 本地与 dev 集成完成 · PR #115 |
-| 13 component | 可复用的界面组成 | 头像、姓名和关注位聚成 MemberCard 结构；MemberList 依次显出三个实例 | 本地验收完成，待 dev 集成 |
-| 14 props | 外部给组件的输入 | 同一种实体轮廓按输入长出不同内容 | 待更新 |
+| 13 component | 可复用的界面组成 | 头像、姓名和关注位聚成 MemberCard 结构；MemberList 依次显出三个实例 | 本地与 dev 集成完成 · PR #116 |
+| 14 props | 外部给组件的输入 | 调用处的 label、tone 依次改变，同一 ActionButton 原位改字、变色 | 本地验收完成 · 待 dev 集成 |
 | 15 state | 记住变化并更新界面 | 同一计数器内部数值带动可见数量 | 待更新 |
 | 16 event | 操作触发处理 | 点击真实控件，局部触点引发一次响应 | 待更新 |
 | 17 event-bubbling | 父子层级传播 | 嵌套轮廓逐层响应，中途停止后外层静止 | 待更新 |
@@ -347,6 +347,20 @@ ZCode：通过本机 `zcode.cjs app-server` CLI 建立只读任务 `sess_58f7dec
 资料：实际逐条阅读 React 官方 [Your First Component](https://react.dev/learn/your-first-component)（函数组件、一次定义多次使用和嵌套）、[State: A Component’s Memory](https://react.dev/learn/state-a-components-memory)（各实例的状态隔离）、[Thinking in React](https://react.dev/learn/thinking-in-react)（按职责和视觉层次划分）以及本轮补入的 [Importing and Exporting Components](https://react.dev/learn/importing-and-exporting-components)（同文件可写多个组件，需要跨文件复用时再导入导出）。新增段落回答“每个组件是否必须单独建文件”，引用只挂到 `component-files`，不把目录与文件等同于组件实例。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页生成通过，`git diff --check` 通过。真实浏览器桌面和 390×844 看到首图分散部件→共同轮廓→三个实例的过渡及终态；390px 文档宽度与 scrollWidth 均为 390。既有主演示中公共角色行让三人都出现对应角色，阿青和林墨独立关注时陈屿仍未关注，重置后三人和代码行均恢复；旧 `component-question` 锚点存在，前端面包屑正确。新增第4份书目可展开正文摘录并回跳 `component-files`，平滑滚动稳定后落在视口顶约 130px；浏览器应用错误为空。VBP-014 用例 `7cda6eab-d2c9-4363-bc1a-84b61f16a393`，本地计划 `50789722-15c3-40b6-99a1-b9653ce4c21a` completed，执行 `e00d5555-59e0-4f3c-b314-582229569d32` passed。没有真人零基础读者观察。
+
+2026-09-29 集成：提交 `ce8dca1` 经 [PR #116](https://github.com/Gyschuaner/VibePolaris/pull/116) 合入 `dev`，merge `bc6fce2139c5d9b2162a21a7ea86932a8c5f232f`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览更新至相同 Git 树与构建产物，`http://localhost:3219/terms/component` 在真实浏览器核对共同结构、三张卡片随开关显角色、第4份资料及无应用错误。DP 部署 `d409b61b-b86a-40cc-97f7-a6c53e4d7f7b` 已回查；前一版 `37ea76d` 构建备份在 `/tmp/vbp012-dev-next-37ea76d`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 13/105、版本 22；下一条 props。
+
+## 14 · props
+
+读者入口：“如果父组件改了按钮文字或样式，子组件是换了一份实现，还是读到新输入后更新了同一个按钮？”原页的配置面板、真实子按钮、回调次数及禁用开关已经能验证主要机制；首图却是两张静态参数纸片飞入按钮，只说明“传入”，看不见输入后续更新。本轮保留主演示，把首图改成一个固定的 ActionButton：调用处先改 label，按钮文字随后原位变化；调用处再改 tone，按钮底色随后退去。两根连线分别短暂亮起，表示这两次输入所走的关系，不表示真实运行时的数据传输动画。
+
+视觉候选：① “拉线牵动”：两个参数槽与按钮保持固定位置，先后牵动文字和外观；采用，原因是两次变化可直接对照，按钮实体连续存在。② “双值联动”：左右并排两个输入及两个输出，能看见对应关系，但容易被读作两份按钮实例，不采用。③ “重新盖章”：配置改变后重新压出按钮，容易暗示组件定义或 DOM 节点都被销毁重建，不采用。相邻 Component 的结构聚合与多实例，以及下一页 State 的草稿与回执，在空间主体和动作上与本页不同。
+
+ZCode：通过本机 `zcode.cjs app-server` CLI 建立只读 inspiration 会话 `sess_6de746db-11b0-48af-a868-12610e7a7449`，显式指定 `Qwen3.8-Flash-Next-FP8` / xhigh，partner Skill 已由 Read 工具实际读取。主助手提供了已核实的机制事实、当前页面和相邻页面的视觉描述；它提出拉线牵动、双值联动与重新盖章，建议第一案。主助手将其简化为短促连线脉冲与按钮原位变化，避免让文字纸片飞行或在首图添加多余说明。ZCode 没有访问互联网，资料核实与页面验收由主助手完成。
+
+资料：实际阅读 React 官方 [Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component)（父级传入任意 JavaScript 值、接收方只读、后续可更新）、[Responding to Events](https://react.dev/learn/responding-to-events)（传函数作回调，而非渲染时调用）、[Sharing State Between Components](https://react.dev/learn/sharing-state-between-components)（共同父级持有共享状态），以及 [WHATWG HTML Standard 的 disabled 规则](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute)（禁用控件阻止用户交互队列中的 click 事件派发）。新增第四份引文只支撑本例把 disabled 交给原生 button 后的浏览器行为；正文仍区分这个例子与任意自定义组件的实现。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页生成通过。真实浏览器桌面与 390×844 看见两次输入依次改变同一个按钮，移动端文档宽与 scrollWidth 都是 390。主演示中改 label、切 quiet、点击、禁用、重置和键盘 Enter 均按预期；清空文字显示本例约定的“按钮”。第四份书目展开后摘录和正文一致，回跳动画稳定后落在 `#props-disabled` 约 130px；旧锚点仍在，浏览器应用错误为空。没有真人零基础读者观察。VBP-014 用例 `fa210b8c-4b60-4675-bd0f-aff1f8d2793a`，本地计划 `0c2de643-dc19-499c-838d-ca966d9ef58e` completed、执行 `a2121341-3ae8-41f4-9a9a-a39283b27991` passed。
 
 ## 01 · Harness
 

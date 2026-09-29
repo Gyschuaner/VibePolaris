@@ -54,7 +54,11 @@ export function PropsTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={propsSources} />;
   return <ConceptArticle slug="props" title="Props" sources={propsSources}
     sections={[["input", "由调用者提供输入"], ["readonly", "只读不等于不变"], ["callback", "把操作交回父组件"], ["contract", "让参数容易理解"]]}
-    hero={<ConceptHero slug="props" label="文字和样式两项输入配置出一个保存按钮"><div className={styles.propsHero}><div><code>label=&quot;保存&quot;</code><code>primary</code></div><span>保存<PaperPlaneTilt size={20} /></span></div></ConceptHero>}
+    hero={<ConceptHero slug="props" label="调用处先修改 label，再修改 tone；同一个 ActionButton 随后改字并变为轻量样式"><div className={styles.propsHero}>
+      <div className={styles.propsCall}><code>调用处</code><div className={styles.propsInputs}><div><code>label</code><span className={styles.propsInputValue}><span>保存草稿</span><span>确认修改</span></span></div><div><code>tone</code><span className={styles.propsInputValue}><span>primary</span><span>quiet</span></span></div></div></div>
+      <svg className={styles.propsThreads} viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true"><path d="M75 0 C75 43 140 29 140 70" /><path d="M225 0 C225 43 160 29 160 70" /><path className={styles.propsLabelThread} d="M75 0 C75 43 140 29 140 70" /><path className={styles.propsToneThread} d="M225 0 C225 43 160 29 160 70" /></svg>
+      <div className={styles.propsButtonBox}><code>ActionButton</code><div className={styles.propsButton}><span>保存草稿</span><span>确认修改</span><PaperPlaneTilt size={18} /></div></div>
+    </div></ConceptHero>}
     intro={<>Props 是调用者传给组件的输入。文字、数据、样式选项和回调函数，都可以通过 Props 交给组件，<strong>让同一份实现按不同配置工作。</strong></>}
     relatedIntro={<>把结构交给 <ConceptTerm slug="component">组件</ConceptTerm>，通过 Props 提供输入，再由数据拥有者管理 <ConceptTerm slug="state">状态</ConceptTerm>。Hook 是 React 组件使用状态等能力的接口。</>}>
     <ArticleSection id="input" title="由调用者提供输入">
@@ -63,7 +67,7 @@ export function PropsTermPage() {
       <p id="props-input" className="vp-citation-target">在 React 中，父组件使用子组件时提供 Props，子组件读取这些值来生成界面。它们可以是字符串、数字、布尔值，也可以是对象、数组或函数；并不只限于 HTML 中常见的文本属性。<Cite id="props-input" /></p>
       <p>下面左侧代表父组件。修改文字或样式，右侧的 ActionButton 就接收到新的输入。点击按钮后，父组件会记录一次回调。这里没有真正保存草稿；清空文字时，本例约定显示“按钮”。</p>
       <Anchors ids={["props-scene-heading"]} /><PropsLesson />
-      <p>把样式切到 quiet，按钮变轻；把 disabled 设为 true，按钮仍然存在，但不能触发点击。两个变化都是子组件按照收到的参数执行已有规则，并没有生成另一套按钮实现。</p>
+      <p id="props-disabled" className="vp-citation-target">把样式切到 quiet，按钮变轻；把 disabled 设为 true，按钮仍然存在，但不能触发点击。本例的子组件把 disabled 传给原生 button，浏览器按 HTML 标准阻止它派发用户点击事件。两个变化都沿用同一套按钮实现。<Cite id="props-disabled" /></p>
     </ArticleSection>
     <ArticleSection id="readonly" title="只读不等于不变">
       <p id="props-readonly" className="vp-citation-target"><strong>对接收它的组件来说，Props 是只读输入。</strong>父组件可以在后续渲染时传来新值，所以“只读”不表示第一次传入后永远固定。需要改变输入时，应让数据的拥有者更新，再把新值传下来，而不是直接改写收到的 Props 对象。<Cite id="props-readonly" /></p>
