@@ -104,35 +104,35 @@ export function StateTermPage() {
       <div className={styles.stateSave}><span>保存草稿</span><span>保存中</span></div>
       <div className={styles.stateMemory}><div><code>text</code><span className={styles.stateTextOld}>&quot;&quot;</span><span className={styles.stateTextNew}>&quot;首页导航&quot;</span></div><div><code>status</code><span className={styles.stateStatusOld}>idle</span><span className={styles.stateStatusNew}>pending</span></div></div>
     </div></div></ConceptHero>}
-    intro={<>状态记录此刻影响界面和行为的数据。输入了什么、是否正在保存、请求有没有失败，都可以属于状态。<strong>事件改变数据，界面再按新值呈现。</strong></>}
+    intro={<>状态是界面需要记住、会影响下一步显示和操作的数据。笔记里输入了什么、现在是否正在保存、上次保存有没有失败，都可以是状态。<strong>处理输入、点击或响应的代码会更新状态，界面再按新值呈现。</strong></>}
     relatedIntro={<>一个 <ConceptTerm slug="event">事件</ConceptTerm> 可以触发状态更新，<ConceptTerm slug="component">组件</ConceptTerm> 负责呈现结果，而清楚的反馈让用户知道操作到了哪一步。</>}>
     <ArticleSection id="memory" title="界面需要记住的数据">
       <Anchors ids={["state-question", "state-definition"]} />
-      <p>写一条会议笔记时，界面需要记住正在编辑的文字。点保存之后，它还要知道请求正在等待，才能暂时阻止重复操作；收到失败结果，又要保留输入并提供重试入口。</p>
-      <p id="state-memory" className="vp-citation-target">在 React 中，组件可以用 useState 保存渲染之间需要记住的数据。它提供当前值和更新函数：更新函数请求下一次渲染，组件再用新的值计算界面。普通局部变量不会替你完成这件事。本文用 React 演示，状态这个概念也存在于其他界面框架和程序中。<Cite id="state-memory" /></p>
-      <p>这里至少有两类数据：笔记内容 text，以及保存进度 status。按钮上的“保存中”由 status 推导，不需要另存一份文字状态。</p>
+      <p>写一条会议笔记时，界面要记住正在编辑的文字。在真实编辑器里，点保存后还要记住这次请求正在等待，才能暂时阻止重复操作；收到失败结果，仍应保留输入并提供重试入口。</p>
+      <p id="state-memory" className="vp-citation-target">在 React 中，负责这块界面的组件可以用 <code>useState</code> 记住数据。组件是页面里负责呈现一块内容的代码；每次渲染，就是 React 根据当前数据重新计算这块界面。<code>useState</code> 提供当前值和更新函数：调用更新函数会请求 React 再渲染。组件函数每次渲染时会重新执行，所以写在里面的普通变量会重新开始；改写它也不会通知 React 更新画面。本文用 React 演示，但其他界面框架和程序中也有状态。<Cite id="state-memory" /></p>
+      <p>这里先记两项：正在编辑的文字 <code>text</code>，以及保存阶段 <code>status</code>。按钮显示“保存中”，是根据 <code>status</code> 算出来的，不需要再记一份按钮文字。若不使用 React 的状态接口，也能自己保存数据并逐处修改页面，但输入框、按钮和回执都得自己保持一致。</p>
     </ArticleSection>
     <ArticleSection id="saving" title="一次保存的变化">
-      <p>首图停在等待，结果还没回来。下面试着改写笔记，再保存。为了让等待过程可观察，本例由你点击“返回成功”或“返回失败”来模拟响应，不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>
+      <p>首图的 <code>status</code> 停在 <code>pending</code>（等待结果），还没有成功回执。下面是另一个独立演示，从一条已有文字的示例笔记重新开始；它与首图不共享内容或进度。你可以改写后保存，再点击“模拟成功”或“模拟失败”给这次保存一个结果。这里不访问服务器，也不把笔记写入文件。先试一次失败，再重试成功。</p>
       <Anchors ids={["state-scene-heading"]} /><StateLesson />
-      <p>等待期间，文字暂时不可编辑，保存按钮也不能再点。失败后，输入仍在；成功后，回执显示这次保存的内容。再次编辑时，“已保存”会失效，因为新文字还没有完成新一轮保存。</p>
+      <p>等待期间，文字暂时不可编辑，保存按钮也不能再点。失败后，输入仍在；成功后，回执显示这次保存的内容。再次编辑时，按钮不再显示“已保存”，旧回执也会隐藏，因为新文字还没有完成新一轮保存。</p>
       <dl className={styles.stateRules}><dt>idle</dt><dd>可以编辑；内容不为空时可以发起保存。</dd><dt>pending</dt><dd>已经发起，仍在等待结果。</dd><dt>error</dt><dd>这次保存失败，保留输入以便重试。</dd><dt>success</dt><dd>这次内容已得到成功响应。</dd></dl>
-      <p id="state-structure" className="vp-citation-target">本例让 status 在这些互斥值中取一个。React 文档建议避免相互矛盾的状态：若用多个独立布尔值表示“保存中”和“已保存”，忘记同步更新就可能让两者同时成立。<strong>状态的形状应尽量让无效组合难以出现。</strong><Cite id="state-structure" /></p>
-      <p>这个演示选择在等待时锁定编辑。真实编辑器也可以允许继续输入，但必须区分已发送的版本和正在编辑的版本，不能让旧响应把新内容误标为已保存。按钮禁用只是界面措施，服务端仍需处理重复请求。</p>
+      <p id="state-structure" className="vp-citation-target">本例的 <code>status</code> 一次只有一个当前值：<code>idle</code>、<code>pending</code>、<code>error</code> 或 <code>success</code>。React 文档建议避免相互矛盾的状态：若用多个独立开关表示“保存中”和“已保存”，忘记同步更新就可能让两者同时成立。<strong>用一个值表示当前阶段，能减少这种错误组合。</strong><Cite id="state-structure" /></p>
+      <p>这个演示选择在等待时锁定编辑。真实编辑器也可以允许继续输入，但必须区分已发送的版本和正在编辑的版本：不能让较早那份文字的成功响应回来后，把正在编辑的新文字也标成已保存。禁用按钮只能阻止这个页面上的重复点击，不能保证别的入口不会再次发起同一请求。</p>
     </ArticleSection>
     <ArticleSection id="snapshot" title="更新与本次渲染" className={styles.offset}>
-      <p id="state-snapshot" className="vp-citation-target">React 把每次渲染中的状态看作一份快照。调用更新函数会请求新渲染，<strong>不会改写当前事件处理函数已经读到的那个值。</strong>下一次渲染才会得到更新后的状态并产生对应界面。<Cite id="state-snapshot" /></p>
-      <pre className={styles.code}>{'// 点击时，这次渲染的 status 是 "idle"\nsetStatus("pending");\n// 当前函数中的 status 仍是 "idle"\n// 下一次渲染会使用 "pending"'}</pre>
-      <p>所以排查“设置了新状态，为什么这行日志仍然是旧值”时，要先看日志属于哪次渲染。不要为了让日志看起来更新，就再维护一份同名变量；那容易让真实数据和显示逻辑分开。</p>
-      <ArticleAside title="重新渲染不等于刷新网页"><p id="state-render" className="vp-citation-target">React 会根据新的数据计算界面，再更新需要改变的部分。本例只改变编辑器和回执中的内容，你仍留在同一篇文章、同一个滚动位置。重新渲染不要求重新下载整页，也不意味着每个 DOM 元素都会被替换。<Cite id="state-render" /></p></ArticleAside>
+      <p id="state-snapshot" className="vp-citation-target">点“保存草稿”时，这次点击处理读到 <code>status</code> 是 <code>idle</code>，于是调用更新函数，请求把它改成 <code>pending</code>。但<strong>这段代码接着读到的仍是 <code>idle</code></strong>；React 下一次渲染才会拿到 <code>pending</code>，把按钮改成“保存中”。React 把每次渲染中拿到的值称为一份快照。<Cite id="state-snapshot" /></p>
+      <pre className={styles.code}>{'// 点击时，这次渲染的 status 是 "idle"\nsetStatus("pending");\n// 这次点击处理里读到的 status 仍是 "idle"\n// 下一次渲染会使用 "pending"'}</pre>
+      <p>在同一次点击处理里读到旧值，按钮仍会在下一次渲染时更新。判断这次操作的结果，应看更新后的界面，不必自己再记一份 <code>status</code>。</p>
+      <ArticleAside title="重新渲染不等于刷新网页"><p id="state-render" className="vp-citation-target">React 会根据新的数据计算界面，再更新需要改变的部分。本例只改变输入框和回执中的内容，你仍留在同一篇文章、同一个滚动位置。重新渲染不需要重新下载整页，也不意味着页面上的每块内容都会被替换。<Cite id="state-render" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="structure" title="只保存必要的数据">
       <Anchors ids={["state-quiz-heading", "state-prompt-heading"]} />
-      <p id="state-derived" className="vp-citation-target">如果一个值能从已有输入或状态计算出来，通常不必重复保存。比如“能否保存”可以由文字是否为空、status 是否允许推导；若把它再存成另一个状态，每次编辑、失败、重试都要记得同步修改。<Cite id="state-derived" /></p>
-      <p>成功回执保留的是上次确认的文字，编辑框里则是现在的草稿。它们可能是两个版本，所以需要分别记录；否则继续输入时，旧回执也会跟着改变，让新文字看起来像已经保存。</p>
-      <div className={styles.comparison}><div><FileText size={26} /><h3>需要记住</h3><p>用户输入的笔记，以及当前请求的阶段。</p></div><div><SlidersHorizontal size={26} /><h3>可以计算</h3><p>按钮是否禁用、显示什么文字、是否出现成功回执。</p></div></div>
-      <p id="state-owner" className="vp-citation-target">需要多个组件共同使用的数据，可以放到最近的共同父组件，再通过 <ConceptTerm slug="props">Props</ConceptTerm> 交给它们。判断状态放在哪里时，关键是哪些地方需要读取和改变它；不是所有数据都要集中到应用最上层。<Cite id="state-owner" /></p>
-      <p>最后还要区分“界面记住了”和“数据保存了”。本页的状态只在当前页面中存在，刷新就恢复初始内容。需要跨页面、跨设备或长期保留时，应另行设计存储和同步，不能把一次画面更新当成持久化完成。</p>
+      <p id="state-derived" className="vp-citation-target">如果一个值能从已有输入或状态计算出来，通常不必重复保存。比如“能否保存”可以由两件事推出：文字是否为空，以及当前 <code>status</code> 是否允许发起保存。若把它再存成另一个状态，每次编辑、失败、重试都要记得同步修改。<Cite id="state-derived" /></p>
+      <p>本例在收到成功结果时，单独记下这次确认过的文字，用它显示回执。输入框里则是当前草稿，可能已经和回执不同；一旦继续输入，页面会隐藏旧回执，不能让新文字看起来像已经保存。两份文字若混在一起，就分不清确认过的是哪一版。</p>
+      <div className={styles.comparison}><div><FileText size={26} /><h3>需要记住</h3><p>当前草稿、上次确认的文字，以及保存阶段。</p></div><div><SlidersHorizontal size={26} /><h3>可以计算</h3><p>按钮是否禁用、显示什么文字、是否出现成功回执。</p></div></div>
+      <p id="state-owner" className="vp-citation-target">假如把笔记输入框和保存按钮拆成两个组件，它们都需要知道当前保存阶段，就可以让包住两者的外层组件记住 <code>status</code>，再把它作为 <ConceptTerm slug="props">Props</ConceptTerm> 分别传下去。外层组件是它们的共同父组件；它记住的数据是自己的状态，传到子组件后就是子组件收到的 Props。不必把所有数据集中到整个应用的最上层。<Cite id="state-owner" /></p>
+      <p>最后还要区分“界面记住了”和“数据保存了”。本页的状态只在当前页面中存在，刷新就恢复初始内容。需要跨页面、跨设备或长期保留时，应另行设计存储和同步，不能把一次画面更新当成数据已经长期保存。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
