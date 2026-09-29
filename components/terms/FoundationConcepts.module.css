@@ -98,11 +98,15 @@
 
 /* Finite hero animations: shared ConceptHero pauses them offscreen. */
 .probabilityHero{padding:25px 8px;width:100%;max-width:330px;margin:auto}
-.probabilityHero p{font:22px ui-monospace,monospace;margin:0 0 30px;white-space:nowrap}
-.probabilityHero strong{font-weight:500;animation:heroAppend 3.8s ease both;color:var(--accent-text)}
-.probabilityHero>div{display:grid;grid-template-columns:46px 1fr 40px;gap:12px;align-items:center;margin:18px 0;font:13px ui-monospace,monospace}
-.probabilityHero i{height:14px;width:var(--probability);background:var(--accent);border-radius:3px;animation:growBar 2.7s ease both}
-.probabilityHero code{color:var(--muted);font-size:12px}
+.probabilityHero p{font:22px ui-monospace,monospace;margin:0 0 23px;white-space:nowrap}
+.probabilityHero strong{display:inline-block;overflow:hidden;vertical-align:bottom;max-width:0;white-space:pre;font-weight:500;color:var(--accent-text)}
+.heroWordOne{animation:heroWordOne 5s ease both}
+.heroCandidateSets{height:105px;position:relative}
+.heroCandidateSet{position:absolute;inset:0;opacity:0}
+.heroCandidateSet:first-child{opacity:1;animation:heroCandidatesOne 5s ease both}
+.heroCandidateSet:nth-child(2){animation:heroCandidatesTwo 5s ease both}
+.heroCandidate{display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:center;margin:12px 0;font:13px ui-monospace,monospace}
+.heroCandidate i{height:14px;width:var(--probability);background:var(--accent);border-radius:3px}
 .tokenHero{display:flex;align-items:center;justify-content:center;height:205px;gap:12px;perspective:800px}
 .tokenHero>div{display:grid;place-items:center;width:100px;height:110px;background:var(--surface);box-shadow:0 12px 24px color-mix(in srgb,var(--ink) 5%,transparent);border-radius:4px;animation:tokenUnfold 3.8s ease both;transform:rotate(-5deg)}
 .tokenHero>div:nth-child(2){transform:translateY(23px) rotate(7deg);animation-delay:.3s}
@@ -115,7 +119,9 @@
 .heroCalendar i:nth-of-type(2),.heroCalendar i:nth-of-type(5){background:var(--accent);animation:heroSlot 3.5s ease both}
 .heroInvite{position:absolute;right:0;bottom:7px;display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--surface);box-shadow:0 10px 30px color-mix(in srgb,var(--ink) 7%,transparent);border-radius:4px;transform:rotate(5deg);animation:inviteArrive 4.5s ease both}
 .heroInvite strong{font-size:16px;font-weight:500}.heroInvite span{font-size:12px;color:var(--muted)}
-@keyframes growBar{0%{width:0}65%,100%{width:var(--probability)}}
+@keyframes heroWordOne{0%,40%{max-width:0}52%,100%{max-width:5ch}}
+@keyframes heroCandidatesOne{0%,40%{opacity:1}52%,100%{opacity:0}}
+@keyframes heroCandidatesTwo{0%,40%{opacity:0}52%,100%{opacity:1}}
 @keyframes heroAppend{0%,45%{opacity:0}85%,100%{opacity:1}}
 @keyframes tokenUnfold{0%{opacity:0;transform:translateY(-15px) rotateY(-60deg)}75%,100%{opacity:1}}
 @keyframes heroSlot{0%,35%{opacity:.25}65%,100%{opacity:1}}
@@ -129,4 +135,5 @@
   .twoTimes{grid-template-columns:1fr;gap:30px}.pairDefinition>div{grid-template-columns:80px 1fr;gap:20px}.pairDefinition dt{font-size:19px}
   .taskBrief{grid-template-columns:1fr;padding:25px;gap:23px}.roleList>div{grid-template-columns:28px 1fr;gap:12px}.roleList dd{grid-column:2}
 }
+@media(prefers-reduced-motion:reduce){.probabilityHero strong{max-width:0!important}.heroCandidateSet{opacity:0!important}.heroCandidateSet:first-child{opacity:1!important}}
 @media(prefers-reduced-motion:reduce){.lab *{transition:none!important;animation:none!important}.tokenTile{transform:none!important}.tokenRows[data-ids="true"] .tokenTile>span{visibility:hidden}.tokenRows[data-ids="true"] .tokenTile>code{transform:none}.tokenRows[data-ids="false"] .tokenTile>code{visibility:hidden}}

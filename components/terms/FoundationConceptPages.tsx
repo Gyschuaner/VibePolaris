@@ -14,32 +14,32 @@ export function LlmTermPage() {
   return <ConceptArticle slug="llm" title="LLM" sources={llmSources}
     hero={<ConceptHero slug="llm" label="已有文字之后出现不同候选，选中的片段加入句子"><ProbabilityHeroArt /></ConceptHero>}
     sections={[["generation", "逐步生成文字"], ["training", "训练与这次回答"], ["choice", "同一句话的不同续写"], ["evidence", "回答仍需要依据"]]}
-    intro={<>大语言模型从大量数据中学习语言的规律，用学到的参数处理新的输入。对常见的生成式 LLM 来说，<strong>回答是根据前文逐步生成的 Token 序列。</strong></>}>
+    intro={<>大语言模型从大量数据中学习语言的规律，用学到的参数处理新的输入。对常见的生成式 LLM 来说，<strong>回答会根据前文逐步接成一串 Token。</strong>Token 是模型处理文字的单位，一个词也可能被拆成几块。</>}>
     <ArticleSection id="generation" title="逐步生成文字">
       <OldAnchor slug="llm" part="definition" />
-      <p>给出“The sky is”，后面可以接 blue，也可以接 gray。哪种续写更合适，取决于已经给出的文字，以及模型在训练中学到的规律。若前文提到阴云，后面的选择也可能改变。</p>
+      <p>给出“The sky is”，后面可以接 blue，也可以接 gray。哪种续写更合适，取决于已经给出的文字，以及模型在训练中学到的规律。如果你先告诉模型天空阴云密布，它接下来的选择也可能改变。</p>
       <p id="llm-generation" className="vp-citation-target">常见的自回归生成过程会先计算候选 <ConceptTerm slug="token">Token</ConceptTerm> 的概率，再选出一个接到序列后面。<strong>下一次预测会使用更新后的前文，包括刚刚生成的内容。</strong>这一步反复进行，才得到你看到的整段回答。<Cite id="llm-generation" /></p>
-      <p>下面用很小的教学词表手动选择续写，看看一句话怎样分叉。片段和百分比均为预设，不是某个真实模型的分词或测量结果；点击候选只是把选择过程放慢给你看。</p>
+      <p>下面用很小的教学词表手动选择续写，看看一句话怎样分叉。这里的片段和百分比都是预设的，只在演示给出的候选之间分配；某一步只剩句号，就会显示 100%。它们不是真实模型的分词或概率。你点击候选，是替演示指定一条路径，观察后面的候选怎样变。</p>
       <OldAnchor slug="llm" part="scene-heading" /><LlmLesson />
-      <p>先选 gray，后续就围绕“The sky is gray”继续。撤回后换成 blue，前面的选择也被替换。真实生成时由解码规则完成选择，通常不需要用户逐个点击。</p>
+      <p>先选 gray，后续就围绕“The sky is gray”继续。回到开头改选 blue，句子和下一步候选都会跟着变。实际生成时，模型会按设定的选法自动选择，不需要用户逐个点击。</p>
     </ArticleSection>
     <ArticleSection id="training" title="训练与这次回答">
       <p id="llm-training" className="vp-citation-target">训练会调整模型参数，让它逐渐学会数据中的模式；预训练之后，还可以针对任务继续微调。调用一个已经训练好的模型来处理新输入，是推理。<strong>把一段日志放进对话，通常改变的是这次输入，不是在现场重新训练模型。</strong><Cite id="llm-training" /></p>
       <div className={styles.twoTimes}><div><h3>训练时</h3><p>通过大量样例调整参数。语言、代码和任务中的规律被反映在参数里。</p></div><div><h3>使用时</h3><p>把当前任务与材料交给已有模型，由它生成这次回答。换一份材料，输入就变了。</p></div></div>
-      <p>例如模型可能已经学过 Python 的语法，但要判断你的程序缺不缺冒号，仍需要看到相关代码。训练中的一般知识，不能替代这次项目的实际状态。</p>
-      <ArticleAside title="模型参数与聊天记录"><p>参数属于模型本身；聊天记录、系统说明和工具结果属于本轮<ConceptTerm slug="context">上下文</ConceptTerm>。应用可能另外保存会话或用于后续训练，这取决于具体产品的数据设置，不能仅凭模型在当前对话中记得一句话判断它已被写进参数。</p></ArticleAside>
+      <p>例如模型可能已经学过 Python 的语法，但要判断你的程序缺不缺冒号，仍需要看到相关代码。训练中学到的一般知识，不能代替查看这次项目的实际情况。</p>
+      <ArticleAside title="模型参数与聊天记录"><p>参数属于模型本身；聊天记录、系统说明和工具结果属于本轮<ConceptTerm slug="context">上下文</ConceptTerm>。应用可能另外保存会话或用于后续训练，这取决于具体产品的数据设置，不能仅凭模型在当前对话中记得一句话，就判断它已被写进参数。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="choice" title="同一句话的不同续写" className={styles.offset}>
-      <p id="llm-sampling" className="vp-citation-target">有了概率分布，还需要决定怎样选。贪心解码选择当前概率最高的候选；采样则按分布抽取。<ConceptTerm slug="temperature">温度</ConceptTerm>等设置可以改变选择的分散程度。因此，相同输入也可能得到不同续写。<Cite id="llm-sampling" /></p>
-      <blockquote className={styles.pullquote}>候选的概率，衡量的是怎样接下去；<br />它不是一句话的事实证明。</blockquote>
-      <p>写一段邀请文案，可以接受几种自然的措辞；问今天服务是否恢复，则需要运行结果。把生成调得更稳定，不能自动把缺少的日志补进来，也不能保证事实正确。</p>
+      <p id="llm-sampling" className="vp-citation-target">有了概率分布，还需要决定怎样选。贪心解码选择当前概率最高的候选；采样则按分布抽取。<ConceptTerm slug="temperature">温度</ConceptTerm>等设置会改变分布的分散程度：通常调高温度，低概率候选更可能被抽到；调低温度，选择更集中在高概率候选。因此，相同输入也可能得到不同续写。<Cite id="llm-sampling" /></p>
+      <blockquote className={styles.pullquote}>候选的概率，衡量的是怎样接下去；<br />它证明不了一句话是不是事实。</blockquote>
+      <p>写一段邀请文案，可以接受几种自然的措辞；问今天服务是否恢复，则需要运行结果。即使调低温度，让模型更常选高概率的续写，它也不会因此拿到缺失的日志，不能据此认定服务恢复。</p>
       <p id="llm-stopping" className="vp-citation-target">生成还需要停止条件，例如结束标记、指定的停止序列或输出长度限制。本页为了展示有限路径，在句号处结束；实际模型不会在每个句号后都停止。达到长度上限时，回答也可能尚未写完。<Cite id="llm-stopping" /></p>
     </ArticleSection>
     <ArticleSection id="evidence" title="回答仍需要依据">
       <OldAnchor slug="llm" part="quiz-heading" /><OldAnchor slug="llm" part="prompt-heading" />
       <p id="llm-evidence" className="vp-citation-target">LLM 可以生成清楚、流畅的文字，也会产生错误或编造的内容，通常称为<ConceptTerm slug="hallucination">幻觉</ConceptTerm>。Google 的课程也将错误预测和偏见列为使用 LLM 时需要考虑的问题。<strong>语言通顺和回答正确，需要分别核对。</strong><Cite id="llm-evidence" /></p>
-      <p>如果模型说“服务已经恢复”，应当能找到本次检查的状态码和结果。如果没有执行检查，这句话最多是推测。可追踪的资料、真正运行的工具和明确的验收条件，才能让你检查结论从哪里来。</p>
-      <p>在 <ConceptTerm slug="agent-harness">Harness</ConceptTerm> 里，模型负责根据现有信息提出下一步；运行程序负责执行允许的操作并带回结果。把模型接入这种过程，才可能持续处理文件、日志和任务状态。单独生成一个工具名称，并不等于工具已经运行。</p>
+      <p>如果模型说“服务已经恢复”，应当能找到本次检查的状态码和结果。如果没有执行检查，这句话最多是推测。可追踪的资料、真正运行的工具和明确的验收条件，才能让你查到结论从哪里来。</p>
+      <p>在 <ConceptTerm slug="agent-harness">Harness</ConceptTerm> 里，模型负责根据现有信息提出下一步；运行程序负责执行允许的操作并带回结果。有了这条反馈链，程序才能依据本步结果继续处理文件、日志和任务状态。单独生成一个工具名称，并不等于工具已经运行。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
