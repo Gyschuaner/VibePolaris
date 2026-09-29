@@ -13,6 +13,8 @@ export const responseSources = [
   mdn("204 No Content", "Web/HTTP/Reference/Status/204", ["response-empty"]),
   mdn("Response: Response() constructor", "Web/API/Response/Response", ["response-native"]),
   mdn("422 Unprocessable Content", "Web/HTTP/Reference/Status/422", ["response-error"]),
+  mdn("Response: json() method", "Web/API/Response/json", ["response-read", "response-empty", "response-parse"]),
+  mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["response-read", "response-format", "response-status"]),
 ];
 export const methodSources = [
   mdn("HTTP request methods", "Web/HTTP/Reference/Methods", ["method-purpose", "method-others"]),

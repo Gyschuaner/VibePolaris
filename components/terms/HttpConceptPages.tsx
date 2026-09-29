@@ -55,7 +55,7 @@ export function RequestTermPage() {
 export function ResponseTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={responseSources} />;
   return <ConceptArticle slug="response" title="响应" sources={responseSources}
-    intro={<>保存书签后，服务器可能返回新书签，也可能指出书名缺失。响应带回这次请求的结果；页面再根据结果决定显示什么。</>}
+    intro={<>你在网上书店把一本书加入账号里的书签，方便以后再找。点完“保存”，怎样知道书店服务有没有存好？它会通过响应告诉浏览器处理结果，页面再据此显示新书签或错误提示。</>}
     sections={[["receipt", "读懂一份返回结果"], ["project", "把响应用到页面"], ["empty", "没有内容也有结果"], ["handling", "错误留在哪一层"]]}
     hero={<ConceptHero slug="response" label="左侧响应保留状态 201 和正文里的书名；客户端处理后，右侧页面新增写着同一书名的书签，响应本身没有变成界面"><div className={s.responseHero}>
       <div className={s.responseMessage}><span>响应</span><div className={s.responseStatus}><strong>201</strong><small>Created</small></div><div className={s.responsePayload}><small>body</small><code>id: 42</code><code>title: <b>海边的书店</b></code></div></div>
@@ -64,24 +64,30 @@ export function ResponseTermPage() {
     </div></ConceptHero>}>
     <ArticleSection id="receipt" title="读懂一份返回结果">
       <Legacy slug="response" names={["question", "definition"]} />
-      <p id="response-parts" className="vp-citation-target"><strong>响应是服务器针对请求返回的消息，响应体只是其中的内容。</strong><ConceptTerm slug="status-code">状态码</ConceptTerm>概括处理结果，响应头补充类型和位置等信息，响应体再提供资源数据或错误说明。只复制一段 JSON，可能漏掉决定处理方式的部分。<Cite id="response-parts" /></p>
-      <p id="response-created" className="vp-citation-target">例如创建书签成功，201 表示资源已经创建；Location 可以指出新资源的地址，响应体可以带回编号和书名。客户端不必从自己提交的草稿猜编号，而可以使用服务器返回的结果。<Cite id="response-created" /></p>
+      <p id="response-parts" className="vp-citation-target"><strong>响应是服务器针对请求返回的消息，响应体只是其中的内容。</strong>在本例里，浏览器发送保存书签的请求，书店服务接收并处理，再返回响应。浏览器是客户端；其中运行的页面程序负责读取响应、更新屏幕上的书签。服务返回了消息，不等于页面已经显示好了。<Cite id="response-parts" /></p>
+      <p>一份响应通常要结合几部分来看。<ConceptTerm slug="status-code">状态码</ConceptTerm>是 201、204、422 这样的数字，概括处理结果；响应头补充怎么理解这份消息，例如 Content-Type 说明正文格式。响应体再携带具体数据或错误说明。本例用 JSON 这种文本格式写编号和书名，其他响应也可以返回网页、图片等内容。</p>
+      <p id="response-created" className="vp-citation-target">以创建书签为例：201 表示新书签已经创建。服务为它分配编号 42，响应体里的 <code>id</code> 是编号，<code>title</code> 是书名；响应头 <code>Location: /bookmarks/42</code> 指出这条新书签的地址。页面可以用服务返回的编号识别书签，不必假定自己提交的草稿就是最终记录。201 不要求每次都返回这组字段；有没有正文、正文叫什么，要看这个服务的接口说明。<Cite id="response-created" /></p>
+      <p>因此，向 AI 描述“保存失败”时，如果只贴 <code>{'{"id":42,"title":"海边的书店"}'}</code> 这段正文，就漏掉了状态码和响应头。它们能帮助判断：服务报告了什么结果，正文应该按什么格式读取，以及新记录在哪里。</p>
     </ArticleSection>
     <ArticleSection id="project" title="把响应用到页面">
       <Legacy slug="response" names={["scene-heading"]} />
-      <p id="response-native" className="vp-citation-target">左边是一份教学响应，右边是尚未处理它的页面。选择一次操作，再把响应应用到界面。演示在本地构造原生 Response，并按状态和内容处理；不会访问真实书签服务。<Cite id="response-native" /></p>
+      <p id="response-native" className="vp-citation-target">下面的消息区摆着一份教学响应，页面区还没有处理它。选择“创建书签”“移除书签”或“缺少书名”，再点“应用到页面”，观察程序怎样使用这份响应。演示用浏览器自带的 Response 对象在本地构造预设消息，不会访问真实书店服务，也不会修改账号里的书签。<Cite id="response-native" /></p>
       <ResponseLesson />
-      <p>消息不会自己变成界面。创建时把新资源显示出来，删除时移除书签，输入有误时留下纠正入口，都是客户端程序作出的决定。<strong>收到响应与正确处理响应，是两件需要分别完成的事。</strong></p>
+      <p>201 这份消息里有书名，程序读出后把它显示在书签上；204 表示本例的移除操作已完成，程序显示“书签已移除”；422 的正文说明缺少书名，程序把“请填写书名”留在页面上。响应仍然留在消息区，页面显示什么由处理它的代码决定。</p>
+      <p>每个选项是一份独立的预设响应。切换选项时，页面区先回到“尚未处理”，等你再次点“应用到页面”；“重置界面”也只恢复这个待处理画面，保留当前选项。这里的切换和重置不代表撤销服务器已经完成的操作。</p>
+      <p id="response-read" className="vp-citation-target">在真实网页里，<code>fetch</code> 是浏览器发起请求的函数。代码等到 <code>await fetch(...)</code> 返回 Response 时，通常已经拿到状态码和响应头，但正文可能还没收完。接着用 <code>await response.json()</code> 读取并解析 JSON，才得到程序能使用的编号、书名等值。最后还要由页面代码把它们显示出来。<strong>拿到响应、读懂正文、更新页面，是不同的步骤。</strong><Cite id="response-read" /></p>
     </ArticleSection>
     <ArticleSection id="empty" title="没有内容也有结果" className={base.offset}>
-      <p id="response-empty" className="vp-citation-target">204 表示请求已成功处理，而且没有响应内容。删除完成或保存后不需要回传数据时，服务可以采用它。此时客户端应直接处理成功状态，而不是继续把空内容当 JSON 解析。<Cite id="response-empty" /></p>
+      <p id="response-empty" className="vp-citation-target">204 表示请求已成功处理，而且没有响应内容。删除完成或保存后不需要回传数据时，服务可以采用它。204 仍然有状态码，也可以带响应头；缺少的是正文。程序应按成功结果更新页面，不要再调用 <code>response.json()</code>：空正文不是合法 JSON，强行解析会报错。<Cite id="response-empty" /></p>
       <blockquote className={s.quote}>204 没有响应体，<br />不等于没有收到响应。</blockquote>
-      <p>反过来，一大段返回内容也不必然代表成功。代理可能返回 HTML 错误页，业务接口可能返回字段校验信息。先确认状态和 Content-Type，再决定怎样读取，会比一律调用 JSON.parse 更可靠。</p>
+      <p id="response-format" className="vp-citation-target">反过来，有一大段正文也不代表成功。服务可能返回 HTML 写成的错误网页，也可能用 JSON 指出哪个字段没填对。先看状态，再看 Content-Type 和接口说明，才能选合适的读取方式；写着 <code>application/json</code> 时可以尝试按 JSON 读取，但格式声明不能保证正文一定写对了，程序仍要处理解析错误。<Cite id="response-format" /></p>
     </ArticleSection>
     <ArticleSection id="handling" title="错误留在哪一层">
       <Legacy slug="response" names={["quiz-heading", "prompt-heading"]} />
-      <p id="response-error" className="vp-citation-target">422 表示内容类型和语法能够理解，但其中的指令无法处理。示例里缺少书名，因此页面保留错误，不加入书签。原样再提交一次，通常仍会遇到同一个问题；应先修改对应输入。<Cite id="response-error" /></p>
-      <p>排查时先看有没有拿到响应，再看 HTTP 状态，再看内容是否符合约定，最后看页面是否正确更新。这能区分网络失败、服务拒绝、解析失败和渲染错误，避免所有问题最后都变成一句“接口坏了”。</p>
+      <p id="response-error" className="vp-citation-target">422 表示服务器能理解请求的内容类型和写法，但无法按这些内容完成要求。本例约定创建书签必须有书名，服务发现缺少它，就用 422 和错误正文说明问题。原样再提交一次，通常还会得到同样的错误；应先补好书名。这个例子没有提供输入表单，只展示收到错误后页面怎样提示。<Cite id="response-error" /></p>
+      <p id="response-status" className="vp-citation-target">422 也是一份响应。浏览器的 fetch 不会因为 HTTP 状态是 422 或 404 就自动报网络失败，程序还要检查状态。代码里的 <code>response.ok</code> 只看状态码是否在 200–299；它不检查正文是否能解析，也不保证页面已经更新。<Cite id="response-status" /></p>
+      <p id="response-parse" className="vp-citation-target">如果收到 201，却在读取 JSON 时出错，应分别看待：服务已经报告“创建成功”，而页面没能读懂返回内容。后一个错误不能改写前一个结果，不能因此断言“书签没有创建”。同样，上传头像返回 204 后若页面解析空正文报错，需要修正的是这次读取方式，不能把“没有正文”当作“没有收到响应”。<Cite id="response-parse" /></p>
+      <p>实际排查时，可以在浏览器开发者工具的 Network（网络）面板中找到这次请求，查看状态码、响应头和正文，再对照接口说明约定的字段。若程序拿到的内容正确，而页面还没变，再检查显示代码。先辨认卡在哪一步，比把网络、数据读取和页面显示的问题都叫作“接口坏了”更有用。</p>
       <ArticleAside title="收到旧请求的响应"><p>先搜索“海边”，紧接着搜索“山间”，较早的请求可能更晚返回。如果页面无条件采用最后到达的响应，就会显示旧搜索结果。客户端可以取消旧请求，或检查响应是否仍属于当前搜索；每份响应都需要与发起它的操作对应。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
