@@ -1,4 +1,4 @@
-import { BookOpen, Check, EnvelopeOpen, FileText, Image as ImageIcon, Receipt } from "@phosphor-icons/react/dist/ssr";
+import { BookOpen, Check, FileText, Image as ImageIcon, Receipt } from "@phosphor-icons/react/dist/ssr";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { AwaitLesson, FetchLesson, PromiseLesson } from "./AsyncConceptLessons";
@@ -15,7 +15,10 @@ export function FetchTermPage() {
   return <ConceptArticle slug="fetch-api" title="Fetch API" subtitle="发出请求，接住响应" sources={fetchSources}
     intro={<>页面要显示一份书单，数据却在另一个地址。Fetch API 负责发出请求，把收到的响应交给程序；这份响应能不能成为书单，还要接着检查。</>}
     sections={[["response", "从地址到响应"], ["inspect", "拆开一份书目响应"], ["checks", "三种不同的失败"], ["cancel", "请求过期以后"]]}
-    hero={<ConceptHero slug="fetch-api" label="响应信封展开，先出现200状态，再露出书目内容"><div className={styles.fetchHero}><div className={styles.heroEnvelope}><div><EnvelopeOpen size={28} weight="light" /><strong>200</strong></div><span>application/json</span><code>{'{ "books": […] }'}</code></div></div></ConceptHero>}
+    hero={<ConceptHero slug="fetch-api" label="同一份 Response 先显示 200 状态与内容类型，正文仍未读取；随后读取并解析正文，书名才显现"><div className={styles.fetchHero}><div className={styles.fetchPanel}>
+      <div className={styles.fetchStatus}><span>Response</span><strong>200</strong><code>application/json</code></div>
+      <div className={styles.fetchBody}><span className={styles.fetchUnread}>body · 未读取</span><div className={styles.fetchBookList}><code>response.json()</code><span>小岛上的灯塔</span><span>读懂浏览器</span></div></div>
+    </div></div></ConceptHero>}
     relatedIntro={<>请求过程用 <ConceptTerm slug="promise">Promise</ConceptTerm> 表示；<ConceptTerm slug="async-await">await</ConceptTerm> 让程序等到这一轮结果，再继续处理。</>}>
     <ArticleSection id="response" title="从地址到响应">
       <AsyncLegacyAnchors slug="fetch-api" names={["question", "definition"]} />

@@ -31,8 +31,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 17 event-bubbling | 父子层级传播 | 两组嵌套轮廓对照：一次点击逐层向外，另一次在按钮处停止 | 本地与 dev 集成完成 · PR #120 |
 | 18 hook | 复用逻辑，各有状态 | 两条相同刻度轨道：咖啡 2→3，门票维持 0；单独操作不改另一实例 | 本地与 dev 集成完成 · PR #121 |
 | 19 effect | 与外部系统同步 | 两路消息源与固定接收器；音乐订阅完整收回后，天气订阅才接通 | 本地与 dev 集成完成 · PR #122 |
-| 20 browser-api | 浏览器提供能力 | 浏览器内的区域变宽、测量括号显现，JS 随后收到内容宽度 | 本地验收完成 · 待 dev 集成 |
-| 21 fetch-api | 发请求并读取响应 | 时间线上分开响应头到达与内容读取 | 待更新 |
+| 20 browser-api | 浏览器提供能力 | 浏览器内的区域变宽、测量括号显现，JS 随后收到内容宽度 | 本地与 dev 集成完成 · PR #123 |
+| 21 fetch-api | 发请求并读取响应 | 同一份 Response 面板先亮状态，正文仍未读；随后书目显现 | 本地验收完成 · 待 dev 集成 |
 | 22 promise | 尚未完成的结果 | 一个待定容器只落入成功或失败的一个终态 | 待更新 |
 | 23 async-await | 当前流程等待 | 并行时间轨迹；当前轨道停驻，其他轨道前进 | 待更新 |
 | 24 json | 结构化文本表示 | 同一对象在文本与树状层级间展开 | 待更新 |
@@ -445,6 +445,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_31fe72
 资料：实际阅读 MDN [Introduction to web APIs](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction)（浏览器 API 与 JavaScript 语言/库/第三方 API 的边界）、[ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)（观察、断开及测量回调）、[Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API)（安全上下文和因浏览器、操作不同而异的权限与用户动作条件），以及 W3C [Resize Observer](https://www.w3.org/TR/resize-observer-1/)（`contentRect` 对应内容盒尺寸）。新增第 4 份引文及 `browser-content-box` 段落；没有把内容宽度、外框宽度、窗口宽度混用，也没有声称所有 API 都要用户批准。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器桌面和 390×844 首图可见浏览器窗口内的区域变宽、测量括号及下方 JS 读数，移动端首图宽 330、主演示宽 342，clientWidth/scrollWidth 均为 390。主演示用键盘把滑块 65% 调到 100%，目标宽与实测读数同为 760px；停止观察后调至 45%，目标变 342px 但读数停在 760px；恢复后直接更新为 342px；重置稳定回 65% 与 494px。五个旧锚点、四份书目在页面，第 4 份 W3C 书目展开的正文摘录与 `#browser-content-box` 回链落点约 130px，应用错误日志为空。未模拟没有 ResizeObserver 的浏览器，也没有真人零基础读者观察。VBP-015 用例 `090ed8c1-a023-4f33-a3bb-795136fb67f9`，本地计划 `1789a40d-6de6-4b6f-b60d-2c04d274a03b` completed、执行 `04e86649-9503-4a69-aed9-3bd0602000d7` passed。
+
+2026-09-29 集成：提交 `d869a04` 经 [PR #123](https://github.com/Gyschuaner/VibePolaris/pull/123) 合入 `dev`，merge `7c239021b56846c558e9dff79ee84d92eacbea8e`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/browser-api` 在真实浏览器复核新首图、四份来源和滑块改变后实测宽度与区域一致，应用错误为空。DP 部署 `e3b195f4-831e-425f-8fb3-d74a2212c2ec` 已回查；前一版 `6c81f16` 的构建备份在 `/tmp/vbp012-dev-next-6c81f16`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。VBP-015 五个本地计划均 completed、各 1/1 passed，子需求转 `ready_for_release`（版本 7），并非已发布。DP VBP-012 描述更新至 20/105、版本 29；下一条 fetch-api。
+
+## 21 · fetch-api
+
+读者入口：“`fetch()` 已经返回 200，为什么书名还没显示？404 是不是根本没有收到响应？”现页正文和主演示已用真实同源静态资源区分收到 Response、检查 HTTP、读取解析 JSON 与验证 `books` 字段，并能切换、重置、取消过期请求；保留。原首图是一封倾斜信封，200 状态固定、JSON 片段稍后出现，两个可读时刻不够分明，也与相邻 Promise 纸质凭条近似。
+
+视觉候选：① 同一份 Response 的剖面，状态带先就位、正文留未读纹理，随后原位置显出书名；采用核心关系，但删去 ZCode 建议的外壳翻瓣，改为不具邮寄形态的平面响应面板。中间帧状态与内容类型可读，body 仍标“未读取”；最终同一面板内出现 `response.json()` 和两本书，状态带保留。② 单条时间轨迹在 Response 点停顿再续绘；时序直接，却容易被当成网络进度条，也与 Effect 的连线和 async/await 的轨道近似，不采用。③ 顶部小状态芯片向下生长书目行；视觉清楚，但像 `json()` 生成了数据，未采用。首图是教学示意的 200 正常文件，不暗示 fetch 永远成功，也不暗示实际必须分两次网络往返；404/非法 JSON/字段错误由主演示分层验证。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_c60ffbf3-7185-4a80-9c72-3b0d314a68d3`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 和动画灵感参考。主助手提供已核实的 MDN 机制、原首图与相邻页边界；ZCode 给剖面对开、单线停顿、小芯片生长三案并推荐第一案。主助手去掉翻瓣和纸质隐喻，保持单面板双时刻；ZCode 未看源码、执行网络请求或验收页面。
+
+资料：实际阅读 MDN [Using the Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)（状态和响应头可先于 body 完整接收，Response 读取方法、AbortController）、[Window: fetch() method](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch)（404/504 不自动拒绝）、[Response: ok property](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok)（200–299）和 [Response: json() method](https://developer.mozilla.org/en-US/docs/Web/API/Response/json)（读完响应体再解析，返回 Promise）。现有四份书目与角标足以支持正文论断，不新增无关来源；仍把 HTTP 成功、JSON 可解析和 `books` 符合应用约定分开。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器重播首图后，中间帧面板和“未读取”均可见、书目透明；完成帧书名显现。390×844 面板宽 280、主演示宽 342，文档 clientWidth/scrollWidth 均为 390。主演示正常资源先收到 Response 200、`ok:true`、内容类型且正文未读，第二步才显示两本书；404 仍收到 Response、检查时报 HTTP 404；200 的非 JSON 报解析失败，200 的合法 JSON 但 `books` 非数组报结构不符。切换资源与重置后旧书目视觉隐藏，Enter 可发请求与读取；五个旧锚点及四份来源存在，第一份书目正文摘录与回链落点约 130px，应用错误日志为空。没有刻意模拟请求仍在途时的竞态，也没有真人零基础读者观察。VBP-016 用例 `7fee90a4-b0c7-4be8-8044-52b4663b2deb`，本地计划 `a7e5dde5-9ca0-462f-ac31-70be14c8d686` completed、执行 `865a7fbc-5eca-4226-ac21-8c7a070139df` passed。
 
 ## 01 · Harness
 
