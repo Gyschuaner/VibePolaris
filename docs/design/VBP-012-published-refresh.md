@@ -27,8 +27,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 13 component | 可复用的界面组成 | 头像、姓名和关注位聚成 MemberCard 结构；MemberList 依次显出三个实例 | 本地与 dev 集成完成 · PR #116 |
 | 14 props | 外部给组件的输入 | 调用处的 label、tone 依次改变，同一 ActionButton 原位改字、变色 | 本地与 dev 集成完成 · PR #117 |
 | 15 state | 记住变化并更新界面 | 一张笔记卡内的 text、status 先变，卡面与按钮随后原位更新；等待时无回执 | 本地与 dev 集成完成 · PR #118 |
-| 16 event | 操作触发处理 | 同一阅读灯两次点击：click 继续计数，断开开灯监听后灯保持上次亮度 | 本地验收完成 · 待 dev 集成 |
-| 17 event-bubbling | 父子层级传播 | 嵌套轮廓逐层响应，中途停止后外层静止 | 待更新 |
+| 16 event | 操作触发处理 | 同一阅读灯两次点击：click 继续计数，断开开灯监听后灯保持上次亮度 | 本地与 dev 集成完成 · PR #119 |
+| 17 event-bubbling | 父子层级传播 | 两组嵌套轮廓对照：一次点击逐层向外，另一次在按钮处停止 | 本地验收完成 · 待 dev 集成 |
 | 18 hook | 组件使用 React 能力 | 渲染与状态槽对齐；保持调用次序 | 待更新 |
 | 19 effect | 与外部系统同步 | 页面内状态与外部连接双区；切换先清理后连接 | 待更新 |
 | 20 browser-api | 浏览器提供能力 | 浏览器外壳中展开对应原生能力和许可边界 | 待更新 |
@@ -389,6 +389,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_d46317
 资料：实际阅读 MDN [Introduction to events](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events)（浏览器事件、注册处理、多个监听器和解除）、[Element: click event](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)（原生按钮的鼠标和键盘激活）、[EventTarget: removeEventListener()](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)（移除同一监听的匹配条件）以及 [Event: preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault)（默认行为与监听/传播的区别）。正文与原书目已涵盖本轮论断，不新增引用编号。首图的两个计数只对应两个示意 click，不能被读成真实业务成功。
 
 2026-09-29 本地验收：最终 `npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器桌面和 390×844 已观察首图从初始 click 0、灯灭、监听连接，到第一次 click 1、灯亮，再到监听断开、第二次 click 2、灯仍亮；移动端 clientWidth/scrollWidth 均为 390，构图无横向溢出。主演示实际点击后灯亮/计数 1；断开后再点计数 2、灯仍亮；重连再点计数 3、灯关，未重复处理；重置后 Enter 激活仍正常。离屏时首图脉冲暂停，可见时运行。旧锚点与四份来源在页面，第二份书目摘录和正文、回跳均核对，应用错误日志为空。VBP-015 用例 `dcf4aebe-9d9e-40f0-b12f-ad31d32f6817`，本地计划 `8031387a-ae8c-47ad-b3cb-1f9decad3765` completed、执行 `fbb42204-6c0f-49b8-84f7-64db543c4b00` passed。没有真人零基础读者观察。
+
+2026-09-29 集成：提交 `c1358da` 经 [PR #119](https://github.com/Gyschuaner/VibePolaris/pull/119) 合入 `dev`，merge `0d23297de0e6b2f91a73254ca26a5046668c438a`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览采用相同 Git 树和构建产物，`http://localhost:3219/terms/event` 在真实浏览器核对首图、四份来源、监听断开后的第二次点击仍计数且灯不变，应用错误为空。DP 部署 `ca0b87ad-4150-4654-aa34-c0a93eaee03c` 已回查；前一版 `4e67966` 的构建备份在 `/tmp/vbp012-dev-next-4e67966`，可停 3219、将 worktree checkout 旧提交并恢复该构建。未部署远端 dev 或生产。DP VBP-012 描述更新至 16/105、版本 25；下一条 event-bubbling。
+
+## 17 · event-bubbling
+
+读者入口：“我只按了卡片里的收藏，为什么列表也处理了这一次点击？如果按钮处停止，收藏会不会也被撤销？”已有正文与主演示已经使用真实三层 DOM，保留捕获、目标、冒泡顺序，以及停止传播与默认行为的边界。原首图仅两层淡入，没有明确的按钮目标，也看不出由内到外的顺序与停止后的外层静止。
+
+视觉候选：① 迷你真实界面中一个描边环从收藏按钮换形到卡片、列表；一次事件的身份清楚，但在 234px 首图中塞两条卡片、游标、刻痕会太密。采用它“同一目标逐层向外”的关系，简化为左右两组各自真实嵌套的按钮/卡片/列表：左侧按钮、卡片、列表依次着色，单个标记上移；右侧另一次按钮着色后标记止步，外两层保持淡色。② 同心环上飞点逐层跳跃，与现有演示轮廓脉冲近似，且易被看作实体飞行，不采用。③ 侧剖面厚壁逐层染色，形态鲜明但容易把传播读成液体渗透，不采用。两组表示两次独立示例点击，不暗示所有 click 都会冒泡，也不把动画慢放当浏览器真实耗时；捕获阶段留在主演示说明。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_f58346f0-3992-46a5-aab9-ecf694eea569`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill、动画灵感参考及相关组件。主助手给出已核实的机制和相邻页边界；ZCode 提供换形环、同心跳点、剖面染色三案，推荐第一案。主助手删去小尺寸中会拥挤的游标/双文章结构，保留两次结果并排及单个标记顺序移动。ZCode 未做浏览器验收、DP 或 Git 操作。
+
+资料：实际阅读 MDN [Event bubbling](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling)（目标后向外、捕获反向、委托与 target/currentTarget）、[Event: stopPropagation()](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation)（停止继续传播，不撤销默认行为或同节点其他处理）、[Event: preventDefault()](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault)（取消可取消的默认行为而不自动截断传播）、[Event: bubbles property](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles)（能否在 DOM 树冒泡）。正文现有四份书目和具体角标已涵盖本轮论断，不新增引用编号。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器桌面首图呈现左三层依次亮起、右仅按钮亮，终态与无动画基样式一致；390×844 构图完整，clientWidth/scrollWidth 均为 390。主演示默认点击留下“按钮目标→卡片冒泡→列表冒泡”，开启停止后仅按钮；再开启捕获得到“列表捕获→卡片捕获→按钮目标”，收藏动作照常切换。重置后 Enter 激活恢复默认顺序；五个旧锚点与四份来源存在，第二份书目摘录与正文及回链一致，应用错误日志为空。VBP-015 用例 `8481cc08-6276-4c83-b067-fbd65d6b0c5e`，本地计划 `5513d503-dece-4aee-95ea-8f91ee2ee8fe` completed、执行 `1699aec1-f695-4db3-81db-c140a75322aa` passed。没有真人零基础读者观察。
 
 ## 01 · Harness
 
