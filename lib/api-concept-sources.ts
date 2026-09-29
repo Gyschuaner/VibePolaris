@@ -22,6 +22,8 @@ export const restSources = [
 export const paginationSources = [
   { publisher: "PostgreSQL Global Development Group", title: "PostgreSQL 18 · LIMIT and OFFSET", date: "", url: "https://www.postgresql.org/docs/18/queries-limit.html", citations: ["pagination-order", "pagination-offset", "pagination-cost"] },
   { publisher: "Stripe · API Reference", title: "Pagination · v1 list APIs", date: "", url: "https://docs.stripe.com/api/pagination", citations: ["pagination-cursor", "pagination-end"] },
+  { publisher: "GitHub · GraphQL API 文档", title: "Using pagination in the GraphQL API", date: "", url: "https://docs.github.com/en/graphql/guides/using-pagination-in-the-graphql-api", citations: ["pagination-cursor", "pagination-end"] },
+  { publisher: "GitHub · REST API 文档", title: "Using pagination in the REST API", date: "", url: "https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api", citations: ["pagination-next-link"] },
 ];
 export const rateSources = [
   { publisher: "Amazon Web Services", title: "Throttle requests to your REST APIs for better throughput in API Gateway", date: "", url: "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html", citations: ["rate-bucket", "rate-scope", "rate-limits"] },

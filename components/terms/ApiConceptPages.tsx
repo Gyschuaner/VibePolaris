@@ -114,24 +114,30 @@ export function RestTermPage() {
 export function PaginationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={paginationSources} />;
   return <ConceptArticle slug="pagination" title="分页" sources={paginationSources} sections={[["order", "先确定顺序"], ["pages", "位置与边界"], ["continuation", "读到哪里，何时停止"]]}
-    intro={<>一份不断增长的书目，每次只读三条。困难不在于切成几段，而在于读下一段时，数据可能已经变了。</>}
-    hero={<ConceptHero slug="pagination" label="有序记录的读取窗口向下一批移动"><div className={s.paginationHero}><div>{[9, 8, 7, 6, 5, 4].map(id => <span key={id}>{id}</span>)}<i /></div><code>每次读取 3 条</code></div></ConceptHero>}>
+    intro={<>书目第一次返回 9、8、7；点击“加载更多”，7 却又出现了。两次读取之间，有人往列表最前面加了一本书。</>}
+    hero={<ConceptHero slug="pagination" label="上次已读9、8、7；队首插入10后，按当前列表跳过三条，下一批再次出现7"><div className={s.paginationHero}>
+      <div className={s.paginationRead}><small>上次已读</small>{[9, 8, 7].map(id => <span key={id} data-repeat={id === 7}>{id}</span>)}</div>
+      <div className={s.paginationCurrent}><small>现在</small>{[10, 9, 8, 7, 6, 5].map(id => <span key={id} data-new={id === 10}>{id === 10 ? "+10" : id}</span>)}</div>
+      <div className={s.paginationNext}><small>跳过 3 条</small>{[7, 6, 5].map(id => <span key={id} data-repeat={id === 7}>{id}</span>)}</div>
+    </div></ConceptHero>}>
     <ArticleSection id="order" title="先确定顺序">
       <Legacy slug="pagination" names={["question", "definition"]} />
-      <p><strong>分页把一个结果集分批返回，并约定怎样继续读取。</strong>它限制单次传输与展示的数据量。页码按钮只是界面的一种表现，后面的 API 也可能使用偏移量、游标或返回的下一页链接。</p>
-      <p id="pagination-order" className="vp-citation-target">在 PostgreSQL 中，使用 LIMIT 取一部分数据时，需要 ORDER BY 给出确定的顺序。只按可能重复的时间排序还不够，可以增加唯一编号作补充；否则“第三条之后”本身就不稳定。<Cite id="pagination-order" /></p>
+      <p><strong>分页把较长的结果分批返回，并约定怎样取下一批。</strong>网页只需接收和展示眼前这批，不必一开始就拿完整书目。界面上的页码和“加载更多”都是入口；服务端实际可能按位置跳过、从某个边界继续，或直接给下一页的链接。如果书目只有十来条，一次返回也可以。</p>
+      <p id="pagination-order" className="vp-citation-target">要说“下一批”，先得说清按什么排序。本例的书按不会改变的编号从大到小排，9、8、7 后面才是 6。若两本书在同一秒上架，只按上架时间排，就没说清哪本在前；分批读取时，同一位置可能落到不同的书。再按唯一编号排一次，顺序才确定。PostgreSQL 是一种数据库，它把排序写作 <code>ORDER BY</code>，把“最多取几条”写作 <code>LIMIT</code>；它的文档提醒：取部分记录时，需要先确定唯一顺序。<Cite id="pagination-order" /></p>
     </ArticleSection>
     <ArticleSection id="pages" title="位置与边界">
       <Legacy slug="pagination" names={["scene-heading"]} />
-      <p>本例按不可变编号倒序排列，每批三条。先读第一批，再在队首插入 #10，最后读下一批。两个读取器会从各自记录的位置继续，结果由当前列表实际计算。</p>
+      <p>开始时服务端有 9 到 1 号书，每次给三条。网页先拿到 9、8、7；接着服务端在队首插入 10，当前顺序变成 10、9、8、7、6……网页已经收到的第一批仍是 9、8、7。下一次请求面对的是<strong>已经变化的列表</strong>，而不是事先切好、永远不变的第二页。下面用同一份当前列表，分别试两种继续方式。</p>
       <PaginationLesson />
-      <div className={s.comparison}><div><h3>Offset：跳过几条</h3><p id="pagination-offset" className="vp-citation-target">LIMIT 3 OFFSET 3 跳过当前结果的前三条，再取三条。队首增加记录后，原来的 #7 被挤到第四位，所以下一批会再次读到它。前半句是 SQL 的规则，后半句是这个样例的推演。<Cite id="pagination-offset" /></p></div><div><h3>Cursor：从哪里继续</h3><p id="pagination-cursor" className="vp-citation-target">本例记录旧边界 #7，下次读取编号小于 7 的前三条。真实接口的游标格式取决于约定，例如 Stripe v1 列表使用对象 ID 作为 starting_after，返回列表中位于该对象之后的数据。<Cite id="pagination-cursor" /></p></div></div>
+      <div className={s.comparison}><div><h3>Offset：跳过几条</h3><p id="pagination-offset" className="vp-citation-target">网页记着“已经取了三条”，于是下次让服务端跳过<strong>当前列表</strong>的前三条，再取三条。现在前三条是 10、9、8；第四条是旧批的 7，结果便是 7、6、5，7 重复了。PostgreSQL 里写成 <code>LIMIT 3 OFFSET 3</code> 时，<code>OFFSET</code> 就是先跳过三条。<Cite id="pagination-offset" /></p></div><div><h3>Cursor：从哪里继续</h3><p id="pagination-cursor" className="vp-citation-target">另一边记住上批末尾的 7，下次从“7 之后”继续。本例编号倒序且不变，所以取编号小于 7 的前三条，得到 6、5、4；队首插入 10 不会改变这个边界。<strong>游标是继续位置的标记</strong>，不一定直接写成编号：Stripe v1 用现有对象 ID 作 <code>starting_after</code>，GitHub GraphQL 则返回 <code>endCursor</code>，下次请求时把它放进 <code>after</code> 参数。调用方按各自接口约定传回即可，不必猜测标记内部怎样编码。<Cite id="pagination-cursor" /></p></div></div>
     </ArticleSection>
     <ArticleSection id="continuation" title="读到哪里，何时停止" className={base.offset}>
       <Legacy slug="pagination" names={["quiz-heading", "prompt-heading"]} />
-      <p><strong>游标不等于整份列表的快照。</strong>本例中新插入的 #10 位于已读边界之前，继续向后不会读到它；重新开始才会看到。若排序键本身会改变，记录还可能跨越边界。需要一致快照的业务，必须另外约定快照或版本策略。</p>
-      <p id="pagination-end" className="vp-citation-target">继续与停止也要看接口约定。Stripe v1 返回 has_more 指明后面是否还有记录，starting_after 与 ending_before 不能同时使用。不要把某个厂商的字段名当成所有分页接口的固定格式。<Cite id="pagination-end" /></p>
-      <ArticleAside title="一次少返回，不代表查询一定便宜"><p id="pagination-cost" className="vp-citation-target">PostgreSQL 仍需计算 OFFSET 跳过的行，因此很大的偏移量可能低效。游标查询也需要合适的排序键、过滤条件和 <ConceptTerm slug="index">索引</ConceptTerm>；仅把参数从 page 改成 cursor，并不会自动让查询变快。<Cite id="pagination-cost" /></p></ArticleAside>
+      <p><strong>不重复旧记录，不等于看到了整份最新列表。</strong>新书 10 在边界 7 前面，沿着 7 往后读不会遇到它；重新从第一批读才会看到。若改按“最近修改时间”排序，一本书被修改后可能移到队首，旧边界不再代表同一位置；前面靠“编号不变”得出的结论，到这里不能直接套用。要得到某一时刻完整而一致的结果，得由服务端固定那一时刻的列表，或让后续请求都读取同一版本；光是换成游标做不到。</p>
+      <p id="pagination-end" className="vp-citation-target">何时停，也要看具体接口的约定。假如一共六条、每批三条，第二批刚好装满，却已经是最后一批；不能靠“装满”判断还有下一页。Stripe v1 的 <code>has_more</code> 为 <code>false</code> 表示已到末尾；GitHub GraphQL 的 <code>hasNextPage</code> 为 <code>false</code> 也表示不再向后取。字段名不一样，含义要各自查文档确认。<Cite id="pagination-end" /></p>
+      <p id="pagination-next-link" className="vp-citation-target">还有接口直接告诉你下一页去哪里：GitHub REST 的响应可以带 <code>Link</code>，其中 <code>rel="next"</code> 对应下一页 URL；没有下一页时，响应里就不会出现这条链接。客户端沿返回的链接继续，不用自己拼地址。它是 GitHub REST 的做法，不是每个分页接口都必须有的字段。<Cite id="pagination-next-link" /></p>
+      <p>换成按新到旧排列的聊天消息也是一样：先读 9、8、7，再来一条 10，按当前列表跳过三条会重见 7；从旧消息 7 往后读不会重见 7，也不会碰到刚来的 10。想看新消息就刷新列表开头；想核对某一时刻的完整消息，则先看服务端是否支持后续请求都读取同一版本。</p>
+      <ArticleAside title="一次少返回，不代表查询一定便宜"><p id="pagination-cost" className="vp-citation-target">PostgreSQL 仍需在服务端找到 <code>OFFSET</code> 跳过的记录，才能知道从哪里开始返回；跳过很多条时，这一步可能变慢。分页限制了单次返回的数量，却不能单凭“每页三条”判断查询代价；具体还要看排序、过滤和 <ConceptTerm slug="index">索引</ConceptTerm>。<Cite id="pagination-cost" /></p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
