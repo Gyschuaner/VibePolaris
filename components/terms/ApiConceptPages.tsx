@@ -49,25 +49,30 @@ export function ApiTermPage() {
 
 export function EndpointTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={endpointSources} />;
-  return <ConceptArticle slug="endpoint" title="端点" sources={endpointSources} sections={[["address", "地址与方法"], ["routing", "找到对应的入口"], ["boundary", "匹配之后还有检查"]]}
-    intro={<>GET /books 读取书目，POST /books 提交新书。同一条路径可以承接不同操作。调用一个接口时，地址和方法需要一起核对。</>}
+  return <ConceptArticle slug="endpoint" title="端点" sources={endpointSources} sections={[["address", "地址与方法"], ["routing", "找到对应的处理程序"], ["boundary", "匹配之后还有检查"]]}
+    intro={<>读书会网页要从图书服务取一本书。AI 给了 <code>/books/42</code>，还特意标着 GET。这个 GET 为什么不能省？</>}
     hero={<ConceptHero slug="endpoint" label="路径和方法交叉定位到 getBook 操作"><div className={s.endpointHero}><code>/books/42</code><div>{["GET", "POST", "DELETE"].map((verb, index) => <span key={verb} data-active={index === 0}>{verb}{index === 0 && <Check size={18} />}</span>)}</div><strong>getBook</strong></div></ConceptHero>}>
     <ArticleSection id="address" title="地址与方法">
       <Legacy slug="endpoint" names={["question", "definition"]} />
-      <p id="endpoint-address" className="vp-citation-target">在 HTTP API 中，端点指可访问的接口位置。一次具体调用还需要确定 <ConceptTerm slug="http-method">HTTP 方法</ConceptTerm>。例如服务基址为 <code>https://api.example.com</code>，路径为 <code>/books</code>，组合后才得到完整地址。OpenAPI 用 Server Object 描述基址，用 Paths 描述接口路径。<Cite id="endpoint-address" /></p>
-      <p id="endpoint-operation" className="vp-citation-target">不同文档对 endpoint 的叫法粒度并不完全相同，有的指位置，有的连同方法称一个端点。OpenAPI 将一个路径下的 GET、POST 分别称为 <strong>operation（操作）</strong>。对接时，明确方法、完整地址、输入和预期结果，比只数“有几个端点”更有用。<Cite id="endpoint-operation" /></p>
+      <p>读书会网页是发起调用的一方，图书服务是提供书目的一方。若把书目预先写在网页里，也能显示列表；要读到以后新上架的书，网页就得知道到哪里、用什么方式提出请求。</p>
+      <p id="endpoint-address" className="vp-citation-target"><strong>在 HTTP API 中，端点先帮调用方找到服务开放的位置。</strong>本例的服务基址是 <code>https://api.example.com</code>，可以理解为提供图书服务的网址；路径 <code>/books</code> 指向书目，拼起来是 <code>https://api.example.com/books</code>。首图里的 <code>/books/42</code> 则指向本例编号为 42 的书。路径只是完整地址的一部分。OpenAPI 是描述 HTTP API 的一种规范，它也把服务网址和路径分开写。<Cite id="endpoint-address" /></p>
+      <p id="endpoint-verb" className="vp-citation-target">同一个地址还要配上 <ConceptTerm slug="http-method">HTTP 方法</ConceptTerm>，告诉服务这次想做哪类操作。本例里，<code>GET /books</code> 读取书目，<code>POST /books</code> 向同一位置提交新书的信息；GET 通常用于读取，POST 用于提交内容，也可能改变服务端保存的信息。服务是否真的接受某个组合，仍要看它开放了什么。<Cite id="endpoint-verb" /></p>
+      <p id="endpoint-operation" className="vp-citation-target">“端点”有时指这条可访问的路径，有时指方法加路径的组合。OpenAPI 在同一路径下分别写 GET、POST，并把其中每个方法的定义称为 <strong>operation（操作）</strong>。所以只说“调用 <code>/books</code> 端点”还不够：调用方还得知道完整地址、方法、要给什么信息，以及预期会收到什么。端点说的是服务开放的调用位置；整个 API 还包含输入、返回和失败等约定。<Cite id="endpoint-operation" /></p>
     </ArticleSection>
-    <ArticleSection id="routing" title="找到对应的入口">
+    <ArticleSection id="routing" title="找到对应的处理程序">
       <Legacy slug="endpoint" names={["scene-heading"]} />
-      <p>这份路由表只声明三个操作。选择一个组合，查看它会匹配到哪里；还可以换一个服务基址，观察同样的方法和路径怎样指向另一套环境。实验仅在本地匹配，不发送网络请求。</p>
+      <p id="endpoint-router" className="vp-citation-target">服务端需要把收到的方法和路径对应到处理程序，也就是负责这类请求的一段代码。以 FastAPI 这个编写服务的框架为例，开发者可以指定哪段代码处理某条路径的 GET 请求。本页用一张只有三行的教学路由表表示这种对应关系：<code>GET /books</code> 对应 <code>listBooks</code>，<code>POST /books</code> 对应 <code>createBook</code>，<code>GET /books/42</code> 对应 <code>getBook</code>。这些英文名字只是本例处理程序的标签，不是 HTTP 内置命令。<Cite id="endpoint-router" /></p>
+      <p>选一个方法和路径，再点“查找处理程序”，看这份表是否列出了对应的处理程序。你也能换服务基址，看完整地址怎样变化。实验只在浏览器内查这张表，不向示例地址发送网络请求。</p>
       <EndpointLesson />
-      <p>GET /books 命中 listBooks，POST /books 命中 createBook。<strong>找到 createBook，并不表示已经创建了一本书。</strong>处理入口之后还要验证输入、身份与权限，最后才是实际业务操作。</p>
+      <p id="endpoint-environment" className="vp-citation-target">把基址从 <code>https://api.example.com</code> 换成 <code>https://test.example.com</code>，同一条 <code>/books</code> 路径就组成另一个完整地址。OpenAPI 可以为开发、测试和正式环境分别描述服务网址；本实验仍使用同一张教学路由表，所以匹配到的处理程序名称不会随基址变化。真实环境不一定有相同的数据、路由或权限，不能只凭这次本地匹配推断远端可用。<Cite id="endpoint-environment" /></p>
+      <p><strong>找到 <code>createBook</code>，并不表示已经创建了一本书。</strong>这次匹配只说明所选方法和路径对应哪个处理程序。服务还需要按自身规则核对输入、身份和权限，业务操作成功后才会有“新书已加入”的结果；本页没有执行这些步骤。</p>
     </ArticleSection>
     <ArticleSection id="boundary" title="匹配之后还有检查" className={base.offset}>
       <Legacy slug="endpoint" names={["quiz-heading", "prompt-heading"]} />
-      <p id="endpoint-method" className="vp-citation-target">路径没有入口，与目标不接受该方法，是两类问题。HTTP 的 405 表示服务认识这个方法，但目标不允许使用它；响应必须提供 <code>Allow</code> 列出允许的方法。404 则可能表示未找到目标，也可能用于不愿披露其存在的情况，不能仅凭状态码推断服务内部原因。<Cite id="endpoint-method" /></p>
-      <div className={s.boundaryNote}><strong>位置 → 操作 → 输入与权限 → 业务结果</strong><p>排查失败时，沿请求真正到达的位置往后看。</p></div>
-      <ArticleAside title="端点与整个 API 的范围"><p>端点帮助定位一个调用位置；<ConceptTerm slug="api">API</ConceptTerm> 还包括一组操作共享的数据结构、认证方式和错误约定。可用的地址不一定公开，公开的地址也不一定允许匿名调用。</p></ArticleAside>
+      <p id="endpoint-method" className="vp-citation-target">在这张表里，<code>/authors</code> 完全没有声明；<code>/books</code> 已声明，却没有 <code>DELETE</code> 操作。演示分别提示“路径不存在”和“该路径未声明此方法”，并未生成真实 HTTP 响应。真实 HTTP 的 405 表示服务认识这次用的方法，但所请求的目标不支持它；响应还必须用 <code>Allow</code> 列出当前支持的方法。404 表示这次没找到可访问的目标，也可能是服务不愿透露它存在。例如无权查看某本书时，服务可以选择用 404 隐藏它。不能仅凭 404 推断服务内部一定没有那本书。<Cite id="endpoint-method" /></p>
+      <div className={s.boundaryNote}><strong>位置与方法 → 输入、身份和权限 → 业务结果</strong><p>排查失败时，按这条链逐步看请求停在哪一步。</p></div>
+      <p>换到笔记服务也能这样判断：<code>GET /notes</code> 可以表示读笔记列表，<code>POST /notes</code> 可以表示提交新笔记；即使路径一样，也要分别确认两种方法是否开放。把网址改到测试环境，只是换了请求目标，不能证明测试环境已有同一批笔记。</p>
+      <ArticleAside title="可访问不等于有权限"><p>端点是调用位置，不是通行证。可用的地址不一定公开，公开的地址也不一定允许匿名调用；是否需要登录、能否读取或新增，仍要看 <ConceptTerm slug="api">API</ConceptTerm> 的权限约定和服务的实际检查。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

@@ -7,7 +7,9 @@ export const apiSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "Introduction to web APIs", date: "", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction", citations: ["api-browser"] },
 ];
 export const endpointSources = [
-  openapi(["endpoint-address", "endpoint-operation"]),
+  openapi(["endpoint-address", "endpoint-operation", "endpoint-environment"]),
+  { publisher: "MDN Web Docs · 贡献者", title: "HTTP request methods", date: "2026-09-23", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods", citations: ["endpoint-verb"] },
+  { publisher: "FastAPI · 官方文档", title: "First Steps", date: "", url: "https://fastapi.tiangolo.com/tutorial/first-steps/", citations: ["endpoint-router"] },
   { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke", title: "RFC 9110 — HTTP Semantics · §15.5.5–6", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.6", citations: ["endpoint-method"] },
 ];
 export const restSources = [
