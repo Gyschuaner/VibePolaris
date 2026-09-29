@@ -13,7 +13,7 @@ export const pathParameterSources = [
   mdn("decodeURIComponent() · Exceptions", "Web/JavaScript/Reference/Global_Objects/decodeURIComponent#exceptions", ["path-decoding"]),
 ];
 export const requestBodySources = [
-  mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["body-content", "body-method", "body-stream"]),
+  mdn("Using the Fetch API", "Web/API/Fetch_API/Using_Fetch", ["body-content", "body-method", "body-stream", "body-object"]),
   mdn("Content-Type header", "Web/HTTP/Reference/Headers/Content-Type", ["body-type"]),
   mdn("Using FormData Objects", "Web/API/XMLHttpRequest_API/Using_FormData_Objects", ["body-multipart"]),
   mdn("415 Unsupported Media Type", "Web/HTTP/Reference/Status/415", ["body-media-error"]),

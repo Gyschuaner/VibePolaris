@@ -104,30 +104,45 @@ export function PathParameterTermPage() {
 export function RequestBodyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={requestBodySources} />;
   return <ConceptArticle slug="request-body" title="请求体" sources={requestBodySources}
-    intro={<>报名读书会时，页面要提交书名和名额。地址说明往哪里提交，请求体装下具体内容；接收端再按约定把内容读出来。</>}
+    intro={<>你让 AI 做一个读书会报名页，填好书名和名额，却被告知“请求体格式不对”。网页程序需要把填好的字段组织成接口约定的格式，再随请求提交。请求体就是携带这些内容的部分。</>}
     sections={[["payload", "消息里携带的内容"], ["workshop", "从字段到接收结果"], ["formats", "选择内容的表示方式"], ["validation", "能解析与能使用"]]}
-    hero={<ConceptHero slug="request-body" label="书名和名额字段编码为JSON请求内容"><div className={s.bodyHero}><div className={s.heroFields}><span>书名　星空手记</span><span>名额　2</span></div><code className={s.heroPayload}>{'{'}<br />　&quot;title&quot;: &quot;星空手记&quot;,<br />　&quot;seats&quot;: 2<br />{'}'}</code></div></ConceptHero>}>
+    hero={<ConceptHero slug="request-body" label="POST /bookings 的地址与 Content-Type 类型说明保持在上方；请求体区域沿折线展开，显示已经编码好的书名和名额 JSON 示例，不表示发送或保存成功"><div className={s.bodyHero}>
+      <div className={s.bodyMessage}>
+        <code className={s.bodyAddress}>POST /bookings</code>
+        <div className={s.bodyContentType}><span>Content-Type</span><code>application/json</code></div>
+        <div className={s.bodyFold}><div className={s.bodyContents}><span>请求体 · JSON 示例</span><code>{'{'}<br />　&quot;title&quot;: &quot;星空手记&quot;,<br />　&quot;seats&quot;: 2<br />{'}'}</code></div></div>
+      </div>
+    </div></ConceptHero>}>
     <ArticleSection id="payload" title="消息里携带的内容">
       <Legacy slug="request-body" names={["question", "definition"]} />
-      <p id="body-content" className="vp-citation-target"><strong>请求体是请求携带的内容，不等于 JavaScript 对象，也不只接受 JSON。</strong>在 Fetch API 中，字符串、URLSearchParams、FormData、Blob 等都可以提供 body。发送普通对象前，通常需要按接口约定把它转成合适的表示。<Cite id="body-content" /></p>
-      <p id="body-type" className="vp-citation-target"><ConceptTerm slug="http-header">Content-Type</ConceptTerm> 告诉接收端提交的是什么媒体类型。它与内容必须对应：设置 <code>application/json</code> 不会自动把任意文本改写成合法 JSON；给一段 JSON 标上表单类型，也不保证接收端会猜中。<Cite id="body-type" /></p>
+      <p>网页程序发出请求，服务器接收并处理它。这里向 <code>/bookings</code> 这个报名入口提交内容，POST 表示请求方法，也就是这次要执行哪类操作。书名和名额放在请求体里，不是拼在这个地址后面。</p>
+      <p id="body-content" className="vp-citation-target"><strong>请求体是请求中承载具体内容的部分，例如提交的报名信息或上传的文件。</strong>英文是 Request Body，代码里常写成 body。浏览器的 Fetch API 是网页程序发请求的一种工具：可以给它文本，也可以给它用于组织表单、文件等内容的对象。请求体没有规定所有内容都必须写成 JSON。<Cite id="body-content" /></p>
+      <p>以 JSON 为例，网页程序先整理出书名，把输入框里的名额转成数字，再把这组数据写成 <code>{'{"title":"星空手记","seats":2}'}</code> 这样的文本。其中 title 是书名字段，seats 是名额字段。把程序里的数据转换成可发送的表示，叫编码或序列化；接收端按同一套规则从文本读回数据，叫解析。JSON 是其中一种写法，更多语法见 <ConceptTerm slug="json">JSON</ConceptTerm>。</p>
+      <p id="body-type" className="vp-citation-target"><ConceptTerm slug="http-header">Content-Type</ConceptTerm> 是请求头中的类型说明，告诉接收端请求体采用什么格式，这种格式名称也叫媒体类型。例如 <code>application/json</code> 表示 JSON。写上这个名称不会替你生成 JSON，也不会补上缺失的花括号。接收端是否支持这个格式、内容是否真的符合格式，都要另外判断。<Cite id="body-type" /></p>
+      <p>少量字段也可以按接口约定放在地址的查询参数里；请求体不是提交信息的唯一位置。把信息放进请求体，就能让地址与提交的内容分开，适合携带报名数据、较复杂的结构或文件。采用哪种位置、哪些字段必填，发送方和接收方必须事先约定；把字段换个位置，并不会让已有接口自动读到。</p>
     </ArticleSection>
     <ArticleSection id="workshop" title="从字段到接收结果">
       <Legacy slug="request-body" names={["scene-heading"]} />
-      <p>输入书名和 1 到 5 个名额，先编码，再交给接收端。JSON 与表单编码承载同一组字段，但文本不同。这里使用真实的序列化和解析操作，接收逻辑在本地模拟；“校验通过”不会真的创建报名。</p>
+      <p>默认书名是《星空手记》，名额是 2。先点“编码内容”，查看要提交的文本和 Content-Type；再点“交给接收端”，由接收逻辑读取并检查。这里只在浏览器里运行教学用的编码和解析，不发送网络请求，也不会真的占用读书会名额。</p>
       <RequestBodyLesson />
-      <p>试着把名额改成 0、错标内容类型，或去掉 JSON 最后的花括号。错误发生的位置不同，处理办法也不同。修改输入后，旧的编码和结果会失效；需要重新编码后，才能再次交给接收端。</p>
+      <p>默认选择 JSON，编码后的文本包含 title 和 seats 两个字段。接收端按 JSON 规则读出书名和数字 2，再检查书名是否非空、名额是否为 1 到 5 之间的整数。通过后显示 200“解析与校验通过”，以及“星空手记 · 2 个名额”。这个结果只说明教学检查通过，没有保存报名记录。</p>
+      <p>把“内容编码”换成“URL 编码表单”，重新编码后，正文变成 <code>title=…&amp;seats=2</code> 这样的键值文本；中文书名会写成带百分号的编码。Content-Type 同时换成 <code>application/x-www-form-urlencoded</code>。接收端按表单规则读出字段，再把名额文字转成数字，仍可得到相同的报名信息。这里的“URL 编码”是格式名称：这些字符仍放在请求体里，没有跑到地址栏。</p>
+      <p>修改字段、格式或错误开关，会撤下旧的编码和结果，“交给接收端”暂时不可用。需要重新编码才能继续。点击“重置内容”则恢复默认字段和 JSON 格式，等待你再次编码。</p>
     </ArticleSection>
     <ArticleSection id="formats" title="选择内容的表示方式">
-      <dl className={s.dictionary}><div><dt>JSON</dt><dd>适合表达对象、数组和有类型的值。示例名额是数字 2；实际接口若要求数字，字符串 &quot;2&quot; 不应只靠外观被当作同一类型。更多语法细节见 <ConceptTerm slug="json">JSON</ConceptTerm>。</dd></div><div><dt>表单编码</dt><dd>把字段写成 title=…&amp;seats=2。解析出的字段值是文本，本例接收端还会转换名额并检查范围。使用这种格式应是双方的约定，不是换个 Content-Type 就算转换完成。</dd></div><div><dt>Multipart</dt><dd id="body-multipart" className="vp-citation-target">需要一起提交文件和字段时，可以使用 FormData。交给浏览器构造 multipart 请求时，不要自行固定 Content-Type；浏览器需要生成与内容一致的 boundary，用来分隔各部分。<Cite id="body-multipart" /></dd></div></dl>
-      <p id="body-method" className="vp-citation-target">本例采用 POST。浏览器 Fetch API 不允许 GET 请求携带 body；读取条件常放在查询参数中。其他方法是否接受什么内容，需要同时看方法语义与接口定义，不能推断所有请求都要有请求体。<Cite id="body-method" /></p>
+      <dl className={s.dictionary}><div><dt>JSON</dt><dd>适合表达一组命名字段、列表和不同类型的值。示例里 <code>"seats":2</code> 表示数字；写成 <code>"seats":"2"</code>，引号里的 2 就是文字。本例的 JSON 接收逻辑要求数字，不会因为看起来一样就接受后者。</dd></div><div><dt>表单编码</dt><dd>适合把字段写成名称和值的组合，解析出来的值是文本。本例知道 seats 应是数字，才另外转换并检查范围。它和 JSON 能表达相同的报名信息，但原始文本与解析方法不同。</dd></div><div><dt>Multipart</dt><dd id="body-multipart" className="vp-citation-target">需要一起提交文件和字段时，可以使用 FormData。它是浏览器提供的收集工具，网页程序把字段和文件加入其中，浏览器再把它们组织成一个分成多部分的请求体。浏览器会生成一串分隔标记，叫 boundary：正文里用它分开各部分，Content-Type 里也写上它，接收端据此知道在哪里分开读取。使用 FormData 发送时，应让浏览器生成这份类型说明；自己只写 <code>multipart/form-data</code> 会缺少 boundary 信息，手动写了不一致的标记也无法正确对应正文。<Cite id="body-multipart" /></dd></div></dl>
+      <p id="body-method" className="vp-citation-target">本例用 POST 提交内容，但并非所有请求都需要请求体。浏览器 Fetch API 不允许 GET 请求携带 body，读取时的筛选条件常放在查询参数中。其他方法是否需要什么内容，要同时看请求方法和接口约定，不能因为有了 body 选项就随意添加。<Cite id="body-method" /></p>
+      <ArticleAside title="在代码里提供请求体"><p id="body-object" className="vp-citation-target">使用 Fetch 发送 JSON 时，直接给 body 传入普通 JavaScript 对象，不会自动按 JSON 发送；需要先用 JSON.stringify 把它转成 JSON 文本。URLSearchParams 可以帮助组织表单编码，FormData 可以组织多部分内容，Blob 可以提供一块文件或其他二进制数据。工具不同，但最后都要与接收端的要求相符。<Cite id="body-object" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="validation" title="能解析与能使用" className={base.offset}>
       <Legacy slug="request-body" names={["quiz-heading", "prompt-heading"]} />
-      <p id="body-media-error" className="vp-citation-target">本例接收端只接受两种声明类型，text/plain 得到 415；这个状态表示服务拒绝不支持的内容格式。接受 JSON 类型之后，语法错误和字段不合要求仍需另外处理。<Cite id="body-media-error" /></p>
-      <p id="body-validation" className="vp-citation-target"><strong>解析成功只说明读出了数据，不说明数据能用于业务。</strong>语法正确的 <code>{'{"title":"星空手记","seats":0}'}</code> 仍然不符合本例名额范围。服务端需要检查字段类型、必填项与业务范围；浏览器上的输入限制不能代替服务端校验。<Cite id="body-validation" /></p>
-      <p>定位问题时，先核对实际提交的文本和类型，再看解析结果，最后看校验错误。字段缺失不一定是用户没填，也可能是内容采用了接收端没有启用的格式。</p>
+      <p id="body-media-error" className="vp-citation-target">保持书名和名额不变，勾选“把类型错标为 text/plain”后重新编码、接收。本例只接受 JSON 和 URL 编码表单这两种声明类型，因此会得到 415“接收端不支持这种内容类型”。415 表示请求内容的格式不受支持；实际服务也可能在检查正文时发现格式不受支持，不能只凭这个状态码断定是类型名称写错。<Cite id="body-media-error" /></p>
+      <p>取消错标，选择 JSON，再勾选“去掉 JSON 末尾花括号”。重新编码后，即使类型说明是 application/json，文本也因缺少闭合的花括号而无法按 JSON 解析；接收端显示 400“JSON 语法错误，尚未校验字段”。此时还没轮到检查名额。</p>
+      <p id="body-validation" className="vp-citation-target">再取消破坏 JSON 的选项，把名额改成 0。语法完整的 <code>{'{"title":"星空手记","seats":0}'}</code> 能读出字段，却不符合本例的名额范围，所以显示 422。<strong>解析成功只说明读出了数据，不说明数据能用于业务。</strong>服务端仍需检查必填项、字段类型与业务范围；网页输入框的限制不能代替它，因为请求可能由别的程序直接发来。<Cite id="body-validation" /></p>
+      <p>这里先检查声明类型，再解析，最后校验字段。因此同时勾选错标类型和破坏 JSON 时，会先看到 415。400、415、422 是本例用来区分失败环节的返回结果，其他接口可能采用不同规则。定位问题时，先核对实际提交的文本和类型，再看能否解析，最后检查字段。</p>
+      <p>编码也不是加密：内容放在请求体里，不代表变成了秘密；请求体仍可由处理请求的程序读取。</p>
       <ArticleAside title="请求内容不是可以反复读取的普通变量"><p id="body-stream" className="vp-citation-target">Fetch 的请求体由流提供，读取后会被消耗。如果需要保留副本，应在消费前克隆请求。演示把内容存成字符串，便于反复检查同一份教学输入；真实 Request 的生命周期不能直接照搬这个行为。<Cite id="body-stream" /></p></ArticleAside>
+      <p>换成一个提交头像和昵称的资料页：地址可以指向资料更新入口，请求体携带实际文件和昵称。如果接口约定使用 FormData，程序就要把文件和昵称一起加入其中，而不是只把图片文件名塞进 JSON 并声称上传完成。让 AI 接入接口时，应明确字段名称、所需格式和校验要求；“把表单发过去”还不足以说明这些约定。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
