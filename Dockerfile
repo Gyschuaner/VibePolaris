@@ -24,6 +24,6 @@ COPY --from=builder /app/public ./public
 COPY package.json package-lock.json ./
 
 EXPOSE 3000
-COPY lib/xiaobei/store.ts ./lib/xiaobei/store.ts
+COPY lib/xiaobei/store.ts lib/xiaobei/events.ts lib/xiaobei/history.ts ./lib/xiaobei/
 COPY scripts/xiaobei-invites.ts ./scripts/xiaobei-invites.ts
 CMD ["npm", "run", "start", "--", "-H", "0.0.0.0"]
