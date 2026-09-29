@@ -17,6 +17,7 @@ export const restSources = [
   { publisher: "Roy T. Fielding", title: "REST APIs must be hypertext-driven", date: "2008-10-20", url: "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven", citations: ["rest-controls"] },
   { publisher: "GitHub · 官方文档", title: "Best practices for using the REST API", date: "", url: "https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api#do-not-manually-parse-urls", citations: ["rest-links-example"] },
   { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke", title: "RFC 9110 — HTTP Semantics · §9.2.1", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.1", citations: ["rest-safe"] },
+  { publisher: "IETF · Roy Fielding、Mark Nottingham、Julian Reschke", title: "RFC 9110 — HTTP Semantics · §15.5.10", date: "2022-06", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.10", citations: ["rest-conflict"] },
 ];
 export const paginationSources = [
   { publisher: "PostgreSQL Global Development Group", title: "PostgreSQL 18 · LIMIT and OFFSET", date: "", url: "https://www.postgresql.org/docs/18/queries-limit.html", citations: ["pagination-order", "pagination-offset", "pagination-cost"] },

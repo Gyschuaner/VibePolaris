@@ -80,32 +80,33 @@ export function EndpointTermPage() {
 export function RestTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={restSources} />;
   return <ConceptArticle slug="rest" title="REST" sources={restSources} sections={[["resource", "资源与表示"], ["actions", "表示带来的后续选择"], ["stateless", "无状态与持久数据"], ["constraints", "一组共同工作的约束"]]}
-    intro={<>预约仍然是那一个预约，状态却会从待确认变成已确认。REST 讨论的是：客户端怎样识别资源、交换它的表示，并据此继续操作。</>}
-    hero={<ConceptHero slug="rest" label="预约标识保持不变，返回的表示变为已确认"><div className={s.restHero}><CalendarBlank size={30} weight="light" /><code>/reservations/42</code><div><span>待确认</span><strong><Check size={22} />已确认</strong></div><p>表示随状态变化</p></div></ConceptHero>}>
+    intro={<>预约网页刚读到“待确认”，也拿到了“确认”这个选择。服务端后来把预约判为过期，网页手里的旧信息却不会自己改。这时再点确认，为什么可能被拒绝？</>}
+    hero={<ConceptHero slug="rest" label="服务端预约已过期，网页上次收到的表示仍写着待确认与确认选项"><div className={s.restHero}><code>/reservations/42</code><div className={s.restHeroPair}><div className={s.restHeroResource}><span><CalendarBlank size={17} weight="light" />服务端预约</span><div><strong className={s.restHeroPending}>待确认</strong><strong className={s.restHeroExpired}>已过期</strong></div></div><div className={s.restHeroSnapshot}><span>网页上次收到</span><strong>待确认</strong><div><i>确认</i><i>取消</i></div></div></div></div></ConceptHero>}>
     <ArticleSection id="resource" title="资源与表示">
       <Legacy slug="rest" names={["question", "definition"]} />
-      <p id="rest-resource" className="vp-citation-target"><strong>REST 是一套组织网络应用交互的架构风格。</strong>在本例中，<code>/reservations/42</code> 标识一个预约；返回的 JSON 描述它某一刻的状态，是资源的“表示”。资源不等于这一段 JSON，也不要求等于某张数据库表的一行。<Cite id="rest-resource" /></p>
-      <p>客户端拿到表示后，知道预约现在处于什么状态。服务端随后仍可能改变资源，因此“我刚看到待确认”和“现在能确认成功”是两件事。</p>
+      <p>先分清两处：预约服务保存着 42 号预约，网页只拿到上次读取的内容。首图左边是服务端当前状态，右边是网页收到的那一份。左边变为“已过期”时，右边不会凭空同步。</p>
+      <p id="rest-resource" className="vp-citation-target"><strong>REST 是一套架构风格，讲的是网络应用中客户端（比如这个网页）和服务端怎样交互。</strong>在本例中，<code>/reservations/42</code> 是预约的标识，预约是<strong>资源</strong>；服务返回的 JSON（一种常见的数据格式）可以描述它当时的状态，这份返回内容是资源的<strong>表示</strong>。同一个资源后来仍可用原标识找到，但新读到的表示可能不同。资源不等于某一份 JSON，也不要求等于数据库里的一行。<Cite id="rest-resource" /></p>
+      <p>开发者也可以事先把“确认”按钮和请求地址写在网页里，预约照样能用；只是网页得提前知道后面每一步的地址，服务改动流程时网页也得跟着改。本例采用另一种做法：网页先读取预约，从收到的内容取得当前可用的选择。无论哪种做法，旧页面上的按钮都不能保证服务现在会接受确认。</p>
     </ArticleSection>
     <ArticleSection id="actions" title="表示带来的后续选择">
       <Legacy slug="rest" names={["scene-heading"]} />
-      <p id="rest-controls" className="vp-citation-target">REST 的统一接口包含用超媒体驱动后续交互：客户端理解媒体类型和关系含义，再使用表示提供的操作目标继续。<strong>下一步的可选操作可以随资源状态变化。</strong>这不同于客户端事先硬编码整个业务流程的所有路径。<Cite id="rest-controls" /></p>
-      <p>先获取预约表示，再确认或取消。也可以先让服务端的预约过期，再点击客户端手里的旧选择，观察实际结果。下面的 actions、rel 是本例约定的表示格式；演示只覆盖这部分机制，不代表完整实现了 REST。</p>
+      <p id="rest-controls" className="vp-citation-target">表示除了描述状态，还可以提供通往下一步的链接或操作。客户端先知道怎样读这种表示、每个动作是什么意思（比如哪个是确认、哪个是取消），再沿服务给出的目标继续，而不是猜后续地址。REST 把这种由返回内容引导下一步的方式称为<strong>超媒体驱动</strong>。待确认时收到的那份表示给出“确认”和“取消”；过期后的新表示不再给这两个选择。网页显示出按钮，是因为收到的表示给了它相应的操作目标；按钮本身不保证操作成功。<Cite id="rest-controls" /></p>
+      <p>先点“获取最新表示”，看网页收到什么、能选什么。也可以先让服务端预约过期，再试网页手里的旧“确认”。演示中的 <code>actions</code> 是动作列表，<code>rel</code> 说明动作含义；确认动作的 <code>method</code> 是 <code>PATCH</code>，<code>body</code> 写着希望改成“已确认”。这些字段和方法都是本例的约定，不是 REST 规定所有预约服务都要这样写。这里仅演示资源、表示和后续选择的一部分机制。</p>
       <RestLesson />
-      <p>过期操作只改变服务端资源，客户端保留旧表示。旧确认到达时，服务按当前状态拒绝，返回本例选择的 409 和已过期表示；客户端收到结果才撤下旧操作。确认成功后，同样以返回的新表示为准。</p>
+      <p id="rest-conflict" className="vp-citation-target">过期操作先只改变服务端预约，网页保留旧表示，所以“确认”按钮还在。旧确认送到服务后，服务按当前状态拒绝。画面里的 200 和 409 是 HTTP 响应状态码，说的是这次请求的结果，不是预约的状态：本例用 200 标出成功，用 409 表示旧确认与当前预约状态冲突。拒绝时服务返回“已过期”的新表示，网页收到后才撤下旧选择。409 是本例对这种冲突的处理，不是 REST 对过期预约规定的唯一响应。确认或取消成功时，网页也以新返回的表示更新自己。<Cite id="rest-conflict" /></p>
       <ArticleAside title="按返回链接继续操作"><p id="rest-links-example" className="vp-citation-target">GitHub API 的使用建议要求直接使用响应里提供的 URL，不手动拆解或猜测未来地址；分页也通过 Link 中的关系继续。这是一个具体平台的使用约定，能帮助理解“沿返回链接前进”，不意味着仅做到这一点就满足全部 REST 约束。<Cite id="rest-links-example" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="stateless" title="无状态与持久数据" className={base.offset}>
       <Legacy slug="rest" names={["quiz-heading"]} />
-      <p id="rest-stateless" className="vp-citation-target"><strong>无状态不等于服务没有数据库。</strong>预约可以持久保存。这里限制的是：服务处理一次请求，不应依赖它为这个客户端暗中记住的前几轮会话步骤；请求需要带上解释这次交互所需的信息。当前资源状态仍由服务负责检查。<Cite id="rest-stateless" /></p>
-      <p id="rest-safe" className="vp-citation-target">如果使用 HTTP，方法语义也要遵守。GET 请求读取预约，不应把“打开详情”变成取消预约的命令。但记录访问日志等调用方未要求的附带行为，不自动违反安全方法语义。安全不能解释成“服务内部任何数据都不允许改变”。<Cite id="rest-safe" /></p>
+      <p id="rest-stateless" className="vp-citation-target"><strong>无状态不等于服务不保存预约。</strong>服务可以持久保存预约的当前状态。无状态限制的是请求之间的会话依赖：处理这一次请求所需的信息要随请求给出，不能要求服务暗中记得这个网页前几步点过什么。比如本例的确认动作带着目标（<code>href</code>）、方法（<code>method</code>）和要改成的状态（<code>body</code>）；服务仍会查看预约现在是否还允许确认。登录也不例外：每次请求需带上身份凭据，服务可据此查询账号资料。<Cite id="rest-stateless" /></p>
+      <p id="rest-safe" className="vp-citation-target">如果用 HTTP，方法本身的含义也要遵守。GET 用来读预约；比如网页上有个“打开详情”按钮，点它不应该把预约取消掉。这里说的<strong>安全方法</strong>，是客户端没有请求改变目标资源，并不保证服务内部一个字节都不变；写入访问日志这类附带行为可以发生。<Cite id="rest-safe" /></p>
     </ArticleSection>
     <ArticleSection id="constraints" title="一组共同工作的约束">
       <Legacy slug="rest" names={["prompt-heading"]} />
-      <div id="rest-constraints" className="vp-citation-target"><p>Fielding 的 REST 定义还包括以下约束。<strong>URL 使用名词、返回 JSON、采用几个 HTTP 方法，都不足以单独证明符合 REST。</strong><Cite id="rest-constraints" /></p>
-        <dl className={s.constraints}><div><dt>客户端与服务端分离</dt><dd>界面与数据服务分别演进。</dd></div><div><dt>无状态</dt><dd>请求提供解释本次交互所需的信息。</dd></div><div><dt>缓存</dt><dd>明确哪些响应可以复用。</dd></div><div><dt>统一接口</dt><dd>资源标识、表示操作、自描述消息、超媒体驱动。</dd></div><div><dt>分层系统</dt><dd>组件通过相邻层的接口协作。</dd></div><div><dt>按需代码 · 可选</dt><dd>允许下载代码扩展客户端能力。</dd></div></dl>
+      <div id="rest-constraints" className="vp-citation-target"><p>上面的预约实验只展示了资源标识、表示引导下一步和请求独立性。Fielding 提出的 REST 还要求几项约束共同工作。<strong>把 URL 写成名词、返回 JSON、使用几个 HTTP 方法，都不能单独证明一个服务符合 REST。</strong><Cite id="rest-constraints" /></p>
+        <dl className={s.constraints}><div><dt>客户端与服务端分离</dt><dd>界面与数据服务分别演进。</dd></div><div><dt>无状态</dt><dd>请求提供解释本次交互所需的信息。</dd></div><div><dt>缓存</dt><dd>明确哪些响应可以复用。</dd></div><div><dt>统一接口</dt><dd>用标识找到资源，通过表示操作它；消息附有理解和处理它所需的信息，返回内容引导下一步。</dd></div><div><dt>分层系统</dt><dd>组件通过相邻层的接口协作。</dd></div><div><dt>按需代码 · 可选</dt><dd>允许下载代码扩展客户端能力。</dd></div></dl>
       </div>
-      <p>工程中的“REST API”常宽泛指资源型 HTTP API。阅读设计文档时，继续核对采用了哪些约束，哪些没有采用，以及对应的取舍。</p>
+      <p>换成借书续借也是同一个判断：网页上次读到“可续借”和续借目标，不能保证书在点击时仍可续。网页用收到的续借目标发起请求；服务按当前状态作答，网页再按答复更新。工程文档常把资源型 HTTP API 也叫“REST API”。看到这个名称时，还要看它实际采用了哪些约束。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
