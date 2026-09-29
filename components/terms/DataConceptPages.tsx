@@ -12,7 +12,14 @@ export function JsonTermPage() {
   return <ConceptArticle slug="json" title="JSON" subtitle="用文本传递结构化数据" sources={jsonSources}
     intro={<>接口返回的一串大括号，需要先读成程序里的数据，才能拿出书名、数量和是否可借。JSON 规定这段文本怎么写，让不同程序可以交换相同结构的信息。</>}
     sections={[["text", "文本和对象"], ["parse", "把文本读成值"], ["types", "引号改变了类型"], ["exchange", "交换数据的约定"]]}
-    hero={<ConceptHero slug="json" label="JSON文本拆成字符串、数字和布尔值"><div className={styles.jsonHero}><code>{'["灯塔",2,true]'}</code><div className={styles.heroValues}><div><strong>灯塔</strong><span>string</span></div><div><strong>2</strong><span>number</span></div><div><strong>true</strong><span>boolean</span></div></div></div></ConceptHero>}>
+    hero={<ConceptHero slug="json" label="同一段 JSON 文本经解析展开为对象，其中 title 是字符串、copies 是数字；原文本仍留在上方"><div className={styles.jsonHero}>
+      <div className={styles.jsonRibbon}><code>{'{"title":"灯塔","copies":2}'}</code></div>
+      <div className={styles.jsonFold}><span>JSON.parse()</span><div className={styles.jsonObject}>
+        <small>{'{}'} object</small>
+        <div className={styles.jsonField}><code>title</code><strong className={styles.jsonString}>“灯塔”</strong><small>string</small></div>
+        <div className={styles.jsonField}><code>copies</code><strong className={styles.jsonNumber}>2</strong><small>number</small></div>
+      </div></div>
+    </div></ConceptHero>}>
     <ArticleSection id="text" title="文本和对象">
       <AsyncLegacyAnchors slug="json" names={["question", "definition"]} />
       <p id="json-values" className="vp-citation-target">JSON 是一种文本数据格式，能表达字符串、数字、布尔值、null、数组和对象。对象把字段名映射到值，数组按顺序容纳多项值。最外层不必总是大括号：<code>42</code>、<code>true</code>、<code>null</code> 本身也能构成合法 JSON 文本。<Cite id="json-values" /></p>

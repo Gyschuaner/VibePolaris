@@ -34,8 +34,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 20 browser-api | 浏览器提供能力 | 浏览器内的区域变宽、测量括号显现，JS 随后收到内容宽度 | 本地与 dev 集成完成 · PR #123 |
 | 21 fetch-api | 发请求并读取响应 | 同一份 Response 面板先亮状态，正文仍未读；随后书目显现 | 本地与 dev 集成完成 · PR #124 |
 | 22 promise | 尚未完成的结果 | 两份独立 Promise 先空后落定：一份 A17，一份售罄，第一份保持不变 | 本地与 dev 集成完成 · PR #125 |
-| 23 async-await | 当前函数等待 | 执行线在 await 处停住，收藏独立完成；封面返回后从停点续长 | 本地验收完成 · 待 dev 集成 |
-| 24 json | 结构化文本表示 | 同一对象在文本与树状层级间展开 | 待更新 |
+| 23 async-await | 当前函数等待 | 执行线在 await 处停住，收藏独立完成；封面返回后从停点续长 | 本地与 dev 集成完成 · PR #126 |
+| 24 json | 文本表示与程序值 | 一条 JSON 文本退为底稿，对象轮廓和带类型的 title/copies 原地展开 | 本地验收完成 · 待 dev 集成 |
 | 25 json-schema | 描述允许的数据 | 结构轮廓套合；缺字段或错误类型露出缺口 | 待更新 |
 | 26 request | 客户端提出一次要求 | 消息剖面依次展开方法、位置、附加信息与内容 | 待更新 |
 | 27 response | 服务端回答请求 | 返回消息分层显露状态与内容；对应原请求 | 待更新 |
@@ -487,6 +487,20 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_cf423f
 资料：实际阅读 MDN [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)（调用返回 Promise、首个 await 前同步执行、逐段恢复）、[await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)（暂停的是当前函数后续代码、拒绝处理）、[Promise.all()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)（结果汇合及提前拒绝）和 [Using Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)（Worker 另开线程处理计算）。新增第 4 份书目并关联 `await-cpu`，不移动前三份编号。await 本身不会把同步计算自动移到 Worker，也不会自动取消 Promise.all 的其他输入。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器重播首图：约 1.8s 路径到 await 后停在 76px；等待帧仍为 76px、收藏图标已填实、终点书本未出现；约 4.2s 封面回信圆点向夹口移动，路径由 76px 续长至 98px，终帧 154px 且书本出现。390×844 首图宽 330、封面与收藏两处均在视口内，文档 clientWidth/scrollWidth 均为 390。串行先标题 pending、封面 idle，等待中可收藏；标题返回后封面才 pending，两项成功卡片才完成。并发两项先都 pending，封面先回时卡片仍未完成；封面先失败时标题依旧可返回而卡片不会伪成功。重置回 idle，Enter 可开始；五个旧锚点、四份资料及第 4 份正文回链有效，应用错误日志为空。未做人类读者试读。VBP-016 用例 `501a6ae3-fc30-4391-ab08-411aedbab111`，本地计划 `b3e66858-6c73-4f01-907d-1d970644abd8` completed、执行 `0030eca1-bba9-40ce-a483-690c175fcd28` passed。
+
+2026-09-29 集成：提交 `93bb7cb` 经 [PR #126](https://github.com/Gyschuaner/VibePolaris/pull/126) 合入 `dev`，merge `b70590a6ccbd4e3d5e5b5bb0dd7fc937a41ab95e`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用相同 Git 树和构建产物，`http://localhost:3219/terms/async-await` 在真实浏览器复核新首图、串行先发标题、第四份来源与旧锚点，应用错误为空。DP 部署 `19bbcfd2-90e7-4134-aae8-b1826a6f4b7d` 已回查；前版 `62c3553` 构建备份在 `/tmp/vbp012-dev-next-62c3553`。未部署远端 dev 或生产。DP VBP-012 描述更新至 23/105、版本 33；下一条 json。
+
+## 24 · json
+
+读者入口：“接口给我一串带大括号的文字，为什么不能直接取 title？给数字加引号又改变了什么？”现页正文和原生 JSON.parse 演示已把文本/值、类型、语法错误与应用规则分开；保留。原首图把数组文字竖排一条、三种值分别摆成卡片，值从文本里读出来的关系较弱，也未表现对象层级。新首图先展示一整条 `{"title":"灯塔","copies":2}` 文本；解析时它折向上方成为仍可辨的淡色底稿，同一区域展开带外层 object 边框和 title/copies 两个字段的值，string 用引号包裹、number 不加引号。终帧同时保留文本与解析后的结构，不把 JSON.parse 画成直接改写原文或检验字段约定。
+
+视觉候选：① 文本条扫描、值树向下生长；层级清楚，但扫描连线会让产物像仍寄居于原文本。② 同一段带字平面折出对象的嵌套层；采用原地折出结构的核心动作，同时保留上方文本底稿，明确解析产物与文本并存。③ token 分拣闸；流程物件过多，且易把解析与 Schema 式检查混为一谈。未做 ZCode 建议的尾声“给 2 加引号”微动作：首图会需要同步改动文本与解析值，过度挤占 330px 空间；类型对照由主演示真实编辑、再次解析来验证。
+
+ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_14844fc8-b327-49ed-9526-a4c9a1e4e6bf`，显式 `Qwen3.8-Flash-Next-FP8` / xhigh，Read 工具实际读取 partner Skill 与动画灵感参考。主助手提供已核实的 RFC/MDN 事实、现页与相邻页描述；ZCode 给上述三案并推荐第二案。它未读源码、访问网页或验收画面。ZCode 最后试调用不可用的 ExitPlanMode，未影响只读结果，也没有任何仓库写入。
+
+资料：实际阅读 [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html)（JSON 是文本格式，四类原始值、对象、数组以及根值范围与数值互操作）、MDN [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON)（语法与 JavaScript 值的边界）、[JSON.parse()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)（解析结果与 SyntaxError）和 [JSON.stringify()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)（序列化与不可无损保留的值）。四份现有角标已覆盖正文，本轮只改首图。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器首图初段仅文本清晰、对象透明；终帧上方仍有原文本，下面对象边框包含 title string“灯塔”和 copies number 2。390×844 首图宽 330、对象宽 250，文档 clientWidth/scrollWidth 均为 390。主演示原生 JSON.parse 正常书目得到 object、title string、copies number、available boolean；数量加引号后 copies 变为 string "2"。尾逗号报语法错误，编辑约 450ms 后旧值树隐藏且提示等待重新解析；根值 null 合法，显示 `$` 为 null。Enter 可解析，五个旧锚点与四份书目在页；JSON.parse 书目摘录回链最终落点约 130px，应用错误日志为空。未做人类读者试读。VBP-016 用例 `a819eb9a-3643-49d0-83ff-67cd782531de`，本地计划 `a42295e3-f955-445e-8929-52d91486f4f0` completed、执行 `0e081d22-a57f-4265-a594-403493e2d570` passed。
 
 ## 01 · Harness
 
