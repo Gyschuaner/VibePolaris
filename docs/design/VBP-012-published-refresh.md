@@ -40,8 +40,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 26 request | 客户端提出一次要求 | 一张连续的 HTTP/1.1 结构示意逐段显出首行、请求头、空行与正文 | 本地与 dev 集成完成 · PR #129 |
 | 27 response | 服务端返回消息，客户端更新页面 | 响应保留 201 与正文 title；客户端处理后页面书签原地出现 | 本地与 dev 集成完成 · PR #130 |
 | 28 http-method | 对资源的操作意图 | 同一资源依不同动作读取、创建、替换或删除 | 本地与 dev 集成完成 · PR #131 |
-| 29 status-code | 响应结果类别 | 同一请求在不同条件下落入不同结果出口 | 本地完成 · 待 dev 集成 |
-| 30 http-header | 消息附加信息 | 信封边栏与主体分开；改变字段影响处理方式 | 待更新 |
+| 29 status-code | 响应结果类别 | 同一请求在不同条件下落入不同结果出口 | 本地与 dev 集成完成 · PR #132 |
+| 30 http-header | 消息附加信息 | 同一资源可有不同表示，请求头表达偏好 | 本地完成 · 待 dev 集成 |
 | 31 query-parameter | URL 中附加的选项 | 地址尾部条件变动，实际列表筛选或排序 | 待更新 |
 | 32 path-parameter | 路径定位具体资源 | 地址中的位置槽变化，镜头定位不同实体 | 待更新 |
 | 33 request-body | 发送的内容 | 正文载荷剖面展开，不混入地址栏 | 待更新 |
@@ -551,6 +551,16 @@ ZCode CLI inspiration 会话 `sess_a37c9fbd-7b34-445e-860d-73db081248f9` 实际�
 ZCode CLI inspiration 会话 `sess_e0a04c6f-e0f8-43da-b003-76099f2a70b9` 实际读取协作 Skill 与动画参考，提出前层受理凭证/后层空结果位、受理回执撕双联、双轨道三个方案；选第一种，因为它在同一帧保留“提交请求已有结果、导出任务结果未定”，又不借时间轴或撕纸暗示必然完成。没有采用 ZCode 候选中的探线动作：它会在两层之间制造不必要的结果传递感。实际核实 MDN HTTP response status codes、202 Accepted、422 Unprocessable Content、503 Service Unavailable 四份来源；沿用现有正文角标和书目，不把“202 最终一定成功”写入页面。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图终帧只有 202 凭证落定，上层任务结果仍未确定；390×844 时首图 330×225，页面宽度 390 无溢出。主演示有效提交得 202 和任务地址，首次 GET 得 200 pending，模拟后台完成后旧查询结果仍 pending，重新 GET 才得 200 done 并显示下载；输入改 0 清旧提交结果并得 422，服务不可用时键盘提交得 503，重置后旧下载入口不可见。五个旧锚点与四份来源在页，202 书目摘录回链落到正文目标，应用错误日志为空。未做人类读者试读。VBP-017 用例 `b4e9c4ec-bfac-4d59-a4a4-0ef672d71c4b`，本地计划 `a6bed5ee-3ce9-4a68-b650-d4a24932ff78` completed、执行 `649fc647-446e-4873-84dc-060dd8a636ff` passed。VBP-017 从 ready_for_release 按允许流转进入 testing 完成本条复测登记，待 dev 集成后复核质量门禁。
+
+2026-09-29 集成：提交 `57729ed` 经 [PR #132](https://github.com/Gyschuaner/VibePolaris/pull/132) 合入 `dev`，merge `477ad543b58a054b6d746efd16cb6689b9e27228`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用相同 Git 树和构建产物，`http://localhost:3219/terms/status-code` 在真实浏览器复核新首图、202 受理与 200 pending 查询、四份来源与旧锚点，应用错误为空。DP 部署 `815be330-ddff-478c-a618-8fb978ad3fd1` 已回查；前版 `e8cbe43` 构建备份在 `/tmp/vbp012-dev-next-e8cbe43`。未部署远端 dev 或生产。VBP-017 从 testing 经质量门禁返回 ready_for_release（版本15）；DP VBP-012 描述更新至 29/105、版本39；下一条 http-header。
+
+## 30 · http-header
+
+读者入口：“我只改了请求头，书和地址都没换，为什么返回格式变了？写一个 Accept 就能强迫服务器生成任意格式吗？”现页正文已经讲清请求头、Accept/Content-Type 的方向、Vary 与浏览器保留字段，主演示可选 JSON、纯文本及不支持的 XML；保留。原首图只有 `Accept: application/json` 与两张各自浮动的 JSON/TXT 卡，容易看成选了不同资源，或由 Accept 把书“变成”JSON。新首图上方保留一份 `/books/42` 和书名，下方同时陈列本例可提供的 JSON 与 TXT 两种表示，两者仍写同一书名。右上角的“请求头”卡显出 `Accept: application/json`，随后仅 JSON 表示被选中；原资源和另一种可提供的表示都不消失。首图只讲一轮偏好选择，XML 失败与真实服务器的回退留给主演示和正文。
+
+ZCode CLI inspiration 会话 `sess_12f0ce0f-5fd1-4ff4-8aca-9ece1448c1b2` 实际读取协作 Skill 与动画参考，提出同一资源双显影、请求挂牌与备货窗口、同轨两轮三个方案；取第一个的“一份资源、两份表示”空间结构。未采用影像剥离回程，避免暗示两份表示必须事先存成实体文件，或 Accept 自身执行转换；本例只是服务器支持两种返回形式。已实际核实 MDN HTTP headers、Accept header、Content-Type header、Content negotiation、Forbidden request header 五份来源；沿用现有正文论断和引用映射，不把本地协商算法当成 HTTP 的固定规则。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图终帧仍有一份书名资源与两种表示，JSON 被选中而 TXT 保留；390×844 首图 330×225，页面宽度 390 无溢出。主演示默认 JSON 协商得 200、Content-Type application/json 与 JSON 正文；切成 text/plain 先清旧结果，再得 200、纯文本正文；application/xml 得 406 且两种格式都不选中；重置恢复初始，Enter 可触发协商。五个旧锚点与五份来源在页，Content negotiation 书目摘录回链落到正文目标，应用错误日志为空。未做人类读者试读。VBP-017 用例 `a5c2ed2c-dffb-4e1f-9c69-62dff8b5865e`，本地计划 `95a154c7-a61a-4d20-9d84-21e31f378dde` completed、执行 `53b55067-a484-4900-9c32-79fffe1f3963` passed。VBP-017 从 ready_for_release 按允许流转进入 testing 完成本条复测登记，待 dev 集成后复核质量门禁。
 
 ## 01 · Harness
 
