@@ -35,8 +35,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 21 fetch-api | 发请求并读取响应 | 同一份 Response 面板先亮状态，正文仍未读；随后书目显现 | 本地与 dev 集成完成 · PR #124 |
 | 22 promise | 尚未完成的结果 | 两份独立 Promise 先空后落定：一份 A17，一份售罄，第一份保持不变 | 本地与 dev 集成完成 · PR #125 |
 | 23 async-await | 当前函数等待 | 执行线在 await 处停住，收藏独立完成；封面返回后从停点续长 | 本地与 dev 集成完成 · PR #126 |
-| 24 json | 文本表示与程序值 | 一条 JSON 文本退为底稿，对象轮廓和带类型的 title/copies 原地展开 | 本地验收完成 · 待 dev 集成 |
-| 25 json-schema | 描述允许的数据 | 结构轮廓套合；缺字段或错误类型露出缺口 | 待更新 |
+| 24 json | 文本表示与程序值 | 一条 JSON 文本退为底稿，对象轮廓和带类型的 title/copies 原地展开 | 本地与 dev 集成完成 · PR #127 |
+| 25 json-schema | 数据与另一份规则逐字段对照 | 规则栏与数据栏分立；status 和 count 对照线留下两处断点与字段诊断 | 本地验收完成 · 待 dev 集成 |
 | 26 request | 客户端提出一次要求 | 消息剖面依次展开方法、位置、附加信息与内容 | 待更新 |
 | 27 response | 服务端回答请求 | 返回消息分层显露状态与内容；对应原请求 | 待更新 |
 | 28 http-method | 对资源的操作意图 | 同一资源依不同动作读取、创建、替换或删除 | 待更新 |
@@ -501,6 +501,16 @@ ZCode：本机 `zcode.cjs app-server` CLI 只读 inspiration 会话 `sess_14844f
 资料：实际阅读 [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259.html)（JSON 是文本格式，四类原始值、对象、数组以及根值范围与数值互操作）、MDN [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON)（语法与 JavaScript 值的边界）、[JSON.parse()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)（解析结果与 SyntaxError）和 [JSON.stringify()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)（序列化与不可无损保留的值）。四份现有角标已覆盖正文，本轮只改首图。
 
 2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过，`git diff --check` 通过。真实浏览器首图初段仅文本清晰、对象透明；终帧上方仍有原文本，下面对象边框包含 title string“灯塔”和 copies number 2。390×844 首图宽 330、对象宽 250，文档 clientWidth/scrollWidth 均为 390。主演示原生 JSON.parse 正常书目得到 object、title string、copies number、available boolean；数量加引号后 copies 变为 string "2"。尾逗号报语法错误，编辑约 450ms 后旧值树隐藏且提示等待重新解析；根值 null 合法，显示 `$` 为 null。Enter 可解析，五个旧锚点与四份书目在页；JSON.parse 书目摘录回链最终落点约 130px，应用错误日志为空。未做人类读者试读。VBP-016 用例 `a819eb9a-3643-49d0-83ff-67cd782531de`，本地计划 `a42295e3-f955-445e-8929-52d91486f4f0` completed、执行 `0e081d22-a57f-4265-a594-403493e2d570` passed。
+
+2026-09-29 集成：提交 `d057beb` 经 [PR #127](https://github.com/Gyschuaner/VibePolaris/pull/127) 合入 `dev`，merge `be8a6f18d6faeecc204ef51743ebfe625b97f5de`；功能分支已快进至该提交。独立 worktree 的本地 dev 预览使用相同 Git 树和构建产物，`http://localhost:3219/terms/json` 在真实浏览器复核新首图、根值 null 的解析、四份来源与旧锚点，应用错误为空。DP 部署 `0feb8bb3-315d-4b91-8a93-d80e4818ae6d` 已回查；前版 `b70590a` 构建备份在 `/tmp/vbp012-dev-next-b70590a`。未部署远端 dev 或生产。DP VBP-012 描述更新至 24/105、版本 34；下一条 json-schema。
+
+## 25 · json-schema
+
+读者入口：“这段 JSON 已经能解析，为什么仍然不收？”现页正文已经把 Schema、实例和校验器分开，主演示可以修改 status、count、缺失和额外字段，并给出逐字段规则错误；保留。原首图只让 pending、2 与规则对齐后出现两个勾，像是 Schema 在替数据选值，也没有呈现失败的具体位置。新首图先分立“规则”与“数据”两张材料：左边 status 允许 pending/success、count 要求非负整数，右边原样保留 done 与 -1。两条短对照线逐一伸出，在中间断开；右边同时显出“不在候选”和“低于 0”。它预告正文实验的同一份示例规则，不暗示校验会修改输入，也不把“符合规则”写成事实正确。
+
+ZCode CLI inspiration 会话 `sess_c1b8bf4e-cc0a-475f-adc2-b3567ec0c719` 实际读取协作 Skill 与动画参考，提出透明模板、双栏断线和允许区域三个空间方案；选择双栏断线，因为它与下方规则/数据对照的实物关系一致，也能在首图点出字段级缺口。舍弃模板的“压进去会成型”暗示；未加入换规则第二轮，以保持首图只讲当前规则。技术资料沿用现页五份 JSON Schema 官方来源（Draft 2020-12 Validation、object、numeric、enum、dialect），本轮未改变规则判断或正文事实。
+
+2026-09-29 本地验收：`npm run build` 编译、TypeScript、116/116 静态页通过。真实浏览器首图终帧中规则/数据仍是独立材料，done 与 -1 未被改写；390×844 时首图 330×225，文档宽度没有溢出。主演示原数据分别产生 `/status enum` 与 `/count minimum`；status 改 success 后只剩 minimum，count 改 0 后通过；数量改字符串报 `/count type`，删 count 报 `/count required`，加 debug 报 `/debug additionalProperties`。修改后待校验状态复位，Enter 可触发校验。Schema 展开可见 Draft 2020-12 的 required、properties、enum、minimum、additionalProperties；五份来源及旧锚点在页，object 来源回链落到正文目标，应用错误日志为空。未做人类读者试读。VBP-016 用例 `99a8d673-0ba1-4c3d-851d-88c572b7633d`，本地计划 `970a7ef1-9c63-490d-a261-ce62dac42696` completed、执行 `d4b49a1b-ed72-414c-ae08-e610e8a6d14e` passed。
 
 ## 01 · Harness
 

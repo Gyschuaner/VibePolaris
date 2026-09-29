@@ -1,4 +1,3 @@
-import { Check } from "@phosphor-icons/react/dist/ssr";
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
 import { ConceptHero } from "./ConceptHero";
 import { AsyncLegacyAnchors } from "./AsyncConceptPages";
@@ -54,7 +53,11 @@ export function JsonSchemaTermPage() {
   return <ConceptArticle slug="json-schema" title="JSON Schema" subtitle="把数据约定写成可检查的规则" sources={schemaSources}
     intro={<>一段 JSON 没有语法错误，仍可能漏了数量、写错状态，或者把数字放进引号。JSON Schema 描述哪些结构和取值可以接受，校验时再把实际数据与这些规则对照。</>}
     sections={[["contract", "数据之外的那份约定"], ["validate", "找出不合约定的字段"], ["keywords", "规则的不同职责"], ["boundary", "通过校验之后"]]}
-    hero={<ConceptHero slug="json-schema" label="status和count分别对齐枚举与整数约束，显示通过"><div className={styles.schemaHero}><div><code>pending</code><span>enum</span><Check size={20} /></div><div><code>2</code><span>integer ≥ 0</span><Check size={20} /></div></div></ConceptHero>}
+    hero={<ConceptHero slug="json-schema" label="左侧规则与右侧数据逐字段对照：done 不在 status 的候选值中，count 的 -1 低于下限；两份数据都没有被自动改写"><div className={styles.schemaHero}>
+      <div className={styles.schemaHeroSheet}><span>规则</span><div className={styles.schemaHeroField}><code>status</code><strong>pending / success</strong></div><div className={styles.schemaHeroField}><code>count</code><strong>整数 ≥ 0</strong></div></div>
+      <div className={styles.schemaHeroBridge}><div><i /><b>×</b><i /></div><div><i /><b>×</b><i /></div></div>
+      <div className={styles.schemaHeroInstance}><span>数据</span><div className={styles.schemaHeroField}><code>status</code><strong>done</strong><small>不在候选</small></div><div className={styles.schemaHeroField}><code>count</code><strong>-1</strong><small>低于 0</small></div></div>
+    </div></ConceptHero>}
     relatedIntro={<>在 <ConceptTerm slug="structured-output">结构化输出</ConceptTerm> 中，Schema 帮助约束结果的形状；回到 <ConceptTerm slug="tools">工具调用</ConceptTerm>，同样要区分“参数符合约定”和“操作已经成功”。</>}>
     <ArticleSection id="contract" title="数据之外的那份约定">
       <AsyncLegacyAnchors slug="json-schema" names={["question", "definition"]} />
