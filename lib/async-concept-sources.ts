@@ -8,6 +8,7 @@ export const promiseSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "Promise", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise", citations: ["promise-states", "promise-resolved", "promise-cancel"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Using promises", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises", citations: ["promise-timing"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Promise.prototype.then()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then", citations: ["promise-chain"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Using microtasks in JavaScript with queueMicrotask()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide", citations: ["promise-timing"] },
 ];
 export const awaitSources = [
   { publisher: "MDN Web Docs · 贡献者", title: "async function", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function", citations: ["await-function", "await-cpu"] },
