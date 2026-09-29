@@ -14,6 +14,9 @@ export const retrySources = [
   { publisher: "Marc Brooker · AWS Architecture Blog", title: "Exponential Backoff And Jitter", date: "2015-03-04，2023-05 更新", url: "https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/", citations: ["retry-jitter"] },
 ];
 export const idempotencySources = [
-  semantics(["idempotency-effect", "idempotency-response"]),
-  { publisher: "Stripe · API Reference", title: "Idempotent requests", date: "", url: "https://docs.stripe.com/api/idempotent_requests", citations: ["idempotency-key", "idempotency-retention"] },
+  semantics(["idempotency-effect", "idempotency-methods", "idempotency-response"]),
+  { publisher: "Stripe · API Reference", title: "Idempotent requests", date: "", url: "https://docs.stripe.com/api/idempotent_requests", citations: ["idempotency-key", "idempotency-unique", "idempotency-retention", "idempotency-current"] },
+  { publisher: "Amazon EC2 · Developer Guide", title: "Ensuring idempotency in Amazon EC2 API requests", date: "", url: "https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html", citations: ["idempotency-scope", "idempotency-current"] },
+  { publisher: "PayPal · Developer", title: "Idempotency", date: "2026-08-11", url: "https://developer.paypal.com/api/rest/reference/idempotency/", citations: ["idempotency-current", "idempotency-concurrent"] },
+  { publisher: "Malcolm Featonby · Amazon Builders’ Library", title: "Making retries safe with idempotent APIs", date: "", url: "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/", citations: ["idempotency-atomic"] },
 ];

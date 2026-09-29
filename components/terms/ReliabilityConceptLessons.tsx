@@ -59,7 +59,7 @@ export function IdempotencyLesson() {
     const next = reserveOnce(entries, requestKey, slot);
     setEntries(next.entries);
     const index = entries.length === 0 ? 0 : next.kind === "replayed" ? 1 : next.kind === "conflict" ? 2 : 3;
-    const text = ["响应丢失 · 客户端尚未取得预约号。", `返回原预约 #${next.entry.id} · 没有新增。`, `拒绝 · 键 ${next.entry.key} 已用于 ${next.entry.slot}，参数不一致。`, `新建预约 #${next.entry.id} · 使用了另一枚键。`][index];
+    const text = ["响应丢失 · 页面还没有拿到预约号。", `返回原预约 #${next.entry.id} · 没有新增。`, `拒绝 · 键 ${next.entry.key} 已用于 ${next.entry.slot}，参数不一致。`, `新建预约 #${next.entry.id} · 使用了另一枚键。`][index];
     // Keep the outgoing receipt intact until its fade finishes.
     setReceipts(values => values.map((value, i) => i === index ? text : value));
     setResultIndex(index);
