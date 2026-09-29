@@ -5,8 +5,10 @@ export const effectSources = [
   { publisher: "React · Meta 与社区", title: "Lifecycle of Reactive Effects", date: "", url: "https://react.dev/learn/lifecycle-of-reactive-effects", citations: ["effect-lifecycle"] },
 ];
 export const browserApiSources = [
-  { publisher: "MDN Web Docs · 贡献者", title: "Introduction to web APIs", date: "", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction", citations: ["browser-host", "browser-layers"] },
-  { publisher: "MDN Web Docs · 贡献者", title: "ResizeObserver", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver", citations: ["browser-measure", "browser-disconnect", "browser-loop"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Introduction to web APIs", date: "", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction", citations: ["browser-host", "browser-layers", "browser-css"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "ResizeObserver", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver", citations: ["browser-measure", "browser-disconnect", "browser-loop", "browser-once"] },
   { publisher: "MDN Web Docs · 贡献者", title: "Clipboard API", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API", citations: ["browser-permission"] },
   { publisher: "W3C · CSS Working Group", title: "Resize Observer", date: "", url: "https://www.w3.org/TR/resize-observer-1/", citations: ["browser-content-box"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Sizing items in CSS", date: "", url: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Sizing", citations: ["browser-css"] },
+  { publisher: "MDN Web Docs · 贡献者", title: "Element.getBoundingClientRect()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect", citations: ["browser-once"] },
 ];

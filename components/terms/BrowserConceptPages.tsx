@@ -60,33 +60,35 @@ export function BrowserApiTermPage() {
       <div className={styles.browserTransfer} aria-hidden="true">↓</div>
       <div className={styles.browserReadout}><span>JS 收到</span><code>contentRect.width</code><strong>200 px</strong></div>
     </div></ConceptHero>}
-    intro={<>计算、判断和循环由 JavaScript 表达。读取页面尺寸、发起网络请求、操作剪贴板，则需要<strong>浏览器向代码提供的接口</strong>。</>}
-    relatedIntro={<>浏览器 API 扩展 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 在网页中的能力。网络请求看 <ConceptTerm slug="fetch-api">Fetch API</ConceptTerm>，本地保存看 <ConceptTerm slug="local-storage">本地存储</ConceptTerm>，持续连接看 <ConceptTerm slug="websocket">WebSocket</ConceptTerm>。</>}>
+    intro={<>计算、判断和循环，JavaScript 自己就能表达。读取页面尺寸、发起网络请求或操作剪贴板，则要调用<strong>浏览器向代码提供的接口</strong>。</>}
+    relatedIntro={<>浏览器 API 扩展 <ConceptTerm slug="javascript">JavaScript</ConceptTerm> 在网页中的能力。网页发网络请求看 <ConceptTerm slug="fetch-api">Fetch API</ConceptTerm>，把数据存在本地看 <ConceptTerm slug="local-storage">本地存储</ConceptTerm>，与服务器保持持续连接看 <ConceptTerm slug="websocket">WebSocket</ConceptTerm>。</>}>
     <ArticleSection id="host" title="语言之外的浏览器能力">
       <Anchors slug="browser-api" names={["question", "definition"]} />
-      <p>一张图表要放进可伸缩的侧栏。代码能算出刻度，却不能仅靠加减乘除知道侧栏现在有多宽；这个尺寸由浏览器的页面布局决定，需要向浏览器取得。</p>
-      <p id="browser-host" className="vp-citation-target">浏览器 API 是运行环境提供的能力，不是 JavaScript 语言语法本身。DOM 用来访问文档，Fetch 用来请求数据，还有尺寸观察、媒体、存储等接口。相同的 JavaScript 代码换到另一个运行环境，能调用的接口也可能不同。<Cite id="browser-host" /></p>
-      <div className={`${styles.choices} vp-citation-target`} id="browser-layers"><div><h3>语言</h3><p>函数、条件和数组，描述计算与控制。</p></div><div><h3>浏览器</h3><p>文档、布局、网络，提供运行环境的能力。</p></div><div><h3>应用</h3><p>决定图表怎么画、消息怎么显示、失败如何处理。<Cite id="browser-layers" /></p></div></div>
+      <p>一张图表要放进可伸缩的侧栏。代码能算出刻度，却不能仅靠加减乘除知道侧栏现在有多宽；页面由浏览器排版，代码得向浏览器询问当下的尺寸。</p>
+      <p id="browser-css" className="vp-citation-target">如果只要图表的外框跟着侧栏伸缩，可以用页面样式规则 CSS 让它的宽度随容器变化，JavaScript 不必知道具体像素数。这里还想让 JavaScript 根据实际宽度调整刻度，才需要取到尺寸。<Cite id="browser-css" /></p>
+      <p id="browser-host" className="vp-citation-target">浏览器 API 是浏览器这个运行环境提供给代码的能力，不是 JavaScript 语法本身。API 就是代码使用这些能力的入口：调用浏览器提供的方法，或让浏览器在变化时通知代码。比如 DOM 让代码读写网页内容，Fetch 用来请求数据，此外还有尺寸观察、媒体、存储等接口。同样的 JavaScript 换到别的程序里运行，能用的接口也可能不同。<Cite id="browser-host" /></p>
+      <div className={`${styles.choices} vp-citation-target`} id="browser-layers"><div><h3>语言</h3><p>函数、判断和数组，描述计算与控制。</p></div><div><h3>浏览器</h3><p>文档、布局、网络，提供运行环境的能力。</p></div><div><h3>应用</h3><p>决定图表怎么画、消息怎么显示、失败如何处理。<Cite id="browser-layers" /></p></div></div>
       <p>React 等库帮你组织界面，但不会凭空生成浏览器没有提供的能力。看到一段代码时，先分清它在做普通计算、调用库，还是请求运行环境做一件事。</p>
     </ArticleSection>
     <ArticleSection id="measure" title="让浏览器测量一块区域">
-      <p id="browser-measure" className="vp-citation-target">ResizeObserver 可以观察元素的尺寸变化。下面改变的是页面里这一块区域，不是整个窗口；读数来自浏览器回调中的 contentRect.width，并四舍五入显示。<Cite id="browser-measure" /></p>
-      <p id="browser-content-box" className="vp-citation-target">这里量的是区域里放内容的宽度，内边距和边框在它外面，不计入这次读数。规范把 contentRect 定义为这个内容区的尺寸；如果给目标加上内边距，外框会比读数更宽。<Cite id="browser-content-box" /></p>
-      <p>拖动滑块，观察区域和像素读数一起变化。再关掉“观察尺寸”后调节：区域仍能伸缩，但读数停留在最后一次测量。这里实际调用浏览器接口，不使用预填的宽度结果。</p>
+      <p id="browser-measure" className="vp-citation-target">测量用的接口叫 <code>ResizeObserver</code>。代码先让它观察网页中的一块区域；浏览器发现这块区域尺寸变化时，就调用预先登记的函数，把新的宽度交给代码。这个函数叫回调。下面改变的是页面里这一块区域，不是整个窗口；代码从测量结果的 <code>contentRect.width</code> 取宽度，显示时四舍五入。<Cite id="browser-measure" /></p>
+      <p id="browser-content-box" className="vp-citation-target">这里量的是区域放内容的那部分宽度。内容与边框之间的留白叫内边距；内边距和边框都不计入 <code>contentRect.width</code>。本演示的目标区域没有设置内边距或边框，因此当前画面里的区域宽度与读数相同；如果加上内边距，外框就会比读数宽。<Cite id="browser-content-box" /></p>
+      <p>拖动滑块，观察区域和像素读数一起变化。再关掉“观察尺寸”开关、继续拖动滑块：区域仍能伸缩，但读数停留在最后一次测量。这里实际调用浏览器接口，不使用预填的宽度结果。</p>
       <Anchors slug="browser-api" names={["scene-heading"]} /><BrowserApiLesson />
-      <div className={styles.sideExplanation}><div><p id="browser-disconnect" className="vp-citation-target">observe 开始观察目标，disconnect 停止这份观察器。页面恢复观察后会重新收到当前尺寸；不需要假装逐条补回暂停期间的变化。离开页面时也应清理不再需要的观察。<Cite id="browser-disconnect" /></p></div><pre className={shared.code}>{'const observer = new ResizeObserver(\n  ([entry]) => {\n    showWidth(entry.contentRect.width);\n  }\n);\nobserver.observe(element);\n// 不再需要时\nobserver.disconnect();'}</pre></div>
+      <div className={styles.sideExplanation}><div><p id="browser-disconnect" className="vp-citation-target">示意代码里的 <code>observe(element)</code> 开始观察这块区域；尺寸变化后，回调收到新的读数，<code>showWidth</code> 把它显示出来。<code>disconnect()</code> 停止观察。重新开启后，浏览器会再给出当前尺寸，不会逐条补发暂停期间的变化；离开页面时也应停止不再需要的观察。<Cite id="browser-disconnect" /></p></div><pre className={shared.code}>{'const observer = new ResizeObserver(\n  ([entry]) => {\n    showWidth(entry.contentRect.width);\n  }\n);\nobserver.observe(element);\n// 不再需要时\nobserver.disconnect();'}</pre></div>
+      <p id="browser-once" className="vp-citation-target">如果只在某一刻需要读一次元素的外框尺寸，浏览器还提供 <code>getBoundingClientRect()</code>。它读到的是包含内边距和边框的外框，不等于本例的内容宽度；本例要在尺寸变化后持续取得新值，所以登记观察。<Cite id="browser-once" /></p>
       <ArticleAside title="测量结果不要反过来制造循环"><p id="browser-loop" className="vp-citation-target">若每次收到尺寸就继续扩大被观察的元素，会再次触发观察。本例只把数值写到区域外的读数中，不用它改写目标宽度。实际组件也要避免“测量 → 改尺寸 → 再测量”的循环。<Cite id="browser-loop" /></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="limits" title="存在，不代表一定能用" className={shared.offset}>
-      <p>接口使用前先看能力是否存在，再按该接口的规则发起操作，并处理结果。尺寸观察不需要用户批准；剪贴板、位置或媒体能力则有各自的限制，不能套用一张通用的权限表。</p>
-      <p id="browser-permission" className="vp-citation-target">例如异步 Clipboard API 要求安全上下文，浏览器还可能要求权限或最近的用户操作；具体限制随浏览器和读写动作不同。检测到 navigator.clipboard，并不能保证随时读取或写入都会成功。<Cite id="browser-permission" /></p>
-      <p>实现“复制链接”时，应从用户点击发起操作，等待返回后再显示成功。接口不可用或操作被拒绝时，可以提供可选中的文字，让用户手动复制。本页的尺寸演示不会读取或修改剪贴板。</p>
+      <p>用接口之前，先确认当前浏览器有没有提供它，再按这项能力的规则发起操作，并为成功或失败安排反馈。尺寸观察不需要用户批准；剪贴板、位置或媒体能力则有各自的限制，不能套用一张通用的权限表。</p>
+      <p id="browser-permission" className="vp-citation-target">例如剪贴板接口（<code>Clipboard API</code>）要求安全上下文，如通过 HTTPS 打开的页面。浏览器还可能要求授权，或要求操作由用户刚刚的点击、按键触发；读取和写入的限制也不一样。检测到 <code>navigator.clipboard</code>，并不能保证随时读取或写入都会成功。<Cite id="browser-permission" /></p>
+      <p>实现“复制链接”时，由用户点击发起操作，等接口返回成功后再提示成功。接口不可用或操作被拒绝时，可以提供可选中的文字，让用户手动复制。本页的尺寸演示不会读取或修改剪贴板。</p>
     </ArticleSection>
     <ArticleSection id="responsibility" title="接口能力与业务责任">
       <Anchors slug="browser-api" names={["quiz-heading", "prompt-heading"]} />
-      <blockquote className={shared.callout}>浏览器告诉你发生了什么，<br />应用决定接下来怎么处理。</blockquote>
-      <p>测到区域是 240 像素，不意味着图表已经适配；复制操作成功，不意味着接收方读到了链接。接口的结果与用户任务的完成之间，通常还有应用自己的判断。</p>
-      <p>实际接入时，给每次调用划清范围：需要哪项能力、什么时候开始、结果怎样进入界面、不再需要时如何停止。遇到不支持或拒绝，就回到可执行的替代路径，而不是让按钮失去反馈。</p>
+      <blockquote className={shared.callout}>浏览器提供能力和结果，<br />应用决定怎样用它们。</blockquote>
+      <p>浏览器量出区域宽度，不意味着图表的刻度已经调整；剪贴板接口返回复制成功，也不意味着接收方读到了链接。应用还得判断这些结果是否满足用户要做的事。</p>
+      <p>使用接口时，要想清楚需要哪项能力、什么时候开始、结果怎样进入界面、不再需要时如何停止。浏览器不支持或操作被拒绝时，就提供手动复制等替代办法，而不是让按钮按下去毫无反馈。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
