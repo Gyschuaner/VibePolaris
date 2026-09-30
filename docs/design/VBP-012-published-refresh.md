@@ -1496,5 +1496,5 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 ### DP、Git 与发布边界
 
 - VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `5f1008d0-ba90-4e0f-ac46-992fb803197a` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；正文发布只带 `ProcessingConceptPages.tsx` 与 `ProcessingConceptLessons.tsx` 的展示文字，交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能与记录提交为 `4cd34c1c78ade349dfaea7fba19d4da30fb3d760`；正文发布分支 `release/VBP-030-stream-content-20261001` 的提交 `4758595` 经 [PR #241](https://github.com/Gyschuaner/VibePolaris/pull/241) 合入 `main`，合并提交 `329f5a023c45a0c577079ea2c4bd1981bd77d97d`。生产部署记录 `807309e1-f137-4994-ba49-07c0cb77982c`、部署批次 `deploy-vbp030-stream-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-329f5a023c45`，回滚点为 `/opt/vibepolaris/releases/20261001-142404d8c1cc`；镜像 `vibepolaris:329f5a023c45a0c577079ea2c4bd1981bd77d97d` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/stream-processing` 返回 200 并精确核对五处新版正文。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **62/105**，下一条是 `event-driven-architecture`。
