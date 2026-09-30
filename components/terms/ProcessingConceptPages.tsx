@@ -35,27 +35,28 @@ export function BatchTermPage() {
 }
 export function StreamTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={streamSources}/>;
-  return <ConceptArticle slug="stream-processing" title="流处理" sources={streamSources} sections={[["flow", "持续到来的借阅记录"], ["time", "发生时间与收到时间"], ["windows", "窗口何时可以给出结果"], ["late", "晚到记录的处理"]]}
-    intro={<>借阅记录不断到来，看板可以持续更新。麻烦的是，较早发生的记录也可能较晚才收到。流处理除了计算，还要决定记录属于哪一段时间、何时输出结果，以及输出以后收到旧记录该怎么办。</>}
-    hero={<ConceptHero slug="stream-processing" label="t2、t12、t4乱序到达，按事件时间进入两个窗口，得到2次和1次借阅"><div className={s.streamHero}><div className={s.heroArrivals}>{[2,12,4].map(t=><code key={t}>t{t}</code>)}</div><div className={s.heroWindows}><div><span>[0, 10)</span><strong>2 次</strong></div><div><span>[10, 20)</span><strong>1 次</strong></div></div></div></ConceptHero>}>
+  return <ConceptArticle slug="stream-processing" title="流处理" sources={streamSources} sections={[["flow", "持续到来的借阅记录"], ["time", "发生时间、到达与处理时间"], ["windows", "窗口何时可以给出结果"], ["late", "晚到记录的处理"]]}
+    intro={<>借阅记录不断到来，看板可以随着窗口陆续完成而更新。麻烦的是，较早发生的记录也可能较晚才收到。流处理除了计算，还要决定记录属于哪个时间窗口、何时输出结果，以及输出以后收到旧记录该怎么办。</>}
+    hero={<ConceptHero slug="stream-processing" label="t2、t12、t4（数字是发生时刻）乱序到达；t4赶在第一窗口关闭前到达时得到2次和1次借阅"><div className={s.streamHero}><div className={s.heroArrivals}>{[2,12,4].map(t=><code key={t}>t{t}</code>)}</div><div className={s.heroWindows}><div><span>[0, 10)</span><strong>2 次</strong></div><div><span>[10, 20)</span><strong>1 次</strong></div></div></div></ConceptHero>}>
     <ArticleSection id="flow" title="持续到来的借阅记录"><Legacy slug="stream-processing" names={["question", "definition"]}/>
-      <p id="stream-flow" className="vp-citation-target"><strong>流处理在记录持续到来的过程中进行计算，而不用等整份数据全部收齐。</strong>Kafka Streams 将流描述为不断更新的记录序列，处理拓扑连接数据来源、处理节点与输出。过滤可以逐条做，借阅次数汇总则需要跨记录保留信息。<Cite id="stream-flow"/></p>
-      <p>持续计算不意味着每条记录立刻得到最终结果。涉及一段时间的计数、不同来源的关联或乱序数据时，需要明确等待与输出规则。数据到达得快，也不等于业务结果已经足够完整。</p>
+      <p id="stream-flow" className="vp-citation-target"><strong>流处理在记录持续到来的过程中进行计算，而不用等数据全部收齐。</strong>Kafka Streams、Flink 和 Beam 是三种不同的流处理工具；下面的讲解参照它们的文档，说的是同一套机制，但各家的默认值和配置名称并不完全一样。Kafka Streams 将流描述为不断更新的记录序列，处理流程把数据来源、处理节点与输出连接起来。过滤可以逐条做，借阅次数汇总则需要跨记录保留信息；这份要跨记录保留的信息，各引擎通常叫作状态。<Cite id="stream-flow"/></p>
+      <p>持续计算不意味着每条记录立刻得到最终结果。当计算要覆盖一段时间内的计数、要关联不同来源的数据，或要应对乱序到达时，就需要先确定等待与输出规则。数据到达得快，也不等于结果已经足够完整。</p>
     </ArticleSection>
-    <ArticleSection id="time" title="发生时间与收到时间"><Legacy slug="stream-processing" names={["quiz-heading"]}/>
-      <p id="stream-time" className="vp-citation-target">Flink 区分事件时间与处理时间：前者通常来自事件携带的时间戳，后者取决于运行处理节点的时钟。<strong>按发生时间统计，不能用到达顺序代替时间归属。</strong>一条 t4 的借阅可能在 t12 之后才到达，但仍属于 [0, 10) 的范围。<Cite id="stream-time"/></p>
-      <div className={base.contrast}><div><h3>事件时间</h3><p>“这条借阅是在什么时候发生的？”决定它归哪个时间窗口，需要可信且口径一致的时间戳。</p></div><div><h3>处理时间</h3><p>“处理节点此刻的时钟是多少？”受传输、排队和处理进度影响，重放时也可能不同。</p></div></div>
+    <ArticleSection id="time" title="发生时间、到达与处理时间"><Legacy slug="stream-processing" names={["quiz-heading"]}/>
+      <p id="stream-time" className="vp-citation-target">Flink 区分事件时间与处理时间：前者通常来自事件携带的时间戳，后者取决于处理节点所在机器的时钟。在下面的演示里，t 是记录发生的时间，也就是事件时间；点击按钮的顺序代表记录到达的顺序。<strong>按发生时间统计时，记录归入哪个窗口要看 t，不能按到达顺序来定。</strong>一条 t4 的借阅可能在 t12 之后才到达，但仍应归入 [0, 10) 这个窗口。<Cite id="stream-time"/></p>
+      <div className={base.contrast}><div><h3>事件时间</h3><p>“这条借阅是在什么时候发生的？”决定它归哪个时间窗口，需要可信且口径一致的时间戳。</p></div><div><h3>处理时间</h3><p>“处理节点此刻的时钟是多少？”受传输、排队和处理进度影响，重放（把历史记录重新跑一遍处理）时，取到的时间也可能和第一次不同。</p></div></div>
     </ArticleSection>
     <ArticleSection id="windows" title="窗口何时可以给出结果"><Legacy slug="stream-processing" names={["scene-heading"]}/>
-      <p id="stream-window" className="vp-citation-target">窗口划分记录归属，触发规则决定何时输出。Beam 用水位表达对事件时间进度的估计，并允许配置迟到与触发方式。<strong>一段时间内的数据归在一起，仍需要规则决定何时认为它足够完整。</strong><Cite id="stream-window"/></p>
-      <p>先接收 t2、t12，再把水位推进到 10，最后接收 t4。也可重置后先收齐三条，再推进水位，比较第一个窗口的计数。本例用逻辑时间、两个固定窗口和手动水位；策略是关闭后不修改原输出，将晚到记录保留在旁路，不模拟真实时钟。</p>
+      <p>演示记号约定：t2、t12、t4 中的数字是记录发生的时刻；演示里的 e1、e2、e3 分别携带 t2、t12、t4，点击按钮的顺序代表记录到达的顺序。窗口标签 [0, 10) 表示包含 0、但不包含 10；[10, 20) 同理包含 10、不包含 20。</p>
+      <p id="stream-window" className="vp-citation-target">窗口决定记录归属，触发规则决定何时输出。Beam 用水位表示它估计事件时间已经推进到了哪里，并允许设置迟到容忍和触发方式。水位回答“等到什么时候”，触发规则还可以决定是否提前或重复输出。本例不配置额外触发，只用手动推进水位作为输出条件。<strong>一段时间内的数据归在一起，仍需要规则决定何时认为它足够完整。</strong><Cite id="stream-window"/></p>
+      <p>先接收 t2、t12，再把水位推进到 10；[0, 10) 输出 1 次。水位和 t 使用同一把事件时间的尺子，推进水位不等于拨快机器时钟。最后接收 t4，水位推进到 10 表示发生时间不超过 10 的记录按本例应已到达；t4 这时才出现，按本例就算晚到，进入晚到旁路（本例特意配置的去处）：它不再放回已经关闭的窗口，而是单独留给事后核对；如果没有配置旁路，晚到记录可能直接被丢弃。再推进水位到 20，第二个窗口才输出 1 次。也可点击“清空事件与水位”后先收齐三条，再推进水位到 20；因为这时水位还没推进到 10，t4 还不算晚到，得到开头那张图展示的 2 次和 1 次。本例用事件时间、两个固定窗口和手动推进的水位；水位到达窗口末端时，本例就关闭该窗口并输出一次，关闭后不再修改已输出的结果。手动推进水位只是演示手段，不是真实系统中水位的产生方式。</p>
       <StreamLesson/>
-      <p id="stream-watermark" className="vp-citation-target">Flink 的水位声明事件时间已经推进到某个位置；乱序与传输延迟可能让旧事件后来才出现。<strong>水位不是“以后绝不会再来旧数据”的事实证明。</strong>推进得早能减少等待，却需要接受或处理更晚的记录；多输入情况下，进度还受较慢输入影响。<Cite id="stream-watermark"/></p>
+      <p id="stream-watermark" className="vp-citation-target">Flink 的水位表示事件时间已经推进到某个位置；乱序与传输延迟可能让旧事件后来才出现。水位到达窗口末端时，处理节点就可以认为这个窗口按时到达的记录已经收齐，可以输出并关闭窗口。<strong>水位并不能保证以后绝不会再有更旧的数据到达。</strong>水位推得早，结果出得快，代价是窗口关闭后才到达的记录变多，必须事先决定怎么对待它们。同一个汇总计算可能同时接收多路记录，比如两个分馆各自上报；这时整体水位取各路中最小的那个，较慢那一路会拖住合并后的进度。<Cite id="stream-watermark"/></p>
     </ArticleSection>
     <ArticleSection id="late" title="晚到记录的处理" className={base.offset}><Legacy slug="stream-processing" names={["prompt-heading"]}/>
-      <p id="stream-late" className="vp-citation-target">Flink 的默认迟到容忍为 0；超过窗口处理期限的数据会被丢弃，晚到旁路需要显式配置。增加容忍时间可以保留窗口状态，让晚到事件参与后续结果；再次输出也需要下游处理更新或重复结果。<strong>本文的旁路是特意选择的策略，不是所有引擎默认都会替你保存晚到记录。</strong><Cite id="stream-late"/></p>
+      <p id="stream-late" className="vp-citation-target">Flink 的默认迟到容忍为 0；处理期限（按事件时间，这个窗口最晚可以处理到哪里）就是窗口末端加上迟到容忍；迟到容忍默认为 0 时，处理期限正好落在窗口末端。超过这个期限的数据会被丢弃，晚到旁路需要显式配置。增加容忍时间可以保留窗口状态，让晚到事件参与后续结果。这是另一种策略，不同于本例把晚到记录送进旁路；比如 [0, 10) 先发布 1 次，允许 t4 参与后可能再发布 2 次，窗口若再次输出，看板这类接收结果的系统还得约定认最新一条，还是把重复结果去重。<strong>本例的旁路是特意选择的策略，并不是每个引擎都默认保存迟到的记录。</strong><Cite id="stream-late"/></p>
       <p>旁路里的 t4 仍是一条有效借阅，只是没有进入已经发布的这次计数。业务可以复核、补算或更新结果，但必须约定谁负责修正，以及看板怎样识别更新后的版本。</p>
-      <ArticleAside title="计数状态需要保留与恢复"><p id="stream-state" className="vp-citation-target">Kafka Streams 的聚合与关联等有状态操作，需要状态存储；它支持持久或内存存储，并提供相应恢复机制。窗口里的计数也占用状态。记录保留多久、进程重启怎样恢复，都是持续计算的一部分。本例重置会清空浏览器内存，没有实际状态恢复。<Cite id="stream-state"/></p></ArticleAside>
+      <ArticleAside title="计数状态需要保留与恢复"><p id="stream-state" className="vp-citation-target">Kafka Streams 的聚合与关联等有状态操作，需要状态存储；它支持持久或内存存储，并提供相应恢复机制。真实系统可能从可重放的输入记录或保存的检查点（处理中间状态的保存点）恢复状态。窗口里的计数也占用状态。记录保留多久、进程重启怎样恢复，都是持续计算的一部分。本例重置会清空浏览器内存，没有实际状态恢复。<Cite id="stream-state"/></p></ArticleAside>
       <p>流处理方案需要写明时间戳来源、窗口、水位与触发规则、迟到容忍、结果更新和恢复要求。先明确结果何时可用、晚到记录如何修正，再比较延迟与资源开销。</p>
     </ArticleSection>
   </ConceptArticle>;
