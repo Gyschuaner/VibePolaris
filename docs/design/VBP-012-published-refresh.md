@@ -913,7 +913,7 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 
 - 遇词场景：AI 建议“给数据库 schema 加一个可借状态字段”。不假设读过表或主键页，读完能分清结构与数据，预测加列、补一条记录、收紧非空规则的变化，并区分 PostgreSQL schema 的分组含义。
 - 原页已有定义/记录对照和准确的加列演示，但字段、boolean、NULL、命名空间和 search_path 的前提不充分。正文补上表/行/列、每行一册书、编号与书名的类型、可借状态的两个值和缺值；说明未声明规则时仅靠界面提示可能漏过其他写入入口，数据库约束也不能证明现实状态。
-- 保留路由、原六个 legacy 锚点、相关关系、首图、CSS、状态逻辑与已有依赖；只修改 DatabaseSchemaTermPage 和 schemaSources，JOIN/唯一约束函数逐字对比未变。把 PRIMARY KEY 的必要含义放到演示前，不让初态标签依赖后面的解释。
+- 保留路由、原有 legacy 锚点、相关关系、首图、CSS、状态逻辑与已有依赖；只修改 DatabaseSchemaTermPage 和 schemaSources，JOIN/唯一约束函数逐字对比未变。把 PRIMARY KEY 的必要含义放到演示前，不让初态标签依赖后面的解释。
 
 ### 资料与论断对应
 
@@ -959,6 +959,14 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - 没有实际目标读者、真实数据库、系统减少动态设置、远端dev或生产验证。Skill/代码里的reduced-motion分支不冒充系统实测。飞书正式文档未变；指定Windows Obsidian库不存在，未写知识库。完整内容与技术进度48/105，下一条join。
 - 第46条专用Bug登记Run `236a6370-7341-4b94-9af4-4561ff8ea5d9` 在00:50Z上游UPSTREAM_UNAVAILABLE失败；读取可恢复检查点后00:55Z在同Run继续，仍运行，未声称Bug关闭。PR附加工具达到100条附件上限，PR221仍真实创建并合并；未删除旧附件。
 
+
+## 49 · 连接查询完整内容复审与本机 dev 集成（2026-09-30）
+
+- 读者目标与范围：从“借阅记录只有书号，界面还想显示书名”出发，正文补齐书目/借阅每行含义、借阅编号与书号的区别、点号和 `b`/`l` 别名、`SELECT`/`FROM`/`ON`/`AS`；解释 JOIN 的配对作用与原表不变，区分主键、外键和本页故意保留的 #65 样例。主体仍复用已有 2×3 配对矩阵和状态逻辑，保留 INNER 2 行、书目 LEFT 3 行、借阅 LEFT 3 行、CROSS 6 行、NULL、重置与有限模型边界；增加 ON/WHERE 的具体结果、自连接和执行计划/索引边界。首图继续展示 #42 与两次借阅的配对，未强行改成通用模板。
+- 资料：实际读取 PostgreSQL 18 `tutorial-join`（连接、别名、自连接）、`queries-table-expressions`（多重配对、CROSS、外连接、ON 过滤）、SQLite `lang_select` 的 WHERE 过滤、MySQL 8.4 JOIN Clause 的未匹配 NULL 示例、PostgreSQL 18 constraints 的主键/外键。来源已映射到 5 个正文锚点和书目摘录；SQLite 页面用实际抓取的 `2.3 WHERE clause filtering` 段落核对，未把候选链接当作已读。
+- ZCode：真实入口使用 `Qwen3.8-Flash-Next-FP8`、xhigh。reader 会话 `sess_ea4d13ce-5894-42de-90a6-b5c1bd03f4f7`，输入 `/tmp/vbp026-join-reader-material.md`，SHA-256 `6360f8384e14045b5c045f510525cfbfa60eac4372fbf00fac242d7afdd8aa0d`；指出 NULL、非空主键、#65 样例和 ON/WHERE 结果需要补前提。language 会话 `sess_888abae7-1cd6-4609-b1a6-febf0eb80abd`，输入 `/tmp/vbp026-join-language-material.md`，SHA-256 `389e315c594c4e53713054ea1894fe2654f3129e47e0e971c6f78618846ec1f0`；采纳“表中的行”、查询结果不改原表、外键检查规则和 CROSS 结尾的具体措辞。两轮均为文字审读，不记为网页操作或真人读者验证；主助手逐项复核事实后再改稿。
+- 实现与发现：代码只改 `JoinTermPage` 与 `joinSources`，未改 `JoinLesson` 的机制。首次候选构建 `ZMkoTcFRVf3NEh-qcnEYo` 通过；桌面键盘与 390px 实测配对切换、2/3/3/6、重置、长代码和引用。引用回跳检查发现 `join-definition` 同时存在空 legacy span 与正文段落，第一条摘录为空，创建并推进 `BUG-D968D955`（confirmed → fixing → ready_for_retest），移除重复空锚点后构建 `M_QwSDfPtMea5yxqWNbfW` 通过；修复回归确认摘录非空、同名 ID 唯一、回跳聚焦正文，自连接摘录可展开并用 Space 收起。未新增无效自动化测试。
+- 验证与集成：最终 `npm run build` 通过，117/117 页；`git diff --check` 通过。浏览器覆盖桌面 Enter/Space、INNER/两种 LEFT/CROSS/重置、390px 矩阵与结果、快速切换、五份引用、折叠自连接、宽度 390/390；浏览器无新增 console error。计划 `75e18a7c-69d9-4976-8503-772d04749cda` 首次执行 `8d349845-b708-44cc-8430-fb647663a2a2` 因锚点缺陷失败，修复后执行 `fa8cf13e-7631-43dc-b1d6-1e9adba45c2a` attempt2 passed，计划 completed；用例 `2b215434-fe92-451e-813a-93b45c8be679` 与任务 `6839dfc8-c78f-4bfc-9b5a-211b18af9261` 均已写后复查并完成。代码提交 `e12a48532459fee79fc558f9dd19e1cd4401de21`，PR [#223](https://github.com/Gyschuaner/VibePolaris/pull/223) 合入 dev `117584081f9217b112ff87f28db1bce7305423ba`；本机 dev 部署 `f45a828e-357a-4872-b77e-6ed7be982839`，地址 `http://127.0.0.1:3219/terms/join`，备份 `/tmp/vbp026-join-dev-prev-7920653-next`。无远端 dev、生产、真实 SQL、真人读者或 OS 减少动态验证；Bug 仍待 DP 正式回归，不声称关闭。
 
 ## 01 · Harness
 
