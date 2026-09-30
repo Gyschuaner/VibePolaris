@@ -78,7 +78,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #236、#237 发布生产，功能留在本地 |
 | 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 完整内容与本地 dev 浏览器验收完成；正文待本条内容分支发布，功能留在本地 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
-| 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 待更新 |
+| 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 已发布正文；交互功能留在本地 |
 | 62 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 待更新 |
 | 63 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 待更新 |
 | 64 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 待更新 |
@@ -1460,3 +1460,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-032 需求 `4ca852b5-1005-40d4-92a9-b8e87d70a043` 保持 `ready_for_release`；本条研发任务 `bb3fa7cf-4167-40c3-b903-d3fbdb66702c` 已按本地验收、正文发布和 DP 记录流转为 `done`，不推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能提交为 `8acef8d`；正文发布分支 `release/VBP-032-ingestion-content-20261001` 的提交 `f26c0a8` 经 [PR #240](https://github.com/Gyschuaner/VibePolaris/pull/240) 合入 `main`，合并提交 `142404d8c1cc24fc607c6cad41cb95890d20cb6d`。生产部署记录 `59dbefc2-28eb-4858-8df5-6f734b935c72`、部署批次 `deploy-vbp032-ingestion-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-142404d8c1cc`，回滚点为 `/opt/vibepolaris/releases/20261001-f12cae3aaceb`；镜像 `vibepolaris:142404d8c1cc24fc607c6cad41cb95890d20cb6d` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/data-ingestion` 返回 200 并精确核对五处新版正文。仅正文进入生产，交互功能仍留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。本条完成后整体为 **61/105**，下一条是 `stream-processing`。
+
+
+## 62 · 流处理文字完整复审、事件时间窗口演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“记录持续到来时，为什么较早发生的记录可能晚到？窗口何时可以给出结果？水位、触发规则、迟到容忍和晚到旁路分别决定什么？”读完应能区分事件时间、到达顺序与处理时间，按事件时间把记录放入半开窗口，解释水位关闭窗口、晚到事件以及多路输入取最小水位的原因，并能判断允许迟到后结果为什么可能再次更新。
+- 更新 `StreamTermPage`：补出 Kafka Streams、Flink、Beam 的工具边界；统一事件时间、处理时间、窗口、水位、触发规则、处理期限和晚到旁路的说法；用 `e1/e2/e3` 对应 `t2/t12/t4`，说明先推进水位再收到 `t4` 时旁路不改已发布计数，以及先收齐再推进到 20 时得到 2 次和 1 次；补出状态存储、恢复、重放和多路输入水位取最小值。
+- 更新 `StreamLesson`：保留本地事件接收、水位推进、窗口关闭、晚到旁路和清空动作；展示文案明确事件编号与发生时刻，完成窗口显示输出次数，晚到事件显示“保留待核对，已输出计数不变”。生产只发布正文和展示文字，演示交互继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+实际打开并核对四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Apache Kafka · Streams Core Concepts](https://kafka.apache.org/42/streams/core-concepts/) | `stream-flow`、`stream-state`：无界记录序列、处理拓扑、状态存储和窗口概念。 |
+| [Apache Flink · Timely Stream Processing](https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/) | `stream-time`、`stream-watermark`：事件时间/处理时间、水位、乱序、晚到事件与多输入最小水位。 |
+| [Apache Beam · Programming Guide · Watermarks and late data](https://beam.apache.org/documentation/programming-guide/#watermarks-and-late-data) | `stream-window`：水位、迟到容忍和触发规则的关系。 |
+| [Apache Flink · Windows](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/operators/windows/) | `stream-late`：默认迟到容忍、处理期限、晚到旁路和再次触发。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初始独立 `reader` 会话 `sess_94aa4355-5c02-4da2-9b3d-6c32b5d7461e` 读取 `/tmp/vbp062-stream-reader-material.md`，指出工具边界、水位到窗口关闭、状态、英雄首图 2/1 条件、触发规则、重放和多输入等理解断点。
+- `language` 会话 `sess_52f833e7-5144-4db9-b9d7-9ddb807750a5` 读取 partner、humanizer-zh 和 `/tmp/vbp062-stream-language-material.md`，统一“事件发生时刻/到达顺序/处理节点”、按钮、半开区间、触发与处理期限等中文表达。
+- 最终独立 `reader` 会话 `sess_0cfa1ba2-68a4-4301-a0fb-2e6826398eb3` 读取 `/tmp/vbp062-stream-reader-final-material.md`（SHA-256 `36eb692bd1af808f612c3dd2da9774ac94d339e9fcdd13ff71d23f383e634923`），复核首图条件、窗口与水位、晚到旁路、多路输入、状态和重复输出；剩余问题属于真实引擎配置与运维延伸，主助手按资料和演示边界裁决。以上是 ZCode 的文字模拟读者审读，不是真人读者或网页试读。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID cViTdYA6yNhyUP4dLr6an`；`git diff --check` 通过；`node --experimental-strip-types --test tests/processing-teaching.test.mjs` 为 1/1 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/stream-processing?qa=062a` 真实操作并观察：接收 `e1/t2`、`e2/t12` 后推进水位到 10，第一窗口关闭并输出 1 次；再接收 `e3/t4`，它进入晚到旁路且已输出计数不变；推进水位到 20，第二窗口输出 1 次。清空后先接收三条再推进到 20，第一窗口输出 2 次、第二窗口输出 1 次。引用区展开 Timely Stream Processing 摘要并点击回链，正文跳转到水位段；最终控制台无 error/warn，截图已实际观察。
+- 当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成当前轮实测通过；没有真实 Kafka/Flink/Beam、真实多路输入、真人读者或远端 dev 功能验证。
+
+### DP、Git 与发布边界
+
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `5f1008d0-ba90-4e0f-ac46-992fb803197a` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；正文发布只带 `ProcessingConceptPages.tsx` 与 `ProcessingConceptLessons.tsx` 的展示文字，交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **62/105**，下一条是 `event-driven-architecture`。
