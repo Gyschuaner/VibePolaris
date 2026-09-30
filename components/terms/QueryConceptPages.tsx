@@ -93,38 +93,39 @@ export function OrmTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ormSources} />;
   return <ConceptArticle slug="orm" title="ORM" sources={ormSources}
     sections={[["mapping","对象属性对应表里的列"],["write","对象修改到数据库写入"],["session","Session 管理的状态"],["loading","访问属性也可能查询"]]}
-    intro={<>在 Python 里拿到一册 Book 并修改 book.title，只能看到对象属性变了。还要弄清数据库何时收到 UPDATE、修改何时提交，以及能否撤回。ORM 让调用更接近程序中的对象，写入过程仍需核对。</>}
+    intro={<>先把两个词说清：对象是程序里代表一条书记录的值，属性是这个对象上的一个字段；<code>book.title</code>就是这本书对象的书名。把它改成“山间来信 · 修订版”，只说明程序手里的对象变了，还不说明数据库已经收到 UPDATE，更不说明修改已经提交。ORM 让程序可以用对象来读写表里的数据，但真正写进数据库发生在哪一步，还有它自己的规矩。</>}
     hero={<ConceptHero slug="orm" label="Book类的id与title分别对应books表的book_id与title，值从行映射到对象"><div className={s.ormHero}><div><strong>Book</strong><code>id = 42</code><code>title = 山间来信</code></div><ArrowsLeftRight size={28} /><div><Database size={25} /><strong>books</strong><code>book_id: 42</code><code>title: 山间来信</code></div></div></ConceptHero>}>
     <ArticleSection id="mapping" title="对象属性对应表里的列">
       <Legacy slug="orm" names={["question","definition"]} />
-      <p id="orm-mapping" className="vp-citation-target"><strong>ORM 建立程序中的类、对象与关系数据之间的映射，并为相应操作生成和执行 SQL。</strong>SQLAlchemy 可以把 Book 类映射到 books 表，再为实例配置与关系操作有关的行为。ORM 也能映射已有结构，使用它不代表必须重建数据库。<Cite id="orm-mapping" /></p>
+      <p id="orm-mapping" className="vp-citation-target"><strong>ORM 把程序中的类、对象和数据库里的表、列对应起来，并为相应操作生成和执行 SQL。</strong>类像“每本书长什么样”的结构说明，Book 对象（也叫实例）则代表其中一本具体的书。SQLAlchemy 可以把 Book 类映射到 books 表，也可以把 Author 对象和它的 books 关系映射到作者与书籍之间的关联。ORM 能映射已有结构，使用它不代表必须重建数据库。<Cite id="orm-mapping" /></p>
       <p id="orm-field" className="vp-citation-target">对象属性名不必等于数据库列名。SQLAlchemy 的 mapped_column 可以显式指定列名，下面把 <code>Book.id</code>对应到 <code>books.book_id</code>；程序写 id，生成的 SQL 使用 book_id。<Cite id="orm-field" /></p>
+      <p>先看字段怎样连起来：<code>Base</code> 是 SQLAlchemy 用来登记映射的基类，<code>Mapped</code> 表示“这是一个会映射到表的属性”，<code>mapped_column</code> 用来指定列名和主键等信息。下面的代码只展示映射关系，不会自己修改数据库结构。</p>
       <pre className={base.code}>{'class Book(Base):\n    __tablename__ = "books"\n\n    id: Mapped[int] = mapped_column(\n        "book_id", primary_key=True\n    )\n    title: Mapped[str]'}</pre>
-      <p>这是 SQLAlchemy 2.0 的映射片段，假定已定义 DeclarativeBase 的子类 Base，并导入 Mapped、mapped_column。字段定义交代对象如何对应数据；数据库结构的实际变更另由建表或迁移操作执行。</p>
-      <p id="orm-query" className="vp-citation-target">查询 ORM 实体时，可以使用 <code>session.scalars(select(Book)).all()</code>取得 Book 实例。普通 SQL 查询返回的行与程序里的实例不是同一种接口；选择普通列、实体或不同结果方法，会影响返回形式，不能把所有 ORM 查询都当成“直接返回对象列表”。<Cite id="orm-query" /></p>
+      <p><code>Book.id</code> 是程序里的属性，<code>books.book_id</code> 是数据库里的列；读到一行后，ORM 才把它们装进一个 Book 对象。数据库结构的实际变更另由建表或迁移操作执行。</p>
+      <p id="orm-query" className="vp-citation-target">用 ORM 查询（比如查书）时，可以使用 <code>session.scalars(select(Book)).all()</code>取得 Book 实例。普通 SQL 查询返回的是一行数据，通常要按列名或位置取值；ORM 查询返回的 Book 实例则可以直接写 <code>book.title</code>。返回形式不同，后面拿到结果怎么取值、怎么写，也跟着不同。不能把所有 ORM 查询都当成“直接返回对象列表”。<Cite id="orm-query" /></p>
     </ArticleSection>
     <ArticleSection id="write" title="对象修改到数据库写入">
       <Legacy slug="orm" names={["scene-heading"]} />
-      <p id="orm-flush" className="vp-citation-target">SQLAlchemy 的 Session 跟踪对象变化，flush 把待处理变化转换为本事务中的数据库操作。<strong>flush 已经发出 SQL，但还没有完成事务提交。</strong>默认配置还可能在查询前自动 flush。演示把这一步单独交给按钮，便于比较；不同 ORM 的自动保存与事务行为需要查各自文档。<Cite id="orm-flush" /></p>
-      <p>对象已从 #42 加载，先改书名，再选择 flush 后回滚，或直接 commit。对照对象、本事务的写入和已提交的值，查看下方 SQL 记录。本例是一条记录、一次有限修改的状态模型，不运行 Python 或真实数据库，也不模拟其他连接的隔离级别。</p>
+      <p id="orm-flush" className="vp-citation-target">SQLAlchemy 的 Session 跟踪对象变化，flush 把待处理变化转换为本事务中的数据库操作。<strong>flush 会让数据库执行 UPDATE，但这次 UPDATE 仍在当前事务里，尚未完成提交。</strong>如果随后 rollback，数据库会放弃这次尚未提交的修改。默认配置还可能在查询前自动 flush。演示把这一步单独交给按钮，便于比较；不同 ORM 的自动保存与事务行为需要查各自文档。<Cite id="orm-flush" /></p>
+      <p>程序已经把 #42 这一行读成了一个 Book 对象。你可以先在对象上改书名，再点 flush 后回滚，也可以改完直接 commit。演示把“对象里的值”“事务内已经执行 UPDATE 的值”和“提交后留下的值”分开显示，下面的 SQL 记录会告诉你每一步发生了什么。这个演示只围绕一条记录和几个按钮的走法，不运行 Python 或真实数据库；其他连接在未提交期间能否看到变化，取决于数据库的隔离级别，本例不模拟。</p>
       <OrmLesson />
       <p id="orm-commit" className="vp-citation-target">SQLAlchemy 的 commit 会先 flush 剩余变化，再提交事务。因此可以修改对象后直接 commit，不必手工先调用一次 flush；这时也应在记录中看到 UPDATE 出现在 COMMIT 之前。<strong>赋值、发出更新、提交完成是不同的时刻。</strong><Cite id="orm-commit" /></p>
-      <p id="orm-rollback" className="vp-citation-target">默认 Session 在 commit 后会让对象属性过期，rollback 也会使保留下来的对象过期；后续访问需要重新读取。本例回滚后显示“属性已过期”，重新读取才看见原书名。若 flush 本身失败，还要调用 rollback 才能继续使用该 Session；不能吞掉异常后假装提交成功。<Cite id="orm-rollback" /></p>
+      <p id="orm-rollback" className="vp-citation-target">默认 Session 在 commit 后会让对象属性过期，rollback 也会使保留下来的对象过期；这里的“过期”是 Session 认为当前属性值已经不可信，下次访问会重新查数据库。本例回滚后显示“对象需要重新读取”，重新读取才看见原书名。若 flush 本身失败，还要调用 rollback 才能继续使用这个 Session；不能把报错悄悄忽略、当成提交成功了。<Cite id="orm-rollback" /></p>
     </ArticleSection>
     <ArticleSection id="session" title="Session 管理的状态">
       <Legacy slug="orm" names={["quiz-heading"]} />
-      <p id="orm-identity" className="vp-citation-target">Session 的身份映射按主键维护已加载对象。SQLAlchemy 的 <code>Session.get()</code>会先检查当前身份映射，再根据需要查询数据库。这有助于同一会话中的对象一致性，<strong>不是整个系统的共享缓存</strong>，也不保证所有查询都能免发 SQL。<Cite id="orm-identity" /></p>
+      <p id="orm-identity" className="vp-citation-target">Session 会按主键记住当前已经加载的对象：同一个 Session 再用相同主键取得它时，可以得到同一个 Python 对象，而不是同时维护两个可能互相矛盾的副本（SQLAlchemy 把这叫“身份映射”）。SQLAlchemy 的 <code>Session.get()</code>会先检查这份身份映射，再根据需要查询数据库。这有助于同一会话中的对象一致性，<strong>不是整个系统的共享缓存</strong>，也不保证所有查询都能免发 SQL。<Cite id="orm-identity" /></p>
       <div className={base.contrast}><div><h3>ORM 的映射</h3><p>把对象属性、查询表达式和数据库列对应起来，组织对象的读写。</p></div><div><h3>数据库的规则</h3><p>继续执行主键、外键、唯一性与事务约束。对象写起来方便，不会让这些要求消失。</p></div></div>
       <p>Session 应围绕一项明确的数据库工作建立提交或回滚边界，结束后释放资源。它不是浏览器的登录会话。检查代码时，要问谁拥有这次数据库操作、在哪里提交、遇到异常在哪里回滚，而不只看有没有调用 save 之类的方法。</p>
     </ArticleSection>
     <ArticleSection id="loading" title="访问属性也可能查询" className={base.offset}>
       <Legacy slug="orm" names={["prompt-heading"]} />
-      <p id="orm-loading" className="vp-citation-target">访问尚未加载的关系，可能触发新 SELECT。若先查 N 位作者，再逐个读取每人的书籍集合，在相应懒加载场景里可能出现 1 + N 次查询。SQLAlchemy 提供预加载策略，减少逐个读取；查询次数仍取决于具体关系、策略与已加载状态，不能说“任何属性访问都查数据库”。<Cite id="orm-loading" /></p>
+      <p id="orm-loading" className="vp-citation-target">读一个还没加载的关系（比如作者的书籍列表），可能触发一条新的 SELECT。若先查 N 位作者，再逐个读取每人的书籍集合，在这种情况下可能出现 1 + N 次查询。SQLAlchemy 提供预加载策略，减少逐个读取；查询次数仍取决于具体关系、策略与已加载状态，不能说“任何属性访问都查数据库”。<Cite id="orm-loading" /></p>
       <ArticleAside title="一段循环可能藏着多次查询">
         <pre className={base.code}>{'authors = session.scalars(select(Author)).all()\nfor author in authors:\n    print(author.books)'}</pre>
-        <p>这里假定 Author.books 是尚未加载的关系集合。这不是上面 Book 映射片段已定义的功能。检查实际 SQL 日志，再决定是否预加载、用连接或分批查询；不要只凭代码行数估计数据库工作量。</p>
+        <p>这里假定 <code>Author.books</code> 是尚未加载的关系集合；也就是先拿到作者对象，等到访问它的书时才去查书。上面的代码只映射了 Book 的 id 和 title，并没有定义 Author 和 books 的关系。检查实际 SQL 日志，再决定是否预加载、用连接或分批查询；不要只凭代码行数估计数据库工作量。</p>
       </ArticleAside>
-      <p>检查 ORM 调用时，需要框架版本、映射关系、返回形式、实际 SQL 与事务范围。ORM 减少重复调用代码，但 <ConceptTerm slug="sql">SQL</ConceptTerm>、<ConceptTerm slug="index">索引</ConceptTerm>和 <ConceptTerm slug="transaction">事务</ConceptTerm>仍决定正确性与性能。</p>
+      <p>要核对 ORM 调用，先说清框架版本、映射关系、返回形式、实际 SQL 与事务范围。ORM 能省下重复的数据访问代码，但 <ConceptTerm slug="sql">SQL</ConceptTerm>、<ConceptTerm slug="index">索引</ConceptTerm>和 <ConceptTerm slug="transaction">事务</ConceptTerm>仍决定正确性与性能。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
