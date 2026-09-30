@@ -58,31 +58,33 @@ export function MigrationTermPage() {
     hero={<ConceptHero slug="database-migration" label="002和003迁移文件依次到达目标数据库，版本从001到003"><div className={s.migrationHero}><div><FileCode size={27} /><span>002 · 增加 name</span></div><div><FileCode size={27} /><span>003 · 回填书名</span></div><div><Database size={30} /><strong>目标库 003</strong><code>name: 山间来信</code></div></div></ConceptHero>}>
     <ArticleSection id="files" title="把结构变更留在代码里">
       <Legacy slug="database-migration" names={["question","definition"]} />
-      <p id="migration-files" className="vp-citation-target"><strong>数据库迁移把结构与必要的数据变化记录为可追踪的步骤，再将这些步骤应用到具体数据库。</strong>Django 的 makemigrations 生成迁移文件，migrate 执行它们；文件与代码一起分发。同一份文件放进仓库，不代表每个环境已经执行。<Cite id="migration-files" /></p>
+      <p id="migration-files" className="vp-citation-target"><strong>数据库迁移把结构与必要的数据变化记录为可追踪的步骤，再将这些步骤应用到具体数据库。</strong>Django、Alembic、Prisma 是不同技术栈里的迁移工具或文档例子，不是一条流水线。Django 的 makemigrations 生成迁移文件，migrate 执行它们；文件与代码一起分发。同一份文件放进仓库，不代表每个环境已经执行。<Cite id="migration-files" /></p>
       <p><ConceptTerm slug="database-schema">数据库模式</ConceptTerm>描述某个时刻的结构，迁移交代如何从此前的结构到达它。备份则保存可用于恢复的数据或状态。写一份“目标表定义”，还没有说明旧数据怎样处理、应用怎样过渡。</p>
-      <p id="migration-review" className="vp-citation-target">工具可以帮忙生成变更，但候选文件需要审查。Alembic 明确要求检查自动生成结果；列名改变等情况可能被识别成删除旧列、增加新列，不能据此假定数据会自动搬过去。审查时要同时看操作、依赖和数据处理方法。<Cite id="migration-review" /></p>
+      <p>本页把四份演示文件先对上：001 是已有 <code>title</code> 列的起点；002 增加 <code>name</code> 列；003 把 <code>title</code> 里的书名回填到 <code>name</code>；004 在旧程序退役后移除 <code>title</code>。编号只是演示里的迁移名；真正决定先后的是文件里写明的依赖，不是数字大小。</p>
+      <p id="migration-review" className="vp-citation-target">工具可以根据模型和数据库的差异生成候选迁移文件，但候选文件需要你审查。Alembic 的 autogenerate 会把它能看出的变化写进文件；列名改变可能被写成删除旧列、增加新列，不能据此假定数据会自动搬过去。审查时要同时看操作、依赖和数据处理方法。<Cite id="migration-review" /></p>
     </ArticleSection>
     <ArticleSection id="history" title="文件到了，数据库还没变">
       <Legacy slug="database-migration" names={["scene-heading"]} />
-      <p id="migration-history" className="vp-citation-target">迁移工具会读取数据库的执行记录，决定还要走哪些步骤。Alembic 的教程用 alembic_version 记录当前修订，并沿依赖路径执行 upgrade。开发库已到 003，目标库还在 001，并不矛盾：它们收到同样的代码，却处在不同的执行进度。<Cite id="migration-history" /></p>
-      <p>下面用一条书目演示 title → name。先尝试执行 004，再按 002、003 的顺序推进；观察目标库、书名和已执行记录是否一起变化。“旧程序仍在运行”属于本站设置的发布检查，不是迁移工具自带的检测能力。演示期间不接受新写入。</p>
+      <p id="migration-history" className="vp-citation-target">迁移工具会读取数据库的执行记录，决定还要走哪些步骤。以 Alembic 为例：它在数据库里用 alembic_version 表记录当前修订（也就是迁移版本），并沿依赖路径执行 upgrade。开发库已到 003，目标库还在 001，并不矛盾：它们收到同样的代码，却处在不同的执行进度。目标库版本描述结构当前走到哪一步；执行记录说明哪些迁移文件已登记为已执行，实际核对时要分别看这两件事。<Cite id="migration-history" /></p>
+      <p>下面用一条书目演示 title → name。先尝试执行 004，再按 002、003 的顺序推进；观察目标库版本、执行记录、书名和两个程序读数是否一起变化。页面模型会让它们按演示同步，真实环境中它们可能分叉。“旧程序仍在运行”复选框是本站对旧程序状态的模拟：勾选表示旧程序还在读 <code>title</code>，取消表示它已经退役；它不会关闭真实线上程序，也不是迁移工具自带的发布检查。初始时复选框是勾选的。演示期间不能添加或修改书名。</p>
       <MigrationLesson />
+      <p>点击“恢复目标库 001”只把这个教学模型整体恢复到起点；它不是实际数据库的事务回滚，也不是从备份恢复数据。</p>
       <p id="migration-dependencies" className="vp-citation-target">003 依赖新增列的 002，004 又依赖已回填的 003。<strong>依赖说明前置条件，文件编号只帮助人阅读。</strong>Django 的迁移可以跨应用形成依赖，真实项目不必是简单的一条直线。已经执行过的步骤不会因为再次请求升级就重新做一遍。<Cite id="migration-dependencies" /></p>
     </ArticleSection>
     <ArticleSection id="compatible" title="新旧程序共用一段结构">
       <Legacy slug="database-migration" names={["quiz-heading"]} />
-      <p id="migration-compatible" className="vp-citation-target">Prisma 的扩展与收缩示例先保留旧列、增加新列并搬数据，调整应用读写后再移除旧列。本例经过 003 后，两列都有书名，新旧程序都能读；只有旧程序退役后，发布检查才允许 004 删除 title。<strong>完成数据回填，不等于可以立刻删掉旧接口。</strong><Cite id="migration-compatible" /></p>
+      <p id="migration-compatible" className="vp-citation-target">Prisma 的扩展与收缩示例先保留旧列、增加新列并搬数据，调整应用读写后再移除旧列。本例中，003 是一次数据回填：把执行当时的 <code>title</code> 值写到 <code>name</code>，它不会因为 002 增加了新列就自动发生。只有旧程序退役后，页面才允许 004 删除 <code>title</code>。<strong>完成数据回填，不等于可以立刻删掉仍被旧程序使用的列。</strong><Cite id="migration-compatible" /></p>
       <div className={s.compatibility}><div><strong>002</strong><p>title 有值<br />name 还是 NULL</p></div><div><strong>003</strong><p>两列都有书名<br />为读切换留出时间</p></div><div><strong>004</strong><p>只剩 name<br />旧程序不能再读 title</p></div></div>
-      <p>现实中迁移期间可能继续写书名，需要安排双写或其他同步方式，并核对回填完成到停止旧写之间的新增与更新。本例冻结写入，因此只演示读兼容。批量处理、锁、耗时和切换验证仍需用实际数据与部署方式评估。</p>
+      <p>现实中迁移期间可能继续写书名。回填只处理执行时已经存在的数据，之后仍写入 <code>title</code> 的新增或更新不会自动出现在 <code>name</code>，所以需要双写或其他同步方式，并核对回填完成到旧程序停止写 <code>title</code> 之间的变化。本例冻结写入，因此只演示读兼容。批量处理、锁、耗时和切换验证仍需用实际数据与部署方式评估。</p>
     </ArticleSection>
     <ArticleSection id="recovery" title="迁移失败与恢复" className={base.offset}>
       <Legacy slug="database-migration" names={["prompt-heading"]} />
-      <p id="migration-backends" className="vp-citation-target">失败能否整体回滚，取决于数据库和操作。Django 文档区分支持 DDL 事务的后端与不支持这种回滚的后端，例如 MySQL 的某些结构变更失败后，需要检查已经发生的变化并人工处理。演示的失败发生在执行前，结构与记录均不变，不能据此推断所有迁移失败都如此。<Cite id="migration-backends" /></p>
-      <p id="migration-reverse" className="vp-citation-target">“有反向操作”也不保证找回原数据。Django 的 RunPython 需要提供 reverse_code 才能反向执行；删掉一列再加回来，已经丢掉的值不会凭空恢复。迁移前要明确数据恢复来源、不可逆步骤和失败后如何继续。<Cite id="migration-reverse" /></p>
+      <p id="migration-backends" className="vp-citation-target">事务回滚、反向迁移和恢复备份不是一件事：事务把一串改动绑成一个整体，要么全部生效，要么全部不算；反向迁移按工具提供的反向步骤走，恢复备份则从备份中取回数据或状态。失败能否整体回滚，取决于数据库是否支持把结构变更包进事务，以及具体操作怎么写。Django 文档区分支持这种结构变更事务的数据库与不支持这种回滚的数据库，例如 MySQL 的某些结构变更失败后，需要检查已经发生的变化并人工处理。演示的失败发生在执行前，结构与记录均不变，不能据此推断所有迁移失败都如此。<Cite id="migration-backends" /></p>
+      <p id="migration-reverse" className="vp-citation-target">支持反向迁移的工具可以按目标版本向回执行；例如把 004 反向，可能会尝试把 <code>title</code> 列加回来，但这不等于恢复列里已经丢掉的值。Django 的 <code>RunPython</code> 需要提供 <code>reverse_code</code> 才能反向执行；迁移前要明确数据恢复来源、不可逆步骤和失败后如何继续。<Cite id="migration-reverse" /></p>
       <ArticleAside title="迁移审查所需材料">
         <p>提供数据库与版本、当前和目标结构、迁移依赖、数据量、持续读写情况，以及新旧程序读写哪些列。要求它说明执行顺序、验证依据、可能持锁的步骤和恢复方法，再核对生成的具体 SQL 或脚本。不要只让它“生成 migration”。</p>
       </ArticleAside>
-      <p>上线前至少对上三件事：文件记录的步骤、数据库的实际结构与数据、仍在运行的应用版本。迁移执行成功只是其中一项，业务读取和写入仍需验证。</p>
+      <p>在实际提供服务的数据库上执行前，至少对上三件事：文件记录的步骤、数据库的实际结构与数据、仍在运行的应用版本。迁移执行成功只是其中一项，业务读取和写入仍需验证。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
