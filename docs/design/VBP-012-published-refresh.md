@@ -78,12 +78,12 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #236、#237 发布生产，功能留在本地 |
 | 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 完整内容与本地 dev 浏览器验收完成；正文待本条内容分支发布，功能留在本地 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
-| 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 已发布正文；交互功能留在本地 |
-| 62 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 已发布正文；交互功能留在本地 |
-| 63 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 已发布正文；交互功能留在本地 |
-| 64 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 待更新 |
-| 65 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 待更新 |
-| 66 data-ingestion | 从来源接入数据 | 不同来源汇入入口，保留来源与接收进度 | 已发布正文；交互功能留在本地 |
+| 61 data-ingestion | 从来源接入数据 | 不同来源汇入入口，保留来源与接收进度 | 已发布正文；交互功能留在本地 |
+| 62 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 已发布正文；交互功能留在本地 |
+| 63 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 已发布正文；交互功能留在本地 |
+| 64 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 已发布正文；交互功能留在本地 |
+| 65 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
+| 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 待更新 |
 | 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 待更新 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 待更新 |
 | 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 待更新 |
@@ -1573,3 +1573,39 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `34bb448c-ebd1-45bb-8566-00ca49bef853` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地正文提交为 `2c62636`；正文发布分支 `release/VBP-030-pipeline-content-20261001` 的提交 `0820529` 经 [PR #243](https://github.com/Gyschuaner/VibePolaris/pull/243) 合入 `main`，合并提交 `e8aaf3f0686b52b60da47e46f48e2bf7583566d6`。生产部署记录 `8654b3a0-305e-409d-baf0-3eb280424f8d`、部署批次 `deploy-vbp030-pipeline-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-e8aaf3f0686b`，回滚点为 `/opt/vibepolaris/releases/20261001-8d1227f8c878`；镜像 `vibepolaris:e8aaf3f0686b52b60da47e46f48e2bf7583566d6` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/data-pipeline` 返回 200 并精确核对六处新版正文。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **64/105**，下一条是 `webhook`。
+
+## 65 · Webhook 文字完整复审、验签与重复投递演示（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“支付平台为什么主动请求我的地址？收到一段 JSON 后，怎样判断它可信、怎样确认已经受理，以及确认丢失、重复、乱序和后台失败分别怎么处理？”读完应能区分主动查询与 Webhook 通知，解释事件、投递、对象 ID 与 GitHub 投递标识的关系，理解原始请求体、签名头、端点密钥和时间戳怎样参与验签，并区分 2xx、受理记录、队列和业务处理完成。
+- 更新 `WebhookTermPage` 正文：补齐 HTTP 请求头/请求体、原始请求体验签、HTTPS 与伪造边界、GitHub 10 秒响应规则、先写受理记录再返回 2xx、Stripe 事件 ID 与对象 ID、GitHub `X-GitHub-Delivery`、自动重试、重新交付、补交和乱序边界。最后按官方资料复核 Stripe 两类事件对象的重复识别，并将 GitHub 来源映射到乱序段。
+- 保留 `WebhookLesson` 的本地投递、改写拒绝、验签、受理、确认丢失、后台处理和重复投递状态；生产只发布正文与展示文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+实际打开并核对四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Stripe · Receive Stripe events in your webhook endpoint](https://docs.stripe.com/webhooks) | `webhook-notify`、`webhook-duplicate`、`webhook-order`、`webhook-redelivery`：HTTPS、异步事件、验签要求、重复事件、对象 ID 与类型、乱序、重试和手动重发。 |
+| [Stripe · Resolve webhook signature verification errors](https://docs.stripe.com/webhooks/signature) | `webhook-signature`：原始请求体、签名头、端点密钥、时间戳与框架改写边界。 |
+| [GitHub · Best practices for using webhooks](https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks) | `webhook-accept`、`webhook-order`：10 秒内返回 2xx、异步队列、事件类型与 action、重投和 `X-GitHub-Delivery`。 |
+| [GitHub · Handling failed webhook deliveries](https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries) | `webhook-redelivery`：失败投递不会自动重投，恢复后查询记录并手动或脚本重新交付。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初轮 reader 会话 `sess_be60f670-853a-42fc-88c8-2f06b6fb24bf`、language 会话 `sess_0fd13f1e-8500-417c-8307-035bd83dc4f3` 和多轮 reader 复审 `sess_b88d1194-31af-49fa-8954-8a62d17a3169`、`sess_ca83ed00-50c4-4e51-81c2-a33f1306a3a3`、`sess_78ddd24a-a0a5-499d-97f9-4c8b38837774`、`sess_08c771cd-1dc5-417b-b045-8380edbb8220`、`sess_14a01f6f-a8d5-48ca-b033-dcb4cc8a88fa`、`sess_c2bc2240-a356-4221-9cc0-cf5a3546d31c` 均只读当前导出的词条材料或配套 Skill。主助手按反馈补齐时间戳、事件/对象/投递 ID、2xx 语义、重试术语、受理顺序、重复事件例子和引用映射。
+- 最后两次按 Skill 改用干净 reader 输入，仅提供读者背景和正文，未附作者意图、官方摘要或旧反馈；ZCode 上游 API 均返回可重试超时，未取得新反馈，不能把它们记为通过。上述成功会话都是文字模拟读者审读，不是真人读者或网页试读。
+
+### 构建与真实浏览器验收
+
+- 最终本地 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，最新 `BUILD_ID Vl6y-gr46VXntnT6NlJmq`；`git diff --check` 通过；`node --experimental-strip-types --test tests/coordination-teaching.test.mjs` 为 1/1 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/webhook?qa=065a` 真实操作并观察：改写通知验签后显示“验证失败 · 返回 400，拒绝受理”；有效通知显示“验证通过 · 可以受理”，受理后显示“2xx · 接收方已确认，不代表业务已完成”，后台处理后显示“付款状态已更新一次”；响应丢失显示“确认未收到 · 本次结果未知”；未处理前再次投递显示“同一事件已有记录 · 不重复创建工作”。引用区可展开并回链到正文，浏览器 `error/warn` 为空，截图已实际观察。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成当前轮实测通过；没有真实第三方 Webhook、真实跨服务投递或真人读者验证。
+
+### DP、Git 与发布边界
+
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec`；本条研发任务 `8531a575-fa02-4f40-95f0-0b83a310ab3a` 已创建并在本地完成阶段，DP CLI 当前因 TLS `UNEXPECTED_EOF_WHILE_READING` 无法重新查询或推进状态，不能把任务写成 done。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交 `0555724`，官方资料映射与最后例子修正提交 `314000a`。正文发布分支 `release/VBP-030-webhook-content-20261001` 的提交 `568a085` 经 [PR #244](https://github.com/Gyschuaner/VibePolaris/pull/244) 合入 `main`，后续资料映射修正分支 `release/VBP-030-webhook-followup-20261001` 的提交 `b22d05c` 经 [PR #245](https://github.com/Gyschuaner/VibePolaris/pull/245) 合入 `main`，当前合并提交 `1202a4f8f15524a50086b6f9137e3aeab2603415`。
+- 正文尚未生产上线：生产机 SSH 在握手前断开，公网 `https://vibe.chuansgu.top/terms/webhook` 超时；新镜像已在本地构建为 `vibepolaris:1202a4f8f15524a50086b6f9137e3aeab2603415`，未完成传输、容器健康检查或公网正文校验。PR artifact 关联工具两次返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条本地内容完成度为 **65/105**，生产部署待网络恢复；下一条是 `distributed-system`。
