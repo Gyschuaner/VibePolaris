@@ -64,27 +64,27 @@ export function ShardingTermPage() {
 export function QueueTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={queueSources}/>;
   return <ConceptArticle slug="queue" title="队列" sources={queueSources} sections={[["jobs", "把任务留给工作进程"], ["delivery", "领取、处理与确认"], ["duplicate", "重投时保护已经发生的工作"], ["limits", "顺序与可靠性的条件"]]}
-    intro={<>用户上传了书封面，缩略图可以交给后台工作进程生成。消息队列先保留任务，工作进程再领取。任务被取走以后是否还算完成，连接断开后要不要再次交付，决定了失败时会丢工作还是重复做工作。</>}
+    intro={<>用户上传了书封面，缩略图可以交给后台工作进程生成。消息队列先保留任务，工作进程再领取。任务被取走之后算不算完成？连接断开时要不要再发一次？怎么回答这两个问题，决定了出错时是丢任务，还是同一个任务被做两遍。</>}
     hero={<ConceptHero slug="queue" label="一条待处理消息交给工作进程，处理后再发送确认"><div className={s.queueHero}><div><EnvelopeSimple size={23}/><EnvelopeSimple size={23}/><span>待领取</span></div><div><Gear size={30}/><span>工作进程</span></div><code>m42</code><span>ack ✓</span></div></ConceptHero>}>
     <ArticleSection id="jobs" title="把任务留给工作进程"><Legacy slug="queue" names={["question", "definition"]}/>
-      <p id="queue-work" className="vp-citation-target"><strong>消息队列在发布者与消费者之间保留待交付消息，让工作可以分开执行。</strong>RabbitMQ 的工作队列教程用后台任务说明这一用途：发布者发送任务，多个工作进程可以分担处理。提交任务的请求不必一直等待后台工作，但“已提交”还不是“缩略图已经生成”。<Cite id="queue-work"/></p>
-      <p>队列可以缓冲一阵突增的任务，不能凭空增加处理能力。长期入队速度大于处理速度，积压仍会增长。本文使用 RabbitMQ AMQP 0-9-1 手动确认的语境，不能把这里的交付规则套给所有名为 queue 的内存集合或产品。</p>
+      <p id="queue-work" className="vp-citation-target"><strong>消息队列在发布者与消费者之间保留待交付消息，让提交任务和处理任务不必同时发生。</strong>RabbitMQ 的工作队列教程用后台任务说明这一用途：发布者发送任务，多个工作进程可以分担处理。这里的“消息代理”是管理队列、接收发布者消息并把消息交给消费者的 RabbitMQ 服务；在这个例子里，接收上传并把任务送进队列的前台程序是发布者，领取并处理任务的后台程序是消费者。多个消费者默认按轮转领取消息，但谁先完成还要看各自的处理时间。提交任务的请求不必一直等待后台工作，但“已提交”还不是“缩略图已经生成”。<Cite id="queue-work"/></p>
+      <p>队列可以缓冲短时间内的任务突增，却不能凭空增加处理能力。长期入队速度大于处理速度，积压仍会增长。本文只讲一个具体场景：RabbitMQ 使用 AMQP 0-9-1 消息协议，消费者采用手动确认。不能把它套到其他产品上，或只在某个程序内存里暂存、当队列用的列表上。</p>
     </ArticleSection>
     <ArticleSection id="delivery" title="领取、处理与确认"><Legacy slug="queue" names={["scene-heading"]}/>
-      <p>发布两条固定书目任务，领取一条，生成缩略图，再确认完成。另走一遍，在生成前或生成后模拟连接断开。消息回到队列，业务结果可能已经留下。本例的按钮推进交付阶段，没有真实消息代理、网络连接或图片处理。</p>
+      <p>演示先走一遍完整流程：发布两条固定的书目任务，工作进程领取一条，生成缩略图，再确认完成。界面把这两条消息标成 m42 和 m78，方便跟踪。然后再走一遍，这次可以在生成缩略图之前或之后点击“模拟连接断开并重投”，观察两种状态。消息会回到队列，但缩略图等业务结果可能已经生成。本例通过点击按钮推进交付的各个阶段，背后没有真实的消息代理、网络连接或图片处理；断开后的重新连接和再次订阅，也压缩成一次点击就能走完。</p>
       <QueueLesson/>
-      <p id="queue-ack" className="vp-citation-target">RabbitMQ 的消费者确认让代理知道交付是否可以结束，并让消息可被删除。手动确认模式下，<strong>领取消息不会自动确认，业务处理完成也不会自动发出 ack。</strong>本例的应用选择在缩略图处理完成后确认；这是处理策略，协议本身不会判断图片是否正确。<Cite id="queue-ack"/></p>
-      <p id="queue-prefetch" className="vp-citation-target">本例让一个工作进程最多持有一条未确认消息。RabbitMQ 教程用 prefetch 限制交给消费者但尚未确认的消息数量；确认之前，工作槽不能继续无限领取。真实消费者的并发与确认方式需要一起配置。<Cite id="queue-prefetch"/></p>
+      <p id="queue-ack" className="vp-citation-target">RabbitMQ 的消费者确认用来告诉代理：这条消息的交付可以结束，代理随后就能把它删掉。手动确认模式下，<strong>领取消息不会自动确认，业务处理完成也不会自动发出 ack。</strong>本例的应用选择在缩略图处理完成后确认；这只是应用自己选择的处理策略，协议本身不会判断图片是否正确。若改用自动确认，消息一发给消费者就会被视为交付完成，消费者随后崩溃可能丢掉仍未处理的任务。<Cite id="queue-ack"/></p>
+      <p id="queue-prefetch" className="vp-citation-target">本例让一个工作进程最多持有一条未确认消息。RabbitMQ 教程用 prefetch 限制交给消费者但尚未确认的消息数量；在这个演示里，一条未确认消息就占用工作进程的一个工作槽。在这个槽位释放（消息被确认）之前，工作进程不能再领新任务。真实的消费者还要决定：最多持有几条未确认消息、什么时候确认，并和同时处理多少任务对齐。<Cite id="queue-prefetch"/></p>
     </ArticleSection>
     <ArticleSection id="duplicate" title="重投时保护已经发生的工作"><Legacy slug="queue" names={["quiz-heading"]}/>
-      <p id="queue-duplicate" className="vp-citation-target">RabbitMQ 在消费者连接或通道关闭时，会重新排队未确认的交付。网络失败下，消费者可能再次看到已经接收过的消息，官方可靠性指南建议将消费处理设计为幂等。<strong>工作已完成、确认未到达，是重复执行的一个来源。</strong>本例按固定任务键记录已生成的缩略图，重投同一任务时复用结果。<Cite id="queue-duplicate"/></p>
-      <p>保护业务结果的是应用里的 <ConceptTerm slug="idempotency">幂等</ConceptTerm>处理，不是消息队列自动去重。这里的两个任务键保存在浏览器内存，便于观察；真实系统要处理并发、记录持久化以及业务写入与防重记录之间的原子性。进程重启后丢掉一张内存表，不能仍然宣称防重有效。</p>
-      <p id="queue-failure" className="vp-citation-target">无法处理的消息也不能永远重投。RabbitMQ 支持拒绝或否定确认，并选择重新排队；配置了死信机制时，也可将相应消息转到其他去向。需要区分暂时失败与永久失败，安排重试上限、错误记录和人工处理。<Cite id="queue-failure"/></p>
+      <p id="queue-duplicate" className="vp-citation-target">消费者的连接或通道（连接里承载消息的会话）关闭时，RabbitMQ 会把尚未确认的消息重新放回队列。网络出问题时，消费者可能再次收到已经处理过的消息，所以 RabbitMQ 官方可靠性指南建议把消息处理设计成幂等的：同一个任务重复执行，结果和只执行一次一样。<strong>业务已经做完、确认却没有送到，这是重复执行的一种来源。</strong>本例按固定任务键记录已生成的缩略图，任务键就是这次业务任务的稳定编号，例如 `book:42:thumb:v1`；这里的 `v1` 只是演示用的版本标记，真实系统由应用按业务规则生成并在重投同一任务时继续使用同一个编号，才能找到之前的结果。<Cite id="queue-duplicate"/></p>
+      <p>保护业务结果的是应用里的 <ConceptTerm slug="idempotency">幂等</ConceptTerm>处理，不是消息队列自动去重。演示里两条任务的任务键保存在浏览器内存，便于观察；真实系统还得处理并发（多处同时处理同一个任务）、把这些记录持久化保存，并确保业务写入与防重记录之间的原子性（要么都成功，要么都不生效）。例如图片已经生成但防重记录没写进去，重投时仍可能再做一次；这两步是否一起成功，要由业务存储来保证。进程重启后丢掉这张内存表，就不能再说防重仍然有效。</p>
+      <p id="queue-failure" className="vp-citation-target">无法处理的消息也不能永远重投。RabbitMQ 支持拒绝消息或发送否定确认，并可选择是否重新排队；如果不再排队且队列配置了死信机制，也可以把这些消息改投到其他队列。需要区分暂时失败与永久失败：设置重试上限和错误记录，并为处理不掉的消息留一条人工处理的通道。<Cite id="queue-failure"/></p>
     </ArticleSection>
     <ArticleSection id="limits" title="顺序与可靠性的条件" className={base.offset}><Legacy slug="queue" names={["prompt-heading"]}/>
-      <p id="queue-order" className="vp-citation-target">RabbitMQ 队列的基础模型是 FIFO，但多个发布连接、优先级、多消费者及重投等情况会影响观察到的处理顺序。<strong>先进入队列，不能无条件推导出先完成业务。</strong>本文单个工作进程顺序处理两条任务，只展示一种简化场景。<Cite id="queue-order"/></p>
-      <ArticleAside title="发布确认与消费确认的边界"><p id="queue-publisher" className="vp-citation-target">Publisher confirms 关注发布者与代理之间的接收；consumer acknowledgements 关注代理与消费者之间的交付。两者相互独立。发布者收到确认，不能证明消费者已完成业务。<Cite id="queue-publisher"/></p><p id="queue-durable" className="vp-citation-target">队列元数据是否持久，以及消息是否持久，是需要分别配置的条件。RabbitMQ 的持久队列能在重启后恢复元数据，相应消息也需要使用持久方式发送；这仍不等于每个外部业务副作用恰好发生一次。<Cite id="queue-durable"/></p></ArticleAside>
-      <p>队列排查应对照产品与协议版本、发布确认、消费确认时机、并发与 prefetch、积压、失败重投及幂等记录。先定位卡在发布、领取、业务处理还是确认，再调整对应环节。</p>
+      <p id="queue-order" className="vp-citation-target">RabbitMQ 队列的基础模型是 FIFO，但多个发布连接、优先级、多消费者及重投等情况会影响观察到的处理顺序：高优先级消息可能先交付，多个连接同时发布时消息顺序可能交错。两个工作进程可能各领一条任务，较短的任务先完成；未确认的消息重新入队时，还可能改变接下来几条消息的交付顺序。<strong>先入队的任务，并不意味着一定先做完。</strong>本文的演示只有一个工作进程顺序处理两条任务，展示的是一种简化场景。<Cite id="queue-order"/></p>
+      <ArticleAside title="发布确认与消费确认的边界"><p id="queue-publisher" className="vp-citation-target">Publisher confirms 管发布者到代理这一段：代理有没有收到发布者发出的消息；consumer acknowledgements 管代理到消费者这一段：消费者有没有把消息处理完。两者相互独立。发布者收到确认，不能证明消费者已完成业务。<Cite id="queue-publisher"/></p><p id="queue-durable" className="vp-citation-target">队列元数据（比如队列名称和持久属性）是否持久、消息是否持久，要分别配置。RabbitMQ 的持久队列能在重启后恢复元数据，相应消息也需要使用持久方式发送；这仍然不能保证写库、更新业务状态这些外部影响恰好只发生一次。<Cite id="queue-durable"/></p></ArticleAside>
+      <p>排查队列问题时，应对照一份清单逐项检查：产品与协议版本、发布确认、消费确认时机、并发与 prefetch、积压、失败重投、幂等记录。先定位卡在发布、领取、业务处理还是确认，再调整对应环节。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
