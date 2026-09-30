@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第54条cache现已按顺序完成内容与dev检查，技术集成与完整内容均54/105，下一条connection-pool。第53条的词条内容已单独经PR #233合入main并发布生产；第54条及后续词条的功能改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第55条connection-pool现已按顺序完成内容与dev检查，技术集成与完整内容均55/105，下一条replication。第53条的词条内容已单独经PR #233合入main并发布生产；第54条及后续词条的功能改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -72,7 +72,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 完整内容与dev集成完成 · 代码PR #230；详见本节 |
 | 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 完整内容与dev集成完成 · 代码PR #232；内容发布PR #233 · 详见本节 |
 | 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 本地文字更新与浏览器验收完成；功能留在本地 |
-| 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 待更新 |
+| 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 待更新 |
 | 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 待更新 |
 | 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 待更新 |
@@ -1199,3 +1199,39 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `e27197ad-5b63-44fa-9063-c6213b502ddf` 已按查询结果更新为 `done`，记录了来源、ZCode、构建与浏览器证据。生产内容发布 PR #233 只包含前 53 条，本条没有合入 main 或部署生产。
 - 当前工作树为 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本条修改仍在本地，下一条是 `connection-pool`。继续处理前会先提交本条并保留现有 dev 预览，完成后再进入第 55 条，整体进度更新为 54/105。
+
+## 55 · 连接池文字完整复审与本地浏览器验收（2026-09-30）
+
+### 读者目标与正文调整
+
+- 读者入口是“每次查书目都重新建立数据库连接，为什么后来请求要排队？池开大是不是就更快？”读完应能解释连接是应用与数据库之间已建立并认证的通信通道，区分连接资源、数据库会话、ORM Session 与 HTTP 请求，预测借出、排队、归还和等待超时的结果，并知道归还连接不代表事务已经提交。
+- 这轮只修改 `PoolTermPage` 的常驻正文，保留已有两条连接/三个请求演示、重置按钮、旧锚点、四份来源和 CSS。补充 Psycopg、SQLAlchemy、node-postgres 的实现边界；解释 `pool_size`、`max_overflow`、`timeout`、`try/finally`、事务、锁、reset-on-return、pre_ping 和 PostgreSQL `max_connections`；把超时请求不会在之后归还时复活，以及“重新分配两条连接”只是恢复教学模型写明。没有新增真实数据库连接、SQL 执行、计时或池容量功能。
+- 与相邻词条的差异保持清楚：池保存可复用的连接资源，不保存上一条 SQL 的结果；等待连接超时与 SQL 执行超时发生在不同阶段；扩大单实例的池不能增加数据库处理能力，多实例还要合并计算连接预算。
+
+### 资料与正文对应
+
+实际打开并阅读四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Psycopg 3 · Connection pools](https://www.psycopg.org/psycopg3/docs/advanced/pool.html) | `pool-mechanism`、`pool-waiting`：连接池借出、队列、归还、等待超时与连接生命周期。 |
+| [SQLAlchemy 2.0 · Connection Pooling](https://docs.sqlalchemy.org/en/20/core/pooling.html) | `pool-lazy`、`pool-reset`、`pool-disconnect`：首次使用建连、池参数、reset-on-return 与 pre_ping 的边界。 |
+| [node-postgres · Pooling](https://node-postgres.com/features/pooling) | `pool-release`：checkout、查询失败仍 release，以及泄漏后池耗尽。 |
+| [PostgreSQL 18 · Connections and Authentication](https://www.postgresql.org/docs/18/runtime-config-connection.html) | `pool-capacity`：`max_connections` 的并发连接上限与资源分配。 |
+
+### ZCode reader、language 与主助手裁决
+
+- 真实 ZCode CLI 0.16.9 使用 `Qwen3.8-Flash-Next-FP8`。独立 `reader` 会话 `sess_cdf9de12-33a0-4d4c-9093-b0e47fffb8fe` 只读取 partner Skill 和冻结文字材料 `/tmp/vbp-pool-reader-material.txt`（SHA-256 `74817983f385b917c9ff14faca0f383b716eafefe1ca20e78ed8288b4b13ddc3`），没有源码、作者意图、资料或其他审读报告。它指出连接、数据库会话、ORM Session、池参数、事务、代码的 `try/finally`、超时后的处理和重置按钮缺少零基础前提；首图 C 的两个位置在纯文字材料里无法判断。主助手回到官方资料和实际页面，补定义与结果，首图则保留动画并在引言说明两个 C 是同一请求的两个阶段。
+- 第一轮 `language` 会话 `sess_527e1b85-d570-4018-b003-da3e64c0d006` 读取 partner、humanizer-zh 和修订稿，逐句指出名词堆叠、翻译腔、指代与技术边界句；主助手按其建议改写后，第二轮 `language` 会话 `sess_bd05d78c-4007-47cb-a06a-d7bf0aab7696` 重新读取最终材料 `/tmp/vbp-pool-language-material-final.txt`（SHA-256 `dce365a9f78fd1d47ebe008d40a959190333bb4b6a11e9e3ae5a86e819fcc79d`），只剩两处必须修正的翻译腔和几处可选句式，均已处理。两轮是文字模拟审读，不是真人读者或网页试读。
+- ZCode CLI 首次页面 headless 试读曾因本机 Playwright 浏览器运行时不可用而没有页面覆盖；本条有效证据分开记录为文字审读与后续 CUA 真实浏览器操作，不把其中一项冒充另一项。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID zQGanCmFtyID9m8rHBwtE`；`git diff --check` 通过。此前已有的 `tests/reuse-teaching.test.mjs` 1/1 通过，本条只改正文，没有增加低价值自动化测试。
+- CUA 打开 `http://127.0.0.1:3219/terms/connection-pool` 并实际操作：请求 A、B 借到两条连接，C 显示“等待空闲连接”；归还连接 1 后 A 显示“已归还”，C 显示“已借到连接”。重置后走超时分支，C 显示“等待超时 · 未获连接”；再归还连接 1，C 仍保持超时，没有被重新发放资源；再次重置回三个“尚未借用”。
+- 用 `Space` 触发“请求 A 借用连接”成功；展开 SQLAlchemy 引用看到 `pool-lazy`、`pool-reset`、`pool-disconnect` 三个正文回链，并点击回跳到正文。实际画面已检查初始和超时后状态；本轮 CUA surface 没有可控的 390px 视口接口，因此没有声称完成窄屏尺寸实测。没有真人读者、真实数据库、系统减少动态偏好、远端 dev 或生产验证。
+
+### DP、Git 与发布边界
+
+- VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `2a970cf3-2f2f-4577-9381-ceede34b2545` 已在完成证据后回写为 `done`。第 54 条任务 `e27197ad-5b63-44fa-9063-c6213b502ddf` 同样为 `done`。
+- 当前工作树为 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。第 55 条代码与记录提交后仍只保留在本地/dev 预览，不合入 main、不部署生产；下一条是第 56 条 `replication`，整体完成度 55/105。

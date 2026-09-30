@@ -36,29 +36,29 @@ export function CacheTermPage() {
 export function PoolTermPage() {
   const Cite=({id}:{id:string})=><ArticleCitation id={id} sources={poolSources}/>;
   return <ConceptArticle slug="connection-pool" title="连接池" sources={poolSources} sections={[["reuse","请求结束，连接可以留下"],["lease","两条连接，三个请求"],["return","结束事务，再归还连接"],["limit","池大小与数据库容量"]]}
-    intro={<>每次查书目都重新建立数据库连接，会重复连接与认证的工作。应用可以借用已有连接，用完交还。多个请求同时到来时，问题又变成：谁正在占用连接，后来者等在哪里，等多久。</>}
+    intro={<>这里的“连接”是一条应用与数据库服务器之间已经建立并完成认证的通信通道。每次查书目都重新建立它，等于每次都要重走连接和认证。应用可以借用已有连接，用完交还。多个请求同时到来时，问题又变成：谁正在占用连接，后来者等在哪里，等多久。首图里的两个 C 标的是同一个请求的两个阶段：前半段它在排队等待，请求 A 归还连接后，它才借到连接 1。</>}
     hero={<ConceptHero slug="connection-pool" label="两条既有连接分别被A和B借用，C先等待，A归还后C借用同一连接"><div className={s.poolHero}><div><span>连接 1</span><strong>A</strong><em>C</em></div><div><span>连接 2</span><strong>B</strong></div><span>C</span><ArrowDownLeft size={25}/></div></ConceptHero>}>
     <ArticleSection id="reuse" title="请求结束，连接可以留下"><Legacy slug="connection-pool" names={["question","definition"]}/>
-      <p id="pool-mechanism" className="vp-citation-target"><strong>连接池维护可借用、可归还的一组连接，复用连接并管理并发使用量。</strong>Psycopg 的池向需要数据库操作的调用提供连接；已有空闲连接可以直接交给调用者，用完再返回。池保存的是连接资源，不是上一条 SQL 的查询结果。<Cite id="pool-mechanism"/></p>
-      <p id="pool-lazy" className="vp-citation-target">“有一个池”也不一定代表启动时已创建全部连接。SQLAlchemy 的池按首次使用建立连接，QueuePool 可以设置 pool_size、max_overflow 与等待上限；Psycopg 的启动准备方式不同。配置要看所用驱动和池，不能把一个实现的默认值套给所有应用。<Cite id="pool-lazy"/></p>
-      <p>一条连接承载数据库会话与操作，它与程序里的 <ConceptTerm slug="orm">ORM</ConceptTerm> Session、HTTP 请求不是同一个对象。这里用一次借用期间由一个请求持有的模型，不讨论协议级流水线或同一连接的并发复用。</p>
+      <p id="pool-mechanism" className="vp-citation-target"><strong>连接池维护一组可借出、可归还的连接，供请求复用，并控制同时占用连接的请求数。</strong>Psycopg 是 Python 程序连接 PostgreSQL 的库；需要访问数据库时向池要连接，池里有空闲连接就直接给，用完再还回来。池保存的是连接资源，不是上一条 SQL 的查询结果。<Cite id="pool-mechanism"/></p>
+      <p id="pool-lazy" className="vp-citation-target">“有一个池”也不一定代表启动时已创建全部连接。SQLAlchemy 是 Python 的数据库工具；它的 QueuePool 要到第一次用到时才建立连接。<code>pool_size</code>表示常驻连接数，<code>max_overflow</code>表示临时允许多开的连接数，等待上限表示没有连接时最多等多久。Psycopg 创建连接的时机不同，不能把一个实现的默认值套给所有应用。<Cite id="pool-lazy"/></p>
+      <p>每条连接上有一个数据库会话，操作都通过它执行。这里的数据库会话是服务器为这条连接保留的状态，例如当前事务；<ConceptTerm slug="orm">ORM</ConceptTerm> 的 Session 是应用里管理对象和事务的程序对象，HTTP 请求则是一次网页或 API 调用。这三者是不同的东西。这里的模型是：一次借用期间，连接由一个请求独占。协议级流水线和同一连接的并发复用不在讨论范围。</p>
     </ArticleSection>
     <ArticleSection id="lease" title="两条连接，三个请求"><Legacy slug="connection-pool" names={["scene-heading"]}/>
-      <p>池里已有两条健康连接，不允许临时扩容。让 A、B、C 依次借用；第三个请求只能等待。完成并归还一条连接后，等待者接手同一资源。另一条路径中，让等待达到上限，再归还连接，观察超时请求会不会被重新发放资源。</p>
+      <p>池里已有两条健康连接，不允许临时扩容。让 A、B、C 依次借用；第三个请求只能等待。有请求完成操作并归还连接后，等待中的请求就能拿到它。换一条路径：让等待达到上限，C 会以“等待超时 · 未获连接”结束。之后再归还 A 的连接，也不会把连接发给这次已经超时的等待。要重新演示借还，点“重新分配两条连接”即可把教学模型恢复到初始状态。</p>
       <PoolLesson/>
-      <p id="pool-waiting" className="vp-citation-target">Psycopg 的池在没有可用连接时把调用放入等待队列，并支持 timeout 等限制。<strong>等待连接超时与 SQL 执行超时发生在不同阶段。</strong>尚未获得连接的请求没有因此完成查询。演示由按钮推进等待上限，只表示容量与借还关系，没有运行 SQL 或真实计时。<Cite id="pool-waiting"/></p>
-      <p>归还之后，连接仍在池里，可以给另一个请求。这里按到达顺序交接只有一个等待者的队列；实际池可能有不同的排队、连接选择与扩容策略。</p>
+      <p id="pool-waiting" className="vp-citation-target">Psycopg 的池在没有可用连接时把调用放入等待队列，并支持用 <code>timeout</code> 限制等待时长。<strong>等待连接超时与 SQL 执行超时发生在不同阶段。</strong>等待超时的请求还没拿到连接，查询也还没有执行。演示里点按钮就能让等待到达上限；这个演示只展示容量与借还关系，没有运行 SQL，也没有真实计时。<Cite id="pool-waiting"/></p>
+      <p>归还之后，连接仍在池里，可以给另一个请求。演示里只有一个等待者，按到达顺序交接即可；实际的池可能有不同的排队、选连接与扩容策略。</p>
     </ArticleSection>
     <ArticleSection id="return" title="结束事务，再归还连接"><Legacy slug="connection-pool" names={["quiz-heading"]}/>
-      <p id="pool-release" className="vp-citation-target">成功借到连接后，查询失败也要按驱动约定归还。node-postgres 文档提醒，不释放 client 会泄漏资源，最终耗尽池。可用 try / finally 保护归还动作；下面假定已创建 pool，只展示一条参数化查询的借还范围。<Cite id="pool-release"/></p>
+      <p id="pool-release" className="vp-citation-target">node-postgres 是 Node.js 连接 PostgreSQL 的客户端库。成功借到连接后，查询失败也要按驱动约定归还。它的文档提醒，不释放 client 会泄漏资源，最终耗尽池。<code>try</code>里执行查询，<code>finally</code>里的归还动作无论查询成功还是抛错都会执行；下面假定已创建 <code>pool</code>，只展示执行一条参数化查询时的借还写法。<Cite id="pool-release"/></p>
       <pre className={base.code}>{'const client = await pool.connect();\ntry {\n  await client.query(\n    "SELECT title FROM books WHERE book_id = $1",\n    [42]\n  );\n} finally {\n  client.release();\n}'}</pre>
-      <p id="pool-reset" className="vp-citation-target">归还也要处理连接上的事务状态。SQLAlchemy 默认的 reset-on-return 会清理未提交事务状态，包括相关锁；现代 Connection 与 Pool 会协调这个动作。<strong>归还连接不是提交成功的凭据。</strong>需要提交的数据仍要有明确的 <ConceptTerm slug="transaction">事务</ConceptTerm>边界，临时表或其他会话状态还可能需要额外清理。<Cite id="pool-reset"/></p>
-      <ArticleAside title="空闲连接也可能已经断开"><p id="pool-disconnect" className="vp-citation-target">SQLAlchemy 的 pre_ping 可以在借出时检查连接并处理失效连接，但它不能挽救正在执行中断开的事务。一次操作中途丢失连接，应用仍需处理失败并判断是否重做整个事务，不能把健康检查当成自动恢复所有查询。<Cite id="pool-disconnect"/></p></ArticleAside>
+      <p id="pool-reset" className="vp-citation-target">事务是一组要一起提交或回滚的数据库操作；锁是数据库为避免并发修改冲突而暂时占住的记录或表资源。归还也要处理连接上的事务状态。SQLAlchemy 默认的 reset-on-return 会清理未提交事务状态，包括相关锁；Connection 与 Pool 会配合完成这个清理。<strong>归还连接不代表事务已经提交成功。</strong>需要提交的数据仍要有明确的 <ConceptTerm slug="transaction">事务</ConceptTerm>边界，临时表或其他会话状态还可能需要额外清理。<Cite id="pool-reset"/></p>
+      <ArticleAside title="空闲连接也可能已经断开"><p id="pool-disconnect" className="vp-citation-target">SQLAlchemy 的 pre_ping 可以在借出时检查连接并处理失效连接，但它不能挽救执行中途断开的事务。一次操作中途丢失连接，应用仍需处理失败并判断是否重做整个事务，不能指望健康检查在出问题时自动恢复一切。<Cite id="pool-disconnect"/></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="limit" title="池大小与数据库容量" className={base.offset}><Legacy slug="connection-pool" names={["prompt-heading"]}/>
-      <p id="pool-capacity" className="vp-citation-target">PostgreSQL 的 max_connections 限制同时连接数量，增大配置也会增加相应资源分配。一个服务部署多个实例时，要把各实例的连接池、临时扩容和其他客户端一起算进预算。<strong>扩大某一个池，不能凭空增加数据库处理能力。</strong><Cite id="pool-capacity"/></p>
-      <div className={base.contrast}><div><h3>先看借用</h3><p>请求是否及时归还、是否把慢外部调用放在持有连接的期间、有没有长事务。</p></div><div><h3>再看容量</h3><p>等待人数、借用时长、超时、数据库负载和实例数量一起决定调整方向。</p></div></div>
-      <p>连接池排查先记录驱动版本、池大小、借用等待上限、实例数量、连接生命周期和真实异常。拿不到连接、建连失败、查询缓慢与连接断开对应不同环节，需要分别定位。</p>
+      <p id="pool-capacity" className="vp-citation-target">PostgreSQL 的 <code>max_connections</code> 限制服务器同时接受的连接数量；把它的值调大，服务器也要为这些连接预留更多资源。这个数值不保证数据库每秒能处理多少查询。一个服务部署多个实例时，要把各实例的连接池、临时扩容和其他客户端一起算进预算。<strong>扩大某一个池，不能凭空增加数据库处理能力。</strong><Cite id="pool-capacity"/></p>
+      <div className={base.contrast}><div><h3>先看借用</h3><p>请求是否及时归还、有没有在持有连接期间调用慢的外部服务、有没有长事务。</p></div><div><h3>再看容量</h3><p>等待人数、借用时长、超时、数据库负载和实例数量，要一起看才能确定调整方向。</p></div></div>
+      <p>排查连接池问题时，先记录驱动版本、池大小、等待上限、实例数量、连接生命周期和真实异常。拿不到连接、建连失败、查询缓慢与连接断开对应不同环节，需要分别定位。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
