@@ -1671,7 +1671,7 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 ### 构建与真实浏览器验收
 
-- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。金额转换逻辑未改动，因此没有新增或重复运行低价值测试。
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。金额转换逻辑未改动，因此没有新增或重复运行低价值测试。正文合并后的 `main` 构建已制作为本地 `linux/amd64` 镜像 `vibepolaris:9fdd3a12eeea17bcc5dfb3a08b4013f29639f412`；本地容器 3220 端口返回 200，精确包含导语和“统计粒度”新文字。
 - CUA 在 `http://127.0.0.1:3219/terms/data-transformation?qa=067final` 真实操作并观察：默认未确认 D 的单位时，A/B/C 转为 1230 分、D 保留“单位未确认”，合计 3690 分；选择“已确认：分”后四条都转为 1230 分，合计 4920 分；选择“已确认：元”并勾选 A 超出两位小数后，A 保留待处理、D 为 123000 分，合计 125460 分。第四处 `Aggregate Functions` 引用可展开，正文回链跳到 `transform-grain` 段；页面浏览器 error/warn 为空，截图已实际观察。
 - 本轮没有真实费用系统、PostgreSQL/dbt/Python 运行、真人零基础读者或远端 dev 功能验证；仅验证静态正文与浏览器内存演示。当前 CUA surface 未把窄屏尺寸写成实测通过。
 
