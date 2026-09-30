@@ -65,28 +65,31 @@ export function PoolTermPage() {
 export function ReplicationTermPage() {
   const Cite=({id}:{id:string})=><ArticleCitation id={id} sources={replicationSources}/>;
   return <ConceptArticle slug="replication" title="复制" sources={replicationSources} sections={[["changes","把变更持续传到另一台库"],["apply","收到变更与查到新值"],["choices","复制范围与确认条件"],["recovery","副本会接收正确操作，也会接收误删"]]}
-    intro={<>书名在主库里已经改好，读者从副本查询却还看到原名。两边的 SQL 都可以执行成功，结果仍有差别。理解复制，需要把提交、传播和应用变更分开，再问这一次查询读到了哪个进度。</>}
+    intro={<>为什么要维护两份数据库？常见答案是让副本承接一部分读取，或在主库故障时接管；代价是两边在一段时间内可能不一样。书名在主库里已经改好，请求落到副本上，查到的却还是原名。理解复制，需要把主库提交、变更传过去、副本应用、这次查询读到什么分开看。开场图展示的是复制追平之后的样子；这篇要看的，是追平之前的那段路。</>}
     hero={<ConceptHero slug="replication" label="主库已提交新书名，变更记录向副本移动，副本应用后才出现新书名"><div className={s.replicationHero}><div><Database size={24}/><span>主库 · 已提交</span><strong>山间来信 · 修订版</strong></div><code>变更</code><div><Database size={24}/><span>副本 · 已应用</span><strong>山间来信 · 修订版</strong></div></div></ConceptHero>}>
     <ArticleSection id="changes" title="把变更持续传到另一台库"><Legacy slug="replication" names={["question","definition"]}/>
-      <p id="replica-stream" className="vp-citation-target"><strong>数据库复制将源节点的数据变更传播到其他节点，让副本跟随变化。</strong>PostgreSQL 的物理流复制向备库传送 WAL 记录，备库重放这些记录。默认异步流复制下，主库提交到副本可见之间可以有延迟；复制不是每次查询时再去主库取一次结果。<Cite id="replica-stream"/></p>
-      <p>副本可以用于适当的读取或故障恢复，但应用还要选择读取节点、决定新鲜度要求，并安排故障切换。本文只解释传播与读取，一次主库提交不会自动把客户端地址切换到另一个数据库。</p>
+      <p id="replica-stream" className="vp-citation-target"><strong>数据库复制将主库的数据变更传播到另一台机器，让副本跟随变化。</strong>PostgreSQL 会把变更先写进 WAL（预写日志），物理流复制把这些记录传给备库，也就是这里说的副本；副本再按顺序把这些记录重新执行一遍，也就是重放。下文演示里的“应用下一条变更”按钮，做的就是这个重放。这里的“提交”是指变更在主库正式落定，之后不会再撤销。默认的流复制是异步的：主库提交完就返回，不等副本确认。所以从主库提交到变更在副本上可见，中间可以有延迟；复制不是每次查询时再去主库取一次结果。<Cite id="replica-stream"/></p>
+      <p>副本常见两种用法：承接能接受稍旧数据的读取（比如刷列表），以及在主库故障后顶替它。应用程序自己决定哪些请求发给副本、要求数据新到什么程度；故障后由哪台机器接管、客户端怎么转过去，都不随复制自动发生，要另行安排。本文只解释传播与读取。</p>
     </ArticleSection>
     <ArticleSection id="apply" title="收到变更与查到新值"><Legacy slug="replication" names={["scene-heading"]}/>
-      <p>两库从同一个 #42 书目开始。提交改名，查询副本；发送下一条变更，再查询；最后应用，再查询。随后提交删除，重复发送与应用。v0、v1、v2 仅是本站两条已提交变更的顺序，不是 PostgreSQL 的实际 WAL 位置；每次查询按当前已应用值取一个新快照。</p>
+      <p>两库从同一本书开始，它的编号是 #42；这里的“行”就是表里代表一条书目记录的那一行。“提交改名”表示主库已经正式接受这次变更。已提交的变更会按顺序排队，每点一次“发送下一条变更”，就传走队首的一条；先提交改名，再查询副本；发送下一条变更，再查询；最后应用，再查询。改名应用后，主库的提交按钮会切换成“主库提交删除 #42”。随后提交删除，重复发送与应用。v1、v2 标记这个演示里两次已提交变更的先后，v0 是起点；它们只是演示给变更贴的标签，不是数据库自己给每条变更记的位置。查询会按当前已应用值取一个新快照，可以把它理解成“在这一刻给副本数据拍一张照片”。
+      </p>
+      <p>真实数据库里，发送和应用会持续自动发生；这里把它们拆成按钮，让你分别停在“主库已提交”“变更已到达副本”“副本已应用”和“这次查询可见”四个阶段。</p>
       <ReplicationLesson/>
-      <p id="replica-visible" className="vp-citation-target">PostgreSQL 热备接收只读查询。变更到达仍需要重放；事务提交记录被重放后，后续新快照才看得到该事务的变化。查询或事务何时取得快照，还受隔离级别影响。<strong>已收到记录、已应用记录、某次查询可见，是不同的观察点。</strong><Cite id="replica-visible"/></p>
-      <p>演示故意让你手动发送和应用，便于观察差别；实际复制会持续工作。这里没有网络断开、磁盘写入确认、长期事务或节点切换，不能从两步按钮推断真实复制耗时与可靠性。</p>
+      <p>应用后，右侧副本面板立刻显示已应用的新值；查询结果是每次查询取到的快照，所以要重新点“查询副本 #42”才会跟上。</p>
+      <p id="replica-visible" className="vp-citation-target">备库可以作为热备运行：一边跟随主库更新，一边允许只读查询；变更到达副本后仍要重放才生效。事务（一组改动绑在一起，要么全生效要么全不算）的提交记录被重放之后，新开始的查询会取一份新快照，这才看得到这个事务的变化。事务究竟在什么时刻取这张“数据照片”，还受隔离级别（数据库规定查询在并发变更下能看到什么数据的规则）影响；这会在“事务”词条里展开。<strong>已收到记录、已应用记录、某次查询可见，是不同的观察点。</strong><Cite id="replica-visible"/></p>
+      <p>演示故意让你手动发送和应用，便于观察差别。这里没有网络断开、磁盘写入确认、长期事务或节点切换，不能凭“发送”和“应用”这两个按钮，推断真实复制要花多久、有多可靠。</p>
     </ArticleSection>
     <ArticleSection id="choices" title="复制范围与确认条件"><Legacy slug="replication" names={["quiz-heading"]}/>
-      <p id="replica-granularity" className="vp-citation-target">PostgreSQL 的物理复制以数据块与字节级变化为基础；逻辑复制依据数据对象及其复制标识传播变化，可以更细地控制复制内容。两者都叫复制，配置、边界和用途却不同；本文的顺序模型只表达传播过程，不伪装成真实 WAL 或逻辑订阅协议。<Cite id="replica-granularity"/></p>
-      <p id="replica-sync" className="vp-citation-target">同步方式还要问“提交在等哪个确认”。PostgreSQL 的 remote_apply 会等待当前同步备库报告已重放事务，使之可见；其他确认方式不都等同于这一步。需要结合同步备库配置和具体提交设置理解保证，不能把“开了复制”直接解释成任意副本马上读到最新值。<Cite id="replica-sync"/></p>
-      <div className={base.contrast}><div><h3>读扩展</h3><p>把能接受相应新鲜度的读取分配到副本，并检查实际应用进度。</p></div><div><h3>故障恢复</h3><p>选择可接管节点，核对可能丢失的提交，处理旧主节点和客户端切换。</p></div></div>
+      <p id="replica-granularity" className="vp-citation-target">PostgreSQL 的物理复制按数据库文件里的数据块和字节传播变化，不按表和行挑选内容；逻辑复制按表和行传播变化，可以选择只复制哪些表。为了知道一条变更对应哪张表的哪一行，被复制的表需要一个能唯一确定行的复制标识（通常用主键，也就是每行独有的编号；演示里的 #42 就是这样的书目编号）。两者都叫复制，配置、边界和用途却不同；演示里“提交 → 传过去 → 应用”这个先后顺序，只用来表达传播过程，不是 WAL 真实的传输方式和逻辑复制的真实细节。<Cite id="replica-granularity"/></p>
+      <p id="replica-sync" className="vp-citation-target">还要问主库提交时等不等副本的回音，这就是同步方式：异步不等，提交完直接返回；同步要等，等到哪一步可以配置。PostgreSQL 的 <code>remote_apply</code> 是等得更深的一档：等当前同步备库报告已重放该事务、数据在那台备库上可见，主库才返回“已提交”；其他确认方式会停在收到或写入等更早阶段，不等于已经重放、对查询可见。需要结合同步备库配置和具体提交设置，才知道它到底保证了什么；不能把“开了复制”直接解释成任意副本马上读到最新值。<Cite id="replica-sync"/></p>
+      <div className={base.contrast}><div><h3>读扩展</h3><p>把能接受一些延迟的读取分配到副本，并检查实际应用进度。</p></div><div><h3>故障恢复</h3><p>选择可接管节点，核对可能丢失的提交，处理旧主节点和客户端切换。</p></div></div>
     </ArticleSection>
     <ArticleSection id="recovery" title="副本会接收正确操作，也会接收误删" className={base.offset}><Legacy slug="replication" names={["prompt-heading"]}/>
-      <p>在主库删除 #42，副本最初还留着旧记录；等删除也应用完，两边都成为 0 行。副本跟随数据变化，不负责判断这一次删除是否符合业务意图。延迟期间碰巧还有一份旧值，不能当成已经安排好的恢复方案。</p>
-      <p id="replica-recovery" className="vp-citation-target"><strong>复制与备份解决的故障范围不同。</strong>PostgreSQL 的时间点恢复需要适用的基础备份与保留的 WAL，恢复时可选择在某个目标点停止重放。保留历史与验证恢复过程，才有机会找回误删之前的状态；一个持续跟随最新变更的副本不能代替这套安排。<Cite id="replica-recovery"/></p>
-      <ArticleAside title="评估复制需要的事实"><p>提供数据库版本、物理或逻辑复制方式、复制范围、确认条件、主库和副本进度、允许丢失或延迟的范围、实际故障与切换办法。让它区分延迟读取、复制中断和应用冲突，不要只回答“加一台从库”。</p></ArticleAside>
-      <p>接着可读 <ConceptTerm slug="backup">备份</ConceptTerm>与 <ConceptTerm slug="transaction">事务</ConceptTerm>。复制保留多处数据；这些节点之间如何传播，历史状态怎样恢复，是两项分别需要设计和验收的能力。</p>
+      <p>在主库删除 #42，副本最初还留着旧记录；等删除应用完，两边都是 0 行。副本跟随数据变化，不负责判断这一次删除是否符合业务意图；旧值只在传播追上来之前短暂存在，不能把它当成一个恢复方案。演示里的“回到初始状态”只是演示重置，真实副本一旦应用了变更，自己退不回过去的值。</p>
+      <p id="replica-recovery" className="vp-citation-target"><strong>复制与备份解决的故障范围不同。</strong>PostgreSQL 的时间点恢复需要一份更早的完整数据备份（基础备份），以及一路保留下来的 WAL；恢复时可选择在某个目标点停止重放。保留历史与验证恢复过程，才有机会找回误删之前的状态；一个持续跟随最新变更的副本不能代替这套安排。<Cite id="replica-recovery"/></p>
+      <ArticleAside title="评估复制需要的事实"><p>评估一套复制配置，要先把这些问清楚：数据库版本、物理或逻辑复制方式、复制范围、确认条件、主库和副本进度、允许丢失或延迟的范围、实际故障与切换办法。让它区分延迟读取、复制中断和应用冲突（变更到了副本却没能按预期应用），不要只回答“加一台副本”。</p></ArticleAside>
+      <p>接着可读 <ConceptTerm slug="backup">备份</ConceptTerm>与 <ConceptTerm slug="transaction">事务</ConceptTerm>。复制让几份数据跟上最新变更，备份让你能回到更早的状态；这是两个目标，需要分别设计和验证。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

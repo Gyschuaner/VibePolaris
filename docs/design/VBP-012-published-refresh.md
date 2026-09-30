@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第55条connection-pool现已按顺序完成内容与dev检查，技术集成与完整内容均55/105，下一条replication。第53条的词条内容已单独经PR #233合入main并发布生产；第54条及后续词条的功能改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第56条replication现已按顺序完成内容与dev检查，技术集成与完整内容均56/105，下一条backup。第53条的词条内容已单独经PR #233合入main并发布生产；第54条及后续词条的功能改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -1235,3 +1235,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `2a970cf3-2f2f-4577-9381-ceede34b2545` 已在完成证据后回写为 `done`。第 54 条任务 `e27197ad-5b63-44fa-9063-c6213b502ddf` 同样为 `done`。
 - 当前工作树为 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。第 55 条代码与记录提交后仍只保留在本地/dev 预览，不合入 main、不部署生产；下一条是第 56 条 `replication`，整体完成度 55/105。
+
+
+## 56 · 复制文字完整复审与本地浏览器验收（2026-09-30）
+
+### 读者目标与正文调整
+
+- 读者入口是“主库已经改名，为什么副本查询还看到旧值？变更到了副本和这次查询真的看到之间差了哪一步？”读完应能区分主库提交、变更传递、副本应用和查询快照可见，知道默认异步复制会产生延迟，并能把复制与备份、故障切换、读扩展分开。
+- 这轮更新 `ReplicationTermPage` 和 `ReplicationLesson` 的文字与演示标签：首次解释 WAL、备库/副本、提交、重放、异步、快照、事务、隔离级别、物理/逻辑复制、复制标识、`remote_apply`、基础备份和应用冲突；说明应用后副本面板先更新、重新查询才得到新快照；把按钮名称统一为“主库提交改名”“主库提交删除 #42”“查询副本 #42”；把演示重置明确为本地教学重置。保留既有两次变更、发送/应用、删除误操作和引用展开功能，未接入真实数据库、网络或故障切换。
+- 与相邻词条的差异写清：复制让副本跟上最新变更，备份保存可回到更早状态的历史；副本的延迟旧值不是恢复方案；发送/应用按钮只是把真实自动过程拆开观察。
+
+### 资料与正文对应
+
+实际打开并核对四份 PostgreSQL 18 官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [PostgreSQL 18 · Log-Shipping Standby Servers](https://www.postgresql.org/docs/18/warm-standby.html) | `replica-stream`、`replica-sync`：WAL 流复制、默认异步延迟、同步确认与 `remote_apply`。 |
+| [PostgreSQL 18 · Hot Standby](https://www.postgresql.org/docs/18/hot-standby.html) | `replica-visible`：只读查询、重放后新快照可见及主备暂时不同。 |
+| [PostgreSQL 18 · Logical Replication](https://www.postgresql.org/docs/18/logical-replication.html) | `replica-granularity`：物理按块/字节、逻辑按对象与复制标识。 |
+| [PostgreSQL 18 · Continuous Archiving and Point-in-Time Recovery](https://www.postgresql.org/docs/18/continuous-archiving.html) | `replica-recovery`：基础备份、连续 WAL 与时间点恢复，和 warm standby 的边界。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI 0.16.9，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。完成 1 轮 `reader` 零基础读者模拟和 5 轮 `language` 中文交叉审读；输入只包含技能要求的可见正文、演示状态和官方资料摘要，没有源码或作者意图。reader 反馈补出两库动机、WAL/提交/快照前提、备库与副本称呼、收到与应用的可见差别，以及复制不等于备份；language 反馈补齐异步、热备、事务、隔离级别、重放、主键和演示状态文案，清掉“顺序模型”“本站”“两步按钮”等零基础读者会卡住的表达。后续每次实质改写都重新跑 language，最终候选没有新增结构性问题。两类反馈都是模拟审读，不是真人读者验收。
+- reader 最终输入材料 SHA-256：`79c287cc257f9a94ffa00b4650fbe5574a2f0a6304e397da3d6fc4fe7deca9e1`；最终 language prompt（含来源摘要与当前材料）SHA-256：`7bd6a113ee6624528e47c22e0d2d6fd023b0b15b798661c8f53e875292a40baa`。ZCode 首次尝试页面 headless 试读仍受本机 Playwright 运行时限制，未把它写成页面证据；有效页面证据来自后续 CUA。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`BUILD_ID Ly0opUW_wXos7_B1WkovB`。`git diff --check` 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/replication` 真实操作并观察页面：初始状态显示两库 v0、主库改名按钮、禁用的删除/发送/应用按钮；点击“主库提交改名”后主库显示修订版、日志为“主库已提交 · 待发送”；查询副本仍返回 v0 原名；发送后日志为“变更已到达副本 · 仍显示旧值”；应用后副本面板变成修订版、日志明确“副本已应用 · 再点查询才见新值”；重新查询结果变成修订版。
+- 沿同一流程提交删除、发送、应用并查询，副本最终显示并返回“0 行 · 已删除”；点击“演示回到初始状态”清除旧查询、恢复 v0；用键盘 `Space` 触发“主库提交改名”成功。参考资料的 PostgreSQL 18 引用披露可展开，正文回链点击后回到 `#replica-sync`；初始与中段页面截图已实际观察。当前 CUA surface 未提供可控 390px 视口接口，因此没有声称完成窄屏尺寸实测；没有真人读者、真实数据库、远端 dev 或生产验证。
+
+### DP、Git 与发布边界
+
+- VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `a53cc0ba-3acc-4080-93cb-bfc2e9f5aa7a` 已进入 `in_progress`，待提交后按 DP 允许流转为 `done` 并重新查询确认。本条未推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本条修改只在本地/dev 预览，未合入 `main`、未发布生产。当前整体完成 56/105，下一条是 `backup`。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入 Obsidian。
