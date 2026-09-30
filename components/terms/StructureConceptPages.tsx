@@ -55,33 +55,44 @@ export function JoinTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={joinSources} />;
   return <ConceptArticle slug="join" title="连接查询" sources={joinSources}
     sections={[["match", "把书名和借阅放在一起"], ["pairs", "一条书目可能配出多行"], ["missing", "没有配上的记录怎么办"], ["filter", "连接之后还可以筛选"]]}
-    intro={<>借阅表只记书的编号，页面却要显示书名。需要把借阅与书目按编号对上，再取出两边的信息。同一本书被借过两次时，结果应该保留两次借阅，不能只看见一个书名就合成一行。</>}
+    intro={<>借阅记录存了书号和读者，界面还想显示当前书名。AI 建议“用 JOIN 查出来”：拿借阅中的书号去找对应书目，再把书名和这次借阅放在同一行结果里。同一册书被借过两次时，会配出两行，分别属于两次借阅。</>}
     hero={<ConceptHero slug="join" label="42号书目与两次借阅配对，得到两条查询结果"><div className={s.joinHero}><div><span>书目 #42</span><span>借阅 1 · #42</span><span>借阅 2 · #42</span></div><Intersect size={30} /><div><span>山间来信 · 林舟</span><span>山间来信 · 陈禾</span></div></div></ConceptHero>}>
     <ArticleSection id="match" title="把书名和借阅放在一起">
-      <Legacy slug="join" names={["question", "definition"]} />
-      <p id="join-definition" className="vp-citation-target"><strong>JOIN 按指定条件组合不同表中的行，形成本次查询的结果。</strong>这里比较 <code>books.book_id</code>和 <code>loans.book_id</code>，匹配后取书名与读者。查询中用 <code>b</code>和 <code>l</code>作为两个表的别名，让同名字段的来源明确。它不会把两张原表永久合成一张。<Cite id="join-definition" /></p>
-      <p>JOIN 的条件可以比较没有外键声明的字段。<ConceptTerm slug="foreign-key">外键</ConceptTerm>负责约束写入时的引用，JOIN 负责查询怎样配对。下面特意保留一条找不到 #65 书目的旧借阅，用来观察未匹配情况；如果已经正确执行相应外键检查，这样的新增记录应被拒绝。</p>
+      <Legacy slug="join" names={["question"]} />
+      <p id="join-definition" className="vp-citation-target"><strong>JOIN 把表中的行按规则配在一起，生成本次查询的结果。</strong>这里的“连接”指记录配对。书目表叫 <code>books</code>，每一行是一册书，保存书号 <code>book_id</code> 和书名 <code>title</code>。借阅表叫 <code>loans</code>，每一行是一次借阅，保存这次借阅的编号 <code>loan_id</code>、所借书号 <code>book_id</code> 和读者 <code>reader</code>。借阅编号识别哪一次借阅，书号识别借的是哪册书。<Cite id="join-definition" /></p>
+      <p>只看借阅表，可以知道林舟借了 #42，却看不到书名；只看书目表，可以知道 #42 叫《山间来信》，却不知道谁借过。让两边的 book_id 相等，就能配出“山间来信 · 林舟”。<code>books.book_id</code> 表示书目表的书号列，<code>loans.book_id</code> 表示借阅表的书号列；点号前面的名字说明这一列来自哪张表。</p>
+      <p>程序也可以分开查询两张表，再逐条找书名。JOIN 把配对规则交给数据库，让一次查询返回两边需要的信息。查询结果会包含这些组合，原来的两张表仍然各自保存记录。这份查询结果不会合并两张原表，也不会改变原表中的记录。</p>
+      <p id="join-alias" className="vp-citation-target">下面的 SQL 查询给 books 临时取了简称 <code>b</code>，给 loans 取了简称 <code>l</code>，这种简称叫<strong>别名</strong>。所以 <code>b.title</code> 是书名，<code>l.reader</code> 是读者。<code>FROM</code> 指定查询的表，<code>ON b.book_id = l.book_id</code> 写出两边书号必须相等的配对条件，<code>SELECT</code> 指定结果中要显示的列。<Cite id="join-alias" /></p>
+      <pre className={base.code}>{'SELECT b.title, l.reader\nFROM books b INNER JOIN loans l\n  ON b.book_id = l.book_id;'}</pre>
+      <p id="join-key" className="vp-citation-target">本例把书目中的 book_id 作为<strong>主键</strong>，要求每册书的编号唯一且不能缺值；借阅中的 book_id 可以重复，因为同一册书可以有多次借阅。<ConceptTerm slug="foreign-key">外键</ConceptTerm>则是数据库里的一种检查规则，例如要求借阅中的书号必须对应已有书目。JOIN 本身不要求先声明外键，它按查询中给出的条件配对。<Cite id="join-key" /></p>
+      <p>为了观察找不到对应书目的情况，本页的固定样例特意放了一条书号 #65 的借阅，而书目中没有 #65。演示不运行外键检查；实际系统如果启用了相应检查，新增这条借阅应被拒绝。</p>
     </ArticleSection>
     <ArticleSection id="pairs" title="一条书目可能配出多行">
       <Legacy slug="join" names={["scene-heading"]} />
-      <p id="join-multiplicity" className="vp-citation-target">INNER JOIN 为每一对符合条件的行生成结果。#42 对上借阅 1，也对上借阅 2，所以有两行；书名相同不代表这两次借阅相同。CROSS JOIN 则保留所有组合：两条书目与三条借阅得到六对，不检查编号相等。<Cite id="join-multiplicity" /></p>
-      <p>矩阵展示候选配对，选择一种查询看结果如何变化。补出的 NULL 行放在结果中，原始书目和借阅始终保留。这个模型用于理解结果语义，不代表数据库实际必须逐格执行。</p>
+      <p id="join-multiplicity" className="vp-citation-target"><code>INNER JOIN</code> 叫内连接，只把符合条件的一对行放进结果。#42 对上借阅 1 的林舟，也对上借阅 2 的陈禾，所以《山间来信》出现两行：每行对应一次不同的借阅。#78 没有借阅，借阅 3 的 #65 没有对应书目，它们都不进入这个结果。<Cite id="join-multiplicity" /></p>
+      <p id="join-cross" className="vp-citation-target"><code>CROSS JOIN</code> 叫交叉连接，把每条书目与每条借阅都组合一次，不要求编号相等。两条书目各配三条借阅，总共是 2 × 3 = 6 行。比如 #78 也会和“借了 #42 的林舟”放在一行；这个组合本身不能说明林舟借过 #78。选择哪种连接方式和配对规则，取决于你想查什么。<Cite id="join-cross" /></p>
+      <p>下方矩阵的每格是一种候选组合，勾和叉只表示两边的书号是否相同；选中 CROSS 时，不同编号的组合也会进入结果。按钮决定本次采用哪一种连接，下面显示相应 SQL 和结果。SQL 中的 <code>AS loan_book_id</code> 把借阅侧的书号列在结果中叫作 loan_book_id，方便与书目侧的 book_id 区分，并没有给原表的列改名。</p>
+      <p>另外两个 LEFT 按钮会保留一侧找不到配对的记录，用 <code>NULL</code> 填另一侧的结果列。NULL 表示这一项没有值，不是编号 0，也不是新增一条真实借阅。原表中的书目和借阅始终保留。这个有限模型展示配对与结果，不连接数据库，也不表示数据库实际必须逐格执行。</p>
       <JoinLesson />
-      <p>看到“重复书名”时，先确认一行结果代表什么。这里一行代表一对书目与借阅，不该为了看起来整齐就随手去重。真要统计每本书被借过几次，需要另外做聚合；真要显示每本书一次，则要先明确选择或汇总借阅的规则。</p>
+      <p>这里一行结果代表一对书目与借阅。若只显示书名，不显示读者或借阅编号，两行可能看起来完全一样，但两次配对仍是不同的借阅。想统计每册书被借过几次，需要把同一册书的借阅分组后计数；这种按组汇总的操作叫聚合。想每册书只显示一行，则先说明要选哪一次借阅，或者怎样汇总，不能随手删去“重复书名”就当作结果正确。</p>
     </ArticleSection>
     <ArticleSection id="missing" title="没有配上的记录怎么办">
       <Legacy slug="join" names={["quiz-heading"]} />
-      <p id="join-outer" className="vp-citation-target"><strong>LEFT JOIN 保留左侧没有匹配对象的行，并用 NULL 补齐另一侧的列。</strong>书目放左侧时，#78 没有借阅也会出现；借阅放左侧时，借阅 3 的 #65 仍会出现，但书名是 NULL。所谓“左侧”是当前 SQL 中的顺序，不是表永远具有的属性。<Cite id="join-outer" /></p>
-      <p id="join-missing" className="vp-citation-target">可以利用这一规则查缺失对象。MySQL 文档给出 LEFT JOIN 后检查右侧键是否为 NULL 的写法。本例查询 <code>WHERE b.book_id IS NULL</code>，得到借阅 3；它在书目侧找不到匹配。这里检查的是非空主键，因此能区分“未匹配”与“匹配行某个普通字段恰好为空”。<Cite id="join-missing" /></p>
+      <p id="join-outer" className="vp-citation-target"><strong>LEFT JOIN 先保留匹配结果，再让左侧没有匹配对象的行也出现在结果中，另一侧的列用 NULL 补齐。</strong>左侧是 SQL 中写在 LEFT JOIN 前面的表。<code>books b LEFT JOIN loans l</code> 把书目放左侧；<code>loans l LEFT JOIN books b</code> 把借阅放左侧。同一张表可以在不同查询中放在不同侧。<Cite id="join-outer" /></p>
+      <p>选“书目 LEFT”，#42 仍配出两次借阅，#78 多出一行，借阅编号、借阅书号和读者都是 NULL，总共三行。选“借阅 LEFT”，前两次借阅照常配上 #42；借阅 3 仍保留原书号 65 和读者唐宁，但书目侧的编号与书名是 NULL，也是三行。LEFT JOIN 不会把右侧单独剩下的行也保留下来：选“书目 LEFT”时，借阅 3 不在结果里。</p>
+      <p id="join-missing" className="vp-citation-target">可以用“借阅 LEFT”的结果找出没有对应书目的借阅。<code>WHERE</code> 表示再筛选结果，<code>b.book_id IS NULL</code> 表示“书目侧的编号没有值”。本例书目表的主键不能是 NULL，因此只要这列在连接结果中是 NULL，就能判断书目侧没有匹配上；若改为检查某个允许缺值的普通列，已经配上的行也可能因那一列没填而被算进去。下面筛出借阅编号 3、它原来记录的书号 65。MySQL 的官方示例也用右侧编号为 NULL 查找没有配对的记录。<Cite id="join-missing" /></p>
       <pre className={base.code}>{'SELECT l.loan_id, l.book_id\nFROM loans l LEFT JOIN books b\n  ON b.book_id = l.book_id\nWHERE b.book_id IS NULL;\n\n-- 3 | 65'}</pre>
     </ArticleSection>
     <ArticleSection id="filter" title="连接之后还可以筛选" className={base.offset}>
       <Legacy slug="join" names={["prompt-heading"]} />
-      <p id="join-where" className="vp-citation-target">外连接中，ON 决定配对，WHERE 再筛结果。若在书目 LEFT JOIN 借阅之后加 <code>WHERE l.reader = '林舟'</code>，#78 补出的 NULL 不满足条件，就会消失。SQLite 文档明确说明补行发生在 ON 之后、WHERE 之前；把条件挪到 ON 中，结果可能不同。<Cite id="join-where" /></p>
+      <p id="join-where" className="vp-citation-target">LEFT JOIN 属于外连接，它把一侧没有配上的行也留了下来。但后面的筛选仍然可能去掉这些行。<code>ON</code> 决定哪些行能配对，给未匹配的行补 NULL 后，<code>WHERE</code> 再筛选，只留下条件成立的结果。这个顺序在 SQLite 的官方说明中有明确区分。<Cite id="join-where" /></p>
+      <p>以“书目 LEFT”的三行结果为例，再加 <code>WHERE l.reader = '林舟'</code>，就是只要读者为林舟的行。#42 与林舟的配对留下；#42 与陈禾的配对被筛掉；#78 补出的 reader 是 NULL，也不满足“是林舟”，因此被筛掉。最后只剩一行，虽然前面的 LEFT JOIN 曾保留 #78。</p>
+      <p id="join-on-filter" className="vp-citation-target">如果把“读者是林舟”写进配对条件，即 <code>ON b.book_id = l.book_id AND l.reader = '林舟'</code>，就要同时满足书号相等、读者是林舟，才算配上。#42 配上林舟，陈禾不参与这次匹配；#78 仍没有配对，但作为左侧书目会保留，借阅侧是 NULL。没有后面的 WHERE 筛选时，结果是两行。两种写法回答的问题不同：一种只留下林舟的借阅，一种保留所有书目，同时只配上林舟的借阅。<Cite id="join-on-filter" /></p>
       <ArticleAside title="连接查询的核对材料">
-        <p>说明每张表的一行代表什么、匹配用哪些列、每边可能匹配几行、是否要保留没有对象的记录，再给一组包含缺失和多次引用的样例。要求它列出预期结果，而不只是写出一段能运行的 SQL。</p>
+        <p>请 AI 写 JOIN 时，先说明每张表一行代表什么、用哪几列匹配、是否允许匹配出多行，以及要保留哪一侧没有对应记录的行。给它这类包含缺失与多次借阅的样例，再要求列出预期结果。只给表名，或者只要求生成能运行的 SQL，还不足以判断结果是否符合需要。</p>
+        <p id="join-self" className="vp-citation-target">连接的两边也可以来自同一张表。比如员工表同时保存员工编号和经理编号，可以给它取“员工”和“经理”两个别名，用员工这一侧的经理编号找经理那一侧的员工编号。别名区分查询中的两个角色，不会复制或修改原表。<Cite id="join-self" /></p>
       </ArticleAside>
-      <p>排查 JOIN 时，从配对条件、两侧数量和未匹配行开始。单独检查列名、索引或语法，无法替代这些语义判断。确认结果正确后，再讨论数据库怎样更快执行。</p>
+      <p>排查结果时，先检查配对条件：一行到底对应哪两条记录，某个编号能配上几行，没有配上的行被保留还是被筛掉。确认这些结果符合需要后，再结合数据库的执行计划判断它怎样查得更快；<ConceptTerm slug="index">索引</ConceptTerm>可能帮助查找，但不会替你决定应该保留哪一行。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
