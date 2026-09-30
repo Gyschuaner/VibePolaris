@@ -8,8 +8,8 @@ import s from "./QueryConcepts.module.css";
 
 const commands: [SqlCommand,string][] = [["select","读 SELECT"],["insert","增 INSERT"],["update","改 UPDATE"],["delete","删 DELETE"]];
 const fixture = [...initialBooks(), { id: 65, title: "河岸笔记", available: true }];
-function Books({ rows, result = false }: { rows: BookRow[]; result?: boolean }) {
-  return <div className={s.books}>{fixture.map(book => <Reveal key={book.id} open={rows.some(row => row.id === book.id)}><div className={s.book}><code>#{book.id}</code><strong>{book.title}</strong>{!result && <States index={rows.find(row => row.id === book.id)?.available === false ? 1 : 0}>{[<code key="true">true</code>,<code key="false">false</code>]}</States>}</div></Reveal>)}<Reveal open={rows.length === 0}><p>0 行</p></Reveal></div>;
+function Books({ rows, result = false, showEmpty = false }: { rows: BookRow[]; result?: boolean; showEmpty?: boolean }) {
+  return <div className={s.books}>{fixture.map(book => <Reveal key={book.id} open={rows.some(row => row.id === book.id)}><div className={s.book}><code>#{book.id}</code><strong>{book.title}</strong>{!result && <States index={rows.find(row => row.id === book.id)?.available === false ? 1 : 0}>{[<code key="true">true</code>,<code key="false">false</code>]}</States>}</div></Reveal>)}<Reveal open={showEmpty && rows.length === 0}><p>0 行</p></Reveal></div>;
 }
 const messages = ["SELECT · 原表没有改动", "INSERT 0 1 · 新增一行", "主键冲突 · #65 已存在，未新增", ...(["UPDATE","DELETE"] as const).flatMap(command => [0,1,2,3].map(count => `${command} ${count} · ${command === "DELETE" ? "删除" : "更新"} ${count} 行`))];
 export function SqlLesson() {
@@ -23,8 +23,18 @@ export function SqlLesson() {
   return <div className={`${base.lab} ${s.lab}`} aria-label="SQL 读写指令演示">
     <div className={s.commands} role="group" aria-label="SQL 指令">{commands.map(([value,label]) => <button key={value} aria-pressed={command === value} onClick={() => {setCommand(value);setMessage(-1);setRead(false);}}>{label}</button>)}</div>
     <div className={s.sqlDesk}><div><pre className={s.statement}>{statement(command,filtered)}</pre><Reveal open={command === "update" || command === "delete"}><label className={base.option}><input type="checkbox" checked={filtered} onChange={event => {setFiltered(event.target.checked);setMessage(-1);setRead(false);}} />保留 WHERE book_id = 42</label></Reveal><button onClick={execute}><Play size={17} />执行这条语句</button></div><div className={s.stored}><h3><Database size={21} />books · {rows.length} 行</h3><div className={s.columnNames}><span>book_id</span><span>title</span><span>available</span></div><Books rows={rows} /></div></div>
-    <div className={s.response} aria-live="polite"><Reveal open={message >= 0}><States index={message}>{messages.map(text => <p key={text}>{text}</p>)}</States></Reveal><Reveal open={read}><div><h3>本次 SELECT 的返回</h3><Books rows={result} result /></div></Reveal></div>
+    <div className={s.response} aria-live="polite"><Reveal open={message >= 0}><States index={message}>{messages.map(text => <p key={text}>{text}</p>)}</States></Reveal><Reveal open={read}><div><h3>本次 SELECT 的返回</h3><Books rows={result} result showEmpty={read} /></div></Reveal></div>
     <button className={base.reset} onClick={() => {setRows(initialBooks());setCommand("select");setFiltered(true);setMessage(-1);setRead(false);}}><ArrowCounterClockwise size={17} />恢复两条书目</button>
+  </div>;
+}
+export function SqlPlanLesson() {
+  const [indexed,setIndexed] = useState(false);
+  return <div className={`${base.lab} ${s.planDemo}`} aria-label="同一查询的两种找法">
+    <pre className={s.statement}>{'SELECT title FROM books\nWHERE book_id = 42;'}</pre>
+    <div className={s.commands} role="group" aria-label="选择找法"><button aria-pressed={!indexed} onClick={() => setIndexed(false)}>Seq Scan · 顺着表读</button><button aria-pressed={indexed} onClick={() => setIndexed(true)}>Index Scan · 沿索引找</button></div>
+    <Reveal open={indexed}><div className={s.planIndex}><code>索引 · #42</code><ArrowRight size={18}/><span>对应第一条书目</span></div></Reveal>
+    <div className={s.planRows}>{initialBooks().map(book => <div key={book.id} data-inspected={!indexed || book.id === 42} data-match={book.id === 42}><code>#{book.id}</code><strong>{book.title}</strong></div>)}</div>
+    <div className={s.planResult}><ArrowRight size={20}/><span>返回</span><strong>山间来信</strong></div>
   </div>;
 }
 const revisions = [2,3,4] as const;
