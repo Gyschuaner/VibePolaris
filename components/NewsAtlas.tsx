@@ -60,19 +60,21 @@ function graphData(articles: NewsAtlasArticle[]) {
   const nodes: NewsGraphNode[] = [];
   const edges: GraphEdge[] = [];
   const terms = new Map<string, NewsGraphNode>();
+  const articleNodes = new Map<string, NewsGraphNode>();
   const articleSlugs = new Set(articles.map(article => article.slug));
   const edgeKeys = new Set<string>();
   const addEdge = (source: string, target: string) => {
     const key = [source, target].sort().join("|");
-    if (edgeKeys.has(key)) return;
+    if (edgeKeys.has(key)) return false;
     edgeKeys.add(key);
     edges.push({ source, target });
+    return true;
   };
 
   articles.forEach((article, index) => {
     const slug = `news:${article.slug}`;
     const angle = index * 2.399963229728653;
-    nodes.push({
+    const articleNode: NewsGraphNode = {
       slug,
       zh: article.title,
       en: "NEWS",
@@ -85,7 +87,9 @@ function graphData(articles: NewsAtlasArticle[]) {
       degree: article.related.length,
       kind: "article",
       articleSlug: article.slug,
-    });
+    };
+    articleNodes.set(article.slug, articleNode);
+    nodes.push(articleNode);
 
     article.related.forEach((related, relatedIndex) => {
       let term = terms.get(related.slug);
@@ -111,9 +115,18 @@ function graphData(articles: NewsAtlasArticle[]) {
       term.degree += 1;
       addEdge(slug, related.slug);
     });
+  });
 
+  articles.forEach(article => {
+    const source = articleNodes.get(article.slug);
+    if (!source) return;
     article.relatedArticleSlugs.filter(relatedSlug => relatedSlug !== article.slug && articleSlugs.has(relatedSlug)).forEach(relatedSlug => {
-      addEdge(slug, `news:${relatedSlug}`);
+      const target = articleNodes.get(relatedSlug);
+      if (!target) return;
+      if (addEdge(source.slug, target.slug)) {
+        source.degree += 1;
+        target.degree += 1;
+      }
     });
   });
 

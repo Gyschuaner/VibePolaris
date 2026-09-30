@@ -57,6 +57,8 @@ export function searchNews(query: string) {
     publishedAt: article.publishedAt,
     source: article.source,
     relatedSlugs: article.relatedSlugs,
+    relatedArticleSlugs: article.relatedArticleSlugs,
+    isExample: article.isExample,
     url: `/news/${article.slug}`,
   }));
 }
@@ -73,6 +75,7 @@ export function readNews(slug: string, offset = 0) {
     publishedAt: article.publishedAt,
     source: article.source,
     relatedSlugs: article.relatedSlugs,
+    relatedArticleSlugs: article.relatedArticleSlugs,
     isExample: article.isExample,
     text: text.slice(offset, end),
     truncated: end < text.length,

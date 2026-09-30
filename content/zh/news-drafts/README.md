@@ -6,6 +6,16 @@
 content/zh/news-drafts/YYYY-MM-DD/<slug>.json
 ```
 
+目录日期是 `discoveredAt` 的 UTC 日期，`publishedAt` 是来源文章的发布日期；旧文章今天才被发现时，两者可以不同。每个文件是一篇完整草稿，正文为 Markdown；JSON 不接受未定义字段。`sourceHash` 使用来源正文经去除首尾空白、统一换行符后的 SHA-256，格式为 `sha256:` 加 64 位小写十六进制。
+
+云端进行去重和关系建议前，需要同步当前目录快照：
+
+```bash
+node --experimental-strip-types scripts/news-catalog.mjs > /tmp/vbp-news-catalog.json
+```
+
+目录包含公开词条的 slug、中文名、英文名、别名、定义，以及已发布文章和已有草稿的来源/指纹；正文不会重复导出。只用目录中的真实 slug 生成关联建议。尚未确认的关系放在 `relationSuggestions`；`relatedSlugs`/`relatedArticleSlugs` 放已确认关系。提升为公开内容前至少确认一个公开词条；多个相互关联草稿须在同一次提升命令中一起指定，或先发布关系目标。
+
 仓库不会自动读取草稿渲染页面或回答 Xiaobei。先运行：
 
 ```bash
@@ -18,7 +28,7 @@ npm run news:validate
 npm run news:publish -- content/zh/news-drafts/2026-09-30/example-slug.json
 ```
 
-只有明确加入 `--approve` 才会写入 `content/zh/news.json`；原草稿会保留为 `status: "published"` 的审计记录。随后运行 `npm run build`，构建成功后合并 PR 才算发布。
+只有明确加入 `--approve` 才会写入 `content/zh/news.json`；原草稿会保留为 `status: "published"` 的审计记录。这个命令只提升本地内容，不会提交、push、合并或部署。随后运行 `npm run build`，经 PR 审核、集成和部署验证后才算上线；生产六小时调度暂未启用。
 
 ## 交接字段
 
