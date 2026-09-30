@@ -20,3 +20,12 @@ test("小北裸词条引用转链接，保持代码、已有链接和地址边�
   assert.ok(render("/terms/agent-loo").includes("/terms/agent-loo"));
   assert.ok(render("/terms/agent-loop").includes('href="/terms/agent-loop"'));
 });
+
+test("小北只把已发布新闻路径转换为新闻引用", () => {
+  const render = text => renderToStaticMarkup(createElement(Markdown, {
+    remarkPlugins: [remarkGfm, [remarkTermLinks, {}, { "/news/example-ai-reading-note": "示例新闻" }]],
+    children: text,
+  }));
+  assert.ok(render("/news/example-ai-reading-note").includes('<a href="/news/example-ai-reading-note">示例新闻</a>'));
+  assert.ok(!render("/news/unpublished-news").includes('href="/news/'));
+});

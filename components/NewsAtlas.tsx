@@ -15,6 +15,7 @@ export type NewsAtlasArticle = {
   isExample: boolean;
   source: { name: string; url: string };
   related: RelatedTerm[];
+  relatedArticleSlugs: string[];
 };
 
 type Point = { x: number; y: number };
@@ -59,6 +60,14 @@ function graphData(articles: NewsAtlasArticle[]) {
   const nodes: NewsGraphNode[] = [];
   const edges: GraphEdge[] = [];
   const terms = new Map<string, NewsGraphNode>();
+  const articleSlugs = new Set(articles.map(article => article.slug));
+  const edgeKeys = new Set<string>();
+  const addEdge = (source: string, target: string) => {
+    const key = [source, target].sort().join("|");
+    if (edgeKeys.has(key)) return;
+    edgeKeys.add(key);
+    edges.push({ source, target });
+  };
 
   articles.forEach((article, index) => {
     const slug = `news:${article.slug}`;
@@ -100,7 +109,11 @@ function graphData(articles: NewsAtlasArticle[]) {
         nodes.push(term);
       }
       term.degree += 1;
-      edges.push({ source: slug, target: related.slug });
+      addEdge(slug, related.slug);
+    });
+
+    article.relatedArticleSlugs.filter(relatedSlug => relatedSlug !== article.slug && articleSlugs.has(relatedSlug)).forEach(relatedSlug => {
+      addEdge(slug, `news:${relatedSlug}`);
     });
   });
 

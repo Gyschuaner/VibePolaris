@@ -85,6 +85,18 @@ content/zh/news-drafts/YYYY-MM-DD/<slug>.json
 
 `status` 至少支持 `discovered`、`draft`、`needs-review`、`published`、`rejected` 和 `archived`。发布校验只接受 `published` 对应的完整字段；`isExample` 只能由人工明确设置，自动抓取不得把真实来源伪装成示例。
 
+仓库侧的交接契约在 `content/zh/news-drafts/README.md`，校验和提升入口是：
+
+```bash
+npm run news:validate
+npm run news:publish -- content/zh/news-drafts/2026-09-30/<slug>.json
+npm run news:publish -- content/zh/news-drafts/2026-09-30/<slug>.json --approve
+```
+
+默认提升命令只做 dry-run。只有在 feature 分支上明确加入 `--approve` 才会写入 `content/zh/news.json`；原草稿保留为 `status: "published"` 的审计记录。`npm run build` 会先自动执行 `news:validate`，所以未通过草稿契约或关系校验的变更不会进入构建。
+
+云端采集只需要交付这个目录中的 JSON：它负责来源抓取、规范化、事实核对、写作和关系建议；仓库脚本负责字段、日期路径、HTTPS、canonical URL、sourceHash、已发布词条/文章存在性和确认状态的最后一道校验。生产六小时调度在发布链路验证完成前保持关闭。
+
 ## 去重和关系判定
 
 ### 去重
