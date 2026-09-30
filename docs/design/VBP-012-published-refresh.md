@@ -1377,10 +1377,10 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 - 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID z4_wu166MTFlUXgu9PNZ9`；`git diff --check` 通过。
 - CUA 在 `http://127.0.0.1:3219/terms/queue` 真实操作并观察：发布后待领取为 2；领取并生成后业务结果为 1 张；确认前模拟连接断开显示“未确认的消息回到队列；已经生成的缩略图仍保留”，待领取回到 2；再次领取并生成显示“已有缩略图 · 跳过重复创建”；继续处理并确认 m42、m78 后业务结果为 2 张、已确认消息为 `m42、m78`；“清空消息与缩略图”后待领取回到 0、业务结果回到 0。引用区展开 Consumer Acknowledgements 正文引用；最终浏览器 error/warn 为空。
-- 本条没有真实 RabbitMQ、真实网络重连、图片处理、死信运维、390px 可控视口或系统减少动态偏好验证；没有真人读者、远端 dev 或生产功能验证。正文尚未发布生产，功能演示留在本地/dev。
+- 本条没有真实 RabbitMQ、真实网络重连、图片处理、死信运维、390px 可控视口或系统减少动态偏好验证；没有真人读者或远端 dev 功能验证。生产只发布正文，功能演示留在本地/dev。
 
 ### DP、Git 与发布边界
 
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `ac4daa0c-6983-4fb6-91ba-6e876e5ddbd0` 已创建并进入 `in_progress`，完成浏览器验收和提交后按允许流转为 `done`，不推进总需求状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本条已提交。只修改本地 `components/terms/DistributionConceptPages.tsx`，不发布到生产；对应功能留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本条已提交。正文发布分支 `release/VBP-028-queue-content-20261001` 的提交 `4e97ff7` 经 [PR #238](https://github.com/Gyschuaner/VibePolaris/pull/238) 合入 `main`，合并提交 `0ddce6f32c80404ff3da69d3f457476782eca74d`；生产部署记录 `8bd527fb-736f-40c3-85b4-7018477e254c`、部署批次 `deploy-vbp028-queue-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-0ddce6f32c80`，回滚点为 `/opt/vibepolaris/releases/20261001-f8af12bb0384`。无缓存构建镜像 `vibepolaris:0ddce6f32c80404ff3da69d3f457476782eca74d` 为 `linux/amd64`，容器健康检查通过；公网 `/terms/queue` 已精确核对消息代理、m42/m78、高优先级顺序和 `book:42:thumb:v1` 文案。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **59/105**，下一条是 `batch-processing`。
