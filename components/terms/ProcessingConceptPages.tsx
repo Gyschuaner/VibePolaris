@@ -63,29 +63,30 @@ export function StreamTermPage() {
 }
 export function EventDrivenTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={eventDrivenSources}/>;
-  return <ConceptArticle slug="event-driven-architecture" title="事件驱动架构" sources={eventDrivenSources} sections={[["fact", "把已发生的借阅发布出来"], ["subscribers", "不同订阅者各自响应"], ["envelope", "事件需要的字段"], ["failures", "重试与重复交付"]]}
-    intro={<>一次借阅记录成功后，书架需要更新状态，统计需要累加次数。借阅服务可以发布“书已被借出”的事件，让不同订阅者响应。同一件事可以引发多项工作，各项工作的进度与失败也需要分别观察。</>}
-    hero={<ConceptHero slug="event-driven-architecture" label="一条借阅事件复制给书架与统计两个独立订阅者"><div className={s.edaHero}><div className={s.heroFact}><EnvelopeSimple size={23}/><strong>借阅已发生</strong></div><div className={s.heroCopies}><div><code>loan-001</code><Books size={26}/><span>更新书架</span></div><div><code>loan-001</code><ChartBar size={26}/><span>更新统计</span></div></div></div></ConceptHero>}>
+  return <ConceptArticle slug="event-driven-architecture" title="事件驱动架构" sources={eventDrivenSources} sections={[["fact", "把已发生的借阅发布出来"], ["subscribers", "不同订阅者各自响应"], ["envelope", "事件需要的字段"], ["failures", "重试与重复投递"]]}
+    intro={<>一次借阅登记成功后，书架（维护图书可借状态的订阅方）需要更新状态，统计需要累加次数。借阅服务可以发布“借阅已发生”的事件，让不同订阅者响应。书架更新没更新、统计加没加上，要分别核实。</>}
+    hero={<ConceptHero slug="event-driven-architecture" label="画面中，“借阅已发生”事件（id：loan-001）被复制成两份，分别送往“更新书架”和“更新统计”两个订阅者"><div className={s.edaHero}><div className={s.heroFact}><EnvelopeSimple size={23}/><strong>借阅已发生</strong></div><div className={s.heroCopies}><div><code>loan-001</code><Books size={26}/><span>更新书架</span></div><div><code>loan-001</code><ChartBar size={26}/><span>更新统计</span></div></div></div></ConceptHero>}>
     <ArticleSection id="fact" title="把已发生的借阅发布出来"><Legacy slug="event-driven-architecture" names={["question", "definition"]}/>
-      <p id="eda-fact" className="vp-citation-target"><strong>事件驱动架构让组件通过发布和响应事件来协作。</strong>AWS 的介绍将事件用于表达状态变化或更新：生产者发布，路由机制将事件交给相关消费者。事件可以携带数据，也可以只带标识，让消费者另外读取需要的内容。<Cite id="eda-fact"/></p>
-      <p>“借阅已发生”表达一个事实；“请批准这次借阅”表达一个待执行的要求。收到事实以后，消费者可以决定怎样响应，却不能把尚未批准的请求写成已经成功的事件。本文的借阅先记录，再发布。</p>
+      <p id="eda-fact" className="vp-citation-target"><strong>事件驱动架构让组件通过发布和响应事件来协作。</strong>按 AWS 的说明，事件用来表达状态变化或更新：生产者把事件发布出去，消息代理（负责接收和转发事件的中间服务）把它交给相关消费者。事件可以携带数据，也可以只带标识，让消费者另外读取需要的内容。这里的生产者就是借阅服务；接收事件的一方通常叫消费者，本文里就是书架和统计两个订阅者。订阅者就是登记接收某类事件的消费者，本例中的两个订阅者相当于已经登记好了。<Cite id="eda-fact"/></p>
+      <p>如果借阅服务直接依次调用书架和统计，任何一个服务挂了，整笔借阅都会被拖住甚至失败；以后每加一个订阅方，还要改借阅服务。事件驱动换一种做法：借阅服务只管把已发生的事宣布出去。</p>
+      <p>“借阅已发生”说的是已经发生的事实；“请批准这次借阅”提出的是一项还没执行的要求。事件记录已发生的事，请求提出待办的事。收到请求的一方可以决定怎么做，但“有人请求借书”不等于“书已经借出去了”，不能拿请求当事实记账。演示会把借阅拆成“记录”和“发布”两个按钮。</p>
     </ArticleSection>
     <ArticleSection id="subscribers" title="不同订阅者各自响应"><Legacy slug="event-driven-architecture" names={["scene-heading"]}/>
-      <p>记录一次 #42 的借阅，发布固定事件 loan-001，再分别交付到书架与统计。让统计目标拒绝交付，观察书架已经更新的结果；单独重试统计，然后重复交付同一事件。本例没有真实消息代理，防重记录仅保存在浏览器内存。</p>
+      <p>实际系统里，RabbitMQ 是一种接收事件并负责转发的消息代理。记录一次 42 号书的借阅，发布一条 id 为 loan-001 的事件（用这次借阅的编号充当事件 id），再分别投递给书架和统计两个订阅者。点击“投递到统计”时模拟一次拒绝（相当于统计服务临时故障），再把事件投递给书架：书架照常更新，不受统计失败影响。然后重试投递统计目标，最后再把同一个事件重复投递一次，看统计会不会多加一次。本例没有接入真实消息代理，页面上的投递按钮是在模拟消息代理的转发行为。</p>
       <EventDrivenLesson/>
-      <p id="eda-fanout" className="vp-citation-target">RabbitMQ 的 fanout 交换器将消息复制给各个已绑定队列；不同订阅者各用一个队列，才能分别收到副本。<strong>两项工作都需要这件事，与两个工作进程争取同一项任务，是不同的交付关系。</strong>共享一个工作队列通常是在分担任务，而不是保证每个工作进程都收到。<Cite id="eda-fanout"/></p>
-      <p id="eda-independent" className="vp-citation-target">事件发布者不必逐个知道所有消费者，独立消费者可以分别处理自己的工作。AWS 将这种解耦用于说明事件架构的适用场景。<strong>统计暂时失败，不应把书架已完成的变化自动抹掉。</strong>但共享的路由服务、存储或资源仍可能形成共同故障点，架构名称不会消除这些依赖。<Cite id="eda-independent"/></p>
+      <p id="eda-fanout" className="vp-citation-target">fanout 是 RabbitMQ 的一种分发方式：消息先进一个入口（RabbitMQ 称之为交换器），再按绑定（交换器和队列之间的转发约定）复制进每个订阅者自己的收件队列。不同订阅者各用一个队列，才能分别收到副本。消息分发有两种常见关系：一种是一条事件同时交给每个订阅者，各拿一份副本，fanout 就是这样；另一种是多个消费者实例（工作进程）共用一个队列领任务，一条消息只会被其中一个领走。共用一个工作队列的目的是分担处理压力，不是保证每个工作进程都收到。实际中还有按主题过滤等其他方式，这里只对比这两种。<Cite id="eda-fanout"/></p>
+      <p id="eda-independent" className="vp-citation-target">事件发布者不必逐个知道所有消费者，独立消费者可以分别处理自己的工作。AWS 将这种解耦用于说明事件架构的适用场景。<strong>统计目标拒绝处理，只影响统计自己这一份；书架已经完成的更新不会被连累回滚——这正是第一节“直接依次调用”做不到的。</strong>但共享的消息代理、存储或资源仍可能形成单点故障；比如消息代理停机，两个订阅者就都收不到事件。架构名称不会消除这些依赖。<Cite id="eda-independent"/></p>
     </ArticleSection>
     <ArticleSection id="envelope" title="事件需要的字段"><Legacy slug="event-driven-architecture" names={["quiz-heading"]}/>
-      <p id="eda-envelope" className="vp-citation-target">CloudEvents 定义了通用事件封装，必填属性包括 id、source、specversion 和 type。<strong>消费者需要知道是什么事件、来自哪里，以及怎样识别这一次发生。</strong>下面展示 JSON 封装；规范 v1.0.2 的 specversion 值仍是 "1.0"，不是文档补丁版本号。<Cite id="eda-envelope"/></p>
+      <p id="eda-envelope" className="vp-citation-target">不同生产者的事件格式可能各不相同，CloudEvents 提供了一套统一的事件格式，好比给事件套上标准信封；必填属性包括 id、source、specversion 和 type。<strong>消费者要能判断：这是什么事件、从哪里来、是哪一次发生。</strong>type 回答“这是什么事件”，source 回答“从哪里来”，id 回答“是哪一次发生”。下面展示 JSON 封装；data 是业务数据本身，datacontenttype 说明它的格式；specversion 填的是规范版本，不带补丁号：规范即使出到 v1.0.2，这个值仍写“1.0”。<Cite id="eda-envelope"/></p>
       <pre className={base.code}>{'{\n  "specversion": "1.0",\n  "id": "loan-001",\n  "source": "/library",\n  "type": "com.example.book.borrowed",\n  "datacontenttype": "application/json",\n  "data": { "book_id": 42 }\n}'}</pre>
-      <p>事件字段怎样演进、消费者能否理解旧版本，也要形成约定。某个服务只需要书目编号，另一个可能还需要借阅时间；缺少业务必需的信息，采用统一封装也不能让它正确计算。</p>
+      <p>日后 data 新增字段时，按旧格式解析的订阅者有的会忽略新字段继续跑，有的会直接解析报错；能否安全加字段，要按各订阅者的解析方式事先约定。某个服务只需要书目编号，另一个可能还需要借阅时间；反过来，如果 data 里缺了业务必需的信息，封装再统一，订阅者也算不出正确结果。</p>
     </ArticleSection>
-    <ArticleSection id="failures" title="重试与重复交付" className={base.offset}><Legacy slug="event-driven-architecture" names={["prompt-heading"]}/>
-      <p id="eda-retry" className="vp-citation-target">EventBridge 会按配置，对目标交付中的可重试错误再次尝试；时间或次数耗尽后可能丢弃事件，死信队列需要配置。<strong>发布过一次，不能直接推导出所有目标都已处理成功。</strong>需要分别观察交付、失败与后续去向。这也不表示任何消费者的业务错误都会自动得到相同重试。<Cite id="eda-retry"/></p>
-      <p id="eda-duplicate" className="vp-citation-target">CloudEvents 要求 source 与 id 的组合标识一次事件；同一事件重发可以沿用这个组合，消费者可以据此识别重复。本例让两个订阅者各自记住已处理的 loan-001，重复交付不再次累计。<strong>封装提供标识，防重仍要由消费处理实现。</strong>真实系统还要处理持久化、并发以及业务写入与防重记录的一致性。<Cite id="eda-duplicate"/></p>
-      <ArticleAside title="借阅已记录，事件还没发布"><p>演示故意将记录与发布分成两个按钮：在两步之间，借阅已经存在，订阅者却不知道。如果进程在这里停止，需要能发现并补发遗漏；反过来，也要避免对未完成的借阅发布成功事件。实际方案应明确数据与事件怎样保持一致，不能靠两次操作通常都成功来保证。</p></ArticleAside>
-      <p>事件方案应列明生产者、订阅关系、字段、确认与重试规则、失败去向和防重记录。事实写入、事件交付与消费者业务完成要分别观察，并各自保留验证证据。</p>
+    <ArticleSection id="failures" title="重试与重复投递" className={base.offset}><Legacy slug="event-driven-architecture" names={["prompt-heading"]}/>
+      <p id="eda-retry" className="vp-citation-target">RabbitMQ 和 EventBridge 都扮演居中接收、转发事件的中间层角色，只是 EventBridge 更偏按规则做事件路由（按事先配置的规则决定每条事件送去哪些目标）。EventBridge 是 AWS 的托管事件服务。异步向目标投递失败时，如果失败原因属于可重试的错误，EventBridge 会自动重试。重试到时限仍未成功，EventBridge 会停止投递该事件；只有事先配置了死信队列（专门留存最终投递失败事件的队列），这些事件才会被留存，否则直接丢弃。<strong>但“发布过一次”不等于“每个订阅者都处理成功了”。</strong>每个订阅者的投递结果、有没有失败、事件后来去了哪，要分别观察。而且，自动重试只针对投递环节的错；消费者处理业务时出的错，不在自动重试范围内，要不要重来由消费者自己决定。<Cite id="eda-retry"/></p>
+      <p id="eda-duplicate" className="vp-citation-target">重试意味着同一事件可能被投递两次：哪怕消费者已经处理成功，只要消息代理没收到确认，就还会再投递一次。CloudEvents 规定：source 加 id 合起来，唯一标识一次事件。重发同一事件时沿用这组值，消费者就能认出重复。本例让统计订阅者记住已处理的 loan-001，重复投递时不再重复累计；书架订阅者也应采用同样的防重规则。<strong>封装只负责给出标识，防重复仍要消费者自己实现。</strong>本例的防重记录只保存在浏览器内存，刷新页面就没了。真实系统还要处理持久化、并发以及业务写入与防重记录的一致性。<Cite id="eda-duplicate"/></p>
+      <ArticleAside title="借阅已记录，事件还没发布"><p>演示故意将记录与发布分成两个按钮：在两步之间，借阅已经存在、订阅者却不知道，系统要能发现漏发的事件并补发。常见做法是给借阅记录打上“待发布”标记，由后台补发；那是另一篇文章的事。反过来，如果先发布事件、后记录借阅，就可能出现事件宣称借阅成功、借阅记录却没写上的情况。两种风险只能靠明确的一致性方案（比如先写记录、确认后发布，并记录发布状态）来防，不能靠两次操作通常都成功。</p></ArticleAside>
+      <p>事件方案应列明生产者、订阅关系、字段、确认与重试规则、失败去向和防重记录。事实写入、事件投递与消费者业务完成要分别观察，并各自保留验证证据。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

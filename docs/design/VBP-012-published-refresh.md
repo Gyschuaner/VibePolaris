@@ -79,7 +79,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 完整内容与本地 dev 浏览器验收完成；正文待本条内容分支发布，功能留在本地 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
 | 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 已发布正文；交互功能留在本地 |
-| 62 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 待更新 |
+| 62 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 已发布正文；交互功能留在本地 |
 | 63 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 待更新 |
 | 64 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 待更新 |
 | 65 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 待更新 |
@@ -1498,3 +1498,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `5f1008d0-ba90-4e0f-ac46-992fb803197a` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能与记录提交为 `4cd34c1c78ade349dfaea7fba19d4da30fb3d760`；正文发布分支 `release/VBP-030-stream-content-20261001` 的提交 `4758595` 经 [PR #241](https://github.com/Gyschuaner/VibePolaris/pull/241) 合入 `main`，合并提交 `329f5a023c45a0c577079ea2c4bd1981bd77d97d`。生产部署记录 `807309e1-f137-4994-ba49-07c0cb77982c`、部署批次 `deploy-vbp030-stream-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-329f5a023c45`，回滚点为 `/opt/vibepolaris/releases/20261001-142404d8c1cc`；镜像 `vibepolaris:329f5a023c45a0c577079ea2c4bd1981bd77d97d` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/stream-processing` 返回 200 并精确核对五处新版正文。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **62/105**，下一条是 `event-driven-architecture`。
+
+
+## 63 · 事件驱动架构文字完整复审、独立订阅演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“借阅已经发生后，书架和统计都要响应；为什么不直接依次调用，而要发布事件？一个订阅者失败时另一个能否继续？重试和重复投递怎么区分？”读完应能区分事件事实与待执行请求，理解生产者、消息代理、消费者/订阅者和 fanout 的关系，读懂 CloudEvents 的核心字段，并判断投递失败、死信和重复事件的边界。
+- 更新 `EventDrivenTermPage`：统一发布、投递、处理和确认的说法；补出直接调用的基线、消息代理定义、生产者与消费者/订阅者的对应关系；把 RabbitMQ fanout 的交换器、绑定和队列用白话落地；补出 CloudEvents 的 `type/source/id` 与 `data/datacontenttype` 对应关系；明确 EventBridge 异步投递重试到时限仍失败时停止投递、死信队列的保留边界，以及记录与发布之间的一致性风险。
+- 更新 `EventDrivenLesson`：保留本地记录借阅、发布事件、统计模拟拒绝、书架独立投递、统计重试和重复投递去重；失败按钮改为“投递到统计（模拟拒绝）”，重试和重复投递按钮根据状态明确显示。生产只发布正文和展示文字，交互演示继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+实际打开并核对四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [AWS · Event-Driven Architecture](https://aws.amazon.com/event-driven-architecture/) | `eda-fact`、`eda-independent`：事件生产者、事件路由、消费者、解耦、独立失败和 fanout。 |
+| [RabbitMQ · Publish/Subscribe · JavaScript tutorial](https://www.rabbitmq.com/tutorials/tutorial-three-javascript) | `eda-fanout`：交换器、绑定、队列、fanout 广播与工作队列竞争消费。 |
+| [CloudEvents · Specification v1.0.2](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md) | `eda-envelope`、`eda-duplicate`：必填属性、`source + id` 事件身份和重复识别。 |
+| [Amazon EventBridge · Retry policy and dead-letter queues](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rule-retry-policy.html) | `eda-retry`：异步目标投递重试、时限耗尽、丢弃和死信队列。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初始独立 `reader` 会话 `sess_d4e1ea79-9f79-44e8-857e-ca8d91f1243b` 读取 `/tmp/vbp063-eda-reader-material.md`（SHA-256 `d626e9355f7a0854c801fea0dd07891cf218214e872239855373b3bdb66e1a85`），指出事件命名、消息代理、投递顺序、重复投递成因和交互状态文案等断点。
+- `language` 会话 `sess_22a6dc32-8fa4-47c7-9388-d644d36f1c7d` 读取 partner/humanizer-zh 和 `/tmp/vbp063-eda-language-material.md`（SHA-256 `90b8a68e89813d534c2ac9cf2b2ab41ab603d3a55e9687b7495c40ef6dee1d36`），统一发布、投递、处理、确认和消息代理术语，修正长句与翻译腔。
+- 最终独立 `reader` 会话 `sess_a9810faf-79c3-428b-9ce5-c6bb3041cb2a` 读取 `/tmp/vbp063-eda-reader-final-material.md`（SHA-256 `d777b8d54df69db36471cd166d5c780726ffd14198a2be1a0d571faa3fc2b818`），复核直接调用基线、fanout 术语、CloudEvents 字段、EventBridge 重试、投递失败隔离和重复投递；主助手按反馈完成最后文字收紧。以上是 ZCode 的文字模拟读者审读，不是真人读者或网页试读。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID szvn8PuzN1rRcjVIrolDOTAP`；`git diff --check` 通过；`node --experimental-strip-types --test tests/processing-teaching.test.mjs` 为 1/1 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/event-driven-architecture?qa=063a` 真实操作并观察：记录借阅、发布 `loan-001`，点击“投递到统计（模拟拒绝）”得到“目标拒绝投递 · 可重试”；投递书架显示 `#42 已借出` 且已处理事件；点击“重试投递到统计目标”得到 `1 次借阅`；重复投递显示“同一事件已处理 · 跳过重复写入”，统计不再累加。引用区展开 AWS Event-Driven Architecture 摘要并点击回链；最终浏览器控制台无 error/warn，截图已实际观察。
+- 当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成当前轮实测通过；没有真实 RabbitMQ/EventBridge、真实跨服务投递或真人读者验证。
+
+### DP、Git 与发布边界
+
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `6305e126-0513-4934-9a13-c7292a2ed764` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；正文发布只带 `ProcessingConceptPages.tsx` 与 `ProcessingConceptLessons.tsx` 的展示文字，交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **63/105**，下一条是 `data-pipeline`。
