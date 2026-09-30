@@ -8,27 +8,29 @@ import s from './DistributionConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 export function BackupTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={backupSources}/>;
-  return <ConceptArticle slug="backup" title="备份" sources={backupSources} sections={[["history", "保留一个可以回去的状态"], ["restore", "从恢复点导入独立库"], ["format", "备份内容与导入"], ["verify", "把恢复过程也验证一遍"]]}
-    intro={<>书目误删以后，当前数据库可以继续正常运行，只是需要的两行已经没了。备份把某个历史状态保留下来，让恢复有数据可用。文件是否生成、保存的是哪个版本、能否导入并得到需要的结果，都要分别核对。</>}
-    hero={<ConceptHero slug="backup" label="原书名和修订版分别留在两个历史备份中"><div className={s.backupHero}><div><Archive size={23}/><span>备份 v0</span><strong>山间来信</strong></div><div><Archive size={23}/><span>备份 v1</span><strong>山间来信·修订版</strong></div></div></ConceptHero>}>
+  return <ConceptArticle slug="backup" title="备份" sources={backupSources} sections={[["history", "保留一个可以回去的状态"], ["restore", "选一份备份，恢复到独立检查库"], ["format", "备份内容与导入"], ["verify", "把恢复过程也验证一遍"]]}
+    intro={<>书店把书目存在数据库里，一本书占一行。误删两本书以后，数据库还能照常查询：程序没坏，只是这两本书对应的行没了。备份把某个历史状态保留下来，让恢复有数据可用。这里的 v0、v1、v2 是书目的教学状态编号；备份按保存那一刻的编号命名，演示开始时还没有任何备份。首图上的两张备份卡片只是预告，这两份备份接下来会在演示里一份份保存出来。演示里要核对保存是否成功、保存的是哪个版本、恢复后能否得到需要的结果；真实系统还要另外核对备份文件是否生成。</>}
+    hero={<ConceptHero slug="backup" label="原书名和修订版分别留在两个历史备份中"><div className={s.backupHero}><div><Archive size={23}/><span>备份 v0</span><strong>山间来信 · 2 行</strong></div><div><Archive size={23}/><span>备份 v1</span><strong>山间来信·修订版 · 2 行</strong></div></div></ConceptHero>}>
     <ArticleSection id="history" title="保留一个可以回去的状态"><Legacy slug="backup" names={["question", "definition"]}/>
-      <p id="backup-snapshot" className="vp-citation-target"><strong>备份保留数据的历史状态，为以后恢复提供输入。</strong>一种方法是逻辑导出：PostgreSQL 的 SQL dump 将数据库状态写成可重新执行的命令，pg_dump 可以在其他读写继续进行时取得一致的快照。它描述的是导出开始时的状态，不会随着之后的改名和删除自动变成新版本。<Cite id="backup-snapshot"/></p>
-      <p>本文从两条书目开始，保存原版与修订版，再误删当前书目。一个不断跟随变更的 <ConceptTerm slug="replication">复制</ConceptTerm>副本也可能接收删除；保留下来的旧备份则仍能提供删除之前的数据。需要保留多久、哪些版本可以被覆盖，应当在误删发生之前就决定。</p>
+      <p id="backup-snapshot" className="vp-citation-target"><strong>备份存在的意义，就是恢复那天有数据可用。</strong>快照就是把某一刻的数据定格下来：运行 pg_dump 导出命令的同时，其他人可以照常查询和修改数据库；导出拿到的内容仍停在开始那一刻。SQL dump 是把这个状态写成一条条可以重新执行的命令。写下来之后这份文件就不再变，数据库后来改名、删除，都动不到它。<Cite id="backup-snapshot"/></p>
+      <p>备份和“<ConceptTerm slug="replication">复制</ConceptTerm>副本”是两回事：正在接收写入的主库改动时，复制副本也会跟着改；主库误删时副本上也可能跟着没了。备份停在保存的那一刻，删除追不上它，所以还能用它找回。每份备份留多久、旧备份什么时候允许被新备份顶掉，要在误删发生之前就定好。</p>
     </ArticleSection>
-    <ArticleSection id="restore" title="从恢复点导入独立库"><Legacy slug="backup" names={["scene-heading"]}/>
-      <p>先保存当前备份，再改名、保存修订版，然后误删。选中一个恢复点，将它导入右边的独立库，核对书名与行数。也可以保存误删后的空书目：恢复它只会得到 0 行。本例的 v0–v2 是固定教学版本，没有访问真实数据库，也没有验证真实磁盘、权限和备份文件。</p>
+    <ArticleSection id="restore" title="选一份备份，恢复到独立检查库"><Legacy slug="backup" names={["scene-heading"]}/>
+      <p>先保存当前备份，再改一本书的书名，接着再存一份，然后误删。选中一份备份，把它恢复到右边的独立检查库，核对书名与行数。也可以保存误删后的空书目：空备份也是备份，它证明备份只负责把当时的状态定格，恢复它只会得到 0 行。本例的 v0–v2 是固定教学版本，没有访问真实数据库，也没有验证真实磁盘、权限和备份文件。</p>
       <BackupLesson/>
-      <p><strong>恢复只能使用备份中已有的内容。</strong>选原版会得到原书名；选修订版会得到新书名。右边的恢复成功，不会让左边被误删的当前库自动改变。是否将恢复结果切回业务，需要另行核对数据、写入进度与应用连接。</p>
+      <p><strong>恢复只能使用备份中已有的内容。</strong>选原版会得到原书名；选修订版会得到新书名。右边恢复出来的数据只是放进检查用的独立库，左边被误删的当前库不会自动复原。要让恢复真正生效，还得把核对过的数据放回正在使用的数据库；这一步要先确认备份之后有没有新数据写入、正在连接这个数据库的程序要不要先断开。本演示到核对为止，不包含这一步。</p>
     </ArticleSection>
     <ArticleSection id="format" title="备份内容与导入"><Legacy slug="backup" names={["quiz-heading"]}/>
-      <p id="backup-scope" className="vp-citation-target">PostgreSQL 的 pg_dump 导出单个数据库，角色与表空间这类全局对象需要另行处理。纯 SQL 文本用 psql 导入；自定义或目录格式的归档用 pg_restore。<strong>看见一个文件名，不能推断它包含整个运行环境。</strong>官方文档也提醒，除简单场景外，pg_dump 通常不适合作为生产系统的常规备份方案；实际策略要结合规模、停机要求与恢复目标选择。<Cite id="backup-scope"/></p>
+      <p id="backup-scope" className="vp-citation-target">PostgreSQL 的 pg_dump 导出单个数据库，角色与表空间这类全局对象需要另行处理。纯 SQL 文本用 psql 导入；自定义或目录格式的归档用 pg_restore。<strong>手里有一份 dump 文件，不等于拿到了整个数据库环境。</strong>官方文档也提醒，除简单场景外，pg_dump 通常不适合作为生产系统的常规备份方案；实际策略要结合规模、停机要求与恢复目标选择。<Cite id="backup-scope"/></p>
+      <p>本节用教学里最常见的 pg_dump 演示备份的基本步骤。命令要在能连接数据库的终端上运行，先看懂流程即可，不必跟着敲。</p>
       <pre className={base.code}>{'pg_dump -Fc -f catalog.dump catalog\ncreatedb -T template0 catalog_check\npg_restore --single-transaction \\\n  --dbname=catalog_check catalog.dump'}</pre>
-      <p id="backup-restore" className="vp-citation-target">这组命令展示自定义格式归档导入一个新建检查库的路径，假定连接配置、权限和必要角色已经准备好。pg_restore 默认会在 SQL 出错后继续执行，最后报告错误数量；--single-transaction 让导入命令全部成功或不应用任何变化，并隐含遇错退出。它也有资源与并行方式限制，不是所有恢复都该照抄的固定配置。<Cite id="backup-restore"/></p>
+      <p><code>-Fc</code> 让 pg_dump 输出 pg_restore 能读取的自定义格式归档；<code>createdb -T template0 catalog_check</code> 基于干净、未被改动过的模板库 template0，新建一个全新的检查库。</p>
+      <p id="backup-restore" className="vp-citation-target">这组命令展示自定义格式归档导入一个新建检查库的路径，假定连接配置、权限和必要角色已经准备好。pg_restore 默认会在 SQL 出错后继续执行，并在结束时报告错误数量；--single-transaction 让导入命令全部成功或不应用任何变化，并隐含遇错退出。它不能和并行恢复（同时开多个恢复任务）一起用，不是所有恢复都照抄这一条。<Cite id="backup-restore"/></p>
     </ArticleSection>
     <ArticleSection id="verify" title="把恢复过程也验证一遍" className={base.offset}><Legacy slug="backup" names={["prompt-heading"]}/>
-      <p>能列出备份文件，只证明文件在那里。需要在隔离环境实际恢复，核对重要记录、关联、权限以及应用查询，再记录耗时与结果。上面的演示只核对两条书目，不能据此宣布一个生产系统已经具备完整灾难恢复能力。</p>
-      <ArticleAside title="需要恢复到两次备份之间的时间点"><p id="backup-pitr" className="vp-citation-target">PostgreSQL 的时间点恢复使用适用的基础备份和持续归档的 WAL，在重放时选择目标点停止。它与上面的逻辑导出是不同的备份路径，不能把一份 pg_dump 文件加上随意取得的 WAL，就当作可用的时间点恢复。归档是否连续、恢复目标是否覆盖在保留范围内，也要验证。<Cite id="backup-pitr"/></p></ArticleAside>
-      <p>备份方案要标明数据范围、数据库版本、备份形式、保存位置与保留期，以及允许丢失的数据时长和恢复时间要求。最近一次实际恢复记录，才能说明用哪份数据、恢复到哪里、怎样核对。</p>
+      <p>能列出备份文件，只证明文件在那里。需要在隔离环境实际恢复一遍：核对重要记录、表之间的关联和权限，再拿应用真正会发出的查询跑一遍，记下花了多久、结果如何。上面的演示只核对两条书目，不能据此宣布一个生产系统已经具备完整灾难恢复能力。</p>
+      <ArticleAside title="需要恢复到两次备份之间的时间点"><p id="backup-pitr" className="vp-citation-target">数据库每做一次修改，都会先记进一本叫 WAL 的流水账。时间点恢复就是拿一份适用的基础备份，把 WAL 一笔一笔重放，在指定的时间点停下来。它和上面用 pg_dump 导出 SQL 文件的做法是两条不同的路，随便拿一份 pg_dump，再配上几段来路不明的 WAL，拼不出一个能用的时间点恢复方案。还要确认 WAL 归档中间没有断档，并且你要回到的时间点落在留下来的记录范围内。<Cite id="backup-pitr"/></p></ArticleAside>
+      <p>备份方案要写清楚：备哪些数据、数据库什么版本、用什么形式备份、文件存在哪里、留多久。再定两条线：最多允许丢多少数据，最长能接受多久的恢复时间。判断一个备份方案是否可靠，看的是最近一次实际恢复的记录：用的哪份备份、恢复到了哪里、怎么核对的。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
