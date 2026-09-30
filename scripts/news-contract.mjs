@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, realpathSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
 import { canonicalNewsUrl, newsArticleSchema, newsDraftSchema, newsRelationErrors } from "../lib/news-schema.ts";
 
@@ -77,6 +78,11 @@ export function loadNewsContent(repository = root) {
     if (name !== expected) errors.push(`${name}：路径应为 ${expected}`);
     if (draftSlugs.has(draft.slug)) errors.push(`${name}：草稿 slug 重复`);
     draftSlugs.add(draft.slug);
+    if (draft.status === "published") {
+      const previous = articles.find(article => article.slug === draft.slug);
+      // Review metadata lives only in the retained draft, never in the public article.
+      if (!previous || !isDeepStrictEqual(previous, publishedNewsFromDraft(draft))) errors.push(`${name}：published 草稿与已发布文章不一致`);
+    }
     if (!activeStatuses.has(draft.status)) continue;
     errors.push(...newsRelationErrors(draft, terms, articleSlugs).map(message => `${name}：${message}`));
     for (const suggestion of draft.relationSuggestions) {
@@ -124,7 +130,8 @@ export function publishNewsDrafts(files, { approve = false, repository = root } 
   for (const { draft } of selected) {
     const article = publishedNewsFromDraft(draft);
     const previous = articles.find(item => item.slug === article.slug);
-    if (previous && JSON.stringify(previous) !== JSON.stringify(article)) throw new Error(`${article.slug} 已发布且内容不同；请另行审核修订，发布入口不会覆盖旧文章`);
+    if (previous && !isDeepStrictEqual(previous, article)) throw new Error(`${article.slug} 已发布且内容不同；请另行审核修订，发布入口不会覆盖旧文章`);
+    if (draft.status === "published" && !previous) throw new Error(`${article.slug}：published 草稿缺少已发布记录`);
     if (!previous) articles.push(article);
   }
   const errors = publishedNewsErrors(articles, content.terms);

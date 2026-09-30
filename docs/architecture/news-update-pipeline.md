@@ -67,7 +67,7 @@ content/zh/news-drafts/YYYY-MM-DD/<slug>.json
   "sourceHash": "sha256:...",
   "status": "draft",
   "discoveredAt": "2026-09-30T12:00:00Z",
-  "relatedSlugs": ["grounding"],
+  "relatedSlugs": [],
   "relationSuggestions": [
     {
       "kind": "term",
@@ -83,7 +83,7 @@ content/zh/news-drafts/YYYY-MM-DD/<slug>.json
 }
 ```
 
-`status` 至少支持 `discovered`、`draft`、`needs-review`、`published`、`rejected` 和 `archived`。发布校验只接受 `published` 对应的完整字段；`isExample` 只能由人工明确设置，自动抓取不得把真实来源伪装成示例。
+`status` 支持 `discovered`、`draft`、`needs-review`、`published`、`rejected` 和 `archived`。只有 `needs-review` 草稿可以被显式提升为公开文章；提升后保留 `published` 草稿供审计与幂等重试。公开 `news.json` 不含状态、审核记录或机器建议字段。`isExample` 只能由人工明确设置，自动抓取不得把真实来源伪装成示例。
 
 仓库侧的交接契约在 `content/zh/news-drafts/README.md`，校验和提升入口是：
 
@@ -149,18 +149,11 @@ npm run news:publish -- content/zh/news-drafts/2026-09-30/<slug>.json --approve
 
 ## 六小时任务的最小实现
 
-第一版使用 GitHub Actions 的 `schedule`：
+当前职责已对齐：主助手 Dots 在云端 shell 负责采集、去重、事实核对、写作和关系建议；仓库侧负责接收草稿、验证、提升、构建、星图和 Xiaobei。Dots 是主助手本身，无需新增同名子任务或外部应用。
 
-```yaml
-on:
-  schedule:
-    - cron: "0 */6 * * *"
-  workflow_dispatch:
-```
+云端任务先取得 `news:catalog` 快照，只访问来源清单中的 HTTPS 地址；每次运行用稳定的 `runId`、canonical URL 和 sourceHash 保证幂等。交付物是草稿文件，不能直接写已发布 `news.json`。
 
-任务只访问代码中显式允许的 HTTPS 来源，设置超时、响应大小上限和重试；每次运行用稳定的 `runId` 和 source hash 保证幂等。它生成或更新一个草稿分支和 PR，不直接 push `main`、不直接改 `dev`、不直接发布生产。
-
-来源清单、是否允许自动生成摘要、是否允许模型参与关系建议必须在实现前确定。没有来源清单时，任务只能运行 dry-run，不能声称已完成新闻更新。
+发布链路验证通过前，生产六小时调度保持关闭，也不自动部署。一次手动端到端运行需要验证：云端草稿交接 → 本地校验 → 人工确认事实与关系 → dry-run → 显式提升 → 构建 → 核对新闻页面、sitemap 与 Xiaobei → 验证集成/发布入口。调度启用和生产部署另按明确授权执行。
 
 ## 需要确认的产品决策
 
