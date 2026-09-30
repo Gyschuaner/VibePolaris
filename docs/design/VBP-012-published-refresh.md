@@ -4,7 +4,7 @@
 
 DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，含内容、视觉、实现、审读、验证与 dev 集成。DP 状态是事实来源；此处记录代码侧顺序、视觉取舍和证据。用户对 concept-pages Skill 的未提交修改保持原样，不混入产品提交。
 
-每条依次执行现状检查、必要资料核实、正文与机制更新、按本条范围选择 ZCode 灵感或审读、build、受影响的浏览器验收、提交与 dev 集成。只有当前条完成相应步骤，才更新下一条。模型试读不等于真实零基础读者验证。生产未获授权。
+每条依次执行现状检查、必要资料核实、正文与机制更新、按本条范围选择 ZCode 灵感或审读、build、受影响的浏览器验收、提交与 dev 集成。只有当前条完成相应步骤，才更新下一条。模型试读不等于真实零基础读者验证。正文生产发布按用户明确授权执行，交互功能留本地。
 
 ## 2026-09-29 Skill 自查与进度校正
 
@@ -75,7 +75,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #235 发布，功能留在本地 |
-| 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 完整内容与本地 dev 浏览器验收完成；正文待随本条内容分支发布，功能留在本地 |
+| 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #236、#237 发布生产，功能留在本地 |
 | 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 待更新 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
 | 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 待更新 |
@@ -1338,12 +1338,12 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 ### 构建与真实浏览器验收
 
-- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID YCWuDJ1MZCJ9sIAEI3JFT`；`git diff --check` 通过。
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID 3uUyfunxIE6QkJWel71EC`；`git diff --check` 通过。生产内容镜像从准确的 `origin/main` 提交重新构建，镜像内再次核对 mongos、Hashed Sharding 和等值查询文案，镜像为 `linux/amd64`。
 - CUA 在 `http://127.0.0.1:3219/terms/sharding` 真实操作并观察：初始 A/B 范围与 #42/#78；查询 #42 请求 A 返回 1 行，#78 请求 B 返回 1 行，#99 按 B 返回 0 行，不含分片键请求 A+B 返回 2 行；点击“复制 50–100 范围到 A”后 A 显示“迁移副本 · 未归属”而 #78 仍由 B 返回；点击“更新范围归属为 A”后范围地图变为 A，#78 请求 A；点击“清理 B 的旧副本”后 B 显示旧副本已清理，按钮进入禁用的“迁移完成”终态；重置回 A/B 初始状态。引用区展开 `Manage Sharded Cluster Balancer` 正文摘录并点击回链，回到 `shard-moving` 段。最终浏览器控制台 error/warn 为空，最终回归后截图已实际观察。
 - 本条没有真实 MongoDB、跨节点迁移、390px 可控视口或系统减少动态偏好验证；没有真人读者、远端 dev 或生产功能验证。生产发布只针对正文文件，功能演示保留本地/dev。
 
 ### DP、Git 与发布边界
 
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `f41d6a22-31cb-4adc-83f3-bc1d7a3d4c93` 已按允许流转由 `in_progress` 变为 `done`，完成后重新查询确认，未推进总需求状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。本条本地功能改动涉及 `DistributionConceptPages.tsx`、`DistributionConceptLessons.tsx`、`lib/distribution-sources.ts`，正文发布将只带入 `DistributionConceptPages.tsx`；未把交互功能带入生产。Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能提交为 `0fa0055`。本条本地功能改动涉及 `DistributionConceptPages.tsx`、`DistributionConceptLessons.tsx`、`lib/distribution-sources.ts`；生产内容经 PR #236 合并提交 `e5f76e73d8eda1daa0ac6c8eea257c30ed282931` 发布，随后 PR #237 补齐 `shard-hash` 来源并以合并提交 `f8af12bb0384805607a78a93a42d82d0016bf5a3` 重新部署，未把交互功能带入生产。生产部署记录为 `10136f9c-7c2d-462e-bbfd-2a2b7658150a`，release 为 `/opt/vibepolaris/releases/20261001-f8af12bb0384`，回滚点为 `/opt/vibepolaris/releases/20260930-aa508c30431e`；公网 `/terms/sharding` 精确检查新版文案，容器健康。Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **58/105**，下一条是 `queue`。
