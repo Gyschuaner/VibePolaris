@@ -83,7 +83,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 63 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 待更新 |
 | 64 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 待更新 |
 | 65 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 待更新 |
-| 66 data-ingestion | 从来源接入数据 | 不同来源汇入入口，保留来源与接收进度 | 第61条已完成本地复审，正文待发布记录 |
+| 66 data-ingestion | 从来源接入数据 | 不同来源汇入入口，保留来源与接收进度 | 已发布正文；交互功能留在本地 |
 | 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 待更新 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 待更新 |
 | 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 待更新 |
@@ -1457,6 +1457,6 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 ### DP、Git 与发布边界
 
-- VBP-032 需求 `4ca852b5-1005-40d4-92a9-b8e87d70a043` 保持 `ready_for_release`；本条研发任务 `bb3fa7cf-4167-40c3-b903-d3fbdb66702c` 已进入 `in_progress`，待正文发布和记录完成后按允许流转为 `done`，不推进总需求状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；正文和展示文字在本地完成，交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
-- 本条完成前整体为 **61/105**，下一条是 `stream-processing`。
+- VBP-032 需求 `4ca852b5-1005-40d4-92a9-b8e87d70a043` 保持 `ready_for_release`；本条研发任务 `bb3fa7cf-4167-40c3-b903-d3fbdb66702c` 已按本地验收、正文发布和 DP 记录流转为 `done`，不推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能提交为 `8acef8d`；正文发布分支 `release/VBP-032-ingestion-content-20261001` 的提交 `f26c0a8` 经 [PR #240](https://github.com/Gyschuaner/VibePolaris/pull/240) 合入 `main`，合并提交 `142404d8c1cc24fc607c6cad41cb95890d20cb6d`。生产部署记录 `59dbefc2-28eb-4858-8df5-6f734b935c72`、部署批次 `deploy-vbp032-ingestion-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-142404d8c1cc`，回滚点为 `/opt/vibepolaris/releases/20261001-f12cae3aaceb`；镜像 `vibepolaris:142404d8c1cc24fc607c6cad41cb95890d20cb6d` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/data-ingestion` 返回 200 并精确核对五处新版正文。仅正文进入生产，交互功能仍留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。本条完成后整体为 **61/105**，下一条是 `stream-processing`。
