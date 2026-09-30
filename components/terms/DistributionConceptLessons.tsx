@@ -20,7 +20,7 @@ export function BackupLesson() {
   </div>;
 }
 const queryKeys = [42, 78, 99, null];
-const moveLabels = ['复制 50–100 范围到 A', '更新范围归属为 A', '清理 B 的旧副本', '范围迁移已结束'];
+const moveLabels = ['复制 50–100 范围到 A', '更新范围归属为 A', '清理 B 的旧副本', '迁移完成'];
 export function ShardingLesson() {
   const [stage, setStage] = useState(0), [key, setKey] = useState(42 as number | null), [result, setResult] = useState(0), [shown, setShown] = useState(false);
   return <div className={`${base.lab} ${s.lab}`} aria-label="分片范围归属与路由演示">

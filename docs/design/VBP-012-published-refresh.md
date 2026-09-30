@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第57条backup现已按顺序完成内容与dev检查，技术集成与完整内容均57/105，下一条sharding。第53条的词条内容已单独经PR #233合入main并发布生产；本轮第54–57条正文已由PR #235合入main并发布生产，交互演示改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第58条sharding现已按顺序完成内容与dev检查，技术集成与完整内容均58/105，下一条queue。第53条的词条内容已单独经PR #233合入main并发布生产；本轮第54–57条正文已由PR #235合入main并发布生产，交互演示改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -75,7 +75,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #235 发布，功能留在本地 |
-| 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 待更新 |
+| 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 完整内容与本地 dev 浏览器验收完成；正文待随本条内容分支发布，功能留在本地 |
 | 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 待更新 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
 | 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 待更新 |
@@ -1308,3 +1308,42 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `77680510-c1fd-4637-8797-90309ea9bbc9` 已按完成证据流转 `done`。生产内容部署记录 `bcfdaa50-3604-4617-91b7-405992f66e17`、批次 `deploy-vbp028-content-prod-20260930` 状态 `released`，关联提交为 main 合并提交 `aa508c30431e969ecd66479735bad1a4dfb571a3`。
 - 本地功能提交 `535d7ae0e9a974401b231d909c84dc3af35fbeb4` 在分支 `feat/VBP-028-cache-content-audit`，只保留在 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev` 的本机 dev 预览；正文发布分支 `release/VBP-028-content-20260930` 的提交 `8984162dc7ed4a7a2d213ddedb1f645326e794fe` 经 [PR #235](https://github.com/Gyschuaner/VibePolaris/pull/235) 合入 main。生产切换前 `current` 为 `/opt/vibepolaris/releases/20260930-1423e96ddd95`，旧镜像 `vibepolaris:1423e96ddd9529b40ec75ef7e1f1f83c5b4bf10c` 保留；新目录为 `/opt/vibepolaris/releases/20260930-aa508c30431e`，容器健康检查通过，`https://vibe.chuansgu.top/terms/cache`、`connection-pool`、`replication`、`backup` 四页正文核对通过。`xiaobei_data` 数据卷未改动。回滚：将 `current` 指回旧目录并用旧镜像重新执行 Compose；不删除新卷。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入 Obsidian。当前整体完成 **57/105**，下一条是 `sharding`；未把本地演示功能带入生产。
+
+
+## 58 · 分片文字完整复审、迁移演示与本地浏览器验收（2026-09-30）
+
+### 读者目标与正文调整
+
+- 读者入口是“书目数据放在哪台数据库？为什么带编号的查询能定向，而不带分片键的查询会访问多个片？迁移时复制、改归属、清理分别改变了什么？分片和分区是不是一回事？”读完应能区分复制与分片，按分片键和范围判断查询路由，指出范围迁移真正换归属的时刻，并知道分片键、热点、跨片查询和分区的边界。
+- 更新 `ShardingTermPage`、`ShardingLesson` 与 `shardingSources`：补出分片键就是本演示的书目编号，配置服务器元数据与范围地图、mongos 路由程序、片内副本集的关系；说明 `[0,50)` 的边界含义、#99 按范围路由但返回 0 行、指定范围迁移的复制/归属更新/旧副本清理，以及迁移结果只统计当前归属的一份；补齐 balancer 只搬范围、不改掉坏分片键的边界；解释范围分片与哈希分片的分布/查询取舍、索引、等值查询、故障切换、外部表和 PostgreSQL 分区的单机收益。第四个迁移按钮改为终态文案“迁移完成”。
+- 演示保持本地：初始 `[0,50)` 在 A、`[50,100)` 在 B；#42 在 A、#78 在 B；复制后 A 出现未归属副本；更新归属后 #78 改由 A 路由、B 显示待清理；清理后 B 的旧副本消失。生产只发布正文文件，不带入 `DistributionConceptLessons.tsx` 的交互功能。
+
+### 资料与正文对应
+
+实际打开并核对五份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [MongoDB · Sharding](https://www.mongodb.com/docs/manual/sharding/) | `shard-distribution`、`shard-routing`：mongos、配置服务器、分片键、定向/广播查询与分片集群结构。 |
+| [MongoDB · Shard Keys](https://www.mongodb.com/docs/manual/core/sharding-shard-key/) | `shard-key`：索引字段组成分片键、范围/哈希选择与分布/查询边界。 |
+| [MongoDB · Hashed Sharding](https://www.mongodb.com/docs/manual/core/hashed-sharding/) | `shard-hash`：连续增长键的分散、范围查询更可能广播、等值查询仍可定向。 |
+| [MongoDB · Manage Sharded Cluster Balancer](https://www.mongodb.com/docs/manual/core/sharding-balancer-administration/) | `shard-moving`：源片继续服务、目标复制并同步、位置元数据更新、旧数据清理与后台 balancer。 |
+| [PostgreSQL 18 · Table Partitioning](https://www.postgresql.org/docs/18/ddl-partitioning.html) | `shard-partition`：逻辑表与物理分区、分区规则、分区裁剪/批量清理、外部表和普通分区不等于分布式分片。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI 0.16.9，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初始独立 `reader` 会话 `sess_cad44b8a-3c0f-4bfd-b95a-fb9a9f98a441` 读取 partner Skill 和材料 `/tmp/vbp058-sharding-reader-material.md`（SHA-256 `2de6c0860d324ef90fe5a6b7a1e23248405abf075dee656441c8e257c0384308`），指出 mongos/配置元数据、副本集、分片键前置、外部表、哈希和迁移动机的理解断点。主助手按官方资料补充并改写。
+- 独立 `language` 会话 `sess_221ceb9f-b654-45eb-810d-1cd5c222c15d` 读取 partner、humanizer-zh 和修订材料；当时材料 SHA-256 为 `0168a5e36607b5dbb067c6bd2d36207b456b9a448ca91ce4f33b53928f712cea`。它定位主语错位、抽象“数据职责”、重复局限说明、迁移范围表达、分区路由与故障准备等具体句子；主助手逐条核对事实后采纳，未为凑数量改写。
+- 最终 `reader` 会话 `sess_25e250ed-ea0a-4dd8-874a-d6200d154b51` 只读取 partner Skill 与最终材料 `/tmp/vbp058-sharding-reader-material.md`，SHA-256 `78979bcdf0adb14cad0f8d52d9074e8e36a4837d915dbce8896fd7dca5f0b646`。它能完整复述数据分片、定向/广播查询和迁移归属链；剩余问题是 mongos 的部署形态、真实迁移并发细节与范围查询按钮，均属于本页已明确边界的延伸，不阻断主线。此前共 8 轮最终 reader 复核，以最后一轮为准；这些均为文字模拟，不是真人读者或网页试读。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID YCWuDJ1MZCJ9sIAEI3JFT`；`git diff --check` 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/sharding` 真实操作并观察：初始 A/B 范围与 #42/#78；查询 #42 请求 A 返回 1 行，#78 请求 B 返回 1 行，#99 按 B 返回 0 行，不含分片键请求 A+B 返回 2 行；点击“复制 50–100 范围到 A”后 A 显示“迁移副本 · 未归属”而 #78 仍由 B 返回；点击“更新范围归属为 A”后范围地图变为 A，#78 请求 A；点击“清理 B 的旧副本”后 B 显示旧副本已清理，按钮进入禁用的“迁移完成”终态；重置回 A/B 初始状态。引用区展开 `Manage Sharded Cluster Balancer` 正文摘录并点击回链，回到 `shard-moving` 段。最终浏览器控制台 error/warn 为空，最终回归后截图已实际观察。
+- 本条没有真实 MongoDB、跨节点迁移、390px 可控视口或系统减少动态偏好验证；没有真人读者、远端 dev 或生产功能验证。生产发布只针对正文文件，功能演示保留本地/dev。
+
+### DP、Git 与发布边界
+
+- VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `f41d6a22-31cb-4adc-83f3-bc1d7a3d4c93` 已按允许流转由 `in_progress` 变为 `done`，完成后重新查询确认，未推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。本条本地功能改动涉及 `DistributionConceptPages.tsx`、`DistributionConceptLessons.tsx`、`lib/distribution-sources.ts`，正文发布将只带入 `DistributionConceptPages.tsx`；未把交互功能带入生产。Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **58/105**，下一条是 `queue`。
