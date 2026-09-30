@@ -50,34 +50,37 @@ export function PrimaryKeyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={primaryKeySources} />;
   return <ConceptArticle slug="primary-key" title="主键" sources={primaryKeySources}
     sections={[["identity", "同名的书，不同的记录"], ["write", "编号的唯一性检查"], ["combination", "一个主键，可以包含多列"], ["generation", "约束与生成编号分开看"]]}
-    intro={<>图书室有两册《山间来信》。读者借走其中一册，不能只记书名；以后书名修订了，借阅记录也仍要指向原来那一册。记录需要一个能够准确指认它的标识。</>}
+    intro={<>图书室有两册《山间来信》，书目表里每册占一行。读者借走其中一册，光记书名分不清是哪册；给两册分别编号 #42、#78，借阅记录就可以记下“借走 #42”。以后书名修订了，仍能靠编号找到那一行。</>}
     hero={<ConceptHero slug="primary-key" label="两册同名书具有不同主键，42号书改名后编号不变"><div className={s.keyHero}>{[42,78].map(id => <div key={id}><BookOpen size={27} /><strong><Key size={16} />#{id}</strong><div>{id === 42 ? <><span>山间来信</span><span>山间来信 · 修订版</span></> : <span>山间来信</span>}</div></div>)}</div></ConceptHero>}>
     <ArticleSection id="identity" title="同名的书，不同的记录">
       <Legacy slug="primary-key" names={["question", "definition"]} />
-      <p id="primary-key-identity" className="vp-citation-target"><strong>主键是一列或一组列，用唯一且非空的值标识表里的每一条记录。</strong>在 PostgreSQL 中，声明 <code>PRIMARY KEY</code>会要求这些值唯一、非空。一张表至多有一个主键约束，但可以有其他唯一约束。主键值的唯一范围是这张表，不是所有系统中的所有记录。<Cite id="primary-key-identity" /></p>
-      <p>这里选 <code>book_id</code>作主键，书名允许相同。#42 改名，只是那一条记录的内容改变，#78 仍是另一册。选择不随书名修订而变化的编号，是本例的设计决定：主键约束本身并不禁止修改编号；如果要修改，还必须处理已有引用。</p>
+      <p id="primary-key-identity" className="vp-citation-target"><strong>主键是表中用来唯一指认一条记录的一列或一组列。</strong>一册书的编号和书名放在同一行，这一行就是这册书的一条记录。按主键的标准规则，主键值不能重复，参与主键的每一列也都不能是 <code>NULL</code>，也就是缺少值。PostgreSQL 会检查这些条件，下面的写入演示也按它的规则检查。唯一的范围是这张表；另一张表可以有自己的 #42。<Cite id="primary-key-identity" /></p>
+      <p>这里把编号列 <code>book_id</code>设为主键。你也可以自己约定每册都发不同编号，但只是约定，录入时仍可能重号。声明主键后，数据库会拒绝重复或空的编号。#42 改名只改变书名，#78 仍是另一册；这张表允许书名相同。</p>
+      <p>选择不随书名修订而变化的编号，是本例的设计决定，主键规则并不禁止修改编号。假如把 #42 改成 #43，借阅记录里原来记着的 #42 就需要一并处理，否则会找不到那册书。这就是“已有引用”：另一条记录里存着这个编号，用它指向这条书目。</p>
     </ArticleSection>
     <ArticleSection id="write" title="编号的唯一性检查">
       <Legacy slug="primary-key" names={["scene-heading"]} />
-      <p>先尝试插入一个同样使用 #42 的新书目，再试一个空编号；最后改成未使用的 #65。新书名仍然可以叫《山间来信》。这个教学模型检查的是编号，不是书名，不会把插入错误解释成修改了原记录。</p>
+      <p>先尝试新增一册同样使用 #42 的书，再提交空编号；最后改成未使用的 #65。新书名仍然可以叫《山间来信》。本例没有配置自动发号，选择 <code>NULL</code>就是提交一个空值。演示只在页面内模拟检查，不连接真实数据库。</p>
       <PrimaryKeyLesson />
-      <p><strong>重复编号被拒绝，意味着本次新增没有发生。</strong>原来的 #42 不会被第二条记录覆盖。新编号 #65 可以通过，因为本例没有对书名施加唯一约束。改名按钮只修改 #42：对照编号，可以确认修改的是谁。</p>
+      <p><strong>重复编号被拒绝，意味着本次新增没有发生。</strong>原来的 #42 不会被第二条记录覆盖。新编号 #65 可以通过，新增后书名仍与另外两册相同。改名按钮只修改 #42：对照编号，可以确认修改的是谁。</p>
+      <p>下面的建表语句把 <code>book_id</code>定义为整数编号，并用 <code>PRIMARY KEY</code>声明主键。<code>title</code>是书名，<code>text</code>表示文本；它后面的 <code>NOT NULL</code>只要求有值，不检查是否重名。</p>
       <pre className={base.code}>{'CREATE TABLE books (\n  book_id integer PRIMARY KEY,\n  title text NOT NULL\n);'}</pre>
     </ArticleSection>
     <ArticleSection id="combination" title="一个主键，可以包含多列" className={base.offset}>
       <Legacy slug="primary-key" names={["quiz-heading"]} />
-      <p id="primary-key-composite" className="vp-citation-target">也可以把两列合成一个主键。例如一张“读者收藏书目”表使用 <code>PRIMARY KEY (reader_id, book_id)</code>：同一读者可以收藏多本书，同一本书也可以被多人收藏，但同一个二元组合不能重复。这是<strong>一个包含两列的主键</strong>，不是两个各自独立的主键。<Cite id="primary-key-composite" /></p>
-      <div className={s.pairs}><div><code>林舟 / #42</code><span>一条收藏</span></div><div><code>林舟 / #78</code><span>另一条收藏</span></div><div><code>陈禾 / #42</code><span>另一位读者</span></div></div>
-      <p>是否选择这种组合，要看你希望什么东西只能出现一次。如果同一个读者可以多次借同一本书，就不能简单把“读者＋书”作为借阅历史的唯一标识，还需区分每一次借阅。</p>
+      <p id="primary-key-composite" className="vp-citation-target">一张表至多有一个主键，但这个主键可以包含多列。例如“读者收藏书目”表中，<code>reader_id</code>存读者编号，<code>book_id</code>存书的编号。声明 <code>PRIMARY KEY (reader_id, book_id)</code>后，同一读者可以收藏多本书，同一本书也可以被多人收藏；只有读者编号和书编号都相同的组合才算重复。这叫<strong>复合主键</strong>，参与的两列都要有值。<Cite id="primary-key-composite" /></p>
+      <div className={s.pairs}><div><code>读者 #7 / 书 #42</code><span>一条收藏</span></div><div><code>读者 #7 / 书 #78</code><span>同一读者，另一本书</span></div><div><code>读者 #9 / 书 #42</code><span>同一本书，另一位读者</span></div></div>
+      <p>是否选择这种组合，要看你希望什么东西只能出现一次。换到借阅历史：同一个读者可以多次借同一本书，“读者＋书”的组合就会重复，无法区分每一次借阅。可以为每次借阅另设一个不重复的借阅编号，让表里的一行对应某一次借阅。</p>
+      <p id="primary-key-unique" className="vp-citation-target">其他列也需要防重复时，可以加<strong>唯一约束</strong>（<code>UNIQUE</code>）。它检查指定列或组合是否重复，不会把它们变成第二个主键。在 PostgreSQL 中，单独的 <code>UNIQUE</code>允许空值；如果还要求必须有值，就另外加 <code>NOT NULL</code>。上面的书目表只要求编号唯一，没有给书名加这种规则。<Cite id="primary-key-unique" /></p>
     </ArticleSection>
     <ArticleSection id="generation" title="约束与生成编号分开看">
       <Legacy slug="primary-key" names={["prompt-heading"]} />
-      <p id="primary-key-generated" className="vp-citation-target">主键不要求自增，也不要求列名叫 <code>id</code>。以 PostgreSQL 为例，identity 列负责从序列生成值，但它本身并不保证唯一；仍需主键或唯一约束来检查。<strong>“怎样得到编号”和“哪些编号允许写入”是两项职责。</strong><Cite id="primary-key-generated" /></p>
-      <p id="primary-key-autoincrement" className="vp-citation-target">SQLite 普通表的 <code>INTEGER PRIMARY KEY</code>有特殊行为：它是 rowid 的别名，省略值时可以自动分配整数。加上 <code>AUTOINCREMENT</code>改变的是避免重用已删除编号的分配规则，还会带来额外开销；它不是所有主键都必须附带的关键字。<Cite id="primary-key-autoincrement" /></p>
+      <p id="primary-key-generated" className="vp-citation-target">主键不要求编号自动增加，也不要求列名叫 <code>id</code>。PostgreSQL 可以用 identity 列自动发号：没有提供编号时，由数据库内置的序列生成下一个编号。但序列可以被重设，有些配置也允许手动写入编号，所以自动发号本身不保证唯一。仍需主键或唯一约束在写入时检查是否重复。<Cite id="primary-key-generated" /></p>
+      <p id="primary-key-autoincrement" className="vp-citation-target">SQLite 普通表的 <code>INTEGER PRIMARY KEY</code>则有特殊行为：这列直接对应数据库内部的行编号 <code>rowid</code>，省略值或提交 <code>NULL</code>时都可以自动分配整数，数据库会用分配的编号代替这个空值。这与上面“没有自动发号，空值被拒绝”的演示不同。加上 <code>AUTOINCREMENT</code>会在自动分配时避免重用已删除记录的编号，并带来额外开销；没有它也可以自动发号。<Cite id="primary-key-autoincrement" /></p>
       <ArticleAside title="SQLite 中需要核对的兼容行为">
-        <p id="primary-key-sqlite" className="vp-citation-target">SQLite 普通 rowid 表因历史兼容，在一些主键声明中仍可能允许 NULL；WITHOUT ROWID 表则对主键各列执行非空要求。上面的空值拒绝模型按 PostgreSQL 的主键规则演示。把概念移到具体数据库时，要核对实际表定义，不能只凭字段上写着 PRIMARY KEY 就跳过实现差异。<Cite id="primary-key-sqlite" /></p>
+        <p id="primary-key-sqlite" className="vp-citation-target">SQL 的标准规则要求主键各列非空，但 SQLite 早期实现没有严格执行这项检查。为了兼容旧数据库，普通表的某些主键声明至今仍可能接受 <code>NULL</code>；这属于实现例外。声明为 <code>WITHOUT ROWID</code>的表不使用上面提到的内部行编号，会对主键每列执行非空要求。使用 SQLite 时，需要核对实际表定义，才能判断空值会被拒绝、被保留，还是触发自动发号。<Cite id="primary-key-sqlite" /></p>
       </ArticleAside>
-      <p>接着读 <ConceptTerm slug="foreign-key">外键</ConceptTerm>，可以看到这份记录标识怎样被另一张表引用。编号只负责标识；它是不是公开、能不能被某个用户读取，还需要应用的权限规则。</p>
+      <p>回到最初的借书：书目表用主键保证 #42 只对应一册书，借阅表存下 #42，才能明确指向它。接着读 <ConceptTerm slug="foreign-key">外键</ConceptTerm>，可以了解数据库怎样检查这个编号确实存在，以及改号或删除书目时如何处理借阅记录。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
