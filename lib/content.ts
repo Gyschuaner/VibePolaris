@@ -7,6 +7,7 @@ import frontendProductTermsSource from "@/content/zh/term-batches/frontend-produ
 import publishedTermSlugsSource from "@/content/zh/published-terms.json";
 import termsSource from "@/content/zh/terms.json";
 import toolsSource from "@/content/zh/tools.json";
+import newsSource from "@/content/zh/news.json";
 
 const taxonomySchema = z.array(
   z.object({
@@ -48,6 +49,23 @@ const toolSchema = z.object({
   category: z.string().min(1),
 });
 
+const newsSectionSchema = z.object({
+  heading: z.string().min(1),
+  paragraphs: z.array(z.string().min(1)).min(1),
+});
+
+const newsArticleSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  summary: z.string().min(1),
+  publishedAt: z.string().date(),
+  category: z.string().min(1),
+  author: z.string().min(1),
+  readTime: z.string().min(1),
+  isExample: z.boolean(),
+  sections: z.array(newsSectionSchema).min(1),
+});
+
 export const taxonomy = taxonomySchema.parse(taxonomySource);
 export const terms = z.array(termSchema).parse([
   ...termsSource,
@@ -57,6 +75,15 @@ export const terms = z.array(termSchema).parse([
 ]);
 export const publishedTermSlugs = z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).parse(publishedTermSlugsSource);
 export const tools = z.array(toolSchema).parse(toolsSource);
+export const newsArticles = z.array(newsArticleSchema).parse(newsSource);
+
+const duplicateNewsSlugs = newsArticles.filter(
+  (article, index) => newsArticles.findIndex((candidate) => candidate.slug === article.slug) !== index,
+);
+
+if (duplicateNewsSlugs.length) {
+  throw new Error(`新闻 slug 重复：${duplicateNewsSlugs.map((article) => article.slug).join(", ")}`);
+}
 
 const categoryNames = new Set(taxonomy.map((item) => item.name));
 const duplicateSlugs = terms.filter(
@@ -105,6 +132,11 @@ export type Term = (typeof terms)[number];
 export type TermDemoType = NonNullable<Term["demoType"]>;
 export type TermDemoStep = NonNullable<Term["demoSteps"]>[number];
 export type Tool = (typeof tools)[number];
+export type NewsArticle = (typeof newsArticles)[number];
+
+export function getNewsArticle(slug: string) {
+  return newsArticles.find((article) => article.slug === slug);
+}
 
 export function getTerm(slug: string) {
   return terms.find((term) => term.slug === slug);

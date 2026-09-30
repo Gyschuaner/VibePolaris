@@ -33,6 +33,8 @@ test("公开内容页面不直接发起模型请求", () => {
     "app/guides/page.tsx",
     "app/tools/page.tsx",
     "app/about/page.tsx",
+    "app/news/page.tsx",
+    "app/news/[slug]/page.tsx",
   ];
   const source = files.map(read).join("\n");
   assert.doesNotMatch(source, /openai|anthropic|generateText|chat\.completions/i);
