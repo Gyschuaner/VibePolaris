@@ -8,6 +8,7 @@ import publishedTermSlugsSource from "@/content/zh/published-terms.json";
 import termsSource from "@/content/zh/terms.json";
 import toolsSource from "@/content/zh/tools.json";
 import newsSource from "@/content/zh/news.json";
+import { newsArticleSchema, newsRelationErrors } from "@/lib/news-schema";
 
 const taxonomySchema = z.array(
   z.object({
@@ -47,20 +48,6 @@ const toolSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   category: z.string().min(1),
-});
-
-const newsArticleSchema = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  title: z.string().min(1),
-  summary: z.string().min(1),
-  body: z.string().min(1),
-  publishedAt: z.iso.date(),
-  isExample: z.boolean(),
-  source: z.object({
-    name: z.string().min(1),
-    url: z.union([z.url(), z.string().regex(/^\//)]),
-  }),
-  relatedSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).max(8),
 });
 
 export const taxonomy = taxonomySchema.parse(taxonomySource);
@@ -111,11 +98,10 @@ if (unknownPublishedSlugs.length) {
 const publishedTermSlugSet = new Set(publishedTermSlugs);
 export const publishedTerms = terms.filter((term) => publishedTermSlugSet.has(term.slug));
 
+const newsSlugSet = new Set(newsArticles.map(article => article.slug));
 for (const article of newsArticles) {
-  const unknownRelatedSlugs = article.relatedSlugs.filter((slug) => !publishedTermSlugSet.has(slug));
-  if (unknownRelatedSlugs.length) {
-    throw new Error(`新闻 ${article.slug} 关联了未公开的术语：${unknownRelatedSlugs.join(", ")}`);
-  }
+  const errors = newsRelationErrors(article, publishedTermSlugSet, newsSlugSet);
+  if (errors.length) throw new Error(`新闻 ${article.slug}：${errors.join("；")}`);
 }
 
 for (const term of terms) {

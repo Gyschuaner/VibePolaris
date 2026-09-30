@@ -29,6 +29,7 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
   const article = getNewsArticle((await params).slug);
   if (!article) notFound();
   const relatedTerms = article.relatedSlugs.map((slug) => getPublishedTerm(slug)).filter(Boolean);
+  const relatedArticles = article.relatedArticleSlugs.map((slug) => getNewsArticle(slug)).filter(Boolean);
 
   return (
     <>
@@ -47,6 +48,10 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
               <h2>关联词条</h2>
               <div>{relatedTerms.map((term) => <Link key={term!.slug} href={`/terms/${term!.slug}`}>{term!.zh}<span aria-hidden="true">↗</span></Link>)}</div>
             </div>
+            {relatedArticles.length > 0 && <div className="news-related">
+              <h2>关联文章</h2>
+              <div>{relatedArticles.map((related) => <Link key={related!.slug} href={`/news/${related!.slug}`}>{related!.title}<span aria-hidden="true">↗</span></Link>)}</div>
+            </div>}
           </footer>
         </article>
       </main>

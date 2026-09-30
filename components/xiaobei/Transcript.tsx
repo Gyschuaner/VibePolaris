@@ -4,14 +4,15 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { BookOpen, Brain, CaretRight, MagnifyingGlass } from "@phosphor-icons/react";
+import { BookOpen, Brain, CaretRight, MagnifyingGlass, Newspaper } from "@phosphor-icons/react";
 import { CONTEXT_WARNING, CONTEXT_WINDOW, partitionTranscript, type ActivityBlock, type ChatBlock } from "@/lib/xiaobei/events";
 import { remarkTermLinks } from "@/lib/xiaobei/citations";
 
-export function Answer({ text, termNames, close }: { text: string; termNames: Record<string, string>; close: () => void }) {
-  return <div className="xb-answer"><Markdown remarkPlugins={[remarkGfm, [remarkTermLinks, termNames]]} skipHtml components={{
+export function Answer({ text, termNames, newsNames, close }: { text: string; termNames: Record<string, string>; newsNames: Record<string, string>; close: () => void }) {
+  return <div className="xb-answer"><Markdown remarkPlugins={[remarkGfm, [remarkTermLinks, termNames, newsNames]]} skipHtml components={{
     a: ({ href, children }) => {
       if (href?.startsWith("/terms/") && termNames[href]) return <Link className="xb-citation" href={href} onClick={close}><BookOpen size={13} aria-hidden="true" /><span>{termNames[href]}</span></Link>;
+      if (href?.startsWith("/news/") && newsNames[href]) return <Link className="xb-citation xb-news-citation" href={href} onClick={close}><Newspaper size={13} aria-hidden="true" /><span>{newsNames[href]}</span></Link>;
       return href && /^\/(?:guides\/(?:html|css|javascript)|about)?$/.test(href)
         ? <Link href={href} onClick={close}>{children}</Link> : <>{children}</>;
     },
@@ -32,10 +33,10 @@ function Elapsed({ block }: { block: ActivityBlock }) {
 
 function Activity({ block }: { block: ActivityBlock }) {
   const think = block.kind === "think";
-  const label = think ? "Think" : block.name === "search_terms" ? "搜索词条" : block.name === "read_term" ? "读取词条" : "工具";
+  const label = think ? "Think" : block.name === "search_terms" ? "搜索词条" : block.name === "read_term" ? "读取词条" : block.name === "search_news" ? "搜索新闻" : block.name === "read_news" ? "读取新闻" : "工具";
   const preview = think ? (block.state === "running" ? block.text.trim().split("\n").at(-1) : block.text.split("\n")[0]) : block.summary;
   const stateLabel = { running: "进行中", complete: "已完成", error: "未完成", stopped: "已停止" }[block.state];
-  const Icon = think ? Brain : block.name === "search_terms" ? MagnifyingGlass : BookOpen;
+  const Icon = think ? Brain : block.name === "search_terms" || block.name === "search_news" ? MagnifyingGlass : block.name === "read_news" ? Newspaper : BookOpen;
   if (!think) return <div className="xb-activity xb-tool" data-state={block.state} role="group" aria-label={`${label} · ${stateLabel} · ${preview || ""}`}>
     <Icon size={15} /><span className="xb-activity-label">{label}</span><span className="xb-activity-preview">{preview}</span>
     {(block.state === "error" || block.state === "stopped") && <span>{stateLabel}</span>}
@@ -49,14 +50,14 @@ function Activity({ block }: { block: ActivityBlock }) {
   </details>;
 }
 
-export function Transcript({ blocks, termNames, close }: { blocks: ChatBlock[]; termNames: Record<string, string>; close: () => void }) {
+export function Transcript({ blocks, termNames, newsNames, close }: { blocks: ChatBlock[]; termNames: Record<string, string>; newsNames: Record<string, string>; close: () => void }) {
   const { process, answer } = partitionTranscript(blocks);
   const [expandedAnswer, setExpandedAnswer] = useState("");
   const processId = useId();
   // Tie the choice to this answer, so subsequent tokens never re-collapse it.
   const expanded = !answer || expandedAnswer === answer.id;
   const render = (block: ChatBlock) => block.kind === "text"
-    ? <div className="xb-text-block" data-phase={block.phase} key={block.id}><Answer text={block.text} termNames={termNames} close={close} /></div>
+    ? <div className="xb-text-block" data-phase={block.phase} key={block.id}><Answer text={block.text} termNames={termNames} newsNames={newsNames} close={close} /></div>
     : <Activity block={block} key={block.id} />;
   return <>
     {process.length > 0 && <>

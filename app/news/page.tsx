@@ -18,6 +18,7 @@ export default function NewsPage() {
     publishedAt: article.publishedAt,
     isExample: article.isExample,
     source: article.source,
+    relatedArticleSlugs: article.relatedArticleSlugs,
     related: article.relatedSlugs.map((slug) => getPublishedTerm(slug)).filter((term): term is NonNullable<typeof term> => Boolean(term)).map(({ slug, zh, en }) => ({ slug, zh, en })),
   }));
 
