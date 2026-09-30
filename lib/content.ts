@@ -7,6 +7,7 @@ import frontendProductTermsSource from "@/content/zh/term-batches/frontend-produ
 import publishedTermSlugsSource from "@/content/zh/published-terms.json";
 import termsSource from "@/content/zh/terms.json";
 import toolsSource from "@/content/zh/tools.json";
+import newsSource from "@/content/zh/news.json";
 
 const taxonomySchema = z.array(
   z.object({
@@ -48,6 +49,20 @@ const toolSchema = z.object({
   category: z.string().min(1),
 });
 
+const newsArticleSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  summary: z.string().min(1),
+  body: z.string().min(1),
+  publishedAt: z.iso.date(),
+  isExample: z.boolean(),
+  source: z.object({
+    name: z.string().min(1),
+    url: z.union([z.url(), z.string().regex(/^\//)]),
+  }),
+  relatedSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).max(8),
+});
+
 export const taxonomy = taxonomySchema.parse(taxonomySource);
 export const terms = z.array(termSchema).parse([
   ...termsSource,
@@ -57,6 +72,7 @@ export const terms = z.array(termSchema).parse([
 ]);
 export const publishedTermSlugs = z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).parse(publishedTermSlugsSource);
 export const tools = z.array(toolSchema).parse(toolsSource);
+export const newsArticles = z.array(newsArticleSchema).min(1).parse(newsSource);
 
 const categoryNames = new Set(taxonomy.map((item) => item.name));
 const duplicateSlugs = terms.filter(
@@ -79,6 +95,14 @@ if (new Set(publishedTermSlugs).size !== publishedTermSlugs.length) {
   throw new Error("公开词条 slug 不能重复");
 }
 
+const duplicateNewsSlugs = newsArticles.filter(
+  (article, index) => newsArticles.findIndex((candidate) => candidate.slug === article.slug) !== index,
+);
+
+if (duplicateNewsSlugs.length) {
+  throw new Error(`新闻 slug 重复：${duplicateNewsSlugs.map((article) => article.slug).join(", ")}`);
+}
+
 const unknownPublishedSlugs = publishedTermSlugs.filter((slug) => !terms.some((term) => term.slug === slug));
 if (unknownPublishedSlugs.length) {
   throw new Error(`公开词条不存在：${unknownPublishedSlugs.join(", ")}`);
@@ -86,6 +110,13 @@ if (unknownPublishedSlugs.length) {
 
 const publishedTermSlugSet = new Set(publishedTermSlugs);
 export const publishedTerms = terms.filter((term) => publishedTermSlugSet.has(term.slug));
+
+for (const article of newsArticles) {
+  const unknownRelatedSlugs = article.relatedSlugs.filter((slug) => !publishedTermSlugSet.has(slug));
+  if (unknownRelatedSlugs.length) {
+    throw new Error(`新闻 ${article.slug} 关联了未公开的术语：${unknownRelatedSlugs.join(", ")}`);
+  }
+}
 
 for (const term of terms) {
   if (!categoryNames.has(term.cat)) {
@@ -105,6 +136,7 @@ export type Term = (typeof terms)[number];
 export type TermDemoType = NonNullable<Term["demoType"]>;
 export type TermDemoStep = NonNullable<Term["demoSteps"]>[number];
 export type Tool = (typeof tools)[number];
+export type NewsArticle = (typeof newsArticles)[number];
 
 export function getTerm(slug: string) {
   return terms.find((term) => term.slug === slug);
@@ -123,4 +155,8 @@ export function getRelatedTerms(term: Term, count = 4) {
     ?.map((slug) => getTerm(slug))
     .filter((candidate): candidate is Term => Boolean(candidate && publishedTermSlugSet.has(candidate.slug))) ?? [];
   return explicitlyRelated.slice(0, count);
+}
+
+export function getNewsArticle(slug: string) {
+  return newsArticles.find((article) => article.slug === slug);
 }
