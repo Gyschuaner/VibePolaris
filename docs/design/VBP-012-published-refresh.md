@@ -84,7 +84,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 64 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 已发布正文；交互功能留在本地 |
 | 65 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 本地正文与浏览器验收完成；待 ZCode/DP/生产网络恢复 |
-| 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 本地正文与浏览器验收完成；待正文发布，交互功能留在本地 |
+| 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 待更新 |
 | 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 待更新 |
 | 70 data-quality | 适合用途的程度 | 完整性、时效等局部缺口在真实记录上显露 | 待更新 |
@@ -1678,5 +1678,5 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 ### DP、Git 与发布边界
 
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 67 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。本地修改待提交；正文发布需从当前 `origin/main`（第 66 条合并提交 `c345e6f4b14ef83767f1f60b298e1c82f43817d5`）另开 release 分支，只带正文与记录，交互功能留在本地/dev。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能在本轮声称上线。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文与记录提交 `767f6f6`。正文发布分支 `release/VBP-030-transformation-content-20261001` 的提交 `b1154c0` 经 [PR #247](https://github.com/Gyschuaner/VibePolaris/pull/247) 合入 `main`，合并提交 `9fdd3a12eeea17bcc5dfb3a08b4013f29639f412`；生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，未完成镜像传输、容器健康检查或公网正文校验，不能声称生产上线。PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。交互功能继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。本条完成后整体为 **67/105**，下一条是 `data-validation`。
