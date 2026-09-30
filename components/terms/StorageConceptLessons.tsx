@@ -21,7 +21,7 @@ export function DatabaseLesson() {
     <div className={s.catalogueDesk}>
       <div className={s.editor}><BookOpen size={30} weight="light" /><h3>山间来信 <code>#42</code></h3><label className={base.option}><input type="checkbox" checked={draft} onChange={e => setDraft(e.target.checked)} />草稿：可借</label>
         <button disabled={draft === records[0].available} onClick={() => { setRecords(saveBook(records, 42, draft)); setVersion(v => v + 1); }}><FloppyDisk size={18} />保存修改</button>
-        <button className={s.quiet} onClick={() => { setDraft(records[0].available); setQueried(false); }}>重开编辑界面<ArrowCounterClockwise size={17} /></button>
+        <button className={s.quiet} onClick={() => setDraft(records[0].available)}>重开编辑界面<ArrowCounterClockwise size={17} /></button>
       </div>
       <div className={s.catalogue}><h3><Database size={21} />已保存书目</h3><div className={s.savedRows}>{records.map(book => <div key={book.id}><code>{book.id}</code><span>{book.title}</span><States index={book.available ? 0 : 1}>{[<span key="yes">可借</span>, <span key="no">已借出</span>]}</States></div>)}</div></div>
     </div>
@@ -56,7 +56,7 @@ export function IndexLesson() {
     </div>
     <div className={s.searchReadout} aria-live="polite"><States index={read && indexed ? trace.steps.length + 1 : step}>{[<p key="start">目标 <strong>#{target}</strong> · 等待第一次比较</p>, ...trace.steps.map((frame, i) => <p key={i}>第 {i + 1} 次比较 · <strong>#{frame.id}</strong>{frame.found ? indexed ? " 命中目录，等待读取记录" : " 匹配，已读取记录" : i === trace.steps.length - 1 ? " 不匹配，范围耗尽：未找到" : indexed ? frame.id < target ? " 小于目标，继续右侧" : " 大于目标，继续左侧" : " 不匹配，继续下一条"}</p>), <p key="read">目录比较 {readCount} 次 · 已读取 <strong>#{receipt?.id}</strong> 的记录</p>]}</States></div>
     <div className={s.actions}><button disabled={ended} onClick={next}>比较下一项<ArrowRight size={18} /></button><button disabled={!indexed || !found || read} onClick={() => { setReceipt(books.find(book => book.id === current.id)!); setReadCount(step); setRead(true); }}><BookOpen size={18} />读取记录</button><button aria-label="重置查找" onClick={clear}><ArrowCounterClockwise size={18} /></button></div>
-    <div className={s.recordLocations}><h3>原记录位置</h3><div>{books.map((book, i) => <span key={book.id} data-selected={read && receipt?.id === book.id}><small>{i + 1}</small><code>#{book.id}</code></span>)}</div></div>
+    <div className={s.recordLocations}><h3>原书目位置</h3><div>{books.map((book, i) => <span key={book.id} data-selected={read && receipt?.id === book.id}><small>{i + 1}</small><code>#{book.id}</code></span>)}</div></div>
     <Reveal open={read}><div className={s.searchReceipt} role="status"><BookOpen size={26} /><div><strong>{receipt?.title}</strong><span>#{receipt?.id} · {receipt?.available ? "可借" : "已借出"}</span></div></div></Reveal>
   </div>;
 }
@@ -77,7 +77,7 @@ export function TransactionLesson() {
     </div>
     <div className={s.commitBridge} data-committed={state.phase === "committed"}><ArrowDown size={25} /><span>{grouped ? "提交后对外生效" : "每一步各自生效"}</span></div>
     <div className={s.committedValues} aria-label="新查询可见的已提交数据"><span>新查询可见</span><div><span>可借</span><States index={state.committed.available === 2 ? 0 : 1}>{[<strong key="two">2 本</strong>,<strong key="one">1 本</strong>]}</States></div><div><span>借阅</span><States index={state.committed.loans}>{[<strong key="zero">0 条</strong>,<strong key="one">1 条</strong>]}</States></div></div>
-    <div className={s.actions}><button disabled={done} onClick={() => setState(advanceLoan(state, "next", grouped, fail))}>{done ? "本次已结束" : nextLabel}<ArrowRight size={18} /></button><button disabled={!grouped || ["idle", "committed", "rolledback"].includes(state.phase)} onClick={() => setState(advanceLoan(state, "rollback", grouped, fail))}>回滚</button><button onClick={() => setState(initialLoan())}><ArrowCounterClockwise size={18} />重新实验</button></div>
+    <div className={s.actions}><button disabled={done} onClick={() => setState(advanceLoan(state, "next", grouped, fail))}>{state.phase === "failed" ? "写入失败" : done ? "本次已结束" : nextLabel}<ArrowRight size={18} /></button><button disabled={!grouped || ["idle", "committed", "rolledback"].includes(state.phase)} onClick={() => setState(advanceLoan(state, "rollback", grouped, fail))}>回滚</button><button onClick={() => setState(initialLoan())}><ArrowCounterClockwise size={18} />重新实验</button></div>
     <div className={s.transactionStatus} aria-live="polite"><States index={phases.indexOf(state.phase)}>{statuses.map((text, i) => <p key={i}>{text}</p>)}</States></div>
   </div>;
 }

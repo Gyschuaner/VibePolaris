@@ -19,7 +19,7 @@ export function ConceptHero({ slug, label, children }: { slug: string; label?: s
     return () => { observer.disconnect(); document.removeEventListener("visibilitychange", update); };
   }, []);
 
-  return <figure ref={ref} className={styles.hero} data-kind={slug} aria-label={label ?? (slug === "tools" ? "请求交给工具，实际结果返回模型" : slug === "context" ? "任务、日志和要求组合成本轮输入" : "从语法错误到检查通过的三次修正")}>
+  return <figure ref={ref} className={styles.hero} data-kind={slug} aria-label={label ?? (slug === "tools" ? "请求交给工具，实际结果返回模型" : slug === "context" ? "任务、日志和要求组合成本轮输入" : "读取日志、修正代码与检查结果")}>
     <div key={replay} className={styles.art} aria-hidden="true">
       {children ?? (slug === "tools" ? <div className={styles.dispatch}>
         <div className={styles.sender}><Brain size={30} weight="light" /><span>模型</span></div>

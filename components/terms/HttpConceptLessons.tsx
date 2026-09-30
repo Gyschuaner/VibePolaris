@@ -23,7 +23,7 @@ export function RequestLesson() {
       const url = new URL("https://example.com/books");
       if (method === "GET") url.searchParams.set("q", name);
       const request = new Request(url, { method, headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify({ title: name }) : undefined });
-      const text = await request.text();
+      const text = await request.clone().text();
       if (id !== generation.current) return;
       setResult([request.method, request.url, request.headers.get("content-type") ?? "未设置", text || "无请求体"]);
       setPhase("ready");
@@ -81,7 +81,7 @@ export function ResponseLesson() {
         <div className={s.blank} key="draft"><BookOpen size={35} weight="light" /><span>页面尚未处理这份响应</span></div>,
         <div className={s.bookmark} key="created"><BookOpen size={34} /><strong>{message}</strong><code>/bookmarks/42</code><span>已加入书签</span></div>,
         <div className={s.blank} key="deleted"><Check size={36} /><strong>书签已移除</strong></div>,
-        <div className={s.blank} key="invalid"><WarningCircle size={36} /><strong>{message}</strong><span>书签未创建</span></div>,
+        <div className={s.blank} key="invalid"><WarningCircle size={36} /><strong>{message}</strong><span>页面未显示新书签</span></div>,
       ]}</States></div></div>
     </div>
     <div className={s.controls}><button onClick={apply}>应用到页面<ArrowRight size={18} /></button><button className={base.reset} onClick={reset}><ArrowCounterClockwise size={17} />重置界面</button></div>

@@ -72,7 +72,7 @@ export function StateLesson() {
     </form>
     <div className={styles.saveResult}><code className={styles.statusCode}>status = &quot;{status}&quot;</code><div aria-live="polite"><States index={["idle", "pending", "error", "success"].indexOf(status)}>{[
       <div key="idle" className={styles.receipt}><FileText size={34} weight="light" /><h3>尚未保存</h3><p>编辑笔记，再保存草稿。</p></div>,
-      <div key="pending" className={styles.receipt}><HourglassMedium size={34} weight="light" /><h3>等待响应</h3><div className={styles.responseControls}><button onClick={() => receive("success")}><Check size={17} />返回成功</button><button onClick={() => receive("error")}><WarningCircle size={17} />返回失败</button></div></div>,
+      <div key="pending" className={styles.receipt}><HourglassMedium size={34} weight="light" /><h3>等待响应</h3><div className={styles.responseControls}><button onClick={() => receive("success")}><Check size={17} />模拟成功</button><button onClick={() => receive("error")}><WarningCircle size={17} />模拟失败</button></div></div>,
       <div key="error" className={styles.receipt} data-error="true"><WarningCircle size={34} weight="light" /><h3>保存失败</h3><p>笔记还在，可以重试。</p></div>,
       <div key="success" className={styles.receipt}><Check size={34} weight="light" /><h3>草稿已保存</h3><p>{savedText}</p></div>,
     ]}</States></div></div>

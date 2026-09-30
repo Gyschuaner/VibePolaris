@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, Terminal, Trash } from "@phosphor-icons/react";
+import { Archive, ArrowCounterClockwise, ArrowDown, ArrowRight, Check, FileText, Globe, LockSimple, LockSimpleOpen, Terminal, Trash } from "@phosphor-icons/react";
 import { useScene } from "./HarnessStoryScenes";
 import styles from "./ExtendedConcepts.module.css";
 
@@ -24,17 +24,24 @@ export function MemoryLesson() {
   const reset = () => { setSaved(false); setSession(1); setRecalled(false); };
   return <div className={`${styles.lab} ${styles.memoryLab}`} aria-label="记忆存取演示">
     <div className={styles.memoryDesk}>
-      <div className={styles.sessionPaper}><div className={styles.objectTitle}><FileText size={21} /><h3>会话 {session}</h3></div><p>继续修复服务</p><States index={session === 1 ? 0 : recalled ? 2 : 1}>{[<p key="current" className={styles.noteText}>{progressNote}</p>,<p key="empty" className={styles.empty}>这次还没有上次的进度。</p>,<p key="recall" className={styles.noteText}>{progressNote}</p>]}</States></div>
-      <div className={styles.archiveShelf} data-saved={saved}><Archive size={32} weight="light" /><h3>外部记录</h3><div className={styles.storedNote} data-saved={saved} aria-hidden={!saved}><FileText size={21} /><strong>服务修复进度</strong><span>app.py · 待检查 /health</span></div><p className={styles.archiveEmpty} data-hidden={saved}>尚未保存</p></div>
+      <div className={styles.sessionPaper} data-recalled={recalled}><div className={styles.objectTitle}><FileText size={21} /><h3>会话 {session}</h3></div><p>继续修复服务</p><States index={session === 1 ? 0 : recalled ? 2 : 1}>{[<p key="current" className={styles.noteText}>{progressNote}</p>,<p key="empty" className={styles.empty}>这次还没有上次的进度。</p>,<p key="recall" className={styles.noteText}>{progressNote}</p>]}</States></div>
+      <div className={styles.archiveShelf}>
+        <div className={styles.archiveHeading}><Archive size={25} weight="light" /><h3>项目记录</h3></div>
+        <div className={styles.archiveOther}><span>首页配色</span><strong>淡紫</strong></div>
+        <div className={styles.archiveSlot}>
+          <p className={styles.archiveEmpty} data-hidden={saved} aria-hidden={saved}>服务修复 · 尚未保存</p>
+          <div className={styles.storedNote} data-saved={saved} data-selected={recalled} aria-hidden={!saved} inert={!saved}><strong>服务修复</strong><span>冒号已补 · /health 仍返回 500</span></div>
+        </div>
+      </div>
     </div>
     <div className={styles.actions}>
       <button disabled={saved || session !== 1} onClick={() => setSaved(true)}><Archive size={18} />保存进度</button>
       <button onClick={() => { setSession(n => n + 1); setRecalled(false); }}>新会话<ArrowRight size={18} /></button>
-      <button disabled={!saved || session === 1 || recalled} onClick={() => setRecalled(true)}><ArrowDown size={18} />取回进度</button>
+      <button disabled={!saved || session === 1 || recalled} onClick={() => setRecalled(true)}><ArrowDown size={18} />让应用取回</button>
       <button disabled={!saved} aria-label="删除保存的进度" onClick={() => { setSaved(false); setRecalled(false); }}><Trash size={18} /></button>
       <button aria-label="重置记忆演示" onClick={reset}><ArrowCounterClockwise size={18} /></button>
     </div>
-    <p className={styles.status} role="status">{recalled ? "已把保存的进度加入这次输入。" : session > 1 ? saved ? "记录还在外部，新会话需要重新读取。" : "没有可取回的记录，可以重置后先保存。" : saved ? "进度已保存，试着开始一次新会话。" : "先保存这次进度，再切换会话。"}</p>
+    <p className={styles.status} role="status">{recalled ? "应用选出服务修复记录，加入本轮输入。" : session > 1 ? saved ? "记录仍在外部，本轮尚未读取。" : "本任务没有保存的记录。" : saved ? "已保存本任务进度，当前会话的内容仍在。" : "保存本任务进度，再切换会话。"}</p>
   </div>;
 }
 
@@ -42,23 +49,26 @@ export function WindowLesson() {
   const [history, setHistory] = useState(40);
   const [output, setOutput] = useState(20);
   const [compressed, setCompressed] = useState(false);
+  const [sampled, setSampled] = useState(false);
   const usedHistory = compressed ? Math.ceil(history / 4) : history;
   const total = 20 + usedHistory + output;
+  const over = Math.max(0, total - 100);
+  const sampleOutput = Math.min(12, output);
   const segments = [{ name: "任务与工具", value: 20 }, { name: compressed ? "历史摘要" : "对话历史", value: usedHistory }, { name: "预留输出", value: output }];
   return <div className={`${styles.lab} ${styles.windowLab}`} aria-label="上下文容量演示">
-    <div className={styles.budgetHeadline}><strong>{total}<span> / 100</span></strong><span role="status">{total > 100 ? `超出 ${total - 100} 格` : `剩余 ${100 - total} 格`}</span></div>
-    <div className={styles.ruler} aria-label={`容量100格，已分配${total}格`}><div className={styles.capacityBoundary} /><div className={styles.capacityTrack}>{segments.map((part, i) => <div key={i} style={{ width: `${part.value / 1.3}%` }}><span>{part.value}</span></div>)}</div><span className={styles.limitMark}>100</span></div>
+    <div className={styles.budgetHeadline}><strong>{total}<span> / 100</span></strong><span role="status">{over ? sampled ? `超出 ${over} 格，样例占用未显示` : `超出 ${over} 格，先调低历史或输出预留` : sampled ? sampleOutput < 12 ? `样例需 12 格，只预留了 ${output} 格` : `样例用了 12 格，预留仍有 ${output - 12} 格未用` : `剩余 ${100 - total} 格`}</span></div>
+    <div className={styles.ruler} aria-label={`容量100格，已安排${total}格${over ? `，超出${over}格` : ""}`}><div className={styles.capacityBoundary} /><div className={styles.capacityTrack}>{segments.map((part, i) => <div key={i} style={{ width: `${part.value / 1.3}%` }}>{i === 2 && <i className={styles.outputFill} style={{ width: sampled && !over ? `${sampleOutput / output * 100}%` : "0%" }} aria-hidden="true" />}<span>{part.value}</span></div>)}</div><div className={styles.capacityOverrun} data-visible={over > 0} style={{ width: `${over / 1.3}%` }} /><span className={styles.limitMark}>100</span></div>
     <div className={styles.legend}>{segments.map((part, i) => <span key={i}><i data-color={i} />{part.name}</span>)}</div>
-    <div className={styles.budgetControls}><label>对话历史 <output>{history} 格</output><input aria-label="对话历史容量" type="range" min="20" max="70" step="5" value={history} onChange={e => setHistory(Number(e.target.value))} /></label><label>预留输出 <output>{output} 格</output><input aria-label="预留输出容量" type="range" min="10" max="40" step="5" value={output} onChange={e => setOutput(Number(e.target.value))} /></label></div>
-    <button className={styles.textButton} aria-pressed={compressed} onClick={() => setCompressed(!compressed)}><FileText size={18} />{compressed ? "恢复完整历史" : "把历史整理成摘要"}<ArrowRight size={18} /></button>
-    <Reveal open={compressed}><p className={styles.compactNote}>保留：已补冒号、/health 返回 500、尚未验收。原始日志仍留在外部。</p></Reveal>
+    <div className={styles.budgetControls}><label>对话历史 <output>{history} 格</output><input aria-label="对话历史容量" type="range" min="20" max="70" step="5" value={history} onChange={e => { setHistory(Number(e.target.value)); setSampled(false); }} /></label><label>预留输出 <output>{output} 格</output><input aria-label="预留输出容量" type="range" min="10" max="40" step="5" value={output} onChange={e => { setOutput(Number(e.target.value)); setSampled(false); }} /></label></div>
+    <div className={styles.windowActions}><button className={styles.textButton} aria-pressed={compressed} onClick={() => { setCompressed(!compressed); setSampled(false); }}><FileText size={18} />{compressed ? "恢复完整历史" : "把历史整理成摘要"}<ArrowRight size={18} /></button><button className={styles.textButton} onClick={() => setSampled(true)}>查看样例占用<ArrowRight size={18} /></button></div>
+    <Reveal open={compressed}><p className={styles.compactNote}>摘要只留下：已补冒号，服务能启动。/health 仍返回 500；下一步检查返回值。原始日志的细节不在这轮摘要里，仍可从外部查回。</p></Reveal>
   </div>;
 }
 
 const promptClauses = [
-  { name: "提供材料", text: "启动日志：app.py 第 1 行，SyntaxError: expected ':'。" },
-  { name: "说明结果", text: "请按「位置、修改、验证」三项回答。" },
-  { name: "限定范围", text: "只分析日志；缺少代码时说明需要补充什么，不声称已经修复。" },
+  { name: "提供材料", text: "启动日志：app.py:1 · SyntaxError: expected ':'" },
+  { name: "说明结果", text: "按「位置、修改、验证」三项回答。" },
+  { name: "限定范围", text: "只分析日志；没读代码或运行检查就说明。" },
 ];
 export function PromptLesson() {
   const [clauses, setClauses] = useState([false, false, false]);
@@ -66,16 +76,17 @@ export function PromptLesson() {
   const [answer, setAnswer] = useState(0);
   const [answerScoped, setAnswerScoped] = useState(false);
   const run = () => { setAnswer((clauses[0] ? 1 : 0) + (clauses[1] ? 2 : 0)); setAnswerScoped(clauses[2]); setOpen(true); };
-  const replies = ["还缺少启动日志或错误信息，暂时无法定位原因。请提供这次运行的报错。", "日志指向 app.py 第 1 行缺少冒号。需要查看对应代码，再修改并重新运行检查；这里尚未实际修复。", "位置：信息不足。\n修改：请先提供启动日志。\n验证：拿到错误信息后再确定检查方法。", "位置：app.py 第 1 行，日志提示缺少冒号。\n修改：查看该行代码，确认并补上缺少的冒号。\n验证：重新启动，再检查 /health；目前尚未执行。"];
+  const hasMaterial = answer % 2 === 1;
+  const hasFormat = answer >= 2;
   return <div className={`${styles.lab} ${styles.promptLab}`} aria-label="提示词改写演示">
     <div className={styles.promptDraft}><span className={styles.draftLabel}>任务稿</span><p className={styles.requestTitle}>帮我分析服务为什么启动失败。</p>{promptClauses.map((clause, i) => <Reveal key={clause.name} open={clauses[i]}><p className={styles.clause}>{clause.text}</p></Reveal>)}</div>
-    <div className={styles.promptEdits}>{promptClauses.map((clause, i) => <button key={clause.name} aria-pressed={clauses[i]} onClick={() => { setClauses(values => values.map((value, j) => i === j ? !value : value)); setOpen(false); }}><span>{clauses[i] ? <Check size={16} /> : `0${i + 1}`}</span>{clause.name}</button>)}<button className={styles.runPrompt} disabled={open} onClick={run}>查看回答样例<ArrowRight size={20} /></button></div>
-    <div className={styles.promptReply}><Reveal open={open}><div role="status"><span>回答样例</span><p>{replies[answer]}{answerScoped ? answer % 2 === 1 ? "\n依据仅为这段日志，下一步需要报错行附近的代码。" : "\n目前没有提供日志，不能声称已经定位或修复。" : ""}</p></div></Reveal></div>
+    <div className={styles.promptEdits}>{promptClauses.map((clause, i) => <button key={clause.name} aria-pressed={clauses[i]} onClick={() => { setClauses(values => values.map((value, j) => i === j ? !value : value)); setOpen(false); }}><span>{clauses[i] ? <Check size={16} /> : `0${i + 1}`}</span>{clause.name}</button>)}<button className={styles.runPrompt} disabled={open} onClick={run}>查看这版样例<ArrowRight size={20} /></button></div>
+    <div className={styles.promptReply}><Reveal open={open}><div className={styles.promptSample} role="status"><span className={styles.draftLabel}>固定回答样例</span>{hasFormat ? <dl><div><dt>位置</dt><dd>{hasMaterial ? "日志指向 app.py 第 1 行，提示缺少冒号。" : "未提供启动日志，暂时无法定位。"}</dd></div><div><dt>修改</dt><dd>{hasMaterial ? "查看该行代码，核对并补上缺少的冒号。" : "请先提供这次运行的报错。"}</dd></div><div><dt>验证</dt><dd>{hasMaterial ? "修改后重新启动，再检查服务能否正常响应；目前尚未执行。" : "拿到日志后再确定检查方法。"}</dd></div></dl> : <p>{hasMaterial ? "启动日志指向 app.py 第 1 行缺少冒号。先查看对应代码，再修改并运行检查；目前尚未执行。" : "还缺少启动日志或错误信息，暂时无法定位原因。请提供这次运行的报错。"}</p>}{answerScoped && <p className={styles.promptScopeNote}>{hasMaterial ? "只依据这段日志分析；没有读取代码或运行检查。" : "没有提供日志，不能声称已经定位或修复。"}</p>}</div></Reveal></div>
   </div>;
 }
 
 const operations = [
-  { name: "修改工作区文件", target: "/workspace/app.py", icon: FileText, result: "允许写入工作区，文件修改完成。" },
+  { name: "读取工作区文件", target: "/workspace/app.py", icon: FileText, result: "允许读取工作区文件，已取得 app.py 的内容。" },
   { name: "读取外部密钥", target: "~/.ssh/id_rsa", icon: LockSimple, result: "拒绝访问：此路径不在允许读取的范围。" },
   { name: "访问文档站点", target: "docs.example.com", icon: Globe, result: "允许访问指定站点，收到文档内容。" },
 ];
@@ -86,11 +97,12 @@ export function SandboxLesson() {
   const current = operations[operation];
   const allowed = operation === 0 || (operation === 2 && network);
   const Icon = current.icon;
+  const GateIcon = operation === 2 && network ? LockSimpleOpen : LockSimple;
   return <div ref={scene.ref} className={`${styles.lab} ${styles.sandboxLab}`} aria-label="沙箱边界演示">
     <div className={styles.operationChoices}>{operations.map((op, i) => <button key={op.name} aria-pressed={operation === i} onClick={() => { setOperation(i); scene.seek(0); }}>{op.name}</button>)}</div>
     <div className={styles.sandboxStage} data-step={scene.step} data-allowed={allowed} data-internal={operation === 0}>
       <div className={styles.workspace}><Terminal size={28} weight="light" /><strong>执行沙箱</strong><span>/workspace 可读写</span></div>
-      <div className={styles.gate}><LockSimple size={24} /><span>访问边界</span></div>
+      <div className={styles.gate}><GateIcon size={24} /><span>访问边界</span></div>
       <div className={styles.operationObject}><Icon size={25} /><code>{current.target}</code></div>
       <span className={styles.hostLabel}>外部环境</span>
     </div>

@@ -13,7 +13,7 @@ export function ApiContractLesson() {
   const [result, setResult] = useState(bookContract("A", true));
   const [shown, setShown] = useState(false);
   const current = bookContract(storage, mapping);
-  return <div className={`${base.lab} ${s.lab}`} aria-label="接口契约实验">
+  return <div className={`${base.lab} ${s.lab}`} aria-label="接口约定实验">
     <div className={s.choices} role="group" aria-label="内部存储结构">{(["A", "B"] as const).map(value => <button key={value} aria-pressed={storage === value} onClick={() => { setStorage(value); setShown(false); }}>内部结构 {value}</button>)}</div>
     <div className={s.contractDesk}>
       <div><h3><Database size={21} />服务内部</h3><States index={storage === "A" ? 0 : 1}>{["A", "B"].map(value => <pre key={value}>{JSON.stringify(bookContract(value as "A" | "B", true).internal, null, 2)}</pre>)}</States></div>
@@ -24,9 +24,9 @@ export function ApiContractLesson() {
     <div className={s.bookReceiver} aria-live="polite"><States index={!shown ? 0 : result.valid ? 1 : 2}>{[
       <p key="idle">调用方需要整数 id 和非空字符串 title。</p>,
       <div key="book" className={s.bookmark}><BookBookmark size={36} weight="light" /><div><strong>{result.valid ? String(result.output.title) : "星空手记"}</strong><span>图书 #{result.valid ? String(result.output.id) : "42"}</span></div><Check size={22} /></div>,
-      <div key="error" className={s.failure}><strong>无法生成书签</strong><p>收到合法 JSON，但缺少约定的 id、title 字段。</p></div>,
+      <div key="error" className={s.failure}><strong>无法生成书签</strong><p>这份数据没有约定的 id、title 字段。</p></div>,
     ]}</States></div>
-    <button className={base.reset} onClick={() => { setStorage("A"); setMapping(true); setShown(false); }}><ArrowCounterClockwise size={17} />重置契约</button>
+    <button className={base.reset} onClick={() => { setStorage("A"); setMapping(true); setShown(false); }}><ArrowCounterClockwise size={17} />重置演示</button>
   </div>;
 }
 
@@ -40,14 +40,14 @@ export function EndpointLesson() {
     <label className={s.host}>服务基址<select value={host} onChange={e => { setHost(e.target.value); setShown(false); }}><option>https://api.example.com</option><option>https://test.example.com</option></select></label>
     <div className={s.matrix}>{["/books", "/books/42", "/authors"].map(location => <div key={location} className={s.pathColumn}><code>{location}</code>{["GET", "POST", "DELETE"].map(verb => <button key={verb} aria-label={`${verb} ${location}`} aria-pressed={path === location && method === verb} data-declared={operations.some(op => op.path === location && op.method === verb)} onClick={() => { setPath(location); setMethod(verb); setShown(false); }}><strong>{verb}</strong><span>{operations.find(op => op.path === location && op.method === verb)?.name ?? "未声明"}</span></button>)}</div>)}</div>
     <div className={s.address}><strong>{method}</strong><code>{host}{path}</code></div>
-    <button onClick={() => { setResult(matchOperation(method, path)); setShown(true); }}>匹配入口<ArrowRight size={18} /></button>
+    <button onClick={() => { setResult(matchOperation(method, path)); setShown(true); }}>查找处理程序<ArrowRight size={18} /></button>
     <div className={s.matchResult} aria-live="polite"><States index={!shown ? 0 : result.kind === "matched" ? 1 : result.kind === "method" ? 2 : 3}>{[
-      <p key="idle">选择方法和路径，查看对应的处理入口。</p>,
-      <div key="match"><span>入口已找到</span><strong>{result.name ?? "listBooks"}</strong><p>尚未执行该操作。</p></div>,
+      <p key="idle">选择方法和路径，查看是否有对应的处理程序。</p>,
+      <div key="match"><span>处理程序已找到</span><strong>{result.name ?? "listBooks"}</strong><p>尚未执行该操作。</p></div>,
       <div key="method"><strong>该路径未声明此方法</strong><p>已声明：{result.allowed.join("、")}</p></div>,
       <div key="path"><strong>路径不存在</strong><p>这份路由表没有声明这个位置。</p></div>,
     ]}</States></div>
-    <button className={base.reset} onClick={() => { setMethod("GET"); setPath("/books"); setHost("https://api.example.com"); setShown(false); }}><ArrowCounterClockwise size={17} />重置入口</button>
+    <button className={base.reset} onClick={() => { setMethod("GET"); setPath("/books"); setHost("https://api.example.com"); setShown(false); }}><ArrowCounterClockwise size={17} />重置选择</button>
   </div>;
 }
 
@@ -112,7 +112,8 @@ export function RateLimitLesson() {
   const [time, setTime] = useState(0);
   const [receipt, setReceipt] = useState({ who: "A", allowed: 0, rejected: 0, time: 0 });
   const [shown, setShown] = useState(false);
-  const reset = (split = separate) => { setSeparate(split); setBuckets({ shared: 5, A: 5, B: 5 }); setTime(0); setShown(false); };
+  const [experiment, setExperiment] = useState(0);
+  const reset = (split = separate) => { setSeparate(split); setBuckets({ shared: 5, A: 5, B: 5 }); setTime(0); setShown(false); setExperiment(value => value + 1); };
   const send = (who: "A" | "B", count: number) => {
     const key = separate ? who : "shared";
     const result = spendTokens(buckets[key], count);
@@ -126,7 +127,7 @@ export function RateLimitLesson() {
       <div className={s.caller}><strong>B</strong><button onClick={() => send("B", 1)}><PaperPlaneTilt size={19} />B 发送 1 次</button></div>
     </div>
     <div className={s.simClock}><span>模拟时间 <strong>{time}s</strong></span><button onClick={() => { setTime(value => value + 1); setBuckets(value => ({ shared: refillTokens(value.shared, 1), A: refillTokens(value.A, 1), B: refillTokens(value.B, 1) })); }}><Clock size={18} />推进 1 秒</button></div>
-    <Reveal open={shown}><div className={s.rateReceipt} aria-live="polite"><span>{receipt.time}s · {receipt.who} 的这批请求</span><strong>放行 {receipt.allowed}</strong><strong>拒绝 {receipt.rejected}</strong><code>{receipt.rejected ? "429 · Retry-After: 1" : "已通过限流检查"}</code></div></Reveal>
+    <Reveal key={experiment} open={shown}><div className={s.rateReceipt} aria-live="polite"><span>{receipt.time}s · {receipt.who} 的这批请求</span><strong>放行 {receipt.allowed}</strong><strong>拒绝 {receipt.rejected}</strong><code>{receipt.rejected ? "被拒请求：429 · Retry-After: 1" : "已通过限流检查"}</code></div></Reveal>
     <button className={base.reset} onClick={() => reset()}><ArrowCounterClockwise size={17} />重置令牌桶</button>
   </div>;
 }

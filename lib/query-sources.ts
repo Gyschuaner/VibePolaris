@@ -4,6 +4,7 @@ export const sqlSources = [
   pg("INSERT", "sql-insert", ["sql-insert"]),
   pg("UPDATE", "sql-update", ["sql-update"]),
   pg("DELETE", "sql-delete", ["sql-delete"]),
+  pg("Comparison Functions and Operators", "functions-comparison", ["sql-null"]),
   pg("Using EXPLAIN", "using-explain", ["sql-plan", "sql-analyze"]),
 ];
 export const migrationSources = [
