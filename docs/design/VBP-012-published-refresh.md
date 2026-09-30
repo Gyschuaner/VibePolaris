@@ -1384,3 +1384,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `ac4daa0c-6983-4fb6-91ba-6e876e5ddbd0` 已创建并进入 `in_progress`，完成浏览器验收和提交后按允许流转为 `done`，不推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本条已提交。正文发布分支 `release/VBP-028-queue-content-20261001` 的提交 `4e97ff7` 经 [PR #238](https://github.com/Gyschuaner/VibePolaris/pull/238) 合入 `main`，合并提交 `0ddce6f32c80404ff3da69d3f457476782eca74d`；生产部署记录 `8bd527fb-736f-40c3-85b4-7018477e254c`、部署批次 `deploy-vbp028-queue-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-0ddce6f32c80`，回滚点为 `/opt/vibepolaris/releases/20261001-f8af12bb0384`。无缓存构建镜像 `vibepolaris:0ddce6f32c80404ff3da69d3f457476782eca74d` 为 `linux/amd64`，容器健康检查通过；公网 `/terms/queue` 已精确核对消息代理、m42/m78、高优先级顺序和 `book:42:thumb:v1` 文案。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **59/105**，下一条是 `batch-processing`。
+
+## 60 · 批处理文字完整复审、失败重试演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“日报要统计哪一批记录？为什么定时器响了还不能说明结果正确？失败块重跑会不会重复计数？”读完应能解释作业、固定输入、有界集合、分块、阶段计数与最终发布的关系，并判断切换输入、失败重试和改变截止点后的结果边界。
+- 更新 `BatchTermPage` 与 `BatchLesson`：引言定义“作业”及固定输入对新记录的影响；补有界/无界集合、数据版本、书目编号和输入范围；明确中间计数只来自成功块，失败块暂不计入，发布对应提交输出，切换4/6条是页面重置；区分 Spark 的变换与 `collect` action，解释 RDD 分区、`parallelize`、`(book, 1)`、`reduceByKey` 和驱动程序；把调度时间与截止点、范围核对、失败原因接起来。
+- 教学交互仍是本地有限模型：默认4条记录、可切换6条，每两条一块；可模拟一次失败、重试后保留计数，所有块完成后发布；切换输入或重置清空旧进度。没有加入真实集群、作业调度或性能测量。
+
+### 资料与正文对应
+
+本轮实际打开并核对四份官方原文：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Apache Beam · Basics of the Beam model](https://beam.apache.org/documentation/basics/) | `batch-bounded`：有界/无界 `PCollection`、流水线和 runner 的定义边界。 |
+| [Apache Spark · RDD Programming Guide](https://spark.apache.org/docs/latest/rdd-programming-guide.html) | `batch-execute`：RDD 变换的惰性、action 触发、分区与 `collect` 返回驱动程序。 |
+| [Apache Hadoop · MapReduce Tutorial](https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html) | `batch-retry`：输入拆分、失败任务重执行、`OutputCommitter` 清理失败输出。 |
+| [AWS · What is Batch Processing?](https://aws.amazon.com/what-is/batch-processing/) | `batch-schedule`：批作业的时间/依赖启动、成功失败告警、日志历史与结果监控。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初始独立 `reader` 会话 `sess_11846971-0516-4bfa-a608-339a4f2e4196` 读取文字材料 `/tmp/vbp060-batch-reader-material.md`（SHA-256 `0794203cf188567584c664cd556f3c71450672c769cf5c5951f1f14072032dc`），指出“作业”、中间计数、失败块、框架身份、Spark 触发点、提交/发布和演示数据与代码的连接缺口。主助手按来源和页面状态补齐。
+- 独立 `language` 会话 `sess_54fbb621-7823-439e-94b5-4466e1e4718a` 读取 partner、humanizer-zh 和修订材料 `/tmp/vbp060-batch-language-material.md`（SHA-256 `ce13868b2d66cd4cf74a70693489e94172efb1f13324abfe05094224c499a648`），修正被动句、指代、提交/发布表达、Spark 变换与 action 说明和结尾名词化。
+- 成稿 `reader` 会话 `sess_955c7f7d-7186-4ca1-bacf-78115f6e167b` 读取更新后的文字与按操作配对状态 `/tmp/vbp060-batch-reader-final-material.md`（SHA-256 `079fb93098da0263d720ca4b21168a740bdbe40d7b700c0533fdc75f44e41f52`），确认失败、重试、4/6条切换和截止点预测主线成立；指出 #42/#78、数据版本、驱动程序及代码中 `parallelize`/键值计数仍需原地补足。主助手核实后采纳。
+- 针对补充句的 `language` 会话 `sess_50d179c7-40f1-4e2e-a986-cb6cc6e01152` 读取 `/tmp/vbp060-batch-language-final-material.md`（SHA-256 `84d229aaebd708695cb7c71fa2eef87939faa1bed566beab846b4933924e54d1`），建议统一“中间计数”、把“标成失败一次”改为“标成失败”、解释分区来源、避免“编号加1”的算术歧义，并改为“取回到驱动程序”；主助手逐条采纳。两类反馈都是模拟审读，不是真人读者或网页试读。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID hh3zZsAB_78Q3Y6h_K4tK`；`git diff --check` 通过。受影响的 `tests/processing-teaching.test.mjs` 以 `node --experimental-strip-types --test` 执行，1/1 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/batch-processing` 真实操作并观察：固定4条后模拟块1失败，显示“本次失败 · 未计入”、中间计数为 #42 0 次/#78 0 次；点击“重试失败块”后块1完成并显示 #42 2 次；完成块2后显示 #42 3 次/#78 1 次，发布按钮可用；点击发布显示“本批汇总已发布”。切换6条出现第三块并清空旧结果，重置回4条未固定、无计数；展开 Beam 引用摘要并点击回跳到 `batch-bounded`。最终截图实际显示两个完成块、3/1 计数和发布终态。
+- 本轮 CUA 没有可控的390px视口接口，因此没有把窄屏重新测量写成当前轮通过；此前 VBP-030 的批处理桌面/390px证据仍在批次记录中。没有真实 Spark/MapReduce/Beam/AWS 作业、真实调度、真人目标读者、系统减少动态偏好或远端 dev 功能验证。
+
+### DP、Git 与发布边界
+
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `fb62fcb5-0708-4db8-98d4-e0b658de8de6` 已创建并进入 `in_progress`，待本地提交与正文发布完成后按允许流转为 `done`，不推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。本条只改 `ProcessingConceptPages.tsx` 的正文和 `ProcessingConceptLessons.tsx` 的阶段计数文案；内容上线与本地功能分离，生产只带正文/展示文字，交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **60/105**，下一条是 `data-ingestion`。
