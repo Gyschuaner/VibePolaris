@@ -9,27 +9,27 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function BatchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={batchSources}/>;
   return <ConceptArticle slug="batch-processing" title="批处理" sources={batchSources} sections={[["bounded", "确定本批输入范围"], ["chunks", "分块执行，完成后再汇总"], ["compute", "描述计算与触发执行"], ["schedule", "安排作业，也核对结果"]]}
-    intro={<>图书馆要统计一份已经截取好的借阅记录，可以把这组记录交给一个作业处理，再得到每本书的借阅次数。批处理面对的是有明确范围的一组输入。新借阅还在发生，并不妨碍这一次只处理已经确定的记录。</>}
+    intro={<>图书馆想在每天收工后统计一批已经截取的借阅记录。这里的“作业”是一次从读入这批记录到写出结果的处理任务：它读入一个固定集合，按规则计算，最后写出汇总结果。批处理关心的是本次输入有没有边界；新借阅还在不断进来，只要没被算进这一批固定输入，就不会改变这一次的计算。</>}
     hero={<ConceptHero slug="batch-processing" label="四条借阅记录汇总为书目42三次、书目78一次"><div className={s.batchHero}><div className={s.heroRows}>{[42,42,78,42].map((id,i)=><code key={i}>#{id}</code>)}</div><div className={s.heroBars}><div><span/><code>#42 · 3</code></div><div><span/><code>#78 · 1</code></div></div></div></ConceptHero>}>
     <ArticleSection id="bounded" title="确定本批输入范围"><Legacy slug="batch-processing" names={["question", "definition"]}/>
-      <p id="batch-bounded" className="vp-citation-target"><strong>批处理把一个有界的数据集合交给作业，按规则计算结果。</strong>Apache Beam 将有界集合描述为大小固定、不会继续增长的输入；无界集合则会持续接收新记录。区别在这次计算的输入范围，不在机器数量，也不在是否恰好凌晨执行。框架可以在同一种编程模型中支持两类输入。<Cite id="batch-bounded"/></p>
-      <p>“昨天的借阅”需要说明采用哪个时间字段、截止点和数据版本。事后补录一条昨天发生的借阅，是否进入下一次补算，也是输入约定的一部分。<strong>先给这一批划清范围，才能判断结果缺了什么、重跑应当读什么。</strong></p>
+      <p id="batch-bounded" className="vp-citation-target"><strong>批处理把一个有界的数据集合交给作业，按规则计算结果。</strong>Apache Beam 是用来定义数据处理流水线的框架；它把有界集合描述为大小固定、不会继续增长的输入，把无界集合描述为持续接收新记录的输入。这里的“有界”说的是这次计算读哪些数据，不是机器数量，也不是必须在凌晨运行。<Cite id="batch-bounded"/></p>
+      <p>例如“昨天的借阅”要先约定按借阅发生时间还是入库时间、截止到哪个时刻，以及读取哪个数据版本。这里的数据版本，可以理解为某个时点保存下来的那份数据状态。昨天发生但今天才补录的记录，是否进入下一次重算，也属于输入约定。<strong>先把这一批的范围划清，才知道结果缺了什么，重跑时应该读什么。</strong></p>
     </ArticleSection>
     <ArticleSection id="chunks" title="分块执行，完成后再汇总"><Legacy slug="batch-processing" names={["scene-heading"]}/>
-      <p>选 4 条或 6 条固定借阅记录，每两条为一块。固定输入后逐块处理，也可以让下一块失败一次，再重试。已经成功的块继续保留，所有块都完成后才能发布汇总。改变记录数量会重新开始。本例只用浏览器内存，没有集群、真实调度或性能测量。</p>
+      <p>页面默认把 4 条固定借阅记录分成每两条一块，也可以切换成 6 条。本例里的 #42 和 #78 是书目编号。页面上的中间计数，只统计已经成功完成的块：每个编号在这些块里出现了几次。输入固定之后逐块处理；你也可以试着把下一块标成失败，再重试。标成失败的块暂不计入。成功块的结果会一直留着，直到所有块完成，“发布本批汇总”才可以点击。发布，就是把这次完整的计数变成页面上的最终结果，对应批处理系统里提交输出的那一步。在 4 条和 6 条之间切换会清空演示进度，这是页面为了换一批输入而做的重置，不是批处理系统的通用行为。本例只用浏览器内存，没有集群、真实调度或性能测量。</p>
       <BatchLesson/>
-      <p id="batch-retry" className="vp-citation-target">Hadoop MapReduce 把输入分为可独立处理的块，调度任务并重新执行失败任务；输出提交机制也要处理失败任务留下的临时数据。<strong>重新执行一块，不应把它之前的贡献重复加进最终结果。</strong>本例只将成功的块计入一次，并在全部完成后发布。这是教学用的提交规则，不是对所有批处理引擎的事务承诺。<Cite id="batch-retry"/></p>
-      <p>上面的中间计数可能已经非零，但仍有块没处理。看到某一部分输出，不能把整批作业当作成功。输出范围、失败块与提交状态要一起看。</p>
+      <p id="batch-retry" className="vp-citation-target">Hadoop MapReduce 会把输入拆成可以分别处理的逻辑块，调度任务并重新执行失败任务；任务失败时留下的临时输出也要在提交前清理。<strong>在本页的规则里，失败块没有贡献，重试成功后，最终汇总会和从未失败时相同。</strong>真实引擎可能重新计算已完成的任务，也可能使用自己的中间结果管理方式；本例只演示“成功的块计一次、全部完成后再发布”，不能由此认为所有批处理引擎都有这种事务保证。<Cite id="batch-retry"/></p>
+      <p>中间计数可能已经非零，但仍有块没处理，所以它只是阶段性结果。看到一部分输出，不能把整批作业当作成功；要一起看输入范围、完成块、失败原因和提交状态。</p>
     </ArticleSection>
     <ArticleSection id="compute" title="描述计算与触发执行"><Legacy slug="batch-processing" names={["quiz-heading"]}/>
-      <p id="batch-execute" className="vp-citation-target">在 Spark RDD 中，map 这类变换先描述如何产生新的集合，通常不会在声明时立即执行；action 才触发计算。分区让数据能够分开处理，reduceByKey 可以按键聚合。<strong>写好了计算规则，与作业已经执行并产生结果，是两个阶段。</strong><Cite id="batch-execute"/></p>
+      <p id="batch-execute" className="vp-citation-target">在 Spark RDD 中，map 和 reduceByKey 都是变换：它们先描述怎样得到新的集合，通常不会在写下这一行时立刻计算。collect 是 action，会触发前面的计算，并把结果取回负责提交作业的驱动程序。RDD 会把数据拆成几份，每一份叫一个分区，可以分开处理。<strong>写出计算规则是一个阶段，作业真正执行并产出结果是另一个阶段。</strong>这样 Spark 可以等到真正需要结果时再运行这条计算链。<Cite id="batch-execute"/></p>
       <pre className={base.code}>{'book_ids = sc.parallelize([42, 42, 78, 42])\npairs = book_ids.map(lambda book: (book, 1))\ncounts = pairs.reduceByKey(lambda a, b: a + b)\nresult = sorted(counts.collect())\n# [(42, 3), (78, 1)]'}</pre>
-      <p>这段示例假定 SparkContext sc 已准备好；collect 将结果取回驱动端，sorted 明确了显示顺序。这里只收集两个计数，不能据此把大规模结果都拉到一台机器的内存。</p>
+      <p><code>sc.parallelize</code> 把四个编号交给 Spark，形成一个可以分区处理的 RDD；`map` 把每条记录变成一对值：书目编号，和数字 1；`reduceByKey` 再把相同编号的 1 加起来。下面的四个编号就是首图里的四条记录。示例假定 SparkContext `sc` 已准备好；`collect` 把两个计数取回到驱动程序，`sorted` 只负责让显示顺序稳定。这里收集的结果很小，不代表可以把大规模数据都拉到一台机器的内存里。</p>
     </ArticleSection>
     <ArticleSection id="schedule" title="安排作业，也核对结果" className={base.offset}><Legacy slug="batch-processing" names={["prompt-heading"]}/>
-      <p id="batch-schedule" className="vp-citation-target">批作业可以按时间、条件或前置任务完成情况启动；有依赖的工作需要安排执行次序。AWS 的批处理介绍同时强调监控成功与失败、日志和历史记录。<strong>定时器按时触发，并不能证明输入完整或结果正确。</strong>还要核对本次实际读取的数据范围、完成块、输出数量和失败原因。<Cite id="batch-schedule"/></p>
+      <p id="batch-schedule" className="vp-citation-target">批作业可以按时间、条件或前置任务完成情况启动；有依赖的工作需要安排执行次序。AWS 的批处理介绍还把成功/失败告警、日志和历史记录列为运行后的检查。<strong>定时器按时触发，只说明作业被触发、尝试运行了一次。</strong>例如截止点从凌晨改到早上，读到的数据范围可能已经不同；还要像前面那样核对实际读到的范围、完成的块、输出数量和失败原因。<Cite id="batch-schedule"/></p>
       <ArticleAside title="批处理与流处理可以一起使用"><p>连续借阅可以先用于实时看板，再用有明确范围的批作业核对日汇总。两条路径要约定时间口径、晚到数据与结果覆盖方式。换一种执行方式，不会自动消除口径差异。</p></ArticleAside>
-      <p>批处理作业先固定输入范围与版本、计算规则、任务依赖、失败重跑方式和提交条件。只有处理范围与可用结果清楚，才有依据调整并行度和运行时长。</p>
+      <p>做一个批处理作业，要先定下输入的范围和版本、怎么计算、任务之间谁先谁后、失败了怎么重跑，以及什么条件下提交结果。只有清楚这批作业读到了什么、跑出了哪些结果，才谈得上调整并行度（同时处理多少块）和运行时长。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
