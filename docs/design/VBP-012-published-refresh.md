@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第51条sql现已按顺序完成内容与dev检查，技术集成与完整内容均51/105，下一条database-migration。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第52条database-migration现已按顺序完成内容与dev检查，技术集成与完整内容均52/105，下一条orm。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -69,7 +69,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 完整内容与dev集成完成 · 代码PR #223；详见本节 |
 | 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 完整内容与dev集成完成 · 代码PR #225；详见本节 |
 | 51 sql | 读、增、改、删并核对影响范围与执行计划 | SELECT 读取结果；INSERT/UPDATE/DELETE 改变教学表；WHERE、NULL 与 Seq/Index Scan 分开呈现 | 完整内容与dev集成完成 · 代码PR #227/#228；详见本节 |
-| 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 待更新 |
+| 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 完整内容与dev集成完成 · 代码PR #230；详见本节 |
 | 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 待更新 |
 | 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 待更新 |
 | 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 待更新 |
@@ -1054,7 +1054,45 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 ### DP 与证据边界
 
 - 页面不连接真实数据库，没有真人目标读者观察；ZCode reader/language 是模拟审读证据，未写成真人验收。没有把系统减少动态设置或隐藏页面能力写成已验证事实。
-- VBP-027 需求仍处于 testing；本条 SQL 任务已经 done，下一条按顺序进入 `database-migration`。指定 Windows Obsidian 库在当前 macOS 环境不存在，本轮未写入 Obsidian。
+- VBP-027 需求仍处于 testing；本条 SQL 任务已经 done，后续已按顺序完成 `database-migration`，下一条进入 `orm`。指定 Windows Obsidian 库在当前 macOS 环境不存在，本轮未写入 Obsidian。
+
+## 52 · 数据库迁移完整内容复审与本机 dev 集成（2026-09-30）
+
+### 读者目标与现状判断
+
+- 读者入口是“我已经把迁移文件放进仓库，为什么目标数据库还没变？把 `title` 改成 `name` 时，什么时候才能删旧列？”读完应能区分迁移文件、数据库当前结构、执行历史、数据回填和应用版本，并能判断新旧程序共存时为什么不能直接删列。
+- 保留原有“同一张书目表从 001 走到 004”的交互骨架，补齐编号与依赖的区别、候选文件需要审查、Alembic 执行记录、回填只处理执行时已有数据、持续写入与双写、事务/反向迁移/备份的边界。页面的旧程序复选框明确是教学模型，不会关闭真实线上程序；“恢复目标库 001”只恢复教学状态，不冒充事务回滚或备份恢复。
+- 演示状态契约为：初始目标库 001、`title` 有值、`name` 缺列且旧程序仍读 `title`；002 增加 `name` 但新程序读 NULL；003 把已有书名回填到 `name`；旧程序退役后 004 才能删除 `title`。越级执行、旧程序仍运行和重置均有独立可见结果，演示冻结写入，因此不把读兼容误称为完整生产迁移方案。
+
+### 资料与论断对应
+
+实际读取并核对五份官方资料，正文角标和资料区保持五个唯一来源：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Django 5.2 · Migrations](https://docs.djangoproject.com/en/5.2/topics/migrations/) | `migration-files`、`migration-dependencies`、`migration-backends`：迁移文件与执行命令、依赖、数据库对结构变更事务的支持差异。 |
+| [Alembic · Tutorial · Running our First Migration](https://alembic.sqlalchemy.org/en/latest/tutorial.html) | `migration-history`：`alembic_version` 执行记录、修订版本与 upgrade 路径。 |
+| [Alembic · Auto Generating Migrations](https://alembic.sqlalchemy.org/en/latest/autogenerate.html) | `migration-review`：自动生成是候选结果，列名变化可能被识别成删列/加列，必须人工审查。 |
+| [Django 5.2 · Migration Operations · RunPython](https://docs.djangoproject.com/en/5.2/ref/migration-operations/) | `migration-reverse`：`RunPython` 需要 `reverse_code` 才能反向执行，反向结构不等于数据恢复。 |
+| [Prisma · Expand-and-contract migrations](https://www.prisma.io/docs/guides/database/data-migration) | `migration-compatible`：先扩展、回填、切换读写，再收缩并移除旧列。 |
+
+### 真实 ZCode 两轮与主助手裁决
+
+- `reader` 会话 `sess_09e86a1a-0e3e-473e-bbc9-28192f120b9e` 读取 `vibepolaris-zcode-partner`、concept-pages editorial 规则和当前词条读者材料；初始输入材料 SHA-256 为 `c16104c...`。它指出四份演示文件编号没有解释、Django/Alembic/Prisma 像一条流水线、候选迁移文件的主语和因果链不清、回填与持续写入之间有缺口、反向迁移没有解释、旧程序复选框同时承担状态与发布检查容易误读。主助手逐条核对源码后全部修正。
+- `language` 会话 `sess_df448bf6-7355-4709-aee7-885e0a5b6d71` 按 humanizer-zh 审阅，输入材料 SHA-256 为 `9fcaf...`。它补出事务与 DDL 的必要前提、移除无定义的“旧接口”、把“编号不是数据库自动理解的顺序”改成“依赖决定先后”、补齐新程序读数和页面模型与真实环境可能分叉的限定。随后主助手完成最后微调，最终审读材料 SHA-256 为 `877cb7c95ea8f796a2a0b7982645836ea86bda5574cb0ff4120d259d18be4e51`。
+- 两轮都是独立的 ZCode 文字模拟审读，未让 reader 看到作者预判，也没有真人零基础读者参与；主助手重新核对官方资料、源码和实际状态后才采纳意见，未把模型反馈写成真人验收。
+
+### 构建、真实浏览器与 dev
+
+- 候选分支 `feat/VBP-027-database-migration-content-audit` 的最终源码提交 `834cc7d` 经 [PR #230](https://github.com/Gyschuaner/VibePolaris/pull/230) 合入 `dev`，merge 提交 `60f31dd7572b2eca7a343fdffa7c37b506c96849`。`npm run build` 编译、TypeScript 与 117/117 静态页通过，`git diff --check` 通过。
+- 3220 候选页真实浏览器完成越级 004、002、003、旧程序发布检查、退役后 004、重置和新程序读数验证；5 个官方资料链接可访问，当前 1085px 页面 body/document 宽度均为 1085，控制台 error 为 0。截图显示 004 成功后旧程序读数已划除、新程序读到 `山间来信`。
+- 3219 本机 dev 使用合并后的生产构建再次完成同一流程；1280px 页面 body/document 宽度均为 1280，临时 390×844 视口宽度均为 390，控制台 error 为 0。dev 预览地址为 `http://127.0.0.1:3219/terms/database-migration`，候选地址为 `http://127.0.0.1:3220/terms/database-migration`。未部署远端 dev 或生产。
+
+### DP 与证据边界
+
+- 研发任务 `243270b2-fe59-42d9-a86b-930d47041f6f` 已 done。专项测试用例 `103f1125-7d7f-4ee2-954e-f466a596bb88`，测试计划 `13f41fe8-203c-4e10-96cf-f1340b6abd62` 已 completed；执行 `b3adf637-e646-4ffe-a26d-e9bb2c0edcef` passed，登记了构建、候选/dev 浏览器流程、1280px/390×844、5 个来源和控制台 0 错误。
+- dev 部署记录 `c105ad44-c2b3-47e9-96af-cb12ef1ec71b`，部署批次 `deploy-vbp027-database-migration-dev-20260930`，提交 `60f31dd7572b2eca7a343fdffa7c37b506c96849`，备份 `/tmp/vbp027-migration-dev-prev-20260930141710`；回滚需停止 3219、恢复备份 `.next` 并重启。VBP-027 仍处于 testing，未获得 main 或生产授权。
+- 指定 Windows Obsidian 库在当前 macOS 环境不存在，本轮未写入 Obsidian。页面不连接真实数据库，复选框、版本和回填数据都是教学模型；没有真人读者观察，也未声称生产数据库迁移或生产发布已完成。
 
 ## 01 · Harness
 
