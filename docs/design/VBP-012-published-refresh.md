@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第48条database-schema现已按顺序完成内容与dev检查，技术集成与完整内容均48/105，下一条join。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理，未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第50条unique-constraint现已按顺序完成内容与dev检查，技术集成与完整内容均50/105，下一条sql。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -66,8 +66,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 46 primary-key | 唯一识别一行并检查编号 | 两册同名书中仅42改名而编号保留；重复/空编号拒绝，新编号增加一册 | 内容补审及dev集成完成 · PR #217；提示Bug回归登记中 |
 | 47 foreign-key | 引用另一表的行 | 一册书连两次借阅，RESTRICT保留两方，CASCADE目标和引用一起退出、其他书留 | 完整内容与dev集成完成 · 代码PR #219；详见本节 |
 | 48 database-schema | 数据库的结构约定 | 定义新增列使旧行出现NULL；补值只改对应行，设非空检查旧值 | 完整内容与dev集成完成 · 代码PR #221；详见本节 |
-| 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 待更新 |
-| 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 待更新 |
+| 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 完整内容与dev集成完成 · 代码PR #223；详见本节 |
+| 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 完整内容与dev集成完成 · 代码PR #225；详见本节 |
 | 51 sql | 声明想得到的数据 | 真实表随查询条件显隐，投影留下所需列 | 待更新 |
 | 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 待更新 |
 | 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 待更新 |
@@ -967,6 +967,47 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - ZCode：真实入口使用 `Qwen3.8-Flash-Next-FP8`、xhigh。reader 会话 `sess_ea4d13ce-5894-42de-90a6-b5c1bd03f4f7`，输入 `/tmp/vbp026-join-reader-material.md`，SHA-256 `6360f8384e14045b5c045f510525cfbfa60eac4372fbf00fac242d7afdd8aa0d`；指出 NULL、非空主键、#65 样例和 ON/WHERE 结果需要补前提。language 会话 `sess_888abae7-1cd6-4609-b1a6-febf0eb80abd`，输入 `/tmp/vbp026-join-language-material.md`，SHA-256 `389e315c594c4e53713054ea1894fe2654f3129e47e0e971c6f78618846ec1f0`；采纳“表中的行”、查询结果不改原表、外键检查规则和 CROSS 结尾的具体措辞。两轮均为文字审读，不记为网页操作或真人读者验证；主助手逐项复核事实后再改稿。
 - 实现与发现：代码只改 `JoinTermPage` 与 `joinSources`，未改 `JoinLesson` 的机制。首次候选构建 `ZMkoTcFRVf3NEh-qcnEYo` 通过；桌面键盘与 390px 实测配对切换、2/3/3/6、重置、长代码和引用。引用回跳检查发现 `join-definition` 同时存在空 legacy span 与正文段落，第一条摘录为空，创建并推进 `BUG-D968D955`（confirmed → fixing → ready_for_retest），移除重复空锚点后构建 `M_QwSDfPtMea5yxqWNbfW` 通过；修复回归确认摘录非空、同名 ID 唯一、回跳聚焦正文，自连接摘录可展开并用 Space 收起。未新增无效自动化测试。
 - 验证与集成：最终 `npm run build` 通过，117/117 页；`git diff --check` 通过。浏览器覆盖桌面 Enter/Space、INNER/两种 LEFT/CROSS/重置、390px 矩阵与结果、快速切换、五份引用、折叠自连接、宽度 390/390；浏览器无新增 console error。计划 `75e18a7c-69d9-4976-8503-772d04749cda` 首次执行 `8d349845-b708-44cc-8430-fb647663a2a2` 因锚点缺陷失败，修复后执行 `fa8cf13e-7631-43dc-b1d6-1e9adba45c2a` attempt2 passed，计划 completed；用例 `2b215434-fe92-451e-813a-93b45c8be679` 与任务 `6839dfc8-c78f-4bfc-9b5a-211b18af9261` 均已写后复查并完成。代码提交 `e12a48532459fee79fc558f9dd19e1cd4401de21`，PR [#223](https://github.com/Gyschuaner/VibePolaris/pull/223) 合入 dev `117584081f9217b112ff87f28db1bce7305423ba`；本机 dev 部署 `f45a828e-357a-4872-b77e-6ed7be982839`，地址 `http://127.0.0.1:3219/terms/join`，备份 `/tmp/vbp026-join-dev-prev-7920653-next`。无远端 dev、生产、真实 SQL、真人读者或 OS 减少动态验证；Bug 仍待 DP 正式回归，不声称关闭。
+
+## 50 · 唯一约束完整内容复审与本机 dev 集成（2026-09-30）
+
+### 读者目标与现状判断
+
+- 读者入口是“两次注册都用了同一个邮箱，为什么其中一次会失败”。读完应能区分应用层的预查与数据库约束，预测两个并发写入的结果，并迁移到组织内邮箱、组合唯一和注销账户的规则。正文补齐 `user_id`、`email`、主键、事务、提交与回滚的必要前提，明确演示是有限模型，不把一次预查当成安全保证。
+- 现有页面已经有重复值拒绝和唯一开关，但原文没有把“两个请求都先查到空”与后续写入的竞态接起来，也没有说明唯一检查可能在插入时等待并重新确认。现在首段先给出两次注册和相同邮箱，主体保留正向/反向写入、关闭 UNIQUE、两个 NULL 与 `NULLS NOT DISTINCT` 的可操作分支；正文同时区分 `NOT NULL`、空字符串、不同 `user_id` 和部分唯一索引。
+
+### 资料与论断对应
+
+实际打开并阅读四份 PostgreSQL 18 一手资料，角标与正文锚点逐一对应：
+
+| 原始资料 | 采用的边界与正文位置 |
+| --- | --- |
+| [Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) 5.5.3 | `UNIQUE`、组合唯一、默认 NULL 比较与 `NULLS NOT DISTINCT`；unique-definition、unique-composite、unique-null。 |
+| [Indexes](https://www.postgresql.org/docs/18/indexes-unique.html) 11.6 | 唯一约束自动创建唯一 B-tree 索引，以及唯一检查发生在写入期间；unique-index。 |
+| [Index Uniqueness Checks](https://www.postgresql.org/docs/18/index-unique-checks.html) 63.5 | 并发插入遇到未提交事务时等待、再确认的实现边界；unique-race。 |
+| [Partial Indexes](https://www.postgresql.org/docs/18/indexes-partial.html) 11.8 | `WHERE active = true` 的部分唯一索引只约束谓词命中的行；unique-partial。 |
+
+没有把应用层预查、页面开关或有限模型写成 PostgreSQL 的约束机制；正文明确实际数据库还可能受事务隔离、错误处理和索引设计影响。
+
+### 机制选择与状态契约
+
+- 比较过把重复邮箱画成两个输入框、把唯一索引画成一条闸门，以及保留现有两次注册的状态演示。选择后者并扩充状态：两次预查都显示未占用；先写 A 或先写 B 只有一条成功，另一条在唯一检查处冲突；关闭 UNIQUE 后两条都写入；两个 NULL 在默认规则下都通过，开启 `NULLS NOT DISTINCT` 后第二个冲突。不同 `user_id` 不会改变邮箱唯一范围，同一组织加邮箱则可表达组合唯一。
+- 这条机制与第46条主键的单行身份、第48条结构变更和第49条连接配对不同。没有新增动画依赖或状态模板；切换输入/规则会清除旧反馈，重置返回初态。
+
+### 真实 ZCode 两轮与主助手裁决
+
+- `reader` 会话 `sess_e757acd0-4094-4491-88ba-f3c787bb6939` 使用 Qwen3.8-Flash-Next-FP8 / xhigh，只读 partner Skill 与冻结成稿 `/tmp/vbp026-unique-reader-material.md`，SHA-256 `e831941c8a65789218301e5f31dfc9776ce25481b4d440593b72af405ec75faa`。它指出主键突然出现、重复预查仍可能竞态、事务/提交/回滚未铺垫、NULL 与 `NOT NULL` 容易混淆，以及部分索引不能当作普通开关。主助手按资料逐项补齐，并保留有限模型边界；这是文字模拟读者反馈，不是真人或网页验收。
+- 经 humanizer-zh 处理后，独立 `language` 会话 `sess_76234de6-25bd-4703-b570-7ff951877676` 读取 `/tmp/vbp026-unique-language-material.md`，SHA-256 `da1b8c72c191c4772bafa96c0a714510eeee9e68c7e8a7f280a96aa01806ca5f`。采用“两边各自先查”“演示里关掉 UNIQUE 开关”、明确正反写入和 NULL 规则等改写；最终句子与页面事实由主助手复核。
+
+### 构建、真实浏览器与 dev
+
+- 最终 `npm run build` 通过，TypeScript 与 117/117 静态页生成通过，BUILD_ID 为 `2-bEoJAk_77ANlHwX0NEP`，`git diff --check` 通过。代码只改 `UniqueConstraintTermPage` 正文，机制与来源结构未变。
+- 3220 候选预览实际覆盖桌面和 390px：同邮箱正向与反向写入各一成功一冲突，关闭 UNIQUE 后双写成功；默认两个 NULL 均成功，`NULLS NOT DISTINCT` 下第二个冲突；重置、键盘推进、四份角标摘录和回跳均检查，390px 无横向溢出。3219 本机 dev 用同一构建复核反向冲突、唯一锚点和引用，浏览器 error 日志为空。截图保存在 `/tmp/vbp026-unique-mobile-hero.png`、`/tmp/vbp026-unique-desktop-conflict-final.png`、`/tmp/vbp026-unique-dev-conflict.png`。
+- 代码 `45f0750674da9b12cebd64f5ed51e3b97ebebed7` 经 [PR #225](https://github.com/Gyschuaner/VibePolaris/pull/225) 合入 dev，merge `505372dfae00764f93f8abbc3069f1516794aea9`。本机预览地址为 `http://127.0.0.1:3219/terms/unique-constraint`；上一版构建备份 `/tmp/vbp026-unique-dev-prev-1175840-next`，回滚需停3219、检出 `117584081f9217b112ff87f28db1bce7305423ba`、恢复备份并重启。未部署远端 dev 或生产。
+
+### DP 与证据边界
+
+- VBP-026 任务 `c02a0886-430d-4076-b7c6-90d89ab0510c` 已完成；专项用例 `03dd26db-6920-4b98-8289-1a272eb2de73`、计划 `ae33cd2e-7d15-4a95-adbf-330b331dac9b`、执行 `02e567bb-6d03-4bdf-b592-677551240752` 均已写后复查，执行 attempt1 passed。部署记录 `e7e4acbf-88de-4b36-a3eb-ca065a602090` 为 local/released，记录了构建、提交、地址和备份。
+- 没有真实数据库、真人目标读者、系统减少动态设置、远端 dev 或生产验证；页面开关是教学模型。第49条发现的 BUG-D968D955 已到 `ready_for_retest`，尚未关闭；VBP-026 仍为 testing。完成度更新为 50/105，下一条 SQL。
 
 ## 01 · Harness
 
