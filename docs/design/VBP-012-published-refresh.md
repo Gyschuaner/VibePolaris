@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第50条unique-constraint现已按顺序完成内容与dev检查，技术集成与完整内容均50/105，下一条sql。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第51条sql现已按顺序完成内容与dev检查，技术集成与完整内容均51/105，下一条database-migration。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -68,7 +68,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 48 database-schema | 数据库的结构约定 | 定义新增列使旧行出现NULL；补值只改对应行，设非空检查旧值 | 完整内容与dev集成完成 · 代码PR #221；详见本节 |
 | 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 完整内容与dev集成完成 · 代码PR #223；详见本节 |
 | 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 完整内容与dev集成完成 · 代码PR #225；详见本节 |
-| 51 sql | 声明想得到的数据 | 真实表随查询条件显隐，投影留下所需列 | 待更新 |
+| 51 sql | 读、增、改、删并核对影响范围与执行计划 | SELECT 读取结果；INSERT/UPDATE/DELETE 改变教学表；WHERE、NULL 与 Seq/Index Scan 分开呈现 | 完整内容与dev集成完成 · 代码PR #227/#228；详见本节 |
 | 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 待更新 |
 | 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 待更新 |
 | 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 待更新 |
@@ -1008,6 +1008,53 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 
 - VBP-026 任务 `c02a0886-430d-4076-b7c6-90d89ab0510c` 已完成；专项用例 `03dd26db-6920-4b98-8289-1a272eb2de73`、计划 `ae33cd2e-7d15-4a95-adbf-330b331dac9b`、执行 `02e567bb-6d03-4bdf-b592-677551240752` 均已写后复查，执行 attempt1 passed。部署记录 `e7e4acbf-88de-4b36-a3eb-ca065a602090` 为 local/released，记录了构建、提交、地址和备份。
 - 没有真实数据库、真人目标读者、系统减少动态设置、远端 dev 或生产验证；页面开关是教学模型。第49条发现的 BUG-D968D955 已到 `ready_for_retest`，尚未关闭；VBP-026 仍为 testing。完成度更新为 50/105，下一条 SQL。
+
+
+## 51 · SQL 完整内容复审与本机 dev 集成（2026-09-30）
+
+### 读者目标与现状判断
+
+- 读者入口是“AI 给我的 SQL 到底读了什么、改了哪些行，为什么有时还会很慢”。正文先区分 SQL 文字、数据库实际执行和页面教学模型，再用同一份 books 书目依次演示 SELECT、INSERT、UPDATE、DELETE。读者可以看到 WHERE 只限定目标行、主键冲突、UPDATE 的受影响行数，以及 DELETE 0 为什么不是语法错误。
+- 交互保持有限两三行教学模型：默认 SELECT；切换 UPDATE/DELETE 时默认勾选“保留 WHERE book_id = 42”，取消后观察整表影响；“恢复两条书目”会清除反馈、切回“读 SELECT”、重置两行并重新勾选 WHERE。页面没有连接真实数据库，也不会把教学按钮写入真实数据；真实数据库的权限、约束、事务提交与回滚单独说明。
+- 执行计划演示与读写演示使用独立的两行初始书目。Seq Scan 与 Index Scan 只切换找法，不运行真实优化器；Index Scan 下 #42 的索引卡显现、#78 卡片变暗，最后仍返回同一本书。EXPLAIN ANALYZE 只在正文说明真实 UPDATE/DELETE 会执行，不在页面模拟写入。
+
+### 资料与论断对应
+
+实际读取六份 PostgreSQL 18 官方资料，六个来源对应七个正文锚点：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [SELECT](https://www.postgresql.org/docs/18/sql-select.html) | `sql-select`：WHERE 过滤结果、不改原表、ORDER BY 顺序。 |
+| [INSERT](https://www.postgresql.org/docs/18/sql-insert.html) | `sql-insert`：主键冲突与 `INSERT 0 1` 标签。 |
+| [UPDATE](https://www.postgresql.org/docs/18/sql-update.html) | `sql-update`：SET 与 WHERE 的区别、匹配但值未变仍计入行数。 |
+| [DELETE](https://www.postgresql.org/docs/18/sql-delete.html) | `sql-delete`：无 WHERE 的全表删除与重复执行的 DELETE 0。 |
+| [Comparison Functions and Operators](https://www.postgresql.org/docs/18/functions-comparison.html) | `sql-null`：NULL 比较不为 true，使用 `IS NULL`/`IS NOT NULL`。 |
+| [Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) | `sql-plan`、`sql-analyze`：计划估计与 EXPLAIN ANALYZE 的真实执行边界。 |
+
+来源只支撑 PostgreSQL 18 的对应事实；教学页面的状态、反馈和视觉效果由本地实现单独核对，没有把候选页面或有限模型当成数据库行为。
+
+### 机制选择与状态契约
+
+- 选择保留已有书目读写演示并补齐四条命令的状态路径，没有把 SELECT、UPDATE 和 DELETE 画成同一种动画。读操作显示返回区；写操作显示反馈和改变后的教学表；切换命令或勾选条件会清除最近反馈，重新执行才显示结果。
+- 先执行 INSERT 再次执行会得到主键冲突；恢复后重新选择 UPDATE 或 DELETE，保留 WHERE 只作用于 #42，取消后可得到 UPDATE 2/3 或 DELETE 2。DELETE 连续执行会从 DELETE 1 变成 DELETE 0。NULL 和重复值的核对方法写在正文中，明确这不是页面里的额外按钮。
+- 计划演示不复用前面可能被删改的表，避免读者把“换一种找法”误认为“恢复或重新执行写入”。Index Scan 下 #78 变暗是未读到它的视觉反馈，不代表数据库一定会在所有真实数据上选索引。
+
+### 真实 ZCode 两轮与主助手裁决
+
+- `reader` 会话 `sess_b56608c2-002e-40d4-8c2b-cef81f43ae24` 使用 Qwen3.8-Flash-Next-FP8 / xhigh，只读 partner Skill 与 SQL 成稿及互斥操作材料；该轮输入材料 SHA-256 为 `98624bd...`。它指出页面模型/真实数据库和事务边界较密、UPDATE 处理行数与实际值变化容易混淆、NULL 样例不应冒充页面新操作，主助手据此补齐说明。
+- `language` 会话 `sess_797546cc-2fe6-4e13-aed1-f37be445be81` 使用同一模型与只读入口，审阅 humanizer-zh 规则和最终语言稿；该轮输入材料 SHA-256 为 `ae8c5f...`。采纳了“读 SELECT 已演示过了”、明确“保留 WHERE”、解释执行计划是找法等局部改写。随后主助手按审校必须项补充重置切回 SELECT、#78 卡片变暗，并同步最终材料 SHA-256 `ad4ddb6bd2baf2a7996848ecb0eef472d9a4ac7b45ace9ef80e70ae3a8a07efe`。两轮都是文字模拟审读，不是真人零基础读者，也不是 ZCode 代写页面。
+
+### 构建、真实浏览器与 dev
+
+- 最终 `git diff --check` 和 `npm run build` 通过，Next.js 生成 117/117 静态页。3220 候选预览实际覆盖 INSERT 成功、UPDATE 保留/取消 WHERE、DELETE 重复/整表、重置切回 SELECT、执行计划切换、六个唯一 PostgreSQL 资料地址；最终控制台 error 为 0，当前浏览器视口 `scrollWidth` 与 `body.scrollWidth` 均为 712。
+- 3219 本机 dev 使用合并后的构建再次读取 SQL 页面：引言、INSERT 反馈、重置语句状态与六个资料链接均可见，INSERT 教学表增至 3 行，控制台 error 为 0。此前同一词条的 1280×900 与 390×844 横向尺寸证据为 1280/1280 与 390/390；本次后续改动是正文和操作说明修正，没有改变布局组件或样式。
+- 代码最终提交 `2d03ec5` 经 [PR #228](https://github.com/Gyschuaner/VibePolaris/pull/228) 合入 `dev`，merge 提交 `942f4ca8c6d4426ec7f9ab79b6d7bb572fdcce0a`。前一轮 SQL 实现经 [PR #227](https://github.com/Gyschuaner/VibePolaris/pull/227) 合入；最终 dev 预览地址为 `http://127.0.0.1:3219/terms/sql`，候选地址为 `http://127.0.0.1:3220/terms/sql`。
+- DP 测试计划 `1fa8ecaf-add2-4119-9964-7f4bf12ea1c1` 的执行 `b56d8ed3-4c6a-4823-93c9-8ae2c07f6c03` passed；研发任务 `1bf03274-4268-415f-ba9a-bb2bb271b8e6` 已 done。dev 部署记录 `8183f2c1-3236-45aa-b184-f6f295ebd02b`，备份 `/tmp/vbp027-sql-dev-prev-20260930134739`；回滚需停止 3219、恢复备份 `.next` 并重启。未部署远端 dev 或生产。
+
+### DP 与证据边界
+
+- 页面不连接真实数据库，没有真人目标读者观察；ZCode reader/language 是模拟审读证据，未写成真人验收。没有把系统减少动态设置或隐藏页面能力写成已验证事实。
+- VBP-027 需求仍处于 testing；本条 SQL 任务已经 done，下一条按顺序进入 `database-migration`。指定 Windows Obsidian 库在当前 macOS 环境不存在，本轮未写入 Obsidian。
 
 ## 01 · Harness
 
