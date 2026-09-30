@@ -1419,6 +1419,7 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 ### DP、Git 与发布边界
 
-- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `fb62fcb5-0708-4db8-98d4-e0b658de8de6` 已创建并进入 `in_progress`，待本地提交与正文发布完成后按允许流转为 `done`，不推进总需求状态。
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `fb62fcb5-0708-4db8-98d4-e0b658de8de6` 已按本地验收与正文发布完成流转为 `done`，不推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。本条只改 `ProcessingConceptPages.tsx` 的正文和 `ProcessingConceptLessons.tsx` 的阶段计数文案；内容上线与本地功能分离，生产只带正文/展示文字，交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 正文发布分支 `release/VBP-030-batch-content-20261001` 的提交 `35e4456` 经 [PR #239](https://github.com/Gyschuaner/VibePolaris/pull/239) 合入 `main`，合并提交 `f12cae3aacebb2604e11f1a4848f6fdedcac0eba`。生产部署记录 `784d52f4-7ee8-4238-b7ed-872e952d46c8`、部署批次 `deploy-vbp030-batch-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-f12cae3aaceb`，回滚点为 `/opt/vibepolaris/releases/20261001-0ddce6f32c80`；镜像 `vibepolaris:f12cae3aacebb2604e11f1a4848f6fdedcac0eba` 为 `linux/amd64`，容器健康检查通过。公网 `/terms/batch-processing` 已精确核对固定4条记录、#42/#78书目编号、`reduceByKey` 和并行度说明。仅正文进入生产，交互功能仍留在本地/dev。
 - 本条完成后整体为 **60/105**，下一条是 `data-ingestion`。
