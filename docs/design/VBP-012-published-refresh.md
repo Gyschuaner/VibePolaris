@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第45条table现已按顺序完成，技术集成与完整内容均45/105，下一条primary-key。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第46条primary-key现已按顺序完成内容与dev检查，技术集成与完整内容均46/105，下一条foreign-key。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理，未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -63,7 +63,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 43 index | 缩小查找范围 | 比较#42后排除左半、命中#64，再按位置5读原书目；主体对照逐条扫描与缺失目标 | 完整内容与dev集成完成 · 代码PR #211；详见本节 |
 | 44 transaction | 多步一起提交或撤销 | #42借阅先改库存、后写借阅；失败时事务内短暂为1/0、新查询仍2/0，显式回滚后同回2/0 | 完整内容与dev集成完成 · 代码PR #213；详见本节 |
 | 45 table | 一套列定义容纳多条同类记录 | 固定编号/书名/可借三列，三册书逐行进入；主体把原表与筛选、选列、排序后的结果分开 | 完整内容与dev集成完成 · 代码PR #215；详见本节 |
-| 46 primary-key | 唯一识别一行 | 固定身份点跟随行移动，重复值被阻挡 | 待更新 |
+| 46 primary-key | 唯一识别一行并检查编号 | 两册同名书中仅42改名而编号保留；重复/空编号拒绝，新编号增加一册 | 内容补审及dev集成完成 · PR #217；提示Bug回归登记中 |
 | 47 foreign-key | 引用另一表的行 | 关系连线锚定已有身份，悬空引用无法落下 | 待更新 |
 | 48 database-schema | 数据库的结构约定 | 表结构骨架展开；数据填入受列约束 | 待更新 |
 | 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 待更新 |
@@ -883,6 +883,17 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - 真实 ZCode CLI 独立模拟读者会话 `sess_09e3c122-3bde-40ce-839b-52f395d2b016` 只读 partner Skill 和冻结的完整文字/互斥状态 `/tmp/vbp025-table-reader-material.md`（SHA256 `d1c0dde0e2cd265cd44261df9b1b424d56ef5984515663d47567a5f33a63882e`），未看代码、原始资料、网页或作者方案。它能据正文判断同名两册各占一行、筛选后原表三行而结果两行、#65 零行不等于表不存在、排序不改编号；指出“按册”出现太晚、同名实物无可见例子、样例编号与唯一约束的连接不够紧。主助手采纳前置前提、具体同名场景和约束衔接；没有重做首图，因为那会把主键页的重点移进表页。独立语言会话 `sess_01e4a194-97cf-4eee-9664-c3cf3d10c210` 只读 partner、humanizer-zh 与修订后全文 `/tmp/vbp025-table-language-material.md`（SHA256 `1b0cf958c731209a7460fafdea15f65975acd46ab10cce9a7e8fa3a91f626354`），建议将“交给页面显示”“候选行”“缩窄结果的列”等换为具体动作，统一列/行称呼，拆解排序段的绕句。主助手逐条核对采纳，保留四份事实与引用；两次均为文字模型审读，不是真人或网页操作。
 - `npm run build` 编译、TypeScript 和 117/117 静态页、`git diff --check` 通过；仅改正文，无新增自动化测试。3220 真实浏览器桌面检查首图三列三行、重播、原表三行不变，隐藏可借列并筛选可借得 #42/#78 两行，仅显示编号和书名；改条件先清旧结果，查 #65 得零行且原表仍在；键盘 Space/Enter 做编号升序得 #12/#42/#78，全部列取消禁用查询并提示，重置恢复。四份来源角标展开、摘录和回正文在桌面与390px均检查；390px 查询和较长网址 `scrollWidth=innerWidth=390`，没有横向溢出。3219 本机 dev 同构建复核新正文与可借两行，浏览器 error 日志空。没有真人目标读者、系统缩动偏好实测或远端 dev/生产部署。
 - 代码 `f9379f1c91c04001e648da9679566b8059dc5cac` 经 [PR #215](https://github.com/Gyschuaner/VibePolaris/pull/215) 合入 dev，merge `f0a6dc04c3b9fd96bf0b4341f36fdf43040f8464`，源码树同为 `e1e0c0e6d164399028b96ca1380ce57c52cf8571`，BUILD_ID `NNJxhy2N0NbQTetYVH4pB`。3219 本机 dev 预览已切到该合并提交；上一版 `.next` 备份 `/tmp/vbp025-table-dev-prev-c3dc-next`，本机回退需停 3219、检出旧 `c3dc0522e2f430f8c2c3484465c20d26982f6bca`、恢复备份后重启。DP VBP-025 保持 testing，专项用例 `a2447405-a1f4-4d5e-937c-0b68b48936ea`、计划 `febff3c1-b07e-474a-b4b5-c9a34f8a3ce5` completed、执行 `08ca64f1-144e-45db-a13e-2318268d0b03` passed、任务 `30f96f24-1f88-4490-b2e2-c99c8933313f` done。技术集成与完整内容45/105，下一条primary-key。未改飞书；指定 Windows Obsidian 库在本机不存在。
+
+## 46 · 主键完整内容复审与本机 dev 集成（2026-09-30）
+
+- 读者入口是假设的“AI 让我给书目加主键，编号和书名到底选谁”；目标是辨认同名记录、预测重复/空编号的新增结果，并把组合唯一迁移到“班级编号＋座位号”。必要前提补到正文：每册占一行、列保存编号和书名、另一条借阅记录存编号来指向书目。主键把防重号和缺号从人工约定变成数据库检查，正文不依赖动画。主助手改清 `NOT NULL` 不检查重名、一个多列主键的各列都要有值、收藏换到重复借阅时可以另设借阅编号，以及 PostgreSQL 演示与 SQLite 空值/自动发号差异。
+- 实际重读四份官方资料：[PostgreSQL 18 Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) 的主键与唯一约束章节对应 `primary-key-identity`、`primary-key-composite`、新增 `primary-key-unique`；[Identity Columns](https://www.postgresql.org/docs/18/ddl-identity-columns.html) 对应 `primary-key-generated`，序列重设或允许显式值时自动发号不保证唯一；[SQLite Autoincrement](https://www.sqlite.org/autoinc.html) 对应 `primary-key-autoincrement`，INTEGER PRIMARY KEY 对应内部 rowid，省略/NULL 可自动分配，AUTOINCREMENT 限定自动分配不重用已删除编号；[WITHOUT ROWID](https://www.sqlite.org/withoutrowid.html) 对应 `primary-key-sqlite`，核对历史 NULL 兼容和该表模式每列非空。厂商范围、实现例外和教学简化均明确，没有用未读链接凑数。
+- 画面比较：保留两册同名书中42改名、编号保持的有限首图；改成借阅箭头会抢外键页的重点，改成行位置移动会更接近表页的排序。主体契约为42/78初态 → 提交重复42或NULL拒绝且保留原记录 → 65新增同名一册 → 再次65拒绝 → 改名只改42 → 重置回两条；切换输入清旧反馈，已经新增的行保留。这与表页的筛选/投影和外键页的父子删除明显不同。复用现有状态、过渡、首图生命周期与缩动CSS，没有新依赖或新增动画模板。
+- 真实 ZCode 独立盲读会话 `sess_6e97c5f0-ead6-4c6e-996b-0dc956f22b14` 只读 partner Skill 与冻结全文/操作配对状态 `/tmp/vbp025-primary-key-reader-material.md`，SHA256 `81ed3b48cba1fd9278d8d26c17ed41f1d18c8a7f4e408098fe167deea170a3a0`。它能据原文判断同名学生应选稳定编号、不同班可有同座位号；指出唯一约束、代码NOT NULL、已有引用、标准非空与SQLite例外、自动发号重复原因没有接稳。主助手逐处核实后采纳必要解释；“为什么只能有一个主键”、跨表外键绑定和编号重用的完整策略留给原始资料/外键页，没有把进阶兴趣都塞回本页。
+- 主助手应用 humanizer-zh 后，另一个 ZCode 会话 `sess_c36c3e4c-f4de-4433-93c3-058149f9ff36` 只读 partner、humanizer-zh 和修订全文 `/tmp/vbp025-primary-key-language-material.md`，SHA256 `4b89a2d52891015e4bd515495ec9080270c36c7356dbd8cd14f2d87753a38d73`。采用清楚的行/记录指代、统一“提交”、序列生成编号和收藏转借阅的衔接；未采用“用借出时间区分”的具体建议，因为时间未必唯一，改为独立借阅编号。未为解释“有些配置”在主线插入额外生成语法，官方来源已核对其范围。最后的局部修改由主助手复核。两轮都是文字模拟审读，没有网页或真人读者证据。
+- 浏览器发现真实提示缺陷：65新增后选项仍称“新编号”，DP失败执行 `641c976c-b0ca-4f3c-8b64-27cb4a4d017e` 创建 BUG-1E1E8649，截图 `/tmp/vbp025-primary-key-stale-label.png`。改为稳定的“#65”，NULL选项改称“空值”。初次与修复后的 `npm run build` 均编译、TypeScript、117/117静态页通过，最终 BUILD_ID `GlW81_xE2qGMG3IBMmf7k`；`git diff --check`通过。3220桌面实际覆盖42/NULL拒绝、65同名新增与再次拒绝、改名、输入清旧反馈、重置、Enter/Space、首图初态与终态/重播、四份当前摘录和回跳；SQLite折叠目标会自动展开。390px检查成功/失败、键盘改名/重置、组合编号图示、新增唯一约束摘录与键盘回跳，`scrollWidth=innerWidth=390`，长网址正常折行；浏览器error为空。修复后仅回归相关项，没有加自动化用例或整站回归。
+- 代码 `dad5a6cdf33f3fc375c3c52db4def8fc4c0eeae0` 经 [PR #217](https://github.com/Gyschuaner/VibePolaris/pull/217) 合入dev `abc99dcc6a47488f338c68f7db34958e4f2d211d`，树同为 `362733a8b6486c799de9f184f39120b4b6018cdb`。3219本机dev使用同构建，新增65/再次拒绝与稳定标签已实测，截图 `/tmp/vbp025-primary-key-dev.png`。DP本机部署记录 `5c5f2c46-0d4b-4f45-b8b6-7ca5b2422003`；旧 `.next` 备份 `/tmp/vbp025-primary-key-dev-prev-f0a6-next`，回退需停3219、检出旧 `f0a6dc04c3b9fd96bf0b4341f36fdf43040f8464`、恢复备份并重启。用例 `2c70c54e-5c93-4ad8-b843-34052bf6bca0`，专项计划 `d1050d26-cfae-4076-9ca8-6e2ff6c87902` completed，第二次执行 `03abcf28-bc7f-4c91-a1ef-4971face9a84` passed。Bug已修复、DP状态ready_for_retest；当前CLI没有专用回归命令，已通过developer-platform-cli Skill的DP Agent入口仅请求按现有实测证据登记，Run `236a6370-7341-4b94-9af4-4561ff8ea5d9`，未把已发任务写成关闭。实现与本机dev验收任务 `fb302c8e-ce37-4e83-8b42-2bb1aa0328a6` 已按允许流转置done并重查。
+- 未实测系统减少动态设置，也没有真人目标读者、远端dev或生产部署。未修改飞书，指定Windows Obsidian库本机不存在。技术与内容复审46/105，下一条foreign-key；VBP-025仍testing。
 
 ## 01 · Harness
 
