@@ -7,7 +7,7 @@ export const tableSources = [
   pg("Sorting Rows (ORDER BY)", "queries-order", ["table-order"]),
 ];
 export const primaryKeySources = [
-  pg("Constraints · Primary Keys", "ddl-constraints", ["primary-key-identity", "primary-key-composite"]),
+  pg("Constraints · Primary Keys / Unique Constraints", "ddl-constraints", ["primary-key-identity", "primary-key-composite", "primary-key-unique"]),
   pg("Identity Columns", "ddl-identity-columns", ["primary-key-generated"]),
   sqlite("SQLite Autoincrement", "autoinc", ["primary-key-autoincrement"]),
   sqlite("Clustered Indexes and the WITHOUT ROWID Optimization", "withoutrowid", ["primary-key-sqlite"], "2025-05-31（更新）"),
