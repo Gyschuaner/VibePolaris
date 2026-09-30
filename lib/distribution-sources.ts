@@ -10,6 +10,7 @@ export const backupSources = [
 export const shardingSources = [
   mongo('Sharding', 'sharding', ['shard-distribution', 'shard-routing']),
   mongo('Shard Keys', 'core/sharding-shard-key', ['shard-key']),
+  mongo('Hashed Sharding', 'core/hashed-sharding', ['shard-hash']),
   mongo('Manage Sharded Cluster Balancer', 'core/sharding-balancer-administration', ['shard-moving']),
   pg('Table Partitioning', 'ddl-partitioning', ['shard-partition']),
 ];
