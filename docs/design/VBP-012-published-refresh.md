@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第56条replication现已按顺序完成内容与dev检查，技术集成与完整内容均56/105，下一条backup。第53条的词条内容已单独经PR #233合入main并发布生产；第54条及后续词条的功能改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第57条backup现已按顺序完成内容与dev检查，技术集成与完整内容均57/105，下一条sharding。第53条的词条内容已单独经PR #233合入main并发布生产；本轮第54–57条正文已由PR #235合入main并发布生产，交互演示改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -73,8 +73,8 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 完整内容与dev集成完成 · 代码PR #232；内容发布PR #233 · 详见本节 |
 | 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 本地文字更新与浏览器验收完成；功能留在本地 |
-| 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 待更新 |
-| 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 待更新 |
+| 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 本地文字更新与浏览器验收完成；功能留在本地 |
+| 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #235 发布，功能留在本地 |
 | 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 待更新 |
 | 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 待更新 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
@@ -1272,3 +1272,39 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `a53cc0ba-3acc-4080-93cb-bfc2e9f5aa7a` 已进入 `in_progress`，待提交后按 DP 允许流转为 `done` 并重新查询确认。本条未推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本条修改只在本地/dev 预览，未合入 `main`、未发布生产。当前整体完成 56/105，下一条是 `backup`。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入 Obsidian。
+
+## 57 · 备份文字完整复审、dev 验收与正文发布（2026-09-30）
+
+### 读者目标与正文调整
+
+- 读者入口是“书目误删后，为什么程序还能查但数据回不来？哪一份历史状态能恢复，恢复到哪里，会不会自动改当前库？”读完应能解释数据库、行、快照、备份文件、独立检查库和恢复的关系，区分备份与实时复制副本，知道逻辑 dump、`pg_restore`、WAL/PITR 的边界，并能用一次实际恢复记录判断方案是否可靠。
+- 更新 `BackupTermPage` 的正文、首图和章节导航：补出“一本书占一行”、v0/v1/v2 是教学状态编号、首图卡片与真实备份文件的关系；把快照、复制副本、空备份、独立检查库、当前业务库的边界讲清；补充 `pg_dump -Fc`、`template0`、`pg_restore` 单事务与并行互斥、WAL/PITR、恢复核对和保留要求。演示行为改动留在本地：当前库状态、恢复点选择、2/2/0 行结果、多次恢复和重置提示都与正文一致。
+- 与相邻词条的差异写清：复制副本跟随主库最新变化，备份停留在保存时刻；右侧独立检查库的结果不会自动替换左侧当前库；本演示到核对为止，不连接真实数据库、磁盘、权限或备份文件。
+
+### 资料与正文对应
+
+实际核对四份 PostgreSQL 18 官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [PostgreSQL 18 · SQL Dump](https://www.postgresql.org/docs/18/backup-dump.html) | `backup-snapshot`：一致快照、逻辑导出和恢复输入。 |
+| [PostgreSQL 18 · pg_dump](https://www.postgresql.org/docs/18/app-pgdump.html) | `backup-scope`：单库、全局对象、custom archive 与生产策略边界。 |
+| [PostgreSQL 18 · pg_restore](https://www.postgresql.org/docs/18/app-pgrestore.html) | `backup-restore`：错误继续与结束汇总、`--single-transaction` 和并行恢复限制。 |
+| [PostgreSQL 18 · Continuous Archiving and Point-in-Time Recovery](https://www.postgresql.org/docs/18/continuous-archiving.html) | `backup-pitr`：基础备份、连续 WAL 和目标时间点重放。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI 0.16.9，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。先用独立 `reader` 会话只读成稿，反馈指出初始 `v0` 与“尚无备份”、备份与复制副本、独立库与当前业务库、空备份、PITR、命令前提等断点；主助手按反馈和官方资料重写。
+- 之后使用 humanizer-zh 的独立 `language` 会话交叉审读，修正“恢复点/备份/版本”混称、测试脚本式状态段、`template0`“空的”误导、首图两行数量、pg_restore 行为和 PITR 表述；官方文档核对后保留“默认继续并在结束报告错误数量”，没有采纳与资料冲突的语言建议。最终 reader 材料 SHA-256 `ac5670876275dc98d6bb4d42366765610780265e212bf118bc396263994ad846`；最终 language prompt SHA-256 `e9e35cf77a0a2c034ccb811e1437e9fbdde07d3a4b27b714d167aaac304791e5`。两类反馈都是模拟审读，不是真人读者验收；ZCode 未读取源码或作者意图。
+
+### 构建与真实浏览器验收
+
+- 当前本地/dev 功能候选 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID eh9fkE7FQbaR8TXACc1b0`；`git diff --check` 通过。正文发布分支从 `origin/main` 只带入 `ReuseConceptPages.tsx` 与 `DistributionConceptPages.tsx` 的文字差异，独立构建通过，`BUILD_ID tnto8pT59kQ-G6GLHiw5l`。
+- CUA 在 `http://127.0.0.1:3219/terms/backup` 真实观察首图和演示：初始显示当前库 v0、独立检查库“尚未导入备份”、保存区“还没有保存备份”，恢复按钮禁用；保存 v0、修改书名保存 v1、选 v0 恢复得到“来自备份 v0，共 2 行”，再选 v1 恢复得到修订版，再误删并保存/恢复 v2 得到“来自备份 v2，共 0 行”。点击“重新开始演示”清除备份与右侧结果，左侧回到两行并显示重置说明；引用区展开 pg_restore 正文回链并成功跳回。
+- 初始与重置画面已截图观察；当前 CUA surface 没有可控的 390px 视口接口，因此没有声称完成窄屏尺寸实测。没有真人读者、真实 PostgreSQL/备份文件、远端 dev 或其他未授权功能验收。
+
+### DP、Git 与发布边界
+
+- VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `77680510-c1fd-4637-8797-90309ea9bbc9` 已按完成证据流转 `done`。生产内容部署记录 `bcfdaa50-3604-4617-91b7-405992f66e17`、批次 `deploy-vbp028-content-prod-20260930` 状态 `released`，关联提交为 main 合并提交 `aa508c30431e969ecd66479735bad1a4dfb571a3`。
+- 本地功能提交 `535d7ae0e9a974401b231d909c84dc3af35fbeb4` 在分支 `feat/VBP-028-cache-content-audit`，只保留在 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev` 的本机 dev 预览；正文发布分支 `release/VBP-028-content-20260930` 的提交 `8984162dc7ed4a7a2d213ddedb1f645326e794fe` 经 [PR #235](https://github.com/Gyschuaner/VibePolaris/pull/235) 合入 main。生产切换前 `current` 为 `/opt/vibepolaris/releases/20260930-1423e96ddd95`，旧镜像 `vibepolaris:1423e96ddd9529b40ec75ef7e1f1f83c5b4bf10c` 保留；新目录为 `/opt/vibepolaris/releases/20260930-aa508c30431e`，容器健康检查通过，`https://vibe.chuansgu.top/terms/cache`、`connection-pool`、`replication`、`backup` 四页正文核对通过。`xiaobei_data` 数据卷未改动。回滚：将 `current` 指回旧目录并用旧镜像重新执行 Compose；不删除新卷。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入 Obsidian。当前整体完成 **57/105**，下一条是 `sharding`；未把本地演示功能带入生产。
