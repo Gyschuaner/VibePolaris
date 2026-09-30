@@ -1642,5 +1642,5 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 ### DP、Git 与发布边界
 
 - VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec`；第 66 条本轮新增研发任务尚未能通过 DP CLI 创建或查询，因 Developer Platform 当前返回 TLS `UNEXPECTED_EOF_WHILE_READING`。不虚构任务编号或 done 状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交 `5664e43`，记录提交随后补充。生产发布仍待第 65 条网络恢复，故第 66 条没有创建新的发布分支、镜像或公网部署记录。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交 `5664e43`，正文发布分支 `release/VBP-030-distributed-content-20261001` 的提交 `30622c7` 经 [PR #246](https://github.com/Gyschuaner/VibePolaris/pull/246) 合入 `main`，合并提交 `c345e6f4b14ef83767f1f60b298e1c82f43817d5`。生产发布仍待第 65 条网络恢复，故第 66 条尚未创建生产镜像或公网部署记录。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条本地内容完成度为 **66/105**，下一条是 `data-ingestion`；第 65、66 条生产发布和 DP 状态待网络恢复后按顺序补齐。
