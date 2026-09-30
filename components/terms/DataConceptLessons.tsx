@@ -7,18 +7,19 @@ import { Reveal, States } from "./ExtendedConceptLessons";
 import base from "./EventConcepts.module.css";
 import styles from "./AsyncConcepts.module.css";
 
+const jsonBookText = '{\n  "title": "小岛上的灯塔",\n  "copies": 2,\n  "available": true\n}';
 const jsonExamples = [
-  { name: "书目对象", text: '{\n  "title": "小岛上的灯塔",\n  "copies": 2,\n  "available": true\n}' },
-  { name: "数量加上引号", text: '{"title":"小岛上的灯塔","copies":"2"}' },
-  { name: "多一个尾逗号", text: '{"title":"小岛上的灯塔",}' },
+  { name: "书目对象", text: jsonBookText },
+  { name: "数量加上引号", text: jsonBookText.replace('"copies": 2', '"copies": "2"') },
+  { name: "多一个尾逗号", text: jsonBookText.replace('true\n}', 'true,\n}') },
   { name: "单独一个 null", text: 'null' },
 ];
-function ValueTree({ value, name = "$", depth = 0 }: { value: unknown; name?: string; depth?: number }) {
+function ValueTree({ value, name = "整体", depth = 0 }: { value: unknown; name?: string; depth?: number }) {
   const type = value === null ? "null" : Array.isArray(value) ? "array" : typeof value;
   const isContainer = value !== null && typeof value === "object";
   const entries = isContainer ? Object.entries(value) : [];
   return <div className={styles.treeNode}>
-    <div className={styles.treeValue}><code>{name}</code><span>{type}</span>{!isContainer && <strong>{(typeof value === "number" ? String(value) : String(JSON.stringify(value))).slice(0,160)}</strong>}</div>
+    <div className={styles.treeValue}><code>{name}</code><span>{type}</span>{!isContainer && <strong>{typeof value === "number" ? String(value) : String(JSON.stringify(value))}</strong>}</div>
     {isContainer && (depth < 4 ? <div className={styles.treeChildren}>{entries.slice(0,12).map(([key, child]) => <ValueTree key={key} name={key} value={child} depth={depth + 1} />)}{entries.length > 12 && <p>还有 {entries.length - 12} 项，预览已省略</p>}{entries.length === 0 && <p>{type === "array" ? "空数组" : "空对象"}</p>}</div> : <p>更深层内容已省略</p>)}
   </div>;
 }
@@ -58,7 +59,7 @@ export function SchemaLesson() {
   const check = () => { setIssues(validateReservation(candidate)); setChecked(true); };
   return <div className={`${base.lab} ${styles.schemaLab}`} aria-label="JSON Schema 字段校验实验">
     <div className={styles.schemaWorkbench}>
-      <div className={styles.ruleSheet}><h3>这份数据的约定</h3><dl><div><dt>status</dt><dd>pending / success</dd></div><div><dt>count</dt><dd>不小于 0 的整数</dd></div><div><dt>字段</dt><dd>两项都必填，不接收额外项</dd></div></dl><button className={base.reset} aria-expanded={showSchema} aria-controls="schema-source" onClick={() => setShowSchema(!showSchema)}>查看 Schema <ArrowDown className={styles.disclosure} data-open={showSchema} size={16} /></button><div id="schema-source"><Reveal open={showSchema}><pre className={base.code}>{JSON.stringify(reservationSchema, null, 2)}</pre></Reveal></div></div>
+      <div className={styles.ruleSheet}><h3>这份数据的约定</h3><dl><div><dt>status</dt><dd>pending / success</dd></div><div><dt>count</dt><dd>不小于 0 的整数</dd></div><div><dt>字段</dt><dd>两项都必填，不接受额外字段</dd></div></dl><button className={base.reset} aria-expanded={showSchema} aria-controls="schema-source" onClick={() => setShowSchema(!showSchema)}>查看 Schema <ArrowDown className={styles.disclosure} data-open={showSchema} size={16} /></button><div id="schema-source"><Reveal open={showSchema}><pre className={base.code}>{JSON.stringify(reservationSchema, null, 2)}</pre></Reveal></div></div>
       <div className={styles.candidate}><h3>待检查的数据</h3><label>status<select value={status} onChange={e => { setStatus(e.target.value); setChecked(false); }}><option value="done">done</option><option value="pending">pending</option><option value="success">success</option></select></label><label>count<input type="number" min="-10" max="100" step="0.5" value={count} disabled={missing} onChange={e => { setCount(e.target.value); setChecked(false); }} /></label><label className={base.option}><input type="checkbox" checked={asString} onChange={e => { setAsString(e.target.checked); setChecked(false); }} />把数量写成字符串</label><label className={base.option}><input type="checkbox" checked={missing} onChange={e => { setMissing(e.target.checked); setChecked(false); }} />去掉 count 字段</label><label className={base.option}><input type="checkbox" checked={extra} onChange={e => { setExtra(e.target.checked); setChecked(false); }} />多带一个 debug 字段</label><pre className={styles.candidateJson}>{JSON.stringify(candidate, null, 2)}</pre></div>
     </div>
     <button onClick={check}>校验当前数据 <ArrowRight size={18} /></button>

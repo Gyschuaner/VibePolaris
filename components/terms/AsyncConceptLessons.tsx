@@ -177,7 +177,7 @@ export function AwaitLesson() {
       if (id === generation.current) setPhase("done");
     } catch { if (id === generation.current) setPhase("failed"); }
   };
-  return <div className={`${base.lab} ${styles.awaitLab}`} aria-label="异步等待与任务装配实验">
+  return <div className={`${base.lab} ${styles.awaitLab}`} aria-label="文章加载等待实验">
     <div className={styles.controls}><div className={styles.mode} role="group" aria-label="任务发起方式"><button aria-pressed={!parallel} onClick={() => { reset(); setParallel(false); }}>依次发起</button><button aria-pressed={parallel} onClick={() => { reset(); setParallel(true); }}>一起发起</button></div><button aria-pressed={saved} onClick={() => setSaved(!saved)}><BookmarkSimple size={18} weight={saved ? "fill" : "regular"} />{saved ? "已收藏" : "收藏文章"}</button></div>
     <div className={styles.assembly}>
       <div className={styles.lanes}>{(["title", "cover"] as ResourceName[]).map(name => <div key={name} className={styles.lane} data-state={states[name]}>
@@ -189,7 +189,7 @@ export function AwaitLesson() {
         <div key="idle" className={styles.cardPlaceholder}><BookOpen size={35} weight="light" /><p>阅读卡片</p></div>,
         <div key="wait" className={styles.cardPlaceholder}><Hourglass size={35} weight="light" /><p>等待两份材料</p></div>,
         <div key="ready" className={styles.completedCard}><div className={styles.coverArt} aria-hidden="true"><i /><b /></div><h3>{title}</h3><p>标题与封面已就位</p></div>,
-        <div key="error" className={styles.cardPlaceholder}><X size={35} /><p>封面加载失败<br />本次未能组装</p></div>,
+        <div key="error" className={styles.cardPlaceholder}><X size={35} /><p>封面加载失败<br />卡片没有拼成</p></div>,
       ]}</States></div>
     </div>
     <div className={styles.controls}><button onClick={start} disabled={phase !== "idle"}>开始加载</button><button className={base.reset} onClick={reset}><ArrowCounterClockwise size={17} />重置任务</button></div>
