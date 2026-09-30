@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第47条foreign-key现已按顺序完成内容与dev检查，技术集成与完整内容均47/105，下一条database-schema。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理，未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第48条database-schema现已按顺序完成内容与dev检查，技术集成与完整内容均48/105，下一条join。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理，未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -65,7 +65,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 45 table | 一套列定义容纳多条同类记录 | 固定编号/书名/可借三列，三册书逐行进入；主体把原表与筛选、选列、排序后的结果分开 | 完整内容与dev集成完成 · 代码PR #215；详见本节 |
 | 46 primary-key | 唯一识别一行并检查编号 | 两册同名书中仅42改名而编号保留；重复/空编号拒绝，新编号增加一册 | 内容补审及dev集成完成 · PR #217；提示Bug回归登记中 |
 | 47 foreign-key | 引用另一表的行 | 一册书连两次借阅，RESTRICT保留两方，CASCADE目标和引用一起退出、其他书留 | 完整内容与dev集成完成 · 代码PR #219；详见本节 |
-| 48 database-schema | 数据库的结构约定 | 表结构骨架展开；数据填入受列约束 | 待更新 |
+| 48 database-schema | 数据库的结构约定 | 定义新增列使旧行出现NULL；补值只改对应行，设非空检查旧值 | 完整内容与dev集成完成 · 代码PR #221；详见本节 |
 | 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 待更新 |
 | 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 待更新 |
 | 51 sql | 声明想得到的数据 | 真实表随查询条件显隐，投影留下所需列 | 待更新 |
@@ -905,6 +905,59 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - `npm run build` 编译、TypeScript、117/117静态页通过，BUILD_ID `ytivrjeei2WHjtHmzMqfe`，`git diff --check`通过。3220桌面与390px实操上述状态，Enter/Space、输入清旧结果、策略重置、首图初态/有限终态/重播以及增删过渡；四来源当前摘录与回跳通过，新增update、timing锚点有效，收起的timing目标自动展开且焦点返回段落。长代码与网址正常折行，`scrollWidth=innerWidth=390`，console error为空。截图 `/tmp/vbp025-foreign-key-desktop-restrict.png`、`/tmp/vbp025-foreign-key-desktop-cascade.png`、`/tmp/vbp025-foreign-key-mobile-restrict.png`、`/tmp/vbp025-foreign-key-mobile-cascade.png`、`/tmp/vbp025-foreign-key-mobile-citation.png`。没有新失败信号，停止追加验证。
 - 代码 `1ee7d6f35233e2f9044ca9f9f9ffc4051dbb0793` 经 [PR #219](https://github.com/Gyschuaner/VibePolaris/pull/219) 合入dev `421adbf547013c5365bedb4682a9c1f068d7a4d1`，树同为 `4e90a58dd1df9573c6b224f4c8f7d45cc1da9564`。3219本机dev复制同构建，新增借阅2后级联只删42及引用、78留，error为空，截图 `/tmp/vbp025-foreign-key-dev.png`。DP本机部署记录 `13ee6e98-7667-4604-b35d-fedf91ee00c7`；备份 `/tmp/vbp025-foreign-key-dev-prev-abc99-next`，回退需停3219、检出旧 `abc99dcc6a47488f338c68f7db34958e4f2d211d`、恢复备份为.next并重启。用例 `edc7efbc-20df-4cf6-9ecd-f936e9327577`，专项计划 `caf1367f-46ce-4027-b2ef-6a3e5edb6e70` completed，实际执行 `bad57372-1d0c-45f5-91c9-9add7be09db1` passed。研发任务 `f88506cd-fe6b-4084-bd3c-ea8bd4980c75` 已done并重查。
 - 未实测系统减少动态设置、真实数据库，也没有真人目标读者、远端dev或生产部署；飞书未变，指定Windows Obsidian库本机不存在。完整内容与技术进度47/105，下一条database-schema。VBP-025的主键提示Bug已修复，但专用回归登记Run `236a6370-7341-4b94-9af4-4561ff8ea5d9` 尚在运行，VBP-025本批4/4研发任务done，依平台允许流转进入ready_for_release并重查，未发布。
+
+
+## 48 · 数据库模式完整内容复审与本机 dev 集成（2026-09-30）
+
+### 读者目标与现状判断
+
+- 遇词场景：AI 建议“给数据库 schema 加一个可借状态字段”。不假设读过表或主键页，读完能分清结构与数据，预测加列、补一条记录、收紧非空规则的变化，并区分 PostgreSQL schema 的分组含义。
+- 原页已有定义/记录对照和准确的加列演示，但字段、boolean、NULL、命名空间和 search_path 的前提不充分。正文补上表/行/列、每行一册书、编号与书名的类型、可借状态的两个值和缺值；说明未声明规则时仅靠界面提示可能漏过其他写入入口，数据库约束也不能证明现实状态。
+- 保留路由、原六个 legacy 锚点、相关关系、首图、CSS、状态逻辑与已有依赖；只修改 DatabaseSchemaTermPage 和 schemaSources，JOIN/唯一约束函数逐字对比未变。把 PRIMARY KEY 的必要含义放到演示前，不让初态标签依赖后面的解释。
+
+### 资料与论断对应
+
+实际打开并读到相关段落，而非只列出链接：
+
+| 原始资料 | 采用的边界与正文位置 |
+| --- | --- |
+| [PostgreSQL 18 Table Basics](https://www.postgresql.org/docs/18/ddl-basics.html) 5.1 | 行/列、共享定义、integer/text；schema-definition、schema-types。首次检索内部错误后以官方URL重取，已读正文。 |
+| [Modifying Tables](https://www.postgresql.org/docs/18/ddl-alter.html) 5.7.1、5.7.3、5.7.5 | 无默认值的新列旧行NULL、旧值要满足新约束；加列时默认值与事后SET DEFAULT的区别；schema-new-column、schema-validation、schema-default。 |
+| [Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) 5.5.2–5.5.5 | NOT NULL、唯一/主键/外键需显式声明，数据库拒绝违规值；schema-contract。 |
+| [Schemas](https://www.postgresql.org/docs/18/ddl-schemas.html) 5.10.1、5.10.3 | 组.表、CREATE SCHEMA不定义表列、search_path按顺序匹配首个同名表；schema-namespace、schema-search-path。 |
+| [Boolean Type](https://www.postgresql.org/docs/18/datatype-boolean.html) 8.6 | true/false与NULL未知值；本例可借/不可借的业务含义由程序约定；schema-boolean。 |
+| [ALTER TABLE](https://www.postgresql.org/docs/18/sql-altertable.html) Description | 各子命令锁级别可能不同，其他操作可能等待；schema-migration-lock，放在折叠补充。 |
+
+保留“没有默认值、允许NULL、以PostgreSQL为例”的限制，不把三步示例写成所有数据库都必须采用的迁移方法。CREATE TABLE 展示新表的目标定义，不是对已有表的变更脚本；重置只是页面示例，失败后能保留哪些修改需按实际数据库、事务及脚本判断。
+
+### 机制选择与状态契约
+
+候选A保留左右定义/记录，新增列让左侧多一项、右侧两行各出现NULL；补值只改对应行，收紧规则只改左侧定义。候选B逐条播放SQL依赖命令知识，且不易看清对象层次；候选C统一三阶段流程图只显顺序，舍弃B/C。46条检查身份、47条画引用连线和删除；48条改变共享定义并逐行填值，机制区别明确。
+
+初始两列/两行 → 增加无默认值可空available → 定义增加boolean列，两行NULL → 可任选先填42或78 → 仅对应行变值；仍有NULL时设非空拒绝、定义不变且已填值保留 → 两行补齐后设非空，定义显示NOT NULL → 页面重置恢复起点及反馈。有限模型不连接数据库，主体不堆解释脚注，解释在正文中补齐。
+
+### 真实 ZCode 两轮与主助手裁决
+
+- `reader`：`sess_8e152a22-238c-4c50-9e8b-17411e2aef1e`，实际 Qwen3.8-Flash-Next-FP8 / xhigh / Read-only。读取根工作区只读 partner Skill 和完整冻结原稿 `/tmp/vbp026-schema-reader-material.md`，SHA256 `a54c4c2bfaa93860a50c0d6bb233bab833c3e7d5b0205c652d4d6cb223810124`。正文由真实页面导出，补充已展开；Reveal隐藏内容会残留于DOM文本，因此演示区域替换为主助手实际观察的“操作→画面”配对状态，没有把互斥状态混成同屏。没有作者预判、源码或语言规则污染；仅文字模拟，不是ZCode网页操作。
+- 能依据文章预测生日列只填一人时非空变更拒绝，改电话是改数据。仍把NULL理解为“尚未检查”，对search_path、锁及重置与真实失败恢复混淆；主助手补必要前提、保留一般缺值含义，解释按顺序找组及迁移旁支。默认值变化是有助判断边界的条件对照，补在主线；没有安排真人读者。
+- `language`：`sess_f068a1cf-6223-4995-a2e1-1440421d1665`，同实际模型/等级，另开干净会话，读取partner、humanizer和从修改源稿重新提取的完整成稿 `/tmp/vbp026-schema-language-material.md`，SHA256 `a774921f4863cec26a4621f2bc41c8a5db2ee5c1691bfea88dbdcb11f041564c`。无源码/上轮结论；主助手已按humanizer先审读。
+- 采用定义定位更直接、表定义/行数据二分更准确、迁移兼容条件用明确主体、新表语句称呼统一、PostgreSQL“具体语法”改为“里”。“title text具体记录”是提取稿块分隔问题，页面有独立标题，不记录为UI Bug；首图展示加列预览是有意的机制首图，真实画面后再确认，不依文字反馈改成装饰图。终轮增加PRIMARY KEY前提、类型和锁引用后由主助手局部复核，没有新问题不重复全篇审读。ZCode结束时尝试不可用ExitPlanMode，主体审读结果完整且无写操作，未当作新阻塞。
+
+### 构建、真实浏览器与 dev
+
+- 最终一次 `npm run build`：编译1379ms、TypeScript2.1s、117/117静态页，`BUILD_ID wZLpXk6DwHhcKcPxWKbyh`。无具体失败信号，未运行无关全套check或新增自动测试。
+- 3220桌面：观察首图两列初态到available/双NULL的有限终态、Enter重播；演示Enter加列、Space先填78、Enter设非空拒绝且78值保留，补42后Space设非空成功，Enter重置。基线实际见先填42的对称分支。查看真实画面及展开/淡出后的状态，没有把DOM中隐藏旧字当成可见错误。
+- 390×844：先填42的拒绝、补78成功、Space重置；定义/记录改为上下排，控件换行可读，宽度390/390。代码与链接无横向溢出。六份书目逐份读取当前摘录，boolean返回聚焦schema-boolean；ALTER TABLE摘录键盘返回先展开补充、聚焦schema-migration-lock，Space可收起。视口已恢复，console errors=[]。
+- 代码 `fcb9bd1142dc348f62efda40f13336b12e32655c`，分支 `feat/VBP-026-database-schema-content-audit`；[PR #221](https://github.com/Gyschuaner/VibePolaris/pull/221) 合dev `792065346a57ab78b3adba338f202a1dee1c02fb`，两者源码树均 `7623ef026370bb69313a44526b537cc777e3f511`。
+- 本机dev worktree检出合并提交，复制最终构建并启动3219，实际读到新引言/正文，重做加列、单行拒绝、补齐成功，console errors=[]。预览 http://127.0.0.1:3219/terms/database-schema 。仅本机运行，未部署远端或生产。
+- 更新前dev提交 `421adbf547013c5365bedb4682a9c1f068d7a4d1`，备份 `/tmp/vbp026-schema-dev-prev-421adbf-next`。回滚：停止3219、检出旧提交、恢复该备份为.next、重启3219。
+- 截图 `/tmp/vbp026-schema-desktop-hero.png`、`desktop-reject.png`、`desktop-complete.png`、`mobile-reject.png`、`mobile-complete.png`、`mobile-citation.png`、`dev.png`（后六项使用相同`/tmp/vbp026-schema-`前缀），窄屏引用落点已在用户消息中嵌入。
+
+### DP 与证据边界
+
+- VBP-026本次任务 `61a1a4fd-5238-4a60-bf5c-355b57c8ae32` done；复用用例 `e857dcf6-c2b3-4806-be68-2616cb9e00eb` 更新本条范围后重查。专项计划 `6aab6d30-ea33-4904-b0d7-a6a155e48a6c` completed，通过执行 `ee10a236-8a66-4dff-a938-837e4d174c50` attempt1；写后重查确认。部署记录 `3414f554-4f12-4f01-8ed4-1ca665748e51` 为local、released，精确代码提交/备份均登记；VBP-026仍testing，本轮49/50尚未完整复审，不声称本批全审完。
+- 没有实际目标读者、真实数据库、系统减少动态设置、远端dev或生产验证。Skill/代码里的reduced-motion分支不冒充系统实测。飞书正式文档未变；指定Windows Obsidian库不存在，未写知识库。完整内容与技术进度48/105，下一条join。
+- 第46条专用Bug登记Run `236a6370-7341-4b94-9af4-4561ff8ea5d9` 在00:50Z上游UPSTREAM_UNAVAILABLE失败；读取可恢复检查点后00:55Z在同Run继续，仍运行，未声称Bug关闭。PR附加工具达到100条附件上限，PR221仍真实创建并合并；未删除旧附件。
 
 
 ## 01 · Harness
