@@ -83,7 +83,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 63 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 已发布正文；交互功能留在本地 |
 | 64 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 已发布正文；交互功能留在本地 |
 | 65 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
-| 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 待更新 |
+| 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 本地正文与浏览器验收完成；待 ZCode/DP/生产网络恢复 |
 | 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 待更新 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 待更新 |
 | 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 待更新 |
@@ -1609,3 +1609,38 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交 `0555724`，官方资料映射与最后例子修正提交 `314000a`。正文发布分支 `release/VBP-030-webhook-content-20261001` 的提交 `568a085` 经 [PR #244](https://github.com/Gyschuaner/VibePolaris/pull/244) 合入 `main`，后续资料映射修正分支 `release/VBP-030-webhook-followup-20261001` 的提交 `b22d05c` 经 [PR #245](https://github.com/Gyschuaner/VibePolaris/pull/245) 合入 `main`，当前合并提交 `1202a4f8f15524a50086b6f9137e3aeab2603415`。
 - 正文尚未生产上线：生产机 SSH 在握手前断开，公网 `https://vibe.chuansgu.top/terms/webhook` 超时；新镜像已在本地构建为 `vibepolaris:1202a4f8f15524a50086b6f9137e3aeab2603415`，未完成传输、容器健康检查或公网正文校验。PR artifact 关联工具两次返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条本地内容完成度为 **65/105**，生产部署待网络恢复；下一条是 `distributed-system`。
+
+## 66 · 分布式系统文字完整复审、局部故障与幂等演示（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“借阅服务请求库存服务扣一本书，为什么 A 只看到超时，却不能确定 B 有没有扣？请求丢失、处理后响应丢失、查询和重试分别怎样判断？”读完应能解释节点、请求/响应阶段、局部故障、UNKNOWN 结果、操作 ID、幂等、因果顺序与逻辑时钟的边界。
+- 更新 `DistributedTermPage` 正文：在开头定义借阅服务、库存服务和 `reserve-42` 操作 ID；将节点解释改成独立运行的程序或服务；按“发出、送达、远端修改、响应、本地更新”补齐请求链；在幂等段解释重复请求不新增副作用，在顺序段解释逻辑时钟不是共享墙上时间；最后明确消息内容是请求和响应中的业务数据。
+- 保留 `DistributedLesson` 的本地响应丢失、请求丢失、超时未知、按操作 ID 查询和同 ID 重试状态；生产只发布正文与展示文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Lamport · Time, Clocks, and the Ordering of Events in a Distributed System](https://lamport.azurewebsites.net/pubs/time-clocks.pdf) | `distributed-definition`、`distributed-order`：独立进程与消息、进程内顺序、发送先于接收、因果偏序、并发和逻辑时钟。 |
+| [AWS Builders’ Library · Challenges with distributed systems](https://d1.awsstatic.com/builderslibrary/pdfs/challenges-with-distributed-systems.pdf) | `distributed-failure`：请求/响应的多阶段链路、各阶段独立失败和超时后的 UNKNOWN。 |
+| [AWS Builders’ Library · Timeouts, retries, and backoff with jitter](https://d1.awsstatic.com/builderslibrary/pdfs/timeouts-retries-and-backoff-with-jitter.pdf) | `distributed-timeout`、`distributed-budget`：超时不等于没有副作用，退避、次数限制和抖动不能代替幂等。 |
+| [AWS Builders’ Library · Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) | `distributed-reconcile`：调用方标识、重复请求返回已有结果、标识与修改的原子提交、同标识换参数的处理。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 启动真实 ZCode CLI 的独立 `reader` 和 `language` 会话，输入只包含当前正文、对应角色规则和读者背景/保留信息，没有附作者意图、官方摘要或旧审读结论。reader 正文材料 SHA-256 为 `a3318c35513220d5713d72194c487c53ebb7a6bac35c5c88f0bd0fbf3edd5fb7`，language 正文材料 SHA-256 为 `362705c06acf22e831e840f949c8bc91378d51767bdac77230b3fce23e2d3929`。
+- 两个 ZCode 请求均因上游可重试 `AI_APICallError` 超时，没有产生可回收的审读文本或稳定 session ID；未把这两次失败记为审读通过。主助手依据四份已核实官方资料和 `humanizer-zh` 规则完成局部改写，保留未改的状态契约与引用映射。
+
+### 构建与真实浏览器验收
+
+- `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`node --experimental-strip-types --test tests/coordination-teaching.test.mjs` 为 1/1 通过；`git diff --check` 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/distributed-system?qa=066a` 真实操作并观察：响应丢失路径先显示“超时 · 执行结果未知”，按操作 ID 查询后显示“已核对 · reserve-42 执行成功”；请求丢失路径保持库存 5、显示“已查询 B · 本例没有执行记录”，恢复网络并按同一 ID 重试后库存为 4、显示一份执行记录。Lamport 引用可展开并回链到 `distributed-definition` 与 `distributed-order`，截图已实际观察；浏览器 `error/warn` 为空。没有真实跨服务网络、共识协议、真人读者或生产功能验证，当前 CUA surface 也没有可控的 390px 视口接口。
+
+### DP、Git 与发布边界
+
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec`；第 66 条本轮新增研发任务尚未能通过 DP CLI 创建或查询，因 Developer Platform 当前返回 TLS `UNEXPECTED_EOF_WHILE_READING`。不虚构任务编号或 done 状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交 `5664e43`，记录提交随后补充。生产发布仍待第 65 条网络恢复，故第 66 条没有创建新的发布分支、镜像或公网部署记录。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条本地内容完成度为 **66/105**，下一条是 `data-ingestion`；第 65、66 条生产发布和 DP 状态待网络恢复后按顺序补齐。
