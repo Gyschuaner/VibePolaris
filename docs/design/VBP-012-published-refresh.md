@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第46条primary-key现已按顺序完成内容与dev检查，技术集成与完整内容均46/105，下一条foreign-key。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理，未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第47条foreign-key现已按顺序完成内容与dev检查，技术集成与完整内容均47/105，下一条database-schema。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理，未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -64,7 +64,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 44 transaction | 多步一起提交或撤销 | #42借阅先改库存、后写借阅；失败时事务内短暂为1/0、新查询仍2/0，显式回滚后同回2/0 | 完整内容与dev集成完成 · 代码PR #213；详见本节 |
 | 45 table | 一套列定义容纳多条同类记录 | 固定编号/书名/可借三列，三册书逐行进入；主体把原表与筛选、选列、排序后的结果分开 | 完整内容与dev集成完成 · 代码PR #215；详见本节 |
 | 46 primary-key | 唯一识别一行并检查编号 | 两册同名书中仅42改名而编号保留；重复/空编号拒绝，新编号增加一册 | 内容补审及dev集成完成 · PR #217；提示Bug回归登记中 |
-| 47 foreign-key | 引用另一表的行 | 关系连线锚定已有身份，悬空引用无法落下 | 待更新 |
+| 47 foreign-key | 引用另一表的行 | 一册书连两次借阅，RESTRICT保留两方，CASCADE目标和引用一起退出、其他书留 | 完整内容与dev集成完成 · 代码PR #219；详见本节 |
 | 48 database-schema | 数据库的结构约定 | 表结构骨架展开；数据填入受列约束 | 待更新 |
 | 49 join | 按条件组合行 | 两侧行按相等键对齐，缺配对按连接方式显示 | 待更新 |
 | 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 待更新 |
@@ -894,6 +894,18 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - 浏览器发现真实提示缺陷：65新增后选项仍称“新编号”，DP失败执行 `641c976c-b0ca-4f3c-8b64-27cb4a4d017e` 创建 BUG-1E1E8649，截图 `/tmp/vbp025-primary-key-stale-label.png`。改为稳定的“#65”，NULL选项改称“空值”。初次与修复后的 `npm run build` 均编译、TypeScript、117/117静态页通过，最终 BUILD_ID `GlW81_xE2qGMG3IBMmf7k`；`git diff --check`通过。3220桌面实际覆盖42/NULL拒绝、65同名新增与再次拒绝、改名、输入清旧反馈、重置、Enter/Space、首图初态与终态/重播、四份当前摘录和回跳；SQLite折叠目标会自动展开。390px检查成功/失败、键盘改名/重置、组合编号图示、新增唯一约束摘录与键盘回跳，`scrollWidth=innerWidth=390`，长网址正常折行；浏览器error为空。修复后仅回归相关项，没有加自动化用例或整站回归。
 - 代码 `dad5a6cdf33f3fc375c3c52db4def8fc4c0eeae0` 经 [PR #217](https://github.com/Gyschuaner/VibePolaris/pull/217) 合入dev `abc99dcc6a47488f338c68f7db34958e4f2d211d`，树同为 `362733a8b6486c799de9f184f39120b4b6018cdb`。3219本机dev使用同构建，新增65/再次拒绝与稳定标签已实测，截图 `/tmp/vbp025-primary-key-dev.png`。DP本机部署记录 `5c5f2c46-0d4b-4f45-b8b6-7ca5b2422003`；旧 `.next` 备份 `/tmp/vbp025-primary-key-dev-prev-f0a6-next`，回退需停3219、检出旧 `f0a6dc04c3b9fd96bf0b4341f36fdf43040f8464`、恢复备份并重启。用例 `2c70c54e-5c93-4ad8-b843-34052bf6bca0`，专项计划 `d1050d26-cfae-4076-9ca8-6e2ff6c87902` completed，第二次执行 `03abcf28-bc7f-4c91-a1ef-4971face9a84` passed。Bug已修复、DP状态ready_for_retest；当前CLI没有专用回归命令，已通过developer-platform-cli Skill的DP Agent入口仅请求按现有实测证据登记，Run `236a6370-7341-4b94-9af4-4561ff8ea5d9`，未把已发任务写成关闭。实现与本机dev验收任务 `fb302c8e-ce37-4e83-8b42-2bb1aa0328a6` 已按允许流转置done并重查。
 - 未实测系统减少动态设置，也没有真人目标读者、远端dev或生产部署。未修改飞书，指定Windows Obsidian库本机不存在。技术与内容复审46/105，下一条foreign-key；VBP-025仍testing。
+
+## 47 · 外键完整内容复审与本机 dev 集成（2026-09-30）
+
+- 读者入口假设是“AI让我把借阅的book_id设成外键，已经填编号为什么还要设”；读完应能预测不存在的65拒绝、42可重复引用、RESTRICT/CASCADE删除结果，并迁移到员工/部门关系。正文原地解释每册一行、借阅另表、表名.列名、两方职责、人工核对会被其他入口漏查，以及同名列不会自动建立约束。主键识别借阅自身，外键检查被指向的书；不把存在说成可借或自动JOIN。代码前解释字段和REFERENCES/NOT NULL/删除规则，常驻正文补改号与改名差别、NULL与不存在编号差别、旧数据加约束失败的具体65例子。
+- 实际打开并阅读四份官方资料：[PostgreSQL18 Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) 的Foreign Keys章节支持 `foreign-key-reference/delete/null`、新增 `foreign-key-update/timing`，核对目标唯一、更新CASCADE/默认NO ACTION、允许延迟与RESTRICT的边界，索引差别也映射此来源；[SQLite Foreign Key Support](https://www.sqlite.org/foreignkeys.html) 的启用章节支持 `foreign-key-enforcement`，每连接、事务外设置及0/1状态；[MySQL8.4 FOREIGN KEY Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html) 的索引限制支持 `foreign-key-indexes`，外键列按约束顺序排索引开头、缺少可用索引时自动建立；[PostgreSQL18 Adding a Constraint](https://www.postgresql.org/docs/18/ddl-alter.html) 支持 `foreign-key-existing`，常规ADD检查旧数据。限定数据库和实现，不把厂商配置概括成通用默认值。
+- 比较后保留首图“一册书对应两次引用”和主体双列书目/借阅及连线：改成输入闸门会靠近主键页的拒绝新增，改成两表行对齐会靠近JOIN的组合结果；外键的目标和引用共同消失适合本概念。状态契约：42/78＋借阅1初态 → 65拒绝不改数据 → 42新增借阅2且两条同指42 → RESTRICT删除拒绝全保留 → 切CASCADE恢复同起点、清反馈并保留候选 → 新增2后删除42及两条引用/连线、78留 → 再写42拒绝 → 重置RESTRICT/65/原数据。正文交代样例只提供一条可新增借阅；没有新增模板、依赖或状态逻辑。
+- 真实ZCode独立reader会话 `sess_4b7254e6-c621-4d86-8c12-eaf8287e04c6` 只读取partner Skill和冻结全文/操作配对状态 `/tmp/vbp025-foreign-key-reader-material.md`，SHA256 `aafe566cd4e69ee77af6eeefd05b4c0ef807d50feb159c1177c8bf4787061d0a`。能预测不存在部门30不能写入（补出外键启用前提），也指出删除有员工的部门10缺少策略就不能唯一判定。它定位的自引用、延迟检查、多列、DDL无读法和两方重复性问题，主助手复现并处理；自引用加员工主管例子后移补充、延迟检查移补充、多列给图书室＋书号。词源和各数据库全部默认配置属进阶兴趣，不自动扩篇；不能把这次文本模拟写成真人或网页读者验证。
+- 主助手应用humanizer-zh，另一个实际ZCode language会话 `sess_d1dd77b2-5cbb-45b1-93c6-2f2f3cbe4a34` 只读partner、humanizer与修订全文 `/tmp/vbp025-foreign-key-language-material.md`，SHA256 `92806f4fe87f9707fea9e6b6a567845d220d4b774c46bd7e1fd81d4a5a9a091a`。采用新增借阅与借阅1的明确指代、“两列”、数据库/程序作施动者、逗号区分改名与书号未变、单列的解释、两个条件加引号断句、去重复收束和明确MySQL索引顺序。它把“已有的书号”误引为“已有的键”，只采纳真实存在的指代收益；“可展开补充”和参考资料行是内部材料标识，不把它们当网页缺陷。未机械拆末段清单或删必要限定；最后局部改写由主助手复核来源与因果。
+- `npm run build` 编译、TypeScript、117/117静态页通过，BUILD_ID `ytivrjeei2WHjtHmzMqfe`，`git diff --check`通过。3220桌面与390px实操上述状态，Enter/Space、输入清旧结果、策略重置、首图初态/有限终态/重播以及增删过渡；四来源当前摘录与回跳通过，新增update、timing锚点有效，收起的timing目标自动展开且焦点返回段落。长代码与网址正常折行，`scrollWidth=innerWidth=390`，console error为空。截图 `/tmp/vbp025-foreign-key-desktop-restrict.png`、`/tmp/vbp025-foreign-key-desktop-cascade.png`、`/tmp/vbp025-foreign-key-mobile-restrict.png`、`/tmp/vbp025-foreign-key-mobile-cascade.png`、`/tmp/vbp025-foreign-key-mobile-citation.png`。没有新失败信号，停止追加验证。
+- 代码 `1ee7d6f35233e2f9044ca9f9f9ffc4051dbb0793` 经 [PR #219](https://github.com/Gyschuaner/VibePolaris/pull/219) 合入dev `421adbf547013c5365bedb4682a9c1f068d7a4d1`，树同为 `4e90a58dd1df9573c6b224f4c8f7d45cc1da9564`。3219本机dev复制同构建，新增借阅2后级联只删42及引用、78留，error为空，截图 `/tmp/vbp025-foreign-key-dev.png`。DP本机部署记录 `13ee6e98-7667-4604-b35d-fedf91ee00c7`；备份 `/tmp/vbp025-foreign-key-dev-prev-abc99-next`，回退需停3219、检出旧 `abc99dcc6a47488f338c68f7db34958e4f2d211d`、恢复备份为.next并重启。用例 `edc7efbc-20df-4cf6-9ecd-f936e9327577`，专项计划 `caf1367f-46ce-4027-b2ef-6a3e5edb6e70` completed，实际执行 `bad57372-1d0c-45f5-91c9-9add7be09db1` passed。研发任务 `f88506cd-fe6b-4084-bd3c-ea8bd4980c75` 已done并重查。
+- 未实测系统减少动态设置、真实数据库，也没有真人目标读者、远端dev或生产部署；飞书未变，指定Windows Obsidian库本机不存在。完整内容与技术进度47/105，下一条database-schema。VBP-025的主键提示Bug已修复，但专用回归登记Run `236a6370-7341-4b94-9af4-4561ff8ea5d9` 尚在运行，VBP-025本批4/4研发任务done，依平台允许流转进入ready_for_release并重查，未发布。
+
 
 ## 01 · Harness
 
