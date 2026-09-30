@@ -14,33 +14,39 @@ export function DatabaseSchemaTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={schemaSources} />;
   return <ConceptArticle slug="database-schema" title="数据库模式" sources={schemaSources}
     sections={[["structure", "结构与书目分开看"], ["change", "给已有记录增加一列"], ["contract", "结构里也有数据规则"], ["namespace", "schema 的另一种用法"]]}
-    intro={<>图书室已经存下两条书目，现在要记录每册书能否借出。加一个字段并不难，难的是旧记录该填什么，以及什么时候才能要求它们都有值。这些问题都与数据库的结构有关。</>}
+    intro={<>图书室已经存下两册书的编号和书名，现在想让程序显示每册书能否借出。AI 建议“给数据库 schema 加一个可借状态字段”。这句话涉及两件事：给所有书目增加一种共同的记录项，再把每册书的实际状态填进去。数据库模式就是这些记录项及其规则的定义。</>}
     hero={<ConceptHero slug="database-schema" label="书目结构增加布尔列，原有两条记录的新值仍是NULL"><div className={s.schemaHero}><Blueprint size={28} /><div><code>books</code><span>book_id · integer</span><span>title · text</span><span>available · boolean</span></div><div><span>#42 → NULL</span><span>#78 → NULL</span></div></div></ConceptHero>}>
     <ArticleSection id="structure" title="结构与书目分开看">
       <Legacy slug="database-schema" names={["question", "definition"]} />
-      <p id="schema-definition" className="vp-citation-target"><strong>数据库模式描述数据的结构：有哪些表、列、类型、键和约束。</strong>本例的书目表有整数编号和文本书名；#42 的书名则是这一结构下的一份具体数据。即使删掉所有书目，列定义也仍然存在。PostgreSQL 建表语句明确列名与类型，插入记录是后续操作。<Cite id="schema-definition" /></p>
+      <p id="schema-definition" className="vp-citation-target"><strong>数据库模式描述数据的结构：保存哪些记录项，各项能放什么值，以及数据库要检查哪些规则。</strong>这里的“模式”是 schema 的译名，指结构定义。我们用一张名叫 <code>books</code> 的表存书目，每一行代表一册书，每一列是这些书共同拥有的记录项。编号列叫 <code>book_id</code>，书名列叫 <code>title</code>；“给表加一个字段”在这个例子中就是增加一列。<Cite id="schema-definition" /></p>
+      <p id="schema-types" className="vp-citation-target">列的类型规定能存哪一类值：<code>integer</code> 是整数，用来存 42、78 这样的编号；<code>text</code> 是文本，用来存书名。下面左边是两列的定义，右边是按这个定义保存的两条记录。给另一册书增加一行记录，用的仍是同一套列；即使把书目记录全部删除，只要没有删除表，列定义仍然存在。<Cite id="schema-types" /></p>
       <div className={s.definitionPair}><div><Blueprint size={25} /><h3>结构定义</h3><code>book_id integer<br />title text</code></div><div><TableIcon size={25} /><h3>具体记录</h3><code>42 · 山间来信<br />78 · 夜空地图</code></div></div>
-      <p>讨论“修改数据库”时，先说清是修改结构还是修改数据。把《山间来信》改名，只改变一行的值；增加 <code>available</code>列，会改变所有书目共同采用的定义。两种操作也可能需要配合执行。</p>
+      <p>把《山间来信》改名，只改变 #42 这一行的书名，这是改数据。增加 <code>available</code> 列，让所有书目都能记录可借状态，这是改结构。已经有两列、存了两行的表，也可以继续修改结构；不需要为了多记一项信息，就把原来的书目删掉重建。</p>
     </ArticleSection>
     <ArticleSection id="change" title="给已有记录增加一列">
       <Legacy slug="database-schema" names={["scene-heading"]} />
-      <p id="schema-new-column" className="vp-citation-target">以 PostgreSQL 为例，添加一个没有默认值的可空列后，旧记录的新列先是 NULL。这里表示尚未记录可借状态，不能直接当成“可借”或“不可借”。数据库知道列是布尔类型，但不知道馆员实际检查了哪一本书。<Cite id="schema-new-column" /></p>
-      <p>先增加列，再分别补上 #42 和 #78 的状态。可以在只补好一条时尝试设为非空，观察拒绝的原因。演示是有限的结构变更模型，不连接数据库。</p>
+      <p id="schema-boolean" className="vp-citation-target">我们把可借状态列命名为 <code>available</code>，类型设为 <code>boolean</code>，也就是布尔类型。它的两个明确取值是 <code>true</code> 和 <code>false</code>，本例分别用来表示“可借”和“不可借”。允许缺值时，还可以是 <code>NULL</code>：这一项没有值。在这里，它表示尚未记录可借状态，不能当成“不可借”，也不能当成“可借”。<Cite id="schema-boolean" /></p>
+      <p id="schema-new-column" className="vp-citation-target">以 PostgreSQL 为例，添加一个<strong>没有默认值、允许 NULL</strong> 的列后，两条旧记录的新列先都是 NULL。增加列告诉数据库“今后可以记这一项”，没有告诉它每册书实际能否借出。馆员检查后，才能把 #42 填成 true、#78 填成 false。<Cite id="schema-new-column" /></p>
+      <p><code>NOT NULL</code> 是“这一列不允许 NULL”的规则。图中原有编号的 <code>PRIMARY KEY</code> 是主键规则，要求编号唯一且非空；本次要修改的是 available 列。下面先增加列，再给书目填值；只补好一条时就尝试设为 NOT NULL，看定义是否会改变。两条的填充值是固定示例，你也可以先填 #78。演示只在页面内模拟这次变更，不连接真实数据库；“恢复初始结构”会重置这个示例。</p>
       <SchemaLesson />
-      <p id="schema-validation" className="vp-citation-target"><strong>设为 NOT NULL 前，现有记录也必须符合要求。</strong>本例尚有 NULL 时，变更被拒绝，结构仍允许空值；补齐两条记录后再提交，才会变成必填。新增列、填充旧数据、收紧约束，是这次变更中不同的动作。<Cite id="schema-validation" /></p>
+      <p id="schema-validation" className="vp-citation-target"><strong>设为 NOT NULL 前，现有记录也必须符合要求。</strong>只填好 #42，#78 仍是 NULL，数据库就会拒绝这次规则变更；已填的 #42 仍是 true，列定义也仍允许 NULL。两条都补齐后再提交，才能增加非空规则。以后写入或修改记录时，这一列也不能是 NULL。增加列、修改列的规则，改的是表定义；给一行填值，改的是这一行的数据。<Cite id="schema-validation" /></p>
+      <p id="schema-default" className="vp-citation-target">旧记录的新列并非总是 NULL。如果增加列时指定默认值 true，旧记录就会得到这个默认值；这只说明程序规定了一个填充值，并不说明馆员检查过它们。而在列已经增加之后，单独给它设置默认值，会影响以后省略这项值的新增记录，不会替你补齐现有的 NULL。<Cite id="schema-default" /></p>
       <ArticleAside title="把变更交给下一位开发者">
-        <p>迁移脚本应交代起点、结构操作与数据处理方法。本例不能简单用“全部填 true”代替馆员检查。还要考虑新旧程序如何读写这列、操作失败后停在哪一步，以及生产数据量和锁的影响。教学中的两行即时变更不代表真实系统都能即时完成。</p>
+        <p>开发者通常会把这些变更写成可以按顺序执行的命令，称为迁移脚本，交代原来的结构、怎样增加列、怎样补旧数据。本例不能简单用“全部填 true”代替馆员检查。如果旧程序仍不填写 available，就需要安排新程序和非空规则何时启用。</p>
+        <p id="schema-migration-lock" className="vp-citation-target">教学里两行数据的变更很快，不代表真实系统也能那么快完成。以 PostgreSQL 为例，修改表结构时可能需要锁住表，让其他操作暂时等待。<Cite id="schema-migration-lock" />失败后会保留哪些修改，取决于数据库、事务和脚本怎样执行。页面的重置按钮不是数据库自动回退的承诺。需要实施时，再按具体数据库规划迁移和恢复方法。</p>
       </ArticleAside>
     </ArticleSection>
     <ArticleSection id="contract" title="结构里也有数据规则" className={base.offset}>
       <Legacy slug="database-schema" names={["quiz-heading", "prompt-heading"]} />
-      <p id="schema-contract" className="vp-citation-target">类型只是结构的一部分。<ConceptTerm slug="primary-key">主键</ConceptTerm>限制记录标识唯一且非空，<ConceptTerm slug="foreign-key">外键</ConceptTerm>限制引用关系，<ConceptTerm slug="unique-constraint">唯一约束</ConceptTerm>限制某列或列组合重复。它们共同决定哪些写入有效；列名叫 <code>book_id</code>，并不会自动获得这些规则。<Cite id="schema-contract" /></p>
+      <p id="schema-contract" className="vp-citation-target">类型只是结构的一部分，数据库检查的规则叫<strong>约束</strong>。比如把 <code>book_id</code> 声明为<ConceptTerm slug="primary-key">主键</ConceptTerm>，就要求每册书的编号唯一且非空；<ConceptTerm slug="foreign-key">外键</ConceptTerm>可以要求借阅中的书号对应已有书目；<ConceptTerm slug="unique-constraint">唯一约束</ConceptTerm>可以要求某一列或几列合起来的值不重复。这些规则需要明确声明，列名叫 book_id 并不会自动让它成为主键。<Cite id="schema-contract" /></p>
+      <p>程序界面也能提醒“请填写可借状态”，但如果数据库没有相应规则，另一个写入入口仍可能把这一项留成 NULL。把 NOT NULL 写进表的定义后，数据库本身就会检查。下面的 SQL 命令用 <code>CREATE TABLE</code> 表示“创建表”：括号里逐列写出列名、类型和约束，<code>PRIMARY KEY</code> 声明主键。</p>
       <pre className={base.code}>{'CREATE TABLE books (\n  book_id integer PRIMARY KEY,\n  title text NOT NULL,\n  available boolean NOT NULL\n);'}</pre>
-      <p>这是一份完成变更后的目标定义。它告诉数据库如何接受数据，不能证明每条数据都符合现实：把一册已经借出的书填成 true，类型和非空检查仍可能通过。结构约束与业务核验要各自做好。</p>
+      <p>这是我们想要的表定义，用来创建一张新表；修改已经存在的 books 表，要用修改表结构的命令，而不是重新执行这段建表语句。这里的 available 没有默认值，新增记录时就需要提供 true 或 false。它告诉数据库怎样接受数据，不能证明数据符合现实：把一册已经借出的书填成 true，类型和非空检查仍会通过。是否真的可借，还要检查实际借阅情况。</p>
     </ArticleSection>
     <ArticleSection id="namespace" title="schema 的另一种用法">
-      <p id="schema-namespace" className="vp-citation-target">在 PostgreSQL 的具体语法中，schema 还指<strong>数据库内部的命名空间</strong>。例如 <code>sales.orders</code>和 <code>archive.orders</code>可以是不同的表。省略前缀时，<code>search_path</code>影响名称解析；因此看到 CREATE SCHEMA 或 schema 前缀，要先判断文档正在谈结构定义，还是对象的归属与名称。<Cite id="schema-namespace" /></p>
-      <p><ConceptTerm slug="json-schema">JSON Schema</ConceptTerm>也使用 schema 这个词，但描述的是 JSON 数据的验证规则。它不会替你在关系数据库中建表。说明数据库、表、字段与所需规则，比只说“加一个 schema”清楚。</p>
+      <p id="schema-namespace" className="vp-citation-target">在 PostgreSQL 里，schema 还指<strong>数据库内部给表等对象分组、区分名称的空间</strong>，也叫命名空间。一个数据库可以有 <code>library.books</code> 和 <code>archive.books</code> 两张不同的表：点号前是组名，点号后是表名，分别是图书室组和归档组中的 books。<code>CREATE SCHEMA archive</code> 创建的是名叫 archive 的组，没有替你定义 books 的列。<Cite id="schema-namespace" /></p>
+      <p id="schema-search-path" className="vp-citation-target">如果只写 <code>books</code>，不写组名前缀，PostgreSQL 会按 <code>search_path</code> 指定的顺序寻找表。这个名字指的是“去哪些组里找、先找哪一组”的名单；找到的第一张同名表就是本次使用的表。因此，问 AI “修改数据库 schema”时，需要说清是修改书目的列和规则，还是创建或调整表所在的组。<Cite id="schema-search-path" /></p>
+      <p><ConceptTerm slug="json-schema">JSON Schema</ConceptTerm>也使用 schema 这个词，描述的是 JSON 数据的验证规则，不会替你在关系数据库中建表。回到图书室的需求，可以具体说“给 books 表增加可借状态列，先补齐旧书目，再要求这一列非空”。接下来需要安排这些命令怎样在已有系统中执行，就会遇到<ConceptTerm slug="database-migration">数据库迁移</ConceptTerm>。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

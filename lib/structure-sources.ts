@@ -1,9 +1,11 @@
 const pg = (title: string, page: string, citations: string[]) => ({ publisher: "PostgreSQL Global Development Group", title: `PostgreSQL 18 · ${title}`, date: "", url: `https://www.postgresql.org/docs/18/${page}.html`, citations });
 export const schemaSources = [
-  pg("Table Basics", "ddl-basics", ["schema-definition"]),
-  pg("Modifying Tables", "ddl-alter", ["schema-new-column", "schema-validation"]),
+  pg("Table Basics", "ddl-basics", ["schema-definition", "schema-types"]),
+  pg("Modifying Tables", "ddl-alter", ["schema-new-column", "schema-validation", "schema-default"]),
   pg("Constraints", "ddl-constraints", ["schema-contract"]),
-  pg("Schemas", "ddl-schemas", ["schema-namespace"]),
+  pg("Schemas", "ddl-schemas", ["schema-namespace", "schema-search-path"]),
+  pg("Boolean Type", "datatype-boolean", ["schema-boolean"]),
+  pg("ALTER TABLE", "sql-altertable", ["schema-migration-lock"]),
 ];
 export const joinSources = [
   pg("Joins Between Tables", "tutorial-join", ["join-definition"]),
