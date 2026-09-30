@@ -80,7 +80,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
 | 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 已发布正文；交互功能留在本地 |
 | 62 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 已发布正文；交互功能留在本地 |
-| 63 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 待更新 |
+| 63 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 已发布正文；交互功能留在本地 |
 | 64 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 待更新 |
 | 65 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 待更新 |
 | 66 data-ingestion | 从来源接入数据 | 不同来源汇入入口，保留来源与接收进度 | 已发布正文；交互功能留在本地 |
@@ -1536,3 +1536,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `6305e126-0513-4934-9a13-c7292a2ed764` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能与记录提交为 `b0d179eee3b77c7179ae693c75def04f83abaaee`；正文发布分支 `release/VBP-030-eda-content-20261001` 的提交 `1bee92f` 经 [PR #242](https://github.com/Gyschuaner/VibePolaris/pull/242) 合入 `main`，合并提交 `8d1227f8c87851d7220cda65d11b6bf27e8d60e1`。生产部署记录 `e074174a-d61f-464d-acc4-1db960059261`、部署批次 `deploy-vbp030-eda-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-8d1227f8c878`，回滚点为 `/opt/vibepolaris/releases/20261001-329f5a023c45`；镜像 `vibepolaris:8d1227f8c87851d7220cda65d11b6bf27e8d60e1` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/event-driven-architecture` 返回 200 并精确核对五处新版正文。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **63/105**，下一条是 `data-pipeline`。
+
+## 64 · 数据管道文字完整复审、依赖分支演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一批数据要经过读取、校验、归档、汇总和发布，为什么有的步骤能并行，有的必须等前置成功？失败后怎样重跑同一份输入，还能说明报表来自哪里？”读完应能区分流程设计与实际运行、任务依赖与启动规则、固定数据区间与当前最新数据、执行记录与来源关系，并能解释 q1 失败后在同一次未发布运行内切换 q2 重验，以及已经发布过的旧规则结果为何需要新运行重算。
+- 更新 `PipelineTermPage` 正文：补出数据管道与 AWS Glue/Airflow 编排工具的边界、固定输入快照 s1、运行标识、任务依赖、直接前置任务、默认启动规则、独立归档、隔离策略 q1/q2、发布前 v0 基线、固定数据区间、稳定键更新写入、失败恢复、W3C PROV-DM 的实体/活动/参与者，以及执行记录与来源关系的区别。明确“隔离”只是本次规则对原始记录的处理标记，不是另一份数据；明确本实验不实际写磁盘，真实归档才写入持久存储。
+- 保留 `PipelineLesson` 的本地读取、严格校验失败、原始归档、隔离缺失编号并重验、汇总和发布交互；本地演示状态保留 q1 失败与 q2 重验记录，发布结果显示 `run-42 · s1 / q2`。生产只发布正文与展示文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+实际打开并核对四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [AWS Glue · Overview of workflows](https://docs.aws.amazon.com/glue/latest/dg/workflows_overview.html) | `pipeline-workflow`：workflow 由作业、数据发现任务和触发条件组成，运行视图显示任务状态、进度与错误。 |
+| [Apache Airflow · Dags](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html) | `pipeline-dependencies`、`pipeline-interval`：DAG 任务依赖、默认触发规则、DagRun、数据区间与逻辑日期。 |
+| [Apache Airflow · Best Practices](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html) | `pipeline-replay`：不留下不完整输出、重试得到一致结果、固定分区、稳定键与重复执行边界。 |
+| [W3C · PROV-DM: The PROV Data Model](https://www.w3.org/TR/prov-dm/) | `pipeline-provenance`：实体、活动与参与者，以及结果来源关系不等于任务执行或数据正确性证明。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初轮独立 `reader`、语言审读和多轮成稿复审均按 `vibepolaris-zcode-partner` 的只读角色执行；ZCode 只读当前导出的词条材料，没有读取源码或作者意图。
+- 最终独立 `reader` 会话 `sess_1e035a1b-66cc-423e-94d4-592f7912046a` 读取 `/tmp/vbp064-pipeline-reader-material.md`（SHA-256 `b51c230b13c4a4afa405830e8463553a063ec47e1d18291050f98629c2314af2`），复核固定快照、并行分支、直接前置任务、q1/q2 重验、数据区间、稳定键、发布基线和 PROV-DM；主助手按反馈补齐执行记录保留 q1 失败与 q2 重验、v0 只是本页基线、历史累计口径需由产品定义等边界。其余追问属于真实调度器迁移、规则版本审计和来源系统实现的进阶延伸，没有扩写成当前演示承诺。
+- 最终 `language` 会话 `sess_6df84300-f67a-4294-a5b6-42edc9c4c024` 读取 partner/humanizer-zh 与 `/tmp/vbp064-pipeline-language-final2-material.md`（SHA-256 `b8a31900590637c549a698ec1c177bebf2fc7cde6435e2c10677e446d857c392`），统一“运行、数据区间、快照、归档、隔离、重验、发布、来源关系”等表达，收紧长句和工具名边界。以上均是 ZCode 的文字模拟审读，不是真人读者验收，也不等同于网页试读。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID RCZksRlt-eAiBYJ0b92LA`；`git diff --check` 通过；`node --experimental-strip-types --test tests/coordination-teaching.test.mjs` 为 1/1 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/data-pipeline?qa=064d` 真实操作并观察：读取固定输入后，校验和归档分别可执行；严格 q1 显示 `q1 · r2 缺失书目编号，校验失败`，归档仍显示 `s1 的 4 条原始记录已保留`；点击隔离缺失编号并重验显示 `q2 · 3 条有效，1 条保留在隔离区`；汇总显示 `#42 · 2 次 #78 · 1 次`；发布后显示 `run-42 · s1 / q2`，两个前置状态均为已完成。最终浏览器控制台 `error/warn` 为空，截图已实际观察；引用区四份资料的正文引用与回链也已核对。
+- 当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸实测写成当前轮通过；没有真实 Airflow/AWS Glue 调度、磁盘归档、数据仓库写入、真人读者或远端 dev 功能验证。演示代码只声明依赖关系，不在浏览器执行 Airflow。
+
+### DP、Git 与发布边界
+
+- VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`；本条研发任务 `34bb448c-ebd1-45bb-8566-00ca49bef853` 在本地验收、正文发布和部署记录完成后流转为 `done`，不推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地正文提交为 `2c62636`；正文发布分支 `release/VBP-030-pipeline-content-20261001` 的提交 `0820529` 经 [PR #243](https://github.com/Gyschuaner/VibePolaris/pull/243) 合入 `main`，合并提交 `e8aaf3f0686b52b60da47e46f48e2bf7583566d6`。生产部署记录 `8654b3a0-305e-409d-baf0-3eb280424f8d`、部署批次 `deploy-vbp030-pipeline-content-prod-20261001` 状态 `released`，release 为 `/opt/vibepolaris/releases/20261001-e8aaf3f0686b`，回滚点为 `/opt/vibepolaris/releases/20261001-8d1227f8c878`；镜像 `vibepolaris:e8aaf3f0686b52b60da47e46f48e2bf7583566d6` 为 `linux/amd64`，容器健康检查通过，公网 `/terms/data-pipeline` 返回 200 并精确核对六处新版正文。仅正文进入生产，交互功能仍留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **64/105**，下一条是 `webhook`。
