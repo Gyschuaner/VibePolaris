@@ -84,7 +84,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 64 data-pipeline | 连续转换步骤 | 数据形态沿多个处理截面改变 | 已发布正文；交互功能留在本地 |
 | 65 webhook | 发生变化主动通知 | 源端变化后发出一次通知，与定时查询对照 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 本地正文与浏览器验收完成；待 ZCode/DP/生产网络恢复 |
-| 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 待更新 |
+| 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 本地正文与浏览器验收完成；待正文发布，交互功能留在本地 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 待更新 |
 | 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 待更新 |
 | 70 data-quality | 适合用途的程度 | 完整性、时效等局部缺口在真实记录上显露 | 待更新 |
@@ -1644,3 +1644,39 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-030 需求 `a1fa5344-bb60-4896-a41d-d951a0a860ec`；第 66 条本轮新增研发任务尚未能通过 DP CLI 创建或查询，因 Developer Platform 当前返回 TLS `UNEXPECTED_EOF_WHILE_READING`。不虚构任务编号或 done 状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交 `5664e43`，正文发布分支 `release/VBP-030-distributed-content-20261001` 的提交 `30622c7` 经 [PR #246](https://github.com/Gyschuaner/VibePolaris/pull/246) 合入 `main`，合并提交 `c345e6f4b14ef83767f1f60b298e1c82f43817d5`。生产发布仍待第 65 条网络恢复，故第 66 条尚未创建生产镜像或公网部署记录。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条本地内容完成度为 **66/105**，下一条是 `data-ingestion`；第 65、66 条生产发布和 DP 状态待网络恢复后按顺序补齐。
+
+## 67 · 数据转换文字复审、金额单位演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一个金额为什么写成 ¥12.30、CNY 12.30 和 1230 分？把它们变成数字后，怎样知道数字代表什么，精度、单位和汇总结果为什么还要另作约定？”读完应能解释数据转换改变的是表示、字段结构、值或统计粒度，区分单位未知、超出精度和已确认规则的结果，并知道转换结果要能回到原始值。
+- 更新 `TransformationTermPage`：在定义处补出“表示、字段结构、统计粒度”的白话解释；说明 dbt SQL model 只是转换的一种实现；明确数据转换与数据验证、异常处理的职责边界；在导语中说明本例的元/分约定；在汇总段解释粒度是一行数据覆盖的范围。
+- 保留 `TransformationLesson` 的本地金额转换、单位选择、超精度拒绝、原值保留和部分合计状态；生产范围只包含正文文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [dbt Labs · SQL models](https://docs.getdbt.com/docs/build/sql-models) | `transform-definition`：SQL model 是 SELECT，运行时按配置建立视图或表；只作为一种实现方式，不扩大成数据转换的完整定义。 |
+| [Python · decimal](https://docs.python.org/3/library/decimal.html) | `transform-precision`：十进制输入、浮点构造、context 精度/舍入和异常；精确类型不能替代舍入规则。 |
+| [PostgreSQL · Numeric Types](https://www.postgresql.org/docs/current/datatype-numeric.html) | `transform-type`：整数、精确 numeric、近似浮点数和声明精度；业务单位仍需另行约定。 |
+| [PostgreSQL · Aggregate Functions](https://www.postgresql.org/docs/current/functions-aggregate.html) | `transform-grain`：`sum` 只计算非 NULL 输入，无输入行返回 NULL；汇总结果需要同时说明待处理数量。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文材料 `/tmp/vbp067-transformation-reader-body.md`（SHA-256 `c68b1389168f4724fc8f111ac24e2f302ab8aa826a5bb3edcad0113f428032c0`），未附作者意图、官方摘要或旧反馈；独立 `language` 只读更新后的正文材料 `/tmp/vbp067-transformation-language-body.md`（SHA-256 `78264978e326af7cd2a7558b80b0384e047b2abaf68b5d5d243dabe2ff915486`）与 partner/humanizer-zh 规则。
+- 两个 ZCode 请求均在等待上游 `AI_APICallError` 超时，没有产生可回收的审读文本或稳定 session ID；没有把它们记成通过。主助手依据四份已核实资料和 `humanizer-zh` 规则完成局部文字调整，保留教学例子、计算结果、技术限定和引用映射。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。金额转换逻辑未改动，因此没有新增或重复运行低价值测试。
+- CUA 在 `http://127.0.0.1:3219/terms/data-transformation?qa=067final` 真实操作并观察：默认未确认 D 的单位时，A/B/C 转为 1230 分、D 保留“单位未确认”，合计 3690 分；选择“已确认：分”后四条都转为 1230 分，合计 4920 分；选择“已确认：元”并勾选 A 超出两位小数后，A 保留待处理、D 为 123000 分，合计 125460 分。第四处 `Aggregate Functions` 引用可展开，正文回链跳到 `transform-grain` 段；页面浏览器 error/warn 为空，截图已实际观察。
+- 本轮没有真实费用系统、PostgreSQL/dbt/Python 运行、真人零基础读者或远端 dev 功能验证；仅验证静态正文与浏览器内存演示。当前 CUA surface 未把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 67 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`。本地修改待提交；正文发布需从当前 `origin/main`（第 66 条合并提交 `c345e6f4b14ef83767f1f60b298e1c82f43817d5`）另开 release 分支，只带正文与记录，交互功能留在本地/dev。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能在本轮声称上线。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。本条完成后整体为 **67/105**，下一条是 `data-validation`。

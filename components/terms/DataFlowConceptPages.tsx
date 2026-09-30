@@ -40,12 +40,13 @@ export function IngestionTermPage() {
 export function TransformationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={transformationSources}/>;
   return <ConceptArticle slug="data-transformation" title="数据转换" sources={transformationSources} sections={[["rules", "让字段遵循同一套规则"], ["units", "数字之外，还要知道单位"], ["precision", "精度与舍入要先约定"], ["grain", "汇总会改变一行的含义"]]}
-    intro={<>三份借阅费用分别写成 ¥12.30、CNY 12.30 和 1230 分。报表不能直接把这些字符串相加。数据转换用明确的规则统一表示，同时保留原始值，避免把不确定的信息悄悄变成一个确定数字。</>}
+    intro={<>三份借阅费用分别写成 ¥12.30、CNY 12.30 和 1230 分。在本例规则里，前两种写法表示元，后一种表示分；报表不能把这三种文字直接相加。数据转换用明确的规则统一表示，同时保留原始值，避免把不确定的信息悄悄变成一个确定数字。</>}
     hero={<ConceptHero slug="data-transformation" label="三种已声明的金额表示转换成CNY的1230整数分"><div className={s.transformHero}><div className={s.heroOriginal}><CurrencyCircleDollar size={25}/><code>¥12.30</code><code>CNY 12.30</code><code>1230 分</code></div><div className={s.heroStamp}><span>已声明单位</span><strong>1230</strong><span>整数分 · CNY</span></div></div></ConceptHero>}>
     <ArticleSection id="rules" title="让字段遵循同一套规则"><Legacy slug="data-transformation" names={["question", "definition"]}/>
-      <p id="transform-definition" className="vp-citation-target"><strong>数据转换按照明确规则，改变数据的表示、字段结构、值或统计粒度，让它适合后续使用。</strong>例如拆出日期、统一金额单位，或者按书目汇总借阅次数。dbt 的 SQL model 用 SELECT 描述结果，运行时由 dbt 按配置物化为视图或表；SQL 是一种实现方式，转换并不限定使用 dbt。<Cite id="transform-definition"/></p>
+      <p id="transform-definition" className="vp-citation-target"><strong>数据转换按照明确规则，改变数据的表示、字段结构、值或统计粒度，让它适合后续使用。</strong>“表示”是同一个值的写法，例如把带货币符号的文字变成整数分；“字段结构”是字段怎样拆分、合并或改名；“统计粒度”是一行数据代表一条记录，还是一组记录的合计。<Cite id="transform-definition"/></p>
+      <p>例如拆出日期、统一金额单位，或者按书目汇总借阅次数。dbt 是把 SQL 组织成可运行模型的工具：它把模型文件里的 SELECT 按配置建立成视图或表。SQL 是一种实现方式，转换并不限定使用 dbt。<Cite id="transform-definition"/></p>
       <div className={s.ruleList}><div><h3>输入约定</h3><p>字段来自哪里？值的单位、币种和精度是什么？缺失或不认识的值怎样保留？</p></div><div><h3>输出约定</h3><p>统一为 CNY 的整数分，保留来源行 ID。超出约定的输入进入待处理结果，不擅自补一个金额。</p></div></div>
-      <p>“转成数字”只解决表示问题。<strong>先说清数字代表什么，再写类型转换和计算。</strong>输入格式、映射规则、异常处理和输出口径都应该能被复查。</p>
+      <p>“转成数字”只解决表示问题。<strong>先说清数字代表什么，再写类型转换和计算。</strong>本页把职责分开：转换产生按约定的新表示，<ConceptTerm slug="data-validation">数据验证</ConceptTerm>检查它是否符合约定；要不要修正、隔离或删除异常值，还要另写处理规则。输入格式、映射规则、异常处理和输出口径都应该能被复查。</p>
     </ArticleSection>
     <ArticleSection id="units" title="数字之外，还要知道单位"><Legacy slug="data-transformation" names={["scene-heading"]}/>
       <p>A、B、C 三条的单位已知，可以统一为 1230 分。D 只有“1230”：如果它代表分，结果是 1230；如果代表元，结果是 123000。转换器不能凭相似的数字猜出处。下面的“已确认”选项代表你从来源说明中取得了单位，不代表程序自动识别。</p>
@@ -60,7 +61,7 @@ export function TransformationTermPage() {
       <ArticleAside title="转换结果要能回到原始值"><p>输出 1230 分，还应能找到 A 的原始字符串 ¥12.30、所用规则和来源。覆盖原始值以后，发现单位错误就很难重新计算。规则发生变化，应重新转换受影响记录，再检查后续汇总；不能只改报表标签。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="grain" title="汇总会改变一行的含义" className={base.offset}><Legacy slug="data-transformation" names={["prompt-heading"]}/>
-      <p id="transform-grain" className="vp-citation-target">逐条转换后，一行仍代表一条费用记录；按书目汇总后，一行变成某本书的合计。PostgreSQL 的 sum 只对非 NULL 输入求和，没有输入行时返回 NULL，而不是自动返回零。<strong>一个合计不能单独说明原始记录是否齐全。</strong>本例显式保留待处理数量，并把总数标为“仅已转换记录合计”。<Cite id="transform-grain"/></p>
+      <p id="transform-grain" className="vp-citation-target">这里的“粒度”可以先理解为一行数据覆盖的范围：逐条转换后，一行仍代表一条费用记录；按书目汇总后，一行变成某本书的合计。PostgreSQL 的 sum 只对非 NULL 输入求和，没有输入行时返回 NULL，而不是自动返回零。<strong>一个合计不能单独说明原始记录是否齐全。</strong>本例显式保留待处理数量，并把总数标为“仅已转换记录合计”。<Cite id="transform-grain"/></p>
       <div className={base.contrast}><div><h3>3690 分</h3><p>单位未知时，A、B、C 的部分合计。它没有包含 D，不能标成四条记录的全部费用。</p></div><div><h3>4920 分</h3><p>D 被确认是分以后，四条正常精度记录的合计。改变规则后重新计算，原始数据仍保留。</p></div></div>
       <p>转换规则应附原始样例，写清单位、类型、输出粒度、精度和非法值处理。每次运行记录字段如何变化、排除了哪些记录，以及下游判断结果是否完整所需的数量。</p>
     </ArticleSection>
