@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { ArrowDown, ArrowUpRight, CornersOut, Minus, Plus } from "@phosphor-icons/react";
+import { ArrowUpRight, CornersOut, Minus, Plus } from "@phosphor-icons/react";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphEdge, type GraphNode } from "@/lib/term-graph";
 
 type RelatedTerm = { slug: string; zh: string; en: string };
@@ -113,6 +113,8 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     [articles],
   );
   const days = useMemo(() => timelineDays(orderedArticles[0]?.publishedAt ?? new Date().toISOString().slice(0, 10)), [orderedArticles]);
+  const timelineArticles = useMemo(() => orderedArticles.filter(article => days.includes(article.publishedAt)), [days, orderedArticles]);
+  const todayKey = new Date().toISOString().slice(0, 10);
   const { nodes, edges } = useMemo(() => graphData(orderedArticles), [orderedArticles]);
   const articleBySlug = useMemo(() => new Map(orderedArticles.map(article => [article.slug, article])), [orderedArticles]);
   const [selectedSlug, setSelectedSlug] = useState(orderedArticles[0]?.slug ?? "");
@@ -362,22 +364,30 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
       </div>
 
       <div className="news-atlas-layout">
-        <nav className="news-atlas-dates" aria-label="新闻日期">
-          {days.map((day, index) => {
-            const dayArticle = orderedArticles.find(article => article.publishedAt === day);
-            const isSelected = dayArticle?.slug === selected.slug;
-            const isToday = index === days.length - 1;
-            const date = utcDate(day);
-            const content = <>
-              {isToday && <span className="news-atlas-today">今天</span>}
-              <time dateTime={day}>{shortDateFormatter.format(date)}</time>
-              <small>{weekdayFormatter.format(date)}</small>
-            </>;
-            return dayArticle ? (
-              <button className={`news-atlas-date${isSelected ? " is-selected" : ""}${isToday ? " is-today" : ""}`} key={day} type="button" aria-pressed={isSelected} onClick={() => selectArticle(dayArticle.slug)}>{content}</button>
-            ) : <div className={`news-atlas-date is-empty${isToday ? " is-today" : ""}`} key={day}>{content}</div>;
-          })}
-          <span className="news-atlas-scroll-cue"><ArrowDown size={19} aria-hidden="true" /><span>继续探索<br />更多进展</span></span>
+        <nav className="news-atlas-dates" aria-label="新闻时间线">
+          <div className="news-atlas-timeline-head">
+            <div><span>时间线</span><strong>最近进展</strong></div>
+            <small>{timelineArticles.length} 篇</small>
+          </div>
+          <div className="news-atlas-timeline-list">
+            {timelineArticles.map(article => {
+              const isSelected = article.slug === selected.slug;
+              const isToday = article.publishedAt === todayKey;
+              const date = utcDate(article.publishedAt);
+              return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>
+                <span className="news-atlas-timeline-marker" aria-hidden="true"><i /></span>
+                <span className="news-atlas-timeline-copy">
+                  <span className="news-atlas-timeline-date"><time dateTime={article.publishedAt}>{shortDateFormatter.format(date)}</time>{isToday && <em>今天</em>}</span>
+                  <small>{weekdayFormatter.format(date)}</small>
+                  <strong>{article.title}</strong>
+                </span>
+              </button>;
+            })}
+          </div>
+          <div className="news-atlas-timeline-range">
+            <span>时间范围</span>
+            <time dateTime={days[0]}>{shortDateFormatter.format(utcDate(days[0]))}—{shortDateFormatter.format(utcDate(days[days.length - 1]))}</time>
+          </div>
         </nav>
 
         <div ref={canvas} className="news-atlas-map news-atlas-canvas" role="region" aria-label="新闻与概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
