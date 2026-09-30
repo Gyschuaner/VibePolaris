@@ -13,7 +13,7 @@ export const primaryKeySources = [
   sqlite("Clustered Indexes and the WITHOUT ROWID Optimization", "withoutrowid", ["primary-key-sqlite"], "2025-05-31（更新）"),
 ];
 export const foreignKeySources = [
-  pg("Constraints · Foreign Keys", "ddl-constraints", ["foreign-key-reference", "foreign-key-delete", "foreign-key-null"]),
+  pg("Constraints · Foreign Keys", "ddl-constraints", ["foreign-key-reference", "foreign-key-delete", "foreign-key-update", "foreign-key-null", "foreign-key-timing", "foreign-key-indexes"]),
   sqlite("SQLite Foreign Key Support", "foreignkeys", ["foreign-key-enforcement"]),
   { publisher: "Oracle · MySQL 官方文档", title: "MySQL 8.4 · FOREIGN KEY Constraints", date: "", url: "https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html", citations: ["foreign-key-indexes"] },
   pg("Modifying Tables · Adding a Constraint", "ddl-alter", ["foreign-key-existing"]),

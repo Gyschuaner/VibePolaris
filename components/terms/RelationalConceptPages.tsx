@@ -89,34 +89,39 @@ export function ForeignKeyTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={foreignKeySources} />;
   return <ConceptArticle slug="foreign-key" title="外键" sources={foreignKeySources}
     sections={[["reference", "借阅记录指向哪本书"], ["change", "写入与删除都要守住关系"], ["scope", "存在不等于可以借"], ["check", "确认约束真的在执行"]]}
-    intro={<>借阅表记下“林舟借了 #42”。书目表里必须能找到 #42，才能知道他借的是哪册书。如果有人录入 #65，而书目中根本没有这个编号，就会留下一条找不到对象的借阅记录。</>}
+    intro={<>图书室把每册书的编号、书名放在书目表里，每次借阅另记一行。借阅表记下“林舟借了 #42”，其中的 #42 用来指向书目。若有人误填 #65，而书目里根本没有这册书，这条借阅就找不到对应对象。外键让数据库检查这种引用。</>}
     hero={<ConceptHero slug="foreign-key" label="两条借阅引用同一本42号书，存在的书目让关联有效"><div className={s.foreignHero}><div><BookOpen size={28} /><strong>books · #42</strong></div><LinkSimple size={31} /><div><span>借阅 1 → #42</span><span>借阅 2 → #42</span></div></div></ConceptHero>}>
     <ArticleSection id="reference" title="借阅记录指向哪本书">
       <Legacy slug="foreign-key" names={["question", "definition"]} />
-      <p id="foreign-key-reference" className="vp-citation-target"><strong>外键约束要求引用值能够匹配被引用表中的有效键，维护记录之间的引用关系。</strong>本例让 <code>loans.book_id</code>引用 <code>books.book_id</code>，目标是书目表的主键。借阅表是引用方，书目表是被引用方；也可以定义指向同一张表其他记录的自引用关系。<Cite id="foreign-key-reference" /></p>
-      <p>同一本书可以在借阅历史中被多次引用。因此借阅表里的 <code>book_id</code>不必唯一，每次借阅仍有自己的 <code>loan_id</code>。外键的目标通常是主键或适合引用的唯一键；如果目标值对应多条不同记录，就无法据此明确指认对象。</p>
+      <p id="foreign-key-reference" className="vp-citation-target"><strong>外键约束是一条由数据库检查的规则：引用列有值时，这个值必须能匹配被引用表中的有效键。</strong>本例中，书目表叫 <code>books</code>，借阅表叫 <code>loans</code>，两表保存书号的列都叫 <code>book_id</code>。<code>loans.book_id</code> 读作“借阅表的书号列”；它引用 <code>books.book_id</code>，也就是书目表的主键。借阅表是引用方，书目表是被引用方。这里每个书号唯一对应一册书，数据库能据此检查借阅指向的书是否存在。在本页使用的 PostgreSQL 中，目标列需要是主键、唯一约束或符合要求的唯一索引所覆盖的列。<Cite id="foreign-key-reference" /></p>
+      <p>同一本书可以在借阅历史中被多次引用。因此借阅表里的 <code>book_id</code> 不必唯一，林舟和陈禾的记录都能填42；每次借阅仍有自己的 <code>loan_id</code>，用来区分两条借阅。主键负责标识本表的一行，外键负责检查这一行引用的对象。书目里用42唯一指认一册书，借阅里却可以多次引用它。</p>
+      <p>管理员也可以在每次记借阅前手动核对书号，程序也可以先查一次书目。但只靠这些步骤，另一个录入入口可能漏查，之后删除书目也可能留下失去目标的借阅。外键把关系写进数据库的结构定义；检查启用后，相关写入都要遵守这条规则。两列恰好同名，或都填了42，本身不会建立外键。</p>
+      <p>下面按 PostgreSQL 的写法建立借阅表。<code>loan_id</code> 是借阅自己的主键；<code>book_id</code> 用整数保存书号，<code>NOT NULL</code> 要求它有值，<code>REFERENCES books(book_id)</code> 指定要匹配哪张表的哪列。<code>ON DELETE RESTRICT</code> 规定被引用的书不能直接删除，下一段会比较它和另一种删除策略。<code>reader</code> 保存读者姓名，<code>text</code> 表示文本。</p>
       <pre className={base.code}>{'CREATE TABLE loans (\n  loan_id integer PRIMARY KEY,\n  book_id integer NOT NULL\n    REFERENCES books(book_id) ON DELETE RESTRICT,\n  reader text NOT NULL\n);'}</pre>
     </ArticleSection>
     <ArticleSection id="change" title="写入与删除都要守住关系">
       <Legacy slug="foreign-key" names={["scene-heading"]} />
-      <p>模型从两本书、一条引用 #42 的借阅开始。尝试插入指向 #65 与 #42 的新借阅，再删除被引用的 #42。切换删除策略会恢复样例数据，以便在相同起点比较；这里不访问真实数据库。</p>
+      <p>下面的演示从两册书、一条引用 #42 的借阅开始。先尝试写入引用 #65 的借阅：因为找不到目标，数据库规则会拒绝它，原数据保留。改成 #42 后，这个书号在书目里存在，新增借阅2会和借阅1指向同一册书。接着删除被引用的 #42，比较两种策略。切换策略会恢复样例数据，以便从同一起点比较；这里不访问真实数据库，样例只提供一条可新增的借阅。</p>
       <ForeignKeyLesson />
-      <p id="foreign-key-delete" className="vp-citation-target">本例显式选择 <code>RESTRICT</code>时，有借阅引用 #42，就拒绝删除它。改为 <code>CASCADE</code>后，删除 #42 会一并删除引用它的借阅行。删除策略是开发者的选择，不能把“有外键”理解成“一定级联删除”。PostgreSQL 默认使用 NO ACTION，允许延迟检查时，它与 RESTRICT 的时机还可能不同。<Cite id="foreign-key-delete" /></p>
-      <p>图书室通常要保留借阅历史，直接级联删除可能不合适。可以禁止删除、把书标记为停用，或按明确的保留方案迁移数据。演示提供两种策略来比较结果，不是在建议历史记录都跟着书目删除。</p>
+      <p id="foreign-key-delete" className="vp-citation-target">选择 <code>RESTRICT</code> 时，若有借阅引用 #42，数据库就拒绝删除这册书，书目和借阅都保留。改为 <code>CASCADE</code> 后，删除 #42 会一并删除引用它的借阅行，连线随之消失；未被删除的 #78 保留。两种策略都避免留下“借阅还在、书号却找不到”的结果，但保留的数据不同。删除策略由开发者写进约束定义，有外键不代表一定级联删除。<Cite id="foreign-key-delete" /></p>
+      <p id="foreign-key-update" className="vp-citation-target">改编号也会影响引用。如果把书目中的42改为43，原来借阅里的42就可能失去目标，需按 <code>ON UPDATE</code> 指定的策略处理。例如 <code>ON UPDATE CASCADE</code> 会把相关借阅中的书号一起改为43。只改书名，书号仍是42，则不需要改这条书号引用。上面的建表语句只显式指定删除策略；PostgreSQL 的更新策略默认是 <code>NO ACTION</code>，不会自动替借阅改号。在这个例子中，直接把书号改为43，会因为已有借阅仍指向42而被拒绝。<Cite id="foreign-key-update" /></p>
+      <p>图书室通常要保留借阅历史，直接级联删除可能不合适。可以禁止删除、把书标记为停用，或按明确的保留方案迁移数据。演示提供两种策略来比较结果，实际选择要依据记录的用途。</p>
     </ArticleSection>
     <ArticleSection id="scope" title="存在不等于可以借" className={base.offset}>
       <Legacy slug="foreign-key" names={["quiz-heading"]} />
-      <p>外键能证明 #42 存在，不能单独证明它现在可借、读者有权限，或者借阅日期正确。这些条件还需要其他约束和业务检查。外键也不会自动把书名填进借阅查询；要合并两表内容，可以继续看 <ConceptTerm slug="join">JOIN</ConceptTerm>。</p>
-      <p id="foreign-key-null" className="vp-citation-target">如果单列外键允许 NULL，空值通常可以表示“未引用对象”，不需要匹配一行目标。这里的借阅必须属于一本书，所以额外声明 <code>NOT NULL</code>。<strong>必须有值与值必须指向有效记录，是两个条件。</strong>多列外键的空值匹配还有自己的规则，需要按定义核对。<Cite id="foreign-key-null" /></p>
+      <p>在外键检查生效、借阅中填了 #42 的前提下，这条引用能保证书目里存在对应记录。它不能单独证明这册书现在可借、读者有权限，或者借阅日期正确。这些条件还需要其他约束和业务检查。外键也不会自动把书名填进借阅查询；要合并两表内容，可以继续看 <ConceptTerm slug="join">JOIN</ConceptTerm>。</p>
+      <p id="foreign-key-null" className="vp-citation-target"><code>NULL</code> 表示这一列没有值。如果外键只涉及一列，并且这一列允许 NULL，空值可以表示“未引用对象”，不需要匹配一行目标；这和填了不存在的65不同。这里每条借阅必须属于一册书，所以额外声明 <code>NOT NULL</code>，拒绝缺少书号的记录。<strong>“必须有值”和“值必须指向有效记录”，是两个条件。</strong>外键也可以把多列的值合起来匹配目标，例如用“图书室编号＋书号”指认一册书；其中有列为 NULL 时怎样检查，要按数据库和约束定义核对。<Cite id="foreign-key-null" /></p>
     </ArticleSection>
     <ArticleSection id="check" title="确认约束真的在执行">
       <Legacy slug="foreign-key" names={["prompt-heading"]} />
-      <p id="foreign-key-enforcement" className="vp-citation-target">在支持外键的 SQLite 中，应用需要确认每个连接的检查配置；可以用 <code>PRAGMA foreign_keys = ON</code>启用，再查询状态。不应假定默认值一定符合要求。写了 REFERENCES，但当前连接没有执行外键检查，仍可能写出无效引用。<Cite id="foreign-key-enforcement" /></p>
-      <p id="foreign-key-existing" className="vp-citation-target">给已有表补约束，也要检查旧数据。PostgreSQL 的常规 <code>ALTER TABLE … ADD FOREIGN KEY</code>会检查现有记录，违反约束时不能直接添加成功。先查清缺失目标的记录，再决定补对象、改引用或移除无效数据，不要把“加了一行定义”当作已经清理完成。<Cite id="foreign-key-existing" /></p>
-      <ArticleAside title="约束与索引的实现差异">
-        <p id="foreign-key-indexes" className="vp-citation-target">MySQL 8.4 要求外键引用列有可用索引，缺少时会自动创建。PostgreSQL 则不会因为声明外键就自动给引用方建立索引。约束决定哪些数据有效；索引决定如何更快查找。核对迁移脚本时，要分别检查两者的实际定义。<Cite id="foreign-key-indexes" /></p>
+      <p id="foreign-key-enforcement" className="vp-citation-target">在支持外键的 SQLite 中，程序每开一个连接，也就是程序和数据库之间的一次会话，都要确认这个连接的检查配置。在事务外用 <code>PRAGMA foreign_keys = ON</code> 启用，再运行 <code>PRAGMA foreign_keys</code> 查询：返回1表示已启用，0表示未启用。不应假定默认值一定符合要求；在事务进行中设置这个开关不会生效。写了 <code>REFERENCES</code>，但当前连接没有执行检查，仍可能写出无效引用。<Cite id="foreign-key-enforcement" /></p>
+      <p id="foreign-key-existing" className="vp-citation-target">给已有表补约束，也要检查旧数据。PostgreSQL 的常规 <code>ALTER TABLE … ADD FOREIGN KEY</code> 会检查现有记录；旧记录违反约束时，这条约束加不上。例如旧借阅里已经有65，而书目里没有65，直接补这条约束会失败。先查清这些记录，再按业务事实补齐书目、纠正书号或处理无效借阅；不能为了让检查通过就随便编出一册书。<Cite id="foreign-key-existing" /></p>
+      <ArticleAside title="检查时机、自引用与索引">
+        <p id="foreign-key-timing" className="vp-citation-target">PostgreSQL 的默认删除策略是 <code>NO ACTION</code>。即使名字叫“没有动作”，引用关系仍须在检查时成立，不能据此随意留下无效引用。如果约束允许延迟检查，NO ACTION 可以让事务中的后续操作先修复关系，再在检查时确认；RESTRICT 不允许把阻止删除的检查延迟到后面。<Cite id="foreign-key-timing" /></p>
+        <p>外键也可以引用同一张表中的记录。例如员工表里的“主管编号”指向员工表的主键，每位主管自己也是一名员工。这叫自引用，仍然是在检查填入的编号是否有对应记录。</p>
+        <p id="foreign-key-indexes" className="vp-citation-target">MySQL 8.4 要求引用方有可用索引，外键列要按约束里列出的顺序排在索引开头；缺少时 MySQL 会自动创建索引。以本例来说，引用方是借阅表，外键列是书号列。PostgreSQL 则不会因为声明外键就自动给引用方建立索引。约束决定哪些数据有效；索引决定如何更快查找。核对迁移脚本时，要分别检查两者的实际定义。<Cite id="foreign-key-indexes" /></p>
       </ArticleAside>
-      <p>确认关系时，依次看引用哪列、是否可空、删除与更新策略、当前数据库是否执行检查。再把相关写入放进适当的 <ConceptTerm slug="transaction">事务</ConceptTerm>，保证一次业务操作的各部分按预期一起完成。</p>
+      <p>回到录入借阅这件事：先看借阅的书号引用哪张表、哪列，再确认是否允许没有书号、目标改号或删除时怎样处理，以及当前数据库是否执行检查。若还要同时修改库存，可以继续读 <ConceptTerm slug="transaction">事务</ConceptTerm>，让一次借阅所需的多步修改一起完成。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
