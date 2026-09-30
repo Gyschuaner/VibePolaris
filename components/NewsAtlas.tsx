@@ -436,7 +436,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               </button>;
             })}
           </div>
-          <div className="news-atlas-graph-controls" aria-label="星图视图控制">
+          <div className="news-atlas-graph-controls" aria-label="星图视图控制" onPointerDown={event => event.stopPropagation()}>
             <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.25); }}><Plus size={18} /></button>
             <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(.8); }}><Minus size={18} /></button>
             <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { setReframing(true); frame(getPositions()); }}><CornersOut size={18} /></button>
