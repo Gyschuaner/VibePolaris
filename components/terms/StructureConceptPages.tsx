@@ -101,35 +101,35 @@ export function UniqueConstraintTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={uniqueSources} />;
   return <ConceptArticle slug="unique-constraint" title="唯一约束" sources={uniqueSources}
     sections={[["rule", "邮箱只能属于一条注册记录"], ["race", "预查通过，写入仍可能冲突"], ["scope", "明确唯一性的范围"], ["null", "空值的唯一性规则"]]}
-    intro={<>两个注册请求使用同一个邮箱，编号却各不相同。它们都先查了一遍，都发现邮箱还没被使用。若数据库允许两次写入，页面再严谨的检查也挡不住这次冲突。</>}
+    intro={<>两个注册请求用了同一个邮箱，编号却各不相同。两边各自先查了一遍，看到邮箱还没被占用，于是都往表里写。若数据库允许两次写入，页面再严谨的检查也挡不住这次冲突。</>}
     hero={<ConceptHero slug="unique-constraint" label="两个相同邮箱的请求进入注册表，第二次写入被唯一约束挡住"><div className={s.uniqueHero}><div><EnvelopeSimple size={24} /><span>lin@example.com</span></div><div><XCircle size={24} /><span>lin@example.com · 冲突</span></div><div><strong>UNIQUE</strong><span>101 · lin@example.com</span></div></div></ConceptHero>}>
     <ArticleSection id="rule" title="邮箱只能属于一条注册记录">
       <Legacy slug="unique-constraint" names={["question", "definition"]} />
-      <p id="unique-definition" className="vp-citation-target"><strong>唯一约束要求一列或一组列的值不能在表中重复。</strong>这里用不同的 user_id 标识记录，再对 email 单独声明 UNIQUE。两条记录即使主键不同，同一邮箱仍会冲突。一张表可以有多个唯一约束；它们不必都成为主键。<Cite id="unique-definition" /></p>
+      <p id="unique-definition" className="vp-citation-target"><strong>唯一约束要求一列或一组列的值不能在表中重复。</strong>这里用不同的 <code>user_id</code> 标识记录，再对 <code>email</code> 单独声明 UNIQUE。主键是用来唯一识别一行的列或列组合；本例的 <code>user_id</code> 是主键，所以 #101 和 #102 代表两条不同记录。两条记录即使主键不同，同一邮箱仍会冲突。一张表可以有多个唯一约束；它们不必都成为主键。<Cite id="unique-definition" /></p>
       <pre className={base.code}>{'CREATE TABLE registrations (\n  user_id integer PRIMARY KEY,\n  email text UNIQUE\n);'}</pre>
       <p>唯一性要与业务范围一致。本例选择“同一邮箱只对应一条注册记录”，并假定输入已经按产品规则处理。约束不自动替应用决定怎样规范大小写、空格或邮箱别名；具体哪些值视为相同，也要核对数据库的类型和比较规则。</p>
     </ArticleSection>
     <ArticleSection id="race" title="预查通过，写入仍可能冲突">
       <Legacy slug="unique-constraint" names={["scene-heading"]} />
-      <p>先让 A、B 分别检查空表，再任选一个先写入。另一份预查结果还写着“未占用”，但写入时表已经变了。关闭约束或切换输入会恢复空表，便于比较；这里用手动先后操作解释竞争，不是真正启动两个数据库事务。</p>
+      <p>先让 A、B 分别检查空表，再任选一个先写入。先写的一方成功，另一份预查结果却还写着“未占用”——此时表已经变了，后写的一方若照这份旧结果去写，就会撞上冲突。真实应用即使紧贴写入前再查一次，这次查询和真正写入之间也可能挤进另一份写入，所以唯一性检查必须成为写入过程的一部分。这里说的事务，是把一组数据库操作当作一次提交的工作单元；提交前的变化可能还不对其他操作可见，回滚则放弃这组变化。演示用手动先后操作解释竞争，不是真正启动两个数据库事务。点击“重新比较”会清空本轮预查、结果和账本；演示里关掉 UNIQUE 开关或切换输入，同样会从空表重新比较。<code>NULLS NOT DISTINCT</code> 是下一节针对两个 NULL 的选项，输入相同邮箱时它保持不可用。</p>
       <UniqueLesson />
-      <p id="unique-race" className="vp-citation-target"><strong>预查是过去某一时刻的观察，唯一性必须在写入时守住。</strong>PostgreSQL 把冲突检查纳入唯一索引的插入过程。遇到其他事务尚未提交的冲突行时，可能先等待其结束，再检查是否冲突；不能简单把“先查、后写”两步当成不可分割的一步。<Cite id="unique-race" /></p>
-      <p>预查仍有用，可以提前提示用户。但应用也要处理最后的写入冲突，让用户换邮箱或确认已有账户；拒绝第二次新增不会自动修改第一条注册记录。模型把每次成功写入视为已经提交，省略真实数据库的等待与回滚过程。</p>
+      <p id="unique-race" className="vp-citation-target"><strong>预查是过去某一时刻的观察，唯一性必须在写入时守住。</strong>PostgreSQL 把冲突检查纳入唯一索引的插入过程。遇到其他事务尚未提交的冲突行时，可能先等待其结束，再检查是否冲突；也就是说，“先查、后写”这两步做不到不可分割地绑在一起，演示里看似连贯的检查加写入，在真实数据库里并没有这样的保证。<Cite id="unique-race" /></p>
+      <p>预查仍有用，可以提前提示用户。但应用也要处理最后的写入冲突，让用户换邮箱或确认已有账户；拒绝第二次新增不会自动修改第一条注册记录。PostgreSQL 的实际唯一索引检查可能等待另一事务提交或回滚，再重新判断是否冲突；本模型把每次成功写入视为已经提交，省略等待与回滚过程。</p>
     </ArticleSection>
     <ArticleSection id="scope" title="明确唯一性的范围">
       <Legacy slug="unique-constraint" names={["quiz-heading"]} />
       <p id="unique-composite" className="vp-citation-target">如果一个邮箱可以分别加入不同组织，可以考虑 <code>UNIQUE (organization_id, email)</code>。检查的是整个组合：同一组织内不能重复，不同组织可以使用相同邮箱。它不要求每列单独唯一；约束的范围要对应你想阻止的那一种重复。<Cite id="unique-composite" /></p>
-      <p id="unique-index" className="vp-citation-target">在 PostgreSQL 中，声明唯一约束会自动建立相应的唯一 B-tree 索引。约束表达有效数据的规则，索引是执行它的一种机制；已有约束时，不需要为了同一项检查再手工创建一份相同的唯一索引。<Cite id="unique-index" /></p>
+      <p id="unique-index" className="vp-citation-target">在 PostgreSQL 中，声明唯一约束会自动建立相应的唯一 B-tree 索引。约束表达有效数据的规则，索引是执行它的一种机制；已有约束时，不需要为了同一项检查再手工创建一份相同的唯一索引。下面的部分唯一索引是另一种写法：它本身就对满足条件的行施加唯一检查，不是普通 UNIQUE 约束上的开关。<Cite id="unique-index" /></p>
       <ArticleAside title="只要求部分记录唯一">
-        <p id="unique-partial" className="vp-citation-target">若保留注销账户的历史记录，却只要求有效账户邮箱唯一，PostgreSQL 可以用带条件的唯一部分索引来限定参与检查的行。它不是普通 UNIQUE 约束中的一个开关；条件要与业务定义一致，重新激活账户时也可能触发冲突。<Cite id="unique-partial" /></p>
+        <p id="unique-partial" className="vp-citation-target">若保留注销账户的历史记录，却只要求有效账户邮箱唯一，PostgreSQL 可以用带条件的唯一部分索引来限定参与检查的行。条件要与业务定义一致，重新激活账户时也可能触发冲突。<Cite id="unique-partial" /></p>
         <pre className={base.code}>{'CREATE UNIQUE INDEX active_email_unique\nON registrations (email)\nWHERE active = true;'}</pre>
         <p>这段写法是扩展示例，假定表已有 active 列；上面的注册模型没有实现账户停用功能。</p>
       </ArticleAside>
     </ArticleSection>
     <ArticleSection id="null" title="空值的唯一性规则" className={base.offset}>
       <Legacy slug="unique-constraint" names={["prompt-heading"]} />
-      <p id="unique-null" className="vp-citation-target">PostgreSQL 的普通 UNIQUE 默认允许多个 NULL；加 <code>NULLS NOT DISTINCT</code>可以把 NULL 也按相同值检查。需要邮箱必填，还应声明 NOT NULL。<strong>不重复与不能为空是两项要求。</strong>NULL 也不是空字符串。其他数据库的 NULL 唯一性规则可能不同，不能把这个默认行为当成所有实现的统一规则。<Cite id="unique-null" /></p>
-      <p>可以回到演示切换 NULL，比较默认规则与 NULLS NOT DISTINCT。同一对请求只改这一项规则，便能看到第二次写入的结果改变；两个不同的记录编号始终没有冲突。</p>
+      <p id="unique-null" className="vp-citation-target">PostgreSQL 的普通 UNIQUE 默认允许多个 <code>NULL</code>；加 <code>NULLS NOT DISTINCT</code> 则把 NULL 也当成可比较的值：表里可以存在一个 NULL，再写入第二个就会触发冲突。<code>NOT NULL</code> 才是禁止该列缺值的要求。<strong>不重复与不能为空是两项要求。</strong>NULL 也不是空字符串：空字符串是一个实际的文本值，两条相同空字符串会按普通值比较并触发 UNIQUE 冲突。其他数据库的 NULL 唯一性规则可能不同，不能把这个 PostgreSQL 默认行为当成所有实现的统一规则。<Cite id="unique-null" /></p>
+      <p>可以回到演示，把输入切到两个 NULL，分别用默认规则和 NULLS NOT DISTINCT 各跑一遍：同一对请求只改这一项规则，就能看到第二次写入的结果随之改变；换成两个不同的记录编号，则任何规则下都不会冲突。</p>
       <p>定义唯一性时，要确定单列还是列组合、适用范围、空值和比较规则。数据库仍需处理最后的写入冲突；单靠注册前预查无法守住这个约束。</p>
     </ArticleSection>
   </ConceptArticle>;
