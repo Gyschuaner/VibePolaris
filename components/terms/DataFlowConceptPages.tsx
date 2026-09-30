@@ -13,25 +13,26 @@ export function IngestionTermPage() {
     intro={<>图书馆的借阅记录不断增加，报表系统要把新增记录接进原始层。接入要回答两个问题：哪些数据已经保存，下一次从哪里继续。读到一条记录，与可靠地保存了它，是不同的进度。</>}
     hero={<ConceptHero slug="data-ingestion" label="来源记录被接入原始层，确认位置在写入后保存"><div className={s.ingestionHero}><div className={s.heroLog}><FileText size={25}/><code>1 · loan-1</code><code>2 · loan-2</code></div><div className={s.heroDestination}><Archive size={25}/><strong>原始层</strong><span>2 个不同事件</span></div><div className={s.heroCursor}>写入完成 → 确认位置 2</div></div></ConceptHero>}>
     <ArticleSection id="entry" title="把来源数据接进来"><Legacy slug="data-ingestion" names={["question", "definition"]}/>
-      <p id="ingestion-entry" className="vp-citation-target"><strong>数据接入把数据库、文件、API 或事件流中的数据收集到目标系统，供后续存储与处理。</strong>AWS 将它描述为数据进入处理流程的入口，也区分批量、流式与微批方式。一套接入系统可能附带基础检查或预处理；本文聚焦来源读取与目标保存，完整的清洗、汇总与发布仍要继续组织。<Cite id="ingestion-entry"/></p>
-      <div className={base.contrast}><div><h3>数据接入</h3><p>从借阅来源拿到记录，保存来源身份与原始值，并记录读取位置。</p></div><div><h3>数据管道</h3><p>把接入、验证、转换、统计和发布连接成完整流程。入口完成，只代表其中一步结束。</p></div></div>
-      <p id="ingestion-modes" className="vp-citation-target">一次导入当天文件，是有边界的批量接入；持续消费借阅事件，是连续接入。也可以每隔一段时间收集新增数据。<strong>先明确来源更新方式、需要多新，以及如何标记记录，再选接入方式。</strong>“实时”这个词本身不能说明延迟、可靠性或处理结果。<Cite id="ingestion-modes"/></p>
+      <p id="ingestion-entry" className="vp-citation-target"><strong>数据接入把数据库、文件、API 或事件流中的数据收集到目标系统，供后续存储与处理。</strong>AWS 将它描述为数据进入处理流程的入口，也区分批量、流式与微批方式。一套接入系统可能附带基础检查或预处理；本文只讲来源读取与目标保存这两步，清洗、汇总与发布不在这里展开。这里把原始层当作接入后的第一落点：先保留来源记录和原始值，后面的转换、验证与汇总再读取它。<Cite id="ingestion-entry"/></p>
+      <div className={base.contrast}><div><h3>数据接入</h3><p>从借阅来源拿到记录，保存事件身份与原始值，并记录读取位置。</p></div><div><h3>数据管道</h3><p>把接入、验证、转换、统计和发布连接成完整流程。接入做完，只代表整个流程里的一步结束。</p></div></div>
+      <p id="ingestion-modes" className="vp-citation-target">一次导入当天文件是批量接入，读完这批就结束；持续消费借阅事件是流式接入，一直跟着来源读。微批介于两者之间：先把一小段时间内到达的记录攒起来，再一次性处理这一小批，所以会比纯流式多一点等待，换来更小、更容易控制的处理单元。<strong>先弄清楚来源多久更新一次、数据需要新到什么程度，以及如何标记记录，再选接入方式。</strong>例如日报只需每天汇总一次，可以选择批量；需要尽快看到新借阅时，才考虑流式或微批。“实时”这个词本身不能说明延迟、可靠性或处理结果。<Cite id="ingestion-modes"/></p>
     </ArticleSection>
     <ArticleSection id="position" title="读到哪里，保存到哪里"><Legacy slug="data-ingestion" names={["scene-heading"]}/>
-      <p id="ingestion-position" className="vp-citation-target">增量接入需要一个继续读取的依据。Airbyte 的游标可以是 updated_at 字段的值，用来识别新记录或已更新记录；它也提醒，数据改变却没有更新游标字段时，增量查询可能漏掉这次变化。<strong>读取位置依赖来源约定，不能随便挑一个时间字段。</strong><Cite id="ingestion-position"/></p>
-      <p>下面用固定事件日志的位置 1、2、3，区分暂存、原始层和已保存的位置。先读取前两条，让写入失败：位置不能前移。成功写入后，暂时不要保存位置，直接重启；你会看到原始层仍有数据，接入进程却需要重新读取。本例只在浏览器内存中模拟重启，没有真实磁盘或连接器。</p>
+      <p id="ingestion-position" className="vp-citation-target">增量接入需要一个继续读取的依据。这里先把三个容易混用的词分开：本页演示的“确认位置”是已经可靠写入后的进度；连接器保存的“偏移量”是来源中的位置记录；Airbyte 所说的“游标”是用来判断哪些记录算新数据的字段或字段值。按顺序读取事件时，三者可能指向同一个位置；按表格增量读取时，游标可能是 `updated_at` 这样的时间值，而不是第几条记录。`updated_at` 就是记录上表示“最后更新时间”的字段。数据改变却没有更新这个字段时，增量查询可能漏掉变化。<strong>读取位置依赖来源约定，不能随便挑一个时间字段。</strong><Cite id="ingestion-position"/></p>
+      <p>演示的事件日志固定有位置 1、2、3，用它来区分暂存、原始层和已保存的位置。先读取前两条，让写入失败：确认位置不会前移。成功写入后，暂时不要保存位置，直接重启；你会看到原始层仍有数据，接入进程却需要重新读取。本例的原始层和确认位置是浏览器里的模拟状态，重启后仍然保留；这里没有真实磁盘，也没有连接器。真实系统要把它们写入可靠存储，才能在进程重启后恢复。</p>
       <IngestionLesson/>
-      <p><strong>确认位置表示这段输入已经被可靠处理，不只是代码碰巧读到了这里。</strong>本例把写入与确认分成两个可观察动作；实际产品可能把确认、事务或消费进度提交组合实现，需要核对各自的故障语义。</p>
+      <p>演示按事件 ID 计数，所以重读 loan-1、loan-2 后重新写入，原始层仍是这两条，不会因为重复送达变成四条。只有把确认位置保存为 2，才能继续读取第 3 条；事件身份用来识别重复，不等于确认位置已经前移。</p>
+      <p><strong>确认位置表示这段输入已经被可靠处理，不只是代码碰巧读到了这里。</strong>本例把写入与确认分成两个可观察动作；真实产品可能用事务把数据写入和进度提交绑在一起，也可能先写入再单独提交消费进度。事务会把一组写入绑在一起：要么全部成功，要么全部失败。这里说的“提交”，就是把这次成功处理过的进度正式保存下来；但真正出故障时会怎么样，仍要看连接器和目标存储的实现。</p>
     </ArticleSection>
     <ArticleSection id="restart" title="重启后可能再次读取"><Legacy slug="data-ingestion" names={["quiz-heading"]}/>
       <p id="ingestion-restart" className="vp-citation-target">Debezium 的 PostgreSQL 连接器在进程异常退出后，从先前保存的偏移量恢复。刚处理过、尚未保存偏移量的事件，可能再次产生。<strong>收到重复事件可以是恢复流程的正常结果，并不一定意味着来源新增了一条业务记录。</strong><Cite id="ingestion-restart"/></p>
-      <p id="ingestion-duplicates" className="vp-citation-target">本例用稳定的 loan-1 等事件 ID 保留一份原始记录。Airbyte 的 Append + Deduped 模式则按主键与游标保留最终表中的最新行，历史数据与最终表含义不同。<strong>“同一个事件重复送达”与“同一个实体产生新版本”，需要不同的身份和处理规则。</strong>不能只凭两个载荷看起来相似就删除其中一个。<Cite id="ingestion-duplicates"/></p>
-      <ArticleAside title="变更数据捕获也要有起点"><p id="ingestion-cdc" className="vp-citation-target">Debezium PostgreSQL 连接器通常先做一致性快照，再从事务日志捕获已提交的行级插入、更新和删除。这是该连接器的机制，不是所有接入都必须使用数据库日志。快照、后续日志位置和日志保留条件都要衔接，不能认为“连接建立了”就已经拿到了完整历史。<Cite id="ingestion-cdc"/></p></ArticleAside>
+      <p id="ingestion-duplicates" className="vp-citation-target">本例用来源提供的 loan-1 这类稳定事件 ID 保留一份原始记录；如果来源没有稳定 ID，就要先约定主键或组合主键，不能临时按内容相似去重。Airbyte 的 Append + Deduped 模式里，主键是识别同一个实体的字段；历史表可以留下每次同步看到的版本，最终表则按游标只保留每个主键最新的一行。比如同一笔借阅的归还状态后来变了，这是同一个实体的新版本，不是同一事件被重复送达。<strong>“同一个事件重复送达”与“同一个实体产生新版本”，需要不同的身份和处理规则。</strong>不能只因为两条记录内容看起来一样，就删掉其中一条。<Cite id="ingestion-duplicates"/></p>
+      <ArticleAside title="变更数据捕获也要有起点"><p id="ingestion-cdc" className="vp-citation-target">变更数据捕获（CDC）是只接收数据库变化的接入方式，用来把插入、更新和删除持续送到另一个系统。Debezium 的 PostgreSQL 连接器通常先做一致性快照，再从事务日志捕获已经提交的行级变化；这里的“已提交”指事务已经正式完成，连接器不会把尚未完成的中间状态当成最终变化。快照可以理解为某个时点的完整起点，事务日志则记录起点之后的变化。来源删除是否让目标删除，取决于目标系统对删除事件的处理规则；原始层也可以保留这条删除事件，交给下游决定。这是该连接器的机制，不是所有接入都必须使用数据库日志。快照结束后从哪个日志位置接上、日志要保留多久，这些都要衔接好，不能认为“连接建立了”就已经拿到了完整历史。<Cite id="ingestion-cdc"/></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="reconcile" title="接进来以后，还要核对" className={base.offset}><Legacy slug="data-ingestion" names={["prompt-heading"]}/>
-      <p id="ingestion-reconcile" className="vp-citation-target">来源和目标都显示三条，仍可能有一条保存了错误值。AWS DMS 的数据验证会比较来源行与对应目标行并报告差异，而不只检查总行数；它也有支持范围与资源开销。<strong>数量一致只是证据的一部分，核对还需要明确同一范围、记录身份和内容。</strong><Cite id="ingestion-reconcile"/></p>
+      <p id="ingestion-reconcile" className="vp-citation-target">来源和目标都显示三条，仍可能有一条保存了错误值。在借阅例子里，loan-1 这样的事件身份就是把来源与目标记录对上的依据；实际的数据表通常使用主键或组合主键。AWS DMS 的数据验证会用记录身份找到对应的目标行，逐行比较内容并报告差异，而不只检查总行数；这样的查询会额外占用来源、目标和网络资源。<strong>数量一致只是证据的一部分。</strong>核对还得说清楚：比的是哪个范围、按什么身份把记录对上、比哪些内容。如果来源本身的业务值就是错的，来源与目标一致也不能证明它合理，那属于后续规则检查要回答的问题。<Cite id="ingestion-reconcile"/></p>
       <p>接入结果应保留来源、事件身份、读取位置和接入批次，失败记录要能够重新定位。格式正确与业务合理是后续 <ConceptTerm slug="data-validation">数据验证</ConceptTerm> 的职责；原始层保留记录，不代表每个字段都已经可信。</p>
-      <p>接入程序要明确来源格式、增量依据、记录身份和目标写入规则。验收时分别检查写入失败、确认丢失、来源更新或删除、重复交付，并用来源与目标的记录核对结果。</p>
+      <p>接入程序要明确来源格式、增量依据、记录身份和目标写入规则。验收时分别检查写入失败、写入成功但确认位置没保存、来源更新或删除、重复交付这几种情况，并用来源与目标的记录核对结果。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

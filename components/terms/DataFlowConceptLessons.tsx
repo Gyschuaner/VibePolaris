@@ -13,7 +13,7 @@ export function IngestionLesson() {
   const batchIndex = !state.batch.length ? 0 : state.batch[0] === 1 ? 1 : 2;
   return <div className={`${base.lab} ${s.lab}`} aria-label="实验：接入与确认读取位置">
     <div className={s.ingestionDesk}><div className={s.sourceLog}><h3><FileText size={23}/>来源事件日志</h3><ol>{ingestionEvents.map(event => <li key={event.id} data-confirmed={event.offset <= state.cursor}><span>{event.offset}</span><code>{event.id}</code><span>书目 #{event.book}</span></li>)}</ol><div className={s.position}><CursorText size={21}/><span>已确认读取到</span><strong>{state.cursor}</strong></div></div>
-      <div className={s.receiver}><h3><Archive size={23}/>原始层</h3><States index={state.saved.length === 3 ? 2 : state.saved.length === 2 ? 1 : 0}>{[
+      <div className={s.receiver}><h3><Archive size={23}/>原始层 · 按事件 ID 保留</h3><States index={state.saved.length === 3 ? 2 : state.saved.length === 2 ? 1 : 0}>{[
         <p key="empty">尚未保存事件</p>,
         <div key="two" className={s.receipts}>{ingestionEvents.slice(0, 2).map(event => <code key={event.id}>{event.id} · #{event.book}</code>)}</div>,
         <div key="three" className={s.receipts}>{ingestionEvents.map(event => <code key={event.id}>{event.id} · #{event.book}</code>)}</div>,
