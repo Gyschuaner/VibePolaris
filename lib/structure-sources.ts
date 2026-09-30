@@ -8,10 +8,11 @@ export const schemaSources = [
   pg("ALTER TABLE", "sql-altertable", ["schema-migration-lock"]),
 ];
 export const joinSources = [
-  pg("Joins Between Tables", "tutorial-join", ["join-definition"]),
-  pg("Table Expressions · Joined Tables", "queries-table-expressions", ["join-multiplicity", "join-outer"]),
+  pg("Joins Between Tables", "tutorial-join", ["join-definition", "join-alias", "join-self"]),
+  pg("Table Expressions · Joined Tables", "queries-table-expressions", ["join-multiplicity", "join-cross", "join-outer", "join-on-filter"]),
   { publisher: "SQLite · 官方文档", title: "SELECT · WHERE clause filtering", date: "", url: "https://www.sqlite.org/lang_select.html", citations: ["join-where"] },
   { publisher: "Oracle · MySQL 官方文档", title: "MySQL 8.4 · JOIN Clause", date: "", url: "https://dev.mysql.com/doc/refman/8.4/en/join.html", citations: ["join-missing"] },
+  pg("Constraints · Primary and Foreign Keys", "ddl-constraints", ["join-key"]),
 ];
 export const uniqueSources = [
   pg("Constraints · Unique Constraints", "ddl-constraints", ["unique-definition", "unique-composite", "unique-null"]),
