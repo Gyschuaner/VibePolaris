@@ -42,28 +42,28 @@ export function PipelineTermPage() {
 export function WebhookTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={webhookSources}/>;
   return <ConceptArticle slug="webhook" title="Webhook" subtitle="事件通知" sources={webhookSources} sections={[["notification", "让事件主动通知你的服务"], ["verify", "先判断通知是否可信"], ["accept", "确认受理与后台处理"], ["recover", "重复、乱序与重新交付"]]}
-    intro={<>外部平台完成了一笔支付，可以主动向你的服务发送 HTTP 通知。你的服务不必不停询问支付结果，却要判断通知是否可信、怎样确认受理，以及重复或失败的通知如何处理。</>}
-    hero={<ConceptHero slug="webhook" label="通知通过验证后先确认受理，订单更新在后台稍后完成"><div className={s.webHero}><div className={s.heroLetter}><EnvelopeSimple size={26}/><code>evt-42</code><ShieldCheck size={24}/></div><div className={s.heroAck}>← 2xx · 已受理</div><div className={s.heroOrder}><span>后台工作</span><strong>更新订单状态</strong></div></div></ConceptHero>}>
+    intro={<>外部平台完成了一笔支付，可以向你登记的接收地址发送 HTTP 通知。这样你的服务就不必不停询问支付结果。但这个接收地址通常公开可访问，任何人都可能向它发请求，所以你的服务要判断通知是否可信、怎样确认受理，以及重复或失败的通知如何处理。</>}
+    hero={<ConceptHero slug="webhook" label="通知通过验证后先确认受理，后台继续处理订单"><div className={s.webHero}><div className={s.heroLetter}><EnvelopeSimple size={26}/><code>evt-42</code><ShieldCheck size={24}/></div><div className={s.heroAck}>← 2xx · 已受理</div><div className={s.heroOrder}><span>后台工作</span><strong>更新订单状态</strong></div></div></ConceptHero>}>
     <ArticleSection id="notification" title="让事件主动通知你的服务"><Legacy slug="webhook" names={["question", "definition"]}/>
-      <p id="webhook-notify" className="vp-citation-target"><strong>Webhook 是事件发生后，由平台向预先登记的接收地址发送 HTTP 请求的通知方式。</strong>Stripe 用它通知支付确认、订阅变更等异步事件。平台是这次请求的发送者，你的服务是接收者；它与浏览器直接向你的服务提交操作是不同的调用路径。<Cite id="webhook-notify"/></p>
-      <div className={base.contrast}><div><h3>主动查询</h3><p>你的服务请求平台：“这笔订单现在是什么状态？”请求频率和补查由你安排。</p></div><div><h3>Webhook 通知</h3><p>平台向你登记的地址发送事件。接收服务要处理来源验证、投递失败和业务更新。</p></div></div>
-      <p>收到 HTTP 请求只说明有一份数据到了入口。是否能信任它、是否已经可靠接收、是否已经更新订单，都需要各自的证据。</p>
+      <p id="webhook-notify" className="vp-citation-target"><strong>Webhook 是事件发生后，由平台向预先登记的接收地址发送 HTTP 请求的通知方式。</strong>这里的“事件”是对已发生事情的一条带类型和标识的通知记录；平台每发送一次这样的通知，就形成一次投递。Stripe 用它通知支付确认、订阅变更等异步事件；“异步”就是先通知，不等你的服务当场完成后续工作。平台是这次请求的发送者，你的服务是接收者；这份请求由平台服务器发出，与用户是否打开过你的页面无关。接收地址通常公开可访问，正式服务一般使用 HTTPS；HTTPS 负责保护传输，不能替代事件验签，也不能阻止知道地址的人自己发请求。<Cite id="webhook-notify"/></p>
+      <div className={base.contrast}><div><h3>主动查询</h3><p>你的服务带自己的凭证请求平台：“这笔订单现在是什么状态？”请求频率和补查由你安排。</p></div><div><h3>Webhook 通知</h3><p>平台向你登记的地址发送事件。接收服务要处理来源验证、投递失败和业务更新。</p></div></div>
+      <p>收到 HTTP 请求只说明有一份数据到了入口；接收地址本身不是信任凭证。是否能信任它、是否已经可靠接收、是否已经更新订单，都需要各自的证据。</p>
     </ArticleSection>
     <ArticleSection id="verify" title="先判断通知是否可信"><Legacy slug="webhook" names={["quiz-heading"]}/>
-      <p id="webhook-signature" className="vp-citation-target">Stripe 的验签需要原始请求体、签名头和对应端点的密钥。解析后重新序列化 JSON，改变空格或字段顺序，也可能破坏验证。<strong>载荷里写了“支付成功”，不能代替验证发送来源与内容完整性。</strong>生产实现应使用平台提供的验签方法，并按其要求检查时间戳等条件。<Cite id="webhook-signature"/></p>
-      <p>下面把“有效”和“被改写”的验证结果预先设定，以便观察后续流程。evt-42、order.paid 和 order-42 都是本站固定教学数据，不是真实平台事件，也没有实际密码学验签、网络请求或持久队列。</p>
+      <p id="webhook-signature" className="vp-citation-target">一份 HTTP 请求有请求头和请求体：请求头携带签名等附加信息，请求体承载事件内容。“验签”就是用收到的内容重新计算并核对签名。Stripe 的验签需要原始请求体、签名头和对应端点（平台后台登记接收地址时生成的一条记录）的密钥。签名是平台用请求体、时间戳和双方共享的密钥算出的值，时间戳和签名一起放在签名头里，接收方用同一密钥对收到的原始请求体和时间戳重新计算出签名，再与签名头里的签名比对；没有密钥的人难以伪造正确签名，改动请求体或时间戳也会让结果对不上。这把密钥在你登记端点时由平台生成，你需要把它安全地放进服务配置。多数 Web 框架会先自动解析请求体，等你重新序列化 JSON 时，空格、字段顺序或编码可能已经改变，所以验签要使用平台发来的原始请求体。时间戳还用于限制有效期，降低请求被截获后长期重新提交的风险。下面用 Stripe 的做法说明验签；其他平台可能使用不同的认证机制，生产实现应使用平台提供的方法，并按其要求检查有效期等条件。<strong>请求体里写了“支付成功”，不能代替验证发送来源与内容完整性。</strong><Cite id="webhook-signature"/></p>
+      <p>下面把“有效”和“被改写”的验证结果预先设好，以便观察后续流程。evt-42、order.paid 和 order-42 都是本站固定教学数据，不是真实平台事件，也没有实际密码学验签、网络请求或队列；文字与按钮只模拟这些结果。</p>
     </ArticleSection>
     <ArticleSection id="accept" title="确认受理与后台处理"><Legacy slug="webhook" names={["scene-heading"]}/>
-      <p id="webhook-accept" className="vp-citation-target">GitHub 建议接收端尽快返回 2xx，把耗时工作放入队列异步处理；同时检查事件类型与动作。<strong>快速确认是通知交付的反馈，不能当作业务已经全部完成。</strong>实际设计还要保证：可信的通知已经可靠进入后续处理流程，再宣告受理，避免回复成功后工作却丢失。<Cite id="webhook-accept"/></p>
+      <p id="webhook-accept" className="vp-citation-target">GitHub 建议接收端尽快返回 2xx，并规定要在 10 秒内完成响应；这个 10 秒是 GitHub 的规则，其他平台的时限可能不同。2xx 是表示请求成功的一类 HTTP 状态码；在 Webhook 场景里，发送方把它当作本次投递成功的依据。订单和数据库操作可能更慢，所以应把耗时工作放入队列（先保存、等待后台取走的待处理项）异步处理。收到通知还要检查事件的种类和具体操作，只处理自己关心的部分。<strong>快速确认是通知投递的反馈，不能当作业务已经全部完成。</strong>实际设计应先把可信通知可靠写入受理记录（例如队列中的一项），再返回 2xx；若先返回 2xx、再写受理记录，进程在两步之间崩溃时，发送方已经看到成功，通知却可能丢失。按“先写入、后返回 2xx”的顺序，最坏只是确认响应丢失；以 Stripe 为例，后续重试仍带着同一个事件 ID，接收方可以据此识别同一事件，其他平台应按自己的事件或投递标识处理。<Cite id="webhook-accept"/></p>
       <WebhookLesson/>
-      <p>先验证被改写的通知，它被拒绝，受理记录与订单都不改变。再投递有效通知，验证并受理：发送方可以看到 2xx，而订单仍未处理。让这次响应丢失后重复投递，同一个 evt-42 只保留一份受理记录，后台也只更新一次。</p>
-      <p id="webhook-duplicate" className="vp-citation-target">Stripe 提醒同一事件可能重复交付，建议记录事件 ID；有时不同事件对象也描述同一业务变化，还需要结合对象 ID 与事件类型。重试的签名与时间戳可以改变，因此不能用“签名相同”代替事件去重。<strong>通知身份、接收记录和业务操作的重复保护要分别设计。</strong><Cite id="webhook-duplicate"/></p>
+      <p>演示先投递被改写的通知：它因为签名对不上而被拒绝，受理记录与订单都不改变。重置后再走有效通知路径，依次投递、验证、受理、后台处理，发送方看到 2xx，订单更新一次。再次重置并勾选“让本次响应丢失”后受理：第一次已经写入受理记录，只是受理确认（也就是那条 2xx 响应）没有送达；发送方可能按平台的重试或重新交付规则再次发来，同一个 evt-42 仍只保留一份受理记录，不重复受理。这里的按钮分别演示投递、验签、受理、后台处理和重复投递；乱序与后台处理失败只在正文说明，不做演示。清空通知与受理记录只重置浏览器里的演示状态，不代表真实订单回滚。</p>
     </ArticleSection>
     <ArticleSection id="recover" title="重复、乱序与重新交付" className={base.offset}><Legacy slug="webhook" names={["prompt-heading"]}/>
-      <p id="webhook-redelivery" className="vp-citation-target">GitHub 不会自动重新交付失败通知，可以从投递记录手动重投，或用脚本安排补交。Stripe 则为失败通知提供自动重试，并允许手动重发。<strong>Webhook 本身不承诺一套统一的重试策略，要核对所用平台的规则。</strong><Cite id="webhook-redelivery"/></p>
-      <p id="webhook-order" className="vp-citation-target">Stripe 也不保证事件按生成顺序交付。不能因为“已取消”的通知先到，就认定后来收到的“已创建”应覆盖当前状态。必要时查询平台对象的最新状态，或按业务版本规则处理更新；事件中的时间戳不能单独解决所有顺序问题。<Cite id="webhook-order"/></p>
-      <ArticleAside title="投递成功以后，后台仍可能失败"><p>接收端已经返回 2xx，随后后台任务更新订单失败，发送平台未必知道。受理记录需要保留处理状态，后台失败要有重试与告警。入口确认丢失导致的重新投递，与已受理工作的失败恢复，是两条不同路径。</p></ArticleAside>
-      <p>接入 Webhook 先核对平台文档、订阅事件、原始请求体验签要求、确认时限与补交规则。验签失败、重复或乱序事件、后台失败和确认丢失都要有明确处理；收到 JSON 只是入口，不能直接认定订单状态已改变。</p>
+      <p id="webhook-duplicate" className="vp-citation-target">Stripe 提醒同一事件可能重复投递，建议记录事件 ID：它标识一个事件，用于把同一事件的重复投递识别出来；有时不同事件也会描述同一业务变化，例如“支付成功”和“订单已支付”都可能描述同一笔订单已经付款，这时还需要结合对象 ID（事件所描述的业务对象，例如某笔支付或某个订单的编号）与事件类型判断。重试时签名和时间戳是否改变由平台规则决定；如果平台没有提供事件 ID，不要把“签名相同”当作判断“同一个事件”的通用依据。<strong>要分别保护同一个事件不重复受理、受理记录不重复写入和业务操作不重复执行。</strong><Cite id="webhook-duplicate"/></p>
+      <p id="webhook-redelivery" className="vp-citation-target">GitHub 对已判定失败的投递不会自动重新交付，可以从投递记录手动重新交付，或用脚本安排重新交付；服务器恢复后漏掉的投递，也要由接收方查询 GitHub 侧的投递记录，再按 GitHub 提供的入口触发补交。这里的“补交”也是人工或脚本触发的重新交付。Stripe 会在有限时间内自动重试失败通知，也允许手动重发。这里的“重试”指平台自动再发，“重新交付”或“重发”指人工或脚本触发；正文说的“一次投递”指一次发送动作，平台记录是否新增条目仍以自己的文档为准。<strong>Webhook 本身不承诺一套统一的重试策略，要核对所用平台的时限、次数和重新交付规则。</strong><Cite id="webhook-redelivery"/></p>
+      <p id="webhook-order" className="vp-citation-target">先到的未必是先发生的。比如“已取消”的通知先到、“已创建”的通知后到；如果只按收到的先后覆盖状态，订单可能停在错误状态。必要时查询平台对象的最新状态，或按业务版本规则处理更新；事件中的时间戳不能单独解决所有顺序问题。对 GitHub 而言，<code>X-GitHub-Delivery</code> 用来定位一次投递及其重投，重投时这个 ID 保持不变，仍挂在原来那条投递记录上；它标识的是“哪一次投递记录”，不是“哪个业务事件”。<Cite id="webhook-order"/></p>
+      <ArticleAside title="投递成功以后，后台仍可能失败"><p>接收端已经返回 2xx，随后后台任务更新订单失败，发送平台未必知道。受理记录需要保留处理状态，后台失败要有自己的补救机制并告警。发送方没收到确认而重新投递，是一条路；受理之后的后台任务失败、自己恢复，是另一条路，两者不能混在一起处理。</p></ArticleAside>
+      <p>接入 Webhook 先核对平台文档、订阅事件、原始请求体验签要求、2xx 响应时限与重新交付规则。验签失败、重复或乱序事件、后台失败和确认丢失都要有明确处理；收到 JSON 只是请求到达，不能直接认定订单状态已改变。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
