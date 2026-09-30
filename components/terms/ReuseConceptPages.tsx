@@ -9,27 +9,27 @@ function Legacy({slug,names}:{slug:string;names:string[]}) {return <>{names.map(
 export function CacheTermPage() {
   const Cite=({id}:{id:string})=><ArticleCitation id={id} sources={cacheSources}/>;
   return <ConceptArticle slug="cache" title="缓存" sources={cacheSources} sections={[["copy","为重复读取留一份副本"],["read","命中与回源"],["fresh","副本与原数据一起变化吗"],["capacity","过期与容量淘汰"]]}
-    intro={<>读者打开书目详情，每次都需要 #42 的书名。应用可以先保留一次读取的结果，下一次按同一个键取回。少访问一次数据库是收益；数据库改名以后，副本还能用多久，是另一件需要决定的事。</>}
+    intro={<>每次打开书目详情页，页面都要显示编号为 #42 的书名。负责页面逻辑的应用可以先保留一次读取的结果，下一次按同一个键取回。少访问一次数据库，这是眼前的好处。但要是数据库里改了书名，这份旧副本还能接着用多久，就得另外拿主意。</>}
     hero={<ConceptHero slug="cache" label="数据库书名先被读取，再保存为book:42:title的缓存副本"><div className={s.cacheHero}><div><Database size={24}/><span>数据库 · #42</span><strong>山间来信</strong></div><div><Lightning size={24}/><code>book:42:title</code><strong>山间来信</strong></div></div></ConceptHero>}>
     <ArticleSection id="copy" title="为重复读取留一份副本"><Legacy slug="cache" names={["question","definition"]}/>
-      <p id="cache-mechanism" className="vp-citation-target"><strong>缓存保留可重复使用的数据或计算结果，让后续访问有机会复用它。</strong>这里采用应用负责的 Cache-Aside：先查缓存，找不到就读数据库，把结果放入缓存并返回。Microsoft 的模式文档说明，这种按需加载需要应用维护副本；缓存产品本身不会自动知道数据库里的书名变了。<Cite id="cache-mechanism"/></p>
-      <p>缓存可以在进程内，也可以由独立服务共享。本文观察一项书名数据，不把浏览器的 HTTP 缓存规则、数据库内部缓存、AI 提示缓存混为一种接口。<ConceptTerm slug="cache-control">Cache-Control</ConceptTerm>负责 HTTP 响应的缓存约定，是另一层机制。</p>
-      <p id="cache-key" className="vp-citation-target">应用用 <code>book:42:title</code>标识这项副本。Redis 的 GET 按键读取字符串，键不存在时返回空值；它不会顺便查询你的业务数据库。<strong>命中表示找到了这个键的值，不表示这个值一定最新。</strong>键还需区分实际会影响结果的输入，避免把不同用户、语言或权限下的结果混用。<Cite id="cache-key"/></p>
+      <p id="cache-mechanism" className="vp-citation-target"><strong>缓存保留可重复使用的数据或计算结果，让后续访问有机会复用它。</strong>这里采用由应用自己维护副本的 Cache-Aside：先查缓存，找不到就读数据库，把结果放入缓存并返回。Microsoft 的模式文档说明，这种按需加载需要应用维护副本；缓存产品本身不会自动知道数据库里的书名变了。<Cite id="cache-mechanism"/></p>
+      <p>缓存可以放在应用进程自己的内存里，也可以由独立缓存服务保存，让多个应用实例共享同一份副本。本文只跟着书名这一项数据走。浏览器的 HTTP 缓存、数据库内部的缓存、AI 提示缓存各有各的规则，这里不把它们混在一起讲。<ConceptTerm slug="cache-control">Cache-Control</ConceptTerm>负责浏览器或代理如何缓存 HTTP 响应，是另一层机制。</p>
+      <p id="cache-key" className="vp-citation-target">Redis 是一种常见的独立缓存服务；这里用它的命令举例，不是说缓存只能用 Redis。应用用 <code>book:42:title</code>标识这项副本。Redis 的 GET 按键读取字符串，键不存在时返回空值；它不会顺便查询你的业务数据库。<strong>命中表示找到了这个键的值，不表示这个值一定最新。</strong>键还需包含实际会影响结果的输入：例如中文标题和英文标题不能共用同一个键，不同权限看到的结果也不能混用。<Cite id="cache-key"/></p>
     </ArticleSection>
     <ArticleSection id="read" title="命中与回源"><Legacy slug="cache" names={["scene-heading"]}/>
-      <p>从空缓存开始读一次，再读一次；接着只修改数据库书名，观察缓存读取。使副本失效或推进到期，再读会重新回源并填入新值。本例只模拟一个键与两个书名；t 是手动推进的逻辑时间，每次回填有效 2 格，没有真实 Redis、数据库或耗时测量。</p>
+      <p>从空缓存开始读一次，再读一次；接着只修改数据库书名，观察缓存读取。之后再使副本失效，或者等它到期，下一次读取就会重新回源（重新读取数据库）并填入新值。本例只模拟一个键与两个书名；t 是手动推进的逻辑时间，每次回填有效 2 格，命中不会重新计时，方便观察这次副本何时到期。没有真实 Redis、数据库或耗时测量。</p>
       <CacheLesson/>
       <p>第一次未命中，原数据被读出并留下副本；第二次命中，直接返回副本。数据库变成“修订版”后，缓存仍可返回原名。页面并排展示两处数据供你比较；真实应用单凭一次命中，不能推断副本和原数据相等。</p>
     </ArticleSection>
     <ArticleSection id="fresh" title="副本与原数据一起变化吗"><Legacy slug="cache" names={["quiz-heading"]}/>
-      <p id="cache-invalidating" className="vp-citation-target">Cache-Aside 的一种写入策略是<strong>先更新数据存储，再使对应缓存失效</strong>，下一次读取重新加载。Microsoft 提醒，若先删缓存再写数据库，中间的读取可能把旧值重新填回。操作顺序重要，但这两个独立动作也不因此变成一个原子事务。<Cite id="cache-invalidating"/></p>
+      <p id="cache-invalidating" className="vp-citation-target">Cache-Aside 的一种写入策略是<strong>先更新数据存储，再使对应缓存失效</strong>，下一次读取重新加载。Microsoft 提醒，若先删缓存再写数据库，在删完缓存到写完数据库之间，如果有另一个请求来读，它会拿到旧值，并把旧值重新填回缓存。顺序重要，但这两步终究是分开的动作，不会拼成一个原子事务。这里的“原子事务”是指外部看不到中间状态、两步像一个整体完成；本例没有把更新和失效包成这样的整体。<Cite id="cache-invalidating"/></p>
       <p id="cache-consistency" className="vp-citation-target">外部程序修改数据库，或多个应用各有本地副本时，更新不会自动同步到所有缓存。Cache-Aside 不保证数据存储与缓存始终一致；需要根据可接受的新鲜度安排失效、到期或其他更新机制。本文按一次一个动作演示，没有解决并发读写中的所有竞争情况。<Cite id="cache-consistency"/></p>
       <div className={base.contrast}><div><h3>能接受短暂旧值</h3><p>书目说明这类数据，可以先确定可接受的延迟，再选择副本期限与更新办法。</p></div><div><h3>需要当前事实</h3><p>是否还有库存、是否允许借阅，需要结合实际一致性要求判断，不能只凭缓存里的书名或数量作决定。</p></div></div>
     </ArticleSection>
     <ArticleSection id="capacity" title="过期与容量淘汰" className={base.offset}><Legacy slug="cache" names={["prompt-heading"]}/>
       <p id="cache-expiry" className="vp-citation-target">Redis 的 EXPIRE 为键设置存活时间，期限到达后键会被删除。<strong>到期移除副本，不是自动把副本改成数据库的新值。</strong>本例到期后要再读取，应用才回源并回填。期限长短需要结合变化频率与读取成本决定，不能从“设置了 TTL”推断每次读取都最新。<Cite id="cache-expiry"/></p>
-      <ArticleAside title="容量不足也会让副本消失"><p id="cache-eviction" className="vp-citation-target">即使还没到期，缓存也可能因容量策略淘汰键。Redis 的 maxmemory-policy 可以选择 LRU、LFU 等策略；noeviction 不淘汰键，而可能拒绝新增数据的命令。Redis 的 LRU 是近似算法。过期、主动失效与容量淘汰触发条件不同，应用应能处理下一次未命中。<Cite id="cache-eviction"/></p></ArticleAside>
-      <p>缓存是否值得保留，要看键的组成、数据变化、可接受的旧值时长、失效方式、容量与未命中路径。再核对实际命中率、回源压力和错误；本页没有给出固定的提速倍数。</p>
+      <ArticleAside title="容量不足也会让副本消失"><p id="cache-eviction" className="vp-citation-target">即使还没到期，缓存也可能因容量策略淘汰键。Redis 的 maxmemory-policy 可以选择 LRU、LFU 等策略；选择 noeviction 时不淘汰已有键，缓存到上限后，应用尝试把新键放进缓存的命令会返回错误。Redis 的 LRU 会用近似的最近使用情况选键，不保证每次都按完整的精确顺序淘汰。过期、主动失效与容量淘汰触发条件不同，应用都应能处理下一次未命中。<Cite id="cache-eviction"/></p></ArticleAside>
+      <p>缓存是否值得保留，要看键怎么拼、数据变得勤不勤、旧值可以旧多久、用什么方式失效、能占多少容量，以及没命中时怎么办。再核对实际命中率、回源压力和错误；本页没有给出固定的提速倍数。</p>
     </ArticleSection>
   </ConceptArticle>;
 }

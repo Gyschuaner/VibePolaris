@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第53条orm现已按顺序完成内容与dev检查，技术集成与完整内容均53/105，下一条cache。第53条的词条内容已单独经PR #233合入main并发布生产；dev中其他未完成的功能没有随内容发布。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第54条cache现已按顺序完成内容与dev检查，技术集成与完整内容均54/105，下一条connection-pool。第53条的词条内容已单独经PR #233合入main并发布生产；第54条及后续词条的功能改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -71,7 +71,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 51 sql | 读、增、改、删并核对影响范围与执行计划 | SELECT 读取结果；INSERT/UPDATE/DELETE 改变教学表；WHERE、NULL 与 Seq/Index Scan 分开呈现 | 完整内容与dev集成完成 · 代码PR #227/#228；详见本节 |
 | 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 完整内容与dev集成完成 · 代码PR #230；详见本节 |
 | 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 完整内容与dev集成完成 · 代码PR #232；内容发布PR #233 · 详见本节 |
-| 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 待更新 |
+| 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 待更新 |
 | 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 待更新 |
 | 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 待更新 |
@@ -1163,3 +1163,39 @@ DP 用例 `eb40f7fd-b0ab-4ce4-9952-aee17a8f4e6e`；本轮持续计划 `2e2bd9cf-
 代码提交 `e25102194a1ba18aaaf38780ff4455870b365341`，经 [PR #104](https://github.com/Gyschuaner/VibePolaris/pull/104) 合入 dev，合并提交 `883d1b678b37740678bd0d22befc615cc55569e5`。两者 Git 树完全相同，已通过的构建部署到独立 worktree `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，`next start --port 3219`。真实 Chrome 在合并版本确认新正文、检查等待和 200 终态。DP 部署 `996195b3-6070-4904-baec-db3975f5723e`（`local-dev-20260928-vbp012-883d1b6`），仅本地 dev；未部署远端 dev 或生产。回滚：停止本地 3219 进程，检出 `99bfb5b49effff5e4e95ba0ca787c0df2e72c33b` 后构建重启。当前整体完成 1/105，继续 tools。
 
 Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳过。
+
+## 54 · 缓存文字完整复审与本地浏览器验收（2026-09-30）
+
+### 读者目标与正文调整
+
+- 读者入口是“书名已经从数据库读过一次，下一次为什么还会看到旧名字？缓存放在哪、什么时候失效，和浏览器缓存是不是一回事？”读完应能用一次 Cache-Aside 读取解释未命中、回源和命中，知道命中不等于最新，能区分主动失效、到期和容量淘汰，并能把键按会影响结果的输入拆开。
+- 正文只改 `CacheTermPage` 的说明文字，保留已存在的有限教学演示、旧锚点和资料映射。新增应用进程内存与独立缓存服务的边界，定义 Redis、`GET`、空值、键命名、Cache-Control、回源、逻辑时间与命中不续期；补充先删缓存再写库的竞态与“原子事务”含义；把 Redis `noeviction` 和近似 LRU 的行为写成可判断的结果。没有新增真实 Redis、数据库、网络请求或功能状态。
+- 与相邻词条的差异写在正文里：浏览器 HTTP 缓存是另一层，数据库内部缓存和 AI 提示缓存不共用本页接口；本页的键值副本只服务一次教学书名，不把缓存命中、TTL 或容量策略说成数据一定最新。
+
+### 资料与正文对应
+
+实际打开并阅读四份官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Microsoft Cache-Aside pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside) | `cache-mechanism`、`cache-invalidating`、`cache-consistency`：应用维护按需加载的副本、回源和先后顺序的竞态。 |
+| [Redis GET](https://redis.io/docs/latest/commands/get/) | `cache-key`：按键读取字符串、键不存在返回空值，读取不会替代业务数据库。 |
+| [Redis EXPIRE](https://redis.io/docs/latest/commands/expire/) | `cache-expiry`：设置存活时间，过期后键被删除；回源和重新填充仍由应用执行。 |
+| [Redis eviction](https://redis.io/docs/latest/develop/reference/eviction/) | `cache-eviction`：`maxmemory-policy`、`noeviction`、近似 LRU 与容量触发条件。 |
+
+### 机制取舍与 ZCode 协作
+
+- 首图和主体保留“数据库书名—`book:42:title` 副本”的近处关系。没有把浏览器、Redis、数据库和 AI 缓存画成四套并列系统，避免读者误认为它们共享同一失效规则；主体只增加正文解释，不把没有实现的容量淘汰伪装成按钮。
+- 使用真实 ZCode CLI 0.16.9，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 会话 `sess_0fa9f19c-46e3-471a-a70c-00710110226d` 读取 partner Skill 与冻结的可见文字/状态材料 `/tmp/vbp-cache-reader-material.txt`（SHA-256 `f1f04ae49d87f5d96e01ced704341c91c6f9499fcc7da1524d350d684b2acb08`），未给作者意图或预期答案；它指出开头需要先说清“缓存是什么”、Redis/原子事务/LRU 未定义、键应给具体的语言与权限例子，并追问浏览器 HTTP 缓存和命中是否续期。主助手按官方资料逐项裁决并改稿。
+- 经 `humanizer-zh` 处理后，独立 `language` 会话 `sess_9b864a5d-5df3-448b-a79a-88c2ca2d0bff` 实际读取 partner Skill、humanizer 规则和当前稿，建议把键命名、回源、noeviction、容量结尾改成更具体的动作句。采纳必要改写，保留 Redis 官方行为的限定；两轮都是文字模拟审读，未写成真人读者验证。ZCode CLI 的首次 headless 页面尝试因本机 Playwright 浏览器运行时不可用而没有页面覆盖，已如实保留；后续只把成功的文字审读作为内容证据。
+
+### 构建与真实浏览器验收
+
+- `npm run build` 通过，TypeScript 与 117/117 静态页生成通过；`node --experimental-strip-types --test tests/reuse-teaching.test.mjs` 通过（1/1）。`git diff --check` 通过。没有扩大到整站无关测试；同批旧测试中的两个基线失败仍是缺失 `ComponentTermPage` 文件和过时 `RagTermPage` 路由断言，与本条文字修改无关。
+- 真实浏览器使用 CUA 打开 `http://127.0.0.1:3219/terms/cache`：从空缓存读取得到“未命中·读取数据库并回填”，再次读取得到“命中·来自缓存”；只改数据库书名后仍命中旧副本；主动失效后下一次回源得到修订版；推进到期后副本清空；重置清除结果、恢复原书名和 `t=0`。展开 Cache-Aside 引用并跳回 `cache-invalidating` 段落成功，引用按钮可用。
+- 键盘 `Tab` 聚焦引用后用 `Space` 触发读取，结果与鼠标相同。桌面稳定画面已观察，未把 DOM 中隐藏的旧结果当成可见状态；本轮 CUA surface 没有提供可控的 390px 视口接口，因此没有声称完成窄屏尺寸实测。没有真人读者、真实 Redis/数据库或远端 dev/生产验证。
+
+### DP、Git 与发布边界
+
+- VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `e27197ad-5b63-44fa-9063-c6213b502ddf` 已按查询结果更新为 `done`，记录了来源、ZCode、构建与浏览器证据。生产内容发布 PR #233 只包含前 53 条，本条没有合入 main 或部署生产。
+- 当前工作树为 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本条修改仍在本地，下一条是 `connection-pool`。继续处理前会先提交本条并保留现有 dev 预览，完成后再进入第 55 条，整体进度更新为 54/105。
