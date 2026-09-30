@@ -8,7 +8,7 @@ export const pipelineSources = [
 export const webhookSources = [
   source('Stripe', 'Receive Stripe events in your webhook endpoint', 'https://docs.stripe.com/webhooks', ['webhook-notify', 'webhook-duplicate', 'webhook-order', 'webhook-redelivery']),
   source('Stripe', 'Resolve webhook signature verification errors', 'https://docs.stripe.com/webhooks/signature', ['webhook-signature']),
-  source('GitHub', 'Best practices for using webhooks', 'https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks', ['webhook-accept']),
+  source('GitHub', 'Best practices for using webhooks', 'https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks', ['webhook-accept', 'webhook-order']),
   source('GitHub', 'Handling failed webhook deliveries', 'https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries', ['webhook-redelivery']),
 ];
 export const distributedSources = [
