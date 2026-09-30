@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第52条database-migration现已按顺序完成内容与dev检查，技术集成与完整内容均52/105，下一条orm。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第53条orm现已按顺序完成内容与dev检查，技术集成与完整内容均53/105，下一条cache。第53条的词条内容已单独经PR #233合入main并发布生产；dev中其他未完成的功能没有随内容发布。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -70,7 +70,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 50 unique-constraint | 某字段值不能重复 | 同列出现重复时位置重叠并被拒绝 | 完整内容与dev集成完成 · 代码PR #225；详见本节 |
 | 51 sql | 读、增、改、删并核对影响范围与执行计划 | SELECT 读取结果；INSERT/UPDATE/DELETE 改变教学表；WHERE、NULL 与 Seq/Index Scan 分开呈现 | 完整内容与dev集成完成 · 代码PR #227/#228；详见本节 |
 | 52 database-migration | 逐版改变结构 | 同一表骨架展开新列；记录版本并保留旧数据 | 完整内容与dev集成完成 · 代码PR #230；详见本节 |
-| 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 待更新 |
+| 53 orm | 对象操作映射数据库 | 对象与表的对应切面；操作显露背后查询 | 完整内容与dev集成完成 · 代码PR #232；内容发布PR #233 · 详见本节 |
 | 54 cache | 复用保存的副本 | 近处副本显影；过期后回到源头获取 | 待更新 |
 | 55 connection-pool | 复用有限连接 | 固定插槽占用、归还和等待；连接不反复新建 | 待更新 |
 | 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 待更新 |
@@ -1093,6 +1093,48 @@ DP复用用例 `db8496ea-7856-48c0-b94b-a172e4ac1467`，计划 `ce233180-67b3-44
 - 研发任务 `243270b2-fe59-42d9-a86b-930d47041f6f` 已 done。专项测试用例 `103f1125-7d7f-4ee2-954e-f466a596bb88`，测试计划 `13f41fe8-203c-4e10-96cf-f1340b6abd62` 已 completed；执行 `b3adf637-e646-4ffe-a26d-e9bb2c0edcef` passed，登记了构建、候选/dev 浏览器流程、1280px/390×844、5 个来源和控制台 0 错误。
 - dev 部署记录 `c105ad44-c2b3-47e9-96af-cb12ef1ec71b`，部署批次 `deploy-vbp027-database-migration-dev-20260930`，提交 `60f31dd7572b2eca7a343fdffa7c37b506c96849`，备份 `/tmp/vbp027-migration-dev-prev-20260930141710`；回滚需停止 3219、恢复备份 `.next` 并重启。VBP-027 仍处于 testing，未获得 main 或生产授权。
 - 指定 Windows Obsidian 库在当前 macOS 环境不存在，本轮未写入 Obsidian。页面不连接真实数据库，复选框、版本和回填数据都是教学模型；没有真人读者观察，也未声称生产数据库迁移或生产发布已完成。
+
+## 53 · ORM 完整内容复审、dev 集成与生产内容发布（2026-09-30）
+
+### 读者目标与现状判断
+
+- 读者入口是“我在 Python 里改了 `book.title`，数据库什么时候真的收到 UPDATE？ORM 返回的对象和 SQL 返回的行有什么不同？”读完应能区分类、对象、属性、表列、Session、flush、commit、rollback，以及访问关系属性可能触发的新查询。
+- 保留对象与 `books` 表的对应首图，主体演示把一条书记录读成 `Book` 对象后，分别改对象、flush、rollback、重新读取和直接 commit。页面明确这是假数据与教学 SQL 记录，不连接真实数据库，不把对象赋值写成已提交。
+- 正文补出 `Base`、`Mapped`、`mapped_column` 前提；说明 `Book.id` 可以映射到 `books.book_id`，ORM 查询取得 `Book` 实例而普通 SQL 通常取得行；补齐身份映射不是共享缓存、关系读取可能形成 1+N 查询、预加载和事务边界的限制。
+
+### 资料与论断对应
+
+实际读取并核对五份 SQLAlchemy 官方资料，正文角标和资料区保持五个唯一来源：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [SQLAlchemy 2.0 · ORM Mapped Class Overview](https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html) | `mapping`：类、实例和映射已有数据库结构。 |
+| [SQLAlchemy 2.0 · ORM Quick Start](https://docs.sqlalchemy.org/en/20/orm/quickstart.html) | `mapping`、`write`：ORM 查询、实例、flush/commit 的基本走法。 |
+| [SQLAlchemy 2.0 · Session Basics](https://docs.sqlalchemy.org/en/20/orm/session_basics.html) | `write`、`session`：事务、flush、commit、rollback、过期状态和身份映射。 |
+| [SQLAlchemy 2.0 · Relationship Loading Techniques](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html) | `loading`：关系属性读取、懒加载风险和预加载策略。 |
+| [SQLAlchemy 2.0 · Table Configuration with Declarative · Column Names](https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html) | `mapping`：属性名与数据库列名分开配置。 |
+
+### 真实 ZCode 两轮与主助手裁决
+
+- `reader` 会话 `sess_3ebfb76b-fff9-46a2-9cdc-61224629518f` 使用真实 ZCode.app、Qwen3.8-Flash-Next-FP8，读取 partner Skill、concept-pages 规则和只读 ORM 成稿材料（材料 SHA-256 `dfa7c5bfd7400f38a0d68068514f0920aae9e67fa642a0e179cd2ed47e50870d`）。它指出对象/属性、实例/关系、`Base`/`Mapped`/`mapped_column`、行与实例、身份映射、过期状态、flush/commit/rollback 先后和重置按钮语义仍有断点；主助手逐项回到源码和官方资料修正。
+- `language` 会话 `sess_0fb0089d-646a-49bb-89f2-bbcd4da2ac2c` 按 humanizer-zh 审阅最终正文，补出“改对象不等于数据库收到 UPDATE”、`#42` 行如何变成对象、回滚后为何需要重新读取、作者关系和 1+N 的具体说法，删掉“消息发给别人后等确认”等机械比喻。两轮均是独立文字模拟审读，没有真人零基础读者；主助手重新核对事实后才采纳意见。
+
+### 构建、真实浏览器与 dev
+
+- ORM 实现提交 `0f3ecd3` 经 [PR #232](https://github.com/Gyschuaner/VibePolaris/pull/232) 合入 `dev`，merge 提交 `cdf705044e795bdd19eaee42c92d5b4c463924c2`。候选和 dev 的 `npm run build` 均通过，生成 117/117 静态页，`git diff --check` 通过。
+- 3220 候选页完成对象修改、flush 后 UPDATE、rollback 放弃未提交值、重新读取原书名、直接 commit 的 UPDATE→COMMIT 顺序和重置；五个官方来源唯一且控制台错误为 0，390×844 页面宽度为 390。3219 本机 dev 在合并提交上重载后完成同一关键流程，控制台错误为 0。
+- DP 研发任务 `5d3df465-1334-40c4-8d80-8962ae60a0a6` 已 done；用例 `5cb1d9f9-8c31-4e09-9471-78a45145fd39`，计划 `30485788-0039-4400-a77f-a655e1a6a6f9fc` completed，执行 `0635e196-5a38-4bdf-8b6c-810af8299460` passed；dev 部署 `add5fb4e-87ca-41a4-afb4-c3e22e39cc31`，回滚备份 `/tmp/vbp027-orm-dev-rollback-cdf7050`。VBP-027 仍为 testing，未擅自推进需求状态。
+
+### 只发布词条内容
+
+- 内容发布分支 `release/VBP-012-content-20260930` 从 `origin/main` 建立，提交 `3f2a89a` 经 [PR #233](https://github.com/Gyschuaner/VibePolaris/pull/233) 合入 `main`，merge 提交 `1423e96ddd9529b40ec75ef7e1f1f83c5b4bf10c`。发布差异仅包含 `components/terms/**` 和词条资料引用所需的 `lib/*concept*`、`lib/*sources*` 等文件，没有带入 dev 中其他未完成的业务功能、API、数据库、部署配置或测试文件。
+- 主干构建和本机 `3221` 生产预览通过；线上容器使用镜像 `vibepolaris:1423e96ddd9529b40ec75ef7e1f1f83c5b4bf10c`，发布目录 `/opt/vibepolaris/releases/20260930-1423e96ddd95`，旧版本 `/opt/vibepolaris/releases/20260929-2b6832232247` 保留。DP 生产部署 `69e85810-29a0-45b7-b15c-dab8486f1b33`（`deploy-vbp012-content-prod-20260930`）状态 `released`，公网 `https://vibe.chuansgu.top/terms/orm` 和 `/terms/sql` 健康检查、正文核对和浏览器控制台检查通过。
+- 线上浏览器看到 ORM 标题、flush/commit/rollback 说明和五个 SQLAlchemy 官方链接；页面宽度 1280，控制台 error/warning 为 0。生产页面仍使用教学静态数据，不连接真实数据库；没有真人读者观察，不把模拟审读写成真人验收。此次发布是用户对词条内容的明确授权，后续 dev 的其他功能继续留在本地/dev。
+
+### DP 与记录边界
+
+- VBP-012 总需求仍为 `in_development`，没有因这次内容上线提前关闭全站 105 条目标；第 54 条 cache 及后续词条继续按顺序审阅和在 dev 验收。
+- PR artifact 绑定因当前线程附件身份数量超过 100 被 Codex 工具拒绝，GitHub PR 链接和 DP 记录仍保留。指定 Windows Obsidian 库在当前 macOS 环境不存在，本轮未写入 Obsidian。
 
 ## 01 · Harness
 
