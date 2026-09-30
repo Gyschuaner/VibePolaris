@@ -10,7 +10,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 
 用户指出可能漏做步骤后，对照本 Skill 的现状与读者目标、资料与正文、动画方案、ZCode 协作、验收六个环节重查。下表里的“本地与 dev 集成完成”只表示相应代码、构建、受影响浏览器操作和 DP 集成记录存在，**不能解释为整篇词条均已通过内容审读**。审计时技术集成是 **32/105**，有独立 ZCode 成稿盲读和语言审读记录的是 **01–10，10/105**；第 11 条 token 至第 32 条 path-parameter 已按顺序补审并集成，第 33 条 request-body 至第 38 条 rate-limiting 完成完整内容审读和验收；这轮补审到第 38 条时进度为 **38/105**。11–32 当时被界定为局部首图调整，虽有机制与资料核实、候选比较、ZCode 灵感、构建和浏览器证据，却没有逐条独立的成稿读者追问和语言交叉审读；原有正文也未按本轮“更新所有词条”的目标作完整检查。这是范围判断错误，不能以已经合入 dev 或 DP 测试通过掩盖。
 
-从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第58条sharding现已按顺序完成内容与dev检查，技术集成与完整内容均58/105，下一条queue。第53条的词条内容已单独经PR #233合入main并发布生产；本轮第54–57条正文已由PR #235合入main并发布生产，交互演示改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
+从 11 token 起，按顺序重查遇词情境、读完要判断什么、必要前提和近邻区别；实际核对来源与正文位置，做不看动画的通读和迁移场景检查。ZCode 在独立只读会话里先看读者可见成稿作模拟盲读；主助手处理具体断点，实质改写正文时使用 humanizer-zh，再由另一会话审读语言。无实质修改时如实记录保留理由，不为凑改动重写；有修改则重新构建并检查受影响页面、更新 DP 和 dev 集成证据。第39条timeout至第59条queue现已按顺序完成内容与dev检查，技术集成与完整内容均59/105，下一条batch-processing。第53条的词条内容已单独经PR #233合入main并发布生产；本轮第54–58条正文已由PR #235、#236、#237合入main并发布生产，交互演示改动继续留在本地/dev，不带入生产。第46条发现的编号提示Bug已修复并有通过执行，DP专用回归登记正在处理；第49条发现的重复空锚点Bug仍待正式回归，均未声称关闭。无真人零基础读者观察，不把模拟反馈写成真人验收。
 
 ## 机制与表现形式差异草案
 
@@ -76,7 +76,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 56 replication | 多处保留数据副本 | 同一版本在两处镜像渐次更新，延迟可见 | 本地文字更新与浏览器验收完成；功能留在本地 |
 | 57 backup | 留下可恢复的历史 | 时间截面冻结；当前损坏后从过去复原 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #235 发布，功能留在本地 |
 | 58 sharding | 数据分到不同分片 | 整体数据面按键分割，查询定位相应区域 | 完整内容与本地 dev 浏览器验收完成；正文已随 PR #236、#237 发布生产，功能留在本地 |
-| 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 待更新 |
+| 59 queue | 任务等待被处理 | 等待序列在入口积累，消费者取走一项 | 完整内容与本地 dev 浏览器验收完成；正文待本条内容分支发布，功能留在本地 |
 | 60 batch-processing | 成批处理积累的数据 | 时间容器蓄满后整批折叠成结果 | 待更新 |
 | 61 stream-processing | 数据持续到达持续处理 | 时间窗口滑动，边界内事件聚合持续变化 | 待更新 |
 | 62 event-driven-architecture | 事件触发多个响应 | 已发生事件形成中心脉冲，独立订阅者响应 | 待更新 |
@@ -1347,3 +1347,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `f41d6a22-31cb-4adc-83f3-bc1d7a3d4c93` 已按允许流转由 `in_progress` 变为 `done`，完成后重新查询确认，未推进总需求状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本地功能提交为 `0fa0055`。本条本地功能改动涉及 `DistributionConceptPages.tsx`、`DistributionConceptLessons.tsx`、`lib/distribution-sources.ts`；生产内容经 PR #236 合并提交 `e5f76e73d8eda1daa0ac6c8eea257c30ed282931` 发布，随后 PR #237 补齐 `shard-hash` 来源并以合并提交 `f8af12bb0384805607a78a93a42d82d0016bf5a3` 重新部署，未把交互功能带入生产。生产部署记录为 `10136f9c-7c2d-462e-bbfd-2a2b7658150a`，release 为 `/opt/vibepolaris/releases/20261001-f8af12bb0384`，回滚点为 `/opt/vibepolaris/releases/20260930-aa508c30431e`；公网 `/terms/sharding` 精确检查新版文案，容器健康。Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **58/105**，下一条是 `queue`。
+
+## 59 · 队列文字完整复审、重投演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“上传图片后为什么不是马上生成？任务被工作进程取走算不算完成？连接断开后为什么可能重复做？”读完应能按发布、领取、处理、确认四步解释队列把提交与处理拆开的作用，区分发布确认和消费确认，判断未确认消息为何重投，并说明幂等记录怎样保护已经发生的业务结果。
+- 更新 `QueueTermPage`：定义发布者、消费者和消息代理在本例中的角色；把 `m42`、`m78` 说明为演示消息编号；补出 AMQP 0-9-1 手动确认的适用范围；解释自动确认的丢失风险、prefetch 与工作槽、连接/通道关闭后的重投、稳定任务键与 `book:42:thumb:v1` 示例、幂等记录与业务写入的原子性；说明高优先级、多发布连接、多消费者和重投对顺序的影响，以及队列/消息持久化分别配置的边界。
+- 演示仍只用浏览器状态：发布两条任务、领取一条、生成缩略图、ack；在生成前或后模拟连接断开，未确认消息回到队列，已有缩略图在再次处理时复用；所有真实代理、网络、图片处理、重连和再次订阅均明确为教学简化。
+
+### 资料与正文对应
+
+实际打开并核对四份 RabbitMQ 官方资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [RabbitMQ · Work Queues · JavaScript](https://www.rabbitmq.com/tutorials/tutorial-two-javascript) | `queue-work`、`queue-prefetch`：工作队列拆分任务、多个消费者轮转、手动 ack、持久化和 prefetch=1。 |
+| [RabbitMQ · Consumer Acknowledgements and Publisher Confirms](https://www.rabbitmq.com/docs/confirms) | `queue-ack`、`queue-publisher`：手动/自动确认、消费者确认与发布确认的独立边界、prefetch。 |
+| [RabbitMQ · Queues](https://www.rabbitmq.com/docs/queues) | `queue-order`、`queue-durable`：FIFO 基础、优先级/重投/多连接影响顺序、队列与消息持久化。 |
+| [RabbitMQ · Reliability Guide](https://www.rabbitmq.com/docs/reliability) | `queue-duplicate`、`queue-failure`：网络失败重投、幂等处理、拒绝/重排队与死信边界。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 使用真实 ZCode CLI 0.16.9，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。初始独立 `reader` 会话 `sess_c4a66c4a-7eca-4080-ae28-4ba5bc035f98` 读取 `/tmp/vbp059-queue-reader-material.md`（SHA-256 `c47987ab659e3ae0c4be07a34bb16ced133ebce64fe8dc6199b93e35cdc6a650`），指出代理、工作槽、原子性、多消费者、内存列表和断线中间状态等理解断点。
+- `language` 会话 `sess_faac0dc2-24ff-4e0c-bdcd-1ab8868cd23c` 读取 `/tmp/vbp059-queue-language-material.md`（SHA-256 `5deedc9a4e24e0116d55de645bb4dced9408339d893e1385e4fd4cbcdd85ee90`）与 humanizer-zh，修正电报式流程、翻译腔、主语、省略和确认边界；随后针对补充句使用 `language` 会话 `sess_f4f95fae-cb85-45ed-b20a-6bad32269b80`，材料 `/tmp/vbp059-queue-language-material-v2.md`（SHA-256 `5055091722e16dc2a6ef86febaf7279d2d327dc8141399c32240bd140f2febdc`）。
+- 成稿 reader 会话 `sess_1633d734-67df-4ead-926d-61e5b90e6a0b` 读取材料 `/tmp/vbp059-queue-reader-final-material.md`（SHA-256 `49db13f4e56ac35a52db81dda2a9c09a792237339e27a685e995b3ee10ca28ed`）；主助手根据反馈补齐发布者角色、任务键、AMQP、通道和元数据。再次 reader 会话 `sess_da024d8f-ce38-43a1-a952-03cc5f6fa735` 读取 `/tmp/vbp059-queue-reader-final-material-v3.md`（SHA-256 `5e56067c5c46afcbc7e90f064449b2a8984cede3765a44f6de5ae5ed98cb0313`），以及最终 reader 会话 `sess_14be158d-d28f-4b63-9306-181ffcd25c6b` 读取 `/tmp/vbp059-queue-reader-final-material-v4.md`（SHA-256 `5db75633e1e737cb88bb99001d8d512e0abf5be3f918b1efb102e0eca312e6e3`）。后两轮将剩余问题收敛到通道细节、死信运维、prefetch 取值等进阶边界；模拟审读不等于真人读者验收。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，`BUILD_ID z4_wu166MTFlUXgu9PNZ9`；`git diff --check` 通过。
+- CUA 在 `http://127.0.0.1:3219/terms/queue` 真实操作并观察：发布后待领取为 2；领取并生成后业务结果为 1 张；确认前模拟连接断开显示“未确认的消息回到队列；已经生成的缩略图仍保留”，待领取回到 2；再次领取并生成显示“已有缩略图 · 跳过重复创建”；继续处理并确认 m42、m78 后业务结果为 2 张、已确认消息为 `m42、m78`；“清空消息与缩略图”后待领取回到 0、业务结果回到 0。引用区展开 Consumer Acknowledgements 正文引用；最终浏览器 error/warn 为空。
+- 本条没有真实 RabbitMQ、真实网络重连、图片处理、死信运维、390px 可控视口或系统减少动态偏好验证；没有真人读者、远端 dev 或生产功能验证。正文尚未发布生产，功能演示留在本地/dev。
+
+### DP、Git 与发布边界
+
+- VBP-028 需求 `52cd0bd1-b7ea-4521-902a-64028dfa2f55` 保持 `ready_for_release`；本条研发任务 `ac4daa0c-6983-4fb6-91ba-6e876e5ddbd0` 已创建并进入 `in_progress`，完成浏览器验收和提交后按允许流转为 `done`，不推进总需求状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`，本条已提交。只修改本地 `components/terms/DistributionConceptPages.tsx`，不发布到生产；对应功能留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **59/105**，下一条是 `batch-processing`。
