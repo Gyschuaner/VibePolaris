@@ -42,22 +42,22 @@ export function SemanticSearchTermPage() {
     hero={<ConceptHero slug="semantic-search" label="按相似分数排列旧版说明与现行规则，最相近的旧版并不自动可用"><div className={s.searchHero}><span>想晚几天还书</span><div><strong>B · 延长借阅期限</strong><code>0.9998</code><em>旧版</em></div><div><strong>A · 续借规则</strong><code>0.9939</code><em>现行</em></div><p>最相近的候选，仍要看版本。</p></div></ConceptHero>}>
     <ArticleSection id="meaning" title="不同措辞，寻找相关内容"><Legacy slug="semantic-search" names={["question", "definition"]}/>
       <p><strong>语义搜索尝试按含义关系找到与查询相关的内容。</strong>一种常见方法是把查询与文档编码成兼容的向量，再比较相似性。文字不必完全相同，也可能进入候选；具体能跨越哪些措辞差异，要由模型和数据验证。</p>
-      <p id="semantic-encoding" className="vp-citation-target">DPR 的研究用配对训练的查询编码器与段落编码器，预先保存文档表示，查询时用点积选出候选段落。<strong>编码、候选检索与读取答案是不同环节。</strong>这是稠密检索的一种具体实现，不能把 DPR 的训练方式或点积度量当成所有语义搜索的统一规范。<Cite id="semantic-encoding"/></p>
+      <p id="semantic-encoding" className="vp-citation-target">DPR 的研究用配对训练的查询编码器与段落编码器：一个把问题变成向量，一个把段落变成向量，查询时把两组数按位相乘并加总（点积）来选出候选段落。<strong>编码、候选检索与读取答案是不同环节。</strong>本词条只讲如何找候选，后续机制才会读取答案。这是稠密检索的一种具体实现，不能把 DPR 的训练方式或点积度量当成所有语义搜索的统一规范。<Cite id="semantic-encoding"/></p>
       <p>关键词搜索适合核对明确词项、编号和固定表达；语言分析也能补充同义词。语义方法可以补充不同措辞的匹配，两者并非只能二选一。产品需要的首先是“哪些文档能解决这个问题”，再选择检索方法。</p>
     </ArticleSection>
     <ArticleSection id="candidates" title="分数、范围与返回数量"><Legacy slug="semantic-search" names={["scene-heading"]}/>
-      <p>四篇文档已指定三维向量，三个查询也使用固定表示。点击检索，文档按余弦分数移动到对应位置，符合版本、最低分数和返回数量的候选会被突出。B 的分数最高，但它是旧版；这正是相似性与可用性之间的区别。</p>
+      <p>四篇文档已指定三维向量：A 是现行续借规则，B 是旧版延长借阅期限，C 是现行打印指南，D 是现行续借系统维护；三个查询也使用固定表示。点击检索，文档按余弦分数移动到对应位置，符合版本、最低分数和返回数量的候选会被突出。B 的分数最高，但它是旧版；这正是相似性与可用性之间的区别。</p>
       <SemanticLesson/>
-      <p>默认返回 B、A。只保留现行版本并取一条，就返回 A；问打印时，C 优先。健身房查询与这里的文档分数都为零，在当前阈值下不返回。<strong>top-k 是最多取多少条，不能替代相关性或业务条件。</strong>最低分数也只是本例的筛选参数，不是通用的正确率门槛。</p>
+      <p>默认返回 B、A。只保留现行版本并取一条，就返回 A；问打印时，C 优先。健身房查询没有对应的表示，所有文档分数为零，在当前阈值下不返回。<strong>top-k 是最多取多少条，不能替代相关性或业务条件。</strong>最低分数是本例可切换的筛选参数（0.20 或 0.95），不是通用的正确率门槛。</p>
       <p>这里使用手工向量和精确计算，没有运行语言模型、ANN 索引或真实搜索服务。人工标注把续借查询的现行规则 A、打印查询的 C 视为相关，维护说明和旧规则不算直接满足需求。得分可以复算，相关性判断则来自这个明确的任务。</p>
     </ArticleSection>
     <ArticleSection id="reranking" title="候选之后的重新排序"><Legacy slug="semantic-search" names={["quiz-heading"]}/>
-      <p id="semantic-rerank" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先取回一批候选，再用 Cross-Encoder 联合读取查询与每个候选、重新排序。<strong>重排能更细地比较已取回的内容，代价是逐对计算。</strong>候选阶段漏掉的文档，不会仅靠重新排序出现。本页没有模拟重排模型或编造模型评分。<Cite id="semantic-rerank"/></p>
+      <p id="semantic-rerank" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先取回一批候选，再用 Cross-Encoder 联合接收查询与每个候选文本、重新排序。<strong>重排能更细地比较已取回的内容，但逐对计算更贵，所以通常只处理候选。</strong>候选阶段漏掉的文档，不会仅靠重新排序出现。本页没有模拟重排模型或编造模型评分。<Cite id="semantic-rerank"/></p>
       <p id="semantic-generalization" className="vp-citation-target">BEIR 对不同领域和任务的检索方法做了对照，发现稠密方法的表现会随领域变化，BM25 仍是有力基线。<strong>在一个测试集里领先，不保证在自己的资料库里更好。</strong>选择方法时同时检查质量、延迟与成本，而不是只看“语义”这个名称。<Cite id="semantic-generalization"/></p>
       <ArticleAside title="精确字段仍然需要明确条件"><p>书目 #42、某个错误代码和有效日期，不应仅依靠意思相近来判断。可以先用业务字段限定范围，也可以结合词项检索与向量检索；怎样融合和排序，需要单独定义与评估。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="evaluation" title="用相关标注检查结果" className={base.offset}><Legacy slug="semantic-search" names={["prompt-heading"]}/>
-      <p id="semantic-evaluation" className="vp-citation-target">《Introduction to Information Retrieval》把精确率定义为返回结果中相关文档的比例，把召回率定义为全部相关文档中已返回的比例。<strong>评估依赖查询与文档的相关标注，而不只是分数。</strong>本例 B、A 两条里只有 A 相关，因此精确率 1/2，召回率 1/1。零条返回时精确率分母为零，本页显示未定义。<Cite id="semantic-evaluation"/></p>
+      <p id="semantic-evaluation" className="vp-citation-target">《Introduction to Information Retrieval》把精确率定义为返回结果中相关文档的比例，把召回率定义为全部相关文档中已返回的比例。<strong>评估依赖查询与文档的相关标注，而不只是分数。</strong>本例续借返回 B、A，但人工标注只有现行规则 A 相关，所以精确率是 1/2；全部相关文档只有 A 且已返回，所以召回率是 1/1。零条返回时没有可核对的结果，精确率分母为零，本页显示未定义而不是 0%。<Cite id="semantic-evaluation"/></p>
       <div className={s.evaluationNote}><strong>多取几条，可以找回遗漏，也可能加入干扰。</strong><p>对同一批真实查询分别看相关文档是否被找到、前排是否有干扰，再调整 k、范围、表示或重排。不能用三个教学查询代表整个系统质量。</p></div>
       <p>需要生成回答时，候选还要变成可读取、可核对的资料，再交给 <ConceptTerm slug="rag">RAG</ConceptTerm> 的后续环节。搜索分数本身不能成为事实依据。</p>
     </ArticleSection>
