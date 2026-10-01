@@ -32,7 +32,7 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
     assert.ok(Array.isArray(article.relatedArticleSlugs));
     if (article.isExample) assert.match(article.body, /不对应任何真实新闻事件/);
   }
-  assert.match(listPage, /newsArticles/);
+  const trialDates = articles.filter((article) => article.eventDate >= "2021-01-01" && article.eventDate <= "2021-01-07").map((article) => article.eventDate).sort();\n  assert.deepEqual(trialDates, ["2021-01-01", "2021-01-02", "2021-01-03", "2021-01-04", "2021-01-05", "2021-01-06", "2021-01-07"]);\n  assert.match(listPage, /newsArticles/);
   assert.match(detailPage, /generateStaticParams/);
   assert.match(detailPage, /getPublishedTerm/);
   assert.match(detailPage, /news-hero/);
