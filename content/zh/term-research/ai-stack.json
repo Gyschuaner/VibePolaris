@@ -1042,11 +1042,14 @@
   },
   {
     "slug": "loop",
-    "mechanism": "循环在条件允许时反复执行同一段逻辑，并在每轮更新索引或状态，直到达到停止条件。",
-    "misconception": "循环不是自动并行；如果状态不朝停止条件推进，可能一直运行。",
-    "demoSignature": "输入：数组[2,4,6]；中间：索引0→1→2→3，累计和0→2→6→12；输出：索引3触发停止，结果12。可视化：建议5帧的环形轨道和变量表；交互：单步执行并可制造不更新索引的死循环警示。",
+    "mechanism": "循环先设置初始状态，再反复处理当前项并更新状态，直到停止条件成立。",
+    "misconception": "如果状态不朝停止条件推进，循环可能一直运行；数组索引到达元素数量时，才表示没有下一项可读。每轮错误还需要明确停止、跳过或重试。",
+    "demoSignature": "输入：数组 [2,4,6]，索引从0开始且累计和为0；中间：每轮读取当前项、累加并让索引0→1→2→3；输出：索引3等于数组长度3，循环停止，结果12。可视化：4帧表现初始化、第一轮、后两轮和停止；交互：单步执行并可制造不更新索引的死循环警示。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
+      "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
+      "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement"
     ],
     "rewriteRisk": "演示必须出现停止条件和状态推进，不能只让箭头绕圈。",
     "nearDuplicates": [
