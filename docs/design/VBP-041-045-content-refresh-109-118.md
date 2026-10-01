@@ -80,3 +80,11 @@
 - 浏览器验收只覆盖本批受影响路由与主交互，不等同生产验收；当前尚未合入 main、尚未部署生产。
 
 Obsidian 路径 `D:/Obsidian/gysnote` 在当前 Mac 环境不存在，跳过项目训练记录。
+
+## 批量上线结果
+
+- PR [#266](https://github.com/Gyschuaner/VibePolaris/pull/266) 已合入 `main`，合并提交为 `b9ea01d`。生产叠加分支为 `release/VBP-041-prod-overlay-20261001`，提交 `bc115f2e2c089a4aee6766d16ec5e6b0452b0ea1`。
+- 生产镜像为 `vibepolaris:bc115f2e2c089a4aee6766d16ec5e6b0452b0ea1`，release 目录为 `/opt/vibepolaris/releases/20261001T135438Z-bc115f2e`。部署记录为 `deploy-vbp041-045-content-109-118-prod-20261001`，DP deployment ID `2f15b9f5-9ad4-42af-9ee3-9dd161e583c7`，状态 `released`。
+- 回滚基线为 `/opt/vibepolaris/releases/20261001T123129Z-10914cce0534`，对应旧镜像 `vibepolaris:10914cce053471e27c33a117ebcc496784507f13`；回滚使用旧 Compose、旧镜像和旧 release 目录，数据库卷未改动。
+- 生产健康检查通过。十条路由 `/terms/streaming-output`、`/terms/structured-output`、`/terms/function-calling`、`/terms/server`、`/terms/api-gateway`、`/terms/reverse-proxy`、`/terms/load-balancer`、`/terms/auth`、`/terms/authorization`、`/terms/session` 与 `/news` 均返回 HTTP 200；十条正文关键词校验通过。
+- 生产 CUA 完成 `streaming-output` 与 `session` 的关键交互验收。Obsidian 路径 `D:/Obsidian/gysnote` 在当前 Mac 环境不存在，跳过项目训练记录。
