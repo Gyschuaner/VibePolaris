@@ -1908,3 +1908,42 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 73 条本地正文提交 `8e021bb`。正文发布分支 `release/VBP-030-webhook-followup2-20261001` 从第 72 条合并提交 `df8d7d9fd406700774560a9e0e88a6581d90942c` 新建，只复制正文文件，提交 `3f58cf9` 经 [PR #253](https://github.com/Gyschuaner/VibePolaris/pull/253) 合入 `main`，当前合并提交 `c9b727f0d8ef330a0e272616d9bfed182c65fc41`。PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。交互功能继续留在本地/dev。
 - 生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/webhook` 在 20 秒内 SSL 连接超时，DP CLI 在 20 秒内超时；因此不能声称生产上线，也没有把本地镜像当作远端部署。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **73/105**，下一条是 `distributed-system`。
+
+## 74 · 分布式系统文字复审、两端故障演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“借阅服务把请求发给库存服务后，为什么一边已经扣库存，另一边却只看到超时；重试怎样避免把同一件事执行两次？”读完应能解释节点、消息、局部故障、超时、操作 ID 和幂等，区分请求没到、远端已执行但响应丢失、确认已执行和查询无记录。
+- 更新 `DistributedTermPage`：补充同机独立进程只要靠消息协作也可能有分布式信息延迟；把 AWS request/reply 的八个动作写成可读的请求、网络、服务端和响应阶段，并说明客户端、服务器和网络可以独立失败。保留操作 ID、幂等、逻辑时钟、退避和重试边界，互动功能继续留在本地/dev。
+- 保留 `DistributedLesson` 的响应丢失、请求丢失、按操作 ID 查询、同 ID 重试和重置状态；演示仍是浏览器固定状态，不执行真实网络、共识协议或跨服务事务。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Lamport · Time, Clocks, and the Ordering of Events in a Distributed System](https://lamport.azurewebsites.net/pubs/time-clocks.pdf) | `distributed-definition` 与 `distributed-order`：独立进程通过消息通信，消息延迟不可忽略；“先发生”是部分顺序，逻辑时钟保持因果先后。 |
+| [AWS Builders’ Library · Challenges with distributed systems](https://d1.awsstatic.com/builderslibrary/pdfs/challenges-with-distributed-systems.pdf) | `distributed-failure`：一次 request/reply 至少包含客户端、网络和服务端的多个动作，客户端、服务器和网络可以独立失败。 |
+| [AWS Builders’ Library · Timeouts, retries, and backoff with jitter](https://d1.awsstatic.com/builderslibrary/pdfs/timeouts-retries-and-backoff-with-jitter.pdf) | `distributed-timeout` 与 `distributed-budget`：超时只限制等待，副作用可能已经发生；重试需要退避、上限和抖动。 |
+| [AWS Builders’ Library · Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) | `distributed-reconcile`：调用方提供唯一请求标识，服务端将标识记录与变更可靠地一起提交；同一标识换参数要明确拒绝或处理。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读正文和两组实际可见状态材料 `/tmp/vbp074-distributed-reader-prompt.txt`（SHA-256 `7d5cbd3b7adde98ad967438b8c0fa78487b74b37360eeb929108cc8dc418acf3`），未附作者意图、官方资料、源码或旧反馈；输入包括响应丢失与请求丢失的操作结果。
+- 独立 `language` 只读当前 `DistributedTermPage` 正文、`vibepolaris-zcode-partner` 与 `humanizer-zh` 规则，提示词材料为 `/tmp/vbp074-distributed-language-prompt.txt`（SHA-256 `bf9eb183e7ef713e7c329cd2eefabee285971dc685324622eb49883b5d3191f8`）。
+- reader 与 language 两个真实 CLI 会话均在 180 秒内因上游 `AI_APICallError` 超时，未生成结果文件或稳定 session ID；不能把它们记成通过。主助手依据四份已核实资料和 `humanizer-zh` 规则完成局部文字调整，保留请求阶段、故障状态、操作 ID 和引用映射。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。正文提交为 `52dbb10`。
+- CUA 在 `http://127.0.0.1:3219/terms/distributed-system?qa=074baseline` 的重启后服务上真实操作并观察：默认“处理后的响应丢失”路径中，A 发出请求后 B 显示已收到但尚未扣减；B 执行后库存为 4、显示 `reserve-42 已记账`，A 等待超时后显示“执行结果未知”，查询后显示“已核对 · reserve-42 执行成功”。重置并切到“请求在途中丢失”后，网络显示请求丢失，A 超时，查询显示“本例没有执行记录”，按同一 ID 重试后显示“本次重试得到确认，reserve-42 只有一份执行记录，库存仍为 4”。展开 AWS 重试引用并点击回链回到 `#distributed-timeout`；浏览器 `error/warn` 为空，截图已实际观察。
+- 演示只使用浏览器内存里的固定状态，不执行真实网络、分布式事务、共识协议、库存数据库或 AWS 服务；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+- 正文合入 `main` 后，以第 73 条镜像为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:24856039bf154232bd157c1cc4763f8e600c70f6`（`linux/amd64`，约 1.73 GB）；本地容器 3227 端口返回 200，并精确包含“同一台机器上，只要它们独立运行”“至少要经过八个动作”和“客户端、服务器和网络可以独立失败”。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI `requirement show VBP-030 --json` 在 20 秒内超时，未创建或虚构第 74 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 74 条本地正文提交 `52dbb10`。正文发布分支 `release/VBP-030-distributed-followup-20261001` 从第 73 条合并提交 `c9b727f0d8ef330a0e272616d9bfed182c65fc41` 新建，只复制正文文件，提交 `7b1d801` 经 [PR #254](https://github.com/Gyschuaner/VibePolaris/pull/254) 合入 `main`，当前合并提交 `24856039bf154232bd157c1cc4763f8e600c70f6`。PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。交互功能继续留在本地/dev。
+- 生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/distributed-system` 在 20 秒内 SSL 连接超时，DP CLI 在 20 秒内超时；因此不能声称生产上线，也没有把本地镜像当作远端部署。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **74/105**，下一条是 `microservices`。
