@@ -34,6 +34,7 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(atlas, /aria-expanded=\{node\.slug === selectedNodeSlug && detailOpen\}/);
   assert.match(atlas, /CaretRight/);
   assert.match(atlas, /aria-label=\{detailOpen \? "收起新闻详情" : "展开新闻详情"\}/);
+  assert.match(atlas, /news-atlas-timeline-item.*onClick=\{\(\) => selectArticle\(article\.slug\)\}/s);
   assert.match(atlas, /if \(!visible \|\| !from \|\| !to\) return null/);
   assert.match(atlas, /selectedSlug === slug && detailOpen/);
   assert.match(atlas, /detailOpen && selected \? `news:\$\{selected\.slug\}`/);
@@ -42,6 +43,9 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(styles, /\.news-atlas-detail-toggle/);
   assert.match(styles, /\.news-atlas-specks \{ z-index: 1; pointer-events: none; \}/);
   assert.match(styles, /\.news-atlas-world \{ position: absolute; z-index: 3;/);
+  assert.match(styles, /\.news-atlas-world\.is-reframing \{ transition: transform \.55s/);
+  assert.doesNotMatch(styles, /\.news-atlas-timeline-list::before/);
+  assert.doesNotMatch(styles, /\.news-atlas-connector/);
   assert.match(atlas, /Boolean\(selectedNodeSlug\) && showLines && connected/);
   assert.match(styles, /\.news-atlas-article-node \.news-atlas-node-copy \{ position: absolute;/);
 });

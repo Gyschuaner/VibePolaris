@@ -249,7 +249,6 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
         const selectedItems = getPositions().filter(node => node.slug === selectedNodeSlug || selectedNeighbors.has(node.slug));
         frame(selectedItems.length ? selectedItems : getPositions());
       } else {
-        setReframing(false);
         setView(value => ({ ...value, x: value.x + (next.width - previous.width) / 2, y: value.y + (next.height - previous.height) / 2 }));
       }
     });
