@@ -12424,9 +12424,9 @@
   },
   {
     "slug": "return-value",
-    "lead": "函数里console.log(8)后没有return，调用方为何拿不到8？",
-    "definition": "返回值是函数完成时交回调用位置的结果；调用方可以保存、继续运算或忽略它。",
-    "boundary": "打印到控制台不是返回值；函数没有显式返回时也可能按语言规则得到默认值。",
+    "lead": "函数里 console.log(8) 之后没有 return，调用方为何拿不到 8？",
+    "definition": "return 把值交给调用方；调用方可以保存、继续运算或忽略它。",
+    "boundary": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
     "sceneKind": "route",
     "sceneTitle": "日志输出与返回通道分叉",
     "actionLabel": "删除 return",
@@ -12450,7 +12450,7 @@
         "label": "控制台",
         "detail": "打印8",
         "icon": "code",
-        "group": "副作用"
+        "group": "显示"
       },
       {
         "id": "return",
@@ -12496,7 +12496,7 @@
     "frames": [
       {
         "label": "函数求值",
-        "note": "double先把4乘2得到8。",
+        "note": "double 先在本次调用里把 4×2 算成 8；这个 8 还留在函数内部，没有交出去。",
         "activeIds": [
           "call",
           "body"
@@ -12516,7 +12516,7 @@
       },
       {
         "label": "日志支路输出",
-        "note": "console显示8，但调用方变量仍没有值。",
+        "note": "console.log 显示 8，但 result 还没收到返回值；打印不会替调用方赋值。",
         "activeIds": [
           "log"
         ],
@@ -12538,7 +12538,7 @@
       },
       {
         "label": "返回通道生效",
-        "note": "执行return 8后，值沿返回通道离开函数。",
+        "note": "执行 return 8 后，这次调用结束，8 沿返回通道交给调用方。",
         "activeIds": [
           "return"
         ],
@@ -12559,7 +12559,7 @@
       },
       {
         "label": "调用方接收",
-        "note": "result得到8；删除return时则变为undefined。",
+        "note": "保留 return 时 result 得到 8；删除 return 的版本中，JavaScript 调用结果是 undefined。",
         "activeIds": [
           "result"
         ],
@@ -12578,12 +12578,12 @@
         ]
       }
     ],
-    "insight": "打印是副作用，返回值是交给调用方继续使用的数据，两条通道不能混为一谈。",
+    "insight": "打印只改变控制台显示，返回值才会被调用方拿到；函数直接改外部状态又是另一条路径。",
     "quiz": {
-      "question": "函数打印“成功”但没有return，调用结果通常是什么？",
+      "question": "在 JavaScript 中，函数打印“成功”但没有 return，调用结果是什么？",
       "options": [
         {
-          "label": "按语言规则得到默认返回值",
+          "label": "undefined",
           "correct": true
         },
         {
@@ -12595,18 +12595,33 @@
           "correct": false
         }
       ],
-      "success": "控制台内容不会自动进入调用表达式。",
-      "retry": "要看是否执行return。"
+      "success": "控制台内容不会自动进入调用代码；JavaScript 没有显式 return 时结果是 undefined。",
+      "retry": "先看函数是否执行 return，再判断调用方收到的值。"
     },
     "prompt": {
       "title": "检查函数输出",
-      "text": "把日志、文件写入、网络请求和return分成不同通道，标出调用方真正接收的值。"
+      "text": "把日志输出、函数直接改外部状态和 return 分成不同通道，标出调用方真正接收的值；注明 JavaScript 没有显式 return 时的结果。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return",
+        "label": "MDN · return",
+        "note": "说明 return 结束函数执行、将值交给调用者；省略表达式时返回 undefined。"
+      },
+      {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
-        "label": "ECMAScript 规范 · ecmascript language statements and declarations",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript 规范 · Return Statement",
+        "note": "规定 JavaScript return 语句的执行语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
+        "label": "Python 文档 · The return statement",
+        "note": "说明 Python return 结束函数并将表达式结果作为调用结果；省略表达式时返回 None。"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html",
+        "label": "TypeScript Handbook · More on Functions",
+        "note": "说明函数返回值类型与调用方使用返回结果的关系。"
       }
     ]
   },

@@ -3097,25 +3097,25 @@
       "返回结果"
     ],
     "question": "函数算出总价后，外部代码怎样拿到这个数？",
-    "definition": "返回语句结束当前函数的相应执行路径，并把一个值传回调用位置。",
-    "boundary": "输出到控制台不等于返回值；修改外部变量也不是同一件事。",
+    "definition": "执行 return 后，当前这次函数调用会结束，并把一个值交回调用方。",
+    "boundary": "控制台打印只是显示信息；函数内部直接修改外部状态，也不等于把返回值交给调用方。调用方可以把返回值赋给 result，再继续使用。",
     "demoType": "flow",
     "demoTitle": "返回值回到调用处",
     "demoSteps": [
       {
         "label": "调用前",
-        "value": "total 尚未赋值",
-        "note": "调用处等待函数结果。"
+        "value": "result = double(4)",
+        "note": "调用方先等右边的函数交回结果。"
       },
       {
         "label": "函数返回",
-        "value": "return 60",
-        "note": "当前函数执行结束。"
+        "value": "return 8",
+        "note": "函数内部先算出 8，再执行 return 8，把它交给调用方，并结束这次调用。"
       },
       {
         "label": "调用后",
-        "value": "total 变为 60",
-        "note": "结果进入后续表达式。"
+        "value": "result 变为 8",
+        "note": "调用方保存返回值后继续计算；只 console.log 不会改变 result。"
       }
     ],
     "quizQuestion": "console.log 的输出是否等于函数返回值？",
@@ -3127,7 +3127,7 @@
     "correctText": "返回值进入调用表达式，日志只是输出信息。",
     "wrongText": "是否为数字不改变两者职责。",
     "promptTitle": "说明返回结果",
-    "prompt": "请写清函数每条执行分支返回什么，以及调用方如何处理空值和错误。",
+    "prompt": "请写清函数每条执行分支返回什么，以及调用方如何处理没有返回值和错误。",
     "relatedSlugs": [
       "function",
       "parameter",
