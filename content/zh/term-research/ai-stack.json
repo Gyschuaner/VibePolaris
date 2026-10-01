@@ -355,14 +355,16 @@
   },
   {
     "slug": "guardrail",
-    "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或升级处理。",
-    "misconception": "护栏不能保证模型绝不出错，也不能代替权限、审核和业务校验。",
-    "demoSignature": "输入：用户请求导出客户表，规则禁止包含手机号；中间：检测到12个手机号字段，输出检查状态pass→blocked；输出：只返回脱敏后的12条记录。可视化：数据字段穿过规则闸门，敏感列被遮罩。 建议4帧：含手机号的数据表进入、规则扫描12列命中、敏感列被遮罩、脱敏结果放行；交互：开关某条规则查看哪些字段被拦。",
+    "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
+    "misconception": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
+    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：12 条脱敏记录放行，完整号码为 0，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/guardrails/",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
     ],
-    "rewriteRisk": "需要明确护栏检查对象和动作，别把所有安全措施都装进同一个词。",
+    "rewriteRisk": "要写出护栏检查什么、命中后做什么，以及权限、审核和业务校验由谁负责，不要把所有安全措施都装进同一个词。",
     "nearDuplicates": [
       "moderation",
       "permission-boundary",

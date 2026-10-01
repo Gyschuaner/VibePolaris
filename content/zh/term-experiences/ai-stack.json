@@ -4485,17 +4485,17 @@
   },
   {
     "slug": "guardrail",
-    "lead": "导出客户表时命中12个手机号字段，护栏应该怎样处理？",
-    "definition": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或升级处理。",
-    "boundary": "护栏不能保证模型绝不出错，也不能代替权限、审核和业务校验。",
+    "lead": "导出客户表时命中 12 个手机号字段，护栏怎样处理？",
+    "definition": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
+    "boundary": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
     "sceneKind": "pipeline",
-    "sceneTitle": "敏感字段穿过输出检查",
-    "actionLabel": "开关脱敏规则",
+    "sceneTitle": "敏感字段经过输出检查",
+    "actionLabel": "选择检查步骤",
     "actors": [
       {
         "id": "data",
         "label": "导出数据",
-        "detail": "12条客户记录",
+        "detail": "12 条客户记录",
         "icon": "database",
         "group": "输入"
       },
@@ -4544,7 +4544,7 @@
     "frames": [
       {
         "label": "数据待导出",
-        "note": "12条记录仍含完整手机号。",
+        "note": "12 条记录仍含完整手机号，每条记录各含 1 个。",
         "activeIds": [
           "data"
         ],
@@ -4555,13 +4555,13 @@
           "output"
         ],
         "values": {
-          "data": "敏感字段 12"
+          "data": "完整手机号 12（每条 1 个）"
         },
         "activeEdgeIds": []
       },
       {
         "label": "规则命中",
-        "note": "检查器逐行识别出12个手机号。",
+        "note": "检查器识别出 12 个手机号字段。",
         "activeIds": [
           "scanner"
         ],
@@ -4580,7 +4580,7 @@
       },
       {
         "label": "字段被改写",
-        "note": "脱敏规则把完整号码改为只显示后4位。",
+        "note": "脱敏规则把完整号码改为只显示后 4 位。",
         "activeIds": [
           "mask"
         ],
@@ -4600,7 +4600,7 @@
       },
       {
         "label": "安全结果放行",
-        "note": "导出条数不变，完整手机号数量降为0。",
+        "note": "导出条数不变，完整手机号数量降为 0；权限仍需单独判断。",
         "activeIds": [
           "output"
         ],
@@ -4611,27 +4611,27 @@
         ],
         "mutedIds": [],
         "values": {
-          "output": "12条 · 完整号码0"
+          "output": "12 条 · 完整号码 0"
         },
         "activeEdgeIds": [
           "m-o"
         ]
       }
     ],
-    "insight": "护栏在输入、输出或动作边界执行具体检查；它不能替代权限和人工审批。",
+    "insight": "护栏在输入、输出或工具动作前后执行具体检查；它不能替代权限、内容审核或业务校验。",
     "quiz": {
       "question": "护栏把手机号脱敏后，是否等于用户拥有导出权限？",
       "options": [
-        {
-          "label": "不等于，权限仍要单独判断",
-          "correct": true
-        },
         {
           "label": "等于，脱敏就是授权",
           "correct": false
         },
         {
-          "label": "只要文件能下载即可",
+          "label": "不等于，权限仍要单独判断",
+          "correct": true
+        },
+        {
+          "label": "只要文件能下载就算有权限",
           "correct": false
         }
       ],
@@ -4646,12 +4646,22 @@
       {
         "url": "https://openai.github.io/openai-agents-python/guardrails/",
         "label": "OpenAI Agents SDK · guardrails",
-        "note": "可运行示例与实现细节"
+        "note": "输入、输出检查与阻断示例"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+        "label": "OpenAI Agents SDK · human in the loop",
+        "note": "需要人工决定时的暂停与审批"
       },
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST AI 600-1 · Generative AI Profile",
+        "note": "生成式 AI 风险与控制措施"
+      },
+      {
+        "url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
+        "label": "NIST AI RMF · Playbook",
+        "note": "风险识别、治理与验证建议"
       }
     ]
   },
