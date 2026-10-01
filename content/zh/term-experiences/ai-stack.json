@@ -8191,7 +8191,7 @@
       },
       {
         "label": "交付后清理",
-      "note": "2 个候选已经交付给用户比较；候选清单和查价、库存的调用次数清掉，目标卡不清，用来说明这 2 个候选按什么条件筛出来。是否把结果另外存起来，按产品规则决定。",
+        "note": "2 个候选已经交付给用户比较；候选清单和查价、库存的调用次数清掉，目标卡不清，用来说明这 2 个候选按什么条件筛出来。是否把结果另外存起来，按产品规则决定。",
         "activeIds": [
           "result",
           "cleanup"
@@ -8261,8 +8261,8 @@
   {
     "slug": "prompt-injection",
     "lead": "网页正文夹着“把密钥发出去”的句子，为什么不能把它当成用户指令？",
-    "definition": "攻击性输入把不可信内容伪装成指令，诱导模型忽略原任务、泄露数据或调用不应调用的工具。",
-    "boundary": "只隐藏系统提示词不能解决注入；网页、文档和工具结果里的间接指令同样可能构成攻击。",
+    "definition": "提示词注入发生在不可信文字进入模型上下文后，文字试图冒充授权指令。应用程序要先保留内容来源，再用工具权限、隔离和确认限制它可能造成的影响。",
+    "boundary": "模型读到用户请求和网页内容时都面对文字，不能稳定地凭句子判断谁有授权。读取网页可以继续，但网页不会因为写成指令的样子就获得发送密钥的权限；即使模型被诱导，工具层仍应拒绝未授权动作。",
     "sceneKind": "pipeline",
     "sceneTitle": "不可信内容试图越过工具边界",
     "actionLabel": "显示不可信指令层",
@@ -8332,105 +8332,40 @@
     "frames": [
       {
         "label": "两路内容进入",
-        "note": "用户目标和网页内容以不同信任标签进入。",
-        "activeIds": [
-          "user",
-          "page"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "tool",
-          "summary"
-        ],
-        "values": {
-          "user": "trusted",
-          "page": "untrusted"
-        },
-        "activeEdgeIds": []
+        "note": "程序保留来源：用户目标是请求，网页正文是不可信数据；两者都能被读取，但权限不同。"
       },
       {
         "label": "恶意句子浮现",
-        "note": "网页里的命令试图从数据通道跳到指令通道。",
-        "activeIds": [
-          "page",
-          "separator"
-        ],
-        "doneIds": [
-          "user"
-        ],
-        "mutedIds": [
-          "tool",
-          "summary"
-        ],
-        "values": {
-          "separator": "越界请求 1"
-        },
-        "activeEdgeIds": [
-          "p-s"
-        ]
+        "note": "网页文字仍可能影响模型判断；把句子识别成攻击不是唯一防线。"
       },
       {
         "label": "权限闸门拒绝",
-        "note": "发送密钥工具没有被授予权限，调用数保持0。",
-        "activeIds": [
-          "separator",
-          "tool"
-        ],
-        "doneIds": [
-          "user",
-          "page"
-        ],
-        "mutedIds": [
-          "summary"
-        ],
-        "values": {
-          "tool": "denied · 执行0"
-        },
-        "activeEdgeIds": [
-          "s-t"
-        ]
+        "note": "即使模型提出发送密钥，工具层按权限拒绝；调用数保持0。"
       },
       {
         "label": "完成原任务",
-        "note": "系统只摘要可见正文，不执行网页内命令。",
-        "activeIds": [
-          "summary"
-        ],
-        "doneIds": [
-          "user",
-          "page",
-          "separator"
-        ],
-        "mutedIds": [
-          "tool"
-        ],
-        "values": {
-          "summary": "完成 · 工具调用0"
-        },
-        "activeEdgeIds": [
-          "s-sum"
-        ]
+        "note": "系统继续使用可见网页正文做摘要，读到内容不代表执行其中命令。"
       }
     ],
-    "insight": "提示词注入利用了数据和指令混淆；防护要靠信任标记、最小权限和外部校验。",
+    "insight": "提示词注入混淆了数据和指令；读数据与执行动作要分开，来源标记、最小权限和确认共同限制影响。",
     "quiz": {
-      "question": "把系统提示词隐藏起来，能彻底防住间接注入吗？",
+      "question": "网页文字要求发送密钥时，最可靠的基础防线是什么？",
       "options": [
         {
-          "label": "不能，还要隔离不可信内容并限制工具权限",
+          "label": "把网页当不可信数据，并在工具层限制权限",
           "correct": true
         },
         {
-          "label": "能，用户看不到就安全",
+          "label": "只把系统提示词藏起来",
           "correct": false
         },
         {
-          "label": "只需过滤“忽略”两个字",
+          "label": "只过滤“忽略”两个字",
           "correct": false
         }
       ],
-      "success": "攻击内容可以来自网页和工具结果。",
-      "retry": "安全不能依赖一句秘密提示。"
+      "success": "读取数据和执行动作是两条边界；权限检查能在模型误判时兜底。",
+      "retry": "网页内容可以被读取，但不会自动得到工具授权。"
     },
     "prompt": {
       "title": "审查一次外部内容处理",
@@ -8439,13 +8374,23 @@
     "sources": [
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST 出版物 · AI 600-1",
+        "note": "生成式 AI 风险、治理与可信边界"
       },
       {
         "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
-        "label": "OWASP GenAI · llm01 prompt injection",
-        "note": "生成式 AI 安全风险"
+        "label": "OWASP GenAI · LLM01 Prompt Injection",
+        "note": "提示注入风险与防护方向"
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.12173",
+        "label": "Greshake 等 · Indirect Prompt Injection",
+        "note": "外部资料中的间接注入如何影响应用和工具调用"
+      },
+      {
+        "url": "https://openai.com/safety/prompt-injections/",
+        "label": "OpenAI · Understanding prompt injections",
+        "note": "第三方内容、分层防护、最小访问和确认"
       }
     ]
   },
@@ -8641,9 +8586,9 @@
   },
   {
     "slug": "compiler",
-    "lead": "一段add函数怎样从可读源码变成机器可以执行的指令？",
-    "definition": "编译器分析源代码的语法和含义，经过中间表示与优化后生成另一种可执行代码或目标文件。",
-    "boundary": "编译不等于打包；前者转换程序表示并检查语言规则，后者主要组织模块和资源。",
+    "lead": "一段 add(2, 3) 源码怎样经由中间表示，变成目标环境能执行的代码？",
+    "definition": "编译器先解析源代码，形成语法树并检查语言规则，再转成中间表示、按需要优化，最后生成目标代码。生成后由运行时或操作系统执行，编译器本身不负责把结果跑起来。",
+    "boundary": "编译负责把代码从一种形式转换成另一种形式，并检查语言规则；打包器组织模块与资源，构建工具把编译、打包等多个步骤按顺序组织起来。编译成功，也不能保证运行时一定不出错。",
     "sceneKind": "pipeline",
     "sceneTitle": "源码经过四层表示",
     "actionLabel": "查看下一层",
@@ -8658,28 +8603,28 @@
       {
         "id": "ast",
         "label": "语法树",
-        "detail": "7个节点",
+        "detail": "结构节点",
         "icon": "layout",
         "group": "分析"
       },
       {
         "id": "ir",
         "label": "中间表示",
-        "detail": "4条指令",
+        "detail": "内部指令",
         "icon": "file",
         "group": "转换"
       },
       {
         "id": "machine",
         "label": "目标代码",
-        "detail": "机器指令",
+        "detail": "交给运行时",
         "icon": "gear",
         "group": "输出"
       },
       {
         "id": "run",
-        "label": "运行结果",
-        "detail": "5",
+        "label": "运行时",
+        "detail": "执行代码，算出 5",
         "icon": "code",
         "group": "验证"
       }
@@ -8713,7 +8658,7 @@
     "frames": [
       {
         "label": "解析源码",
-        "note": "字符被组织成7个有结构的语法节点。",
+        "note": "字符先被组织成语法树的节点；语法不完整时在这一层返回错误。",
         "activeIds": [
           "source",
           "ast"
@@ -8724,7 +8669,7 @@
           "run"
         ],
         "values": {
-          "ast": "7 节点"
+          "ast": "结构节点"
         },
         "activeEdgeIds": [
           "s-a"
@@ -8732,7 +8677,7 @@
       },
       {
         "label": "生成中间表示",
-        "note": "语法树降为4条更接近执行的指令。",
+        "note": "语法树变成编译器内部指令；这个例子太简单，没有多少可优化的地方，中间表示仍不是目标机器指令。",
         "activeIds": [
           "ast",
           "ir"
@@ -8745,7 +8690,7 @@
           "run"
         ],
         "values": {
-          "ir": "4 条"
+          "ir": "内部指令"
         },
         "activeEdgeIds": [
           "a-i"
@@ -8753,7 +8698,7 @@
       },
       {
         "label": "产出目标代码",
-        "note": "后端把中间指令变成目标机器指令。",
+        "note": "编译器按目标环境生成代码；编译完成后交给运行时或操作系统，由它们执行，编译器自己不跑这段代码。",
         "activeIds": [
           "ir",
           "machine"
@@ -8773,8 +8718,8 @@
         ]
       },
       {
-        "label": "执行验证",
-        "note": "运行目标代码，add(2,3)得到5。",
+        "label": "运行验证",
+        "note": "运行时执行目标代码，add(2,3)得到5；如果输入或环境不符合要求，错误会在这一层出现，编译阶段拦不住它。",
         "activeIds": [
           "machine",
           "run"
@@ -8786,84 +8731,94 @@
         ],
         "mutedIds": [],
         "values": {
-          "run": "5"
+          "run": "执行 · 5"
         },
         "activeEdgeIds": [
           "m-r"
         ]
       }
     ],
-    "insight": "编译器转换程序表示并检查语言规则；它不是把模块和图片装进一个包。",
+    "insight": "编译器把代码从一种形式逐层转换，并检查语言规则；目标代码随后交给运行时执行，打包器组织模块，构建工具组织步骤。",
     "quiz": {
-      "question": "把多个JS模块合成两个文件，主要属于什么？",
+      "question": "哪句话准确区分了编译和运行？",
       "options": [
         {
-          "label": "打包",
+          "label": "编译器生成目标代码，运行时或操作系统负责执行",
           "correct": true
         },
         {
-          "label": "典型的机器码编译",
+          "label": "编译器生成代码后也负责把所有输入跑完",
           "correct": false
         },
         {
-          "label": "代码格式化",
+          "label": "只要编译成功，运行时就不会出错",
           "correct": false
         }
       ],
-      "success": "模块组织是打包器的主要职责。",
-      "retry": "编译更关心语言表示的转换。"
+      "success": "编译产出和运行执行是相邻但不同的阶段。",
+      "retry": "想想目标代码生成后还需要谁来执行。"
     },
     "prompt": {
-      "title": "追踪一次编译",
-      "text": "列出源码、语法树或中间表示、目标代码和错误发生层，给一个最小程序验证最终结果。"
+      "title": "追踪一次编译和运行",
+      "text": "用一个最小程序分别标出语法检查、语法树、中间表示、目标代码、执行者，以及编译期和运行期各自可能出现的错误。"
     },
     "sources": [
       {
         "url": "https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html",
-        "label": "LLVM 官方文档 · index",
-        "note": "原始规范与实现说明"
+        "label": "LLVM 官方教程 · My First Language Frontend",
+        "note": "从源代码到 AST、IR 和目标代码的前端流程"
+      },
+      {
+        "url": "https://gcc.gnu.org/onlinedocs/gccint/",
+        "label": "GCC 官方文档 · Internals",
+        "note": "前端、GIMPLE、RTL 与后端生成阶段"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Concepts",
+        "label": "MDN WebAssembly · Concepts",
+        "note": "模块、二进制代码与运行时实例化的边界"
       },
       {
         "url": "https://www.ecma-international.org/publications-and-standards/standards/ecma-335/",
-        "label": "Ecma 标准 · ecma 335",
-        "note": "原始规范与实现说明"
+        "label": "ECMA-335 CLI 标准",
+        "note": "可执行格式、运行时与类型系统的规范背景"
       }
     ]
   },
   {
     "slug": "interpreter",
-    "lead": "代码逐步运行时，变量x为什么会从空变成1再变成3？",
-    "definition": "解释器在运行时读取程序表示并执行其操作，常在遇到语句或字节码时立即更新程序状态。",
-    "boundary": "解释执行不等于逐行翻译文本；现代运行时可能先生成字节码或再即时编译。",
+    "lead": "代码逐步运行时，变量 x 为什么会从未赋值变成 1，再变成 3？",
+    "definition": "解释器拿到源代码或字节码这样的程序，一条一条执行其中的指令，每执行一步就更新程序状态；现代运行时也可能先生成字节码或即时编译。",
+    "boundary": "解释器不等于把源码逐行翻译成另一种语言。区分解释和编译，看的是程序什么时候开始执行、是不是先产出一个完整的目标程序再运行。指令指针记录当前执行到哪条指令，不是读到第几行源码；中间有没有生成过字节码，也不是判断标准。脚本仍需要对应的解释器或运行时才能开始执行。",
     "sceneKind": "terminal",
     "sceneTitle": "解释执行时的指令指针与变量表",
     "actionLabel": "单步执行",
     "actors": [
       {
         "id": "code",
-        "label": "程序",
-        "detail": "x=1; x=x+2; print(x)",
+        "label": "程序指令",
+        "detail": "源码 → 指令",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "pointer",
         "label": "指令指针",
-        "detail": "第0条",
+        "detail": "指向第一条指令",
         "icon": "clock",
         "group": "控制"
       },
       {
         "id": "vars",
         "label": "变量表",
-        "detail": "x 未定义",
+        "detail": "x 尚未赋值",
         "icon": "database",
         "group": "状态"
       },
       {
         "id": "console",
         "label": "控制台",
-        "detail": "空",
+        "detail": "等待输出",
         "icon": "code",
         "group": "输出"
       }
@@ -8891,7 +8846,7 @@
     "frames": [
       {
         "label": "尚未执行",
-        "note": "指针在第0条，变量表为空。",
+        "note": "解释器先把源码变成一条条可执行的指令；指针指向第一条，变量 x 尚未赋值。",
         "activeIds": [
           "code",
           "pointer"
@@ -8901,14 +8856,14 @@
           "console"
         ],
         "values": {
-          "pointer": "0",
-          "vars": "x = 未定义"
+          "pointer": "0 · 指令",
+          "vars": "x = 未赋值"
         },
         "activeEdgeIds": []
       },
       {
         "label": "第一步赋值",
-        "note": "执行x=1，指针和变量同时推进。",
+        "note": "第一步赋值：执行 x = 1。等号的意思是把它右边的 1 写进 x；执行完，指针移到下一条指令，变量表记下 x = 1。",
         "activeIds": [
           "pointer",
           "vars"
@@ -8920,7 +8875,7 @@
           "console"
         ],
         "values": {
-          "pointer": "1",
+          "pointer": "1 · 下一条",
           "vars": "x = 1"
         },
         "activeEdgeIds": [
@@ -8930,7 +8885,7 @@
       },
       {
         "label": "第二步计算",
-        "note": "执行x=x+2，变量改为3。",
+        "note": "读取旧值 1，加 2，再把结果写回 x；如果某条指令出了问题（比如用了从未赋值的变量），错误会在执行到它时出现，之前改好的状态不会自动退回。",
         "activeIds": [
           "pointer",
           "vars"
@@ -8942,7 +8897,7 @@
           "console"
         ],
         "values": {
-          "pointer": "2",
+          "pointer": "2 · 下一条",
           "vars": "x = 3"
         },
         "activeEdgeIds": [
@@ -8951,7 +8906,7 @@
       },
       {
         "label": "第三步打印",
-        "note": "读取当前x，控制台出现3。",
+        "note": "解释器读取当前的 x，控制台出现 3；脚本要先有对应的运行时才能走到这里。",
         "activeIds": [
           "pointer",
           "vars",
@@ -8962,7 +8917,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "pointer": "3",
+          "pointer": "3 · 完成",
           "console": "3"
         },
         "activeEdgeIds": [
@@ -8970,55 +8925,65 @@
         ]
       }
     ],
-    "insight": "解释执行强调运行时状态如何被指令推进，不等于永远逐行处理原始文本。",
+    "insight": "解释器让程序在运行时逐步执行可执行指令并更新状态；它不等于逐行翻译原始文本，也不排斥先有字节码或即时编译。",
     "quiz": {
-      "question": "解释器能否先把源码变成字节码再执行？",
+      "question": "区分解释器和编译器，最有用的判断是什么？",
       "options": [
         {
-          "label": "可以，现代运行时常混合多种阶段",
+          "label": "看程序什么时候开始执行、是不是先产出一个完整的目标程序再运行",
           "correct": true
         },
         {
-          "label": "不可以，否则就一定是编译器",
+          "label": "看运行过程中有没有生成过字节码",
           "correct": false
         },
         {
-          "label": "只有浏览器能这样做",
+          "label": "看程序是不是在浏览器里运行",
           "correct": false
         }
       ],
-      "success": "编译与解释不是简单互斥。",
-      "retry": "要看实际执行机制。"
+      "success": "执行时机和交付结果比“是否有字节码”更能说明边界。",
+      "retry": "现代运行时可能混合多个阶段，别把字节码当成唯一标准。"
     },
     "prompt": {
-      "title": "演示一段解释执行",
-      "text": "选择三行代码，逐步记录指令位置、变量表、调用栈和输出，不用“逐行翻译”代替机制。"
+      "title": "观察一次解释执行",
+      "text": "选择三条代码，记录源码怎样变成指令或字节码、指针停在哪条指令、变量状态、错误出现的位置和输出。"
     },
     "sources": [
       {
         "url": "https://docs.python.org/3/reference/executionmodel.html",
-        "label": "Python 官方文档 · executionmodel",
-        "note": "原始规范与实现说明"
+        "label": "Python 官方文档 · Execution model",
+        "note": "代码块、名字绑定和执行上下文"
       },
       {
         "url": "https://docs.python.org/3/library/dis.html",
         "label": "Python 官方文档 · dis",
-        "note": "原始规范与实现说明"
+        "note": "字节码指令与反汇编观察"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html",
+        "label": "ECMA-262 · Executable Code and Execution Contexts",
+        "note": "执行上下文、环境记录与代码执行"
+      },
+      {
+        "url": "https://www.lua.org/manual/5.4/manual.html",
+        "label": "Lua 5.4 Reference Manual",
+        "note": "Lua 程序、虚拟机和运行时语义"
       }
     ]
   },
   {
     "slug": "transpiler",
-    "lead": "TypeScript里的类型标注消失后，为什么输出仍是一段可读JavaScript？",
-    "definition": "转译器把一种源代码转换为抽象层级相近的另一种源代码，常用于语法兼容或语言迁移。",
-    "boundary": "转译后的结果仍是源代码；它不同于生成机器码的典型编译步骤，也不是模块打包。",
+    "lead": "TypeScript 里的 : number 去哪儿了？去掉它之后，输出为什么还是一份能直接阅读的 JavaScript？",
+    "definition": "转译器把一种源代码改写成另一种源代码，改的是语法，以及类型标注这类只在开发时起作用的信息。TypeScript 的类型标注能帮开发工具查出代码里的错误，转成 JavaScript 时会被转译器移除；输出仍是一份源代码。",
+    "boundary": "转译输出仍是源代码，通常还要交给打包或构建工具，再由运行时（真正执行代码的环境，比如浏览器）执行。转译器只对源代码做这种改写，环境里缺失的 API 它不会替你补上；那通常要引入垫片（补足缺失功能的一小段代码）或其他库。",
     "sceneKind": "transform",
     "sceneTitle": "相近层级源码之间的对应",
     "actionLabel": "悬停查看映射",
     "actors": [
       {
         "id": "ts",
-        "label": "TypeScript源码",
+        "label": "TypeScript 源码",
         "detail": "const n: number = 3",
         "icon": "code",
         "group": "输入"
@@ -9026,20 +8991,20 @@
       {
         "id": "tree",
         "label": "语法结构",
-        "detail": "赋值+类型节点",
+        "detail": "赋值 + 类型标注",
         "icon": "layout",
         "group": "中间"
       },
       {
         "id": "rule",
         "label": "转译规则",
-        "detail": "移除类型节点",
+        "detail": "移除类型标注",
         "icon": "gear",
         "group": "转换"
       },
       {
         "id": "js",
-        "label": "JavaScript源码",
+        "label": "JavaScript 源码",
         "detail": "const n = 3",
         "icon": "code",
         "group": "输出"
@@ -9068,7 +9033,7 @@
     "frames": [
       {
         "label": "读取源代码",
-        "note": "输入同时含赋值结构和1个类型节点。",
+        "note": "输入同时含赋值结构和类型标注；类型标注供开发工具检查，JavaScript 运行时（比如浏览器）不会去读它。",
         "activeIds": [
           "ts",
           "tree"
@@ -9078,15 +9043,15 @@
           "js"
         ],
         "values": {
-          "tree": "赋值1 · 类型1"
+          "tree": "赋值 · 类型"
         },
         "activeEdgeIds": [
           "t-tree"
         ]
       },
       {
-        "label": "应用目标规则",
-        "note": "JavaScript不保留这个类型节点，赋值结构不变。",
+        "label": "应用转译规则",
+        "note": "转译规则保留赋值结构、移除类型标注；去掉 : number 后，n 还是 3，程序的行为没有变化。",
         "activeIds": [
           "tree",
           "rule"
@@ -9098,7 +9063,7 @@
           "js"
         ],
         "values": {
-          "rule": "移除类型节点1"
+          "rule": "移除类型节点"
         },
         "activeEdgeIds": [
           "tree-r"
@@ -9106,7 +9071,7 @@
       },
       {
         "label": "输出仍是源码",
-        "note": "结果是可继续阅读和打包的JavaScript。",
+        "note": "输出还是一份能直接阅读的 JavaScript 源码，之后可以打包，最后交给运行时执行。运行出错时报的是这份 JavaScript 的位置，source map（记录转译前后位置对应关系的文件）能把错误指回 TypeScript 原文件。",
         "activeIds": [
           "js"
         ],
@@ -9117,58 +9082,68 @@
         ],
         "mutedIds": [],
         "values": {
-          "js": "const n = 3"
+          "js": "const n = 3 · source map"
         },
         "activeEdgeIds": [
           "r-j"
         ]
       }
     ],
-    "insight": "转译器把一种源码变成另一种相近层级源码，不等于生成机器码或完成打包。",
+    "insight": "转译器改写语言层的源码，保留可读输入输出；它不生成最终机器码、不自动打包，也不补齐缺失的运行时 API。",
     "quiz": {
-      "question": "TypeScript转成JavaScript后，下一步还可能需要什么？",
+      "question": "TypeScript 转成 JavaScript 后，为什么还需要后续步骤？",
       "options": [
         {
-          "label": "打包或继续构建",
+          "label": "输出仍是源码，还要交给构建流程处理，或由运行时执行",
           "correct": true
         },
         {
-          "label": "重新加入所有类型标注",
+          "label": "因为转译器已经把代码变成了能直接执行的机器码",
           "correct": false
         },
         {
-          "label": "把源码当成数据库",
+          "label": "转译器会自动补齐所有缺失的运行时 API",
           "correct": false
         }
       ],
-      "success": "转译只完成语言层转换。",
-      "retry": "资源组织和发布仍是后续环节。"
+      "success": "转译完成语言层改写，构建和运行仍有各自职责。",
+      "retry": "想想输出是否已经是最终可执行产物。"
     },
     "prompt": {
-      "title": "核对一次转译",
-      "text": "并排放出最小输入与输出，标出被移除、改写和保留的语法节点，确认运行行为是否一致。"
+      "title": "核对一次转译链路",
+      "text": "左右对照输入和输出：: number 被移除了，赋值结构原样保留；出错时，source map（记录转译前后位置对应关系的文件）会把位置指回 TypeScript 原文件。"
     },
     "sources": [
       {
         "url": "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
-        "label": "TypeScript 官方文档 · typescript from scratch",
-        "note": "类型系统与编译行为"
+        "label": "TypeScript 官方文档 · TypeScript from Scratch",
+        "note": "类型标注、编译输出与 JavaScript 兼容"
       },
       {
         "url": "https://www.typescriptlang.org/tsconfig/",
-        "label": "TypeScript 官方文档 · tsconfig",
-        "note": "类型系统与编译行为"
+        "label": "TypeScript 官方文档 · TSConfig",
+        "note": "目标环境、模块和源码映射配置"
+      },
+      {
+        "url": "https://babeljs.io/docs/",
+        "label": "Babel 官方文档",
+        "note": "JavaScript 语法转换与插件化转译"
+      },
+      {
+        "url": "https://swc.rs/docs/usage/core",
+        "label": "SWC 官方文档 · Core",
+        "note": "源码到源码转换与 AST 处理"
       }
     ]
   },
   {
     "slug": "build-tool",
-    "lead": "一个项目要先检查类型、再转译、最后复制图片，谁来安排这三个任务？",
-    "definition": "构建工具编排转译、资源处理、检查和产物输出等任务，并依据配置与依赖关系决定执行顺序。",
-    "boundary": "构建工具可以调用打包器，但两者不是同义词；构建还可能包含不打包的检查和生成任务。",
+    "lead": "一个项目里有类型检查、转译、图片复制这些任务，哪些必须等前面的任务做完，哪些可以同时开始？",
+    "definition": "构建工具读取配置，把检查、转译、打包和资源处理等任务接成依赖图；能并行的任务一起跑，必须等待的任务按顺序跑，最后汇总产物。",
+    "boundary": "构建工具负责任务编排和产物汇总；编译器或转译器改写代码，打包器把分散的模块整理成产物文件，开发服务器让你在本地改完代码就马上看到效果。构建得到的目录仍在本机，不等于已经部署上线。",
     "sceneKind": "tree",
     "sceneTitle": "构建任务按依赖顺序执行",
-    "actionLabel": "关闭一个任务",
+    "actionLabel": "切换任务状态",
     "actors": [
       {
         "id": "source",
@@ -9211,7 +9186,13 @@
         "id": "s-t",
         "from": "source",
         "to": "typecheck",
-        "label": "输入"
+        "label": "代码检查"
+      },
+      {
+        "id": "s-a",
+        "from": "source",
+        "to": "assets",
+        "label": "资源输入"
       },
       {
         "id": "t-tr",
@@ -9220,22 +9201,22 @@
         "label": "通过后"
       },
       {
-        "id": "tr-a",
+        "id": "tr-d",
         "from": "transpile",
-        "to": "assets",
-        "label": "继续"
+        "to": "dist",
+        "label": "代码输出"
       },
       {
         "id": "a-d",
         "from": "assets",
         "to": "dist",
-        "label": "输出"
+        "label": "资源输出"
       }
     ],
     "frames": [
       {
         "label": "任务图建立",
-        "note": "三个任务按依赖排好，产物目录为空。",
+        "note": "转译必须等类型检查通过才能开始；图片复制不依赖类型检查，可以单独开始。",
         "activeIds": [
           "source"
         ],
@@ -9252,31 +9233,33 @@
         "activeEdgeIds": []
       },
       {
-        "label": "检查通过",
-        "note": "类型检查完成后，转译任务解锁。",
+        "label": "按依赖执行",
+        "note": "检查通过，转译开始执行；资源任务沿自己的分支运行。若检查失败，转译会被阻塞。",
         "activeIds": [
           "typecheck",
-          "transpile"
+          "transpile",
+          "assets"
         ],
         "doneIds": [
           "source"
         ],
         "mutedIds": [
-          "assets",
           "dist"
         ],
         "values": {
           "typecheck": "通过",
-          "transpile": "可运行"
+          "transpile": "可运行",
+          "assets": "处理中"
         },
         "activeEdgeIds": [
           "s-t",
+          "s-a",
           "t-tr"
         ]
       },
       {
-        "label": "代码与资源处理",
-        "note": "转译3个模块，再复制1张图片。",
+        "label": "代码与资源完成",
+        "note": "3 个模块和 1 张图片分别完成；任一任务失败，构建流程报告失败，不应把半成品当新版本。",
         "activeIds": [
           "transpile",
           "assets"
@@ -9293,12 +9276,13 @@
           "assets": "1 图片"
         },
         "activeEdgeIds": [
-          "tr-a"
+          "tr-d",
+          "a-d"
         ]
       },
       {
         "label": "产物汇总",
-        "note": "dist最终包含4个产物；关闭资源任务则只剩3个。",
+        "note": "dist 收到 JS、CSS、图片和清单；目录仍在本机，部署流程还没有把它交给服务器。",
         "activeIds": [
           "dist"
         ],
@@ -9310,55 +9294,66 @@
         ],
         "mutedIds": [],
         "values": {
-          "dist": "4 个"
+          "dist": "4 个 · 未部署"
         },
         "activeEdgeIds": [
+          "tr-d",
           "a-d"
         ]
       }
     ],
-    "insight": "构建工具负责编排多类任务；打包器只是它可能调用的一环。",
+    "insight": "构建工具把检查、转译、资源处理和可能的打包接成任务图，安排等待或并行并汇总本机产物；构建完成不等于部署。",
     "quiz": {
-      "question": "构建流程只有类型检查而没有合并模块，这仍算构建吗？",
+      "question": "构建流程没有合并模块，仍然可以称为构建吗？",
       "options": [
         {
-          "label": "算，构建可包含不打包的任务",
+          "label": "可以，构建也能只编排检查、代码生成或资源处理这类任务",
           "correct": true
         },
         {
-          "label": "不算，必须生成单文件",
+          "label": "不可以，必须生成单个 JS 文件",
           "correct": false
         },
         {
-          "label": "只有部署才算构建",
+          "label": "只有部署到服务器后才算构建",
           "correct": false
         }
       ],
-      "success": "构建的核心是产物准备与任务编排。",
-      "retry": "打包不是唯一条件。"
+      "success": "构建的核心是依赖编排和产物准备，不要求每次都打包。",
+      "retry": "打包和部署都是可能的后续步骤。"
     },
     "prompt": {
       "title": "画出项目构建图",
-      "text": "列出每个任务的输入、输出、依赖、缓存条件和失败阻塞关系，删除没有产物或检查价值的步骤。"
+      "text": "列出每个任务的输入、输出、依赖和失败阻塞关系，标出可以并行的分支，并区分本机构建与部署。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/",
-        "label": "Vite 官方文档 · guide",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Guide",
+        "note": "开发与生产构建的任务入口和产物"
       },
       {
         "url": "https://www.gnu.org/software/make/manual/make.html",
-        "label": "GNU 官方手册 · make",
-        "note": "原始规范与实现说明"
+        "label": "GNU Make 官方手册",
+        "note": "目标、依赖和按需执行的任务图"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts",
+        "label": "npm 官方文档 · Scripts",
+        "note": "脚本生命周期与任务串联"
+      },
+      {
+        "url": "https://bazel.build/basics",
+        "label": "Bazel 官方文档 · Basics",
+        "note": "可缓存、可并行的构建图"
       }
     ]
   },
   {
     "slug": "bundler",
-    "lead": "入口文件依赖五个模块，其中一个动态导入，为什么最后不是只生成一个包？",
-    "definition": "打包器从入口文件沿依赖关系解析模块，把代码和资源组合、拆分或优化成浏览器可加载的产物。",
-    "boundary": "打包不一定只生成一个文件；代码分割会按入口或动态导入生成多个块。",
+    "lead": "点开按需功能时，为什么浏览器才去加载 lazy.js？",
+    "definition": "打包器从入口文件沿静态和动态导入建立依赖图，把入口与静态依赖放进主包，把被动态导入的模块单独拆成需要时再加载的块。",
+    "boundary": "打包器负责把模块图中的模块组合成产物文件、按需分块，并把重复引入的模块只保留一份。它不负责把源码转成另一种语言；代码里要划分出哪些模块，是写代码时决定的，打包器不插手。打包不等于压缩，结果也不一定只有一个文件。",
     "sceneKind": "assembly",
     "sceneTitle": "依赖图聚合成主包与动态块",
     "actionLabel": "切换动态导入",
@@ -9366,35 +9361,35 @@
       {
         "id": "entry",
         "label": "入口",
-        "detail": "main.js",
+        "detail": "src/main.js",
         "icon": "code",
         "group": "起点"
       },
       {
         "id": "static",
-        "label": "静态模块",
-        "detail": "5个",
+        "label": "静态依赖",
+        "detail": "5 个",
         "icon": "component",
-        "group": "依赖"
+        "group": "首屏依赖"
       },
       {
         "id": "dynamic",
-        "label": "动态模块",
-        "detail": "1个",
+        "label": "动态依赖",
+        "detail": "1 个按需模块",
         "icon": "component",
-        "group": "依赖"
+        "group": "延迟依赖"
       },
       {
         "id": "main",
         "label": "主包",
-        "detail": "main.js",
+        "detail": "dist/main.js",
         "icon": "package",
         "group": "产物"
       },
       {
         "id": "lazy",
         "label": "按需块",
-        "detail": "lazy.js",
+        "detail": "dist/lazy.js",
         "icon": "package",
         "group": "产物"
       }
@@ -9416,19 +9411,19 @@
         "id": "s-m",
         "from": "static",
         "to": "main",
-        "label": "合并"
+        "label": "进入主包"
       },
       {
         "id": "d-l",
         "from": "dynamic",
         "to": "lazy",
-        "label": "分块"
+        "label": "拆成按需块"
       }
     ],
     "frames": [
       {
         "label": "沿入口建图",
-        "note": "打包器从main.js找到5个静态模块和1个动态模块。",
+        "note": "从 src/main.js 出发，依赖图共有入口、5 个静态依赖和 1 个动态依赖。",
         "activeIds": [
           "entry",
           "static",
@@ -9440,8 +9435,8 @@
           "lazy"
         ],
         "values": {
-          "static": "5",
-          "dynamic": "1"
+          "static": "5 个静态",
+          "dynamic": "1 个动态"
         },
         "activeEdgeIds": [
           "e-s",
@@ -9449,29 +9444,29 @@
         ]
       },
       {
-        "label": "静态部分聚合",
-        "note": "入口和静态依赖进入主包。",
+        "label": "生成主包",
+        "note": "src/main.js 和 5 个静态依赖进入 dist/main.js；按需模块暂不随首屏加载。",
         "activeIds": [
+          "entry",
           "static",
           "main"
         ],
         "doneIds": [
-          "entry"
+          "dynamic"
         ],
         "mutedIds": [
-          "dynamic",
           "lazy"
         ],
         "values": {
-          "main": "5 模块"
+          "main": "入口 + 5"
         },
         "activeEdgeIds": [
           "s-m"
         ]
       },
       {
-        "label": "动态部分分块",
-        "note": "动态导入单独生成lazy.js。",
+        "label": "生成按需块",
+        "note": "被动态导入的模块单独生成 dist/lazy.js；用户打开对应功能时，浏览器才请求这个文件。",
         "activeIds": [
           "dynamic",
           "lazy"
@@ -9483,7 +9478,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "lazy": "1 模块"
+          "lazy": "1 个按需模块"
         },
         "activeEdgeIds": [
           "d-l"
@@ -9491,7 +9486,7 @@
       },
       {
         "label": "改成静态导入",
-        "note": "切换后动态块消失，所有6个模块进入主包。",
+        "note": "如果把动态导入改成静态导入，1 个按需模块会并入主包，主包变成入口 + 6 个依赖，按需块消失。",
         "activeIds": [
           "dynamic",
           "main"
@@ -9504,57 +9499,67 @@
           "lazy"
         ],
         "values": {
-          "main": "6 模块",
+          "main": "入口 + 6",
           "lazy": "0"
         },
         "activeEdgeIds": [
-          "e-d",
+          "e-s",
           "s-m"
         ]
       }
     ],
-    "insight": "打包器围绕入口和依赖图组织产物，代码分割意味着结果可以有多个文件。",
+    "insight": "打包器围绕入口和依赖图生成主包与按需块；动态导入让不一定首屏需要的代码延后加载，结果可以有多个文件。",
     "quiz": {
-      "question": "打包器一定输出一个文件吗？",
+      "question": "为什么打包器不一定只输出一个文件？",
       "options": [
         {
-          "label": "不一定，代码分割会生成多个块",
+          "label": "动态导入可以拆成用户需要时再加载的块",
           "correct": true
         },
         {
-          "label": "一定，否则不叫打包",
+          "label": "打包器会把所有文件合并成一个文件，所以只有一个",
           "correct": false
         },
         {
-          "label": "只要文件名相同即可",
+          "label": "打包器只负责把文件压缩成更小的 zip",
           "correct": false
         }
       ],
-      "success": "输出数量取决于入口和分块策略。",
-      "retry": "“打包”不等于“单文件”。"
+      "success": "代码分割让首屏和按需功能使用不同产物。",
+      "retry": "想想动态导入何时才会被请求。"
     },
     "prompt": {
-      "title": "检查一次打包",
-      "text": "列出入口、静态导入、动态导入、共享依赖和最终块，标出哪个用户动作会加载每个按需块。"
+      "title": "检查一次打包分块",
+      "text": "列出入口、静态依赖、动态依赖、主包和按需块，标出哪个用户动作会请求每个按需块。"
     },
     "sources": [
       {
         "url": "https://rollupjs.org/introduction/",
-        "label": "Rollup 官方文档 · introduction",
-        "note": "模块打包与输出行为"
+        "label": "Rollup 官方文档 · Introduction",
+        "note": "入口、模块图和输出块"
       },
       {
         "url": "https://webpack.js.org/concepts/",
-        "label": "webpack 官方文档 · concepts",
-        "note": "打包过程与配置行为"
+        "label": "webpack 官方文档 · Concepts",
+        "note": "依赖图、代码分割与产物"
+      },
+      {
+        "url": "https://esbuild.github.io/",
+        "label": "esbuild 官方文档",
+        "note": "快速打包、分块与格式输出"
+      },
+      {
+        "url": "https://vite.dev/guide/dep-pre-bundling",
+        "label": "Vite 官方文档 · Dependency Pre-Bundling",
+        "note": "依赖预构建与浏览器请求边界"
       }
     ]
   },
   {
     "slug": "dev-server",
-    "lead": "保存一个文件后，浏览器为什么能在180ms内看到本地变化？",
-    "definition": "开发服务器在本地提供源码或转换后的资源，监听文件变化，并通过浏览器连接触发刷新或模块更新。",
-    "boundary": "它不是生产服务器；默认设置通常面向本地反馈速度，而非公网安全、缓存和容量。",
+    "lead": "页面先从 localhost 加载，保存源码后为什么能看到本地变化？",
+    "definition": "开发服务器在本机按请求提供页面和资源，监听文件变化后按需处理受影响的文件，再通过更新连接通知浏览器。更新可能是整页刷新，也可能只替换变化的模块。",
+    "boundary": "它主要服务本地开发，比如前端连上后端一起调试；构建工具负责产出可部署的完整文件，开发服务器只是按需提供和更新资源。代理可以把本地 API 请求转到另一个服务。默认配置通常满足不了公网对安全、缓存和容量的要求。开发服务器不等于生产服务器。",
     "sceneKind": "pipeline",
     "sceneTitle": "文件监听把变更送到浏览器",
     "actionLabel": "保存文件",
@@ -9576,21 +9581,21 @@
       {
         "id": "server",
         "label": "开发服务器",
-        "detail": "localhost",
+        "detail": "localhost:端口",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "socket",
         "label": "更新连接",
-        "detail": "WebSocket",
+        "detail": "WebSocket 通道",
         "icon": "network",
         "group": "通道"
       },
       {
         "id": "browser",
         "label": "浏览器",
-        "detail": "页面已打开",
+        "detail": "已打开 localhost",
         "icon": "browser",
         "group": "界面"
       }
@@ -9623,8 +9628,8 @@
     ],
     "frames": [
       {
-        "label": "本地服务就绪",
-        "note": "浏览器已连接开发服务器和更新通道。",
+        "label": "先打开本地页面",
+        "note": "浏览器先用 localhost:端口从开发服务器取得页面，并建立更新连接。",
         "activeIds": [
           "server",
           "socket",
@@ -9642,7 +9647,7 @@
       },
       {
         "label": "文件被保存",
-        "note": "监听器捕获button.css的1次变化。",
+        "note": "监听器捕获 button.css 的 1 次变化。",
         "activeIds": [
           "file",
           "watcher"
@@ -9661,8 +9666,8 @@
         ]
       },
       {
-        "label": "更新消息发出",
-        "note": "开发服务器转换文件并通过连接发送变更。",
+        "label": "按需处理并通知",
+        "note": "开发服务器只处理受影响的文件（可调用转译器），再通过更新连接发送变更；错误显示在终端或页面。",
         "activeIds": [
           "server",
           "socket"
@@ -9684,7 +9689,7 @@
       },
       {
         "label": "浏览器应用变化",
-        "note": "本机示例中页面180ms后更新。",
+        "note": "我本机这个例子约 180 ms 完成更新；换一台机器，或换个大小的文件，这个数字就不一样了。工具支持模块级更新时就只替换变化的模块，不支持就整页刷新。",
         "activeIds": [
           "browser"
         ],
@@ -9702,53 +9707,63 @@
           "so-b"
         ],
         "metric": {
-          "label": "示例更新时间",
-          "value": "180 ms"
+          "label": "本机示例更新时间",
+          "value": "约 180 ms"
         }
       }
     ],
-    "insight": "开发服务器优化本地反馈，不具备生产服务默认需要的安全、缓存和容量配置。",
+    "insight": "开发服务器把本地请求、文件监听和更新连接串成快速反馈；它可以按需处理资源，但不承担完整生产构建或公网服务配置。",
     "quiz": {
-      "question": "可以把默认开发服务器直接当生产服务器吗？",
+      "question": "开发服务器主要用于哪个阶段？",
       "options": [
         {
-          "label": "通常不应，应使用面向生产的构建与服务配置",
+          "label": "本地开发和联调",
           "correct": true
         },
         {
-          "label": "可以，本地能打开就够了",
+          "label": "长期生产托管",
           "correct": false
         },
         {
-          "label": "只需隐藏端口号",
+          "label": "数据库冷备份",
           "correct": false
         }
       ],
-      "success": "开发体验与生产要求不同。",
-      "retry": "公网安全和容量不能省略。"
+      "success": "开发服务器为本地开发循环提供快速反馈。",
+      "retry": "生产托管需要独立的稳定性和安全配置。"
     },
     "prompt": {
-      "title": "检查本地开发服务",
-      "text": "列出监听目录、转换步骤、更新通道、代理配置和仅限本地的假设，标出不能带到生产的设置。"
+      "title": "排查开发服务",
+      "text": "检查 localhost 的监听地址、端口、文件怎么处理、更新连接和代理规则，看错误会出现在哪里，再想想哪些做法只在本机成立、放到公网就会出问题。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/",
-        "label": "Vite 官方文档 · guide",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Guide",
+        "note": "本地开发服务器、请求和构建入口"
       },
       {
         "url": "https://vite.dev/guide/features",
-        "label": "Vite 官方文档 · features",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Features",
+        "note": "按需转换、CSS 和模块更新"
+      },
+      {
+        "url": "https://webpack.js.org/configuration/dev-server/",
+        "label": "webpack 官方文档 · devServer",
+        "note": "监听、代理、静态资源和热更新配置"
+      },
+      {
+        "url": "https://nodejs.org/api/http.html",
+        "label": "Node.js 官方文档 · HTTP",
+        "note": "本地 HTTP 服务、请求与响应"
       }
     ]
   },
   {
     "slug": "hot-reload",
-    "lead": "计数器已经点到7，只改按钮颜色后为何页面又回到0？",
-    "definition": "热重载在代码变化后自动重新加载应用或页面，使新代码生效，但运行中的页面状态通常会丢失。",
-    "boundary": "热重载不等于HMR；HMR尝试只替换受影响模块并保留其余状态。",
+    "lead": "开发服务器盯着文件，把按钮的样式保存后，为什么整个页面会重新加载、计数从 7 变回 0？",
+    "definition": "热重载是开发阶段让改动生效的一种方式：开发服务器或监听器发现源码变化，重新处理后通知浏览器整页重载（整页重新加载），让新代码生效。",
+    "boundary": "整页重载会重建页面，页面内存里的状态也随之重置；HMR（热模块替换）则尝试只替换变化的模块并保留运行中的状态。热重载依赖开发工具的监听和通知，不是普通浏览器或生产网站自带的功能；已经写入数据库的持久化状态，不会随整页重载丢失。",
     "sceneKind": "timeline",
     "sceneTitle": "整页重载让运行状态重建",
     "actionLabel": "保存样式文件",
@@ -9756,16 +9771,23 @@
       {
         "id": "page",
         "label": "计数器页面",
-        "detail": "当前7",
+        "detail": "当前 7",
         "icon": "browser",
         "group": "界面"
       },
       {
         "id": "change",
         "label": "样式改动",
-        "detail": "蓝→绿",
+        "detail": "蓝 → 绿",
         "icon": "file",
         "group": "变更"
+      },
+      {
+        "id": "dev",
+        "label": "开发服务器",
+        "detail": "监听文件变化",
+        "icon": "server",
+        "group": "开发环境"
       },
       {
         "id": "reload",
@@ -9784,10 +9806,16 @@
     ],
     "edges": [
       {
-        "id": "c-r",
+        "id": "c-d",
         "from": "change",
+        "to": "dev",
+        "label": "保存通知"
+      },
+      {
+        "id": "d-r",
+        "from": "dev",
         "to": "reload",
-        "label": "触发"
+        "label": "通知浏览器"
       },
       {
         "id": "r-p",
@@ -9799,13 +9827,13 @@
         "id": "p-s",
         "from": "page",
         "to": "state",
-        "label": "初始化"
+        "label": "重新初始化"
       }
     ],
     "frames": [
       {
-        "label": "保留现状",
-        "note": "页面颜色为蓝，计数器已到7。",
+        "label": "改动前",
+        "note": "页面颜色为蓝，计数器已到 7；数字在页面内存里，颜色来自源码文件。",
         "activeIds": [
           "page",
           "state"
@@ -9813,6 +9841,7 @@
         "doneIds": [],
         "mutedIds": [
           "change",
+          "dev",
           "reload"
         ],
         "values": {
@@ -9823,28 +9852,31 @@
       },
       {
         "label": "保存样式",
-        "note": "颜色改为绿色，热重载触发。",
+        "note": "你保存 button.css，开发服务器监听到它变了。",
         "activeIds": [
           "change",
-          "reload"
+          "dev"
         ],
         "doneIds": [
           "page"
         ],
         "mutedIds": [
+          "reload",
           "state"
         ],
         "values": {
-          "change": "蓝 → 绿"
+          "change": "蓝 → 绿",
+          "dev": "change 1"
         },
         "activeEdgeIds": [
-          "c-r"
+          "c-d"
         ]
       },
       {
         "label": "页面重建",
-        "note": "浏览器重新加载整个页面实例。",
+        "note": "开发服务器发送整页重载信号，浏览器把整个页面重新加载一遍。",
         "activeIds": [
+          "dev",
           "reload",
           "page"
         ],
@@ -9858,18 +9890,20 @@
           "reload": "reload 1 次"
         },
         "activeEdgeIds": [
+          "d-r",
           "r-p"
         ]
       },
       {
         "label": "状态丢失",
-        "note": "颜色已更新，但新页面把计数初始化为0。",
+        "note": "颜色从源码更新为绿色，但新页面的内存重新初始化，未持久化的计数从 7 回到 0。",
         "activeIds": [
           "page",
           "state"
         ],
         "doneIds": [
           "change",
+          "dev",
           "reload"
         ],
         "mutedIds": [],
@@ -9882,12 +9916,12 @@
         ]
       }
     ],
-    "insight": "热重载让新代码生效，通常会重建页面状态；这正是它与HMR的直观区别。",
+    "insight": "热重载是开发工具通知浏览器整页重建的路径；新代码生效，页面内存状态通常重置，这正是它与 HMR 的区别。",
     "quiz": {
       "question": "保存样式后页面状态归零，最可能发生了什么？",
       "options": [
         {
-          "label": "整页热重载",
+          "label": "发生了整页重载，页面内存被重新初始化",
           "correct": true
         },
         {
@@ -9895,93 +9929,116 @@
           "correct": false
         },
         {
-          "label": "只执行了格式化器",
+          "label": "计数在页面里待得太久，自动归零了",
           "correct": false
         }
       ],
-      "success": "重建页面会重新初始化内存状态。",
-      "retry": "看状态是否保留可以区分两种更新。"
+      "success": "整页重载会重建页面运行时，临时状态因此回到初始值。",
+      "retry": "只替换模块并保留状态是 HMR 的目标。"
     },
     "prompt": {
       "title": "验证热重载行为",
-      "text": "在页面先建立可见状态，再修改一个样式文件，记录页面是否整页刷新、状态是否保留和更新时间。"
+      "text": "记录开发服务器怎么通知、页面有没有整页重载、哪些状态丢了哪些还在，以及从保存到页面变化隔了多久。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/features",
-        "label": "Vite 官方文档 · features",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Features",
+        "note": "开发服务器、CSS 更新与 HMR 行为"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Location/reload",
-        "label": "MDN Web Docs · reload",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN Web Docs · Location.reload()",
+        "note": "浏览器整页重新加载行为"
+      },
+      {
+        "url": "https://webpack.js.org/configuration/dev-server/",
+        "label": "webpack 官方文档 · devServer",
+        "note": "文件监听、刷新和开发服务配置"
+      },
+      {
+        "url": "https://github.com/pmmmwh/react-refresh-webpack-plugin",
+        "label": "React Refresh Webpack Plugin",
+        "note": "开发环境中的局部刷新与状态保留边界"
       }
     ]
   },
   {
     "slug": "hmr",
-    "lead": "同样把计数器点到7，为什么HMR换掉按钮模块后数字还能保留？",
-    "definition": "热模块替换只更新发生变化的模块，并由运行时处理模块边界、接受更新或回退到整页刷新。",
-    "boundary": "HMR不保证所有状态都保留；模块没有正确接受更新时仍可能退化为重载。",
+    "lead": "只改 Button 模块时，为什么计数和表单内容还能留在页面里？",
+    "definition": "HMR（热模块替换）由开发服务器把变更模块送到浏览器更新运行时；运行时先清理旧模块，再交给应用里声明了“可以原地接收更新”的那段代码（更新边界）接受新模块，应用里没被换的部分继续运行。",
+    "boundary": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留。模块或它的依赖没有声明可接受更新时，浏览器会退回整页重载；被替换模块自己管理的状态也可能重置。",
     "sceneKind": "network",
     "sceneTitle": "模块边界内的局部替换",
-    "actionLabel": "关闭 accept 处理",
+    "actionLabel": "展示回退路径",
     "actors": [
       {
         "id": "app",
-        "label": "运行中的应用",
-        "detail": "20个模块",
+        "label": "浏览器中的应用",
+        "detail": "20 个模块",
         "icon": "browser",
         "group": "运行时"
       },
       {
         "id": "button",
-        "label": "按钮模块",
+        "label": "Button 模块",
         "detail": "发生改动",
         "icon": "component",
         "group": "更新"
       },
       {
         "id": "state",
-        "label": "计数状态",
-        "detail": "7",
+        "label": "页面状态",
+        "detail": "计数 7 · 姓名小林",
         "icon": "memory",
         "group": "保留"
       },
       {
         "id": "runtime",
-        "label": "HMR运行时",
-        "detail": "dispose→accept",
+        "label": "浏览器更新运行时",
+        "detail": "dispose → accept",
         "icon": "gear",
         "group": "控制"
       },
       {
+        "id": "server",
+        "label": "开发服务器",
+        "detail": "发送变更模块",
+        "icon": "server",
+        "group": "通道"
+      },
+      {
         "id": "fallback",
-        "label": "整页刷新",
-        "detail": "备用路径",
+        "label": "整页重载",
+        "detail": "回退 ·状态重置",
         "icon": "clock",
         "group": "回退"
       }
     ],
     "edges": [
       {
-        "id": "b-r",
+        "id": "b-s",
         "from": "button",
+        "to": "server",
+        "label": "文件变更"
+      },
+      {
+        "id": "s-r",
+        "from": "server",
         "to": "runtime",
-        "label": "通知"
+        "label": "发送模块"
       },
       {
         "id": "r-a",
         "from": "runtime",
         "to": "app",
-        "label": "替换模块"
+        "label": "接受更新"
       },
       {
         "id": "s-a",
         "from": "state",
         "to": "app",
-        "label": "保留"
+        "label": "继续运行"
       },
       {
         "id": "r-f",
@@ -9992,8 +10049,8 @@
     ],
     "frames": [
       {
-        "label": "运行状态存在",
-        "note": "应用有20个模块，计数器状态为7。",
+        "label": "改动前",
+        "note": "浏览器里的应用有 20 个模块，表单姓名是小林，页面状态中的计数器为 7。",
         "activeIds": [
           "app",
           "state"
@@ -10001,19 +10058,22 @@
         "doneIds": [],
         "mutedIds": [
           "button",
+          "server",
+          "runtime",
           "fallback"
         ],
         "values": {
-          "app": "20模块",
-          "state": "7"
+          "app": "20 个模块",
+          "state": "7 · 小林"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "单模块变更",
-        "note": "只有按钮模块进入更新集合。",
+        "label": "变更消息到达",
+        "note": "Button 文件变化后，开发服务器把对应的模块送到浏览器更新运行时。",
         "activeIds": [
           "button",
+          "server",
           "runtime"
         ],
         "doneIds": [
@@ -10026,94 +10086,110 @@
           "button": "变更 1 / 20"
         },
         "activeEdgeIds": [
-          "b-r"
+          "b-s",
+          "s-r"
         ]
       },
       {
         "label": "边界接受更新",
-        "note": "旧模块dispose，新模块accept，其他模块不重建。",
+        "note": "运行时先执行旧模块的 dispose 清理，再由声明了 accept 的更新边界接手；其他模块继续运行，页面状态原样保留。",
         "activeIds": [
           "runtime",
-          "app"
+          "app",
+          "state"
         ],
         "doneIds": [
-          "button"
+          "button",
+          "server"
         ],
         "mutedIds": [
           "fallback"
         ],
         "values": {
-          "runtime": "accepted"
+          "runtime": "accepted",
+          "state": "7 · 小林"
         },
         "activeEdgeIds": [
-          "r-a"
+          "r-a",
+          "s-a"
         ]
       },
       {
-        "label": "状态仍为7",
-        "note": "按钮颜色更新，计数状态没有归零；关闭accept则走整页刷新。",
+        "label": "无法接受时回退",
+        "note": "如果更新边界没有接受这次变化，浏览器退回整页重载，记在内存里的页面状态从 7 重置为 0。",
         "activeIds": [
-          "app",
-          "state",
-          "fallback"
+          "runtime",
+          "fallback",
+          "state"
         ],
         "doneIds": [
           "button",
-          "runtime"
+          "server"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "app"
+        ],
         "values": {
-          "state": "7",
-          "fallback": "关闭accept时启用"
+          "fallback": "reload · 1 次",
+          "state": "7 → 0"
         },
         "activeEdgeIds": [
-          "s-a",
           "r-f"
         ]
       }
     ],
-    "insight": "HMR尝试局部替换模块并保留其余状态，但模块边界不接受时仍会退回整页刷新。",
+    "insight": "HMR 通过开发服务器把变化模块送到浏览器，按更新边界执行 dispose/accept；边界成功时保留未替换状态，失败时退回整页重载。",
     "quiz": {
-      "question": "HMR是否保证所有状态永远保留？",
+      "question": "HMR 与整页重载的主要区别是什么？",
       "options": [
         {
-          "label": "不保证，更新边界失败时可能整页刷新",
+          "label": "HMR 尝试只替换受影响模块，页面其余部分的状态保持不变",
           "correct": true
         },
         {
-          "label": "保证，名称里有热替换",
+          "label": "HMR 只用于生产环境",
           "correct": false
         },
         {
-          "label": "只对服务器状态有效",
+          "label": "HMR 不需要开发服务器",
           "correct": false
         }
       ],
-      "success": "是否保留取决于更新边界和框架处理。",
-      "retry": "HMR有回退路径。"
+      "success": "局部替换能让未受影响的页面继续运行，但是否保留状态取决于更新边界。",
+      "retry": "HMR 通常依赖开发服务器，也有整页重载回退。"
     },
     "prompt": {
-      "title": "检查一个HMR边界",
-      "text": "修改模块后记录更新集合、dispose/accept处理、保留状态和回退条件，确认失败时能安全整页刷新。"
+      "title": "分析 HMR 边界",
+      "text": "说明哪个模块发生变化、开发服务器怎样把它送到浏览器、dispose/accept 做什么、哪些状态能保留，以及何时退回整页重载。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/api-hmr",
-        "label": "Vite 官方文档 · api hmr",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · HMR API",
+        "note": "更新消息、accept 和 dispose 边界"
       },
       {
         "url": "https://webpack.js.org/concepts/hot-module-replacement/",
-        "label": "webpack 官方文档 · hot module replacement",
-        "note": "打包过程与配置行为"
+        "label": "webpack 官方文档 · Hot Module Replacement",
+        "note": "开发服务器与局部模块替换"
+      },
+      {
+        "url": "https://webpack.js.org/api/hot-module-replacement/",
+        "label": "webpack 官方文档 · HMR API",
+        "note": "模块接受、清理和回退路径"
+      },
+      {
+        "url": "https://github.com/pmmmwh/react-refresh-webpack-plugin",
+        "label": "React Refresh Webpack Plugin",
+        "note": "组件刷新与状态保留限制"
       }
     ]
   },
   {
     "slug": "dependency",
-    "lead": "应用直接依赖A，A又依赖B，删掉A后为什么B也从可达图中消失？",
-    "definition": "依赖是当前模块或项目为了工作而引用的外部包、内部模块或服务，依赖关系决定加载和变更影响。",
-    "boundary": "把包装进清单不等于它一定在运行时使用；开发依赖、可选依赖和传递依赖的作用不同。",
+    "lead": "清单只写了 A，为什么安装图里还会出现 B？",
+    "definition": "直接依赖是项目自己声明的包；传递依赖是这些包继续需要的包。包管理器（负责安装的工具）会顺着这些包自己的声明，一层层找出还需要哪些包，凑齐完整清单；再结合版本约束和锁文件，决定每个包实际装哪个版本。",
+    "boundary": "开发依赖主要服务构建和测试，可选依赖是否安装或使用由包管理器和环境条件决定；它们和运行时依赖的用途不同。能从应用节点到达一个包，不等于应用运行时一定会用到它；删掉一条依赖关系后，只要还有别的路径能指向这个包，它就不会从安装结果里消失。",
     "sceneKind": "tree",
     "sceneTitle": "直接依赖与传递依赖的边方向",
     "actionLabel": "增删依赖节点",
@@ -10121,7 +10197,7 @@
       {
         "id": "app",
         "label": "应用",
-        "detail": "根节点",
+        "detail": "根节点 · 应用清单",
         "icon": "package",
         "group": "项目"
       },
@@ -10135,16 +10211,23 @@
       {
         "id": "b",
         "label": "包 B",
-        "detail": "A的依赖",
+        "detail": "A 的传递依赖",
         "icon": "package",
         "group": "二层"
       },
       {
         "id": "report",
         "label": "依赖报告",
-        "detail": "可达2个",
+        "detail": "可达 2 个",
         "icon": "file",
         "group": "结果"
+      },
+      {
+        "id": "lock",
+        "label": "锁文件",
+        "detail": "A@1.4 · B@2.1",
+        "icon": "file",
+        "group": "版本"
       }
     ],
     "edges": [
@@ -10164,16 +10247,23 @@
         "id": "tree-report",
         "from": "app",
         "to": "report",
-        "label": "统计"
+        "label": "统计可达"
+      },
+      {
+        "id": "app-lock",
+        "from": "app",
+        "to": "lock",
+        "label": "记录版本"
       }
     ],
     "frames": [
       {
         "label": "只看根节点",
-        "note": "应用尚未声明外部包，可达数为0。",
+        "note": "应用清单还没有外部包，依赖报告可达数为 0，锁文件里还没有 A 和 B 的任何版本记录。",
         "activeIds": [
           "app",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [],
         "mutedIds": [
@@ -10181,55 +10271,63 @@
           "b"
         ],
         "values": {
-          "report": "0"
+          "report": "0",
+          "lock": "空"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "加入A",
-        "note": "应用到A出现一条直接依赖边。",
+        "label": "加入 A",
+        "note": "应用向 A 画出一条依赖边（一条指向关系）；清单只说“要 A”，这次演示装的是 A@1.4。",
         "activeIds": [
           "app",
           "a",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [],
         "mutedIds": [
           "b"
         ],
         "values": {
-          "report": "直接1"
+          "report": "直接 1",
+          "lock": "A@1.4"
         },
         "activeEdgeIds": [
           "app-a",
-          "tree-report"
+          "tree-report",
+          "app-lock"
         ]
       },
       {
-        "label": "展开B",
-        "note": "沿A继续找到B，可达节点变为2。",
+        "label": "展开 B",
+        "note": "顺着 A 自己的声明找到 B：B 是传递依赖；应用清单没有写它，但包管理器会把它加进这次要安装的包里面。",
         "activeIds": [
           "a",
           "b",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [
           "app"
         ],
         "mutedIds": [],
         "values": {
-          "report": "直接1 · 传递1"
+          "report": "直接 1 · 传递 1",
+          "lock": "A@1.4 · B@2.1"
         },
         "activeEdgeIds": [
-          "a-b"
+          "a-b",
+          "app-lock"
         ]
       },
       {
-        "label": "删除A",
-        "note": "根到A的边移除后，B也不再从应用可达。",
+        "label": "删除 A",
+        "note": "移除应用到 A 的边后，若没有其他路径，B 对应用不再可达；B 不一定会立刻从磁盘删掉：还要看有没有别的包继续需要它，以及这个工具自己怎么清理。",
         "activeIds": [
           "app",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [],
         "mutedIds": [
@@ -10237,45 +10335,59 @@
           "b"
         ],
         "values": {
-          "report": "2 → 0"
+          "report": "2 → 0",
+          "lock": "重新解析"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "tree-report",
+          "app-lock"
+        ]
       }
     ],
-    "insight": "依赖关系由有向边决定；清单中的包还要区分直接、传递和运行阶段。",
+    "insight": "依赖图说明包之间的需要关系，版本约束和锁文件决定具体版本；直接、传递、开发、可选和运行用途要分开看。",
     "quiz": {
-      "question": "B没有写在应用清单里，却被安装了，最可能为什么？",
+      "question": "B 没有写在应用清单里，却出现在安装结果中，最可能为什么？",
       "options": [
         {
-          "label": "它是直接依赖A的传递依赖",
+          "label": "B 是直接依赖 A 的传递依赖",
           "correct": true
         },
         {
-          "label": "安装工具随机添加",
+          "label": "安装工具随机添加了 B",
           "correct": false
         },
         {
-          "label": "B一定是操作系统文件",
+          "label": "B 一定是操作系统文件",
           "correct": false
         }
       ],
-      "success": "依赖图可以有多层。",
-      "retry": "清单只显示部分直接关系。"
+      "success": "安装工具会沿 A 的依赖关系继续解析 B。",
+      "retry": "想想依赖图里的下一层边。"
     },
     "prompt": {
       "title": "梳理一项依赖",
-      "text": "画出从应用到目标包的完整路径，标明直接/传递、运行/开发、版本约束和删除它的影响。"
+      "text": "画出从应用到目标包的完整路径：哪些环节是直接依赖、哪些是传递依赖；每个包是运行时用、构建时用还是可选；版本约束和锁文件把它定在哪个版本；再想想删掉其中一条线会怎样。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-        "label": "npm 官方文档 · package json",
-        "note": "包管理命令与文件语义"
+        "label": "npm 官方文档 · package.json",
+        "note": "dependencies、devDependencies 和 optionalDependencies"
       },
       {
         "url": "https://semver.org/",
-        "label": "SemVer 规范 · overview",
-        "note": "原始规范与实现说明"
+        "label": "Semantic Versioning 规范",
+        "note": "版本号和版本范围的比较规则"
+      },
+      {
+        "url": "https://nodejs.org/api/packages.html",
+        "label": "Node.js 官方文档 · Packages",
+        "note": "包解析、exports 和运行时加载边界"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts",
+        "label": "npm 官方文档 · Scripts",
+        "note": "开发脚本、安装生命周期与用途区分"
       }
     ]
   },
