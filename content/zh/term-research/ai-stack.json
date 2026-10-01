@@ -304,13 +304,16 @@
   },
   {
     "slug": "handoff",
-    "mechanism": "当前智能体把任务控制权和必要上下文移交给另一个专门智能体，后者从明确入口继续处理。",
-    "misconception": "交接不是复制一份消息并行运行；控制权、上下文范围和返回路径都需要定义。",
-    "demoSignature": "输入：售后对话含订单号A102和“申请退款”；中间：路由置信0.93，移交包保留2个字段并删除聊天闲话；输出：退款智能体从确认金额步骤接手。可视化：控制权令牌从客服节点移动到退款节点。 建议4帧：客服节点持有控制权令牌、交接包收缩为2字段、令牌沿线移动、退款节点点亮；交互：展开交接包检查被保留与删除的内容。",
+    "mechanism": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
+    "misconception": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
+    "demoSignature": "输入：售后对话含订单 A102 和“申请退款”；中间：从整段对话整理出订单号和申请类型两项信息，先送达退款智能体，再把回复权从客服转过去；输出：退款智能体从确认金额步骤接手，客服不再直接回复。可视化：回复权标记从客服节点移动到退款节点。建议5帧：客服节点持有回复权标记、交接包整理为2项信息、交接包抵达退款节点、回复权标记移动、退款节点从确认金额点亮；交互：展开交接包检查被保留的信息。",
     "sourceUrls": [
-      "https://openai.github.io/openai-agents-python/handoffs/"
+      "https://openai.github.io/openai-agents-python/handoffs/",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
-    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些字段、谁继续响应以及失败如何退回。",
+    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些信息、回复权给谁以及失败如何退回。",
     "nearDuplicates": [
       "agent-orchestration",
       "subagent"

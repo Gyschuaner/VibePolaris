@@ -3822,11 +3822,11 @@
   },
   {
     "slug": "handoff",
-    "lead": "客服已经拿到订单号，转给退款专员时怎样避免让用户重新说一遍？",
-    "definition": "当前智能体把任务控制权和必要上下文移交给另一个专门智能体，后者从明确入口继续处理。",
-    "boundary": "交接不是复制一份消息并行运行；控制权、上下文范围和返回路径都需要定义。",
+    "lead": "客服已经识别退款请求，为什么换到退款智能体后不用让用户重说？",
+    "definition": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
+    "boundary": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
     "sceneKind": "route",
-    "sceneTitle": "控制权与最小上下文一起转移",
+    "sceneTitle": "回复权与必要上下文一起转移",
     "actionLabel": "检查交接包",
     "actors": [
       {
@@ -3839,7 +3839,7 @@
       {
         "id": "packet",
         "label": "交接包",
-        "detail": "订单A102 · 申请退款",
+        "detail": "订单 A102 · 申请退款",
         "icon": "package",
         "group": "上下文"
       },
@@ -3852,8 +3852,8 @@
       },
       {
         "id": "control",
-        "label": "控制权令牌",
-        "detail": "客服",
+        "label": "回复权标记",
+        "detail": "在客服处（画面示意）",
         "icon": "key",
         "group": "路由"
       }
@@ -3863,7 +3863,7 @@
         "id": "s-p",
         "from": "support",
         "to": "packet",
-        "label": "整理字段"
+        "label": "整理信息"
       },
       {
         "id": "p-r",
@@ -3875,29 +3875,30 @@
         "id": "s-r",
         "from": "support",
         "to": "refund",
-        "label": "移交控制"
+        "label": "移交回复权"
       }
     ],
     "frames": [
       {
-        "label": "客服持有控制",
-        "note": "当前回复者是客服，已识别退款意图。",
+        "label": "客服持有回复权",
+        "note": "客服确认用户要申请退款，交接包尚未整理，当前仍由客服回复。",
         "activeIds": [
           "support",
           "control"
         ],
         "doneIds": [],
         "mutedIds": [
-          "refund"
+          "refund",
+          "packet"
         ],
         "values": {
-          "control": "客服"
+          "control": "在客服处"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "交接包收缩",
-        "note": "长对话只保留订单号和申请类型两个必要字段。",
+        "label": "整理交接包",
+        "note": "从整段对话中整理出订单号和申请类型两项信息。",
         "activeIds": [
           "packet"
         ],
@@ -3908,15 +3909,33 @@
           "refund"
         ],
         "values": {
-          "packet": "2 个字段"
+          "packet": "2 项"
         },
         "activeEdgeIds": [
           "s-p"
         ]
       },
       {
-        "label": "控制权移动",
-        "note": "交接包先到，随后回复权从客服转给退款专员。",
+        "label": "交接包抵达退款智能体",
+        "note": "交接包只含两项信息；记录的下一步是确认金额，回复权仍在客服。",
+        "activeIds": [
+          "packet",
+          "refund"
+        ],
+        "doneIds": [
+          "support"
+        ],
+        "mutedIds": [],
+        "values": {
+          "packet": "订单号 + 申请类型"
+        },
+        "activeEdgeIds": [
+          "p-r"
+        ]
+      },
+      {
+        "label": "回复权移动",
+        "note": "回复权转给退款智能体，客服不再直接回复用户。",
         "activeIds": [
           "control",
           "refund"
@@ -3930,13 +3949,12 @@
           "control": "客服 → 退款"
         },
         "activeEdgeIds": [
-          "p-r",
           "s-r"
         ]
       },
       {
         "label": "从下一步接手",
-        "note": "退款专员直接确认金额，不再索要订单号。",
+        "note": "退款智能体从确认金额继续，不再询问已传递的信息。",
         "activeIds": [
           "refund"
         ],
@@ -3952,25 +3970,25 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "交接会移动对话控制权；它不同于主智能体调用子智能体后仍由主智能体回复。",
+    "insight": "交接的区别，在于回复权有没有转给接手者；只把结果交给主智能体继续回复，属于调用子智能体。",
     "quiz": {
-      "question": "怎样判断一次转交是真正的handoff？",
+      "question": "怎样判断一次转交是真正的 handoff？",
       "options": [
-        {
-          "label": "新的智能体取得后续对话控制权",
-          "correct": true
-        },
         {
           "label": "两个智能体同时在后台运行",
           "correct": false
+        },
+        {
+          "label": "新的智能体取得后续回复权",
+          "correct": true
         },
         {
           "label": "复制了完整聊天记录",
           "correct": false
         }
       ],
-      "success": "关键是控制权与必要上下文一起转移。",
-      "retry": "并发任务不等于交接。"
+      "success": "关键是回复权交给了新的智能体。",
+      "retry": "并行工作不等于把回复权交给下一位。"
     },
     "prompt": {
       "title": "定义一次智能体交接",
@@ -3981,6 +3999,21 @@
         "url": "https://openai.github.io/openai-agents-python/handoffs/",
         "label": "OpenAI Agents SDK · handoffs",
         "note": "可运行示例与实现细节"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/multi_agent/",
+        "label": "OpenAI Agents SDK · multi-agent",
+        "note": "区分工具调用与控制权交接"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building Effective Agents",
+        "note": "路由与专门智能体的边界"
+      },
+      {
+        "url": "https://arxiv.org/abs/2308.08155",
+        "label": "AutoGen · arXiv:2308.08155",
+        "note": "多智能体对话与协作机制"
       }
     ]
   },
