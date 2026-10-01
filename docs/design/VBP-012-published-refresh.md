@@ -1828,5 +1828,6 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 ### DP、Git 与发布边界
 
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 71 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 71 条本地正文提交 `06689e4`，记录提交待发布链路完成。正文发布分支应从当前 `origin/main` 的第 70 条合并提交 `8481c01918bec30b1cfab43dd8ccda12ec03df22` 新建，只复制正文文件，不带入 `LineageLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
-- 本条完成本地内容后整体为 **71/105**，下一条是 `data-pipeline`。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 71 条本地正文提交 `06689e4`，记录提交 `9d334fe`。正文发布分支 `release/VBP-030-lineage-content-20261001` 从第 70 条合并提交 `8481c01918bec30b1cfab43dd8ccda12ec03df22` 新建，只复制正文文件，提交 `ce708e6` 经 [PR #251](https://github.com/Gyschuaner/VibePolaris/pull/251) 合入 `main`，当前合并提交 `e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/data-lineage` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内超时；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 正文合入 `main` 后，用第 70 条镜像作为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9`（`linux/amd64`，约 1.45 GB）；本地容器 3224 端口返回 200，并精确包含“实体是要追查的东西”“Job 是读取或生成数据的工作”和“monthly.total（月合计）使用 daily.total（日合计）”。
+- 本条完成后整体为 **71/105**，下一条是 `data-pipeline`。
