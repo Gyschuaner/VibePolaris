@@ -1987,3 +1987,39 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 生产 SSH 恢复并成功切换：部署记录 `66a7fb00-824e-477b-96e5-d4679815da21`，批次 `deploy-vbp030-data-ingestion-content-prod-20261001` 状态 `released`；远端镜像为 `vibepolaris:04ace64a9146dd8b5ddd7718612b43575aa46942`（`linux/amd64`），目录 `/opt/vibepolaris/releases/20261001-04ace64a9146`，容器 `health=healthy`，`current` 已指向该目录。切换前目录 `/opt/vibepolaris/releases/20261001-e8aaf3f0686b` 和旧镜像 `vibepolaris:e8aaf3f0686b52b60da47e46f48e2bf7583566d` 保留，可将 `current` 指回旧目录并用旧镜像执行 Compose 回滚；`xiaobei_data` 数据卷未改动。
 - 公网 `https://vibe.chuansgu.top/terms/data-ingestion` 返回 200，正文精确包含新首屏、`数据写到了哪，位置才能动到哪` 和 Debezium 默认 `initial` 文案；生产 CUA 已观察到引用展开、`#ref-2` 回链，`error/warn` 日志为空。DP 测试计划仍因 CLI 的 `TEST_CASE_NOT_IN_PLAN`/参数校验错误没有执行记录，没有把它记成通过。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **75/105**，下一条是 `data-transformation`。
+
+## 76 · 数据转换文字复审、金额单位演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一笔费用写成元、分或只有数字时，为什么不能直接相加；把金额统一表示后，怎样知道单位、精度和汇总范围没有被悄悄猜错？”读完应能解释数据转换改变的是表示、字段结构、数值或统计粒度，区分转换与数据验证，判断 D 的单位是否已由输入约定确认，并解释待处理记录为何不能直接进入合计。
+- 更新 `TransformationTermPage` 的正文文字：把 A/B/C/D 四条输入、CNY 元/分和 D 的未确认状态写清；补充 1 元 = 100 分、金额单位与币种的边界；说明 dbt SQL model 只是实现转换的工具；明确转换与数据验证的职责边界、待处理记录保留原值和原因；补齐 Decimal、二进制浮点、`numeric(10,2)`、舍入策略、原始值与规则版本的关系；解释全表合计与按书目汇总的粒度差异，以及 3690、4920、126690、2460 分和待处理数量的含义。
+- `TransformationLesson` 的输入切换、D=分/元、超两位小数、执行、重置、引用回链等交互继续留在本地/dev；生产发布只复制正文文件的文字差异。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [dbt Labs · SQL models](https://docs.getdbt.com/docs/build/sql-models) | `transform-definition`：SQL model 是 SELECT 文件，运行时按配置建立为视图或表；dbt 是实现转换的工具。 |
+| [Python Software Foundation · decimal](https://docs.python.org/3/library/decimal.html) | `transform-precision`：Decimal 可表示十进制输入；精度和舍入受计算设置控制；从二进制浮点构造与从十进制字符串构造不同。 |
+| [PostgreSQL · Numeric Types](https://www.postgresql.org/docs/current/datatype-numeric.html) | `transform-type`：整数、numeric 与浮点类型的差异，声明总位数和小数位数会限制可保存值并影响舍入；类型本身不携带业务单位。 |
+| [PostgreSQL · Aggregate Functions](https://www.postgresql.org/docs/current/functions-aggregate.html) | `transform-grain`：`sum` 聚合非 `NULL` 输入；没有输入行时返回 `NULL`，合计不能单独证明原始记录完整。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文与按操作顺序整理的页面材料，未附作者意图、官方资料、源码或旧反馈。最终 reader 会话为 `sess_965fdf14-cfc0-4d2d-b1ac-1283e1c5f638`；材料 `/tmp/vbp076-data-transformation-reader-body.txt` SHA-256 为 `45375f19610744b27be84b8816fa2d9434555717403084dbc6d598fa61c171c7`，结果 `/tmp/vbp076-data-transformation-reader-result-final.json` SHA-256 为 `c6246a248df58fa17a0242fe50f73440c0122bf14cda2fa48bb7c05417258cfa`。反馈集中在单位与输入约定、数据验证边界、Decimal 与二进制浮点、书目粒度、D 的不同单位结果、2460/4920/126690 的对应关系和重置语义，已逐项核对并吸收。
+- 独立 `language` 只读当前正文与 `vibepolaris-zcode-partner`、`humanizer-zh` 规则，未重新研究事实或修改演示逻辑。最新语言会话为 `sess_47c5cc5a-c763-4ce2-92f8-ff8304838192`；材料 `/tmp/vbp076-data-transformation-language-body.txt` SHA-256 为 `ed7a4955cf1a80ef03c7231d9dd8ff854803ed1aee282a0b829521daf9c13ea9`，提示词 `/tmp/vbp076-data-transformation-language-prompt-final2.txt` SHA-256 为 `4a697adb8c1d1c667f531be412b9de1281120ff27f30928e32fe95fd44312536`，结果 `/tmp/vbp076-data-transformation-language-result-final2.json` SHA-256 为 `4e867963ad82241f37349fb0622a6c0871627b8cdd80268b7e65c3fef6a60bb9`。审读后统一了“输入约定/待处理/值”的称呼，补清 D 的输出单位、`Decimal.from_float` 的长小数、PostgreSQL numeric 的舍入限定和合计覆盖范围。ZCode 读取用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 时路径不存在，按项目内 `.agents/skills/humanizer-zh/SKILL.md` 的实际可读规则继续；没有把该路径缺失记成语言审读通过依据。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。当前变更只在 `components/terms/DataFlowConceptPages.tsx`，未修改 `DataFlowConceptLessons.tsx` 或通用词条 JSON。
+- CUA 在 `http://127.0.0.1:3219/terms/data-transformation?qa=076baseline` 真实操作并观察：默认 D 未确认执行后显示 3 条已转换、1 条待处理、3690 分；选择 D=CNY 分执行后显示 4 条已转换、0 条待处理、4920 分；选择 D=CNY 元执行后显示 126690 分；重置后勾选 A 超过两位小数执行，显示 2 条已转换、2 条待处理、2460 分；再次重置回到“等待执行”初始状态。展开 PostgreSQL numeric 引用并点击正文引用回链，URL 带 `#ref-3`；浏览器 `error/warn` 日志为空。
+- 演示只使用浏览器内存中的四条固定教学数据，不执行真实 dbt、Python、PostgreSQL、费用数据库或生产转换；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮研发任务 `c0ff25d4-862f-4385-8e68-279e6ba1cff6` 已创建并进入 `in_progress`；测试用例 `28f71573-2213-431d-9a96-4b79c2534eec` 与测试计划 `9f02bd54-c731-444c-abda-44e878e0f10c` 已创建。DP `testplan execute` 返回 `REQUIREMENT_NOT_IN_TESTING`，父需求仍在 `ready_for_release`，因此没有把 DP 执行记成通过；上面的浏览器证据与 DP 计划执行状态分开记录。
+- 当前工作树为 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本条正文和记录的提交、发布分支、PR、main 合并、生产镜像、部署记录与回滚位置将在文字发布完成后补写。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **76/105**，下一条是 `data-validation`。
