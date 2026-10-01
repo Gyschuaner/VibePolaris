@@ -31,6 +31,7 @@ function draftRecord(article, batch, decision, mechanicalErrors) {
     title: article.title,
     summary: article.summary,
     body: article.body,
+    eventDate: article.eventDate,
     publishedAt: article.publishedAt,
     isExample: false,
     hero: article.hero,
