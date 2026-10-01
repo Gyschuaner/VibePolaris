@@ -70,3 +70,5 @@ feat(VBP-049): add published news atlas and Dots handoff pipeline
 ## 阻塞项
 
 远端 Draft PR 尚未创建，因为本地分支尚未推送，也没有得到推送/合并/部署授权。要启用云端 Dots 更新，还需要在仓库侧配置 `NEWS_DOTS_ENDPOINT`、`NEWS_DOTS_TOKEN`、`dev` 分支保护和审核者；启用前应先手动跑通一批真实来源的交接、校验、构建和回滚演练。当前六小时 workflow 文件只作为候选入口留在 feature 分支，不会在本地容器或生产环境自动运行。
+
+真实来源的自动发布判断和 endpoint/token 的最小权限说明见 [`docs/development/news-evidence/2026-10-01-official-sources.md`](../news-evidence/2026-10-01-official-sources.md)。
