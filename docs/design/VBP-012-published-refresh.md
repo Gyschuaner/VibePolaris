@@ -1981,8 +1981,9 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 ### DP、Git 与发布边界
 
-- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前仍为 `ready_for_release`。本轮创建研发任务 `9d7e1e3b-836e-4282-9a19-dfbb3c5e8b64`（数据接入词条第 75 轮文字复审与发布），已进入 `in_progress`；创建测试用例 `eb789def-4c01-482a-b172-2efecd00b00e` 与测试计划 `48c0672a-4231-4d83-beed-6ba94d58f56c`。
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前仍为 `ready_for_release`。本轮研发任务 `9d7e1e3b-836e-4282-9a19-dfbb3c5e8b64`（数据接入词条第 75 轮文字复审与发布）已按本地验收、主分支合入和生产发布证据流转为 `done`；创建测试用例 `eb789def-4c01-482a-b172-2efecd00b00e` 与测试计划 `48c0672a-4231-4d83-beed-6ba94d58f56c`。
 - DP `testplan show` 能看到该用例，但 `testplan execute` 在补写用例集合后仍返回参数校验错误（此前按 ID 和标题执行也分别返回 `TEST_CASE_NOT_IN_PLAN`）；因此没有把 DP 执行记成通过。上面的浏览器证据是本地实测结果，和 DP 计划执行状态分开记录。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交为 `e2a0f66`。发布分支将从最新 `origin/main` 新建，只复制本次实际页面文字文件；`IngestionLesson` 交互继续留在本地/dev。
-- 生产 SSH、公网 HTTPS 与之前的远端发布链路仍需在发布分支完成后重新检查；在 SSH/HTTPS 健康检查通过前不能声称生产上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交为 `e2a0f66`。发布分支 `release/VBP-030-data-ingestion-content-20261001` 只复制本次实际页面文字文件，提交 `ace19ea` 经 [PR #255](https://github.com/Gyschuaner/VibePolaris/pull/255) 合入 `main`，合并提交为 `04ace64a9146dd8b5ddd7718612b43575aa46942`；`IngestionLesson` 交互继续留在本地/dev，未把本地新增功能带入发布分支。
+- 生产 SSH 恢复并成功切换：部署记录 `66a7fb00-824e-477b-96e5-d4679815da21`，批次 `deploy-vbp030-data-ingestion-content-prod-20261001` 状态 `released`；远端镜像为 `vibepolaris:04ace64a9146dd8b5ddd7718612b43575aa46942`（`linux/amd64`），目录 `/opt/vibepolaris/releases/20261001-04ace64a9146`，容器 `health=healthy`，`current` 已指向该目录。切换前目录 `/opt/vibepolaris/releases/20261001-e8aaf3f0686b` 和旧镜像 `vibepolaris:e8aaf3f0686b52b60da47e46f48e2bf7583566d` 保留，可将 `current` 指回旧目录并用旧镜像执行 Compose 回滚；`xiaobei_data` 数据卷未改动。
+- 公网 `https://vibe.chuansgu.top/terms/data-ingestion` 返回 200，正文精确包含新首屏、`数据写到了哪，位置才能动到哪` 和 Debezium 默认 `initial` 文案；生产 CUA 已观察到引用展开、`#ref-2` 回链，`error/warn` 日志为空。DP 测试计划仍因 CLI 的 `TEST_CASE_NOT_IN_PLAN`/参数校验错误没有执行记录，没有把它记成通过。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **75/105**，下一条是 `data-transformation`。
