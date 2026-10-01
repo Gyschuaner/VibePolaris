@@ -2134,6 +2134,13 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `855595a4-64b6-41f7-9d84-4769e801eafc` 已创建并处于 `in_progress`；测试用例 `92ba2f51-a6cf-47ec-9eda-7e947a0f7f2b` 与测试计划 `0550c333-6dec-45ef-838a-d8accf1b024e` 已创建，待本批本地验收完成后记录执行结果。按用户最新要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 79 条正文与本地记录在当前批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`LineageLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+
+### 批次发布与生产验证
+
+- 第 79—88 条文字批次发布分支为 `release/VBP-030-content-batch-20261001`，只从最新 `origin/main` 提取四个正文组件的净差异，未带入 `FrameLesson`、其他 Lesson 状态机或本地 docs；提交 `6b5d37c0797b4010ca4319f1f8d418772cd5be8c` 经 [PR #259](https://github.com/Gyschuaner/VibePolaris/pull/259) 合入 `main`，合并提交为 `2936dbe17e0e2508d2b56009a0b13a0c8cb08b22`。PR 没有 GitHub CI checks；PR artifact 关联工具仍返回 `thread attachment identity count exceeds 100`。
+- 生产部署记录为 `fad52cfa-4096-4838-bd1e-42c0f08fbc4a`，批次 `deploy-vbp030-content-batch-79-88-prod-20261001`，状态 `released`；镜像 `vibepolaris:2936dbe17e0e2508d2b56009a0b13a0c8cb08b22` 为 `linux/amd64`，目录 `/opt/vibepolaris/releases/20261001-2936dbe17e0e`，容器 `vibepolaris-web-1` 为 `healthy`，`current` 已指向该目录。切换前回滚点 `/opt/vibepolaris/releases/20261001-d1670bbb9247` 与旧镜像 `vibepolaris:d1670bbb92474a7e4c12334564e369766c21edcf` 保留；回滚可将 `current` 指回旧目录并用旧镜像重新执行 Compose，数据卷未改动。
+- 生产 `https://vibe.chuansgu.top/terms/` 下第 79—88 条对应页面均返回 200，并核对批次正文关键词；生产 CUA 在 `https://vibe.chuansgu.top/terms/dataframe?qa=batch079088prod` 实际看到新版正文，勾选“逾期 ≥ 1 天”得到 2×3，展开 Spark 引用后观察到 `frame-execution` 正文与书目区。没有把生产页面的交互功能写成已更新，Lesson 变化仍只在本地/dev。
+- DP 父需求 VBP-030 已按返回的 `allowed_transitions` 从 `ready_for_release` 置为 `released`（version 7，quality gate passed）。当前任务台账显示 19/20：有一条早期重复的 Webhook 任务 `8531a575-fa02-4f40-95f0-0b83a310ab3a` 仍为 `in_progress`，本批 #81 任务已完成并覆盖同一词条；本次不把这条历史重复任务伪装成新验收通过。
 - 当前批次进度为 **1/10（第 79 条）**，下一条是 `data-pipeline`；前序已发布总计 **78/105**。
 
 ## 80 · 数据管道文字复审、依赖链演示与本地浏览器验收（2026-10-01）
