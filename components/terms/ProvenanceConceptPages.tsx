@@ -40,27 +40,29 @@ export function DatasetTermPage() {
 export function QualityTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={qualitySources}/>;
   return <ConceptArticle slug="data-quality" title="数据质量" sources={qualitySources} sections={[["purpose", "质量要放到用途里判断"], ["measure", "同一批数据，换一种要求"], ["dimensions", "把不同问题分别量出来"], ["evidence", "规则通过，还要看事实"]]}
-    intro={<>一份三小时前的借阅快照，可能够用来整理月报，却赶不上实时库存。数据质量不是一张脱离用途的总分，而是数据在特定任务、指标和门槛下是否够用。</>}
+    intro={<>图书馆保存了一份三小时前的借阅记录。用它回看本月情况，和用它判断一本书此刻能否借出，对数据的要求不同。数据质量描述数据适合某种用途的程度，判断时要说清具体用途、怎么测、接受什么结果。</>}
     hero={<ConceptHero slug="data-quality" label="同一份三小时前快照在月报24小时门槛下通过，在实时库存30秒门槛下未通过"><div className={s.qualityHero}><div className={s.heroAge}><Clock size={24}/><span>同一快照</span><strong>3 小时</strong></div><div className={s.heroPolicy}><strong>月报参考</strong><span>≤ 24 小时</span><span>时效通过 ✓</span></div><div className={s.heroPolicy}><strong>实时库存</strong><span>≤ 30 秒</span><span>时效未通过</span></div></div></ConceptHero>}>
     <ArticleSection id="purpose" title="质量要放到用途里判断"><Legacy slug="data-quality" names={["question", "definition"]}/>
-      <p id="quality-purpose" className="vp-citation-target"><strong>数据质量描述一份数据适合某种用途的程度。</strong>W3C 的 Data Quality Vocabulary 是工作组说明文档，用来表达质量维度、指标、测量值与政策；质量测量要指向被测数据，说明用什么指标算出什么值。它强调质量与使用者需求有关，并没有规定一份放之四海皆准的“高质量”定义。判断前，先明确谁要用、做什么，以及不能接受哪些问题。<Cite id="quality-purpose"/></p>
-      <p>实时库存关心刚发生的借阅是否已经反映出来；月报参考对分钟级延迟可能不敏感，却需要覆盖正确的月份。两种用途都可能在意缺失与重复，但接受门槛要由业务约定。<strong>用途变化，合格结论可以变化，原始数据不必跟着改变。</strong>先固定数据版本和观察时刻，再说明本次结论按哪组门槛得出。</p>
+      <p id="quality-purpose" className="vp-citation-target"><strong>先明确谁要用这份数据、做什么，以及不能接受哪些问题。</strong>W3C 的 Data Quality Vocabulary（简称 DQV）是一份描述数据质量信息的工作组说明文档，没有规定统一的“高质量”定义。它区分质量维度、指标、测量值与政策：完整性是维度，也就是大家关注的方面；“书目编号非空的记录占多少”是指标；9/10 是测量值，也就是实际测出来的数；“本次用途至少接受 90%”是政策，即这次用途接受数据的门槛。把它们分开记录，别人才能知道“通过”是怎样得出的。<Cite id="quality-purpose"/></p>
+      <p>实时库存关心刚发生的借阅是否已经反映出来；月报参考对分钟级延迟可能不敏感，却需要覆盖正确的月份。两种用途都可能在意缺失与重复，但接受门槛要由使用数据的人根据错误或延迟会造成的后果来约定。<strong>用途变化，合格结论可以变化，原始数据不必跟着改变。</strong>判断时先固定数据版本和观察时刻，也就是本次拿来比较的时间点，再说明按哪组门槛得出结论。</p>
     </ArticleSection>
     <ArticleSection id="measure" title="同一批数据，换一种要求"><Legacy slug="data-quality" names={["scene-heading"]}/>
-      <p>固定的十条教学记录中，九条有书目编号，十个 ID 中有九个不同值。两个用途都暂定这两项至少 90%；月报允许快照距观察时刻不超过 24 小时，实时库存只允许 30 秒。<strong>这些阈值专为演示设定，不是行业标准或真实库存上线条件。</strong>演示先用三小时前的快照，再换成 12 秒前的快照，另外可以再缺一条书目编号。</p>
+      <p>下面的演示固定使用十条教学记录，每条代表一次借阅事件。e1、e2 等 ID 是事件编号，不是读者编号；两次不同借阅应有不同的 ID。#42、#78 是书目编号。九条记录有书目编号，十个事件 ID 中有九个不同值，e9 出现了两次。两个用途都暂定这两项至少 90%；月报允许快照距观察时刻不超过 24 小时，实时库存只允许 30 秒。<strong>这些阈值专为演示设定，不是行业标准或真实库存上线条件。</strong>演示先用三小时前的快照，再换成 12 秒前的快照，还可以去掉一条书目编号。</p>
       <QualityLesson/>
-      <p>完整性按“书目非空记录数 ÷ 十条记录”计算；不同 ID 占比按“不同 ID 数 ÷ 十条记录”计算。默认月报看到 9/10、9/10 和 3 小时，三项都过门槛；切到实时库存后，只有 30 秒时效这一项失败。换成 12 秒前的快照可以让实时库存通过，但不能补齐缺失字段；再缺一条书目编号会把完整性降到 8/10。不同 ID 占比能暴露重复，但不是所有系统对唯一性的统计口径；两条 e9 的书目不同，这个比例也没有检查内容冲突。时效是固定观察时刻与快照时间的差，没有后台时钟或实际连接。</p>
-      <p id="quality-record" className="vp-citation-target">DQV 把质量测量关联到被测数据、指标和测量值，也可以说明所遵循的政策。<strong>一份质量报告要能回答：测了哪份数据，用什么计算口径，按哪组门槛判断。</strong>只保存“通过”两个字，难以说明后来为什么出现不同结论；换了数据版本、观察时刻或政策，旧结论也不能直接沿用。<Cite id="quality-record"/></p>
+      <p>本例的完整性只算书目字段，按“书目编号非空的记录数 ÷ 十条记录”计算；不同 ID 占比按“不同 ID 数 ÷ 十条记录”计算。默认月报看到 9/10、9/10 和 3 小时，三项都达到门槛；切到实时库存后，只有时效这一项未通过，因为 3 小时超过了 30 秒。换成 12 秒前的快照后，三项都达到实时库存的门槛，但缺失的书目编号没有补齐；再缺一条会把完整性降到 8/10，整体又不通过。点击“恢复用途与数据”，演示会回到默认状态：月报用途、3 小时快照、九条有书目编号。</p>
+      <p><strong>达到 90% 的不同 ID 门槛，不等于每个事件 ID 都唯一。</strong>如果实际业务要求一次事件只有一条记录，e9 重复就必须处理。两条 e9 的书目编号还不同，现有数据不能告诉我们是事件编号填错了，还是书目编号填错了，不能只删掉其中一条。这个比例也没有检查内容是否冲突，更不能证明所有应有的借阅都已收录。本例的时效只是拿固定的观察时刻和快照时间做比较，页面背后没有真实的时钟，也没有连接任何真实系统。</p>
+      <p id="quality-record" className="vp-citation-target">DQV 可以把质量测量关联到被测数据、指标和测量值，并记录所遵循的质量政策。<strong>一份质量报告要能回答：测了哪份数据，用什么计算口径，按哪组门槛判断。</strong>这样才能区分“旧快照按月报要求通过”和“新快照按库存要求通过”。只保存“通过”两个字，难以说明后来为什么出现不同结论；换了数据版本、观察时刻或要求，应重新核对，不能直接沿用旧结论。<Cite id="quality-record"/></p>
     </ArticleSection>
     <ArticleSection id="dimensions" title="把不同问题分别量出来"><Legacy slug="data-quality" names={["quiz-heading"]}/>
       <p id="quality-dimensions" className="vp-citation-target">英国政府数据质量框架列出完整性、唯一性、一致性、时效性、有效性和准确性，并提醒这些维度不是每个组织必须照搬的固定清单。完整性问记录和重要字段是否齐全，唯一性问是否重复，有效性问格式或范围是否符合约定，准确性问值是否符合现实。<strong>字段齐全、格式合法和符合现实，分别回答不同问题。</strong>需要哪些指标，仍由本次用途决定。<Cite id="quality-dimensions"/></p>
-      <div className={s.dimensions}><div><h3>完整与唯一</h3><p>需要的记录和字段是否齐全？同一事件是否重复进入？两项要分开算。</p></div><div><h3>时效与一致</h3><p>数据是否来得及支持决策？不同表里同一本书的状态是否相互矛盾？</p></div><div><h3>有效与准确</h3><p>书目编号符合约定格式，不代表它真的对应读者借走的那本书。</p></div></div>
-      <p id="quality-automation" className="vp-citation-target">Deequ 是构建在 Apache Spark 上的库，可以把完整性、唯一性和行数等要求写成“数据单元测试”，在大数据集上计算指标并判断约束。自动化能持续执行明确规则，发现缺失、重复或范围问题；没有写出的要求仍然不会凭空出现。<strong>检查结果需要回到具体规则和失败记录。</strong>本页使用少量浏览器记录计算，没有运行 Spark 或 Deequ。<Cite id="quality-automation"/></p>
+      <div className={s.dimensions}><div><h3>完整与唯一</h3><p>需要的记录和字段是否齐全？同一事件是否被记了不止一次？两项要分开算。</p></div><div><h3>时效与一致</h3><p>数据是否来得及支持决策？不同表里同一本书的状态是否相互矛盾？</p></div><div><h3>有效与准确</h3><p>书目编号符合约定格式，不代表它真的对应读者借走的那本书。</p></div></div>
+      <p id="quality-automation" className="vp-citation-target">十条记录可以逐条看，成千上万条就需要程序反复检查。Deequ 是基于 Apache Spark 的程序库；Spark 用来处理大批数据，Deequ 把“某字段不能缺失”“ID 必须唯一”等要求写成可以自动运行的检查，称为“数据单元测试”。运行后，它计算指标，再判断是否满足写好的要求。<strong>检查结果需要回到具体规则；未写进规则的问题，不能靠自动化发现。</strong>失败时还要结合原始记录定位原因。本页只在浏览器里计算十条教学记录，没有运行 Spark 或 Deequ。<Cite id="quality-automation"/></p>
     </ArticleSection>
     <ArticleSection id="evidence" title="规则通过，还要看事实" className={base.offset}><Legacy slug="data-quality" names={["prompt-heading"]}/>
-      <p id="quality-fact" className="vp-citation-target">政府框架区分完整性与准确性：所有字段都有值，仍然可能是错误值。<strong>检测值是否符合规则，与核对它是否反映真实业务，是不同的证据。</strong>借阅系统可能要与实际事件或权威来源核对；关掉一项检查，也不能让原来的问题自动消失。<Cite id="quality-fact"/></p>
-      <ArticleAside title="总分遮住的质量差异"><p id="quality-score" className="vp-citation-target">AWS Glue Data Quality 把质量分数定义为规则判断为真的比例。因此，90 分表示规则通过比例，不直接表示 90% 的记录真实或准确；规则本身怎样定义，决定这个数字能回答什么。<strong>先看分子的规则是什么，再看关键规则有没有失败。</strong>本例逐项展示门槛，不把时效失败藏进一个平均分。<Cite id="quality-score"/></p></ArticleAside>
-      <p>质量报告应写明用途、数据版本、观察时刻，以及每项指标的分子、分母和门槛。失败记录需要定位位置与处理方式；缺失、未检查和检查失败分别统计。对现实情况的判断仍要补充外部证据。</p>
+      <p id="quality-fact" className="vp-citation-target">英国政府框架区分完整性与准确性：所有字段都有值，仍然可能是错误值。<strong>按规则检查数据，与核对它是否反映真实业务，需要不同的证据。</strong>例如，记录里的 #42 格式正确、也确有这本书，却可能是工作人员选错了书目；还要核对对应的借阅凭据或经过确认的事件来源，才能判断是否记对。仅凭这十条记录，我们不知道 e9 应对应哪本书。关掉一项检查，也不会消除原来的问题。<Cite id="quality-fact"/></p>
+      <p><ConceptTerm slug="data-validation">数据验证</ConceptTerm>按已写好的规则检查输入，是质量评估可用的一种手段。质量评估还要决定哪些问题会影响本次用途、采用什么指标、能接受多大的误差，以及缺少哪些现实证据。格式检查全部通过，只能说明满足这些格式规则，不能独自证明整份数据适合这次任务。</p>
+      <ArticleAside title="总分遮住的质量差异"><p id="quality-score" className="vp-citation-target">AWS Glue Data Quality 的分数，是用“通过的规则数 ÷ 本次评估的规则总数”算出的百分比。例如，十条规则有九条通过，分数就是 90%，并不表示 90% 的记录真实或准确；规则怎样定义，决定这个数字能回答什么。<strong>还要看未通过的是哪一条，是否影响这次用途。</strong>本例要求三项全部达到门槛，不把时效失败藏进一个平均分。<Cite id="quality-score"/></p></ArticleAside>
+      <p>质量报告应写明用途、数据版本、观察时刻，以及各项指标的计算方法、测得的值和门槛。比例指标还要保留分子、分母；本例时效则保留快照时间与比较时间。发现问题后定位记录，说明怎样处理；没有检查的项目也要标明。需要判断是否符合现实时，再补充相应证据。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
