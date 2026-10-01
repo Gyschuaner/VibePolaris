@@ -269,12 +269,14 @@
   },
   {
     "slug": "plan-and-execute",
-    "mechanism": "系统先把目标拆成可检查的步骤，再逐步执行；每步结果可使剩余计划被修改、跳过或重排。",
-    "misconception": "计划不是一次生成后必须照做的清单；外部状态改变时，可靠系统需要重新规划。",
+    "mechanism": "规划与执行先把目标拆成有前后关系、可检查的步骤，再逐项执行；某一步做完，结果没有达到完成条件时，后面的计划可以停下、调整或重排。",
+    "misconception": "计划只是接下来怎么做的安排，不代表事情已经完成；步骤走完也要看实际结果，外部状态改变时还需要重新规划。",
     "demoSignature": "输入：发布清单含构建、测试、部署3步；中间：构建通过，测试12项中1项失败，部署状态从待执行改为阻塞；输出：生成修复测试的新步骤并停止发布。可视化：清单节点状态与分支动画。 建议5帧：三节点计划生成、构建通过、测试节点显示11/12并变红、部署被锁、修复节点插入；交互：点击失败测试查看计划如何改写。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://arxiv.org/abs/2210.03629"
+      "https://arxiv.org/abs/2210.03629",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://blog.langchain.dev/planning-agents/"
     ],
     "rewriteRisk": "别只写三个动词；每一步都要有完成证据、失败分支和计划更新。",
     "nearDuplicates": [
@@ -284,12 +286,14 @@
   },
   {
     "slug": "agent-orchestration",
-    "mechanism": "编排层把任务分给不同执行单元，管理共享上下文、依赖顺序、超时与结果合并。",
-    "misconception": "多开几个模型并不自动形成编排；没有职责边界和汇总规则时，只是并发调用。",
-    "demoSignature": "输入：报告任务拆为检索、核数、撰写3份子任务；中间：检索8条证据、核数发现1处冲突，撰写被阻塞后重跑；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。 建议6帧：总任务拆成三节点、检索和核数并行、冲突边亮红、撰写暂停、核数重跑、结果汇合；交互：切换串行/并行比较等待时间。",
+    "mechanism": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
+    "misconception": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。",
+    "demoSignature": "输入：报告任务拆为检索、核对、撰写3份子任务；中间：检索8条证据、核对发现1处冲突，撰写被阻塞后按规则排除冲突证据；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。建议6帧：总任务拆成三节点、检索和核对并行、冲突边亮红、撰写暂停、排除冲突证据、结果合并；交互：切换串行/并行比较等待时间。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://openai.github.io/openai-agents-python/running_agents/"
+      "https://openai.github.io/openai-agents-python/running_agents/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
     "rewriteRisk": "强调编排者管理的状态，不要把角色名称堆叠成看似复杂的流程。",
     "nearDuplicates": [
@@ -300,13 +304,16 @@
   },
   {
     "slug": "handoff",
-    "mechanism": "当前智能体把任务控制权和必要上下文移交给另一个专门智能体，后者从明确入口继续处理。",
-    "misconception": "交接不是复制一份消息并行运行；控制权、上下文范围和返回路径都需要定义。",
-    "demoSignature": "输入：售后对话含订单号A102和“申请退款”；中间：路由置信0.93，移交包保留2个字段并删除聊天闲话；输出：退款智能体从确认金额步骤接手。可视化：控制权令牌从客服节点移动到退款节点。 建议4帧：客服节点持有控制权令牌、交接包收缩为2字段、令牌沿线移动、退款节点点亮；交互：展开交接包检查被保留与删除的内容。",
+    "mechanism": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
+    "misconception": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
+    "demoSignature": "输入：售后对话含订单 A102 和“申请退款”；中间：从整段对话整理出订单号和申请类型两项信息，先送达退款智能体，再把回复权从客服转过去；输出：退款智能体从确认金额步骤接手，客服不再直接回复。可视化：回复权标记从客服节点移动到退款节点。建议5帧：客服节点持有回复权标记、交接包整理为2项信息、交接包抵达退款节点、回复权标记移动、退款节点从确认金额点亮；交互：展开交接包检查被保留的信息。",
     "sourceUrls": [
-      "https://openai.github.io/openai-agents-python/handoffs/"
+      "https://openai.github.io/openai-agents-python/handoffs/",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
-    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些字段、谁继续响应以及失败如何退回。",
+    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些信息、回复权给谁以及失败如何退回。",
     "nearDuplicates": [
       "agent-orchestration",
       "subagent"
@@ -314,14 +321,16 @@
   },
   {
     "slug": "subagent",
-    "mechanism": "主智能体把一个边界清楚的子任务交给另一智能体执行，并接收其结果，主任务的最终控制权通常仍在主智能体。",
-    "misconception": "子智能体不等于交接：交接常把对话控制权转走，子智能体更像被主智能体调用的工作单元。",
-    "demoSignature": "输入：主任务要比较3个方案，子智能体只负责核对价格；中间：3个URL→2个可验证价格+1个缺失，结果返回主智能体；输出：主报告保留缺失标记。可视化：主干流程旁伸出支线再汇合。 建议5帧：主任务保持在主干、价格子任务分叉、3个URL被核对、2项结果回传、主干继续；交互：点击支线单独重跑，不移动主控制权。",
+    "mechanism": "主智能体把主任务中边界清楚、能独立验收的一块工作分派给子智能体；子智能体完成后，由主智能体验收并合并结果，同时保留最终回复权。",
+    "misconception": "子智能体只接收明确范围并回传结果，主智能体通常仍保留最终回复和合并控制；要把回复权转走是交接（handoff），要安排多个子任务的依赖与合并是智能体编排。",
+    "demoSignature": "输入：主报告比较3个方案，子智能体只负责核对价格；中间：3个指定URL→2项有效价格+1项缺失，结果带状态回传主线；输出：主智能体检查后把结果写入报告并保留缺失标记。可视化：主干流程旁伸出支线再汇合。建议4帧：主线保留最终回复、价格支线独立核对、结果回到主线、主智能体合并结果并保留1项缺失；交互：点击支线单独重跑，不移动主线回复权。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://openai.github.io/openai-agents-python/tools/"
+      "https://openai.github.io/openai-agents-python/tools/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
-    "rewriteRisk": "避免把任何后台函数称为子智能体；必须出现独立任务边界和结果回传。",
+    "rewriteRisk": "不要把后台函数都称为子智能体；必须出现独立任务边界、可检查结果和回传主线。",
     "nearDuplicates": [
       "agent-orchestration",
       "handoff"
@@ -329,14 +338,16 @@
   },
   {
     "slug": "human-in-the-loop",
-    "mechanism": "系统在高风险、低置信或不可逆动作前暂停，让人审阅输入、建议动作和影响，再决定批准、修改或拒绝。",
-    "misconception": "有人最后看一眼不等于人在回路；人必须能在关键动作发生前改变结果。",
-    "demoSignature": "输入：退款金额1200元，自动审批阈值500元；中间：金额越阈值700元，状态运行中→待人工；输出：审核人改为1000元后批准执行。可视化：金额刻度触发暂停闸门与审批按钮。 建议5帧：退款请求进入、金额越过500刻度、流程冻结并弹出审阅卡、人工改额、批准后继续；交互：亲自选择批准/修改/拒绝三种结局。",
+    "mechanism": "系统在高风险、系统没把握或不可逆动作前暂停，让人查看输入、建议动作和影响，再批准、修改或拒绝。",
+    "misconception": "事后通知或抽样复查不算人在回路；人工节点要位于动作执行前，并能改变结果。",
+    "demoSignature": "输入：退款金额 1200 元，自动退款上限 500 元；中间：系统比较金额并暂停，审阅人可批准、修改或拒绝；输出：批准路径执行退款并记录，拒绝路径保持未执行并记录决定。可视化：金额比较触发暂停闸门与审批卡。建议7帧：申请进入、比较自动退款上限、暂停等待决定、拒绝结局、人工改额、批准后退款、批准留痕；交互：用“选择审批结局”下拉查看拒绝和修改后批准两种结局。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
+      "https://www.nist.gov/itl/ai-risk-management-framework"
     ],
-    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、可见信息和可改动作。",
+    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、审阅人能看到什么、能改变哪个动作，以及决定如何留痕。",
     "nearDuplicates": [
       "tool-approval",
       "guardrail"
@@ -344,14 +355,16 @@
   },
   {
     "slug": "guardrail",
-    "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或升级处理。",
-    "misconception": "护栏不能保证模型绝不出错，也不能代替权限、审核和业务校验。",
-    "demoSignature": "输入：用户请求导出客户表，规则禁止包含手机号；中间：检测到12个手机号字段，输出检查状态pass→blocked；输出：只返回脱敏后的12条记录。可视化：数据字段穿过规则闸门，敏感列被遮罩。 建议4帧：含手机号的数据表进入、规则扫描12列命中、敏感列被遮罩、脱敏结果放行；交互：开关某条规则查看哪些字段被拦。",
+    "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
+    "misconception": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
+    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：12 条脱敏记录放行，完整号码为 0，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/guardrails/",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
     ],
-    "rewriteRisk": "需要明确护栏检查对象和动作，别把所有安全措施都装进同一个词。",
+    "rewriteRisk": "要写出护栏检查什么、命中后做什么，以及权限、审核和业务校验由谁负责，不要把所有安全措施都装进同一个词。",
     "nearDuplicates": [
       "moderation",
       "permission-boundary",
@@ -360,14 +373,16 @@
   },
   {
     "slug": "moderation",
-    "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取允许、限制或复核。",
-    "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。",
-    "demoSignature": "输入：3条评论；中间：风险分0.03/0.61/0.94，阈值0.80后状态为通过/复核/拦截；输出：1条展示、1条送审、1条隐藏。可视化：三点落在阈值色带上。 建议4帧：三条评论落到风险色带、分数定位、阈值线切分三种处置、卡片进入展示/复核/隐藏队列；交互：拖阈值线观察队列数量。",
+    "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取展示、复核或隐藏。",
+    "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。护栏负责规则检查，内容审核负责内容分类。",
+    "demoSignature": "输入：3 条评论；中间：风险分 0.03 / 0.61 / 0.94，阈值 0.80 后按示意区间进入展示 / 复核 / 隐藏（≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示）；输出：1 条展示、1 条送审、1 条隐藏。阈值改为 0.60 后，样本的复核队列变空，B 转入隐藏。可视化：三点落在阈值色带上。建议4帧：三条评论落到风险色带、阈值区间切分、三路处置队列、阈值调整后队列更新；交互：拖阈值线观察队列数量。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/moderation",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
     ],
-    "rewriteRisk": "不要列一串抽象风险类型；用阈值和三种处置说明审核如何进入产品流程。",
+    "rewriteRisk": "不要把审核分数写成法律结论；要用风险类别、产品阈值和处置队列说明审核如何进入产品流程。",
     "nearDuplicates": [
       "guardrail"
     ]
@@ -420,14 +435,16 @@
   },
   {
     "slug": "fine-tuning",
-    "mechanism": "微调用训练样本继续更新模型参数，使特定格式、语气或任务行为更稳定；它发生在训练阶段而非每次提示中。",
-    "misconception": "微调不是给模型实时灌入最新知识的数据库，也不应先于提示、检索和评测直接上。",
-    "demoSignature": "输入：200条“工单→标签”样本，训练前验证准确率71%；中间：训练3轮，损失0.84→0.39，验证准确率升至83%；输出：固定测试集提升12个百分点。可视化：训练曲线与验证集对照。 建议5帧：200条训练样本入场、三轮训练曲线下降、验证曲线上升、训练与验证分叉提示过拟合、固定测试集给出83%；交互：拖训练轮数看两条曲线。",
+    "mechanism": "微调在训练阶段更新模型参数，使特定格式、语气或任务行为更稳定；效果要用未参与训练的数据检查。",
+    "misconception": "微调不会自动注入实时知识；提示词适合修改任务说明，检索适合临时查资料，训练数据也要去重、去除隐私内容并与验证集分开。",
+    "demoSignature": "输入：200 条工单分类训练样本与一份未参与训练的验证集；中间：训练损失 0.84→0.39，验证准确率 71%→83%，再训练一轮后模型更贴合训练样本，验证准确率回落至 80%；输出：出现过拟合信号，不能只看训练指标。可视化：训练损失与验证准确率并排。建议4帧：验证基线、参数开始更新、第三轮改善、再训练后验证回落；交互：拖训练轮数看训练损失与验证准确率的变化。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/model-optimization",
-      "https://arxiv.org/abs/2203.02155"
+      "https://platform.openai.com/docs/guides/supervised-fine-tuning",
+      "https://huggingface.co/docs/transformers/training",
+      "https://arxiv.org/abs/2106.09685"
     ],
-    "rewriteRisk": "数值要标为案例结果而非普遍收益；必须保留独立验证集和过拟合风险。",
+    "rewriteRisk": "数值要标为教学案例而非普遍收益；必须解释训练损失、保留未参与训练的验证集，并说明过拟合风险。",
     "nearDuplicates": [
       "few-shot-prompting",
       "evaluation-dataset"
@@ -596,29 +613,34 @@
   },
   {
     "slug": "agent-memory",
-    "mechanism": "智能体记忆把跨轮次或跨会话需要保留的信息写入外部存储，并在后续任务按条件检索、更新或删除。",
-    "misconception": "它不是模型参数里的永久记忆，也不等于把所有聊天原样塞回上下文。",
-    "demoSignature": "输入：用户偏好“代码示例用TypeScript”，会话结束；中间：记忆库新增1条带时间戳记录，下次请求检索命中1条；输出：新示例改用TypeScript。可视化：会话时间轴跨段连接一张记忆卡。 建议5帧：偏好在会话A出现、写成带时间戳记忆卡、会话A关闭、会话B检索命中、TypeScript示例生成；交互：删除记忆后重试查看偏好消失。",
+    "mechanism": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
+    "misconception": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
+    "demoSignature": "用户确认保存代码写法偏好；应用把带来源与时间的记录加入已有食谱记录的记忆库。新代码任务在 2 条记录中只取回相关的 1 条，并交给 AI 生成示例。随后用户纠正、删除这条代码偏好，记忆库剩 1 条食谱记录；既有回复不改写，下一次代码任务需重新说明偏好。6 帧分别展示确认、写入、相关取回、生成、纠正、删除；选择操作查看对应状态。失效时间作为记录规则说明，不假装演示实际计时。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2310.08560",
-      "https://platform.openai.com/docs/guides/conversation-state"
+      "https://docs.langchain.com/oss/python/concepts/memory",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2304.03442",
+      "https://arxiv.org/abs/2310.08560"
     ],
-    "rewriteRisk": "必须说明写入、召回和删除规则；避免把隐私敏感信息默认长期保存。",
+    "rewriteRisk": "智能体记忆包含任务内和跨会话信息；本例聚焦跨会话偏好，不把聊天关闭等同于临时状态自动清除。不把删除记录表现成修改已生成的输出。隐私同意和保存期限属于本例管理建议，不声明所有框架自动提供。",
     "nearDuplicates": [
       "working-memory",
+      "context-window",
       "vector-store"
     ]
   },
   {
     "slug": "working-memory",
-    "mechanism": "工作记忆保存当前任务正在使用的短期状态，如已完成步骤、临时候选和工具结果，并随任务推进被覆盖或清理。",
-    "misconception": "它不同于跨会话记忆，也不等于模型上下文窗口本身；状态可以存放在应用侧。",
-    "demoSignature": "输入：比价任务有5个商品；中间：筛预算后5→3、查库存后3→2，并记录已调用工具2/4；输出：选出2个候选，任务结束后清空临时状态。可视化：便签栈随步骤增删并在终点归零。 建议5帧：5个候选进入临时便签栈、筛价5→3、查库存3→2、结果选出、任务结束便签归零；交互：逐步回退查看每步状态快照。",
+    "mechanism": "工作记忆把当前任务要继续使用的状态放在一起，例如目标、候选清单、已查结果和下一步要做的事；任务推进时更新它，结束后按需要清理或保留结果。",
+    "misconception": "它只服务当前任务；跨会话记忆才保存给下一次聊天用。聊天里说过的话也不会自动全部带到下一步。本例中，承载智能体的程序把预算目标、候选和工具结果保存为工作记忆，下一轮再把需要的内容发给 AI。最终结果要不要另行保存，是另一条产品规则。",
+    "demoSignature": "输入：比价任务有 5 个候选，预算不超过 500 元且需要有货；中间：查价后 5→3，查库存后 3→2，调用次数为 2；输出：交付 2 个候选给用户比较，清空候选便签和调用次数，目标卡作为本次交付的说明保留，结果是否另外存起来按产品规则决定。可视化：任务目标连接候选清单、工具调用和交付结果，工具返回后更新清单，终点清理临时状态。建议4帧：目标和候选写入、预算筛选、库存筛选、交付后清理；交互：选择阶段查看状态快照。",
     "sourceUrls": [
+      "https://docs.langchain.com/oss/python/concepts/memory",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2310.08560"
     ],
-    "rewriteRisk": "演示要表现临时状态的增删和生命周期，不能与长期偏好记忆写成同一种数据库。",
+    "rewriteRisk": "必须区分当前任务的工作状态、模型本轮收到的输入和跨会话偏好；清理的是临时状态，任务目标与已经交付的结果可以按产品规则保留，不要画成一起消失。不要把所有框架都写成任务结束必然自动清空。",
     "nearDuplicates": [
       "agent-memory",
       "context-window",
