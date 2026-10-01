@@ -31,6 +31,12 @@ News 页面初始不选中文章，不绘制关系线。点击新闻星点或时
 - 容器：`vibepolaris-news-local`，`http://127.0.0.1:3001`。`/`、`/news`、新闻详情、`/sitemap.xml` 均 HTTP 200，`npm run news:smoke -- http://127.0.0.1:3001` 通过。
 - 浏览器验收覆盖：桌面初始/打开/重复星点取消/时间线重复取消/三角关闭重开；移动横向时间线、触摸打开与自动滚动、重复触摸取消、三角关闭重开；过渡采样确认 transform 在 0.55 秒内连续变化。
 
+## 真实新闻草稿批次
+
+2026-10-01 从 [OpenAI](https://openai.com/index/introducing-dots/)、[Anthropic](https://www.anthropic.com/claude-sonnet-5-5) 和 [Google DeepMind](https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/) 官方页面核对了 3 篇真实 AI 行业新闻，写入 `content/zh/news-drafts/2026-10-01/`。三篇均带 canonical URL、sourceHash、证据摘录、人工 verification、routine 风险和确认词条关系，状态为 `needs-review`。详细来源、事实边界和校验记录见 [`docs/development/news-evidence/2026-10-01-official-sources.md`](../news-evidence/2026-10-01-official-sources.md)。
+
+本批次已完成 `news:validate`、`news:publish` dry-run 和 `news:auto-publish` dry-run；自动提升结果为空，因草稿仍有编辑复核原因。它们尚未进入 `news.json`、sitemap 或 Xiaobei 检索。
+
 ## Draft PR 材料
 
 建议标题：
