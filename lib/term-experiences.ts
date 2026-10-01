@@ -111,7 +111,7 @@ export const termExperienceSchema = z.object({
     url: z.string().url().startsWith("https://"),
     label: z.string().min(1),
     note: z.string().min(1),
-  })).min(1).max(3),
+  })).min(1).max(5),
 });
 
 export type TermExperience = z.infer<typeof termExperienceSchema>;
