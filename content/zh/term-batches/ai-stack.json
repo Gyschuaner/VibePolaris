@@ -3237,32 +3237,32 @@
     "en": "Object",
     "slug": "object",
     "cat": "技术栈",
-    "say": "用一组键和值描述同一个实体的相关数据和行为。",
+    "say": "用一组键和值描述同一个实体的属性，值也可以是行为。",
     "aliases": [
       "对象值",
       "键值对象",
       "object value"
     ],
-    "question": "用户姓名、邮箱和状态怎样放在一个变量里？",
-    "definition": "对象把相关属性组织在同一结构中，代码通过键读取或修改对应值。",
-    "boundary": "对象不是 JSON 的同义词；对象可以包含方法或运行时特性，JSON 只是数据格式。",
+    "question": "用户姓名和年龄怎样放在一个变量里？",
+    "definition": "对象把相关属性组织在同一结构中，代码通过键读取或修改对应值；某个值是函数时，它也可以成为对象的方法。",
+    "boundary": "对象不是 JSON 的同义词：JavaScript 对象可以写成 user = { name: '林', age: 20 }，JSON 文本要写成 {\"name\":\"林\",\"age\":20}，不能表示对象的方法。以 JavaScript 为例，删除属性后再读取不存在的键会得到 undefined。",
     "demoType": "hierarchy",
     "demoTitle": "用户对象的属性",
     "demoSteps": [
       {
         "label": "初始对象",
-        "value": "name 与 status 两个键",
-        "note": "status 当前是 pending。"
+        "value": "user = { name: '林', age: 20 }",
+        "note": "name 和 age 是两个键，各自指向一个值。"
       },
       {
-        "label": "更新属性",
-        "value": "status 改为 active",
-        "note": "name 保持不变。"
+        "label": "修改属性",
+        "value": "user.age 改为 21",
+        "note": "只替换 age 对应的值，name 保持不变。"
       },
       {
         "label": "读取结果",
-        "value": "user.status 得到 active",
-        "note": "代码只访问指定键。"
+        "value": "user.age 得到 21",
+        "note": "代码通过键找到指定属性的值。"
       }
     ],
     "quizQuestion": "对象适合组织哪类数据？",
@@ -3272,9 +3272,9 @@
       "没有任何关系的全站文件"
     ],
     "correctText": "键值结构适合描述实体属性。",
-    "wrongText": "按位置的序列通常更适合数组。",
+    "wrongText": "如果数据主要靠位置读取，才会选择按顺序组织的一列值。",
     "promptTitle": "设计对象结构",
-    "prompt": "请定义对象字段、类型、必填项、默认值和哪些字段可以被修改。",
+    "prompt": "请定义对象的属性、类型、必填项、默认值，以及哪些属性可以被修改。",
     "relatedSlugs": [
       "array",
       "json-schema",
