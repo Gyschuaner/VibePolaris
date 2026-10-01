@@ -38,5 +38,5 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(styles, /\.news-atlas-specks \{ z-index: 1; pointer-events: none; \}/);
   assert.match(styles, /\.news-atlas-world \{ position: absolute; z-index: 3;/);
   assert.match(atlas, /Boolean\(selectedNodeSlug\) && showLines && connected/);
-  assert.match(styles, /\.news-atlas-news-node \.news-atlas-node-copy \{ position: absolute;/);
+  assert.match(styles, /\.news-atlas-article-node \.news-atlas-node-copy \{ position: absolute;/);
 });
