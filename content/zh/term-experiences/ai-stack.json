@@ -13453,7 +13453,7 @@
       {
         "id": "server",
         "label": "商品服务",
-        "detail": "处理中",
+        "detail": "待更新",
         "icon": "server",
         "group": "服务器"
       },
@@ -13848,45 +13848,45 @@
   },
   {
     "slug": "microservices",
-    "lead": "订单调用库存和支付时，库存超时为何会让订单停在pending？",
-    "definition": "微服务把业务能力拆成可独立部署的服务，通过网络接口协作，每个服务拥有明确边界和运行责任。",
-    "boundary": "拆成多个进程不自动带来微服务收益；网络失败、数据一致性和运维成本会随之增加。",
+    "lead": "订单服务调用库存和支付，库存两秒没回应时，为什么订单不能直接说成功？",
+    "definition": "微服务把一套应用拆成多个可分别发布的服务。每个服务负责一块业务，服务之间通过网络请求协作，所以一次业务可能经过多个服务。",
+    "boundary": "拆成多个服务不自动带来收益；网络可能延迟或失败，数据要跨服务协调，监控和发布也更复杂。",
     "sceneKind": "network",
-    "sceneTitle": "三个独立服务之间的部分失败",
-    "actionLabel": "断开库存连接",
+    "sceneTitle": "服务分开，网络调用会失败",
+    "actionLabel": "看下一步",
     "actors": [
       {
         "id": "order",
         "label": "订单服务",
-        "detail": "v2.1",
+        "detail": "订单业务",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "stock",
         "label": "库存服务",
-        "detail": "v1.4",
+        "detail": "库存业务",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "pay",
         "label": "支付服务",
-        "detail": "v3.0",
+        "detail": "支付业务",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "network",
-        "label": "网络调用",
-        "detail": "库存超时",
+        "label": "等待计时",
+        "detail": "上限 2 秒",
         "icon": "network",
         "group": "通信"
       },
       {
         "id": "state",
         "label": "订单状态",
-        "detail": "pending",
+        "detail": "处理中",
         "icon": "database",
         "group": "结果"
       }
@@ -13905,10 +13905,10 @@
         "label": "支付"
       },
       {
-        "id": "s-n",
-        "from": "stock",
+        "id": "o-n",
+        "from": "order",
         "to": "network",
-        "label": "响应"
+        "label": "开始等待"
       },
       {
         "id": "n-o",
@@ -13925,8 +13925,8 @@
     ],
     "frames": [
       {
-        "label": "独立服务就绪",
-        "note": "三个服务有各自版本和部署单元。",
+        "label": "三个服务各自就绪",
+        "note": "订单、库存、支付各自有自己的版本，也各自发布；版本号只表示当前运行版本。",
         "activeIds": [
           "order",
           "stock",
@@ -13944,8 +13944,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "订单发起调用",
-        "note": "订单并行联系库存和支付。",
+        "label": "订单发起两次请求",
+        "note": "订单向库存和支付发出请求；演示简化为同时等待两份回应。",
         "activeIds": [
           "order",
           "stock",
@@ -13957,16 +13957,17 @@
           "state"
         ],
         "values": {
-          "network": "2条请求"
+          "network": "等待两份回应"
         },
         "activeEdgeIds": [
           "o-s",
-          "o-p"
+          "o-p",
+          "o-n"
         ]
       },
       {
-        "label": "库存发生超时",
-        "note": "支付成功，但库存超过2秒没有响应。",
+        "label": "库存在时限内没回应",
+        "note": "支付已回应成功；订单给库存请求最多等 2 秒，时间到仍未收到回应，所以结果暂时未知。",
         "activeIds": [
           "stock",
           "network",
@@ -13979,63 +13980,84 @@
           "state"
         ],
         "values": {
-          "network": "库存 timeout 2s"
+          "network": "2 秒已到"
         },
         "activeEdgeIds": [
-          "s-n",
+          "o-s",
           "n-o"
         ]
       },
       {
-        "label": "保存中间状态",
-        "note": "订单不能假装完成，状态改为pending等待重试。",
+        "label": "先保存处理中",
+        "note": "订单把状态记为处理中，等重试或人工核对；演示不假设库存已经扣减。",
         "activeIds": [
           "order",
           "state"
         ],
         "doneIds": [
-          "stock",
           "pay",
           "network"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "stock"
+        ],
         "values": {
-          "state": "created → pending"
+          "state": "处理中"
         },
         "activeEdgeIds": [
           "o-st"
         ]
       }
     ],
-    "insight": "微服务提供独立部署，也引入网络失败和跨服务状态协调成本。",
+    "insight": "独立发布是微服务的收益，网络失败和跨服务状态协调是随之而来的成本；是否值得拆分，要看业务边界是否清楚，以及团队能否承担这些工作。",
     "quiz": {
-      "question": "把一个应用拆成多个进程，就自动是良好微服务吗？",
+      "question": "把一个应用拆成多个服务，就自动是微服务吗？",
       "options": [
         {
-          "label": "不是，还需业务边界和独立运行责任",
+          "label": "不一定，还要有清楚的业务边界和独立发布责任",
           "correct": true
         },
         {
-          "label": "是，进程数量决定一切",
+          "label": "是，服务数量超过三个就算",
           "correct": false
         },
         {
-          "label": "只要容器数量多即可",
+          "label": "是，只要每个服务使用不同语言",
           "correct": false
         }
       ],
-      "success": "拆分形式不能替代清晰边界。",
-      "retry": "网络与数据责任必须设计。"
+      "success": "服务数量不是标准；还要看业务边界、独立发布和运行责任。",
+      "retry": "问自己：它能不能单独发布，出了故障谁负责？"
     },
     "prompt": {
       "title": "审查一个服务拆分",
-      "text": "为每个服务写业务职责、数据所有权、接口、独立部署、超时重试和故障时的中间状态。"
+      "text": "请为每个服务写清业务职责、谁保存数据、接口如何调用、是否能独立发布，以及超时或状态不一致时如何处理。"
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf",
-        "label": "NIST 出版物 · NIST.SP.800 204",
-        "note": "术语、风险与评估框架"
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
+        "label": "Microsoft Learn · Microservices architecture style",
+        "note": "定义可独立部署的业务服务，并说明网络通信、数据归属、独立扩缩和测试运维带来的取舍。"
+      },
+      {
+        "url": "https://csrc.nist.gov/pubs/sp/800/204/final",
+        "label": "NIST SP 800-204 · Microservices-based Application Systems",
+        "note": "说明微服务通过 API 协作，以及服务发现、认证、监控和弹性等配套能力。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_service_architecture_monolith_soa_microservice.html",
+        "label": "AWS Well-Architected · Choose how to segment your workload",
+        "note": "说明拆成更小服务会带来延迟、调试和运维复杂度，需要按场景权衡。"
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-microservices-architecture",
+        "label": "Google Cloud · What is Microservices Architecture?",
+        "note": "对比单体统一单元与微服务独立服务，并说明服务边界、可扩缩性和可观测性。"
+      },
+      {
+        "url": "https://www.martinfowler.com/microservices/",
+        "label": "Martin Fowler · Microservices Guide",
+        "note": "给出围绕业务能力、独立部署的定义，并列出分布式调用、最终一致性和运维复杂度等代价。"
       }
     ]
   },
