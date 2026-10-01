@@ -9138,12 +9138,12 @@
   },
   {
     "slug": "build-tool",
-    "lead": "一个项目要先检查类型、再转译、最后复制图片，谁来安排这三个任务？",
-    "definition": "构建工具编排转译、资源处理、检查和产物输出等任务，并依据配置与依赖关系决定执行顺序。",
-    "boundary": "构建工具可以调用打包器，但两者不是同义词；构建还可能包含不打包的检查和生成任务。",
+    "lead": "一个项目里有类型检查、转译、图片复制这些任务，哪些必须等前面的任务做完，哪些可以同时开始？",
+    "definition": "构建工具读取配置，把检查、转译、打包和资源处理等任务接成依赖图；能并行的任务一起跑，必须等待的任务按顺序跑，最后汇总产物。",
+    "boundary": "构建工具负责任务编排和产物汇总；编译器或转译器改写代码，打包器把分散的模块整理成产物文件，开发服务器让你在本地改完代码就马上看到效果。构建得到的目录仍在本机，不等于已经部署上线。",
     "sceneKind": "tree",
     "sceneTitle": "构建任务按依赖顺序执行",
-    "actionLabel": "关闭一个任务",
+    "actionLabel": "切换任务状态",
     "actors": [
       {
         "id": "source",
@@ -9186,7 +9186,13 @@
         "id": "s-t",
         "from": "source",
         "to": "typecheck",
-        "label": "输入"
+        "label": "代码检查"
+      },
+      {
+        "id": "s-a",
+        "from": "source",
+        "to": "assets",
+        "label": "资源输入"
       },
       {
         "id": "t-tr",
@@ -9195,22 +9201,22 @@
         "label": "通过后"
       },
       {
-        "id": "tr-a",
+        "id": "tr-d",
         "from": "transpile",
-        "to": "assets",
-        "label": "继续"
+        "to": "dist",
+        "label": "代码输出"
       },
       {
         "id": "a-d",
         "from": "assets",
         "to": "dist",
-        "label": "输出"
+        "label": "资源输出"
       }
     ],
     "frames": [
       {
         "label": "任务图建立",
-        "note": "三个任务按依赖排好，产物目录为空。",
+        "note": "转译必须等类型检查通过才能开始；图片复制不依赖类型检查，可以单独开始。",
         "activeIds": [
           "source"
         ],
@@ -9227,31 +9233,33 @@
         "activeEdgeIds": []
       },
       {
-        "label": "检查通过",
-        "note": "类型检查完成后，转译任务解锁。",
+        "label": "按依赖执行",
+        "note": "检查通过，转译开始执行；资源任务沿自己的分支运行。若检查失败，转译会被阻塞。",
         "activeIds": [
           "typecheck",
-          "transpile"
+          "transpile",
+          "assets"
         ],
         "doneIds": [
           "source"
         ],
         "mutedIds": [
-          "assets",
           "dist"
         ],
         "values": {
           "typecheck": "通过",
-          "transpile": "可运行"
+          "transpile": "可运行",
+          "assets": "处理中"
         },
         "activeEdgeIds": [
           "s-t",
+          "s-a",
           "t-tr"
         ]
       },
       {
-        "label": "代码与资源处理",
-        "note": "转译3个模块，再复制1张图片。",
+        "label": "代码与资源完成",
+        "note": "3 个模块和 1 张图片分别完成；任一任务失败，构建流程报告失败，不应把半成品当新版本。",
         "activeIds": [
           "transpile",
           "assets"
@@ -9268,12 +9276,13 @@
           "assets": "1 图片"
         },
         "activeEdgeIds": [
-          "tr-a"
+          "tr-d",
+          "a-d"
         ]
       },
       {
         "label": "产物汇总",
-        "note": "dist最终包含4个产物；关闭资源任务则只剩3个。",
+        "note": "dist 收到 JS、CSS、图片和清单；目录仍在本机，部署流程还没有把它交给服务器。",
         "activeIds": [
           "dist"
         ],
@@ -9285,47 +9294,58 @@
         ],
         "mutedIds": [],
         "values": {
-          "dist": "4 个"
+          "dist": "4 个 · 未部署"
         },
         "activeEdgeIds": [
+          "tr-d",
           "a-d"
         ]
       }
     ],
-    "insight": "构建工具负责编排多类任务；打包器只是它可能调用的一环。",
+    "insight": "构建工具把检查、转译、资源处理和可能的打包接成任务图，安排等待或并行并汇总本机产物；构建完成不等于部署。",
     "quiz": {
-      "question": "构建流程只有类型检查而没有合并模块，这仍算构建吗？",
+      "question": "构建流程没有合并模块，仍然可以称为构建吗？",
       "options": [
         {
-          "label": "算，构建可包含不打包的任务",
+          "label": "可以，构建也能只编排检查、代码生成或资源处理这类任务",
           "correct": true
         },
         {
-          "label": "不算，必须生成单文件",
+          "label": "不可以，必须生成单个 JS 文件",
           "correct": false
         },
         {
-          "label": "只有部署才算构建",
+          "label": "只有部署到服务器后才算构建",
           "correct": false
         }
       ],
-      "success": "构建的核心是产物准备与任务编排。",
-      "retry": "打包不是唯一条件。"
+      "success": "构建的核心是依赖编排和产物准备，不要求每次都打包。",
+      "retry": "打包和部署都是可能的后续步骤。"
     },
     "prompt": {
       "title": "画出项目构建图",
-      "text": "列出每个任务的输入、输出、依赖、缓存条件和失败阻塞关系，删除没有产物或检查价值的步骤。"
+      "text": "列出每个任务的输入、输出、依赖和失败阻塞关系，标出可以并行的分支，并区分本机构建与部署。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/",
-        "label": "Vite 官方文档 · guide",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Guide",
+        "note": "开发与生产构建的任务入口和产物"
       },
       {
         "url": "https://www.gnu.org/software/make/manual/make.html",
-        "label": "GNU 官方手册 · make",
-        "note": "原始规范与实现说明"
+        "label": "GNU Make 官方手册",
+        "note": "目标、依赖和按需执行的任务图"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts",
+        "label": "npm 官方文档 · Scripts",
+        "note": "脚本生命周期与任务串联"
+      },
+      {
+        "url": "https://bazel.build/basics",
+        "label": "Bazel 官方文档 · Basics",
+        "note": "可缓存、可并行的构建图"
       }
     ]
   },

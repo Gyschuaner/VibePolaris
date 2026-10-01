@@ -734,14 +734,16 @@
   },
   {
     "slug": "build-tool",
-    "mechanism": "构建工具编排转译、资源处理、检查和产物输出等任务，并依据配置与依赖关系决定执行顺序。",
-    "misconception": "构建工具可以调用打包器，但两者不是同义词；构建还可能包含不打包的检查和生成任务。",
-    "demoSignature": "输入：src中3个模块与1张图片；中间：任务图依次完成类型检查、转译、复制资源，状态0/3→3/3；输出：dist目录4个产物。可视化：建议5帧的任务依赖图；交互：关闭某任务观察产物差异。",
+    "mechanism": "构建工具读取配置，把检查、转译、打包和资源处理接成依赖图，安排可并行或必须等待的任务并汇总本机产物。",
+    "misconception": "构建工具不是编译器、打包器或开发服务器的同义词，也不等于部署；它可以调用这些步骤，最后只生成待发布的本地目录。",
+    "demoSignature": "输入：3个模块、1张图片和任务配置；中间：类型检查→转译，资源复制独立分支并行；输出：dist含JS、CSS、图片和清单，状态标为未部署。失败分支：检查失败阻塞转译，任一任务失败则构建报告失败。可视化：分叉任务图汇合到产物；交互：切换任务状态观察阻塞与并行。",
     "sourceUrls": [
       "https://vite.dev/guide/",
-      "https://www.gnu.org/software/make/manual/make.html"
+      "https://www.gnu.org/software/make/manual/make.html",
+      "https://docs.npmjs.com/cli/v11/using-npm/scripts",
+      "https://bazel.build/basics"
     ],
-    "rewriteRisk": "正文要把“编排任务”与“合并模块”拆开，避免继续混同打包器。",
+    "rewriteRisk": "正文要把任务编排、代码转换、模块打包、开发服务和部署拆开，并明确构建产物仍是本机文件。",
     "nearDuplicates": [
       "bundler",
       "compiler",
