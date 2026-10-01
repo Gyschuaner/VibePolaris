@@ -14,21 +14,21 @@ export function EmbeddingTermPage() {
     <ArticleSection id="representation" title="把内容表示成一组数"><Legacy slug="embedding" names={["question", "definition"]}/>
       <p><strong>嵌入是把对象映射到数值空间的表示。</strong>对象可以是词、句子，也可以是图像等内容。检索里常使用学习得到的向量，让适合当前任务的对象关系能通过数值比较体现出来；不只是把文字换成编号。</p>
       <p id="embedding-learning" className="vp-citation-target">Mikolov 等人的词向量研究从大量文本学习连续表示，并用词语关系检验结果。<strong>词向量就是给词配上的一组数，向量中的关系来自表示方法与训练数据。</strong>它不能直接当成整篇文档的表示，也不能期待任意模型都保留同一种关系。<Cite id="embedding-learning"/></p>
-      <p id="embedding-sentences" className="vp-citation-target">Sentence-BERT 在句子层面构造可独立计算的表示，并用余弦等度量比较；编码器就是负责产出这组数的模型或模型组件。论文也比较了直接取 BERT 输出的做法，说明<strong>拿到一组模型数值，不代表它已经适合相似性检索。</strong>需要按任务训练或选择合适的表示，再检查实际效果。<Cite id="embedding-sentences"/></p>
+      <p id="embedding-sentences" className="vp-citation-target">Sentence-BERT 在句子层面构造可独立计算的表示，并用余弦等度量比较；编码器就是负责产出这组数的模型或模型组件。论文也比较了直接取 BERT 输出的做法，说明<strong>句子表示之间可以用余弦比较；但拿到一组模型数值，不代表它就适合做相似检索。</strong>需要按任务训练或选择合适的表示，再检查实际效果。<Cite id="embedding-sentences"/></p>
     </ArticleSection>
     <ArticleSection id="comparison" title="比较表示，保留原文"><Legacy slug="embedding" names={["scene-heading"]}/>
       <p>下面为三句文本手工指定三维向量。选择一句，生成预设表示，再与“想晚几天还书”比较。三个分量用数值条显示；它们没有预先命名成“续借程度”或“打印程度”，只是让数值变化可见。第三句是“在哪里打印文件”。</p>
       <EmbeddingLesson/>
-      <p>两种续借表达得到余弦 0.96，打印句约为 0.12；余弦通常在 -1 到 1 之间，本例越接近 1 只表示方向更接近，不是统一的合格线。换成未对齐的编码器 B，会停止比较，因为不同空间的数各自遵循不同约定，距离没有可比意义。<strong>这里真实计算数值，没有运行嵌入模型。</strong>手工向量只用于解释表示和度量，不能证明某个真实模型理解了这三句话。</p>
-      <p id="embedding-output" className="vp-citation-target">Hugging Face 的特征提取页面展示从文本得到数值特征、再用于分类或检索的过程。<strong>表示的输出与生成回答的输出不同。</strong>向量通常需要连同原文入口保存，检索找到编号后仍要读取具体内容；它不是无损压缩文件，也不是一份可直接引用的文字答案。<Cite id="embedding-output"/></p>
+      <p>两句还书表达之间的余弦相似度约 0.96，打印句约为 0.12；余弦通常在 -1 到 1 之间，本例越接近 1 只表示方向更接近，不是统一的合格线。换成另一个编码器（把文本变成向量的模型）B 时，两边的向量不在同一个空间，就不能再直接比较，因为不同空间的数各自遵循不同约定，距离没有可比意义。<strong>这里真实计算数值，没有运行嵌入模型。</strong>手工向量只用于解释表示和度量，不能证明某个真实模型理解了这三句话。</p>
+      <p id="embedding-output" className="vp-citation-target">Hugging Face 的特征提取页面展示从文本得到数值特征、再用于分类或检索的过程。<strong>表示的输出与生成回答的输出不同。</strong>向量通常需要连同原文入口保存，检索找到编号后仍要读取具体内容；它不是无损压缩文件，也不是可以直接引用的答案文字。<Cite id="embedding-output"/></p>
     </ArticleSection>
     <ArticleSection id="configuration" title="表示空间与输入配置"><Legacy slug="embedding" names={["quiz-heading"]}/>
-      <p id="embedding-config" className="vp-citation-target">Sentence Transformers 文档说明，部分模型要求查询和文档使用不同前缀。<strong>查询与文档必须遵守同一套兼容的表示约定。</strong>不一定使用完全相同的编码器，但模型配对、版本、预处理和比较方法要一起确认；仅看向量维度相同，无法证明可以混用，因为不同空间的数值含义和尺度可能不同。<Cite id="embedding-config"/></p>
+      <p id="embedding-config" className="vp-citation-target">Sentence Transformers 文档说明，部分模型要求查询和文档使用不同前缀。<strong>查询与文档所使用的模型配对、版本、预处理和比较方法必须彼此兼容。</strong>不一定使用完全相同的编码器，但这些条件要一起确认；仅看向量维度相同，无法证明可以混用，因为不同空间的数值含义和尺度可能不同。<Cite id="embedding-config"/></p>
       <div className={s.columns}><div><h3>生成表示</h3><p>决定文本怎样进入模型、得到什么维度与数值。模型升级后，已有文档可能需要重新编码。</p></div><div><h3>检索表示</h3><p>按选定度量比较查询与文档，寻找候选。<ConceptTerm slug="vector-database">向量数据库</ConceptTerm> 管理这些记录与索引。</p></div></div>
       <p>余弦比较方向，点积还受长度影响，欧氏距离比较坐标差异。选用哪一种，要配合模型的训练与使用约定。<strong>相似分数只表示这套度量下的接近程度，用来比较或排序候选，不是事实正确率或概率。</strong>否定句、相同主题下的相反结论和过期内容，都需要回到原文检查。</p>
     </ArticleSection>
     <ArticleSection id="length" title="长文本与信息损失" className={base.offset}><Legacy slug="embedding" names={["prompt-heading"]}/>
-      <p id="embedding-length" className="vp-citation-target">Sentence Transformers 的计算指南说明，超出模型最大输入长度的文本会被截断，训练于短文本的表示也未必适合长文本。<strong>给模型一整篇文章，不保证每一句都进入表示；被截掉的句子就不会参与这次检索。</strong>先核对输入限制与切分方式，再用重要信息位于不同位置的样例检验。<Cite id="embedding-length"/></p>
+      <p id="embedding-length" className="vp-citation-target">Sentence Transformers 的计算指南说明，超出模型最大输入长度的文本会被截断，训练于短文本的表示也未必适合长文本。<strong>被截掉的句子不会参与这次检索；就算把整篇文本都提交，也不保证每句都进入表示。</strong>先核对输入限制与切分方式，再用重要信息位于不同位置的样例检验。<Cite id="embedding-length"/></p>
       <ArticleAside title="维度多，不等于信息完整"><p>维度是表示结构的一个参数，不能单独证明检索质量。应检查任务、语言、原文长度、模型版本和相关样例；也要保存内容版本与文档编号，避免新旧表示混在一起。</p></ArticleAside>
       <p>做文档检索前，准备几组相关表达和容易混淆的反例。看它们的排序是否符合使用目的，再决定如何接入 <ConceptTerm slug="semantic-search">语义搜索</ConceptTerm>。</p>
     </ArticleSection>
@@ -38,18 +38,18 @@ export function EmbeddingTermPage() {
 export function SemanticSearchTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={semanticSources}/>;
   return <ConceptArticle slug="semantic-search" title="语义搜索" sources={semanticSources} sections={[["meaning", "不同措辞，寻找相关内容"], ["candidates", "分数、范围与返回数量"], ["reranking", "候选之后的重新排序"], ["evaluation", "用相关标注检查结果"]]}
-    intro={<>读者问“想晚几天还书”，需要找到续借规则，即使标题没有同样的词。语义搜索尝试按表达的含义寻找相关内容；检索结果仍然是一组候选，版本和适用范围还需核对。</>}
+    intro={<>你想晚几天还书，需要找到续借规则，但规则文档的标题里并没有这几个词。语义搜索尝试按表达的含义寻找相关内容；检索结果仍然是一组候选，版本和适用范围还需核对。</>}
     hero={<ConceptHero slug="semantic-search" label="按相似分数排列旧版说明与现行规则，最相近的旧版并不自动可用"><div className={s.searchHero}><span>想晚几天还书</span><div><strong>B · 延长借阅期限</strong><code>0.9998</code><em>旧版</em></div><div><strong>A · 续借规则</strong><code>0.9939</code><em>现行</em></div><p>最相近的候选，仍要看版本。</p></div></ConceptHero>}>
     <ArticleSection id="meaning" title="不同措辞，寻找相关内容"><Legacy slug="semantic-search" names={["question", "definition"]}/>
       <p><strong>语义搜索尝试按含义关系找到与查询相关的内容。</strong>一种常见方法是把查询与文档编码成兼容的向量，再比较相似性。文字不必完全相同，也可能进入候选；具体能跨越哪些措辞差异，要由模型和数据验证。</p>
-      <p id="semantic-encoding" className="vp-citation-target">DPR 的研究用配对训练的查询编码器与段落编码器：一个把问题变成向量，一个把段落变成向量，查询时把两组数按位相乘并加总（点积）来选出候选段落。<strong>编码、候选检索与读取答案是不同环节。</strong>本词条只讲如何找候选，后续机制才会读取答案。这是稠密检索的一种具体实现，不能把 DPR 的训练方式或点积度量当成所有语义搜索的统一规范。<Cite id="semantic-encoding"/></p>
+      <p id="semantic-encoding" className="vp-citation-target">常见做法是把查询和文档各变成一组数字（向量），并且放在同一个空间里，这样两组数字才能直接比较相似性。DPR 的研究用配对训练的查询编码器与段落编码器：一个把问题变成向量，一个把段落变成向量，查询时把两组数按位相乘并加总（点积）来选出候选段落。<strong>编码、候选检索与读取答案是不同环节。</strong>本词条只讲如何找候选，后续机制才会读取答案。这是稠密检索的一种具体实现，不能把 DPR 的训练方式或点积度量当成所有语义搜索的统一规范。<Cite id="semantic-encoding"/></p>
       <p>关键词搜索适合核对明确词项、编号和固定表达；语言分析也能补充同义词。语义方法可以补充不同措辞的匹配，两者并非只能二选一。产品需要的首先是“哪些文档能解决这个问题”，再选择检索方法。</p>
     </ArticleSection>
     <ArticleSection id="candidates" title="分数、范围与返回数量"><Legacy slug="semantic-search" names={["scene-heading"]}/>
-      <p>四篇文档已指定三维向量：A 是现行续借规则，B 是旧版延长借阅期限，C 是现行打印指南，D 是现行续借系统维护；三个查询也使用固定表示。点击检索，文档按余弦分数移动到对应位置，符合版本、最低分数和返回数量的候选会被突出。B 的分数最高，但它是旧版；这正是相似性与可用性之间的区别。</p>
+      <p>四篇文档已指定三维向量：A 是现行续借规则，B 是旧版延长借阅期限，C 是现行打印指南，D 是现行续借系统维护；三个查询也使用固定表示。点击检索，文档按余弦分数移动到对应位置，通过版本和最低分数筛选、并且排在返回数量以内的候选会被标出。B 的分数最高，但它是旧版；这正是相似性与可用性之间的区别。</p>
       <SemanticLesson/>
-      <p>默认返回 B、A。只保留现行版本并取一条，就返回 A；问打印时，C 优先。健身房查询没有对应的表示，所有文档分数为零，在当前阈值下不返回。<strong>top-k 是最多取多少条，不能替代相关性或业务条件。</strong>最低分数是本例可切换的筛选参数（0.20 或 0.95），不是通用的正确率门槛。</p>
-      <p>这里使用手工向量和精确计算，没有运行语言模型、ANN 索引或真实搜索服务。人工标注把续借查询的现行规则 A、打印查询的 C 视为相关，维护说明和旧规则不算直接满足需求。得分可以复算，相关性判断则来自这个明确的任务。</p>
+      <p>默认返回 B、A。只保留现行版本并取一条时，返回 A；问打印时，C 优先。健身房查询没有对应的表示，所有文档分数为零，在当前阈值下不返回。<strong>top-k（最多返回几条）不能替代相关性或业务条件。</strong>最低分数是本例可切换的筛选参数（0.20 或 0.95），不是通用的正确率门槛。</p>
+      <p>这里使用手工向量和精确计算，没有模型、近似最近邻检索（ANN）或真实搜索服务真的在运行。人工标注把续借查询的现行规则 A、打印查询的 C 视为相关，维护说明和旧规则不算直接满足需求。得分可以复算，相关性判断则来自这个明确的任务。</p>
     </ArticleSection>
     <ArticleSection id="reranking" title="候选之后的重新排序"><Legacy slug="semantic-search" names={["quiz-heading"]}/>
       <p id="semantic-rerank" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先取回一批候选，再用 Cross-Encoder 联合接收查询与每个候选文本、重新排序。<strong>重排能更细地比较已取回的内容，但逐对计算更贵，所以通常只处理候选。</strong>候选阶段漏掉的文档，不会仅靠重新排序出现。本页没有模拟重排模型或编造模型评分。<Cite id="semantic-rerank"/></p>
