@@ -5460,45 +5460,45 @@
   },
   {
     "slug": "fine-tuning",
-    "lead": "200条工单样本训练三轮后，为什么还要盯着另一条验证曲线？",
-    "definition": "微调用训练样本继续更新模型参数，使特定格式、语气或任务行为更稳定；它发生在训练阶段而非每次提示中。",
-    "boundary": "微调不是给模型实时灌入最新知识的数据库，也不应先于提示、检索和评测直接上。",
+    "lead": "训练工单分类时，怎样判断模型学会了规则，而不是只记住样本？",
+    "definition": "微调在训练阶段更新模型参数，使特定格式、语气或任务行为更稳定；效果要用未参与训练的数据检查。",
+    "boundary": "微调不会自动注入实时知识；提示词适合修改任务说明，检索适合临时查资料，训练数据也要去重、去除隐私内容并与验证集分开。",
     "sceneKind": "timeline",
-    "sceneTitle": "训练下降与验证变化并排观察",
-    "actionLabel": "拖动训练轮数",
+    "sceneTitle": "训练表现变好，验证表现是否跟上",
+    "actionLabel": "拖动调整训练轮数",
     "actors": [
       {
         "id": "train",
         "label": "训练集",
-        "detail": "200条工单",
+        "detail": "200 条工单分类样本",
         "icon": "database",
         "group": "数据"
       },
       {
         "id": "model",
-        "label": "待调模型",
-        "detail": "参数更新",
+        "label": "工单分类模型",
+        "detail": "参数逐轮更新",
         "icon": "brain",
         "group": "训练"
       },
       {
         "id": "loss",
         "label": "训练损失",
-        "detail": "0.84 → 0.39",
+        "detail": "0.84 → 0.39 → 0.31",
         "icon": "chart",
         "group": "指标"
       },
       {
         "id": "validation",
         "label": "验证集",
-        "detail": "准确率71% → 83%",
+        "detail": "未参与训练 · 准确率 71% → 83% → 80%",
         "icon": "shield",
         "group": "检查"
       },
       {
         "id": "overfit",
         "label": "过拟合信号",
-        "detail": "第4轮出现",
+        "detail": "第四轮出现",
         "icon": "message",
         "group": "风险"
       }
@@ -5532,7 +5532,7 @@
     "frames": [
       {
         "label": "训练前基线",
-        "note": "固定验证集先测得71%。",
+        "note": "本页数字均为教学示意；微调前的模型在固定验证集上先测得 71%，这些验证样本不会参与参数更新。",
         "activeIds": [
           "validation"
         ],
@@ -5548,7 +5548,7 @@
       },
       {
         "label": "参数开始更新",
-        "note": "200条样本进入训练，第一轮损失为0.84。",
+        "note": "200 条训练样本进入第一轮；训练损失是模型在训练样本上的错误程度，0.84 只是示意数值。",
         "activeIds": [
           "train",
           "model",
@@ -5561,7 +5561,8 @@
           "overfit"
         ],
         "values": {
-          "loss": "0.84"
+          "loss": "0.84",
+          "train": "200 条"
         },
         "activeEdgeIds": [
           "t-m",
@@ -5569,8 +5570,8 @@
         ]
       },
       {
-        "label": "第三轮改善",
-        "note": "损失降到0.39，验证准确率升至83%。",
+        "label": "几轮之后",
+        "note": "到第三轮，训练损失降到 0.39，验证准确率升至 83%。",
         "activeIds": [
           "model",
           "loss",
@@ -5593,7 +5594,7 @@
       },
       {
         "label": "多训一轮",
-        "note": "训练损失继续降，但验证准确率回落到80%。",
+        "note": "再训练一轮后模型更贴合训练样本中的细节，验证准确率反而回落到 80%，这就是开头说的“只记住了样本”，叫作过拟合。",
         "activeIds": [
           "loss",
           "validation",
@@ -5614,40 +5615,50 @@
         ]
       }
     ],
-    "insight": "微调更新模型参数；训练集变好不够，必须用独立验证数据防止过拟合。",
+    "insight": "微调更新模型参数；模型在训练集上表现变好还不够，必须用独立的验证集检查，防止过拟合。",
     "quiz": {
       "question": "训练损失继续下降、验证准确率却下降，最可能说明什么？",
       "options": [
         {
-          "label": "模型开始过拟合训练样本",
-          "correct": true
-        },
-        {
           "label": "模型一定掌握了新事实",
           "correct": false
+        },
+        {
+          "label": "模型开始过拟合训练样本",
+          "correct": true
         },
         {
           "label": "验证集可以删除",
           "correct": false
         }
       ],
-      "success": "两条曲线分叉是重要风险信号。",
-      "retry": "不能只看训练指标。"
+      "success": "对，这正是过拟合信号——训练指标变好，不代表模型真的学会了。",
+      "retry": "再想想：训练指标一直变好，就等于模型学好了吗？"
     },
     "prompt": {
       "title": "规划一次微调",
-      "text": "说明目标行为、训练/验证划分、基线、停止条件和过拟合信号，并比较提示或检索能否先解决问题。"
+      "text": "把工单分类任务写成一份计划，列出输入、范围、训练/验证划分、输出指标和停止条件，再比较提示词或检索能否先解决问题。"
     },
     "sources": [
       {
         "url": "https://platform.openai.com/docs/guides/model-optimization",
         "label": "OpenAI 官方文档 · model optimization",
-        "note": "接口参数与调用行为"
+        "note": "优化循环与评测取舍"
       },
       {
-        "url": "https://arxiv.org/abs/2203.02155",
-        "label": "原始论文 · 2203.02155",
-        "note": "原论文的方法与实验"
+        "url": "https://platform.openai.com/docs/guides/supervised-fine-tuning",
+        "label": "OpenAI 官方文档 · supervised fine-tuning",
+        "note": "监督微调数据与训练流程"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/training",
+        "label": "Hugging Face · Transformers training",
+        "note": "训练、验证与保存模型的流程"
+      },
+      {
+        "url": "https://arxiv.org/abs/2106.09685",
+        "label": "LoRA · arXiv:2106.09685",
+        "note": "参数高效微调的一种实现方法"
       }
     ]
   },

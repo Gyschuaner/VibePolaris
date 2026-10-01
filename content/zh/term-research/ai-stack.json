@@ -435,14 +435,16 @@
   },
   {
     "slug": "fine-tuning",
-    "mechanism": "微调用训练样本继续更新模型参数，使特定格式、语气或任务行为更稳定；它发生在训练阶段而非每次提示中。",
-    "misconception": "微调不是给模型实时灌入最新知识的数据库，也不应先于提示、检索和评测直接上。",
-    "demoSignature": "输入：200条“工单→标签”样本，训练前验证准确率71%；中间：训练3轮，损失0.84→0.39，验证准确率升至83%；输出：固定测试集提升12个百分点。可视化：训练曲线与验证集对照。 建议5帧：200条训练样本入场、三轮训练曲线下降、验证曲线上升、训练与验证分叉提示过拟合、固定测试集给出83%；交互：拖训练轮数看两条曲线。",
+    "mechanism": "微调在训练阶段更新模型参数，使特定格式、语气或任务行为更稳定；效果要用未参与训练的数据检查。",
+    "misconception": "微调不会自动注入实时知识；提示词适合修改任务说明，检索适合临时查资料，训练数据也要去重、去除隐私内容并与验证集分开。",
+    "demoSignature": "输入：200 条工单分类训练样本与一份未参与训练的验证集；中间：训练损失 0.84→0.39，验证准确率 71%→83%，再训练一轮后模型更贴合训练样本，验证准确率回落至 80%；输出：出现过拟合信号，不能只看训练指标。可视化：训练损失与验证准确率并排。建议4帧：验证基线、参数开始更新、第三轮改善、再训练后验证回落；交互：拖训练轮数看训练损失与验证准确率的变化。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/model-optimization",
-      "https://arxiv.org/abs/2203.02155"
+      "https://platform.openai.com/docs/guides/supervised-fine-tuning",
+      "https://huggingface.co/docs/transformers/training",
+      "https://arxiv.org/abs/2106.09685"
     ],
-    "rewriteRisk": "数值要标为案例结果而非普遍收益；必须保留独立验证集和过拟合风险。",
+    "rewriteRisk": "数值要标为教学案例而非普遍收益；必须解释训练损失、保留未参与训练的验证集，并说明过拟合风险。",
     "nearDuplicates": [
       "few-shot-prompting",
       "evaluation-dataset"
