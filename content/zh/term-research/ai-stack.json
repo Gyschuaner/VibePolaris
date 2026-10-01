@@ -373,14 +373,16 @@
   },
   {
     "slug": "moderation",
-    "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取允许、限制或复核。",
-    "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。",
-    "demoSignature": "输入：3条评论；中间：风险分0.03/0.61/0.94，阈值0.80后状态为通过/复核/拦截；输出：1条展示、1条送审、1条隐藏。可视化：三点落在阈值色带上。 建议4帧：三条评论落到风险色带、分数定位、阈值线切分三种处置、卡片进入展示/复核/隐藏队列；交互：拖阈值线观察队列数量。",
+    "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取展示、复核或隐藏。",
+    "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。护栏负责规则检查，内容审核负责内容分类。",
+    "demoSignature": "输入：3 条评论；中间：风险分 0.03 / 0.61 / 0.94，阈值 0.80 后按示意区间进入展示 / 复核 / 隐藏（≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示）；输出：1 条展示、1 条送审、1 条隐藏。阈值改为 0.60 后，样本的复核队列变空，B 转入隐藏。可视化：三点落在阈值色带上。建议4帧：三条评论落到风险色带、阈值区间切分、三路处置队列、阈值调整后队列更新；交互：拖阈值线观察队列数量。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/moderation",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
     ],
-    "rewriteRisk": "不要列一串抽象风险类型；用阈值和三种处置说明审核如何进入产品流程。",
+    "rewriteRisk": "不要把审核分数写成法律结论；要用风险类别、产品阈值和处置队列说明审核如何进入产品流程。",
     "nearDuplicates": [
       "guardrail"
     ]

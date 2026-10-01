@@ -4667,9 +4667,9 @@
   },
   {
     "slug": "moderation",
-    "lead": "三条评论风险分分别是0.03、0.61和0.94，阈值0.80时各去哪？",
-    "definition": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取允许、限制或复核。",
-    "boundary": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。",
+    "lead": "三条评论风险分分别是 0.03、0.61 和 0.94，阈值 0.80 时各去哪？",
+    "definition": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取展示、复核或隐藏。",
+    "boundary": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。护栏负责规则检查，内容审核负责内容分类。",
     "sceneKind": "spectrum",
     "sceneTitle": "风险分落入不同处置区间",
     "actionLabel": "拖动审核阈值",
@@ -4739,7 +4739,7 @@
     "frames": [
       {
         "label": "分数落点",
-        "note": "三条评论先落到0到1的风险色带。",
+        "note": "三条评论先落到 0 到 1 的风险色带，分数为教学示意。",
         "activeIds": [
           "low",
           "mid",
@@ -4758,7 +4758,7 @@
       },
       {
         "label": "阈值切分",
-        "note": "0.80以上进入隐藏区，靠近阈值的进入复核区。",
+        "note": "按示意规则：≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示。",
         "activeIds": [
           "threshold"
         ],
@@ -4769,13 +4769,11 @@
         "values": {
           "threshold": "0.80"
         },
-        "activeEdgeIds": [
-          "t-q"
-        ]
+        "activeEdgeIds": []
       },
       {
         "label": "三路处置",
-        "note": "A展示、B复核、C隐藏，不把分数直接当法律结论。",
+        "note": "A 展示、B 复核、C 隐藏，不把分数直接当法律结论。",
         "activeIds": [
           "queues"
         ],
@@ -4787,9 +4785,10 @@
         ],
         "mutedIds": [],
         "values": {
-          "queues": "1 / 1 / 1"
+          "queues": "展示 1 / 复核 1 / 隐藏 1"
         },
         "activeEdgeIds": [
+          "t-q",
           "l-q",
           "m-q",
           "h-q"
@@ -4797,7 +4796,7 @@
       },
       {
         "label": "阈值下调",
-        "note": "阈值改为0.60后，B从复核移入隐藏。",
+        "note": "阈值改为 0.60 后，样本的复核队列变空，B 进入隐藏队列。",
         "activeIds": [
           "threshold",
           "mid",
@@ -4810,11 +4809,11 @@
         "mutedIds": [],
         "values": {
           "threshold": "0.60",
-          "queues": "展示1 / 隐藏2"
+          "queues": "展示 1 / 复核 0 / 隐藏 2"
         },
         "activeEdgeIds": [
-          "m-q",
-          "t-q"
+          "t-q",
+          "h-q"
         ]
       }
     ],
@@ -4823,12 +4822,12 @@
       "question": "审核分0.81意味着什么？",
       "options": [
         {
-          "label": "它越过当前产品阈值，需按规则处置",
-          "correct": true
-        },
-        {
           "label": "内容已经被法律认定违法",
           "correct": false
+        },
+        {
+          "label": "它越过当前产品阈值，需按规则处置",
+          "correct": true
         },
         {
           "label": "所有产品都必须删除",
@@ -4840,18 +4839,28 @@
     },
     "prompt": {
       "title": "设计内容审核流程",
-      "text": "列出内容类型、风险标签、展示/复核/拦截阈值和人工申诉路径，并记录阈值调整的依据。"
+      "text": "列出内容类型、风险标签、展示/复核/隐藏阈值和人工申诉路径，并记录阈值调整的依据。"
     },
     "sources": [
       {
         "url": "https://platform.openai.com/docs/guides/moderation",
         "label": "OpenAI 官方文档 · moderation",
-        "note": "接口参数与调用行为"
+        "note": "审核模型接口与风险类别"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/guardrails/",
+        "label": "OpenAI Agents SDK · guardrails",
+        "note": "与内容审核相邻的规则检查边界"
       },
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST AI 600-1 · Generative AI Profile",
+        "note": "生成式 AI 风险与控制措施"
+      },
+      {
+        "url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
+        "label": "NIST AI RMF · Playbook",
+        "note": "风险分级、治理与人工复核建议"
       }
     ]
   },
