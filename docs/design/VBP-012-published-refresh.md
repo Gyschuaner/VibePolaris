@@ -1866,5 +1866,6 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 ### DP、Git 与发布边界
 
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 72 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 72 条本地正文提交 `4745004`，记录提交待发布链路完成。正文发布分支应从当前 `origin/main` 的第 71 条合并提交 `e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9` 新建，只复制正文文件，不带入 `PipelineLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
-- 本条完成本地内容后整体为 **72/105**，下一条是 `webhook`。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 72 条本地正文提交 `4745004`，记录提交 `6a8f049`。此前已有旧版数据管道正文发布分支 `release/VBP-030-pipeline-content-20261001`（PR #243）；本轮更新从第 71 条合并提交 `e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9` 新建跟进分支 `release/VBP-030-pipeline-followup-20261001`，只复制正文文件，提交 `7d54f10` 经 [PR #252](https://github.com/Gyschuaner/VibePolaris/pull/252) 合入 `main`，当前合并提交 `df8d7d9fd406700774560a9e0e88a6581d90942c`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 在 banner exchange 阶段超时并显示连接超时，公网 `https://vibe.chuansgu.top/terms/data-pipeline` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内超时；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 正文合入 `main` 后，用第 71 条镜像作为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:df8d7d9fd406700774560a9e0e88a6581d90942c`（`linux/amd64`，约 1.55 GB）；本地容器 3225 端口返回 200，并精确包含“一个 workflow 可以组合 jobs、crawlers 和 triggers”“默认的 `all_success` 启动规则”和“固定分区”。
+- 本条完成后整体为 **72/105**，下一条是 `webhook`。
