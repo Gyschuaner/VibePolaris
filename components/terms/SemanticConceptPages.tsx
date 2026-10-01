@@ -67,28 +67,28 @@ export function SemanticSearchTermPage() {
 export function RagConceptTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ragSources}/>;
   return <ConceptArticle slug="rag" title="RAG" subtitle="检索增强生成" sources={ragSources} sections={[["retrieval", "回答前，先取回资料"], ["evidence", "检索资料进入本轮回答"], ["context", "选择与更新可用内容"], ["checking", "核对回答，也核对资料"]]}
-    intro={<>“这本书能续借吗？”需要本馆规则和当前预约状态。RAG 在生成回答时加入检索得到的资料，让模型能利用参数之外的信息；这些资料是否充分、有效，仍然要检查。</>}
+    intro={<>“这本书能续借吗？”需要本馆规则和当前预约状态。RAG 在生成回答时加入检索得到的资料，让模型能利用训练参数之外、会随业务变化的规则和状态；这些资料是否充分、有效，仍然要检查。</>}
     hero={<ConceptHero slug="rag" label="续借规则A与预约状态B一起支持不能续借的回答"><div className={s.ragHero}><div><code>A · 规则</code><strong>未被预约才可续借</strong></div><div><code>B · 状态</code><strong>已有预约</strong></div><p>当前不能续借。<span>[A] [B]</span></p></div></ConceptHero>}>
     <ArticleSection id="retrieval" title="回答前，先取回资料"><Legacy slug="rag" names={["question", "definition"]}/>
       <p id="rag-definition" className="vp-citation-target"><strong>RAG 把检索得到的外部资料与生成过程结合起来。</strong>Lewis 等人的原始研究把生成模型的参数记忆与文档索引中的外部记忆组合，用问题检索段落，再让生成依赖问题和取回内容。外部资料可以更新和查看，不必把每次知识变化都写进模型参数。<Cite id="rag-definition"/></p>
-      <p>常见应用把过程分成准备资料、检索候选、组织本轮输入、生成回答。资料先有来源与版本，检索找到相关片段，本轮输入保留回答所需的内容，模型再组织文字。<strong>上传文件、找到片段与正确回答，是三个不同的结果。</strong></p>
+      <p>常见应用把过程分成准备资料、检索候选、组织本轮输入、生成回答：先把规则整理成可检索的资料，找到相关片段，再把问题、规则 A 和状态 B 一起交给模型，最后依据这三样组织文字。<strong>上传文件、找到片段与正确回答，是三个不同的结果。</strong>例如文件上传了却还没进入索引，或者找到了“14 天”却答成“7 天”，都可能发生。</p>
       <p id="rag-original" className="vp-citation-target">原始论文研究了 RAG-Sequence 与 RAG-Token，并对检索器与生成器进行联合微调。今天使用现成检索服务和模型拼接输入的应用，不必复现这套训练架构。<strong>名字相同，仍要核对具体实现怎样取资料、怎样使用资料。</strong><Cite id="rag-original"/></p>
     </ArticleSection>
     <ArticleSection id="evidence" title="检索资料进入本轮回答"><Legacy slug="rag" names={["scene-heading"]}/>
-      <p>A 规定只有未被预约的书才可续借，每次延长 14 天；B 说书目 #42 已有预约。先取回资料，再按资料组织预设答复。点击某一句，会突出它依赖的资料；把场景改成缺规则或规则冲突，旧答复会收起。</p>
+      <p>A 规定只有未被预约的书才可续借，每次延长 14 天；B 说书目 #42 已有预约。有预约是否阻止续借，是 A 里的业务规定，不是脱离规则也成立的常识。先取回资料，再按资料组织预设答复。点击某一句，会突出它依赖的资料；把场景改成缺规则或规则冲突（例如另一份规则说“有预约也能续借 7 天”），旧答复会收起。</p>
       <RagLesson/>
       <p>完整资料下，不能续借的结论同时依赖 A 的条件和 B 的状态。只取到 B，只能说明已有预约，不能凭空补出续借政策。取到互相矛盾的 A、C，则先确认有效规则。<strong>缺资料或资料冲突时，回答应明确缺口，而不是挑一个数字继续说。</strong></p>
-      <p>这是固定资料包与规则生成的教学答复，没有调用语言模型或访问真实书目。点击依据只展示我们在例子中声明的支持关系；真实模型是否正确使用了材料，仍需独立核对。</p>
+      <p>这是固定资料包与规则生成的教学答复，没有调用语言模型或访问真实书目。真实系统的回答由模型即时组织，可能每次措辞不同；资料不全时结论仍可能不完整，甚至出现没有依据的补写。点击依据只展示我们在例子中声明的支持关系，真实模型是否正确使用了材料，仍需独立核对。</p>
     </ArticleSection>
     <ArticleSection id="context" title="选择与更新可用内容"><Legacy slug="rag" names={["quiz-heading"]}/>
-      <p id="rag-index" className="vp-citation-target">Hugging Face 的 RAG 文档说明，推理时取回段落并据此生成，外部知识可以通过改变索引更新。<strong>内容更新后，要让检索实际能读到新版本。</strong>若应用使用嵌入与缓存，还需按自己的数据流维护对应表示和缓存；只修改原始文件，不足以证明回答已经使用新资料。<Cite id="rag-index"/></p>
+      <p id="rag-index" className="vp-citation-target">Hugging Face 的 RAG 文档说明，推理时取回段落并据此生成，外部知识可以通过改变索引更新。这里的索引，是把资料整理成可检索状态后的内容；上传文件不等于检索已经能读到它。<strong>内容更新后，要让检索实际能读到新版本。</strong>若应用使用嵌入与缓存，还需按自己的数据流维护对应表示和缓存；只修改原始文件，不足以证明回答已经使用新资料。<Cite id="rag-index"/></p>
       <p id="rag-context" className="vp-citation-target">Lost in the Middle 在多文档问答等实验中发现，相关信息的位置会影响模型使用长输入的表现。<strong>取回更多内容，不保证关键资料被更好地利用。</strong>这是一组特定模型与任务的实验结论，不能把其效果大小照搬到所有模型；它提醒我们检查输入选择、顺序与干扰内容。<Cite id="rag-context"/></p>
       <div className={s.columns}><div><h3>检索范围</h3><p>限定资料库、用户可见内容、版本和任务范围。相似但无权访问的内容，不能进入本轮输入。</p></div><div><h3>本轮输入</h3><p>保留问题、必要片段和可追溯标识。<ConceptTerm slug="context-window">窗口容量</ConceptTerm> 是约束，不是资料质量标准。</p></div></div>
       <ArticleAside title="资料内容不等于操作授权"><p>取回的文章中可能夹杂错误、过期内容或诱导指令。应把它作为待使用的数据，并保留指令与数据的边界。若回答还要执行工具操作，权限由可信系统另外检查，不能由资料中的一句话决定。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="checking" title="核对回答，也核对资料" className={base.offset}><Legacy slug="rag" names={["prompt-heading"]}/>
       <p id="rag-evaluation" className="vp-citation-target">RAGAS 区分回答是否忠于上下文、是否回应问题，以及取回内容是否相关，并研究自动估计这些维度。<strong>回答忠于资料，不等于资料本身正确。</strong>系统可能准确复述了一份错误规则；自动评估也有误差，需要与实际任务和人工检查对照。本页没有运行 RAGAS 或宣称自动核验通过。<Cite id="rag-evaluation"/></p>
-      <div className={s.checking}><div><strong>先看资料</strong><p>有没有取到必要规则？来源、版本、范围和冲突是否可判断？</p></div><div><strong>再看答句</strong><p>每个结论能否由资料支持？条件是否遗漏？有没有直接回答问题？</p></div></div>
+      <div className={s.checking}><div><strong>先看资料</strong><p>有没有取到必要规则？来源、版本、范围和冲突是否可判断？五年前的旧版规则，即使被完整取回，也不一定适用于今天。</p></div><div><strong>再看答句</strong><p>每个结论能否由资料支持？条件是否遗漏？有没有直接回答问题？</p></div></div>
       <p>上线前保存有代表性的“问题—资料—回答”样例，把错误分到检索、输入组织或生成使用的环节。引用能帮助读者追查，但仅仅显示角标，不能证明那句话受来源支持。</p>
     </ArticleSection>
   </ConceptArticle>;
