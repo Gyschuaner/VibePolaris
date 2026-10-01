@@ -38,28 +38,28 @@ export function HybridSearchTermPage() {
 
 export function VectorStoreTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={storeSources}/>;
-  return <ConceptArticle slug="vector-store" title="向量存储" sources={storeSources} sections={[["records", "向量要和原文一起找到"], ["versions", "原文更新，记录仍可能是旧的"], ["sync", "用同一ID更新一条记录"], ["lifetime", "保存多久，由实现决定"]]}
-    intro={<>退款规则从三个工作日改成七个工作日，查询却仍返回旧说明。问题可能出在资料已经改了，存储中的记录还没有同步。向量存储需要管理向量，也需要管理它代表哪份内容。</>}
+  return <ConceptArticle slug="vector-store" title="向量存储" sources={storeSources} sections={[["records", "向量要和它代表的内容一起找到"], ["versions", "原文更新，记录仍可能是旧的"], ["sync", "用同一ID更新一条记录"], ["lifetime", "保存多久，由实现决定"]]}
+    intro={<>退款规则从三个工作日改成七个工作日，查询却仍返回旧说明。问题可能出在资料已经改了，存储中的记录还没有同步。使用向量存储的应用要管理向量，也要管理它代表的内容或原文入口。</>}
     hero={<ConceptHero slug="vector-store" label="记录ID A不变，向量、版本和对应原文一起更新"><div className={s.storeHero}><Database size={26}/><div><strong>ID A</strong><code>vector + text + version</code><p>v2 · 七个工作日</p></div></div></ConceptHero>}>
     <ArticleSection id="records" title="向量要和原文一起找到"><Legacy slug="vector-store" names={["question", "definition"]}/>
       <p id="store-definition" className="vp-citation-target"><strong>向量存储是一类保存向量化资料、支持相似查询的存储能力或接口。</strong>LangChain 的通用接口包含添加文档、按 ID 删除与相似搜索，并提供内存实现。它可以由数据库、独立服务或进程内对象实现；不一定是单独运行的数据库，也不一定建立近似索引。<Cite id="store-definition"/></p>
-      <p id="store-record" className="vp-citation-target">Qdrant 用 point 组织 ID、向量与 payload。向量参与比较，ID 标识记录，附加数据保存文档信息并可支持过滤。<strong>找到了向量，还要能找回它代表的内容。</strong>应用可以把来源、版本和原文位置放在元数据里；这些字段并不会自动证明内容是当前或正确的。<Cite id="store-record"/></p>
+      <p id="store-record" className="vp-citation-target">Qdrant 用 point 组织 ID、向量与 payload。向量参与比较，ID 标识记录，附加数据保存文档信息并可支持过滤。<strong>找到了向量，还要能找回它代表的内容，因为向量只负责找“像的”，最终仍要读人能核对的文字。</strong>payload 可以存全文，也可以只存原文入口；应用还要维护来源、版本和位置，这些字段不会自动证明内容当前或正确。<Cite id="store-record"/></p>
       <p>文档经过 <ConceptTerm slug="embedding">嵌入</ConceptTerm> 得到数值表示，再和原文或原文入口一起保存。不同模型、维度和处理方式的向量不能随意混用。实际查询还需要选择相似度、候选数量及适用条件。</p>
     </ArticleSection>
     <ArticleSection id="versions" title="原文更新，记录仍可能是旧的"><Legacy slug="vector-store" names={["scene-heading"]}/>
-      <p>下面只在浏览器内存里保存两条虚构记录。A 是退款规则，B 是打印说明。二维向量是手工指定的单位向量，查询退款固定使用 [1, 0]，按余弦取大于 0.2 的第一条；没有调用嵌入模型或数据库。</p>
+      <p>下面只在浏览器内存里保存两条虚构记录。A 是退款规则，B 是打印说明。二维向量是手工指定的单位向量；真实系统通常先由嵌入模型把查询编码成向量，本例为聚焦版本流程而固定使用 [1, 0]，按余弦取大于 0.2 的第一条。没有调用嵌入模型或数据库。</p>
       <VectorStoreLesson/>
-      <p>先写入 v1，再把原文改成 v2，查询仍会返回 A 的“三个工作日”。<strong>修改源文件，不等于修改存储记录。</strong>启用当前版本过滤后，旧 A 被排除；B 的余弦为 0，也过不了本例阈值，所以没有可用结果。同步 A 后，再查询才会返回“七个工作日”。</p>
+      <p>先写入 v1，再把原文改成 v2，查询仍会返回 A 的“三个工作日”。<strong>修改源文件，不等于修改存储记录。</strong>启用当前版本过滤后，旧 A 被排除；B 的余弦为 0，也过不了本例阈值，所以页面显示没有可用依据。过滤只是不让旧值被使用，不会产生新值；同步 A 后，再查询才会返回“七个工作日”。</p>
       <p>“当前版本”来自本例的原文版本选择器。真实应用需要自己的版本记录、更新触发和同步检查；只给记录加一个 version 字段，没有比较对象和过滤流程，仍会读到旧内容。</p>
     </ArticleSection>
     <ArticleSection id="sync" title="用同一ID更新一条记录"><Legacy slug="vector-store" names={["quiz-heading"]}/>
-      <p id="store-upsert" className="vp-citation-target">Pinecone 的 upsert 文档说明，同一个记录 ID 再次写入会覆盖整条记录；部分更新则使用相应更新操作。<strong>稳定 ID 可以把更新对应到已有对象。</strong>本例同步 A 时替换 A 的向量、原文与版本，记录数量仍是两条；若每次生成新 ID，旧记录就可能留在集合里。<Cite id="store-upsert"/></p>
-      <p id="store-sync" className="vp-citation-target">Chroma 更新文档时，如果没有同时提供向量，会使用集合的嵌入函数重新计算；提供向量则还要满足维度要求。<strong>原文和向量应对应同一个内容版本。</strong>不同产品可以负责不同部分的编码与更新，应用要确认实际行为，不能只改显示文字而保留旧表示。<Cite id="store-sync"/></p>
+      <p id="store-upsert" className="vp-citation-target">Pinecone 的 upsert 文档说明，同一个记录 ID 再次写入会用新记录整条顶掉旧记录；只想改一部分时要使用相应更新操作。<strong>稳定 ID 可以把更新对应到已有对象。</strong>本例“同步退款规则”就是应用替换 A 的向量、原文与版本，记录数量仍是两条；若每次生成新 ID，旧记录就可能留在集合里。<Cite id="store-upsert"/></p>
+      <p id="store-sync" className="vp-citation-target">Chroma 更新文档时，如果没有同时提供向量，会使用集合的嵌入函数重新计算；提供向量则还要满足维度要求，否则更新会失败。<strong>原文和向量应对应同一个内容版本。</strong>不同产品可以负责不同部分的编码与更新，应用要确认实际行为，不能只改显示文字而保留旧表示。<Cite id="store-sync"/></p>
       <p>删除 A，只删除本例存储中的记录；原文仍在左侧。之后查询退款没有结果，说明删除已经影响候选。原文是否也需要删除、哪些副本仍然存在、历史版本是否保留，要由应用另外处理。</p>
     </ArticleSection>
     <ArticleSection id="lifetime" title="保存多久，由实现决定" className={base.offset}><Legacy slug="vector-store" names={["prompt-heading"]}/>
-      <p id="store-lifetime" className="vp-citation-target">LangChain 把不同实现放在向量存储接口下，进程内存与持久服务的保存方式不同。<strong>接口相似，不代表生命周期、访问限制或运维能力相同。</strong>本页刷新后数据消失；需要长期保存时，应选择相应存储，并检查持久化、备份、更新和删除流程。<Cite id="store-lifetime"/></p>
-      <ArticleAside title="向量存储与向量数据库"><p><ConceptTerm slug="vector-database">向量数据库</ConceptTerm> 是提供向量管理与查询能力的一种数据库实现。向量存储是更宽的能力名称，也可能只是一个内存接口。本项目保留“向量数据库”作为该词常见叫法，阅读具体文档时仍要确认它说的是接口还是产品。</p><p>在 <ConceptTerm slug="rag">RAG</ConceptTerm> 中，它负责保存和返回候选资料；后续如何读取、组织输入和生成回答，是另一部分工作。</p></ArticleAside>
+      <p id="store-lifetime" className="vp-citation-target">LangChain 把不同实现放在向量存储接口下，进程内存与持久服务的保存方式不同；是否有近似索引通常影响规模变大时的速度与召回取舍，不自动改变“记录是什么”。<strong>接口相似，不代表生命周期、访问限制或运维能力相同。</strong>本页刷新后数据消失；需要长期保存时，应选择相应存储，并检查持久化、备份、更新和删除流程。<Cite id="store-lifetime"/></p>
+      <ArticleAside title="向量存储与向量数据库"><p><ConceptTerm slug="vector-database">向量数据库</ConceptTerm> 是提供向量管理与查询能力的一种数据库实现。向量存储是更宽的能力名称，也可能只是一个内存接口。本项目保留“向量数据库”作为该词常见叫法，阅读具体文档时仍要确认它说的是接口还是产品。ID 通常只在 collection 或 namespace 内唯一，更新和删除时要明确操作的是哪个集合或分区。</p><p>在 <ConceptTerm slug="rag">RAG</ConceptTerm> 中，它负责保存和返回候选资料；后续如何读取、组织输入和生成回答，是另一部分工作。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
