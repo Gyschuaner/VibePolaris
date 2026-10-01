@@ -4019,11 +4019,11 @@
   },
   {
     "slug": "subagent",
-    "lead": "主报告只缺价格核对，为什么把这件事交给支线而不转走整个对话？",
-    "definition": "主智能体把一个边界清楚的子任务交给另一智能体执行，并接收其结果，主任务的最终控制权通常仍在主智能体。",
-    "boundary": "子智能体不等于交接：交接常把对话控制权转走，子智能体更像被主智能体调用的工作单元。",
+    "lead": "主报告只缺价格核对，为什么只分出这一块，而不是把整段对话连同回复一起交给另一个智能体？",
+    "definition": "主智能体把主任务中边界清楚、能独立验收的一块工作分派给子智能体；子智能体完成后，由主智能体验收并合并结果，同时保留最终回复权。",
+    "boundary": "子智能体只接收明确范围并回传结果，主智能体通常仍保留最终回复和合并控制；要把回复权转走是交接（handoff），要安排多个子任务的依赖与合并是智能体编排。",
     "sceneKind": "tree",
-    "sceneTitle": "子任务从主线分出再返回",
+    "sceneTitle": "子任务分出去，结果回到主线",
     "actionLabel": "重跑价格支线",
     "actors": [
       {
@@ -4036,7 +4036,7 @@
       {
         "id": "task",
         "label": "价格核对子任务",
-        "detail": "3个URL",
+        "detail": "3 个 URL",
         "icon": "package",
         "group": "支线"
       },
@@ -4050,7 +4050,7 @@
       {
         "id": "result",
         "label": "核对结果",
-        "detail": "2项有效 · 1项缺失",
+        "detail": "2 项有效 · 1 项缺失",
         "icon": "message",
         "group": "回传"
       },
@@ -4067,37 +4067,31 @@
         "id": "m-t",
         "from": "main",
         "to": "task",
-        "label": "委派"
+        "label": "委派子任务"
       },
       {
         "id": "t-w",
         "from": "task",
         "to": "worker",
-        "label": "执行"
+        "label": "核对"
       },
       {
         "id": "w-r",
         "from": "worker",
         "to": "result",
-        "label": "回传"
+        "label": "回传结果"
       },
       {
         "id": "r-rep",
         "from": "result",
         "to": "report",
-        "label": "合并"
-      },
-      {
-        "id": "m-rep",
-        "from": "main",
-        "to": "report",
-        "label": "最终控制"
+        "label": "合并结果"
       }
     ],
     "frames": [
       {
-        "label": "主线不转交",
-        "note": "主智能体仍负责最后输出，只分出价格核对。",
+        "label": "主线保留回复",
+        "note": "主智能体仍负责最终报告，只分出价格核对。",
         "activeIds": [
           "main",
           "task"
@@ -4109,15 +4103,15 @@
           "report"
         ],
         "values": {
-          "main": "控制权保留"
+          "main": "回复权：主线"
         },
         "activeEdgeIds": [
           "m-t"
         ]
       },
       {
-        "label": "支线独立工作",
-        "note": "子智能体检查3个URL，不扩展到报告其他部分。",
+        "label": "支线独立核对",
+        "note": "价格子智能体只检查 3 个指定 URL，不扩展到报告其他部分。",
         "activeIds": [
           "worker"
         ],
@@ -4129,15 +4123,16 @@
           "report"
         ],
         "values": {
-          "worker": "已查 3"
+          "worker": "已查 3 个 URL",
+          "main": "回复权：主线"
         },
         "activeEdgeIds": [
           "t-w"
         ]
       },
       {
-        "label": "核对结果回主线",
-        "note": "2个价格可验证，1个缺失按原样返回。",
+        "label": "结果回到主线",
+        "note": "2 项价格有效，1 项缺失按原样返回。",
         "activeIds": [
           "result"
         ],
@@ -4150,15 +4145,16 @@
           "report"
         ],
         "values": {
-          "result": "2有效 / 1缺失"
+          "result": "2 有效 / 1 缺失",
+          "main": "回复权：主线"
         },
         "activeEdgeIds": [
           "w-r"
         ]
       },
       {
-        "label": "主线合并",
-        "note": "主智能体把核对结果写入报告并保持缺失标记。",
+        "label": "主线合并结果",
+        "note": "主智能体检查核对结果，把它写入报告并保留缺失标记。",
         "activeIds": [
           "main",
           "report"
@@ -4170,25 +4166,24 @@
         ],
         "mutedIds": [],
         "values": {
-          "report": "价格段完成"
+          "report": "完成 · 保留 1 个缺失"
         },
         "activeEdgeIds": [
-          "r-rep",
-          "m-rep"
+          "r-rep"
         ]
       }
     ],
-    "insight": "子智能体是受主线调用的独立工作单元；它回传结果，而不是接管整段对话。",
+    "insight": "子智能体就是主智能体分出的一个独立任务；它回传结果，而不是接管整段对话。主智能体因此可以把可独立验收的核对分出去做。",
     "quiz": {
       "question": "价格子智能体完成后，谁负责最终报告？",
       "options": [
         {
-          "label": "主智能体",
-          "correct": true
-        },
-        {
           "label": "价格子智能体自动接管",
           "correct": false
+        },
+        {
+          "label": "主智能体",
+          "correct": true
         },
         {
           "label": "所有子智能体共同随机决定",
@@ -4196,22 +4191,32 @@
         }
       ],
       "success": "子任务完成后结果回到主线。",
-      "retry": "这正是它与handoff的边界。"
+      "retry": "结果回传主线，由主智能体验收合并。"
     },
     "prompt": {
       "title": "拆出一个子智能体任务",
-      "text": "把主任务中可独立验证的一块写成输入、范围、输出格式和失败返回，明确主智能体如何验收和合并。"
+      "text": "把主任务中能独立验收的一块写成输入、范围、输出格式和失败时如何返回，明确主智能体如何验收和合并。"
     },
     "sources": [
       {
         "url": "https://openai.github.io/openai-agents-python/multi_agent/",
-        "label": "OpenAI Agents SDK · multi agent",
-        "note": "可运行示例与实现细节"
+        "label": "OpenAI Agents SDK · multi-agent",
+        "note": "区分工具调用与 handoff 的控制范围"
       },
       {
         "url": "https://openai.github.io/openai-agents-python/tools/",
         "label": "OpenAI Agents SDK · tools",
-        "note": "可运行示例与实现细节"
+        "note": "工具调用与结果回传机制"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building Effective Agents",
+        "note": "路由、并行化与专门工作单元"
+      },
+      {
+        "url": "https://arxiv.org/abs/2308.08155",
+        "label": "AutoGen · arXiv:2308.08155",
+        "note": "多智能体对话与协作机制"
       }
     ]
   },

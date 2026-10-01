@@ -321,14 +321,16 @@
   },
   {
     "slug": "subagent",
-    "mechanism": "主智能体把一个边界清楚的子任务交给另一智能体执行，并接收其结果，主任务的最终控制权通常仍在主智能体。",
-    "misconception": "子智能体不等于交接：交接常把对话控制权转走，子智能体更像被主智能体调用的工作单元。",
-    "demoSignature": "输入：主任务要比较3个方案，子智能体只负责核对价格；中间：3个URL→2个可验证价格+1个缺失，结果返回主智能体；输出：主报告保留缺失标记。可视化：主干流程旁伸出支线再汇合。 建议5帧：主任务保持在主干、价格子任务分叉、3个URL被核对、2项结果回传、主干继续；交互：点击支线单独重跑，不移动主控制权。",
+    "mechanism": "主智能体把主任务中边界清楚、能独立验收的一块工作分派给子智能体；子智能体完成后，由主智能体验收并合并结果，同时保留最终回复权。",
+    "misconception": "子智能体只接收明确范围并回传结果，主智能体通常仍保留最终回复和合并控制；要把回复权转走是交接（handoff），要安排多个子任务的依赖与合并是智能体编排。",
+    "demoSignature": "输入：主报告比较3个方案，子智能体只负责核对价格；中间：3个指定URL→2项有效价格+1项缺失，结果带状态回传主线；输出：主智能体检查后把结果写入报告并保留缺失标记。可视化：主干流程旁伸出支线再汇合。建议4帧：主线保留最终回复、价格支线独立核对、结果回到主线、主智能体合并结果并保留1项缺失；交互：点击支线单独重跑，不移动主线回复权。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://openai.github.io/openai-agents-python/tools/"
+      "https://openai.github.io/openai-agents-python/tools/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
-    "rewriteRisk": "避免把任何后台函数称为子智能体；必须出现独立任务边界和结果回传。",
+    "rewriteRisk": "不要把后台函数都称为子智能体；必须出现独立任务边界、可检查结果和回传主线。",
     "nearDuplicates": [
       "agent-orchestration",
       "handoff"
