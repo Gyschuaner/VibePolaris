@@ -1,6 +1,6 @@
 # VBP-049 新闻栏目交付记录
 
-状态：Anthropic 与 Google DeepMind 两篇新闻已经依据厂商官方页面写入已发布目录；OpenAI Dots 保持 `needs-review`，没有进入公开目录。实现位于 `feat/VBP-049-news-column`，当前分支已推送到 `origin`，最新提交为 `5468d597d6e1b49b2b8f3b28d7abf95f36c1bc22`。
+状态：Anthropic 与 Google DeepMind 两篇新闻已经依据厂商官方页面写入已发布目录；OpenAI Dots 保持 `needs-review`，没有进入公开目录。实现位于 `feat/VBP-049-news-column`，当前分支已推送到 `origin`，初始内容提交为 `5468d597d6e1b49b2b8f3b28d7abf95f36c1bc22`；本次叙事与直发改版提交为 `98d8373`。
 
 这次发布不依赖 `NEWS_DOTS_ENDPOINT`，也不要求 `dev` 分支保护。工作流在没有 Dots endpoint 时会跳过外部交接，继续校验仓库内的官方来源内容；如果以后配置 endpoint 或触发 `repository_dispatch`，仍会经过同一套 ingest、事实、来源、词条关系和发布门槛。
 
