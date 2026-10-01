@@ -2173,3 +2173,42 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 80 条正文与本地记录在当前批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`PipelineLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 当前批次进度为 **2/10（第 79—80 条）**，下一条是 `webhook`；前序已发布总计 **78/105**。
+
+## 81 · Webhook 文字复审、验签受理演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“支付平台把结果通知给服务后，为什么不能直接相信请求体；验签通过后为什么还要先记录受理；确认丢失或重复投递时怎样避免订单重复处理？”读完应能解释事件、投递、接收地址/端点、共享密钥、签名、验签、2xx 确认、后台处理、事件 ID 与业务对象 ID 的区别，并判断重试、重新交付、乱序和后台失败各自需要什么处理。
+- 更新 `WebhookTermPage` 的正文文字：在引子中补出“自己准备公开网址并登记给平台”的接收地址前提，首次解释端点、Stripe（支付平台）和 GitHub（代码托管平台）；在验签段补齐“平台与服务共享密钥、平台生成签名、接收方用同一密钥重算”的因果，并说明原始请求体、签名头、时间戳有效期、重放边界和 Stripe CLI `whsec_` 密钥不能与后台端点密钥混用；在受理段补充 GitHub 的 10 秒 2xx 规则、4xx 失败示例、事件类型/操作过滤和“先写受理记录再回 2xx”的顺序；在重复段用 `evt-42`、`evt-43` 与 `order-42` 说明事件 ID 和业务对象 ID，补出失败重发造成乱序的例子，并统一“重新交付”的称呼；明确演示中“被改写”是预置测试输入，不代表接收方能从外观识别篡改。
+- `WebhookLesson` 的投递、验签、受理、后台处理、响应丢失、重复投递、清空、引用展开与回链继续留在本地/dev；生产批次只计划复制 `components/terms/CoordinationConceptPages.tsx` 的正文文字差异。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Stripe · Receive Stripe events in your webhook endpoint](https://docs.stripe.com/webhooks) | `webhook-notify` 与 `webhook-accept`：公开 HTTPS 端点、按需订阅事件、异步事件、原始请求体验签，以及复杂逻辑前先返回成功状态。 |
+| [Stripe · Resolve webhook signature verification errors](https://docs.stripe.com/webhooks/signature) | `webhook-signature`：验签需要原始请求体、`Stripe-Signature`/签名头和端点密钥；CLI 与后台端点的 `whsec_` 密钥不同；请求体被框架改写会导致验签失败。 |
+| [GitHub · Best practices for using webhooks](https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks) | `webhook-notify`、`webhook-accept` 与 `webhook-order`：只订阅所需事件、使用 HTTPS/secret、10 秒内返回 2xx、检查事件类型与 action、使用 `X-GitHub-Delivery`，重新交付时 ID 保持不变。 |
+| [GitHub · Handling failed webhook deliveries](https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries) | `webhook-redelivery`：GitHub 不会自动重新交付失败投递，可从投递记录手动或脚本触发补交；服务器宕机期间漏掉的失败投递要在恢复后查询记录。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 读取 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/vibepolaris-zcode-partner/SKILL.md` 后，以干净输入只读正文与按“操作 → 当时可见状态”配对的材料，没有附作者意图、官方资料、源码或旧反馈；材料 `/tmp/vbp081-reader-material.txt` SHA-256 为 `b62946f77dbbba0f8b207ea85bebad8110a112f55ac960ba29ff5a78097137a4b`，提示词 `/tmp/vbp081-reader-prompt.txt` SHA-256 为 `71a29cdaa6cdea15ca7fdb09d0ea48aad5bf3884426044b5865c8fd134c1ffc2`，结果 `/tmp/vbp081-reader-result.json` SHA-256 为 `fd3cec222c651eff99563c0676c58ed86c7c4b06d3e09ba29ff5a78097137a4b`；会话 `sess_e9c7ed11-00ec-434b-b558-ac6c14f94a8b` 正常完成。reader 指出了共享密钥验签因果、接收地址前提、Stripe/GitHub 身份、时间戳防重放、4xx 失败反馈、事件/业务对象 ID 例子、乱序原因以及演示“被改写”标记的边界；主助手逐项核对后采纳。
+- 独立 `language` 读取 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/vibepolaris-zcode-partner/SKILL.md`、`/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`，并审读当前 `WebhookTermPage`；提示词 `/tmp/vbp081-language-prompt.txt` SHA-256 为 `cd2c4f54e8d95abcdeb890772ae1d79aefa68b6e3c4a4d8e9777a19e2adb85d8`，结果 `/tmp/vbp081-language-result.json` SHA-256 为 `b0b9c3039014532ebc58cbc5201e880dc4a7f40413d503a60257af3e52270b36`；会话 `sess_f67fa298-9523-4c91-9ae9-68ec94a6febe` 正常完成。采纳了引子与正文去重、端点/接收地址口径、验签段落指代、4xx 主语、10 秒比较对象、宕机期间漏投递和“重新交付”统一等建议；保留所有技术限定、例子、引用角标与本地演示边界。
+- ZCode 实际读取项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`；用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内可读规则审读，没有把缺失路径冒充为已读取。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成，最新本地 `BUILD_ID YISfGLryCRl7YeUaeUYEk`；`git diff --check` 通过。当前变更只在 `components/terms/CoordinationConceptPages.tsx`，未修改 `WebhookLesson`、通用词条注册或交互逻辑。
+- CUA 先在 `http://127.0.0.1:3219/terms/webhook?qa=081baseline` 真实操作并观察基线：投递被改写通知后验签显示 400 拒绝且受理记录/订单不变；有效通知依次验签、受理、后台处理，显示 2xx 已确认、受理记录 1 条和付款状态更新一次；勾选响应丢失后再次投递，显示确认未收到，重复验签/受理显示同一事件已有记录且不新增；展开 GitHub 失败投递引用并回链到 `#webhook-redelivery`；截图已实际观察。
+- 最终在 `http://127.0.0.1:3219/terms/webhook?qa=081final` 重复上述四条关键路径，观察到改写 400、有效 2xx/后台完成和响应丢失后的去重；展开第四条引用并回链到 `#webhook-redelivery`，最终截图已实际观察。最后一次纯文字语序修正后，在 `http://127.0.0.1:3219/terms/webhook?qa=081final2` 复核正文快照、四条引用和 GitHub 引用回链，URL 定位 `#webhook-redelivery`。当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也未把不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存里的固定教学事件 `evt-42`、`order.paid`、`order-42`，不执行真实 Stripe/GitHub 投递、密码学验签、队列、订单写入或重新交付；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮研发任务 `463e9b49-0a81-4737-b79b-aefc6c399ed3` 已创建并处于 `in_progress`；测试用例 `b71ad644-e94e-4422-b488-29263dd2d0b8` 与测试计划 `e104a6e1-ff29-4854-b7a0-3b9f5eb1ed82` 已创建，待第 79—88 条本地验收完成后统一记录执行结果。按用户要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 81 条正文与本地记录将在本批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`WebhookLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前批次进度为 **3/10（第 79—81 条）**，下一条按现有顺序是 `distributed-system`；前序已发布总计 **78/105**。
