@@ -2760,8 +2760,8 @@
   {
     "slug": "tool-choice",
     "lead": "“改会议时间”同时匹配三个工具时，为什么选中了更新工具却仍没有执行？",
-    "definition": "当多个工具可用时，系统决定让模型自动选择、强制选择某个工具或禁止调用；选择结果仍需经过参数与权限检查。",
-    "boundary": "工具选择不是工具执行，也不是让模型获得工具背后的全部权限。",
+    "definition": "应用先提供候选工具和选择策略，模型再提出本轮要不要调用、调用哪一个；auto、required、指定/强制和 none 会改变可提出的选择。选出工具后，应用仍要检查参数、身份、权限和审批；写操作指会改变外部状态的调用。",
+    "boundary": "选择不是执行，也不是授权；工具描述、allowlist 和策略只能缩小候选范围，不能替代业务权限、副作用控制或人工审批。",
     "sceneKind": "route",
     "sceneTitle": "工具相关性与审批条件分两次判断",
     "actionLabel": "切换选择策略",
@@ -2831,7 +2831,7 @@
     "frames": [
       {
         "label": "三个候选出现",
-        "note": "路由器先比较哪一个工具与请求相关。",
+        "note": "路由器先比较哪一个工具与请求相关；0.42、0.91、0.08 是教学示意，没有及格线，也不会自动放行。",
         "activeIds": [
           "request",
           "read",
@@ -2851,7 +2851,7 @@
       },
       {
         "label": "更新工具胜出",
-        "note": "最高分是更新日历，其他两个候选淡出。",
+        "note": "最高分只是选择线索，模型提出“更新日历”的调用请求，尚未执行。",
         "activeIds": [
           "update"
         ],
@@ -2872,7 +2872,7 @@
       },
       {
         "label": "审批规则生效",
-        "note": "选择完成后，写操作仍停在审批闸门。",
+        "note": "选择完成后，写操作仍停在审批闸门；审批通过前不会改变日历。",
         "activeIds": [
           "update",
           "approval"
@@ -2893,7 +2893,7 @@
       },
       {
         "label": "改为禁用工具",
-        "note": "选择策略切到none后，三条工具路径全部关闭。",
+        "note": "选择策略切到 none 后，三条工具路径全部关闭，只能生成文本回答。",
         "activeIds": [
           "request"
         ],
@@ -2910,7 +2910,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "工具选择决定用哪个工具，不授予权限，也不代表工具已经执行。",
+    "insight": "工具选择决定模型提出哪个调用；应用再检查参数、权限和审批，选中不等于执行或授权。",
     "quiz": {
       "question": "自动选择到“删除文件”工具后，系统可以直接运行吗？",
       "options": [
@@ -2932,18 +2932,28 @@
     },
     "prompt": {
       "title": "设计工具选择规则",
-      "text": "列出候选工具、适用请求、禁用条件和强制选择场景，再单列每个写操作的审批要求。"
+      "text": "列出候选工具、auto/required/指定/none 等策略的影响，再为每个有副作用的调用单列参数、权限、审批和幂等检查。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/function-calling",
-        "label": "OpenAI 官方文档 · function calling",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-choice",
+        "label": "OpenAI · Function calling · tool choice",
+        "note": "auto/required/forced/none"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "label": "Anthropic · Tool use with Claude",
+        "note": "模型提出调用与应用执行"
       },
       {
         "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-        "label": "MCP 规范 · tools",
-        "note": "协议角色与消息行为"
+        "label": "MCP · Tools specification 2025-06-18",
+        "note": "工具描述与 tools/call"
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.04761",
+        "label": "arXiv · Toolformer",
+        "note": "模型学习调用工具"
       }
     ]
   },
