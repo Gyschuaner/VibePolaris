@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { ArrowUpRight, CornersOut, Minus, Plus, X } from "@phosphor-icons/react";
+import { ArrowUpRight, CaretRight, CornersOut, Minus, Plus } from "@phosphor-icons/react";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphEdge, type GraphNode } from "@/lib/term-graph";
 
 type RelatedTerm = { slug: string; zh: string; en: string };
@@ -160,6 +160,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const pinch = useRef<{ distance: number; center: Point; view: View } | null>(null);
   const dragged = useRef(false);
   const closeTimer = useRef<number | null>(null);
+  const selectionGuard = useRef<{ slug: string; frame: number } | null>(null);
   const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
@@ -309,6 +310,15 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   }
 
   function selectArticle(slug: string) {
+    if (selectionGuard.current?.slug === slug) return;
+    const rafId = window.requestAnimationFrame(() => {
+      if (selectionGuard.current?.frame === rafId) selectionGuard.current = null;
+    });
+    selectionGuard.current = { slug, frame: rafId };
+    if (selectedSlug === slug && detailOpen) {
+      clearSelection();
+      return;
+    }
     if (closeTimer.current !== null) {
       window.clearTimeout(closeTimer.current);
       closeTimer.current = null;
@@ -458,12 +468,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                 const visible = Boolean(selectedNodeSlug) && showLines && connected;
                 const from = bySlug.get(edge.source);
                 const to = bySlug.get(edge.target);
-                if (!from || !to) return null;
+                if (!visible || !from || !to) return null;
                 const key = `${edge.source}|${edge.target}`;
                 return <line key={key} ref={element => {
                   if (element) lineElements.current.set(key, { element, ...edge });
                   else lineElements.current.delete(key);
-                }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} strokeLinecap="round" className={`news-atlas-graph-line${connected ? " is-connected" : ""}`} style={{ opacity: visible ? undefined : 0 }} />;
+                }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} strokeLinecap="round" className="news-atlas-graph-line is-connected" />;
               })}
             </svg>
             {nodes.map(node => {
@@ -502,7 +512,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
         </div>
 
         {selected && <aside ref={detail} className={`news-atlas-detail${detailOpen ? " is-open" : ""}`} data-open={detailOpen} aria-live="polite" aria-hidden={!detailOpen} inert={!detailOpen} aria-label={`${selected.title}详情`}>
-          <button className="news-atlas-detail-close" type="button" aria-label="关闭新闻详情" onClick={clearSelection}><X size={18} /></button>
+          <button className="news-atlas-detail-toggle" type="button" aria-label={detailOpen ? "收起新闻详情" : "展开新闻详情"} title={detailOpen ? "收起新闻详情" : "展开新闻详情"} onClick={clearSelection}><CaretRight size={18} weight="fill" aria-hidden="true" /></button>
           <div className="news-atlas-detail-meta"><time dateTime={selected.publishedAt}>{longDateFormatter.format(utcDate(selected.publishedAt))}</time><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
           <h2>{selected.title}</h2>
           <p>{selected.summary}</p>
