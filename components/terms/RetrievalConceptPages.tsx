@@ -9,29 +9,29 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function FrameTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={frameSources}/>;
   return <ConceptArticle slug="dataframe" title="数据帧" sources={frameSources} sections={[["shape", "行与列有各自的含义"], ["selection", "筛选记录与选择字段"], ["operations", "计算会改变结果的形状"], ["execution", "表格接口与执行方式"]]}
-    intro={<>把借阅记录读进程序后，先筛出逾期的两条，再只保留需要的字段。DataFrame 把这些操作放到一张有列名的二维表里，让程序按列选择、按行筛选和计算。</>}
+    intro={<>把四条借阅记录读进程序后，先筛出逾期的两条，再只保留需要的字段。DataFrame 把这些记录放进一张有列名的二维表，程序就能按列选择、按行筛选和计算。</>}
     hero={<ConceptHero slug="dataframe" label="原始四行三列筛出B与D，输出仍是有列定义的二维表"><div className={s.frameHero}><div className={s.heroSheet}><strong>4 × 3</strong><code>A　42　0　北</code><code>B　78　3　南</code><code>C　42　0　南</code><code>D　91　7　北</code></div><div className={s.heroSheet}><strong>2 × 3</strong><code>逾期 ≥ 1 天</code><code>B　78　3　南</code><code>D　91　7　北</code></div></div></ConceptHero>}>
     <ArticleSection id="shape" title="行与列有各自的含义"><Legacy slug="dataframe" names={["question", "definition"]}/>
-      <p><strong>DataFrame 是用命名的列组织二维数据的结构。</strong>一行代表一条记录，一列代表一个字段。借阅记录可以有书目编号、逾期天数和馆名；这三列放在一起，仍然需要说明每行是否代表一次借阅、一个读者或一本书。</p>
-      <p id="frame-selection" className="vp-citation-target">pandas 的教程区分两种选择：用一个列名取列，得到一维 Series；用列名列表选择，得到二维 DataFrame。<strong>结果有多少行、多少列，是理解一次操作的基本证据。</strong>只剩一列的 DataFrame 与 Series 也不完全相同；本例一直使用列列表，保留二维结果。<Cite id="frame-selection"/></p>
-      <div className={s.columns}><div><h3>数据集</h3><p>关心数据的收录范围、版本与使用说明。它可以由多份文件构成。</p></div><div><h3>数据帧</h3><p>关心程序怎样组织与计算这些记录。装载其中一部分，不代表覆盖了整份数据集。</p></div></div>
+      <p><strong>DataFrame 是用命名的列组织二维数据的结构。</strong>一行代表一条记录，一列代表一个字段。在本例里，每行代表一次借阅；借阅记录有书目编号、逾期天数和馆名这三列。换一个业务，每行可能代表一个读者或一本书，仍要先说明它代表什么。</p>
+      <p id="frame-selection" className="vp-citation-target">pandas 的教程区分两种选择：只取一个列名时，单独得到那一列，pandas 把它叫一维 Series；把要保留的几个列名一起写出来，得到二维 DataFrame。<strong>结果有多少行、多少列，是理解一次操作的基本证据。</strong>本例选择列时传的始终是列名列表，所以结果仍是二维表。<Cite id="frame-selection"/></p>
+      <div className={s.columns}><div><h3>数据集</h3><p>关心数据的收录范围、版本与使用说明。它可以由多份文件构成。</p></div><div><h3>数据帧</h3><p>关心程序怎样组织与计算这些记录。把数据集的一部分读入程序，不代表已经覆盖整份数据集。</p></div></div>
     </ArticleSection>
     <ArticleSection id="selection" title="筛选记录与选择字段"><Legacy slug="dataframe" names={["scene-heading"]}/>
-      <p>原始表有四行、三列。A、C 没有逾期，B 逾期三天，D 七天。筛选天数至少为 1 的记录，得到 B、D 两行；再取消书目列，变成两行、两列。<strong>筛选行与选择列分别控制结果的两个方向。</strong></p>
+      <p>原始表有四行、三列。A、C 没有逾期，B 逾期三天，D 七天。筛选天数至少为 1 的记录，得到 B、D 两行；再去掉书目编号这一列，变成两行、两列。<strong>筛选行与选择列分别控制结果的两个方向。</strong></p>
       <FrameLesson/>
-      <p>这里用固定浏览器对象计算结果，没有运行 pandas。标签 A—D 单独显示，不计入三列字段。筛选与投影没有改写原始表；严格到至少 10 天时，结果是零行，但仍知道选择了哪些列。零行不等于读取失败。</p>
-      <p id="frame-labels" className="vp-citation-target">pandas 的 loc 按标签、名称或条件选择，iloc 按位置选择。<strong>行标签与第几行需要分清。</strong>筛选后 B、D 可以保留原标签，并不因为现在只有两行，就自动变成原始表中的第一、第二条。本例保留标签方便追查，不能据此假定所有 DataFrame 实现都有 pandas 式行索引。<Cite id="frame-labels"/></p>
+      <p>这里用页面里预先做好的小模拟计算结果，没有运行 pandas；它只演示筛选和选列的关系，真实库还要按自己的版本和接口核对。标签 A—D 单独显示，不计入三列字段。筛选行和只保留部分列都没有改写原始表；把条件收紧到至少 10 天时，结果是零行，但仍知道选择了哪些列。零行不等于读取失败。</p>
+      <p id="frame-labels" className="vp-citation-target">pandas 的 loc 按行标签、列名或条件选择，iloc 按当前位置选择。标签是行自带的名字，比如 B；位置是它当前排第几行。<strong>行标签与第几行需要分清。</strong>筛选后 B、D 可以保留原标签，并不因为现在只有两行，就自动变成原始表中的第一、第二条。本例保留标签方便追查，不能据此假定所有 DataFrame 实现都有 pandas 式行索引。<Cite id="frame-labels"/></p>
     </ArticleSection>
     <ArticleSection id="operations" title="计算会改变结果的形状"><Legacy slug="dataframe" names={["quiz-heading"]}/>
-      <p id="frame-operations" className="vp-citation-target">Polars 把 select、with_columns、filter、group_by 区分为不同上下文：选择结果列，保留原列并增加计算列，筛选记录，或者按分组值汇总。<strong>过滤通常改变记录数量，增加列改变字段数量，聚合还会改变一行代表什么。</strong>具体行为应按表达式和实现核对。<Cite id="frame-operations"/></p>
-      <div className={s.note}><p>原始四条借阅按馆分组后，北馆、南馆各两条。输出只有两行，每行代表一个馆；此时的“2 行”不能再解释为只发生了两次借阅。</p></div>
-      <p>做计算前，还要核对字段类型与缺失值。逾期天数是数字 3，与字符串“3天”并不等价；未知天数也不能直接补成 0，后者表示确定没有逾期。需要的转换、缺失处理和验证规则，应先写清再运行。</p>
-      <p id="frame-storage" className="vp-citation-target">Apache Arrow 定义语言无关的列式内存格式，把同类型值组织成数组，并描述类型、长度、空值与缓冲区。它有利于按列扫描，修改则可能更昂贵。<strong>DataFrame 是操作数据的接口概念，Arrow 是一种具体的数据表示约定。</strong>不能把所有数据帧都说成必然使用 Arrow，也不能只凭“列式”保证零复制或更快。<Cite id="frame-storage"/></p>
+      <p id="frame-operations" className="vp-citation-target">以 Polars 为例，select 选择结果列，with_columns 保留原列并增加计算列，filter 筛选记录，group_by 按某列的值把行分组，汇总由随后的聚合计算完成。<strong>过滤通常改变记录数量，增加列改变字段数量，聚合就是把多行并成一行，还会改变一行代表什么。</strong>具体行为应按查询写法和实现核对。<Cite id="frame-operations"/></p>
+      <div className={s.note}><p>原始四条借阅按馆名分组后，北馆、南馆各两条。输出只有两行，每行代表一个馆；此时的“2 行”不能再解释为只发生了两次借阅。页面的交互只演示筛选和选列，分组结果用这个文字例子说明。</p></div>
+      <p>做计算前，还要核对字段类型与缺失值。逾期天数是数字 3，与字符串“3天”并不等价；未知天数也不能直接补成 0，后者表示确定没有逾期。要怎样转换、缺失怎样处理、哪些结果算错，应先写清再运行。</p>
+      <p id="frame-storage" className="vp-citation-target">Apache Arrow 定义一种编程语言无关的列式内存格式（Python、Java 等都能使用）。列式表示会把同一列的值连续放在一起，并记录类型、长度和空值；数据本身存放在一段段连续的内存区域里，也就是缓冲区。这样按列读取方便，但修改可能需要重排或重新分配一段连续区域，所以代价可能更高。<strong>DataFrame 是操作数据的接口概念，Arrow 是一种具体的数据表示约定。</strong>不能把所有数据帧都说成必然使用 Arrow，也不能只凭“列式”就断定不同程序能共享同一份内存而不用拷贝，或者一定更快。<Cite id="frame-storage"/></p>
     </ArticleSection>
     <ArticleSection id="execution" title="表格接口与执行方式" className={base.offset}><Legacy slug="dataframe" names={["prompt-heading"]}/>
-      <p id="frame-execution" className="vp-citation-target">Spark 把 DataFrame 描述为按命名列组织的 Dataset，背后使用分布式执行与优化引擎；不同语言和接口可以表达同一计算。<strong>叫 DataFrame，不说明它一定完整装在一台机器的内存里。</strong>同样的筛选式，在本地库与分布式引擎中，执行成本、类型和支持的操作可能不同。<Cite id="frame-execution"/></p>
-      <ArticleAside title="与数据库表怎么配合"><p>数据库表负责持久保存和约束；数据帧可装载查询结果进行分析，也可能由引擎继续读取外部来源。这里的筛选结果不会写回数据库。需要持久化时，说明写到哪里、覆盖还是追加、失败如何处理，再核对相应接口。</p></ArticleAside>
-      <p>核对一次 DataFrame 计算，先明确库与版本、每行含义、字段类型和预期结果。用少量样例检查标签、维度与空结果，再执行完整数据；表格外观不能证明计算正确。</p>
+      <p id="frame-execution" className="vp-citation-target">Spark 把 DataFrame 描述为按命名列组织的 Dataset；这里的 Dataset 是 Spark 的类型名，不是前文讲的那份有收录范围和版本说明的数据集。Spark 在背后用分布式执行引擎：把计算拆开，交给多台机器一起运行，并做优化；不同语言和接口可以表达同一个计算。<strong>叫 DataFrame，不说明它一定完整装在一台机器的内存里。</strong>同样的筛选条件，在本地库（例如 pandas）与分布式引擎中，执行成本、类型和支持的操作可能不同。<Cite id="frame-execution"/></p>
+      <ArticleAside title="与数据库表怎么配合"><p>数据库表负责持久保存和约束；数据帧可装载查询结果进行分析，也可以从外部文件或数据库读取数据。这里的筛选结果不会写回数据库。需要持久化时，说明写到哪里、覆盖还是追加、失败如何处理，再核对相应接口。</p></ArticleAside>
+      <p>核对一次 DataFrame 计算，先明确库与版本、每行含义、字段类型和预期结果。用少量样例检查标签、维度与空结果，再在完整数据上执行；表格外观不能证明计算正确。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
