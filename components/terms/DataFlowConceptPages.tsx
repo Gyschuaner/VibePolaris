@@ -71,26 +71,27 @@ export function TransformationTermPage() {
 export function ValidationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={validationSources}/>;
   return <ConceptArticle slug="data-validation" title="数据验证" sources={validationSources} sections={[["contract", "把要求写成可检查的规则"], ["check", "逐条解释验证结果"], ["report", "报告要指向具体字段"], ["boundary", "通过规则，不代表全部真实"]]}
-    intro={<>读者资料里，年龄是 −2、城市写成 ??，或者年龄看起来是 24，却以字符串保存。数据验证逐项检查约定，把符合要求的记录与需要处理的记录分开，也让失败有一个能追查的理由。</>}
+    intro={<>一份导入资料里，年龄是 −2、城市写成 ??，或者年龄看起来是 24，却以字符串保存。数据验证逐项检查约定，把符合要求的记录与需要处理的记录分开，也让失败有一个能追查的理由。</>}
     hero={<ConceptHero slug="data-validation" label="整数年龄与字符串年龄被区别检查，失败字段留下可读原因"><div className={s.validationHero}><div className={s.heroGrid}><div><code>age: 24</code><span>整数 ✓</span></div><div><code>age: −2</code><span>范围 ×</span></div><div><code>city: ??</code><span>城市 ×</span></div><div><code>age: &quot;24&quot;</code><span>类型 ×</span></div></div><div className={s.heroBeam}/><div className={s.heroReport}><Funnel size={16}/> 1 条通过 · 3 条待处理</div></div></ConceptHero>}>
     <ArticleSection id="contract" title="把要求写成可检查的规则"><Legacy slug="data-validation" names={["question", "definition"]}/>
-      <p id="validation-contract" className="vp-citation-target"><strong>数据验证按约定检查输入，给出通过或失败的结果与原因。</strong>规则可以约束类型、必填、范围、格式及字段关系。JSON Schema 区分 properties 与 required：描述了属性怎样检查，不等于它必须出现；属性缺失也不同于属性值为 null。要求必须明确，验证器才能检查。<Cite id="validation-contract"/></p>
-      <p id="validation-levels" className="vp-citation-target">OWASP 区分语法与语义层的验证：格式满足要求以后，还要检查是否符合业务关系，例如开始日期是否早于结束日期。<strong>数字写得合法、字段关系合理，是两种检查。</strong>它们都依赖业务要求，不能仅用一个正则表达式代替全部判断。<Cite id="validation-levels"/></p>
+      <p id="validation-contract" className="vp-citation-target"><strong>数据验证按约定检查输入，给出通过或失败的结果与原因。</strong>这里的“输入”可以是一条记录，也可以是一批记录。规则可以约束类型、必填、范围、格式及字段关系。JSON Schema 的 `properties` 列出字段及各自的检查方式，`required` 列出必须出现的字段；properties 里有一个字段，不等于它一定要出现，字段缺失也不同于字段值为 null。要求必须明确，验证器才能检查。<Cite id="validation-contract"/></p>
+      <p id="validation-levels" className="vp-citation-target">OWASP 把验证分成语法和语义两层：语法层检查单个字段是否符合可接受的格式，语义层检查它在业务关系中是否合理，例如开始日期是否早于结束日期。<strong>数字写得合法、字段关系合理，是两种检查。</strong>它们都依赖业务要求，不能仅用一个正则表达式代替全部判断。<Cite id="validation-levels"/></p>
       <div className={base.contrast}><div><h3>验证</h3><p>年龄是字符串 &quot;24&quot;，与约定整数不符。保留原值，给出类型失败原因。</p></div><div><h3>转换</h3><p>若来源明确允许数字字符串，可以按单独规则转换为整数，再验证。规则不同，要留下记录。</p></div></div>
     </ArticleSection>
     <ArticleSection id="check" title="逐条解释验证结果"><Legacy slug="data-validation" names={["scene-heading"]}/>
       <p>这里的类型要求始终启用，年龄范围与城市名单可以开关。SH / BJ 只是本站示例允许的两个代码，不是完整城市标准。默认只有 A 通过；关闭范围规则后，B 的 −2 并没有变成合理年龄，只是这次不再检查它。</p>
+      <p>教学演示固定使用快照 s1：A 的 age 是数字 24、city 是 "SH"；B 的 age 是 −2、city 是 "SH"；C 的 age 是 37、city 是 "??"；D 的 age 是字符串 "24"、city 是 "BJ"。age 必须为整数；年龄范围 0–120 和城市代码只允许 SH / BJ 可以分别开关。运行前只显示这四条输入，运行后才显示按当前规则算出的报告。</p>
       <ValidationLesson/>
       <p>演示按固定快照 s1 重新计算，不运行 JSON Schema、SHACL 或远端校验服务。字符串年龄不会自动转型；类型失败后，范围检查标为不适用。修改规则会收起旧报告，重新运行才得到对应结果。</p>
       <p><strong>失败不一定意味着删除整条记录。</strong>可以拒绝本次输入、隔离并修复，或按明确规则允许部分处理。本页选择保留原始记录并隔离；如果后续只使用通过的记录，应同时报告未处理的数量和原因。</p>
     </ArticleSection>
     <ArticleSection id="report" title="报告要指向具体字段"><Legacy slug="data-validation" names={["quiz-heading"]}/>
-      <p id="validation-report" className="vp-citation-target">W3C 的 SHACL 规范针对 RDF 图，验证结果可以记录相关节点、属性路径、值与失败约束。这里借鉴的是可定位的报告结构，没有把它当作 JSON 验证器。<strong>“有三条错误”只能告诉你规模；记录、字段、原值与规则才能帮助处理。</strong><Cite id="validation-report"/></p>
+      <p id="validation-report" className="vp-citation-target">W3C 的 SHACL 规范针对 RDF 图，也就是用节点和属性关系表示的数据图；它的验证报告可以记录相关节点、属性路径、值与失败约束。这里借鉴的是可定位的报告结构，没有把它当作 JSON 验证器。<strong>“有三条错误”只能告诉你规模；记录、字段、原值与规则才能帮助处理。</strong><Cite id="validation-report"/></p>
       <div className={s.reportFields}><div><h3>定位问题</h3><code>D → age → &quot;24&quot;</code><p>哪条记录、哪个字段、收到的原始值是什么？保留字符串与数字的区别。</p></div><div><h3>解释判断</h3><code>要求整数 → 类型失败</code><p>哪条规则生效，为什么没有通过？没有启用的规则不能显示成检查通过。</p></div></div>
-      <p id="validation-run" className="vp-citation-target">Great Expectations 将一批数据交给 Validation Definition 执行，结果包含所用 Expectation 的通过情况与解释信息，运行后还可以保存报告。<strong>报告属于一份输入与一组规则的这次运行。</strong>重新选择数据或规则，应生成对应结果，不能拿旧报告代替新一轮验证。<Cite id="validation-run"/></p>
+      <p id="validation-run" className="vp-citation-target">Great Expectations 是一个数据验证工具。它把一批数据交给 Validation Definition，也就是预先配置的一组验证规则；运行结果包含每条 Expectation（对数据的一个具体期望）的通过情况与解释信息，还可以保存报告。<strong>报告属于一份输入与一组规则的这次运行。</strong>重新选择数据或规则，应生成对应结果，不能拿旧报告代替新一轮验证。<Cite id="validation-run"/></p>
     </ArticleSection>
     <ArticleSection id="boundary" title="通过规则，不代表全部真实" className={base.offset}><Legacy slug="data-validation" names={["prompt-heading"]}/>
-      <p>年龄 24 在规定范围内，也可能与本人实际年龄不符。验证不会自动知道未提供的事实，也检查不到没有写出的规则。所有记录都通过，仍要考虑来源真实性、遗漏、重复和时效等 <ConceptTerm slug="data-quality">数据质量</ConceptTerm> 问题。</p>
+      <p>年龄 24 在规定范围内，也可能与本人实际年龄不符。验证不会自动知道未提供的事实，也检查不到没有写出的规则。<ConceptTerm slug="data-quality">数据质量</ConceptTerm> 是更广的用途判断，还要考虑来源真实性、遗漏、重复和时效；所有记录都通过当前规则，不代表这些方面也没有问题。</p>
       <ArticleAside title="浏览器里的提示不能代替服务端检查"><p id="validation-boundary" className="vp-citation-target">OWASP 指出客户端检查可以被绕过，服务端必须在处理输入前执行相应验证；两边检查服务于不同目的。浏览器提示帮助用户及时修正，服务端检查守住实际入口。<strong>本页能让你观察规则的结果，不构成真实系统的数据保护。</strong><Cite id="validation-boundary"/></p></ArticleAside>
       <p>验证规则需要覆盖必填字段、类型、范围和字段关系，并约定失败后的处理。报告区分未检查、检查失败和检查通过，附上输入范围与规则版本。格式和关系通过以后，现实事实仍需另行核对。</p>
     </ArticleSection>
