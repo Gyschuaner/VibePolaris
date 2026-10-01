@@ -9557,9 +9557,9 @@
   },
   {
     "slug": "dev-server",
-    "lead": "保存一个文件后，浏览器为什么能在180ms内看到本地变化？",
-    "definition": "开发服务器在本地提供源码或转换后的资源，监听文件变化，并通过浏览器连接触发刷新或模块更新。",
-    "boundary": "它不是生产服务器；默认设置通常面向本地反馈速度，而非公网安全、缓存和容量。",
+    "lead": "页面先从 localhost 加载，保存源码后为什么能看到本地变化？",
+    "definition": "开发服务器在本机按请求提供页面和资源，监听文件变化后按需处理受影响的文件，再通过更新连接通知浏览器。更新可能是整页刷新，也可能只替换变化的模块。",
+    "boundary": "它主要服务本地开发，比如前端连上后端一起调试；构建工具负责产出可部署的完整文件，开发服务器只是按需提供和更新资源。代理可以把本地 API 请求转到另一个服务。默认配置通常满足不了公网对安全、缓存和容量的要求。开发服务器不等于生产服务器。",
     "sceneKind": "pipeline",
     "sceneTitle": "文件监听把变更送到浏览器",
     "actionLabel": "保存文件",
@@ -9581,21 +9581,21 @@
       {
         "id": "server",
         "label": "开发服务器",
-        "detail": "localhost",
+        "detail": "localhost:端口",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "socket",
         "label": "更新连接",
-        "detail": "WebSocket",
+        "detail": "WebSocket 通道",
         "icon": "network",
         "group": "通道"
       },
       {
         "id": "browser",
         "label": "浏览器",
-        "detail": "页面已打开",
+        "detail": "已打开 localhost",
         "icon": "browser",
         "group": "界面"
       }
@@ -9628,8 +9628,8 @@
     ],
     "frames": [
       {
-        "label": "本地服务就绪",
-        "note": "浏览器已连接开发服务器和更新通道。",
+        "label": "先打开本地页面",
+        "note": "浏览器先用 localhost:端口从开发服务器取得页面，并建立更新连接。",
         "activeIds": [
           "server",
           "socket",
@@ -9647,7 +9647,7 @@
       },
       {
         "label": "文件被保存",
-        "note": "监听器捕获button.css的1次变化。",
+        "note": "监听器捕获 button.css 的 1 次变化。",
         "activeIds": [
           "file",
           "watcher"
@@ -9666,8 +9666,8 @@
         ]
       },
       {
-        "label": "更新消息发出",
-        "note": "开发服务器转换文件并通过连接发送变更。",
+        "label": "按需处理并通知",
+        "note": "开发服务器只处理受影响的文件（可调用转译器），再通过更新连接发送变更；错误显示在终端或页面。",
         "activeIds": [
           "server",
           "socket"
@@ -9689,7 +9689,7 @@
       },
       {
         "label": "浏览器应用变化",
-        "note": "本机示例中页面180ms后更新。",
+        "note": "我本机这个例子约 180 ms 完成更新；换一台机器，或换个大小的文件，这个数字就不一样了。工具支持模块级更新时就只替换变化的模块，不支持就整页刷新。",
         "activeIds": [
           "browser"
         ],
@@ -9707,45 +9707,55 @@
           "so-b"
         ],
         "metric": {
-          "label": "示例更新时间",
-          "value": "180 ms"
+          "label": "本机示例更新时间",
+          "value": "约 180 ms"
         }
       }
     ],
-    "insight": "开发服务器优化本地反馈，不具备生产服务默认需要的安全、缓存和容量配置。",
+    "insight": "开发服务器把本地请求、文件监听和更新连接串成快速反馈；它可以按需处理资源，但不承担完整生产构建或公网服务配置。",
     "quiz": {
-      "question": "可以把默认开发服务器直接当生产服务器吗？",
+      "question": "开发服务器主要用于哪个阶段？",
       "options": [
         {
-          "label": "通常不应，应使用面向生产的构建与服务配置",
+          "label": "本地开发和联调",
           "correct": true
         },
         {
-          "label": "可以，本地能打开就够了",
+          "label": "长期生产托管",
           "correct": false
         },
         {
-          "label": "只需隐藏端口号",
+          "label": "数据库冷备份",
           "correct": false
         }
       ],
-      "success": "开发体验与生产要求不同。",
-      "retry": "公网安全和容量不能省略。"
+      "success": "开发服务器为本地开发循环提供快速反馈。",
+      "retry": "生产托管需要独立的稳定性和安全配置。"
     },
     "prompt": {
-      "title": "检查本地开发服务",
-      "text": "列出监听目录、转换步骤、更新通道、代理配置和仅限本地的假设，标出不能带到生产的设置。"
+      "title": "排查开发服务",
+      "text": "检查 localhost 的监听地址、端口、文件怎么处理、更新连接和代理规则，看错误会出现在哪里，再想想哪些做法只在本机成立、放到公网就会出问题。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/",
-        "label": "Vite 官方文档 · guide",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Guide",
+        "note": "本地开发服务器、请求和构建入口"
       },
       {
         "url": "https://vite.dev/guide/features",
-        "label": "Vite 官方文档 · features",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Features",
+        "note": "按需转换、CSS 和模块更新"
+      },
+      {
+        "url": "https://webpack.js.org/configuration/dev-server/",
+        "label": "webpack 官方文档 · devServer",
+        "note": "监听、代理、静态资源和热更新配置"
+      },
+      {
+        "url": "https://nodejs.org/api/http.html",
+        "label": "Node.js 官方文档 · HTTP",
+        "note": "本地 HTTP 服务、请求与响应"
       }
     ]
   },
