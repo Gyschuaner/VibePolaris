@@ -8787,38 +8787,38 @@
   },
   {
     "slug": "interpreter",
-    "lead": "代码逐步运行时，变量x为什么会从空变成1再变成3？",
-    "definition": "解释器在运行时读取程序表示并执行其操作，常在遇到语句或字节码时立即更新程序状态。",
-    "boundary": "解释执行不等于逐行翻译文本；现代运行时可能先生成字节码或再即时编译。",
+    "lead": "代码逐步运行时，变量 x 为什么会从未赋值变成 1，再变成 3？",
+    "definition": "解释器拿到源代码或字节码这样的程序，一条一条执行其中的指令，每执行一步就更新程序状态；现代运行时也可能先生成字节码或即时编译。",
+    "boundary": "解释器不等于把源码逐行翻译成另一种语言。区分解释和编译，看的是程序什么时候开始执行、是不是先产出一个完整的目标程序再运行。指令指针记录当前执行到哪条指令，不是读到第几行源码；中间有没有生成过字节码，也不是判断标准。脚本仍需要对应的解释器或运行时才能开始执行。",
     "sceneKind": "terminal",
     "sceneTitle": "解释执行时的指令指针与变量表",
     "actionLabel": "单步执行",
     "actors": [
       {
         "id": "code",
-        "label": "程序",
-        "detail": "x=1; x=x+2; print(x)",
+        "label": "程序指令",
+        "detail": "源码 → 指令",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "pointer",
         "label": "指令指针",
-        "detail": "第0条",
+        "detail": "指向第一条指令",
         "icon": "clock",
         "group": "控制"
       },
       {
         "id": "vars",
         "label": "变量表",
-        "detail": "x 未定义",
+        "detail": "x 尚未赋值",
         "icon": "database",
         "group": "状态"
       },
       {
         "id": "console",
         "label": "控制台",
-        "detail": "空",
+        "detail": "等待输出",
         "icon": "code",
         "group": "输出"
       }
@@ -8846,7 +8846,7 @@
     "frames": [
       {
         "label": "尚未执行",
-        "note": "指针在第0条，变量表为空。",
+        "note": "解释器先把源码变成一条条可执行的指令；指针指向第一条，变量 x 尚未赋值。",
         "activeIds": [
           "code",
           "pointer"
@@ -8856,14 +8856,14 @@
           "console"
         ],
         "values": {
-          "pointer": "0",
-          "vars": "x = 未定义"
+          "pointer": "0 · 指令",
+          "vars": "x = 未赋值"
         },
         "activeEdgeIds": []
       },
       {
         "label": "第一步赋值",
-        "note": "执行x=1，指针和变量同时推进。",
+        "note": "第一步赋值：执行 x = 1。等号的意思是把它右边的 1 写进 x；执行完，指针移到下一条指令，变量表记下 x = 1。",
         "activeIds": [
           "pointer",
           "vars"
@@ -8875,7 +8875,7 @@
           "console"
         ],
         "values": {
-          "pointer": "1",
+          "pointer": "1 · 下一条",
           "vars": "x = 1"
         },
         "activeEdgeIds": [
@@ -8885,7 +8885,7 @@
       },
       {
         "label": "第二步计算",
-        "note": "执行x=x+2，变量改为3。",
+        "note": "读取旧值 1，加 2，再把结果写回 x；如果某条指令出了问题（比如用了从未赋值的变量），错误会在执行到它时出现，之前改好的状态不会自动退回。",
         "activeIds": [
           "pointer",
           "vars"
@@ -8897,7 +8897,7 @@
           "console"
         ],
         "values": {
-          "pointer": "2",
+          "pointer": "2 · 下一条",
           "vars": "x = 3"
         },
         "activeEdgeIds": [
@@ -8906,7 +8906,7 @@
       },
       {
         "label": "第三步打印",
-        "note": "读取当前x，控制台出现3。",
+        "note": "解释器读取当前的 x，控制台出现 3；脚本要先有对应的运行时才能走到这里。",
         "activeIds": [
           "pointer",
           "vars",
@@ -8917,7 +8917,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "pointer": "3",
+          "pointer": "3 · 完成",
           "console": "3"
         },
         "activeEdgeIds": [
@@ -8925,40 +8925,50 @@
         ]
       }
     ],
-    "insight": "解释执行强调运行时状态如何被指令推进，不等于永远逐行处理原始文本。",
+    "insight": "解释器让程序在运行时逐步执行可执行指令并更新状态；它不等于逐行翻译原始文本，也不排斥先有字节码或即时编译。",
     "quiz": {
-      "question": "解释器能否先把源码变成字节码再执行？",
+      "question": "区分解释器和编译器，最有用的判断是什么？",
       "options": [
         {
-          "label": "可以，现代运行时常混合多种阶段",
+          "label": "看程序什么时候开始执行、是不是先产出一个完整的目标程序再运行",
           "correct": true
         },
         {
-          "label": "不可以，否则就一定是编译器",
+          "label": "看运行过程中有没有生成过字节码",
           "correct": false
         },
         {
-          "label": "只有浏览器能这样做",
+          "label": "看程序是不是在浏览器里运行",
           "correct": false
         }
       ],
-      "success": "编译与解释不是简单互斥。",
-      "retry": "要看实际执行机制。"
+      "success": "执行时机和交付结果比“是否有字节码”更能说明边界。",
+      "retry": "现代运行时可能混合多个阶段，别把字节码当成唯一标准。"
     },
     "prompt": {
-      "title": "演示一段解释执行",
-      "text": "选择三行代码，逐步记录指令位置、变量表、调用栈和输出，不用“逐行翻译”代替机制。"
+      "title": "观察一次解释执行",
+      "text": "选择三条代码，记录源码怎样变成指令或字节码、指针停在哪条指令、变量状态、错误出现的位置和输出。"
     },
     "sources": [
       {
         "url": "https://docs.python.org/3/reference/executionmodel.html",
-        "label": "Python 官方文档 · executionmodel",
-        "note": "原始规范与实现说明"
+        "label": "Python 官方文档 · Execution model",
+        "note": "代码块、名字绑定和执行上下文"
       },
       {
         "url": "https://docs.python.org/3/library/dis.html",
         "label": "Python 官方文档 · dis",
-        "note": "原始规范与实现说明"
+        "note": "字节码指令与反汇编观察"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html",
+        "label": "ECMA-262 · Executable Code and Execution Contexts",
+        "note": "执行上下文、环境记录与代码执行"
+      },
+      {
+        "url": "https://www.lua.org/manual/5.4/manual.html",
+        "label": "Lua 5.4 Reference Manual",
+        "note": "Lua 程序、虚拟机和运行时语义"
       }
     ]
   },

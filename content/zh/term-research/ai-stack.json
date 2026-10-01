@@ -700,14 +700,16 @@
   },
   {
     "slug": "interpreter",
-    "mechanism": "解释器在运行时读取程序表示并执行其操作，常在遇到语句或字节码时立即更新程序状态。",
-    "misconception": "解释执行不等于逐行翻译文本；现代运行时可能先生成字节码或再即时编译。",
-    "demoSignature": "输入：x=1; x=x+2; print(x)；中间：指令指针0→1→2，变量x从无→1→3；输出：控制台打印3。可视化：建议4帧的代码高亮与变量表同步；交互：单步按钮推进一条指令。",
+    "mechanism": "解释器拿到源代码或字节码这样的程序，一条一条执行其中的指令，每执行一步就更新程序状态；现代运行时也可能先生成字节码或即时编译。",
+    "misconception": "解释器不等于把源码逐行翻译成另一种语言，也不能用“有没有字节码”一刀切；要看执行时机、是否先交付完整目标程序和运行时边界。",
+    "demoSignature": "输入：x=1; x=x+2; print(x)；中间：源码变成指令/字节码，指针指向第一条→下一条，变量x未赋值→1→3；输出：解释器读取x并打印3。错误分支：某条指令出错时在执行到它时报告，之前状态不自动撤销。可视化：源码到指令、指针、变量表同步；交互：单步推进并查看错误位置。",
     "sourceUrls": [
       "https://docs.python.org/3/reference/executionmodel.html",
-      "https://docs.python.org/3/library/dis.html"
+      "https://docs.python.org/3/library/dis.html",
+      "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html",
+      "https://www.lua.org/manual/5.4/manual.html"
     ],
-    "rewriteRisk": "避免用“编译器一次性、解释器逐行”作绝对划分，现代实现常混合两者。",
+    "rewriteRisk": "避免用“编译器一次性、解释器逐行”作绝对划分；说明源码、字节码、执行上下文和即时编译可以组合出现。",
     "nearDuplicates": [
       "compiler",
       "transpiler"
