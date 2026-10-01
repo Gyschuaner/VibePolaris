@@ -1503,8 +1503,8 @@
   {
     "slug": "tokenization",
     "lead": "删掉一个空格，为什么模型收到的编号数量也可能变化？",
-    "definition": "分词器把字符串切成模型词表中的 token 编号，模型实际接收的是编号序列而不是原始字符。",
-    "boundary": "一个 token 不是固定一个字或一个单词；不同语言、空格和分词器都会改变数量。",
+    "definition": "分词器使用特定模型预先准备的词表和编码规则，把原始字符串切成 token（词、半个词、空格或符号等片段），再映射为模型接收的编号序列。",
+    "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、模型版本和 tokenizer 都可能改变切分，示例编号不能跨模型套用。",
     "sceneKind": "transform",
     "sceneTitle": "字符串怎样变成 token 编号",
     "actionLabel": "编辑原字符串",
@@ -1519,14 +1519,14 @@
       {
         "id": "cuts",
         "label": "切分结果",
-        "detail": "5 个 token（示意）",
+        "detail": "5 个 token（示意：词、半词、空格或符号片段）",
         "icon": "layout",
         "group": "切分"
       },
       {
         "id": "ids",
         "label": "编号序列",
-        "detail": "[6212, 220, …]",
+        "detail": "[示意编号…]",
         "icon": "code",
         "group": "模型输入"
       },
@@ -1560,8 +1560,8 @@
     ],
     "frames": [
       {
-        "label": "字符不是token",
-        "note": "先显示原字符串的7个可见字符。",
+        "label": "字符不是 token",
+        "note": "原字符串一共有 7 个字符，包括中间那个空格。",
         "activeIds": [
           "text"
         ],
@@ -1576,8 +1576,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "编码器切分",
-        "note": "切分边界落下，得到示意5块。",
+        "label": "分词器切分",
+        "note": "按词表切成示意的 5 个片段；片段可能是词、半个词、空格或符号。",
         "activeIds": [
           "cuts"
         ],
@@ -1597,7 +1597,7 @@
       },
       {
         "label": "变成编号",
-        "note": "每个块查词表后成为模型接收的编号。",
+        "note": "每个片段查词表后成为模型接收的编号；编号大小只在这套 tokenizer 中有意义。",
         "activeIds": [
           "ids"
         ],
@@ -1617,7 +1617,7 @@
       },
       {
         "label": "空格改变边界",
-        "note": "删除空格后重新编码，示意数量变为4。",
+        "note": "删除空格后要重新编码，片段可能合并或改换边界，不保证只少一个 token。",
         "activeIds": [
           "edited",
           "cuts",
@@ -1637,9 +1637,9 @@
         ]
       }
     ],
-    "insight": "token取决于具体编码器和文本形态，不能固定等同于一个字或一个单词。",
+    "insight": "token 数取决于具体的分词器和文本形态，不能一概等同于一个字或一个单词。",
     "quiz": {
-      "question": "怎样最准确地估算一次请求的token？",
+      "question": "怎样最准确地估算一次请求的 token 数？",
       "options": [
         {
           "label": "使用目标模型对应的分词器编码",
@@ -1654,23 +1654,38 @@
           "correct": false
         }
       ],
-      "success": "不同编码器会给出不同切分。",
+      "success": "不同分词器会给出不同的切分。",
       "retry": "字符数只能粗估，不能替代实际编码。"
     },
     "prompt": {
-      "title": "检查一段输入的token",
-      "text": "使用目标模型对应的编码器分别统计原文、系统提示和工具结果，并记录空格或格式变化后的差异。"
+      "title": "检查一段输入的 token",
+      "text": "使用目标模型对应的 tokenizer 分别统计原文、系统提示和工具结果，并记录空格、格式和模型版本变化。"
     },
     "sources": [
       {
         "url": "https://github.com/openai/tiktoken",
-        "label": "开放规范仓库 · tiktoken",
-        "note": "原始规范与实现说明"
+        "label": "OpenAI · tiktoken",
+        "note": "BPE tokenizer 与 token ID"
       },
       {
         "url": "https://arxiv.org/abs/1508.07909",
-        "label": "原始论文 · 1508.07909",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Neural Machine Translation of Rare Words",
+        "note": "subword 与 BPE"
+      },
+      {
+        "url": "https://arxiv.org/abs/1808.06226",
+        "label": "arXiv · SentencePiece",
+        "note": "语言无关分词"
+      },
+      {
+        "url": "https://huggingface.co/learn/llm-course/en/chapter2/4",
+        "label": "Hugging Face · Tokenizers course",
+        "note": "tokenization 与 IDs"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+        "label": "Anthropic · Token counting",
+        "note": "按目标模型计数"
       }
     ]
   },
