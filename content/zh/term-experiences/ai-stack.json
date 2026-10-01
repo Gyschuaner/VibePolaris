@@ -2960,8 +2960,8 @@
   {
     "slug": "tool-result",
     "lead": "库存工具返回stock=0后，最终回答是怎样从“有货”切成“缺货”的？",
-    "definition": "工具执行后的结构化结果被送回模型或应用，成为下一步判断的可观测状态；错误、空结果和元数据也属于结果。",
-    "boundary": "工具结果不是最终回答，模型还可能误读它；应用应保留状态码、来源和校验信息。",
+    "definition": "工具执行后返回结构化数据、错误和元信息；应用用关联标识（例如 call_id）把结果对回发起它的那次调用，再决定下一步状态或回答。",
+    "boundary": "HTTP 状态表示传输是否处理成功，不等于业务成功；结构正确也不等于事实可信。应用还要检查业务字段、来源、时效、权限、空结果和部分完成。",
     "sceneKind": "state-machine",
     "sceneTitle": "原始结果字段驱动回答状态",
     "actionLabel": "修改 stock 值",
@@ -2969,14 +2969,14 @@
       {
         "id": "call",
         "label": "库存查询",
-        "detail": "sku=K7",
+        "detail": "call_id=inv-7 · sku=K7",
         "icon": "gear",
         "group": "请求"
       },
       {
         "id": "raw",
         "label": "原始结果",
-        "detail": "{stock:0,status:200}",
+        "detail": "{call_id:inv-7, stock:0, status:200}",
         "icon": "code",
         "group": "工具"
       },
@@ -3018,7 +3018,7 @@
     "frames": [
       {
         "label": "查询发出",
-        "note": "sku参数进入库存工具。",
+        "note": "应用发出库存查询，并记下 call_id=inv-7，方便把返回结果对回这次请求。",
         "activeIds": [
           "call"
         ],
@@ -3029,13 +3029,13 @@
           "answer"
         ],
         "values": {
-          "call": "K7"
+          "call": "inv-7 · K7"
         },
         "activeEdgeIds": []
       },
       {
         "label": "结果返回",
-        "note": "HTTP成功只表示查询完成，stock字段为0。",
+        "note": "HTTP 状态 200 只表示请求被处理；stock=0 才是业务字段。",
         "activeIds": [
           "raw"
         ],
@@ -3055,7 +3055,7 @@
       },
       {
         "label": "状态翻转",
-        "note": "解释层读取stock=0，把回答状态从未知改为缺货。",
+        "note": "应用的解释层读取 stock=0，把回答状态从未知改为缺货；结果还要经过来源和时效检查。",
         "activeIds": [
           "state"
         ],
@@ -3075,7 +3075,7 @@
       },
       {
         "label": "生成措辞",
-        "note": "最终回答说明暂时缺货，而不是把200误读成有货。",
+        "note": "最终回答说明暂时缺货，而不是把 200 误读成有货；错误、空结果、过期数据或部分完成应走失败分支。",
         "activeIds": [
           "answer"
         ],
@@ -3095,7 +3095,7 @@
     ],
     "insight": "工具结果是下一步的可观测状态，不是最终答案；状态码和业务字段要分别解释。",
     "quiz": {
-      "question": "接口返回HTTP 200且stock=0，应怎样回答？",
+      "question": "HTTP 状态 200 且 stock=0，应怎样回答？",
       "options": [
         {
           "label": "查询成功，但商品缺货",
@@ -3106,7 +3106,7 @@
           "correct": false
         },
         {
-          "label": "忽略stock只复述状态码",
+          "label": "忽略 stock，只复述状态码",
           "correct": false
         }
       ],
@@ -3115,18 +3115,33 @@
     },
     "prompt": {
       "title": "检查一次工具结果处理",
-      "text": "列出成功、空结果、业务失败和超时四类返回，说明每个字段怎样改变下一步状态和用户措辞。"
+      "text": "请把一次工具返回拆成关联标识、传输状态、业务数据、错误、时间和来源，并说明每种组合如何改变下一步状态与用户措辞。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/function-calling",
-        "label": "OpenAI 官方文档 · function calling",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-call-outputs",
+        "label": "OpenAI · Function calling · tool call outputs",
+        "note": "call_id 与 function_call_output"
       },
       {
-        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-        "label": "MCP 规范 · tools",
-        "note": "协议角色与消息行为"
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result",
+        "label": "MCP · Tools specification · tool result",
+        "note": "structuredContent 与 isError"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "label": "Anthropic · Tool use with Claude",
+        "note": "应用执行并回传结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2210.03629",
+        "label": "arXiv · ReAct",
+        "note": "action/observation 状态循环"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok",
+        "label": "IETF · RFC 9110 HTTP Semantics",
+        "note": "HTTP 200 与业务字段"
       }
     ]
   },
