@@ -80,13 +80,13 @@ export function ValidationTermPage() {
     </ArticleSection>
     <ArticleSection id="check" title="逐条解释验证结果"><Legacy slug="data-validation" names={["scene-heading"]}/>
       <p>本页把“校验”按钮当作一次验证运行。类型要求始终启用，年龄范围与城市名单可以开关。<strong>一条记录只有所有已启用的规则都通过，才会计入“通过当前规则”；未启用或“不适用”既不算通过，也不算失败。关闭规则只改变这次检查的范围，不会把原值改得更合理。</strong>SH / BJ 只是本站示例允许的两个代码，不是完整城市标准。默认只有 A 通过；关闭范围规则后，B 的 −2 并没有变成合理年龄，只是这次不再检查它。</p>
-      <p>教学演示固定使用快照 s1：A 的 age 是数字 24、city 是 "SH"；B 的 age 是 −2、city 是 "SH"；C 的 age 是 37、city 是 "??"；D 的 age 是字符串 "24"、city 是 "BJ"。age 必须为整数；年龄范围限定 0–120，城市代码只允许 SH / BJ；这两条规则可以分别开关。运行前只显示这四条输入，运行后才显示按当前规则算出的报告。字符串 "24" 不能直接按数字比较范围；类型检查失败后，范围检查显示“不适用”，因为没有可比较的数字。本例没有字段缺失或 `null`，所以不会显示这两类情况的结果。</p>
+      <p>教学演示固定使用一组示例数据（快照 s1），检查全在浏览器里完成，不会连接验证服务：A 的 age 是数字 24、city 是 "SH"；B 的 age 是 −2、city 是 "SH"；C 的 age 是 37、city 是 "??"；D 的 age 是字符串 "24"、city 是 "BJ"。age 必须为整数；年龄范围限定 0–120，城市代码只允许 SH / BJ；范围和城市这两条规则可以分别开关。运行前只显示这四条输入，运行后才显示按当前规则算出的报告。字符串 "24" 是文本值，机器看到的不是数字 24；范围规则只能比较数字，类型检查失败后，范围检查显示“不适用”，因为没有可比较的数字。本例没有字段缺失或 `null`，所以不会显示这两类情况的结果。</p>
+      <p><strong>失败不一定意味着删除整条记录。</strong>可以拒绝本次输入、隔离并修复，或按明确规则允许部分处理。本页统一把失败记录称作“待处理”；实验结果区域用“隔离”标记这批待处理记录，表示暂不进入后续使用，原值和失败原因仍保留，不代表删除或自动修复。如果后续只使用通过的记录，应同时报告待处理的数量和原因。</p>
       <ValidationLesson/>
       <p>演示按固定快照 s1 重新计算，不运行 JSON Schema、SHACL 或远端验证服务。修改规则会收起旧报告，重新运行才得到对应结果。点击“恢复默认校验”会把两个开关重新打开，并收起旧报告；它重置的是本轮演示状态，不会修改输入快照。</p>
-      <p><strong>失败不一定意味着删除整条记录。</strong>可以拒绝本次输入、隔离并修复，或按明确规则允许部分处理。本页统一把失败记录称作“待处理”；实验结果区域用“隔离”标记这批待处理记录，表示暂不进入后续使用，不代表删除。如果后续只使用通过的记录，应同时报告待处理的数量和原因。</p>
     </ArticleSection>
     <ArticleSection id="report" title="报告要指向具体字段"><Legacy slug="data-validation" names={["quiz-heading"]}/>
-      <p id="validation-report" className="vp-citation-target">W3C 的 SHACL 是针对 RDF 图的规则语言，RDF 图用节点和属性关系表示数据；它的验证报告可以记录相关节点、属性路径、值与失败约束。这里借鉴的是“报告要能定位”的结构，并没有把 SHACL 当作 JSON 验证器。<strong>“有三条错误”只能告诉你规模；记录、字段、原值与规则才能帮助处理。</strong><Cite id="validation-report"/></p>
+      <p id="validation-report" className="vp-citation-target">W3C 的 SHACL 是针对 RDF 图的规则语言，RDF 图用节点和属性关系表示数据；它的验证报告可以记录相关节点、属性路径、值与失败约束。这里借鉴的是“报告要能定位”的结构，并没有把 SHACL 当作 JSON 验证器。<strong>说“有三条错误”，只告诉你数量；写明记录、字段、原值和规则，才能处理。</strong><Cite id="validation-report"/></p>
       <div className={s.reportFields}><div><h3>定位问题</h3><code>D → age → &quot;24&quot;</code><p>哪条记录、哪个字段、收到的原始值是什么？保留字符串与数字的区别。</p></div><div><h3>解释判断</h3><code>要求整数 → 类型失败</code><p>哪条规则生效，为什么没有通过？没有启用的规则不能显示成检查通过。</p></div></div>
       <p>每条报告同时列出整数、范围和城市三项检查；同一条记录如果违反多条已启用规则，原因会按字段并列保留，而不是只留一个总数。</p>
       <p id="validation-run" className="vp-citation-target">Great Expectations 是一个数据验证工具。它用 Validation Definition（预先配置的一组验证规则）来检查一批数据；每条 Expectation 是对数据的一个具体要求，运行结果包含每条要求的通过情况与解释信息，报告也可以保存下来。页面上的两个开关只是本例用来改变规则集合的演示控件，不是一个完整的 Validation Definition。<strong>报告属于一份输入与一组规则的这次运行。</strong>重新选择数据或规则，应生成对应结果，不能拿旧报告代替新一轮验证。<Cite id="validation-run"/></p>
@@ -94,7 +94,7 @@ export function ValidationTermPage() {
     <ArticleSection id="boundary" title="通过规则，不代表全部真实" className={base.offset}><Legacy slug="data-validation" names={["prompt-heading"]}/>
       <p>年龄 24 在规定范围内，也可能与本人实际年龄不符。验证不会自动知道未提供的事实，没写进规则的要求它也管不到。<ConceptTerm slug="data-quality">数据质量</ConceptTerm>的判断范围更广，还要考虑来源真实性、遗漏、重复和时效；所有记录都通过当前规则，不代表这些方面也没有问题。</p>
       <ArticleAside title="浏览器里的提示不能代替服务端检查"><p id="validation-boundary" className="vp-citation-target">OWASP 指出客户端检查可以被绕过，服务端必须在处理输入前执行相应验证；两边检查服务于不同目的。这里的“接口”可以理解为服务端接收数据的入口；用户可以不点网页按钮，直接向这个入口发送 `age: &quot;24&quot;`，服务端仍要按自己的规则拒绝或隔离它。浏览器提示帮助用户及时修正，服务端检查守住实际入口；服务端也只能判断已经写进规则的条件，不能凭空证明真实年龄。<strong>本页能让你观察规则的结果，不构成真实系统的数据保护。</strong><Cite id="validation-boundary"/></p></ArticleAside>
-      <p>验证规则需要覆盖必填字段、类型、范围和字段关系，并约定失败后的处理。报告区分未检查、检查失败和检查通过，附上输入范围与规则版本。格式和关系通过以后，现实事实仍需另行核对。</p>
+      <p>验证规则需要覆盖必填字段、类型、范围和字段关系，并约定失败后的处理。报告区分未检查（本次未启用或不适用）、检查失败和检查通过，附上输入范围与规则版本。格式和关系通过以后，现实事实仍需另行核对。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
