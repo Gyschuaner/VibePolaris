@@ -38,26 +38,26 @@ export function RetrievalTermPage() {
 export function ChunkingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={chunkingSources}/>;
   return <ConceptArticle slug="chunking" title="分块" sources={chunkingSources} sections={[["units", "让一篇长文变成可用片段"], ["cuts", "看见切口与重叠"], ["structure", "按结构保留完整意思"], ["evaluation", "块长没有统一答案"]]}
-    intro={<>退款规则里，“审核通过后”和“三个工作日内到账”属于同一个条件句。分块让长文能分段处理，也会改变哪些内容一起被检索、一起进入模型。切口放在哪里，会影响后续理解。</>}
+    intro={<>退款规则里，“审核通过后”和“三个工作日内到账”属于同一个条件句。提问后，系统会从索引里找出相关片段交给模型；模型一次能读的内容有限，分块让长文能分段处理，也会改变哪些内容一起被检索、一起进入模型。切口放在哪里，会影响后续理解。</>}
     hero={<ConceptHero slug="chunking" label="一页退款说明沿段落分成三个片段，到账条件留在同一个片段"><div className={s.chunkHero}><Scissors size={24}/>{['退款申请', '审核通过 → 三个工作日', '打印服务'].map((text, i) => <div key={text} style={{ '--piece': i } as CSSProperties}><FileText size={18}/><strong>{text}</strong></div>)}</div></ConceptHero>}>
     <ArticleSection id="units" title="让一篇长文变成可用片段"><Legacy slug="chunking" names={["question", "definition"]}/>
-      <p><strong>分块是把较长内容切成能独立处理的小片段。</strong>每块可以单独编码、存入索引、参与检索，再按需要取回。它改变的是资料的处理单位，原始文档仍应保存，块也需要能回到原文的位置。</p>
+      <p><strong>分块是把较长内容切成能独立处理的小片段。</strong>每块可以单独编码成可检索的表示、存入索引、参与检索，再按需要取回。它改变的是资料的处理单位，原始文档仍应保存，块也需要能回到原文的位置，以便回答时核对完整语境或标注出处。</p>
       <p id="chunk-purpose" className="vp-citation-target">Azure AI Search 的文档说明，分块既能适应模型输入长度，也能避免用一个表示概括一篇包含多种主题的长文。<strong>能塞进模型，并不代表整篇作为一块就适合检索。</strong>块长需要结合资料结构、问题类型和表示方法决定，不能只用输入上限反推。<Cite id="chunk-purpose"/></p>
-      <p>退款说明还介绍打印服务。整篇一起检索，可能把无关段落带入；切得很细，又可能只取回“通常三个工作日”，丢失“线上退款审核通过后”。这两种问题需要一起考虑。</p>
+      <p>退款说明还介绍打印服务。整篇一起检索，可能把无关段落带入；切得很细，又可能只取回“通常三个工作日”，丢失“线上退款审核通过后”，模型就可能把有条件的时效写成无条件承诺。这两种问题需要一起考虑。</p>
     </ArticleSection>
     <ArticleSection id="cuts" title="看见切口与重叠"><Legacy slug="chunking" names={["scene-heading"]}/>
       <p>先保留原文，再按字符或段落切分。点击一个块，它在原文中的区间会被标出。字符模式使用 Unicode 码点计数，包含换行；重叠让相邻块共享一段内容。这里的“字符”不是模型使用的 <ConceptTerm slug="token">Token</ConceptTerm>。</p>
       <ChunkingLesson/>
-      <p>24 字符、重叠 8 字符时，完整到账条件句没有落在任何一个块里。改成按段落，条件句保留在到账段落中。<strong>重叠能缓解边缘信息丢失，也会重复取回内容。</strong>重复字符数量只是本例的覆盖统计，不能当成检索质量分数。</p>
-      <p id="chunk-size" className="vp-citation-target">LangChain 的递归切分器按一组分隔符逐级拆分，尽量保留较完整的文本结构，再约束块长和目标重叠。<strong>长度单位与切分方法必须一起说明。</strong>本页的固定字符切分是更简单的教学方法，没有执行它的递归算法；按段落模式也没有额外限制段落长度。<Cite id="chunk-size"/></p>
+      <p>24 字符、重叠 8 字符时，完整到账条件句没有落在任何一个块里；重叠长度小于这句时，边缘信息仍可能接不上。改成按段落，条件句保留在到账段落中。<strong>重叠能缓解边缘信息丢失，也会重复取回内容。</strong>重复字符数量只是本例的覆盖统计，不能当成检索质量分数。</p>
+      <p id="chunk-size" className="vp-citation-target">LangChain 的递归切分器按一组分隔符逐级拆分，尽量保留较完整的文本结构，再约束块长和目标重叠。<strong>长度单位与切分方法必须一起说明。</strong>本页的固定字符切分按 Unicode 码点计数，不等于模型 Token 数；页面上的 24 只是代码计数示例，不能直接当成模型输入长度。本页没有执行递归算法；按段落模式也没有额外限制段落长度。<Cite id="chunk-size"/></p>
     </ArticleSection>
     <ArticleSection id="structure" title="按结构保留完整意思"><Legacy slug="chunking" names={["quiz-heading"]}/>
-      <p id="chunk-structure" className="vp-citation-target">Unstructured 先根据文档格式识别标题、正文和表格等元素，再组合成块；过长元素仍可能进一步拆分。它的 by_title 策略还会利用章节边界。<strong>结构可以帮助选择切口，不能保证每块都有完整语义。</strong>跨段落的指代、条件和表格说明，仍要检查是否被分开。<Cite id="chunk-structure"/></p>
+      <p id="chunk-structure" className="vp-citation-target">Unstructured 先根据文档格式识别标题、正文和表格等元素，再组合成块；过长元素仍可能进一步拆分。它的 by_title 策略还会利用章节边界。<strong>结构可以帮助选择切口，不能保证每块都有完整语义。</strong>例如某段开头的“它”指向上一段的对象，切开后模型可能不知道“它”是谁；跨段落的指代、条件和表格说明，仍要检查是否被分开。<Cite id="chunk-structure"/></p>
       <p id="chunk-language" className="vp-citation-target">LangChain 的文档特别讨论了没有空格分词的语言，可以补充中文标点等分隔符，减少不合适的切口。<strong>同一套分隔符不能直接假定适合所有语言。</strong>处理中文、代码或表格时，应使用对应样例验证，而不是只看块的平均长度。<Cite id="chunk-language"/></p>
       <p id="chunk-provenance" className="vp-citation-target">Unstructured 的块可以保留原始元素信息，让下游追溯到分块前的材料。<strong>片段需要带着出处一起走。</strong>本例使用原文字符区间；实际系统还应保留文档编号、版本和章节位置，便于展示上下文、更新索引或撤回过期内容。<Cite id="chunk-provenance"/></p>
     </ArticleSection>
     <ArticleSection id="evaluation" title="块长没有统一答案" className={s.chunkClosing}><Legacy slug="chunking" names={["prompt-heading"]}/>
-      <p id="chunk-evaluation" className="vp-citation-target">Chroma 的分块研究按相关文本片段衡量检索覆盖，并考虑带入的无关或重复内容。它使用有限的语料和生成的查询、相关片段，不能证明某个块长普遍最优。<strong>应拿自己的资料和问题比较切分方案。</strong>既看关键依据能否被找到，也看是否取回大量干扰，以及后续回答是否保留了条件。<Cite id="chunk-evaluation"/></p>
+      <p id="chunk-evaluation" className="vp-citation-target">Chroma 的分块研究按相关文本片段衡量检索覆盖，并考虑带入的无关或重复内容。短且主题单一、能放进模型输入的内容可以先不切；长文则没有一套普遍最优的块长。它使用有限的语料和生成的查询、相关片段，不能直接推广到所有资料。<strong>应拿自己的资料和问题比较切分方案：</strong>列几个真正会问的问题，换几种切法，看哪种能取到必要句子、少带无关内容，并保留回答条件。<Cite id="chunk-evaluation"/></p>
       <ArticleAside title="长度、完整性与出处一起验收"><p>先选几条跨句条件、表格说明和跨段落指代。比较不同切口与重叠，检查需要的材料是否仍在同一块或能一起取回，再接入 <ConceptTerm slug="retrieval">检索</ConceptTerm>。有结构的段落也可能过长，需要继续拆分与补充上下文。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
