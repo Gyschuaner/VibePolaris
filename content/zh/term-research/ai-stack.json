@@ -840,14 +840,16 @@
   },
   {
     "slug": "semantic-versioning",
-    "mechanism": "语义化版本用主版本、次版本、修订号表达不兼容变更、向后兼容功能和向后兼容修复。",
-    "misconception": "版本号能表达发布者的兼容承诺，却不能自动证明软件真的兼容或质量更高。",
-    "demoSignature": "输入：当前1.4.2，分别发生修复、新增兼容API、删除旧API；中间：候选变为1.4.3/1.5.0/2.0.0；输出：三类变更落到对应版本。可视化：建议4帧的三段数字翻牌；交互：选择变更类型生成下一版本。",
+    "mechanism": "语义化版本把版本写成 MAJOR.MINOR.PATCH：不兼容的公开 API 变化升 MAJOR，兼容功能新增升 MINOR，兼容缺陷修复升 PATCH。",
+    "misconception": "版本号是发布者对公开 API 兼容性的声明；它不会自动验证实现是否真的兼容，代码改动大小也不直接决定版本段。",
+    "demoSignature": "输入：当前 1.4.2，分别发生兼容修复、兼容功能新增、删除公开 API；中间：读者先识别旧调用是否仍能工作，再得到 1.4.3、1.5.0 或 2.0.0；输出：变更类型与版本段一一对应。可视化：四帧展示三段版本号和一条迁移提示；交互：选择变更类型生成下一版本。",
     "sourceUrls": [
-      "https://semver.org/",
-      "https://docs.npmjs.com/about-semantic-versioning"
+      "https://semver.org/spec/v2.0.0.html",
+      "https://docs.npmjs.com/about-semantic-versioning",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://nodejs.org/learn/getting-started/an-introduction-to-the-npm-package-manager"
     ],
-    "rewriteRisk": "要说明SemVer依赖公开API定义，不能把每次大改都机械升主版本。",
+    "rewriteRisk": "要先解释公开 API、兼容和旧调用，再说明版本段；不要把任何大改动都机械地升 MAJOR，也不要把版本号写成质量保证。",
     "nearDuplicates": [
       "dependency",
       "lockfile"
@@ -855,14 +857,16 @@
   },
   {
     "slug": "lockfile",
-    "mechanism": "锁文件记录一次解析后的精确依赖版本和依赖树信息，使其他环境更容易安装出同一组合。",
-    "misconception": "它不是依赖声明的替代品，也不能保证跨平台产物逐字节相同。",
-    "demoSignature": "输入：package声明A为^1.2.0；中间：解析可选1.2.0/1.3.1后锁定1.3.1及B=2.0.4；输出：两台机器均安装A1.3.1。可视化：建议4帧的版本漏斗与锁扣；交互：删除锁文件后重新解析观察版本是否漂移。",
+    "mechanism": "依赖清单声明允许的版本范围，锁文件记录包管理器解析后的确切版本、传递依赖和完整依赖树，安装命令可以复用这份结果。",
+    "misconception": "清单和锁文件承担不同职责：清单描述想要的范围，锁文件描述这次实际选中的树；锁文件不等于安全审计，也不锁定脚本和平台差异。",
+    "demoSignature": "输入：package.json 声明 A ^1.2.0；中间：解析器从包仓库候选选 A1.3.1，并展开 B2.0.4；输出：锁文件记录完整树，另一台机器按它装出同一组包，删除或清单不同步后会重新解析，结果可能漂移。可视化：四帧展示范围、解析、写入、复现；交互：切换清单/锁文件路径观察结果。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-      "https://docs.npmjs.com/cli/v11/commands/npm-ci"
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://pnpm.io/lockfile"
     ],
-    "rewriteRisk": "避免声称锁文件解决所有可复现问题；系统库、平台和安装脚本仍会造成差异。",
+    "rewriteRisk": "先解释直接依赖、传递依赖、版本范围和解析，再说明锁文件如何记录结果；不要声称锁文件解决所有可复现或安全问题。",
     "nearDuplicates": [
       "dependency",
       "semantic-versioning"
@@ -870,14 +874,16 @@
   },
   {
     "slug": "monorepo",
-    "mechanism": "单体仓库把多个应用或包放在同一版本库中，并共享变更、工具配置和依赖关系管理。",
-    "misconception": "单体仓库描述的是代码组织方式，不等于单体架构；仓库里可以部署许多独立服务。",
-    "demoSignature": "输入：web、api、ui三个包；中间：修改ui后影响图只标记web和ui为2/3，api不重建；输出：一次提交包含两个相关包。可视化：建议4帧的仓库树与影响波纹；交互：点击改动文件查看受影响包。",
+    "mechanism": "单体仓库把多个应用、共享包或服务放在同一代码仓库，统一管理脚本、依赖和变更，再用应用或包之间的依赖图决定受影响的构建与测试项目。",
+    "misconception": "一个仓库和一个部署单元是两个维度：monorepo 可以包含多个独立服务，影响范围由依赖图决定，而不是由目录是否相邻决定。",
+    "demoSignature": "输入：同一仓库中的 web、ui、api；中间：web 依赖 ui 而 api 不依赖 ui，修改 ui 后影响集合从 1/3 变成 web+ui 的 2/3；输出：相关项目进入重建，api 跳过。可视化：四帧展示仓库容器、依赖边和影响集合；交互：点击包改动查看受影响项目。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/using-npm/workspaces",
-      "https://pnpm.io/workspaces"
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/#workspaces",
+      "https://pnpm.io/workspaces",
+      "https://bazel.build/concepts/build-ref"
     ],
-    "rewriteRisk": "必须明确“一个仓库”和“一个部署单元”的区别，避免与monolith混写。",
+    "rewriteRisk": "先解释一个仓库、多个项目、依赖图和部署单元，再使用“原子提交”“构建策略”等词；避免把 monorepo 与 monolith 混写。",
     "nearDuplicates": [
       "monolith",
       "dependency"
@@ -885,26 +891,30 @@
   },
   {
     "slug": "environment-variable",
-    "mechanism": "环境变量是由进程环境提供的键值对，程序在启动或运行时读取它们来取得配置。",
-    "misconception": "它不是天然安全的密钥库；值可能被子进程、日志、调试器或错误页面泄露。",
-    "demoSignature": "输入：APP_MODE=dev启动进程；中间：进程读取值dev，切到prod后新进程读到prod而旧进程仍为dev；输出：两进程配置不同。可视化：建议4帧的父环境向进程快照复制；交互：修改变量并重启/不重启对比。",
+    "mechanism": "环境变量是进程可以按名称读取的键值对；父环境在启动新进程时复制一份配置，应用从自己的环境副本读取，父环境后续改变不会自动刷新既有进程。",
+    "misconception": "环境变量不是天然安全的密钥库：服务端可由秘密管理系统注入凭据，但前端构建变量可能进入浏览器资源，暴露面取决于读取进程和产物。",
+    "demoSignature": "输入：shell 或容器以 APP_MODE=dev 创建进程；中间：进程读取并保留 dev，父环境改为 prod，旧进程仍为 dev；输出：重新启动的新进程读取 prod，旧/新结果并存。可视化：四帧展示父环境到进程的配置快照；交互：修改变量并比较重启与不重启。",
     "sourceUrls": [
-      "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html",
-      "https://nodejs.org/api/process.html#processenv"
+      "https://nodejs.org/api/process.html#processenv",
+      "https://vite.dev/guide/env-and-mode",
+      "https://nextjs.org/docs/app/guides/environment-variables",
+      "https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/"
     ],
-    "rewriteRisk": "不要建议把敏感值直接写进前端环境变量；要强调暴露面与进程快照。",
+    "rewriteRisk": "先解释父环境、进程副本和重启时机，再讨论秘密注入与前端暴露；不要把“放在环境变量里”写成安全保证。",
     "nearDuplicates": []
   },
   {
     "slug": "source-map",
-    "mechanism": "源映射用映射表把生成代码的位置还原到原始源码的文件、行和列，便于调试和错误定位。",
-    "misconception": "它不会还原执行过程，也可能暴露源码；生产发布是否提供映射需要单独权衡。",
-    "demoSignature": "输入：压缩代码第1行列240报错；中间：映射段把1:240对应到src/app.ts的18:7；输出：调试器跳到原始第18行。可视化：建议3帧的两张代码纸带与定位连线；交互：点击堆栈坐标在两边同步高亮。",
+    "mechanism": "构建工具生成源映射，把生成代码的文件、行列位置对应到原始源码的位置；生成文件通过 sourceMappingURL 指向 map，浏览器调试器读取后可在原始文件上显示错误和设置断点。",
+    "misconception": "源映射只提供位置对照，不会修复错误或改变正在运行的程序；map 可能包含源码路径和内容，公开发布需要单独评估。",
+    "demoSignature": "输入：生成文件 bundle.js 的 1:240；中间：sourceMappingURL 指向本次构建的 map，调试器命中映射条目；输出：跳到 src/app.ts 的 18:7，浏览器仍执行生成代码。可视化：四帧展示生成位置、map 查询、源位置和调试器高亮；交互：点击堆栈坐标在两边同步高亮。",
     "sourceUrls": [
       "https://tc39.es/ecma426/",
-      "https://www.typescriptlang.org/tsconfig/sourceMap.html"
+      "https://www.typescriptlang.org/tsconfig/sourceMap.html",
+      "https://developer.chrome.com/docs/devtools/javascript/source-maps",
+      "https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map"
     ],
-    "rewriteRisk": "映射示例必须包含行和列，不能暗示能恢复未包含的变量名或源码。",
+    "rewriteRisk": "先解释构建后代码、行列坐标、sourceMappingURL 和调试器，再说明发布访问控制；不要暗示 map 能修复错误或恢复未映射的执行过程。",
     "nearDuplicates": [
       "transpiler",
       "bundler"
@@ -912,14 +922,16 @@
   },
   {
     "slug": "linter",
-    "mechanism": "代码检查器按语法树和规则寻找可能的错误、不一致或危险写法，并报告位置与规则编号。",
-    "misconception": "检查器不只是格式工具，也不能证明程序逻辑正确；规则集决定它能发现什么。",
-    "demoSignature": "输入：代码中1个未使用变量和1个恒真条件；中间：语法树遍历命中2条规则，错误计数0→2；输出：行3和行7两条诊断。可视化：建议4帧的语法树扫描光标；交互：逐条启停规则观察诊断消失。",
+    "mechanism": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等源码模式；部分诊断可自动修复，CI 或提交钩子可按严重级别设置门槛。",
+    "misconception": "linter 不是格式化器，也不能证明业务逻辑正确；它能发现什么取决于规则集，关闭规则只会停止相应报告。",
+    "demoSignature": "输入：12 行源码含未使用变量 total 和 if(true)；中间：源码解析为带位置的语法树，两个规则分别命中第 3、7 行；输出：2 条诊断，关闭未使用变量规则后剩 1 条，格式化器只负责排版。可视化：四帧展示解析、规则命中和报告汇总；交互：逐条启停规则观察诊断变化。",
     "sourceUrls": [
       "https://eslint.org/docs/latest/use/core-concepts/",
-      "https://eslint.org/docs/latest/extend/custom-rules"
+      "https://eslint.org/docs/latest/use/configure/rules",
+      "https://typescript-eslint.io/getting-started/",
+      "https://github.com/standard/standard"
     ],
-    "rewriteRisk": "避免与formatter共用“让代码更规范”的空话；要展示规则诊断及不可自动修复项。",
+    "rewriteRisk": "先解释静态检查、语法树、规则和诊断，再区分格式化器、测试与监控；不要把关闭规则写成问题已经消失。",
     "nearDuplicates": [
       "formatter",
       "sast"
@@ -927,27 +939,32 @@
   },
   {
     "slug": "formatter",
-    "mechanism": "格式化器把代码按统一排版规则重写，如缩进、换行和引号，而通常不改变程序含义。",
-    "misconception": "格式化器不负责判断业务逻辑，也不应与发现潜在错误的linter混为一谈。",
-    "demoSignature": "输入：同一数组写成1行92字符；中间：行宽规则80触发，1行拆为4行且语法树保持不变；输出：统一排版代码。可视化：建议3帧的代码折行与AST锁定标记；交互：拖行宽从60到100看断点移动。",
+    "mechanism": "格式化器先读取代码结构，再按固定选项重新打印源码，主要改变缩进、空白、换行和引号等外观，目标是保留程序含义并减少审查排版差异。",
+    "misconception": "格式化器不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或解析器变化仍需要差异检查和测试。",
+    "demoSignature": "输入：一行 92 字符的 5 项数组；中间：读取结构，行宽设为 80 时触发重排，输出 4 行且元素数量与顺序不变；输出：差异主要是排版，但仍需测试验证。可视化：四帧展示输入、结构、重排与验证；交互：调整行宽查看换行变化。",
     "sourceUrls": [
       "https://prettier.io/docs/en/why-prettier",
-      "https://prettier.io/docs/en/options.html"
+      "https://prettier.io/docs/en/options.html",
+      "https://go.dev/blog/gofmt",
+      "https://rust-lang.github.io/rustfmt/"
     ],
-    "rewriteRisk": "不能宣称绝不改变行为；插件或有缺陷的解析器仍需测试，概念层应说“目标是不改变”。",
+    "rewriteRisk": "先解释排版规则、代码结构和行宽选项，再区分 linter、测试与监控；不要宣称格式化绝不会改变行为，也不要把 printWidth 写成硬性上限。",
     "nearDuplicates": [
       "linter"
     ]
   },
   {
     "slug": "expression",
-    "mechanism": "表达式经过求值得到一个值，也可能在求值过程中读取或改变状态；它可以嵌在更大的表达式或语句中。",
-    "misconception": "有运算符不代表就是完整语句；表达式强调会产生值，语句则组织控制流程。",
-    "demoSignature": "输入：(price*2)+tax，其中price=10、tax=3；中间：10*2→20，再20+3→23；输出：表达式值23。可视化：建议4帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算。",
+    "mechanism": "表达式是可以求值并产生一个值的代码片段；它能嵌入赋值、函数调用或条件判断，语句则组织动作和控制流程。求值顺序与副作用由语言规则决定。",
+    "misconception": "有运算符不代表就是完整语句；表达式强调求值结果，语句本身不一定有可用返回值，打印输出也不等于函数返回值。",
+    "demoSignature": "输入：(price * 2) + tax，其中 price=10、tax=3；中间：把表达式看成树，叶子取值，10*2→20，再 20+3→23；输出：把 price 换成 12 后这次求值得到 27。可视化：四帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算，并标注 * 与 × 是同一乘法。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html"
+      "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
+      "https://docs.python.org/3/reference/expressions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators"
     ],
-    "rewriteRisk": "示例应把求值顺序与最终值画清，不要用含多重副作用的复杂代码开场。",
+    "rewriteRisk": "先解释表达式、语句、求值、树的叶子和副作用，再使用调用或条件判断；不要把打印结果写成函数返回值，也不要用复杂副作用示例开场。",
     "nearDuplicates": [
       "function",
       "conditional-branch"
@@ -955,13 +972,16 @@
   },
   {
     "slug": "function",
-    "mechanism": "函数把一段可调用的行为封装起来，接收参数，在独立执行环境中运行，并可产生返回值或副作用。",
-    "misconception": "函数不一定都有返回值，也不一定是纯函数；相同输入是否得到相同输出取决于它读取的状态。",
-    "demoSignature": "输入：add(a,b)与参数2、3；中间：创建调用帧，a=2、b=3，表达式求得5；输出：调用帧弹出并返回5。可视化：建议4帧的调用栈推入弹出；交互：切换纯函数/读取全局变量版本。",
+    "mechanism": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
+    "misconception": "函数不只是可复用代码块，也不保证纯度或固定返回值；它可能读取或修改外部状态、执行 I/O，局部参数只属于本次调用。",
+    "demoSignature": "输入：total = calculate(20, 3)，函数参数为 price、count；中间：调用帧绑定 price=20、count=3，函数体求 price×count=60；输出：返回 60 给 total，调用帧弹出，栈深度 0→1→0。可视化：四帧展示调用、局部绑定、执行、返回；交互：切换读取外部状态的版本比较相同参数的结果。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
+      "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
-    "rewriteRisk": "不要把函数只写成“可复用代码块”；应表现调用、局部绑定和返回。",
+    "rewriteRisk": "先解释定义/调用、形参/实参、局部调用帧和返回值，再使用调用栈、I/O 或纯函数；不要把函数写成必然纯净或必然有返回值。",
     "nearDuplicates": [
       "parameter",
       "return-value",
@@ -970,13 +990,16 @@
   },
   {
     "slug": "parameter",
-    "mechanism": "参数是函数定义中的占位名称；调用时传入的实参会按语言规则绑定到这些名称。",
-    "misconception": "参数和实参不是同一个东西：前者在定义处，后者是某次调用提供的具体值。",
-    "demoSignature": "输入：定义discount(price,rate)，调用discount(100,0.8)；中间：price←100、rate←0.8，两条绑定落入调用帧；输出：函数内部可用这两个值。可视化：建议3帧的定义槽与实参卡对接；交互：交换实参顺序看绑定结果。",
+    "mechanism": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
+    "misconception": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
+    "demoSignature": "输入：定义 discount(price, rate=0.2)，调用 discount(100,0.2)；中间：price←100、rate←0.2，两个实参按位置落入调用帧；变化：调用 discount(100) 时 rate 使用默认值，改成 discount(0.2,100) 时绑定顺序也交换；输出：函数收到的值可能不符合业务含义。可视化：建议5帧展示定义、提供实参、按位置绑定、使用默认值、交换顺序；交互：省略或交换实参观察绑定结果。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
+      "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html#optional-parameters"
     ],
-    "rewriteRisk": "正文统一使用参数/实参术语，避免把默认值、类型和传值方式混成一件事。",
+    "rewriteRisk": "正文先统一使用参数（形参）/实参术语，再解释位置、名称、默认值、必填项和多给的实参；不要把参数当成类型检查，也不要暗示所有语言对缺失或多给实参的处理相同。",
     "nearDuplicates": [
       "function",
       "return-value"
