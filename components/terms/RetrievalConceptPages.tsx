@@ -39,25 +39,25 @@ export function FrameTermPage() {
 export function FullTextTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={textSources}/>;
   return <ConceptArticle slug="full-text-search" title="全文搜索" sources={textSources} sections={[["terms", "把文档整理成可查的词项"], ["postings", "从词项找到文档"], ["analysis", "匹配规则与语言处理"], ["ranking", "命中以后，还要决定顺序"]]}
-    intro={<>读者输入“借阅 续借”，系统要找到相关说明。先把文档中的词项整理成索引，查询时查词项对应的文档，再判断哪些文档满足条件；它不必每次从头读完全部正文。</>}
+    intro={<>读者输入“借阅 续借”，系统要找到相关说明。先按解析规则把文档处理成可检索的词项；系统常把处理结果保存为索引来加速重复查询，但“全文搜索”不等于某一种索引实现。有了索引，查询时就不必每次从头读完全部正文，再按词项找到文档并判断哪些满足条件。</>}
     hero={<ConceptHero slug="full-text-search" label="借阅对应ABE，续借对应ACE，两份文档集合求交得到AE"><div className={s.textHero}><div className={s.heroPosting}><strong>借阅</strong><code>A　B　E</code></div><div className={s.heroPosting}><strong>续借</strong><code>A　C　E</code></div><div className={s.heroMatch}><span>同时包含两词</span><strong>A　E</strong></div></div></ConceptHero>}>
     <ArticleSection id="terms" title="把文档整理成可查的词项"><Legacy slug="full-text-search" names={["question", "definition"]}/>
-      <p id="text-definition" className="vp-citation-target"><strong>全文搜索根据文本查询找到匹配文档，并可按相关性排序。</strong>PostgreSQL 的介绍说明，索引前可以把正文拆成 token，再归一化为适合检索的词项，记录词项与文档的关系。原始文字、处理后的词项与查询条件，各有自己的作用。<Cite id="text-definition"/></p>
-      <p>普通字符串匹配关心一串字符是否出现；全文检索还会按选定的语言处理和查询规则判断词项。比如英文复数可能归并，常见虚词可能被忽略。<strong>能否找到不同写法，不只由输入框决定，还由索引与查询的处理配置决定。</strong></p>
+      <p id="text-definition" className="vp-citation-target"><strong>全文搜索根据文本查询找到匹配文档，并可按相关性排序。</strong>PostgreSQL 的介绍说明，索引前可以把正文拆成 token（切出来的词或片段），再由词典把它们归一成适合检索的词项，例如英文 <code>books</code> 可能按配置归一为 <code>book</code>。原始文字、处理后的词项与查询条件，各有自己的作用；索引里存的不是原文，而是处理后的词项和位置。<Cite id="text-definition"/></p>
+      <p>普通字符串匹配关心一串字符是否出现；全文搜索比较处理后的词项和查询规则，所以字面写法相同不是唯一条件。比如启用词形归一后，搜 <code>book</code> 可能命中 <code>books</code>，而字面匹配未必会。<strong>能否找到不同写法，不只由输入框决定，还由索引与查询的处理配置决定。</strong></p>
     </ArticleSection>
     <ArticleSection id="postings" title="从词项找到文档"><Legacy slug="full-text-search" names={["scene-heading"]}/>
-      <p>五篇教学文档已人工分好词。索引左侧记录“词项 → 文档编号:位置”，如借阅出现在 A 的位置 1、B 的位置 1 和 E 的位置 2。查“借阅 续借”时，AND 求共同文档，OR 求至少包含一个词的文档；相邻短语还需要检查顺序与位置。</p>
+      <p>五篇教学文档编号 A 到 E，已预先分好词。索引左侧记录“词项 → 文档编号:位置”，如借阅出现在 A 的位置 1、B 的位置 1 和 E 的位置 2。记录位置，是为了之后判断两个词是否按顺序相邻。查“借阅 续借”时，AND 求共同文档，OR 求至少包含一个词的文档；相邻短语还要检查顺序与位置。</p>
       <TextLesson/>
-      <p>AND 得到 A、E；OR 得到 A、B、C、E；按输入顺序的相邻短语只得到 A。E 虽包含两词，顺序却相反。输入“预约”查不到词项，结果为空；删除输入则要求先输入词项。<strong>无结果是当前词项和规则下的结论，不等于现实中没有相关信息。</strong></p>
+      <p>AND 得到 A、E；OR 得到 A、B、C、E；相邻短语要求两个词按输入顺序紧挨着出现，所以只得到 A。E 虽包含两词，顺序却相反，不算短语命中。输入“预约”后检索，不会命中任何文档；输入框里没有词项时，删除操作会先收到提示。<strong>无结果是当前词项和规则下的结论，不等于现实中没有相关信息。</strong></p>
       <p id="text-positions" className="vp-citation-target">SQLite FTS5 支持词项组成的短语以及 AND、OR 等布尔条件，并用词项位置表达相邻关系。<strong>“都出现了”与“按顺序相邻”是不同条件。</strong>本例由五份固定词项数组生成倒排记录，仅支持空格分词与三种模式，没有运行 SQLite，也没有模拟完整查询语法。<Cite id="text-positions"/></p>
     </ArticleSection>
     <ArticleSection id="analysis" title="匹配规则与语言处理"><Legacy slug="full-text-search" names={["quiz-heading"]}/>
-      <p id="text-analysis" className="vp-citation-target">PostgreSQL 的文本搜索配置把解析器与词典组合起来，可以控制停用词、词形归一与同义词等处理。<strong>拆出哪些词、哪些词进入索引，需要按实际语言和领域检验。</strong>本页手工分好的中文词项，只用于看清集合与位置；不能把空格拆分当成完整的中文分词方案。<Cite id="text-analysis"/></p>
-      <p id="text-configuration" className="vp-citation-target">Elasticsearch 对 text 字段的 match 查询会分析输入；文档规定 operator 默认是 OR，也可设 AND。<strong>相同输入放到不同默认规则里，可能返回不同集合。</strong>因此本例把模式直接显示出来。新版 match 也可针对语义字段调用推理端点，接口同名不代表底层仍是词项匹配。<Cite id="text-configuration"/></p>
+      <p id="text-analysis" className="vp-citation-target">PostgreSQL 的文本搜索配置把解析器与词典组合起来：解析器负责从文字找出 token，词典再决定哪些词归一、忽略或扩展；像“的”“是”这类停用词可能被忽略。<strong>哪些词进入索引，取决于文本语言和解析设置，需要按领域检验。</strong>本页的中文词项是人工切分的，不代表完整的中文分词；它只用于看清集合与位置。<Cite id="text-analysis"/></p>
+      <p id="text-configuration" className="vp-citation-target">Elasticsearch 对普通 <code>text</code> 字段的 <code>match</code> 查询会分析输入；文档规定 <code>operator</code> 默认是 OR，也可设 AND。<strong>相同输入放到不同默认规则里，可能返回不同集合。</strong>因此本例把模式直接显示出来。若字段是配置了推理端点的语义字段，同名 <code>match</code> 才会走对应的语义处理；接口同名不代表底层仍是词项匹配。<Cite id="text-configuration"/></p>
       <div className={s.columns}><div><h3>关键词与编号</h3><p>书名、作者、错误代码与固定词项，常需要明确匹配、字段限制和可核对的高亮。</p></div><div><h3>意思相近的表达</h3><p>“借书到期怎么办”未必出现“续借”。同义词配置或语义检索可以补充，但要验证实际效果。</p></div></div>
     </ArticleSection>
     <ArticleSection id="ranking" title="命中以后，还要决定顺序" className={base.offset}><Legacy slug="full-text-search" names={["prompt-heading"]}/>
-      <p id="text-ranking" className="vp-citation-target">PostgreSQL 的排序函数可考虑词频、词项接近程度及来源字段权重；文档也指出，相关性依赖应用，可能还要结合修改时间等因素。<strong>匹配决定哪些文档进入结果，排序决定先展示哪一篇。</strong>本页按固定文档编号展示集合，没有计算 BM25 或模拟搜索引擎分数。<Cite id="text-ranking"/></p>
+      <p id="text-ranking" className="vp-citation-target">PostgreSQL 的排序函数可考虑词频、词项接近程度及来源字段权重；文档也指出，相关性依赖应用，可能还要结合修改时间等因素。实际系统常用名为 BM25 的算法综合部分词频和文档长度因素，但具体公式与参数仍按实现核对。<strong>匹配决定哪些文档进入结果，排序决定先展示哪一篇。</strong>本页按固定文档编号展示集合，没有计算 BM25 或模拟搜索引擎分数。<Cite id="text-ranking"/></p>
       <ArticleAside title="更新正文，也要维护可搜索内容"><p>倒排记录来自正文。删除 A 中的“续借”却继续使用旧记录，会让搜索与最新内容不一致。真实系统需要明确索引更新方式、可见时机和重建流程；查到文档后，还要回到正文核对来源与有效版本。</p></ArticleAside>
       <p>设计站内搜索时，先准备真实查询样例，说明字段、语言配置、匹配模式和排序目标。把“应该找到什么”和“应该排除什么”放到一起核对，再决定是否补充 <ConceptTerm slug="vector-database">向量检索</ConceptTerm>。</p>
     </ArticleSection>
