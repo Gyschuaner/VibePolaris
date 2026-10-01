@@ -33,10 +33,10 @@
 | 023 | 基于证据回答、幻觉、评测 | VBP-038 · [初始设计](VBP-038-quality-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
 | 024 | 基准测试、评分器、评测数据集 | VBP-039 · [初始设计](VBP-039-assessment-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
 | 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [初始设计](VBP-040-model-delivery-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
-| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [本批研究与 review](VBP-041-output-concepts.md) |
-| 027 | 服务器、API 网关、反向代理 | VBP-043 · [本批研究与 review](VBP-043-edge-concepts.md) |
-| 028 | 负载均衡、认证、授权 | VBP-044 · [本批研究与 review](VBP-044-access-concepts.md) |
-| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [本批研究与 review](VBP-045-identity-concepts.md) |
+| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [初始设计](VBP-041-output-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 027 | 服务器、API 网关、反向代理 | VBP-043 · [初始设计](VBP-043-edge-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 028 | 负载均衡、认证、授权 | VBP-044 · [初始设计](VBP-044-access-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [初始设计](VBP-045-identity-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
 | 030 | 技能（Agent Skill，单页新增词条，不计入基线完成数） | VBP-046 · [本批研究与 review](VBP-046-skill-concepts.md) |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 95 页，另有 9 页历史基准；其余 197 页待处理，新增候选不计入完成数。
