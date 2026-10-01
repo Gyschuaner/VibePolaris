@@ -5,8 +5,9 @@ import test from "node:test";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("新闻内容模型与最小栏目路由保持可追踪", async () => {
-  const [raw, listPage, detailPage, sitemap, atlas, styles] = await Promise.all([
+  const [raw, contentModule, listPage, detailPage, sitemap, atlas, styles] = await Promise.all([
     read("content/zh/news.json"),
+    read("lib/content.ts"),
     read("app/news/page.tsx"),
     read("app/news/[slug]/page.tsx"),
     read("app/sitemap.ts"),
@@ -15,6 +16,7 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   ]);
   const articles = JSON.parse(raw);
   assert.ok(articles.length >= 2);
+  assert.ok(articles.every((article) => article.isExample === false));
   assert.equal(new Set(articles.map((article) => article.slug)).size, articles.length);
   for (const article of articles) {
     assert.match(article.slug, /^[a-z0-9-]+$/);
@@ -29,7 +31,11 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(detailPage, /generateStaticParams/);
   assert.match(detailPage, /getPublishedTerm/);
   assert.match(sitemap, /newsArticles/);
+  assert.match(contentModule, /filter\(\(article\) => !article\.isExample\)/);
   assert.match(atlas, /data-news-node/);
+  assert.match(atlas, /relatedSlugs: article\.relatedArticleSlugs/);
+  assert.doesNotMatch(atlas, /kind: "term"/);
+  assert.doesNotMatch(atlas, /addEdge\(slug, related\.slug\)/);
   assert.match(atlas, /setDetailOpen\(true\)/);
   assert.match(atlas, /aria-expanded=\{node\.slug === selectedNodeSlug && detailOpen\}/);
   assert.match(atlas, /CaretRight/);
