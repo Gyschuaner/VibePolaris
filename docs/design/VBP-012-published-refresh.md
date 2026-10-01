@@ -2249,3 +2249,42 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 82 条正文提交 `435cc3c`，本轮文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理。`DistributedLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 当前批次进度为 **4/10（第 79—82 条）**，下一条按现有顺序是 `data-ingestion`；前序已发布总计 **78/105**。
+
+## 83 · 数据接入文字复审、确认位置与重读演示本地验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“图书馆借阅记录不断增加时，哪些记录已经可靠写入原始层，下一次应该从哪里继续？写入失败、确认位置未保存、进程重启和重复交付分别会怎样？”读完应能区分数据接入与后续处理，理解批量/流式/微批、连接器、确认位置、偏移量、游标字段与事件身份，解释写入与确认位置的先后关系、重启后的重读、按事件 ID 去重、历史表与最终表、来源/目标核对。
+- 更新 `IngestionTermPage` 的正文文字：补出原始层是接入后的第一个去处，并明确接入完成不等于验证、转换和汇总完成；定义连接器、增量接入、确认位置、连接器偏移量与 Airbyte 游标字段/游标值，说明演示中的同号只是教学映射；从事件日志过渡到表格 `updated_at` 增量读取并说明漏更新风险；补充确认位置需要持久化、写入失败与确认位置不前移、写入后未保存导致重读、同库事务与跨系统去重/核对的边界；用 WAL、稳定事件 ID、主键、历史表/最终表、来源与目标逐行核对解释恢复、重复和验证。
+- `IngestionLesson` 的读取、写入失败、重启重读、成功提交、清空、引用展开与回链继续留在本地/dev；本批次只计划上线正文文字，交互功能不进入生产。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [AWS · What is Data Ingestion?](https://aws.amazon.com/what-is/data-ingestion/) | `ingestion-entry`、`ingestion-modes`：数据接入是把来源数据收集到目标系统的入口，并区分批量、流式和微批方式，接入与后续 ETL/处理步骤有边界。 |
+| [Debezium · PostgreSQL connector — Snapshot, streaming and failures](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) | `ingestion-restart`、`ingestion-cdc`：连接器从 PostgreSQL 一致快照进入流式读取，按行产生提交后的变更事件，并从保存的 WAL 位置继续读取；尚未保存位置的事件可能再次出现。 |
+| [Airbyte · Incremental Sync – Append + Deduped](https://docs.airbyte.com/platform/using-airbyte/core-concepts/sync-modes/incremental-append-deduped) | `ingestion-position`、`ingestion-duplicates`：增量读取使用游标字段和值；Append + Deduped 依靠主键或组合主键保留每个实体最新版本，同时保留历史版本供追溯。 |
+| [AWS DMS · Data validation](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html) | `ingestion-reconcile`：验证按主键/唯一键找到对应目标行并逐行比较，行数一致不足以证明值一致，核对会增加来源库、目标库和网络资源开销。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文和按“操作→当时可见状态”配对的页面材料，未附作者意图、资料链接、源码或旧反馈；材料 `/tmp/vbp083-reader-material.txt` SHA-256 为 `b046aaf613f7f514af4382aabe8e4c456edc4005dc2f799ffb0d2af93bc781f1`，提示词 `/tmp/vbp083-reader-prompt.txt` SHA-256 为 `cacfd2720b4ad92729919ee5f7c0c187e73839cd2238187123ed2819ff973617`，结果 `/tmp/vbp083-reader-result.json` SHA-256 为 `510989a86e75f4997266a4a13c7a5b33c03c648cd8f69b20857e6cde9c534b12`；会话 `sess_8172da92-8c75-4373-bfd3-b26911147d37` 正常完成。reader 指出了确认位置的持久化位置、演示数字与真实偏移量的区别、连接器和事件身份的首次定义、事件日志到 `updated_at` 的过渡、字段映射/来源更新/截断导致的值差异、历史表与最终表、WAL、跨系统提交边界以及可预测的失败/重启/重复分支；主助手逐项核对后补入。
+- 独立 `language` 读取项目内 `vibepolaris-zcode-partner` 与 `humanizer-zh`，并审读当前 `IngestionTermPage`；提示词 `/tmp/vbp083-language-prompt.txt` SHA-256 为 `1c1036d98648552f3b8659ccc2fe63c7721f9d2146168a960731546e20572025`，结果 `/tmp/vbp083-language-result.json` SHA-256 为 `baddb62aee28c9c2dd7bd201233a3487872194ed4fc62feb4abab2a95f9eb944`；会话 `sess_ffcfc550-e2b5-4ca7-8779-d1438a547437` 正常完成。采纳了“保存确认位置”的统一说法、确认位置与重复结果的分开解释、“本例里的提交”范围、事件身份/主键/副作用/增量接入/WAL/CDC 的首次定义、Airbyte 规则和历史/最终表的句法拆分等建议；语言会话未读取 `IngestionLesson` 实现、来源表或官方资料，因此没有把它写成完整交互审查。
+- ZCode 实际读取项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`；用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内可读规则审读，没有把缺失路径冒充为已读取。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。正文变更只在 `components/terms/DataFlowConceptPages.tsx` 的 `IngestionTermPage`，未修改 `DataFlowConceptLessons.tsx`、交互状态机或通用词条注册；正文提交为 `eaed171`。
+- CUA 先在 `http://127.0.0.1:3219/terms/data-ingestion?qa=083baseline` 真实操作并观察基线，再在 `http://127.0.0.1:3219/terms/data-ingestion?qa=083final` 复核最终正文：初始状态确认位置为 0、原始层为空；读取前两条后模拟写入失败，确认位置仍为 0、原始层仍为空；重置后读取并写入但不保存位置，点击重启再读取，原始层保留两条而确认位置仍为 0，说明会重读；最后完成两批写入并保存确认位置，观察到确认位置为 3、原始层为 `loan-1`、`loan-2`、`loan-3` 三个不同事件、暂存为空。最终展开 AWS DMS 引用并点击“接进来以后，还要核对”回链，URL 定位 `#ingestion-reconcile`；截图实际观察了核对段落和正文引用角标。
+- 当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也未把不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存中的三条固定借阅事件，不执行真实数据库、磁盘、连接器、Debezium、Airbyte、DMS 或跨系统事务；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `cebf5a24-e1cf-4f89-9f56-aeb4ceb62031` 已创建并处于 `in_progress`；测试用例 `a67e0ba6-4096-40e3-9c85-f35bb164af4d` 与测试计划 `82d77add-d797-4668-b995-6a67bb68b8b9` 已创建，测试计划保持 `ready`，待第 79—88 条本地验收完成后统一执行，不提前伪造通过结果。按用户要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 83 条正文提交 `eaed171`，本条文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理。`IngestionLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前批次进度为 **5/10（第 79—83 条）**，下一条是 `data-transformation`；前序已发布总计 **78/105**。
