@@ -8049,45 +8049,45 @@
   },
   {
     "slug": "working-memory",
-    "lead": "比价任务从5个候选筛到2个，结束后为什么这叠临时便签要清空？",
-    "definition": "工作记忆保存当前任务正在使用的短期状态，如已完成步骤、临时候选和工具结果，并随任务推进被覆盖或清理。",
-    "boundary": "它不同于跨会话记忆，也不等于模型上下文窗口本身；状态可以存放在应用侧。",
+    "lead": "比价任务筛掉 3 个候选后，智能体为什么还要保留剩下 2 个？",
+    "definition": "工作记忆是当前任务用的临时状态：目标、候选清单、已经查到的结果和下一步要做的事都放在这里，下一步判断时直接能用。",
+    "boundary": "它只服务当前任务；跨会话记忆才保存给下一次聊天用。聊天里说过的话也不会自动全部带到下一步。本例中，承载智能体的程序把预算目标、候选和工具结果保存为工作记忆，下一轮再把需要的内容发给 AI。任务结束后，程序按需要清理；最终结果要不要另行保存，是另一条产品规则。",
     "sceneKind": "state-machine",
-    "sceneTitle": "当前任务状态逐步收缩并销毁",
-    "actionLabel": "逐步回退状态",
+    "sceneTitle": "临时状态怎样更新并清理",
+    "actionLabel": "选择任务阶段",
     "actors": [
       {
         "id": "goal",
         "label": "任务目标",
-        "detail": "低于500元且有货",
+        "detail": "预算 ≤ 500 元 · 现货",
         "icon": "message",
         "group": "目标"
       },
       {
         "id": "candidates",
-        "label": "候选便签",
-        "detail": "5个",
+        "label": "候选清单",
+        "detail": "5 个待筛商品",
         "icon": "memory",
         "group": "临时状态"
       },
       {
         "id": "tools",
-        "label": "工具计数",
-        "detail": "0 / 4",
+        "label": "查价与库存",
+        "detail": "已调用 0 次",
         "icon": "gear",
         "group": "执行"
       },
       {
         "id": "result",
-        "label": "最终候选",
-        "detail": "2个",
+        "label": "交付结果",
+        "detail": "留给用户比较",
         "icon": "spark",
         "group": "结果"
       },
       {
         "id": "cleanup",
         "label": "任务结束",
-        "detail": "清空临时状态",
+        "detail": "清理临时状态",
         "icon": "shield",
         "group": "生命周期"
       }
@@ -8097,19 +8097,25 @@
         "id": "g-c",
         "from": "goal",
         "to": "candidates",
-        "label": "初始化"
+        "label": "先定目标"
       },
       {
         "id": "c-t",
         "from": "candidates",
         "to": "tools",
-        "label": "筛选"
+        "label": "送去查询"
+      },
+      {
+        "id": "t-c",
+        "from": "tools",
+        "to": "candidates",
+        "label": "更新清单"
       },
       {
         "id": "c-r",
         "from": "candidates",
         "to": "result",
-        "label": "收束"
+        "label": "保留"
       },
       {
         "id": "r-cl",
@@ -8120,10 +8126,29 @@
     ],
     "frames": [
       {
-        "label": "状态初始化",
-        "note": "工作记忆只保存当前5个候选和剩余预算。",
+        "label": "目标和候选写入",
+        "note": "当前任务只保留预算、现货要求和 5 个候选；长期偏好不放进这叠临时便签。",
         "activeIds": [
           "goal",
+          "candidates"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "result",
+          "cleanup"
+        ],
+        "values": {
+          "candidates": "5",
+          "tools": "0 次"
+        },
+        "activeEdgeIds": [
+          "g-c"
+        ]
+      },
+      {
+        "label": "按预算筛选",
+        "note": "查价工具返回后，候选从 5 个变成 3 个，调用次数变为 1；结果留在当前任务里，供下一步继续筛选。",
+        "activeIds": [
           "candidates",
           "tools"
         ],
@@ -8133,88 +8158,65 @@
           "cleanup"
         ],
         "values": {
-          "candidates": "5",
-          "tools": "0 / 4"
-        },
-        "activeEdgeIds": [
-          "g-c"
-        ]
-      },
-      {
-        "label": "筛掉超预算",
-        "note": "一次价格工具后，候选5变3，调用计数变1。",
-        "activeIds": [
-          "candidates",
-          "tools"
-        ],
-        "doneIds": [
-          "goal"
-        ],
-        "mutedIds": [
-          "result",
-          "cleanup"
-        ],
-        "values": {
           "candidates": "5 → 3",
-          "tools": "1 / 4"
+          "tools": "1 次"
         },
         "activeEdgeIds": [
-          "c-t"
+          "c-t",
+          "t-c"
         ]
       },
       {
-        "label": "再查库存",
-        "note": "第二次工具调用把候选3变2。",
+        "label": "按库存筛选",
+        "note": "库存工具返回后，候选从 3 个变成 2 个，调用次数变为 2；这 2 个留给用户比较或选择。",
         "activeIds": [
           "candidates",
           "tools",
           "result"
         ],
-        "doneIds": [
-          "goal"
-        ],
+        "doneIds": [],
         "mutedIds": [
           "cleanup"
         ],
         "values": {
           "candidates": "3 → 2",
-          "tools": "2 / 4",
-          "result": "2"
+          "tools": "2 次",
+          "result": "2 个"
         },
         "activeEdgeIds": [
           "c-t",
+          "t-c",
           "c-r"
         ]
       },
       {
-        "label": "任务完成清空",
-        "note": "结果交付后，临时候选和调用计数归零。",
+        "label": "交付后清理",
+      "note": "2 个候选已经交付给用户比较；候选清单和查价、库存的调用次数清掉，目标卡不清，用来说明这 2 个候选按什么条件筛出来。是否把结果另外存起来，按产品规则决定。",
         "activeIds": [
+          "result",
           "cleanup"
         ],
-        "doneIds": [
-          "goal",
-          "result"
-        ],
+        "doneIds": [],
         "mutedIds": [
           "candidates",
           "tools"
         ],
         "values": {
-          "candidates": "0",
-          "tools": "0"
+          "candidates": "清空",
+          "tools": "清空",
+          "result": "2 个已交付"
         },
         "activeEdgeIds": [
           "r-cl"
         ]
       }
     ],
-    "insight": "工作记忆服务于当前任务并有清理时机；它不是跨会话保存偏好的长期记忆。",
+    "insight": "工作记忆让当前任务接得上下一步；任务结束后，临时状态可以清理，交付结果是否另外保存要按产品规则决定。",
     "quiz": {
-      "question": "任务结束后，哪项通常应从工作记忆清除？",
+      "question": "哪项最适合放进这次比价任务的工作记忆？",
       "options": [
         {
-          "label": "这次筛选产生的临时候选",
+          "label": "当前候选清单和查价结果",
           "correct": true
         },
         {
@@ -8222,27 +8224,37 @@
           "correct": false
         },
         {
-          "label": "公开的产品文档",
+          "label": "所有历史对话原文",
           "correct": false
         }
       ],
-      "success": "临时状态完成使命后应销毁。",
-      "retry": "长期偏好属于另一类记忆。"
+      "success": "对，候选和工具结果会影响下一步，所以属于当前任务状态。",
+      "retry": "再想想：这次任务下一步会用到候选和查价结果吗？"
     },
     "prompt": {
       "title": "列出任务工作状态",
-      "text": "写出每一步需要暂存的候选、工具结果和计数器，以及何时覆盖、回退和清理。"
+      "text": "把一次任务拆成目标、候选清单、工具结果、已完成步骤、待处理项和清理时机，并标出哪些结果要另行保存。"
     },
     "sources": [
       {
+        "url": "https://docs.langchain.com/oss/python/concepts/memory",
+        "label": "LangChain 文档 · Memory overview",
+        "note": "线程内状态与跨会话记忆的范围"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "上下文取舍、工作记忆和长期任务"
+      },
+      {
         "url": "https://openai.github.io/openai-agents-python/running_agents/",
         "label": "OpenAI Agents SDK · running agents",
-        "note": "可运行示例与实现细节"
+        "note": "智能体运行步骤与任务状态"
       },
       {
         "url": "https://arxiv.org/abs/2310.08560",
-        "label": "原始论文 · 2310.08560",
-        "note": "原论文的方法与实验"
+        "label": "MemGPT · 2310.08560",
+        "note": "上下文受限时的分层记忆管理"
       }
     ]
   },
