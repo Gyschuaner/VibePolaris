@@ -46,14 +46,14 @@ export function FullTextTermPage() {
       <p>普通字符串匹配关心一串字符是否出现；全文搜索比较处理后的词项和查询规则，所以字面写法相同不是唯一条件。比如启用词形归一后，搜 <code>book</code> 可能命中 <code>books</code>，而字面匹配未必会。<strong>能否找到不同写法，不只由输入框决定，还由索引与查询的处理配置决定。</strong></p>
     </ArticleSection>
     <ArticleSection id="postings" title="从词项找到文档"><Legacy slug="full-text-search" names={["scene-heading"]}/>
-      <p>五篇教学文档编号 A 到 E，已预先分好词。索引左侧记录“词项 → 文档编号:位置”，如借阅出现在 A 的位置 1、B 的位置 1 和 E 的位置 2。记录位置，是为了之后判断两个词是否按顺序相邻。查“借阅 续借”时，AND 求共同文档，OR 求至少包含一个词的文档；相邻短语还要检查顺序与位置。</p>
+      <p>五篇教学文档编号 A 到 E，已预先分好词。索引左侧记录“词项 → 文档编号:位置”，如借阅出现在 A 的位置 1、B 的位置 1 和 E 的位置 2。记录位置，是为了之后判断这两个词项是否按顺序相邻。查“借阅 续借”时，AND 求共同文档，OR 求至少包含一个词的文档；相邻短语还要检查顺序与位置。</p>
       <TextLesson/>
-      <p>AND 得到 A、E；OR 得到 A、B、C、E；相邻短语要求两个词按输入顺序紧挨着出现，所以只得到 A。E 虽包含两词，顺序却相反，不算短语命中。输入“预约”后检索，不会命中任何文档；输入框里没有词项时，删除操作会先收到提示。<strong>无结果是当前词项和规则下的结论，不等于现实中没有相关信息。</strong></p>
+      <p>AND 得到 A、E；OR 得到 A、B、C、E；相邻短语要求两个词项按输入顺序紧挨着出现，所以只得到 A。E 虽包含这两个词项，顺序却相反，不算短语命中。输入“预约”后检索，不会命中任何文档；输入框里没有词项时，删除操作会先收到提示。<strong>无结果是当前词项和规则下的结论，不等于现实中没有相关信息。</strong></p>
       <p id="text-positions" className="vp-citation-target">SQLite FTS5 支持词项组成的短语以及 AND、OR 等布尔条件，并用词项位置表达相邻关系。<strong>“都出现了”与“按顺序相邻”是不同条件。</strong>本例由五份固定词项数组生成倒排记录，仅支持空格分词与三种模式，没有运行 SQLite，也没有模拟完整查询语法。<Cite id="text-positions"/></p>
     </ArticleSection>
     <ArticleSection id="analysis" title="匹配规则与语言处理"><Legacy slug="full-text-search" names={["quiz-heading"]}/>
       <p id="text-analysis" className="vp-citation-target">PostgreSQL 的文本搜索配置把解析器与词典组合起来：解析器负责从文字找出 token，词典再决定哪些词归一、忽略或扩展；像“的”“是”这类停用词可能被忽略。<strong>哪些词进入索引，取决于文本语言和解析设置，需要按领域检验。</strong>本页的中文词项是人工切分的，不代表完整的中文分词；它只用于看清集合与位置。<Cite id="text-analysis"/></p>
-      <p id="text-configuration" className="vp-citation-target">Elasticsearch 对普通 <code>text</code> 字段的 <code>match</code> 查询会分析输入；文档规定 <code>operator</code> 默认是 OR，也可设 AND。<strong>相同输入放到不同默认规则里，可能返回不同集合。</strong>因此本例把模式直接显示出来。若字段是配置了推理端点的语义字段，同名 <code>match</code> 才会走对应的语义处理；接口同名不代表底层仍是词项匹配。<Cite id="text-configuration"/></p>
+      <p id="text-configuration" className="vp-citation-target">Elasticsearch 里，普通 <code>text</code> 字段的 <code>match</code> 查询会先分析输入，文档规定 <code>operator</code> 默认是 OR，也可设为 AND；配置了推理端点的语义字段则走对应的语义处理。<strong>相同输入放到不同默认规则里，可能返回不同集合。</strong>因此本例把模式直接显示出来。同样是 <code>match</code> 查询，底层处理可能因为字段类型不同而不同。<Cite id="text-configuration"/></p>
       <div className={s.columns}><div><h3>关键词与编号</h3><p>书名、作者、错误代码与固定词项，常需要明确匹配、字段限制和可核对的高亮。</p></div><div><h3>意思相近的表达</h3><p>“借书到期怎么办”未必出现“续借”。同义词配置或语义检索可以补充，但要验证实际效果。</p></div></div>
     </ArticleSection>
     <ArticleSection id="ranking" title="命中以后，还要决定顺序" className={base.offset}><Legacy slug="full-text-search" names={["prompt-heading"]}/>
@@ -74,15 +74,15 @@ export function VectorDatabaseTermPage() {
       <p>文档检索里，通常先用选定的编码器把文档和查询变成兼容的向量，再按约定的距离或相似度比较。<strong>生成表示与检索表示，是不同环节。</strong>不能把随便两组数字放到一起，就断言它们在比较文本含义。</p>
     </ArticleSection>
     <ArticleSection id="neighbours" title="限定候选，再比较距离"><Legacy slug="vector-database" names={["scene-heading"]}/>
-      <p>下面为六条记录手工指定二维坐标，便于直接看清距离。查询 [2, 2] 附近，B 比 A 更近；限制为公开记录时，B 因为属于内部范围被筛掉，所以返回 A、C。归档范围里没有记录，因此会得到零条。坐标为教学输入，不来自真实文本模型，图上的轴也没有业务含义。</p>
+      <p>下面为六条记录手工指定二维坐标，便于直接看清距离。查询 [2, 2] 附近时，B 比 A 更近；限制为公开记录时，B 因为属于内部范围被筛掉，所以返回 A、C。归档范围里没有记录，因此会得到零条。坐标为教学输入，本页没有用模型生成真实向量，也没有连接真实数据库，图上的轴也没有业务含义。</p>
       <VectorLesson/>
-      <p>本例先按范围筛选，再计算每条候选的欧氏距离，取最近两条。更新 A 到 [9, 8] 后，旧结果收起；重新计算公开范围，结果变成 C、D。“归档”范围没有记录，返回零条。<strong>改向量会改变相对位置，改范围会改变参与比较的对象。</strong>这里只保存在浏览器内存，没有实际写入数据库。</p>
-      <p id="vector-distance" className="vp-citation-target">Faiss 的入门例子用 IndexFlatL2 对全部候选做精确 L2 检索，返回近邻 ID 及距离平方。本页为阅读方便展示欧氏距离本身；距离平方是距离的单调变换，所以排序相同，但数值口径不同。<strong>比较分数前，要知道距离定义、排序方向和实际返回值。</strong>Faiss 是相似性检索库，完整数据库还需管理数据和服务生命周期。<Cite id="vector-distance"/></p>
-      <p id="vector-filter" className="vp-citation-target">Qdrant 可以按 payload 或 ID 限定搜索与读取条件，用来表达库存、价格范围等不能仅靠向量表示的要求。<strong>距离近，不会自动满足业务条件</strong>，例如内容已过期也可能仍然相近。本例“公开”只是教学字段；真实访问权限还必须由可信服务端强制执行，不能依赖前端下拉框。<Cite id="vector-filter"/></p>
+      <p>本例先按范围筛选，再计算每条候选的欧氏距离（也就是坐标间的直线距离），取最近两条。更新 A 到 [9, 8] 后，旧结果收起；重新计算公开范围，结果变成 C、D。“归档”范围没有记录，返回零条。<strong>改向量会改变相对位置，改范围会改变参与比较的对象。</strong>这里只保存在浏览器内存，没有实际写入数据库。</p>
+      <p id="vector-distance" className="vp-citation-target">Faiss 是相似检索库，它的入门例子用 IndexFlatL2 对全部候选做精确 L2 检索，返回近邻 ID 及距离平方。本页直接展示欧氏距离；距离平方是距离的单调变换，所以按它排序时结果顺序相同，但数值口径不同。<strong>比较分数前，要知道距离定义、排序方向和实际返回值。</strong>完整数据库还需管理数据和服务生命周期。<Cite id="vector-distance"/></p>
+      <p id="vector-filter" className="vp-citation-target">Qdrant 可以按 payload 或 ID 限定搜索与读取条件，用来表达库存、价格范围等不能仅靠向量表示的要求。<strong>距离近不代表业务条件满足</strong>，例如内容已经过期，向量也可能很近。本例“公开”只是教学字段；真实访问权限还必须由可信服务端强制执行，不能依赖前端下拉框。<Cite id="vector-filter"/></p>
     </ArticleSection>
     <ArticleSection id="indexing" title="数据增长时的检索开销"><Legacy slug="vector-database" names={["quiz-heading"]}/>
       <p>六条记录可以逐条比较；百万条高维向量，每次都计算全部距离就有明显成本。检索索引会组织候选，尝试减少需要查看的对象。精确与近似方案有不同代价，不能把“使用索引”直接等同于一定返回全局最近邻。</p>
-      <p id="vector-index" className="vp-citation-target">Malkov 与 Yashunin 提出的 HNSW 建立多层邻近图，从上层逐步进入下层，再扩展候选。它是近似近邻方法；搜索参数 ef 控制候选探索，论文比较了召回率与时间等代价。它更快，是因为不逐个检查所有向量，因此可能漏掉真正更近的对象。<strong>更快的候选搜索，需要用真实样例检查漏掉了哪些近邻。</strong>本页没有实现 HNSW，二维全量计算只提供可核对的精确基线。<Cite id="vector-index"/></p>
+      <p id="vector-index" className="vp-citation-target">Malkov 与 Yashunin 提出的 HNSW 建立多层邻近图，从上层逐步进入下层，再扩展候选。它是近似近邻方法；搜索参数 ef 控制候选探索，论文比较了召回率与时间等代价。它更快，是因为不逐个检查所有向量，但可能漏掉真正更近的对象；漏检情况要用真实数据来检验。<strong>更快的候选搜索，仍要用真实样例核对召回。</strong>本页没有实现 HNSW，二维全量计算只提供可核对的精确基线。<Cite id="vector-index"/></p>
       <div className={s.columns}><div><h3>精确基线</h3><p>按同一距离定义、同一候选范围取最近 k 条，用来核对近似结果。</p></div><div><h3>近似检索</h3><p>用索引与搜索预算减少探索，衡量延迟、内存和召回，再选适合任务的配置。</p></div></div>
     </ArticleSection>
     <ArticleSection id="limits" title="相似结果仍要核对内容" className={base.offset}><Legacy slug="vector-database" names={["prompt-heading"]}/>
