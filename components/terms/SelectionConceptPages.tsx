@@ -38,18 +38,18 @@ export function RetrievalTermPage() {
 export function ChunkingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={chunkingSources}/>;
   return <ConceptArticle slug="chunking" title="分块" sources={chunkingSources} sections={[["units", "让一篇长文变成可用片段"], ["cuts", "看见切口与重叠"], ["structure", "按结构保留完整意思"], ["evaluation", "块长没有统一答案"]]}
-    intro={<>退款规则里，“审核通过后”和“三个工作日内到账”属于同一个条件句。提问后，系统会从索引里找出相关片段交给模型；模型一次能读的内容有限，分块让长文能分段处理，也会改变哪些内容一起被检索、一起进入模型。切口放在哪里，会影响后续理解。</>}
+    intro={<>退款规则里，“审核通过后”和“三个工作日内到账”属于同一个条件句。用户提问后，系统从索引里找出相关片段交给模型；模型一次能读的内容有限，怎么分块决定了哪些内容会一起被检索、一起送到模型面前。切口放在哪里，会影响后续理解。</>}
     hero={<ConceptHero slug="chunking" label="一页退款说明沿段落分成三个片段，到账条件留在同一个片段"><div className={s.chunkHero}><Scissors size={24}/>{['退款申请', '审核通过 → 三个工作日', '打印服务'].map((text, i) => <div key={text} style={{ '--piece': i } as CSSProperties}><FileText size={18}/><strong>{text}</strong></div>)}</div></ConceptHero>}>
     <ArticleSection id="units" title="让一篇长文变成可用片段"><Legacy slug="chunking" names={["question", "definition"]}/>
       <p><strong>分块是把较长内容切成能独立处理的小片段。</strong>每块可以单独编码成可检索的表示、存入索引、参与检索，再按需要取回。它改变的是资料的处理单位，原始文档仍应保存，块也需要能回到原文的位置，以便回答时核对完整语境或标注出处。</p>
-      <p id="chunk-purpose" className="vp-citation-target">Azure AI Search 的文档说明，分块既能适应模型输入长度，也能避免用一个表示概括一篇包含多种主题的长文。<strong>能塞进模型，并不代表整篇作为一块就适合检索。</strong>块长需要结合资料结构、问题类型和表示方法决定，不能只用输入上限反推。<Cite id="chunk-purpose"/></p>
+      <p id="chunk-purpose" className="vp-citation-target">Azure AI Search 的文档说明，分块能把内容控制在模型一次能读的范围内，也能避免整篇讲多个主题的长文只得到一个表示（向量），各主题的信息互相混在一起。<strong>能塞进模型，并不代表整篇作为一块就适合检索。</strong>块长需要结合资料结构、问题类型和表示方法决定，不能只用输入上限反推。<Cite id="chunk-purpose"/></p>
       <p>退款说明还介绍打印服务。整篇一起检索，可能把无关段落带入；切得很细，又可能只取回“通常三个工作日”，丢失“线上退款审核通过后”，模型就可能把有条件的时效写成无条件承诺。这两种问题需要一起考虑。</p>
     </ArticleSection>
     <ArticleSection id="cuts" title="看见切口与重叠"><Legacy slug="chunking" names={["scene-heading"]}/>
       <p>先保留原文，再按字符或段落切分。点击一个块，它在原文中的区间会被标出。字符模式使用 Unicode 码点计数，包含换行；重叠让相邻块共享一段内容。这里的“字符”不是模型使用的 <ConceptTerm slug="token">Token</ConceptTerm>。</p>
       <ChunkingLesson/>
-      <p>24 字符、重叠 8 字符时，完整到账条件句没有落在任何一个块里；重叠长度小于这句时，边缘信息仍可能接不上。改成按段落，条件句保留在到账段落中。<strong>重叠能缓解边缘信息丢失，也会重复取回内容。</strong>重复字符数量只是本例的覆盖统计，不能当成检索质量分数。</p>
-      <p id="chunk-size" className="vp-citation-target">LangChain 的递归切分器按一组分隔符逐级拆分，尽量保留较完整的文本结构，再约束块长和目标重叠。<strong>长度单位与切分方法必须一起说明。</strong>本页的固定字符切分按 Unicode 码点计数，不等于模型 Token 数；页面上的 24 只是代码计数示例，不能直接当成模型输入长度。本页没有执行递归算法；按段落模式也没有额外限制段落长度。<Cite id="chunk-size"/></p>
+      <p>按 24 字符、重叠 8 切分时，没有任何一个块包含完整的到账条件句；重叠比句子短的时候，句子还是可能被切断。改用段落模式后，到账规则所在的整段会被完整保留。<strong>重叠能缓解边缘信息丢失，也会重复取回内容。</strong>重复字符数量只是本例的覆盖统计，不能当成检索质量分数。</p>
+      <p id="chunk-size" className="vp-citation-target">LangChain 的递归切分器按一组分隔符逐级拆分，尽量保留较完整的文本结构，再约束块长和目标重叠。<strong>长度单位与切分方法必须一起说明。</strong>本页的字符数按 Unicode 码点计数，和模型实际读的 Token 数不是一回事；24 只是示例里的字符数，不是 Token 数。本页没有执行递归算法；按段落模式也没有额外限制段落长度。<Cite id="chunk-size"/></p>
     </ArticleSection>
     <ArticleSection id="structure" title="按结构保留完整意思"><Legacy slug="chunking" names={["quiz-heading"]}/>
       <p id="chunk-structure" className="vp-citation-target">Unstructured 先根据文档格式识别标题、正文和表格等元素，再组合成块；过长元素仍可能进一步拆分。它的 by_title 策略还会利用章节边界。<strong>结构可以帮助选择切口，不能保证每块都有完整语义。</strong>例如某段开头的“它”指向上一段的对象，切开后模型可能不知道“它”是谁；跨段落的指代、条件和表格说明，仍要检查是否被分开。<Cite id="chunk-structure"/></p>
@@ -66,17 +66,17 @@ export function ChunkingTermPage() {
 export function RerankingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rerankingSources}/>;
   return <ConceptArticle slug="reranking" title="重排序" sources={rerankingSources} sections={[["second-pass", "对已有候选再排一次"], ["pairs", "带着查询逐篇核对"], ["models", "规则与模型给出的新顺序"], ["window", "候选以外的资料不会出现"]]}
-    intro={<>检索先交回三篇候选，用户却问“线上退款审核通过后，多久到账”。重排序再读取查询与这批候选，把更覆盖条件的资料排到前面；没有进入候选的资料，无法靠重排找回来。</>}
+    intro={<>检索先返回三篇候选，用户却问“线上退款审核通过后，多久到账”。重排序再读取查询与这批候选，把满足条件的资料排到前面；没有进入候选的资料，无法靠重排找回来。</>}
     hero={<ConceptHero slug="reranking" label="查询条件逐项核对线上退款文档，三个条件一起决定优先阅读"><div className={s.rerankHero}><ListChecks size={27}/><strong>线上退款时效</strong><div>{['线上', '审核通过', '到账时间'].map((text, i) => <span key={text} style={{ '--check': i } as CSSProperties}>✓ {text}</span>)}</div><p>优先读取 B</p></div></ConceptHero>}>
     <ArticleSection id="second-pass" title="对已有候选再排一次"><Legacy slug="reranking" names={["question", "definition"]}/>
       <p><strong>重排序是在已取回的候选里，按新的判断重新安排顺序。</strong>第一阶段通常先从大集合找出一批内容，后续可以使用更细的规则或模型比较。它改变阅读的优先级，原文内容和已有候选范围并不会因此自动改变。</p>
-      <p id="rerank-pairs" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先检索候选，再让 Cross-Encoder 联合接收查询与每篇候选文本，给出用于排序的分数。<strong>逐对读取能检查更具体的关系，但比只看向量或词项的初筛更贵。</strong>这是重排的一种实现；不必把“使用 Cross-Encoder”当成重排序的定义。<Cite id="rerank-pairs"/></p>
+      <p id="rerank-pairs" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先检索候选，再让 Cross-Encoder 这种重排模型把查询和每篇候选放在一起比较，输出排序分数。<strong>每篇候选都要和查询配对算一次，比第一轮检索更费算力。</strong>这是重排的一种实现；不必把“使用 Cross-Encoder”当成重排序的定义。<Cite id="rerank-pairs"/></p>
       <p>申请入口只说明“怎么申请”，柜台时效不适用于线上退款。标题和词项都很接近，但它们覆盖的条件不同。排序需要比较问题真正要求的内容，也要保留文档的适用范围。</p>
     </ArticleSection>
     <ArticleSection id="pairs" title="带着查询逐篇核对"><Legacy slug="reranking" names={["scene-heading"]}/>
-      <p>候选初始顺序固定为 A、C、B，不来自真实搜索。它们是检索之前交回的文档；窗口表示这次交给重排处理的候选数量。先取前两篇，带着查询逐篇核对原文中的条件，再生成新顺序。这里按预先标注的事实数数：满足多少条查询条件，就优先多少；同数保持原来的顺序。</p>
+      <p>初始顺序 A、C、B 是上一轮检索排好的，不来自真实搜索；窗口表示这次交给重排处理的候选数量。先取前两篇，带着查询逐篇核对原文中的条件，再生成新顺序。这里按预先标注的事实数数：满足多少条查询条件，就优先多少；同数保持原来的顺序。</p>
       <RerankingLesson/>
-      <p>只取 A、C 时，重排得到 C、A；C 覆盖审核与时效，却不适用于线上。C 排在前面正好说明“话题相近”不等于满足全部条件。扩大到三篇等于改变了交给重排的候选范围，B 才进入候选并排到首位，不是重排把窗口外的 B 找了回来。改问申请入口，A 又优先。<strong>演示里的顺序是按预先标注的条件排好的，没有真的运行模型；实际工具会由规则或模型计算排序信号。</strong>缺失的条件不会因为排到第一就自动得到补齐。</p>
+      <p>只取 A、C 时，重排得到 C、A；C 覆盖审核与时效，却不适用于线上。C 排在前面正好说明“话题相近”不等于满足全部条件。扩大到三篇等于改变了交给重排的候选范围，B 才进入候选并排到首位，不是重排把窗口外的 B 找了回来。换成问申请入口，A 会排到第一。<strong>演示里的顺序是按预先标注的条件排好的，没有真的运行模型；实际工具会由规则或模型计算排序信号。</strong>缺失的条件不会因为排到第一就自动得到补齐。</p>
     </ArticleSection>
     <ArticleSection id="models" title="规则与模型给出的新顺序"><Legacy slug="reranking" names={["quiz-heading"]}/>
       <p id="rerank-learning" className="vp-citation-target">Nogueira 与 Cho 的 BERT 重排论文，把查询和段落作为成对输入，用标注过的查询—段落训练相关性判断，再对初始检索结果重新排序。<strong>模型分数来自训练任务和数据。</strong>论文在特定检索数据集上的结果，不能直接替代对自己的退款资料、语言与查询分布的评估。<Cite id="rerank-learning"/></p>
@@ -84,7 +84,7 @@ export function RerankingTermPage() {
       <div className={s.ruleNote}><h3>相关，不等于可靠</h3><p>过期规则、错误陈述也可能非常贴题。可以另设版本、权限或出处条件，筛掉不可用材料；排序承担的是先看哪篇，不是替文档证明真假。</p></div>
     </ArticleSection>
     <ArticleSection id="window" title="候选以外的资料不会出现" className={base.offset}><Legacy slug="reranking" names={["prompt-heading"]}/>
-      <p id="rerank-window" className="vp-citation-target">Elasticsearch 的 <code>rescore</code> 是一种具体 API：它在各分片先选定结果窗口，再做额外的查询、脚本或学习排序，以控制计算开销。<strong>处理窗口限制了能重排的候选。</strong>本页只有一个小列表，不模拟分片流程；共同的边界是：资料不在处理范围内，就不会因这个阶段出现。<Cite id="rerank-window"/></p>
+      <p id="rerank-window" className="vp-citation-target">Elasticsearch 的 <code>rescore</code> 是做二次排序的具体 API；它在各分片先选定结果窗口，再做额外的查询、脚本或学习排序，以控制计算开销。它的窗口参数限制参与重排的候选数量。<strong>处理窗口限制了能重排的候选。</strong>本页只有一个小列表，不模拟分片流程；共同的边界是：资料不在处理范围内，就不会因这个阶段出现。<Cite id="rerank-window"/></p>
       <ArticleAside title="区分漏召回与排错顺序"><p>正确资料没进入候选，先检查 <ConceptTerm slug="retrieval">检索</ConceptTerm> 和候选数量；已经进入却排得靠后，再检查重排依据。增加窗口可能改善覆盖，也会增加工作量，需要同时观察质量与延迟。</p></ArticleAside>
       <p>接入 <ConceptTerm slug="rag">RAG</ConceptTerm> 后，排在前面的资料只是更早进入阅读。回答仍要核对条件、冲突和引用；遇到本例的 C，也应该说明渠道不符，而不是直接回答七个工作日。</p>
     </ArticleSection>
