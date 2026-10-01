@@ -82,8 +82,8 @@ function graphData(articles: NewsAtlasArticle[]) {
       aliases: [],
       definition: article.summary,
       relatedSlugs: article.related.map(term => term.slug),
-      x: Math.cos(angle) * (150 + index * 60),
-      y: Math.sin(angle) * (130 + index * 35),
+      x: Math.cos(angle) * (118 + index * 46),
+      y: Math.sin(angle) * (102 + index * 28),
       degree: article.related.length,
       kind: "article",
       articleSlug: article.slug,
@@ -103,8 +103,8 @@ function graphData(articles: NewsAtlasArticle[]) {
           aliases: [],
           definition: "",
           relatedSlugs: [],
-          x: Math.cos(termAngle) * 250,
-          y: Math.sin(termAngle) * 210,
+          x: Math.cos(termAngle) * 188,
+          y: Math.sin(termAngle) * 156,
           degree: 0,
           kind: "term",
           term: related,
@@ -150,6 +150,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const [ready, setReady] = useState(false);
   const [reframing, setReframing] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
+  const detail = useRef<HTMLElement>(null);
   const nodeElements = useRef(new Map<string, HTMLButtonElement | HTMLAnchorElement>());
   const lineElements = useRef(new Map<string, { element: SVGLineElement; source: string; target: string }>());
   const size = useRef({ width: 1000, height: 740 });
@@ -165,6 +166,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const selectedNeighbors = useMemo(() => graphNeighbors(selectedNodeSlug, edges), [selectedNodeSlug, edges]);
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
   const labelOpacity = Math.max(0, Math.min(1, (view.scale - .74) / .4));
+
+  useEffect(() => {
+    if (!selectedSlug || !ready || !window.matchMedia("(max-width: 700px)").matches) return;
+    const frameId = window.requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    return () => window.cancelAnimationFrame(frameId);
+  }, [ready, selectedSlug]);
 
   const paintPositions = useCallback(() => {
     const moving = simulation.current?.nodes();
@@ -415,7 +422,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
         </nav>
 
-        <div ref={canvas} className="news-atlas-map news-atlas-canvas" role="region" aria-label="新闻与概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
+        <div ref={canvas} className="news-atlas-map news-atlas-canvas" role="region" aria-label="新闻星图，点击新闻星点查看文章详情，可拖动、缩放或用方向键移动" tabIndex={0}
           onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => { if (!pointers.current.size) setHovered(""); }}
           onKeyDown={event => {
             if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "+", "=", "-", "0"].includes(event.key)) event.preventDefault();
@@ -479,7 +486,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
         </div>
 
-        {selected && <aside className="news-atlas-detail" aria-live="polite" aria-label={`${selected.title}详情`}>
+        {selected && <aside ref={detail} className="news-atlas-detail" aria-live="polite" aria-label={`${selected.title}详情`}>
           <button className="news-atlas-detail-close" type="button" aria-label="关闭新闻详情" onClick={clearSelection}><X size={18} /></button>
           <div className="news-atlas-detail-meta"><time dateTime={selected.publishedAt}>{longDateFormatter.format(utcDate(selected.publishedAt))}</time><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
           <h2>{selected.title}</h2>
