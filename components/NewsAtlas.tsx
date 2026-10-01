@@ -136,11 +136,22 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
+  const frameRaf = useRef<number | null>(null);
+  const frameTimer = useRef<number | null>(null);
+  const reframeTimer = useRef<number | null>(null);
+  const reframeSequence = useRef(0);
   const selected = articleBySlug.get(selectedSlug);
   const selectedNodeSlug = detailOpen && selected ? `news:${selected.slug}` : "";
   const selectedNeighbors = useMemo(() => graphNeighbors(selectedNodeSlug, edges), [selectedNodeSlug, edges]);
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
+  const selectedNodeSlugRef = useRef(selectedNodeSlug);
+  const selectedNeighborsRef = useRef(selectedNeighbors);
   const labelOpacity = Math.max(0, Math.min(1, (view.scale - .74) / .4));
+
+  useEffect(() => {
+    selectedNodeSlugRef.current = selectedNodeSlug;
+    selectedNeighborsRef.current = selectedNeighbors;
+  }, [selectedNeighbors, selectedNodeSlug]);
 
   useEffect(() => {
     if (!selectedSlug || !detailOpen || !ready || !window.matchMedia("(max-width: 700px)").matches) return;
@@ -167,9 +178,18 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     }
   }, []);
 
-  useLayoutEffect(paintPositions, [paintPositions, selectedSlug, detailOpen, showLines, hovered]);
+  useLayoutEffect(paintPositions, [paintPositions]);
 
   const getPositions = useCallback(() => simulation.current?.nodes() || nodes, [nodes]);
+
+  const armReframing = useCallback(() => {
+    if (reframeTimer.current !== null) window.clearTimeout(reframeTimer.current);
+    const sequence = ++reframeSequence.current;
+    setReframing(true);
+    reframeTimer.current = window.setTimeout(() => {
+      if (reframeSequence.current === sequence) setReframing(false);
+    }, 620);
+  }, []);
 
   const frame = useCallback((items: Array<{ x: number; y: number }>) => {
     if (!items.length) return;
@@ -183,8 +203,38 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const spanX = Math.max(280, maxX - minX);
     const spanY = Math.max(240, maxY - minY);
     const scale = Math.max(.22, Math.min(1.15, (width - 110) / (spanX + 170), (height - 110) / (spanY + 170)));
-    setView({ x: width / 2 - middleX * scale, y: height / 2 - middleY * scale, scale });
-    setReframing(true);
+    const nextView = { x: width / 2 - middleX * scale, y: height / 2 - middleY * scale, scale };
+    setView(previous => previous.x === nextView.x && previous.y === nextView.y && previous.scale === nextView.scale ? previous : nextView);
+    armReframing();
+  }, [armReframing]);
+
+  const stopReframing = useCallback(() => {
+    reframeSequence.current += 1;
+    if (reframeTimer.current !== null) {
+      window.clearTimeout(reframeTimer.current);
+      reframeTimer.current = null;
+    }
+    setReframing(false);
+  }, []);
+
+  const scheduleFrame = useCallback((delay = 80) => {
+    if (frameRaf.current !== null) window.cancelAnimationFrame(frameRaf.current);
+    if (frameTimer.current !== null) window.clearTimeout(frameTimer.current);
+    frameRaf.current = window.requestAnimationFrame(() => {
+      frameRaf.current = null;
+      frameTimer.current = window.setTimeout(() => {
+        frameTimer.current = null;
+        const positions = getPositions();
+        const selectedItems = positions.filter(node => node.slug === selectedNodeSlugRef.current || selectedNeighborsRef.current.has(node.slug));
+        frame(selectedItems.length ? selectedItems : positions);
+      }, delay);
+    });
+  }, [frame, getPositions]);
+
+  useEffect(() => () => {
+    if (frameRaf.current !== null) window.cancelAnimationFrame(frameRaf.current);
+    if (frameTimer.current !== null) window.clearTimeout(frameTimer.current);
+    if (reframeTimer.current !== null) window.clearTimeout(reframeTimer.current);
   }, []);
 
   useEffect(() => {
@@ -219,23 +269,19 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
       if (!element.dataset.ready) {
         element.dataset.ready = "true";
         setReady(true);
-        const selectedItems = getPositions().filter(node => node.slug === selectedNodeSlug || selectedNeighbors.has(node.slug));
-        frame(selectedItems.length ? selectedItems : getPositions());
+        scheduleFrame(0);
       } else {
-        setView(value => ({ ...value, x: value.x + (next.width - previous.width) / 2, y: value.y + (next.height - previous.height) / 2 }));
+        if (next.width !== previous.width || next.height !== previous.height) scheduleFrame(90);
       }
     });
     observer.observe(element);
     return () => observer.disconnect();
-  }, [frame, getPositions, selectedNeighbors, selectedNodeSlug]);
+  }, [getPositions, scheduleFrame]);
 
   useEffect(() => {
     if (!ready) return;
-    const selectedItems = getPositions().filter(node => node.slug === selectedNodeSlug || selectedNeighbors.has(node.slug));
-    frame(selectedItems.length ? selectedItems : getPositions());
-  // A selected article is the user's explicit framing action; the graph engine owns the live coordinates.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNodeSlug]);
+    scheduleFrame(80);
+  }, [ready, scheduleFrame, selectedNodeSlug]);
 
   const zoom = useCallback((factor: number, point = { x: size.current.width / 2, y: size.current.height / 2 }) => {
     setView(previous => {
@@ -252,12 +298,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
       event.preventDefault();
       const rect = element.getBoundingClientRect();
       const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
-      setReframing(false);
+      stopReframing();
       zoom(Math.exp(-delta * .002), { x: event.clientX - rect.left, y: event.clientY - rect.top });
     };
     element.addEventListener("wheel", wheel, { passive: false });
     return () => element.removeEventListener("wheel", wheel);
-  }, [zoom]);
+  }, [stopReframing, zoom]);
 
   function localPoint(event: { clientX: number; clientY: number }) {
     const rect = canvas.current!.getBoundingClientRect();
@@ -299,7 +345,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const point = localPoint(event);
     pointers.current.set(event.pointerId, point);
     event.currentTarget.setPointerCapture(event.pointerId);
-    setReframing(false);
+    stopReframing();
     if (pointers.current.size === 2) {
       releaseNode();
       const [a, b] = [...pointers.current.values()];
@@ -404,9 +450,9 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => { if (!pointers.current.size) setHovered(""); }}
           onKeyDown={event => {
             if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "+", "=", "-", "0"].includes(event.key)) event.preventDefault();
-            setReframing(false);
-            if (event.key === "+" || event.key === "=") zoom(1.25);
-            if (event.key === "-") zoom(.8);
+            stopReframing();
+            if (event.key === "+" || event.key === "=") { armReframing(); zoom(1.25); }
+            if (event.key === "-") { armReframing(); zoom(.8); }
             if (event.key === "0") frame(getPositions());
             if (event.key.startsWith("Arrow")) setView(value => ({ ...value, x: value.x + (event.key === "ArrowLeft" ? 50 : event.key === "ArrowRight" ? -50 : 0), y: value.y + (event.key === "ArrowUp" ? 50 : event.key === "ArrowDown" ? -50 : 0) }));
           }}>
@@ -448,8 +494,8 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
             })}
           </div>
           <div className="news-atlas-graph-controls" aria-label="星图视图控制" onPointerDown={event => event.stopPropagation()}>
-            <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.25); }}><Plus size={18} /></button>
-            <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(.8); }}><Minus size={18} /></button>
+            <button type="button" aria-label="放大星图" title="放大" onClick={() => { armReframing(); zoom(1.25); }}><Plus size={18} /></button>
+            <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { armReframing(); zoom(.8); }}><Minus size={18} /></button>
             <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { setReframing(true); frame(getPositions()); }}><CornersOut size={18} /></button>
             <label><input type="checkbox" checked={showLines} disabled={!selectedNodeSlug} onChange={event => setShowLines(event.target.checked)} />显示连线</label>
           </div>
