@@ -36,8 +36,8 @@ function draftFiles(directory) {
 }
 
 export function publishedNewsFromDraft(draft) {
-  const { slug, title, summary, body, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash } = draft;
-  return newsArticleSchema.parse({ slug, title, summary, body, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash });
+  const { slug, title, summary, body, eventDate, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash } = draft;
+  return newsArticleSchema.parse({ slug, title, summary, body, eventDate, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash });
 }
 
 export function newsMechanicalErrors(article) {
