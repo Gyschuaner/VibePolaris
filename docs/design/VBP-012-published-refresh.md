@@ -1784,12 +1784,12 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 ### 构建与真实浏览器验收
 
-- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`QualityLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`QualityLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。正文合入 `main` 后，用第 69 条镜像作为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:8481c01918bec30b1cfab43dd8ccda12ec03df22`（`linux/amd64`，约 1.36 GB）；本地容器 3223 端口返回 200，并精确包含“数据质量不是一张脱离用途的总分”“质量测量要指向被测数据”和“规则判断为真的比例”。
 - CUA 在 `http://127.0.0.1:3219/terms/data-quality?qa=070baseline` 的重启后服务上真实操作并观察：默认“月报参考”显示完整性 9/10、不同 ID 9/10、3 小时 ≤24 小时，结论为符合；切到“实时库存”显示 3 小时 >30 秒，结论未达到；点击“换成 12 秒前的快照”后实时库存通过；勾选“再缺一条书目编号”后完整性降为 8/10、结论未达到。展开 DQV 引用后点击“同一批数据，换一种要求”回到质量记录段，截图已实际观察；浏览器 `error/warn` 为空。
 - 演示只使用浏览器内存中的十条固定记录，没有运行 Spark/Deequ、AWS Glue、真实库存系统或外部数据服务；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
 
 ### DP、Git 与发布边界
 
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 70 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 70 条正文待本轮提交。正文发布分支应从 `origin/main` 的第 69 条合并提交 `2095d288c7d7fee4fd677bfe73fa470d4d9550f5` 新建，只复制正文文件，不带入 `QualityLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 70 条本地正文与记录提交 `58f9aaf`。正文发布分支 `release/VBP-030-quality-content-20261001` 从第 69 条合并提交 `2095d288c7d7fee4fd677bfe73fa470d4d9550f5` 新建，只复制正文文件，提交 `1cd224f` 经 [PR #250](https://github.com/Gyschuaner/VibePolaris/pull/250) 合入 `main`，当前合并提交 `8481c01918bec30b1cfab43dd8ccda12ec03df22`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/data-quality` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内超时；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **70/105**，下一条是 `data-lineage`。
