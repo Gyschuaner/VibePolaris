@@ -801,8 +801,8 @@
   {
     "slug": "few-shot-prompting",
     "lead": "只给两条工单示例，新工单为什么更容易套进同一标签格式？",
-    "definition": "在提示中放入少量输入—输出示例，让模型从示例里归纳格式或映射规律，再处理新输入。",
-    "boundary": "少样本提示不会更新模型参数；示例质量差时，模型也会照着错误模式学。",
+    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照任务格式、边界和表达方式；模型参数是训练后保留的内部设置，放入示例不会更新它们。",
+    "boundary": "示例会占用上下文，示例里错误、片面或只覆盖部分情况的模式，也可能被带进新结果；示例数量没有跨模型通用的“正确值”，也不是越多越好。",
     "sceneKind": "pipeline",
     "sceneTitle": "两条例子怎样改变新样本的映射",
     "actionLabel": "移除一条例子",
@@ -859,7 +859,7 @@
     "frames": [
       {
         "label": "示例先到",
-        "note": "两条输入—输出对定义了标签写法。",
+        "note": "两条输入—输出对定义了标签写法；“2 组”只是本次示意，不是通用标准。",
         "activeIds": [
           "examples"
         ],
@@ -893,7 +893,7 @@
       },
       {
         "label": "分数拉开",
-        "note": "加入示例后，前端候选从0.34升到示例0.72。",
+        "note": "0.34 → 0.72 是本次演示的示意数值，不是准确率；示例改变的是输出更贴近示范里的标签写法。",
         "activeIds": [
           "labels"
         ],
@@ -905,7 +905,7 @@
           "result"
         ],
         "values": {
-          "labels": "前端 0.72"
+          "labels": "示意：0.34 → 0.72"
         },
         "activeEdgeIds": [
           "ex-l",
@@ -954,18 +954,33 @@
     },
     "prompt": {
       "title": "准备少样本示例",
-      "text": "为当前任务写2到4组输入—输出示例，保持格式一致，并补一条容易误分的边界样本。"
+      "text": "请准备少量、覆盖正常与边界的输入—输出示例，并说明它们会占用多少上下文；不要把示例当作训练参数更新。"
     },
     "sources": [
       {
         "url": "https://arxiv.org/abs/2005.14165",
-        "label": "原始论文 · 2005.14165",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Language Models are Few-Shot Learners",
+        "note": "上下文示例不更新参数"
       },
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
-        "label": "OpenAI 官方文档 · prompt engineering",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/abs/2202.12837",
+        "label": "arXiv · Rethinking the Role of Demonstrations",
+        "note": "示例传递模式与输入分布"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering#few-shot-learning",
+        "label": "OpenAI · Prompt engineering · Few-shot learning",
+        "note": "示例覆盖与格式"
+      },
+      {
+        "url": "https://arxiv.org/abs/2201.11903",
+        "label": "arXiv · Chain-of-Thought Prompting",
+        "note": "示范推理过程"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Gemini prompting strategies",
+        "note": "zero-shot/few-shot 对照"
       }
     ]
   },
