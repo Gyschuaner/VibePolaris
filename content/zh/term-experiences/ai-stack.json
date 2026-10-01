@@ -13429,9 +13429,9 @@
   },
   {
     "slug": "client-server",
-    "lead": "浏览器请求/products/7时，请求和响应分别经过哪些角色？",
-    "definition": "客户端发出请求，服务器根据自身资源和规则处理后返回响应；双方通过约定的协议交换消息。",
-    "boundary": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。",
+    "lead": "浏览器请求 /products/7 时，请求和响应分别经过哪些角色？",
+    "definition": "客户端发出请求，服务器根据请求查找数据或执行操作后返回响应；双方通过约定的协议交换消息。",
+    "boundary": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。HTTP 是双方交换消息的约定；200 状态码表示成功，404 表示找不到资源，500 表示服务器处理出错。",
     "sceneKind": "pipeline",
     "sceneTitle": "客户端请求到服务器响应的往返",
     "actionLabel": "模拟状态码",
@@ -13446,7 +13446,7 @@
       {
         "id": "request",
         "label": "HTTP请求",
-        "detail": "已发送",
+        "detail": "已发出",
         "icon": "message",
         "group": "网络"
       },
@@ -13513,7 +13513,7 @@
     "frames": [
       {
         "label": "客户端发出请求",
-        "note": "商品页创建GET请求，还没有拿到数据。",
+      "note": "商品页创建 GET 请求（读取商品），还没有拿到数据。",
         "activeIds": [
           "client",
           "request"
@@ -13524,7 +13524,7 @@
           "response"
         ],
         "values": {
-          "request": "sent"
+          "request": "已发出"
         },
         "activeEdgeIds": [
           "c-r"
@@ -13532,7 +13532,7 @@
       },
       {
         "label": "服务器处理",
-        "note": "服务收到路径后查询商品数据。",
+      "note": "服务器收到请求路径 /products/7 后查询商品数据，准备响应。",
         "activeIds": [
           "request",
           "server",
@@ -13556,7 +13556,7 @@
       },
       {
         "label": "响应返回",
-        "note": "服务器发送200与JSON，方向与请求相反。",
+      "note": "服务器发送状态码 200 与 JSON（按结构组织数据的文本），方向与请求相反。",
         "activeIds": [
           "server",
           "response"
@@ -13576,7 +13576,7 @@
       },
       {
         "label": "客户端呈现",
-        "note": "商品页读取响应并显示商品7。",
+      "note": "商品页读取响应并显示商品 7。",
         "activeIds": [
           "client"
         ],
@@ -13595,7 +13595,7 @@
         ]
       }
     ],
-    "insight": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。",
+    "insight": "这一趟里谁是客户端、谁是服务器，看的是这轮谁发请求、谁提供资源，而不是软件装在哪台机器上。",
     "quiz": {
       "question": "同一程序能否在一种交互中是客户端、另一种交互中是服务器？",
       "options": [
@@ -13612,18 +13612,33 @@
           "correct": false
         }
       ],
-      "success": "客户端与服务器是相对角色。",
+    "success": "客户端与服务器是相对角色，谁发请求、谁提供资源要看当前交互。",
       "retry": "看谁发请求、谁提供资源。"
     },
     "prompt": {
       "title": "画一次请求往返",
-      "text": "标出客户端、请求方法与路径、服务器处理、外部资源、状态码和响应体，并补404与500两条失败路径。"
+      "text": "标出客户端、请求方法与路径、服务器处理、外部资源、状态码和响应体，并补 404 与 500 两条失败路径。"
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc9110",
-        "label": "RFC · rfc9110",
-        "note": "协议定义与报文语义"
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "label": "RFC 9110 · HTTP Semantics",
+      "note": "定义 HTTP 的客户端、服务器、请求、响应和状态语义。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+      "label": "MDN · Overview of HTTP",
+      "note": "说明浏览器等客户端发出请求，服务器返回响应，以及一次 HTTP 往返的基本步骤。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages",
+      "label": "MDN · HTTP messages",
+      "note": "说明请求方法、路径、响应状态码、头和正文等消息部分。"
+    },
+    {
+      "url": "https://fetch.spec.whatwg.org/",
+      "label": "WHATWG · Fetch Standard",
+      "note": "规定浏览器 Fetch 如何发起请求并处理响应。"
       }
     ]
   },
