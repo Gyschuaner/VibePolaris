@@ -74,11 +74,11 @@ export function DistributedTermPage() {
     intro={<>读者在借阅服务点击借书。借阅服务把带有操作 ID <code>reserve-42</code> 的请求发给库存服务，请它扣掉一本书。两处服务通过网络传消息；库存服务可能已经扣减，确认却没回来，借阅服务只看到超时。分布式系统让不同进程协作，也使延迟、局部故障和信息不完整成为日常设计问题。</>}
     hero={<ConceptHero slug="distributed-system" label="B 已扣减一本库存，确认未送达，A 看到的仍是执行结果未知"><div className={s.distributedHero}><div><span>A · 借阅服务</span><EnvelopeSimple size={27}/><strong>未知</strong><code>确认未到达</code></div><div><span>B · 库存服务</span><Database size={27}/><strong className={s.heroStock}>5 → 4</strong><code>已执行 reserve-42</code></div></div></ConceptHero>}>
     <ArticleSection id="nodes" title="多处执行，通过消息协作"><Legacy slug="distributed-system" names={["question", "definition"]}/>
-      <p id="distributed-definition" className="vp-citation-target"><strong>分布式系统把任务交给多个独立运行的程序或服务，它们通过网络消息协作；这里把每一方叫作一个节点。</strong>Lamport 的经典论文把分布式进程中的事件顺序建立在进程内顺序和消息发送、接收关系上。消息需要传输，各节点不能瞬间知道其他节点刚发生了什么。<Cite id="distributed-definition"/></p>
+      <p id="distributed-definition" className="vp-citation-target"><strong>分布式系统把任务交给多个独立运行的程序或服务，它们通过网络消息协作；这里把每一方叫作一个节点。</strong>Lamport 的经典论文把分布式进程中的事件顺序建立在进程内顺序和消息发送、接收关系上。消息需要传输，各节点不能瞬间知道其他节点刚发生了什么；即使多个进程在同一台机器上，只要它们独立运行并靠消息协作，也会遇到类似的信息延迟。<Cite id="distributed-definition"/></p>
       <p>借阅服务处理读者请求，库存服务保管可借数量。职责分开后可以独立运行，但 A 对 B 的了解来自已经收到的消息。<strong>“有多台机器”还不是设计的全部，关键是它们如何协作，以及失去联系时怎样判断和恢复。</strong></p>
     </ArticleSection>
     <ArticleSection id="observe" title="同一次请求，两端所见不同"><Legacy slug="distributed-system" names={["scene-heading"]}/>
-      <p id="distributed-failure" className="vp-citation-target">一次跨网络请求至少经过这些阶段：A 发出请求，网络把它送到 B，B 校验并修改自己的状态，B 发回响应，A 收到响应后更新自己的记录。AWS Builders’ Library 将这些阶段分开讨论，因为每一步都可能单独失败。请求没到与响应丢失，都可以表现为调用端超时。<strong>调用端此时知道的是“没有在期限内收到确认”，执行结果仍然未知。</strong><Cite id="distributed-failure"/></p>
+      <p id="distributed-failure" className="vp-citation-target">一次跨网络请求至少要经过八个动作：A 把请求交给网络，网络送到 B，B 校验请求并修改自己的状态，B 把响应交给网络，网络把响应送回 A，A 再校验响应并更新自己的记录。AWS Builders’ Library 将这些阶段分开讨论，因为客户端、服务器和网络可以独立失败。请求没到与响应丢失，都可以表现为调用端超时。<strong>调用端此时知道的是“没有在期限内收到确认”，执行结果仍然未知。</strong><Cite id="distributed-failure"/></p>
       <p>先看 B 执行后响应丢失，再切到请求在途中丢失。两次 A 都超时，B 的库存却分别为 4 与 5。本例手动推进两个固定故障，恢复后按已经说明的操作 ID 核对与重试；没有真实网络、共识协议或跨服务事务。</p>
       <DistributedLesson/>
       <p>左右两列展示各端实际记录，读者能同时看到，A 却不能凭空读取右边的状态。查询或重新得到确认以后，A 才能更新判断。这种局部信息差，正是演示要保留下来的部分。</p>
