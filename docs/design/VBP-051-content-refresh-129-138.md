@@ -56,3 +56,10 @@ reader 和 language 的输入是当前词条的读者可见文案与按阶段配
 ## 发布边界
 
 本批已经完成本地内容、公开清单、构建和受影响页面验收；生产合并和部署需在生产叠加分支上保留现有 `/news` 后执行。生产提交、DP deployment、线上十条路由和 `/news` 健康检查、版本镜像与回滚位置在发布完成后补录。
+
+- PR #270 已合并到 `main`，合并提交为 `978f1604ac39b668898da75003b3e0f3fd535776`。
+- 生产使用 `release/VBP-051-prod-overlay-20261002` 叠加 `release/VBP-050-prod-overlay-20261001` 的新闻版本 `0662c3429667371a90f23d5348d064bc27a1c064`，部署提交为 `1bd2aa2968839a2afd44eb0bbefb0d3784116e88`；该分支保留 `/news`，只叠加本批内容、公开清单和研发记录。
+- DP deployment：`deploy-vbp051-content-129-138-prod-20261002`，ID `d04163c3-b818-4de4-820e-267a439cc6e1`，状态 `released`，目标为 `prod`，关联需求 VBP-051。
+- 当前生产发布为 `/opt/vibepolaris/releases/20261001T190755Z-1bd2aa29`，镜像为 `vibepolaris:1bd2aa2968839a2afd44eb0bbefb0d3784116e88`；容器健康检查通过，数据卷 `vibepolaris_xiaobei_data` 未改动。
+- 生产复核：十条 `/terms/<slug>`、`/news` 和一篇新闻详情均返回 HTTP 200；CUA 抽查 `/news` 和 `working-memory` 的“交付后清理”状态，页面内容与交互可见。
+- 回滚目标为 `/opt/vibepolaris/releases/20261001T155220Z-0662c342`，切换前版本和镜像健康；`D:/Obsidian/gysnote` 在当前 Mac 环境不存在，因此未同步 Obsidian。
