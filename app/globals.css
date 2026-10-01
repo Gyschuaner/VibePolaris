@@ -781,9 +781,7 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .news-atlas-page { width: min(100% - 64px, 1420px); margin: 0 auto; }
 .news-atlas { min-height: calc(100svh - 82px); padding: 36px 0 54px; }
 .news-atlas-heading { display: flex; align-items: end; justify-content: space-between; gap: 40px; min-height: 122px; padding: 0 0 22px 2px; }
-.news-atlas-heading h1 { margin-top: 12px; color: var(--ink); font-size: clamp(44px, 5.2vw, 72px); font-weight: 760; line-height: .98; letter-spacing: -.06em; }
-.news-atlas-heading > div > p:last-child { margin-top: 12px; color: var(--muted); font-size: 17px; }
-.news-atlas-hint { max-width: 30ch; padding-bottom: 5px; color: var(--faint); font-size: 13px; line-height: 1.7; text-align: right; }
+.news-atlas-heading h1 { max-width: 13ch; margin-top: 12px; color: var(--ink); font-size: clamp(44px, 5.2vw, 72px); font-weight: 760; line-height: .98; letter-spacing: -.06em; }
 .news-atlas-layout { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(300px, 350px); min-height: 740px; border-top: 1px solid var(--hairline); }
 .news-atlas-dates { position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 48px 0 24px 0; border-right: 1px solid var(--hairline); }
 .news-atlas-date { position: relative; display: grid; justify-items: start; gap: 2px; min-height: 56px; border: 0; padding: 7px 0 7px 20px; background: transparent; color: var(--faint); font: inherit; text-align: left; cursor: pointer; transition: color 180ms ease, transform 220ms ease; }
@@ -816,7 +814,10 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .news-atlas-article-copy small { color: var(--muted); font-size: 11px; }
 .news-atlas-term { z-index: 4; gap: 7px; color: var(--muted); font-size: 13px; font-weight: 560; white-space: nowrap; }
 .news-atlas-term-star { width: 17px; height: 17px; flex: none; }
-.news-atlas-detail { display: flex; flex-direction: column; min-width: 0; padding: 30px 0 26px 34px; border-left: 1px solid var(--hairline); }
+.news-atlas-detail { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 30px 0 26px 34px; border-left: 1px solid var(--hairline); }
+.news-atlas-detail-close { position: absolute; top: 22px; right: 0; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--hairline); border-radius: 50%; background: var(--surface); color: var(--muted); cursor: pointer; }
+.news-atlas-detail-close:hover { border-color: var(--accent); color: var(--accent-text); }
+.news-atlas-detail-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .news-atlas-detail-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; color: var(--faint); font-size: 12px; line-height: 1.5; }
 .news-atlas-example { padding: 2px 7px; background: var(--tint); color: var(--accent-text); font-size: 10px; }
 .news-atlas-detail h2 { max-width: 12ch; margin-top: 26px; color: var(--ink); font-size: clamp(26px, 2.4vw, 38px); font-weight: 700; line-height: 1.24; letter-spacing: -.045em; }
@@ -837,7 +838,6 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 @media (max-width: 980px) {
   .news-atlas-page { width: min(100% - 40px, 720px); }
   .news-atlas-heading { align-items: start; flex-direction: column; gap: 16px; }
-  .news-atlas-hint { max-width: 48ch; padding: 0; text-align: left; }
   .news-atlas-layout { grid-template-columns: 92px minmax(0, 1fr); }
   .news-atlas-detail { grid-column: 1 / -1; min-height: 360px; padding: 28px 0 42px; border-top: 1px solid var(--hairline); border-left: 0; }
   .news-atlas-detail h2, .news-atlas-detail > p { max-width: 60ch; }
@@ -848,7 +848,6 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .news-atlas-page { width: min(100% - 28px, 520px); }
   .news-atlas { padding-top: 24px; }
   .news-atlas-heading h1 { font-size: 48px; }
-  .news-atlas-heading > div > p:last-child { font-size: 15px; }
   .news-atlas-layout { grid-template-columns: 72px minmax(0, 1fr); }
   .news-atlas-layout, .news-atlas-map { min-height: 620px; }
   .news-atlas-dates { padding-top: 30px; }
@@ -906,8 +905,8 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .news-atlas-world { position: absolute; left: 0; top: 0; width: 1px; height: 1px; transform-origin: 0 0; will-change: transform; }
 .news-atlas-world.is-reframing { transition: transform .55s cubic-bezier(.2,.75,.2,1); }
 .news-atlas-graph-lines { position: absolute; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
-.news-atlas-graph-line { fill: none; stroke: var(--brand-star); vector-effect: non-scaling-stroke; stroke-width: 1; opacity: .16; transition: opacity .2s, stroke-width .2s; }
-.news-atlas-graph-line.is-connected { stroke-width: 1.3; opacity: .82; }
+.news-atlas-graph-line { fill: none; stroke: var(--brand-star); stroke-linecap: round; vector-effect: non-scaling-stroke; stroke-width: 1.1; opacity: .34; transition: opacity .2s, stroke-width .2s; }
+.news-atlas-graph-line.is-connected { stroke-width: 1.8; opacity: .92; }
 .news-atlas-node { position: absolute; left: 0; top: 0; z-index: 3; display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; text-decoration: none; touch-action: none; transition: opacity .2s, color .2s; }
 .news-atlas-node > .news-atlas-node-star { transition: transform .25s, filter .25s; }
 .news-atlas-node:hover, .news-atlas-node:focus-visible { color: var(--accent-text); }
@@ -942,7 +941,8 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 }
 
 /* ---------- 新闻时间线：按内容密度组织事件，而不是填满空日期 ---------- */
-.news-atlas-layout { grid-template-columns: 186px minmax(0, 1fr) minmax(300px, 350px); }
+.news-atlas-layout { grid-template-columns: 186px minmax(0, 1fr); }
+.news-atlas-layout.has-selection { grid-template-columns: 186px minmax(0, 1fr) minmax(300px, 350px); }
 .news-atlas-dates { justify-content: flex-start; padding: 26px 18px 24px 0; }
 .news-atlas-timeline-head { display: flex; align-items: end; justify-content: space-between; gap: 10px; padding-left: 18px; }
 .news-atlas-timeline-head > div { display: grid; gap: 4px; }
@@ -966,19 +966,16 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .news-atlas-timeline-copy strong { display: -webkit-box; overflow: hidden; color: var(--muted); font-size: 12px; font-weight: 560; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .news-atlas-timeline-item.is-selected .news-atlas-timeline-date time, .news-atlas-timeline-item.is-selected .news-atlas-timeline-copy strong { color: var(--ink); }
 .news-atlas-timeline-item:hover .news-atlas-timeline-date time, .news-atlas-timeline-item:hover .news-atlas-timeline-copy strong { color: var(--accent-text); }
-.news-atlas-timeline-range { display: grid; gap: 4px; margin: 18px 0 0 18px; padding-top: 14px; border-top: 1px solid var(--hairline); color: var(--faint); font-size: 10px; line-height: 1.4; }
-.news-atlas-timeline-range time { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
 
 @media (max-width: 980px) {
-  .news-atlas-layout { grid-template-columns: 166px minmax(0, 1fr); }
+  .news-atlas-layout, .news-atlas-layout.has-selection { grid-template-columns: 166px minmax(0, 1fr); }
   .news-atlas-dates { padding-right: 14px; }
   .news-atlas-timeline-head { padding-left: 12px; }
   .news-atlas-timeline-item { padding-left: 4px; }
-  .news-atlas-timeline-range { margin-left: 12px; }
 }
 
 @media (max-width: 620px) {
-  .news-atlas-layout { grid-template-columns: 128px minmax(0, 1fr); }
+  .news-atlas-layout, .news-atlas-layout.has-selection { grid-template-columns: 128px minmax(0, 1fr); }
   .news-atlas-dates { padding: 22px 10px 20px 0; }
   .news-atlas-timeline-head { padding-left: 8px; }
   .news-atlas-timeline-head strong { font-size: 14px; }
@@ -990,7 +987,6 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .news-atlas-timeline-date { display: grid; gap: 1px; }
   .news-atlas-timeline-date time { font-size: 12px; }
   .news-atlas-timeline-copy small { font-size: 10px; }
-  .news-atlas-timeline-range { margin-left: 8px; }
 }
 .bespoke-term-summary { max-width: 480px; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; align-items: center; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .bespoke-term-summary i { width: 20px; height: 20px; }

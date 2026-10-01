@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { ArrowUpRight, CornersOut, Minus, Plus } from "@phosphor-icons/react";
+import { ArrowUpRight, CornersOut, Minus, Plus, X } from "@phosphor-icons/react";
 import { createGraphSimulation, graphNeighbors, nudgeGraph, type GraphEdge, type GraphNode } from "@/lib/term-graph";
 
 type RelatedTerm = { slug: string; zh: string; en: string };
@@ -143,7 +143,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const todayKey = new Date().toISOString().slice(0, 10);
   const { nodes, edges } = useMemo(() => graphData(orderedArticles), [orderedArticles]);
   const articleBySlug = useMemo(() => new Map(orderedArticles.map(article => [article.slug, article])), [orderedArticles]);
-  const [selectedSlug, setSelectedSlug] = useState(orderedArticles[0]?.slug ?? "");
+  const [selectedSlug, setSelectedSlug] = useState("");
   const [hovered, setHovered] = useState("");
   const [showLines, setShowLines] = useState(true);
   const [view, setView] = useState<View>({ x: 0, y: 0, scale: .72 });
@@ -160,7 +160,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
-  const selected = articleBySlug.get(selectedSlug) ?? orderedArticles[0];
+  const selected = articleBySlug.get(selectedSlug);
   const selectedNodeSlug = selected ? `news:${selected.slug}` : "";
   const selectedNeighbors = useMemo(() => graphNeighbors(selectedNodeSlug, edges), [selectedNodeSlug, edges]);
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
@@ -304,6 +304,11 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     frame(selectedItems.length ? selectedItems : getPositions());
   }
 
+  function clearSelection() {
+    setSelectedSlug("");
+    setHovered("");
+  }
+
   function startDrag(event: PointerEvent<HTMLDivElement>) {
     if (event.button !== 0) return;
     const point = localPoint(event);
@@ -376,20 +381,18 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     }
   }
 
-  if (!selected) return null;
+  if (!orderedArticles.length) return null;
 
   return (
-    <section className="news-atlas" aria-label="新闻星历">
+    <section className="news-atlas" aria-label="世界最近发生了什么">
       <div className="news-atlas-heading">
         <div>
-          <p className="news-kicker">NEWS / 星历</p>
-          <h1>星历</h1>
-          <p>把进展放回上下文里。</p>
+          <p className="news-kicker">NEWS</p>
+          <h1>世界最近发生了什么</h1>
         </div>
-        <p className="news-atlas-hint">拖动星点或缩放画布，沿着概念关系继续阅读。</p>
       </div>
 
-      <div className="news-atlas-layout">
+      <div className={`news-atlas-layout${selected ? " has-selection" : ""}`}>
         <nav className="news-atlas-dates" aria-label="新闻时间线">
           <div className="news-atlas-timeline-head">
             <div><span>时间线</span><strong>最近进展</strong></div>
@@ -397,7 +400,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
           <div className="news-atlas-timeline-list">
             {timelineArticles.map(article => {
-              const isSelected = article.slug === selected.slug;
+              const isSelected = article.slug === selectedSlug;
               const isToday = article.publishedAt === todayKey;
               const date = utcDate(article.publishedAt);
               return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>
@@ -409,10 +412,6 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                 </span>
               </button>;
             })}
-          </div>
-          <div className="news-atlas-timeline-range">
-            <span>时间范围</span>
-            <time dateTime={days[0]}>{shortDateFormatter.format(utcDate(days[0]))}—{shortDateFormatter.format(utcDate(days[days.length - 1]))}</time>
           </div>
         </nav>
 
@@ -442,7 +441,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                 return <line key={key} ref={element => {
                   if (element) lineElements.current.set(key, { element, ...edge });
                   else lineElements.current.delete(key);
-                }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className={`news-atlas-graph-line${connected || hoveredConnected ? " is-connected" : ""}`} style={{ opacity: visible ? undefined : 0 }} />;
+                }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} strokeLinecap="round" className={`news-atlas-graph-line${connected || hoveredConnected ? " is-connected" : ""}`} style={{ opacity: visible ? undefined : 0 }} />;
               })}
             </svg>
             {nodes.map(node => {
@@ -480,7 +479,8 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
         </div>
 
-        <aside className="news-atlas-detail" aria-live="polite">
+        {selected && <aside className="news-atlas-detail" aria-live="polite" aria-label={`${selected.title}详情`}>
+          <button className="news-atlas-detail-close" type="button" aria-label="关闭新闻详情" onClick={clearSelection}><X size={18} /></button>
           <div className="news-atlas-detail-meta"><time dateTime={selected.publishedAt}>{longDateFormatter.format(utcDate(selected.publishedAt))}</time><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
           <h2>{selected.title}</h2>
           <p>{selected.summary}</p>
@@ -489,7 +489,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
             {selected.related.map(term => <Link key={term.slug} href={`/terms/${term.slug}`}>{term.zh}<span>{term.en}</span></Link>)}
           </div>
           <Link className="news-atlas-read" href={`/news/${selected.slug}`}>阅读文章 <ArrowUpRight size={19} aria-hidden="true" /></Link>
-        </aside>
+        </aside>}
       </div>
     </section>
   );
