@@ -68,27 +68,27 @@ export function QualityTermPage() {
 export function LineageTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={lineageSources}/>;
   return <ConceptArticle slug="data-lineage" title="数据血缘" sources={lineageSources} sections={[["relations", "从结果找到来源与过程"], ["trace", "同一份输入，两个报表值"], ["impact", "字段变化影响的下游输出"], ["history", "当前关系与历史记录要分开"]]}
-    intro={<>报表的合计从 2000 分变成 1800 分，需要查明是输入变化还是规则变化。数据血缘把来源、处理过程和结果关联起来，让一个数字有可以向上追查的路径。</>}
+    intro={<>报表的合计从 2000 分变成 1800 分，先别急着认定哪一版算错了：可能是输入变了，也可能是计算规则变了。数据血缘把这个结果、使用过的输入和处理过程关联起来，帮助我们沿记录查清变化来自哪里。</>}
     hero={<ConceptHero slug="data-lineage" label="1800分输出关联run43、减去优惠的规则和amount与discount两个输入字段"><div className={s.lineageHero}><div className={s.heroOutput}><strong>1800 分</strong><span>daily.total · v2</span></div><div className={s.heroRun}><code>run-43 · 规则 v2</code><code>sum(amount − discount)</code></div><div className={s.heroInputs}><code>amount</code><code>discount</code></div></div></ConceptHero>}>
     <ArticleSection id="relations" title="从结果找到来源与过程"><Legacy slug="data-lineage" names={["question", "definition"]}/>
-      <p id="lineage-relations" className="vp-citation-target"><strong>数据血缘记录数据与处理之间的依赖，帮助追查一个结果怎样产生、哪些后续结果依赖它。</strong>W3C PROV 的通用来源模型区分实体、活动和参与者，也描述使用、生成与派生关系。借到数据场景，输入表、处理任务与输出表各有不同身份；知道两个表相关，还需要知道中间实际做了什么。<Cite id="lineage-relations"/></p>
-      <p>向上看，是“这个合计来自哪些输入”；向下看，是“这份输入改变后，哪些输出可能需要复查”。<strong>依赖关系给出调查范围，不自动证明数据正确，也不自动执行修复。</strong></p>
+      <p id="lineage-relations" className="vp-citation-target"><strong>数据血缘记录数据与处理之间的依赖，帮助追查一个结果怎样产生、哪些后续结果依赖它。</strong>W3C PROV 是通用的来源记录模型：实体是要追查的东西，例如一份输入快照或输出报表；活动是发生过的处理，例如某次汇总；参与者是承担责任的人、组织或程序。模型可以表达活动使用了什么、生成了什么，以及一个结果由哪些输入派生而来。知道两个表相关，还需要知道中间实际做了什么。<Cite id="lineage-relations"/></p>
+      <p>向上看，是“这个合计来自哪些输入”；向下看，是“这份输入改变后，哪些输出可能需要复查”。没有血缘记录，也能逐份打开文件、检查计算规则或询问维护者，但要自己拼出这条路径。血缘把已知关系记下来，方便沿途调查；<strong>它不自动证明数据正确，也不自动执行修复。</strong>处理数据的任务负责计算，血缘记录负责说明这些处理怎样关联输入与结果。</p>
     </ArticleSection>
     <ArticleSection id="trace" title="同一份输入，两个报表值"><Legacy slug="data-lineage" names={["scene-heading"]}/>
-      <p>费用来源 s1 只有 A、B 两条，金额分别为 1200、800 分，优惠为 200、0 分。旧规则合计 amount 得到 2000；新规则先减去 discount，再合计得到 1800。两次使用相同输入，规则与运行记录不同。</p>
+      <p>费用来源 s1 是固定的输入快照，只有 A、B 两条记录。amount 是金额，discount 是优惠，单位都是分；A 为 1200 和 200，B 为 800 和 0。旧规则只加金额，1200＋800＝2000；新规则先分别减去优惠，再相加，（1200−200）＋（800−0）＝1800。两次使用相同输入，改变的是规则。演示里的 sum 表示求和，daily.total 是日合计的名称。</p>
       <LineageLesson/>
-      <p>这个演示展示预先登记的两次教学运行，没有执行 SQL、抓取日志或自动解析血缘。月度合计已登记依赖日合计，所以下游列表能沿这条边继续查找。<strong>源字段保留原值，高亮只表示本次规则是否使用它。</strong></p>
-      <p id="lineage-run" className="vp-citation-target">OpenLineage 把 Job 看作定义好的工作，把 Run 看作它某次实际发生的执行；运行事件可携带输入、输出与变化状态，也有不关联 Run 的设计期元数据事件。<strong>任务定义与某次运行记录不能混成一件事。</strong>追查昨日结果，应找到昨日实际使用的输入与规则，而不是只打开今天的代码。<Cite id="lineage-run"/></p>
+      <p>先展开“生成记录”，能看到输出 v1 对应 run-42 和规则 v1；再展开“输入字段”，能看到来源 s1 的 A、B，以及只有 amount 参与合计。切到输出 v2 后，生成记录变为 run-43 和规则 v2，amount 与 discount 都参与。本例展示预先登记的两次教学运行，没有执行 SQL、抓取日志或自动解析血缘。<strong>源字段保留原值，高亮只表示本次规则是否使用它。</strong>输入中有一列，不代表结果一定依赖那一列。</p>
+      <p id="lineage-run" className="vp-citation-target">OpenLineage 区分 Job、Run 和 Dataset：Job 是读取或生成数据的工作，Run 是这项工作的某次执行，Dataset 是其中涉及的数据集。运行事件可以记录开始、完成等状态，以及输入和输出；声明任务会使用哪些输入的设计期事件，则不属于某次 Run。<strong>“计划怎样处理”与“这一次实际怎样处理”需要分开。</strong>追查昨日结果，应找到昨日运行使用的输入与规则，今天的代码未必与当时相同。<Cite id="lineage-run"/></p>
       <div className={s.lineageComparison}><div><strong>2000 分</strong><code>run-42 · 规则 v1<br/>sum(amount)</code><p>只使用金额字段。优惠存在于输入中，却没有参与这次合计。</p></div><div><strong>1800 分</strong><code>run-43 · 规则 v2<br/>sum(amount − discount)</code><p>金额与优惠共同参与。结果变化来自规则变化，不是新增记录。</p></div></div>
     </ArticleSection>
     <ArticleSection id="impact" title="字段变化影响的下游输出"><Legacy slug="data-lineage" names={["quiz-heading"]}/>
-      <p id="lineage-columns" className="vp-citation-target">OpenLineage 的列级血缘可以描述输出列使用了哪些输入列及其转换方式。表级关系只能告诉你“这份报表依赖费用表”；<strong>字段级关系进一步区分金额与优惠是否参与合计。</strong>本例 v1 不读取 discount，v2 则读取它，因此同一个字段在两版规则下的影响范围不同。<Cite id="lineage-columns"/></p>
-      <p>展开下游影响，选 discount：旧版的两个合计没有使用它，新版的日合计及依赖日合计的月合计可能受影响。这个列表表示应复查的输出；字段数值还没有被修改，报表也没有在后台重新计算。</p>
-      <p id="lineage-impact" className="vp-citation-target">DataHub 可以查看上下游资产，也可以把视图聚焦到一个字段。血缘来自支持采集的来源、接口登记或人工维护，覆盖能力取决于实际接入。<strong>看不到一条边，不足以证明现实中没有依赖。</strong>先检查采集范围、更新时间和手工维护情况，再决定调查是否完整。<Cite id="lineage-impact"/></p>
+      <p id="lineage-columns" className="vp-citation-target">表里的字段就是一列数据，例如 amount 和 discount。OpenLineage 的列级血缘可以描述输出列使用了哪些输入列及其转换方式。表级关系告诉你“这份报表依赖费用表”；<strong>字段级关系进一步区分金额与优惠是否参与合计。</strong>本例规则 v1 不读取 discount，v2 则读取它，因此同一个字段在两版规则下的影响范围不同。<Cite id="lineage-columns"/></p>
+      <p>本例还登记了一条关系：monthly.total（月合计）使用 daily.total（日合计）。展开下游影响，选 discount：规则 v1 下两个合计都没有使用它，列表为 0 个；规则 v2 下，它先影响日合计，再沿已登记的关系影响月合计，列表为 2 个。这里列出的是需要复查的输出，字段数值没有被修改，报表也没有在后台重新计算。</p>
+      <p id="lineage-impact" className="vp-citation-target">DataHub 可以查看上游输入、下游输出，也可以把视图聚焦到一个字段。血缘可以从支持自动提取的系统采集，通过接口登记，或由人维护。图中的连线表示已记录的依赖，覆盖范围取决于实际接入。<strong>看不到一条连线，不足以证明现实中没有依赖。</strong>先检查采集范围、更新时间和手工维护情况，再决定调查是否完整。<Cite id="lineage-impact"/></p>
     </ArticleSection>
     <ArticleSection id="history" title="当前关系与历史记录要分开" className={base.offset}><Legacy slug="data-lineage" names={["prompt-heading"]}/>
-      <p id="lineage-history" className="vp-citation-target">DataHub 的这份文档说明，默认 UI 显示最新血缘；时间选择器过滤最新图中关系的更新时间，不会因此还原历史图。<strong>“查看旧日期”与“拿到旧运行的真实依赖”并不总是一回事。</strong>具体系统支持哪种历史能力，需要核对文档和实际保存的记录。<Cite id="lineage-history"/></p>
-      <ArticleAside title="有路径，还需要可重现的输入"><p>run-42 指向一个已经被覆盖的文件，仍不能复算昨日的 2000 分。血缘说明关系，<ConceptTerm slug="dataset-data">数据集</ConceptTerm> 版本保留相应输入，规则版本说明当时做了什么。它们要能对应起来，调查才不止于一张图。</p></ArticleAside>
+      <p id="lineage-history" className="vp-citation-target">DataHub 的这份文档说明，默认界面显示最新血缘；时间选择器只按连线的最后更新时间过滤这张最新图，不会还原当时的历史图。于是，选了昨天的日期，也不能据此认定看到的就是 run-42 的实际依赖。<strong>“过滤当前关系”与“查到旧运行记录”是两种能力。</strong>具体系统支持哪一种，需要核对文档和实际保存的记录。<Cite id="lineage-history"/></p>
+      <ArticleAside title="有路径，还需要可重现的输入"><p>即使 run-42 有完整的来源路径，如果输入文件已经被覆盖，仍不能仅凭路径复算昨日的 2000 分。血缘说明关系，<ConceptTerm slug="dataset-data">数据集</ConceptTerm> 版本保留相应输入，规则版本说明当时做了什么。它们要能对应起来，调查才不止于一张图。</p></ArticleAside>
       <p>追查异常结果时，先固定输出版本、运行记录、输入快照和规则版本。沿实际记录逐段核对数据变化，标出尚属推测的依赖，再列出需要重新计算、验证或人工确认的下游输出。</p>
     </ArticleSection>
   </ConceptArticle>;
