@@ -11,6 +11,7 @@ export type NewsAtlasArticle = {
   slug: string;
   title: string;
   summary: string;
+  eventDate: string;
   publishedAt: string;
   isExample: boolean;
   source: { name: string; url: string };
@@ -108,11 +109,11 @@ function graphData(articles: NewsAtlasArticle[]) {
 
 export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const orderedArticles = useMemo(
-    () => [...articles].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
+    () => [...articles].sort((a, b) => b.eventDate.localeCompare(a.eventDate)),
     [articles],
   );
-  const days = useMemo(() => timelineDays(orderedArticles[0]?.publishedAt ?? new Date().toISOString().slice(0, 10)), [orderedArticles]);
-  const timelineArticles = useMemo(() => orderedArticles.filter(article => days.includes(article.publishedAt)), [days, orderedArticles]);
+  const days = useMemo(() => timelineDays(orderedArticles[0]?.eventDate ?? new Date().toISOString().slice(0, 10)), [orderedArticles]);
+  const timelineArticles = useMemo(() => orderedArticles.filter(article => days.includes(article.eventDate)), [days, orderedArticles]);
   const todayKey = new Date().toISOString().slice(0, 10);
   const { nodes, edges } = useMemo(() => graphData(orderedArticles), [orderedArticles]);
   const articleBySlug = useMemo(() => new Map(orderedArticles.map(article => [article.slug, article])), [orderedArticles]);
@@ -432,12 +433,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           <div className="news-atlas-timeline-list">
             {timelineArticles.map(article => {
               const isSelected = detailOpen && article.slug === selectedSlug;
-              const isToday = article.publishedAt === todayKey;
-              const date = utcDate(article.publishedAt);
+              const isToday = article.eventDate === todayKey;
+              const date = utcDate(article.eventDate);
               return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>
                 <span className="news-atlas-timeline-marker" aria-hidden="true"><i /></span>
                 <span className="news-atlas-timeline-copy">
-                  <span className="news-atlas-timeline-date"><time dateTime={article.publishedAt}>{shortDateFormatter.format(date)}</time>{isToday && <em>今天</em>}</span>
+                  <span className="news-atlas-timeline-date"><time dateTime={article.eventDate}>{shortDateFormatter.format(date)}</time>{isToday && <em>今天</em>}</span>
                   <small>{weekdayFormatter.format(date)}</small>
                   <strong>{article.title}</strong>
                 </span>
@@ -484,12 +485,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               const starSize = node.slug === selectedNodeSlug ? 58 : 39;
               const label = article?.title;
               const classes = `news-atlas-node news-atlas-${node.kind}-node${highlighted ? " is-highlighted" : ""}${node.slug === selectedNodeSlug ? " is-selected" : ""}${node.slug === hovered ? " is-hovered" : ""}${muted ? " is-muted" : ""}`;
-              return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.publishedAt)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
+              return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.eventDate)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
                 if (element) nodeElements.current.set(node.slug, element);
                 else nodeElements.current.delete(node.slug);
               }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
                 <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" />
-                <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.publishedAt))}</small>}</span>
+                <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.eventDate))}</small>}</span>
               </button>;
             })}
           </div>
@@ -512,7 +513,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           <div className="news-atlas-detail-body" id="news-atlas-detail-content" aria-live="polite" aria-hidden={!detailOpen} inert={!detailOpen}>
           <div className="news-atlas-detail-content">
           <div className="news-atlas-detail-copy">
-          <div className="news-atlas-detail-meta"><time dateTime={selected.publishedAt}>{longDateFormatter.format(utcDate(selected.publishedAt))}</time><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
+          <div className="news-atlas-detail-meta"><time dateTime={selected.eventDate}>事件 {longDateFormatter.format(utcDate(selected.eventDate))}</time><span>来源发布 {longDateFormatter.format(utcDate(selected.publishedAt))}</span><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
           <h2>{selected.title}</h2>
           <p>{selected.summary}</p>
           <div className="news-atlas-related">
