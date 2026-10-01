@@ -13,23 +13,23 @@ export function HybridSearchTermPage() {
     intro={<>查“MX-42 经常断开连接”，型号适合按字面匹配，“断开连接”又可能在文档里写成“掉线”或“重连”。混合搜索组合不同的检索信号，再把候选汇成一份结果。</>}
     hero={<ConceptHero slug="hybrid-search" label="关键词与语义两路排名，共同出现的B只保留一条并合计排名贡献"><div className={s.fusionHero}><div><span>关键词 A → B → C</span></div><div><span>语义 B → D → A</span></div><strong>B · 两路贡献相加</strong></div></ConceptHero>}>
     <ArticleSection id="routes" title="一次查询，两种检索信号"><Legacy slug="hybrid-search" names={["question", "definition"]}/>
-      <p id="hybrid-definition" className="vp-citation-target"><strong>混合搜索把不同检索方法的结果组合起来。</strong>Azure AI Search 的实现并行执行全文与向量查询，再用 RRF 合并排名。词项匹配可以利用型号、代码等具体表达，向量查询则按表示空间中的相近程度寻找候选。<strong>两种信号互补，也都可能找到无关资料。</strong>这只是混合搜索的一种实现，后续还可以重排。<Cite id="hybrid-definition"/></p>
+      <p id="hybrid-definition" className="vp-citation-target"><strong>混合搜索把不同检索方法的结果组合起来。</strong>Azure AI Search 的实现并行执行全文与向量查询，再用 RRF 合并排名。词项匹配（关键词路线）可以利用型号、代码等具体表达；向量查询（语义路线）则把文字编码成数字，按表示空间中的相近程度寻找候选。<strong>两种信号互补，也都可能找到无关资料。</strong>这只是混合搜索的一种实现，后续还可以重排。<Cite id="hybrid-definition"/></p>
       <p>产品型号与故障描述承担不同作用。“MX-42”确定了对象，“经常断开连接”表达了问题；如果资料只写“掉线重连”，单纯词项匹配可能漏掉它。反过来，另一型号的重连指南即使意思接近，也未必适用。</p>
-      <p>硬性条件应单独限定。例如只允许返回 MX-42 的资料，就要明确过滤型号；给型号匹配加一点分，仍可能让其他型号进入结果。<ConceptTerm slug="semantic-search">语义搜索</ConceptTerm> 帮助找相近表达，不能替代适用范围检查。</p>
+      <p>硬性条件应单独限定。例如只允许返回 MX-42 的资料，就要明确过滤型号；给型号匹配加一点分，只会提高它的排名，另一型号里“断开连接”写得更详细的资料仍可能压过它。过滤是直接把不合格资料排除出候选。<ConceptTerm slug="semantic-search">语义搜索</ConceptTerm> 帮助找相近表达，不能替代适用范围检查。</p>
     </ArticleSection>
     <ArticleSection id="fusion" title="把两路排名合成一份"><Legacy slug="hybrid-search" names={["scene-heading"]}/>
       <p id="hybrid-calculation" className="vp-citation-target">RRF 按名次分配贡献：<strong>每路出现一次，就加上 1 / (k + 名次)</strong>；没有进入这路候选，贡献为 0。同一文档按 ID 合并。Elastic 的实现以第一名为 1，并通过候选窗口限制参与融合的结果。它使用排名，避免直接比较两种原始分数。<Cite id="hybrid-calculation"/></p>
-      <p>下面是四篇虚构资料和两份预设排名，没有执行全文或向量检索。本例取 k = 60，每路最多三条，融合后只显示前三条。条形的深浅分别对应两路贡献；改动路线或窗口，再融合一次。</p>
+      <p>下面是四篇虚构资料和两份预设排名：关键词路是 A①、B②、C③，语义路是 B①、D②、A③；名次从 1 开始，没有执行真实检索。本例取 k = 60，每路最多三条，融合后只显示前三条。k 是缓和名次差距的常数，不是取 60 条；条形的深浅分别对应两路贡献，改动路线或窗口，再融合一次。</p>
       <HybridLesson/>
       <p>默认 B 得到 1/62 + 1/61，A 得到 1/61 + 1/63，所以 B 略高。D 只在语义路线排第二，仍能进入合并结果。<strong>同一文档被两路找到，会合计贡献，但不会复制成两条。</strong>同分时本例按 ID 排序，这只是确定展示顺序的约定。</p>
     </ArticleSection>
     <ArticleSection id="scores" title="两路分数不能直接相加"><Legacy slug="hybrid-search" names={["quiz-heading"]}/>
-      <p id="hybrid-scales" className="vp-citation-target">全文分数与向量相似度可能使用不同尺度。Weaviate 文档对比基于排名的融合与先归一化再加权的融合：前者主要保留顺序，后者还保留分数间的相对差距。<strong>融合规则决定保留哪种信息。</strong>归一化加权需要相应尺度处理，RRF 则不要求把原始分数先变成同一种单位。<Cite id="hybrid-scales"/></p>
+      <p id="hybrid-scales" className="vp-citation-target">全文分数与向量相似度可能使用不同尺度。Weaviate 文档对比基于排名的融合与先归一化再加权的融合：前者主要保留顺序，后者还保留分数间的相对差距。<strong>融合规则决定保留哪种信息。</strong>归一化加权要先把每路分数缩到可比较的区间，再按权重相加；RRF 则不要求把原始分数先变成同一种单位。<Cite id="hybrid-scales"/></p>
       <div className={s.pair}><div><h3>按排名融合</h3><p>第一与第二差一点还是差很多，都只通过名次体现。参数 k 改变名次差异的影响，本页固定为 60。</p></div><div><h3>按归一分数融合</h3><p>先处理每路分数尺度，再按权重相加。归一方式、异常高分与权重会影响结果，需要用实际问题评估。</p></div></div>
       <p>融合分数表达这套规则下的排序贡献，<strong>不是答案正确率，也不是资料真实度。</strong>无论怎样融合，仍要读取原文，核对型号、版本、条件和问题是否对应。</p>
     </ArticleSection>
     <ArticleSection id="limits" title="候选范围决定融合结果" className={base.offset}><Legacy slug="hybrid-search" names={["prompt-heading"]}/>
-      <p id="hybrid-window" className="vp-citation-target">候选窗口与最终显示数量是两个步骤。Elastic 先取各路窗口中的结果参与融合，再截取最终数量。<strong>不在任何一路窗口里的资料，不会凭空进入合并结果。</strong>把本例窗口改成 1，只剩 A、B；D 即使有用，也没有参与这次计算。<Cite id="hybrid-window"/></p>
+      <p id="hybrid-window" className="vp-citation-target">每路候选窗口就是这一路最多取前几名；候选窗口与最终显示数量是两个步骤。Elastic 先取各路窗口中的结果参与融合，再截取最终数量。<strong>不在任何一路窗口里的资料，不会凭空进入合并结果。</strong>把本例窗口改成 1，只剩 A、B；D 即使有用，也没有参与这次计算。<Cite id="hybrid-window"/></p>
       <p id="hybrid-evaluation" className="vp-citation-target">RRF 原始论文用多个 TREC 与 LETOR 实验考察排名融合，并在研究中选择 k = 60。结果支持它在这些实验中的效果，<strong>不能由此推断所有资料库都必然改善。</strong>自己的问题集仍需检查关键资料是否进入前排、型号不符的内容是否被误选，以及增加路线的成本。<Cite id="hybrid-evaluation"/></p>
       <ArticleAside title="融合后的核对"><p>需要更细地比较查询与候选时，可以继续做 <ConceptTerm slug="reranking">重排序</ConceptTerm>。它处理已经选出的候选；融合扩大了可比较的范围，但两者都无法代替资料本身的质量。</p></ArticleAside>
     </ArticleSection>
