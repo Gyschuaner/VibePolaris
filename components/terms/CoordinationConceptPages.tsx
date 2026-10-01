@@ -71,27 +71,27 @@ export function WebhookTermPage() {
 export function DistributedTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={distributedSources}/>;
   return <ConceptArticle slug="distributed-system" title="分布式系统" sources={distributedSources} sections={[["nodes", "多处执行，通过消息协作"], ["observe", "同一次请求，两端所见不同"], ["timeout", "超时以后，执行结果仍需核对"], ["ordering", "顺序与重试需要共同约定"]]}
-    intro={<>读者在借阅服务点击借书。借阅服务把带有操作 ID <code>reserve-42</code> 的请求发给库存服务，请它扣掉一本书。两处服务通过网络传消息；库存服务可能已经扣减，确认却没回来，借阅服务只看到超时。分布式系统让不同进程协作，也使延迟、局部故障和信息不完整成为日常设计问题。</>}
-    hero={<ConceptHero slug="distributed-system" label="B 已扣减一本库存，确认未送达，A 看到的仍是执行结果未知"><div className={s.distributedHero}><div><span>A · 借阅服务</span><EnvelopeSimple size={27}/><strong>未知</strong><code>确认未到达</code></div><div><span>B · 库存服务</span><Database size={27}/><strong className={s.heroStock}>5 → 4</strong><code>已执行 reserve-42</code></div></div></ConceptHero>}>
+    intro={<>读者在借阅服务点击借书。本文把借阅服务记作 A，把库存服务记作 B：A 把带有操作 ID <code>reserve-42</code> 的请求发给 B，请它扣掉一本书。两个服务之间通过网络传消息；B 可能已经扣减，确认却没回来，A 只看到超时。分布式系统让跑在不同地方的程序互相协作，代价是延迟、局部故障和信息不完整都会成为设计上经常要处理的问题。</>}
+    hero={<ConceptHero slug="distributed-system" label="B 已扣减一本库存，确认未送达，A 侧仍是：执行结果未知"><div className={s.distributedHero}><div><span>A · 借阅服务</span><EnvelopeSimple size={27}/><strong>未知</strong><code>确认未到达</code></div><div><span>B · 库存服务</span><Database size={27}/><strong className={s.heroStock}>5 → 4</strong><code>已执行 reserve-42</code></div></div></ConceptHero>}>
     <ArticleSection id="nodes" title="多处执行，通过消息协作"><Legacy slug="distributed-system" names={["question", "definition"]}/>
-      <p id="distributed-definition" className="vp-citation-target"><strong>分布式系统把任务交给多个独立运行的程序或服务，它们通过网络消息协作；这里把每一方叫作一个节点。</strong>Lamport 的经典论文把分布式进程中的事件顺序建立在进程内顺序和消息发送、接收关系上。消息需要传输，各节点不能瞬间知道其他节点刚发生了什么；即使多个进程在同一台机器上，只要它们独立运行并靠消息协作，也会遇到类似的信息延迟。<Cite id="distributed-definition"/></p>
-      <p>借阅服务处理读者请求，库存服务保管可借数量。职责分开后可以独立运行，但 A 对 B 的了解来自已经收到的消息。<strong>“有多台机器”还不是设计的全部，关键是它们如何协作，以及失去联系时怎样判断和恢复。</strong></p>
+      <p id="distributed-definition" className="vp-citation-target"><strong>分布式系统把任务交给多个独立运行的程序或服务，它们通过网络消息协作；这里把每一方叫作一个节点。</strong>这里的“程序”是代码，“进程”是正在运行的一份程序，“服务”是按职责对外提供某种能力的运行中的程序；在这个例子里，借阅服务和库存服务各自运行，也各算一个节点。消息需要传输，各节点不能瞬间知道其他节点刚发生了什么。<strong>事件谁先谁后</strong>因此需要重新定义：Lamport 的经典论文把分布式进程中的事件顺序建立在进程内顺序和消息发送、接收关系上。即使多个进程在同一台机器上，只要它们独立运行并靠消息协作，也会遇到类似的信息延迟。<Cite id="distributed-definition"/></p>
+      <p>借阅服务 A 处理读者请求，库存服务 B 保管可借数量。职责分开后，两边可以各自独立运行，但 A 对 B 的了解只来自已经收到的消息。<strong>“有多台机器”还不是设计的全部，关键是它们如何协作，以及失去联系时怎样判断和恢复。</strong></p>
     </ArticleSection>
     <ArticleSection id="observe" title="同一次请求，两端所见不同"><Legacy slug="distributed-system" names={["scene-heading"]}/>
-      <p id="distributed-failure" className="vp-citation-target">一次跨网络请求至少要经过八个动作：A 把请求交给网络，网络送到 B，B 校验请求并修改自己的状态，B 把响应交给网络，网络把响应送回 A，A 再校验响应并更新自己的记录。AWS Builders’ Library 将这些阶段分开讨论，因为客户端、服务器和网络可以独立失败。请求没到与响应丢失，都可以表现为调用端超时。<strong>调用端此时知道的是“没有在期限内收到确认”，执行结果仍然未知。</strong><Cite id="distributed-failure"/></p>
-      <p>先看 B 执行后响应丢失，再切到请求在途中丢失。两次 A 都超时，B 的库存却分别为 4 与 5。本例手动推进两个固定故障，恢复后按已经说明的操作 ID 核对与重试；没有真实网络、共识协议或跨服务事务。</p>
+      <p id="distributed-failure" className="vp-citation-target">为了看清消息可能在哪一步丢失，一次跨网络请求可以拆成八步：① A 把请求交给网络；②网络把请求送到 B；③ B 校验请求；④ B 修改自己的状态；⑤ B 把响应交给网络；⑥网络把响应送回 A；⑦ A 校验响应；⑧ A 更新自己的记录。AWS Builders’ Library 将这些阶段分开讨论，因为客户端、服务器和网络可以独立失败。请求没到与响应丢失，都可以表现为调用方超时。<strong>调用方此时知道的是“没有在期限内收到确认”，执行结果仍然未知。</strong><Cite id="distributed-failure"/></p>
+      <p>先演示第一种故障：B 已经扣减，但响应在回来的路上丢失；再切换到第二种：请求在去的路上就丢了。两种情况下 A 都超时，B 的库存却不同：前一种剩 4，后一种还是 5。这两种故障都是演示预设好的，由读者手动一步步推进；“恢复网络”只是解除预设的丢失条件，不是真正断开或恢复本机网络。恢复后要凭操作 ID 去 B 核对，再决定是否重试，具体方法下一节展开。演示里没有真实网络，也不涉及共识协议或跨服务事务。</p>
       <DistributedLesson/>
-      <p>左右两列展示各端实际记录，读者能同时看到，A 却不能凭空读取右边的状态。查询或重新得到确认以后，A 才能更新判断。这种局部信息差，正是演示要保留下来的部分。</p>
+      <p>左右两列展示各端实际记录，读者能同时看到，A 却不能凭空读取右边的状态。演示里 B 的执行按钮由读者手动推进，用来把“请求已到达”和“B 已修改状态”分开；真实服务会按自己的处理逻辑继续执行。查询或重新得到确认以后，A 才能更新判断。这种局部信息差，正是演示要保留下来的部分。</p>
     </ArticleSection>
     <ArticleSection id="timeout" title="超时以后，执行结果仍需核对"><Legacy slug="distributed-system" names={["quiz-heading"]}/>
-      <p id="distributed-timeout" className="vp-citation-target">超时限制调用方等待与占用资源的时间；AWS 的重试讨论特别指出，失败或超时不代表副作用没有发生。<strong>A 停止等待，不会自动撤销 B 已经执行的库存扣减。</strong>取消执行需要单独的协议与处理，不能由一个本地计时器推断出来。<Cite id="distributed-timeout"/></p>
-      <p id="distributed-reconcile" className="vp-citation-target">这种“同一个操作重复请求，结果不新增副作用”的约定常称为幂等。AWS 的幂等 API 设计使用调用方提供的请求标识，识别重试并返回已有操作结果。标识记录与业务修改必须一起可靠提交；同一标识换了参数，也需要拒绝或明确处理。<strong>核对 <code>reserve-42</code>，或带原标识重试，可以恢复对同一次操作的判断，而不是重新扣一本书。</strong><Cite id="distributed-reconcile"/></p>
-      <div className={base.contrast}><div><h3>查询原操作</h3><p>查 reserve-42 的记录。本例直接查 B 的确定记录；实际系统要核对查询一致性与仍在执行的工作，不能把一次“未查到”普遍当作永远不会执行。</p></div><div><h3>重试原操作</h3><p>保留操作 ID 与参数。B 识别已有记录后返回结果。换一个 ID 或缺少可靠去重，可能使相同意图被执行两次。</p></div></div>
+      <p id="distributed-timeout" className="vp-citation-target">超时的作用是限制调用方等待和占用资源的时间；AWS 的重试讨论特别指出，失败或超时不代表副作用没有发生（副作用指操作造成的实际改变，比如库存少了一本）。<strong>A 停止等待，不会自动撤销 B 已经执行的库存扣减。</strong>取消执行需要单独的协议与处理，不能因为 A 本地的计时器到点了，就认定 B 那边已经取消。这里的“库存事务”，指的是 B 把扣减和自己的操作记录写成同一个不可拆开的状态变更；跨服务事务还需要额外协议，不能靠 A 的计时器完成。<Cite id="distributed-timeout"/></p>
+      <p id="distributed-reconcile" className="vp-citation-target">这种“同一个操作重复请求，结果不新增副作用”的约定常称为幂等。AWS 的幂等 API 设计使用调用方提供的请求标识，识别重试并返回已有操作结果；这个请求标识在本例里就是操作 ID <code>reserve-42</code>。操作标识的记录必须和库存修改一起可靠提交；否则 B 可能已经扣书，却没记下可用于去重的标识，下一次重试就无法判断是否做过。如果同一个标识配上了不同的参数，B 要拒绝它，或明确说明怎么处理。<strong>核对 <code>reserve-42</code>，或带原标识重试，可以恢复对同一次操作的判断，而不是重新扣一本书。</strong><Cite id="distributed-reconcile"/></p>
+      <div className={base.contrast}><div><h3>查询原操作</h3><p>查 reserve-42 的记录。演示里 B 的记录是确定的，直接查即可；实际系统要核对查询一致性和仍在执行的工作，因为查询本身可能延迟或读到旧视图，不能因为一次没查到，就断定它永远不会被执行。</p></div><div><h3>重试原操作</h3><p>保留操作 ID 与原参数。B 识别已有记录后返回结果。换一个 ID 或缺少可靠的去重，同一件事就可能被执行两次。</p></div></div>
     </ArticleSection>
     <ArticleSection id="ordering" title="顺序与重试需要共同约定" className={base.offset}><Legacy slug="distributed-system" names={["prompt-heading"]}/>
-      <p id="distributed-order" className="vp-citation-target">Lamport 用“先发生”关系描述因果：同一进程内的先后、发送在接收之前，以及这些关系的传递。没有这种关系的事件可以并发。<strong>仅比较两台机器上的时间戳，不能单独证明业务的因果关系。</strong>逻辑时钟是节点内部递增的计数，用来保持这类先后关系；它不是共享的墙上时间，也不能自行代替库存事务或幂等保护。<Cite id="distributed-order"/></p>
-      <ArticleAside title="恢复通信，也要限制重试规模"><p id="distributed-budget" className="vp-citation-target">AWS 提醒重试可能加重过载，多层同时重试会放大请求量；退避、次数限制和抖动用于减少集中的重复请求。它们控制尝试节奏，却不替代副作用的幂等设计。先明确可以重试什么，再决定重试多少次与等待多久。<Cite id="distributed-budget"/></p></ArticleAside>
-      <p>拆分服务前，先确定谁保管权威状态、请求和响应里的业务数据、操作 ID，以及超时后的核对方法。区分“未收到确认”“远端未执行”与“确认已执行”，再讨论 <ConceptTerm slug="microservices">微服务</ConceptTerm> 或其他部署方式。</p>
+      <p id="distributed-order" className="vp-citation-target">Lamport 用“先发生”关系描述因果：同一进程内的先后、发送在接收之前，以及这些关系的传递：如果甲早于乙、乙早于丙，那么甲早于丙。比如，<code>A 发出 reserve-42</code> 发生在 <code>B 收到它</code> 之前。两个事件之间如果没有任何消息链相连，就分不出先后，称为并发。<strong>只比较两台机器上的时间戳，证明不了业务上的因果关系。</strong>两台机器各自显示的钟表时间（所谓墙上时钟）可能有偏差，网络也可能让后发生的消息先到。逻辑时钟是节点内部递增的计数：发送消息前先递增，并把这个计数随消息发送；接收方把自己的计数推进到大于消息计数，用来保留“发送在接收之前”的关系。它不是共享的墙上时间，也不能自行代替库存事务或幂等保护。<Cite id="distributed-order"/></p>
+      <ArticleAside title="恢复通信，也要限制重试规模"><p id="distributed-budget" className="vp-citation-target">AWS 提醒重试可能加重过载，多层同时重试会放大请求量；退避让相邻两次重试之间的等待逐次拉长，次数限制防止无限重试，抖动则是在等待时间上加一点随机差异，让同时失败的客户端不要在同一刻再次冲向服务。它们控制的是重试的节奏，替代不了针对副作用的幂等设计。先明确可以重试什么，再决定重试多少次与等待多久。<Cite id="distributed-budget"/></p></ArticleAside>
+      <p>拆分服务前，先确定几件事：谁保管权威状态，请求和响应里要传哪些业务数据和操作 ID，以及超时后怎么核对。区分“未收到确认”“远端未执行”与“确认已执行”，再讨论 <ConceptTerm slug="microservices">微服务</ConceptTerm> 或其他部署方式。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
