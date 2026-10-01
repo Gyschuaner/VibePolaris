@@ -86,7 +86,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 本地正文与浏览器验收完成；待 ZCode/DP/生产网络恢复 |
 | 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
-| 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 本地正文与浏览器验收完成；待正文发布，交互功能留在本地 |
+| 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 70 data-quality | 适合用途的程度 | 完整性、时效等局部缺口在真实记录上显露 | 待更新 |
 | 71 data-lineage | 数据的来路与变化 | 从结果逆向展开实际来源与变换分支 | 待更新 |
 | 72 dataframe | 可操作的二维数据 | 列切片、行筛选在同一二维平面展开 | 待更新 |
@@ -1748,10 +1748,10 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 - 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`DatasetLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。
 - CUA 在 `http://127.0.0.1:3219/terms/dataset-data?qa=069final` 的重启后服务上真实操作并观察：先保存快照显示 `v1 · 来源 s1 · 09-01—09-02 · 3 条 · A/B/C`；点击“来源新增 D”、勾选“把范围延长到 9 月 3 日”并保存后，显示 `v2 · 来源 s2 · 09-01—09-03 · 4 条 · A/B/C/D`，E 仍在范围外。展开 DCAT 引用后，点击“来源更新，旧版本仍要可查”回到版本段落，截图已实际观察；浏览器 `error/warn` 为空。
-- 演示只复制固定记录并保存在浏览器内存，不读取真实文件、DVC、数据服务或远端 API；没有真实数据集发布、真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+- 演示只复制固定记录并保存在浏览器内存，不读取真实文件、DVC、数据服务或远端 API；没有真实数据集发布、真人零基础读者或生产功能验证。正文合入 `main` 后，使用第 68 条镜像作为基础并替换发布 worktree 的 `.next` 产物，生成 `vibepolaris:2095d288c7d7fee4fd677bfe73fa470d4d9550f5`（`linux/amd64`，约 1.27 GB）；本地容器 3222 端口返回 200，并精确包含“分发形式回答”“来源和范围都改变时，要把新快照与旧快照分开”和“Dataset Card 是数据仓库里的 README”。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
 
 ### DP、Git 与发布边界
 
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 69 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 69 条正文待本轮提交。正文发布分支应从 `origin/main` 的第 68 条合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa` 新建，只复制正文文件，不带入 `DatasetLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文与记录提交 `c6fe613`。正文发布分支 `release/VBP-030-dataset-content-20261001` 从第 68 条合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa` 新建，只复制正文文件，提交 `d6a14fc` 经 [PR #249](https://github.com/Gyschuaner/VibePolaris/pull/249) 合入 `main`，当前合并提交 `2095d288c7d7fee4fd677bfe73fa470d4d9550f5`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **69/105**，下一条是 `data-quality`。
