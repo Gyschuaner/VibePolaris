@@ -66,25 +66,25 @@ export function ChunkingTermPage() {
 export function RerankingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={rerankingSources}/>;
   return <ConceptArticle slug="reranking" title="重排序" sources={rerankingSources} sections={[["second-pass", "对已有候选再排一次"], ["pairs", "带着查询逐篇核对"], ["models", "规则与模型给出的新顺序"], ["window", "候选以外的资料不会出现"]]}
-    intro={<>三篇候选都谈退款，用户却问“线上退款审核通过后，多久到账”。重新读取查询与候选，可以让真正覆盖这些条件的资料排到前面；没有进入候选的资料，无法靠重排找回来。</>}
+    intro={<>检索先交回三篇候选，用户却问“线上退款审核通过后，多久到账”。重排序再读取查询与这批候选，把更覆盖条件的资料排到前面；没有进入候选的资料，无法靠重排找回来。</>}
     hero={<ConceptHero slug="reranking" label="查询条件逐项核对线上退款文档，三个条件一起决定优先阅读"><div className={s.rerankHero}><ListChecks size={27}/><strong>线上退款时效</strong><div>{['线上', '审核通过', '到账时间'].map((text, i) => <span key={text} style={{ '--check': i } as CSSProperties}>✓ {text}</span>)}</div><p>优先读取 B</p></div></ConceptHero>}>
     <ArticleSection id="second-pass" title="对已有候选再排一次"><Legacy slug="reranking" names={["question", "definition"]}/>
       <p><strong>重排序是在已取回的候选里，按新的判断重新安排顺序。</strong>第一阶段通常先从大集合找出一批内容，后续可以使用更细的规则或模型比较。它改变阅读的优先级，原文内容和已有候选范围并不会因此自动改变。</p>
-      <p id="rerank-pairs" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先检索候选，再让 Cross-Encoder 联合读取查询与每篇候选，给出用于排序的分数。<strong>逐对读取能检查更具体的关系，也增加计算量。</strong>这是重排的一种实现；不必把“使用 Cross-Encoder”当成重排序的定义。<Cite id="rerank-pairs"/></p>
+      <p id="rerank-pairs" className="vp-citation-target">Sentence Transformers 的 Retrieve &amp; Re-Rank 先检索候选，再让 Cross-Encoder 联合接收查询与每篇候选文本，给出用于排序的分数。<strong>逐对读取能检查更具体的关系，但比只看向量或词项的初筛更贵。</strong>这是重排的一种实现；不必把“使用 Cross-Encoder”当成重排序的定义。<Cite id="rerank-pairs"/></p>
       <p>申请入口只说明“怎么申请”，柜台时效不适用于线上退款。标题和词项都很接近，但它们覆盖的条件不同。排序需要比较问题真正要求的内容，也要保留文档的适用范围。</p>
     </ArticleSection>
     <ArticleSection id="pairs" title="带着查询逐篇核对"><Legacy slug="reranking" names={["scene-heading"]}/>
-      <p>候选初始顺序固定为 A、C、B，不来自真实搜索。先取前两篇，带着查询逐篇核对原文中的条件，再生成新顺序。这里按预先标注的事实数数：满足多少条查询条件，就优先多少；同数保持原来的顺序。</p>
+      <p>候选初始顺序固定为 A、C、B，不来自真实搜索。它们是检索之前交回的文档；窗口表示这次交给重排处理的候选数量。先取前两篇，带着查询逐篇核对原文中的条件，再生成新顺序。这里按预先标注的事实数数：满足多少条查询条件，就优先多少；同数保持原来的顺序。</p>
       <RerankingLesson/>
-      <p>只取 A、C 时，重排得到 C、A；C 覆盖审核与时效，却不适用于线上。扩大到三篇，B 才进入候选并排到首位。改问申请入口，A 又优先。<strong>这些是明确的手工标注与计数，没有运行重排模型。</strong>缺失的条件不会因为排到第一就自动得到补齐。</p>
+      <p>只取 A、C 时，重排得到 C、A；C 覆盖审核与时效，却不适用于线上。C 排在前面正好说明“话题相近”不等于满足全部条件。扩大到三篇等于改变了交给重排的候选范围，B 才进入候选并排到首位，不是重排把窗口外的 B 找了回来。改问申请入口，A 又优先。<strong>演示里的顺序是按预先标注的条件排好的，没有真的运行模型；实际工具会由规则或模型计算排序信号。</strong>缺失的条件不会因为排到第一就自动得到补齐。</p>
     </ArticleSection>
     <ArticleSection id="models" title="规则与模型给出的新顺序"><Legacy slug="reranking" names={["quiz-heading"]}/>
       <p id="rerank-learning" className="vp-citation-target">Nogueira 与 Cho 的 BERT 重排论文，把查询和段落作为成对输入，用标注过的查询—段落训练相关性判断，再对初始检索结果重新排序。<strong>模型分数来自训练任务和数据。</strong>论文在特定检索数据集上的结果，不能直接替代对自己的退款资料、语言与查询分布的评估。<Cite id="rerank-learning"/></p>
-      <p id="rerank-index" className="vp-citation-target">Cohere 的 Rerank 接口接收查询和一组文档，返回原始文档列表中的索引及相关性分数。<strong>新顺序需要对应回原文。</strong>调用方仍需按索引读取正确内容、保存出处；不能把分数当成事实正确率，也不能把新列表的位置误认为原文的编号。<Cite id="rerank-index"/></p>
+      <p id="rerank-index" className="vp-citation-target">实际系统可以调用 Cohere 的 Rerank 接口：它接收查询和一组文档，返回从 0 开始的原始列表位置及相关性分数。<strong>新顺序只是决定先读谁，调用方仍要用这个位置找回对应原文并保存出处。</strong>不能把分数当成事实正确率，也不能把新列表的位置误认为文档编号。<Cite id="rerank-index"/></p>
       <div className={s.ruleNote}><h3>相关，不等于可靠</h3><p>过期规则、错误陈述也可能非常贴题。可以另设版本、权限或出处条件，筛掉不可用材料；排序承担的是先看哪篇，不是替文档证明真假。</p></div>
     </ArticleSection>
     <ArticleSection id="window" title="候选以外的资料不会出现" className={base.offset}><Legacy slug="reranking" names={["prompt-heading"]}/>
-      <p id="rerank-window" className="vp-citation-target">Elasticsearch 的 rescore 在各分片先选定结果窗口，再做额外的查询、脚本或学习排序，以控制计算开销。<strong>处理窗口限制了能重排的候选。</strong>本页只有一个小列表，不模拟分片流程；共同的边界是：资料不在处理范围内，就不会因这个阶段出现。<Cite id="rerank-window"/></p>
+      <p id="rerank-window" className="vp-citation-target">Elasticsearch 的 <code>rescore</code> 是一种具体 API：它在各分片先选定结果窗口，再做额外的查询、脚本或学习排序，以控制计算开销。<strong>处理窗口限制了能重排的候选。</strong>本页只有一个小列表，不模拟分片流程；共同的边界是：资料不在处理范围内，就不会因这个阶段出现。<Cite id="rerank-window"/></p>
       <ArticleAside title="区分漏召回与排错顺序"><p>正确资料没进入候选，先检查 <ConceptTerm slug="retrieval">检索</ConceptTerm> 和候选数量；已经进入却排得靠后，再检查重排依据。增加窗口可能改善覆盖，也会增加工作量，需要同时观察质量与延迟。</p></ArticleAside>
       <p>接入 <ConceptTerm slug="rag">RAG</ConceptTerm> 后，排在前面的资料只是更早进入阅读。回答仍要核对条件、冲突和引用；遇到本例的 C，也应该说明渠道不符，而不是直接回答七个工作日。</p>
     </ArticleSection>
