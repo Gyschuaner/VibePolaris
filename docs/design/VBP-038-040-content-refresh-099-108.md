@@ -87,3 +87,13 @@
 - 首次使用 `127.0.0.1` 时 Next 开发资源被 `allowedDevOrigins` 拦截，且磁盘空间不足；清理其他 worktree 的可再生缓存后改用同源 `localhost` 复验通过。该环境问题未改入产品配置。
 
 本地工作树改动只在四个概念正文组件与本记录、索引文件；Lessons、registry、source arrays没有改动。生产发布证据、PR、回滚和 DP 结果在合批上线后继续补记。
+
+
+## 批量上线结果（2026-10-01）
+
+- PR [#262](https://github.com/Gyschuaner/VibePolaris/pull/262) 已合入 `main`，合并提交为 `840340480974f0bbda52ca4f030639897bdd02fb`。
+- 生产叠加分支为 `release/VBP-038-prod-overlay-20261001`，从线上 `release/VBP-049-news-fix-20261001`（`1ea5c652469acb7bfa3753064f6ce442d7fb9333`）切出，只叠加本批四个正文组件；提交 `10914cce053471e27c33a117ebcc496784507f13` 已推送。
+- 生产镜像为 `vibepolaris:10914cce053471e27c33a117ebcc496784507f13`，发布目录为 `/opt/vibepolaris/releases/20261001T123129Z-10914cce0534`，当前容器 `healthy`。回滚基线保留在 `/opt/vibepolaris/releases/20261001T115904Z-1ea5c652469a`，旧镜像为 `vibepolaris:1ea5c652469acb7bfa3753064f6ce442d7fb9333`；小北数据库卷未改动。
+- 生产验收：`/terms/citation`、`grounding`、`hallucination`、`eval`、`benchmark`、`grader`、`evaluation-dataset`、`model-routing`、`model-fallback`、`prompt-caching` 和 `/news` 均返回 HTTP 200，十条正文关键词均命中；生产浏览器完成 citation “标记出处 → 核对这条引用”，显示“原文支持”。
+- DP 研发任务十条均已 `done`；VBP-038、VBP-039、VBP-040 均已按允许流转进入 `released`。部署记录：`deploy-vbp038-040-content-099-108-prod-20261001`。
+- 生产 PR 的 Codex artifact attachment 因当前线程附件数量超过 100 被拒绝（`thread attachment identity count exceeds 100`），不影响 GitHub 合并、生产部署或 DP 记录；PR URL 已保留在本记录。
