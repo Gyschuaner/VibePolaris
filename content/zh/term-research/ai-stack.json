@@ -939,14 +939,16 @@
   },
   {
     "slug": "formatter",
-    "mechanism": "格式化器把代码按统一排版规则重写，如缩进、换行和引号，而通常不改变程序含义。",
-    "misconception": "格式化器不负责判断业务逻辑，也不应与发现潜在错误的linter混为一谈。",
-    "demoSignature": "输入：同一数组写成1行92字符；中间：行宽规则80触发，1行拆为4行且语法树保持不变；输出：统一排版代码。可视化：建议3帧的代码折行与AST锁定标记；交互：拖行宽从60到100看断点移动。",
+    "mechanism": "格式化器先读取代码结构，再按固定选项重新打印源码，主要改变缩进、空白、换行和引号等外观，目标是保留程序含义并减少审查排版差异。",
+    "misconception": "格式化器不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或解析器变化仍需要差异检查和测试。",
+    "demoSignature": "输入：一行 92 字符的 5 项数组；中间：读取结构，行宽设为 80 时触发重排，输出 4 行且元素数量与顺序不变；输出：差异主要是排版，但仍需测试验证。可视化：四帧展示输入、结构、重排与验证；交互：调整行宽查看换行变化。",
     "sourceUrls": [
       "https://prettier.io/docs/en/why-prettier",
-      "https://prettier.io/docs/en/options.html"
+      "https://prettier.io/docs/en/options.html",
+      "https://go.dev/blog/gofmt",
+      "https://rust-lang.github.io/rustfmt/"
     ],
-    "rewriteRisk": "不能宣称绝不改变行为；插件或有缺陷的解析器仍需测试，概念层应说“目标是不改变”。",
+    "rewriteRisk": "先解释排版规则、代码结构和行宽选项，再区分 linter、测试与监控；不要宣称格式化绝不会改变行为，也不要把 printWidth 写成硬性上限。",
     "nearDuplicates": [
       "linter"
     ]

@@ -11593,45 +11593,45 @@
   },
   {
     "slug": "formatter",
-    "lead": "92字符的一行数组被拆成4行时，程序为何仍应保持相同行为？",
-    "definition": "格式化器把代码按统一排版规则重写，如缩进、换行和引号，而通常不改变程序含义。",
-    "boundary": "格式化器不负责判断业务逻辑，也不应与发现潜在错误的linter混为一谈。",
+    "lead": "92 字符的一行数组按 80 列拆成 4 行时，程序为何通常仍保持相同行为？",
+    "definition": "格式化器先读取代码结构，再按固定选项重新打印源码。它主要改变缩进、空白、换行和引号等外观，目标是保留程序含义，让代码审查少看排版差异。",
+    "boundary": "它不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或配置有变化时仍要跑测试，不能把“通常不改含义”当成绝对保证。",
     "sceneKind": "transform",
-    "sceneTitle": "排版变化与语法结构分离",
-    "actionLabel": "拖动行宽",
+    "sceneTitle": "代码结构不变，排版按规则重印",
+    "actionLabel": "调整行宽规则",
     "actors": [
       {
         "id": "before",
         "label": "格式化前",
-        "detail": "1行 · 92字符",
+        "detail": "一行 · 92 字符",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "parser",
-        "label": "语法结构",
-        "detail": "数组5项",
+        "label": "代码结构",
+        "detail": "数组 5 项",
         "icon": "layout",
         "group": "保持"
       },
       {
         "id": "width",
         "label": "行宽规则",
-        "detail": "80",
+        "detail": "80 列",
         "icon": "gear",
         "group": "设置"
       },
       {
         "id": "after",
         "label": "格式化后",
-        "detail": "4行",
+        "detail": "4 行 · 5 项",
         "icon": "code",
         "group": "输出"
       },
       {
         "id": "diff",
-        "label": "差异",
-        "detail": "只含空白与换行",
+        "label": "差异与测试",
+        "detail": "排版差异，仍需验证",
         "icon": "git",
         "group": "检查"
       }
@@ -11665,7 +11665,7 @@
     "frames": [
       {
         "label": "读取长行",
-        "note": "格式化前代码是一行92字符。",
+        "note": "格式化前代码是一行 92 字符，数组包含 5 个元素。",
         "activeIds": [
           "before"
         ],
@@ -11675,13 +11675,13 @@
           "diff"
         ],
         "values": {
-          "before": "1行 · 92字符"
+          "before": "1 行 · 92 字符"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "结构锁定",
-        "note": "解析器确认它是5项数组，排版不能改变元素。",
+        "label": "读取代码结构",
+        "note": "格式化器把一行 92 字符、含 5 个元素的数组读成代码结构，先保留结构再决定换行。",
         "activeIds": [
           "parser"
         ],
@@ -11692,15 +11692,15 @@
           "after"
         ],
         "values": {
-          "parser": "数组5项"
+          "parser": "数组 5 项"
         },
         "activeEdgeIds": [
           "b-p"
         ]
       },
       {
-        "label": "按80折行",
-        "note": "行宽规则触发，输出变成4行。",
+        "label": "按 80 列重排",
+        "note": "行宽设为 80 时触发，格式化器只调整空白和换行，输出变成 4 行。",
         "activeIds": [
           "width",
           "after"
@@ -11713,7 +11713,7 @@
           "diff"
         ],
         "values": {
-          "after": "4行"
+          "after": "4 行 · 5 项"
         },
         "activeEdgeIds": [
           "w-a",
@@ -11721,8 +11721,8 @@
         ]
       },
       {
-        "label": "只见排版差异",
-        "note": "差异检查显示元素和顺序没变。",
+        "label": "比较并验证",
+        "note": "差异主要是排版；插件、配置或解析器变化仍要通过测试确认。",
         "activeIds": [
           "diff"
         ],
@@ -11734,14 +11734,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "diff": "语义变化0"
+          "diff": "排版差异，待测试"
         },
         "activeEdgeIds": [
           "a-d"
         ]
       }
     ],
-    "insight": "格式化器的目标是统一排版，不负责判断业务正确性或安全缺陷。",
+    "insight": "格式化器统一排版并减少审查噪声，目标是保留代码含义；配置、插件或解析器变化仍需要测试。",
     "quiz": {
       "question": "格式化后测试失败，正确态度是什么？",
       "options": [
@@ -11754,27 +11754,37 @@
           "correct": false
         },
         {
-          "label": "删除所有测试",
+          "label": "直接删除失败的测试",
           "correct": false
         }
       ],
-      "success": "工具目标不等于绝对无错。",
-      "retry": "应以实际差异和测试为准。"
+      "success": "工具的目标是保留含义，实际差异仍要检查和测试。",
+      "retry": "检查配置、插件、解析器版本和代码差异，不要跳过测试。"
     },
     "prompt": {
-      "title": "确定格式化规则",
-      "text": "设置行宽、缩进、引号和忽略范围，对一个真实文件比较格式化前后语法结构与测试结果。"
+      "title": "确定并验证格式化规则",
+      "text": "确定行宽、缩进、引号和插件配置，比较格式化前后的语法结构与差异，再用测试确认没有引入行为变化。"
     },
     "sources": [
       {
         "url": "https://prettier.io/docs/en/why-prettier",
-        "label": "Prettier 官方文档 · why prettier",
-        "note": "原始规范与实现说明"
+        "label": "Prettier Docs · Why Prettier?",
+        "note": "说明格式化器通过固定规则打印代码，减少团队在排版上的争论。"
       },
       {
         "url": "https://prettier.io/docs/en/options.html",
-        "label": "Prettier 官方文档 · options",
-        "note": "原始规范与实现说明"
+        "label": "Prettier Docs · options",
+        "note": "说明 printWidth、tabWidth、引号等排版选项是配置偏好而非硬性语法限制。"
+      },
+      {
+        "url": "https://go.dev/blog/gofmt",
+        "label": "Go Blog · gofmt",
+        "note": "说明 gofmt 用统一的机器格式化降低代码排版差异。"
+      },
+      {
+        "url": "https://rust-lang.github.io/rustfmt/",
+        "label": "rustfmt · configuration",
+        "note": "说明 Rust formatter 的配置、格式化范围与项目验证。"
       }
     ]
   },
