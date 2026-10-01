@@ -10,27 +10,27 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function DatasetTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={datasetSources}/>;
   return <ConceptArticle slug="dataset-data" title="数据集" sources={datasetSources} sections={[["collection", "一组有范围的数据"], ["snapshot", "来源更新，旧版本仍要可查"], ["description", "数据之外，还需要说明"], ["use", "先判断是否适合这次用途"]]}
-    intro={<>“九月借阅数据”听起来明确，真正使用时还得知道：哪几天、哪些记录、哪个版本。一组数据可以不断更新；某次报表用过的那一份，却需要被准确找到。</>}
+    intro={<>“九月借阅数据”听起来明确，但还少了几个边界：哪几天、哪些记录、哪个版本。一组数据可以不断更新；某次报表实际用过的那一份，需要能够被准确找回。</>}
     hero={<ConceptHero slug="dataset-data" label="来源新增D后，旧快照v1仍保留ABC，新快照v2包含ABCD"><div className={s.datasetHero}><div className={s.heroVersion}><strong>v1 · 3 条</strong><code>A　B　C</code><span>旧范围与来源</span></div><span className={s.heroArrival}>来源新增 D</span><div className={s.heroVersion}><strong>v2 · 4 条</strong><code>A　B　C　D</code><span>扩大范围后保存</span></div></div></ConceptHero>}>
     <ArticleSection id="collection" title="一组有范围的数据"><Legacy slug="dataset-data" names={["question", "definition"]}/>
-      <p id="dataset-definition" className="vp-citation-target"><strong>数据集是被组织在一起、可以作为一组来描述和使用的数据。</strong>它可以是借阅记录、图片、文本或声音，不限于机器学习样本。W3C 的 DCAT 区分数据集本身与可获取的具体表示：同一份数据可以提供 CSV 和 JSON 两种格式，文件格式不同，不一定是两套不同内容。<Cite id="dataset-definition"/></p>
-      <p>“一行代表一次借阅”“只包含九月前两天”“保留稳定事件 ID”，这些约定决定这组记录的含义。文件名写成 loans.csv，不能独自说明它收录了什么；一个文件也可能只是一份数据集的某个部分。</p>
-      <div className={base.contrast}><div><h3>数据集</h3><p>关心数据集合的身份、范围与使用约定，可以跨多个文件保存。</p></div><div><h3>DataFrame</h3><p>程序里组织、选择和计算表格数据的结构。它可以装载数据集的一部分，不自动补齐来源说明。</p></div></div>
+      <p id="dataset-definition" className="vp-citation-target"><strong>数据集是被组织在一起、可以作为一组来描述和使用的数据。</strong>它可以是借阅记录、图片、文本或声音，不限于机器学习样本。W3C 的 DCAT 把数据集本身和可获取的具体表示分开：同一份数据可以提供 CSV 和 JSON 两种分发形式，下载文件不同，不一定是两套不同内容。分发形式回答“怎样拿到”，数据集还要说明“包含什么、范围到哪里”。<Cite id="dataset-definition"/></p>
+      <p>“一行代表一次借阅”“只包含九月前两天”“保留稳定事件 ID”，这些约定决定这组记录的含义，也划出了数据集的边界。文件名写成 loans.csv，不能独自说明它收录了什么；一个文件也可能只是一份数据集的某个分发或切片。</p>
+      <div className={base.contrast}><div><h3>数据集</h3><p>关心数据集合的身份、范围与使用约定，可以跨多个文件或接口分发。</p></div><div><h3>DataFrame</h3><p>程序里组织、选择和计算表格数据的结构。它可以装载数据集的一部分，不自动补齐来源、版本和范围说明。</p></div></div>
     </ArticleSection>
     <ArticleSection id="snapshot" title="来源更新，旧版本仍要可查"><Legacy slug="dataset-data" names={["scene-heading"]}/>
-      <p>来源 s1 有 A、B、C 和八月的 E。范围选九月 1—2 日，得到 A、B、C。保存 v1 后，试着新增九月 3 日的 D，再扩大范围：下一版变成四条，v1 仍然是原来的三条。范围和来源改变，都应与已经保存的快照区分。</p>
+      <p>第一次读取的是来源 s1：有 A、B、C 和八月的 E。把范围限定为九月 1—2 日后，快照只包含 A、B、C；保存它就是 v1。来源后来新增九月 3 日的 D，演示把来源切到 s2，再把范围延长到 9 月 3 日并保存，下一版才包含 A、B、C、D。E 仍在范围外，v1 也仍然是原来的三条。来源和范围都改变时，要把新快照与旧快照分开。</p>
       <DatasetLesson/>
-      <p>这里复制固定记录来模拟快照，只保存在浏览器内存；重置会重新开始。<strong>版本标识需要对应可重新取得的数据，不能只留下“v1”这个名字。</strong>真实存储还要明确快照保存、保留期限与访问方式。</p>
-      <p id="dataset-version" className="vp-citation-target">DCAT 3 可以描述版本标识、前一版本与当前版本等关系。这些元数据帮助识别版本，但不会替你保存数据。一个持续更新的数据集与其中某个时刻的版本，可以分别有自己的身份；引用报表结果时，应说明实际使用了哪一份。<Cite id="dataset-version"/></p>
+      <p>这里复制固定记录来模拟快照，只保存在浏览器内存；重置会重新开始。快照至少要能对应当时的来源、范围和记录集合。<strong>版本标识需要对应可重新取得的数据，不能只留下“v1”这个名字。</strong>真实存储还要明确快照保存、保留期限与访问方式。</p>
+      <p id="dataset-version" className="vp-citation-target">DCAT 3 可以描述版本标识、前一版本与当前版本等关系。这些元数据帮助识别版本，但不会替你保存数据。一个持续更新的数据集与其中某个时刻的版本，可以分别有自己的身份；引用报表结果时，应说明实际使用了哪一份，以及它的范围和分发形式。<Cite id="dataset-version"/></p>
       <p id="dataset-identity" className="vp-citation-target">DVC 的 .dvc 文件记录被跟踪文件或目录的路径、内容校验值及大小等信息，也能记录云存储的版本 ID。<strong>路径回答在哪里，内容标识帮助判断拿到的是不是那一份。</strong>这是 DVC 的具体机制；本页没有计算内容哈希，也没有运行 DVC。<Cite id="dataset-identity"/></p>
     </ArticleSection>
     <ArticleSection id="description" title="数据之外，还需要说明"><Legacy slug="dataset-data" names={["quiz-heading"]}/>
-      <p id="dataset-scope" className="vp-citation-target">Gebru 等人的《Datasheets for Datasets》面向机器学习数据，提出记录创建目的、组成、收集过程、处理、用途、分发与维护。问题需要按场景选取，不能把表格自动填满就当成理解了数据。<strong>借鉴到借阅报表，首先要说清收录范围、每条记录代表什么，以及哪些数据没有被收录。</strong><Cite id="dataset-scope"/></p>
+      <p id="dataset-scope" className="vp-citation-target">Gebru 等人的《Datasheets for Datasets》面向机器学习数据，提出记录创建目的、组成、收集过程、处理、用途、分发与维护。作者也说明问题要按场景取舍，文档不是自动填表就能完成的检查。<strong>借鉴到借阅报表，先说清收录范围、每条记录代表什么，以及哪些数据没有被收录。</strong><Cite id="dataset-scope"/></p>
       <div className={s.documentFields}><div><h3>这份数据是什么</h3><p>一次借阅一条记录；来自教学来源 s1；9 月 1—2 日；字段为事件 ID、借阅日期与书目编号。八月的 E 被范围排除。</p></div><div><h3>使用前还要知道什么</h3><p>是否覆盖全部来源、有哪些缺失与修正、由谁维护、何时更新，以及允许怎样使用。未知信息应明确留下。</p></div></div>
-      <p id="dataset-card" className="vp-citation-target">Hugging Face 的 Dataset Card 用仓库 README 描述数据内容与使用背景，元数据可以标记许可证、语言和规模。它是一种具体的资料组织方式，不能代替数据本身的检查。<strong>字段列表、样例和限制应与当前版本一起更新。</strong><Cite id="dataset-card"/></p>
+      <p id="dataset-card" className="vp-citation-target">Hugging Face 的 Dataset Card 是数据仓库里的 README，用来描述数据内容、使用背景和限制；元数据可以标记许可证、语言和规模。它说明怎样理解和使用数据，不等于数据文件本身，也不能代替对内容的检查。<strong>字段列表、样例和限制应与当前版本一起更新。</strong><Cite id="dataset-card"/></p>
     </ArticleSection>
     <ArticleSection id="use" title="先判断是否适合这次用途" className={base.offset}><Legacy slug="dataset-data" names={["prompt-heading"]}/>
-      <p>九月前两天的三条记录，可以解释本例快照，却不能当成全月借阅量。样本多、文件大，也不能直接证明覆盖完整或符合实际分布。<strong>先匹配任务所需范围，再检查质量与使用约定。</strong>这些判断连接到 <ConceptTerm slug="data-quality">数据质量</ConceptTerm>。</p>
+      <p>九月前两天的三条记录，可以解释本例快照，却不能当成全月借阅量。样本多、文件大，也不能直接证明覆盖完整或符合实际分布。<strong>先匹配任务所需范围，再检查质量与使用约定。</strong>这些判断连接到 <ConceptTerm slug="data-quality">数据质量</ConceptTerm>；适用范围、数据版本和质量证据要一起看。</p>
       <ArticleAside title="说明书也有它的边界"><p id="dataset-limits" className="vp-citation-target">《Datasheets for Datasets》明确指出，文档不能完整解决偏差、风险或所有潜在用途；数据更新较少时，更新版本也应有更新的说明。<strong>文档提供判断依据，不替使用者做完判断。</strong>缺少收集过程或适用范围时，文件名不足以支持使用结论。<Cite id="dataset-limits"/></p></ArticleAside>
       <p>使用一份数据集前，先确定用途、字段含义、范围和具体版本。处理过程应交代读取了哪些记录、是否保留原始值，以及输出怎样追到输入。发布前核对记录身份与数量，并保存实际使用的版本。</p>
     </ArticleSection>
