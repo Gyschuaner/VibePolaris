@@ -35,4 +35,6 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(atlas, /aria-label="关闭新闻详情"/);
   assert.match(styles, /\.news-atlas-detail\.is-open/);
   assert.match(styles, /ease-in-out/);
+  assert.match(styles, /\.news-atlas-specks \{ z-index: 1; pointer-events: none; \}/);
+  assert.match(styles, /\.news-atlas-world \{ position: absolute; z-index: 3;/);
 });
