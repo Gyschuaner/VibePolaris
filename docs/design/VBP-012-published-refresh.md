@@ -2440,3 +2440,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。第 87 条研发任务 `85c40904-d564-4591-b943-053cb39edb1a` 已创建并完成本地工作；测试用例 `18298b1f-21ad-45a2-8424-3fd89d6a1c69` 与测试计划 `db154667-d060-4544-9fe0-1949a027f11a` 已创建，测试计划保持 `ready`。按 DP 当前限制，父需求处于 `ready_for_release` 时执行测试计划会返回 `REQUIREMENT_NOT_IN_TESTING`；因此本条只记录真实本地执行证据，不伪造 DP 通过执行。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 87 条正文提交为 `77f9b96`，本条文档记录随本批次提交。按用户要求，生产发布延后至第 79—88 条全部完成后统一处理；当前批次进度为 **9/10（第 79—87 条）**，下一条继续处理第 88 条。`QualityLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+
+## 88 · 数据帧二维结构、筛选与执行边界本地验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“借阅记录读进程序后，DataFrame 到底保留了什么？只选一列为什么可能变成 Series？筛选、选列、分组和分布式执行会怎样改变结果？”读完应能解释每行与每列的含义，区分数据集、DataFrame、Series 与 Spark 的 Dataset 类型名，预测筛选/选列/聚合后的行列变化，并判断本地表格接口与分布式执行边界。
+- 本轮只更新 `FrameTermPage` 正文：补充本例每行代表一次借阅的前提；解释 pandas 中单列与列名列表分别得到 Series 和 DataFrame；把“读入数据集的一部分”与覆盖整份数据集区分开；明确 loc 的标签与 iloc 的位置；区分 Polars 的 `group_by` 分组和后续聚合；补足 Arrow 的编程语言无关、列式内存、缓冲区和零复制限定；解释 Spark 的 Dataset 是类型名以及分布式执行；补充外部文件/数据库读取和持久化写入边界。
+- `FrameLesson` 的筛选、选列、重置和阈值变化继续留在本地/dev；本批次计划上线正文文字，交互功能不进入生产。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [pandas · Subset data](https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html) | `frame-selection`、`frame-labels`：单列与列名列表的 Series/DataFrame 区别，以及 `loc`/`iloc` 的标签、名称、条件与位置选择。 |
+| [Polars · Expressions and contexts](https://docs.pola.rs/user-guide/concepts/expressions-and-contexts/) | `frame-operations`：`select`、`with_columns`、`filter`、`group_by` 的职责边界，以及分组后仍需聚合计算。 |
+| [Apache Arrow · Columnar format](https://arrow.apache.org/docs/format/Columnar.html) | `frame-storage`：列式内存、类型/长度/空值、缓冲区与语言无关表示；正文保留零复制和性能的条件限定。 |
+| [Apache Spark · SQL, DataFrames and Datasets](https://spark.apache.org/docs/latest/sql-programming-guide.html) | `frame-execution`：DataFrame 按命名列组织 Dataset、Spark 分布式执行与 DataFrame/Dataset 术语边界。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 读取按“操作 → 当时可见状态”配对的正文与演示材料 `/tmp/vbp088-reader-material.txt`，未附作者意图、资料链接、源码或旧反馈；材料 SHA-256 为 `6f1fb4c85e435e2e3b7fbc61727f2748a0748b274c6bdc28577b75ed71375fef`，提示词 `/tmp/vbp088-reader-prompt.txt` SHA-256 为 `f2f73ede06cc23fcdf45c8a71d78b4b85bbe1769c54c4ca1704bf0ccfa5aa71a`，结果 `/tmp/vbp088-reader-result.json` SHA-256 为 `681c1e85294aaf681e6215a90d70158b6b9187039531d7c8eab7bca165b576df`；会话 `sess_88d22e9b-6335-43a6-80ad-258d8f966c02` 正常完成。reader 指出每行在本例中代表一次借阅、Series 与 DataFrame、数据集与数据帧、页面模拟与真实 pandas 的边界、`loc`/`iloc`、Polars 分组上下文、Arrow 缓冲区与零复制、Spark Dataset 类型名与分布式执行、外部来源和写入规则等前提断点；主助手结合官方资料和实际实现逐项核对并采纳必要说明。
+- 独立 `language` 读取 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/vibepolaris-zcode-partner/SKILL.md`、项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md` 与 `/Users/guyisheng/.codex/skills/ponytail/SKILL.md`，并审读当前 `FrameTermPage` 正文；提示词 `/tmp/vbp088-language-prompt.txt` SHA-256 为 `6738ed0ecafb34c5c06c4322c9561de43afe6fe375c23411655d258ac12f0db8`，结果 `/tmp/vbp088-language-result.json` SHA-256 为 `e2260aa3bc6d2fbc7bb868e276a5613394e2b1d8235f7a93015a844a0b8a92a4`；会话 `sess_40dac83f-14ce-46b6-9d13-917c0d24ee87` 正常完成。language 建议把本例行语义说透、把列名列表与二维结果绑定、把“去掉书目编号”写成列操作、提前说明真实库边界、把 `group_by` 与聚合分开、补足 Arrow 缓冲区和零复制解释、拆开 Spark 分布式执行句子，并删除旁支中的“继续”；主助手逐项复核后已采纳。language 只覆盖 `FrameTermPage` 正文，未把交互源码或资料表写成语言审读结论。
+- ZCode 的 reader/language 都是模拟审读线索，不是真实目标读者验证；本轮没有真人零基础读者参与。
+
+### 构建与真实浏览器验收
+
+- `git diff --check` 与 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；本地构建 `BUILD_ID pFIo22yARu80zqpYaOD7i`。正文变更只在 `components/terms/RetrievalConceptPages.tsx` 的 `FrameTermPage`，正文提交为 `f0c68d5`。
+- CUA 先在 `http://127.0.0.1:3219/terms/dataframe?qa=088baseline` 操作基线，再在 `http://127.0.0.1:3219/terms/dataframe?qa=088final` 复核最终页面：初始 4×3 全部记录且书目列保留；点击“逾期 ≥1 天”得到 B、D 两行；取消书目列后变为 2×2 的逾期天数与馆名；切换“逾期 ≥10 天”得到 0×2 且列定义保留；重置恢复 4×3。最终页展开 Spark SQL 引用并点击正文回链，地址定位为 `#frame-execution`，实际截图观察到回链目标段落和引用区。
+- 最终页 `dev.logs({levels:['error','warn','warning'],limit:100})` 返回空数组；没有真人零基础读者参与，也没有把当前不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存中的四条固定借阅记录，不运行 pandas、Polars、Arrow、Spark 或外部数据库服务；交互继续保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。第 88 条研发任务 `c060f1cb-71e7-47f8-8820-f8194902efc9` 已创建并完成本地工作；测试用例 `4946c325-7701-49b4-9b19-0787978ae19e` 与测试计划 `fb6452f7-3f10-40b3-b71f-6998299da958` 已创建，测试计划保持 `ready`。按 DP 当前限制，父需求处于 `ready_for_release` 时执行测试计划会返回 `REQUIREMENT_NOT_IN_TESTING`；因此本条只记录真实本地执行证据，不伪造 DP 通过执行。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 88 条正文提交为 `f0c68d5`，本条文档记录随本批次提交。第 79—88 条本地验收已完成 **10/10**，按用户要求现在统一处理文字发布；`FrameLesson` 与其他交互功能继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
