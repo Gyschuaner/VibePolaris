@@ -54,7 +54,7 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
                   <p className="news-kicker">NEWS{article.isExample ? " / 示例内容" : ""}</p>
                   <h1>{article.title}</h1>
                   <p className="news-summary">{article.summary}</p>
-                  <div className="news-detail-meta"><time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time><span>来源：{article.source.name}</span></div>
+                  <div className="news-detail-meta"><time dateTime={article.eventDate}>事件：{formatDate(article.eventDate)}</time><span>来源发布：{formatDate(article.publishedAt)}</span><span>来源：{article.source.name}</span></div>
                   <figure className="news-hero">
                     {/* eslint-disable-next-line @next/next/no-img-element -- News hero URLs are validated by the content contract and may be local or official assets. */}
                     <img src={article.hero!.url} alt={article.hero!.alt} loading="eager" />
