@@ -12627,9 +12627,9 @@
   },
   {
     "slug": "conditional-branch",
-    "lead": "score从59拖到60时，为什么只有一条路径由暗变亮？",
-    "definition": "条件分支先求一个条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
-    "boundary": "分支不是把两段代码都执行后再选结果；条件转换规则也可能让空值、零等产生意外路径。",
+    "lead": "score 从 59 拖到 60 时，为什么只有一条路径由暗变亮？",
+    "definition": "条件分支先计算条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
+    "boundary": "分支不是把两段代码都执行后再选结果；以 JavaScript 为例，条件不写成 true/false 时，if 也会折算：0、空文字这类值算假，多数其他值算真。页面上的 if 运行在用户自己的浏览器里，用户可以不经过页面直接发请求，所以登录权限必须由服务器重新校验。if 后面没有 else 时，条件为假就什么都不做，直接继续后面的代码。",
     "sceneKind": "branch",
     "sceneTitle": "条件值决定唯一执行路径",
     "actionLabel": "拖动 score",
@@ -12705,7 +12705,7 @@
     "frames": [
       {
         "label": "条件前",
-        "note": "score为59，两条路径都还未选择。",
+      "note": "score 为 59，程序接下来要算 score >= 60，看它是真还是假。",
         "activeIds": [
           "score",
           "condition"
@@ -12724,8 +12724,8 @@
         ]
       },
       {
-        "label": "结果为false",
-        "note": "59>=60为false，令牌只进入未通过路径。",
+      "label": "结果为 false",
+      "note": "59 >= 60 算出 false（假），只有未通过路径开始执行。",
         "activeIds": [
           "condition",
           "fail"
@@ -12747,7 +12747,7 @@
       },
       {
         "label": "输出未通过",
-        "note": "另一条路径保持静默。",
+      "note": "未通过结果出现；通过路径没有执行。",
         "activeIds": [
           "fail",
           "output"
@@ -12768,7 +12768,7 @@
       },
       {
         "label": "越过阈值",
-        "note": "score拖到60，条件变true，令牌改走通过路径。",
+      "note": "score 拖到 60，60 >= 60 成立（>= 表示大于或等于，包含相等），条件为 true，改走通过路径。",
         "activeIds": [
           "score",
           "condition",
@@ -12791,9 +12791,9 @@
         ]
       }
     ],
-    "insight": "条件分支先求条件，再执行匹配路径；未选路径不会在这次分支中运行。",
+  "insight": "条件分支先计算条件，再执行匹配路径；未选路径不会在这次分支中运行。",
     "quiz": {
-      "question": "if条件为false时，true分支里的函数会发生什么？",
+    "question": "if 条件为 false 时，true 分支里的函数会发生什么？",
       "options": [
         {
           "label": "这次不会执行",
@@ -12808,8 +12808,8 @@
           "correct": false
         }
       ],
-      "success": "分支选择发生在执行路径之前。",
-      "retry": "未选路径不应产生副作用。"
+    "success": "分支先计算条件，再决定执行路径；未选路径不会产生这次调用。",
+    "retry": "那条路径没有执行，不会真的发送或修改任何东西。"
     },
     "prompt": {
       "title": "验证一个条件分支",
@@ -12817,9 +12817,29 @@
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
-        "label": "ECMAScript 规范 · ecmascript language statements and declarations",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
+      "label": "MDN · if...else",
+      "note": "说明条件为 truthy 或 falsy 时分别执行哪条语句，以及未选路径会被跳过。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
+      "label": "ECMAScript 规范 · If Statement",
+      "note": "规定 JavaScript if 语句的条件求值和路径执行语义。"
+    },
+    {
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#if",
+      "label": "Python 文档 · The if statement",
+      "note": "说明 Python 按条件顺序选择一个执行块。"
+    },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+        "label": "TypeScript Handbook · Narrowing",
+        "note": "说明条件检查如何改变后续分支中可用的类型信息。"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+        "label": "OWASP · Authentication Cheat Sheet",
+        "note": "说明认证由服务器验证身份，浏览器端分支不能代替服务端的安全检查。"
       }
     ]
   },
