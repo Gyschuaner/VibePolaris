@@ -5,6 +5,17 @@ const slugs = z.array(slug).max(8).refine(values => new Set(values).size === val
 const sourceHash = z.string().regex(/^sha256:[a-f0-9]{64}$/);
 const httpsUrl = z.url().refine(value => value.startsWith("https://"), "真实新闻来源必须使用 HTTPS");
 const siteUrl = z.string().regex(/^\/(?!\/)/);
+const evidenceSchema = z.object({
+  url: httpsUrl,
+  claim: z.string().trim().min(1).max(500),
+  excerpt: z.string().trim().min(1).max(2_000),
+}).strict();
+const verificationSchema = z.object({
+  status: z.enum(["verified", "needs-review", "unverified"]),
+  checkedAt: z.iso.datetime(),
+  method: z.enum(["dots", "source", "manual"]),
+  notes: z.string().trim().max(2_000).optional(),
+}).strict();
 
 export const newsArticleSchema = z.object({
   slug,
@@ -34,11 +45,41 @@ export const newsDraftSchema = newsArticleSchema.safeExtend({
     method: z.enum(["lexical", "embedding", "model", "manual"]),
     status: z.enum(["suggested", "confirmed", "rejected"]),
   }).strict()).max(100),
+  evidence: z.array(evidenceSchema).max(20).default([]),
+  verification: verificationSchema.optional(),
+  riskLevel: z.enum(["routine", "major", "uncertain"]).default("uncertain"),
+  publishDecision: z.enum(["auto", "review", "rejected"]).default("review"),
+  reviewReasons: z.array(z.string().trim().min(1).max(200)).max(20).default([]),
   runId: z.string().trim().min(1).max(200).optional(),
   fingerprint: z.string().trim().min(1).max(200).optional(),
   lastSeenAt: z.iso.datetime().optional(),
   promotedAt: z.iso.datetime().optional(),
 });
+
+export const newsIngestRecordSchema = z.object({
+  slug,
+  title: z.string().trim().min(1).max(300),
+  summary: z.string().trim().min(1).max(2_000),
+  body: z.string().trim().min(1).max(100_000),
+  publishedAt: z.iso.date(),
+  source: z.object({ name: z.string().trim().min(1).max(200), url: httpsUrl }).strict(),
+  canonicalUrl: httpsUrl.optional(),
+  sourceHash: sourceHash.optional(),
+  relatedSlugs: slugs.default([]),
+  relatedArticleSlugs: slugs.default([]),
+  relationSuggestions: newsDraftSchema.shape.relationSuggestions.default([]),
+  evidence: z.array(evidenceSchema).max(20).default([]),
+  verification: verificationSchema.optional(),
+  riskLevel: z.enum(["routine", "major", "uncertain"]).default("uncertain"),
+  isExample: z.literal(false).default(false),
+}).strict();
+
+export const newsIngestBatchSchema = z.object({
+  version: z.literal(1).default(1),
+  runId: z.string().trim().min(1).max(200),
+  generatedAt: z.iso.datetime(),
+  articles: z.array(newsIngestRecordSchema).max(100),
+}).strict();
 
 export type NewsArticle = z.infer<typeof newsArticleSchema>;
 export type NewsDraft = z.infer<typeof newsDraftSchema>;

@@ -1,13 +1,13 @@
 # 新闻更新管线设计
 
-状态：方案基线，2026-09-30。关联需求：VBP-049。
+状态：仓库侧实现基线，2026-10-01。关联需求：VBP-049（DP 当前未找到对应记录，因此不写入虚构的需求状态）。
 
-这套方案把新闻分成“发现、草稿、发布、检索”四个边界。六小时任务负责发现和整理候选内容，人工确认后才会进入公开页面和小北的知识范围。公开站点仍然是可复现的静态构建，不把一个运行中的容器当作内容数据库。
+这套方案把新闻分成“发现、草稿、发布、检索”四个边界。六小时任务负责发现和整理候选内容，证据门槛通过的常规候选可由受保护的 `dev` PR 自动提升；重大、证据不足、风险不确定或关系未确认的候选始终进入人工复核。公开站点仍然是可复现的静态构建，不把一个运行中的容器当作内容数据库。
 
 ## 一次更新的完整路径
 
 ```text
-每 6 小时
+每 6 小时（北京时间 00:00 / 06:00 / 12:00 / 18:00）
   ↓
 读取允许的 RSS / Atom / 官方 API
   ↓
@@ -17,11 +17,13 @@
   ↓
 生成关联词条和关联文章建议（带依据和置信度）
   ↓
-写入 feature 分支的新闻草稿并创建/更新 PR
+写入 `news-auto/<run-id>` 分支的新闻草稿
   ↓
-人工检查来源、事实、正文、关系和示例标记
+常规且证据充分的候选自动提升；其余保持 `needs-review`
   ↓
-合并后构建
+构建 Docker 候选并检查页面、sitemap 和 Xiaobei 邀请制状态
+  ↓
+创建/更新面向 `dev` 的受保护 PR，合并后进入部署入口
   ↓
 新闻页面、日期星图和 Xiaobei 同步看到已发布内容
 ```
@@ -93,9 +95,9 @@ npm run news:publish -- content/zh/news-drafts/2026-09-30/<slug>.json
 npm run news:publish -- content/zh/news-drafts/2026-09-30/<slug>.json --approve
 ```
 
-默认提升命令只做 dry-run。只有在 feature 分支上明确加入 `--approve` 才会写入 `content/zh/news.json`；原草稿保留为 `status: "published"` 的审计记录。`npm run build` 会先自动执行 `news:validate`，所以未通过草稿契约或关系校验的变更不会进入构建。
+默认提升命令只做 dry-run。只有在 feature 分支上明确加入 `--approve` 才会写入 `content/zh/news.json`；原草稿保留为 `status: "published"` 的审计记录。`news:auto-publish` 只接受同时满足以下条件的候选：至少一条 HTTPS 证据、`verification.status=verified`、`riskLevel=routine`、至少一个已确认公开词条且所有关系建议已确认。重大消息、证据不足、关系未确认或风险不确定的候选保留 `needs-review`，不会自动公开。`npm run build` 会先自动执行 `news:validate`，所以未通过草稿契约或关系校验的变更不会进入构建。
 
-云端采集只需要交付这个目录中的 JSON：它负责来源抓取、规范化、事实核对、写作和关系建议；仓库脚本负责字段、日期路径、HTTPS、canonical URL、sourceHash、已发布词条/文章存在性和确认状态的最后一道校验。生产六小时调度在发布链路验证完成前保持关闭。
+云端采集只需要交付这个目录中的 JSON：它负责来源抓取、规范化、事实核对、写作和关系建议；仓库脚本负责字段、日期路径、HTTPS、canonical URL、sourceHash、已发布词条/文章存在性和确认状态的最后一道校验。工作流声明北京时间四次调度，但在 GitHub 仓库合并工作流、配置 `NEWS_DOTS_ENDPOINT`/`NEWS_DOTS_TOKEN`、保护 `dev` 分支前不会产生有效生产内容。生产部署仍是单独的环境步骤；工作流只构建候选镜像并运行 `scripts/news-smoke.mjs`，不会通过 SSH 直接改生产机。
 
 ## 去重和关系判定
 
@@ -153,10 +155,10 @@ npm run news:publish -- content/zh/news-drafts/2026-09-30/<slug>.json --approve
 
 云端任务先取得 `news:catalog` 快照，只访问来源清单中的 HTTPS 地址；每次运行用稳定的 `runId`、canonical URL 和 sourceHash 保证幂等。交付物是草稿文件，不能直接写已发布 `news.json`。
 
-发布链路验证通过前，生产六小时调度保持关闭，也不自动部署。一次手动端到端运行需要验证：云端草稿交接 → 本地校验 → 人工确认事实与关系 → dry-run → 显式提升 → 构建 → 核对新闻页面、sitemap 与 Xiaobei → 验证集成/发布入口。调度启用和生产部署另按明确授权执行。
+一次手动端到端运行需要验证：云端批次交接 → 本地校验 → 证据/关系门槛 → dry-run → 自动提升 → 构建 Docker → 核对新闻页面、sitemap 与 Xiaobei → 通过受保护 PR 合并 → 再由现有部署入口发布。当前不直接执行生产部署。
 
 ## 需要确认的产品决策
 
-1. 第一批允许抓取哪些来源：官方博客/RSS、研究机构、开发者工具 changelog，还是已有的具体 URL 清单？
-2. 发现候选后是否统一进入 PR 审核，还是允许某些可信来源自动发布？默认建议全部审核。
-3. Xiaobei 是否只回答已经合并发布的新闻，还是要在内部邀请码范围内读取 `needs-review` 草稿？默认只回答已发布内容，保持公开页面、站内链接和回答事实一致。
+1. 第一批允许抓取哪些来源：官方博客/RSS、研究机构、开发者工具 changelog，还是已有的具体 URL 清单？这份清单仍由云端 Dots 管理，不写入公开页面。
+2. 可信来源是否可以进入 `routine + verified + evidence + confirmed relation` 门槛？仓库默认只按结构化门槛自动提升，重大消息与不确定候选永不自动公开。
+3. Xiaobei 只回答已经合并发布的新闻，保持公开页面、站内链接和回答事实一致；邀请制入口继续隐藏，工作流的 smoke test 会检查 session 默认未激活。
