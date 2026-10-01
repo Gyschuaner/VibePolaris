@@ -421,8 +421,8 @@
   {
     "slug": "reasoning-model",
     "lead": "库存17件，先卖4件再卖6件，怎样让每一步都能检查？",
-    "definition": "这类模型在回答前会分配更多推理计算来处理多步问题，并用训练或推断策略提高复杂任务的完成率。",
-    "boundary": "推理模型不是逻辑正确性的证明，也不意味着用户能看到或应当依赖模型内部思维过程。",
+    "definition": "推理模型或推理模式会为多步骤任务分配更多计算，用来推断、搜索或验证；演示中的检查步骤是人和程序都能复算的公开记录，不等于模型私有的思维过程。",
+    "boundary": "更多推理计算可能改善特定任务的完成率，但不是正确性证明；外部事实、数值和业务约束仍需要独立核验。",
     "sceneKind": "timeline",
     "sceneTitle": "库存数值沿步骤推进",
     "actionLabel": "改变销量重算",
@@ -539,7 +539,7 @@
       },
       {
         "label": "检查约束",
-        "note": "7没有越过零，结果可以交付。",
+        "note": "这是公开、可复算的业务规则检查；7 没有越过 0，结果可以交付。这里没有展示模型的私有思维过程。",
         "activeIds": [
           "check",
           "result"
@@ -559,7 +559,7 @@
         ]
       }
     ],
-    "insight": "推理模型的演示重点是可检查的状态推进，不是把一段流畅解释当作正确证明。",
+    "insight": "演示把检查步骤写成公开、可复算的状态记录；它帮助人和程序核对结论，不是模型私有思维过程，也不是正确性证明。",
     "quiz": {
       "question": "若第二次销量改为16，最可靠的处理是什么？",
       "options": [
@@ -576,23 +576,38 @@
           "correct": false
         }
       ],
-      "success": "输入变化后要重走状态与约束。",
+      "success": "输入一变，就要重新过一遍库存计算和约束检查。",
       "retry": "推理长度不能替代对中间数值的检查。"
     },
     "prompt": {
       "title": "拆解一个多步判断",
-      "text": "把问题写成初始状态、每一步操作、每步后的可检查数值和停止条件，不要求模型展示私有思维过程。"
+      "text": "请把多步骤任务拆成可检查的输入、约束和中间结果，并标出需要程序、工具或来源独立核验的结论。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/reasoning",
-        "label": "OpenAI 官方文档 · reasoning",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/reasoning",
+        "label": "OpenAI · Reasoning models",
+        "note": "推理调用与 effort"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
+        "label": "OpenAI · Reasoning best practices",
+        "note": "不依赖私有思维过程"
       },
       {
         "url": "https://arxiv.org/abs/2201.11903",
-        "label": "原始论文 · 2201.11903",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Chain-of-Thought Prompting",
+        "note": "少样本推理示例"
+      },
+      {
+        "url": "https://arxiv.org/abs/2501.12948",
+        "label": "arXiv · DeepSeek-R1",
+        "note": "推理策略与验证"
+      },
+      {
+        "url": "https://arxiv.org/abs/2408.03314",
+        "label": "arXiv · Scaling LLM Test-Time Compute",
+        "note": "推理计算与任务难度"
       }
     ]
   },
