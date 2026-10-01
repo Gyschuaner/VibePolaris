@@ -86,7 +86,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 66 distributed-system | 多个节点协作 | 分布空间中的局部失联与其余节点继续运行 | 本地正文与浏览器验收完成；待 ZCode/DP/生产网络恢复 |
 | 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
-| 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 待更新 |
+| 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 本地正文与浏览器验收完成；待正文发布，交互功能留在本地 |
 | 70 data-quality | 适合用途的程度 | 完整性、时效等局部缺口在真实记录上显露 | 待更新 |
 | 71 data-lineage | 数据的来路与变化 | 从结果逆向展开实际来源与变换分支 | 待更新 |
 | 72 dataframe | 可操作的二维数据 | 列切片、行筛选在同一二维平面展开 | 待更新 |
@@ -1717,3 +1717,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 68 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文与记录提交 `579f5e3`。正文发布分支 `release/VBP-030-validation-content-20261001` 从第 67 条合并提交 `9fdd3a12eeea17bcc5dfb3a08b4013f29639f412` 新建，只复制正文文件，提交 `e960ed0` 经 [PR #248](https://github.com/Gyschuaner/VibePolaris/pull/248) 合入 `main`，当前合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 在握手前返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/data-validation` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内无响应；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **68/105**，下一条是 `dataset-data`。
+
+
+## 69 · 数据集文字复审、快照范围演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“CSV 文件、API 返回和某次报表用过的那一份数据，为什么不一定是同一层次的东西？来源更新后，怎样保留旧版本并判断新数据是否适合当前用途？”读完应能解释数据集与分发形式、DataFrame、快照版本和说明书的区别，预测范围改变后的记录集合，并知道文件名或版本名本身不足以证明内容可重现。
+- 更新 `DatasetTermPage`：导语把问题落到范围、记录和版本；定义段说明 DCAT 中抽象数据集与 CSV/JSON 分发形式的区别，补出数据集边界由记录含义、时间范围和稳定身份共同决定；对照段说明 DataFrame 不自动带来源、版本和范围元数据；快照段按实际交互写清 s1/v1、来源新增 D 后的 s2/v2、E 仍被排除，以及快照需对应来源、范围和记录集合；DCAT 版本段补出引用时要带范围和分发形式；Datasheets 段说明问题需按场景取舍；Dataset Card 段明确 README 是说明材料，不是数据文件，也不代替内容检查；用途段把范围、版本与数据质量证据连起来。
+- 保留 `DatasetLesson` 的本地来源切换、日期范围开关、快照保存、版本选择和重置状态；生产范围只包含正文文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [W3C · Data Catalog Vocabulary (DCAT) 3](https://www.w3.org/TR/vocab-dcat-3/) | `dataset-definition` 与 `dataset-version`：数据集和 distribution 分开描述，DCAT 3 支持版本、前一版本和当前版本等关系，但元数据不替代数据保存。 |
+| [Gebru et al. · Datasheets for Datasets](https://arxiv.org/pdf/1803.09010) | `dataset-scope` 与 `dataset-limits`：记录创建目的、组成、收集、处理、用途、分发和维护；问题按场景取舍，说明书不是完整风险解决方案。 |
+| [Hugging Face · Dataset Cards](https://huggingface.co/docs/hub/datasets-cards) | `dataset-card`：数据仓库 README 作为 Dataset Card，说明内容、使用背景、限制和元数据，不等于数据文件。 |
+| [DVC · .dvc Files](https://doc.dvc.org/user-guide/project-structure/dvc-files) | `dataset-identity`：`.dvc` 文件可记录被跟踪路径、校验值、大小和云存储版本 ID；路径与内容标识回答不同问题。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前页面正文和演示状态材料 `/tmp/vbp069-dataset-reader-body.md`（SHA-256 `91b421fa7899bdf98ec5626e3538cc84f0115dc647e7e52f834bb776beffc379`），提示词材料为 `/tmp/vbp069-dataset-reader-prompt.md`（SHA-256 `8a851c03581814281a13b5bee84f38bb5e927a325ab1e6639a29c90e34a2d083`），未附作者意图、官方资料或旧反馈。
+- 独立 `language` 只读改写后的正文材料 `/tmp/vbp069-dataset-language-body.md`（SHA-256 `d40bed19cb626812b1cd0c72bb39c0368d367f15751687267630e98f3f58720c`）和提示词材料 `/tmp/vbp069-dataset-language-prompt.md`（SHA-256 `8d10cf25f553b0ab1aedf171163869eec9f3a4d906ea42f194fd851d9e2c8dde`），并带 partner/humanizer-zh 规则。
+- reader 与 language 两个 ZCode 请求均在等待上游 `AI_APICallError` 超时，没有产生可回收的审读文本或稳定 session ID；不能把它们记成通过。主助手依据四份已核实资料和 humanizer-zh 规则完成局部文字调整，保留机制、技术限定和引用映射。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`DatasetLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。
+- CUA 在 `http://127.0.0.1:3219/terms/dataset-data?qa=069final` 的重启后服务上真实操作并观察：先保存快照显示 `v1 · 来源 s1 · 09-01—09-02 · 3 条 · A/B/C`；点击“来源新增 D”、勾选“把范围延长到 9 月 3 日”并保存后，显示 `v2 · 来源 s2 · 09-01—09-03 · 4 条 · A/B/C/D`，E 仍在范围外。展开 DCAT 引用后，点击“来源更新，旧版本仍要可查”回到版本段落，截图已实际观察；浏览器 `error/warn` 为空。
+- 演示只复制固定记录并保存在浏览器内存，不读取真实文件、DVC、数据服务或远端 API；没有真实数据集发布、真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 69 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 69 条正文待本轮提交。正文发布分支应从 `origin/main` 的第 68 条合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa` 新建，只复制正文文件，不带入 `DatasetLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **69/105**，下一条是 `data-quality`。
