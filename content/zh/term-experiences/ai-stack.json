@@ -10393,45 +10393,45 @@
   },
   {
     "slug": "semantic-versioning",
-    "lead": "当前1.4.2，修Bug、加兼容功能和删旧API分别该怎么变？",
-    "definition": "语义化版本用主版本、次版本、修订号表达不兼容变更、向后兼容功能和向后兼容修复。",
-    "boundary": "版本号能表达发布者的兼容承诺，却不能自动证明软件真的兼容或质量更高。",
+    "lead": "当前 1.4.2：修 Bug、加兼容功能、删公开 API，版本号分别怎么走？",
+    "definition": "语义化版本（SemVer）把版本写成主版本（MAJOR）.次版本（MINOR）.修订号（PATCH）：不兼容的公开 API 变化升 MAJOR，向后兼容（旧调用在新版本上照常可用）的功能新增升 MINOR，向后兼容的缺陷修复升 PATCH。",
+    "boundary": "它是发布者对公开 API 的兼容承诺，规范本身不会替发布者检查改动是否真的兼容。0.y.z 处于初始开发阶段，预发布标识和构建元数据也有额外规则。",
     "sceneKind": "compare",
-    "sceneTitle": "三种变更映射到三个版本段",
-    "actionLabel": "选择变更类型",
+    "sceneTitle": "从公开接口变化选下一版",
+    "actionLabel": "选择发布变更",
     "actors": [
       {
         "id": "current",
         "label": "当前版本",
-        "detail": "1.4.2",
+        "detail": "已发布 1.4.2",
         "icon": "package",
         "group": "起点"
       },
       {
         "id": "patch",
-        "label": "修复",
-        "detail": "兼容修正",
+        "label": "兼容修复",
+        "detail": "旧调用仍能工作",
         "icon": "shield",
         "group": "变更"
       },
       {
         "id": "minor",
-        "label": "新增",
-        "detail": "兼容功能",
+        "label": "兼容新增",
+        "detail": "增加功能，旧调用仍能工作",
         "icon": "spark",
         "group": "变更"
       },
       {
         "id": "major",
-        "label": "破坏",
-        "detail": "删除旧API",
+        "label": "不兼容变更",
+        "detail": "公开 API 被删改",
         "icon": "message",
         "group": "变更"
       },
       {
         "id": "next",
         "label": "下一版本",
-        "detail": "待选择",
+        "detail": "依据规则生成",
         "icon": "git",
         "group": "结果"
       }
@@ -10477,7 +10477,7 @@
     "frames": [
       {
         "label": "版本拆三段",
-        "note": "1.4.2显示为主1、次4、修订2。",
+        "note": "1.4.2 显示为主版本（MAJOR）1、次版本（MINOR）4、修订号（PATCH）2。",
         "activeIds": [
           "current"
         ],
@@ -10492,7 +10492,7 @@
       },
       {
         "label": "兼容修复",
-        "note": "选择Bug修复，修订号2变3。",
+        "note": "选择只修复兼容缺陷，PATCH 从 2 变成 3。",
         "activeIds": [
           "patch",
           "next"
@@ -10514,7 +10514,7 @@
       },
       {
         "label": "兼容新增",
-        "note": "改选新增API，次版本4变5且修订归零。",
+        "note": "选择旧调用仍可使用的新功能，MINOR 从 4 变成 5，PATCH 归零。",
         "activeIds": [
           "minor",
           "next"
@@ -10535,8 +10535,8 @@
         ]
       },
       {
-        "label": "不兼容删除",
-        "note": "删除公开API时，主版本1变2。",
+        "label": "不兼容变更",
+        "note": "删除或改动公开 API，MAJOR 从 1 变成 2，MINOR 和 PATCH 归零，并提示迁移。",
         "activeIds": [
           "major",
           "next"
@@ -10557,62 +10557,72 @@
         ]
       }
     ],
-    "insight": "语义化版本表达发布者对公开API兼容性的承诺，不会自动证明软件没有破坏性变化。",
+    "insight": "先问公开 API 和旧用法是否仍能工作，再决定 MAJOR、MINOR 或 PATCH；代码改动大小本身不决定版本段。",
     "quiz": {
-      "question": "内部重构但公开API和行为完全兼容，通常应怎样？",
+      "question": "删掉一个其他程序正在调用的公开函数，下一版应怎样？",
       "options": [
         {
-          "label": "按实际兼容影响决定修订版本",
+          "label": "升主版本到 2.0.0，并写迁移说明",
           "correct": true
         },
         {
-          "label": "一定升级主版本",
+          "label": "只升修订版本到 1.4.3",
           "correct": false
         },
         {
-          "label": "永远不发布新版本",
+          "label": "不发布新版本",
           "correct": false
         }
       ],
-      "success": "SemVer围绕公开API的变化。",
-      "retry": "代码改动大小不是唯一依据。"
+      "success": "先看公开 API 对旧调用的影响，再选择版本段。",
+      "retry": "删除公开函数会让旧调用失效，不能按兼容修复处理。"
     },
     "prompt": {
-      "title": "决定下一版本",
-      "text": "列出公开API变化，分别标注兼容修复、兼容新增和不兼容变更，再选择版本号并写迁移说明。"
+      "title": "给一次发布选版本号",
+      "text": "给出变更内容，先标出公开 API 和旧用法是否仍能工作，再选择 MAJOR、MINOR 或 PATCH，写出版本号并说明迁移影响。"
     },
     "sources": [
       {
-        "url": "https://semver.org/",
-        "label": "SemVer 规范 · overview",
-        "note": "原始规范与实现说明"
+        "url": "https://semver.org/spec/v2.0.0.html",
+        "label": "Semantic Versioning 2.0.0 · 规范",
+        "note": "定义 MAJOR、MINOR、PATCH、预发布标识和版本优先级。"
       },
       {
         "url": "https://docs.npmjs.com/about-semantic-versioning",
-        "label": "npm 官方文档 · about semantic versioning",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · About semantic versioning",
+        "note": "说明 npm 包版本范围如何表达兼容更新。"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+        "label": "npm Docs · package.json",
+        "note": "说明可发布包的 name/version 标识，以及依赖版本字段的作用。"
+      },
+      {
+        "url": "https://nodejs.org/learn/getting-started/an-introduction-to-the-npm-package-manager",
+        "label": "Node.js Learn · npm package manager",
+        "note": "说明 npm 包如何通过 package.json 管理版本和依赖。"
       }
     ]
   },
   {
     "slug": "lockfile",
-    "lead": "清单写A为^1.2.0，为何两台机器仍能都装到1.3.1？",
-    "definition": "锁文件记录一次解析后的精确依赖版本和依赖树信息，使其他环境更容易安装出同一组合。",
-    "boundary": "它不是依赖声明的替代品，也不能保证跨平台产物逐字节相同。",
+    "lead": "package.json 写着 A ^1.2.0，为什么今天和明天可能装到不同的间接依赖？",
+    "definition": "依赖清单声明直接依赖允许的版本范围；锁文件记录包管理器解析后的确切版本、传递依赖（也叫间接依赖）和完整依赖树，安装命令可以复用这份结果。",
+    "boundary": "它不替代依赖清单，也不保证包本身安全、安装脚本无害，或平台相关的包在不同系统上装出相同产物。依赖更新仍要自己改清单，让包管理器重新生成锁文件，再跑测试。",
     "sceneKind": "contract",
-    "sceneTitle": "版本范围解析后被精确锁定",
-    "actionLabel": "删除锁文件重装",
+    "sceneTitle": "从版本范围到可复现的依赖树",
+    "actionLabel": "选择安装路径",
     "actors": [
       {
         "id": "manifest",
-        "label": "依赖声明",
-        "detail": "A ^1.2.0",
+        "label": "依赖清单",
+        "detail": "package.json: A ^1.2.0",
         "icon": "file",
         "group": "规则"
       },
       {
         "id": "registry",
-        "label": "可选版本",
+        "label": "仓库候选",
         "detail": "1.2.0 / 1.3.1",
         "icon": "cloud",
         "group": "来源"
@@ -10620,7 +10630,7 @@
       {
         "id": "resolver",
         "label": "解析器",
-        "detail": "选择1.3.1",
+        "detail": "从范围选出版本",
         "icon": "gear",
         "group": "决策"
       },
@@ -10634,7 +10644,7 @@
       {
         "id": "install",
         "label": "两台机器",
-        "detail": "同一依赖树",
+        "detail": "按锁文件复现",
         "icon": "package",
         "group": "结果"
       }
@@ -10668,7 +10678,7 @@
     "frames": [
       {
         "label": "范围允许多个版本",
-        "note": "^1.2.0同时允许1.2.0和1.3.1。",
+        "note": "^1.2.0 允许兼容的 1.x 版本；包仓库当前有 1.2.0 和 1.3.1 两个候选。",
         "activeIds": [
           "manifest",
           "registry"
@@ -10685,7 +10695,7 @@
       },
       {
         "label": "首次解析",
-        "note": "解析器选择1.3.1，并继续解析B为2.0.4。",
+        "note": "本例解析器从范围中选 A1.3.1，并继续展开 A 带来的间接依赖 B2.0.4。",
         "activeIds": [
           "resolver"
         ],
@@ -10706,7 +10716,7 @@
       },
       {
         "label": "精确写入",
-        "note": "锁文件记录这次实际得到的版本树。",
+        "note": "锁文件记录这次实际得到的完整依赖树，清单仍保留允许范围。",
         "activeIds": [
           "lock"
         ],
@@ -10727,7 +10737,7 @@
       },
       {
         "label": "另一台复现",
-        "note": "第二台机器读取锁文件，安装相同组合；删除后可能重新漂移。",
+        "note": "第二台机器读取锁文件装出同一组包；删掉锁文件，或者清单和锁文件对不上，下一次安装会重新解析，结果就可能漂移。",
         "activeIds": [
           "lock",
           "install"
@@ -10746,48 +10756,58 @@
         ]
       }
     ],
-    "insight": "锁文件固定依赖解析结果，但操作系统、脚本和外部工具仍可能影响完整复现。",
+    "insight": "清单说明允许什么，锁文件记录这次实际选了什么；两者一起维护才能在更新时可控、在安装时可复现。",
     "quiz": {
-      "question": "已有锁文件时，依赖清单还有什么作用？",
+      "question": "改动 A 的允许范围后，怎样让团队安装同一组新版本？",
       "options": [
         {
-          "label": "声明允许范围和直接依赖",
+          "label": "更新清单，重新生成并提交锁文件",
           "correct": true
         },
         {
-          "label": "完全没有作用",
+          "label": "只删除锁文件让每台机器自行选择",
           "correct": false
         },
         {
-          "label": "只决定代码缩进",
+          "label": "只改源码，不改依赖文件",
           "correct": false
         }
       ],
-      "success": "声明与解析结果承担不同职责。",
-      "retry": "锁文件不是清单的替代品。"
+      "success": "清单和锁文件分别记录范围与实际解析结果。",
+      "retry": "删掉锁文件会重新解析，不能替代提交新的解析结果。"
     },
     "prompt": {
-      "title": "审查锁文件策略",
-      "text": "核对清单范围、锁定版本、传递依赖、CI安装命令和更新流程，并记录哪些环境差异仍未被锁定。"
+      "title": "审查一次锁文件更新",
+      "text": "核对直接依赖范围、锁定版本、传递依赖和 CI 安装命令，说明变更原因、仍未锁定的环境差异和需要回归的范围。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-        "label": "npm 官方文档 · package lock json",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · package-lock.json",
+        "note": "说明锁文件记录依赖树、版本、完整性和安装复现信息。"
       },
       {
         "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci",
-        "label": "npm 官方文档 · npm ci",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · npm ci",
+        "note": "说明 CI 按现有锁文件安装，并要求清单与锁文件保持同步。"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+        "label": "npm Docs · package.json",
+        "note": "说明清单中的直接依赖、版本范围和工作区声明。"
+      },
+      {
+        "url": "https://pnpm.io/lockfile",
+        "label": "pnpm Docs · Reading pnpm-lock.yaml",
+        "note": "说明锁文件中的 importers、packages、snapshots 和完整性信息。"
       }
     ]
   },
   {
     "slug": "monorepo",
-    "lead": "同一仓库有web、api、ui三个包，改ui为何只重建两个包？",
-    "definition": "单体仓库把多个应用或包放在同一版本库中，并共享变更、工具配置和依赖关系管理。",
-    "boundary": "单体仓库描述的是代码组织方式，不等于单体架构；仓库里可以部署许多独立服务。",
+    "lead": "同一仓库有 web、ui、api 三个包，改 ui 为什么只重建两个包？",
+    "definition": "单体仓库把多个应用或包放在同一仓库中，统一管理脚本、依赖和变更。相关改动可以作为一次提交保存，再根据应用或包之间的依赖图决定哪些项目需要重新构建。",
+    "boundary": "它说的是代码仓库的组织方式，不等于单体架构。单体架构通常把整个系统作为一个单元来运行和部署；一个 monorepo 里仍可以有多个独立服务。",
     "sceneKind": "network",
     "sceneTitle": "一次改动沿包依赖图传播",
     "actionLabel": "点击改动文件",
@@ -10795,28 +10815,28 @@
       {
         "id": "repo",
         "label": "单一仓库",
-        "detail": "web / api / ui",
+        "detail": "web / ui / api",
         "icon": "git",
         "group": "容器"
       },
       {
         "id": "ui",
-        "label": "ui包",
-        "detail": "发生改动",
+        "label": "ui 包",
+        "detail": "共享界面组件，发生改动",
         "icon": "component",
         "group": "包"
       },
       {
         "id": "web",
-        "label": "web包",
-        "detail": "依赖ui",
+        "label": "web 应用",
+        "detail": "依赖 ui，可独立部署",
         "icon": "browser",
         "group": "包"
       },
       {
         "id": "api",
-        "label": "api包",
-        "detail": "不依赖ui",
+        "label": "api 服务",
+        "detail": "不依赖 ui，可独立部署",
         "icon": "server",
         "group": "包"
       },
@@ -10857,7 +10877,7 @@
     "frames": [
       {
         "label": "一个仓库三包",
-        "note": "三个包共享版本库，但依赖关系不同。",
+        "note": "三个项目共享版本历史；同一提交可以记录相关包的配套改动，但它们仍可分别构建。",
         "activeIds": [
           "repo"
         ],
@@ -10871,8 +10891,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "ui发生改动",
-        "note": "改动先标记ui自身。",
+        "label": "ui 发生改动",
+        "note": "改动先标记 ui 自身，api 因为不依赖 ui 暂不受影响。",
         "activeIds": [
           "ui",
           "impact"
@@ -10893,7 +10913,7 @@
       },
       {
         "label": "影响向上游传播",
-        "note": "web依赖ui，因此也进入重建集合。",
+        "note": "web 依赖 ui，因此也进入重建集合；这次影响变成 2 / 3。",
         "activeIds": [
           "ui",
           "web",
@@ -10913,8 +10933,8 @@
         ]
       },
       {
-        "label": "api保持不动",
-        "note": "api与ui没有依赖边，不需要重建。",
+        "label": "api 保持不动",
+        "note": "api 与 ui 没有依赖边，可以跳过这次重建并独立部署。",
         "activeIds": [
           "api"
         ],
@@ -10934,9 +10954,9 @@
         ]
       }
     ],
-    "insight": "单体仓库描述代码放在一起；它不要求这些包作为一个单体应用部署。",
+    "insight": "同一仓库让相关改动可以一起记录和共享工具；真正决定重建范围的是包间依赖图，而不是目录位置。",
     "quiz": {
-      "question": "一个monorepo能否包含多个独立微服务？",
+      "question": "一个 monorepo 能否包含多个独立微服务？",
       "options": [
         {
           "label": "可以，仓库边界与部署边界不同",
@@ -10952,66 +10972,76 @@
         }
       ],
       "success": "代码组织和运行架构是两层问题。",
-      "retry": "不要把monorepo和monolith混淆。"
+      "retry": "不要把 monorepo 和单体架构混淆。"
     },
     "prompt": {
-      "title": "画出单体仓库影响图",
-      "text": "列出包、包间依赖、共享配置和独立部署单元，验证改一个包时哪些任务必须重跑。"
+      "title": "规划单体仓库的依赖图",
+      "text": "列出应用、共享包和服务，标出依赖方向、可以独立部署的边界，再根据一次改动推导需要重建和测试的项目。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/using-npm/workspaces",
-        "label": "npm 官方文档 · workspaces",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · workspaces",
+        "note": "说明根工作区如何组织多个包、链接本地依赖和运行工作区命令。"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/#workspaces",
+        "label": "npm Docs · package.json workspaces",
+        "note": "说明 package.json 的 workspaces 字段如何声明工作区目录。"
       },
       {
         "url": "https://pnpm.io/workspaces",
-        "label": "pnpm 官方文档 · workspaces",
-        "note": "依赖安装与存储结构"
+        "label": "pnpm Docs · Workspace",
+        "note": "说明多包仓库、workspace 协议和独立包之间的依赖关系。"
+      },
+      {
+        "url": "https://bazel.build/concepts/build-ref",
+        "label": "Bazel · Build Encyclopedia",
+        "note": "说明 workspace、package、target 和依赖图如何组织构建。"
       }
     ]
   },
   {
     "slug": "environment-variable",
-    "lead": "把APP_MODE从dev改成prod后，为何旧进程仍显示dev？",
-    "definition": "环境变量是由进程环境提供的键值对，程序在启动或运行时读取它们来取得配置。",
-    "boundary": "它不是天然安全的密钥库；值可能被子进程、日志、调试器或错误页面泄露。",
+    "lead": "把 APP_MODE 从 dev 改成 prod 后，为什么旧进程仍显示 dev？",
+    "definition": "环境变量是进程可以按名称读取的键值对。父环境在启动新进程时会复制一份给它，应用再读取这份配置；父环境后来改变，也不会自动传进已经在运行的进程。",
+    "boundary": "服务端可以让秘密管理系统把凭据注入进程，但环境变量本身不是密钥库。前端构建时的变量可能被写进浏览器资源，敏感值还要控制谁能读到它：日志和构建产物都可能把它带出去。",
     "sceneKind": "layers",
-    "sceneTitle": "环境值在进程创建时形成快照",
+    "sceneTitle": "父环境变化与进程配置快照",
     "actionLabel": "修改变量并重启",
     "actors": [
       {
         "id": "shell",
         "label": "父环境",
-        "detail": "APP_MODE=dev",
+        "detail": "启动器/容器：APP_MODE=dev",
         "icon": "code",
         "group": "来源"
       },
       {
         "id": "old",
         "label": "旧进程",
-        "detail": "读取dev",
+        "detail": "保存 dev 副本",
         "icon": "gear",
         "group": "进程"
       },
       {
         "id": "change",
         "label": "变量修改",
-        "detail": "dev→prod",
+        "detail": "父环境 dev → prod",
         "icon": "key",
         "group": "变化"
       },
       {
         "id": "new",
         "label": "新进程",
-        "detail": "读取prod",
+        "detail": "读取 prod 副本",
         "icon": "gear",
         "group": "进程"
       },
       {
         "id": "ui",
         "label": "运行结果",
-        "detail": "旧dev / 新prod",
+        "detail": "旧 dev / 新 prod",
         "icon": "browser",
         "group": "观察"
       }
@@ -11051,7 +11081,7 @@
     "frames": [
       {
         "label": "启动旧进程",
-        "note": "进程从父环境读取dev并保存当前值。",
+        "note": "shell 或容器把 APP_MODE=dev 传给新进程；这个进程读到的是 dev。",
         "activeIds": [
           "shell",
           "old"
@@ -11069,7 +11099,7 @@
       },
       {
         "label": "父环境修改",
-        "note": "变量在父环境改为prod，旧进程不自动同步。",
+        "note": "父环境改为 prod，旧进程不会自动同步，仍然读取 dev。",
         "activeIds": [
           "shell",
           "change"
@@ -11082,7 +11112,7 @@
         ],
         "values": {
           "change": "dev → prod",
-          "old": "仍为dev"
+          "old": "仍为 dev"
         },
         "activeEdgeIds": [
           "s-c"
@@ -11090,7 +11120,7 @@
       },
       {
         "label": "启动新进程",
-        "note": "新进程读取修改后的prod。",
+        "note": "重新启动或创建新进程后，它从父环境读取修改后的 prod。",
         "activeIds": [
           "change",
           "new"
@@ -11109,7 +11139,7 @@
       },
       {
         "label": "结果并存",
-        "note": "页面同时看到旧进程dev与新进程prod。",
+        "note": "新进程读到 prod，先启动的那个仍是 dev；两个进程同时存在，各读各的值。",
         "activeIds": [
           "old",
           "new",
@@ -11129,12 +11159,12 @@
         ]
       }
     ],
-    "insight": "环境变量属于进程环境配置，不是天然安全的密钥库，也不会自动刷新既有进程。",
+    "insight": "环境变量是进程配置的入口，不是天然安全的密钥库；父环境改动也不会自动刷新既有进程。",
     "quiz": {
-      "question": "把密钥放入前端构建时环境变量就安全吗？",
+      "question": "把密钥放进前端构建时的环境变量就安全吗？",
       "options": [
         {
-          "label": "不一定，构建后可能进入浏览器资源",
+          "label": "不一定，构建后这些值可能已经进入浏览器资源",
           "correct": true
         },
         {
@@ -11146,33 +11176,43 @@
           "correct": false
         }
       ],
-      "success": "变量暴露面取决于读取它的进程和产物。",
-      "retry": "前端可见代码不能保存秘密。"
+      "success": "是否暴露取决于读取它的进程和生成的产物。",
+      "retry": "前端可见代码不能保存服务器秘密。"
     },
     "prompt": {
-      "title": "盘点环境变量",
-      "text": "列出变量由谁注入、哪个进程读取、何时生效、是否进入前端产物和如何轮换，敏感值另用密钥管理。"
+      "title": "检查环境变量的生效范围",
+      "text": "列出变量由谁注入、哪个进程读取、在启动还是运行中生效、是否会进入前端产物，以及缺失和轮换时的行为。"
     },
     "sources": [
       {
-        "url": "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html",
-        "label": "POSIX 规范 · V1 chap08",
-        "note": "原始规范与实现说明"
+        "url": "https://nodejs.org/api/process.html#processenv",
+        "label": "Node.js Docs · process.env",
+        "note": "说明 Node 进程如何读取环境对象，以及子进程获得的环境。"
       },
       {
-        "url": "https://nodejs.org/api/process.html#processenv",
-        "label": "Node.js 官方文档 · process",
-        "note": "Node.js 运行时行为"
+        "url": "https://vite.dev/guide/env-and-mode",
+        "label": "Vite Docs · env variables and modes",
+        "note": "说明前端构建变量的读取方式和公开前缀，提醒不要把秘密暴露到客户端。"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/guides/environment-variables",
+        "label": "Next.js Docs · environment variables",
+        "note": "区分服务器运行时变量与 NEXT_PUBLIC_ 构建时公开变量。"
+      },
+      {
+        "url": "https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/",
+        "label": "Docker Docs · set environment variables",
+        "note": "说明 Compose 如何从 shell、env 文件和配置向容器注入变量。"
       }
     ]
   },
   {
     "slug": "source-map",
-    "lead": "压缩代码在第1行240列报错，调试器怎样跳回src/app.ts第18行7列？",
-    "definition": "源映射用映射表把生成代码的位置还原到原始源码的文件、行和列，便于调试和错误定位。",
-    "boundary": "它不会还原执行过程，也可能暴露源码；生产发布是否提供映射需要单独权衡。",
+    "lead": "压缩后的代码报错，位置在第 1 行第 240 列，调试器怎样跳回 src/app.ts 第 18 行第 7 列？",
+    "definition": "构建工具会生成源映射，把生成代码的文件、行列位置对应到原始源码的位置。生成文件末尾的 sourceMappingURL 注释会告诉调试器 map 在哪里；调试器读取后，可以在原始文件上显示错误并设置断点。",
+    "boundary": "源映射不会修复错误，也不改变正在运行的程序。map 文件可能包含源码文件名、路径甚至源码内容；发布前可以随站点公开、只上传给错误监控服务，或者干脆不发布。",
     "sceneKind": "matrix",
-    "sceneTitle": "生成位置与源码位置逐段映射",
+    "sceneTitle": "从生成位置回到原始语句",
     "actionLabel": "点击堆栈坐标",
     "actors": [
       {
@@ -11185,7 +11225,7 @@
       {
         "id": "map",
         "label": "源映射",
-        "detail": "位置映射表",
+        "detail": "本次构建的 map",
         "icon": "file",
         "group": "索引"
       },
@@ -11199,7 +11239,7 @@
       {
         "id": "debugger",
         "label": "调试器",
-        "detail": "高亮第18行",
+        "detail": "高亮原始 18:7",
         "icon": "browser",
         "group": "结果"
       }
@@ -11227,7 +11267,7 @@
     "frames": [
       {
         "label": "错误在产物中",
-        "note": "运行时只报告bundle.js的1:240。",
+        "note": "运行时报告生成文件 bundle.js 的第 1 行第 240 列。",
         "activeIds": [
           "generated"
         ],
@@ -11242,8 +11282,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "查询映射段",
-        "note": "源映射找到覆盖该列的记录。",
+        "label": "查询映射条目",
+        "note": "生成文件末尾的 sourceMappingURL 指向本次构建的 map，调试器找到覆盖 1:240 的映射条目。",
         "activeIds": [
           "generated",
           "map"
@@ -11253,7 +11293,7 @@
           "debugger"
         ],
         "values": {
-          "map": "命中1段"
+          "map": "命中 1 条"
         },
         "activeEdgeIds": [
           "g-m"
@@ -11261,7 +11301,7 @@
       },
       {
         "label": "还原源位置",
-        "note": "记录指向src/app.ts的18:7。",
+        "note": "映射条目指向 src/app.ts 的第 18 行第 7 列。",
         "activeIds": [
           "map",
           "source"
@@ -11281,7 +11321,7 @@
       },
       {
         "label": "调试器跳转",
-        "note": "界面高亮原始第18行，而非压缩后的长行。",
+        "note": "调试器在原始文件里高亮这个位置；浏览器实际执行的仍是生成代码。",
         "activeIds": [
           "source",
           "debugger"
@@ -11299,16 +11339,16 @@
         ]
       }
     ],
-    "insight": "源映射连接生成位置与原始位置；它不记录完整执行过程，也可能暴露源码。",
+    "insight": "源映射连接生成位置与原始位置，帮助调试器显示可读源码；它不会修复错误，也可能暴露源码。",
     "quiz": {
-      "question": "生产环境公开source map可能带来什么额外风险？",
+      "question": "公开生产环境的 source map 可能带来什么风险？",
       "options": [
         {
           "label": "暴露原始源码和文件结构",
           "correct": true
         },
         {
-          "label": "让JavaScript无法运行",
+          "label": "让 JavaScript 无法运行",
           "correct": false
         },
         {
@@ -11316,67 +11356,77 @@
           "correct": false
         }
       ],
-      "success": "调试便利与源码暴露要权衡。",
-      "retry": "映射文件本身可能包含敏感路径或源码。"
+      "success": "调试便利与源码暴露需要一起考虑。",
+      "retry": "映射文件可能包含敏感路径或源码，必要时私下上传或不发布。"
     },
     "prompt": {
-      "title": "检查源映射发布",
-      "text": "确认生成文件、映射文件、源码内容和错误平台访问权限，决定是否公开、私下上传或禁用。"
+      "title": "检查源映射是否可用且可控",
+      "text": "确认生成文件和 map 属于同一次构建，行列能对应到原始源码版本，sourceMappingURL 可访问，并决定 map 是公开提供、私下上传还是不发布。"
     },
     "sources": [
       {
         "url": "https://tc39.es/ecma426/",
-        "label": "ECMAScript 规范 · ecma426",
-        "note": "JavaScript 语言规范"
+        "label": "ECMA-426 · Source Map 规范",
+        "note": "定义生成代码与原始源位置的映射格式、version、sources 和 mappings。"
       },
       {
         "url": "https://www.typescriptlang.org/tsconfig/sourceMap.html",
-        "label": "TypeScript 官方文档 · sourceMap",
-        "note": "类型系统与编译行为"
+        "label": "TypeScript Docs · sourceMap",
+        "note": "说明 TypeScript 编译时如何生成 source map。"
+      },
+      {
+        "url": "https://developer.chrome.com/docs/devtools/javascript/source-maps",
+        "label": "Chrome DevTools · source maps",
+        "note": "说明浏览器调试器用 map 显示原始文件、错误和断点。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map",
+        "label": "Firefox Source Docs · use a source map",
+        "note": "说明生成 map、sourceMappingURL 和调试器还原原始文件的关系。"
       }
     ]
   },
   {
     "slug": "linter",
-    "lead": "一段代码同时有未使用变量和恒真条件，检查器怎样指出两处不同问题？",
-    "definition": "代码检查器按语法树和规则寻找可能的错误、不一致或危险写法，并报告位置与规则编号。",
-    "boundary": "检查器不只是格式工具，也不能证明程序逻辑正确；规则集决定它能发现什么。",
+    "lead": "一段代码同时有未使用变量和恒真条件，linter 怎样指出两处不同问题？",
+    "definition": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等问题；部分诊断可以自动修复，CI 或提交钩子也可以把严重问题设为门槛。",
+    "boundary": "它只检查规则能描述的源码模式，不执行完整业务流程，所以不能替代测试和运行时监控。它能发现什么取决于启用了哪些规则：关闭规则只是停止相应报告。",
     "sceneKind": "tree",
-    "sceneTitle": "规则沿语法树寻找命中节点",
+    "sceneTitle": "规则如何沿语法树产生诊断",
     "actionLabel": "启停一条规则",
     "actors": [
       {
         "id": "code",
         "label": "源代码",
-        "detail": "12行",
+        "detail": "12 行，含 total 和 if(true)",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "ast",
         "label": "语法树",
-        "detail": "声明与条件节点",
+        "detail": "变量与条件节点带位置",
         "icon": "layout",
         "group": "结构"
       },
       {
         "id": "unused",
         "label": "未使用规则",
-        "detail": "命中行3",
+        "detail": "命中第 3 行",
         "icon": "shield",
         "group": "规则"
       },
       {
         "id": "constant",
-        "label": "恒真规则",
-        "detail": "命中行7",
+        "label": "恒真条件规则",
+        "detail": "命中第 7 行",
         "icon": "shield",
         "group": "规则"
       },
       {
         "id": "report",
         "label": "诊断列表",
-        "detail": "2条",
+        "detail": "2 条",
         "icon": "message",
         "group": "输出"
       }
@@ -11416,7 +11466,7 @@
     "frames": [
       {
         "label": "解析代码",
-        "note": "12行源码先变成带位置的语法树。",
+        "note": "12 行源码先变成带位置的语法树，规则可以按结构找到变量和条件节点。",
         "activeIds": [
           "code",
           "ast"
@@ -11434,7 +11484,7 @@
       },
       {
         "label": "未使用规则命中",
-        "note": "声明节点没有任何引用，行3产生1条诊断。",
+        "note": "total 的声明没有引用，未使用规则在第 3 行产生 1 条诊断。",
         "activeIds": [
           "unused"
         ],
@@ -11446,7 +11496,7 @@
           "constant"
         ],
         "values": {
-          "unused": "行3"
+          "unused": "第 3 行"
         },
         "activeEdgeIds": [
           "a-u"
@@ -11454,7 +11504,7 @@
       },
       {
         "label": "恒真规则命中",
-        "note": "条件左右都是常量，行7再增加1条诊断。",
+        "note": "if (true) 的条件恒为真，恒真条件规则在第 7 行再增加 1 条诊断。",
         "activeIds": [
           "constant"
         ],
@@ -11466,7 +11516,7 @@
           "unused"
         ],
         "values": {
-          "constant": "行7"
+          "constant": "第 7 行"
         },
         "activeEdgeIds": [
           "a-c"
@@ -11474,7 +11524,7 @@
       },
       {
         "label": "报告汇总",
-        "note": "诊断数变为2；关闭恒真规则后只剩1条。",
+        "note": "关闭未使用变量规则后，诊断数从 2 条变成 1 条；格式化器负责排版，不负责报告这两类问题。",
         "activeIds": [
           "report"
         ],
@@ -11494,7 +11544,7 @@
         ]
       }
     ],
-    "insight": "linter依据规则报告潜在问题；它不只排版，也不能证明业务逻辑正确。",
+    "insight": "linter依据静态规则报告源码模式，格式化器负责排版；两者都不能证明业务逻辑已经正确。",
     "quiz": {
       "question": "把代码自动对齐缩进，主要是哪类工具的工作？",
       "options": [
@@ -11503,7 +11553,7 @@
           "correct": true
         },
         {
-          "label": "linter的全部职责",
+          "label": "linter 的全部职责",
           "correct": false
         },
         {
@@ -11511,67 +11561,77 @@
           "correct": false
         }
       ],
-      "success": "排版重写与规则诊断不同。",
-      "retry": "linter可以含风格规则，但核心不等于格式化。"
+      "success": "格式化器重写排版，linter 诊断规则问题。",
+      "retry": "linter 可以包含风格规则，但核心工作不是统一排版。"
     },
     "prompt": {
-      "title": "审查代码检查规则",
-      "text": "列出规则名、命中语法、严重级别、能否自动修复和误报例子，再按项目风险决定启用级别。"
+      "title": "处理一份 lint 报告",
+      "text": "逐条记录规则名、命中的语法结构、严重级别、能否自动修复和误报理由，再决定哪些规则可以成为 CI 或提交钩子的门槛。"
     },
     "sources": [
       {
         "url": "https://eslint.org/docs/latest/use/core-concepts/",
-        "label": "ESLint 官方文档 · core concepts",
-        "note": "原始规范与实现说明"
+        "label": "ESLint Docs · core concepts",
+        "note": "说明 linter 解析源码、应用规则并输出诊断的基本流程。"
       },
       {
-        "url": "https://eslint.org/docs/latest/extend/custom-rules",
-        "label": "ESLint 官方文档 · custom rules",
-        "note": "原始规范与实现说明"
+        "url": "https://eslint.org/docs/latest/use/configure/rules",
+        "label": "ESLint Docs · configure rules",
+        "note": "说明规则的 error/warn/off 级别和如何启停规则。"
+      },
+      {
+        "url": "https://typescript-eslint.io/getting-started/",
+        "label": "typescript-eslint · getting started",
+        "note": "说明如何让 ESLint 解析 TypeScript 并运行类型相关规则。"
+      },
+      {
+        "url": "https://github.com/standard/standard",
+        "label": "JavaScript Standard Style",
+        "note": "展示一套把规则检查与自动修复命令结合的实际规则集。"
       }
     ]
   },
   {
     "slug": "formatter",
-    "lead": "92字符的一行数组被拆成4行时，程序为何仍应保持相同行为？",
-    "definition": "格式化器把代码按统一排版规则重写，如缩进、换行和引号，而通常不改变程序含义。",
-    "boundary": "格式化器不负责判断业务逻辑，也不应与发现潜在错误的linter混为一谈。",
+    "lead": "92 字符的一行数组按 80 列拆成 4 行时，程序为何通常仍保持相同行为？",
+    "definition": "格式化器先读取代码结构，再按固定选项重新打印源码。它主要改变缩进、空白、换行和引号等外观，目标是保留程序含义，让代码审查少看排版差异。",
+    "boundary": "它不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或配置有变化时仍要跑测试，不能把“通常不改含义”当成绝对保证。",
     "sceneKind": "transform",
-    "sceneTitle": "排版变化与语法结构分离",
-    "actionLabel": "拖动行宽",
+    "sceneTitle": "代码结构不变，排版按规则重印",
+    "actionLabel": "调整行宽规则",
     "actors": [
       {
         "id": "before",
         "label": "格式化前",
-        "detail": "1行 · 92字符",
+        "detail": "一行 · 92 字符",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "parser",
-        "label": "语法结构",
-        "detail": "数组5项",
+        "label": "代码结构",
+        "detail": "数组 5 项",
         "icon": "layout",
         "group": "保持"
       },
       {
         "id": "width",
         "label": "行宽规则",
-        "detail": "80",
+        "detail": "80 列",
         "icon": "gear",
         "group": "设置"
       },
       {
         "id": "after",
         "label": "格式化后",
-        "detail": "4行",
+        "detail": "4 行 · 5 项",
         "icon": "code",
         "group": "输出"
       },
       {
         "id": "diff",
-        "label": "差异",
-        "detail": "只含空白与换行",
+        "label": "差异与测试",
+        "detail": "排版差异，仍需验证",
         "icon": "git",
         "group": "检查"
       }
@@ -11605,7 +11665,7 @@
     "frames": [
       {
         "label": "读取长行",
-        "note": "格式化前代码是一行92字符。",
+        "note": "格式化前代码是一行 92 字符，数组包含 5 个元素。",
         "activeIds": [
           "before"
         ],
@@ -11615,13 +11675,13 @@
           "diff"
         ],
         "values": {
-          "before": "1行 · 92字符"
+          "before": "1 行 · 92 字符"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "结构锁定",
-        "note": "解析器确认它是5项数组，排版不能改变元素。",
+        "label": "读取代码结构",
+        "note": "格式化器把一行 92 字符、含 5 个元素的数组读成代码结构，先保留结构再决定换行。",
         "activeIds": [
           "parser"
         ],
@@ -11632,15 +11692,15 @@
           "after"
         ],
         "values": {
-          "parser": "数组5项"
+          "parser": "数组 5 项"
         },
         "activeEdgeIds": [
           "b-p"
         ]
       },
       {
-        "label": "按80折行",
-        "note": "行宽规则触发，输出变成4行。",
+        "label": "按 80 列重排",
+        "note": "行宽设为 80 时触发，格式化器只调整空白和换行，输出变成 4 行。",
         "activeIds": [
           "width",
           "after"
@@ -11653,7 +11713,7 @@
           "diff"
         ],
         "values": {
-          "after": "4行"
+          "after": "4 行 · 5 项"
         },
         "activeEdgeIds": [
           "w-a",
@@ -11661,8 +11721,8 @@
         ]
       },
       {
-        "label": "只见排版差异",
-        "note": "差异检查显示元素和顺序没变。",
+        "label": "比较并验证",
+        "note": "差异主要是排版；插件、配置或解析器变化仍要通过测试确认。",
         "activeIds": [
           "diff"
         ],
@@ -11674,14 +11734,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "diff": "语义变化0"
+          "diff": "排版差异，待测试"
         },
         "activeEdgeIds": [
           "a-d"
         ]
       }
     ],
-    "insight": "格式化器的目标是统一排版，不负责判断业务正确性或安全缺陷。",
+    "insight": "格式化器统一排版并减少审查噪声，目标是保留代码含义；配置、插件或解析器变化仍需要测试。",
     "quiz": {
       "question": "格式化后测试失败，正确态度是什么？",
       "options": [
@@ -11694,37 +11754,47 @@
           "correct": false
         },
         {
-          "label": "删除所有测试",
+          "label": "直接删除失败的测试",
           "correct": false
         }
       ],
-      "success": "工具目标不等于绝对无错。",
-      "retry": "应以实际差异和测试为准。"
+      "success": "工具的目标是保留含义，实际差异仍要检查和测试。",
+      "retry": "检查配置、插件、解析器版本和代码差异，不要跳过测试。"
     },
     "prompt": {
-      "title": "确定格式化规则",
-      "text": "设置行宽、缩进、引号和忽略范围，对一个真实文件比较格式化前后语法结构与测试结果。"
+      "title": "确定并验证格式化规则",
+      "text": "确定行宽、缩进、引号和插件配置，比较格式化前后的语法结构与差异，再用测试确认没有引入行为变化。"
     },
     "sources": [
       {
         "url": "https://prettier.io/docs/en/why-prettier",
-        "label": "Prettier 官方文档 · why prettier",
-        "note": "原始规范与实现说明"
+        "label": "Prettier Docs · Why Prettier?",
+        "note": "说明格式化器通过固定规则打印代码，减少团队在排版上的争论。"
       },
       {
         "url": "https://prettier.io/docs/en/options.html",
-        "label": "Prettier 官方文档 · options",
-        "note": "原始规范与实现说明"
+        "label": "Prettier Docs · options",
+        "note": "说明 printWidth、tabWidth、引号等排版选项是配置偏好而非硬性语法限制。"
+      },
+      {
+        "url": "https://go.dev/blog/gofmt",
+        "label": "Go Blog · gofmt",
+        "note": "说明 gofmt 用统一的机器格式化降低代码排版差异。"
+      },
+      {
+        "url": "https://rust-lang.github.io/rustfmt/",
+        "label": "rustfmt · configuration",
+        "note": "说明 Rust formatter 的配置、格式化范围与项目验证。"
       }
     ]
   },
   {
     "slug": "expression",
-    "lead": "price=10、tax=3时，(price×2)+tax的值怎样从叶子算到根？",
-    "definition": "表达式经过求值得到一个值，也可能在求值过程中读取或改变状态；它可以嵌在更大的表达式或语句中。",
-    "boundary": "有运算符不代表就是完整语句；表达式强调会产生值，语句则组织控制流程。",
+    "lead": "price=10、tax=3 时，(price * 2) + tax 怎样从叶子算到根？",
+    "definition": "表达式是可以求值并产生一个值的代码片段；这个值可以接着用在赋值、函数调用或条件判断里。语句负责组织动作和控制流程，里面可以包含表达式，但语句本身不一定有可用返回值。",
+    "boundary": "表达式也可能有副作用，例如赋值会改变状态，函数调用也可能带来副作用。求值是按语言规则计算结果；执行一条语句时，除了求值还可能要走控制流程。示例里的 * 和 × 只是同一个乘法运算的两种写法。",
     "sceneKind": "tree",
-    "sceneTitle": "表达式树自下而上求值",
+    "sceneTitle": "表达式树怎样从叶子求到根",
     "actionLabel": "修改叶子值",
     "actors": [
       {
@@ -11792,7 +11862,7 @@
     "frames": [
       {
         "label": "叶子取值",
-        "note": "price读到10，tax读到3。",
+        "note": "把 (price * 2) + tax 看成一棵树：叶子是 price=10、常量 2 和 tax=3，* 表示乘法。",
         "activeIds": [
           "price",
           "tax"
@@ -11810,7 +11880,7 @@
       },
       {
         "label": "先算乘法",
-        "note": "10乘2得到20，中间节点有了值。",
+        "note": "求值从叶子往根走，先求左侧子表达式 price * 2：10 * 2 得到 20。",
         "activeIds": [
           "price",
           "two",
@@ -11832,7 +11902,7 @@
       },
       {
         "label": "再算加法",
-        "note": "20加3，根节点得到23。",
+        "note": "把中间值 20 和 tax=3 交给根节点，20 + 3 得到 23。",
         "activeIds": [
           "multiply",
           "tax",
@@ -11852,8 +11922,8 @@
         ]
       },
       {
-        "label": "修改叶子",
-        "note": "price改为12后，结果沿树重算为27。",
+        "label": "替换叶子",
+        "note": "price 改为 12 后，这次求值沿树得到 24，再加 tax 得到 27；旧的 23 不会自动保留。",
         "activeIds": [
           "price",
           "multiply",
@@ -11875,12 +11945,12 @@
         ]
       }
     ],
-    "insight": "表达式的特点是求值得到一个值；求值顺序和副作用由语言规则决定。",
+    "insight": "表达式的特点是求值得到一个值；树上的每次求值按语言规则读取当前值，副作用和求值顺序也由语言规则决定。",
     "quiz": {
-      "question": "console.log(3)打印了3，它的返回值也一定是3吗？",
+      "question": "console.log(3) 打印了 3，它的返回值也一定是 3 吗？",
       "options": [
         {
-          "label": "不一定，打印与表达式返回是不同通道",
+          "label": "不一定，打印输出和返回值是两回事",
           "correct": true
         },
         {
@@ -11892,62 +11962,77 @@
           "correct": false
         }
       ],
-      "success": "可见输出不能代替求值结果。",
-      "retry": "要检查实际返回规则。"
+      "success": "可见输出不能代替求值结果；在 JavaScript 中 console.log 通常返回 undefined。",
+      "retry": "要分别检查输出动作和函数调用的实际返回规则。"
     },
     "prompt": {
       "title": "拆解一个表达式",
-      "text": "画出运算树，标明每个叶值、求值顺序、中间值和最终值；若有副作用，单独列出。"
+      "text": "画出运算树，标明每个叶值、运算符、求值顺序、中间值和最终值；再指出它放在赋值、调用或条件中的位置，以及是否有副作用。"
     },
     "sources": [
       {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html",
-        "label": "ECMAScript 规范 · ecmascript language expressions",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript · Expressions",
+        "note": "说明 JavaScript 表达式的语法类别、求值和运算顺序。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
+        "label": "MDN · Expressions and operators",
+        "note": "用面向读者的例子区分值、运算符和表达式。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/expressions.html",
+        "label": "Python Docs · expressions",
+        "note": "说明表达式求值、运算符和副作用等语言层概念。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators",
+        "label": "MDN · JavaScript operators",
+        "note": "说明 JavaScript 运算符的操作数、结果和求值规则。"
       }
     ]
   },
   {
     "slug": "function",
-    "lead": "调用add(2,3)时，参数和局部变量是怎样进入又离开调用栈的？",
-    "definition": "函数把一段可调用的行为封装起来，接收参数，在独立执行环境中运行，并可产生返回值或副作用。",
-    "boundary": "函数不一定都有返回值，也不一定是纯函数；相同输入是否得到相同输出取决于它读取的状态。",
+    "lead": "调用 calculate(20, 3) 时，实参怎样绑定到局部参数，结果又怎样回到 total？",
+    "definition": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用都会建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
+    "boundary": "函数不一定有返回值，也不一定是纯函数。它可能修改或读取函数外的状态，或执行 I/O（读写文件、网络等），所以传入相同的实参，不一定每次都得到相同的结果。",
     "sceneKind": "timeline",
-    "sceneTitle": "函数调用帧的完整生命周期",
+    "sceneTitle": "一次函数调用怎样进出局部环境",
     "actionLabel": "进入下一步",
     "actors": [
       {
         "id": "caller",
         "label": "调用位置",
-        "detail": "result = add(2,3)",
+        "detail": "total = calculate(20, 3)",
         "icon": "code",
         "group": "外部"
       },
       {
         "id": "frame",
         "label": "调用帧",
-        "detail": "a=2 · b=3",
+        "detail": "price=20 · count=3",
         "icon": "memory",
         "group": "函数"
       },
       {
         "id": "body",
         "label": "函数体",
-        "detail": "a+b",
+        "detail": "price × count",
         "icon": "gear",
         "group": "执行"
       },
       {
         "id": "return",
         "label": "返回通道",
-        "detail": "5",
+        "detail": "60",
         "icon": "message",
         "group": "结果"
       },
       {
         "id": "stack",
         "label": "调用栈",
-        "detail": "深度0",
+        "detail": "深度 0 → 1 → 0",
         "icon": "layout",
         "group": "状态"
       }
@@ -11981,7 +12066,7 @@
     "frames": [
       {
         "label": "调用前",
-        "note": "调用栈深度为0，result尚未赋值。",
+        "note": "调用栈深度为 0，total 尚未赋值；函数定义已经存在但函数体还没运行。",
         "activeIds": [
           "caller",
           "stack"
@@ -11993,13 +12078,13 @@
         ],
         "values": {
           "stack": "0",
-          "caller": "result=?"
+          "caller": "total=?"
         },
         "activeEdgeIds": []
       },
       {
         "label": "压入调用帧",
-        "note": "a和b绑定为2、3，栈深度变1。",
+        "note": "实参 20、3 分别绑定到局部参数 price、count，栈深度变为 1。",
         "activeIds": [
           "frame",
           "stack"
@@ -12011,7 +12096,7 @@
           "return"
         ],
         "values": {
-          "frame": "a=2 · b=3",
+          "frame": "price=20 · count=3",
           "stack": "1"
         },
         "activeEdgeIds": [
@@ -12020,7 +12105,7 @@
       },
       {
         "label": "函数体求值",
-        "note": "局部表达式a+b得到5。",
+        "note": "本次局部表达式 price × count 得到 60，外部代码暂时看不到局部参数。",
         "activeIds": [
           "body"
         ],
@@ -12032,7 +12117,7 @@
           "return"
         ],
         "values": {
-          "body": "5"
+          "body": "60"
         },
         "activeEdgeIds": [
           "f-b"
@@ -12040,7 +12125,7 @@
       },
       {
         "label": "返回并弹栈",
-        "note": "5交回调用位置，栈深度恢复0。",
+        "note": "60 交回调用位置，total=60；调用帧弹出，局部参数离开本次调用，栈深度恢复 0。",
         "activeIds": [
           "return",
           "caller",
@@ -12052,8 +12137,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "return": "5",
-          "caller": "result=5",
+          "return": "60",
+          "caller": "total=60",
           "stack": "0"
         },
         "activeEdgeIds": [
@@ -12062,9 +12147,9 @@
         ]
       }
     ],
-    "insight": "函数封装一次可调用行为；是否纯净、是否有返回值要看具体实现。",
+    "insight": "函数把一次行为和本次局部调用隔离开；参数绑定、返回值、纯度和副作用都取决于具体实现。",
     "quiz": {
-      "question": "相同参数调用两次却结果不同，可能因为什么？",
+      "question": "用相同实参调用两次却结果不同，可能因为什么？",
       "options": [
         {
           "label": "函数读取了外部可变状态",
@@ -12079,34 +12164,49 @@
           "correct": false
         }
       ],
-      "success": "函数可能有副作用或外部依赖。",
-      "retry": "封装不保证纯度。"
+      "success": "函数可能读取外部状态、执行 I/O 或产生副作用。",
+      "retry": "封装行为不保证纯度，继续检查函数外的读写。"
     },
     "prompt": {
-      "title": "检查一个函数",
-      "text": "列出参数、局部状态、返回值和所有外部读写，再判断它是否能用相同输入稳定复现。"
+      "title": "说明一个函数的行为",
+      "text": "写清函数定义中的参数、调用时传入的实参、局部状态、返回值、可能副作用、错误处理和一个最小调用示例。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+        "label": "MDN · JavaScript functions",
+        "note": "说明函数定义、调用、参数、返回值、作用域和闭包。"
+      },
+      {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
-        "label": "ECMAScript 规范 · ecmascript language functions and classes",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript · functions and classes",
+        "note": "说明 JavaScript 函数定义、调用和执行上下文的规范语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+        "label": "Python Docs · defining functions",
+        "note": "说明函数定义、参数绑定、局部变量和 return。"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html",
+        "label": "TypeScript Docs · functions",
+        "note": "说明 TypeScript 函数参数、返回类型和可调用签名。"
       }
     ]
   },
   {
     "slug": "parameter",
-    "lead": "定义里的price、rate与调用里的100、0.8分别是什么？",
-    "definition": "参数是函数定义中的占位名称；调用时传入的实参会按语言规则绑定到这些名称。",
-    "boundary": "参数和实参不是同一个东西：前者在定义处，后者是某次调用提供的具体值。",
+    "lead": "调用 discount(100, 0.2) 时，price、rate 这两个参数如何接住实参？缺少 rate 或交换顺序会怎样？",
+    "definition": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
+    "boundary": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
     "sceneKind": "assembly",
-    "sceneTitle": "形参与实参按位置绑定",
-    "actionLabel": "交换实参顺序",
+    "sceneTitle": "一次调用怎样绑定参数",
+    "actionLabel": "省略或交换实参",
     "actors": [
       {
         "id": "definition",
         "label": "函数定义",
-        "detail": "discount(price, rate)",
+        "detail": "discount(price, rate = 0.2)",
         "icon": "code",
         "group": "定义"
       },
@@ -12120,21 +12220,21 @@
       {
         "id": "arg-b",
         "label": "实参2",
-        "detail": "0.8",
+        "detail": "0.2",
         "icon": "message",
         "group": "调用"
       },
       {
         "id": "slot-a",
         "label": "参数price",
-        "detail": "空",
+        "detail": "必填",
         "icon": "component",
         "group": "帧"
       },
       {
         "id": "slot-b",
         "label": "参数rate",
-        "detail": "空",
+        "detail": "默认 0.2",
         "icon": "component",
         "group": "帧"
       }
@@ -12168,7 +12268,7 @@
     "frames": [
       {
         "label": "定义占位",
-        "note": "price和rate只是函数定义中的两个槽位。",
+        "note": "price 是必填参数，rate 是有默认值 0.2 的参数；它们仍只是定义中的名称。",
         "activeIds": [
           "definition",
           "slot-a",
@@ -12180,8 +12280,8 @@
           "arg-b"
         ],
         "values": {
-          "slot-a": "空",
-          "slot-b": "空"
+          "slot-a": "必填",
+          "slot-b": "默认 0.2"
         },
         "activeEdgeIds": [
           "d-sa",
@@ -12190,7 +12290,7 @@
       },
       {
         "label": "调用提供实参",
-        "note": "本次调用给出100和0.8两个具体值。",
+        "note": "本次调用给出 100 和 0.2 两个具体值，它们是实参。",
         "activeIds": [
           "arg-a",
           "arg-b"
@@ -12204,13 +12304,13 @@
         ],
         "values": {
           "arg-a": "100",
-          "arg-b": "0.8"
+          "arg-b": "0.2"
         },
         "activeEdgeIds": []
       },
       {
         "label": "按位置绑定",
-        "note": "第1个值进入price，第2个进入rate。",
+        "note": "绑定只负责把值放到对应的名称上，不判断值在业务上是否合理。",
         "activeIds": [
           "slot-a",
           "slot-b"
@@ -12223,7 +12323,7 @@
         "mutedIds": [],
         "values": {
           "slot-a": "price=100",
-          "slot-b": "rate=0.8"
+          "slot-b": "rate=0.2"
         },
         "activeEdgeIds": [
           "a-sa",
@@ -12231,8 +12331,30 @@
         ]
       },
       {
+        "label": "省略 rate",
+        "note": "调用 discount(100) 没有提供第二个实参，rate 使用定义中的默认值 0.2。",
+        "activeIds": [
+          "slot-a",
+          "slot-b"
+        ],
+        "doneIds": [
+          "definition",
+          "arg-a"
+        ],
+        "mutedIds": [
+          "arg-b"
+        ],
+        "values": {
+          "slot-a": "price=100",
+          "slot-b": "rate=0.2（默认）"
+        },
+        "activeEdgeIds": [
+          "a-sa"
+        ]
+      },
+      {
         "label": "交换顺序",
-        "note": "调用改为discount(0.8,100)后，绑定也随之交换。",
+        "note": "改为 discount(0.2, 100) 后，按位置绑定照旧进行，price 和 rate 拿到互换后的值，可能不符合业务含义。",
         "activeIds": [
           "arg-a",
           "arg-b",
@@ -12244,7 +12366,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "slot-a": "price=0.8",
+          "slot-a": "price=0.2",
           "slot-b": "rate=100"
         },
         "activeEdgeIds": [
@@ -12253,35 +12375,50 @@
         ]
       }
     ],
-    "insight": "参数是定义中的名称，实参是某次调用提供的值；绑定规则决定它们如何对应。",
+    "insight": "参数是定义中的名称，实参是本次调用的值；默认值和绑定规则决定缺少或交换实参时函数收到什么。",
     "quiz": {
-      "question": "调用discount(100,0.8)时，rate是什么？",
+      "question": "调用 discount(100) 时，rate 是什么？",
       "options": [
         {
-          "label": "参数名，绑定到实参0.8",
+          "label": "使用定义中的默认值 0.2",
           "correct": true
         },
         {
-          "label": "调用返回值",
+          "label": "上一次调用留下的值",
           "correct": false
         },
         {
-          "label": "函数文件名",
+          "label": "自动等于 price 的值",
           "correct": false
         }
       ],
-      "success": "定义处名称和调用处值要分开。",
-      "retry": "rate不是0.8这个字面值本身。"
+      "success": "缺少实参时，rate 使用定义的默认值 0.2；没有默认值则要看具体语言是否报错。",
+      "retry": "rate 每次调用都单独确定：这次没给实参就用默认值，它既不会记住上一次的结果，也不会自动跟 price 相等。"
     },
     "prompt": {
       "title": "核对函数参数",
-      "text": "列出参数顺序、类型、默认值和调用实参，补上缺失、多余或顺序错误时的处理。"
+      "text": "列出形参与实参的对应关系，说明参数顺序、默认值、必填项，以及缺失、多给或顺序错误时的处理。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+        "label": "MDN · JavaScript functions",
+        "note": "说明函数参数、实参、默认参数和调用。"
+      },
+      {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
-        "label": "ECMAScript 规范 · ecmascript language functions and classes",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript · functions and classes",
+        "note": "说明 JavaScript 函数定义、调用和参数绑定的规范语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+        "label": "Python Docs · defining functions",
+        "note": "说明函数参数、默认值、关键字参数和实参传递。"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html#optional-parameters",
+        "label": "TypeScript Docs · optional parameters",
+        "note": "说明必填参数、可选参数、默认值和参数顺序。"
       }
     ]
   },
