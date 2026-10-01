@@ -1024,11 +1024,15 @@
   },
   {
     "slug": "conditional-branch",
-    "mechanism": "条件分支先求一个条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
-    "misconception": "分支不是把两段代码都执行后再选结果；条件转换规则也可能让空值、零等产生意外路径。",
-    "demoSignature": "输入：score=72，条件score>=60；中间：比较得true，pass路径计数0→1，fail保持0；输出：“通过”。可视化：建议4帧的岔路口令牌只走一边；交互：拖score越过60观察路径切换。",
+    "mechanism": "条件分支先计算条件得到真或假，再只执行匹配的路径，并跳过其他路径；没有 else 且条件为假时，直接继续后面的代码。",
+    "misconception": "分支不是把两段代码都执行后再选结果；以 JavaScript 为例，0 和空文字会按规则算假，多数其他值算真。页面 if 运行在用户自己的浏览器里，登录权限仍需服务器重新校验。",
+    "demoSignature": "输入：score=59，条件score>=60；中间：比较得false，令牌只走未通过路径；输出：把score拖到60后条件变true，令牌改走通过路径。可视化：4帧表现准备条件、求值、输出和跨过阈值后的路径切换；交互：拖score越过60观察另一条路径被选中。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
+      "https://docs.python.org/3/reference/compound_stmts.html#if",
+      "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html"
     ],
     "rewriteRisk": "别把流程图当解释终点；要显示条件的实际值和未执行路径。",
     "nearDuplicates": [
