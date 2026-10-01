@@ -3371,12 +3371,12 @@
   },
   {
     "slug": "plan-and-execute",
-    "lead": "发布计划里的测试只过了11/12项，部署步骤该继续还是改计划？",
-    "definition": "系统先把目标拆成可检查的步骤，再逐步执行；每步结果可使剩余计划被修改、跳过或重排。",
-    "boundary": "计划不是一次生成后必须照做的清单；外部状态改变时，可靠系统需要重新规划。",
+    "lead": "测试有一项没过，为什么不能直接部署？",
+    "definition": "规划与执行先把目标拆成有前后关系、可检查的步骤，再逐项执行；某一步做完，结果没有达到完成条件时，后面的计划可以停下、调整或重排。",
+    "boundary": "计划只是接下来怎么做的安排，不代表事情已经完成。简单任务直接做更省事；步骤走完也要看实际结果。谁根据失败结果改计划，取决于系统设计，本页只演示结果如何改变后续步骤。",
     "sceneKind": "state-machine",
     "sceneTitle": "失败结果怎样改写剩余计划",
-    "actionLabel": "注入一次测试失败",
+    "actionLabel": "模拟一项测试失败",
     "actors": [
       {
         "id": "plan",
@@ -3395,7 +3395,7 @@
       {
         "id": "test",
         "label": "测试",
-        "detail": "0/12",
+        "detail": "待执行",
         "icon": "shield",
         "group": "步骤"
       },
@@ -3411,7 +3411,7 @@
         "label": "修复失败项",
         "detail": "未创建",
         "icon": "code",
-        "group": "重规划"
+        "group": "调整"
       }
     ],
     "edges": [
@@ -3449,7 +3449,7 @@
     "frames": [
       {
         "label": "计划生成",
-        "note": "三步按依赖顺序进入待执行状态。",
+        "note": "三个步骤按先后顺序排好，等待执行。",
         "activeIds": [
           "plan"
         ],
@@ -3483,7 +3483,7 @@
         ],
         "values": {
           "build": "通过",
-          "test": "可执行"
+          "test": "已解锁"
         },
         "activeEdgeIds": [
           "p-b",
@@ -3492,7 +3492,7 @@
       },
       {
         "label": "测试未全过",
-        "note": "12项有1项失败，部署从待执行变为阻塞。",
+        "note": "12 项中有 1 项失败，部署从待执行变为阻塞。",
         "activeIds": [
           "test",
           "deploy"
@@ -3505,7 +3505,7 @@
           "fix"
         ],
         "values": {
-          "test": "11 / 12",
+          "test": "通过 11 / 12",
           "deploy": "阻塞"
         },
         "activeEdgeIds": [
@@ -3518,7 +3518,7 @@
       },
       {
         "label": "计划插入修复",
-        "note": "系统新增修复步骤，而不是硬着头皮部署。",
+        "note": "失败后插入修复步骤；修复完成前，部署保持阻塞。",
         "activeIds": [
           "fix"
         ],
@@ -3539,7 +3539,7 @@
       },
       {
         "label": "复测后继续",
-        "note": "修复后12/12通过，部署才重新解锁。",
+        "note": "修复后通过 12 / 12，部署才重新解锁。",
         "activeIds": [
           "test",
           "deploy"
@@ -3551,8 +3551,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "test": "12 / 12",
-          "deploy": "可执行"
+          "test": "通过 12 / 12",
+          "deploy": "已解锁"
         },
         "activeEdgeIds": [
           "f-t",
@@ -3560,17 +3560,17 @@
         ]
       }
     ],
-    "insight": "规划与执行的价值在计划能被结果修正，而不是先写一张永远不变的清单。",
+    "insight": "先写计划只是开头；执行中的结果会改写剩下的步骤。",
     "quiz": {
       "question": "计划中某一步失败后，最合理的行为是什么？",
       "options": [
         {
-          "label": "根据失败证据更新后续步骤",
-          "correct": true
-        },
-        {
           "label": "仍按原计划执行到底",
           "correct": false
+        },
+        {
+          "label": "根据失败证据更新后续步骤",
+          "correct": true
         },
         {
           "label": "把失败项标成完成",
@@ -3578,11 +3578,11 @@
         }
       ],
       "success": "执行结果必须能反馈到计划。",
-      "retry": "计划不是绕过阻塞条件的许可。"
+      "retry": "计划排好了，没满足的条件也跳不过去。"
     },
     "prompt": {
       "title": "审查一份执行计划",
-      "text": "为每一步补上完成证据、失败分支、依赖关系和允许重排的条件，明确何时必须停止。"
+      "text": "找出计划里缺少完成证据的步骤，补上失败后的调整方式和停止条件。"
     },
     "sources": [
       {
@@ -3592,8 +3592,18 @@
       },
       {
         "url": "https://arxiv.org/abs/2210.03629",
-        "label": "原始论文 · 2210.03629",
-        "note": "原论文的方法与实验"
+        "label": "ReAct · Synergizing Reasoning and Acting",
+        "note": "推理与行动交替，并根据外部结果更新行动计划"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "工作流、反馈和停止条件的设计取舍"
+      },
+      {
+        "url": "https://blog.langchain.dev/planning-agents/",
+        "label": "LangChain · Plan-and-Execute Agents",
+        "note": "规划器、执行器与重新规划的架构示例"
       }
     ]
   },
