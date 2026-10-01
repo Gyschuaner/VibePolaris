@@ -11790,11 +11790,11 @@
   },
   {
     "slug": "expression",
-    "lead": "price=10、tax=3时，(price×2)+tax的值怎样从叶子算到根？",
-    "definition": "表达式经过求值得到一个值，也可能在求值过程中读取或改变状态；它可以嵌在更大的表达式或语句中。",
-    "boundary": "有运算符不代表就是完整语句；表达式强调会产生值，语句则组织控制流程。",
+    "lead": "price=10、tax=3 时，(price * 2) + tax 怎样从叶子算到根？",
+    "definition": "表达式是可以求值并产生一个值的代码片段；这个值可以接着用在赋值、函数调用或条件判断里。语句负责组织动作和控制流程，里面可以包含表达式，但语句本身不一定有可用返回值。",
+    "boundary": "表达式也可能有副作用，例如赋值会改变状态，函数调用也可能带来副作用。求值是按语言规则计算结果；执行一条语句时，除了求值还可能要走控制流程。示例里的 * 和 × 只是同一个乘法运算的两种写法。",
     "sceneKind": "tree",
-    "sceneTitle": "表达式树自下而上求值",
+    "sceneTitle": "表达式树怎样从叶子求到根",
     "actionLabel": "修改叶子值",
     "actors": [
       {
@@ -11862,7 +11862,7 @@
     "frames": [
       {
         "label": "叶子取值",
-        "note": "price读到10，tax读到3。",
+        "note": "把 (price * 2) + tax 看成一棵树：叶子是 price=10、常量 2 和 tax=3，* 表示乘法。",
         "activeIds": [
           "price",
           "tax"
@@ -11880,7 +11880,7 @@
       },
       {
         "label": "先算乘法",
-        "note": "10乘2得到20，中间节点有了值。",
+        "note": "求值从叶子往根走，先求左侧子表达式 price * 2：10 * 2 得到 20。",
         "activeIds": [
           "price",
           "two",
@@ -11902,7 +11902,7 @@
       },
       {
         "label": "再算加法",
-        "note": "20加3，根节点得到23。",
+        "note": "把中间值 20 和 tax=3 交给根节点，20 + 3 得到 23。",
         "activeIds": [
           "multiply",
           "tax",
@@ -11922,8 +11922,8 @@
         ]
       },
       {
-        "label": "修改叶子",
-        "note": "price改为12后，结果沿树重算为27。",
+        "label": "替换叶子",
+        "note": "price 改为 12 后，这次求值沿树得到 24，再加 tax 得到 27；旧的 23 不会自动保留。",
         "activeIds": [
           "price",
           "multiply",
@@ -11945,12 +11945,12 @@
         ]
       }
     ],
-    "insight": "表达式的特点是求值得到一个值；求值顺序和副作用由语言规则决定。",
+    "insight": "表达式的特点是求值得到一个值；树上的每次求值按语言规则读取当前值，副作用和求值顺序也由语言规则决定。",
     "quiz": {
-      "question": "console.log(3)打印了3，它的返回值也一定是3吗？",
+      "question": "console.log(3) 打印了 3，它的返回值也一定是 3 吗？",
       "options": [
         {
-          "label": "不一定，打印与表达式返回是不同通道",
+          "label": "不一定，打印输出和返回值是两回事",
           "correct": true
         },
         {
@@ -11962,18 +11962,33 @@
           "correct": false
         }
       ],
-      "success": "可见输出不能代替求值结果。",
-      "retry": "要检查实际返回规则。"
+      "success": "可见输出不能代替求值结果；在 JavaScript 中 console.log 通常返回 undefined。",
+      "retry": "要分别检查输出动作和函数调用的实际返回规则。"
     },
     "prompt": {
       "title": "拆解一个表达式",
-      "text": "画出运算树，标明每个叶值、求值顺序、中间值和最终值；若有副作用，单独列出。"
+      "text": "画出运算树，标明每个叶值、运算符、求值顺序、中间值和最终值；再指出它放在赋值、调用或条件中的位置，以及是否有副作用。"
     },
     "sources": [
       {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html",
-        "label": "ECMAScript 规范 · ecmascript language expressions",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript · Expressions",
+        "note": "说明 JavaScript 表达式的语法类别、求值和运算顺序。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
+        "label": "MDN · Expressions and operators",
+        "note": "用面向读者的例子区分值、运算符和表达式。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/expressions.html",
+        "label": "Python Docs · expressions",
+        "note": "说明表达式求值、运算符和副作用等语言层概念。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators",
+        "label": "MDN · JavaScript operators",
+        "note": "说明 JavaScript 运算符的操作数、结果和求值规则。"
       }
     ]
   },

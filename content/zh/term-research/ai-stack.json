@@ -955,13 +955,16 @@
   },
   {
     "slug": "expression",
-    "mechanism": "表达式经过求值得到一个值，也可能在求值过程中读取或改变状态；它可以嵌在更大的表达式或语句中。",
-    "misconception": "有运算符不代表就是完整语句；表达式强调会产生值，语句则组织控制流程。",
-    "demoSignature": "输入：(price*2)+tax，其中price=10、tax=3；中间：10*2→20，再20+3→23；输出：表达式值23。可视化：建议4帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算。",
+    "mechanism": "表达式是可以求值并产生一个值的代码片段；它能嵌入赋值、函数调用或条件判断，语句则组织动作和控制流程。求值顺序与副作用由语言规则决定。",
+    "misconception": "有运算符不代表就是完整语句；表达式强调求值结果，语句本身不一定有可用返回值，打印输出也不等于函数返回值。",
+    "demoSignature": "输入：(price * 2) + tax，其中 price=10、tax=3；中间：把表达式看成树，叶子取值，10*2→20，再 20+3→23；输出：把 price 换成 12 后这次求值得到 27。可视化：四帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算，并标注 * 与 × 是同一乘法。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html"
+      "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
+      "https://docs.python.org/3/reference/expressions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators"
     ],
-    "rewriteRisk": "示例应把求值顺序与最终值画清，不要用含多重副作用的复杂代码开场。",
+    "rewriteRisk": "先解释表达式、语句、求值、树的叶子和副作用，再使用调用或条件判断；不要把打印结果写成函数返回值，也不要用复杂副作用示例开场。",
     "nearDuplicates": [
       "function",
       "conditional-branch"
