@@ -46,3 +46,15 @@ npm run news:auto-publish                     dry-run passed (slugs=[])
 三篇草稿都保留 `evidence`、`verification.status=verified`、`riskLevel=routine` 和 `publishDecision=review`。`news:auto-publish` 没有提升它们，因为编辑审查原因仍存在；这批内容不会进入公开页面或 Xiaobei 检索，直到人工确认后执行 feature 分支上的 `news:publish --approve`，再通过受保护的 `dev` PR。
 
 为了验证发布路径而不改变当前仓库，我在临时 Git feature 分支上复制了这批草稿并运行 `news:publish --approve`：结果为 `publishedCount=5`，随后临时仓库 `news:validate` 为 `published=5,drafts=3,pending=0`。当前工作分支的 `content/zh/news.json` 没有被写入，生产环境也没有发布。
+
+## 自动发布判断
+
+- Anthropic 和 Google DeepMind 的 canonical URL 在本机链接检查中返回 HTTP 200。编辑确认中文表述和厂商数字后，可以把 `publishDecision` 改为 `auto` 并清空 `reviewReasons`，满足 routine、verified、evidence 和 confirmed relations 门槛后进入自动提升。
+- OpenAI 的官方页面在本机 `curl` 返回 HTTP 403；浏览器来源可以打开，草稿使用 2026-10-01 保存的官方页面文本快照计算 `sourceHash`。这足以作为人工复核材料，但不足以作为可重复的自动发布证据。OpenAI 草稿必须保持人工确认，直到编辑能够从 canonical URL 复核页面或补充可重复的官方抓取快照。
+
+## Dots 交接所需配置和权限
+
+- `NEWS_DOTS_ENDPOINT`：必填的 HTTPS 只读 JSON 端点，返回 `version=1` 的批次；脚本只发 GET，并要求 `Accept: application/json`。
+- `NEWS_DOTS_TOKEN`：可选的 endpoint 访问令牌，脚本只作为 `Authorization: Bearer` 发送。最小权限是读取新闻交接端点，不需要仓库写权限、生产 SSH 权限或其他 API 范围。
+- GitHub Actions 的 `GITHUB_TOKEN` 当前声明 `contents: write` 和 `pull-requests: write`，这是创建隔离 `news-auto/<run-id>` 分支、推送候选和创建/自动合并 dev PR 所需的最小仓库范围；工作流没有 `id-token`、部署密钥或生产主机权限。
+- `repository_dispatch` 是另一条输入路径，由外部调用方发送 `dots-news` payload；它不读取 `NEWS_DOTS_ENDPOINT`，但仍经过同一 schema、去重、证据和关系门槛。
