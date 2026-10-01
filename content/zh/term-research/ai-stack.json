@@ -822,14 +822,16 @@
   },
   {
     "slug": "dependency",
-    "mechanism": "依赖是当前模块或项目为了工作而引用的外部包、内部模块或服务，依赖关系决定加载和变更影响。",
-    "misconception": "把包装进清单不等于它一定在运行时使用；开发依赖、可选依赖和传递依赖的作用不同。",
-    "demoSignature": "输入：app直接依赖A，A依赖B；中间：依赖图从1层扩为2层，删除A后可达节点2→0；输出：构建报告缺少A。可视化：建议4帧的有向图增删；交互：点击节点查看直接/传递影响。",
+    "mechanism": "依赖图从应用声明的直接依赖出发，包管理器会顺着这些包自己的声明，一层层找出传递依赖；再根据版本约束和锁文件解析具体版本。",
+    "misconception": "可达不等于运行时一定使用；开发、可选、运行依赖用途不同，删除一条依赖关系后若仍有其他路径，包也不会从安装结果里消失。",
+    "demoSignature": "输入：应用直接依赖A，A依赖B；中间：图从应用→A→B，锁文件记录A@1.4、B@2.1；输出：报告直接1、传递1。删除应用→A后，若无其他路径B不再可达，安装结果重算但磁盘清理取决于工具。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-      "https://semver.org/"
+      "https://semver.org/",
+      "https://nodejs.org/api/packages.html",
+      "https://docs.npmjs.com/cli/v11/using-npm/scripts"
     ],
-    "rewriteRisk": "不要只讲第三方库；要让边方向和直接、传递关系可见。",
+    "rewriteRisk": "不要只讲第三方库；让边方向、版本约束、锁文件、直接/传递/开发/可选/运行用途和删除后的条件都可见。",
     "nearDuplicates": [
       "lockfile",
       "semantic-versioning",

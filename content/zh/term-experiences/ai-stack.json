@@ -10187,9 +10187,9 @@
   },
   {
     "slug": "dependency",
-    "lead": "应用直接依赖A，A又依赖B，删掉A后为什么B也从可达图中消失？",
-    "definition": "依赖是当前模块或项目为了工作而引用的外部包、内部模块或服务，依赖关系决定加载和变更影响。",
-    "boundary": "把包装进清单不等于它一定在运行时使用；开发依赖、可选依赖和传递依赖的作用不同。",
+    "lead": "清单只写了 A，为什么安装图里还会出现 B？",
+    "definition": "直接依赖是项目自己声明的包；传递依赖是这些包继续需要的包。包管理器（负责安装的工具）会顺着这些包自己的声明，一层层找出还需要哪些包，凑齐完整清单；再结合版本约束和锁文件，决定每个包实际装哪个版本。",
+    "boundary": "开发依赖主要服务构建和测试，可选依赖是否安装或使用由包管理器和环境条件决定；它们和运行时依赖的用途不同。能从应用节点到达一个包，不等于应用运行时一定会用到它；删掉一条依赖关系后，只要还有别的路径能指向这个包，它就不会从安装结果里消失。",
     "sceneKind": "tree",
     "sceneTitle": "直接依赖与传递依赖的边方向",
     "actionLabel": "增删依赖节点",
@@ -10197,7 +10197,7 @@
       {
         "id": "app",
         "label": "应用",
-        "detail": "根节点",
+        "detail": "根节点 · 应用清单",
         "icon": "package",
         "group": "项目"
       },
@@ -10211,16 +10211,23 @@
       {
         "id": "b",
         "label": "包 B",
-        "detail": "A的依赖",
+        "detail": "A 的传递依赖",
         "icon": "package",
         "group": "二层"
       },
       {
         "id": "report",
         "label": "依赖报告",
-        "detail": "可达2个",
+        "detail": "可达 2 个",
         "icon": "file",
         "group": "结果"
+      },
+      {
+        "id": "lock",
+        "label": "锁文件",
+        "detail": "A@1.4 · B@2.1",
+        "icon": "file",
+        "group": "版本"
       }
     ],
     "edges": [
@@ -10240,16 +10247,23 @@
         "id": "tree-report",
         "from": "app",
         "to": "report",
-        "label": "统计"
+        "label": "统计可达"
+      },
+      {
+        "id": "app-lock",
+        "from": "app",
+        "to": "lock",
+        "label": "记录版本"
       }
     ],
     "frames": [
       {
         "label": "只看根节点",
-        "note": "应用尚未声明外部包，可达数为0。",
+        "note": "应用清单还没有外部包，依赖报告可达数为 0，锁文件里还没有 A 和 B 的任何版本记录。",
         "activeIds": [
           "app",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [],
         "mutedIds": [
@@ -10257,55 +10271,63 @@
           "b"
         ],
         "values": {
-          "report": "0"
+          "report": "0",
+          "lock": "空"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "加入A",
-        "note": "应用到A出现一条直接依赖边。",
+        "label": "加入 A",
+        "note": "应用向 A 画出一条依赖边（一条指向关系）；清单只说“要 A”，这次演示装的是 A@1.4。",
         "activeIds": [
           "app",
           "a",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [],
         "mutedIds": [
           "b"
         ],
         "values": {
-          "report": "直接1"
+          "report": "直接 1",
+          "lock": "A@1.4"
         },
         "activeEdgeIds": [
           "app-a",
-          "tree-report"
+          "tree-report",
+          "app-lock"
         ]
       },
       {
-        "label": "展开B",
-        "note": "沿A继续找到B，可达节点变为2。",
+        "label": "展开 B",
+        "note": "顺着 A 自己的声明找到 B：B 是传递依赖；应用清单没有写它，但包管理器会把它加进这次要安装的包里面。",
         "activeIds": [
           "a",
           "b",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [
           "app"
         ],
         "mutedIds": [],
         "values": {
-          "report": "直接1 · 传递1"
+          "report": "直接 1 · 传递 1",
+          "lock": "A@1.4 · B@2.1"
         },
         "activeEdgeIds": [
-          "a-b"
+          "a-b",
+          "app-lock"
         ]
       },
       {
-        "label": "删除A",
-        "note": "根到A的边移除后，B也不再从应用可达。",
+        "label": "删除 A",
+        "note": "移除应用到 A 的边后，若没有其他路径，B 对应用不再可达；B 不一定会立刻从磁盘删掉：还要看有没有别的包继续需要它，以及这个工具自己怎么清理。",
         "activeIds": [
           "app",
-          "report"
+          "report",
+          "lock"
         ],
         "doneIds": [],
         "mutedIds": [
@@ -10313,45 +10335,59 @@
           "b"
         ],
         "values": {
-          "report": "2 → 0"
+          "report": "2 → 0",
+          "lock": "重新解析"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "tree-report",
+          "app-lock"
+        ]
       }
     ],
-    "insight": "依赖关系由有向边决定；清单中的包还要区分直接、传递和运行阶段。",
+    "insight": "依赖图说明包之间的需要关系，版本约束和锁文件决定具体版本；直接、传递、开发、可选和运行用途要分开看。",
     "quiz": {
-      "question": "B没有写在应用清单里，却被安装了，最可能为什么？",
+      "question": "B 没有写在应用清单里，却出现在安装结果中，最可能为什么？",
       "options": [
         {
-          "label": "它是直接依赖A的传递依赖",
+          "label": "B 是直接依赖 A 的传递依赖",
           "correct": true
         },
         {
-          "label": "安装工具随机添加",
+          "label": "安装工具随机添加了 B",
           "correct": false
         },
         {
-          "label": "B一定是操作系统文件",
+          "label": "B 一定是操作系统文件",
           "correct": false
         }
       ],
-      "success": "依赖图可以有多层。",
-      "retry": "清单只显示部分直接关系。"
+      "success": "安装工具会沿 A 的依赖关系继续解析 B。",
+      "retry": "想想依赖图里的下一层边。"
     },
     "prompt": {
       "title": "梳理一项依赖",
-      "text": "画出从应用到目标包的完整路径，标明直接/传递、运行/开发、版本约束和删除它的影响。"
+      "text": "画出从应用到目标包的完整路径：哪些环节是直接依赖、哪些是传递依赖；每个包是运行时用、构建时用还是可选；版本约束和锁文件把它定在哪个版本；再想想删掉其中一条线会怎样。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-        "label": "npm 官方文档 · package json",
-        "note": "包管理命令与文件语义"
+        "label": "npm 官方文档 · package.json",
+        "note": "dependencies、devDependencies 和 optionalDependencies"
       },
       {
         "url": "https://semver.org/",
-        "label": "SemVer 规范 · overview",
-        "note": "原始规范与实现说明"
+        "label": "Semantic Versioning 规范",
+        "note": "版本号和版本范围的比较规则"
+      },
+      {
+        "url": "https://nodejs.org/api/packages.html",
+        "label": "Node.js 官方文档 · Packages",
+        "note": "包解析、exports 和运行时加载边界"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts",
+        "label": "npm 官方文档 · Scripts",
+        "note": "开发脚本、安装生命周期与用途区分"
       }
     ]
   },
