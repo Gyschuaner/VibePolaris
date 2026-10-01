@@ -338,14 +338,16 @@
   },
   {
     "slug": "human-in-the-loop",
-    "mechanism": "系统在高风险、低置信或不可逆动作前暂停，让人审阅输入、建议动作和影响，再决定批准、修改或拒绝。",
-    "misconception": "有人最后看一眼不等于人在回路；人必须能在关键动作发生前改变结果。",
-    "demoSignature": "输入：退款金额1200元，自动审批阈值500元；中间：金额越阈值700元，状态运行中→待人工；输出：审核人改为1000元后批准执行。可视化：金额刻度触发暂停闸门与审批按钮。 建议5帧：退款请求进入、金额越过500刻度、流程冻结并弹出审阅卡、人工改额、批准后继续；交互：亲自选择批准/修改/拒绝三种结局。",
+    "mechanism": "系统在高风险、系统没把握或不可逆动作前暂停，让人查看输入、建议动作和影响，再批准、修改或拒绝。",
+    "misconception": "事后通知或抽样复查不算人在回路；人工节点要位于动作执行前，并能改变结果。",
+    "demoSignature": "输入：退款金额 1200 元，自动退款上限 500 元；中间：系统比较金额并暂停，审阅人可批准、修改或拒绝；输出：批准路径执行退款并记录，拒绝路径保持未执行并记录决定。可视化：金额比较触发暂停闸门与审批卡。建议7帧：申请进入、比较自动退款上限、暂停等待决定、拒绝结局、人工改额、批准后退款、批准留痕；交互：用“选择审批结局”下拉查看拒绝和修改后批准两种结局。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
+      "https://www.nist.gov/itl/ai-risk-management-framework"
     ],
-    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、可见信息和可改动作。",
+    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、审阅人能看到什么、能改变哪个动作，以及决定如何留痕。",
     "nearDuplicates": [
       "tool-approval",
       "guardrail"

@@ -4222,12 +4222,12 @@
   },
   {
     "slug": "human-in-the-loop",
-    "lead": "自动退款上限500元，申请1200元时，人应该在哪一步出现？",
-    "definition": "系统在高风险、低置信或不可逆动作前暂停，让人审阅输入、建议动作和影响，再决定批准、修改或拒绝。",
-    "boundary": "有人最后看一眼不等于人在回路；人必须能在关键动作发生前改变结果。",
+    "lead": "自动退款上限 500 元，申请 1200 元时，人工怎样在退款前改变结果？",
+    "definition": "系统在高风险、系统没把握或不可逆动作前暂停，让人查看输入、建议动作和影响，再批准、修改或拒绝。",
+    "boundary": "事后通知或抽样复查不算人在回路；人工节点要位于动作执行前，并能改变结果。",
     "sceneKind": "branch",
-    "sceneTitle": "高额退款在执行前暂停",
-    "actionLabel": "作出审批决定",
+    "sceneTitle": "退款审批的不同结局",
+    "actionLabel": "选择审批结局",
     "actors": [
       {
         "id": "request",
@@ -4238,7 +4238,7 @@
       },
       {
         "id": "threshold",
-        "label": "自动阈值",
+        "label": "自动退款上限",
         "detail": "500 元",
         "icon": "chart",
         "group": "规则"
@@ -4289,12 +4289,18 @@
         "from": "execute",
         "to": "record",
         "label": "留痕"
+      },
+      {
+        "id": "rev-rec",
+        "from": "review",
+        "to": "record",
+        "label": "拒绝也留痕"
       }
     ],
     "frames": [
       {
-        "label": "金额到达",
-        "note": "申请额1200元进入自动流程。",
+        "label": "申请进入",
+        "note": "申请额 1200 元进入自动流程。",
         "activeIds": [
           "request"
         ],
@@ -4308,30 +4314,28 @@
         "activeEdgeIds": []
       },
       {
-        "label": "触发暂停",
-        "note": "1200比500高700元，执行状态改为待人工。",
+        "label": "比较自动退款上限",
+        "note": "系统比较申请额和 500 元自动退款上限。",
         "activeIds": [
-          "threshold",
-          "review"
+          "threshold"
         ],
         "doneIds": [
           "request"
         ],
         "mutedIds": [
+          "review",
           "execute"
         ],
         "values": {
-          "threshold": "超限 700 元",
-          "review": "待决定"
+          "threshold": "1200 > 500"
         },
         "activeEdgeIds": [
-          "r-t",
-          "t-rev"
+          "r-t"
         ]
       },
       {
-        "label": "人工改额",
-        "note": "审核人根据订单把金额改为1000元。",
+        "label": "暂停等待决定",
+        "note": "超过上限，退款暂停；审阅人可批准、修改或拒绝。",
         "activeIds": [
           "review"
         ],
@@ -4340,18 +4344,20 @@
           "threshold"
         ],
         "mutedIds": [
-          "execute"
+          "execute",
+          "record"
         ],
         "values": {
-          "review": "1200 → 1000 元"
+          "review": "待决定"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "t-rev"
+        ]
       },
       {
-        "label": "批准后执行",
-        "note": "只有批准后才退款，并留下修改记录。",
+        "label": "拒绝结局",
+        "note": "如果拒绝，退款不执行，决定写入审计记录。",
         "activeIds": [
-          "execute",
           "record"
         ],
         "doneIds": [
@@ -4359,13 +4365,73 @@
           "threshold",
           "review"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "execute"
+        ],
         "values": {
-          "execute": "已执行 1000 元",
-          "record": "已记录"
+          "record": "已拒绝 · 已记录"
         },
         "activeEdgeIds": [
-          "rev-ex",
+          "rev-rec"
+        ]
+      },
+      {
+        "label": "人工改额",
+        "note": "另一条结局：审核人把金额改为 1000 元后继续审批。",
+        "activeIds": [
+          "review"
+        ],
+        "doneIds": [
+          "request",
+          "threshold"
+        ],
+        "mutedIds": [
+          "execute",
+          "record"
+        ],
+        "values": {
+          "review": "1200 → 1000 元"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "批准后退款",
+        "note": "审核人批准后，系统执行 1000 元退款。",
+        "activeIds": [
+          "execute"
+        ],
+        "doneIds": [
+          "request",
+          "threshold",
+          "review"
+        ],
+        "mutedIds": [
+          "record"
+        ],
+        "values": {
+          "execute": "执行 1000 元"
+        },
+        "activeEdgeIds": [
+          "rev-ex"
+        ]
+      },
+      {
+        "label": "批准留痕",
+        "note": "批准结果、金额、决定人和时间写入审计记录。",
+        "activeIds": [
+          "record"
+        ],
+        "doneIds": [
+          "request",
+          "threshold",
+          "review",
+          "execute"
+        ],
+        "mutedIds": [],
+        "values": {
+          "record": "已批准 · 1000 元"
+        },
+        "activeEdgeIds": [
           "ex-rec"
         ]
       }
@@ -4375,12 +4441,12 @@
       "question": "哪种情况真正属于人在回路？",
       "options": [
         {
-          "label": "人工可在执行前批准、修改或拒绝",
-          "correct": true
-        },
-        {
           "label": "系统完成退款后发一封通知",
           "correct": false
+        },
+        {
+          "label": "人工可在执行前批准、修改或拒绝",
+          "correct": true
         },
         {
           "label": "每天汇总一次成功数量",
@@ -4392,18 +4458,28 @@
     },
     "prompt": {
       "title": "设置人工介入点",
-      "text": "列出高风险动作、自动阈值、审阅人可见信息、可选决定和超时处理，确保动作在决定前暂停。"
+      "text": "列出高风险动作、自动退款上限、审阅人可见信息、可选决定和超时处理，确保动作在决定前暂停。"
     },
     "sources": [
       {
         "url": "https://openai.github.io/openai-agents-python/human_in_the_loop/",
         "label": "OpenAI Agents SDK · human in the loop",
-        "note": "可运行示例与实现细节"
+        "note": "审批、暂停与恢复的实现示例"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/guardrails/",
+        "label": "OpenAI Agents SDK · guardrails",
+        "note": "在执行前检查并阻止不合规动作"
       },
       {
         "url": "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
         "label": "NIST AI RMF · Playbook",
-        "note": "AI 风险管理说明"
+        "note": "风险分级、治理与人工监督建议"
+      },
+      {
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "label": "NIST AI Risk Management Framework",
+        "note": "可信与可负责的 AI 风险管理框架"
       }
     ]
   },
