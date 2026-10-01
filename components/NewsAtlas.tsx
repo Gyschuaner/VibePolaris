@@ -165,7 +165,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
   const selected = articleBySlug.get(selectedSlug);
-  const selectedNodeSlug = selected ? `news:${selected.slug}` : "";
+  const selectedNodeSlug = detailOpen && selected ? `news:${selected.slug}` : "";
   const selectedNeighbors = useMemo(() => graphNeighbors(selectedNodeSlug, edges), [selectedNodeSlug, edges]);
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
   const labelOpacity = Math.max(0, Math.min(1, (view.scale - .74) / .4));
@@ -433,7 +433,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
           <div className="news-atlas-timeline-list">
             {timelineArticles.map(article => {
-              const isSelected = article.slug === selectedSlug;
+              const isSelected = detailOpen && article.slug === selectedSlug;
               const isToday = article.publishedAt === todayKey;
               const date = utcDate(article.publishedAt);
               return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>

@@ -37,6 +37,7 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(atlas, /if \(!visible \|\| !from \|\| !to\) return null/);
   assert.match(atlas, /selectedSlug === slug && detailOpen/);
   assert.match(atlas, /selectionGuard/);
+  assert.match(atlas, /detailOpen && selected \? `news:\$\{selected\.slug\}`/);
   assert.match(styles, /\.news-atlas-detail\.is-open/);
   assert.match(styles, /ease-in-out/);
   assert.match(styles, /\.news-atlas-detail-toggle/);
