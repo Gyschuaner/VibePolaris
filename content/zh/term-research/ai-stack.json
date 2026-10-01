@@ -1007,11 +1007,14 @@
   },
   {
     "slug": "return-value",
-    "mechanism": "返回值是函数完成时交回调用位置的结果；调用方可以保存、继续运算或忽略它。",
-    "misconception": "打印到控制台不是返回值；函数没有显式返回时也可能按语言规则得到默认值。",
-    "demoSignature": "输入：double(4)内部先计算8并console.log；中间：日志出现8但调用结果仍待定，执行return 8；输出：变量result接到8。可视化：建议4帧的日志支路与返回箭头分离；交互：删除return观察result变为undefined。",
+    "mechanism": "执行 return 后，当前这次函数调用会结束，并把一个值交回调用方；调用方可以保存、继续运算或忽略它。",
+    "misconception": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
+    "demoSignature": "输入：调用方执行 result = double(4)，函数内部先把 4×2 算成 8；中间：console.log 显示 8 但 result 仍未收到返回值，执行 return 8；输出：8 沿返回通道交给调用方。可视化：4 帧分别表现函数求值、日志支路、返回通道和调用方接收；交互：删除 return 观察 JavaScript 调用结果变为 undefined。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
+      "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
     "rewriteRisk": "一定把输出日志和返回通道分开，否则新手最容易混淆。",
     "nearDuplicates": [
