@@ -9351,9 +9351,9 @@
   },
   {
     "slug": "bundler",
-    "lead": "入口文件依赖五个模块，其中一个动态导入，为什么最后不是只生成一个包？",
-    "definition": "打包器从入口文件沿依赖关系解析模块，把代码和资源组合、拆分或优化成浏览器可加载的产物。",
-    "boundary": "打包不一定只生成一个文件；代码分割会按入口或动态导入生成多个块。",
+    "lead": "点开按需功能时，为什么浏览器才去加载 lazy.js？",
+    "definition": "打包器从入口文件沿静态和动态导入建立依赖图，把入口与静态依赖放进主包，把被动态导入的模块单独拆成需要时再加载的块。",
+    "boundary": "打包器负责把模块图中的模块组合成产物文件、按需分块，并把重复引入的模块只保留一份。它不负责把源码转成另一种语言；代码里要划分出哪些模块，是写代码时决定的，打包器不插手。打包不等于压缩，结果也不一定只有一个文件。",
     "sceneKind": "assembly",
     "sceneTitle": "依赖图聚合成主包与动态块",
     "actionLabel": "切换动态导入",
@@ -9361,35 +9361,35 @@
       {
         "id": "entry",
         "label": "入口",
-        "detail": "main.js",
+        "detail": "src/main.js",
         "icon": "code",
         "group": "起点"
       },
       {
         "id": "static",
-        "label": "静态模块",
-        "detail": "5个",
+        "label": "静态依赖",
+        "detail": "5 个",
         "icon": "component",
-        "group": "依赖"
+        "group": "首屏依赖"
       },
       {
         "id": "dynamic",
-        "label": "动态模块",
-        "detail": "1个",
+        "label": "动态依赖",
+        "detail": "1 个按需模块",
         "icon": "component",
-        "group": "依赖"
+        "group": "延迟依赖"
       },
       {
         "id": "main",
         "label": "主包",
-        "detail": "main.js",
+        "detail": "dist/main.js",
         "icon": "package",
         "group": "产物"
       },
       {
         "id": "lazy",
         "label": "按需块",
-        "detail": "lazy.js",
+        "detail": "dist/lazy.js",
         "icon": "package",
         "group": "产物"
       }
@@ -9411,19 +9411,19 @@
         "id": "s-m",
         "from": "static",
         "to": "main",
-        "label": "合并"
+        "label": "进入主包"
       },
       {
         "id": "d-l",
         "from": "dynamic",
         "to": "lazy",
-        "label": "分块"
+        "label": "拆成按需块"
       }
     ],
     "frames": [
       {
         "label": "沿入口建图",
-        "note": "打包器从main.js找到5个静态模块和1个动态模块。",
+        "note": "从 src/main.js 出发，依赖图共有入口、5 个静态依赖和 1 个动态依赖。",
         "activeIds": [
           "entry",
           "static",
@@ -9435,8 +9435,8 @@
           "lazy"
         ],
         "values": {
-          "static": "5",
-          "dynamic": "1"
+          "static": "5 个静态",
+          "dynamic": "1 个动态"
         },
         "activeEdgeIds": [
           "e-s",
@@ -9444,29 +9444,29 @@
         ]
       },
       {
-        "label": "静态部分聚合",
-        "note": "入口和静态依赖进入主包。",
+        "label": "生成主包",
+        "note": "src/main.js 和 5 个静态依赖进入 dist/main.js；按需模块暂不随首屏加载。",
         "activeIds": [
+          "entry",
           "static",
           "main"
         ],
         "doneIds": [
-          "entry"
+          "dynamic"
         ],
         "mutedIds": [
-          "dynamic",
           "lazy"
         ],
         "values": {
-          "main": "5 模块"
+          "main": "入口 + 5"
         },
         "activeEdgeIds": [
           "s-m"
         ]
       },
       {
-        "label": "动态部分分块",
-        "note": "动态导入单独生成lazy.js。",
+        "label": "生成按需块",
+        "note": "被动态导入的模块单独生成 dist/lazy.js；用户打开对应功能时，浏览器才请求这个文件。",
         "activeIds": [
           "dynamic",
           "lazy"
@@ -9478,7 +9478,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "lazy": "1 模块"
+          "lazy": "1 个按需模块"
         },
         "activeEdgeIds": [
           "d-l"
@@ -9486,7 +9486,7 @@
       },
       {
         "label": "改成静态导入",
-        "note": "切换后动态块消失，所有6个模块进入主包。",
+        "note": "如果把动态导入改成静态导入，1 个按需模块会并入主包，主包变成入口 + 6 个依赖，按需块消失。",
         "activeIds": [
           "dynamic",
           "main"
@@ -9499,49 +9499,59 @@
           "lazy"
         ],
         "values": {
-          "main": "6 模块",
+          "main": "入口 + 6",
           "lazy": "0"
         },
         "activeEdgeIds": [
-          "e-d",
+          "e-s",
           "s-m"
         ]
       }
     ],
-    "insight": "打包器围绕入口和依赖图组织产物，代码分割意味着结果可以有多个文件。",
+    "insight": "打包器围绕入口和依赖图生成主包与按需块；动态导入让不一定首屏需要的代码延后加载，结果可以有多个文件。",
     "quiz": {
-      "question": "打包器一定输出一个文件吗？",
+      "question": "为什么打包器不一定只输出一个文件？",
       "options": [
         {
-          "label": "不一定，代码分割会生成多个块",
+          "label": "动态导入可以拆成用户需要时再加载的块",
           "correct": true
         },
         {
-          "label": "一定，否则不叫打包",
+          "label": "打包器会把所有文件合并成一个文件，所以只有一个",
           "correct": false
         },
         {
-          "label": "只要文件名相同即可",
+          "label": "打包器只负责把文件压缩成更小的 zip",
           "correct": false
         }
       ],
-      "success": "输出数量取决于入口和分块策略。",
-      "retry": "“打包”不等于“单文件”。"
+      "success": "代码分割让首屏和按需功能使用不同产物。",
+      "retry": "想想动态导入何时才会被请求。"
     },
     "prompt": {
-      "title": "检查一次打包",
-      "text": "列出入口、静态导入、动态导入、共享依赖和最终块，标出哪个用户动作会加载每个按需块。"
+      "title": "检查一次打包分块",
+      "text": "列出入口、静态依赖、动态依赖、主包和按需块，标出哪个用户动作会请求每个按需块。"
     },
     "sources": [
       {
         "url": "https://rollupjs.org/introduction/",
-        "label": "Rollup 官方文档 · introduction",
-        "note": "模块打包与输出行为"
+        "label": "Rollup 官方文档 · Introduction",
+        "note": "入口、模块图和输出块"
       },
       {
         "url": "https://webpack.js.org/concepts/",
-        "label": "webpack 官方文档 · concepts",
-        "note": "打包过程与配置行为"
+        "label": "webpack 官方文档 · Concepts",
+        "note": "依赖图、代码分割与产物"
+      },
+      {
+        "url": "https://esbuild.github.io/",
+        "label": "esbuild 官方文档",
+        "note": "快速打包、分块与格式输出"
+      },
+      {
+        "url": "https://vite.dev/guide/dep-pre-bundling",
+        "label": "Vite 官方文档 · Dependency Pre-Bundling",
+        "note": "依赖预构建与浏览器请求边界"
       }
     ]
   },

@@ -752,14 +752,16 @@
   },
   {
     "slug": "bundler",
-    "mechanism": "打包器从入口文件沿依赖关系解析模块，把代码和资源组合、拆分或优化成浏览器可加载的产物。",
-    "misconception": "打包不一定只生成一个文件；代码分割会按入口或动态导入生成多个块。",
-    "demoSignature": "输入：入口依赖5个模块，其中1个动态导入；中间：依赖图6节点、静态主包5节点、动态块1节点；输出：main.js与lazy.js两文件。可视化：建议4帧的依赖图聚合；交互：切换动态导入观察块数量1→2。",
+    "mechanism": "打包器从入口沿静态和动态导入建立模块依赖图，把入口与静态依赖放入主包，把动态依赖拆成用户需要时再加载的块。",
+    "misconception": "打包不等于压缩、转译或单文件输出；代码分割可以生成主包和多个按需块，入口与动态导入决定加载边界。",
+    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。",
     "sourceUrls": [
       "https://rollupjs.org/introduction/",
-      "https://webpack.js.org/concepts/"
+      "https://webpack.js.org/concepts/",
+      "https://esbuild.github.io/",
+      "https://vite.dev/guide/dep-pre-bundling"
     ],
-    "rewriteRisk": "不要用压缩或编译替代打包定义；必须展示入口、依赖图和输出块。",
+    "rewriteRisk": "不要用压缩或编译替代打包定义；必须展示入口、静态/动态导入、首屏主包和按需块的数量关系。",
     "nearDuplicates": [
       "build-tool",
       "dependency",
