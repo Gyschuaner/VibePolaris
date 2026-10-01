@@ -2097,3 +2097,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；正文提交 `fa60be6`，文档记录提交待完成。生产文字分支 `release/VBP-030-data-quality-content-20261001-2` 从合入前最新 `origin/main` 建立，只复制 `components/terms/ProvenanceConceptPages.tsx`，提交 `8989f46` 经 [PR #258](https://github.com/Gyschuaner/VibePolaris/pull/258) 合入 `main`，合并提交 `d1670bbb92474a7e4c12334564e369766c21edcf`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。`QualityLesson` 交互继续留在本地/dev。
 - 生产镜像为 `vibepolaris:d1670bbb92474a7e4c12334564e369766c21edcf`（`linux/amd64`），目录 `/opt/vibepolaris/releases/20261001-d1670bbb9247`，容器 `health=healthy`，`current` 已指向该目录；切换前目录 `/opt/vibepolaris/releases/20261001-872c0cf1220c` 与旧镜像 `vibepolaris:872c0cf1220c347737e6c4b18db494c550bd41b4` 保留，可将 `current` 指回旧目录并用旧镜像 Compose 回滚，`vibepolaris_xiaobei_data` 数据卷未改动。公网 curl 返回 200，生产 CUA 已观察默认/实时库存/12 秒/缺失/重置、Deequ 引用展开与 `#quality-automation` 回链，浏览器 `error/warn` 日志为空；指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮不写入。
 - 本条完成后整体为 **78/105**，下一条是 `data-lineage`。
+
+## 79 · 数据血缘文字复审、运行记录与字段影响演示（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“报表从 2000 分变成 1800 分，应该先查输入、规则还是下游输出？”读完应能解释数据血缘把结果、输入和处理过程关联起来，区分实体/活动/参与者、Job/Run/Dataset，理解同一份输入换规则会改变结果，并根据字段级关系列出需要复查的下游输出。
+- 更新 `LineageTermPage` 的正文文字：把 W3C PROV 的三类对象落到费用来源、`daily.total`、求和规则和 `run-42` 的具体例子；先解释输入快照为何要保存；在主例中提前交代 `monthly.total` 使用 `daily.total`；说明字段选择列表包含已登记关系，不等于当前规则都使用；解释设计期事件是任务真正运行前声明计划输入的事件；把 DataHub 时间过滤改写为过滤最新图中连线的更新时间，而不是还原历史图；明确调查时要固定并持续对照输出、运行、输入和规则的同一组记录。
+- `LineageLesson` 的输出切换、生成记录、输入字段、字段下游影响、重置、引用展开和回链继续留在本地/dev；本轮生产批次只计划复制正文文字文件。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [W3C · PROV-DM: The PROV Data Model](https://www.w3.org/TR/prov-dm/) | `lineage-relations`：PROV 区分实体、活动和代理/责任主体，描述实体的使用、生成与派生；正文用费用来源、`daily.total`、求和规则和 `run-42` 对应解释。 |
+| [OpenLineage · Object Model](https://openlineage.io/docs/spec/object-model/) | `lineage-run`：Job 是定义的工作，Run 是某次执行，Dataset 是离散数据集合；`RunEvent` 记录运行状态与输入输出，`JobEvent`/`DatasetEvent` 是不关联 Run 的设计期元数据。 |
+| [OpenLineage · Column Level Lineage Dataset Facet](https://openlineage.io/docs/spec/facets/dataset-facets/column_lineage_facet/) | `lineage-columns`：列级血缘记录输出列使用的输入列及转换关系，区分直接/间接关系；正文用 `amount` 与 `discount` 说明字段级影响。 |
+| [DataHub · About DataHub Lineage](https://docs.datahub.com/docs/features/feature-guides/lineage) | `lineage-impact` 与 `lineage-history`：支持上游/下游与列级聚焦，可自动采集、接口登记或手工维护；默认显示最新血缘，时间选择只过滤最新图中连线的更新时间，不显示历史图。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文和按“操作→当时可见内容”配对的页面材料，未附作者意图、资料链接、源码或旧反馈；材料 `/tmp/vbp079-reader-material.txt` SHA-256 为 `d87bdf2f10571ed9fc400b44747603ad6bb092ad8047e12946fd7f0ae58da722`，提示词 `/tmp/vbp079-reader-prompt.txt` SHA-256 为 `1182dc19ee8d57450ea48a618d114fea1d90ff3499a00f6b301c910184d4c935`，结果 `/tmp/vbp079-reader-result.json` SHA-256 `78d608b844ade08e378f4cae47aea81059879f7851dda4700c998d270786746d`；会话 `sess_b9647734-3f55-4d4d-b994-642b24d4ba34` 正常完成。reader 指出了输入快照、PROV 三类对象、`monthly.total` 首次出现、字段登记与当前规则、设计期事件、时间过滤和“固定”调查对象等必要前提断点，主助手逐项核对后补入。
+- 独立 `language` 读取项目内 `vibepolaris-zcode-partner` 与 `humanizer-zh`，并审读当前 `LineageTermPage`；提示词 `/tmp/vbp079-language-prompt.txt` SHA-256 为 `852a4b699ab06740827fb1da3825f8785ea0e5e101464a7b66fe1a050a42db44`，结果 `/tmp/vbp079-language-result.json` SHA-256 `7a1cd9eaf663eca7f41e32e346baccb77abce7e9d2792f3cea0c290d4dd596db`；会话 `sess_ddbfeefa-0bd0-43d5-8d3a-c6d94d787472` 正常完成。采纳了“顺着这些关联”“run-42 就是这次活动的记录”、金额/优惠显式标注、`monthly.total` 去重、设计期事件拆句和调查记录表达等建议；没有删掉必要的技术限定或改变交互逻辑。
+- ZCode 读取项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`；用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内实际可读规则审读。
+
+### 构建与真实浏览器验收
+
+- `npm run build` 已通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。当前未修改 `ProvenanceConceptLessons.tsx`、`lib/provenance-teaching.ts` 或通用词条注册。
+- CUA 在 `http://127.0.0.1:3219/terms/data-lineage?qa=079final` 真实操作并观察：默认 v1 显示 `daily.total` 2000 分；展开“生成记录”显示 `run-42`、规则 v1，继续展开“输入字段”显示 A/B 和仅 `amount` 参与；展开字段影响显示 v1 的登记字段与 2 个潜在输出；切换 v2 显示 1800 分、规则 v2，并选择 `discount` 后显示 `daily.total`、`monthly.total` 两个潜在受影响输出；重置回到 v1。展开第四条 DataHub 引用并点击“当前关系与历史记录要分开”回链，URL 定位 `#lineage-history`；最终截图实际观察了更新时间过滤与调查记录段落。当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也未把不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存里的固定费用记录和预先登记的两次教学运行，不执行真实 SQL、日志解析、OpenLineage/DataHub 服务或后台重算；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `855595a4-64b6-41f7-9d84-4769e801eafc` 已创建并处于 `in_progress`；测试用例 `92ba2f51-a6cf-47ec-9eda-7e947a0f7f2b` 与测试计划 `0550c333-6dec-45ef-838a-d8accf1b024e` 已创建，待本批本地验收完成后记录执行结果。按用户最新要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 79 条正文与本地记录在当前批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`LineageLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前批次进度为 **1/10（第 79 条）**，下一条是 `data-pipeline`；前序已发布总计 **78/105**。
