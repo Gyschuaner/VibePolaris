@@ -21,9 +21,8 @@ export type NewsAtlasArticle = {
 type Point = { x: number; y: number };
 type View = Point & { scale: number };
 type NewsGraphNode = GraphNode & {
-  kind: "article" | "term";
+  kind: "article";
   articleSlug?: string;
-  term?: RelatedTerm;
 };
 
 const specks: Point[] = [
@@ -59,7 +58,6 @@ function timelineDays(latestDate: string) {
 function graphData(articles: NewsAtlasArticle[]) {
   const nodes: NewsGraphNode[] = [];
   const edges: GraphEdge[] = [];
-  const terms = new Map<string, NewsGraphNode>();
   const articleNodes = new Map<string, NewsGraphNode>();
   const articleSlugs = new Set(articles.map(article => article.slug));
   const edgeKeys = new Set<string>();
@@ -81,40 +79,15 @@ function graphData(articles: NewsAtlasArticle[]) {
       cat: "新闻",
       aliases: [],
       definition: article.summary,
-      relatedSlugs: article.related.map(term => term.slug),
+      relatedSlugs: article.relatedArticleSlugs,
       x: Math.cos(angle) * (118 + index * 46),
       y: Math.sin(angle) * (102 + index * 28),
-      degree: article.related.length,
+      degree: 0,
       kind: "article",
       articleSlug: article.slug,
     };
     articleNodes.set(article.slug, articleNode);
     nodes.push(articleNode);
-
-    article.related.forEach((related, relatedIndex) => {
-      let term = terms.get(related.slug);
-      if (!term) {
-        const termAngle = (terms.size + relatedIndex) * 2.399963229728653;
-        term = {
-          slug: related.slug,
-          zh: related.zh,
-          en: related.en,
-          cat: "关联词条",
-          aliases: [],
-          definition: "",
-          relatedSlugs: [],
-          x: Math.cos(termAngle) * 188,
-          y: Math.sin(termAngle) * 156,
-          degree: 0,
-          kind: "term",
-          term: related,
-        };
-        terms.set(related.slug, term);
-        nodes.push(term);
-      }
-      term.degree += 1;
-      addEdge(slug, related.slug);
-    });
   });
 
   articles.forEach(article => {
@@ -462,17 +435,9 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               const hoveredConnected = hovered ? graphNeighbors(hovered, edges).has(node.slug) : false;
               const named = node.kind === "article" || highlighted || hoveredConnected;
               const muted = Boolean(selectedNodeSlug) && !highlighted && !hoveredConnected;
-              const starSize = node.kind === "article" ? (node.slug === selectedNodeSlug ? 58 : 39) : 22;
-              const label = node.kind === "article" ? article?.title : node.term?.zh;
+              const starSize = node.slug === selectedNodeSlug ? 58 : 39;
+              const label = article?.title;
               const classes = `news-atlas-node news-atlas-${node.kind}-node${highlighted ? " is-highlighted" : ""}${node.slug === selectedNodeSlug ? " is-selected" : ""}${node.slug === hovered ? " is-hovered" : ""}${muted ? " is-muted" : ""}`;
-              if (node.kind === "term" && node.term) {
-                return <Link className={classes} key={node.slug} href={`/terms/${node.term.slug}`} data-news-node={node.slug} aria-label={`打开词条：${node.term.zh}`} ref={element => {
-                  if (element) nodeElements.current.set(node.slug, element);
-                  else nodeElements.current.delete(node.slug);
-                }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}>
-                  <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" /><span className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</span>
-                </Link>;
-              }
               return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.publishedAt)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
                 if (element) nodeElements.current.set(node.slug, element);
                 else nodeElements.current.delete(node.slug);

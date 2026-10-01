@@ -84,7 +84,7 @@ final result: passed
 - `npx eslint app/news/page.tsx components/NewsAtlas.tsx` 通过。
 - `npm run typecheck` 通过。
 - `node --test tests/news-content.test.mjs` 通过。
-- 浏览器打开 `/news`，默认选中最新新闻星；点击 09/29 日期和第二颗新闻星后，右侧标题、摘要、关联词条和线路均更新；点击“阅读文章”进入 `/news/example-agent-evidence` 详情页，再回到 `/news`。
+- 浏览器打开 `/news`，默认选中最新新闻星；点击 09/23 日期和第二颗新闻星后，右侧标题、摘要、关联词条和线路均更新；点击“阅读文章”进入真实新闻详情页，再回到 `/news`。
 - Docker 容器 `vibepolaris-news-local` 保持运行，绑定 `127.0.0.1:3001->3000`。
 
 ## Implementation Checklist
