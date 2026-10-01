@@ -990,13 +990,16 @@
   },
   {
     "slug": "parameter",
-    "mechanism": "参数是函数定义中的占位名称；调用时传入的实参会按语言规则绑定到这些名称。",
-    "misconception": "参数和实参不是同一个东西：前者在定义处，后者是某次调用提供的具体值。",
-    "demoSignature": "输入：定义discount(price,rate)，调用discount(100,0.8)；中间：price←100、rate←0.8，两条绑定落入调用帧；输出：函数内部可用这两个值。可视化：建议3帧的定义槽与实参卡对接；交互：交换实参顺序看绑定结果。",
+    "mechanism": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
+    "misconception": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
+    "demoSignature": "输入：定义 discount(price, rate=0.2)，调用 discount(100,0.2)；中间：price←100、rate←0.2，两个实参按位置落入调用帧；变化：调用 discount(100) 时 rate 使用默认值，改成 discount(0.2,100) 时绑定顺序也交换；输出：函数收到的值可能不符合业务含义。可视化：建议5帧展示定义、提供实参、按位置绑定、使用默认值、交换顺序；交互：省略或交换实参观察绑定结果。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
+      "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html#optional-parameters"
     ],
-    "rewriteRisk": "正文统一使用参数/实参术语，避免把默认值、类型和传值方式混成一件事。",
+    "rewriteRisk": "正文先统一使用参数（形参）/实参术语，再解释位置、名称、默认值、必填项和多给的实参；不要把参数当成类型检查，也不要暗示所有语言对缺失或多给实参的处理相同。",
     "nearDuplicates": [
       "function",
       "return-value"

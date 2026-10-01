@@ -12196,17 +12196,17 @@
   },
   {
     "slug": "parameter",
-    "lead": "定义里的price、rate与调用里的100、0.8分别是什么？",
-    "definition": "参数是函数定义中的占位名称；调用时传入的实参会按语言规则绑定到这些名称。",
-    "boundary": "参数和实参不是同一个东西：前者在定义处，后者是某次调用提供的具体值。",
+    "lead": "调用 discount(100, 0.2) 时，price、rate 这两个参数如何接住实参？缺少 rate 或交换顺序会怎样？",
+    "definition": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
+    "boundary": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
     "sceneKind": "assembly",
-    "sceneTitle": "形参与实参按位置绑定",
-    "actionLabel": "交换实参顺序",
+    "sceneTitle": "一次调用怎样绑定参数",
+    "actionLabel": "省略或交换实参",
     "actors": [
       {
         "id": "definition",
         "label": "函数定义",
-        "detail": "discount(price, rate)",
+        "detail": "discount(price, rate = 0.2)",
         "icon": "code",
         "group": "定义"
       },
@@ -12220,21 +12220,21 @@
       {
         "id": "arg-b",
         "label": "实参2",
-        "detail": "0.8",
+        "detail": "0.2",
         "icon": "message",
         "group": "调用"
       },
       {
         "id": "slot-a",
         "label": "参数price",
-        "detail": "空",
+        "detail": "必填",
         "icon": "component",
         "group": "帧"
       },
       {
         "id": "slot-b",
         "label": "参数rate",
-        "detail": "空",
+        "detail": "默认 0.2",
         "icon": "component",
         "group": "帧"
       }
@@ -12268,7 +12268,7 @@
     "frames": [
       {
         "label": "定义占位",
-        "note": "price和rate只是函数定义中的两个槽位。",
+        "note": "price 是必填参数，rate 是有默认值 0.2 的参数；它们仍只是定义中的名称。",
         "activeIds": [
           "definition",
           "slot-a",
@@ -12280,8 +12280,8 @@
           "arg-b"
         ],
         "values": {
-          "slot-a": "空",
-          "slot-b": "空"
+          "slot-a": "必填",
+          "slot-b": "默认 0.2"
         },
         "activeEdgeIds": [
           "d-sa",
@@ -12290,7 +12290,7 @@
       },
       {
         "label": "调用提供实参",
-        "note": "本次调用给出100和0.8两个具体值。",
+        "note": "本次调用给出 100 和 0.2 两个具体值，它们是实参。",
         "activeIds": [
           "arg-a",
           "arg-b"
@@ -12304,13 +12304,13 @@
         ],
         "values": {
           "arg-a": "100",
-          "arg-b": "0.8"
+          "arg-b": "0.2"
         },
         "activeEdgeIds": []
       },
       {
         "label": "按位置绑定",
-        "note": "第1个值进入price，第2个进入rate。",
+        "note": "绑定只负责把值放到对应的名称上，不判断值在业务上是否合理。",
         "activeIds": [
           "slot-a",
           "slot-b"
@@ -12323,7 +12323,7 @@
         "mutedIds": [],
         "values": {
           "slot-a": "price=100",
-          "slot-b": "rate=0.8"
+          "slot-b": "rate=0.2"
         },
         "activeEdgeIds": [
           "a-sa",
@@ -12331,8 +12331,30 @@
         ]
       },
       {
+        "label": "省略 rate",
+        "note": "调用 discount(100) 没有提供第二个实参，rate 使用定义中的默认值 0.2。",
+        "activeIds": [
+          "slot-a",
+          "slot-b"
+        ],
+        "doneIds": [
+          "definition",
+          "arg-a"
+        ],
+        "mutedIds": [
+          "arg-b"
+        ],
+        "values": {
+          "slot-a": "price=100",
+          "slot-b": "rate=0.2（默认）"
+        },
+        "activeEdgeIds": [
+          "a-sa"
+        ]
+      },
+      {
         "label": "交换顺序",
-        "note": "调用改为discount(0.8,100)后，绑定也随之交换。",
+        "note": "改为 discount(0.2, 100) 后，按位置绑定照旧进行，price 和 rate 拿到互换后的值，可能不符合业务含义。",
         "activeIds": [
           "arg-a",
           "arg-b",
@@ -12344,7 +12366,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "slot-a": "price=0.8",
+          "slot-a": "price=0.2",
           "slot-b": "rate=100"
         },
         "activeEdgeIds": [
@@ -12353,35 +12375,50 @@
         ]
       }
     ],
-    "insight": "参数是定义中的名称，实参是某次调用提供的值；绑定规则决定它们如何对应。",
+    "insight": "参数是定义中的名称，实参是本次调用的值；默认值和绑定规则决定缺少或交换实参时函数收到什么。",
     "quiz": {
-      "question": "调用discount(100,0.8)时，rate是什么？",
+      "question": "调用 discount(100) 时，rate 是什么？",
       "options": [
         {
-          "label": "参数名，绑定到实参0.8",
+          "label": "使用定义中的默认值 0.2",
           "correct": true
         },
         {
-          "label": "调用返回值",
+          "label": "上一次调用留下的值",
           "correct": false
         },
         {
-          "label": "函数文件名",
+          "label": "自动等于 price 的值",
           "correct": false
         }
       ],
-      "success": "定义处名称和调用处值要分开。",
-      "retry": "rate不是0.8这个字面值本身。"
+      "success": "缺少实参时，rate 使用定义的默认值 0.2；没有默认值则要看具体语言是否报错。",
+      "retry": "rate 每次调用都单独确定：这次没给实参就用默认值，它既不会记住上一次的结果，也不会自动跟 price 相等。"
     },
     "prompt": {
       "title": "核对函数参数",
-      "text": "列出参数顺序、类型、默认值和调用实参，补上缺失、多余或顺序错误时的处理。"
+      "text": "列出形参与实参的对应关系，说明参数顺序、默认值、必填项，以及缺失、多给或顺序错误时的处理。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+        "label": "MDN · JavaScript functions",
+        "note": "说明函数参数、实参、默认参数和调用。"
+      },
+      {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
-        "label": "ECMAScript 规范 · ecmascript language functions and classes",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript · functions and classes",
+        "note": "说明 JavaScript 函数定义、调用和参数绑定的规范语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+        "label": "Python Docs · defining functions",
+        "note": "说明函数参数、默认值、关键字参数和实参传递。"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html#optional-parameters",
+        "label": "TypeScript Docs · optional parameters",
+        "note": "说明必填参数、可选参数、默认值和参数顺序。"
       }
     ]
   },
