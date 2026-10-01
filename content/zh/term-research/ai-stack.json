@@ -1175,11 +1175,15 @@
   },
   {
     "slug": "serverless",
-    "mechanism": "无服务器架构把代码或服务交给平台按请求或事件运行，平台负责资源调度和扩缩容，使用者仍需管理代码、配置和数据。",
-    "misconception": "它并非没有服务器，也不保证更便宜；冷启动、执行时限和持续高负载会改变取舍。",
-    "demoSignature": "输入：一分钟请求从0升到120；中间：实例数0→6，每实例处理20次，首批冷启动耗时80→420ms；输出：流量回落后实例6→0。可视化：建议5帧的实例气泡随流量伸缩；交互：拖请求速率查看实例与延迟。",
+    "mechanism": "无服务器把函数交给云平台，在请求或事件到来时准备运行环境；平台管理底层服务器和自动扩缩，开发者仍负责代码、配置和数据。",
+    "misconception": "服务器仍然存在；冷启动、执行时限、临时状态、供应商接口和计费规则仍需考虑。",
+    "demoSignature": "输入：每分钟请求量从0升到120；中间：函数运行份数0→6，第一次准备运行环境产生420ms示例延迟；输出：流量回落后运行份数6→0，空闲时示例计量不再增长。可视化：建议4帧的无请求、流量突增、第一次启动、流量归零；交互：拖请求速率查看运行份数与延迟。",
     "sourceUrls": [
-      "https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf"
+      "https://cloud.google.com/discover/what-is-serverless-computing",
+      "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+      "https://docs.aws.amazon.com/lambda/latest/dg/concepts-event-driven-architectures.html",
+      "https://docs.aws.amazon.com/lambda/latest/dg/lambda-functions-chapter.html",
+      "https://www.cncf.io/blog/2018/02/14/cncf-takes-first-step-towards-serverless-computing/"
     ],
     "rewriteRisk": "不能用“免运维”作卖点；要显示平台接管和团队仍负责的边界。",
     "nearDuplicates": [
