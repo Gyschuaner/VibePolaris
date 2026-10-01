@@ -3,18 +3,32 @@ import { readFileSync, readdirSync, realpathSync, renameSync, unlinkSync, writeF
 import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
-import { canonicalNewsUrl, newsArticleSchema, newsDraftSchema, newsRelationErrors } from "../lib/news-schema.ts";
+import { canonicalNewsUrl, newsArticleSchema, newsDailyRunSchema, newsDraftSchema, newsRelationErrors } from "../lib/news-schema.ts";
 
 export const root = resolve(import.meta.dirname, "..");
-const activeStatuses = new Set(["discovered", "draft", "needs-review"]);
+const activeStatuses = new Set(["discovered", "draft", "ready", "needs-review"]);
 
 export function contentPaths(repository = root) {
   return {
     repository,
     drafts: resolve(repository, "content/zh/news-drafts"),
+    daily: resolve(repository, "content/zh/news-daily"),
     published: resolve(repository, "content/zh/news.json"),
     terms: resolve(repository, "content/zh/published-terms.json"),
   };
+}
+
+function dailyRunFiles(directory) {
+  try {
+    return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+      const path = join(directory, entry.name);
+      if (entry.isSymbolicLink()) throw new Error(`按天记录目录不接受符号链接：${path}`);
+      return entry.isFile() && entry.name.endsWith(".json") ? [path] : [];
+    }).sort();
+  } catch (error) {
+    if (error.code === "ENOENT") return [];
+    throw error;
+  }
 }
 
 export function readJson(path) {
@@ -36,8 +50,37 @@ function draftFiles(directory) {
 }
 
 export function publishedNewsFromDraft(draft) {
-  const { slug, title, summary, body, publishedAt, isExample, source, relatedSlugs, relatedArticleSlugs, canonicalUrl, sourceHash } = draft;
-  return newsArticleSchema.parse({ slug, title, summary, body, publishedAt, isExample, source, relatedSlugs, relatedArticleSlugs, canonicalUrl, sourceHash });
+  const { slug, title, summary, body, eventDate, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash } = draft;
+  return newsArticleSchema.parse({ slug, title, summary, body, eventDate, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash });
+}
+
+export function newsMechanicalErrors(article) {
+  const errors = [];
+  if (!article.body?.trim()) errors.push("正文不能为空");
+  if (!article.canonicalUrl) errors.push("缺少 canonicalUrl");
+  if (!article.sourceHash) errors.push("缺少 sourceHash");
+  if (!article.hero?.url || !article.hero?.sourceUrl || !article.hero?.license) errors.push("头图缺少图片来源或许可字段");
+  if (!Array.isArray(article.sections) || article.sections.length < 2 || article.sections.some(section => !section?.id?.trim() || !section?.title?.trim() || !section?.body?.trim())) errors.push("文章详细段落不能为空");
+  if (!article.explainer || article.explainer.steps.length < 2 || article.explainer.steps.some(step => !step?.label?.trim() || !step?.detail?.trim())) errors.push("文章讲解动画内容不能为空");
+  if (!article.sources?.length) errors.push("缺少来源引用");
+  if (!article.relatedSlugs?.length) errors.push("缺少站内词条关联");
+  for (const [label, value] of [
+    ["source.url", article.source?.url],
+    ["canonicalUrl", article.canonicalUrl],
+    ["hero.url", article.hero?.url],
+    ["hero.sourceUrl", article.hero?.sourceUrl],
+    ...((article.sources ?? []).map((source, index) => [`sources[${index}].url`, source.url])),
+  ]) {
+    if (!value) continue;
+    try {
+      if (value.startsWith("/")) continue;
+      const url = new URL(value);
+      if (url.protocol !== "https:") errors.push(`${label} 必须使用 HTTPS 或站内路径`);
+    } catch {
+      errors.push(`${label} 不是可用链接`);
+    }
+  }
+  return errors;
 }
 
 export function publishedNewsErrors(articles, terms) {
@@ -59,11 +102,52 @@ export function publishedNewsErrors(articles, terms) {
   return errors;
 }
 
+export function dailyRunErrors(runs, { articles = [], terms = new Set() } = {}) {
+  const errors = [];
+  const articleBySlug = new Map(articles.map(article => [article.slug, article]));
+  for (const { path, run } of runs) {
+    const name = basename(path);
+    if (name !== `${run.eventDate}.json`) errors.push(`${name}：文件名应与 eventDate 一致`);
+    if (run.search.candidateCount !== run.candidates.length) errors.push(`${name}：candidateCount 与候选数量不一致`);
+    const primaryCount = run.candidates.filter(candidate => run.search.sourcePolicy.includes(candidate.sourceType)).length;
+    if (run.search.primaryCandidateCount !== primaryCount) errors.push(`${name}：primaryCandidateCount 与来源政策不一致`);
+    const duplicateCount = run.candidates.filter(candidate => candidate.decision === "duplicate").length;
+    if (run.search.deduplicatedCount !== duplicateCount) errors.push(`${name}：deduplicatedCount 与 duplicate 候选数量不一致`);
+    const selected = run.candidates.filter(candidate => candidate.decision === "selected").map(candidate => candidate.slug).sort();
+    if (JSON.stringify(selected) !== JSON.stringify([...run.selectedSlugs].sort())) errors.push(`${name}：selectedSlugs 与候选决策不一致`);
+    if (run.gap === null && !selected.length) errors.push(`${name}：没有选中事件时必须记录空档日原因`);
+    if (run.gap && selected.length) errors.push(`${name}：有选中事件时不能标记为空档日`);
+    const candidateSlugs = new Set();
+    for (const candidate of run.candidates) {
+      if (candidateSlugs.has(candidate.slug)) errors.push(`${name}：候选 slug 重复：${candidate.slug}`);
+      candidateSlugs.add(candidate.slug);
+      for (const related of candidate.relatedSlugs) if (!terms.has(related)) errors.push(`${name}：候选关联了未公开词条：${related}`);
+      const article = articleBySlug.get(candidate.slug);
+      if (article && (article.eventDate !== candidate.eventDate || article.publishedAt !== candidate.publishedAt)) {
+        errors.push(`${name}：${candidate.slug} 的候选日期与文章日期不一致`);
+      }
+    }
+  }
+  const seen = new Map();
+  for (const { path, run } of runs) {
+    for (const candidate of run.candidates) {
+      const keys = [`url:${canonicalNewsUrl(candidate.canonicalUrl)}`, `hash:${candidate.sourceHash}`];
+      for (const key of keys) {
+        const previous = seen.get(key);
+        if (previous && candidate.decision !== "duplicate") errors.push(`${basename(path)} 与 ${previous} 重复：${key}`);
+        else if (!previous) seen.set(key, `${basename(path)}:${candidate.slug}`);
+      }
+    }
+  }
+  return errors;
+}
+
 export function loadNewsContent(repository = root) {
   const paths = contentPaths(repository);
   const articles = z.array(newsArticleSchema).min(1).parse(readJson(paths.published));
   const terms = new Set(z.array(z.string()).parse(readJson(paths.terms)));
   const drafts = draftFiles(paths.drafts).map(path => ({ path, draft: newsDraftSchema.parse(readJson(path)) }));
+  const dailyRuns = dailyRunFiles(paths.daily).map(path => ({ path, run: newsDailyRunSchema.parse(readJson(path)) }));
   const errors = publishedNewsErrors(articles, terms);
   const articleSlugs = new Set([...articles.map(article => article.slug), ...drafts.filter(({ draft }) => activeStatuses.has(draft.status)).map(({ draft }) => draft.slug)]);
   const seen = new Map(articles.filter(article => !article.isExample).flatMap(article => [
@@ -99,8 +183,9 @@ export function loadNewsContent(repository = root) {
       else seen.set(key, draft.slug);
     }
   }
+  errors.push(...dailyRunErrors(dailyRuns, { articles, terms }));
   if (errors.length) throw new Error(errors.join("\n"));
-  return { paths, articles, terms, drafts };
+  return { paths, articles, terms, drafts, dailyRuns };
 }
 
 function atomicJson(path, value) {
@@ -121,7 +206,7 @@ export function publishNewsDrafts(files, { approve = false, repository = root } 
     if (local.startsWith(`..${sep}`) || local === ".." || isAbsolute(local)) throw new Error("发布入口只接受 news-drafts 目录中的文件");
     const entry = content.drafts.find(item => realpathSync(item.path) === path);
     if (!entry) throw new Error(`找不到已校验的 JSON 草稿：${basename(path)}`);
-    if (!["needs-review", "published"].includes(entry.draft.status)) throw new Error(`${entry.draft.slug}：只有 needs-review 草稿可以提升为已发布内容`);
+    if (!["ready", "needs-review", "published"].includes(entry.draft.status)) throw new Error(`${entry.draft.slug}：只有 ready 或 needs-review 草稿可以提升为已发布内容`);
     return entry;
   });
   if (!selected.length) throw new Error("请提供至少一个草稿 JSON 路径");
@@ -129,6 +214,8 @@ export function publishNewsDrafts(files, { approve = false, repository = root } 
   const articles = [...content.articles];
   for (const { draft } of selected) {
     const article = publishedNewsFromDraft(draft);
+    const mechanicalErrors = newsMechanicalErrors(article);
+    if (mechanicalErrors.length) throw new Error(`${article.slug}：${mechanicalErrors.join("；")}`);
     const previous = articles.find(item => item.slug === article.slug);
     if (previous && !isDeepStrictEqual(previous, article)) throw new Error(`${article.slug} 已发布且内容不同；请另行审核修订，发布入口不会覆盖旧文章`);
     if (draft.status === "published" && !previous) throw new Error(`${article.slug}：published 草稿缺少已发布记录`);

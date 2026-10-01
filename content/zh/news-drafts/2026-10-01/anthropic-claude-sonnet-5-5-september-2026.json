@@ -2,7 +2,7 @@
   "slug": "anthropic-claude-sonnet-5-5-september-2026",
   "title": "Anthropic 发布 Claude Sonnet 5.5，强调编码性能与运行效率",
   "summary": "Anthropic 于 2026 年 9 月 28 日发布 Claude Sonnet 5.5，官方称其相较 Sonnet 5 速度提升超过 30%，并在部分任务上降低成本。",
-  "body": "Anthropic 于 2026 年 9 月 28 日发布 Claude Sonnet 5.5，将其定位为 Claude 5.5 家族中面向日常任务、修复代码和文档工作的模型。官方称，Sonnet 5.5 相较 Sonnet 5 生成速度提升超过 30%，并通过减少完成同一任务所需的 token，使单任务成本最多降低 30%。\n\n在官方披露的评测中，Sonnet 5.5 在 Terminal-Bench 4.0 上得分为 70.6%，Sonnet 5 为 10.3%；Anthropic 同时说明，基准分数只反映能力的一部分，Opus 5.5 在需要持续判断的复杂开放任务上仍然更强。\n\nAnthropic 还介绍了网络安全防护、模型行为审计和推理保护等措施，并称 Sonnet 5.5 已在 Claude 平台以及 AWS、Google Cloud 和 Microsoft Azure 提供。本文保留这些数字的官方归属，不把厂商自测结果写成独立验证结论。",
+  "body": "Anthropic 在 2026 年 9 月 28 日发布 Claude Sonnet 5.5，把它放在 Claude 5.5 家族里，主要面对日常编程、代码修复和文档工作。发布页同时给出三个读者容易混在一起的信号：模型在一组编码基准上的成绩、完成任务所需的速度和 token 数量，以及网络安全和模型行为方面的防护说明。它们分别回答“能不能做”“做得多快、花多少”和“怎样控制风险”，不能互相替代。\n\n官方称 Sonnet 5.5 相较 Sonnet 5 生成速度提升超过 30%，单任务成本最多降低 30%；在 Terminal-Bench 4.0 上，Sonnet 5.5 得分 70.6%，Sonnet 5 得分 10.3%。这些数字来自 Anthropic 自己公布的评测口径。理解这条新闻时，最重要的不是把 70.6% 当成所有项目的成功率，而是看清速度、成本和基准分数各自测量什么。\n\n下面把这次更新拆成几个可以单独阅读的段落，并用一个小动画把“基准成绩”和“真实工作”之间的距离画出来。",
   "publishedAt": "2026-09-28",
   "isExample": false,
   "source": {
@@ -15,7 +15,9 @@
     "evaluation-dataset",
     "tools"
   ],
-  "relatedArticleSlugs": [],
+  "relatedArticleSlugs": [
+    "google-private-ai-compute-memory-september-2026"
+  ],
   "canonicalUrl": "https://www.anthropic.com/claude-sonnet-5-5",
   "sourceHash": "sha256:5503456d02b60fb6526a3d1960edeb60ec15a0f816309caedaf4bb236feae4d5",
   "status": "published",
@@ -81,9 +83,91 @@
     "notes": "逐段核对 Anthropic 官方产品页；性能与成本数字保留厂商口径，并在正文中注明未作独立复核。"
   },
   "riskLevel": "routine",
-  "publishDecision": "review",
-  "reviewReasons": [
-    "评测数字和价格属于厂商发布口径，待编辑复核是否保留全部对比数据"
+  "publishDecision": "auto",
+  "promotedAt": "2026-10-01T08:44:05.199Z",
+  "hero": {
+    "url": "/images/news/anthropic-sonnet-55.svg",
+    "alt": "暖色光束穿过代码网格，代表 Claude Sonnet 5.5 的编码与效率更新",
+    "sourceUrl": "/images/news/anthropic-sonnet-55.svg",
+    "license": "VibePolaris 自制插图 · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这次更新到底发布了什么",
+      "kind": "narrative",
+      "body": "Sonnet 5.5 是 Anthropic 对 Claude 5.5 家族的一次型号更新。官方把它描述为更适合日常任务、代码修复、文档处理和多步骤编码的模型，并称它已经在 Claude 平台以及 AWS、Google Cloud 和 Microsoft Azure 提供。\n\n这里有一个容易被忽略的阅读顺序：产品定位是厂商对模型用途的判断，评测分数是特定测试集上的结果，安全说明则是产品方描述的控制措施。三者都来自同一个发布页，但它们不是同一个结论。本文保留“官方称”“官方评测”这些限定，避免把发布材料改写成独立实验报告。"
+    },
+    {
+      "id": "numbers",
+      "title": "数字从哪里来，应该怎样读",
+      "kind": "technical",
+      "body": "Anthropic 给出的 Terminal-Bench 4.0 结果是 Sonnet 5.5 为 70.6%，Sonnet 5 为 10.3%。这个基准面向终端环境中的编程任务，分数可以帮助读者比较两个版本在该测试设置下的完成情况，却不能直接换算成“现实项目有 70.6% 的代码一次通过”。\n\n同一页还给出生成速度提升超过 30%、单任务成本最多降低 30%。速度描述关注单位时间内产出多少内容，成本描述关注完成同一任务需要消耗多少 token；如果任务本身更长、更难，或者需要反复调用工具，实际花费仍会改变。Opus 5.5 在需要持续判断的复杂开放任务上仍被官方放在更强的位置，这也是“更快”与“更适合所有任务”之间的边界。"
+    },
+    {
+      "id": "work-loop",
+      "title": "把它放进一次代码修复会发生什么",
+      "kind": "example",
+      "body": "假设一个项目的测试只在 CI 里失败。模型首先要读错误日志，再定位调用链，修改代码，运行局部测试，最后把变更解释给人。速度提升可能缩短每一轮等待，token 消耗下降可能减少长日志和重复上下文的成本；但如果模型没有真正跑测试，或者误读了日志，这两项优势都不能替代验证。\n\n因此，实际使用时可以把 Sonnet 5.5 放在一个小循环里观察：先给它只读的仓库和失败信息，再让它提出最小补丁，随后由测试结果决定是否继续。这个例子不是 Anthropic 对某个具体项目的承诺，而是把“编码性能”和“运行效率”翻译成读者可以检查的工作过程。"
+    },
+    {
+      "id": "security-and-boundary",
+      "title": "安全说明与能力边界要分开看",
+      "kind": "boundary",
+      "body": "发布页还介绍了网络安全防护、模型行为审计和推理保护。它们说明产品团队正在把安全控制放进模型上线流程，但页面本身没有给出独立机构对所有数字和所有部署环境的复现实验。阅读这部分时，应该把“官方说明已采取的措施”和“外部已经验证的效果”分成两列。\n\n同样，Sonnet 5.5 的成绩不能推导出它在每个代码库、每种语言或每个长链路代理任务中都优于旧型号。上下文质量、工具权限、测试覆盖率和人工复核都会影响结果。需要持续判断的开放任务仍可能更适合更强但更慢的型号。"
+    },
+    {
+      "id": "terms",
+      "title": "三个词先弄懂，数字就不容易误读",
+      "kind": "aside",
+      "body": "**基准（benchmark）** 是一组固定任务和评分规则，用来做相对比较；它不是你手头项目的验收结果。**Token** 是模型处理文本时使用的计量单位，输入、输出和工具结果都可能消耗 token。**Agentic coding** 指模型在多步任务中读文件、调用工具、修改代码并根据反馈继续，而不是只补全一小段代码。\n\n把这三个词分清后，“70.6%”“快 30%”“便宜 30%”就会回到各自的测量范围里。"
+    }
   ],
-  "promotedAt": "2026-10-01T08:44:05.199Z"
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/claude-sonnet-5-5",
+      "claim": "Anthropic 发布 Claude Sonnet 5.5，并公布速度、成本和评测数据。",
+      "excerpt": "It runs 30%+ faster and costs up to 30% less for most work."
+    },
+    {
+      "url": "https://www.anthropic.com/claude-sonnet-5-5",
+      "claim": "官方披露 Sonnet 5.5 在 Terminal-Bench 4.0 的自测结果。",
+      "excerpt": "Sonnet 5.5 scores 70.6% on Terminal-Bench 4.0."
+    }
+  ],
+  "mechanicalErrors": [],
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-01T08:11:49Z",
+    "notes": "模型首轮自判：内容交由机械完整性检查后直发。"
+  },
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一组跑分，怎样变成一次工作",
+    "question": "先看测试里的相对成绩，再把它放回真实的代码修复循环。",
+    "steps": [
+      {
+        "label": "固定任务",
+        "detail": "Terminal-Bench 给模型一组可重复的终端编程任务，先固定题目和评分方法。",
+        "evidence": "官方公布 Terminal-Bench 4.0：Sonnet 5.5 为 70.6%。"
+      },
+      {
+        "label": "完成任务",
+        "detail": "模型读取环境、修改文件并执行命令；一次完成不等于所有项目都一次通过。",
+        "evidence": "基准分数只覆盖测试设置中的任务。"
+      },
+      {
+        "label": "观察成本",
+        "detail": "更快的生成和更少的 token 会改变等待时间与预算，但长上下文和工具调用仍会增加实际消耗。",
+        "evidence": "官方称速度提升超过 30%，单任务成本最多降低 30%。"
+      },
+      {
+        "label": "回到项目",
+        "detail": "最后用真实测试、代码审查和权限边界决定是否采用，而不是直接把跑分当上线结论。",
+        "evidence": "发布页同时指出复杂开放任务仍可能需要更强型号。"
+      }
+    ]
+  },
+  "eventDate": "2026-09-28"
 }

@@ -23,13 +23,27 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
     assert.match(article.publishedAt, /^\d{4}-\d{2}-\d{2}$/);
     assert.ok(article.title && article.summary && article.body);
     assert.ok(article.source?.name && article.source?.url);
+    assert.ok(article.hero?.url && article.hero?.sourceUrl && article.hero?.license);
+    assert.ok(Array.isArray(article.sections) && article.sections.length >= 2);
+    assert.ok(article.sections.every((section) => section.id && section.title && section.body));
+    assert.ok(article.explainer?.title && article.explainer?.question && article.explainer.steps.length >= 2);
+    assert.ok(Array.isArray(article.sources) && article.sources.length > 0);
     assert.ok(Array.isArray(article.relatedSlugs) && article.relatedSlugs.length > 0);
     assert.ok(Array.isArray(article.relatedArticleSlugs));
     if (article.isExample) assert.match(article.body, /不对应任何真实新闻事件/);
   }
+  const trialDates = articles.filter((article) => article.eventDate >= "2021-01-01" && article.eventDate <= "2021-01-07").map((article) => article.eventDate).sort();
+  assert.deepEqual(trialDates, ["2021-01-01", "2021-01-02", "2021-01-03", "2021-01-04", "2021-01-05", "2021-01-06", "2021-01-07"]);
   assert.match(listPage, /newsArticles/);
   assert.match(detailPage, /generateStaticParams/);
   assert.match(detailPage, /getPublishedTerm/);
+  assert.match(detailPage, /news-hero/);
+  assert.match(detailPage, /来源引用/);
+  assert.match(detailPage, /article\.sources\.map/);
+  assert.match(detailPage, /article\.sections!\.map/);
+  assert.match(detailPage, /NewsExplainer/);
+  assert.match(detailPage, /HarnessV4Toc/);
+  assert.match(detailPage, /ReadingNotes/);
   assert.match(sitemap, /newsArticles/);
   assert.match(contentModule, /filter\(\(article\) => !article\.isExample\)/);
   assert.match(atlas, /data-news-node/);
@@ -47,6 +61,8 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(styles, /\.news-atlas-detail\.is-open/);
   assert.match(styles, /ease-in-out/);
   assert.match(styles, /\.news-atlas-detail-toggle/);
+  assert.match(styles, /\.news-hero img/);
+  assert.match(styles, /\.news-citation-list/);
   assert.match(styles, /\.news-atlas-specks \{ z-index: 1; pointer-events: none; \}/);
   assert.match(styles, /\.news-atlas-world \{ position: absolute; z-index: 3;/);
   assert.match(styles, /\.news-atlas-world\.is-reframing \{ transition: transform \.55s/);

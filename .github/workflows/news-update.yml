@@ -66,7 +66,7 @@ jobs:
       - name: Validate drafts and relations
         run: npm run news:validate
 
-      - name: Auto-publish only routine, verified candidates
+      - name: Auto-publish after model self-check and mechanical validation
         run: npm run news:auto-publish -- --approve
 
       - name: Build candidate site
@@ -106,7 +106,7 @@ jobs:
           gh pr create --base dev --head "$NEWS_BRANCH" --title "News update ${{ github.run_id }}" --body-file <(cat <<'EOF'
           Automated News update from Dots.
 
-          The repository gate only publishes candidates with verified evidence, at least one evidence URL, routine risk, and confirmed concept relationships. Major or uncertain candidates remain needs-review.
+          The model makes the first-pass publish decision. The repository gate only enforces mechanical completeness: canonical/sourceHash, structured article sections, image provenance and license, usable links, dedupe, non-empty body, and valid concept/article relations. Candidates held by the model or failing those checks remain needs-review.
           EOF
           )
           gh pr merge "$NEWS_BRANCH" --auto --squash --delete-branch
