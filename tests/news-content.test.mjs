@@ -5,11 +5,13 @@ import test from "node:test";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("新闻内容模型与最小栏目路由保持可追踪", async () => {
-  const [raw, listPage, detailPage, sitemap] = await Promise.all([
+  const [raw, listPage, detailPage, sitemap, atlas, styles] = await Promise.all([
     read("content/zh/news.json"),
     read("app/news/page.tsx"),
     read("app/news/[slug]/page.tsx"),
     read("app/sitemap.ts"),
+    read("components/NewsAtlas.tsx"),
+    read("app/globals.css"),
   ]);
   const articles = JSON.parse(raw);
   assert.ok(articles.length >= 2);
@@ -27,4 +29,10 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(detailPage, /generateStaticParams/);
   assert.match(detailPage, /getPublishedTerm/);
   assert.match(sitemap, /newsArticles/);
+  assert.match(atlas, /data-news-node/);
+  assert.match(atlas, /setDetailOpen\(true\)/);
+  assert.match(atlas, /aria-expanded=\{node\.slug === selectedNodeSlug && detailOpen\}/);
+  assert.match(atlas, /aria-label="关闭新闻详情"/);
+  assert.match(styles, /\.news-atlas-detail\.is-open/);
+  assert.match(styles, /ease-in-out/);
 });

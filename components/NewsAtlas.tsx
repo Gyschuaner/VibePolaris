@@ -146,6 +146,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const [selectedSlug, setSelectedSlug] = useState("");
   const [hovered, setHovered] = useState("");
   const [showLines, setShowLines] = useState(true);
+  const [detailOpen, setDetailOpen] = useState(false);
   const [view, setView] = useState<View>({ x: 0, y: 0, scale: .72 });
   const [ready, setReady] = useState(false);
   const [reframing, setReframing] = useState(false);
@@ -158,6 +159,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const pointers = useRef(new Map<number, Point>());
   const pinch = useRef<{ distance: number; center: Point; view: View } | null>(null);
   const dragged = useRef(false);
+  const closeTimer = useRef<number | null>(null);
   const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
@@ -168,10 +170,14 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const labelOpacity = Math.max(0, Math.min(1, (view.scale - .74) / .4));
 
   useEffect(() => {
-    if (!selectedSlug || !ready || !window.matchMedia("(max-width: 700px)").matches) return;
+    if (!selectedSlug || !detailOpen || !ready || !window.matchMedia("(max-width: 700px)").matches) return;
     const frameId = window.requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     return () => window.cancelAnimationFrame(frameId);
-  }, [ready, selectedSlug]);
+  }, [detailOpen, ready, selectedSlug]);
+
+  useEffect(() => () => {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+  }, []);
 
   const paintPositions = useCallback(() => {
     const moving = simulation.current?.nodes();
@@ -303,7 +309,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   }
 
   function selectArticle(slug: string) {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
     setSelectedSlug(slug);
+    setDetailOpen(true);
     setHovered("");
     const nodeSlug = `news:${slug}`;
     const related = graphNeighbors(nodeSlug, edges);
@@ -312,8 +323,13 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   }
 
   function clearSelection() {
-    setSelectedSlug("");
+    setDetailOpen(false);
     setHovered("");
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => {
+      setSelectedSlug("");
+      closeTimer.current = null;
+    }, 320);
   }
 
   function startDrag(event: PointerEvent<HTMLDivElement>) {
@@ -359,7 +375,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     if (!start || pinch.current) return;
     const dx = point.x - start.start.x;
     const dy = point.y - start.start.y;
-    if (Math.hypot(dx, dy) < 4 && !dragged.current) return;
+    if (Math.hypot(dx, dy) < 8 && !dragged.current) return;
     dragged.current = true;
     if (start.slug && start.point) {
       const node = engine?.nodes().find(item => item.slug === start.slug);
@@ -469,10 +485,10 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                   <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" /><span className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</span>
                 </Link>;
               }
-              return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.publishedAt)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} ref={element => {
+              return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.publishedAt)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
                 if (element) nodeElements.current.set(node.slug, element);
                 else nodeElements.current.delete(node.slug);
-              }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (event.detail === 0 && article) selectArticle(article.slug); }}>
+              }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={() => { if (article && !dragged.current) selectArticle(article.slug); }}>
                 <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" />
                 <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.publishedAt))}</small>}</span>
               </button>;
@@ -486,7 +502,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
         </div>
 
-        {selected && <aside ref={detail} className="news-atlas-detail" aria-live="polite" aria-label={`${selected.title}详情`}>
+        {selected && <aside ref={detail} className={`news-atlas-detail${detailOpen ? " is-open" : ""}`} data-open={detailOpen} aria-live="polite" aria-hidden={!detailOpen} inert={!detailOpen} aria-label={`${selected.title}详情`}>
           <button className="news-atlas-detail-close" type="button" aria-label="关闭新闻详情" onClick={clearSelection}><X size={18} /></button>
           <div className="news-atlas-detail-meta"><time dateTime={selected.publishedAt}>{longDateFormatter.format(utcDate(selected.publishedAt))}</time><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
           <h2>{selected.title}</h2>
