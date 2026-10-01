@@ -13644,38 +13644,38 @@
   },
   {
     "slug": "monolith",
-    "lead": "用户、订单、支付三个模块在一个部署单元里，为什么改支付仍要整体发布？",
-    "definition": "单体架构把主要业务模块作为一个部署单元构建和发布，模块可在进程内直接调用并共享资源。",
-    "boundary": "单体不等于没有模块，也不等于代码都在一个仓库；它描述部署边界。",
+    "lead": "用户、订单、支付三个模块一起发布，为什么改支付还要重新构建整份应用？",
+    "definition": "单体把多个业务模块放在一份应用里构建、测试和发布；模块可以分开组织，但发布时一起换上。",
+    "boundary": "单体说的是部署边界：一次发布换上整份应用。代码仓库只是存放代码的地方，和部署边界不是一回事。",
     "sceneKind": "layers",
-    "sceneTitle": "模块边界与部署边界叠在一起",
-    "actionLabel": "点击一个模块",
+    "sceneTitle": "模块分开，发布时一起换上",
+    "actionLabel": "看下一步",
     "actors": [
       {
         "id": "artifact",
-        "label": "单体制品",
-        "detail": "版本1.8",
+        "label": "应用包",
+        "detail": "一起发布",
         "icon": "package",
         "group": "部署边界"
       },
       {
         "id": "user",
         "label": "用户模块",
-        "detail": "未改",
+        "detail": "用户能力",
         "icon": "component",
         "group": "模块"
       },
       {
         "id": "order",
         "label": "订单模块",
-        "detail": "未改",
+        "detail": "订单能力",
         "icon": "component",
         "group": "模块"
       },
       {
         "id": "pay",
         "label": "支付模块",
-        "detail": "有改动",
+        "detail": "支付能力",
         "icon": "component",
         "group": "模块"
       },
@@ -13715,8 +13715,8 @@
     ],
     "frames": [
       {
-        "label": "三个模块装入一体",
-        "note": "代码内部有模块，但都属于同一个制品。",
+        "label": "三个模块组成一份应用",
+        "note": "用户、订单、支付各自有职责，但一次发布会把它们一起换上。",
         "activeIds": [
           "artifact",
           "user",
@@ -13728,7 +13728,7 @@
           "deploy"
         ],
         "values": {
-          "artifact": "1个部署单元"
+          "artifact": "一份应用"
         },
         "activeEdgeIds": [
           "a-u",
@@ -13738,7 +13738,7 @@
       },
       {
         "label": "只改支付",
-        "note": "变更标记只落在支付模块。",
+        "note": "本次改动发生在支付模块，用户和订单代码没有改。",
         "activeIds": [
           "pay"
         ],
@@ -13751,15 +13751,17 @@
           "deploy"
         ],
         "values": {
-          "pay": "changed"
+          "user": "未改",
+          "order": "未改",
+          "pay": "有改动"
         },
         "activeEdgeIds": [
           "a-p"
         ]
       },
       {
-        "label": "重新构建整体",
-        "note": "制品版本从1.7升为1.8，仍包含全部模块。",
+        "label": "重新构建与测试",
+        "note": "改动后要重新生成整份应用，并检查整份应用的行为。",
         "activeIds": [
           "artifact"
         ],
@@ -13772,13 +13774,13 @@
           "deploy"
         ],
         "values": {
-          "artifact": "1.7 → 1.8"
+          "artifact": "重新生成"
         },
         "activeEdgeIds": []
       },
       {
         "label": "整体发布",
-        "note": "运行环境替换唯一制品，而非单独部署支付。",
+        "note": "发布时换上的就是整份应用，不能只替换支付模块。",
         "activeIds": [
           "artifact",
           "deploy"
@@ -13790,42 +13792,57 @@
         ],
         "mutedIds": [],
         "values": {
-          "deploy": "1个单元"
+          "deploy": "一份应用"
         },
         "activeEdgeIds": [
           "a-d"
         ]
       }
     ],
-    "insight": "单体架构说的是部署单元，不代表代码内部不能模块化，也不等于monorepo。",
+    "insight": "是不是单体，看的是部署边界：内部可以有清晰的模块，关键是改动后要不要把整份应用一起构建、测试和发布。",
     "quiz": {
-      "question": "代码放在一个仓库里，就一定是单体架构吗？",
+      "question": "一个仓库里有用户、订单、支付代码，就一定是单体吗？",
       "options": [
         {
-          "label": "不一定，要看部署边界",
+          "label": "不一定，先看它们是否作为一份应用一起发布",
           "correct": true
         },
         {
-          "label": "一定，一个仓库就是一个进程",
+          "label": "一定，一个仓库就只能发布一份应用",
           "correct": false
         },
         {
-          "label": "只有微服务会用Git",
+          "label": "一定，模块多就必须拆成服务",
           "correct": false
         }
       ],
-      "success": "仓库组织与运行部署不同。",
-      "retry": "判断单体要看是否整体构建和发布。"
+      "success": "仓库只说明代码放在哪里；单体要看部署边界。",
+      "retry": "想一想一次发布要换上什么：是一整份应用，还是几个服务分别换上？"
     },
     "prompt": {
       "title": "识别系统部署边界",
-      "text": "列出代码模块、进程、制品和发布单元，说明改一个模块时哪些内容必须一起发布。"
+      "text": "请说明模块如何分组、一次发布换上什么、改一个模块要重新构建和测试哪些内容，以及一个模块出故障或者需要扩容时会影响谁。"
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf",
-        "label": "NIST 出版物 · NIST.SP.800 204",
-        "note": "术语、风险与评估框架"
+        "url": "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures",
+        "label": "Microsoft Learn · Common web application architectures",
+        "note": "定义单体应用的自包含行为、单一部署单元，以及整体扩缩和整体重新部署的影响。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/develop-deploy-dotnet-apps-on-aws/building-monoliths-or-microservices.html",
+        "label": "AWS · Building Monoliths or Microservices",
+        "note": "说明紧耦合模块共享应用资源时，资源扩缩和变更会牵动整套应用。"
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-microservices-architecture",
+        "label": "Google Cloud · What is Microservices Architecture?",
+        "note": "对比单体作为统一单元与微服务独立拆分的部署和维护边界。"
+      },
+      {
+        "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+        "label": "Martin Fowler · Monolith First",
+        "note": "说明先做结构清晰的单体可以降低早期分布式协作成本，并提醒模块边界需要逐步验证。"
       }
     ]
   },
