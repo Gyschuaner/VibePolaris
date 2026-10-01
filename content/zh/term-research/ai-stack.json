@@ -1059,12 +1059,14 @@
   },
   {
     "slug": "object",
-    "mechanism": "对象把一组具名属性关联到同一个值上，读取属性时通过键找到对应值或行为。",
-    "misconception": "对象不是JSON：对象可含方法、原型和非字符串值，JSON只是数据交换文本格式。",
-    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：建议4帧的键值抽屉打开与替换；交互：新增、修改、删除一个属性。",
+    "mechanism": "对象把一组具名属性放在同一个结构里，读取属性时通过键找到对应值；函数值也可以成为对象的方法。",
+    "misconception": "对象不是 JSON：JavaScript 对象可以包含方法和运行时状态；JSON 文本只能表示有限的数据类型，删除属性后读取不存在的键在 JavaScript 中会得到 undefined。",
+    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：4帧表现键值集合、修改、增加和删除属性；交互：新增、修改、删除一个属性。",
     "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
       "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
-      "https://www.rfc-editor.org/rfc/rfc8259"
+      "https://www.rfc-editor.org/rfc/rfc8259",
+      "https://docs.python.org/3/tutorial/datastructures.html#dictionaries"
     ],
     "rewriteRisk": "不要用JSON文本完全代替语言对象；需提醒两者可表示内容和行为的差异。",
     "nearDuplicates": [

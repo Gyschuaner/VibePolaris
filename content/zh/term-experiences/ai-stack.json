@@ -13048,17 +13048,17 @@
   },
   {
     "slug": "object",
-    "lead": "给user新增、修改、删除属性时，键与值怎样对应变化？",
-    "definition": "对象把一组具名属性关联到同一个值上，读取属性时通过键找到对应值或行为。",
-    "boundary": "对象不是JSON：对象可含方法、原型和非字符串值，JSON只是数据交换文本格式。",
+    "lead": "给 user 新增、修改、删除属性时，键与值怎样对应变化？",
+    "definition": "对象把一组具名属性放在同一个结构里，读取属性时通过键找到对应值。函数是一段可调用的代码，也可以作为对象的一个值，称为方法。",
+    "boundary": "对象不是 JSON：JavaScript 对象可以写成 user = { name: '林', age: 20 }，JSON 文本要写成 {\"name\":\"林\",\"age\":20}，不能表示方法。删除属性后再读取不存在的键，在 JavaScript 中会得到 undefined。",
     "sceneKind": "state-machine",
     "sceneTitle": "对象的属性集合发生三种操作",
     "actionLabel": "选择属性操作",
     "actors": [
       {
         "id": "object",
-        "label": "user对象",
-        "detail": "2个属性",
+        "label": "user 对象",
+        "detail": "2 个属性",
         "icon": "component",
         "group": "容器"
       },
@@ -13114,7 +13114,7 @@
     "frames": [
       {
         "label": "初始对象",
-        "note": "user含name和age两个具名属性。",
+      "note": "user 含 name 和 age 两个具名属性。",
         "activeIds": [
           "object",
           "name",
@@ -13135,7 +13135,7 @@
       },
       {
         "label": "修改属性",
-        "note": "age从20改为21，属性数量不变。",
+      "note": "age 从 20 改为 21，属性数量不变。",
         "activeIds": [
           "age",
           "count"
@@ -13157,7 +13157,7 @@
       },
       {
         "label": "新增属性",
-        "note": "加入city=杭州，属性数量2变3。",
+      "note": "加入 city = 杭州，属性数量从 2 变 3。",
         "activeIds": [
           "city",
           "count"
@@ -13178,9 +13178,8 @@
       },
       {
         "label": "删除属性",
-        "note": "移除name后，属性数量3变2。",
+      "note": "移除 name 后，再读取 user.name 得到 undefined，属性数量从 3 变 2。",
         "activeIds": [
-          "name",
           "count"
         ],
         "doneIds": [
@@ -13188,22 +13187,22 @@
           "age",
           "city"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "name"
+        ],
         "values": {
           "name": "已删除",
           "count": "2"
         },
-        "activeEdgeIds": [
-          "o-n"
-        ]
+        "activeEdgeIds": []
       }
     ],
-    "insight": "对象通过键组织属性；它不等同于JSON文本，也可能含方法和原型。",
+    "insight": "对象通过键组织属性，某个值可以是函数，也就是方法。",
     "quiz": {
-      "question": "JavaScript对象含一个函数属性，能原样写成标准JSON吗？",
+    "question": "JavaScript 对象含一个函数属性，能原样写成标准 JSON 吗？",
       "options": [
         {
-          "label": "不能，JSON不表示函数值",
+        "label": "不能，JSON 不表示函数值",
           "correct": true
         },
         {
@@ -13216,22 +13215,32 @@
         }
       ],
       "success": "对象与JSON的可表示范围不同。",
-      "retry": "序列化前要处理非JSON值。"
+    "retry": "转换为 JSON 文本前，要先处理不能表示的值，例如函数。"
     },
     "prompt": {
       "title": "检查一个对象模型",
-      "text": "列出属性键、值类型、可选项和方法，标出哪些内容能序列化为JSON、哪些不能。"
+      "text": "列出每个属性的键、值类型、可选项和方法，标出哪些内容能写成 JSON、哪些不能。"
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
-        "label": "ECMAScript 规范 · ecmascript data types and values",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
+      "label": "MDN · Working with objects",
+      "note": "说明对象由属性组成，属性通过键关联值，函数值可以作为方法。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
+      "label": "ECMAScript 规范 · Object Type",
+      "note": "规定 JavaScript 对象类型和属性行为。"
       },
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc8259",
-        "label": "RFC · rfc8259",
-        "note": "协议定义与报文语义"
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "label": "RFC 8259 · JSON",
+      "note": "定义 JSON 对象、数组、字符串、数字、布尔值和 null 等数据类型。"
+    },
+    {
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries",
+      "label": "Python 文档 · Dictionaries",
+      "note": "用另一种语言的字典说明通过键组织和读取相关值。"
       }
     ]
   },
