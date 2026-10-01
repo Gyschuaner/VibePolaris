@@ -87,7 +87,7 @@ DP 研发任务：`04070ed0-cbfe-427c-9ba4-3764d1762e02`，负责人顾毅盛，
 | 67 data-transformation | 改变数据表示 | 同一值经单位换算、拆列后改变形状 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 68 data-validation | 检查是否符合规则 | 数据穿过形状规则，错误留在对应检查处 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
 | 69 dataset-data | 一组有范围的数据 | 取样框从更大整体框出一组记录 | 正文已合入 main；生产部署待网络恢复，交互功能留在本地 |
-| 70 data-quality | 适合用途的程度 | 完整性、时效等局部缺口在真实记录上显露 | 待更新 |
+| 70 data-quality | 适合用途的程度 | 完整性、时效等局部缺口在真实记录上显露 | 本地正文与浏览器验收完成；待正文发布，交互功能留在本地 |
 | 71 data-lineage | 数据的来路与变化 | 从结果逆向展开实际来源与变换分支 | 待更新 |
 | 72 dataframe | 可操作的二维数据 | 列切片、行筛选在同一二维平面展开 | 待更新 |
 | 73 full-text-search | 根据文本内容搜索 | 词项索引定位包含它们的文本位置 | 待更新 |
@@ -1755,3 +1755,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 69 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文与记录提交 `c6fe613`。正文发布分支 `release/VBP-030-dataset-content-20261001` 从第 68 条合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa` 新建，只复制正文文件，提交 `d6a14fc` 经 [PR #249](https://github.com/Gyschuaner/VibePolaris/pull/249) 合入 `main`，当前合并提交 `2095d288c7d7fee4fd677bfe73fa470d4d9550f5`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。本条发布后的最新检查仍失败：生产 SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/dataset-data` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内无响应；因此不能提前声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **69/105**，下一条是 `data-quality`。
+
+
+## 70 · 数据质量文字复审、用途门槛演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一批借阅记录为什么能通过月报，却不能直接用于实时库存？完整性、唯一性、时效性和准确性分别在检查什么，一个质量分数又能说明多少？”读完应能把质量判断放回具体用途，区分维度、指标、测量值和门槛，预测改变观察时刻或缺失记录后的结果，并知道通过规则不等于事实准确。
+- 更新 `QualityTermPage`：导语把数据质量定义为特定任务、指标和门槛下是否够用；DQV 段补出质量维度、指标、测量值、政策和被测数据的关系；用途段要求固定数据版本与观察时刻；演示段固定十条记录、9/10 完整性、9/10 ID 占比、3 小时/12 秒快照和两种用途门槛，写清月报、实时库存、刷新快照和再缺一条记录的结果；质量记录段说明换数据版本、观察时刻或政策后不能沿用旧结论；政府框架段补出完整性、唯一性、有效性和准确性的具体问题；Deequ 段说明它是基于 Spark 的数据单元测试库；AWS 段明确质量分数是规则通过比例，不是记录真实性比例。
+- 保留 `QualityLesson` 的本地用途切换、快照刷新、缺失字段开关、逐项指标和重置逻辑；生产范围只包含正文文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [W3C · Data Quality Vocabulary](https://www.w3.org/TR/vocab-dqv/) | `quality-purpose` 与 `quality-record`：DQV 用维度、指标、Quality Measurement、政策和元数据表达质量；测量指向被测数据，质量不是统一分数。 |
+| [UK Government · The Government Data Quality Framework](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework) | `quality-dimensions` 与 `quality-fact`：完整性、唯一性、有效性、准确性等维度，以及完整不等于准确、门槛要结合用户需要。 |
+| [AWS Labs · Deequ](https://github.com/awslabs/deequ) | `quality-automation`：基于 Apache Spark 的“数据单元测试”库，可在大数据集上计算完整性、唯一性、行数等约束；本页没有运行 Spark。 |
+| [AWS · Glue Data Quality](https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html) | `quality-score`：质量分数定义为规则返回 true 的比例；规则定义决定分数能回答什么。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文和演示状态材料 `/tmp/vbp070-quality-reader-body.md`（SHA-256 `579e25306e1e1969c7f3efd9789651207763bdad746f42d504c2607e29b23c36`），提示词材料为 `/tmp/vbp070-quality-reader-prompt.md`（SHA-256 `7450915ccef9060e868a6a78333d091c17d373e8b9ce4196e1761ce0a1bac608`），未附作者意图、官方资料或旧反馈。
+- 独立 `language` 只读改写后的正文材料 `/tmp/vbp070-quality-language-body.md`（SHA-256 `579e25306e1e1969c7f3efd9789651207763bdad746f42d504c2607e29b23c36`）和提示词材料 `/tmp/vbp070-quality-language-prompt.md`（SHA-256 `6edbe4950b70d1d2e443a9a66a90ae636eec4aa63e83a9f3fa4ec8b19842cd27`），并带 partner/humanizer-zh 规则。
+- reader 与 language 两个 ZCode 请求均在等待上游 `AI_APICallError` 超时，没有产生可回收的审读文本或稳定 session ID；不能把它们记成通过。主助手依据四份已核实资料和 humanizer-zh 规则完成局部文字调整，保留演示结果、技术限定和引用映射。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`QualityLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。
+- CUA 在 `http://127.0.0.1:3219/terms/data-quality?qa=070baseline` 的重启后服务上真实操作并观察：默认“月报参考”显示完整性 9/10、不同 ID 9/10、3 小时 ≤24 小时，结论为符合；切到“实时库存”显示 3 小时 >30 秒，结论未达到；点击“换成 12 秒前的快照”后实时库存通过；勾选“再缺一条书目编号”后完整性降为 8/10、结论未达到。展开 DQV 引用后点击“同一批数据，换一种要求”回到质量记录段，截图已实际观察；浏览器 `error/warn` 为空。
+- 演示只使用浏览器内存中的十条固定记录，没有运行 Spark/Deequ、AWS Glue、真实库存系统或外部数据服务；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 70 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 70 条正文待本轮提交。正文发布分支应从 `origin/main` 的第 69 条合并提交 `2095d288c7d7fee4fd677bfe73fa470d4d9550f5` 新建，只复制正文文件，不带入 `QualityLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **70/105**，下一条是 `data-lineage`。
