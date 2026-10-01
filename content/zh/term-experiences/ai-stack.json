@@ -10805,9 +10805,9 @@
   },
   {
     "slug": "monorepo",
-    "lead": "同一仓库有web、api、ui三个包，改ui为何只重建两个包？",
-    "definition": "单体仓库把多个应用或包放在同一版本库中，并共享变更、工具配置和依赖关系管理。",
-    "boundary": "单体仓库描述的是代码组织方式，不等于单体架构；仓库里可以部署许多独立服务。",
+    "lead": "同一仓库有 web、ui、api 三个包，改 ui 为什么只重建两个包？",
+    "definition": "单体仓库把多个应用或包放在同一仓库中，统一管理脚本、依赖和变更。相关改动可以作为一次提交保存，再根据应用或包之间的依赖图决定哪些项目需要重新构建。",
+    "boundary": "它说的是代码仓库的组织方式，不等于单体架构。单体架构通常把整个系统作为一个单元来运行和部署；一个 monorepo 里仍可以有多个独立服务。",
     "sceneKind": "network",
     "sceneTitle": "一次改动沿包依赖图传播",
     "actionLabel": "点击改动文件",
@@ -10815,28 +10815,28 @@
       {
         "id": "repo",
         "label": "单一仓库",
-        "detail": "web / api / ui",
+        "detail": "web / ui / api",
         "icon": "git",
         "group": "容器"
       },
       {
         "id": "ui",
-        "label": "ui包",
-        "detail": "发生改动",
+        "label": "ui 包",
+        "detail": "共享界面组件，发生改动",
         "icon": "component",
         "group": "包"
       },
       {
         "id": "web",
-        "label": "web包",
-        "detail": "依赖ui",
+        "label": "web 应用",
+        "detail": "依赖 ui，可独立部署",
         "icon": "browser",
         "group": "包"
       },
       {
         "id": "api",
-        "label": "api包",
-        "detail": "不依赖ui",
+        "label": "api 服务",
+        "detail": "不依赖 ui，可独立部署",
         "icon": "server",
         "group": "包"
       },
@@ -10877,7 +10877,7 @@
     "frames": [
       {
         "label": "一个仓库三包",
-        "note": "三个包共享版本库，但依赖关系不同。",
+        "note": "三个项目共享版本历史；同一提交可以记录相关包的配套改动，但它们仍可分别构建。",
         "activeIds": [
           "repo"
         ],
@@ -10891,8 +10891,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "ui发生改动",
-        "note": "改动先标记ui自身。",
+        "label": "ui 发生改动",
+        "note": "改动先标记 ui 自身，api 因为不依赖 ui 暂不受影响。",
         "activeIds": [
           "ui",
           "impact"
@@ -10913,7 +10913,7 @@
       },
       {
         "label": "影响向上游传播",
-        "note": "web依赖ui，因此也进入重建集合。",
+        "note": "web 依赖 ui，因此也进入重建集合；这次影响变成 2 / 3。",
         "activeIds": [
           "ui",
           "web",
@@ -10933,8 +10933,8 @@
         ]
       },
       {
-        "label": "api保持不动",
-        "note": "api与ui没有依赖边，不需要重建。",
+        "label": "api 保持不动",
+        "note": "api 与 ui 没有依赖边，可以跳过这次重建并独立部署。",
         "activeIds": [
           "api"
         ],
@@ -10954,9 +10954,9 @@
         ]
       }
     ],
-    "insight": "单体仓库描述代码放在一起；它不要求这些包作为一个单体应用部署。",
+    "insight": "同一仓库让相关改动可以一起记录和共享工具；真正决定重建范围的是包间依赖图，而不是目录位置。",
     "quiz": {
-      "question": "一个monorepo能否包含多个独立微服务？",
+      "question": "一个 monorepo 能否包含多个独立微服务？",
       "options": [
         {
           "label": "可以，仓库边界与部署边界不同",
@@ -10972,22 +10972,32 @@
         }
       ],
       "success": "代码组织和运行架构是两层问题。",
-      "retry": "不要把monorepo和monolith混淆。"
+      "retry": "不要把 monorepo 和单体架构混淆。"
     },
     "prompt": {
-      "title": "画出单体仓库影响图",
-      "text": "列出包、包间依赖、共享配置和独立部署单元，验证改一个包时哪些任务必须重跑。"
+      "title": "规划单体仓库的依赖图",
+      "text": "列出应用、共享包和服务，标出依赖方向、可以独立部署的边界，再根据一次改动推导需要重建和测试的项目。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/using-npm/workspaces",
-        "label": "npm 官方文档 · workspaces",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · workspaces",
+        "note": "说明根工作区如何组织多个包、链接本地依赖和运行工作区命令。"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/#workspaces",
+        "label": "npm Docs · package.json workspaces",
+        "note": "说明 package.json 的 workspaces 字段如何声明工作区目录。"
       },
       {
         "url": "https://pnpm.io/workspaces",
-        "label": "pnpm 官方文档 · workspaces",
-        "note": "依赖安装与存储结构"
+        "label": "pnpm Docs · Workspace",
+        "note": "说明多包仓库、workspace 协议和独立包之间的依赖关系。"
+      },
+      {
+        "url": "https://bazel.build/concepts/build-ref",
+        "label": "Bazel · Build Encyclopedia",
+        "note": "说明 workspace、package、target 和依赖图如何组织构建。"
       }
     ]
   },
