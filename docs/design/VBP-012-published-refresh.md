@@ -1831,3 +1831,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 71 条本地正文提交 `06689e4`，记录提交 `9d334fe`。正文发布分支 `release/VBP-030-lineage-content-20261001` 从第 70 条合并提交 `8481c01918bec30b1cfab43dd8ccda12ec03df22` 新建，只复制正文文件，提交 `ce708e6` 经 [PR #251](https://github.com/Gyschuaner/VibePolaris/pull/251) 合入 `main`，当前合并提交 `e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/data-lineage` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内超时；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 正文合入 `main` 后，用第 70 条镜像作为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9`（`linux/amd64`，约 1.45 GB）；本地容器 3224 端口返回 200，并精确包含“实体是要追查的东西”“Job 是读取或生成数据的工作”和“monthly.total（月合计）使用 daily.total（日合计）”。
 - 本条完成后整体为 **71/105**，下一条是 `data-pipeline`。
+
+## 72 · 数据管道文字复审、依赖门槛与重跑边界演示（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一批借阅记录要经过哪些步骤才能发布？校验失败时为什么原始归档仍可完成，改规则后重跑怎样避免读到另一批数据？”读完应能区分数据管道与单个任务，理解输入、输出、依赖、调度和一次运行，预测严格校验、隔离后汇总、独立归档和发布的状态，并知道重跑要固定数据区间、输入分区和写入语义。
+- 更新 `PipelineTermPage`：导语补充调度时间、数据范围和实际开始时间可以不同；AWS Glue 段补出 jobs/crawlers/triggers、计划/手动/事件触发以及静态/动态视图；Airflow 段说明 Dag 是工作流计划、默认 `all_success` 与任务内部代码的边界；依赖段明确校验与归档独立、汇总和发布的前置条件；重跑段结合 Airflow 最佳实践补出不留不完整输出、固定分区、UPSERT 与稳定键；PROV 段补出本次运行使用和生成的来源记录。
+- 保留 `PipelineLesson` 的固定快照、q1 严格校验、独立归档、q2 隔离重验、汇总、发布和重置逻辑；生产范围只包含正文文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [AWS Glue · Overview of workflows](https://docs.aws.amazon.com/glue/latest/dg/workflows_overview.html) | `pipeline-workflow`：workflow 组合 jobs、crawlers、triggers，支持计划/手动/事件触发，并区分静态设计视图和动态运行视图。 |
+| [Apache Airflow · Dags](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html) | `pipeline-dependencies` 与 `pipeline-interval`：Dag 组织任务、调度和依赖，默认 `all_success`，DagRun 有数据区间，逻辑日期与实际运行时间可不同。 |
+| [Apache Airflow · Best Practices](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html) | `pipeline-replay`：任务应避免不完整输出，重跑产生相同结果，读取/写入固定分区并避免 INSERT 造成重复。 |
+| [W3C · PROV-DM: The PROV Data Model](https://www.w3.org/TR/prov-dm/) | `pipeline-provenance`：实体、活动、参与者以及活动使用/生成实体的来源关系；来源记录不执行任务，也不自动证明正确。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文与按操作顺序整理的可见状态材料 `/tmp/vbp072-pipeline-reader-body.md`（SHA-256 `92c85a53162a329395a48fe8dbd37fa6c3f6762aff8f857f0683bfd7666f2b96`），提示词材料为 `/tmp/vbp072-pipeline-reader-prompt.md`（SHA-256 `6d732ac701201fe184fa415574bdeba14b0667159313630124ec9a94e66ad056`），没有附作者意图、官方资料、源码或旧反馈。
+- 独立 `language` 只读当前正文材料 `/tmp/vbp072-pipeline-language-body.md`（SHA-256 `45ccc4f4492ad904eceda2f430fa59e32974d0f92b255e43e40f7f654622f9dd`）和提示词材料 `/tmp/vbp072-pipeline-language-prompt.md`（SHA-256 `6606c61e52780e630f185c3bbce0c03f3a208418f682900d864ff95353c7918c`），并带 partner/humanizer-zh 规则。
+- reader 与 language 两个 ZCode 请求均在等待上游 `AI_APICallError` 超时，没有产生可回收的审读文本或稳定 session ID；不能把它们记成通过。主助手依据四份已核实资料、humanizer-zh 规则和实际浏览器状态补齐解释，保留 q1/q2、3 条有效/1 条隔离、run-42 与模拟限制。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`PipelineLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。
+- CUA 在 `http://127.0.0.1:3219/terms/data-pipeline?qa=072baseline` 的重启后服务上真实操作并观察：读取固定输入后显示 r1/r2/r3/r4，其中 r2 缺失；严格校验显示 `q1 · r2 缺失书目编号，校验失败`；归档可独立完成并显示 `s1 的 4 条原始记录已保留`；切到 q2 后显示 `q2 · 3 条有效，1 条保留在隔离区`；汇总显示 `#42 · 2 次`、`#78 · 1 次`；发布后显示 `run-42 · s1 / q2`。截图已实际观察，浏览器 `error/warn` 为空。
+- 演示只使用浏览器内存中的四条固定记录，不运行 Airflow、AWS Glue、真实存储或实际归档；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 72 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 72 条本地正文提交 `4745004`，记录提交待发布链路完成。正文发布分支应从当前 `origin/main` 的第 71 条合并提交 `e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9` 新建，只复制正文文件，不带入 `PipelineLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成本地内容后整体为 **72/105**，下一条是 `webhook`。
