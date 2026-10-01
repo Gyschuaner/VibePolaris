@@ -857,14 +857,16 @@
   },
   {
     "slug": "lockfile",
-    "mechanism": "锁文件记录一次解析后的精确依赖版本和依赖树信息，使其他环境更容易安装出同一组合。",
-    "misconception": "它不是依赖声明的替代品，也不能保证跨平台产物逐字节相同。",
-    "demoSignature": "输入：package声明A为^1.2.0；中间：解析可选1.2.0/1.3.1后锁定1.3.1及B=2.0.4；输出：两台机器均安装A1.3.1。可视化：建议4帧的版本漏斗与锁扣；交互：删除锁文件后重新解析观察版本是否漂移。",
+    "mechanism": "依赖清单声明允许的版本范围，锁文件记录包管理器解析后的确切版本、传递依赖和完整依赖树，安装命令可以复用这份结果。",
+    "misconception": "清单和锁文件承担不同职责：清单描述想要的范围，锁文件描述这次实际选中的树；锁文件不等于安全审计，也不锁定脚本和平台差异。",
+    "demoSignature": "输入：package.json 声明 A ^1.2.0；中间：解析器从包仓库候选选 A1.3.1，并展开 B2.0.4；输出：锁文件记录完整树，另一台机器按它装出同一组包，删除或清单不同步后会重新解析，结果可能漂移。可视化：四帧展示范围、解析、写入、复现；交互：切换清单/锁文件路径观察结果。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-      "https://docs.npmjs.com/cli/v11/commands/npm-ci"
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://pnpm.io/lockfile"
     ],
-    "rewriteRisk": "避免声称锁文件解决所有可复现问题；系统库、平台和安装脚本仍会造成差异。",
+    "rewriteRisk": "先解释直接依赖、传递依赖、版本范围和解析，再说明锁文件如何记录结果；不要声称锁文件解决所有可复现或安全问题。",
     "nearDuplicates": [
       "dependency",
       "semantic-versioning"

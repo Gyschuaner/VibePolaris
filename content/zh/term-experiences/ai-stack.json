@@ -10606,23 +10606,23 @@
   },
   {
     "slug": "lockfile",
-    "lead": "清单写A为^1.2.0，为何两台机器仍能都装到1.3.1？",
-    "definition": "锁文件记录一次解析后的精确依赖版本和依赖树信息，使其他环境更容易安装出同一组合。",
-    "boundary": "它不是依赖声明的替代品，也不能保证跨平台产物逐字节相同。",
+    "lead": "package.json 写着 A ^1.2.0，为什么今天和明天可能装到不同的间接依赖？",
+    "definition": "依赖清单声明直接依赖允许的版本范围；锁文件记录包管理器解析后的确切版本、传递依赖（也叫间接依赖）和完整依赖树，安装命令可以复用这份结果。",
+    "boundary": "它不替代依赖清单，也不保证包本身安全、安装脚本无害，或平台相关的包在不同系统上装出相同产物。依赖更新仍要自己改清单，让包管理器重新生成锁文件，再跑测试。",
     "sceneKind": "contract",
-    "sceneTitle": "版本范围解析后被精确锁定",
-    "actionLabel": "删除锁文件重装",
+    "sceneTitle": "从版本范围到可复现的依赖树",
+    "actionLabel": "选择安装路径",
     "actors": [
       {
         "id": "manifest",
-        "label": "依赖声明",
-        "detail": "A ^1.2.0",
+        "label": "依赖清单",
+        "detail": "package.json: A ^1.2.0",
         "icon": "file",
         "group": "规则"
       },
       {
         "id": "registry",
-        "label": "可选版本",
+        "label": "仓库候选",
         "detail": "1.2.0 / 1.3.1",
         "icon": "cloud",
         "group": "来源"
@@ -10630,7 +10630,7 @@
       {
         "id": "resolver",
         "label": "解析器",
-        "detail": "选择1.3.1",
+        "detail": "从范围选出版本",
         "icon": "gear",
         "group": "决策"
       },
@@ -10644,7 +10644,7 @@
       {
         "id": "install",
         "label": "两台机器",
-        "detail": "同一依赖树",
+        "detail": "按锁文件复现",
         "icon": "package",
         "group": "结果"
       }
@@ -10678,7 +10678,7 @@
     "frames": [
       {
         "label": "范围允许多个版本",
-        "note": "^1.2.0同时允许1.2.0和1.3.1。",
+        "note": "^1.2.0 允许兼容的 1.x 版本；包仓库当前有 1.2.0 和 1.3.1 两个候选。",
         "activeIds": [
           "manifest",
           "registry"
@@ -10695,7 +10695,7 @@
       },
       {
         "label": "首次解析",
-        "note": "解析器选择1.3.1，并继续解析B为2.0.4。",
+        "note": "本例解析器从范围中选 A1.3.1，并继续展开 A 带来的间接依赖 B2.0.4。",
         "activeIds": [
           "resolver"
         ],
@@ -10716,7 +10716,7 @@
       },
       {
         "label": "精确写入",
-        "note": "锁文件记录这次实际得到的版本树。",
+        "note": "锁文件记录这次实际得到的完整依赖树，清单仍保留允许范围。",
         "activeIds": [
           "lock"
         ],
@@ -10737,7 +10737,7 @@
       },
       {
         "label": "另一台复现",
-        "note": "第二台机器读取锁文件，安装相同组合；删除后可能重新漂移。",
+        "note": "第二台机器读取锁文件装出同一组包；删掉锁文件，或者清单和锁文件对不上，下一次安装会重新解析，结果就可能漂移。",
         "activeIds": [
           "lock",
           "install"
@@ -10756,40 +10756,50 @@
         ]
       }
     ],
-    "insight": "锁文件固定依赖解析结果，但操作系统、脚本和外部工具仍可能影响完整复现。",
+    "insight": "清单说明允许什么，锁文件记录这次实际选了什么；两者一起维护才能在更新时可控、在安装时可复现。",
     "quiz": {
-      "question": "已有锁文件时，依赖清单还有什么作用？",
+      "question": "改动 A 的允许范围后，怎样让团队安装同一组新版本？",
       "options": [
         {
-          "label": "声明允许范围和直接依赖",
+          "label": "更新清单，重新生成并提交锁文件",
           "correct": true
         },
         {
-          "label": "完全没有作用",
+          "label": "只删除锁文件让每台机器自行选择",
           "correct": false
         },
         {
-          "label": "只决定代码缩进",
+          "label": "只改源码，不改依赖文件",
           "correct": false
         }
       ],
-      "success": "声明与解析结果承担不同职责。",
-      "retry": "锁文件不是清单的替代品。"
+      "success": "清单和锁文件分别记录范围与实际解析结果。",
+      "retry": "删掉锁文件会重新解析，不能替代提交新的解析结果。"
     },
     "prompt": {
-      "title": "审查锁文件策略",
-      "text": "核对清单范围、锁定版本、传递依赖、CI安装命令和更新流程，并记录哪些环境差异仍未被锁定。"
+      "title": "审查一次锁文件更新",
+      "text": "核对直接依赖范围、锁定版本、传递依赖和 CI 安装命令，说明变更原因、仍未锁定的环境差异和需要回归的范围。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-        "label": "npm 官方文档 · package lock json",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · package-lock.json",
+        "note": "说明锁文件记录依赖树、版本、完整性和安装复现信息。"
       },
       {
         "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci",
-        "label": "npm 官方文档 · npm ci",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · npm ci",
+        "note": "说明 CI 按现有锁文件安装，并要求清单与锁文件保持同步。"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+        "label": "npm Docs · package.json",
+        "note": "说明清单中的直接依赖、版本范围和工作区声明。"
+      },
+      {
+        "url": "https://pnpm.io/lockfile",
+        "label": "pnpm Docs · Reading pnpm-lock.yaml",
+        "note": "说明锁文件中的 importers、packages、snapshots 和完整性信息。"
       }
     ]
   },
