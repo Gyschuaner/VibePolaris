@@ -45,17 +45,22 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Receive Dots handoff
+      - name: Receive external handoff
         if: github.event_name == 'repository_dispatch'
         env:
           DOTS_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
         run: node -e 'require("node:fs").writeFileSync("/tmp/dots-news.json", process.env.DOTS_PAYLOAD)' 
 
-      - name: Fetch Dots handoff
-        if: github.event_name != 'repository_dispatch'
+      - name: Fetch Dots handoff when configured
+        if: github.event_name != 'repository_dispatch' && env.NEWS_DOTS_ENDPOINT != ''
         run: node scripts/news-fetch-dots.mjs > /tmp/dots-news.json
 
+      - name: Continue with checked-in official sources
+        if: github.event_name != 'repository_dispatch' && env.NEWS_DOTS_ENDPOINT == ''
+        run: echo "NEWS_DOTS_ENDPOINT is not configured; validating checked-in official-source content."
+
       - name: Ingest drafts with idempotent dedupe
+        if: github.event_name == 'repository_dispatch' || env.NEWS_DOTS_ENDPOINT != ''
         run: npm run news:ingest -- /tmp/dots-news.json
 
       - name: Validate drafts and relations
