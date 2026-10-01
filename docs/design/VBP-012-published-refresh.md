@@ -1793,3 +1793,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 70 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 70 条本地正文与记录提交 `58f9aaf`。正文发布分支 `release/VBP-030-quality-content-20261001` 从第 69 条合并提交 `2095d288c7d7fee4fd677bfe73fa470d4d9550f5` 新建，只复制正文文件，提交 `1cd224f` 经 [PR #250](https://github.com/Gyschuaner/VibePolaris/pull/250) 合入 `main`，当前合并提交 `8481c01918bec30b1cfab43dd8ccda12ec03df22`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/data-quality` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内超时；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **70/105**，下一条是 `data-lineage`。
+
+## 71 · 数据血缘文字复审、运行记录与字段影响演示（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一份费用输入为什么得到 2000 分和 1800 分？变化来自输入、规则还是运行时记录；改一列后，哪些下游输出需要复查？”读完应能解释数据血缘记录的对象与处理依赖，区分输入、处理、输出、Job、Run、Dataset，沿字段级依赖判断影响范围，并知道当前关系、历史运行和可重现输入不是一回事。
+- 更新 `LineageTermPage`：导语先把 2000/1800 的差异拆成输入变化或规则变化；PROV 段补出实体、活动、参与者及使用/生成/派生关系；追踪段补齐 s1、A/B、amount/discount 的单位和算式；运行段说明 Job、Run、Dataset 与设计期/运行期记录的区别；影响段说明表级与字段级血缘、monthly.total 依赖 daily.total 及 v1/v2 的 0/2 个潜在影响输出；历史段明确 DataHub 的最新图时间过滤不能还原旧运行。
+- 保留 `LineageLesson` 的本地输出 v1/v2、运行记录、输入字段展开、字段影响切换和重置逻辑；生产范围只包含正文文字，交互功能继续留在当前功能分支与本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [W3C · PROV-DM: The PROV Data Model](https://www.w3.org/TR/prov-dm/) | `lineage-relations`：实体、活动、参与者，以及使用、生成和派生关系；来源记录可用于判断可靠性，但关系本身不等于正确性。 |
+| [OpenLineage · Object Model](https://openlineage.io/docs/spec/object-model/) | `lineage-run`：Job、Run、Dataset，以及运行期 RunEvent 与不关联 Run 的设计期 JobEvent/DatasetEvent。 |
+| [OpenLineage · Column Level Lineage Dataset Facet](https://openlineage.io/docs/spec/facets/dataset-facets/column_lineage_facet/) | `lineage-columns`：输出列使用哪些输入列和转换方式，列级关系比表级关系更细。 |
+| [DataHub · About DataHub Lineage](https://docs.datahub.com/docs/features/feature-guides/lineage) | `lineage-impact` 与 `lineage-history`：上下游与字段视图、自动提取/接口/人工维护的覆盖边界，以及最新图时间过滤不还原历史图。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前完整正文和状态材料 `/tmp/vbp071-lineage-reader-body.md`（SHA-256 `5b239c82e8310f88d828736a4e11dca3b2047cdfb3a06872d63722aab56b5b78`），提示词材料为 `/tmp/vbp071-lineage-reader-prompt.md`（SHA-256 `7bbe92262f17216078ea53b8fee155bba7e9120701f18d8288aee836fa0e2505`），没有附作者意图、官方资料、源码或旧反馈。
+- 独立 `language` 只读当前正文材料 `/tmp/vbp071-lineage-language-body.md`（SHA-256 `4f5a730a27f0297195dd837242b6c1a9df36e2bdb78483fa116a5a3a0ed17132`）和提示词材料 `/tmp/vbp071-lineage-language-prompt.md`（SHA-256 `29ecd8d41cc43dcff7187658057c047049bb41e1f7a3e6044c11c0849e1ca049`），并带 partner/humanizer-zh 规则。
+- reader 与 language 两个 ZCode 请求均在等待上游 `AI_APICallError` 超时，没有产生可回收的审读文本或稳定 session ID；不能把它们记成通过。主助手依据四份已核实资料、humanizer-zh 规则和实际状态材料补齐上述解释，保留演示数字、限制说明和引用映射。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。`LineageLesson` 逻辑未改动，因此没有新增或重复运行低价值测试。
+- CUA 在 `http://127.0.0.1:3219/terms/data-lineage?qa=071baseline` 的重启后服务上真实操作并观察：默认输出 v1 为 2000 分；展开“生成记录”显示 `run-42 · 已完成`、来源 s1、规则 v1、`sum(amount)`；继续展开“输入字段”显示 A/B 的 amount 与 discount，以及参与合计字段 amount。切换输出 v2 后显示 1800 分、`run-43 · 已完成`、规则 v2、`sum(amount − discount)`；展开字段影响并选择 discount，显示规则 v2 下 daily.total 与 monthly.total 两个潜在受影响输出；展开 PROV 引用并回链到 `lineage-relations`，截图已实际观察；浏览器 `error/warn` 为空。
+- 演示只使用浏览器内存中的固定教学运行和预登记关系，没有执行 SQL、抓取日志、自动解析血缘、接入 DataHub/OpenLineage 或重新计算真实报表；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 71 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 71 条本地正文提交 `06689e4`，记录提交待发布链路完成。正文发布分支应从当前 `origin/main` 的第 70 条合并提交 `8481c01918bec30b1cfab43dd8ccda12ec03df22` 新建，只复制正文文件，不带入 `LineageLesson` 等交互改动。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成本地内容后整体为 **71/105**，下一条是 `data-pipeline`。
