@@ -2288,3 +2288,42 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 83 条正文提交 `eaed171`，本条文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理。`IngestionLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 当前批次进度为 **5/10（第 79—83 条）**，下一条是 `data-transformation`；前序已发布总计 **78/105**。
+
+## 84 · 数据转换文字复审、单位精度边界与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“借阅费用有的写成元、有的写成分，还有一条没有单位时，为什么不能直接相加？转换、验证、舍入和汇总分别负责什么？”读完应能区分表示变化与业务值变化，理解输入/输出约定、待处理记录、单位确认、无损转换、小数精度、`Decimal`、`numeric(10,2)`、金额列与汇总粒度，并知道只看合计不能证明原始记录完整。
+- 更新 `TransformationTermPage` 的正文文字：用 A/B/C/D 四条费用说明混合单位直接相加会得到错误的 `1254.60`，已知约定下应先统一为 3690 分；补出“表示变化”不改变现实金额、“值变化”会改变业务含义的区别；将 dbt 定义为数据建模工具、SQL 定义为查询语言；明确转换的输入/输出约定、转换前置条件与独立数据验证的边界；说明待处理不是删除或 `NULL`，报表还要带待处理数量与记录；补充 D 单位确认、无自动四舍五入、超出两位小数的演示开关只修改预置测试输入；解释 `amount_cents`、`numeric(10,2)`、十进制字符串与 `Decimal.from_float`、输入/输出小数位和计算精度的区别；补出先转换再汇总与先分组再转换可能产生不同结果。
+- `DataTransformationLesson` 的金额转换、重置、引用展开与回链继续留在本地/dev；本批次只计划上线正文文字，交互功能不进入生产。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [dbt · SQL models](https://docs.getdbt.com/docs/build/sql-models) | `transform-definition`：dbt model 使用 SQL `select`，运行时按配置建立视图或表；dbt 是实现转换的工具。 |
+| [Python · decimal — Decimal fixed-point and floating-point arithmetic](https://docs.python.org/3/library/decimal.html) | `transform-precision`：十进制数的精确表示、计算上下文、精度/舍入，以及从 float 展开近似值的边界。 |
+| [PostgreSQL · Numeric Types](https://www.postgresql.org/docs/current/datatype-numeric.html) | `transform-type`：整数、精确 numeric、近似浮点数，`numeric(10,2)` 的 precision/scale 与声明小数位时的舍入行为。 |
+| [PostgreSQL · Aggregate Functions](https://www.postgresql.org/docs/current/functions-aggregate.html) | `transform-grain`：聚合从一组输入产生结果，`sum` 的 `NULL` 行为，以及汇总粒度与待处理记录的区别。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文和按“操作→当时可见内容”配对的页面材料，未附作者意图、资料链接、源码或旧反馈；材料 `/tmp/vbp084-reader-material.txt` SHA-256 为 `54020afa66fc23063ab6c178051589ddbbeb26ea2c6ab104eb2f6732665ca3`，提示词 `/tmp/vbp084-reader-prompt.txt` SHA-256 为 `e80db9229cecc7e5002278a5457c114d62c459652f8185c00ead1d853bed7002`，结果 `/tmp/vbp084-reader-result.json` SHA-256 为 `d64dcea9487f827c2117283337de209a4871df2f6c2b374f087938fc374c3391`；会话 `sess_3de405d9-6b6c-416e-a21e-26feb3a834df` 正常完成。reader 指出了混合单位直接相加的错误原因、表示/值变化、待处理与 `NULL` 的区别、转换前置条件与验证、无自动舍入的范围、dbt/SQL、`Decimal.from_float`、`numeric(10,2)` 和转换/汇总顺序等断点，主助手逐项核对后补入。
+- 独立 `language` 读取项目内 `vibepolaris-zcode-partner`、`humanizer-zh` 与 `ponytail`，并审读当前 `TransformationTermPage`；提示词 `/tmp/vbp084-language-prompt.txt` SHA-256 为 `240909b0e65cc21a462c4d7e5f4d24369009b0fc4bc06b33918229b22666285c`，结果 `/tmp/vbp084-language-result.json` SHA-256 为 `eed431b89a0458b44d4b39ae5c8986ddb1523c05a42fd4e7a1c65bd8a916f3a3`；会话 `sess_d919b8e7-80b4-4a2a-89b6-86a1cc9c4ee8` 正常完成。采纳了删重、术语统一、精度举例、待处理说明、`amount_cents` 解释、旧输出失效和引用角标补齐等建议；language 会话未读取 lesson、来源表或官方资料，因此没有把它写成完整交互审查。
+- ZCode 实际读取项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`；用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内可读规则审读，没有把缺失路径冒充为已读取。
+
+### 构建与真实浏览器验收
+
+- `npm run build` 已通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；本地构建 `BUILD_ID XYetIWyBh3EUmMXgvS4MN`；`git diff --check` 通过。当前正文变更只在 `components/terms/DataFlowConceptPages.tsx` 的 `TransformationTermPage`，未修改 `DataFlowConceptLessons.tsx`、交互状态机或通用词条注册；正文提交为 `4c6a78f`。
+- CUA 在 `http://127.0.0.1:3219/terms/data-transformation?qa=084baseline` 与 `http://127.0.0.1:3219/terms/data-transformation?qa=084final` 真实操作并观察：D 未确认时 A/B/C 转成 1230 分、3 条已转换/1 条待处理、合计 3690 分；重置并确认 D=分后 4 条已转换、合计 4920 分；重置并勾选 A 超出两位小数后 A 与 D 待处理、B/C 已转换、2 条已转换/2 条待处理、合计 2460 分。展开 PostgreSQL Aggregate Functions 引用并点击“汇总会改变一行的含义”回链，URL 定位 `#transform-grain`；最终截图实际观察了汇总粒度段落与引用角标。
+- 当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也未把不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存中的四条固定费用和预置规则，不执行真实 dbt、SQL、PostgreSQL、Python Decimal、数据库写入或财务报表计算；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `094ad24f-8c09-4058-ab9d-f44030c65c5f` 已创建并处于 `in_progress`；测试用例 `bcff423c-a71d-45c9-9f7c-e606f417f0e7` 与测试计划 `f2b0d775-50e4-4471-b978-adf0da1de1f4` 已创建，测试计划保持 `ready`，待第 79—88 条本地验收完成后统一执行，不提前伪造通过结果。按用户要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 84 条正文提交 `4c6a78f`，本条文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理。`DataTransformationLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前批次进度为 **6/10（第 79—84 条）**，下一条按现有顺序是 `data-validation`；前序已发布总计 **78/105**。
