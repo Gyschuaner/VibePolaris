@@ -8586,9 +8586,9 @@
   },
   {
     "slug": "compiler",
-    "lead": "一段add函数怎样从可读源码变成机器可以执行的指令？",
-    "definition": "编译器分析源代码的语法和含义，经过中间表示与优化后生成另一种可执行代码或目标文件。",
-    "boundary": "编译不等于打包；前者转换程序表示并检查语言规则，后者主要组织模块和资源。",
+    "lead": "一段 add(2, 3) 源码怎样经由中间表示，变成目标环境能执行的代码？",
+    "definition": "编译器先解析源代码，形成语法树并检查语言规则，再转成中间表示、按需要优化，最后生成目标代码。生成后由运行时或操作系统执行，编译器本身不负责把结果跑起来。",
+    "boundary": "编译负责把代码从一种形式转换成另一种形式，并检查语言规则；打包器组织模块与资源，构建工具把编译、打包等多个步骤按顺序组织起来。编译成功，也不能保证运行时一定不出错。",
     "sceneKind": "pipeline",
     "sceneTitle": "源码经过四层表示",
     "actionLabel": "查看下一层",
@@ -8603,28 +8603,28 @@
       {
         "id": "ast",
         "label": "语法树",
-        "detail": "7个节点",
+        "detail": "结构节点",
         "icon": "layout",
         "group": "分析"
       },
       {
         "id": "ir",
         "label": "中间表示",
-        "detail": "4条指令",
+        "detail": "内部指令",
         "icon": "file",
         "group": "转换"
       },
       {
         "id": "machine",
         "label": "目标代码",
-        "detail": "机器指令",
+        "detail": "交给运行时",
         "icon": "gear",
         "group": "输出"
       },
       {
         "id": "run",
-        "label": "运行结果",
-        "detail": "5",
+        "label": "运行时",
+        "detail": "执行代码，算出 5",
         "icon": "code",
         "group": "验证"
       }
@@ -8658,7 +8658,7 @@
     "frames": [
       {
         "label": "解析源码",
-        "note": "字符被组织成7个有结构的语法节点。",
+        "note": "字符先被组织成语法树的节点；语法不完整时在这一层返回错误。",
         "activeIds": [
           "source",
           "ast"
@@ -8669,7 +8669,7 @@
           "run"
         ],
         "values": {
-          "ast": "7 节点"
+          "ast": "结构节点"
         },
         "activeEdgeIds": [
           "s-a"
@@ -8677,7 +8677,7 @@
       },
       {
         "label": "生成中间表示",
-        "note": "语法树降为4条更接近执行的指令。",
+        "note": "语法树变成编译器内部指令；这个例子太简单，没有多少可优化的地方，中间表示仍不是目标机器指令。",
         "activeIds": [
           "ast",
           "ir"
@@ -8690,7 +8690,7 @@
           "run"
         ],
         "values": {
-          "ir": "4 条"
+          "ir": "内部指令"
         },
         "activeEdgeIds": [
           "a-i"
@@ -8698,7 +8698,7 @@
       },
       {
         "label": "产出目标代码",
-        "note": "后端把中间指令变成目标机器指令。",
+        "note": "编译器按目标环境生成代码；编译完成后交给运行时或操作系统，由它们执行，编译器自己不跑这段代码。",
         "activeIds": [
           "ir",
           "machine"
@@ -8718,8 +8718,8 @@
         ]
       },
       {
-        "label": "执行验证",
-        "note": "运行目标代码，add(2,3)得到5。",
+        "label": "运行验证",
+        "note": "运行时执行目标代码，add(2,3)得到5；如果输入或环境不符合要求，错误会在这一层出现，编译阶段拦不住它。",
         "activeIds": [
           "machine",
           "run"
@@ -8731,47 +8731,57 @@
         ],
         "mutedIds": [],
         "values": {
-          "run": "5"
+          "run": "执行 · 5"
         },
         "activeEdgeIds": [
           "m-r"
         ]
       }
     ],
-    "insight": "编译器转换程序表示并检查语言规则；它不是把模块和图片装进一个包。",
+    "insight": "编译器把代码从一种形式逐层转换，并检查语言规则；目标代码随后交给运行时执行，打包器组织模块，构建工具组织步骤。",
     "quiz": {
-      "question": "把多个JS模块合成两个文件，主要属于什么？",
+      "question": "哪句话准确区分了编译和运行？",
       "options": [
         {
-          "label": "打包",
+          "label": "编译器生成目标代码，运行时或操作系统负责执行",
           "correct": true
         },
         {
-          "label": "典型的机器码编译",
+          "label": "编译器生成代码后也负责把所有输入跑完",
           "correct": false
         },
         {
-          "label": "代码格式化",
+          "label": "只要编译成功，运行时就不会出错",
           "correct": false
         }
       ],
-      "success": "模块组织是打包器的主要职责。",
-      "retry": "编译更关心语言表示的转换。"
+      "success": "编译产出和运行执行是相邻但不同的阶段。",
+      "retry": "想想目标代码生成后还需要谁来执行。"
     },
     "prompt": {
-      "title": "追踪一次编译",
-      "text": "列出源码、语法树或中间表示、目标代码和错误发生层，给一个最小程序验证最终结果。"
+      "title": "追踪一次编译和运行",
+      "text": "用一个最小程序分别标出语法检查、语法树、中间表示、目标代码、执行者，以及编译期和运行期各自可能出现的错误。"
     },
     "sources": [
       {
         "url": "https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html",
-        "label": "LLVM 官方文档 · index",
-        "note": "原始规范与实现说明"
+        "label": "LLVM 官方教程 · My First Language Frontend",
+        "note": "从源代码到 AST、IR 和目标代码的前端流程"
+      },
+      {
+        "url": "https://gcc.gnu.org/onlinedocs/gccint/",
+        "label": "GCC 官方文档 · Internals",
+        "note": "前端、GIMPLE、RTL 与后端生成阶段"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Concepts",
+        "label": "MDN WebAssembly · Concepts",
+        "note": "模块、二进制代码与运行时实例化的边界"
       },
       {
         "url": "https://www.ecma-international.org/publications-and-standards/standards/ecma-335/",
-        "label": "Ecma 标准 · ecma 335",
-        "note": "原始规范与实现说明"
+        "label": "ECMA-335 CLI 标准",
+        "note": "可执行格式、运行时与类型系统的规范背景"
       }
     ]
   },

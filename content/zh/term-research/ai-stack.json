@@ -682,14 +682,16 @@
   },
   {
     "slug": "compiler",
-    "mechanism": "编译器分析源代码的语法和含义，经过中间表示与优化后生成另一种可执行代码或目标文件。",
-    "misconception": "编译不等于打包；前者转换程序表示并检查语言规则，后者主要组织模块和资源。",
-    "demoSignature": "输入：函数add(2,3)的源代码；中间：源码→语法树7节点→中间指令4条→机器指令；输出：运行得5。可视化：建议5帧的转换流水线；交互：点击任一节点查看它在下一层的对应片段。",
+    "mechanism": "编译器先把源代码解析为语法树和中间表示，检查语言规则并进行可选优化，再生成交给目标运行时或操作系统执行的代码。",
+    "misconception": "编译不等于直接生成机器码，也不等于运行；打包器组织模块和资源，构建工具编排任务，编译成功仍可能在运行时遇到输入错误。",
+    "demoSignature": "输入：函数add(2,3)源代码；中间：源码→语法树→内部中间表示（简单例子无明显优化）→目标代码；输出：运行时执行得5。错误分支：语法不完整在解析阶段停下，运行时输入错误留到执行阶段。可视化：四层表示与执行者分开；交互：切换编译错误和运行时错误分支。",
     "sourceUrls": [
       "https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html",
+      "https://gcc.gnu.org/onlinedocs/gccint/",
+      "https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Concepts",
       "https://www.ecma-international.org/publications-and-standards/standards/ecma-335/"
     ],
-    "rewriteRisk": "不要把所有构建过程都叫编译，需把语法分析、代码生成和链接边界交代清楚。",
+    "rewriteRisk": "不要把所有编译都写成直接变机器码；需说明中间表示、可选优化、目标代码与运行时执行的边界。",
     "nearDuplicates": [
       "interpreter",
       "transpiler",
