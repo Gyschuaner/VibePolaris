@@ -70,23 +70,23 @@ export function CitationTermPage() {
     intro={<>“退款三个工作日到账”后面放了一个链接，读者仍不知道它是否适用于线上退款、是否要求审核通过、是不是保证时效。引用要把结论和对应材料连起来，让这些条件能够被核对。</>}
     hero={<ConceptHero slug="citation" label="草稿句子后的引用1，定位到原文中包含审核条件和通常时效的一段"><div className={s.citationHero}><p>审核通过后，通常三个工作日。<sup>[1]</sup></p><div><span>[1] 退款规则 · 第 2 段</span>线上退款审核通过后，通常三个工作日内原路退回。</div></div></ConceptHero>}>
     <ArticleSection id="location" title="让读者找得到具体出处"><Legacy slug="citation" names={["question", "definition"]}/>
-      <p><strong>引用标明一句话或一项论断的来源，让读者能回到材料核对。</strong>它可以是脚注、角标或作者与年份标记；形式应配合阅读场景。参考资料列表列出材料，正文中的标记则说明哪一处使用了哪份材料。</p>
-      <p id="citation-location" className="vp-citation-target">Chicago 的注释与书目示例区分具体引用位置和整份材料的信息：注释可以指定页码，电子资料没有固定页码时也可使用章节等定位方式。<strong>材料入口与具体位置承担不同作用。</strong>只列文章标题，读者还要自行找出哪一段支持结论。本页用角标对应参考资料，并提供正文回跳。<Cite id="citation-location"/></p>
-      <p>引用也不要求把整段原文搬过来。概括别人的研究时，用自己的话准确保留范围和条件；直接引文要明确区分原话与自己的解释。对机制的演绎和演示约定，也要说清哪些来自资料，哪些是本页设计。</p>
+      <p><strong>引用标明一句话或一项论断的来源，让读者能回到材料核对。</strong>它可以是脚注、角标或作者与年份标记；形式应配合阅读场景。普通链接只告诉你“去哪个页面”，引用还要说明“这句话用了哪份材料的哪一处”。参考资料列表列出材料，正文中的标记则说明哪一处使用了哪份材料。</p>
+      <p id="citation-location" className="vp-citation-target">《芝加哥格式手册》（Chicago）的注释—书目体系区分具体引用位置和整份材料的信息：注释可以指定页码，电子资料没有固定页码时也可使用章节等定位方式。<strong>材料入口与具体位置承担不同作用。</strong>只列文章标题，读者还要自行找出哪一段支持结论。本页用角标对应参考资料，两处之间可以互相跳转。<Cite id="citation-location"/></p>
+      <p>引用也不要求把整段原文搬过来。概括别人的研究时，用自己的话准确保留范围和条件；直接引文要明确区分原话与自己的解释。本页用示例或演示呈现的机制，也要说清哪些来自资料，哪些是本页设计的演示约定。</p>
     </ArticleSection>
     <ArticleSection id="support" title="出处是否支持这句话"><Legacy slug="citation" names={["scene-heading"]}/>
-      <p id="citation-support" className="vp-citation-target">ALCE 研究分别考察生成内容与引用质量，引用评估关注材料是否支持相关陈述，以及引用是否必要。<strong>写了引用标记，并不等于这条引用支持结论。</strong>它可能只提到相同主题，或只支持句子中的一部分。具体判断还要逐项对照条件。<Cite id="citation-support"/></p>
-      <p>下面三段规则都是虚构的。选择一句草稿和一个出处，先标记，再点击角标定位，最后核对支持范围。判断使用本页明确编写的对照表，没有运行自动事实核查模型。</p>
+      <p id="citation-support" className="vp-citation-target">引用质量研究会把“出处标得对不对”和“这句话写得好不好”分开看。<strong>写了引用标记，并不等于这条引用支持结论。</strong>它可能只提到相同主题，或只支持复合句中的一部分；还要检查重要主张是否漏了引用。具体判断要逐项对照渠道、对象、时间和确定程度。<Cite id="citation-support"/></p>
+      <p>下面三段退款规则是练习用的虚构材料。你扮演审核 AI 草稿的人：选择一句草稿和一个出处，先把它们配起来，再点击角标定位，最后按条件查看页面展示的判定依据。这个练习的规则是虚构的，但“逐项对照支持范围”的方法适用于真实材料；页面不会调用自动事实核查模型。</p>
       <CitationLesson/>
-      <p>线上规则支持“线上、审核通过后、通常、三个工作日、原路退回”。改写成“所有退款都保证到账”，范围就扩大了，确定程度也变了。<strong>保留原文限定，往往比增加引用数量更有用。</strong>申请入口段落无法证明到账时间，更无法证明免费。</p>
+      <p>线上规则支持“线上、审核通过后、通常、三个工作日、原路退回”。改写成“所有退款都保证到账”，范围从线上退款扩大到所有退款，确定程度也从“通常”变成“保证”，和原材料对不上了。<strong>保留原文限定，往往比增加引用数量更有用。</strong>如果把申请入口段错配给到账这句话，它不能证明到账时间；同样，材料没有写费用时，也不能替它补成免费。</p>
     </ArticleSection>
     <ArticleSection id="selector" title="从文章入口到具体段落"><Legacy slug="citation" names={["quiz-heading"]}/>
-      <p id="citation-selector" className="vp-citation-target">W3C 的 Web Annotation Data Model 提供文本引用选择器，可以用匹配文本及前后文定位；也提供起止位置选择器，并提醒内容编辑后位置容易失效。<strong>实现定位时，要考虑原文会变化。</strong>这是一套技术标注模型，不是所有文章必须遵循的引文样式；它提示我们记录具体范围与版本，比只保存页面入口更便于回查。<Cite id="citation-selector"/></p>
+      <p id="citation-selector" className="vp-citation-target">W3C 的 Web Annotation Data Model 提供文本引用选择器：可以保存要找的原文片段，以及它前后的短文；也可以保存字符起止位置。前一种更像“在页面里找这句”，后一种按位置记，原文编辑后可能偏到别处。<strong>实现定位时，要同时记录原文范围、版本或检查状态。</strong>本页互动里的定位是本地虚构段落，用来演示“从角标找到依据”，不是把角标直接跳到远程网页的某一行。<Cite id="citation-selector"/></p>
       <div className={s.pair}><div><h3>找到材料</h3><p>标题、作者或机构、网址或标识符。读者能判断是哪份文档，并打开材料。</p></div><div><h3>找到依据</h3><p>页码、章节、段落或原文片段。读者能把这项结论与具体内容对应起来。</p></div></div>
-      <p id="citation-limits" className="vp-citation-target">ALCE 也讨论自动判断的限制：部分支持等情况并不总能准确识别。<strong>自动评估结果仍要配合人工阅读。</strong>即使材料支持这句话，材料本身也可能过时、缺少适用条件或存在错误；引用使核查有入口，并不会替代核查。<Cite id="citation-limits"/></p>
+      <p id="citation-limits" className="vp-citation-target">自动评估引用是否成立的研究（如 ALCE 基准）也指出了限制：部分支持等情况并不总能准确识别。<strong>自动评估结果仍要配合人工阅读。</strong>即使材料支持这句话，材料本身也可能过时、缺少适用条件或存在错误；引用使核查有入口，并不会替代核查。<Cite id="citation-limits"/></p>
     </ArticleSection>
     <ArticleSection id="identifiers" title="链接、版本与检查时间" className={base.offset}><Legacy slug="citation" names={["prompt-heading"]}/>
-      <p id="citation-identifiers" className="vp-citation-target">Crossref 建议把它的 DOI 显示为完整的 https://doi.org/ 地址；出版方维护目标网址后，标识符能继续导向材料的新位置。<strong>稳定入口解决的是去哪找，不是内容是否正确。</strong>本页参考资料保留完整网址与机构，研究论文注明年份；会变化的技术文档还需要结合实际版本阅读。<Cite id="citation-identifiers"/></p>
+      <p id="citation-identifiers" className="vp-citation-target">DOI（学术文献的持久标识符）由注册机构 Crossref 建议显示为完整的 https://doi.org/ 地址；DOI 指向的网页地址可以被更新，所以材料换了网址，读者仍能通过原标识符找到它。<strong>稳定入口解决的是去哪找，不是内容是否正确。</strong>本页参考资料保留完整网址与机构，研究论文注明年份；会变化的技术文档还应记录版本和检查时间，因为同一个链接里的政策或接口可能已经更新。<Cite id="citation-identifiers"/></p>
       <ArticleAside title="沿引用核对结论"><p>先看原文是否真的存在，再看渠道、对象、时间和结论是否对应。如果系统只 <ConceptTerm slug="retrieval">检索</ConceptTerm> 到一个标题，还没有读到支持段落，就不能据此声称这句话已有依据。材料缺失时，可以缩小结论或继续查找。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
