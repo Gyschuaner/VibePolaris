@@ -1710,10 +1710,10 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 
 - 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；构建命令包含 `git diff --check`，检查通过。教学逻辑未改动，因此没有新增或重复运行低价值测试。
 - CUA 在 `http://127.0.0.1:3219/terms/data-validation?qa=068final` 真实操作并观察：默认运行显示 1 条通过、3 条隔离；A 通过，B 因年龄范围失败，C 因城市代码失败，D 因字符串类型失败，D 的范围检查标为不适用。关闭年龄范围后重新运行显示 2 条通过、2 条隔离，B 通过但数值仍为 −2；再关闭城市规则后显示 3 条通过、1 条隔离，D 仍因类型失败。展开 `Run a Validation Definition` 引用后，点击预览回链回到 `#validation-run`；浏览器 `error/warn` 为空，截图已实际观察。
-- 演示按固定快照 s1 计算，不运行 JSON Schema、SHACL、Great Expectations 或远端验证服务；没有真实数据源、真实服务端输入保护、真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+- 演示按固定快照 s1 计算，不运行 JSON Schema、SHACL、Great Expectations 或远端验证服务；没有真实数据源、真实服务端输入保护、真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。正文合入 `main` 后，使用本地已存在的第 67 条镜像作为基础替换构建产物，生成 `vibepolaris:2d98be31f56520beab59585f37964bb8c924a0fa`（`linux/amd64`，约 1.08 GB）；本地容器 3221 端口返回 200，并精确包含“输入可以是一条记录，也可以是一批记录”和“Validation Definition，也就是预先配置的一组验证规则”。
 
 ### DP、Git 与发布边界
 
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI 查询在 20 秒内无响应，未创建或虚构第 68 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
-- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文与记录提交 `579f5e3`。正文发布分支 `release/VBP-030-validation-content-20261001` 从第 67 条合并提交 `9fdd3a12eeea17bcc5dfb3a08b4013f29639f412` 新建，只复制正文文件，提交 `e960ed0` 经 [PR #248](https://github.com/Gyschuaner/VibePolaris/pull/248) 合入 `main`，当前合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产部署仍受生产机 SSH、公网和 DP 网络可用性约束，不能提前声称上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文与记录提交 `579f5e3`。正文发布分支 `release/VBP-030-validation-content-20261001` 从第 67 条合并提交 `9fdd3a12eeea17bcc5dfb3a08b4013f29639f412` 新建，只复制正文文件，提交 `e960ed0` 经 [PR #248](https://github.com/Gyschuaner/VibePolaris/pull/248) 合入 `main`，当前合并提交 `2d98be31f56520beab59585f37964bb8c924a0fa`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 在握手前返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/data-validation` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内无响应；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 本条完成后整体为 **68/105**，下一条是 `dataset-data`。
