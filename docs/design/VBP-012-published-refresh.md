@@ -2060,3 +2060,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮研发任务 `851d87b6-2feb-4d78-9bab-9ad37a599dca` 已完成本地验收、main 合入和生产发布，状态为 `done`；测试用例 `c0ac344c-4db4-41f7-9924-920089f1baa5` 与测试计划 `815cfcdf-c77f-454f-aeda-764985272cbd` 已创建。DP `testplan execute` 返回 `REQUIREMENT_NOT_IN_TESTING`，父需求仍在 `ready_for_release`，因此没有把 DP 执行记成通过；上面的浏览器证据与 DP 计划执行状态分开记录。
 - 当前工作树为 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；正文提交 `99cc93d`，记录提交 `a4882ef`。发布分支 `release/VBP-030-data-validation-content-20261001-2` 从合并前最新 `origin/main` 建立，只复制 `components/terms/DataFlowConceptPages.tsx`，提交 `658d955` 经 [PR #257](https://github.com/Gyschuaner/VibePolaris/pull/257) 合入 `main`，合并提交 `872c0cf1220c347737e6c4b18db494c550bd41b4`。PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 生产发布记录为 `a43e147f-174a-4da7-8d38-b04cc9680958`，批次 `deploy-vbp030-data-validation-content-prod-20261001` 状态 `released`；远端镜像为 `vibepolaris:872c0cf1220c347737e6c4b18db494c550bd41b4`（`linux/amd64`），目录 `/opt/vibepolaris/releases/20261001-872c0cf1220c`，容器 `health=healthy`，`current` 已指向该目录。切换前目录 `/opt/vibepolaris/releases/20261001-bb8faa57ccc1` 和旧镜像 `vibepolaris:bb8faa57ccc174d95babb5edd48c561a8c32380b` 保留，可将 `current` 指回旧目录并用旧镜像执行 Compose 回滚；`xiaobei_data` 数据卷未改动。公网 curl 首次超时，重试收到正文后在 49152 bytes 后超时；生产 CUA 已观察到正文新文字、默认运行 1 条通过/3 条隔离、SHACL 引用展开与 `#ref-3` 回链，`error/warn` 日志为空，因此页面验证以 CUA 为准并保留链路超时记录。任务完成后整体为 **77/105**，下一条是 `data-quality`。
+
+## 78 · 数据质量文字复审、用途门槛演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一份借阅快照为什么月报能用、实时库存却不能用；9/10 到底量的是什么；规则都通过后，怎样知道记录真的符合现实？”读完应能解释数据质量是按用途判断的适用程度，区分维度、指标、测量值与政策，预测用途、快照时间、缺失字段变化后的结果，并区分规则检查与准确性证据。
+- 更新 `QualityTermPage` 的正文文字：补充图书馆借阅场景、观察时刻和接受门槛；解释事件 ID 与书目编号，明确 e9 重复不能直接删除；把 9/10、8/10、3 小时、12 秒、24 小时和 30 秒的计算与重置状态写清；用例子对齐 DQV 的维度/指标/测量值/政策；补充 Deequ 基于 Spark 的零基础前提；增加数据验证与数据质量的边界；解释完整性、唯一性、有效性、准确性不能互相替代；把 AWS Glue 分数限定为通过规则的比例；说明本页没有真实时钟、连接或 Spark/Deequ 运行。
+- `QualityLesson` 的用途切换、快照更新时间、额外缺失、重置、引用展开与回链功能继续留在本地/dev，生产发布只复制 `components/terms/ProvenanceConceptPages.tsx` 的正文文字差异。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [W3C · Data on the Web Best Practices: Data Quality Vocabulary](https://www.w3.org/TR/vocab-dqv/) | `quality-purpose` 与 `quality-record`：质量没有统一定义；DQV 区分维度、指标、质量测量与质量政策，并把测量关联到被测数据和测量值。 |
+| [UK Government · The Government Data Quality Framework](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework) | `quality-dimensions` 与 `quality-fact`：数据质量按用途判断，六类维度不是固定清单；完整性与准确性回答不同问题，完整数据仍可能有错误值。 |
+| [AWS Labs · Deequ](https://github.com/awslabs/deequ) | `quality-automation`：Deequ 是基于 Apache Spark 的大数据质量“数据单元测试”库；自动化只检查已经写出的要求。 |
+| [AWS · AWS Glue Data Quality](https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html) | `quality-score`：数据质量分数是通过规则的百分比，不是记录真实或准确的百分比。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读正文和按操作顺序配对的页面状态，未附作者意图、来源链接、源码或旧反馈；材料 `/tmp/vbp078-reader-material.txt` SHA-256 为 `c32592cd16661e3e029e635e5095e7eea93c085b4e4fd2fad22b3579de3bd398`，提示词 `/tmp/vbp078-reader-prompt.txt` SHA-256 为 `beeb913a834720f7cce9f35ef083d37dee7a3c88fd9cf4a89574f4a0035d4fb0`，结果 `/tmp/vbp078-reader-result.json` SHA-256 为 `5961ced99bd7932a1777cfbf3288da02d14e28f4a1775899a693ebe4d29952a3`；会话 `sess_00cd2195-636e-43fc-8447-df96f7e758fc` 正常完成。reader 反馈的 DQV 抽象术语、e9 重复依据、9/10 与 8/10 读法、Deequ/Spark 前提、准确性需要外部证据等断点已由主助手逐项核对并补入；反馈只代表模拟读者，不代表真人验证。
+- 独立 `language` 读取项目内 `vibepolaris-zcode-partner` 与 `humanizer-zh`，并只审读当前 `QualityTermPage` 的源码正文；提示词 `/tmp/vbp078-language-prompt.txt` SHA-256 为 `d939ed864e1af068c7503e92fdeef8c32a5d4be701b1cfca1941f7b3e0fd4cf9`，结果 `/tmp/vbp078-language-result.json` SHA-256 为 `91e15e93da90fe77905a78c013a10da55b53995b8fef3d8722c16dc56df63757`；会话 `sess_ab9b9427-5066-417f-beae-1d822ba1c679` 正常完成。采纳了 DQV 术语对齐、事件字段称呼、动作主语、真实时钟/连接限定、维度卡片措辞和 Glue 分数句法建议；未改变事实或交互逻辑。用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内 `.agents/skills/humanizer-zh/SKILL.md` 的实际可读规则审读。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。当前本地代码只改 `components/terms/ProvenanceConceptPages.tsx`；未改 `ProvenanceConceptLessons.tsx`、质量计算逻辑或通用词条注册。
+- CUA 在 `http://127.0.0.1:3219/terms/data-quality?qa=078final` 真实操作并观察：默认月报为 9/10 完整、9/10 不同 ID、3 小时 ≤24 小时且符合门槛；切实时库存后 3 小时 >30 秒、只有时效未通过；换成 12 秒后实时库存三项通过；再缺一条书目编号后完整性为 8/10、整体未通过；恢复按钮回到默认状态。展开 Deequ 引用并点击正文角标，引用区展开且回链定位 `#quality-automation`；最终截图观察了引用展开画面和首屏演示画面，浏览器 `error/warn` 日志为空。
+- 演示只使用浏览器内存中的十条固定教学记录，不执行真实库存、借阅系统、Spark、Deequ、AWS Glue 或外部事实核对；没有真人零基础读者参与，也没有把不可控的 390px 视口写成实测通过。生产发布前会以生产 CUA 再核对文字和引用回链。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `528ae3b3-d47b-4902-9bed-0cc2c2368ad3` 已进入 `in_progress`；测试用例 `4d27e660-12ec-4e39-b855-432614692d46` 与测试计划 `ed1ca633-3cc1-431d-94f6-a658eec3e2ff` 已创建。`testplan execute` 返回 `REQUIREMENT_NOT_IN_TESTING`，因此没有把 DP 测试执行记成通过；浏览器证据与 DP 计划执行状态分开记录。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本条提交和记录提交待完成。生产文字分支将从合入前最新 `origin/main` 建立，只复制本次正文文件；`QualityLesson` 交互继续留在本地/dev。PR artifact 关联工具在此前各条均因 `thread attachment identity count exceeds 100` 失败，本条仍按该限制如实记录。
+- 生产发布、镜像、备份、回滚和 DP deployment ID 待文字分支合入 `main` 后补写；指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮不写入。
+- 本条完成后整体为 **78/105**，下一条是 `data-lineage`。
