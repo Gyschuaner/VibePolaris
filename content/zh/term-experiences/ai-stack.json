@@ -9761,9 +9761,9 @@
   },
   {
     "slug": "hot-reload",
-    "lead": "计数器已经点到7，只改按钮颜色后为何页面又回到0？",
-    "definition": "热重载在代码变化后自动重新加载应用或页面，使新代码生效，但运行中的页面状态通常会丢失。",
-    "boundary": "热重载不等于HMR；HMR尝试只替换受影响模块并保留其余状态。",
+    "lead": "开发服务器盯着文件，把按钮的样式保存后，为什么整个页面会重新加载、计数从 7 变回 0？",
+    "definition": "热重载是开发阶段让改动生效的一种方式：开发服务器或监听器发现源码变化，重新处理后通知浏览器整页重载（整页重新加载），让新代码生效。",
+    "boundary": "整页重载会重建页面，页面内存里的状态也随之重置；HMR（热模块替换）则尝试只替换变化的模块并保留运行中的状态。热重载依赖开发工具的监听和通知，不是普通浏览器或生产网站自带的功能；已经写入数据库的持久化状态，不会随整页重载丢失。",
     "sceneKind": "timeline",
     "sceneTitle": "整页重载让运行状态重建",
     "actionLabel": "保存样式文件",
@@ -9771,16 +9771,23 @@
       {
         "id": "page",
         "label": "计数器页面",
-        "detail": "当前7",
+        "detail": "当前 7",
         "icon": "browser",
         "group": "界面"
       },
       {
         "id": "change",
         "label": "样式改动",
-        "detail": "蓝→绿",
+        "detail": "蓝 → 绿",
         "icon": "file",
         "group": "变更"
+      },
+      {
+        "id": "dev",
+        "label": "开发服务器",
+        "detail": "监听文件变化",
+        "icon": "server",
+        "group": "开发环境"
       },
       {
         "id": "reload",
@@ -9799,10 +9806,16 @@
     ],
     "edges": [
       {
-        "id": "c-r",
+        "id": "c-d",
         "from": "change",
+        "to": "dev",
+        "label": "保存通知"
+      },
+      {
+        "id": "d-r",
+        "from": "dev",
         "to": "reload",
-        "label": "触发"
+        "label": "通知浏览器"
       },
       {
         "id": "r-p",
@@ -9814,13 +9827,13 @@
         "id": "p-s",
         "from": "page",
         "to": "state",
-        "label": "初始化"
+        "label": "重新初始化"
       }
     ],
     "frames": [
       {
-        "label": "保留现状",
-        "note": "页面颜色为蓝，计数器已到7。",
+        "label": "改动前",
+        "note": "页面颜色为蓝，计数器已到 7；数字在页面内存里，颜色来自源码文件。",
         "activeIds": [
           "page",
           "state"
@@ -9828,6 +9841,7 @@
         "doneIds": [],
         "mutedIds": [
           "change",
+          "dev",
           "reload"
         ],
         "values": {
@@ -9838,28 +9852,31 @@
       },
       {
         "label": "保存样式",
-        "note": "颜色改为绿色，热重载触发。",
+        "note": "你保存 button.css，开发服务器监听到它变了。",
         "activeIds": [
           "change",
-          "reload"
+          "dev"
         ],
         "doneIds": [
           "page"
         ],
         "mutedIds": [
+          "reload",
           "state"
         ],
         "values": {
-          "change": "蓝 → 绿"
+          "change": "蓝 → 绿",
+          "dev": "change 1"
         },
         "activeEdgeIds": [
-          "c-r"
+          "c-d"
         ]
       },
       {
         "label": "页面重建",
-        "note": "浏览器重新加载整个页面实例。",
+        "note": "开发服务器发送整页重载信号，浏览器把整个页面重新加载一遍。",
         "activeIds": [
+          "dev",
           "reload",
           "page"
         ],
@@ -9873,18 +9890,20 @@
           "reload": "reload 1 次"
         },
         "activeEdgeIds": [
+          "d-r",
           "r-p"
         ]
       },
       {
         "label": "状态丢失",
-        "note": "颜色已更新，但新页面把计数初始化为0。",
+        "note": "颜色从源码更新为绿色，但新页面的内存重新初始化，未持久化的计数从 7 回到 0。",
         "activeIds": [
           "page",
           "state"
         ],
         "doneIds": [
           "change",
+          "dev",
           "reload"
         ],
         "mutedIds": [],
@@ -9897,12 +9916,12 @@
         ]
       }
     ],
-    "insight": "热重载让新代码生效，通常会重建页面状态；这正是它与HMR的直观区别。",
+    "insight": "热重载是开发工具通知浏览器整页重建的路径；新代码生效，页面内存状态通常重置，这正是它与 HMR 的区别。",
     "quiz": {
       "question": "保存样式后页面状态归零，最可能发生了什么？",
       "options": [
         {
-          "label": "整页热重载",
+          "label": "发生了整页重载，页面内存被重新初始化",
           "correct": true
         },
         {
@@ -9910,27 +9929,37 @@
           "correct": false
         },
         {
-          "label": "只执行了格式化器",
+          "label": "计数在页面里待得太久，自动归零了",
           "correct": false
         }
       ],
-      "success": "重建页面会重新初始化内存状态。",
-      "retry": "看状态是否保留可以区分两种更新。"
+      "success": "整页重载会重建页面运行时，临时状态因此回到初始值。",
+      "retry": "只替换模块并保留状态是 HMR 的目标。"
     },
     "prompt": {
       "title": "验证热重载行为",
-      "text": "在页面先建立可见状态，再修改一个样式文件，记录页面是否整页刷新、状态是否保留和更新时间。"
+      "text": "记录开发服务器怎么通知、页面有没有整页重载、哪些状态丢了哪些还在，以及从保存到页面变化隔了多久。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/features",
-        "label": "Vite 官方文档 · features",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · Features",
+        "note": "开发服务器、CSS 更新与 HMR 行为"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Location/reload",
-        "label": "MDN Web Docs · reload",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN Web Docs · Location.reload()",
+        "note": "浏览器整页重新加载行为"
+      },
+      {
+        "url": "https://webpack.js.org/configuration/dev-server/",
+        "label": "webpack 官方文档 · devServer",
+        "note": "文件监听、刷新和开发服务配置"
+      },
+      {
+        "url": "https://github.com/pmmmwh/react-refresh-webpack-plugin",
+        "label": "React Refresh Webpack Plugin",
+        "note": "开发环境中的局部刷新与状态保留边界"
       }
     ]
   },

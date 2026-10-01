@@ -788,14 +788,16 @@
   },
   {
     "slug": "hot-reload",
-    "mechanism": "热重载在代码变化后自动重新加载应用或页面，使新代码生效，但运行中的页面状态通常会丢失。",
-    "misconception": "热重载不等于HMR；HMR尝试只替换受影响模块并保留其余状态。",
-    "demoSignature": "输入：计数器当前为7，修改按钮颜色；中间：文件变更触发整页reload=1，页面实例重建；输出：颜色更新但计数7→0。可视化：建议4帧的页面熄灭再重建；交互：先点到7再保存样式。",
+    "mechanism": "热重载是开发阶段的一条更新路径：开发服务器或监听器发现源码变化，重新处理后通知浏览器整页 reload，页面内未持久化的运行状态通常重置。",
+    "misconception": "热重载不等于 HMR；前者重建整页，后者尝试只替换受影响模块并保留状态。它依赖开发工具监听和通知，不是普通浏览器自带功能，已写入数据库的状态不会随整页重载丢失。",
+    "demoSignature": "输入：页面计数为7、按钮样式蓝色；中间：开发服务器监听保存，发送整页 reload；输出：按钮变绿、页面内存重新初始化，计数7→0。可视化：开发服务角色补在文件与浏览器之间；交互：保存样式触发一次重载。",
     "sourceUrls": [
       "https://vite.dev/guide/features",
-      "https://developer.mozilla.org/en-US/docs/Web/API/Location/reload"
+      "https://developer.mozilla.org/en-US/docs/Web/API/Location/reload",
+      "https://webpack.js.org/configuration/dev-server/",
+      "https://github.com/pmmmwh/react-refresh-webpack-plugin"
     ],
-    "rewriteRisk": "必须用状态是否保留区分热重载和HMR，而不是只比较速度。",
+    "rewriteRisk": "必须用状态是否保留区分热重载和 HMR，并说明开发服务器监听、整页重建、持久化状态和浏览器默认行为的边界。",
     "nearDuplicates": [
       "hmr",
       "dev-server"
