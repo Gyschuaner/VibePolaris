@@ -32,9 +32,14 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(atlas, /data-news-node/);
   assert.match(atlas, /setDetailOpen\(true\)/);
   assert.match(atlas, /aria-expanded=\{node\.slug === selectedNodeSlug && detailOpen\}/);
-  assert.match(atlas, /aria-label="关闭新闻详情"/);
+  assert.match(atlas, /CaretRight/);
+  assert.match(atlas, /aria-label=\{detailOpen \? "收起新闻详情" : "展开新闻详情"\}/);
+  assert.match(atlas, /if \(!visible \|\| !from \|\| !to\) return null/);
+  assert.match(atlas, /selectedSlug === slug && detailOpen/);
+  assert.match(atlas, /selectionGuard/);
   assert.match(styles, /\.news-atlas-detail\.is-open/);
   assert.match(styles, /ease-in-out/);
+  assert.match(styles, /\.news-atlas-detail-toggle/);
   assert.match(styles, /\.news-atlas-specks \{ z-index: 1; pointer-events: none; \}/);
   assert.match(styles, /\.news-atlas-world \{ position: absolute; z-index: 3;/);
   assert.match(atlas, /Boolean\(selectedNodeSlug\) && showLines && connected/);
