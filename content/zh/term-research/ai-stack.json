@@ -1127,11 +1127,15 @@
   },
   {
     "slug": "microservices",
-    "mechanism": "微服务把业务能力拆成可独立部署的服务，通过网络接口协作，每个服务拥有明确边界和运行责任。",
-    "misconception": "拆成多个进程不自动带来微服务收益；网络失败、数据一致性和运维成本会随之增加。",
-    "demoSignature": "输入：订单服务调用库存和支付；中间：3个部署单元各自版本2.1/1.4/3.0，库存调用超时使订单进入pending；输出：重试后订单完成。可视化：建议6帧的服务节点与超时支路；交互：断开一条网络边观察故障传播。",
+    "mechanism": "微服务把业务能力拆成多个可分别构建、测试和发布的服务；服务通过网络接口协作，各自负责一块业务。",
+    "misconception": "服务越多，网络调用、数据一致性、监控和运维工作越多；拆成多个服务不自动带来收益。",
+    "demoSignature": "输入：订单服务调用库存和支付；中间：3个服务各自版本，库存请求等待2秒仍无回应，订单把状态保存为处理中；输出：独立发布的收益与跨服务协调成本同时出现。可视化：建议4帧的各自发布、两次请求、等待超时、保存处理中；交互：推进帧观察一次调用如何留下中间状态。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
+      "https://csrc.nist.gov/pubs/sp/800/204/final",
+      "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_service_architecture_monolith_soa_microservice.html",
+      "https://cloud.google.com/learn/what-is-microservices-architecture",
+      "https://www.martinfowler.com/microservices/"
     ],
     "rewriteRisk": "不要把微服务写成天然更先进；演示必须把网络和独立部署的代价一起画出。",
     "nearDuplicates": [
