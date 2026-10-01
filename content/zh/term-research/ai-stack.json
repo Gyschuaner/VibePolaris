@@ -805,14 +805,16 @@
   },
   {
     "slug": "hmr",
-    "mechanism": "热模块替换只更新发生变化的模块，并由运行时处理模块边界、接受更新或回退到整页刷新。",
-    "misconception": "HMR不保证所有状态都保留；模块没有正确接受更新时仍可能退化为重载。",
-    "demoSignature": "输入：计数器为7，仅修改按钮模块；中间：变更模块1/20，旧模块dispose后新模块accept；输出：颜色更新且计数保持7。可视化：建议5帧的模块网格单格替换；交互：关闭accept处理看它退化为整页刷新。",
+    "mechanism": "开发服务器把变更模块送到浏览器更新运行时，运行时按应用声明的更新边界执行旧模块清理和新模块接受；边界失败时退回整页重载。",
+    "misconception": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留；状态能否继续取决于模块及其依赖是否接受更新，未接受时会整页重载。",
+    "demoSignature": "输入：浏览器应用20个模块，Button发生改动，计数7、姓名小林；中间：开发服务器发送Button模块，运行时dispose旧模块、accept新模块；输出：按钮变绿、状态保留。回退分支：边界未接受时整页重载，状态7→0。可视化：服务器→运行时→模块边界→应用；交互：展示回退路径。",
     "sourceUrls": [
       "https://vite.dev/guide/api-hmr",
-      "https://webpack.js.org/concepts/hot-module-replacement/"
+      "https://webpack.js.org/concepts/hot-module-replacement/",
+      "https://webpack.js.org/api/hot-module-replacement/",
+      "https://github.com/pmmmwh/react-refresh-webpack-plugin"
     ],
-    "rewriteRisk": "不要承诺零刷新；需展示接受边界和失败回退。",
+    "rewriteRisk": "不要承诺零刷新或所有状态保留；需展示开发服务器传输、dispose/accept 边界以及失败回退。",
     "nearDuplicates": [
       "hot-reload",
       "dev-server"

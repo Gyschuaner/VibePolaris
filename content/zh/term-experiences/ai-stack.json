@@ -9965,67 +9965,80 @@
   },
   {
     "slug": "hmr",
-    "lead": "同样把计数器点到7，为什么HMR换掉按钮模块后数字还能保留？",
-    "definition": "热模块替换只更新发生变化的模块，并由运行时处理模块边界、接受更新或回退到整页刷新。",
-    "boundary": "HMR不保证所有状态都保留；模块没有正确接受更新时仍可能退化为重载。",
+    "lead": "只改 Button 模块时，为什么计数和表单内容还能留在页面里？",
+    "definition": "HMR（热模块替换）由开发服务器把变更模块送到浏览器更新运行时；运行时先清理旧模块，再交给应用里声明了“可以原地接收更新”的那段代码（更新边界）接受新模块，应用里没被换的部分继续运行。",
+    "boundary": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留。模块或它的依赖没有声明可接受更新时，浏览器会退回整页重载；被替换模块自己管理的状态也可能重置。",
     "sceneKind": "network",
     "sceneTitle": "模块边界内的局部替换",
-    "actionLabel": "关闭 accept 处理",
+    "actionLabel": "展示回退路径",
     "actors": [
       {
         "id": "app",
-        "label": "运行中的应用",
-        "detail": "20个模块",
+        "label": "浏览器中的应用",
+        "detail": "20 个模块",
         "icon": "browser",
         "group": "运行时"
       },
       {
         "id": "button",
-        "label": "按钮模块",
+        "label": "Button 模块",
         "detail": "发生改动",
         "icon": "component",
         "group": "更新"
       },
       {
         "id": "state",
-        "label": "计数状态",
-        "detail": "7",
+        "label": "页面状态",
+        "detail": "计数 7 · 姓名小林",
         "icon": "memory",
         "group": "保留"
       },
       {
         "id": "runtime",
-        "label": "HMR运行时",
-        "detail": "dispose→accept",
+        "label": "浏览器更新运行时",
+        "detail": "dispose → accept",
         "icon": "gear",
         "group": "控制"
       },
       {
+        "id": "server",
+        "label": "开发服务器",
+        "detail": "发送变更模块",
+        "icon": "server",
+        "group": "通道"
+      },
+      {
         "id": "fallback",
-        "label": "整页刷新",
-        "detail": "备用路径",
+        "label": "整页重载",
+        "detail": "回退 ·状态重置",
         "icon": "clock",
         "group": "回退"
       }
     ],
     "edges": [
       {
-        "id": "b-r",
+        "id": "b-s",
         "from": "button",
+        "to": "server",
+        "label": "文件变更"
+      },
+      {
+        "id": "s-r",
+        "from": "server",
         "to": "runtime",
-        "label": "通知"
+        "label": "发送模块"
       },
       {
         "id": "r-a",
         "from": "runtime",
         "to": "app",
-        "label": "替换模块"
+        "label": "接受更新"
       },
       {
         "id": "s-a",
         "from": "state",
         "to": "app",
-        "label": "保留"
+        "label": "继续运行"
       },
       {
         "id": "r-f",
@@ -10036,8 +10049,8 @@
     ],
     "frames": [
       {
-        "label": "运行状态存在",
-        "note": "应用有20个模块，计数器状态为7。",
+        "label": "改动前",
+        "note": "浏览器里的应用有 20 个模块，表单姓名是小林，页面状态中的计数器为 7。",
         "activeIds": [
           "app",
           "state"
@@ -10045,19 +10058,22 @@
         "doneIds": [],
         "mutedIds": [
           "button",
+          "server",
+          "runtime",
           "fallback"
         ],
         "values": {
-          "app": "20模块",
-          "state": "7"
+          "app": "20 个模块",
+          "state": "7 · 小林"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "单模块变更",
-        "note": "只有按钮模块进入更新集合。",
+        "label": "变更消息到达",
+        "note": "Button 文件变化后，开发服务器把对应的模块送到浏览器更新运行时。",
         "activeIds": [
           "button",
+          "server",
           "runtime"
         ],
         "doneIds": [
@@ -10070,86 +10086,102 @@
           "button": "变更 1 / 20"
         },
         "activeEdgeIds": [
-          "b-r"
+          "b-s",
+          "s-r"
         ]
       },
       {
         "label": "边界接受更新",
-        "note": "旧模块dispose，新模块accept，其他模块不重建。",
+        "note": "运行时先执行旧模块的 dispose 清理，再由声明了 accept 的更新边界接手；其他模块继续运行，页面状态原样保留。",
         "activeIds": [
           "runtime",
-          "app"
+          "app",
+          "state"
         ],
         "doneIds": [
-          "button"
+          "button",
+          "server"
         ],
         "mutedIds": [
           "fallback"
         ],
         "values": {
-          "runtime": "accepted"
+          "runtime": "accepted",
+          "state": "7 · 小林"
         },
         "activeEdgeIds": [
-          "r-a"
+          "r-a",
+          "s-a"
         ]
       },
       {
-        "label": "状态仍为7",
-        "note": "按钮颜色更新，计数状态没有归零；关闭accept则走整页刷新。",
+        "label": "无法接受时回退",
+        "note": "如果更新边界没有接受这次变化，浏览器退回整页重载，记在内存里的页面状态从 7 重置为 0。",
         "activeIds": [
-          "app",
-          "state",
-          "fallback"
+          "runtime",
+          "fallback",
+          "state"
         ],
         "doneIds": [
           "button",
-          "runtime"
+          "server"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "app"
+        ],
         "values": {
-          "state": "7",
-          "fallback": "关闭accept时启用"
+          "fallback": "reload · 1 次",
+          "state": "7 → 0"
         },
         "activeEdgeIds": [
-          "s-a",
           "r-f"
         ]
       }
     ],
-    "insight": "HMR尝试局部替换模块并保留其余状态，但模块边界不接受时仍会退回整页刷新。",
+    "insight": "HMR 通过开发服务器把变化模块送到浏览器，按更新边界执行 dispose/accept；边界成功时保留未替换状态，失败时退回整页重载。",
     "quiz": {
-      "question": "HMR是否保证所有状态永远保留？",
+      "question": "HMR 与整页重载的主要区别是什么？",
       "options": [
         {
-          "label": "不保证，更新边界失败时可能整页刷新",
+          "label": "HMR 尝试只替换受影响模块，页面其余部分的状态保持不变",
           "correct": true
         },
         {
-          "label": "保证，名称里有热替换",
+          "label": "HMR 只用于生产环境",
           "correct": false
         },
         {
-          "label": "只对服务器状态有效",
+          "label": "HMR 不需要开发服务器",
           "correct": false
         }
       ],
-      "success": "是否保留取决于更新边界和框架处理。",
-      "retry": "HMR有回退路径。"
+      "success": "局部替换能让未受影响的页面继续运行，但是否保留状态取决于更新边界。",
+      "retry": "HMR 通常依赖开发服务器，也有整页重载回退。"
     },
     "prompt": {
-      "title": "检查一个HMR边界",
-      "text": "修改模块后记录更新集合、dispose/accept处理、保留状态和回退条件，确认失败时能安全整页刷新。"
+      "title": "分析 HMR 边界",
+      "text": "说明哪个模块发生变化、开发服务器怎样把它送到浏览器、dispose/accept 做什么、哪些状态能保留，以及何时退回整页重载。"
     },
     "sources": [
       {
         "url": "https://vite.dev/guide/api-hmr",
-        "label": "Vite 官方文档 · api hmr",
-        "note": "构建与模块处理方式"
+        "label": "Vite 官方文档 · HMR API",
+        "note": "更新消息、accept 和 dispose 边界"
       },
       {
         "url": "https://webpack.js.org/concepts/hot-module-replacement/",
-        "label": "webpack 官方文档 · hot module replacement",
-        "note": "打包过程与配置行为"
+        "label": "webpack 官方文档 · Hot Module Replacement",
+        "note": "开发服务器与局部模块替换"
+      },
+      {
+        "url": "https://webpack.js.org/api/hot-module-replacement/",
+        "label": "webpack 官方文档 · HMR API",
+        "note": "模块接受、清理和回退路径"
+      },
+      {
+        "url": "https://github.com/pmmmwh/react-refresh-webpack-plugin",
+        "label": "React Refresh Webpack Plugin",
+        "note": "组件刷新与状态保留限制"
       }
     ]
   },
