@@ -14,22 +14,22 @@ export function RetrievalTermPage() {
     intro={<>问“退款多久到账”，资料库里可能有申请入口、到账规则和内部记录。检索负责从这些材料中找出候选；哪些候选可用、是否足够回答，还要继续检查。</>}
     hero={<ConceptHero slug="retrieval" label="退款查询从四篇文档中选出A和B，候选仍然是资料"><div className={s.retrievalHero}><span><Funnel size={20}/> 查询：退款</span><div>{['A', 'B', 'C', 'D'].map(id => <div key={id} data-selected={id === 'A' || id === 'B'}><FileText size={26}/><strong>{id}</strong></div>)}</div><p>候选 A、B</p></div></ConceptHero>}>
     <ArticleSection id="collection" title="从资料集合里找到候选"><Legacy slug="retrieval" names={["question", "definition"]}/>
-      <p id="retrieval-definition" className="vp-citation-target"><strong>检索是从一组材料中，找出满足信息需求的内容。</strong>《Introduction to Information Retrieval》用文档集合、查询与信息需求解释这个问题。它可以用于网站搜索、图书查找或 AI 应用；不一定伴随生成回答，也不限于向量搜索。查询是用户的表达，真正想解决的事可能比几个词更具体。<Cite id="retrieval-definition"/></p>
+      <p id="retrieval-definition" className="vp-citation-target"><strong>检索是从一组材料中，找出满足信息需求的内容。</strong>《Introduction to Information Retrieval》用文档集合、查询与信息需求解释这个问题。它可以用于网站搜索、图书查找或 AI 应用；不一定伴随生成回答，也不限于向量搜索。查询是用户输入的几个词，例如“退款”；信息需求是想解决的完整问题，例如“线上退款审核通过后多久到账”。<Cite id="retrieval-definition"/></p>
       <p>“退款”可能同时匹配申请入口与到账规则。两篇都提到同一主题，却只各自覆盖问题的一部分。<strong>找到同主题的文档，是继续阅读的起点。</strong>如果想知道审核通过后的线上退款时效，就要检查渠道、条件与具体时间。</p>
-      <p id="retrieval-stages" className="vp-citation-target">Elastic 的 retriever 接口把查询封装成取得候选的步骤，也能组合多个检索器、融合结果或接入重排。<strong>检索方法与整个搜索流程要分开理解。</strong>词项匹配、向量比较和多路融合都是可选方案，索引怎样组织资料、候选怎样排序则需要相应实现。这里的演示只使用明确词项。<Cite id="retrieval-stages"/></p>
+      <p id="retrieval-stages" className="vp-citation-target">Elastic 的 retriever 是 Elasticsearch 中封装“取得候选”步骤的一种具体接口，也能组合多个检索器、融合结果或接入重排。<strong>检索方法与整个搜索流程要分开理解。</strong>词项匹配是找查询里出现的词，向量比较是按表示的接近程度找候选，多路融合则合并不同方法的结果；索引怎样组织资料、候选怎样排序需要相应实现。这里的演示只使用明确词项。<Cite id="retrieval-stages"/></p>
     </ArticleSection>
     <ArticleSection id="selection" title="查询、范围与返回数量"><Legacy slug="retrieval" names={["scene-heading"]}/>
-      <p>下面四篇资料都是虚构的。查询按卡片上列出的词项匹配，先按身份限定范围，再按 A、B、C、D 的原始顺序取前几条。点击检索后，进入候选的文档会突出；再点击读取，才展示这些候选的原文。</p>
+      <p>下面四篇资料都是虚构的：A 是退款申请入口，B 是退款到账时间，C 是打印指南，D 是只对运营身份可见的商户退款记录。查询按卡片上列出的词项匹配，先按身份限定范围，再按 A、B、C、D 的原始顺序取前几条；这里的原始顺序只是教学规则，真实系统通常还会按相关性排序。点击检索后，进入候选的文档会突出；再点击读取，才展示这些候选的原文。</p>
       <RetrievalLesson/>
-      <p>读者查退款得到 A、B；运营身份最多取三条时，还能选中 D。查打印得到 C，查赛事则为空。<strong>没有结果时，应确认表达或资料范围，而不是编造一篇文档。</strong>本例没有调用搜索服务，身份控制也只是界面演示；真实系统必须在服务端执行访问限制。</p>
+      <p>读者查退款得到 A、B；默认公开范围会挡住 D，运营身份且最多取三条时，D 才能进入候选。查打印得到 C，查赛事则为空。<strong>没有结果时，应确认表达或资料范围，而不是编造一篇文档。</strong>本例没有调用搜索服务，身份控制也只是界面演示；真实系统应在检索前由可信服务端校验权限，避免把不可见资料交给搜索器。</p>
     </ArticleSection>
     <ArticleSection id="reading" title="找到资料，再读原文"><Legacy slug="retrieval" names={["quiz-heading"]}/>
-      <p id="retrieval-output" className="vp-citation-target">DPR 论文把过程分为检索器与阅读器：前者从大集合选出较小的段落集合，后者读取这些段落并提取答案。<strong>检索的输出是候选材料，不是答案本身。</strong>DPR 使用配对训练的查询与段落编码器；这个具体方案说明两阶段的分工，不代表所有检索都使用同样的模型或度量。<Cite id="retrieval-output"/></p>
+      <p id="retrieval-output" className="vp-citation-target">DPR 论文把“检索器 + 阅读器”分成两步：检索器从大集合选出较小的段落集合，阅读器再读取这些段落并提取答案。<strong>检索的输出是候选材料，不是答案本身。</strong>DPR 使用配对训练的查询与段落编码器；这个具体方案说明两阶段的分工，不代表所有检索都使用同样的模型或度量。如果正确段落没有进入候选，后面的阅读或生成就看不到它。<Cite id="retrieval-output"/></p>
       <div className={s.readingPair}><div><h3>候选入口</h3><p>编号、标题、内容版本和分数，帮助决定先读哪篇。只看标题，无法知道完整条件。</p></div><div><h3>可读材料</h3><p>回到原文，核对退款渠道、审核状态和时效。需要生成回答时，再交给 <ConceptTerm slug="rag">RAG</ConceptTerm> 的后续过程。</p></div></div>
       <p>检索不到关键规则，后续阅读或生成就缺少依据。扩大候选数量可能找回遗漏，也可能加入干扰；修改查询、补充索引中的资料或改变检索方法，也都需要用真实样例检查。</p>
     </ArticleSection>
     <ArticleSection id="relevance" title="相关性要按任务判断" className={base.offset}><Legacy slug="retrieval" names={["prompt-heading"]}/>
-      <p id="retrieval-relevance" className="vp-citation-target">PostgreSQL 的全文排序可以考虑词项出现频率、距离和文档中的位置，并明确指出相关性与应用有关。<strong>分数要配合排序方法和使用目的解释。</strong>把它归一到 0–1，并不会变成正确率百分比；一篇词项密集的说明，也可能没有用户需要的条件或适用版本。<Cite id="retrieval-relevance"/></p>
+      <p id="retrieval-relevance" className="vp-citation-target">PostgreSQL 的全文排序可以考虑词项出现频率、距离和文档中的位置，并明确指出相关性与应用有关。<strong>分数要配合排序方法和使用目的解释。</strong>把它归一到 0–1，并不会变成正确率百分比；同一个查询在检索器升级前后，是否相关仍要由人工用实际文档标注。一篇词项密集的说明，也可能没有用户需要的条件或适用版本。<Cite id="retrieval-relevance"/></p>
       <ArticleAside title="先看该找到的资料是否在候选里"><p>准备几条实际问题，标出能够解决问题的文档。观察是否漏掉关键材料、前排是否被无关内容占据，再调整查询、范围与候选数量。只有进入候选的文档，才能参与后面的 <ConceptTerm slug="reranking">重排序</ConceptTerm>。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
