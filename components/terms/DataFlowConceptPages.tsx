@@ -40,30 +40,30 @@ export function IngestionTermPage() {
 export function TransformationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={transformationSources}/>;
   return <ConceptArticle slug="data-transformation" title="数据转换" sources={transformationSources} sections={[["rules", "让字段遵循同一套规则"], ["units", "数字之外，还要知道单位"], ["precision", "精度与舍入要先约定"], ["grain", "汇总会改变一行的含义"]]}
-    intro={<>三份借阅费用分别写成 ¥12.30、CNY 12.30 和 1230 分。在本例规则里，前两种写法表示元，后一种表示分；报表不能把这三种文字直接相加。数据转换用明确的规则统一表示，同时保留原始值，避免把不确定的信息悄悄变成一个确定数字。</>}
-    hero={<ConceptHero slug="data-transformation" label="三种已声明的金额表示转换成CNY的1230整数分"><div className={s.transformHero}><div className={s.heroOriginal}><CurrencyCircleDollar size={25}/><code>¥12.30</code><code>CNY 12.30</code><code>1230 分</code></div><div className={s.heroStamp}><span>已声明单位</span><strong>1230</strong><span>整数分 · CNY</span></div></div></ConceptHero>}>
+    intro={<>本例有四条借阅费用：A 写成 ¥12.30、B 写成 CNY 12.30，输入约定它们都是 CNY 元；C 写成 1230 分，输入约定它是 CNY 分；D 只写 1230，单位还没有确认。报表不能把这四种输入直接相加。数据转换用明确的规则统一表示，同时保留原始值，避免把不确定的信息悄悄变成一个确定数字。</>}
+    hero={<ConceptHero slug="data-transformation" label="先确认单位，再统一为 CNY 整数分"><div className={s.transformHero}><div className={s.heroOriginal}><CurrencyCircleDollar size={25}/><code>A · ¥12.30</code><code>B · CNY 12.30</code><code>C · 1230 分</code></div><div className={s.heroStamp}><span>输出约定</span><strong>等待执行</strong><span>整数分 · CNY</span></div></div></ConceptHero>}>
     <ArticleSection id="rules" title="让字段遵循同一套规则"><Legacy slug="data-transformation" names={["question", "definition"]}/>
-      <p id="transform-definition" className="vp-citation-target"><strong>数据转换按照明确规则，改变数据的表示、字段结构、值或统计粒度，让它适合后续使用。</strong>“表示”是同一个值的写法，例如把带货币符号的文字变成整数分；“字段结构”是字段怎样拆分、合并或改名；“统计粒度”是一行数据代表一条记录，还是一组记录的合计。<Cite id="transform-definition"/></p>
-      <p>例如拆出日期、统一金额单位，或者按书目汇总借阅次数。dbt 是把 SQL 组织成可运行模型的工具：它把模型文件里的 SELECT 按配置建立成视图或表。SQL 是一种实现方式，转换并不限定使用 dbt。<Cite id="transform-definition"/></p>
-      <div className={s.ruleList}><div><h3>输入约定</h3><p>字段来自哪里？值的单位、币种和精度是什么？缺失或不认识的值怎样保留？</p></div><div><h3>输出约定</h3><p>统一为 CNY 的整数分，保留来源行 ID。超出约定的输入进入待处理结果，不擅自补一个金额。</p></div></div>
-      <p>“转成数字”只解决表示问题。<strong>先说清数字代表什么，再写类型转换和计算。</strong>本页把职责分开：转换产生按约定的新表示，<ConceptTerm slug="data-validation">数据验证</ConceptTerm>检查它是否符合约定；要不要修正、隔离或删除异常值，还要另写处理规则。输入格式、映射规则、异常处理和输出口径都应该能被复查。</p>
+      <p id="transform-definition" className="vp-citation-target"><strong>数据转换按照明确规则，改变数据的表示、字段结构、值或统计粒度，让它适合后续使用。</strong>“表示”是同一个值的写法，例如把 12.30 元写成 1230 分，金额没有变，写法和单位变了；“字段结构”是字段怎样拆分、合并或改名；“值”指改变数值本身，例如按税率从不含税金额算出含税金额；“统计粒度”是一行数据代表一条记录，还是一组记录的合计。<Cite id="transform-definition"/></p>
+      <p>例如拆出日期、统一金额单位，或者按书目汇总借阅次数。dbt 把一个 SQL SELECT 文件当作 model，运行时可以按配置建立成视图或表；它是实现转换的一种工具，转换本身不限定使用 dbt。<Cite id="transform-definition"/></p>
+      <div className={s.ruleList}><div><h3>输入约定</h3><p>字段来自哪里？值的单位、币种和精度是什么？缺失或不认识的值怎样保留？</p></div><div><h3>输出约定</h3><p>统一为 CNY 的整数分，保留来源行 ID。超出约定、缺失或不认识的输入进入“待处理”状态，保留原值和原因，不擅自补一个金额。</p></div></div>
+      <p>“转成数字”只解决表示问题。<strong>先说清数字代表什么，再写类型转换和计算。</strong>本页把职责分开：转换先按输入约定产生新表示；<ConceptTerm slug="data-validation">数据验证</ConceptTerm>对输入或中间结果执行能明确判断“符合还是不符合”的规则，并处理不符合的记录。判断转换结果是否合规属于数据验证，不属于转换。本演示里的转换器只做最小输入检查：不符合输入约定的值（例如单位未确认、小数超过两位）、缺失或不认识的输入，就标为“待处理”，不把异常改成正确值；之后是否修正、隔离或删除，还要另写处理规则。输入格式、映射规则、异常处理和输出口径都应该能被复查。</p>
     </ArticleSection>
     <ArticleSection id="units" title="数字之外，还要知道单位"><Legacy slug="data-transformation" names={["scene-heading"]}/>
-      <p>A、B、C 三条的单位已知，可以统一为 1230 分。D 只有“1230”：如果它代表分，结果是 1230；如果代表元，结果是 123000。转换器不能凭相似的数字猜出处。下面的“已确认”选项代表你从来源说明中取得了单位，不代表程序自动识别。</p>
+      <p>A、B、C 三条的输入约定已经写明，可以统一为 1230 分。本例按 1 元 = 100 分计算；“分”是金额单位，CNY 是币种，二者都要按输入约定确认。D 只有“1230”：如果它代表 CNY 分，结果是 1230 分；如果代表 CNY 元，结果是 123000 分。D 的单位属于输入约定的一部分，补充这个约定后要重新转换受影响的行。转换器不能靠数字长得像就猜出单位。下面的“已确认”选项代表你根据输入约定确认了单位，不代表程序自动识别。</p>
       <TransformationLesson/>
-      <p>这是固定教学记录和浏览器中的字段计算，不会处理真实费用。D 未确认时保留原值与原因，不进入合计。修改单位或输入后，必须重新执行；旧输出不再作为当前规则的结果。</p>
-      <p id="transform-type" className="vp-citation-target">PostgreSQL 区分整数、精确 numeric 和近似浮点数；声明 numeric 的精度与小数位数，会影响可保存的值和舍入行为。但这些数值类型并不会自动声明业务单位。<strong>amount_cents、currency 和来源单位的约定，需要数据设计者补充。</strong>本例选择整数分；其他场景可以采用适当的十进制类型与明确精度。<Cite id="transform-type"/></p>
+      <p>这是浏览器里对固定示例数据做的字段计算，不会处理真实费用。D 未确认时保留原值与原因，不进入合计。重置会把输入和确认（包括 D）恢复到初始状态；修改单位或输入后，必须重新执行，旧输出不再作为当前规则的结果。</p>
+      <p id="transform-type" className="vp-citation-target">PostgreSQL 区分整数、精确 numeric 和近似浮点数；给 numeric 列声明总位数和小数位数（例如 `numeric(10,2)`），就限定了能存入的值和舍入行为。Python 的 decimal 模块提供 Decimal 类型，PostgreSQL 提供 numeric 类型；两者都能表示十进制数，但都不携带业务单位，也不会替你选好舍入策略。<strong>amount_cents、currency 和输入约定的单位，需要数据设计者补充。</strong>本例选择整数分；其他场景可以采用适当的十进制类型与明确精度。<Cite id="transform-type"/></p>
     </ArticleSection>
     <ArticleSection id="precision" title="精度与舍入要先约定"><Legacy slug="data-transformation" names={["quiz-heading"]}/>
-      <p id="transform-precision" className="vp-citation-target">Python 的 decimal 文档说明，十进制运算可以准确表示十进制输入，但精度、舍入和异常仍由上下文控制。把一个浮点数交给 Decimal，会精确转换那个已经近似的浮点值；从十进制字符串构造才能保留相应输入。<strong>选了一个精确类型，不等于已经选好舍入规则。</strong><Cite id="transform-precision"/></p>
+      <p id="transform-precision" className="vp-citation-target">计算机常用二进制浮点保存小数，而 0.1 这样的十进制小数无法在二进制中精确写出。Python 的 decimal 文档说明，十进制运算可以准确表示十进制输入，但精度和舍入仍由当前计算设置控制。例如 `Decimal.from_float(0.1)` 不是 `Decimal("0.1")`，它会展开成该二进制浮点数对应的一长串十进制小数位；从十进制字符串构造，才能保住输入里的十进制值。<strong>选了一个精确类型，不等于已经选好舍入规则。</strong><Cite id="transform-precision"/></p>
       <pre className={base.code}>{'from decimal import Decimal\nDecimal("12.30") * 100\n# Decimal("1230.00")'}</pre>
-      <p>这个固定例子说明按元换算为分，不能把它当作任意输入的完整处理程序。本页规则只接受最多两位小数，所以 12.345 元会被保留待处理；其他系统可以选择明确的舍入策略，但应说明发生了什么。PostgreSQL 的声明精度可触发舍入，也与本页主动拒绝的教学策略不同。</p>
-      <ArticleAside title="转换结果要能回到原始值"><p>输出 1230 分，还应能找到 A 的原始字符串 ¥12.30、所用规则和来源。覆盖原始值以后，发现单位错误就很难重新计算。规则发生变化，应重新转换受影响记录，再检查后续汇总；不能只改报表标签。</p></ArticleAside>
+      <p>这个固定例子表示 12.30 元与 1230 分是同一笔金额，Decimal 形式保留的尾部两个 0 只是小数位信息，按输出约定落成整数后是 1230 分；不能把它当作任意输入的完整处理程序。因为 1 分 = 0.01 元，本页规则只接受最多两位小数，12.345 元无法精确表示成整数分，所以标为“待处理”并保留原值，不擅自舍入。其他系统可以选择明确的舍入策略，但应说明发生了什么；PostgreSQL 把值存入声明了小数位数的 numeric 列时也可能舍入，这和本页“不舍入、标为待处理”的做法是两种不同约定。</p>
+      <ArticleAside title="转换结果要能回到原始值"><p>输出 1230 分，还应能找到 A 的原始字符串 ¥12.30、输入约定和所用规则版本。覆盖原始值以后，发现单位错误就很难重新计算。规则发生变化，应重新转换受影响记录，再检查后续汇总；不能只改报表标签。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="grain" title="汇总会改变一行的含义" className={base.offset}><Legacy slug="data-transformation" names={["prompt-heading"]}/>
-      <p id="transform-grain" className="vp-citation-target">这里的“粒度”可以先理解为一行数据覆盖的范围：逐条转换后，一行仍代表一条费用记录；按书目汇总后，一行变成某本书的合计。PostgreSQL 的 sum 只对非 NULL 输入求和，没有输入行时返回 NULL，而不是自动返回零。<strong>一个合计不能单独说明原始记录是否齐全。</strong>本例显式保留待处理数量，并把总数标为“仅已转换记录合计”。<Cite id="transform-grain"/></p>
-      <div className={base.contrast}><div><h3>3690 分</h3><p>单位未知时，A、B、C 的部分合计。它没有包含 D，不能标成四条记录的全部费用。</p></div><div><h3>4920 分</h3><p>D 被确认是分以后，四条正常精度记录的合计。改变规则后重新计算，原始数据仍保留。</p></div></div>
-      <p>转换规则应附原始样例，写清单位、类型、输出粒度、精度和非法值处理。每次运行记录字段如何变化、排除了哪些记录，以及下游判断结果是否完整所需的数量。</p>
+      <p id="transform-grain" className="vp-citation-target">这里的“粒度”可以先理解为一行数据覆盖的范围：逐条转换后，一行仍代表一条费用记录；按书目汇总后，一行变成某本书的合计，这里的“书目”就是目录中的一本书。本演示的合计是全表合计，没有展示书目列；真实按书目汇总时，每本书会各有一行。PostgreSQL 的 `sum` 只对非 `NULL` 输入求和；`NULL` 是数据库表示缺失值的一种方式，没有输入行时 `sum` 返回 `NULL`，而不是自动返回零。本页的待处理行是另外标记并排除的记录，不等于数据库里的 `NULL`。<strong>一个合计不能单独说明原始记录是否齐全。</strong>本例显式保留待处理数量，并把总数标为“仅已转换记录合计”。<Cite id="transform-grain"/></p>
+      <div className={base.contrast}><div><h3>3690 分</h3><p>D 的单位未确认时，A、B、C 三条的部分合计；它没有包含 D，不能标成四条记录的全部费用。</p></div><div><h3>4920 分</h3><p>这是“D 代表 CNY 分”假设下的推算；四条符合精度规则的记录合计为 4920 分。当前演示选择“D=元”时会显示 126690 分，切换单位后要重新执行。改变规则后重新计算，原始数据仍保留。</p></div></div>
+      <p>A 超出两位小数且 D 仍未确认时，只有 B、C 进入合计，结果是 2460 分。转换规则应附原始样例，写清单位、类型、精度、非法值处理，以及输出粒度（每行代表什么、合计覆盖的范围）。每次运行要记下字段如何变化、排除了哪些记录，再记下待处理数量，下游要靠它判断结果是否完整。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
