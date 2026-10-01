@@ -497,7 +497,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
             <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.25); }}><Plus size={18} /></button>
             <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(.8); }}><Minus size={18} /></button>
             <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => { setReframing(true); frame(getPositions()); }}><CornersOut size={18} /></button>
-            <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>
+            <label><input type="checkbox" checked={showLines} disabled={!selectedNodeSlug} onChange={event => setShowLines(event.target.checked)} />显示连线</label>
           </div>
         </div>
 
