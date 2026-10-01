@@ -613,16 +613,19 @@
   },
   {
     "slug": "agent-memory",
-    "mechanism": "智能体记忆把跨轮次或跨会话需要保留的信息写入外部存储，并在后续任务按条件检索、更新或删除。",
-    "misconception": "它不是模型参数里的永久记忆，也不等于把所有聊天原样塞回上下文。",
-    "demoSignature": "输入：用户偏好“代码示例用TypeScript”，会话结束；中间：记忆库新增1条带时间戳记录，下次请求检索命中1条；输出：新示例改用TypeScript。可视化：会话时间轴跨段连接一张记忆卡。 建议5帧：偏好在会话A出现、写成带时间戳记忆卡、会话A关闭、会话B检索命中、TypeScript示例生成；交互：删除记忆后重试查看偏好消失。",
+    "mechanism": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
+    "misconception": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
+    "demoSignature": "用户确认保存代码写法偏好；应用把带来源与时间的记录加入已有食谱记录的记忆库。新代码任务在 2 条记录中只取回相关的 1 条，并交给 AI 生成示例。随后用户纠正、删除这条代码偏好，记忆库剩 1 条食谱记录；既有回复不改写，下一次代码任务需重新说明偏好。6 帧分别展示确认、写入、相关取回、生成、纠正、删除；选择操作查看对应状态。失效时间作为记录规则说明，不假装演示实际计时。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2310.08560",
-      "https://platform.openai.com/docs/guides/conversation-state"
+      "https://docs.langchain.com/oss/python/concepts/memory",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2304.03442",
+      "https://arxiv.org/abs/2310.08560"
     ],
-    "rewriteRisk": "必须说明写入、召回和删除规则；避免把隐私敏感信息默认长期保存。",
+    "rewriteRisk": "智能体记忆包含任务内和跨会话信息；本例聚焦跨会话偏好，不把聊天关闭等同于临时状态自动清除。不把删除记录表现成修改已生成的输出。隐私同意和保存期限属于本例管理建议，不声明所有框架自动提供。",
     "nearDuplicates": [
       "working-memory",
+      "context-window",
       "vector-store"
     ]
   },

@@ -7783,47 +7783,54 @@
   },
   {
     "slug": "agent-memory",
-    "lead": "用户上次选择TypeScript，关掉会话后新任务为何还能沿用这个偏好？",
-    "definition": "智能体记忆把跨轮次或跨会话需要保留的信息写入外部存储，并在后续任务按条件检索、更新或删除。",
-    "boundary": "它不是模型参数里的永久记忆，也不等于把所有聊天原样塞回上下文。",
+    "lead": "会话结束后，智能体怎样记住有用偏好，又不把整段聊天都带上？",
+    "definition": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
+    "boundary": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
     "sceneKind": "memory",
-    "sceneTitle": "一条偏好跨会话写入与召回",
-    "actionLabel": "删除这条记忆",
+    "sceneTitle": "保存偏好、取回使用，再纠正或删除",
+    "actionLabel": "选择记忆操作",
     "actors": [
       {
         "id": "session-a",
         "label": "会话 A",
-        "detail": "偏好：TypeScript",
+        "detail": "用户确认的偏好",
         "icon": "message",
         "group": "来源"
       },
       {
         "id": "memory",
-        "label": "长期记忆",
-        "detail": "带时间戳1条",
+        "label": "记忆库",
+        "detail": "保存带来源和时间的记录",
         "icon": "memory",
         "group": "存储"
       },
       {
         "id": "session-b",
         "label": "会话 B",
-        "detail": "新的代码任务",
+        "detail": "当前编码任务",
         "icon": "message",
         "group": "使用"
       },
       {
         "id": "example",
-        "label": "代码示例",
-        "detail": "TypeScript",
+        "label": "本次输出",
+        "detail": "按取回结果生成",
         "icon": "code",
         "group": "输出"
       },
       {
         "id": "delete",
-        "label": "删除规则",
-        "detail": "用户可撤回",
+        "label": "管理入口",
+        "detail": "查看、纠正或删除",
         "icon": "shield",
         "group": "控制"
+      },
+      {
+        "id": "next-example",
+        "label": "下一次输出",
+        "detail": "后续任务再生成",
+        "icon": "code",
+        "group": "结果"
       }
     ],
     "edges": [
@@ -7837,7 +7844,7 @@
         "id": "m-b",
         "from": "memory",
         "to": "session-b",
-        "label": "召回"
+        "label": "取回"
       },
       {
         "id": "b-e",
@@ -7849,20 +7856,29 @@
         "id": "d-m",
         "from": "delete",
         "to": "memory",
-        "label": "删除"
+        "label": "管理"
+      },
+      {
+        "id": "d-n",
+        "from": "delete",
+        "to": "next-example",
+        "label": "下一次生效"
       }
     ],
     "frames": [
       {
-        "label": "偏好被确认",
-        "note": "会话A中用户明确选择TypeScript。",
+        "label": "用户确认偏好",
+        "note": "会话 A 中，用户明确同意保存“代码示例用 TypeScript”；未确认的信息不写入。",
         "activeIds": [
           "session-a"
         ],
         "doneIds": [],
         "mutedIds": [
           "memory",
-          "session-b"
+          "session-b",
+          "example",
+          "delete",
+          "next-example"
         ],
         "values": {
           "session-a": "已确认"
@@ -7870,8 +7886,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "写入外部记忆",
-        "note": "系统保存1条带来源与时间戳的偏好。",
+        "label": "写入可管理记录",
+        "note": "记忆库原有 1 条“食谱少放盐”的记录。应用新增这条代码偏好，来源记为会话 A、时间记为今天；应用也可以设定失效时间，到期不再取回。",
         "activeIds": [
           "memory"
         ],
@@ -7879,18 +7895,21 @@
           "session-a"
         ],
         "mutedIds": [
-          "session-b"
+          "session-b",
+          "example",
+          "delete",
+          "next-example"
         ],
         "values": {
-          "memory": "1 条 · 2026-08-31"
+          "memory": "新增 1 条 · 会话 A · 今天"
         },
         "activeEdgeIds": [
           "a-m"
         ]
       },
       {
-        "label": "跨会话召回",
-        "note": "会话B查询到这条偏好，而不是回放全部旧对话。",
+        "label": "新任务取回相关记录",
+        "note": "记忆库一共 2 条。会话 B 要写代码，应用只取回代码偏好这 1 条，不带入食谱记录或全部旧聊天。",
         "activeIds": [
           "memory",
           "session-b"
@@ -7899,41 +7918,91 @@
           "session-a"
         ],
         "mutedIds": [
-          "delete"
+          "example",
+          "delete",
+          "next-example"
         ],
         "values": {
-          "memory": "命中 1"
+          "memory": "共 2 条 · 取回 1"
         },
         "activeEdgeIds": [
           "m-b"
         ]
       },
       {
-        "label": "输出随偏好变化",
-        "note": "新代码示例使用TypeScript；删除记忆后恢复默认。",
+        "label": "使用取回的偏好",
+        "note": "应用把取回的偏好交给 AI，本次输出使用 TypeScript（一种编程语言）。用户随时可以通过管理入口纠正这条偏好。",
         "activeIds": [
-          "example",
+          "session-b",
+          "example"
+        ],
+        "doneIds": [
+          "session-a",
+          "memory"
+        ],
+        "mutedIds": [
+          "delete",
+          "next-example"
+        ],
+        "values": {
+          "example": "TypeScript"
+        },
+        "activeEdgeIds": [
+          "m-b",
+          "b-e"
+        ]
+      },
+      {
+        "label": "纠正一条记录",
+        "note": "用户把偏好从 TypeScript 改成 Python，记忆里存的值跟着变了；已经生成的回复保持原样。",
+        "activeIds": [
+          "memory",
           "delete"
         ],
         "doneIds": [
           "session-a",
+          "session-b",
+          "example"
+        ],
+        "mutedIds": [
+          "next-example"
+        ],
+        "values": {
+          "memory": "TypeScript → Python",
+          "example": "TypeScript（已生成）"
+        },
+        "activeEdgeIds": [
+          "d-m"
+        ]
+      },
+      {
+        "label": "删除后不再使用",
+        "note": "纠正之后，用户又把这条代码偏好删掉了，记忆库从 2 条剩 1 条食谱记录。下一次代码任务不会自动使用这条偏好，需要重新说明想用哪种语言写代码。",
+        "activeIds": [
           "memory",
-          "session-b"
+          "delete",
+          "next-example"
+        ],
+        "doneIds": [
+          "session-a",
+          "session-b",
+          "example"
         ],
         "mutedIds": [],
         "values": {
-          "example": "TypeScript",
-          "memory": "1 → 0"
+          "memory": "2 → 1",
+          "next-example": "需重新说明语言偏好",
+          "example": "TypeScript（已生成）"
         },
         "activeEdgeIds": [
-          "b-e",
-          "d-m"
+          "d-m",
+          "d-n"
         ]
       }
     ],
-    "insight": "Agent记忆是可管理的外部记录，不是模型参数里的永久印象。",
+    "insight": "留下记录后，应用还要按当前任务取回它。记忆内容可以纠正或删除，过去生成的回复不会跟着改写。",
     "quiz": {
-      "question": "什么信息更适合写入跨会话记忆？",
+      "question": "哪些信息值得留给下一次聊天使用？",
       "options": [
         {
           "label": "用户明确确认、后续仍有用的稳定偏好",
@@ -7948,23 +8017,33 @@
           "correct": false
         }
       ],
-      "success": "长期记忆需要价值、来源和删除规则。",
-      "retry": "临时状态应留在工作记忆。"
+      "success": "对，这类明确确认且后续仍有用的偏好才适合写入；仍要保留删除入口。",
+      "retry": "再看保存那一步：信息经过用户明确确认，而且后续仍有用；临时列表和全部聊天原文都不满足这个条件。"
     },
     "prompt": {
       "title": "设计一条记忆规则",
-      "text": "写出允许保存的信息、确认方式、来源、有效期、召回条件和删除入口，并排除敏感或一次性内容。"
+      "text": "为一个用户偏好设计保存规则：写明确认方式、来源、保存期限、取回条件、纠正和删除入口，并排除敏感或一次性内容。"
     },
     "sources": [
       {
-        "url": "https://arxiv.org/abs/2310.08560",
-        "label": "原始论文 · 2310.08560",
-        "note": "原论文的方法与实验"
+        "url": "https://docs.langchain.com/oss/python/concepts/memory",
+        "label": "LangChain 文档 · Memory overview",
+        "note": "当前任务与跨会话记忆的范围、记录更新和取回"
       },
       {
-        "url": "https://platform.openai.com/docs/guides/conversation-state",
-        "label": "OpenAI 官方文档 · conversation state",
-        "note": "接口参数与调用行为"
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "上下文选择、压缩与信息取舍"
+      },
+      {
+        "url": "https://arxiv.org/abs/2304.03442",
+        "label": "Generative Agents · 2304.03442",
+        "note": "记忆记录、检索与反思"
+      },
+      {
+        "url": "https://arxiv.org/abs/2310.08560",
+        "label": "MemGPT · 2310.08560",
+        "note": "分层记忆与外部存储管理"
       }
     ]
   },
