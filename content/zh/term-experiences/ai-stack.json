@@ -8191,7 +8191,7 @@
       },
       {
         "label": "交付后清理",
-      "note": "2 个候选已经交付给用户比较；候选清单和查价、库存的调用次数清掉，目标卡不清，用来说明这 2 个候选按什么条件筛出来。是否把结果另外存起来，按产品规则决定。",
+        "note": "2 个候选已经交付给用户比较；候选清单和查价、库存的调用次数清掉，目标卡不清，用来说明这 2 个候选按什么条件筛出来。是否把结果另外存起来，按产品规则决定。",
         "activeIds": [
           "result",
           "cleanup"
@@ -8261,8 +8261,8 @@
   {
     "slug": "prompt-injection",
     "lead": "网页正文夹着“把密钥发出去”的句子，为什么不能把它当成用户指令？",
-    "definition": "攻击性输入把不可信内容伪装成指令，诱导模型忽略原任务、泄露数据或调用不应调用的工具。",
-    "boundary": "只隐藏系统提示词不能解决注入；网页、文档和工具结果里的间接指令同样可能构成攻击。",
+    "definition": "提示词注入发生在不可信文字进入模型上下文后，文字试图冒充授权指令。应用程序要先保留内容来源，再用工具权限、隔离和确认限制它可能造成的影响。",
+    "boundary": "模型读到用户请求和网页内容时都面对文字，不能稳定地凭句子判断谁有授权。读取网页可以继续，但网页不会因为写成指令的样子就获得发送密钥的权限；即使模型被诱导，工具层仍应拒绝未授权动作。",
     "sceneKind": "pipeline",
     "sceneTitle": "不可信内容试图越过工具边界",
     "actionLabel": "显示不可信指令层",
@@ -8332,105 +8332,40 @@
     "frames": [
       {
         "label": "两路内容进入",
-        "note": "用户目标和网页内容以不同信任标签进入。",
-        "activeIds": [
-          "user",
-          "page"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "tool",
-          "summary"
-        ],
-        "values": {
-          "user": "trusted",
-          "page": "untrusted"
-        },
-        "activeEdgeIds": []
+        "note": "程序保留来源：用户目标是请求，网页正文是不可信数据；两者都能被读取，但权限不同。"
       },
       {
         "label": "恶意句子浮现",
-        "note": "网页里的命令试图从数据通道跳到指令通道。",
-        "activeIds": [
-          "page",
-          "separator"
-        ],
-        "doneIds": [
-          "user"
-        ],
-        "mutedIds": [
-          "tool",
-          "summary"
-        ],
-        "values": {
-          "separator": "越界请求 1"
-        },
-        "activeEdgeIds": [
-          "p-s"
-        ]
+        "note": "网页文字仍可能影响模型判断；把句子识别成攻击不是唯一防线。"
       },
       {
         "label": "权限闸门拒绝",
-        "note": "发送密钥工具没有被授予权限，调用数保持0。",
-        "activeIds": [
-          "separator",
-          "tool"
-        ],
-        "doneIds": [
-          "user",
-          "page"
-        ],
-        "mutedIds": [
-          "summary"
-        ],
-        "values": {
-          "tool": "denied · 执行0"
-        },
-        "activeEdgeIds": [
-          "s-t"
-        ]
+        "note": "即使模型提出发送密钥，工具层按权限拒绝；调用数保持0。"
       },
       {
         "label": "完成原任务",
-        "note": "系统只摘要可见正文，不执行网页内命令。",
-        "activeIds": [
-          "summary"
-        ],
-        "doneIds": [
-          "user",
-          "page",
-          "separator"
-        ],
-        "mutedIds": [
-          "tool"
-        ],
-        "values": {
-          "summary": "完成 · 工具调用0"
-        },
-        "activeEdgeIds": [
-          "s-sum"
-        ]
+        "note": "系统继续使用可见网页正文做摘要，读到内容不代表执行其中命令。"
       }
     ],
-    "insight": "提示词注入利用了数据和指令混淆；防护要靠信任标记、最小权限和外部校验。",
+    "insight": "提示词注入混淆了数据和指令；读数据与执行动作要分开，来源标记、最小权限和确认共同限制影响。",
     "quiz": {
-      "question": "把系统提示词隐藏起来，能彻底防住间接注入吗？",
+      "question": "网页文字要求发送密钥时，最可靠的基础防线是什么？",
       "options": [
         {
-          "label": "不能，还要隔离不可信内容并限制工具权限",
+          "label": "把网页当不可信数据，并在工具层限制权限",
           "correct": true
         },
         {
-          "label": "能，用户看不到就安全",
+          "label": "只把系统提示词藏起来",
           "correct": false
         },
         {
-          "label": "只需过滤“忽略”两个字",
+          "label": "只过滤“忽略”两个字",
           "correct": false
         }
       ],
-      "success": "攻击内容可以来自网页和工具结果。",
-      "retry": "安全不能依赖一句秘密提示。"
+      "success": "读取数据和执行动作是两条边界；权限检查能在模型误判时兜底。",
+      "retry": "网页内容可以被读取，但不会自动得到工具授权。"
     },
     "prompt": {
       "title": "审查一次外部内容处理",
@@ -8439,13 +8374,23 @@
     "sources": [
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST 出版物 · AI 600-1",
+        "note": "生成式 AI 风险、治理与可信边界"
       },
       {
         "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
-        "label": "OWASP GenAI · llm01 prompt injection",
-        "note": "生成式 AI 安全风险"
+        "label": "OWASP GenAI · LLM01 Prompt Injection",
+        "note": "提示注入风险与防护方向"
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.12173",
+        "label": "Greshake 等 · Indirect Prompt Injection",
+        "note": "外部资料中的间接注入如何影响应用和工具调用"
+      },
+      {
+        "url": "https://openai.com/safety/prompt-injections/",
+        "label": "OpenAI · Understanding prompt injections",
+        "note": "第三方内容、分层防护、最小访问和确认"
       }
     ]
   },
