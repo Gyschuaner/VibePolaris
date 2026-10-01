@@ -152,6 +152,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const [reframing, setReframing] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
   const detail = useRef<HTMLElement>(null);
+  const detailToggle = useRef<HTMLButtonElement>(null);
   const nodeElements = useRef(new Map<string, HTMLButtonElement | HTMLAnchorElement>());
   const lineElements = useRef(new Map<string, { element: SVGLineElement; source: string; target: string }>());
   const size = useRef({ width: 1000, height: 740 });
@@ -159,8 +160,6 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const pointers = useRef(new Map<number, Point>());
   const pinch = useRef<{ distance: number; center: Point; view: View } | null>(null);
   const dragged = useRef(false);
-  const closeTimer = useRef<number | null>(null);
-  const selectionGuard = useRef<{ slug: string; frame: number } | null>(null);
   const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
@@ -175,10 +174,6 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const frameId = window.requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     return () => window.cancelAnimationFrame(frameId);
   }, [detailOpen, ready, selectedSlug]);
-
-  useEffect(() => () => {
-    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-  }, []);
 
   const paintPositions = useCallback(() => {
     const moving = simulation.current?.nodes();
@@ -199,7 +194,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     }
   }, []);
 
-  useLayoutEffect(paintPositions, [paintPositions, selectedSlug, showLines, hovered]);
+  useLayoutEffect(paintPositions, [paintPositions, selectedSlug, detailOpen, showLines, hovered]);
 
   const getPositions = useCallback(() => simulation.current?.nodes() || nodes, [nodes]);
 
@@ -268,7 +263,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     frame(selectedItems.length ? selectedItems : getPositions());
   // A selected article is the user's explicit framing action; the graph engine owns the live coordinates.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSlug]);
+  }, [selectedNodeSlug]);
 
   const zoom = useCallback((factor: number, point = { x: size.current.width / 2, y: size.current.height / 2 }) => {
     setView(previous => {
@@ -310,36 +305,21 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   }
 
   function selectArticle(slug: string) {
-    if (selectionGuard.current?.slug === slug) return;
-    const rafId = window.requestAnimationFrame(() => {
-      if (selectionGuard.current?.frame === rafId) selectionGuard.current = null;
-    });
-    selectionGuard.current = { slug, frame: rafId };
     if (selectedSlug === slug && detailOpen) {
       clearSelection();
       return;
     }
-    if (closeTimer.current !== null) {
-      window.clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
     setSelectedSlug(slug);
     setDetailOpen(true);
     setHovered("");
-    const nodeSlug = `news:${slug}`;
-    const related = graphNeighbors(nodeSlug, edges);
-    const selectedItems = getPositions().filter(node => node.slug === nodeSlug || related.has(node.slug));
-    frame(selectedItems.length ? selectedItems : getPositions());
   }
 
   function clearSelection() {
+    if (detail.current?.querySelector(".news-atlas-detail-body")?.contains(document.activeElement)) {
+      detailToggle.current?.focus({ preventScroll: true });
+    }
     setDetailOpen(false);
     setHovered("");
-    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => {
-      setSelectedSlug("");
-      closeTimer.current = null;
-    }, 320);
   }
 
   function startDrag(event: PointerEvent<HTMLDivElement>) {
@@ -425,7 +405,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
         </div>
       </div>
 
-      <div className={`news-atlas-layout${selected ? " has-selection" : ""}`}>
+      <div className={`news-atlas-layout${selected ? " has-detail" : ""}${detailOpen ? " has-selection" : ""}`}>
         <nav className="news-atlas-dates" aria-label="新闻时间线">
           <div className="news-atlas-timeline-head">
             <div><span>时间线</span><strong>最近进展</strong></div>
@@ -497,7 +477,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.publishedAt)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
                 if (element) nodeElements.current.set(node.slug, element);
                 else nodeElements.current.delete(node.slug);
-              }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={() => { if (article && !dragged.current) selectArticle(article.slug); }}>
+              }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
                 <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" />
                 <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.publishedAt))}</small>}</span>
               </button>;
@@ -511,8 +491,17 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
           </div>
         </div>
 
-        {selected && <aside ref={detail} className={`news-atlas-detail${detailOpen ? " is-open" : ""}`} data-open={detailOpen} aria-live="polite" aria-hidden={!detailOpen} inert={!detailOpen} aria-label={`${selected.title}详情`}>
-          <button className="news-atlas-detail-toggle" type="button" aria-label={detailOpen ? "收起新闻详情" : "展开新闻详情"} title={detailOpen ? "收起新闻详情" : "展开新闻详情"} onClick={clearSelection}><CaretRight size={18} weight="fill" aria-hidden="true" /></button>
+        {selected && <aside ref={detail} className={`news-atlas-detail${detailOpen ? " is-open" : ""}`} data-open={detailOpen} aria-label={`${selected.title}详情`} onKeyDown={event => {
+          if (event.key === "Escape" && detailOpen) {
+            event.preventDefault();
+            clearSelection();
+            detailToggle.current?.focus({ preventScroll: true });
+          }
+        }}>
+          <button ref={detailToggle} className="news-atlas-detail-toggle" type="button" aria-expanded={detailOpen} aria-controls="news-atlas-detail-content" aria-label={detailOpen ? "收起新闻详情" : "展开新闻详情"} title={detailOpen ? "收起新闻详情" : "展开新闻详情"} onClick={() => detailOpen ? clearSelection() : selectArticle(selected.slug)}><CaretRight size={18} weight="fill" aria-hidden="true" /></button>
+          <div className="news-atlas-detail-body" id="news-atlas-detail-content" aria-live="polite" aria-hidden={!detailOpen} inert={!detailOpen}>
+          <div className="news-atlas-detail-content">
+          <div className="news-atlas-detail-copy">
           <div className="news-atlas-detail-meta"><time dateTime={selected.publishedAt}>{longDateFormatter.format(utcDate(selected.publishedAt))}</time><span>来源 {selected.source.name}</span>{selected.isExample && <span className="news-atlas-example">示例内容</span>}</div>
           <h2>{selected.title}</h2>
           <p>{selected.summary}</p>
@@ -521,6 +510,9 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
             {selected.related.map(term => <Link key={term.slug} href={`/terms/${term.slug}`}>{term.zh}<span>{term.en}</span></Link>)}
           </div>
           <Link className="news-atlas-read" href={`/news/${selected.slug}`}>阅读文章 <ArrowUpRight size={19} aria-hidden="true" /></Link>
+          </div>
+          </div>
+          </div>
         </aside>}
       </div>
     </section>
