@@ -67,22 +67,22 @@ export function FullTextTermPage() {
 export function VectorDatabaseTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={vectorSources}/>;
   return <ConceptArticle slug="vector-database" title="向量数据库" sources={vectorSources} sections={[["records", "向量与记录一起保存"], ["neighbours", "限定候选，再比较距离"], ["indexing", "数据增长时的检索开销"], ["limits", "相似结果仍要核对内容"]]}
-    intro={<>查询和文档都可以用向量表示。向量数据库保存这些向量及对应记录，帮助找出相近的候选；标题、原文、范围与版本仍然要和它们一起管理。</>}
+    intro={<>真实使用时，编码器先把查询和文档变成同一表示空间里的向量。向量数据库保存这些向量及对应记录，帮助找出相近的候选；标题、原文、范围与版本也要和它们一起管理。</>}
     hero={<ConceptHero slug="vector-database" label="二维查询q连接距离较近的B与A，其他候选保持在各自坐标"><div className={s.vectorHero}><svg viewBox="0 0 290 210" aria-hidden="true"><path className={s.heroLink} d="M65 145L88 132M65 145L132 150"/><circle className={s.heroQuery} cx="65" cy="145" r="14"/><text x="40" y="180">q</text><g className={s.heroNear}><circle cx="88" cy="132" r="6"/><text x="95" y="125">B</text><circle cx="132" cy="150" r="6"/><text x="140" y="175">A</text></g><g className={s.heroFar}><circle cx="170" cy="74" r="5"/><text x="179" y="68">C</text><circle cx="245" cy="45" r="5"/><text x="252" y="40">E</text><circle cx="228" cy="160" r="5"/><text x="238" y="176">D</text></g></svg></div></ConceptHero>}>
     <ArticleSection id="records" title="向量与记录一起保存"><Legacy slug="vector-database" names={["question", "definition"]}/>
-      <p id="vector-records" className="vp-citation-target"><strong>向量数据库围绕向量相似性组织存储、索引和查询，并把向量关联到可识别的记录。</strong>Qdrant 的 Point 包含向量和可选 payload，记录也有 ID。向量用来比较，ID 用来找到对象，附带字段可记录类别、来源或原文入口；它们不能相互替代。<Cite id="vector-records"/></p>
-      <p>文档检索里，通常先用选定的表示方法把文档和查询变成兼容的向量，再按约定的距离或相似度比较。<strong>生成表示与检索表示，是不同环节。</strong>不能把随便两组数字放到一起，就断言它们在比较文本含义。</p>
+      <p id="vector-records" className="vp-citation-target"><strong>向量数据库围绕向量相似性组织存储、索引和查询，并把向量关联到可识别的记录。</strong>Qdrant 是这类工具的一个例子；它的 Point 包含向量、ID 和可选 payload（附带元数据）。向量用来比较，ID 用来找到对象，payload 可记录类别、来源或原文入口；它们不能相互替代。<Cite id="vector-records"/></p>
+      <p>文档检索里，通常先用选定的编码器把文档和查询变成兼容的向量，再按约定的距离或相似度比较。<strong>生成表示与检索表示，是不同环节。</strong>不能把随便两组数字放到一起，就断言它们在比较文本含义。</p>
     </ArticleSection>
     <ArticleSection id="neighbours" title="限定候选，再比较距离"><Legacy slug="vector-database" names={["scene-heading"]}/>
-      <p>下面为六条记录手工指定二维坐标，便于直接看清距离。查询 [2, 2] 附近，B 比 A 更近；限制为公开记录时，内部的 B 不再是候选，返回 A、C。坐标为教学输入，不来自真实文本模型，图上的轴也没有业务含义。</p>
+      <p>下面为六条记录手工指定二维坐标，便于直接看清距离。查询 [2, 2] 附近，B 比 A 更近；限制为公开记录时，B 因为属于内部范围被筛掉，所以返回 A、C。归档范围里没有记录，因此会得到零条。坐标为教学输入，不来自真实文本模型，图上的轴也没有业务含义。</p>
       <VectorLesson/>
       <p>本例先按范围筛选，再计算每条候选的欧氏距离，取最近两条。更新 A 到 [9, 8] 后，旧结果收起；重新计算公开范围，结果变成 C、D。“归档”范围没有记录，返回零条。<strong>改向量会改变相对位置，改范围会改变参与比较的对象。</strong>这里只保存在浏览器内存，没有实际写入数据库。</p>
-      <p id="vector-distance" className="vp-citation-target">Faiss 的入门例子用 IndexFlatL2 对全部候选做精确 L2 检索，返回近邻 ID 及距离平方。本页为阅读方便展示欧氏距离本身，排序相同，数值口径不同。<strong>比较分数前，要知道距离定义、排序方向和实际返回值。</strong>Faiss 是相似性检索库，完整数据库还需管理数据和服务生命周期。<Cite id="vector-distance"/></p>
-      <p id="vector-filter" className="vp-citation-target">Qdrant 可以按 payload 或 ID 限定搜索与读取条件，用来表达库存、价格范围等不能仅靠向量表示的要求。<strong>距离近，不会自动满足业务条件。</strong>本例“公开”只是教学字段；真实访问权限还必须由可信服务端强制执行，不能依赖前端下拉框。<Cite id="vector-filter"/></p>
+      <p id="vector-distance" className="vp-citation-target">Faiss 的入门例子用 IndexFlatL2 对全部候选做精确 L2 检索，返回近邻 ID 及距离平方。本页为阅读方便展示欧氏距离本身；距离平方是距离的单调变换，所以排序相同，但数值口径不同。<strong>比较分数前，要知道距离定义、排序方向和实际返回值。</strong>Faiss 是相似性检索库，完整数据库还需管理数据和服务生命周期。<Cite id="vector-distance"/></p>
+      <p id="vector-filter" className="vp-citation-target">Qdrant 可以按 payload 或 ID 限定搜索与读取条件，用来表达库存、价格范围等不能仅靠向量表示的要求。<strong>距离近，不会自动满足业务条件</strong>，例如内容已过期也可能仍然相近。本例“公开”只是教学字段；真实访问权限还必须由可信服务端强制执行，不能依赖前端下拉框。<Cite id="vector-filter"/></p>
     </ArticleSection>
     <ArticleSection id="indexing" title="数据增长时的检索开销"><Legacy slug="vector-database" names={["quiz-heading"]}/>
       <p>六条记录可以逐条比较；百万条高维向量，每次都计算全部距离就有明显成本。检索索引会组织候选，尝试减少需要查看的对象。精确与近似方案有不同代价，不能把“使用索引”直接等同于一定返回全局最近邻。</p>
-      <p id="vector-index" className="vp-citation-target">Malkov 与 Yashunin 提出的 HNSW 建立多层邻近图，从上层逐步进入下层，再扩展候选。它是近似近邻方法；搜索参数 ef 控制候选探索，论文比较了召回率与时间等代价。<strong>更快的候选搜索，需要用真实样例检查漏掉了哪些近邻。</strong>本页没有实现 HNSW，二维全量计算只提供可核对的精确基线。<Cite id="vector-index"/></p>
+      <p id="vector-index" className="vp-citation-target">Malkov 与 Yashunin 提出的 HNSW 建立多层邻近图，从上层逐步进入下层，再扩展候选。它是近似近邻方法；搜索参数 ef 控制候选探索，论文比较了召回率与时间等代价。它更快，是因为不逐个检查所有向量，因此可能漏掉真正更近的对象。<strong>更快的候选搜索，需要用真实样例检查漏掉了哪些近邻。</strong>本页没有实现 HNSW，二维全量计算只提供可核对的精确基线。<Cite id="vector-index"/></p>
       <div className={s.columns}><div><h3>精确基线</h3><p>按同一距离定义、同一候选范围取最近 k 条，用来核对近似结果。</p></div><div><h3>近似检索</h3><p>用索引与搜索预算减少探索，衡量延迟、内存和召回，再选适合任务的配置。</p></div></div>
     </ArticleSection>
     <ArticleSection id="limits" title="相似结果仍要核对内容" className={base.offset}><Legacy slug="vector-database" names={["prompt-heading"]}/>
