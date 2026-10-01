@@ -1946,4 +1946,43 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI `requirement show VBP-030 --json` 在 20 秒内超时，未创建或虚构第 74 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 74 条本地正文提交 `52dbb10`。正文发布分支 `release/VBP-030-distributed-followup-20261001` 从第 73 条合并提交 `c9b727f0d8ef330a0e272616d9bfed182c65fc41` 新建，只复制正文文件，提交 `7b1d801` 经 [PR #254](https://github.com/Gyschuaner/VibePolaris/pull/254) 合入 `main`，当前合并提交 `24856039bf154232bd157c1cc4763f8e600c70f6`。PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。交互功能继续留在本地/dev。
 - 生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/distributed-system` 在 20 秒内 SSL 连接超时，DP CLI 在 20 秒内超时；因此不能声称生产上线，也没有把本地镜像当作远端部署。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
-- 本条完成后整体为 **74/105**，下一条是 `microservices`。
+- 本条完成后整体为 **74/105**，下一条是 `data-ingestion`。
+
+## 75 · 数据接入文字复审、检查点/重放演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“外部记录进入系统后，怎样知道它真的写进原始层；进程重启、写入失败或重复读取时，哪些位置可以安全前移？”读完应能区分原始层、确认位置、偏移量和游标，解释写入失败不能前移、重启后可以重读、稳定事件 ID 才能去重，以及 CDC 快照和后续日志的关系。
+- 实际路由 `/terms/data-ingestion` 使用 `components/terms/DataFlowConceptPages.tsx` 的 `IngestionTermPage`，本轮只更新该页面的说明文字：修正首屏静态“已完成”状态，改成接入等待/写入后确认；补充原始层与清洗、汇总、发布的边界；说明确认位置、连接器偏移量和 Airbyte 游标可能共享数字但含义不同；明确 `updated_at` 漏记会导致遗漏、位置推进必须遵循源系统契约；把重启后的再次读取路径写进演示说明；调整事务顺序和 CDC `initial` 快照表述，并补充 Airbyte 概念过渡。
+- `IngestionLesson` 的检查点、写入失败、重启重读、去重和引用回链功能继续留在本地/dev，没有随本轮文字发布。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [AWS · What is Data Ingestion?](https://aws.amazon.com/what-is/data-ingestion/) | `ingestion-entry` 与 `ingestion-modes`：数据接入是把来自多个来源的数据带入目标系统，并区分批量与流式接入。 |
+| [Debezium · PostgreSQL connector](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) | `ingestion-cdc`：PostgreSQL 连接器捕获行级变化；默认 `initial` 先做一致性快照，再从对应事务日志位置继续捕获已提交变化。 |
+| [Airbyte · Incremental Sync — Append + Deduped](https://docs.airbyte.com/platform/using-airbyte/core-concepts/sync-modes/incremental-append-deduped) | `ingestion-position` 与 `ingestion-duplicates`：增量读取依赖游标/状态，Append + Deduped 需要可识别的主键或唯一键。 |
+| [AWS DMS · Data validation](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html) | `ingestion-reconcile`：接入后需要比较源和目标数据并处理不一致，而不能只看传输动作是否返回成功。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读实际页面正文和浏览器中可见的失败、重启重读、写入确认、第三条记录和引用回链状态；正文材料 `/tmp/vbp075-data-ingestion-active-body.txt` 的 SHA-256 为 `dcfbc357a18796ac380fd80856b4f10e7be0a80952a01e6b16632128b11aef1f`，提示词 `/tmp/vbp075-data-ingestion-active-reader-prompt.txt` 的 SHA-256 为 `e3a64ec02ddb8a7cceda67ed003105f6bbe47ed25af81070eebbb7626e6ea471`。会话 `sess_d2c53275-d0ca-4518-a968-5458a4e0c110` 正常完成；反馈要求首屏不要预设完成、明确重启后的再次读取，并追问稳定事件 ID 与事务语义，本轮已吸收。
+- 独立 `language` 只读当前页面正文、`vibepolaris-zcode-partner` 和 `humanizer-zh` 规则；正文材料 `/tmp/vbp075-data-ingestion-active-language-body.txt` 的 SHA-256 为 `50875f85ded9977ea83ec0fde9c9fe31f4c0f9517d9f53ccd19e174169e9feda`，提示词 `/tmp/vbp075-data-ingestion-active-language-prompt.txt` 的 SHA-256 为 `baf50efee8e2d94153faf58025086f8e756608d3ad80f8d8b9aebb8e935acf6c`。会话 `sess_15cded0d-3af5-4734-b479-95a9c3bf10b3` 正常完成；采纳了“第一落点”、`updated_at` 边界、原始层与确认位置的关系、事务顺序、Airbyte 过渡和 CDC 快照表述的语言修改。没有真人零基础读者参与，ZCode 的角色仅作为模拟读者和语言审读。
+- 资料核对后保留 CDC 的事实限定：Debezium PostgreSQL 连接器默认 `initial` 模式先做一致性快照，再从记录的事务日志位置继续捕获已提交行级变化；没有把浏览器演示描述成真实 Debezium、Airbyte 或 AWS 运行。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。正文提交为 `e2a0f66`。
+- CUA 在 `http://127.0.0.1:3219/terms/data-ingestion?qa=075baseline` 真实操作并观察：读取后让本次写入失败显示“本次写入失败，确认位置未前移”；重置、写入两条并重启后，原始层保留 `loan-1`、`loan-2`，再次“读取下一批”会重读这两条；保存位置后读取并写入第三条，确认位置为 3、原始层显示 3 个不同事件；展开 Debezium 引用并点击回链，页面定位到 `#ingestion-cdc`；浏览器 `error/warn` 日志为空，截图已实际观察。
+- 演示只使用浏览器内存里的固定教学数据，不执行真实数据源、连接器、CDC 日志、原始数据库、去重存储或 AWS/Airbyte/Debezium 服务；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前仍为 `ready_for_release`。本轮创建研发任务 `9d7e1e3b-836e-4282-9a19-dfbb3c5e8b64`（数据接入词条第 75 轮文字复审与发布），已进入 `in_progress`；创建测试用例 `eb789def-4c01-482a-b172-2efecd00b00e` 与测试计划 `48c0672a-4231-4d83-beed-6ba94d58f56c`。
+- DP `testplan show` 能看到该用例，但 `testplan execute` 在补写用例集合后仍返回参数校验错误（此前按 ID 和标题执行也分别返回 `TEST_CASE_NOT_IN_PLAN`）；因此没有把 DP 执行记成通过。上面的浏览器证据是本地实测结果，和 DP 计划执行状态分开记录。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；本地正文提交为 `e2a0f66`。发布分支将从最新 `origin/main` 新建，只复制本次实际页面文字文件；`IngestionLesson` 交互继续留在本地/dev。
+- 生产 SSH、公网 HTTPS 与之前的远端发布链路仍需在发布分支完成后重新检查；在 SSH/HTTPS 健康检查通过前不能声称生产上线。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **75/105**，下一条是 `data-transformation`。
