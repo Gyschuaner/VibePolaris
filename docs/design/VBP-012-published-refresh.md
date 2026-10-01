@@ -2212,3 +2212,40 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 81 条正文与本地记录将在本批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`WebhookLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 当前批次进度为 **3/10（第 79—81 条）**，下一条按现有顺序是 `distributed-system`；前序已发布总计 **78/105**。
+
+## 82 · 分布式系统文字复审、两端故障演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“借阅服务 A 把 `reserve-42` 发给库存服务 B 后，为什么 A 超时仍不知道 B 是否扣了库存？”读完应能解释节点、服务、进程、消息延迟、部分失败、超时未知、幂等核对、因果顺序与逻辑时钟，并能区分请求丢失和响应丢失。
+- 更新 `CoordinationTermPage` 的正文文字：明确 A 是借阅服务、B 是库存服务；把程序/进程/服务/节点和消息延迟放在定义段；将一次请求拆成明确编号的八步；分别解释请求途中丢失与响应途中丢失时 A、B 的可见状态；说明演示的恢复网络与 B 手动执行按钮只是教学分步，不是真实网络或后台暂停；补充超时不撤销远端副作用、库存记录与操作 ID 需要可靠一起提交、同一 ID 不得换参数；补充查询/重试、Lamport 因果顺序、并发、墙上时钟偏差、逻辑时钟、退避与重试规模的零基础解释。`DistributedLesson` 的交互逻辑保持本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Leslie Lamport · Time, Clocks, and the Ordering of Events in a Distributed System](https://lamport.azurewebsites.net/pubs/time-clocks.pdf) | `distributed-definition` 与 `distributed-order`：独立进程通过消息协作；事件顺序由进程内顺序、发送/接收关系及其传递关系构成；逻辑时钟表达因果顺序。 |
+| [AWS Builders’ Library · Challenges with distributed systems](https://d1.awsstatic.com/builderslibrary/pdfs/challenges-with-distributed-systems.pdf) | `distributed-failure`：请求/响应跨越客户端、服务器和网络的八个阶段；请求没到与响应丢失都可能表现为调用方超时，结果仍可能未知。 |
+| [AWS Builders’ Library · Timeouts, retries, and backoff with jitter](https://d1.awsstatic.com/builderslibrary/pdfs/timeouts-retries-and-backoff-with-jitter.pdf) | `distributed-timeout` 与重试预算折叠段：超时限制等待和资源占用，失败不代表副作用没有发生；退避、抖动与次数上限控制重试压力。 |
+| [AWS Builders’ Library · Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) | `distributed-reconcile`：请求标识支持重复请求去重并返回已有结果；同一标识配不同参数需要拒绝或明确处理。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文和按操作顺序整理的页面材料，未附作者意图、官方资料、源码或旧反馈；干净材料 `/tmp/vbp082-reader-material.txt` SHA-256 为 `dcde6c8c9636bc61bb3d9dfe6b5b8b578683a150268364ce6ad951b58f071e3f`，最终提示词 `/tmp/vbp082-reader-prompt-clean.txt` SHA-256 为 `9a8d783251b534889dfb675d7c2c46d2860d788ee982ab3f836fe98c0b25c823`，结果 `/tmp/vbp082-reader-clean-result.json` SHA-256 为 `8184865d677e1074afc3ac9fdf60ce0667322bc147e69168f74662398dfe705e`；会话 `sess_2176ef71-56f3-4be3-a6b5-a5caedd2c2e1` 正常完成。reader 指出了 A/B 角色、八步编号、手动推进与真实服务差异、超时副作用、同机多进程、查询/重试后的状态、抖动和局部故障等断点，主助手逐项核对后补入；此前一份带作者预期结论的提示词结果未作为最终读者证据。
+- 独立 `language` 读取 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/vibepolaris-zcode-partner/SKILL.md`、`/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`，并审读当前 `CoordinationConceptPages.tsx` 的正文；提示词 `/tmp/vbp082-language-prompt.txt` SHA-256 为 `b5daf456f43c20c96d140dd34ff88c856fcdf4b80eaac4eff46178dd77e477b6`，结果 `/tmp/vbp082-language-result.json` SHA-256 为 `ed7adf55fb350b29ee779a71804a19f80cbb1728beec4f2b99501bafe642cc6f`；会话 `sess_20bfa5af-0047-43fd-a753-ce267018b147` 正常完成。采纳了角色映射、八步编号、请求/响应失败对比、超时/副作用、操作 ID、因果顺序、逻辑时钟、退避和结尾决策句的表达建议；保留了教学演示与真实分布式系统之间的边界。language 会话未读取 `DistributedLesson` 实现或资料源表，因此没有把它写成完整交互审查。
+- ZCode 实际读取项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`；用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内可读规则审读，没有把缺失路径冒充为已读取。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；本地构建 `BUILD_ID giqq5b6CG3bCEsIt9pfNy`；`git diff --check` 通过。当前正文变更只在 `components/terms/CoordinationConceptPages.tsx`，未修改 `DistributedLesson`、分布式演示状态机或通用词条注册。
+- CUA 先在 `http://127.0.0.1:3219/terms/distributed-system?qa=082baseline` 真实操作并观察基线，再在 `http://127.0.0.1:3219/terms/distributed-system?qa=082final` 复核最终正文：选择“处理后的响应丢失”时，点击 A 发出、B 执行、A 超时后，B 库存从 5 变为 4、记录 `reserve-42`，A 显示执行结果未知；重置后选择“请求在途中丢失”，A 超时而 B 保持库存 5 且没有执行记录。最终页面展开 AWS `Challenges with distributed systems` 引用并点击“同一次请求，两端所见不同”回链，URL 定位 `#distributed-failure`；截图实际观察了引用区。当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也没有把不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存中的固定借阅与库存状态，不执行真实网络、事务、共识协议、Lamport 时钟或后台重试；交互继续留在本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `4a3ed7a5-1d07-4cae-b81f-b6ffffc5f415` 已创建并处于 `in_progress`；测试用例 `5b03ddb9-5656-4e72-9ea6-29a8602d86c3` 与测试计划 `927ea0b3-2dd2-429c-85f1-da46b70f922c` 已创建，待第 79—88 条本地验收完成后统一记录执行结果。按用户要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 82 条正文提交 `435cc3c`，本轮文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理。`DistributedLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前批次进度为 **4/10（第 79—82 条）**，下一条按现有顺序是 `data-ingestion`；前序已发布总计 **78/105**。
