@@ -1869,3 +1869,42 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 72 条本地正文提交 `4745004`，记录提交 `6a8f049`。此前已有旧版数据管道正文发布分支 `release/VBP-030-pipeline-content-20261001`（PR #243）；本轮更新从第 71 条合并提交 `e6e0defa4d2e4c632647c0b85aa2ab7f4cdc76c9` 新建跟进分支 `release/VBP-030-pipeline-followup-20261001`，只复制正文文件，提交 `7d54f10` 经 [PR #252](https://github.com/Gyschuaner/VibePolaris/pull/252) 合入 `main`，当前合并提交 `df8d7d9fd406700774560a9e0e88a6581d90942c`；PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。生产检查仍失败：SSH 在 banner exchange 阶段超时并显示连接超时，公网 `https://vibe.chuansgu.top/terms/data-pipeline` 在 20 秒内 SSL 连接超时，DP CLI `requirement show VBP-030 --json` 在 20 秒内超时；因此不能声称生产上线。交互功能继续留在本地/dev。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 正文合入 `main` 后，用第 71 条镜像作为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:df8d7d9fd406700774560a9e0e88a6581d90942c`（`linux/amd64`，约 1.55 GB）；本地容器 3225 端口返回 200，并精确包含“一个 workflow 可以组合 jobs、crawlers 和 triggers”“默认的 `all_success` 启动规则”和“固定分区”。
 - 本条完成后整体为 **72/105**，下一条是 `webhook`。
+
+## 73 · Webhook 文字复审、通知受理演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“平台把支付结果通知给服务后，为什么还要验签、先确认受理；看到 2xx 是否就能断定订单已经更新？”读完应能解释事件、投递、事件 ID 和业务对象 ID 的区别，判断原始请求体验签、2xx 确认、后台处理、重复投递和乱序各自解决什么问题，并知道不同平台的重试与重新交付规则不能混用。
+- 更新 `WebhookTermPage`：补充 Stripe 端点可以只订阅需要的事件类型；说明 Stripe CLI 转发本地事件时的 `whsec_` 密钥与后台端点密钥不是同一把；把 GitHub 的 10 秒 2xx 时限写成 GitHub 自己的规则，并保留 Stripe 在复杂逻辑可能超时前先返回成功状态的边界。其余正文和 `WebhookLesson` 交互保持不变，互动功能继续留在本地/dev。
+- 保留验签使用原始请求体、签名头、端点密钥和时间戳有效期；保留先写受理记录再返回 2xx、确认丢失、同一事件去重、不同事件对象核对业务对象、乱序和后台失败的区分。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [Stripe · Receive Stripe events in your webhook endpoint](https://docs.stripe.com/webhooks) | `webhook-notify` 与 `webhook-accept`：端点可按事件订阅，接收端应先快速返回成功状态，再处理复杂业务。 |
+| [Stripe · Resolve webhook signature verification errors](https://docs.stripe.com/webhooks/signature) | `webhook-signature`：验签要使用未改写的原始请求体、签名头和对应端点密钥；Stripe CLI 的 `whsec_` 与后台端点密钥不能混用。 |
+| [GitHub · Best practices for using webhooks](https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks) | `webhook-notify` 与 `webhook-accept`：只订阅需要的事件，使用 HTTPS 和 secret，并在 10 秒内返回 2xx。 |
+| [GitHub · Handling failed webhook deliveries](https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries) | `webhook-redelivery`：GitHub 不会自动重新交付已失败投递，需从投递记录手动或脚本触发重新交付。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读正文和三组实际可见状态材料 `/tmp/vbp073-webhook-reader-prompt.txt`（SHA-256 `6f65a1ab045b0f3c58cf51e7923290a8dab914fd2319fd9a1c8efa974001bc1`），未附作者意图、官方资料、源码或旧反馈；输入包括改写通知被 400 拒绝、有效通知完成处理和确认丢失。
+- 独立 `language` 只读当前 `WebhookTermPage` 正文、`vibepolaris-zcode-partner` 与 `humanizer-zh` 规则，提示词材料为 `/tmp/vbp073-webhook-language-prompt.txt`（SHA-256 `da79ee1b0c4328dbf5bc50cbc67e3363ac766d10a6e70633be8f924c9b760d79`）。
+- reader 与 language 两个真实 CLI 会话均在 180 秒内因上游 `AI_APICallError` 超时，未生成结果文件或稳定 session ID；单独复跑仍得到相同错误尾部，不能把它们记成通过。主助手依据四份已核实资料和 `humanizer-zh` 规则完成局部文字调整，保留技术限定、演示边界和引用映射。
+
+### 构建与真实浏览器验收
+
+- 最终 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。正文提交为 `8e021bb`。
+- CUA 在 `http://127.0.0.1:3219/terms/webhook?qa=073baseline` 的重启后服务上真实操作并观察：投递被改写的通知后验签显示“验证失败 · 返回 400，拒绝受理”，发送方显示“400 · 通知未受理”；有效通知依次投递、验签、受理、后台处理，显示“2xx · 接收方已确认，不代表业务已完成”和“付款状态已更新一次”；勾选“让本次响应丢失”后显示“确认未收到 · 本次结果未知”；受理记录已存在时再次投递、验签并受理，显示“同一事件已有记录 · 不重复创建工作”。展开 Stripe 验签引用并点击回链，页面回到 `#webhook-signature`；浏览器 `error/warn` 为空，截图已实际观察。
+- 演示只使用浏览器内存里的固定教学事件，不执行真实 Stripe/GitHub 投递、密码学验签、队列、订单更新或重新交付；没有真人零基础读者或生产功能验证。当前 CUA surface 没有可控的 390px 视口接口，因此没有把窄屏尺寸写成实测通过。
+- 正文合入 `main` 后，以第 72 条镜像为基础替换发布 worktree 的 `.next` 产物，生成本地 `vibepolaris:c9b727f0d8ef330a0e272616d9bfed182c65fc41`（`linux/amd64`，约 1.64 GB）；本地容器 3226 端口返回 200，并精确包含“也允许端点只订阅需要的事件类型”“CLI 输出的 `whsec_` 密钥与后台端点的密钥不是同一把，不能混用”“GitHub 建议接收端在 10 秒内返回 2xx”和“再快速返回 2xx”。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 保持 `ready_for_release`。本轮 DP CLI `requirement show VBP-030 --json` 在 20 秒内超时，未创建或虚构第 73 条研发任务、测试执行或 done 状态；网络恢复后需补建任务并回查真实状态。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 73 条本地正文提交 `8e021bb`。正文发布分支 `release/VBP-030-webhook-followup2-20261001` 从第 72 条合并提交 `df8d7d9fd406700774560a9e0e88a6581d90942c` 新建，只复制正文文件，提交 `3f58cf9` 经 [PR #253](https://github.com/Gyschuaner/VibePolaris/pull/253) 合入 `main`，当前合并提交 `c9b727f0d8ef330a0e272616d9bfed182c65fc41`。PR artifact 关联工具返回 `thread attachment identity count exceeds 100`，未能附加到当前任务。交互功能继续留在本地/dev。
+- 生产检查仍失败：SSH 返回 `Connection closed by 124.156.103.213 port 22`，公网 `https://vibe.chuansgu.top/terms/webhook` 在 20 秒内 SSL 连接超时，DP CLI 在 20 秒内超时；因此不能声称生产上线，也没有把本地镜像当作远端部署。指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 本条完成后整体为 **73/105**，下一条是 `distributed-system`。
