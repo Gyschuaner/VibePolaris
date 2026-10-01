@@ -37,6 +37,8 @@ News 页面初始不选中文章，不绘制关系线。点击新闻星点或时
 
 本批次已完成 `news:validate`、`news:publish` dry-run 和 `news:auto-publish` dry-run；自动提升结果为空，因草稿仍有编辑复核原因。它们尚未进入 `news.json`、sitemap 或 Xiaobei 检索。
 
+发布路径也在临时 Git feature 分支中完成了一次隔离演练：复制 3 篇草稿后执行 `news:publish --approve`，临时仓库得到 `published=5,drafts=3,pending=0`。当前分支没有写入 `news.json`，这次演练没有改变本地预览或生产环境。
+
 ## Draft PR 材料
 
 建议标题：

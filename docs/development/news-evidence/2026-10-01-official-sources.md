@@ -44,3 +44,5 @@ npm run news:auto-publish                     dry-run passed (slugs=[])
 ```
 
 三篇草稿都保留 `evidence`、`verification.status=verified`、`riskLevel=routine` 和 `publishDecision=review`。`news:auto-publish` 没有提升它们，因为编辑审查原因仍存在；这批内容不会进入公开页面或 Xiaobei 检索，直到人工确认后执行 feature 分支上的 `news:publish --approve`，再通过受保护的 `dev` PR。
+
+为了验证发布路径而不改变当前仓库，我在临时 Git feature 分支上复制了这批草稿并运行 `news:publish --approve`：结果为 `publishedCount=5`，随后临时仓库 `news:validate` 为 `published=5,drafts=3,pending=0`。当前工作分支的 `content/zh/news.json` 没有被写入，生产环境也没有发布。
