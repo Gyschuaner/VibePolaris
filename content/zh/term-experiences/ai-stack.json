@@ -11003,45 +11003,45 @@
   },
   {
     "slug": "environment-variable",
-    "lead": "把APP_MODE从dev改成prod后，为何旧进程仍显示dev？",
-    "definition": "环境变量是由进程环境提供的键值对，程序在启动或运行时读取它们来取得配置。",
-    "boundary": "它不是天然安全的密钥库；值可能被子进程、日志、调试器或错误页面泄露。",
+    "lead": "把 APP_MODE 从 dev 改成 prod 后，为什么旧进程仍显示 dev？",
+    "definition": "环境变量是进程可以按名称读取的键值对。父环境在启动新进程时会复制一份给它，应用再读取这份配置；父环境后来改变，也不会自动传进已经在运行的进程。",
+    "boundary": "服务端可以让秘密管理系统把凭据注入进程，但环境变量本身不是密钥库。前端构建时的变量可能被写进浏览器资源，敏感值还要控制谁能读到它：日志和构建产物都可能把它带出去。",
     "sceneKind": "layers",
-    "sceneTitle": "环境值在进程创建时形成快照",
+    "sceneTitle": "父环境变化与进程配置快照",
     "actionLabel": "修改变量并重启",
     "actors": [
       {
         "id": "shell",
         "label": "父环境",
-        "detail": "APP_MODE=dev",
+        "detail": "启动器/容器：APP_MODE=dev",
         "icon": "code",
         "group": "来源"
       },
       {
         "id": "old",
         "label": "旧进程",
-        "detail": "读取dev",
+        "detail": "保存 dev 副本",
         "icon": "gear",
         "group": "进程"
       },
       {
         "id": "change",
         "label": "变量修改",
-        "detail": "dev→prod",
+        "detail": "父环境 dev → prod",
         "icon": "key",
         "group": "变化"
       },
       {
         "id": "new",
         "label": "新进程",
-        "detail": "读取prod",
+        "detail": "读取 prod 副本",
         "icon": "gear",
         "group": "进程"
       },
       {
         "id": "ui",
         "label": "运行结果",
-        "detail": "旧dev / 新prod",
+        "detail": "旧 dev / 新 prod",
         "icon": "browser",
         "group": "观察"
       }
@@ -11081,7 +11081,7 @@
     "frames": [
       {
         "label": "启动旧进程",
-        "note": "进程从父环境读取dev并保存当前值。",
+        "note": "shell 或容器把 APP_MODE=dev 传给新进程；这个进程读到的是 dev。",
         "activeIds": [
           "shell",
           "old"
@@ -11099,7 +11099,7 @@
       },
       {
         "label": "父环境修改",
-        "note": "变量在父环境改为prod，旧进程不自动同步。",
+        "note": "父环境改为 prod，旧进程不会自动同步，仍然读取 dev。",
         "activeIds": [
           "shell",
           "change"
@@ -11112,7 +11112,7 @@
         ],
         "values": {
           "change": "dev → prod",
-          "old": "仍为dev"
+          "old": "仍为 dev"
         },
         "activeEdgeIds": [
           "s-c"
@@ -11120,7 +11120,7 @@
       },
       {
         "label": "启动新进程",
-        "note": "新进程读取修改后的prod。",
+        "note": "重新启动或创建新进程后，它从父环境读取修改后的 prod。",
         "activeIds": [
           "change",
           "new"
@@ -11139,7 +11139,7 @@
       },
       {
         "label": "结果并存",
-        "note": "页面同时看到旧进程dev与新进程prod。",
+        "note": "新进程读到 prod，先启动的那个仍是 dev；两个进程同时存在，各读各的值。",
         "activeIds": [
           "old",
           "new",
@@ -11159,12 +11159,12 @@
         ]
       }
     ],
-    "insight": "环境变量属于进程环境配置，不是天然安全的密钥库，也不会自动刷新既有进程。",
+    "insight": "环境变量是进程配置的入口，不是天然安全的密钥库；父环境改动也不会自动刷新既有进程。",
     "quiz": {
-      "question": "把密钥放入前端构建时环境变量就安全吗？",
+      "question": "把密钥放进前端构建时的环境变量就安全吗？",
       "options": [
         {
-          "label": "不一定，构建后可能进入浏览器资源",
+          "label": "不一定，构建后这些值可能已经进入浏览器资源",
           "correct": true
         },
         {
@@ -11176,23 +11176,33 @@
           "correct": false
         }
       ],
-      "success": "变量暴露面取决于读取它的进程和产物。",
-      "retry": "前端可见代码不能保存秘密。"
+      "success": "是否暴露取决于读取它的进程和生成的产物。",
+      "retry": "前端可见代码不能保存服务器秘密。"
     },
     "prompt": {
-      "title": "盘点环境变量",
-      "text": "列出变量由谁注入、哪个进程读取、何时生效、是否进入前端产物和如何轮换，敏感值另用密钥管理。"
+      "title": "检查环境变量的生效范围",
+      "text": "列出变量由谁注入、哪个进程读取、在启动还是运行中生效、是否会进入前端产物，以及缺失和轮换时的行为。"
     },
     "sources": [
       {
-        "url": "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html",
-        "label": "POSIX 规范 · V1 chap08",
-        "note": "原始规范与实现说明"
+        "url": "https://nodejs.org/api/process.html#processenv",
+        "label": "Node.js Docs · process.env",
+        "note": "说明 Node 进程如何读取环境对象，以及子进程获得的环境。"
       },
       {
-        "url": "https://nodejs.org/api/process.html#processenv",
-        "label": "Node.js 官方文档 · process",
-        "note": "Node.js 运行时行为"
+        "url": "https://vite.dev/guide/env-and-mode",
+        "label": "Vite Docs · env variables and modes",
+        "note": "说明前端构建变量的读取方式和公开前缀，提醒不要把秘密暴露到客户端。"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/guides/environment-variables",
+        "label": "Next.js Docs · environment variables",
+        "note": "区分服务器运行时变量与 NEXT_PUBLIC_ 构建时公开变量。"
+      },
+      {
+        "url": "https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/",
+        "label": "Docker Docs · set environment variables",
+        "note": "说明 Compose 如何从 shell、env 文件和配置向容器注入变量。"
       }
     ]
   },

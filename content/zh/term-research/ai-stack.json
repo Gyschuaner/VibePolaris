@@ -891,14 +891,16 @@
   },
   {
     "slug": "environment-variable",
-    "mechanism": "环境变量是由进程环境提供的键值对，程序在启动或运行时读取它们来取得配置。",
-    "misconception": "它不是天然安全的密钥库；值可能被子进程、日志、调试器或错误页面泄露。",
-    "demoSignature": "输入：APP_MODE=dev启动进程；中间：进程读取值dev，切到prod后新进程读到prod而旧进程仍为dev；输出：两进程配置不同。可视化：建议4帧的父环境向进程快照复制；交互：修改变量并重启/不重启对比。",
+    "mechanism": "环境变量是进程可以按名称读取的键值对；父环境在启动新进程时复制一份配置，应用从自己的环境副本读取，父环境后续改变不会自动刷新既有进程。",
+    "misconception": "环境变量不是天然安全的密钥库：服务端可由秘密管理系统注入凭据，但前端构建变量可能进入浏览器资源，暴露面取决于读取进程和产物。",
+    "demoSignature": "输入：shell 或容器以 APP_MODE=dev 创建进程；中间：进程读取并保留 dev，父环境改为 prod，旧进程仍为 dev；输出：重新启动的新进程读取 prod，旧/新结果并存。可视化：四帧展示父环境到进程的配置快照；交互：修改变量并比较重启与不重启。",
     "sourceUrls": [
-      "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html",
-      "https://nodejs.org/api/process.html#processenv"
+      "https://nodejs.org/api/process.html#processenv",
+      "https://vite.dev/guide/env-and-mode",
+      "https://nextjs.org/docs/app/guides/environment-variables",
+      "https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/"
     ],
-    "rewriteRisk": "不要建议把敏感值直接写进前端环境变量；要强调暴露面与进程快照。",
+    "rewriteRisk": "先解释父环境、进程副本和重启时机，再讨论秘密注入与前端暴露；不要把“放在环境变量里”写成安全保证。",
     "nearDuplicates": []
   },
   {
