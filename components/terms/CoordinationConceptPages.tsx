@@ -10,25 +10,25 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function PipelineTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={pipelineSources}/>;
   return <ConceptArticle slug="data-pipeline" title="数据管道" sources={pipelineSources} sections={[["work", "把数据处理组织起来"], ["depends", "前置成功，后续才能开始"], ["replay", "重跑同一份输入"], ["trace", "留下结果的来路"]]}
-    intro={<>图书馆每天收到一批借阅记录，先把这批输入固定成快照 s1，后面重跑时仍读取这份快照；读入后分成校验和原始归档两路，再汇总借阅次数，最后更新报表。按计划触发的一整轮处理称作一次运行；调度时间、数据范围和实际开始时间可以不同。数据管道把这些步骤连接起来，让每一步拿到约定的输入，也让结果能够追溯到这次运行。</>}
+    intro={<>图书馆每天收到一批借阅记录，先把这批输入固定成快照 s1，后面重跑时仍读取这份快照；读入后分成校验和原始归档两路，再汇总借阅次数，最后更新报表。按计划触发的一整轮处理称作一次运行；计划何时触发是调度时间，要处理哪一天是数据范围；实际开始执行的时刻，则可能和调度时间对不上。数据管道把这些步骤连接起来，让每一步拿到约定的输入，也让结果能够追溯到这次运行。</>}
     hero={<ConceptHero slug="data-pipeline" label="输入分成校验与原始归档两路，两项前置成功后发布报表"><div className={s.pipeHero}><div className={s.pipeInput}><FileText size={25}/><span>借阅快照 s1</span></div><div className={s.pipeBranch}><div><ShieldCheck size={29}/><span>校验 → 汇总</span></div><div><Archive size={29}/><span>原始归档</span></div></div><div className={s.pipeOutput}>两路完成 → 发布报表</div></div></ConceptHero>}>
     <ArticleSection id="work" title="把数据处理组织起来"><Legacy slug="data-pipeline" names={["question", "definition"]}/>
-      <p id="pipeline-workflow" className="vp-citation-target"><strong>数据管道把读取、处理与输出连接成一套可运行的数据流程。</strong>它既要描述各步怎样交接，也要记录这一轮真正执行到了哪里。实际系统会用编排工具把这些约定变成可运行的任务，例如 AWS Glue 或 Airflow；数据管道不依赖某一个产品。以 AWS Glue 为例，一个 workflow 可以组合 jobs、crawlers 和 triggers，触发方式可以是计划、手动或事件；静态视图表示设计，动态视图表示某次运行的状态与错误。设计好的流程是计划，已经成功的一次运行是实际结果，两者需要分开看。<Cite id="pipeline-workflow"/></p>
+      <p id="pipeline-workflow" className="vp-citation-target"><strong>数据管道把读取、处理与输出连接成一套可运行的数据流程。</strong>它既要描述各步怎样交接，也要记录这一轮真正执行到了哪里。实际系统会用编排工具把这些约定变成可运行的任务，例如 AWS Glue 或 Airflow；数据管道不依赖某一个产品。以 AWS Glue 为例，一个 workflow 可以把多个任务和触发条件组合起来，触发方式可以是计划、手动或事件；在 Glue 里，静态视图展示流程设计好的样子，动态视图展示某次运行实际进行到哪里、有没有出错，其他工具可能使用不同的名称。设计好的流程是计划，某次运行的状态与结果是实际发生的，两者需要分开看。<Cite id="pipeline-workflow"/></p>
       <p>管道可以处理固定范围的一批数据，也可以持续接收记录；本页只用固定批次的每日借阅报表解释依赖。读取与业务校验是不同职责，归档原始输入只保证原始材料还在，不能说明统计已经正确。<strong>先约定每一步的输入、输出和成功条件，再连接任务。</strong></p>
     </ArticleSection>
     <ArticleSection id="depends" title="前置成功，后续才能开始"><Legacy slug="data-pipeline" names={["scene-heading"]}/>
-      <p id="pipeline-dependencies" className="vp-citation-target">Airflow 的 Dag 可以理解为一份工作流计划：它声明任务、调度、依赖和重试等运行信息，任务内部做什么仍由各自代码负责。默认的 `all_success` 启动规则要求后续任务的所有直接前置任务都成功；Airflow 也支持其他 trigger rule，本例不采用这些例外。<strong>依赖不是一条装饰性的箭头，它决定什么时候允许启动后续工作。</strong><Cite id="pipeline-dependencies"/></p>
+      <p id="pipeline-dependencies" className="vp-citation-target">Airflow 的 Dag 可以理解为一份工作流计划：它声明任务、调度、依赖和重试等运行信息，任务内部做什么仍由各自代码负责。默认的 `all_success` 启动规则要求后续任务的所有直接前置任务都成功；本例里校验是汇总的直接前置，汇总又是发布的直接前置，所以校验失败会沿这条链阻止汇总和发布，归档这条独立分支仍可继续。Airflow 也支持其他启动规则，本例不采用。<strong>依赖不是一条装饰性的箭头，它决定什么时候允许启动后续工作。</strong><Cite id="pipeline-dependencies"/></p>
       <p>本例的校验和归档都只需要读取数据，互不依赖，因此校验失败不妨碍归档；归档能推进来自独立的依赖关系，不是因为放宽了启动规则。汇总必须等校验通过，否则不完整记录被算进统计，出来的数字就说不清代表了什么。发布必须等汇总和归档都完成：汇总说明数字算完了，归档保证本次使用的原始材料还在，结果可以追溯。快照 s1 有四条记录，其中 r2 缺少书目编号。本例先用严格的校验规则 q1：一条不合格就让整批校验失败；再切换到 q2，把问题记录标记为隔离，重新校验通过后再进入汇总。q1 和 q2 是本例的两套规则标识。隔离区不是另一份数据，只是给原始记录打上“暂不参与统计”的标记；归档仍保留 s1 的四条原始记录。本实验只把归档分支标记为完成，不实际写入磁盘；真实系统的归档才会把原始材料保存到持久存储。</p>
       <PipelineLesson/>
-      <p>隔离改变的是本次处理规则，从严格的 q1 改为允许隔离的 q2，<strong>没有编造缺失的编号</strong>。这次运行的结果要说明有三条参与汇总、一条被隔离；报表更新前，报表使用者看到的仍是上一版 v0。这里的 v0 是页面预置的上一版基线，只用于对照发布前后，不代表本页定义了历史累计的统计口径。</p>
+      <p>隔离改变的是本次处理规则，从严格的 q1 改为允许隔离的 q2，<strong>没有编造缺失的编号</strong>。这次运行的结果要说明有三条参与汇总、一条被隔离；报表更新前，报表使用者看到的仍是上一版 v0。这里的 v0 是页面预先放好的上一版报表，只用来对照；本次发布的结果只统计 s1 中三条有效记录，不在 v0 上累加。</p>
       <pre className={base.code}>{'# 假定下面五个 Airflow 任务已定义\nread >> [validate, archive]\nvalidate >> aggregate\n[aggregate, archive] >> publish'}</pre>
       <p>这段代码只是用符号声明任务的先后顺序：<code>read &gt;&gt; [validate, archive]</code> 表示读取完成后，校验和归档可以分别开始；<code>[aggregate, archive] &gt;&gt; publish</code> 表示发布要等汇总和归档都完成。<code>read</code>、<code>validate</code>、<code>archive</code>、<code>aggregate</code>、<code>publish</code> 分别对应读取、校验、归档、汇总和发布。它不是本页要运行的程序；校验失败怎样处理、隔离数据怎样复核、输出何时可用，都要由任务自己的代码和运行规则来决定。</p>
       <p>这个实验把报表当作本次运行的产物：发布后用新结果替换页面预置的 v0，方便看出本次汇总发生了什么；真实系统要不要把新结果累加到历史报表，取决于产品如何定义统计范围，不能从这个演示的固定做法直接推出。发布结果中的 <code>run-42 · s1 / q2</code> 把本次运行、输入快照和校验规则放在一起，后面的来源关系会继续解释它们。</p>
       <p>实验里的“隔离缺失编号并重验”只展示在当前页面把 q1 切换到 q2；因为 q1 还没有发布结果，这仍是同一次未发布运行内的重验。“重置本次运行”只清除浏览器里的演示状态。真实系统如果旧规则已经产出并发布过结果，再按 q2 全量重算，就要保留原始快照、重新执行受影响的步骤，并把这次重算记为一次新的运行。</p>
     </ArticleSection>
     <ArticleSection id="replay" title="重跑同一份输入"><Legacy slug="data-pipeline" names={["quiz-heading"]}/>
-      <p id="pipeline-interval" className="vp-citation-target">Airflow 里每次运行（DagRun）都有自己的数据区间。数据区间就是这次要处理的范围，例如某一天的借阅记录；逻辑日期通常标记这个区间的起点，和作业实际开始的时刻不是一回事。即使任务晚些启动，按固定分区读取的仍是同一个数据区间，不会因为启动晚就改读最新的一天。<strong>“今天重跑”必须说清是在补哪一天的数据，而不能默认读取此刻最新的数据。</strong><Cite id="pipeline-interval"/></p>
-      <p id="pipeline-replay" className="vp-citation-target">Airflow 官方文档把任务当作数据库事务来提醒：任务结束时不要留下不完整输出，重试后应得到相同结果。读取与写入都绑定固定分区（例如某一天的数据块），不要在任务里每次读取“最新可用”数据；写入端还要考虑重复执行，文档以 UPSERT 代替 INSERT 说明怎样避免重试追加重复行。本例用记录编号作为稳定键来表达同一条借阅记录，现实系统还要由存储层定义更新语义。<strong>框架替你重新启动任务，不会自动替业务消除重复数据。</strong><Cite id="pipeline-replay"/></p>
+      <p id="pipeline-interval" className="vp-citation-target">Airflow 里每次运行（DagRun）都有自己的数据区间。数据区间就是这次要处理的范围，例如某一天的借阅记录；逻辑日期通常标记这个区间的起点，和作业实际开始的时刻不是一回事。即使任务晚些启动，按固定分区（例如某一天的数据块）读取的仍是同一个数据区间，不会因为启动晚就改读最新的一天。<strong>“今天重跑”必须说清是在补哪一天的数据，而不能默认读取此刻最新的数据。</strong><Cite id="pipeline-interval"/></p>
+      <p id="pipeline-replay" className="vp-citation-target">Airflow 官方文档建议把任务当作数据库事务来做：任务结束时不要留下不完整输出，重试后应得到相同结果。读取与写入都绑定固定分区，不要在任务里每次读取“最新可用”数据；写入端还要考虑重复执行：<code>INSERT</code> 每次都新增一行，重试可能留下重复记录；<code>UPSERT</code> 会先按一个稳定不变的标识（稳定键）查找，已有记录就更新，没有才新增，文档用它说明怎样避免重试追加重复行。本例用记录编号作为稳定键来表达同一条借阅记录，现实系统还要由存储层定义更新语义。<strong>框架替你重新启动任务，不会自动替业务消除重复数据。</strong><Cite id="pipeline-replay"/></p>
       <ArticleAside title="失败以后，不必每一步都从头来"><p>原始快照 s1 没变，已完成的归档可以保留。校验规则改为 q2 后，应重新校验；汇总依赖校验结果，所以也要跟着重算；再把这次完整重算记为一次新的运行，发布时使用它自己的运行标识。演示里的 run-42 是一个写死的固定标识；现实系统要让新旧两次运行的记录分开。还要核对已保存的中间输出是否完整、版本是否匹配；例如真实系统里某份按旧规则生成的历史汇总即使显示成功，换成 q2 后规则版本已经对不上，也不能直接拿来用。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="trace" title="留下结果的来路" className={base.offset}><Legacy slug="data-pipeline" names={["prompt-heading"]}/>

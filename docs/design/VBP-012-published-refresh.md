@@ -2135,3 +2135,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 79 条正文与本地记录在当前批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`LineageLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 当前批次进度为 **1/10（第 79 条）**，下一条是 `data-pipeline`；前序已发布总计 **78/105**。
+
+## 80 · 数据管道文字复审、依赖链演示与本地浏览器验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“同一批借阅记录怎样经过校验、归档、汇总和发布；校验失败时哪些步骤还能继续；重跑时怎样避免换了输入或写出重复记录？”读完应能区分流程计划与某次运行、理解前置成功条件、解释固定数据区间与重跑、并沿输入版本、规则和运行记录追溯结果。
+- 更新 `PipelineTermPage` 的正文文字：把调度时间、数据范围和实际开始时间分开；将 Glue 静态/动态视图限定在 Glue 并改成零基础可读的“设计样子/实际进行到哪里”；补充 `all_success` 依赖如何沿校验→汇总→发布链阻断，而独立归档仍可继续；明确页面预置 v0 只用于对照，本次结果只统计 s1 的三条有效记录且不在 v0 上累加；解释 `INSERT` 每次新增、`UPSERT` 按稳定键更新或新增；把固定分区、数据库事务与运行结果的说明前移或改顺。
+- `PipelineLesson` 的读取、严格 q1 失败、独立归档、q2 隔离重验、汇总、发布、重置、引用展开与回链继续留在本地/dev；本轮生产批次只计划复制正文文字文件。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [AWS Glue · Overview of workflows](https://docs.aws.amazon.com/glue/latest/dg/workflows_overview.html) | `pipeline-workflow`：workflow 组合任务与触发条件，记录组件运行进度与状态，静态视图是设计、动态视图是某次运行信息。 |
+| [Apache Airflow · Dags](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html) | `pipeline-dependencies` 与 `pipeline-interval`：Dag 声明任务、调度和依赖；默认所有上游成功后才运行下游；DagRun 有数据区间，逻辑日期与实际运行时间可不同。 |
+| [Apache Airflow · Best Practices](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html) | `pipeline-replay`：任务要避免不完整输出，重试应得到相同结果；固定数据分区与 UPSERT 语义用于避免重复写入。 |
+| [W3C · PROV-DM: The PROV Data Model](https://www.w3.org/TR/prov-dm/) | `pipeline-provenance`：用实体、活动与参与者描述输入、处理与输出的来源关系；来源模型不执行任务，也不自动证明正确。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读当前正文和按“操作→当时可见内容”配对的页面材料，未附作者意图、资料链接、源码或旧反馈；材料 `/tmp/vbp080-reader-material.txt` SHA-256 为 `044766f3a01f1517246bd82fa0b6755fc1d4c9c218a2eb1c2c312eeeb1a80c15`，提示词 `/tmp/vbp080-reader-prompt.txt` SHA-256 为 `0a4f81335916dda181604754d6435361cf6b09d9d8253a7adbdf77aedc192e06`，结果 `/tmp/vbp080-reader-result.json` SHA-256 为 `b045407c67b18d8b3aa8c53dec6206f33587a394340fea7c0474eac069f87aba`；会话 `sess_8049ba48-74e5-449a-897a-28e4d901f3ea` 正常完成。reader 反馈的 v0 基线与本次结果、`UPSERT/INSERT`、调度时间、Glue 视图范围和依赖链等断点，主助手逐项核对后补入。
+- 独立 `language` 读取项目内 `vibepolaris-zcode-partner` 与 `humanizer-zh`，并审读当前 `PipelineTermPage`；提示词 `/tmp/vbp080-language-prompt.txt` SHA-256 为 `22a7d3ed8ea472d3c1e2e529183b9a79b6b3c66dc878d35d20586d3edf773f24`，结果 `/tmp/vbp080-language-result.json` SHA-256 为 `b313740ea0f90cec7a11b57a922638639876d96bf77bb167e1788bbe9b6f6460`；会话 `sess_358ec272-4554-4fc6-89a3-40c84f20a221` 正常完成。采纳了时间概念对齐、Glue 视图具体化、去掉成功运行的突兀限定、统一“启动规则”、v0 口径通俗化、分区注释前移、事务句法和稳定键前置解释等建议；保留全部必要的失败、重跑和版本边界。
+- ZCode 读取项目内 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md`；用户级 `/Users/guyisheng/.codex/skills/humanizer-zh/SKILL.md` 不存在，本轮按项目内实际可读规则审读。
+
+### 构建与真实浏览器验收
+
+- `npm run build` 已通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；`git diff --check` 通过。当前正文变更只在 `components/terms/CoordinationConceptPages.tsx`，未修改 `PipelineLesson` 或通用词条注册。
+- CUA 在 `http://127.0.0.1:3219/terms/data-pipeline?qa=080final` 真实操作并观察：读取固定输入后，q1 显示 `r2` 缺失书目编号而校验失败；独立归档仍显示 `s1` 的 4 条原始记录已保留；切换 q2 后显示 3 条有效、1 条隔离；汇总显示 `#42 · 2 次`、`#78 · 1 次`；发布核对后显示 `run-42 · s1 / q2`；重置回到 v0 与未完成状态。展开第四条 PROV 引用并点击“留下结果的来路”回链，URL 定位 `#pipeline-provenance`；最终截图实际观察了来源关系段落。当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也未把不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存里的四条固定借阅记录和预置运行状态，不执行真实 Airflow、AWS Glue、数据库、持久归档、任务重试或生产报表写入；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `cf251f94-ce19-4d8e-92fc-e276574412f1` 已创建并处于 `in_progress`；测试用例 `613c5def-421f-4ce6-aa78-e34df31f1a32` 与测试计划 `bc0d8992-b834-468d-aa86-f22720afc0c7` 已创建，待本批本地验收完成后记录执行结果。按用户最新要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 80 条正文与本地记录在当前批次累计，生产发布延后至第 79—88 条全部完成后统一处理。`PipelineLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+- 当前批次进度为 **2/10（第 79—80 条）**，下一条是 `webhook`；前序已发布总计 **78/105**。
