@@ -1,5 +1,7 @@
 # 新闻草稿交接目录
 
+按事件发生日的候选检索和空档日记录见 [`content/zh/news-daily/`](../news-daily/)。先在按天记录中核对一手来源和 `eventDate`/`publishedAt`，再把选中候选交给本目录的完整文章草稿。
+
 云端采集程序把每条候选新闻写成一个 JSON 文件，路径固定为：
 
 ```text

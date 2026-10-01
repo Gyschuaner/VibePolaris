@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, realpathSync, renameSync, unlinkSync, writeF
 import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
-import { canonicalNewsUrl, newsArticleSchema, newsDraftSchema, newsRelationErrors } from "../lib/news-schema.ts";
+import { canonicalNewsUrl, newsArticleSchema, newsDailyRunSchema, newsDraftSchema, newsRelationErrors } from "../lib/news-schema.ts";
 
 export const root = resolve(import.meta.dirname, "..");
 const activeStatuses = new Set(["discovered", "draft", "ready", "needs-review"]);
@@ -12,9 +12,23 @@ export function contentPaths(repository = root) {
   return {
     repository,
     drafts: resolve(repository, "content/zh/news-drafts"),
+    daily: resolve(repository, "content/zh/news-daily"),
     published: resolve(repository, "content/zh/news.json"),
     terms: resolve(repository, "content/zh/published-terms.json"),
   };
+}
+
+function dailyRunFiles(directory) {
+  try {
+    return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+      const path = join(directory, entry.name);
+      if (entry.isSymbolicLink()) throw new Error(`按天记录目录不接受符号链接：${path}`);
+      return entry.isFile() && entry.name.endsWith(".json") ? [path] : [];
+    }).sort();
+  } catch (error) {
+    if (error.code === "ENOENT") return [];
+    throw error;
+  }
 }
 
 export function readJson(path) {
@@ -88,11 +102,52 @@ export function publishedNewsErrors(articles, terms) {
   return errors;
 }
 
+export function dailyRunErrors(runs, { articles = [], terms = new Set() } = {}) {
+  const errors = [];
+  const articleBySlug = new Map(articles.map(article => [article.slug, article]));
+  for (const { path, run } of runs) {
+    const name = basename(path);
+    if (name !== `${run.eventDate}.json`) errors.push(`${name}：文件名应与 eventDate 一致`);
+    if (run.search.candidateCount !== run.candidates.length) errors.push(`${name}：candidateCount 与候选数量不一致`);
+    const primaryCount = run.candidates.filter(candidate => run.search.sourcePolicy.includes(candidate.sourceType)).length;
+    if (run.search.primaryCandidateCount !== primaryCount) errors.push(`${name}：primaryCandidateCount 与来源政策不一致`);
+    const duplicateCount = run.candidates.filter(candidate => candidate.decision === "duplicate").length;
+    if (run.search.deduplicatedCount !== duplicateCount) errors.push(`${name}：deduplicatedCount 与 duplicate 候选数量不一致`);
+    const selected = run.candidates.filter(candidate => candidate.decision === "selected").map(candidate => candidate.slug).sort();
+    if (JSON.stringify(selected) !== JSON.stringify([...run.selectedSlugs].sort())) errors.push(`${name}：selectedSlugs 与候选决策不一致`);
+    if (run.gap === null && !selected.length) errors.push(`${name}：没有选中事件时必须记录空档日原因`);
+    if (run.gap && selected.length) errors.push(`${name}：有选中事件时不能标记为空档日`);
+    const candidateSlugs = new Set();
+    for (const candidate of run.candidates) {
+      if (candidateSlugs.has(candidate.slug)) errors.push(`${name}：候选 slug 重复：${candidate.slug}`);
+      candidateSlugs.add(candidate.slug);
+      for (const related of candidate.relatedSlugs) if (!terms.has(related)) errors.push(`${name}：候选关联了未公开词条：${related}`);
+      const article = articleBySlug.get(candidate.slug);
+      if (article && (article.eventDate !== candidate.eventDate || article.publishedAt !== candidate.publishedAt)) {
+        errors.push(`${name}：${candidate.slug} 的候选日期与文章日期不一致`);
+      }
+    }
+  }
+  const seen = new Map();
+  for (const { path, run } of runs) {
+    for (const candidate of run.candidates) {
+      const keys = [`url:${canonicalNewsUrl(candidate.canonicalUrl)}`, `hash:${candidate.sourceHash}`];
+      for (const key of keys) {
+        const previous = seen.get(key);
+        if (previous && candidate.decision !== "duplicate") errors.push(`${basename(path)} 与 ${previous} 重复：${key}`);
+        else if (!previous) seen.set(key, `${basename(path)}:${candidate.slug}`);
+      }
+    }
+  }
+  return errors;
+}
+
 export function loadNewsContent(repository = root) {
   const paths = contentPaths(repository);
   const articles = z.array(newsArticleSchema).min(1).parse(readJson(paths.published));
   const terms = new Set(z.array(z.string()).parse(readJson(paths.terms)));
   const drafts = draftFiles(paths.drafts).map(path => ({ path, draft: newsDraftSchema.parse(readJson(path)) }));
+  const dailyRuns = dailyRunFiles(paths.daily).map(path => ({ path, run: newsDailyRunSchema.parse(readJson(path)) }));
   const errors = publishedNewsErrors(articles, terms);
   const articleSlugs = new Set([...articles.map(article => article.slug), ...drafts.filter(({ draft }) => activeStatuses.has(draft.status)).map(({ draft }) => draft.slug)]);
   const seen = new Map(articles.filter(article => !article.isExample).flatMap(article => [
@@ -128,8 +183,9 @@ export function loadNewsContent(repository = root) {
       else seen.set(key, draft.slug);
     }
   }
+  errors.push(...dailyRunErrors(dailyRuns, { articles, terms }));
   if (errors.length) throw new Error(errors.join("\n"));
-  return { paths, articles, terms, drafts };
+  return { paths, articles, terms, drafts, dailyRuns };
 }
 
 function atomicJson(path, value) {

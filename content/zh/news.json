@@ -5,6 +5,7 @@
     "summary": "Anthropic 于 2026 年 9 月 28 日发布 Claude Sonnet 5.5，官方称其相较 Sonnet 5 速度提升超过 30%，并在部分任务上降低成本。",
     "body": "Anthropic 在 2026 年 9 月 28 日发布 Claude Sonnet 5.5，把它放在 Claude 5.5 家族里，主要面对日常编程、代码修复和文档工作。发布页同时给出三个读者容易混在一起的信号：模型在一组编码基准上的成绩、完成任务所需的速度和 token 数量，以及网络安全和模型行为方面的防护说明。它们分别回答“能不能做”“做得多快、花多少”和“怎样控制风险”，不能互相替代。\n\n官方称 Sonnet 5.5 相较 Sonnet 5 生成速度提升超过 30%，单任务成本最多降低 30%；在 Terminal-Bench 4.0 上，Sonnet 5.5 得分 70.6%，Sonnet 5 得分 10.3%。这些数字来自 Anthropic 自己公布的评测口径。理解这条新闻时，最重要的不是把 70.6% 当成所有项目的成功率，而是看清速度、成本和基准分数各自测量什么。\n\n下面把这次更新拆成几个可以单独阅读的段落，并用一个小动画把“基准成绩”和“真实工作”之间的距离画出来。",
     "publishedAt": "2026-09-28",
+    "eventDate": "2026-09-28",
     "isExample": false,
     "source": {
       "name": "Anthropic",
@@ -106,6 +107,7 @@
     "summary": "Google DeepMind 于 2026 年 9 月 23 日介绍 Private AI Compute 的服务器端持久记忆方案，强调设备持有密钥、云端安全隔离和跨设备连续性。",
     "body": "Google DeepMind 在 2026 年 9 月 23 日介绍 Private AI Compute 的服务器端持久记忆架构。它试图回答一个很具体的问题：如果助手要在多台设备之间保留上下文，数据可以放在云端，但解密能力能不能仍然掌握在用户手里？\n\n官方描述的链路是：设备持有密钥，请求经过端到端加密通道进入硬件隔离环境，服务在短暂解密状态下完成处理，再把结果加密写回存储。这个设计把“云端有容量”和“服务方不应直接拿到明文钥匙”拆成两个可讨论的部分。它是架构说明，不等于所有产品已经上线同样的持久记忆能力。\n\n下面沿着一次请求走一遍，读者可以看到密钥、隔离环境、跨设备连续性和审计分别解决什么问题，以及它们没有解决什么问题。",
     "publishedAt": "2026-09-23",
+    "eventDate": "2026-09-23",
     "isExample": false,
     "source": {
       "name": "Google DeepMind",
@@ -205,5 +207,670 @@
         }
       ]
     }
+  },
+  {
+    "slug": "ood-detection-evaluation-scenarios-20210107",
+    "title": "OOD 检测论文提醒：换一个场景，方法排名也可能换",
+    "summary": "1 月 7 日提交的研究重新检查图像分类中的分布外检测评测，把无关输入、新类别和域变化分成不同场景。作者发现数据集与任务场景会改变方法的相对表现。",
+    "body": "1 月 7 日，Engkarat Techapanurak 和 Takayuki Okatani 提交了关于分布外（OOD）检测的研究。图像分类器通常要判断图片属于哪个已知类别，但真实输入可能完全无关、来自一个没有见过的新类别，或者只是换了拍摄环境。系统在这些情况下应该知道“我没有足够把握”，而不是硬选一个熟悉类别。\n\n论文重新检查了 OOD 检测方法的评测方式。作者把实验分成无关输入检测、新类别检测和域变化检测三种场景，再在不同数据集与分类任务上比较代表性方法。结果显示，场景和数据集的改变会影响方法之间的相对表现。\n\n这条消息对工程团队的提醒很实际：一个基准上的第一名不一定在另一个风险场景仍然第一。部署前应该先定义系统会遇到哪种“陌生输入”，再选择接近真实分布的验证集。检测分数只是报警依据，后续还需要拒答、转人工或重新采集数据的产品路径。",
+    "publishedAt": "2021-01-07",
+    "eventDate": "2021-01-07",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/ood-detection-evaluation-scenarios-20210107.svg",
+      "alt": "OOD 检测论文提醒：换一个场景，方法排名也可能换：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/ood-detection-evaluation-scenarios-20210107.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "three-scenarios",
+        "title": "三种陌生输入不是一回事",
+        "body": "无关输入是照片根本不属于分类任务，新类别是输入属于一个此前没有标签的类别，域变化则可能仍是相同类别但来自不同设备、地点或风格。它们都会让模型面对分布变化，却需要不同的测试问题。",
+        "kind": "narrative"
+      },
+      {
+        "id": "evaluation",
+        "title": "为什么评测口径会改变结论",
+        "body": "如果只用一种数据集和一种任务，方法可能学会适应那个设置。论文把场景、数据集与分类任务组合起来比较，发现方法的相对表现会随组合变化。评测不只是给方法排序，也是在决定我们把哪种失败算得更重要。",
+        "kind": "technical"
+      },
+      {
+        "id": "deployment",
+        "title": "把检测结果接到产品流程",
+        "body": "相机应用可以先判断输入是否像训练数据。若检测到新类别，产品可以显示“需要确认”并保存样本；若只是轻微域变化，可以交给另一套校准规则。关键是把 OOD 分数连到可观察的处理动作，而不是把一个阈值写成“安全保证”。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "方法比较仍受实验设置限制",
+        "body": "论文结果来自它选择的代表性方法、数据集和三类场景。它不能直接告诉每个行业的最佳阈值，也不能替代对真实输入和错误代价的测试。使用者需要把自己的输入风险、拒答体验和人工处理能力一并纳入验收。",
+        "kind": "boundary"
+      },
+      {
+        "id": "acceptance",
+        "title": "上线前先写清楚错误代价",
+        "body": "同一个 OOD 分数，在相机应用里可能触发一次人工确认，在高风险流程里则可能必须拒绝请求。先定义漏放、误拒和人工处理的代价，再选择阈值和验收集，评测结果才有实际决策含义。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "同一个方法放进三个陌生输入场景",
+      "question": "为什么不能只看一张排行榜来选择 OOD 检测方法？",
+      "steps": [
+        {
+          "label": "已知",
+          "detail": "先在训练过的类别和数据分布上建立分类基线。",
+          "evidence": "OOD 检测依赖先定义什么算分布外。"
+        },
+        {
+          "label": "换场景",
+          "detail": "分别测试无关输入、新类别和域变化。",
+          "evidence": "论文明确比较三种应用场景。"
+        },
+        {
+          "label": "换数据",
+          "detail": "在多种数据集和分类任务上重复比较。",
+          "evidence": "作者报告数据集和任务会改变相对表现。"
+        },
+        {
+          "label": "接动作",
+          "detail": "把低置信结果交给拒答、转人工或重新采集流程。",
+          "evidence": "检测分数是产品处理的入口，不是安全结论。"
+        }
+      ]
+    },
+    "source": {
+      "name": "arXiv / OOD Detection 论文",
+      "url": "https://arxiv.org/abs/2101.02447"
+    },
+    "relatedSlugs": [
+      "eval",
+      "benchmark",
+      "evaluation-dataset",
+      "grounding"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2101.02447",
+        "claim": "论文把 OOD 检测分为无关输入、新类别和域变化三个场景。",
+        "excerpt": "three scenarios, i.e., irrelevant input detection, novel class detection, and domain shift detection"
+      },
+      {
+        "url": "https://arxiv.org/abs/2101.02447",
+        "claim": "论文指出场景和数据集的差异会改变方法的相对表现。",
+        "excerpt": "differences in scenarios and datasets alter the relative performance among the methods"
+      }
+    ],
+    "canonicalUrl": "https://arxiv.org/abs/2101.02447",
+    "sourceHash": "sha256:5daf581d50ec1b27e94b603c7be285df39d087758b645cca823a4af2c6315c81"
+  },
+  {
+    "slug": "textbox-text-generation-framework-20210106",
+    "title": "TextBox 把文本生成模型、训练和评测拆成可复用模块",
+    "summary": "1 月 6 日提交的 TextBox 论文公开一个统一、模块化、可扩展的文本生成框架，收录 21 个模型和 9 个基准数据集，目标是让研究者更容易复现基线并加入新模型。",
+    "body": "1 月 6 日，Junyi Li 等作者提交 TextBox 论文。论文同时公开一个文本生成框架和它的模块划分：模型架构、推理、学习过程被拆成可以重用的组件。框架实现了 21 个文本生成模型，覆盖 9 个基准数据集和 VAE、GAN、预训练语言模型等类别。\n\n这类工具的新闻重点不在于“又有一个模型分数更高”，而在于复现实验的成本。研究者如果每换一个模型都要重写训练、推理和评测脚本，很难判断差异来自模型，还是来自工程实现。TextBox 试图把公共部分收拢起来，让新模型可以接入同一套接口，并用一致的数据集和指标比较。\n\n论文还说明框架基于 PyTorch，并以 Apache License 2.0 发布。开源框架降低了开始实验的门槛，却不会自动保证结果可比：数据预处理、超参数、随机种子和评测实现仍需要记录。",
+    "publishedAt": "2021-01-06",
+    "eventDate": "2021-01-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/textbox-text-generation-framework-20210106.svg",
+      "alt": "TextBox 把文本生成模型、训练和评测拆成可复用模块：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/textbox-text-generation-framework-20210106.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "TextBox 把什么交给研究者",
+        "body": "论文公开一个统一的文本生成框架，目标是支持多类任务和模型。作者把模型架构、推理和学习过程拆成可复用模块，研究者可以在相同骨架里换模型、换数据集或加入新的基线。",
+        "kind": "narrative"
+      },
+      {
+        "id": "coverage",
+        "title": "21 个模型和 9 个数据集意味着什么",
+        "body": "这些数量描述的是框架当前实现覆盖范围，不是所有文本生成方法的完整清单。它们让读者看到 TextBox 是一个用于横向实验的工具箱：同一套公共流程可以承载多种模型和数据集，便于复现、比较和扩展。",
+        "kind": "technical"
+      },
+      {
+        "id": "reproduction",
+        "title": "复现一次实验时谁负责什么",
+        "body": "研究者先选定数据集和任务，再选一个已实现模型。框架负责按约定准备数据、训练模型、运行推理并记录结果；研究者仍要确认配置、版本和评测指标与论文一致。若新模型需要不同输入，应该扩展模块而不是悄悄改动公共流程。 Apache License 2.0 方便代码被使用和修改，但可复现性仍需要完整配置、数据版本、随机性控制和清楚的指标解释；开源框架不能替研究者判断哪个结果适合生产。",
+        "kind": "example"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一套框架怎样承载多种生成实验",
+      "question": "换模型时，哪些步骤可以复用，哪些结果仍要重新核对？",
+      "steps": [
+        {
+          "label": "任务",
+          "detail": "先固定文本生成任务、数据集和评价方式。",
+          "evidence": "TextBox 以多任务、多数据集为目标。"
+        },
+        {
+          "label": "模块",
+          "detail": "把架构、训练和推理接入同一套可扩展组件。",
+          "evidence": "论文强调 modularized and extensible framework。"
+        },
+        {
+          "label": "运行",
+          "detail": "框架用统一流程训练模型并生成结果。",
+          "evidence": "实现覆盖 21 个模型和 9 个基准数据集。"
+        },
+        {
+          "label": "复核",
+          "detail": "比较结果前检查配置、数据版本和指标是否一致。",
+          "evidence": "复用代码减少差异，不替代实验记录。"
+        }
+      ]
+    },
+    "source": {
+      "name": "arXiv / TextBox 论文",
+      "url": "https://arxiv.org/abs/2101.02046"
+    },
+    "relatedSlugs": [
+      "llm",
+      "tools",
+      "benchmark",
+      "evaluation-dataset",
+      "structured-output"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2101.02046",
+        "claim": "论文公开 TextBox 框架，覆盖 21 个文本生成模型和 9 个基准数据集。",
+        "excerpt": "we implement 21 text generation models on 9 benchmark datasets"
+      },
+      {
+        "url": "https://arxiv.org/abs/2101.02046",
+        "claim": "论文说明模块化设计用于复现实验和扩展新模型，并以 Apache License 2.0 发布。",
+        "excerpt": "released under Apache License 2.0 ... suitable for researchers and practitioners to quickly reproduce baseline models"
+      }
+    ],
+    "canonicalUrl": "https://arxiv.org/abs/2101.02046",
+    "sourceHash": "sha256:626a8a443db0aa0cac447e5bc19d816147c4d256cd69f2a473d46ee04448f72a"
+  },
+  {
+    "slug": "clip-natural-language-supervision-20210105",
+    "title": "OpenAI 发布 CLIP：用自然语言监督连接图像和分类任务",
+    "summary": "1 月 5 日，OpenAI 公布 CLIP。它用互联网上已有的图文配对训练视觉概念，并尝试让模型通过自然语言类别描述完成多种分类基准，而不为每个基准单独训练输出头。",
+    "body": "1 月 5 日，OpenAI 在官方研究文章中介绍 CLIP（Contrastive Language–Image Pre-training）。文章把它描述为一种从自然语言监督中学习视觉概念的神经网络：训练材料是互联网上已有的图文配对，模型学习判断哪段文字和哪张图片更可能对应。\n\nCLIP 的使用方式和传统固定类别分类器不同。给定一张图片，系统可以把“a photo of a dog”和“a photo of a cat”这样的文字描述交给模型，比较哪一个描述更匹配，而不是为每个新任务重新训练一个分类头。官方文章称，这种设计让模型能够用自然语言指示去做多种视觉分类基准，并报告了在 ImageNet zero-shot 设置下的结果。\n\n这条新闻容易被读成“模型理解了任何图片”。实际边界更窄：文字提示会影响结果，类别名称写法很重要，开放网络图文数据也带有偏差。CLIP 改变的是任务适配方式和监督来源，读者仍要按具体数据、提示词和安全要求评测。",
+    "publishedAt": "2021-01-05",
+    "eventDate": "2021-01-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/clip-natural-language-supervision-20210105.svg",
+      "alt": "OpenAI 发布 CLIP：用自然语言监督连接图像和分类任务：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/clip-natural-language-supervision-20210105.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "OpenAI 公开了什么",
+        "body": "官方文章介绍一个用自然语言监督学习视觉概念的模型，并链接到论文与代码。训练不依赖为每个分类基准单独准备一套人工标签作为唯一入口，而是利用图像旁边已有的文字描述建立图文联系。",
+        "kind": "narrative"
+      },
+      {
+        "id": "prompted-classification",
+        "title": "分类问题怎样变成文字匹配",
+        "body": "在一个简单例子里，系统把图片分别和“a photo of a dog”“a photo of a cat”进行比较，选择匹配度更高的文本。新的类别可以通过改写类别名称进入任务，这就是 zero-shot 方式的直观含义。实际系统还要处理提示词措辞、类别粒度和图片分布。",
+        "kind": "technical"
+      },
+      {
+        "id": "why-it-matters",
+        "title": "为什么监督来源会改变工程流程",
+        "body": "传统视觉分类往往围绕预先确定的类别和标注集训练。CLIP 把自然语言当成更灵活的预测空间，减少了为每个新分类任务重新训练头部的需要。代价是网络文本和图像配对不一定均衡，提示词也可能把偏差带入结果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "limits",
+        "title": "官方文章也写了哪些限制",
+        "body": "官方说明指出，模型在多对象属性、复杂提示和某些细节任务上会变得脆弱。zero-shot 不等于没有评测；部署前仍要用代表真实用户的图片、类别和安全压力测试检查误判。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "先把 zero-shot 和提示词分开",
+        "body": "zero-shot 描述的是没有为新类别重新训练分类器；提示词则决定类别文字如何被写给模型。一个模型可以采用 zero-shot 评测，却仍然需要比较不同提示词、类别命名和输入分布，两个概念不应混为一谈。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "把一张图片交给文字类别",
+      "question": "为什么换一句类别描述，模型就可能改变分类结果？",
+      "steps": [
+        {
+          "label": "图文",
+          "detail": "模型在图像与自然语言配对中学习视觉概念。",
+          "evidence": "OpenAI 将 CLIP 描述为从自然语言监督学习视觉概念。"
+        },
+        {
+          "label": "提示",
+          "detail": "把候选类别写成可比较的文字描述。",
+          "evidence": "官方示例用文字描述比较狗和猫。"
+        },
+        {
+          "label": "匹配",
+          "detail": "计算图片与各段文字的匹配关系，选出更符合的一项。",
+          "evidence": "不为每个基准单独训练一个输出头是设计目标。"
+        },
+        {
+          "label": "压力测试",
+          "detail": "用真实图片和不同提示检查偏差与脆弱点。",
+          "evidence": "官方文章保留了对提示措辞和复杂场景的限制说明。"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/clip/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "prompt",
+      "benchmark",
+      "eval"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/clip/",
+        "claim": "OpenAI 官方文章介绍 CLIP 使用自然语言监督学习视觉概念。",
+        "excerpt": "We’re introducing a neural network called CLIP which efficiently learns visual concepts from natural language supervision."
+      },
+      {
+        "url": "https://openai.com/index/clip/",
+        "claim": "官方文章说明 CLIP 可通过自然语言指示完成多种视觉分类基准。",
+        "excerpt": "By design, the network can be instructed in natural language to perform a great variety of classification benchmarks"
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/clip",
+    "sourceHash": "sha256:501699fc1e6953f4889ad67a698c51f656aa1821a794f91aa49129542c6917db"
+  },
+  {
+    "slug": "agent-read-write-20210104",
+    "title": "研究者提出让智能体读论文、总结线索，再参与写作",
+    "summary": "1 月 4 日提交的 How to Train Your Agent to Read and Write 论文，把“读懂研究材料”和“写出新内容”放进一个智能体辅助流程。它先定义任务与数据，再讨论怎样让模型利用检索到的论文线索。",
+    "body": "1 月 4 日，Li Liu 等作者提交了 How to Train Your Agent to Read and Write。论文从一个熟悉的困难开始：研究者需要阅读大量论文，理解其中的假设和证据，再把线索组织成新的研究文本。对新研究者来说，这个过程尤其难，因为“读”“记”“找关系”和“写”不是一次生成就能完成的动作。\n\n作者提出训练一个智能体帮助人们阅读和总结论文，也探索让它发现和利用潜在知识线索来写出新的论文。标题里的 read and write 不是把模型变成自动作者的承诺，而是把输入材料、检索线索、摘要和后续写作放进一个可以观察的循环。读者应把它看成研究辅助流程，而不是无需核对的论文生产器。\n\n如果把一篇论文当成一组材料，智能体首先需要选择要读的内容，把它放进当前上下文；读完后保留与任务有关的线索，再决定下一步要检索、比较还是起草。任何一步引用错误或遗漏条件，都会影响后面的写作。因此，人仍要检查原文、证据和最终结论。",
+    "publishedAt": "2021-01-04",
+    "eventDate": "2021-01-04",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/agent-read-write-20210104.svg",
+      "alt": "研究者提出让智能体读论文、总结线索，再参与写作：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/agent-read-write-20210104.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "question",
+        "title": "论文想解决的读写断点",
+        "body": "阅读论文不是把全文变成几句摘要就结束。研究者要知道作者问了什么、用了哪些数据、结果能支持什么，并把这些线索带进下一次检索或写作。论文把这种连续工作描述为训练智能体辅助阅读和写作的目标。",
+        "kind": "narrative"
+      },
+      {
+        "id": "loop",
+        "title": "读和写怎样变成可观察的循环",
+        "body": "一次循环可以从任务问题开始：系统选出相关论文，取得正文或摘要，提取与问题有关的线索，再把这些线索送回下一步。写作阶段不是凭空生成，而是根据当前材料组织段落。若材料不足，循环应回到检索；若证据冲突，应该停下来交给人判断。",
+        "kind": "technical"
+      },
+      {
+        "id": "example",
+        "title": "用一篇论文试走一遍",
+        "body": "假设读者想比较两个问答评测。智能体先找出两篇原始论文，再记录任务、数据集和指标的差别。它可以先写一段带引用的草稿，但草稿里的每个数字仍要回到论文原文核对。自动化减少的是整理工作，不是把证据责任交给模型。",
+        "kind": "example"
+      },
+      {
+        "id": "boundary",
+        "title": "读写能力不等于研究结论可靠",
+        "body": "模型能生成通顺的总结，也可能把相邻论文的结论混在一起。检索范围、上下文长度、引用定位和人工复核都会影响结果。论文提出的是研究方向与方法问题，不能把标题理解成已经解决了学术发现、原创性或作者责任。",
+        "kind": "boundary"
+      },
+      {
+        "id": "human-check",
+        "title": "循环的停止点需要人来确认",
+        "body": "当检索到的论文彼此冲突，或生成的段落缺少可定位的证据时，系统应该停止扩写并把问题交回读者。把停止条件写进流程，才能避免“写得更长”被误认为“证据更多”。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "从论文线索到草稿的一轮循环",
+      "question": "智能体怎样知道下一步该继续找材料，还是开始组织文字？",
+      "steps": [
+        {
+          "label": "任务",
+          "detail": "先明确要比较或解释的研究问题。",
+          "evidence": "论文以帮助人们阅读、总结和发现线索为动机。"
+        },
+        {
+          "label": "阅读",
+          "detail": "检索并读取与问题相关的论文片段，留下可追溯线索。",
+          "evidence": "材料必须进入本轮上下文，不能只记住标题。"
+        },
+        {
+          "label": "判断",
+          "detail": "根据证据是否足够，决定继续检索、比较还是起草。",
+          "evidence": "下一步选择依赖当前取得的线索。"
+        },
+        {
+          "label": "写作",
+          "detail": "把已核对的关系组织成段落，保留需要人工确认的空缺。",
+          "evidence": "读写辅助不替代原文核对和作者责任。"
+        }
+      ]
+    },
+    "source": {
+      "name": "arXiv / How to Train Your Agent to Read and Write 论文",
+      "url": "https://arxiv.org/abs/2101.00916"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "retrieval",
+      "llm",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2101.00916",
+        "claim": "论文的目标是训练智能体帮助人们阅读、总结论文并利用潜在知识线索。",
+        "excerpt": "train an intelligent agent to help people read and summarize papers, and perhaps even discover and exploit the potential knowledge clues to write novel papers"
+      },
+      {
+        "url": "https://arxiv.org/abs/2101.00916",
+        "claim": "arXiv 页面记录论文 v1 于 2021 年 1 月 4 日提交。",
+        "excerpt": "Submitted on 4 Jan 2021"
+      }
+    ],
+    "canonicalUrl": "https://arxiv.org/abs/2101.00916",
+    "sourceHash": "sha256:3d3fb66e8fabe3ef2c115b6a02697f3ca8429cf7bbff4021fbb8c93b8d328a39"
+  },
+  {
+    "slug": "few-shot-feature-library-20210103",
+    "title": "少样本图像分类论文把复杂元学习换成特征库加简单分类器",
+    "summary": "1 月 3 日提交的研究比较了少样本图像分类的两条路线：复杂的元学习方法，和一组预训练特征提取器加一个带 L2 正则的前馈分类器。作者在多种跨域任务上报告了后者的实验优势。",
+    "body": "1 月 3 日，Arkabandhu Chowdhury 等作者提交了一篇少样本图像分类论文。少样本的难点很直观：每个新类别只有很少的标注图片，模型既要学会区分，又不能把有限样本当成完整世界。近年来的一些工作已经观察到，迁移学习可能胜过更复杂的元学习方法；这篇论文把这个判断继续推向更简单的方案。\n\n作者提出使用一组高质量的预训练特征提取器，把同一张新图片转换成多种特征，再训练一个简单的前馈网络，并用 L2 正则限制参数过度适应。实验覆盖跨域少样本任务，论文报告这种样本效率较高的做法在多组任务上优于若干常见元学习算法。\n\n这条消息的价值不在于宣布“简单永远更好”。它提供了一个可复现的比较问题：当新类别样本很少时，先拿已经训练好的特征库组合起来，是否比再造一套复杂的快速学习机制更稳？真实选择仍要看数据域、特征库质量和评测任务。",
+    "publishedAt": "2021-01-03",
+    "eventDate": "2021-01-03",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/few-shot-feature-library-20210103.svg",
+      "alt": "少样本图像分类论文把复杂元学习换成特征库加简单分类器：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/few-shot-feature-library-20210103.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "problem",
+        "title": "少样本到底少在哪里",
+        "body": "训练一个普通分类器通常需要很多带标签的图片。少样本场景里，新类别只有几张示例，直接从头学习很容易把偶然背景当成类别特征。预训练特征提取器提供了已经学过的视觉表示，分类器只需在有限样本上学习如何组合这些表示。",
+        "kind": "narrative"
+      },
+      {
+        "id": "method",
+        "title": "特征库和分类器怎样分工",
+        "body": "特征提取器把图片转换成可比较的向量，多个提取器像不同角度的观察器。前馈网络接收这些向量，输出新类别的判断；L2 正则会抑制参数变得过大，减少在少量样本上的过度适应。这样做把“看懂视觉内容”和“适应新类别”拆开。",
+        "kind": "technical"
+      },
+      {
+        "id": "comparison",
+        "title": "为什么要和元学习放在一起比",
+        "body": "元学习试图训练一个能快速适应新任务的学习过程，结构和训练流程更复杂。论文选择同样的少样本任务比较两种路线，让复杂度本身也成为可讨论的变量。作者报告了多种跨域任务上的实验结果，但结果仍属于论文使用的数据和评价设置。 这也意味着，特征库必须覆盖新任务需要的视觉信息；迁移到差异很大的目标域时仍要保留验证集，确认性能来自真正的类别线索。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "少量样本如何借到已有特征",
+      "question": "当新类别只有几张图时，系统怎样减少从头学习的负担？",
+      "steps": [
+        {
+          "label": "示例",
+          "detail": "为新类别准备少量带标签图片。",
+          "evidence": "论文关注 cross-domain few-shot classification。"
+        },
+        {
+          "label": "特征库",
+          "detail": "多套预训练提取器从不同角度编码图片。",
+          "evidence": "作者建议使用一组高质量预训练特征提取器。"
+        },
+        {
+          "label": "分类器",
+          "detail": "简单前馈网络在有限样本上学习类别边界，并使用 L2 正则。",
+          "evidence": "论文将简单分类器作为少样本适配层。"
+        },
+        {
+          "label": "对比",
+          "detail": "用相同任务和数据检查它与元学习方法的差异。",
+          "evidence": "实验报告在多组少样本任务上的相对结果。"
+        }
+      ]
+    },
+    "source": {
+      "name": "arXiv / Few-shot Image Classification 论文",
+      "url": "https://arxiv.org/abs/2101.00562"
+    },
+    "relatedSlugs": [
+      "embedding",
+      "benchmark",
+      "eval"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2101.00562",
+        "claim": "论文提出用预训练特征提取器的集合加简单前馈分类器完成少样本图像分类。",
+        "excerpt": "suggest the use of an ensemble of high-quality, pre-trained feature extractors"
+      },
+      {
+        "url": "https://arxiv.org/abs/2101.00562",
+        "claim": "作者报告该样本效率较高的方案在多种少样本任务上优于若干元学习算法。",
+        "excerpt": "far outperforms several well-established meta-learning algorithms on a variety of few-shot tasks"
+      }
+    ],
+    "canonicalUrl": "https://arxiv.org/abs/2101.00562",
+    "sourceHash": "sha256:f616e9e6f3d2371bead6090a03c78274e5ac0c212cf6bfbb963f7ddaa9d9269b"
+  },
+  {
+    "slug": "vinvl-visual-representations-20210102",
+    "title": "VinVL 把视觉表示重新放回视觉语言模型的基础位置",
+    "summary": "1 月 2 日提交的 VinVL v1 论文先改进图像中的对象表示，再把这些视觉特征交给视觉语言模型。作者报告在七个公开基准上取得新的最好结果，并承诺公开新的目标检测模型。",
+    "body": "1 月 2 日，Pengchuan Zhang 等作者把 VinVL v1 提交到 arXiv。论文讨论视觉语言任务：模型既要看图，也要处理文字。作者没有只在语言和视觉的融合层上继续堆结构，而是先追问一个更基础的问题：送进融合模型的视觉特征，是否已经把图中的对象和概念说清楚？\n\nVinVL 的做法是训练一个更大、为视觉语言任务重新设计的目标检测模型，再用它产生以对象为中心的视觉表示。论文把多个公开标注目标检测数据集合并用于预训练，并将生成的视觉特征送入基于 Transformer 的 Oscar 视觉语言模型。作者报告这些特征在七个公开基准上带来新的最好结果，也说明会公开目标检测模型。\n\n读者可以把这条消息理解成“翻译前先把图片里的名词认准”。如果检测器只看出模糊的颜色和轮廓，后面的语言模型再会组织句子，也很难回答“图里哪一个物体在做什么”。VinVL 的贡献重点在输入表示的质量，不能由此推导出所有视觉语言任务都会获得同样幅度的提升。",
+    "publishedAt": "2021-01-02",
+    "eventDate": "2021-01-02",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/vinvl-visual-representations-20210102.svg",
+      "alt": "VinVL 把视觉表示重新放回视觉语言模型的基础位置：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/vinvl-visual-representations-20210102.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "这次论文把哪一层往前移了",
+        "body": "视觉语言模型通常需要把图像特征和文字特征放到同一套推理流程里。VinVL 先改进产生图像特征的目标检测模型，再把更丰富的对象表示交给融合模型。这个顺序提醒我们：融合结构很重要，但输入里到底保留了哪些对象和概念同样会决定后续结果。",
+        "kind": "narrative"
+      },
+      {
+        "id": "representation",
+        "title": "对象表示为什么会改变回答",
+        "body": "目标检测器会把图像变成一组带位置和语义的对象特征。VinVL 的目标是让这些特征覆盖更丰富的视觉对象与概念，并用更大的公开标注数据集做预训练。语言模型接收的不是整张图片的模糊摘要，而是一组更适合视觉语言任务的输入表示。",
+        "kind": "technical"
+      },
+      {
+        "id": "pipeline",
+        "title": "一次看图问答怎样走过这条管线",
+        "body": "用户问“桌上靠近杯子的物体是什么”。检测器先从画面中找出杯子、桌面和相邻物体的位置与特征，融合模型再把这些对象和问题放在一起判断。若检测器漏掉了靠近关系，后面的语言生成即使语句流畅，也没有足够证据回答。",
+        "kind": "example"
+      },
+      {
+        "id": "results",
+        "title": "七个基准的结果该怎样读",
+        "body": "论文报告在七个公开基准上取得新的最好结果，这是作者在指定任务、数据和评测口径下的实验结论。它说明视觉表示改进值得测量，却不等于所有图片、问题和部署环境都会得到同样结果。数据分布、检测器误差与融合模型都会影响迁移。",
+        "kind": "comparison"
+      },
+      {
+        "id": "transfer",
+        "title": "表示变强不等于迁移自动完成",
+        "body": "更丰富的对象表示能给视觉语言模型提供更好的起点，但迁移到新的图片类型、语言表达或部署环境仍需要重新检查。对象检测本身的漏检、标注分布和问题措辞都会把误差带到最后的回答。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "先认出对象，再让语言模型组织答案",
+      "question": "视觉语言模型看到一张图时，哪一步把图像变成可推理的对象？",
+      "steps": [
+        {
+          "label": "图像",
+          "detail": "输入一张包含多个对象和空间关系的图片。",
+          "evidence": "VinVL 面向视觉语言任务，而不是只做文字生成。"
+        },
+        {
+          "label": "对象特征",
+          "detail": "目标检测模型提取更丰富、以对象为中心的视觉表示。",
+          "evidence": "论文把视觉特征改进作为主要贡献。"
+        },
+        {
+          "label": "融合",
+          "detail": "Transformer 视觉语言模型把视觉特征与文字问题放在一起。",
+          "evidence": "作者将改进特征送入 Oscar 融合模型。"
+        },
+        {
+          "label": "回答",
+          "detail": "模型根据已取得的视觉证据回答问题，错误会从表示阶段一路传下去。",
+          "evidence": "结果来自特定公开基准，不能脱离设置泛化。"
+        }
+      ]
+    },
+    "source": {
+      "name": "arXiv / VinVL 论文",
+      "url": "https://arxiv.org/abs/2101.00529"
+    },
+    "relatedSlugs": [
+      "embedding",
+      "benchmark",
+      "llm"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2101.00529",
+        "claim": "论文提出改进的对象检测模型，以产生面向视觉语言任务的对象中心表示。",
+        "excerpt": "develops an improved object detection model to provide object-centric representations of images"
+      },
+      {
+        "url": "https://arxiv.org/abs/2101.00529",
+        "claim": "论文报告改进视觉特征在七个公开基准上带来新的最好结果，并计划公开检测模型。",
+        "excerpt": "creating new state-of-the-art results on seven public benchmarks. We will release the new object detection model to public."
+      }
+    ],
+    "canonicalUrl": "https://arxiv.org/abs/2101.00529",
+    "sourceHash": "sha256:a78ff6b87854f232e40e76ff1e93ca435d2beb7fd04252a97d9aa18f13bf3a6b"
+  },
+  {
+    "slug": "efficientqa-memory-budget-20210101",
+    "title": "EfficientQA 把开放域问答的答案和内存预算放在一起评测",
+    "summary": "1 月 1 日公开的 EfficientQA 竞赛总结，记录了参赛系统怎样在回答开放问题的同时受限于严格的磁盘内存预算。它把“答对多少”和“需要带多少资料或参数”放到同一个工程问题里。",
+    "body": "2021 年 1 月 1 日，Sewon Min 等作者把 NeurIPS 2020 EfficientQA 竞赛的系统、分析和经验整理成论文，提交到 arXiv。竞赛面对的是开放域问答：系统收到一个自然语言问题，要从大范围资料中找到线索，再给出自然语言答案。论文标题里虽然有“竞赛总结”，真正值得读者留意的是它把答案质量和存储预算放进了同一张成绩单。\n\n参赛者不能无限制地把资料副本或模型参数放进磁盘。这个约束会改变方案选择：把更多检索语料存下来，可能让系统更容易找回事实；把容量用在模型参数上，可能换来另一种泛化能力。系统的准确率因此不能脱离资源条件单独比较。论文回顾了参赛方案，也分析了系统预测，借此讨论开放域问答怎样设计更有信息量的评测。\n\n对第一次接触问答系统的读者，可以把它想成一次带行李限额的查资料任务。问题先进入检索步骤，候选资料再进入模型，模型生成答案；每一步都在消耗可用上下文或存储空间。限制不是答案生成之后才出现的附注，而是从系统设计一开始就影响取舍。",
+    "publishedAt": "2021-01-01",
+    "eventDate": "2021-01-01",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/efficientqa-memory-budget-20210101.svg",
+      "alt": "EfficientQA 把开放域问答的答案和内存预算放在一起评测：VibePolaris 自制机制图",
+      "sourceUrl": "/images/news/efficientqa-memory-budget-20210101.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "what-happened",
+        "title": "这篇论文记录了什么事件",
+        "body": "论文回顾的是 NeurIPS 2020 EfficientQA 竞赛。参赛系统要完成开放域问答，同时遵守严格的磁盘内存预算。作者整理了竞赛动机、组织方式、优秀方案和预测分析，重点不在发布一个新的通用模型，而在于让不同系统的资源与效果可以被放在一起观察。",
+        "kind": "narrative"
+      },
+      {
+        "id": "tradeoff",
+        "title": "资料副本和模型参数怎样互相牵制",
+        "body": "一个问答系统可以把容量花在检索语料，也可以把更多容量花在学习到的参数上。前者可能带来更丰富的可查资料，后者可能带来更紧凑的模式表示。竞赛的预算把这两个方向拉到同一约束下，所以“更高分”需要连同使用了多少存储来理解。",
+        "kind": "technical"
+      },
+      {
+        "id": "reader-example",
+        "title": "把它换成一次查资料",
+        "body": "假设你要回答一条产品规则，手边只能保留有限页纸。你可以保留更多原文片段，也可以把常见规则整理成一张索引表。遇到新问题时，两种选择的查找速度和遗漏风险不同。这个类比只表达资源取舍；真实系统还要处理检索质量、模型误答和引用是否对应等问题。",
+        "kind": "example"
+      },
+      {
+        "id": "boundary",
+        "title": "评测分数不能直接变成日常成功率",
+        "body": "论文讨论的是竞赛设置下的系统预测和资源限制。它不能直接证明某个方案在所有知识库、语言或业务问题上都更可靠。把答案是否正确、证据是否找对、预算是否满足分开记录，才能知道一次失败发生在哪一层。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "答案怎样经过一条有预算的检索链",
+      "question": "同样的问题，为什么换一种资料和参数分配就可能得到不同结果？",
+      "steps": [
+        {
+          "label": "问题",
+          "detail": "先把自然语言问题交给开放域问答系统。",
+          "evidence": "论文将任务定义为输入问题、返回自然语言答案。"
+        },
+        {
+          "label": "取舍",
+          "detail": "系统在有限磁盘预算里分配检索语料与模型参数。",
+          "evidence": "竞赛约束让资源分配成为方案的一部分。"
+        },
+        {
+          "label": "答案",
+          "detail": "模型根据取回的线索生成回答，再用评测检查效果。",
+          "evidence": "系统预测和评测结果需要连同预算一起读。"
+        }
+      ]
+    },
+    "source": {
+      "name": "arXiv / EfficientQA 论文",
+      "url": "https://arxiv.org/abs/2101.00133"
+    },
+    "relatedSlugs": [
+      "retrieval",
+      "benchmark",
+      "evaluation-dataset",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/2101.00133",
+        "claim": "论文说明 EfficientQA 面向开放域问答，并要求系统遵守严格的磁盘内存预算。",
+        "excerpt": "The competition focused on open-domain question answering ... while also satisfying strict on-disk memory budgets."
+      },
+      {
+        "url": "https://arxiv.org/abs/2101.00133",
+        "claim": "论文回顾参赛方案并分析系统预测，用来讨论开放域问答评测。",
+        "excerpt": "we describe the motivation and organization of the competition, review the best submissions, and analyze system predictions"
+      }
+    ],
+    "canonicalUrl": "https://arxiv.org/abs/2101.00133",
+    "sourceHash": "sha256:dd691d1da5ddaa962b3f15fade41b4e5d360003ca6b2df8774a5b2a7deeb0958"
   }
 ]

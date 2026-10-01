@@ -48,6 +48,54 @@ const verificationSchema = z.object({
   notes: z.string().trim().max(2_000).optional(),
 }).strict();
 
+const sourceTypeSchema = z.enum(["official-announcement", "official-blog", "paper", "regulatory"]);
+const candidateDecisionSchema = z.enum(["selected", "rejected", "duplicate", "deferred"]);
+
+export const newsCandidateSchema = z.object({
+  slug,
+  title: z.string().trim().min(1).max(300),
+  eventDate: z.iso.date(),
+  publishedAt: z.iso.date(),
+  sourceType: sourceTypeSchema,
+  source: z.object({ name: z.string().trim().min(1).max(200), url: httpsUrl }).strict(),
+  canonicalUrl: httpsUrl,
+  sourceHash,
+  relatedSlugs: slugs.default([]),
+  evidence: z.array(evidenceSchema).min(1).max(20),
+  decision: candidateDecisionSchema,
+  reason: z.string().trim().min(1).max(500),
+  duplicateOf: slug.optional(),
+}).strict().superRefine((candidate, context) => {
+  if (candidate.decision === "duplicate" && !candidate.duplicateOf) {
+    context.addIssue({ code: "custom", path: ["duplicateOf"], message: "重复候选需要记录原文章 slug" });
+  }
+  if (candidate.decision !== "duplicate" && candidate.duplicateOf) {
+    context.addIssue({ code: "custom", path: ["duplicateOf"], message: "非重复候选不能填写 duplicateOf" });
+  }
+});
+
+export const newsDailyRunSchema = z.object({
+  schemaVersion: z.literal(1),
+  runId: z.string().trim().min(1).max(200),
+  eventDate: z.iso.date(),
+  searchedAt: z.iso.datetime(),
+  search: z.object({
+    query: z.string().trim().min(1).max(2_000),
+    sourceUrls: z.array(httpsUrl).min(1).max(20),
+    sourcePolicy: z.array(sourceTypeSchema).min(1).max(4),
+    candidateCount: z.number().int().nonnegative(),
+    primaryCandidateCount: z.number().int().nonnegative(),
+    deduplicatedCount: z.number().int().nonnegative(),
+  }).strict(),
+  candidates: z.array(newsCandidateSchema).max(100),
+  selectedSlugs: slugs,
+  gap: z.object({
+    status: z.literal("empty"),
+    reason: z.string().trim().min(1).max(1_000),
+    nextAction: z.string().trim().min(1).max(1_000),
+  }).strict().nullable(),
+}).strict();
+
 export const newsArticleSchema = z.object({
   slug,
   title: z.string().trim().min(1).max(300),
