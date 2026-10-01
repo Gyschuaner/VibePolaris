@@ -1110,11 +1110,14 @@
   },
   {
     "slug": "monolith",
-    "mechanism": "单体架构把主要业务模块作为一个部署单元构建和发布，模块可在进程内直接调用并共享资源。",
-    "misconception": "单体不等于没有模块，也不等于代码都在一个仓库；它描述部署边界。",
-    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍生成1个整体制品，部署单元数保持1；输出：整套应用版本1.8上线。可视化：建议4帧的三个模块装入同一边框；交互：点击任一模块看部署边界整体高亮。",
+    "mechanism": "单体把多个业务模块一起构建、测试和发布成一份应用；模块可以分开组织，但部署时一起换上。",
+    "misconception": "单体可以有清晰的内部模块，也可以把代码放在一个或多个仓库；判断它要看部署边界。",
+    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍要重新生成并测试整份应用；输出：一次发布换上包含全部模块的应用。可视化：建议4帧的三个模块组成一份应用、支付变更、整体重建测试、整体发布；交互：点击模块查看改动如何牵动整份应用。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures",
+      "https://docs.aws.amazon.com/whitepapers/latest/develop-deploy-dotnet-apps-on-aws/building-monoliths-or-microservices.html",
+      "https://cloud.google.com/learn/what-is-microservices-architecture",
+      "https://martinfowler.com/bliki/MonolithFirst.html"
     ],
     "rewriteRisk": "核心是部署单元，不能用代码量或团队规模判断是否单体。",
     "nearDuplicates": [
