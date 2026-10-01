@@ -717,14 +717,16 @@
   },
   {
     "slug": "transpiler",
-    "mechanism": "转译器把一种源代码转换为抽象层级相近的另一种源代码，常用于语法兼容或语言迁移。",
-    "misconception": "转译后的结果仍是源代码；它不同于生成机器码的典型编译步骤，也不是模块打包。",
-    "demoSignature": "输入：TypeScript的const n: number=3；中间：类型标注节点1个被移除，语法树保持赋值结构；输出：JavaScript const n=3。可视化：建议3帧的左右代码映射；交互：悬停源代码节点高亮目标片段。",
+    "mechanism": "转译器解析源代码，按目标语法或语言规则移除、改写和保留节点，输出另一份仍可阅读的源代码，再交给构建或运行流程。",
+    "misconception": "转译输出仍是源码；它不同于直接生成机器码，也不等于打包，更不会自动补齐缺失的运行时 API。",
+    "demoSignature": "输入：TypeScript 的 const n: number = 3；中间：类型标注供开发工具检查，转译规则移除类型节点、保留赋值结构；输出：JavaScript const n = 3，可继续构建，source map 指回原文件。可视化：左右代码节点映射；交互：悬停查看移除、改写和保留。",
     "sourceUrls": [
       "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
-      "https://www.typescriptlang.org/tsconfig/"
+      "https://www.typescriptlang.org/tsconfig/",
+      "https://babeljs.io/docs/",
+      "https://swc.rs/docs/usage/core"
     ],
-    "rewriteRisk": "别用“降级语法”覆盖全部转译场景；要展示输入输出都可阅读。",
+    "rewriteRisk": "别用“降级语法”覆盖全部转译场景；要展示输入输出都可阅读，并明确源码转换、打包、机器码和运行时 API 的边界。",
     "nearDuplicates": [
       "compiler",
       "bundler"

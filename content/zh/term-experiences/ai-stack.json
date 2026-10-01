@@ -8974,16 +8974,16 @@
   },
   {
     "slug": "transpiler",
-    "lead": "TypeScript里的类型标注消失后，为什么输出仍是一段可读JavaScript？",
-    "definition": "转译器把一种源代码转换为抽象层级相近的另一种源代码，常用于语法兼容或语言迁移。",
-    "boundary": "转译后的结果仍是源代码；它不同于生成机器码的典型编译步骤，也不是模块打包。",
+    "lead": "TypeScript 里的 : number 去哪儿了？去掉它之后，输出为什么还是一份能直接阅读的 JavaScript？",
+    "definition": "转译器把一种源代码改写成另一种源代码，改的是语法，以及类型标注这类只在开发时起作用的信息。TypeScript 的类型标注能帮开发工具查出代码里的错误，转成 JavaScript 时会被转译器移除；输出仍是一份源代码。",
+    "boundary": "转译输出仍是源代码，通常还要交给打包或构建工具，再由运行时（真正执行代码的环境，比如浏览器）执行。转译器只对源代码做这种改写，环境里缺失的 API 它不会替你补上；那通常要引入垫片（补足缺失功能的一小段代码）或其他库。",
     "sceneKind": "transform",
     "sceneTitle": "相近层级源码之间的对应",
     "actionLabel": "悬停查看映射",
     "actors": [
       {
         "id": "ts",
-        "label": "TypeScript源码",
+        "label": "TypeScript 源码",
         "detail": "const n: number = 3",
         "icon": "code",
         "group": "输入"
@@ -8991,20 +8991,20 @@
       {
         "id": "tree",
         "label": "语法结构",
-        "detail": "赋值+类型节点",
+        "detail": "赋值 + 类型标注",
         "icon": "layout",
         "group": "中间"
       },
       {
         "id": "rule",
         "label": "转译规则",
-        "detail": "移除类型节点",
+        "detail": "移除类型标注",
         "icon": "gear",
         "group": "转换"
       },
       {
         "id": "js",
-        "label": "JavaScript源码",
+        "label": "JavaScript 源码",
         "detail": "const n = 3",
         "icon": "code",
         "group": "输出"
@@ -9033,7 +9033,7 @@
     "frames": [
       {
         "label": "读取源代码",
-        "note": "输入同时含赋值结构和1个类型节点。",
+        "note": "输入同时含赋值结构和类型标注；类型标注供开发工具检查，JavaScript 运行时（比如浏览器）不会去读它。",
         "activeIds": [
           "ts",
           "tree"
@@ -9043,15 +9043,15 @@
           "js"
         ],
         "values": {
-          "tree": "赋值1 · 类型1"
+          "tree": "赋值 · 类型"
         },
         "activeEdgeIds": [
           "t-tree"
         ]
       },
       {
-        "label": "应用目标规则",
-        "note": "JavaScript不保留这个类型节点，赋值结构不变。",
+        "label": "应用转译规则",
+        "note": "转译规则保留赋值结构、移除类型标注；去掉 : number 后，n 还是 3，程序的行为没有变化。",
         "activeIds": [
           "tree",
           "rule"
@@ -9063,7 +9063,7 @@
           "js"
         ],
         "values": {
-          "rule": "移除类型节点1"
+          "rule": "移除类型节点"
         },
         "activeEdgeIds": [
           "tree-r"
@@ -9071,7 +9071,7 @@
       },
       {
         "label": "输出仍是源码",
-        "note": "结果是可继续阅读和打包的JavaScript。",
+        "note": "输出还是一份能直接阅读的 JavaScript 源码，之后可以打包，最后交给运行时执行。运行出错时报的是这份 JavaScript 的位置，source map（记录转译前后位置对应关系的文件）能把错误指回 TypeScript 原文件。",
         "activeIds": [
           "js"
         ],
@@ -9082,47 +9082,57 @@
         ],
         "mutedIds": [],
         "values": {
-          "js": "const n = 3"
+          "js": "const n = 3 · source map"
         },
         "activeEdgeIds": [
           "r-j"
         ]
       }
     ],
-    "insight": "转译器把一种源码变成另一种相近层级源码，不等于生成机器码或完成打包。",
+    "insight": "转译器改写语言层的源码，保留可读输入输出；它不生成最终机器码、不自动打包，也不补齐缺失的运行时 API。",
     "quiz": {
-      "question": "TypeScript转成JavaScript后，下一步还可能需要什么？",
+      "question": "TypeScript 转成 JavaScript 后，为什么还需要后续步骤？",
       "options": [
         {
-          "label": "打包或继续构建",
+          "label": "输出仍是源码，还要交给构建流程处理，或由运行时执行",
           "correct": true
         },
         {
-          "label": "重新加入所有类型标注",
+          "label": "因为转译器已经把代码变成了能直接执行的机器码",
           "correct": false
         },
         {
-          "label": "把源码当成数据库",
+          "label": "转译器会自动补齐所有缺失的运行时 API",
           "correct": false
         }
       ],
-      "success": "转译只完成语言层转换。",
-      "retry": "资源组织和发布仍是后续环节。"
+      "success": "转译完成语言层改写，构建和运行仍有各自职责。",
+      "retry": "想想输出是否已经是最终可执行产物。"
     },
     "prompt": {
-      "title": "核对一次转译",
-      "text": "并排放出最小输入与输出，标出被移除、改写和保留的语法节点，确认运行行为是否一致。"
+      "title": "核对一次转译链路",
+      "text": "左右对照输入和输出：: number 被移除了，赋值结构原样保留；出错时，source map（记录转译前后位置对应关系的文件）会把位置指回 TypeScript 原文件。"
     },
     "sources": [
       {
         "url": "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
-        "label": "TypeScript 官方文档 · typescript from scratch",
-        "note": "类型系统与编译行为"
+        "label": "TypeScript 官方文档 · TypeScript from Scratch",
+        "note": "类型标注、编译输出与 JavaScript 兼容"
       },
       {
         "url": "https://www.typescriptlang.org/tsconfig/",
-        "label": "TypeScript 官方文档 · tsconfig",
-        "note": "类型系统与编译行为"
+        "label": "TypeScript 官方文档 · TSConfig",
+        "note": "目标环境、模块和源码映射配置"
+      },
+      {
+        "url": "https://babeljs.io/docs/",
+        "label": "Babel 官方文档",
+        "note": "JavaScript 语法转换与插件化转译"
+      },
+      {
+        "url": "https://swc.rs/docs/usage/core",
+        "label": "SWC 官方文档 · Core",
+        "note": "源码到源码转换与 AST 处理"
       }
     ]
   },

@@ -2258,44 +2258,44 @@
     "en": "Transpiler",
     "slug": "transpiler",
     "cat": "技术栈",
-    "say": "把一种源代码转换成另一种相近层级的源代码。",
+    "say": "把一种源代码改写成另一种源代码，让目标语言或环境能接着处理。",
     "aliases": [
       "源码转换器",
       "transpile",
       "源到源编译"
     ],
-    "question": "旧浏览器不认识新语法时，项目怎样兼容？",
-    "definition": "转译器改写语法或语言形式，例如把较新的 JavaScript 或 TypeScript 转成目标环境可处理的代码。",
-    "boundary": "转译通常不提供缺失的运行时 API，那类兼容需要垫片或其他实现。",
+    "question": "TypeScript 里的 : number，到了 JavaScript 里去哪儿了？",
+    "definition": "转译器把一种源代码改写成另一种源代码，改的是语法，以及类型标注这类只在开发时起作用的信息。例如 TypeScript 的类型标注能帮开发工具查出代码里的错误，转成 JavaScript 时会被移除。",
+    "boundary": "转译输出仍是源代码，通常还要交给打包或构建工具，再由运行时（真正执行代码的环境，比如浏览器）执行。转译器只对源代码做这种改写，环境里缺失的 API 它不会替你补上；那通常要引入垫片（补足缺失功能的一小段代码）或其他库。",
     "demoType": "flow",
     "demoTitle": "新语法转成目标语法",
     "demoSteps": [
       {
         "label": "输入",
-        "value": "可选链 user?.name",
-        "note": "目标环境暂不支持。"
+        "value": "TypeScript：const n: number = 3",
+        "note": "类型标注帮助开发工具检查代码，JavaScript 运行时（比如浏览器）不会去读它。"
       },
       {
         "label": "转换",
-        "value": "改写为空值判断",
-        "note": "语义保持，语法换成旧写法。"
+        "value": "保留赋值结构，移除类型标注",
+        "note": "去掉 : number 后，n 还是 3，程序的行为没有变化。"
       },
       {
         "label": "输出",
-        "value": "目标环境可解析的源码",
-        "note": "源映射仍能指回原文件。"
+        "value": "JavaScript：const n = 3",
+        "note": "结果还是一份能直接阅读的 JavaScript 源码，之后可以打包，最后交给运行时执行；source map（记录转译前后位置对应关系的文件）能把错误指回原文件。"
       }
     ],
-    "quizQuestion": "转译器主要改变什么？",
+    "quizQuestion": "TypeScript 转成 JavaScript 后，为什么还需要后续步骤？",
     "quizOptions": [
-      "源代码的语法形式",
-      "生产数据库结构",
-      "用户的网络带宽"
+      "输出仍是源码，还要交给构建流程处理，或由运行时执行",
+      "因为转译器已经把代码变成了能直接执行的机器码",
+      "转译器会自动补齐所有缺失的运行时 API"
     ],
-    "correctText": "转译器处理源代码之间的转换。",
-    "wrongText": "它不直接修改业务数据或网络条件。",
-    "promptTitle": "配置转译目标",
-    "prompt": "请说明源码语言、目标运行环境、需要转换的语法和不由转译器处理的 API。",
+    "correctText": "转译只完成语言层改写，输出还要进入构建或运行流程。",
+    "wrongText": "它不会自动生成最终机器码，也不会补齐缺失的运行时功能。",
+    "promptTitle": "核对一次转译链路",
+    "prompt": "左右对照输入和输出：: number 被移除了，赋值结构原样保留；出错时，source map（记录转译前后位置对应关系的文件）会把位置指回 TypeScript 原文件。",
     "relatedSlugs": [
       "compiler",
       "typescript",
