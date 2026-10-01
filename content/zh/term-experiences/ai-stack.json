@@ -11388,45 +11388,45 @@
   },
   {
     "slug": "linter",
-    "lead": "一段代码同时有未使用变量和恒真条件，检查器怎样指出两处不同问题？",
-    "definition": "代码检查器按语法树和规则寻找可能的错误、不一致或危险写法，并报告位置与规则编号。",
-    "boundary": "检查器不只是格式工具，也不能证明程序逻辑正确；规则集决定它能发现什么。",
+    "lead": "一段代码同时有未使用变量和恒真条件，linter 怎样指出两处不同问题？",
+    "definition": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等问题；部分诊断可以自动修复，CI 或提交钩子也可以把严重问题设为门槛。",
+    "boundary": "它只检查规则能描述的源码模式，不执行完整业务流程，所以不能替代测试和运行时监控。它能发现什么取决于启用了哪些规则：关闭规则只是停止相应报告。",
     "sceneKind": "tree",
-    "sceneTitle": "规则沿语法树寻找命中节点",
+    "sceneTitle": "规则如何沿语法树产生诊断",
     "actionLabel": "启停一条规则",
     "actors": [
       {
         "id": "code",
         "label": "源代码",
-        "detail": "12行",
+        "detail": "12 行，含 total 和 if(true)",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "ast",
         "label": "语法树",
-        "detail": "声明与条件节点",
+        "detail": "变量与条件节点带位置",
         "icon": "layout",
         "group": "结构"
       },
       {
         "id": "unused",
         "label": "未使用规则",
-        "detail": "命中行3",
+        "detail": "命中第 3 行",
         "icon": "shield",
         "group": "规则"
       },
       {
         "id": "constant",
-        "label": "恒真规则",
-        "detail": "命中行7",
+        "label": "恒真条件规则",
+        "detail": "命中第 7 行",
         "icon": "shield",
         "group": "规则"
       },
       {
         "id": "report",
         "label": "诊断列表",
-        "detail": "2条",
+        "detail": "2 条",
         "icon": "message",
         "group": "输出"
       }
@@ -11466,7 +11466,7 @@
     "frames": [
       {
         "label": "解析代码",
-        "note": "12行源码先变成带位置的语法树。",
+        "note": "12 行源码先变成带位置的语法树，规则可以按结构找到变量和条件节点。",
         "activeIds": [
           "code",
           "ast"
@@ -11484,7 +11484,7 @@
       },
       {
         "label": "未使用规则命中",
-        "note": "声明节点没有任何引用，行3产生1条诊断。",
+        "note": "total 的声明没有引用，未使用规则在第 3 行产生 1 条诊断。",
         "activeIds": [
           "unused"
         ],
@@ -11496,7 +11496,7 @@
           "constant"
         ],
         "values": {
-          "unused": "行3"
+          "unused": "第 3 行"
         },
         "activeEdgeIds": [
           "a-u"
@@ -11504,7 +11504,7 @@
       },
       {
         "label": "恒真规则命中",
-        "note": "条件左右都是常量，行7再增加1条诊断。",
+        "note": "if (true) 的条件恒为真，恒真条件规则在第 7 行再增加 1 条诊断。",
         "activeIds": [
           "constant"
         ],
@@ -11516,7 +11516,7 @@
           "unused"
         ],
         "values": {
-          "constant": "行7"
+          "constant": "第 7 行"
         },
         "activeEdgeIds": [
           "a-c"
@@ -11524,7 +11524,7 @@
       },
       {
         "label": "报告汇总",
-        "note": "诊断数变为2；关闭恒真规则后只剩1条。",
+        "note": "关闭未使用变量规则后，诊断数从 2 条变成 1 条；格式化器负责排版，不负责报告这两类问题。",
         "activeIds": [
           "report"
         ],
@@ -11544,7 +11544,7 @@
         ]
       }
     ],
-    "insight": "linter依据规则报告潜在问题；它不只排版，也不能证明业务逻辑正确。",
+    "insight": "linter依据静态规则报告源码模式，格式化器负责排版；两者都不能证明业务逻辑已经正确。",
     "quiz": {
       "question": "把代码自动对齐缩进，主要是哪类工具的工作？",
       "options": [
@@ -11553,7 +11553,7 @@
           "correct": true
         },
         {
-          "label": "linter的全部职责",
+          "label": "linter 的全部职责",
           "correct": false
         },
         {
@@ -11561,23 +11561,33 @@
           "correct": false
         }
       ],
-      "success": "排版重写与规则诊断不同。",
-      "retry": "linter可以含风格规则，但核心不等于格式化。"
+      "success": "格式化器重写排版，linter 诊断规则问题。",
+      "retry": "linter 可以包含风格规则，但核心工作不是统一排版。"
     },
     "prompt": {
-      "title": "审查代码检查规则",
-      "text": "列出规则名、命中语法、严重级别、能否自动修复和误报例子，再按项目风险决定启用级别。"
+      "title": "处理一份 lint 报告",
+      "text": "逐条记录规则名、命中的语法结构、严重级别、能否自动修复和误报理由，再决定哪些规则可以成为 CI 或提交钩子的门槛。"
     },
     "sources": [
       {
         "url": "https://eslint.org/docs/latest/use/core-concepts/",
-        "label": "ESLint 官方文档 · core concepts",
-        "note": "原始规范与实现说明"
+        "label": "ESLint Docs · core concepts",
+        "note": "说明 linter 解析源码、应用规则并输出诊断的基本流程。"
       },
       {
-        "url": "https://eslint.org/docs/latest/extend/custom-rules",
-        "label": "ESLint 官方文档 · custom rules",
-        "note": "原始规范与实现说明"
+        "url": "https://eslint.org/docs/latest/use/configure/rules",
+        "label": "ESLint Docs · configure rules",
+        "note": "说明规则的 error/warn/off 级别和如何启停规则。"
+      },
+      {
+        "url": "https://typescript-eslint.io/getting-started/",
+        "label": "typescript-eslint · getting started",
+        "note": "说明如何让 ESLint 解析 TypeScript 并运行类型相关规则。"
+      },
+      {
+        "url": "https://github.com/standard/standard",
+        "label": "JavaScript Standard Style",
+        "note": "展示一套把规则检查与自动修复命令结合的实际规则集。"
       }
     ]
   },

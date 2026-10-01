@@ -922,14 +922,16 @@
   },
   {
     "slug": "linter",
-    "mechanism": "代码检查器按语法树和规则寻找可能的错误、不一致或危险写法，并报告位置与规则编号。",
-    "misconception": "检查器不只是格式工具，也不能证明程序逻辑正确；规则集决定它能发现什么。",
-    "demoSignature": "输入：代码中1个未使用变量和1个恒真条件；中间：语法树遍历命中2条规则，错误计数0→2；输出：行3和行7两条诊断。可视化：建议4帧的语法树扫描光标；交互：逐条启停规则观察诊断消失。",
+    "mechanism": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等源码模式；部分诊断可自动修复，CI 或提交钩子可按严重级别设置门槛。",
+    "misconception": "linter 不是格式化器，也不能证明业务逻辑正确；它能发现什么取决于规则集，关闭规则只会停止相应报告。",
+    "demoSignature": "输入：12 行源码含未使用变量 total 和 if(true)；中间：源码解析为带位置的语法树，两个规则分别命中第 3、7 行；输出：2 条诊断，关闭未使用变量规则后剩 1 条，格式化器只负责排版。可视化：四帧展示解析、规则命中和报告汇总；交互：逐条启停规则观察诊断变化。",
     "sourceUrls": [
       "https://eslint.org/docs/latest/use/core-concepts/",
-      "https://eslint.org/docs/latest/extend/custom-rules"
+      "https://eslint.org/docs/latest/use/configure/rules",
+      "https://typescript-eslint.io/getting-started/",
+      "https://github.com/standard/standard"
     ],
-    "rewriteRisk": "避免与formatter共用“让代码更规范”的空话；要展示规则诊断及不可自动修复项。",
+    "rewriteRisk": "先解释静态检查、语法树、规则和诊断，再区分格式化器、测试与监控；不要把关闭规则写成问题已经消失。",
     "nearDuplicates": [
       "formatter",
       "sast"
