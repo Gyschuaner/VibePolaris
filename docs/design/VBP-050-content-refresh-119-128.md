@@ -49,4 +49,12 @@
 
 ## 发布边界
 
-本批公开清单和现有数据驱动词条入口随十条一起发布；没有把额外功能、独立组件或实验性代码带入本批。生产合并、部署、健康检查、版本和回滚信息以 DP deployment 记录及后续发布提交补录。
+本批公开清单和现有数据驱动词条入口随十条一起发布；没有把额外功能、独立组件或实验性代码带入本批。十条词条是逐条完成、逐条审读和逐条提交，公开上线按一个十条批次执行。
+
+- PR #268 已合并到 `main`，合并提交为 `69db765d2f378d4b313221012d89ffc486ecf108`。
+- 生产使用 `release/VBP-050-prod-overlay-20261001` 覆盖分支，基于当时生产新闻版本 `85b7b0f979502fc71e490db7250e84fe85bda1b8`，部署提交为 `0662c3429667371a90f23d5348d064bc27a1c064`。该覆盖保留既有 `/news`，只叠加本批内容、公开清单、来源 schema 和研发记录。
+- DP deployment：`deploy-vbp050-content-119-128-prod-20261001`，ID `8f3fc6dc-936e-4c43-b6d1-c2b0369cca14`，状态 `released`，目标为 `prod`。
+- 当前生产发布为 `/opt/vibepolaris/releases/20261001T155220Z-0662c342`，镜像为 `vibepolaris:0662c3429667371a90f23d5348d064bc27a1c064`；容器健康检查通过。
+- 生产复核：十条 `/terms/<slug>` 和 `/news` 均返回 HTTP 200；十条关键正文标记均可检出；CUA 抽查 `generative-ai` 和 `tool-result` 的真实页面可见内容，其中后者显示 `call_id=inv-7`、`HTTP 200` 和 `stock=0`。
+- 部署中曾发现直接使用 `main` 会覆盖生产已有 `/news` 的风险，已立即回滚到 `/opt/vibepolaris/releases/20261001T151627Z-85b7b0f` 并确认 `/news` 恢复，再改用上述生产覆盖分支部署；数据库卷未改动。
+- 回滚目标为 `/opt/vibepolaris/releases/20261001T151627Z-85b7b0f`。`D:/Obsidian/gysnote` 在当前 Mac 环境不存在，因此未写入 Obsidian，已保留在本记录中。
