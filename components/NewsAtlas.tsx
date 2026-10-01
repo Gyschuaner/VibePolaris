@@ -455,8 +455,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
             <svg className="news-atlas-graph-lines" aria-hidden="true">
               {edges.map(edge => {
                 const connected = edge.source === selectedNodeSlug || edge.target === selectedNodeSlug;
-                const hoveredConnected = hovered && (edge.source === hovered || edge.target === hovered);
-                const visible = showLines || connected || Boolean(hoveredConnected);
+                const visible = Boolean(selectedNodeSlug) && showLines && connected;
                 const from = bySlug.get(edge.source);
                 const to = bySlug.get(edge.target);
                 if (!from || !to) return null;
@@ -464,7 +463,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                 return <line key={key} ref={element => {
                   if (element) lineElements.current.set(key, { element, ...edge });
                   else lineElements.current.delete(key);
-                }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} strokeLinecap="round" className={`news-atlas-graph-line${connected || hoveredConnected ? " is-connected" : ""}`} style={{ opacity: visible ? undefined : 0 }} />;
+                }} x1={from.x} y1={from.y} x2={to.x} y2={to.y} strokeLinecap="round" className={`news-atlas-graph-line${connected ? " is-connected" : ""}`} style={{ opacity: visible ? undefined : 0 }} />;
               })}
             </svg>
             {nodes.map(node => {
