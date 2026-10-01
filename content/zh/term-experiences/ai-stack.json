@@ -11994,45 +11994,45 @@
   },
   {
     "slug": "function",
-    "lead": "调用add(2,3)时，参数和局部变量是怎样进入又离开调用栈的？",
-    "definition": "函数把一段可调用的行为封装起来，接收参数，在独立执行环境中运行，并可产生返回值或副作用。",
-    "boundary": "函数不一定都有返回值，也不一定是纯函数；相同输入是否得到相同输出取决于它读取的状态。",
+    "lead": "调用 calculate(20, 3) 时，实参怎样绑定到局部参数，结果又怎样回到 total？",
+    "definition": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用都会建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
+    "boundary": "函数不一定有返回值，也不一定是纯函数。它可能修改或读取函数外的状态，或执行 I/O（读写文件、网络等），所以传入相同的实参，不一定每次都得到相同的结果。",
     "sceneKind": "timeline",
-    "sceneTitle": "函数调用帧的完整生命周期",
+    "sceneTitle": "一次函数调用怎样进出局部环境",
     "actionLabel": "进入下一步",
     "actors": [
       {
         "id": "caller",
         "label": "调用位置",
-        "detail": "result = add(2,3)",
+        "detail": "total = calculate(20, 3)",
         "icon": "code",
         "group": "外部"
       },
       {
         "id": "frame",
         "label": "调用帧",
-        "detail": "a=2 · b=3",
+        "detail": "price=20 · count=3",
         "icon": "memory",
         "group": "函数"
       },
       {
         "id": "body",
         "label": "函数体",
-        "detail": "a+b",
+        "detail": "price × count",
         "icon": "gear",
         "group": "执行"
       },
       {
         "id": "return",
         "label": "返回通道",
-        "detail": "5",
+        "detail": "60",
         "icon": "message",
         "group": "结果"
       },
       {
         "id": "stack",
         "label": "调用栈",
-        "detail": "深度0",
+        "detail": "深度 0 → 1 → 0",
         "icon": "layout",
         "group": "状态"
       }
@@ -12066,7 +12066,7 @@
     "frames": [
       {
         "label": "调用前",
-        "note": "调用栈深度为0，result尚未赋值。",
+        "note": "调用栈深度为 0，total 尚未赋值；函数定义已经存在但函数体还没运行。",
         "activeIds": [
           "caller",
           "stack"
@@ -12078,13 +12078,13 @@
         ],
         "values": {
           "stack": "0",
-          "caller": "result=?"
+          "caller": "total=?"
         },
         "activeEdgeIds": []
       },
       {
         "label": "压入调用帧",
-        "note": "a和b绑定为2、3，栈深度变1。",
+        "note": "实参 20、3 分别绑定到局部参数 price、count，栈深度变为 1。",
         "activeIds": [
           "frame",
           "stack"
@@ -12096,7 +12096,7 @@
           "return"
         ],
         "values": {
-          "frame": "a=2 · b=3",
+          "frame": "price=20 · count=3",
           "stack": "1"
         },
         "activeEdgeIds": [
@@ -12105,7 +12105,7 @@
       },
       {
         "label": "函数体求值",
-        "note": "局部表达式a+b得到5。",
+        "note": "本次局部表达式 price × count 得到 60，外部代码暂时看不到局部参数。",
         "activeIds": [
           "body"
         ],
@@ -12117,7 +12117,7 @@
           "return"
         ],
         "values": {
-          "body": "5"
+          "body": "60"
         },
         "activeEdgeIds": [
           "f-b"
@@ -12125,7 +12125,7 @@
       },
       {
         "label": "返回并弹栈",
-        "note": "5交回调用位置，栈深度恢复0。",
+        "note": "60 交回调用位置，total=60；调用帧弹出，局部参数离开本次调用，栈深度恢复 0。",
         "activeIds": [
           "return",
           "caller",
@@ -12137,8 +12137,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "return": "5",
-          "caller": "result=5",
+          "return": "60",
+          "caller": "total=60",
           "stack": "0"
         },
         "activeEdgeIds": [
@@ -12147,9 +12147,9 @@
         ]
       }
     ],
-    "insight": "函数封装一次可调用行为；是否纯净、是否有返回值要看具体实现。",
+    "insight": "函数把一次行为和本次局部调用隔离开；参数绑定、返回值、纯度和副作用都取决于具体实现。",
     "quiz": {
-      "question": "相同参数调用两次却结果不同，可能因为什么？",
+      "question": "用相同实参调用两次却结果不同，可能因为什么？",
       "options": [
         {
           "label": "函数读取了外部可变状态",
@@ -12164,18 +12164,33 @@
           "correct": false
         }
       ],
-      "success": "函数可能有副作用或外部依赖。",
-      "retry": "封装不保证纯度。"
+      "success": "函数可能读取外部状态、执行 I/O 或产生副作用。",
+      "retry": "封装行为不保证纯度，继续检查函数外的读写。"
     },
     "prompt": {
-      "title": "检查一个函数",
-      "text": "列出参数、局部状态、返回值和所有外部读写，再判断它是否能用相同输入稳定复现。"
+      "title": "说明一个函数的行为",
+      "text": "写清函数定义中的参数、调用时传入的实参、局部状态、返回值、可能副作用、错误处理和一个最小调用示例。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+        "label": "MDN · JavaScript functions",
+        "note": "说明函数定义、调用、参数、返回值、作用域和闭包。"
+      },
+      {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
-        "label": "ECMAScript 规范 · ecmascript language functions and classes",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript · functions and classes",
+        "note": "说明 JavaScript 函数定义、调用和执行上下文的规范语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+        "label": "Python Docs · defining functions",
+        "note": "说明函数定义、参数绑定、局部变量和 return。"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html",
+        "label": "TypeScript Docs · functions",
+        "note": "说明 TypeScript 函数参数、返回类型和可调用签名。"
       }
     ]
   },

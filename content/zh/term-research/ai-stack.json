@@ -972,13 +972,16 @@
   },
   {
     "slug": "function",
-    "mechanism": "函数把一段可调用的行为封装起来，接收参数，在独立执行环境中运行，并可产生返回值或副作用。",
-    "misconception": "函数不一定都有返回值，也不一定是纯函数；相同输入是否得到相同输出取决于它读取的状态。",
-    "demoSignature": "输入：add(a,b)与参数2、3；中间：创建调用帧，a=2、b=3，表达式求得5；输出：调用帧弹出并返回5。可视化：建议4帧的调用栈推入弹出；交互：切换纯函数/读取全局变量版本。",
+    "mechanism": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
+    "misconception": "函数不只是可复用代码块，也不保证纯度或固定返回值；它可能读取或修改外部状态、执行 I/O，局部参数只属于本次调用。",
+    "demoSignature": "输入：total = calculate(20, 3)，函数参数为 price、count；中间：调用帧绑定 price=20、count=3，函数体求 price×count=60；输出：返回 60 给 total，调用帧弹出，栈深度 0→1→0。可视化：四帧展示调用、局部绑定、执行、返回；交互：切换读取外部状态的版本比较相同参数的结果。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
+      "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
-    "rewriteRisk": "不要把函数只写成“可复用代码块”；应表现调用、局部绑定和返回。",
+    "rewriteRisk": "先解释定义/调用、形参/实参、局部调用帧和返回值，再使用调用栈、I/O 或纯函数；不要把函数写成必然纯净或必然有返回值。",
     "nearDuplicates": [
       "parameter",
       "return-value",
