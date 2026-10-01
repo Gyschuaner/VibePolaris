@@ -61,6 +61,13 @@ reader 输入是当前词条的读者可见文案与按阶段配对的状态材�
 
 ## 生产发布记录
 
-截至创建本记录时，本批已完成逐条内容、十条批量公开清单、构建和本地受影响交互验收；VBP-053 的生产合并、部署、线上十条路由检查和 DP 发布记录在完成后补录。生产覆盖分支必须保留现有线上 `/news` 版本，只叠加本批内容和公开清单。
+本批已完成逐条内容、十条批量公开清单、构建、本地受影响交互验收、main 合并和生产发布。生产覆盖分支保留了现有线上 `/news` 版本，只叠加本批内容、公开清单和研发记录。
+
+- 内容 PR [#274](https://github.com/Gyschuaner/VibePolaris/pull/274) 已合入 `main`，合并提交为 `b02a0785492bed5f1a1b553e5961fa8908ce1cce`。
+- 生产覆盖分支为 `release/VBP-053-prod-overlay-20261002`，提交为 `c0f5def8e3561ae50b831c96941e39845c1f3751`；镜像为 `vibepolaris:c0f5def8`，本机 `linux/amd64` 构建和容器内静态构建通过。
+- 当前生产目录为 `/opt/vibepolaris/releases/20261001T223056Z-c0f5def8`，容器 healthcheck 为 `healthy`，`current` 已指向该目录；上一版发布目录 `/opt/vibepolaris/releases/20261001T204507Z-7b110d29` 保留，回滚目标为 `/opt/vibepolaris/releases/20261001T190755Z-1bd2aa29`。
+- DP deployment `deploy-vbp053-content-149-158-prod-20261002`，对象 ID `76ce66f0-8795-4d83-8e0a-20901f2fd466`，状态 `released`，关联需求 `VBP-053`；VBP-053 需求状态为 `released`，十个研发任务均为 `done`。
+- HTTPS 线上检查通过：十条 `/terms/<slug>` 路由、`/news` 和新闻详情页均返回 HTTP 200；线上浏览器打开 `parameter`，推进实参绑定、默认值帧并答对默认值小测，页面反馈正常。
+- `vibepolaris_xiaobei_data` 持久化数据卷未改动；回滚使用上一版 Compose 与镜像恢复 web，再将 `/opt/vibepolaris/current` 指回上一版目录。
 
 Obsidian 记录路径 `D:/Obsidian/gysnote` 在当前 Mac 环境不存在，本批不创建空记录；研发记录保留在本文件与 DP。
