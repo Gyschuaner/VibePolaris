@@ -14485,45 +14485,45 @@
   },
   {
     "slug": "serverless",
-    "lead": "一分钟请求从0涨到120再归零时，运行实例为何会从0变6又回0？",
-    "definition": "无服务器架构把代码或服务交给平台按请求或事件运行，平台负责资源调度和扩缩容，使用者仍需管理代码、配置和数据。",
-    "boundary": "它并非没有服务器，也不保证更便宜；冷启动、执行时限和持续高负载会改变取舍。",
+    "lead": "在这份演示里，请求量从每分钟 0 涨到 120 再归零，平台为什么会让函数从 0 份跑到 6 份，又回到 0 份？",
+    "definition": "无服务器架构下，开发者把函数（一小段只做一件事的代码）交给云平台，在请求或事件到来时准备运行环境；平台管理底层服务器和自动扩缩，开发者仍负责代码、配置和数据。",
+    "boundary": "服务器仍然存在；第一次运行可能有冷启动，函数执行有时间和内存限制，状态不能只放在临时内存，持续高负载也未必便宜。",
     "sceneKind": "timeline",
-    "sceneTitle": "平台实例随事件负载伸缩",
+    "sceneTitle": "请求变化，函数运行份数跟着变",
     "actionLabel": "拖动请求速率",
     "actors": [
       {
         "id": "traffic",
         "label": "请求速率",
-        "detail": "0 / min",
+        "detail": "0 / 分钟",
         "icon": "chart",
         "group": "输入"
       },
       {
         "id": "platform",
         "label": "运行平台",
-        "detail": "自动调度",
+        "detail": "准备和回收运行环境",
         "icon": "cloud",
         "group": "控制"
       },
       {
         "id": "instances",
-        "label": "函数实例",
-        "detail": "0个",
+        "label": "函数运行份数",
+        "detail": "0 份",
         "icon": "server",
         "group": "执行"
       },
       {
         "id": "cold",
         "label": "冷启动",
-        "detail": "首批420ms",
+        "detail": "未发生",
         "icon": "clock",
         "group": "延迟"
       },
       {
         "id": "cost",
         "label": "计费状态",
-        "detail": "按运行量",
+        "detail": "按实际运行量（示例）",
         "icon": "chart",
         "group": "结果"
       }
@@ -14539,13 +14539,13 @@
         "id": "p-i",
         "from": "platform",
         "to": "instances",
-        "label": "扩缩"
+        "label": "准备 / 回收"
       },
       {
         "id": "i-c",
         "from": "instances",
         "to": "cold",
-        "label": "启动"
+        "label": "首次启动"
       },
       {
         "id": "i-cost",
@@ -14557,7 +14557,7 @@
     "frames": [
       {
         "label": "没有请求",
-        "note": "平台保留代码配置，但运行实例数为0。",
+        "note": "平台保留代码和配置，当前没有正在运行的函数。",
         "activeIds": [
           "traffic",
           "platform",
@@ -14568,14 +14568,15 @@
           "cold"
         ],
         "values": {
-          "traffic": "0/min",
-          "instances": "0"
+          "traffic": "0 / 分钟",
+          "instances": "0 份",
+          "cold": "未发生"
         },
         "activeEdgeIds": []
       },
       {
         "label": "流量突增",
-        "note": "请求升到120/min，平台拉起6个实例。",
+        "note": "请求升到 120 / 分钟，一份环境同时能处理的请求有限，平台开出 6 份来分担（示例）。",
         "activeIds": [
           "traffic",
           "platform",
@@ -14586,8 +14587,8 @@
           "cold"
         ],
         "values": {
-          "traffic": "120/min",
-          "instances": "0 → 6"
+          "traffic": "120 / 分钟",
+          "instances": "0 → 6 份"
         },
         "activeEdgeIds": [
           "t-p",
@@ -14595,8 +14596,8 @@
         ]
       },
       {
-        "label": "首批冷启动",
-        "note": "新实例第一次启动，示例延迟从80升到420ms。",
+        "label": "第一次启动",
+        "note": "新运行环境先加载代码，示例首批请求延迟升到 420 ms。",
         "activeIds": [
           "instances",
           "cold"
@@ -14615,7 +14616,7 @@
       },
       {
         "label": "流量归零",
-        "note": "请求停止后实例6变0，计量停止增长。",
+        "note": "请求停止后运行份数从 6 降到 0；示例按运行量计费，空闲时计量不再增长。",
         "activeIds": [
           "traffic",
           "platform",
@@ -14627,9 +14628,9 @@
         ],
         "mutedIds": [],
         "values": {
-          "traffic": "0/min",
-          "instances": "6 → 0",
-          "cost": "idle"
+          "traffic": "0 / 分钟",
+          "instances": "6 → 0 份",
+          "cost": "空闲不增长"
         },
         "activeEdgeIds": [
           "p-i",
@@ -14637,9 +14638,9 @@
         ]
       }
     ],
-    "insight": "无服务器架构把资源调度交给平台，并不是真的没有服务器或没有运维取舍。",
+    "insight": "平台接管服务器和自动扩缩，开发者仍要负责代码和数据；是否合适，要看流量起伏、延迟要求、最长执行时间、状态放在哪里，以及平台限制。",
     "quiz": {
-      "question": "持续高负载下，serverless一定更便宜吗？",
+      "question": "持续高负载下，Serverless 一定更便宜吗？",
       "options": [
         {
           "label": "不一定，要比较计费、时限和常驻方案",
@@ -14658,14 +14659,34 @@
       "retry": "需要用真实流量测算。"
     },
     "prompt": {
-      "title": "评估一个serverless任务",
-      "text": "记录触发方式、峰谷流量、执行时间、并发、冷启动、状态存放和失败重试，再与常驻服务比较。"
+      "title": "评估一个 Serverless 任务",
+      "text": "记录触发方式、峰谷请求、延迟、最长执行时间、状态存放、失败重试和成本，再与常驻服务比较。"
     },
     "sources": [
       {
-        "url": "https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf",
-        "label": "开放规范仓库 · cncf serverless whitepaper v1.0",
-        "note": "原始规范与实现说明"
+        "url": "https://cloud.google.com/discover/what-is-serverless-computing",
+        "label": "Google Cloud · What is serverless computing?",
+        "note": "说明平台按使用量准备和扩缩资源，以及冷启动、执行限制和供应商差异。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+        "label": "AWS Lambda · Runtime environment lifecycle",
+        "note": "说明运行环境的初始化、复用、回收和冷启动延迟。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/concepts-event-driven-architectures.html",
+        "label": "AWS Lambda · Event-driven architectures",
+        "note": "说明请求、定时器等事件如何触发函数，以及弹性、延迟和状态一致性的取舍。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-functions-chapter.html",
+        "label": "AWS Lambda · Functions",
+        "note": "说明平台管理服务器、容量、自动扩缩和日志，开发者负责函数代码和权限。"
+      },
+      {
+        "url": "https://www.cncf.io/blog/2018/02/14/cncf-takes-first-step-towards-serverless-computing/",
+        "label": "CNCF · The CNCF takes steps toward serverless computing",
+        "note": "给出 serverless 的定义：无需管理服务器，由平台按需求执行、扩缩和计费。"
       }
     ]
   },
