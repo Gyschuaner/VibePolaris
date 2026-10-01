@@ -286,12 +286,14 @@
   },
   {
     "slug": "agent-orchestration",
-    "mechanism": "编排层把任务分给不同执行单元，管理共享上下文、依赖顺序、超时与结果合并。",
-    "misconception": "多开几个模型并不自动形成编排；没有职责边界和汇总规则时，只是并发调用。",
-    "demoSignature": "输入：报告任务拆为检索、核数、撰写3份子任务；中间：检索8条证据、核数发现1处冲突，撰写被阻塞后重跑；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。 建议6帧：总任务拆成三节点、检索和核数并行、冲突边亮红、撰写暂停、核数重跑、结果汇合；交互：切换串行/并行比较等待时间。",
+    "mechanism": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
+    "misconception": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。",
+    "demoSignature": "输入：报告任务拆为检索、核对、撰写3份子任务；中间：检索8条证据、核对发现1处冲突，撰写被阻塞后按规则排除冲突证据；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。建议6帧：总任务拆成三节点、检索和核对并行、冲突边亮红、撰写暂停、排除冲突证据、结果合并；交互：切换串行/并行比较等待时间。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://openai.github.io/openai-agents-python/running_agents/"
+      "https://openai.github.io/openai-agents-python/running_agents/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
     "rewriteRisk": "强调编排者管理的状态，不要把角色名称堆叠成看似复杂的流程。",
     "nearDuplicates": [

@@ -3609,11 +3609,11 @@
   },
   {
     "slug": "agent-orchestration",
-    "lead": "检索、核数和撰写三个任务互相依赖时，谁负责暂停和重跑？",
-    "definition": "编排层把任务分给不同执行单元，管理共享上下文、依赖顺序、超时与结果合并。",
-    "boundary": "多开几个模型并不自动形成编排；没有职责边界和汇总规则时，只是并发调用。",
+    "lead": "检索与核对可以并行，为什么撰写还要等？",
+    "definition": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
+    "boundary": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。简单任务用一个流程更容易核对。",
     "sceneKind": "network",
-    "sceneTitle": "三项子任务如何被依赖关系协调",
+    "sceneTitle": "并行任务怎样等待依赖并合并结果",
     "actionLabel": "切换串行与并行",
     "actors": [
       {
@@ -3626,28 +3626,28 @@
       {
         "id": "research",
         "label": "检索",
-        "detail": "8条证据",
+        "detail": "8 条证据",
         "icon": "search",
         "group": "任务"
       },
       {
         "id": "verify",
-        "label": "核数",
-        "detail": "发现1处冲突",
+        "label": "核对",
+        "detail": "逐条核对证据",
         "icon": "chart",
         "group": "任务"
       },
       {
         "id": "write",
         "label": "撰写",
-        "detail": "等待一致证据",
+        "detail": "等待核对结果",
         "icon": "file",
         "group": "任务"
       },
       {
         "id": "report",
         "label": "合并报告",
-        "detail": "7条证据",
+        "detail": "7 条证据",
         "icon": "spark",
         "group": "结果"
       }
@@ -3687,7 +3687,7 @@
     "frames": [
       {
         "label": "任务拆开",
-        "note": "编排器建立三项任务和两条依赖。",
+        "note": "编排器先写清三个任务，标出撰写要等核对结果。",
         "activeIds": [
           "orchestrator"
         ],
@@ -3704,8 +3704,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "检索与核数启动",
-        "note": "检索给出8条，核数可以逐条检查。",
+        "label": "检索与核对启动",
+        "note": "检索找到 8 条，核对开始逐条对照。",
         "activeIds": [
           "research",
           "verify"
@@ -3718,7 +3718,7 @@
           "report"
         ],
         "values": {
-          "research": "8条",
+          "research": "8 条",
           "verify": "检查中"
         },
         "activeEdgeIds": [
@@ -3729,7 +3729,7 @@
       },
       {
         "label": "冲突阻塞撰写",
-        "note": "核数发现1处冲突，撰写节点保持等待。",
+        "note": "核对发现 1 处冲突，按既定规则复核，撰写暂停，避免把矛盾结果写进报告。",
         "activeIds": [
           "verify",
           "write"
@@ -3751,8 +3751,8 @@
         ]
       },
       {
-        "label": "重跑并汇合",
-        "note": "冲突证据被排除，7条一致证据交给撰写。",
+        "label": "排除冲突证据后汇合",
+        "note": "7 条一致证据交给撰写，再由撰写合并进报告。",
         "activeIds": [
           "verify",
           "write",
@@ -3765,7 +3765,7 @@
         "mutedIds": [],
         "values": {
           "verify": "冲突 0",
-          "report": "7条证据"
+          "report": "7 条证据"
         },
         "activeEdgeIds": [
           "v-w",
@@ -3773,17 +3773,17 @@
         ]
       }
     ],
-    "insight": "编排管理的是职责、依赖和共享状态；并发调用几个模型并不会自动形成编排。",
+    "insight": "编排先管清楚谁做什么、谁要等谁；并行调用几个模型，不会自动解决冲突。",
     "quiz": {
       "question": "三个智能体并行返回互相矛盾的答案时，缺少的是什么？",
       "options": [
         {
-          "label": "冲突处理与结果合并规则",
-          "correct": true
-        },
-        {
           "label": "更多角色名称",
           "correct": false
+        },
+        {
+          "label": "冲突处理与结果合并规则",
+          "correct": true
         },
         {
           "label": "把三个答案直接拼接",
@@ -3791,7 +3791,7 @@
         }
       ],
       "success": "编排必须处理依赖与冲突。",
-      "retry": "并发数量不能代替协调规则。"
+      "retry": "多开几个智能体，代替不了协调规则。"
     },
     "prompt": {
       "title": "画一张智能体任务图",
@@ -3807,6 +3807,16 @@
         "url": "https://openai.github.io/openai-agents-python/running_agents/",
         "label": "OpenAI Agents SDK · running agents",
         "note": "可运行示例与实现细节"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "并行、编排器与工作流的取舍"
+      },
+      {
+        "url": "https://arxiv.org/abs/2308.08155",
+        "label": "AutoGen · Multi-Agent Conversation",
+        "note": "多智能体对话与可编排的交互模式"
       }
     ]
   },
