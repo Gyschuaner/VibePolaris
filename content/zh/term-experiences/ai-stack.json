@@ -614,10 +614,10 @@
   {
     "slug": "system-prompt",
     "lead": "要求“只返回城市名”后，用户又要一段解释，输出该听谁的？",
-    "definition": "系统提示词在一次模型调用中提供高优先级的角色、边界和输出规则，后续用户输入在这些规则内被处理。",
-    "boundary": "它不是不可绕过的安全边界；权限控制仍要由模型外的代码和系统承担。",
+    "definition": "系统提示词是宿主应用先于对话发给模型的一段高优先级规则（比如扮演什么角色、按什么格式输出、处理哪些任务）。每次调用模型都是一次请求，这段规则能不能被用户的话覆盖，取决于宿主应用的设计。",
+    "boundary": "它可以影响模型的输出，但不等于模型就真的拥有了某个身份、权限或沙箱隔离；模型可能遵循也可能误解这段文字，文件、网络和业务操作仍要由宿主工具与后端校验。",
     "sceneKind": "layers",
-    "sceneTitle": "两层指令怎样限制输出形状",
+    "sceneTitle": "两层指令怎样限制输出形式",
     "actionLabel": "切换系统规则",
     "actors": [
       {
@@ -666,7 +666,7 @@
         "id": "d-o",
         "from": "draft",
         "to": "output",
-        "label": "裁剪"
+        "label": "只保留格式（示意）"
       }
     ],
     "frames": [
@@ -707,7 +707,7 @@
       },
       {
         "label": "候选越界",
-        "note": "草稿多出天气解释，超出系统格式。",
+        "note": "候选回答多出了天气解释，超出了系统规则允许的格式。",
         "activeIds": [
           "draft"
         ],
@@ -728,7 +728,7 @@
       },
       {
         "label": "输出收紧",
-        "note": "解释被裁掉，只保留城市名。",
+        "note": "这里示意只呈现城市名，不表示宿主一定会用程序裁剪。",
         "activeIds": [
           "output"
         ],
@@ -746,7 +746,7 @@
         ]
       }
     ],
-    "insight": "系统提示词影响一次调用的行为，但真正的权限边界仍要放在模型外。",
+    "insight": "系统提示词影响一次请求的行为，可能让模型更倾向遵守角色或格式；真正的权限边界仍要放在模型外。",
     "quiz": {
       "question": "若系统提示写着“不得删除文件”，还需要什么？",
       "options": [
@@ -768,18 +768,33 @@
     },
     "prompt": {
       "title": "整理一段系统提示",
-      "text": "请把任务目标、输出格式、拒绝范围分开写，并列出哪些限制必须由代码或权限系统另外执行。"
+      "text": "请区分行为说明、输出格式和真正的权限控制：把必须由后端或工具校验的条件单独列出。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
-        "label": "OpenAI 官方文档 · prompt engineering",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
+        "label": "OpenAI · Prompt engineering",
+        "note": "消息角色与指令"
       },
       {
         "url": "https://model-spec.openai.com/",
-        "label": "OpenAI Model Spec · overview",
-        "note": "模型行为与指令边界"
+        "label": "OpenAI · Model Spec",
+        "note": "指令层级与行为原则"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/text-generation",
+        "label": "Google · Gemini text generation",
+        "note": "system instruction"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+        "label": "Anthropic · Prompt engineering overview",
+        "note": "提示编排"
+      },
+      {
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+        "label": "OWASP · LLM01 Prompt Injection",
+        "note": "提示注入风险"
       }
     ]
   },
