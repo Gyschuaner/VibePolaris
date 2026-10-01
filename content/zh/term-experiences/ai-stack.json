@@ -12846,8 +12846,8 @@
   {
     "slug": "loop",
     "lead": "数组[2,4,6]怎样在三轮里把累计和从0变成12并停下？",
-    "definition": "循环在条件允许时反复执行同一段逻辑，并在每轮更新索引或状态，直到达到停止条件。",
-    "boundary": "循环不是自动并行；如果状态不朝停止条件推进，可能一直运行。",
+    "definition": "循环先设置初始状态，再反复处理当前项并更新索引或状态，直到停止条件成立。",
+    "boundary": "如果状态不朝停止条件推进，循环可能一直运行；每轮遇到错误时，还要明确是停止、跳过还是重试。这里的 length 是数组中元素的数量，索引到达它时已经没有下一项可读。",
     "sceneKind": "loop",
     "sceneTitle": "索引与累计值每轮共同推进",
     "actionLabel": "单步循环",
@@ -12883,7 +12883,7 @@
       {
         "id": "stop",
         "label": "停止条件",
-        "detail": "index == length",
+        "detail": "索引到达数组长度",
         "icon": "shield",
         "group": "结束"
       }
@@ -12917,7 +12917,7 @@
     "frames": [
       {
         "label": "循环初始化",
-        "note": "索引0，累计和0。",
+      "note": "索引为 0，累计和为 0，准备读取第一项；检查后还有 3 项可读。",
         "activeIds": [
           "array",
           "index",
@@ -12935,7 +12935,7 @@
       },
       {
         "label": "第一轮",
-        "note": "取2后，累计和0变2，索引变1。",
+      "note": "取 2 后，累计和从 0 变 2，索引变为 1。",
         "activeIds": [
           "index",
           "item",
@@ -12958,7 +12958,7 @@
       },
       {
         "label": "继续两轮",
-        "note": "依次加入4和6，累计和2→6→12，索引到3。",
+      "note": "第二轮加入 4 后累计和为 6、索引为 2；第三轮加入 6 后累计和为 12、索引到 3。",
         "activeIds": [
           "index",
           "item",
@@ -12980,7 +12980,7 @@
       },
       {
         "label": "停止",
-        "note": "索引3等于数组长度3，循环结束。",
+      "note": "索引 3 等于数组长度 3，说明没有下一项可读，循环结束。",
         "activeIds": [
           "index",
           "stop"
@@ -12999,9 +12999,9 @@
         ]
       }
     ],
-    "insight": "循环必须让状态朝停止条件推进；只画一个回环箭头看不出是否会结束。",
+  "insight": "循环必须让状态朝停止条件推进；只画一个回环箭头看不出每轮怎样结束。",
     "quiz": {
-      "question": "循环里忘记更新index，主要风险是什么？",
+    "question": "循环里忘记更新 index，主要风险是什么？",
       "options": [
         {
           "label": "停止条件可能永远不成立",
@@ -13016,7 +13016,7 @@
           "correct": false
         }
       ],
-      "success": "状态不推进会造成无限循环。",
+    "success": "状态不推进，停止条件可能永远不成立，循环就不会结束。",
       "retry": "停止条件要与每轮更新配对。"
     },
     "prompt": {
@@ -13025,9 +13025,24 @@
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
-        "label": "ECMAScript 规范 · ecmascript language statements and declarations",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+      "label": "MDN · Loops and iteration",
+      "note": "说明 for、while 等循环如何检查条件、执行循环体和更新状态，并提醒避免无限循环。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
+      "label": "ECMAScript 规范 · Iteration Statements",
+      "note": "规定 JavaScript 各类迭代语句的执行顺序。"
+    },
+    {
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
+      "label": "Python 文档 · The for statement",
+      "note": "说明 for 循环逐项遍历可迭代对象并执行循环体。"
+    },
+    {
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement",
+      "label": "Python 文档 · The while statement",
+      "note": "说明 while 在条件为真时重复执行，条件为假时停止。"
       }
     ]
   },
