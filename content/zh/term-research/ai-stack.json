@@ -905,14 +905,16 @@
   },
   {
     "slug": "source-map",
-    "mechanism": "源映射用映射表把生成代码的位置还原到原始源码的文件、行和列，便于调试和错误定位。",
-    "misconception": "它不会还原执行过程，也可能暴露源码；生产发布是否提供映射需要单独权衡。",
-    "demoSignature": "输入：压缩代码第1行列240报错；中间：映射段把1:240对应到src/app.ts的18:7；输出：调试器跳到原始第18行。可视化：建议3帧的两张代码纸带与定位连线；交互：点击堆栈坐标在两边同步高亮。",
+    "mechanism": "构建工具生成源映射，把生成代码的文件、行列位置对应到原始源码的位置；生成文件通过 sourceMappingURL 指向 map，浏览器调试器读取后可在原始文件上显示错误和设置断点。",
+    "misconception": "源映射只提供位置对照，不会修复错误或改变正在运行的程序；map 可能包含源码路径和内容，公开发布需要单独评估。",
+    "demoSignature": "输入：生成文件 bundle.js 的 1:240；中间：sourceMappingURL 指向本次构建的 map，调试器命中映射条目；输出：跳到 src/app.ts 的 18:7，浏览器仍执行生成代码。可视化：四帧展示生成位置、map 查询、源位置和调试器高亮；交互：点击堆栈坐标在两边同步高亮。",
     "sourceUrls": [
       "https://tc39.es/ecma426/",
-      "https://www.typescriptlang.org/tsconfig/sourceMap.html"
+      "https://www.typescriptlang.org/tsconfig/sourceMap.html",
+      "https://developer.chrome.com/docs/devtools/javascript/source-maps",
+      "https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map"
     ],
-    "rewriteRisk": "映射示例必须包含行和列，不能暗示能恢复未包含的变量名或源码。",
+    "rewriteRisk": "先解释构建后代码、行列坐标、sourceMappingURL 和调试器，再说明发布访问控制；不要暗示 map 能修复错误或恢复未映射的执行过程。",
     "nearDuplicates": [
       "transpiler",
       "bundler"
