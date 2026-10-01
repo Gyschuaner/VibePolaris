@@ -2365,3 +2365,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `ba726f50-13ea-4b30-b125-a9015f39733f` 已为 `done`；测试用例 `080dae59-2ee7-477b-b5d7-5e886f2dfb70` 与测试计划 `807c3d97-f9df-4efb-97c3-6eee2eaf9ff6` 已创建，测试计划保持 `ready`，待第 79—88 条本地验收完成后统一执行，不提前伪造通过结果。按用户要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 85 条正文提交 `62ff19f`，本条文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理；本批次当前进度为 **7/10（第 79—85 条）**，下一条按现有顺序为第 86 条。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
+
+## 86 · 数据集文字复审、版本快照与范围说明本地验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“九月借阅数据”到底包含哪些记录、来源更新后旧报表还能不能找回、CSV/JSON 与 DataFrame 是不是同一回事。读完应能解释数据集与文件/DataFrame 的边界，预测来源新增或范围扩大时快照怎样变化，并判断一份数据是否适合当前用途。
+- 更新 `DatasetTermPage` 的正文：把 DataFrame 解释为程序里可操作的表格并明确它不是数据文件；补出 CSV/JSON 是同一数据的不同分发形式、文件名不能说明范围；解释来源新增 D 后页面用 s2 表示当前来源、s1 仍属于 v1；说明 A/B/C/D 是稳定事件 ID、#42/#78 是书目编号，并交代来源更新后直接保存会产生一份仍含三条记录的新快照；统一“本次保存范围”、版本关系、内容校验值、说明文档、未知字段和适用范围表达。
+- `DatasetLesson` 的来源新增、范围延长、保存 v1/v2、切回旧版本、重置和引用回链继续留在本地/dev；本批次只计划上线正文文字，交互功能不进入生产。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [W3C · Data Catalog Vocabulary (DCAT) — Version 3](https://www.w3.org/TR/vocab-dcat-3/) | `dataset-definition`、`dataset-version`：抽象数据集与可获取分发形式的区别，以及版本标识、前一版本/当前版本关系。 |
+| [Gebru 等 · Datasheets for Datasets](https://arxiv.org/pdf/1803.09010) | `dataset-scope`、`dataset-limits`：记录数据集的动机、组成、收集/处理、用途、分发和维护，并保留按场景取舍及文档边界。 |
+| [Hugging Face · Dataset Cards](https://huggingface.co/docs/hub/datasets-cards) | `dataset-card`：数据集页面说明文档、内容/背景/限制及许可证、语言、规模等元数据。 |
+| [DVC · .dvc Files](https://doc.dvc.org/user-guide/project-structure/dvc-files) | `dataset-identity`：`.dvc` 文件中的路径、内容校验值、大小和云存储版本 ID，用于说明位置与内容身份的不同。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读 `/tmp/vbp086-reader-material.txt` 中的可见正文和按“操作→当时可见状态”配对的演示材料，未附作者意图、资料链接、源码或旧反馈；材料 SHA-256 为 `adc6b2a5042598a97596d3f50ebba749a5c45e742c2dd746802166a3a52bd6b8`，提示词 `/tmp/vbp086-reader-prompt.txt` SHA-256 为 `b045802cb00bf81bd341566d5d48b5c69cf11cc7af01c2c0610fd9bd932ca5f5`，结果 `/tmp/vbp086-reader-result.json` SHA-256 为 `e382ac594c1c254579930b71c361422dd98c880627bded236ca50d3d94dae32c`；会话 `sess_a06a42d6-0ea2-47ec-9cc5-33988b3d32c5` 正常完成。reader 指出 DataFrame 前提不足、s1→s2 的来源变化原因、#42/#78 字段含义、来源更新后直接保存的结果和“下一版范围”措辞问题；主助手逐项核对演示实现后补入必要解释，没有扩展为新功能。
+- 独立 `language` 读取项目内 `vibepolaris-zcode-partner`、`humanizer-zh` 与 `ponytail`，并审读当前 `DatasetTermPage` 正文；提示词 `/tmp/vbp086-language-prompt.txt` SHA-256 为 `78b15ea736dc1e42facfefff4b3f54a8f2142576fd052a6c1884b696c220653c`，结果 `/tmp/vbp086-language-result.json` SHA-256 为 `bc488ed26c57533206df85520eb4be124cef7cc95c2847c170d4a45f645cf1da`；会话 `sess_4eb3f4ae-dd27-48a8-88b8-f091ead65146` 正常完成。采纳了 DataFrame 类比收敛、分发形式与文件名表述、直接保存快照的歧义、DVC 术语统一、说明文档与未知字段的自然表达，以及 Datasheet/Dataset Card 与边栏句法修正；language 未把交互或资料研究写成审读结果。
+- ZCode reader/language 都是模拟审读线索，不是真实目标读者验证；本轮没有真人零基础读者参与。
+
+### 构建与真实浏览器验收
+
+- `git diff --check` 与 `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；本地构建 `BUILD_ID PE7LYHGD3dalaU0TeHTqP`。正文变更在 `components/terms/ProvenanceConceptPages.tsx` 的 `DatasetTermPage`，交互标题文字在 `components/terms/ProvenanceConceptLessons.tsx` 的 `DatasetLesson`。
+- CUA 先在 `http://127.0.0.1:3219/terms/dataset-data?qa=086baseline` 操作基线，再在 `http://127.0.0.1:3219/terms/dataset-data?qa=086final` 复核最终页面：初始 s1/A/B/C/E 与“本次保存范围”可见；保存后出现 v1（s1、09-01—09-02、3 条）；来源新增 D 后变为 s2、D 在范围外且 v1 保留；勾选范围至 09-03 后当前范围 4 条，保存出现 v2（s2、A/B/C/D）；切回 v1 仍显示 s1 的三条；重置回到初始状态。最终展开 `.dvc Files` 引用并点击正文回链，`cua.getState()` 显示地址定位 `#dataset-identity`；最终截图观察了 DVC 段与“数据之外，还需要说明”段的实际画面。
+- 当前 CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也没有把当前不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内存中的固定借阅记录，不执行真实数据集存储、DVC、DCAT 服务、Hugging Face 仓库或外部数据源；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`；第 86 条研发任务 `075fa244-3a64-43fb-8e8b-93dd88ceca30` 已为 `done`。测试用例 `5c5045a1-034c-4527-8a37-6ac668818766` 与测试计划 `05f59864-d342-483c-b59c-8c25695a3bfd` 已创建，计划保持 `ready`；DP 当前拒绝在 `ready_for_release` 需求上执行测试计划（`REQUIREMENT_NOT_IN_TESTING`），因此只记录真实本地执行证据，不伪造 DP 通过执行。待第 79—88 条全部本地验收后，再按用户要求统一处理上线与相应 DP 阶段。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 86 条源文件提交为 `985b3c32b32d5841530ea93716be637bc062d344`，文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理；当前批次进度为 **8/10（第 79—86 条）**，下一条继续按现有顺序处理第 87 条。`DatasetLesson` 交互继续留在本地/dev。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
