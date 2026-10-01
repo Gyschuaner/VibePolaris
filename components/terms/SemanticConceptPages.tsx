@@ -9,26 +9,26 @@ function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{
 export function EmbeddingTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={embeddingSources}/>;
   return <ConceptArticle slug="embedding" title="嵌入" sources={embeddingSources} sections={[["representation", "把内容表示成一组数"], ["comparison", "比较表示，保留原文"], ["configuration", "表示空间与输入配置"], ["length", "长文本与信息损失"]]}
-    intro={<>“想晚几天还书”与“延长借书期限”用词不同，却在说相近的事。嵌入把内容映射到数值空间，为比较、检索和分类提供表示；这些数能表达什么，取决于表示方法与训练任务。</>}
+    intro={<>“想晚几天还书”与“延长借书期限”用词不同，却在说相近的事。嵌入把内容映射到数值空间，为比较、检索和分类提供表示；在常见的余弦比较里，方向越接近通常越相似，但这些数能表达什么，仍取决于表示方法与训练任务。</>}
     hero={<ConceptHero slug="embedding" label="两种续借表达变为三维数值条，分量相近但并不相同"><div className={s.embeddingHero}><div><span>晚几天还书</span><code>0.8　0.6　0.0</code><div>{[80, 60, 0].map((n, i) => <i key={i} style={{ width: `${n}%` }}/>)}</div></div><div><span>延长借书期限</span><code>0.6　0.8　0.0</code><div>{[60, 80, 0].map((n, i) => <i key={i} style={{ width: `${n}%` }}/>)}</div></div></div></ConceptHero>}>
     <ArticleSection id="representation" title="把内容表示成一组数"><Legacy slug="embedding" names={["question", "definition"]}/>
       <p><strong>嵌入是把对象映射到数值空间的表示。</strong>对象可以是词、句子，也可以是图像等内容。检索里常使用学习得到的向量，让适合当前任务的对象关系能通过数值比较体现出来；不只是把文字换成编号。</p>
-      <p id="embedding-learning" className="vp-citation-target">Mikolov 等人的词向量研究从大量文本学习连续表示，并用词语关系检验结果。<strong>向量中的关系来自表示方法与训练数据。</strong>词向量是其中一种方案，不能把“每个词一条向量”直接当成整篇文档的表示，也不能期待任意模型都保留同一种关系。<Cite id="embedding-learning"/></p>
-      <p id="embedding-sentences" className="vp-citation-target">Sentence-BERT 在句子层面构造可独立计算的表示，并用余弦等度量比较。论文也比较了直接取 BERT 输出的做法，说明<strong>拿到一组模型数值，不代表它已经适合相似性检索。</strong>需要按任务训练或选择合适的表示，再检查实际效果。<Cite id="embedding-sentences"/></p>
+      <p id="embedding-learning" className="vp-citation-target">Mikolov 等人的词向量研究从大量文本学习连续表示，并用词语关系检验结果。<strong>词向量就是给词配上的一组数，向量中的关系来自表示方法与训练数据。</strong>它不能直接当成整篇文档的表示，也不能期待任意模型都保留同一种关系。<Cite id="embedding-learning"/></p>
+      <p id="embedding-sentences" className="vp-citation-target">Sentence-BERT 在句子层面构造可独立计算的表示，并用余弦等度量比较；编码器就是负责产出这组数的模型或模型组件。论文也比较了直接取 BERT 输出的做法，说明<strong>拿到一组模型数值，不代表它已经适合相似性检索。</strong>需要按任务训练或选择合适的表示，再检查实际效果。<Cite id="embedding-sentences"/></p>
     </ArticleSection>
     <ArticleSection id="comparison" title="比较表示，保留原文"><Legacy slug="embedding" names={["scene-heading"]}/>
-      <p>下面为三句文本手工指定三维向量。选择一句，生成预设表示，再与“想晚几天还书”比较。三个分量用数值条显示；它们没有预先命名成“续借程度”或“打印程度”，只是让数值变化可见。</p>
+      <p>下面为三句文本手工指定三维向量。选择一句，生成预设表示，再与“想晚几天还书”比较。三个分量用数值条显示；它们没有预先命名成“续借程度”或“打印程度”，只是让数值变化可见。第三句是“在哪里打印文件”。</p>
       <EmbeddingLesson/>
-      <p>两种续借表达得到余弦 0.96，打印句约为 0.12。换成未对齐的编码器 B，会停止比较。<strong>这里真实计算数值，没有运行嵌入模型。</strong>手工向量只用于解释表示和度量，不能证明某个真实模型理解了这三句话。</p>
+      <p>两种续借表达得到余弦 0.96，打印句约为 0.12；余弦通常在 -1 到 1 之间，本例越接近 1 只表示方向更接近，不是统一的合格线。换成未对齐的编码器 B，会停止比较，因为不同空间的数各自遵循不同约定，距离没有可比意义。<strong>这里真实计算数值，没有运行嵌入模型。</strong>手工向量只用于解释表示和度量，不能证明某个真实模型理解了这三句话。</p>
       <p id="embedding-output" className="vp-citation-target">Hugging Face 的特征提取页面展示从文本得到数值特征、再用于分类或检索的过程。<strong>表示的输出与生成回答的输出不同。</strong>向量通常需要连同原文入口保存，检索找到编号后仍要读取具体内容；它不是无损压缩文件，也不是一份可直接引用的文字答案。<Cite id="embedding-output"/></p>
     </ArticleSection>
     <ArticleSection id="configuration" title="表示空间与输入配置"><Legacy slug="embedding" names={["quiz-heading"]}/>
-      <p id="embedding-config" className="vp-citation-target">Sentence Transformers 文档说明，部分模型要求查询和文档使用不同前缀。<strong>查询与文档必须遵守同一套兼容的表示约定。</strong>不一定使用完全相同的编码器，但模型配对、版本、预处理和比较方法要一起确认。仅看向量维度相同，无法证明可以混用。<Cite id="embedding-config"/></p>
+      <p id="embedding-config" className="vp-citation-target">Sentence Transformers 文档说明，部分模型要求查询和文档使用不同前缀。<strong>查询与文档必须遵守同一套兼容的表示约定。</strong>不一定使用完全相同的编码器，但模型配对、版本、预处理和比较方法要一起确认；仅看向量维度相同，无法证明可以混用，因为不同空间的数值含义和尺度可能不同。<Cite id="embedding-config"/></p>
       <div className={s.columns}><div><h3>生成表示</h3><p>决定文本怎样进入模型、得到什么维度与数值。模型升级后，已有文档可能需要重新编码。</p></div><div><h3>检索表示</h3><p>按选定度量比较查询与文档，寻找候选。<ConceptTerm slug="vector-database">向量数据库</ConceptTerm> 管理这些记录与索引。</p></div></div>
-      <p>余弦比较方向，点积还受长度影响，欧氏距离比较坐标差异。选用哪一种，要配合模型的训练与使用约定。<strong>相似分数不是“有多少概率是真的”。</strong>否定句、相同主题下的相反结论和过期内容，都需要回到原文检查。</p>
+      <p>余弦比较方向，点积还受长度影响，欧氏距离比较坐标差异。选用哪一种，要配合模型的训练与使用约定。<strong>相似分数只表示这套度量下的接近程度，用来比较或排序候选，不是事实正确率或概率。</strong>否定句、相同主题下的相反结论和过期内容，都需要回到原文检查。</p>
     </ArticleSection>
     <ArticleSection id="length" title="长文本与信息损失" className={base.offset}><Legacy slug="embedding" names={["prompt-heading"]}/>
-      <p id="embedding-length" className="vp-citation-target">Sentence Transformers 的计算指南说明，超出模型最大输入长度的文本会被截断，训练于短文本的表示也未必适合长文本。<strong>给模型一整篇文章，不保证每一句都进入表示。</strong>先核对输入限制与切分方式，再用重要信息位于不同位置的样例检验。<Cite id="embedding-length"/></p>
+      <p id="embedding-length" className="vp-citation-target">Sentence Transformers 的计算指南说明，超出模型最大输入长度的文本会被截断，训练于短文本的表示也未必适合长文本。<strong>给模型一整篇文章，不保证每一句都进入表示；被截掉的句子就不会参与这次检索。</strong>先核对输入限制与切分方式，再用重要信息位于不同位置的样例检验。<Cite id="embedding-length"/></p>
       <ArticleAside title="维度多，不等于信息完整"><p>维度是表示结构的一个参数，不能单独证明检索质量。应检查任务、语言、原文长度、模型版本和相关样例；也要保存内容版本与文档编号，避免新旧表示混在一起。</p></ArticleAside>
       <p>做文档检索前，准备几组相关表达和容易混淆的反例。看它们的排序是否符合使用目的，再决定如何接入 <ConceptTerm slug="semantic-search">语义搜索</ConceptTerm>。</p>
     </ArticleSection>
