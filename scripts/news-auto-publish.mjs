@@ -5,12 +5,10 @@ const repository = process.env.NEWS_REPOSITORY ? resolve(process.env.NEWS_REPOSI
 
 export function autoPublishNews({ approve = false, repository: targetRepository = repository } = {}) {
   const content = loadNewsContent(targetRepository);
-  const eligible = content.drafts.filter(({ draft }) => draft.status === "needs-review"
+  const eligible = content.drafts.filter(({ draft }) => ["ready", "needs-review"].includes(draft.status)
     && draft.publishDecision === "auto"
-    && draft.riskLevel === "routine"
-    && draft.verification?.status === "verified"
-    && draft.evidence.length > 0
-    && draft.reviewReasons.length === 0);
+    && draft.modelReview.decision === "publish"
+    && draft.mechanicalErrors.length === 0);
   if (!eligible.length) return { mode: approve ? "approved" : "dry-run", slugs: [], publishedCount: content.articles.length };
   return publishNewsDrafts(eligible.map(({ path }) => path), { approve, repository: targetRepository });
 }

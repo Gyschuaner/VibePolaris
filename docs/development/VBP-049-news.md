@@ -33,3 +33,13 @@
 - Docker 首次因默认 `/home/agent/.docker` 只读，改用临时 `DOCKER_CONFIG` 后又被 Docker Hub `node:22-alpine` 的 `429 Too Many Requests` 限流；没有可验证的新镜像。
 - 生产域名访问被执行环境的代理 `127.0.0.1:8080` 拒绝；工作区没有生产 SSH/部署凭据。因此没有声称线上页面或部署已经完成。
 - GitHub Actions 的 workflow 文件已经提交，但该分支提交尚无 workflow run；创建 PR 后需在仓库侧运行 Actions，或在具备 Docker/生产网络凭据的环境完成最后验收。
+
+## 2026-10-01 内容叙事与直发改版（本地验证完成，待集成）
+
+DP 任务：`4fd618eb-43f5-41f1-905a-8f74cd4421e2`（News 详细文章结构与模型首轮直发改版）。功能分支在现有 `feat/VBP-049-news-column` 上继续实现，未把本次自动发布改动部署到生产。
+
+- 公开文章新增可自由编排的 `hero`、Markdown `body`、`sections[]` 段落和 `sources` 引用卡片字段；每篇文章可以按自己的事实链路安排叙事，详情页沿用词条的目录/阅读轨道，并提供可暂停、可重播、尊重 reduced-motion 的 `explainer` 机制动画。头图要求可追溯 URL 与明确许可，当前两篇公开文章使用仓库自制 SVG 并标注 CC BY 4.0。
+- ingest 接收 `modelReview` 首轮自判；自判为 `publish` 且机械字段通过的记录写为 `ready`，同一轮 `news:auto-publish -- --approve` 直接提升。模型暂缓或机械字段缺失的记录保留 `needs-review`。
+- 机械保护继续检查 canonical URL、sourceHash、结构版式、头图来源/许可、可用链接、去重、非空正文和站内关系目标；没有按文章风格增加二次人工内容审查。
+- 本次改动仅在本地验证，未合并 `dev`、未启用生产自动直发、未部署生产。`npm run news:validate` 通过（`published=2,drafts=3,pending=1`）；News 内容/ingest/pipeline 定向测试 5 项通过；`npm run typecheck`、定向 ESLint 和 `npm run build` 通过（120 个静态页面）。
+- `NEWS_EXPECTED_SLUGS='anthropic-claude-sonnet-5-5-september-2026,google-private-ai-compute-memory-september-2026' npm run news:smoke -- http://127.0.0.1:3200` 通过；本地浏览器实际切换四步讲解、暂停/重播并确认目录、来源卡片和关联链接可见。

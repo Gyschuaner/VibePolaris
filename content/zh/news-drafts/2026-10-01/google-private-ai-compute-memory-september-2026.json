@@ -2,7 +2,7 @@
   "slug": "google-private-ai-compute-memory-september-2026",
   "title": "Google DeepMind 更新 Private AI Compute，引入服务器端持久记忆架构",
   "summary": "Google DeepMind 于 2026 年 9 月 23 日介绍 Private AI Compute 的服务器端持久记忆方案，强调设备持有密钥、云端安全隔离和跨设备连续性。",
-  "body": "Google DeepMind 于 2026 年 9 月 23 日发布 Private AI Compute 技术更新，介绍一种服务器端持久记忆架构。官方描述中，个人数据保存在加密存储内，解密所需的密钥由用户设备持有；请求通过端到端加密通道进入硬件隔离的安全环境，完成处理后再次加密保存。\n\n这套设计试图把云端模型的计算能力与设备端隐私保护结合起来，让助手能够跨设备保留必要上下文。Google DeepMind 同时表示，将公开服务器软件的防篡改记录、更新技术白皮书，并分享独立安全审计相关信息，供外部社区检查。\n\n该页面介绍的是架构和验证方法，不代表所有产品已经具备同等的持久记忆能力，也没有在页面中给出具体产品的普遍可用时间。本文只记录官方技术说明，不延伸推断部署规模或实际性能。",
+  "body": "Google DeepMind 在 2026 年 9 月 23 日介绍 Private AI Compute 的服务器端持久记忆架构。它试图回答一个很具体的问题：如果助手要在多台设备之间保留上下文，数据可以放在云端，但解密能力能不能仍然掌握在用户手里？\n\n官方描述的链路是：设备持有密钥，请求经过端到端加密通道进入硬件隔离环境，服务在短暂解密状态下完成处理，再把结果加密写回存储。这个设计把“云端有容量”和“服务方不应直接拿到明文钥匙”拆成两个可讨论的部分。它是架构说明，不等于所有产品已经上线同样的持久记忆能力。\n\n下面沿着一次请求走一遍，读者可以看到密钥、隔离环境、跨设备连续性和审计分别解决什么问题，以及它们没有解决什么问题。",
   "publishedAt": "2026-09-23",
   "isExample": false,
   "source": {
@@ -14,7 +14,9 @@
     "retrieval",
     "agent-harness"
   ],
-  "relatedArticleSlugs": [],
+  "relatedArticleSlugs": [
+    "anthropic-claude-sonnet-5-5-september-2026"
+  ],
   "canonicalUrl": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
   "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5",
   "status": "published",
@@ -70,9 +72,96 @@
     "notes": "逐段核对 Google DeepMind 官方技术文章；正文明确区分架构说明与实际产品可用性。"
   },
   "riskLevel": "routine",
-  "publishDecision": "review",
-  "reviewReasons": [
-    "安全架构描述涉及技术实现细节，待编辑复核术语翻译和发布范围措辞"
+  "publishDecision": "auto",
+  "promotedAt": "2026-10-01T08:44:05.200Z",
+  "hero": {
+    "url": "/images/news/google-private-ai-memory.svg",
+    "alt": "蓝色立方体组成安全数据流，代表 Private AI Compute 的服务器端记忆架构",
+    "sourceUrl": "/images/news/google-private-ai-memory.svg",
+    "license": "VibePolaris 自制插图 · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "architecture",
+      "title": "先沿着一条请求走一遍",
+      "kind": "narrative",
+      "body": "当用户在新设备上继续一个对话，应用需要找到此前保存的记忆。按 Google DeepMind 的说明，记忆数据保存在加密存储里，设备侧持有解密所需的密钥；请求通过端到端加密通道送到服务器上的硬件隔离环境，在那里短暂完成需要明文的计算，随后结果重新加密保存。\n\n这条链路的关键不是“数据永远不离开设备”，而是把数据存放、计算和解密能力放在不同位置。云端负责容量与计算，设备负责钥匙，隔离环境负责缩小明文暴露的时间和范围。"
+    },
+    {
+      "id": "key",
+      "title": "设备上的钥匙，改变了谁能打开数据",
+      "kind": "technical",
+      "body": "如果密钥和数据都长期由同一台服务器管理，服务方理论上可以在服务器侧直接解密。Private AI Compute 的设计把密钥放到用户设备，并要求服务器进入受保护的执行环境后才能处理请求。这样，服务器存储被复制或单独读取时，拿到的仍应是密文。\n\n这并不意味着“有了设备密钥就没有风险”。设备丢失、恶意软件、用户主动授权、实现漏洞和运行时输出泄露，仍然需要单独处理。密钥归属改善的是一条明确的信任边界，不能替代端点安全和权限设计。"
+    },
+    {
+      "id": "continuity",
+      "title": "跨设备记忆为什么需要云端",
+      "kind": "example",
+      "body": "把一个研究项目从手机切到电脑时，助手需要知道已经确认的术语、文件和未完成问题。如果记忆只存在手机里，电脑无法继续；如果明文长期放在云端，跨设备很方便，却会扩大服务端读取范围。服务器端持久记忆的目标，就是让加密后的记忆可以跨设备存取，同时只在受保护的计算步骤里暂时解密。\n\n这也引出一个产品问题：用户能否查看、删除或撤销某一条记忆？官方文章重点讲架构和审计，没有在同一页面给出完整的产品操作承诺。因此本文只解释它试图提供的连续性，不把架构描述写成已经普遍可用的功能清单。"
+    },
+    {
+      "id": "audit",
+      "title": "审计记录能证明什么",
+      "kind": "comparison",
+      "body": "Google DeepMind 表示会公开服务器软件的防篡改记录、更新后的技术白皮书，并分享独立安全审计信息。它们分别帮助外部读者检查软件版本有没有被悄悄替换、设计是否能被复核、实际实现是否经过第三方检查。\n\n审计能提高可追溯性，却不等于证明每一次请求都绝对安全。读者仍需要关注审计范围、时间点、例外条件和密钥生命周期。把“可检查”与“已证明没有任何风险”区分开，才是这类安全架构新闻最重要的阅读习惯。"
+    },
+    {
+      "id": "boundary",
+      "title": "它没有替你解决哪些问题",
+      "kind": "boundary",
+      "body": "这篇官方更新没有给出一个所有用户都能立即打开的产品开关，也没有给出跨设备记忆的普遍发布时间、性能数据或错误率。它主要提供设计方向与验证方法。\n\n即使隔离环境本身可靠，恶意客户端也可能把敏感信息放进请求，模型也可能在回答中复述不该复述的内容；如果设备被控制，设备持有的密钥也会受到影响。安全性来自整条链路，而不是一个名为 secure enclave 的单点标签。"
+    },
+    {
+      "id": "terms",
+      "title": "三个安全词汇",
+      "kind": "aside",
+      "body": "**端到端加密** 关注消息从发送端到接收端的传输过程；**安全隔离环境（secure enclave）** 是限制代码、数据和访问路径的硬件或运行时边界；**持久记忆** 只是指上下文可以跨会话保存，并不自动意味着模型记住了一切，也不替用户决定哪些信息应该保存。\n\n把“保存在哪里”“谁有钥匙”“在哪里暂时解密”分开问，才能看懂这套架构。"
+    }
   ],
-  "promotedAt": "2026-10-01T08:44:05.200Z"
+  "sources": [
+    {
+      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+      "claim": "Google DeepMind 介绍 Private AI Compute 的服务器端持久记忆架构。",
+      "excerpt": "A technical update on our Private AI Compute architecture, which will enable persistent, cross-device AI memory."
+    },
+    {
+      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+      "claim": "官方描述设备密钥、加密存储和安全隔离环境。",
+      "excerpt": "The cryptographic keys required to unlock it are held exclusively on your personal devices."
+    }
+  ],
+  "mechanicalErrors": [],
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-01T08:11:49Z",
+    "notes": "模型首轮自判：内容交由机械完整性检查后直发。"
+  },
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "一把钥匙，如何陪请求走完一圈",
+    "question": "把设备、云端存储和隔离计算分开看，隐私边界就更清楚。",
+    "steps": [
+      {
+        "label": "设备持钥",
+        "detail": "用户设备保留解密所需的密钥；服务器拿到的持久数据保持加密状态。",
+        "evidence": "官方称密钥由个人设备独占持有。"
+      },
+      {
+        "label": "加密传输",
+        "detail": "请求通过端到端加密通道进入服务器，传输过程不把明文暴露给普通网络路径。",
+        "evidence": "官方架构描述端到端加密通道。"
+      },
+      {
+        "label": "隔离计算",
+        "detail": "受保护的服务器环境在短时间内解密并处理请求，再把结果交回加密存储。",
+        "evidence": "官方强调硬件隔离的安全环境。"
+      },
+      {
+        "label": "跨设备继续",
+        "detail": "另一台设备再次请求时重复这条链路；连续性来自云端容量，钥匙边界仍留在设备。",
+        "evidence": "官方将方案定位为跨设备持久记忆架构。"
+      }
+    ]
+  }
 }

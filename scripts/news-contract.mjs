@@ -6,7 +6,7 @@ import { z } from "zod";
 import { canonicalNewsUrl, newsArticleSchema, newsDraftSchema, newsRelationErrors } from "../lib/news-schema.ts";
 
 export const root = resolve(import.meta.dirname, "..");
-const activeStatuses = new Set(["discovered", "draft", "needs-review"]);
+const activeStatuses = new Set(["discovered", "draft", "ready", "needs-review"]);
 
 export function contentPaths(repository = root) {
   return {
@@ -36,8 +36,37 @@ function draftFiles(directory) {
 }
 
 export function publishedNewsFromDraft(draft) {
-  const { slug, title, summary, body, publishedAt, isExample, source, relatedSlugs, relatedArticleSlugs, canonicalUrl, sourceHash } = draft;
-  return newsArticleSchema.parse({ slug, title, summary, body, publishedAt, isExample, source, relatedSlugs, relatedArticleSlugs, canonicalUrl, sourceHash });
+  const { slug, title, summary, body, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash } = draft;
+  return newsArticleSchema.parse({ slug, title, summary, body, publishedAt, isExample, hero, sections, explainer, source, relatedSlugs, relatedArticleSlugs, sources, canonicalUrl, sourceHash });
+}
+
+export function newsMechanicalErrors(article) {
+  const errors = [];
+  if (!article.body?.trim()) errors.push("正文不能为空");
+  if (!article.canonicalUrl) errors.push("缺少 canonicalUrl");
+  if (!article.sourceHash) errors.push("缺少 sourceHash");
+  if (!article.hero?.url || !article.hero?.sourceUrl || !article.hero?.license) errors.push("头图缺少图片来源或许可字段");
+  if (!Array.isArray(article.sections) || article.sections.length < 2 || article.sections.some(section => !section?.id?.trim() || !section?.title?.trim() || !section?.body?.trim())) errors.push("文章详细段落不能为空");
+  if (!article.explainer || article.explainer.steps.length < 2 || article.explainer.steps.some(step => !step?.label?.trim() || !step?.detail?.trim())) errors.push("文章讲解动画内容不能为空");
+  if (!article.sources?.length) errors.push("缺少来源引用");
+  if (!article.relatedSlugs?.length) errors.push("缺少站内词条关联");
+  for (const [label, value] of [
+    ["source.url", article.source?.url],
+    ["canonicalUrl", article.canonicalUrl],
+    ["hero.url", article.hero?.url],
+    ["hero.sourceUrl", article.hero?.sourceUrl],
+    ...((article.sources ?? []).map((source, index) => [`sources[${index}].url`, source.url])),
+  ]) {
+    if (!value) continue;
+    try {
+      if (value.startsWith("/")) continue;
+      const url = new URL(value);
+      if (url.protocol !== "https:") errors.push(`${label} 必须使用 HTTPS 或站内路径`);
+    } catch {
+      errors.push(`${label} 不是可用链接`);
+    }
+  }
+  return errors;
 }
 
 export function publishedNewsErrors(articles, terms) {
@@ -121,7 +150,7 @@ export function publishNewsDrafts(files, { approve = false, repository = root } 
     if (local.startsWith(`..${sep}`) || local === ".." || isAbsolute(local)) throw new Error("发布入口只接受 news-drafts 目录中的文件");
     const entry = content.drafts.find(item => realpathSync(item.path) === path);
     if (!entry) throw new Error(`找不到已校验的 JSON 草稿：${basename(path)}`);
-    if (!["needs-review", "published"].includes(entry.draft.status)) throw new Error(`${entry.draft.slug}：只有 needs-review 草稿可以提升为已发布内容`);
+    if (!["ready", "needs-review", "published"].includes(entry.draft.status)) throw new Error(`${entry.draft.slug}：只有 ready 或 needs-review 草稿可以提升为已发布内容`);
     return entry;
   });
   if (!selected.length) throw new Error("请提供至少一个草稿 JSON 路径");
@@ -129,6 +158,8 @@ export function publishNewsDrafts(files, { approve = false, repository = root } 
   const articles = [...content.articles];
   for (const { draft } of selected) {
     const article = publishedNewsFromDraft(draft);
+    const mechanicalErrors = newsMechanicalErrors(article);
+    if (mechanicalErrors.length) throw new Error(`${article.slug}：${mechanicalErrors.join("；")}`);
     const previous = articles.find(item => item.slug === article.slug);
     if (previous && !isDeepStrictEqual(previous, article)) throw new Error(`${article.slug} 已发布且内容不同；请另行审核修订，发布入口不会覆盖旧文章`);
     if (draft.status === "published" && !previous) throw new Error(`${article.slug}：published 草稿缺少已发布记录`);

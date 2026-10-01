@@ -22,6 +22,13 @@ if (!sitemap.body.includes("/news/")) throw new Error("sitemap 没有新闻详�
 for (const slug of expectedSlugs) {
   if (!sitemap.body.includes(`/news/${slug}`)) throw new Error(`sitemap 缺少新闻：${slug}`);
 }
+if (expectedSlugs[0]) {
+  const detail = await request(`/news/${expectedSlugs[0]}`);
+  for (const marker of ["news-explainer", "来源引用", "站内关联"]) {
+    if (!detail.body.includes(marker)) throw new Error(`新闻详情缺少概念式阅读内容：${marker}`);
+  }
+  if (!detail.body.includes("news-hero")) throw new Error("新闻详情缺少头图");
+}
 
 let sessionData;
 try {
@@ -35,7 +42,7 @@ if (!invite.body.includes("激活") && !invite.body.includes("邀请码")) throw
 
 process.stdout.write(JSON.stringify({
   origin,
-  checked: ["/", "/news", "/sitemap.xml", "/api/xiaobei/session", "/xiaobei/activate"],
+  checked: ["/", "/news", "/news/<first-slug>", "/sitemap.xml", "/api/xiaobei/session", "/xiaobei/activate"],
   expectedSlugs,
   xiaobeiInviteOnly: true,
 }, null, 2) + "\n");
