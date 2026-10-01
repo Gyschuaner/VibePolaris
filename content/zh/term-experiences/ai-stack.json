@@ -13246,30 +13246,30 @@
   },
   {
     "slug": "array",
-    "lead": "在['A','B','C']的索引1插入X后，为什么B和C的位置都变了？",
+    "lead": "在 ['A', 'B', 'C'] 的索引 1 插入 X 后，为什么 B 和 C 的位置都变了？",
     "definition": "数组按顺序保存一组元素，通常用从零开始的索引访问；插入和删除会影响长度及后续位置。",
-    "boundary": "数组不要求所有语言里都只能装同类型数据，也不能把索引当稳定业务ID。",
+    "boundary": "数组索引会因插入或删除而变化；索引表示当前位置，不是稳定的业务 ID。商品编号这类业务 ID 应跟着商品本身保存，不应跟着位置改变。不同语言对元素类型的限制也可能不同。",
     "sceneKind": "timeline",
     "sceneTitle": "有序格子在插入点后整体右移",
     "actionLabel": "拖动元素插入",
     "actors": [
       {
         "id": "a",
-        "label": "索引0",
+        "label": "索引 0",
         "detail": "A",
         "icon": "component",
         "group": "数组"
       },
       {
         "id": "b",
-        "label": "索引1",
+        "label": "索引 1",
         "detail": "B",
         "icon": "component",
         "group": "数组"
       },
       {
         "id": "c",
-        "label": "索引2",
+        "label": "索引 2",
         "detail": "C",
         "icon": "component",
         "group": "数组"
@@ -13306,7 +13306,7 @@
     "frames": [
       {
         "label": "原顺序",
-        "note": "三个元素占据索引0、1、2。",
+      "note": "三个元素占据索引 0、1、2。",
         "activeIds": [
           "a",
           "b",
@@ -13327,7 +13327,7 @@
       },
       {
         "label": "选择插入点",
-        "note": "X对准索引1，B和C准备右移。",
+      "note": "X 对准索引 1，B 和 C 准备右移。",
         "activeIds": [
           "x",
           "b",
@@ -13338,13 +13338,13 @@
         ],
         "mutedIds": [],
         "values": {
-          "x": "目标索引1"
+        "x": "目标索引 1"
         },
         "activeEdgeIds": []
       },
       {
         "label": "整体右移",
-        "note": "B从1到2，C从2到3。",
+      "note": "B 从 1 移到 2，C 从 2 移到 3。",
         "activeIds": [
           "b",
           "c"
@@ -13362,7 +13362,7 @@
       },
       {
         "label": "插入完成",
-        "note": "X占索引1，数组长度3变4。",
+      "note": "X 占索引 1，数组长度从 3 变 4。",
         "activeIds": [
           "x",
           "length"
@@ -13380,9 +13380,9 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "数组用位置表达顺序，插删会改变后续索引；索引不适合当稳定业务ID。",
+    "insight": "数组用位置表达顺序，插入或删除会改变后续索引；索引不适合当稳定业务 ID。",
     "quiz": {
-      "question": "把数组索引当列表项唯一ID，插入元素后可能怎样？",
+    "question": "如果把数组索引当作列表项的唯一 ID，插入新元素后会怎样？",
       "options": [
         {
           "label": "后续项的ID全部变化",
@@ -13397,18 +13397,33 @@
           "correct": false
         }
       ],
-      "success": "位置会随插删改变。",
-      "retry": "稳定身份应使用独立ID。"
+    "success": "位置会随插入或删除改变。",
+    "retry": "稳定的编号要单独保存，不能依赖索引。"
     },
     "prompt": {
       "title": "检查数组操作",
-      "text": "用一个四项列表演示插入、删除和排序，记录索引与稳定ID如何分别变化。"
+      "text": "用一个四项列表演示插入、删除和排序，记录索引和稳定 ID 分别发生了什么变化。"
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
-        "label": "ECMAScript 规范 · indexed collections",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
+      "label": "MDN · Indexed collections",
+      "note": "说明数组按索引保存有序值、索引从 0 开始，并介绍长度与插入删除带来的位置变化。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
+      "label": "ECMAScript 规范 · Array Objects",
+      "note": "规定 JavaScript 数组对象的索引和长度行为。"
+    },
+    {
+      "url": "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range",
+      "label": "Python 文档 · Sequence Types",
+      "note": "说明序列按位置保存和访问元素，列表支持插入、删除等操作。"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8259#section-5",
+      "label": "RFC 8259 · Arrays",
+      "note": "定义 JSON 数组是有序值序列；JSON 是传输文本格式，程序运行时的数组还要按语言规则处理。"
       }
     ]
   },
