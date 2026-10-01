@@ -26,10 +26,10 @@
 | 016 | 数据管道、Webhook、分布式系统 | VBP-031 · [本批研究与 review](VBP-031-coordination-concepts.md) |
 | 017 | 数据接入、数据转换、数据验证 | VBP-032 · [本批研究与 review](VBP-032-dataflow-concepts.md) |
 | 018 | 数据集、数据质量、数据血缘 | VBP-033 · [本批研究与 review](VBP-033-provenance-concepts.md) |
-| 019 | 数据帧、全文搜索、向量数据库 | VBP-034 · [本批研究与 review](VBP-034-retrieval-concepts.md) |
-| 020 | 嵌入、语义搜索、RAG | VBP-035 · [本批研究与 review](VBP-035-semantic-concepts.md) |
-| 021 | 检索、分块、重排序 | VBP-036 · [本批研究与 review](VBP-036-selection-concepts.md) |
-| 022 | 混合搜索、向量存储、引用 | VBP-037 · [本批研究与 review](VBP-037-evidence-concepts.md) |
+| 019 | 数据帧、全文搜索、向量数据库 | VBP-034 · [本批研究与 review](VBP-034-retrieval-concepts.md) · 089–090 文案复审见 [VBP-035–037 refresh](VBP-035-037-content-refresh-089-098.md) |
+| 020 | 嵌入、语义搜索、RAG | VBP-035 · [本批研究与 review](VBP-035-semantic-concepts.md) · 091–093 文案复审见 [VBP-035–037 refresh](VBP-035-037-content-refresh-089-098.md) |
+| 021 | 检索、分块、重排序 | VBP-036 · [本批研究与 review](VBP-036-selection-concepts.md) · 094–096 文案复审见 [VBP-035–037 refresh](VBP-035-037-content-refresh-089-098.md) |
+| 022 | 混合搜索、向量存储、引用 | VBP-037 · [本批研究与 review](VBP-037-evidence-concepts.md) · 097–098 文案复审见 [VBP-035–037 refresh](VBP-035-037-content-refresh-089-098.md) |
 | 023 | 基于证据回答、幻觉、评测 | VBP-038 · [本批研究与 review](VBP-038-quality-concepts.md) |
 | 024 | 基准测试、评分器、评测数据集 | VBP-039 · [本批研究与 review](VBP-039-assessment-concepts.md) |
 | 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [本批研究与 review](VBP-040-model-delivery-concepts.md) |
