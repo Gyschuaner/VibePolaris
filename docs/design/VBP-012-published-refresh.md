@@ -2327,3 +2327,41 @@ Obsidian：项目规则指定的 `D:/Obsidian/gysnote` 在本机不存在，跳�
 - 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 84 条正文提交 `4c6a78f`，本条文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理。`DataTransformationLesson` 交互继续留在本地/dev。
 - 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
 - 当前批次进度为 **6/10（第 79—84 条）**，下一条按现有顺序是 `data-validation`；前序已发布总计 **78/105**。
+
+## 85 · 数据验证文字复审、规则开关与字段级报告本地验收（2026-10-01）
+
+### 读者目标与正文调整
+
+- 读者入口是“导入记录里有负年龄、城市代码不在约定集合，或数字看起来正确却以字符串保存时，验证到底检查什么？关闭规则后为什么不能直接说它通过？报告为什么要指向记录和字段？”读完应能解释规则合同、类型/范围/城市规则、未启用与不适用、隔离记录、字段级报告、Validation Definition，以及浏览器演示与服务端检查的边界。
+- 本轮只更新 `ValidationTermPage` 正文：把字符串 `"24"` 与数字 `24` 的类型差异和范围检查因果链说清；把演示固定在浏览器内计算、不会连接验证服务的边界前移；把“隔离”说明放到交互实验之前，明确原值和失败原因仍保留，不代表删除或自动修复；明确“范围和城市”两条可开关规则，收紧报告字段表述，并解释“未检查”对应未启用或不适用。
+- `ValidationLesson`、来源表、通用组件与其他词条未改；本批次计划上线文字，规则开关和报告交互继续留在本地/dev。
+
+### 资料与正文对应
+
+本轮重新打开并核对四份公开原始资料：
+
+| 原始资料 | 正文位置 |
+| --- | --- |
+| [JSON Schema · Understanding JSON Schema — Objects](https://json-schema.org/understanding-json-schema/reference/object) | `validation-contract`：`properties` 描述字段规则，`required` 才声明必须出现的字段，并区分字段缺失与 `null`。 |
+| [OWASP · Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) | `validation-levels`、`validation-boundary`：区分语法/语义验证，并说明客户端检查可绕过、服务端仍需验证。 |
+| [W3C · Shapes Constraint Language (SHACL)](https://www.w3.org/TR/shacl/) | `validation-report`：SHACL 面向 RDF 图，验证报告可记录节点、属性路径、值和失败约束；正文明确未把 SHACL 当作 JSON 验证器。 |
+| [Great Expectations · Run a Validation Definition](https://docs.greatexpectations.io/docs/core/run_validations/run_a_validation_definition/) | `validation-run`：Validation Definition 是预配置的规则集合，运行结果按 Expectation 提供通过情况与解释，并属于一份输入和一组规则的本次运行。 |
+
+### 真实 ZCode 协作与主助手裁决
+
+- 按 Skill 使用真实 ZCode CLI，模型为 `Qwen3.8-Flash-Next-FP8`，不是 Codex 子代理。独立 `reader` 只读取 `/tmp/vbp085-reader-material.txt` 中的可见正文和按“操作→当时可见状态”配对的文字材料，未附作者意图、资料链接、源码或旧反馈；材料 SHA-256 为 `65c54a9e05c10101ed1606cd8b2b394469196f7a1629430d6c4699900ce1ed41`，提示词 `/tmp/vbp085-reader-prompt.txt` SHA-256 为 `5347dcdc5a7a52f751b9228c126c9fb0286db374ac71f300c4289b7ef74e231e`，结果 `/tmp/vbp085-reader-result.json` SHA-256 为 `40a7f27cb7f694cca31f65764535168df9b5f5904cc47a125a2d16dbcf484e30`；会话 `sess_21dee66b-d00b-4ea9-bdc7-34789d08ad0f` 正常完成。reader 指出了字符串/数字差异、隔离状态首次出现时的解释顺序、浏览器演示与服务端边界三个主线断点，并把 JSON Schema “不一定失败”、正则表达式、多规则同时失败、旧报告收起列为不阻碍主线的进阶问题；主助手逐项核对后只采纳前三项及对应措辞顺序调整。
+- 独立 `language` 读取 `/Users/guyisheng/Documents/VibePolaris/.agents/skills/vibepolaris-zcode-partner/SKILL.md`、`/Users/guyisheng/Documents/VibePolaris/.agents/skills/humanizer-zh/SKILL.md` 与 `/Users/guyisheng/.codex/skills/ponytail/SKILL.md`，并审读当前 `ValidationTermPage` 正文；提示词 `/tmp/vbp085-language-prompt.txt` SHA-256 为 `6c2c49cd052336848d6a965e645568577ed63b41fb5ae44e2e7c5c78f70e91e9`，结果 `/tmp/vbp085-language-result.json` SHA-256 为 `d8726c418b6f8ad03556de672bb254d2b6db0ad18326042c2a780ce557da07b3`；会话 `sess_3f3bde65-9002-472f-9b9e-db4cca2d3021` 正常完成。language 建议把“这两条”明确为“范围和城市”，把字符串解释为文本值、把浏览器内演示边界提前、把“隔离”说明前置、把“规模”改为“数量”、并对齐“未检查”与未启用/不适用；主助手采纳这些局部改写，保留 JSON Schema 的“不一定失败”、正则表达式、多规则同时失败与旧报告收起的现有边界。language 未读取 `ValidationLesson`、来源表或官方资料，因此没有把它写成交互或资料完整审查。
+- ZCode 的 reader 结果属于模拟读者线索，不是真实目标读者验证；本轮没有真人零基础读者参与。
+
+### 构建与真实浏览器验收
+
+- `npm run build` 通过：Next.js 编译、TypeScript 与 117/117 静态页生成完成；本地构建 `BUILD_ID 3lbgGEDDtZmsJyz1miag7`；`git diff --check` 通过。正文变更只在 `components/terms/DataFlowConceptPages.tsx` 的 `ValidationTermPage`，正文提交为 `62ff19fbe752eaaefc3ef4529d9297f49b68c22a`。
+- CUA 先在 `http://127.0.0.1:3219/terms/data-validation?qa=085baseline` 真实操作基线，再在 `http://127.0.0.1:3219/terms/data-validation?qa=085final` 复核最终页面。最终页默认运行显示 `1 条通过当前规则 / 3 条隔离`：A 三项通过，B 年龄范围失败，C 城市失败，D 整数类型失败且范围不适用；重置后关闭年龄范围，显示 `2 条通过 / 2 条隔离`，B 的范围为未启用而仍保留负值，C 仍因城市失败；重置后关闭城市规则，显示 `2 条通过 / 2 条隔离`，C 的城市为未启用，B 仍因年龄范围失败，D 仍因类型失败。三种状态都观察到新报告替换旧报告。
+- 最终页展开第四条 Great Expectations 引用，并点击回链，CUA 当前地址为 `http://127.0.0.1:3219/terms/data-validation?qa=085final#validation-run`；实际截图观察了引用区、回链目标段落与边界段落。CUA 绑定能力没有暴露可读的 console `error/warn` 日志接口，未把日志为空写成已验证；没有真人零基础读者参与，也没有把当前不可控的 390px 视口写成实测通过。
+- 演示只使用浏览器内固定的四条年龄/城市记录和规则开关，不执行 JSON Schema、SHACL、Great Expectations 或服务端验证请求；交互保持本地/dev。
+
+### DP、Git 与发布边界
+
+- 父需求 VBP-030 `a1fa5344-bb60-4896-a41d-d951a0a860ec` 当前为 `ready_for_release`。本轮研发任务 `ba726f50-13ea-4b30-b125-a9015f39733f` 已为 `done`；测试用例 `080dae59-2ee7-477b-b5d7-5e886f2dfb70` 与测试计划 `807c3d97-f9df-4efb-97c3-6eee2eaf9ff6` 已创建，测试计划保持 `ready`，待第 79—88 条本地验收完成后统一执行，不提前伪造通过结果。按用户要求，本条暂不创建生产部署记录，也不把本地验证写成生产发布。
+- 当前工作树 `/Users/guyisheng/.codex/worktrees/vbp012-refresh-dev`，分支 `feat/VBP-028-cache-content-audit`；第 85 条正文提交 `62ff19f`，本条文档记录随本批次提交。生产发布延后至第 79—88 条全部完成后统一处理；本批次当前进度为 **7/10（第 79—85 条）**，下一条按现有顺序为第 86 条。
+- 指定 Windows Obsidian 库 `D:/Obsidian/gysnote` 在当前 macOS 环境不存在，本轮未写入。
