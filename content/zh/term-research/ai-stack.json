@@ -840,14 +840,16 @@
   },
   {
     "slug": "semantic-versioning",
-    "mechanism": "语义化版本用主版本、次版本、修订号表达不兼容变更、向后兼容功能和向后兼容修复。",
-    "misconception": "版本号能表达发布者的兼容承诺，却不能自动证明软件真的兼容或质量更高。",
-    "demoSignature": "输入：当前1.4.2，分别发生修复、新增兼容API、删除旧API；中间：候选变为1.4.3/1.5.0/2.0.0；输出：三类变更落到对应版本。可视化：建议4帧的三段数字翻牌；交互：选择变更类型生成下一版本。",
+    "mechanism": "语义化版本把版本写成 MAJOR.MINOR.PATCH：不兼容的公开 API 变化升 MAJOR，兼容功能新增升 MINOR，兼容缺陷修复升 PATCH。",
+    "misconception": "版本号是发布者对公开 API 兼容性的声明；它不会自动验证实现是否真的兼容，代码改动大小也不直接决定版本段。",
+    "demoSignature": "输入：当前 1.4.2，分别发生兼容修复、兼容功能新增、删除公开 API；中间：读者先识别旧调用是否仍能工作，再得到 1.4.3、1.5.0 或 2.0.0；输出：变更类型与版本段一一对应。可视化：四帧展示三段版本号和一条迁移提示；交互：选择变更类型生成下一版本。",
     "sourceUrls": [
-      "https://semver.org/",
-      "https://docs.npmjs.com/about-semantic-versioning"
+      "https://semver.org/spec/v2.0.0.html",
+      "https://docs.npmjs.com/about-semantic-versioning",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://nodejs.org/learn/getting-started/an-introduction-to-the-npm-package-manager"
     ],
-    "rewriteRisk": "要说明SemVer依赖公开API定义，不能把每次大改都机械升主版本。",
+    "rewriteRisk": "要先解释公开 API、兼容和旧调用，再说明版本段；不要把任何大改动都机械地升 MAJOR，也不要把版本号写成质量保证。",
     "nearDuplicates": [
       "dependency",
       "lockfile"

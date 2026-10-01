@@ -2601,44 +2601,44 @@
     "en": "Semantic Versioning",
     "slug": "semantic-versioning",
     "cat": "技术栈",
-    "say": "用主版本、次版本和修订号表达兼容性变化，常写成 2.4.1。",
+    "say": "版本号分主版本、次版本和修订号三段写。哪一段变了，等于在告诉使用方：这次更新会不会让已有的用法失效。",
     "aliases": [
       "SemVer",
       "语义版本号",
       "major minor patch"
     ],
-    "question": "一个修复版本和破坏兼容的版本，编号该怎样变化？",
-    "definition": "语义化版本约定主版本表示不兼容变化，次版本表示兼容新增，修订号表示兼容修复。",
-    "boundary": "只有维护者正确标注版本时，这套约定才可靠，预发布版本还有额外规则。",
+    "question": "两种情况：只修了一个缺陷、接口不动，版本号怎么改？如果把旧接口删掉，又该怎么改？",
+    "definition": "语义化版本（SemVer）把版本写成主版本（MAJOR）.次版本（MINOR）.修订号（PATCH）：不兼容的公开 API 变化升 MAJOR，向后兼容（旧调用在新版本上照常可用）的功能新增升 MINOR，向后兼容的缺陷修复升 PATCH。",
+    "boundary": "它是发布者对公开 API 的兼容承诺，规范本身不会替发布者检查改动是否真的兼容。0.y.z 处于初始开发阶段，预发布标识和构建元数据也有额外规则。",
     "demoType": "comparison",
-    "demoTitle": "三种变更对应的版本",
+    "demoTitle": "从公开接口变化选下一版",
     "demoSteps": [
       {
-        "label": "修复缺陷",
-        "value": "2.4.1 → 2.4.2",
-        "note": "兼容修复只增加修订号。"
+        "label": "兼容修复",
+        "value": "1.4.2 → 1.4.3",
+        "note": "只修复兼容缺陷，PATCH 增加。"
       },
       {
-        "label": "新增兼容功能",
-        "value": "2.4.2 → 2.5.0",
-        "note": "次版本增加，修订号归零。"
+        "label": "兼容新增",
+        "value": "1.4.2 → 1.5.0",
+        "note": "增加旧用法仍可使用的功能，MINOR 增加且 PATCH 归零。"
       },
       {
-        "label": "破坏兼容",
-        "value": "2.5.0 → 3.0.0",
-        "note": "调用方需要评估迁移。"
+        "label": "删改公开 API",
+        "value": "1.4.2 → 2.0.0",
+        "note": "旧调用可能失效，MAJOR 增加，MINOR 和 PATCH 归零，并需要迁移说明。"
       }
     ],
-    "quizQuestion": "不兼容 API 变化应增加哪部分？",
+    "quizQuestion": "删除一个其他程序正在调用的公开 API，应选择哪种版本变化？",
     "quizOptions": [
       "主版本号",
       "只改修订号",
       "不改版本号"
     ],
-    "correctText": "主版本用于标识不兼容变化。",
-    "wrongText": "只改修订号会误导依赖方。",
-    "promptTitle": "判断版本变化",
-    "prompt": "请根据变更内容判断主、次或修订版本，并说明兼容性依据。",
+    "correctText": "删除公开 API 会破坏旧调用，应升主版本并说明迁移方式。",
+    "wrongText": "只改修订号会把不兼容变化误报成小修复。",
+    "promptTitle": "给一次发布选版本号",
+    "prompt": "先指出公开 API 和旧用法是否仍能工作，再把变更归入兼容修复、兼容新增或不兼容变更，最后写出下一版本号和迁移说明。",
     "relatedSlugs": [
       "dependency",
       "lockfile",

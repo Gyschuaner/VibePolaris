@@ -10393,45 +10393,45 @@
   },
   {
     "slug": "semantic-versioning",
-    "lead": "当前1.4.2，修Bug、加兼容功能和删旧API分别该怎么变？",
-    "definition": "语义化版本用主版本、次版本、修订号表达不兼容变更、向后兼容功能和向后兼容修复。",
-    "boundary": "版本号能表达发布者的兼容承诺，却不能自动证明软件真的兼容或质量更高。",
+    "lead": "当前 1.4.2：修 Bug、加兼容功能、删公开 API，版本号分别怎么走？",
+    "definition": "语义化版本（SemVer）把版本写成主版本（MAJOR）.次版本（MINOR）.修订号（PATCH）：不兼容的公开 API 变化升 MAJOR，向后兼容（旧调用在新版本上照常可用）的功能新增升 MINOR，向后兼容的缺陷修复升 PATCH。",
+    "boundary": "它是发布者对公开 API 的兼容承诺，规范本身不会替发布者检查改动是否真的兼容。0.y.z 处于初始开发阶段，预发布标识和构建元数据也有额外规则。",
     "sceneKind": "compare",
-    "sceneTitle": "三种变更映射到三个版本段",
-    "actionLabel": "选择变更类型",
+    "sceneTitle": "从公开接口变化选下一版",
+    "actionLabel": "选择发布变更",
     "actors": [
       {
         "id": "current",
         "label": "当前版本",
-        "detail": "1.4.2",
+        "detail": "已发布 1.4.2",
         "icon": "package",
         "group": "起点"
       },
       {
         "id": "patch",
-        "label": "修复",
-        "detail": "兼容修正",
+        "label": "兼容修复",
+        "detail": "旧调用仍能工作",
         "icon": "shield",
         "group": "变更"
       },
       {
         "id": "minor",
-        "label": "新增",
-        "detail": "兼容功能",
+        "label": "兼容新增",
+        "detail": "增加功能，旧调用仍能工作",
         "icon": "spark",
         "group": "变更"
       },
       {
         "id": "major",
-        "label": "破坏",
-        "detail": "删除旧API",
+        "label": "不兼容变更",
+        "detail": "公开 API 被删改",
         "icon": "message",
         "group": "变更"
       },
       {
         "id": "next",
         "label": "下一版本",
-        "detail": "待选择",
+        "detail": "依据规则生成",
         "icon": "git",
         "group": "结果"
       }
@@ -10477,7 +10477,7 @@
     "frames": [
       {
         "label": "版本拆三段",
-        "note": "1.4.2显示为主1、次4、修订2。",
+        "note": "1.4.2 显示为主版本（MAJOR）1、次版本（MINOR）4、修订号（PATCH）2。",
         "activeIds": [
           "current"
         ],
@@ -10492,7 +10492,7 @@
       },
       {
         "label": "兼容修复",
-        "note": "选择Bug修复，修订号2变3。",
+        "note": "选择只修复兼容缺陷，PATCH 从 2 变成 3。",
         "activeIds": [
           "patch",
           "next"
@@ -10514,7 +10514,7 @@
       },
       {
         "label": "兼容新增",
-        "note": "改选新增API，次版本4变5且修订归零。",
+        "note": "选择旧调用仍可使用的新功能，MINOR 从 4 变成 5，PATCH 归零。",
         "activeIds": [
           "minor",
           "next"
@@ -10535,8 +10535,8 @@
         ]
       },
       {
-        "label": "不兼容删除",
-        "note": "删除公开API时，主版本1变2。",
+        "label": "不兼容变更",
+        "note": "删除或改动公开 API，MAJOR 从 1 变成 2，MINOR 和 PATCH 归零，并提示迁移。",
         "activeIds": [
           "major",
           "next"
@@ -10557,40 +10557,50 @@
         ]
       }
     ],
-    "insight": "语义化版本表达发布者对公开API兼容性的承诺，不会自动证明软件没有破坏性变化。",
+    "insight": "先问公开 API 和旧用法是否仍能工作，再决定 MAJOR、MINOR 或 PATCH；代码改动大小本身不决定版本段。",
     "quiz": {
-      "question": "内部重构但公开API和行为完全兼容，通常应怎样？",
+      "question": "删掉一个其他程序正在调用的公开函数，下一版应怎样？",
       "options": [
         {
-          "label": "按实际兼容影响决定修订版本",
+          "label": "升主版本到 2.0.0，并写迁移说明",
           "correct": true
         },
         {
-          "label": "一定升级主版本",
+          "label": "只升修订版本到 1.4.3",
           "correct": false
         },
         {
-          "label": "永远不发布新版本",
+          "label": "不发布新版本",
           "correct": false
         }
       ],
-      "success": "SemVer围绕公开API的变化。",
-      "retry": "代码改动大小不是唯一依据。"
+      "success": "先看公开 API 对旧调用的影响，再选择版本段。",
+      "retry": "删除公开函数会让旧调用失效，不能按兼容修复处理。"
     },
     "prompt": {
-      "title": "决定下一版本",
-      "text": "列出公开API变化，分别标注兼容修复、兼容新增和不兼容变更，再选择版本号并写迁移说明。"
+      "title": "给一次发布选版本号",
+      "text": "给出变更内容，先标出公开 API 和旧用法是否仍能工作，再选择 MAJOR、MINOR 或 PATCH，写出版本号并说明迁移影响。"
     },
     "sources": [
       {
-        "url": "https://semver.org/",
-        "label": "SemVer 规范 · overview",
-        "note": "原始规范与实现说明"
+        "url": "https://semver.org/spec/v2.0.0.html",
+        "label": "Semantic Versioning 2.0.0 · 规范",
+        "note": "定义 MAJOR、MINOR、PATCH、预发布标识和版本优先级。"
       },
       {
         "url": "https://docs.npmjs.com/about-semantic-versioning",
-        "label": "npm 官方文档 · about semantic versioning",
-        "note": "包管理命令与文件语义"
+        "label": "npm Docs · About semantic versioning",
+        "note": "说明 npm 包版本范围如何表达兼容更新。"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+        "label": "npm Docs · package.json",
+        "note": "说明可发布包的 name/version 标识，以及依赖版本字段的作用。"
+      },
+      {
+        "url": "https://nodejs.org/learn/getting-started/an-introduction-to-the-npm-package-manager",
+        "label": "Node.js Learn · npm package manager",
+        "note": "说明 npm 包如何通过 package.json 管理版本和依赖。"
       }
     ]
   },
