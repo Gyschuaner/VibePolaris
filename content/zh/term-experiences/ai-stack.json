@@ -2,8 +2,8 @@
   {
     "slug": "generative-ai",
     "lead": "同一句商品描述，为什么点三次生成会得到三种标题？",
-    "definition": "模型根据输入与已学到的概率分布，逐步生成新的文字、图像或声音；每一步都在候选结果中继续采样。",
-    "boundary": "生成式 AI 是一类生成能力，不等于只处理语言的 LLM，也不保证生成内容真实。",
+    "definition": "生成式 AI 根据输入和已训练的模型参数，逐步预测下一个片段（通常是一个词或符号）并生成新的内容；模型会按生成设置（例如温度）和采样方式，从候选片段中选出下一步，而不是直接取回一条现成答案。",
+    "boundary": "它回答的是“怎样生成一段内容”，不是检索指定资料后返回已经核实的唯一答案；生成结果仍要按任务需要核对事实。",
     "sceneKind": "tree",
     "sceneTitle": "一句提示如何长出不同文本",
     "actionLabel": "再生成一次",
@@ -17,8 +17,8 @@
       },
       {
         "id": "next",
-        "label": "候选词",
-        "detail": "简洁 .46 / 清楚 .31 / 灵动 .12",
+        "label": "候选片段",
+        "detail": "简洁 46% / 清楚 31% / 灵动 12% / 其他 11%",
         "icon": "brain",
         "group": "采样"
       },
@@ -49,25 +49,25 @@
         "id": "p-n",
         "from": "prompt",
         "to": "next",
-        "label": "预测下一个词"
+        "label": "预测下一个片段"
       },
       {
         "id": "n-a",
         "from": "next",
         "to": "path-a",
-        "label": "采样"
+        "label": "采样一个候选"
       },
       {
         "id": "n-b",
         "from": "next",
         "to": "path-b",
-        "label": "采样"
+        "label": "采样一个候选"
       },
       {
         "id": "n-c",
         "from": "next",
         "to": "path-c",
-        "label": "采样"
+        "label": "采样一个候选"
       }
     ],
     "frames": [
@@ -90,7 +90,7 @@
       },
       {
         "label": "候选分叉",
-        "note": "模型为下一个词给出不同概率，不是从固定答案库取一句。",
+        "note": "模型为下一步形成候选分布；这里的比例合计 100%，只是教学示意，不是从固定答案库取一句。",
         "activeIds": [
           "next"
         ],
@@ -103,19 +103,19 @@
           "path-c"
         ],
         "values": {
-          "next": "0.46 / 0.31 / 0.12"
+          "next": "46% / 31% / 12% / 其他 11%"
         },
         "activeEdgeIds": [
           "p-n"
         ],
         "metric": {
           "label": "候选词",
-          "value": "3 个"
+          "value": "4 类候选"
         }
       },
       {
         "label": "三路生成",
-        "note": "每次采样沿一条路径继续，三条文字逐字延伸。",
+        "note": "每次按候选概率进行一次采样，再沿选中的路径继续；三条文字逐步延伸，示意中的路径不是模型内部思维记录。",
         "activeIds": [
           "path-a",
           "path-b",
@@ -161,7 +161,7 @@
         }
       }
     ],
-    "insight": "生成式 AI 的关键是按概率续出新内容，不是检索一条唯一标准答案。",
+    "insight": "生成式 AI 是根据输入和模型学到的分布逐步续出新内容；检索则从指定索引或资料库取回已有资料。两者可以在同一个应用里先后配合，但生成结果仍需核验。",
     "quiz": {
       "question": "三次输出不同，最直接的原因是什么？",
       "options": [
@@ -179,30 +179,40 @@
         }
       ],
       "success": "提示相同也可能走向不同采样路径。",
-      "retry": "先看候选概率如何分叉，不要把生成当检索。"
+      "retry": "先看候选分布和采样如何产生不同路径，再与“从资料库取回原文”的检索方式比较。"
     },
     "prompt": {
       "title": "检查一个生成任务",
-      "text": "请写出这个任务的输入、允许变化的部分、必须固定的约束，以及判断输出可用的三条标准。"
+      "text": "请先写清目标、受众、格式和事实边界；如果内容需要真实数据，再列出来源与核验步骤。"
     },
     "sources": [
       {
         "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-        "label": "NIST 出版物 · NIST.AI.600 1",
-        "note": "术语、风险与评估框架"
+        "label": "NIST · NIST AI 600-1 Generative AI Profile",
+        "note": "生成式系统风险与评估"
       },
       {
         "url": "https://arxiv.org/abs/1706.03762",
-        "label": "原始论文 · 1706.03762",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Attention Is All You Need",
+        "note": "Transformer 架构边界"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.14165",
+        "label": "arXiv · Language Models are Few-Shot Learners",
+        "note": "自回归语言模型与上下文"
+      },
+      {
+        "url": "https://arxiv.org/abs/1904.09751",
+        "label": "arXiv · The Curious Case of Neural Text Degeneration",
+        "note": "解码策略与输出变化"
       }
     ]
   },
   {
     "slug": "multimodal",
     "lead": "照片里有五只杯子，问题只问红色的，系统怎样把图和字对上？",
-    "definition": "系统把文字、图像、音频等不同类型的输入编码并对齐，再在同一次任务里联合使用这些信息。",
-    "boundary": "能上传图片不代表模型会生成图片；多模态描述的是输入输出模态的组合，不是能力强弱。",
+    "definition": "多模态系统把文字、图片、音频或视频等不同类型的信息编码成模型可以一起处理的表示，再按具体模型和接口生成指定类型的结果。“表示”指模型内部可计算的信息，不是把图片自动变成一段可检索的文字。",
+    "boundary": "输入和输出模态由具体产品决定：有的接口接收图和文字并返回文字，有的还支持音频或图像输出。上传一份材料只授权使用这份材料，不等于访问设备上的其他文件；识别、计数和生成结果仍需核验。",
     "sceneKind": "layers",
     "sceneTitle": "图像区域与文字条件如何汇合",
     "actionLabel": "框选并计数",
@@ -282,14 +292,14 @@
           "answer"
         ],
         "values": {
-          "image": "5 个候选对象",
+          "image": "已提交图片",
           "question": "颜色条件：红"
         },
         "activeEdgeIds": []
       },
       {
         "label": "框出对象",
-        "note": "画面找到5只杯子，暂时不判断是否计数。",
+        "note": "画面里找到 5 只杯子，先不判断哪些该计入。",
         "activeIds": [
           "regions"
         ],
@@ -356,7 +366,7 @@
         }
       }
     ],
-    "insight": "多模态发生在不同类型的信息被联合使用时；能上传图片并不等于会生成图片。",
+    "insight": "不同类型的信息要一起用上，才算多模态；能上传图片不等于会生成图片。",
     "quiz": {
       "question": "这个演示中，哪一步体现了多模态？",
       "options": [
@@ -373,31 +383,46 @@
           "correct": false
         }
       ],
-      "success": "关键是图像信息与文字条件发生了对齐。",
-      "retry": "只处理图片或只处理文字，都没有体现两种模态的联合。"
+      "success": "关键是把文字条件用到了图像区域上。",
+      "retry": "只处理图片或只处理文字，都只用到一种模态。"
     },
     "prompt": {
       "title": "设计一次多模态核对",
-      "text": "给出一份图像输入和一条文字问题，列出系统需要从图中提取的对象、从文字中提取的条件，以及两者如何对齐。"
+      "text": "请分别写明提供了哪些输入、希望得到哪种输出；只根据已提交材料回答，看不清、没提供或无法确认的部分请指出。"
     },
     "sources": [
       {
         "url": "https://arxiv.org/abs/2303.08774",
-        "label": "原始论文 · 2303.08774",
-        "note": "原论文的方法与实验"
+        "label": "OpenAI · GPT-4 Technical Report",
+        "note": "图文输入与文本输出"
       },
       {
-        "url": "https://platform.openai.com/docs/guides/images-vision",
-        "label": "OpenAI 官方文档 · images vision",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/abs/2103.00020",
+        "label": "OpenAI · CLIP",
+        "note": "图文表示对齐"
+      },
+      {
+        "url": "https://arxiv.org/abs/2204.14198",
+        "label": "DeepMind · Flamingo",
+        "note": "交错视觉与文本输入"
+      },
+      {
+        "url": "https://arxiv.org/abs/2312.11805",
+        "label": "Google · Gemini technical report",
+        "note": "多种输入模态范围"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/images-vision",
+        "label": "OpenAI · Images and vision",
+        "note": "图片输入接口边界"
       }
     ]
   },
   {
     "slug": "reasoning-model",
     "lead": "库存17件，先卖4件再卖6件，怎样让每一步都能检查？",
-    "definition": "这类模型在回答前会分配更多推理计算来处理多步问题，并用训练或推断策略提高复杂任务的完成率。",
-    "boundary": "推理模型不是逻辑正确性的证明，也不意味着用户能看到或应当依赖模型内部思维过程。",
+    "definition": "推理模型或推理模式会为多步骤任务分配更多计算，用来推断、搜索或验证；演示中的检查步骤是人和程序都能复算的公开记录，不等于模型私有的思维过程。",
+    "boundary": "更多推理计算可能改善特定任务的完成率，但不是正确性证明；外部事实、数值和业务约束仍需要独立核验。",
     "sceneKind": "timeline",
     "sceneTitle": "库存数值沿步骤推进",
     "actionLabel": "改变销量重算",
@@ -514,7 +539,7 @@
       },
       {
         "label": "检查约束",
-        "note": "7没有越过零，结果可以交付。",
+        "note": "这是公开、可复算的业务规则检查；7 没有越过 0，结果可以交付。这里没有展示模型的私有思维过程。",
         "activeIds": [
           "check",
           "result"
@@ -534,7 +559,7 @@
         ]
       }
     ],
-    "insight": "推理模型的演示重点是可检查的状态推进，不是把一段流畅解释当作正确证明。",
+    "insight": "演示把检查步骤写成公开、可复算的状态记录；它帮助人和程序核对结论，不是模型私有思维过程，也不是正确性证明。",
     "quiz": {
       "question": "若第二次销量改为16，最可靠的处理是什么？",
       "options": [
@@ -551,33 +576,48 @@
           "correct": false
         }
       ],
-      "success": "输入变化后要重走状态与约束。",
+      "success": "输入一变，就要重新过一遍库存计算和约束检查。",
       "retry": "推理长度不能替代对中间数值的检查。"
     },
     "prompt": {
       "title": "拆解一个多步判断",
-      "text": "把问题写成初始状态、每一步操作、每步后的可检查数值和停止条件，不要求模型展示私有思维过程。"
+      "text": "请把多步骤任务拆成可检查的输入、约束和中间结果，并标出需要程序、工具或来源独立核验的结论。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/reasoning",
-        "label": "OpenAI 官方文档 · reasoning",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/reasoning",
+        "label": "OpenAI · Reasoning models",
+        "note": "推理调用与 effort"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices",
+        "label": "OpenAI · Reasoning best practices",
+        "note": "不依赖私有思维过程"
       },
       {
         "url": "https://arxiv.org/abs/2201.11903",
-        "label": "原始论文 · 2201.11903",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Chain-of-Thought Prompting",
+        "note": "少样本推理示例"
+      },
+      {
+        "url": "https://arxiv.org/abs/2501.12948",
+        "label": "arXiv · DeepSeek-R1",
+        "note": "推理策略与验证"
+      },
+      {
+        "url": "https://arxiv.org/abs/2408.03314",
+        "label": "arXiv · Scaling LLM Test-Time Compute",
+        "note": "推理计算与任务难度"
       }
     ]
   },
   {
     "slug": "system-prompt",
     "lead": "要求“只返回城市名”后，用户又要一段解释，输出该听谁的？",
-    "definition": "系统提示词在一次模型调用中提供高优先级的角色、边界和输出规则，后续用户输入在这些规则内被处理。",
-    "boundary": "它不是不可绕过的安全边界；权限控制仍要由模型外的代码和系统承担。",
+    "definition": "系统提示词是宿主应用先于对话发给模型的一段高优先级规则（比如扮演什么角色、按什么格式输出、处理哪些任务）。每次调用模型都是一次请求，这段规则能不能被用户的话覆盖，取决于宿主应用的设计。",
+    "boundary": "它可以影响模型的输出，但不等于模型就真的拥有了某个身份、权限或沙箱隔离；模型可能遵循也可能误解这段文字，文件、网络和业务操作仍要由宿主工具与后端校验。",
     "sceneKind": "layers",
-    "sceneTitle": "两层指令怎样限制输出形状",
+    "sceneTitle": "两层指令怎样限制输出形式",
     "actionLabel": "切换系统规则",
     "actors": [
       {
@@ -626,7 +666,7 @@
         "id": "d-o",
         "from": "draft",
         "to": "output",
-        "label": "裁剪"
+        "label": "只保留格式（示意）"
       }
     ],
     "frames": [
@@ -667,7 +707,7 @@
       },
       {
         "label": "候选越界",
-        "note": "草稿多出天气解释，超出系统格式。",
+        "note": "候选回答多出了天气解释，超出了系统规则允许的格式。",
         "activeIds": [
           "draft"
         ],
@@ -688,7 +728,7 @@
       },
       {
         "label": "输出收紧",
-        "note": "解释被裁掉，只保留城市名。",
+        "note": "这里示意只呈现城市名，不表示宿主一定会用程序裁剪。",
         "activeIds": [
           "output"
         ],
@@ -706,7 +746,7 @@
         ]
       }
     ],
-    "insight": "系统提示词影响一次调用的行为，但真正的权限边界仍要放在模型外。",
+    "insight": "系统提示词影响一次请求的行为，可能让模型更倾向遵守角色或格式；真正的权限边界仍要放在模型外。",
     "quiz": {
       "question": "若系统提示写着“不得删除文件”，还需要什么？",
       "options": [
@@ -728,26 +768,41 @@
     },
     "prompt": {
       "title": "整理一段系统提示",
-      "text": "请把任务目标、输出格式、拒绝范围分开写，并列出哪些限制必须由代码或权限系统另外执行。"
+      "text": "请区分行为说明、输出格式和真正的权限控制：把必须由后端或工具校验的条件单独列出。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
-        "label": "OpenAI 官方文档 · prompt engineering",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
+        "label": "OpenAI · Prompt engineering",
+        "note": "消息角色与指令"
       },
       {
         "url": "https://model-spec.openai.com/",
-        "label": "OpenAI Model Spec · overview",
-        "note": "模型行为与指令边界"
+        "label": "OpenAI · Model Spec",
+        "note": "指令层级与行为原则"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/text-generation",
+        "label": "Google · Gemini text generation",
+        "note": "system instruction"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+        "label": "Anthropic · Prompt engineering overview",
+        "note": "提示编排"
+      },
+      {
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+        "label": "OWASP · LLM01 Prompt Injection",
+        "note": "提示注入风险"
       }
     ]
   },
   {
     "slug": "few-shot-prompting",
     "lead": "只给两条工单示例，新工单为什么更容易套进同一标签格式？",
-    "definition": "在提示中放入少量输入—输出示例，让模型从示例里归纳格式或映射规律，再处理新输入。",
-    "boundary": "少样本提示不会更新模型参数；示例质量差时，模型也会照着错误模式学。",
+    "definition": "少样本提示把少量输入—输出示例放进当前请求，让模型在这次上下文中参照任务格式、边界和表达方式；模型参数是训练后保留的内部设置，放入示例不会更新它们。",
+    "boundary": "示例会占用上下文，示例里错误、片面或只覆盖部分情况的模式，也可能被带进新结果；示例数量没有跨模型通用的“正确值”，也不是越多越好。",
     "sceneKind": "pipeline",
     "sceneTitle": "两条例子怎样改变新样本的映射",
     "actionLabel": "移除一条例子",
@@ -804,7 +859,7 @@
     "frames": [
       {
         "label": "示例先到",
-        "note": "两条输入—输出对定义了标签写法。",
+        "note": "两条输入—输出对定义了标签写法；“2 组”只是本次示意，不是通用标准。",
         "activeIds": [
           "examples"
         ],
@@ -838,7 +893,7 @@
       },
       {
         "label": "分数拉开",
-        "note": "加入示例后，前端候选从0.34升到示例0.72。",
+        "note": "0.34 → 0.72 是本次演示的示意数值，不是准确率；示例改变的是输出更贴近示范里的标签写法。",
         "activeIds": [
           "labels"
         ],
@@ -850,7 +905,7 @@
           "result"
         ],
         "values": {
-          "labels": "前端 0.72"
+          "labels": "示意：0.34 → 0.72"
         },
         "activeEdgeIds": [
           "ex-l",
@@ -899,26 +954,41 @@
     },
     "prompt": {
       "title": "准备少样本示例",
-      "text": "为当前任务写2到4组输入—输出示例，保持格式一致，并补一条容易误分的边界样本。"
+      "text": "请准备少量、覆盖正常与边界的输入—输出示例，并说明它们会占用多少上下文；不要把示例当作训练参数更新。"
     },
     "sources": [
       {
         "url": "https://arxiv.org/abs/2005.14165",
-        "label": "原始论文 · 2005.14165",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Language Models are Few-Shot Learners",
+        "note": "上下文示例不更新参数"
       },
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
-        "label": "OpenAI 官方文档 · prompt engineering",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/abs/2202.12837",
+        "label": "arXiv · Rethinking the Role of Demonstrations",
+        "note": "示例传递模式与输入分布"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering#few-shot-learning",
+        "label": "OpenAI · Prompt engineering · Few-shot learning",
+        "note": "示例覆盖与格式"
+      },
+      {
+        "url": "https://arxiv.org/abs/2201.11903",
+        "label": "arXiv · Chain-of-Thought Prompting",
+        "note": "示范推理过程"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+        "label": "Google · Gemini prompting strategies",
+        "note": "zero-shot/few-shot 对照"
       }
     ]
   },
   {
     "slug": "zero-shot-prompting",
     "lead": "没有任何样例时，怎样让“登录后白屏”只落到三个标签之一？",
-    "definition": "不给任务示例，只用自然语言说明目标、约束和期望格式，让模型直接完成一次新任务。",
-    "boundary": "零样本不是“什么都不写”，任务定义仍要清楚；效果也不能据此推断为通用能力。",
+    "definition": "零样本提示不放输入—输出示例，而是直接写目标、输入、允许输出、拒绝条件和输出格式，让模型完成一次推断。",
+    "boundary": "“零样本”只表示没有示例，不表示没有说明；复杂或容易歧义的任务可能需要示例、结构化约束或用测试样本评估。",
     "sceneKind": "branch",
     "sceneTitle": "任务说明直接驱动三选一",
     "actionLabel": "删掉一条约束",
@@ -926,7 +996,7 @@
       {
         "id": "instruction",
         "label": "任务说明",
-        "detail": "从前端/后端/网络中选一项",
+        "detail": "从前端/后端/网络中选一项；无法判断时拒绝给标签",
         "icon": "message",
         "group": "规则"
       },
@@ -988,7 +1058,7 @@
     "frames": [
       {
         "label": "没有示例",
-        "note": "画面保留空示例区，只给任务和三个合法标签。",
+        "note": "画面保留空示例区，只给任务、三个合法标签和无法判断时的拒绝条件。",
         "activeIds": [
           "instruction"
         ],
@@ -1050,7 +1120,7 @@
         }
       }
     ],
-    "insight": "零样本不是没有说明，而是没有输入—输出样例，任务边界仍要写清。",
+    "insight": "零样本不是没有说明，而是没有输入—输出样例；任务边界仍要写清，并用自己的测试样本核验结果。",
     "quiz": {
       "question": "这项任务何时不再是零样本？",
       "options": [
@@ -1072,26 +1142,41 @@
     },
     "prompt": {
       "title": "写一条零样本任务说明",
-      "text": "只写任务目标、允许输出和拒绝条件，不放示例；再检查陌生人是否能据此完成任务。"
+      "text": "请只写任务目标、输入、允许输出和拒绝条件，不提供示例；再列出需要用测试样本核验的边界。"
     },
     "sources": [
       {
         "url": "https://arxiv.org/abs/2005.14165",
-        "label": "原始论文 · 2005.14165",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Language Models are Few-Shot Learners",
+        "note": "无示例文本交互"
       },
       {
-        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
-        "label": "OpenAI 官方文档 · prompt engineering",
-        "note": "接口参数与调用行为"
+        "url": "https://arxiv.org/abs/2205.11916",
+        "label": "arXiv · Large Language Models are Zero-Shot Reasoners",
+        "note": "零样本指令实验"
+      },
+      {
+        "url": "https://arxiv.org/abs/2206.07682",
+        "label": "arXiv · Emergent Abilities of Large Language Models",
+        "note": "能力与模型规模边界"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/prompt-engineering",
+        "label": "OpenAI · Prompt engineering",
+        "note": "任务、约束与格式"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies#zero-shot-vs-few-shot-prompts",
+        "label": "Google · Gemini prompting strategies",
+        "note": "zero/few-shot 定义"
       }
     ]
   },
   {
     "slug": "temperature",
     "lead": "把温度从低拖到高时，三个候选词的机会怎样变化？",
-    "definition": "温度在采样阶段重新拉伸候选 token 的相对概率；值越高，低概率候选通常越容易被选中。",
-    "boundary": "温度不等于创造力刻度，也不能修复事实错误；在某些确定性或特殊模型接口中还可能不可用。",
+    "definition": "温度是解码参数：它重新分配模型为下一个小片段给出的候选概率，再由采样策略选出一个；高温通常让候选差距缩小，低温通常让最高候选更集中。",
+    "boundary": "温度不是创造力、智力或准确率开关；是否支持、取值范围和默认值由具体模型与 API 决定，低温也不保证事实正确或完全复现。",
     "sceneKind": "spectrum",
     "sceneTitle": "温度如何拉平候选概率",
     "actionLabel": "拖动温度",
@@ -1136,7 +1221,7 @@
     "frames": [
       {
         "label": "原始分布",
-        "note": "三个候选的概率差距较大。",
+        "note": "三个候选的概率差距较大；数字合计 1，只是教学示意。",
         "activeIds": [
           "clear",
           "plain",
@@ -1155,7 +1240,7 @@
       },
       {
         "label": "低温收尖",
-        "note": "滑块向低移动，最高候选约升到0.91。",
+        "note": "滑块向低移动，最高候选约升到 0.91；实际效果还受模型和其他采样设置影响。",
         "activeIds": [
           "slider",
           "clear"
@@ -1173,7 +1258,7 @@
       },
       {
         "label": "高温拉平",
-        "note": "滑块向高移动，低概率词得到更多机会。",
+        "note": "滑块向高移动，低概率候选得到更多机会；数字是教学示意。",
         "activeIds": [
           "slider",
           "plain",
@@ -1192,7 +1277,7 @@
       },
       {
         "label": "重放十次",
-        "note": "频次随分布改变，但单次结果仍有随机性。",
+        "note": "频次会随分布改变，但单次结果仍可能不同；示例次数不是准确率。",
         "activeIds": [
           "samples"
         ],
@@ -1235,13 +1320,28 @@
     },
     "prompt": {
       "title": "检查采样参数",
-      "text": "说明哪些输出允许多样、哪些字段必须稳定，再决定是否调整温度，并保留固定样例做对照。"
+      "text": "说明哪些输出允许多样、哪些字段必须稳定；一次只调整一个采样参数，并用固定样例和评估结果比较。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/api-reference/responses/create",
-        "label": "OpenAI 官方文档 · create",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/reference/cli/resources/responses/methods/create",
+        "label": "OpenAI · Create a model response",
+        "note": "temperature 参数"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationConfig",
+        "label": "Hugging Face · GenerationConfig",
+        "note": "概率重标定与采样"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/prompting-strategies#experiment-with-model-parameters",
+        "label": "Google · Gemini prompting strategies",
+        "note": "temperature 与 top-p"
+      },
+      {
+        "url": "https://arxiv.org/abs/1904.09751",
+        "label": "arXiv · The Curious Case of Neural Text Degeneration",
+        "note": "解码策略影响"
       }
     ]
   },
@@ -1403,8 +1503,8 @@
   {
     "slug": "tokenization",
     "lead": "删掉一个空格，为什么模型收到的编号数量也可能变化？",
-    "definition": "分词器把字符串切成模型词表中的 token 编号，模型实际接收的是编号序列而不是原始字符。",
-    "boundary": "一个 token 不是固定一个字或一个单词；不同语言、空格和分词器都会改变数量。",
+    "definition": "分词器使用特定模型预先准备的词表和编码规则，把原始字符串切成 token（词、半个词、空格或符号等片段），再映射为模型接收的编号序列。",
+    "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、模型版本和 tokenizer 都可能改变切分，示例编号不能跨模型套用。",
     "sceneKind": "transform",
     "sceneTitle": "字符串怎样变成 token 编号",
     "actionLabel": "编辑原字符串",
@@ -1419,14 +1519,14 @@
       {
         "id": "cuts",
         "label": "切分结果",
-        "detail": "5 个 token（示意）",
+        "detail": "5 个 token（示意：词、半词、空格或符号片段）",
         "icon": "layout",
         "group": "切分"
       },
       {
         "id": "ids",
         "label": "编号序列",
-        "detail": "[6212, 220, …]",
+        "detail": "[示意编号…]",
         "icon": "code",
         "group": "模型输入"
       },
@@ -1460,8 +1560,8 @@
     ],
     "frames": [
       {
-        "label": "字符不是token",
-        "note": "先显示原字符串的7个可见字符。",
+        "label": "字符不是 token",
+        "note": "原字符串一共有 7 个字符，包括中间那个空格。",
         "activeIds": [
           "text"
         ],
@@ -1476,8 +1576,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "编码器切分",
-        "note": "切分边界落下，得到示意5块。",
+        "label": "分词器切分",
+        "note": "按词表切成示意的 5 个片段；片段可能是词、半个词、空格或符号。",
         "activeIds": [
           "cuts"
         ],
@@ -1497,7 +1597,7 @@
       },
       {
         "label": "变成编号",
-        "note": "每个块查词表后成为模型接收的编号。",
+        "note": "每个片段查词表后成为模型接收的编号；编号大小只在这套 tokenizer 中有意义。",
         "activeIds": [
           "ids"
         ],
@@ -1517,7 +1617,7 @@
       },
       {
         "label": "空格改变边界",
-        "note": "删除空格后重新编码，示意数量变为4。",
+        "note": "删除空格后要重新编码，片段可能合并或改换边界，不保证只少一个 token。",
         "activeIds": [
           "edited",
           "cuts",
@@ -1537,9 +1637,9 @@
         ]
       }
     ],
-    "insight": "token取决于具体编码器和文本形态，不能固定等同于一个字或一个单词。",
+    "insight": "token 数取决于具体的分词器和文本形态，不能一概等同于一个字或一个单词。",
     "quiz": {
-      "question": "怎样最准确地估算一次请求的token？",
+      "question": "怎样最准确地估算一次请求的 token 数？",
       "options": [
         {
           "label": "使用目标模型对应的分词器编码",
@@ -1554,23 +1654,38 @@
           "correct": false
         }
       ],
-      "success": "不同编码器会给出不同切分。",
+      "success": "不同分词器会给出不同的切分。",
       "retry": "字符数只能粗估，不能替代实际编码。"
     },
     "prompt": {
-      "title": "检查一段输入的token",
-      "text": "使用目标模型对应的编码器分别统计原文、系统提示和工具结果，并记录空格或格式变化后的差异。"
+      "title": "检查一段输入的 token",
+      "text": "使用目标模型对应的 tokenizer 分别统计原文、系统提示和工具结果，并记录空格、格式和模型版本变化。"
     },
     "sources": [
       {
         "url": "https://github.com/openai/tiktoken",
-        "label": "开放规范仓库 · tiktoken",
-        "note": "原始规范与实现说明"
+        "label": "OpenAI · tiktoken",
+        "note": "BPE tokenizer 与 token ID"
       },
       {
         "url": "https://arxiv.org/abs/1508.07909",
-        "label": "原始论文 · 1508.07909",
-        "note": "原论文的方法与实验"
+        "label": "arXiv · Neural Machine Translation of Rare Words",
+        "note": "subword 与 BPE"
+      },
+      {
+        "url": "https://arxiv.org/abs/1808.06226",
+        "label": "arXiv · SentencePiece",
+        "note": "语言无关分词"
+      },
+      {
+        "url": "https://huggingface.co/learn/llm-course/en/chapter2/4",
+        "label": "Hugging Face · Tokenizers course",
+        "note": "tokenization 与 IDs"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+        "label": "Anthropic · Token counting",
+        "note": "按目标模型计数"
       }
     ]
   },
@@ -2645,8 +2760,8 @@
   {
     "slug": "tool-choice",
     "lead": "“改会议时间”同时匹配三个工具时，为什么选中了更新工具却仍没有执行？",
-    "definition": "当多个工具可用时，系统决定让模型自动选择、强制选择某个工具或禁止调用；选择结果仍需经过参数与权限检查。",
-    "boundary": "工具选择不是工具执行，也不是让模型获得工具背后的全部权限。",
+    "definition": "应用先提供候选工具和选择策略，模型再提出本轮要不要调用、调用哪一个；auto、required、指定工具和 none 会改变可提出的选择。选出工具后，应用仍要检查参数、身份、权限和审批；写操作指会改变外部状态的调用。",
+    "boundary": "选择不是执行，也不是授权；工具描述、allowlist 和策略只能缩小候选范围，不能替代业务权限、副作用控制或人工审批。",
     "sceneKind": "route",
     "sceneTitle": "工具相关性与审批条件分两次判断",
     "actionLabel": "切换选择策略",
@@ -2716,7 +2831,7 @@
     "frames": [
       {
         "label": "三个候选出现",
-        "note": "路由器先比较哪一个工具与请求相关。",
+        "note": "路由器先比较哪一个工具与请求相关；0.42、0.91、0.08 是教学示意，没有及格线，也不会自动放行。",
         "activeIds": [
           "request",
           "read",
@@ -2736,7 +2851,7 @@
       },
       {
         "label": "更新工具胜出",
-        "note": "最高分是更新日历，其他两个候选淡出。",
+        "note": "最高分只是选择线索，模型提出“更新日历”的调用请求，尚未执行。",
         "activeIds": [
           "update"
         ],
@@ -2757,7 +2872,7 @@
       },
       {
         "label": "审批规则生效",
-        "note": "选择完成后，写操作仍停在审批闸门。",
+        "note": "选择完成后，写操作仍停在审批闸门；审批通过前不会改变日历。",
         "activeIds": [
           "update",
           "approval"
@@ -2777,8 +2892,8 @@
         ]
       },
       {
-        "label": "改为禁用工具",
-        "note": "选择策略切到none后，三条工具路径全部关闭。",
+        "label": "改为禁止调用",
+        "note": "选择策略切到 none 后，三条工具路径全部关闭，只能生成文本回答。",
         "activeIds": [
           "request"
         ],
@@ -2795,7 +2910,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "工具选择决定用哪个工具，不授予权限，也不代表工具已经执行。",
+    "insight": "工具选择决定模型提出哪个调用；能不能执行，是另一道由权限和审批做的判断。",
     "quiz": {
       "question": "自动选择到“删除文件”工具后，系统可以直接运行吗？",
       "options": [
@@ -2817,26 +2932,36 @@
     },
     "prompt": {
       "title": "设计工具选择规则",
-      "text": "列出候选工具、适用请求、禁用条件和强制选择场景，再单列每个写操作的审批要求。"
+      "text": "列出候选工具、auto/required/指定/none 等策略的影响，再为每个有副作用的调用单列参数、权限、审批，以及重复执行会不会出问题的检查。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/function-calling",
-        "label": "OpenAI 官方文档 · function calling",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-choice",
+        "label": "OpenAI · Function calling · tool choice",
+        "note": "auto/required/forced/none"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "label": "Anthropic · Tool use with Claude",
+        "note": "模型提出调用与应用执行"
       },
       {
         "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-        "label": "MCP 规范 · tools",
-        "note": "协议角色与消息行为"
+        "label": "MCP · Tools specification 2025-06-18",
+        "note": "工具描述与 tools/call"
+      },
+      {
+        "url": "https://arxiv.org/abs/2302.04761",
+        "label": "arXiv · Toolformer",
+        "note": "模型学习调用工具"
       }
     ]
   },
   {
     "slug": "tool-result",
     "lead": "库存工具返回stock=0后，最终回答是怎样从“有货”切成“缺货”的？",
-    "definition": "工具执行后的结构化结果被送回模型或应用，成为下一步判断的可观测状态；错误、空结果和元数据也属于结果。",
-    "boundary": "工具结果不是最终回答，模型还可能误读它；应用应保留状态码、来源和校验信息。",
+    "definition": "工具执行后返回结构化数据、错误和元信息；应用用关联标识（例如 call_id）把结果对回发起它的那次调用，再决定下一步状态或回答。",
+    "boundary": "HTTP 状态表示传输是否处理成功，不等于业务成功；结构正确也不等于事实可信。应用还要检查业务字段、来源、时效、权限、空结果和部分完成。",
     "sceneKind": "state-machine",
     "sceneTitle": "原始结果字段驱动回答状态",
     "actionLabel": "修改 stock 值",
@@ -2844,14 +2969,14 @@
       {
         "id": "call",
         "label": "库存查询",
-        "detail": "sku=K7",
+        "detail": "call_id=inv-7 · sku=K7",
         "icon": "gear",
         "group": "请求"
       },
       {
         "id": "raw",
         "label": "原始结果",
-        "detail": "{stock:0,status:200}",
+        "detail": "{call_id:inv-7, stock:0, status:200}",
         "icon": "code",
         "group": "工具"
       },
@@ -2893,7 +3018,7 @@
     "frames": [
       {
         "label": "查询发出",
-        "note": "sku参数进入库存工具。",
+        "note": "应用发出库存查询，并记下 call_id=inv-7，方便把返回结果对回这次请求。",
         "activeIds": [
           "call"
         ],
@@ -2904,13 +3029,13 @@
           "answer"
         ],
         "values": {
-          "call": "K7"
+          "call": "inv-7 · K7"
         },
         "activeEdgeIds": []
       },
       {
         "label": "结果返回",
-        "note": "HTTP成功只表示查询完成，stock字段为0。",
+        "note": "HTTP 状态 200 只表示请求被处理；stock=0 才是业务字段。",
         "activeIds": [
           "raw"
         ],
@@ -2930,7 +3055,7 @@
       },
       {
         "label": "状态翻转",
-        "note": "解释层读取stock=0，把回答状态从未知改为缺货。",
+        "note": "应用的解释层读取 stock=0，把回答状态从未知改为缺货；结果还要经过来源和时效检查。",
         "activeIds": [
           "state"
         ],
@@ -2950,7 +3075,7 @@
       },
       {
         "label": "生成措辞",
-        "note": "最终回答说明暂时缺货，而不是把200误读成有货。",
+        "note": "最终回答说明暂时缺货，而不是把 200 误读成有货；错误、空结果、过期数据或部分完成应走失败分支。",
         "activeIds": [
           "answer"
         ],
@@ -2970,7 +3095,7 @@
     ],
     "insight": "工具结果是下一步的可观测状态，不是最终答案；状态码和业务字段要分别解释。",
     "quiz": {
-      "question": "接口返回HTTP 200且stock=0，应怎样回答？",
+      "question": "HTTP 状态 200 且 stock=0，应怎样回答？",
       "options": [
         {
           "label": "查询成功，但商品缺货",
@@ -2981,7 +3106,7 @@
           "correct": false
         },
         {
-          "label": "忽略stock只复述状态码",
+          "label": "忽略 stock，只复述状态码",
           "correct": false
         }
       ],
@@ -2990,18 +3115,33 @@
     },
     "prompt": {
       "title": "检查一次工具结果处理",
-      "text": "列出成功、空结果、业务失败和超时四类返回，说明每个字段怎样改变下一步状态和用户措辞。"
+      "text": "请把一次工具返回拆成关联标识、传输状态、业务数据、错误、时间和来源，并说明每种组合如何改变下一步状态与用户措辞。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/function-calling",
-        "label": "OpenAI 官方文档 · function calling",
-        "note": "接口参数与调用行为"
+        "url": "https://developers.openai.com/api/docs/guides/function-calling#tool-call-outputs",
+        "label": "OpenAI · Function calling · tool call outputs",
+        "note": "call_id 与 function_call_output"
       },
       {
-        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-        "label": "MCP 规范 · tools",
-        "note": "协议角色与消息行为"
+        "url": "https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result",
+        "label": "MCP · Tools specification · tool result",
+        "note": "structuredContent 与 isError"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "label": "Anthropic · Tool use with Claude",
+        "note": "应用执行并回传结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2210.03629",
+        "label": "arXiv · ReAct",
+        "note": "action/observation 状态循环"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-200-ok",
+        "label": "IETF · RFC 9110 HTTP Semantics",
+        "note": "HTTP 200 与业务字段"
       }
     ]
   },
