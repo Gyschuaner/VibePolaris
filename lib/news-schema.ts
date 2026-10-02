@@ -56,7 +56,7 @@ const verificationSchema = z.object({
   notes: z.string().trim().max(2_000).optional(),
 }).strict();
 
-const sourceTypeSchema = z.enum(["official-announcement", "official-blog", "news-report", "paper", "regulatory"]);
+const sourceTypeSchema = z.enum(["official-announcement", "official-blog", "news-report", "personal-blog", "paper", "regulatory"]);
 const candidateDecisionSchema = z.enum(["selected", "rejected", "duplicate", "deferred"]);
 
 export const newsCandidateSchema = z.object({
@@ -90,7 +90,7 @@ export const newsDailyRunSchema = z.object({
   search: z.object({
     query: z.string().trim().min(1).max(2_000),
     sourceUrls: z.array(httpsUrl).min(1).max(20),
-    sourcePolicy: z.array(sourceTypeSchema).min(1).max(5),
+    sourcePolicy: z.array(sourceTypeSchema).min(1).max(6),
     candidateCount: z.number().int().nonnegative(),
     primaryCandidateCount: z.number().int().nonnegative(),
     deduplicatedCount: z.number().int().nonnegative(),

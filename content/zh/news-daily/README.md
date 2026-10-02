@@ -22,7 +22,7 @@
 5. 确认公开词条联动，运行 humanizer-zh 检查中文表达，并把完整草稿交给 `codex-subagent-reader` 以零基础读者视角审读；
 6. 根据审读意见修订，写入 `readerReview`，通过校验后当天独立提交一个 Git commit。
 
-阶段二允许的候选来源类型包括 `official-announcement`、`official-blog`、`news-report`、`regulatory` 和仅作背景的 `paper`。`paper` 不得在没有对应新闻事件时成为 `selected`。
+阶段二允许的候选来源类型包括 `official-announcement`、`official-blog`、`news-report`、`personal-blog`、`regulatory` 和仅作背景的 `paper`。`paper` 不得在没有对应新闻事件时成为 `selected`。
 
 试跑命令：
 
