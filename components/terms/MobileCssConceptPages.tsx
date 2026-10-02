@@ -149,7 +149,7 @@ export function AppPermissionTermPage() {
     <ArticleSection id="permission-task" title="相机权限应该何时出现">
       <p>你在订单页点击“拍照上传发票”。如果应用一打开就弹出相机权限，用户还不知道为什么需要；如果点击拍照后没有任何解释，系统弹窗也会显得突然。权限请求应该跟着当前任务出现。</p>
       <p id="permission-timing" className="vp-citation-target">权限最佳实践通常建议在用户触发相关功能时请求，并在系统对话框之前解释用途。这样用户可以把“允许相机”与刚刚选择的拍照任务联系起来，而不是在启动时面对一串没有上下文的询问。<Cite id="permission-timing" sources={appPermissionSources} /></p>
-      <p>“请求权限”只是流程的一步，不是功能本身。功能还要处理已授权、暂时拒绝、永久拒绝、系统限制和替代输入，最后才把状态呈现给用户。</p>
+      <p>“请求权限”只是流程的一步，不是功能本身。功能还要处理已授权、一次拒绝、系统不再直接弹窗、系统限制和替代输入，最后才把状态呈现给用户。</p>
       <MobileConceptLesson slug="app-permission" />
     </ArticleSection>
     <ArticleSection id="permission-request" title="用途说明与系统请求">
@@ -161,14 +161,14 @@ export function AppPermissionTermPage() {
     <ArticleSection id="permission-branches" title="允许、拒绝与替代路径">
       <p id="permission-state" className="vp-citation-target">Permissions API 可以查询部分能力的当前状态，帮助页面在请求前决定是直接继续、显示解释，还是引导用户修改设置。但并非所有能力和所有浏览器都支持同样的查询，不能把一个 API 当作所有权限的统一答案。<Cite id="permission-state" sources={appPermissionSources} /></p>
       <p id="permission-media" className="vp-citation-target">调用 <code>getUserMedia()</code> 时，浏览器仍会检查来源、用户选择和设备条件；获得相机流之前，页面不能假定“已经有相机”。拒绝后应保留用户的其他上传方式，或者清楚说明下一步。<Cite id="permission-media" sources={appPermissionSources} /></p>
-      <div className={styles.distinctions}><div><h3>允许</h3><p>打开相机，完成当前上传任务。</p></div><div><h3>拒绝</h3><p>保留文件选择或手动输入，不把整页锁死。</p></div><div><h3>长期拒绝</h3><p>停止重复弹窗，提供系统设置入口和说明。</p></div></div>
+      <div className={styles.distinctions}><div><h3>允许</h3><p>打开相机，完成当前上传任务。</p></div><div><h3>拒绝</h3><p>保留文件选择或手动输入，不把整页锁死。</p></div><div><h3>系统不再直接弹窗</h3><p>停止重复弹窗，提供系统设置入口和说明。</p></div></div>
       <p>替代路径不是把相机功能偷偷删掉，而是承认当前能力不可用后，把同一个业务目标交给另一种输入完成。</p>
     </ArticleSection>
     <ArticleSection id="permission-boundary" title="声明、状态和平台差异">
       <p>清单或 Info.plist 里的声明说明应用请求了什么，不代表用户已经授权；运行时状态说明当前是否可能调用，也不代表摄像头一定存在或不会在调用时失败。</p>
       <p id="permission-denied" className="vp-citation-target">Android 的权限文档区分了普通拒绝和不再询问等情况。反复请求同一项能力可能只会增加打扰，甚至让用户找不到完成任务的入口。<Cite id="permission-denied" sources={appPermissionSources} /></p>
       <p>浏览器、iOS 和 Android 对再次请求、系统设置和临时权限的处理不同。跨平台页面应把“用户能完成什么”放在主线，把各平台的状态映射放在实现层，并在真机上验证。</p>
-      <p>验收权限流程时，至少走一次允许和一次拒绝；如果产品依赖永久拒绝后的设置入口，再验证该分支。只点击“允许”不能说明权限设计完整。</p>
+      <p>验收权限流程时，至少走一次允许和一次拒绝；如果产品依赖系统不再直接弹窗后的设置入口，再验证该分支。只点击“允许”不能说明权限设计完整。</p>
     </ArticleSection>
   </ConceptArticle>;
 }
@@ -203,22 +203,22 @@ export function PushNotificationTermPage() {
 }
 
 export function CrossPlatformDevelopmentTermPage() {
-  return <ConceptArticle slug="cross-platform-development" title="Cross-platform development" subtitle="跨平台开发" hero={<MobileHero trigger="同一订单要跑在两个平台" change="共享规则 → 平台适配器" proof="业务一致，权限和相机由各平台处理" />} sections={crossSections} sources={crossPlatformSources} intro={<>跨平台开发把能共用的业务规则、数据和部分界面放在共享核心，再用平台实现接上 iOS、Android 或桌面系统的差异。<strong>共享的是清楚的边界，不是承诺所有行为完全相同。</strong></>}>
+  return <ConceptArticle slug="cross-platform-development" title="Cross-platform development" subtitle="跨平台开发" hero={<MobileHero trigger="同一订单要跑在两个平台" change="共享规则 → 平台适配器" proof="业务一致，权限和相机由各平台处理" />} sections={crossSections} sources={crossPlatformSources} intro={<>跨平台开发把能共用的业务规则、数据和部分界面放在共享核心，再用平台实现接上 iOS 和 Android 的差异。<strong>共享的是清楚的边界，不是承诺所有行为完全相同。</strong></>}>
     <ArticleSection id="cross-task" title="一套规则，两个平台">
       <p>你要做一个订单应用：总价计算、优惠规则和订单状态在 iOS 与 Android 应该一致，但相机、通知、文件选择和生命周期由各自系统管理。真正的问题不是“代码能不能复制”，而是哪些决策应该保持一致、哪些能力必须面对平台差异。</p>
-      <p id="cross-core" className="vp-citation-target">Flutter 的架构说明把框架层、引擎和平台嵌入区分开；Kotlin Multiplatform 也把共享业务逻辑和平台代码分开组织。共同的做法是先找到可验证的共享核心，再把平台 API 留在边界。<Cite id="cross-core" sources={crossPlatformSources} /></p>
+      <p id="cross-core-source" className="vp-citation-target">Flutter 的架构说明把框架层、引擎和平台嵌入区分开；Kotlin Multiplatform 也把共享业务逻辑和平台代码分开组织。共同的做法是先找到可验证的共享核心，再把平台 API 留在边界。<Cite id="cross-core-source" sources={crossPlatformSources} /></p>
       <p>共享核心可以是“计算订单总额”的纯函数，也可以是跨平台的数据模型；它不应该偷偷依赖某台设备有没有相机。下面把一条代码从共享区移动到平台边界，看它为什么会改变可维护性。</p>
       <MobileConceptLesson slug="cross-platform-development" />
     </ArticleSection>
     <ArticleSection id="cross-core" title="共享什么才划算">
-      <p>适合共享的部分通常有明确输入和输出：价格计算、表单校验、同步状态、业务规则和数据解析。它们可以用同一组测试在两个平台运行，减少规则漂移。</p>
+      <p>适合共享的部分通常有明确输入和输出：价格计算、表单校验、同步状态、业务规则和数据解析。它们可以用同一组测试在两个平台运行，减少规则漂移。后面说的“适配器”，就是把共享接口翻译成各平台调用的连接层。</p>
       <p id="cross-runtime" className="vp-citation-target">React Native 的架构资料说明 JavaScript、原生模块和运行时之间存在通信与调度边界。共享代码仍要经过运行时和平台实现，性能、线程和生命周期的行为不能只凭同一份源码推断。<Cite id="cross-runtime" sources={crossPlatformSources} /></p>
       <div className={styles.contract}><div><Code size={26} /><h3>共享核心</h3><p><code>calculateTotal(items, coupon)</code> 不访问平台 API。</p></div><div><GitBranch size={26} /><h3>平台入口</h3><p><code>takePhoto()</code> 由 iOS 与 Android 各自实现。</p></div></div>
       <p>共享比例没有固定答案。一个平台控件如果在另一个平台上需要完全不同的交互和可访问性，强行共享视图层可能比共享规则更贵。</p>
     </ArticleSection>
     <ArticleSection id="cross-adapter" title="平台能力放在边界">
       <p id="cross-channel" className="vp-citation-target">Flutter 的 platform channels 让 Dart 代码通过约定的消息调用平台侧实现。这个通道是边界：共享代码表达“请求拍照”，平台实现决定使用哪套相机 API、权限和返回错误。<Cite id="cross-channel" sources={crossPlatformSources} /></p>
-      <p>适配器的价值是把差异集中起来。iOS 适配器可以处理权限被永久拒绝，Android 适配器可以处理不同版本的通知权限，共享业务层只接收“成功、取消或失败”的结果。</p>
+      <p>适配器的价值是把差异集中起来。iOS 适配器可以处理系统不再直接弹窗的权限状态，Android 适配器可以处理不同版本的通知权限，共享业务层只接收“成功、取消或失败”的结果。</p>
       <p id="cross-kmp" className="vp-citation-target">Kotlin Multiplatform 的共享模块也不是消除平台代码，而是让团队选择哪些逻辑共享、哪些平台实现。清楚的边界方便分别测试和在必要时替换实现。<Cite id="cross-kmp" sources={crossPlatformSources} /></p>
       <ArticleAside title="接口先写结果，再写平台名"><p>共享接口可以叫 <code>takePhoto()</code>，返回图片或取消；它不必把 AVCaptureSession、CameraX 等平台类暴露给业务规则。平台名放在适配器里，业务层更容易理解和测试。</p></ArticleAside>
     </ArticleSection>
