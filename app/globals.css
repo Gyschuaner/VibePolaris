@@ -1604,6 +1604,71 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .policy-governance-phase-3 .policy-governance-track i:nth-of-type(-n+4),
 .policy-governance-phase-4 .policy-governance-track i { background: var(--accent); transform: scaleY(1.5); }
 .policy-governance-phase-3 .policy-governance-result, .policy-governance-phase-4 .policy-governance-result { color: var(--accent-text); }
+.news-explainer-agent-safety, .news-explainer-ecg-screening { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); grid-template-rows: 1fr auto; align-items: center; min-height: 180px; gap: 8px; padding: 20px 2px 18px; }
+.agent-safety-card, .ecg-screening-card { display: grid; gap: 13px; min-height: 112px; align-content: center; padding: 16px 10px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--surface); color: var(--muted); opacity: .42; transform: translateY(5px) scale(.96); transition: opacity .28s ease, transform .28s ease, border-color .28s ease, color .28s ease; }
+.agent-safety-card-label, .ecg-screening-card-label { font-size: 12px; text-align: center; }
+.agent-safety-intent { color: #c4b5fd; border-color: color-mix(in srgb, #c4b5fd 55%, var(--hairline)); }
+.agent-safety-shell { color: #67e8f9; border-color: color-mix(in srgb, #67e8f9 55%, var(--hairline)); }
+.agent-safety-sentry { color: #a7f3d0; border-color: color-mix(in srgb, #a7f3d0 55%, var(--hairline)); }
+.agent-safety-intent-shape, .agent-safety-shell-shape, .agent-safety-sentry-shape, .ecg-screening-wave, .ecg-screening-model-shape, .ecg-screening-followup-shape { display: flex; justify-content: center; align-items: center; gap: 7px; min-height: 27px; }
+.agent-safety-intent-shape i { display: block; width: 18px; height: 18px; border: 2px solid currentColor; border-radius: 50%; }
+.agent-safety-intent-shape i:nth-child(2) { transform: translateY(-7px); }
+.agent-safety-intent-shape i:nth-child(3) { transform: translateY(5px); }
+.agent-safety-shell-shape { padding: 3px 7px; border: 2px solid currentColor; border-radius: 7px; }
+.agent-safety-shell-shape i { display: block; width: 16px; height: 5px; border-radius: 4px; background: currentColor; }
+.agent-safety-shell-shape i:nth-child(2) { width: 22px; opacity: .7; }
+.agent-safety-shell-shape i:nth-child(3) { width: 12px; opacity: .5; }
+.agent-safety-shell-shape i:nth-child(4) { width: 19px; opacity: .8; }
+.agent-safety-sentry-shape i { display: block; width: 22px; height: 22px; border: 2px solid currentColor; border-radius: 50%; box-shadow: 0 0 0 7px color-mix(in srgb, currentColor 14%, transparent); }
+.agent-safety-sentry-shape i:nth-child(2) { width: 8px; height: 8px; margin-left: -18px; background: currentColor; border: 0; box-shadow: none; }
+.agent-safety-arrow, .ecg-screening-arrow { color: var(--faint); font-size: 22px; opacity: .42; transition: color .28s ease, opacity .28s ease, transform .28s ease; }
+.agent-safety-result, .ecg-screening-result { grid-column: 1 / -1; color: var(--faint); font-size: 11px; text-align: center; transition: color .28s ease; }
+.agent-safety-phase-0 .agent-safety-intent,
+.agent-safety-phase-1 .agent-safety-intent,
+.agent-safety-phase-1 .agent-safety-shell,
+.agent-safety-phase-2 .agent-safety-shell,
+.agent-safety-phase-3 .agent-safety-shell,
+.agent-safety-phase-3 .agent-safety-sentry,
+.agent-safety-phase-4 .agent-safety-sentry,
+.ecg-screening-phase-0 .ecg-screening-ecg,
+.ecg-screening-phase-1 .ecg-screening-ecg,
+.ecg-screening-phase-1 .ecg-screening-model,
+.ecg-screening-phase-2 .ecg-screening-model,
+.ecg-screening-phase-3 .ecg-screening-model,
+.ecg-screening-phase-3 .ecg-screening-followup,
+.ecg-screening-phase-4 .ecg-screening-followup { opacity: 1; transform: translateY(-4px) scale(1); color: var(--ink); border-color: var(--accent); }
+.agent-safety-phase-1 .agent-safety-arrow:first-of-type,
+.agent-safety-phase-2 .agent-safety-arrow:first-of-type,
+.agent-safety-phase-3 .agent-safety-arrow,
+.agent-safety-phase-4 .agent-safety-arrow:last-of-type,
+.ecg-screening-phase-1 .ecg-screening-arrow:first-of-type,
+.ecg-screening-phase-2 .ecg-screening-arrow:first-of-type,
+.ecg-screening-phase-3 .ecg-screening-arrow,
+.ecg-screening-phase-4 .ecg-screening-arrow:last-of-type { color: var(--accent-text); opacity: 1; transform: translateX(3px); }
+.agent-safety-phase-3 .agent-safety-result, .agent-safety-phase-4 .agent-safety-result,
+.ecg-screening-phase-3 .ecg-screening-result, .ecg-screening-phase-4 .ecg-screening-result { color: var(--accent-text); }
+.ecg-screening-ecg { color: #fda4af; border-color: color-mix(in srgb, #fda4af 55%, var(--hairline)); }
+.ecg-screening-model { color: #67e8f9; border-color: color-mix(in srgb, #67e8f9 55%, var(--hairline)); }
+.ecg-screening-followup { color: #a7f3d0; border-color: color-mix(in srgb, #a7f3d0 55%, var(--hairline)); }
+.ecg-screening-wave i { display: block; width: 15px; height: 26px; border-top: 2px solid currentColor; border-radius: 50%; transform: skewY(-22deg); }
+.ecg-screening-wave i:nth-child(2) { height: 13px; transform: translateY(6px) skewY(22deg); }
+.ecg-screening-wave i:nth-child(3) { height: 30px; transform: translateY(-3px) skewY(-22deg); }
+.ecg-screening-wave i:nth-child(4) { height: 11px; transform: translateY(7px) skewY(22deg); }
+.ecg-screening-wave i:nth-child(5) { height: 22px; transform: skewY(-22deg); }
+.ecg-screening-model-shape i { display: block; width: 10px; height: 10px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 7px color-mix(in srgb, currentColor 12%, transparent); }
+.ecg-screening-model-shape i:nth-child(2) { transform: translateY(-7px); }
+.ecg-screening-model-shape i:nth-child(3) { transform: translateY(5px); }
+.ecg-screening-followup-shape i { display: block; width: 26px; height: 16px; border: 2px solid currentColor; border-radius: 8px 8px 4px 4px; }
+.ecg-screening-followup-shape i:nth-child(2) { width: 12px; height: 12px; border-radius: 50%; margin-left: -17px; background: currentColor; border: 0; }
+.news-explainer-agent-safety { grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); grid-template-rows: auto 30px auto auto; min-height: 228px; }
+.agent-safety-intent { grid-column: 1; grid-row: 1; }
+.agent-safety-arrow:first-of-type { grid-column: 2; grid-row: 1; }
+.agent-safety-shell { grid-column: 3; grid-row: 1; }
+.agent-safety-monitor-link { grid-column: 1 / -1; grid-row: 2; justify-self: center; color: var(--faint); font-size: 11px; opacity: .5; transition: color .28s ease, opacity .28s ease; }
+.agent-safety-sentry { grid-column: 1 / -1; grid-row: 3; min-height: 70px; }
+.agent-safety-result { grid-row: 4; }
+.agent-safety-phase-2 .agent-safety-monitor-link, .agent-safety-phase-3 .agent-safety-monitor-link, .agent-safety-phase-4 .agent-safety-monitor-link { color: var(--accent-text); opacity: 1; }
+.agent-safety-phase-3 .agent-safety-result, .agent-safety-phase-4 .agent-safety-result { color: var(--accent-text); }
 .news-explainer-orbit { position: absolute; inset: 27px 10%; border: 1px dashed color-mix(in srgb, var(--accent) 48%, var(--hairline)); border-radius: 50%; transform: rotate(-8deg); }
 .news-explainer-node { position: relative; z-index: 1; display: grid; justify-items: center; gap: 8px; color: var(--muted); font-size: 12px; transition: color .24s ease, transform .24s ease; }
 .news-explainer-node i { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--hairline); border-radius: 50%; background: var(--bg); color: var(--faint); font-style: normal; font-size: 12px; transition: border-color .24s ease, background .24s ease, color .24s ease; }
@@ -1664,6 +1729,11 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .policy-governance-card { min-height: 96px; padding: 10px 4px; }
   .policy-governance-arrow { font-size: 18px; }
   .policy-governance-track { gap: 4px; font-size: 9px; }
+  .news-explainer-agent-safety, .news-explainer-ecg-screening { min-height: 145px; gap: 4px; }
+  .agent-safety-card, .ecg-screening-card { min-height: 96px; padding: 10px 4px; }
+  .agent-safety-arrow, .ecg-screening-arrow { font-size: 18px; }
+  .news-explainer-agent-safety { min-height: 205px; grid-template-rows: auto 26px auto auto; }
+  .agent-safety-sentry { min-height: 64px; }
   .news-explainer-controls { align-items: flex-start; flex-wrap: wrap; }
   .news-explainer-steps { width: 100%; flex-basis: 100%; }
 }

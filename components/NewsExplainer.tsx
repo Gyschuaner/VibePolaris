@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -145,6 +145,50 @@ function PolicyGovernanceVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function AgentSafetyVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-agent-safety agent-safety-phase-${activeStep}`} aria-hidden="true">
+      <div className="agent-safety-card agent-safety-intent">
+        <span className="agent-safety-card-label">任务与权限</span>
+        <span className="agent-safety-intent-shape"><i /><i /><i /></span>
+      </div>
+      <span className="agent-safety-arrow">→</span>
+      <div className="agent-safety-card agent-safety-shell">
+        <span className="agent-safety-card-label">OpenShell 沙箱</span>
+        <span className="agent-safety-shell-shape"><i /><i /><i /><i /></span>
+      </div>
+      <span className="agent-safety-monitor-link">↓ 外部持续监控</span>
+      <div className="agent-safety-card agent-safety-sentry">
+        <span className="agent-safety-card-label">Sentry 外部监控</span>
+        <span className="agent-safety-sentry-shape"><i /><i /></span>
+      </div>
+      <div className="agent-safety-result">越界时隔离或停止，不把安全交给提示词</div>
+    </div>
+  );
+}
+
+function EcgScreeningVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-ecg-screening ecg-screening-phase-${activeStep}`} aria-hidden="true">
+      <div className="ecg-screening-card ecg-screening-ecg">
+        <span className="ecg-screening-card-label">12 导联 ECG</span>
+        <span className="ecg-screening-wave"><i /><i /><i /><i /><i /></span>
+      </div>
+      <span className="ecg-screening-arrow">→</span>
+      <div className="ecg-screening-card ecg-screening-model">
+        <span className="ecg-screening-card-label">AI 筛查信号</span>
+        <span className="ecg-screening-model-shape"><i /><i /><i /></span>
+      </div>
+      <span className="ecg-screening-arrow">→</span>
+      <div className="ecg-screening-card ecg-screening-followup">
+        <span className="ecg-screening-card-label">复核与后续检查</span>
+        <span className="ecg-screening-followup-shape"><i /><i /></span>
+      </div>
+      <div className="ecg-screening-result">AI 输出风险提示，不能替代诊断</div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -184,7 +228,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (

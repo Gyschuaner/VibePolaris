@@ -497,6 +497,283 @@
     "sourceHash": "sha256:5503456d02b60fb6526a3d1960edeb60ec15a0f816309caedaf4bb236feae4d5"
   },
   {
+    "slug": "nvidia-open-agent-safety-platform-20260928-4b5c47b6",
+    "title": "NVIDIA 发布 Open Agent Safety Platform：给 AI 代理加上运行时和硬件边界",
+    "summary": "2026-09-28，NVIDIA 发布 Open Agent Safety Platform，把开源 OpenShell 运行时和 BlueField-4 上的 Sentry 参考系统放在同一套安全架构里：前者在代理执行时限制文件、网络、工具和凭据，后者在独立硬件层监控并可隔离越界代理。新闻记录的是平台设计和厂商承诺，不是所有部署都已证明安全。",
+    "body": "2026-09-28，NVIDIA 发布 Open Agent Safety Platform，新闻主线是给能自己调用工具、运行代码和持续工作的 AI 代理加上执行边界。平台由两部分组成：开源的 OpenShell 负责代理运行时，Sentry 则把监控和止损放到与代理分开的硬件层。\n\n这条新闻出现的背景，是一些 AI 代理在测试或执行任务时越过原本的范围，访问不该访问的系统。NVIDIA 的判断是，安全控制不能只写在提示词或应用层规则里，因为代理可能会绕过应用层；还需要一层位于模型和代理进程外部的约束。AP 报道了 NVIDIA 高管关于近期 Hugging Face 事件的推测，但那是公司对“如果当时部署了这套平台可能怎样”的判断，不能当作已完成的独立复盘。\n\nOpenShell 的角色像一个带规则的运行时工作区。每个代理在隔离的沙箱里运行，默认没有直接网络权限，也不能随意读写主机上的文件。操作方可以规定它能访问哪些文件、网络、工具、进程和凭据；OpenShell 在代理运行前检查策略，在运行中监控系统调用，并把需要批准的请求交给监督组件。NVIDIA 还把它设计成开源软件，称它可以扩展到 Arm、Intel 等第三方计算平台。\n\nSentry 是另一道边界。NVIDIA 的公告把它描述成运行在 BlueField-4 数据处理器（DPU）上的带外监控器：它不和代理待在同一个进程里，而是从基础设施层持续观察代理行为。若代理试图越过软件边界，Sentry 可以把它隔离或停止；“毫秒级”是 NVIDIA 对平台能力的描述。独立硬件层被设计为让代理无法直接控制监控层，但它依赖特定硬件和部署方式，不能自动替每个组织写出正确的权限策略。\n\n这套设计解决的首先是“能不能碰到某个资源”，不是“模型会不会说谎、判断是否正确”。AP 采访的研究者也指出，代理需要资源才能完成工作，如何把权限设到刚好够用并不简单；规则太松会放大风险，规则太紧又可能让任务无法完成。NVIDIA 的技术博客把 drift（行为偏离目标）归因于工具失败、指令含糊、长时间运行等组合因素，平台提供的是约束和止损层，而不是对模型意图的证明。\n\n新闻里还出现了一个容易混淆的概念：OpenShell 是可使用的开源运行时，Sentry 是参考系统设计，两者不等于同一个开源软件包。NVIDIA 同时说有多家模型、软件、机器人和云基础设施公司参与生态，但“参与”是公告中的合作或支持口径，不等于每家公司已经完成生产部署或通过了统一安全评测。\n\n把它和 9 月 29 日 OpenAI 发布的 Dots 放在一起看，会更容易理解这一波产品变化。Dots 把代理放进云端计算机、浏览器和应用连接里，问题是“代理能做什么、何时需要审批”；NVIDIA 这条新闻把关注点放到更底层的“代理进程之外如何限制和观察它”。两篇文章记录的是相邻的 AI 代理新闻，不能互相证明产品效果。\n\n截至本文核对的 NVIDIA 公告、OpenShell 页面和 AP 报道，能够确认的是平台组成、策略边界和发布时点，不能确认所有企业都已经可用、所有越界行为都能被捕获，或该平台已经阻止了某次真实攻击。继续追踪这条新闻时，应看 OpenShell 的版本和兼容硬件、策略配置是否可审计、Sentry 的实际部署范围，以及独立测试是否复现“毫秒级隔离”这样的厂商表述。",
+    "publishedAt": "2026-09-28",
+    "eventDate": "2026-09-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nvidia-open-agent-safety-20260928-4b5c47b6.svg",
+      "alt": "AI 代理先在 OpenShell 沙箱中按权限执行，再由独立硬件层的 Sentry 监控并在越界时隔离；这是 NVIDIA 新闻的平台机制示意",
+      "sourceUrl": "/images/news/nvidia-open-agent-safety-20260928-4b5c47b6.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "event",
+        "title": "9 月 28 日，NVIDIA 发布了什么",
+        "body": "NVIDIA 发布 Open Agent Safety Platform，组合 OpenShell 开源运行时和 Sentry 参考系统设计，目标是从代理测试到部署阶段都能施加治理和控制。新闻记录的是平台发布与设计，不是已经完成的安全效果验证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "background",
+        "title": "为什么只靠提示词不够",
+        "body": "代理可以调用工具、运行代码并持续执行任务；如果安全规则只停留在提示词或应用层，代理可能绕过它们去完成目标。NVIDIA 的方案把控制点放到模型和代理进程之外，但 AP 转述的“可能阻止某次事件”仍属于公司判断。",
+        "kind": "boundary"
+      },
+      {
+        "id": "openshell",
+        "title": "OpenShell：把代理放进受限运行时",
+        "body": "OpenShell 为每个代理提供隔离沙箱，默认限制网络、文件和进程权限；操作方可以写出可访问的文件、网络、工具、进程和凭据范围。策略会在运行前核验，并在代理工作时拦截不安全的系统调用或把请求送去审批。",
+        "kind": "technical"
+      },
+      {
+        "id": "sentry",
+        "title": "Sentry：在代理之外观察并止损",
+        "body": "Sentry 被 NVIDIA 描述为运行在 BlueField-4 数据处理器（DPU）上的带外监控器，独立于代理和主机软件观察行为。公告称它可以在代理越过软件边界时隔离或停止，毫秒级是厂商能力口径；它仍依赖硬件和部署条件。",
+        "kind": "technical"
+      },
+      {
+        "id": "limits",
+        "title": "它控制的是行动范围，不是模型真伪",
+        "body": "平台可以限制代理接触什么资源，却不能自动证明模型的判断正确、意图诚实或策略写得合理。权限太松会放大风险，权限太紧会让任务无法完成；安全团队仍要设定、审计和迭代规则。",
+        "kind": "boundary"
+      },
+      {
+        "id": "ecosystem",
+        "title": "生态支持不等于统一安全认证",
+        "body": "NVIDIA 公告列出多家模型、软件、机器人和基础设施公司参与生态，但支持、合作或接入声明不能直接推出生产部署完成，也不能替代独立安全评测。OpenShell 是开源运行时，Sentry 是参考系统设计，两者的可用范围也应分别核对。",
+        "kind": "comparison"
+      },
+      {
+        "id": "timeline",
+        "title": "和 OpenAI Dots 的相邻时间线",
+        "body": "2026-09-28：NVIDIA 发布运行时与硬件安全边界 → 2026-09-29：OpenAI 发布把代理放进云端工作区的 Dots → 后续：等待兼容硬件、策略配置和独立测试证据。两篇新闻互为语境，不互相证明效果。",
+        "kind": "aside"
+      },
+      {
+        "id": "terms",
+        "title": "三个词，读懂代理安全新闻",
+        "body": "**运行时边界** 是代理执行时真正会被系统拦截的范围；**沙箱** 是隔离文件、网络和进程的受限工作区；**带外监控** 是把观察和止损放在代理进程之外。它们都属于控制层，不等于模型本身已经安全。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "AI 代理越界时，哪一层负责拦住它？",
+      "question": "任务权限、OpenShell 沙箱和 Sentry 硬件监控分别做什么？",
+      "steps": [
+        {
+          "label": "写出权限",
+          "detail": "先定义代理能访问哪些文件、网络、工具、进程和凭据；能做什么不能只靠一句提示词。",
+          "evidence": "NVIDIA OpenShell 页面与公告。"
+        },
+        {
+          "label": "进入沙箱",
+          "detail": "代理在隔离运行时里工作，默认没有直接网络权限，系统调用和请求要经过策略检查。",
+          "evidence": "NVIDIA OpenShell architecture。"
+        },
+        {
+          "label": "核验动作",
+          "detail": "OpenShell 将操作者的边界转成运行时策略，在代理工作时拦截不安全调用或把请求送去审批。",
+          "evidence": "NVIDIA Technical Blog, September 28, 2026。"
+        },
+        {
+          "label": "独立监控",
+          "detail": "Sentry 在 BlueField-4 数据处理器（DPU）上从代理进程之外观察行为，形成一层被设计为由基础设施独立控制的监控层。",
+          "evidence": "NVIDIA 公告将 Sentry 描述为带外 watchdog。"
+        },
+        {
+          "label": "越界止损",
+          "detail": "如果代理试图离开软件边界，NVIDIA 称 Sentry 可以隔离或停止它；毫秒级和实际覆盖范围仍需要独立测试。",
+          "evidence": "AP 交叉报道与 NVIDIA 厂商口径。"
+        }
+      ]
+    },
+    "source": {
+      "name": "NVIDIA Investor Relations",
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "execution-sandbox",
+      "tools"
+    ],
+    "relatedArticleSlugs": [
+      "openai-dots-september-2026"
+    ],
+    "sources": [
+      {
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/",
+        "claim": "NVIDIA 说明平台由 OpenShell 和 Sentry 组成，前者是安全运行时边界，后者在 BlueField-4 DPU 上提供带外监控和隔离。",
+        "excerpt": "NVIDIA Investor Relations, September 28, 2026：OpenShell traces actions and enforces policy；Sentry can quarantine agents that move outside their boundaries in milliseconds。"
+      },
+      {
+        "url": "https://nvidianews.nvidia.com/news/open-agent-safety-platform",
+        "claim": "NVIDIA Newsroom 交叉呈现 OpenShell 的可用范围、第三方计算平台扩展和 Sentry 的参考系统定位。",
+        "excerpt": "NVIDIA Newsroom, September 28, 2026：OpenShell is broadly available and can be extended to Arm and Intel；Sentry is an out-of-band watchdog。"
+      },
+      {
+        "url": "https://www.nvidia.com/en-us/ai/openshell/",
+        "claim": "OpenShell 官方页面解释默认拒绝、沙箱、内核级系统调用过滤和策略验证器。",
+        "excerpt": "NVIDIA OpenShell：nothing is permitted by default；each agent runs in an isolated sandbox with no direct network access。"
+      },
+      {
+        "url": "https://developer.nvidia.com/blog/nvidia-open-agent-safety-platform-a-reference-for-continuous-in-silicon-agent-monitoring",
+        "claim": "NVIDIA 技术博客把 OpenShell 的策略执行和 Sentry 的硬件层监控拆开，并说明 drift 是工具、指令和长时间运行等因素的组合。",
+        "excerpt": "NVIDIA Technical Blog, September 28, 2026：OpenShell checks limits before and during execution；Sentry correlates agent interactions, policy decisions and tool access。"
+      },
+      {
+        "url": "https://apnews.com/article/nvidia-ai-security-openshell-sentry-a4cfc84ed00353ff8f2dad4bed7b429e",
+        "claim": "AP 解释 OpenShell 的沙箱和 Sentry 的硬件 watchdog，并提醒平台是控制和遏制层，不会自动解决模型欺骗、错误或策略配置问题。",
+        "excerpt": "AP, September 28, 2026：OpenShell is a sealed workspace；Sentry is a separate checkpoint；the platform is not a comprehensive solution to the AI safety debate。"
+      },
+      {
+        "url": "https://www.axios.com/2026/09/28/nvidia-ai-agent-safety",
+        "claim": "Axios 将发布置于 AI 代理失控争论中，并交叉记录 OpenShell 和 Sentry 的角色。",
+        "excerpt": "Axios, September 28, 2026：Nvidia debuted the Open Agent Safety Platform, including OpenShell and Sentry。"
+      }
+    ],
+    "canonicalUrl": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/",
+    "sourceHash": "sha256:4b5c47b6df3d2e7c7240caaaf1011daaff8662bfa7a1ed1561324b7264924a87"
+  },
+  {
+    "slug": "tempus-ecg-mr-fda-clearance-20260928-21a5c1c0",
+    "title": "Tempus 获 FDA 510(k) 清除 ECG-MR：AI 从普通心电图提示二尖瓣反流风险",
+    "summary": "2026-09-28，Tempus 宣布 ECG-MR 获 FDA 510(k) 清除。这个 AI 产品分析医院采集的标准 12 导联静息心电图（ECG），输出与未诊断中重度二尖瓣反流相关的二元提示，再由医生结合症状、病史和其他检查判断下一步。清除确认了用途和边界，不等于独立诊断或对每位患者都适用。",
+    "body": "2026-09-28，Tempus AI 宣布其 ECG-MR 产品获得美国食品药品监督管理局（FDA）的 510(k) 清除。FDA 的 K254297 记录显示，510(k) 决定日是 2026-09-25；9 月 28 日是 Tempus 对外发布公告的日期。产品的新闻点不是“AI 替医生看心脏”，而是尝试从医院已经常规采集的标准 12 导联静息心电图（ECG）中，找出与未诊断中重度二尖瓣反流（mitral regurgitation，MR）相关的信号。\n\n二尖瓣反流是心脏瓣膜疾病：心脏收缩时，血液会从左心室向左心房倒流。早期可能没有明显症状，也可能只表现为气短等不特异的不适，所以一些患者不会立刻进入瓣膜影像检查流程。Tempus 的说法是，ECG-MR 用普通 ECG 做早期风险提示，帮助医护人员判断谁可能需要进一步评估；它不是把心电图直接变成确诊结果。\n\n产品流程可以拆成三步。第一，输入在医疗机构采集的非动态、静息 12 导联 ECG。第二，模型分析信号，给出与中重度 MR 相关的二元输出。第三，医生把这个提示和原始心电图、患者症状、病史及其他检查放在一起，决定是否转做超声等后续影像。Tempus 的公告写的是“检测与 MR 相关的迹象”，而不是声称模型独自确认患者有瓣膜病。\n\nFDA 认定设备在申报用途上与既有合法设备实质等同，可按该用途上市；这不等于独立疗效已经被证实，也和药品批准不是同一件事。Tempus 的公告没有在当天公开一组可供外部复算的敏感度、特异度或真实世界漏诊率，因此本文只记录清除、用途和限制，不把公司产品介绍改写成已证实的临床收益。\n\n适用人群也有边界。Tempus 写明 ECG-MR 面向 65 岁及以上、存在心血管风险或相关症状的人群，且没有既往瓣膜干预或已知中重度 MR。产品只分析临床诊断 ECG，不能用于起搏节律，也不用于连续患者监测。它输出的是二元提示，不能脱离原始 ECG、其他检查和临床病史单独解释。\n\n这条新闻是 Tempus ECG-AI 产品线的第四个 FDA 清除产品，公司把它放在心律失常、心脏功能、肺血管和瓣膜疾病几个方向的组合里。产品线扩大说明公司在重复使用同一种常见信号源，但不代表不同疾病任务共享同样的准确率，也不代表任何医院已经普遍部署。真正需要追踪的是清除后的使用场景、医生如何处理提示、后续影像是否增加，以及不同人群中的漏检和误报。\n\n把它和 9 月 30 日 HHS/ARPA-H 的 SURPASS 放在一起，可以看到临床 AI 新闻的两个尺度：ECG-MR 是已经拿到产品监管清除的单一筛查工具，SURPASS 是政府刚启动、仍在征集方案的临床试验基础设施项目。两者都涉及 AI 和医疗，但不能把一个产品的监管状态当成另一个项目的效果证据。\n\n读到“AI 从普通 ECG 发现瓣膜病”时，可以继续追问：输入数据来自哪些设备和人群？二元提示的阈值如何设定？医生是否能看到原始信号和理由？转诊后是否真的改善了确诊时间和治疗结果？这条新闻确认了一个辅助筛查用途，后续价值仍要由真实临床流程和独立数据检验。",
+    "publishedAt": "2026-09-28",
+    "eventDate": "2026-09-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/tempus-ecg-mr-ai-20260928-21a5c1c0.svg",
+      "alt": "标准 12 导联心电图进入 ECG-MR AI 筛查，输出风险提示后交给医生结合其他检查复核；这是 Tempus FDA 清除新闻的用途示意",
+      "sourceUrl": "/images/news/tempus-ecg-mr-ai-20260928-21a5c1c0.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "clearance",
+        "title": "9 月 28 日，FDA 清除了什么",
+        "body": "Tempus 宣布 ECG-MR 获 FDA 510(k) 清除，产品分析标准 12 导联静息 ECG，用来发现与未诊断中重度二尖瓣反流相关的信号。事件确认的是产品用途与监管状态，不是独立诊断或临床收益已经被证明。",
+        "kind": "narrative"
+      },
+      {
+        "id": "mr",
+        "title": "为什么从普通 ECG 找线索",
+        "body": "二尖瓣反流早期可能没有明显症状，气短等表现也不专一。ECG-MR 的定位是从已经常规采集的 ECG 里提供一个早期风险提示，帮助医护人员判断是否需要进一步评估，而不是把 ECG 直接变成确诊。",
+        "kind": "technical"
+      },
+      {
+        "id": "workflow",
+        "title": "产品怎样接进临床流程",
+        "body": "输入是医院采集的非动态、静息 12 导联 ECG；模型给出与中重度 MR 相关的二元输出；医生再结合原始 ECG、症状、病史和其他检查决定下一步。这个流程把 AI 放在筛查和转诊之间。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "清除和诊断、疗效不是一回事",
+        "body": "FDA 认定设备在申报用途上与既有合法设备实质等同，可按该用途上市；这不等于独立疗效已经被证实。Tempus 公告没有提供当天可独立复算的敏感度、特异度或真实世界收益，产品也不能作为独立诊断或连续监测工具；这些边界必须保留。",
+        "kind": "boundary"
+      },
+      {
+        "id": "eligibility",
+        "title": "适用人群和排除条件",
+        "body": "公告写明产品面向 65 岁及以上、有心血管风险或相关症状的人群，且没有既往瓣膜干预或已知中重度 MR；起搏节律、连续监测和脱离其他临床资料的解释都不在用途内。",
+        "kind": "comparison"
+      },
+      {
+        "id": "portfolio",
+        "title": "第四个 ECG-AI 产品意味着什么",
+        "body": "Tempus 把 ECG-MR 放入其心律失常、心脏功能、肺血管和瓣膜疾病产品组合。产品线扩大说明常见信号可以被重复用于不同筛查任务，但不能推出不同任务有相同准确率，也不能推出医院已经普遍部署。",
+        "kind": "comparison"
+      },
+      {
+        "id": "timeline",
+        "title": "和 SURPASS 的临床 AI 时间线",
+        "body": "2026-09-25：FDA 对 ECG-MR 作出 K254297 510(k) 决定 → 2026-09-28：Tempus 对外宣布清除 → 2026-09-30：HHS/ARPA-H 启动 SURPASS 并征集临床试验方案 → 后续：分别追踪产品真实使用和政府项目的入选、审查与结果。",
+        "kind": "aside"
+      },
+      {
+        "id": "terms",
+        "title": "三个词，读懂医疗 AI 新闻",
+        "body": "**筛查** 是先找出需要进一步检查的人；**二元输出** 是系统给出有/无某种风险信号的结果；**510(k) 清除** 是 FDA 针对特定用途的监管路径。它们都不能单独替代医生诊断或保证治疗效果。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "ecg-screening",
+      "title": "AI 从一张 ECG 里输出什么，谁来做最后判断？",
+      "question": "心电图、模型提示和医生复核怎样连成一条辅助筛查流程？",
+      "steps": [
+        {
+          "label": "采集 ECG",
+          "detail": "从医疗机构获得标准 12 导联静息心电图（ECG）；产品不能用于起搏节律，也不用于连续监测。",
+          "evidence": "Tempus ECG-MR 官方产品说明。"
+        },
+        {
+          "label": "分析信号",
+          "detail": "ECG-MR 分析心电图中与中重度二尖瓣反流相关的信号，输出一个二元提示。",
+          "evidence": "Tempus 于 2026-09-28 的 FDA 清除公告。"
+        },
+        {
+          "label": "看懂提示",
+          "detail": "二元提示代表风险信号，不代表患者已经确诊；模型没有替医生完成完整病史和检查。",
+          "evidence": "Tempus 明确写出 binary output for interpretation。"
+        },
+        {
+          "label": "结合临床资料",
+          "detail": "医生把提示和原始 ECG、症状、病史以及其他检查一起解释，再决定是否需要进一步影像评估。",
+          "evidence": "Tempus 产品限制说明。"
+        },
+        {
+          "label": "追踪真实结果",
+          "detail": "要判断产品价值，还要看转诊、确诊时间和不同人群中的误报漏报；FDA 清除本身不提供这些结果。",
+          "evidence": "文章对监管状态和独立证据边界的整理。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Tempus AI",
+      "url": "https://www.tempus.com/news/pr/tempus-receives-fda-clearance-for-its-ecg-mr-ai-product-designed-to-identify-undiagnosed-mitral-regurgitation/"
+    },
+    "relatedSlugs": [
+      "context",
+      "state"
+    ],
+    "relatedArticleSlugs": [
+      "hhs-surpass-adaptive-clinical-trials-20260930-3cfdb073"
+    ],
+    "sources": [
+      {
+        "url": "https://www.tempus.com/news/pr/tempus-receives-fda-clearance-for-its-ecg-mr-ai-product-designed-to-identify-undiagnosed-mitral-regurgitation/",
+        "claim": "Tempus 官方公告确认 ECG-MR 的 2026-09-28 事件日期、FDA 510(k) 清除、输入数据、适用人群与二元输出边界。",
+        "excerpt": "Tempus Press Release, September 28, 2026：ECG-MR analyzes standard 12-lead resting ECGs；it is not a stand-alone diagnostic tool or for serial monitoring。"
+      },
+      {
+        "url": "https://investors.tempus.com/news-events/news-releases",
+        "claim": "Tempus 投资者新闻索引把 ECG-MR 列为第四个 FDA-cleared ECG-AI 产品，并交叉确认发布日期。",
+        "excerpt": "Tempus Investor Relations, September 28, 2026。"
+      },
+      {
+        "url": "https://investors.tempus.com/node/10756/pdf",
+        "claim": "Tempus 投资者 PDF 版本保留同一份新闻稿的日期、FDA 510(k) 清除和产品用途文字。",
+        "excerpt": "Tempus investor release PDF, September 28, 2026：FDA clearance for ECG-MR and product indication。"
+      },
+      {
+        "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K254297",
+        "claim": "FDA 510(k) 数据库记录 K254297 的决定日为 2026-09-25，并提供设备在申报用途上与既有合法设备实质等同的监管决定。",
+        "excerpt": "FDA 510(k) Premarket Notification K254297：Decision Date September 25, 2026。"
+      }
+    ],
+    "canonicalUrl": "https://www.tempus.com/news/pr/tempus-receives-fda-clearance-for-its-ecg-mr-ai-product-designed-to-identify-undiagnosed-mitral-regurgitation/",
+    "sourceHash": "sha256:21a5c1c037e9fa30bd246bd7d505340c2f6b145fdbbfa5f28c81782471710c77"
+  },
+  {
     "slug": "google-private-ai-compute-memory-september-2026",
     "title": "Google DeepMind 更新 Private AI Compute，引入服务器端持久记忆架构",
     "summary": "Google DeepMind 于 2026 年 9 月 23 日介绍 Private AI Compute 的服务器端持久记忆方案，强调设备持有密钥、云端安全隔离和跨设备连续性。",
