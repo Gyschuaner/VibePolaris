@@ -56,9 +56,20 @@ import { ServerTermPage, ApiGatewayTermPage, ReverseProxyTermPage } from '@/comp
 import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/components/terms/AccessConceptPages';
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
+import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
 
 const articleTermPages = {
   skill: SkillTermPage,
+  'offline-first': OfflineFirstTermPage,
+  'adaptive-layout': AdaptiveLayoutTermPage,
+  'safe-area': SafeAreaTermPage,
+  'app-lifecycle': AppLifecycleTermPage,
+  'app-permission': AppPermissionTermPage,
+  'push-notification': PushNotificationTermPage,
+  'cross-platform-development': CrossPlatformDevelopmentTermPage,
+  webview: WebviewTermPage,
+  'css-selector': CssSelectorTermPage,
+  'box-model': BoxModelTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
