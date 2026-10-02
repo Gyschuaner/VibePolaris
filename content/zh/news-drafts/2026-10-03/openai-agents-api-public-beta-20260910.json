@@ -1,0 +1,163 @@
+{
+  "slug": "openai-agents-api-public-beta-20260910",
+  "title": "OpenAI 发布 Agents API 公测：把 Codex harness 交给开发者",
+  "summary": "OpenAI 于 2026-09-10 宣布 Agents API 进入公测，提供由公司托管的 Codex harness 和长运行基础设施。开发者可以选择 OpenAI 沙箱、自有环境或合作方沙箱，并通过同一套接口使用上下文管理、工具搜索、并行子智能体等能力。",
+  "body": "OpenAI 在 9 月 10 日宣布 Agents API 进入 public beta。它的卖点不是再加一个聊天模型，而是把支撑 Codex 的“harness”——管理上下文、工具调用、子智能体和长时间运行的那层基础设施——作为 API 交给开发者。\n\n开发者仍要决定智能体能访问什么环境。OpenAI 介绍了托管沙箱、自有基础设施和合作方沙箱等选择；托管沙箱可以配置文件、包、技能和插件，让代理运行代码并产出文件。这样做把“模型会不会回答”与“任务在哪儿执行、权限如何给”拆开了。\n\n产品还把几个经常被应用团队重复实现的环节放进 harness：长会话接近上下文上限时自动压缩早期内容；工具搜索按需加载定义以节省 token；程序化工具调用可以并行执行、串联结果，并把必要部分带回上下文。Agents API 也支持 MCP、自定义函数和内置网页搜索。\n\n多智能体支持让复杂任务可以拆成并行子任务。每个子智能体有自己的上下文，主智能体负责协调和合并结果。OpenAI 的示例参数把并发上限设为 3，但这只是示例配置，不是所有工作负载的性能保证。\n\nOpenAI 说公测阶段不另收 Agents API 使用费，开发者按所用 token 和工具付费。由于 harness 会随模型发布持续改进，应用团队换模型时可能少维护一层编排代码；相应地，也要把沙箱、MCP、权限和日志当作产品边界，而不是把它们视为模型默认安全。",
+  "publishedAt": "2026-09-10",
+  "eventDate": "2026-09-10",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-agents-api-public-beta-20260910.svg",
+    "alt": "OpenAI 发布 Agents API 公测：把 Codex harness 交给开发者；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/openai-agents-api-public-beta-20260910.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "harness-as-product",
+      "title": "这次发布的核心是运行层",
+      "body": "Agents API 把上下文、工具、子智能体和长会话的管理从应用代码中抽出来。它仍然需要开发者提供任务、环境和权限，不能把 API 理解成一个自动替应用负责全部决策的黑盒。",
+      "kind": "narrative"
+    },
+    {
+      "id": "choose-environment",
+      "title": "环境选择决定代理能做什么",
+      "body": "OpenAI 提供托管沙箱，也允许连接自有或合作方环境。文件、软件包、技能、插件和网络权限都属于实际攻击面，应该和模型提示词一样被记录与审计。",
+      "kind": "technical"
+    },
+    {
+      "id": "context-and-tools",
+      "title": "长会话靠压缩和工具搜索维持",
+      "body": "接近上下文上限时自动压缩早期信息，按需加载工具定义，再以程序化调用并行处理大量数据，目标是减少无效 token，同时让代理在多窗口任务中继续工作。",
+      "kind": "technical"
+    },
+    {
+      "id": "parallel-subagents",
+      "title": "并行子智能体换来速度，也增加协调责任",
+      "body": "每个子智能体拥有独立上下文，主智能体合并结果。并行不等于结果天然一致：主智能体仍需要检查冲突、失败重试、数据来源和权限边界。",
+      "kind": "comparison"
+    },
+    {
+      "id": "beta-boundary",
+      "title": "公测和计费口径要单独记录",
+      "body": "OpenAI 宣布公测阶段不收额外 API 费用，但 token 与工具仍计费；harness 会持续变化。文章没有给出通用吞吐或成功率 SLA，开发者应把版本与成本作为自己的验收指标。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个长运行智能体由哪些层组成？",
+    "question": "先区分模型、harness、执行环境和工具，才能判断 API 到底替你解决了什么。",
+    "steps": [
+      {
+        "label": "接收任务",
+        "detail": "应用把目标、输入和允许的工具交给 Agents API。",
+        "evidence": "Agents API public beta"
+      },
+      {
+        "label": "保持上下文",
+        "detail": "harness 在长会话中压缩早期内容，保留继续工作所需的信息。",
+        "evidence": "Automatic context compaction"
+      },
+      {
+        "label": "调用工具",
+        "detail": "按需加载工具定义，程序化地并行调用 MCP、函数或网页搜索。",
+        "evidence": "Tool search and programmatic tool calling"
+      },
+      {
+        "label": "拆分与合并",
+        "detail": "主智能体把任务交给子智能体，再检查并合并各自结果。",
+        "evidence": "Multi-agent support"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/introducing-the-agents-api/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "tools",
+    "context",
+    "agent-loop",
+    "api",
+    "function-calling",
+    "model-routing",
+    "eval"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "OpenAI 于 2026-09-10 宣布 Agents API 进入公测，用 Codex harness 和基础设施帮助开发者构建长运行云端智能体。",
+      "excerpt": "Today, we’re introducing the Agents API in public beta, bringing that same harness and infrastructure that powers Codex to developers."
+    },
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "托管沙箱支持文件、包、技能和插件；开发者也可选择自有或合作方环境。",
+      "excerpt": "OpenAI provisions and manages the sandbox... flexibly configured with your files, packages, skills and plugins."
+    },
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "Agents API 提供上下文压缩、工具搜索、程序化工具调用和 MCP/自定义函数/网页搜索支持。",
+      "excerpt": "Automatically compacts earlier context... tool search... programmatic tool calling... supports MCP, custom functions, and built-in tools like web search."
+    },
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "公测阶段不收 Agents API 额外费用，开发者仍按 token 和工具使用付费。",
+      "excerpt": "There are no additional fees for using the Agents API – you simply pay for the tokens and tools your agents use."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/introducing-the-agents-api",
+  "sourceHash": "sha256:132ed10b2f38f31f423e4fea7bdd0666ba6960d532025f47b5ae8817aa5ba5fc",
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:30:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "OpenAI 于 2026-09-10 宣布 Agents API 进入公测，用 Codex harness 和基础设施帮助开发者构建长运行云端智能体。",
+      "excerpt": "Today, we’re introducing the Agents API in public beta, bringing that same harness and infrastructure that powers Codex to developers."
+    },
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "托管沙箱支持文件、包、技能和插件；开发者也可选择自有或合作方环境。",
+      "excerpt": "OpenAI provisions and manages the sandbox... flexibly configured with your files, packages, skills and plugins."
+    },
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "Agents API 提供上下文压缩、工具搜索、程序化工具调用和 MCP/自定义函数/网页搜索支持。",
+      "excerpt": "Automatically compacts earlier context... tool search... programmatic tool calling... supports MCP, custom functions, and built-in tools like web search."
+    },
+    {
+      "url": "https://openai.com/index/introducing-the-agents-api/",
+      "claim": "公测阶段不收 Agents API 额外费用，开发者仍按 token 和工具使用付费。",
+      "excerpt": "There are no additional fees for using the Agents API – you simply pay for the tokens and tools your agents use."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:30:00Z",
+    "method": "source",
+    "notes": "逐条核对原文发布日期、事件边界与公司/媒体自述口径；把论文、公司评测和融资路线图明确标为相应来源口径。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:30:00Z",
+    "notes": "按新闻事件独立成篇，正文区分已发生事实、来源自述、评测结果与仍待验证的推断。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T23:25:27Z",
+    "questions": [],
+    "notes": "新闻主线是 OpenAI 将 Codex harness 和长运行基础设施以 Agents API public beta 形式提供给开发者。正文清楚拆开模型、harness、沙箱/自有环境、工具和权限，并把“公测阶段不收额外 API 费”与 token/工具计费分开；日期、官方来源、词条、引用卡片、explainer 与 SVG 一致，中文适合零基础读者。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-10",
+  "promotedAt": "2026-10-02T23:29:15.500Z"
+}
