@@ -13,8 +13,9 @@ export function FineTuningLesson() {
   useResetOnSceneStart(scene, () => setEpoch(1));
   const train = [0.84, 0.58, 0.39, 0.30][epoch - 1];
   const validation = [0.71, 0.78, 0.83, 0.80][epoch - 1];
-  const overfit = epoch === 4;
-  const best = epoch === 3;
+  const showAssessment = scene.step === 2;
+  const overfit = showAssessment && epoch === 4;
+  const best = showAssessment && epoch === 3;
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="微调训练与验证演示">
     <Caption scene={scene} labels={["验证基线", "更新参数", "检查泛化"]} titles={["先保留未参与训练的数据", "训练损失下降不是全部证据", overfit ? "验证回落提示过拟合" : best ? "验证达到当前最佳" : "验证结果还要继续比较"]} copy={["200 条工单用于训练，另一份验证集先测得 71%。", `第 ${epoch} 轮训练损失为 ${train.toFixed(2)}；训练损失只描述训练样本。`, overfit ? "训练损失继续下降而验证准确率从 83% 回落到 80%，应停止追加训练。" : best ? "验证准确率达到 83%，还要保留独立测试和成本记录。" : `验证准确率为 ${(validation * 100).toFixed(0)}%，暂不能只凭训练数字宣布成功。`]} />
     <label className={styles.inputExample}>训练轮数 {epoch}<input type="range" min="1" max="4" step="1" value={epoch} onChange={(event) => { setEpoch(Number(event.target.value)); scene.seek(2); }} /></label>
