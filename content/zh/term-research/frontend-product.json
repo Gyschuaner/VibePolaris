@@ -168,10 +168,16 @@
   },
   {
     "slug": "push-notification",
-    "mechanism": "应用从系统推送服务取得设备令牌，业务服务器把消息交给推送服务，设备再按前后台状态展示或交给应用处理。",
-    "misconception": "推送不是必达消息队列，设备令牌也不会永久不变；关键业务不能只靠通知到达。",
-    "demoSignature": "建议 6 帧：app token、业务服务器、FCM/APNs、设备组成四段投递管线；点击发送后消息逐段移动；切换令牌过期会在网关退回，应用前台会转成站内提示，用户点通知后再沿 deep link 进入指定页面。",
-    "sourceUrls": ["https://firebase.google.com/docs/cloud-messaging/fcm-architecture", "https://developer.apple.com/documentation/usernotifications"],
+    "mechanism": "应用通过 FCM/APNs SDK 取得平台为本次安装生成的注册令牌，业务服务器保存当前映射并在订单变化时提交消息；推送服务按平台规则把消息交给设备，用户已允许通知且系统策略允许展示时才可能出现系统通知，前台也可能由应用改成站内提示。",
+    "misconception": "注册令牌不是固定设备 ID；它可能因重装、清理数据、平台刷新或长期不活跃而变化。投递成功不等于系统展示或用户点击，关键业务仍需打开应用后从服务器核对；收到无效结果要清理映射。",
+    "demoSignature": "pipeline: 5 frames; actors=设备令牌/业务服务器/FCM / APNs/用户设备/订单详情; phases=令牌先登记→服务器交给网关→后台显示通知→点击进入订单→过期令牌被清理; action=发送通知",
+    "sourceUrls": [
+      "https://firebase.google.com/docs/cloud-messaging/fcm-architecture",
+      "https://firebase.google.com/docs/cloud-messaging/manage-tokens",
+      "https://developer.android.com/develop/ui/views/notifications/notification-permission",
+      "https://developer.apple.com/documentation/usernotifications",
+      "https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["deep-link", "app-permission", "app-lifecycle"]
   },

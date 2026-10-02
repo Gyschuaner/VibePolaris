@@ -2588,8 +2588,8 @@
   {
     "slug": "push-notification",
     "lead": "订单状态改变时，怎样在应用未打开的情况下通知用户？",
-    "definition": "应用从系统推送服务取得设备令牌，业务服务器把消息交给推送服务，设备再按前后台状态展示或交给应用处理。",
-    "boundary": "推送不是必达消息队列，设备令牌也不会永久不变；关键业务不能只靠通知到达。",
+    "definition": "应用通过 FCM/APNs SDK 取得平台为本次安装生成的注册令牌，业务服务器保存当前映射并在订单变化时提交消息；推送服务按平台规则把消息交给设备，用户已允许通知且系统策略允许展示时才可能出现系统通知，前台也可能由应用改成站内提示。",
+    "boundary": "注册令牌不是固定设备 ID；它可因重装、清理数据、平台刷新或长期不活跃而变化。服务器收到无效或过期反馈应删除映射；投递成功、系统展示、用户点击是三个独立结果，前后台、授权和消息类型由平台决定，订单页面仍要重新核验。",
     "sceneKind": "pipeline",
     "sceneTitle": "一条订单更新通知从令牌到目标页面",
     "actionLabel": "发送通知",
@@ -2597,35 +2597,35 @@
       {
         "id": "token",
         "label": "设备令牌",
-        "detail": "当前安装实例",
+        "detail": "本次安装生成的寻址令牌，会刷新",
         "icon": "key",
         "group": "寻址"
       },
       {
         "id": "backend",
         "label": "业务服务器",
-        "detail": "订单已发货",
+        "detail": "保存当前映射 · 订单已发货",
         "icon": "server",
         "group": "发送"
       },
       {
         "id": "gateway",
         "label": "FCM / APNs",
-        "detail": "平台网关",
+        "detail": "平台推送服务",
         "icon": "cloud",
         "group": "投递"
       },
       {
         "id": "device",
         "label": "用户设备",
-        "detail": "前台或后台",
+        "detail": "前台/后台 · 需获通知授权",
         "icon": "user",
         "group": "接收"
       },
       {
         "id": "destination",
         "label": "订单详情",
-        "detail": "点击后打开",
+        "detail": "点击后校验再打开",
         "icon": "file",
         "group": "结果"
       }
@@ -2654,12 +2654,18 @@
         "from": "device",
         "to": "destination",
         "label": "点击导航"
+      },
+      {
+        "id": "gateway-backend-invalid",
+        "from": "gateway",
+        "to": "backend",
+        "label": "令牌无效/退回"
       }
     ],
     "frames": [
       {
         "label": "令牌先登记",
-        "note": "应用获得当前令牌并同步到业务服务器，订单与设备建立可更新的对应关系。",
+        "note": "应用通过 FCM/APNs SDK 获得本次安装的当前令牌并同步给业务服务器，订单与安装实例建立可更新的对应关系。",
         "activeIds": [
           "token",
           "backend"
@@ -2681,7 +2687,7 @@
       },
       {
         "label": "服务器交给网关",
-        "note": "订单状态改变后，服务器只发送必要标识，不把敏感详情塞进通知正文。",
+        "note": "订单状态改变后，服务器把必要标识交给 FCM/APNs，不把敏感详情塞进通知正文；网关先确认收到请求。",
         "activeIds": [
           "backend",
           "gateway"
@@ -2703,7 +2709,7 @@
       },
       {
         "label": "后台显示通知",
-        "note": "设备在后台，系统展示通知；应用前台时则改为站内提示。",
+        "note": "用户已允许通知且消息类型和平台策略支持时，后台可由系统展示；应用前台时也可能由应用回调改成站内提示，投递不等于已展示。",
         "activeIds": [
           "gateway",
           "device"
@@ -2715,7 +2721,7 @@
           "destination"
         ],
         "values": {
-          "device": "后台 · 系统通知"
+          "device": "后台 · 系统通知（若获授权）"
         },
         "activeEdgeIds": [
           "gateway-device"
@@ -2723,7 +2729,7 @@
       },
       {
         "label": "点击进入订单",
-        "note": "用户点击后，通知携带的订单标识被路由到对应详情页。",
+        "note": "用户点击后，应用先校验通知携带的订单标识和访问权限，再路由到对应详情页。",
         "activeIds": [
           "device",
           "destination"
@@ -2735,7 +2741,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "destination": "order/42 已打开"
+          "destination": "order/42 已校验并打开"
         },
         "activeEdgeIds": [
           "device-destination"
@@ -2743,10 +2749,10 @@
       },
       {
         "label": "过期令牌被清理",
-        "note": "把令牌切为过期，网关返回无效结果，服务器移除旧映射而不是持续重试。",
+        "note": "把令牌切为过期后，网关返回无效结果；服务器删除旧映射，避免继续向同一安装重试。",
         "activeIds": [
-          "backend",
           "gateway",
+          "backend",
           "token"
         ],
         "doneIds": [],
@@ -2756,14 +2762,15 @@
         ],
         "values": {
           "token": "expired",
+          "gateway": "UNREGISTERED",
           "backend": "映射已删除"
         },
         "activeEdgeIds": [
-          "backend-gateway"
+          "gateway-backend-invalid"
         ]
       }
     ],
-    "insight": "推送由令牌、业务服务器和平台网关共同完成，投递成功与用户看见、点击是不同结果。",
+    "insight": "推送由令牌、业务服务器和平台网关共同完成；投递成功、系统展示和用户点击是不同结果，令牌无效时服务器要清理映射。",
     "quiz": {
       "question": "推送令牌发生变化后，应用应怎样处理？",
       "options": [
@@ -2785,18 +2792,33 @@
     },
     "prompt": {
       "title": "检查推送通知流程",
-      "text": "请梳理下面推送实现中的授权、令牌更新、服务端投递、前台接收、点击导航和无效令牌清理，并避免在通知正文放敏感数据。"
+      "text": "请梳理下面推送实现中的通知授权、令牌取得与更新、服务端投递、前台/后台处理、点击导航和无效令牌清理；说明投递成功、系统展示和用户点击的区别，并避免在通知正文放敏感数据。"
     },
     "sources": [
       {
         "url": "https://firebase.google.com/docs/cloud-messaging/fcm-architecture",
-        "label": "Firebase Documentation",
-        "note": "原始规范与实现说明"
+        "label": "Firebase · FCM architectural overview",
+        "note": "服务端、FCM、平台传输层与设备 SDK 的投递链路"
+      },
+      {
+        "url": "https://firebase.google.com/docs/cloud-messaging/manage-tokens",
+        "label": "Firebase · Manage registration tokens",
+        "note": "令牌/安装标识刷新、保持新鲜度和无效结果清理"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/notifications/notification-permission",
+        "label": "Android Developers · Notification runtime permission",
+        "note": "Android 13 及以上通知授权和系统展示前提"
       },
       {
         "url": "https://developer.apple.com/documentation/usernotifications",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple Developer Documentation · User Notifications",
+        "note": "Apple 通知授权、前后台接收与系统展示边界"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server",
+        "label": "Apple Developer Documentation · Remote notification server",
+        "note": "服务端向 APNs 发送远程通知的边界"
       }
     ]
   },
