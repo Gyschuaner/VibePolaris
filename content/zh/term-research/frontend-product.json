@@ -149,12 +149,22 @@
   },
   {
     "slug": "app-permission",
-    "mechanism": "应用先在清单声明受保护能力，运行时读取授权状态，并在用户触发相关任务时请求；结果可能是允许、拒绝或不再询问。",
-    "misconception": "权限弹窗不是启动时越早弹越好，也不能把拒绝理解为应用整体不可用。",
-    "demoSignature": "建议 5 帧：点击拍照按钮，权限卡从 unknown 进入用途说明和系统弹窗；选择允许后相机打开，选择拒绝后原位出现文件上传；第二次永久拒绝才出现设置入口；每次选择都同步改变下一次点击的路径。",
-    "sourceUrls": ["https://developer.android.com/training/permissions/requesting", "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy"],
+    "mechanism": "原生平台先声明能力和用途（Android manifest、iOS Info.plist），Web 按权限 API 和浏览器策略处理；运行时读取授权状态，在用户触发具体任务时解释用途并请求，界面据此选择主路径或替代路径。",
+    "misconception": "权限不是启动时一次性收集，也不是拒绝后反复弹窗；Android 的“不再询问”、iOS 和浏览器的权限状态与再次请求规则不同，拒绝后仍应让用户完成不依赖该能力的任务。",
+    "demoSignature": "branch: 5 frames; actors=拍照按钮/用途说明/系统权限弹窗/相机页面/文件上传/系统设置入口; phases=在需要时说明→交给系统决定→允许后打开相机→拒绝后仍可继续→永久拒绝才去设置; action=选择一个授权结果",
+    "sourceUrls": [
+      "https://developer.android.com/training/permissions/requesting",
+      "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API",
+      "https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia",
+      "https://web.dev/articles/permissions-best-practices"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["browser-api", "push-notification", "safe-area"]
+    "nearDuplicates": [
+      "browser-api",
+      "push-notification",
+      "safe-area"
+    ]
   },
   {
     "slug": "push-notification",

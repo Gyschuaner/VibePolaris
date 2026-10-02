@@ -2338,10 +2338,10 @@
   {
     "slug": "app-permission",
     "lead": "用户拒绝位置权限后，页面应该继续弹窗还是提供别的办法？",
-    "definition": "应用先在清单声明受保护能力，运行时读取授权状态，并在用户触发相关任务时请求；结果可能是允许、拒绝或不再询问。",
-    "boundary": "权限弹窗不是启动时越早弹越好，也不能把拒绝理解为应用整体不可用。",
+    "definition": "原生平台先声明能力和用途（Android manifest、iOS Info.plist），Web 按权限 API 和浏览器策略处理；运行时读取拍照权限状态，在用户触发任务时请求，结果可能是允许、拒绝、暂时授权或平台不再直接弹窗。",
+    "boundary": "权限弹窗不是启动时越早越好；Android、iOS 和浏览器的状态与再次请求规则不同。本例第五帧按 Android “不再询问”演示：系统不再直接弹框，需要去设置改回；其他平台由各自授权状态决定。拒绝后仍应保留文件上传等替代路径。",
     "sceneKind": "branch",
-    "sceneTitle": "拍照按钮面对三种权限结果",
+    "sceneTitle": "拍照按钮面对不同权限结果",
     "actionLabel": "选择一个授权结果",
     "actors": [
       {
@@ -2361,7 +2361,7 @@
       {
         "id": "system-dialog",
         "label": "系统权限弹窗",
-        "detail": "允许或拒绝",
+        "detail": "系统或浏览器决定允许/拒绝",
         "icon": "shield",
         "group": "系统"
       },
@@ -2382,7 +2382,7 @@
       {
         "id": "settings",
         "label": "系统设置入口",
-        "detail": "永久拒绝后出现",
+        "detail": "Android 设置/浏览器权限页",
         "icon": "gear",
         "group": "结果"
       }
@@ -2416,7 +2416,7 @@
         "id": "dialog-settings",
         "from": "system-dialog",
         "to": "settings",
-        "label": "不再询问"
+        "label": "平台不再直接请求"
       }
     ],
     "frames": [
@@ -2445,7 +2445,7 @@
       },
       {
         "label": "交给系统决定",
-        "note": "继续后由系统弹窗记录允许、拒绝或不再询问。",
+        "note": "继续后由系统或浏览器弹窗记录允许、拒绝或暂时授权。",
         "activeIds": [
           "rationale",
           "system-dialog"
@@ -2512,7 +2512,7 @@
       },
       {
         "label": "永久拒绝才去设置",
-        "note": "选择不再询问后，应用无法再次弹系统框，设置入口替代重复请求。",
+        "note": "本例按 Android “不再询问”演示：系统不再直接弹框，需要去设置改回；iOS 或浏览器由各自授权状态决定，页面仍保留上传。",
         "activeIds": [
           "system-dialog",
           "settings",
@@ -2526,14 +2526,14 @@
           "camera"
         ],
         "values": {
-          "settings": "打开应用权限页"
+          "settings": "打开平台权限页"
         },
         "activeEdgeIds": [
           "dialog-settings"
         ]
       }
     ],
-    "insight": "权限流程要跟着用户任务走，并为拒绝和永久拒绝保留可完成任务的路径。",
+    "insight": "权限流程要跟着用户任务走，并为拒绝、暂时授权和无法再次请求保留可完成任务的路径。",
     "quiz": {
       "question": "请求相机权限的合适时机是什么？",
       "options": [
@@ -2550,23 +2550,38 @@
           "correct": false
         }
       ],
-      "success": "在能力即将使用时，用户更容易理解请求原因。",
+      "success": "在能力即将使用时，用户更容易理解请求原因；结果仍由系统或浏览器决定。",
       "retry": "脱离任务集中请求会增加拒绝和打扰。"
     },
     "prompt": {
       "title": "设计权限请求与拒绝处理",
-      "text": "请为下面功能补充权限状态检查、请求前说明、首次拒绝、永久拒绝和无权限替代方案。不要在应用启动时一次请求所有权限。"
+      "text": "请为下面功能同时考虑原生 App 和浏览器相机：补充 Android manifest、iOS Info.plist 或 Web 权限 API 的声明/前提，检查当前授权，解释用途，处理允许、首次拒绝、Android 不再询问和无权限替代方案；浏览器还要标出安全上下文等前提。不要在应用启动时一次请求所有权限。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/training/permissions/requesting",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Request runtime permissions",
+        "note": "按用户动作请求、解释用途、处理拒绝与降级"
       },
       {
         "url": "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple Developer Documentation · Protecting privacy",
+        "note": "原生 App 访问敏感数据前的授权原则"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API",
+        "label": "MDN · Permissions API",
+        "note": "查询浏览器权限状态与状态变化"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia",
+        "label": "MDN · MediaDevices.getUserMedia()",
+        "note": "浏览器相机权限、安全上下文与拒绝结果"
+      },
+      {
+        "url": "https://web.dev/articles/permissions-best-practices",
+        "label": "web.dev · Web permissions best practices",
+        "note": "按需、解释用途并尊重用户选择"
       }
     ]
   },
