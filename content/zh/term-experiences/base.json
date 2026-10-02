@@ -4206,9 +4206,9 @@
   },
   {
     "slug": "framework",
-    "lead": "React、Next.js 和日期格式化工具都属于依赖，它们为什么会对项目产生不同程度的约束？",
-    "definition": "框架规定应用结构、生命周期和扩展位置，库提供由应用主动调用的特定能力；实际项目通常同时使用两者。",
-    "boundary": "框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
+    "lead": "React、Next.js 和日期格式化工具都属于依赖：谁安排应用流程，谁提供组件能力，谁只在需要时被调用？",
+    "definition": "依赖是项目安装并在代码或构建中使用的外部能力；框架通常规定项目结构、入口、路由以及渲染或构建流程，库通常提供由业务代码主动调用的功能。",
+    "boundary": "框架与库没有永远准确的名称分界；评估时应看谁控制运行流程、调用方向，以及升级或替换要改多少代码。",
     "sceneKind": "layers",
     "sceneTitle": "一个 Web 应用中的框架、库与运行环境",
     "actionLabel": "展开依赖层",
@@ -4232,7 +4232,7 @@
         "label": "React",
         "detail": "组件与更新模型",
         "icon": "component",
-        "group": "框架能力"
+        "group": "UI 库"
       },
       {
         "id": "date-lib",
@@ -4277,8 +4277,8 @@
     ],
     "frames": [
       {
-        "label": "应用入口",
-        "note": "页面代码写在框架规定的路由和生命周期中。",
+        "label": "框架安排入口",
+        "note": "文件和目录按框架约定映射到路由，框架还安排构建入口。",
         "activeIds": [
           "product",
           "framework"
@@ -4289,15 +4289,15 @@
           "runtime"
         ],
         "values": {
-          "framework": "控制路由与构建"
+          "framework": "规定路由与构建"
         },
         "activeEdgeIds": [
           "product-framework"
         ]
       },
       {
-        "label": "框架驱动",
-        "note": "请求进入时，框架决定加载、渲染和数据获取顺序。",
+        "label": "框架驱动渲染",
+        "note": "用户访问页面时，框架决定取数据、加载代码和渲染的先后顺序；界面本身由 React 按组件定义生成。",
         "activeIds": [
           "framework",
           "react"
@@ -4316,8 +4316,8 @@
         ]
       },
       {
-        "label": "调用日期库",
-        "note": "业务代码在需要的位置主动调用日期格式化函数。",
+        "label": "应用调用库",
+        "note": "业务代码在需要的位置主动调用日期格式化函数，框架不会替它决定每次调用。",
         "activeIds": [
           "product",
           "date-lib"
@@ -4336,7 +4336,7 @@
       },
       {
         "label": "依赖运行时",
-        "note": "框架和库最终都只能使用目标运行环境提供的能力。",
+        "note": "框架和库最终都只能使用目标运行环境提供的 API；浏览器与 Node.js 的可用能力也可能不同。",
         "activeIds": [
           "framework",
           "date-lib",
@@ -4355,35 +4355,45 @@
         ]
       }
     ],
-    "insight": "判断依赖影响时，看它控制了多少应用流程，比争论名称更有用。",
+    "insight": "看依赖控制多少流程以及谁发起调用，比争论名称更有用。",
     "quiz": {
       "question": "更换日期格式化库和更换应用框架，哪项通常影响范围更大？",
       "options": [
         {
-          "label": "更换控制路由、构建和生命周期的框架",
+          "label": "更换应用框架",
           "correct": true
         },
         {
-          "label": "两者影响永远完全相同",
+          "label": "更换日期格式化库",
           "correct": false
         },
         {
-          "label": "只看安装包名字长度",
+          "label": "两者影响一样，因为都是 package.json 里的依赖",
           "correct": false
         }
       ],
-      "success": "框架占据的控制点更多，替换时需要迁移的边界通常更广。",
+      "success": "框架控制的流程边界更广，替换时通常要迁移路由、构建或渲染等多个接口；日期库多集中在调用点。",
       "retry": "应比较依赖控制的流程和接口，而不是名称。"
     },
     "prompt": {
       "title": "评估项目中的框架和库",
-      "text": "请列出项目的框架、运行时和关键库，分别标明它们控制的流程、调用方向、替换接口、升级影响和维护状态。优先检查控制路由、构建、数据层或组件模型的依赖，不把所有 package.json 条目按同一风险处理。"
+      "text": "请列出项目的框架与关键库，分别说明谁控制运行流程、谁由你的代码主动调用，并比较更换或升级各自会波及哪些文件和接口。"
     },
     "sources": [
       {
-        "url": "https://nextjs.org/docs/app/getting-started/project-structure",
-        "label": "Next.js · Project structure",
-        "note": "渲染模式与框架行为"
+        "url": "https://nextjs.org/docs",
+        "label": "Next.js · Docs",
+        "note": "框架提供的路由、渲染和构建能力"
+      },
+      {
+        "url": "https://react.dev/learn/describing-the-ui",
+        "label": "React · Describing the UI",
+        "note": "组件库与主动调用的 UI 能力"
+      },
+      {
+        "url": "https://angular.dev/overview",
+        "label": "Angular · What is Angular?",
+        "note": "框架整合路由、表单与构建工具"
       }
     ]
   },
