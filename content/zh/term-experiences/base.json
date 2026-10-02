@@ -6023,9 +6023,9 @@
   },
   {
     "slug": "branch",
-    "lead": "新功能尚未完成时，怎样让主线继续稳定，同时保留与最新开发代码合并的能力？",
-    "definition": "Git 分支是指向提交的可移动引用；在某分支创建提交只会移动该引用，其他分支仍指向原提交。",
-    "boundary": "分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
+    "lead": "新功能还没做完，怎样让主线保持稳定，之后又能顺利合回去？",
+    "definition": "Git 分支是一个会跟着提交移动的名字（引用）；在某分支创建提交只会移动这个名字，其他分支仍指向原提交。",
+    "boundary": "分支不是复制一套完整文件；多个分支共享历史，改到同一处代码时，合并仍可能冲突。",
     "sceneKind": "branch",
     "sceneTitle": "功能分支怎样离开主线并合回",
     "actionLabel": "创建下一提交",
@@ -6039,14 +6039,14 @@
       },
       {
         "id": "dev",
-        "label": "dev",
+        "label": "主线（dev）",
         "detail": "指向 A",
         "icon": "git",
         "group": "主线"
       },
       {
         "id": "feature",
-        "label": "feat/VBP-001",
+        "label": "功能分支",
         "detail": "从 A 创建",
         "icon": "git",
         "group": "功能线"
@@ -6066,6 +6066,13 @@
         "group": "功能线"
       },
       {
+        "id": "commit-d",
+        "label": "提交 D",
+        "detail": "主线上的新改动",
+        "icon": "code",
+        "group": "主线"
+      },
+      {
         "id": "merge",
         "label": "合并结果",
         "detail": "等待验证",
@@ -6078,7 +6085,7 @@
         "id": "base-dev",
         "from": "base",
         "to": "dev",
-        "label": "主线引用"
+        "label": "主线指向 A"
       },
       {
         "id": "base-feature",
@@ -6099,16 +6106,22 @@
         "label": "继续提交"
       },
       {
+        "id": "dev-d",
+        "from": "dev",
+        "to": "commit-d",
+        "label": "主线提交"
+      },
+      {
         "id": "c-merge",
         "from": "commit-c",
         "to": "merge",
-        "label": "评审后合并"
+        "label": "合并功能分支"
       }
     ],
     "frames": [
       {
         "label": "共同起点",
-        "note": "dev 和新功能都从已验证的提交 A 开始。",
+        "note": "主线和功能分支都从已验证的提交 A 开始。",
         "activeIds": [
           "base",
           "dev"
@@ -6117,6 +6130,7 @@
         "mutedIds": [
           "commit-b",
           "commit-c",
+          "commit-d",
           "merge"
         ],
         "values": {
@@ -6127,7 +6141,7 @@
         ]
       },
       {
-        "label": "创建引用",
+        "label": "创建功能分支",
         "note": "功能分支只是新增一个指向 A 的可移动名称，不复制仓库。",
         "activeIds": [
           "base",
@@ -6139,6 +6153,7 @@
         "mutedIds": [
           "commit-b",
           "commit-c",
+          "commit-d",
           "merge"
         ],
         "values": {
@@ -6150,7 +6165,7 @@
       },
       {
         "label": "功能线前进",
-        "note": "提交 B 和 C 只推动功能分支，dev 仍停在 A。",
+        "note": "提交 B 和 C 只推动功能分支，主线仍停在 A。",
         "activeIds": [
           "feature",
           "commit-b",
@@ -6160,6 +6175,7 @@
           "base"
         ],
         "mutedIds": [
+          "commit-d",
           "merge"
         ],
         "values": {
@@ -6173,11 +6189,12 @@
       },
       {
         "label": "主线也变化",
-        "note": "若 dev 出现新的提交，两个分支会形成分叉，需要先处理差异。",
+        "note": "如果主线也有新提交 D，两边从共同起点分开，合并前要先处理这些不同之处。",
         "activeIds": [
           "dev",
           "feature",
-          "commit-c"
+          "commit-c",
+          "commit-d"
         ],
         "doneIds": [
           "base"
@@ -6191,14 +6208,16 @@
         },
         "activeEdgeIds": [
           "base-dev",
-          "b-c"
+          "b-c",
+          "dev-d"
         ]
       },
       {
         "label": "验证后合并",
-        "note": "处理冲突并通过测试后，合并结果同时包含主线和功能修改。",
+        "note": "解决冲突并通过测试后，合并结果同时包含主线和功能分支的修改。",
         "activeIds": [
           "commit-c",
+          "commit-d",
           "merge",
           "dev"
         ],
@@ -6209,17 +6228,17 @@
         ],
         "mutedIds": [],
         "values": {
-          "dev": "M · contains C + D",
-          "merge": "tests passed"
+          "dev": "合并提交 M · 包含 C 和 D",
+          "merge": "测试通过"
         },
         "activeEdgeIds": [
           "c-merge"
         ]
       }
     ],
-    "insight": "分支隔离的是提交引用，不隔离共同历史；合并前仍要面对双方真实差异。",
+    "insight": "分支让不同改动沿各自的提交线前进，但仍共享共同历史；合并前要处理双方差异。",
     "quiz": {
-      "question": "功能分支和 dev 修改了同一行，Git 会自动判断哪一边业务正确吗？",
+      "question": "功能分支和主线（dev）修改了同一行，Git 会自动判断哪一边业务正确吗？",
       "options": [
         {
           "label": "不会，需要开发者理解差异并解决冲突",
@@ -6239,13 +6258,33 @@
     },
     "prompt": {
       "title": "根据任务规划分支流程",
-      "text": "请从当前 dev 的明确提交创建包含任务编号的功能分支。开发期间记录主线变化，合并前检查提交差异、冲突区域和测试结果；说明采用 merge 或 rebase 的理由，并保留可追踪历史，不直接向保护分支推送。"
+      "text": "请从主线（dev）当前所在的提交创建功能分支。开发期间记录主线变化，合并前检查提交差异、冲突区域和测试结果；说明合并前需要确认什么，合并后是否删除已完成的功能分支，并避免直接修改主线。"
     },
     "sources": [
       {
         "url": "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html",
         "label": "Pro Git · Branches in a Nutshell",
         "note": "命令语义与状态变化"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-branch",
+        "label": "Git · git-branch",
+        "note": "创建、查看和删除分支"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-switch",
+        "label": "Git · git-switch",
+        "note": "切换到已有分支或创建并切换"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-merge",
+        "label": "Git · git-merge",
+        "note": "把不同开发线合并"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-rebase",
+        "label": "Git · git-rebase",
+        "note": "重新安排提交基线"
       }
     ]
   },
