@@ -48,6 +48,10 @@ test("schema rejects unknown keys, non-HTTPS sources, and invalid slugs", () => 
     ...article("bad-slug"),
     source: { name: "Example", url: "http://example.com/news" },
   }])));
+  assert.throws(() => newsIngestBatchSchema.parse(payload([{
+    ...article("self-link"),
+    relatedArticleSlugs: ["self-link"],
+  }])));
 });
 
 test("producer handoff is idempotent and writes a dated draft", () => {
