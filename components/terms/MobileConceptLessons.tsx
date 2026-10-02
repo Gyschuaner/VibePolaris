@@ -170,17 +170,21 @@ function CssSelectorLesson() {
 
 function BoxModelLesson() {
   const scene = useScene(3);
-  const [boxSizing, setBoxSizing] = useState<"content-box" | "border-box">("content-box");
-  const content = 240;
-  const padding = 24;
-  const border = 4;
-  const borderBox = boxSizing === "content-box" ? content + padding * 2 + border * 2 : content;
+  const content = 200;
+  const padding = 12;
+  const border = 5;
+  const boxSizing = scene.step === 2 ? "border-box" : "content-box";
+  const expanded = scene.step >= 1;
+  const appliedPadding = expanded ? padding : 0;
+  const appliedBorder = expanded ? border : 0;
+  const borderBox = boxSizing === "content-box" ? content + appliedPadding * 2 + appliedBorder * 2 : content;
+  const contentWidth = boxSizing === "content-box" ? content : content - padding * 2 - border * 2;
   const labels = ["只有内容", "加上内边距和边框", "切换 box-sizing"];
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="CSS 盒模型尺寸演示">
-    <div className={styles.choices} role="group" aria-label="选择盒模型算法"><button type="button" aria-pressed={boxSizing === "content-box"} onClick={() => { setBoxSizing("content-box"); scene.seek(1); }}>content-box</button><button type="button" aria-pressed={boxSizing === "border-box"} onClick={() => { setBoxSizing("border-box"); scene.seek(2); }}>border-box</button></div>
-    <div className={styles.resultFlow}><span style={{ width: 120, padding: `${scene.step >= 1 ? 18 : 0}px`, border: `${scene.step >= 1 ? 3 : 0}px solid var(--accent-text)`, background: "var(--tint)", textAlign: "center" }}>内容 {content}px</span><ArrowRight size={19} /><span>border box = {borderBox}px</span></div>
+    <div className={styles.choices} role="group" aria-label="选择盒模型算法"><button type="button" aria-pressed={boxSizing === "content-box"} onClick={() => scene.seek(1)}>content-box</button><button type="button" aria-pressed={boxSizing === "border-box"} onClick={() => scene.seek(2)}>border-box</button></div>
+    <div className={styles.resultFlow}><span style={{ boxSizing, width: content, padding: `${appliedPadding}px`, border: `${appliedBorder}px solid var(--accent-text)`, background: "var(--tint)", textAlign: "center" }}>内容区 {contentWidth}px</span><ArrowRight size={19} /><span>border box = {borderBox}px</span></div>
     <div className={styles.contract}><div><Layout size={27} /><h3>盒子内部</h3><p>content 是文字或子元素所在区域；padding 是内容与边框之间的内边距。</p></div><div><Stack size={27} /><h3>盒子外部</h3><p>border 围住盒子，margin 在更外面，不会被 width 计入。</p></div></div>
-    <FrameCopy scene={scene} labels={labels} title={["width 先指向内容区", "内边距和边框会占空间", "border-box 把它们算进指定尺寸"]} text={["先看 content，宽度 240px 只描述内容区，外层盒子还没有完整展开。", "content-box 下，左右 padding 和 border 叠加到 border box；margin 仍在盒子外。", "border-box 下，width 直接包含 content、padding 和 border，更容易让卡片保持指定外宽。"]} />
+    <FrameCopy scene={scene} labels={labels} title={["width 先指向内容区", "内边距和边框会占空间", "border-box 把它们算进指定尺寸"]} text={["先看 content，宽度 200px 只描述内容区，外层盒子还没有完整展开。", "content-box 下，左右 padding 和 border 叠加到 border box；margin 仍在盒子外。", "border-box 下，width 直接包含 content、padding 和 border，更容易让卡片保持指定外宽。"]} />
   </div>;
 }
 

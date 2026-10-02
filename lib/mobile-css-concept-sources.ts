@@ -73,7 +73,7 @@ export const cssSelectorSources = [
 export const boxModelSources = [
   { publisher: "W3C", title: "CSS Box Model Module Level 4", date: "", url: "https://www.w3.org/TR/css-box-4/", citations: ["box-areas"] },
   { publisher: "MDN Web Docs", title: "Introduction to the CSS box model", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model", citations: ["box-definition", "box-margin"] },
-  { publisher: "W3C", title: "CSS Sizing Module Level 3", date: "", url: "https://www.w3.org/TR/css-sizing-3/", citations: ["box-sizing"] },
+  { publisher: "W3C", title: "CSS Sizing Module Level 3", date: "", url: "https://www.w3.org/TR/css-sizing-3/", citations: ["box-sizing-source"] },
   { publisher: "MDN Web Docs", title: "box-sizing", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing", citations: ["box-border"] },
   { publisher: "MDN Web Docs", title: "width", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/width", citations: ["box-width"] },
 ];
