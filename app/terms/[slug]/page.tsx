@@ -57,7 +57,7 @@ import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/com
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
-import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage } from '@/components/terms/AiStackConceptPages';
+import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage } from '@/components/terms/AiStackConceptPages';
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -77,6 +77,7 @@ const articleTermPages = {
   sast: SastTermPage,
   'secret-scanning': SecretScanningTermPage,
   'dependency-scanning': DependencyScanningTermPage,
+  'threat-modeling': ThreatModelingTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
