@@ -57,6 +57,7 @@ import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/com
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
+import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage } from '@/components/terms/AiStackConceptPages';
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -70,6 +71,16 @@ const articleTermPages = {
   webview: WebviewTermPage,
   'css-selector': CssSelectorTermPage,
   'box-model': BoxModelTermPage,
+  'container-image': ContainerImageTermPage,
+  'service-discovery': ServiceDiscoveryTermPage,
+  observability: ObservabilityTermPage,
+  sast: SastTermPage,
+  'secret-scanning': SecretScanningTermPage,
+  'dependency-scanning': DependencyScanningTermPage,
+  'threat-modeling': ThreatModelingTermPage,
+  'tool-approval': ToolApprovalTermPage,
+  'permission-boundary': PermissionBoundaryTermPage,
+  xss: XssTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
