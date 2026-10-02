@@ -156,12 +156,12 @@ function CssSelectorLesson() {
   const selector = scene.step === 0 ? "card" : scene.step === 1 ? "child" : scene.step === 2 ? "disabled" : "cascade";
   const query = selector === "card" ? ".card" : selector === "child" ? ".card > button" : ".card > button[disabled]";
   const matches = selector === "card" ? "2 个 article" : selector === "child" ? "2 个直接子 button" : selector === "disabled" ? "1 个 disabled button" : "1 个命中，值被覆盖";
-  const labels = ["匹配类", "增加关系", "加入属性条件", "进入层叠"];
+  const labels = ["输入类选择器", "增加子代条件", "加入属性条件", "规则被覆盖"];
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="CSS 选择器匹配与层叠演示">
     <div className={styles.choices} role="group" aria-label="选择 CSS 选择器"><button type="button" aria-pressed={selector === "card"} onClick={() => scene.seek(0)}>.card</button><button type="button" aria-pressed={selector === "child"} onClick={() => scene.seek(1)}>.card &gt; button</button><button type="button" aria-pressed={selector === "disabled"} onClick={() => scene.seek(2)}>.card &gt; button[disabled]</button></div>
     <div className={styles.contract}><div><TreeStructure size={27} /><h3>DOM 树</h3><p><code>.card</code> 下面有两个按钮，其中一个带有 <code>disabled</code> 属性；选择器按节点、关系和属性筛选它们。</p></div><div><CheckCircle size={27} /><h3>匹配结果</h3><p>{matches}。匹配成功只说明声明进入候选集合。</p></div></div>
     <div className={styles.resultFlow}><span className={styles.code}>{query}</span><ArrowRight size={19} /><span>匹配集合：{matches}</span><ArrowRight size={19} /><span>{scene.step === 3 ? "再比较来源、层、特异性和顺序" : "尚未进入层叠"}</span></div>
-    <FrameCopy scene={scene} labels={labels} title={["先按条件找元素", "关系会缩小集合", "属性条件进一步收窄", "匹配不等于最终样式"]} text={["选择器描述哪些 DOM 元素符合条件，类选择器可以命中多个节点。", "子代关系要求元素直接位于指定父节点下，结构改变时匹配集合也会变。", "加入 [disabled] 后，只保留带有该属性的直接子按钮，匹配集合从两个缩小到一个。", "多个规则都命中后，浏览器还要按来源、层、特异性和顺序决定最终声明。"]} />
+    <FrameCopy scene={scene} labels={labels} title={["输入类选择器", "增加子代条件", "加入属性条件", "规则被覆盖"]} text={["选择器描述哪些 DOM 元素符合条件，类选择器可以命中多个节点。", "子代关系要求元素直接位于指定父节点下，结构改变时匹配集合也会变。", "加入 [disabled] 后，只保留带有该属性的直接子按钮，匹配集合从两个缩小到一个。", "多个规则都命中后，浏览器还要按来源、层、特异性和顺序决定最终声明。"]} />
   </div>;
 }
 
