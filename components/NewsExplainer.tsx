@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -26,6 +26,27 @@ function SyntheticDataVisual({ activeStep }: { activeStep: number }) {
       <div className="synthetic-card synthetic-card-reality">
         <span className="synthetic-card-label">真实复测</span>
         <span className="synthetic-card-shapes"><i /><i /></span>
+      </div>
+    </div>
+  );
+}
+
+function DataMotionVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-data-motion data-motion-phase-${activeStep}`} aria-hidden="true">
+      <div className="data-motion-card data-motion-source">
+        <span className="data-motion-label">数据源</span>
+        <span className="data-motion-stream"><i /><i /><i /><i /></span>
+      </div>
+      <span className="data-motion-arrow">→</span>
+      <div className="data-motion-card data-motion-mesh">
+        <span className="data-motion-label">实时拆解</span>
+        <span className="data-motion-mesh-shape"><i /><i /><i /><i /></span>
+      </div>
+      <span className="data-motion-arrow">→</span>
+      <div className="data-motion-card data-motion-action">
+        <span className="data-motion-label">决策动作</span>
+        <span className="data-motion-action-shape"><i /><i /></span>
       </div>
     </div>
   );
@@ -70,7 +91,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (
