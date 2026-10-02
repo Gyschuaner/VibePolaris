@@ -1447,6 +1447,27 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
 .news-explainer-header > p:last-child { max-width: 58ch; color: var(--muted); font-size: 15px; line-height: 1.8; }
 .news-explainer-stage { display: grid; grid-template-columns: minmax(220px, .9fr) minmax(0, 1.1fr); gap: 34px; align-items: center; margin-top: 30px; padding: 28px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
 .news-explainer-visual { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(52px, 1fr)); align-items: center; min-height: 180px; gap: 8px; padding: 20px 5px; }
+.news-explainer-synthetic-visual { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); align-items: center; min-height: 180px; gap: 8px; padding: 20px 2px; }
+.synthetic-card { display: grid; gap: 13px; min-height: 112px; align-content: center; padding: 16px 10px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--surface); color: var(--muted); opacity: .42; transform: translateY(5px) scale(.96); transition: opacity .28s ease, transform .28s ease, border-color .28s ease, color .28s ease; }
+.synthetic-card-label { font-size: 12px; text-align: center; }
+.synthetic-card-shapes { display: flex; justify-content: center; gap: 7px; min-height: 27px; }
+.synthetic-card-shapes i { display: block; width: 23px; height: 23px; border: 2px solid currentColor; border-radius: 7px 11px 8px 12px; transform: rotate(-12deg); }
+.synthetic-card-shapes i:nth-child(2) { border-radius: 50%; transform: translateY(4px); }
+.synthetic-card-shapes i:nth-child(3) { border-radius: 4px 50% 4px 50%; transform: rotate(18deg); }
+.synthetic-card-shapes i:nth-child(4) { border-radius: 50% 4px 50% 4px; transform: translateY(-3px); }
+.synthetic-card-generator { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent) 55%, var(--hairline)); }
+.synthetic-flow-arrow { color: var(--faint); font-size: 22px; opacity: .42; transition: color .28s ease, opacity .28s ease, transform .28s ease; }
+.synthetic-phase-0 .synthetic-card-source,
+.synthetic-phase-1 .synthetic-card-source,
+.synthetic-phase-1 .synthetic-card-generator,
+.synthetic-phase-2 .synthetic-card-generator,
+.synthetic-phase-3 .synthetic-card-generator,
+.synthetic-phase-3 .synthetic-card-reality,
+.synthetic-phase-4 .synthetic-card-reality { opacity: 1; transform: translateY(-4px) scale(1); color: var(--ink); border-color: var(--accent); }
+.synthetic-phase-1 .synthetic-flow-arrow:first-of-type,
+.synthetic-phase-2 .synthetic-flow-arrow:first-of-type,
+.synthetic-phase-3 .synthetic-flow-arrow,
+.synthetic-phase-4 .synthetic-flow-arrow:last-of-type { color: var(--accent-text); opacity: 1; transform: translateX(3px); }
 .news-explainer-orbit { position: absolute; inset: 27px 10%; border: 1px dashed color-mix(in srgb, var(--accent) 48%, var(--hairline)); border-radius: 50%; transform: rotate(-8deg); }
 .news-explainer-node { position: relative; z-index: 1; display: grid; justify-items: center; gap: 8px; color: var(--muted); font-size: 12px; transition: color .24s ease, transform .24s ease; }
 .news-explainer-node i { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--hairline); border-radius: 50%; background: var(--bg); color: var(--faint); font-style: normal; font-size: 12px; transition: border-color .24s ease, background .24s ease, color .24s ease; }
@@ -1479,6 +1500,11 @@ a.hl:hover, h1 a:hover, h2 a:hover, .t-item a:hover .t-name,
   .news-section-beginner { padding: 20px; }
   .news-explainer-stage { grid-template-columns: 1fr; gap: 20px; padding: 22px 0; }
   .news-explainer-visual { min-height: 145px; }
+  .news-explainer-synthetic-visual { min-height: 145px; gap: 4px; }
+  .synthetic-card { min-height: 96px; padding: 12px 5px; }
+  .synthetic-card-shapes { gap: 3px; }
+  .synthetic-card-shapes i { width: 18px; height: 18px; }
+  .synthetic-flow-arrow { font-size: 18px; }
   .news-explainer-controls { align-items: flex-start; flex-wrap: wrap; }
   .news-explainer-steps { width: 100%; flex-basis: 100%; }
 }

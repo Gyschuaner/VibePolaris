@@ -4,11 +4,32 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
 };
+
+function SyntheticDataVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-synthetic-visual synthetic-phase-${activeStep}`} aria-hidden="true">
+      <div className="synthetic-card synthetic-card-source">
+        <span className="synthetic-card-label">真实缺口</span>
+        <span className="synthetic-card-shapes"><i /><i /><i /></span>
+      </div>
+      <span className="synthetic-flow-arrow">→</span>
+      <div className="synthetic-card synthetic-card-generator">
+        <span className="synthetic-card-label">合成场景</span>
+        <span className="synthetic-card-shapes"><i /><i /><i /><i /></span>
+      </div>
+      <span className="synthetic-flow-arrow">→</span>
+      <div className="synthetic-card synthetic-card-reality">
+        <span className="synthetic-card-label">真实复测</span>
+        <span className="synthetic-card-shapes"><i /><i /></span>
+      </div>
+    </div>
+  );
+}
 
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -49,14 +70,16 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        <div className="news-explainer-visual" aria-hidden="true">
-          <span className="news-explainer-orbit" />
-          {labels.map((label, index) => (
-            <span className={`news-explainer-node ${index <= Math.min(activeStep, labels.length - 1) ? "is-reached" : ""} ${index === activeStep ? "is-active" : ""}`} key={`${label}-${index}`}>
-              <i>{index + 1}</i>{label}
-            </span>
-          ))}
-        </div>
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : (
+          <div className="news-explainer-visual" aria-hidden="true">
+            <span className="news-explainer-orbit" />
+            {labels.map((label, index) => (
+              <span className={`news-explainer-node ${index <= Math.min(activeStep, labels.length - 1) ? "is-reached" : ""} ${index === activeStep ? "is-active" : ""}`} key={`${label}-${index}`}>
+                <i>{index + 1}</i>{label}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="news-explainer-caption" aria-live="polite">
           <span className="news-explainer-step">STEP {String(activeStep + 1).padStart(2, "0")}</span>
           <h3>{step.label}</h3>
