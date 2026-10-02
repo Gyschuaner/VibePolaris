@@ -4172,26 +4172,26 @@
       "脚本注入",
       "跨站脚本攻击"
     ],
-    "question": "评论内容里出现 script 标签，直接插入页面会发生什么？",
+    "question": "同一条评论，用 innerHTML 和 textContent 为什么结果不同？",
     "definition": "XSS 利用应用把不可信输入当成可执行页面内容，可能读取会话信息或冒充用户操作。",
     "boundary": "输入校验不能覆盖所有上下文，主要防护还包括按输出位置编码和内容安全策略。",
     "demoType": "request",
-    "demoTitle": "恶意输入进入页面",
+    "demoTitle": "评论字符串进入 DOM",
     "demoSteps": [
       {
         "label": "提交",
-        "value": "评论包含脚本片段",
-        "note": "数据库把它当普通文本保存。"
+        "value": "评论保存为 <img onerror=…> 字符串",
+        "note": "服务器先保存数据，浏览器还没有解析它。"
       },
       {
         "label": "危险渲染",
-        "value": "页面把文本插入可执行 HTML",
-        "note": "浏览器节点从文字变成脚本。"
+        "value": "innerHTML 解析为标签和事件属性",
+        "note": "DOM 出现 1 个可执行节点。"
       },
       {
         "label": "安全渲染",
-        "value": "按文本输出并应用 CSP",
-        "note": "页面显示字符，脚本没有执行。"
+        "value": "textContent 作为普通文字输出",
+        "note": "可执行节点从 1 个变成 0 个，原字符仍可见。"
       }
     ],
     "quizQuestion": "防止把普通文本当脚本执行的关键是什么？",
