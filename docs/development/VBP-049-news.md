@@ -33,6 +33,7 @@
 | 2021-03-08 | MIT 研究团队提出 CARRL：让强化学习在传感器不可靠时先按最坏情况选动作 | MIT News；arXiv、MIT Aerospace Controls Laboratory 与作者发表列表作方法和出处背景 | 2021-03-08 / 2021-03-08 | `passed`（两轮 Codex 子智能体读者与中文审读） | `55c7a784` |
 | 2021-03-09 | KPMG 调查：企业 AI 采用在加速，治理担忧也在升温 | KPMG/PR Newswire；KPMG 官方报告与介绍页；Fortune 同日报道 | 2021-03-09 / 2021-03-09 | `passed`（两轮 Codex 子智能体读者与中文审读） | `501ed3f8` |
 | 2021-03-10 | MIT 报道 Tensor Holography：深度学习让 3D 全息图生成更快，手机端也能运行原型 | MIT News；Nature 论文、MIT CSAIL Tensor Holography 项目页与 MIT Technology Licensing Office 作方法和原型背景 | 2021-03-10 / 2021-03-10 | `passed`（两轮 Codex 子智能体读者与中文审读） | `b0351d07` |
+| 2021-03-11 | Facebook AI 的“公平落地”框架：先分清产品目标、政策选择和模型误差 | Facebook AI 官方博客；Meta 研究页与 arXiv 作方法背景；Pew 同日医疗政策分析；03-31 Fairness Flow 后续官方页作时间线背景 | 2021-03-11 / 2021-03-11 | `passed`（两轮 Codex 子智能体读者与中文审读） | `66496401` |
 
 ## 交付内容
 
