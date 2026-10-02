@@ -3263,8 +3263,8 @@
   {
     "slug": "css-selector",
     "lead": "样式已经写了，为什么页面上的目标元素没有变化？",
-    "definition": "选择器按元素、类、属性、关系和伪类条件匹配 DOM 节点，只有匹配声明才进入层叠计算。",
-    "boundary": "选择器具体不等于一定生效；匹配之后还要比较来源、重要性、层和优先级。",
+    "definition": "选择器按元素、类、属性、关系和伪类条件匹配 DOM（页面节点树）中的元素；只有匹配成功的声明才进入层叠计算。伪类表示元素状态或结构条件，例如 :hover。",
+    "boundary": "选择器匹配不等于样式一定生效；匹配之后还要比较来源、重要性、层（@layer）、特异性（选择器权重）和声明顺序。",
     "sceneKind": "tree",
     "sceneTitle": "选择器输入后哪些 DOM 节点会被命中",
     "actionLabel": "修改选择器",
@@ -3272,28 +3272,28 @@
       {
         "id": "selector",
         "label": "选择器",
-        "detail": ".card > button",
+        "detail": "类 · 子代 · 属性条件",
         "icon": "search",
         "group": "规则"
       },
       {
         "id": "dom",
         "label": "DOM 树",
-        "detail": "section / article / button",
+        "detail": "父子结构与元素属性",
         "icon": "layout",
         "group": "结构"
       },
       {
         "id": "matches",
         "label": "匹配集合",
-        "detail": "当前 2 个节点",
+        "detail": "当前命中的节点",
         "icon": "component",
         "group": "结果"
       },
       {
         "id": "cascade",
         "label": "层叠结果",
-        "detail": "最终颜色",
+        "detail": "匹配后决定最终值",
         "icon": "layout",
         "group": "结果"
       }
@@ -3344,7 +3344,7 @@
       },
       {
         "label": "增加子代条件",
-        "note": "改成 .card > button 后，匹配集合收缩到两个直接子按钮。",
+        "note": "改成 .card > button 后，匹配集合收缩到两个直接子按钮；> 只表示直接子代。",
         "activeIds": [
           "selector",
           "dom",
@@ -3364,8 +3364,29 @@
         ]
       },
       {
+        "label": "加入属性条件",
+        "note": "再加 [disabled]，只保留带有 disabled 属性的直接子按钮。",
+        "activeIds": [
+          "selector",
+          "dom",
+          "matches"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "cascade"
+        ],
+        "values": {
+          "selector": ".card > button[disabled]",
+          "matches": "1 个 button"
+        },
+        "activeEdgeIds": [
+          "selector-dom",
+          "dom-matches"
+        ]
+      },
+      {
         "label": "规则被覆盖",
-        "note": "两个按钮都匹配规则，但其中一个最终颜色被更晚的声明覆盖，匹配与生效分开显示。",
+        "note": "命中的按钮仍可能被更高特异性或更晚的声明覆盖；只有来源、重要性、层和特异性都未分出胜负时，后写声明才决定，匹配与最终生效分开显示。",
         "activeIds": [
           "matches",
           "cascade"
@@ -3376,7 +3397,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "matches": "2 个",
+          "matches": "1 个",
           "cascade": "1 个值被覆盖"
         },
         "activeEdgeIds": [
@@ -3384,7 +3405,7 @@
         ]
       }
     ],
-    "insight": "选择器只回答规则能否找到节点，最终样式还要经过层叠。",
+    "insight": "选择器只回答规则能否找到节点，最终样式还要经过特异性与层叠；改变一个组合器或属性条件就会改变匹配集合。",
     "quiz": {
       "question": "要选中 class 为 card 的元素，应使用哪个选择器？",
       "options": [
@@ -3406,18 +3427,33 @@
     },
     "prompt": {
       "title": "定位未命中的选择器",
-      "text": "下面的 CSS 没有作用。请对照 HTML 检查选择器是否匹配，并给出改动最小的选择器。随后说明它会选中哪些元素。"
+      "text": "下面的 CSS 没有作用。请对照 HTML 检查元素、类、组合器和属性条件是否匹配，并给出改动最小的选择器；随后说明匹配成功后还会怎样经过特异性和层叠。"
     },
     "sources": [
       {
         "url": "https://www.w3.org/TR/selectors-4/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "W3C · Selectors Level 4",
+        "note": "选择器语法、属性条件、伪类和组合器的标准定义"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · CSS selectors",
+        "note": "常见选择器、组合器和匹配示例"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity",
+        "label": "MDN · Specificity",
+        "note": "匹配后比较特异性和最终声明"
+      },
+      {
+        "url": "https://www.w3.org/TR/css-cascade-6/",
+        "label": "W3C · CSS Cascading and Inheritance Level 6",
+        "note": "层叠排序、来源、重要性和声明顺序"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator",
+        "label": "MDN · Child combinator",
+        "note": "直接子代组合器 > 的结构边界"
       }
     ]
   },

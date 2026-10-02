@@ -471,18 +471,53 @@
     ]
   },
   {
-    "zh": "CSS 选择器", "en": "CSS Selector", "slug": "css-selector", "cat": "前端",
-    "say": "选择器负责找到要应用样式的元素，例如按钮、某个类，或列表里的第一项。",
-    "aliases": ["选择器", "selector", "样式匹配"],
+    "zh": "CSS 选择器",
+    "en": "CSS Selector",
+    "slug": "css-selector",
+    "cat": "前端",
+    "say": "CSS 选择器负责从文档树里找出要应用样式的元素，例如按钮、某个类，或列表里的禁用项。",
+    "aliases": [
+      "选择器",
+      "selector",
+      "样式匹配"
+    ],
     "question": "样式已经写了，为什么页面上的目标元素没有变化？",
-    "definition": "CSS 选择器是一组匹配规则，用元素名、类、属性、关系或状态定位文档中的元素。匹配成功后，声明才会参与样式计算。",
-    "boundary": "选择器只决定规则能否匹配，不单独决定最终样式；层叠、优先级和声明顺序仍会参与计算。",
-    "demoType": "comparison", "demoTitle": "选择范围如何变化",
-    "demoSteps": [{"label":"button","value":"匹配页面中的全部按钮","note":"范围最宽。"},{"label":".toolbar button","value":"只匹配工具栏里的按钮","note":"增加父级关系后范围缩小。"},{"label":".toolbar button[disabled]","value":"只匹配禁用按钮","note":"属性条件进一步限定目标。"}],
-    "quizQuestion": "要选中 class 为 card 的元素，应使用哪个选择器？", "quizOptions": [".card", "#card", "card"],
-    "correctText": ". 前缀表示类选择器。", "wrongText": "#card 匹配 id，card 会被当作元素名。",
-    "promptTitle": "定位未命中的选择器", "prompt": "下面的 CSS 没有作用。请对照 HTML 检查选择器是否匹配，并给出改动最小的选择器。随后说明它会选中哪些元素。",
-    "relatedSlugs": ["css", "specificity", "cascade"]
+    "definition": "CSS 选择器用元素名、类、属性、关系（组合器）或状态条件匹配文档中的元素；匹配成功后，声明才会参与样式计算。",
+    "boundary": "选择器只决定规则能否匹配，不单独决定最终样式；层叠还会比较来源、重要性、层（@layer）、特异性（选择器权重）和声明顺序。",
+    "demoType": "comparison",
+    "demoTitle": "选择范围如何变化",
+    "demoSteps": [
+      {
+        "label": ".card",
+        "value": "匹配两个 article",
+        "note": "class 条件先圈出卡片节点。"
+      },
+      {
+        "label": ".card > button",
+        "value": "匹配两个直接子 button",
+        "note": "> 表示只沿直接父子关系匹配。"
+      },
+      {
+        "label": ".card > button[disabled]",
+        "value": "只保留一个禁用 button",
+        "note": "属性条件进一步收窄，再进入层叠计算。"
+      }
+    ],
+    "quizQuestion": "要选中 class 为 card 的元素，应使用哪个选择器？",
+    "quizOptions": [
+      ".card",
+      "#card",
+      "card"
+    ],
+    "correctText": ". 前缀表示类选择器。",
+    "wrongText": "#card 匹配 id，card 会被当作元素名。",
+    "promptTitle": "定位未命中的选择器",
+    "prompt": "下面的 CSS 没有作用。请对照 HTML 检查元素、类、组合器和属性条件是否匹配，并给出改动最小的选择器；随后说明匹配成功后还会怎样经过特异性和层叠。",
+    "relatedSlugs": [
+      "css",
+      "specificity",
+      "cascade"
+    ]
   },
   {
     "zh": "盒模型", "en": "Box Model", "slug": "box-model", "cat": "前端",

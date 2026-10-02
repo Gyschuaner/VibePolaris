@@ -217,12 +217,22 @@
   },
   {
     "slug": "css-selector",
-    "mechanism": "选择器按元素、类、属性、关系和伪类条件匹配 DOM 节点，只有匹配声明才进入层叠计算。",
-    "misconception": "选择器具体不等于一定生效；匹配之后还要比较来源、重要性、层和优先级。",
-    "demoSignature": "建议 4 帧：DOM 树旁输入 selector，匹配节点逐个亮起；悬停选择器会画出组合关系，改一段语法后匹配集合即时收缩；打开层叠面板，另用划线状态区分“匹配成功”和“最终值被覆盖”。",
-    "sourceUrls": ["https://www.w3.org/TR/selectors-4/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors"],
+    "mechanism": "选择器按元素、类、属性、关系和伪类条件匹配 DOM（页面节点树）中的元素；只有匹配成功的声明才进入层叠计算。伪类表示元素状态或结构条件，例如 :hover。",
+    "misconception": "选择器匹配不等于样式一定生效；匹配之后还要比较来源、重要性、层（@layer）、特异性（选择器权重）和声明顺序。",
+    "demoSignature": "tree: 4 frames; actors=选择器/DOM 树/匹配集合/层叠结果; phases=输入类选择器→增加子代条件→加入属性条件→规则被覆盖; action=修改选择器",
+    "sourceUrls": [
+      "https://www.w3.org/TR/selectors-4/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity",
+      "https://www.w3.org/TR/css-cascade-6/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator"
+    ],
     "rewriteRisk": "medium",
-    "nearDuplicates": ["cascade", "specificity", "css"]
+    "nearDuplicates": [
+      "cascade",
+      "specificity",
+      "css"
+    ]
   },
   {
     "slug": "box-model",
