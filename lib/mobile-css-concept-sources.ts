@@ -39,7 +39,7 @@ export const appPermissionSources = [
 ];
 
 export const pushNotificationSources = [
-  { publisher: "Firebase", title: "FCM architecture", date: "", url: "https://firebase.google.com/docs/cloud-messaging/fcm-architecture", citations: ["push-route"] },
+  { publisher: "Firebase", title: "FCM architecture", date: "", url: "https://firebase.google.com/docs/cloud-messaging/fcm-architecture", citations: ["push-route-source"] },
   { publisher: "Firebase", title: "Manage registration tokens", date: "", url: "https://firebase.google.com/docs/cloud-messaging/manage-tokens", citations: ["push-token", "push-invalid"] },
   { publisher: "Android Developers", title: "Notification runtime permission", date: "", url: "https://developer.android.com/develop/ui/views/notifications/notification-permission", citations: ["push-android"] },
   { publisher: "Apple Developer", title: "UserNotifications", date: "", url: "https://developer.apple.com/documentation/usernotifications", citations: ["push-apple"] },

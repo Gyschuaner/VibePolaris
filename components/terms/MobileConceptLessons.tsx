@@ -103,12 +103,21 @@ function CameraIcon() { return <Camera size={27} />; }
 function PushNotificationLesson() {
   const scene = useScene(5);
   const [invalid, setInvalid] = useState(false);
-  const labels = ["登记令牌", "提交消息", "网关投递", "设备展示", "点击核对"];
+  const labels = ["令牌先登记", "服务器交给网关", "后台显示通知", "点击进入订单", "过期令牌被清理"];
+  const cleanup = invalid || scene.step === 4;
+  const displayScene: Scene = {
+    ...scene,
+    step: cleanup ? 4 : scene.step,
+    seek: (next: number) => { setInvalid(next === 4); scene.seek(next); },
+    toggle: () => { if (cleanup) { setInvalid(false); scene.seek(0); } else scene.toggle(); },
+  };
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="推送通知投递链路演示">
-    <div className={styles.choices} role="group" aria-label="选择推送令牌"><button type="button" aria-pressed={!invalid} onClick={() => { setInvalid(false); scene.seek(0); }}>当前令牌</button><button type="button" aria-pressed={invalid} onClick={() => { setInvalid(true); scene.seek(2); }}>过期令牌</button></div>
-    <div className={styles.resultFlow}><DeviceMobile size={27} /><span>{invalid ? "旧令牌" : "注册令牌"}</span><ArrowRight size={19} /><Database size={27} /><span>业务服务器</span><ArrowRight size={19} /><Bell size={27} /><span>{scene.step >= 3 && !invalid ? "系统通知" : "等待结果"}</span></div>
-    <div className={styles.distinctions}><div><Bell size={25} /><h3>投递</h3><p>{invalid ? "网关返回令牌无效，服务器应清理映射。" : "FCM 或 APNs 接到服务器的消息。"}</p></div><div><CheckCircle size={25} /><h3>业务事实</h3><p>{scene.step === 4 && !invalid ? "点击后重新从服务器读取订单状态。" : "投递成功不等于用户已看到或点击。"}</p></div></div>
-    <FrameCopy scene={scene} labels={labels} title={["令牌先登记", "服务器提交消息", "平台网关负责投递", "展示还受权限和系统策略影响", "点击后再核对事实"]} text={["注册令牌代表这次安装的投递地址，不是永久设备 ID。", "业务服务器把订单变化和目标令牌交给平台推送服务。", "FCM/APNs 处理平台之间的投递，应用服务器不直接画系统通知。", "用户关闭通知权限、设备离线或前台策略不同，展示结果都可能不同。", "关键订单状态仍应打开应用向服务器确认，通知只是一条提示。"]} />
+    <div className={styles.choices} role="group" aria-label="选择推送令牌"><button type="button" aria-pressed={!cleanup} onClick={() => { setInvalid(false); scene.seek(0); }}>当前令牌</button><button type="button" aria-pressed={cleanup} onClick={() => { setInvalid(true); scene.seek(4); }}>过期令牌</button></div>
+    <div className={styles.resultFlow}><DeviceMobile size={27} /><span>{cleanup ? "旧令牌" : "注册令牌"}</span><ArrowRight size={19} /><Database size={27} /><span>业务服务器</span><ArrowRight size={19} /><Bell size={27} /><span>{cleanup ? "UNREGISTERED" : displayScene.step >= 2 ? displayScene.step === 3 ? "系统通知 → 订单详情" : "系统通知" : "等待结果"}</span></div>
+    {displayScene.step === 3 && <p className={styles.inputExample}><strong>点击目的地</strong>订单详情 / 42 · 先核对访问权限，再重新从服务器读取订单状态。</p>}
+    {cleanup && <p className={styles.inputExample}><strong>清理证据</strong>UNREGISTERED → 删除旧映射；服务器不再向这次安装重试。</p>}
+    <div className={styles.distinctions}><div><Bell size={25} /><h3>{cleanup ? "令牌无效" : "平台投递"}</h3><p>{cleanup ? "网关返回无效结果，服务器清理映射。" : "FCM 或 APNs 接到服务器的消息。"}</p></div><div><CheckCircle size={25} /><h3>{cleanup ? "停止重试" : "业务事实"}</h3><p>{cleanup ? "设备和订单详情不再继续接收这条旧令牌路径。" : displayScene.step === 3 ? "点击只负责导航，页面仍要重新核对订单。" : "投递成功不等于用户已看到或点击。"}</p></div></div>
+    <FrameCopy scene={displayScene} labels={labels} title={["令牌先登记", "服务器交给网关", "后台显示通知", "点击进入订单", "过期令牌被清理"]} text={["应用通过 SDK 获得本次安装的当前令牌，并把可更新映射同步给业务服务器。", "订单状态改变后，服务器把必要标识交给 FCM/APNs；网关先确认收到请求。", "用户已允许通知且平台策略支持时，后台可由系统展示；前台也可能改成站内提示。", "用户点击后，应用先校验订单标识和访问权限，再打开详情并重新读取服务器事实。", "把令牌切为过期后，网关返回无效结果；服务器删除旧映射，避免继续重试。"]} />
   </div>;
 }
 
