@@ -23,8 +23,8 @@ export const safeAreaSources = [
 ];
 
 export const appLifecycleSources = [
-  { publisher: "Android Developers", title: "The activity lifecycle", date: "", url: "https://developer.android.com/guide/components/activities/activity-lifecycle", citations: ["lifecycle-states", "lifecycle-stop"] },
-  { publisher: "Android Developers", title: "Save UI states", date: "", url: "https://developer.android.com/topic/libraries/architecture/saving-states", citations: ["lifecycle-save"] },
+  { publisher: "Android Developers", title: "The activity lifecycle", date: "", url: "https://developer.android.com/guide/components/activities/activity-lifecycle", citations: ["lifecycle-states-source"] },
+  { publisher: "Android Developers", title: "Save UI states", date: "", url: "https://developer.android.com/topic/libraries/architecture/saving-states", citations: ["lifecycle-save-source"] },
   { publisher: "MDN Web Docs", title: "Page Visibility API", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API", citations: ["lifecycle-hidden"] },
   { publisher: "Chrome for Developers", title: "Page Lifecycle API", date: "", url: "https://developer.chrome.com/docs/web-platform/page-lifecycle-api", citations: ["lifecycle-freeze"] },
   { publisher: "MDN Web Docs", title: "beforeunload event", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event", citations: ["lifecycle-unload"] },

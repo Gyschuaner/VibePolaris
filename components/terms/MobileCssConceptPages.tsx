@@ -116,10 +116,10 @@ export function SafeAreaTermPage() {
 }
 
 export function AppLifecycleTermPage() {
-  return <ConceptArticle slug="app-lifecycle" title="App lifecycle" subtitle="应用生命周期" hero={<MobileHero trigger="用户切到后台" change="前台 → 后台 → 可能被回收" proof="重新打开只能恢复已持久化的草稿" />} sections={lifecycleSections} sources={appLifecycleSources} intro={<>应用生命周期描述运行环境如何让页面或应用经历创建、可见、后台、冻结、销毁和重新创建。<strong>它帮助你安排保存、暂停和恢复，但不承诺每一个“即将离开”的事件都会发生。</strong></>}>
+  return <ConceptArticle slug="app-lifecycle" title="App lifecycle" subtitle="应用生命周期" hero={<MobileHero trigger="用户切到后台" change="前台 → 后台 → 可能被回收" proof="重新打开只能从已持久化草稿尝试恢复" />} sections={lifecycleSections} sources={appLifecycleSources} intro={<>应用生命周期描述运行环境如何让页面或应用经历创建、可见、后台、冻结、销毁和重新创建。<strong>它帮助你安排保存、暂停和恢复，但不承诺每一个“即将离开”的事件都会发生。</strong></>}>
     <ArticleSection id="lifecycle-task" title="离开页面前的草稿">
       <p>你在手机上写发布说明，切到聊天应用复制一段链接，回来时页面被重新打开，刚写的内容只剩标题。你可能以为“切后台时保存一下”就够了，但系统可能在后台直接回收进程，页面没有机会执行最后一步。</p>
-      <p id="lifecycle-states" className="vp-citation-target">Android Activity 生命周期把创建、开始、恢复、暂停、停止和销毁等阶段区分开来；浏览器也会通过可见性、冻结和恢复事件表达页面是否继续参与工作。不同平台的事件名称不同，共同点是运行环境会改变，应用要据此调整资源和状态。<Cite id="lifecycle-states" sources={appLifecycleSources} /></p>
+      <p id="lifecycle-states-source" className="vp-citation-target">Android Activity 生命周期把创建、开始、恢复、暂停、停止和销毁等阶段区分开来；浏览器也会通过可见性、冻结和恢复事件表达页面是否继续参与工作。不同平台的事件名称不同，共同点是运行环境会改变，应用要据此调整资源和状态。<Cite id="lifecycle-states-source" sources={appLifecycleSources} /></p>
       <p>生命周期不是一条保证执行到底的流水线。进入后台时可以暂停视频和网络轮询，但重要草稿不能等到销毁时才写入。下面用一次编辑和进程回收来对照两种保存策略。</p>
       <MobileConceptLesson slug="app-lifecycle" />
     </ArticleSection>
@@ -130,7 +130,7 @@ export function AppLifecycleTermPage() {
       <p>用户看到的是同一个应用入口，运行环境看到的可能已经是一个新实例。恢复逻辑要先读取持久化状态，再把它映射回当前页面，而不是假设旧对象仍在内存里。</p>
     </ArticleSection>
     <ArticleSection id="lifecycle-save" title="什么时候保存才可靠">
-      <p id="lifecycle-save" className="vp-citation-target">Android 的保存状态资料建议把短暂 UI 状态交给合适的保存机制，并在状态变化时尽早记录。保存应由应用的数据模型负责，不应只依赖生命周期最后一个回调。<Cite id="lifecycle-save" sources={appLifecycleSources} /></p>
+      <p id="lifecycle-save-source" className="vp-citation-target">Android 的保存状态资料建议把短暂 UI 状态交给合适的保存机制，并在状态变化时尽早记录。保存应由应用的数据模型负责，不应只依赖生命周期最后一个回调。<Cite id="lifecycle-save-source" sources={appLifecycleSources} /></p>
       <p>编辑器可以在用户停止输入一小段时间后写入草稿，也可以在字段变化时写入一个轻量版本。保存成功后再更新“已保存”标记，避免界面显示的状态超过实际持久化结果。</p>
       <ArticleAside title="不要把 beforeunload 当保险箱"><p><code>beforeunload</code> 适合在页面离开前询问用户是否要离开未保存内容，但它并不保证在移动设备被系统回收时触发。把最后一次保存放在这里，会让最重要的数据恰好没有保存机会。</p></ArticleAside>
       <p>暂停音频、断开轮询和释放相机属于资源管理；保存用户草稿属于数据管理。两者可以在同一个生命周期变化里发生，但失败处理和可靠性要求不同。</p>
