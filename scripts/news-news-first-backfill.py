@@ -280,6 +280,23 @@ def chinese_headline(headline: str) -> str:
     """Give the reader a Chinese event cue without pretending to translate every proper noun."""
     value = headline.strip()
     replacements = (
+        ("News", "发布消息"), ("news", "发布消息"),
+        ("First-of-its-kind", "首个同类"), ("first-of-its-kind", "首个同类"),
+        ("could spark", "可能引发"), ("Could spark", "可能引发"),
+        ("could help", "可能帮助"), ("Could help", "可能帮助"),
+        ("helps", "帮助"), ("helping", "帮助"), ("help", "帮助"),
+        ("after fault develops", "出现故障后返航"),
+        ("backs", "支持"), ("Backs", "支持"),
+        ("recognized for", "获认可"), ("recognized as", "获评为"),
+        ("recognized", "获认可"), ("awarded", "获奖"),
+        ("winners", "获奖者"), ("winner", "获奖者"),
+        ("to become", "将成为"), ("become", "成为"),
+        ("cut", "缩短"), ("improve", "改善"), ("improves", "改善"),
+        ("risks", "风险"), ("risk", "风险"), ("safety", "安全"),
+        ("security", "安全"), ("human rights", "人权"),
+        ("public debate", "公共讨论"), ("in the hands of", "掌握在"),
+        ("without", "无需"), ("for the first time", "首次"),
+        ("the future of", "未来"), ("Future of", "未来"),
         ("Artificial intelligence", "人工智能"), ("artificial intelligence", "人工智能"),
         ("AI-powered", "AI 驱动的"), ("AI-powered", "AI 驱动的"),
         ("machine learning", "机器学习"), ("Machine Learning", "机器学习"),
@@ -297,7 +314,28 @@ def chinese_headline(headline: str) -> str:
     )
     for source, target in replacements:
         value = value.replace(source, target)
-    return value
+    value = re.sub(r"\s+", " ", value).strip(" -–—:")
+    return value or "AI 相关消息"
+
+
+def event_fact(source_name: str, headline: str, headline_zh: str, published_at: str, source_type_value: str) -> str:
+    """Turn a source headline into a short, attributable news fact.
+
+    Keep this close to the source title: a backfill must not invent outcomes
+    that are absent from the source card.
+    """
+    lower = headline.lower()
+    if "announce" in lower and ("winner" in lower or "challenge" in lower):
+        return f"{source_name} 在 {published_at} 宣布了与 AI 相关挑战或项目的结果"
+    if any(token in lower for token in ("launch", "launched", "introduc", "unveil", "release", "released", "opens", "open ")):
+        return f"{source_name} 在 {published_at} 发布或介绍了“{headline_zh}”所指的项目/产品动作"
+    if any(token in lower for token in ("acquire", "acqui", "funding", "raises", "backs", "partnership", "partner")):
+        return f"{source_name} 在 {published_at} 报道或宣布了“{headline_zh}”所指的融资、收购或合作动作"
+    if any(token in lower for token in ("report", "analysis", "opinion", "why ", "how ", "what ", "could ", "future", "review")):
+        return f"{source_name} 在 {published_at} 发布围绕“{headline_zh}”的报道或分析"
+    if any(token in lower for token in ("study", "research", "scientist", "researcher")):
+        return f"{source_name} 在 {published_at} 报道了与“{headline_zh}”有关的研究进展"
+    return f"{source_name} 在 {published_at} 发布了题为“{headline_zh}”的新闻"
 
 
 TERM_EXPLANATIONS = {
@@ -341,20 +379,21 @@ def build_article(item: dict, meta: dict, day: str, slug: str, terms: list[str],
     # underlying event must stay a source-publication date, not an invented launch date.
     date_note = f"本条 eventDate 记录 {day}，含义是 {source_name} 在这一天公开了这条报道/公告；来源没有单独证明另一个 underlying event date。publishedAt 记录来源页面的公开日期 {published_at}。"
     lower = headline.lower()
+    fact = event_fact(source_name, headline, headline_zh, published_at, source_type_value)
     if any(token in lower for token in ("launch", "announce", "release", "introduc", "deploy", "partnership", "partner", "acqui", "funding", "appoint", "opens", "unveil")):
         event_kind = "发布、合作或组织动作"
         section_items = [
-            {"id":"reported-event","title":"当天发生的动作","body":f"{source_name} 在 {published_at} 发布/报道了“{headline_zh}”。从标题和摘要能确定的是这一公开动作；它不自动等于产品效果、部署规模或商业结果。","kind":"narrative"},
-            {"id":"what-changed","title":"对读者真正改变了哪一层","body":f"把事件拆成对象、动作和范围：对象是 {headline_zh} 所指的机构、产品或项目，动作是发布/合作/部署/任命之一，范围仍以来源正文为准。不要把新闻标题补成来源没有说过的数字。","kind":"technical"},
+            {"id":"reported-event","title":"当天发生的动作","body":f"{fact}。从标题和来源卡能够确认的是这一公开动作；它不自动等于产品效果、部署规模或商业结果。","kind":"narrative"},
+            {"id":"what-changed","title":"对象与范围","body":f"标题把关注点放在“{headline_zh}”。读者需要继续确认参与方、覆盖范围、实施时间和结果证据；来源没有写出的数字和效果不在本文中补造。","kind":"technical"},
             {"id":"term-link","title":"词条怎样帮助理解","body":term_sentence(terms),"kind":"comparison"},
-            {"id":"evidence-boundary","title":"哪些结果还不能从标题推出","body":"如果来源没有公开样本、基线、测试、客户记录或监管结论，就只能把结果写成发布方的目标或主张。后续应优先找官方文件、可信媒体和实施记录。","kind":"boundary"},
+            {"id":"evidence-boundary","title":"证据边界","body":f"{framing}页面记录了“{headline_zh}”这一动作；若没有样本、基线、客户记录或监管结论，不能把发布方的目标写成普遍效果。","kind":"boundary"},
         ]
         explainer_variant = "agent-workflow"
     elif any(token in lower for token in ("how ", "why ", "what ", "review", "opinion", "future", "could", "impact", "analysis")):
         event_kind = "媒体解读或分析"
         section_items = [
-            {"id":"article-type","title":"这是一条什么性质的消息","body":f"{source_name} 在 {published_at} 发布了一篇围绕“{headline_zh}”的 {framing}。它提供的是观点、背景或议题整理，不应被改写成一个已经完成的产品结果。","kind":"narrative"},
-            {"id":"reader-question","title":"文章试图回答什么","body":f"读者可以先把标题转换成一个可核验问题：{headline_zh} 具体描述了谁、哪一个动作或哪一个争议？摘要线索是：{description}","kind":"technical"},
+            {"id":"article-type","title":"报道的性质","body":f"{fact}。它提供的是观点、背景或议题整理，不应被改写成一个已经完成的产品结果。","kind":"narrative"},
+            {"id":"reader-question","title":"读者要核对什么","body":f"把“{headline_zh}”拆成主体、时间和可验证动作：谁提出了什么判断，是否有实施记录或独立数据支持？来源摘要线索是：{description}","kind":"technical"},
             {"id":"term-link","title":"词条怎样落到事实","body":term_sentence(terms),"kind":"comparison"},
             {"id":"evidence-boundary","title":"观点和证据的分界","body":"来源的判断、条件句和预测都保留归因。要进一步确认效果，需要回到原始研究、监管文件、产品记录或另一家可信媒体，而不是把解读文章当作独立实验。","kind":"boundary"},
         ]
@@ -362,28 +401,27 @@ def build_article(item: dict, meta: dict, day: str, slug: str, terms: list[str],
     else:
         event_kind = "具体新闻事件"
         section_items = [
-            {"id":"reported-event","title":"来源明确写了什么","body":f"{source_name} 在 {published_at} 报道“{headline_zh}”。可确认的事实先限于来源标题、摘要和正文明确写出的对象与动作。","kind":"narrative"},
-            {"id":"context","title":"为什么这件事值得追踪","body":f"它把一个具体对象或动作带进公共讨论：{headline_zh}。读者应继续查范围、参与者、时间线和结果，而不是只记住一个醒目的形容词。","kind":"technical"},
+            {"id":"reported-event","title":"报道的核心事实","body":f"{fact}。可确认的事实先限于来源标题、摘要和正文明确写出的对象与动作。","kind":"narrative"},
+            {"id":"context","title":"还需要补齐的时间线","body":f"“{headline_zh}”涉及的参与者、范围、后续结果要回到来源正文确认。报道日不等于更早的研究、产品上线或实际部署日。","kind":"technical"},
             {"id":"term-link","title":"关联词条提供什么视角","body":term_sentence(terms),"kind":"comparison"},
             {"id":"evidence-boundary","title":"仍需独立核验的部分","body":"如果页面没有给出数据、样本、独立复核或长期影响，就不能把宣传性结果写成普遍事实。本文把待核验项留在边界里。","kind":"boundary"},
         ]
         explainer_variant = "secure-memory" if source_type_value == "regulatory" else "benchmark"
     body = (
         f"{date_note}\n\n"
-        f"这条{event_kind}的标题可理解为“{headline_zh}”。来源摘要给出的原始线索是：{description}。这段摘要保留为引用依据，中文叙述只把来源明确写出的对象、动作和主张列为事实。\n\n"
-        f"阅读时先问三个问题：谁在什么时间发布或报道，做了哪一个动作，来源有没有给出范围和证据。{source_name} 的页面承担的是事件入口；官方公告、监管文本或论文可以补充背景，但不会自动把新闻中的目标变成结果。\n\n"
-        f"{term_sentence(terms)}"
-        "最后把发布方的判断、媒体的转述和独立可复核的数据分开。若来源没有公开测试、样本、基线、权限或长期影响，本文不替它补出结论。"
+        f"{fact}。来源摘要的原始线索是：{description}。中文叙述只把来源明确写出的对象、动作和主张列为事实。\n\n"
+        f"对读者来说，先把“{headline_zh}”拆成主体、动作、范围和日期，再区分发布方主张、媒体转述与可复核结果。{term_sentence(terms)}"
+        "若来源没有公开测试、样本、基线、权限或长期影响，本文保留这个证据边界，不把它补成确定结论。"
     )
     steps = [
         {"label":"事件日","detail":f"先记录来源公开日 {day}，再检查页面自身的 publishedAt {published_at}；没有证据时不另造 underlying event date。","evidence":"daily run 与来源页面"},
-        {"label":"新闻动作","detail":f"把“{headline_zh}”拆成对象、动作和范围，保留来源的归因层级。","evidence":item["url"]},
+        {"label":"新闻动作","detail":fact+"。","evidence":item["url"]},
         {"label":"词条视角","detail":term_sentence(terms),"evidence":"正文的关联词条段落"},
         {"label":"后续核验","detail":"寻找官方公告、监管文件、实施记录、可信媒体或论文背景，检查日期、数字和实际影响。","evidence":"论文只作为新闻事件的背景来源。"},
     ]
     evidence = [{"url":item["url"],"claim":f"{source_name} 在 {published_at} 公开/报道了该事件；正文与摘要提供了以下可核验线索。","excerpt":(headline + ("；" + description if description and not description.startswith("来源页面未提供") else ""))[:1_500]}]
     return {
-        "slug":slug,"title":title,"summary":f"{date_note}{framing}的标题是《{headline_zh}》。本文先复述新闻动作，再标出来源主张与仍需核验的结果。","body":body,"publishedAt":published_at,"eventDate":day,"isExample":False,
+        "slug":slug,"title":title,"summary":f"{date_note}{fact}。本文保留来源主张、词条视角和仍需核验的证据边界。","body":body,"publishedAt":published_at,"eventDate":day,"isExample":False,
         "hero":{"url":f"/images/news/{slug}.svg","alt":title,"sourceUrl":f"/images/news/{slug}.svg","license":"VibePolaris 自制 SVG · CC BY 4.0","credit":"VibePolaris"},
         "sections":section_items,"explainer":{"variant":explainer_variant,"title":"把新闻拆成可核对的链路","question":"读者怎样知道标题对应的事实边界？","steps":steps},
         "source":{"name":source_name,"url":item["url"]},"relatedSlugs":terms,"relatedArticleSlugs":[],"sources":evidence,
@@ -482,7 +520,11 @@ def write_day(day: str, terms: set[str], known: dict[str, str]) -> tuple[dict, d
         selected["relatedSlugs"] = rel
         selected["decision"] = "selected"
         selected["reason"] = "来源链接可解码，属于新闻/官方/监管来源，且未与已记录 canonical URL 重复。"
-        article = build_article(selected, selected["meta"], day, slug, rel, selected["sourceType"], selected["sourceHash"])
+        # Discovery deliberately stops here.  The article is written by the
+        # primary agent one day at a time after opening the source page and
+        # deciding what this particular event needs; this script must not pour
+        # a shared prose template into a range of dates.
+        article = None
     else:
         article = None
     record_candidates = []
@@ -510,19 +552,11 @@ def write_day(day: str, terms: set[str], known: dict[str, str]) -> tuple[dict, d
         if duplicate_of:
             rec["duplicateOf"] = duplicate_of
         record_candidates.append(rec)
-    if article:
-        for rec in record_candidates:
-            if rec["slug"] == article["slug"]:
-                break
+    selected_slug = selected["slug"] if selected else None
     run = {"schemaVersion":1,"runId":f"vbp-049-news-backfill-news-{day}","eventDate":day,"searchedAt":DISCOVERED_AT,
            "search":{"query":"Google News RSS：\"artificial intelligence\" / AI，按目标日期过滤；再解码发布方原始链接","sourceUrls":[f"https://news.google.com/rss/search?q=AI+after:{day}+before:{(dt.date.fromisoformat(day)+dt.timedelta(days=1)).isoformat()}&hl=en-US&gl=US&ceid=US:en"],"sourcePolicy":["official-announcement","official-blog","news-report","personal-blog","regulatory","paper"],"candidateCount":len(record_candidates),"primaryCandidateCount":sum(1 for item in record_candidates if item["sourceType"] != "paper"),"deduplicatedCount":sum(1 for item in record_candidates if item["decision"] == "duplicate")},
-           "candidates":record_candidates,"selectedSlugs":[article["slug"]] if article else [],"gap":None if article else {"status":"empty","reason":"目标日期没有解码出未重复且达到来源政策的新闻/官方/监管候选；论文候选不用于填空。","nextAction":"补查官方公告、监管文件、可信媒体和行业/个人解读，确认是否存在事件日不同于报道日的可核验新闻。"}}
+           "candidates":record_candidates,"selectedSlugs":[selected_slug] if selected_slug else [],"gap":None if selected_slug else {"status":"empty","reason":"目标日期没有解码出未重复且达到来源政策的新闻/官方/监管候选；论文候选不用于填空。","nextAction":"补查官方公告、监管文件、可信媒体和行业/个人解读，确认是否存在事件日不同于报道日的可核验新闻。"}}
     DAILY.mkdir(parents=True, exist_ok=True); (DAILY/f"{day}.json").write_text(json.dumps(run,ensure_ascii=False,indent=2)+'\n')
-    if article:
-        draft_dir = DRAFTS / DISCOVERED_AT[:10]; draft_dir.mkdir(parents=True, exist_ok=True)
-        (draft_dir/f"{article['slug']}.json").write_text(json.dumps(article,ensure_ascii=False,indent=2)+'\n')
-        image_dir = ROOT / "public/images/news"; image_dir.mkdir(parents=True,exist_ok=True)
-        (image_dir/f"{article['slug']}.svg").write_text(svg_for(article["title"], day, article["slug"]))
     return run, article
 
 
