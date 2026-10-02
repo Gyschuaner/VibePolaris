@@ -27,7 +27,7 @@
 | 2021-03-02 | Azure Percept 进入公开预览：边缘设备、现场推理与云端管理 | Microsoft News Center；Azure Blog、Ignite Book of News；TechCrunch 同日交叉报道 | 2021-03-02 / 2021-03-02 | `passed`（两轮子智能体读者与中文审读） | `60aef89c` |
 | 2021-03-03 | AI Index 2021：AI 走向产业实践，数据盲区也更明显 | Stanford HAI 官方公告与报告；Axios 同日报道 | 2021-03-03 / 2021-03-03 | `passed`（两轮子智能体读者与中文审读） | `ce2cc3d4` |
 | 2021-03-04 | OpenAI 拆开 CLIP 的视觉神经元：能解释，也可能被文字骗过 | OpenAI 官方博客；Axios 同日报道；Distill 原文作技术背景 | 2021-03-04 / 2021-03-04 | `passed`（两轮子智能体读者与中文审读） | `53f47f96` |
-| 2021-03-05 | MHRA 关注 Babylon AI 分诊聊天机器人：报道提出英国医疗监管空档 | TechCrunch 同日报道；MHRA GOV.UK 执法说明与 Yellow Card 安全报告页面作制度背景 | 2021-03-05 / 2021-03-05 | `passed`（两轮子智能体读者与中文审读） | `待本日提交后回填` |
+| 2021-03-05 | MHRA 关注 Babylon AI 分诊聊天机器人：报道提出英国医疗监管空档 | TechCrunch 同日报道；MHRA GOV.UK 执法说明与 Yellow Card 安全报告页面作制度背景 | 2021-03-05 / 2021-03-05 | `passed`（两轮子智能体读者与中文审读） | `fe3508e9` |
 
 ## 交付内容
 
