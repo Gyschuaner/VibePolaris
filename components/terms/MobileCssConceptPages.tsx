@@ -177,7 +177,7 @@ export function PushNotificationTermPage() {
   return <ConceptArticle slug="push-notification" title="Push notification" subtitle="推送通知" hero={<MobileHero trigger="订单状态发生变化" change="令牌 → FCM/APNs → 系统通知" proof="点击后从服务器核对最新订单" />} sections={pushSections} sources={pushNotificationSources} intro={<>推送通知把服务器上的变化提示到用户设备。<strong>它是一条经过令牌、推送服务、系统权限和展示策略的链路，不是服务器发一段文字就等于用户看到了。</strong></>}>
     <ArticleSection id="push-task" title="订单状态怎样到达用户">
       <p>你在电商应用里等待包裹，仓库状态变成“已发出”。业务希望用户收到提醒并点回订单详情。要解释这件事，需要跟着消息走过安装、令牌登记、服务器提交、平台投递和用户点击几个不同位置。</p>
-      <p id="push-route" className="vp-citation-target">Firebase 的 FCM 架构把应用服务器、FCM 后端、平台传输层和客户端分开。Apple 的远程通知服务器也要求业务服务器向 APNs 提交消息，再由系统负责到达设备。它们共同说明：业务服务器不是直接操作手机通知栏。<Cite id="push-route" sources={pushNotificationSources} /></p>
+      <p id="push-route-source" className="vp-citation-target">Firebase 的 FCM 架构把应用服务器、FCM 后端、平台传输层和客户端分开。Apple 的远程通知服务器也要求业务服务器向 APNs 提交消息，再由系统负责到达设备。它们共同说明：业务服务器不是直接操作手机通知栏。<Cite id="push-route-source" sources={pushNotificationSources} /></p>
       <p>通知的内容可以带一个订单 ID，让点击后打开正确详情，但关键状态仍应回到服务器确认。通知适合提示用户回来，不适合独自承担库存、付款或配送的事实来源。</p>
       <MobileConceptLesson slug="push-notification" />
     </ArticleSection>
