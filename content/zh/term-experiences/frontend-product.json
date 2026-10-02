@@ -1772,44 +1772,44 @@
   {
     "slug": "adaptive-layout",
     "lead": "同一个应用在手机、平板和折叠屏上，导航应该完全一样吗？",
-    "definition": "布局根据当前窗口大小类别和姿态切换导航与内容关系，而不是只读取设备型号；窗口运行中变化时重新计算。",
-    "boundary": "常与响应式等比缩放混为一谈；自适应强调布局模式变化，例如列表与详情从分屏变为前后页。",
+    "definition": "布局根据应用窗口的可用空间、方向和折叠姿态切换导航与内容关系，而不是读取设备型号；窗口运行中变化时重新计算并保留当前任务和阅读位置。若接入键盘或辅助技术，还应把焦点映射回原控件。",
+    "boundary": "响应式通常指按可用空间改变样式；自适应还会选择面板和导航模式，两者可以重叠。Web 常用 CSS px，Android 窗口大小类别常用 dp，本例 360/720/1200 只是教学示例，不是固定断点。没有键盘时不能假设存在键盘焦点，至少要保留选中任务和阅读位置。",
     "sceneKind": "transform",
-    "sceneTitle": "窗口变宽时导航和详情如何重组",
+    "sceneTitle": "可用空间改变时保留任务连续性",
     "actionLabel": "拖宽窗口",
     "actors": [
       {
         "id": "viewport",
         "label": "应用窗口",
-        "detail": "360 → 1200 px",
+        "detail": "窗口宽度 360 → 720 → 1200（教学示例）",
         "icon": "layout",
         "group": "约束"
       },
       {
         "id": "nav",
         "label": "主导航",
-        "detail": "底栏 / 侧栏",
+        "detail": "底栏 → 侧栏",
         "icon": "component",
         "group": "界面"
       },
       {
         "id": "list",
         "label": "任务列表",
-        "detail": "当前选中任务 8",
+        "detail": "当前选中任务 8 · 列表",
         "icon": "file",
         "group": "界面"
       },
       {
         "id": "detail",
         "label": "任务详情",
-        "detail": "独立页 / 并列面板",
+        "detail": "独立页 → 并列面板",
         "icon": "component",
         "group": "界面"
       },
       {
         "id": "focus",
         "label": "键盘焦点",
-        "detail": "停在“完成”按钮",
+        "detail": "接入键盘或辅助技术时的焦点",
         "icon": "spark",
         "group": "连续性"
       }
@@ -1818,7 +1818,7 @@
     "frames": [
       {
         "label": "窄屏单任务",
-        "note": "360 px 下使用底部导航，打开任务后详情占满页面。",
+        "note": "本页把窄窗口设为 360 作为示意，详情占满页面；接入键盘或辅助技术时，焦点指向任务 8 的“完成”按钮。没有键盘时保留选中任务和阅读位置。",
         "activeIds": [
           "viewport",
           "nav",
@@ -1830,54 +1830,57 @@
           "list"
         ],
         "values": {
-          "viewport": "360 px",
+          "viewport": "窗口宽度 360 · 教学示例",
           "nav": "底栏",
-          "detail": "独立页面"
+          "detail": "独立页面",
+          "focus": "任务 8 · 完成"
         },
         "activeEdgeIds": []
       },
       {
         "label": "中宽保留上下文",
-        "note": "窗口到 720 px，列表重新出现，详情仍是主要区域。",
+        "note": "本页把窗口设为 720 作为示意，让列表重新出现，详情仍是主要区域；接入键盘或辅助技术时焦点继续指向任务 8。",
         "activeIds": [
           "viewport",
           "list",
-          "detail"
+          "detail",
+          "focus"
         ],
         "doneIds": [
           "nav"
         ],
         "mutedIds": [],
         "values": {
-          "viewport": "720 px",
+          "viewport": "窗口宽度 720 · 教学示例",
           "list": "窄列",
-          "detail": "宽列"
+          "detail": "宽列",
+          "focus": "任务 8 · 完成"
         },
         "activeEdgeIds": []
       },
       {
         "label": "宽屏改成侧栏",
-        "note": "达到 1200 px 后导航移到左侧，列表与详情稳定并列。",
+        "note": "本页把窗口设为 1200 作为示意，让导航移到左侧、列表与详情稳定并列；布局变化不应丢失选中任务或阅读位置，也不应把辅助技术焦点跳到页面开头。",
         "activeIds": [
           "viewport",
           "nav",
           "list",
-          "detail"
-        ],
-        "doneIds": [],
-        "mutedIds": [
+          "detail",
           "focus"
         ],
+        "doneIds": [],
+        "mutedIds": [],
         "values": {
-          "viewport": "1200 px",
+          "viewport": "窗口宽度 1200 · 教学示例",
           "nav": "侧栏",
-          "detail": "并列面板"
+          "detail": "并列面板",
+          "focus": "任务 8 · 完成"
         },
         "activeEdgeIds": []
       },
       {
         "label": "焦点仍在原任务",
-        "note": "布局完成后焦点回到任务 8 的完成按钮，没有跳到页面开头。",
+        "note": "窗口重组完成后，若页面有键盘或辅助技术焦点，它仍映射到任务 8 的完成按钮；没有键盘时，选中任务和阅读位置保持不变。",
         "activeIds": [
           "focus",
           "detail"
@@ -1894,7 +1897,7 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "自适应布局改变信息关系和操作方式，不能只把同一列内容等比例拉宽。",
+    "insight": "自适应布局依据窗口可用空间和内容关系改变信息结构；窗口重组后保留当前任务和阅读位置，接入键盘或辅助技术时再把焦点映射回原控件。",
     "quiz": {
       "question": "自适应布局首先应根据什么变化？",
       "options": [
@@ -1916,13 +1919,33 @@
     },
     "prompt": {
       "title": "规划三种窗口下的布局",
-      "text": "请把下面页面拆成窄、中、宽三种布局，说明导航、主内容和次要信息如何移动或隐藏，并覆盖窗口运行时继续变化的情况。"
+      "text": "请把下面页面按应用窗口的可用空间拆成窄、中、宽三种布局，说明导航、主内容和次要信息如何移动或隐藏，并覆盖窗口或折叠姿态继续变化时如何保留当前任务和阅读位置；如果接入键盘或辅助技术，还要说明焦点如何回到原控件。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/develop/ui/compose/layouts/adaptive",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Adaptive apps",
+        "note": "窗口大小、姿态变化与布局模式切换"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-size-classes",
+        "label": "Android Developers · Window size classes",
+        "note": "按应用可用窗口空间分类，不按设备型号判断"
+      },
+      {
+        "url": "https://www.w3.org/TR/mediaqueries-4/",
+        "label": "W3C · Media Queries Level 4",
+        "note": "媒体特征与条件化样式的标准语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+        "label": "MDN · Responsive web design",
+        "note": "响应式布局的视口、媒体查询与流式排列"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries",
+        "label": "MDN · CSS container queries",
+        "note": "根据组件容器空间而不是整页视口调整样式"
       }
     ]
   },

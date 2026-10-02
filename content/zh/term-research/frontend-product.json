@@ -92,12 +92,22 @@
   },
   {
     "slug": "adaptive-layout",
-    "mechanism": "布局根据当前窗口大小类别和姿态切换导航与内容关系，而不是只读取设备型号；窗口运行中变化时重新计算。",
-    "misconception": "常与响应式等比缩放混为一谈；自适应强调布局模式变化，例如列表与详情从分屏变为前后页。",
-    "demoSignature": "建议 5 帧：用户拖动窗口从 360 到 1200px，画布上保留同一任务；导航先是底栏，再变侧栏，详情从独立页并入双栏；一枚焦点光标跨布局跟随同一控件，最终显示内容未丢失、操作位置未重置。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/compose/layouts/adaptive"],
+    "mechanism": "布局根据应用窗口的可用空间、方向和折叠姿态切换导航与内容关系，而不是读取设备型号；窗口运行中变化时重新计算并保留当前任务和阅读位置，接入键盘或辅助技术时再把焦点映射回原控件。",
+    "misconception": "自适应不是按设备型号套固定三档，也不是把所有元素等比拉伸；Web 常用 CSS px、Android 窗口大小类别常用 dp，本例数值只是教学示例，真实阈值要由内容关系、可读性和输入方式决定。",
+    "demoSignature": "transform: 4 frames; actors=应用窗口/主导航/任务列表/任务详情/键盘焦点; phases=窄屏单任务→中宽保留上下文→宽屏改成侧栏→焦点仍在原任务; action=拖宽窗口",
+    "sourceUrls": [
+      "https://developer.android.com/develop/ui/compose/layouts/adaptive",
+      "https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-size-classes",
+      "https://www.w3.org/TR/mediaqueries-4/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["responsive", "safe-area", "cross-platform-development"]
+    "nearDuplicates": [
+      "responsive",
+      "safe-area",
+      "cross-platform-development"
+    ]
   },
   {
     "slug": "safe-area",
