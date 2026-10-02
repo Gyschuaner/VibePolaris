@@ -83,15 +83,12 @@ function AppLifecycleLesson() {
 
 function AppPermissionLesson() {
   const scene = useScene(5);
-  const [outcome, setOutcome] = useState<"allow" | "deny" | "blocked" | null>(null);
+  const [manualOutcome, setManualOutcome] = useState<"allow" | "deny" | "blocked" | null>(null);
   const labels = ["提出任务", "解释用途", "系统决定", "继续或替代", "系统不再直接弹窗"];
-  useEffect(() => {
-    if (scene.step === 4) setOutcome("blocked");
-    if (scene.step === 3 && outcome === null) setOutcome("deny");
-  }, [scene.step, outcome]);
+  const outcome = scene.step < 2 ? null : scene.step === 3 ? "deny" : scene.step === 4 ? "blocked" : manualOutcome === "allow" || manualOutcome === "deny" ? manualOutcome : null;
   const state = scene.step < 2 ? "尚未请求" : outcome === "allow" ? "已允许" : outcome === "deny" ? "本次拒绝" : outcome === "blocked" ? "系统不再直接弹窗" : "等待选择";
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="运行时权限请求演示">
-    <div className={styles.choices} role="group" aria-label="模拟系统返回结果（仅演示，不改变设备权限）"><button type="button" aria-pressed={outcome === "allow"} onClick={() => { setOutcome("allow"); scene.seek(2); }}>模拟允许</button><button type="button" aria-pressed={outcome === "deny"} onClick={() => { setOutcome("deny"); scene.seek(2); }}>模拟这次拒绝</button><button type="button" aria-pressed={outcome === "blocked"} onClick={() => { setOutcome("blocked"); scene.seek(4); }}>模拟不再直接弹窗</button></div>
+    <div className={styles.choices} role="group" aria-label="模拟系统返回结果（仅演示，不改变设备权限）"><button type="button" aria-pressed={manualOutcome === "allow" && scene.step === 2} onClick={() => { setManualOutcome("allow"); scene.seek(2); }}>模拟允许</button><button type="button" aria-pressed={manualOutcome === "deny" && scene.step === 2} onClick={() => { setManualOutcome("deny"); scene.seek(2); }}>模拟这次拒绝</button><button type="button" aria-pressed={scene.step === 4} onClick={() => { setManualOutcome("blocked"); scene.seek(4); }}>模拟不再直接弹窗</button></div>
     <p className={styles.inputExample}>上面的按钮只改变教学演示；真实应用仍要调用系统权限 API。</p>
     <div className={styles.contract}><div><CameraIcon /><h3>拍照上传</h3><p>用户先点了需要相机的任务，应用说明用途后才提出请求。</p></div><div><Key size={27} /><h3>系统状态：{state}</h3><p>{outcome === "allow" ? "可以打开相机。" : outcome === "deny" ? "仍可选择文件上传。" : outcome === "blocked" ? "引导用户到系统设置修改。" : "先完成用途说明，再等待系统决定。"}</p></div></div>
     <FrameCopy scene={scene} labels={labels} title={["能力在任务中才出现", "先说明为什么需要", "权限由系统决定", "拒绝也要能完成任务", "系统不再直接弹窗时走设置"]} text={["启动应用时不必先收集所有权限；先让用户看到自己的目标。", "用途说明应和当前动作相连，用户知道允许后会发生什么。", "应用只能发起请求，不能把自己的按钮当成系统授权。", "拒绝相机不应让整个上传任务无路可走，可以提供文件选择。", "Android 的这个分支不会继续直接弹窗，应给出设置入口和清楚的替代方案；iOS 与 Web 规则不同。"]} />
