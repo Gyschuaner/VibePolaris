@@ -79,12 +79,12 @@
 | agent-harness | 智能体运行框架 | AI·Agent | 基准 · 待最终复核 |
 | component | 组件 | 前端 | 002 · 本地验收及 review 通过 |
 | state | 状态 | 前端 | 002 · 本地验收及 review 通过 |
-| responsive | 响应式布局 | 前端 | 036 · 本地验收及 review 通过 |
-| css | CSS | 前端 | 036 · 本地验收及 review 通过 |
-| form | 表单 | 前端 | 036 · 本地验收及 review 通过 |
-| html | HTML | 前端 | 036 · 本地验收及 review 通过 |
-| javascript | JavaScript | 前端 | 036 · 本地验收及 review 通过 |
-| dom | DOM | 前端 | 036 · 本地验收及 review 通过 |
+| responsive | 响应式布局 | 前端 | 036 · 生产已发布 |
+| css | CSS | 前端 | 036 · 生产已发布 |
+| form | 表单 | 前端 | 036 · 生产已发布 |
+| html | HTML | 前端 | 036 · 生产已发布 |
+| javascript | JavaScript | 前端 | 036 · 生产已发布 |
+| dom | DOM | 前端 | 036 · 生产已发布 |
 | api | API 接口 | 后端 | 007 · 本地验收及 review 通过 |
 | database | 数据库 | 后端 | 009 · 本地验收及 review 通过 |
 | auth | 认证 | 后端 | 028 · 本地验收及 review 通过 |
@@ -101,10 +101,10 @@
 | memory | 记忆 | AI·Agent | 基准 · 待最终复核 |
 | rag | RAG | AI·Agent | 020 · 本地验收及 review 通过 |
 | mcp | MCP | AI·Agent | 基准 · 待最终复核 |
-| framework | 框架与库 | 技术栈 | 036 · 本地验收及 review 通过 |
-| ssg-ssr | 静态站点与服务端渲染 | 技术栈 | 036 · 本地验收及 review 通过 |
-| deploy | 部署与托管 | 技术栈 | 036 · 本地验收及 review 通过 |
-| library | 库 | 技术栈 | 036 · 本地验收及 review 通过 |
+| framework | 框架与库 | 技术栈 | 036 · 生产已发布 |
+| ssg-ssr | 静态站点与服务端渲染 | 技术栈 | 036 · 生产已发布 |
+| deploy | 部署与托管 | 技术栈 | 036 · 生产已发布 |
+| library | 库 | 技术栈 | 036 · 生产已发布 |
 | runtime | 运行时 | 技术栈 | 待处理 |
 | package | 包管理 | 技术栈 | 待处理 |
 | typescript | TypeScript | 技术栈 | 待处理 |

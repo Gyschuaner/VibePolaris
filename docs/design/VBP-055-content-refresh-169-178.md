@@ -68,6 +68,18 @@
 - `npm run build` 通过，TypeScript 通过，静态页面生成 `177/177`。
 - `git diff --check` 和本批 JSON 解析通过；公开清单从 155 条增至 165 条，尾部正好是本批十个 slug。
 - CUA 真实浏览器在本地 `3010` 端口逐条打开十个 `/terms/<slug>` 路由，十页标题、H1、正文和来源区均可见，均没有 404；CSS 页面检查了选择器—层叠—计算值演示，部署页面推进了“锁定版本 → 构建制品”状态，库、SSG/SSR、部署页面查看了实际画面；浏览器控制台日志为空。
-- 本批只有文字与数据驱动体验内容进入当前分支，其他功能仍留在本地；生产发布需在本记录补充合并、覆盖分支、镜像、路径、健康检查和回滚证据。
+- 本批只有文字与数据驱动体验内容进入生产覆盖分支，其他功能仍留在本地；Docker 构建上下文保留线上新闻模块。
+
+## 生产发布记录
+
+内容 PR [#279](https://github.com/Gyschuaner/VibePolaris/pull/279) 已合入 `main`，合并提交为 `b9169bbdcdacbfe4a01a9d97866d5cc0eefff669`。生产从上一版覆盖分支切出 `release/VBP-055-prod-overlay-20261002`，合并当前 `main` 后保留线上新闻模块；生产覆盖提交为 `001dff4a86ef1aba609c4c09f4c6b71d15c3ea4a`。
+
+- 镜像：`vibepolaris:001dff4a`，本机 `linux/amd64` 构建通过，容器内 Next 构建和 TypeScript 通过。
+- 当前发布目录：`/opt/vibepolaris/releases/20261002T032532Z-001dff4a`；`/opt/vibepolaris/current` 已指向该目录，容器 `vibepolaris-web-1` 使用新镜像并为 `healthy`。
+- 回滚基线：`/opt/vibepolaris/releases/20261002T004723Z-9e4c51ce`，旧镜像 `vibepolaris:9e4c51ce4002dd5ed2200233e1ffb0182e6a0313` 保留；`vibepolaris_xiaobei_data` 持久化数据卷未改动。
+- DP deployment：`deploy-vbp055-content-169-178-prod-20261002`，对象 ID `9f6dec34-fe2c-4af3-8b33-9fa68a7ec864`，状态 `released`，关联需求 `VBP-055`。
+- HTTPS 检查通过：十个 `/terms/<slug>` 路由、首页、`/news` 和两条现有新闻详情均返回 HTTP 200，并返回本批词条标题或页面标记；线上 CUA 打开 `library`，正文、来源区和演示首帧可见，浏览器控制台日志为空。
+
+回滚时恢复旧 Compose 与镜像 `vibepolaris:9e4c51ce4002dd5ed2200233e1ffb0182e6a0313`，将 `/opt/vibepolaris/current` 指回 `/opt/vibepolaris/releases/20261002T004723Z-9e4c51ce`；保留新版本产生的数据，不覆盖 `vibepolaris_xiaobei_data`。
 
 `D:/Obsidian/gysnote` 在当前 Mac 环境不存在，因此不创建空记录。
