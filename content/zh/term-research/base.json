@@ -480,13 +480,18 @@
   },
   {
     "slug": "package",
-    "mechanism": "包管理器读取依赖范围，解析完整依赖树，下载包并用锁文件记录确定版本与完整性。",
-    "misconception": "锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
-    "demoSignature": "tree: 5 frames; actors=package.json/版本解析器/ui-kit 2.5.1/color-utils 1.4.2/package-lock.json/node_modules; phases=读取范围→选择直接依赖→展开间接依赖→写入锁文件→复现安装; action=继续安装",
+    "mechanism": "包管理器读取 package.json 的依赖范围，解析直接和间接依赖，下载包，并在锁文件中记录精确版本、来源与完整性；安装器据此复现同一棵依赖树。",
+    "misconception": "锁定版本提高可复现性，但不保证依赖安全、兼容或维护良好；升级仍需审查依赖树、漏洞和许可证并运行测试。",
+    "demoSignature": "summary=3 steps; scene=tree: 5 frames; actors=package.json/版本解析器/ui-kit 2.5.1/color-utils 1.4.2/package-lock.json/node_modules; phases=声明范围→选择版本→展开间接依赖→锁定精确树→按锁文件安装; action=继续安装",
     "sourceUrls": [
-      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json"
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
+      "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+      "https://docs.npmjs.com/about-audit-reports",
+      "https://docs.npmjs.com/cli/v6/using-npm/semver/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-install/"
     ],
-    "rewriteRisk": "正式页面需守住边界：锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "rewriteRisk": "正式页面需解释版本范围的示例含义，并区分 package.json 的允许范围、锁文件的精确依赖树和安装目录的落地结果；不要把锁定版本写成安全或兼容保证。",
     "nearDuplicates": [
       "lockfile",
       "dependency",

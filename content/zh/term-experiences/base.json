@@ -5300,24 +5300,24 @@
   },
   {
     "slug": "package",
-    "lead": "两台电脑都运行 npm install，为什么没有锁文件时可能得到不同的间接依赖版本？",
-    "definition": "包管理器读取依赖范围，解析完整依赖树，下载包并用锁文件记录确定版本与完整性。",
-    "boundary": "锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "lead": "package.json 写了 ^2.3.0，为什么还要把 package-lock.json 一起保存到项目代码库？",
+    "definition": "包是带有 package.json 的可复用程序或代码单元。项目直接使用的包叫直接依赖；这些包自己需要的其他包叫间接依赖，层层连接起来就是依赖树。包管理器根据项目允许的版本范围选择并下载这些包，在锁文件中记下精确版本、来源，以及用来核对下载内容的完整性摘要。",
+    "boundary": "锁文件记录每次安装使用的精确版本，却不保证包安全、兼容或维护良好；升级仍要审查依赖树、漏洞和许可证，并检查受影响的功能。在持续集成（CI，自动跑构建和测试的环境）中，npm ci 按锁文件安装，package.json 与锁文件不一致时会停止。",
     "sceneKind": "tree",
-    "sceneTitle": "package.json 怎样解析成可复现的依赖树",
+    "sceneTitle": "package.json 怎样变成可复现的依赖树",
     "actionLabel": "继续安装",
     "actors": [
       {
         "id": "manifest",
         "label": "package.json",
-        "detail": "ui-kit: ^2.3.0",
+        "detail": "ui-kit: ^2.3.0（允许范围）",
         "icon": "file",
         "group": "声明"
       },
       {
         "id": "resolver",
         "label": "版本解析器",
-        "detail": "查询可用版本",
+        "detail": "从 npm 注册表选择匹配版本",
         "icon": "search",
         "group": "解析"
       },
@@ -5338,16 +5338,16 @@
       {
         "id": "lockfile",
         "label": "package-lock.json",
-        "detail": "尚未记录",
+        "detail": "记录精确版本与完整性",
         "icon": "key",
         "group": "锁定"
       },
       {
         "id": "install",
         "label": "node_modules",
-        "detail": "等待安装",
+        "detail": "等待按锁文件安装",
         "icon": "database",
-        "group": "落地"
+        "group": "安装"
       }
     ],
     "edges": [
@@ -5385,7 +5385,7 @@
     "frames": [
       {
         "label": "读取范围",
-        "note": "清单允许安装 2.x 中满足 ^2.3.0 的版本。",
+        "note": "这里的 ^2.3.0 允许从 2.3.0 起、不到 3.0.0 的稳定版本；npm 注册表是存放包与版本信息、提供下载的服务。",
         "activeIds": [
           "manifest",
           "resolver"
@@ -5404,7 +5404,7 @@
       },
       {
         "label": "选择直接依赖",
-        "note": "解析器根据仓库当前内容选择 ui-kit 2.5.1。",
+        "note": "解析器从可用版本中选择满足范围的 ui-kit 2.5.1。",
         "activeIds": [
           "resolver",
           "direct"
@@ -5448,7 +5448,7 @@
       },
       {
         "label": "写入锁文件",
-        "note": "精确版本、来源和完整性摘要被记录，后续安装不再重新漂移。",
+        "note": "包管理器在锁文件里记下精确版本、来源和完整性摘要；安装时用摘要核对下载的包是否还是记录的那一份。",
         "activeIds": [
           "resolver",
           "lockfile"
@@ -5469,7 +5469,7 @@
       },
       {
         "label": "复现安装",
-        "note": "另一台电脑读取锁文件，安装同一棵依赖树。",
+        "note": "另一台电脑按锁文件安装，node_modules 中得到示例里的两个包与精确版本。",
         "activeIds": [
           "lockfile",
           "install"
@@ -5482,16 +5482,16 @@
         ],
         "mutedIds": [],
         "values": {
-          "install": "tree verified"
+          "install": "ui-kit 2.5.1 + color-utils 1.4.2 已安装"
         },
         "activeEdgeIds": [
           "lock-install"
         ]
       }
     ],
-    "insight": "清单表达允许范围，锁文件记录一次解析出的完整精确结果。",
+    "insight": "package.json 规定允许范围；匹配的锁文件记录精确依赖树，安装器按这份记录下载对应版本。更新锁文件后，即使允许范围没变，也可能选到另一个具体版本。",
     "quiz": {
-      "question": "package.json 没变，只提交了更新后的锁文件，是否仍可能影响运行结果？",
+      "question": "package.json 没变，只提交更新后的锁文件，是否仍可能影响运行结果？",
       "options": [
         {
           "label": "可能，间接依赖或精确版本已经变化",
@@ -5506,18 +5506,38 @@
           "correct": false
         }
       ],
-      "success": "锁文件是实际依赖树的重要变更，应与代码一样评审。",
-      "retry": "安装器会按锁文件选择精确包版本。"
+      "success": "锁文件记录实际依赖树；它变化时，间接依赖或精确版本就可能变化。",
+      "retry": "安装器会按锁文件选择精确包版本，先比较依赖树再判断影响。"
     },
     "prompt": {
       "title": "检查一次依赖升级",
-      "text": "请比较升级前后的直接依赖、间接依赖、锁文件、许可证、漏洞和运行时要求。指出真正进入生产包的版本变化，运行相关测试，并说明出现兼容问题时如何恢复上一棵依赖树。"
+      "text": "请比较升级前后的 package.json、锁文件和完整依赖树，指出直接与间接变化，检查漏洞和许可证，运行相关测试；如果不兼容，说明如何恢复上一棵依赖树。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
         "label": "npm Docs · package-lock.json",
-        "note": "包管理命令与文件语义"
+        "note": "锁文件记录精确依赖树、来源和完整性"
+      },
+      {
+        "url": "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
+        "label": "npm Docs · dependencies",
+        "note": "package.json 如何声明直接依赖和版本范围"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+        "label": "npm Docs · npm ci",
+        "note": "CI 按锁文件安装并检查清单是否匹配"
+      },
+      {
+        "url": "https://docs.npmjs.com/about-audit-reports",
+        "label": "npm Docs · Audit reports",
+        "note": "依赖安全审查不能由锁定版本替代"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v6/using-npm/semver/",
+        "label": "npm Docs · semver ranges",
+        "note": "^2.3.0 示例允许的稳定版本范围"
       }
     ]
   },
