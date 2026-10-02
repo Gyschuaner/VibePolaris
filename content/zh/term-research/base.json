@@ -407,13 +407,16 @@
   },
   {
     "slug": "ssg-ssr",
-    "mechanism": "SSG 在构建或再验证时生成可复用 HTML，SSR 在请求到达服务器时根据当前请求和数据生成 HTML。",
-    "misconception": "渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "mechanism": "SSG 在构建时或缓存失效后生成可复用 HTML，SSR 在请求到达时读取请求相关数据并生成 HTML；两者都可以先把 HTML 交给浏览器，客户端水合再负责接上交互。",
+    "misconception": "SSG 不是永远不变，生成结果可以按时间或事件再验证；SSR 也不等于完全不缓存。选择要看数据是否随请求变化以及缓存边界。",
     "demoSignature": "compare: 4 frames; actors=构建阶段/静态文件/文档访客/账户用户/请求时服务器/个性化 HTML; phases=提前生成文档→复用静态页→账户请求到达→请求时生成; action=发起访问",
     "sourceUrls": [
-      "https://nextjs.org/docs/app/getting-started/caching-and-revalidating"
+      "https://nextjs.org/docs/app/getting-started/linking-and-navigating",
+      "https://nextjs.org/docs/app/getting-started/revalidating",
+      "https://react.dev/reference/react-dom/client/hydrateRoot",
+      "https://nextjs.org/docs/app/guides/cdn-caching"
     ],
-    "rewriteRisk": "正式页面需守住边界：渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "rewriteRisk": "正式页面需守住边界：SSG 结果可以再验证，SSR 也可能使用缓存；选择要看数据是否随请求变化以及缓存边界。",
     "nearDuplicates": [
       "ssg",
       "ssr",

@@ -4399,9 +4399,9 @@
   },
   {
     "slug": "ssg-ssr",
-    "lead": "公开文档和登录后的账户余额，为什么不该使用完全相同的页面生成时机？",
-    "definition": "SSG 在构建或再验证时生成可复用 HTML，SSR 在请求到达服务器时根据当前请求和数据生成 HTML。",
-    "boundary": "渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "lead": "公开文档和登录后的账户余额，为什么不该在同一个时机生成？",
+    "definition": "SSG（静态生成）在构建时生成可复用的 HTML；内容更新后，可以让旧页面过期并重新生成，这一步叫“再验证”。SSR（服务端渲染）在请求到达时读取请求相关数据并生成 HTML。两者都会先把带内容的 HTML 交给浏览器显示；页面交互要等客户端脚本接上，这是另一回事。",
+    "boundary": "SSG 和 SSR 说的是服务端何时生成页面，不等于有没有 JavaScript；静态、缓存和动态内容可以按页面组合，甚至可以同一页面内分区组合（例如正文静态、侧边栏登录状态动态）；还要单独考虑客户端脚本如何接上交互（通常称为水合）。",
     "sceneKind": "compare",
     "sceneTitle": "公开文档与账户页的两种生成时机",
     "actionLabel": "发起访问",
@@ -4478,7 +4478,7 @@
     "frames": [
       {
         "label": "提前生成文档",
-        "note": "构建阶段读取内容并产出公开文档 HTML。",
+        "note": "构建阶段读取公开内容，产出可缓存的文档 HTML；更新时可重新构建或再验证。",
         "activeIds": [
           "build",
           "cdn"
@@ -4498,7 +4498,7 @@
       },
       {
         "label": "复用静态页",
-        "note": "不同访客直接获得同一份文档文件，不必每次运行页面服务器。",
+        "note": "不同访客拿到的是同一份文档文件，服务器不用每次重新生成；浏览器先显示这份 HTML，脚本之后再接上交互。",
         "activeIds": [
           "cdn",
           "public-user"
@@ -4540,7 +4540,7 @@
       },
       {
         "label": "请求时生成",
-        "note": "服务器读取当前余额并生成只对应这次请求的 HTML。",
+        "note": "服务器读取当前余额并生成只对应这次请求的 HTML；是否缓存还要看隐私边界。",
         "activeIds": [
           "server",
           "private-html"
@@ -4561,7 +4561,7 @@
         ]
       }
     ],
-    "insight": "选择 SSG 或 SSR 的关键是数据何时变化、是否因用户而异，以及可否安全缓存。",
+    "insight": "选择 SSG 或 SSR 的关键是数据何时变化、是否因用户而异，以及能否安全缓存；水合只负责把交互接到已经生成的 HTML 上。",
     "quiz": {
       "question": "每天更新一次、所有人内容相同的帮助文档更适合先考虑什么？",
       "options": [
@@ -4574,11 +4574,11 @@
           "correct": false
         },
         {
-          "label": "把每位访客的文档存在独立数据库行",
+          "label": "生成一次后永远不再更新的静态页面",
           "correct": false
         }
       ],
-      "success": "低频更新且公开一致的内容适合提前生成和缓存。",
+      "success": "低频更新且公开一致的内容适合提前生成和缓存，变化时再验证即可。",
       "retry": "先看内容更新频率和个性化要求。"
     },
     "prompt": {
@@ -4587,9 +4587,19 @@
     },
     "sources": [
       {
-        "url": "https://nextjs.org/docs/app/getting-started/caching-and-revalidating",
-        "label": "Next.js · Caching and revalidating",
-        "note": "渲染模式与框架行为"
+        "url": "https://nextjs.org/docs/app/getting-started/linking-and-navigating",
+        "label": "Next.js · Linking and navigating",
+        "note": "预渲染与请求时渲染的时机"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/getting-started/revalidating",
+        "label": "Next.js · Revalidating",
+        "note": "缓存内容如何按时间或事件更新"
+      },
+      {
+        "url": "https://react.dev/reference/react-dom/client/hydrateRoot",
+        "label": "React · hydrateRoot",
+        "note": "客户端如何接管服务端生成的 HTML"
       }
     ]
   },
