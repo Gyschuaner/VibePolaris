@@ -1171,130 +1171,158 @@
   },
   {
     "slug": "haptic-feedback",
-    "lead": "用户看不到屏幕时，怎样感知长按已经触发？",
-    "definition": "系统把语义化触觉类型映射到设备执行器的波形、强度与时长，并受硬件能力和用户设置限制。",
-    "boundary": "不是所有点击都应振动，也不能用任意长振动代替确认、选择和警告的不同含义。",
-    "sceneKind": "spectrum",
-    "sceneTitle": "选择、确认和警告触觉的波形差异",
-    "actionLabel": "触发下一种反馈",
+    "lead": "保存成功时，设备怎样让用户感觉到结果？",
+    "definition": "应用先为选择、确认、警告或失败等事件选择对应的语义触感，平台再把它映射到设备执行器的强度、节奏或波形，并受硬件能力和用户设置限制。",
+    "boundary": "触觉是补充通道，不能替代文字、视觉或声音；高频或长振动会干扰任务。设备、系统开关以及浏览器可见性或用户激活策略可能让请求降级或不播放，因此关键结果要保留可见回退。",
+    "sceneKind": "compare",
+    "sceneTitle": "语义模式怎样落到触感与可见回退",
+    "actionLabel": "查看下一种触感",
     "actors": [
       {
-        "id": "action",
-        "label": "界面操作",
-        "detail": "选择 / 确认 / 警告",
+        "id": "event",
+        "label": "语义事件",
+        "detail": "选择 / 确认 / 警告 / 失败",
         "icon": "component",
         "group": "触发"
       },
       {
         "id": "pattern",
-        "label": "触觉波形",
-        "detail": "幅度与时长",
+        "label": "平台模式",
+        "detail": "selection / confirm / warning / reject",
         "icon": "chart",
-        "group": "反馈"
+        "group": "映射"
       },
       {
         "id": "motor",
-        "label": "设备马达",
-        "detail": "能力可能不同",
+        "label": "设备执行器",
+        "detail": "强度、节奏与能力",
         "icon": "gear",
-        "group": "硬件"
+        "group": "输出"
       },
       {
         "id": "visual",
-        "label": "视觉状态",
-        "detail": "始终保留",
+        "label": "文字与视觉",
+        "detail": "关键结果始终可见",
         "icon": "spark",
         "group": "回退"
       }
     ],
     "edges": [
       {
-        "id": "action-pattern",
-        "from": "action",
+        "id": "event-pattern",
+        "from": "event",
         "to": "pattern",
-        "label": "选择模式"
+        "label": "选择语义"
       },
       {
         "id": "pattern-motor",
         "from": "pattern",
         "to": "motor",
-        "label": "请求振动"
+        "label": "请求触感"
       },
       {
-        "id": "action-visual",
-        "from": "action",
+        "id": "event-visual",
+        "from": "event",
         "to": "visual",
-        "label": "同步更新"
+        "label": "同步状态"
       }
     ],
     "frames": [
       {
-        "label": "轻量选择",
-        "note": "切换选项时播放一次短脉冲，选中标记同步出现。",
+        "label": "选择发生",
+        "note": "值改变时播放一次短触感，选中标记同时出现；触觉表达的是选择变化。",
         "activeIds": [
-          "action",
+          "event",
           "pattern",
           "motor",
           "visual"
         ],
         "doneIds": [
-          "action"
+          "event"
         ],
         "mutedIds": [],
         "values": {
-          "pattern": "短 · 低幅",
-          "visual": "选中"
+          "pattern": "selection（选择）",
+          "motor": "轻触",
+          "visual": "已选中"
         },
         "activeEdgeIds": [
-          "action-pattern",
+          "event-pattern",
           "pattern-motor",
-          "action-visual"
+          "event-visual"
         ]
       },
       {
-        "label": "操作确认",
-        "note": "保存成功改用更清楚的双段波形，但不覆盖成功文字。",
+        "label": "确认成功",
+        "note": "保存结果先落到界面，再播放一次清晰短脉冲；触觉不替代成功文字。",
         "activeIds": [
+          "event",
           "pattern",
           "motor",
           "visual"
         ],
         "doneIds": [
-          "action"
+          "event"
         ],
         "mutedIds": [],
         "values": {
-          "pattern": "短 + 短",
+          "pattern": "confirm（确认）",
+          "motor": "清晰短脉冲",
           "visual": "已保存"
         },
         "activeEdgeIds": [
+          "event-pattern",
           "pattern-motor",
-          "action-visual"
+          "event-visual"
         ]
       },
       {
-        "label": "设备不支持",
-        "note": "关闭触觉能力后，波形请求置灰，视觉结果仍完整到达。",
+        "label": "警告或失败",
+        "note": "危险或失败结果使用有区别的短节奏，同时显示警告或错误文字，避免让人只靠震动猜含义。",
         "activeIds": [
+          "event",
+          "pattern",
           "motor",
           "visual"
         ],
         "doneIds": [
-          "action"
+          "event"
         ],
-        "mutedIds": [
-          "pattern"
-        ],
+        "mutedIds": [],
         "values": {
-          "motor": "不可用",
-          "visual": "已保存 · 可见"
+          "pattern": "warning/reject（警告/拒绝）",
+          "motor": "较强短脉冲（示例模式）",
+          "visual": "需要处理"
         },
         "activeEdgeIds": [
-          "action-visual"
+          "event-pattern",
+          "pattern-motor",
+          "event-visual"
+        ]
+      },
+      {
+        "label": "设备不可用",
+        "note": "设备没有执行器或用户关闭触觉时，请求不播放；文字与视觉结果仍完整到达。",
+        "activeIds": [
+          "event",
+          "visual"
+        ],
+        "doneIds": [
+          "pattern"
+        ],
+        "mutedIds": [
+          "motor"
+        ],
+        "values": {
+          "motor": "不可用/已关闭",
+          "visual": "结果仍可见"
+        },
+        "activeEdgeIds": [
+          "event-visual"
         ]
       }
     ],
-    "insight": "触觉可以补强一次状态变化，但不能替代用户看得见或听得到的结果。",
+    "insight": "触觉先把事件映射到平台语义，再尝试交给设备执行器；无论是否播放，关键结果都必须由文字或视觉表达。",
     "quiz": {
       "question": "触觉反馈不可用时，关键结果应怎样呈现？",
       "options": [
@@ -1312,22 +1340,37 @@
         }
       ],
       "success": "触觉是补充通道，核心信息需要其他方式表达。",
-      "retry": "设备不支持时重复调用也不能产生可靠反馈。"
+      "retry": "设备不支持或用户关闭触觉时，重复调用也不能产生可靠反馈。"
     },
     "prompt": {
       "title": "为操作选择适量触觉反馈",
-      "text": "请检查下面交互，标出适合使用轻触感、确认触感、警告触感或不使用触觉的节点，并为每个关键结果保留可见反馈。"
+      "text": "请为一个保存、选择和失败操作选择系统语义触感，限制触发频率，并写出设备或用户关闭触觉时仍可理解的文字、视觉或声音回退。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/develop/ui/views/haptics/haptic-feedback",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Add haptic feedback to events",
+        "note": "按操作语义触发平台默认触感，并尊重用户触觉设置"
+      },
+      {
+        "url": "https://developer.android.com/reference/android/os/VibrationEffect",
+        "label": "Android API · VibrationEffect",
+        "note": "自定义波形和组合效果受设备能力影响，不能把每种设备都当成同一执行器"
       },
       {
         "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple HIG · Playing haptics",
+        "note": "选择、确认和警告要使用有明确含义的模式，并与视觉或声音互补、可关闭"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/uikit/uifeedbackgenerator",
+        "label": "Apple · UIFeedbackGenerator",
+        "note": "UIKit 按 selection、impact、notification 区分反馈生成器类型"
+      },
+      {
+        "url": "https://www.w3.org/TR/vibration/",
+        "label": "W3C · Vibration API",
+        "note": "网页振动受可见性、用户激活、设备能力和系统限流影响，不能假定每次请求都会播放"
       }
     ]
   },
