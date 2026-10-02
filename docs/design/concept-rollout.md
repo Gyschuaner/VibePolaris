@@ -30,13 +30,13 @@
 | 020 | 嵌入、语义搜索、RAG | VBP-035 · [本批研究与 review](VBP-035-semantic-concepts.md) |
 | 021 | 检索、分块、重排序 | VBP-036 · [本批研究与 review](VBP-036-selection-concepts.md) |
 | 022 | 混合搜索、向量存储、引用 | VBP-037 · [本批研究与 review](VBP-037-evidence-concepts.md) |
-| 023 | 基于证据回答、幻觉、评测 | VBP-038 · [初始设计](VBP-038-quality-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
-| 024 | 基准测试、评分器、评测数据集 | VBP-039 · [初始设计](VBP-039-assessment-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
-| 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [初始设计](VBP-040-model-delivery-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
-| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [初始设计](VBP-041-output-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
-| 027 | 服务器、API 网关、反向代理 | VBP-043 · [初始设计](VBP-043-edge-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
-| 028 | 负载均衡、认证、授权 | VBP-044 · [初始设计](VBP-044-access-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
-| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [初始设计](VBP-045-identity-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 023 | 基于证据回答、幻觉、评测 | VBP-038 · [本批研究与 review](VBP-038-quality-concepts.md) |
+| 024 | 基准测试、评分器、评测数据集 | VBP-039 · [本批研究与 review](VBP-039-assessment-concepts.md) |
+| 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [本批研究与 review](VBP-040-model-delivery-concepts.md) |
+| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [本批研究与 review](VBP-041-output-concepts.md) |
+| 027 | 服务器、API 网关、反向代理 | VBP-043 · [本批研究与 review](VBP-043-edge-concepts.md) |
+| 028 | 负载均衡、认证、授权 | VBP-044 · [本批研究与 review](VBP-044-access-concepts.md) |
+| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [本批研究与 review](VBP-045-identity-concepts.md) |
 | 030 | 技能（Agent Skill，单页新增词条，不计入基线完成数） | VBP-046 · [本批研究与 review](VBP-046-skill-concepts.md) |
 | 031 | 生成式 AI、多模态、推理模型、系统提示词、少样本提示、零样本提示、温度、分词、工具选择、工具结果 | VBP-050 · [119–128 文案更新与上线记录](VBP-050-content-refresh-119-128.md) |
 | 032 | 规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调、智能体记忆、工作记忆 | VBP-051 · [129–138 文案更新与上线记录](VBP-051-content-refresh-129-138.md) |

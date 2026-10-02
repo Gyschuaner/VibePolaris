@@ -53,16 +53,6 @@ reader 和 language 的输入是当前词条的读者可见文案与按阶段配
 - 390px 窄屏抽查提示注入页面，标题、正文、演示阶段切换、终态说明和底部阅读操作均可见，未发现横向溢出；验收后视口应恢复默认。
 - 未执行真实目标读者测试；ZCode reader 是模拟审读，不能替代用户验收。
 
-## 生产发布记录
+## 发布边界
 
-本批已完成逐条内容、十条批量公开清单、构建和本地受影响交互验收。内容分支通过 PR [#272](https://github.com/Gyschuaner/VibePolaris/pull/272) 合入 `main`，合并提交为 `356abd40`；生产叠加分支为 `release/VBP-052-prod-overlay-20261002`，最终提交为 `7b110d2923082b522025ec7d135376e4e21cdbb4`。
-
-2026-10-02（Asia/Shanghai）已完成生产发布：
-
-- 镜像：`vibepolaris:7b110d2923082b522025ec7d135376e4e21cdbb4`，本机 `linux/amd64` 构建通过。
-- 当前发布目录：`/opt/vibepolaris/releases/20261001T204507Z-7b110d29`；切换前版本与回滚目录：`/opt/vibepolaris/releases/20261001T190755Z-1bd2aa29`。
-- Docker healthcheck 为 `healthy`，`current` 已指向新发布目录；持久化数据卷 `vibepolaris_xiaobei_data` 保持不变。
-- DP 部署记录：`deploy-vbp052-content-139-148-prod-20261002`，对象 ID `a72ab309-1784-4152-9129-f3fab5cc6a75`，状态 `released`，关联需求 `VBP-052`。
-- HTTPS 200 检查通过：`/news`、新闻详情页，以及本批十条 `/terms/` 路由；线上浏览器打开 `prompt-injection` 并完成“恶意句子浮现 → 权限闸门拒绝 → 完成原任务”，终态显示工具拒绝且摘要继续。
-
-回滚时使用备份目录的 Compose 与镜像 `vibepolaris:1bd2aa2968839a2afd44eb0bbefb0d3784116e88` 恢复 web 服务，再将 `/opt/vibepolaris/current` 指回 `20261001T190755Z-1bd2aa29`；保留新版本产生的数据，不覆盖 `vibepolaris_xiaobei_data`。
+本批已完成逐条内容、十条批量公开清单、构建和本地受影响交互验收。生产发布沿用既有新闻版本的生产叠加分支，待 main 合并后执行；生产提交、DP deployment、线上路由、版本镜像与回滚位置在发布完成后补录。

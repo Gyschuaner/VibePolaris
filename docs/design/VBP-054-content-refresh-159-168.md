@@ -71,14 +71,4 @@ reader 输入是当前词条的读者可见文案与按阶段配对的状态材�
 - CUA 真实浏览器在本地 `3010` 端口打开十个 `/terms/<slug>` 路由，标题、正文、交互演示、判断题和来源区均可见；十个页面控制台 error 均为 0。
 - 浏览器实际推进了单体架构“只改支付”帧；在 `390×844` 视口检查容器页，标题、问题卡片、正文和移动端操作入口均正常显示；验收后已恢复默认视口。
 
-## 生产发布记录
-
-内容 PR [#276](https://github.com/Gyschuaner/VibePolaris/pull/276) 已合入 `main`，合并提交为 `725b37fe01a3318e9dd333c43b0b82dc49a7698d`。生产从上一版覆盖分支切出 `release/VBP-054-prod-overlay-20261002`，只叠加本批十条内容、公开清单和研发记录，保留线上新闻模块；生产覆盖提交为 `9e4c51ce4002dd5ed2200233e1ffb0182e6a0313`。
-
-- 镜像：`vibepolaris:9e4c51ce4002dd5ed2200233e1ffb0182e6a0313`，本机 `linux/amd64` 构建通过；容器内保留线上新闻校验并生成 `170/170` 静态页面。
-- 当前发布目录：`/opt/vibepolaris/releases/20261002T004723Z-9e4c51ce`；`/opt/vibepolaris/current` 已指向该目录，容器 `vibepolaris-web-1` 为 `healthy`。
-- 回滚目录：`/opt/vibepolaris/releases/20261001T223056Z-c0f5def8`，旧镜像 `vibepolaris:c0f5def8` 保留；持久化数据卷未改动。
-- DP deployment：`deploy-vbp054-content-159-168-prod-20261002`，对象 ID `406fd0e2-9394-4ae0-80cf-b0bbb0cda0f0`，状态 `released`，关联需求 `VBP-054`。
-- HTTPS 线上检查通过：十个 `/terms/<slug>` 路由、首页、`/news` 和新闻详情页均返回 200；CUA 真实浏览器打开线上 `monolith`，推进到“只改支付”帧，控制台 error 为 0。
-
-当前功能分支为 `feat/VBP-054-control-architecture-159-168`，十条内容分别提交、十条公开清单一次提交；生产记录单独补入本文，其他功能没有随本批进入生产。`D:/Obsidian/gysnote` 在当前 Mac 环境不存在，因此不创建空记录。
+当前分支为 `feat/VBP-054-control-architecture-159-168`，十条内容与本批公开清单均已提交；生产发布记录在后续发布阶段补充，其他功能仍留在本地分支。
