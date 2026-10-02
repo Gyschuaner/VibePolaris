@@ -19,14 +19,16 @@
   },
   {
     "slug": "css",
-    "mechanism": "浏览器先用选择器匹配元素，再按来源、重要性、层叠层、优先级和源码顺序确定声明，最后把计算值交给布局与绘制。",
-    "misconception": "CSS 不是给 HTML 表面加颜色；层叠决定哪条声明生效，布局规则还会随容器与媒体条件改变。",
-    "demoSignature": "responsive-code-map: 3 frames; actors=CSS代码行/计算值/三列星图; phases=桌面展开→发现拥挤→媒体查询改单列; action=播放代码与布局同步变化",
+    "mechanism": "浏览器先用选择器筛出匹配元素的声明，再按来源、重要性、层叠层、优先级和源码顺序得到层叠值，经过计算后交给盒模型与布局系统。",
+    "misconception": "CSS 不只是给 HTML 表面加颜色；声明要先匹配再经过层叠，计算值还会参与盒模型和 Grid/Flex 等布局。",
+    "demoSignature": "cascade-to-layout: 3 frames; actors=选择器/候选声明/计算值/卡片容器; phases=规则命中→层叠选胜者→计算值进入布局; action=逐步执行 CSS 规则",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"
+      "https://www.w3.org/TR/css-cascade-5/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts"
     ],
-    "rewriteRisk": "不要把 CSS 讲成属性清单；正式页面必须同时说明匹配、层叠、计算值和布局结果。",
+    "rewriteRisk": "不要把 CSS 讲成属性清单或把 specificity 写成唯一决定因素；正式页面要同时说明规则匹配、层叠、计算值、盒模型和布局结果。",
     "nearDuplicates": [
       "css-selector",
       "box-model",
@@ -36,13 +38,15 @@
   {
     "slug": "html",
     "mechanism": "HTML 元素与属性构成文档结构；浏览器据此建立 DOM 和可访问性语义，使标题、区域和原生控件能够被程序与辅助技术识别。",
-    "misconception": "HTML 不只是把内容显示出来；用 div 模仿按钮或标题会丢失原生语义与交互行为。",
-    "demoSignature": "semantic-node-recognition: 3 frames; actors=普通容器/标题层级/原生按钮/浏览器识别结果; phases=只有容器→标题被识别→操作可被键盘触发; action=切换元素语义",
+    "misconception": "HTML 不只是把内容显示出来；用 div 模仿按钮或标题会丢失原生语义与交互行为，视觉样式也不能把这些关系补回来。",
+    "demoSignature": "semantic-node-recognition: 3 frames; actors=普通容器/标题与主要内容/原生按钮/浏览器识别结果; phases=只有容器→标记内容关系→操作可被键盘触发; action=切换元素语义",
     "sourceUrls": [
       "https://html.spec.whatwg.org/",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content"
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Structuring_documents",
+      "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements",
+      "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html"
     ],
-    "rewriteRisk": "不要只强调 SEO；正式页面要把文档结构、原生行为和辅助技术识别放在同一个例子中。",
+    "rewriteRisk": "不要只强调 SEO；正式页面要把文档结构、原生行为和辅助技术识别放在同一个例子中，并说明 CSS 改变外观不会替代 HTML 语义。",
     "nearDuplicates": [
       "semantic-html",
       "dom",
@@ -51,14 +55,16 @@
   },
   {
     "slug": "javascript",
-    "mechanism": "JavaScript 接收事件，读取或修改程序数据，再通过浏览器 API 更新页面；异步任务完成后会在事件循环允许的时机继续执行。",
-    "misconception": "JavaScript 语言不等于 DOM、网络或文件系统 API；可调用能力由浏览器、Node.js 等运行时决定。",
-    "demoSignature": "event-state-render: 3 frames; actors=点击事件/count状态/计数节点; phases=事件进入→count加一→textContent更新; action=逐段执行一次点击",
+    "mechanism": "页面加载后，JavaScript 脚本先登记事件监听器；浏览器把 click 等事件送给脚本，脚本用核心语言修改状态，再通过 DOM 等浏览器 API 更新当前页面。异步请求完成后，后续更新要等响应结果再继续。",
+    "misconception": "JavaScript 语言不等于 DOM、网络或文件系统 API；脚本修改当前页面的 DOM，不会自动改回 HTML 源文件；可调用能力由浏览器、Node.js 等运行时决定。",
+    "demoSignature": "event-state-render: 3 frames; actors=点击事件/count状态/计数节点; phases=登记监听→修改状态→更新页面; action=逐段执行一次点击",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Language_overview",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction",
+      "https://tc39.es/ecma262/2023/multipage/overview.html"
     ],
-    "rewriteRisk": "不要把 JavaScript 写成‘让页面动起来’；正式页面要明确事件、数据变化和界面更新的先后。",
+    "rewriteRisk": "不要把 JavaScript 写成‘让页面动起来’；正式页面要明确脚本登记事件、核心语言修改状态、浏览器 API 更新 DOM 的边界与先后。",
     "nearDuplicates": [
       "event",
       "dom",
@@ -82,13 +88,16 @@
   },
   {
     "slug": "responsive",
-    "mechanism": "响应式布局根据容器宽度、内容需要和输入方式调整结构，让同一份内容保持可读和可操作。",
-    "misconception": "响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
-    "demoSignature": "transform: 4 frames; actors=可用宽度/内容容器/主卡片/次卡片/操作区; phases=桌面三栏→开始拥挤→改单列→操作下移; action=收窄容器",
+    "mechanism": "响应式布局让页面根据内容所在容器的可用空间和交互条件重排；流式尺寸、Flexbox、Grid、媒体查询和容器查询都可以参与这个过程，断点应放在内容开始失效的位置。",
+    "misconception": "响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面；它要保护内容、阅读顺序和可操作性。",
+    "demoSignature": "transform: 4 frames; actors=视口/内容容器/主卡片/次卡片/操作区; phases=空间充足→出现拥挤→改为两列→手机单列并换行操作; action=收窄容器",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries",
+      "https://www.w3.org/TR/css-contain-3/",
+      "https://www.w3.org/WAI/WCAG21/Understanding/reflow"
     ],
-    "rewriteRisk": "正式页面需守住边界：响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
+    "rewriteRisk": "正式页面要把视口查询与容器查询区分开，并说明断点是内容失效点；不能把 WCAG 的回流要求写成所有二维内容都必须取消横向滚动。",
     "nearDuplicates": [
       "breakpoint",
       "media-query",
@@ -97,13 +106,16 @@
   },
   {
     "slug": "form",
-    "mechanism": "表单把标签、输入、约束、错误反馈和提交行为组织在一起，收集一组有明确含义的数据。",
-    "misconception": "浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
-    "demoSignature": "state-machine: 4 frames; actors=姓名/邮箱/浏览器校验/服务端校验/报名结果; phases=保留输入→前端拦截→修正后提交→确认成功; action=尝试提交",
+    "mechanism": "表单先用可见标签把输入和含义对应起来，再用约束做客户端即时检查；通过后提交，服务端把输入当作不可信数据重新验证，并把错误关联回字段或整表结果。",
+    "misconception": "浏览器校验只负责尽快反馈；有人可以用别的工具直接向服务端发请求，不走这个页面，所以服务端仍要按业务规则重新验证。占位文字只是示例，不能代替始终可见的字段标签。",
+    "demoSignature": "state-machine: 6 frames; actors=姓名/邮箱/浏览器校验/服务端校验/报名结果; phases=填写表单→前端拦截→用户修正→服务端检查→服务端拒绝→改正后成功; action=尝试提交",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation"
+      "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation",
+      "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+      "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html"
     ],
-    "rewriteRisk": "正式页面需守住边界：浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "rewriteRisk": "正式页面需守住边界：客户端校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的字段标签；错误提示要指出具体字段和修复方向。",
     "nearDuplicates": [
       "html",
       "focus-management",
@@ -112,13 +124,16 @@
   },
   {
     "slug": "dom",
-    "mechanism": "DOM 是浏览器把文档解析成的节点对象树；脚本操作的是内存中的节点、属性和文本。",
-    "misconception": "DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "mechanism": "浏览器拿到服务器上的 HTML 后建立 DOM：一棵就在屏幕后面的节点树和一组让脚本操作节点的方法。脚本可用 querySelector 找到第一个匹配元素、用 textContent 修改节点文本，浏览器再绘制当前页面。",
+    "misconception": "DOM 不是服务器上的 HTML 源文件，也不是 JavaScript 语言本身；脚本修改的是屏幕后面的当前 DOM，不会自动改回服务器源文件。",
     "demoSignature": "tree: 4 frames; actors=document/main/h1/Text 节点/脚本; phases=解析文档→查询标题→修改文本→重新呈现; action=执行脚本",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting"
+      "https://dom.spec.whatwg.org/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector"
     ],
-    "rewriteRisk": "正式页面需守住边界：DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "rewriteRisk": "正式页面需守住边界：先说明服务器 HTML 如何成为浏览器当前 DOM，再说明脚本修改当前 DOM 不会自动回写服务器源文件。",
     "nearDuplicates": [
       "html",
       "javascript",
@@ -374,13 +389,16 @@
   },
   {
     "slug": "framework",
-    "mechanism": "框架规定应用结构、生命周期和扩展位置，库提供由应用主动调用的特定能力；实际项目通常同时使用两者。",
-    "misconception": "框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
-    "demoSignature": "layers: 4 frames; actors=业务页面/Next.js/React/日期库/浏览器 / Node.js; phases=应用入口→框架驱动→调用日期库→依赖运行时; action=展开依赖层",
+    "mechanism": "依赖是项目安装并在代码或构建中使用的外部能力；框架通常规定应用结构、入口、路由以及渲染或构建流程，库通常提供由应用代码主动调用的功能。",
+    "misconception": "框架与库没有永远准确的名称分界；评估时应看谁控制运行流程、调用方向，以及升级或替换要改多少代码。",
+    "demoSignature": "layers: 4 frames; actors=业务页面/Next.js/React/日期库/浏览器 / Node.js; phases=框架安排入口→框架驱动渲染→应用调用库→依赖运行时; action=展开依赖层",
     "sourceUrls": [
-      "https://nextjs.org/docs/app/getting-started/project-structure"
+      "https://nextjs.org/docs",
+      "https://react.dev/learn/describing-the-ui",
+      "https://angular.dev/overview",
+      "https://nextjs.org/docs/app/getting-started/server-and-client-components"
     ],
-    "rewriteRisk": "正式页面需守住边界：框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
+    "rewriteRisk": "正式页面需守住边界：框架与库没有永远准确的名称分界；评估时应看谁控制运行流程、调用方向，以及升级或替换要改多少代码。",
     "nearDuplicates": [
       "library",
       "dependency",
@@ -389,13 +407,16 @@
   },
   {
     "slug": "ssg-ssr",
-    "mechanism": "SSG 在构建或再验证时生成可复用 HTML，SSR 在请求到达服务器时根据当前请求和数据生成 HTML。",
-    "misconception": "渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "mechanism": "SSG 在构建时或缓存失效后生成可复用 HTML，SSR 在请求到达时读取请求相关数据并生成 HTML；两者都可以先把 HTML 交给浏览器，客户端水合再负责接上交互。",
+    "misconception": "SSG 不是永远不变，生成结果可以按时间或事件再验证；SSR 也不等于完全不缓存。选择要看数据是否随请求变化以及缓存边界。",
     "demoSignature": "compare: 4 frames; actors=构建阶段/静态文件/文档访客/账户用户/请求时服务器/个性化 HTML; phases=提前生成文档→复用静态页→账户请求到达→请求时生成; action=发起访问",
     "sourceUrls": [
-      "https://nextjs.org/docs/app/getting-started/caching-and-revalidating"
+      "https://nextjs.org/docs/app/getting-started/linking-and-navigating",
+      "https://nextjs.org/docs/app/getting-started/revalidating",
+      "https://react.dev/reference/react-dom/client/hydrateRoot",
+      "https://nextjs.org/docs/app/guides/cdn-caching"
     ],
-    "rewriteRisk": "正式页面需守住边界：渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "rewriteRisk": "正式页面需守住边界：SSG 结果可以再验证，SSR 也可能使用缓存；选择要看数据是否随请求变化以及缓存边界。",
     "nearDuplicates": [
       "ssg",
       "ssr",
@@ -404,13 +425,16 @@
   },
   {
     "slug": "deploy",
-    "mechanism": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查和流量切换。",
-    "misconception": "命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
-    "demoSignature": "pipeline: 6 frames; actors=提交版本/构建/不可变制品/dev 环境/健康检查/访问流量; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=推进发布",
+    "mechanism": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查、流量切换和回滚准备。",
+    "misconception": "部署命令成功不等于服务可用；同一版本要在目标环境验证，流量和回滚要有证据。",
+    "demoSignature": "pipeline: 6 frames; actors=提交版本/构建/制品/生产环境/健康检查/访问流量/上一版制品; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=推进发布",
     "sourceUrls": [
-      "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions"
+      "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+      "https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments",
+      "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+      "https://sre.google/workbook/canarying-releases/"
     ],
-    "rewriteRisk": "正式页面需守住边界：命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "rewriteRisk": "正式页面需守住边界：部署命令成功不等于服务可用；同一版本要在目标环境验证，流量和回滚要有证据。",
     "nearDuplicates": [
       "cd",
       "preview-deployment",
@@ -419,14 +443,16 @@
   },
   {
     "slug": "library",
-    "mechanism": "库把一组相关能力封装为可调用接口，项目通过依赖管理安装并在需要的位置主动使用。",
-    "misconception": "引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
-    "demoSignature": "compare: 5 frames; actors=实际需求/Intl.DateTimeFormat/轻量日期库/通用工具包/维护面; phases=限定需求→检查原生能力→评估小库→发现过量能力→形成选择; action=比较方案",
+    "mechanism": "库把一组相关能力封装为可调用接口，项目通常把它记录在 package.json 中，按需导入并调用。",
+    "misconception": "库会进入安装、构建、运行和升级流程；先检查平台原生能力、实际缺口、维护状态和安全，再决定是否引入。",
+    "demoSignature": "assembly: 5 frames; actors=实际需求/Intl.DateTimeFormat/轻量日期库/通用工具包/维护成本; phases=限定需求→检查原生能力→评估小库→发现过量能力→形成选择; action=比较方案",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat",
+      "https://react.dev/learn/describing-the-ui",
+      "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
       "https://docs.npmjs.com/about-audit-reports"
     ],
-    "rewriteRisk": "正式页面需守住边界：引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "rewriteRisk": "正式页面需守住边界：先检查平台原生能力和实际缺口，再评估依赖的体积、版本、维护和安全成本。",
     "nearDuplicates": [
       "framework",
       "dependency",
