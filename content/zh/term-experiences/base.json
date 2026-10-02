@@ -6527,8 +6527,8 @@
   {
     "slug": "user-flow",
     "lead": "用户从邮件链接进入重设密码后，链接过期、两次密码不一致和成功返回分别怎么走？",
-    "definition": "用户流程把入口、用户动作、系统反馈、条件分支和结束状态连接起来，描述完成一个目标的完整路径。",
-    "boundary": "用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "definition": "用户流程把入口、用户动作、系统反馈、分支、恢复和结束状态连接起来，描述完成一个目标的完整路径。",
+    "boundary": "用户流程不是把网站的页面列成一张清单，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
     "sceneKind": "branch",
     "sceneTitle": "重设密码流程中的成功与恢复分支",
     "actionLabel": "走下一节点",
@@ -6545,14 +6545,14 @@
         "label": "链接校验",
         "detail": "检查有效期与是否使用",
         "icon": "shield",
-        "group": "系统"
+        "group": "系统反馈"
       },
       {
         "id": "form",
         "label": "新密码表单",
         "detail": "输入两次密码",
         "icon": "layout",
-        "group": "操作"
+        "group": "用户动作"
       },
       {
         "id": "expired",
@@ -6572,6 +6572,13 @@
         "id": "success",
         "label": "重设成功",
         "detail": "返回登录并提示完成",
+        "icon": "spark",
+        "group": "结束"
+      },
+      {
+        "id": "original-task",
+        "label": "继续原任务",
+        "detail": "登录后回到原访问页面",
         "icon": "spark",
         "group": "结束"
       }
@@ -6596,6 +6603,12 @@
         "label": "过期"
       },
       {
+        "id": "expired-email",
+        "from": "expired",
+        "to": "email",
+        "label": "重新申请"
+      },
+      {
         "id": "form-mismatch",
         "from": "form",
         "to": "mismatch",
@@ -6608,6 +6621,12 @@
         "label": "修正"
       },
       {
+        "id": "success-original-task",
+        "from": "success",
+        "to": "original-task",
+        "label": "继续原任务"
+      },
+      {
         "id": "form-success",
         "from": "form",
         "to": "success",
@@ -6617,7 +6636,7 @@
     "frames": [
       {
         "label": "从邮件进入",
-        "note": "流程起点不是首页，而是带一次性 token 的邮件链接。",
+        "note": "流程起点不是首页，而是邮件里的重设链接；链接末尾带着一串只用一次的口令（token）。",
         "activeIds": [
           "email"
         ],
@@ -6626,14 +6645,15 @@
           "form",
           "expired",
           "mismatch",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {},
         "activeEdgeIds": []
       },
       {
         "label": "检查链接",
-        "note": "系统先判断 token 是否存在、未过期且未被使用。",
+        "note": "系统先判断这个 token 在不在、有没有过期、是不是已经被用过。",
         "activeIds": [
           "email",
           "token-check"
@@ -6641,19 +6661,21 @@
         "doneIds": [],
         "mutedIds": [
           "mismatch",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {
-          "token-check": "valid"
+          "token-check": "链接有效"
         },
         "activeEdgeIds": [
           "email-check"
         ]
       },
       {
-        "label": "过期恢复",
-        "note": "过期时不展示无效表单，直接提供重新发送入口。",
+        "label": "如果链接已过期",
+        "note": "过期时不展示无效表单，提供重新发送入口；用户收到新邮件后再回到校验。",
         "activeIds": [
+          "email",
           "token-check",
           "expired"
         ],
@@ -6663,18 +6685,20 @@
         "mutedIds": [
           "form",
           "mismatch",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {
           "expired": "发送新链接"
         },
         "activeEdgeIds": [
-          "check-expired"
+          "check-expired",
+          "expired-email"
         ]
       },
       {
         "label": "填写新密码",
-        "note": "有效链接进入表单，要求和错误在输入附近显示。",
+        "note": "有效链接进入表单，密码要求和错误都显示在输入框旁边。",
         "activeIds": [
           "token-check",
           "form"
@@ -6684,7 +6708,8 @@
         ],
         "mutedIds": [
           "expired",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {},
         "activeEdgeIds": [
@@ -6703,7 +6728,8 @@
         ],
         "mutedIds": [
           "expired",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {
           "mismatch": "两次密码不同"
@@ -6715,10 +6741,11 @@
       },
       {
         "label": "完成并返回",
-        "note": "成功后 token 失效，用户回到登录并看到明确确认。",
+        "note": "成功后 token 失效，用户回到登录并看到明确确认；登录后能继续原本想完成的任务。",
         "activeIds": [
           "form",
-          "success"
+          "success",
+          "original-task"
         ],
         "doneIds": [
           "email",
@@ -6729,10 +6756,12 @@
           "mismatch"
         ],
         "values": {
-          "success": "密码已更新 · 去登录"
+          "success": "密码已更新 · 去登录",
+          "original-task": "登录后继续"
         },
         "activeEdgeIds": [
-          "form-success"
+          "form-success",
+          "success-original-task"
         ]
       }
     ],
@@ -6758,13 +6787,33 @@
     },
     "prompt": {
       "title": "补全一个用户流程",
-      "text": "请从用户真实入口开始，列出每个动作、系统判断、即时反馈、失败分支、取消、返回和完成状态。对每条中断路径补恢复入口，并检查最终是否回到用户原本要完成的任务。"
+      "text": "请从用户真实入口开始，列出用户动作、系统反馈、分支、恢复和结束状态。对每条中断路径补恢复入口，并检查最终是否回到用户原本要完成的任务。"
     },
     "sources": [
       {
-        "url": "https://www.nngroup.com/articles/user-journeys-vs-user-flows/",
-        "label": "Nielsen Norman Group · Task Flows and User Flows",
-        "note": "用户研究与交互原则"
+        "url": "https://www.gov.uk/service-manual/design/scoping-your-service",
+        "label": "GOV.UK Service Manual · Scoping a service",
+        "note": "把交易放回用户的完整旅程"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/user-research/creating-an-experience-map",
+        "label": "GOV.UK Service Manual · Experience maps",
+        "note": "按时间整理用户经历的步骤和触点"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/map-a-users-whole-problem",
+        "label": "GOV.UK Service Manual · Map a whole problem",
+        "note": "从用户视角发现中断和死路"
+      },
+      {
+        "url": "https://design-system.service.gov.uk/patterns/step-by-step-navigation/",
+        "label": "GOV.UK Design System · Step by step navigation",
+        "note": "有明确起点和终点的分步任务"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/introduction-designing-government-services",
+        "label": "GOV.UK Service Manual · Designing services",
+        "note": "让用户从开始走到清楚的结果"
       }
     ]
   },
