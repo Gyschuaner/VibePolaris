@@ -14692,44 +14692,44 @@
   },
   {
     "slug": "container",
-    "lead": "两个进程共享宿主内核，怎样仍看到不同文件并获得70%与30%的CPU？",
-    "definition": "容器用操作系统级隔离把进程及其文件、网络和资源视图限制在指定边界内，并共享宿主机内核。",
-    "boundary": "容器不是虚拟机，也不是默认安全沙箱；共享内核和配置权限会影响隔离强度。",
+    "lead": "两个容器共用宿主机的内核，为什么能看到不同的文件，CPU 还是一个用 70%、一个用 30%？",
+    "definition": "容器是一个带有应用文件和它需要的其他程序的隔离进程（正在运行的程序）；它有自己的文件、网络和资源视图，通常共享宿主机内核（操作系统最核心的部分，负责调度 CPU、内存和文件）。",
+    "boundary": "容器不是完整虚拟机：虚拟机运行自己的完整操作系统和内核，容器共享宿主机内核；权限配置会影响隔离强度，数据也要用挂载（把存储连接给容器）的卷（独立保存数据的存储）等方式持久化。",
     "sceneKind": "layers",
-    "sceneTitle": "共享内核上的隔离视图与配额",
-    "actionLabel": "调整CPU配额",
+    "sceneTitle": "共享内核，隔离视图与资源配额",
+    "actionLabel": "看下一步",
     "actors": [
       {
         "id": "kernel",
-        "label": "宿主内核",
-        "detail": "共享",
+        "label": "宿主机内核",
+        "detail": "容器共用",
         "icon": "gear",
         "group": "底层"
       },
       {
         "id": "container-a",
         "label": "容器 A",
-        "detail": "文件视图A · CPU70%",
+        "detail": "文件视图 A · CPU 70%",
         "icon": "package",
         "group": "隔离"
       },
       {
         "id": "container-b",
         "label": "容器 B",
-        "detail": "文件视图B · CPU30%",
+        "detail": "文件视图 B · CPU 30%",
         "icon": "package",
         "group": "隔离"
       },
       {
         "id": "process-a",
-        "label": "进程 A",
+        "label": "应用进程 A",
         "detail": "运行中",
         "icon": "code",
         "group": "工作负载"
       },
       {
         "id": "process-b",
-        "label": "进程 B",
+        "label": "应用进程 B",
         "detail": "运行中",
         "icon": "code",
         "group": "工作负载"
@@ -14737,7 +14737,7 @@
       {
         "id": "limit",
         "label": "资源控制",
-        "detail": "70 / 30",
+        "detail": "CPU 70 / 30",
         "icon": "chart",
         "group": "规则"
       }
@@ -14768,6 +14768,12 @@
         "label": "运行"
       },
       {
+        "id": "pa-b",
+        "from": "process-a",
+        "to": "container-b",
+        "label": "尝试读取"
+      },
+      {
         "id": "l-a",
         "from": "limit",
         "to": "container-a",
@@ -14783,7 +14789,7 @@
     "frames": [
       {
         "label": "共享同一内核",
-        "note": "两只容器都在同一宿主内核上运行。",
+        "note": "容器 A 和 B 共用同一个宿主机内核，里面的应用都靠它干活。",
         "activeIds": [
           "kernel",
           "container-a",
@@ -14795,7 +14801,7 @@
           "process-b"
         ],
         "values": {
-          "kernel": "1个"
+          "kernel": "共用 1 个"
         },
         "activeEdgeIds": [
           "k-a",
@@ -14803,8 +14809,8 @@
         ]
       },
       {
-        "label": "文件视图隔离",
-        "note": "A和B各自看到不同根文件系统。",
+        "label": "各自看到文件视图",
+        "note": "容器 A 和 B 看到不同的文件系统视图，应用像在各自目录里运行。",
         "activeIds": [
           "container-a",
           "container-b"
@@ -14814,14 +14820,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "container-a": "视图A",
-          "container-b": "视图B"
+          "container-a": "文件视图 A",
+          "container-b": "文件视图 B"
         },
         "activeEdgeIds": []
       },
       {
         "label": "配额生效",
-        "note": "CPU控制按70%和30%限制两个工作负载。",
+        "note": "配额（CPU、内存等的用量上限）把示例 CPU 使用量限制为 A 70%、B 30%；配额限制使用量，不是把 CPU 变成两台机器。",
         "activeIds": [
           "limit",
           "process-a",
@@ -14832,8 +14838,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "process-a": "70%",
-          "process-b": "30%"
+          "process-a": "CPU 70%",
+          "process-b": "CPU 30%"
         },
         "activeEdgeIds": [
           "l-a",
@@ -14844,58 +14850,76 @@
       },
       {
         "label": "越界读取被拒",
-        "note": "A尝试读取B的未挂载文件，返回拒绝。",
+        "note": "A 想读容器 B 的文件，但那个文件没有挂载（连接）给 A，访问被拒；隔离效果取决于权限和挂载配置。",
         "activeIds": [
           "container-a",
-          "container-b"
+          "process-a"
         ],
         "doneIds": [
           "kernel",
           "limit"
         ],
         "mutedIds": [
+          "container-b",
           "process-b"
         ],
         "values": {
-          "container-a": "denied"
+          "process-a": "访问被拒"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "pa-b"
+        ]
       }
     ],
-    "insight": "容器共享宿主内核，不是完整虚拟机；隔离强度取决于命名空间、权限和资源配置。",
+    "insight": "容器隔离的是进程看到的视图和可用资源，不是另一套完整内核；共享宿主机内核、权限、挂载和配额共同决定隔离效果。",
     "quiz": {
-      "question": "容器默认就是绝对安全边界吗？",
+      "question": "容器和虚拟机的关键差异是什么？",
       "options": [
         {
-          "label": "不是，配置和共享内核仍有风险",
+          "label": "容器通常共享宿主机内核，虚拟机运行自己的完整内核",
           "correct": true
         },
         {
-          "label": "是，容器内永远无法越界",
+          "label": "容器和虚拟机都有自己的完整内核",
           "correct": false
         },
         {
-          "label": "镜像小就绝对安全",
+          "label": "容器自动提供更强的安全边界",
           "correct": false
         }
       ],
-      "success": "隔离能力需要具体配置与加固。",
-      "retry": "容器不等于万能沙箱。"
+      "success": "容器通常共享宿主机内核；虚拟机运行自己的完整内核，隔离边界不同。",
+      "retry": "先看它有没有自己的完整操作系统和内核。"
     },
     "prompt": {
       "title": "检查容器隔离",
-      "text": "列出共享内核、用户身份、挂载、网络、能力集和CPU/内存限制，逐项说明越界时谁负责阻断。"
+      "text": "请检查镜像里的文件、进程的文件和网络视图、宿主机内核、用户权限、挂载和 CPU/内存限制，并说明数据如何持久化。"
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
-        "label": "NIST 出版物 · nist.sp.800 190",
-        "note": "术语、风险与评估框架"
+        "url": "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
+        "label": "Docker Docs · What is a container?",
+        "note": "说明容器是隔离进程，以及容器与虚拟机、宿主机内核的关系。"
       },
       {
-        "url": "https://opencontainers.org/",
-        "label": "OCI · overview",
-        "note": "原始规范与实现说明"
+        "url": "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/",
+        "label": "Docker Docs · What is an image?",
+        "note": "说明镜像是包含运行文件和配置的不可变分层模板。"
+      },
+      {
+        "url": "https://docs.docker.com/engine/containers/run/",
+        "label": "Docker Docs · Running containers",
+        "note": "说明容器进程拥有独立文件系统、网络和进程树。"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/virtualization/windowscontainers/about/containers-vs-vm",
+        "label": "Microsoft Learn · Containers vs. virtual machines",
+        "note": "对比容器使用宿主操作系统内核与虚拟机运行完整操作系统的差异。"
+      },
+      {
+        "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
+        "label": "NIST SP 800-190 · Application Container Security Guide",
+        "note": "说明容器的操作系统级隔离、权限配置和安全风险。"
       }
     ]
   },

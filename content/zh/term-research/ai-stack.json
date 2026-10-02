@@ -1193,12 +1193,15 @@
   },
   {
     "slug": "container",
-    "mechanism": "容器用操作系统级隔离把进程及其文件、网络和资源视图限制在指定边界内，并共享宿主机内核。",
-    "misconception": "容器不是虚拟机，也不是默认安全沙箱；共享内核和配置权限会影响隔离强度。",
-    "demoSignature": "输入：两个进程各需CPU和文件；中间：命名空间分出2套文件视图，CPU配额70%/30%，越界读取被拒；输出：两进程独立运行。可视化：建议5帧的共享内核上两只隔离盒；交互：调CPU配额看用量条。",
+    "mechanism": "容器是带有应用文件和所需其他程序的隔离进程；它有自己的文件、网络和资源视图，通常共享宿主机内核。",
+    "misconception": "容器不是完整虚拟机，也不是默认安全沙箱；共享宿主机内核、权限、挂载和资源配置共同决定隔离效果。",
+    "demoSignature": "输入：两个容器共享宿主机内核；中间：A、B看到不同文件视图，CPU配额示例为70%/30%，A读取未挂载文件被拒；输出：视图和资源被隔离，但不是两套完整内核。可视化：建议4帧的共享内核、文件视图、资源配额、越界读取；交互：推进帧观察隔离边界。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
-      "https://opencontainers.org/"
+      "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
+      "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/",
+      "https://docs.docker.com/engine/containers/run/",
+      "https://learn.microsoft.com/en-us/virtualization/windowscontainers/about/containers-vs-vm",
+      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf"
     ],
     "rewriteRisk": "要把共享内核画出来，避免继续用“轻量虚拟机”造成错误理解。",
     "nearDuplicates": [
