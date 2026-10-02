@@ -209,6 +209,153 @@
     "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5"
   },
   {
+    "slug": "facebook-ai-fairness-production-20210311-355f7472",
+    "title": "Facebook AI 的“公平落地”框架：先分清产品目标、政策选择和模型误差",
+    "summary": "2021-03-11，Facebook AI 在官方博客介绍一套把公平性放进真实生产系统的初步方法：先分别看产品要为谁创造什么价值、政策如何定义伤害与规则，再检查模型和人工标注在不同群体上的错误分布。文章还提到标签公平和信号检测方法，但这些内容是公司的方法分享，不是独立机构对 Facebook 产品的公平审计，也不能由一组指标自动决定什么才是公平。",
+    "body": "2021-03-11，Facebook AI 发布《What AI fairness in practice looks like at Facebook》，博客把一个常被压缩成“模型公平不公平”的问题拆成产品、政策和实现三个层面。博客链接了一篇同日的研究论文，主题是怎样把公平性方法放进大型、复杂的生产系统；新闻事件的重点是这套实践框架被公开讨论，而不是宣布某个模型已经通过公平认证。\n\n博客先承认一个现实：公平没有适用于所有场景的单一答案。不同群体之间的错误、资源分配和风险可能互相牵制，数学上也可能存在彼此不兼容的公平定义。因此，团队把公平看成持续的工作过程：系统要实现什么、规则是否合理、模型和数据在实际运行中造成了什么结果，需要分别检查。\n\n第一层是产品。一个产品的目标是否给不同人群带来公平的价值，谁会得到便利，谁可能承担新的风险？例如一个排序或推荐系统，即使每个预测都很准确，也可能因为目标只服务一部分人的需求而产生不公平。这个问题不是调一个模型参数就能解决的，产品团队需要在同一次讨论里同时考虑使用者、受影响者和产品承诺。\n\n第二层是政策。产品规则怎样定义什么行为应被限制，怎样处理不同群体遭遇的伤害，哪些例外需要人工判断？博客把“政策公平”与“实现公平”分开：政策层关心规则本身是否正当，不能只看规则在模型里执行得是否一致。一个标签规则如果把复杂的社会情境压成单一类别，模型即使严格执行，也可能把不合理的政策放大。\n\n第三层是实现。这里讨论模型、特征和人工标签留下的可测量结果。Facebook AI 讨论了二元分类器，也就是在两个结果之间作判断的模型：例如内容审核中，合规内容被判为违规是误报，本应拦截的内容被放过是漏报；哪个错误更严重，取决于任务的政策和后果。团队可以按群体比较这些错误的分布，查看一个群体是否更常被误报或漏报。博客还提到标签公平，也就是检查人工标注是否对不同群体保持一致，并用信号检测理论观察标注者是否把自己的偏差带进训练标签：可以把需要识别的内容当作信号、其余当作噪声，再把差异拆成内容本身的标注难度和标注者使用的判定阈值。这个分析能帮助定位差异，不会自动证明某位标注者有偏见，也不能替产品团队回答“这个目标是否值得追求”。\n\n把错误分布画出来只是诊断入口。博客列出的可能原因包括训练数据不足、特征缺失、预测目标写错和输入测量误差；修复其中一个原因，也可能改变另一个群体的结果。要决定怎么取舍，还需要领域专家、政策团队和有亲身经历的人一起判断。公平指标可以帮助发现差异，不能替代对目标、规则和后果的讨论。\n\n公开材料能支持的结论到这里为止。Facebook AI 说这些方法已经用于一组内部 AI 系统，但公开页面没有给出一个可由外部复算的产品清单、群体基线、错误率表或独立审计报告；公司也明确说复杂系统的最佳实践仍在发展。它更像生产团队公开的工作方法和问题清单，据此不能断言产品已经公平。同日 Pew 对疫情 AI 的分析是另一篇独立政策文章，既不是 Facebook AI 博客的审计方，也没有评价 Facebook；它提供了医疗 AI 的另一个语境，提醒读者模型要在不同人群和真实临床环境中评估，监管和安全证据仍是部署的一部分。\n\n时间线要分开记录：03-11 是 Facebook AI 博客的报道日期，链接的研究论文在 03-10 已提交到 arXiv；团队在 2021-03-31 又公开介绍 Fairness Flow，说明工具如何按群体测量模型和标签的误差；等对应文章完成后，再把两条记录连成事件时间线。\n\n读这类新闻时，先看它讨论的是产品目标、规则还是模型错误，再核对群体、标签、指标和部署环境，并确认是否有受影响者反馈或独立评估。",
+    "publishedAt": "2021-03-11",
+    "eventDate": "2021-03-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/facebook-ai-fairness-production-20210311-355f7472.svg",
+      "alt": "Facebook AI 将公平性拆成产品目标、政策规则和实现误差三层，再用群体比较与利益相关者反馈检查结果",
+      "sourceUrl": "/images/news/facebook-ai-fairness-production-20210311-355f7472.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "event",
+        "title": "3 月 11 日公开的是什么",
+        "body": "Facebook AI 在官方博客介绍一套把公平性放进复杂生产系统的初步方法，主线是把产品、政策和实现三个层面分开。博客链接同日研究论文，但没有宣布某个模型或产品已经通过独立公平认证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "layers",
+        "title": "同一个“公平”问题其实有三层",
+        "body": "产品层问系统要为谁创造什么价值，政策层问规则怎样定义伤害和例外，实现层才检查模型与人工标签在不同群体上的实际错误。把三层混成一个指标，容易把目标、规则和执行效果互相替代。",
+        "kind": "technical"
+      },
+      {
+        "id": "product",
+        "title": "产品层先问目标是否给人公平的价值",
+        "body": "推荐、排序或审核系统即使预测准确，也可能只服务一部分人的需求，或把风险转移给看不见的群体。产品层的公平需要把使用者、受影响者和产品承诺放在一起讨论，不能只靠调模型参数解决。",
+        "kind": "example"
+      },
+      {
+        "id": "policy",
+        "title": "政策层检查规则本身是否合理",
+        "body": "政策层关心哪些行为被限制、不同群体遭遇的伤害怎样被定义、哪些情况需要人工判断。规则如果把复杂的社会情境压成单一标签，模型严格执行它也可能放大原有问题；执行一致不代表规则正当。",
+        "kind": "comparison"
+      },
+      {
+        "id": "implementation",
+        "title": "实现层把差异变成可测量的错误",
+        "body": "Facebook AI 讨论二元分类器，也就是在两个结果之间作判断的模型。以内容审核为例，合规内容被判为违规是误报，本应拦截的内容被放过是漏报；哪个错误更严重，要回到任务政策和实际后果。团队可以按群体比较误报、漏报和其他错误的分布。标签公平则检查人工标注是否对不同群体保持一致，信号检测理论会把目标内容看成信号、其余看成噪声，再把差异拆成内容本身的标注难度和标注者使用的判定阈值。它帮助定位差异，不会自动证明某位标注者有偏见。",
+        "kind": "technical"
+      },
+      {
+        "id": "diagnosis",
+        "title": "指标能指路，不能替人做价值判断",
+        "body": "训练数据不足、特征缺失、预测目标写错或输入测量误差，都可能造成群体差异。修复其中一个原因也可能改变另一个群体的结果，指标只能帮助定位差异；产品、政策、工程和有亲身经历的人仍要共同判断取舍。",
+        "kind": "boundary"
+      },
+      {
+        "id": "evidence",
+        "title": "这份方法分享没有证明产品已经公平",
+        "body": "Facebook AI 说方法已用于一组内部 AI 系统，但公开页面没有给出可由外部复算的产品清单、群体基线、错误率表或独立审计报告。读者可以把它当作生产团队的工作方法和问题清单，不能把“我们在测量公平”读成“产品已经公平”。",
+        "kind": "boundary"
+      },
+      {
+        "id": "timeline",
+        "title": "先记下事件日，再等后续文章建立星图",
+        "body": "03-11 是 Facebook AI 博客的报道日期，链接的研究论文在 03-10 已提交到 arXiv；团队在 2021-03-31 又公开介绍 Fairness Flow，说明工具如何按群体测量模型和标签的误差。等对应文章完成后，再把两条记录连成事件时间线。",
+        "kind": "aside"
+      },
+      {
+        "id": "terms",
+        "title": "两个词条帮助读懂公平性新闻",
+        "body": "上下文词条提醒我们，群体、标签、产品目标和部署环境会改变同一个公平指标的含义；benchmark（基准测试）词条提醒我们，群体间的错误比较必须先说明任务、数据和指标，不能把单个数字当成所有场景的公平证明。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "从产品目标走到群体错误分布",
+      "question": "下面沿着 Facebook AI 公开的方法走一遍：一个“公平”问题怎样从产品目标逐层落到可测量的实现结果？",
+      "steps": [
+        {
+          "label": "写清产品目标",
+          "detail": "先说明系统要给谁提供什么价值，谁可能承担成本或风险；准确率高不能自动证明目标对所有受影响者都公平。",
+          "evidence": "https://ai.meta.com/blog/what-ai-fairness-in-practice-looks-like-at-facebook/"
+        },
+        {
+          "label": "检查政策规则",
+          "detail": "再看哪些行为被限制、哪些伤害被承认、哪些例外需要人工判断；规则本身的正当性不能由模型指标代替。",
+          "evidence": "https://ai.meta.com/research/publications/applying-algorithmic-fairness-approaches-to-production-systems/"
+        },
+        {
+          "label": "核对数据与标签",
+          "detail": "检查训练数据是否代表相关群体，人工标注者是否按同一说明执行。信号检测理论把目标内容看作信号、其余看作噪声，再区分内容本身难标和标注者判定阈值不同；这不是自动证明某人有偏见。",
+          "evidence": "https://arxiv.org/abs/2103.06172"
+        },
+        {
+          "label": "比较群体错误",
+          "detail": "在二元分类任务中，按群体比较误报、漏报和其他错误的分布；例如合规内容被判违规是误报，本应拦截内容被放过是漏报。哪种错误更严重，要结合任务政策和后果。",
+          "evidence": "https://ai.meta.com/blog/what-ai-fairness-in-practice-looks-like-at-facebook/"
+        },
+        {
+          "label": "追查差异原因",
+          "detail": "把差异回溯到数据、特征、预测目标或输入测量，确认修复一个问题是否会把风险转移给另一个群体。",
+          "evidence": "https://ai.meta.com/research/publications/applying-algorithmic-fairness-approaches-to-production-systems/"
+        },
+        {
+          "label": "加入真实反馈",
+          "detail": "让领域专家、政策团队和有亲身经历的人参与取舍，并把群体测量放进持续监控；Fairness Flow 自己也只是诊断工具，不能替代独立评估或语境判断。",
+          "evidence": "https://ai.meta.com/blog/how-were-using-fairness-flow-to-help-build-ai-that-works-better-for-everyone/"
+        }
+      ]
+    },
+    "source": {
+      "name": "Facebook AI",
+      "url": "https://ai.meta.com/blog/what-ai-fairness-in-practice-looks-like-at-facebook/"
+    },
+    "relatedSlugs": [
+      "context",
+      "benchmark"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://ai.meta.com/blog/what-ai-fairness-in-practice-looks-like-at-facebook/",
+        "claim": "Facebook AI 的 2021-03-11 官方博客是事件主来源，提出产品、政策和实现三层的公平性框架，讨论模型错误、标签公平和参与者反馈。",
+        "excerpt": "Facebook AI, March 11, 2021：公平性不是一个勾选框或单一数学目标；博客把公平实践放到产品、政策与实现三个层面，并说明方法仍在发展。"
+      },
+      {
+        "url": "https://ai.meta.com/research/publications/applying-algorithmic-fairness-approaches-to-production-systems/",
+        "claim": "Facebook AI 官方研究页给出同日论文的摘要，解释如何把规范性产品/政策问题与经验性的系统实现问题分开。",
+        "excerpt": "Meta AI, March 11, 2021：论文讨论复杂生产系统中的公平方法，区分“应该怎样取舍”与“系统实际是否实现取舍”，并测量模型和人工标注者在不同群体上的结果。"
+      },
+      {
+        "url": "https://arxiv.org/abs/2103.06172",
+        "claim": "arXiv 版本作为原始方法背景，页面显示首版提交于 2021-03-10；它补充二元分类器、标签和群体比较的研究语境，不是 03-11 新闻主来源。",
+        "excerpt": "arXiv:2103.06172：论文标题为 Fairness On The Ground，摘要把复杂生产系统中的产品/政策规范问题与实现层面的经验问题分开。"
+      },
+      {
+        "url": "https://www.pew.org/en/research-and-analysis/articles/2021/03/11/artificial-intelligence-has-helped-to-guide-pandemic-response-but-requires-adequate-regulation",
+        "claim": "Pew 同日分析提供医疗 AI 的独立政策语境，强调不同人群、临床场景、偏差和 FDA 风险监管仍需评估。",
+        "excerpt": "The Pew Charitable Trusts, March 11, 2021：文章指出临床 AI 需要在不同人群和真实场景中验证，监管要跟上 AI 产品的安全与有效性问题。"
+      },
+      {
+        "url": "https://ai.meta.com/blog/how-were-using-fairness-flow-to-help-build-ai-that-works-better-for-everyone/",
+        "claim": "Facebook AI 2021-03-31 的后续官方博客介绍 Fairness Flow，补充按群体测量模型和标签的误差、误报/漏报、标注难度与判定阈值，并明确它只是诊断工具。",
+        "excerpt": "Facebook AI, March 31, 2021：Fairness Flow 按群体计算模型和标签表现，使用信号检测理论区分标注难度与标注者阈值；页面说工具不能单独解决公平问题。"
+      }
+    ],
+    "canonicalUrl": "https://ai.meta.com/blog/what-ai-fairness-in-practice-looks-like-at-facebook/",
+    "sourceHash": "sha256:355f7472b3225e172b95b2c630b5d6dc5e1308444f93f5f2d0e83d298a174a73"
+  },
+  {
     "slug": "mit-tensor-holography-20210310-ad796087",
     "title": "MIT 报道 Tensor Holography：深度学习让 3D 全息图生成更快，手机端也能运行原型",
     "summary": "2021-03-10，MIT News 报道了 Tensor Holography：研究团队用深度学习把带颜色和逐像素深度的 RGB-D 图像转换成 3D 全息图。模型在消费级 GPU 上可达到 1920×1080、60 Hz，iPhone 11 Pro 上约 1.1 Hz、Google Edge TPU 上约 2 Hz；这些数字展示了不同硬件上的速度差异，也不等于手机已经能流畅驱动所有全息显示。报道把研究与 VR、3D 打印和医学成像等方向联系起来，真正可复现的证据仍要回到输入数据、显示硬件和测试速度。",
