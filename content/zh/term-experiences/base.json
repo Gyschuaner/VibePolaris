@@ -4879,8 +4879,8 @@
   {
     "slug": "library",
     "lead": "只需要格式化一个日期，是否值得引入一个覆盖时区、日历和国际化的大工具包？",
-    "definition": "库把一组相关能力封装为可调用接口，项目通过依赖管理安装并在需要的位置主动使用。",
-    "boundary": "引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "definition": "库是别人已经写好、按固定调用方式（即接口）来使用的一组函数或组件；项目会把用了哪些库、用什么版本记录在 package.json（项目的依赖清单）里，用到时再导入调用。",
+    "boundary": "引入库会同时带来版本、体积、许可证、安全和维护成本；先检查浏览器或 Node.js 本身是否已提供这个能力（原生能力），再看现有依赖能否覆盖。",
     "sceneKind": "assembly",
     "sceneTitle": "同一个日期需求的三种实现成本",
     "actionLabel": "比较方案",
@@ -4888,14 +4888,14 @@
       {
         "id": "need",
         "label": "实际需求",
-        "detail": "显示 2026-08-31",
+        "detail": "显示 2026年8月31日",
         "icon": "clock",
         "group": "需求"
       },
       {
         "id": "native",
         "label": "Intl.DateTimeFormat",
-        "detail": "运行时原生能力",
+        "detail": "浏览器 / Node.js 自带能力",
         "icon": "gear",
         "group": "原生方案"
       },
@@ -4915,7 +4915,7 @@
       },
       {
         "id": "maintenance",
-        "label": "维护面",
+        "label": "维护成本",
         "detail": "升级与漏洞检查",
         "icon": "shield",
         "group": "长期成本"
@@ -4938,7 +4938,7 @@
         "id": "need-large",
         "from": "need",
         "to": "large-lib",
-        "label": "通用实现"
+        "label": "同样满足 · 但附带多余"
       },
       {
         "id": "libs-maintenance",
@@ -4966,7 +4966,7 @@
       },
       {
         "label": "检查原生能力",
-        "note": "目标运行时已经提供 Intl.DateTimeFormat，可以满足当前格式化。",
+        "note": "浏览器或 Node.js 本身就提供 Intl.DateTimeFormat，可以满足当前格式化。",
         "activeIds": [
           "need",
           "native"
@@ -4986,7 +4986,7 @@
       },
       {
         "label": "评估小库",
-        "note": "若随后需要日期计算，小库可能提供更清楚的 API，但仍要评估更新状态。",
+        "note": "若随后需要日期计算，小库可能把调用方式提供得更清楚，但仍要评估更新状态。",
         "activeIds": [
           "need",
           "small-lib"
@@ -5006,7 +5006,7 @@
       },
       {
         "label": "发现过量能力",
-        "note": "通用包的大部分能力不会使用，却进入下载和升级范围。",
+        "note": "若改用通用工具包，会发现大部分能力用不上，却全都进入下载和升级范围。",
         "activeIds": [
           "large-lib",
           "maintenance"
@@ -5020,7 +5020,7 @@
         ],
         "values": {
           "large-lib": "仅用 1 个函数",
-          "maintenance": "新增供应链检查"
+          "maintenance": "从此要持续关注升级和漏洞"
         },
         "activeEdgeIds": [
           "need-large",
@@ -5029,7 +5029,7 @@
       },
       {
         "label": "形成选择",
-        "note": "当前采用原生 API，并把未来需要时区计算列为重新评估条件。",
+        "note": "当前采用浏览器或 Node.js 自带的原生能力，若将来出现时区计算需求再重新评估。",
         "activeIds": [
           "native",
           "maintenance"
@@ -5057,20 +5057,20 @@
           "correct": true
         },
         {
-          "label": "只要安装成功就继续使用",
+          "label": "先锁定版本，暂时忽略漏洞，因为功能已经能用",
           "correct": false
         },
         {
-          "label": "把版本号隐藏起来",
+          "label": "只看下载量，维护和漏洞不影响选择",
           "correct": false
         }
       ],
-      "success": "维护状态与供应链风险属于依赖选择的一部分。",
+      "success": "依赖可用只是起点，维护状态、漏洞和替换成本也属于选择依据。",
       "retry": "功能可用不能覆盖已知安全和维护问题。"
     },
     "prompt": {
       "title": "判断是否需要新增依赖库",
-      "text": "请说明当前能力缺口，比较运行时原生 API、少量自有实现和候选库。对候选库检查实际使用范围、包体积、维护频率、许可证、漏洞、间接依赖和替换成本，并写明何种需求变化会触发重新选择。"
+      "text": "请说明当前能力缺口，比较浏览器或 Node.js 自带能力、少量自有实现和候选库。对候选库检查实际使用范围、包体积、维护频率、许可证、漏洞、间接依赖和替换成本，并写明何种需求变化会触发重新选择。"
     },
     "sources": [
       {
@@ -5079,9 +5079,19 @@
         "note": "浏览器行为与常见用法"
       },
       {
+        "url": "https://react.dev/learn/describing-the-ui",
+        "label": "React · Describing the UI",
+        "note": "库提供可复用的组件能力"
+      },
+      {
+        "url": "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
+        "label": "npm Docs · dependencies",
+        "note": "依赖如何记录并参与安装"
+      },
+      {
         "url": "https://docs.npmjs.com/about-audit-reports",
         "label": "npm Docs · Audit reports",
-        "note": "包管理命令与文件语义"
+        "note": "依赖漏洞与维护检查"
       }
     ]
   },

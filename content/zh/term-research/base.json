@@ -443,14 +443,16 @@
   },
   {
     "slug": "library",
-    "mechanism": "库把一组相关能力封装为可调用接口，项目通过依赖管理安装并在需要的位置主动使用。",
-    "misconception": "引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
-    "demoSignature": "compare: 5 frames; actors=实际需求/Intl.DateTimeFormat/轻量日期库/通用工具包/维护面; phases=限定需求→检查原生能力→评估小库→发现过量能力→形成选择; action=比较方案",
+    "mechanism": "库把一组相关能力封装为可调用接口，项目通常把它记录在 package.json 中，按需导入并调用。",
+    "misconception": "库会进入安装、构建、运行和升级流程；先检查平台原生能力、实际缺口、维护状态和安全，再决定是否引入。",
+    "demoSignature": "assembly: 5 frames; actors=实际需求/Intl.DateTimeFormat/轻量日期库/通用工具包/维护成本; phases=限定需求→检查原生能力→评估小库→发现过量能力→形成选择; action=比较方案",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat",
+      "https://react.dev/learn/describing-the-ui",
+      "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
       "https://docs.npmjs.com/about-audit-reports"
     ],
-    "rewriteRisk": "正式页面需守住边界：引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "rewriteRisk": "正式页面需守住边界：先检查平台原生能力和实际缺口，再评估依赖的体积、版本、维护和安全成本。",
     "nearDuplicates": [
       "framework",
       "dependency",
