@@ -1,3 +1,4 @@
+export { SubagentLesson } from "./subagent";
 export { HandoffLesson } from "./handoff";
 export { AgentOrchestrationLesson } from "./agent-orchestration";
 export { PlanAndExecuteLesson } from "./plan-and-execute";
