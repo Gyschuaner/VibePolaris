@@ -63,10 +63,10 @@ export const webviewSources = [
 ];
 
 export const cssSelectorSources = [
-  { publisher: "W3C", title: "Selectors Level 4", date: "", url: "https://www.w3.org/TR/selectors-4/", citations: ["selector-match"] },
+  { publisher: "W3C", title: "Selectors Level 4", date: "", url: "https://www.w3.org/TR/selectors-4/", citations: ["selector-match-source"] },
   { publisher: "MDN Web Docs", title: "CSS selectors", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors", citations: ["selector-kinds"] },
   { publisher: "MDN Web Docs", title: "Specificity", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity", citations: ["selector-specificity"] },
-  { publisher: "W3C", title: "CSS Cascading and Inheritance Level 6", date: "", url: "https://www.w3.org/TR/css-cascade-6/", citations: ["selector-cascade"] },
+  { publisher: "W3C", title: "CSS Cascading and Inheritance Level 6", date: "", url: "https://www.w3.org/TR/css-cascade-6/", citations: ["selector-cascade-source"] },
   { publisher: "MDN Web Docs", title: "Child combinator", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator", citations: ["selector-child"] },
 ];
 
