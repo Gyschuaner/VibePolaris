@@ -308,20 +308,20 @@
 | structured-output | 结构化输出 | AI·Agent | 026 · 本地验收及 review 通过 |
 | json-schema | JSON Schema | AI·Agent | 004 · 本地验收及 review 通过 |
 | function-calling | 函数调用 | AI·Agent | 026 · 本地验收及 review 通过 |
-| tool-choice | 工具选择 | AI·Agent | 待处理 |
-| tool-result | 工具结果 | AI·Agent | 待处理 |
+| tool-choice | 工具选择 | AI·Agent | 041 · 生产已发布 |
+| tool-result | 工具结果 | AI·Agent | 041 · 生产已发布 |
 | agent-loop | 智能体循环 | AI·Agent | 基准 · 待最终复核 |
-| plan-and-execute | 规划与执行 | AI·Agent | 待处理 |
-| agent-orchestration | 智能体编排 | AI·Agent | 待处理 |
-| handoff | 交接 | AI·Agent | 待处理 |
-| subagent | 子智能体 | AI·Agent | 待处理 |
-| human-in-the-loop | 人在回路 | AI·Agent | 待处理 |
-| guardrail | 护栏 | AI·Agent | 待处理 |
-| moderation | 内容审核 | AI·Agent | 待处理 |
+| plan-and-execute | 规划与执行 | AI·Agent | 041 · 生产已发布 |
+| agent-orchestration | 智能体编排 | AI·Agent | 041 · 生产已发布 |
+| handoff | 交接 | AI·Agent | 041 · 生产已发布 |
+| subagent | 子智能体 | AI·Agent | 041 · 生产已发布 |
+| human-in-the-loop | 人在回路 | AI·Agent | 041 · 生产已发布 |
+| guardrail | 护栏 | AI·Agent | 041 · 生产已发布 |
+| moderation | 内容审核 | AI·Agent | 041 · 生产已发布 |
 | eval | 评测 | AI·Agent | 023 · 本地验收及 review 通过 |
 | benchmark | 基准测试 | AI·Agent | 024 · 本地验收及 review 通过 |
 | grader | 评分器 | AI·Agent | 024 · 本地验收及 review 通过 |
-| fine-tuning | 微调 | AI·Agent | 待处理 |
+| fine-tuning | 微调 | AI·Agent | 041 · 生产已发布 |
 | embedding | 嵌入 | AI·Agent | 020 · 本地验收及 review 通过 |
 | vector-store | 向量存储 | AI·Agent | 022 · 本地验收及 review 通过 |
 | retrieval | 检索 | AI·Agent | 021 · 本地验收及 review 通过 |
