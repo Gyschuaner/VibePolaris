@@ -1007,11 +1007,14 @@
   },
   {
     "slug": "return-value",
-    "mechanism": "返回值是函数完成时交回调用位置的结果；调用方可以保存、继续运算或忽略它。",
-    "misconception": "打印到控制台不是返回值；函数没有显式返回时也可能按语言规则得到默认值。",
-    "demoSignature": "输入：double(4)内部先计算8并console.log；中间：日志出现8但调用结果仍待定，执行return 8；输出：变量result接到8。可视化：建议4帧的日志支路与返回箭头分离；交互：删除return观察result变为undefined。",
+    "mechanism": "执行 return 后，当前这次函数调用会结束，并把一个值交回调用方；调用方可以保存、继续运算或忽略它。",
+    "misconception": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
+    "demoSignature": "输入：调用方执行 result = double(4)，函数内部先把 4×2 算成 8；中间：console.log 显示 8 但 result 仍未收到返回值，执行 return 8；输出：8 沿返回通道交给调用方。可视化：4 帧分别表现函数求值、日志支路、返回通道和调用方接收；交互：删除 return 观察 JavaScript 调用结果变为 undefined。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
+      "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
     "rewriteRisk": "一定把输出日志和返回通道分开，否则新手最容易混淆。",
     "nearDuplicates": [
@@ -1021,11 +1024,15 @@
   },
   {
     "slug": "conditional-branch",
-    "mechanism": "条件分支先求一个条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
-    "misconception": "分支不是把两段代码都执行后再选结果；条件转换规则也可能让空值、零等产生意外路径。",
-    "demoSignature": "输入：score=72，条件score>=60；中间：比较得true，pass路径计数0→1，fail保持0；输出：“通过”。可视化：建议4帧的岔路口令牌只走一边；交互：拖score越过60观察路径切换。",
+    "mechanism": "条件分支先计算条件得到真或假，再只执行匹配的路径，并跳过其他路径；没有 else 且条件为假时，直接继续后面的代码。",
+    "misconception": "分支不是把两段代码都执行后再选结果；以 JavaScript 为例，0 和空文字会按规则算假，多数其他值算真。页面 if 运行在用户自己的浏览器里，登录权限仍需服务器重新校验。",
+    "demoSignature": "输入：score=59，条件score>=60；中间：比较得false，令牌只走未通过路径；输出：把score拖到60后条件变true，令牌改走通过路径。可视化：4帧表现准备条件、求值、输出和跨过阈值后的路径切换；交互：拖score越过60观察另一条路径被选中。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
+      "https://docs.python.org/3/reference/compound_stmts.html#if",
+      "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html"
     ],
     "rewriteRisk": "别把流程图当解释终点；要显示条件的实际值和未执行路径。",
     "nearDuplicates": [
@@ -1035,11 +1042,14 @@
   },
   {
     "slug": "loop",
-    "mechanism": "循环在条件允许时反复执行同一段逻辑，并在每轮更新索引或状态，直到达到停止条件。",
-    "misconception": "循环不是自动并行；如果状态不朝停止条件推进，可能一直运行。",
-    "demoSignature": "输入：数组[2,4,6]；中间：索引0→1→2→3，累计和0→2→6→12；输出：索引3触发停止，结果12。可视化：建议5帧的环形轨道和变量表；交互：单步执行并可制造不更新索引的死循环警示。",
+    "mechanism": "循环先设置初始状态，再反复处理当前项并更新状态，直到停止条件成立。",
+    "misconception": "如果状态不朝停止条件推进，循环可能一直运行；数组索引到达元素数量时，才表示没有下一项可读。每轮错误还需要明确停止、跳过或重试。",
+    "demoSignature": "输入：数组 [2,4,6]，索引从0开始且累计和为0；中间：每轮读取当前项、累加并让索引0→1→2→3；输出：索引3等于数组长度3，循环停止，结果12。可视化：4帧表现初始化、第一轮、后两轮和停止；交互：单步执行并可制造不更新索引的死循环警示。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
+      "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
+      "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement"
     ],
     "rewriteRisk": "演示必须出现停止条件和状态推进，不能只让箭头绕圈。",
     "nearDuplicates": [
@@ -1049,12 +1059,14 @@
   },
   {
     "slug": "object",
-    "mechanism": "对象把一组具名属性关联到同一个值上，读取属性时通过键找到对应值或行为。",
-    "misconception": "对象不是JSON：对象可含方法、原型和非字符串值，JSON只是数据交换文本格式。",
-    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：建议4帧的键值抽屉打开与替换；交互：新增、修改、删除一个属性。",
+    "mechanism": "对象把一组具名属性放在同一个结构里，读取属性时通过键找到对应值；函数值也可以成为对象的方法。",
+    "misconception": "对象不是 JSON：JavaScript 对象可以包含方法和运行时状态；JSON 文本只能表示有限的数据类型，删除属性后读取不存在的键在 JavaScript 中会得到 undefined。",
+    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：4帧表现键值集合、修改、增加和删除属性；交互：新增、修改、删除一个属性。",
     "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
       "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
-      "https://www.rfc-editor.org/rfc/rfc8259"
+      "https://www.rfc-editor.org/rfc/rfc8259",
+      "https://docs.python.org/3/tutorial/datastructures.html#dictionaries"
     ],
     "rewriteRisk": "不要用JSON文本完全代替语言对象；需提醒两者可表示内容和行为的差异。",
     "nearDuplicates": [
@@ -1064,11 +1076,14 @@
   },
   {
     "slug": "array",
-    "mechanism": "数组按顺序保存一组元素，通常用从零开始的索引访问；插入和删除会影响长度及后续位置。",
-    "misconception": "数组不要求所有语言里都只能装同类型数据，也不能把索引当稳定业务ID。",
-    "demoSignature": "输入：['A','B','C']；中间：在索引1插入'X'，长度3→4，B位置1→2；输出：['A','X','B','C']。可视化：建议4帧的编号格子右移；交互：拖一项插入不同位置观察索引重排。",
+    "mechanism": "数组按顺序保存一组元素，通常用从零开始的索引访问，也可以逐项处理；插入和删除会影响长度及后续位置。",
+    "misconception": "索引表示当前位置，不是稳定的业务 ID；商品编号应跟着商品保存。不同语言对数组元素类型的限制也可能不同。",
+    "demoSignature": "输入：['A','B','C']；中间：在索引1插入'X'，长度3→4，B位置1→2、C位置2→3；输出：['A','X','B','C']。可视化：4帧表现原顺序、选择插入点、后续格子右移和插入完成；交互：拖一项插入不同位置观察索引重排。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
+      "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
+      "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range",
+      "https://www.rfc-editor.org/rfc/rfc8259#section-5"
     ],
     "rewriteRisk": "示例要表现顺序和索引变化，避免只把数组画成无序列表。",
     "nearDuplicates": [
@@ -1078,11 +1093,14 @@
   },
   {
     "slug": "client-server",
-    "mechanism": "客户端发出请求，服务器根据自身资源和规则处理后返回响应；双方通过约定的协议交换消息。",
-    "misconception": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。",
-    "demoSignature": "输入：客户端GET /products/7；中间：DNS后建立连接，请求状态sent→processing，服务器查到1条记录；输出：HTTP 200与JSON响应。可视化：建议5帧的双泳道请求往返；交互：模拟404和500查看不同响应路径。",
+    "mechanism": "客户端发出请求，服务器根据资源和规则处理后返回响应；双方通过约定的协议交换消息，响应可能成功也可能带错误状态。",
+    "misconception": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器；404 和 500 等状态也会沿响应通道回到客户端。",
+    "demoSignature": "输入：客户端 GET /products/7；中间：请求送达服务器，服务查询数据并生成响应；输出：HTTP 200 与 JSON，模拟 404/500 时客户端改显示错误提示。可视化：4帧表现发出、处理、返回和呈现；交互：切换状态码查看不同响应路径。",
     "sourceUrls": [
-      "https://www.rfc-editor.org/rfc/rfc9110"
+      "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages",
+      "https://fetch.spec.whatwg.org/"
     ],
     "rewriteRisk": "不要只画一根双向箭头；必须显示请求、处理、状态码和响应的顺序。",
     "nearDuplicates": [
@@ -1092,11 +1110,14 @@
   },
   {
     "slug": "monolith",
-    "mechanism": "单体架构把主要业务模块作为一个部署单元构建和发布，模块可在进程内直接调用并共享资源。",
-    "misconception": "单体不等于没有模块，也不等于代码都在一个仓库；它描述部署边界。",
-    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍生成1个整体制品，部署单元数保持1；输出：整套应用版本1.8上线。可视化：建议4帧的三个模块装入同一边框；交互：点击任一模块看部署边界整体高亮。",
+    "mechanism": "单体把多个业务模块一起构建、测试和发布成一份应用；模块可以分开组织，但部署时一起换上。",
+    "misconception": "单体可以有清晰的内部模块，也可以把代码放在一个或多个仓库；判断它要看部署边界。",
+    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍要重新生成并测试整份应用；输出：一次发布换上包含全部模块的应用。可视化：建议4帧的三个模块组成一份应用、支付变更、整体重建测试、整体发布；交互：点击模块查看改动如何牵动整份应用。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures",
+      "https://docs.aws.amazon.com/whitepapers/latest/develop-deploy-dotnet-apps-on-aws/building-monoliths-or-microservices.html",
+      "https://cloud.google.com/learn/what-is-microservices-architecture",
+      "https://martinfowler.com/bliki/MonolithFirst.html"
     ],
     "rewriteRisk": "核心是部署单元，不能用代码量或团队规模判断是否单体。",
     "nearDuplicates": [
@@ -1106,11 +1127,15 @@
   },
   {
     "slug": "microservices",
-    "mechanism": "微服务把业务能力拆成可独立部署的服务，通过网络接口协作，每个服务拥有明确边界和运行责任。",
-    "misconception": "拆成多个进程不自动带来微服务收益；网络失败、数据一致性和运维成本会随之增加。",
-    "demoSignature": "输入：订单服务调用库存和支付；中间：3个部署单元各自版本2.1/1.4/3.0，库存调用超时使订单进入pending；输出：重试后订单完成。可视化：建议6帧的服务节点与超时支路；交互：断开一条网络边观察故障传播。",
+    "mechanism": "微服务把业务能力拆成多个可分别构建、测试和发布的服务；服务通过网络接口协作，各自负责一块业务。",
+    "misconception": "服务越多，网络调用、数据一致性、监控和运维工作越多；拆成多个服务不自动带来收益。",
+    "demoSignature": "输入：订单服务调用库存和支付；中间：3个服务各自版本，库存请求等待2秒仍无回应，订单把状态保存为处理中；输出：独立发布的收益与跨服务协调成本同时出现。可视化：建议4帧的各自发布、两次请求、等待超时、保存处理中；交互：推进帧观察一次调用如何留下中间状态。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
+      "https://csrc.nist.gov/pubs/sp/800/204/final",
+      "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_service_architecture_monolith_soa_microservice.html",
+      "https://cloud.google.com/learn/what-is-microservices-architecture",
+      "https://www.martinfowler.com/microservices/"
     ],
     "rewriteRisk": "不要把微服务写成天然更先进；演示必须把网络和独立部署的代价一起画出。",
     "nearDuplicates": [
@@ -1150,11 +1175,15 @@
   },
   {
     "slug": "serverless",
-    "mechanism": "无服务器架构把代码或服务交给平台按请求或事件运行，平台负责资源调度和扩缩容，使用者仍需管理代码、配置和数据。",
-    "misconception": "它并非没有服务器，也不保证更便宜；冷启动、执行时限和持续高负载会改变取舍。",
-    "demoSignature": "输入：一分钟请求从0升到120；中间：实例数0→6，每实例处理20次，首批冷启动耗时80→420ms；输出：流量回落后实例6→0。可视化：建议5帧的实例气泡随流量伸缩；交互：拖请求速率查看实例与延迟。",
+    "mechanism": "无服务器把函数交给云平台，在请求或事件到来时准备运行环境；平台管理底层服务器和自动扩缩，开发者仍负责代码、配置和数据。",
+    "misconception": "服务器仍然存在；冷启动、执行时限、临时状态、供应商接口和计费规则仍需考虑。",
+    "demoSignature": "输入：每分钟请求量从0升到120；中间：函数运行份数0→6，第一次准备运行环境产生420ms示例延迟；输出：流量回落后运行份数6→0，空闲时示例计量不再增长。可视化：建议4帧的无请求、流量突增、第一次启动、流量归零；交互：拖请求速率查看运行份数与延迟。",
     "sourceUrls": [
-      "https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf"
+      "https://cloud.google.com/discover/what-is-serverless-computing",
+      "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+      "https://docs.aws.amazon.com/lambda/latest/dg/concepts-event-driven-architectures.html",
+      "https://docs.aws.amazon.com/lambda/latest/dg/lambda-functions-chapter.html",
+      "https://www.cncf.io/blog/2018/02/14/cncf-takes-first-step-towards-serverless-computing/"
     ],
     "rewriteRisk": "不能用“免运维”作卖点；要显示平台接管和团队仍负责的边界。",
     "nearDuplicates": [
@@ -1164,12 +1193,15 @@
   },
   {
     "slug": "container",
-    "mechanism": "容器用操作系统级隔离把进程及其文件、网络和资源视图限制在指定边界内，并共享宿主机内核。",
-    "misconception": "容器不是虚拟机，也不是默认安全沙箱；共享内核和配置权限会影响隔离强度。",
-    "demoSignature": "输入：两个进程各需CPU和文件；中间：命名空间分出2套文件视图，CPU配额70%/30%，越界读取被拒；输出：两进程独立运行。可视化：建议5帧的共享内核上两只隔离盒；交互：调CPU配额看用量条。",
+    "mechanism": "容器是带有应用文件和所需其他程序的隔离进程；它有自己的文件、网络和资源视图，通常共享宿主机内核。",
+    "misconception": "容器不是完整虚拟机，也不是默认安全沙箱；共享宿主机内核、权限、挂载和资源配置共同决定隔离效果。",
+    "demoSignature": "输入：两个容器共享宿主机内核；中间：A、B看到不同文件视图，CPU配额示例为70%/30%，A读取未挂载文件被拒；输出：视图和资源被隔离，但不是两套完整内核。可视化：建议4帧的共享内核、文件视图、资源配额、越界读取；交互：推进帧观察隔离边界。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
-      "https://opencontainers.org/"
+      "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
+      "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/",
+      "https://docs.docker.com/engine/containers/run/",
+      "https://learn.microsoft.com/en-us/virtualization/windowscontainers/about/containers-vs-vm",
+      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf"
     ],
     "rewriteRisk": "要把共享内核画出来，避免继续用“轻量虚拟机”造成错误理解。",
     "nearDuplicates": [

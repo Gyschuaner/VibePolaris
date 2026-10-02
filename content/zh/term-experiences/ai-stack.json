@@ -12424,9 +12424,9 @@
   },
   {
     "slug": "return-value",
-    "lead": "函数里console.log(8)后没有return，调用方为何拿不到8？",
-    "definition": "返回值是函数完成时交回调用位置的结果；调用方可以保存、继续运算或忽略它。",
-    "boundary": "打印到控制台不是返回值；函数没有显式返回时也可能按语言规则得到默认值。",
+    "lead": "函数里 console.log(8) 之后没有 return，调用方为何拿不到 8？",
+    "definition": "return 把值交给调用方；调用方可以保存、继续运算或忽略它。",
+    "boundary": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
     "sceneKind": "route",
     "sceneTitle": "日志输出与返回通道分叉",
     "actionLabel": "删除 return",
@@ -12450,7 +12450,7 @@
         "label": "控制台",
         "detail": "打印8",
         "icon": "code",
-        "group": "副作用"
+        "group": "显示"
       },
       {
         "id": "return",
@@ -12496,7 +12496,7 @@
     "frames": [
       {
         "label": "函数求值",
-        "note": "double先把4乘2得到8。",
+        "note": "double 先在本次调用里把 4×2 算成 8；这个 8 还留在函数内部，没有交出去。",
         "activeIds": [
           "call",
           "body"
@@ -12516,7 +12516,7 @@
       },
       {
         "label": "日志支路输出",
-        "note": "console显示8，但调用方变量仍没有值。",
+        "note": "console.log 显示 8，但 result 还没收到返回值；打印不会替调用方赋值。",
         "activeIds": [
           "log"
         ],
@@ -12538,7 +12538,7 @@
       },
       {
         "label": "返回通道生效",
-        "note": "执行return 8后，值沿返回通道离开函数。",
+        "note": "执行 return 8 后，这次调用结束，8 沿返回通道交给调用方。",
         "activeIds": [
           "return"
         ],
@@ -12559,7 +12559,7 @@
       },
       {
         "label": "调用方接收",
-        "note": "result得到8；删除return时则变为undefined。",
+        "note": "保留 return 时 result 得到 8；删除 return 的版本中，JavaScript 调用结果是 undefined。",
         "activeIds": [
           "result"
         ],
@@ -12578,12 +12578,12 @@
         ]
       }
     ],
-    "insight": "打印是副作用，返回值是交给调用方继续使用的数据，两条通道不能混为一谈。",
+    "insight": "打印只改变控制台显示，返回值才会被调用方拿到；函数直接改外部状态又是另一条路径。",
     "quiz": {
-      "question": "函数打印“成功”但没有return，调用结果通常是什么？",
+      "question": "在 JavaScript 中，函数打印“成功”但没有 return，调用结果是什么？",
       "options": [
         {
-          "label": "按语言规则得到默认返回值",
+          "label": "undefined",
           "correct": true
         },
         {
@@ -12595,26 +12595,41 @@
           "correct": false
         }
       ],
-      "success": "控制台内容不会自动进入调用表达式。",
-      "retry": "要看是否执行return。"
+      "success": "控制台内容不会自动进入调用代码；JavaScript 没有显式 return 时结果是 undefined。",
+      "retry": "先看函数是否执行 return，再判断调用方收到的值。"
     },
     "prompt": {
       "title": "检查函数输出",
-      "text": "把日志、文件写入、网络请求和return分成不同通道，标出调用方真正接收的值。"
+      "text": "把日志输出、函数直接改外部状态和 return 分成不同通道，标出调用方真正接收的值；注明 JavaScript 没有显式 return 时的结果。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return",
+        "label": "MDN · return",
+        "note": "说明 return 结束函数执行、将值交给调用者；省略表达式时返回 undefined。"
+      },
+      {
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
-        "label": "ECMAScript 规范 · ecmascript language statements and declarations",
-        "note": "JavaScript 语言规范"
+        "label": "ECMAScript 规范 · Return Statement",
+        "note": "规定 JavaScript return 语句的执行语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
+        "label": "Python 文档 · The return statement",
+        "note": "说明 Python return 结束函数并将表达式结果作为调用结果；省略表达式时返回 None。"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html",
+        "label": "TypeScript Handbook · More on Functions",
+        "note": "说明函数返回值类型与调用方使用返回结果的关系。"
       }
     ]
   },
   {
     "slug": "conditional-branch",
-    "lead": "score从59拖到60时，为什么只有一条路径由暗变亮？",
-    "definition": "条件分支先求一个条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
-    "boundary": "分支不是把两段代码都执行后再选结果；条件转换规则也可能让空值、零等产生意外路径。",
+    "lead": "score 从 59 拖到 60 时，为什么只有一条路径由暗变亮？",
+    "definition": "条件分支先计算条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
+    "boundary": "分支不是把两段代码都执行后再选结果；以 JavaScript 为例，条件不写成 true/false 时，if 也会折算：0、空文字这类值算假，多数其他值算真。页面上的 if 运行在用户自己的浏览器里，用户可以不经过页面直接发请求，所以登录权限必须由服务器重新校验。if 后面没有 else 时，条件为假就什么都不做，直接继续后面的代码。",
     "sceneKind": "branch",
     "sceneTitle": "条件值决定唯一执行路径",
     "actionLabel": "拖动 score",
@@ -12690,7 +12705,7 @@
     "frames": [
       {
         "label": "条件前",
-        "note": "score为59，两条路径都还未选择。",
+      "note": "score 为 59，程序接下来要算 score >= 60，看它是真还是假。",
         "activeIds": [
           "score",
           "condition"
@@ -12709,8 +12724,8 @@
         ]
       },
       {
-        "label": "结果为false",
-        "note": "59>=60为false，令牌只进入未通过路径。",
+      "label": "结果为 false",
+      "note": "59 >= 60 算出 false（假），只有未通过路径开始执行。",
         "activeIds": [
           "condition",
           "fail"
@@ -12732,7 +12747,7 @@
       },
       {
         "label": "输出未通过",
-        "note": "另一条路径保持静默。",
+      "note": "未通过结果出现；通过路径没有执行。",
         "activeIds": [
           "fail",
           "output"
@@ -12753,7 +12768,7 @@
       },
       {
         "label": "越过阈值",
-        "note": "score拖到60，条件变true，令牌改走通过路径。",
+      "note": "score 拖到 60，60 >= 60 成立（>= 表示大于或等于，包含相等），条件为 true，改走通过路径。",
         "activeIds": [
           "score",
           "condition",
@@ -12776,9 +12791,9 @@
         ]
       }
     ],
-    "insight": "条件分支先求条件，再执行匹配路径；未选路径不会在这次分支中运行。",
+  "insight": "条件分支先计算条件，再执行匹配路径；未选路径不会在这次分支中运行。",
     "quiz": {
-      "question": "if条件为false时，true分支里的函数会发生什么？",
+    "question": "if 条件为 false 时，true 分支里的函数会发生什么？",
       "options": [
         {
           "label": "这次不会执行",
@@ -12793,8 +12808,8 @@
           "correct": false
         }
       ],
-      "success": "分支选择发生在执行路径之前。",
-      "retry": "未选路径不应产生副作用。"
+    "success": "分支先计算条件，再决定执行路径；未选路径不会产生这次调用。",
+    "retry": "那条路径没有执行，不会真的发送或修改任何东西。"
     },
     "prompt": {
       "title": "验证一个条件分支",
@@ -12802,17 +12817,37 @@
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
-        "label": "ECMAScript 规范 · ecmascript language statements and declarations",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
+      "label": "MDN · if...else",
+      "note": "说明条件为 truthy 或 falsy 时分别执行哪条语句，以及未选路径会被跳过。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
+      "label": "ECMAScript 规范 · If Statement",
+      "note": "规定 JavaScript if 语句的条件求值和路径执行语义。"
+    },
+    {
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#if",
+      "label": "Python 文档 · The if statement",
+      "note": "说明 Python 按条件顺序选择一个执行块。"
+    },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+        "label": "TypeScript Handbook · Narrowing",
+        "note": "说明条件检查如何改变后续分支中可用的类型信息。"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+        "label": "OWASP · Authentication Cheat Sheet",
+        "note": "说明认证由服务器验证身份，浏览器端分支不能代替服务端的安全检查。"
       }
     ]
   },
   {
     "slug": "loop",
     "lead": "数组[2,4,6]怎样在三轮里把累计和从0变成12并停下？",
-    "definition": "循环在条件允许时反复执行同一段逻辑，并在每轮更新索引或状态，直到达到停止条件。",
-    "boundary": "循环不是自动并行；如果状态不朝停止条件推进，可能一直运行。",
+    "definition": "循环先设置初始状态，再反复处理当前项并更新索引或状态，直到停止条件成立。",
+    "boundary": "如果状态不朝停止条件推进，循环可能一直运行；每轮遇到错误时，还要明确是停止、跳过还是重试。这里的 length 是数组中元素的数量，索引到达它时已经没有下一项可读。",
     "sceneKind": "loop",
     "sceneTitle": "索引与累计值每轮共同推进",
     "actionLabel": "单步循环",
@@ -12848,7 +12883,7 @@
       {
         "id": "stop",
         "label": "停止条件",
-        "detail": "index == length",
+        "detail": "索引到达数组长度",
         "icon": "shield",
         "group": "结束"
       }
@@ -12882,7 +12917,7 @@
     "frames": [
       {
         "label": "循环初始化",
-        "note": "索引0，累计和0。",
+      "note": "索引为 0，累计和为 0，准备读取第一项；检查后还有 3 项可读。",
         "activeIds": [
           "array",
           "index",
@@ -12900,7 +12935,7 @@
       },
       {
         "label": "第一轮",
-        "note": "取2后，累计和0变2，索引变1。",
+      "note": "取 2 后，累计和从 0 变 2，索引变为 1。",
         "activeIds": [
           "index",
           "item",
@@ -12923,7 +12958,7 @@
       },
       {
         "label": "继续两轮",
-        "note": "依次加入4和6，累计和2→6→12，索引到3。",
+      "note": "第二轮加入 4 后累计和为 6、索引为 2；第三轮加入 6 后累计和为 12、索引到 3。",
         "activeIds": [
           "index",
           "item",
@@ -12945,7 +12980,7 @@
       },
       {
         "label": "停止",
-        "note": "索引3等于数组长度3，循环结束。",
+      "note": "索引 3 等于数组长度 3，说明没有下一项可读，循环结束。",
         "activeIds": [
           "index",
           "stop"
@@ -12964,9 +12999,9 @@
         ]
       }
     ],
-    "insight": "循环必须让状态朝停止条件推进；只画一个回环箭头看不出是否会结束。",
+  "insight": "循环必须让状态朝停止条件推进；只画一个回环箭头看不出每轮怎样结束。",
     "quiz": {
-      "question": "循环里忘记更新index，主要风险是什么？",
+    "question": "循环里忘记更新 index，主要风险是什么？",
       "options": [
         {
           "label": "停止条件可能永远不成立",
@@ -12981,7 +13016,7 @@
           "correct": false
         }
       ],
-      "success": "状态不推进会造成无限循环。",
+    "success": "状态不推进，停止条件可能永远不成立，循环就不会结束。",
       "retry": "停止条件要与每轮更新配对。"
     },
     "prompt": {
@@ -12990,25 +13025,40 @@
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
-        "label": "ECMAScript 规范 · ecmascript language statements and declarations",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+      "label": "MDN · Loops and iteration",
+      "note": "说明 for、while 等循环如何检查条件、执行循环体和更新状态，并提醒避免无限循环。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
+      "label": "ECMAScript 规范 · Iteration Statements",
+      "note": "规定 JavaScript 各类迭代语句的执行顺序。"
+    },
+    {
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
+      "label": "Python 文档 · The for statement",
+      "note": "说明 for 循环逐项遍历可迭代对象并执行循环体。"
+    },
+    {
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement",
+      "label": "Python 文档 · The while statement",
+      "note": "说明 while 在条件为真时重复执行，条件为假时停止。"
       }
     ]
   },
   {
     "slug": "object",
-    "lead": "给user新增、修改、删除属性时，键与值怎样对应变化？",
-    "definition": "对象把一组具名属性关联到同一个值上，读取属性时通过键找到对应值或行为。",
-    "boundary": "对象不是JSON：对象可含方法、原型和非字符串值，JSON只是数据交换文本格式。",
+    "lead": "给 user 新增、修改、删除属性时，键与值怎样对应变化？",
+    "definition": "对象把一组具名属性放在同一个结构里，读取属性时通过键找到对应值。函数是一段可调用的代码，也可以作为对象的一个值，称为方法。",
+    "boundary": "对象不是 JSON：JavaScript 对象可以写成 user = { name: '林', age: 20 }，JSON 文本要写成 {\"name\":\"林\",\"age\":20}，不能表示方法。删除属性后再读取不存在的键，在 JavaScript 中会得到 undefined。",
     "sceneKind": "state-machine",
     "sceneTitle": "对象的属性集合发生三种操作",
     "actionLabel": "选择属性操作",
     "actors": [
       {
         "id": "object",
-        "label": "user对象",
-        "detail": "2个属性",
+        "label": "user 对象",
+        "detail": "2 个属性",
         "icon": "component",
         "group": "容器"
       },
@@ -13064,7 +13114,7 @@
     "frames": [
       {
         "label": "初始对象",
-        "note": "user含name和age两个具名属性。",
+      "note": "user 含 name 和 age 两个具名属性。",
         "activeIds": [
           "object",
           "name",
@@ -13085,7 +13135,7 @@
       },
       {
         "label": "修改属性",
-        "note": "age从20改为21，属性数量不变。",
+      "note": "age 从 20 改为 21，属性数量不变。",
         "activeIds": [
           "age",
           "count"
@@ -13107,7 +13157,7 @@
       },
       {
         "label": "新增属性",
-        "note": "加入city=杭州，属性数量2变3。",
+      "note": "加入 city = 杭州，属性数量从 2 变 3。",
         "activeIds": [
           "city",
           "count"
@@ -13128,9 +13178,8 @@
       },
       {
         "label": "删除属性",
-        "note": "移除name后，属性数量3变2。",
+      "note": "移除 name 后，再读取 user.name 得到 undefined，属性数量从 3 变 2。",
         "activeIds": [
-          "name",
           "count"
         ],
         "doneIds": [
@@ -13138,22 +13187,22 @@
           "age",
           "city"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "name"
+        ],
         "values": {
           "name": "已删除",
           "count": "2"
         },
-        "activeEdgeIds": [
-          "o-n"
-        ]
+        "activeEdgeIds": []
       }
     ],
-    "insight": "对象通过键组织属性；它不等同于JSON文本，也可能含方法和原型。",
+    "insight": "对象通过键组织属性，某个值可以是函数，也就是方法。",
     "quiz": {
-      "question": "JavaScript对象含一个函数属性，能原样写成标准JSON吗？",
+    "question": "JavaScript 对象含一个函数属性，能原样写成标准 JSON 吗？",
       "options": [
         {
-          "label": "不能，JSON不表示函数值",
+        "label": "不能，JSON 不表示函数值",
           "correct": true
         },
         {
@@ -13166,51 +13215,61 @@
         }
       ],
       "success": "对象与JSON的可表示范围不同。",
-      "retry": "序列化前要处理非JSON值。"
+    "retry": "转换为 JSON 文本前，要先处理不能表示的值，例如函数。"
     },
     "prompt": {
       "title": "检查一个对象模型",
-      "text": "列出属性键、值类型、可选项和方法，标出哪些内容能序列化为JSON、哪些不能。"
+      "text": "列出每个属性的键、值类型、可选项和方法，标出哪些内容能写成 JSON、哪些不能。"
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
-        "label": "ECMAScript 规范 · ecmascript data types and values",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
+      "label": "MDN · Working with objects",
+      "note": "说明对象由属性组成，属性通过键关联值，函数值可以作为方法。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
+      "label": "ECMAScript 规范 · Object Type",
+      "note": "规定 JavaScript 对象类型和属性行为。"
       },
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc8259",
-        "label": "RFC · rfc8259",
-        "note": "协议定义与报文语义"
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "label": "RFC 8259 · JSON",
+      "note": "定义 JSON 对象、数组、字符串、数字、布尔值和 null 等数据类型。"
+    },
+    {
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries",
+      "label": "Python 文档 · Dictionaries",
+      "note": "用另一种语言的字典说明通过键组织和读取相关值。"
       }
     ]
   },
   {
     "slug": "array",
-    "lead": "在['A','B','C']的索引1插入X后，为什么B和C的位置都变了？",
+    "lead": "在 ['A', 'B', 'C'] 的索引 1 插入 X 后，为什么 B 和 C 的位置都变了？",
     "definition": "数组按顺序保存一组元素，通常用从零开始的索引访问；插入和删除会影响长度及后续位置。",
-    "boundary": "数组不要求所有语言里都只能装同类型数据，也不能把索引当稳定业务ID。",
+    "boundary": "数组索引会因插入或删除而变化；索引表示当前位置，不是稳定的业务 ID。商品编号这类业务 ID 应跟着商品本身保存，不应跟着位置改变。不同语言对元素类型的限制也可能不同。",
     "sceneKind": "timeline",
     "sceneTitle": "有序格子在插入点后整体右移",
     "actionLabel": "拖动元素插入",
     "actors": [
       {
         "id": "a",
-        "label": "索引0",
+        "label": "索引 0",
         "detail": "A",
         "icon": "component",
         "group": "数组"
       },
       {
         "id": "b",
-        "label": "索引1",
+        "label": "索引 1",
         "detail": "B",
         "icon": "component",
         "group": "数组"
       },
       {
         "id": "c",
-        "label": "索引2",
+        "label": "索引 2",
         "detail": "C",
         "icon": "component",
         "group": "数组"
@@ -13247,7 +13306,7 @@
     "frames": [
       {
         "label": "原顺序",
-        "note": "三个元素占据索引0、1、2。",
+      "note": "三个元素占据索引 0、1、2。",
         "activeIds": [
           "a",
           "b",
@@ -13268,7 +13327,7 @@
       },
       {
         "label": "选择插入点",
-        "note": "X对准索引1，B和C准备右移。",
+      "note": "X 对准索引 1，B 和 C 准备右移。",
         "activeIds": [
           "x",
           "b",
@@ -13279,13 +13338,13 @@
         ],
         "mutedIds": [],
         "values": {
-          "x": "目标索引1"
+        "x": "目标索引 1"
         },
         "activeEdgeIds": []
       },
       {
         "label": "整体右移",
-        "note": "B从1到2，C从2到3。",
+      "note": "B 从 1 移到 2，C 从 2 移到 3。",
         "activeIds": [
           "b",
           "c"
@@ -13303,7 +13362,7 @@
       },
       {
         "label": "插入完成",
-        "note": "X占索引1，数组长度3变4。",
+      "note": "X 占索引 1，数组长度从 3 变 4。",
         "activeIds": [
           "x",
           "length"
@@ -13321,9 +13380,9 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "数组用位置表达顺序，插删会改变后续索引；索引不适合当稳定业务ID。",
+    "insight": "数组用位置表达顺序，插入或删除会改变后续索引；索引不适合当稳定业务 ID。",
     "quiz": {
-      "question": "把数组索引当列表项唯一ID，插入元素后可能怎样？",
+    "question": "如果把数组索引当作列表项的唯一 ID，插入新元素后会怎样？",
       "options": [
         {
           "label": "后续项的ID全部变化",
@@ -13338,26 +13397,41 @@
           "correct": false
         }
       ],
-      "success": "位置会随插删改变。",
-      "retry": "稳定身份应使用独立ID。"
+    "success": "位置会随插入或删除改变。",
+    "retry": "稳定的编号要单独保存，不能依赖索引。"
     },
     "prompt": {
       "title": "检查数组操作",
-      "text": "用一个四项列表演示插入、删除和排序，记录索引与稳定ID如何分别变化。"
+      "text": "用一个四项列表演示插入、删除和排序，记录索引和稳定 ID 分别发生了什么变化。"
     },
     "sources": [
       {
-        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
-        "label": "ECMAScript 规范 · indexed collections",
-        "note": "JavaScript 语言规范"
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
+      "label": "MDN · Indexed collections",
+      "note": "说明数组按索引保存有序值、索引从 0 开始，并介绍长度与插入删除带来的位置变化。"
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
+      "label": "ECMAScript 规范 · Array Objects",
+      "note": "规定 JavaScript 数组对象的索引和长度行为。"
+    },
+    {
+      "url": "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range",
+      "label": "Python 文档 · Sequence Types",
+      "note": "说明序列按位置保存和访问元素，列表支持插入、删除等操作。"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8259#section-5",
+      "label": "RFC 8259 · Arrays",
+      "note": "定义 JSON 数组是有序值序列；JSON 是传输文本格式，程序运行时的数组还要按语言规则处理。"
       }
     ]
   },
   {
     "slug": "client-server",
-    "lead": "浏览器请求/products/7时，请求和响应分别经过哪些角色？",
-    "definition": "客户端发出请求，服务器根据自身资源和规则处理后返回响应；双方通过约定的协议交换消息。",
-    "boundary": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。",
+    "lead": "浏览器请求 /products/7 时，请求和响应分别经过哪些角色？",
+    "definition": "客户端发出请求，服务器根据请求查找数据或执行操作后返回响应；双方通过约定的协议交换消息。",
+    "boundary": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。HTTP 是双方交换消息的约定；200 状态码表示成功，404 表示找不到资源，500 表示服务器处理出错。",
     "sceneKind": "pipeline",
     "sceneTitle": "客户端请求到服务器响应的往返",
     "actionLabel": "模拟状态码",
@@ -13372,14 +13446,14 @@
       {
         "id": "request",
         "label": "HTTP请求",
-        "detail": "已发送",
+        "detail": "已发出",
         "icon": "message",
         "group": "网络"
       },
       {
         "id": "server",
         "label": "商品服务",
-        "detail": "处理中",
+        "detail": "待更新",
         "icon": "server",
         "group": "服务器"
       },
@@ -13439,7 +13513,7 @@
     "frames": [
       {
         "label": "客户端发出请求",
-        "note": "商品页创建GET请求，还没有拿到数据。",
+      "note": "商品页创建 GET 请求（读取商品），还没有拿到数据。",
         "activeIds": [
           "client",
           "request"
@@ -13450,7 +13524,7 @@
           "response"
         ],
         "values": {
-          "request": "sent"
+          "request": "已发出"
         },
         "activeEdgeIds": [
           "c-r"
@@ -13458,7 +13532,7 @@
       },
       {
         "label": "服务器处理",
-        "note": "服务收到路径后查询商品数据。",
+      "note": "服务器收到请求路径 /products/7 后查询商品数据，准备响应。",
         "activeIds": [
           "request",
           "server",
@@ -13482,7 +13556,7 @@
       },
       {
         "label": "响应返回",
-        "note": "服务器发送200与JSON，方向与请求相反。",
+      "note": "服务器发送状态码 200 与 JSON（按结构组织数据的文本），方向与请求相反。",
         "activeIds": [
           "server",
           "response"
@@ -13502,7 +13576,7 @@
       },
       {
         "label": "客户端呈现",
-        "note": "商品页读取响应并显示商品7。",
+      "note": "商品页读取响应并显示商品 7。",
         "activeIds": [
           "client"
         ],
@@ -13521,7 +13595,7 @@
         ]
       }
     ],
-    "insight": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。",
+    "insight": "这一趟里谁是客户端、谁是服务器，看的是这轮谁发请求、谁提供资源，而不是软件装在哪台机器上。",
     "quiz": {
       "question": "同一程序能否在一种交互中是客户端、另一种交互中是服务器？",
       "options": [
@@ -13538,55 +13612,70 @@
           "correct": false
         }
       ],
-      "success": "客户端与服务器是相对角色。",
+    "success": "客户端与服务器是相对角色，谁发请求、谁提供资源要看当前交互。",
       "retry": "看谁发请求、谁提供资源。"
     },
     "prompt": {
       "title": "画一次请求往返",
-      "text": "标出客户端、请求方法与路径、服务器处理、外部资源、状态码和响应体，并补404与500两条失败路径。"
+      "text": "标出客户端、请求方法与路径、服务器处理、外部资源、状态码和响应体，并补 404 与 500 两条失败路径。"
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc9110",
-        "label": "RFC · rfc9110",
-        "note": "协议定义与报文语义"
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "label": "RFC 9110 · HTTP Semantics",
+      "note": "定义 HTTP 的客户端、服务器、请求、响应和状态语义。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+      "label": "MDN · Overview of HTTP",
+      "note": "说明浏览器等客户端发出请求，服务器返回响应，以及一次 HTTP 往返的基本步骤。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages",
+      "label": "MDN · HTTP messages",
+      "note": "说明请求方法、路径、响应状态码、头和正文等消息部分。"
+    },
+    {
+      "url": "https://fetch.spec.whatwg.org/",
+      "label": "WHATWG · Fetch Standard",
+      "note": "规定浏览器 Fetch 如何发起请求并处理响应。"
       }
     ]
   },
   {
     "slug": "monolith",
-    "lead": "用户、订单、支付三个模块在一个部署单元里，为什么改支付仍要整体发布？",
-    "definition": "单体架构把主要业务模块作为一个部署单元构建和发布，模块可在进程内直接调用并共享资源。",
-    "boundary": "单体不等于没有模块，也不等于代码都在一个仓库；它描述部署边界。",
+    "lead": "用户、订单、支付三个模块一起发布，为什么改支付还要重新构建整份应用？",
+    "definition": "单体把多个业务模块放在一份应用里构建、测试和发布；模块可以分开组织，但发布时一起换上。",
+    "boundary": "单体说的是部署边界：一次发布换上整份应用。代码仓库只是存放代码的地方，和部署边界不是一回事。",
     "sceneKind": "layers",
-    "sceneTitle": "模块边界与部署边界叠在一起",
-    "actionLabel": "点击一个模块",
+    "sceneTitle": "模块分开，发布时一起换上",
+    "actionLabel": "看下一步",
     "actors": [
       {
         "id": "artifact",
-        "label": "单体制品",
-        "detail": "版本1.8",
+        "label": "应用包",
+        "detail": "一起发布",
         "icon": "package",
         "group": "部署边界"
       },
       {
         "id": "user",
         "label": "用户模块",
-        "detail": "未改",
+        "detail": "用户能力",
         "icon": "component",
         "group": "模块"
       },
       {
         "id": "order",
         "label": "订单模块",
-        "detail": "未改",
+        "detail": "订单能力",
         "icon": "component",
         "group": "模块"
       },
       {
         "id": "pay",
         "label": "支付模块",
-        "detail": "有改动",
+        "detail": "支付能力",
         "icon": "component",
         "group": "模块"
       },
@@ -13626,8 +13715,8 @@
     ],
     "frames": [
       {
-        "label": "三个模块装入一体",
-        "note": "代码内部有模块，但都属于同一个制品。",
+        "label": "三个模块组成一份应用",
+        "note": "用户、订单、支付各自有职责，但一次发布会把它们一起换上。",
         "activeIds": [
           "artifact",
           "user",
@@ -13639,7 +13728,7 @@
           "deploy"
         ],
         "values": {
-          "artifact": "1个部署单元"
+          "artifact": "一份应用"
         },
         "activeEdgeIds": [
           "a-u",
@@ -13649,7 +13738,7 @@
       },
       {
         "label": "只改支付",
-        "note": "变更标记只落在支付模块。",
+        "note": "本次改动发生在支付模块，用户和订单代码没有改。",
         "activeIds": [
           "pay"
         ],
@@ -13662,15 +13751,17 @@
           "deploy"
         ],
         "values": {
-          "pay": "changed"
+          "user": "未改",
+          "order": "未改",
+          "pay": "有改动"
         },
         "activeEdgeIds": [
           "a-p"
         ]
       },
       {
-        "label": "重新构建整体",
-        "note": "制品版本从1.7升为1.8，仍包含全部模块。",
+        "label": "重新构建与测试",
+        "note": "改动后要重新生成整份应用，并检查整份应用的行为。",
         "activeIds": [
           "artifact"
         ],
@@ -13683,13 +13774,13 @@
           "deploy"
         ],
         "values": {
-          "artifact": "1.7 → 1.8"
+          "artifact": "重新生成"
         },
         "activeEdgeIds": []
       },
       {
         "label": "整体发布",
-        "note": "运行环境替换唯一制品，而非单独部署支付。",
+        "note": "发布时换上的就是整份应用，不能只替换支付模块。",
         "activeIds": [
           "artifact",
           "deploy"
@@ -13701,86 +13792,101 @@
         ],
         "mutedIds": [],
         "values": {
-          "deploy": "1个单元"
+          "deploy": "一份应用"
         },
         "activeEdgeIds": [
           "a-d"
         ]
       }
     ],
-    "insight": "单体架构说的是部署单元，不代表代码内部不能模块化，也不等于monorepo。",
+    "insight": "是不是单体，看的是部署边界：内部可以有清晰的模块，关键是改动后要不要把整份应用一起构建、测试和发布。",
     "quiz": {
-      "question": "代码放在一个仓库里，就一定是单体架构吗？",
+      "question": "一个仓库里有用户、订单、支付代码，就一定是单体吗？",
       "options": [
         {
-          "label": "不一定，要看部署边界",
+          "label": "不一定，先看它们是否作为一份应用一起发布",
           "correct": true
         },
         {
-          "label": "一定，一个仓库就是一个进程",
+          "label": "一定，一个仓库就只能发布一份应用",
           "correct": false
         },
         {
-          "label": "只有微服务会用Git",
+          "label": "一定，模块多就必须拆成服务",
           "correct": false
         }
       ],
-      "success": "仓库组织与运行部署不同。",
-      "retry": "判断单体要看是否整体构建和发布。"
+      "success": "仓库只说明代码放在哪里；单体要看部署边界。",
+      "retry": "想一想一次发布要换上什么：是一整份应用，还是几个服务分别换上？"
     },
     "prompt": {
       "title": "识别系统部署边界",
-      "text": "列出代码模块、进程、制品和发布单元，说明改一个模块时哪些内容必须一起发布。"
+      "text": "请说明模块如何分组、一次发布换上什么、改一个模块要重新构建和测试哪些内容，以及一个模块出故障或者需要扩容时会影响谁。"
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf",
-        "label": "NIST 出版物 · NIST.SP.800 204",
-        "note": "术语、风险与评估框架"
+        "url": "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures",
+        "label": "Microsoft Learn · Common web application architectures",
+        "note": "定义单体应用的自包含行为、单一部署单元，以及整体扩缩和整体重新部署的影响。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/develop-deploy-dotnet-apps-on-aws/building-monoliths-or-microservices.html",
+        "label": "AWS · Building Monoliths or Microservices",
+        "note": "说明紧耦合模块共享应用资源时，资源扩缩和变更会牵动整套应用。"
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-microservices-architecture",
+        "label": "Google Cloud · What is Microservices Architecture?",
+        "note": "对比单体作为统一单元与微服务独立拆分的部署和维护边界。"
+      },
+      {
+        "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+        "label": "Martin Fowler · Monolith First",
+        "note": "说明先做结构清晰的单体可以降低早期分布式协作成本，并提醒模块边界需要逐步验证。"
       }
     ]
   },
   {
     "slug": "microservices",
-    "lead": "订单调用库存和支付时，库存超时为何会让订单停在pending？",
-    "definition": "微服务把业务能力拆成可独立部署的服务，通过网络接口协作，每个服务拥有明确边界和运行责任。",
-    "boundary": "拆成多个进程不自动带来微服务收益；网络失败、数据一致性和运维成本会随之增加。",
+    "lead": "订单服务调用库存和支付，库存两秒没回应时，为什么订单不能直接说成功？",
+    "definition": "微服务把一套应用拆成多个可分别发布的服务。每个服务负责一块业务，服务之间通过网络请求协作，所以一次业务可能经过多个服务。",
+    "boundary": "拆成多个服务不自动带来收益；网络可能延迟或失败，数据要跨服务协调，监控和发布也更复杂。",
     "sceneKind": "network",
-    "sceneTitle": "三个独立服务之间的部分失败",
-    "actionLabel": "断开库存连接",
+    "sceneTitle": "服务分开，网络调用会失败",
+    "actionLabel": "看下一步",
     "actors": [
       {
         "id": "order",
         "label": "订单服务",
-        "detail": "v2.1",
+        "detail": "订单业务",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "stock",
         "label": "库存服务",
-        "detail": "v1.4",
+        "detail": "库存业务",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "pay",
         "label": "支付服务",
-        "detail": "v3.0",
+        "detail": "支付业务",
         "icon": "server",
         "group": "服务"
       },
       {
         "id": "network",
-        "label": "网络调用",
-        "detail": "库存超时",
+        "label": "等待计时",
+        "detail": "上限 2 秒",
         "icon": "network",
         "group": "通信"
       },
       {
         "id": "state",
         "label": "订单状态",
-        "detail": "pending",
+        "detail": "处理中",
         "icon": "database",
         "group": "结果"
       }
@@ -13799,10 +13905,10 @@
         "label": "支付"
       },
       {
-        "id": "s-n",
-        "from": "stock",
+        "id": "o-n",
+        "from": "order",
         "to": "network",
-        "label": "响应"
+        "label": "开始等待"
       },
       {
         "id": "n-o",
@@ -13819,8 +13925,8 @@
     ],
     "frames": [
       {
-        "label": "独立服务就绪",
-        "note": "三个服务有各自版本和部署单元。",
+        "label": "三个服务各自就绪",
+        "note": "订单、库存、支付各自有自己的版本，也各自发布；版本号只表示当前运行版本。",
         "activeIds": [
           "order",
           "stock",
@@ -13838,8 +13944,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "订单发起调用",
-        "note": "订单并行联系库存和支付。",
+        "label": "订单发起两次请求",
+        "note": "订单向库存和支付发出请求；演示简化为同时等待两份回应。",
         "activeIds": [
           "order",
           "stock",
@@ -13851,16 +13957,17 @@
           "state"
         ],
         "values": {
-          "network": "2条请求"
+          "network": "等待两份回应"
         },
         "activeEdgeIds": [
           "o-s",
-          "o-p"
+          "o-p",
+          "o-n"
         ]
       },
       {
-        "label": "库存发生超时",
-        "note": "支付成功，但库存超过2秒没有响应。",
+        "label": "库存在时限内没回应",
+        "note": "支付已回应成功；订单给库存请求最多等 2 秒，时间到仍未收到回应，所以结果暂时未知。",
         "activeIds": [
           "stock",
           "network",
@@ -13873,63 +13980,84 @@
           "state"
         ],
         "values": {
-          "network": "库存 timeout 2s"
+          "network": "2 秒已到"
         },
         "activeEdgeIds": [
-          "s-n",
+          "o-s",
           "n-o"
         ]
       },
       {
-        "label": "保存中间状态",
-        "note": "订单不能假装完成，状态改为pending等待重试。",
+        "label": "先保存处理中",
+        "note": "订单把状态记为处理中，等重试或人工核对；演示不假设库存已经扣减。",
         "activeIds": [
           "order",
           "state"
         ],
         "doneIds": [
-          "stock",
           "pay",
           "network"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "stock"
+        ],
         "values": {
-          "state": "created → pending"
+          "state": "处理中"
         },
         "activeEdgeIds": [
           "o-st"
         ]
       }
     ],
-    "insight": "微服务提供独立部署，也引入网络失败和跨服务状态协调成本。",
+    "insight": "独立发布是微服务的收益，网络失败和跨服务状态协调是随之而来的成本；是否值得拆分，要看业务边界是否清楚，以及团队能否承担这些工作。",
     "quiz": {
-      "question": "把一个应用拆成多个进程，就自动是良好微服务吗？",
+      "question": "把一个应用拆成多个服务，就自动是微服务吗？",
       "options": [
         {
-          "label": "不是，还需业务边界和独立运行责任",
+          "label": "不一定，还要有清楚的业务边界和独立发布责任",
           "correct": true
         },
         {
-          "label": "是，进程数量决定一切",
+          "label": "是，服务数量超过三个就算",
           "correct": false
         },
         {
-          "label": "只要容器数量多即可",
+          "label": "是，只要每个服务使用不同语言",
           "correct": false
         }
       ],
-      "success": "拆分形式不能替代清晰边界。",
-      "retry": "网络与数据责任必须设计。"
+      "success": "服务数量不是标准；还要看业务边界、独立发布和运行责任。",
+      "retry": "问自己：它能不能单独发布，出了故障谁负责？"
     },
     "prompt": {
       "title": "审查一个服务拆分",
-      "text": "为每个服务写业务职责、数据所有权、接口、独立部署、超时重试和故障时的中间状态。"
+      "text": "请为每个服务写清业务职责、谁保存数据、接口如何调用、是否能独立发布，以及超时或状态不一致时如何处理。"
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf",
-        "label": "NIST 出版物 · NIST.SP.800 204",
-        "note": "术语、风险与评估框架"
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
+        "label": "Microsoft Learn · Microservices architecture style",
+        "note": "定义可独立部署的业务服务，并说明网络通信、数据归属、独立扩缩和测试运维带来的取舍。"
+      },
+      {
+        "url": "https://csrc.nist.gov/pubs/sp/800/204/final",
+        "label": "NIST SP 800-204 · Microservices-based Application Systems",
+        "note": "说明微服务通过 API 协作，以及服务发现、认证、监控和弹性等配套能力。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_service_architecture_monolith_soa_microservice.html",
+        "label": "AWS Well-Architected · Choose how to segment your workload",
+        "note": "说明拆成更小服务会带来延迟、调试和运维复杂度，需要按场景权衡。"
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-microservices-architecture",
+        "label": "Google Cloud · What is Microservices Architecture?",
+        "note": "对比单体统一单元与微服务独立服务，并说明服务边界、可扩缩性和可观测性。"
+      },
+      {
+        "url": "https://www.martinfowler.com/microservices/",
+        "label": "Martin Fowler · Microservices Guide",
+        "note": "给出围绕业务能力、独立部署的定义，并列出分布式调用、最终一致性和运维复杂度等代价。"
       }
     ]
   },
@@ -14357,45 +14485,45 @@
   },
   {
     "slug": "serverless",
-    "lead": "一分钟请求从0涨到120再归零时，运行实例为何会从0变6又回0？",
-    "definition": "无服务器架构把代码或服务交给平台按请求或事件运行，平台负责资源调度和扩缩容，使用者仍需管理代码、配置和数据。",
-    "boundary": "它并非没有服务器，也不保证更便宜；冷启动、执行时限和持续高负载会改变取舍。",
+    "lead": "在这份演示里，请求量从每分钟 0 涨到 120 再归零，平台为什么会让函数从 0 份跑到 6 份，又回到 0 份？",
+    "definition": "无服务器架构下，开发者把函数（一小段只做一件事的代码）交给云平台，在请求或事件到来时准备运行环境；平台管理底层服务器和自动扩缩，开发者仍负责代码、配置和数据。",
+    "boundary": "服务器仍然存在；第一次运行可能有冷启动，函数执行有时间和内存限制，状态不能只放在临时内存，持续高负载也未必便宜。",
     "sceneKind": "timeline",
-    "sceneTitle": "平台实例随事件负载伸缩",
+    "sceneTitle": "请求变化，函数运行份数跟着变",
     "actionLabel": "拖动请求速率",
     "actors": [
       {
         "id": "traffic",
         "label": "请求速率",
-        "detail": "0 / min",
+        "detail": "0 / 分钟",
         "icon": "chart",
         "group": "输入"
       },
       {
         "id": "platform",
         "label": "运行平台",
-        "detail": "自动调度",
+        "detail": "准备和回收运行环境",
         "icon": "cloud",
         "group": "控制"
       },
       {
         "id": "instances",
-        "label": "函数实例",
-        "detail": "0个",
+        "label": "函数运行份数",
+        "detail": "0 份",
         "icon": "server",
         "group": "执行"
       },
       {
         "id": "cold",
         "label": "冷启动",
-        "detail": "首批420ms",
+        "detail": "未发生",
         "icon": "clock",
         "group": "延迟"
       },
       {
         "id": "cost",
         "label": "计费状态",
-        "detail": "按运行量",
+        "detail": "按实际运行量（示例）",
         "icon": "chart",
         "group": "结果"
       }
@@ -14411,13 +14539,13 @@
         "id": "p-i",
         "from": "platform",
         "to": "instances",
-        "label": "扩缩"
+        "label": "准备 / 回收"
       },
       {
         "id": "i-c",
         "from": "instances",
         "to": "cold",
-        "label": "启动"
+        "label": "首次启动"
       },
       {
         "id": "i-cost",
@@ -14429,7 +14557,7 @@
     "frames": [
       {
         "label": "没有请求",
-        "note": "平台保留代码配置，但运行实例数为0。",
+        "note": "平台保留代码和配置，当前没有正在运行的函数。",
         "activeIds": [
           "traffic",
           "platform",
@@ -14440,14 +14568,15 @@
           "cold"
         ],
         "values": {
-          "traffic": "0/min",
-          "instances": "0"
+          "traffic": "0 / 分钟",
+          "instances": "0 份",
+          "cold": "未发生"
         },
         "activeEdgeIds": []
       },
       {
         "label": "流量突增",
-        "note": "请求升到120/min，平台拉起6个实例。",
+        "note": "请求升到 120 / 分钟，一份环境同时能处理的请求有限，平台开出 6 份来分担（示例）。",
         "activeIds": [
           "traffic",
           "platform",
@@ -14458,8 +14587,8 @@
           "cold"
         ],
         "values": {
-          "traffic": "120/min",
-          "instances": "0 → 6"
+          "traffic": "120 / 分钟",
+          "instances": "0 → 6 份"
         },
         "activeEdgeIds": [
           "t-p",
@@ -14467,8 +14596,8 @@
         ]
       },
       {
-        "label": "首批冷启动",
-        "note": "新实例第一次启动，示例延迟从80升到420ms。",
+        "label": "第一次启动",
+        "note": "新运行环境先加载代码，示例首批请求延迟升到 420 ms。",
         "activeIds": [
           "instances",
           "cold"
@@ -14487,7 +14616,7 @@
       },
       {
         "label": "流量归零",
-        "note": "请求停止后实例6变0，计量停止增长。",
+        "note": "请求停止后运行份数从 6 降到 0；示例按运行量计费，空闲时计量不再增长。",
         "activeIds": [
           "traffic",
           "platform",
@@ -14499,9 +14628,9 @@
         ],
         "mutedIds": [],
         "values": {
-          "traffic": "0/min",
-          "instances": "6 → 0",
-          "cost": "idle"
+          "traffic": "0 / 分钟",
+          "instances": "6 → 0 份",
+          "cost": "空闲不增长"
         },
         "activeEdgeIds": [
           "p-i",
@@ -14509,9 +14638,9 @@
         ]
       }
     ],
-    "insight": "无服务器架构把资源调度交给平台，并不是真的没有服务器或没有运维取舍。",
+    "insight": "平台接管服务器和自动扩缩，开发者仍要负责代码和数据；是否合适，要看流量起伏、延迟要求、最长执行时间、状态放在哪里，以及平台限制。",
     "quiz": {
-      "question": "持续高负载下，serverless一定更便宜吗？",
+      "question": "持续高负载下，Serverless 一定更便宜吗？",
       "options": [
         {
           "label": "不一定，要比较计费、时限和常驻方案",
@@ -14530,57 +14659,77 @@
       "retry": "需要用真实流量测算。"
     },
     "prompt": {
-      "title": "评估一个serverless任务",
-      "text": "记录触发方式、峰谷流量、执行时间、并发、冷启动、状态存放和失败重试，再与常驻服务比较。"
+      "title": "评估一个 Serverless 任务",
+      "text": "记录触发方式、峰谷请求、延迟、最长执行时间、状态存放、失败重试和成本，再与常驻服务比较。"
     },
     "sources": [
       {
-        "url": "https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf",
-        "label": "开放规范仓库 · cncf serverless whitepaper v1.0",
-        "note": "原始规范与实现说明"
+        "url": "https://cloud.google.com/discover/what-is-serverless-computing",
+        "label": "Google Cloud · What is serverless computing?",
+        "note": "说明平台按使用量准备和扩缩资源，以及冷启动、执行限制和供应商差异。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+        "label": "AWS Lambda · Runtime environment lifecycle",
+        "note": "说明运行环境的初始化、复用、回收和冷启动延迟。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/concepts-event-driven-architectures.html",
+        "label": "AWS Lambda · Event-driven architectures",
+        "note": "说明请求、定时器等事件如何触发函数，以及弹性、延迟和状态一致性的取舍。"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-functions-chapter.html",
+        "label": "AWS Lambda · Functions",
+        "note": "说明平台管理服务器、容量、自动扩缩和日志，开发者负责函数代码和权限。"
+      },
+      {
+        "url": "https://www.cncf.io/blog/2018/02/14/cncf-takes-first-step-towards-serverless-computing/",
+        "label": "CNCF · The CNCF takes steps toward serverless computing",
+        "note": "给出 serverless 的定义：无需管理服务器，由平台按需求执行、扩缩和计费。"
       }
     ]
   },
   {
     "slug": "container",
-    "lead": "两个进程共享宿主内核，怎样仍看到不同文件并获得70%与30%的CPU？",
-    "definition": "容器用操作系统级隔离把进程及其文件、网络和资源视图限制在指定边界内，并共享宿主机内核。",
-    "boundary": "容器不是虚拟机，也不是默认安全沙箱；共享内核和配置权限会影响隔离强度。",
+    "lead": "两个容器共用宿主机的内核，为什么能看到不同的文件，CPU 还是一个用 70%、一个用 30%？",
+    "definition": "容器是一个带有应用文件和它需要的其他程序的隔离进程（正在运行的程序）；它有自己的文件、网络和资源视图，通常共享宿主机内核（操作系统最核心的部分，负责调度 CPU、内存和文件）。",
+    "boundary": "容器不是完整虚拟机：虚拟机运行自己的完整操作系统和内核，容器共享宿主机内核；权限配置会影响隔离强度，数据也要用挂载（把存储连接给容器）的卷（独立保存数据的存储）等方式持久化。",
     "sceneKind": "layers",
-    "sceneTitle": "共享内核上的隔离视图与配额",
-    "actionLabel": "调整CPU配额",
+    "sceneTitle": "共享内核，隔离视图与资源配额",
+    "actionLabel": "看下一步",
     "actors": [
       {
         "id": "kernel",
-        "label": "宿主内核",
-        "detail": "共享",
+        "label": "宿主机内核",
+        "detail": "容器共用",
         "icon": "gear",
         "group": "底层"
       },
       {
         "id": "container-a",
         "label": "容器 A",
-        "detail": "文件视图A · CPU70%",
+        "detail": "文件视图 A · CPU 70%",
         "icon": "package",
         "group": "隔离"
       },
       {
         "id": "container-b",
         "label": "容器 B",
-        "detail": "文件视图B · CPU30%",
+        "detail": "文件视图 B · CPU 30%",
         "icon": "package",
         "group": "隔离"
       },
       {
         "id": "process-a",
-        "label": "进程 A",
+        "label": "应用进程 A",
         "detail": "运行中",
         "icon": "code",
         "group": "工作负载"
       },
       {
         "id": "process-b",
-        "label": "进程 B",
+        "label": "应用进程 B",
         "detail": "运行中",
         "icon": "code",
         "group": "工作负载"
@@ -14588,7 +14737,7 @@
       {
         "id": "limit",
         "label": "资源控制",
-        "detail": "70 / 30",
+        "detail": "CPU 70 / 30",
         "icon": "chart",
         "group": "规则"
       }
@@ -14619,6 +14768,12 @@
         "label": "运行"
       },
       {
+        "id": "pa-b",
+        "from": "process-a",
+        "to": "container-b",
+        "label": "尝试读取"
+      },
+      {
         "id": "l-a",
         "from": "limit",
         "to": "container-a",
@@ -14634,7 +14789,7 @@
     "frames": [
       {
         "label": "共享同一内核",
-        "note": "两只容器都在同一宿主内核上运行。",
+        "note": "容器 A 和 B 共用同一个宿主机内核，里面的应用都靠它干活。",
         "activeIds": [
           "kernel",
           "container-a",
@@ -14646,7 +14801,7 @@
           "process-b"
         ],
         "values": {
-          "kernel": "1个"
+          "kernel": "共用 1 个"
         },
         "activeEdgeIds": [
           "k-a",
@@ -14654,8 +14809,8 @@
         ]
       },
       {
-        "label": "文件视图隔离",
-        "note": "A和B各自看到不同根文件系统。",
+        "label": "各自看到文件视图",
+        "note": "容器 A 和 B 看到不同的文件系统视图，应用像在各自目录里运行。",
         "activeIds": [
           "container-a",
           "container-b"
@@ -14665,14 +14820,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "container-a": "视图A",
-          "container-b": "视图B"
+          "container-a": "文件视图 A",
+          "container-b": "文件视图 B"
         },
         "activeEdgeIds": []
       },
       {
         "label": "配额生效",
-        "note": "CPU控制按70%和30%限制两个工作负载。",
+        "note": "配额（CPU、内存等的用量上限）把示例 CPU 使用量限制为 A 70%、B 30%；配额限制使用量，不是把 CPU 变成两台机器。",
         "activeIds": [
           "limit",
           "process-a",
@@ -14683,8 +14838,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "process-a": "70%",
-          "process-b": "30%"
+          "process-a": "CPU 70%",
+          "process-b": "CPU 30%"
         },
         "activeEdgeIds": [
           "l-a",
@@ -14695,58 +14850,76 @@
       },
       {
         "label": "越界读取被拒",
-        "note": "A尝试读取B的未挂载文件，返回拒绝。",
+        "note": "A 想读容器 B 的文件，但那个文件没有挂载（连接）给 A，访问被拒；隔离效果取决于权限和挂载配置。",
         "activeIds": [
           "container-a",
-          "container-b"
+          "process-a"
         ],
         "doneIds": [
           "kernel",
           "limit"
         ],
         "mutedIds": [
+          "container-b",
           "process-b"
         ],
         "values": {
-          "container-a": "denied"
+          "process-a": "访问被拒"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "pa-b"
+        ]
       }
     ],
-    "insight": "容器共享宿主内核，不是完整虚拟机；隔离强度取决于命名空间、权限和资源配置。",
+    "insight": "容器隔离的是进程看到的视图和可用资源，不是另一套完整内核；共享宿主机内核、权限、挂载和配额共同决定隔离效果。",
     "quiz": {
-      "question": "容器默认就是绝对安全边界吗？",
+      "question": "容器和虚拟机的关键差异是什么？",
       "options": [
         {
-          "label": "不是，配置和共享内核仍有风险",
+          "label": "容器通常共享宿主机内核，虚拟机运行自己的完整内核",
           "correct": true
         },
         {
-          "label": "是，容器内永远无法越界",
+          "label": "容器和虚拟机都有自己的完整内核",
           "correct": false
         },
         {
-          "label": "镜像小就绝对安全",
+          "label": "容器自动提供更强的安全边界",
           "correct": false
         }
       ],
-      "success": "隔离能力需要具体配置与加固。",
-      "retry": "容器不等于万能沙箱。"
+      "success": "容器通常共享宿主机内核；虚拟机运行自己的完整内核，隔离边界不同。",
+      "retry": "先看它有没有自己的完整操作系统和内核。"
     },
     "prompt": {
       "title": "检查容器隔离",
-      "text": "列出共享内核、用户身份、挂载、网络、能力集和CPU/内存限制，逐项说明越界时谁负责阻断。"
+      "text": "请检查镜像里的文件、进程的文件和网络视图、宿主机内核、用户权限、挂载和 CPU/内存限制，并说明数据如何持久化。"
     },
     "sources": [
       {
-        "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
-        "label": "NIST 出版物 · nist.sp.800 190",
-        "note": "术语、风险与评估框架"
+        "url": "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
+        "label": "Docker Docs · What is a container?",
+        "note": "说明容器是隔离进程，以及容器与虚拟机、宿主机内核的关系。"
       },
       {
-        "url": "https://opencontainers.org/",
-        "label": "OCI · overview",
-        "note": "原始规范与实现说明"
+        "url": "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/",
+        "label": "Docker Docs · What is an image?",
+        "note": "说明镜像是包含运行文件和配置的不可变分层模板。"
+      },
+      {
+        "url": "https://docs.docker.com/engine/containers/run/",
+        "label": "Docker Docs · Running containers",
+        "note": "说明容器进程拥有独立文件系统、网络和进程树。"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/virtualization/windowscontainers/about/containers-vs-vm",
+        "label": "Microsoft Learn · Containers vs. virtual machines",
+        "note": "对比容器使用宿主操作系统内核与虚拟机运行完整操作系统的差异。"
+      },
+      {
+        "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
+        "label": "NIST SP 800-190 · Application Container Security Guide",
+        "note": "说明容器的操作系统级隔离、权限配置和安全风险。"
       }
     ]
   },
