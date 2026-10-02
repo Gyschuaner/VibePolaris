@@ -66,4 +66,14 @@ runtime、package、typescript、repo-commit、branch、mvp、user-flow 也按�
 
 ## 生产发布记录
 
-本节在十条公开清单一次性发布、DP 发布对象和线上健康检查完成后补充。
+内容 PR [#281](https://github.com/Gyschuaner/VibePolaris/pull/281) 已合入 `main`，合并提交为 `72a0b07b6b77da0bec94eff35634062c65f4c3f6`。生产从当前 `main` 切出覆盖分支 `release/VBP-056-prod-overlay-20261002`，叠加上一版生产新闻模块并保留线上 `/news`；生产覆盖提交为 `15953dcbf5d51417c481fe1b993dbffd505cc1f5`。
+
+- 镜像：`vibepolaris:15953dcbf5d51417c481fe1b993dbffd505cc1f5`，本机 `linux/amd64` 构建通过，容器内 `news:validate`、Next 构建、TypeScript 和 187 个词条静态页面构建通过。
+- 当前发布目录：`/opt/vibepolaris/releases/20261002T062511Z-15953dcb`；`/opt/vibepolaris/current` 已指向该目录，容器 `vibepolaris-web-1` 使用新镜像并为 `running/healthy`。
+- 回滚基线：`/opt/vibepolaris/releases/20261002T032532Z-001dff4a`，旧镜像 `vibepolaris:001dff4a` 保留；切换前快照在 `/opt/vibepolaris/backups/20261002T062511Z-001dff4a`；`vibepolaris_xiaobei_data` 持久化数据卷未改动。
+- DP deployment：`deploy-vbp056-content-179-188-prod-20261002`，对象 ID `8614a341-3923-4efd-8a3c-2c76fe34ee9f`，状态 `released`，关联需求 `VBP-056`。
+- HTTPS 检查通过：首页、新闻列表、两条已有新闻详情和本批十个 `/terms/<slug>` 路由均返回 HTTP 200，并返回本批词条标题；线上 CUA 打开 `prototype`，正文、演示、来源区可见，选择正确测验选项后显示独立验证提示，浏览器控制台无错误。
+
+回滚时恢复备份的旧 Compose 与镜像 `vibepolaris:001dff4a`，将 `/opt/vibepolaris/current` 指回 `/opt/vibepolaris/releases/20261002T032532Z-001dff4a`；保留新版本产生的数据，不覆盖 `vibepolaris_xiaobei_data`。
+
+`D:/Obsidian/gysnote` 在当前 Mac 环境不存在，因此不创建空记录。
