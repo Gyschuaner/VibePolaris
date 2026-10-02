@@ -74,10 +74,10 @@ function AppLifecycleLesson() {
   const labels = ["前台编辑", "进入后台", "进程被回收", "重新打开"];
   const draft = scene.step >= 3 ? (saved ? "已恢复：周五发布说明" : "没有可恢复草稿") : "周五发布说明";
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="应用生命周期与草稿恢复演示">
-    <div className={styles.choices} role="group" aria-label="模拟保存时机"><button type="button" aria-pressed={saved} onClick={() => setSaved(true)}><Check size={16} />编辑时持久化</button><button type="button" aria-pressed={!saved} onClick={() => setSaved(false)}>只等退出时保存</button></div>
-    <div className={styles.contract}><div><FileText size={27} /><h3>当前草稿</h3><p>{draft}</p></div><div><Gear size={27} /><h3>{scene.step === 0 ? "前台 · 可编辑" : scene.step === 1 ? "后台 · 可能暂停" : scene.step === 2 ? "进程已回收" : "重新创建"}</h3><p>{scene.step < 2 ? "页面仍可能有机会保存，但不能假设一定会继续运行。" : "回来时只能从已经持久化的状态尝试恢复。"}</p></div></div>
+    <div className={styles.choices} role="group" aria-label="模拟保存时机"><button type="button" aria-pressed={saved} onClick={() => setSaved(true)}><Check size={16} />编辑时持久化（重启后可读）</button><button type="button" aria-pressed={!saved} onClick={() => setSaved(false)}>只等退出时保存</button></div>
+    <div className={styles.contract}><div><FileText size={27} /><h3>当前草稿</h3><p>{draft}</p></div><div><Gear size={27} /><h3>{scene.step === 0 ? "前台 · 可编辑" : scene.step === 1 ? "后台 · 可能暂停" : scene.step === 2 ? "Android 回收 · Web 丢弃" : "重新创建"}</h3><p>{scene.step < 2 ? "页面仍可能有机会保存，但不能假设一定会继续运行。" : "回来时只能从已经持久化的状态尝试恢复。"}</p></div></div>
     <div className={styles.resultFlow}><User size={28} /><span>编辑</span><ArrowRight size={19} /><Stack size={28} /><span>{saved ? "持久化草稿" : "内存中的草稿"}</span><ArrowRight size={19} /><Browser size={28} /></div>
-    <FrameCopy scene={scene} labels={labels} title={["变化发生在前台", "后台不是永久运行", "终止可能没有最后通知", "恢复要读取已保存数据"]} text={["用户输入时就保存重要状态，比把全部希望放在最后一次退出更可靠。", "切到后台后，系统或浏览器可以暂停、冻结甚至回收页面。", "onDestroy 和 beforeunload 都不应被当作唯一的最终保存机会。", "重新打开只知道持久化内容；没有保存的内存状态不能凭空回来。"]} />
+    <FrameCopy scene={scene} labels={labels} title={["变化发生在前台", "后台不是永久运行", "Android 与 Web 的回收方式不同", "恢复要读取已保存数据"]} text={["用户输入时就保存重要状态，比把全部希望放在最后一次退出更可靠。", "切到后台后，系统或浏览器可以暂停、冻结甚至回收页面。", "Android 进程可能被系统回收；Web 标签页可能被冻结或被浏览器丢弃，二者都不保证最后回调。", "本例从已持久化状态读取草稿；没有保存的内存状态不能凭空回来。"]} />
   </div>;
 }
 
