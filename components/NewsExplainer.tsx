@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -119,6 +119,32 @@ function AdaptiveTrialVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function PolicyGovernanceVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-policy-governance policy-governance-phase-${activeStep}`} aria-hidden="true">
+      <div className="policy-governance-track">
+        <span className="policy-governance-track-label">政策状态</span>
+        <i /><i /><i /><i /><i />
+      </div>
+      <div className="policy-governance-card policy-governance-old">
+        <span className="policy-governance-card-label">原有 AI</span>
+        <span className="policy-governance-shape"><i /><i /><i /></span>
+      </div>
+      <span className="policy-governance-arrow">→</span>
+      <div className="policy-governance-card policy-governance-scope">
+        <span className="policy-governance-card-label">行政文本用 SI</span>
+        <span className="policy-governance-shape"><i /><i /></span>
+      </div>
+      <span className="policy-governance-arrow">→</span>
+      <div className="policy-governance-card policy-governance-next">
+        <span className="policy-governance-card-label">后续核对</span>
+        <span className="policy-governance-shape"><i /><i /><i /></span>
+      </div>
+      <div className="policy-governance-result">改名不等于能力改变</div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -158,7 +184,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (
