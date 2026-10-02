@@ -6,14 +6,25 @@
 
 - `eventDate`：事件真正发生或论文 v1 首次提交的 UTC 日期；
 - `publishedAt`：来源页面或论文版本显示的发布日期；两者不同也必须分别记录；
-- `sourceType`、`source.url`、`canonicalUrl`、`sourceHash`：来源优先官方公告/博客、论文原文和监管文件，URL 规范化后用指纹去重；
+- `sourceType`、`source.url`、`canonicalUrl`、`sourceHash`：阶段二优先官方公告/博客、监管文件、可信新闻报道和可核验的行业/个人解读；论文只在新闻事件已经成立时作为背景，URL 规范化后用指纹去重；
 - `evidence`：支持正文事实的短引用卡片；
 - `decision`：`selected`、`rejected`、`duplicate` 或 `deferred`，并写明原因；
 - `relatedSlugs`：已经确认的公开词条关系。机器建议不能冒充确认关系。
 
 某天没有满足日期和来源政策的候选时，也要写入同一天的 JSON，把 `selectedSlugs` 留空并填写 `gap` 的原因和下一步检索动作。空档日不是把前一天的文章复制过来。
 
-试跑流程：
+逐日流程（阶段二必须按天完成并提交）：
+
+1. 以目标日期检索候选新闻，先核对事件发生日，再分别记录来源的发布日期；
+2. 打开候选的原始页面，按“来源—事实—段落”建立引用卡片，优先保留一手材料和至少一条独立报道；
+3. 对同一事件按 canonical URL、sourceHash 和事件事实去重；没有合格事件就记录 `gap`，不拿论文或邻日新闻填空；
+4. 先写可自由编排的正文和机制讲解，再制作带来源/许可字段的本地图或动画；
+5. 确认公开词条联动，运行 humanizer-zh 检查中文表达，并把完整草稿交给 `codex-subagent-reader` 以零基础读者视角审读；
+6. 根据审读意见修订，写入 `readerReview`，通过校验后当天独立提交一个 Git commit。
+
+阶段二允许的候选来源类型包括 `official-announcement`、`official-blog`、`news-report`、`regulatory` 和仅作背景的 `paper`。`paper` 不得在没有对应新闻事件时成为 `selected`。
+
+试跑命令：
 
 ```bash
 npm run news:catalog > /tmp/vbp-news-catalog.json

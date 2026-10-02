@@ -7,21 +7,6 @@
     "publishedAt": "2026-09-28",
     "eventDate": "2026-09-28",
     "isExample": false,
-    "source": {
-      "name": "Anthropic",
-      "url": "https://www.anthropic.com/claude-sonnet-5-5"
-    },
-    "relatedSlugs": [
-      "agent-loop",
-      "benchmark",
-      "evaluation-dataset",
-      "tools"
-    ],
-    "relatedArticleSlugs": [
-      "google-private-ai-compute-memory-september-2026"
-    ],
-    "canonicalUrl": "https://www.anthropic.com/claude-sonnet-5-5",
-    "sourceHash": "sha256:5503456d02b60fb6526a3d1960edeb60ec15a0f816309caedaf4bb236feae4d5",
     "hero": {
       "url": "/images/news/anthropic-sonnet-55.svg",
       "alt": "暖色光束穿过代码网格，代表 Claude Sonnet 5.5 的编码与效率更新",
@@ -33,44 +18,32 @@
       {
         "id": "release",
         "title": "这次更新到底发布了什么",
-        "kind": "narrative",
-        "body": "Sonnet 5.5 是 Anthropic 对 Claude 5.5 家族的一次型号更新。官方把它描述为更适合日常任务、代码修复、文档处理和多步骤编码的模型，并称它已经在 Claude 平台以及 AWS、Google Cloud 和 Microsoft Azure 提供。\n\n这里有一个容易被忽略的阅读顺序：产品定位是厂商对模型用途的判断，评测分数是特定测试集上的结果，安全说明则是产品方描述的控制措施。三者都来自同一个发布页，但它们不是同一个结论。本文保留“官方称”“官方评测”这些限定，避免把发布材料改写成独立实验报告。"
+        "body": "Sonnet 5.5 是 Anthropic 对 Claude 5.5 家族的一次型号更新。官方把它描述为更适合日常任务、代码修复、文档处理和多步骤编码的模型，并称它已经在 Claude 平台以及 AWS、Google Cloud 和 Microsoft Azure 提供。\n\n这里有一个容易被忽略的阅读顺序：产品定位是厂商对模型用途的判断，评测分数是特定测试集上的结果，安全说明则是产品方描述的控制措施。三者都来自同一个发布页，但它们不是同一个结论。本文保留“官方称”“官方评测”这些限定，避免把发布材料改写成独立实验报告。",
+        "kind": "narrative"
       },
       {
         "id": "numbers",
         "title": "数字从哪里来，应该怎样读",
-        "kind": "technical",
-        "body": "Anthropic 给出的 Terminal-Bench 4.0 结果是 Sonnet 5.5 为 70.6%，Sonnet 5 为 10.3%。这个基准面向终端环境中的编程任务，分数可以帮助读者比较两个版本在该测试设置下的完成情况，却不能直接换算成“现实项目有 70.6% 的代码一次通过”。\n\n同一页还给出生成速度提升超过 30%、单任务成本最多降低 30%。速度描述关注单位时间内产出多少内容，成本描述关注完成同一任务需要消耗多少 token；如果任务本身更长、更难，或者需要反复调用工具，实际花费仍会改变。Opus 5.5 在需要持续判断的复杂开放任务上仍被官方放在更强的位置，这也是“更快”与“更适合所有任务”之间的边界。"
+        "body": "Anthropic 给出的 Terminal-Bench 4.0 结果是 Sonnet 5.5 为 70.6%，Sonnet 5 为 10.3%。这个基准面向终端环境中的编程任务，分数可以帮助读者比较两个版本在该测试设置下的完成情况，却不能直接换算成“现实项目有 70.6% 的代码一次通过”。\n\n同一页还给出生成速度提升超过 30%、单任务成本最多降低 30%。速度描述关注单位时间内产出多少内容，成本描述关注完成同一任务需要消耗多少 token；如果任务本身更长、更难，或者需要反复调用工具，实际花费仍会改变。Opus 5.5 在需要持续判断的复杂开放任务上仍被官方放在更强的位置，这也是“更快”与“更适合所有任务”之间的边界。",
+        "kind": "technical"
       },
       {
         "id": "work-loop",
         "title": "把它放进一次代码修复会发生什么",
-        "kind": "example",
-        "body": "假设一个项目的测试只在 CI 里失败。模型首先要读错误日志，再定位调用链，修改代码，运行局部测试，最后把变更解释给人。速度提升可能缩短每一轮等待，token 消耗下降可能减少长日志和重复上下文的成本；但如果模型没有真正跑测试，或者误读了日志，这两项优势都不能替代验证。\n\n因此，实际使用时可以把 Sonnet 5.5 放在一个小循环里观察：先给它只读的仓库和失败信息，再让它提出最小补丁，随后由测试结果决定是否继续。这个例子不是 Anthropic 对某个具体项目的承诺，而是把“编码性能”和“运行效率”翻译成读者可以检查的工作过程。"
+        "body": "假设一个项目的测试只在 CI 里失败。模型首先要读错误日志，再定位调用链，修改代码，运行局部测试，最后把变更解释给人。速度提升可能缩短每一轮等待，token 消耗下降可能减少长日志和重复上下文的成本；但如果模型没有真正跑测试，或者误读了日志，这两项优势都不能替代验证。\n\n因此，实际使用时可以把 Sonnet 5.5 放在一个小循环里观察：先给它只读的仓库和失败信息，再让它提出最小补丁，随后由测试结果决定是否继续。这个例子不是 Anthropic 对某个具体项目的承诺，而是把“编码性能”和“运行效率”翻译成读者可以检查的工作过程。",
+        "kind": "example"
       },
       {
         "id": "security-and-boundary",
         "title": "安全说明与能力边界要分开看",
-        "kind": "boundary",
-        "body": "发布页还介绍了网络安全防护、模型行为审计和推理保护。它们说明产品团队正在把安全控制放进模型上线流程，但页面本身没有给出独立机构对所有数字和所有部署环境的复现实验。阅读这部分时，应该把“官方说明已采取的措施”和“外部已经验证的效果”分成两列。\n\n同样，Sonnet 5.5 的成绩不能推导出它在每个代码库、每种语言或每个长链路代理任务中都优于旧型号。上下文质量、工具权限、测试覆盖率和人工复核都会影响结果。需要持续判断的开放任务仍可能更适合更强但更慢的型号。"
+        "body": "发布页还介绍了网络安全防护、模型行为审计和推理保护。它们说明产品团队正在把安全控制放进模型上线流程，但页面本身没有给出独立机构对所有数字和所有部署环境的复现实验。阅读这部分时，应该把“官方说明已采取的措施”和“外部已经验证的效果”分成两列。\n\n同样，Sonnet 5.5 的成绩不能推导出它在每个代码库、每种语言或每个长链路代理任务中都优于旧型号。上下文质量、工具权限、测试覆盖率和人工复核都会影响结果。需要持续判断的开放任务仍可能更适合更强但更慢的型号。",
+        "kind": "boundary"
       },
       {
         "id": "terms",
         "title": "三个词先弄懂，数字就不容易误读",
-        "kind": "aside",
-        "body": "**基准（benchmark）** 是一组固定任务和评分规则，用来做相对比较；它不是你手头项目的验收结果。**Token** 是模型处理文本时使用的计量单位，输入、输出和工具结果都可能消耗 token。**Agentic coding** 指模型在多步任务中读文件、调用工具、修改代码并根据反馈继续，而不是只补全一小段代码。\n\n把这三个词分清后，“70.6%”“快 30%”“便宜 30%”就会回到各自的测量范围里。"
-      }
-    ],
-    "sources": [
-      {
-        "url": "https://www.anthropic.com/claude-sonnet-5-5",
-        "claim": "Anthropic 发布 Claude Sonnet 5.5，并公布速度、成本和评测数据。",
-        "excerpt": "It runs 30%+ faster and costs up to 30% less for most work."
-      },
-      {
-        "url": "https://www.anthropic.com/claude-sonnet-5-5",
-        "claim": "官方披露 Sonnet 5.5 在 Terminal-Bench 4.0 的自测结果。",
-        "excerpt": "Sonnet 5.5 scores 70.6% on Terminal-Bench 4.0."
+        "body": "**基准（benchmark）** 是一组固定任务和评分规则，用来做相对比较；它不是你手头项目的验收结果。**Token** 是模型处理文本时使用的计量单位，输入、输出和工具结果都可能消耗 token。**Agentic coding** 指模型在多步任务中读文件、调用工具、修改代码并根据反馈继续，而不是只补全一小段代码。\n\n把这三个词分清后，“70.6%”“快 30%”“便宜 30%”就会回到各自的测量范围里。",
+        "kind": "aside"
       }
     ],
     "explainer": {
@@ -99,7 +72,34 @@
           "evidence": "发布页同时指出复杂开放任务仍可能需要更强型号。"
         }
       ]
-    }
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/claude-sonnet-5-5"
+    },
+    "relatedSlugs": [
+      "agent-loop",
+      "benchmark",
+      "evaluation-dataset",
+      "tools"
+    ],
+    "relatedArticleSlugs": [
+      "google-private-ai-compute-memory-september-2026"
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/claude-sonnet-5-5",
+        "claim": "Anthropic 发布 Claude Sonnet 5.5，并公布速度、成本和评测数据。",
+        "excerpt": "It runs 30%+ faster and costs up to 30% less for most work."
+      },
+      {
+        "url": "https://www.anthropic.com/claude-sonnet-5-5",
+        "claim": "官方披露 Sonnet 5.5 在 Terminal-Bench 4.0 的自测结果。",
+        "excerpt": "Sonnet 5.5 scores 70.6% on Terminal-Bench 4.0."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/claude-sonnet-5-5",
+    "sourceHash": "sha256:5503456d02b60fb6526a3d1960edeb60ec15a0f816309caedaf4bb236feae4d5"
   },
   {
     "slug": "google-private-ai-compute-memory-september-2026",
@@ -109,20 +109,6 @@
     "publishedAt": "2026-09-23",
     "eventDate": "2026-09-23",
     "isExample": false,
-    "source": {
-      "name": "Google DeepMind",
-      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/"
-    },
-    "relatedSlugs": [
-      "memory",
-      "retrieval",
-      "agent-harness"
-    ],
-    "relatedArticleSlugs": [
-      "anthropic-claude-sonnet-5-5-september-2026"
-    ],
-    "canonicalUrl": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
-    "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5",
     "hero": {
       "url": "/images/news/google-private-ai-memory.svg",
       "alt": "蓝色立方体组成安全数据流，代表 Private AI Compute 的服务器端记忆架构",
@@ -134,50 +120,38 @@
       {
         "id": "architecture",
         "title": "先沿着一条请求走一遍",
-        "kind": "narrative",
-        "body": "当用户在新设备上继续一个对话，应用需要找到此前保存的记忆。按 Google DeepMind 的说明，记忆数据保存在加密存储里，设备侧持有解密所需的密钥；请求通过端到端加密通道送到服务器上的硬件隔离环境，在那里短暂完成需要明文的计算，随后结果重新加密保存。\n\n这条链路的关键不是“数据永远不离开设备”，而是把数据存放、计算和解密能力放在不同位置。云端负责容量与计算，设备负责钥匙，隔离环境负责缩小明文暴露的时间和范围。"
+        "body": "当用户在新设备上继续一个对话，应用需要找到此前保存的记忆。按 Google DeepMind 的说明，记忆数据保存在加密存储里，设备侧持有解密所需的密钥；请求通过端到端加密通道送到服务器上的硬件隔离环境，在那里短暂完成需要明文的计算，随后结果重新加密保存。\n\n这条链路的关键不是“数据永远不离开设备”，而是把数据存放、计算和解密能力放在不同位置。云端负责容量与计算，设备负责钥匙，隔离环境负责缩小明文暴露的时间和范围。",
+        "kind": "narrative"
       },
       {
         "id": "key",
         "title": "设备上的钥匙，改变了谁能打开数据",
-        "kind": "technical",
-        "body": "如果密钥和数据都长期由同一台服务器管理，服务方理论上可以在服务器侧直接解密。Private AI Compute 的设计把密钥放到用户设备，并要求服务器进入受保护的执行环境后才能处理请求。这样，服务器存储被复制或单独读取时，拿到的仍应是密文。\n\n这并不意味着“有了设备密钥就没有风险”。设备丢失、恶意软件、用户主动授权、实现漏洞和运行时输出泄露，仍然需要单独处理。密钥归属改善的是一条明确的信任边界，不能替代端点安全和权限设计。"
+        "body": "如果密钥和数据都长期由同一台服务器管理，服务方理论上可以在服务器侧直接解密。Private AI Compute 的设计把密钥放到用户设备，并要求服务器进入受保护的执行环境后才能处理请求。这样，服务器存储被复制或单独读取时，拿到的仍应是密文。\n\n这并不意味着“有了设备密钥就没有风险”。设备丢失、恶意软件、用户主动授权、实现漏洞和运行时输出泄露，仍然需要单独处理。密钥归属改善的是一条明确的信任边界，不能替代端点安全和权限设计。",
+        "kind": "technical"
       },
       {
         "id": "continuity",
         "title": "跨设备记忆为什么需要云端",
-        "kind": "example",
-        "body": "把一个研究项目从手机切到电脑时，助手需要知道已经确认的术语、文件和未完成问题。如果记忆只存在手机里，电脑无法继续；如果明文长期放在云端，跨设备很方便，却会扩大服务端读取范围。服务器端持久记忆的目标，就是让加密后的记忆可以跨设备存取，同时只在受保护的计算步骤里暂时解密。\n\n这也引出一个产品问题：用户能否查看、删除或撤销某一条记忆？官方文章重点讲架构和审计，没有在同一页面给出完整的产品操作承诺。因此本文只解释它试图提供的连续性，不把架构描述写成已经普遍可用的功能清单。"
+        "body": "把一个研究项目从手机切到电脑时，助手需要知道已经确认的术语、文件和未完成问题。如果记忆只存在手机里，电脑无法继续；如果明文长期放在云端，跨设备很方便，却会扩大服务端读取范围。服务器端持久记忆的目标，就是让加密后的记忆可以跨设备存取，同时只在受保护的计算步骤里暂时解密。\n\n这也引出一个产品问题：用户能否查看、删除或撤销某一条记忆？官方文章重点讲架构和审计，没有在同一页面给出完整的产品操作承诺。因此本文只解释它试图提供的连续性，不把架构描述写成已经普遍可用的功能清单。",
+        "kind": "example"
       },
       {
         "id": "audit",
         "title": "审计记录能证明什么",
-        "kind": "comparison",
-        "body": "Google DeepMind 表示会公开服务器软件的防篡改记录、更新后的技术白皮书，并分享独立安全审计信息。它们分别帮助外部读者检查软件版本有没有被悄悄替换、设计是否能被复核、实际实现是否经过第三方检查。\n\n审计能提高可追溯性，却不等于证明每一次请求都绝对安全。读者仍需要关注审计范围、时间点、例外条件和密钥生命周期。把“可检查”与“已证明没有任何风险”区分开，才是这类安全架构新闻最重要的阅读习惯。"
+        "body": "Google DeepMind 表示会公开服务器软件的防篡改记录、更新后的技术白皮书，并分享独立安全审计信息。它们分别帮助外部读者检查软件版本有没有被悄悄替换、设计是否能被复核、实际实现是否经过第三方检查。\n\n审计能提高可追溯性，却不等于证明每一次请求都绝对安全。读者仍需要关注审计范围、时间点、例外条件和密钥生命周期。把“可检查”与“已证明没有任何风险”区分开，才是这类安全架构新闻最重要的阅读习惯。",
+        "kind": "comparison"
       },
       {
         "id": "boundary",
         "title": "它没有替你解决哪些问题",
-        "kind": "boundary",
-        "body": "这篇官方更新没有给出一个所有用户都能立即打开的产品开关，也没有给出跨设备记忆的普遍发布时间、性能数据或错误率。它主要提供设计方向与验证方法。\n\n即使隔离环境本身可靠，恶意客户端也可能把敏感信息放进请求，模型也可能在回答中复述不该复述的内容；如果设备被控制，设备持有的密钥也会受到影响。安全性来自整条链路，而不是一个名为 secure enclave 的单点标签。"
+        "body": "这篇官方更新没有给出一个所有用户都能立即打开的产品开关，也没有给出跨设备记忆的普遍发布时间、性能数据或错误率。它主要提供设计方向与验证方法。\n\n即使隔离环境本身可靠，恶意客户端也可能把敏感信息放进请求，模型也可能在回答中复述不该复述的内容；如果设备被控制，设备持有的密钥也会受到影响。安全性来自整条链路，而不是一个名为 secure enclave 的单点标签。",
+        "kind": "boundary"
       },
       {
         "id": "terms",
         "title": "三个安全词汇",
-        "kind": "aside",
-        "body": "**端到端加密** 关注消息从发送端到接收端的传输过程；**安全隔离环境（secure enclave）** 是限制代码、数据和访问路径的硬件或运行时边界；**持久记忆** 只是指上下文可以跨会话保存，并不自动意味着模型记住了一切，也不替用户决定哪些信息应该保存。\n\n把“保存在哪里”“谁有钥匙”“在哪里暂时解密”分开问，才能看懂这套架构。"
-      }
-    ],
-    "sources": [
-      {
-        "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
-        "claim": "Google DeepMind 介绍 Private AI Compute 的服务器端持久记忆架构。",
-        "excerpt": "A technical update on our Private AI Compute architecture, which will enable persistent, cross-device AI memory."
-      },
-      {
-        "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
-        "claim": "官方描述设备密钥、加密存储和安全隔离环境。",
-        "excerpt": "The cryptographic keys required to unlock it are held exclusively on your personal devices."
+        "body": "**端到端加密** 关注消息从发送端到接收端的传输过程；**安全隔离环境（secure enclave）** 是限制代码、数据和访问路径的硬件或运行时边界；**持久记忆** 只是指上下文可以跨会话保存，并不自动意味着模型记住了一切，也不替用户决定哪些信息应该保存。\n\n把“保存在哪里”“谁有钥匙”“在哪里暂时解密”分开问，才能看懂这套架构。",
+        "kind": "aside"
       }
     ],
     "explainer": {
@@ -206,7 +180,142 @@
           "evidence": "官方将方案定位为跨设备持久记忆架构。"
         }
       ]
-    }
+    },
+    "source": {
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/"
+    },
+    "relatedSlugs": [
+      "memory",
+      "retrieval",
+      "agent-harness"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-claude-sonnet-5-5-september-2026"
+    ],
+    "sources": [
+      {
+        "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+        "claim": "Google DeepMind 介绍 Private AI Compute 的服务器端持久记忆架构。",
+        "excerpt": "A technical update on our Private AI Compute architecture, which will enable persistent, cross-device AI memory."
+      },
+      {
+        "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+        "claim": "官方描述设备密钥、加密存储和安全隔离环境。",
+        "excerpt": "The cryptographic keys required to unlock it are held exclusively on your personal devices."
+      }
+    ],
+    "canonicalUrl": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+    "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5"
+  },
+  {
+    "slug": "waste-free-world-ai-recycling-20210108",
+    "title": "中国试用 AI 分拣机：探索把塑料回收接成可追踪的流程",
+    "summary": "2021 年 1 月，Unilever 与 Alibaba 在中国启动 Waste-Free World 试点。WebWire 的企业新闻稿和 Circular Online 的行业报道都提到，上海和杭州先放置 20 台回收机，用 AI 识别并预分拣塑料，再配合支付宝入口和激励机制；报道把后续回收与再利用写成闭环目标，实际效果仍需数据验证。",
+    "body": "2021 年 1 月 8 日，Unilever 与 Alibaba 启动了名为 Waste-Free World 的塑料回收试点。WebWire 的企业新闻稿把这一天标为发布日期；1 月 12 日，行业媒体 Circular Online 又报道了同一项计划。两种来源放在一起看，事件的重点不是“AI 自己懂环保”，而是合作方尝试把 AI 放进塑料回收的识别和预分拣环节。\n\n报道描述的投递流程是：使用者先用支付宝扫描机器上的二维码，再把塑料瓶投入入口；企业材料称机器会用 AI 识别不同种类的塑料瓶，并据此预分拣。报道还提到优惠券和蚂蚁森林绿色能量积分。至于分拣后的材料是否每次都交回回收中心、最终是否真的被再利用，公开材料把它写成闭环流程或目标，本文没有独立数据证明每一步都已完成。\n\n这里的“AI”需要谨慎理解。公开报道没有交代模型的训练数据、识别类别、误分拣率，或它在脏污、压扁、混合材质瓶子上的表现。因此我们能确认的是合作方、试点地点、20 台机器以及报道所述的流程；不能从新闻标题推断出通用的视觉理解能力，也不能把企业的减塑目标当成试点已经取得的结果。",
+    "publishedAt": "2021-01-12",
+    "eventDate": "2021-01-08",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/waste-free-world-ai-recycling-20210108.svg",
+      "alt": "中国试用 AI 分拣机：从投递到再利用的塑料回收闭环",
+      "sourceUrl": "/images/news/waste-free-world-ai-recycling-20210108.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "reported-event",
+        "title": "新闻里真正发生了什么",
+        "body": "WebWire 发布的企业新闻稿把事件日期标为 2021 年 1 月 8 日：Unilever 与 Alibaba 联合启动 Waste-Free World，在上海和杭州先放置 20 台回收机。Circular Online 在 1 月 12 日的行业报道中复述了这项计划。我们把 1 月 8 日记为 eventDate，把行业报道的 1 月 12 日记为 publishedAt，避免把“事情发生”和“报道出现”混成一个日期。",
+        "kind": "narrative"
+      },
+      {
+        "id": "loop",
+        "title": "AI 被放在回收流程的哪一步",
+        "body": "报道给出的流程可以拆成五个动作：扫码和投递是报道中的入口；识别和预分拣是企业材料声称的机器功能；暂存、交回回收中心和再利用属于闭环目标，实际完成情况没有在这些来源中被独立量化。把每一步的证据状态写清楚，比直接说“完成了闭环”更准确。",
+        "kind": "technical"
+      },
+      {
+        "id": "incentive",
+        "title": "为什么还要把扫码和积分接进来",
+        "body": "企业材料称投递者可以得到优惠券或支付宝蚂蚁森林的绿色能量积分。它们可能帮助记录扫码或投递行为，但不能据此确认瓶子后来被正确处理。要判断试点成效，还需要公开回收量、误分拣率和最终再利用去向。",
+        "kind": "comparison"
+      },
+      {
+        "id": "known-unknown",
+        "title": "目前能确认和不能确认的边界",
+        "body": "能确认的是合作方、20 台试点机器、上海和杭州的部署地点、支付宝扫码入口，以及“识别并预分拣塑料”的公开表述。不能确认的是训练数据、模型类型、每类塑料的准确率、设备维护成本和最终减塑量。把这些未知项写出来，读者才能区分新闻事实、企业目标和仍需验证的效果。",
+        "kind": "boundary"
+      },
+      {
+        "id": "takeaway",
+        "title": "把这条新闻带回日常判断",
+        "body": "以后看到“AI 回收”“智能分类”这类标题，可以先问三件事：输入是什么，分类结果会改变哪一步，结果有没有进入可追踪的后续流程。这个案例给出了报道中的输入和流程答案，但可识别类别、实际处理结果和长期效果仍需要运营数据或独立评估材料补上。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一只塑料瓶怎样被报道为“闭环”",
+      "question": "机器识别出材质之后，哪些步骤是报道事实，哪些只是目标？",
+      "steps": [
+        {
+          "label": "扫码",
+          "detail": "支付宝二维码是报道中的投递入口；是否把有效投递与账户积分成功关联，本文没有更细证据。",
+          "evidence": "Circular Online 描述了支付宝扫码入口。"
+        },
+        {
+          "label": "投递",
+          "detail": "报道把塑料瓶投入回收机作为试点流程的一部分，但没有提供每次投递的运营记录。",
+          "evidence": "企业新闻稿和行业报道都描述了投瓶步骤。"
+        },
+        {
+          "label": "识别",
+          "detail": "企业新闻稿称机器用 AI 自动识别不同种类的塑料瓶；模型、类别和准确率未公开。",
+          "evidence": "WebWire 的 2021-01-08 新闻稿。"
+        },
+        {
+          "label": "预分拣",
+          "detail": "报道把按类别分拣写成回收链路中的一环；它说明的是设计目标和设备功能，不等于已量化的最终效果。",
+          "evidence": "Circular Online 对预分拣的描述。"
+        },
+        {
+          "label": "计划回到回收中心",
+          "detail": "只有收集、处理和再利用真的发生，算法输出才会变成闭环的一部分；本次来源没有独立证明这一步。",
+          "evidence": "公开材料把后续回收写成闭环流程或目标。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Circular Online",
+      "url": "https://www.circularonline.co.uk/news/china-trials-ai-enabled-sorting-machines-to-keep-plastic-in-circular-economy/"
+    },
+    "relatedSlugs": [
+      "data-quality",
+      "data-pipeline",
+      "event-driven-architecture"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.circularonline.co.uk/news/china-trials-ai-enabled-sorting-machines-to-keep-plastic-in-circular-economy/",
+        "claim": "行业媒体在 2021-01-12 报道 Unilever 与 Alibaba 在中国启动 Waste-Free World，并描述 20 台机器的试点、支付宝扫码和按塑料类别预分拣。",
+        "excerpt": "The launch of Waste-Free World saw 20 recycling machines installed ... in Shanghai and Hangzhou. Each machine is equipped with ... AI technology which automatically identifies different kinds of plastic bottle."
+      },
+      {
+        "url": "https://www.webwire.com/ViewPressRel.asp?aId=268732",
+        "claim": "企业新闻稿把事件日期标为 2021-01-08，并说明试点由 Unilever 与 Alibaba 联合推出。",
+        "excerpt": "WEBWIRE – Friday, January 8, 2021. Unilever has joined forces with the Alibaba Group to launch ... a closed-loop plastic recycling system."
+      },
+      {
+        "url": "https://www.webwire.com/ViewPressRel.asp?aId=268732",
+        "claim": "企业材料把 AI 的职责限定为识别、分拣和暂存塑料，并提到支付宝投递入口。",
+        "excerpt": "Each machine is equipped with state-of-the-art AI technology which automatically identifies different kinds of plastic bottle."
+      }
+    ],
+    "canonicalUrl": "https://www.circularonline.co.uk/news/china-trials-ai-enabled-sorting-machines-to-keep-plastic-in-circular-economy/",
+    "sourceHash": "sha256:936d8a41b66c26a8367fecccdd14862bbb890102975da08994bc15984fe9d9fe"
   },
   {
     "slug": "ood-detection-evaluation-scenarios-20210107",

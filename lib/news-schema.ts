@@ -41,6 +41,14 @@ const modelReviewSchema = z.object({
   checkedAt: z.iso.datetime(),
   notes: z.string().trim().max(2_000).optional(),
 }).strict();
+const readerReviewSchema = z.object({
+  reviewer: z.enum(["codex-subagent-reader", "zcode-reader"]),
+  decision: z.enum(["passed", "needs-revision"]),
+  checkedAt: z.iso.datetime(),
+  questions: z.array(z.string().trim().min(1).max(500)).max(20).default([]),
+  notes: z.string().trim().max(2_000).optional(),
+  changes: z.array(z.string().trim().min(1).max(500)).max(20).default([]),
+}).strict();
 const verificationSchema = z.object({
   status: z.enum(["verified", "needs-review", "unverified"]),
   checkedAt: z.iso.datetime(),
@@ -48,7 +56,7 @@ const verificationSchema = z.object({
   notes: z.string().trim().max(2_000).optional(),
 }).strict();
 
-const sourceTypeSchema = z.enum(["official-announcement", "official-blog", "paper", "regulatory"]);
+const sourceTypeSchema = z.enum(["official-announcement", "official-blog", "news-report", "paper", "regulatory"]);
 const candidateDecisionSchema = z.enum(["selected", "rejected", "duplicate", "deferred"]);
 
 export const newsCandidateSchema = z.object({
@@ -82,7 +90,7 @@ export const newsDailyRunSchema = z.object({
   search: z.object({
     query: z.string().trim().min(1).max(2_000),
     sourceUrls: z.array(httpsUrl).min(1).max(20),
-    sourcePolicy: z.array(sourceTypeSchema).min(1).max(4),
+    sourcePolicy: z.array(sourceTypeSchema).min(1).max(5),
     candidateCount: z.number().int().nonnegative(),
     primaryCandidateCount: z.number().int().nonnegative(),
     deduplicatedCount: z.number().int().nonnegative(),
@@ -147,6 +155,7 @@ export const newsDraftSchema = newsArticleSchema.safeExtend({
   riskLevel: z.enum(["routine", "major", "uncertain"]).default("uncertain"),
   publishDecision: z.enum(["auto", "review", "rejected"]).default("review"),
   modelReview: modelReviewSchema,
+  readerReview: readerReviewSchema.optional(),
   mechanicalErrors: z.array(z.string().trim().min(1).max(300)).max(20).default([]),
   runId: z.string().trim().min(1).max(200).optional(),
   fingerprint: z.string().trim().min(1).max(200).optional(),
