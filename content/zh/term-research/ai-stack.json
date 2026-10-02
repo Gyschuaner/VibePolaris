@@ -1211,14 +1211,17 @@
   },
   {
     "slug": "container-image",
-    "mechanism": "容器镜像是只读层和运行配置组成的可分发模板，容器运行时据此创建可写实例。",
-    "misconception": "镜像不是正在运行的容器；同一镜像可启动多个状态各异的容器。",
-    "demoSignature": "输入：镜像含基础层80MB、应用层12MB；中间：启动3次复用92MB只读层并新增3个可写层各2MB；输出：3个独立容器。可视化：建议4帧的层堆栈复制出实例；交互：修改一个容器看只有其可写层变化。",
+    "mechanism": "容器镜像是不可变文件系统层、配置和内容摘要组成的可分发模板，运行时在其上创建带独立可写层的实例。",
+    "misconception": "镜像不是正在运行的容器；实例内写入不会回写镜像，删除实例只会删除它的临时写层。",
+    "demoSignature": "输入：base 80MB + app 12MB；中间：启动 A/B/C 共享 92MB 只读层，B 写入 /tmp/note 后仅 B 增加 2MB；输出：删除 B 后以同一摘要启动 B2。可视化：4 帧分层复制；交互：写入、删除和重启 B。",
     "sourceUrls": [
       "https://github.com/opencontainers/image-spec",
-      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf"
+      "https://docs.docker.com/get-started/docker-concepts/building-images/understanding-image-layers/",
+      "https://docs.docker.com/engine/storage/",
+      "https://docs.docker.com/engine/storage/drivers/",
+      "https://csrc.nist.gov/pubs/sp/800/190/final"
     ],
-    "rewriteRisk": "不要把Docker命令列表当概念；需要分清镜像层、配置和运行实例。",
+    "rewriteRisk": "必须区分镜像摘要、标签、实例可写层和持久化卷，不能用 Docker 命令列表代替机制解释。",
     "nearDuplicates": [
       "container"
     ]
