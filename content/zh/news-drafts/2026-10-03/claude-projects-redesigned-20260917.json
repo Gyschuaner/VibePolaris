@@ -1,0 +1,226 @@
+{
+  "slug": "claude-projects-redesigned-20260917",
+  "title": "Claude Code Projects 从“文件夹”变成协调器：并行线程、共享记忆先在 beta 开放",
+  "summary": "Anthropic 于 2026-09-17 重做 Claude Code Projects：用户给出目标和仓库后，协调器可以拆分任务、启动并行云端线程、汇总结果并持续保留项目记忆。新功能先以 beta 向部分 Pro/Max 云端会话用户开放，人工审查、合并和权限仍然存在。",
+  "body": "2026-09-17，Anthropic 把 Claude Code 的 Projects 重新设计成一个会协调任务的工作空间。过去的 Project 更像放资料和对话的文件夹；新版本让用户给出一个目标和代码库，Claude 负责拆分工作、派出并行线程、查看结果，再把结果汇总到主对话中。这个版本先以 beta 向部分使用云端会话的 Claude Pro 和 Max 用户开放。\n\n新结构的核心不是“多开几个聊天窗口”，而是协调器和工作线程的分工。每个线程是自己的 Claude Code 云端会话，有独立分支和仓库副本；协调器负责把目标变成任务、把上下文传给线程、收回输出并提示用户哪些结果需要处理。线程可以运行测试和创建 pull request，但代码重叠仍可能产生普通的合并冲突。\n\nProjects 还加入共享记忆和 Library。前者把项目决定、约束和沟通偏好留在后续线程可读取的位置，后者集中保存用户上传的文件和 Claude 生成的产物。Anthropic 说用户可以在主项目对话或单个线程里查看和干预，项目也会记住诸如发布时间、被放弃的方案和需要先征求谁同意等细节。\n\n这仍是 beta 产品，不是一个默认替用户合并所有代码的自动发布系统。访问范围、云端运行、线程用量和权限配置都会影响风险；官方还说本地工具与网络背后的运行方式尚未在当天开放。实际使用时，应把协调器当成任务编排层，把分支、测试、审查和人工合并当成仍需验证的工程环节。",
+  "publishedAt": "2026-09-17",
+  "eventDate": "2026-09-17",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/claude-projects-redesigned-20260917.svg",
+    "alt": "Claude Projects 用协调器串起目标、并行线程、共享记忆和人工验收。",
+    "sourceUrl": "/images/news/claude-projects-redesigned-20260917.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "shift",
+      "title": "从文件夹到协调器",
+      "body": "用户给目标和仓库后，Claude 会提出可执行工作、启动线程并汇总结果；资料文件夹不再是 Project 的全部。",
+      "kind": "narrative"
+    },
+    {
+      "id": "threads",
+      "title": "每个线程都有自己的会话和分支",
+      "body": "线程在云端运行自己的 Claude Code 会话、分支和仓库副本，能测试和创建 pull request，但同一代码的重叠仍按普通合并冲突处理。",
+      "kind": "technical"
+    },
+    {
+      "id": "memory",
+      "title": "共享记忆让项目跨会话延续",
+      "body": "项目会保存决定、约束和沟通偏好，Library 统一收集用户文件与生成产物；这些内容仍需要用户检查和删除。",
+      "kind": "comparison"
+    },
+    {
+      "id": "beta",
+      "title": "beta 资格和云端边界不能省略",
+      "body": "发布先面向部分 Pro/Max 云端会话用户，线程用量和权限会影响成本与风险，本地工具背后的运行方式还在后续计划。",
+      "kind": "boundary"
+    },
+    {
+      "id": "human",
+      "title": "人仍要掌握合并和验收",
+      "body": "协调器能安排工作和回传结果，却不等于已经替人完成代码审查、权限审批或生产发布。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个项目协调器怎样把目标变成可检查的线程？",
+    "question": "先设目标，再分派线程、共享上下文，最后由人验收。",
+    "steps": [
+      {
+        "label": "设定目标",
+        "detail": "用户说明目标、仓库和项目环境，协调器先提出可开始的工作。",
+        "evidence": "Anthropic 发布页。"
+      },
+      {
+        "label": "分派线程",
+        "detail": "每个任务进入自己的云端会话、分支和仓库副本。",
+        "evidence": "Projects architecture。"
+      },
+      {
+        "label": "共享上下文",
+        "detail": "线程读写项目记忆和 Library，减少重复交接。",
+        "evidence": "共享记忆说明。"
+      },
+      {
+        "label": "查看并验收",
+        "detail": "协调器汇总结果，人仍要检查测试、冲突和 pull request。",
+        "evidence": "beta 与工程边界。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Claude by Anthropic",
+    "url": "https://claude.com/blog/projects-redesigned"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "tools",
+    "memory",
+    "execution-sandbox",
+    "context"
+  ],
+  "relatedArticleSlugs": [
+    "anthropic-embedded-evaluation-accenture-20260918",
+    "google-cc-family-agent-20260917"
+  ],
+  "sources": [
+    {
+      "url": "https://claude.com/blog/projects-redesigned",
+      "claim": "Anthropic 宣布 Claude Code Projects 从文件夹式资料容器改成可拆分、协调并行云端线程的 beta 工作空间。",
+      "excerpt": "Claude by Anthropic, Projects redesigned: from folder to conversation, 2026-09-17。"
+    },
+    {
+      "url": "https://code.claude.com/docs/en/claude-projects",
+      "claim": "官方文档说明 Projects 的项目指令、共享上下文、线程、权限和云端会话边界。",
+      "excerpt": "Claude Code documentation, Claude Projects；作为产品使用和权限背景。"
+    }
+  ],
+  "canonicalUrl": "https://claude.com/blog/projects-redesigned",
+  "sourceHash": "sha256:71ee995e794e424ef1676dd75cffc7f4d705c0ef26f155eb7f70760f133433ef",
+  "status": "published",
+  "discoveredAt": "2026-10-03T17:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.82,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.82,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.76,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.76,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.76,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.76,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "anthropic-embedded-evaluation-accenture-20260918",
+      "score": 0.82,
+      "evidence": [
+        "同一周的 AI 产品、治理或代理事件构成时间线联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-cc-family-agent-20260917",
+      "score": 0.82,
+      "evidence": [
+        "同一周的 AI 产品、治理或代理事件构成时间线联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://claude.com/blog/projects-redesigned",
+      "claim": "Anthropic 宣布 Claude Code Projects 从文件夹式资料容器改成可拆分、协调并行云端线程的 beta 工作空间。",
+      "excerpt": "Claude by Anthropic, Projects redesigned: from folder to conversation, 2026-09-17。"
+    },
+    {
+      "url": "https://code.claude.com/docs/en/claude-projects",
+      "claim": "官方文档说明 Projects 的项目指令、共享上下文、线程、权限和云端会话边界。",
+      "excerpt": "Claude Code documentation, Claude Projects；作为产品使用和权限背景。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T17:10:00Z",
+    "method": "manual",
+    "notes": "逐条核对官方页面、日期和交叉报道；正文把公司/机构主张与可核验事实分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T17:10:00Z",
+    "notes": "按当天新闻事件独立组织正文，不把 beta、公司指标、峰会倡议或未来计划写成普遍能力或已落地规则。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T20:57:03Z",
+    "questions": [],
+    "notes": "Anthropic 产品公告和文档边界清楚；正文解释协调器、云端线程、共享记忆、beta 和人工合并，未把产品愿景写成自动发布能力。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-17",
+  "fingerprint": "sha256:71ee995e794e424ef1676dd75cffc7f4d705c0ef26f155eb7f70760f133433ef",
+  "promotedAt": "2026-10-02T20:59:18.548Z"
+}

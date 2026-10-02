@@ -4448,6 +4448,641 @@
     "sourceHash": "sha256:79cf58a605f1411ea7bc2a37d9aec01175b9e99e966f50b0f015636973a6048c"
   },
   {
+    "slug": "anthropic-ai-rd-metrics-20260917",
+    "title": "Anthropic 首次公开“AI 参与造 AI”指标：Claude 主导 26% 研发，但离完全自主还有距离",
+    "summary": "Anthropic 于 2026-09-17 发布一套内部测量：截至 8 月，Claude 按公司定义“主导”约 26% 的 AI 研发工作，超过 90% 的工作至少与 AI 协作；公司同时披露代理监督和安全算力快照，并强调方法仍需跨实验室和第三方验证。",
+    "body": "2026-09-17，Anthropic 发布一组用来衡量“AI 如何参与研发 AI”的内部指标。公司把 AI 研发拆成三个可追踪问题：Claude 在多大程度上完成 AI 研发工作、代理行为有多少监督，以及用于 AI 研发的算力有多少流向安全工作。它同时公开了一份截至 2026 年 8 月的快照，试图让外部读者看到实验室内部的进度，而不是只听发布会上的能力叙述。\n\n最受关注的数字是自动化指数：按 Anthropic 采用的 Automation Level 量表，Claude 在公司 AI 研发工作中“主导”（leads）约 26%，也就是从高层提示出发完成大部分任务、由人类监督；处在“协作”或更高层级的工作超过 90%。但官方同时写明，测量范围内没有任何一类工作已经达到完全自主。26% 是公司自己构建的任务篮子和加权方法得出的内部指标，不是对整个行业的比例。\n\n第二组数字描述监督：Anthropic 说最常用的内部平台同时约有 3 万个研究和工程代理，在线监控覆盖这些代理的每一次动作，离线监控会读取事后记录；截至 8 月，在线监控阻挡约 0.002% 的决策。第三组数字是算力快照：在 7 月 13 日至 20 日抽取的 AI 研发算力中，约 6% 用于安全工作，在 AI 驱动的 AI 研发算力中约 12% 用于安全。\n\n这些指标的价值在于把争论变成了可以重复检查的测量问题，但它们也有明确限制。任务分类、模型评审和算力标签都由 Anthropic 设计，部分标签是 best-effort，算力只看一周，指标还没有跨实验室的共同方法。公司提出让第三方核验内部流程，意味着这篇文章是透明度起点，不是独立审计结论，也不是“递归自我改进已经发生”的证明。",
+    "publishedAt": "2026-09-17",
+    "eventDate": "2026-09-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-ai-rd-metrics-20260917.svg",
+      "alt": "自动化等级、代理监督和安全算力组成一套可复核的 AI 研发指标。",
+      "sourceUrl": "/images/news/anthropic-ai-rd-metrics-20260917.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "why",
+        "title": "为什么把“AI 参与研发”做成指标",
+        "body": "Anthropic 想让公众看到模型怎样参与下一代模型和安全工作，而不是只看到最终产品的能力分数。",
+        "kind": "narrative"
+      },
+      {
+        "id": "automation",
+        "title": "26% 的“主导”不是 26% 的自主研发",
+        "body": "官方量表里的 leads 是从高层提示完成大部分任务、由人类监督；完全自主是更高的 AL5，当前没有测量子集达到它。",
+        "kind": "boundary"
+      },
+      {
+        "id": "oversight",
+        "title": "监督数字描述的是一套内部监控",
+        "body": "约 3 万个代理、在线/离线监控和 0.002% 阻挡率只覆盖最常用的内部平台，不能外推到所有 Claude 用户或整个行业。",
+        "kind": "technical"
+      },
+      {
+        "id": "compute",
+        "title": "安全算力占比是快照，不是预算承诺",
+        "body": "6% 与 12% 来自特定日期窗口和分类方法，安全研究的算力占用也不等于安全工作总量。",
+        "kind": "comparison"
+      },
+      {
+        "id": "limits",
+        "title": "第三方复核决定可比性",
+        "body": "任务篮子、标签和模型评审仍由 Anthropic 设计；跨实验室比较需要共同定义、可复跑样本和独立验证。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "怎样把“AI 在造 AI”拆成可核对的三个指标？",
+      "question": "先区分自动化等级、监督覆盖和算力投入，再讨论速度。",
+      "steps": [
+        {
+          "label": "列出研发任务",
+          "detail": "先把训练、评估、工具和安全工作放入固定任务篮子。",
+          "evidence": "Anthropic 指标方法。"
+        },
+        {
+          "label": "标注自动化等级",
+          "detail": "用 AL0 到 AL5 判断 AI 是协助、协作、主导还是完全自主。",
+          "evidence": "Automation Level 量表。"
+        },
+        {
+          "label": "记录代理监督",
+          "detail": "统计覆盖、复核延迟和阻挡/升级比例。",
+          "evidence": "在线与离线监控表。"
+        },
+        {
+          "label": "公开限制",
+          "detail": "说明标签、样本窗口和自评可能带来的偏差，等待第三方核验。",
+          "evidence": "官方 limitations。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic Institute",
+      "url": "https://www.anthropic.com/institute/measuring-pace-of-ai-development"
+    },
+    "relatedSlugs": [
+      "agent",
+      "benchmark",
+      "data-quality",
+      "authorization",
+      "context-window"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-embedded-evaluation-accenture-20260918",
+      "openai-ai-standards-rsi-20260921"
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/institute/measuring-pace-of-ai-development",
+        "claim": "Anthropic 公布 AI-led R&D、代理监督和安全算力三个指标，并报告 Claude 在 2026 年 8 月“主导”约 26% 的 AI 研发工作。",
+        "excerpt": "Anthropic Institute, Measurements for understanding the pace of AI development inside frontier labs, 2026-09-17；官方方法与限制。"
+      },
+      {
+        "url": "https://apnews.com/article/anthropic-claude-ai-model-self-improvement-4d3a7430f57cbc7c39e1c5f2b7d7e132",
+        "claim": "AP 9 月 18 日跟进报道把官方指标概括为 Claude 协助构建下一代模型，同时保留“仍需人类监督、尚未完全自主”的边界。",
+        "excerpt": "Associated Press, Anthropic’s Claude is helping the company develop the next version, published 2026-09-18；为跨日报道交叉卡片。"
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/institute/measuring-pace-of-ai-development",
+    "sourceHash": "sha256:35ef4e506e8e05802e65a167f21e30a1f75e1245ecadf3a52a99dba3e86639b0"
+  },
+  {
+    "slug": "anthropic-life-sciences-verification-20260917",
+    "title": "Anthropic 为生命科学开放更宽模型访问：高风险项目仍要单独核验",
+    "summary": "Anthropic 于 2026-09-17 发布 beta 版 Life Sciences Verification Program，机构通过资质、安全和伦理核验后，可申请更适合生物工作的模型访问；High-risk Use 仍按单项目额外审批，不能理解为无限制的 Claude 生物能力。",
+    "body": "2026-09-17，Anthropic 宣布 Life Sciences Verification Program（LSVP，生命科学验证计划）进入 beta，并向更广泛的生命科学团队开放申请。通过验证的机构可以使用 Mythos、Opus 和 Sonnet，在药物发现、研究生物学、临床开发和制造等场景获得比通用 Fable 模型更宽的生物学访问范围。当天开放的是机构和团队入口，不是所有个人用户的无条件开通。\n\nLSVP 把“能不能用”拆成了两层。申请方要先提交研究资质、安全标准和伦理监督信息；通过后，再按项目需要申请 Standard Use 或 High-risk Use。Standard Use 面向大多数日常研发工作，通常一年续期；High-risk Use 只绑定一个具体项目、六个月续期，风险更高的申请还要接受额外审查。\n\n这里的放宽是有范围的。Anthropic 说，High-risk grant 会移除阻挡生命科学请求的那组限制，但网络安全分类器等其他安全措施仍保留；高风险的 Mythos 访问在发布时也只对少数经过额外核验的机构开放。计划还把组织资格、数据隔离和产品入口写进了准入条件，而不是只在模型提示词里加一句“请谨慎使用”。\n\n这条新闻记录的是一种访问和责任分配机制，不是 Claude 已经独立完成药物研发的证据。LSVP 目前仍是 beta，不支持 BAA 组织，也还没有第三方平台入口。判断它是否有效，要继续看审核标准如何执行、研究结果是否可复现、发生误用时谁能撤销项目权限，以及机构如何把模型输出接回真实实验和伦理流程。",
+    "publishedAt": "2026-09-17",
+    "eventDate": "2026-09-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-life-sciences-verification-20260917.svg",
+      "alt": "生命科学模型访问从机构核验走向分层 grant；高风险项目仍需独立复核。",
+      "sourceUrl": "/images/news/anthropic-life-sciences-verification-20260917.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "今天开放的是经过核验的机构入口",
+        "body": "LSVP 在 beta 阶段向生命科学团队和机构开放申请，覆盖药物发现、研究生物学、临床开发和制造等工作。个人 Pro/Max 入口仍在后续计划中。",
+        "kind": "narrative"
+      },
+      {
+        "id": "verification",
+        "title": "先核验机构，再决定访问范围",
+        "body": "申请方要提供研究资质、安全标准和伦理监督信息；通过后才进入 Standard Use 或 High-risk Use 的 grant 申请。",
+        "kind": "technical"
+      },
+      {
+        "id": "risk",
+        "title": "高风险 grant 绑定具体项目",
+        "body": "High-risk Use 不是整支团队的长期通行证，而是针对单一项目、需要更高审查并按半年续期的额外权限。",
+        "kind": "comparison"
+      },
+      {
+        "id": "safeguards",
+        "title": "放宽生物学限制，不等于取消所有护栏",
+        "body": "Anthropic 说网络安全分类器等其他措施仍保留；高风险 Mythos 访问也只先给少数实体。",
+        "kind": "boundary"
+      },
+      {
+        "id": "followup",
+        "title": "后续要看准入和撤权如何执行",
+        "body": "计划是否真的降低误用风险，要看审核、数据隔离、项目撤销和实验伦理流程，而不是只看“更宽访问”。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "ai-biology",
+      "title": "一项生命科学访问计划怎样把模型权限分层？",
+      "question": "先核验谁在做什么，再决定能使用哪一层模型。",
+      "steps": [
+        {
+          "label": "提交机构资料",
+          "detail": "团队提供研究资质、安全标准和伦理监督信息。",
+          "evidence": "Anthropic LSVP 说明。"
+        },
+        {
+          "label": "选择访问等级",
+          "detail": "按项目选择 Standard Use 或 High-risk Use grant。",
+          "evidence": "官方 grant 条款。"
+        },
+        {
+          "label": "按期限复核",
+          "detail": "Standard 通常年度续期，高风险项目按半年复核。",
+          "evidence": "官方可用性说明。"
+        },
+        {
+          "label": "保留其他护栏",
+          "detail": "网络安全分类器等措施继续工作，计划仍处于 beta。",
+          "evidence": "官方安全边界。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/life-sciences-verification-program"
+    },
+    "relatedSlugs": [
+      "authorization",
+      "agent",
+      "data-quality",
+      "execution-sandbox"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-wet-lab-20260918",
+      "anthropic-embedded-evaluation-accenture-20260918"
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/life-sciences-verification-program",
+        "claim": "Anthropic 宣布 LSVP beta，向生命科学机构开放经过验证的模型访问，并区分 Standard Use 与 High-risk Use。",
+        "excerpt": "Anthropic, Introducing the Life Sciences Verification Program, 2026-09-17；官方说明 beta、申请和准入范围。"
+      },
+      {
+        "url": "https://www.anthropic.com/news/detecting-and-countering-misuse-of-ai-september-2026",
+        "claim": "Anthropic 将生命科学误用与网络安全分类器、内部审查和数据隔离放在同一套滥用防护背景中。",
+        "excerpt": "Anthropic, Detecting and countering misuse of AI: September 2026；作为计划风险背景，不替代 LSVP 条款。"
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/life-sciences-verification-program",
+    "sourceHash": "sha256:4bc5b576de08193162582961d2cc5142a1510ce2671eb795b8426e3a745b2faa"
+  },
+  {
+    "slug": "claude-projects-redesigned-20260917",
+    "title": "Claude Code Projects 从“文件夹”变成协调器：并行线程、共享记忆先在 beta 开放",
+    "summary": "Anthropic 于 2026-09-17 重做 Claude Code Projects：用户给出目标和仓库后，协调器可以拆分任务、启动并行云端线程、汇总结果并持续保留项目记忆。新功能先以 beta 向部分 Pro/Max 云端会话用户开放，人工审查、合并和权限仍然存在。",
+    "body": "2026-09-17，Anthropic 把 Claude Code 的 Projects 重新设计成一个会协调任务的工作空间。过去的 Project 更像放资料和对话的文件夹；新版本让用户给出一个目标和代码库，Claude 负责拆分工作、派出并行线程、查看结果，再把结果汇总到主对话中。这个版本先以 beta 向部分使用云端会话的 Claude Pro 和 Max 用户开放。\n\n新结构的核心不是“多开几个聊天窗口”，而是协调器和工作线程的分工。每个线程是自己的 Claude Code 云端会话，有独立分支和仓库副本；协调器负责把目标变成任务、把上下文传给线程、收回输出并提示用户哪些结果需要处理。线程可以运行测试和创建 pull request，但代码重叠仍可能产生普通的合并冲突。\n\nProjects 还加入共享记忆和 Library。前者把项目决定、约束和沟通偏好留在后续线程可读取的位置，后者集中保存用户上传的文件和 Claude 生成的产物。Anthropic 说用户可以在主项目对话或单个线程里查看和干预，项目也会记住诸如发布时间、被放弃的方案和需要先征求谁同意等细节。\n\n这仍是 beta 产品，不是一个默认替用户合并所有代码的自动发布系统。访问范围、云端运行、线程用量和权限配置都会影响风险；官方还说本地工具与网络背后的运行方式尚未在当天开放。实际使用时，应把协调器当成任务编排层，把分支、测试、审查和人工合并当成仍需验证的工程环节。",
+    "publishedAt": "2026-09-17",
+    "eventDate": "2026-09-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/claude-projects-redesigned-20260917.svg",
+      "alt": "Claude Projects 用协调器串起目标、并行线程、共享记忆和人工验收。",
+      "sourceUrl": "/images/news/claude-projects-redesigned-20260917.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "shift",
+        "title": "从文件夹到协调器",
+        "body": "用户给目标和仓库后，Claude 会提出可执行工作、启动线程并汇总结果；资料文件夹不再是 Project 的全部。",
+        "kind": "narrative"
+      },
+      {
+        "id": "threads",
+        "title": "每个线程都有自己的会话和分支",
+        "body": "线程在云端运行自己的 Claude Code 会话、分支和仓库副本，能测试和创建 pull request，但同一代码的重叠仍按普通合并冲突处理。",
+        "kind": "technical"
+      },
+      {
+        "id": "memory",
+        "title": "共享记忆让项目跨会话延续",
+        "body": "项目会保存决定、约束和沟通偏好，Library 统一收集用户文件与生成产物；这些内容仍需要用户检查和删除。",
+        "kind": "comparison"
+      },
+      {
+        "id": "beta",
+        "title": "beta 资格和云端边界不能省略",
+        "body": "发布先面向部分 Pro/Max 云端会话用户，线程用量和权限会影响成本与风险，本地工具背后的运行方式还在后续计划。",
+        "kind": "boundary"
+      },
+      {
+        "id": "human",
+        "title": "人仍要掌握合并和验收",
+        "body": "协调器能安排工作和回传结果，却不等于已经替人完成代码审查、权限审批或生产发布。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个项目协调器怎样把目标变成可检查的线程？",
+      "question": "先设目标，再分派线程、共享上下文，最后由人验收。",
+      "steps": [
+        {
+          "label": "设定目标",
+          "detail": "用户说明目标、仓库和项目环境，协调器先提出可开始的工作。",
+          "evidence": "Anthropic 发布页。"
+        },
+        {
+          "label": "分派线程",
+          "detail": "每个任务进入自己的云端会话、分支和仓库副本。",
+          "evidence": "Projects architecture。"
+        },
+        {
+          "label": "共享上下文",
+          "detail": "线程读写项目记忆和 Library，减少重复交接。",
+          "evidence": "共享记忆说明。"
+        },
+        {
+          "label": "查看并验收",
+          "detail": "协调器汇总结果，人仍要检查测试、冲突和 pull request。",
+          "evidence": "beta 与工程边界。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Claude by Anthropic",
+      "url": "https://claude.com/blog/projects-redesigned"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "tools",
+      "memory",
+      "execution-sandbox",
+      "context"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-embedded-evaluation-accenture-20260918",
+      "google-cc-family-agent-20260917"
+    ],
+    "sources": [
+      {
+        "url": "https://claude.com/blog/projects-redesigned",
+        "claim": "Anthropic 宣布 Claude Code Projects 从文件夹式资料容器改成可拆分、协调并行云端线程的 beta 工作空间。",
+        "excerpt": "Claude by Anthropic, Projects redesigned: from folder to conversation, 2026-09-17。"
+      },
+      {
+        "url": "https://code.claude.com/docs/en/claude-projects",
+        "claim": "官方文档说明 Projects 的项目指令、共享上下文、线程、权限和云端会话边界。",
+        "excerpt": "Claude Code documentation, Claude Projects；作为产品使用和权限背景。"
+      }
+    ],
+    "canonicalUrl": "https://claude.com/blog/projects-redesigned",
+    "sourceHash": "sha256:71ee995e794e424ef1676dd75cffc7f4d705c0ef26f155eb7f70760f133433ef"
+  },
+  {
+    "slug": "google-cc-family-agent-20260917",
+    "title": "Google 把 CC 扩成家庭共享代理：最多六人共享上下文，权限仍由成员逐项选择",
+    "summary": "Google Labs 于 2026-09-17 推出家庭版 CC：最多六名成员可选择共享邮件、日历、聊天或文件，让代理生成共同日程并执行部分事务。CC 有独立 Google 账号和权限边界，但目前只面向美国成年个人账号做早期实验。",
+    "body": "2026-09-17，Google Labs 把实验性 AI agent“CC”扩展成面向家庭和小组的共享助手。最多六名成员可以选择把学校通知、日历、聊天或 Drive 文件交给同一个 CC；它会生成共享的 “Your Day Ahead” 日报、整理任务和日程，也可以在得到许可后填写报名表、制作购物清单或规划每周菜单。\n\nCC 的产品设计有一个关键变化：它拥有自己的已验证 Google 账号，而不是伪装成某个家庭成员。每个人决定哪些信息可以交给 CC，成员也可以随时收回；官方说 CC 只回应小组成员，不会在没有许可时向组外发送信息或采取行动。这个账号和权限模型，是家庭共享代理与个人聊天机器人之间的主要区别。\n\nGoogle 把 CC 放在一个更长的代理链里：它连接 Gmail、Chat、Docs、Calendar 和 Tasks，背后运行在隔离的云端计算机上，由 Google 的 agentic harness 和 Gemini 模型提供能力。它可以把图片、短信或邮件里的活动信息写进共享日历，但“能调用工具”不等于自动获得所有家庭数据，分享范围仍取决于成员的选择和产品权限。\n\n当天开放的是美国、18 岁以上、个人 Google 账号用户的早期实验；现有用户通过邮件升级，新用户加入 waitlist。Google 没有把它写成面向所有家庭的正式产品，也没有公布实验阶段的准确率、误操作率或家庭争议处理数据。因此这条新闻更适合读成“共享代理的权限原型”，而不是一个已经替全家可靠管理生活的产品。",
+    "publishedAt": "2026-09-17",
+    "eventDate": "2026-09-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-cc-family-agent-20260917.svg",
+      "alt": "家庭成员选择共享信息，CC 通过独立账号整理任务并在获准后行动。",
+      "sourceUrl": "/images/news/google-cc-family-agent-20260917.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "group",
+        "title": "CC 从个人助手变成共享家庭代理",
+        "body": "最多六名成员可以共享一套日历、任务和选定资料，CC 负责整理每日简报和家庭事务。",
+        "kind": "narrative"
+      },
+      {
+        "id": "identity",
+        "title": "自己的账号让身份和权限更清楚",
+        "body": "CC 使用已验证的 Google 账号回应家庭成员；成员选择分享什么，CC 不在未经许可时向组外行动。",
+        "kind": "boundary"
+      },
+      {
+        "id": "actions",
+        "title": "它可以做事，但每一步都有条件",
+        "body": "填写表格、更新日历和创建清单需要成员授权；连接工具不等于拥有所有邮件、聊天或 Drive 文件。",
+        "kind": "technical"
+      },
+      {
+        "id": "memory",
+        "title": "共享记忆可能同时带来便利和风险",
+        "body": "家庭偏好和共同任务会被长期整理，个人信息与群组信息如何分开，取决于产品的共享设置和成员习惯。",
+        "kind": "comparison"
+      },
+      {
+        "id": "rollout",
+        "title": "目前只是美国早期实验",
+        "body": "产品面向美国 18 岁以上个人账号用户，分批升级或 waitlist；准确率、误操作和纠纷处理数据还没有公开。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "共享家庭代理怎样避免“替所有人做决定”？",
+      "question": "先由成员选择信息，再让代理整理和执行获准的任务。",
+      "steps": [
+        {
+          "label": "邀请成员",
+          "detail": "家庭成员加入同一个 CC，最多六人共享一个代理入口。",
+          "evidence": "Google Labs 说明。"
+        },
+        {
+          "label": "选择信息",
+          "detail": "每个人决定邮件、日历、聊天或 Drive 哪些内容可以给 CC。",
+          "evidence": "共享权限说明。"
+        },
+        {
+          "label": "整理任务",
+          "detail": "CC 生成每日简报、日历事件和任务清单，保留家庭共同上下文。",
+          "evidence": "Your Day Ahead。"
+        },
+        {
+          "label": "获得许可再行动",
+          "detail": "填写表格或更新外部服务前，成员仍需授权，且产品处于早期实验。",
+          "evidence": "官方 rollout 条件。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Labs",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "memory",
+      "authorization",
+      "tools",
+      "execution-sandbox",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "claude-projects-redesigned-20260917",
+      "google-gemini-irregular-breach-20260918"
+    ],
+    "sources": [
+      {
+        "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+        "claim": "Google Labs 宣布 CC 成为面向家庭的实验性 AI agent，最多六名成员共享选择性信息，并连接日历、任务和家庭协作。",
+        "excerpt": "Google Labs, The new CC, an AI agent built for families, 2026-09-17。"
+      },
+      {
+        "url": "https://arstechnica.com/google/2026/09/google-announces-new-experimental-cc-ai-agent-for-families/",
+        "claim": "Ars Technica 交叉报道 CC 自有 Google 账号、最多六名成员和共享数据边界。",
+        "excerpt": "Ars Technica, Google announces new experimental CC AI agent for families, 2026-09-17。"
+      }
+    ],
+    "canonicalUrl": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+    "sourceHash": "sha256:bfe62d31a75d773139bfaf6d949c46b97017c294f3492b0268d13c868e6f9386"
+  },
+  {
+    "slug": "king-charles-ai-summit-20260917",
+    "title": "查尔斯三世在苏格兰 AI 峰会要求“在太晚之前”保留控制手段：没有形成约束性规则",
+    "summary": "2026-09-17，英国王室在苏格兰召集 Nvidia、Google DeepMind、OpenAI、Anthropic 等 AI 代表与政府、公民社会讨论共同原则。国王讲话强调安全、人类尊严和国际合作，但当天没有公布具法律约束力的规则或监管机构。",
+    "body": "2026-09-17，英国国王查尔斯三世在苏格兰 Dumfries House 召集 AI 企业、政府和公民社会代表开会。英国王室的会后说明列出 Nvidia、Google DeepMind、OpenAI 和 Anthropic 等参与方；会议讨论的是怎样让 AI 服务社会、社区和环境，以及能否形成指导未来应用的共同原则。\n\n查尔斯三世在开场讲话中把 AI 的收益和风险放在一起谈：生命科学和医疗可能受益，但失控或落入错误的人手也可能带来严重后果。他要求与会者思考两件事——怎样把安全放进 AI 的收益之中，以及怎样通过国际合作形成共识。这里的“要求”是峰会上的政治与公共讨论，不是对参会公司的监管命令。\n\n这场峰会的新闻价值在于参与者和议题被放到同一张桌子上，但公开材料没有给出具有法律约束力的协议、统一安全标准或具体执行预算。王室页面只说与会者讨论共同原则，AP 也把它报道为在 AI 发展速度和控制手段争论中的一次会面。\n\n因此，读者要把三层信息分开：当天确实有峰会和公开讲话；峰会提出了以人为中心、国际合作和控制手段等方向；后续是否形成规则、行业承诺或政府行动，还要看会议结论和正式文件。把一场高层讨论写成“英国已经建立 AI 监管机构”，会超过现有证据。",
+    "publishedAt": "2026-09-17",
+    "eventDate": "2026-09-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/king-charles-ai-summit-20260917.svg",
+      "alt": "AI 峰会把企业、政府与公民社会放到共同原则的讨论桌上。",
+      "sourceUrl": "/images/news/king-charles-ai-summit-20260917.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "meeting",
+        "title": "当天发生的是一场跨界峰会",
+        "body": "王室把 AI 企业、政府部长和公民社会代表带到 Dumfries House，讨论技术如何服务社会、社区和环境。",
+        "kind": "narrative"
+      },
+      {
+        "id": "speech",
+        "title": "讲话提出问题，不是发布规则",
+        "body": "查尔斯三世要求与会者思考安全收益和国际合作，但没有宣布监管机构、合规义务或统一技术标准。",
+        "kind": "boundary"
+      },
+      {
+        "id": "participants",
+        "title": "参与者让议题变得具体",
+        "body": "Nvidia、Google DeepMind、OpenAI 和 Anthropic 等代表出席，使 AI 速度、控制和人的尊严进入同一场政策对话。",
+        "kind": "comparison"
+      },
+      {
+        "id": "what-next",
+        "title": "后续文件比现场口号更关键",
+        "body": "能否形成共同原则、公司承诺或政府行动，要看会后结论和正式文本，而不是只看讲话中的价值判断。",
+        "kind": "technical"
+      },
+      {
+        "id": "date",
+        "title": "峰会日、讲话日和报道日一致",
+        "body": "王室页面和 AP 都把事件记录为 9 月 17 日，当前没有理由把它拆成多天的不同事件。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "ai-ethics",
+      "title": "一场 AI 峰会怎样从讲话走到政策？",
+      "question": "把现场讨论、共同原则和正式规则分成三步看。",
+      "steps": [
+        {
+          "label": "召集代表",
+          "detail": "企业、政府和公民社会代表在 Dumfries House 见面。",
+          "evidence": "王室会后说明。"
+        },
+        {
+          "label": "提出两组问题",
+          "detail": "怎样让 AI 造福社会，怎样通过国际合作形成共识。",
+          "evidence": "国王讲话原文。"
+        },
+        {
+          "label": "讨论共同原则",
+          "detail": "与会者考虑未来应用应如何兼顾能力、人的尊严和自然环境。",
+          "evidence": "峰会说明。"
+        },
+        {
+          "label": "等待正式结果",
+          "detail": "没有把讨论自动升级为法律、监管机构或行业协议。",
+          "evidence": "王室与 AP 报道边界。"
+        }
+      ]
+    },
+    "source": {
+      "name": "The Royal Family",
+      "url": "https://www.royal.uk/news-and-activity/2026-09-17/the-king-convenes-tech-leaders-for-ai-summit-in-scotland"
+    },
+    "relatedSlugs": [
+      "state",
+      "event",
+      "authorization",
+      "data-quality"
+    ],
+    "relatedArticleSlugs": [
+      "trump-ai-force-czar-20260919",
+      "ai-slowdown-antitrust-lawsuit-20260918"
+    ],
+    "sources": [
+      {
+        "url": "https://www.royal.uk/news-and-activity/2026-09-17/the-king-convenes-tech-leaders-for-ai-summit-in-scotland",
+        "claim": "英国王室确认查尔斯三世在 Dumfries House 召集 AI、政府和公民社会代表讨论未来 AI 部署与共同原则。",
+        "excerpt": "The Royal Family, The King convenes tech leaders for AI Summit in Scotland, published 17/09/2026。"
+      },
+      {
+        "url": "https://www.royal.uk/news-and-activity/2026-09-17/the-kings-speech-at-the-ai-summit-in-scotland",
+        "claim": "国王讲话提出把 AI 安全放进收益讨论，并询问如何通过国际合作形成共识；它是公开讲话，不是约束性规则。",
+        "excerpt": "The Royal Family, The King’s speech at the AI Summit in Scotland, 17/09/2026。"
+      },
+      {
+        "url": "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a",
+        "claim": "AP 交叉报道了与会的 AI 领导者、控制风险和未形成正式协议的背景。",
+        "excerpt": "Associated Press, The king and AI: UK monarch Charles meets artificial intelligence leaders as safety concerns swirl, 2026-09-17。"
+      }
+    ],
+    "canonicalUrl": "https://www.royal.uk/news-and-activity/2026-09-17/the-king-convenes-tech-leaders-for-ai-summit-in-scotland",
+    "sourceHash": "sha256:9b4a10be9e8ef51641b33f7da80e289feded64f9720c84c9e40893f4960f31cf"
+  },
+  {
+    "slug": "mozilla-mila-open-source-ai-20260917",
+    "title": "Mozilla 与 Mila 获加拿大支持，启动本地可控的开源 AI 基础层：先做标准和参考实现",
+    "summary": "Mozilla 与 Mila 于 2026-09-17 宣布建设面向企业、政府和公共利益组织的开源 AI 基础层，计划同时提供开放接口标准和可安装的参考实现。Mozilla 先投 500 万美元，Hypertec 承诺第一年投 100 万美元；六个月和两年的采用目标仍是后续交付。",
+    "body": "2026-09-17，Mozilla 和 Mila 在加拿大 ALL IN 大会上宣布建设面向机构的开源 AI 基础层，并获得加拿大政府支持。Mila 负责技术交付和协调，Mozilla 提供开源工程经验；Mozilla 为项目先投入 500 万美元，Hypertec 另承诺第一年投入 100 万美元，帮助把参考实现放到加拿大硬件上。\n\n这项计划想解决的不是“再发布一个更大的模型”，而是让组织能够在自己的机器或选择的基础设施上运行模型、工具和治理控制。官方设想包含两半：一套可以互换组件的开放接口标准，以及任何机构都能安装的 reference implementation（参考实现）。目标是减少部署开源模型时的集成、维护、安全和成本门槛。\n\nMozilla 和 Mila 说，基础层会把数据控制、访问权限和治理放在一开始，而不是等系统上线后再补。它面向企业、政府和公共利益组织，但新闻稿只公布了方向、资金和合作方，没有交付可下载的完整产品，也没有证明所有开源模型都能直接接入。\n\n官方时间表同样需要谨慎读：双方希望六个月内发布面向企业、政府和公共利益场景的参考实现，两年目标是让开源 AI 更容易被组织采用。它是一个有资金和工程计划的基础设施倡议，不等于加拿大已经建立统一的主权 AI 平台；后续要看接口是否公开、参考实现是否可运行，以及安全更新和责任如何分配。",
+    "publishedAt": "2026-09-17",
+    "eventDate": "2026-09-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/mozilla-mila-open-source-ai-20260917.svg",
+      "alt": "开放接口、参考实现、治理控制和真实部署组成开源 AI 基础层。",
+      "sourceUrl": "/images/news/mozilla-mila-open-source-ai-20260917.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "这是一层基础设施倡议，不是新模型发布",
+        "body": "Mozilla 和 Mila 要做的是让组织更容易在本地运行开源 AI，同时拥有模型、数据、工具和治理控制。",
+        "kind": "narrative"
+      },
+      {
+        "id": "standard",
+        "title": "开放标准让组件可以替换",
+        "body": "计划包含接口契约和 reference implementation，目标是减少接入模型、工具与治理系统时的重复工程。",
+        "kind": "technical"
+      },
+      {
+        "id": "funding",
+        "title": "资金先支持工程和本地部署",
+        "body": "Mozilla 投入 500 万美元，Hypertec 承诺第一年 100 万美元；金额和时间表是启动承诺，不是完整产品预算。",
+        "kind": "comparison"
+      },
+      {
+        "id": "control",
+        "title": "“本地可控”仍要靠实际实现证明",
+        "body": "新闻稿强调数据、访问控制和治理，但没有当天发布可下载的完整基础层，也没有保证所有模型兼容。",
+        "kind": "boundary"
+      },
+      {
+        "id": "timeline",
+        "title": "六个月和两年是目标，不是交付结果",
+        "body": "参考实现和更广泛采用要看后续公开接口、代码、安全更新和真实机构部署。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "“开源 AI 基础层”怎样从口号变成可运行的系统？",
+      "question": "先公开接口，再交付参考实现，最后用真实部署检验本地控制。",
+      "steps": [
+        {
+          "label": "定义接口标准",
+          "detail": "先约定模型、工具、数据和治理层之间可互换的接口。",
+          "evidence": "Mozilla/Mila 官方计划。"
+        },
+        {
+          "label": "做参考实现",
+          "detail": "提供组织可以安装在自有机器或自选基础设施上的样板。",
+          "evidence": "官方 reference implementation。"
+        },
+        {
+          "label": "放入治理控制",
+          "detail": "把数据控制、访问权限和安全操作放进基础层，而不是上线后补丁式添加。",
+          "evidence": "官方倡议说明。"
+        },
+        {
+          "label": "等待实际部署",
+          "detail": "六个月参考实现和两年采用目标仍需代码、接口和机构案例验证。",
+          "evidence": "官方时间表。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Mozilla",
+      "url": "https://blog.mozilla.org/en/mozilla/mila-canada-open-source-ai-initiative/"
+    },
+    "relatedSlugs": [
+      "state",
+      "authorization",
+      "component",
+      "data-quality",
+      "event",
+      "llm"
+    ],
+    "relatedArticleSlugs": [
+      "qwen38-omni-flash-20260918",
+      "openai-ai-standards-rsi-20260921"
+    ],
+    "sources": [
+      {
+        "url": "https://blog.mozilla.org/en/mozilla/mila-canada-open-source-ai-initiative/",
+        "claim": "Mozilla 与 Mila 宣布建设开放的 AI foundation layer，加拿大政府支持，Mozilla 投入 500 万美元，Hypertec 承诺第一年投入 100 万美元。",
+        "excerpt": "Mozilla, Mila and Mozilla announce new initiative to build trustworthy open source AI for everyone, 2026-09-17。"
+      },
+      {
+        "url": "https://mila.quebec/fr/nouvelle/mila-et-mozilla-annoncent-une-nouvelle-initiative-pour-batir-une-ia-ouverte-digne-de",
+        "claim": "Mila 的官方公告交叉确认日期、技术交付角色、加拿大政府支持和本地运行/数据控制目标。",
+        "excerpt": "Mila, Mila et Mozilla annoncent une nouvelle initiative…, 17 septembre 2026。"
+      },
+      {
+        "url": "https://www.canada.ca/en/innovation-science-economic-development/news/2026/09/ai-leadership-takes-centre-stage-at-all-in-2026.html",
+        "claim": "加拿大政府将其描述为加拿大主导的开源 AI consortium，并强调更易部署、安全和实际可用。",
+        "excerpt": "Government of Canada, AI leadership takes centre stage at ALL IN 2026, 2026-09-17。"
+      }
+    ],
+    "canonicalUrl": "https://blog.mozilla.org/en/mozilla/mila-canada-open-source-ai-initiative/",
+    "sourceHash": "sha256:e2daee06f65029d71c758e1278a644bf490ef243867e3c5d077ef7dfcd9a48ff"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
