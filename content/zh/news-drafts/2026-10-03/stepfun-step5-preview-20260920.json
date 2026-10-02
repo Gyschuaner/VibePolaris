@@ -1,0 +1,226 @@
+{
+  "slug": "stepfun-step5-preview-20260920",
+  "title": "阶跃星辰发布 Step 5 Preview：1M token 长上下文和多模态输入先以 API 预览开放",
+  "summary": "2026-09-20，阶跃星辰发布 Step 5 Preview，官方规格包括 1M token（约一百万个模型计数的文本片段）上下文、文本/图片/视频输入、工具调用与结构化输出；它以 API preview 形式开放，长任务稳定性仍需开发者复测。",
+  "body": "2026-09-20，阶跃星辰发布 Step 5 Preview，把它定位为面向代理工作、软件工程和专业知识工作的旗舰模型。官方文档列出的规格包括 1M token 上下文，也就是约一百万个模型计数的文本片段；它支持文本/图片/视频输入、文本输出和 64K 最大输出。模型 ID 是 `step-5-preview`，可以从 StepFun 的 API 平台调用。\n\n它的新闻价值在于“长上下文”不再只是一个实验室数字，而被放进一个可调用的工作流。官方把它描述为能处理长文档、多个来源和持续进展的任务，也列出工具调用、结构化输出、三档 reasoning effort（推理强度选项）和提示缓存（复用输入以减少重复处理）。文档同时提醒，工具、搜索和代码执行能力来自接入应用，模型本身不会自动访问用户的本地环境或外部服务。\n\n多模态输入让它和单纯的长文本模型有所区别：一条请求可以带图片和视频，用于图表分析、截图问答或视频摘要。官方文档给出格式、数量和大小限制，例如图片最多 60 张、视频单文件低于 128 MB 且建议少于 5 分钟。长上下文的容量因此要和输入预处理、成本、延迟以及输出上限一起评估。\n\n第三方模型目录把 Step 5 Preview 的发布日记为 9 月 20 日，并列出每百万 token 约 1 美元输入、2.70 美元输出；这些价格和目录信息会随账户、地区和平台变化，本文以 StepFun 官方规格为主，不把第三方价格当成永久承诺。官方页面还把它称为 preview，说明开发者应该固定模型 ID、记录日期并在自己的任务上复测。\n\n对代理开发者来说，真正需要验证的不是“能否塞进一百万 token”，而是模型能否在长任务中持续保持目标、调用工具并处理失败。Step 5 Preview 的公开规格把这些接口列出来了，接下来仍要靠真实文档、图像和视频、权限拒绝、超时与重试测试来判断它是否适合生产。",
+  "publishedAt": "2026-09-20",
+  "eventDate": "2026-09-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/stepfun-step5-preview-20260920.svg",
+    "alt": "约一百万个文本片段怎样变成可用的代理任务？",
+    "sourceUrl": "/images/news/stepfun-step5-preview-20260920.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "先看它实际开放了什么",
+      "body": "Step 5 Preview 在 9 月 20 日作为 preview 进入 StepFun 平台。官方规格是 1M token（约一百万个模型计数的文本片段）上下文、文本/图片/视频输入、文本输出和 64K 最大输出，模型 ID 为 step-5-preview；开发者可以从 API 开始调用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agent",
+      "title": "长上下文被放进代理工作",
+      "body": "官方把它面向长文档、多来源研究、软件工程和多步代理任务，并列出工具调用、结构化输出、三档 reasoning effort 和提示缓存。搜索、代码执行和其他外部能力仍由集成应用提供，模型本身不会自动访问本地环境。",
+      "kind": "technical"
+    },
+    {
+      "id": "multimodal",
+      "title": "图片和视频也进入同一请求",
+      "body": "文档支持图片与视频输入，可用于图表分析、截图问答和视频摘要。图片数量、格式、视频大小和建议时长都有边界；1M token 容量不能抹掉预处理、延迟和费用问题。",
+      "kind": "comparison"
+    },
+    {
+      "id": "pricing",
+      "title": "第三方价格要和官方规格分开",
+      "body": "第三方目录把发布日记为 9 月 20 日，并列出约 1 美元输入、2.70 美元输出的价格。价格会随账户、地区和平台变化，本文把它作为交叉信息，不把它当成 StepFun 永久承诺。",
+      "kind": "boundary"
+    },
+    {
+      "id": "test",
+      "title": "真正的采用门槛是长任务稳定性",
+      "body": "代理开发者需要固定模型 ID，测试长文档、图片视频、工具调用、权限拒绝、超时和重试，并记录任务是否持续朝目标推进。1M context 是容量规格，不是生产可靠性的证明。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "约一百万个文本片段怎样变成可用的代理任务？",
+    "question": "一百万个模型计数的文本片段、工具调用和多模态输入之间，开发者到底需要验证什么？",
+    "steps": [
+      {
+        "label": "装入材料",
+        "detail": "把长文档、图片或视频放进同一请求；1M token 约指一百万个模型计数的文本片段，但仍要记录实际 token、格式和大小限制。",
+        "evidence": "StepFun 官方文档。"
+      },
+      {
+        "label": "调用工具",
+        "detail": "模型输出结构化参数，由接入应用执行搜索、代码或业务工具。",
+        "evidence": "官方文档说明工具能力来自集成应用。"
+      },
+      {
+        "label": "处理失败",
+        "detail": "对拒绝、超时、坏参数和重试建立明确路径，不能把 1M 窗口当作自动可靠。",
+        "evidence": "官方 API 文档与本文采用边界。"
+      },
+      {
+        "label": "验证长程",
+        "detail": "用真实任务检查目标保持、证据引用和最终交付，而不是只测一次长 prompt。",
+        "evidence": "Step 5 Preview 的代理定位。"
+      }
+    ]
+  },
+  "source": {
+    "name": "StepFun",
+    "url": "https://www.stepfun.com/step-5-preview"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context-window",
+    "tools",
+    "structured-output",
+    "prompt-caching",
+    "function-calling"
+  ],
+  "relatedArticleSlugs": [
+    "openai-gpt6-sol-luna-20260922"
+  ],
+  "sources": [
+    {
+      "url": "https://www.stepfun.com/step-5-preview",
+      "claim": "StepFun 官方把 Step 5 Preview 定位为面向代理工作、软件工程和专业知识工作的旗舰模型，并列出 1M context、文本/图片/视频输入和 64K 最大输出。",
+      "excerpt": "StepFun, Step 5 Preview, 官方模型页面。"
+    },
+    {
+      "url": "https://platform.stepfun.ai/docs/en/guides/models/step-5-preview",
+      "claim": "官方文档列出多模态输入、工具调用、JSON Mode/Schema、reasoning effort 和提示缓存，并说明外部工具能力取决于集成应用。",
+      "excerpt": "StepFun Documentation, Step 5 Preview, lines 23-67 and 93-111。"
+    },
+    {
+      "url": "https://platform.stepfun.ai/docs/en/api-reference/chat/chat-completion-create",
+      "claim": "官方 API 文档给出模型 ID step-5-preview、Chat Completions 接口和请求参数。",
+      "excerpt": "StepFun Documentation, Chat Completions API。"
+    },
+    {
+      "url": "https://vercel.com/ai-gateway/models/step-5-preview",
+      "claim": "第三方目录记录 Step 5 Preview 的 2026-09-20 release date 与公开价格，作为交叉信息而非永久价格承诺。",
+      "excerpt": "Vercel AI Gateway, Step 5 Preview, release date 09/20/2026。"
+    }
+  ],
+  "canonicalUrl": "https://www.stepfun.com/step-5-preview",
+  "sourceHash": "sha256:d54a25ebfce11d69405b6b0262f59ece5ca1ce3f56ec6749eb16fb6292917d97",
+  "status": "published",
+  "discoveredAt": "2026-10-03T12:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文解释了 agent 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.92,
+      "evidence": [
+        "正文解释了 context-window 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 tools 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "structured-output",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 structured-output 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt-caching",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 prompt-caching 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "function-calling",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 function-calling 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.stepfun.com/step-5-preview",
+      "claim": "StepFun 官方把 Step 5 Preview 定位为面向代理工作、软件工程和专业知识工作的旗舰模型，并列出 1M context、文本/图片/视频输入和 64K 最大输出。",
+      "excerpt": "StepFun, Step 5 Preview, 官方模型页面。"
+    },
+    {
+      "url": "https://platform.stepfun.ai/docs/en/guides/models/step-5-preview",
+      "claim": "官方文档列出多模态输入、工具调用、JSON Mode/Schema、reasoning effort 和提示缓存，并说明外部工具能力取决于集成应用。",
+      "excerpt": "StepFun Documentation, Step 5 Preview, lines 23-67 and 93-111。"
+    },
+    {
+      "url": "https://platform.stepfun.ai/docs/en/api-reference/chat/chat-completion-create",
+      "claim": "官方 API 文档给出模型 ID step-5-preview、Chat Completions 接口和请求参数。",
+      "excerpt": "StepFun Documentation, Chat Completions API。"
+    },
+    {
+      "url": "https://vercel.com/ai-gateway/models/step-5-preview",
+      "claim": "第三方目录记录 Step 5 Preview 的 2026-09-20 release date 与公开价格，作为交叉信息而非永久价格承诺。",
+      "excerpt": "Vercel AI Gateway, Step 5 Preview, release date 09/20/2026。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T12:35:00Z",
+    "method": "manual",
+    "notes": "核对 StepFun 官方模型页、模型指南、Chat Completions API 文档和 Vercel AI Gateway 目录；把 9 月 20 日发布、1M token/64K 输出、preview/API 边界、工具集成和第三方价格分别记录。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T12:35:00Z",
+    "notes": "Step 5 Preview 发布是当天独立的模型与代理工作流新闻；正文区分官方规格、集成应用提供的工具能力、第三方价格和 preview 复测边界，没有把长上下文容量写成生产可靠性证明。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T20:11:04Z",
+    "questions": [],
+    "notes": "事件日、官方规格、API preview 边界和第三方价格归属清楚；已在摘要、正文、首段、讲解和首图替代文字中解释 1M token，说明工具来自集成应用、preview 仍需复测。SVG 的长材料→工具调用→失败处理→持续交付链路与正文一致。",
+    "changes": [
+      "补充 1M token 的零基础解释，并解释 reasoning effort/提示缓存。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-20",
+  "promotedAt": "2026-10-02T20:17:17.807Z"
+}
