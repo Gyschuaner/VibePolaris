@@ -5785,16 +5785,16 @@
   {
     "slug": "repo-commit",
     "lead": "文件已经保存到磁盘，为什么还要暂存并创建一次 Git 提交？",
-    "definition": "工作区保存正在编辑的文件；暂存区选择本次快照内容；提交把所选内容、父提交和说明写入仓库历史。",
-    "boundary": "本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
+    "definition": "工作区保存正在编辑的文件；你把要提交的修改挑进暂存区；提交把选中的内容连同作者和说明写入仓库历史。",
+    "boundary": "本地提交不会自动上传远程；无关改动混进同一个提交，之后想单独退回就难了。推送是之后的独立步骤。",
     "sceneKind": "timeline",
-    "sceneTitle": "一次 CSS 修改怎样成为可追踪提交",
+    "sceneTitle": "一次 CSS 修改怎样进入提交历史",
     "actionLabel": "推进修改",
     "actors": [
       {
         "id": "working",
         "label": "工作区",
-        "detail": "styles.css 已修改",
+        "detail": "styles.css 已保存，工作区有修改",
         "icon": "code",
         "group": "编辑"
       },
@@ -5814,7 +5814,7 @@
       },
       {
         "id": "commit",
-        "label": "提交对象",
+        "label": "提交",
         "detail": "等待创建",
         "icon": "git",
         "group": "历史"
@@ -5822,14 +5822,14 @@
       {
         "id": "branch",
         "label": "当前分支",
-        "detail": "feat/VBP-001",
+        "detail": "feature/copy-fix",
         "icon": "git",
-        "group": "引用"
+        "group": "位置"
       },
       {
         "id": "remote",
         "label": "远程仓库",
-        "detail": "尚未推送",
+        "detail": "尚未同步",
         "icon": "cloud",
         "group": "同步"
       }
@@ -5845,31 +5845,31 @@
         "id": "diff-staging",
         "from": "diff",
         "to": "staging",
-        "label": "选择文件"
+        "label": "暂存修改"
       },
       {
         "id": "staging-commit",
         "from": "staging",
         "to": "commit",
-        "label": "创建快照"
+        "label": "写入历史"
       },
       {
         "id": "commit-branch",
         "from": "commit",
         "to": "branch",
-        "label": "移动引用"
+        "label": "分支指向新提交"
       },
       {
         "id": "branch-remote",
         "from": "branch",
         "to": "remote",
-        "label": "另行推送"
+        "label": "同步到远程"
       }
     ],
     "frames": [
       {
         "label": "保存文件",
-        "note": "修改存在于工作区，Git 能看到变化，但历史还没有新节点。",
+        "note": "修改存在于工作区，Git 能看到变化，但历史还没有新记录。",
         "activeIds": [
           "working"
         ],
@@ -5885,7 +5885,7 @@
       },
       {
         "label": "检查差异",
-        "note": "逐段确认这次修改只包含当前任务。",
+        "note": "逐段区分哪些修改属于当前任务。",
         "activeIds": [
           "working",
           "diff"
@@ -5896,15 +5896,15 @@
           "remote"
         ],
         "values": {
-          "diff": "响应式规则 + 测试"
+          "diff": "当前修复 + 其他改动"
         },
         "activeEdgeIds": [
           "working-diff"
         ]
       },
       {
-        "label": "选择快照",
-        "note": "把相关文件加入暂存区，无关调试改动仍留在工作区。",
+        "label": "暂存修改",
+        "note": "把与当前任务相关的修改放进暂存区；其他改动仍留在工作区。",
         "activeIds": [
           "diff",
           "staging"
@@ -5917,7 +5917,7 @@
           "remote"
         ],
         "values": {
-          "staging": "2 files staged"
+          "staging": "当前修复已暂存"
         },
         "activeEdgeIds": [
           "diff-staging"
@@ -5925,7 +5925,7 @@
       },
       {
         "label": "创建提交",
-        "note": "Git 记录暂存内容、父提交和可追踪的任务说明。",
+        "note": "Git 把暂存的内容写成一条历史记录，并附上作者和这条说明。",
         "activeIds": [
           "staging",
           "commit",
@@ -5939,8 +5939,8 @@
           "remote"
         ],
         "values": {
-          "commit": "a31f2c · fix(VBP-001)",
-          "branch": "→ a31f2c"
+          "commit": "文案修复",
+          "branch": "指向这条提交"
         },
         "activeEdgeIds": [
           "staging-commit",
@@ -5949,7 +5949,7 @@
       },
       {
         "label": "决定推送",
-        "note": "提交仍只在本地；推送是把分支引用同步到远程的独立动作。",
+        "note": "提交仍只在本地；推送是把本地分支上的新提交同步到远程的独立动作。",
         "activeIds": [
           "branch",
           "remote"
@@ -5962,7 +5962,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "remote": "origin/feat/VBP-001"
+          "remote": "等待推送"
         },
         "activeEdgeIds": [
           "branch-remote"
@@ -5986,18 +5986,38 @@
           "correct": false
         }
       ],
-      "success": "提交应形成可理解、可回退的任务单位。",
-      "retry": "同一目录中的变化不一定属于同一提交。"
+        "success": "这样每次提交都是一件能单独看懂、也能单独退回去的改动。",
+        "retry": "同一目录中的改动不一定属于同一提交，先看差异再选择要暂存的内容。"
     },
     "prompt": {
       "title": "整理一次可追踪的提交",
-      "text": "请先查看工作区状态和逐段差异，只选择与当前任务相关的文件或代码块。提交说明包含对应任务编号和实际变化；提交后重新检查剩余未提交内容，并说明是否需要推送或创建评审。"
+      "text": "请先查看工作区状态和逐段差异，只选择与当前任务相关的文件或代码块。提交说明写清实际变化；提交后重新检查剩余未提交内容，并说明是否需要推送到远程。"
     },
     "sources": [
       {
         "url": "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
         "label": "Pro Git · Recording Changes",
         "note": "命令语义与状态变化"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-add",
+        "label": "Git · git-add",
+        "note": "把选定内容放进暂存区"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-diff",
+        "label": "Git · git-diff",
+        "note": "查看工作区和暂存区的差异"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-commit",
+        "label": "Git · git-commit",
+        "note": "创建带说明的提交"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-push",
+        "label": "Git · git-push",
+        "note": "把本地提交同步到远程"
       }
     ]
   },
