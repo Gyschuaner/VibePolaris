@@ -3036,8 +3036,8 @@
   {
     "slug": "webview",
     "lead": "活动页想快速复用网页，又需要调用原生分享功能，怎样连接两边？",
-    "definition": "原生应用创建内嵌浏览器视图加载 Web 内容，并通过受控消息桥让 JavaScript 请求少量原生能力。",
-    "boundary": "WebView 不是完整系统浏览器，也不等于原生页面；Cookie、导航、下载、权限和桥接安全由宿主处理。",
+    "definition": "WebView 是原生应用（宿主应用）里由系统网页引擎提供的内嵌页面容器；消息桥把网页消息转换为受控原生调用，网页通过它请求少量能力，宿主校验 origin（协议+域名+端口）、方法和参数后再调用。",
+    "boundary": "它不是完整浏览器，也不是原生页面；网页引擎和版本可能与系统浏览器不同，登录状态与能力不会自动一致。宿主负责导航、Cookie/存储、下载、权限、生命周期、内存和桥接安全，不应让不可信页面调用任意原生方法。",
     "sceneKind": "contract",
     "sceneTitle": "网页消息通过两道校验后调用原生分享",
     "actionLabel": "发送桥接消息",
@@ -3045,35 +3045,35 @@
       {
         "id": "page",
         "label": "活动网页",
-        "detail": "postMessage",
+        "detail": "网页→原生消息（postMessage/平台桥，API 因平台而异）",
         "icon": "browser",
         "group": "网页"
       },
       {
         "id": "origin",
         "label": "来源校验",
-        "detail": "允许的域名",
+        "detail": "允许的 origin（协议+域名+端口）",
         "icon": "shield",
         "group": "桥接"
       },
       {
         "id": "schema",
         "label": "消息校验",
-        "detail": "method 与参数",
+        "detail": "schema：method · 参数 · 版本",
         "icon": "code",
         "group": "桥接"
       },
       {
         "id": "native",
         "label": "原生分享",
-        "detail": "系统能力",
+        "detail": "宿主调用系统分享 API",
         "icon": "component",
         "group": "原生"
       },
       {
         "id": "reply",
         "label": "结构化回复",
-        "detail": "成功或错误码",
+        "detail": "success · cancel · error",
         "icon": "message",
         "group": "网页"
       }
@@ -3107,13 +3107,19 @@
         "id": "schema-reply",
         "from": "schema",
         "to": "reply",
-        "label": "拒绝原因"
+        "label": "参数/方法拒绝"
+      },
+      {
+        "id": "origin-reply",
+        "from": "origin",
+        "to": "reply",
+        "label": "来源拒绝"
       }
     ],
     "frames": [
       {
         "label": "网页发起分享",
-        "note": "消息带上固定 method、版本和分享参数，先进入来源校验。",
+        "note": "消息带上固定 HTTPS origin、method、版本和分享参数，先进入来源校验。",
         "activeIds": [
           "page",
           "origin"
@@ -3127,7 +3133,7 @@
           "reply"
         ],
         "values": {
-          "page": "share · v2"
+          "page": "share · v2 · HTTPS"
         },
         "activeEdgeIds": [
           "page-origin"
@@ -3135,7 +3141,7 @@
       },
       {
         "label": "来源与结构通过",
-        "note": "域名在允许清单内，字段类型也符合 schema，消息继续进入原生层。",
+        "note": "域名在允许清单内，字段类型和版本也符合 schema，消息才继续进入原生层。",
         "activeIds": [
           "origin",
           "schema",
@@ -3160,7 +3166,7 @@
       },
       {
         "label": "原生返回结果",
-        "note": "分享面板完成后，网页收到可识别的 success 结果。",
+        "note": "分享面板完成后，网页收到可识别的 success、cancel 或 error 结果，而不是直接读取原生内部对象。",
         "activeIds": [
           "native",
           "reply"
@@ -3181,29 +3187,28 @@
       },
       {
         "label": "篡改字段被拒绝",
-        "note": "把来源或 method 改错，消息停在对应校验器，原生分享没有被调用。",
+        "note": "把 origin 改成不在清单的来源，消息停在来源校验器并返回错误；原生分享没有被调用。",
         "activeIds": [
           "origin",
-          "schema",
           "reply"
         ],
         "doneIds": [
           "page"
         ],
         "mutedIds": [
+          "schema",
           "native"
         ],
         "values": {
-          "reply": "UNSUPPORTED_METHOD",
-          "native": "未调用"
+          "reply": "ORIGIN_NOT_ALLOWED · 未调用"
         },
         "activeEdgeIds": [
           "page-origin",
-          "schema-reply"
+          "origin-reply"
         ]
       }
     ],
-    "insight": "WebView 桥接是受约束的跨环境接口，来源、方法和参数都要在调用原生能力前验证。",
+    "insight": "WebView 桥接是受约束的跨环境接口，来源、方法、版本和参数都要在调用原生能力前验证；失败也要返回可处理的结构化结果。",
     "quiz": {
       "question": "WebView 消息桥接收到网页参数后应先做什么？",
       "options": [
@@ -3225,18 +3230,33 @@
     },
     "prompt": {
       "title": "检查 WebView 桥接接口",
-      "text": "请审查下面网页与原生的消息协议，限制可调用方法，验证来源和参数，并补充超时、取消和应用版本不支持时的返回结果。"
+      "text": "请审查下面网页与原生的消息协议：限制允许的 HTTPS 来源和方法，验证版本与参数，避免把不可信页面接入原生桥，并补充导航、超时、取消、应用版本不支持时的返回结果。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/develop/ui/views/layout/webapps/webview",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Build web apps in WebView",
+        "note": "WebView 容器、网页加载、导航和 JavaScript 接口"
+      },
+      {
+        "url": "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges",
+        "label": "Android Developers · WebView native bridges",
+        "note": "不可信页面、JavaScript bridge 与来源限制的安全风险"
       },
       {
         "url": "https://developer.apple.com/documentation/webkit/wkwebview",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple Developer Documentation · WKWebView",
+        "note": "Apple 原生应用内网页视图和宿主职责"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/webkit/wkscriptmessagehandler",
+        "label": "Apple Developer Documentation · WKScriptMessageHandler",
+        "note": "网页 JavaScript 向原生宿主发送消息的接口"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage",
+        "label": "MDN · Window.postMessage()",
+        "note": "跨上下文消息的 targetOrigin、来源校验和数据边界"
       }
     ]
   },

@@ -422,18 +422,53 @@
     ]
   },
   {
-    "zh": "WebView", "en": "WebView", "slug": "webview", "cat": "前端",
-    "say": "WebView 是嵌在原生应用里的网页运行区域，可展示 Web 内容并与应用交换消息。",
-    "aliases": ["内嵌网页", "WebView 容器", "H5 页面"],
+    "zh": "WebView",
+    "en": "WebView",
+    "slug": "webview",
+    "cat": "前端",
+    "say": "WebView 是嵌在原生应用里的网页运行区域；宿主加载网页，网页通过受控消息桥请求少量原生能力。",
+    "aliases": [
+      "内嵌网页",
+      "WebView 容器",
+      "H5 页面"
+    ],
     "question": "活动页想快速复用网页，又需要调用原生分享功能，怎样连接两边？",
-    "definition": "WebView 由原生应用创建，使用系统网页引擎加载本地或远程页面。原生与网页可以通过受控消息桥接传递数据和调用能力。",
-    "boundary": "WebView 不是普通系统浏览器。Cookie、返回键、下载、权限和安全边界需要宿主应用明确处理。",
-    "demoType": "request", "demoTitle": "网页请求原生分享",
-    "demoSteps": [{"label":"网页发送消息","value":"携带 share 类型和必要参数","note":"消息内容需要校验。"},{"label":"原生层处理","value":"调用系统分享面板","note":"只开放允许的能力。"},{"label":"结果返回网页","value":"成功、取消或失败","note":"页面据此更新按钮状态。"}],
-    "quizQuestion": "WebView 消息桥接收到网页参数后应先做什么？", "quizOptions": ["校验来源、类型和参数", "直接执行任意原生方法", "永久关闭 HTTPS"],
-    "correctText": "桥接会扩大网页可调用的能力，必须限制并验证输入。", "wrongText": "无条件执行会造成明显安全风险。",
-    "promptTitle": "检查 WebView 桥接接口", "prompt": "请审查下面网页与原生的消息协议，限制可调用方法，验证来源和参数，并补充超时、取消和应用版本不支持时的返回结果。",
-    "relatedSlugs": ["csr", "browser-api", "cors"]
+    "definition": "WebView 由原生应用（宿主应用）创建，使用系统网页引擎加载本地或远程页面；消息桥就是把网页消息转换为受控原生调用的接口，宿主验证 origin（协议+域名+端口）、方法和参数后，才调用分享等能力并返回结果。",
+    "boundary": "WebView 不是普通系统浏览器，也不是原生页面。网页引擎和版本可能不同，网页登录状态与能力也不会自动一致；导航、Cookie/存储、下载、权限、生命周期、内存和消息桥安全都需要宿主明确处理，不可信页面不应获得任意原生方法。",
+    "demoType": "request",
+    "demoTitle": "网页请求原生分享",
+    "demoSteps": [
+      {
+        "label": "网页发送消息",
+        "value": "携带固定 origin、method 和参数",
+        "note": "消息内容需要校验，页面应使用 HTTPS。"
+      },
+      {
+        "label": "原生层处理",
+        "value": "校验来源与 schema 后调用分享面板",
+        "note": "只开放允许的能力。"
+      },
+      {
+        "label": "结果返回网页",
+        "value": "成功、取消或错误码",
+        "note": "页面据此更新按钮状态并处理失败。"
+      }
+    ],
+    "quizQuestion": "WebView 消息桥接收到网页参数后应先做什么？",
+    "quizOptions": [
+      "校验来源、类型和参数",
+      "直接执行任意原生方法",
+      "永久关闭 HTTPS"
+    ],
+    "correctText": "桥接会扩大网页可调用的能力，必须限制并验证输入。",
+    "wrongText": "无条件执行会造成明显安全风险。",
+    "promptTitle": "检查 WebView 桥接接口",
+    "prompt": "请审查下面网页与原生的消息协议：限制允许的 HTTPS 来源和方法，验证版本与参数，避免把不可信页面接入原生桥，并补充导航、超时、取消、应用版本不支持时的返回结果。",
+    "relatedSlugs": [
+      "csr",
+      "browser-api",
+      "cors"
+    ]
   },
   {
     "zh": "CSS 选择器", "en": "CSS Selector", "slug": "css-selector", "cat": "前端",
