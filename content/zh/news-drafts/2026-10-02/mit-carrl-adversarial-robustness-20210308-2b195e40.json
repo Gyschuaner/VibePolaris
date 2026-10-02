@@ -1,0 +1,212 @@
+{
+  "slug": "mit-carrl-adversarial-robustness-20210308-2b195e40",
+  "title": "MIT 研究团队提出 CARRL：让强化学习在传感器不可靠时先按最坏情况选动作",
+  "summary": "2021-03-08，MIT News 报道 MIT 研究团队提出 CARRL（Certified Adversarial Robustness for Deep Reinforcement Learning），让强化学习系统在摄像头读数或其他测量结果可能有偏差时，不把一个读数当成绝对事实，而是评估一组可能的状态后选择在最坏情况下仍有较高回报的动作。团队在 Pong 和模拟碰撞规避中测试了这种做法；报道也承认不确定范围过大时，系统会变得过度保守。新闻展示的是受控实验中的稳健性改进，不是已经通过真实道路安全认证。",
+  "body": "2021-03-08，MIT News 报道研究团队提出了应对不可靠输入的方法 CARRL（Certified Adversarial Robustness for Deep Reinforcement Learning）。这里的重点不是让机器在游戏里多赢几局，而是让它在看不清或测不准时，仍然能做出相对稳妥的动作。报道以自动驾驶和其他安全关键系统为背景，但实际证据来自 Pong 和模拟碰撞规避实验。\n\n为什么一个传感器读数会改变决策？假设摄像头把行人边缘的位置看偏了几个像素，系统如果把这个位置当成精确事实，就可能立刻向错误方向转弯。在这条报道里，adversarial input（对抗输入）可以理解为恶意或非预期的输入偏移：它可能来自有人故意篡改信号，也可能只是噪声、遮挡或传感器本身不够好。这个词在这里不等于“黑客已经入侵”，而是提醒系统为输入留出一个可能出错的范围。\n\nCARRL 的做法是将强化学习与深度神经网络结合起来。强化学习会根据动作带来的 reward（回报）调整策略，深度 Q 网络（DQN）则估计每个候选动作从当前状态出发、未来可能获得的累计回报。系统不再只把观测到的一个点送进网络，而是把它周围一片可能的真实状态纳入计算，然后选择在最不利位置上回报仍然较高的动作。论文把这种最低保证写成“状态—动作价值的保证下界”，也就是在预设误差范围内至少能拿到多少回报的下限；对读者来说，可以先把它理解成：先问“如果读数往最坏处偏，我还会不会撞上？”再决定怎么动。\n\nPong 是新闻里最直观的测试。研究者在实验中人为把球的位置向下挪了几个像素，普通策略仍按原来的位置接球，偏差变大后更容易接不到球。CARRL 不假装知道球的精确位置，而是把球可能出现的区域一起考虑，像把球拍放在这个区域的中间，给最坏偏差留出余量。MIT News 报道说，随着这种扰动变强，CARRL 赢下的对局多于标准机器学习方法。这个结果说明它对设定好的测量误差更耐受，不说明它能处理所有种类的传感器故障。\n\n碰撞规避测试将同一方法用于两个模拟移动体：橙色个体要换到另一边，研究者逐渐扰动橙色个体看到的蓝色个体位置。CARRL 会随不确定范围变大而绕行得更远，尽量让两个个体不相撞。这种稳健性也有明显代价：当不确定范围过大时，系统会认为蓝色个体可能在附近任何位置，因而不再前往目的地。MIT News 把这称为过度保守，并指出研究者可以把允许的偏差范围调小，在安全余量和完成任务之间找平衡。\n\n因此需要把新闻给出的范围说清楚。CARRL 的“可认证的稳健性”是针对给定输入扰动范围、奖励定义和测试任务的保证；它没有证明摄像头在现实道路上会产生怎样的误差，也没有在真实车辆上验证行人行为、天气变化、传感器失效或责任分配。论文摘要提到的是行人碰撞规避和控制任务，MIT 新闻则报道了模拟碰撞规避与 Pong；两者都属于受控实验。直接把“在这些条件下更能抵抗扰动”写成“自动驾驶已经安全”，会超出这些实验能支持的范围。\n\n这条消息可以这样读：先确认新闻讨论的输入误差，再看算法如何把误差变成可计算的可能状态，接着检查测试是否改变了误差大小、任务目标和奖励函数，最后问系统在不确定性过大时会不会停止、绕行或拒绝行动。这样既能看见 CARRL 解决了什么，也能看见它还没有解决什么。",
+  "publishedAt": "2021-03-08",
+  "eventDate": "2021-03-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mit-carrl-adversarial-robustness-20210308-2b195e40.svg",
+    "alt": "传感器读数扩展为可能状态区域，CARRL 选择在最坏偏差下回报较高的动作，并在测试中显示保守边界",
+    "sourceUrl": "/images/news/mit-carrl-adversarial-robustness-20210308-2b195e40.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "event",
+      "title": "MIT News 报道了什么",
+      "body": "MIT News 报道 MIT 研究团队提出 CARRL，把强化学习和深度神经网络结合起来，应对传感器测量不完美、输入被轻微扰动的情况。新闻给出的证据是 Pong 与模拟碰撞规避测试；它没有宣布真实车辆已经通过安全认证。",
+      "kind": "narrative"
+    },
+    {
+      "id": "input",
+      "title": "“对抗输入”不一定来自黑客",
+      "body": "对抗输入（adversarial input）在本文指可能把系统决策带偏的恶意或非预期输入偏移。它可能来自故意篡改，也可能来自噪声、遮挡和传感器误差；关键问题是模型是否把一个不确定的读数误当成事实。",
+      "kind": "technical"
+    },
+    {
+      "id": "method",
+      "title": "CARRL 怎样把不确定性带进动作选择",
+      "body": "强化学习按动作得到的回报调整策略，DQN 为候选动作估计 Q value（从当前状态采取动作后，未来可能获得的累计回报）。CARRL 不只评估一个观测点，而是评估它周围一片可能状态，再选择在最坏偏差下回报仍然较高的动作。论文把这种最低保证写成“状态—动作价值的保证下界”，也就是在预设误差范围内至少能拿到多少回报的下限。",
+      "kind": "technical"
+    },
+    {
+      "id": "pong",
+      "title": "Pong 测试把几像素偏差变成可见差别",
+      "body": "研究者在实验中人为把球的位置向下挪动，普通策略依赖原位置，偏差变大后更容易接不到球。CARRL 把球可能出现的区域一起考虑，给球拍留下余量；MIT News 报道它在扰动增强时赢下更多对局。这个结果只覆盖设定好的输入偏差。",
+      "kind": "example"
+    },
+    {
+      "id": "collision",
+      "title": "碰撞规避里，稳健会变成绕得更远",
+      "body": "在两个模拟移动体交换位置的测试中，研究者逐渐扰动橙色个体看到的蓝色个体位置，CARRL 随不确定范围变大而扩大绕行距离，降低碰撞风险。范围大到一定程度后，系统会认为对方可能在附近任何位置，因而不再前往目的地；这种过度保守是需要调参的边界。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "稳健性保证覆盖到哪里",
+      "body": "这种可认证的稳健性保证依赖预先设定的扰动范围、奖励函数和任务环境。Pong 与模拟碰撞规避能说明系统在这些条件下更抗偏差，不能说明现实道路上的天气、传感器失效、行人行为和责任分配已经被验证。直接把受控实验结果写成自动驾驶安全结论，会超出这些实验能支持的范围。",
+      "kind": "boundary"
+    },
+    {
+      "id": "terms",
+      "title": "两个词条帮助读懂这条实验新闻",
+      "body": "上下文词条提醒我们，传感器、任务、误差范围和使用环境共同决定一个动作的含义；benchmark（统一条件下比较模型的基准测试）词条提醒我们，Pong 和模拟碰撞规避是可比较的测试，不是现实部署的安全证书。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "把一个不可靠读数变成一次稳健决策",
+    "question": "下面按这条新闻里的 CARRL 流程走一遍：当系统不知道观测点是否准确时，它怎样选择动作，又会在哪个条件下变得过于保守？",
+    "steps": [
+      {
+        "label": "收到观测",
+        "detail": "系统先得到一个传感器读数，例如球的位置或另一个移动体的位置；这个读数可能有噪声或被轻微挪动。",
+        "evidence": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+      },
+      {
+        "label": "展开可能状态",
+        "detail": "不把读数当成唯一真相，而是给它周围画出一片可能的真实位置；区域大小代表当前允许的输入不确定性。",
+        "evidence": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+      },
+      {
+        "label": "计算最坏回报",
+        "detail": "DQN 为每个可能位置和候选动作估计 Q value，再关注在最不利位置仍能得到的回报，而不是只看最理想的那一个。",
+        "evidence": "https://arxiv.org/abs/2004.06496"
+      },
+      {
+        "label": "选择留余量的动作",
+        "detail": "在 Pong 里把球拍放到可能区域中间，在碰撞规避里扩大绕行距离；动作会随着不确定范围变大而变得更谨慎。",
+        "evidence": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+      },
+      {
+        "label": "观察任务结果",
+        "detail": "比较标准策略与 CARRL 在扰动增强时的胜率和碰撞情况；这一步回答的是“在这个基准测试（benchmark）上是否更稳”。",
+        "evidence": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+      },
+      {
+        "label": "检查保守边界",
+        "detail": "如果不确定区域太大，系统可能绕开目的地或停止完成任务；这提示部署者重新估计误差范围和安全余量，而不是把保守当成万能答案。",
+        "evidence": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+      }
+    ]
+  },
+  "source": {
+    "name": "MIT News",
+    "url": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+  },
+  "relatedSlugs": [
+    "context",
+    "benchmark"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308",
+      "claim": "MIT News 是 2021-03-08 的主新闻来源，说明 CARRL 的动机、组成、Pong 与模拟碰撞规避测试以及过度保守的限制。",
+      "excerpt": "MIT News, March 8, 2021：CARRL 结合强化学习和深度神经网络，在输入不确定时选择更稳健的动作；报道说明它在 Pong 和碰撞规避模拟中表现更好，也可能因不确定范围过大而变得过度保守。"
+    },
+    {
+      "url": "https://arxiv.org/abs/2004.06496",
+      "claim": "arXiv 原始论文作为背景来源，解释状态—动作价值的保证下界、最坏偏差下的动作选择和实验范围；论文不是本日事件来源。",
+      "excerpt": "arXiv, submitted April 11, 2020：方法在执行时计算状态—动作价值的保证下界，在可能的最坏输入偏差下选择稳健动作，并在行人碰撞规避和控制任务中演示。"
+    },
+    {
+      "url": "https://acl.mit.edu/people/mfe",
+      "claim": "MIT Aerospace Controls Laboratory 的研究者页面列出 Certified Adversarial Robustness for Deep RL 项目，并说明它让深度强化学习对观测空间中的对抗扰动更稳健。",
+      "excerpt": "MIT Aerospace Controls Laboratory 的 Michael Everett 页面列出项目 “Certified Adversarial Robustness for Deep RL”（2020），说明该项目研究对观测空间对抗扰动更稳健的深度 RL 算法。"
+    },
+    {
+      "url": "https://mfe7.github.io/publications/",
+      "claim": "论文作者 Michael Everett 的公开发表列表记录该工作发表于 IEEE Transactions on Neural Networks and Learning Systems，并链接到 arXiv 版本。",
+      "excerpt": "Michael Everett 的 publication page 将 “Certifiable Robustness to Adversarial State Uncertainty in Deep Reinforcement Learning” 列为 TNNLS 论文，并列出作者和 arXiv 论文链接。"
+    }
+  ],
+  "canonicalUrl": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308",
+  "sourceHash": "sha256:2b195e40c94dc84d917a19dc4b9051b8294fc87c527aaec4239a86be56bd3a40",
+  "status": "published",
+  "discoveredAt": "2026-10-02T12:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.96,
+      "evidence": [
+        "文章解释传感器误差范围、任务环境和奖励定义会改变同一动作的含义。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.94,
+      "evidence": [
+        "文章把 Pong 与模拟碰撞规避作为受控 benchmark，并明确它们不等于现实部署安全认证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308",
+      "claim": "当天主新闻和事件日期。",
+      "excerpt": "MIT News, March 8, 2021：Algorithm helps artificial intelligence systems dodge adversarial inputs."
+    },
+    {
+      "url": "https://arxiv.org/abs/2004.06496",
+      "claim": "方法背景和论文日期。",
+      "excerpt": "arXiv 首次提交于 2020-04-11，摘要描述在最坏状态偏差下计算稳健动作；这里仅用于解释新闻中的 CARRL。"
+    },
+    {
+      "url": "https://acl.mit.edu/people/mfe",
+      "claim": "MIT Aerospace Controls Laboratory 的研究者页面列出 Certified Adversarial Robustness for Deep RL 项目，并说明它让深度强化学习对观测空间中的对抗扰动更稳健。",
+      "excerpt": "MIT Aerospace Controls Laboratory 的 Michael Everett 页面列出项目 “Certified Adversarial Robustness for Deep RL”（2020），说明该项目研究对观测空间对抗扰动更稳健的深度 RL 算法。"
+    },
+    {
+      "url": "https://mfe7.github.io/publications/",
+      "claim": "论文作者 Michael Everett 的公开发表列表记录该工作发表于 IEEE Transactions on Neural Networks and Learning Systems，并链接到 arXiv 版本。",
+      "excerpt": "Michael Everett 的 publication page 将 “Certifiable Robustness to Adversarial State Uncertainty in Deep Reinforcement Learning” 列为 TNNLS 论文，并列出作者和 arXiv 论文链接。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T12:00:00Z",
+    "method": "source",
+    "notes": "核对 MIT News 2021-03-08 原文的标题、日期、CARRL 全称、对抗输入定义、DQN 与可能状态区域、Pong 和模拟碰撞规避结果及过度保守限制；核对 arXiv 原始页面的首版日期和保证下界摘要；阅读 MIT Aerospace Controls Laboratory 的 Michael Everett 项目页和作者公开发表列表，确认项目名称、作者关联、观测空间扰动与论文发表信息。文章把 MIT News 作为新闻事件来源，其余资料只作方法和出处背景。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T12:30:00Z",
+    "notes": "MIT News 作为 2021-03-08 事件主来源，arXiv、MIT Aerospace Controls Laboratory 和作者发表列表只补充方法及出处背景；Codex 子智能体读者审读与中文表达审读均通过。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T12:30:00Z",
+    "questions": [
+      "读者是否能分清 03-08 的新闻报道、2020 年论文背景和受控实验边界？",
+      "DQN、Q value、对抗输入、最坏回报和 benchmark 是否在首次出现时有白话解释？",
+      "Pong 与碰撞规避的结果和过度保守限制是否能从正文复述出来？"
+    ],
+    "notes": "Codex 子智能体读者审读与中文表达审读最终通过：四份可访问且与正文对应的资料已齐备，新闻归因、事件日期、术语白话、实验主体、过度保守边界、真实部署限制、词条联动和自制 SVG 可追溯。",
+    "changes": [
+      "将 MIT 发布 CARRL 改为 MIT 研究团队提出，避免把研究报道写成产品发布。",
+      "修正碰撞实验为逐渐扰动橙色个体看到的蓝色个体位置。",
+      "补充保证下界、Q value、对抗输入和 benchmark 的首次白话解释。",
+      "补充 MIT News 链接的 IEEE 原始论文记录，和 arXiv 一起作为方法背景。",
+      "微调摄像头测量、最低保证、扰动实验、稳健性代价和解释器 benchmark 的中文表达。",
+      "移除无法展开的 IEEE 页面卡片，补充 MIT Aerospace Controls Laboratory 与作者发表列表的可访问来源，并收窄过度保守结论。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2021-03-08",
+  "fingerprint": "sha256:2b195e40c94dc84d917a19dc4b9051b8294fc87c527aaec4239a86be56bd3a40",
+  "promotedAt": "2026-10-02T07:28:56.837Z"
+}

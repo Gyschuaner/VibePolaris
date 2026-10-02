@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2021-03-08",
+  "eventDate": "2021-03-08",
+  "searchedAt": "2026-10-02T12:00:00Z",
+  "search": {
+    "query": "2021-03-08 AI 新闻：优先核对官方新闻、同日媒体报道和论文原始页面，区分事件发生日与论文日期",
+    "sourceUrls": [
+      "https://news.google.com/rss/search?q=AI+after:2021-03-08+before:2021-03-09&hl=en-US&gl=US&ceid=US:en",
+      "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308",
+      "https://fedscoop.com/nscai-final-report-ai-in-dod/",
+      "https://arxiv.org/abs/2004.06496"
+    ],
+    "sourcePolicy": [
+      "official-announcement",
+      "official-blog",
+      "news-report",
+      "personal-blog",
+      "regulatory",
+      "paper"
+    ],
+    "candidateCount": 3,
+    "primaryCandidateCount": 3,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "mit-carrl-adversarial-robustness-20210308-2b195e40",
+      "title": "Algorithm helps artificial intelligence systems dodge “adversarial” inputs",
+      "eventDate": "2021-03-08",
+      "publishedAt": "2021-03-08",
+      "sourceType": "official-announcement",
+      "source": {
+        "name": "MIT News",
+        "url": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308"
+      },
+      "canonicalUrl": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308",
+      "sourceHash": "sha256:2b195e40c94dc84d917a19dc4b9051b8294fc87c527aaec4239a86be56bd3a40",
+      "relatedSlugs": [
+        "context",
+        "benchmark"
+      ],
+      "evidence": [
+        {
+          "url": "https://news.mit.edu/2021/artificial-intelligence-adversarial-0308",
+          "claim": "MIT News 的一手新闻页面标注 2021-03-08，报道 CARRL 如何让强化学习系统在输入可能不可靠时选择更稳健的动作。",
+          "excerpt": "页面标注 March 8, 2021，并说明 CARRL 结合强化学习和深度神经网络，在 Pong 与模拟碰撞规避场景中测试了不确定或对抗输入。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "官方新闻页面明确标注当天日期，并把算法、测试场景、优势和过度保守的限制写成完整新闻；它是事件主来源，论文只补充方法背景。"
+    },
+    {
+      "slug": "fedscoop-nscai-final-report-ai-20210308",
+      "title": "In final report, commission makes plea for DOD to field AI fast",
+      "eventDate": "2021-03-08",
+      "publishedAt": "2021-03-08",
+      "sourceType": "news-report",
+      "source": {
+        "name": "FedScoop",
+        "url": "https://fedscoop.com/nscai-final-report-ai-in-dod/"
+      },
+      "canonicalUrl": "https://fedscoop.com/nscai-final-report-ai-in-dod/",
+      "sourceHash": "sha256:5ff141aa1408f4273afcfb8028c41bbde71c84fb2c2e5448f6b02db1cb942406",
+      "relatedSlugs": [
+        "context",
+        "state"
+      ],
+      "evidence": [
+        {
+          "url": "https://fedscoop.com/nscai-final-report-ai-in-dod/",
+          "claim": "FedScoop 在 2021-03-08 报道美国国家安全人工智能委员会提交最终报告，主线是国防部门加快部署 AI。",
+          "excerpt": "报道标注 March 8, 2021，介绍委员会提交给国会和行政部门的最终报告及其关于领导力、人才、硬件和创新的建议。"
+        }
+      ],
+      "decision": "rejected",
+      "reason": "这是当天独立的国防政策新闻，但与 CARRL 的传感器不确定性事件没有直接证据链；保留候选以证明检索覆盖，不用政策报道替代更具体的技术新闻。"
+    },
+    {
+      "slug": "arxiv-carrl-certifiable-robustness-20200411",
+      "title": "Certifiable Robustness to Adversarial State Uncertainty in Deep Reinforcement Learning",
+      "eventDate": "2020-04-11",
+      "publishedAt": "2020-04-11",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv",
+        "url": "https://arxiv.org/abs/2004.06496"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2004.06496",
+      "sourceHash": "sha256:6f180fda58e1705d6cd87f14c0c4b1eebfa39b740922b88aa62bd842084483c0",
+      "relatedSlugs": [
+        "context",
+        "benchmark"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2004.06496",
+          "claim": "arXiv 原始页面显示该论文首版发表于 2020-04-11，摘要描述对状态不确定性计算状态-动作价值的保证下界。",
+          "excerpt": "页面标注 Submitted on 11 Apr 2020，并说明方法在最坏偏差下选择稳健动作，在行人碰撞规避和控制任务中测试。"
+        }
+      ],
+      "decision": "rejected",
+      "reason": "论文早于 03-08 一年，不能单独作为当天新闻；仅作为解释 CARRL 方法和证书含义的背景来源。"
+    }
+  ],
+  "selectedSlugs": [
+    "mit-carrl-adversarial-robustness-20210308-2b195e40"
+  ],
+  "gap": null
+}
