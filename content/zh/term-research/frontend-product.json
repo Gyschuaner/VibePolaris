@@ -113,7 +113,7 @@
     "slug": "safe-area",
     "mechanism": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset（系统留出的安全边距）；背景可延伸到屏幕边缘，关键控件根据这些值加内边距，方向或设备形态变化时重新读取。",
     "misconception": "安全区域不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；平台单位和接口可能不同，背景与可操作内容的处理也不同。",
-    "demoSignature": "layers: 4 frames; actors=物理屏幕/安全区域/页面背景/标题与按钮; phases=普通矩形屏（本例无刘海/手势区）→加入刘海和手势条→旋转到横屏→关闭适配对照; action=切换设备外形",
+    "demoSignature": "layers: 4 frames; actors=物理屏幕/安全区域/页面背景/标题与按钮; phases=普通矩形屏（本例无刘海/手势区）→加入刘海和手势条→旋转到横屏→固定边距造成遮挡; action=切换设备外形",
     "sourceUrls": [
       "https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area",
       "https://www.w3.org/TR/css-env-1/",
@@ -151,7 +151,7 @@
     "slug": "app-permission",
     "mechanism": "原生平台先声明能力和用途（Android manifest、iOS Info.plist），Web 按权限 API 和浏览器策略处理；运行时读取授权状态，在用户触发具体任务时解释用途并请求，界面据此选择主路径或替代路径。",
     "misconception": "权限不是启动时一次性收集，也不是拒绝后反复弹窗；Android 的“不再询问”、iOS 和浏览器的权限状态与再次请求规则不同，拒绝后仍应让用户完成不依赖该能力的任务。",
-    "demoSignature": "branch: 5 frames; actors=拍照按钮/用途说明/系统权限弹窗/相机页面/文件上传/系统设置入口; phases=在需要时说明→交给系统决定→允许后打开相机→拒绝后仍可继续→永久拒绝才去设置; action=选择一个授权结果",
+    "demoSignature": "branch: 5 frames; actors=拍照按钮/用途说明/系统权限弹窗/相机页面/文件上传/系统设置入口; phases=在需要时说明→交给系统决定→允许后打开相机→拒绝后仍可继续→系统不再直接弹窗才去设置; action=选择一个授权结果",
     "sourceUrls": [
       "https://developer.android.com/training/permissions/requesting",
       "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy",
@@ -198,9 +198,9 @@
   },
   {
     "slug": "webview",
-    "mechanism": "WebView 是原生应用（宿主应用）里由系统网页引擎提供的内嵌页面容器；消息桥把网页消息转换为受控原生调用，网页通过它请求少量能力，宿主校验 origin（协议+域名+端口）、方法和参数后再调用。",
+    "mechanism": "WebView 是原生应用（宿主应用）里由系统网页引擎提供的内嵌页面容器；消息桥把网页消息转换为少量受控原生调用，不是任意 RPC，宿主校验 origin（协议+域名+端口）、方法、版本和参数后再调用。",
     "misconception": "它不是完整浏览器，也不是原生页面；网页引擎和版本可能与系统浏览器不同，登录状态与能力不会自动一致。宿主负责导航、Cookie/存储、下载、权限、生命周期、内存和桥接安全，不应让不可信页面调用任意原生方法。",
-    "demoSignature": "contract: 4 frames; actors=活动网页/来源校验/消息校验/原生分享/结构化回复; phases=网页发起分享→来源与结构通过→原生返回结果→篡改字段被拒绝; action=发送桥接消息",
+    "demoSignature": "contract: 4 frames; actors=活动网页/来源校验/消息校验/原生分享/结构化回复; phases=网页发起分享→来源与结构通过→原生返回结果→未知来源被拒绝; action=发送桥接消息",
     "sourceUrls": [
       "https://developer.android.com/develop/ui/views/layout/webapps/webview",
       "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges",
