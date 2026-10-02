@@ -1,9 +1,9 @@
 [
   {
     "slug": "semantic-html",
-    "lead": "页面看起来一样，为什么还要区分 main、nav 和 div？",
-    "definition": "浏览器解析元素时会把 nav、main、button 等角色带入文档与无障碍结构，辅助技术因此能按区域和控件类型导航。",
-    "boundary": "常被误解为“换个标签有利于 SEO”；核心差异是机器可识别的结构和原生交互行为，不只是搜索排名。",
+    "lead": "页面看起来一样，换成 main、nav、button 后，谁会多知道什么？",
+    "definition": "语义化 HTML 按内容职责选择元素：nav 表示导航，main 表示主要内容，article 表示可独立阅读内容，button 表示可触发操作。浏览器据此构造文档和无障碍结构，辅助技术才能按区域和控件导航。",
+    "boundary": "语义元素表达结构与原生行为，不负责颜色、间距或动画；class 命名不会改变语义，ARIA 角色也不应替代已有的原生元素。",
     "sceneKind": "tree",
     "sceneTitle": "同一页面在无障碍树里的两种结构",
     "actionLabel": "替换一个语义节点",
@@ -11,21 +11,21 @@
       {
         "id": "markup",
         "label": "HTML",
-        "detail": "文章与导航",
+        "detail": "元素职责：nav、main、button",
         "icon": "code",
         "group": "源代码"
       },
       {
         "id": "dom",
         "label": "DOM",
-        "detail": "浏览器解析结果",
+        "detail": "浏览器解析后的节点结构",
         "icon": "layout",
         "group": "页面结构"
       },
       {
         "id": "a11y",
         "label": "无障碍树",
-        "detail": "区域与控件角色",
+        "detail": "辅助技术看到的区域和控件角色",
         "icon": "layout",
         "group": "辅助技术"
       }
@@ -35,19 +35,19 @@
         "id": "markup-dom",
         "from": "markup",
         "to": "dom",
-        "label": "解析"
+        "label": "浏览器解析"
       },
       {
         "id": "dom-a11y",
         "from": "dom",
         "to": "a11y",
-        "label": "暴露语义"
+        "label": "暴露结构与行为"
       }
     ],
     "frames": [
       {
-        "label": "只有 div",
-        "note": "页面能显示，但树里只有无名称的普通容器。",
+        "label": "先看普通容器",
+        "note": "页面能显示，但无障碍树没有可跳转的 nav、main、button 角色；普通容器可能被忽略或只作为通用容器。",
         "activeIds": [
           "markup",
           "dom"
@@ -58,7 +58,7 @@
         ],
         "values": {
           "markup": "div × 6",
-          "a11y": "generic × 6"
+          "a11y": "无 nav/main/button 角色"
         },
         "activeEdgeIds": [
           "markup-dom"
@@ -66,7 +66,7 @@
       },
       {
         "label": "标出页面区域",
-        "note": "nav、main 和 article 进入解析结果，对应区域立即出现在无障碍树中。",
+        "note": "在本例浏览器中，nav、main 和 article 进入解析结果，对应区域出现在无障碍树中。",
         "activeIds": [
           "markup",
           "dom",
@@ -87,7 +87,7 @@
       },
       {
         "label": "换成原生按钮",
-        "note": "最后一个可点击 div 改为 button，键盘焦点和按钮角色同时出现。",
+        "note": "最后一个可点击 div 改为 button，按钮角色和 Enter/Space 键盘行为一起出现。",
         "activeIds": [
           "markup",
           "a11y"
@@ -97,20 +97,20 @@
         ],
         "mutedIds": [],
         "values": {
-          "a11y": "button · 可按 Enter"
+          "a11y": "button · Enter/Space"
         },
         "activeEdgeIds": [
           "dom-a11y"
         ],
         "metric": {
-          "label": "可识别区域",
-          "value": "4 个"
+          "label": "可识别区域与控件",
+          "value": "4 个示例"
         }
       }
     ],
     "insight": "语义标签改变的是机器读到的结构和原生行为，不只是代码长相。",
     "quiz": {
-      "question": "一组可以提交表单的文字应优先使用什么元素？",
+      "question": "提交表单的操作应优先使用什么元素？",
       "options": [
         {
           "label": "button",
@@ -125,23 +125,38 @@
           "correct": false
         }
       ],
-      "success": "button 自带按钮语义和键盘行为。",
-      "retry": "可点击不等于按钮；普通容器需要额外补齐语义和键盘行为。"
+      "success": "原生 button 自带按钮语义和 Enter/Space 键盘行为。",
+      "retry": "可点击不等于按钮；普通容器需要额外补齐语义、焦点和键盘行为。"
     },
     "prompt": {
       "title": "检查页面的 HTML 语义",
-      "text": "请检查下面的 HTML。指出只承担样式容器作用的 div，以及应改为 header、nav、main、section、article 或 button 的节点，并说明修改依据。不要改动页面视觉。"
+        "text": "请检查下面的 HTML：指出只承担样式容器作用的 div，以及应改为 header、nav、main、section、article 或 button 的节点；说明每次替换带来的结构或原生行为变化，不改动页面视觉。"
     },
     "sources": [
       {
         "url": "https://html.spec.whatwg.org/multipage/dom.html#semantics-2",
         "label": "WHATWG · HTML Standard",
-        "note": "HTML 标准语义"
+        "note": "元素的语义让浏览器和其他处理器理解内容"
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Semantics",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/",
+        "label": "WAI ARIA APG · Landmarks Pattern",
+        "note": "main 和 nav 可形成可导航的区域地标"
+      },
+      {
+        "url": "https://www.w3.org/WAI/tutorials/page-structure/regions/",
+        "label": "W3C WAI · Page Regions",
+        "note": "header、nav、main 等元素标出页面区域"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H101",
+        "label": "W3C WAI · Technique H101",
+        "note": "语义元素为辅助技术提供区域结构"
+      },
+      {
+        "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+        "label": "WAI ARIA APG · Keyboard Interface",
+        "note": "原生控件与自定义控件的键盘行为边界"
       }
     ]
   },

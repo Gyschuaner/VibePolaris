@@ -1,14 +1,14 @@
 [
   {
     "zh": "语义化 HTML", "en": "Semantic HTML", "slug": "semantic-html", "cat": "前端",
-    "say": "用 header、nav、main、button 等元素说明内容的作用，而不是把所有区域都写成 div。",
+    "say": "给 HTML 元素选对职责，让浏览器和辅助技术读懂页面区域与操作。",
     "aliases": ["语义标签", "网页结构", "semantic markup"],
     "question": "页面看起来一样，为什么还要区分 main、nav 和 div？",
-    "definition": "语义化 HTML 是根据内容职责选择元素。浏览器、搜索引擎和辅助技术可以据此识别标题、导航、正文和操作。",
-    "boundary": "语义元素负责表达结构，不负责决定颜色、间距或动画；这些仍由 CSS 和 JavaScript 处理。",
+    "definition": "语义化 HTML 按内容职责选择元素：nav 表示导航，main 表示主要内容，article 表示可独立阅读内容，button 表示可触发操作。浏览器据此构造文档和无障碍结构，辅助技术才能按区域和控件导航。",
+    "boundary": "语义元素表达结构与原生行为，不负责颜色、间距或动画；class 命名不会改变语义，ARIA 角色也不应替代已有的原生元素。",
     "demoType": "hierarchy", "demoTitle": "同一段内容的结构识别",
-    "demoSteps": [{"label":"只有 div","value":"所有节点都显示为普通容器","note":"视觉样式可以正常，但结构信息很少。"},{"label":"补上语义元素","value":"nav、main、article 各自承担职责","note":"文档层级开始清楚。"},{"label":"辅助技术读取","value":"用户可以直接跳到导航或正文","note":"结构信息转化为可操作的入口。"}],
-    "quizQuestion": "一组可以提交表单的文字应优先使用什么元素？", "quizOptions": ["button", "div", "span"],
+    "demoSteps": [{"label":"先看普通容器","value":"div × 6 → 普通容器","note":"页面能显示，但浏览器和辅助技术只知道这些是容器。"},{"label":"标出页面区域","value":"nav、main、article → 对应区域","note":"辅助技术能识别导航、正文和文章的结构边界。"},{"label":"换成原生按钮","value":"div → button · 可按 Enter/Space","note":"按钮语义和键盘行为随原生元素一起出现。"}],
+    "quizQuestion": "提交表单的操作应优先使用什么元素？", "quizOptions": ["button", "div", "span"],
     "correctText": "button 自带按钮语义和键盘行为。", "wrongText": "可点击不等于按钮；普通容器需要额外补齐语义和键盘行为。",
     "promptTitle": "检查页面的 HTML 语义", "prompt": "请检查下面的 HTML。指出只承担样式容器作用的 div，以及应改为 header、nav、main、section、article 或 button 的节点，并说明修改依据。不要改动页面视觉。",
     "relatedSlugs": ["html", "a11y", "dom", "focus-management"]
