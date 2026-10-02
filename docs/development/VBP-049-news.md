@@ -41,7 +41,7 @@
 | 2021-03-16 | DataGen 融资 1850 万美元，押注合成视觉数据；报道的是训练数据产品与扩展测试数据计划，真实部署仍需复测 | Fortune；VentureBeat 同日交叉报道；DataGen 当前官网作身份补充；9 月公司新闻稿作后续时间线 | 2021-03-16 / 2021-03-16 | `passed`（两轮 Codex 子智能体读者审读；中文表达审读；新增 `synthetic-data` 机制动画） | `a267dc1c` |
 | 2021-03-17 | Torch.AI 融资 3000 万美元，押注“数据在流动中处理”；客户、联邦机构覆盖和认证均保留为公司口径，03-18 国防报道作后续 | PR Newswire（Torch.AI）；VentureBeat 同日交叉报道；InsideDefense 03-18 后续；Feedzai/Keelvar 候选拒选并保留原因 | 2021-03-17 / 2021-03-17 | `passed`（两轮 Codex 子智能体读者审读；中文表达审读；新增 `data-motion` 机制动画） | `1f361d8f` |
 | 2021-03-18 | FORT Robotics 融资 1300 万美元，扩展自主机器安全平台；无线急停、多机停止和客户数量保留为公司/媒体口径，当前页面只作机制与验收背景 | FORT Robotics 官方新闻稿；VentureBeat 同日报道；FORT 当前 AMR 页面；OSHA、NIST 当前安全背景；2022 Series B 后续稿 | 2021-03-18 / 2021-03-18 | `passed`（读者与中文表达子智能体复审；修正客户数量“前一年”、门控触发、多机协同、停机确认和当前页面时效；新增 `robot-safety` 机制动画） | `8fa0eb92` |
-| 2021-03-19 | Viz.ai 在国际卒中大会期间发布护理协调数据；Hassan 的 Viz LVO 研究与 Jankowitz 的 Viz RECRUIT/AI ENRICH 招募结果严格分开，Practical Neurology 只作前者交叉报道 | Viz.ai 官方新闻稿；Practical Neurology；AHA ISC 2021 页面；Viz.ai 当前 notification-only 使用说明；ISC 海报摘要与早期评估页 | 2021-03-19 / 2021-03-19 | `passed`（读者与中文表达子智能体复审；修正 102.3 分钟/45%/mRS 与 41%/213% 的研究归属，补 CTA/LVO/到院到转出/到院到穿刺白话解释；新增 `clinical-alert` 机制动画） | 待提交 |
+| 2021-03-19 | Viz.ai 在国际卒中大会期间发布护理协调数据；Hassan 的 Viz LVO 研究与 Jankowitz 的 Viz RECRUIT/AI ENRICH 招募结果严格分开，Practical Neurology 只作前者交叉报道 | Viz.ai 官方新闻稿；Practical Neurology；AHA ISC 2021 页面；Viz.ai 当前 notification-only 使用说明；ISC 海报摘要与早期评估页 | 2021-03-19 / 2021-03-19 | `passed`（读者与中文表达子智能体复审；修正 102.3 分钟/45%/mRS 与 41%/213% 的研究归属，补 CTA/LVO/到院到转出/到院到穿刺白话解释；新增 `clinical-alert` 机制动画） | `8613dab3` |
 | 2021-03-20 | 空档日：检索到的内容是前几日主题的观点、采访或进行中项目分析，未确认新的当天 AI 公告、产品上线、融资或监管动作 | VentureBeat 合成数据观点与机器人采访；Google News RSS；TechCrunch 日期索引；DOE 页面交叉核对 | — | `n/a`（空档日，无文章） | 待提交 |
 
 
