@@ -285,7 +285,7 @@ export function publishEligibleNews({ rootDir = process.cwd(), approve = false }
   const slugs = new Set(published.map((article) => article.slug));
   for (const { draft } of eligible) {
     if (!slugs.has(draft.slug)) {
-      const { status, runId, receivedAt, ...article } = draft;
+      const { status, runId, receivedAt, relationSuggestions, modelReview, verification, riskLevel, ...article } = draft;
       published.push(article);
       slugs.add(draft.slug);
     }
