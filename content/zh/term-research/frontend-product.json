@@ -64,12 +64,12 @@
   },
   {
     "slug": "touch-target",
-    "mechanism": "命中测试使用控件的可交互边界，而非图标可见像素；容器内边距可扩大目标，同时相邻目标必须保持分离。",
-    "misconception": "把图标放大不等于正确扩大点击区，透明热区若互相覆盖还会制造误触。",
-    "demoSignature": "建议 5 帧：16px 图标上显示真实命中框，用户连续点十次，落点散点记录命中与漏点；拖动 padding 把热区扩到 48dp，图标视觉尺寸不变；再次播放相同落点，漏点转为命中，同时标出与邻近按钮是否重叠。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/compose/accessibility/api-defaults?hl=en", "https://developer.apple.com/design/human-interface-guidelines/accessibility"],
+    "mechanism": "命中测试看的是控件的可交互边界，不是图标的可见像素；用容器尺寸或内边距扩大热区，再用间距避免相邻热区重叠。",
+    "misconception": "图标大小、命中区域和相邻间距是三个不同量；dp 是 Android 的密度无关像素，pt 是 Apple 的点，CSS px 是网页 CSS 像素；44 pt、48 dp、24 CSS px 来自不同平台或标准，不能直接互换，也不能只靠颜色或视觉放大解决漏点。",
+    "demoSignature": "transform: 4 frames; actors=16 px 图标/命中区域/十个落点/相邻目标; phases=只按图标命中→扩大不可见热区→重放相同落点→发现边界相撞; action=重放十个落点",
+    "sourceUrls": ["https://developer.android.com/develop/ui/compose/accessibility/api-defaults","https://developer.android.com/develop/ui/views/touch-and-input/gestures/viewgroup","https://developer.apple.com/design/human-interface-guidelines/buttons","https://developer.apple.com/design/human-interface-guidelines/accessibility","https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum"],
     "rewriteRisk": "high",
-    "nearDuplicates": ["a11y", "form", "feedback"]
+    "nearDuplicates": ["a11y","form","feedback"]
   },
   {
     "slug": "offline-first",

@@ -1377,10 +1377,10 @@
   {
     "slug": "touch-target",
     "lead": "图标看得见，为什么在手机上总是点不中？",
-    "definition": "命中测试使用控件的可交互边界，而非图标可见像素；容器内边距可扩大目标，同时相邻目标必须保持分离。",
-    "boundary": "把图标放大不等于正确扩大点击区，透明热区若互相覆盖还会制造误触。",
-    "sceneKind": "compare",
-    "sceneTitle": "图标尺寸不变时，命中区域如何影响误触",
+    "definition": "命中测试看的是控件的可交互边界，不是图标的可见像素；用容器尺寸或内边距扩大热区，再用间距避免相邻热区重叠。",
+    "boundary": "扩大热区不能让不同控件共享同一片可交互区域；dp 是 Android 的密度无关像素，pt 是 Apple 的点，CSS px 是网页 CSS 像素；这些数值不能直接互换，尺寸建议要结合目标平台与布局。",
+    "sceneKind": "transform",
+    "sceneTitle": "同一图标的可见尺寸与命中边界",
     "actionLabel": "重放十个落点",
     "actors": [
       {
@@ -1393,7 +1393,7 @@
       {
         "id": "hitbox",
         "label": "命中区域",
-        "detail": "16 dp → 48 dp",
+        "detail": "16 dp → 48 dp（示例）",
         "icon": "layout",
         "group": "控件"
       },
@@ -1406,8 +1406,8 @@
       },
       {
         "id": "neighbor",
-        "label": "相邻按钮",
-        "detail": "检查热区重叠",
+        "label": "相邻目标",
+        "detail": "检查边界是否重叠",
         "icon": "component",
         "group": "约束"
       }
@@ -1427,8 +1427,8 @@
           "neighbor"
         ],
         "values": {
-          "hitbox": "16 × 16 dp",
-          "points": "命中 3 / 10"
+          "hitbox": "16 × 16 px（教学示例）",
+          "points": "命中 3 / 10（教学示例）"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -1438,8 +1438,9 @@
       },
       {
         "label": "扩大不可见热区",
-        "note": "增加按钮容器内边距，图标没有变大，命中框扩到 48 dp。",
+        "note": "用按钮容器内边距扩大命中区域，图标视觉尺寸保持不变。",
         "activeIds": [
+          "icon",
           "hitbox"
         ],
         "doneIds": [
@@ -1450,13 +1451,13 @@
           "neighbor"
         ],
         "values": {
-          "hitbox": "48 × 48 dp"
+          "hitbox": "48 × 48 dp（Android 示例）"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "相同落点重放",
-        "note": "原来的十个落点有九个命中，同时相邻热区没有重叠。",
+        "label": "重放相同落点",
+        "note": "相同输入再次命中，同时相邻目标仍保留可区分的间隔。",
         "activeIds": [
           "points",
           "hitbox",
@@ -1467,17 +1468,40 @@
         ],
         "mutedIds": [],
         "values": {
-          "points": "命中 9 / 10",
-          "neighbor": "间隔 8 dp"
+          "points": "命中 9 / 10（教学示例）",
+          "neighbor": "间隔 8 dp（教学示例）"
         },
         "activeEdgeIds": [],
         "metric": {
           "label": "本例命中",
           "value": "9 / 10"
         }
+      },
+      {
+        "label": "发现边界相撞",
+        "note": "如果扩大后的热区覆盖相邻按钮，就要调整布局或缩小其中一个热区，不能让两个控件争抢同一落点。",
+        "activeIds": [
+          "hitbox",
+          "neighbor"
+        ],
+        "doneIds": [
+          "points"
+        ],
+        "mutedIds": [
+          "icon"
+        ],
+        "values": {
+          "hitbox": "48 × 48 dp（示例）",
+          "neighbor": "重叠 · 需调整间距"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本例风险",
+          "value": "两块热区相撞"
+        }
       }
     ],
-    "insight": "视觉图标可以很小，但可操作区域必须足够大，并与相邻控件保持可区分的间距。",
+    "insight": "图标大小、命中区域和相邻间距是三个不同量；命中区域变大后仍要用落点重放检查误触。",
     "quiz": {
       "question": "放大触控目标的常见做法是什么？",
       "options": [
@@ -1499,18 +1523,33 @@
     },
     "prompt": {
       "title": "检查移动端控件热区",
-      "text": "请根据下面控件尺寸和间距，标出难以触摸或热区重叠的位置。通过按钮容器和内边距扩大热区，不改变图标含义。"
+      "text": "请按目标平台标出控件的可见尺寸、命中区域和相邻间距，选择容器或内边距扩大热区，并用一组真实落点验证是否漏点或重叠。"
     },
     "sources": [
       {
-        "url": "https://developer.android.com/develop/ui/compose/accessibility/api-defaults?hl=en",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "url": "https://developer.android.com/develop/ui/compose/accessibility/api-defaults",
+        "label": "Android Developers · Compose API defaults",
+        "note": "可交互元素建议至少 48 dp，Compose 会扩大小控件的命中区域但仍需避免重叠"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/viewgroup",
+        "label": "Android Developers · TouchDelegate",
+        "note": "父容器可以把更大的触摸矩形转发给小的子控件"
+      },
+      {
+        "url": "https://developer.apple.com/design/human-interface-guidelines/buttons",
+        "label": "Apple HIG · Buttons",
+        "note": "按钮命中区域通常至少 44 × 44 pt，并要与周围内容保持足够间距"
       },
       {
         "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple HIG · Accessibility",
+        "note": "控件尺寸和相邻间距都影响行动不便用户的选择准确度"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "label": "W3C WAI · Target Size (Minimum)",
+        "note": "WCAG 2.2 给出 24 × 24 CSS px 最小目标及以间距满足的例外"
       }
     ]
   },
