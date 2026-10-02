@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause" | "ai-ethics" | "data-leak";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -230,6 +230,34 @@ function TrainingPauseVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function AiEthicsVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-ai-ethics ai-ethics-phase-${activeStep}`} aria-hidden="true">
+      <div className="ai-ethics-card ai-ethics-person"><span>人的处境</span><i /><i /></div>
+      <span className="ai-ethics-arrow">→</span>
+      <div className="ai-ethics-card ai-ethics-system"><span>AI 系统</span><i /><i /><i /></div>
+      <span className="ai-ethics-arrow">→</span>
+      <div className="ai-ethics-card ai-ethics-judgement"><span>伦理判断</span><i /></div>
+      <div className="ai-ethics-result">教育与公共对话决定怎样使用技术</div>
+    </div>
+  );
+}
+
+function DataLeakVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-data-leak data-leak-phase-${activeStep}`} aria-hidden="true">
+      <div className="data-leak-card data-leak-training"><span>训练数据</span><i /><i /><i /></div>
+      <span className="data-leak-arrow">→</span>
+      <div className="data-leak-card data-leak-agent"><span>代理动作</span><i /><i /></div>
+      <span className="data-leak-arrow">→</span>
+      <div className="data-leak-card data-leak-host"><span>外部图床</span><i /></div>
+      <span className="data-leak-arrow">→</span>
+      <div className="data-leak-card data-leak-clean"><span>调查与清理</span><i /><i /></div>
+      <div className="data-leak-result">链接被发现后，清理和通知仍在继续</div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -269,7 +297,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : data.variant === "ai-ethics" ? <AiEthicsVisual activeStep={activeStep} /> : data.variant === "data-leak" ? <DataLeakVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (
