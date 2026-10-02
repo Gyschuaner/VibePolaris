@@ -130,12 +130,22 @@
   },
   {
     "slug": "app-lifecycle",
-    "mechanism": "操作系统通过 onCreate/onStart/onResume/onPause/onStop/onDestroy 等回调驱动 Activity 状态；进程可能在后台被直接回收。",
-    "misconception": "后台不等于应用仍完整运行，onDestroy 也不是可靠的最终保存时机。",
-    "demoSignature": "建议 6 帧：状态机围绕一个正在编辑的草稿页；依次点击打开、切到后台、旋转、系统回收，实际生命周期回调沿路径点亮；保存策略可在 onPause 与 onDestroy 间切换；回到页面后，后者会出现草稿为空的可见结果。",
-    "sourceUrls": ["https://developer.android.com/guide/components/activities/activity-lifecycle"],
+    "mechanism": "运行环境通过生命周期事件通知页面或应用进入可见、交互、后台和终止或重建等阶段；应用可在这些阶段安排保存状态、暂停资源，回来时再从已持久化数据尝试恢复，结果取决于实现和保存是否完成。",
+    "misconception": "后台不等于进程还会一直运行，onDestroy 或 beforeunload 也不是可靠的最终保存时机；重要数据应在编辑过程中或有机会时提前持久化。",
+    "demoSignature": "state-machine: 4 frames; actors=页面已创建/前台可编辑/后台不可见/进程已被回收/草稿存储; phases=打开并编辑→切到后台→进程被回收→重新打开; action=触发下一次生命周期变化",
+    "sourceUrls": [
+      "https://developer.android.com/guide/components/activities/activity-lifecycle",
+      "https://developer.android.com/topic/libraries/architecture/saving-states",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API",
+      "https://developer.chrome.com/docs/web-platform/page-lifecycle-api",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["offline-first", "local-storage", "push-notification"]
+    "nearDuplicates": [
+      "offline-first",
+      "local-storage",
+      "push-notification"
+    ]
   },
   {
     "slug": "app-permission",

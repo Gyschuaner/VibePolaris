@@ -2118,44 +2118,44 @@
   {
     "slug": "app-lifecycle",
     "lead": "用户切到别的应用后，当前页面的数据和连接应该怎样处理？",
-    "definition": "操作系统通过 onCreate/onStart/onResume/onPause/onStop/onDestroy 等回调驱动 Activity 状态；进程可能在后台被直接回收。",
-    "boundary": "后台不等于应用仍完整运行，onDestroy 也不是可靠的最终保存时机。",
+    "definition": "以 Android Activity 为例，onCreate/onStart/onResume/onPause/onStop/onDestroy 描述页面阶段；Web 页面可通过 visibilitychange 等事件观察可见性。Android 进程可能在后台被回收，Web 标签页也可能被冻结或被浏览器丢弃，状态要持久化（保存到可跨重启读取的存储）。",
+    "boundary": "不同平台的事件名称和顺序不同，回调不等于可靠的最终保存机会；Android 可能被系统杀掉进程，Web 隐藏标签页可能被冻结或丢弃，丢弃时通常没有 beforeunload 或其他脚本回调。重要数据应在编辑过程中或有机会时持久化。",
     "sceneKind": "state-machine",
-    "sceneTitle": "草稿页面经历前台、后台和进程回收",
+    "sceneTitle": "草稿页面前后台切换与进程回收",
     "actionLabel": "触发下一次生命周期变化",
     "actors": [
       {
         "id": "created",
-        "label": "Created",
-        "detail": "页面已建立",
+        "label": "页面已创建",
+        "detail": "页面结构已建立",
         "icon": "component",
         "group": "状态"
       },
       {
         "id": "active",
-        "label": "Active",
+        "label": "前台可编辑",
         "detail": "用户正在编辑",
         "icon": "user",
         "group": "状态"
       },
       {
         "id": "background",
-        "label": "Background",
-        "detail": "应用不可见",
+        "label": "后台不可见",
+        "detail": "暂停不必要资源",
         "icon": "clock",
         "group": "状态"
       },
       {
         "id": "killed",
-        "label": "Process killed",
-        "detail": "内存被系统回收",
+        "label": "进程已被回收",
+        "detail": "不保证最后回调",
         "icon": "gear",
         "group": "状态"
       },
       {
         "id": "draft",
         "label": "草稿存储",
-        "detail": "标题与正文",
+        "detail": "标题与正文已持久化",
         "icon": "database",
         "group": "数据"
       }
@@ -2184,12 +2184,18 @@
         "from": "active",
         "to": "draft",
         "label": "编辑时保存"
+      },
+      {
+        "id": "killed-created",
+        "from": "killed",
+        "to": "created",
+        "label": "重新打开/重建"
       }
     ],
     "frames": [
       {
         "label": "打开并编辑",
-        "note": "页面进入 Active，输入内容同时写入草稿存储。",
+        "note": "页面进入前台可编辑状态，用户输入同时写入草稿存储。",
         "activeIds": [
           "created",
           "active",
@@ -2212,7 +2218,7 @@
       },
       {
         "label": "切到后台",
-        "note": "应用不可见，订阅暂停；草稿已经在存储中，不依赖终止回调。",
+        "note": "页面不可见，订阅暂停；草稿已经持久化，不依赖终止回调。",
         "activeIds": [
           "active",
           "background"
@@ -2234,7 +2240,7 @@
       },
       {
         "label": "进程被回收",
-        "note": "系统直接移除进程，未保证执行 onDestroy，草稿存储不受影响。",
+        "note": "Android 进程可能被系统回收；Web 标签页可能被冻结或被浏览器丢弃，本例不依赖 onDestroy 或 beforeunload，已持久化的草稿仍可尝试恢复。",
         "activeIds": [
           "background",
           "killed"
@@ -2247,7 +2253,7 @@
           "active"
         ],
         "values": {
-          "killed": "回调不保证",
+          "killed": "最后回调不保证",
           "draft": "仍有 18 字"
         },
         "activeEdgeIds": [
@@ -2256,7 +2262,7 @@
       },
       {
         "label": "重新打开",
-        "note": "新页面从草稿存储恢复内容，并按时间决定是否刷新远端数据。",
+        "note": "Android 重新创建页面或 Web 重新加载标签页时，从草稿存储尝试恢复内容，并按时间决定是否刷新远端数据。",
         "activeIds": [
           "created",
           "active",
@@ -2272,11 +2278,12 @@
           "active": "内容已恢复"
         },
         "activeEdgeIds": [
+          "killed-created",
           "created-active"
         ]
       }
     ],
-    "insight": "生命周期回调用于协调资源和状态，重要数据不能押在可能不执行的终止时刻。",
+    "insight": "生命周期事件用于协调资源和恢复状态；应用可在有机会时持久化重要数据，回来时再尝试恢复，不能押在可能不执行的最终回调上。",
     "quiz": {
       "question": "重要草稿应只在应用终止回调中保存吗？",
       "options": [
@@ -2293,18 +2300,38 @@
           "correct": false
         }
       ],
-      "success": "系统终止进程时不保证提供完整收尾机会。",
+      "success": "系统终止进程或丢弃页面时，不保证提供完整收尾机会；重要状态要在更早的时机保存。",
       "retry": "把保存依赖于单一退出回调会产生数据丢失风险。"
     },
     "prompt": {
       "title": "补全页面的生命周期处理",
-      "text": "请检查下面页面在前台、后台和进程重启时的行为，补充草稿保存、请求取消、订阅恢复和过期数据刷新。"
+      "text": "请检查下面页面在前台、后台和进程重启时的行为，补充草稿持久化、请求取消、订阅恢复和过期数据刷新，并分别标出 Android 回调或 Web 可见性事件能保证什么。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/guide/components/activities/activity-lifecycle",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Activity lifecycle",
+        "note": "Activity 前台、后台、回收与回调顺序"
+      },
+      {
+        "url": "https://developer.android.com/topic/libraries/architecture/saving-states",
+        "label": "Android Developers · Save UI states",
+        "note": "配置变化和进程回收时保存与恢复状态"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API",
+        "label": "MDN · Page Visibility API",
+        "note": "Web 页面可见性变化与资源暂停"
+      },
+      {
+        "url": "https://developer.chrome.com/docs/web-platform/page-lifecycle-api",
+        "label": "Chrome for Developers · Page Lifecycle API",
+        "note": "Web 页面 freeze、discard 等生命周期阶段"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event",
+        "label": "MDN · beforeunload event",
+        "note": "离开页面事件不适合作为唯一保存机制"
       }
     ]
   },
