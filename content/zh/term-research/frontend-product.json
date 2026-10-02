@@ -46,10 +46,10 @@
   },
   {
     "slug": "gesture",
-    "mechanism": "识别器根据触点数量、位移、速度、方向和持续时间，把连续触摸样本判定为轻点、拖拽、滑动或缩放。",
-    "misconception": "手势不是单个 touch 事件；轻点和滑动在手指落下时尚未确定，还会与滚动和系统手势竞争。",
-    "demoSignature": "建议 4 帧：手指在画布上移动，轨迹旁实时累计 distance、velocity、duration；未过阈值时卡片保持 pending；快速短划切为 swipe，长按后移动切为 drag；松手后把本次判定参数固定在轨迹旁。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/views/touch-and-input/gestures"],
+    "mechanism": "手势识别先收集按下、移动、抬起或取消等触摸事件，再按触点数量、位移、方向、速度和持续时间与规则比较，输出轻点 tap、滑动 swipe、拖拽 drag 等结果。",
+    "misconception": "手势是输入解释层，不应成为关键功能的唯一入口；还要处理系统滚动或手势竞争、取消事件和误触，并提供可见按钮或菜单替代；具体阈值由平台、组件配置和设备决定。",
+    "demoSignature": "route: 4 frames; actors=触点轨迹/移动距离/移动速度/手势结果; phases=按下：等待更多输入→短距离抬起→快速移动→停留后移动; action=查看下一段轨迹",
+    "sourceUrls": ["https://developer.android.com/develop/ui/views/touch-and-input/gestures", "https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector", "https://developer.android.com/develop/ui/views/touch-and-input/gestures/multi", "https://developer.apple.com/documentation/uikit/uigesturerecognizer", "https://www.w3.org/TR/pointerevents/latest/"],
     "rewriteRisk": "medium",
     "nearDuplicates": ["event", "touch-target", "adaptive-layout"]
   },

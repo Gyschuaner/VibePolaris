@@ -967,37 +967,37 @@
   {
     "slug": "gesture",
     "lead": "同样是手指落下，系统怎样区分轻点和滑动？",
-    "definition": "识别器根据触点数量、位移、速度、方向和持续时间，把连续触摸样本判定为轻点、拖拽、滑动或缩放。",
-    "boundary": "手势不是单个 touch 事件；轻点和滑动在手指落下时尚未确定，还会与滚动和系统手势竞争。",
+    "definition": "手势识别先收集按下、移动、抬起或取消等触摸事件，再按触点数量、位移、方向、速度和持续时间与规则比较，输出轻点 tap、滑动 swipe、拖拽 drag 等结果。",
+    "boundary": "手势是输入解释层，不应成为关键功能的唯一入口；还要处理系统滚动或手势竞争、取消事件和误触，并提供可见按钮或菜单替代；具体阈值由平台、组件配置和设备决定。",
     "sceneKind": "route",
-    "sceneTitle": "一段触点轨迹如何被判定为轻点、滑动或拖拽",
-    "actionLabel": "画一段手势",
+    "sceneTitle": "同一段触点怎样变成不同结果",
+    "actionLabel": "查看下一段轨迹",
     "actors": [
       {
         "id": "track",
         "label": "触点轨迹",
-        "detail": "位置随时间记录",
+        "detail": "按下/移动/抬起/取消",
         "icon": "user",
         "group": "输入"
       },
       {
         "id": "distance",
         "label": "移动距离",
-        "detail": "阈值 24 px",
+        "detail": "累计 px（像素）· 本例阈值",
         "icon": "chart",
         "group": "判定量"
       },
       {
         "id": "speed",
         "label": "移动速度",
-        "detail": "px/s",
+        "detail": "px/s（每秒像素）· 方向",
         "icon": "clock",
         "group": "判定量"
       },
       {
         "id": "result",
         "label": "手势结果",
-        "detail": "pending",
+        "detail": "pending（待定）· 轻点 tap/滑动 swipe/拖拽 drag",
         "icon": "gear",
         "group": "输出"
       }
@@ -1030,16 +1030,16 @@
     ],
     "frames": [
       {
-        "label": "手指落下",
-        "note": "只有起点和时间戳，距离未过阈值，系统暂不决定类型。",
+        "label": "按下：等待更多输入",
+        "note": "只有起点和时间戳，尚未过任何阈值，结果保持 pending（待定）。",
         "activeIds": [
-          "track"
+          "track",
+          "result"
         ],
         "doneIds": [],
         "mutedIds": [
           "distance",
-          "speed",
-          "result"
+          "speed"
         ],
         "values": {
           "result": "pending"
@@ -1047,8 +1047,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "短距离松开",
-        "note": "位移很小且很快松手，结果落到 tap。",
+        "label": "短距离抬起",
+        "note": "位移很小且很快抬起，规则把这段输入归为 tap（轻点）。",
         "activeIds": [
           "track",
           "distance",
@@ -1060,9 +1060,9 @@
         ],
         "mutedIds": [],
         "values": {
-          "distance": "6 px",
-          "speed": "低",
-          "result": "tap"
+          "distance": "6 px（像素，教学示例）",
+          "speed": "低（教学示例）",
+          "result": "tap（轻点）"
         },
         "activeEdgeIds": [
           "track-distance",
@@ -1072,8 +1072,8 @@
         ]
       },
       {
-        "label": "快速划过",
-        "note": "重播时拉长轨迹并提高速度，越过阈值后结果改为 swipe。",
+        "label": "快速移动",
+        "note": "位移和速度一起越过本例阈值，结果改为 swipe（滑动）。",
         "activeIds": [
           "track",
           "distance",
@@ -1083,9 +1083,9 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "distance": "86 px",
-          "speed": "720 px/s",
-          "result": "swipe"
+          "distance": "86 px（像素，教学示例）",
+          "speed": "720 px/s（每秒像素，教学示例）",
+          "result": "swipe（滑动）"
         },
         "activeEdgeIds": [
           "track-distance",
@@ -1096,7 +1096,7 @@
       },
       {
         "label": "停留后移动",
-        "note": "按住超过时长再移动，速度相近也会进入 drag，而不是 swipe。",
+        "note": "先停留超过长按时长再移动，即使速度相近也进入 drag（拖拽）。",
         "activeIds": [
           "track",
           "speed",
@@ -1107,8 +1107,9 @@
         ],
         "mutedIds": [],
         "values": {
-          "track": "停留 500 ms",
-          "result": "drag"
+          "track": "本例停留 500 ms（示例阈值）",
+          "speed": "中（教学示例）",
+          "result": "drag（拖拽）"
         },
         "activeEdgeIds": [
           "track-speed",
@@ -1116,7 +1117,7 @@
         ]
       }
     ],
-    "insight": "手势识别依赖轨迹、时间和阈值组合，同一段位移不能单独决定结果。",
+    "insight": "识别器把一段输入先保持 pending，再用位移、速度、时间和触点数量匹配规则；同一段位移不能单独决定结果。",
     "quiz": {
       "question": "关键删除操作只放在隐藏滑动手势中是否合适？",
       "options": [
@@ -1138,13 +1139,33 @@
     },
     "prompt": {
       "title": "定义一个可测试的手势",
-      "text": "请为下面卡片滑动操作定义起点、方向、最小距离、取消条件、与页面滚动的冲突处理，以及不使用手势时的替代入口。"
+      "text": "请为下面卡片滑动操作定义起点、方向、最小距离、速度或停留条件、取消条件、与页面滚动的冲突处理，以及不使用手势时的替代入口。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Use touch gestures",
+        "note": "触摸手势不是基本行为的唯一入口，需遵循平台惯例"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector",
+        "label": "Android Developers · Detect common gestures",
+        "note": "先收集触摸事件，再按规则解释轻点、长按和滑动"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/multi",
+        "label": "Android Developers · Multi-touch",
+        "note": "多指输入按 pointer down/move/up 维护触点序列"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/uikit/uigesturerecognizer",
+        "label": "Apple · UIGestureRecognizer",
+        "note": "识别器以状态机解释触摸序列并协调视图事件"
+      },
+      {
+        "url": "https://www.w3.org/TR/pointerevents/latest/",
+        "label": "W3C · Pointer Events",
+        "note": "统一鼠标、触控笔和触屏的 pointer 输入事件"
       }
     ]
   },
