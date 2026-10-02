@@ -594,9 +594,9 @@
   },
   {
     "slug": "dom",
-    "lead": "脚本修改标题以后，为什么源 HTML 文件里的文字没有跟着改变？",
-    "definition": "DOM 是浏览器把文档解析成的节点对象树；脚本操作的是内存中的节点、属性和文本。",
-    "boundary": "DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "lead": "脚本修改标题以后，为什么服务器上的 HTML 源文件里的文字没有跟着改变？",
+    "definition": "DOM（文档对象模型）是浏览器拿到服务器上的 HTML 后建立的一棵节点树，就在屏幕后面；它还带一组让脚本操作节点的方法。节点可以是元素或文本。脚本操作的是浏览器内存中的节点、属性和文本。",
+    "boundary": "DOM 不是服务器上的 HTML 源文件，也不是 JavaScript 语言本身；它是屏幕后面的当前页面结构。脚本可以查询和修改当前页面，但变化不会自动写回服务器文件，另有保存请求时才可能交给服务器保存。",
     "sceneKind": "tree",
     "sceneTitle": "标题文字在 DOM 树中的更新位置",
     "actionLabel": "执行脚本",
@@ -604,8 +604,8 @@
       {
         "id": "document",
         "label": "document",
-        "detail": "页面根对象",
-        "icon": "file",
+        "detail": "当前页面根节点",
+        "icon": "browser",
         "group": "根"
       },
       {
@@ -666,7 +666,7 @@
     "frames": [
       {
         "label": "解析文档",
-        "note": "浏览器读取 HTML，创建 document、main、h1 和文本节点。",
+        "note": "浏览器拿到服务器上的 HTML 后，创建当前页面的节点树；服务器上的 HTML 源文件只是输入。",
         "activeIds": [
           "document",
           "main",
@@ -686,7 +686,7 @@
       },
       {
         "label": "查询标题",
-        "note": "脚本通过选择器拿到 h1 节点引用。",
+        "note": "页面里的脚本通过 document.querySelector('h1') 找到当前页面的第一个 h1 元素。",
         "activeIds": [
           "script",
           "heading"
@@ -705,7 +705,7 @@
       },
       {
         "label": "修改文本",
-        "note": "textContent 替换内存中标题节点的文本。",
+        "note": "textContent 替换当前 DOM 中标题节点的文字；服务器上的 HTML 源文件不变。",
         "activeIds": [
           "heading",
           "text"
@@ -724,7 +724,7 @@
       },
       {
         "label": "重新呈现",
-        "note": "浏览器把新节点内容画到页面，源文件仍保持原样。",
+        "note": "浏览器根据当前 DOM 绘制页面，服务器上的 HTML 源文件仍保持原样。",
         "activeIds": [
           "document",
           "heading"
@@ -744,12 +744,12 @@
         ]
       }
     ],
-    "insight": "脚本改的是浏览器当前持有的文档对象，不会自动回写服务器模板或源文件。",
+    "insight": "脚本改的是浏览器里当前页面的 DOM，不会自动回写服务器上的 HTML 源文件。",
     "quiz": {
-      "question": "页面上出现两个同名按钮，querySelector 会返回什么？",
+      "question": "页面上有两个 h1 时，querySelector 会返回哪个？",
       "options": [
         {
-          "label": "第一个匹配到的元素",
+          "label": "文档顺序里第一个匹配的元素",
           "correct": true
         },
         {
@@ -761,18 +761,28 @@
           "correct": false
         }
       ],
-      "success": "需要多个结果时应使用 querySelectorAll，并明确遍历范围。",
-      "retry": "查询接口决定返回一个节点还是节点集合，与元素名称无关。"
+      "success": "querySelector 返回文档顺序里第一个匹配的元素；querySelectorAll 会返回全部匹配项。",
+      "retry": "querySelector 只返回一个匹配节点，不会自动把全部结果组成数组。"
     },
     "prompt": {
       "title": "检查 DOM 查询与更新",
-      "text": "请标出这段交互查询的 DOM 节点、读取的属性、写入的内容和触发更新的事件。检查选择器是否可能匹配错节点、监听器是否重复绑定、更新后焦点与可访问名称是否仍正确，并说明源 HTML 与运行时 DOM 的差别。"
+      "text": "请标出这段交互查询的 DOM 节点、读取的属性、写入的内容和触发更新的事件。检查选择器是否可能匹配错节点、监听器是否重复绑定、更新后焦点与可访问名称是否仍正确，并说明服务器上的 HTML 源文件与运行时 DOM 的差别。"
     },
     "sources": [
       {
+        "url": "https://dom.spec.whatwg.org/",
+        "label": "WHATWG · DOM Standard",
+        "note": "节点树与 DOM 操作接口的标准定义"
+      },
+      {
         "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",
         "label": "MDN · DOM scripting introduction",
-        "note": "浏览器行为与常见用法"
+        "note": "节点树、querySelector 与 textContent 的常见用法"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector",
+        "label": "MDN · Document.querySelector",
+        "note": "按选择器返回文档顺序里的第一个匹配元素"
       }
     ]
   },

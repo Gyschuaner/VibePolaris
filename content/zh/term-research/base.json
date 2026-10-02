@@ -124,13 +124,16 @@
   },
   {
     "slug": "dom",
-    "mechanism": "DOM 是浏览器把文档解析成的节点对象树；脚本操作的是内存中的节点、属性和文本。",
-    "misconception": "DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "mechanism": "浏览器拿到服务器上的 HTML 后建立 DOM：一棵就在屏幕后面的节点树和一组让脚本操作节点的方法。脚本可用 querySelector 找到第一个匹配元素、用 textContent 修改节点文本，浏览器再绘制当前页面。",
+    "misconception": "DOM 不是服务器上的 HTML 源文件，也不是 JavaScript 语言本身；脚本修改的是屏幕后面的当前 DOM，不会自动改回服务器源文件。",
     "demoSignature": "tree: 4 frames; actors=document/main/h1/Text 节点/脚本; phases=解析文档→查询标题→修改文本→重新呈现; action=执行脚本",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting"
+      "https://dom.spec.whatwg.org/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector"
     ],
-    "rewriteRisk": "正式页面需守住边界：DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "rewriteRisk": "正式页面需守住边界：先说明服务器 HTML 如何成为浏览器当前 DOM，再说明脚本修改当前 DOM 不会自动回写服务器源文件。",
     "nearDuplicates": [
       "html",
       "javascript",
