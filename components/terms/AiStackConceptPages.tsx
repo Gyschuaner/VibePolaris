@@ -15,6 +15,7 @@ import { AgentOrchestrationTermPage } from "./ai-stack-pages/agent-orchestration
 import { HandoffTermPage } from "./ai-stack-pages/handoff";
 import { SubagentTermPage } from "./ai-stack-pages/subagent";
 import { HumanInTheLoopTermPage } from "./ai-stack-pages/human-in-the-loop";
+import { GuardrailTermPage } from "./ai-stack-pages/guardrail";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -32,6 +33,7 @@ export { AgentOrchestrationTermPage } from "./ai-stack-pages/agent-orchestration
 export { HandoffTermPage } from "./ai-stack-pages/handoff";
 export { SubagentTermPage } from "./ai-stack-pages/subagent";
 export { HumanInTheLoopTermPage } from "./ai-stack-pages/human-in-the-loop";
+export { GuardrailTermPage } from "./ai-stack-pages/guardrail";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -51,4 +53,5 @@ export const aiStackArticlePages = {
   handoff: HandoffTermPage,
   subagent: SubagentTermPage,
   "human-in-the-loop": HumanInTheLoopTermPage,
+  guardrail: GuardrailTermPage,
 } as const;
