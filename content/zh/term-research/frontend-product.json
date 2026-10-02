@@ -19,10 +19,10 @@
   },
   {
     "slug": "app-manifest",
-    "mechanism": "构建工具和操作系统在安装、启动与组件调用时读取清单，获得组件、权限、特性和入口声明。",
-    "misconception": "清单声明权限不等于用户已经授权；声明相机能力也不代表运行时可以直接打开相机。",
-    "demoSignature": "建议 4 帧：左侧编辑 AndroidManifest.xml，右侧放启动图标、相机按钮和外部链接三个测试入口；依次删掉 activity、permission、intent-filter，点击对应入口；设备分别停在无法启动、权限异常和链接不匹配，恢复节点后逐项转绿。",
-    "sourceUrls": ["https://developer.android.com/guide/topics/manifest/manifest-intro"],
+    "mechanism": "应用清单是平台读取的配置文件：Android 的 AndroidManifest.xml 描述组件、入口、权限和链接匹配；PWA 的 Web App Manifest 描述名称、图标、启动地址和显示方式。",
+    "misconception": "清单只负责声明配置和入口；权限仍要按平台规则在运行时请求，用户也可以拒绝；它不负责业务错误处理或保证能力一定可用。",
+    "demoSignature": "contract: 4 frames; actors=AndroidManifest.xml/Android 系统/启动入口/相机权限/外部链接; phases=清单完整→入口声明缺失→权限声明缺失→链接规则缺失; action=移除一项声明",
+    "sourceUrls": ["https://developer.android.com/guide/topics/manifest/manifest-intro", "https://developer.android.com/guide/components/intents-filters", "https://developer.android.com/training/permissions/requesting", "https://www.w3.org/TR/appmanifest/", "https://web.dev/learn/pwa/web-app-manifest"],
     "rewriteRisk": "medium",
     "nearDuplicates": ["app-permission", "deep-link", "code-signing"]
   },

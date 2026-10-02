@@ -381,44 +381,44 @@
   {
     "slug": "app-manifest",
     "lead": "系统从哪里知道应用名称、入口页面和需要的权限？",
-    "definition": "构建工具和操作系统在安装、启动与组件调用时读取清单，获得组件、权限、特性和入口声明。",
-    "boundary": "清单声明权限不等于用户已经授权；声明相机能力也不代表运行时可以直接打开相机。",
+    "definition": "应用清单是平台读取的配置文件：Android 的 AndroidManifest.xml 描述组件、入口、权限和链接匹配；PWA 的 Web App Manifest 描述名称、图标、启动地址和显示方式。",
+    "boundary": "清单只负责声明配置和入口；权限仍要按平台规则在运行时请求，用户也可以拒绝；它不负责业务错误处理或保证能力一定可用。",
     "sceneKind": "contract",
-    "sceneTitle": "系统读取清单后允许哪些入口和能力",
+    "sceneTitle": "AndroidManifest.xml：系统读取后如何检查入口和能力",
     "actionLabel": "移除一项声明",
     "actors": [
       {
         "id": "manifest",
         "label": "应用清单",
-        "detail": "组件、权限、链接",
+        "detail": "AndroidManifest.xml · activity/permission/filter",
         "icon": "file",
         "group": "声明"
       },
       {
         "id": "system",
         "label": "操作系统",
-        "detail": "安装时读取",
+        "detail": "Android 安装、启动时读取",
         "icon": "gear",
         "group": "校验"
       },
       {
         "id": "launcher",
         "label": "启动入口",
-        "detail": "MainActivity",
+        "detail": "MainActivity · launcher",
         "icon": "component",
         "group": "能力"
       },
       {
         "id": "camera",
         "label": "相机能力",
-        "detail": "CAMERA",
+        "detail": "CAMERA · 仍需运行时授权",
         "icon": "shield",
         "group": "能力"
       },
       {
         "id": "link",
         "label": "外部链接",
-        "detail": "example.com",
+        "detail": "intent-filter · example.com",
         "icon": "network",
         "group": "能力"
       }
@@ -428,7 +428,7 @@
         "id": "manifest-system",
         "from": "manifest",
         "to": "system",
-        "label": "安装时注册"
+        "label": "构建/安装读取"
       },
       {
         "id": "system-launcher",
@@ -440,7 +440,7 @@
         "id": "system-camera",
         "from": "system",
         "to": "camera",
-        "label": "权限声明"
+        "label": "声明后请求授权"
       },
       {
         "id": "system-link",
@@ -452,7 +452,7 @@
     "frames": [
       {
         "label": "清单完整",
-        "note": "系统读到入口、权限和链接规则，三项能力都能继续接受运行时检查。",
+        "note": "Android 系统读到入口、权限和链接规则；这些声明进入候选能力，受限能力仍要经过运行时检查。",
         "activeIds": [
           "manifest",
           "system"
@@ -460,7 +460,7 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "system": "3 项已注册"
+          "system": "入口、权限、链接已声明"
         },
         "activeEdgeIds": [
           "manifest-system"
@@ -468,7 +468,7 @@
       },
       {
         "label": "入口声明缺失",
-        "note": "移除启动 Activity 后，桌面图标仍可见于旧缓存，但系统找不到可启动组件。",
+        "note": "移除 launcher Activity 后，安装图标仍可能可见，但 Android 系统找不到可启动入口。",
         "activeIds": [
           "manifest",
           "system",
@@ -491,7 +491,7 @@
       },
       {
         "label": "权限声明缺失",
-        "note": "恢复入口并移除 CAMERA，运行时授权请求无法补上清单中不存在的能力。",
+        "note": "恢复入口并移除 CAMERA uses-permission，运行时请求没有清单声明可供匹配；即使声明存在也仍需用户授权。",
         "activeIds": [
           "manifest",
           "system",
@@ -513,7 +513,7 @@
       },
       {
         "label": "链接规则缺失",
-        "note": "移除 intent-filter 后，同一网址不再被分发给应用。",
+        "note": "移除 intent-filter 后，同一网址不再被 Android 分发给应用；网页回退由浏览器处理。",
         "activeIds": [
           "manifest",
           "system",
@@ -534,9 +534,9 @@
         ]
       }
     ],
-    "insight": "清单是应用交给系统的能力声明，运行时代码只能在已声明的边界内继续工作。",
+    "insight": "清单把平台需要的入口和能力写成声明；运行时仍要通过授权、匹配和错误处理把声明变成可用功能。",
     "quiz": {
-      "question": "清单里声明相机权限后，应用能否直接使用相机？",
+      "question": "在 AndroidManifest.xml 里声明相机权限后，应用能否直接使用相机？",
       "options": [
         {
           "label": "仍需按平台规则请求用户授权",
@@ -551,18 +551,38 @@
           "correct": false
         }
       ],
-      "success": "声明和用户授权是不同阶段。",
-      "retry": "清单本身不会替用户作出权限决定。"
+      "success": "清单先声明需要什么，平台再按规则请求授权；用户拒绝时，运行时代码必须处理失败。",
+      "retry": "清单不会替用户授权，也不会绕过平台的运行时权限检查。"
     },
     "prompt": {
       "title": "检查应用清单配置",
-      "text": "请检查下面清单中的应用标识、入口、链接匹配和权限声明，指出重复、缺失或范围过宽的配置，并说明哪些权限仍需运行时申请。"
+      "text": "请检查下面的 AndroidManifest.xml 或 webmanifest：标出组件/入口、链接、名称图标和权限声明；分别说明哪些在构建或启动时读取，哪些仍需运行时授权。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/guide/topics/manifest/manifest-intro",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · App manifest",
+        "note": "组件、权限和 intent-filter 都在清单中声明"
+      },
+      {
+        "url": "https://developer.android.com/guide/components/intents-filters",
+        "label": "Android Developers · Intents",
+        "note": "系统按 intent filter 匹配组件"
+      },
+      {
+        "url": "https://developer.android.com/training/permissions/requesting",
+        "label": "Android Developers · Runtime permissions",
+        "note": "敏感权限需要运行时请求并处理拒绝"
+      },
+      {
+        "url": "https://www.w3.org/TR/appmanifest/",
+        "label": "W3C · Web Application Manifest",
+        "note": "Web App Manifest 的 name、icons、start_url、display"
+      },
+      {
+        "url": "https://web.dev/learn/pwa/web-app-manifest",
+        "label": "web.dev · Web app manifest",
+        "note": "PWA 安装和启动入口配置"
       }
     ]
   },
