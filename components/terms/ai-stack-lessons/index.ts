@@ -1,3 +1,4 @@
+export { PlanAndExecuteLesson } from "./plan-and-execute";
 export { ToolResultLesson } from "./tool-result";
 export { ToolChoiceLesson } from "./tool-choice";
 export { ContainerImageLesson } from "./container-image";
