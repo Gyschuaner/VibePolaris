@@ -31,6 +31,7 @@
 | 2021-03-06 | 空档日：观点文章与前日回顾，未确认新的当天 AI 事件 | Financial Express 观点文章；Tech Xplore 前日新闻汇总；Microsoft 官方页核对 Power Fx 为 03-02 | — | `n/a`（空档日，无文章） | `356b90d2` |
 | 2021-03-07 | 空档日：研究汇总与跨日官方发布，未确认新的当天 AI 事件 | Brightsurf 科学新闻汇总；CAIDP 月度政策回顾；MIT News 核对 CARRL 实际为 03-08 | — | `n/a`（空档日，无文章） | `1abd0f5e` |
 | 2021-03-08 | MIT 研究团队提出 CARRL：让强化学习在传感器不可靠时先按最坏情况选动作 | MIT News；arXiv、MIT Aerospace Controls Laboratory 与作者发表列表作方法和出处背景 | 2021-03-08 / 2021-03-08 | `passed`（两轮 Codex 子智能体读者与中文审读） | `55c7a784` |
+| 2021-03-09 | KPMG 调查：企业 AI 采用在加速，治理担忧也在升温 | KPMG/PR Newswire；KPMG 官方报告与介绍页；Fortune 同日报道 | 2021-03-09 / 2021-03-09 | `passed`（两轮 Codex 子智能体读者与中文审读） | `501ed3f8` |
 
 ## 交付内容
 
