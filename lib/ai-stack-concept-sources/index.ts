@@ -6,3 +6,4 @@ export { observabilitySources } from "./observability";
 export { sastSources } from "./sast";
 export { secretScanningSources } from "./secret-scanning";
 export { dependencyScanningSources } from "./dependency-scanning";
+export { threatModelingSources } from "./threat-modeling";
