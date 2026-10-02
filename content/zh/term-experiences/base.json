@@ -7565,23 +7565,23 @@
   {
     "slug": "design-system",
     "lead": "同一种成功提示在三个页面颜色、间距和关闭方式都不同，应该改页面还是改共同规则？",
-    "definition": "设计系统把原则、令牌、组件、交互模式、内容规则和维护机制组织成可复用的产品决策。",
-    "boundary": "设计系统不只是组件展示页，也不要求所有业务页面完全一样；差异应通过明确变体和扩展规则表达。",
+    "definition": "设计系统把原则、令牌、组件、模式、内容规则和维护流程组织成一套可复用的规则：原则先定取舍，内容规则定具体写法；令牌命名基础值，组件提供部件，模式说明使用时机，规则改动后旧页面按迁移说明逐个跟上。",
+    "boundary": "设计系统不是组件展示页、单独的令牌表，也不要求所有业务页面完全一样；差异要通过明确的变体和扩展规则表达，局部覆写还要留下原因与维护责任。",
     "sceneKind": "layers",
-    "sceneTitle": "一个成功提示从令牌到三个产品页面",
+    "sceneTitle": "一个成功提示从规则到三个产品页面",
     "actionLabel": "更新一层",
     "actors": [
       {
         "id": "principle",
-        "label": "反馈原则",
-        "detail": "说明结果与下一步",
+        "label": "共同原则与内容规则",
+        "detail": "原则定方向，规则定写法",
         "icon": "file",
-        "group": "原则"
+        "group": "规则"
       },
       {
         "id": "tokens",
         "label": "设计令牌",
-        "detail": "success color / spacing",
+        "detail": "颜色.success / 间距.4（示例名）",
         "icon": "code",
         "group": "基础"
       },
@@ -7595,14 +7595,14 @@
       {
         "id": "pattern",
         "label": "提交成功模式",
-        "detail": "位置与出现时机",
+        "detail": "说明位置与出现时机",
         "icon": "layout",
         "group": "模式"
       },
       {
         "id": "products",
         "label": "三个业务页面",
-        "detail": "订单 / 设置 / 邀请",
+        "detail": "保存 / 付款 / 上传",
         "icon": "browser",
         "group": "使用"
       },
@@ -7644,12 +7644,18 @@
         "from": "governance",
         "to": "component",
         "label": "管理变更"
+      },
+      {
+        "id": "governance-products",
+        "from": "governance",
+        "to": "products",
+        "label": "推动页面迁移"
       }
     ],
     "frames": [
       {
         "label": "明确共同原则",
-        "note": "成功反馈必须说明完成结果，并给出仍需执行的下一步。",
+        "note": "先定共同原则：成功反馈必须说明完成结果，并给出仍需执行的下一步；这条内容规则把方向落到具体文案。",
         "activeIds": [
           "principle"
         ],
@@ -7666,7 +7672,7 @@
       },
       {
         "label": "统一基础值",
-        "note": "颜色、圆角、间距和文字级别由语义令牌提供。",
+        "note": "颜色、圆角、间距和文字级别由语义令牌提供；令牌名是共同约定，不等于某个固定颜色。",
         "activeIds": [
           "principle",
           "tokens"
@@ -7677,7 +7683,7 @@
           "products"
         ],
         "values": {
-          "tokens": "color.success · space.4"
+          "tokens": "颜色.success · 间距.4"
         },
         "activeEdgeIds": [
           "principle-tokens"
@@ -7685,7 +7691,7 @@
       },
       {
         "label": "形成组件变体",
-        "note": "组件提供默认、可关闭和带后续操作三种受控变体。",
+        "note": "组件提供默认、可关闭和带后续操作三种受控变体；受控表示页面只能选择已命名的选项，不能随意改结构。",
         "activeIds": [
           "tokens",
           "component"
@@ -7697,7 +7703,7 @@
           "products"
         ],
         "values": {
-          "component": "default | dismissible | action"
+          "component": "默认 · 可关闭 · 带操作"
         },
         "activeEdgeIds": [
           "tokens-component"
@@ -7705,7 +7711,7 @@
       },
       {
         "label": "定义使用模式",
-        "note": "表单成功放在提交区附近，异步完成使用页面级通知。",
+        "note": "组件是可复用部件，模式补充它在任务中的位置和时机：表单成功靠近提交区，异步完成使用页面级通知。",
         "activeIds": [
           "component",
           "pattern"
@@ -7718,7 +7724,7 @@
           "products"
         ],
         "values": {
-          "pattern": "inline vs page-level"
+          "pattern": "表单内联 · 页面级通知"
         },
         "activeEdgeIds": [
           "component-pattern"
@@ -7726,7 +7732,7 @@
       },
       {
         "label": "同步三个页面",
-        "note": "订单、设置和邀请页面选择合适变体，样式与行为保持一致。",
+        "note": "保存、付款和上传页面选择合适变体，样式与行为保持一致，文案仍按各自任务表达。",
         "activeIds": [
           "pattern",
           "products"
@@ -7738,15 +7744,15 @@
         ],
         "mutedIds": [],
         "values": {
-          "products": "3 pages · same rules"
+          "products": "保存 · 付款 · 上传"
         },
         "activeEdgeIds": [
           "pattern-products"
         ]
       },
       {
-        "label": "管理后续变化",
-        "note": "新增变体先说明通用需求，评审后发布版本并给出迁移说明。",
+        "label": "发布并迁移旧页面",
+        "note": "新版本发布后，三个页面按迁移说明逐个更新；尚未迁移的页面标记旧版本，不能假装已经同步。令牌、组件、模式和内容规则的变更都走同一套提案与评审流程。",
         "activeIds": [
           "governance",
           "component",
@@ -7759,43 +7765,59 @@
         ],
         "mutedIds": [],
         "values": {
-          "governance": "proposal → review → release"
+          "governance": "提案 → 评审 → 发布 → 迁移"
         },
         "activeEdgeIds": [
           "governance-component",
+          "governance-products",
           "pattern-products"
         ]
       }
     ],
-    "insight": "设计系统复用的是经过维护的决策，不只是复制一段组件代码。",
+    "insight": "设计系统复用的是有名字、有版本、有人维护的决策；复制一段组件代码不会自动带来这些约定。",
     "quiz": {
-      "question": "某页面需要紫色成功提示，但系统成功语义是绿色，应该直接覆盖颜色吗？",
+      "question": "某页面想把成功提示改成紫色，先要判断什么？",
       "options": [
         {
-          "label": "先确认这是业务语义差异还是视觉偏好，再决定变体或修正页面",
+          "label": "这个紫色是某个业务场景固定要用的，还是这个页面临时想换个颜色",
           "correct": true
         },
         {
-          "label": "直接写局部样式，不记录原因",
+          "label": "能不能直接写局部样式、不记原因",
           "correct": false
         },
         {
-          "label": "禁止所有页面出现任何差异",
+          "label": "是不是所有页面都不该有任何差异",
           "correct": false
         }
       ],
-      "success": "差异需要被命名和解释，才能判断是合理扩展还是规则漂移。",
-      "retry": "设计系统既不鼓励随意覆盖，也不是取消业务差异。"
+      "success": "颜色.success 是语义令牌的示例，不代表所有产品都必须用令牌默认的颜色；若紫色有明确业务依据，就命名为变体并写清适用场景和维护人。",
+      "retry": "先说明紫色服务于哪个具体场景，再决定新增一个有名字的变体，还是修正页面的临时样式。"
     },
     "prompt": {
       "title": "检查设计系统的重复与缺口",
-      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本和迁移范围。"
+      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本、迁移步骤和回滚或废弃策略。"
     },
     "sources": [
       {
-        "url": "https://designsystem.digital.gov/components/alert/",
-        "label": "U.S. Web Design System · Alert",
-        "note": "设计系统与组件原则"
+        "url": "https://designsystem.digital.gov/design-tokens/",
+        "label": "U.S. Web Design System · Design tokens",
+        "note": "令牌用命名值减少任意选择，并让组件共享稳定的基础值。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/writing-for-user-interfaces",
+        "label": "GOV.UK · Writing for user interfaces",
+        "note": "界面文案应短而直接；如果必须解释界面怎么用，说明设计需要改进。"
+      },
+      {
+        "url": "https://designsystem.digital.gov/documentation/migration/",
+        "label": "U.S. Web Design System · Migrating to USWDS 3.0",
+        "note": "版本升级需要检查设置、标记和编译方式，迁移说明帮助旧页面跟上共同规则。"
+      },
+      {
+        "url": "https://designsystem.digital.gov/",
+        "label": "U.S. Web Design System · Overview",
+        "note": "组件、模式、令牌和开放维护一起构成可复用的设计系统。"
       }
     ]
   },
