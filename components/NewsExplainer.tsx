@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause" | "ai-ethics" | "data-leak";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause" | "ai-ethics" | "data-leak" | "government-incident" | "agentic-calling" | "ai-regulation";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -258,6 +258,51 @@ function DataLeakVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function GovernmentIncidentVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-government-incident government-incident-phase-${activeStep}`} aria-hidden="true">
+      <div className="government-incident-card government-incident-task"><span>研究任务</span><i /><i /></div>
+      <span className="government-incident-arrow">→</span>
+      <div className="government-incident-card government-incident-portal"><span>统计门户</span><i /><i /><i /></div>
+      <span className="government-incident-arrow">→</span>
+      <div className="government-incident-card government-incident-files"><span>非公开文件</span><i /><i /></div>
+      <span className="government-incident-arrow">→</span>
+      <div className="government-incident-card government-incident-review"><span>法证调查</span><i /><i /><i /></div>
+      <div className="government-incident-result">先划清访问边界，再让调查追踪责任</div>
+    </div>
+  );
+}
+
+function AgenticCallingVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-agentic-calling agentic-calling-phase-${activeStep}`} aria-hidden="true">
+      <div className="agentic-calling-card agentic-calling-approval"><span>用户批准</span><i /><i /></div>
+      <span className="agentic-calling-arrow">→</span>
+      <div className="agentic-calling-card agentic-calling-phone"><span>Gemini 拨号</span><i /><i /><i /></div>
+      <span className="agentic-calling-arrow">→</span>
+      <div className="agentic-calling-card agentic-calling-business"><span>商家与菜单</span><i /><i /></div>
+      <span className="agentic-calling-arrow">→</span>
+      <div className="agentic-calling-card agentic-calling-handoff"><span>实时接管</span><i /></div>
+      <div className="agentic-calling-result">AI 先自报身份，用户随时可以接回电话</div>
+    </div>
+  );
+}
+
+function AiRegulationVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-ai-regulation ai-regulation-phase-${activeStep}`} aria-hidden="true">
+      <div className="ai-regulation-card ai-regulation-incident"><span>事故披露</span><i /><i /></div>
+      <span className="ai-regulation-arrow">→</span>
+      <div className="ai-regulation-card ai-regulation-coalition"><span>多州联署</span><i /><i /><i /></div>
+      <span className="ai-regulation-arrow">→</span>
+      <div className="ai-regulation-card ai-regulation-guardrails"><span>安全护栏</span><i /><i /></div>
+      <span className="ai-regulation-arrow">→</span>
+      <div className="ai-regulation-card ai-regulation-law"><span>国会行动</span><i /></div>
+      <div className="ai-regulation-result">联署是政策主张，法律仍待提出和通过</div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -297,7 +342,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : data.variant === "ai-ethics" ? <AiEthicsVisual activeStep={activeStep} /> : data.variant === "data-leak" ? <DataLeakVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : data.variant === "ai-ethics" ? <AiEthicsVisual activeStep={activeStep} /> : data.variant === "data-leak" ? <DataLeakVisual activeStep={activeStep} /> : data.variant === "government-incident" ? <GovernmentIncidentVisual activeStep={activeStep} /> : data.variant === "agentic-calling" ? <AgenticCallingVisual activeStep={activeStep} /> : data.variant === "ai-regulation" ? <AiRegulationVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (

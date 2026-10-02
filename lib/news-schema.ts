@@ -31,7 +31,7 @@ const explainerStepSchema = z.object({
   evidence: z.string().trim().min(1).max(300).optional(),
 }).strict();
 const explainerSchema = z.object({
-  variant: z.enum(["benchmark", "secure-memory", "agent-workflow", "synthetic-data", "data-motion", "robot-safety", "clinical-alert", "adaptive-trial", "policy-governance", "agent-safety", "ecg-screening", "ai-diplomacy", "agent-incident", "training-pause", "ai-ethics", "data-leak"]),
+  variant: z.enum(["benchmark", "secure-memory", "agent-workflow", "synthetic-data", "data-motion", "robot-safety", "clinical-alert", "adaptive-trial", "policy-governance", "agent-safety", "ecg-screening", "ai-diplomacy", "agent-incident", "training-pause", "ai-ethics", "data-leak", "government-incident", "agentic-calling", "ai-regulation"]),
   title: z.string().trim().min(1).max(200),
   question: z.string().trim().min(1).max(500),
   steps: z.array(explainerStepSchema).min(2).max(8),
