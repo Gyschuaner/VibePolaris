@@ -11,6 +11,7 @@ import { XssTermPage } from "./ai-stack-pages/xss";
 import { ToolChoiceTermPage } from "./ai-stack-pages/tool-choice";
 import { ToolResultTermPage } from "./ai-stack-pages/tool-result";
 import { PlanAndExecuteTermPage } from "./ai-stack-pages/plan-and-execute";
+import { AgentOrchestrationTermPage } from "./ai-stack-pages/agent-orchestration";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -24,6 +25,7 @@ export { XssTermPage } from "./ai-stack-pages/xss";
 export { ToolChoiceTermPage } from "./ai-stack-pages/tool-choice";
 export { ToolResultTermPage } from "./ai-stack-pages/tool-result";
 export { PlanAndExecuteTermPage } from "./ai-stack-pages/plan-and-execute";
+export { AgentOrchestrationTermPage } from "./ai-stack-pages/agent-orchestration";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -39,4 +41,5 @@ export const aiStackArticlePages = {
   "tool-choice": ToolChoiceTermPage,
   "tool-result": ToolResultTermPage,
   "plan-and-execute": PlanAndExecuteTermPage,
+  "agent-orchestration": AgentOrchestrationTermPage,
 } as const;

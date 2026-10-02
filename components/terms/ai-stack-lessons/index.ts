@@ -1,3 +1,4 @@
+export { AgentOrchestrationLesson } from "./agent-orchestration";
 export { PlanAndExecuteLesson } from "./plan-and-execute";
 export { ToolResultLesson } from "./tool-result";
 export { ToolChoiceLesson } from "./tool-choice";
