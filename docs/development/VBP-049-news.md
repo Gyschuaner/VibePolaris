@@ -34,6 +34,7 @@
 | 2021-03-09 | KPMG 调查：企业 AI 采用在加速，治理担忧也在升温 | KPMG/PR Newswire；KPMG 官方报告与介绍页；Fortune 同日报道 | 2021-03-09 / 2021-03-09 | `passed`（两轮 Codex 子智能体读者与中文审读） | `501ed3f8` |
 | 2021-03-10 | MIT 报道 Tensor Holography：深度学习让 3D 全息图生成更快，手机端也能运行原型 | MIT News；Nature 论文、MIT CSAIL Tensor Holography 项目页与 MIT Technology Licensing Office 作方法和原型背景 | 2021-03-10 / 2021-03-10 | `passed`（两轮 Codex 子智能体读者与中文审读） | `b0351d07` |
 | 2021-03-11 | Facebook AI 的“公平落地”框架：先分清产品目标、政策选择和模型误差 | Facebook AI 官方博客；Meta 研究页与 arXiv 作方法背景；Pew 同日医疗政策分析；03-31 Fairness Flow 后续官方页作时间线背景 | 2021-03-11 / 2021-03-11 | `passed`（两轮 Codex 子智能体读者与中文审读） | `66496401` |
+| 2021-03-12 | 英国宣布年内发布国家 AI 战略：当天公布的是方向，不是完整文本 | GOV.UK 政府公告；AI Council 路线图、Office for AI 议会书面证据作政策阶段核验；techUK 同期行业语境；9 月正式战略作后续时间线 | 2021-03-12 / 2021-03-12（techUK 页面标注 03-11，议会材料也保留 03-11 原文） | `passed`（两轮 Codex 子智能体读者与中文审读） | `5016a86` |
 
 ## 交付内容
 
