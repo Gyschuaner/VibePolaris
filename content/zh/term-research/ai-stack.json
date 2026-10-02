@@ -1230,10 +1230,13 @@
     "slug": "service-discovery",
     "mechanism": "服务发现维护服务名到可用实例地址的映射，让调用方在实例增减或更换地址后仍能找到目标。",
     "misconception": "它不是负载均衡本身；发现负责提供候选地址，负载策略再决定选哪一个。",
-    "demoSignature": "输入：orders服务有10.0.0.2和.3两个实例；中间：.2下线后注册表地址2→1，DNS缓存到期30秒；输出：新请求只解析到.3。可视化：建议5帧的注册表与地址卡增删；交互：上下线实例观察解析列表。",
+    "demoSignature": "输入：orders 服务有 10.0.0.2 和 .3 两个实例；中间：.4 上线后列表变成 3 个，.2 心跳超时后注册表保留 .3/.4，但 TTL 内旧缓存仍可能返回 .2；输出：缓存到期后只解析到 .3/.4。可视化：4 帧注册表与缓存地址卡变化；交互：上线、失效和 TTL 到期观察解析列表。",
     "sourceUrls": [
       "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://kubernetes.io/docs/concepts/services-networking/service/",
+      "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/",
+      "https://csrc.nist.gov/pubs/sp/800/204/final",
+      "https://developer.hashicorp.com/consul/docs/discover/dns/configure"
     ],
     "rewriteRisk": "别把DNS、注册中心和负载均衡混成单一组件；要按职责拆开。",
     "nearDuplicates": [
