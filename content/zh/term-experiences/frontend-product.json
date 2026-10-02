@@ -589,37 +589,37 @@
   {
     "slug": "emulator",
     "lead": "没有每一种实体手机时，怎样先检查不同系统版本和屏幕尺寸？",
-    "definition": "仿真器在主机上模拟目标处理器、硬件和系统镜像，并允许注入网络、位置和设备状态。",
-    "boundary": "容易与只模拟操作系统接口的 simulator 混淆，也不能把仿真器性能当作真机性能。",
+    "definition": "仿真器在主机上运行虚拟设备配置，加载目标系统版本和硬件特征，并允许注入网络、位置和设备状态。",
+    "boundary": "仿真器适合功能、兼容性和可重复异常检查；它不能替代真机对真实性能、功耗、触觉、摄像头和传感器差异的确认。",
     "sceneKind": "compare",
-    "sceneTitle": "同一相机页面在虚拟设备和真机上的差异",
+    "sceneTitle": "同一构建先在仿真器覆盖，再由真机复核",
     "actionLabel": "运行下一项测试",
     "actors": [
       {
         "id": "build",
         "label": "同一构建",
-        "detail": "camera-debug.apk",
+        "detail": "相机示例应用安装包 · 同一构建",
         "icon": "package",
         "group": "输入"
       },
       {
         "id": "emulator",
         "label": "仿真器",
-        "detail": "虚拟硬件",
+        "detail": "Android AVD（Android 虚拟设备）· 可注入条件",
         "icon": "component",
         "group": "测试设备"
       },
       {
         "id": "device",
         "label": "真机",
-        "detail": "实际传感器与功耗",
+        "detail": "真实摄像头/传感器",
         "icon": "user",
         "group": "测试设备"
       },
       {
         "id": "results",
         "label": "验证清单",
-        "detail": "功能、性能、触觉",
+        "detail": "功能、异常、硬件",
         "icon": "chart",
         "group": "结果"
       }
@@ -629,57 +629,56 @@
         "id": "build-emulator",
         "from": "build",
         "to": "emulator",
-        "label": "安装"
+        "label": "同一构建"
       },
       {
         "id": "build-device",
         "from": "build",
         "to": "device",
-        "label": "安装"
+        "label": "同一构建"
       },
       {
         "id": "emulator-results",
         "from": "emulator",
         "to": "results",
-        "label": "记录"
+        "label": "记录功能与异常"
       },
       {
         "id": "device-results",
         "from": "device",
         "to": "results",
-        "label": "记录"
+        "label": "记录硬件实测"
       }
     ],
     "frames": [
       {
-        "label": "先测页面功能",
-        "note": "两台设备都能完成打开相机和保存图片，功能项同时通过。",
+        "label": "先覆盖配置",
+        "note": "仿真器切换系统版本（API level）和屏幕尺寸，先覆盖同一相机页面的功能路径。",
         "activeIds": [
           "build",
           "emulator",
-          "device"
+          "results"
         ],
         "doneIds": [
           "build"
         ],
         "mutedIds": [
-          "results"
+          "device"
         ],
         "values": {
-          "emulator": "功能通过",
-          "device": "功能通过"
+          "emulator": "功能通过 · API 35（系统版本标识）",
+          "results": "候选组合 4 组"
         },
         "activeEdgeIds": [
           "build-emulator",
-          "build-device"
+          "emulator-results"
         ]
       },
       {
-        "label": "加入网络与定位",
-        "note": "调低网络、移动模拟位置后，两边都能复现超时和位置变化。",
+        "label": "复现异常条件",
+        "note": "在仿真器中限速、断网或修改位置，异常流程可以重复出现。",
         "activeIds": [
           "emulator",
-          "device",
           "results"
         ],
         "doneIds": [
@@ -687,16 +686,16 @@
         ],
         "mutedIds": [],
         "values": {
+          "emulator": "网络/定位可注入",
           "results": "异常流程可复现"
         },
         "activeEdgeIds": [
-          "emulator-results",
-          "device-results"
+          "emulator-results"
         ]
       },
       {
-        "label": "检查真实硬件",
-        "note": "进入触觉、功耗和启动延迟测试，仿真器列变为未覆盖，真机给出可观察结果。",
+        "label": "真机校验硬件",
+        "note": "进入触觉、功耗和启动延迟测试，仿真器列变为未覆盖，真机给出实测结果。",
         "activeIds": [
           "device",
           "results"
@@ -709,23 +708,23 @@
         ],
         "values": {
           "emulator": "硬件项未覆盖",
-          "device": "触觉有反馈 · 启动 420 ms（示例）"
+          "device": "触觉有反馈 · 启动 420 ms（教学示例）"
         },
         "activeEdgeIds": [
           "device-results"
         ],
         "metric": {
           "label": "本例未覆盖项",
-          "value": "3 项"
+          "value": "3 项需真机确认"
         }
       }
     ],
-    "insight": "仿真器适合快速覆盖系统组合，真机仍要负责真实硬件、功耗和性能结论。",
+    "insight": "仿真器先覆盖系统组合和可注入条件，真机再给出真实硬件、功耗和性能结论。",
     "quiz": {
       "question": "哪项更需要在真机上确认？",
       "options": [
         {
-          "label": "触觉反馈和实际性能",
+          "label": "相机启动延迟和触觉反馈",
           "correct": true
         },
         {
@@ -737,18 +736,38 @@
           "correct": false
         }
       ],
-      "success": "硬件手感和真实性能很难由仿真器完整还原。",
-      "retry": "基础静态检查不一定依赖真机。"
+      "success": "仿真器能覆盖很多配置和可注入条件，但真实性能、功耗与硬件反馈仍要真机确认。",
+      "retry": "基础功能和可重复异常通常可以先在仿真器中检查。"
     },
     "prompt": {
       "title": "制定移动端设备验证范围",
-      "text": "请把下面测试项分为仿真器可完成、必须真机复核和两者都要覆盖三类，并给出最低设备与系统版本组合。"
+      "text": "请把下面测试项分为仿真器可完成、必须真机复核和两者都要覆盖三类；说明需要覆盖的系统版本、屏幕尺寸、网络条件和真实硬件指标。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/studio/run/emulator",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Android Emulator",
+        "note": "AVD 指定系统版本和硬件；可模拟位置、网络与传感器"
+      },
+      {
+        "url": "https://developer.android.com/studio/run/emulator-networking-address",
+        "label": "Android Developers · Emulator networking",
+        "note": "仿真器通过虚拟路由连接网络，与真机地址环境不同"
+      },
+      {
+        "url": "https://developer.android.com/studio/run/emulator-console",
+        "label": "Android Developers · Emulator console",
+        "note": "运行中可控制网络特征和位置等仿真环境"
+      },
+      {
+        "url": "https://developer.android.com/studio/run/emulator-comparison",
+        "label": "Android Developers · Emulator tools",
+        "note": "不同仿真工具对传感器和网络条件的支持范围"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/Xcode/running-your-app-on-simulated-or-physical-devices",
+        "label": "Apple Developer · Simulated or physical devices",
+        "note": "模拟设备适合覆盖，真实性能和硬件特性需实体设备确认"
       }
     ]
   },
