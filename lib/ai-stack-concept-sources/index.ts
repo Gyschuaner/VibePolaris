@@ -8,3 +8,4 @@ export { secretScanningSources } from "./secret-scanning";
 export { dependencyScanningSources } from "./dependency-scanning";
 export { threatModelingSources } from "./threat-modeling";
 export { toolApprovalSources } from "./tool-approval";
+export { permissionBoundarySources } from "./permission-boundary";
