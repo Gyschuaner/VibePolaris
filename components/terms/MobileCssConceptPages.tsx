@@ -264,14 +264,14 @@ export function WebviewTermPage() {
 export function CssSelectorTermPage() {
   return <ConceptArticle slug="css-selector" title="CSS selector" subtitle="CSS 选择器" hero={<MobileHero trigger="规则没有改变通知卡片" change="条件 → DOM 匹配集合" proof="命中后再经过层叠竞争" />} sections={selectorSections} sources={cssSelectorSources} intro={<>CSS 选择器描述哪些 DOM 元素符合一组条件。<strong>它先负责找出候选元素，匹配成功后浏览器还要经过层叠计算，才决定最终样式。</strong></>}>
     <ArticleSection id="selector-task" title="为什么这条规则没有命中">
-      <p>你给通知卡片写了 <code>.list &gt; .notice</code>，页面却没有变红。先不要马上提高权重：可能通知卡片不是列表的直接子元素，或者它的类名并不在你以为的节点上。</p>
+      <p>你给订单卡片写了 <code>.card &gt; button[disabled]</code>，页面却没有把禁用按钮变灰。先不要马上提高权重：可能按钮不是卡片的直接子元素，或者 <code>disabled</code> 属性落在了另一个节点上。</p>
       <p id="selector-match-source" className="vp-citation-target">Selectors 规范把选择器定义为匹配元素的条件，条件可以包括类型、类、属性、关系和伪类。浏览器会在 DOM 树中判断每个元素是否满足这些条件。<Cite id="selector-match-source" sources={cssSelectorSources} /></p>
       <p>选择器解决的是“哪些元素属于这条规则”。它不读取你脑中的组件名称，也不保证这条规则最后赢过另一条同样命中的声明。下面逐步改动选择器，看集合怎样变化。</p>
       <MobileConceptLesson slug="css-selector" />
     </ArticleSection>
     <ArticleSection id="selector-match" title="选择器如何筛节点">
       <p id="selector-kinds" className="vp-citation-target">类型选择器匹配元素名，类和属性选择器匹配节点上的信息，组合器表达父子或兄弟关系，伪类表达状态或结构条件。例如 <code>.card:hover</code> 只有鼠标悬停等状态满足时才匹配。<Cite id="selector-kinds" sources={cssSelectorSources} /></p>
-      <div className={styles.contract}><div><TreeStructure size={26} /><h3>DOM 树</h3><p><code>ul.list</code> 包含两个 <code>li.card</code>，其中一个还有 <code>notice</code> 类。</p></div><div><CheckCircle size={26} /><h3>匹配集合</h3><p>每次组合条件都会减少或改变被选中的节点。</p></div></div>
+      <div className={styles.contract}><div><TreeStructure size={26} /><h3>DOM 树</h3><p>两个 <code>article.card</code> 各自包含按钮，其中一个直接子按钮带有 <code>disabled</code> 属性。</p></div><div><CheckCircle size={26} /><h3>匹配集合</h3><p>每次组合条件都会减少或改变被选中的节点。</p></div></div>
       <p id="selector-child" className="vp-citation-target">子代组合器 <code>&gt;</code> 只匹配直接子元素；如果中间多了一层包装节点，规则就不会命中。换成空格的后代组合器会扩大范围，但也可能误选更深层的节点。<Cite id="selector-child" sources={cssSelectorSources} /></p>
       <p>调试选择器时，先在开发者工具中确认 DOM 结构和匹配节点，再判断是不是层叠问题。否则不断增加类名或 <code>!important</code>，只会把真正的结构错误藏起来。</p>
     </ArticleSection>
