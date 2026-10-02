@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, ArrowCounterClockwise, Bell, Brain, Browser, Check, CheckCircle, Cloud, Code, Database, DeviceMobile, FileText, Gear, GitBranch, Key, Layout, LockSimple, Pause, Play, Plus, ShieldCheck, Stack, TreeStructure, User, WarningCircle, X } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ConceptArticle.module.css";
@@ -32,13 +32,17 @@ function AdaptiveLayoutLesson() {
   const scene = useScene(4);
   const [width, setWidth] = useState(390);
   const mode = width < 600 ? "single" : width < 900 ? "split" : "rail";
+  const sampleWidths = [390, 720, 1000];
   const labels = ["窄窗口", "中等窗口", "宽窗口", "保留焦点"];
+  useEffect(() => {
+    if (scene.step < 3) setWidth(current => current === sampleWidths[scene.step] ? current : sampleWidths[scene.step]);
+  }, [scene.step]);
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="自适应布局演示">
-    <label className={styles.inputExample}>拖动窗口宽度：<input type="range" min="320" max="1120" value={width} onChange={event => { setWidth(Number(event.target.value)); scene.seek(width < 600 ? 0 : width < 900 ? 1 : 2); }} /><code>{width}px</code></label>
+    <label className={styles.inputExample}>拖动窗口宽度（CSS px 教学示例）：<input type="range" min="320" max="1120" value={width} onChange={event => { const nextWidth = Number(event.target.value); setWidth(nextWidth); scene.seek(nextWidth < 600 ? 0 : nextWidth < 900 ? 1 : 2); }} /><code>{width}px</code></label>
     <div className={styles.contract} style={{ gridTemplateColumns: mode === "single" ? "1fr" : mode === "split" ? "1fr 1fr" : "180px 1fr 1fr" }}>
-      <div><Layout size={27} /><h3>{mode === "single" ? "任务列表" : "主导航"}</h3><p>{mode === "single" ? "先完成当前任务，再回到列表。" : "导航关系改变，但当前任务仍可回到。"}</p></div>
+      <div><Layout size={27} /><h3>{mode === "single" ? "任务列表" : "主导航"}</h3><button type="button" aria-pressed="true" aria-label="当前选中的订单 42">订单 42 · 已选中</button><p>{mode === "single" ? "先完成当前任务，再回到列表。" : "导航关系改变，但当前任务仍可回到。"}</p></div>
       {mode !== "single" && <div><FileText size={27} /><h3>任务列表</h3><p>列表与详情同时可见，减少来回切换。</p></div>}
-      <div><CheckCircle size={27} /><h3>任务详情</h3><p>窗口变窄时也保留同一个选中任务。</p></div>
+      <div><CheckCircle size={27} /><h3>任务详情</h3><p>订单 42 的详情仍然对应同一条记录，布局变化不会把它换成第一条。</p></div>
     </div>
     <FrameCopy scene={scene} labels={labels} title={["先让窄屏任务可完成", "空间变宽，关系重新安排", "宽屏增加并列信息", "布局变了，任务没有丢"]} text={["自适应布局根据可用窗口空间安排信息，不先猜手机还是平板型号。", "中等宽度可以把列表和详情并列，但仍围绕同一项任务。", "空间足够时再显示侧栏和更多上下文，内容不只是等比放大。", "重新布局后，键盘焦点和选中项应回到原来的任务控件。"]} />
   </div>;
