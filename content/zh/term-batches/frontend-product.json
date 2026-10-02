@@ -520,18 +520,54 @@
     ]
   },
   {
-    "zh": "盒模型", "en": "Box Model", "slug": "box-model", "cat": "前端",
-    "say": "元素占用的空间由内容、内边距、边框和外边距共同决定。",
-    "aliases": ["CSS 盒模型", "margin padding", "元素尺寸"],
+    "zh": "盒模型",
+    "en": "Box Model",
+    "slug": "box-model",
+    "cat": "前端",
+    "say": "元素的宽度由内容区、内边距和边框组成；外边距再决定盒子和邻居之间的间隔。",
+    "aliases": [
+      "CSS 盒模型",
+      "margin padding",
+      "元素尺寸"
+    ],
     "question": "明明设置了 width，元素为什么还是比预期更宽？",
-    "definition": "盒模型把每个元素分成 content、padding、border 和 margin 四层。box-sizing 决定 width 和 height 是否包含内边距与边框。",
-    "boundary": "盒模型解释单个元素的尺寸组成；元素如何排列则由普通流、Flex、Grid 或定位规则决定。",
-    "demoType": "hierarchy", "demoTitle": "宽度从内到外的组成",
-    "demoSteps": [{"label":"内容区","value":"width: 200px","note":"默认只计算内容宽度。"},{"label":"加入内边距和边框","value":"200 + 32 + 2 = 234px","note":"content-box 下实际宽度增加。"},{"label":"改为 border-box","value":"总宽度保持 200px","note":"内边距和边框被计入设定宽度。"}],
-    "quizQuestion": "希望元素总宽度始终等于 width，应使用什么？", "quizOptions": ["box-sizing: border-box", "display: block", "overflow: hidden"],
-    "correctText": "border-box 会把 padding 和 border 计入设定宽度。", "wrongText": "display 和 overflow 不会改变 width 的计算范围。",
-    "promptTitle": "计算元素的实际尺寸", "prompt": "请根据下面的 width、padding、border、margin 和 box-sizing，分别计算元素本身宽度与占用的水平空间，并指出导致溢出的部分。",
-    "relatedSlugs": ["css", "flexbox", "css-grid", "positioning"]
+    "definition": "盒模型把每个元素分成 content 内容区、padding 内边距、border 边框和 margin 外边距；box-sizing 决定 width/height 是否包含 padding 与 border。本例先算 border box，再单独说明 margin 的外部间隔。",
+    "boundary": "本例按单个盒子计算横向 border box，margin 另算外部占用，未涉及相邻块的外边距折叠；元素如何排列仍由普通流、Flex、Grid 或定位规则决定。",
+    "demoType": "hierarchy",
+    "demoTitle": "宽度从内到外的组成",
+    "demoSteps": [
+      {
+        "label": "内容区",
+        "value": "width: 200px",
+        "note": "本例教学值，默认只计算内容宽度。"
+      },
+      {
+        "label": "加入内边距和边框",
+        "value": "200 + 24 + 10 = 234px",
+        "note": "左右 padding 各 12px、border 各 5px，content-box 下边框盒变宽。"
+      },
+      {
+        "label": "改为 border-box",
+        "value": "边框盒保持 200px",
+        "note": "padding 与 border 被计入 width，内容区缩为 166px。"
+      }
+    ],
+    "quizQuestion": "希望元素总宽度始终等于 width，应使用什么？",
+    "quizOptions": [
+      "box-sizing: border-box",
+      "display: block",
+      "overflow: hidden"
+    ],
+    "correctText": "border-box 会把 padding 和 border 计入设定宽度。",
+    "wrongText": "display 和 overflow 不会改变 width 的计算范围。",
+    "promptTitle": "计算元素的实际尺寸",
+    "prompt": "请根据下面的 width、padding、border、margin 和 box-sizing，先计算单个元素的 content/padding/border 组成的 border box，再单独计算 margin 造成的外部占用；指出 content-box 与 border-box 的差异，并说明本例未涉及相邻外边距折叠。",
+    "relatedSlugs": [
+      "css",
+      "flexbox",
+      "css-grid",
+      "positioning"
+    ]
   },
   {
     "zh": "层叠", "en": "Cascade", "slug": "cascade", "cat": "前端",

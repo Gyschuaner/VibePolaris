@@ -3460,29 +3460,29 @@
   {
     "slug": "box-model",
     "lead": "明明设置了 width，元素为什么还是比预期更宽？",
-    "definition": "布局尺寸由 content、padding、border、margin 分层计算；box-sizing 决定声明宽高覆盖 content box 还是 border box。",
-    "boundary": "width 不总是元素最终占用宽度，margin 也不属于元素可绘制背景范围。",
+    "definition": "盒模型把元素分成 content 内容区、padding 内边距（内容和边框之间）、border 边框和 margin 外边距（盒子外部间隔）；box-sizing 决定 width/height 从 content box 还是 border box 开始计算。下面先演示单个盒子的 border box，margin 另算。",
+    "boundary": "width 不总是元素最终占用的水平空间：本例的 border box 不含 margin，margin 也不属于元素可绘制背景范围；相邻块的外边距折叠不在本例中。",
     "sceneKind": "assembly",
     "sceneTitle": "width、padding 和 border 怎样组成实际宽度",
     "actionLabel": "调整盒子参数",
     "actors": [
       {
         "id": "content",
-        "label": "Content",
-        "detail": "width: 200px",
+        "label": "Content 内容区",
+        "detail": "width: 200px（教学值）",
         "icon": "component",
         "group": "盒子"
       },
       {
         "id": "padding",
-        "label": "Padding",
+        "label": "Padding 内边距",
         "detail": "左右各 12px",
         "icon": "layout",
         "group": "盒子"
       },
       {
         "id": "border",
-        "label": "Border",
+        "label": "Border 边框",
         "detail": "左右各 5px",
         "icon": "layout",
         "group": "盒子"
@@ -3490,7 +3490,7 @@
       {
         "id": "formula",
         "label": "尺寸计算",
-        "detail": "content-box",
+        "detail": "border box · margin 另算",
         "icon": "chart",
         "group": "结果"
       }
@@ -3499,7 +3499,7 @@
     "frames": [
       {
         "label": "只有内容宽度",
-        "note": "width 先只决定内容区，外框暂时是 200px。",
+        "note": "本例教学值中，width 先只决定内容区，border box 暂时是 200px。",
         "activeIds": [
           "content",
           "formula"
@@ -3510,38 +3510,20 @@
           "border"
         ],
         "values": {
-          "formula": "200 px"
+          "formula": "200 px · border box"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "内边距撑大外框",
-        "note": "左右 padding 各 12px，内容不变，边框外宽度增加到 224px。",
+        "label": "内边距和边框加入",
+        "note": "左右 padding 各 12px、border 各 5px，content-box 下 border box 增加到 234px；margin 还没有计入。",
         "activeIds": [
           "padding",
-          "formula"
-        ],
-        "doneIds": [
-          "content"
-        ],
-        "mutedIds": [
-          "border"
-        ],
-        "values": {
-          "formula": "200 + 24 = 224 px"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "边框继续计入",
-        "note": "左右 border 各 5px，元素边框盒最终占 234px。",
-        "activeIds": [
           "border",
           "formula"
         ],
         "doneIds": [
-          "content",
-          "padding"
+          "content"
         ],
         "mutedIds": [],
         "values": {
@@ -3549,13 +3531,13 @@
         },
         "activeEdgeIds": [],
         "metric": {
-          "label": "本例边框盒",
+          "label": "本例 border box",
           "value": "234 px"
         }
       },
       {
         "label": "切换 border-box",
-        "note": "总外框回到 200px，padding 和 border 改为从 width 内部扣除。",
+        "note": "box-sizing: border-box 让 border box 回到 200px，padding 和 border 从 width 内部扣除，内容区变成 166px。",
         "activeIds": [
           "content",
           "padding",
@@ -3566,16 +3548,16 @@
         "mutedIds": [],
         "values": {
           "content": "166 px",
-          "formula": "border-box = 200 px"
+          "formula": "border box = 200 px · margin 另算"
         },
         "activeEdgeIds": [],
         "metric": {
-          "label": "本例边框盒",
+          "label": "本例 border box",
           "value": "200 px"
         }
       }
     ],
-    "insight": "盒模型先确定 width 作用在哪一层，再决定 padding 和 border 是否把外框继续撑大。",
+    "insight": "盒模型先确定 width 作用在哪一层；content-box 会让 padding 和 border 撑大 border box，border-box 则把它们计入设定宽度，margin 另算外部间隔。",
     "quiz": {
       "question": "希望元素总宽度始终等于 width，应使用什么？",
       "options": [
@@ -3597,18 +3579,33 @@
     },
     "prompt": {
       "title": "计算元素的实际尺寸",
-      "text": "请根据下面的 width、padding、border、margin 和 box-sizing，分别计算元素本身宽度与占用的水平空间，并指出导致溢出的部分。"
+      "text": "请根据下面的 width、padding、border、margin 和 box-sizing，先计算单个元素的 content/padding/border 组成的 border box，再单独计算 margin 造成的外部占用；指出 content-box 与 border-box 的差异，并说明本例未涉及相邻外边距折叠。"
     },
     "sources": [
       {
         "url": "https://www.w3.org/TR/css-box-4/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "W3C · CSS Box Model Level 4",
+        "note": "content、padding、border、margin 四个区域和各自边缘"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · Introduction to the CSS box model",
+        "note": "浏览器中可观察的盒模型尺寸与区域"
+      },
+      {
+        "url": "https://www.w3.org/TR/css-sizing-3/",
+        "label": "W3C · CSS Box Sizing Level 3",
+        "note": "content-box、border-box 与尺寸属性的计算范围"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing",
+        "label": "MDN · box-sizing",
+        "note": "width/height 是否包含 padding 和 border"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/width",
+        "label": "MDN · width",
+        "note": "声明宽度与实际盒子尺寸的关系"
       }
     ]
   },
