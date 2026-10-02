@@ -4605,11 +4605,11 @@
   },
   {
     "slug": "deploy",
-    "lead": "本地能打开的网站，怎样变成团队可访问、出问题还能退回上一版的服务？",
+    "lead": "一个版本怎样从提交变成可验证、可回滚的真实服务？",
     "definition": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查和流量切换。",
-    "boundary": "命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "boundary": "命令执行成功不等于部署可用；环境变量、数据库变更脚本、权限、核心流程和回滚都需要验证。",
     "sceneKind": "pipeline",
-    "sceneTitle": "一个版本从提交到接收真实流量",
+    "sceneTitle": "一个版本从提交到安全接收真实流量",
     "actionLabel": "推进发布",
     "actors": [
       {
@@ -4628,14 +4628,21 @@
       },
       {
         "id": "artifact",
-        "label": "不可变制品",
+        "label": "制品",
         "detail": "等待生成",
         "icon": "package",
         "group": "制品"
       },
       {
+        "id": "previous-artifact",
+        "label": "上一版制品",
+        "detail": "v1.7.2 · 已验证",
+        "icon": "package",
+        "group": "制品"
+      },
+      {
         "id": "environment",
-        "label": "dev 环境",
+        "label": "生产环境",
         "detail": "等待部署",
         "icon": "cloud",
         "group": "环境"
@@ -4675,6 +4682,12 @@
         "label": "部署同一制品"
       },
       {
+        "id": "previous-artifact-traffic",
+        "from": "previous-artifact",
+        "to": "traffic",
+        "label": "回滚目标"
+      },
+      {
         "id": "env-health",
         "from": "environment",
         "to": "health",
@@ -4697,6 +4710,7 @@
         "doneIds": [],
         "mutedIds": [
           "artifact",
+          "previous-artifact",
           "environment",
           "health",
           "traffic"
@@ -4706,7 +4720,7 @@
       },
       {
         "label": "构建制品",
-        "note": "流水线安装锁定依赖、运行检查并生成不可变包。",
+        "note": "流水线按锁定的版本安装依赖、运行检查，并生成制品。制品一旦生成就不再修改。",
         "activeIds": [
           "commit",
           "build",
@@ -4714,6 +4728,7 @@
         ],
         "doneIds": [],
         "mutedIds": [
+          "previous-artifact",
           "environment",
           "health",
           "traffic"
@@ -4728,7 +4743,7 @@
       },
       {
         "label": "写入环境",
-        "note": "同一制品进入 dev，配置从环境安全注入。",
+        "note": "同一制品进入目标环境，配置由环境提供；这一版若改了数据库结构，要先执行脚本并验证。",
         "activeIds": [
           "artifact",
           "environment"
@@ -4738,11 +4753,12 @@
           "build"
         ],
         "mutedIds": [
+          "previous-artifact",
           "health",
           "traffic"
         ],
         "values": {
-          "environment": "v1.8.0 running"
+          "environment": "v1.8.0 running · migration ok"
         },
         "activeEdgeIds": [
           "artifact-env"
@@ -4750,7 +4766,7 @@
       },
       {
         "label": "实际验证",
-        "note": "健康检查和核心流程冒烟确认服务已启动并能正常工作。",
+        "note": "健康检查确认服务有响应，再亲手走一遍最重要的真实流程（比如用测试账号成功登录），确认真的能用。",
         "activeIds": [
           "environment",
           "health"
@@ -4761,6 +4777,7 @@
           "artifact"
         ],
         "mutedIds": [
+          "previous-artifact",
           "traffic"
         ],
         "values": {
@@ -4772,7 +4789,7 @@
       },
       {
         "label": "切换流量",
-        "note": "验证通过才把访问流量指向新版本，并保留上一制品。",
+        "note": "验证通过才把流量指向新版本：可以先放一部分访问进来，观察指标平稳后再全量切完，并保留上一制品随时退回。",
         "activeIds": [
           "health",
           "traffic"
@@ -4783,9 +4800,11 @@
           "artifact",
           "environment"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "previous-artifact"
+        ],
         "values": {
-          "traffic": "100% → v1.8.0"
+          "traffic": "10% → 100% · v1.8.0"
         },
         "activeEdgeIds": [
           "health-traffic"
@@ -4793,57 +4812,67 @@
       },
       {
         "label": "准备回滚",
-        "note": "若关键指标异常，流量可以退回已验证的 v1.7.2。",
+        "note": "上一版 v1.7.2 的制品仍保留在环境里：如果新版本关键指标异常，把流量切回 v1.7.2，不需要重新构建。",
         "activeIds": [
           "traffic",
-          "artifact"
+          "previous-artifact"
         ],
         "doneIds": [
           "commit",
           "build",
+          "artifact",
           "environment",
           "health"
         ],
         "mutedIds": [],
         "values": {
-          "artifact": "v1.7.2 retained",
+          "previous-artifact": "v1.7.2 retained",
           "traffic": "rollback ready"
         },
         "activeEdgeIds": [
-          "artifact-env",
-          "health-traffic"
+          "previous-artifact-traffic"
         ]
       }
     ],
-    "insight": "可发布版本必须同时具备可追踪制品、真实验证和明确回滚路径。",
+    "insight": "部署完成需要多类证据：版本可追踪、环境配置正确、真实流程通过，并且知道如何停下和回滚。",
     "quiz": {
       "question": "构建完成且进程已启动，可以直接宣布上线成功吗？",
       "options": [
         {
-          "label": "不能，还要完成健康检查和核心流程冒烟",
+          "label": "不能，还要完成健康检查并走通核心流程",
           "correct": true
         },
         {
-          "label": "可以，进程存在就代表业务可用",
+          "label": "可以，构建成功就代表线上可用",
           "correct": false
         },
         {
-          "label": "可以，只要日志里没有红字",
+          "label": "可以，只要进程存在且没有明显报错",
           "correct": false
         }
       ],
-      "success": "部署状态和用户可用性需要不同证据。",
+      "success": "命令成功、进程存在只能证明步骤执行过；服务能不能用，要健康检查通过、核心流程真的走通才算。",
       "retry": "启动只证明进程运行，不证明依赖、权限和业务流程正确。"
     },
     "prompt": {
       "title": "整理一次可回滚的部署流程",
-      "text": "请列出本次发布的提交号、构建制品、目标环境、配置差异、数据库迁移、健康检查、核心冒烟、流量切换、监控指标和回滚触发条件。每个阶段写明可验证证据，不把命令返回成功当成最终上线结论。"
+      "text": "请列出本次发布的提交号、构建制品、目标环境、配置差异、数据库变更脚本、健康检查、核心流程验证、流量切换、监控指标和回滚触发条件。每个阶段写明可验证证据，不把命令返回成功当成最终上线结论。"
     },
     "sources": [
       {
-        "url": "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions",
+        "url": "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
         "label": "GitHub Docs · Deploying with Actions",
-        "note": "协作流程与平台行为"
+        "note": "环境、保护规则与部署记录"
+      },
+      {
+        "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+        "label": "Kubernetes · Deployments",
+        "note": "滚动更新、状态检查与回滚"
+      },
+      {
+        "url": "https://sre.google/workbook/canarying-releases/",
+        "label": "Google SRE · Canarying releases",
+        "note": "小流量验证与指标监控"
       }
     ]
   },

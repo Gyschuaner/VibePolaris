@@ -425,13 +425,16 @@
   },
   {
     "slug": "deploy",
-    "mechanism": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查和流量切换。",
-    "misconception": "命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
-    "demoSignature": "pipeline: 6 frames; actors=提交版本/构建/不可变制品/dev 环境/健康检查/访问流量; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=推进发布",
+    "mechanism": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查、流量切换和回滚准备。",
+    "misconception": "部署命令成功不等于服务可用；同一版本要在目标环境验证，流量和回滚要有证据。",
+    "demoSignature": "pipeline: 6 frames; actors=提交版本/构建/制品/生产环境/健康检查/访问流量/上一版制品; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=推进发布",
     "sourceUrls": [
-      "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions"
+      "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+      "https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments",
+      "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+      "https://sre.google/workbook/canarying-releases/"
     ],
-    "rewriteRisk": "正式页面需守住边界：命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "rewriteRisk": "正式页面需守住边界：部署命令成功不等于服务可用；同一版本要在目标环境验证，流量和回滚要有证据。",
     "nearDuplicates": [
       "cd",
       "preview-deployment",
