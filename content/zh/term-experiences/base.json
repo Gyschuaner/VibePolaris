@@ -7823,52 +7823,52 @@
   },
   {
     "slug": "a11y",
-    "lead": "不用鼠标、看不清低对比文字或需要读屏时，用户还能否完成登录？",
-    "definition": "无障碍让内容在不同视觉、听觉、行动和认知条件下仍可感知、可操作、可理解，并与辅助技术兼容。",
-    "boundary": "无障碍不是发布前补几个 ARIA 属性；语义、键盘顺序、对比度、错误反馈和动效都要从结构开始处理。",
+    "lead": "不用鼠标、看不到颜色或需要读屏时，用户还能完成登录并修复错误吗？",
+    "definition": "无障碍把信息结构、键盘操作、可见焦点、对比度、字段标签和错误反馈做成可感知、可操作、可理解的路径，并让辅助技术拿到同样的状态。",
+    "boundary": "无障碍不是发布前补几个 ARIA 属性，也不是只检查颜色。原生语义、页面在浏览器里的结构（DOM）与 Tab 顺序、可见焦点、标签、错误文字和动效偏好要从设计与开发一起处理；ARIA（给辅助技术的角色说明）只描述角色，不会自动补上键盘行为。本演示聚焦键盘与表单反馈，完整检查还要覆盖听觉内容、对比度和动效偏好。",
     "sceneKind": "route",
     "sceneTitle": "只用键盘完成一次登录",
-    "actionLabel": "按下一次 Tab",
+    "actionLabel": "依次按 Tab，必要时激活跳过链接",
     "actors": [
       {
         "id": "skip",
         "label": "跳到正文",
-        "detail": "第一个可见焦点",
+        "detail": "Tab 后可见焦点，能跳过重复导航",
         "icon": "network",
         "group": "导航"
       },
       {
         "id": "email",
         "label": "邮箱输入",
-        "detail": "label 与输入关联",
+        "detail": "label 与输入关联，读屏能读出名称",
         "icon": "message",
         "group": "表单"
       },
       {
         "id": "password",
         "label": "密码输入",
-        "detail": "要求可被读屏理解",
+        "detail": "标签、必填状态和输入类型可被读出",
         "icon": "key",
         "group": "表单"
       },
       {
         "id": "error",
         "label": "错误提示",
-        "detail": "尚未出现",
+        "detail": "文字指出字段和修复方式",
         "icon": "shield",
         "group": "反馈"
       },
       {
         "id": "submit",
         "label": "登录按钮",
-        "detail": "键盘可触发",
+        "detail": "原生 button 可用 Enter 和 Space",
         "icon": "component",
         "group": "操作"
       },
       {
         "id": "result",
         "label": "登录结果",
-        "detail": "等待反馈",
+        "detail": "状态和下一步都可感知",
         "icon": "spark",
         "group": "结果"
       }
@@ -7878,7 +7878,7 @@
         "id": "skip-email",
         "from": "skip",
         "to": "email",
-        "label": "逻辑焦点顺序"
+        "label": "激活后进入表单"
       },
       {
         "id": "email-password",
@@ -7890,7 +7890,7 @@
         "id": "password-submit",
         "from": "password",
         "to": "submit",
-        "label": "进入操作"
+        "label": "继续 Tab 到登录按钮"
       },
       {
         "id": "submit-error",
@@ -7914,7 +7914,7 @@
     "frames": [
       {
         "label": "进入页面",
-        "note": "第一个焦点提供跳到正文入口，避免重复穿过整组导航。",
+        "note": "按 Tab 聚焦跳过链接；激活后把焦点带到正文起点，避免重复导航。",
         "activeIds": [
           "skip"
         ],
@@ -7924,13 +7924,13 @@
           "result"
         ],
         "values": {
-          "skip": "focus visible"
+          "skip": "焦点可见 · 可激活"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "识别邮箱",
-        "note": "焦点到邮箱时，读屏同时读出标签、输入类型和必填状态。",
+        "label": "到达邮箱",
+        "note": "本例中，激活跳过链接后继续按 Tab 到邮箱，标签、输入类型和必填状态都能被读出。",
         "activeIds": [
           "skip",
           "email"
@@ -7949,7 +7949,7 @@
       },
       {
         "label": "按顺序移动",
-        "note": "Tab 从邮箱进入密码，再进入登录按钮，顺序与视觉阅读一致。",
+        "note": "本例中 Tab 顺序与页面的逻辑阅读顺序一致，也与视觉顺序相同；邮箱留空、密码已填，按 Enter 提交。",
         "activeIds": [
           "email",
           "password",
@@ -7963,8 +7963,9 @@
           "result"
         ],
         "values": {
-          "password": "密码 · 必填",
-          "submit": "focus visible"
+          "email": "邮箱未填",
+          "password": "密码 · 已填",
+          "submit": "原生 button · 焦点可见"
         },
         "activeEdgeIds": [
           "email-password",
@@ -7973,7 +7974,7 @@
       },
       {
         "label": "收到错误",
-        "note": "提交空邮箱时，错误用文字说明并通过状态通知辅助技术。",
+        "note": "提交时邮箱留空，文字错误指出字段和修复方式，并通过状态通知辅助技术；颜色只作额外提示。",
         "activeIds": [
           "submit",
           "error"
@@ -7985,7 +7986,7 @@
           "result"
         ],
         "values": {
-          "error": "请输入邮箱地址"
+          "error": "邮箱：请输入有效地址"
         },
         "activeEdgeIds": [
           "submit-error"
@@ -7993,7 +7994,7 @@
       },
       {
         "label": "回到问题处",
-        "note": "焦点移回邮箱，用户无需重新寻找出错位置。",
+        "note": "按提示填入有效邮箱，错误摘要与邮箱字段关联，焦点移回邮箱；用户无需重新搜索。",
         "activeIds": [
           "error",
           "email"
@@ -8006,7 +8007,7 @@
           "result"
         ],
         "values": {
-          "email": "focus · invalid"
+          "email": "已填有效地址 · 焦点"
         },
         "activeEdgeIds": [
           "error-email"
@@ -8014,7 +8015,7 @@
       },
       {
         "label": "完成登录",
-        "note": "修正后按 Enter 提交，成功结果以文字和焦点变化明确呈现。",
+        "note": "修正后再次按 Enter 提交，结果文字和焦点变化共同说明登录完成和下一步。",
         "activeIds": [
           "submit",
           "result"
@@ -8035,7 +8036,7 @@
         ]
       }
     ],
-    "insight": "可访问性不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作能力。",
+    "insight": "无障碍不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作路径。",
     "quiz": {
       "question": "自定义 div 做的按钮加上 role=button 后，是否自动支持键盘？",
       "options": [
@@ -8052,23 +8053,38 @@
           "correct": false
         }
       ],
-      "success": "优先使用原生 button；自定义控件需要自己实现完整键盘模型。",
-      "retry": "ARIA 描述角色，但不会自动提供浏览器原生行为。"
+      "success": "原生 button 自带基本键盘行为；自定义控件需要实现角色之外的焦点、Enter/Space、状态和焦点去向。",
+      "retry": "ARIA 角色只提供语义承诺，不会自动提供浏览器原生行为。"
     },
     "prompt": {
       "title": "审查页面的无障碍基础",
-      "text": "请只用键盘走完页面主要任务，记录焦点顺序、可见焦点、键盘陷阱和无法触发的操作。再检查语义标签、可访问名称、颜色对比、字段错误、动态通知和减少动效偏好；每个问题给出可复现步骤与最小修正。"
+      "text": "只用键盘走完页面主要任务，再用读屏视角检查标签、名称、状态和错误；随后补查对比度与减少动效偏好。记录每个无法到达、无法理解或无法恢复的步骤，并给出最小修正。"
     },
     "sources": [
       {
-        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-order",
-        "label": "W3C WAI · Focus Order",
-        "note": "Web 标准与无障碍要求"
-      },
-      {
         "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
         "label": "WAI ARIA APG · Keyboard Interface",
-        "note": "Web 标准与无障碍要求"
+        "note": "Tab 顺序、可见焦点和键盘操作"
+      },
+      {
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
+        "label": "WAI ARIA APG · Button Pattern",
+        "note": "按钮的 Enter/Space 行为与焦点去向"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+        "label": "W3C WAI · Error Identification",
+        "note": "错误必须指出字段并用文字说明"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+        "label": "W3C WAI · Labels or Instructions",
+        "note": "输入控件需要标签或说明"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum",
+        "label": "W3C WAI · Contrast Minimum",
+        "note": "文字和界面的对比度不能只靠颜色区分"
       }
     ]
   }
