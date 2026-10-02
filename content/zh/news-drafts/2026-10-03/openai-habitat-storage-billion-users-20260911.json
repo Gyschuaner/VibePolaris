@@ -1,0 +1,143 @@
+{
+  "slug": "openai-habitat-storage-billion-users-20260911",
+  "title": "OpenAI 公开 Habitat 存储平台：每秒处理 7000 万次请求",
+  "summary": "OpenAI 在 2026-09-11 的工程文章中介绍在线存储平台 Habitat：官方称它每秒处理超过 7000 万次请求、管理超过 500 PB 数据，并支撑每周使用 OpenAI 产品的超过 10 亿人。数字来自公司自述，不能直接当成独立审计的活跃用户数或服务等级承诺。",
+  "body": "OpenAI 在 9 月 11 日发布了一篇工程文章，主题不是新模型，而是支撑 ChatGPT、API、Codex 和内部服务的在线存储平台 Habitat。公司称，Habitat 现在横跨近 40 个地区，每秒处理超过 7000 万次请求，管理超过 500 PB 数据，服务每周使用其产品的超过 10 亿人。\n\n这个规模数字首先说明了一个容易被忽略的事实：AI 产品的响应不只发生在模型推理那几秒。一次登录、打开 Codex 设置或开始新对话，可能先要读取权限、功能开关、会话状态和其他数据；这些读取一旦变慢，用户感到的就是“模型很慢”或“产品不可用”。Habitat 把这些访问集中成一个在线存储层，让不同产品调用同一套路由、缓存、访问控制和数据驻留能力。\n\nHabitat 的起点并不宏大。OpenAI 说它在 2023 年 DevDay 期间最初只是给 GPTs 使用的 Python 客户端库，后面才逐步变成连接多种数据库的服务。工程团队没有一开始就把 Python 全部换掉，而是先接受一部分性能债务，优先把 API、稳定性和容量问题解决，再用大量进程扩展吞吐。文章还描述了对 asyncio 调度延迟、连接池偏斜、特性开关配置和 Azure Cosmos DB 数据库层的逐项排查。\n\n其中一个很具体的教训是“并发不等于并行”。Python 的 asyncio 能让 I/O 等待重叠，但 CPU 密集的压缩、加密、校验和路由仍会堵住同一个事件循环。Habitat 团队因此监控事件循环调度延迟，限制单进程并发，再用更多进程把负载摊开；他们还调整连接复用时间，避免少数服务进程持续接到过多请求。这些取舍比“用了什么模型”更接近用户每天遇到的延迟。\n\n这篇文章仍然是一份公司的工程自述。超过 10 亿人是 OpenAI 对产品覆盖范围的口径，不等于经过第三方核验的 ChatGPT 月活或同时在线人数；70M 请求/秒和 500 PB 也没有在文中配套独立审计、公开 SLA 或故障率。文章是两部分系列的第一篇，后续工程细节和实际服务表现仍要看更多记录。",
+  "publishedAt": "2026-09-11",
+  "eventDate": "2026-09-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-habitat-storage-billion-users-20260911.svg",
+    "alt": "OpenAI 工程文章展示 Habitat 在线存储层如何支撑每秒超过 7000 万次请求；数字来自公司自述。",
+    "sourceUrl": "/images/news/openai-habitat-storage-billion-users-20260911.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-openai-published",
+      "title": "这次公开的是存储平台，不是新模型",
+      "body": "OpenAI 介绍 Habitat 作为 ChatGPT、API、Codex 和内部服务共用的在线存储层。公司给出的规模是每秒超过 7000 万次请求、超过 500 PB 数据、近 40 个地区，以及每周使用 OpenAI 产品的超过 10 亿人。本文先把这些数字放回官方口径，不把它们改写成独立市场统计。",
+      "kind": "narrative"
+    },
+    {
+      "id": "request-path",
+      "title": "模型回答前，产品还要读很多状态",
+      "body": "登录、读取 Codex 设置或开始对话，都可能触发多次数据查找。权限、功能开关、会话状态和数据驻留策略如果在尾延迟上卡住，模型本身再快也会显得慢。Habitat 把这些查找放进统一的路由、缓存和访问控制层。",
+      "kind": "technical"
+    },
+    {
+      "id": "engineering-tradeoffs",
+      "title": "先用 Python 撑住，再为下一次规模做准备",
+      "body": "Habitat 从 DevDay 2023 的 Python 客户端库成长为分布式服务。团队暂时接受 Python 的 CPU 开销，先建立稳定 API，再监控 asyncio 调度延迟、连接池负载和数据库行为。这里记录的是工程排序，不是“Python 适合所有高吞吐服务”的结论。",
+      "kind": "comparison"
+    },
+    {
+      "id": "tail-latency",
+      "title": "并发、连接池和尾延迟会一起放大故障",
+      "body": "asyncio 可以重叠 I/O 等待，却不能让同一个 CPU 线程同时处理压缩、加密和校验。OpenAI 描述了限制单进程并发、增加进程数、给后台任务加抖动、缩短连接复用时间等措施，用来避免少数进程被持续压垮。",
+      "kind": "technical"
+    },
+    {
+      "id": "company-boundary",
+      "title": "三个数字都要留在公司的自述范围内",
+      "body": "“每周超过 10 亿人”不是第三方审计的 ChatGPT 活跃账户，“70M+ 请求/秒”和“500 PB+ 数据”也不是公开 SLA。后续还需要更多故障率、区域可用性和独立核验材料，才能判断这些规模是否带来稳定体验。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一次 AI 产品请求怎样穿过存储层？",
+    "question": "先看数据和权限怎样到达模型，再看尾延迟为什么会变成用户体验。",
+    "steps": [
+      {
+        "label": "产品发起请求",
+        "detail": "用户登录、打开设置或开始对话；产品先产生一串数据读取，而不是直接把问题交给模型。",
+        "evidence": "OpenAI Habitat 工程文章，2026-09-11"
+      },
+      {
+        "label": "路由与访问控制",
+        "detail": "Habitat 根据资源位置、权限、数据驻留和缓存策略，把请求送到合适的存储后端。",
+        "evidence": "Habitat 架构图与 ACL、routing、data residency 说明"
+      },
+      {
+        "label": "并发读取",
+        "detail": "Python 服务同时等待数据库响应，并处理压缩、加密、校验等 CPU 工作；事件循环延迟会把快请求拖到队尾。",
+        "evidence": "asyncio scheduling delay 与 tail latency 段落"
+      },
+      {
+        "label": "结果回到产品",
+        "detail": "只有存储读取顺利返回，模型输出和界面更新才会显得及时；公司自述的规模指标还需要独立可用性数据来复核。",
+        "evidence": "70M+ requests/s、500 PB+、1B+ people each week"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI Engineering",
+    "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one/"
+  },
+  "relatedSlugs": [
+    "data-pipeline",
+    "data-quality",
+    "state",
+    "context",
+    "authorization",
+    "api",
+    "event",
+    "streaming-output"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one/",
+      "claim": "OpenAI 于 2026-09-11 公开 Habitat 在线存储平台，称其每秒处理超过 7000 万次请求、管理超过 500 PB 数据，服务每周使用 OpenAI 产品的超过 10 亿人。",
+      "excerpt": "Rapidly scaling online storage to serve over 1 billion ChatGPT users：Habitat now handles more than 70 million requests every second, supports products used by over 1 billion people each week, and serves more than 500 petabytes of data。"
+    },
+    {
+      "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one/",
+      "claim": "文章记录 Habitat 从 2023 年 DevDay 的 Python 客户端库演变为服务，并描述 asyncio 调度延迟、连接池、特性开关和 Cosmos DB 的工程取舍。",
+      "excerpt": "OpenAI Engineering：What made our situation unique…；Tracking the asyncio delay；Balancing loads and managing connection pools；Optimizing our database layer。"
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/scaling-storage-one-billion-users-part-one",
+  "sourceHash": "sha256:7364dda69298a348375d2d8a777ec937d3f47d662d81b0b6fe9acdd723472689",
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one/",
+      "claim": "OpenAI 于 2026-09-11 公开 Habitat 在线存储平台，称其每秒处理超过 7000 万次请求、管理超过 500 PB 数据，服务每周使用 OpenAI 产品的超过 10 亿人。",
+      "excerpt": "Rapidly scaling online storage to serve over 1 billion ChatGPT users：Habitat now handles more than 70 million requests every second, supports products used by over 1 billion people each week, and serves more than 500 petabytes of data。"
+    },
+    {
+      "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one/",
+      "claim": "文章记录 Habitat 从 2023 年 DevDay 的 Python 客户端库演变为服务，并描述 asyncio 调度延迟、连接池、特性开关和 Cosmos DB 的工程取舍。",
+      "excerpt": "OpenAI Engineering：What made our situation unique…；Tracking the asyncio delay；Balancing loads and managing connection pools；Optimizing our database layer。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:00:00Z",
+    "method": "source",
+    "notes": "核对 OpenAI 工程原文的发布日期、规模数字、Habitat 架构描述和公司自述边界；未把覆盖人数写成第三方活跃用户统计。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:00:00Z",
+    "notes": "正文按工程新闻组织，区分产品请求链路、架构取舍和公司口径；未把基础设施文章扩写成新模型发布或 SLA。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T23:01:05Z",
+    "questions": [],
+    "notes": "新闻主线是 OpenAI 工程文章公开 Habitat 在线存储平台，而不是新模型。70M+ 请求/秒、500 PB+ 数据和每周 10 亿人都明确留在公司自述，未被写成独立审计、活跃用户或 SLA；eventDate/publishedAt 与官方工程来源一致。正文把存储、权限、并发和尾延迟讲给零基础读者，相关词条、引用卡片、explainer 与 SVG 的请求→存储层→结果路径一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-11",
+  "promotedAt": "2026-10-02T23:03:16.936Z"
+}

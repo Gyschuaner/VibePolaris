@@ -1,6 +1,6 @@
 # VBP-049 新闻栏目交付记录
 
-状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30 至 2026-09-12 十九个事件日（含 9 月 27 日空档日），继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
+状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30 至 2026-09-11 二十个事件日（含 9 月 27 日空档日），继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
 
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
@@ -12,7 +12,7 @@
 
 ## 阶段二执行口径
 
-- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-12（含 9 月 27 日空档日），再逐日处理更早日期。
+- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-11（含 9 月 27 日空档日），再逐日处理更早日期。
 - 主事件优先取官方公告/官方博客、监管文件、可信新闻报道和可核验的行业或个人解读；论文只作为已成立新闻事件的背景来源，不能单独填充 `selectedSlugs`。
 - 文章先写事实链和读者问题，再组织按事件需要变化的正文段落、讲解步骤和自制 SVG；`hero.sourceUrl`、许可和引用卡片都保留追溯信息。
 - 词条关系只确认已经公开且正文确实解释的 slug。草稿在 `ready` 前必须经过 humanizer-zh 表达检查与 `codex-subagent-reader` 零基础读者审读，审读结果写入 `readerReview`。
@@ -46,6 +46,7 @@
 | 2026-09-15 | ① Google Gemini 3.8 Live、Extended Thinking 与 3.5 Transcribe；② Salesforce/NVIDIA Koa CRM 推理模型；③ Salesforce AIforce 界面层；④ AWS/Salesforce 跨云企业 AI；⑤ Salesforce/Google Cloud 统一 AI 栈；⑥ Google AI & Economy ATLAS 数据产品；⑦ Dreamforce AI 速度与安全争论 | Google、Salesforce、AWS 官方；Axios、TechRadar 同日报道；ATLAS 研究 PDF 作背景 | 2026-09-15 / 2026-09-15（AWS 日本译文发表于 09-18，保留美国原稿日期） | `passed`（唯一 Codex review 子智能体逐篇复审七篇；确认新闻主线、厂商 benchmark/合作/预览/观点边界、跨日去重、SVG/动画和词条联动） | 本次提交 |
 | 2026-09-14 | ① Microsoft Humanist AI 行为准则草案；② Apple Siri AI beta rollout；③ 据报道 OpenAI 收购 Glass Imaging；④ 特朗普与黄仁勋公开反对 AI 放慢 | Microsoft AI、Apple Newsroom、Glass Imaging 官方技术页；Axios、TechCrunch、SiliconANGLE、Reuters Breakingviews | 2026-09-14 / 2026-09-14（Glass 并购仍未获双方公开确认；DeepSeek 路由计划按 09-10 原公告延期） | `passed`（唯一 Codex review 子智能体逐篇复审四篇；确认草案/ beta / 未确认报道 / 公开立场边界、四张 SVG 与机制讲解） | 本次提交 |
 | 2026-09-13 | ① 特朗普在爱尔兰淡化 AI 监管压力并强调对华竞争；② 众议长 Mike Johnson 反对国会仓促带头监管、主张企业先负安全责任 | AP 爱尔兰现场报道；Axios CNN/NBC 采访整理；AP 同日报道作交叉 | 2026-09-13 / 2026-09-13（9 月 12 日实验室放慢倡议和 Amodei 原文按原始事件日延期） | `passed`（唯一 Codex review 子智能体逐篇复审两篇；确认现场表态、企业自律、护栏与会议提议均未落地成新政策） | 本次提交 |
+| 2026-09-11 | ① OpenAI 公开 Habitat 在线存储平台；② 联合国秘书长报告建议推进 AI 能力建设全球基金；③ Roblox 扩大 Build AI 创作层；④ Mecka AI 传出接近 5 亿美元估值；⑤ 众议员联署要求取消休会推动 AI 护栏；⑥ 28 位菲尔兹奖得主发布 Math and AI 声明；⑦ Moonshot AI 目标年底 20 亿美元年化收入 | OpenAI、联合国 ODET、Roblox、Math and AI 官方原文；TechCrunch、Axios 交叉报道；A/80/817 监管/政策文件 | 2026-09-11 / 2026-09-11（UN 基金、Mecka 估值、Moonshot 收入均保留建议/报道/目标边界；9 月 10 日 Anthropic 警告后续评论延期） | `passed`（唯一 Codex review 子智能体逐篇复审七篇；确认公司规模/采用数据、政策建议、融资传闻、公开声明和商业目标边界；七张 SVG 与各自讲解） | 本次提交 |
 | 2026-09-12 | ① Anthropic CEO Dario Amodei 提出 “We Must Pace the Frontier”；② Anthropic、OpenAI、SpaceXAI、Google DeepMind 负责人同日回应；③ Sam Altman 确认 OpenAI 2026 年不 IPO | Amodei 原文；Fortune、Axios、TechCrunch 同日报道；OpenAI/Anthropic 的安全承诺按采访和公开回应归属 | 2026-09-12 / 2026-09-12（9 月 10 日 Anthropic 威胁报告、9 月 9 日网络事件评估按原始公告日延期） | `passed`（唯一 Codex review 子智能体逐篇复审三篇；确认 pacing≠停训、个人回应≠共同协议、IPO 是 CEO 采访表态且无正式 2027 时间表） | 本次提交 |
 | 2021-01-08 | Waste-Free World AI 塑料回收试点 | Circular Online（新闻报道）；WebWire 企业新闻稿作一手核验 | 2021-01-08 / 2021-01-12 | `passed`（先 `needs-revision`，按建议修订后通过） | `9a7cb072` |
 | 2021-03-01 | 警务 AI 产品特写：转写、脱敏、车牌识别与加密货币分析 | Police Chief Magazine；VIQ、Veritone、Jenoptik 官方产品页；加州 DOJ AB 953 规则 | 2021-03-01 / 2021-03-01 | `passed`（子智能体读者与中文审读，按来源卡片建议修订） | `53037828` |
@@ -72,7 +73,8 @@
 
 ## 交付内容
 
-- `content/zh/news.json` 当前包含 138 篇已发布内容，其中包括本轮新增的 2026-09-12 三篇 AI 新闻、2026-09-13 两篇 AI 新闻、2026-09-14 四篇 AI 新闻、2026-09-15 七篇 AI 新闻、2026-09-16 六篇 AI 新闻、2026-09-17 六篇 AI 新闻、2026-09-18 七篇 AI 新闻、AI Force 组织设想、中美 AI 事故通报对话、Qwen-Image-2.1 研究权重、Step 5 Preview、OpenAI 前沿 AI 国际标准提议、OpenAI 数学顾问组与 100 多道开放题声明、Meta Muse 早期采用估算、GPT-6 Sol/Luna、Claude Opus 5.5、EvilTokens 网络犯罪服务、白宫“超级智能”联合国表态、Snorkel AI 数据基础设施融资、联合国安理会 AI 安全会议、Anthropic Claude 生物发现、Meta Muse AI 眼镜、YouTube Made on YouTube AI 工具、美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS、OpenAI 用户图片披露、教宗 UNESCO AI 演讲、澳大利亚 Medicare 代理事件、Google Gemini Call for Me 和多州检察长 AI 监管倡议新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- `content/zh/news.json` 当前包含 145 篇已发布内容，其中包括本轮新增的 2026-09-11 七篇 AI 新闻、2026-09-12 三篇 AI 新闻、2026-09-13 两篇 AI 新闻、2026-09-14 四篇 AI 新闻、2026-09-15 七篇 AI 新闻、2026-09-16 六篇 AI 新闻、2026-09-17 六篇 AI 新闻、2026-09-18 七篇 AI 新闻、AI Force 组织设想、中美 AI 事故通报对话、Qwen-Image-2.1 研究权重、Step 5 Preview、OpenAI 前沿 AI 国际标准提议、OpenAI 数学顾问组与 100 多道开放题声明、Meta Muse 早期采用估算、GPT-6 Sol/Luna、Claude Opus 5.5、EvilTokens 网络犯罪服务、白宫“超级智能”联合国表态、Snorkel AI 数据基础设施融资、联合国安理会 AI 安全会议、Anthropic Claude 生物发现、Meta Muse AI 眼镜、YouTube Made on YouTube AI 工具、美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS、OpenAI 用户图片披露、教宗 UNESCO AI 演讲、澳大利亚 Medicare 代理事件、Google Gemini Call for Me 和多州检察长 AI 监管倡议新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- 2026-09-11 按七条独立事实链发布七篇：OpenAI Habitat 是基础设施工程新闻；联合国 A/80/817 是能力建设基金政策建议；Roblox Build 是 AI 创作层产品更新；Mecka 是条款未敲定的融资报道；众议员联署信是尚未进入正式立法的政治动作；Math and AI 是 28 位菲尔兹奖得主公开声明；Moonshot K3 是开放权重模型的收入目标。每篇都把公司自述、报道传闻、指示性金额、第三方 token 统计和政策建议分开，保留七张事件专属 SVG、引用卡片、词条联动和唯一 reader-review 结果；Anthropic 9 月 10 日警告后续、OpenAI 数学争议分析和 Axios 周综述留在延期候选，同一 Moonshot canonical URL 的旧候选记为 `duplicate`。
 - 2026-09-12 按三条事实链发布三篇：Amodei 原文写出 pacing、嵌入式第三方评估和两层国际协调；Altman、Musk、Hassabis 的回应被单独写成行业信号，明确不是共同协议；Altman 的 Fortune 专访则单独记录 OpenAI 2026 年不 IPO，强调这是 CEO 表态而非 SEC/董事会公告，也没有正式的 2027 时间表。9 月 13 日台账中的 Amodei 原文候选已在 9 月 12 日主文章选中后改为 `duplicate`；9 月 10 日威胁情报报告和 9 月 9 日网络事件评估按原始日期延期。三篇都保留原始链接、引用卡片、自制 SVG、各自组织的段落、机制讲解、词条联动和唯一 reader-review 结果。
 - 2026-09-13 也按实际事件数发布两篇：特朗普在爱尔兰的讲话与 Johnson 在 CNN/NBC 的国会责任表态分别成篇；前者记录国家竞争优先级和缺少具体护栏，后者记录企业自律、紧急暂停和跨方会议提议。9 月 12 日 Amodei 原文候选已指向 9 月 12 日主文章并改为 `duplicate`，四家实验室回应和 9 月 13 日 TechCrunch 播客评论则按原始事件日或分析性质延期，没有重复扩写。两篇都保留 AP/Axios 原始链接、引用卡片、自制 SVG、各自组织的段落、机制讲解、词条联动和唯一 reader-review 结果。
 - 2026-09-14 也按独立事实链发布四篇，而不是限制每天一篇：Humanist AI 是公开治理草案，Siri AI 是有地区/语言/额度条件的 beta rollout，Glass Imaging 是 TechCrunch 援引 WSJ 的未确认并购报道，特朗普与黄仁勋是 All-In Summit 现场的公开立场。当天的 Apple 总览候选与 Siri 共享 canonical URL，按 `duplicate` 合并；DeepSeek 9 月 10 日公告和 Reuters Breakingviews 市场分析保留为 `deferred`，没有把运营计划或评论文章扩写成 9 月 14 日新事件。四篇都保留原始链接、引用卡片、自制 SVG、各自组织的段落、机制讲解、词条联动和唯一 reader-review 结果。
