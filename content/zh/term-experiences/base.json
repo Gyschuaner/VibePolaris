@@ -169,45 +169,45 @@
   },
   {
     "slug": "responsive",
-    "lead": "桌面三栏放到 390px 宽的手机上，应该缩小内容还是改变布局？",
-    "definition": "响应式布局根据容器宽度、内容需要和输入方式调整结构，让同一份内容保持可读和可操作。",
-    "boundary": "响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
+    "lead": "三栏卡片放进 390px 宽的手机视口时，应该把字缩成 10px，还是让卡片换行？",
+    "definition": "响应式布局让元素根据它所在容器的可用空间重排。流式布局、Grid、Flexbox、媒体查询和容器查询可以共同决定列数、间距与局部尺寸；内容开始拥挤时切换规则的位置叫断点。",
+    "boundary": "响应式不是按设备型号复制页面，也不是把文字缩小到不能读。设计要保留信息、阅读顺序和可操作性；地图、表格等本来需要二维操作的区域可以保留横向滚动，不必强行改成单列。",
     "sceneKind": "transform",
-    "sceneTitle": "三张卡片如何随可用宽度重排",
+    "sceneTitle": "可用空间变窄，先找内容失效点",
     "actionLabel": "收窄容器",
     "actors": [
       {
         "id": "viewport",
-        "label": "可用宽度",
-        "detail": "1280 px",
+        "label": "视口宽度",
+        "detail": "1280 CSS px",
         "icon": "browser",
         "group": "环境"
       },
       {
         "id": "container",
         "label": "内容容器",
-        "detail": "三列网格",
+        "detail": "三列且有最低卡片宽度",
         "icon": "layout",
         "group": "规则"
       },
       {
         "id": "card-a",
         "label": "主卡片",
-        "detail": "完整标题与摘要",
+        "detail": "标题和摘要保持可读",
         "icon": "component",
         "group": "内容"
       },
       {
         "id": "card-b",
         "label": "次卡片",
-        "detail": "完整标题与摘要",
+        "detail": "不靠缩小字号挤进去",
         "icon": "component",
         "group": "内容"
       },
       {
         "id": "controls",
         "label": "操作区",
-        "detail": "横向排列",
+        "detail": "窄屏换行且保留点击高度",
         "icon": "gear",
         "group": "操作"
       }
@@ -223,13 +223,19 @@
         "id": "container-cards",
         "from": "container",
         "to": "card-a",
-        "label": "重排内容"
+        "label": "按最低宽度重排"
+      },
+      {
+        "id": "container-controls",
+        "from": "container",
+        "to": "controls",
+        "label": "重新安排操作"
       }
     ],
     "frames": [
       {
-        "label": "桌面三栏",
-        "note": "空间充足时，卡片并排展示，操作区保持一行。",
+        "label": "空间充足",
+        "note": "1280 CSS px 下，三张卡片并排，操作区也能保持一行。",
         "activeIds": [
           "viewport",
           "container"
@@ -237,16 +243,16 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "viewport": "1280 px",
-          "container": "3 columns"
+          "viewport": "1280 CSS px",
+          "container": "3 columns · readable"
         },
         "activeEdgeIds": [
           "viewport-container"
         ]
       },
       {
-        "label": "开始拥挤",
-        "note": "宽度降到 760px，摘要先缩短，主卡片仍保留更多空间。",
+        "label": "出现拥挤",
+        "note": "760px 时标题接近卡片的最低可读宽度，断点应根据这个失效点决定。",
         "activeIds": [
           "viewport",
           "card-a",
@@ -256,7 +262,7 @@
         "mutedIds": [],
         "values": {
           "viewport": "760 px",
-          "container": "2 columns"
+          "container": "2 columns · breakpoint"
         },
         "activeEdgeIds": [
           "viewport-container",
@@ -264,8 +270,8 @@
         ]
       },
       {
-        "label": "改单列",
-        "note": "390px 下卡片改为单列，不压缩字号和点击区域。",
+        "label": "改为两列",
+        "note": "中等宽度先改为两列，字号保持不变，卡片仍按顺序阅读。",
         "activeIds": [
           "container",
           "card-a",
@@ -276,16 +282,16 @@
         ],
         "mutedIds": [],
         "values": {
-          "viewport": "390 px",
-          "container": "1 column"
+          "viewport": "620 CSS px",
+          "container": "2 columns · readable"
         },
         "activeEdgeIds": [
           "container-cards"
         ]
       },
       {
-        "label": "操作下移",
-        "note": "按钮换行并保持 44px 点击高度，内容仍可顺序阅读。",
+        "label": "手机单列",
+        "note": "390px 下卡片改为单列，按钮换行并保持 44px 点击高度。",
         "activeIds": [
           "controls"
         ],
@@ -297,21 +303,26 @@
         ],
         "mutedIds": [],
         "values": {
+          "viewport": "390 CSS px",
+          "container": "1 column",
           "controls": "纵向 · 44px"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "container-cards",
+          "container-controls"
+        ]
       }
     ],
-    "insight": "响应式改变的是信息关系和排列，不是把所有东西一起缩小。",
+    "insight": "响应式先保护内容，再改变排列；断点由布局什么时候失效决定。",
     "quiz": {
-      "question": "手机端标题已经挤成四行，第一步应检查什么？",
+      "question": "390px 下三栏标题挤成四行，哪项更符合响应式设计？",
       "options": [
         {
-          "label": "容器与内容在哪个宽度开始失去可读性",
+          "label": "观察内容失效点，再让容器改列或换行",
           "correct": true
         },
         {
-          "label": "为每款手机写一个设备判断",
+          "label": "为每款手机复制一套页面",
           "correct": false
         },
         {
@@ -324,21 +335,36 @@
     },
     "prompt": {
       "title": "检查页面的响应式规则",
-      "text": "请在 360px、768px 和 1280px 三种宽度下检查当前页面，记录最先出现换行异常、横向滚动、点击区过小或层级混乱的位置。根据内容失效点调整容器、网格和操作区，不按设备型号添加规则，并验证键盘焦点与阅读顺序保持一致。"
+      "text": "请在 360px、768px 和 1280px 三种视口宽度下检查当前页面，记录最先出现换行异常、横向滚动、点击区过小或阅读顺序混乱的位置。把这些宽度当作测试条件，不按设备型号复制页面；根据内容失效点决定流式布局、媒体查询或容器查询，并验证键盘焦点与阅读顺序保持一致。"
     },
     "sources": [
       {
         "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
         "label": "MDN · Responsive design",
         "note": "浏览器行为与常见用法"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries",
+        "label": "MDN · Media query fundamentals",
+        "note": "媒体查询与内容断点"
+      },
+      {
+        "url": "https://www.w3.org/TR/css-contain-3/",
+        "label": "W3C · CSS Containment Level 3",
+        "note": "容器查询按元素尺寸判断"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG21/Understanding/reflow",
+        "label": "W3C WAI · Reflow",
+        "note": "窄视口回流与二维布局例外"
       }
     ]
   },
   {
     "slug": "form",
     "lead": "邮箱写错后，页面怎样指出具体问题，同时保留用户已经填好的姓名？",
-    "definition": "表单把标签、输入、约束、错误反馈和提交行为组织在一起，收集一组有明确含义的数据。",
-    "boundary": "浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "definition": "表单把可见标签、输入、约束、错误反馈和提交行为组织在一起，收集一组要一起提交的数据。",
+    "boundary": "浏览器校验只负责尽快反馈；有人可以用别的工具直接向服务端发请求，不走这个页面，所以服务端仍要按业务规则重新验证。占位文字只是示例，不能代替始终可见的字段标签。",
     "sceneKind": "state-machine",
     "sceneTitle": "一封报名表的校验与提交",
     "actionLabel": "尝试提交",
@@ -367,7 +393,7 @@
       {
         "id": "server-check",
         "label": "服务端校验",
-        "detail": "尚未收到",
+        "detail": "尚未收到请求",
         "icon": "shield",
         "group": "服务端"
       },
@@ -401,8 +427,8 @@
     ],
     "frames": [
       {
-        "label": "保留输入",
-        "note": "姓名和邮箱各自有标签，用户输入不会因为报错被清空。",
+        "label": "填写表单",
+        "note": "姓名和邮箱各自有始终可见的标签，填好的内容不会被后续检查清空；占位文字只是示例，不能代替标签。",
         "activeIds": [
           "name",
           "email"
@@ -419,7 +445,7 @@
       },
       {
         "label": "前端拦截",
-        "note": "邮箱格式不完整，焦点回到邮箱并显示具体错误。",
+        "note": "邮箱格式不完整，错误显示在邮箱旁，焦点回到邮箱输入框；姓名不会被清空。",
         "activeIds": [
           "email",
           "client-check"
@@ -432,16 +458,38 @@
           "result"
         ],
         "values": {
-          "email": "请输入完整邮箱",
-          "client-check": "invalid"
+          "email": "guyan@",
+          "client-check": "格式不完整"
         },
         "activeEdgeIds": [
           "input-client"
         ]
       },
       {
-        "label": "修正后提交",
-        "note": "邮箱改为有效格式，浏览器把完整数据发送给服务端。",
+        "label": "用户修正",
+        "note": "用户补全邮箱并再次提交；浏览器检查通过，请求这才发往服务端。",
+        "activeIds": [
+          "email",
+          "client-check"
+        ],
+        "doneIds": [
+          "name"
+        ],
+        "mutedIds": [
+          "server-check",
+          "result"
+        ],
+        "values": {
+          "email": "guyan@example.com",
+          "client-check": "格式通过"
+        },
+        "activeEdgeIds": [
+          "input-client"
+        ]
+      },
+      {
+        "label": "服务端校验",
+        "note": "页面通常在格式通过后发送请求；服务端不直接把页面送来的内容当真，每次都要再检查邮箱是否已注册这类业务规则，绕过页面发来的请求也一样。",
         "activeIds": [
           "email",
           "server-check"
@@ -455,15 +503,35 @@
         ],
         "values": {
           "email": "guyan@example.com",
-          "server-check": "校验业务规则"
+          "server-check": "检查是否已注册"
         },
         "activeEdgeIds": [
           "client-server"
         ]
       },
       {
-        "label": "确认成功",
-        "note": "服务端接受数据，页面显示可被读屏识别的成功提示。",
+        "label": "服务端拒绝",
+        "note": "邮箱已经注册，错误提示出现在邮箱旁边，焦点回到邮箱输入框；姓名等有效输入仍保留。",
+        "activeIds": [
+          "email",
+          "result"
+        ],
+        "doneIds": [
+          "name",
+          "client-check",
+          "server-check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "邮箱已注册"
+        },
+        "activeEdgeIds": [
+          "server-result"
+        ]
+      },
+      {
+        "label": "改正后成功",
+        "note": "换用未注册邮箱再次提交，服务端接受数据，页面用文字显示成功，不只靠颜色提示。",
         "activeIds": [
           "result"
         ],
@@ -482,7 +550,7 @@
         ]
       }
     ],
-    "insight": "一份好表单既要阻止无效数据，也要帮助用户知道下一步改哪里。",
+    "insight": "一份好表单把客户端的即时提示和服务端的最终判断分开，同时让用户知道要改哪一项。",
     "quiz": {
       "question": "前端已经验证邮箱格式，服务端还需要再验证吗？",
       "options": [
@@ -508,17 +576,27 @@
     },
     "sources": [
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation",
-        "label": "MDN · Client-side form validation",
-        "note": "浏览器行为与常见用法"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation",
+        "label": "MDN · Constraint validation",
+        "note": "浏览器约束校验、反馈方法与服务端边界"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+        "label": "W3C WCAG 2.2 · Labels or Instructions",
+        "note": "字段标签、说明与占位文字的区别"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+        "label": "W3C WCAG 2.2 · Error Identification",
+        "note": "指出出错字段并提供文字错误信息"
       }
     ]
   },
   {
     "slug": "dom",
-    "lead": "脚本修改标题以后，为什么源 HTML 文件里的文字没有跟着改变？",
-    "definition": "DOM 是浏览器把文档解析成的节点对象树；脚本操作的是内存中的节点、属性和文本。",
-    "boundary": "DOM 不是磁盘里的 HTML 源文件，也不是 JavaScript 语言本身；它是浏览器提供的文档接口。",
+    "lead": "脚本修改标题以后，为什么服务器上的 HTML 源文件里的文字没有跟着改变？",
+    "definition": "DOM（文档对象模型）是浏览器拿到服务器上的 HTML 后建立的一棵节点树，就在屏幕后面；它还带一组让脚本操作节点的方法。节点可以是元素或文本。脚本操作的是浏览器内存中的节点、属性和文本。",
+    "boundary": "DOM 不是服务器上的 HTML 源文件，也不是 JavaScript 语言本身；它是屏幕后面的当前页面结构。脚本可以查询和修改当前页面，但变化不会自动写回服务器文件，另有保存请求时才可能交给服务器保存。",
     "sceneKind": "tree",
     "sceneTitle": "标题文字在 DOM 树中的更新位置",
     "actionLabel": "执行脚本",
@@ -526,8 +604,8 @@
       {
         "id": "document",
         "label": "document",
-        "detail": "页面根对象",
-        "icon": "file",
+        "detail": "当前页面根节点",
+        "icon": "browser",
         "group": "根"
       },
       {
@@ -588,7 +666,7 @@
     "frames": [
       {
         "label": "解析文档",
-        "note": "浏览器读取 HTML，创建 document、main、h1 和文本节点。",
+        "note": "浏览器拿到服务器上的 HTML 后，创建当前页面的节点树；服务器上的 HTML 源文件只是输入。",
         "activeIds": [
           "document",
           "main",
@@ -608,7 +686,7 @@
       },
       {
         "label": "查询标题",
-        "note": "脚本通过选择器拿到 h1 节点引用。",
+        "note": "页面里的脚本通过 document.querySelector('h1') 找到当前页面的第一个 h1 元素。",
         "activeIds": [
           "script",
           "heading"
@@ -627,7 +705,7 @@
       },
       {
         "label": "修改文本",
-        "note": "textContent 替换内存中标题节点的文本。",
+        "note": "textContent 替换当前 DOM 中标题节点的文字；服务器上的 HTML 源文件不变。",
         "activeIds": [
           "heading",
           "text"
@@ -646,7 +724,7 @@
       },
       {
         "label": "重新呈现",
-        "note": "浏览器把新节点内容画到页面，源文件仍保持原样。",
+        "note": "浏览器根据当前 DOM 绘制页面，服务器上的 HTML 源文件仍保持原样。",
         "activeIds": [
           "document",
           "heading"
@@ -666,12 +744,12 @@
         ]
       }
     ],
-    "insight": "脚本改的是浏览器当前持有的文档对象，不会自动回写服务器模板或源文件。",
+    "insight": "脚本改的是浏览器里当前页面的 DOM，不会自动回写服务器上的 HTML 源文件。",
     "quiz": {
-      "question": "页面上出现两个同名按钮，querySelector 会返回什么？",
+      "question": "页面上有两个 h1 时，querySelector 会返回哪个？",
       "options": [
         {
-          "label": "第一个匹配到的元素",
+          "label": "文档顺序里第一个匹配的元素",
           "correct": true
         },
         {
@@ -683,18 +761,28 @@
           "correct": false
         }
       ],
-      "success": "需要多个结果时应使用 querySelectorAll，并明确遍历范围。",
-      "retry": "查询接口决定返回一个节点还是节点集合，与元素名称无关。"
+      "success": "querySelector 返回文档顺序里第一个匹配的元素；querySelectorAll 会返回全部匹配项。",
+      "retry": "querySelector 只返回一个匹配节点，不会自动把全部结果组成数组。"
     },
     "prompt": {
       "title": "检查 DOM 查询与更新",
-      "text": "请标出这段交互查询的 DOM 节点、读取的属性、写入的内容和触发更新的事件。检查选择器是否可能匹配错节点、监听器是否重复绑定、更新后焦点与可访问名称是否仍正确，并说明源 HTML 与运行时 DOM 的差别。"
+      "text": "请标出这段交互查询的 DOM 节点、读取的属性、写入的内容和触发更新的事件。检查选择器是否可能匹配错节点、监听器是否重复绑定、更新后焦点与可访问名称是否仍正确，并说明服务器上的 HTML 源文件与运行时 DOM 的差别。"
     },
     "sources": [
       {
+        "url": "https://dom.spec.whatwg.org/",
+        "label": "WHATWG · DOM Standard",
+        "note": "节点树与 DOM 操作接口的标准定义"
+      },
+      {
         "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting",
         "label": "MDN · DOM scripting introduction",
-        "note": "浏览器行为与常见用法"
+        "note": "节点树、querySelector 与 textContent 的常见用法"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector",
+        "label": "MDN · Document.querySelector",
+        "note": "按选择器返回文档顺序里的第一个匹配元素"
       }
     ]
   },
@@ -4118,9 +4206,9 @@
   },
   {
     "slug": "framework",
-    "lead": "React、Next.js 和日期格式化工具都属于依赖，它们为什么会对项目产生不同程度的约束？",
-    "definition": "框架规定应用结构、生命周期和扩展位置，库提供由应用主动调用的特定能力；实际项目通常同时使用两者。",
-    "boundary": "框架与库没有永远准确的名称分界，评估时应看谁控制运行流程、升级面和替换成本。",
+    "lead": "React、Next.js 和日期格式化工具都属于依赖：谁安排应用流程，谁提供组件能力，谁只在需要时被调用？",
+    "definition": "依赖是项目安装并在代码或构建中使用的外部能力；框架通常规定项目结构、入口、路由以及渲染或构建流程，库通常提供由业务代码主动调用的功能。",
+    "boundary": "框架与库没有永远准确的名称分界；评估时应看谁控制运行流程、调用方向，以及升级或替换要改多少代码。",
     "sceneKind": "layers",
     "sceneTitle": "一个 Web 应用中的框架、库与运行环境",
     "actionLabel": "展开依赖层",
@@ -4144,7 +4232,7 @@
         "label": "React",
         "detail": "组件与更新模型",
         "icon": "component",
-        "group": "框架能力"
+        "group": "UI 库"
       },
       {
         "id": "date-lib",
@@ -4189,8 +4277,8 @@
     ],
     "frames": [
       {
-        "label": "应用入口",
-        "note": "页面代码写在框架规定的路由和生命周期中。",
+        "label": "框架安排入口",
+        "note": "文件和目录按框架约定映射到路由，框架还安排构建入口。",
         "activeIds": [
           "product",
           "framework"
@@ -4201,15 +4289,15 @@
           "runtime"
         ],
         "values": {
-          "framework": "控制路由与构建"
+          "framework": "规定路由与构建"
         },
         "activeEdgeIds": [
           "product-framework"
         ]
       },
       {
-        "label": "框架驱动",
-        "note": "请求进入时，框架决定加载、渲染和数据获取顺序。",
+        "label": "框架驱动渲染",
+        "note": "用户访问页面时，框架决定取数据、加载代码和渲染的先后顺序；界面本身由 React 按组件定义生成。",
         "activeIds": [
           "framework",
           "react"
@@ -4228,8 +4316,8 @@
         ]
       },
       {
-        "label": "调用日期库",
-        "note": "业务代码在需要的位置主动调用日期格式化函数。",
+        "label": "应用调用库",
+        "note": "业务代码在需要的位置主动调用日期格式化函数，框架不会替它决定每次调用。",
         "activeIds": [
           "product",
           "date-lib"
@@ -4248,7 +4336,7 @@
       },
       {
         "label": "依赖运行时",
-        "note": "框架和库最终都只能使用目标运行环境提供的能力。",
+        "note": "框架和库最终都只能使用目标运行环境提供的 API；浏览器与 Node.js 的可用能力也可能不同。",
         "activeIds": [
           "framework",
           "date-lib",
@@ -4267,43 +4355,53 @@
         ]
       }
     ],
-    "insight": "判断依赖影响时，看它控制了多少应用流程，比争论名称更有用。",
+    "insight": "看依赖控制多少流程以及谁发起调用，比争论名称更有用。",
     "quiz": {
       "question": "更换日期格式化库和更换应用框架，哪项通常影响范围更大？",
       "options": [
         {
-          "label": "更换控制路由、构建和生命周期的框架",
+          "label": "更换应用框架",
           "correct": true
         },
         {
-          "label": "两者影响永远完全相同",
+          "label": "更换日期格式化库",
           "correct": false
         },
         {
-          "label": "只看安装包名字长度",
+          "label": "两者影响一样，因为都是 package.json 里的依赖",
           "correct": false
         }
       ],
-      "success": "框架占据的控制点更多，替换时需要迁移的边界通常更广。",
+      "success": "框架控制的流程边界更广，替换时通常要迁移路由、构建或渲染等多个接口；日期库多集中在调用点。",
       "retry": "应比较依赖控制的流程和接口，而不是名称。"
     },
     "prompt": {
       "title": "评估项目中的框架和库",
-      "text": "请列出项目的框架、运行时和关键库，分别标明它们控制的流程、调用方向、替换接口、升级影响和维护状态。优先检查控制路由、构建、数据层或组件模型的依赖，不把所有 package.json 条目按同一风险处理。"
+      "text": "请列出项目的框架与关键库，分别说明谁控制运行流程、谁由你的代码主动调用，并比较更换或升级各自会波及哪些文件和接口。"
     },
     "sources": [
       {
-        "url": "https://nextjs.org/docs/app/getting-started/project-structure",
-        "label": "Next.js · Project structure",
-        "note": "渲染模式与框架行为"
+        "url": "https://nextjs.org/docs",
+        "label": "Next.js · Docs",
+        "note": "框架提供的路由、渲染和构建能力"
+      },
+      {
+        "url": "https://react.dev/learn/describing-the-ui",
+        "label": "React · Describing the UI",
+        "note": "组件库与主动调用的 UI 能力"
+      },
+      {
+        "url": "https://angular.dev/overview",
+        "label": "Angular · What is Angular?",
+        "note": "框架整合路由、表单与构建工具"
       }
     ]
   },
   {
     "slug": "ssg-ssr",
-    "lead": "公开文档和登录后的账户余额，为什么不该使用完全相同的页面生成时机？",
-    "definition": "SSG 在构建或再验证时生成可复用 HTML，SSR 在请求到达服务器时根据当前请求和数据生成 HTML。",
-    "boundary": "渲染策略可以按路由甚至按数据请求组合，不需要整站只选一种。",
+    "lead": "公开文档和登录后的账户余额，为什么不该在同一个时机生成？",
+    "definition": "SSG（静态生成）在构建时生成可复用的 HTML；内容更新后，可以让旧页面过期并重新生成，这一步叫“再验证”。SSR（服务端渲染）在请求到达时读取请求相关数据并生成 HTML。两者都会先把带内容的 HTML 交给浏览器显示；页面交互要等客户端脚本接上，这是另一回事。",
+    "boundary": "SSG 和 SSR 说的是服务端何时生成页面，不等于有没有 JavaScript；静态、缓存和动态内容可以按页面组合，甚至可以同一页面内分区组合（例如正文静态、侧边栏登录状态动态）；还要单独考虑客户端脚本如何接上交互（通常称为水合）。",
     "sceneKind": "compare",
     "sceneTitle": "公开文档与账户页的两种生成时机",
     "actionLabel": "发起访问",
@@ -4380,7 +4478,7 @@
     "frames": [
       {
         "label": "提前生成文档",
-        "note": "构建阶段读取内容并产出公开文档 HTML。",
+        "note": "构建阶段读取公开内容，产出可缓存的文档 HTML；更新时可重新构建或再验证。",
         "activeIds": [
           "build",
           "cdn"
@@ -4400,7 +4498,7 @@
       },
       {
         "label": "复用静态页",
-        "note": "不同访客直接获得同一份文档文件，不必每次运行页面服务器。",
+        "note": "不同访客拿到的是同一份文档文件，服务器不用每次重新生成；浏览器先显示这份 HTML，脚本之后再接上交互。",
         "activeIds": [
           "cdn",
           "public-user"
@@ -4442,7 +4540,7 @@
       },
       {
         "label": "请求时生成",
-        "note": "服务器读取当前余额并生成只对应这次请求的 HTML。",
+        "note": "服务器读取当前余额并生成只对应这次请求的 HTML；是否缓存还要看隐私边界。",
         "activeIds": [
           "server",
           "private-html"
@@ -4463,7 +4561,7 @@
         ]
       }
     ],
-    "insight": "选择 SSG 或 SSR 的关键是数据何时变化、是否因用户而异，以及可否安全缓存。",
+    "insight": "选择 SSG 或 SSR 的关键是数据何时变化、是否因用户而异，以及能否安全缓存；水合只负责把交互接到已经生成的 HTML 上。",
     "quiz": {
       "question": "每天更新一次、所有人内容相同的帮助文档更适合先考虑什么？",
       "options": [
@@ -4476,11 +4574,11 @@
           "correct": false
         },
         {
-          "label": "把每位访客的文档存在独立数据库行",
+          "label": "生成一次后永远不再更新的静态页面",
           "correct": false
         }
       ],
-      "success": "低频更新且公开一致的内容适合提前生成和缓存。",
+      "success": "低频更新且公开一致的内容适合提前生成和缓存，变化时再验证即可。",
       "retry": "先看内容更新频率和个性化要求。"
     },
     "prompt": {
@@ -4489,19 +4587,29 @@
     },
     "sources": [
       {
-        "url": "https://nextjs.org/docs/app/getting-started/caching-and-revalidating",
-        "label": "Next.js · Caching and revalidating",
-        "note": "渲染模式与框架行为"
+        "url": "https://nextjs.org/docs/app/getting-started/linking-and-navigating",
+        "label": "Next.js · Linking and navigating",
+        "note": "预渲染与请求时渲染的时机"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/getting-started/revalidating",
+        "label": "Next.js · Revalidating",
+        "note": "缓存内容如何按时间或事件更新"
+      },
+      {
+        "url": "https://react.dev/reference/react-dom/client/hydrateRoot",
+        "label": "React · hydrateRoot",
+        "note": "客户端如何接管服务端生成的 HTML"
       }
     ]
   },
   {
     "slug": "deploy",
-    "lead": "本地能打开的网站，怎样变成团队可访问、出问题还能退回上一版的服务？",
+    "lead": "一个版本怎样从提交变成可验证、可回滚的真实服务？",
     "definition": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查和流量切换。",
-    "boundary": "命令执行成功不等于部署可用；环境变量、迁移、权限、核心流程和回滚都需要验证。",
+    "boundary": "命令执行成功不等于部署可用；环境变量、数据库变更脚本、权限、核心流程和回滚都需要验证。",
     "sceneKind": "pipeline",
-    "sceneTitle": "一个版本从提交到接收真实流量",
+    "sceneTitle": "一个版本从提交到安全接收真实流量",
     "actionLabel": "推进发布",
     "actors": [
       {
@@ -4520,14 +4628,21 @@
       },
       {
         "id": "artifact",
-        "label": "不可变制品",
+        "label": "制品",
         "detail": "等待生成",
         "icon": "package",
         "group": "制品"
       },
       {
+        "id": "previous-artifact",
+        "label": "上一版制品",
+        "detail": "v1.7.2 · 已验证",
+        "icon": "package",
+        "group": "制品"
+      },
+      {
         "id": "environment",
-        "label": "dev 环境",
+        "label": "生产环境",
         "detail": "等待部署",
         "icon": "cloud",
         "group": "环境"
@@ -4567,6 +4682,12 @@
         "label": "部署同一制品"
       },
       {
+        "id": "previous-artifact-traffic",
+        "from": "previous-artifact",
+        "to": "traffic",
+        "label": "回滚目标"
+      },
+      {
         "id": "env-health",
         "from": "environment",
         "to": "health",
@@ -4589,6 +4710,7 @@
         "doneIds": [],
         "mutedIds": [
           "artifact",
+          "previous-artifact",
           "environment",
           "health",
           "traffic"
@@ -4598,7 +4720,7 @@
       },
       {
         "label": "构建制品",
-        "note": "流水线安装锁定依赖、运行检查并生成不可变包。",
+        "note": "流水线按锁定的版本安装依赖、运行检查，并生成制品。制品一旦生成就不再修改。",
         "activeIds": [
           "commit",
           "build",
@@ -4606,6 +4728,7 @@
         ],
         "doneIds": [],
         "mutedIds": [
+          "previous-artifact",
           "environment",
           "health",
           "traffic"
@@ -4620,7 +4743,7 @@
       },
       {
         "label": "写入环境",
-        "note": "同一制品进入 dev，配置从环境安全注入。",
+        "note": "同一制品进入目标环境，配置由环境提供；这一版若改了数据库结构，要先执行脚本并验证。",
         "activeIds": [
           "artifact",
           "environment"
@@ -4630,11 +4753,12 @@
           "build"
         ],
         "mutedIds": [
+          "previous-artifact",
           "health",
           "traffic"
         ],
         "values": {
-          "environment": "v1.8.0 running"
+          "environment": "v1.8.0 running · migration ok"
         },
         "activeEdgeIds": [
           "artifact-env"
@@ -4642,7 +4766,7 @@
       },
       {
         "label": "实际验证",
-        "note": "健康检查和核心流程冒烟确认服务已启动并能正常工作。",
+        "note": "健康检查确认服务有响应，再亲手走一遍最重要的真实流程（比如用测试账号成功登录），确认真的能用。",
         "activeIds": [
           "environment",
           "health"
@@ -4653,6 +4777,7 @@
           "artifact"
         ],
         "mutedIds": [
+          "previous-artifact",
           "traffic"
         ],
         "values": {
@@ -4664,7 +4789,7 @@
       },
       {
         "label": "切换流量",
-        "note": "验证通过才把访问流量指向新版本，并保留上一制品。",
+        "note": "验证通过才把流量指向新版本：可以先放一部分访问进来，观察指标平稳后再全量切完，并保留上一制品随时退回。",
         "activeIds": [
           "health",
           "traffic"
@@ -4675,9 +4800,11 @@
           "artifact",
           "environment"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "previous-artifact"
+        ],
         "values": {
-          "traffic": "100% → v1.8.0"
+          "traffic": "10% → 100% · v1.8.0"
         },
         "activeEdgeIds": [
           "health-traffic"
@@ -4685,65 +4812,75 @@
       },
       {
         "label": "准备回滚",
-        "note": "若关键指标异常，流量可以退回已验证的 v1.7.2。",
+        "note": "上一版 v1.7.2 的制品仍保留在环境里：如果新版本关键指标异常，把流量切回 v1.7.2，不需要重新构建。",
         "activeIds": [
           "traffic",
-          "artifact"
+          "previous-artifact"
         ],
         "doneIds": [
           "commit",
           "build",
+          "artifact",
           "environment",
           "health"
         ],
         "mutedIds": [],
         "values": {
-          "artifact": "v1.7.2 retained",
+          "previous-artifact": "v1.7.2 retained",
           "traffic": "rollback ready"
         },
         "activeEdgeIds": [
-          "artifact-env",
-          "health-traffic"
+          "previous-artifact-traffic"
         ]
       }
     ],
-    "insight": "可发布版本必须同时具备可追踪制品、真实验证和明确回滚路径。",
+    "insight": "部署完成需要多类证据：版本可追踪、环境配置正确、真实流程通过，并且知道如何停下和回滚。",
     "quiz": {
       "question": "构建完成且进程已启动，可以直接宣布上线成功吗？",
       "options": [
         {
-          "label": "不能，还要完成健康检查和核心流程冒烟",
+          "label": "不能，还要完成健康检查并走通核心流程",
           "correct": true
         },
         {
-          "label": "可以，进程存在就代表业务可用",
+          "label": "可以，构建成功就代表线上可用",
           "correct": false
         },
         {
-          "label": "可以，只要日志里没有红字",
+          "label": "可以，只要进程存在且没有明显报错",
           "correct": false
         }
       ],
-      "success": "部署状态和用户可用性需要不同证据。",
+      "success": "命令成功、进程存在只能证明步骤执行过；服务能不能用，要健康检查通过、核心流程真的走通才算。",
       "retry": "启动只证明进程运行，不证明依赖、权限和业务流程正确。"
     },
     "prompt": {
       "title": "整理一次可回滚的部署流程",
-      "text": "请列出本次发布的提交号、构建制品、目标环境、配置差异、数据库迁移、健康检查、核心冒烟、流量切换、监控指标和回滚触发条件。每个阶段写明可验证证据，不把命令返回成功当成最终上线结论。"
+      "text": "请列出本次发布的提交号、构建制品、目标环境、配置差异、数据库变更脚本、健康检查、核心流程验证、流量切换、监控指标和回滚触发条件。每个阶段写明可验证证据，不把命令返回成功当成最终上线结论。"
     },
     "sources": [
       {
-        "url": "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions",
+        "url": "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
         "label": "GitHub Docs · Deploying with Actions",
-        "note": "协作流程与平台行为"
+        "note": "环境、保护规则与部署记录"
+      },
+      {
+        "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+        "label": "Kubernetes · Deployments",
+        "note": "滚动更新、状态检查与回滚"
+      },
+      {
+        "url": "https://sre.google/workbook/canarying-releases/",
+        "label": "Google SRE · Canarying releases",
+        "note": "小流量验证与指标监控"
       }
     ]
   },
   {
     "slug": "library",
     "lead": "只需要格式化一个日期，是否值得引入一个覆盖时区、日历和国际化的大工具包？",
-    "definition": "库把一组相关能力封装为可调用接口，项目通过依赖管理安装并在需要的位置主动使用。",
-    "boundary": "引入库同时引入版本、体积、安全和维护成本；现成实现不代表比小范围自有代码更合适。",
+    "definition": "库是别人已经写好、按固定调用方式（即接口）来使用的一组函数或组件；项目会把用了哪些库、用什么版本记录在 package.json（项目的依赖清单）里，用到时再导入调用。",
+    "boundary": "引入库会同时带来版本、体积、许可证、安全和维护成本；先检查浏览器或 Node.js 本身是否已提供这个能力（原生能力），再看现有依赖能否覆盖。",
     "sceneKind": "assembly",
     "sceneTitle": "同一个日期需求的三种实现成本",
     "actionLabel": "比较方案",
@@ -4751,14 +4888,14 @@
       {
         "id": "need",
         "label": "实际需求",
-        "detail": "显示 2026-08-31",
+        "detail": "显示 2026年8月31日",
         "icon": "clock",
         "group": "需求"
       },
       {
         "id": "native",
         "label": "Intl.DateTimeFormat",
-        "detail": "运行时原生能力",
+        "detail": "浏览器 / Node.js 自带能力",
         "icon": "gear",
         "group": "原生方案"
       },
@@ -4778,7 +4915,7 @@
       },
       {
         "id": "maintenance",
-        "label": "维护面",
+        "label": "维护成本",
         "detail": "升级与漏洞检查",
         "icon": "shield",
         "group": "长期成本"
@@ -4801,7 +4938,7 @@
         "id": "need-large",
         "from": "need",
         "to": "large-lib",
-        "label": "通用实现"
+        "label": "同样满足 · 但附带多余"
       },
       {
         "id": "libs-maintenance",
@@ -4829,7 +4966,7 @@
       },
       {
         "label": "检查原生能力",
-        "note": "目标运行时已经提供 Intl.DateTimeFormat，可以满足当前格式化。",
+        "note": "浏览器或 Node.js 本身就提供 Intl.DateTimeFormat，可以满足当前格式化。",
         "activeIds": [
           "need",
           "native"
@@ -4849,7 +4986,7 @@
       },
       {
         "label": "评估小库",
-        "note": "若随后需要日期计算，小库可能提供更清楚的 API，但仍要评估更新状态。",
+        "note": "若随后需要日期计算，小库可能把调用方式提供得更清楚，但仍要评估更新状态。",
         "activeIds": [
           "need",
           "small-lib"
@@ -4869,7 +5006,7 @@
       },
       {
         "label": "发现过量能力",
-        "note": "通用包的大部分能力不会使用，却进入下载和升级范围。",
+        "note": "若改用通用工具包，会发现大部分能力用不上，却全都进入下载和升级范围。",
         "activeIds": [
           "large-lib",
           "maintenance"
@@ -4883,7 +5020,7 @@
         ],
         "values": {
           "large-lib": "仅用 1 个函数",
-          "maintenance": "新增供应链检查"
+          "maintenance": "从此要持续关注升级和漏洞"
         },
         "activeEdgeIds": [
           "need-large",
@@ -4892,7 +5029,7 @@
       },
       {
         "label": "形成选择",
-        "note": "当前采用原生 API，并把未来需要时区计算列为重新评估条件。",
+        "note": "当前采用浏览器或 Node.js 自带的原生能力，若将来出现时区计算需求再重新评估。",
         "activeIds": [
           "native",
           "maintenance"
@@ -4920,20 +5057,20 @@
           "correct": true
         },
         {
-          "label": "只要安装成功就继续使用",
+          "label": "先锁定版本，暂时忽略漏洞，因为功能已经能用",
           "correct": false
         },
         {
-          "label": "把版本号隐藏起来",
+          "label": "只看下载量，维护和漏洞不影响选择",
           "correct": false
         }
       ],
-      "success": "维护状态与供应链风险属于依赖选择的一部分。",
+      "success": "依赖可用只是起点，维护状态、漏洞和替换成本也属于选择依据。",
       "retry": "功能可用不能覆盖已知安全和维护问题。"
     },
     "prompt": {
       "title": "判断是否需要新增依赖库",
-      "text": "请说明当前能力缺口，比较运行时原生 API、少量自有实现和候选库。对候选库检查实际使用范围、包体积、维护频率、许可证、漏洞、间接依赖和替换成本，并写明何种需求变化会触发重新选择。"
+      "text": "请说明当前能力缺口，比较浏览器或 Node.js 自带能力、少量自有实现和候选库。对候选库检查实际使用范围、包体积、维护频率、许可证、漏洞、间接依赖和替换成本，并写明何种需求变化会触发重新选择。"
     },
     "sources": [
       {
@@ -4942,19 +5079,29 @@
         "note": "浏览器行为与常见用法"
       },
       {
+        "url": "https://react.dev/learn/describing-the-ui",
+        "label": "React · Describing the UI",
+        "note": "库提供可复用的组件能力"
+      },
+      {
+        "url": "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
+        "label": "npm Docs · dependencies",
+        "note": "依赖如何记录并参与安装"
+      },
+      {
         "url": "https://docs.npmjs.com/about-audit-reports",
         "label": "npm Docs · Audit reports",
-        "note": "包管理命令与文件语义"
+        "note": "依赖漏洞与维护检查"
       }
     ]
   },
   {
     "slug": "runtime",
     "lead": "同一行 document.querySelector 在浏览器可用，放到 Node.js 为什么会报 document 未定义？",
-    "definition": "运行时加载并执行语言代码，同时提供内存、调度、模块和宿主 API；不同环境提供的接口并不相同。",
-    "boundary": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "definition": "运行时由语言引擎和宿主环境共同组成：引擎解析并执行 JavaScript，宿主提供全局对象和 DOM、文件、网络这些环境接口；浏览器和 Node.js 的接口范围并不相同。",
+    "boundary": "语法能被解析不代表目标环境拥有所调用的 API；即使是同一个运行时，也要核对它的实际版本和支持哪些 API。",
     "sceneKind": "compare",
-    "sceneTitle": "同一段 JavaScript 在两个运行时中的可用接口",
+    "sceneTitle": "引擎相同，宿主接口为何不同？",
     "actionLabel": "换个环境运行",
     "actors": [
       {
@@ -5004,7 +5151,7 @@
         "id": "browser-dom",
         "from": "browser",
         "to": "dom",
-        "label": "调用 Web API"
+        "label": "调用宿主 API"
       },
       {
         "id": "code-node",
@@ -5022,7 +5169,7 @@
     "frames": [
       {
         "label": "检查语法",
-        "note": "这行 JavaScript 语法本身合法，问题不在解析阶段。",
+        "note": "语言引擎可以解析这行代码；能解析不代表宿主提供了这个接口。",
         "activeIds": [
           "code"
         ],
@@ -5038,7 +5185,7 @@
       },
       {
         "label": "浏览器执行",
-        "note": "浏览器提供 document，查询能返回当前页面的 h1。",
+        "note": "浏览器宿主提供 document，查询能返回当前页面的 h1。",
         "activeIds": [
           "code",
           "browser",
@@ -5059,7 +5206,7 @@
       },
       {
         "label": "Node.js 执行",
-        "note": "Node.js 没有页面文档，运行到 document 时抛出 ReferenceError。",
+        "note": "Node.js 默认没有页面文档，运行到 document 时抛出 ReferenceError；这不是 JavaScript 语法错误。",
         "activeIds": [
           "code",
           "node"
@@ -5079,7 +5226,7 @@
       },
       {
         "label": "使用本环境接口",
-        "note": "Node.js 可以读文件，但这项能力不是 JavaScript 语言统一提供的。",
+        "note": "Node.js 可以通过 fs 读取文件，但这是宿主 API，不是 JavaScript 语言本身提供的能力。",
         "activeIds": [
           "node",
           "filesystem"
@@ -5099,63 +5246,78 @@
         ]
       }
     ],
-    "insight": "先区分语言能力和宿主能力，才能判断代码能否在目标环境运行。",
+    "insight": "先区分语言引擎和宿主接口，再核对目标版本，才能判断代码能否在那里运行。",
     "quiz": {
-      "question": "fetch 在新版本 Node.js 可用，是否说明所有 Node.js 版本都可直接调用？",
+      "question": "下面哪一项最能说明运行时的作用？",
       "options": [
         {
-          "label": "不说明，还要检查目标版本和兼容范围",
+          "label": "同一段代码换环境后，可用的宿主 API 会变化",
           "correct": true
         },
         {
-          "label": "说明，运行时版本不会影响 API",
+          "label": "所有 JavaScript 环境都会自动提供 document",
           "correct": false
         },
         {
-          "label": "说明，因为 fetch 属于 CSS",
+          "label": "运行时只负责给页面设置 CSS",
           "correct": false
         }
       ],
-      "success": "运行时能力会随版本变化，部署环境必须明确。",
-      "retry": "同一种运行时的不同版本也可能提供不同 API。"
+      "success": "运行时把语言代码放进具体环境执行，并决定它能接触哪些宿主 API。",
+      "retry": "先看代码调用的是语言能力还是宿主接口，再比较目标环境提供的 API。"
     },
     "prompt": {
       "title": "检查代码的运行时依赖",
-      "text": "请标出这段代码使用的语言内置对象、浏览器 API、Node.js API和第三方库，并核对目标运行时版本。对缺失能力说明应改为条件加载、服务端/客户端边界调整、polyfill 或替代接口中的哪一种。"
+      "text": "请把每个调用分成语言能力、宿主 API 或第三方库，并核对目标运行时的版本与接口。对缺失能力说明应移动执行位置、改用替代接口，还是增加兼容层。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model",
+        "label": "MDN · JavaScript execution model",
+        "note": "引擎、宿主、调用栈与任务队列的分工"
+      },
+      {
+        "url": "https://tc39.es/ecma262/",
+        "label": "ECMAScript · Language Specification",
+        "note": "语言执行上下文与核心能力的规范边界"
+      },
+      {
         "url": "https://nodejs.org/api/globals.html",
         "label": "Node.js · Globals",
-        "note": "Node.js 运行时行为"
+        "note": "Node.js 提供的全局对象与运行时接口"
+      },
+      {
+        "url": "https://nodejs.org/api/fs.html",
+        "label": "Node.js · File system",
+        "note": "Node.js 文件系统宿主 API"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document",
         "label": "MDN · Document",
-        "note": "浏览器行为与常见用法"
+        "note": "浏览器提供的 DOM 文档接口"
       }
     ]
   },
   {
     "slug": "package",
-    "lead": "两台电脑都运行 npm install，为什么没有锁文件时可能得到不同的间接依赖版本？",
-    "definition": "包管理器读取依赖范围，解析完整依赖树，下载包并用锁文件记录确定版本与完整性。",
-    "boundary": "锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "lead": "package.json 写了 ^2.3.0，为什么还要把 package-lock.json 一起保存到项目代码库？",
+    "definition": "包是带有 package.json 的可复用程序或代码单元。项目直接使用的包叫直接依赖；这些包自己需要的其他包叫间接依赖，层层连接起来就是依赖树。包管理器根据项目允许的版本范围选择并下载这些包，在锁文件中记下精确版本、来源，以及用来核对下载内容的完整性摘要。",
+    "boundary": "锁文件记录每次安装使用的精确版本，却不保证包安全、兼容或维护良好；升级仍要审查依赖树、漏洞和许可证，并检查受影响的功能。在持续集成（CI，自动跑构建和测试的环境）中，npm ci 按锁文件安装，package.json 与锁文件不一致时会停止。",
     "sceneKind": "tree",
-    "sceneTitle": "package.json 怎样解析成可复现的依赖树",
+    "sceneTitle": "package.json 怎样变成可复现的依赖树",
     "actionLabel": "继续安装",
     "actors": [
       {
         "id": "manifest",
         "label": "package.json",
-        "detail": "ui-kit: ^2.3.0",
+        "detail": "ui-kit: ^2.3.0（允许范围）",
         "icon": "file",
         "group": "声明"
       },
       {
         "id": "resolver",
         "label": "版本解析器",
-        "detail": "查询可用版本",
+        "detail": "从 npm 注册表选择匹配版本",
         "icon": "search",
         "group": "解析"
       },
@@ -5176,16 +5338,16 @@
       {
         "id": "lockfile",
         "label": "package-lock.json",
-        "detail": "尚未记录",
+        "detail": "记录精确版本与完整性",
         "icon": "key",
         "group": "锁定"
       },
       {
         "id": "install",
         "label": "node_modules",
-        "detail": "等待安装",
+        "detail": "等待按锁文件安装",
         "icon": "database",
-        "group": "落地"
+        "group": "安装"
       }
     ],
     "edges": [
@@ -5223,7 +5385,7 @@
     "frames": [
       {
         "label": "读取范围",
-        "note": "清单允许安装 2.x 中满足 ^2.3.0 的版本。",
+        "note": "这里的 ^2.3.0 允许从 2.3.0 起、不到 3.0.0 的稳定版本；npm 注册表是存放包与版本信息、提供下载的服务。",
         "activeIds": [
           "manifest",
           "resolver"
@@ -5242,7 +5404,7 @@
       },
       {
         "label": "选择直接依赖",
-        "note": "解析器根据仓库当前内容选择 ui-kit 2.5.1。",
+        "note": "解析器从可用版本中选择满足范围的 ui-kit 2.5.1。",
         "activeIds": [
           "resolver",
           "direct"
@@ -5286,7 +5448,7 @@
       },
       {
         "label": "写入锁文件",
-        "note": "精确版本、来源和完整性摘要被记录，后续安装不再重新漂移。",
+        "note": "包管理器在锁文件里记下精确版本、来源和完整性摘要；安装时用摘要核对下载的包是否还是记录的那一份。",
         "activeIds": [
           "resolver",
           "lockfile"
@@ -5307,7 +5469,7 @@
       },
       {
         "label": "复现安装",
-        "note": "另一台电脑读取锁文件，安装同一棵依赖树。",
+        "note": "另一台电脑按锁文件安装，node_modules 中得到示例里的两个包与精确版本。",
         "activeIds": [
           "lockfile",
           "install"
@@ -5320,16 +5482,16 @@
         ],
         "mutedIds": [],
         "values": {
-          "install": "tree verified"
+          "install": "ui-kit 2.5.1 + color-utils 1.4.2 已安装"
         },
         "activeEdgeIds": [
           "lock-install"
         ]
       }
     ],
-    "insight": "清单表达允许范围，锁文件记录一次解析出的完整精确结果。",
+    "insight": "package.json 规定允许范围；匹配的锁文件记录精确依赖树，安装器按这份记录下载对应版本。更新锁文件后，即使允许范围没变，也可能选到另一个具体版本。",
     "quiz": {
-      "question": "package.json 没变，只提交了更新后的锁文件，是否仍可能影响运行结果？",
+      "question": "package.json 没变，只提交更新后的锁文件，是否仍可能影响运行结果？",
       "options": [
         {
           "label": "可能，间接依赖或精确版本已经变化",
@@ -5344,28 +5506,48 @@
           "correct": false
         }
       ],
-      "success": "锁文件是实际依赖树的重要变更，应与代码一样评审。",
-      "retry": "安装器会按锁文件选择精确包版本。"
+      "success": "锁文件记录实际依赖树；它变化时，间接依赖或精确版本就可能变化。",
+      "retry": "安装器会按锁文件选择精确包版本，先比较依赖树再判断影响。"
     },
     "prompt": {
       "title": "检查一次依赖升级",
-      "text": "请比较升级前后的直接依赖、间接依赖、锁文件、许可证、漏洞和运行时要求。指出真正进入生产包的版本变化，运行相关测试，并说明出现兼容问题时如何恢复上一棵依赖树。"
+      "text": "请比较升级前后的 package.json、锁文件和完整依赖树，指出直接与间接变化，检查漏洞和许可证，运行相关测试；如果不兼容，说明如何恢复上一棵依赖树。"
     },
     "sources": [
       {
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
         "label": "npm Docs · package-lock.json",
-        "note": "包管理命令与文件语义"
+        "note": "锁文件记录精确依赖树、来源和完整性"
+      },
+      {
+        "url": "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
+        "label": "npm Docs · dependencies",
+        "note": "package.json 如何声明直接依赖和版本范围"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+        "label": "npm Docs · npm ci",
+        "note": "CI 按锁文件安装并检查清单是否匹配"
+      },
+      {
+        "url": "https://docs.npmjs.com/about-audit-reports",
+        "label": "npm Docs · Audit reports",
+        "note": "依赖安全审查不能由锁定版本替代"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v6/using-npm/semver/",
+        "label": "npm Docs · semver ranges",
+        "note": "^2.3.0 示例允许的稳定版本范围"
       }
     ]
   },
   {
     "slug": "typescript",
     "lead": "函数声明只接收数字，却被传入字符串时，怎样在代码运行前发现？",
-    "definition": "TypeScript 在 JavaScript 上增加静态类型检查，编译阶段分析变量、函数和对象的使用是否符合声明。",
-    "boundary": "类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
+    "definition": "TypeScript 让变量、函数参数和对象带上可检查的类型信息。类型检查器会在代码运行前检查各处调用是否符合声明的要求，编译或构建工具再把带类型标注的代码转换成 JavaScript。",
+    "boundary": "类型信息通常不会保留在输出 JavaScript 中，也不会自动检查接口返回的 JSON；外部数据进入程序时，仍需在运行时用代码检查实际内容和格式，确认无误后再按声明的类型使用它。",
     "sceneKind": "pipeline",
-    "sceneTitle": "一个参数错误在编译阶段被拦住",
+    "sceneTitle": "先拦住代码错误，再验证外部数据",
     "actionLabel": "运行检查",
     "actors": [
       {
@@ -5385,7 +5567,7 @@
       {
         "id": "checker",
         "label": "类型检查器",
-        "detail": "比较实参与形参",
+        "detail": "对照声明要求和传入的值",
         "icon": "search",
         "group": "编译"
       },
@@ -5406,7 +5588,7 @@
       {
         "id": "runtime",
         "label": "运行时输入",
-        "detail": "API 数据未知",
+        "detail": "API JSON 未验证",
         "icon": "server",
         "group": "运行"
       }
@@ -5440,13 +5622,13 @@
         "id": "runtime-js",
         "from": "runtime",
         "to": "javascript",
-        "label": "运行时进入"
+        "label": "运行时才校验"
       }
     ],
     "frames": [
       {
         "label": "读取声明",
-        "note": "检查器知道两个参数都必须是 number。",
+        "note": "类型声明告诉检查器两个参数都必须是 number。",
         "activeIds": [
           "declaration",
           "checker"
@@ -5464,7 +5646,7 @@
       },
       {
         "label": "检查调用",
-        "note": "第一个实参是 string，与 number 约束不一致。",
+        "note": "第一个传入值是字符串，与 number 约束不一致；错误还没进入运行时。",
         "activeIds": [
           "source",
           "checker"
@@ -5485,7 +5667,7 @@
       },
       {
         "label": "给出诊断",
-        "note": "错误定位到调用位置，在程序运行前暴露。",
+        "note": "类型检查器把错误定位到调用位置，程序还没有运行就能看到诊断。",
         "activeIds": [
           "checker",
           "diagnostic"
@@ -5499,7 +5681,7 @@
           "runtime"
         ],
         "values": {
-          "diagnostic": "TS2345 · string 不能赋给 number"
+          "diagnostic": "类型错误 · 字符串不能当作 number 使用"
         },
         "activeEdgeIds": [
           "checker-diagnostic"
@@ -5507,7 +5689,7 @@
       },
       {
         "label": "修正并输出",
-        "note": "把参数改为数字后通过检查，类型标记不会进入最终 JavaScript。",
+        "note": "把参数改为数字后通过检查；类型标记不会进入最终 JavaScript。",
         "activeIds": [
           "source",
           "javascript"
@@ -5529,7 +5711,7 @@
       },
       {
         "label": "验证外部数据",
-        "note": "API 返回值绕过静态假设进入运行时，仍需 schema 校验。",
+        "note": "API 返回的 JSON 在代码写完时还不存在，类型检查看不到它；程序运行时要用一段校验代码检查字段和值。",
         "activeIds": [
           "runtime",
           "javascript"
@@ -5541,58 +5723,78 @@
         ],
         "mutedIds": [],
         "values": {
-          "runtime": "unknown → validate"
+          "runtime": "未知数据 → 校验"
         },
         "activeEdgeIds": [
           "runtime-js"
         ]
       }
     ],
-    "insight": "TypeScript 能检查代码中的类型关系，但不能替代运行时对外部数据的验证。",
+    "insight": "TypeScript 先检查代码里已经写出的类型关系；外部数据进入程序后，还要在运行时验证。",
     "quiz": {
-      "question": "把 API 响应直接断言为 User，是否证明运行时数据一定符合 User？",
+      "question": "TypeScript 类型能否自动验证接口返回的真实 JSON？",
       "options": [
         {
-          "label": "不能，断言不会验证真实数据",
+          "label": "不能，运行时仍需数据校验",
           "correct": true
         },
         {
-          "label": "能，类型在服务器上会自动校验",
+          "label": "能，类型会修改服务器响应",
           "correct": false
         },
         {
-          "label": "能，只要编辑器没有红线",
+          "label": "只要使用 interface 就一定能",
           "correct": false
         }
       ],
-      "success": "外部输入应先作为 unknown，再通过运行时规则验证。",
-      "retry": "静态类型信息在运行时通常不存在。"
+      "success": "静态类型检查处理代码关系，接口返回的数据仍要在运行时验证。",
+      "retry": "类型检查不会读取真实响应；输出 JavaScript 中通常没有这些类型信息。"
     },
     "prompt": {
       "title": "检查一组 TypeScript 类型边界",
-      "text": "请标出数据从用户输入、网络响应、存储或环境变量进入程序的位置。内部结构使用精确类型，外部数据先按 unknown 处理并补运行时校验；删除掩盖问题的 any 和无依据断言，再说明检查能在编译期还是运行期发现错误。"
+      "text": "请标出数据从用户输入、网络响应、存储或环境变量进入程序的位置，区分类型检查能发现的代码关系和只能在运行时发现的问题。外部数据先按未知值处理并补运行时校验，再说明校验后的数据如何获得更具体的类型。"
     },
     "sources": [
       {
-        "url": "https://www.typescriptlang.org/docs/handbook/2/basic-types.html",
-        "label": "TypeScript Handbook · The Basics",
-        "note": "类型系统与编译行为"
+        "url": "https://www.typescriptlang.org/docs/handbook/intro",
+        "label": "TypeScript Handbook",
+        "note": "TypeScript 的静态类型检查定位"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+        "label": "TypeScript Handbook · Everyday Types",
+        "note": "变量、函数与对象的类型写法"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+        "label": "TypeScript Handbook · Narrowing",
+        "note": "校验后如何获得更具体的类型"
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/type-compatibility",
+        "label": "TypeScript Handbook · Type Compatibility",
+        "note": "类型关系与编译期兼容判断"
+      },
+      {
+        "url": "https://www.typescriptlang.org/tsconfig/strict.html",
+        "label": "TypeScript · strict",
+        "note": "更严格的类型检查选项"
       }
     ]
   },
   {
     "slug": "repo-commit",
     "lead": "文件已经保存到磁盘，为什么还要暂存并创建一次 Git 提交？",
-    "definition": "工作区保存正在编辑的文件；暂存区选择本次快照内容；提交把所选内容、父提交和说明写入仓库历史。",
-    "boundary": "本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
+    "definition": "工作区保存正在编辑的文件；你把要提交的修改挑进暂存区；提交把选中的内容连同作者和说明写入仓库历史。",
+    "boundary": "本地提交不会自动上传远程；无关改动混进同一个提交，之后想单独退回就难了。推送是之后的独立步骤。",
     "sceneKind": "timeline",
-    "sceneTitle": "一次 CSS 修改怎样成为可追踪提交",
+    "sceneTitle": "一次 CSS 修改怎样进入提交历史",
     "actionLabel": "推进修改",
     "actors": [
       {
         "id": "working",
         "label": "工作区",
-        "detail": "styles.css 已修改",
+        "detail": "styles.css 已保存，工作区有修改",
         "icon": "code",
         "group": "编辑"
       },
@@ -5612,7 +5814,7 @@
       },
       {
         "id": "commit",
-        "label": "提交对象",
+        "label": "提交",
         "detail": "等待创建",
         "icon": "git",
         "group": "历史"
@@ -5620,14 +5822,14 @@
       {
         "id": "branch",
         "label": "当前分支",
-        "detail": "feat/VBP-001",
+        "detail": "feature/copy-fix",
         "icon": "git",
-        "group": "引用"
+        "group": "位置"
       },
       {
         "id": "remote",
         "label": "远程仓库",
-        "detail": "尚未推送",
+        "detail": "尚未同步",
         "icon": "cloud",
         "group": "同步"
       }
@@ -5643,31 +5845,31 @@
         "id": "diff-staging",
         "from": "diff",
         "to": "staging",
-        "label": "选择文件"
+        "label": "暂存修改"
       },
       {
         "id": "staging-commit",
         "from": "staging",
         "to": "commit",
-        "label": "创建快照"
+        "label": "写入历史"
       },
       {
         "id": "commit-branch",
         "from": "commit",
         "to": "branch",
-        "label": "移动引用"
+        "label": "分支指向新提交"
       },
       {
         "id": "branch-remote",
         "from": "branch",
         "to": "remote",
-        "label": "另行推送"
+        "label": "同步到远程"
       }
     ],
     "frames": [
       {
         "label": "保存文件",
-        "note": "修改存在于工作区，Git 能看到变化，但历史还没有新节点。",
+        "note": "修改存在于工作区，Git 能看到变化，但历史还没有新记录。",
         "activeIds": [
           "working"
         ],
@@ -5683,7 +5885,7 @@
       },
       {
         "label": "检查差异",
-        "note": "逐段确认这次修改只包含当前任务。",
+        "note": "逐段区分哪些修改属于当前任务。",
         "activeIds": [
           "working",
           "diff"
@@ -5694,15 +5896,15 @@
           "remote"
         ],
         "values": {
-          "diff": "响应式规则 + 测试"
+          "diff": "当前修复 + 其他改动"
         },
         "activeEdgeIds": [
           "working-diff"
         ]
       },
       {
-        "label": "选择快照",
-        "note": "把相关文件加入暂存区，无关调试改动仍留在工作区。",
+        "label": "暂存修改",
+        "note": "把与当前任务相关的修改放进暂存区；其他改动仍留在工作区。",
         "activeIds": [
           "diff",
           "staging"
@@ -5715,7 +5917,7 @@
           "remote"
         ],
         "values": {
-          "staging": "2 files staged"
+          "staging": "当前修复已暂存"
         },
         "activeEdgeIds": [
           "diff-staging"
@@ -5723,7 +5925,7 @@
       },
       {
         "label": "创建提交",
-        "note": "Git 记录暂存内容、父提交和可追踪的任务说明。",
+        "note": "Git 把暂存的内容写成一条历史记录，并附上作者和这条说明。",
         "activeIds": [
           "staging",
           "commit",
@@ -5737,8 +5939,8 @@
           "remote"
         ],
         "values": {
-          "commit": "a31f2c · fix(VBP-001)",
-          "branch": "→ a31f2c"
+          "commit": "文案修复",
+          "branch": "指向这条提交"
         },
         "activeEdgeIds": [
           "staging-commit",
@@ -5747,7 +5949,7 @@
       },
       {
         "label": "决定推送",
-        "note": "提交仍只在本地；推送是把分支引用同步到远程的独立动作。",
+        "note": "提交仍只在本地；推送是把本地分支上的新提交同步到远程的独立动作。",
         "activeIds": [
           "branch",
           "remote"
@@ -5760,7 +5962,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "remote": "origin/feat/VBP-001"
+          "remote": "等待推送"
         },
         "activeEdgeIds": [
           "branch-remote"
@@ -5784,26 +5986,46 @@
           "correct": false
         }
       ],
-      "success": "提交应形成可理解、可回退的任务单位。",
-      "retry": "同一目录中的变化不一定属于同一提交。"
+        "success": "这样每次提交都是一件能单独看懂、也能单独退回去的改动。",
+        "retry": "同一目录中的改动不一定属于同一提交，先看差异再选择要暂存的内容。"
     },
     "prompt": {
       "title": "整理一次可追踪的提交",
-      "text": "请先查看工作区状态和逐段差异，只选择与当前任务相关的文件或代码块。提交说明包含对应任务编号和实际变化；提交后重新检查剩余未提交内容，并说明是否需要推送或创建评审。"
+      "text": "请先查看工作区状态和逐段差异，只选择与当前任务相关的文件或代码块。提交说明写清实际变化；提交后重新检查剩余未提交内容，并说明是否需要推送到远程。"
     },
     "sources": [
       {
         "url": "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
         "label": "Pro Git · Recording Changes",
         "note": "命令语义与状态变化"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-add",
+        "label": "Git · git-add",
+        "note": "把选定内容放进暂存区"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-diff",
+        "label": "Git · git-diff",
+        "note": "查看工作区和暂存区的差异"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-commit",
+        "label": "Git · git-commit",
+        "note": "创建带说明的提交"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-push",
+        "label": "Git · git-push",
+        "note": "把本地提交同步到远程"
       }
     ]
   },
   {
     "slug": "branch",
-    "lead": "新功能尚未完成时，怎样让主线继续稳定，同时保留与最新开发代码合并的能力？",
-    "definition": "Git 分支是指向提交的可移动引用；在某分支创建提交只会移动该引用，其他分支仍指向原提交。",
-    "boundary": "分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
+    "lead": "新功能还没做完，怎样让主线保持稳定，之后又能顺利合回去？",
+    "definition": "Git 分支是一个会跟着提交移动的名字（引用）；在某分支创建提交只会移动这个名字，其他分支仍指向原提交。",
+    "boundary": "分支不是复制一套完整文件；多个分支共享历史，改到同一处代码时，合并仍可能冲突。",
     "sceneKind": "branch",
     "sceneTitle": "功能分支怎样离开主线并合回",
     "actionLabel": "创建下一提交",
@@ -5817,14 +6039,14 @@
       },
       {
         "id": "dev",
-        "label": "dev",
+        "label": "主线（dev）",
         "detail": "指向 A",
         "icon": "git",
         "group": "主线"
       },
       {
         "id": "feature",
-        "label": "feat/VBP-001",
+        "label": "功能分支",
         "detail": "从 A 创建",
         "icon": "git",
         "group": "功能线"
@@ -5844,6 +6066,13 @@
         "group": "功能线"
       },
       {
+        "id": "commit-d",
+        "label": "提交 D",
+        "detail": "主线上的新改动",
+        "icon": "code",
+        "group": "主线"
+      },
+      {
         "id": "merge",
         "label": "合并结果",
         "detail": "等待验证",
@@ -5856,7 +6085,7 @@
         "id": "base-dev",
         "from": "base",
         "to": "dev",
-        "label": "主线引用"
+        "label": "主线指向 A"
       },
       {
         "id": "base-feature",
@@ -5877,16 +6106,22 @@
         "label": "继续提交"
       },
       {
+        "id": "dev-d",
+        "from": "dev",
+        "to": "commit-d",
+        "label": "主线提交"
+      },
+      {
         "id": "c-merge",
         "from": "commit-c",
         "to": "merge",
-        "label": "评审后合并"
+        "label": "合并功能分支"
       }
     ],
     "frames": [
       {
         "label": "共同起点",
-        "note": "dev 和新功能都从已验证的提交 A 开始。",
+        "note": "主线和功能分支都从已验证的提交 A 开始。",
         "activeIds": [
           "base",
           "dev"
@@ -5895,6 +6130,7 @@
         "mutedIds": [
           "commit-b",
           "commit-c",
+          "commit-d",
           "merge"
         ],
         "values": {
@@ -5905,7 +6141,7 @@
         ]
       },
       {
-        "label": "创建引用",
+        "label": "创建功能分支",
         "note": "功能分支只是新增一个指向 A 的可移动名称，不复制仓库。",
         "activeIds": [
           "base",
@@ -5917,6 +6153,7 @@
         "mutedIds": [
           "commit-b",
           "commit-c",
+          "commit-d",
           "merge"
         ],
         "values": {
@@ -5928,7 +6165,7 @@
       },
       {
         "label": "功能线前进",
-        "note": "提交 B 和 C 只推动功能分支，dev 仍停在 A。",
+        "note": "提交 B 和 C 只推动功能分支，主线仍停在 A。",
         "activeIds": [
           "feature",
           "commit-b",
@@ -5938,6 +6175,7 @@
           "base"
         ],
         "mutedIds": [
+          "commit-d",
           "merge"
         ],
         "values": {
@@ -5951,11 +6189,12 @@
       },
       {
         "label": "主线也变化",
-        "note": "若 dev 出现新的提交，两个分支会形成分叉，需要先处理差异。",
+        "note": "如果主线也有新提交 D，两边从共同起点分开，合并前要先处理这些不同之处。",
         "activeIds": [
           "dev",
           "feature",
-          "commit-c"
+          "commit-c",
+          "commit-d"
         ],
         "doneIds": [
           "base"
@@ -5969,14 +6208,16 @@
         },
         "activeEdgeIds": [
           "base-dev",
-          "b-c"
+          "b-c",
+          "dev-d"
         ]
       },
       {
         "label": "验证后合并",
-        "note": "处理冲突并通过测试后，合并结果同时包含主线和功能修改。",
+        "note": "解决冲突并通过测试后，合并结果同时包含主线和功能分支的修改。",
         "activeIds": [
           "commit-c",
+          "commit-d",
           "merge",
           "dev"
         ],
@@ -5987,17 +6228,17 @@
         ],
         "mutedIds": [],
         "values": {
-          "dev": "M · contains C + D",
-          "merge": "tests passed"
+          "dev": "合并提交 M · 包含 C 和 D",
+          "merge": "测试通过"
         },
         "activeEdgeIds": [
           "c-merge"
         ]
       }
     ],
-    "insight": "分支隔离的是提交引用，不隔离共同历史；合并前仍要面对双方真实差异。",
+    "insight": "分支让不同改动沿各自的提交线前进，但仍共享共同历史；合并前要处理双方差异。",
     "quiz": {
-      "question": "功能分支和 dev 修改了同一行，Git 会自动判断哪一边业务正确吗？",
+      "question": "功能分支和主线（dev）修改了同一行，Git 会自动判断哪一边业务正确吗？",
       "options": [
         {
           "label": "不会，需要开发者理解差异并解决冲突",
@@ -6017,20 +6258,40 @@
     },
     "prompt": {
       "title": "根据任务规划分支流程",
-      "text": "请从当前 dev 的明确提交创建包含任务编号的功能分支。开发期间记录主线变化，合并前检查提交差异、冲突区域和测试结果；说明采用 merge 或 rebase 的理由，并保留可追踪历史，不直接向保护分支推送。"
+      "text": "请从主线（dev）当前所在的提交创建功能分支。开发期间记录主线变化，合并前检查提交差异、冲突区域和测试结果；说明合并前需要确认什么，合并后是否删除已完成的功能分支，并避免直接修改主线。"
     },
     "sources": [
       {
         "url": "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html",
         "label": "Pro Git · Branches in a Nutshell",
         "note": "命令语义与状态变化"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-branch",
+        "label": "Git · git-branch",
+        "note": "创建、查看和删除分支"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-switch",
+        "label": "Git · git-switch",
+        "note": "切换到已有分支或创建并切换"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-merge",
+        "label": "Git · git-merge",
+        "note": "把不同开发线合并"
+      },
+      {
+        "url": "https://git-scm.com/docs/git-rebase",
+        "label": "Git · git-rebase",
+        "note": "重新安排提交基线"
       }
     ]
   },
   {
     "slug": "mvp",
-    "lead": "课程产品第一版要验证“有人愿意学”，是否需要先做社区、排行榜和证书？",
-    "definition": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本，范围由要获得的证据决定。",
+    "lead": "课程产品第一版要验证“有人愿意学”，是否需要先做社区和证书？",
+    "definition": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本。范围由要拿到的证据决定，而要什么证据由关键假设决定。",
     "boundary": "MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
     "sceneKind": "assembly",
     "sceneTitle": "一项课程假设怎样收敛成首版范围",
@@ -6053,7 +6314,7 @@
       {
         "id": "progress",
         "label": "学习进度",
-        "detail": "记录完成位置",
+        "detail": "记录学到哪一步",
         "icon": "chart",
         "group": "核心"
       },
@@ -6102,19 +6363,19 @@
         "id": "community-evidence",
         "from": "community",
         "to": "evidence",
-        "label": "非首轮必要"
+        "label": "暂不纳入首版"
       },
       {
         "id": "certificate-evidence",
         "from": "certificate",
         "to": "evidence",
-        "label": "非首轮必要"
+        "label": "暂不纳入首版"
       }
     ],
     "frames": [
       {
         "label": "写清假设",
-        "note": "要验证的是初学者是否愿意完成一次短课，而不是“产品是否受欢迎”。",
+        "note": "这轮只看一个可观察动作：初学者是否完成一次短课；“产品是否受欢迎”范围太大，不能直接用这一轮判断。",
         "activeIds": [
           "hypothesis"
         ],
@@ -6150,7 +6411,7 @@
       },
       {
         "label": "加入必要记录",
-        "note": "进度记录让用户能够继续，也能观察是否完成。",
+        "note": "进度记录让用户能回到上次位置，也能观察是否完成。",
         "activeIds": [
           "lesson",
           "progress"
@@ -6163,7 +6424,7 @@
           "certificate"
         ],
         "values": {
-          "progress": "started → completed"
+          "progress": "开始 → 完成"
         },
         "activeEdgeIds": [
           "lesson-progress"
@@ -6171,7 +6432,7 @@
       },
       {
         "label": "推迟旁支功能",
-        "note": "社区和证书不影响当前假设，进入后续候选而非首版。",
+        "note": "本轮先验证课程是否能让用户完成，社区和证书进入下一版再单独验证。",
         "activeIds": [
           "community",
           "certificate"
@@ -6183,14 +6444,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "community": "later",
-          "certificate": "later"
+          "community": "下一版",
+          "certificate": "下一版"
         },
         "activeEdgeIds": []
       },
       {
         "label": "收集证据",
-        "note": "完成率说明行为，访谈补充未完成的原因。",
+        "note": "完成率说明有多少人学完，访谈补充没学完的原因。",
         "activeIds": [
           "progress",
           "evidence"
@@ -6228,26 +6489,46 @@
           "correct": false
         }
       ],
-      "success": "范围可以小，核心流程的基本质量不能省。",
+      "success": "范围可以小，核心流程的基本可用性不能省。",
       "retry": "MVP 缩小的是验证范围，不是把风险留给用户。"
     },
     "prompt": {
       "title": "确定一个 MVP 的验证范围",
-      "text": "请写出本次要验证的唯一关键假设、目标用户、核心使用场景和可观察证据。把功能分为直接产生核心价值、收集验证证据、必须满足的安全与正确性、可推迟四组，并说明每个保留项如何服务当前假设。"
+      "text": "请先写下你的产品想法，再列出本次要验证的一条关键假设、目标用户、核心使用场景和可观察证据。把功能分为直接产生核心价值、收集验证证据、必须满足的安全与正确性、可推迟四组，并说明每个保留项如何服务当前假设。"
     },
     "sources": [
       {
         "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
         "label": "GOV.UK Service Manual · Alpha phase",
-        "note": "服务设计与无障碍要求"
+        "note": "用最小范围测试高风险假设"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/core-principles-agile",
+        "label": "GOV.UK Service Manual · Agile principles",
+        "note": "围绕用户需求迭代并尽早获取反馈"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/deciding-on-priorities",
+        "label": "GOV.UK Service Manual · Priorities",
+        "note": "根据用户研究和表现分析确定优先级"
+      },
+      {
+        "url": "https://www.gov.uk/government/publications/nuar-minimum-viable-product-mvp/nuar-minimum-viable-product-mvp",
+        "label": "GOV.UK · NUAR MVP",
+        "note": "先提供核心功能，再用反馈持续完善"
+      },
+      {
+        "url": "https://assets.publishing.service.gov.uk/media/618521c1d3bf7f55fe946e98/Guide_on_Assurance_for_Agile_Delivery_of_Digital_Services_V1.2_October_2021.docx.pdf",
+        "label": "UK Government · Agile delivery assurance",
+        "note": "安全上线所需的最小功能与后续迭代"
       }
     ]
   },
   {
     "slug": "user-flow",
     "lead": "用户从邮件链接进入重设密码后，链接过期、两次密码不一致和成功返回分别怎么走？",
-    "definition": "用户流程把入口、用户动作、系统反馈、条件分支和结束状态连接起来，描述完成一个目标的完整路径。",
-    "boundary": "用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "definition": "用户流程把入口、用户动作、系统反馈、分支、恢复和结束状态连接起来，描述完成一个目标的完整路径。",
+    "boundary": "用户流程不是把网站的页面列成一张清单，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
     "sceneKind": "branch",
     "sceneTitle": "重设密码流程中的成功与恢复分支",
     "actionLabel": "走下一节点",
@@ -6264,14 +6545,14 @@
         "label": "链接校验",
         "detail": "检查有效期与是否使用",
         "icon": "shield",
-        "group": "系统"
+        "group": "系统反馈"
       },
       {
         "id": "form",
         "label": "新密码表单",
         "detail": "输入两次密码",
         "icon": "layout",
-        "group": "操作"
+        "group": "用户动作"
       },
       {
         "id": "expired",
@@ -6291,6 +6572,13 @@
         "id": "success",
         "label": "重设成功",
         "detail": "返回登录并提示完成",
+        "icon": "spark",
+        "group": "结束"
+      },
+      {
+        "id": "original-task",
+        "label": "继续原任务",
+        "detail": "登录后回到原访问页面",
         "icon": "spark",
         "group": "结束"
       }
@@ -6315,6 +6603,12 @@
         "label": "过期"
       },
       {
+        "id": "expired-email",
+        "from": "expired",
+        "to": "email",
+        "label": "重新申请"
+      },
+      {
         "id": "form-mismatch",
         "from": "form",
         "to": "mismatch",
@@ -6327,6 +6621,12 @@
         "label": "修正"
       },
       {
+        "id": "success-original-task",
+        "from": "success",
+        "to": "original-task",
+        "label": "继续原任务"
+      },
+      {
         "id": "form-success",
         "from": "form",
         "to": "success",
@@ -6336,7 +6636,7 @@
     "frames": [
       {
         "label": "从邮件进入",
-        "note": "流程起点不是首页，而是带一次性 token 的邮件链接。",
+        "note": "流程起点不是首页，而是邮件里的重设链接；链接末尾带着一串只用一次的口令（token）。",
         "activeIds": [
           "email"
         ],
@@ -6345,14 +6645,15 @@
           "form",
           "expired",
           "mismatch",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {},
         "activeEdgeIds": []
       },
       {
         "label": "检查链接",
-        "note": "系统先判断 token 是否存在、未过期且未被使用。",
+        "note": "系统先判断这个 token 在不在、有没有过期、是不是已经被用过。",
         "activeIds": [
           "email",
           "token-check"
@@ -6360,19 +6661,21 @@
         "doneIds": [],
         "mutedIds": [
           "mismatch",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {
-          "token-check": "valid"
+          "token-check": "链接有效"
         },
         "activeEdgeIds": [
           "email-check"
         ]
       },
       {
-        "label": "过期恢复",
-        "note": "过期时不展示无效表单，直接提供重新发送入口。",
+        "label": "如果链接已过期",
+        "note": "过期时不展示无效表单，提供重新发送入口；用户收到新邮件后再回到校验。",
         "activeIds": [
+          "email",
           "token-check",
           "expired"
         ],
@@ -6382,18 +6685,20 @@
         "mutedIds": [
           "form",
           "mismatch",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {
           "expired": "发送新链接"
         },
         "activeEdgeIds": [
-          "check-expired"
+          "check-expired",
+          "expired-email"
         ]
       },
       {
         "label": "填写新密码",
-        "note": "有效链接进入表单，要求和错误在输入附近显示。",
+        "note": "有效链接进入表单，密码要求和错误都显示在输入框旁边。",
         "activeIds": [
           "token-check",
           "form"
@@ -6403,7 +6708,8 @@
         ],
         "mutedIds": [
           "expired",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {},
         "activeEdgeIds": [
@@ -6422,7 +6728,8 @@
         ],
         "mutedIds": [
           "expired",
-          "success"
+          "success",
+          "original-task"
         ],
         "values": {
           "mismatch": "两次密码不同"
@@ -6434,10 +6741,11 @@
       },
       {
         "label": "完成并返回",
-        "note": "成功后 token 失效，用户回到登录并看到明确确认。",
+        "note": "成功后 token 失效，用户回到登录并看到明确确认；登录后能继续原本想完成的任务。",
         "activeIds": [
           "form",
-          "success"
+          "success",
+          "original-task"
         ],
         "doneIds": [
           "email",
@@ -6448,10 +6756,12 @@
           "mismatch"
         ],
         "values": {
-          "success": "密码已更新 · 去登录"
+          "success": "密码已更新 · 去登录",
+          "original-task": "登录后继续"
         },
         "activeEdgeIds": [
-          "form-success"
+          "form-success",
+          "success-original-task"
         ]
       }
     ],
@@ -6477,21 +6787,41 @@
     },
     "prompt": {
       "title": "补全一个用户流程",
-      "text": "请从用户真实入口开始，列出每个动作、系统判断、即时反馈、失败分支、取消、返回和完成状态。对每条中断路径补恢复入口，并检查最终是否回到用户原本要完成的任务。"
+      "text": "请从用户真实入口开始，列出用户动作、系统反馈、分支、恢复和结束状态。对每条中断路径补恢复入口，并检查最终是否回到用户原本要完成的任务。"
     },
     "sources": [
       {
-        "url": "https://www.nngroup.com/articles/user-journeys-vs-user-flows/",
-        "label": "Nielsen Norman Group · Task Flows and User Flows",
-        "note": "用户研究与交互原则"
+        "url": "https://www.gov.uk/service-manual/design/scoping-your-service",
+        "label": "GOV.UK Service Manual · Scoping a service",
+        "note": "把交易放回用户的完整旅程"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/user-research/creating-an-experience-map",
+        "label": "GOV.UK Service Manual · Experience maps",
+        "note": "按时间整理用户经历的步骤和触点"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/map-a-users-whole-problem",
+        "label": "GOV.UK Service Manual · Map a whole problem",
+        "note": "从用户视角发现中断和死路"
+      },
+      {
+        "url": "https://design-system.service.gov.uk/patterns/step-by-step-navigation/",
+        "label": "GOV.UK Design System · Step by step navigation",
+        "note": "有明确起点和终点的分步任务"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/introduction-designing-government-services",
+        "label": "GOV.UK Service Manual · Designing services",
+        "note": "让用户从开始走到清楚的结果"
       }
     ]
   },
   {
     "slug": "wireframe",
-    "lead": "品牌颜色还没确定，团队能否先判断页面应该放什么、谁先看到什么、从哪里继续？",
-    "definition": "线框图用低细节结构表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。",
-    "boundary": "线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "lead": "品牌颜色还没确定时，你能否先和团队或 AI 判断页面放什么、谁先看到什么、从哪里继续？",
+    "definition": "线框图用低细节的框、文字和位置表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。纸笔、白板或文字草稿都能表达结构；如果还要验证点击流程，通常会把它做成交互原型。",
+    "boundary": "线框图关注页面结构，不是最终视觉。真实文案、数据密度、响应式显示、动效和技术可行性仍要另外验证。",
     "sceneKind": "transform",
     "sceneTitle": "详情页从内容清单到可评审线框",
     "actionLabel": "增加一层结构",
@@ -6506,7 +6836,7 @@
       {
         "id": "groups",
         "label": "信息分组",
-        "detail": "商品信息 / 交易操作",
+        "detail": "商品信息 / 购买操作",
         "icon": "layout",
         "group": "结构"
       },
@@ -6527,14 +6857,14 @@
       {
         "id": "wireframe",
         "label": "线框页面",
-        "detail": "可讨论的低细节布局",
+        "detail": "可讨论的低细节结构草稿",
         "icon": "browser",
         "group": "结果"
       },
       {
         "id": "visual",
         "label": "最终视觉",
-        "detail": "颜色、字体与图片未定",
+        "detail": "颜色、字体与图片仍未定",
         "icon": "spark",
         "group": "后续"
       }
@@ -6574,12 +6904,13 @@
     "frames": [
       {
         "label": "列出内容",
-        "note": "先确认页面必须承载的真实信息和操作。",
+        "note": "先确认页面必须承载的真实信息、主要操作和可能失败的情况。",
         "activeIds": [
           "requirements"
         ],
         "doneIds": [],
         "mutedIds": [
+          "groups",
           "hierarchy",
           "actions",
           "wireframe",
@@ -6590,7 +6921,7 @@
       },
       {
         "label": "建立分组",
-        "note": "把商品事实与购买操作分开，避免同一层级平铺。",
+        "note": "把商品信息和购买操作分开，先看清每一块要完成什么。",
         "activeIds": [
           "requirements",
           "groups"
@@ -6610,7 +6941,7 @@
       },
       {
         "label": "确定层级",
-        "note": "标题、价格和库存按决策顺序建立阅读重点。",
+        "note": "按用户做决定的顺序安排标题、价格和库存。",
         "activeIds": [
           "groups",
           "hierarchy"
@@ -6619,6 +6950,8 @@
           "requirements"
         ],
         "mutedIds": [
+          "actions",
+          "wireframe",
           "visual"
         ],
         "values": {
@@ -6630,15 +6963,17 @@
       },
       {
         "label": "放置操作",
-        "note": "主操作靠近会影响购买判断的信息，次操作降低强调。",
+        "note": "把主操作放在用户刚看完价格的位置，收藏放在次要位置。",
         "activeIds": [
           "hierarchy",
           "actions"
         ],
         "doneIds": [
+          "requirements",
           "groups"
         ],
         "mutedIds": [
+          "wireframe",
           "visual"
         ],
         "values": {
@@ -6650,7 +6985,7 @@
       },
       {
         "label": "形成线框",
-        "note": "团队可以评审结构和流程，但不把灰色框当成最终尺寸。",
+        "note": "形成一张可讨论的结构草稿；视觉、真实文案和点击流程还要继续验证。",
         "activeIds": [
           "actions",
           "wireframe"
@@ -6672,9 +7007,9 @@
         ]
       }
     ],
-    "insight": "线框图先固定信息关系和操作位置，把视觉风格留到结构成立之后。",
+    "insight": "线框图先把页面的信息关系和操作位置摆出来，视觉、真实文案和点击流程再分别验证。",
     "quiz": {
-      "question": "线框里用两行占位文字，能否证明最终中文标题不会换成五行？",
+      "question": "线框里用两行占位文字，能否证明最终中文标题不会变成五行？",
       "options": [
         {
           "label": "不能，还要用真实或极端长度文案验证",
@@ -6689,28 +7024,48 @@
           "correct": false
         }
       ],
-      "success": "线框适合讨论结构，但真实内容仍要单独验证。",
+      "success": "线框只能先讨论结构；真实文案长度和各屏幕显示还要单独验证。",
       "retry": "占位块不能代表真实内容密度。"
     },
     "prompt": {
       "title": "把需求整理成线框结构",
-      "text": "请先列出页面的真实信息、用户判断顺序、主要操作和异常状态，再按分组与层级组织为低细节线框。使用接近真实长度的文案，标出仍需验证的数据密度、响应式变化和动效，不提前确定品牌视觉。"
+      "text": "请先列出页面的真实信息、用户判断顺序、主要操作和可能遇到的失败情况，再按分组与层级组织为低细节线框。可以用纸笔、白板或文字草稿表达；用接近真实长度的文案检查结构，并标出在不同屏幕、动效和技术实现上仍要验证的地方，不提前确定品牌视觉。"
     },
     "sources": [
       {
+        "url": "https://www.gov.uk/service-manual/design/making-prototypes",
+        "label": "GOV.UK Service Manual · Making prototypes",
+        "note": "草图和原型适合在投入构建前探索、讨论和验证基本想法。"
+      },
+      {
+        "url": "https://design-system.service.gov.uk/get-started/prototyping/",
+        "label": "GOV.UK Design System · Prototyping",
+        "note": "用 Design System 和 Prototype Kit 制作接近真实内容与交互的原型。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/introduction-designing-government-services",
+        "label": "GOV.UK Service Manual · Designing good government services",
+        "note": "设计服务要从用户需要和清楚、直接的任务结果出发。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
+        "label": "GOV.UK Service Manual · How the alpha phase works",
+        "note": "alpha 用原型测试不同想法和高风险假设，原型不等同于生产代码。"
+      },
+      {
         "url": "https://media.nngroup.com/media/articles/attachments/UX-Deliverables-Glossary-PDF-2.pdf",
         "label": "Nielsen Norman Group · UX Deliverables Glossary",
-        "note": "用户研究方法与证据"
+        "note": "UX 交付物术语表说明线框图等交付物的定义与完整度差异。"
       }
     ]
   },
   {
     "slug": "ia",
-    "lead": "帮助中心有三百篇文章，用户凭什么预测“取消订阅”应该在哪一类？",
-    "definition": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能够预测信息位置。",
-    "boundary": "信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "lead": "帮助中心有 300 篇文章，用户凭什么预测“取消订阅”应该在哪一类？",
+    "definition": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能按自己的任务预测信息位置。同一篇内容可以保留一份正文，从多个入口被找到。",
+    "boundary": "信息架构不只是画菜单。搜索词、同义标签和从不同任务进入同一内容的路径，也属于信息架构要安排的部分。",
     "sceneKind": "tree",
-    "sceneTitle": "三百篇帮助文章怎样形成可预测入口",
+    "sceneTitle": "300 篇帮助文章，怎样让人猜到从哪儿找",
     "actionLabel": "整理下一层",
     "actors": [
       {
@@ -6730,14 +7085,14 @@
       {
         "id": "account",
         "label": "账户与安全",
-        "detail": "登录、成员、权限",
+        "detail": "登录、成员、安全设置",
         "icon": "shield",
         "group": "一级分类"
       },
       {
         "id": "cancel",
         "label": "取消订阅",
-        "detail": "套餐管理 > 取消",
+        "detail": "账单与订阅 › 取消订阅",
         "icon": "component",
         "group": "任务内容"
       },
@@ -6767,7 +7122,7 @@
         "id": "content-account",
         "from": "content",
         "to": "account",
-        "label": "分开身份问题"
+        "label": "账号类问题分开放"
       },
       {
         "id": "billing-cancel",
@@ -6779,7 +7134,7 @@
         "id": "search-cancel",
         "from": "search",
         "to": "cancel",
-        "label": "同义词命中"
+        "label": "同义词也能找到"
       },
       {
         "id": "crosslink-cancel",
@@ -6791,7 +7146,7 @@
     "frames": [
       {
         "label": "盘点内容",
-        "note": "先识别文章实际回答的用户任务，而不是按内部团队归属分类。",
+        "note": "先看每篇文章实际在回答什么问题，不按内部团队来分。",
         "activeIds": [
           "content"
         ],
@@ -6828,7 +7183,7 @@
       },
       {
         "label": "放置任务内容",
-        "note": "“取消订阅”进入账单与订阅下的套餐管理，而不是公司内部的留存团队。",
+        "note": "“取消订阅”放在账单与订阅下；分类名跟着用户任务走，不跟着公司团队走。",
         "activeIds": [
           "billing",
           "cancel"
@@ -6842,7 +7197,7 @@
           "crosslink"
         ],
         "values": {
-          "cancel": "账单与订阅 / 套餐管理"
+          "cancel": "账单与订阅 › 取消订阅"
         },
         "activeEdgeIds": [
           "billing-cancel"
@@ -6870,7 +7225,7 @@
       },
       {
         "label": "建立交叉入口",
-        "note": "账单页和套餐设置都链接到同一内容，不复制两篇不同版本。",
+        "note": "账单页和套餐设置都链接到同一篇文章，不复制第二份。",
         "activeIds": [
           "crosslink",
           "cancel"
@@ -6891,20 +7246,20 @@
         ]
       }
     ],
-    "insight": "好的信息架构让用户按自己的任务语言找到内容，而不是学习组织内部结构。",
+    "insight": "好的信息架构让用户用自己的任务语言就能找到内容；同一篇内容可以有多个入口，但正文只维护一份。",
     "quiz": {
-      "question": "“API 密钥”文章应该只放在开发团队所属分类下吗？",
+      "question": "“API 密钥”文章要不要只放在开发团队分类下？",
       "options": [
         {
-          "label": "不一定，还要考虑用户从安全、集成和账户设置进入的路径",
+          "label": "不一定，安全设置、连接服务等入口也可能通向它",
           "correct": true
         },
         {
-          "label": "应该，组织架构就是最佳导航",
+          "label": "应该，只按开发团队归属放置就够了",
           "correct": false
         },
         {
-          "label": "应该，而且每个入口复制一篇",
+          "label": "应该，每个入口都复制一篇完整文章",
           "correct": false
         }
       ],
@@ -6913,21 +7268,41 @@
     },
     "prompt": {
       "title": "整理内容的信息架构",
-      "text": "请按用户任务盘点内容，提出一级分类、二级标签和命名规则。用五个真实查找任务测试用户会先去哪里，补充同义搜索词和交叉入口，并标出重复、孤立和无法归类的内容。"
+      "text": "请先从客服记录、搜索日志或访谈中选出五个真实查找任务，再按用户任务盘点内容，提出一级分类、必要的二级标签和命名规则。拿这五个任务逐个检查：用户会先去哪里找？再补充同义搜索词和交叉入口，并标出重复、孤立和无法归类的内容。"
     },
     "sources": [
       {
-        "url": "https://www.usability.gov/what-and-why/information-architecture.html",
-        "label": "Usability.gov · Information Architecture",
-        "note": "可用性方法与实践"
+        "url": "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels",
+        "label": "W3C WAI · Headings and Labels",
+        "note": "清楚的标题和标签帮助用户找到信息，并理解内容之间的关系。"
+      },
+      {
+        "url": "https://www.w3.org/WAI/curricula/designer-modules/navigation-design/",
+        "label": "W3C WAI · Navigation Design",
+        "note": "导航设计要考虑菜单、目录、搜索和站点地图等查找方式。"
+      },
+      {
+        "url": "https://www.w3.org/WAI/tips/writing/",
+        "label": "W3C WAI · Writing for Web Accessibility",
+        "note": "短而清楚的标题可以组织内容，并帮助读者定位和浏览。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/scoping-your-service",
+        "label": "GOV.UK Service Manual · Getting the scope of your transaction right",
+        "note": "服务应按用户能识别的任务来组织，不让组织结构决定入口。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/map-a-users-whole-problem",
+        "label": "GOV.UK Service Manual · Map and understand a user's whole problem",
+        "note": "把相关任务和入口连成用户能理解的完整旅程，减少断点和重复内容。"
       }
     ]
   },
   {
     "slug": "prototype",
-    "lead": "正式开发前，怎样让用户实际走一遍新流程，并尽早发现他们不知道下一步点哪里？",
-    "definition": "原型用可操作媒介模拟关键行为，用于验证流程理解、交互反馈或产品假设。",
-    "boundary": "原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "lead": "正式开发前，怎样用一个可操作的假版本让用户走一遍新流程，并尽早发现他们不知道下一步点哪里？",
+    "definition": "原型用页面、纸面流程、对话脚本或代码等可操作媒介，模拟本轮要验证的行为，用于检查流程理解、交互反馈或产品假设。",
+    "boundary": "可以先照线框做原型，也可以先出视觉稿再做，三者先后取决于本轮要验证什么。原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
     "sceneKind": "loop",
     "sceneTitle": "一个注册假设怎样经过原型测试修正",
     "actionLabel": "进行下一轮",
@@ -6980,7 +7355,7 @@
         "id": "assumption-prototype",
         "from": "assumption",
         "to": "prototype",
-        "label": "做成可操作状态"
+        "label": "做成能操作的版本"
       },
       {
         "id": "prototype-task",
@@ -7033,7 +7408,7 @@
       },
       {
         "label": "模拟关键状态",
-        "note": "原型覆盖入口、填写、错误和成功，不实现真实账户系统。",
+        "note": "原型覆盖入口、填写、错误和成功，数据、账号验证和邮件发送都只是模拟。",
         "activeIds": [
           "assumption",
           "prototype"
@@ -7053,7 +7428,7 @@
       },
       {
         "label": "给出真实任务",
-        "note": "让用户“加入朋友的空间”，不提示具体按钮名称。",
+        "note": "让用户“加入朋友的空间”，不提示按钮名称，否则测到的是提示，不是入口本身。",
         "activeIds": [
           "prototype",
           "task"
@@ -7072,7 +7447,7 @@
       },
       {
         "label": "观察行为",
-        "note": "三位用户都停在首页寻找“加入”入口，假设没有被支持。",
+        "note": "本例三位用户都停在首页寻找“加入”入口；这只是这一轮观察，不是通用通过标准。",
         "activeIds": [
           "task",
           "observation"
@@ -7115,7 +7490,7 @@
       },
       {
         "label": "形成决定",
-        "note": "新一轮 3/3 完成任务，团队获得继续开发该入口的证据。",
+        "note": "本例新一轮 3/3 完成任务；是否继续开发还要结合更多证据，不由人数单独决定。",
         "activeIds": [
           "observation",
           "decision"
@@ -7135,58 +7510,78 @@
         ]
       }
     ],
-    "insight": "原型通过真实操作暴露理解问题，重点是获得决策证据，不是看起来像成品。",
+    "insight": "原型通过真实操作暴露理解问题。团队拿它换回的是证据，用来决定下一步；做得像不像成品并不重要。",
     "quiz": {
-      "question": "高保真原型中的付款按钮可以点击，是否证明支付系统已可上线？",
+      "question": "可点击原型中的付款按钮，是否证明支付系统已可上线？",
       "options": [
         {
-          "label": "不能，它只证明模拟流程可操作",
+          "label": "不能，只说明模拟流程可以点击",
           "correct": true
         },
         {
-          "label": "能，按钮能点就代表真实支付过程已经完成",
+          "label": "能，按钮可点击就代表真实支付已经完成",
           "correct": false
         },
         {
-          "label": "能，只要视觉和正式页面一致",
+          "label": "能，视觉和正式页面一致就代表系统可用",
           "correct": false
         }
       ],
       "success": "技术、安全和真实数据能力需要独立验证。",
-      "retry": "交互保真度不能替代生产系统证据。"
+      "retry": "按钮点得再顺、界面做得再像，也代替不了对真实支付系统的验证。"
     },
     "prompt": {
       "title": "规划一个验证目标明确的原型",
-      "text": "请写出本轮唯一待验证假设、目标用户、真实任务和观察指标。只实现完成该任务所需的入口、关键状态、错误与结果，并明确哪些数据和后端行为是模拟的；测试后按实际行为记录证据和下一轮修改。"
+      "text": "请写出本轮唯一待验证假设、目标用户、真实任务和观察指标。只实现完成该任务所需的入口、关键状态、错误与结果，并明确哪些数据、账号验证和邮件发送只是模拟的；测试后按实际行为记录证据和下一轮修改。"
     },
     "sources": [
       {
+        "url": "https://www.gov.uk/service-manual/design/making-prototypes",
+        "label": "GOV.UK Service Manual · Making prototypes",
+        "note": "原型用于在投入构建前探索、分享和测试不同设计；可以从纸笔草图到代码原型。"
+      },
+      {
+        "url": "https://design-system.service.gov.uk/get-started/prototyping/",
+        "label": "GOV.UK Design System · Prototyping",
+        "note": "说明用 Design System 和 Prototype Kit 制作原型并检查真实内容与交互。"
+      },
+      {
+        "url": "https://prototype-kit.service.gov.uk/tutorials-and-guides/",
+        "label": "GOV.UK Prototype Kit · Tutorials and guides",
+        "note": "Prototype Kit 用于快速制作接近真实 HTML 的服务原型。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
+        "label": "GOV.UK Service Manual · How the alpha phase works",
+        "note": "原型用于测试不同想法和高风险假设，不等同生产质量代码。"
+      },
+      {
         "url": "https://www.nngroup.com/articles/ux-prototype-hi-lo-fidelity/",
-        "label": "Nielsen Norman Group · Prototype Testing",
-        "note": "用户研究与交互原则"
+        "label": "Nielsen Norman Group · UX Prototypes: Low Fidelity vs. High Fidelity",
+        "note": "原型的媒介和完整度可以不同，应根据研究目标选择并测试。"
       }
     ]
   },
   {
     "slug": "design-system",
     "lead": "同一种成功提示在三个页面颜色、间距和关闭方式都不同，应该改页面还是改共同规则？",
-    "definition": "设计系统把原则、令牌、组件、交互模式、内容规则和维护机制组织成可复用的产品决策。",
-    "boundary": "设计系统不只是组件展示页，也不要求所有业务页面完全一样；差异应通过明确变体和扩展规则表达。",
+    "definition": "设计系统把原则、令牌、组件、模式、内容规则和维护流程组织成一套可复用的规则：原则先定取舍，内容规则定具体写法；令牌命名基础值，组件提供部件，模式说明使用时机，规则改动后旧页面按迁移说明逐个跟上。",
+    "boundary": "设计系统不是组件展示页、单独的令牌表，也不要求所有业务页面完全一样；差异要通过明确的变体和扩展规则表达，局部覆写还要留下原因与维护责任。",
     "sceneKind": "layers",
-    "sceneTitle": "一个成功提示从令牌到三个产品页面",
+    "sceneTitle": "一个成功提示从规则到三个产品页面",
     "actionLabel": "更新一层",
     "actors": [
       {
         "id": "principle",
-        "label": "反馈原则",
-        "detail": "说明结果与下一步",
+        "label": "共同原则与内容规则",
+        "detail": "原则定方向，规则定写法",
         "icon": "file",
-        "group": "原则"
+        "group": "规则"
       },
       {
         "id": "tokens",
         "label": "设计令牌",
-        "detail": "success color / spacing",
+        "detail": "颜色.success / 间距.4（示例名）",
         "icon": "code",
         "group": "基础"
       },
@@ -7200,14 +7595,14 @@
       {
         "id": "pattern",
         "label": "提交成功模式",
-        "detail": "位置与出现时机",
+        "detail": "说明位置与出现时机",
         "icon": "layout",
         "group": "模式"
       },
       {
         "id": "products",
         "label": "三个业务页面",
-        "detail": "订单 / 设置 / 邀请",
+        "detail": "保存 / 付款 / 上传",
         "icon": "browser",
         "group": "使用"
       },
@@ -7249,12 +7644,18 @@
         "from": "governance",
         "to": "component",
         "label": "管理变更"
+      },
+      {
+        "id": "governance-products",
+        "from": "governance",
+        "to": "products",
+        "label": "推动页面迁移"
       }
     ],
     "frames": [
       {
         "label": "明确共同原则",
-        "note": "成功反馈必须说明完成结果，并给出仍需执行的下一步。",
+        "note": "先定共同原则：成功反馈必须说明完成结果，并给出仍需执行的下一步；这条内容规则把方向落到具体文案。",
         "activeIds": [
           "principle"
         ],
@@ -7271,7 +7672,7 @@
       },
       {
         "label": "统一基础值",
-        "note": "颜色、圆角、间距和文字级别由语义令牌提供。",
+        "note": "颜色、圆角、间距和文字级别由语义令牌提供；令牌名是共同约定，不等于某个固定颜色。",
         "activeIds": [
           "principle",
           "tokens"
@@ -7282,7 +7683,7 @@
           "products"
         ],
         "values": {
-          "tokens": "color.success · space.4"
+          "tokens": "颜色.success · 间距.4"
         },
         "activeEdgeIds": [
           "principle-tokens"
@@ -7290,7 +7691,7 @@
       },
       {
         "label": "形成组件变体",
-        "note": "组件提供默认、可关闭和带后续操作三种受控变体。",
+        "note": "组件提供默认、可关闭和带后续操作三种受控变体；受控表示页面只能选择已命名的选项，不能随意改结构。",
         "activeIds": [
           "tokens",
           "component"
@@ -7302,7 +7703,7 @@
           "products"
         ],
         "values": {
-          "component": "default | dismissible | action"
+          "component": "默认 · 可关闭 · 带操作"
         },
         "activeEdgeIds": [
           "tokens-component"
@@ -7310,7 +7711,7 @@
       },
       {
         "label": "定义使用模式",
-        "note": "表单成功放在提交区附近，异步完成使用页面级通知。",
+        "note": "组件是可复用部件，模式补充它在任务中的位置和时机：表单成功靠近提交区，异步完成使用页面级通知。",
         "activeIds": [
           "component",
           "pattern"
@@ -7323,7 +7724,7 @@
           "products"
         ],
         "values": {
-          "pattern": "inline vs page-level"
+          "pattern": "表单内联 · 页面级通知"
         },
         "activeEdgeIds": [
           "component-pattern"
@@ -7331,7 +7732,7 @@
       },
       {
         "label": "同步三个页面",
-        "note": "订单、设置和邀请页面选择合适变体，样式与行为保持一致。",
+        "note": "保存、付款和上传页面选择合适变体，样式与行为保持一致，文案仍按各自任务表达。",
         "activeIds": [
           "pattern",
           "products"
@@ -7343,15 +7744,15 @@
         ],
         "mutedIds": [],
         "values": {
-          "products": "3 pages · same rules"
+          "products": "保存 · 付款 · 上传"
         },
         "activeEdgeIds": [
           "pattern-products"
         ]
       },
       {
-        "label": "管理后续变化",
-        "note": "新增变体先说明通用需求，评审后发布版本并给出迁移说明。",
+        "label": "发布并迁移旧页面",
+        "note": "新版本发布后，三个页面按迁移说明逐个更新；尚未迁移的页面标记旧版本，不能假装已经同步。令牌、组件、模式和内容规则的变更都走同一套提案与评审流程。",
         "activeIds": [
           "governance",
           "component",
@@ -7364,94 +7765,110 @@
         ],
         "mutedIds": [],
         "values": {
-          "governance": "proposal → review → release"
+          "governance": "提案 → 评审 → 发布 → 迁移"
         },
         "activeEdgeIds": [
           "governance-component",
+          "governance-products",
           "pattern-products"
         ]
       }
     ],
-    "insight": "设计系统复用的是经过维护的决策，不只是复制一段组件代码。",
+    "insight": "设计系统复用的是有名字、有版本、有人维护的决策；复制一段组件代码不会自动带来这些约定。",
     "quiz": {
-      "question": "某页面需要紫色成功提示，但系统成功语义是绿色，应该直接覆盖颜色吗？",
+      "question": "某页面想把成功提示改成紫色，先要判断什么？",
       "options": [
         {
-          "label": "先确认这是业务语义差异还是视觉偏好，再决定变体或修正页面",
+          "label": "这个紫色是某个业务场景固定要用的，还是这个页面临时想换个颜色",
           "correct": true
         },
         {
-          "label": "直接写局部样式，不记录原因",
+          "label": "能不能直接写局部样式、不记原因",
           "correct": false
         },
         {
-          "label": "禁止所有页面出现任何差异",
+          "label": "是不是所有页面都不该有任何差异",
           "correct": false
         }
       ],
-      "success": "差异需要被命名和解释，才能判断是合理扩展还是规则漂移。",
-      "retry": "设计系统既不鼓励随意覆盖，也不是取消业务差异。"
+      "success": "颜色.success 是语义令牌的示例，不代表所有产品都必须用令牌默认的颜色；若紫色有明确业务依据，就命名为变体并写清适用场景和维护人。",
+      "retry": "先说明紫色服务于哪个具体场景，再决定新增一个有名字的变体，还是修正页面的临时样式。"
     },
     "prompt": {
       "title": "检查设计系统的重复与缺口",
-      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本和迁移范围。"
+      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本、迁移步骤和回滚或废弃策略。"
     },
     "sources": [
       {
-        "url": "https://designsystem.digital.gov/components/alert/",
-        "label": "U.S. Web Design System · Alert",
-        "note": "设计系统与组件原则"
+        "url": "https://designsystem.digital.gov/design-tokens/",
+        "label": "U.S. Web Design System · Design tokens",
+        "note": "令牌用命名值减少任意选择，并让组件共享稳定的基础值。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/writing-for-user-interfaces",
+        "label": "GOV.UK · Writing for user interfaces",
+        "note": "界面文案应短而直接；如果必须解释界面怎么用，说明设计需要改进。"
+      },
+      {
+        "url": "https://designsystem.digital.gov/documentation/migration/",
+        "label": "U.S. Web Design System · Migrating to USWDS 3.0",
+        "note": "版本升级需要检查设置、标记和编译方式，迁移说明帮助旧页面跟上共同规则。"
+      },
+      {
+        "url": "https://designsystem.digital.gov/",
+        "label": "U.S. Web Design System · Overview",
+        "note": "组件、模式、令牌和开放维护一起构成可复用的设计系统。"
       }
     ]
   },
   {
     "slug": "a11y",
-    "lead": "不用鼠标、看不清低对比文字或需要读屏时，用户还能否完成登录？",
-    "definition": "无障碍让内容在不同视觉、听觉、行动和认知条件下仍可感知、可操作、可理解，并与辅助技术兼容。",
-    "boundary": "无障碍不是发布前补几个 ARIA 属性；语义、键盘顺序、对比度、错误反馈和动效都要从结构开始处理。",
+    "lead": "不用鼠标、看不到颜色或需要读屏时，用户还能完成登录并修复错误吗？",
+    "definition": "无障碍把信息结构、键盘操作、可见焦点、对比度、字段标签和错误反馈做成可感知、可操作、可理解的路径，并让辅助技术拿到同样的状态。",
+    "boundary": "无障碍不是发布前补几个 ARIA 属性，也不是只检查颜色。原生语义、页面在浏览器里的结构（DOM）与 Tab 顺序、可见焦点、标签、错误文字和动效偏好要从设计与开发一起处理；ARIA（给辅助技术的角色说明）只描述角色，不会自动补上键盘行为。本演示聚焦键盘与表单反馈，完整检查还要覆盖听觉内容、对比度和动效偏好。",
     "sceneKind": "route",
     "sceneTitle": "只用键盘完成一次登录",
-    "actionLabel": "按下一次 Tab",
+    "actionLabel": "依次按 Tab，必要时激活跳过链接",
     "actors": [
       {
         "id": "skip",
         "label": "跳到正文",
-        "detail": "第一个可见焦点",
+        "detail": "Tab 后可见焦点，能跳过重复导航",
         "icon": "network",
         "group": "导航"
       },
       {
         "id": "email",
         "label": "邮箱输入",
-        "detail": "label 与输入关联",
+        "detail": "label 与输入关联，读屏能读出名称",
         "icon": "message",
         "group": "表单"
       },
       {
         "id": "password",
         "label": "密码输入",
-        "detail": "要求可被读屏理解",
+        "detail": "标签、必填状态和输入类型可被读出",
         "icon": "key",
         "group": "表单"
       },
       {
         "id": "error",
         "label": "错误提示",
-        "detail": "尚未出现",
+        "detail": "文字指出字段和修复方式",
         "icon": "shield",
         "group": "反馈"
       },
       {
         "id": "submit",
         "label": "登录按钮",
-        "detail": "键盘可触发",
+        "detail": "原生 button 可用 Enter 和 Space",
         "icon": "component",
         "group": "操作"
       },
       {
         "id": "result",
         "label": "登录结果",
-        "detail": "等待反馈",
+        "detail": "状态和下一步都可感知",
         "icon": "spark",
         "group": "结果"
       }
@@ -7461,7 +7878,7 @@
         "id": "skip-email",
         "from": "skip",
         "to": "email",
-        "label": "逻辑焦点顺序"
+        "label": "激活后进入表单"
       },
       {
         "id": "email-password",
@@ -7473,7 +7890,7 @@
         "id": "password-submit",
         "from": "password",
         "to": "submit",
-        "label": "进入操作"
+        "label": "继续 Tab 到登录按钮"
       },
       {
         "id": "submit-error",
@@ -7497,7 +7914,7 @@
     "frames": [
       {
         "label": "进入页面",
-        "note": "第一个焦点提供跳到正文入口，避免重复穿过整组导航。",
+        "note": "按 Tab 聚焦跳过链接；激活后把焦点带到正文起点，避免重复导航。",
         "activeIds": [
           "skip"
         ],
@@ -7507,13 +7924,13 @@
           "result"
         ],
         "values": {
-          "skip": "focus visible"
+          "skip": "焦点可见 · 可激活"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "识别邮箱",
-        "note": "焦点到邮箱时，读屏同时读出标签、输入类型和必填状态。",
+        "label": "到达邮箱",
+        "note": "本例中，激活跳过链接后继续按 Tab 到邮箱，标签、输入类型和必填状态都能被读出。",
         "activeIds": [
           "skip",
           "email"
@@ -7532,7 +7949,7 @@
       },
       {
         "label": "按顺序移动",
-        "note": "Tab 从邮箱进入密码，再进入登录按钮，顺序与视觉阅读一致。",
+        "note": "本例中 Tab 顺序与页面的逻辑阅读顺序一致，也与视觉顺序相同；邮箱留空、密码已填，按 Enter 提交。",
         "activeIds": [
           "email",
           "password",
@@ -7546,8 +7963,9 @@
           "result"
         ],
         "values": {
-          "password": "密码 · 必填",
-          "submit": "focus visible"
+          "email": "邮箱未填",
+          "password": "密码 · 已填",
+          "submit": "原生 button · 焦点可见"
         },
         "activeEdgeIds": [
           "email-password",
@@ -7556,7 +7974,7 @@
       },
       {
         "label": "收到错误",
-        "note": "提交空邮箱时，错误用文字说明并通过状态通知辅助技术。",
+        "note": "提交时邮箱留空，文字错误指出字段和修复方式，并通过状态通知辅助技术；颜色只作额外提示。",
         "activeIds": [
           "submit",
           "error"
@@ -7568,7 +7986,7 @@
           "result"
         ],
         "values": {
-          "error": "请输入邮箱地址"
+          "error": "邮箱：请输入有效地址"
         },
         "activeEdgeIds": [
           "submit-error"
@@ -7576,7 +7994,7 @@
       },
       {
         "label": "回到问题处",
-        "note": "焦点移回邮箱，用户无需重新寻找出错位置。",
+        "note": "按提示填入有效邮箱，错误摘要与邮箱字段关联，焦点移回邮箱；用户无需重新搜索。",
         "activeIds": [
           "error",
           "email"
@@ -7589,7 +8007,7 @@
           "result"
         ],
         "values": {
-          "email": "focus · invalid"
+          "email": "已填有效地址 · 焦点"
         },
         "activeEdgeIds": [
           "error-email"
@@ -7597,7 +8015,7 @@
       },
       {
         "label": "完成登录",
-        "note": "修正后按 Enter 提交，成功结果以文字和焦点变化明确呈现。",
+        "note": "修正后再次按 Enter 提交，结果文字和焦点变化共同说明登录完成和下一步。",
         "activeIds": [
           "submit",
           "result"
@@ -7618,7 +8036,7 @@
         ]
       }
     ],
-    "insight": "可访问性不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作能力。",
+    "insight": "无障碍不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作路径。",
     "quiz": {
       "question": "自定义 div 做的按钮加上 role=button 后，是否自动支持键盘？",
       "options": [
@@ -7635,23 +8053,38 @@
           "correct": false
         }
       ],
-      "success": "优先使用原生 button；自定义控件需要自己实现完整键盘模型。",
-      "retry": "ARIA 描述角色，但不会自动提供浏览器原生行为。"
+      "success": "原生 button 自带基本键盘行为；自定义控件需要实现角色之外的焦点、Enter/Space、状态和焦点去向。",
+      "retry": "ARIA 角色只提供语义承诺，不会自动提供浏览器原生行为。"
     },
     "prompt": {
       "title": "审查页面的无障碍基础",
-      "text": "请只用键盘走完页面主要任务，记录焦点顺序、可见焦点、键盘陷阱和无法触发的操作。再检查语义标签、可访问名称、颜色对比、字段错误、动态通知和减少动效偏好；每个问题给出可复现步骤与最小修正。"
+      "text": "只用键盘走完页面主要任务，再用读屏视角检查标签、名称、状态和错误；随后补查对比度与减少动效偏好。记录每个无法到达、无法理解或无法恢复的步骤，并给出最小修正。"
     },
     "sources": [
       {
-        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-order",
-        "label": "W3C WAI · Focus Order",
-        "note": "Web 标准与无障碍要求"
-      },
-      {
         "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
         "label": "WAI ARIA APG · Keyboard Interface",
-        "note": "Web 标准与无障碍要求"
+        "note": "Tab 顺序、可见焦点和键盘操作"
+      },
+      {
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
+        "label": "WAI ARIA APG · Button Pattern",
+        "note": "按钮的 Enter/Space 行为与焦点去向"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+        "label": "W3C WAI · Error Identification",
+        "note": "错误必须指出字段并用文字说明"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+        "label": "W3C WAI · Labels or Instructions",
+        "note": "输入控件需要标签或说明"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum",
+        "label": "W3C WAI · Contrast Minimum",
+        "note": "文字和界面的对比度不能只靠颜色区分"
       }
     ]
   }

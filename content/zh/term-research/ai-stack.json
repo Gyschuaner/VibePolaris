@@ -269,12 +269,14 @@
   },
   {
     "slug": "plan-and-execute",
-    "mechanism": "系统先把目标拆成可检查的步骤，再逐步执行；每步结果可使剩余计划被修改、跳过或重排。",
-    "misconception": "计划不是一次生成后必须照做的清单；外部状态改变时，可靠系统需要重新规划。",
+    "mechanism": "规划与执行先把目标拆成有前后关系、可检查的步骤，再逐项执行；某一步做完，结果没有达到完成条件时，后面的计划可以停下、调整或重排。",
+    "misconception": "计划只是接下来怎么做的安排，不代表事情已经完成；步骤走完也要看实际结果，外部状态改变时还需要重新规划。",
     "demoSignature": "输入：发布清单含构建、测试、部署3步；中间：构建通过，测试12项中1项失败，部署状态从待执行改为阻塞；输出：生成修复测试的新步骤并停止发布。可视化：清单节点状态与分支动画。 建议5帧：三节点计划生成、构建通过、测试节点显示11/12并变红、部署被锁、修复节点插入；交互：点击失败测试查看计划如何改写。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://arxiv.org/abs/2210.03629"
+      "https://arxiv.org/abs/2210.03629",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://blog.langchain.dev/planning-agents/"
     ],
     "rewriteRisk": "别只写三个动词；每一步都要有完成证据、失败分支和计划更新。",
     "nearDuplicates": [
@@ -284,12 +286,14 @@
   },
   {
     "slug": "agent-orchestration",
-    "mechanism": "编排层把任务分给不同执行单元，管理共享上下文、依赖顺序、超时与结果合并。",
-    "misconception": "多开几个模型并不自动形成编排；没有职责边界和汇总规则时，只是并发调用。",
-    "demoSignature": "输入：报告任务拆为检索、核数、撰写3份子任务；中间：检索8条证据、核数发现1处冲突，撰写被阻塞后重跑；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。 建议6帧：总任务拆成三节点、检索和核数并行、冲突边亮红、撰写暂停、核数重跑、结果汇合；交互：切换串行/并行比较等待时间。",
+    "mechanism": "智能体编排把任务分给不同的智能体、程序或工具，安排哪些步骤可以同时做、哪些必须等待，传递每步需要的材料和状态，并按规则处理冲突、超时和结果合并。",
+    "misconception": "多个模型同时运行不等于编排；没有分工和汇总规则，只会增加调用和协调成本。负责调度的编排器可以是固定程序，也可以是智能体。",
+    "demoSignature": "输入：报告任务拆为检索、核对、撰写3份子任务；中间：检索8条证据、核对发现1处冲突，撰写被阻塞后按规则排除冲突证据；输出：合并7条一致证据的报告。可视化：任务依赖图中节点由等待转完成。建议6帧：总任务拆成三节点、检索和核对并行、冲突边亮红、撰写暂停、排除冲突证据、结果合并；交互：切换串行/并行比较等待时间。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://openai.github.io/openai-agents-python/running_agents/"
+      "https://openai.github.io/openai-agents-python/running_agents/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
     "rewriteRisk": "强调编排者管理的状态，不要把角色名称堆叠成看似复杂的流程。",
     "nearDuplicates": [
@@ -300,13 +304,16 @@
   },
   {
     "slug": "handoff",
-    "mechanism": "当前智能体把任务控制权和必要上下文移交给另一个专门智能体，后者从明确入口继续处理。",
-    "misconception": "交接不是复制一份消息并行运行；控制权、上下文范围和返回路径都需要定义。",
-    "demoSignature": "输入：售后对话含订单号A102和“申请退款”；中间：路由置信0.93，移交包保留2个字段并删除聊天闲话；输出：退款智能体从确认金额步骤接手。可视化：控制权令牌从客服节点移动到退款节点。 建议4帧：客服节点持有控制权令牌、交接包收缩为2字段、令牌沿线移动、退款节点点亮；交互：展开交接包检查被保留与删除的内容。",
+    "mechanism": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
+    "misconception": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
+    "demoSignature": "输入：售后对话含订单 A102 和“申请退款”；中间：从整段对话整理出订单号和申请类型两项信息，先送达退款智能体，再把回复权从客服转过去；输出：退款智能体从确认金额步骤接手，客服不再直接回复。可视化：回复权标记从客服节点移动到退款节点。建议5帧：客服节点持有回复权标记、交接包整理为2项信息、交接包抵达退款节点、回复权标记移动、退款节点从确认金额点亮；交互：展开交接包检查被保留的信息。",
     "sourceUrls": [
-      "https://openai.github.io/openai-agents-python/handoffs/"
+      "https://openai.github.io/openai-agents-python/handoffs/",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
-    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些字段、谁继续响应以及失败如何退回。",
+    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些信息、回复权给谁以及失败如何退回。",
     "nearDuplicates": [
       "agent-orchestration",
       "subagent"
@@ -314,14 +321,16 @@
   },
   {
     "slug": "subagent",
-    "mechanism": "主智能体把一个边界清楚的子任务交给另一智能体执行，并接收其结果，主任务的最终控制权通常仍在主智能体。",
-    "misconception": "子智能体不等于交接：交接常把对话控制权转走，子智能体更像被主智能体调用的工作单元。",
-    "demoSignature": "输入：主任务要比较3个方案，子智能体只负责核对价格；中间：3个URL→2个可验证价格+1个缺失，结果返回主智能体；输出：主报告保留缺失标记。可视化：主干流程旁伸出支线再汇合。 建议5帧：主任务保持在主干、价格子任务分叉、3个URL被核对、2项结果回传、主干继续；交互：点击支线单独重跑，不移动主控制权。",
+    "mechanism": "主智能体把主任务中边界清楚、能独立验收的一块工作分派给子智能体；子智能体完成后，由主智能体验收并合并结果，同时保留最终回复权。",
+    "misconception": "子智能体只接收明确范围并回传结果，主智能体通常仍保留最终回复和合并控制；要把回复权转走是交接（handoff），要安排多个子任务的依赖与合并是智能体编排。",
+    "demoSignature": "输入：主报告比较3个方案，子智能体只负责核对价格；中间：3个指定URL→2项有效价格+1项缺失，结果带状态回传主线；输出：主智能体检查后把结果写入报告并保留缺失标记。可视化：主干流程旁伸出支线再汇合。建议4帧：主线保留最终回复、价格支线独立核对、结果回到主线、主智能体合并结果并保留1项缺失；交互：点击支线单独重跑，不移动主线回复权。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
-      "https://openai.github.io/openai-agents-python/tools/"
+      "https://openai.github.io/openai-agents-python/tools/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://arxiv.org/abs/2308.08155"
     ],
-    "rewriteRisk": "避免把任何后台函数称为子智能体；必须出现独立任务边界和结果回传。",
+    "rewriteRisk": "不要把后台函数都称为子智能体；必须出现独立任务边界、可检查结果和回传主线。",
     "nearDuplicates": [
       "agent-orchestration",
       "handoff"
@@ -329,14 +338,16 @@
   },
   {
     "slug": "human-in-the-loop",
-    "mechanism": "系统在高风险、低置信或不可逆动作前暂停，让人审阅输入、建议动作和影响，再决定批准、修改或拒绝。",
-    "misconception": "有人最后看一眼不等于人在回路；人必须能在关键动作发生前改变结果。",
-    "demoSignature": "输入：退款金额1200元，自动审批阈值500元；中间：金额越阈值700元，状态运行中→待人工；输出：审核人改为1000元后批准执行。可视化：金额刻度触发暂停闸门与审批按钮。 建议5帧：退款请求进入、金额越过500刻度、流程冻结并弹出审阅卡、人工改额、批准后继续；交互：亲自选择批准/修改/拒绝三种结局。",
+    "mechanism": "系统在高风险、系统没把握或不可逆动作前暂停，让人查看输入、建议动作和影响，再批准、修改或拒绝。",
+    "misconception": "事后通知或抽样复查不算人在回路；人工节点要位于动作执行前，并能改变结果。",
+    "demoSignature": "输入：退款金额 1200 元，自动退款上限 500 元；中间：系统比较金额并暂停，审阅人可批准、修改或拒绝；输出：批准路径执行退款并记录，拒绝路径保持未执行并记录决定。可视化：金额比较触发暂停闸门与审批卡。建议7帧：申请进入、比较自动退款上限、暂停等待决定、拒绝结局、人工改额、批准后退款、批准留痕；交互：用“选择审批结局”下拉查看拒绝和修改后批准两种结局。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
+      "https://www.nist.gov/itl/ai-risk-management-framework"
     ],
-    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、可见信息和可改动作。",
+    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、审阅人能看到什么、能改变哪个动作，以及决定如何留痕。",
     "nearDuplicates": [
       "tool-approval",
       "guardrail"
@@ -344,14 +355,16 @@
   },
   {
     "slug": "guardrail",
-    "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或升级处理。",
-    "misconception": "护栏不能保证模型绝不出错，也不能代替权限、审核和业务校验。",
-    "demoSignature": "输入：用户请求导出客户表，规则禁止包含手机号；中间：检测到12个手机号字段，输出检查状态pass→blocked；输出：只返回脱敏后的12条记录。可视化：数据字段穿过规则闸门，敏感列被遮罩。 建议4帧：含手机号的数据表进入、规则扫描12列命中、敏感列被遮罩、脱敏结果放行；交互：开关某条规则查看哪些字段被拦。",
+    "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
+    "misconception": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
+    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：12 条脱敏记录放行，完整号码为 0，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/guardrails/",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
     ],
-    "rewriteRisk": "需要明确护栏检查对象和动作，别把所有安全措施都装进同一个词。",
+    "rewriteRisk": "要写出护栏检查什么、命中后做什么，以及权限、审核和业务校验由谁负责，不要把所有安全措施都装进同一个词。",
     "nearDuplicates": [
       "moderation",
       "permission-boundary",
@@ -360,14 +373,16 @@
   },
   {
     "slug": "moderation",
-    "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取允许、限制或复核。",
-    "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。",
-    "demoSignature": "输入：3条评论；中间：风险分0.03/0.61/0.94，阈值0.80后状态为通过/复核/拦截；输出：1条展示、1条送审、1条隐藏。可视化：三点落在阈值色带上。 建议4帧：三条评论落到风险色带、分数定位、阈值线切分三种处置、卡片进入展示/复核/隐藏队列；交互：拖阈值线观察队列数量。",
+    "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取展示、复核或隐藏。",
+    "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。护栏负责规则检查，内容审核负责内容分类。",
+    "demoSignature": "输入：3 条评论；中间：风险分 0.03 / 0.61 / 0.94，阈值 0.80 后按示意区间进入展示 / 复核 / 隐藏（≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示）；输出：1 条展示、1 条送审、1 条隐藏。阈值改为 0.60 后，样本的复核队列变空，B 转入隐藏。可视化：三点落在阈值色带上。建议4帧：三条评论落到风险色带、阈值区间切分、三路处置队列、阈值调整后队列更新；交互：拖阈值线观察队列数量。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/moderation",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
     ],
-    "rewriteRisk": "不要列一串抽象风险类型；用阈值和三种处置说明审核如何进入产品流程。",
+    "rewriteRisk": "不要把审核分数写成法律结论；要用风险类别、产品阈值和处置队列说明审核如何进入产品流程。",
     "nearDuplicates": [
       "guardrail"
     ]
@@ -420,14 +435,16 @@
   },
   {
     "slug": "fine-tuning",
-    "mechanism": "微调用训练样本继续更新模型参数，使特定格式、语气或任务行为更稳定；它发生在训练阶段而非每次提示中。",
-    "misconception": "微调不是给模型实时灌入最新知识的数据库，也不应先于提示、检索和评测直接上。",
-    "demoSignature": "输入：200条“工单→标签”样本，训练前验证准确率71%；中间：训练3轮，损失0.84→0.39，验证准确率升至83%；输出：固定测试集提升12个百分点。可视化：训练曲线与验证集对照。 建议5帧：200条训练样本入场、三轮训练曲线下降、验证曲线上升、训练与验证分叉提示过拟合、固定测试集给出83%；交互：拖训练轮数看两条曲线。",
+    "mechanism": "微调在训练阶段更新模型参数，使特定格式、语气或任务行为更稳定；效果要用未参与训练的数据检查。",
+    "misconception": "微调不会自动注入实时知识；提示词适合修改任务说明，检索适合临时查资料，训练数据也要去重、去除隐私内容并与验证集分开。",
+    "demoSignature": "输入：200 条工单分类训练样本与一份未参与训练的验证集；中间：训练损失 0.84→0.39，验证准确率 71%→83%，再训练一轮后模型更贴合训练样本，验证准确率回落至 80%；输出：出现过拟合信号，不能只看训练指标。可视化：训练损失与验证准确率并排。建议4帧：验证基线、参数开始更新、第三轮改善、再训练后验证回落；交互：拖训练轮数看训练损失与验证准确率的变化。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/model-optimization",
-      "https://arxiv.org/abs/2203.02155"
+      "https://platform.openai.com/docs/guides/supervised-fine-tuning",
+      "https://huggingface.co/docs/transformers/training",
+      "https://arxiv.org/abs/2106.09685"
     ],
-    "rewriteRisk": "数值要标为案例结果而非普遍收益；必须保留独立验证集和过拟合风险。",
+    "rewriteRisk": "数值要标为教学案例而非普遍收益；必须解释训练损失、保留未参与训练的验证集，并说明过拟合风险。",
     "nearDuplicates": [
       "few-shot-prompting",
       "evaluation-dataset"
@@ -596,29 +613,34 @@
   },
   {
     "slug": "agent-memory",
-    "mechanism": "智能体记忆把跨轮次或跨会话需要保留的信息写入外部存储，并在后续任务按条件检索、更新或删除。",
-    "misconception": "它不是模型参数里的永久记忆，也不等于把所有聊天原样塞回上下文。",
-    "demoSignature": "输入：用户偏好“代码示例用TypeScript”，会话结束；中间：记忆库新增1条带时间戳记录，下次请求检索命中1条；输出：新示例改用TypeScript。可视化：会话时间轴跨段连接一张记忆卡。 建议5帧：偏好在会话A出现、写成带时间戳记忆卡、会话A关闭、会话B检索命中、TypeScript示例生成；交互：删除记忆后重试查看偏好消失。",
+    "mechanism": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
+    "misconception": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
+    "demoSignature": "用户确认保存代码写法偏好；应用把带来源与时间的记录加入已有食谱记录的记忆库。新代码任务在 2 条记录中只取回相关的 1 条，并交给 AI 生成示例。随后用户纠正、删除这条代码偏好，记忆库剩 1 条食谱记录；既有回复不改写，下一次代码任务需重新说明偏好。6 帧分别展示确认、写入、相关取回、生成、纠正、删除；选择操作查看对应状态。失效时间作为记录规则说明，不假装演示实际计时。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2310.08560",
-      "https://platform.openai.com/docs/guides/conversation-state"
+      "https://docs.langchain.com/oss/python/concepts/memory",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2304.03442",
+      "https://arxiv.org/abs/2310.08560"
     ],
-    "rewriteRisk": "必须说明写入、召回和删除规则；避免把隐私敏感信息默认长期保存。",
+    "rewriteRisk": "智能体记忆包含任务内和跨会话信息；本例聚焦跨会话偏好，不把聊天关闭等同于临时状态自动清除。不把删除记录表现成修改已生成的输出。隐私同意和保存期限属于本例管理建议，不声明所有框架自动提供。",
     "nearDuplicates": [
       "working-memory",
+      "context-window",
       "vector-store"
     ]
   },
   {
     "slug": "working-memory",
-    "mechanism": "工作记忆保存当前任务正在使用的短期状态，如已完成步骤、临时候选和工具结果，并随任务推进被覆盖或清理。",
-    "misconception": "它不同于跨会话记忆，也不等于模型上下文窗口本身；状态可以存放在应用侧。",
-    "demoSignature": "输入：比价任务有5个商品；中间：筛预算后5→3、查库存后3→2，并记录已调用工具2/4；输出：选出2个候选，任务结束后清空临时状态。可视化：便签栈随步骤增删并在终点归零。 建议5帧：5个候选进入临时便签栈、筛价5→3、查库存3→2、结果选出、任务结束便签归零；交互：逐步回退查看每步状态快照。",
+    "mechanism": "工作记忆把当前任务要继续使用的状态放在一起，例如目标、候选清单、已查结果和下一步要做的事；任务推进时更新它，结束后按需要清理或保留结果。",
+    "misconception": "它只服务当前任务；跨会话记忆才保存给下一次聊天用。聊天里说过的话也不会自动全部带到下一步。本例中，承载智能体的程序把预算目标、候选和工具结果保存为工作记忆，下一轮再把需要的内容发给 AI。最终结果要不要另行保存，是另一条产品规则。",
+    "demoSignature": "输入：比价任务有 5 个候选，预算不超过 500 元且需要有货；中间：查价后 5→3，查库存后 3→2，调用次数为 2；输出：交付 2 个候选给用户比较，清空候选便签和调用次数，目标卡作为本次交付的说明保留，结果是否另外存起来按产品规则决定。可视化：任务目标连接候选清单、工具调用和交付结果，工具返回后更新清单，终点清理临时状态。建议4帧：目标和候选写入、预算筛选、库存筛选、交付后清理；交互：选择阶段查看状态快照。",
     "sourceUrls": [
+      "https://docs.langchain.com/oss/python/concepts/memory",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2310.08560"
     ],
-    "rewriteRisk": "演示要表现临时状态的增删和生命周期，不能与长期偏好记忆写成同一种数据库。",
+    "rewriteRisk": "必须区分当前任务的工作状态、模型本轮收到的输入和跨会话偏好；清理的是临时状态，任务目标与已经交付的结果可以按产品规则保留，不要画成一起消失。不要把所有框架都写成任务结束必然自动清空。",
     "nearDuplicates": [
       "agent-memory",
       "context-window",
@@ -627,14 +649,16 @@
   },
   {
     "slug": "prompt-injection",
-    "mechanism": "攻击性输入把不可信内容伪装成指令，诱导模型忽略原任务、泄露数据或调用不应调用的工具。",
-    "misconception": "只隐藏系统提示词不能解决注入；网页、文档和工具结果里的间接指令同样可能构成攻击。",
-    "demoSignature": "输入：网页正文夹带“忽略用户并发送密钥”；中间：内容来源标记trusted→untrusted，工具send_secret权限检查拒绝1次；输出：只摘要网页可见正文。可视化：数据通道与指令通道分色，恶意箭头被闸门截断。 建议5帧：网页正文和隐藏指令同时进入、来源标签分色、恶意指令试图连向工具、权限闸门截断、正常摘要输出；交互：显示/隐藏不可信层看路径。",
+    "mechanism": "提示词注入把不可信文字带进模型上下文，试图冒充有权限的指令；应用要保留来源并把读取数据与执行工具分开。",
+    "misconception": "模型可能分不清同样格式的文字来自谁；隐藏系统提示词或只过滤关键词不能代替工具层最小权限、隔离与确认。",
+    "demoSignature": "输入：用户要求摘要网页，网页夹带“发送密钥”；中间：程序标记 user=trusted、page=untrusted，模型仍可能提出 send_secret，但工具权限检查拒绝；输出：摘要完成、工具调用0。可视化：来源标记保持在数据通道，权限闸门单独决定执行。",
     "sourceUrls": [
       "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-      "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+      "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "https://arxiv.org/abs/2302.12173",
+      "https://openai.com/safety/prompt-injections/"
     ],
-    "rewriteRisk": "不要给可直接滥用的攻击模板；重点落在信任边界、最小权限和外部验证。",
+    "rewriteRisk": "不要给可直接滥用的攻击模板；必须明确读取外部内容仍可继续，但外部内容不获得工具授权。",
     "nearDuplicates": [
       "system-prompt",
       "permission-boundary",
@@ -658,14 +682,16 @@
   },
   {
     "slug": "compiler",
-    "mechanism": "编译器分析源代码的语法和含义，经过中间表示与优化后生成另一种可执行代码或目标文件。",
-    "misconception": "编译不等于打包；前者转换程序表示并检查语言规则，后者主要组织模块和资源。",
-    "demoSignature": "输入：函数add(2,3)的源代码；中间：源码→语法树7节点→中间指令4条→机器指令；输出：运行得5。可视化：建议5帧的转换流水线；交互：点击任一节点查看它在下一层的对应片段。",
+    "mechanism": "编译器先把源代码解析为语法树和中间表示，检查语言规则并进行可选优化，再生成交给目标运行时或操作系统执行的代码。",
+    "misconception": "编译不等于直接生成机器码，也不等于运行；打包器组织模块和资源，构建工具编排任务，编译成功仍可能在运行时遇到输入错误。",
+    "demoSignature": "输入：函数add(2,3)源代码；中间：源码→语法树→内部中间表示（简单例子无明显优化）→目标代码；输出：运行时执行得5。错误分支：语法不完整在解析阶段停下，运行时输入错误留到执行阶段。可视化：四层表示与执行者分开；交互：切换编译错误和运行时错误分支。",
     "sourceUrls": [
       "https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html",
+      "https://gcc.gnu.org/onlinedocs/gccint/",
+      "https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Concepts",
       "https://www.ecma-international.org/publications-and-standards/standards/ecma-335/"
     ],
-    "rewriteRisk": "不要把所有构建过程都叫编译，需把语法分析、代码生成和链接边界交代清楚。",
+    "rewriteRisk": "不要把所有编译都写成直接变机器码；需说明中间表示、可选优化、目标代码与运行时执行的边界。",
     "nearDuplicates": [
       "interpreter",
       "transpiler",
@@ -674,14 +700,16 @@
   },
   {
     "slug": "interpreter",
-    "mechanism": "解释器在运行时读取程序表示并执行其操作，常在遇到语句或字节码时立即更新程序状态。",
-    "misconception": "解释执行不等于逐行翻译文本；现代运行时可能先生成字节码或再即时编译。",
-    "demoSignature": "输入：x=1; x=x+2; print(x)；中间：指令指针0→1→2，变量x从无→1→3；输出：控制台打印3。可视化：建议4帧的代码高亮与变量表同步；交互：单步按钮推进一条指令。",
+    "mechanism": "解释器拿到源代码或字节码这样的程序，一条一条执行其中的指令，每执行一步就更新程序状态；现代运行时也可能先生成字节码或即时编译。",
+    "misconception": "解释器不等于把源码逐行翻译成另一种语言，也不能用“有没有字节码”一刀切；要看执行时机、是否先交付完整目标程序和运行时边界。",
+    "demoSignature": "输入：x=1; x=x+2; print(x)；中间：源码变成指令/字节码，指针指向第一条→下一条，变量x未赋值→1→3；输出：解释器读取x并打印3。错误分支：某条指令出错时在执行到它时报告，之前状态不自动撤销。可视化：源码到指令、指针、变量表同步；交互：单步推进并查看错误位置。",
     "sourceUrls": [
       "https://docs.python.org/3/reference/executionmodel.html",
-      "https://docs.python.org/3/library/dis.html"
+      "https://docs.python.org/3/library/dis.html",
+      "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html",
+      "https://www.lua.org/manual/5.4/manual.html"
     ],
-    "rewriteRisk": "避免用“编译器一次性、解释器逐行”作绝对划分，现代实现常混合两者。",
+    "rewriteRisk": "避免用“编译器一次性、解释器逐行”作绝对划分；说明源码、字节码、执行上下文和即时编译可以组合出现。",
     "nearDuplicates": [
       "compiler",
       "transpiler"
@@ -689,14 +717,16 @@
   },
   {
     "slug": "transpiler",
-    "mechanism": "转译器把一种源代码转换为抽象层级相近的另一种源代码，常用于语法兼容或语言迁移。",
-    "misconception": "转译后的结果仍是源代码；它不同于生成机器码的典型编译步骤，也不是模块打包。",
-    "demoSignature": "输入：TypeScript的const n: number=3；中间：类型标注节点1个被移除，语法树保持赋值结构；输出：JavaScript const n=3。可视化：建议3帧的左右代码映射；交互：悬停源代码节点高亮目标片段。",
+    "mechanism": "转译器解析源代码，按目标语法或语言规则移除、改写和保留节点，输出另一份仍可阅读的源代码，再交给构建或运行流程。",
+    "misconception": "转译输出仍是源码；它不同于直接生成机器码，也不等于打包，更不会自动补齐缺失的运行时 API。",
+    "demoSignature": "输入：TypeScript 的 const n: number = 3；中间：类型标注供开发工具检查，转译规则移除类型节点、保留赋值结构；输出：JavaScript const n = 3，可继续构建，source map 指回原文件。可视化：左右代码节点映射；交互：悬停查看移除、改写和保留。",
     "sourceUrls": [
       "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
-      "https://www.typescriptlang.org/tsconfig/"
+      "https://www.typescriptlang.org/tsconfig/",
+      "https://babeljs.io/docs/",
+      "https://swc.rs/docs/usage/core"
     ],
-    "rewriteRisk": "别用“降级语法”覆盖全部转译场景；要展示输入输出都可阅读。",
+    "rewriteRisk": "别用“降级语法”覆盖全部转译场景；要展示输入输出都可阅读，并明确源码转换、打包、机器码和运行时 API 的边界。",
     "nearDuplicates": [
       "compiler",
       "bundler"
@@ -704,14 +734,16 @@
   },
   {
     "slug": "build-tool",
-    "mechanism": "构建工具编排转译、资源处理、检查和产物输出等任务，并依据配置与依赖关系决定执行顺序。",
-    "misconception": "构建工具可以调用打包器，但两者不是同义词；构建还可能包含不打包的检查和生成任务。",
-    "demoSignature": "输入：src中3个模块与1张图片；中间：任务图依次完成类型检查、转译、复制资源，状态0/3→3/3；输出：dist目录4个产物。可视化：建议5帧的任务依赖图；交互：关闭某任务观察产物差异。",
+    "mechanism": "构建工具读取配置，把检查、转译、打包和资源处理接成依赖图，安排可并行或必须等待的任务并汇总本机产物。",
+    "misconception": "构建工具不是编译器、打包器或开发服务器的同义词，也不等于部署；它可以调用这些步骤，最后只生成待发布的本地目录。",
+    "demoSignature": "输入：3个模块、1张图片和任务配置；中间：类型检查→转译，资源复制独立分支并行；输出：dist含JS、CSS、图片和清单，状态标为未部署。失败分支：检查失败阻塞转译，任一任务失败则构建报告失败。可视化：分叉任务图汇合到产物；交互：切换任务状态观察阻塞与并行。",
     "sourceUrls": [
       "https://vite.dev/guide/",
-      "https://www.gnu.org/software/make/manual/make.html"
+      "https://www.gnu.org/software/make/manual/make.html",
+      "https://docs.npmjs.com/cli/v11/using-npm/scripts",
+      "https://bazel.build/basics"
     ],
-    "rewriteRisk": "正文要把“编排任务”与“合并模块”拆开，避免继续混同打包器。",
+    "rewriteRisk": "正文要把任务编排、代码转换、模块打包、开发服务和部署拆开，并明确构建产物仍是本机文件。",
     "nearDuplicates": [
       "bundler",
       "compiler",
@@ -720,14 +752,16 @@
   },
   {
     "slug": "bundler",
-    "mechanism": "打包器从入口文件沿依赖关系解析模块，把代码和资源组合、拆分或优化成浏览器可加载的产物。",
-    "misconception": "打包不一定只生成一个文件；代码分割会按入口或动态导入生成多个块。",
-    "demoSignature": "输入：入口依赖5个模块，其中1个动态导入；中间：依赖图6节点、静态主包5节点、动态块1节点；输出：main.js与lazy.js两文件。可视化：建议4帧的依赖图聚合；交互：切换动态导入观察块数量1→2。",
+    "mechanism": "打包器从入口沿静态和动态导入建立模块依赖图，把入口与静态依赖放入主包，把动态依赖拆成用户需要时再加载的块。",
+    "misconception": "打包不等于压缩、转译或单文件输出；代码分割可以生成主包和多个按需块，入口与动态导入决定加载边界。",
+    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。",
     "sourceUrls": [
       "https://rollupjs.org/introduction/",
-      "https://webpack.js.org/concepts/"
+      "https://webpack.js.org/concepts/",
+      "https://esbuild.github.io/",
+      "https://vite.dev/guide/dep-pre-bundling"
     ],
-    "rewriteRisk": "不要用压缩或编译替代打包定义；必须展示入口、依赖图和输出块。",
+    "rewriteRisk": "不要用压缩或编译替代打包定义；必须展示入口、静态/动态导入、首屏主包和按需块的数量关系。",
     "nearDuplicates": [
       "build-tool",
       "dependency",
@@ -736,14 +770,16 @@
   },
   {
     "slug": "dev-server",
-    "mechanism": "开发服务器在本地提供源码或转换后的资源，监听文件变化，并通过浏览器连接触发刷新或模块更新。",
-    "misconception": "它不是生产服务器；默认设置通常面向本地反馈速度，而非公网安全、缓存和容量。",
-    "demoSignature": "输入：浏览器请求/index.js；中间：本地服务返回200，修改文件后变更事件1次通过WebSocket发送；输出：页面在180ms内更新。可视化：建议4帧的浏览器—服务—文件监听链；交互：保存文件触发一次真实更新计时。",
+    "mechanism": "开发服务器在本机按请求提供页面和资源，监听文件变化后按需处理受影响的文件，并通过更新连接通知浏览器刷新或替换模块。",
+    "misconception": "开发服务器服务本地开发循环，不是生产服务器，也不等于完整构建；代理是把本地请求转给另一个服务，更新时间数字只代表本机示例。",
+    "demoSignature": "输入：浏览器先请求 localhost:端口，随后保存 button.css；中间：监听器捕获变化，开发服务器按需处理文件并经 WebSocket 发送更新；输出：浏览器可整页刷新或替换模块，示例约180ms但不作性能保证。失败：终端/页面显示文件和行号。",
     "sourceUrls": [
       "https://vite.dev/guide/",
-      "https://vite.dev/guide/features"
+      "https://vite.dev/guide/features",
+      "https://webpack.js.org/configuration/dev-server/",
+      "https://nodejs.org/api/http.html"
     ],
-    "rewriteRisk": "性能数字需作为本机案例；避免鼓励把开发服务直接暴露到生产。",
+    "rewriteRisk": "性能数字必须标成本机示例；说明本地服务、按需处理、代理、更新方式和生产配置的边界。",
     "nearDuplicates": [
       "hot-reload",
       "hmr",
@@ -752,14 +788,16 @@
   },
   {
     "slug": "hot-reload",
-    "mechanism": "热重载在代码变化后自动重新加载应用或页面，使新代码生效，但运行中的页面状态通常会丢失。",
-    "misconception": "热重载不等于HMR；HMR尝试只替换受影响模块并保留其余状态。",
-    "demoSignature": "输入：计数器当前为7，修改按钮颜色；中间：文件变更触发整页reload=1，页面实例重建；输出：颜色更新但计数7→0。可视化：建议4帧的页面熄灭再重建；交互：先点到7再保存样式。",
+    "mechanism": "热重载是开发阶段的一条更新路径：开发服务器或监听器发现源码变化，重新处理后通知浏览器整页 reload，页面内未持久化的运行状态通常重置。",
+    "misconception": "热重载不等于 HMR；前者重建整页，后者尝试只替换受影响模块并保留状态。它依赖开发工具监听和通知，不是普通浏览器自带功能，已写入数据库的状态不会随整页重载丢失。",
+    "demoSignature": "输入：页面计数为7、按钮样式蓝色；中间：开发服务器监听保存，发送整页 reload；输出：按钮变绿、页面内存重新初始化，计数7→0。可视化：开发服务角色补在文件与浏览器之间；交互：保存样式触发一次重载。",
     "sourceUrls": [
       "https://vite.dev/guide/features",
-      "https://developer.mozilla.org/en-US/docs/Web/API/Location/reload"
+      "https://developer.mozilla.org/en-US/docs/Web/API/Location/reload",
+      "https://webpack.js.org/configuration/dev-server/",
+      "https://github.com/pmmmwh/react-refresh-webpack-plugin"
     ],
-    "rewriteRisk": "必须用状态是否保留区分热重载和HMR，而不是只比较速度。",
+    "rewriteRisk": "必须用状态是否保留区分热重载和 HMR，并说明开发服务器监听、整页重建、持久化状态和浏览器默认行为的边界。",
     "nearDuplicates": [
       "hmr",
       "dev-server"
@@ -767,14 +805,16 @@
   },
   {
     "slug": "hmr",
-    "mechanism": "热模块替换只更新发生变化的模块，并由运行时处理模块边界、接受更新或回退到整页刷新。",
-    "misconception": "HMR不保证所有状态都保留；模块没有正确接受更新时仍可能退化为重载。",
-    "demoSignature": "输入：计数器为7，仅修改按钮模块；中间：变更模块1/20，旧模块dispose后新模块accept；输出：颜色更新且计数保持7。可视化：建议5帧的模块网格单格替换；交互：关闭accept处理看它退化为整页刷新。",
+    "mechanism": "开发服务器把变更模块送到浏览器更新运行时，运行时按应用声明的更新边界执行旧模块清理和新模块接受；边界失败时退回整页重载。",
+    "misconception": "HMR 只发生在开发阶段，做的也只是局部更新，不保证所有状态都保留；状态能否继续取决于模块及其依赖是否接受更新，未接受时会整页重载。",
+    "demoSignature": "输入：浏览器应用20个模块，Button发生改动，计数7、姓名小林；中间：开发服务器发送Button模块，运行时dispose旧模块、accept新模块；输出：按钮变绿、状态保留。回退分支：边界未接受时整页重载，状态7→0。可视化：服务器→运行时→模块边界→应用；交互：展示回退路径。",
     "sourceUrls": [
       "https://vite.dev/guide/api-hmr",
-      "https://webpack.js.org/concepts/hot-module-replacement/"
+      "https://webpack.js.org/concepts/hot-module-replacement/",
+      "https://webpack.js.org/api/hot-module-replacement/",
+      "https://github.com/pmmmwh/react-refresh-webpack-plugin"
     ],
-    "rewriteRisk": "不要承诺零刷新；需展示接受边界和失败回退。",
+    "rewriteRisk": "不要承诺零刷新或所有状态保留；需展示开发服务器传输、dispose/accept 边界以及失败回退。",
     "nearDuplicates": [
       "hot-reload",
       "dev-server"
@@ -782,14 +822,16 @@
   },
   {
     "slug": "dependency",
-    "mechanism": "依赖是当前模块或项目为了工作而引用的外部包、内部模块或服务，依赖关系决定加载和变更影响。",
-    "misconception": "把包装进清单不等于它一定在运行时使用；开发依赖、可选依赖和传递依赖的作用不同。",
-    "demoSignature": "输入：app直接依赖A，A依赖B；中间：依赖图从1层扩为2层，删除A后可达节点2→0；输出：构建报告缺少A。可视化：建议4帧的有向图增删；交互：点击节点查看直接/传递影响。",
+    "mechanism": "依赖图从应用声明的直接依赖出发，包管理器会顺着这些包自己的声明，一层层找出传递依赖；再根据版本约束和锁文件解析具体版本。",
+    "misconception": "可达不等于运行时一定使用；开发、可选、运行依赖用途不同，删除一条依赖关系后若仍有其他路径，包也不会从安装结果里消失。",
+    "demoSignature": "输入：应用直接依赖A，A依赖B；中间：图从应用→A→B，锁文件记录A@1.4、B@2.1；输出：报告直接1、传递1。删除应用→A后，若无其他路径B不再可达，安装结果重算但磁盘清理取决于工具。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
-      "https://semver.org/"
+      "https://semver.org/",
+      "https://nodejs.org/api/packages.html",
+      "https://docs.npmjs.com/cli/v11/using-npm/scripts"
     ],
-    "rewriteRisk": "不要只讲第三方库；要让边方向和直接、传递关系可见。",
+    "rewriteRisk": "不要只讲第三方库；让边方向、版本约束、锁文件、直接/传递/开发/可选/运行用途和删除后的条件都可见。",
     "nearDuplicates": [
       "lockfile",
       "semantic-versioning",
@@ -798,14 +840,16 @@
   },
   {
     "slug": "semantic-versioning",
-    "mechanism": "语义化版本用主版本、次版本、修订号表达不兼容变更、向后兼容功能和向后兼容修复。",
-    "misconception": "版本号能表达发布者的兼容承诺，却不能自动证明软件真的兼容或质量更高。",
-    "demoSignature": "输入：当前1.4.2，分别发生修复、新增兼容API、删除旧API；中间：候选变为1.4.3/1.5.0/2.0.0；输出：三类变更落到对应版本。可视化：建议4帧的三段数字翻牌；交互：选择变更类型生成下一版本。",
+    "mechanism": "语义化版本把版本写成 MAJOR.MINOR.PATCH：不兼容的公开 API 变化升 MAJOR，兼容功能新增升 MINOR，兼容缺陷修复升 PATCH。",
+    "misconception": "版本号是发布者对公开 API 兼容性的声明；它不会自动验证实现是否真的兼容，代码改动大小也不直接决定版本段。",
+    "demoSignature": "输入：当前 1.4.2，分别发生兼容修复、兼容功能新增、删除公开 API；中间：读者先识别旧调用是否仍能工作，再得到 1.4.3、1.5.0 或 2.0.0；输出：变更类型与版本段一一对应。可视化：四帧展示三段版本号和一条迁移提示；交互：选择变更类型生成下一版本。",
     "sourceUrls": [
-      "https://semver.org/",
-      "https://docs.npmjs.com/about-semantic-versioning"
+      "https://semver.org/spec/v2.0.0.html",
+      "https://docs.npmjs.com/about-semantic-versioning",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://nodejs.org/learn/getting-started/an-introduction-to-the-npm-package-manager"
     ],
-    "rewriteRisk": "要说明SemVer依赖公开API定义，不能把每次大改都机械升主版本。",
+    "rewriteRisk": "要先解释公开 API、兼容和旧调用，再说明版本段；不要把任何大改动都机械地升 MAJOR，也不要把版本号写成质量保证。",
     "nearDuplicates": [
       "dependency",
       "lockfile"
@@ -813,14 +857,16 @@
   },
   {
     "slug": "lockfile",
-    "mechanism": "锁文件记录一次解析后的精确依赖版本和依赖树信息，使其他环境更容易安装出同一组合。",
-    "misconception": "它不是依赖声明的替代品，也不能保证跨平台产物逐字节相同。",
-    "demoSignature": "输入：package声明A为^1.2.0；中间：解析可选1.2.0/1.3.1后锁定1.3.1及B=2.0.4；输出：两台机器均安装A1.3.1。可视化：建议4帧的版本漏斗与锁扣；交互：删除锁文件后重新解析观察版本是否漂移。",
+    "mechanism": "依赖清单声明允许的版本范围，锁文件记录包管理器解析后的确切版本、传递依赖和完整依赖树，安装命令可以复用这份结果。",
+    "misconception": "清单和锁文件承担不同职责：清单描述想要的范围，锁文件描述这次实际选中的树；锁文件不等于安全审计，也不锁定脚本和平台差异。",
+    "demoSignature": "输入：package.json 声明 A ^1.2.0；中间：解析器从包仓库候选选 A1.3.1，并展开 B2.0.4；输出：锁文件记录完整树，另一台机器按它装出同一组包，删除或清单不同步后会重新解析，结果可能漂移。可视化：四帧展示范围、解析、写入、复现；交互：切换清单/锁文件路径观察结果。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
-      "https://docs.npmjs.com/cli/v11/commands/npm-ci"
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/",
+      "https://pnpm.io/lockfile"
     ],
-    "rewriteRisk": "避免声称锁文件解决所有可复现问题；系统库、平台和安装脚本仍会造成差异。",
+    "rewriteRisk": "先解释直接依赖、传递依赖、版本范围和解析，再说明锁文件如何记录结果；不要声称锁文件解决所有可复现或安全问题。",
     "nearDuplicates": [
       "dependency",
       "semantic-versioning"
@@ -828,14 +874,16 @@
   },
   {
     "slug": "monorepo",
-    "mechanism": "单体仓库把多个应用或包放在同一版本库中，并共享变更、工具配置和依赖关系管理。",
-    "misconception": "单体仓库描述的是代码组织方式，不等于单体架构；仓库里可以部署许多独立服务。",
-    "demoSignature": "输入：web、api、ui三个包；中间：修改ui后影响图只标记web和ui为2/3，api不重建；输出：一次提交包含两个相关包。可视化：建议4帧的仓库树与影响波纹；交互：点击改动文件查看受影响包。",
+    "mechanism": "单体仓库把多个应用、共享包或服务放在同一代码仓库，统一管理脚本、依赖和变更，再用应用或包之间的依赖图决定受影响的构建与测试项目。",
+    "misconception": "一个仓库和一个部署单元是两个维度：monorepo 可以包含多个独立服务，影响范围由依赖图决定，而不是由目录是否相邻决定。",
+    "demoSignature": "输入：同一仓库中的 web、ui、api；中间：web 依赖 ui 而 api 不依赖 ui，修改 ui 后影响集合从 1/3 变成 web+ui 的 2/3；输出：相关项目进入重建，api 跳过。可视化：四帧展示仓库容器、依赖边和影响集合；交互：点击包改动查看受影响项目。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/using-npm/workspaces",
-      "https://pnpm.io/workspaces"
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/#workspaces",
+      "https://pnpm.io/workspaces",
+      "https://bazel.build/concepts/build-ref"
     ],
-    "rewriteRisk": "必须明确“一个仓库”和“一个部署单元”的区别，避免与monolith混写。",
+    "rewriteRisk": "先解释一个仓库、多个项目、依赖图和部署单元，再使用“原子提交”“构建策略”等词；避免把 monorepo 与 monolith 混写。",
     "nearDuplicates": [
       "monolith",
       "dependency"
@@ -843,26 +891,30 @@
   },
   {
     "slug": "environment-variable",
-    "mechanism": "环境变量是由进程环境提供的键值对，程序在启动或运行时读取它们来取得配置。",
-    "misconception": "它不是天然安全的密钥库；值可能被子进程、日志、调试器或错误页面泄露。",
-    "demoSignature": "输入：APP_MODE=dev启动进程；中间：进程读取值dev，切到prod后新进程读到prod而旧进程仍为dev；输出：两进程配置不同。可视化：建议4帧的父环境向进程快照复制；交互：修改变量并重启/不重启对比。",
+    "mechanism": "环境变量是进程可以按名称读取的键值对；父环境在启动新进程时复制一份配置，应用从自己的环境副本读取，父环境后续改变不会自动刷新既有进程。",
+    "misconception": "环境变量不是天然安全的密钥库：服务端可由秘密管理系统注入凭据，但前端构建变量可能进入浏览器资源，暴露面取决于读取进程和产物。",
+    "demoSignature": "输入：shell 或容器以 APP_MODE=dev 创建进程；中间：进程读取并保留 dev，父环境改为 prod，旧进程仍为 dev；输出：重新启动的新进程读取 prod，旧/新结果并存。可视化：四帧展示父环境到进程的配置快照；交互：修改变量并比较重启与不重启。",
     "sourceUrls": [
-      "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html",
-      "https://nodejs.org/api/process.html#processenv"
+      "https://nodejs.org/api/process.html#processenv",
+      "https://vite.dev/guide/env-and-mode",
+      "https://nextjs.org/docs/app/guides/environment-variables",
+      "https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/"
     ],
-    "rewriteRisk": "不要建议把敏感值直接写进前端环境变量；要强调暴露面与进程快照。",
+    "rewriteRisk": "先解释父环境、进程副本和重启时机，再讨论秘密注入与前端暴露；不要把“放在环境变量里”写成安全保证。",
     "nearDuplicates": []
   },
   {
     "slug": "source-map",
-    "mechanism": "源映射用映射表把生成代码的位置还原到原始源码的文件、行和列，便于调试和错误定位。",
-    "misconception": "它不会还原执行过程，也可能暴露源码；生产发布是否提供映射需要单独权衡。",
-    "demoSignature": "输入：压缩代码第1行列240报错；中间：映射段把1:240对应到src/app.ts的18:7；输出：调试器跳到原始第18行。可视化：建议3帧的两张代码纸带与定位连线；交互：点击堆栈坐标在两边同步高亮。",
+    "mechanism": "构建工具生成源映射，把生成代码的文件、行列位置对应到原始源码的位置；生成文件通过 sourceMappingURL 指向 map，浏览器调试器读取后可在原始文件上显示错误和设置断点。",
+    "misconception": "源映射只提供位置对照，不会修复错误或改变正在运行的程序；map 可能包含源码路径和内容，公开发布需要单独评估。",
+    "demoSignature": "输入：生成文件 bundle.js 的 1:240；中间：sourceMappingURL 指向本次构建的 map，调试器命中映射条目；输出：跳到 src/app.ts 的 18:7，浏览器仍执行生成代码。可视化：四帧展示生成位置、map 查询、源位置和调试器高亮；交互：点击堆栈坐标在两边同步高亮。",
     "sourceUrls": [
       "https://tc39.es/ecma426/",
-      "https://www.typescriptlang.org/tsconfig/sourceMap.html"
+      "https://www.typescriptlang.org/tsconfig/sourceMap.html",
+      "https://developer.chrome.com/docs/devtools/javascript/source-maps",
+      "https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map"
     ],
-    "rewriteRisk": "映射示例必须包含行和列，不能暗示能恢复未包含的变量名或源码。",
+    "rewriteRisk": "先解释构建后代码、行列坐标、sourceMappingURL 和调试器，再说明发布访问控制；不要暗示 map 能修复错误或恢复未映射的执行过程。",
     "nearDuplicates": [
       "transpiler",
       "bundler"
@@ -870,14 +922,16 @@
   },
   {
     "slug": "linter",
-    "mechanism": "代码检查器按语法树和规则寻找可能的错误、不一致或危险写法，并报告位置与规则编号。",
-    "misconception": "检查器不只是格式工具，也不能证明程序逻辑正确；规则集决定它能发现什么。",
-    "demoSignature": "输入：代码中1个未使用变量和1个恒真条件；中间：语法树遍历命中2条规则，错误计数0→2；输出：行3和行7两条诊断。可视化：建议4帧的语法树扫描光标；交互：逐条启停规则观察诊断消失。",
+    "mechanism": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等源码模式；部分诊断可自动修复，CI 或提交钩子可按严重级别设置门槛。",
+    "misconception": "linter 不是格式化器，也不能证明业务逻辑正确；它能发现什么取决于规则集，关闭规则只会停止相应报告。",
+    "demoSignature": "输入：12 行源码含未使用变量 total 和 if(true)；中间：源码解析为带位置的语法树，两个规则分别命中第 3、7 行；输出：2 条诊断，关闭未使用变量规则后剩 1 条，格式化器只负责排版。可视化：四帧展示解析、规则命中和报告汇总；交互：逐条启停规则观察诊断变化。",
     "sourceUrls": [
       "https://eslint.org/docs/latest/use/core-concepts/",
-      "https://eslint.org/docs/latest/extend/custom-rules"
+      "https://eslint.org/docs/latest/use/configure/rules",
+      "https://typescript-eslint.io/getting-started/",
+      "https://github.com/standard/standard"
     ],
-    "rewriteRisk": "避免与formatter共用“让代码更规范”的空话；要展示规则诊断及不可自动修复项。",
+    "rewriteRisk": "先解释静态检查、语法树、规则和诊断，再区分格式化器、测试与监控；不要把关闭规则写成问题已经消失。",
     "nearDuplicates": [
       "formatter",
       "sast"
@@ -885,27 +939,32 @@
   },
   {
     "slug": "formatter",
-    "mechanism": "格式化器把代码按统一排版规则重写，如缩进、换行和引号，而通常不改变程序含义。",
-    "misconception": "格式化器不负责判断业务逻辑，也不应与发现潜在错误的linter混为一谈。",
-    "demoSignature": "输入：同一数组写成1行92字符；中间：行宽规则80触发，1行拆为4行且语法树保持不变；输出：统一排版代码。可视化：建议3帧的代码折行与AST锁定标记；交互：拖行宽从60到100看断点移动。",
+    "mechanism": "格式化器先读取代码结构，再按固定选项重新打印源码，主要改变缩进、空白、换行和引号等外观，目标是保留程序含义并减少审查排版差异。",
+    "misconception": "格式化器不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或解析器变化仍需要差异检查和测试。",
+    "demoSignature": "输入：一行 92 字符的 5 项数组；中间：读取结构，行宽设为 80 时触发重排，输出 4 行且元素数量与顺序不变；输出：差异主要是排版，但仍需测试验证。可视化：四帧展示输入、结构、重排与验证；交互：调整行宽查看换行变化。",
     "sourceUrls": [
       "https://prettier.io/docs/en/why-prettier",
-      "https://prettier.io/docs/en/options.html"
+      "https://prettier.io/docs/en/options.html",
+      "https://go.dev/blog/gofmt",
+      "https://rust-lang.github.io/rustfmt/"
     ],
-    "rewriteRisk": "不能宣称绝不改变行为；插件或有缺陷的解析器仍需测试，概念层应说“目标是不改变”。",
+    "rewriteRisk": "先解释排版规则、代码结构和行宽选项，再区分 linter、测试与监控；不要宣称格式化绝不会改变行为，也不要把 printWidth 写成硬性上限。",
     "nearDuplicates": [
       "linter"
     ]
   },
   {
     "slug": "expression",
-    "mechanism": "表达式经过求值得到一个值，也可能在求值过程中读取或改变状态；它可以嵌在更大的表达式或语句中。",
-    "misconception": "有运算符不代表就是完整语句；表达式强调会产生值，语句则组织控制流程。",
-    "demoSignature": "输入：(price*2)+tax，其中price=10、tax=3；中间：10*2→20，再20+3→23；输出：表达式值23。可视化：建议4帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算。",
+    "mechanism": "表达式是可以求值并产生一个值的代码片段；它能嵌入赋值、函数调用或条件判断，语句则组织动作和控制流程。求值顺序与副作用由语言规则决定。",
+    "misconception": "有运算符不代表就是完整语句；表达式强调求值结果，语句本身不一定有可用返回值，打印输出也不等于函数返回值。",
+    "demoSignature": "输入：(price * 2) + tax，其中 price=10、tax=3；中间：把表达式看成树，叶子取值，10*2→20，再 20+3→23；输出：把 price 换成 12 后这次求值得到 27。可视化：四帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算，并标注 * 与 × 是同一乘法。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html"
+      "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
+      "https://docs.python.org/3/reference/expressions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators"
     ],
-    "rewriteRisk": "示例应把求值顺序与最终值画清，不要用含多重副作用的复杂代码开场。",
+    "rewriteRisk": "先解释表达式、语句、求值、树的叶子和副作用，再使用调用或条件判断；不要把打印结果写成函数返回值，也不要用复杂副作用示例开场。",
     "nearDuplicates": [
       "function",
       "conditional-branch"
@@ -913,13 +972,16 @@
   },
   {
     "slug": "function",
-    "mechanism": "函数把一段可调用的行为封装起来，接收参数，在独立执行环境中运行，并可产生返回值或副作用。",
-    "misconception": "函数不一定都有返回值，也不一定是纯函数；相同输入是否得到相同输出取决于它读取的状态。",
-    "demoSignature": "输入：add(a,b)与参数2、3；中间：创建调用帧，a=2、b=3，表达式求得5；输出：调用帧弹出并返回5。可视化：建议4帧的调用栈推入弹出；交互：切换纯函数/读取全局变量版本。",
+    "mechanism": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
+    "misconception": "函数不只是可复用代码块，也不保证纯度或固定返回值；它可能读取或修改外部状态、执行 I/O，局部参数只属于本次调用。",
+    "demoSignature": "输入：total = calculate(20, 3)，函数参数为 price、count；中间：调用帧绑定 price=20、count=3，函数体求 price×count=60；输出：返回 60 给 total，调用帧弹出，栈深度 0→1→0。可视化：四帧展示调用、局部绑定、执行、返回；交互：切换读取外部状态的版本比较相同参数的结果。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
+      "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
-    "rewriteRisk": "不要把函数只写成“可复用代码块”；应表现调用、局部绑定和返回。",
+    "rewriteRisk": "先解释定义/调用、形参/实参、局部调用帧和返回值，再使用调用栈、I/O 或纯函数；不要把函数写成必然纯净或必然有返回值。",
     "nearDuplicates": [
       "parameter",
       "return-value",
@@ -928,13 +990,16 @@
   },
   {
     "slug": "parameter",
-    "mechanism": "参数是函数定义中的占位名称；调用时传入的实参会按语言规则绑定到这些名称。",
-    "misconception": "参数和实参不是同一个东西：前者在定义处，后者是某次调用提供的具体值。",
-    "demoSignature": "输入：定义discount(price,rate)，调用discount(100,0.8)；中间：price←100、rate←0.8，两条绑定落入调用帧；输出：函数内部可用这两个值。可视化：建议3帧的定义槽与实参卡对接；交互：交换实参顺序看绑定结果。",
+    "mechanism": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
+    "misconception": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
+    "demoSignature": "输入：定义 discount(price, rate=0.2)，调用 discount(100,0.2)；中间：price←100、rate←0.2，两个实参按位置落入调用帧；变化：调用 discount(100) 时 rate 使用默认值，改成 discount(0.2,100) 时绑定顺序也交换；输出：函数收到的值可能不符合业务含义。可视化：建议5帧展示定义、提供实参、按位置绑定、使用默认值、交换顺序；交互：省略或交换实参观察绑定结果。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
+      "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html#optional-parameters"
     ],
-    "rewriteRisk": "正文统一使用参数/实参术语，避免把默认值、类型和传值方式混成一件事。",
+    "rewriteRisk": "正文先统一使用参数（形参）/实参术语，再解释位置、名称、默认值、必填项和多给的实参；不要把参数当成类型检查，也不要暗示所有语言对缺失或多给实参的处理相同。",
     "nearDuplicates": [
       "function",
       "return-value"
@@ -942,11 +1007,14 @@
   },
   {
     "slug": "return-value",
-    "mechanism": "返回值是函数完成时交回调用位置的结果；调用方可以保存、继续运算或忽略它。",
-    "misconception": "打印到控制台不是返回值；函数没有显式返回时也可能按语言规则得到默认值。",
-    "demoSignature": "输入：double(4)内部先计算8并console.log；中间：日志出现8但调用结果仍待定，执行return 8；输出：变量result接到8。可视化：建议4帧的日志支路与返回箭头分离；交互：删除return观察result变为undefined。",
+    "mechanism": "执行 return 后，当前这次函数调用会结束，并把一个值交回调用方；调用方可以保存、继续运算或忽略它。",
+    "misconception": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
+    "demoSignature": "输入：调用方执行 result = double(4)，函数内部先把 4×2 算成 8；中间：console.log 显示 8 但 result 仍未收到返回值，执行 return 8；输出：8 沿返回通道交给调用方。可视化：4 帧分别表现函数求值、日志支路、返回通道和调用方接收；交互：删除 return 观察 JavaScript 调用结果变为 undefined。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
+      "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
+      "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
     "rewriteRisk": "一定把输出日志和返回通道分开，否则新手最容易混淆。",
     "nearDuplicates": [
@@ -956,11 +1024,15 @@
   },
   {
     "slug": "conditional-branch",
-    "mechanism": "条件分支先求一个条件，再只执行与结果匹配的路径；未选路径不会在这次分支中运行。",
-    "misconception": "分支不是把两段代码都执行后再选结果；条件转换规则也可能让空值、零等产生意外路径。",
-    "demoSignature": "输入：score=72，条件score>=60；中间：比较得true，pass路径计数0→1，fail保持0；输出：“通过”。可视化：建议4帧的岔路口令牌只走一边；交互：拖score越过60观察路径切换。",
+    "mechanism": "条件分支先计算条件得到真或假，再只执行匹配的路径，并跳过其他路径；没有 else 且条件为假时，直接继续后面的代码。",
+    "misconception": "分支不是把两段代码都执行后再选结果；以 JavaScript 为例，0 和空文字会按规则算假，多数其他值算真。页面 if 运行在用户自己的浏览器里，登录权限仍需服务器重新校验。",
+    "demoSignature": "输入：score=59，条件score>=60；中间：比较得false，令牌只走未通过路径；输出：把score拖到60后条件变true，令牌改走通过路径。可视化：4帧表现准备条件、求值、输出和跨过阈值后的路径切换；交互：拖score越过60观察另一条路径被选中。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
+      "https://docs.python.org/3/reference/compound_stmts.html#if",
+      "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html"
     ],
     "rewriteRisk": "别把流程图当解释终点；要显示条件的实际值和未执行路径。",
     "nearDuplicates": [
@@ -970,11 +1042,14 @@
   },
   {
     "slug": "loop",
-    "mechanism": "循环在条件允许时反复执行同一段逻辑，并在每轮更新索引或状态，直到达到停止条件。",
-    "misconception": "循环不是自动并行；如果状态不朝停止条件推进，可能一直运行。",
-    "demoSignature": "输入：数组[2,4,6]；中间：索引0→1→2→3，累计和0→2→6→12；输出：索引3触发停止，结果12。可视化：建议5帧的环形轨道和变量表；交互：单步执行并可制造不更新索引的死循环警示。",
+    "mechanism": "循环先设置初始状态，再反复处理当前项并更新状态，直到停止条件成立。",
+    "misconception": "如果状态不朝停止条件推进，循环可能一直运行；数组索引到达元素数量时，才表示没有下一项可读。每轮错误还需要明确停止、跳过或重试。",
+    "demoSignature": "输入：数组 [2,4,6]，索引从0开始且累计和为0；中间：每轮读取当前项、累加并让索引0→1→2→3；输出：索引3等于数组长度3，循环停止，结果12。可视化：4帧表现初始化、第一轮、后两轮和停止；交互：单步执行并可制造不更新索引的死循环警示。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+      "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
+      "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
+      "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement"
     ],
     "rewriteRisk": "演示必须出现停止条件和状态推进，不能只让箭头绕圈。",
     "nearDuplicates": [
@@ -984,12 +1059,14 @@
   },
   {
     "slug": "object",
-    "mechanism": "对象把一组具名属性关联到同一个值上，读取属性时通过键找到对应值或行为。",
-    "misconception": "对象不是JSON：对象可含方法、原型和非字符串值，JSON只是数据交换文本格式。",
-    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：建议4帧的键值抽屉打开与替换；交互：新增、修改、删除一个属性。",
+    "mechanism": "对象把一组具名属性放在同一个结构里，读取属性时通过键找到对应值；函数值也可以成为对象的方法。",
+    "misconception": "对象不是 JSON：JavaScript 对象可以包含方法和运行时状态；JSON 文本只能表示有限的数据类型，删除属性后读取不存在的键在 JavaScript 中会得到 undefined。",
+    "demoSignature": "输入：user={name:'林',age:20}；中间：读取键age命中20，再写age=21使属性数仍为2；输出：对象状态更新。可视化：4帧表现键值集合、修改、增加和删除属性；交互：新增、修改、删除一个属性。",
     "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
       "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
-      "https://www.rfc-editor.org/rfc/rfc8259"
+      "https://www.rfc-editor.org/rfc/rfc8259",
+      "https://docs.python.org/3/tutorial/datastructures.html#dictionaries"
     ],
     "rewriteRisk": "不要用JSON文本完全代替语言对象；需提醒两者可表示内容和行为的差异。",
     "nearDuplicates": [
@@ -999,11 +1076,14 @@
   },
   {
     "slug": "array",
-    "mechanism": "数组按顺序保存一组元素，通常用从零开始的索引访问；插入和删除会影响长度及后续位置。",
-    "misconception": "数组不要求所有语言里都只能装同类型数据，也不能把索引当稳定业务ID。",
-    "demoSignature": "输入：['A','B','C']；中间：在索引1插入'X'，长度3→4，B位置1→2；输出：['A','X','B','C']。可视化：建议4帧的编号格子右移；交互：拖一项插入不同位置观察索引重排。",
+    "mechanism": "数组按顺序保存一组元素，通常用从零开始的索引访问，也可以逐项处理；插入和删除会影响长度及后续位置。",
+    "misconception": "索引表示当前位置，不是稳定的业务 ID；商品编号应跟着商品保存。不同语言对数组元素类型的限制也可能不同。",
+    "demoSignature": "输入：['A','B','C']；中间：在索引1插入'X'，长度3→4，B位置1→2、C位置2→3；输出：['A','X','B','C']。可视化：4帧表现原顺序、选择插入点、后续格子右移和插入完成；交互：拖一项插入不同位置观察索引重排。",
     "sourceUrls": [
-      "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
+      "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
+      "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range",
+      "https://www.rfc-editor.org/rfc/rfc8259#section-5"
     ],
     "rewriteRisk": "示例要表现顺序和索引变化，避免只把数组画成无序列表。",
     "nearDuplicates": [
@@ -1013,11 +1093,14 @@
   },
   {
     "slug": "client-server",
-    "mechanism": "客户端发出请求，服务器根据自身资源和规则处理后返回响应；双方通过约定的协议交换消息。",
-    "misconception": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器。",
-    "demoSignature": "输入：客户端GET /products/7；中间：DNS后建立连接，请求状态sent→processing，服务器查到1条记录；输出：HTTP 200与JSON响应。可视化：建议5帧的双泳道请求往返；交互：模拟404和500查看不同响应路径。",
+    "mechanism": "客户端发出请求，服务器根据资源和规则处理后返回响应；双方通过约定的协议交换消息，响应可能成功也可能带错误状态。",
+    "misconception": "客户端与服务器是一次交互中的角色，不固定等于浏览器和某台物理机器；404 和 500 等状态也会沿响应通道回到客户端。",
+    "demoSignature": "输入：客户端 GET /products/7；中间：请求送达服务器，服务查询数据并生成响应；输出：HTTP 200 与 JSON，模拟 404/500 时客户端改显示错误提示。可视化：4帧表现发出、处理、返回和呈现；交互：切换状态码查看不同响应路径。",
     "sourceUrls": [
-      "https://www.rfc-editor.org/rfc/rfc9110"
+      "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages",
+      "https://fetch.spec.whatwg.org/"
     ],
     "rewriteRisk": "不要只画一根双向箭头；必须显示请求、处理、状态码和响应的顺序。",
     "nearDuplicates": [
@@ -1027,11 +1110,14 @@
   },
   {
     "slug": "monolith",
-    "mechanism": "单体架构把主要业务模块作为一个部署单元构建和发布，模块可在进程内直接调用并共享资源。",
-    "misconception": "单体不等于没有模块，也不等于代码都在一个仓库；它描述部署边界。",
-    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍生成1个整体制品，部署单元数保持1；输出：整套应用版本1.8上线。可视化：建议4帧的三个模块装入同一边框；交互：点击任一模块看部署边界整体高亮。",
+    "mechanism": "单体把多个业务模块一起构建、测试和发布成一份应用；模块可以分开组织，但部署时一起换上。",
+    "misconception": "单体可以有清晰的内部模块，也可以把代码放在一个或多个仓库；判断它要看部署边界。",
+    "demoSignature": "输入：用户、订单、支付3模块；中间：只改支付仍要重新生成并测试整份应用；输出：一次发布换上包含全部模块的应用。可视化：建议4帧的三个模块组成一份应用、支付变更、整体重建测试、整体发布；交互：点击模块查看改动如何牵动整份应用。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures",
+      "https://docs.aws.amazon.com/whitepapers/latest/develop-deploy-dotnet-apps-on-aws/building-monoliths-or-microservices.html",
+      "https://cloud.google.com/learn/what-is-microservices-architecture",
+      "https://martinfowler.com/bliki/MonolithFirst.html"
     ],
     "rewriteRisk": "核心是部署单元，不能用代码量或团队规模判断是否单体。",
     "nearDuplicates": [
@@ -1041,11 +1127,15 @@
   },
   {
     "slug": "microservices",
-    "mechanism": "微服务把业务能力拆成可独立部署的服务，通过网络接口协作，每个服务拥有明确边界和运行责任。",
-    "misconception": "拆成多个进程不自动带来微服务收益；网络失败、数据一致性和运维成本会随之增加。",
-    "demoSignature": "输入：订单服务调用库存和支付；中间：3个部署单元各自版本2.1/1.4/3.0，库存调用超时使订单进入pending；输出：重试后订单完成。可视化：建议6帧的服务节点与超时支路；交互：断开一条网络边观察故障传播。",
+    "mechanism": "微服务把业务能力拆成多个可分别构建、测试和发布的服务；服务通过网络接口协作，各自负责一块业务。",
+    "misconception": "服务越多，网络调用、数据一致性、监控和运维工作越多；拆成多个服务不自动带来收益。",
+    "demoSignature": "输入：订单服务调用库存和支付；中间：3个服务各自版本，库存请求等待2秒仍无回应，订单把状态保存为处理中；输出：独立发布的收益与跨服务协调成本同时出现。可视化：建议4帧的各自发布、两次请求、等待超时、保存处理中；交互：推进帧观察一次调用如何留下中间状态。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
+      "https://csrc.nist.gov/pubs/sp/800/204/final",
+      "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_service_architecture_monolith_soa_microservice.html",
+      "https://cloud.google.com/learn/what-is-microservices-architecture",
+      "https://www.martinfowler.com/microservices/"
     ],
     "rewriteRisk": "不要把微服务写成天然更先进；演示必须把网络和独立部署的代价一起画出。",
     "nearDuplicates": [
@@ -1085,11 +1175,15 @@
   },
   {
     "slug": "serverless",
-    "mechanism": "无服务器架构把代码或服务交给平台按请求或事件运行，平台负责资源调度和扩缩容，使用者仍需管理代码、配置和数据。",
-    "misconception": "它并非没有服务器，也不保证更便宜；冷启动、执行时限和持续高负载会改变取舍。",
-    "demoSignature": "输入：一分钟请求从0升到120；中间：实例数0→6，每实例处理20次，首批冷启动耗时80→420ms；输出：流量回落后实例6→0。可视化：建议5帧的实例气泡随流量伸缩；交互：拖请求速率查看实例与延迟。",
+    "mechanism": "无服务器把函数交给云平台，在请求或事件到来时准备运行环境；平台管理底层服务器和自动扩缩，开发者仍负责代码、配置和数据。",
+    "misconception": "服务器仍然存在；冷启动、执行时限、临时状态、供应商接口和计费规则仍需考虑。",
+    "demoSignature": "输入：每分钟请求量从0升到120；中间：函数运行份数0→6，第一次准备运行环境产生420ms示例延迟；输出：流量回落后运行份数6→0，空闲时示例计量不再增长。可视化：建议4帧的无请求、流量突增、第一次启动、流量归零；交互：拖请求速率查看运行份数与延迟。",
     "sourceUrls": [
-      "https://github.com/cncf/wg-serverless/blob/master/whitepapers/serverless-overview/cncf_serverless_whitepaper_v1.0.pdf"
+      "https://cloud.google.com/discover/what-is-serverless-computing",
+      "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+      "https://docs.aws.amazon.com/lambda/latest/dg/concepts-event-driven-architectures.html",
+      "https://docs.aws.amazon.com/lambda/latest/dg/lambda-functions-chapter.html",
+      "https://www.cncf.io/blog/2018/02/14/cncf-takes-first-step-towards-serverless-computing/"
     ],
     "rewriteRisk": "不能用“免运维”作卖点；要显示平台接管和团队仍负责的边界。",
     "nearDuplicates": [
@@ -1099,12 +1193,15 @@
   },
   {
     "slug": "container",
-    "mechanism": "容器用操作系统级隔离把进程及其文件、网络和资源视图限制在指定边界内，并共享宿主机内核。",
-    "misconception": "容器不是虚拟机，也不是默认安全沙箱；共享内核和配置权限会影响隔离强度。",
-    "demoSignature": "输入：两个进程各需CPU和文件；中间：命名空间分出2套文件视图，CPU配额70%/30%，越界读取被拒；输出：两进程独立运行。可视化：建议5帧的共享内核上两只隔离盒；交互：调CPU配额看用量条。",
+    "mechanism": "容器是带有应用文件和所需其他程序的隔离进程；它有自己的文件、网络和资源视图，通常共享宿主机内核。",
+    "misconception": "容器不是完整虚拟机，也不是默认安全沙箱；共享宿主机内核、权限、挂载和资源配置共同决定隔离效果。",
+    "demoSignature": "输入：两个容器共享宿主机内核；中间：A、B看到不同文件视图，CPU配额示例为70%/30%，A读取未挂载文件被拒；输出：视图和资源被隔离，但不是两套完整内核。可视化：建议4帧的共享内核、文件视图、资源配额、越界读取；交互：推进帧观察隔离边界。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf",
-      "https://opencontainers.org/"
+      "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
+      "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/",
+      "https://docs.docker.com/engine/containers/run/",
+      "https://learn.microsoft.com/en-us/virtualization/windowscontainers/about/containers-vs-vm",
+      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf"
     ],
     "rewriteRisk": "要把共享内核画出来，避免继续用“轻量虚拟机”造成错误理解。",
     "nearDuplicates": [

@@ -1,9 +1,9 @@
 {
   "slug": "css",
   "intro": {
-    "question": "同一份内容，怎样从一列变成并排卡片，手机上看又不挤？",
-    "definition": "CSS 用选择器找到元素，再用属性和值规定它长什么样。多个规则同时命中时，浏览器按层叠、继承和布局规则算出最终样式。",
-    "boundary": "CSS 只管外观：颜色、字体、间距、排版和不同屏幕下的呈现。内容结构属于 HTML，点击之后的数据和业务逻辑属于 JavaScript。",
+    "question": "同一份 HTML 内容，为什么改一条 CSS 规则就会从一列变成并排卡片？",
+    "definition": "CSS 用选择器找到元素，再用属性和值写出声明。一条声明就是类似 `display: grid` 的一对属性和值。浏览器筛掉不匹配的规则，按层叠顺序选出胜者，得到计算值后交给盒模型和布局系统。",
+    "boundary": "CSS 负责呈现和布局：颜色、字体、间距、盒子尺寸与排列都属于它。内容结构由 HTML 提供，点击后的数据变化由 JavaScript 处理，服务端权限也不由 CSS 决定。",
     "prerequisite": "前置概念：HTML ↗",
     "aliases": [
       "层叠样式表",
@@ -17,12 +17,12 @@
       "target": "demo"
     },
     {
-      "text": "卡片想并排，不要一个大块",
+      "text": "卡片想并排，规则却没有生效",
       "target": "demo"
     },
     {
       "text": "改了一处，别的地方也变了",
-      "target": "direction"
+      "target": "demo"
     },
     {
       "text": "AI 改完了，我怎么确认真对了",
@@ -31,41 +31,41 @@
   ],
   "demo": {
     "eyebrow": "01",
-    "title": "一个属性，让卡片从三列变一列",
-    "ariaLabel": "CSS 布局规则与内容卡片重排演示",
+    "title": "从规则命中到卡片排列",
+    "ariaLabel": "CSS 选择器、层叠和布局结果演示",
     "steps": [
       {
-        "key": "desktop",
-        "label": "宽屏并排",
+        "key": "match",
+        "label": "选择器命中",
         "selector": ".content-cards",
-        "property": "grid-template-columns",
-        "value": "repeat(3, 1fr)",
-        "note": "屏幕宽时，三张卡片并排，各占三分之一。",
-        "computed": "repeat(3, 1fr)",
+        "property": "display",
+        "value": "block",
+        "note": "选择器找到卡片容器，子元素先按浏览器默认的从上到下顺序排列。",
+        "computed": "block",
         "source": ".content-cards",
         "widthLabel": "1280px",
         "layout": "desktop"
       },
       {
-        "key": "problem",
-        "label": "问题出现",
-        "selector": "@media (max-width: 640px)",
-        "property": "/* 还没写手机规则 */",
-        "value": "",
-        "note": "到了手机宽度，仍沿用三列，图片和文字互相重叠。",
-        "computed": "repeat(3, 1fr)",
-        "source": "沿用 .content-cards 桌面规则",
-        "widthLabel": "390px",
-        "layout": "squeezed"
+        "key": "cascade",
+        "label": "层叠选胜者",
+        "selector": ".content-cards",
+        "property": "display",
+        "value": "grid",
+        "note": "两条规则都命中同一容器，层叠顺序决定哪条 display 声明生效。",
+        "computed": "grid",
+        "source": ".content-cards 后写的规则",
+        "widthLabel": "1280px",
+        "layout": "desktop"
       },
       {
-        "key": "fix",
-        "label": "换成一列",
+        "key": "layout",
+        "label": "计算值进入布局",
         "selector": "@media (max-width: 640px)",
         "innerSelector": ".content-cards",
         "property": "grid-template-columns",
         "value": "1fr",
-        "note": "手机宽度改成一列，每张卡片占满一整行，不再重叠。",
+        "note": "计算值交给 Grid 布局；1fr 表示把可用空间分给这一列，手机宽度下每张卡片占一行。",
         "computed": "1fr",
         "source": "@media (max-width: 640px)",
         "widthLabel": "390px",
@@ -73,11 +73,11 @@
       }
     ],
     "chain": [
-      "屏幕变窄",
-      "媒体查询命中",
-      "卡片换排法"
+      "选择器找到元素",
+      "层叠决定属性值",
+      "布局排列子元素"
     ],
-    "responsibility": "CSS 管呈现，HTML 管结构，JavaScript 管行为。"
+    "responsibility": "CSS 管规则匹配、取值和呈现；HTML 管结构；JavaScript 管行为和数据变化。"
   },
   "aiGuide": {
     "title": "跟 AI 怎么说",
@@ -93,12 +93,12 @@
         "label": "做出来",
         "tagline": "从零加一个想要的效果",
         "slots": {
-          "seen": "现在列表是一列一列的纯文字，看着单调。",
-          "want": "做成三张并排的卡片，每张上面放图、下面放标题和两行说明。",
-          "avoid": "别动我现有的文字内容，也别动里面的链接。",
-          "verify": "电脑看三张并排，手机看一列一张，图片不能压住文字。"
+          "seen": "现在列表是一列一列的纯文字，HTML 结构和文字内容已经存在。",
+          "want": "用 CSS 把列表排成三张卡片，每张上方放图、下方放标题和两行说明。",
+          "avoid": "不要改 HTML 文字和链接，也不要用脚本重写内容。",
+          "verify": "检查计算后的列数、间距和图片尺寸；电脑三张并排，手机一列一张，图片不能压住文字。"
         },
-        "prompt": "我想把现在的纯文字列表改成卡片。请把它们做成三张并排的卡片，每张上方放一张图，下方放标题和两行说明。不要改动我现有的文字内容，也不要改动里面的链接。电脑宽度下三张并排，手机宽度下每行一张，图片不能压住文字，页面不能左右滚动。做完用大白话说明你加了哪些样式、手机上是怎么变回一列的。",
+        "prompt": "我想把现在的纯文字列表改成卡片。请只用 CSS 调整布局和间距，不改动 HTML 文字和链接。电脑宽度下三张并排，手机宽度下每行一张，图片不能压住文字，页面不能左右滚动。做完用大白话说明选择器匹配了哪里、哪条声明决定列数，以及怎样检查计算后的样式。",
         "scene": {
           "from": {
             "width": "wide",
@@ -148,12 +148,12 @@
         "label": "修好它",
         "tagline": "页面被改坏了，要定位原因",
         "slots": {
-          "seen": "手机上三张卡片挤在同一行，图片和文字叠在一起。",
-          "want": "手机上卡片一列一张，电脑上的样子保持不变。",
-          "avoid": "不要删任何文字和图片，也不要改原来的点击效果。",
-          "verify": "手机和电脑都检查一遍：内容不重叠，页面不能左右滚动。"
+          "seen": "手机上三张卡片挤在同一行，电脑上看着正常。我怀疑是某条规则覆盖了另一条，但不知道怎么确认。",
+          "want": "先找出实际命中的选择器和计算值，再让手机卡片一列一张，电脑样子保持不变。",
+          "avoid": "不要删文字和图片，不要直接加能强行覆盖其他规则的 !important 声明，也不要改点击效果。",
+          "verify": "如果不会打开开发者工具，先让 AI 告诉我入口；然后检查规则匹配、层叠胜者、计算值和最终盒子尺寸，手机和电脑都不能重叠或横向溢出。"
         },
-        "prompt": "这个页面在电脑上看着正常，但到了手机上，三张卡片挤在同一行，图片和文字都叠在一起了。请帮我找出是哪条布局规则造成的，并把手机上的排列改成一列，电脑上的样子保持不变。不要删除任何内容，也不要改变原来的点击效果。改完后请分别检查电脑和手机：内容不能重叠，页面不能左右滚动，并用大白话告诉我问题原因和你改了什么。",
+        "prompt": "这个页面在电脑上看着正常，但到了手机上，三张卡片挤在同一行。如果我不知道怎么打开浏览器开发者工具，请先告诉我入口；然后找出匹配的选择器、被覆盖的声明和实际计算值，再用最小 CSS 修改让手机排列成一列，电脑样子保持不变。不要删除内容、不要直接加 !important，也不要改变点击效果。改完检查电脑和手机的盒子尺寸、内容溢出和横向滚动，并用大白话说明根因。",
         "scene": {
           "from": {
             "width": "phone",
@@ -203,12 +203,12 @@
         "label": "调细节",
         "tagline": "大功能没问题，看着就是差一点",
         "slots": {
-          "seen": "卡片之间挨得太紧，看着有点闷。",
-          "want": "卡片之间留出一点均匀的空隙，看起来更透气。",
-          "avoid": "只改空隙，别动卡片里的内容和颜色。",
-          "verify": "手机上看，空隙均匀、不超出屏幕，卡片没有错位。"
+          "seen": "卡片之间的间距不一致；浏览器开发者工具的盒模型显示，gap（卡片之间）和 padding（卡片内部）的作用混在了一起。",
+          "want": "只调整卡片之间的 gap，让行列间距一致。",
+          "avoid": "不改卡片内容、颜色、选择器范围和卡片数量。",
+          "verify": "电脑和手机都检查 gap、padding 与总宽度，卡片不超出容器也不发生错位。"
         },
-        "prompt": "卡片的空隙太小，看起来太挤。请只在卡片之间留出均匀的空隙，不要改动卡片里的内容和颜色，也不要改变卡片数量。手机和电脑都检查一遍：空隙要均匀一致，卡片不能错位，也不能超出屏幕宽度。完成后说明你是用哪个属性控制空隙的。",
+        "prompt": "卡片之间的间距不一致。请先区分 gap、padding 和 margin，再只调整卡片容器的 gap；不要改动卡片内容、颜色、选择器范围或数量。手机和电脑都检查一遍：行列间距一致，盒子不超出容器。完成后说明计算后的总宽度怎样得到。",
         "scene": {
           "from": {
             "width": "wide",
@@ -259,11 +259,11 @@
   },
   "direction": {
     "title": "同样样式，先选哪种写法",
-    "note": "Vibe Coding 阶段的关键不是哪种语法更高级，而是 AI 能稳定接住、你之后也改得动。",
+    "note": "Vibe Coding 阶段的关键不是哪种语法更高级，而是 AI 能不能稳定照着改、你之后自己也改得动。",
     "options": [
       {
         "name": "直接写 CSS",
-        "verdict": "小白默认的起步选择",
+        "verdict": "小白起步的默认选择",
         "when": "页面不多，想在原文件里看到样式就改在哪。"
       },
       {
@@ -305,19 +305,19 @@
     },
     "references": [
       {
-        "label": "MDN · CSS 基础",
-        "note": "结构化入门",
-        "href": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics"
-      },
-      {
-        "label": "web.dev · Learn CSS",
-        "note": "现代布局与实践",
-        "href": "https://web.dev/learn/css"
-      },
-      {
         "label": "MDN · CSS 层叠",
-        "note": "理解最终样式",
-        "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade"
+        "note": "规则匹配与最终声明",
+        "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction"
+      },
+      {
+        "label": "W3C · CSS Cascading Level 5",
+        "note": "层叠与层级规范",
+        "href": "https://www.w3.org/TR/css-cascade-5/"
+      },
+      {
+        "label": "MDN · CSS 盒模型",
+        "note": "尺寸、内边距与边框",
+        "href": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model"
       }
     ]
   }

@@ -30,20 +30,26 @@
 | 020 | 嵌入、语义搜索、RAG | VBP-035 · [本批研究与 review](VBP-035-semantic-concepts.md) |
 | 021 | 检索、分块、重排序 | VBP-036 · [本批研究与 review](VBP-036-selection-concepts.md) |
 | 022 | 混合搜索、向量存储、引用 | VBP-037 · [本批研究与 review](VBP-037-evidence-concepts.md) |
-| 023 | 基于证据回答、幻觉、评测 | VBP-038 · [本批研究与 review](VBP-038-quality-concepts.md) |
-| 024 | 基准测试、评分器、评测数据集 | VBP-039 · [本批研究与 review](VBP-039-assessment-concepts.md) |
-| 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [本批研究与 review](VBP-040-model-delivery-concepts.md) |
-| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [本批研究与 review](VBP-041-output-concepts.md) |
-| 027 | 服务器、API 网关、反向代理 | VBP-043 · [本批研究与 review](VBP-043-edge-concepts.md) |
-| 028 | 负载均衡、认证、授权 | VBP-044 · [本批研究与 review](VBP-044-access-concepts.md) |
-| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [本批研究与 review](VBP-045-identity-concepts.md) |
+| 023 | 基于证据回答、幻觉、评测 | VBP-038 · [初始设计](VBP-038-quality-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
+| 024 | 基准测试、评分器、评测数据集 | VBP-039 · [初始设计](VBP-039-assessment-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
+| 025 | 模型路由、备用模型、提示缓存 | VBP-040 · [初始设计](VBP-040-model-delivery-concepts.md) · [099–108 文案更新与上线记录](VBP-038-040-content-refresh-099-108.md) |
+| 026 | 流式输出、结构化输出、函数调用 | VBP-041 · [初始设计](VBP-041-output-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 027 | 服务器、API 网关、反向代理 | VBP-043 · [初始设计](VBP-043-edge-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 028 | 负载均衡、认证、授权 | VBP-044 · [初始设计](VBP-044-access-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
+| 029 | 会话、JWT、OAuth 2.0 | VBP-045 · [初始设计](VBP-045-identity-concepts.md) · [109–118 文案更新记录](VBP-041-045-content-refresh-109-118.md) |
 | 030 | 技能（Agent Skill，单页新增词条，不计入基线完成数） | VBP-046 · [本批研究与 review](VBP-046-skill-concepts.md) |
+| 031 | 生成式 AI、多模态、推理模型、系统提示词、少样本提示、零样本提示、温度、分词、工具选择、工具结果 | VBP-050 · [119–128 文案更新与上线记录](VBP-050-content-refresh-119-128.md) |
+| 032 | 规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调、智能体记忆、工作记忆 | VBP-051 · [129–138 文案更新与上线记录](VBP-051-content-refresh-129-138.md) |
+| 033 | 提示词注入、编译器、解释器、转译器、构建工具、打包器、开发服务器、热重载、热模块替换、依赖 | VBP-052 · [139–148 文案更新与上线记录](VBP-052-content-refresh-139-148.md) |
+| 034 | 语义化版本、锁文件、单体仓库、环境变量、源映射、代码检查器、格式化器、表达式、函数、参数 | VBP-053 · [149–158 文案更新与上线记录](VBP-053-content-refresh-149-158.md) |
+| 035 | 返回值、条件分支、循环、对象、数组、客户端—服务器、单体架构、微服务、无服务器架构、容器 | VBP-054 · [159–168 文案更新与上线记录](VBP-054-content-refresh-159-168.md) |
+| 036 | 响应式布局、CSS、表单、HTML、JavaScript、DOM、框架与库、静态站点与服务端渲染、部署与托管、库 | VBP-055 · [169–178 文案更新与上线记录](VBP-055-content-refresh-169-178.md) |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 95 页，另有 9 页历史基准；其余 197 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 155 页，另有 9 页历史基准；其余 137 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
 
-2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023、024、025、026、027、028、029 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023、024、025、026、027、028、029、031、032、033、034、035 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -73,12 +79,12 @@
 | agent-harness | 智能体运行框架 | AI·Agent | 基准 · 待最终复核 |
 | component | 组件 | 前端 | 002 · 本地验收及 review 通过 |
 | state | 状态 | 前端 | 002 · 本地验收及 review 通过 |
-| responsive | 响应式布局 | 前端 | 待处理 |
-| css | CSS | 前端 | 待处理 |
-| form | 表单 | 前端 | 待处理 |
-| html | HTML | 前端 | 待处理 |
-| javascript | JavaScript | 前端 | 待处理 |
-| dom | DOM | 前端 | 待处理 |
+| responsive | 响应式布局 | 前端 | 036 · 生产已发布 |
+| css | CSS | 前端 | 036 · 生产已发布 |
+| form | 表单 | 前端 | 036 · 生产已发布 |
+| html | HTML | 前端 | 036 · 生产已发布 |
+| javascript | JavaScript | 前端 | 036 · 生产已发布 |
+| dom | DOM | 前端 | 036 · 生产已发布 |
 | api | API 接口 | 后端 | 007 · 本地验收及 review 通过 |
 | database | 数据库 | 后端 | 009 · 本地验收及 review 通过 |
 | auth | 认证 | 后端 | 028 · 本地验收及 review 通过 |
@@ -95,10 +101,10 @@
 | memory | 记忆 | AI·Agent | 基准 · 待最终复核 |
 | rag | RAG | AI·Agent | 020 · 本地验收及 review 通过 |
 | mcp | MCP | AI·Agent | 基准 · 待最终复核 |
-| framework | 框架与库 | 技术栈 | 待处理 |
-| ssg-ssr | 静态站点与服务器渲染 | 技术栈 | 待处理 |
-| deploy | 部署与托管 | 技术栈 | 待处理 |
-| library | 库 | 技术栈 | 待处理 |
+| framework | 框架与库 | 技术栈 | 036 · 生产已发布 |
+| ssg-ssr | 静态站点与服务端渲染 | 技术栈 | 036 · 生产已发布 |
+| deploy | 部署与托管 | 技术栈 | 036 · 生产已发布 |
+| library | 库 | 技术栈 | 036 · 生产已发布 |
 | runtime | 运行时 | 技术栈 | 待处理 |
 | package | 包管理 | 技术栈 | 待处理 |
 | typescript | TypeScript | 技术栈 | 待处理 |
@@ -327,39 +333,39 @@
 | model-fallback | 备用模型 | AI·Agent | 025 · 本地验收及 review 通过 |
 | agent-memory | 智能体记忆 | AI·Agent | 待处理 |
 | working-memory | 工作记忆 | AI·Agent | 待处理 |
-| prompt-injection | 提示词注入 | AI·Agent | 待处理 |
+| prompt-injection | 提示词注入 | AI·Agent | 033 · 本地验收及 review 通过 |
 | execution-sandbox | 执行沙箱 | AI·Agent | 基准 · 待最终复核 |
-| compiler | 编译器 | 技术栈 | 待处理 |
-| interpreter | 解释器 | 技术栈 | 待处理 |
-| transpiler | 转译器 | 技术栈 | 待处理 |
-| build-tool | 构建工具 | 技术栈 | 待处理 |
-| bundler | 打包器 | 技术栈 | 待处理 |
-| dev-server | 开发服务器 | 技术栈 | 待处理 |
-| hot-reload | 热重载 | 技术栈 | 待处理 |
-| hmr | 热模块替换 | 技术栈 | 待处理 |
-| dependency | 依赖 | 技术栈 | 待处理 |
-| semantic-versioning | 语义化版本 | 技术栈 | 待处理 |
-| lockfile | 锁文件 | 技术栈 | 待处理 |
-| monorepo | 单体仓库 | 技术栈 | 待处理 |
-| environment-variable | 环境变量 | 技术栈 | 待处理 |
-| source-map | 源映射 | 技术栈 | 待处理 |
-| linter | 代码检查器 | 技术栈 | 待处理 |
-| formatter | 格式化器 | 技术栈 | 待处理 |
-| expression | 表达式 | 技术栈 | 待处理 |
-| function | 函数 | 技术栈 | 待处理 |
-| parameter | 参数 | 技术栈 | 待处理 |
-| return-value | 返回值 | 技术栈 | 待处理 |
-| conditional-branch | 条件分支 | 技术栈 | 待处理 |
-| loop | 循环 | 技术栈 | 待处理 |
-| object | 对象 | 技术栈 | 待处理 |
-| array | 数组 | 技术栈 | 待处理 |
-| client-server | 客户端—服务器 | 技术栈 | 待处理 |
-| monolith | 单体架构 | 技术栈 | 待处理 |
-| microservices | 微服务 | 技术栈 | 待处理 |
+| compiler | 编译器 | 技术栈 | 033 · 本地验收及 review 通过 |
+| interpreter | 解释器 | 技术栈 | 033 · 本地验收及 review 通过 |
+| transpiler | 转译器 | 技术栈 | 033 · 本地验收及 review 通过 |
+| build-tool | 构建工具 | 技术栈 | 033 · 本地验收及 review 通过 |
+| bundler | 打包器 | 技术栈 | 033 · 本地验收及 review 通过 |
+| dev-server | 开发服务器 | 技术栈 | 033 · 本地验收及 review 通过 |
+| hot-reload | 热重载 | 技术栈 | 033 · 本地验收及 review 通过 |
+| hmr | 热模块替换 | 技术栈 | 033 · 本地验收及 review 通过 |
+| dependency | 依赖 | 技术栈 | 033 · 本地验收及 review 通过 |
+| semantic-versioning | 语义化版本 | 技术栈 | 034 · 本地验收及 review 通过 |
+| lockfile | 锁文件 | 技术栈 | 034 · 本地验收及 review 通过 |
+| monorepo | 单体仓库 | 技术栈 | 034 · 本地验收及 review 通过 |
+| environment-variable | 环境变量 | 技术栈 | 034 · 本地验收及 review 通过 |
+| source-map | 源映射 | 技术栈 | 034 · 本地验收及 review 通过 |
+| linter | 代码检查器 | 技术栈 | 034 · 本地验收及 review 通过 |
+| formatter | 格式化器 | 技术栈 | 034 · 本地验收及 review 通过 |
+| expression | 表达式 | 技术栈 | 034 · 本地验收及 review 通过 |
+| function | 函数 | 技术栈 | 034 · 本地验收及 review 通过 |
+| parameter | 参数 | 技术栈 | 034 · 本地验收及 review 通过 |
+| return-value | 返回值 | 技术栈 | 035 · 本地验收及 review 通过 |
+| conditional-branch | 条件分支 | 技术栈 | 035 · 本地验收及 review 通过 |
+| loop | 循环 | 技术栈 | 035 · 本地验收及 review 通过 |
+| object | 对象 | 技术栈 | 035 · 本地验收及 review 通过 |
+| array | 数组 | 技术栈 | 035 · 本地验收及 review 通过 |
+| client-server | 客户端—服务器 | 技术栈 | 035 · 本地验收及 review 通过 |
+| monolith | 单体架构 | 技术栈 | 035 · 本地验收及 review 通过 |
+| microservices | 微服务 | 技术栈 | 035 · 本地验收及 review 通过 |
 | distributed-system | 分布式系统 | 技术栈 | 016 · 本地验收及 review 通过 |
 | event-driven-architecture | 事件驱动架构 | 技术栈 | 015 · 本地验收及 review 通过 |
-| serverless | 无服务器架构 | 技术栈 | 待处理 |
-| container | 容器 | 技术栈 | 待处理 |
+| serverless | 无服务器架构 | 技术栈 | 035 · 本地验收及 review 通过 |
+| container | 容器 | 技术栈 | 035 · 本地验收及 review 通过 |
 | container-image | 容器镜像 | 技术栈 | 待处理 |
 | service-discovery | 服务发现 | 技术栈 | 待处理 |
 | observability | 可观测性 | 技术栈 | 待处理 |

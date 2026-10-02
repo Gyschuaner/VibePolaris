@@ -1,163 +1,251 @@
 [
   {
     "slug": "semantic-html",
-    "mechanism": "浏览器解析元素时会把 nav、main、button 等角色带入文档与无障碍结构，辅助技术因此能按区域和控件类型导航。",
-    "misconception": "常被误解为“换个标签有利于 SEO”；核心差异是机器可识别的结构和原生交互行为，不只是搜索排名。",
-    "demoSignature": "建议 4 帧：画面左侧是全用 div 的文章，右侧是无障碍树；点击“语义化”后，nav/main/article/button 逐个替换原节点；树中的角色与可操作入口同步增加；最后用 Tab 走一遍新顺序，结果可直接对照。",
-    "sourceUrls": ["https://html.spec.whatwg.org/multipage/dom.html#semantics-2", "https://developer.mozilla.org/en-US/docs/Glossary/Semantics"],
-    "rewriteRisk": "high",
+    "mechanism": "语义化 HTML 按内容职责选择元素；浏览器把 nav、main、article、button 等元素解析成文档和无障碍结构，辅助技术因此能按区域和控件类型导航。",
+    "misconception": "常被误解为“换个标签有利于 SEO”；核心差异是机器可识别的结构和原生交互行为，不只是搜索排名。class 命名不会改变语义，ARIA 角色也不应替代已有的原生元素。",
+    "demoSignature": "tree: 3 frames; actors=HTML/DOM/无障碍树; phases=先看普通容器→标出页面区域→换成原生按钮; action=替换一个语义节点",
+    "sourceUrls": ["https://html.spec.whatwg.org/multipage/dom.html#semantics-2", "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/", "https://www.w3.org/WAI/tutorials/page-structure/regions/", "https://www.w3.org/WAI/WCAG21/Techniques/html/H101", "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/"],
+    "rewriteRisk": "medium",
     "nearDuplicates": ["html", "a11y", "dom"]
   },
   {
     "slug": "deep-link",
-    "mechanism": "系统收到 URI 后，按应用清单中的匹配规则生成 Intent 并选择目标应用；应用再把路径和参数映射到内部页面。",
-    "misconception": "容易和普通网页链接混淆，也常忽略“应用未安装、未登录、链接失效”不是同一种失败。",
-    "demoSignature": "建议 5 帧：手机外是一条订单链接，手机内有系统路由、App、登录页和网页四层；点击链接并切换已安装、未安装、未登录状态，路径分别落到订单页、应用商店或登录暂存；登录完成后自动回到原订单，最终地址保持一致。",
-    "sourceUrls": ["https://developer.android.com/training/app-links/create-deeplinks"],
+    "mechanism": "系统收到 URI 后，按已注册的域名和路径匹配规则选择应用；应用再把路径和参数映射到内部页面。",
+    "misconception": "深度链接只解决入口定位；应用未安装、未登录、资源不存在和链接无法匹配，分别需要自己的回退结果。",
+    "demoSignature": "route: 4 frames; actors=订单链接/系统路由/登录页/订单 42/网页回退; phases=系统先匹配→已登录直达→登录后续走→未安装回网页; action=打开订单链接",
+    "sourceUrls": ["https://developer.android.com/training/app-links/create-deeplinks", "https://developer.android.com/guide/components/intents-filters", "https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html", "https://developer.apple.com/documentation/technotes/tn3155-debugging-universal-links", "https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment"],
     "rewriteRisk": "high",
     "nearDuplicates": ["routing", "app-manifest", "webview"]
   },
   {
     "slug": "app-manifest",
-    "mechanism": "构建工具和操作系统在安装、启动与组件调用时读取清单，获得组件、权限、特性和入口声明。",
-    "misconception": "清单声明权限不等于用户已经授权；声明相机能力也不代表运行时可以直接打开相机。",
-    "demoSignature": "建议 4 帧：左侧编辑 AndroidManifest.xml，右侧放启动图标、相机按钮和外部链接三个测试入口；依次删掉 activity、permission、intent-filter，点击对应入口；设备分别停在无法启动、权限异常和链接不匹配，恢复节点后逐项转绿。",
-    "sourceUrls": ["https://developer.android.com/guide/topics/manifest/manifest-intro"],
+    "mechanism": "应用清单是平台读取的配置文件：Android 的 AndroidManifest.xml 描述组件、入口、权限和链接匹配；PWA 的 Web App Manifest 描述名称、图标、启动地址和显示方式。",
+    "misconception": "清单只负责声明配置和入口；权限仍要按平台规则在运行时请求，用户也可以拒绝；它不负责业务错误处理或保证能力一定可用。",
+    "demoSignature": "contract: 4 frames; actors=AndroidManifest.xml/Android 系统/启动入口/相机权限/外部链接; phases=清单完整→入口声明缺失→权限声明缺失→链接规则缺失; action=移除一项声明",
+    "sourceUrls": ["https://developer.android.com/guide/topics/manifest/manifest-intro", "https://developer.android.com/guide/components/intents-filters", "https://developer.android.com/training/permissions/requesting", "https://www.w3.org/TR/appmanifest/", "https://web.dev/learn/pwa/web-app-manifest"],
     "rewriteRisk": "medium",
     "nearDuplicates": ["app-permission", "deep-link", "code-signing"]
   },
   {
     "slug": "emulator",
-    "mechanism": "仿真器在主机上模拟目标处理器、硬件和系统镜像，并允许注入网络、位置和设备状态。",
-    "misconception": "容易与只模拟操作系统接口的 simulator 混淆，也不能把仿真器性能当作真机性能。",
-    "demoSignature": "建议 5 帧：虚拟设备与真机双栏运行同一相机页；拖动网络、定位和传感器滑块，两栏先给出相同业务结果；随后真机栏补出触觉、功耗与相机启动延迟；点击“仅模拟器验证”会高亮仍未覆盖的硬件项。",
-    "sourceUrls": ["https://developer.android.com/studio/run/emulator"],
+    "mechanism": "仿真器在主机上运行虚拟设备配置，加载目标系统版本和硬件特征，并允许注入网络、位置和设备状态。",
+    "misconception": "仿真器适合功能、兼容性和可重复异常检查；它不能替代真机对真实性能、功耗、触觉、摄像头和传感器差异的确认。",
+    "demoSignature": "compare: 3 frames; actors=同一构建/仿真器/真机/验证清单; phases=先覆盖配置→复现异常条件→真机校验硬件; action=运行下一项测试",
+    "sourceUrls": ["https://developer.android.com/studio/run/emulator", "https://developer.android.com/studio/run/emulator-networking-address", "https://developer.android.com/studio/run/emulator-console", "https://developer.android.com/studio/run/emulator-comparison", "https://developer.apple.com/documentation/Xcode/running-your-app-on-simulated-or-physical-devices"],
     "rewriteRisk": "high",
     "nearDuplicates": ["adaptive-layout", "app-manifest", "safe-area"]
   },
   {
     "slug": "code-signing",
-    "mechanism": "构建产物的摘要由私钥签名，设备用证书公钥验证发布者身份与文件完整性；应用更新还会检查签名连续性。",
-    "misconception": "签名不是加密整个应用，也不证明代码安全；它证明谁签发以及产物是否被改动。",
-    "demoSignature": "建议 5 帧：APK 文件先生成摘要，再由私钥签名，设备用证书公钥验签；用户拖动修改包内一个字节，文件摘要立即变化；验签连线断开并标出“签名不匹配”；换用另一证书时再显示身份不一致。",
-    "sourceUrls": ["https://developer.android.com/studio/publish/app-signing", "https://developer.apple.com/support/code-signing/"],
+    "mechanism": "代码签名用私钥对构建产物的摘要或签名数据进行签名；设备或平台用证书里的公钥验证来源和内容是否被改动。",
+    "misconception": "签名只回答“谁签了、包有没有被改”，不保证代码没有漏洞，也不等于加密；私钥保护和权限管理仍要单独做好。",
+    "demoSignature": "pipeline: 4 frames; actors=Android APK（应用安装包）/文件摘要/签名私钥/设备验签; phases=生成摘要→私钥签名→设备验证通过→篡改后拒绝; action=修改包内一个字节",
+    "sourceUrls": ["https://developer.android.com/studio/publish/app-signing", "https://source.android.com/docs/security/features/apksigning", "https://source.android.com/docs/security/features/apksigning/v2", "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/AboutCS/AboutCS.html", "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Introduction/Introduction.html"],
     "rewriteRisk": "high",
     "nearDuplicates": ["app-manifest", "deploy", "build-tool"]
   },
   {
     "slug": "gesture",
-    "mechanism": "识别器根据触点数量、位移、速度、方向和持续时间，把连续触摸样本判定为轻点、拖拽、滑动或缩放。",
-    "misconception": "手势不是单个 touch 事件；轻点和滑动在手指落下时尚未确定，还会与滚动和系统手势竞争。",
-    "demoSignature": "建议 4 帧：手指在画布上移动，轨迹旁实时累计 distance、velocity、duration；未过阈值时卡片保持 pending；快速短划切为 swipe，长按后移动切为 drag；松手后把本次判定参数固定在轨迹旁。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/views/touch-and-input/gestures"],
+    "mechanism": "手势识别先收集按下、移动、抬起或取消等触摸事件，再按触点数量、位移、方向、速度和持续时间与规则比较，输出轻点 tap、滑动 swipe、拖拽 drag 等结果。",
+    "misconception": "手势是输入解释层，不应成为关键功能的唯一入口；还要处理系统滚动或手势竞争、取消事件和误触，并提供可见按钮或菜单替代；具体阈值由平台、组件配置和设备决定。",
+    "demoSignature": "route: 4 frames; actors=触点轨迹/移动距离/移动速度/手势结果; phases=按下：等待更多输入→短距离抬起→快速移动→停留后移动; action=查看下一段轨迹",
+    "sourceUrls": ["https://developer.android.com/develop/ui/views/touch-and-input/gestures", "https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector", "https://developer.android.com/develop/ui/views/touch-and-input/gestures/multi", "https://developer.apple.com/documentation/uikit/uigesturerecognizer", "https://www.w3.org/TR/pointerevents/latest/"],
     "rewriteRisk": "medium",
     "nearDuplicates": ["event", "touch-target", "adaptive-layout"]
   },
   {
     "slug": "haptic-feedback",
-    "mechanism": "系统把语义化触觉类型映射到设备执行器的波形、强度与时长，并受硬件能力和用户设置限制。",
-    "misconception": "不是所有点击都应振动，也不能用任意长振动代替确认、选择和警告的不同含义。",
-    "demoSignature": "建议 4 帧：选择、确认、警告三个按钮对应三条不同波形；按下按钮时手机轮廓轻缩，波形同步走完幅度和时长；关闭设备触觉能力后再次点击，波形置灰但按钮的视觉反馈仍完整出现。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/views/haptics/haptic-feedback", "https://developer.apple.com/design/human-interface-guidelines/playing-haptics"],
+    "mechanism": "应用先为选择、确认、警告或失败等事件选择对应的语义触感，平台再把它映射到设备执行器的强度、节奏或波形，并受硬件能力和用户设置限制；触觉结果还要与文字、视觉或声音同步。",
+    "misconception": "触觉不是把设备随便震一下，也不是可靠的唯一通知通道；原生语义反馈 API、自定义振动波形和网页 Vibration API 的能力边界不同，设备或用户设置也可能让请求不播放。",
+    "demoSignature": "compare: 4 frames; actors=语义事件/平台模式/设备执行器/文字与视觉; phases=选择发生→确认成功→警告或失败→设备不可用; action=查看下一种触感",
+    "sourceUrls": ["https://developer.android.com/develop/ui/views/haptics/haptic-feedback","https://developer.android.com/develop/ui/views/haptics/haptics-principles","https://developer.android.com/reference/android/os/VibrationEffect","https://developer.apple.com/design/human-interface-guidelines/playing-haptics","https://developer.apple.com/documentation/uikit/uifeedbackgenerator","https://www.w3.org/TR/vibration/"],
     "rewriteRisk": "medium",
-    "nearDuplicates": ["feedback", "gesture", "reduced-motion"]
+    "nearDuplicates": ["feedback","gesture","reduced-motion"]
   },
   {
     "slug": "touch-target",
-    "mechanism": "命中测试使用控件的可交互边界，而非图标可见像素；容器内边距可扩大目标，同时相邻目标必须保持分离。",
-    "misconception": "把图标放大不等于正确扩大点击区，透明热区若互相覆盖还会制造误触。",
-    "demoSignature": "建议 5 帧：16px 图标上显示真实命中框，用户连续点十次，落点散点记录命中与漏点；拖动 padding 把热区扩到 48dp，图标视觉尺寸不变；再次播放相同落点，漏点转为命中，同时标出与邻近按钮是否重叠。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/compose/accessibility/api-defaults?hl=en", "https://developer.apple.com/design/human-interface-guidelines/accessibility"],
+    "mechanism": "命中测试看的是控件的可交互边界，不是图标的可见像素；用容器尺寸或内边距扩大热区，再用间距避免相邻热区重叠。",
+    "misconception": "图标大小、命中区域和相邻间距是三个不同量；dp 是 Android 的密度无关像素，pt 是 Apple 的点，CSS px 是网页 CSS 像素；44 pt、48 dp、24 CSS px 来自不同平台或标准，不能直接互换，也不能只靠颜色或视觉放大解决漏点。",
+    "demoSignature": "transform: 4 frames; actors=16 px 图标/命中区域/十个落点/相邻目标; phases=只按图标命中→扩大不可见热区→重放相同落点→发现边界相撞; action=重放十个落点",
+    "sourceUrls": ["https://developer.android.com/develop/ui/compose/accessibility/api-defaults","https://developer.android.com/develop/ui/views/touch-and-input/gestures/viewgroup","https://developer.apple.com/design/human-interface-guidelines/buttons","https://developer.apple.com/design/human-interface-guidelines/accessibility","https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum"],
     "rewriteRisk": "high",
-    "nearDuplicates": ["a11y", "form", "feedback"]
+    "nearDuplicates": ["a11y","form","feedback"]
   },
   {
     "slug": "offline-first",
-    "mechanism": "读取优先命中本地数据源，写入先记录本地变更与同步元数据；网络恢复后队列上传，并按版本或业务规则解决冲突。",
-    "misconception": "不是把接口响应缓存起来就完成离线，也不是所有操作都能在无服务器确认时承诺成功。",
-    "demoSignature": "建议 6 帧：断网开关切断服务器后编辑一条笔记，本地卡片立即更新并进入 pending 队列；另一设备改同一标题；恢复网络后队列上传，服务器返回版本冲突；两份字段并排选择，确认后 server ack 消掉待同步标记。",
-    "sourceUrls": ["https://developer.android.com/topic/architecture/data-layer/offline-first"],
+    "mechanism": "关键读取先命中本地数据源；支持离线写入时，先把变更和同步元数据持久化到本地，再联网上传，并按版本或业务规则处理冲突。",
+    "misconception": "缓存一次接口响应只能帮助读取，不能自动提供离线写入、重试或冲突处理；设备显示已保存也不等于服务器已确认。",
+    "demoSignature": "queue: 4 frames; actors=笔记编辑器/本地数据/待同步队列/服务器版本/冲突选择; phases=断网仍可编辑→操作进入队列→恢复网络上传→选择字段结果; action=推进待同步队列",
+    "sourceUrls": [
+      "https://developer.android.com/topic/architecture/data-layer/offline-first",
+      "https://developer.android.com/topic/architecture/data-layer",
+      "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API",
+      "https://developer.chrome.com/docs/workbox/modules/workbox-background-sync"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["local-storage", "retry", "browser-api"]
+    "nearDuplicates": [
+      "local-storage",
+      "retry",
+      "browser-api"
+    ]
   },
   {
     "slug": "adaptive-layout",
-    "mechanism": "布局根据当前窗口大小类别和姿态切换导航与内容关系，而不是只读取设备型号；窗口运行中变化时重新计算。",
-    "misconception": "常与响应式等比缩放混为一谈；自适应强调布局模式变化，例如列表与详情从分屏变为前后页。",
-    "demoSignature": "建议 5 帧：用户拖动窗口从 360 到 1200px，画布上保留同一任务；导航先是底栏，再变侧栏，详情从独立页并入双栏；一枚焦点光标跨布局跟随同一控件，最终显示内容未丢失、操作位置未重置。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/compose/layouts/adaptive"],
+    "mechanism": "布局根据应用窗口的可用空间、方向和折叠姿态切换导航与内容关系，而不是读取设备型号；窗口运行中变化时重新计算并保留当前任务和阅读位置，接入键盘或辅助技术时再把焦点映射回原控件。",
+    "misconception": "自适应不是按设备型号套固定三档，也不是把所有元素等比拉伸；Web 常用 CSS px、Android 窗口大小类别常用 dp，本例数值只是教学示例，真实阈值要由内容关系、可读性和输入方式决定。",
+    "demoSignature": "transform: 4 frames; actors=应用窗口/主导航/任务列表/任务详情/键盘焦点; phases=窄屏单任务→中宽保留上下文→宽屏改成侧栏→焦点仍在原任务; action=拖宽窗口",
+    "sourceUrls": [
+      "https://developer.android.com/develop/ui/compose/layouts/adaptive",
+      "https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-size-classes",
+      "https://www.w3.org/TR/mediaqueries-4/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["responsive", "safe-area", "cross-platform-development"]
+    "nearDuplicates": [
+      "responsive",
+      "safe-area",
+      "cross-platform-development"
+    ]
   },
   {
     "slug": "safe-area",
-    "mechanism": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset；内容可延伸到屏幕边缘，关键控件需加上相应内边距。",
-    "misconception": "安全区不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；背景和可操作内容处理不同。",
-    "demoSignature": "建议 4 帧：切换刘海、圆角和横屏设备外形，四边 inset 以半透明色块进入画面；背景保持铺满，标题和底部按钮自动移入安全区；关闭 safe-area 适配后，两者被遮挡的位置用红框标出。",
-    "sourceUrls": ["https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area", "https://drafts.csswg.org/css-env-1/"],
+    "mechanism": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset（系统留出的安全边距）；背景可延伸到屏幕边缘，关键控件根据这些值加内边距，方向或设备形态变化时重新读取。",
+    "misconception": "安全区域不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；平台单位和接口可能不同，背景与可操作内容的处理也不同。",
+    "demoSignature": "layers: 4 frames; actors=物理屏幕/安全区域/页面背景/标题与按钮; phases=普通矩形屏（本例无刘海/手势区）→加入刘海和手势条→旋转到横屏→固定边距造成遮挡; action=切换设备外形",
+    "sourceUrls": [
+      "https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area",
+      "https://www.w3.org/TR/css-env-1/",
+      "https://developer.android.com/reference/android/view/WindowInsets",
+      "https://developer.android.com/develop/ui/views/layout/display-cutout",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/env"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["adaptive-layout", "touch-target", "app-lifecycle"]
+    "nearDuplicates": [
+      "adaptive-layout",
+      "touch-target",
+      "app-lifecycle"
+    ]
   },
   {
     "slug": "app-lifecycle",
-    "mechanism": "操作系统通过 onCreate/onStart/onResume/onPause/onStop/onDestroy 等回调驱动 Activity 状态；进程可能在后台被直接回收。",
-    "misconception": "后台不等于应用仍完整运行，onDestroy 也不是可靠的最终保存时机。",
-    "demoSignature": "建议 6 帧：状态机围绕一个正在编辑的草稿页；依次点击打开、切到后台、旋转、系统回收，实际生命周期回调沿路径点亮；保存策略可在 onPause 与 onDestroy 间切换；回到页面后，后者会出现草稿为空的可见结果。",
-    "sourceUrls": ["https://developer.android.com/guide/components/activities/activity-lifecycle"],
+    "mechanism": "运行环境通过生命周期事件通知页面或应用进入可见、交互、后台和终止或重建等阶段；应用可在这些阶段安排保存状态、暂停资源，回来时再从已持久化数据尝试恢复，结果取决于实现和保存是否完成。",
+    "misconception": "后台不等于进程还会一直运行，onDestroy 或 beforeunload 也不是可靠的最终保存时机；重要数据应在编辑过程中或有机会时提前持久化。",
+    "demoSignature": "state-machine: 4 frames; actors=页面已创建/前台可编辑/后台不可见/进程已被回收/草稿存储; phases=打开并编辑→切到后台→进程被回收→重新打开; action=触发下一次生命周期变化",
+    "sourceUrls": [
+      "https://developer.android.com/guide/components/activities/activity-lifecycle",
+      "https://developer.android.com/topic/libraries/architecture/saving-states",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API",
+      "https://developer.chrome.com/docs/web-platform/page-lifecycle-api",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["offline-first", "local-storage", "push-notification"]
+    "nearDuplicates": [
+      "offline-first",
+      "local-storage",
+      "push-notification"
+    ]
   },
   {
     "slug": "app-permission",
-    "mechanism": "应用先在清单声明受保护能力，运行时读取授权状态，并在用户触发相关任务时请求；结果可能是允许、拒绝或不再询问。",
-    "misconception": "权限弹窗不是启动时越早弹越好，也不能把拒绝理解为应用整体不可用。",
-    "demoSignature": "建议 5 帧：点击拍照按钮，权限卡从 unknown 进入用途说明和系统弹窗；选择允许后相机打开，选择拒绝后原位出现文件上传；第二次永久拒绝才出现设置入口；每次选择都同步改变下一次点击的路径。",
-    "sourceUrls": ["https://developer.android.com/training/permissions/requesting", "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy"],
+    "mechanism": "原生平台先声明能力和用途（Android manifest、iOS Info.plist），Web 按权限 API 和浏览器策略处理；运行时读取授权状态，在用户触发具体任务时解释用途并请求，界面据此选择主路径或替代路径。",
+    "misconception": "权限不是启动时一次性收集，也不是拒绝后反复弹窗；Android 的“不再询问”、iOS 和浏览器的权限状态与再次请求规则不同，拒绝后仍应让用户完成不依赖该能力的任务。",
+    "demoSignature": "branch: 5 frames; actors=拍照按钮/用途说明/系统权限弹窗/相机页面/文件上传/系统设置入口; phases=在需要时说明→交给系统决定→允许后打开相机→拒绝后仍可继续→系统不再直接弹窗才去设置; action=选择一个授权结果",
+    "sourceUrls": [
+      "https://developer.android.com/training/permissions/requesting",
+      "https://developer.apple.com/documentation/uikit/protecting-the-user-s-privacy",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API",
+      "https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia",
+      "https://web.dev/articles/permissions-best-practices"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["browser-api", "push-notification", "safe-area"]
+    "nearDuplicates": [
+      "browser-api",
+      "push-notification",
+      "safe-area"
+    ]
   },
   {
     "slug": "push-notification",
-    "mechanism": "应用从系统推送服务取得设备令牌，业务服务器把消息交给推送服务，设备再按前后台状态展示或交给应用处理。",
-    "misconception": "推送不是必达消息队列，设备令牌也不会永久不变；关键业务不能只靠通知到达。",
-    "demoSignature": "建议 6 帧：app token、业务服务器、FCM/APNs、设备组成四段投递管线；点击发送后消息逐段移动；切换令牌过期会在网关退回，应用前台会转成站内提示，用户点通知后再沿 deep link 进入指定页面。",
-    "sourceUrls": ["https://firebase.google.com/docs/cloud-messaging/fcm-architecture", "https://developer.apple.com/documentation/usernotifications"],
+    "mechanism": "应用通过 FCM/APNs SDK 取得平台为本次安装生成的注册令牌，业务服务器保存当前映射并在订单变化时提交消息；推送服务按平台规则把消息交给设备，用户已允许通知且系统策略允许展示时才可能出现系统通知，前台也可能由应用改成站内提示。",
+    "misconception": "注册令牌不是固定设备 ID；它可能因重装、清理数据、平台刷新或长期不活跃而变化。投递成功不等于系统展示或用户点击，关键业务仍需打开应用后从服务器核对；收到无效结果要清理映射。",
+    "demoSignature": "pipeline: 5 frames; actors=设备令牌/业务服务器/FCM / APNs/用户设备/订单详情; phases=令牌先登记→服务器交给网关→后台显示通知→点击进入订单→过期令牌被清理; action=发送通知",
+    "sourceUrls": [
+      "https://firebase.google.com/docs/cloud-messaging/fcm-architecture",
+      "https://firebase.google.com/docs/cloud-messaging/manage-tokens",
+      "https://developer.android.com/develop/ui/views/notifications/notification-permission",
+      "https://developer.apple.com/documentation/usernotifications",
+      "https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["deep-link", "app-permission", "app-lifecycle"]
   },
   {
     "slug": "cross-platform-development",
-    "mechanism": "共享层复用业务逻辑和部分界面，通过编译、运行时或平台通道调用 iOS/Android 原生能力；平台特有代码仍单独维护。",
-    "misconception": "跨平台不是“一份代码无需适配”，也不是 WebView 的同义词。",
-    "demoSignature": "建议 5 帧：代码树分 shared、ios、android 三个容器；用户把价格计算拖进 shared，两端测试同时通过；再把通知权限或相机调用拖进 shared，平台 API 标记冲突；移回各自 adapter 后公共逻辑比例与平台差异同时可见。",
-    "sourceUrls": ["https://docs.flutter.dev/resources/architectural-overview", "https://reactnative.dev/architecture/overview"],
+    "mechanism": "跨平台方案把能共享的业务规则、数据和部分界面放在共享核心；编译产物、运行时或平台通道（桥接）负责把统一接口接到 iOS/Android API。适配器就是把“请求相机”等统一接口翻译成各平台实现的薄层。",
+    "misconception": "共享代码不等于所有界面和行为相同；权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
+    "demoSignature": "assembly: 4 frames; actors=共享核心/iOS 适配器/Android 适配器/iOS 应用/Android 应用; phases=共享纯业务规则→平台能力走接口→错误共享会失败→移回平台边界; action=移动一块代码",
+    "sourceUrls": [
+      "https://docs.flutter.dev/resources/architectural-overview",
+      "https://docs.flutter.dev/platform-integration/platform-channels",
+      "https://reactnative.dev/architecture/overview",
+      "https://kotlinlang.org/docs/multiplatform.html",
+      "https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui?view=net-maui-9.0"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["webview", "app-manifest", "browser-api"]
   },
   {
     "slug": "webview",
-    "mechanism": "原生应用创建内嵌浏览器视图加载 Web 内容，并通过受控消息桥让 JavaScript 请求少量原生能力。",
-    "misconception": "WebView 不是完整系统浏览器，也不等于原生页面；Cookie、导航、下载、权限和桥接安全由宿主处理。",
-    "demoSignature": "建议 4 帧：WebView 中点击分享，消息卡先穿过 origin 与 schema 两道校验，再抵达原生分享面板；用户篡改 origin 或 method 字段，消息停在对应闸门；网页收到结构化错误并显示可恢复提示。",
-    "sourceUrls": ["https://developer.android.com/develop/ui/views/layout/webapps/webview", "https://developer.apple.com/documentation/webkit/wkwebview"],
+    "mechanism": "WebView 是原生应用（宿主应用）里由系统网页引擎提供的内嵌页面容器；消息桥把网页消息转换为少量受控原生调用，不是任意 RPC，宿主校验 origin（协议+域名+端口）、方法、版本和参数后再调用。",
+    "misconception": "它不是完整浏览器，也不是原生页面；网页引擎和版本可能与系统浏览器不同，登录状态与能力不会自动一致。宿主负责导航、Cookie/存储、下载、权限、生命周期、内存和桥接安全，不应让不可信页面调用任意原生方法。",
+    "demoSignature": "contract: 4 frames; actors=活动网页/来源校验/消息校验/原生分享/结构化回复; phases=网页发起分享→来源与结构通过→原生返回结果→未知来源被拒绝; action=发送桥接消息",
+    "sourceUrls": [
+      "https://developer.android.com/develop/ui/views/layout/webapps/webview",
+      "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges",
+      "https://developer.apple.com/documentation/webkit/wkwebview",
+      "https://developer.apple.com/documentation/webkit/wkscriptmessagehandler",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["csr", "browser-api", "cors"]
+    "nearDuplicates": [
+      "csr",
+      "browser-api",
+      "cors"
+    ]
   },
   {
     "slug": "css-selector",
-    "mechanism": "选择器按元素、类、属性、关系和伪类条件匹配 DOM 节点，只有匹配声明才进入层叠计算。",
-    "misconception": "选择器具体不等于一定生效；匹配之后还要比较来源、重要性、层和优先级。",
-    "demoSignature": "建议 4 帧：DOM 树旁输入 selector，匹配节点逐个亮起；悬停选择器会画出组合关系，改一段语法后匹配集合即时收缩；打开层叠面板，另用划线状态区分“匹配成功”和“最终值被覆盖”。",
-    "sourceUrls": ["https://www.w3.org/TR/selectors-4/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors"],
+    "mechanism": "选择器按元素、类、属性、关系和伪类条件匹配 DOM（页面节点树）中的元素；只有匹配成功的声明才进入层叠计算。伪类表示元素状态或结构条件，例如 :hover。",
+    "misconception": "选择器匹配不等于样式一定生效；匹配之后还要比较来源、重要性、层（@layer）、特异性（选择器权重）和声明顺序。",
+    "demoSignature": "tree: 4 frames; actors=选择器/DOM 树/匹配集合/层叠结果; phases=输入类选择器→增加子代条件→加入属性条件→规则被覆盖; action=修改选择器",
+    "sourceUrls": [
+      "https://www.w3.org/TR/selectors-4/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity",
+      "https://www.w3.org/TR/css-cascade-6/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator"
+    ],
     "rewriteRisk": "medium",
-    "nearDuplicates": ["cascade", "specificity", "css"]
+    "nearDuplicates": [
+      "cascade",
+      "specificity",
+      "css"
+    ]
   },
   {
     "slug": "box-model",
-    "mechanism": "布局尺寸由 content、padding、border、margin 分层计算；box-sizing 决定声明宽高覆盖 content box 还是 border box。",
-    "misconception": "width 不总是元素最终占用宽度，margin 也不属于元素可绘制背景范围。",
-    "demoSignature": "建议 4 帧：拖动 width、padding、border 三个滑块，content/padding/border/margin 四层盒子同步伸缩；计算式逐项累加占用宽度；切换到 border-box 后外框收回 200px，内容区数值相应缩小。",
-    "sourceUrls": ["https://www.w3.org/TR/css-box-4/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model"],
+    "mechanism": "盒模型把元素分成 content 内容区、padding 内边距、border 边框和 margin 外边距；box-sizing 决定 width/height 从 content box 还是 border box 开始计算。本例先算单个盒子的 border box，margin 另算。",
+    "misconception": "width 不总是元素最终占用的水平空间：content-box 下 padding 和 border 会把 border box 撑大，margin 仍在盒子外且可能受相邻块外边距折叠影响。",
+    "demoSignature": "assembly: 3 frames; actors=内容区/内边距/边框/尺寸计算; phases=只有内容宽度→内边距和边框加入→切换 border-box; action=调整盒子参数",
+    "sourceUrls": [
+      "https://www.w3.org/TR/css-box-4/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model",
+      "https://www.w3.org/TR/css-sizing-3/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/width"
+    ],
     "rewriteRisk": "medium",
     "nearDuplicates": ["css", "positioning", "css-grid"]
   },
