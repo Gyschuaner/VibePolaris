@@ -1,6 +1,12 @@
 # VBP-049 新闻栏目交付记录
 
-状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯 2021-01-08 至 2026-10-02。本分支不合并 `dev`、不部署生产；论文不再作为阶段二的主事件来源。
+状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
+
+### 2026-10-02 腾讯云部署尝试（已回滚）
+
+- 目标提交：`7de944165ad88a03d7a9dea80f1708a452d507bf`；本机 `linux/amd64` 镜像构建、`news:validate`、`typecheck` 和定向 5 项测试、192 页构建均通过。
+- 子智能体完成镜像传输并短暂加载新容器；用户在正式切换后续阶段要求停止，因此没有把它作为成功发布。线上已恢复 `vibepolaris:46b7612c`，`current` 为 `/opt/vibepolaris/releases/20261002T093829Z-46b7612c`，容器 health 为 `healthy`。
+- 临时镜像、release 目录和上传包已清理；数据库卷、旧镜像和 Caddy 未改动。DP 部署记录：`deploy-vbp049-news-20261002-7de94416-rollback`，状态 `rolled_back`。
 
 这次发布不依赖 `NEWS_DOTS_ENDPOINT`，也不要求 `dev` 分支保护。工作流在没有 Dots endpoint 时会跳过外部交接，继续校验仓库内的官方来源内容；如果以后配置 endpoint 或触发 `repository_dispatch`，仍会经过同一套 ingest、事实、来源、词条关系和发布门槛。
 
