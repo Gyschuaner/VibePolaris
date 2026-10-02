@@ -102,13 +102,16 @@
   },
   {
     "slug": "form",
-    "mechanism": "表单把标签、输入、约束、错误反馈和提交行为组织在一起，收集一组有明确含义的数据。",
-    "misconception": "浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
-    "demoSignature": "state-machine: 4 frames; actors=姓名/邮箱/浏览器校验/服务端校验/报名结果; phases=保留输入→前端拦截→修正后提交→确认成功; action=尝试提交",
+    "mechanism": "表单先用可见标签把输入和含义对应起来，再用约束做客户端即时检查；通过后提交，服务端把输入当作不可信数据重新验证，并把错误关联回字段或整表结果。",
+    "misconception": "浏览器校验只负责尽快反馈；有人可以用别的工具直接向服务端发请求，不走这个页面，所以服务端仍要按业务规则重新验证。占位文字只是示例，不能代替始终可见的字段标签。",
+    "demoSignature": "state-machine: 6 frames; actors=姓名/邮箱/浏览器校验/服务端校验/报名结果; phases=填写表单→前端拦截→用户修正→服务端检查→服务端拒绝→改正后成功; action=尝试提交",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation"
+      "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation",
+      "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+      "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html"
     ],
-    "rewriteRisk": "正式页面需守住边界：浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "rewriteRisk": "正式页面需守住边界：客户端校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的字段标签；错误提示要指出具体字段和修复方向。",
     "nearDuplicates": [
       "html",
       "focus-management",

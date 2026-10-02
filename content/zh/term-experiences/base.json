@@ -363,8 +363,8 @@
   {
     "slug": "form",
     "lead": "邮箱写错后，页面怎样指出具体问题，同时保留用户已经填好的姓名？",
-    "definition": "表单把标签、输入、约束、错误反馈和提交行为组织在一起，收集一组有明确含义的数据。",
-    "boundary": "浏览器校验用于及时反馈，不能替代服务端校验；占位文字也不能代替始终可见的标签。",
+    "definition": "表单把可见标签、输入、约束、错误反馈和提交行为组织在一起，收集一组要一起提交的数据。",
+    "boundary": "浏览器校验只负责尽快反馈；有人可以用别的工具直接向服务端发请求，不走这个页面，所以服务端仍要按业务规则重新验证。占位文字只是示例，不能代替始终可见的字段标签。",
     "sceneKind": "state-machine",
     "sceneTitle": "一封报名表的校验与提交",
     "actionLabel": "尝试提交",
@@ -393,7 +393,7 @@
       {
         "id": "server-check",
         "label": "服务端校验",
-        "detail": "尚未收到",
+        "detail": "尚未收到请求",
         "icon": "shield",
         "group": "服务端"
       },
@@ -427,8 +427,8 @@
     ],
     "frames": [
       {
-        "label": "保留输入",
-        "note": "姓名和邮箱各自有标签，用户输入不会因为报错被清空。",
+        "label": "填写表单",
+        "note": "姓名和邮箱各自有始终可见的标签，填好的内容不会被后续检查清空；占位文字只是示例，不能代替标签。",
         "activeIds": [
           "name",
           "email"
@@ -445,7 +445,7 @@
       },
       {
         "label": "前端拦截",
-        "note": "邮箱格式不完整，焦点回到邮箱并显示具体错误。",
+        "note": "邮箱格式不完整，错误显示在邮箱旁，焦点回到邮箱输入框；姓名不会被清空。",
         "activeIds": [
           "email",
           "client-check"
@@ -458,16 +458,38 @@
           "result"
         ],
         "values": {
-          "email": "请输入完整邮箱",
-          "client-check": "invalid"
+          "email": "guyan@",
+          "client-check": "格式不完整"
         },
         "activeEdgeIds": [
           "input-client"
         ]
       },
       {
-        "label": "修正后提交",
-        "note": "邮箱改为有效格式，浏览器把完整数据发送给服务端。",
+        "label": "用户修正",
+        "note": "用户补全邮箱并再次提交；浏览器检查通过，请求这才发往服务端。",
+        "activeIds": [
+          "email",
+          "client-check"
+        ],
+        "doneIds": [
+          "name"
+        ],
+        "mutedIds": [
+          "server-check",
+          "result"
+        ],
+        "values": {
+          "email": "guyan@example.com",
+          "client-check": "格式通过"
+        },
+        "activeEdgeIds": [
+          "input-client"
+        ]
+      },
+      {
+        "label": "服务端校验",
+        "note": "页面通常在格式通过后发送请求；服务端不直接把页面送来的内容当真，每次都要再检查邮箱是否已注册这类业务规则，绕过页面发来的请求也一样。",
         "activeIds": [
           "email",
           "server-check"
@@ -481,15 +503,35 @@
         ],
         "values": {
           "email": "guyan@example.com",
-          "server-check": "校验业务规则"
+          "server-check": "检查是否已注册"
         },
         "activeEdgeIds": [
           "client-server"
         ]
       },
       {
-        "label": "确认成功",
-        "note": "服务端接受数据，页面显示可被读屏识别的成功提示。",
+        "label": "服务端拒绝",
+        "note": "邮箱已经注册，错误提示出现在邮箱旁边，焦点回到邮箱输入框；姓名等有效输入仍保留。",
+        "activeIds": [
+          "email",
+          "result"
+        ],
+        "doneIds": [
+          "name",
+          "client-check",
+          "server-check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "邮箱已注册"
+        },
+        "activeEdgeIds": [
+          "server-result"
+        ]
+      },
+      {
+        "label": "改正后成功",
+        "note": "换用未注册邮箱再次提交，服务端接受数据，页面用文字显示成功，不只靠颜色提示。",
         "activeIds": [
           "result"
         ],
@@ -508,7 +550,7 @@
         ]
       }
     ],
-    "insight": "一份好表单既要阻止无效数据，也要帮助用户知道下一步改哪里。",
+    "insight": "一份好表单把客户端的即时提示和服务端的最终判断分开，同时让用户知道要改哪一项。",
     "quiz": {
       "question": "前端已经验证邮箱格式，服务端还需要再验证吗？",
       "options": [
@@ -534,9 +576,19 @@
     },
     "sources": [
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation",
-        "label": "MDN · Client-side form validation",
-        "note": "浏览器行为与常见用法"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation",
+        "label": "MDN · Constraint validation",
+        "note": "浏览器约束校验、反馈方法与服务端边界"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+        "label": "W3C WCAG 2.2 · Labels or Instructions",
+        "note": "字段标签、说明与占位文字的区别"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+        "label": "W3C WCAG 2.2 · Error Identification",
+        "note": "指出出错字段并提供文字错误信息"
       }
     ]
   },
