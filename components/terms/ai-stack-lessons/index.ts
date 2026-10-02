@@ -5,3 +5,4 @@ export { SastLesson } from "./sast";
 export { SecretScanningLesson } from "./secret-scanning";
 export { DependencyScanningLesson } from "./dependency-scanning";
 export { ThreatModelingLesson } from "./threat-modeling";
+export { ToolApprovalLesson } from "./tool-approval";

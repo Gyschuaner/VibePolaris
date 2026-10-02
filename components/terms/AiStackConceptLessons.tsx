@@ -1,4 +1,4 @@
-import { ContainerImageLesson, DependencyScanningLesson, ObservabilityLesson, SastLesson, SecretScanningLesson, ServiceDiscoveryLesson, ThreatModelingLesson } from "./ai-stack-lessons";
+import { ContainerImageLesson, DependencyScanningLesson, ObservabilityLesson, SastLesson, SecretScanningLesson, ServiceDiscoveryLesson, ThreatModelingLesson, ToolApprovalLesson } from "./ai-stack-lessons";
 export { Caption } from "./AiStackConceptLessonShared";
 export { ContainerImageLesson } from "./ai-stack-lessons/container-image";
 
@@ -10,4 +10,5 @@ export const aiStackLessons = {
   "secret-scanning": SecretScanningLesson,
   "dependency-scanning": DependencyScanningLesson,
   "threat-modeling": ThreatModelingLesson,
+  "tool-approval": ToolApprovalLesson,
 } as const;
