@@ -14,3 +14,4 @@ export { toolChoiceSources } from "./tool-choice";
 export { toolResultSources } from "./tool-result";
 export { planAndExecuteSources } from "./plan-and-execute";
 export { agentOrchestrationSources } from "./agent-orchestration";
+export { handoffSources } from "./handoff";
