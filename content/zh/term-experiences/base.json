@@ -7061,11 +7061,11 @@
   },
   {
     "slug": "ia",
-    "lead": "帮助中心有三百篇文章，用户凭什么预测“取消订阅”应该在哪一类？",
-    "definition": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能够预测信息位置。",
-    "boundary": "信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "lead": "帮助中心有 300 篇文章，用户凭什么预测“取消订阅”应该在哪一类？",
+    "definition": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能按自己的任务预测信息位置。同一篇内容可以保留一份正文，从多个入口被找到。",
+    "boundary": "信息架构不只是画菜单。搜索词、同义标签和从不同任务进入同一内容的路径，也属于信息架构要安排的部分。",
     "sceneKind": "tree",
-    "sceneTitle": "三百篇帮助文章怎样形成可预测入口",
+    "sceneTitle": "300 篇帮助文章，怎样让人猜到从哪儿找",
     "actionLabel": "整理下一层",
     "actors": [
       {
@@ -7085,14 +7085,14 @@
       {
         "id": "account",
         "label": "账户与安全",
-        "detail": "登录、成员、权限",
+        "detail": "登录、成员、安全设置",
         "icon": "shield",
         "group": "一级分类"
       },
       {
         "id": "cancel",
         "label": "取消订阅",
-        "detail": "套餐管理 > 取消",
+        "detail": "账单与订阅 › 取消订阅",
         "icon": "component",
         "group": "任务内容"
       },
@@ -7122,7 +7122,7 @@
         "id": "content-account",
         "from": "content",
         "to": "account",
-        "label": "分开身份问题"
+        "label": "账号类问题分开放"
       },
       {
         "id": "billing-cancel",
@@ -7134,7 +7134,7 @@
         "id": "search-cancel",
         "from": "search",
         "to": "cancel",
-        "label": "同义词命中"
+        "label": "同义词也能找到"
       },
       {
         "id": "crosslink-cancel",
@@ -7146,7 +7146,7 @@
     "frames": [
       {
         "label": "盘点内容",
-        "note": "先识别文章实际回答的用户任务，而不是按内部团队归属分类。",
+        "note": "先看每篇文章实际在回答什么问题，不按内部团队来分。",
         "activeIds": [
           "content"
         ],
@@ -7183,7 +7183,7 @@
       },
       {
         "label": "放置任务内容",
-        "note": "“取消订阅”进入账单与订阅下的套餐管理，而不是公司内部的留存团队。",
+        "note": "“取消订阅”放在账单与订阅下；分类名跟着用户任务走，不跟着公司团队走。",
         "activeIds": [
           "billing",
           "cancel"
@@ -7197,7 +7197,7 @@
           "crosslink"
         ],
         "values": {
-          "cancel": "账单与订阅 / 套餐管理"
+          "cancel": "账单与订阅 › 取消订阅"
         },
         "activeEdgeIds": [
           "billing-cancel"
@@ -7225,7 +7225,7 @@
       },
       {
         "label": "建立交叉入口",
-        "note": "账单页和套餐设置都链接到同一内容，不复制两篇不同版本。",
+        "note": "账单页和套餐设置都链接到同一篇文章，不复制第二份。",
         "activeIds": [
           "crosslink",
           "cancel"
@@ -7246,20 +7246,20 @@
         ]
       }
     ],
-    "insight": "好的信息架构让用户按自己的任务语言找到内容，而不是学习组织内部结构。",
+    "insight": "好的信息架构让用户用自己的任务语言就能找到内容；同一篇内容可以有多个入口，但正文只维护一份。",
     "quiz": {
-      "question": "“API 密钥”文章应该只放在开发团队所属分类下吗？",
+      "question": "“API 密钥”文章要不要只放在开发团队分类下？",
       "options": [
         {
-          "label": "不一定，还要考虑用户从安全、集成和账户设置进入的路径",
+          "label": "不一定，安全设置、连接服务等入口也可能通向它",
           "correct": true
         },
         {
-          "label": "应该，组织架构就是最佳导航",
+          "label": "应该，只按开发团队归属放置就够了",
           "correct": false
         },
         {
-          "label": "应该，而且每个入口复制一篇",
+          "label": "应该，每个入口都复制一篇完整文章",
           "correct": false
         }
       ],
@@ -7268,13 +7268,33 @@
     },
     "prompt": {
       "title": "整理内容的信息架构",
-      "text": "请按用户任务盘点内容，提出一级分类、二级标签和命名规则。用五个真实查找任务测试用户会先去哪里，补充同义搜索词和交叉入口，并标出重复、孤立和无法归类的内容。"
+      "text": "请先从客服记录、搜索日志或访谈中选出五个真实查找任务，再按用户任务盘点内容，提出一级分类、必要的二级标签和命名规则。拿这五个任务逐个检查：用户会先去哪里找？再补充同义搜索词和交叉入口，并标出重复、孤立和无法归类的内容。"
     },
     "sources": [
       {
-        "url": "https://www.usability.gov/what-and-why/information-architecture.html",
-        "label": "Usability.gov · Information Architecture",
-        "note": "可用性方法与实践"
+        "url": "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels",
+        "label": "W3C WAI · Headings and Labels",
+        "note": "清楚的标题和标签帮助用户找到信息，并理解内容之间的关系。"
+      },
+      {
+        "url": "https://www.w3.org/WAI/curricula/designer-modules/navigation-design/",
+        "label": "W3C WAI · Navigation Design",
+        "note": "导航设计要考虑菜单、目录、搜索和站点地图等查找方式。"
+      },
+      {
+        "url": "https://www.w3.org/WAI/tips/writing/",
+        "label": "W3C WAI · Writing for Web Accessibility",
+        "note": "短而清楚的标题可以组织内容，并帮助读者定位和浏览。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/scoping-your-service",
+        "label": "GOV.UK Service Manual · Getting the scope of your transaction right",
+        "note": "服务应按用户能识别的任务来组织，不让组织结构决定入口。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/map-a-users-whole-problem",
+        "label": "GOV.UK Service Manual · Map and understand a user's whole problem",
+        "note": "把相关任务和入口连成用户能理解的完整旅程，减少断点和重复内容。"
       }
     ]
   },
