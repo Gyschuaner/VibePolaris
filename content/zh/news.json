@@ -209,6 +209,136 @@
     "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5"
   },
   {
+    "slug": "mit-tensor-holography-20210310-ad796087",
+    "title": "MIT 报道 Tensor Holography：深度学习让 3D 全息图生成更快，手机端也能运行原型",
+    "summary": "2021-03-10，MIT News 报道了 Tensor Holography：研究团队用深度学习把带颜色和逐像素深度的 RGB-D 图像转换成 3D 全息图。模型在消费级 GPU 上可达到 1920×1080、60 Hz，iPhone 11 Pro 上约 1.1 Hz、Google Edge TPU 上约 2 Hz；这些数字展示了不同硬件上的速度差异，也不等于手机已经能流畅驱动所有全息显示。报道把研究与 VR、3D 打印和医学成像等方向联系起来，真正可复现的证据仍要回到输入数据、显示硬件和测试速度。",
+    "body": "2021-03-10，MIT News 报道 MIT 研究团队提出的 Tensor Holography（张量全息）方法。报道对象是一套深度学习管线、训练数据和原型演示，文章把它与 VR、3D 打印、显微镜和医学数据可视化等方向联系起来，页面没有产品上市信息。\n\n先把全息图想成一张给光线看的指令图。普通照片只记录颜色和亮暗；3D 全息显示还要让光在不同深度产生正确的相位（光波周期中的位置或节奏，不是颜色）和干涉（不同光波叠加后形成的明暗变化），眼睛才会收到连续的深度线索。传统的计算机生成全息（CGH）会根据光学传播公式逐步模拟，这要反复处理场景里不同深度的点。MIT News 说，物理仿真在高性能计算机上也可能要为一张图花几秒甚至几分钟，而且遮挡关系很难同时处理得逼真。\n\nTensor Holography 的输入是一张 RGB-D 图像：每个像素除了红绿蓝，还带有到相机的深度。研究团队用卷积神经网络（一种擅长处理图像的神经网络）学习“颜色加深度”到“全息图”的映射。为了训练网络，他们建立了 4,000 对计算机生成的图像和对应全息图；每一对都把复杂形状、颜色、纹理以及前景和背景的深度信息配在一起，再用物理计算处理遮挡。网络学习的不是某个物体的名字，而是怎样把带深度的场景转换为可供显示器调制光波的结果。\n\n数字能说明它快到什么程度，也能提醒我们不要把“快”读过头。Nature 的原始论文写明，模型在消费级 GPU 上对 1920×1080 分辨率可达到 60 Hz，内存占用低于 620 KB；MIT News 用“不到 1 MB”概括它的内存规模。这里的 Hz 是模型生成或推理的频率：60 Hz 约等于每秒 60 次，iPhone 11 Pro 的 1.1 Hz 约等于每秒 1 次，Google Edge TPU 的 2 Hz 约等于每秒 2 次，不是最终显示器的刷新率。后两项是交互运行的原型结果，距离“手机上每秒 60 张全息图”还有明显差距；手机端结果只表明原型可以运行。\n\n这项方法用可部署的神经网络推理替代部分物理计算，降低了研究人员制作实时演示的门槛。项目页展示了用 HOLOEYE PLUTO 空间光调制器（SLM，一种可以逐像素改变光波相位的显示面板）做的近眼显示实验；普通手机屏幕主要调节亮度，所以手机能运行模型并不等于手机屏幕能直接显示全息图。MIT 技术转移办公室还把它描述为可用于 VR 显示、3D 打印、医学成像和显微镜等方向。这里的“可用于”仍是技术路线和原型能力的延伸，尚无这些行业的临床、生产或安全认证证据。显示器能否调制相位、深度数据是否可靠、用户是否会看到散斑（相干光形成的颗粒状亮暗纹）和延迟，都会决定实际体验。\n\n这条新闻的时间线应分开记录：2021-03-10 是 MIT News 报道日期，也是 Nature 论文的发表日期；研究团队的项目页提供代码、数据集和演示链接。论文是新闻背后的原始方法证据，新闻则把结果放回读者能理解的应用语境。两个日期都不能被写成“手机全息产品发布日”，因为报道对象是科研演示。\n\n检查类似的 AI 硬件新闻时，先核对输入、模型输出控制的物理过程、测速分辨率和设备条件，再寻找真实部署、用户安全与可靠性证据。Tensor Holography 报告了更快的全息图生成，但全息体验仍由数据、神经网络、光学器件和人的视觉共同决定。",
+    "publishedAt": "2021-03-10",
+    "eventDate": "2021-03-10",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/mit-tensor-holography-20210310-ad796087.svg",
+      "alt": "RGB-D 场景经过 Tensor Holography 神经网络生成全息图，再交给空间光调制器显示",
+      "sourceUrl": "/images/news/mit-tensor-holography-20210310-ad796087.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "event",
+        "title": "3 月 10 日的新闻讲了什么",
+        "body": "MIT News 报道 MIT 研究团队提出 Tensor Holography，让带颜色和逐像素深度的 RGB-D 图像更快地转换成 3D 全息图。报道给出研究方法、训练数据和原型演示，讨论 VR、3D 打印和医学成像等方向；页面没有产品上市信息。",
+        "kind": "narrative"
+      },
+      {
+        "id": "optics",
+        "title": "全息图为什么比普通照片难算",
+        "body": "普通照片主要记录颜色和亮暗；3D 全息显示还要让光在不同深度产生正确的相位（光波周期中的位置或节奏，不是颜色）和干涉（不同光波叠加后形成的明暗变化）。传统计算机生成全息会模拟光学传播，场景中的不同深度和遮挡让计算量快速增加。MIT News 说，物理仿真可能要在高性能计算机上为一张图花几秒甚至几分钟。",
+        "kind": "technical"
+      },
+      {
+        "id": "pipeline",
+        "title": "模型学的是“场景到光波指令”的转换",
+        "body": "Tensor Holography 接收 RGB-D 图像：每个像素有颜色，也有到相机的深度。卷积神经网络（一种擅长处理图像的神经网络）学习把这些输入变成全息图；团队建立了 4,000 对带颜色和深度的图像与对应全息图来训练，并用物理计算处理遮挡。神经网络学的是转换过程，不是给物体分类。",
+        "kind": "technical"
+      },
+      {
+        "id": "numbers",
+        "title": "60 Hz、1.1 Hz 和 2 Hz 要放回设备里读",
+        "body": "Nature 原始论文记录，模型在消费级 GPU 上对 1920×1080 分辨率可达到 60 Hz，内存占用低于 620 KB；论文在 iPhone 11 Pro 上约 1.1 Hz、Google Edge TPU 上约 2 Hz。这里的 Hz 是 CNN（卷积神经网络）生成或推理的频率：60 Hz 约等于每秒 60 次，1.1 Hz 约等于每秒 1 次，2 Hz 约等于每秒 2 次，不是显示器刷新率。手机和边缘设备的结果说明原型能交互运行，却不等于手机已经能每秒生成 60 张可用于所有显示器的全息图。",
+        "kind": "comparison"
+      },
+      {
+        "id": "display",
+        "title": "神经网络只是管线中的一段",
+        "body": "MIT 项目页展示了连接空间光调制器（SLM）的近眼显示实验。SLM 是可以逐像素改变光波相位的显示面板，普通手机屏幕主要调节亮度，所以手机能跑模型不等于手机屏能直接显示全息图。相位显示器、深度数据质量、光学对准、延迟和散斑（相干光形成的颗粒状亮暗纹）都会影响最终效果；神经网络生成全息图与用户舒适地看见稳定的 3D 画面，需要分别验证。",
+        "kind": "example"
+      },
+      {
+        "id": "applications",
+        "title": "应用方向仍待硬件和场景验证",
+        "body": "MIT News 和技术转移页面把 VR、3D 打印、显微镜、医学数据可视化等列为潜在方向。它们仍是研究路线，尚无这些行业的临床、生产或安全认证证据；实际部署还要补充硬件、用户体验和可靠性证据。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "两个词条帮助读懂这条硬件新闻",
+        "body": "上下文词条提醒我们，RGB-D 输入、显示器类型、分辨率和设备会改变同一个速度数字的含义；benchmark（基准测试）词条提醒我们，60 Hz、1.1 Hz 和 2 Hz 是不同设备与条件下的测量，不能抽成一个脱离场景的“实时”标签。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "从 RGB-D 输入到可见全息图",
+      "question": "下面沿着这条新闻的证据链走一遍：神经网络怎样接住带深度的场景，速度数字又该怎样和设备条件一起读？",
+      "steps": [
+        {
+          "label": "准备 RGB-D 场景",
+          "detail": "输入同时包含像素颜色和深度；深度告诉系统哪些内容更靠近相机，哪些内容在背景，不能把它当成一张普通 RGB 照片。",
+          "evidence": "https://cgh.csail.mit.edu/"
+        },
+        {
+          "label": "用成对数据训练",
+          "detail": "研究团队用 4,000 对计算机生成的场景与全息图训练网络，并在数据生成时处理颜色、形状、深度变化和遮挡。",
+          "evidence": "https://news.mit.edu/2021/3d-holograms-vr-0310"
+        },
+        {
+          "label": "神经网络生成全息图",
+          "detail": "卷积神经网络学习从 RGB-D 到全息图的映射，把原本需要反复进行的物理计算压缩成一段可部署的推理过程。",
+          "evidence": "https://www.nature.com/articles/s41586-020-03152-0"
+        },
+        {
+          "label": "把速度放回硬件",
+          "detail": "消费级 GPU 的 60 Hz、iPhone 11 Pro 的 1.1 Hz 和 Edge TPU 的 2 Hz 属于不同设备；先看分辨率和显示链路，再判断是否达到你的“实时”。",
+          "evidence": "https://www.nature.com/articles/s41586-020-03152-0"
+        },
+        {
+          "label": "交给光学显示器",
+          "detail": "神经网络输出还要经过空间光调制器和光学系统，才能变成眼睛看到的连续深度；神经网络推理速度不是最终观看体验的全部。",
+          "evidence": "https://cgh.csail.mit.edu/"
+        },
+        {
+          "label": "检查应用边界",
+          "detail": "VR、3D 打印和医学成像是潜在方向，下一步仍要核对硬件、散斑、延迟、可靠性和真实用户或生产环境证据。",
+          "evidence": "https://tlo.mit.edu/industry-entrepreneurs/available-technologies/real-time-photorealistic-3d-holographic-display-using"
+        }
+      ]
+    },
+    "source": {
+      "name": "MIT News",
+      "url": "https://news.mit.edu/2021/3d-holograms-vr-0310"
+    },
+    "relatedSlugs": [
+      "context",
+      "benchmark"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://news.mit.edu/2021/3d-holograms-vr-0310",
+        "claim": "MIT News 是 2021-03-10 的主新闻来源，说明 Tensor Holography 的动机、RGB-D 输入、4,000 对训练数据、不到 1 MB 的网络、应用方向和移动演示。",
+        "excerpt": "MIT News, March 10, 2021：研究团队用深度学习近乎即时地生成全息图；报道解释传统物理仿真较慢，并把方法与 VR、3D 打印、医学成像联系起来。"
+      },
+      {
+        "url": "https://www.nature.com/articles/s41586-020-03152-0",
+        "claim": "Nature 原始论文作为方法与性能背景，记录 1920×1080 消费级 GPU 上 60 Hz、内存占用低于 620 KB 的 CNN，以及 iPhone 11 Pro 1.1 Hz、Google Edge TPU 2 Hz。",
+        "excerpt": "Nature, published 10 March 2021：摘要说明网络从单张 RGB-D 图像合成 3D 全息图，在消费级 GPU 上可达 60 Hz，内存占用低于 620 KB，并在移动与边缘设备上交互运行。"
+      },
+      {
+        "url": "https://cgh.csail.mit.edu/",
+        "claim": "MIT CSAIL Tensor Holography 项目页说明输入是单张 RGB-D 图像，展示 MIT-CGH-4K 数据集、近眼显示视频和项目资源。",
+        "excerpt": "项目页：Tensor Holography synthesizes a 3D hologram with per-pixel depth from a single RGB-D image in real-time；数据集包含 4,000 对 RGB-D 图像和对应 3D 全息图。"
+      },
+      {
+        "url": "https://tlo.mit.edu/industry-entrepreneurs/available-technologies/real-time-photorealistic-3d-holographic-display-using",
+        "claim": "MIT Technology Licensing Office 页面补充技术路线的潜在应用和硬件问题，说明原型可在移动设备交互运行，但仍属于可转化技术描述。",
+        "excerpt": "MIT TLO：该技术把 RGB-D 输入转换为 3D 全息图，列出 VR、3D 打印、医学成像等潜在方向，并说明 iPhone 11 Pro 的交互运行结果。"
+      }
+    ],
+    "canonicalUrl": "https://news.mit.edu/2021/3d-holograms-vr-0310",
+    "sourceHash": "sha256:ad796087892389aeb3e92010ab39a40280ad952bb8fe440bbce893f23862b7ee"
+  },
+  {
     "slug": "kpmg-ai-adoption-whiplash-20210309-262af75b",
     "title": "KPMG 调查：企业 AI 采用在加速，治理担忧也在升温",
     "summary": "2021-03-09，KPMG 发布《Thriving in an AI World》调查结果：950 名业务或 IT 决策者中，多个行业有相当比例的人认为 AI 在各自组织内已至少达到“中等运作程度”，但工业制造、零售和科技行业也有接近一半受访者觉得本行业推进过快。调查还显示，受访者普遍希望政府参与 AI 监管。这些数字来自企业决策者自报，调查不是对部署效果的独立审计；读者应把“采用到了哪里”“采用得多快”和“有没有治理能力”分开看。",
