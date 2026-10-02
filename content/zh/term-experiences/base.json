@@ -7565,23 +7565,23 @@
   {
     "slug": "design-system",
     "lead": "同一种成功提示在三个页面颜色、间距和关闭方式都不同，应该改页面还是改共同规则？",
-    "definition": "设计系统把原则、令牌、组件、交互模式、内容规则和维护机制组织成可复用的产品决策。",
-    "boundary": "设计系统不只是组件展示页，也不要求所有业务页面完全一样；差异应通过明确变体和扩展规则表达。",
+    "definition": "设计系统把原则、令牌、组件、模式、内容规则和维护流程组织成一套可复用的规则：原则先定取舍，内容规则定具体写法；令牌命名基础值，组件提供部件，模式说明使用时机，规则改动后旧页面按迁移说明逐个跟上。",
+    "boundary": "设计系统不是组件展示页、单独的令牌表，也不要求所有业务页面完全一样；差异要通过明确的变体和扩展规则表达，局部覆写还要留下原因与维护责任。",
     "sceneKind": "layers",
-    "sceneTitle": "一个成功提示从令牌到三个产品页面",
+    "sceneTitle": "一个成功提示从规则到三个产品页面",
     "actionLabel": "更新一层",
     "actors": [
       {
         "id": "principle",
-        "label": "反馈原则",
-        "detail": "说明结果与下一步",
+        "label": "共同原则与内容规则",
+        "detail": "原则定方向，规则定写法",
         "icon": "file",
-        "group": "原则"
+        "group": "规则"
       },
       {
         "id": "tokens",
         "label": "设计令牌",
-        "detail": "success color / spacing",
+        "detail": "颜色.success / 间距.4（示例名）",
         "icon": "code",
         "group": "基础"
       },
@@ -7595,14 +7595,14 @@
       {
         "id": "pattern",
         "label": "提交成功模式",
-        "detail": "位置与出现时机",
+        "detail": "说明位置与出现时机",
         "icon": "layout",
         "group": "模式"
       },
       {
         "id": "products",
         "label": "三个业务页面",
-        "detail": "订单 / 设置 / 邀请",
+        "detail": "保存 / 付款 / 上传",
         "icon": "browser",
         "group": "使用"
       },
@@ -7644,12 +7644,18 @@
         "from": "governance",
         "to": "component",
         "label": "管理变更"
+      },
+      {
+        "id": "governance-products",
+        "from": "governance",
+        "to": "products",
+        "label": "推动页面迁移"
       }
     ],
     "frames": [
       {
         "label": "明确共同原则",
-        "note": "成功反馈必须说明完成结果，并给出仍需执行的下一步。",
+        "note": "先定共同原则：成功反馈必须说明完成结果，并给出仍需执行的下一步；这条内容规则把方向落到具体文案。",
         "activeIds": [
           "principle"
         ],
@@ -7666,7 +7672,7 @@
       },
       {
         "label": "统一基础值",
-        "note": "颜色、圆角、间距和文字级别由语义令牌提供。",
+        "note": "颜色、圆角、间距和文字级别由语义令牌提供；令牌名是共同约定，不等于某个固定颜色。",
         "activeIds": [
           "principle",
           "tokens"
@@ -7677,7 +7683,7 @@
           "products"
         ],
         "values": {
-          "tokens": "color.success · space.4"
+          "tokens": "颜色.success · 间距.4"
         },
         "activeEdgeIds": [
           "principle-tokens"
@@ -7685,7 +7691,7 @@
       },
       {
         "label": "形成组件变体",
-        "note": "组件提供默认、可关闭和带后续操作三种受控变体。",
+        "note": "组件提供默认、可关闭和带后续操作三种受控变体；受控表示页面只能选择已命名的选项，不能随意改结构。",
         "activeIds": [
           "tokens",
           "component"
@@ -7697,7 +7703,7 @@
           "products"
         ],
         "values": {
-          "component": "default | dismissible | action"
+          "component": "默认 · 可关闭 · 带操作"
         },
         "activeEdgeIds": [
           "tokens-component"
@@ -7705,7 +7711,7 @@
       },
       {
         "label": "定义使用模式",
-        "note": "表单成功放在提交区附近，异步完成使用页面级通知。",
+        "note": "组件是可复用部件，模式补充它在任务中的位置和时机：表单成功靠近提交区，异步完成使用页面级通知。",
         "activeIds": [
           "component",
           "pattern"
@@ -7718,7 +7724,7 @@
           "products"
         ],
         "values": {
-          "pattern": "inline vs page-level"
+          "pattern": "表单内联 · 页面级通知"
         },
         "activeEdgeIds": [
           "component-pattern"
@@ -7726,7 +7732,7 @@
       },
       {
         "label": "同步三个页面",
-        "note": "订单、设置和邀请页面选择合适变体，样式与行为保持一致。",
+        "note": "保存、付款和上传页面选择合适变体，样式与行为保持一致，文案仍按各自任务表达。",
         "activeIds": [
           "pattern",
           "products"
@@ -7738,15 +7744,15 @@
         ],
         "mutedIds": [],
         "values": {
-          "products": "3 pages · same rules"
+          "products": "保存 · 付款 · 上传"
         },
         "activeEdgeIds": [
           "pattern-products"
         ]
       },
       {
-        "label": "管理后续变化",
-        "note": "新增变体先说明通用需求，评审后发布版本并给出迁移说明。",
+        "label": "发布并迁移旧页面",
+        "note": "新版本发布后，三个页面按迁移说明逐个更新；尚未迁移的页面标记旧版本，不能假装已经同步。令牌、组件、模式和内容规则的变更都走同一套提案与评审流程。",
         "activeIds": [
           "governance",
           "component",
@@ -7759,94 +7765,110 @@
         ],
         "mutedIds": [],
         "values": {
-          "governance": "proposal → review → release"
+          "governance": "提案 → 评审 → 发布 → 迁移"
         },
         "activeEdgeIds": [
           "governance-component",
+          "governance-products",
           "pattern-products"
         ]
       }
     ],
-    "insight": "设计系统复用的是经过维护的决策，不只是复制一段组件代码。",
+    "insight": "设计系统复用的是有名字、有版本、有人维护的决策；复制一段组件代码不会自动带来这些约定。",
     "quiz": {
-      "question": "某页面需要紫色成功提示，但系统成功语义是绿色，应该直接覆盖颜色吗？",
+      "question": "某页面想把成功提示改成紫色，先要判断什么？",
       "options": [
         {
-          "label": "先确认这是业务语义差异还是视觉偏好，再决定变体或修正页面",
+          "label": "这个紫色是某个业务场景固定要用的，还是这个页面临时想换个颜色",
           "correct": true
         },
         {
-          "label": "直接写局部样式，不记录原因",
+          "label": "能不能直接写局部样式、不记原因",
           "correct": false
         },
         {
-          "label": "禁止所有页面出现任何差异",
+          "label": "是不是所有页面都不该有任何差异",
           "correct": false
         }
       ],
-      "success": "差异需要被命名和解释，才能判断是合理扩展还是规则漂移。",
-      "retry": "设计系统既不鼓励随意覆盖，也不是取消业务差异。"
+      "success": "颜色.success 是语义令牌的示例，不代表所有产品都必须用令牌默认的颜色；若紫色有明确业务依据，就命名为变体并写清适用场景和维护人。",
+      "retry": "先说明紫色服务于哪个具体场景，再决定新增一个有名字的变体，还是修正页面的临时样式。"
     },
     "prompt": {
       "title": "检查设计系统的重复与缺口",
-      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本和迁移范围。"
+      "text": "请盘点同一语义在不同页面的颜色、间距、文案、交互和状态差异。判断哪些应收敛为令牌、组件或使用模式，哪些属于有依据的业务变体；为新增变体写出适用条件、无障碍要求、版本、迁移步骤和回滚或废弃策略。"
     },
     "sources": [
       {
-        "url": "https://designsystem.digital.gov/components/alert/",
-        "label": "U.S. Web Design System · Alert",
-        "note": "设计系统与组件原则"
+        "url": "https://designsystem.digital.gov/design-tokens/",
+        "label": "U.S. Web Design System · Design tokens",
+        "note": "令牌用命名值减少任意选择，并让组件共享稳定的基础值。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/writing-for-user-interfaces",
+        "label": "GOV.UK · Writing for user interfaces",
+        "note": "界面文案应短而直接；如果必须解释界面怎么用，说明设计需要改进。"
+      },
+      {
+        "url": "https://designsystem.digital.gov/documentation/migration/",
+        "label": "U.S. Web Design System · Migrating to USWDS 3.0",
+        "note": "版本升级需要检查设置、标记和编译方式，迁移说明帮助旧页面跟上共同规则。"
+      },
+      {
+        "url": "https://designsystem.digital.gov/",
+        "label": "U.S. Web Design System · Overview",
+        "note": "组件、模式、令牌和开放维护一起构成可复用的设计系统。"
       }
     ]
   },
   {
     "slug": "a11y",
-    "lead": "不用鼠标、看不清低对比文字或需要读屏时，用户还能否完成登录？",
-    "definition": "无障碍让内容在不同视觉、听觉、行动和认知条件下仍可感知、可操作、可理解，并与辅助技术兼容。",
-    "boundary": "无障碍不是发布前补几个 ARIA 属性；语义、键盘顺序、对比度、错误反馈和动效都要从结构开始处理。",
+    "lead": "不用鼠标、看不到颜色或需要读屏时，用户还能完成登录并修复错误吗？",
+    "definition": "无障碍把信息结构、键盘操作、可见焦点、对比度、字段标签和错误反馈做成可感知、可操作、可理解的路径，并让辅助技术拿到同样的状态。",
+    "boundary": "无障碍不是发布前补几个 ARIA 属性，也不是只检查颜色。原生语义、页面在浏览器里的结构（DOM）与 Tab 顺序、可见焦点、标签、错误文字和动效偏好要从设计与开发一起处理；ARIA（给辅助技术的角色说明）只描述角色，不会自动补上键盘行为。本演示聚焦键盘与表单反馈，完整检查还要覆盖听觉内容、对比度和动效偏好。",
     "sceneKind": "route",
     "sceneTitle": "只用键盘完成一次登录",
-    "actionLabel": "按下一次 Tab",
+    "actionLabel": "依次按 Tab，必要时激活跳过链接",
     "actors": [
       {
         "id": "skip",
         "label": "跳到正文",
-        "detail": "第一个可见焦点",
+        "detail": "Tab 后可见焦点，能跳过重复导航",
         "icon": "network",
         "group": "导航"
       },
       {
         "id": "email",
         "label": "邮箱输入",
-        "detail": "label 与输入关联",
+        "detail": "label 与输入关联，读屏能读出名称",
         "icon": "message",
         "group": "表单"
       },
       {
         "id": "password",
         "label": "密码输入",
-        "detail": "要求可被读屏理解",
+        "detail": "标签、必填状态和输入类型可被读出",
         "icon": "key",
         "group": "表单"
       },
       {
         "id": "error",
         "label": "错误提示",
-        "detail": "尚未出现",
+        "detail": "文字指出字段和修复方式",
         "icon": "shield",
         "group": "反馈"
       },
       {
         "id": "submit",
         "label": "登录按钮",
-        "detail": "键盘可触发",
+        "detail": "原生 button 可用 Enter 和 Space",
         "icon": "component",
         "group": "操作"
       },
       {
         "id": "result",
         "label": "登录结果",
-        "detail": "等待反馈",
+        "detail": "状态和下一步都可感知",
         "icon": "spark",
         "group": "结果"
       }
@@ -7856,7 +7878,7 @@
         "id": "skip-email",
         "from": "skip",
         "to": "email",
-        "label": "逻辑焦点顺序"
+        "label": "激活后进入表单"
       },
       {
         "id": "email-password",
@@ -7868,7 +7890,7 @@
         "id": "password-submit",
         "from": "password",
         "to": "submit",
-        "label": "进入操作"
+        "label": "继续 Tab 到登录按钮"
       },
       {
         "id": "submit-error",
@@ -7892,7 +7914,7 @@
     "frames": [
       {
         "label": "进入页面",
-        "note": "第一个焦点提供跳到正文入口，避免重复穿过整组导航。",
+        "note": "按 Tab 聚焦跳过链接；激活后把焦点带到正文起点，避免重复导航。",
         "activeIds": [
           "skip"
         ],
@@ -7902,13 +7924,13 @@
           "result"
         ],
         "values": {
-          "skip": "focus visible"
+          "skip": "焦点可见 · 可激活"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "识别邮箱",
-        "note": "焦点到邮箱时，读屏同时读出标签、输入类型和必填状态。",
+        "label": "到达邮箱",
+        "note": "本例中，激活跳过链接后继续按 Tab 到邮箱，标签、输入类型和必填状态都能被读出。",
         "activeIds": [
           "skip",
           "email"
@@ -7927,7 +7949,7 @@
       },
       {
         "label": "按顺序移动",
-        "note": "Tab 从邮箱进入密码，再进入登录按钮，顺序与视觉阅读一致。",
+        "note": "本例中 Tab 顺序与页面的逻辑阅读顺序一致，也与视觉顺序相同；邮箱留空、密码已填，按 Enter 提交。",
         "activeIds": [
           "email",
           "password",
@@ -7941,8 +7963,9 @@
           "result"
         ],
         "values": {
-          "password": "密码 · 必填",
-          "submit": "focus visible"
+          "email": "邮箱未填",
+          "password": "密码 · 已填",
+          "submit": "原生 button · 焦点可见"
         },
         "activeEdgeIds": [
           "email-password",
@@ -7951,7 +7974,7 @@
       },
       {
         "label": "收到错误",
-        "note": "提交空邮箱时，错误用文字说明并通过状态通知辅助技术。",
+        "note": "提交时邮箱留空，文字错误指出字段和修复方式，并通过状态通知辅助技术；颜色只作额外提示。",
         "activeIds": [
           "submit",
           "error"
@@ -7963,7 +7986,7 @@
           "result"
         ],
         "values": {
-          "error": "请输入邮箱地址"
+          "error": "邮箱：请输入有效地址"
         },
         "activeEdgeIds": [
           "submit-error"
@@ -7971,7 +7994,7 @@
       },
       {
         "label": "回到问题处",
-        "note": "焦点移回邮箱，用户无需重新寻找出错位置。",
+        "note": "按提示填入有效邮箱，错误摘要与邮箱字段关联，焦点移回邮箱；用户无需重新搜索。",
         "activeIds": [
           "error",
           "email"
@@ -7984,7 +8007,7 @@
           "result"
         ],
         "values": {
-          "email": "focus · invalid"
+          "email": "已填有效地址 · 焦点"
         },
         "activeEdgeIds": [
           "error-email"
@@ -7992,7 +8015,7 @@
       },
       {
         "label": "完成登录",
-        "note": "修正后按 Enter 提交，成功结果以文字和焦点变化明确呈现。",
+        "note": "修正后再次按 Enter 提交，结果文字和焦点变化共同说明登录完成和下一步。",
         "activeIds": [
           "submit",
           "result"
@@ -8013,7 +8036,7 @@
         ]
       }
     ],
-    "insight": "可访问性不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作能力。",
+    "insight": "无障碍不是单个属性，而是从信息结构到输入、反馈和恢复的完整操作路径。",
     "quiz": {
       "question": "自定义 div 做的按钮加上 role=button 后，是否自动支持键盘？",
       "options": [
@@ -8030,23 +8053,38 @@
           "correct": false
         }
       ],
-      "success": "优先使用原生 button；自定义控件需要自己实现完整键盘模型。",
-      "retry": "ARIA 描述角色，但不会自动提供浏览器原生行为。"
+      "success": "原生 button 自带基本键盘行为；自定义控件需要实现角色之外的焦点、Enter/Space、状态和焦点去向。",
+      "retry": "ARIA 角色只提供语义承诺，不会自动提供浏览器原生行为。"
     },
     "prompt": {
       "title": "审查页面的无障碍基础",
-      "text": "请只用键盘走完页面主要任务，记录焦点顺序、可见焦点、键盘陷阱和无法触发的操作。再检查语义标签、可访问名称、颜色对比、字段错误、动态通知和减少动效偏好；每个问题给出可复现步骤与最小修正。"
+      "text": "只用键盘走完页面主要任务，再用读屏视角检查标签、名称、状态和错误；随后补查对比度与减少动效偏好。记录每个无法到达、无法理解或无法恢复的步骤，并给出最小修正。"
     },
     "sources": [
       {
-        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-order",
-        "label": "W3C WAI · Focus Order",
-        "note": "Web 标准与无障碍要求"
-      },
-      {
         "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
         "label": "WAI ARIA APG · Keyboard Interface",
-        "note": "Web 标准与无障碍要求"
+        "note": "Tab 顺序、可见焦点和键盘操作"
+      },
+      {
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
+        "label": "WAI ARIA APG · Button Pattern",
+        "note": "按钮的 Enter/Space 行为与焦点去向"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification",
+        "label": "W3C WAI · Error Identification",
+        "note": "错误必须指出字段并用文字说明"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions",
+        "label": "W3C WAI · Labels or Instructions",
+        "note": "输入控件需要标签或说明"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum",
+        "label": "W3C WAI · Contrast Minimum",
+        "note": "文字和界面的对比度不能只靠颜色区分"
       }
     ]
   }
