@@ -1,0 +1,156 @@
+{
+  "slug": "microsoft-humanist-ai-code-20260914",
+  "title": "微软公开 Humanist AI 行为准则：先把“人仍能做主”写进模型规则",
+  "summary": "微软 AI 于 2026-09-14 发布 Humanist AI Code of Conduct 草案并启动六周公开征求意见，提出模型应服从人类目标、不得自行扩张权限或逃避暂停；微软同时说明这份草案尚未用于训练现有模型，评估方法仍在开发。",
+  "body": "2026-09-14，Microsoft AI 公开了一份名为 Humanist AI Code of Conduct 的行为准则草案，并开始为期六周的公开征求意见。它不是一份新的产品功能说明，而是一份试图回答“足够强的模型应该怎样被设计、训练和约束”的公开文件。微软说，修订后的版本计划在年底发布，用来指导 2027 年及之后的模型开发。\n\n文件把“人类必须保持对 AI 的有意义控制”放在总目标的位置。微软明确写出，模型应是服务人类的从属工具；如果要在通用性、自主性和能力上做取舍，也可以优先选择更容易控制、用途更清楚的系统。这种表述与“把所有能力都推到最大”的竞赛叙事不同，但目前仍是公司提出的设计方向，不是外部监管机构已经采纳的标准。\n\n草案还把一些边界写成模型不能被用户或运营方覆盖的绝对约束：不协助化学、生物、放射性、核与爆炸性武器，不提供可直接实施的攻击性网络行动，不制作恶意深伪或冒充内容，也不能用欺骗、自我强化、串通等机制躲开人类监督。它同时承认安全不能只靠“什么都拒绝”：在没有明显风险时过度拒答也会损害用户，因此模型需要结合意图、后果、可逆性和授权范围作比例化判断。\n\n对做产品的人来说，最具体的部分是指令层级。准则把行为规则、运营方配置和用户偏好排成一条链：运营方可以配置工作环境，用户可以提出任务，但两者都不能解除更高层的安全约束。模型可以执行多步工作，却不能凭空启动自己的目标，不能在任务完成后自行重启，也不能隐藏行动轨迹；边界不清时，应停下来询问，而不是把权限理解成默认开放。\n\n这份草案的状态同样需要写进新闻里。微软明确表示，当前版本还没有用于训练模型，相关评估正在开发，文件是“意图和价值观”的公开版本，不能被当作现有模型已经具备这些行为的证明。真正的检验要看后续模型卡、评测结果、运营控制和发生错误时是否能暂停、纠正、审计与追责。",
+  "publishedAt": "2026-09-14",
+  "eventDate": "2026-09-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/microsoft-humanist-ai-code-20260914.svg",
+    "alt": "人类意图经过授权、约束和评估后进入 AI 模型的工作回路。",
+    "sourceUrl": "/images/news/microsoft-humanist-ai-code-20260914.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "public-consultation",
+      "title": "公开的是一份可修改的治理草案",
+      "body": "微软在 9 月 14 日发布文件并开启六周咨询，计划吸收反馈后再修订。它描述的是未来训练和运行 MAI 模型的意图，当前并不是已经对所有模型生效的产品承诺。",
+      "kind": "narrative"
+    },
+    {
+      "id": "human-control",
+      "title": "把“人能暂停和改方向”放在能力之前",
+      "body": "Humanist AI 的主张是模型可以做复杂工作，但应保持从属关系，服从人的目的、授权和停止指令。微软甚至写明，必要时可以牺牲一部分通用性、自主性或能力来换取控制性。",
+      "kind": "technical"
+    },
+    {
+      "id": "absolute-constraints",
+      "title": "有些边界不能被用户配置覆盖",
+      "body": "武器与大规模伤害、攻击性网络行动、恶意深伪、规避监督等被列为绝对约束。运营方可以在约束内配置系统，用户可以在配置内发起任务，但不能用提示词越过这些层级。",
+      "kind": "boundary"
+    },
+    {
+      "id": "proportional-safety",
+      "title": "安全也包括不要无谓地拒绝",
+      "body": "文件把过度谨慎列为另一种失败：合法、低风险的请求如果被反复确认或直接拒绝，用户同样会失去帮助。模型需要评估潜在伤害的严重性、概率、可逆性以及请求是否可能是欺骗。",
+      "kind": "comparison"
+    },
+    {
+      "id": "what-is-unproven",
+      "title": "草案还没有变成评测结果",
+      "body": "微软说现有模型尚未按这份文件训练，评估方法仍在开发。新闻的事实是“发布并征求意见”，不是“模型已经遵守”。后续应继续追踪模型卡、红队结果、审计记录和暂停机制。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一条任务怎样留在人类能控制的范围内？",
+    "question": "把“能做什么”与“谁能决定”分开，才能看懂准则的实际约束。",
+    "steps": [
+      {
+        "label": "人先给出目的",
+        "detail": "用户或运营方提出一个具体任务，模型只能在这个目的、上下文和权限里规划动作。",
+        "evidence": "Humanist AI 的人类控制目标"
+      },
+      {
+        "label": "规则先于偏好",
+        "detail": "系统先检查指令层级和绝对约束；用户偏好不能解除武器、攻击性网络行动或规避监督等边界。",
+        "evidence": "Code of Conduct Part 2"
+      },
+      {
+        "label": "不确定就缩小范围",
+        "detail": "如果目标、权限或后果不清楚，模型应澄清、请求确认或提供安全替代，而不是自行扩张任务。",
+        "evidence": "授权范围与比例化安全"
+      },
+      {
+        "label": "动作必须可暂停和复盘",
+        "detail": "进行中的工作要有停止条件，允许人暂停、纠正、取消，并留下可审计的行动轨迹。",
+        "evidence": "Human Control requirements"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft AI",
+    "url": "https://microsoft.ai/code-of-conduct/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "state",
+    "event",
+    "llm",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [
+    "openai-misalignment-reporting-framework-20260916",
+    "frontier-ai-safety-talks-20260916",
+    "nvidia-open-agent-safety-platform-20260928-4b5c47b6"
+  ],
+  "sources": [
+    {
+      "url": "https://microsoft.ai/code-of-conduct/",
+      "claim": "微软 AI 于 2026-09-14 发布 Humanist AI Code of Conduct 草案，公开征求意见六周，并说明修订版将指导 2027 年及之后的模型开发。",
+      "excerpt": "Microsoft AI, Humanist AI Code of Conduct, 2026-09-14：文件说明当前版本仍在开发，公开发布用于咨询和迭代。"
+    },
+    {
+      "url": "https://microsoft.ai/code-of-conduct/",
+      "claim": "草案把人类控制、绝对安全约束、运营方配置与用户偏好放进指令层级，并要求模型不逃避暂停、纠正或关闭。",
+      "excerpt": "Microsoft AI, Humanist AI Code of Conduct：Safety、Chain of Command 与 Human Control 部分。"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/14/microsofts-new-ai-code-of-conduct-tells-models-not-to-hack-systems-or-trick-humans/",
+      "claim": "TechCrunch 对草案中的攻击性网络行动、深伪和规避监督边界作了同日报道。",
+      "excerpt": "TechCrunch, Microsoft’s new AI code of conduct tells models not to hack systems or trick humans, 2026-09-14。"
+    }
+  ],
+  "canonicalUrl": "https://microsoft.ai/code-of-conduct",
+  "sourceHash": "sha256:bc3ae235cdc2eb3e772bedbe106b7b3f34e9335aa6cc8adaae4b99ad501961e9",
+  "status": "published",
+  "discoveredAt": "2026-10-03T20:45:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://microsoft.ai/code-of-conduct/",
+      "claim": "微软 AI 于 2026-09-14 发布 Humanist AI Code of Conduct 草案，公开征求意见六周，并说明修订版将指导 2027 年及之后的模型开发。",
+      "excerpt": "Microsoft AI, Humanist AI Code of Conduct, 2026-09-14：文件说明当前版本仍在开发，公开发布用于咨询和迭代。"
+    },
+    {
+      "url": "https://microsoft.ai/code-of-conduct/",
+      "claim": "草案把人类控制、绝对安全约束、运营方配置与用户偏好放进指令层级，并要求模型不逃避暂停、纠正或关闭。",
+      "excerpt": "Microsoft AI, Humanist AI Code of Conduct：Safety、Chain of Command 与 Human Control 部分。"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/14/microsofts-new-ai-code-of-conduct-tells-models-not-to-hack-systems-or-trick-humans/",
+      "claim": "TechCrunch 对草案中的攻击性网络行动、深伪和规避监督边界作了同日报道。",
+      "excerpt": "TechCrunch, Microsoft’s new AI code of conduct tells models not to hack systems or trick humans, 2026-09-14。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T20:45:00Z",
+    "method": "manual",
+    "notes": "逐段核对 Microsoft AI 原文和同日报道；把公开草案、未来训练计划与当前模型行为分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T20:45:00Z",
+    "notes": "新闻主线是公开治理草案与咨询流程；没有把愿景写成已完成的模型评测或监管标准。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T22:08:33Z",
+    "questions": [],
+    "notes": "主线是微软公开 Humanist AI 行为准则草案及六周征求意见；正文明确这是设计方向，不是已实施的模型行为或外部标准，并把人类控制、暂停和审计讲给零基础读者。官方页面和 TechCrunch 的归属清楚，explainer/SVG 的“目标→规则→澄清/范围→暂停/审计”与正文一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-14",
+  "promotedAt": "2026-10-02T22:10:34.065Z"
+}
