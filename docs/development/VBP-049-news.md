@@ -1,6 +1,6 @@
 # VBP-049 新闻栏目交付记录
 
-状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30 至 2026-09-16 十五个事件日（含 9 月 27 日空档日），继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
+状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30 至 2026-09-15 十六个事件日（含 9 月 27 日空档日），继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
 
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
@@ -12,7 +12,7 @@
 
 ## 阶段二执行口径
 
-- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-16（含 9 月 27 日空档日），再逐日处理更早日期。
+- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-15（含 9 月 27 日空档日），再逐日处理更早日期。
 - 主事件优先取官方公告/官方博客、监管文件、可信新闻报道和可核验的行业或个人解读；论文只作为已成立新闻事件的背景来源，不能单独填充 `selectedSlugs`。
 - 文章先写事实链和读者问题，再组织按事件需要变化的正文段落、讲解步骤和自制 SVG；`hero.sourceUrl`、许可和引用卡片都保留追溯信息。
 - 词条关系只确认已经公开且正文确实解释的 slug。草稿在 `ready` 前必须经过 humanizer-zh 表达检查与 `codex-subagent-reader` 零基础读者审读，审读结果写入 `readerReview`。
@@ -43,6 +43,7 @@
 | 2026-09-18 | ① Anthropic 与 Accenture 启动嵌入式评估；② 加州行政令推动独立 AI 监督与“紧急关闭开关”可行性研究；③ Qwen3.8-Omni-Flash 发布；④ Google 承认 Gemini 在 Irregular 测试中访问三家真实公司；⑤ 四家 AI 公司因“协同放慢开发”被起诉；⑥ Anthropic 确认运营生物湿实验室；⑦ AI 错误情报差点推动美军行动 | Anthropic、加州州长办公室行政令与签署 PDF、Qwen 官方页；Axios、AP、TechCrunch、Politico、CNN、TechRadar | 2026-09-18 / 2026-09-18（AP 诉讼报道发表于 09-19；军事事件发生于春季、09-18 为公开披露日） | `passed`（唯一 Codex review 子智能体逐篇复审七篇；确认新闻主线、来源归属、事件日/报道日、诉状/行政令/公司口径边界、正文可读性、SVG/动画和词条联动） | 本次提交 |
 | 2026-09-17 | ① Anthropic 生命科学验证计划；② Anthropic AI 研发指标；③ 查尔斯三世苏格兰 AI 峰会；④ Claude Projects 重做；⑤ Google 家庭代理 CC；⑥ Mozilla/Mila 开源 AI 基础层 | Anthropic、Royal Family、Google、Claude、Mozilla、Mila 官方；AP、TechCrunch、Ars Technica 交叉 | 2026-09-17 / 2026-09-17（Anthropic 指标 AP 后续发表于 09-18） | `passed`（唯一 Codex review 子智能体逐篇复审六篇；确认新闻主线、日期、来源归属、beta/公司指标/峰会倡议边界、SVG/动画和词条联动） | 本次提交 |
 | 2026-09-16 | ① OpenAI 模型失配披露框架与六个案例；② ChatGPT Sponsored Agents 广告代理；③ Google Home MCP；④ Salesforce Missionforce 与 OpenAI 合作；⑤ AI Energy Management Alliance；⑥ 前沿实验室 AI 安全协调谈话 | OpenAI、Google Home、Salesforce、NVIDIA 官方；AP、Quartz、Axios、TechCrunch、TechRadar、The Information 交叉 | 2026-09-16 / 2026-09-16 | `passed`（唯一 Codex review 子智能体逐篇复审六篇；确认新闻主线、事件日/报道日、产品测试/合作/政策未落地边界、SVG/动画和词条联动） | 本次提交 |
+| 2026-09-15 | ① Google Gemini 3.8 Live、Extended Thinking 与 3.5 Transcribe；② Salesforce/NVIDIA Koa CRM 推理模型；③ Salesforce AIforce 界面层；④ AWS/Salesforce 跨云企业 AI；⑤ Salesforce/Google Cloud 统一 AI 栈；⑥ Google AI & Economy ATLAS 数据产品；⑦ Dreamforce AI 速度与安全争论 | Google、Salesforce、AWS 官方；Axios、TechRadar 同日报道；ATLAS 研究 PDF 作背景 | 2026-09-15 / 2026-09-15（AWS 日本译文发表于 09-18，保留美国原稿日期） | `passed`（唯一 Codex review 子智能体逐篇复审七篇；确认新闻主线、厂商 benchmark/合作/预览/观点边界、跨日去重、SVG/动画和词条联动） | 本次提交 |
 | 2021-01-08 | Waste-Free World AI 塑料回收试点 | Circular Online（新闻报道）；WebWire 企业新闻稿作一手核验 | 2021-01-08 / 2021-01-12 | `passed`（先 `needs-revision`，按建议修订后通过） | `9a7cb072` |
 | 2021-03-01 | 警务 AI 产品特写：转写、脱敏、车牌识别与加密货币分析 | Police Chief Magazine；VIQ、Veritone、Jenoptik 官方产品页；加州 DOJ AB 953 规则 | 2021-03-01 / 2021-03-01 | `passed`（子智能体读者与中文审读，按来源卡片建议修订） | `53037828` |
 | 2021-03-02 | Azure Percept 进入公开预览：边缘设备、现场推理与云端管理 | Microsoft News Center；Azure Blog、Ignite Book of News；TechCrunch 同日交叉报道 | 2021-03-02 / 2021-03-02 | `passed`（两轮子智能体读者与中文审读） | `60aef89c` |
@@ -68,7 +69,8 @@
 
 ## 交付内容
 
-- `content/zh/news.json` 当前包含 122 篇已发布内容，其中包括本轮新增的 2026-09-16 六篇 AI 新闻、2026-09-17 六篇 AI 新闻、2026-09-18 七篇 AI 新闻、AI Force 组织设想、中美 AI 事故通报对话、Qwen-Image-2.1 研究权重、Step 5 Preview、OpenAI 前沿 AI 国际标准提议、OpenAI 数学顾问组与 100 多道开放题声明、Meta Muse 早期采用估算、GPT-6 Sol/Luna、Claude Opus 5.5、EvilTokens 网络犯罪服务、白宫“超级智能”联合国表态、Snorkel AI 数据基础设施融资、联合国安理会 AI 安全会议、Anthropic Claude 生物发现、Meta Muse AI 眼镜、YouTube Made on YouTube AI 工具、美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS、OpenAI 用户图片披露、教宗 UNESCO AI 演讲、澳大利亚 Medicare 代理事件、Google Gemini Call for Me 和多州检察长 AI 监管倡议新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- `content/zh/news.json` 当前包含 129 篇已发布内容，其中包括本轮新增的 2026-09-15 七篇 AI 新闻、2026-09-16 六篇 AI 新闻、2026-09-17 六篇 AI 新闻、2026-09-18 七篇 AI 新闻、AI Force 组织设想、中美 AI 事故通报对话、Qwen-Image-2.1 研究权重、Step 5 Preview、OpenAI 前沿 AI 国际标准提议、OpenAI 数学顾问组与 100 多道开放题声明、Meta Muse 早期采用估算、GPT-6 Sol/Luna、Claude Opus 5.5、EvilTokens 网络犯罪服务、白宫“超级智能”联合国表态、Snorkel AI 数据基础设施融资、联合国安理会 AI 安全会议、Anthropic Claude 生物发现、Meta Muse AI 眼镜、YouTube Made on YouTube AI 工具、美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS、OpenAI 用户图片披露、教宗 UNESCO AI 演讲、澳大利亚 Medicare 代理事件、Google Gemini Call for Me 和多州检察长 AI 监管倡议新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- 2026-09-15 不是“每天一篇”的限制：当天按独立事实链发布七篇。Gemini 音频模型与 ATLAS 是 Google 的两条不同新闻；Koa、AIforce、AWS/Salesforce、Google Cloud/Salesforce 分别对应模型、界面层和两条跨云合作；Dreamforce 速度争论则按公开报道单独记录。泛多语言/社会影响综述和 Siemens 单客户合作留在当天候选台账，没有机械扩写成文章；9 月 16、17 台账中同一 canonical URL 的 Gemini/ATLAS/Koa 候选已改为指向 9 月 15 日主文章的 `duplicate`。
 - 2026-09-23 的四篇新闻按事件边界拆开：联合国会议记录国际治理讨论但没有当天约束性决议；Anthropic 的 ART 仍是公司披露的早期发现，实验由人类完成且功能未知；Meta 的 Muse 眼镜能力写成未来数月计划，和已售 Ray-Ban Meta Audio 分开；YouTube 把 Gemini 放进创作者工作流，实时配音和视频 A/B 测试保留后续开放边界。四篇均保留原始链接、引用卡片、自制 SVG、独立机制讲解、词条联动和唯一 reader-review 结果。
 - 2026-09-22 的五篇新闻分别记录模型成本下沉、长任务模型护栏、AI 犯罪服务处置、政策语言变化和训练数据融资：OpenAI/Anthropic 的厂商评测均保留测试归属；Microsoft 的 12,000+ 邮箱和 10,000+ 组织数字标注为微软估计并由 Axios 交叉报道；白宫演讲与 9 月 29 日后续行政行动分开；Snorkel 的 3.75 亿美元年化运行率标注为公司口径。五篇各自保留原始链接、引用卡片、自制 SVG、独立机制讲解、词条联动和唯一 reader-review 结果。
 - 2026-09-21 的三篇新闻把能力声明、政策倡议和消费级采用拆开：OpenAI 的 RSI 标准文章明确不是法律或中美协议；数学“100 多道题”保留为公司声明，顾问组没有内部研究否决权；Muse 的下载和日活来自 Apptopia 第三方估算，标题限定美国/加拿大 iOS 可比窗口，并说明 Secure VM 和长期留存边界。三篇均保留官方或新闻原始链接、引用卡片、自制 SVG、独立机制讲解、词条联动和唯一 reader-review 结果。
