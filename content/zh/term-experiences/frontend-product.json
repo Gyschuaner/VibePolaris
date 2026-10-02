@@ -1952,8 +1952,8 @@
   {
     "slug": "safe-area",
     "lead": "按钮贴在屏幕底部，为什么会和系统手势条重叠？",
-    "definition": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset；内容可延伸到屏幕边缘，关键控件需加上相应内边距。",
-    "boundary": "安全区不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；背景和可操作内容处理不同。",
+    "definition": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset（系统留出的安全边距）；内容可延伸到屏幕边缘，关键控件需加上相应内边距，旋转或设备形态变化时重新读取。",
+    "boundary": "安全区不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；背景和可操作内容处理不同，平台单位与接口也可能不同。",
     "sceneKind": "layers",
     "sceneTitle": "全屏背景与安全区域内容的不同边界",
     "actionLabel": "切换设备外形",
@@ -1968,7 +1968,7 @@
       {
         "id": "insets",
         "label": "安全区域",
-        "detail": "四边动态 inset",
+        "detail": "四边动态 inset（系统留出的安全边距）",
         "icon": "shield",
         "group": "系统"
       },
@@ -1982,7 +1982,7 @@
       {
         "id": "controls",
         "label": "标题与按钮",
-        "detail": "必须可读可按",
+        "detail": "关键内容加动态边距",
         "icon": "component",
         "group": "页面"
       }
@@ -1990,8 +1990,8 @@
     "edges": [],
     "frames": [
       {
-        "label": "普通矩形屏",
-        "note": "四边 inset 为零，背景和控件都贴合常规内容边界。",
+        "label": "普通矩形屏（本例无刘海/手势区）",
+        "note": "这是本例没有刘海、圆角和系统手势区的起点，四边值暂为零，不代表所有矩形屏都没有安全边距。",
         "activeIds": [
           "screen",
           "insets",
@@ -2001,13 +2001,13 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "insets": "0 / 0 / 0 / 0"
+          "insets": "0 / 0 / 0 / 0（本例）"
         },
         "activeEdgeIds": []
       },
       {
         "label": "加入刘海和手势条",
-        "note": "顶部和底部 inset 出现，背景不动，标题与按钮向内移动。",
+        "note": "顶部和底部动态 inset 出现，背景不动，标题与按钮向内移动；数值和单位只是本例示意。",
         "activeIds": [
           "screen",
           "insets",
@@ -2018,14 +2018,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "insets": "top 47 · bottom 34",
+          "insets": "top 47 pt · bottom 34 pt（本例）",
           "controls": "未被遮挡"
         },
         "activeEdgeIds": []
       },
       {
         "label": "旋转到横屏",
-        "note": "左右 inset 重新计算，底部按钮改为避开侧边圆角。",
+        "note": "左右 inset 重新计算，底部按钮改为避开侧边圆角；不同平台可能使用不同单位。",
         "activeIds": [
           "screen",
           "insets",
@@ -2036,14 +2036,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "insets": "left 47 · right 47",
+          "insets": "left 47 pt · right 47 pt（本例）",
           "background": "仍铺满"
         },
         "activeEdgeIds": []
       },
       {
         "label": "关闭适配对照",
-        "note": "控件回到物理边缘，被刘海和手势区压住的位置变红。",
+        "note": "本例把控件放回物理边缘，被刘海和手势区压住的位置变红；“2 处”是教学示例。",
         "activeIds": [
           "controls"
         ],
@@ -2054,7 +2054,7 @@
           "insets"
         ],
         "values": {
-          "controls": "2 处遮挡"
+          "controls": "2 处遮挡（本例）"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -2063,12 +2063,12 @@
         }
       }
     ],
-    "insight": "背景可以延伸到整块屏幕，文字和操作控件要跟随系统给出的安全边距。",
+    "insight": "背景可以延伸到整块屏幕，文字和操作控件要跟随系统或浏览器给出的动态安全边距；方向和设备形态变化时重新读取。",
     "quiz": {
       "question": "安全区域边距应该怎样取得？",
       "options": [
         {
-          "label": "读取平台或 CSS 环境变量提供的值",
+          "label": "读取平台值或 CSS env(safe-area-inset-*)",
           "correct": true
         },
         {
@@ -2080,23 +2080,38 @@
           "correct": false
         }
       ],
-      "success": "系统值会反映当前设备形态和方向。",
+      "success": "平台接口或 CSS env(safe-area-inset-*) 会给出当前形态的动态值。",
       "retry": "固定像素无法覆盖不同刘海、圆角和手势区域。"
     },
     "prompt": {
       "title": "修正全屏页面的安全区域",
-      "text": "请检查下面全屏页面，把背景继续铺满屏幕，同时为顶部标题、底部按钮和横屏侧边操作加入动态安全区域边距。"
+      "text": "请检查下面全屏页面，让背景继续铺满屏幕，同时为顶部标题、底部按钮和横屏侧边操作加入动态安全区域边距；Web 页面可说明 env(safe-area-inset-top/right/bottom/left) 的用途。"
     },
     "sources": [
       {
         "url": "https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple Developer Documentation · Safe area",
+        "note": "原生界面把关键内容放在安全区域内"
       },
       {
-        "url": "https://drafts.csswg.org/css-env-1/",
-        "label": "drafts.csswg.org",
-        "note": "原始规范与实现说明"
+        "url": "https://www.w3.org/TR/css-env-1/",
+        "label": "W3C · CSS Environment Variables",
+        "note": "safe-area-inset-* 与 env() 的动态安全边距"
+      },
+      {
+        "url": "https://developer.android.com/reference/android/view/WindowInsets",
+        "label": "Android Developers · WindowInsets",
+        "note": "系统窗口 inset 的类型与变化读取"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/layout/display-cutout",
+        "label": "Android Developers · Display cutouts",
+        "note": "刘海区域与边到边布局的处理边界"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/env",
+        "label": "MDN · env() CSS function",
+        "note": "浏览器环境变量与安全区域 CSS 用法"
       }
     ]
   },

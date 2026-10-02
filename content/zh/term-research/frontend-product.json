@@ -111,12 +111,22 @@
   },
   {
     "slug": "safe-area",
-    "mechanism": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset；内容可延伸到屏幕边缘，关键控件需加上相应内边距。",
-    "misconception": "安全区不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；背景和可操作内容处理不同。",
-    "demoSignature": "建议 4 帧：切换刘海、圆角和横屏设备外形，四边 inset 以半透明色块进入画面；背景保持铺满，标题和底部按钮自动移入安全区；关闭 safe-area 适配后，两者被遮挡的位置用红框标出。",
-    "sourceUrls": ["https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area", "https://drafts.csswg.org/css-env-1/"],
+    "mechanism": "系统或浏览器根据刘海、圆角、状态栏和手势区提供动态 inset（系统留出的安全边距）；背景可延伸到屏幕边缘，关键控件根据这些值加内边距，方向或设备形态变化时重新读取。",
+    "misconception": "安全区域不是固定 20px，也不等于所有内容都不能铺到屏幕边缘；平台单位和接口可能不同，背景与可操作内容的处理也不同。",
+    "demoSignature": "layers: 4 frames; actors=物理屏幕/安全区域/页面背景/标题与按钮; phases=普通矩形屏（本例无刘海/手势区）→加入刘海和手势条→旋转到横屏→关闭适配对照; action=切换设备外形",
+    "sourceUrls": [
+      "https://developer.apple.com/documentation/uikit/positioning-content-relative-to-the-safe-area",
+      "https://www.w3.org/TR/css-env-1/",
+      "https://developer.android.com/reference/android/view/WindowInsets",
+      "https://developer.android.com/develop/ui/views/layout/display-cutout",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/env"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["adaptive-layout", "touch-target", "app-lifecycle"]
+    "nearDuplicates": [
+      "adaptive-layout",
+      "touch-target",
+      "app-lifecycle"
+    ]
   },
   {
     "slug": "app-lifecycle",

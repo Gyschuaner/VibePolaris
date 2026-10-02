@@ -211,18 +211,53 @@
     ]
   },
   {
-    "zh": "安全区域", "en": "Safe Area", "slug": "safe-area", "cat": "前端",
-    "say": "安全区域是不会被刘海、圆角、状态栏和系统手势区遮挡的可用范围。",
-    "aliases": ["Safe Area", "安全区", "系统边距"],
+    "zh": "安全区域",
+    "en": "Safe Area",
+    "slug": "safe-area",
+    "cat": "前端",
+    "say": "安全区域是系统或浏览器为避开刘海、圆角、状态栏和手势区保留的可用范围。",
+    "aliases": [
+      "Safe Area",
+      "安全区",
+      "系统边距"
+    ],
     "question": "按钮贴在屏幕底部，为什么会和系统手势条重叠？",
-    "definition": "安全区域由系统根据屏幕形态和界面装饰提供边距。应用可让背景铺满屏幕，但应把关键文字和控件放在安全范围内。",
-    "boundary": "安全区域不是固定像素，也不应在所有设备手写同一组边距；方向和设备形态变化时需要重新读取。",
-    "demoType": "state", "demoTitle": "底部操作栏的位置修正",
-    "demoSteps": [{"label":"忽略安全区","value":"按钮贴到物理屏幕底边","note":"可能被手势条遮挡。"},{"label":"读取底部 inset","value":"增加系统提供的内边距","note":"操作区移到可触摸范围。"},{"label":"旋转设备","value":"重新应用四周 inset","note":"边距随方向变化。"}],
-    "quizQuestion": "安全区域边距应该怎样取得？", "quizOptions": ["读取平台或 CSS 环境变量提供的值", "所有设备固定写 20px", "根据应用名称计算"],
-    "correctText": "系统值会反映当前设备形态和方向。", "wrongText": "固定像素无法覆盖不同刘海、圆角和手势区域。",
-    "promptTitle": "修正全屏页面的安全区域", "prompt": "请检查下面全屏页面，把背景继续铺满屏幕，同时为顶部标题、底部按钮和横屏侧边操作加入动态安全区域边距。",
-    "relatedSlugs": ["adaptive-layout", "touch-target", "app-lifecycle"]
+    "definition": "安全区域由系统或浏览器提供动态 inset（系统留出的安全边距）；应用可让背景铺满屏幕，但应把关键文字和控件放在这些边距内。旋转或设备形态变化时要重新读取。",
+    "boundary": "安全区域不是固定像素，也不是所有内容都不能铺到边缘；平台单位和接口不同，不能手写一组边距覆盖所有设备。",
+    "demoType": "state",
+    "demoTitle": "底部操作栏的位置修正",
+    "demoSteps": [
+      {
+        "label": "忽略安全区",
+        "value": "控件贴到物理屏幕边缘",
+        "note": "本例设备有刘海或手势区时，控件可能被遮挡。"
+      },
+      {
+        "label": "读取底部 inset",
+        "value": "把动态安全边距加到操作区",
+        "note": "inset 是系统或浏览器为可见区域留出的边距，本例直接使用平台提供的值。"
+      },
+      {
+        "label": "旋转设备",
+        "value": "重新读取四边 inset",
+        "note": "方向变化后，数值和单位按平台重新计算。"
+      }
+    ],
+    "quizQuestion": "安全区域边距应该怎样取得？",
+    "quizOptions": [
+      "读取平台值或 CSS env(safe-area-inset-*)",
+      "所有设备固定写 20px",
+      "根据应用名称计算"
+    ],
+    "correctText": "平台接口或 CSS env(safe-area-inset-*) 会给出当前形态的动态值。",
+    "wrongText": "固定像素无法覆盖不同刘海、圆角和手势区域。",
+    "promptTitle": "修正全屏页面的安全区域",
+    "prompt": "请检查下面全屏页面，让背景继续铺满屏幕，同时为顶部标题、底部按钮和横屏侧边操作加入动态安全区域边距；Web 页面可说明 env(safe-area-inset-top/right/bottom/left) 的用途。",
+    "relatedSlugs": [
+      "adaptive-layout",
+      "touch-target",
+      "app-lifecycle"
+    ]
   },
   {
     "zh": "应用生命周期", "en": "App Lifecycle", "slug": "app-lifecycle", "cat": "前端",
