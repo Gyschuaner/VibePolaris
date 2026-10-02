@@ -63,6 +63,7 @@ export function AdaptiveLayoutTermPage() {
       <p id="adaptive-window" className="vp-citation-target">Android 的自适应布局资料把窗口大小和折叠姿态当作运行时输入，建议根据可用空间决定布局关系。窗口可以在运行中变化，应用要重新计算能否并列显示，而不是只在启动时选择一个设备档位。<Cite id="adaptive-window" sources={adaptiveLayoutSources} /></p>
       <p>因此，自适应布局的核心问题是“当前空间适合怎样完成任务”。当空间不足，详情可以暂时占满窗口；当空间增加，导航和上下文可以回来。两种结果都应保持标题、选中项和键盘焦点的关系。</p>
       <MobileConceptLesson slug="adaptive-layout" />
+      <p>演示中的“订单 42 · 已选中”是一个真实按钮，不是随布局复制出来的文字。切换宽度或布局步骤后，它仍然代表同一条记录；用键盘操作时，焦点也应留在这个控件或能明确映射回它。</p>
     </ArticleSection>
     <ArticleSection id="adaptive-space" title="按可用空间重排">
       <p id="adaptive-size" className="vp-citation-target">窗口大小类别是对当前可用空间的归纳，不是设备品牌的清单。它帮助应用决定何时从单列切到双列、何时显示侧栏，但具体断点仍应由内容是否可读、触控是否可用来验证。<Cite id="adaptive-size" sources={adaptiveLayoutSources} /></p>
