@@ -6819,9 +6819,9 @@
   },
   {
     "slug": "wireframe",
-    "lead": "品牌颜色还没确定，团队能否先判断页面应该放什么、谁先看到什么、从哪里继续？",
-    "definition": "线框图用低细节结构表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。",
-    "boundary": "线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "lead": "品牌颜色还没确定时，你能否先和团队或 AI 判断页面放什么、谁先看到什么、从哪里继续？",
+    "definition": "线框图用低细节的框、文字和位置表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。纸笔、白板或文字草稿都能表达结构；如果还要验证点击流程，通常会把它做成交互原型。",
+    "boundary": "线框图关注页面结构，不是最终视觉。真实文案、数据密度、响应式显示、动效和技术可行性仍要另外验证。",
     "sceneKind": "transform",
     "sceneTitle": "详情页从内容清单到可评审线框",
     "actionLabel": "增加一层结构",
@@ -6836,7 +6836,7 @@
       {
         "id": "groups",
         "label": "信息分组",
-        "detail": "商品信息 / 交易操作",
+        "detail": "商品信息 / 购买操作",
         "icon": "layout",
         "group": "结构"
       },
@@ -6857,14 +6857,14 @@
       {
         "id": "wireframe",
         "label": "线框页面",
-        "detail": "可讨论的低细节布局",
+        "detail": "可讨论的低细节结构草稿",
         "icon": "browser",
         "group": "结果"
       },
       {
         "id": "visual",
         "label": "最终视觉",
-        "detail": "颜色、字体与图片未定",
+        "detail": "颜色、字体与图片仍未定",
         "icon": "spark",
         "group": "后续"
       }
@@ -6904,12 +6904,13 @@
     "frames": [
       {
         "label": "列出内容",
-        "note": "先确认页面必须承载的真实信息和操作。",
+        "note": "先确认页面必须承载的真实信息、主要操作和可能失败的情况。",
         "activeIds": [
           "requirements"
         ],
         "doneIds": [],
         "mutedIds": [
+          "groups",
           "hierarchy",
           "actions",
           "wireframe",
@@ -6920,7 +6921,7 @@
       },
       {
         "label": "建立分组",
-        "note": "把商品事实与购买操作分开，避免同一层级平铺。",
+        "note": "把商品信息和购买操作分开，先看清每一块要完成什么。",
         "activeIds": [
           "requirements",
           "groups"
@@ -6940,7 +6941,7 @@
       },
       {
         "label": "确定层级",
-        "note": "标题、价格和库存按决策顺序建立阅读重点。",
+        "note": "按用户做决定的顺序安排标题、价格和库存。",
         "activeIds": [
           "groups",
           "hierarchy"
@@ -6949,6 +6950,8 @@
           "requirements"
         ],
         "mutedIds": [
+          "actions",
+          "wireframe",
           "visual"
         ],
         "values": {
@@ -6960,15 +6963,17 @@
       },
       {
         "label": "放置操作",
-        "note": "主操作靠近会影响购买判断的信息，次操作降低强调。",
+        "note": "把主操作放在用户刚看完价格的位置，收藏放在次要位置。",
         "activeIds": [
           "hierarchy",
           "actions"
         ],
         "doneIds": [
+          "requirements",
           "groups"
         ],
         "mutedIds": [
+          "wireframe",
           "visual"
         ],
         "values": {
@@ -6980,7 +6985,7 @@
       },
       {
         "label": "形成线框",
-        "note": "团队可以评审结构和流程，但不把灰色框当成最终尺寸。",
+        "note": "形成一张可讨论的结构草稿；视觉、真实文案和点击流程还要继续验证。",
         "activeIds": [
           "actions",
           "wireframe"
@@ -7002,9 +7007,9 @@
         ]
       }
     ],
-    "insight": "线框图先固定信息关系和操作位置，把视觉风格留到结构成立之后。",
+    "insight": "线框图先把页面的信息关系和操作位置摆出来，视觉、真实文案和点击流程再分别验证。",
     "quiz": {
-      "question": "线框里用两行占位文字，能否证明最终中文标题不会换成五行？",
+      "question": "线框里用两行占位文字，能否证明最终中文标题不会变成五行？",
       "options": [
         {
           "label": "不能，还要用真实或极端长度文案验证",
@@ -7019,18 +7024,38 @@
           "correct": false
         }
       ],
-      "success": "线框适合讨论结构，但真实内容仍要单独验证。",
+      "success": "线框只能先讨论结构；真实文案长度和各屏幕显示还要单独验证。",
       "retry": "占位块不能代表真实内容密度。"
     },
     "prompt": {
       "title": "把需求整理成线框结构",
-      "text": "请先列出页面的真实信息、用户判断顺序、主要操作和异常状态，再按分组与层级组织为低细节线框。使用接近真实长度的文案，标出仍需验证的数据密度、响应式变化和动效，不提前确定品牌视觉。"
+      "text": "请先列出页面的真实信息、用户判断顺序、主要操作和可能遇到的失败情况，再按分组与层级组织为低细节线框。可以用纸笔、白板或文字草稿表达；用接近真实长度的文案检查结构，并标出在不同屏幕、动效和技术实现上仍要验证的地方，不提前确定品牌视觉。"
     },
     "sources": [
       {
+        "url": "https://www.gov.uk/service-manual/design/making-prototypes",
+        "label": "GOV.UK Service Manual · Making prototypes",
+        "note": "草图和原型适合在投入构建前探索、讨论和验证基本想法。"
+      },
+      {
+        "url": "https://design-system.service.gov.uk/get-started/prototyping/",
+        "label": "GOV.UK Design System · Prototyping",
+        "note": "用 Design System 和 Prototype Kit 制作接近真实内容与交互的原型。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/design/introduction-designing-government-services",
+        "label": "GOV.UK Service Manual · Designing good government services",
+        "note": "设计服务要从用户需要和清楚、直接的任务结果出发。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
+        "label": "GOV.UK Service Manual · How the alpha phase works",
+        "note": "alpha 用原型测试不同想法和高风险假设，原型不等同于生产代码。"
+      },
+      {
         "url": "https://media.nngroup.com/media/articles/attachments/UX-Deliverables-Glossary-PDF-2.pdf",
         "label": "Nielsen Norman Group · UX Deliverables Glossary",
-        "note": "用户研究方法与证据"
+        "note": "UX 交付物术语表说明线框图等交付物的定义与完整度差异。"
       }
     ]
   },
