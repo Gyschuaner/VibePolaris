@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -52,6 +52,47 @@ function DataMotionVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function RobotSafetyVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-robot-safety robot-safety-phase-${activeStep}`} aria-hidden="true">
+      <div className="robot-safety-zone">
+        <span className="robot-safety-zone-label">共享工作区</span>
+        <span className="robot-safety-gate" />
+        <i className="robot-safety-robot robot-safety-robot-one" />
+        <i className="robot-safety-robot robot-safety-robot-two" />
+        <i className="robot-safety-person" />
+      </div>
+      <div className="robot-safety-command">
+        <span className="robot-safety-command-pulse" />
+        <span className="robot-safety-command-label">安全命令</span>
+      </div>
+      <div className="robot-safety-result">等待机器确认停止</div>
+    </div>
+  );
+}
+
+function ClinicalAlertVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-clinical-alert clinical-alert-phase-${activeStep}`} aria-hidden="true">
+      <div className="clinical-alert-scan">
+        <span className="clinical-alert-scan-ring" />
+        <span className="clinical-alert-scan-mark" />
+        <span className="clinical-alert-label">CT 图像</span>
+      </div>
+      <span className="clinical-alert-arrow">→</span>
+      <div className="clinical-alert-notice">
+        <span className="clinical-alert-notice-dot" />
+        <span className="clinical-alert-label">疑似 LVO</span>
+      </div>
+      <span className="clinical-alert-arrow">→</span>
+      <div className="clinical-alert-team">
+        <span className="clinical-alert-team-head" />
+        <span className="clinical-alert-label">医生复核</span>
+      </div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -91,7 +132,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (
