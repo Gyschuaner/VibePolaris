@@ -461,14 +461,17 @@
   },
   {
     "slug": "runtime",
-    "mechanism": "运行时加载并执行语言代码，同时提供内存、调度、模块和宿主 API；不同环境提供的接口并不相同。",
-    "misconception": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
-    "demoSignature": "compare: 4 frames; actors=同一段代码/浏览器运行时/DOM API/Node.js 运行时/文件系统 API; phases=检查语法→浏览器执行→Node.js 执行→使用本环境接口; action=换个环境运行",
+    "mechanism": "运行时由语言引擎与宿主环境共同完成执行：引擎解析并运行代码，宿主提供全局对象、任务调度以及 DOM、文件和网络等接口；不同环境与版本的接口范围并不相同。",
+    "misconception": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断，同一运行时的版本差异也要单独核对。",
+    "demoSignature": "compare: 4 frames; actors=同一段代码/浏览器运行时/DOM API/Node.js 运行时/文件系统 API; phases=引擎解析→浏览器执行→Node.js 执行→改用宿主接口; action=换个环境运行",
     "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model",
+      "https://tc39.es/ecma262/",
       "https://nodejs.org/api/globals.html",
+      "https://nodejs.org/api/fs.html",
       "https://developer.mozilla.org/en-US/docs/Web/API/Document"
     ],
-    "rewriteRisk": "正式页面需守住边界：语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "rewriteRisk": "正文要明确语言引擎与宿主环境的分工，并提醒读者核对目标运行时版本；不要把浏览器 DOM 或 Node.js 文件 API 写成 JavaScript 语言的统一能力。",
     "nearDuplicates": [
       "compiler",
       "interpreter",
@@ -477,13 +480,18 @@
   },
   {
     "slug": "package",
-    "mechanism": "包管理器读取依赖范围，解析完整依赖树，下载包并用锁文件记录确定版本与完整性。",
-    "misconception": "锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
-    "demoSignature": "tree: 5 frames; actors=package.json/版本解析器/ui-kit 2.5.1/color-utils 1.4.2/package-lock.json/node_modules; phases=读取范围→选择直接依赖→展开间接依赖→写入锁文件→复现安装; action=继续安装",
+    "mechanism": "包管理器读取 package.json 的依赖范围，解析直接和间接依赖，下载包，并在锁文件中记录精确版本、来源与完整性；安装器据此复现同一棵依赖树。",
+    "misconception": "锁定版本提高可复现性，但不保证依赖安全、兼容或维护良好；升级仍需审查依赖树、漏洞和许可证并运行测试。",
+    "demoSignature": "summary=3 steps; scene=tree: 5 frames; actors=package.json/版本解析器/ui-kit 2.5.1/color-utils 1.4.2/package-lock.json/node_modules; phases=声明范围→选择版本→展开间接依赖→锁定精确树→按锁文件安装; action=继续安装",
     "sourceUrls": [
-      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json"
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
+      "https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file",
+      "https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+      "https://docs.npmjs.com/about-audit-reports",
+      "https://docs.npmjs.com/cli/v6/using-npm/semver/",
+      "https://docs.npmjs.com/cli/v11/commands/npm-install/"
     ],
-    "rewriteRisk": "正式页面需守住边界：锁定版本提高可复现性，但不保证依赖安全或兼容；升级仍需审查变更并运行测试。",
+    "rewriteRisk": "正式页面需解释版本范围的示例含义，并区分 package.json 的允许范围、锁文件的精确依赖树和安装目录的落地结果；不要把锁定版本写成安全或兼容保证。",
     "nearDuplicates": [
       "lockfile",
       "dependency",
@@ -492,13 +500,17 @@
   },
   {
     "slug": "typescript",
-    "mechanism": "TypeScript 在 JavaScript 上增加静态类型检查，编译阶段分析变量、函数和对象的使用是否符合声明。",
-    "misconception": "类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
-    "demoSignature": "pipeline: 5 frames; actors=TypeScript 源码/函数声明/类型检查器/诊断/JavaScript 输出/运行时输入; phases=读取声明→检查调用→给出诊断→修正并输出→验证外部数据; action=运行检查",
+    "mechanism": "TypeScript 在 JavaScript 上增加静态类型系统；类型检查器在代码运行前分析变量、函数和对象关系，编译或构建工具再输出 JavaScript。",
+    "misconception": "类型信息通常会在输出 JavaScript 中被擦除，类型断言也不会验证外部数据；接口响应、用户输入等数据仍需运行时校验。",
+    "demoSignature": "summary=3 steps; scene=pipeline: 5 frames; actors=TypeScript 源码/函数声明/类型检查器/诊断/JavaScript 输出/运行时输入; phases=声明约束→提前诊断→修正并输出→验证外部数据; action=运行检查",
     "sourceUrls": [
-      "https://www.typescriptlang.org/docs/handbook/2/basic-types.html"
+      "https://www.typescriptlang.org/docs/handbook/intro",
+      "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+      "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "https://www.typescriptlang.org/docs/handbook/type-compatibility",
+      "https://www.typescriptlang.org/tsconfig/strict.html"
     ],
-    "rewriteRisk": "正式页面需守住边界：类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
+    "rewriteRisk": "正式页面需区分编译前的静态检查与运行时验证，说明类型通常不会进入输出 JavaScript，也不要把类型断言写成外部数据校验。",
     "nearDuplicates": [
       "javascript",
       "compiler",
@@ -507,13 +519,17 @@
   },
   {
     "slug": "repo-commit",
-    "mechanism": "工作区保存正在编辑的文件；暂存区选择本次快照内容；提交把所选内容、父提交和说明写入仓库历史。",
-    "misconception": "本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
-    "demoSignature": "timeline: 5 frames; actors=工作区/差异/暂存区/提交对象/当前分支/远程仓库; phases=保存文件→检查差异→选择快照→创建提交→决定推送; action=推进修改",
+    "mechanism": "工作区保存正在编辑的文件；你把要提交的修改挑进暂存区；提交把选中的内容连同作者和说明写入仓库历史。",
+    "misconception": "本地提交不会自动上传远程；无关改动混进同一个提交，之后想单独退回就难了。推送是之后的独立步骤。",
+    "demoSignature": "timeline: 5 frames; actors=工作区/差异/暂存区/提交/当前分支/远程仓库; phases=保存文件→检查差异→暂存修改→创建提交→决定推送; action=推进修改",
     "sourceUrls": [
-      "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"
+      "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
+      "https://git-scm.com/docs/git-add",
+      "https://git-scm.com/docs/git-diff",
+      "https://git-scm.com/docs/git-commit",
+      "https://git-scm.com/docs/git-push"
     ],
-    "rewriteRisk": "正式页面需守住边界：本地提交不会自动上传远程，也不应把多个无关任务混进同一个历史节点。",
+    "rewriteRisk": "正式页面需让零基础读者分清保存、查看差异、暂存、提交和推送，避免把本地提交写成远程备份。",
     "nearDuplicates": [
       "working-tree",
       "staging-area",
@@ -522,13 +538,17 @@
   },
   {
     "slug": "branch",
-    "mechanism": "Git 分支是指向提交的可移动引用；在某分支创建提交只会移动该引用，其他分支仍指向原提交。",
-    "misconception": "分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
-    "demoSignature": "branch: 5 frames; actors=共同提交 A/dev/feat/VBP-001/提交 B/提交 C/合并结果; phases=共同起点→创建引用→功能线前进→主线也变化→验证后合并; action=创建下一提交",
+    "mechanism": "Git 分支是一个会跟着提交移动的名字（引用）；在某分支创建提交只会移动这个名字，其他分支仍指向原提交。",
+    "misconception": "分支不是复制一套完整文件；多个分支共享历史，改到同一处代码时，合并仍可能冲突。",
+    "demoSignature": "branch: 5 frames; actors=共同提交 A/主线（dev）/功能分支/提交 B/提交 C/提交 D/合并结果; phases=共同起点→创建功能分支→功能线前进→主线也变化→验证后合并; action=创建下一提交",
     "sourceUrls": [
-      "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html"
+      "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html",
+      "https://git-scm.com/docs/git-branch",
+      "https://git-scm.com/docs/git-switch",
+      "https://git-scm.com/docs/git-merge",
+      "https://git-scm.com/docs/git-rebase"
     ],
-    "rewriteRisk": "正式页面需守住边界：分支不是复制一套完整文件；多个分支共享历史，修改同一区域时合并仍可能冲突。",
+    "rewriteRisk": "正式页面需让零基础读者理解分支如何沿提交线移动、主线如何分叉，以及合并冲突需要人工判断。",
     "nearDuplicates": [
       "checkout-switch",
       "merge",
@@ -537,13 +557,17 @@
   },
   {
     "slug": "mvp",
-    "mechanism": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本，范围由要获得的证据决定。",
+    "mechanism": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本。范围由要拿到的证据决定，而要什么证据由关键假设决定。",
     "misconception": "MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
     "demoSignature": "assembly: 5 frames; actors=关键假设/互动课程/学习进度/学习社区/证书系统/验证证据; phases=写清假设→保留核心体验→加入必要记录→推迟旁支功能→收集证据; action=筛选下一项",
     "sourceUrls": [
-      "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works"
+      "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
+      "https://www.gov.uk/service-manual/agile-delivery/core-principles-agile",
+      "https://www.gov.uk/service-manual/agile-delivery/deciding-on-priorities",
+      "https://www.gov.uk/government/publications/nuar-minimum-viable-product-mvp/nuar-minimum-viable-product-mvp",
+      "https://assets.publishing.service.gov.uk/media/618521c1d3bf7f55fe946e98/Guide_on_Assurance_for_Agile_Delivery_of_Digital_Services_V1.2_October_2021.docx.pdf"
     ],
-    "rewriteRisk": "正式页面需守住边界：MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
+    "rewriteRisk": "正式页面需把关键假设、要拿到的证据和首版范围连起来，同时守住核心流程、安全与数据正确性。",
     "nearDuplicates": [
       "scope",
       "iteration",
@@ -552,13 +576,17 @@
   },
   {
     "slug": "user-flow",
-    "mechanism": "用户流程把入口、用户动作、系统反馈、条件分支和结束状态连接起来，描述完成一个目标的完整路径。",
-    "misconception": "用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
-    "demoSignature": "branch: 6 frames; actors=邮件入口/链接校验/新密码表单/链接过期/输入不一致/重设成功; phases=从邮件进入→检查链接→过期恢复→填写新密码→修正不一致→完成并返回; action=走下一节点",
+    "mechanism": "用户流程把入口、用户动作、系统反馈、分支、恢复和结束状态连接起来，描述完成一个目标的完整路径。",
+    "misconception": "用户流程不是把网站的页面列成一张清单，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "demoSignature": "branch: 6 frames; actors=邮件入口/链接校验/新密码表单/链接过期/输入不一致/重设成功/继续原任务; phases=从邮件进入→检查链接→如果链接已过期→填写新密码→修正不一致→完成并返回; action=走下一节点",
     "sourceUrls": [
-      "https://www.nngroup.com/articles/user-journeys-vs-user-flows/"
+      "https://www.gov.uk/service-manual/design/scoping-your-service",
+      "https://www.gov.uk/service-manual/user-research/creating-an-experience-map",
+      "https://www.gov.uk/service-manual/design/map-a-users-whole-problem",
+      "https://design-system.service.gov.uk/patterns/step-by-step-navigation/",
+      "https://www.gov.uk/service-manual/design/introduction-designing-government-services"
     ],
-    "rewriteRisk": "正式页面需守住边界：用户流程不是站点页面目录，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
+    "rewriteRisk": "正式页面需让入口、动作、系统反馈、分支、恢复和结束状态彼此对应，避免把用户流程写成页面清单。",
     "nearDuplicates": [
       "use-case",
       "sitemap",
@@ -567,13 +595,17 @@
   },
   {
     "slug": "wireframe",
-    "mechanism": "线框图用低细节结构表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织。",
-    "misconception": "线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "mechanism": "线框图用低细节的框、文字和位置表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织；纸笔、白板或文字草稿都能表达结构。",
+    "misconception": "线框图关注页面结构，不是最终视觉。只凭线框里的占位内容，验证不了真实文案长度、数据密度、响应式变化、动效或技术可行性。",
     "demoSignature": "transform: 5 frames; actors=内容清单/信息分组/视觉层级/操作位置/线框页面/最终视觉; phases=列出内容→建立分组→确定层级→放置操作→形成线框; action=增加一层结构",
     "sourceUrls": [
+      "https://www.gov.uk/service-manual/design/making-prototypes",
+      "https://design-system.service.gov.uk/get-started/prototyping/",
+      "https://www.gov.uk/service-manual/design/introduction-designing-government-services",
+      "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
       "https://media.nngroup.com/media/articles/attachments/UX-Deliverables-Glossary-PDF-2.pdf"
     ],
-    "rewriteRisk": "正式页面需守住边界：线框图不是最终视觉，也不能替代真实文案、动效、数据密度和技术可行性验证。",
+    "rewriteRisk": "正式页面需守住边界：线框图关注结构，不是最终视觉；真实文案、数据密度、响应式变化、动效和技术可行性仍要单独验证。",
     "nearDuplicates": [
       "mockup",
       "prototype",
@@ -582,13 +614,17 @@
   },
   {
     "slug": "ia",
-    "mechanism": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能够预测信息位置。",
-    "misconception": "信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "mechanism": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能按自己的任务预测信息位置；同一篇内容可以保留一份正文，从多个入口被找到。",
+    "misconception": "信息架构不只是画菜单。搜索词、同义标签和从不同任务进入同一内容的路径，也属于信息架构要安排的部分。",
     "demoSignature": "tree: 5 frames; actors=300 篇文章/账单与订阅/账户与安全/取消订阅/搜索词/交叉入口; phases=盘点内容→建立分类→放置任务内容→补搜索语言→建立交叉入口; action=整理下一层",
     "sourceUrls": [
-      "https://www.usability.gov/what-and-why/information-architecture.html"
+      "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels",
+      "https://www.w3.org/WAI/curricula/designer-modules/navigation-design/",
+      "https://www.w3.org/WAI/tips/writing/",
+      "https://www.gov.uk/service-manual/design/scoping-your-service",
+      "https://www.gov.uk/service-manual/design/map-a-users-whole-problem"
     ],
-    "rewriteRisk": "正式页面需守住边界：信息架构不只是画菜单；搜索词、同义标签和从不同任务进入同一内容的路径也属于组织问题。",
+    "rewriteRisk": "正式页面需守住边界：信息架构不只是画菜单。搜索词、同义标签和从不同任务进入同一内容的路径，也属于信息架构要安排的部分。",
     "nearDuplicates": [
       "sitemap",
       "user-flow",
@@ -597,13 +633,17 @@
   },
   {
     "slug": "prototype",
-    "mechanism": "原型用可操作媒介模拟关键行为，用于验证流程理解、交互反馈或产品假设。",
-    "misconception": "原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "mechanism": "原型用页面、纸面流程、对话脚本或代码等可操作媒介模拟本轮要验证的行为，用于检查流程理解、交互反馈或产品假设。",
+    "misconception": "原型可以基于线框或视觉稿制作，顺序取决于要验证的问题；它不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
     "demoSignature": "loop: 6 frames; actors=待验证假设/可点击原型/测试任务/观察记录/原型调整/产品决定; phases=限定假设→模拟关键状态→给出真实任务→观察行为→修改原型→形成决定; action=进行下一轮",
     "sourceUrls": [
+      "https://www.gov.uk/service-manual/design/making-prototypes",
+      "https://design-system.service.gov.uk/get-started/prototyping/",
+      "https://prototype-kit.service.gov.uk/tutorials-and-guides/",
+      "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
       "https://www.nngroup.com/articles/ux-prototype-hi-lo-fidelity/"
     ],
-    "rewriteRisk": "正式页面需守住边界：原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "rewriteRisk": "正式页面需守住边界：原型只模拟本轮要验证的部分，不等于生产实现；性能、安全、数据一致性和完整技术方案仍要单独验证。",
     "nearDuplicates": [
       "wireframe",
       "mockup",
