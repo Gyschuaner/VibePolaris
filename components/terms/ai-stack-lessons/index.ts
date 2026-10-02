@@ -1,3 +1,4 @@
+export { HumanInTheLoopLesson } from "./human-in-the-loop";
 export { SubagentLesson } from "./subagent";
 export { HandoffLesson } from "./handoff";
 export { AgentOrchestrationLesson } from "./agent-orchestration";
