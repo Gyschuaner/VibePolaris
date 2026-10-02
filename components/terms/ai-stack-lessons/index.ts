@@ -1,3 +1,13 @@
+export { FineTuningLesson } from "./fine-tuning";
+export { ModerationLesson } from "./moderation";
+export { GuardrailLesson } from "./guardrail";
+export { HumanInTheLoopLesson } from "./human-in-the-loop";
+export { SubagentLesson } from "./subagent";
+export { HandoffLesson } from "./handoff";
+export { AgentOrchestrationLesson } from "./agent-orchestration";
+export { PlanAndExecuteLesson } from "./plan-and-execute";
+export { ToolResultLesson } from "./tool-result";
+export { ToolChoiceLesson } from "./tool-choice";
 export { ContainerImageLesson } from "./container-image";
 export { ServiceDiscoveryLesson } from "./service-discovery";
 export { ObservabilityLesson } from "./observability";

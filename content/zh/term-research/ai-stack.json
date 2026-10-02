@@ -227,8 +227,11 @@
     "misconception": "工具选择不是工具执行，也不是让模型获得工具背后的全部权限。",
     "demoSignature": "输入：“把会议改到周五”，候选calendar_read/calendar_update/web_search；中间：相关性0.42/0.91/0.08，策略又要求写操作审批；输出：选中calendar_update但停在待审批。可视化：候选分数条与审批闸门。 建议4帧：三个工具围绕请求出现、相关性条增长、写操作审批闸门落下、选中工具停在闸门前；交互：切换“自动/强制/禁用”观察路径。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/function-calling",
-      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+      "https://developers.openai.com/api/docs/guides/function-calling",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://openai.github.io/openai-agents-python/tools/",
+      "https://openai.github.io/openai-agents-python/human_in_the_loop/"
     ],
     "rewriteRisk": "不要把选择分数说成模型接口必然返回的真实概率；可标为演示系统的路由分数。",
     "nearDuplicates": [
@@ -242,8 +245,11 @@
     "misconception": "工具结果不是最终回答，模型还可能误读它；应用应保留状态码、来源和校验信息。",
     "demoSignature": "输入：库存查询sku=K7；中间：工具返回{stock:0,status:200}，模型候选“有货/缺货”→缺货；输出：“K7暂时缺货”。可视化：响应JSON字段高亮驱动答案状态切换。 建议4帧：查询参数发出、原始JSON返回、stock=0字段点亮、最终措辞切到缺货；交互：把stock改为8看答案状态翻转。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/function-calling",
-      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+      "https://developers.openai.com/api/docs/guides/function-calling",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://openai.github.io/openai-agents-python/tools/",
+      "https://openai.github.io/openai-agents-python/running_agents/"
     ],
     "rewriteRisk": "演示不可只放一段自然语言反馈，要显示原始结果字段如何改变下一步。",
     "nearDuplicates": [
@@ -274,9 +280,10 @@
     "demoSignature": "输入：发布清单含构建、测试、部署3步；中间：构建通过，测试12项中1项失败，部署状态从待执行改为阻塞；输出：生成修复测试的新步骤并停止发布。可视化：清单节点状态与分支动画。 建议5帧：三节点计划生成、构建通过、测试节点显示11/12并变红、部署被锁、修复节点插入；交互：点击失败测试查看计划如何改写。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2210.03629",
       "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://blog.langchain.dev/planning-agents/"
+      "https://www.langchain.com/blog/planning-agents/"
     ],
     "rewriteRisk": "别只写三个动词；每一步都要有完成证据、失败分支和计划更新。",
     "nearDuplicates": [
@@ -293,7 +300,8 @@
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://arxiv.org/abs/2308.08155"
+      "https://arxiv.org/abs/2308.08155",
+      "https://openai.github.io/openai-agents-python/handoffs/"
     ],
     "rewriteRisk": "强调编排者管理的状态，不要把角色名称堆叠成看似复杂的流程。",
     "nearDuplicates": [
@@ -311,7 +319,8 @@
       "https://openai.github.io/openai-agents-python/handoffs/",
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://arxiv.org/abs/2308.08155"
+      "https://arxiv.org/abs/2308.08155",
+      "https://openai.github.io/openai-agents-python/running_agents/"
     ],
     "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些信息、回复权给谁以及失败如何退回。",
     "nearDuplicates": [
@@ -328,7 +337,8 @@
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://openai.github.io/openai-agents-python/tools/",
       "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://arxiv.org/abs/2308.08155"
+      "https://arxiv.org/abs/2308.08155",
+      "https://openai.github.io/openai-agents-python/running_agents/"
     ],
     "rewriteRisk": "不要把后台函数都称为子智能体；必须出现独立任务边界、可检查结果和回传主线。",
     "nearDuplicates": [
@@ -344,8 +354,9 @@
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
       "https://openai.github.io/openai-agents-python/guardrails/",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook",
-      "https://www.nist.gov/itl/ai-risk-management-framework"
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://www.nist.gov/itl/ai-risk-management-framework",
+      "https://openai.github.io/openai-agents-python/tools/"
     ],
     "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、审阅人能看到什么、能改变哪个动作，以及决定如何留痕。",
     "nearDuplicates": [
@@ -357,12 +368,13 @@
     "slug": "guardrail",
     "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
     "misconception": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
-    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：12 条脱敏记录放行，完整号码为 0，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
+    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：脱敏分支放行 12 条记录且完整号码为 0；禁止分支直接阻断导出，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/guardrails/",
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
       "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://developers.openai.com/api/docs/guides/safety-best-practices"
     ],
     "rewriteRisk": "要写出护栏检查什么、命中后做什么，以及权限、审核和业务校验由谁负责，不要把所有安全措施都装进同一个词。",
     "nearDuplicates": [
@@ -377,10 +389,11 @@
     "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。护栏负责规则检查，内容审核负责内容分类。",
     "demoSignature": "输入：3 条评论；中间：风险分 0.03 / 0.61 / 0.94，阈值 0.80 后按示意区间进入展示 / 复核 / 隐藏（≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示）；输出：1 条展示、1 条送审、1 条隐藏。阈值改为 0.60 后，样本的复核队列变空，B 转入隐藏。可视化：三点落在阈值色带上。建议4帧：三条评论落到风险色带、阈值区间切分、三路处置队列、阈值调整后队列更新；交互：拖阈值线观察队列数量。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/moderation",
+      "https://developers.openai.com/api/docs/guides/moderation",
       "https://openai.github.io/openai-agents-python/guardrails/",
       "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://developers.openai.com/api/docs/guides/safety-best-practices"
     ],
     "rewriteRisk": "不要把审核分数写成法律结论；要用风险类别、产品阈值和处置队列说明审核如何进入产品流程。",
     "nearDuplicates": [
@@ -439,9 +452,10 @@
     "misconception": "微调不会自动注入实时知识；提示词适合修改任务说明，检索适合临时查资料，训练数据也要去重、去除隐私内容并与验证集分开。",
     "demoSignature": "输入：200 条工单分类训练样本与一份未参与训练的验证集；中间：训练损失 0.84→0.39，验证准确率 71%→83%，再训练一轮后模型更贴合训练样本，验证准确率回落至 80%；输出：出现过拟合信号，不能只看训练指标。可视化：训练损失与验证准确率并排。建议4帧：验证基线、参数开始更新、第三轮改善、再训练后验证回落；交互：拖训练轮数看训练损失与验证准确率的变化。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/model-optimization",
-      "https://platform.openai.com/docs/guides/supervised-fine-tuning",
+      "https://developers.openai.com/api/docs/guides/model-optimization",
+      "https://developers.openai.com/api/docs/guides/supervised-fine-tuning",
       "https://huggingface.co/docs/transformers/training",
+      "https://huggingface.co/docs/peft/index",
       "https://arxiv.org/abs/2106.09685"
     ],
     "rewriteRisk": "数值要标为教学案例而非普遍收益；必须解释训练损失、保留未参与训练的验证集，并说明过拟合风险。",
