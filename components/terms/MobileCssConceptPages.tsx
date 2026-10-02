@@ -264,7 +264,7 @@ export function CssSelectorTermPage() {
   return <ConceptArticle slug="css-selector" title="CSS selector" subtitle="CSS 选择器" hero={<MobileHero trigger="规则没有改变通知卡片" change="条件 → DOM 匹配集合" proof="命中后再经过层叠竞争" />} sections={selectorSections} sources={cssSelectorSources} intro={<>CSS 选择器描述哪些 DOM 元素符合一组条件。<strong>它先负责找出候选元素，匹配成功后浏览器还要经过层叠计算，才决定最终样式。</strong></>}>
     <ArticleSection id="selector-task" title="为什么这条规则没有命中">
       <p>你给通知卡片写了 <code>.list &gt; .notice</code>，页面却没有变红。先不要马上提高权重：可能通知卡片不是列表的直接子元素，或者它的类名并不在你以为的节点上。</p>
-      <p id="selector-match" className="vp-citation-target">Selectors 规范把选择器定义为匹配元素的条件，条件可以包括类型、类、属性、关系和伪类。浏览器会在 DOM 树中判断每个元素是否满足这些条件。<Cite id="selector-match" sources={cssSelectorSources} /></p>
+      <p id="selector-match-source" className="vp-citation-target">Selectors 规范把选择器定义为匹配元素的条件，条件可以包括类型、类、属性、关系和伪类。浏览器会在 DOM 树中判断每个元素是否满足这些条件。<Cite id="selector-match-source" sources={cssSelectorSources} /></p>
       <p>选择器解决的是“哪些元素属于这条规则”。它不读取你脑中的组件名称，也不保证这条规则最后赢过另一条同样命中的声明。下面逐步改动选择器，看集合怎样变化。</p>
       <MobileConceptLesson slug="css-selector" />
     </ArticleSection>
@@ -276,7 +276,7 @@ export function CssSelectorTermPage() {
     </ArticleSection>
     <ArticleSection id="selector-cascade" title="命中后还要竞争">
       <p id="selector-specificity" className="vp-citation-target">特异性会在同一层叠来源中比较选择器的权重列：ID、类/属性/伪类、类型/伪元素。它不是把选择器字符数简单相加，也不是所有样式冲突的第一层规则。<Cite id="selector-specificity" sources={cssSelectorSources} /></p>
-      <p id="selector-cascade" className="vp-citation-target">CSS Cascade 还会先考虑来源、重要性和层，再比较特异性和出现顺序。只有前面的条件相同，后出现的声明才可能成为胜者。<Cite id="selector-cascade" sources={cssSelectorSources} /></p>
+      <p id="selector-cascade-source" className="vp-citation-target">CSS Cascade 还会先考虑来源、重要性和层，再比较特异性和出现顺序。只有前面的条件相同，后出现的声明才可能成为胜者。<Cite id="selector-cascade-source" sources={cssSelectorSources} /></p>
       <div className={styles.resultFlow}><span>选择器匹配</span><ArrowRight size={19} /><span>候选声明</span><ArrowRight size={19} /><span>来源 / 层 / 特异性</span><ArrowRight size={19} /><span>最终值</span></div>
       <p>因此，“规则没生效”至少有两种原因：没有选中目标，或者选中了但在层叠竞争中输了。两种问题的修法不同，应该先定位发生在哪一层。</p>
     </ArticleSection>
