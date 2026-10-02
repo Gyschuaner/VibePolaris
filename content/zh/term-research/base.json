@@ -55,14 +55,16 @@
   },
   {
     "slug": "javascript",
-    "mechanism": "JavaScript 接收事件，读取或修改程序数据，再通过浏览器 API 更新页面；异步任务完成后会在事件循环允许的时机继续执行。",
-    "misconception": "JavaScript 语言不等于 DOM、网络或文件系统 API；可调用能力由浏览器、Node.js 等运行时决定。",
-    "demoSignature": "event-state-render: 3 frames; actors=点击事件/count状态/计数节点; phases=事件进入→count加一→textContent更新; action=逐段执行一次点击",
+    "mechanism": "页面加载后，JavaScript 脚本先登记事件监听器；浏览器把 click 等事件送给脚本，脚本用核心语言修改状态，再通过 DOM 等浏览器 API 更新当前页面。异步请求完成后，后续更新要等响应结果再继续。",
+    "misconception": "JavaScript 语言不等于 DOM、网络或文件系统 API；脚本修改当前页面的 DOM，不会自动改回 HTML 源文件；可调用能力由浏览器、Node.js 等运行时决定。",
+    "demoSignature": "event-state-render: 3 frames; actors=点击事件/count状态/计数节点; phases=登记监听→修改状态→更新页面; action=逐段执行一次点击",
     "sourceUrls": [
-      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events"
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Language_overview",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Client-side_APIs/Introduction",
+      "https://tc39.es/ecma262/2023/multipage/overview.html"
     ],
-    "rewriteRisk": "不要把 JavaScript 写成‘让页面动起来’；正式页面要明确事件、数据变化和界面更新的先后。",
+    "rewriteRisk": "不要把 JavaScript 写成‘让页面动起来’；正式页面要明确脚本登记事件、核心语言修改状态、浏览器 API 更新 DOM 的边界与先后。",
     "nearDuplicates": [
       "event",
       "dom",
