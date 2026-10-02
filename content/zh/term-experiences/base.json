@@ -7300,9 +7300,9 @@
   },
   {
     "slug": "prototype",
-    "lead": "正式开发前，怎样让用户实际走一遍新流程，并尽早发现他们不知道下一步点哪里？",
-    "definition": "原型用可操作媒介模拟关键行为，用于验证流程理解、交互反馈或产品假设。",
-    "boundary": "原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
+    "lead": "正式开发前，怎样用一个可操作的假版本让用户走一遍新流程，并尽早发现他们不知道下一步点哪里？",
+    "definition": "原型用页面、纸面流程、对话脚本或代码等可操作媒介，模拟本轮要验证的行为，用于检查流程理解、交互反馈或产品假设。",
+    "boundary": "可以先照线框做原型，也可以先出视觉稿再做，三者先后取决于本轮要验证什么。原型不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
     "sceneKind": "loop",
     "sceneTitle": "一个注册假设怎样经过原型测试修正",
     "actionLabel": "进行下一轮",
@@ -7355,7 +7355,7 @@
         "id": "assumption-prototype",
         "from": "assumption",
         "to": "prototype",
-        "label": "做成可操作状态"
+        "label": "做成能操作的版本"
       },
       {
         "id": "prototype-task",
@@ -7408,7 +7408,7 @@
       },
       {
         "label": "模拟关键状态",
-        "note": "原型覆盖入口、填写、错误和成功，不实现真实账户系统。",
+        "note": "原型覆盖入口、填写、错误和成功，数据、账号验证和邮件发送都只是模拟。",
         "activeIds": [
           "assumption",
           "prototype"
@@ -7428,7 +7428,7 @@
       },
       {
         "label": "给出真实任务",
-        "note": "让用户“加入朋友的空间”，不提示具体按钮名称。",
+        "note": "让用户“加入朋友的空间”，不提示按钮名称，否则测到的是提示，不是入口本身。",
         "activeIds": [
           "prototype",
           "task"
@@ -7447,7 +7447,7 @@
       },
       {
         "label": "观察行为",
-        "note": "三位用户都停在首页寻找“加入”入口，假设没有被支持。",
+        "note": "本例三位用户都停在首页寻找“加入”入口；这只是这一轮观察，不是通用通过标准。",
         "activeIds": [
           "task",
           "observation"
@@ -7490,7 +7490,7 @@
       },
       {
         "label": "形成决定",
-        "note": "新一轮 3/3 完成任务，团队获得继续开发该入口的证据。",
+        "note": "本例新一轮 3/3 完成任务；是否继续开发还要结合更多证据，不由人数单独决定。",
         "activeIds": [
           "observation",
           "decision"
@@ -7510,35 +7510,55 @@
         ]
       }
     ],
-    "insight": "原型通过真实操作暴露理解问题，重点是获得决策证据，不是看起来像成品。",
+    "insight": "原型通过真实操作暴露理解问题。团队拿它换回的是证据，用来决定下一步；做得像不像成品并不重要。",
     "quiz": {
-      "question": "高保真原型中的付款按钮可以点击，是否证明支付系统已可上线？",
+      "question": "可点击原型中的付款按钮，是否证明支付系统已可上线？",
       "options": [
         {
-          "label": "不能，它只证明模拟流程可操作",
+          "label": "不能，只说明模拟流程可以点击",
           "correct": true
         },
         {
-          "label": "能，按钮能点就代表真实支付过程已经完成",
+          "label": "能，按钮可点击就代表真实支付已经完成",
           "correct": false
         },
         {
-          "label": "能，只要视觉和正式页面一致",
+          "label": "能，视觉和正式页面一致就代表系统可用",
           "correct": false
         }
       ],
       "success": "技术、安全和真实数据能力需要独立验证。",
-      "retry": "交互保真度不能替代生产系统证据。"
+      "retry": "按钮点得再顺、界面做得再像，也代替不了对真实支付系统的验证。"
     },
     "prompt": {
       "title": "规划一个验证目标明确的原型",
-      "text": "请写出本轮唯一待验证假设、目标用户、真实任务和观察指标。只实现完成该任务所需的入口、关键状态、错误与结果，并明确哪些数据和后端行为是模拟的；测试后按实际行为记录证据和下一轮修改。"
+      "text": "请写出本轮唯一待验证假设、目标用户、真实任务和观察指标。只实现完成该任务所需的入口、关键状态、错误与结果，并明确哪些数据、账号验证和邮件发送只是模拟的；测试后按实际行为记录证据和下一轮修改。"
     },
     "sources": [
       {
+        "url": "https://www.gov.uk/service-manual/design/making-prototypes",
+        "label": "GOV.UK Service Manual · Making prototypes",
+        "note": "原型用于在投入构建前探索、分享和测试不同设计；可以从纸笔草图到代码原型。"
+      },
+      {
+        "url": "https://design-system.service.gov.uk/get-started/prototyping/",
+        "label": "GOV.UK Design System · Prototyping",
+        "note": "说明用 Design System 和 Prototype Kit 制作原型并检查真实内容与交互。"
+      },
+      {
+        "url": "https://prototype-kit.service.gov.uk/tutorials-and-guides/",
+        "label": "GOV.UK Prototype Kit · Tutorials and guides",
+        "note": "Prototype Kit 用于快速制作接近真实 HTML 的服务原型。"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
+        "label": "GOV.UK Service Manual · How the alpha phase works",
+        "note": "原型用于测试不同想法和高风险假设，不等同生产质量代码。"
+      },
+      {
         "url": "https://www.nngroup.com/articles/ux-prototype-hi-lo-fidelity/",
-        "label": "Nielsen Norman Group · Prototype Testing",
-        "note": "用户研究与交互原则"
+        "label": "Nielsen Norman Group · UX Prototypes: Low Fidelity vs. High Fidelity",
+        "note": "原型的媒介和完整度可以不同，应根据研究目标选择并测试。"
       }
     ]
   },
