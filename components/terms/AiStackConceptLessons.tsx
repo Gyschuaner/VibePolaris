@@ -1,4 +1,4 @@
-import { ContainerImageLesson, ObservabilityLesson, SastLesson, ServiceDiscoveryLesson } from "./ai-stack-lessons";
+import { ContainerImageLesson, ObservabilityLesson, SastLesson, SecretScanningLesson, ServiceDiscoveryLesson } from "./ai-stack-lessons";
 export { Caption } from "./AiStackConceptLessonShared";
 export { ContainerImageLesson } from "./ai-stack-lessons/container-image";
 
@@ -7,4 +7,5 @@ export const aiStackLessons = {
   "service-discovery": ServiceDiscoveryLesson,
   observability: ObservabilityLesson,
   sast: SastLesson,
+  "secret-scanning": SecretScanningLesson,
 } as const;
