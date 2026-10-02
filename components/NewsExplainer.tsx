@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause" | "ai-ethics" | "data-leak" | "government-incident" | "agentic-calling" | "ai-regulation";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause" | "ai-ethics" | "data-leak" | "government-incident" | "agentic-calling" | "ai-regulation" | "un-governance" | "ai-biology" | "wearable-agent" | "creator-ai";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -303,6 +303,27 @@ function AiRegulationVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+type StoryChainVariant = "un-governance" | "ai-biology" | "wearable-agent" | "creator-ai";
+
+const storyChainConfig: Record<StoryChainVariant, { labels: string[]; result: string }> = {
+  "un-governance": { labels: ["能力警告", "安理会陈述", "共同标准", "没有约束决议"], result: "公开讨论把风险带到国际机构，规则仍要由各国落实" },
+  "ai-biology": { labels: ["DNA 数据库", "候选筛选", "人类复核", "实验验证"], result: "模型负责扩大假设空间，实验结果仍由人类确认" },
+  "wearable-agent": { labels: ["说出 Muse", "看见现场", "规划动作", "后台完成"], result: "免手操作扩大了代理入口，也把权限和反馈带到现实环境" },
+  "creator-ai": { labels: ["创作想法", "对话剪辑", "测试分发", "内容保护"], result: "AI 贯穿创作流程，但发布选择和社区规则仍由创作者掌握" },
+};
+
+function StoryChainVisual({ activeStep, variant }: { activeStep: number; variant: StoryChainVariant }) {
+  const config = storyChainConfig[variant];
+  return (
+    <div className={`news-explainer-story-chain story-chain-${variant} story-chain-phase-${activeStep}`} aria-hidden="true">
+      {config.labels.map((label, index) => (
+        <span className={`story-chain-card story-chain-card-${index}`} key={label}><b>{label}</b><i /><i /></span>
+      )).flatMap((card, index) => index < config.labels.length - 1 ? [card, <span className={`story-chain-arrow story-chain-arrow-${index}`} key={`arrow-${index}`}>→</span>] : [card])}
+      <span className="story-chain-result">{config.result}</span>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -342,7 +363,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : data.variant === "ai-ethics" ? <AiEthicsVisual activeStep={activeStep} /> : data.variant === "data-leak" ? <DataLeakVisual activeStep={activeStep} /> : data.variant === "government-incident" ? <GovernmentIncidentVisual activeStep={activeStep} /> : data.variant === "agentic-calling" ? <AgenticCallingVisual activeStep={activeStep} /> : data.variant === "ai-regulation" ? <AiRegulationVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : data.variant === "ai-ethics" ? <AiEthicsVisual activeStep={activeStep} /> : data.variant === "data-leak" ? <DataLeakVisual activeStep={activeStep} /> : data.variant === "government-incident" ? <GovernmentIncidentVisual activeStep={activeStep} /> : data.variant === "agentic-calling" ? <AgenticCallingVisual activeStep={activeStep} /> : data.variant === "ai-regulation" ? <AiRegulationVisual activeStep={activeStep} /> : data.variant === "un-governance" ? <StoryChainVisual activeStep={activeStep} variant="un-governance" /> : data.variant === "ai-biology" ? <StoryChainVisual activeStep={activeStep} variant="ai-biology" /> : data.variant === "wearable-agent" ? <StoryChainVisual activeStep={activeStep} variant="wearable-agent" /> : data.variant === "creator-ai" ? <StoryChainVisual activeStep={activeStep} variant="creator-ai" /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (
