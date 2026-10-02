@@ -209,6 +209,120 @@
     "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5"
   },
   {
+    "slug": "openai-multimodal-neurons-clip-interpretability-20210304-f46c295f",
+    "title": "OpenAI 拆开 CLIP 的视觉神经元：能解释，也可能被文字骗过",
+    "summary": "2021-03-04，OpenAI 发布对 CLIP 多模态神经元的分析，并更新 Microscope 可视化目录、公开两组模型权重（训练后保存的参数文件）。官方展示了同一神经元如何对图像、文字和符号化图形产生响应，也公开了文字排版攻击、偏见和过度概括的例子；这条新闻讲的是“怎样观察模型”，不是模型已经理解了人类概念。",
+    "body": "2021-03-04，OpenAI 在官方博客发布《Multimodal neurons in artificial neural networks》，让读者看到 CLIP 的内部表示。CLIP 是把图像和文字编码到可比较的表示空间、再判断它们是否匹配的模型；简单说，图片和文字会被转换成可以放在一起比较的数字表示。这次发布聚焦于如何观察模型里的神经元，并同步公开 OpenAI Microscope 的可视化内容、数据集示例和模型权重（训练后保存的参数文件）。Axios 的同日报道把这项工作概括为“Seeing like an AI”（可译作“像 AI 一样看”），并指出它能帮助研究者发现模型学到的偏差和容易被攻击的失灵方式。\n\n最直观的例子是“蜘蛛侠（Spider-Man）神经元”。OpenAI 说，它会对蜘蛛的照片、写着 spider 的文字图像，以及 Spider-Man 的角色图像或手绘图产生响应。这里的“响应”指神经元的激活强度或激活模式；“多模态”指同一个内部单元会在不同表现形式中被触发。这个例子说明模型在这些输入之间学到某种关联，不等于模型真的像人一样理解了一个概念，也不能从一个神经元推断完整的模型行为。\n\n研究团队用了两种观察工具。第一种是特征可视化：算法逐步改动输入像素，让某个神经元尽量强烈地激活，再看它偏好的图像或图案；第二种是数据集示例：从已有数据里找出最能激活它的图片。OpenAI 称，CLIP RN50x4 中多数神经元都能用这种方法得到比较容易理解的解释。可视化只是观察内部信号的一种方法，不能替代在真实数据、不同输入和不同任务上的测试。\n\n同一篇发布还展示了失败模式。排版攻击，就是把文字写进图片来误导模型；OpenAI 展示了一张照片里的手写字或印刷字如何改变 CLIP 的判断，让模型把照片判成另一个类别。官方示例中，一个会响应“finance”的神经元也会被存钱罐图像触发；研究者进一步利用这种文字线索，诱导模型把狗判成存钱罐。这样的例子说明，模型有时会过分依赖文字或局部线索；“能解释某个激活”也不等于“系统在所有场景都可靠”。\n\n同一篇发布还列出了偏差案例。OpenAI 记录了把 Middle East（中东）与 terrorism（恐怖主义）联系起来的神经元、把 immigration（移民）与 Latin America（拉丁美洲）联系起来的神经元，以及同时对肤色较深的人物和大猩猩图像产生响应的案例。它们是研究团队观察到的模型关联，不是对现实群体的事实判断；但部署时可能出现代表性伤害，也就是让某些群体更容易被错识别或受到不公平对待。官方展示了这些偏差和攻击案例，Axios 强调可解释性可以帮助定位偏差与容易被利用的失灵方式。这些材料适合用作排查和修复线索，不能当作安全认证。\n\nOpenAI 同时放出了 CLIP RN50x4 和 RN101 的模型权重，并在脚注中说明这些模型只供研究使用。截至当天，公开材料能确认的内容包括观察方法、可视化材料和已经公开的失败案例；完整行为是否能被神经元级方法解释、偏差怎样在具体产品中出现、修复后是否改善，都要依靠独立数据和任务测试继续验证。",
+    "publishedAt": "2021-03-04",
+    "eventDate": "2021-03-04",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-multimodal-neurons-clip-interpretability-20210304-f46c295f.svg",
+      "alt": "CLIP 的图像、文字和符号输入汇聚到可视化神经元，再暴露排版攻击与偏差风险",
+      "sourceUrl": "/images/news/openai-multimodal-neurons-clip-interpretability-20210304-f46c295f.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "这次发布公开了什么",
+        "body": "OpenAI 发布了对 CLIP 内部神经元的观察和一组研究工具：Microscope 更新了可视化目录和数据集示例，RN50x4/RN101 模型权重也一并公开。三份材料分工不同：官方博客记录发布内容，Axios 报道当天的新闻背景，Distill 文章解释方法和实验。",
+        "kind": "narrative"
+      },
+      {
+        "id": "multimodal",
+        "title": "“多模态神经元”是什么意思",
+        "body": "同一个神经元可能对照片、草图和文字里的同一主题产生响应，这里的响应指激活强度或激活模式。蜘蛛侠（Spider-Man）例子说明不同表现形式可以指向相似关联；它不证明神经元等于人类脑细胞，也不代表一个单元能完整说明模型的决策。",
+        "kind": "technical"
+      },
+      {
+        "id": "inspection",
+        "title": "研究团队怎样观察内部信号",
+        "body": "特征可视化通过逐步改动输入、尽量让神经元强烈激活，数据集示例则寻找最能激活它的已有图片。两种方法把神经元的响应变成可查看的图像证据，但解释范围受模型、数据集和可视化方法限制。",
+        "kind": "example"
+      },
+      {
+        "id": "failure",
+        "title": "同一套表示也会制造错误",
+        "body": "排版攻击是把文字写进图片来误导模型；它利用 CLIP 对图中文字的敏感性，让手写或印刷字改变分类。OpenAI 还展示了把 Middle East（中东）、terrorism（恐怖主义）等概念错误连在一起的例子。可解释性让错误更容易被指出，却不会自动把错误修好。",
+        "kind": "boundary"
+      },
+      {
+        "id": "release-boundary",
+        "title": "公开权重不等于可直接部署",
+        "body": "OpenAI 在脚注中把发布的 CLIP 模型标为研究用途。这些材料便于复现观察，但应用方仍需用自己的数据和测试检查偏差、过度概括和现实任务表现。",
+        "kind": "comparison"
+      },
+      {
+        "id": "terms",
+        "title": "两个词条帮助读者读懂这次“拆箱”",
+        "body": "上下文词条提醒我们，同一神经元在图像、文字或符号里的响应要放回具体输入和任务中理解；benchmark（在统一条件下比较模型的基准测试）则提醒我们，可视化案例不能替代真实数据上的对照测试。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "从一张图到一次模型审计",
+      "question": "下面按步骤看 OpenAI 怎样把神经元的响应变成可观察证据，以及为什么最后仍要回到任务测试。",
+      "steps": [
+        {
+          "label": "输入变体",
+          "detail": "同一主题分别以照片、草图、文字或符号出现；研究者观察模型对不同表现形式的反应是否相似。",
+          "evidence": "https://openai.com/index/multimodal-neurons/"
+        },
+        {
+          "label": "激活观察",
+          "detail": "用特征可视化寻找能让神经元强烈激活的输入，再用数据集示例检查这种模式是否反复出现。",
+          "evidence": "https://distill.pub/2021/multimodal-neurons/"
+        },
+        {
+          "label": "关联解释",
+          "detail": "把蜘蛛侠（Spider-Man）、数字或艺术风格等响应暂时贴上便于讨论的主题标签，帮助研究者提出关于内部表示的假设。",
+          "evidence": "https://openai.com/index/multimodal-neurons/"
+        },
+        {
+          "label": "攻击与偏差",
+          "detail": "用图中文字、局部线索和已观察的群体关联测试模型会不会被诱导、过度概括，或让某些群体更容易被错识别和受到不公平对待。",
+          "evidence": "https://www.axios.com/2021/03/04/openai-vision-recognition-system-bias"
+        },
+        {
+          "label": "任务复核",
+          "detail": "把解释假设带回真实数据和具体任务，比较错误、偏差与修复前后的变化；可视化本身不能替代 benchmark 或部署前审计。",
+          "evidence": "https://openai.com/index/multimodal-neurons/"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/multimodal-neurons/"
+    },
+    "relatedSlugs": [
+      "context",
+      "benchmark"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/multimodal-neurons/",
+        "claim": "OpenAI 官方博客在 2021-03-04 发布 CLIP 多模态神经元分析，介绍特征可视化、数据集示例、排版攻击、偏差案例、Microscope 更新和研究权重。",
+        "excerpt": "OpenAI says some CLIP neurons respond to a concept across literal, symbolic and conceptual forms; it describes feature visualization and dataset examples, warns about typographic attacks and learned biases, and releases Microscope updates plus RN50x4/RN101 weights for research."
+      },
+      {
+        "url": "https://www.axios.com/2021/03/04/openai-vision-recognition-system-bias",
+        "claim": "Axios 在同日把发布解释为观察视觉网络内部表示，并强调可解释性与偏差、错误和攻击之间的关系。",
+        "excerpt": "Axios reports that OpenAI’s CLARITY work found multimodal neurons in CLIP; it explains that interpretability can help identify how visual systems work, what biases they learned and how they might be deliberately disrupted."
+      },
+      {
+        "url": "https://distill.pub/2021/multimodal-neurons/",
+        "claim": "Distill 原论文提供神经元可视化与实验方法的技术细节，作为这条新闻的背景来源。",
+        "excerpt": "The Distill article supplies the interactive visualizations and detailed experiments behind the announcement; it is used here to explain the method, not to create a separate paper-only event."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/multimodal-neurons/",
+    "sourceHash": "sha256:f46c295fe53bcb4086994e85abab24b7692fb6538dcd513307e7ae6e871e26d8"
+  },
+  {
     "slug": "stanford-ai-index-2021-growth-pandemic-20210303-0cb8fc10",
     "title": "AI Index 2021 发布：AI 走向产业实践，数据盲区也更明显",
     "summary": "2021-03-03，Stanford HAI 发布 2021 AI Index（人工智能年度指标报告），回看 2020 年 AI 的投资、人才、研究、教育、政府使用、伦理与多样性。报告和 Axios 同日报道共同指向一个变化：私人投资增长、北美 AI 博士进入产业的比例上升，但招聘按地区分化（全球增加、美国首次下降）；不同指标（衡量某方面的数字或分类）的口径、数据缺口和权力集中也需要一起读。",
