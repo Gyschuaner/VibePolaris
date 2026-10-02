@@ -19,14 +19,16 @@
   },
   {
     "slug": "css",
-    "mechanism": "浏览器先用选择器匹配元素，再按来源、重要性、层叠层、优先级和源码顺序确定声明，最后把计算值交给布局与绘制。",
-    "misconception": "CSS 不是给 HTML 表面加颜色；层叠决定哪条声明生效，布局规则还会随容器与媒体条件改变。",
-    "demoSignature": "responsive-code-map: 3 frames; actors=CSS代码行/计算值/三列星图; phases=桌面展开→发现拥挤→媒体查询改单列; action=播放代码与布局同步变化",
+    "mechanism": "浏览器先用选择器筛出匹配元素的声明，再按来源、重要性、层叠层、优先级和源码顺序得到层叠值，经过计算后交给盒模型与布局系统。",
+    "misconception": "CSS 不只是给 HTML 表面加颜色；声明要先匹配再经过层叠，计算值还会参与盒模型和 Grid/Flex 等布局。",
+    "demoSignature": "cascade-to-layout: 3 frames; actors=选择器/候选声明/计算值/卡片容器; phases=规则命中→层叠选胜者→计算值进入布局; action=逐步执行 CSS 规则",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade",
-      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"
+      "https://www.w3.org/TR/css-cascade-5/",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts"
     ],
-    "rewriteRisk": "不要把 CSS 讲成属性清单；正式页面必须同时说明匹配、层叠、计算值和布局结果。",
+    "rewriteRisk": "不要把 CSS 讲成属性清单或把 specificity 写成唯一决定因素；正式页面要同时说明规则匹配、层叠、计算值、盒模型和布局结果。",
     "nearDuplicates": [
       "css-selector",
       "box-model",
