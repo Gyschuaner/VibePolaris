@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial" | "policy-governance" | "agent-safety" | "ecg-screening" | "ai-diplomacy" | "agent-incident" | "training-pause";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -189,6 +189,47 @@ function EcgScreeningVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function AiDiplomacyVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-ai-diplomacy ai-diplomacy-phase-${activeStep}`} aria-hidden="true">
+      <div className="ai-diplomacy-card ai-diplomacy-us"><span>美国</span><i /><i /></div>
+      <span className="ai-diplomacy-link">⇄</span>
+      <div className="ai-diplomacy-card ai-diplomacy-cn"><span>中国</span><i /><i /></div>
+      <div className="ai-diplomacy-channel"><b>SI 对话</b><small>风险与收益</small></div>
+      <div className="ai-diplomacy-incident"><b>事故通道</b><small>先沟通再升级</small></div>
+      <div className="ai-diplomacy-result">下次交流：2026 年 11 月</div>
+    </div>
+  );
+}
+
+function AgentIncidentVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-agent-incident agent-incident-phase-${activeStep}`} aria-hidden="true">
+      <div className="agent-incident-card agent-incident-task"><span>代理任务</span><i /><i /><i /></div>
+      <span className="agent-incident-arrow">→</span>
+      <div className="agent-incident-card agent-incident-web"><span>公开网站</span><i /><i /></div>
+      <span className="agent-incident-arrow">→</span>
+      <div className="agent-incident-card agent-incident-review"><span>监控与通报</span><i /><i /><i /></div>
+      <div className="agent-incident-result">访问公开资料 ≠ 取得非公开权限</div>
+    </div>
+  );
+}
+
+function TrainingPauseVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-training-pause training-pause-phase-${activeStep}`} aria-hidden="true">
+      <div className="training-pause-card training-pause-run"><span>训练运行</span><i /><i /><i /></div>
+      <span className="training-pause-arrow">→</span>
+      <div className="training-pause-card training-pause-signal"><span>越界信号</span><i /><i /></div>
+      <span className="training-pause-arrow">→</span>
+      <div className="training-pause-card training-pause-stop"><span>暂停</span><i /></div>
+      <span className="training-pause-arrow">→</span>
+      <div className="training-pause-card training-pause-guard"><span>补护栏</span><i /><i /></div>
+      <div className="training-pause-result">满足安全条件后才恢复</div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -228,7 +269,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : data.variant === "policy-governance" ? <PolicyGovernanceVisual activeStep={activeStep} /> : data.variant === "agent-safety" ? <AgentSafetyVisual activeStep={activeStep} /> : data.variant === "ecg-screening" ? <EcgScreeningVisual activeStep={activeStep} /> : data.variant === "ai-diplomacy" ? <AiDiplomacyVisual activeStep={activeStep} /> : data.variant === "agent-incident" ? <AgentIncidentVisual activeStep={activeStep} /> : data.variant === "training-pause" ? <TrainingPauseVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (

@@ -1,6 +1,6 @@
 # VBP-049 新闻栏目交付记录
 
-状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30、2026-09-29、2026-09-28、2026-09-27 四个事件日，继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
+状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30、2026-09-29、2026-09-28、2026-09-27、2026-09-26 五个事件日，继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
 
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
@@ -12,7 +12,7 @@
 
 ## 阶段二执行口径
 
-- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 和 2026-09-29，再逐日处理更早日期。
+- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-26（含 9 月 27 日空档日），再逐日处理更早日期。
 - 主事件优先取官方公告/官方博客、监管文件、可信新闻报道和可核验的行业或个人解读；论文只作为已成立新闻事件的背景来源，不能单独填充 `selectedSlugs`。
 - 文章先写事实链和读者问题，再组织按事件需要变化的正文段落、讲解步骤和自制 SVG；`hero.sourceUrl`、许可和引用卡片都保留追溯信息。
 - 词条关系只确认已经公开且正文确实解释的 slug。草稿在 `ready` 前必须经过 humanizer-zh 表达检查与 `codex-subagent-reader` 零基础读者审读，审读结果写入 `readerReview`。
@@ -32,6 +32,7 @@
 | 2026-09-29 | ① OpenAI DevDay 发布 Dots：持续运行的 AI 代理与权限规则；② 白宫总统令把行政文本中的 AI 改称 SI，后续定义仍待提出 | OpenAI Dots/DevDay/GPT-6.1 Sol 官方页；TechCrunch；White House 总统令与事实说明；AP/Axios 同日报道 | 2026-09-29 / 2026-09-29 | `passed`（一个 Codex 子智能体完成两篇零基础可读性、中文表达、来源归属和动画一致性复审） | 本次提交 |
 | 2026-09-28 | ① NVIDIA 发布 Open Agent Safety Platform：OpenShell 在沙箱内执行，Sentry 在外部硬件层监控并可隔离越界代理；② Tempus ECG-MR 获 FDA 510(k) 清除：从标准 12 导联 ECG 提示中重度二尖瓣反流风险 | NVIDIA 官方投资者公告、Newsroom、OpenShell 页面和技术博客；AP；Axios；Tempus 官方公告、投资者 PDF；FDA K254297 原始记录 | 2026-09-25（FDA 决定）/ 2026-09-28（Tempus 公告）；2026-09-28（NVIDIA 公告与媒体报道） | `passed`（一个 Codex 子智能体复审两篇新闻主线、中文表达、日期与监管边界、官方/媒体归属、SVG/动画和词条联动；按建议修正后通过） | 本次提交 |
 | 2026-09-27 | 空档日：AP 对 Anthropic/OpenAI 安全表态的分析、Axios 政治会面预告和白宫贸易公告均未形成当天新的 AI 主线事件 | AP；Axios；White House；KeyNews.AI 聚合页 | — | `n/a`（空档日，无文章） | 本次提交 |
+| 2026-09-26 | ① 美中同意建立 SI 对话与拟建事故沟通渠道；② OpenAI 披露代理意外访问美国政府网站；③ OpenAI 随后暂停最强模型中涉及工具使用的训练、评估和推理 | White House 事实清单；AP；Axios；OpenAI Alignment 一手事件报告 | 2026-09-25（白宫文件）/ 2026-09-26（新闻报道与公司响应） | `passed`（同一个 Codex review 子智能体两轮复审；按日期、渠道落地状态、SEC 范围、Transluce 归属和工具使用范围建议修订后通过） | 本次提交 |
 | 2021-01-08 | Waste-Free World AI 塑料回收试点 | Circular Online（新闻报道）；WebWire 企业新闻稿作一手核验 | 2021-01-08 / 2021-01-12 | `passed`（先 `needs-revision`，按建议修订后通过） | `9a7cb072` |
 | 2021-03-01 | 警务 AI 产品特写：转写、脱敏、车牌识别与加密货币分析 | Police Chief Magazine；VIQ、Veritone、Jenoptik 官方产品页；加州 DOJ AB 953 规则 | 2021-03-01 / 2021-03-01 | `passed`（子智能体读者与中文审读，按来源卡片建议修订） | `53037828` |
 | 2021-03-02 | Azure Percept 进入公开预览：边缘设备、现场推理与云端管理 | Microsoft News Center；Azure Blog、Ignite Book of News；TechCrunch 同日交叉报道 | 2021-03-02 / 2021-03-02 | `passed`（两轮子智能体读者与中文审读） | `60aef89c` |
@@ -57,7 +58,8 @@
 
 ## 交付内容
 
-- `content/zh/news.json` 当前包含 79 篇已发布内容，其中包括本轮新增的 NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS 新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- `content/zh/news.json` 当前包含 82 篇已发布内容，其中包括本轮新增的美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS 新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- 2026-09-26 的三篇新闻按时间线拆开：白宫 9 月 25 日事实清单与 9 月 26 日 AP/Axios 报道确认双边 SI 安排；OpenAI 政府网站披露限定为公开资料访问与待核查的 Transluce 线索；暂停训练单独记录公司响应，并引用 OpenAI Alignment 的 DNS 事件报告。三篇均保留原始链接、引用卡片、自制 SVG、独立机制讲解和文章联动。
 - 2026-09-29 的 OpenAI Dots 与白宫 SI 总统令文章已完成官方页面、可信媒体和政策文件核验；两篇草稿在发布后保留复审字段和原始引用卡片。
 - 2026-09-28 的两篇 AI 新闻已完成 NVIDIA/Tempus 官方来源、AP/Axios 交叉报道和 FDA K254297 原始记录核验；两篇草稿保留一个 Codex review 子智能体的复审记录、视觉机制和文章/词条联动。
 - `/news`、新闻详情页、sitemap 和 Xiaobei 的 published-only 检索均使用同一份已发布目录；草稿不会出现在公开路由或 sitemap。
