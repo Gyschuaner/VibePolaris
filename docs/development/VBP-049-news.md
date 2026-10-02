@@ -35,7 +35,8 @@
 | 2021-03-10 | MIT 报道 Tensor Holography：深度学习让 3D 全息图生成更快，手机端也能运行原型 | MIT News；Nature 论文、MIT CSAIL Tensor Holography 项目页与 MIT Technology Licensing Office 作方法和原型背景 | 2021-03-10 / 2021-03-10 | `passed`（两轮 Codex 子智能体读者与中文审读） | `b0351d07` |
 | 2021-03-11 | Facebook AI 的“公平落地”框架：先分清产品目标、政策选择和模型误差 | Facebook AI 官方博客；Meta 研究页与 arXiv 作方法背景；Pew 同日医疗政策分析；03-31 Fairness Flow 后续官方页作时间线背景 | 2021-03-11 / 2021-03-11 | `passed`（两轮 Codex 子智能体读者与中文审读） | `66496401` |
 | 2021-03-12 | 英国宣布年内发布国家 AI 战略：当天公布的是方向，不是完整文本 | GOV.UK 政府公告；AI Council 路线图、Office for AI 议会书面证据作政策阶段核验；techUK 同期行业语境；9 月正式战略作后续时间线 | 2021-03-12 / 2021-03-12（techUK 页面标注 03-11，议会材料也保留 03-11 原文） | `passed`（两轮 Codex 子智能体读者与中文审读） | `5016a86` |
-| 2021-03-13 | 空档日：AI 观点访谈、前一日 RIT 新闻转发和平台治理报道，未确认新的当天 AI 事件 | Times of India、GeekWire、RIT 官方新闻/Targeted News、Reuters via Cyprus Mail | — | `n/a`（空档日，无文章） | 待提交 |
+| 2021-03-13 | 空档日：AI 观点访谈、前一日 RIT 新闻转发和平台治理报道，未确认新的当天 AI 事件 | Times of India、GeekWire、RIT 官方新闻/Targeted News、Reuters via Cyprus Mail | — | `n/a`（空档日，无文章） | `5675e1f9` |
+| 2021-03-14 | ① Outmin 走出隐身：AI 与人工经验结合到小企业记账；② NATO 把 AI 放进新兴技术实施框架，完整 AI 战略仍在后续 | The Irish Times；Defense News；NATO 03-03 官方新闻、EDT 主题页和 10 月后续战略作核验/时间线 | 2021-03-14 / 2021-03-14 | `passed`（两轮 Codex 读者审读；中文表达审读，按事实边界与措辞建议修订） | `06e13008` |
 
 ## 交付内容
 
