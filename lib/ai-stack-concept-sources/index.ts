@@ -18,3 +18,4 @@ export { handoffSources } from "./handoff";
 export { subagentSources } from "./subagent";
 export { humanInTheLoopSources } from "./human-in-the-loop";
 export { guardrailSources } from "./guardrail";
+export { moderationSources } from "./moderation";
