@@ -26,7 +26,7 @@
 | 2021-03-01 | 警务 AI 产品特写：转写、脱敏、车牌识别与加密货币分析 | Police Chief Magazine；VIQ、Veritone、Jenoptik 官方产品页；加州 DOJ AB 953 规则 | 2021-03-01 / 2021-03-01 | `passed`（子智能体读者与中文审读，按来源卡片建议修订） | `53037828` |
 | 2021-03-02 | Azure Percept 进入公开预览：边缘设备、现场推理与云端管理 | Microsoft News Center；Azure Blog、Ignite Book of News；TechCrunch 同日交叉报道 | 2021-03-02 / 2021-03-02 | `passed`（两轮子智能体读者与中文审读） | `60aef89c` |
 | 2021-03-03 | AI Index 2021：AI 走向产业实践，数据盲区也更明显 | Stanford HAI 官方公告与报告；Axios 同日报道 | 2021-03-03 / 2021-03-03 | `passed`（两轮子智能体读者与中文审读） | `ce2cc3d4` |
-| 2021-03-04 | OpenAI 拆开 CLIP 的视觉神经元：能解释，也可能被文字骗过 | OpenAI 官方博客；Axios 同日报道；Distill 原文作技术背景 | 2021-03-04 / 2021-03-04 | `passed`（两轮子智能体读者与中文审读） | `待本日提交后回填` |
+| 2021-03-04 | OpenAI 拆开 CLIP 的视觉神经元：能解释，也可能被文字骗过 | OpenAI 官方博客；Axios 同日报道；Distill 原文作技术背景 | 2021-03-04 / 2021-03-04 | `passed`（两轮子智能体读者与中文审读） | `53f47f96` |
 
 ## 交付内容
 
