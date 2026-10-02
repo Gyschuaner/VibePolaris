@@ -1,3 +1,4 @@
+export { GuardrailLesson } from "./guardrail";
 export { HumanInTheLoopLesson } from "./human-in-the-loop";
 export { SubagentLesson } from "./subagent";
 export { HandoffLesson } from "./handoff";
