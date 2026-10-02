@@ -163,23 +163,23 @@
   {
     "slug": "deep-link",
     "lead": "用户点开活动链接，怎样直接进入应用里的订单详情？",
-    "definition": "系统收到 URI 后，按应用清单中的匹配规则生成 Intent 并选择目标应用；应用再把路径和参数映射到内部页面。",
-    "boundary": "容易和普通网页链接混淆，也常忽略“应用未安装、未登录、链接失效”不是同一种失败。",
+    "definition": "系统收到 URI 后，按已注册的域名和路径匹配规则选择应用；应用再把路径和参数映射到内部页面。",
+    "boundary": "深度链接只解决入口定位；应用未安装、未登录、资源不存在和链接无法匹配，分别返回相应结果。",
     "sceneKind": "route",
-    "sceneTitle": "一条订单链接在三种设备状态下的去向",
+    "sceneTitle": "一条订单链接的匹配与去向",
     "actionLabel": "打开订单链接",
     "actors": [
       {
         "id": "link",
         "label": "订单链接",
-        "detail": "/orders/42",
+        "detail": "HTTPS · /orders/42",
         "icon": "message",
         "group": "入口"
       },
       {
         "id": "router",
         "label": "系统路由",
-        "detail": "匹配 App Link",
+        "detail": "域名和路径匹配",
         "icon": "gear",
         "group": "系统"
       },
@@ -200,7 +200,7 @@
       {
         "id": "web",
         "label": "网页回退",
-        "detail": "应用未安装",
+        "detail": "应用未安装或无法匹配",
         "icon": "browser",
         "group": "结果"
       }
@@ -210,7 +210,7 @@
         "id": "link-router",
         "from": "link",
         "to": "router",
-        "label": "交给系统"
+        "label": "系统匹配"
       },
       {
         "id": "router-order",
@@ -222,25 +222,25 @@
         "id": "router-login",
         "from": "router",
         "to": "login",
-        "label": "需要登录"
+        "label": "未登录"
       },
       {
         "id": "login-order",
         "from": "login",
         "to": "order",
-        "label": "登录后返回"
+        "label": "登录后回到原地址"
       },
       {
         "id": "router-web",
         "from": "router",
         "to": "web",
-        "label": "未安装"
+        "label": "未安装或无法处理"
       }
     ],
     "frames": [
       {
         "label": "系统先匹配",
-        "note": "点击链接后，系统根据域名和路径选择可处理它的应用。",
+        "note": "点击链接后，系统根据域名和路径匹配可处理它的应用。",
         "activeIds": [
           "link",
           "router"
@@ -268,8 +268,7 @@
           "order"
         ],
         "doneIds": [
-          "link",
-          "router"
+          "link"
         ],
         "mutedIds": [
           "login",
@@ -284,15 +283,14 @@
       },
       {
         "label": "登录后续走",
-        "note": "关闭登录状态后，目标地址被暂存；登录完成再回到原订单。",
+        "note": "会话无效时，目标地址被暂存；登录完成再回到原订单。",
         "activeIds": [
           "router",
           "login",
           "order"
         ],
         "doneIds": [
-          "link",
-          "login"
+          "link"
         ],
         "mutedIds": [
           "web"
@@ -308,7 +306,7 @@
       },
       {
         "label": "未安装回网页",
-        "note": "关闭应用安装状态，系统不再进入应用，链接落到可访问的网页。",
+        "note": "应用未安装或不处理这条路径时，保留同一 HTTPS 地址打开网页。",
         "activeIds": [
           "router",
           "web"
@@ -321,7 +319,7 @@
           "order"
         ],
         "values": {
-          "web": "https://…/orders/42"
+          "web": "https://shop.example/orders/42（示例）"
         },
         "activeEdgeIds": [
           "router-web"
@@ -355,8 +353,28 @@
     "sources": [
       {
         "url": "https://developer.android.com/training/app-links/create-deeplinks",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Create deep links",
+        "note": "域名、路径匹配和应用入口"
+      },
+      {
+        "url": "https://developer.android.com/guide/components/intents-filters",
+        "label": "Android Developers · Intents and filters",
+        "note": "系统如何把请求交给匹配的组件"
+      },
+      {
+        "url": "https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html",
+        "label": "Apple · Support Universal Links",
+        "note": "已安装打开应用，未安装回到网页"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/technotes/tn3155-debugging-universal-links",
+        "label": "Apple · Debugging Universal Links",
+        "note": "关联域名、路径匹配和网页回退"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment",
+        "label": "MDN · URI fragment",
+        "note": "网页地址如何指向资源中的具体位置"
       }
     ]
   },

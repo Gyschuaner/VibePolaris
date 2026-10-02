@@ -10,10 +10,10 @@
   },
   {
     "slug": "deep-link",
-    "mechanism": "系统收到 URI 后，按应用清单中的匹配规则生成 Intent 并选择目标应用；应用再把路径和参数映射到内部页面。",
-    "misconception": "容易和普通网页链接混淆，也常忽略“应用未安装、未登录、链接失效”不是同一种失败。",
-    "demoSignature": "建议 5 帧：手机外是一条订单链接，手机内有系统路由、App、登录页和网页四层；点击链接并切换已安装、未安装、未登录状态，路径分别落到订单页、应用商店或登录暂存；登录完成后自动回到原订单，最终地址保持一致。",
-    "sourceUrls": ["https://developer.android.com/training/app-links/create-deeplinks"],
+    "mechanism": "系统收到 URI 后，按已注册的域名和路径匹配规则选择应用；应用再把路径和参数映射到内部页面。",
+    "misconception": "深度链接只解决入口定位；应用未安装、未登录、资源不存在和链接无法匹配，分别需要自己的回退结果。",
+    "demoSignature": "route: 4 frames; actors=订单链接/系统路由/登录页/订单 42/网页回退; phases=系统先匹配→已登录直达→登录后续走→未安装回网页; action=打开订单链接",
+    "sourceUrls": ["https://developer.android.com/training/app-links/create-deeplinks", "https://developer.android.com/guide/components/intents-filters", "https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html", "https://developer.apple.com/documentation/technotes/tn3155-debugging-universal-links", "https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment"],
     "rewriteRisk": "high",
     "nearDuplicates": ["routing", "app-manifest", "webview"]
   },
