@@ -461,14 +461,17 @@
   },
   {
     "slug": "runtime",
-    "mechanism": "运行时加载并执行语言代码，同时提供内存、调度、模块和宿主 API；不同环境提供的接口并不相同。",
-    "misconception": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
-    "demoSignature": "compare: 4 frames; actors=同一段代码/浏览器运行时/DOM API/Node.js 运行时/文件系统 API; phases=检查语法→浏览器执行→Node.js 执行→使用本环境接口; action=换个环境运行",
+    "mechanism": "运行时由语言引擎与宿主环境共同完成执行：引擎解析并运行代码，宿主提供全局对象、任务调度以及 DOM、文件和网络等接口；不同环境与版本的接口范围并不相同。",
+    "misconception": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断，同一运行时的版本差异也要单独核对。",
+    "demoSignature": "compare: 4 frames; actors=同一段代码/浏览器运行时/DOM API/Node.js 运行时/文件系统 API; phases=引擎解析→浏览器执行→Node.js 执行→改用宿主接口; action=换个环境运行",
     "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model",
+      "https://tc39.es/ecma262/",
       "https://nodejs.org/api/globals.html",
+      "https://nodejs.org/api/fs.html",
       "https://developer.mozilla.org/en-US/docs/Web/API/Document"
     ],
-    "rewriteRisk": "正式页面需守住边界：语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "rewriteRisk": "正文要明确语言引擎与宿主环境的分工，并提醒读者核对目标运行时版本；不要把浏览器 DOM 或 Node.js 文件 API 写成 JavaScript 语言的统一能力。",
     "nearDuplicates": [
       "compiler",
       "interpreter",

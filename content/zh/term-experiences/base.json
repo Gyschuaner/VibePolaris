@@ -5098,10 +5098,10 @@
   {
     "slug": "runtime",
     "lead": "同一行 document.querySelector 在浏览器可用，放到 Node.js 为什么会报 document 未定义？",
-    "definition": "运行时加载并执行语言代码，同时提供内存、调度、模块和宿主 API；不同环境提供的接口并不相同。",
-    "boundary": "语言语法合法不代表目标环境存在所调用的能力；Web API、Node API 和语言内置对象需要分开判断。",
+    "definition": "运行时由语言引擎和宿主环境共同组成：引擎解析并执行 JavaScript，宿主提供全局对象和 DOM、文件、网络这些环境接口；浏览器和 Node.js 的接口范围并不相同。",
+    "boundary": "语法能被解析不代表目标环境拥有所调用的 API；即使是同一个运行时，也要核对它的实际版本和支持哪些 API。",
     "sceneKind": "compare",
-    "sceneTitle": "同一段 JavaScript 在两个运行时中的可用接口",
+    "sceneTitle": "引擎相同，宿主接口为何不同？",
     "actionLabel": "换个环境运行",
     "actors": [
       {
@@ -5151,7 +5151,7 @@
         "id": "browser-dom",
         "from": "browser",
         "to": "dom",
-        "label": "调用 Web API"
+        "label": "调用宿主 API"
       },
       {
         "id": "code-node",
@@ -5169,7 +5169,7 @@
     "frames": [
       {
         "label": "检查语法",
-        "note": "这行 JavaScript 语法本身合法，问题不在解析阶段。",
+        "note": "语言引擎可以解析这行代码；能解析不代表宿主提供了这个接口。",
         "activeIds": [
           "code"
         ],
@@ -5185,7 +5185,7 @@
       },
       {
         "label": "浏览器执行",
-        "note": "浏览器提供 document，查询能返回当前页面的 h1。",
+        "note": "浏览器宿主提供 document，查询能返回当前页面的 h1。",
         "activeIds": [
           "code",
           "browser",
@@ -5206,7 +5206,7 @@
       },
       {
         "label": "Node.js 执行",
-        "note": "Node.js 没有页面文档，运行到 document 时抛出 ReferenceError。",
+        "note": "Node.js 默认没有页面文档，运行到 document 时抛出 ReferenceError；这不是 JavaScript 语法错误。",
         "activeIds": [
           "code",
           "node"
@@ -5226,7 +5226,7 @@
       },
       {
         "label": "使用本环境接口",
-        "note": "Node.js 可以读文件，但这项能力不是 JavaScript 语言统一提供的。",
+        "note": "Node.js 可以通过 fs 读取文件，但这是宿主 API，不是 JavaScript 语言本身提供的能力。",
         "activeIds": [
           "node",
           "filesystem"
@@ -5246,40 +5246,55 @@
         ]
       }
     ],
-    "insight": "先区分语言能力和宿主能力，才能判断代码能否在目标环境运行。",
+    "insight": "先区分语言引擎和宿主接口，再核对目标版本，才能判断代码能否在那里运行。",
     "quiz": {
-      "question": "fetch 在新版本 Node.js 可用，是否说明所有 Node.js 版本都可直接调用？",
+      "question": "下面哪一项最能说明运行时的作用？",
       "options": [
         {
-          "label": "不说明，还要检查目标版本和兼容范围",
+          "label": "同一段代码换环境后，可用的宿主 API 会变化",
           "correct": true
         },
         {
-          "label": "说明，运行时版本不会影响 API",
+          "label": "所有 JavaScript 环境都会自动提供 document",
           "correct": false
         },
         {
-          "label": "说明，因为 fetch 属于 CSS",
+          "label": "运行时只负责给页面设置 CSS",
           "correct": false
         }
       ],
-      "success": "运行时能力会随版本变化，部署环境必须明确。",
-      "retry": "同一种运行时的不同版本也可能提供不同 API。"
+      "success": "运行时把语言代码放进具体环境执行，并决定它能接触哪些宿主 API。",
+      "retry": "先看代码调用的是语言能力还是宿主接口，再比较目标环境提供的 API。"
     },
     "prompt": {
       "title": "检查代码的运行时依赖",
-      "text": "请标出这段代码使用的语言内置对象、浏览器 API、Node.js API和第三方库，并核对目标运行时版本。对缺失能力说明应改为条件加载、服务端/客户端边界调整、polyfill 或替代接口中的哪一种。"
+      "text": "请把每个调用分成语言能力、宿主 API 或第三方库，并核对目标运行时的版本与接口。对缺失能力说明应移动执行位置、改用替代接口，还是增加兼容层。"
     },
     "sources": [
       {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model",
+        "label": "MDN · JavaScript execution model",
+        "note": "引擎、宿主、调用栈与任务队列的分工"
+      },
+      {
+        "url": "https://tc39.es/ecma262/",
+        "label": "ECMAScript · Language Specification",
+        "note": "语言执行上下文与核心能力的规范边界"
+      },
+      {
         "url": "https://nodejs.org/api/globals.html",
         "label": "Node.js · Globals",
-        "note": "Node.js 运行时行为"
+        "note": "Node.js 提供的全局对象与运行时接口"
+      },
+      {
+        "url": "https://nodejs.org/api/fs.html",
+        "label": "Node.js · File system",
+        "note": "Node.js 文件系统宿主 API"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document",
         "label": "MDN · Document",
-        "note": "浏览器行为与常见用法"
+        "note": "浏览器提供的 DOM 文档接口"
       }
     ]
   },
