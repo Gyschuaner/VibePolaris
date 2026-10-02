@@ -774,37 +774,37 @@
   {
     "slug": "code-signing",
     "lead": "系统为什么拒绝安装一个已经构建成功的应用包？",
-    "definition": "构建产物的摘要由私钥签名，设备用证书公钥验证发布者身份与文件完整性；应用更新还会检查签名连续性。",
-    "boundary": "签名不是加密整个应用，也不证明代码安全；它证明谁签发以及产物是否被改动。",
+    "definition": "代码签名用私钥对构建产物的摘要或签名数据进行签名；设备或平台用证书里的公钥验证来源和内容是否被改动。",
+    "boundary": "签名只回答“谁签了、包有没有被改”，不保证代码没有漏洞，也不等于加密；私钥保护和权限管理仍要单独做好。",
     "sceneKind": "pipeline",
-    "sceneTitle": "应用包从摘要到设备验签",
+    "sceneTitle": "Android 应用安装包（APK）从摘要到设备验签",
     "actionLabel": "修改包内一个字节",
     "actors": [
       {
         "id": "apk",
-        "label": "应用包",
-        "detail": "release.apk",
+        "label": "Android APK（应用安装包）",
+        "detail": "release.apk · Android 构建产物",
         "icon": "package",
         "group": "产物"
       },
       {
         "id": "digest",
         "label": "文件摘要",
-        "detail": "SHA-256",
+        "detail": "内容摘要（哈希）",
         "icon": "code",
         "group": "签名"
       },
       {
         "id": "private",
         "label": "签名私钥",
-        "detail": "仅构建环境可用",
+        "detail": "仅签名环境可用",
         "icon": "key",
         "group": "签名"
       },
       {
         "id": "device",
         "label": "设备验签",
-        "detail": "证书公钥",
+        "detail": "证书公钥 · 验证来源",
         "icon": "shield",
         "group": "安装"
       }
@@ -823,16 +823,16 @@
         "label": "生成签名"
       },
       {
-        "id": "private-device",
-        "from": "private",
+        "id": "apk-device",
+        "from": "apk",
         "to": "device",
-        "label": "携带签名"
+        "label": "携带签名与证书"
       }
     ],
     "frames": [
       {
         "label": "生成摘要",
-        "note": "构建完成后，应用包内容被计算成固定长度摘要。",
+        "note": "构建完成后，APK 内容被计算成固定长度摘要；摘要不是原文件本身。",
         "activeIds": [
           "apk",
           "digest"
@@ -853,7 +853,7 @@
       },
       {
         "label": "私钥签名",
-        "note": "私钥只处理摘要，签名和证书随应用包一同交付。",
+        "note": "私钥对摘要生成签名，证书随 APK 一同交付；私钥不进入应用包或代码仓库。",
         "activeIds": [
           "digest",
           "private"
@@ -874,7 +874,7 @@
       },
       {
         "label": "设备验证通过",
-        "note": "设备用证书公钥验证签名，并重新计算包摘要，两边一致才允许安装。",
+        "note": "设备用证书公钥验证签名，并重新计算包摘要；两边一致才允许安装或更新。",
         "activeIds": [
           "apk",
           "device"
@@ -888,12 +888,12 @@
           "device": "摘要一致 · 允许安装"
         },
         "activeEdgeIds": [
-          "private-device"
+          "apk-device"
         ]
       },
       {
         "label": "篡改后拒绝",
-        "note": "修改一个字节会得到新摘要，旧签名无法匹配，安装立即停止。",
+        "note": "修改一个字节会得到新摘要，旧签名无法匹配，安装或更新立即停止。",
         "activeIds": [
           "apk",
           "digest",
@@ -912,7 +912,7 @@
         ]
       }
     ],
-    "insight": "签名同时校验发布者身份和包内容完整性，构建成功不代表设备会接受安装。",
+    "insight": "签名把发布者身份与包完整性绑定到安装和更新检查；构建成功不代表设备会接受安装。",
     "quiz": {
       "question": "签名私钥应怎样管理？",
       "options": [
@@ -934,18 +934,33 @@
     },
     "prompt": {
       "title": "检查应用签名流程",
-      "text": "请审查下面构建流程中证书、私钥、签名和验证步骤，指出密钥暴露风险，并区分开发签名与正式发布签名。"
+      "text": "请审查下面 Android 应用安装包（APK）的构建流程中证书、私钥、摘要、签名和设备验签步骤，指出密钥暴露风险，并区分开发签名与正式发布签名。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/studio/publish/app-signing",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Sign your app",
+        "note": "APK 安装、更新、证书、应用签名密钥和上传密钥"
       },
       {
-        "url": "https://developer.apple.com/support/code-signing/",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "url": "https://source.android.com/docs/security/features/apksigning",
+        "label": "Android Open Source Project · App signing",
+        "note": "系统用证书校验 APK 签名与应用身份"
+      },
+      {
+        "url": "https://source.android.com/docs/security/features/apksigning/v2",
+        "label": "Android Open Source Project · APK v2",
+        "note": "整文件摘要和签名如何检测 APK 改动"
+      },
+      {
+        "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/AboutCS/AboutCS.html",
+        "label": "Apple · Understanding the Code Signature",
+        "note": "seal、数字签名和代码完整性验证"
+      },
+      {
+        "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Introduction/Introduction.html",
+        "label": "Apple · About Code Signing",
+        "note": "签名能识别来源和发现改动，但不保证代码无漏洞"
       }
     ]
   },

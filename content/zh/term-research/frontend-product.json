@@ -37,10 +37,10 @@
   },
   {
     "slug": "code-signing",
-    "mechanism": "构建产物的摘要由私钥签名，设备用证书公钥验证发布者身份与文件完整性；应用更新还会检查签名连续性。",
-    "misconception": "签名不是加密整个应用，也不证明代码安全；它证明谁签发以及产物是否被改动。",
-    "demoSignature": "建议 5 帧：APK 文件先生成摘要，再由私钥签名，设备用证书公钥验签；用户拖动修改包内一个字节，文件摘要立即变化；验签连线断开并标出“签名不匹配”；换用另一证书时再显示身份不一致。",
-    "sourceUrls": ["https://developer.android.com/studio/publish/app-signing", "https://developer.apple.com/support/code-signing/"],
+    "mechanism": "代码签名用私钥对构建产物的摘要或签名数据进行签名；设备或平台用证书里的公钥验证来源和内容是否被改动。",
+    "misconception": "签名只回答“谁签了、包有没有被改”，不保证代码没有漏洞，也不等于加密；私钥保护和权限管理仍要单独做好。",
+    "demoSignature": "pipeline: 4 frames; actors=Android APK（应用安装包）/文件摘要/签名私钥/设备验签; phases=生成摘要→私钥签名→设备验证通过→篡改后拒绝; action=修改包内一个字节",
+    "sourceUrls": ["https://developer.android.com/studio/publish/app-signing", "https://source.android.com/docs/security/features/apksigning", "https://source.android.com/docs/security/features/apksigning/v2", "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/AboutCS/AboutCS.html", "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Introduction/Introduction.html"],
     "rewriteRisk": "high",
     "nearDuplicates": ["app-manifest", "deploy", "build-tool"]
   },
