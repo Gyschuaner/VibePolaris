@@ -1211,14 +1211,17 @@
   },
   {
     "slug": "container-image",
-    "mechanism": "容器镜像是只读层和运行配置组成的可分发模板，容器运行时据此创建可写实例。",
-    "misconception": "镜像不是正在运行的容器；同一镜像可启动多个状态各异的容器。",
-    "demoSignature": "输入：镜像含基础层80MB、应用层12MB；中间：启动3次复用92MB只读层并新增3个可写层各2MB；输出：3个独立容器。可视化：建议4帧的层堆栈复制出实例；交互：修改一个容器看只有其可写层变化。",
+    "mechanism": "容器镜像是不可变文件系统层、配置和内容摘要组成的可分发模板，运行时在其上创建带独立可写层的实例。",
+    "misconception": "镜像不是正在运行的容器；实例内写入不会回写镜像，删除实例只会删除它的临时写层。",
+    "demoSignature": "输入：base 80MB + app 12MB；中间：启动 A/B/C 共享 92MB 只读层，B 写入 /tmp/note 后仅 B 增加 2MB；输出：删除 B 后以同一摘要启动 B2。可视化：4 帧分层复制；交互：写入、删除和重启 B。",
     "sourceUrls": [
       "https://github.com/opencontainers/image-spec",
-      "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf"
+      "https://docs.docker.com/get-started/docker-concepts/building-images/understanding-image-layers/",
+      "https://docs.docker.com/engine/storage/",
+      "https://docs.docker.com/engine/storage/drivers/",
+      "https://csrc.nist.gov/pubs/sp/800/190/final"
     ],
-    "rewriteRisk": "不要把Docker命令列表当概念；需要分清镜像层、配置和运行实例。",
+    "rewriteRisk": "必须区分镜像摘要、标签、实例可写层和持久化卷，不能用 Docker 命令列表代替机制解释。",
     "nearDuplicates": [
       "container"
     ]
@@ -1227,10 +1230,13 @@
     "slug": "service-discovery",
     "mechanism": "服务发现维护服务名到可用实例地址的映射，让调用方在实例增减或更换地址后仍能找到目标。",
     "misconception": "它不是负载均衡本身；发现负责提供候选地址，负载策略再决定选哪一个。",
-    "demoSignature": "输入：orders服务有10.0.0.2和.3两个实例；中间：.2下线后注册表地址2→1，DNS缓存到期30秒；输出：新请求只解析到.3。可视化：建议5帧的注册表与地址卡增删；交互：上下线实例观察解析列表。",
+    "demoSignature": "输入：orders 服务有 10.0.0.2 和 .3 两个实例；中间：.4 上线后列表变成 3 个，.2 心跳超时后注册表保留 .3/.4，但 TTL 内旧缓存仍可能返回 .2；输出：缓存到期后只解析到 .3/.4。可视化：4 帧注册表与缓存地址卡变化；交互：上线、失效和 TTL 到期观察解析列表。",
     "sourceUrls": [
       "https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/",
-      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-204.pdf"
+      "https://kubernetes.io/docs/concepts/services-networking/service/",
+      "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/",
+      "https://csrc.nist.gov/pubs/sp/800/204/final",
+      "https://developer.hashicorp.com/consul/docs/discover/dns/configure"
     ],
     "rewriteRisk": "别把DNS、注册中心和负载均衡混成单一组件；要按职责拆开。",
     "nearDuplicates": [
@@ -1244,7 +1250,10 @@
     "misconception": "收集很多监控数据不等于可观测；信号必须能关联到具体请求、组件和时间。",
     "demoSignature": "输入：结账请求耗时2.4秒；中间：追踪拆为前端0.2、订单0.4、支付1.8秒，日志trace_id命中3条；输出：瓶颈定位到支付。可视化：建议5帧的瀑布追踪与日志联动；交互：点击慢跨度筛出对应日志。",
     "sourceUrls": [
-      "https://opentelemetry.io/docs/specs/otel/",
+      "https://opentelemetry.io/docs/concepts/signals/",
+      "https://opentelemetry.io/docs/concepts/observability-primer/",
+      "https://opentelemetry.io/docs/specs/otel/logs/",
+      "https://opentelemetry.io/docs/concepts/context-propagation/",
       "https://kubernetes.io/docs/concepts/cluster-administration/observability/"
     ],
     "rewriteRisk": "不要把日志、指标、追踪只列成三项；演示要证明它们如何共同回答一个问题。",
@@ -1257,7 +1266,10 @@
     "demoSignature": "输入：用户输入流向SQL拼接；中间：数据流跨3个函数，source→sink路径1条且无净化节点；输出：行42产生高风险告警。可视化：建议5帧的代码数据流染色；交互：插入参数化查询看告警消失。",
     "sourceUrls": [
       "https://owasp.org/www-community/Source_Code_Analysis_Tools",
-      "https://owasp.org/www-project-code-review-guide/"
+      "https://owasp.org/www-project-code-review-guide/",
+      "https://codeql.github.com/docs/codeql-overview/about-codeql/",
+      "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html"
     ],
     "rewriteRisk": "必须展示规则或数据流证据，不能把普通lint告警都称为安全漏洞。",
     "nearDuplicates": [
@@ -1272,7 +1284,10 @@
     "demoSignature": "输入：提交中出现1个API密钥；中间：格式规则命中，扫描范围当前树1处+历史2处，密钥状态active→revoked；输出：阻止提交并生成轮换记录。可视化：建议5帧的Git时间轴扫描；交互：切换“当前/历史”范围看命中数。",
     "sourceUrls": [
       "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
-      "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html"
+      "https://docs.github.com/en/code-security/concepts/secret-security/push-protection",
+      "https://docs.github.com/en/rest/secret-scanning",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+      "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final"
     ],
     "rewriteRisk": "不要展示真实密钥形状；重点强调撤销和历史清理，而非只删字符串。",
     "nearDuplicates": [
@@ -1286,7 +1301,10 @@
     "demoSignature": "输入：应用依赖A→B@2.1.0；中间：公告影响B<2.3.0，路径数0→1，升级A后B变2.3.2；输出：告警从高风险变已修复。可视化：建议5帧的依赖树红点沿升级消退；交互：选择版本查看路径和修复状态。",
     "sourceUrls": [
       "https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html",
-      "https://docs.github.com/en/code-security/dependabot/dependabot-alerts/about-dependabot-alerts"
+      "https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts",
+      "https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-security-updates",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Dependency_Graph_SBOM_Cheat_Sheet.html",
+      "https://ossf.github.io/osv-schema/"
     ],
     "rewriteRisk": "不能只展示漏洞数量；要把受影响版本和依赖路径写清。",
     "nearDuplicates": [
@@ -1298,10 +1316,13 @@
     "slug": "threat-modeling",
     "mechanism": "威胁建模先画出资产、数据流和信任边界，再系统识别攻击路径、影响与缓解措施，并随设计变化更新。",
     "misconception": "它不是上线前填一次安全表，也不等于漏洞扫描；重点是设计阶段推演系统如何被滥用。",
-    "demoSignature": "输入：登录服务含浏览器、API、数据库3节点；中间：画出2条信任边界和4条数据流，识别3个威胁，加入限流后高风险3→2；输出：保留2项待办及负责人。可视化：建议6帧的数据流图上逐项加威胁标记；交互：新增外部节点自动提示重审边界。",
+    "demoSignature": "输入：登录服务含浏览器、API、数据库3节点；中间：加入短信供应商后画出2条信任边界和4条数据流，识别3个威胁（其中2项高风险），加入回执签名校验后高风险2→1；输出：保留供应商泄露等残余风险及负责人。可视化：建议6帧的数据流图上逐项加威胁标记；交互：新增外部节点自动提示重审边界。",
     "sourceUrls": [
+      "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
       "https://owasp.org/www-community/Threat_Modeling",
-      "https://csrc.nist.gov/pubs/sp/800/154/ipd"
+      "https://csrc.nist.gov/pubs/sp/800/154/ipd",
+      "https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool",
+      "https://www.cisa.gov/securebydesign"
     ],
     "rewriteRisk": "不要停在STRIDE名词表；要让一个设计改变怎样消除或留下风险可见。",
     "nearDuplicates": [
@@ -1316,7 +1337,10 @@
     "demoSignature": "输入：工具准备删除3个文件；中间：审批卡展示3条完整路径和不可恢复标记，状态ready→paused；输出：用户只批准2条，执行数3→2。可视化：建议5帧的动作清单与逐项勾选；交互：亲自展开参数并选择部分批准。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
-      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+      "https://openai.github.io/openai-agents-python/tools/",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://modelcontextprotocol.io/specification/draft/server/index",
+      "https://openai.github.io/openai-agents-python/mcp/"
     ],
     "rewriteRisk": "演示要避开真实破坏操作；必须强调审批粒度、参数可见和授权人。",
     "nearDuplicates": [
@@ -1345,10 +1369,13 @@
     "slug": "permission-boundary",
     "mechanism": "权限边界规定某个身份、进程或工具能够访问哪些资源、执行哪些动作，并在边界处强制校验。",
     "misconception": "在提示词里说“不要访问”不是权限边界；真正的边界必须由模型外的授权系统执行。",
-    "demoSignature": "输入：报表工具只获read:sales，尝试read:salary；中间：令牌权限1项，策略匹配0项，访问状态requested→denied；输出：工资数据返回0行并记录审计事件。可视化：建议4帧的能力令牌穿过资源边界；交互：勾选权限后重新发请求。",
+    "demoSignature": "输入：报表工具只获read:sales，尝试read:salary；中间：令牌权限1项，策略匹配0项，访问状态requested→denied；输出：工资数据返回0行并记录审计事件，明确加入read:salary后重试才allow。可视化：建议4帧的能力令牌穿过资源边界；交互：勾选权限后重新发请求。",
     "sourceUrls": [
-      "https://csrc.nist.gov/projects/role-based-access-control",
-      "https://csrc.nist.gov/glossary/term/least_privilege"
+      "https://csrc.nist.gov/projects/role-based-access-control/faqs",
+      "https://csrc.nist.gov/glossary/term/least_privilege",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "https://csrc.nist.gov/pubs/sp/800/162/final"
     ],
     "rewriteRisk": "必须区分权限声明、策略判定和实际执行，不能把提示词约束算作授权。",
     "nearDuplicates": [
@@ -1364,7 +1391,10 @@
     "demoSignature": "输入：评论含带事件属性的图片标签；中间：直接innerHTML时产生1个可执行节点，改用textContent后可执行节点1→0；输出：页面只显示原始文字。可视化：建议4帧的DOM树危险节点被转成文本；交互：切换不安全/安全渲染看事件是否触发。",
     "sourceUrls": [
       "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
-      "https://owasp.org/www-community/attacks/xss/"
+      "https://owasp.org/www-community/attacks/xss/",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API"
     ],
     "rewriteRisk": "示例不要包含可直接攻击真实站点的载荷；需按输出上下文解释防护。",
     "nearDuplicates": [

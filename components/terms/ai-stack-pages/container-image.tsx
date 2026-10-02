@@ -1,0 +1,17 @@
+import { ArticleAside, ArticleSection } from "../ConceptArticle";
+import { Article, Cite, Hero } from "../AiStackConceptPageShared";
+import { containerImageSources } from "@/lib/ai-stack-concept-sources";
+import styles from "../ConceptArticle.module.css";
+import { ContainerImageLesson } from "../ai-stack-lessons/container-image";
+
+const containerSections: [string, string][] = [["image-need", "同一版本，删除后仍可重建"], ["image-layers", "模板里面有什么"], ["image-runtime", "镜像怎样变成容器"], ["image-boundary", "可复现不等于安全"]];
+export function ContainerImageTermPage() {
+  const sources = containerImageSources;
+  const Lesson = ContainerImageLesson;
+  return <Article slug="container-image" title="容器镜像" subtitle="Container Image · 创建运行实例的模板" sources={sources} sections={containerSections} hero={<Hero trigger="删掉容器后还能按同一版本启动吗？" change="不可变层 + 临时实例层" proof="镜像摘要不变，只有被写入的实例层改变" />} intro={<>容器镜像是可以被分发、校验和重复使用的运行模板。它把应用文件、依赖和启动信息放在不可变层里；启动时，运行时在这些层上增加一个属于当前容器的可写层。<Cite id="image-definition" sources={sources} /><strong>镜像是模板，容器是实例。</strong></>}>
+    <ArticleSection id="image-need" title="同一版本，删除后仍可重建"><p>你把结账服务交给测试环境，测试人员说“我这里能跑，生产却不是这个版本”。如果每次启动都现场下载依赖、修改文件，重启以后就很难解释到底变了什么。镜像先把一份构建结果封装成可识别的产物，环境只负责按这个产物创建实例。</p><p id="image-definition" className="vp-citation-target">OCI 把镜像描述为由配置和文件系统层组成的内容寻址产物；摘要随内容变化，因此部署时可以固定到同一个摘要，而不是依赖会移动的标签。<Cite id="image-definition" sources={sources} /></p><p id="image-recreate" className="vp-citation-target">这回答了“删除容器后还能不能启动”：容器的进程和临时写入会消失；只要镜像仍在本地或仓库，就可以用同一个摘要创建另一个实例。这里的“删除后重建”不同于 docker restart：restart 保留原实例的可写层，rm + run 才会丢掉它。<Cite id="image-recreate" sources={sources} /></p><Lesson /></ArticleSection>
+    <ArticleSection id="image-layers" title="模板里面有什么" className={styles.splitSection}><p id="image-layers" className="vp-citation-target">一个镜像通常由多层文件系统变化组成。基础运行时、系统库和应用文件可以分别成为层；层一旦生成，就作为只读内容被后续镜像或多个容器复用。<Cite id="image-layers" sources={sources} /></p><p>例如本页演示的基础层是 80 MB，应用层是 12 MB。三个实例看到的是同一份 92 MB 只读视图，不需要把这 92 MB 复制三次。只有某个实例修改已有文件或写入新文件时，变化才落到它自己的可写层。</p><div className={styles.contract}><div><span>静态产物</span><h3>image@sha256:demo…（演示用缩写） · 92 MB</h3><p>层和配置组成的固定模板，可被仓库按摘要分发。</p></div><div><span>运行状态</span><h3>container B · +2 MB</h3><p>只记录 B 的临时变化，不回写镜像。</p></div></div><ArticleAside title="标签和摘要不是一回事"><p><code>web:latest</code> 是一个可能被重新指向的标签；摘要是内容寻址标识。需要复现和审计时，应记录真正部署的摘要，并说明平台架构。</p></ArticleAside></ArticleSection>
+    <ArticleSection id="image-runtime" title="镜像怎样变成容器"><p id="image-writable" className="vp-citation-target">以 Docker 为例，容器可写层放在只读镜像层之上；不同运行时的存储驱动细节可能不同。这个层属于单个容器，容器删除后其中的临时文件也会删除。需要跨重启保存的数据应写入卷或外部存储。<Cite id="image-writable" sources={sources} /></p><p id="image-copy" className="vp-citation-target">当实例修改只读层里的文件时，存储驱动会执行 copy-on-write，把需要修改的文件复制到实例层；没有被改动的文件继续共享底层内容。<Cite id="image-copy" sources={sources} /></p><p>因此“在运行中的容器里改配置”不是一种可靠的发布方式。它只改变这一份实例，扩容出来的下一个实例看不到这次修改。把需要发布的变化写回 Dockerfile 或构建流水线，重新生成镜像，才能让所有实例从同一产物启动。</p></ArticleSection>
+    <ArticleSection id="image-boundary" title="可复现不等于安全"><p id="image-security" className="vp-citation-target">NIST 的容器安全指南把镜像、仓库、编排和运行时都视作需要控制的环节：可复用的镜像仍可能带有漏洞、过宽权限或不该进入产物的密钥。<Cite id="image-security" sources={sources} /></p><p>镜像适合装固定的应用和依赖，不适合装生产密钥。启动时注入的秘密、挂载的卷和运行时权限，属于另一层配置；把它们烘进镜像会让每个复制品都带着同一份风险。<Cite id="image-security" sources={sources} /></p><p><strong>停止条件</strong>：你能指出“哪一层是模板、哪一层是实例”，能解释删除实例后什么消失、什么保留，也能说明需要持久化时为什么要使用卷或外部存储。做不到这些时，不要把“镜像能启动”当成发布完成。</p></ArticleSection>
+  </Article>;
+}
