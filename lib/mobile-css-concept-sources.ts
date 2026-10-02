@@ -47,7 +47,7 @@ export const pushNotificationSources = [
 ];
 
 export const crossPlatformSources = [
-  { publisher: "Flutter", title: "Architectural overview", date: "", url: "https://docs.flutter.dev/resources/architectural-overview", citations: ["cross-core"] },
+  { publisher: "Flutter", title: "Architectural overview", date: "", url: "https://docs.flutter.dev/resources/architectural-overview", citations: ["cross-core-source"] },
   { publisher: "Flutter", title: "Platform channels", date: "", url: "https://docs.flutter.dev/platform-integration/platform-channels", citations: ["cross-channel"] },
   { publisher: "React Native", title: "Architecture overview", date: "", url: "https://reactnative.dev/architecture/overview", citations: ["cross-runtime"] },
   { publisher: "Kotlin", title: "Kotlin Multiplatform", date: "", url: "https://kotlinlang.org/docs/multiplatform.html", citations: ["cross-kmp"] },

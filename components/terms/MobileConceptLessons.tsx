@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowCounterClockwise, Bell, Brain, Browser, Check, CheckCircle, Cloud, Code, Database, DeviceMobile, FileText, Gear, GitBranch, Key, Layout, LockSimple, Pause, Play, Plus, ShieldCheck, Stack, TreeStructure, User, WarningCircle, X } from "@phosphor-icons/react";
+import { ArrowRight, ArrowCounterClockwise, Bell, Brain, Browser, Camera, Check, CheckCircle, Cloud, Code, Database, DeviceMobile, FileText, Gear, GitBranch, Key, Layout, LockSimple, Pause, Play, Plus, ShieldCheck, Stack, TreeStructure, User, WarningCircle, X } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ConceptArticle.module.css";
 
@@ -83,17 +83,22 @@ function AppLifecycleLesson() {
 
 function AppPermissionLesson() {
   const scene = useScene(5);
-  const [outcome, setOutcome] = useState<"allow" | "deny" | "blocked">("allow");
-  const labels = ["提出任务", "解释用途", "系统决定", "继续或替代", "长期拒绝"];
-  const state = scene.step < 2 ? "尚未请求" : outcome === "allow" ? "已允许" : outcome === "deny" ? "本次拒绝" : "不再询问";
+  const [outcome, setOutcome] = useState<"allow" | "deny" | "blocked" | null>(null);
+  const labels = ["提出任务", "解释用途", "系统决定", "继续或替代", "系统不再直接弹窗"];
+  useEffect(() => {
+    if (scene.step === 4) setOutcome("blocked");
+    if (scene.step === 3 && outcome === null) setOutcome("deny");
+  }, [scene.step, outcome]);
+  const state = scene.step < 2 ? "尚未请求" : outcome === "allow" ? "已允许" : outcome === "deny" ? "本次拒绝" : outcome === "blocked" ? "系统不再直接弹窗" : "等待选择";
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="运行时权限请求演示">
-    <div className={styles.choices} role="group" aria-label="选择系统授权结果"><button type="button" aria-pressed={outcome === "allow"} onClick={() => { setOutcome("allow"); scene.seek(2); }}>允许相机</button><button type="button" aria-pressed={outcome === "deny"} onClick={() => { setOutcome("deny"); scene.seek(2); }}>这次拒绝</button><button type="button" aria-pressed={outcome === "blocked"} onClick={() => { setOutcome("blocked"); scene.seek(4); }}>不再询问</button></div>
-    <div className={styles.contract}><div><CameraIcon /><h3>拍照上传</h3><p>用户先点了需要相机的任务，应用说明用途后才提出请求。</p></div><div><Key size={27} /><h3>系统状态：{state}</h3><p>{outcome === "allow" ? "可以打开相机。" : outcome === "deny" ? "仍可选择文件上传。" : "只能引导用户到系统设置修改。"}</p></div></div>
-    <FrameCopy scene={scene} labels={labels} title={["能力在任务中才出现", "先说明为什么需要", "权限由系统决定", "拒绝也要能完成任务", "长期拒绝走设置"]} text={["启动应用时不必先收集所有权限；先让用户看到自己的目标。", "用途说明应和当前动作相连，用户知道允许后会发生什么。", "应用只能发起请求，不能把自己的按钮当成系统授权。", "拒绝相机不应让整个上传任务无路可走，可以提供文件选择。", "永久拒绝后重复弹窗没有帮助，应给出设置入口和清楚的替代方案。"]} />
+    <div className={styles.choices} role="group" aria-label="模拟系统返回结果（仅演示，不改变设备权限）"><button type="button" aria-pressed={outcome === "allow"} onClick={() => { setOutcome("allow"); scene.seek(2); }}>模拟允许</button><button type="button" aria-pressed={outcome === "deny"} onClick={() => { setOutcome("deny"); scene.seek(2); }}>模拟这次拒绝</button><button type="button" aria-pressed={outcome === "blocked"} onClick={() => { setOutcome("blocked"); scene.seek(4); }}>模拟不再直接弹窗</button></div>
+    <p className={styles.inputExample}>上面的按钮只改变教学演示；真实应用仍要调用系统权限 API。</p>
+    <div className={styles.contract}><div><CameraIcon /><h3>拍照上传</h3><p>用户先点了需要相机的任务，应用说明用途后才提出请求。</p></div><div><Key size={27} /><h3>系统状态：{state}</h3><p>{outcome === "allow" ? "可以打开相机。" : outcome === "deny" ? "仍可选择文件上传。" : outcome === "blocked" ? "引导用户到系统设置修改。" : "先完成用途说明，再等待系统决定。"}</p></div></div>
+    <FrameCopy scene={scene} labels={labels} title={["能力在任务中才出现", "先说明为什么需要", "权限由系统决定", "拒绝也要能完成任务", "系统不再直接弹窗时走设置"]} text={["启动应用时不必先收集所有权限；先让用户看到自己的目标。", "用途说明应和当前动作相连，用户知道允许后会发生什么。", "应用只能发起请求，不能把自己的按钮当成系统授权。", "拒绝相机不应让整个上传任务无路可走，可以提供文件选择。", "Android 的这个分支不会继续直接弹窗，应给出设置入口和清楚的替代方案；iOS 与 Web 规则不同。"]} />
   </div>;
 }
 
-function CameraIcon() { return <Browser size={27} />; }
+function CameraIcon() { return <Camera size={27} />; }
 
 function PushNotificationLesson() {
   const scene = useScene(5);
@@ -109,12 +114,12 @@ function PushNotificationLesson() {
 
 function CrossPlatformLesson() {
   const scene = useScene(4);
-  const [sharedCamera, setSharedCamera] = useState(false);
   const labels = ["共享规则", "接入平台能力", "错误地全共享", "放回适配器"];
+  const wrong = scene.step === 2;
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="跨平台代码边界演示">
-    <div className={styles.contract}><div><Code size={27} /><h3>共享核心</h3><p>订单计算、数据校验和状态规则可以共用。</p><code>calculateTotal()</code></div><div><DeviceMobile size={27} /><h3>平台适配器</h3><p>{sharedCamera ? "相机实现被错误地塞进共享核心。" : "iOS 与 Android 各自翻译相机、通知和生命周期。"}</p><button type="button" onClick={() => setSharedCamera(!sharedCamera)}>{sharedCamera ? "移回平台边界" : "把相机移进共享核心"}</button></div></div>
+    <div className={styles.contract}><div><Code size={27} /><h3>共享核心</h3><p>订单计算、数据校验和状态规则可以共用。</p><code>calculateTotal()</code></div><div><DeviceMobile size={27} /><h3>平台适配器</h3><p>{wrong ? "相机实现被错误地塞进共享核心。" : "iOS 与 Android 各自翻译相机、通知和生命周期。"}</p><button type="button" onClick={() => scene.seek(wrong ? 3 : 2)}>{wrong ? "移回平台边界" : "模拟把相机移进共享核心"}</button></div></div>
     <div className={styles.resultFlow}><Code size={28} /><span>共享接口</span><ArrowRight size={19} /><GitBranch size={28} /><span>iOS / Android 实现</span><ArrowRight size={19} /><CheckCircle size={28} /></div>
-    {sharedCamera && <p className={styles.inputExample}><strong>可观察失败</strong>共享核心开始依赖某个平台的相机 API，另一平台无法编译或只能加一层条件分支；共享比例需要退回到真实边界。</p>}
+    {wrong && <p className={styles.inputExample}><strong>可观察失败</strong>共享核心开始依赖某个平台的相机 API，另一平台无法编译或只能加一层条件分支；共享比例需要退回到真实边界。</p>}
     <FrameCopy scene={scene} labels={labels} title={["先共享不依赖平台的规则", "平台能力通过接口接入", "全部相同会遇到边界", "把差异留在适配器"]} text={["跨平台不是复制一套屏幕，而是先找出业务规则和数据模型的共同部分。", "相机、权限、通知和生命周期通过平台通道或适配器接到共享接口。", "把平台 API 硬塞进共享核心，会把差异隐藏到编译、性能和行为错误里。", "共享代码与原生实现都要在真实平台上测试；统一接口不承诺统一体验。"]} />
   </div>;
 }
