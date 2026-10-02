@@ -182,27 +182,36 @@ def resolve_google(url: str) -> str | None:
         return canonical_url(url)
     key = "resolve:" + url
     cached = cached_json(key)
-    if cached is not None:
+    # A transient Google error must not become a permanent "gap day".  Re-run
+    # failed decodes on the next pass; successful URLs remain cached.
+    if cached is not None and cached.get("url"):
         return cached.get("url")
-    try:
-        page = request(url).decode("utf-8", "replace")
-        match = re.search(r'<c-wiz[^>]*data-p="([^"]+)"', page)
-        if not match:
-            save_cache(key, {"url": None, "error": "missing data-p"})
-            return None
-        data = html.unescape(match.group(1))
-        config = json.loads(data.replace("%.@.", '["garturlreq",', 1))
-        payload = {"f.req": json.dumps([[['Fbv4je', json.dumps(config[:-6] + config[-2:]), "null", "generic"]]])}
-        raw = request("https://news.google.com/_/DotsSplashUi/data/batchexecute", data=urllib.parse.urlencode(payload).encode()).decode("utf-8", "replace")
-        response = json.loads(raw.replace(")]}'", "", 1))[0][2]
-        resolved = json.loads(response)[1]
-        result = canonical_url(resolved) if resolved.startswith("http") else None
-        save_cache(key, {"url": result})
-        time.sleep(0.05)
-        return result
-    except Exception as error:
-        save_cache(key, {"url": None, "error": str(error)})
-        return None
+    last_error = None
+    for attempt in range(3):
+        try:
+            page = request(url).decode("utf-8", "replace")
+            match = re.search(r'<c-wiz[^>]*data-p="([^"]+)"', page)
+            if not match:
+                last_error = "missing data-p"
+                time.sleep(0.4 * (attempt + 1))
+                continue
+            data = html.unescape(match.group(1))
+            config = json.loads(data.replace("%.@.", '["garturlreq",', 1))
+            payload = {"f.req": json.dumps([[['Fbv4je', json.dumps(config[:-6] + config[-2:]), "null", "generic"]]])}
+            raw = request("https://news.google.com/_/DotsSplashUi/data/batchexecute", data=urllib.parse.urlencode(payload).encode()).decode("utf-8", "replace")
+            response = json.loads(raw.replace(")]}'", "", 1))[0][2]
+            resolved = json.loads(response)[1]
+            result = canonical_url(resolved) if resolved.startswith("http") else None
+            if result:
+                save_cache(key, {"url": result})
+                time.sleep(0.05)
+                return result
+            last_error = "missing resolved URL"
+        except Exception as error:
+            last_error = str(error)
+        time.sleep(0.4 * (attempt + 1))
+    save_cache(key, {"url": None, "error": last_error or "decode failed"})
+    return None
 
 
 def strip_markup(value: str) -> str:
@@ -452,7 +461,7 @@ def write_day(day: str, terms: set[str], known: dict[str, str]) -> tuple[dict, d
         return score
     raw = sorted((item for item in raw if item.get("publishedAt") == day), key=lambda item: -pre_score(item))
     candidates = []
-    for item in raw[:3]:
+    for item in raw[:10]:
         if len(candidates) >= 2:
             break
         candidate = make_candidate(item, day, known)
