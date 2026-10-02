@@ -14,9 +14,9 @@ const evidence = z.object({
   excerpt: z.string().trim().min(1).max(2_000),
 }).strict();
 const hero = z.object({
-  url: z.union([httpsUrl, z.string().regex(/^\\/(?!\\/)/)]),
+  url: z.union([httpsUrl, z.string().regex(/^\/(?!\/)/)]),
   alt: z.string().trim().min(1).max(300),
-  sourceUrl: z.union([httpsUrl, z.string().regex(/^\\/(?!\\/)/)]),
+  sourceUrl: z.union([httpsUrl, z.string().regex(/^\/(?!\/)/)]),
   license: z.string().trim().min(1).max(300),
   credit: z.string().trim().min(1).max(200).optional(),
 }).strict();
@@ -114,12 +114,12 @@ export function canonicalNewsUrl(value: string) {
     if (/^utm_/i.test(key) || /^(fbclid|gclid)$/i.test(key)) url.searchParams.delete(key);
   }
   url.searchParams.sort();
-  url.pathname = url.pathname.replace(/\\/$/, "") || "/";
+  url.pathname = url.pathname.replace(/\/$/, "") || "/";
   return url.toString();
 }
 
 function digest(body: string) {
-  return "sha256:" + createHash("sha256").update(body.trim().replace(/\\r\\n?/g, "\\n"), "utf8").digest("hex");
+  return "sha256:" + createHash("sha256").update(body.trim().replace(/\r\n?/g, "\n"), "utf8").digest("hex");
 }
 
 function normalizeBatch(payload: unknown): NewsIngestBatch {
@@ -182,7 +182,7 @@ function existingKeys(store: ReturnType<typeof readNewsStore>) {
 function atomicJson(path: string, value: unknown) {
   const temporary = path + "." + process.pid + ".tmp";
   try {
-    writeFileSync(temporary, JSON.stringify(value, null, 2) + "\\n", { flag: "wx" });
+    writeFileSync(temporary, JSON.stringify(value, null, 2) + "\n", { flag: "wx" });
     renameSync(temporary, path);
   } finally {
     try { unlinkSync(temporary); } catch (error) {
@@ -231,7 +231,7 @@ export function ingestNewsBatch(payload: unknown, { rootDir = process.cwd() } = 
     const path = join(directory, article.slug + ".json");
     mkdirSync(directory, { recursive: true });
     try {
-      writeFileSync(path, JSON.stringify(draft, null, 2) + "\\n", { flag: "wx" });
+      writeFileSync(path, JSON.stringify(draft, null, 2) + "\n", { flag: "wx" });
     } catch (error) {
       if (error && typeof error === "object" && "code" in error && error.code === "EEXIST") {
         result.duplicates.push({ slug: article.slug, existingSlug: article.slug, reason: "draft_path" });
