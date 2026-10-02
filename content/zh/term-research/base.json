@@ -500,13 +500,17 @@
   },
   {
     "slug": "typescript",
-    "mechanism": "TypeScript 在 JavaScript 上增加静态类型检查，编译阶段分析变量、函数和对象的使用是否符合声明。",
-    "misconception": "类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
-    "demoSignature": "pipeline: 5 frames; actors=TypeScript 源码/函数声明/类型检查器/诊断/JavaScript 输出/运行时输入; phases=读取声明→检查调用→给出诊断→修正并输出→验证外部数据; action=运行检查",
+    "mechanism": "TypeScript 在 JavaScript 上增加静态类型系统；类型检查器在代码运行前分析变量、函数和对象关系，编译或构建工具再输出 JavaScript。",
+    "misconception": "类型信息通常会在输出 JavaScript 中被擦除，类型断言也不会验证外部数据；接口响应、用户输入等数据仍需运行时校验。",
+    "demoSignature": "summary=3 steps; scene=pipeline: 5 frames; actors=TypeScript 源码/函数声明/类型检查器/诊断/JavaScript 输出/运行时输入; phases=声明约束→提前诊断→修正并输出→验证外部数据; action=运行检查",
     "sourceUrls": [
-      "https://www.typescriptlang.org/docs/handbook/2/basic-types.html"
+      "https://www.typescriptlang.org/docs/handbook/intro",
+      "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+      "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+      "https://www.typescriptlang.org/docs/handbook/type-compatibility",
+      "https://www.typescriptlang.org/tsconfig/strict.html"
     ],
-    "rewriteRisk": "正式页面需守住边界：类型通常会在输出 JavaScript 中被擦除，接口响应、用户输入等外部数据仍需运行时校验。",
+    "rewriteRisk": "正式页面需区分编译前的静态检查与运行时验证，说明类型通常不会进入输出 JavaScript，也不要把类型断言写成外部数据校验。",
     "nearDuplicates": [
       "javascript",
       "compiler",
