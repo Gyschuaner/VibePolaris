@@ -1,9 +1,9 @@
 [
   {
     "slug": "semantic-html",
-    "lead": "页面看起来一样，为什么还要区分 main、nav 和 div？",
-    "definition": "浏览器解析元素时会把 nav、main、button 等角色带入文档与无障碍结构，辅助技术因此能按区域和控件类型导航。",
-    "boundary": "常被误解为“换个标签有利于 SEO”；核心差异是机器可识别的结构和原生交互行为，不只是搜索排名。",
+    "lead": "页面看起来一样，换成 main、nav、button 后，谁会多知道什么？",
+    "definition": "语义化 HTML 按内容职责选择元素：nav 表示导航，main 表示主要内容，article 表示可独立阅读内容，button 表示可触发操作。浏览器据此构造文档和无障碍结构，辅助技术才能按区域和控件导航。",
+    "boundary": "语义元素表达结构与原生行为，不负责颜色、间距或动画；class 命名不会改变语义，ARIA 角色也不应替代已有的原生元素。",
     "sceneKind": "tree",
     "sceneTitle": "同一页面在无障碍树里的两种结构",
     "actionLabel": "替换一个语义节点",
@@ -11,21 +11,21 @@
       {
         "id": "markup",
         "label": "HTML",
-        "detail": "文章与导航",
+        "detail": "元素职责：nav、main、button",
         "icon": "code",
         "group": "源代码"
       },
       {
         "id": "dom",
         "label": "DOM",
-        "detail": "浏览器解析结果",
+        "detail": "浏览器解析后的节点结构",
         "icon": "layout",
         "group": "页面结构"
       },
       {
         "id": "a11y",
         "label": "无障碍树",
-        "detail": "区域与控件角色",
+        "detail": "辅助技术看到的区域和控件角色",
         "icon": "layout",
         "group": "辅助技术"
       }
@@ -35,19 +35,19 @@
         "id": "markup-dom",
         "from": "markup",
         "to": "dom",
-        "label": "解析"
+        "label": "浏览器解析"
       },
       {
         "id": "dom-a11y",
         "from": "dom",
         "to": "a11y",
-        "label": "暴露语义"
+        "label": "暴露结构与行为"
       }
     ],
     "frames": [
       {
-        "label": "只有 div",
-        "note": "页面能显示，但树里只有无名称的普通容器。",
+        "label": "先看普通容器",
+        "note": "页面能显示，但无障碍树没有可跳转的 nav、main、button 角色；普通容器可能被忽略或只作为通用容器。",
         "activeIds": [
           "markup",
           "dom"
@@ -58,7 +58,7 @@
         ],
         "values": {
           "markup": "div × 6",
-          "a11y": "generic × 6"
+          "a11y": "无 nav/main/button 角色"
         },
         "activeEdgeIds": [
           "markup-dom"
@@ -66,7 +66,7 @@
       },
       {
         "label": "标出页面区域",
-        "note": "nav、main 和 article 进入解析结果，对应区域立即出现在无障碍树中。",
+        "note": "在本例浏览器中，nav、main 和 article 进入解析结果，对应区域出现在无障碍树中。",
         "activeIds": [
           "markup",
           "dom",
@@ -87,7 +87,7 @@
       },
       {
         "label": "换成原生按钮",
-        "note": "最后一个可点击 div 改为 button，键盘焦点和按钮角色同时出现。",
+        "note": "最后一个可点击 div 改为 button，按钮角色和 Enter/Space 键盘行为一起出现。",
         "activeIds": [
           "markup",
           "a11y"
@@ -97,20 +97,20 @@
         ],
         "mutedIds": [],
         "values": {
-          "a11y": "button · 可按 Enter"
+          "a11y": "button · Enter/Space"
         },
         "activeEdgeIds": [
           "dom-a11y"
         ],
         "metric": {
-          "label": "可识别区域",
-          "value": "4 个"
+          "label": "可识别区域与控件",
+          "value": "4 个示例"
         }
       }
     ],
     "insight": "语义标签改变的是机器读到的结构和原生行为，不只是代码长相。",
     "quiz": {
-      "question": "一组可以提交表单的文字应优先使用什么元素？",
+      "question": "提交表单的操作应优先使用什么元素？",
       "options": [
         {
           "label": "button",
@@ -125,46 +125,61 @@
           "correct": false
         }
       ],
-      "success": "button 自带按钮语义和键盘行为。",
-      "retry": "可点击不等于按钮；普通容器需要额外补齐语义和键盘行为。"
+      "success": "原生 button 自带按钮语义和 Enter/Space 键盘行为。",
+      "retry": "可点击不等于按钮；普通容器需要额外补齐语义、焦点和键盘行为。"
     },
     "prompt": {
       "title": "检查页面的 HTML 语义",
-      "text": "请检查下面的 HTML。指出只承担样式容器作用的 div，以及应改为 header、nav、main、section、article 或 button 的节点，并说明修改依据。不要改动页面视觉。"
+        "text": "请检查下面的 HTML：指出只承担样式容器作用的 div，以及应改为 header、nav、main、section、article 或 button 的节点；说明每次替换带来的结构或原生行为变化，不改动页面视觉。"
     },
     "sources": [
       {
         "url": "https://html.spec.whatwg.org/multipage/dom.html#semantics-2",
         "label": "WHATWG · HTML Standard",
-        "note": "HTML 标准语义"
+        "note": "元素的语义让浏览器和其他处理器理解内容"
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Semantics",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/",
+        "label": "WAI ARIA APG · Landmarks Pattern",
+        "note": "main 和 nav 可形成可导航的区域地标"
+      },
+      {
+        "url": "https://www.w3.org/WAI/tutorials/page-structure/regions/",
+        "label": "W3C WAI · Page Regions",
+        "note": "header、nav、main 等元素标出页面区域"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG21/Techniques/html/H101",
+        "label": "W3C WAI · Technique H101",
+        "note": "语义元素为辅助技术提供区域结构"
+      },
+      {
+        "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+        "label": "WAI ARIA APG · Keyboard Interface",
+        "note": "原生控件与自定义控件的键盘行为边界"
       }
     ]
   },
   {
     "slug": "deep-link",
     "lead": "用户点开活动链接，怎样直接进入应用里的订单详情？",
-    "definition": "系统收到 URI 后，按应用清单中的匹配规则生成 Intent 并选择目标应用；应用再把路径和参数映射到内部页面。",
-    "boundary": "容易和普通网页链接混淆，也常忽略“应用未安装、未登录、链接失效”不是同一种失败。",
+    "definition": "系统收到 URI 后，按已注册的域名和路径匹配规则选择应用；应用再把路径和参数映射到内部页面。",
+    "boundary": "深度链接只解决入口定位；应用未安装、未登录、资源不存在和链接无法匹配，分别返回相应结果。",
     "sceneKind": "route",
-    "sceneTitle": "一条订单链接在三种设备状态下的去向",
+    "sceneTitle": "一条订单链接的匹配与去向",
     "actionLabel": "打开订单链接",
     "actors": [
       {
         "id": "link",
         "label": "订单链接",
-        "detail": "/orders/42",
+        "detail": "HTTPS · /orders/42",
         "icon": "message",
         "group": "入口"
       },
       {
         "id": "router",
         "label": "系统路由",
-        "detail": "匹配 App Link",
+        "detail": "域名和路径匹配",
         "icon": "gear",
         "group": "系统"
       },
@@ -185,7 +200,7 @@
       {
         "id": "web",
         "label": "网页回退",
-        "detail": "应用未安装",
+        "detail": "应用未安装或无法匹配",
         "icon": "browser",
         "group": "结果"
       }
@@ -195,7 +210,7 @@
         "id": "link-router",
         "from": "link",
         "to": "router",
-        "label": "交给系统"
+        "label": "系统匹配"
       },
       {
         "id": "router-order",
@@ -207,25 +222,25 @@
         "id": "router-login",
         "from": "router",
         "to": "login",
-        "label": "需要登录"
+        "label": "未登录"
       },
       {
         "id": "login-order",
         "from": "login",
         "to": "order",
-        "label": "登录后返回"
+        "label": "登录后回到原地址"
       },
       {
         "id": "router-web",
         "from": "router",
         "to": "web",
-        "label": "未安装"
+        "label": "未安装或无法处理"
       }
     ],
     "frames": [
       {
         "label": "系统先匹配",
-        "note": "点击链接后，系统根据域名和路径选择可处理它的应用。",
+        "note": "点击链接后，系统根据域名和路径匹配可处理它的应用。",
         "activeIds": [
           "link",
           "router"
@@ -253,8 +268,7 @@
           "order"
         ],
         "doneIds": [
-          "link",
-          "router"
+          "link"
         ],
         "mutedIds": [
           "login",
@@ -269,15 +283,14 @@
       },
       {
         "label": "登录后续走",
-        "note": "关闭登录状态后，目标地址被暂存；登录完成再回到原订单。",
+        "note": "会话无效时，目标地址被暂存；登录完成再回到原订单。",
         "activeIds": [
           "router",
           "login",
           "order"
         ],
         "doneIds": [
-          "link",
-          "login"
+          "link"
         ],
         "mutedIds": [
           "web"
@@ -293,7 +306,7 @@
       },
       {
         "label": "未安装回网页",
-        "note": "关闭应用安装状态，系统不再进入应用，链接落到可访问的网页。",
+        "note": "应用未安装或不处理这条路径时，保留同一 HTTPS 地址打开网页。",
         "activeIds": [
           "router",
           "web"
@@ -306,7 +319,7 @@
           "order"
         ],
         "values": {
-          "web": "https://…/orders/42"
+          "web": "https://shop.example/orders/42（示例）"
         },
         "activeEdgeIds": [
           "router-web"
@@ -340,52 +353,72 @@
     "sources": [
       {
         "url": "https://developer.android.com/training/app-links/create-deeplinks",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Create deep links",
+        "note": "域名、路径匹配和应用入口"
+      },
+      {
+        "url": "https://developer.android.com/guide/components/intents-filters",
+        "label": "Android Developers · Intents and filters",
+        "note": "系统如何把请求交给匹配的组件"
+      },
+      {
+        "url": "https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html",
+        "label": "Apple · Support Universal Links",
+        "note": "已安装打开应用，未安装回到网页"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/technotes/tn3155-debugging-universal-links",
+        "label": "Apple · Debugging Universal Links",
+        "note": "关联域名、路径匹配和网页回退"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment",
+        "label": "MDN · URI fragment",
+        "note": "网页地址如何指向资源中的具体位置"
       }
     ]
   },
   {
     "slug": "app-manifest",
     "lead": "系统从哪里知道应用名称、入口页面和需要的权限？",
-    "definition": "构建工具和操作系统在安装、启动与组件调用时读取清单，获得组件、权限、特性和入口声明。",
-    "boundary": "清单声明权限不等于用户已经授权；声明相机能力也不代表运行时可以直接打开相机。",
+    "definition": "应用清单是平台读取的配置文件：Android 的 AndroidManifest.xml 描述组件、入口、权限和链接匹配；PWA 的 Web App Manifest 描述名称、图标、启动地址和显示方式。",
+    "boundary": "清单只负责声明配置和入口；权限仍要按平台规则在运行时请求，用户也可以拒绝；它不负责业务错误处理或保证能力一定可用。",
     "sceneKind": "contract",
-    "sceneTitle": "系统读取清单后允许哪些入口和能力",
+    "sceneTitle": "AndroidManifest.xml：系统读取后如何检查入口和能力",
     "actionLabel": "移除一项声明",
     "actors": [
       {
         "id": "manifest",
         "label": "应用清单",
-        "detail": "组件、权限、链接",
+        "detail": "AndroidManifest.xml · activity/permission/filter",
         "icon": "file",
         "group": "声明"
       },
       {
         "id": "system",
         "label": "操作系统",
-        "detail": "安装时读取",
+        "detail": "Android 安装、启动时读取",
         "icon": "gear",
         "group": "校验"
       },
       {
         "id": "launcher",
         "label": "启动入口",
-        "detail": "MainActivity",
+        "detail": "MainActivity · launcher",
         "icon": "component",
         "group": "能力"
       },
       {
         "id": "camera",
         "label": "相机能力",
-        "detail": "CAMERA",
+        "detail": "CAMERA · 仍需运行时授权",
         "icon": "shield",
         "group": "能力"
       },
       {
         "id": "link",
         "label": "外部链接",
-        "detail": "example.com",
+        "detail": "intent-filter · example.com",
         "icon": "network",
         "group": "能力"
       }
@@ -395,7 +428,7 @@
         "id": "manifest-system",
         "from": "manifest",
         "to": "system",
-        "label": "安装时注册"
+        "label": "构建/安装读取"
       },
       {
         "id": "system-launcher",
@@ -407,7 +440,7 @@
         "id": "system-camera",
         "from": "system",
         "to": "camera",
-        "label": "权限声明"
+        "label": "声明后请求授权"
       },
       {
         "id": "system-link",
@@ -419,7 +452,7 @@
     "frames": [
       {
         "label": "清单完整",
-        "note": "系统读到入口、权限和链接规则，三项能力都能继续接受运行时检查。",
+        "note": "Android 系统读到入口、权限和链接规则；这些声明进入候选能力，受限能力仍要经过运行时检查。",
         "activeIds": [
           "manifest",
           "system"
@@ -427,7 +460,7 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "system": "3 项已注册"
+          "system": "入口、权限、链接已声明"
         },
         "activeEdgeIds": [
           "manifest-system"
@@ -435,7 +468,7 @@
       },
       {
         "label": "入口声明缺失",
-        "note": "移除启动 Activity 后，桌面图标仍可见于旧缓存，但系统找不到可启动组件。",
+        "note": "移除 launcher Activity 后，安装图标仍可能可见，但 Android 系统找不到可启动入口。",
         "activeIds": [
           "manifest",
           "system",
@@ -458,7 +491,7 @@
       },
       {
         "label": "权限声明缺失",
-        "note": "恢复入口并移除 CAMERA，运行时授权请求无法补上清单中不存在的能力。",
+        "note": "恢复入口并移除 CAMERA uses-permission，运行时请求没有清单声明可供匹配；即使声明存在也仍需用户授权。",
         "activeIds": [
           "manifest",
           "system",
@@ -480,7 +513,7 @@
       },
       {
         "label": "链接规则缺失",
-        "note": "移除 intent-filter 后，同一网址不再被分发给应用。",
+        "note": "移除 intent-filter 后，同一网址不再被 Android 分发给应用；网页回退由浏览器处理。",
         "activeIds": [
           "manifest",
           "system",
@@ -501,9 +534,9 @@
         ]
       }
     ],
-    "insight": "清单是应用交给系统的能力声明，运行时代码只能在已声明的边界内继续工作。",
+    "insight": "清单把平台需要的入口和能力写成声明；运行时仍要通过授权、匹配和错误处理把声明变成可用功能。",
     "quiz": {
-      "question": "清单里声明相机权限后，应用能否直接使用相机？",
+      "question": "在 AndroidManifest.xml 里声明相机权限后，应用能否直接使用相机？",
       "options": [
         {
           "label": "仍需按平台规则请求用户授权",
@@ -518,55 +551,75 @@
           "correct": false
         }
       ],
-      "success": "声明和用户授权是不同阶段。",
-      "retry": "清单本身不会替用户作出权限决定。"
+      "success": "清单先声明需要什么，平台再按规则请求授权；用户拒绝时，运行时代码必须处理失败。",
+      "retry": "清单不会替用户授权，也不会绕过平台的运行时权限检查。"
     },
     "prompt": {
       "title": "检查应用清单配置",
-      "text": "请检查下面清单中的应用标识、入口、链接匹配和权限声明，指出重复、缺失或范围过宽的配置，并说明哪些权限仍需运行时申请。"
+      "text": "请检查下面的 AndroidManifest.xml 或 webmanifest：标出组件/入口、链接、名称图标和权限声明；分别说明哪些在构建或启动时读取，哪些仍需运行时授权。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/guide/topics/manifest/manifest-intro",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · App manifest",
+        "note": "组件、权限和 intent-filter 都在清单中声明"
+      },
+      {
+        "url": "https://developer.android.com/guide/components/intents-filters",
+        "label": "Android Developers · Intents",
+        "note": "系统按 intent filter 匹配组件"
+      },
+      {
+        "url": "https://developer.android.com/training/permissions/requesting",
+        "label": "Android Developers · Runtime permissions",
+        "note": "敏感权限需要运行时请求并处理拒绝"
+      },
+      {
+        "url": "https://www.w3.org/TR/appmanifest/",
+        "label": "W3C · Web Application Manifest",
+        "note": "Web App Manifest 的 name、icons、start_url、display"
+      },
+      {
+        "url": "https://web.dev/learn/pwa/web-app-manifest",
+        "label": "web.dev · Web app manifest",
+        "note": "PWA 安装和启动入口配置"
       }
     ]
   },
   {
     "slug": "emulator",
     "lead": "没有每一种实体手机时，怎样先检查不同系统版本和屏幕尺寸？",
-    "definition": "仿真器在主机上模拟目标处理器、硬件和系统镜像，并允许注入网络、位置和设备状态。",
-    "boundary": "容易与只模拟操作系统接口的 simulator 混淆，也不能把仿真器性能当作真机性能。",
+    "definition": "仿真器在主机上运行虚拟设备配置，加载目标系统版本和硬件特征，并允许注入网络、位置和设备状态。",
+    "boundary": "仿真器适合功能、兼容性和可重复异常检查；它不能替代真机对真实性能、功耗、触觉、摄像头和传感器差异的确认。",
     "sceneKind": "compare",
-    "sceneTitle": "同一相机页面在虚拟设备和真机上的差异",
+    "sceneTitle": "同一构建先在仿真器覆盖，再由真机复核",
     "actionLabel": "运行下一项测试",
     "actors": [
       {
         "id": "build",
         "label": "同一构建",
-        "detail": "camera-debug.apk",
+        "detail": "相机示例应用安装包 · 同一构建",
         "icon": "package",
         "group": "输入"
       },
       {
         "id": "emulator",
         "label": "仿真器",
-        "detail": "虚拟硬件",
+        "detail": "Android AVD（Android 虚拟设备）· 可注入条件",
         "icon": "component",
         "group": "测试设备"
       },
       {
         "id": "device",
         "label": "真机",
-        "detail": "实际传感器与功耗",
+        "detail": "真实摄像头/传感器",
         "icon": "user",
         "group": "测试设备"
       },
       {
         "id": "results",
         "label": "验证清单",
-        "detail": "功能、性能、触觉",
+        "detail": "功能、异常、硬件",
         "icon": "chart",
         "group": "结果"
       }
@@ -576,57 +629,56 @@
         "id": "build-emulator",
         "from": "build",
         "to": "emulator",
-        "label": "安装"
+        "label": "同一构建"
       },
       {
         "id": "build-device",
         "from": "build",
         "to": "device",
-        "label": "安装"
+        "label": "同一构建"
       },
       {
         "id": "emulator-results",
         "from": "emulator",
         "to": "results",
-        "label": "记录"
+        "label": "记录功能与异常"
       },
       {
         "id": "device-results",
         "from": "device",
         "to": "results",
-        "label": "记录"
+        "label": "记录硬件实测"
       }
     ],
     "frames": [
       {
-        "label": "先测页面功能",
-        "note": "两台设备都能完成打开相机和保存图片，功能项同时通过。",
+        "label": "先覆盖配置",
+        "note": "仿真器切换系统版本（API level）和屏幕尺寸，先覆盖同一相机页面的功能路径。",
         "activeIds": [
           "build",
           "emulator",
-          "device"
+          "results"
         ],
         "doneIds": [
           "build"
         ],
         "mutedIds": [
-          "results"
+          "device"
         ],
         "values": {
-          "emulator": "功能通过",
-          "device": "功能通过"
+          "emulator": "功能通过 · API 35（系统版本标识）",
+          "results": "候选组合 4 组"
         },
         "activeEdgeIds": [
           "build-emulator",
-          "build-device"
+          "emulator-results"
         ]
       },
       {
-        "label": "加入网络与定位",
-        "note": "调低网络、移动模拟位置后，两边都能复现超时和位置变化。",
+        "label": "复现异常条件",
+        "note": "在仿真器中限速、断网或修改位置，异常流程可以重复出现。",
         "activeIds": [
           "emulator",
-          "device",
           "results"
         ],
         "doneIds": [
@@ -634,16 +686,16 @@
         ],
         "mutedIds": [],
         "values": {
+          "emulator": "网络/定位可注入",
           "results": "异常流程可复现"
         },
         "activeEdgeIds": [
-          "emulator-results",
-          "device-results"
+          "emulator-results"
         ]
       },
       {
-        "label": "检查真实硬件",
-        "note": "进入触觉、功耗和启动延迟测试，仿真器列变为未覆盖，真机给出可观察结果。",
+        "label": "真机校验硬件",
+        "note": "进入触觉、功耗和启动延迟测试，仿真器列变为未覆盖，真机给出实测结果。",
         "activeIds": [
           "device",
           "results"
@@ -656,23 +708,23 @@
         ],
         "values": {
           "emulator": "硬件项未覆盖",
-          "device": "触觉有反馈 · 启动 420 ms（示例）"
+          "device": "触觉有反馈 · 启动 420 ms（教学示例）"
         },
         "activeEdgeIds": [
           "device-results"
         ],
         "metric": {
           "label": "本例未覆盖项",
-          "value": "3 项"
+          "value": "3 项需真机确认"
         }
       }
     ],
-    "insight": "仿真器适合快速覆盖系统组合，真机仍要负责真实硬件、功耗和性能结论。",
+    "insight": "仿真器先覆盖系统组合和可注入条件，真机再给出真实硬件、功耗和性能结论。",
     "quiz": {
       "question": "哪项更需要在真机上确认？",
       "options": [
         {
-          "label": "触觉反馈和实际性能",
+          "label": "相机启动延迟和触觉反馈",
           "correct": true
         },
         {
@@ -684,55 +736,75 @@
           "correct": false
         }
       ],
-      "success": "硬件手感和真实性能很难由仿真器完整还原。",
-      "retry": "基础静态检查不一定依赖真机。"
+      "success": "仿真器能覆盖很多配置和可注入条件，但真实性能、功耗与硬件反馈仍要真机确认。",
+      "retry": "基础功能和可重复异常通常可以先在仿真器中检查。"
     },
     "prompt": {
       "title": "制定移动端设备验证范围",
-      "text": "请把下面测试项分为仿真器可完成、必须真机复核和两者都要覆盖三类，并给出最低设备与系统版本组合。"
+      "text": "请把下面测试项分为仿真器可完成、必须真机复核和两者都要覆盖三类；说明需要覆盖的系统版本、屏幕尺寸、网络条件和真实硬件指标。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/studio/run/emulator",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Android Emulator",
+        "note": "AVD 指定系统版本和硬件；可模拟位置、网络与传感器"
+      },
+      {
+        "url": "https://developer.android.com/studio/run/emulator-networking-address",
+        "label": "Android Developers · Emulator networking",
+        "note": "仿真器通过虚拟路由连接网络，与真机地址环境不同"
+      },
+      {
+        "url": "https://developer.android.com/studio/run/emulator-console",
+        "label": "Android Developers · Emulator console",
+        "note": "运行中可控制网络特征和位置等仿真环境"
+      },
+      {
+        "url": "https://developer.android.com/studio/run/emulator-comparison",
+        "label": "Android Developers · Emulator tools",
+        "note": "不同仿真工具对传感器和网络条件的支持范围"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/Xcode/running-your-app-on-simulated-or-physical-devices",
+        "label": "Apple Developer · Simulated or physical devices",
+        "note": "模拟设备适合覆盖，真实性能和硬件特性需实体设备确认"
       }
     ]
   },
   {
     "slug": "code-signing",
     "lead": "系统为什么拒绝安装一个已经构建成功的应用包？",
-    "definition": "构建产物的摘要由私钥签名，设备用证书公钥验证发布者身份与文件完整性；应用更新还会检查签名连续性。",
-    "boundary": "签名不是加密整个应用，也不证明代码安全；它证明谁签发以及产物是否被改动。",
+    "definition": "代码签名用私钥对构建产物的摘要或签名数据进行签名；设备或平台用证书里的公钥验证来源和内容是否被改动。",
+    "boundary": "签名只回答“谁签了、包有没有被改”，不保证代码没有漏洞，也不等于加密；私钥保护和权限管理仍要单独做好。",
     "sceneKind": "pipeline",
-    "sceneTitle": "应用包从摘要到设备验签",
+    "sceneTitle": "Android 应用安装包（APK）从摘要到设备验签",
     "actionLabel": "修改包内一个字节",
     "actors": [
       {
         "id": "apk",
-        "label": "应用包",
-        "detail": "release.apk",
+        "label": "Android APK（应用安装包）",
+        "detail": "release.apk · Android 构建产物",
         "icon": "package",
         "group": "产物"
       },
       {
         "id": "digest",
         "label": "文件摘要",
-        "detail": "SHA-256",
+        "detail": "内容摘要（哈希）",
         "icon": "code",
         "group": "签名"
       },
       {
         "id": "private",
         "label": "签名私钥",
-        "detail": "仅构建环境可用",
+        "detail": "仅签名环境可用",
         "icon": "key",
         "group": "签名"
       },
       {
         "id": "device",
         "label": "设备验签",
-        "detail": "证书公钥",
+        "detail": "证书公钥 · 验证来源",
         "icon": "shield",
         "group": "安装"
       }
@@ -751,16 +823,16 @@
         "label": "生成签名"
       },
       {
-        "id": "private-device",
-        "from": "private",
+        "id": "apk-device",
+        "from": "apk",
         "to": "device",
-        "label": "携带签名"
+        "label": "携带签名与证书"
       }
     ],
     "frames": [
       {
         "label": "生成摘要",
-        "note": "构建完成后，应用包内容被计算成固定长度摘要。",
+        "note": "构建完成后，APK 内容被计算成固定长度摘要；摘要不是原文件本身。",
         "activeIds": [
           "apk",
           "digest"
@@ -781,7 +853,7 @@
       },
       {
         "label": "私钥签名",
-        "note": "私钥只处理摘要，签名和证书随应用包一同交付。",
+        "note": "私钥对摘要生成签名，证书随 APK 一同交付；私钥不进入应用包或代码仓库。",
         "activeIds": [
           "digest",
           "private"
@@ -802,7 +874,7 @@
       },
       {
         "label": "设备验证通过",
-        "note": "设备用证书公钥验证签名，并重新计算包摘要，两边一致才允许安装。",
+        "note": "设备用证书公钥验证签名，并重新计算包摘要；两边一致才允许安装或更新。",
         "activeIds": [
           "apk",
           "device"
@@ -816,12 +888,12 @@
           "device": "摘要一致 · 允许安装"
         },
         "activeEdgeIds": [
-          "private-device"
+          "apk-device"
         ]
       },
       {
         "label": "篡改后拒绝",
-        "note": "修改一个字节会得到新摘要，旧签名无法匹配，安装立即停止。",
+        "note": "修改一个字节会得到新摘要，旧签名无法匹配，安装或更新立即停止。",
         "activeIds": [
           "apk",
           "digest",
@@ -840,7 +912,7 @@
         ]
       }
     ],
-    "insight": "签名同时校验发布者身份和包内容完整性，构建成功不代表设备会接受安装。",
+    "insight": "签名把发布者身份与包完整性绑定到安装和更新检查；构建成功不代表设备会接受安装。",
     "quiz": {
       "question": "签名私钥应怎样管理？",
       "options": [
@@ -862,55 +934,70 @@
     },
     "prompt": {
       "title": "检查应用签名流程",
-      "text": "请审查下面构建流程中证书、私钥、签名和验证步骤，指出密钥暴露风险，并区分开发签名与正式发布签名。"
+      "text": "请审查下面 Android 应用安装包（APK）的构建流程中证书、私钥、摘要、签名和设备验签步骤，指出密钥暴露风险，并区分开发签名与正式发布签名。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/studio/publish/app-signing",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Sign your app",
+        "note": "APK 安装、更新、证书、应用签名密钥和上传密钥"
       },
       {
-        "url": "https://developer.apple.com/support/code-signing/",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "url": "https://source.android.com/docs/security/features/apksigning",
+        "label": "Android Open Source Project · App signing",
+        "note": "系统用证书校验 APK 签名与应用身份"
+      },
+      {
+        "url": "https://source.android.com/docs/security/features/apksigning/v2",
+        "label": "Android Open Source Project · APK v2",
+        "note": "整文件摘要和签名如何检测 APK 改动"
+      },
+      {
+        "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/AboutCS/AboutCS.html",
+        "label": "Apple · Understanding the Code Signature",
+        "note": "seal、数字签名和代码完整性验证"
+      },
+      {
+        "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Introduction/Introduction.html",
+        "label": "Apple · About Code Signing",
+        "note": "签名能识别来源和发现改动，但不保证代码无漏洞"
       }
     ]
   },
   {
     "slug": "gesture",
     "lead": "同样是手指落下，系统怎样区分轻点和滑动？",
-    "definition": "识别器根据触点数量、位移、速度、方向和持续时间，把连续触摸样本判定为轻点、拖拽、滑动或缩放。",
-    "boundary": "手势不是单个 touch 事件；轻点和滑动在手指落下时尚未确定，还会与滚动和系统手势竞争。",
+    "definition": "手势识别先收集按下、移动、抬起或取消等触摸事件，再按触点数量、位移、方向、速度和持续时间与规则比较，输出轻点 tap、滑动 swipe、拖拽 drag 等结果。",
+    "boundary": "手势是输入解释层，不应成为关键功能的唯一入口；还要处理系统滚动或手势竞争、取消事件和误触，并提供可见按钮或菜单替代；具体阈值由平台、组件配置和设备决定。",
     "sceneKind": "route",
-    "sceneTitle": "一段触点轨迹如何被判定为轻点、滑动或拖拽",
-    "actionLabel": "画一段手势",
+    "sceneTitle": "同一段触点怎样变成不同结果",
+    "actionLabel": "查看下一段轨迹",
     "actors": [
       {
         "id": "track",
         "label": "触点轨迹",
-        "detail": "位置随时间记录",
+        "detail": "按下/移动/抬起/取消",
         "icon": "user",
         "group": "输入"
       },
       {
         "id": "distance",
         "label": "移动距离",
-        "detail": "阈值 24 px",
+        "detail": "累计 px（像素）· 本例阈值",
         "icon": "chart",
         "group": "判定量"
       },
       {
         "id": "speed",
         "label": "移动速度",
-        "detail": "px/s",
+        "detail": "px/s（每秒像素）· 方向",
         "icon": "clock",
         "group": "判定量"
       },
       {
         "id": "result",
         "label": "手势结果",
-        "detail": "pending",
+        "detail": "pending（待定）· 轻点 tap/滑动 swipe/拖拽 drag",
         "icon": "gear",
         "group": "输出"
       }
@@ -943,16 +1030,16 @@
     ],
     "frames": [
       {
-        "label": "手指落下",
-        "note": "只有起点和时间戳，距离未过阈值，系统暂不决定类型。",
+        "label": "按下：等待更多输入",
+        "note": "只有起点和时间戳，尚未过任何阈值，结果保持 pending（待定）。",
         "activeIds": [
-          "track"
+          "track",
+          "result"
         ],
         "doneIds": [],
         "mutedIds": [
           "distance",
-          "speed",
-          "result"
+          "speed"
         ],
         "values": {
           "result": "pending"
@@ -960,8 +1047,8 @@
         "activeEdgeIds": []
       },
       {
-        "label": "短距离松开",
-        "note": "位移很小且很快松手，结果落到 tap。",
+        "label": "短距离抬起",
+        "note": "位移很小且很快抬起，规则把这段输入归为 tap（轻点）。",
         "activeIds": [
           "track",
           "distance",
@@ -973,9 +1060,9 @@
         ],
         "mutedIds": [],
         "values": {
-          "distance": "6 px",
-          "speed": "低",
-          "result": "tap"
+          "distance": "6 px（像素，教学示例）",
+          "speed": "低（教学示例）",
+          "result": "tap（轻点）"
         },
         "activeEdgeIds": [
           "track-distance",
@@ -985,8 +1072,8 @@
         ]
       },
       {
-        "label": "快速划过",
-        "note": "重播时拉长轨迹并提高速度，越过阈值后结果改为 swipe。",
+        "label": "快速移动",
+        "note": "位移和速度一起越过本例阈值，结果改为 swipe（滑动）。",
         "activeIds": [
           "track",
           "distance",
@@ -996,9 +1083,9 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "distance": "86 px",
-          "speed": "720 px/s",
-          "result": "swipe"
+          "distance": "86 px（像素，教学示例）",
+          "speed": "720 px/s（每秒像素，教学示例）",
+          "result": "swipe（滑动）"
         },
         "activeEdgeIds": [
           "track-distance",
@@ -1009,7 +1096,7 @@
       },
       {
         "label": "停留后移动",
-        "note": "按住超过时长再移动，速度相近也会进入 drag，而不是 swipe。",
+        "note": "先停留超过长按时长再移动，即使速度相近也进入 drag（拖拽）。",
         "activeIds": [
           "track",
           "speed",
@@ -1020,8 +1107,9 @@
         ],
         "mutedIds": [],
         "values": {
-          "track": "停留 500 ms",
-          "result": "drag"
+          "track": "本例停留 500 ms（示例阈值）",
+          "speed": "中（教学示例）",
+          "result": "drag（拖拽）"
         },
         "activeEdgeIds": [
           "track-speed",
@@ -1029,7 +1117,7 @@
         ]
       }
     ],
-    "insight": "手势识别依赖轨迹、时间和阈值组合，同一段位移不能单独决定结果。",
+    "insight": "识别器把一段输入先保持 pending，再用位移、速度、时间和触点数量匹配规则；同一段位移不能单独决定结果。",
     "quiz": {
       "question": "关键删除操作只放在隐藏滑动手势中是否合适？",
       "options": [
@@ -1051,142 +1139,190 @@
     },
     "prompt": {
       "title": "定义一个可测试的手势",
-      "text": "请为下面卡片滑动操作定义起点、方向、最小距离、取消条件、与页面滚动的冲突处理，以及不使用手势时的替代入口。"
+      "text": "请为下面卡片滑动操作定义起点、方向、最小距离、速度或停留条件、取消条件、与页面滚动的冲突处理，以及不使用手势时的替代入口。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Use touch gestures",
+        "note": "触摸手势不是基本行为的唯一入口，需遵循平台惯例"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector",
+        "label": "Android Developers · Detect common gestures",
+        "note": "先收集触摸事件，再按规则解释轻点、长按和滑动"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/multi",
+        "label": "Android Developers · Multi-touch",
+        "note": "多指输入按 pointer down/move/up 维护触点序列"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/uikit/uigesturerecognizer",
+        "label": "Apple · UIGestureRecognizer",
+        "note": "识别器以状态机解释触摸序列并协调视图事件"
+      },
+      {
+        "url": "https://www.w3.org/TR/pointerevents/latest/",
+        "label": "W3C · Pointer Events",
+        "note": "统一鼠标、触控笔和触屏的 pointer 输入事件"
       }
     ]
   },
   {
     "slug": "haptic-feedback",
-    "lead": "用户看不到屏幕时，怎样感知长按已经触发？",
-    "definition": "系统把语义化触觉类型映射到设备执行器的波形、强度与时长，并受硬件能力和用户设置限制。",
-    "boundary": "不是所有点击都应振动，也不能用任意长振动代替确认、选择和警告的不同含义。",
-    "sceneKind": "spectrum",
-    "sceneTitle": "选择、确认和警告触觉的波形差异",
-    "actionLabel": "触发下一种反馈",
+    "lead": "保存成功时，设备怎样让用户感觉到结果？",
+    "definition": "应用先为选择、确认、警告或失败等事件选择对应的语义触感，平台再把它映射到设备执行器的强度、节奏或波形，并受硬件能力和用户设置限制。",
+    "boundary": "触觉是补充通道，不能替代文字、视觉或声音；高频或长振动会干扰任务。设备、系统开关以及浏览器可见性或用户激活策略可能让请求降级或不播放，因此关键结果要保留可见回退。",
+    "sceneKind": "compare",
+    "sceneTitle": "语义模式怎样落到触感与可见回退",
+    "actionLabel": "查看下一种触感",
     "actors": [
       {
-        "id": "action",
-        "label": "界面操作",
-        "detail": "选择 / 确认 / 警告",
+        "id": "event",
+        "label": "语义事件",
+        "detail": "选择 / 确认 / 警告 / 失败",
         "icon": "component",
         "group": "触发"
       },
       {
         "id": "pattern",
-        "label": "触觉波形",
-        "detail": "幅度与时长",
+        "label": "平台模式",
+        "detail": "selection / confirm / warning / reject",
         "icon": "chart",
-        "group": "反馈"
+        "group": "映射"
       },
       {
         "id": "motor",
-        "label": "设备马达",
-        "detail": "能力可能不同",
+        "label": "设备执行器",
+        "detail": "强度、节奏与能力",
         "icon": "gear",
-        "group": "硬件"
+        "group": "输出"
       },
       {
         "id": "visual",
-        "label": "视觉状态",
-        "detail": "始终保留",
+        "label": "文字与视觉",
+        "detail": "关键结果始终可见",
         "icon": "spark",
         "group": "回退"
       }
     ],
     "edges": [
       {
-        "id": "action-pattern",
-        "from": "action",
+        "id": "event-pattern",
+        "from": "event",
         "to": "pattern",
-        "label": "选择模式"
+        "label": "选择语义"
       },
       {
         "id": "pattern-motor",
         "from": "pattern",
         "to": "motor",
-        "label": "请求振动"
+        "label": "请求触感"
       },
       {
-        "id": "action-visual",
-        "from": "action",
+        "id": "event-visual",
+        "from": "event",
         "to": "visual",
-        "label": "同步更新"
+        "label": "同步状态"
       }
     ],
     "frames": [
       {
-        "label": "轻量选择",
-        "note": "切换选项时播放一次短脉冲，选中标记同步出现。",
+        "label": "选择发生",
+        "note": "值改变时播放一次短触感，选中标记同时出现；触觉表达的是选择变化。",
         "activeIds": [
-          "action",
+          "event",
           "pattern",
           "motor",
           "visual"
         ],
         "doneIds": [
-          "action"
+          "event"
         ],
         "mutedIds": [],
         "values": {
-          "pattern": "短 · 低幅",
-          "visual": "选中"
+          "pattern": "selection（选择）",
+          "motor": "轻触",
+          "visual": "已选中"
         },
         "activeEdgeIds": [
-          "action-pattern",
+          "event-pattern",
           "pattern-motor",
-          "action-visual"
+          "event-visual"
         ]
       },
       {
-        "label": "操作确认",
-        "note": "保存成功改用更清楚的双段波形，但不覆盖成功文字。",
+        "label": "确认成功",
+        "note": "保存结果先落到界面，再播放一次清晰短脉冲；触觉不替代成功文字。",
         "activeIds": [
+          "event",
           "pattern",
           "motor",
           "visual"
         ],
         "doneIds": [
-          "action"
+          "event"
         ],
         "mutedIds": [],
         "values": {
-          "pattern": "短 + 短",
+          "pattern": "confirm（确认）",
+          "motor": "清晰短脉冲",
           "visual": "已保存"
         },
         "activeEdgeIds": [
+          "event-pattern",
           "pattern-motor",
-          "action-visual"
+          "event-visual"
         ]
       },
       {
-        "label": "设备不支持",
-        "note": "关闭触觉能力后，波形请求置灰，视觉结果仍完整到达。",
+        "label": "警告或失败",
+        "note": "危险或失败结果使用有区别的短节奏，同时显示警告或错误文字，避免让人只靠震动猜含义。",
         "activeIds": [
+          "event",
+          "pattern",
           "motor",
           "visual"
         ],
         "doneIds": [
-          "action"
+          "event"
         ],
-        "mutedIds": [
-          "pattern"
-        ],
+        "mutedIds": [],
         "values": {
-          "motor": "不可用",
-          "visual": "已保存 · 可见"
+          "pattern": "warning/reject（警告/拒绝）",
+          "motor": "较强短脉冲（示例模式）",
+          "visual": "需要处理"
         },
         "activeEdgeIds": [
-          "action-visual"
+          "event-pattern",
+          "pattern-motor",
+          "event-visual"
+        ]
+      },
+      {
+        "label": "设备不可用",
+        "note": "设备没有执行器或用户关闭触觉时，请求不播放；文字与视觉结果仍完整到达。",
+        "activeIds": [
+          "event",
+          "visual"
+        ],
+        "doneIds": [
+          "pattern"
+        ],
+        "mutedIds": [
+          "motor"
+        ],
+        "values": {
+          "motor": "不可用/已关闭",
+          "visual": "结果仍可见"
+        },
+        "activeEdgeIds": [
+          "event-visual"
         ]
       }
     ],
-    "insight": "触觉可以补强一次状态变化，但不能替代用户看得见或听得到的结果。",
+    "insight": "触觉先把事件映射到平台语义，再尝试交给设备执行器；无论是否播放，关键结果都必须由文字或视觉表达。",
     "quiz": {
       "question": "触觉反馈不可用时，关键结果应怎样呈现？",
       "options": [
@@ -1204,32 +1340,47 @@
         }
       ],
       "success": "触觉是补充通道，核心信息需要其他方式表达。",
-      "retry": "设备不支持时重复调用也不能产生可靠反馈。"
+      "retry": "设备不支持或用户关闭触觉时，重复调用也不能产生可靠反馈。"
     },
     "prompt": {
       "title": "为操作选择适量触觉反馈",
-      "text": "请检查下面交互，标出适合使用轻触感、确认触感、警告触感或不使用触觉的节点，并为每个关键结果保留可见反馈。"
+      "text": "请为一个保存、选择和失败操作选择系统语义触感，限制触发频率，并写出设备或用户关闭触觉时仍可理解的文字、视觉或声音回退。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/develop/ui/views/haptics/haptic-feedback",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Add haptic feedback to events",
+        "note": "按操作语义触发平台默认触感，并尊重用户触觉设置"
+      },
+      {
+        "url": "https://developer.android.com/reference/android/os/VibrationEffect",
+        "label": "Android API · VibrationEffect",
+        "note": "自定义波形和组合效果受设备能力影响，不能把每种设备都当成同一执行器"
       },
       {
         "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple HIG · Playing haptics",
+        "note": "选择、确认和警告要使用有明确含义的模式，并与视觉或声音互补、可关闭"
+      },
+      {
+        "url": "https://developer.apple.com/documentation/uikit/uifeedbackgenerator",
+        "label": "Apple · UIFeedbackGenerator",
+        "note": "UIKit 按 selection、impact、notification 区分反馈生成器类型"
+      },
+      {
+        "url": "https://www.w3.org/TR/vibration/",
+        "label": "W3C · Vibration API",
+        "note": "网页振动受可见性、用户激活、设备能力和系统限流影响，不能假定每次请求都会播放"
       }
     ]
   },
   {
     "slug": "touch-target",
     "lead": "图标看得见，为什么在手机上总是点不中？",
-    "definition": "命中测试使用控件的可交互边界，而非图标可见像素；容器内边距可扩大目标，同时相邻目标必须保持分离。",
-    "boundary": "把图标放大不等于正确扩大点击区，透明热区若互相覆盖还会制造误触。",
-    "sceneKind": "compare",
-    "sceneTitle": "图标尺寸不变时，命中区域如何影响误触",
+    "definition": "命中测试看的是控件的可交互边界，不是图标的可见像素；用容器尺寸或内边距扩大热区，再用间距避免相邻热区重叠。",
+    "boundary": "扩大热区不能让不同控件共享同一片可交互区域；dp 是 Android 的密度无关像素，pt 是 Apple 的点，CSS px 是网页 CSS 像素；这些数值不能直接互换，尺寸建议要结合目标平台与布局。",
+    "sceneKind": "transform",
+    "sceneTitle": "同一图标的可见尺寸与命中边界",
     "actionLabel": "重放十个落点",
     "actors": [
       {
@@ -1242,7 +1393,7 @@
       {
         "id": "hitbox",
         "label": "命中区域",
-        "detail": "16 dp → 48 dp",
+        "detail": "16 dp → 48 dp（示例）",
         "icon": "layout",
         "group": "控件"
       },
@@ -1255,8 +1406,8 @@
       },
       {
         "id": "neighbor",
-        "label": "相邻按钮",
-        "detail": "检查热区重叠",
+        "label": "相邻目标",
+        "detail": "检查边界是否重叠",
         "icon": "component",
         "group": "约束"
       }
@@ -1276,8 +1427,8 @@
           "neighbor"
         ],
         "values": {
-          "hitbox": "16 × 16 dp",
-          "points": "命中 3 / 10"
+          "hitbox": "16 × 16 px（教学示例）",
+          "points": "命中 3 / 10（教学示例）"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -1287,8 +1438,9 @@
       },
       {
         "label": "扩大不可见热区",
-        "note": "增加按钮容器内边距，图标没有变大，命中框扩到 48 dp。",
+        "note": "用按钮容器内边距扩大命中区域，图标视觉尺寸保持不变。",
         "activeIds": [
+          "icon",
           "hitbox"
         ],
         "doneIds": [
@@ -1299,13 +1451,13 @@
           "neighbor"
         ],
         "values": {
-          "hitbox": "48 × 48 dp"
+          "hitbox": "48 × 48 dp（Android 示例）"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "相同落点重放",
-        "note": "原来的十个落点有九个命中，同时相邻热区没有重叠。",
+        "label": "重放相同落点",
+        "note": "相同输入再次命中，同时相邻目标仍保留可区分的间隔。",
         "activeIds": [
           "points",
           "hitbox",
@@ -1316,17 +1468,40 @@
         ],
         "mutedIds": [],
         "values": {
-          "points": "命中 9 / 10",
-          "neighbor": "间隔 8 dp"
+          "points": "命中 9 / 10（教学示例）",
+          "neighbor": "间隔 8 dp（教学示例）"
         },
         "activeEdgeIds": [],
         "metric": {
           "label": "本例命中",
           "value": "9 / 10"
         }
+      },
+      {
+        "label": "发现边界相撞",
+        "note": "如果扩大后的热区覆盖相邻按钮，就要调整布局或缩小其中一个热区，不能让两个控件争抢同一落点。",
+        "activeIds": [
+          "hitbox",
+          "neighbor"
+        ],
+        "doneIds": [
+          "points"
+        ],
+        "mutedIds": [
+          "icon"
+        ],
+        "values": {
+          "hitbox": "48 × 48 dp（示例）",
+          "neighbor": "重叠 · 需调整间距"
+        },
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "本例风险",
+          "value": "两块热区相撞"
+        }
       }
     ],
-    "insight": "视觉图标可以很小，但可操作区域必须足够大，并与相邻控件保持可区分的间距。",
+    "insight": "图标大小、命中区域和相邻间距是三个不同量；命中区域变大后仍要用落点重放检查误触。",
     "quiz": {
       "question": "放大触控目标的常见做法是什么？",
       "options": [
@@ -1348,18 +1523,33 @@
     },
     "prompt": {
       "title": "检查移动端控件热区",
-      "text": "请根据下面控件尺寸和间距，标出难以触摸或热区重叠的位置。通过按钮容器和内边距扩大热区，不改变图标含义。"
+      "text": "请按目标平台标出控件的可见尺寸、命中区域和相邻间距，选择容器或内边距扩大热区，并用一组真实落点验证是否漏点或重叠。"
     },
     "sources": [
       {
-        "url": "https://developer.android.com/develop/ui/compose/accessibility/api-defaults?hl=en",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "url": "https://developer.android.com/develop/ui/compose/accessibility/api-defaults",
+        "label": "Android Developers · Compose API defaults",
+        "note": "可交互元素建议至少 48 dp，Compose 会扩大小控件的命中区域但仍需避免重叠"
+      },
+      {
+        "url": "https://developer.android.com/develop/ui/views/touch-and-input/gestures/viewgroup",
+        "label": "Android Developers · TouchDelegate",
+        "note": "父容器可以把更大的触摸矩形转发给小的子控件"
+      },
+      {
+        "url": "https://developer.apple.com/design/human-interface-guidelines/buttons",
+        "label": "Apple HIG · Buttons",
+        "note": "按钮命中区域通常至少 44 × 44 pt，并要与周围内容保持足够间距"
       },
       {
         "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
-        "label": "Apple Developer Documentation",
-        "note": "Apple 平台行为与设计要求"
+        "label": "Apple HIG · Accessibility",
+        "note": "控件尺寸和相邻间距都影响行动不便用户的选择准确度"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "label": "W3C WAI · Target Size (Minimum)",
+        "note": "WCAG 2.2 给出 24 × 24 CSS px 最小目标及以间距满足的例外"
       }
     ]
   },
