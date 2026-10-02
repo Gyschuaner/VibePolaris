@@ -11,3 +11,4 @@ export { toolApprovalSources } from "./tool-approval";
 export { permissionBoundarySources } from "./permission-boundary";
 export { xssSources } from "./xss";
 export { toolChoiceSources } from "./tool-choice";
+export { toolResultSources } from "./tool-result";

@@ -9,6 +9,7 @@ import { ToolApprovalTermPage } from "./ai-stack-pages/tool-approval";
 import { PermissionBoundaryTermPage } from "./ai-stack-pages/permission-boundary";
 import { XssTermPage } from "./ai-stack-pages/xss";
 import { ToolChoiceTermPage } from "./ai-stack-pages/tool-choice";
+import { ToolResultTermPage } from "./ai-stack-pages/tool-result";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -20,6 +21,7 @@ export { ToolApprovalTermPage } from "./ai-stack-pages/tool-approval";
 export { PermissionBoundaryTermPage } from "./ai-stack-pages/permission-boundary";
 export { XssTermPage } from "./ai-stack-pages/xss";
 export { ToolChoiceTermPage } from "./ai-stack-pages/tool-choice";
+export { ToolResultTermPage } from "./ai-stack-pages/tool-result";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -33,4 +35,5 @@ export const aiStackArticlePages = {
   "permission-boundary": PermissionBoundaryTermPage,
   xss: XssTermPage,
   "tool-choice": ToolChoiceTermPage,
+  "tool-result": ToolResultTermPage,
 } as const;
