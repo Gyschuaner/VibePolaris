@@ -209,6 +209,93 @@
     "sourceHash": "sha256:3bbb7cd3ccaeeeb7c0e197b50c4f2c6ac1ef03c28cea77d9fdcb3a71e229c1f5"
   },
   {
+    "slug": "aws-sagemaker-multi-account-pipelines-20210122-1d25351f",
+    "title": "AWS 介绍 SageMaker Pipelines：用多账户组织机器学习部署",
+    "summary": "1 月 22 日，AWS 官方机器学习博客发布多账户部署教程，展示如何用 Amazon SageMaker Pipelines 把机器学习的构建、测试和上线流程接入 CI/CD。文章是官方工程实践说明，不是对所有团队都有效的性能承诺。",
+    "body": "这条记录把 2021-01-22 作为 AWS 官方博客公开多账户部署文章的日期。文章介绍 Amazon SageMaker Pipelines 如何把机器学习工作流组织成可自动化的步骤，再把开发、测试和生产资源拆到不同 AWS 账户。\n\n这和普通“训练一个模型”的新闻不同：重点在模型如何从代码和数据走到部署。多账户做法可以隔离权限、环境和成本，但同时增加账号间的角色、网络、制品和审计配置。AWS 把 Pipelines 描述为面向机器学习的 CI/CD 服务，读者应把它看作官方方案定位。\n\n“数据管道”是这篇文章最自然的词条联动：训练数据、模型制品、审批和部署步骤按顺序流动；“工具”则对应 Pipelines、账户和 CI/CD 平台。词条解释的是流程结构，不暗示 AWS 的方案一定适合每个组织。\n\n要验证方案是否可用，应运行自己的模型和权限策略，记录流水线失败、回滚、审计和成本。官方教程给出的是做法和代码路径，效果仍需在目标环境中测试。",
+    "publishedAt": "2021-01-22",
+    "eventDate": "2021-01-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/aws-sagemaker-multi-account-pipelines-20210122-1d25351f.svg",
+      "alt": "AWS 介绍 SageMaker Pipelines：用多账户组织机器学习部署",
+      "sourceUrl": "/images/news/aws-sagemaker-multi-account-pipelines-20210122-1d25351f.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "official-guide",
+        "title": "官方文章讲什么",
+        "body": "AWS 在 1 月 22 日发布多账户 SageMaker Pipelines 文章，示范把 ML 工作流接到 CI/CD。",
+        "kind": "narrative"
+      },
+      {
+        "id": "accounts",
+        "title": "为什么拆账户",
+        "body": "开发、测试和生产可以分开管理权限、环境和成本，但账号间的角色、网络和制品传递也要配置。",
+        "kind": "technical"
+      },
+      {
+        "id": "pipeline",
+        "title": "词条联动",
+        "body": "“数据管道”覆盖训练数据、模型制品、审批和部署步骤；“工具”对应 Pipelines 与 CI/CD 平台。",
+        "kind": "comparison"
+      },
+      {
+        "id": "local-validation",
+        "title": "仍需在本地验证",
+        "body": "教程没有替代目标组织的安全评审。应在自己的数据、权限、回滚和成本约束下运行。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "把 ML 部署新闻画成流水线",
+      "question": "读者怎样知道一篇云服务教程是否适合自己的组织？",
+      "steps": [
+        {
+          "label": "拆分",
+          "detail": "先区分开发、测试和生产账户。",
+          "evidence": "AWS 官方文章"
+        },
+        {
+          "label": "流转",
+          "detail": "跟踪数据、模型制品、审批与部署步骤。",
+          "evidence": "data-pipeline 词条"
+        },
+        {
+          "label": "权限",
+          "detail": "检查角色、网络、日志和回滚。",
+          "evidence": "多账户实践"
+        },
+        {
+          "label": "验证",
+          "detail": "在自己的模型和成本约束下跑一次，而不是照搬宣传。",
+          "evidence": "本地测试记录"
+        }
+      ]
+    },
+    "source": {
+      "name": "Amazon Web Services (AWS)",
+      "url": "https://aws.amazon.com/blogs/machine-learning/multi-account-model-deployment-with-amazon-sagemaker-pipelines"
+    },
+    "relatedSlugs": [
+      "data-pipeline",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/multi-account-model-deployment-with-amazon-sagemaker-pipelines",
+        "claim": "AWS 在 2021-01-22 发布 SageMaker Pipelines 多账户部署的官方文章。；文章以多账户组织资源为例，说明开发、测试和生产之间的部署流程。",
+        "excerpt": "Amazon SageMaker Pipelines helps you build, automate, manage, and scale end-to-end ML workflows and apply DevOps best practices of CI/CD to ML.\nCreating multiple accounts to organize all the resources of your organization is a good DevOps practice."
+      }
+    ],
+    "canonicalUrl": "https://aws.amazon.com/blogs/machine-learning/multi-account-model-deployment-with-amazon-sagemaker-pipelines",
+    "sourceHash": "sha256:a246c87bf68260261315f3d61e5cd7ee5527daf57e5543407d079797985c7bdb"
+  },
+  {
     "slug": "cnbc-ai-labs-ranking-20210121-aedcaada",
     "title": "2021-01-21 AI 新闻：CNBC 汇总研究者对顶级 AI 实验室的看法",
     "summary": "1 月 21 日，CNBC 采访研究者并比较 DeepMind、OpenAI 和 Facebook AI Research（FAIR）的研究实力。报道把“顶级实验室”当作受访者基于资金、人才和公开成果的判断，不是一个有统一评分公式的官方排行榜。",
