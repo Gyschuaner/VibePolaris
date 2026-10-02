@@ -290,9 +290,9 @@ export function CssSelectorTermPage() {
 }
 
 export function BoxModelTermPage() {
-  return <ConceptArticle slug="box-model" title="CSS box model" subtitle="CSS 盒模型" hero={<MobileHero trigger="卡片比 width 更宽" change="content → padding → border" proof="margin 在盒子外，box-sizing 改变尺寸起点" />} sections={boxSections} sources={boxModelSources} intro={<>CSS 盒模型把元素的空间拆成 content、padding、border 和 margin。<strong>理解它，就能解释为什么一个写着 width: 240px 的卡片最后占了更宽的空间。</strong></>}>
+  return <ConceptArticle slug="box-model" title="CSS box model" subtitle="CSS 盒模型" hero={<MobileHero trigger="卡片比 width 更宽" change="content → padding → border" proof="margin 在盒子外，box-sizing 改变尺寸起点" />} sections={boxSections} sources={boxModelSources} intro={<>CSS 盒模型把元素的空间拆成 content、padding、border 和 margin。<strong>理解它，就能解释为什么一个写着 width: 200px 的卡片最后占了更宽的空间。</strong></>}>
     <ArticleSection id="box-task" title="卡片为什么比 width 更宽">
-      <p>你给一张卡片写了 <code>width: 240px</code>，又加了左右各 24px 的内边距和 4px 的边框。测量时发现外框接近 296px。代码没有偷偷改数字，浏览器只是把 width 和盒子模型的其他区域一起计算了。</p>
+      <p>你给一张卡片写了 <code>width: 200px</code>，又加了左右各 12px 的内边距和 5px 的边框。测量时发现外框接近 234px。代码没有偷偷改数字，浏览器只是把 width 和盒子模型的其他区域一起计算了。</p>
       <p id="box-definition" className="vp-citation-target">CSS 盒模型把每个元素表示为内容区、内边距、边框和外边距的层。MDN 的介绍用这四个区域解释元素在布局中占据的空间；W3C 的 Box Model 规范定义了这些盒子之间的关系。<Cite id="box-definition" sources={boxModelSources} /></p>
       <p>先把“内容宽度”和“外框宽度”分开，很多尺寸问题就能定位。下面逐步加入 padding 和 border，再切换 <code>box-sizing</code> 看 width 的含义如何变化。</p>
       <MobileConceptLesson slug="box-model" />
@@ -301,10 +301,10 @@ export function BoxModelTermPage() {
       <p id="box-areas" className="vp-citation-target">content 是文字或子元素所在的区域，padding 在内容和边框之间，border 围住前两者，margin 位于整个盒子之外。每一层都可能影响布局，但负责的空间不同。<Cite id="box-areas" sources={boxModelSources} /></p>
       <div className={styles.contract}><div><Layout size={26} /><h3>盒子内部</h3><p><code>content + padding + border</code> 组成 border box。</p></div><div><Stack size={26} /><h3>盒子外部</h3><p><code>margin</code> 参与相邻盒子的间距，通常不算进 border box。</p></div></div>
       <p>如果文字变长，content 可能增高；如果 padding 增大，文字周围的呼吸空间和外框尺寸都可能增加。调试时先标出每一层，而不是只盯着元素的 width。</p>
-      <ArticleAside title="把数值放在同一张账单上"><p>content 240px、左右 padding 各 24px、左右 border 各 4px 时，content-box 的 border box 宽度是 240 + 48 + 8 = 296px。margin 还要另算。</p></ArticleAside>
+      <ArticleAside title="把数值放在同一张账单上"><p>content 200px、左右 padding 各 12px、左右 border 各 5px 时，content-box 的 border box 宽度是 200 + 24 + 10 = 234px。margin 还要另算。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="box-sizing" title="两种尺寸算法">
-      <p id="box-sizing" className="vp-citation-target"><code>box-sizing: content-box</code> 时，width 和 height 指向内容区，padding 和 border 会在外面加出来；<code>border-box</code> 时，指定尺寸包含内容、padding 和 border。CSS Sizing 规范和 MDN 都把这两种计算方式分开说明。<Cite id="box-sizing" sources={boxModelSources} /></p>
+      <p id="box-sizing-source" className="vp-citation-target"><code>box-sizing: content-box</code> 时，width 和 height 指向内容区，padding 和 border 会在外面加出来；<code>border-box</code> 时，指定尺寸包含内容、padding 和 border。CSS Sizing 规范和 MDN 都把这两种计算方式分开说明。<Cite id="box-sizing-source" sources={boxModelSources} /></p>
       <p id="box-border" className="vp-citation-target">切换到 <code>border-box</code> 不会删除 padding 或 border，而是让它们从指定的总尺寸里分配空间。内容空间可能因此变窄，文字是否换行仍要观察。<Cite id="box-border" sources={boxModelSources} /></p>
       <div className={styles.resultFlow}><span>width</span><ArrowRight size={19} /><span>{"content-box：内容宽度"}</span><ArrowRight size={19} /><span>{"border-box：外框宽度"}</span></div>
       <p id="box-width" className="vp-citation-target">CSS <code>width</code> 的计算还会受到包含块、最小/最大尺寸和布局上下文影响。把“width 是最终占用宽度”当成普遍规则，会在 Flex、Grid 或滚动容器里继续遇到误差。<Cite id="box-width" sources={boxModelSources} /></p>
