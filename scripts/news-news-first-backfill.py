@@ -48,7 +48,8 @@ OFFICIAL_DOMAINS = {
     "apple.com", "amazon.science", "huggingface.co", "stability.ai", "baidu.com",
     "tencent.com", "alibaba.com", "unilever.com", "novartis.com", "philips.com",
     "stanford.edu", "mit.edu", "berkeley.edu", "cmu.edu", "caltech.edu",
-    "mozilla.org", "mozilla.ai", "github.blog", "github.com",
+    "mozilla.org", "mozilla.ai", "github.blog", "github.com", "amazon.com",
+    "c3.ai", "esa.int", "duke.edu", "computer.org",
 }
 REGULATORY_SUFFIXES = (".gov", ".gov.uk", ".gov.au", ".gov.cn", ".europa.eu", ".int")
 PAPER_DOMAINS = {"arxiv.org", "openreview.net", "paperswithcode.com", "acm.org", "dl.acm.org", "ieeexplore.ieee.org"}
@@ -118,11 +119,11 @@ def source_type(url: str, title: str) -> str:
         return "paper"
     if host.endswith(REGULATORY_SUFFIXES) or any(x in lower for x in ("sec.gov", "ftc.gov", "fda.gov", "nist.gov", "europa.eu")):
         return "regulatory"
-    if rd in OFFICIAL_DOMAINS:
+    if any(host == official or host.endswith("." + official) for official in OFFICIAL_DOMAINS):
         if any(x in lower for x in ("blog", "research", "story", "stories", "engineering", "insight")):
             return "official-blog"
         return "official-announcement"
-    if rd in TRUSTED_NEWS:
+    if any(host == news or host.endswith("." + news) for news in TRUSTED_NEWS):
         return "news-report"
     if any(x in host for x in ("substack.com", "medium.com", "towardsdatascience.com", "dev.to")):
         return "personal-blog"
@@ -266,6 +267,46 @@ def selected_terms(title: str, description: str, terms: set[str]) -> list[str]:
     return [slug for _, slug in scored[:4]]
 
 
+def chinese_headline(headline: str) -> str:
+    """Give the reader a Chinese event cue without pretending to translate every proper noun."""
+    value = headline.strip()
+    replacements = (
+        ("Artificial intelligence", "人工智能"), ("artificial intelligence", "人工智能"),
+        ("AI-powered", "AI 驱动的"), ("AI-powered", "AI 驱动的"),
+        ("machine learning", "机器学习"), ("Machine Learning", "机器学习"),
+        ("announces", "宣布"), ("announced", "宣布"), ("launches", "推出"),
+        ("launch", "推出"), ("introduces", "介绍"), ("introducing", "介绍"),
+        ("released", "发布"), ("release", "发布"), ("acquires", "收购"),
+        ("acquisition", "收购"), ("funding", "融资"), ("raises", "融资"),
+        ("partnership", "合作"), ("partner", "合作"), ("deploys", "部署"),
+        ("deployment", "部署"), ("appoints", "任命"), ("appointed", "任命"),
+        ("dies", "去世"), ("dies", "去世"), ("review", "回顾"),
+        ("researchers", "研究者"), ("researcher", "研究者"), ("study", "研究"),
+        ("report", "报道"), ("reports", "报道"), ("platform", "平台"),
+        ("software", "软件"), ("system", "系统"), ("systems", "系统"),
+        ("without coding", "无需编程"), ("without code", "无需编程"),
+    )
+    for source, target in replacements:
+        value = value.replace(source, target)
+    return value
+
+
+TERM_EXPLANATIONS = {
+    "tools": "工具词条帮助读者定位这条消息里真正可操作的软件、服务或设备，不把产品宣传直接当成效果证明。",
+    "data-pipeline": "数据管道词条帮助读者追踪数据从采集、清洗、建模到业务动作的流向，观察中间哪里需要权限和审计。",
+    "data-quality": "数据质量词条提醒读者检查样本是否完整、代表性是否足够，以及错误会怎样传到结果。",
+    "eval": "评估词条把“看起来有效”拆成任务、样本、指标、基线和复现实验。",
+    "authorization": "授权词条把能力问题转成治理问题：谁可以访问、批准、暂停或追责。",
+    "llm": "LLM 词条用于解释生成文本的模型层；文字流畅不等于事实可靠。",
+    "agent-harness": "agent-harness 词条用于解释模型怎样被工具、权限和运行环境约束，不能把自主性写成默认能力。",
+}
+
+
+def term_sentence(terms: list[str]) -> str:
+    explanations = [TERM_EXPLANATIONS.get(term, f"“{term}”词条提供这条新闻的概念背景。") for term in terms[:3]]
+    return "".join(explanations)
+
+
 def svg_for(article_title: str, day: str, slug: str) -> str:
     def esc(text: str) -> str:
         return html.escape(text[:82], quote=True)
@@ -275,56 +316,74 @@ def svg_for(article_title: str, day: str, slug: str) -> str:
 def build_article(item: dict, meta: dict, day: str, slug: str, terms: list[str], source_type_value: str, source_hash: str) -> dict:
     source_name = item["sourceName"] or domain(item["url"])
     headline = re.sub(r"\s+-\s+[^-]+$", "", item["title"]).strip()
+    headline_zh = chinese_headline(headline)
     description = meta.get("description") or "来源页面未提供可稳定抓取的摘要；本文只把标题和发布日期作为可核验线索。"
-    title = f"{day} AI 新闻：{headline}"
+    published_at = item.get("publishedAt") or day
+    title = f"{day} AI 新闻：{headline_zh}"
     if source_type_value == "regulatory":
         framing = "监管文件"
     elif source_type_value.startswith("official"):
         framing = "官方页面"
     elif source_type_value == "personal-blog":
-        framing = "解读博客"
+        framing = "个人解读"
     else:
         framing = "新闻报道"
-    summary = f"{framing} {source_name} 在 {item['publishedAt'] or day} 发布/报道《{headline}》。本文只把来源明确写出的事件、日期和主张列为事实，再说明哪些影响和技术细节还需要独立证据。"
-    body = (
-        f"{day}，{framing} {source_name} 发布或报道了《{headline}》。来源发布日期记录为 {item['publishedAt'] or day}；如果它与事件日不同，本文把两个日期分开保存。可直接核对的线索是：{description}\n\n"
-        f"对读者来说，先要回答的问题是“这条消息到底改变了什么”。目前来源明确写出的是标题所指向的事件，以及它对产品、组织或公共讨论的描述；这不等于所有宣传目标都已经实现。本文把原始页面放在引用卡片里，避免用二手标题替代来源。\n\n"
-        "还需要留意证据边界。来源没有公开的模型细节、样本范围、独立复现或长期影响，都会保留为待核验项。阅读这条新闻时，可以把“已经发生的动作”“发布方的判断”和“需要后续数据验证的结果”分开。"
-    )
-    sections = [
-        {"id":"reported-event","title":"来源实际写了什么","body":f"{source_name} 的页面标题是“{headline}”，发布日期为 {item['publishedAt'] or day}。来源摘要提供的可核验线索是：{description}。这里先保留来源的措辞，不把标题扩写成来源没有说过的结论。","kind":"narrative"},
-        {"id":"reader-question","title":"读者应该先追哪一个动作","body":f"把新闻拆成一个动作链：谁在什么时候发布或报道、对象做了什么、结果被谁观察到。当前能确定的是 {headline} 这一事件线索；更细的机制、规模和影响要回到原始页面逐项核对。","kind":"technical"},
-        {"id":"evidence-boundary","title":"哪些话不能直接从标题推出","body":"标题和摘要不等于独立评测。若来源没有给出数据集、样本、误差、监管结论或第三方复核，就不能把“更快”“更安全”“更智能”等宣传性词语写成普遍事实。本文把这些未公开信息保留为边界。","kind":"boundary"},
-    ]
-    if source_type_value in {"official-announcement", "official-blog", "regulatory"}:
-        sections.append({"id":"follow-up","title":"接下来应该检查什么","body":"后续核验应优先寻找同一机构的正式文件、监管文本、实施记录或可信媒体的独立报道，再检查日期、范围和数字是否一致。论文可以补充背景，但不能替代这条新闻的事件来源。","kind":"comparison"})
+    # eventDate is deliberately explicit: a date without an independently reported
+    # underlying event must stay a source-publication date, not an invented launch date.
+    date_note = f"本条 eventDate 记录 {day}，含义是 {source_name} 在这一天公开了这条报道/公告；来源没有单独证明另一个 underlying event date。publishedAt 记录来源页面的公开日期 {published_at}。"
+    lower = headline.lower()
+    if any(token in lower for token in ("launch", "announce", "release", "introduc", "deploy", "partnership", "partner", "acqui", "funding", "appoint", "opens", "unveil")):
+        event_kind = "发布、合作或组织动作"
+        section_items = [
+            {"id":"reported-event","title":"当天发生的动作","body":f"{source_name} 在 {published_at} 发布/报道了“{headline_zh}”。从标题和摘要能确定的是这一公开动作；它不自动等于产品效果、部署规模或商业结果。","kind":"narrative"},
+            {"id":"what-changed","title":"对读者真正改变了哪一层","body":f"把事件拆成对象、动作和范围：对象是 {headline_zh} 所指的机构、产品或项目，动作是发布/合作/部署/任命之一，范围仍以来源正文为准。不要把新闻标题补成来源没有说过的数字。","kind":"technical"},
+            {"id":"term-link","title":"词条怎样帮助理解","body":term_sentence(terms),"kind":"comparison"},
+            {"id":"evidence-boundary","title":"哪些结果还不能从标题推出","body":"如果来源没有公开样本、基线、测试、客户记录或监管结论，就只能把结果写成发布方的目标或主张。后续应优先找官方文件、可信媒体和实施记录。","kind":"boundary"},
+        ]
+        explainer_variant = "agent-workflow"
+    elif any(token in lower for token in ("how ", "why ", "what ", "review", "opinion", "future", "could", "impact", "analysis")):
+        event_kind = "媒体解读或分析"
+        section_items = [
+            {"id":"article-type","title":"这是一条什么性质的消息","body":f"{source_name} 在 {published_at} 发布了一篇围绕“{headline_zh}”的 {framing}。它提供的是观点、背景或议题整理，不应被改写成一个已经完成的产品结果。","kind":"narrative"},
+            {"id":"reader-question","title":"文章试图回答什么","body":f"读者可以先把标题转换成一个可核验问题：{headline_zh} 具体描述了谁、哪一个动作或哪一个争议？摘要线索是：{description}","kind":"technical"},
+            {"id":"term-link","title":"词条怎样落到事实","body":term_sentence(terms),"kind":"comparison"},
+            {"id":"evidence-boundary","title":"观点和证据的分界","body":"来源的判断、条件句和预测都保留归因。要进一步确认效果，需要回到原始研究、监管文件、产品记录或另一家可信媒体，而不是把解读文章当作独立实验。","kind":"boundary"},
+        ]
+        explainer_variant = "benchmark"
     else:
-        sections.append({"id":"source-comparison","title":"把报道和背景资料分开","body":"媒体报道负责告诉读者这件事何时进入公共视野；官方公告、监管文件或论文可能分别补充原始立场、法律约束和技术背景。不同来源承担的证明责任不同，不能把它们拼成一个无条件的结论。","kind":"aside"})
-    variant = "secure-memory" if source_type_value == "regulatory" else ("agent-workflow" if "agent" in headline.lower() or "assistant" in headline.lower() else "benchmark")
-    explainer = {"variant":variant,"title":"把一条新闻拆成可核对的链路","question":"读者怎样判断标题背后的事实边界？","steps":[
-        {"label":"事件日","detail":f"先记录目标日 {day}，再看来源自己的发布日期 {item['publishedAt'] or day}。","evidence":"按天记录保留 eventDate 与 publishedAt。"},
-        {"label":"来源动作","detail":f"{source_name} 的页面给出标题和摘要线索：{description[:260]}","evidence":item["url"]},
-        {"label":"事实分层","detail":"把已经发生的动作、发布方的主张和仍未公开的结果分别标记，不让标题替代证据。","evidence":"正文逐段对应来源卡片。"},
-        {"label":"后续核验","detail":"寻找官方文件、监管材料或另一家可信媒体，检查日期、范围、数字和实际影响是否一致。","evidence":"论文只作为新闻事件的背景来源。"},
-    ]}
-    evidence = [
-        {"url":item["url"],"claim":f"{source_name} 在 {item['publishedAt'] or day} 发布或报道该新闻事件。","excerpt":headline[:500]},
+        event_kind = "具体新闻事件"
+        section_items = [
+            {"id":"reported-event","title":"来源明确写了什么","body":f"{source_name} 在 {published_at} 报道“{headline_zh}”。可确认的事实先限于来源标题、摘要和正文明确写出的对象与动作。","kind":"narrative"},
+            {"id":"context","title":"为什么这件事值得追踪","body":f"它把一个具体对象或动作带进公共讨论：{headline_zh}。读者应继续查范围、参与者、时间线和结果，而不是只记住一个醒目的形容词。","kind":"technical"},
+            {"id":"term-link","title":"关联词条提供什么视角","body":term_sentence(terms),"kind":"comparison"},
+            {"id":"evidence-boundary","title":"仍需独立核验的部分","body":"如果页面没有给出数据、样本、独立复核或长期影响，就不能把宣传性结果写成普遍事实。本文把待核验项留在边界里。","kind":"boundary"},
+        ]
+        explainer_variant = "secure-memory" if source_type_value == "regulatory" else "benchmark"
+    body = (
+        f"{date_note}\n\n"
+        f"这条{event_kind}的标题可理解为“{headline_zh}”。来源摘要给出的原始线索是：{description}。这段摘要保留为引用依据，中文叙述只把来源明确写出的对象、动作和主张列为事实。\n\n"
+        f"阅读时先问三个问题：谁在什么时间发布或报道，做了哪一个动作，来源有没有给出范围和证据。{source_name} 的页面承担的是事件入口；官方公告、监管文本或论文可以补充背景，但不会自动把新闻中的目标变成结果。\n\n"
+        f"{term_sentence(terms)}"
+        "最后把发布方的判断、媒体的转述和独立可复核的数据分开。若来源没有公开测试、样本、基线、权限或长期影响，本文不替它补出结论。"
+    )
+    steps = [
+        {"label":"事件日","detail":f"先记录来源公开日 {day}，再检查页面自身的 publishedAt {published_at}；没有证据时不另造 underlying event date。","evidence":"daily run 与来源页面"},
+        {"label":"新闻动作","detail":f"把“{headline_zh}”拆成对象、动作和范围，保留来源的归因层级。","evidence":item["url"]},
+        {"label":"词条视角","detail":term_sentence(terms),"evidence":"正文的关联词条段落"},
+        {"label":"后续核验","detail":"寻找官方公告、监管文件、实施记录、可信媒体或论文背景，检查日期、数字和实际影响。","evidence":"论文只作为新闻事件的背景来源。"},
     ]
-    if description and not description.startswith("来源页面未提供"):
-        evidence.append({"url":item["url"],"claim":"来源摘要提供了事件的具体线索。","excerpt":description[:1_500]})
+    evidence = [{"url":item["url"],"claim":f"{source_name} 在 {published_at} 公开/报道了该事件；正文与摘要提供了以下可核验线索。","excerpt":(headline + ("；" + description if description and not description.startswith("来源页面未提供") else ""))[:1_500]}]
     return {
-        "slug":slug,"title":title,"summary":summary,"body":body,"publishedAt":item["publishedAt"] or day,"eventDate":day,"isExample":False,
+        "slug":slug,"title":title,"summary":f"{date_note}{framing}的标题是《{headline_zh}》。本文先复述新闻动作，再标出来源主张与仍需核验的结果。","body":body,"publishedAt":published_at,"eventDate":day,"isExample":False,
         "hero":{"url":f"/images/news/{slug}.svg","alt":title,"sourceUrl":f"/images/news/{slug}.svg","license":"VibePolaris 自制 SVG · CC BY 4.0","credit":"VibePolaris"},
-        "sections":sections,"explainer":explainer,
+        "sections":section_items,"explainer":{"variant":explainer_variant,"title":"把新闻拆成可核对的链路","question":"读者怎样知道标题对应的事实边界？","steps":steps},
         "source":{"name":source_name,"url":item["url"]},"relatedSlugs":terms,"relatedArticleSlugs":[],"sources":evidence,
         "canonicalUrl":item["url"],"sourceHash":source_hash,"status":"needs-review","discoveredAt":DISCOVERED_AT,
-        "relationSuggestions":[{"kind":"term","slug":term,"score":0.72,"evidence":["正文按该词条解释新闻中的事实边界。"],"method":"manual","status":"confirmed"} for term in terms],
-        "evidence":evidence,"verification":{"status":"verified","checkedAt":DISCOVERED_AT,"method":"source","notes":"已从 Google News 发现页解码到发布方原始链接，并核对来源日期与标题；详细模型/效果没有从标题外推。"},
+        "relationSuggestions":[{"kind":"term","slug":term,"score":0.72,"evidence":[TERM_EXPLANATIONS.get(term, f"正文按该词条解释新闻中的事实边界。")],"method":"manual","status":"confirmed"} for term in terms],
+        "evidence":evidence,"verification":{"status":"verified","checkedAt":DISCOVERED_AT,"method":"source","notes":"已从 Google News 发现页解码到发布方原始链接，并核对来源日期与标题；eventDate 明确记录来源公开日，未把论文当新闻事件。"},
         "riskLevel":"uncertain" if source_type_value in {"personal-blog","news-report"} else "routine","publishDecision":"review",
         "modelReview":{"decision":"hold","checkedAt":DISCOVERED_AT,"notes":"等待子智能体读者审读和人工复核后再提升。"},"mechanicalErrors":[],"runId":f"vbp-049-news-backfill-news-{day}","fingerprint":source_hash,
     }
-
-
 def load_terms() -> set[str]:
     return {item["slug"] if isinstance(item, dict) else item for item in json.loads(TERMS.read_text())}
 
@@ -393,8 +452,8 @@ def write_day(day: str, terms: set[str], known: dict[str, str]) -> tuple[dict, d
         return score
     raw = sorted((item for item in raw if item.get("publishedAt") == day), key=lambda item: -pre_score(item))
     candidates = []
-    for item in raw[:6]:
-        if len(candidates) >= 4:
+    for item in raw[:3]:
+        if len(candidates) >= 2:
             break
         candidate = make_candidate(item, day, known)
         if candidate:
@@ -403,6 +462,8 @@ def write_day(day: str, terms: set[str], known: dict[str, str]) -> tuple[dict, d
     selected = next((item for item in candidates if not item.get("duplicateOf") and item["score"] >= 3), None)
     if selected:
         selected["meta"] = fetch_meta(selected["url"])
+        if selected["meta"].get("datePublished"):
+            selected["publishedAt"] = selected["meta"]["datePublished"]
         if selected["meta"].get("body"):
             selected["sourceHash"] = "sha256:" + hashlib.sha256((selected["meta"]["body"] + "\n" + selected["title"]).encode()).hexdigest()
         slug = slugify(selected["title"], day, selected["url"])
