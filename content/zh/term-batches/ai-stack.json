@@ -4123,26 +4123,26 @@
       "工具权限范围",
       "permission scope"
     ],
-    "question": "文件工具只应修改当前项目，怎样防止它写到其他目录？",
+    "question": "报表工具只有 read:sales，怎样阻止它读取工资表？",
     "definition": "权限边界由运行环境或授权系统执行，在模型请求之外独立限制资源和动作。",
     "boundary": "提示词可以说明边界，但不能替代操作系统、沙箱或服务端的实际校验。",
     "demoType": "branch",
-    "demoTitle": "写文件请求经过权限边界",
+    "demoTitle": "报表请求经过权限边界",
     "demoSteps": [
       {
-        "label": "允许范围",
-        "value": "D:/project/** 可读写",
-        "note": "当前项目路径显示为绿色。"
+        "label": "发放最小令牌",
+        "value": "read:sales only",
+        "note": "令牌只有销售读取范围，提示词不能扩大它。"
       },
       {
         "label": "越界请求",
-        "value": "尝试写入 D:/private/key.txt",
-        "note": "权限检查返回 denied。"
+        "value": "read:salary → deny / 0 行",
+        "note": "策略在工资表前拒绝请求并写入审计事件。"
       },
       {
-        "label": "允许请求",
-        "value": "写入 D:/project/readme.md",
-        "note": "文件变更记录包含工具和时间。"
+        "label": "明确授权",
+        "value": "+ read:salary → allow",
+        "note": "管理员授权后重新请求，返回结果并记录主体与范围。"
       }
     ],
     "quizQuestion": "权限边界应由谁实际执行？",

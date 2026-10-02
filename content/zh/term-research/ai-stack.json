@@ -1369,10 +1369,13 @@
     "slug": "permission-boundary",
     "mechanism": "权限边界规定某个身份、进程或工具能够访问哪些资源、执行哪些动作，并在边界处强制校验。",
     "misconception": "在提示词里说“不要访问”不是权限边界；真正的边界必须由模型外的授权系统执行。",
-    "demoSignature": "输入：报表工具只获read:sales，尝试read:salary；中间：令牌权限1项，策略匹配0项，访问状态requested→denied；输出：工资数据返回0行并记录审计事件。可视化：建议4帧的能力令牌穿过资源边界；交互：勾选权限后重新发请求。",
+    "demoSignature": "输入：报表工具只获read:sales，尝试read:salary；中间：令牌权限1项，策略匹配0项，访问状态requested→denied；输出：工资数据返回0行并记录审计事件，明确加入read:salary后重试才allow。可视化：建议4帧的能力令牌穿过资源边界；交互：勾选权限后重新发请求。",
     "sourceUrls": [
-      "https://csrc.nist.gov/projects/role-based-access-control",
-      "https://csrc.nist.gov/glossary/term/least_privilege"
+      "https://csrc.nist.gov/projects/role-based-access-control/faqs",
+      "https://csrc.nist.gov/glossary/term/least_privilege",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "https://csrc.nist.gov/pubs/sp/800/162/final"
     ],
     "rewriteRisk": "必须区分权限声明、策略判定和实际执行，不能把提示词约束算作授权。",
     "nearDuplicates": [
