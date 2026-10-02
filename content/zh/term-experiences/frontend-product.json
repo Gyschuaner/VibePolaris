@@ -2825,8 +2825,8 @@
   {
     "slug": "cross-platform-development",
     "lead": "同一产品要支持 iOS 和 Android，能否完全只写一份代码？",
-    "definition": "共享层复用业务逻辑和部分界面，通过编译、运行时或平台通道调用 iOS/Android 原生能力；平台特有代码仍单独维护。",
-    "boundary": "跨平台不是“一份代码无需适配”，也不是 WebView 的同义词。",
+    "definition": "跨平台方案把能共享的业务规则、数据和部分界面放在共享核心；编译产物、运行时或平台通道（桥接）负责把统一接口接到 iOS/Android API。适配器就是把“请求相机”等统一接口翻译成各平台实现的薄层。",
+    "boundary": "共享代码不等于所有界面和行为相同；权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
     "sceneKind": "assembly",
     "sceneTitle": "共享业务规则与平台适配器怎样拼成两个应用",
     "actionLabel": "移动一块代码",
@@ -2834,21 +2834,21 @@
       {
         "id": "shared",
         "label": "共享核心",
-        "detail": "价格与校验规则",
+        "detail": "不依赖平台的价格/校验规则",
         "icon": "code",
         "group": "共享"
       },
       {
         "id": "ios",
         "label": "iOS 适配器",
-        "detail": "通知、相机、导航",
+        "detail": "把接口翻译成 Apple API",
         "icon": "gear",
         "group": "平台"
       },
       {
         "id": "android",
         "label": "Android 适配器",
-        "detail": "通知、相机、导航",
+        "detail": "把接口翻译成 Android API",
         "icon": "gear",
         "group": "平台"
       },
@@ -2896,7 +2896,7 @@
     "frames": [
       {
         "label": "共享纯业务规则",
-        "note": "价格计算放进共享核心，两端运行同一组输入时得到相同结果。",
+        "note": "价格计算放进共享核心，两端运行同一组输入时得到相同结果；这里的共享核心不依赖具体平台。",
         "activeIds": [
           "shared",
           "ios-app",
@@ -2917,7 +2917,7 @@
       },
       {
         "label": "平台能力走接口",
-        "note": "共享核心只发出“请求相机”的接口调用，两个适配器分别接到平台 API。",
+        "note": "共享核心只发出“请求相机”的统一接口；本例用 UIImagePicker 和 CameraX 作示意，实际 API 取决于框架与版本。",
         "activeIds": [
           "shared",
           "ios",
@@ -2929,8 +2929,8 @@
           "android-app"
         ],
         "values": {
-          "ios": "UIImagePicker",
-          "android": "CameraX"
+          "ios": "UIImagePicker（示例 API）",
+          "android": "CameraX（示例 API）"
         },
         "activeEdgeIds": [
           "shared-ios",
@@ -2939,7 +2939,7 @@
       },
       {
         "label": "错误共享会失败",
-        "note": "把 iOS 通知类拖进共享核心，Android 组装立即出现不可用 API。",
+        "note": "把只存在于 iOS 的通知类拖进共享核心，Android 目标没有同名 API，组装阶段立即暴露平台边界。",
         "activeIds": [
           "shared",
           "android",
@@ -2960,7 +2960,7 @@
       },
       {
         "label": "移回平台边界",
-        "note": "通知实现回到各自适配器，两个产物恢复通过，公共规则仍只有一份。",
+        "note": "通知实现回到各自适配器，两个产物恢复通过；公共规则仍只有一份，平台差异由适配器承担。",
         "activeIds": [
           "ios",
           "android",
@@ -2981,7 +2981,7 @@
         ]
       }
     ],
-    "insight": "跨平台开发共享的是稳定规则和接口，不是强迫所有平台行为使用同一份实现。",
+    "insight": "跨平台开发共享的是稳定规则和统一接口，不是强迫所有平台行为使用同一份实现；适配器把差异留在平台边界。",
     "quiz": {
       "question": "哪类代码最适合优先共享？",
       "options": [
@@ -3003,18 +3003,33 @@
     },
     "prompt": {
       "title": "划分跨平台项目的共享边界",
-      "text": "请把下面功能拆为共享业务逻辑、可复用界面和平台专用实现，说明相机、通知、导航与文件系统分别通过什么适配层接入。"
+      "text": "请把下面功能拆为共享核心、可复用界面和平台适配器：说明统一接口如何通过编译、运行时或平台通道接入 iOS/Android，并分别检查相机、通知、导航与文件系统的权限、生命周期和真机差异。"
     },
     "sources": [
       {
         "url": "https://docs.flutter.dev/resources/architectural-overview",
-        "label": "Flutter Documentation",
-        "note": "原始规范与实现说明"
+        "label": "Flutter · Architectural overview",
+        "note": "跨平台复用、编译产物、平台 embedder 与分层结构"
+      },
+      {
+        "url": "https://docs.flutter.dev/platform-integration/platform-channels",
+        "label": "Flutter · Platform channels",
+        "note": "统一接口通过平台通道调用 Android/iOS 原生代码"
       },
       {
         "url": "https://reactnative.dev/architecture/overview",
-        "label": "React Native Documentation",
-        "note": "原始规范与实现说明"
+        "label": "React Native · Architecture overview",
+        "note": "JavaScript 与原生组件/模块的协作边界"
+      },
+      {
+        "url": "https://kotlinlang.org/docs/multiplatform.html",
+        "label": "Kotlin Multiplatform · Official docs",
+        "note": "共享代码与平台专用代码的组织方式"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui?view=net-maui-9.0",
+        "label": ".NET MAUI · What is .NET MAUI?",
+        "note": "单一共享项目、跨平台 API 与平台代码入口"
       }
     ]
   },

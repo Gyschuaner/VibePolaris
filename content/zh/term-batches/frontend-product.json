@@ -372,18 +372,54 @@
     "relatedSlugs": ["app-lifecycle", "app-permission", "deep-link"]
   },
   {
-    "zh": "跨平台开发", "en": "Cross-platform Development", "slug": "cross-platform-development", "cat": "前端",
-    "say": "跨平台开发用一套主要代码覆盖多个系统，同时为平台差异保留适配层。",
-    "aliases": ["跨端开发", "Cross-platform", "多平台开发"],
+    "zh": "跨平台开发",
+    "en": "Cross-platform Development",
+    "slug": "cross-platform-development",
+    "cat": "前端",
+    "say": "跨平台开发把不依赖平台的业务规则和数据处理放进共享核心，再用适配器接上各系统能力。",
+    "aliases": [
+      "跨端开发",
+      "Cross-platform",
+      "多平台开发"
+    ],
     "question": "同一产品要支持 iOS 和 Android，能否完全只写一份代码？",
-    "definition": "跨平台方案共享业务逻辑和部分界面，通过运行时、编译或桥接调用各平台能力，减少重复实现。",
-    "boundary": "共享代码不等于忽略平台规范。导航、权限、性能和原生能力仍可能需要分别实现与测试。",
-    "demoType": "hierarchy", "demoTitle": "共享层与平台适配层",
-    "demoSteps": [{"label":"共享业务层","value":"数据模型、校验和接口调用","note":"两端使用同一套规则。"},{"label":"共享界面层","value":"复用常见页面与组件","note":"保留主题和平台差异入口。"},{"label":"平台适配层","value":"相机、通知和系统导航","note":"通过各平台接口完成。"}],
-    "quizQuestion": "哪类代码最适合优先共享？", "quizOptions": ["平台无关的业务规则与数据处理", "所有系统权限弹窗", "每个平台独有的系统控件细节"],
-    "correctText": "业务规则通常不依赖具体设备平台。", "wrongText": "系统权限和独有控件往往需要平台适配。",
-    "promptTitle": "划分跨平台项目的共享边界", "prompt": "请把下面功能拆为共享业务逻辑、可复用界面和平台专用实现，说明相机、通知、导航与文件系统分别通过什么适配层接入。",
-    "relatedSlugs": ["app-manifest", "webview", "browser-api", "framework"]
+    "definition": "跨平台方案把能共享的业务规则、数据和部分界面放在共享层；编译产物、运行时或平台通道（桥接）负责把统一接口接到 iOS/Android API。适配器就是把“请求相机”等统一接口翻译成各平台实现的薄层。",
+    "boundary": "共享代码不等于所有界面和行为相同；权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
+    "demoType": "hierarchy",
+    "demoTitle": "共享层与平台适配层",
+    "demoSteps": [
+      {
+        "label": "共享业务层",
+        "value": "数据模型、校验和接口调用",
+        "note": "两端使用同一套规则。"
+      },
+      {
+        "label": "共享界面层",
+        "value": "复用常见页面与组件",
+        "note": "保留主题和平台差异入口。"
+      },
+      {
+        "label": "平台适配层",
+        "value": "相机、通知和系统导航",
+        "note": "通过各平台接口完成。"
+      }
+    ],
+    "quizQuestion": "哪类代码最适合优先共享？",
+    "quizOptions": [
+      "平台无关的业务规则与数据处理",
+      "所有系统权限弹窗",
+      "每个平台独有的系统控件细节"
+    ],
+    "correctText": "业务规则通常不依赖具体设备平台。",
+    "wrongText": "系统权限和独有控件往往需要平台适配。",
+    "promptTitle": "划分跨平台项目的共享边界",
+    "prompt": "请把下面功能拆为共享核心、可复用界面和平台适配器：说明统一接口如何通过编译、运行时或平台通道接入 iOS/Android，并分别检查相机、通知、导航与文件系统的权限、生命周期和真机差异。",
+    "relatedSlugs": [
+      "app-manifest",
+      "webview",
+      "browser-api",
+      "framework"
+    ]
   },
   {
     "zh": "WebView", "en": "WebView", "slug": "webview", "cat": "前端",

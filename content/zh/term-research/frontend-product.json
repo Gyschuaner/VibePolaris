@@ -183,10 +183,16 @@
   },
   {
     "slug": "cross-platform-development",
-    "mechanism": "共享层复用业务逻辑和部分界面，通过编译、运行时或平台通道调用 iOS/Android 原生能力；平台特有代码仍单独维护。",
-    "misconception": "跨平台不是“一份代码无需适配”，也不是 WebView 的同义词。",
-    "demoSignature": "建议 5 帧：代码树分 shared、ios、android 三个容器；用户把价格计算拖进 shared，两端测试同时通过；再把通知权限或相机调用拖进 shared，平台 API 标记冲突；移回各自 adapter 后公共逻辑比例与平台差异同时可见。",
-    "sourceUrls": ["https://docs.flutter.dev/resources/architectural-overview", "https://reactnative.dev/architecture/overview"],
+    "mechanism": "跨平台方案把能共享的业务规则、数据和部分界面放在共享核心；编译产物、运行时或平台通道（桥接）负责把统一接口接到 iOS/Android API。适配器就是把“请求相机”等统一接口翻译成各平台实现的薄层。",
+    "misconception": "共享代码不等于所有界面和行为相同；权限、通知、相机、文件系统、导航、生命周期和性能仍可能按平台实现与真机测试，共享比例取决于框架和功能。",
+    "demoSignature": "assembly: 4 frames; actors=共享核心/iOS 适配器/Android 适配器/iOS 应用/Android 应用; phases=共享纯业务规则→平台能力走接口→错误共享会失败→移回平台边界; action=移动一块代码",
+    "sourceUrls": [
+      "https://docs.flutter.dev/resources/architectural-overview",
+      "https://docs.flutter.dev/platform-integration/platform-channels",
+      "https://reactnative.dev/architecture/overview",
+      "https://kotlinlang.org/docs/multiplatform.html",
+      "https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui?view=net-maui-9.0"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["webview", "app-manifest", "browser-api"]
   },
