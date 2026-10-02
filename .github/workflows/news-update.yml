@@ -20,9 +20,11 @@ jobs:
   collect-validate-publish:
     runs-on: ubuntu-latest
     env:
-      NEWS_DOTS_ENDPOINT: ${{ secrets.NEWS_DOTS_ENDPOINT }}
-      NEWS_DOTS_TOKEN: ${{ secrets.NEWS_DOTS_TOKEN }}
-      NEWS_BRANCH: news-auto/${{ github.run_id }}
+      # Primary handoff is repository_dispatch(dots-news). These two secrets only
+      # preserve the older pull-based GET compatibility path.
+      NEWS_DOTS_ENDPOINT: \${{ secrets.NEWS_DOTS_ENDPOINT }}
+      NEWS_DOTS_TOKEN: \${{ secrets.NEWS_DOTS_TOKEN }}
+      NEWS_BRANCH: news-auto/\${{ github.run_id }}
     steps:
       - name: Checkout dev baseline
         uses: actions/checkout@v4
@@ -48,8 +50,14 @@ jobs:
       - name: Receive external handoff
         if: github.event_name == 'repository_dispatch'
         env:
-          DOTS_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
-        run: node -e 'require("node:fs").writeFileSync("/tmp/dots-news.json", process.env.DOTS_PAYLOAD)' 
+          DOTS_PAYLOAD: \${{ toJSON(github.event.client_payload) }}
+        run: node -e 'require("node:fs").writeFileSync("/tmp/dots-news.json", process.env.DOTS_PAYLOAD)'
+
+      - name: Bound repository dispatch payload
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          test -s /tmp/dots-news.json
+          test "$(wc -c < /tmp/dots-news.json)" -le 1000000
 
       - name: Fetch Dots handoff when configured
         if: github.event_name != 'repository_dispatch' && env.NEWS_DOTS_ENDPOINT != ''
@@ -73,16 +81,16 @@ jobs:
         run: npm run build
 
       - name: Build Docker candidate
-        run: docker build --tag "vibepolaris-news-ci:${{ github.run_id }}" .
+        run: docker build --tag "vibepolaris-news-ci:\${{ github.run_id }}" .
 
       - name: Run Docker candidate
-        run: docker run --detach --rm --name "vibepolaris-news-ci-${{ github.run_id }}" --publish 38080:3000 "vibepolaris-news-ci:${{ github.run_id }}"
+        run: docker run --detach --rm --name "vibepolaris-news-ci-\${{ github.run_id }}" --publish 38080:3000 "vibepolaris-news-ci:\${{ github.run_id }}"
 
-      - name: Smoke-test published routes and Xiaobei visibility
+      - name: Smoke-test candidate root and Xiaobei visibility
         run: |
           set -euo pipefail
           for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:38080/news >/dev/null; then break; fi
+            if curl --fail --silent http://127.0.0.1:38080/ >/dev/null; then break; fi
             sleep 2
           done
           NEWS_EXPECTED_SLUGS="$(node -e 'const fs=require("node:fs"); console.log(JSON.parse(fs.readFileSync("content/zh/news.json", "utf8")).map(article=>article.slug).join(","))')" \
@@ -90,7 +98,7 @@ jobs:
 
       - name: Stop Docker candidate
         if: always()
-        run: docker stop "vibepolaris-news-ci-${{ github.run_id }}" || true
+        run: docker stop "vibepolaris-news-ci-\${{ github.run_id }}" || true
 
       - name: Create protected dev PR
         id: publish
@@ -101,14 +109,14 @@ jobs:
           fi
           git diff --check
           git add content/zh/news.json content/zh/news-drafts
-          git commit -m "chore(news): ingest Dots update ${{ github.run_id }}"
+          git commit -m "chore(news): ingest Dots update \${{ github.run_id }}"
           git push --set-upstream origin "$NEWS_BRANCH"
-          gh pr create --base dev --head "$NEWS_BRANCH" --title "News update ${{ github.run_id }}" --body-file <(cat <<'EOF'
+          gh pr create --base dev --head "$NEWS_BRANCH" --title "News update \${{ github.run_id }}" --body-file <(cat <<'EOF'
           Automated News update from Dots.
 
-          The repository gate only publishes candidates with verified evidence, at least one evidence URL, routine risk, and confirmed concept relationships. Major or uncertain candidates remain needs-review.
+          The repository gate only publishes candidates with verified evidence, at least one evidence URL, routine risk, and confirmed concept relationships. Candidates held by review or failing those checks remain needs-review.
           EOF
           )
           gh pr merge "$NEWS_BRANCH" --auto --squash --delete-branch
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: \${{ github.token }}
