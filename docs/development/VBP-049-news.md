@@ -25,6 +25,7 @@
 | 2021-01-08 | Waste-Free World AI 塑料回收试点 | Circular Online（新闻报道）；WebWire 企业新闻稿作一手核验 | 2021-01-08 / 2021-01-12 | `passed`（先 `needs-revision`，按建议修订后通过） | `9a7cb072` |
 | 2021-03-01 | 警务 AI 产品特写：转写、脱敏、车牌识别与加密货币分析 | Police Chief Magazine；VIQ、Veritone、Jenoptik 官方产品页；加州 DOJ AB 953 规则 | 2021-03-01 / 2021-03-01 | `passed`（子智能体读者与中文审读，按来源卡片建议修订） | `53037828` |
 | 2021-03-02 | Azure Percept 进入公开预览：边缘设备、现场推理与云端管理 | Microsoft News Center；Azure Blog、Ignite Book of News；TechCrunch 同日交叉报道 | 2021-03-02 / 2021-03-02 | `passed`（两轮子智能体读者与中文审读） | `7e9d61e8` |
+| 2021-03-03 | AI Index 2021：AI 走向产业实践，数据盲区也更明显 | Stanford HAI 官方公告与报告；Axios 同日报道 | 2021-03-03 / 2021-03-03 | `passed`（两轮子智能体读者与中文审读） | `dafad5c0` |
 
 ## 交付内容
 
