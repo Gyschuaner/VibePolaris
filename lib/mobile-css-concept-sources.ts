@@ -55,8 +55,8 @@ export const crossPlatformSources = [
 ];
 
 export const webviewSources = [
-  { publisher: "Android Developers", title: "Build web apps in WebView", date: "", url: "https://developer.android.com/develop/ui/views/layout/webapps/webview", citations: ["webview-host"] },
-  { publisher: "Android Developers", title: "Insecure WebView native bridges", date: "", url: "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges", citations: ["webview-bridge"] },
+  { publisher: "Android Developers", title: "Build web apps in WebView", date: "", url: "https://developer.android.com/develop/ui/views/layout/webapps/webview", citations: ["webview-container-source"] },
+  { publisher: "Android Developers", title: "Insecure WebView native bridges", date: "", url: "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges", citations: ["webview-bridge-source"] },
   { publisher: "Apple Developer", title: "WKWebView", date: "", url: "https://developer.apple.com/documentation/webkit/wkwebview", citations: ["webview-engine"] },
   { publisher: "Apple Developer", title: "WKScriptMessageHandler", date: "", url: "https://developer.apple.com/documentation/webkit/wkscriptmessagehandler", citations: ["webview-message"] },
   { publisher: "MDN Web Docs", title: "Window.postMessage()", date: "", url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage", citations: ["webview-origin"] },

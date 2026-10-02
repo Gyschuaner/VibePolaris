@@ -136,13 +136,21 @@ function CrossPlatformLesson() {
 function WebviewLesson() {
   const scene = useScene(4);
   const [tampered, setTampered] = useState(false);
-  const labels = ["网页发消息", "校验来源", "调用原生能力", "拒绝篡改消息"];
-  const accepted = scene.step >= 2 && !tampered;
+  const labels = ["网页发消息", "校验来源", "调用原生能力", "未知来源被拒绝"];
+  const rejected = tampered || scene.step === 3;
+  const displayScene: Scene = {
+    ...scene,
+    step: rejected ? 3 : Math.min(scene.step, 2),
+    seek: (next: number) => { setTampered(next === 3); scene.seek(next); },
+    toggle: () => { if (rejected) { setTampered(false); scene.seek(0); } else scene.toggle(); },
+  };
+  const accepted = displayScene.step >= 2 && !rejected;
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="WebView 消息桥安全演示">
-    <div className={styles.choices} role="group" aria-label="选择网页消息"><button type="button" aria-pressed={!tampered} onClick={() => { setTampered(false); scene.seek(0); }}>受信网页</button><button type="button" aria-pressed={tampered} onClick={() => { setTampered(true); scene.seek(2); }}>未知来源</button></div>
-    <div className={styles.contract}><div><Browser size={27} /><h3>WebView 页面</h3><p><code>{tampered ? "https://ads.example" : "https://shop.example"}</code> 请求分享当前订单。</p></div><div><ShieldCheck size={27} /><h3>宿主检查</h3><p>{accepted ? "origin、方法和参数都符合约定。" : tampered ? "来源不在白名单，消息被拒绝。" : "等待校验，原生能力尚未调用。"}</p></div></div>
-    <div className={styles.resultFlow}><Browser size={28} /><span>网页消息</span><ArrowRight size={19} /><ShieldCheck size={28} /><span>origin + 方法 + 参数</span><ArrowRight size={19} /><DeviceMobile size={28} /><span>{accepted ? "原生分享完成" : "无调用"}</span></div>
-    <FrameCopy scene={scene} labels={labels} title={["网页只能发出请求", "宿主先检查边界", "通过后才调用原生", "不可信页面不能任意调用"]} text={["WebView 是原生应用里的网页容器，消息桥把网页请求交给宿主。", "宿主验证来源、允许的方法和参数形状；收到消息不等于应该执行。", "检查通过后，原生代码调用分享能力，再返回结构化结果。", "如果不可信页面也能调用任意原生方法，桥就会扩大网页的攻击面。"]} />
+    <div className={styles.choices} role="group" aria-label="选择网页消息"><button type="button" aria-pressed={!rejected} onClick={() => { setTampered(false); scene.seek(0); }}>受信网页</button><button type="button" aria-pressed={rejected} onClick={() => { setTampered(true); scene.seek(3); }}>未知来源</button></div>
+    <div className={styles.contract}><div><Browser size={27} /><h3>WebView 页面</h3><p><code>{rejected ? "https://ads.example" : "https://shop.example"}</code> 请求分享当前订单。</p></div><div><ShieldCheck size={27} /><h3>宿主检查</h3><p>{rejected ? "来源不在白名单，消息被拒绝。" : displayScene.step === 2 ? "origin、方法和参数通过，收到结构化 success。" : "等待校验，原生能力尚未调用。"}</p></div></div>
+    <div className={styles.resultFlow}><Browser size={28} /><span>网页消息</span><ArrowRight size={19} /><ShieldCheck size={28} /><span>origin + 方法 + 参数</span><ArrowRight size={19} /><DeviceMobile size={28} /><span>{displayScene.step === 2 && accepted ? "结构化结果：success" : rejected ? "error: ORIGIN_NOT_ALLOWED · 未调用" : "尚无原生结果"}</span></div>
+    {rejected && <p className={styles.inputExample}><strong>失败证据</strong>来源校验返回 ORIGIN_NOT_ALLOWED，原生分享没有被调用。</p>}
+    <FrameCopy scene={displayScene} labels={labels} title={["网页只能发出请求", "宿主先检查边界", "原生返回结构化结果", "未知来源被拒绝"]} text={["WebView 是原生应用里的网页容器，消息桥把网页请求交给宿主。", "宿主验证来源、允许的方法和参数形状；收到消息不等于应该执行。", "检查通过后，原生代码调用分享能力，网页收到 success、cancel 或 error 这样的结构化结果。", "来源不在允许清单时返回 ORIGIN_NOT_ALLOWED，原生分享没有被调用。"]} />
   </div>;
 }
 
