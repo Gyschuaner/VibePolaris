@@ -39,6 +39,8 @@
 | `moderation` | `82dfc255` | `7c9e642e-0987-4f43-b10c-3894821c36ba` | done |
 | `fine-tuning` | `3de8d5ed` | `1407c950-d3cb-4e7d-a35b-a435a382b3ac` | done |
 
+阶段语义修复另提交 `1237a964`：HITL 的 pending 决定和微调的评估结果都按演示步骤 gate，避免回退时提前显示后续状态。
+
 ## 验收证据
 
 - 每条接入路由后均运行 `git diff --check`、`npx tsc --noEmit` 和 `npm run build`；当前批次构建通过并生成 217 个静态页面。
