@@ -1,6 +1,6 @@
 # VBP-049 新闻栏目交付记录
 
-状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
+状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前从 2026-09-30 倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
 
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
@@ -12,7 +12,7 @@
 
 ## 阶段二执行口径
 
-- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因。
+- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯先从 2026-09-30 开始，再逐日处理更早日期。
 - 主事件优先取官方公告/官方博客、监管文件、可信新闻报道和可核验的行业或个人解读；论文只作为已成立新闻事件的背景来源，不能单独填充 `selectedSlugs`。
 - 文章先写事实链和读者问题，再组织按事件需要变化的正文段落、讲解步骤和自制 SVG；`hero.sourceUrl`、许可和引用卡片都保留追溯信息。
 - 词条关系只确认已经公开且正文确实解释的 slug。草稿在 `ready` 前必须经过 humanizer-zh 表达检查与 `codex-subagent-reader` 零基础读者审读，审读结果写入 `readerReview`。
@@ -28,6 +28,7 @@
 
 | 事件日 | 选中事件 | 主来源 | 事件日 / 报道日 | 子智能体审读 | 提交 |
 | --- | --- | --- | --- | --- | --- |
+| 2026-09-30 | HHS/ARPA-H 启动 SURPASS：用预测模型、连续分析和自动化运营推动自适应临床试验；当前是 AI 项目启动与团队方案征集 | HHS 官方公告；Axios 同日报道；ARPA-H SURPASS 项目页；BioPharma Dive 10-01 跟进 | 2026-09-30 / 2026-09-30（10-01 为后续报道） | `passed`（两轮 Codex 子智能体读者与中文审读；修正来源归属、开放征集状态、术语边界和 SVG 可能性） | 本次提交 |
 | 2021-01-08 | Waste-Free World AI 塑料回收试点 | Circular Online（新闻报道）；WebWire 企业新闻稿作一手核验 | 2021-01-08 / 2021-01-12 | `passed`（先 `needs-revision`，按建议修订后通过） | `9a7cb072` |
 | 2021-03-01 | 警务 AI 产品特写：转写、脱敏、车牌识别与加密货币分析 | Police Chief Magazine；VIQ、Veritone、Jenoptik 官方产品页；加州 DOJ AB 953 规则 | 2021-03-01 / 2021-03-01 | `passed`（子智能体读者与中文审读，按来源卡片建议修订） | `53037828` |
 | 2021-03-02 | Azure Percept 进入公开预览：边缘设备、现场推理与云端管理 | Microsoft News Center；Azure Blog、Ignite Book of News；TechCrunch 同日交叉报道 | 2021-03-02 / 2021-03-02 | `passed`（两轮子智能体读者与中文审读） | `60aef89c` |
@@ -48,12 +49,12 @@
 | 2021-03-17 | Torch.AI 融资 3000 万美元，押注“数据在流动中处理”；客户、联邦机构覆盖和认证均保留为公司口径，03-18 国防报道作后续 | PR Newswire（Torch.AI）；VentureBeat 同日交叉报道；InsideDefense 03-18 后续；Feedzai/Keelvar 候选拒选并保留原因 | 2021-03-17 / 2021-03-17 | `passed`（两轮 Codex 子智能体读者审读；中文表达审读；新增 `data-motion` 机制动画） | `1f361d8f` |
 | 2021-03-18 | FORT Robotics 融资 1300 万美元，扩展自主机器安全平台；无线急停、多机停止和客户数量保留为公司/媒体口径，当前页面只作机制与验收背景 | FORT Robotics 官方新闻稿；VentureBeat 同日报道；FORT 当前 AMR 页面；OSHA、NIST 当前安全背景；2022 Series B 后续稿 | 2021-03-18 / 2021-03-18 | `passed`（读者与中文表达子智能体复审；修正客户数量“前一年”、门控触发、多机协同、停机确认和当前页面时效；新增 `robot-safety` 机制动画） | `8fa0eb92` |
 | 2021-03-19 | Viz.ai 在国际卒中大会期间发布护理协调数据；Hassan 的 Viz LVO 研究与 Jankowitz 的 Viz RECRUIT/AI ENRICH 招募结果严格分开，Practical Neurology 只作前者交叉报道 | Viz.ai 官方新闻稿；Practical Neurology；AHA ISC 2021 页面；Viz.ai 当前 notification-only 使用说明；ISC 海报摘要与早期评估页 | 2021-03-19 / 2021-03-19 | `passed`（读者与中文表达子智能体复审；修正 102.3 分钟/45%/mRS 与 41%/213% 的研究归属，补 CTA/LVO/到院到转出/到院到穿刺白话解释；新增 `clinical-alert` 机制动画） | `8613dab3` |
-| 2021-03-20 | 空档日：检索到的内容是前几日主题的观点、采访或进行中项目分析，未确认新的当天 AI 公告、产品上线、融资或监管动作 | VentureBeat 合成数据观点与机器人采访；Google News RSS；TechCrunch 日期索引；DOE 页面交叉核对 | — | `n/a`（空档日，无文章） | 待提交 |
+| 2021-03-20 | 空档日：检索到的内容是前几日主题的观点、采访或进行中项目分析，未确认新的当天 AI 公告、产品上线、融资或监管动作 | VentureBeat 合成数据观点与机器人采访；Google News RSS；TechCrunch 日期索引；DOE 页面交叉核对 | — | `n/a`（空档日，无文章） | `7de94416` |
 
 
 ## 交付内容
 
-- `content/zh/news.json` 保留原有两篇 2026 真实发布内容：Anthropic Claude Sonnet 5.5、Google DeepMind Private AI Compute；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- `content/zh/news.json` 当前包含 75 篇已发布内容，其中包括 Anthropic Claude Sonnet 5.5、Google DeepMind Private AI Compute 和本日 HHS/ARPA-H SURPASS 新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
 - `content/zh/news-drafts/2026-10-01/openai-dots-september-2026.json` 保持 `needs-review`，因为官方页面在当前抓取环境返回 403，不能作为可重复自动发布证据。
 - `/news`、新闻详情页、sitemap 和 Xiaobei 的 published-only 检索均使用同一份已发布目录；草稿不会出现在公开路由或 sitemap。
 - `scripts/news-contract.mjs`、`news:validate`、幂等 ingest、canonical/sourceHash 去重、证据/风险/词条关系门槛继续作为发布闸门。

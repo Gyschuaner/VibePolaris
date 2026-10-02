@@ -4,7 +4,7 @@ import { ArrowCounterClockwise, Pause, Play } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
 export type NewsExplainerData = {
-  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert";
+  variant: "benchmark" | "secure-memory" | "agent-workflow" | "synthetic-data" | "data-motion" | "robot-safety" | "clinical-alert" | "adaptive-trial";
   title: string;
   question: string;
   steps: { label: string; detail: string; evidence?: string }[];
@@ -93,6 +93,32 @@ function ClinicalAlertVisual({ activeStep }: { activeStep: number }) {
   );
 }
 
+function AdaptiveTrialVisual({ activeStep }: { activeStep: number }) {
+  return (
+    <div className={`news-explainer-adaptive-trial adaptive-trial-phase-${activeStep}`} aria-hidden="true">
+      <div className="adaptive-trial-track">
+        <span className="adaptive-trial-track-label">试验状态</span>
+        <i /><i /><i /><i /><i />
+      </div>
+      <div className="adaptive-trial-card adaptive-trial-model">
+        <span className="adaptive-trial-card-label">预测设计</span>
+        <span className="adaptive-trial-model-shape"><i /><i /><i /></span>
+      </div>
+      <span className="adaptive-trial-arrow">→</span>
+      <div className="adaptive-trial-card adaptive-trial-analysis">
+        <span className="adaptive-trial-card-label">实时分析</span>
+        <span className="adaptive-trial-analysis-bars"><i /><i /><i /></span>
+      </div>
+      <span className="adaptive-trial-arrow">→</span>
+      <div className="adaptive-trial-card adaptive-trial-adjust">
+        <span className="adaptive-trial-card-label">调整下一步</span>
+        <span className="adaptive-trial-adjust-shape"><i /><i /></span>
+      </div>
+      <div className="adaptive-trial-result">数据累积后再决定是否调整</div>
+    </div>
+  );
+}
+
 export function NewsExplainer({ data }: { data: NewsExplainerData }) {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -132,7 +158,7 @@ export function NewsExplainer({ data }: { data: NewsExplainerData }) {
         <p>{data.question}</p>
       </header>
       <div className="news-explainer-stage">
-        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : (
+        {data.variant === "synthetic-data" ? <SyntheticDataVisual activeStep={activeStep} /> : data.variant === "data-motion" ? <DataMotionVisual activeStep={activeStep} /> : data.variant === "robot-safety" ? <RobotSafetyVisual activeStep={activeStep} /> : data.variant === "clinical-alert" ? <ClinicalAlertVisual activeStep={activeStep} /> : data.variant === "adaptive-trial" ? <AdaptiveTrialVisual activeStep={activeStep} /> : (
           <div className="news-explainer-visual" aria-hidden="true">
             <span className="news-explainer-orbit" />
             {labels.map((label, index) => (
