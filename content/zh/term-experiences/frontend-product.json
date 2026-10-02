@@ -1556,11 +1556,11 @@
   {
     "slug": "offline-first",
     "lead": "地铁断网时填写的内容，怎样避免连接恢复前丢失？",
-    "definition": "读取优先命中本地数据源，写入先记录本地变更与同步元数据；网络恢复后队列上传，并按版本或业务规则解决冲突。",
-    "boundary": "不是把接口响应缓存起来就完成离线，也不是所有操作都能在无服务器确认时承诺成功。",
+    "definition": "关键读取先命中本地数据源；支持离线写入时，先把变更和同步元数据持久化到本地，再联网上传，并按版本或业务规则处理冲突。",
+    "boundary": "缓存一次接口响应只能帮助读取，不能自动提供离线写入、重试或冲突处理；支付、实时库存等需要服务器确认的操作仍要联网。",
     "sceneKind": "queue",
-    "sceneTitle": "断网编辑从本地写入到冲突解决",
-    "actionLabel": "推进同步队列",
+    "sceneTitle": "从本地持久化到同步确认",
+    "actionLabel": "推进待同步队列",
     "actors": [
       {
         "id": "editor",
@@ -1572,28 +1572,28 @@
       {
         "id": "local",
         "label": "本地数据",
-        "detail": "立即保存",
+        "detail": "笔记与同步状态已持久化",
         "icon": "database",
         "group": "设备"
       },
       {
         "id": "outbox",
         "label": "待同步队列",
-        "detail": "operation #7",
+        "detail": "操作 7 · 待上传",
         "icon": "queue",
         "group": "设备"
       },
       {
         "id": "server",
         "label": "服务器版本",
-        "detail": "version 12",
+        "detail": "已保存版本 12",
         "icon": "server",
         "group": "远端"
       },
       {
         "id": "conflict",
         "label": "冲突选择",
-        "detail": "字段级对比",
+        "detail": "比较本地与服务器版本",
         "icon": "gear",
         "group": "处理"
       }
@@ -1609,7 +1609,7 @@
         "id": "local-outbox",
         "from": "local",
         "to": "outbox",
-        "label": "记录操作"
+        "label": "留下待同步操作"
       },
       {
         "id": "outbox-server",
@@ -1621,13 +1621,13 @@
         "id": "server-conflict",
         "from": "server",
         "to": "conflict",
-        "label": "版本不一致"
+        "label": "返回版本冲突"
       }
     ],
     "frames": [
       {
         "label": "断网仍可编辑",
-        "note": "保存动作先更新本地数据，界面立即显示新标题。",
+        "note": "保存动作先写入本地持久化数据，界面显示新标题；这表示设备已保存，不代表服务器已经确认。",
         "activeIds": [
           "editor",
           "local"
@@ -1641,7 +1641,7 @@
           "conflict"
         ],
         "values": {
-          "local": "周报 · 本地已保存"
+          "local": "周报 · 本地已保存（教学示例）"
         },
         "activeEdgeIds": [
           "editor-local"
@@ -1649,7 +1649,7 @@
       },
       {
         "label": "操作进入队列",
-        "note": "修改内容、目标记录和基础版本一起进入待同步队列。",
+        "note": "修改内容、目标记录和编辑时看到的基础版本一起进入待同步队列；“待上传”表示还没有服务器确认。",
         "activeIds": [
           "local",
           "outbox"
@@ -1663,7 +1663,7 @@
           "conflict"
         ],
         "values": {
-          "outbox": "#7 · base v12 · pending"
+          "outbox": "操作 7 · 基础 v12 · 待上传"
         },
         "activeEdgeIds": [
           "local-outbox"
@@ -1671,7 +1671,7 @@
       },
       {
         "label": "恢复网络上传",
-        "note": "队列开始发送，但服务器已被另一台设备改到 version 13。",
+        "note": "网络恢复后队列进入上传中，但服务器已有另一台设备写入的 v13；这是版本冲突，不是网络错误。",
         "activeIds": [
           "outbox",
           "server"
@@ -1684,8 +1684,8 @@
           "conflict"
         ],
         "values": {
-          "outbox": "sending",
-          "server": "v13 · conflict"
+          "outbox": "上传中",
+          "server": "v13 · 冲突待处理"
         },
         "activeEdgeIds": [
           "outbox-server"
@@ -1693,7 +1693,7 @@
       },
       {
         "label": "选择字段结果",
-        "note": "用户比较两个标题并确认保留本地值，新版本写回后队列项消失。",
+        "note": "用户比较两份标题并确认保留本地值；服务器接受合并结果并确认后，队列项才移除。",
         "activeIds": [
           "server",
           "conflict"
@@ -1705,19 +1705,19 @@
         ],
         "mutedIds": [],
         "values": {
-          "server": "v14 · 周报",
-          "outbox": "0 pending"
+          "server": "v14 · 周报（教学示例）",
+          "outbox": "0 条待同步（本例）"
         },
         "activeEdgeIds": [
           "server-conflict"
         ],
         "metric": {
           "label": "待同步操作",
-          "value": "0"
+          "value": "0 条"
         }
       }
     ],
-    "insight": "离线优先先保证本地结果可用，再用可追踪队列处理上传、重试和版本冲突。",
+    "insight": "离线优先先让本地持久化结果可用，再用可追踪队列处理上传、重试和版本冲突；设备已保存与服务器已确认是两个状态。",
     "quiz": {
       "question": "离线修改在上传前至少要保存什么？",
       "options": [
@@ -1734,18 +1734,38 @@
           "correct": false
         }
       ],
-      "success": "同步队列需要知道改了什么以及是否已经发送。",
+      "success": "本地要保留修改内容，队列还要记录它是否待上传以及用哪一版数据开始编辑。",
       "retry": "背景和音量不能恢复业务修改。"
     },
     "prompt": {
       "title": "设计一条离线写入流程",
-      "text": "请为下面编辑功能设计本地保存、待同步队列、重试、重复提交防护和冲突提示。标出哪些操作必须联网才能完成。"
+      "text": "请为下面编辑功能设计本地持久化、待同步队列、重试、重复提交防护和冲突提示。区分“设备已保存”和“服务器已确认”，并标出哪些操作必须联网。"
     },
     "sources": [
       {
         "url": "https://developer.android.com/topic/architecture/data-layer/offline-first",
-        "label": "Android Developers",
-        "note": "Android 平台行为与约束"
+        "label": "Android Developers · Offline-first",
+        "note": "本地/网络数据源、读取写入、同步与冲突处理"
+      },
+      {
+        "url": "https://developer.android.com/topic/architecture/data-layer",
+        "label": "Android Developers · Data layer",
+        "note": "本地数据源作为离线优先的事实来源"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB",
+        "label": "MDN · Using IndexedDB",
+        "note": "浏览器离线持久化、权限与数据库版本"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API",
+        "label": "MDN · Service Worker API",
+        "note": "拦截请求、缓存资源与安全上下文限制"
+      },
+      {
+        "url": "https://developer.chrome.com/docs/workbox/modules/workbox-background-sync",
+        "label": "Chrome for Developers · Workbox Background Sync",
+        "note": "失败请求入队、IndexedDB 保存与恢复网络后的重试"
       }
     ]
   },
