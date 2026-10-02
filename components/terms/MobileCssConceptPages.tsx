@@ -87,7 +87,7 @@ export function AdaptiveLayoutTermPage() {
 }
 
 export function SafeAreaTermPage() {
-  return <ConceptArticle slug="safe-area" title="Safe area" subtitle="安全区域" hero={<MobileHero trigger="设备有刘海或手势区" change="背景铺满，关键内容读取动态 inset" proof="标题和底部按钮离开危险边界" />} sections={safeAreaSections} sources={safeAreaSources} intro={<>安全区域是系统为刘海、圆角、状态栏和手势区留下的动态安全边距。<strong>背景可以继续画到屏幕边缘，标题、按钮等关键内容要根据当前 inset 离开危险位置。</strong></>}>
+  return <ConceptArticle slug="safe-area" title="Safe area" subtitle="安全区域" hero={<MobileHero trigger="设备有刘海或手势区" change="背景铺满，关键内容读取动态 inset" proof="标题和底部按钮离开危险边界" />} sections={safeAreaSections} sources={safeAreaSources} intro={<>安全区域是系统或浏览器为刘海、圆角、状态栏和手势区留下的动态安全边距；inset 指这段系统或浏览器提供的安全距离。<strong>背景可以继续画到屏幕边缘，标题、按钮等关键内容要根据当前值离开危险位置。</strong></>}>
     <ArticleSection id="safe-task" title="全屏页面里的危险位置">
       <p>你做了一个全屏阅读页，背景图片铺满了手机。顶部标题紧贴屏幕边缘，底部“下一章”按钮却被手势条盖住。问题不是背景太大，而是可操作内容没有避开系统占用的区域。</p>
       <p id="safe-area-native" className="vp-citation-target">在 iOS 中，UIKit 的 safe area 表示视图中不会被导航栏、状态栏或其他遮挡覆盖的区域。约束关键内容到 safe area，可以让系统根据设备形态计算边距。<Cite id="safe-area-native" sources={safeAreaSources} /></p>

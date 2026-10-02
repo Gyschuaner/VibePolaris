@@ -51,13 +51,20 @@ function AdaptiveLayoutLesson() {
 function SafeAreaLesson() {
   const scene = useScene(4);
   const [shape, setShape] = useState<"flat" | "notch" | "landscape">("flat");
+  const [adapted, setAdapted] = useState(true);
   const inset = shape === "flat" ? 0 : shape === "notch" ? 34 : 18;
   const labels = ["普通屏幕", "加入刘海和手势区", "旋转设备", "看错误对照"];
+  useEffect(() => {
+    if (scene.step === 0) { setShape("flat"); setAdapted(true); }
+    if (scene.step === 1) { setShape("notch"); setAdapted(true); }
+    if (scene.step === 2) { setShape("landscape"); setAdapted(true); }
+    if (scene.step === 3) { setShape("notch"); setAdapted(false); }
+  }, [scene.step]);
   return <div className={styles.lab} ref={scene.ref} role="region" aria-label="安全区域演示">
-    <div className={styles.choices} role="group" aria-label="选择设备外形"><button type="button" aria-pressed={shape === "flat"} onClick={() => { setShape("flat"); scene.seek(0); }}>普通屏幕</button><button type="button" aria-pressed={shape === "notch"} onClick={() => { setShape("notch"); scene.seek(1); }}>刘海屏</button><button type="button" aria-pressed={shape === "landscape"} onClick={() => { setShape("landscape"); scene.seek(2); }}>横屏</button></div>
-    <div className={styles.resultFlow} style={{ border: "1px solid var(--line)", borderRadius: 18, padding: `${inset + 14}px 24px 22px`, background: "var(--surface)", position: "relative" }}><span style={{ position: "absolute", inset: 0, borderRadius: 18, borderTop: `${inset}px solid color-mix(in srgb,var(--accent) 40%,transparent)`, pointerEvents: "none" }} /><Layout size={27} /><span>背景可铺满</span><ArrowRight size={19} /><ShieldCheck size={27} /><span>标题和按钮离开危险区 {inset}px</span></div>
-    <p className={styles.inputExample}><strong>当前安全值</strong><code>env(safe-area-inset-top)</code> = {inset}px；背景是否延伸到边缘，不决定内容是否可以贴边。</p>
-    <FrameCopy scene={scene} labels={labels} title={["没有额外 inset", "内容需要动态内边距", "方向改变，值也会变", "固定 20px 不是安全区域"]} text={["普通矩形屏幕没有刘海或手势区，标题可以按页面自己的间距排布。", "系统提供安全边距后，关键内容读取这个值；背景仍可以画到屏幕边缘。", "横屏时危险区域的位置和数值会改变，页面需要重新计算四个方向。", "安全区域属于当前设备形态，不能用一个写死的像素值代替。"]} />
+    <div className={styles.choices} role="group" aria-label="选择设备外形"><button type="button" aria-pressed={shape === "flat" && adapted} onClick={() => { setShape("flat"); setAdapted(true); scene.seek(0); }}>普通屏幕</button><button type="button" aria-pressed={shape === "notch" && adapted} onClick={() => { setShape("notch"); setAdapted(true); scene.seek(1); }}>刘海屏</button><button type="button" aria-pressed={shape === "landscape" && adapted} onClick={() => { setShape("landscape"); setAdapted(true); scene.seek(2); }}>横屏</button></div>
+    <div className={styles.resultFlow} style={{ border: adapted ? "1px solid var(--line)" : "2px solid #c45454", borderRadius: 18, padding: shape === "landscape" && adapted ? "14px 24px 22px" : `${(adapted ? inset : 0) + 14}px 24px 22px`, background: adapted ? "var(--surface)" : "color-mix(in srgb,#c45454 9%,var(--surface))", position: "relative" }}><span style={{ position: "absolute", inset: 0, borderRadius: 18, borderTop: adapted && shape !== "landscape" ? `${inset}px solid color-mix(in srgb,var(--accent) 40%,transparent)` : undefined, borderLeft: adapted && shape === "landscape" ? `${inset}px solid color-mix(in srgb,var(--accent) 40%,transparent)` : undefined, borderRight: adapted && shape === "landscape" ? `${inset}px solid color-mix(in srgb,var(--accent) 40%,transparent)` : undefined, pointerEvents: "none" }} />{adapted ? <Layout size={27} /> : <WarningCircle size={27} />}<span>背景可铺满</span><ArrowRight size={19} /><ShieldCheck size={27} /><span>{adapted ? shape === "landscape" ? "侧边控件离开左右危险区 18px" : `标题和按钮离开危险区 ${inset}px` : "底部按钮固定 20px，被手势区盖住"}</span></div>
+    <p className={styles.inputExample}><strong>当前安全值</strong>{shape === "landscape" && adapted ? <><code>env(safe-area-inset-left/right)</code> = 18px（本例 CSS px 教学值）</> : <><code>env(safe-area-inset-top/bottom)</code> = {inset}px（本例 CSS px 教学值）</>}；背景是否延伸到边缘，不决定内容是否可以贴边。</p>
+    <FrameCopy scene={scene} labels={labels} title={["没有额外 inset", "内容需要动态内边距", "方向改变，值也会变", "固定边距造成遮挡"]} text={["普通矩形屏幕没有刘海或手势区，标题可以按页面自己的间距排布。", "系统提供安全边距后，关键内容读取这个值；背景仍可以画到屏幕边缘。", "横屏时危险区域可能转到左右两侧，页面需要重新计算四个方向。", "不读取安全值而固定 20px 时，底部按钮会被手势区盖住，不能把这条路径当作安全。"]} />
   </div>;
 }
 
