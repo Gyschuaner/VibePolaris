@@ -17,6 +17,7 @@ import { SubagentTermPage } from "./ai-stack-pages/subagent";
 import { HumanInTheLoopTermPage } from "./ai-stack-pages/human-in-the-loop";
 import { GuardrailTermPage } from "./ai-stack-pages/guardrail";
 import { ModerationTermPage } from "./ai-stack-pages/moderation";
+import { FineTuningTermPage } from "./ai-stack-pages/fine-tuning";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -36,6 +37,7 @@ export { SubagentTermPage } from "./ai-stack-pages/subagent";
 export { HumanInTheLoopTermPage } from "./ai-stack-pages/human-in-the-loop";
 export { GuardrailTermPage } from "./ai-stack-pages/guardrail";
 export { ModerationTermPage } from "./ai-stack-pages/moderation";
+export { FineTuningTermPage } from "./ai-stack-pages/fine-tuning";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -57,4 +59,5 @@ export const aiStackArticlePages = {
   "human-in-the-loop": HumanInTheLoopTermPage,
   guardrail: GuardrailTermPage,
   moderation: ModerationTermPage,
+  "fine-tuning": FineTuningTermPage,
 } as const;

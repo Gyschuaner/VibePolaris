@@ -1,3 +1,4 @@
+export { FineTuningLesson } from "./fine-tuning";
 export { ModerationLesson } from "./moderation";
 export { GuardrailLesson } from "./guardrail";
 export { HumanInTheLoopLesson } from "./human-in-the-loop";
