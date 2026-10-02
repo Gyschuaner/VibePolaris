@@ -44,6 +44,7 @@
 | 034 | 语义化版本、锁文件、单体仓库、环境变量、源映射、代码检查器、格式化器、表达式、函数、参数 | VBP-053 · [149–158 文案更新与上线记录](VBP-053-content-refresh-149-158.md) |
 | 035 | 返回值、条件分支、循环、对象、数组、客户端—服务器、单体架构、微服务、无服务器架构、容器 | VBP-054 · [159–168 文案更新与上线记录](VBP-054-content-refresh-159-168.md) |
 | 036 | 响应式布局、CSS、表单、HTML、JavaScript、DOM、框架与库、静态站点与服务端渲染、部署与托管、库 | VBP-055 · [169–178 文案更新与上线记录](VBP-055-content-refresh-169-178.md) |
+| 040 | 容器镜像、服务发现、可观测性、SAST、密钥扫描、依赖扫描、威胁建模、工具审批、权限边界、XSS | VBP-059 · [209–218 文案更新与上线记录](VBP-059-content-refresh-209-218.md) |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 155 页，另有 9 页历史基准；其余 137 页待处理，新增候选不计入完成数。
 
@@ -366,15 +367,15 @@
 | event-driven-architecture | 事件驱动架构 | 技术栈 | 015 · 本地验收及 review 通过 |
 | serverless | 无服务器架构 | 技术栈 | 035 · 本地验收及 review 通过 |
 | container | 容器 | 技术栈 | 035 · 本地验收及 review 通过 |
-| container-image | 容器镜像 | 技术栈 | 待处理 |
-| service-discovery | 服务发现 | 技术栈 | 待处理 |
-| observability | 可观测性 | 技术栈 | 待处理 |
-| sast | 静态应用安全测试 | 技术栈 | 待处理 |
-| secret-scanning | 密钥扫描 | 技术栈 | 待处理 |
-| dependency-scanning | 依赖扫描 | 技术栈 | 待处理 |
-| threat-modeling | 威胁建模 | 技术栈 | 待处理 |
-| tool-approval | 工具审批 | AI·Agent | 待处理 |
+| container-image | 容器镜像 | 技术栈 | 040 · 生产已发布 |
+| service-discovery | 服务发现 | 技术栈 | 040 · 生产已发布 |
+| observability | 可观测性 | 技术栈 | 040 · 生产已发布 |
+| sast | 静态应用安全测试 | 技术栈 | 040 · 生产已发布 |
+| secret-scanning | 密钥扫描 | 技术栈 | 040 · 生产已发布 |
+| dependency-scanning | 依赖扫描 | 技术栈 | 040 · 生产已发布 |
+| threat-modeling | 威胁建模 | 技术栈 | 040 · 生产已发布 |
+| tool-approval | 工具审批 | AI·Agent | 040 · 生产已发布 |
 | skill | 技能 | AI·Agent | 030 · 本地验收及 review 通过（新增词条） |
 | evaluation-dataset | 评测数据集 | AI·Agent | 024 · 本地验收及 review 通过 |
-| permission-boundary | 权限边界 | AI·Agent | 待处理 |
-| xss | 跨站脚本 | 技术栈 | 待处理 |
+| permission-boundary | 权限边界 | AI·Agent | 040 · 生产已发布 |
+| xss | 跨站脚本 | 技术栈 | 040 · 生产已发布 |
