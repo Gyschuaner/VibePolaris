@@ -4,3 +4,4 @@ export { ObservabilityLesson } from "./observability";
 export { SastLesson } from "./sast";
 export { SecretScanningLesson } from "./secret-scanning";
 export { DependencyScanningLesson } from "./dependency-scanning";
+export { ThreatModelingLesson } from "./threat-modeling";
