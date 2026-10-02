@@ -6290,8 +6290,8 @@
   },
   {
     "slug": "mvp",
-    "lead": "课程产品第一版要验证“有人愿意学”，是否需要先做社区、排行榜和证书？",
-    "definition": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本，范围由要获得的证据决定。",
+    "lead": "课程产品第一版要验证“有人愿意学”，是否需要先做社区和证书？",
+    "definition": "MVP 是能向目标用户提供核心价值并验证关键假设的最小可用版本。范围由要拿到的证据决定，而要什么证据由关键假设决定。",
     "boundary": "MVP 不是质量低劣的半成品；核心流程、数据正确性、安全和基本可用性不能用“最小”省略。",
     "sceneKind": "assembly",
     "sceneTitle": "一项课程假设怎样收敛成首版范围",
@@ -6314,7 +6314,7 @@
       {
         "id": "progress",
         "label": "学习进度",
-        "detail": "记录完成位置",
+        "detail": "记录学到哪一步",
         "icon": "chart",
         "group": "核心"
       },
@@ -6363,19 +6363,19 @@
         "id": "community-evidence",
         "from": "community",
         "to": "evidence",
-        "label": "非首轮必要"
+        "label": "暂不纳入首版"
       },
       {
         "id": "certificate-evidence",
         "from": "certificate",
         "to": "evidence",
-        "label": "非首轮必要"
+        "label": "暂不纳入首版"
       }
     ],
     "frames": [
       {
         "label": "写清假设",
-        "note": "要验证的是初学者是否愿意完成一次短课，而不是“产品是否受欢迎”。",
+        "note": "这轮只看一个可观察动作：初学者是否完成一次短课；“产品是否受欢迎”范围太大，不能直接用这一轮判断。",
         "activeIds": [
           "hypothesis"
         ],
@@ -6411,7 +6411,7 @@
       },
       {
         "label": "加入必要记录",
-        "note": "进度记录让用户能够继续，也能观察是否完成。",
+        "note": "进度记录让用户能回到上次位置，也能观察是否完成。",
         "activeIds": [
           "lesson",
           "progress"
@@ -6424,7 +6424,7 @@
           "certificate"
         ],
         "values": {
-          "progress": "started → completed"
+          "progress": "开始 → 完成"
         },
         "activeEdgeIds": [
           "lesson-progress"
@@ -6432,7 +6432,7 @@
       },
       {
         "label": "推迟旁支功能",
-        "note": "社区和证书不影响当前假设，进入后续候选而非首版。",
+        "note": "本轮先验证课程是否能让用户完成，社区和证书进入下一版再单独验证。",
         "activeIds": [
           "community",
           "certificate"
@@ -6444,14 +6444,14 @@
         ],
         "mutedIds": [],
         "values": {
-          "community": "later",
-          "certificate": "later"
+          "community": "下一版",
+          "certificate": "下一版"
         },
         "activeEdgeIds": []
       },
       {
         "label": "收集证据",
-        "note": "完成率说明行为，访谈补充未完成的原因。",
+        "note": "完成率说明有多少人学完，访谈补充没学完的原因。",
         "activeIds": [
           "progress",
           "evidence"
@@ -6489,18 +6489,38 @@
           "correct": false
         }
       ],
-      "success": "范围可以小，核心流程的基本质量不能省。",
+      "success": "范围可以小，核心流程的基本可用性不能省。",
       "retry": "MVP 缩小的是验证范围，不是把风险留给用户。"
     },
     "prompt": {
       "title": "确定一个 MVP 的验证范围",
-      "text": "请写出本次要验证的唯一关键假设、目标用户、核心使用场景和可观察证据。把功能分为直接产生核心价值、收集验证证据、必须满足的安全与正确性、可推迟四组，并说明每个保留项如何服务当前假设。"
+      "text": "请先写下你的产品想法，再列出本次要验证的一条关键假设、目标用户、核心使用场景和可观察证据。把功能分为直接产生核心价值、收集验证证据、必须满足的安全与正确性、可推迟四组，并说明每个保留项如何服务当前假设。"
     },
     "sources": [
       {
         "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-alpha-phase-works",
         "label": "GOV.UK Service Manual · Alpha phase",
-        "note": "服务设计与无障碍要求"
+        "note": "用最小范围测试高风险假设"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/core-principles-agile",
+        "label": "GOV.UK Service Manual · Agile principles",
+        "note": "围绕用户需求迭代并尽早获取反馈"
+      },
+      {
+        "url": "https://www.gov.uk/service-manual/agile-delivery/deciding-on-priorities",
+        "label": "GOV.UK Service Manual · Priorities",
+        "note": "根据用户研究和表现分析确定优先级"
+      },
+      {
+        "url": "https://www.gov.uk/government/publications/nuar-minimum-viable-product-mvp/nuar-minimum-viable-product-mvp",
+        "label": "GOV.UK · NUAR MVP",
+        "note": "先提供核心功能，再用反馈持续完善"
+      },
+      {
+        "url": "https://assets.publishing.service.gov.uk/media/618521c1d3bf7f55fe946e98/Guide_on_Assurance_for_Agile_Delivery_of_Digital_Services_V1.2_October_2021.docx.pdf",
+        "label": "UK Government · Agile delivery assurance",
+        "note": "安全上线所需的最小功能与后续迭代"
       }
     ]
   },
