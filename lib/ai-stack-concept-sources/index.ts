@@ -10,3 +10,4 @@ export { threatModelingSources } from "./threat-modeling";
 export { toolApprovalSources } from "./tool-approval";
 export { permissionBoundarySources } from "./permission-boundary";
 export { xssSources } from "./xss";
+export { toolChoiceSources } from "./tool-choice";
