@@ -169,45 +169,45 @@
   },
   {
     "slug": "responsive",
-    "lead": "桌面三栏放到 390px 宽的手机上，应该缩小内容还是改变布局？",
-    "definition": "响应式布局根据容器宽度、内容需要和输入方式调整结构，让同一份内容保持可读和可操作。",
-    "boundary": "响应式不是把桌面页面等比缩小，也不是按每个设备型号维护一份页面。",
+    "lead": "三栏卡片放进 390px 宽的手机视口时，应该把字缩成 10px，还是让卡片换行？",
+    "definition": "响应式布局让元素根据它所在容器的可用空间重排。流式布局、Grid、Flexbox、媒体查询和容器查询可以共同决定列数、间距与局部尺寸；内容开始拥挤时切换规则的位置叫断点。",
+    "boundary": "响应式不是按设备型号复制页面，也不是把文字缩小到不能读。设计要保留信息、阅读顺序和可操作性；地图、表格等本来需要二维操作的区域可以保留横向滚动，不必强行改成单列。",
     "sceneKind": "transform",
-    "sceneTitle": "三张卡片如何随可用宽度重排",
+    "sceneTitle": "可用空间变窄，先找内容失效点",
     "actionLabel": "收窄容器",
     "actors": [
       {
         "id": "viewport",
-        "label": "可用宽度",
-        "detail": "1280 px",
+        "label": "视口宽度",
+        "detail": "1280 CSS px",
         "icon": "browser",
         "group": "环境"
       },
       {
         "id": "container",
         "label": "内容容器",
-        "detail": "三列网格",
+        "detail": "三列且有最低卡片宽度",
         "icon": "layout",
         "group": "规则"
       },
       {
         "id": "card-a",
         "label": "主卡片",
-        "detail": "完整标题与摘要",
+        "detail": "标题和摘要保持可读",
         "icon": "component",
         "group": "内容"
       },
       {
         "id": "card-b",
         "label": "次卡片",
-        "detail": "完整标题与摘要",
+        "detail": "不靠缩小字号挤进去",
         "icon": "component",
         "group": "内容"
       },
       {
         "id": "controls",
         "label": "操作区",
-        "detail": "横向排列",
+        "detail": "窄屏换行且保留点击高度",
         "icon": "gear",
         "group": "操作"
       }
@@ -223,13 +223,19 @@
         "id": "container-cards",
         "from": "container",
         "to": "card-a",
-        "label": "重排内容"
+        "label": "按最低宽度重排"
+      },
+      {
+        "id": "container-controls",
+        "from": "container",
+        "to": "controls",
+        "label": "重新安排操作"
       }
     ],
     "frames": [
       {
-        "label": "桌面三栏",
-        "note": "空间充足时，卡片并排展示，操作区保持一行。",
+        "label": "空间充足",
+        "note": "1280 CSS px 下，三张卡片并排，操作区也能保持一行。",
         "activeIds": [
           "viewport",
           "container"
@@ -237,16 +243,16 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
-          "viewport": "1280 px",
-          "container": "3 columns"
+          "viewport": "1280 CSS px",
+          "container": "3 columns · readable"
         },
         "activeEdgeIds": [
           "viewport-container"
         ]
       },
       {
-        "label": "开始拥挤",
-        "note": "宽度降到 760px，摘要先缩短，主卡片仍保留更多空间。",
+        "label": "出现拥挤",
+        "note": "760px 时标题接近卡片的最低可读宽度，断点应根据这个失效点决定。",
         "activeIds": [
           "viewport",
           "card-a",
@@ -256,7 +262,7 @@
         "mutedIds": [],
         "values": {
           "viewport": "760 px",
-          "container": "2 columns"
+          "container": "2 columns · breakpoint"
         },
         "activeEdgeIds": [
           "viewport-container",
@@ -264,8 +270,8 @@
         ]
       },
       {
-        "label": "改单列",
-        "note": "390px 下卡片改为单列，不压缩字号和点击区域。",
+        "label": "改为两列",
+        "note": "中等宽度先改为两列，字号保持不变，卡片仍按顺序阅读。",
         "activeIds": [
           "container",
           "card-a",
@@ -276,16 +282,16 @@
         ],
         "mutedIds": [],
         "values": {
-          "viewport": "390 px",
-          "container": "1 column"
+          "viewport": "620 CSS px",
+          "container": "2 columns · readable"
         },
         "activeEdgeIds": [
           "container-cards"
         ]
       },
       {
-        "label": "操作下移",
-        "note": "按钮换行并保持 44px 点击高度，内容仍可顺序阅读。",
+        "label": "手机单列",
+        "note": "390px 下卡片改为单列，按钮换行并保持 44px 点击高度。",
         "activeIds": [
           "controls"
         ],
@@ -297,21 +303,26 @@
         ],
         "mutedIds": [],
         "values": {
+          "viewport": "390 CSS px",
+          "container": "1 column",
           "controls": "纵向 · 44px"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "container-cards",
+          "container-controls"
+        ]
       }
     ],
-    "insight": "响应式改变的是信息关系和排列，不是把所有东西一起缩小。",
+    "insight": "响应式先保护内容，再改变排列；断点由布局什么时候失效决定。",
     "quiz": {
-      "question": "手机端标题已经挤成四行，第一步应检查什么？",
+      "question": "390px 下三栏标题挤成四行，哪项更符合响应式设计？",
       "options": [
         {
-          "label": "容器与内容在哪个宽度开始失去可读性",
+          "label": "观察内容失效点，再让容器改列或换行",
           "correct": true
         },
         {
-          "label": "为每款手机写一个设备判断",
+          "label": "为每款手机复制一套页面",
           "correct": false
         },
         {
@@ -324,13 +335,28 @@
     },
     "prompt": {
       "title": "检查页面的响应式规则",
-      "text": "请在 360px、768px 和 1280px 三种宽度下检查当前页面，记录最先出现换行异常、横向滚动、点击区过小或层级混乱的位置。根据内容失效点调整容器、网格和操作区，不按设备型号添加规则，并验证键盘焦点与阅读顺序保持一致。"
+      "text": "请在 360px、768px 和 1280px 三种视口宽度下检查当前页面，记录最先出现换行异常、横向滚动、点击区过小或阅读顺序混乱的位置。把这些宽度当作测试条件，不按设备型号复制页面；根据内容失效点决定流式布局、媒体查询或容器查询，并验证键盘焦点与阅读顺序保持一致。"
     },
     "sources": [
       {
         "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design",
         "label": "MDN · Responsive design",
         "note": "浏览器行为与常见用法"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries",
+        "label": "MDN · Media query fundamentals",
+        "note": "媒体查询与内容断点"
+      },
+      {
+        "url": "https://www.w3.org/TR/css-contain-3/",
+        "label": "W3C · CSS Containment Level 3",
+        "note": "容器查询按元素尺寸判断"
+      },
+      {
+        "url": "https://www.w3.org/WAI/WCAG21/Understanding/reflow",
+        "label": "W3C WAI · Reflow",
+        "note": "窄视口回流与二维布局例外"
       }
     ]
   },
