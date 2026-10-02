@@ -17,3 +17,4 @@ export { agentOrchestrationSources } from "./agent-orchestration";
 export { handoffSources } from "./handoff";
 export { subagentSources } from "./subagent";
 export { humanInTheLoopSources } from "./human-in-the-loop";
+export { guardrailSources } from "./guardrail";
