@@ -208,10 +208,12 @@
     "slug": "structured-output",
     "mechanism": "应用预先声明输出结构，模型返回的数据需满足指定字段、类型和嵌套关系，便于程序直接解析。",
     "misconception": "结构合法只证明形状正确，不证明字段值真实，也不代表业务约束全部满足。",
-    "demoSignature": "输入：要求{name:string,count:integer}，初稿为“3杯拿铁”；中间：解析失败→生成{name:'拿铁',count:3}并通过2个类型检查；输出：合法对象。可视化：文本卡片折叠成字段树，错误灯由红转绿。 建议4帧：自然语言结果出现、解析器报错、字段树自动成形、两项类型检查转绿；交互：把count改成字符串，立即查看验证反馈。",
+    "demoSignature": "输入：原始资料金额120，目标schema为amount: integer、required: amount、additionalProperties: false；中间：候选120与999通过形状，字符串\"120\"被排除，截断/拒绝/空输出走终止分支；输出：120同时通过JSON解析、字段形状和金额事实，999仅格式合规但事实不符。可视化：候选卡片经过格式闸门后进入三项检查；交互：切换schema/只要JSON/自然语言和结束情境，观察候选与检查状态。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/structured-outputs",
-      "https://json-schema.org/draft/2020-12/json-schema-core"
+      "https://developers.openai.com/api/docs/guides/structured-outputs",
+      "https://json-schema.org/understanding-json-schema/reference/object",
+      "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+      "https://arxiv.org/pdf/2307.09702"
     ],
     "rewriteRisk": "别把JSON外观当成结构化输出；要明确约束、验证结果和语义校验仍是两层。",
     "nearDuplicates": [
@@ -237,10 +239,12 @@
     "slug": "function-calling",
     "mechanism": "模型根据工具定义生成函数名和结构化参数；宿主程序验证并执行函数，再把结果交回模型继续处理。",
     "misconception": "模型不会因为输出了调用参数就自动执行函数；函数调用也不等于MCP，更不等于完整智能体。",
-    "demoSignature": "输入：“查订单A102”，可用工具search_order(id)；中间：模型产出{id:'A102'}，应用校验1个必填字段并执行；输出：工具返回status='shipped'。可视化：模型—应用—工具三段请求轨迹。 建议5帧：用户请求进入模型、函数名与参数生成、应用侧校验、工具执行、结果回到模型；交互：故意清空id，观察流程停在校验帧。",
+    "demoSignature": "输入：用户请求查订单A102；中间：模型返回call_01、函数名get_order和参数{order_id:A102}，应用依次检查注册名、唯一字段、格式与权限；输出：执行1次后回传{order_id:A102,status:shipped}并绑定同一call_id，未知函数、非法JSON、无权访问或查无订单均不执行或不通过。可视化：模型请求→应用注册表→执行回执三段轨迹；交互：切换未知函数、参数文本和权限，观察流程停点。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/function-calling",
-      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+      "https://developers.openai.com/api/docs/guides/function-calling",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://arxiv.org/pdf/2302.04761"
     ],
     "rewriteRisk": "必须把“建议调用”和“代码实际执行”分成两个节点，不能写成模型直接操作系统。",
     "nearDuplicates": [
@@ -253,7 +257,7 @@
     "slug": "tool-choice",
     "mechanism": "当多个工具可用时，系统决定让模型自动选择、强制选择某个工具或禁止调用；选择结果仍需经过参数与权限检查。",
     "misconception": "工具选择不是工具执行，也不是让模型获得工具背后的全部权限。",
-    "demoSignature": "输入：“把会议改到周五”，候选calendar_read/calendar_update/web_search；中间：相关性0.42/0.91/0.08，策略又要求写操作审批；输出：选中calendar_update但停在待审批。可视化：候选分数条与审批闸门。 建议4帧：三个工具围绕请求出现、相关性条增长、写操作审批闸门落下、选中工具停在闸门前；交互：切换“自动/强制/禁用”观察路径。",
+    "demoSignature": "输入：把会议改到周五；中间：候选calendar_read、calendar_update、web_search出现，auto/required/none改变可提出的选择，写操作停在待校验；输出：选中calendar_update但尚未执行，none则不调用工具。可视化：候选工具卡片经过策略闸门停在执行前；交互：切换auto、required、none观察路径。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
@@ -621,9 +625,12 @@
     "slug": "prompt-caching",
     "mechanism": "服务端复用相同提示前缀的已处理计算，后续请求只需处理变化的尾部，从而降低首token延迟或计费输入。",
     "misconception": "缓存通常按前缀命中，不是把整段最终答案永久保存；改动前部内容可能让命中失效。",
-    "demoSignature": "输入：两次请求共享6000 token前缀，仅末尾问题不同；中间：首请求缓存0、次请求命中6000，首token耗时1.8s→0.7s；输出：答案仍分别生成。可视化：前缀条由灰变绿并对比耗时。 建议4帧：首请求6000-token前缀逐段处理、前缀变成缓存块、第二请求只处理尾部、首token耗时从1.8降至0.7秒；交互：修改前缀开头或末尾比较命中。",
+    "demoSignature": "输入：四段输入由指令、资料、格式和问题组成；中间：首次处理并保存前三段，下一次只改问题时复用3段，改资料时复用1段，改指令或更换模型/失效缓存时复用0段；输出：回答仍按本次问题新生成。可视化：四段输入的复用/重算状态与计算篮同步变化；交互：切换改动位置、模型是否相同和缓存是否有效。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/prompt-caching"
+      "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "https://docs.vllm.ai/en/latest/design/prefix_caching/",
+      "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "https://papers.nips.cc/paper_files/paper/2024/file/724be4472168f31ba1c9ac630f15dec8-Paper-Conference.pdf"
     ],
     "rewriteRisk": "性能数字必须标为案例观测；不要承诺固定节省比例或把它与响应缓存混淆。",
     "nearDuplicates": [
@@ -646,10 +653,12 @@
     "slug": "model-routing",
     "mechanism": "路由器根据任务类型、质量要求、延迟、成本或实时状态，为每个请求选择合适模型。",
     "misconception": "模型路由不是失败后的备用切换；前者在请求前做选择，后者在首选模型失败后接管。",
-    "demoSignature": "输入：100个请求含70个抽取、30个复杂推理；中间：路由分数使轻量模型承接65个、强模型35个，平均成本0.12→0.07元；输出：质量门槛仍保持90%。可视化：请求流按类型分到两条模型泳道。 建议5帧：100请求按特征着色、路由器打分、65/35分入两模型、成本条0.12→0.07、质量门槛保持90%；交互：调质量权重观察分流比例。",
+    "demoSignature": "输入：提取订单金额；中间：A=96/100、1单位，B=97/100、3单位，门槛90时选A；切到条款则A=76排除、B=92，切到截图则A不支持、B=94；门槛98时没有候选；输出：只产生调用前的选择，不执行回答。可视化：请求分叉到候选卡片，合格与排除状态随任务和门槛变化；交互：切换任务、门槛和B可用性。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2406.18665",
-      "https://platform.openai.com/docs/guides/production-best-practices"
+      "https://arxiv.org/pdf/2406.18665",
+      "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html",
+      "https://arxiv.org/pdf/2305.05176",
+      "https://docs.litellm.ai/docs/routing"
     ],
     "rewriteRisk": "不要把演示成本写成平台定价事实；需说明路由目标和回退是不同阶段。",
     "nearDuplicates": [
@@ -661,10 +670,12 @@
     "slug": "model-fallback",
     "mechanism": "首选模型遇到超时、限流、不可用或不满足最低质量时，系统按预设条件切到备用模型并记录降级。",
     "misconception": "备用模型不是负载均衡，也不保证输出完全等价；能力、格式和上下文限制都要重新校验。",
-    "demoSignature": "输入：请求发给主模型，2秒后返回HTTP 429；中间：重试计数0→1仍失败，路由切到备用模型并把能力标记full→reduced；输出：备用响应成功且附降级状态。可视化：请求轨迹在429节点转入橙色支路。 建议5帧：请求进入主模型、2秒超时后出现429、重试计数0→1、路径转入备用模型、降级响应返回；交互：模拟429/超时/格式错三种触发。",
+    "demoSignature": "输入：提取金额120；中间：主调用可选429/超时/401/成功，备用可选支持amount、返回错误字段、不支持结构化输出或不可用，总尝试上限包含主调用；输出：只有允许且兼容时才发起备用，返回{amount:120}才通过，否则保留未完成。可视化：主调用回执后分流到策略卡，再进入备用回执或停止状态；交互：切换主错误、备用能力与尝试上限。",
     "sourceUrls": [
+      "https://docs.litellm.ai/docs/routing",
       "https://www.rfc-editor.org/rfc/rfc6585#section-4",
-      "https://platform.openai.com/docs/guides/production-best-practices"
+      "https://github.com/Portkey-AI/portkey-cookbook/blob/main/ai-gateway/how-to-setup-fallback-from-openai-to-azure-openai.md",
+      "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html"
     ],
     "rewriteRisk": "需要展示触发条件和降级差异，不能只写“模型A不行就换B”。",
     "nearDuplicates": [
@@ -1418,10 +1429,12 @@
     "slug": "evaluation-dataset",
     "mechanism": "评测数据集是一组带输入、期望行为、参考答案或元数据的样本，供评测过程重复运行。",
     "misconception": "它不是评分器，也不是分数；数据泄漏、分布偏差和标注错误会让评测结论失真。",
-    "demoSignature": "输入：30条工单样本按简单/边界/失败各10条；中间：去重后30→27，人工复核修正2个标签，划分训练0条/评测27条；输出：版本化数据集v2。可视化：建议5帧的样本篮分层、去重和改标；交互：筛分类查看覆盖缺口。",
+    "demoSignature": "输入：三个虚构工单 A/B/C，每单两条关联问题；中间：逐行交替把同一工单拆到开发/留出，按工单分组则整组留出 C；输出：分组模式没有重叠但留出只覆盖关键类，仍需检查覆盖。可视化：工单卡片在开发与留出篮之间移动，重叠工单亮警告；交互：切换逐行/按组并勾选工单，观察泄漏与覆盖提示。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/evals",
-      "https://www.nist.gov/itl/ai-risk-management-framework"
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/pdf/1803.09010",
+      "https://developers.google.com/machine-learning/crash-course/overfitting/dividing-datasets",
+      "https://scikit-learn.org/stable/modules/cross_validation.html"
     ],
     "rewriteRisk": "不要把训练数据和评测数据混用；后续正文需写版本、来源和污染风险。",
     "nearDuplicates": [
