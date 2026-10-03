@@ -621,9 +621,12 @@
     "slug": "prompt-caching",
     "mechanism": "服务端复用相同提示前缀的已处理计算，后续请求只需处理变化的尾部，从而降低首token延迟或计费输入。",
     "misconception": "缓存通常按前缀命中，不是把整段最终答案永久保存；改动前部内容可能让命中失效。",
-    "demoSignature": "输入：两次请求共享6000 token前缀，仅末尾问题不同；中间：首请求缓存0、次请求命中6000，首token耗时1.8s→0.7s；输出：答案仍分别生成。可视化：前缀条由灰变绿并对比耗时。 建议4帧：首请求6000-token前缀逐段处理、前缀变成缓存块、第二请求只处理尾部、首token耗时从1.8降至0.7秒；交互：修改前缀开头或末尾比较命中。",
+    "demoSignature": "输入：四段输入由指令、资料、格式和问题组成；中间：首次处理并保存前三段，下一次只改问题时复用3段，改资料时复用1段，改指令或更换模型/失效缓存时复用0段；输出：回答仍按本次问题新生成。可视化：四段输入的复用/重算状态与计算篮同步变化；交互：切换改动位置、模型是否相同和缓存是否有效。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/prompt-caching"
+      "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "https://docs.vllm.ai/en/latest/design/prefix_caching/",
+      "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "https://papers.nips.cc/paper_files/paper/2024/file/724be4472168f31ba1c9ac630f15dec8-Paper-Conference.pdf"
     ],
     "rewriteRisk": "性能数字必须标为案例观测；不要承诺固定节省比例或把它与响应缓存混淆。",
     "nearDuplicates": [
