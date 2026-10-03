@@ -29,6 +29,7 @@ import { RetrievalTermPage } from "./ai-stack-pages/retrieval";
 import { ChunkingTermPage } from "./ai-stack-pages/chunking";
 import { RerankingTermPage } from "./ai-stack-pages/reranking";
 import { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
+import { MultimodalTermPage } from "./ai-stack-pages/multimodal";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -60,6 +61,7 @@ export { RetrievalTermPage } from "./ai-stack-pages/retrieval";
 export { ChunkingTermPage } from "./ai-stack-pages/chunking";
 export { RerankingTermPage } from "./ai-stack-pages/reranking";
 export { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
+export { MultimodalTermPage } from "./ai-stack-pages/multimodal";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -93,4 +95,5 @@ export const aiStackArticlePages = {
   "chunking": ChunkingTermPage,
   "reranking": RerankingTermPage,
   "generative-ai": GenerativeAiTermPage,
+  multimodal: MultimodalTermPage,
 } as const;

@@ -20,14 +20,17 @@
   },
   {
     "slug": "multimodal",
-    "mechanism": "系统把文字、图像、音频等不同类型的输入编码并对齐，再在同一次任务里联合使用这些信息。",
-    "misconception": "能上传图片不代表模型会生成图片；多模态描述的是输入输出模态的组合，不是能力强弱。",
-    "demoSignature": "输入：一张含3个红杯的照片和问题“有几个红杯”；中间：图像区域计数由5个候选收敛为3个，文字问题锁定颜色；输出：“3个”。可视化：图片框选与文本对齐线。 建议4帧：照片与问题分两路进入、杯子区域被框选、颜色条件筛掉2个区域、答案数字落下；交互：点击任一框可查看它为何计入或排除。",
+    "mechanism": "多模态系统把文字、图片、音频或其他输入编码后放进同一任务流程，模型根据实际进入请求的模态共同理解。",
+    "misconception": "多模态不是“什么都能看”；支持的模态、格式和分辨率有边界，缺少图片时不能凭文字问题猜出视觉事实。",
+    "demoSignature": "文字问题先无票面图片；加入图片后显示日期回答；移除图片后转为缺少证据。证据：输入通道卡片与回答范围同步变化。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2303.08774",
-      "https://platform.openai.com/docs/guides/images-vision"
+      "https://platform.openai.com/docs/guides/images-vision",
+      "https://ai.google.dev/gemini-api/docs/vision",
+      "https://arxiv.org/abs/2103.00020",
+      "https://arxiv.org/abs/2204.14198",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
     ],
-    "rewriteRisk": "避免用“像人一样看懂”这种拟人说法；要明确是哪两种模态、如何合并信息。",
+    "rewriteRisk": "用具体的票面例子解释输入通道，不把“视觉模型”写成自动拥有所有图像事实。",
     "nearDuplicates": [
       "generative-ai"
     ]
