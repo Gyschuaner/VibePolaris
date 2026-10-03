@@ -28,7 +28,7 @@ export const nosqlSources: Source[] = [
   make("MongoDB", "What Is a Document Database?", "https://www.mongodb.com/resources/basics/databases/document-databases", ["nosql-models", "nosql-query"]),
   make("Amazon Web Services", "Dynamo: Amazon's Highly Available Key-value Store", "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf", ["nosql-tradeoff", "nosql-boundary", "nosql-selection"]),
   make("AWS", "What is Amazon DynamoDB?", "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html", ["nosql-models", "nosql-tradeoff"]),
-  make("Apache Cassandra", "Data Modeling", "https://cassandra.apache.org/doc/stable/cassandra/data_modeling/intro.html", ["nosql-query", "nosql-boundary", "nosql-failure"]),
+  make("Apache Cassandra", "Data Modeling", "https://cassandra.apache.org/doc/stable/cassandra/developing/data-modeling/intro.html", ["nosql-query", "nosql-boundary", "nosql-failure"]),
 ];
 
 export const rowSources: Source[] = [
