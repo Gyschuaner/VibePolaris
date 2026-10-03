@@ -45,7 +45,7 @@
 | 035 | 返回值、条件分支、循环、对象、数组、客户端—服务器、单体架构、微服务、无服务器架构、容器 | VBP-054 · [159–168 文案更新与上线记录](VBP-054-content-refresh-159-168.md) |
 | 036 | 响应式布局、CSS、表单、HTML、JavaScript、DOM、框架与库、静态站点与服务端渲染、部署与托管、库 | VBP-055 · [169–178 文案更新与上线记录](VBP-055-content-refresh-169-178.md) |
 | 040 | 容器镜像、服务发现、可观测性、SAST、密钥扫描、依赖扫描、威胁建模、工具审批、权限边界、XSS | VBP-059 · [209–218 文案更新与上线记录](VBP-059-content-refresh-209-218.md) |
-| 041 | 工具选择、工具结果、规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调 | VBP-060 · [219–228 文案更新与上线记录](VBP-060-content-refresh-219-228.md) · 十条本地实现完成，待统一发布 |
+| 041 | 工具选择、工具结果、规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调 | VBP-060 · [219–228 文案更新与上线记录](VBP-060-content-refresh-219-228.md) · 十条统一发布，生产已上线 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 155 页，另有 9 页历史基准；其余 137 页待处理，新增候选不计入完成数。
 
@@ -308,20 +308,20 @@
 | structured-output | 结构化输出 | AI·Agent | 026 · 本地验收及 review 通过 |
 | json-schema | JSON Schema | AI·Agent | 004 · 本地验收及 review 通过 |
 | function-calling | 函数调用 | AI·Agent | 026 · 本地验收及 review 通过 |
-| tool-choice | 工具选择 | AI·Agent | 待处理 |
-| tool-result | 工具结果 | AI·Agent | 待处理 |
+| tool-choice | 工具选择 | AI·Agent | 041 · 生产已发布 |
+| tool-result | 工具结果 | AI·Agent | 041 · 生产已发布 |
 | agent-loop | 智能体循环 | AI·Agent | 基准 · 待最终复核 |
-| plan-and-execute | 规划与执行 | AI·Agent | 待处理 |
-| agent-orchestration | 智能体编排 | AI·Agent | 待处理 |
-| handoff | 交接 | AI·Agent | 待处理 |
-| subagent | 子智能体 | AI·Agent | 待处理 |
-| human-in-the-loop | 人在回路 | AI·Agent | 待处理 |
-| guardrail | 护栏 | AI·Agent | 待处理 |
-| moderation | 内容审核 | AI·Agent | 待处理 |
+| plan-and-execute | 规划与执行 | AI·Agent | 041 · 生产已发布 |
+| agent-orchestration | 智能体编排 | AI·Agent | 041 · 生产已发布 |
+| handoff | 交接 | AI·Agent | 041 · 生产已发布 |
+| subagent | 子智能体 | AI·Agent | 041 · 生产已发布 |
+| human-in-the-loop | 人在回路 | AI·Agent | 041 · 生产已发布 |
+| guardrail | 护栏 | AI·Agent | 041 · 生产已发布 |
+| moderation | 内容审核 | AI·Agent | 041 · 生产已发布 |
 | eval | 评测 | AI·Agent | 023 · 本地验收及 review 通过 |
 | benchmark | 基准测试 | AI·Agent | 024 · 本地验收及 review 通过 |
 | grader | 评分器 | AI·Agent | 024 · 本地验收及 review 通过 |
-| fine-tuning | 微调 | AI·Agent | 待处理 |
+| fine-tuning | 微调 | AI·Agent | 041 · 生产已发布 |
 | embedding | 嵌入 | AI·Agent | 020 · 本地验收及 review 通过 |
 | vector-store | 向量存储 | AI·Agent | 022 · 本地验收及 review 通过 |
 | retrieval | 检索 | AI·Agent | 021 · 本地验收及 review 通过 |
