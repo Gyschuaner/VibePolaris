@@ -19,3 +19,4 @@ export { ToolApprovalLesson } from "./tool-approval";
 export { PermissionBoundaryLesson } from "./permission-boundary";
 export { XssLesson } from "./xss";
 export { ContextWindowLesson } from "./context-window";
+export { AgentLoopLesson } from "./agent-loop";

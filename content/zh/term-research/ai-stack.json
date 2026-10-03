@@ -262,14 +262,17 @@
   },
   {
     "slug": "agent-loop",
-    "mechanism": "智能体在“读取当前状态—选择动作—接收结果—更新状态—判断停止”之间循环，直到完成、失败或达到限制。",
-    "misconception": "一次函数调用不是循环；若没有状态更新、停止条件和失败处理，只能算单步工具调用。",
-    "demoSignature": "输入：任务“找到低于300元且有货的耳机”，预算3次调用；中间：搜索得8项→筛价得3项→查库存得1项，调用计数0→3；输出：返回唯一候选并停止。可视化：循环轨道上同步显示候选数与剩余步数。 建议6帧：任务与3步预算出现、搜索得到8项、筛价剩3项、库存剩1项、停止条件亮起、结果输出；交互：逐步播放或修改预算上限。",
+    "mechanism": "智能体在读取状态、执行动作、接收结果、更新状态和停止判断之间循环，直到完成、失败或达到限制。",
+    "misconception": "一次工具调用不是循环；没有状态更新和停止条件的重复调用不能证明任务完成。",
+    "demoSignature": "修复按钮：清单 1/2 与测试失败进入循环，改状态逻辑后再测，测试通过时清单 2/2 并停止；交互：切换最大轮数 2/3，观察达到上限和完成两种终态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/running_agents/",
-      "https://arxiv.org/abs/2210.03629"
+      "https://arxiv.org/abs/2210.03629",
+      "https://www.anthropic.com/research/building-effective-agents",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://docs.langchain.com/oss/python/langgraph/overview"
     ],
-    "rewriteRisk": "正文要让读者看到状态每轮变化，避免把“思考—行动—观察”写成空泛三段式。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "agent",
       "function-calling",
