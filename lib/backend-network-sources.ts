@@ -44,3 +44,10 @@ export const columnSources: Source[] = [
   make("PostgreSQL", "Select Lists", "https://www.postgresql.org/docs/current/queries-select-lists.html", ["column-operations"]),
   make("SQLite", "Datatypes In SQLite", "https://www.sqlite.org/datatype3.html", ["column-types", "column-boundary"]),
 ];
+
+export const acidSources: Source[] = [
+  make("PostgreSQL", "Transactions", "https://www.postgresql.org/docs/current/tutorial-transactions.html", ["acid-atomicity", "acid-consistency"]),
+  make("PostgreSQL", "Write-Ahead Logging", "https://www.postgresql.org/docs/current/wal-intro.html", ["acid-durability", "acid-boundary"]),
+  make("IBM Research", "Principles of Transaction-Oriented Database Recovery", "https://research.ibm.com/publications/principles-of-transaction-oriented-database-recovery", ["acid-durability"]),
+  make("Microsoft Learn", "Transaction locking and row versioning", "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide", ["acid-isolation", "acid-boundary"]),
+];

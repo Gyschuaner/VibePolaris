@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources } from "@/lib/backend-network-sources";
+import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -375,4 +375,58 @@ const columnSpec: PageSpec = {
 
 export function ColumnTermPage() {
   return renderBackendNetworkPage(columnSpec);
+}
+
+const acidSpec: PageSpec = {
+  slug: "acid",
+  title: "ACID",
+  subtitle: "ACID · 事务在成功、并发与故障中的四个承诺",
+  intro: "转账要么从一个账户扣款并给另一个账户入账，要么两边都不改变。ACID 把事务中常被期待的四类属性拆开：原子性、一致性、隔离性和持久性；它们分别回答不同的失败问题。",
+  hero: {
+    question: "一次转账遇到断电和并发读取",
+    nodes: [["事务", "扣款 + 入账"], ["四项属性", "A · C · I · D"], ["结果", "全成 / 全败"]],
+    proof: "ACID 不是一个保证业务正确的开关；每项都依赖约束与配置。",
+  },
+  sections: [
+    {
+      id: "acid-atomicity",
+      title: "先把四个字母拆开",
+      blocks: [
+        { id: "acid-atomicity", text: "原子性（Atomicity）回答“事务里的变化是否全成或全败”：扣款成功、入账失败时，系统应能回滚成两边都没变。一致性（Consistency）回答“提交后是否仍满足数据库和事务写下的约束”，例如余额不能为负；它不是凭空替业务设计规则。" },
+        { id: "acid-isolation", text: "隔离性（Isolation）回答并发事务怎样互相看见，取决于隔离级别和实现；持久性（Durability）回答提交成功后，系统重启或故障恢复时能否找回已提交变化。四项不是一条“安全等级”，而是四类可分别观察的承诺。" },
+      ],
+      lesson: {
+        title: "逐项关闭条件，观察转账哪里出问题",
+        ariaLabel: "ACID 四项属性分别影响转账、并发和恢复的演示",
+        steps: [
+          { label: "原子性", actors: ["扣款 -100", "断电", "回滚"], evidence: "入账没有完成时，扣款也被撤回；系统不留下半笔转账。" },
+          { label: "隔离性", actors: ["事务 A", "并发读取", "事务 B"], evidence: "读取者只能看到符合隔离规则的版本，不把未提交余额当成已发生。" },
+          { label: "持久性", actors: ["COMMIT", "WAL", "重启恢复"], evidence: "提交记录写入可恢复日志后，重启仍能重放已提交变化。" },
+        ],
+        failure: { label: "把一致性当真相保证", text: "数据库能检查声明的约束，却不知道‘一次转账必须经过风控’这类未写下的业务规则；规则缺失时，ACID 也不能替你补上。" },
+      },
+    },
+    {
+      id: "acid-consistency",
+      title: "属性之间怎样一起工作",
+      blocks: [
+        { id: "acid-consistency", text: "一致性来自约束、触发器和事务逻辑的组合。把余额约束写进数据库，能让非法结果在提交时失败；但“余额足够”与“风控允许”可能需要锁、版本检查或应用服务共同决定。先明确由谁检查哪条规则，才能避免把一项属性的责任写给另一项。" },
+        { id: "acid-durability", text: "许多数据库使用预写日志：先把足以恢复的变化写到日志，再确认提交。日志和存储配置决定故障后能恢复到什么点；同步提交、复制和备份是不同层次的选择，不能看到一个 WAL 文件就声称数据已经跨机房安全。" },
+      ],
+    },
+    {
+      id: "acid-boundary",
+      title: "失败分支：四项都满足也不代表业务完成",
+      blocks: [
+        { id: "acid-boundary", text: "事务可能四项都满足，却把错误的账户当成目标；数据库守住的是程序交给它的变化。隔离级别提高通常会减少某些异常，但也可能增加等待和冲突；持久性配置越强，也可能增加写入延迟。产品需要在明确的失败后果下选择。" },
+        { id: "acid-recovery", text: "读者判断“这个系统支持 ACID”时，应继续问范围是什么：单个数据库还是跨服务，哪些约束真的写入，提交确认点在哪里，故障恢复和重试怎样避免重复。没有这些限定，ACID 只是一个过于宽的标签。" },
+      ],
+    },
+  ],
+  sources: acidSources,
+  relatedIntro: "ACID 建立在事务、行版本、约束和日志之上；继续看事务和备份，可以把四个属性放回具体系统边界。",
+};
+
+export function AcidTermPage() {
+  return renderBackendNetworkPage(acidSpec);
 }
