@@ -24,8 +24,8 @@ export const evaluationRunSources = [
   source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['evalrun-boundary']),
 ];
 export const gradingRubricSources = [
-  source('OpenAI', 'Graders', 'https://developers.openai.com/api/docs/guides/graders', ['rubric-definition']),
-  source('Yang Liu、Dan Iter、Yichong Xu 等', 'G-EVAL: NLG Evaluation using GPT-4 with Better Human Alignment', 'https://arxiv.org/pdf/2303.16634', ['rubric-dimensions']),
-  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['rubric-calibration']),
-  source('Inspect', 'Scoring', 'https://inspect.aisi.org.uk/scoring.html', ['rubric-boundary']),
+  source('OpenAI', 'Graders', 'https://developers.openai.com/api/docs/guides/graders', ['rubric-definition-detail']),
+  source('Yang Liu、Dan Iter、Yichong Xu 等', 'G-EVAL: NLG Evaluation using GPT-4 with Better Human Alignment', 'https://arxiv.org/pdf/2303.16634', ['rubric-dimensions-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['rubric-calibration-detail']),
+  source('Inspect', 'Scoring', 'https://inspect.aisi.org.uk/scoring.html', ['rubric-boundary-detail']),
 ];

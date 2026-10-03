@@ -137,23 +137,23 @@ export function GradingRubricTermPage() {
     intro={<>评分规则把一个开放目标拆成维度、等级和判定依据，让人、程序或模型可以逐项检查。它不是把“感觉不错”换成一个更大的数字，而是先说明哪些证据算满足、缺什么会扣分，以及资料不足时如何停在未评分。</>}
     hero={<ConceptHero slug="grading-rubric" label="一条回答按事实、条件和越界承诺三条规则逐项检查，显示哪些要求满足"><div className={s.rubricHero}><div className={s.rubricHeroAnswer}><span>回答样本</span><strong>审核通过后，通常三个工作日到账。</strong></div><div className={s.rubricHeroChecks}>{['事实准确', '条件保留', '没有越界承诺'].map((item, i) => <span key={item} data-delay={i}>{item}<Check size={17}/></span>)}</div><p>3 / 3 项满足</p></div></ConceptHero>}>
     <ArticleSection id="rubric-definition" title="评分规则不是一句“请打分”"><Legacy slug="grading-rubric" names={['question', 'definition']}/>
-      <p id="rubric-definition" className="vp-citation-target"><strong>评分规则（rubric）是一份把任务要求写成可检查维度、等级和证据的说明。</strong>OpenAI 的 graders 文档把评分标准作为评分器输入的一部分：评分器负责执行判定，规则先说明什么结果算好、什么结果不满足。<Cite id="rubric-definition"/></p>
+      <p id="rubric-definition-detail" className="vp-citation-target"><strong>评分规则（rubric）是一份把任务要求写成可检查维度、等级和证据的说明。</strong>OpenAI 的 graders 文档把评分标准作为评分器输入的一部分：评分器负责执行判定，规则先说明什么结果算好、什么结果不满足。<Cite id="rubric-definition-detail"/></p>
       <p>“请给这段回答打 1 到 5 分”没有告诉评分者怎样区分 2 分和 4 分，也没有告诉它缺少关键资料时该怎么办。一个可用的规则会把任务目标写成几条可以回看的要求，例如事实是否正确、前提是否保留、有没有添加资料没有支持的承诺。评分器是执行者，规则是它执行的标准，两者不要混成同一个词。</p>
       <div className={s.rubricAnatomy}><div><span>维度</span><strong>检查哪件事</strong><p>事实、条件、范围或格式。</p></div><div><span>等级</span><strong>满足到什么程度</strong><p>通过、部分满足、未满足。</p></div><div><span>证据</span><strong>凭什么这样判</strong><p>回答中的句子或外部结果。</p></div></div>
     </ArticleSection>
     <ArticleSection id="rubric-dimensions" title="把回答拆成多个维度"><Legacy slug="grading-rubric" names={['scene-heading']}/>
-      <p id="rubric-dimensions" className="vp-citation-target">G-Eval 研究让模型按照任务说明、评价标准与评价步骤进行判断，并将开放式质量拆成更具体的评价过程。<strong>维度拆开后，评分者可以指出是事实错了，还是条件漏了，而不是只留下一个无法解释的总分。</strong><Cite id="rubric-dimensions"/></p>
+      <p id="rubric-dimensions-detail" className="vp-citation-target">G-Eval 研究让模型按照任务说明、评价标准与评价步骤进行判断，并将开放式质量拆成更具体的评价过程。<strong>维度拆开后，评分者可以指出是事实错了，还是条件漏了，而不是只留下一个无法解释的总分。</strong><Cite id="rubric-dimensions-detail"/></p>
       <p>下面的固定样本回答同一条退款规则。选择不同回答并运行评分，会看到三个维度分别亮起或变灰；这不是对语言风格的偏好，而是把资料里的事实、条件和禁止越界承诺逐项对照。实际项目可以有更多维度，但每增加一条，都要说明它测什么、证据在哪里。</p>
       <GradingRubricLesson/>
       <p>维度之间也可能冲突：回答事实正确，却因为漏掉重要限制而不满足任务；回答很完整，却添加了资料没有支持的保证。把维度分开保留，后续才能决定是修正系统、补充资料，还是调整规则，而不是盲目追逐总分。</p>
     </ArticleSection>
     <ArticleSection id="rubric-calibration" title="让不同评分有共同尺度" className={base.offset}><Legacy slug="grading-rubric" names={['quiz-heading']}/>
-      <p id="rubric-calibration" className="vp-citation-target">智能体评测需要明确任务和成功标准，并用样本检查评分是否与目标一致。Anthropic 的评测实践强调先定义成功，再用真实任务验证评测；<strong>规则写得越清楚，人工、程序和模型评分才越有机会落在同一尺度上。</strong><Cite id="rubric-calibration"/></p>
+      <p id="rubric-calibration-detail" className="vp-citation-target">智能体评测需要明确任务和成功标准，并用样本检查评分是否与目标一致。Anthropic 的评测实践强调先定义成功，再用真实任务验证评测；<strong>规则写得越清楚，人工、程序和模型评分才越有机会落在同一尺度上。</strong><Cite id="rubric-calibration-detail"/></p>
       <p>校准可以从一小组共同样本开始：让两位评分者独立应用规则，比较分歧，补充“通常”“资料不足”“无法观察”等边界的写法，再重新评分。规则变更要记录版本；否则下一次分数变化时，你无法区分回答变好了，还是评分方式变宽了。</p>
       <ArticleAside title="等级不是越多越精确"><p>三档足够表达通过、部分满足和未满足时，不必为了看起来精细而加到十档。等级太多却没有稳定证据，可能只制造假精度。先让相邻等级有可观察差别，再决定是否需要更细。</p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="rubric-boundary" title="规则能判断什么，不能判断什么"><Legacy slug="grading-rubric" names={['prompt-heading']}/>
-      <p id="rubric-boundary" className="vp-citation-target">Inspect 的评分系统区分不同评分方法与未评分情况，提醒评测设计者明确运行失败、证据不足和任务失败怎样进入结果。<strong>规则只能根据声明的证据判断，不应把看不到的事实当成已满足。</strong><Cite id="rubric-boundary"/></p>
+      <p id="rubric-boundary-detail" className="vp-citation-target">Inspect 的评分系统区分不同评分方法与未评分情况，提醒评测设计者明确运行失败、证据不足和任务失败怎样进入结果。<strong>规则只能根据声明的证据判断，不应把看不到的事实当成已满足。</strong><Cite id="rubric-boundary-detail"/></p>
       <p>如果回答声称“已经退款”，但运行记录没有实际支付状态，规则最多能判断它是否使用了合适的措辞，不能证明退款真的发生。若工具超时导致结果不可读，应标为未评分或设施失败，不能随意给零分。规则也不能替代业务政策：政策改变后，先更新规则和样本，再解释新旧分数。</p>
       <p>最后检查规则是否测到了真正的目标：它是否奖励了真实结果，而不是长度、自信语气或某个固定短语？保留逐项理由、规则版本和样本证据，才能在一次异常评分后回到具体判断。</p>
       <ArticleAside title="评分规则的最小审查表"><p>每条维度都应回答：检查什么、需要什么证据、缺证据怎样处理、与相邻等级差在哪里。四个问题有一个答不上来，就先把规则当成草稿。</p></ArticleAside>

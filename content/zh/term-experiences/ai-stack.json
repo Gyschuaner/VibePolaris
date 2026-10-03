@@ -18073,21 +18073,21 @@
       {
         "id": "criteria",
         "label": "评分维度",
-        "detail": "准确/完整/风险",
+        "detail": "事实/条件/越界",
         "icon": "file",
         "group": "约定"
       },
       {
         "id": "evidence",
         "label": "证据",
-        "detail": "缺少时效",
+        "detail": "缺少到账条件",
         "icon": "search",
         "group": "检查"
       },
       {
         "id": "score",
         "label": "分数",
-        "detail": "3/5",
+        "detail": "1/3",
         "icon": "chart",
         "group": "结论"
       }
@@ -18132,7 +18132,7 @@
       },
       {
         "label": "逐项核对",
-        "note": "回答缺退款时效，完整性只能得1分。",
+        "note": "回答漏掉到账条件，条件保留这一项不满足。",
         "activeIds": [
           "answer",
           "evidence"
@@ -18144,7 +18144,7 @@
           "score"
         ],
         "values": {
-          "evidence": "缺1项"
+          "evidence": "条件缺失"
         },
         "activeEdgeIds": [
           "a-c",
@@ -18153,7 +18153,7 @@
       },
       {
         "label": "汇总分档",
-        "note": "证据映射到分档，再得到总分。",
+        "note": "三项证据分别映射到满足或不满足，再得到可解释的结果。",
         "activeIds": [
           "score"
         ],
@@ -18164,7 +18164,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "score": "3/5"
+          "score": "1/3"
         },
         "activeEdgeIds": [
           "e-s"
@@ -18172,7 +18172,7 @@
       },
       {
         "label": "发现歧义",
-        "note": "两位评分者分差2分，规则回到样例校准。",
+        "note": "越界承诺没有证据支持，规则应把它判为不满足。",
         "activeIds": [
           "criteria",
           "evidence"
@@ -18183,30 +18183,30 @@
         ],
         "mutedIds": [],
         "values": {
-          "criteria": "补充反例"
+          "criteria": "保留边界"
         },
         "activeEdgeIds": []
       }
     ],
     "insight": "评分规则让分数可以被解释、复核和校准，不是把印象换成数字。",
     "quiz": {
-      "question": "两位评分者分数差很大，先查什么？",
+      "question": "回答只说“退款三个工作日到账”，先查哪项？",
       "options": [
         {
-          "label": "维度定义和证据样例",
+          "label": "条件保留这一项",
           "correct": true
         },
         {
-          "label": "直接取两分平均",
+          "label": "整体读起来是否顺",
           "correct": false
         },
         {
-          "label": "删除低分者",
+          "label": "把缺失条件忽略",
           "correct": false
         }
       ],
-      "success": "先回到规则和证据，再决定是否修订量表。",
-      "retry": "平均分会遮住规则本身的歧义。"
+      "success": "逐项检查能指出回答漏了哪条条件，结果才可以复核。",
+      "retry": "只看整体印象会遮住缺失的条件。"
     },
     "prompt": {
       "title": "写一份可复核的评分量表",
