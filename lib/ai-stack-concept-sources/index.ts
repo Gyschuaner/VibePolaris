@@ -30,3 +30,4 @@ export { vectorStoreSources } from "./vector-store";
 export { retrievalSources } from "./retrieval";
 export { chunkingSources } from "./chunking";
 export { rerankingSources } from "./reranking";
+export { generativeAiSources } from "./generative-ai";

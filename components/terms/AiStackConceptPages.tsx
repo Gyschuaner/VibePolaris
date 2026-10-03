@@ -28,6 +28,7 @@ import { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
 import { RetrievalTermPage } from "./ai-stack-pages/retrieval";
 import { ChunkingTermPage } from "./ai-stack-pages/chunking";
 import { RerankingTermPage } from "./ai-stack-pages/reranking";
+import { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -58,6 +59,7 @@ export { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
 export { RetrievalTermPage } from "./ai-stack-pages/retrieval";
 export { ChunkingTermPage } from "./ai-stack-pages/chunking";
 export { RerankingTermPage } from "./ai-stack-pages/reranking";
+export { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -90,4 +92,5 @@ export const aiStackArticlePages = {
   "retrieval": RetrievalTermPage,
   "chunking": ChunkingTermPage,
   "reranking": RerankingTermPage,
+  "generative-ai": GenerativeAiTermPage,
 } as const;
