@@ -12,6 +12,7 @@ import { RevertLesson } from "./revert";
 import { StashLesson } from "./stash";
 import { PullRequestLesson } from "./pull-request";
 import { CodeReviewLesson } from "./code-review";
+import { CiLesson } from "./ci";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -178,5 +179,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "stash") return <StashLesson />;
   if (slug === "pull-request") return <PullRequestLesson />;
   if (slug === "code-review") return <CodeReviewLesson />;
+  if (slug === "ci") return <CiLesson />;
   return null;
 }

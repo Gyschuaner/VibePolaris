@@ -658,8 +658,8 @@
     "slug": "ci",
     "mechanism": "代码事件触发隔离运行环境，按依赖图执行构建、测试和静态检查，并把退出状态回写到提交或 PR。",
     "misconception": "CI 绿灯只说明已配置任务通过，不证明未覆盖场景正确，也不等于已部署。",
-    "demoSignature": "建议 5 帧：一次提交触发 lint、unit test、build 三节点并行，日志与状态逐项回传；用户关闭浏览器测试节点后流水线仍显示绿色；覆盖矩阵随即出现空白格；重新启用并制造失败，总状态被准确拉红。",
-    "sourceUrls": ["https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-nodejs"],
+    "demoSignature": "ci-board: 3 steps; actors=commit F4/workflow run #42/lint/unit test/build/logs/required check; phases=push 事件排队→独立作业并行执行并保留失败日志→汇总状态阻止合并或在修复后对新提交重新通过; boundary=绿色只覆盖声明的 job，未配置的浏览器或人工验证仍未知; action=运行并行检查/修复后重跑",
+    "sourceUrls": ["https://docs.github.com/en/actions/tutorials/build-and-test-code/nodejs", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax", "https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs", "https://docs.github.com/en/pull-requests/reference/status-checks"],
     "rewriteRisk": "high",
     "nearDuplicates": ["pull-request", "cd", "build-tool"]
   },

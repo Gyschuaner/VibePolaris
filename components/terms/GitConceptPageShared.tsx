@@ -8,8 +8,8 @@ export function Cite({ id, sources }: { id: string; sources: GitSource[] }) {
   return <ArticleCitation id={id} sources={sources as unknown as typeof harnessSources} />;
 }
 
-export function GitHero({ trigger, change, proof }: { trigger: string; change: string; proof: string }) {
-  return <MechanismHero kind="git" trigger={trigger} change={change} proof={proof} />;
+export function GitHero({ trigger, change, proof, contextLabel, contextTitle }: { trigger: string; change: string; proof: string; contextLabel?: string; contextTitle?: string }) {
+  return <MechanismHero kind="git" trigger={trigger} change={change} proof={proof} contextLabel={contextLabel} contextTitle={contextTitle} />;
 }
 
 export function GitArticle({ slug, title, subtitle, intro, sections, sources, hero, children }: { slug: string; title: string; subtitle: string; intro: ReactNode; sections: [string, string][]; sources: GitSource[]; hero: ReactNode; children: ReactNode }) {
