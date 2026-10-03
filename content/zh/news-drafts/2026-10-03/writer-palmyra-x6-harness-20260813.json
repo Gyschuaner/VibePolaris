@@ -1,0 +1,141 @@
+{
+  "slug": "writer-palmyra-x6-harness-20260813",
+  "title": "Writer 发布 Palmyra X6 与 Agent harness（代理编排框架）：把企业代理的 token 成本放到台面上",
+  "summary": "8 月 13 日，Writer 发布 Palmyra X6、重做后的 Writer Agent harness 和一组治理工具。公司称组合后的流程平均成本下降 52%、速度提高 48%；这些数字来自 Writer 的企业任务评测，文章同时把模型、编排方式和费用控制拆开说明。",
+  "body": "Writer 在 8 月 13 日同时发布三类更新：Palmyra X6 旗舰模型、重做后的 Writer Agent harness（代理编排框架），以及用于查看和限制 token（模型拆分文本后的计费单位）消耗的治理工具。它的目标客户是把 Agent 放进营销、销售和收入流程的企业团队。新闻的重点不在又一个模型名称，而在 Writer 把“模型能力”和“任务怎样被编排”放在同一张成本表里。\n\nPalmyra X6 是在 GLM 5.2 基础上继续训练的模型。Writer 用自己的企业任务集测试 grounding、检索、工具使用、内容生成、子智能体委派和品牌语气等九项能力，给出的平均分是 0.87（满分 1.00），输入和输出价格分别为每百万 token 2 美元和 8 美元。这个分数和价格来自 Writer 的测试口径，比较时不能脱离任务集和运行环境。\n\nharness 可以理解为让模型完成长任务时的外层编排。Writer 说，新版本会根据任务难度决定是否先规划，批量执行高量任务，必要时委派子智能体，减少重复上下文。公司称在搭配 X6 时平均成本下降 52%、速度提升 48%、质量提升 10%；另一组跨模型实验则报告任务速度提升 44%、每项成本下降 41%。这些结果说明编排方式会放大每一次工具调用的成本，但仍需要在自己的流程里复测。\n\nWriter 还增加了治理界面：管理员可以查看各团队使用了哪些 Playbook（流程模板）和 Skill（技能配置），比较采用率、性能和花费，并设置提醒和用量上限。这样一来，企业不必只靠模型价格表估算预算，也能看到一个具体工作流为什么越来越贵。\n\n这次发布留下的边界很清楚。模型评测、成本估算和治理工具都是 Writer 的产品材料，公开信息没有提供独立审计的统一基准。企业在采用前仍需检查数据接入、模型切换、工具权限和失败重试，把单次任务费用和可接受的人工复核时间一起算进去。",
+  "publishedAt": "2026-08-13",
+  "eventDate": "2026-08-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/writer-palmyra-x6-harness-20260813.svg",
+    "alt": "Writer 发布 Palmyra X6 与新 Agent harness：把企业代理的 token 成本放到台面上 的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/writer-palmyra-x6-harness-20260813.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "three-releases",
+      "title": "Writer 把模型、编排和治理一起交付",
+      "body": "Palmyra X6 负责模型输出，Agent harness（代理编排框架）负责规划和工具调用，治理工具负责观察使用量并限制花费。三者解决的是同一条企业流程中的不同问题。",
+      "kind": "narrative"
+    },
+    {
+      "id": "x6-eval",
+      "title": "X6 的分数来自企业任务集",
+      "body": "Writer 测试了 grounding、检索、工具使用、内容生成、子智能体委派和品牌语气等九项能力，报告平均分 0.87，并列出每百万 token 的输入和输出价格。",
+      "kind": "technical"
+    },
+    {
+      "id": "harness",
+      "title": "harness 改变的是任务走法",
+      "body": "任务简单时直接回答，复杂时先形成计划；高量工作可以批量执行，长流程也可以委派子智能体。减少一次无效工具调用，就可能少用一串上下文 token（文本计费单位）。",
+      "kind": "example"
+    },
+    {
+      "id": "governance",
+      "title": "费用控制落到具体工作流",
+      "body": "管理员可以查看 Playbook（流程模板）和 Skill（技能配置） 的使用情况、所有权与花费，设置提醒和上限，再决定哪些流程值得扩大。",
+      "kind": "comparison"
+    },
+    {
+      "id": "limits",
+      "title": "公司数据要在自己的环境里复测",
+      "body": "Writer 的成本和质量数字来自自己的模型、任务集和运行方式。真实项目还会受到数据权限、工具失败、人工审核和模型切换的影响。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次企业 Agent 任务为什么会花很多 token？",
+    "question": "模型变便宜了，成本为什么仍可能上升？",
+    "steps": [
+      {
+        "label": "先规划任务",
+        "detail": "复杂工作会先生成计划，计划本身就会消耗上下文和输出 token。",
+        "evidence": "WRITER 发布公告"
+      },
+      {
+        "label": "反复调用工具",
+        "detail": "每一次搜索、写入或检查都要带上必要上下文，失败重试还会继续增加消耗。",
+        "evidence": "WRITER Agent harness 说明"
+      },
+      {
+        "label": "拆给子智能体",
+        "detail": "高量任务可以批量执行或委派子智能体，速度可能上升，但调用次数和治理要求也会变化。",
+        "evidence": "WRITER Agent harness 说明"
+      },
+      {
+        "label": "看账单再决定扩容",
+        "detail": "管理员按工作流查看采用率、质量和 token 花费，再设置提醒、上限或继续扩大。",
+        "evidence": "WRITER 治理工具说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "WRITER",
+    "url": "https://writer.com/blog/palmyra-x6-major-harness-release/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "agent",
+    "tools",
+    "token",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://writer.com/blog/palmyra-x6-major-harness-release/",
+      "claim": "WRITER 于 2026-08-13 发布 Palmyra X6、Agent harness 升级和治理工具，并报告组合后的成本、速度与质量变化。",
+      "excerpt": "WRITER Agent now operates at an average 52% lower cost with 48% improvement in speed and 10% improvement in quality"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs/",
+      "claim": "TechCrunch 报道 Writer 发布 X6 与 harness 升级，并说明企业客户对 token 成本的关注。",
+      "excerpt": "Writer introduced a new flagship model called Palmyra X6 and upgraded its agentic harness"
+    }
+  ],
+  "canonicalUrl": "https://writer.com/blog/palmyra-x6-major-harness-release/",
+  "sourceHash": "sha256:cb11470ee90bf9e520db99cd997e60d75125514e023e1481736b0953e74360bf",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:32:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://writer.com/blog/palmyra-x6-major-harness-release/",
+      "claim": "WRITER 于 2026-08-13 发布 Palmyra X6、Agent harness 升级和治理工具，并报告组合后的成本、速度与质量变化。",
+      "excerpt": "WRITER Agent now operates at an average 52% lower cost with 48% improvement in speed and 10% improvement in quality"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs/",
+      "claim": "TechCrunch 报道 Writer 发布 X6 与 harness 升级，并说明企业客户对 token 成本的关注。",
+      "excerpt": "Writer introduced a new flagship model called Palmyra X6 and upgraded its agentic harness"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:32:00Z",
+    "method": "source",
+    "notes": "按事件发生日核对官方公告与可信新闻，区分公司口径、新闻报道和尚未确认的部分。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:32:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 做事实先行、去宣传腔和去模板化审校；保留来源边界与公司自报数据。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T14:40:00Z",
+    "questions": [],
+    "notes": "Agent harness、token、Playbook、Skill 已首次解释；公司评测数据与独立验证边界清楚，来源、日期、词条、解释器和 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-13",
+  "promotedAt": "2026-10-03T14:39:09.257Z"
+}

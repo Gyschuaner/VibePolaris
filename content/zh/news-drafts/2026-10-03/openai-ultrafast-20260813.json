@@ -1,0 +1,139 @@
+{
+  "slug": "openai-ultrafast-20260813",
+  "title": "OpenAI 预览 Ultrafast：GPT-5.6 Sol 最高每秒生成 750 个 token",
+  "summary": "8 月 13 日，OpenAI 公布 Ultrafast 服务层，先在 API 中为 GPT-5.6 Sol 接入 Cerebras 推理。官方称输出速度最高可达每秒 750 个 token、比 Standard 处理快 14 倍；目前是面向少量客户的预览，数字描述的是生成速度，不等于所有请求都会获得同样的端到端延迟。",
+  "body": "8 月 13 日，OpenAI 公布 Ultrafast 的早期预览。它不是一款新模型，而是给 GPT-5.6 Sol 增加的服务层：模型仍由 OpenAI 提供，推理由 Cerebras 的高速系统承载，首批接入点是 OpenAI API。官方把它描述为一个新的速度档位，面向需要实时响应的产品和工作流。\n\nOpenAI 给出的两个数字很醒目：Ultrafast 相比 Standard 处理最高快 14 倍，输出速度最高可达每秒 750 个 token（模型拆分文本后的生成和计费单位）。这里的“输出速度”指模型连续生成答案的速度，实际请求还会受到输入长度、排队、工具调用和网络往返影响。把 750 个 token 直接理解成一次业务请求 750 倍变快，会超出公告能支持的范围。\n\n官方列举的使用场景包括故障响应、金融研究、客服语音、实时电商和交互式实验。共同点是任务正在发生，用户或工程师需要在下一轮操作前拿到结果。OpenAI 也说内部团队用它读取日志、分析 trace、整理对话并准备修复建议，但部署和最终判断仍由工程师负责。\n\n这次预览先开放给一小批客户。OpenAI 没有公布完整定价、公开申请名单或所有地区的容量计划，只说会随 Cerebras 产能增加而扩大访问范围。对 API 使用者来说，Ultrafast 的价值要在真实工作流中衡量：更快的生成是否减少了等待，增加的并发或硬件费用是否能被业务收益覆盖。\n\n因此，8 月 13 日确认的是一个以推理速度为卖点的 API 服务预览。它把“更聪明的模型”和“更快的响应”放在同一条产品线上，但公告没有承诺通用实时性，也没有用少量早期客户的体验替代公开的独立性能测试。",
+  "publishedAt": "2026-08-13",
+  "eventDate": "2026-08-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-ultrafast-20260813.svg",
+    "alt": "OpenAI 预览 Ultrafast：GPT-5.6 Sol 最高每秒生成 750 个 token 的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/openai-ultrafast-20260813.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "service-layer",
+      "title": "Ultrafast 改的是服务层，不是模型名称",
+      "body": "GPT-5.6 Sol 仍是负责推理的模型，Ultrafast 是调用它时选择的速度档位。首批接入在 OpenAI API，Cerebras 负责提供更低延迟的推理基础设施。",
+      "kind": "narrative"
+    },
+    {
+      "id": "speed-number",
+      "title": "14 倍和每秒 750 个 token 各自描述什么",
+      "body": "14 倍是相对 Standard 处理的最高速度说法，每秒 750 个 token 是输出生成速率。输入处理、排队、工具调用和网络延迟仍会影响一次完整请求。",
+      "kind": "technical"
+    },
+    {
+      "id": "use-cases",
+      "title": "它瞄准的是正在变化的工作",
+      "body": "故障排查、语音客服、金融研究和实时实验都需要在上下文变化前继续下一步。更快的输出可以缩短等待，但不能替代业务系统的权限检查和人工判断。",
+      "kind": "example"
+    },
+    {
+      "id": "preview",
+      "title": "现在仍是有限预览",
+      "body": "OpenAI 只向少量客户开放 Ultrafast，并表示会随容量增长扩大访问。完整价格、地区范围和普遍可用时间在公告中没有确定。",
+      "kind": "boundary"
+    },
+    {
+      "id": "takeaway",
+      "title": "评价它要看端到端任务",
+      "body": "开发者需要测量从发起请求到得到可用结果的总时间，再把并发、硬件和工具调用成本算进去。单看输出 token 速度不足以判断产品收益。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一个实时 AI 请求，时间花在哪里？",
+    "question": "模型生成得很快，为什么完整业务流程仍可能慢？",
+    "steps": [
+      {
+        "label": "请求进入 API",
+        "detail": "业务系统发送提示、上下文和工具配置；输入长度会影响开始生成前的等待。",
+        "evidence": "OpenAI Ultrafast 公告"
+      },
+      {
+        "label": "Cerebras 承载推理",
+        "detail": "Ultrafast 让 GPT-5.6 Sol 在 Cerebras 系统上生成输出，官方给出最高每秒 750 个 token。",
+        "evidence": "OpenAI Ultrafast 公告"
+      },
+      {
+        "label": "输出流式返回",
+        "detail": "文字生成更快，用户可以更早看到答案；这只覆盖模型输出阶段。",
+        "evidence": "OpenAI Ultrafast 公告"
+      },
+      {
+        "label": "工具与人工继续接手",
+        "detail": "日志查询、数据库调用、权限校验和部署仍按业务系统的速度执行。",
+        "evidence": "OpenAI Ultrafast 公告"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/previewing-ultrafast/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "api",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/previewing-ultrafast/",
+      "claim": "OpenAI 于 2026-08-13 预览 Ultrafast 服务层，首批在 API 中运行 GPT-5.6 Sol。",
+      "excerpt": "a new service tier that runs GPT-5.6 Sol up to 14× faster than Standard processing"
+    },
+    {
+      "url": "https://openai.com/zh-Hans-CN/index/previewing-ultrafast/",
+      "claim": "OpenAI 中文页面同样说明 Ultrafast 由 Cerebras 提供推理支持，并处于有限预览。",
+      "excerpt": "Ultrafast 模式下的 GPT-5.6 Sol，每秒最多生成 750 个输出 token"
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/previewing-ultrafast/",
+  "sourceHash": "sha256:5ceaa66584ca27d218a27381b9075247d369b5397f6a1a829b1daa074f88b601",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:32:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/previewing-ultrafast/",
+      "claim": "OpenAI 于 2026-08-13 预览 Ultrafast 服务层，首批在 API 中运行 GPT-5.6 Sol。",
+      "excerpt": "a new service tier that runs GPT-5.6 Sol up to 14× faster than Standard processing"
+    },
+    {
+      "url": "https://openai.com/zh-Hans-CN/index/previewing-ultrafast/",
+      "claim": "OpenAI 中文页面同样说明 Ultrafast 由 Cerebras 提供推理支持，并处于有限预览。",
+      "excerpt": "Ultrafast 模式下的 GPT-5.6 Sol，每秒最多生成 750 个输出 token"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:32:00Z",
+    "method": "source",
+    "notes": "按事件发生日核对官方公告与可信新闻，区分公司口径、新闻报道和尚未确认的部分。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:32:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 做事实先行、去宣传腔和去模板化审校；保留来源边界与公司自报数据。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T14:40:00Z",
+    "questions": [],
+    "notes": "token、输出速度和端到端延迟已用白话分开；OpenAI/Cerebras 归属、有限预览、来源、日期、词条、解释器和 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-13",
+  "promotedAt": "2026-10-03T14:39:09.256Z"
+}
