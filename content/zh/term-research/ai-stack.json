@@ -446,12 +446,14 @@
     "slug": "eval",
     "mechanism": "评测是一套可重复的运行过程：给定样本、系统版本和评分方法，收集结果并比较是否达到目标。",
     "misconception": "评测不等于单个基准题，也不等于评分器；同一数据集可用不同评分方法跑出不同结论。",
-    "demoSignature": "输入：20条客服问答，版本A/B；中间：同一评分器下正确数A=14、B=17，失败类型由6条降到3条；输出：B通过80%门槛。可视化：逐样本矩阵与版本通过率柱。 建议5帧：20个固定样本排成矩阵、A/B两版同时运行、格子逐项判分、通过率70%/85%汇总、门槛80%裁决；交互：筛选失败类型查看具体样本。",
+    "demoSignature": "输入：固定六例（普通 3、边界 2、关键 1），比较基线 A 与候选 B/C；中间：选择全部、仅普通或不选案例后评分，显示两版逐例通过、分组覆盖和关键失败；输出：同一总分也会标出关键案例回退，展开逐例记录可看到是哪条判据变化。可视化：案例分组、版本分数和逐例记录；交互：切换 A→B/A→C 与案例范围观察总分和失败位置。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/evals",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/pdf/2211.09110",
+      "https://arxiv.org/pdf/2005.04118",
+      "https://www.nist.gov/caisi/cheating-ai-agent-evaluations"
     ],
-    "rewriteRisk": "必须写清样本、被测版本、评分器和门槛，避免把“多测一测”称为评测方案。",
+    "rewriteRisk": "不要用一次总分替代逐例与关键失败；演示需让读者看到案例范围、分组覆盖和版本回退如何改变结论。",
     "nearDuplicates": [
       "benchmark",
       "grader",
