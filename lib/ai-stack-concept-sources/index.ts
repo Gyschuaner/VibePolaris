@@ -22,3 +22,4 @@ export { moderationSources } from "./moderation";
 export { fineTuningSources } from "./fine-tuning";
 export { contextWindowSources } from "./context-window";
 export { agentLoopSources } from "./agent-loop";
+export { agentMemorySources } from "./agent-memory";

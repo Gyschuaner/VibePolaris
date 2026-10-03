@@ -633,16 +633,17 @@
   },
   {
     "slug": "agent-memory",
-    "mechanism": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
-    "misconception": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
-    "demoSignature": "用户确认保存代码写法偏好；应用把带来源与时间的记录加入已有食谱记录的记忆库。新代码任务在 2 条记录中只取回相关的 1 条，并交给 AI 生成示例。随后用户纠正、删除这条代码偏好，记忆库剩 1 条食谱记录；既有回复不改写，下一次代码任务需重新说明偏好。6 帧分别展示确认、写入、相关取回、生成、纠正、删除；选择操作查看对应状态。失效时间作为记录规则说明，不假装演示实际计时。",
+    "mechanism": "应用为后续任务保存、检索、纠正和删除的信息；模型只有在记录被放入本轮输入时才会看到。",
+    "misconception": "工作记忆是当前任务的临时状态；保存聊天不等于同意长期记忆，删除也不会倒写旧回答。",
+    "demoSignature": "代码偏好：用户同意后写入带来源和时间的记录，新会话只取回相关一条，用户撤回后删除；交互：保存、取回、纠正/删除三阶段。",
     "sourceUrls": [
       "https://docs.langchain.com/oss/python/concepts/memory",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
       "https://arxiv.org/abs/2304.03442",
-      "https://arxiv.org/abs/2310.08560"
+      "https://arxiv.org/abs/2310.08560",
+      "https://openai.github.io/openai-agents-python/running_agents/"
     ],
-    "rewriteRisk": "智能体记忆包含任务内和跨会话信息；本例聚焦跨会话偏好，不把聊天关闭等同于临时状态自动清除。不把删除记录表现成修改已生成的输出。隐私同意和保存期限属于本例管理建议，不声明所有框架自动提供。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "working-memory",
       "context-window",

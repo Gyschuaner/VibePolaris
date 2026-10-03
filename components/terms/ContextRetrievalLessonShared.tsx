@@ -110,7 +110,24 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
   });
 
   const caption = captions[mode];
-  const controls = <Caption scene={scene} labels={caption.labels} titles={caption.titles} copy={caption.copy} />;
+  const captionCopy = mode === "context-window"
+    ? history === "long"
+      ? caption.copy
+      : [caption.copy[0], "历史对话和工具结果一起进入，输入总量目前为 12k，输出区仍要保留。", "再加一段旧消息会超限；切换长历史后才会进入裁剪分支。"]
+    : mode === "agent-memory"
+      ? [memoryAction === "saved" ? "用户已同意保存一项偏好，记录带有来源和时间。" : "应用先请求保存同意；当前记录仍为空。", memoryAction === "saved" ? caption.copy[1] : "当前没有可取回的相关记录。", memoryAction === "deleted" ? caption.copy[2] : "用户可以纠正或删除，旧回答不会被倒写。"]
+      : mode === "working-memory"
+        ? [caption.copy[0], "价格和库存结果让候选从 5 个逐步收敛，下一阶段交付 2 个。", caption.copy[2]]
+        : mode === "execution-sandbox"
+          ? [caption.copy[0], `${sandbox.file ? "文件允许" : "文件被拒"} · ${sandbox.network ? "网络允许" : "网络被拒"}；标准输出仍可收集。`, sandbox.file && sandbox.network && sandbox.time ? caption.copy[2] : "仍有访问范围未开放；逐项检查后，才会在到时销毁环境。"]
+          : mode === "vector-store"
+            ? [caption.copy[0], filtered ? caption.copy[1] : "候选范围仍为 20 条；打开版本过滤后才会变成 7 条。", caption.copy[2]]
+            : mode === "chunking"
+              ? [caption.copy[0], chunkRule === "overlap" ? caption.copy[1] : "当前仍是 800 字、无重叠；切换规则后才会看到 500/100 的边界。", chunkRule === "overlap" ? caption.copy[2] : "当前规则只有 3 块；命中后仍需核对相邻条件。"]
+              : mode === "reranking"
+                ? [caption.copy[0], rankBasis === "rerank" ? caption.copy[1] : "当前仍按召回分排序；切换重排分后 B 才会升到第一。", rankBasis === "rerank" ? caption.copy[2] : "尚未重排；全库里从未进入候选的 D 仍不会出现。"]
+                : caption.copy;
+  const controls = <Caption scene={scene} labels={caption.labels} titles={caption.titles} copy={captionCopy} />;
 
   if (mode === "context-window") {
     const used = history === "short" ? 12 : 15;
@@ -148,11 +165,13 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
   }
 
   if (mode === "working-memory") {
-    const count = workingPhase === "five" ? 5 : 2;
+    const delivered = scene.step === 2;
+    const count = delivered ? 0 : scene.step === 1 ? 3 : workingPhase === "five" ? 5 : 2;
+    const calls = delivered ? 0 : scene.step === 1 ? 1 : workingPhase === "two" ? 2 : 0;
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="工作记忆状态演示">
       {controls}
       <div className={styles.choices} role="group" aria-label="推进任务状态"><button type="button" aria-pressed={workingPhase === "five"} onClick={() => { setWorkingPhase("five"); scene.seek(0); }}>5 个候选</button><button type="button" aria-pressed={workingPhase === "two"} onClick={() => { setWorkingPhase("two"); scene.seek(2); }}>筛到 2 个</button></div>
-      <div className={styles.contract}><div><FileText size={25} /><h3>当前目标</h3><p>预算 ≤ 500 · 需要有货</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>工作状态</h3><p>候选 {count} · 调用 {workingPhase === "two" ? 2 : 0}</p></div><ArrowRight size={20} /><div>{workingPhase === "two" && scene.step === 2 ? <CheckCircle size={25} /> : <LockSimple size={25} />}<h3>{workingPhase === "two" && scene.step === 2 ? "交付" : "进行中"}</h3><p>{workingPhase === "two" && scene.step === 2 ? "临时清单可清理" : "结果会改写下一步"}</p></div></div>
+      <div className={styles.contract}><div><FileText size={25} /><h3>当前目标</h3><p>预算 ≤ 500 · 需要有货</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>工作状态</h3><p>{delivered ? "临时状态已清理" : `候选 ${count} · 调用 ${calls}`}</p></div><ArrowRight size={20} /><div>{delivered ? <CheckCircle size={25} /> : <LockSimple size={25} />}<h3>{delivered ? "交付" : "进行中"}</h3><p>{delivered ? "结果保留 2 个" : "结果会改写下一步"}</p></div></div>
       <p className={styles.inputExample}><strong>可观察证据</strong>工作记忆是本轮任务的可变状态；它和跨会话偏好、最终交付物不是同一层。</p>
     </div>;
   }
@@ -199,10 +218,11 @@ export function ContextRetrievalLesson({ mode }: { mode: ContextRetrievalMode })
 
   if (mode === "chunking") {
     const result = chunkRule === "large" ? "3 块 · 边界较少" : "6 块 · 保留 100 字重叠";
+    const hit = chunkRule === "large" ? "命中第 2 块" : "命中第 4 块";
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="文档分块规则演示">
       {controls}
       <div className={styles.choices} role="group" aria-label="切换分块规则"><button type="button" aria-pressed={chunkRule === "large"} onClick={() => { setChunkRule("large"); scene.seek(1); }}>800 字，无重叠</button><button type="button" aria-pressed={chunkRule === "overlap"} onClick={() => { setChunkRule("overlap"); scene.seek(1); }}>500 字，重叠 100</button></div>
-      <div className={styles.contract}><div><FileText size={25} /><h3>长文档</h3><p>2400 字 · 标题和页码保留</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>切分结果</h3><p>{result}</p></div><ArrowRight size={20} /><div>{scene.step === 2 ? <CheckCircle size={25} /> : <Warning size={25} />}<h3>{scene.step === 2 ? "命中第 4 块" : "等待检查"}</h3><p>{scene.step === 2 ? "相邻条件仍需核对" : "边界会改变可见上下文"}</p></div></div>
+      <div className={styles.contract}><div><FileText size={25} /><h3>长文档</h3><p>2400 字 · 标题和页码保留</p></div><ArrowRight size={20} /><div><Database size={25} /><h3>切分结果</h3><p>{result}</p></div><ArrowRight size={20} /><div>{scene.step === 2 ? <CheckCircle size={25} /> : <Warning size={25} />}<h3>{scene.step === 2 ? hit : "等待检查"}</h3><p>{scene.step === 2 ? "相邻条件仍需核对" : "边界会改变可见上下文"}</p></div></div>
       <p className={styles.inputExample}><strong>可观察证据</strong>没有通用的最佳块大小；切得更小可能保留细节，也可能把标题和限制条件切开。</p>
     </div>;
   }
