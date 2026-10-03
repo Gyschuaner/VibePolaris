@@ -45,7 +45,7 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
 import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
-import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage } from '@/components/terms/AssessmentConceptPages';
+import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage, RegressionEvaluationTermPage } from '@/components/terms/AssessmentConceptPages';
 
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
 
@@ -171,6 +171,7 @@ const articleTermPages = {
   'evaluation-dataset': EvalDatasetTermPage,
   'evaluation-run': EvaluationRunTermPage,
   'grading-rubric': GradingRubricTermPage,
+  'regression-evaluation': RegressionEvaluationTermPage,
   grounding: GroundingTermPage,
   hallucination: HallucinationTermPage,
   eval: EvaluationTermPage,

@@ -29,3 +29,9 @@ export const gradingRubricSources = [
   source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['rubric-calibration-detail']),
   source('Inspect', 'Scoring', 'https://inspect.aisi.org.uk/scoring.html', ['rubric-boundary-detail']),
 ];
+export const regressionEvaluationSources = [
+  source('OpenAI', 'Working with evals', 'https://developers.openai.com/api/docs/guides/evals', ['regression-definition-detail', 'regression-record-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['regression-compare-detail']),
+  source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['regression-gate-detail']),
+  source('Percy Liang、Rishi Bommasani、Tony Lee 等', 'Holistic Evaluation of Language Models', 'https://arxiv.org/pdf/2211.09110', ['regression-boundary-detail'], '2023'),
+];

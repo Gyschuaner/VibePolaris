@@ -18601,26 +18601,26 @@
     "definition": "回归评测在同一套任务和评分条件下比较基线与候选版本，寻找新增失败和高风险回退。",
     "boundary": "平均分上升不能掩盖关键题失败；未覆盖的行为也不会自动被发现。",
     "sceneKind": "matrix",
-    "sceneTitle": "基线与候选版本逐项对照",
-    "actionLabel": "切换版本",
+    "sceneTitle": "同一题集逐项对照基线与候选",
+    "actionLabel": "切换候选变化",
     "actors": [
       {
         "id": "suite",
-        "label": "固定套件",
+        "label": "suite-v1",
         "detail": "20 条任务",
         "icon": "file",
         "group": "材料"
       },
       {
         "id": "base",
-        "label": "基线A",
+        "label": "基线 agent-B",
         "detail": "17/20 · 关键全过",
         "icon": "robot",
         "group": "版本"
       },
       {
         "id": "candidate",
-        "label": "候选B",
+        "label": "候选 agent-C",
         "detail": "18/20 · 关键失败1",
         "icon": "robot",
         "group": "版本"
@@ -18655,45 +18655,29 @@
     ],
     "frames": [
       {
-        "label": "固定基线",
-        "note": "保存基线逐题结果和关键行为。",
+        "label": "关键行为保持",
+        "note": "同一 suite-v1，候选18/20且关键失败0，可以继续看新增失败。",
         "activeIds": [
           "suite",
-          "base"
-        ],
-        "doneIds": [],
-        "mutedIds": [
           "candidate",
           "gate"
         ],
-        "values": {
-          "base": "17/20"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "跑候选",
-        "note": "候选通过18题，但一个关键题失败。",
-        "activeIds": [
-          "candidate"
-        ],
         "doneIds": [
-          "suite",
           "base"
         ],
-        "mutedIds": [
-          "gate"
-        ],
+        "mutedIds": [],
         "values": {
-          "candidate": "18/20"
+          "candidate": "18/20",
+          "gate": "继续"
         },
         "activeEdgeIds": [
-          "s-c"
+          "s-c",
+          "c-g"
         ]
       },
       {
-        "label": "发现回退",
-        "note": "逐项差异标出关键题从通过变失败。",
+        "label": "发现关键回退",
+        "note": "候选18/20，但 refund-condition 从基线通过变失败，关键门槛阻断。",
         "activeIds": [
           "candidate",
           "gate"
@@ -18704,6 +18688,7 @@
         ],
         "mutedIds": [],
         "values": {
+          "candidate": "18/20",
           "gate": "阻断"
         },
         "activeEdgeIds": [
@@ -18711,21 +18696,26 @@
         ]
       },
       {
-        "label": "允许发布",
-        "note": "只有关键失败修复且复测通过才解锁。",
+        "label": "题集版本变化",
+        "note": "候选改用 suite-v2，分母变化，暂不比较总分。",
         "activeIds": [
+          "suite",
+          "candidate",
           "gate"
         ],
         "doneIds": [
-          "suite",
-          "base",
-          "candidate"
+          "base"
         ],
         "mutedIds": [],
         "values": {
-          "gate": "待复测"
+          "suite": "suite-v2",
+          "candidate": "19/20",
+          "gate": "暂不比较"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "s-c",
+          "c-g"
+        ]
       }
     ],
     "insight": "回归评测关注改动造成的变差，关键行为可以拥有独立门槛。",

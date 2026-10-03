@@ -115,3 +115,39 @@ export function GradingRubricLesson() {
     <button className={base.reset} onClick={() => { setSample('complete'); setChecked(null); }}><ArrowCounterClockwise size={17}/>重置回答与规则</button>
   </div>;
 }
+
+type RegressionMode = 'stable' | 'regression' | 'changed';
+
+const regressionCases = [
+  { id: 'refund-condition', label: '退款保留审核条件', critical: true, baseline: true },
+  { id: 'tool-confirm', label: '写入前请求确认', critical: true, baseline: true },
+  { id: 'citation', label: '回答带回资料来源', critical: false, baseline: true },
+  { id: 'timeout', label: '工具超时说明状态', critical: false, baseline: false },
+  { id: 'format', label: '输出字段完整', critical: false, baseline: true },
+  { id: 'handoff', label: '高风险任务交给人工', critical: true, baseline: true },
+] as const;
+
+export function RegressionEvaluationLesson() {
+  const [mode, setMode] = useState<RegressionMode>('stable');
+  const [checkedMode, setCheckedMode] = useState<RegressionMode | null>(null);
+  const candidate = mode === 'changed' ? { version: 'agent-C · suite-v2', passed: 19, criticalFailures: 0 } : mode === 'regression' ? { version: 'agent-C · suite-v1', passed: 18, criticalFailures: 1 } : { version: 'agent-C · suite-v1', passed: 18, criticalFailures: 0 };
+  const checkedCandidate = checkedMode === 'changed' ? { version: 'agent-C · suite-v2', passed: 19, criticalFailures: 0 } : checkedMode === 'regression' ? { version: 'agent-C · suite-v1', passed: 18, criticalFailures: 1 } : { version: 'agent-C · suite-v1', passed: 18, criticalFailures: 0 };
+  const result = checkedMode === 'regression' ? {
+    title: '发现关键回退，阻断发布',
+    body: 'refund-condition 基线通过、候选失败。即使总通过数从 17/20 变成 18/20，关键失败门槛仍未满足。',
+  } : checkedMode === 'changed' ? {
+    title: '题集版本不同，暂不判定回归',
+    body: '基线使用 suite-v1，候选使用 suite-v2。新增或删除题目会改变分母，先在同一题集版本上重跑。',
+  } : {
+    title: '没有发现关键回退，可以继续看新增失败',
+    body: '候选在同一题集版本上通过 18/20，关键失败仍为 0；还要单独决定普通失败是否达到发布门槛。',
+  };
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：逐项检查回归评测门槛">
+    <div className={s.controls}><label>候选版本的变化<select value={mode} onChange={e => { setMode(e.target.value as RegressionMode); setCheckedMode(null); }}><option value="stable">关键行为保持</option><option value="regression">关键行为回退</option><option value="changed">切换题集版本</option></select></label><p className={s.runHint}>先对齐基线和候选的题集，再检查原来通过的关键项。</p></div>
+    <div className={s.regressionSummary} aria-label="基线与候选汇总"><article><span>基线 · agent-B · suite-v1</span><strong>17/20</strong><p>关键失败 0</p></article><article><span>{candidate.version}</span><strong>{candidate.passed}/20</strong><p>关键失败 {candidate.criticalFailures}</p></article></div>
+    <div className={s.regressionTable} aria-label="代表性样本逐项对照"><div className={s.regressionTableHead}><span>代表性样本</span><span>基线</span><span>候选</span></div>{regressionCases.map(item => { const candidatePass = mode === 'regression' && item.id === 'refund-condition' ? false : item.baseline; const candidateStatus = candidatePass ? '通过' : '失败'; const baseLabel = `基线 ${item.id}：${item.baseline ? '通过' : '失败'}`; const candidateLabel = `候选 ${item.id}：${candidateStatus}${item.critical ? '，关键项' : ''}`; return <div key={item.id} className={s.regressionRow} data-critical={item.critical}><span>{item.label}{item.critical && <small>关键</small>}</span><span role="img" aria-label={baseLabel} title={baseLabel}>{item.baseline ? <Check size={18}/> : <X size={18}/>}<i>{item.baseline ? '通过' : '失败'}</i></span><span role="img" aria-label={candidateLabel} title={candidateLabel}>{candidatePass ? <Check size={18}/> : <X size={18}/>}<i>{candidateStatus}</i></span></div>; })}</div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>检查回归门槛<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.regressionResult} role="status"><h3>{result.title}</h3><p>{result.body}</p><p className={s.runEvidence}>检查记录：候选 {checkedCandidate.passed}/20，关键失败 {checkedCandidate.criticalFailures}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('stable'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置版本与题集</button>
+  </div>;
+}

@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -157,6 +157,36 @@ export function GradingRubricTermPage() {
       <p>如果回答声称“已经退款”，但运行记录没有实际支付状态，规则最多能判断它是否使用了合适的措辞，不能证明退款真的发生。若工具超时导致结果不可读，应标为未评分或设施失败，不能随意给零分。规则也不能替代业务政策：政策改变后，先更新规则和样本，再解释新旧分数。</p>
       <p>最后检查规则是否测到了真正的目标：它是否奖励了真实结果，而不是长度、自信语气或某个固定短语？保留逐项理由、规则版本和样本证据，才能在一次异常评分后回到具体判断。</p>
       <ArticleAside title="评分规则的最小审查表"><p>每条维度都应回答：检查什么、需要什么证据、缺证据怎样处理、与相邻等级差在哪里。四个问题有一个答不上来，就先把规则当成草稿。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function RegressionEvaluationTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={regressionEvaluationSources}/>;
+  return <ConceptArticle slug="regression-evaluation" title="回归评测" subtitle="Regression Evaluation · 改动后检查原来通过的能力是否退回" sources={regressionEvaluationSources}
+    sections={[['regression-definition', '先把“回退”说清楚'], ['regression-diff', '逐项比较基线和候选'], ['regression-gate', '关键失败可以阻断发布'], ['regression-boundary', '题集和证据的边界']]}
+    intro={<>回归评测用一套固定任务比较旧版本和新版本，专门找出“以前做对、现在做错”的变化。新版本总分变高，只能说明某些题的结果变好；它不能自动证明原来的关键行为都还在。</>}
+    hero={<ConceptHero slug="regression-evaluation" label="同一题集上比较基线与候选：总通过数增加，但关键行为回退时仍然阻断"><div className={s.regressionHero}><div className={s.regressionHeroHeader}><span>suite-v1 · 20 条任务</span><span>关键失败 <strong>1</strong></span></div><div className={s.regressionHeroCompare}><div><span>基线 · agent-B</span><strong>17/20</strong><small>关键项全通过</small></div><b aria-hidden="true">→</b><div data-regression="true"><span>候选 · agent-C</span><strong>18/20</strong><small>refund-condition 失败</small></div></div><div className={s.regressionHeroGate}><span>发布门槛</span><strong>阻断</strong><small>关键失败必须为 0</small></div></div></ConceptHero>}>
+    <ArticleSection id="regression-definition" title="先把“回退”说清楚"><Legacy slug="regression-evaluation" names={['question', 'definition']}/>
+      <p id="regression-definition-detail" className="vp-citation-target"><strong>回归评测是在相同题集、输入约定和评分规则下，把基线版本与候选版本逐项对照。</strong>OpenAI 的评测指南把评测对象、数据集、评分器和运行结果作为可追溯的记录；这里的“回归”特指改动后原先通过的行为变成失败，而不是所有新失败都自动叫回归。<Cite id="regression-definition-detail"/></p>
+      <p id="regression-record-detail" className="vp-citation-target">因此，至少要保留题集版本、基线和候选版本、每条任务的结果，以及哪些任务属于关键行为。<strong>只保存“17/20 变成 18/20”会丢掉最需要查的那一条。</strong>如果基线本身没有稳定记录，就无法知道候选到底是回退，还是两次运行的条件不同。<Cite id="regression-record-detail"/></p>
+      <div className={s.regressionChecklist}><div><span>固定什么</span><strong>题集与评分规则</strong><p>先确定比较的分母和判据。</p></div><div><span>保留什么</span><strong>逐题结果</strong><p>把关键行为单独标出来。</p></div><div><span>寻找什么</span><strong>通过 → 失败</strong><p>回到原始证据看变化。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="regression-diff" title="逐项比较基线和候选"><Legacy slug="regression-evaluation" names={['scene-heading']}/>
+      <p id="regression-compare-detail" className="vp-citation-target">Anthropic 将智能体评测拆成任务、成功标准、运行轨迹和结果比较；同一套任务上逐项查看，才能把“总分变好”和“重要能力变差”同时看见。<strong>先对齐题集，再看差异，最后回到失败样本。</strong><Cite id="regression-compare-detail"/></p>
+      <p>下面的例子只展示预先写好的结果，不会调用模型。基线 agent-B 在 suite-v1 上通过 17/20，候选 agent-C 通过 18/20；候选多通过一题，却把原来通过的“退款保留审核条件”变成了失败。切换三种情况，再按门槛检查，不把平均分当成唯一答案。</p>
+      <RegressionEvaluationLesson/>
+      <p>正常状态下，同一题集、关键失败为 0，才可以继续分析普通失败。发现关键回退时，即使总分增加，也要先修复并复测。题集换成 suite-v2 时，分母和任务集合发生变化，应该先标记为暂不比较。</p>
+    </ArticleSection>
+    <ArticleSection id="regression-gate" title="关键失败可以阻断发布" className={base.offset}><Legacy slug="regression-evaluation" names={['quiz-heading']}/>
+      <p id="regression-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 把持续测量、记录和复查放进风险管理流程。对需要保护的行为，可以预先写出发布门槛：关键失败必须为零，或某类失败不得超过规定数量。<strong>门槛不是为了让分数看起来更低，而是防止平均值掩盖高风险回退。</strong><Cite id="regression-gate-detail"/></p>
+      <p>关键行为要来自真实任务风险，而不是看到结果后临时挑一条。比如写入前确认、退款条件和高风险转人工都可能比普通格式更重要；如果这些样本没有进入题集，回归评测就没有机会发现它们。门槛也要写清“未评分”怎样处理，不能把运行设施的缺口默默算成通过。</p>
+      <ArticleAside title="一次发布前的最小检查"><p>确认基线稳定；确认题集和评分器版本一致；检查每条关键题的通过状态；记录新增失败、关键失败和未评分；关键失败修复后，用同一题集重新运行。平均分只作为补充信号。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="regression-boundary" title="题集和证据的边界"><Legacy slug="regression-evaluation" names={['prompt-heading']}/>
+      <p id="regression-boundary-detail" className="vp-citation-target">HELM 通过多个场景和维度报告模型表现，也强调评测覆盖不是无限的。<strong>回归评测只能回答题集实际覆盖的问题；它没有测到的行为，不会因为总分稳定就自动安全。</strong>题集变窄、评分器改宽或基线本身漂移，都会让结论失去可比性。<Cite id="regression-boundary-detail"/></p>
+      <p>如果工具超时、输出缺失或评分器无法读取证据，先记录为未评分或运行不完整，再按预先规则决定重跑、排除还是单独报告。不要因为候选版本的总分更高，就把这些状态解释成能力提升。回归结果说明的是“在这一版题集、规则和运行条件下发生了什么”，不是系统在所有未来输入上的保证。</p>
+      <ArticleAside title="读到一个“通过”时再问三句"><p>题集版本有没有变？关键行为是否逐项通过？有没有未评分或无法观察的样本？这三句有一个答不上来，就先把结果当作需要补证据的比较，而不是发布结论。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
