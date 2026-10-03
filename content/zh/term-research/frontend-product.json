@@ -595,8 +595,8 @@
     "slug": "merge",
     "mechanism": "Git 找到两个分支头的最佳共同祖先，进行三方合并；若目标是另一分支祖先可快进，否则生成合并结果。",
     "misconception": "merge 不一定创建 merge commit，也不是按时间把两份文件简单覆盖。",
-    "demoSignature": "建议 5 帧：用户在 fast-forward、分叉、无共同历史三个提交图间切换；系统先寻找共同祖先，分叉场景展开 base/ours/theirs 三方输入；无冲突时生成合并节点，fast-forward 只移动指针，无共同祖先则停下。",
-    "sourceUrls": ["https://git-scm.com/docs/git-merge"],
+    "demoSignature": "merge-board: 3 steps; actors=共同祖先 A/分叉输入 ours dev D + theirs feature F/可快进输入 dev A + feature F/result F or M; phases=确定共同祖先→先看不能直接快进的 D/F 分叉→切换到 A/F 可快进前提只移动指针，或保留 D/F 创建两个父提交的 M; boundary=无共同祖先、冲突和未提交工作区会停下; action=比较分叉/切到可快进例/保留分叉并合并",
+    "sourceUrls": ["https://git-scm.com/docs/git-merge", "https://git-scm.com/docs/git-merge-base", "https://git-scm.com/docs/git-read-tree", "https://git-scm.com/docs/git-commit", "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"],
     "rewriteRisk": "high",
     "nearDuplicates": ["rebase", "merge-conflict", "branch"]
   },
