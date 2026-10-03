@@ -7,8 +7,6 @@ import frontendProductTermsSource from "@/content/zh/term-batches/frontend-produ
 import publishedTermSlugsSource from "@/content/zh/published-terms.json";
 import termsSource from "@/content/zh/terms.json";
 import toolsSource from "@/content/zh/tools.json";
-import newsSource from "@/content/zh/news.json";
-import { newsArticleSchema, newsRelationErrors } from "@/lib/news-schema";
 
 const taxonomySchema = z.array(
   z.object({
@@ -59,16 +57,6 @@ export const terms = z.array(termSchema).parse([
 ]);
 export const publishedTermSlugs = z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).parse(publishedTermSlugsSource);
 export const tools = z.array(toolSchema).parse(toolsSource);
-const parsedNewsArticles = z.array(newsArticleSchema).min(1).parse(newsSource);
-
-// Example records are useful in draft/pipeline fixtures, but they are never part
-// of the public content collection. Keep this boundary here so every page,
-// sitemap entry, search result, and Xiaobei lookup shares the same filter.
-export const newsArticles = parsedNewsArticles.filter((article) => !article.isExample);
-
-if (!newsArticles.length) {
-  throw new Error("公开新闻至少需要一篇真实来源文章");
-}
 
 const categoryNames = new Set(taxonomy.map((item) => item.name));
 const duplicateSlugs = terms.filter(
@@ -91,14 +79,6 @@ if (new Set(publishedTermSlugs).size !== publishedTermSlugs.length) {
   throw new Error("公开词条 slug 不能重复");
 }
 
-const duplicateNewsSlugs = newsArticles.filter(
-  (article, index) => newsArticles.findIndex((candidate) => candidate.slug === article.slug) !== index,
-);
-
-if (duplicateNewsSlugs.length) {
-  throw new Error(`新闻 slug 重复：${duplicateNewsSlugs.map((article) => article.slug).join(", ")}`);
-}
-
 const unknownPublishedSlugs = publishedTermSlugs.filter((slug) => !terms.some((term) => term.slug === slug));
 if (unknownPublishedSlugs.length) {
   throw new Error(`公开词条不存在：${unknownPublishedSlugs.join(", ")}`);
@@ -106,12 +86,6 @@ if (unknownPublishedSlugs.length) {
 
 const publishedTermSlugSet = new Set(publishedTermSlugs);
 export const publishedTerms = terms.filter((term) => publishedTermSlugSet.has(term.slug));
-
-const newsSlugSet = new Set(newsArticles.map(article => article.slug));
-for (const article of newsArticles) {
-  const errors = newsRelationErrors(article, publishedTermSlugSet, newsSlugSet);
-  if (errors.length) throw new Error(`新闻 ${article.slug}：${errors.join("；")}`);
-}
 
 for (const term of terms) {
   if (!categoryNames.has(term.cat)) {
@@ -131,7 +105,6 @@ export type Term = (typeof terms)[number];
 export type TermDemoType = NonNullable<Term["demoType"]>;
 export type TermDemoStep = NonNullable<Term["demoSteps"]>[number];
 export type Tool = (typeof tools)[number];
-export type NewsArticle = (typeof newsArticles)[number];
 
 export function getTerm(slug: string) {
   return terms.find((term) => term.slug === slug);
@@ -150,8 +123,4 @@ export function getRelatedTerms(term: Term, count = 4) {
     ?.map((slug) => getTerm(slug))
     .filter((candidate): candidate is Term => Boolean(candidate && publishedTermSlugSet.has(candidate.slug))) ?? [];
   return explicitlyRelated.slice(0, count);
-}
-
-export function getNewsArticle(slug: string) {
-  return newsArticles.find((article) => article.slug === slug);
 }
