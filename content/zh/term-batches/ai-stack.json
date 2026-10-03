@@ -4124,22 +4124,22 @@
     "definition": "权限边界由运行环境或授权系统执行，在模型请求之外独立限制资源和动作。",
     "boundary": "提示词可以说明边界，但不能替代操作系统、沙箱或服务端的实际校验。",
     "demoType": "branch",
-    "demoTitle": "报表请求经过权限边界",
+    "demoTitle": "资源访问处的权限强制校验",
     "demoSteps": [
       {
-        "label": "发放最小令牌",
-        "value": "read:sales only",
-        "note": "令牌只有销售读取范围，提示词不能扩大它。"
+        "label": "令牌",
+        "value": "只发放 read:sales",
+        "note": "最小能力先进入模型外的执行层。"
       },
       {
-        "label": "越界请求",
-        "value": "read:salary → deny / 0 行",
-        "note": "策略在工资表前拒绝请求并写入审计事件。"
+        "label": "请求",
+        "value": "sales → allow；salary → deny",
+        "note": "策略匹配主体、动作和资源，越界请求不读表。"
       },
       {
-        "label": "明确授权",
-        "value": "+ read:salary → allow",
-        "note": "管理员授权后重新请求，返回结果并记录主体与范围。"
+        "label": "证据",
+        "value": "salary 返回 0 行并写入审计",
+        "note": "加入 read:salary 后才允许重试，授权也要被记录。"
       }
     ],
     "quizQuestion": "权限边界应由谁实际执行？",
