@@ -23674,6 +23674,116 @@
     "sourceHash": "sha256:66321e57ae7a50676743cff3c18b07d268b97e6c04ae727c87f41701b8e73dae"
   },
   {
+    "slug": "neuromorphic-labs-trust-layer-seed-20260811",
+    "title": "Neuromorphic Labs 以 510 万美元种子轮押注生产 AI 的“信任层”",
+    "summary": "Neuromorphic Labs 在 8 月 11 日宣布获得 510 万美元超额认购种子轮，领投方为 Flying Fish。公司称平台帮助组织在模型和 Agent 的开发、部署与运行阶段保留控制和可验证性；网页标题在 8 月 12 日发布，因此文章分别保留事件日与公开日。",
+    "body": "Neuromorphic Labs 的新闻稿页面标题标为 8 月 12 日，但正文地点行写的是“Seattle, August 11, 2026”。按正文记录，8 月 11 日公司宣布完成 510 万美元、超额认购的种子轮，Flying Fish 领投，Toyota Ventures、Amplify Partners、Tandem Ventures 和 SaaS Ventures 等参与。这个日期差异被保留在 eventDate 和 publishedAt 里，避免把网页上线时间误当成事件发生时间。\n\n公司把自己的产品叫作生产 AI 的“信任层”。它想解决的不是再训练一个更大的模型，而是让团队在选模型、管理权重、处理数据、部署 Agent 和运行环境时，始终知道谁在控制什么、结果能否复查。对零基础读者来说，这更像一组围绕模型的控制面：模型是发动机，信任层负责记录配置、权限和部署边界。\n\n这条路线对应企业落地时常见的摩擦。一个团队可能在实验环境里换模型、调提示、接工具，但到了生产环境，数据位置、权限、版本和回滚都不能靠口头约定。Neuromorphic 的公告称平台可在组织自己的环境中工作，并与已有 AI 工程工具配合；目前公开材料没有给出独立性能基准、客户名单或通用可用日期。\n\n融资用途也比较具体。公司说资金将用于扩大创始团队，并把平台推进到 general availability，也就是面向更广泛用户的正式可用阶段。这说明 8 月 11 日确认的是融资和产品方向，而不是平台已经普遍部署。早期访问、招聘和路线图仍然需要后续公告来验证。\n\n“可验证”这个词也要谨慎理解。它可以指能追踪模型、权重、数据和环境的来源，也可以指对一次 Agent 执行保留审计记录；它不自动等于模型回答正确，更不等于部署过程没有风险。真正有价值的验证要能回答：哪个版本在什么权限下运行、调用了什么数据、失败后怎样回退。\n\n接下来应观察平台是否公开控制面细节、审计输出和真实客户案例。如果这些材料出现，读者才能判断它是在解决生产工程问题，还是只把“信任”作为融资叙事。",
+    "publishedAt": "2026-08-12",
+    "eventDate": "2026-08-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/neuromorphic-labs-trust-layer-seed-20260811.svg",
+      "alt": "Neuromorphic Labs 以 510 万美元种子轮押注生产 AI 的“信任层” 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/neuromorphic-labs-trust-layer-seed-20260811.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "date",
+        "title": "为什么文章有两个日期",
+        "body": "网页标题在 8 月 12 日发布，新闻稿正文把公告地点和事件写为 8 月 11 日；因此 eventDate 与 publishedAt 不相同。",
+        "kind": "narrative"
+      },
+      {
+        "id": "trust",
+        "title": "“信任层”实际要管什么",
+        "body": "公司描述的范围包括模型、权重、数据、Agent 和运行环境的控制与可验证性，重点是生产流程的配置和边界。",
+        "kind": "technical"
+      },
+      {
+        "id": "production",
+        "title": "实验成功不等于生产可用",
+        "body": "早期团队需要把模型选择、权限、数据位置、部署版本和回滚记录串起来；公开材料尚未给出独立基准或大规模客户结果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "funding",
+        "title": "510 万美元将用于什么",
+        "body": "公司称资金扩充团队并推进 general availability；这描述的是融资用途和路线图，不是已经完成的全面上线。",
+        "kind": "boundary"
+      },
+      {
+        "id": "verify",
+        "title": "以后要看哪些证据",
+        "body": "控制面、审计记录、真实客户案例和失败回退流程，才能让“可验证”从概念变成可检查的工程能力。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "一层生产 AI 的控制面怎样工作？",
+      "question": "模型进入业务系统后，谁来记录它做了什么？",
+      "steps": [
+        {
+          "label": "锁定模型与版本",
+          "detail": "先记录使用的模型、权重和配置，确保同一个任务可以追溯到具体版本。",
+          "evidence": "Neuromorphic Labs 公告"
+        },
+        {
+          "label": "限定数据与环境",
+          "detail": "把数据位置、运行环境和工具权限写成边界，避免实验配置直接带进生产。",
+          "evidence": "公司对 control and verifiability 的描述"
+        },
+        {
+          "label": "保留执行记录",
+          "detail": "记录 Agent 的输入、调用、结果和失败路径，让团队可以复查一次运行。",
+          "evidence": "文章对白话“可验证”的解释"
+        },
+        {
+          "label": "允许回退与复盘",
+          "detail": "出现错误时回到已知版本，随后再分析数据、权限和模型选择，而不是只重试一次。",
+          "evidence": "生产工程边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Neuromorphic Labs",
+      "url": "https://neuromorphiclabs.ai/press/seed-funding"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "authorization",
+      "execution-sandbox",
+      "data-lineage",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "skan-context-graph-series-c-20260812",
+      "thrive-ai-fundraise-20260812"
+    ],
+    "sources": [
+      {
+        "url": "https://neuromorphiclabs.ai/press/seed-funding",
+        "claim": "Neuromorphic Labs 正文将事件写为 8 月 11 日，宣布 510 万美元超额认购种子轮。",
+        "excerpt": "Seattle, August 11, 2026: Neuromorphic Labs today announced an oversubscribed $5.1 million seed round"
+      },
+      {
+        "url": "https://neuromorphiclabs.ai/press/seed-funding",
+        "claim": "公司把平台定位为生产 AI 的信任层，强调控制与可验证性。",
+        "excerpt": "with control and verifiability at every stage"
+      },
+      {
+        "url": "https://neuromorphiclabs.ai/",
+        "claim": "公司主页称平台在组织自己的环境中运行并配合已有工具。",
+        "excerpt": "Runs in your environment. Works with the tools you already use."
+      }
+    ],
+    "canonicalUrl": "https://neuromorphiclabs.ai/press/seed-funding",
+    "sourceHash": "sha256:cca8010f8c586f48e805e0005db808e9fdcb0d5da32a5534ba295413f50b70a3"
+  },
+  {
     "slug": "skan-context-graph-series-c-20260812",
     "title": "Skan AI 获 6300 万美元 C 轮融资，发布企业工作上下文与 Agents 平台",
     "summary": "8 月 12 日，Skan AI 宣布获得 6300 万美元 C 轮融资（按融资轮次命名的成长阶段融资），并宣布 Blueprint 与 Agents（能根据上下文调用工具执行多步任务的软件）平台正式可用。公司把产品定位为“工作上下文图”：从系统、应用和例外中观察工作如何真实发生，再把这些信息交给企业 AI；融资方和客户效果数字来自公司公告，SiliconANGLE 提供了交叉报道。",
@@ -23891,6 +24001,586 @@
     ],
     "canonicalUrl": "https://www.thriveholdings.com/thrive-holdings-fundraise",
     "sourceHash": "sha256:b9389243406a850c6bcf43aa28481176328032e34ef55906e6f3644a0e20e0be"
+  },
+  {
+    "slug": "nvidia-ai-factory-financing-20260811",
+    "title": "NVIDIA 把 AI 工厂写成可融资的基础设施",
+    "summary": "8 月 11 日，Jensen Huang 在 NVIDIA 博客追踪介绍 AI 工厂融资框架：公司前一天宣布与六家金融机构合作，计划长期调动超过 5000 亿美元的第三方资本。这个数字是平台要争取的累计资本规模，不是一只已经募集的基金，也不是 NVIDIA 的收入或单一客户承诺。",
+    "body": "8 月 11 日，NVIDIA CEO Jensen Huang 在公司博客继续解释“AI 工厂”为什么可以被当作基础设施来融资。前一天的新闻稿说，NVIDIA 与 Apollo、BlackRock、Blackstone、Brookfield、Goldman Sachs 和 KKR 签署谅解备忘录，准备建立独立的算力融资平台；博客把这件事放进一条更大的叙事里：从企业逐个买芯片、建数据中心，转向用长期资金建设能持续产生收入的算力设施。\n\nNVIDIA 所说的 AI 工厂，不只是 GPU。它把加速计算、网络、系统软件、AI 框架和 CUDA 生态放在一起，假设同一套基础设施可以服务不同模型、客户和工作负载。这样写的意义在于，投资人评估的对象不再是一批很快折旧的硬件，而是一套能被重新租给不同客户、并通过软件升级提高产出的系统。这个定义是 NVIDIA 的商业主张，不能直接当作行业已经形成的统一会计口径。\n\n博客反复强调“超过 5000 亿美元”是平台希望在较长时间里调动的第三方资本总量，不是已经到账的资金，也不是对某一家公司的融资承诺。金融机构要分别评估客户、需求、利用率、现金流和设备剩余价值；NVIDIA 可能在个别项目里提供不超过 25% 的剩余价值支持，但这仍取决于项目审查。也就是说，新闻确认的是融资机制和合作方，不能提前写成 5000 亿美元已经投入建设。\n\n这条消息对 AI 行业的影响，落在算力的付款方式。训练和推理需求增长后，模型公司、云厂商和企业都要把未来收入拿来支撑今天的电力、机房、网络和芯片。把算力包装成长期生产性资产，可能降低部分客户一次性建设的门槛；反过来，客户能否稳定使用、设备能否转租、能源和利率是否可控，都会决定融资能否真正落地。\n\nNVIDIA 还拿 H100 租赁价格和 A100 的持续使用来说明设备具有经济寿命。这些价格和案例来自 NVIDIA 自己的博客，适合用来理解它怎样向投资人讲故事，不足以证明每个云服务商都能获得同样的回报。Axios 对 8 月 10 日公告的报道也提到，谅解备忘录仍要经过最终协议，市场还担心供应商、客户和资本之间形成循环融资。\n\n接下来要看的不是口号，而是每个平台是否签下最终协议、哪些客户获得融资、项目的利用率和现金流怎样被独立审查。只有这些信息逐步公开，AI 工厂才会从一种新的资产叙事变成可以比较的金融产品。",
+    "publishedAt": "2026-08-11",
+    "eventDate": "2026-08-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nvidia-ai-factory-financing-20260811.svg",
+      "alt": "NVIDIA 把 AI 工厂写成可融资的基础设施 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/nvidia-ai-factory-financing-20260811.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "8 月 10 日的合作，8 月 11 日的解释",
+        "body": "新闻稿确认了六家金融机构和超过 5000 亿美元的长期调动目标；博客进一步解释 NVIDIA 想把算力从设备采购改写成生产性基础设施。",
+        "kind": "narrative"
+      },
+      {
+        "id": "asset",
+        "title": "“AI 工厂”在这里指什么",
+        "body": "NVIDIA 把 GPU、网络、系统软件、框架和 CUDA 生态视为一套可服务多类客户的完整平台。这个定义反映公司商业视角，不代表统一行业标准。",
+        "kind": "technical"
+      },
+      {
+        "id": "capital",
+        "title": "5000 亿美元不是一笔已经到账的资金",
+        "body": "博客明确说这是平台希望长期调动的第三方资本总量，不是 NVIDIA 收入、单一基金或单一客户承诺；每个项目仍要由金融机构独立审查。",
+        "kind": "boundary"
+      },
+      {
+        "id": "economics",
+        "title": "为什么算力需要新的付款方式",
+        "body": "模型公司要同时承担电力、机房、网络和芯片成本。长期融资能把一次性建设摊到未来使用，但利用率、能源价格和利率会决定风险。",
+        "kind": "comparison"
+      },
+      {
+        "id": "watch",
+        "title": "后续应观察哪些硬事实",
+        "body": "最终协议、实际融资客户、利用率、现金流和设备处置价格，才会检验 AI 工厂能否成为可比较的基础设施资产。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "一套 AI 工厂怎样走到融资审查？",
+      "question": "为什么“有 GPU”还不等于“能拿到长期资本”？",
+      "steps": [
+        {
+          "label": "提出算力需求",
+          "detail": "模型公司或云厂商先说明训练、推理、客户和用电需求，需求必须能被量化。",
+          "evidence": "NVIDIA AI Factory Compute 博客"
+        },
+        {
+          "label": "组合成基础设施",
+          "detail": "把芯片、网络、软件、机房和能源放进一套可运营的 AI 工厂，而不是只估一批 GPU。",
+          "evidence": "NVIDIA 对 AI factory 的定义"
+        },
+        {
+          "label": "独立审查",
+          "detail": "金融机构分别检查客户、利用率、现金流和设备剩余价值，决定是否提供长期资本。",
+          "evidence": "NVIDIA 融资说明"
+        },
+        {
+          "label": "持续核对",
+          "detail": "项目上线后还要看真实使用、收入、风险支持和能否转租；签署意向不等于融资落地。",
+          "evidence": "文章事实边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "NVIDIA Blog",
+      "url": "https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/"
+    },
+    "relatedSlugs": [
+      "data-pipeline",
+      "llm",
+      "agent",
+      "tools",
+      "event",
+      "authorization"
+    ],
+    "relatedArticleSlugs": [
+      "thrive-ai-fundraise-20260812",
+      "skan-context-graph-series-c-20260812"
+    ],
+    "sources": [
+      {
+        "url": "https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/",
+        "claim": "NVIDIA 在 8 月 11 日博客中介绍六家金融机构参与的 AI 工厂融资平台。",
+        "excerpt": "designed to mobilize over $500 billion of third-party capital"
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/",
+        "claim": "5000 亿美元是长期调动目标，不是 NVIDIA 收入或单一客户承诺。",
+        "excerpt": "The capital is not NVIDIA revenue, a single fund or a commitment to a single customer."
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/",
+        "claim": "金融机构将独立评估客户、需求、利用率、现金流和剩余价值。",
+        "excerpt": "The financial institutions will independently assess each opportunity."
+      },
+      {
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Partners-With-Apollo-BlackRock-Blackstone-Brookfield-Goldman-Sachs-and-KKR-to-Establish-AI-Compute-Infrastructure-Financing-Platforms-to-Mobilize-Over-500-Billion-of-Third-Party-Capital/default.aspx",
+        "claim": "NVIDIA 8 月 10 日新闻稿确认与六家机构签署谅解备忘录。",
+        "excerpt": "strategic partnerships to establish independent compute financing platforms"
+      },
+      {
+        "url": "https://www.axios.com/2026/08/10/nvidia-financing-ai-goldman-sachs-blackrock",
+        "claim": "Axios 报道指出公告仍涉及最终协议和循环融资争议。",
+        "excerpt": "the financing deal is necessary to help customers access scarce compute at scale"
+      }
+    ],
+    "canonicalUrl": "https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/",
+    "sourceHash": "sha256:90efa435138feda2a8d78328a3a8cd5479ce35f725e80f9323e52443321c4848"
+  },
+  {
+    "slug": "openai-chatgpt-linux-preview-20260811",
+    "title": "OpenAI 把 ChatGPT、Work 和 Codex 带到 Linux 预览版",
+    "summary": "8 月 11 日，OpenAI 宣布 ChatGPT 桌面应用的 Linux 预览版，把 ChatGPT、ChatGPT Work 和 Codex 放在一个桌面入口。首批支持 Ubuntu 24.04/26.04、Debian 13、Fedora 43/44，以及 x64 和 ARM64；官方后续文档仍把它标为预览，浏览器操作可用，但控制其他桌面应用暂不支持。",
+    "body": "8 月 11 日，OpenAI 在官方开发者社区转发了 ChatGPT Linux 桌面应用的预览公告，随后 TechCrunch 等媒体报道了这次发布。它把 ChatGPT、ChatGPT Work 和 Codex 放到同一桌面应用里，面向需要在 Linux 上处理项目、文件和代码工作的用户。这里的新闻重点是入口和工作流到达了新的操作系统，并不是宣布一个新的基础模型。\n\n预览版列出的系统包括 Ubuntu 24.04 LTS、Ubuntu 26.04 LTS、Debian 13、Fedora 43 和 Fedora 44，提供 x64 与 ARM64 的 deb、rpm 包。支持清单是一个有边界的产品承诺，不能简单写成“所有 Linux 都能用”。官方文档后来补充了 Arch Linux 的安装说明，但文章按 8 月 11 日公告记录当时可见的首批支持范围。\n\n这个桌面入口对 Agent 工作流有实际影响。用户可以在项目中保留上下文，读取本地文件，让 Codex 继续处理代码，并在内置浏览器里执行网页任务。帮助中心的后续说明写明，Linux 应用支持浏览器操作，但目前不能控制其他桌面应用；这意味着桌面 Agent 的权限范围仍然比“接管整台电脑”窄。\n\n“本地文件”也不等于应用可以无条件读取整个磁盘。使用者需要选择项目和授权范围，应用还要受到操作系统文件权限、浏览器登录状态和工作区设置的限制。对开发者来说，Linux 预览版的价值更像把已有的 ChatGPT Work 与 Codex 工作台搬到常用环境里；对安全审查来说，关键是确认本地文件、浏览器会话和外部动作分别经过什么批准。\n\n这次发布也显示出桌面产品的竞争在向“连续工作”移动。聊天、项目、浏览器和代码助手如果共享上下文，用户少做几次复制粘贴；但上下文越连贯，误读文件、错用凭据和误操作的影响也越大。预览阶段把支持系统和暂不支持的控制范围写清楚，反而比“全能桌面 Agent”的宣传更有用。\n\n后续应关注 Linux 版本更新、项目与 Codex CLI 的同步、浏览器操作的审批提示，以及对其他桌面应用的控制是否会开放。对现在的用户，最稳妥的读法是：这是可试用的统一入口，功能边界仍在形成。",
+    "publishedAt": "2026-08-11",
+    "eventDate": "2026-08-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-chatgpt-linux-preview-20260811.svg",
+      "alt": "OpenAI 把 ChatGPT、Work 和 Codex 带到 Linux 预览版 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/openai-chatgpt-linux-preview-20260811.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "这次发布解决的是入口问题",
+        "body": "ChatGPT、Work 和 Codex 在 Linux 桌面应用里汇合，重点是项目、文件、浏览器和代码工作的连续性，不是新的模型发布。",
+        "kind": "narrative"
+      },
+      {
+        "id": "support",
+        "title": "支持系统要按清单理解",
+        "body": "公告列出 Ubuntu 24.04/26.04、Debian 13、Fedora 43/44，以及 x64/ARM64 的 deb、rpm 包；预览版不是所有发行版的保证。",
+        "kind": "technical"
+      },
+      {
+        "id": "actions",
+        "title": "浏览器能操作，其他桌面应用暂时不能",
+        "body": "OpenAI 后续帮助文档把浏览器操作列为可用能力，同时说明控制其他桌面应用尚未支持，这给桌面 Agent 画出了边界。",
+        "kind": "boundary"
+      },
+      {
+        "id": "permissions",
+        "title": "连续上下文也带来权限问题",
+        "body": "项目文件、浏览器会话和工作区设置需要分别检查；能在同一入口看到内容，不代表应用可以无条件读取和修改所有本地资源。",
+        "kind": "comparison"
+      },
+      {
+        "id": "preview",
+        "title": "预览阶段应该看哪些变化",
+        "body": "更新频率、项目与 CLI 同步、审批提示和桌面控制范围，都会决定这个入口是否真的适合长期工作。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "Linux 桌面 Agent 怎样把工作接起来？",
+      "question": "从文件到代码再到网页，哪些步骤需要明确授权？",
+      "steps": [
+        {
+          "label": "选择项目",
+          "detail": "用户先选择项目和允许使用的上下文，应用据此读取本地文件和已有对话。",
+          "evidence": "OpenAI Linux 预览说明"
+        },
+        {
+          "label": "调用工具",
+          "detail": "ChatGPT Work 或 Codex 根据任务调用文件、代码和内置浏览器工具，结果回到同一个工作流。",
+          "evidence": "OpenAI 官方产品描述"
+        },
+        {
+          "label": "检查边界",
+          "detail": "浏览器操作可用，但其他桌面应用控制尚未支持；操作系统权限和工作区设置仍然有效。",
+          "evidence": "OpenAI 帮助中心"
+        },
+        {
+          "label": "人工确认",
+          "detail": "涉及登录状态、外部提交或写入文件时，用户应核对目标、范围和结果，再继续下一步。",
+          "evidence": "文章权限边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI Developer Community",
+      "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "execution-sandbox",
+      "authorization",
+      "context",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "grok-46-long-agents-20260812",
+      "gemini-connected-apps-20260812"
+    ],
+    "sources": [
+      {
+        "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+        "claim": "OpenAI 官方社区在 8 月 11 日公布 Linux 桌面应用预览，包含 ChatGPT、Work 和 Codex。",
+        "excerpt": "ChatGPT desktop app for Linux is now available in preview"
+      },
+      {
+        "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+        "claim": "公告列出首批 Linux 发行版、架构和 deb/rpm 包。",
+        "excerpt": "Ubuntu 24.04 LTS and 26.04 LTS, Debian 13, Fedora 43 and 44"
+      },
+      {
+        "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+        "claim": "OpenAI 后续帮助中心说明 Linux 应用支持浏览器操作，但暂不支持控制其他桌面应用。",
+        "excerpt": "Browser actions are available in the Linux app; controlling other desktop apps is not yet supported."
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/11/openai-launches-chatgpt-desktop-app-for-linux/",
+        "claim": "TechCrunch 交叉报道 Linux 预览版全球发布和支持范围。",
+        "excerpt": "The new app, which is being released in preview"
+      }
+    ],
+    "canonicalUrl": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+    "sourceHash": "sha256:ef6e31b77c28644dc2f143dee2cd1bb7f75f5b47656fc7cd89253af53212826c"
+  },
+  {
+    "slug": "retell-ai-seed-funding-20260811",
+    "title": "Retell AI 完成 460 万美元种子轮，目标是把语音 Agent 变成可运营系统",
+    "summary": "Retell AI 在 8 月 11 日宣布获得 460 万美元种子轮融资，Alt Capital 领投，Y Combinator、Carya Venture 及二十多位创始人与运营者参与。公司把资金投入 AI 语音 Agent 的构建、测试、部署和监控，并承认生产级语音系统要同时解决延迟、轮流说话、打断和异常处理。",
+    "body": "同一天，Retell AI 还发布了种子轮融资消息。公司宣布获得 460 万美元，Alt Capital 领投，Y Combinator、Carya Venture 以及二十多位创始人、管理者和运营者参与。融资新闻的重点不是“又一个语音模型”，而是把电话客服里的 AI 语音 Agent 当成需要持续运营的软件系统。\n\nRetell 解释，过去的语音机器人往往靠大量固定对话流程，设计周期长、应对变化僵硬；大语言模型带来了更自然的表达，却也让系统更容易自由发挥。要让它在真实电话里可靠工作，团队还要处理低延迟、轮流说话、打断、执行动作、监控和 A/B 测试。公司把这些工程工作列为产品的一部分，而不是把提示词交给客户就结束。\n\n官方页面提到一个低于 500 毫秒的“人类级延迟”目标，并称自 2 月初次发布以来，年化收入已超过 300 万美元。这两项都是公司自己的指标：前者需要说明测量口径和网络条件，后者需要明确客户数量、收入确认和持续性。它们可以说明公司的商业叙事，但不能直接说明所有客户都达到同样效果。\n\n种子轮的意义在于给团队时间继续做平台化工作。一个语音 Agent 不只会回答问题，还可能查订单、改预约、转接人工或触发外部系统。每个动作都需要授权、失败处理和可追踪记录。融资新闻没有给出具体客户合同或安全审计，因此“规模化”仍是计划和经营目标。\n\nRetell 的 Conductor 也在同日发布，负责让使用者用自然语言构建、审查和测试语音 Agent。两条消息的关系是：融资提供资源，Conductor 试图降低构建门槛；它们不是同一条证据，不能把一个产品页面的内部指标写成融资结果。\n\n后续应关注语音识别和合成的真实延迟、转人工率、误触发工具的次数、客户投诉和可回滚性。只有这些运行数据逐渐公开，读者才知道“生产级”是工程状态，还是宣传用语。",
+    "publishedAt": "2026-08-11",
+    "eventDate": "2026-08-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/retell-ai-seed-funding-20260811.svg",
+      "alt": "Retell AI 完成 460 万美元种子轮，目标是把语音 Agent 变成可运营系统 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/retell-ai-seed-funding-20260811.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "round",
+        "title": "一笔种子轮对应一套长期工程",
+        "body": "460 万美元由 Alt Capital 领投，其他投资方和参与者已列出；公司要做的是构建、测试、部署和监控语音 Agent 的平台。",
+        "kind": "narrative"
+      },
+      {
+        "id": "voice",
+        "title": "语音 Agent 的难点在电话之外",
+        "body": "低延迟、轮流说话、打断、动作执行和异常转人工共同决定一次通话是否可靠，语言自然只是其中一环。",
+        "kind": "technical"
+      },
+      {
+        "id": "metrics",
+        "title": "内部指标要带着测量条件读",
+        "body": "低于 500 毫秒的目标和超过 300 万美元的年化收入都来自公司页面，缺少口径时不能外推成全行业结果。",
+        "kind": "boundary"
+      },
+      {
+        "id": "operations",
+        "title": "融资想解决的是运营闭环",
+        "body": "真实系统要监控每次调用、做 A/B 测试、处理失败并保留回滚路径；这比一次演示需要更多工具和权限设计。",
+        "kind": "comparison"
+      },
+      {
+        "id": "link",
+        "title": "与 Conductor 的关系",
+        "body": "种子轮说明资源来源，Conductor 说明产品方向；两条独立事实链可以互相补充，但不应合并成同一条指标。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "语音 Agent 为什么需要一条运营闭环？",
+      "question": "一通电话结束后，系统还要做哪些工作？",
+      "steps": [
+        {
+          "label": "接住对话",
+          "detail": "把语音转成可处理的内容，并在打断和轮流说话时维持低延迟。",
+          "evidence": "Retell 种子轮公告"
+        },
+        {
+          "label": "执行动作",
+          "detail": "根据权限调用订单、预约或 CRM 工具，记录谁授权了什么动作。",
+          "evidence": "公司对 production-ready agent 的描述"
+        },
+        {
+          "label": "处理异常",
+          "detail": "遇到不确定、失败或高风险请求时转人工，而不是为了保持流畅继续猜。",
+          "evidence": "文章边界说明"
+        },
+        {
+          "label": "复盘与测试",
+          "detail": "用通话监控、失败样例和 A/B 测试改进下一版 Agent，并保留可回滚的版本。",
+          "evidence": "Retell 对 monitoring and testing 的描述"
+        }
+      ]
+    },
+    "source": {
+      "name": "Retell AI",
+      "url": "https://www.retellai.com/blog/seed-announcement"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "tools",
+      "authorization",
+      "data-quality",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "retell-conductor-voice-agents-20260811"
+    ],
+    "sources": [
+      {
+        "url": "https://www.retellai.com/blog/seed-announcement",
+        "claim": "Retell AI 宣布完成 460 万美元种子轮及领投方。",
+        "excerpt": "secured a $4.6 million seed funding round"
+      },
+      {
+        "url": "https://www.retellai.com/blog/seed-announcement",
+        "claim": "公司列出生产级语音 Agent 的延迟、轮流说话和打断等工程问题。",
+        "excerpt": "achieving human-level latency (<500ms)"
+      },
+      {
+        "url": "https://www.retellai.com/blog/seed-announcement",
+        "claim": "Retell 称自首次发布以来年化收入超过 300 万美元。",
+        "excerpt": "achieving an annualized revenue of more than $3M"
+      },
+      {
+        "url": "https://www.retellai.com/blog/introducing-conductor",
+        "claim": "同日 Conductor 把构建、审查、测试和改进放进语音 Agent 流程。",
+        "excerpt": "Conductor builds, reviews, tests, and improves a real voice agent"
+      }
+    ],
+    "canonicalUrl": "https://www.retellai.com/blog/seed-announcement",
+    "sourceHash": "sha256:79fddceaf31dd846803fcf0f9fae70b1be2943b79e34533f576e72121e876242"
+  },
+  {
+    "slug": "retell-conductor-voice-agents-20260811",
+    "title": "Retell AI 推出 Conductor：先改、再测、再让语音 Agent 上线",
+    "summary": "8 月 11 日，Retell AI 发布 Conductor，一个面向语音 Agent 构建的协作工具。它把自然语言意图转成 Agent 配置，同时在图结构中展示改动、生成测试并沿用用户的角色权限；公司内部称它已写出 70% 的模拟测试，这个比例仍属于公司自报。",
+    "body": "Retell AI 在 8 月 11 日发布 Conductor，把“描述我想要的呼叫流程”变成构建语音 Agent 的入口。官方介绍里，Conductor 会在 Retell 内部创建、审查、测试和改进一个真实 Agent，并把每次改动展示出来，等使用者确认后再接近线上电话。它面对的是电话客服这种有状态、有工具、有转接和异常分支的系统，不是只生成一段对话文本。\n\nConductor 的一个关键设计是 graph-native review。普通代码助手可能给你一个 JSON 文件，使用者还要自己找出哪一处被改了；Conductor 把改动放回流程图中的节点，让人可以在上下文里接受或拒绝。这个设计把审查从“看最终文本”移到了“看行为链路”，更适合有多个提示、步骤、工具和设置的语音系统。\n\n权限也是产品叙事的一部分。Retell 称 Conductor 遵守细粒度的 RBAC，并继承当前用户的访问范围：看不到通话记录的人，Conductor 也不能替他看到；不能编辑 Agent 的人，Conductor 也不应替他编辑。它并没有消除权限配置，而是把权限作为构建过程的输入。真正上线前仍需要管理员确认数据范围和发布权限。\n\nRetell 还称 Conductor 会分析出错的通话、写出重现问题的测试，并根据结果更新 Agent。官方页面给出的内部指标是，它已经写出公司 70% 的模拟测试、完成一半内部 Agent 修改；这些数字没有给出任务样本、时间窗口或独立验证，不能外推到所有客服团队。\n\n语音 Agent 的难点包括延迟、轮流说话、打断、工具调用和异常转人工。一个看起来流畅的演示，可能在客户说“改地址但不要改账单”时走错分支。Conductor 选择把审查、测试和修正放在部署前后，方向上更接近软件工程的回归循环，但它仍然需要人来定义安全边界、检查测试是否覆盖关键场景。\n\n这条新闻值得关注的地方，是把 Agent 构建从“写提示词”拉回到“维护一套会接电话的系统”。后续需要看公开文档是否给出测试格式、回滚方式、审计记录和真实客户结果，才能判断这个协作层能否降低上线风险。",
+    "publishedAt": "2026-08-11",
+    "eventDate": "2026-08-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/retell-conductor-voice-agents-20260811.svg",
+      "alt": "Retell AI 推出 Conductor：先改、再测、再让语音 Agent 上线 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/retell-conductor-voice-agents-20260811.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "product",
+        "title": "它不是聊天机器人配置器",
+        "body": "Conductor 处理的是提示、步骤、工具和设置组成的语音 Agent，并把改动、测试和修正放进同一条流程。",
+        "kind": "narrative"
+      },
+      {
+        "id": "review",
+        "title": "把改动放回流程图里看",
+        "body": "graph-native review 让使用者在具体节点旁接受或拒绝改动，减少只看一份 JSON 或最终话术带来的盲区。",
+        "kind": "technical"
+      },
+      {
+        "id": "permission",
+        "title": "权限跟着操作者走",
+        "body": "Retell 称 Conductor 继承 RBAC；它不能替一个没有通话记录权限的人读取通话，也不能绕过编辑权限。",
+        "kind": "boundary"
+      },
+      {
+        "id": "tests",
+        "title": "公司内部指标要放在原位",
+        "body": "“写出 70% 模拟测试、完成一半 Agent 修改”是公司内部口径，页面没有给出样本和独立复核，不能当作行业效果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "deploy",
+        "title": "语音系统仍需要人工放行",
+        "body": "延迟、打断、工具调用和转人工都要在真实电话中回归；能生成测试不等于测试覆盖了关键风险。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "一个语音 Agent 怎样从描述走到上线？",
+      "question": "为什么“说清楚需求”还不够，必须把改动和测试放出来？",
+      "steps": [
+        {
+          "label": "描述工作意图",
+          "detail": "使用者先说清楚客户、目标和边界，Conductor 把自然语言转成流程节点和工具设置。",
+          "evidence": "Retell Conductor 公告"
+        },
+        {
+          "label": "显示每个改动",
+          "detail": "系统把变化放回流程图，使用者可以逐项接受或拒绝，不用猜一份配置文件改了什么。",
+          "evidence": "graph-native review"
+        },
+        {
+          "label": "生成可复现测试",
+          "detail": "对失败通话写出测试样例，再跑一遍，检查延迟、分支、工具调用和转人工。",
+          "evidence": "Retell 对失败通话的描述"
+        },
+        {
+          "label": "按权限放行",
+          "detail": "只有具备相应权限的人才能编辑和发布；上线前仍要人工验收高风险场景。",
+          "evidence": "RBAC 说明与文章边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Retell AI",
+      "url": "https://www.retellai.com/blog/introducing-conductor"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "tools",
+      "authorization",
+      "eval",
+      "function-calling",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "grok-46-long-agents-20260812",
+      "gemini-connected-apps-20260812"
+    ],
+    "sources": [
+      {
+        "url": "https://www.retellai.com/blog/introducing-conductor",
+        "claim": "Retell 说 Conductor 可以构建、审查、测试和改进真实语音 Agent。",
+        "excerpt": "builds, reviews, tests, and improves a real voice agent"
+      },
+      {
+        "url": "https://www.retellai.com/blog/introducing-conductor",
+        "claim": "Conductor 将变更显示在流程上下文中，供使用者接受或拒绝。",
+        "excerpt": "surfaces every change right where it happens"
+      },
+      {
+        "url": "https://www.retellai.com/blog/introducing-conductor",
+        "claim": "Retell 称 Conductor 继承使用者的访问权限。",
+        "excerpt": "It inherits the permissions of whoever is using it."
+      },
+      {
+        "url": "https://www.retellai.com/blog/introducing-conductor",
+        "claim": "公司披露 Conductor 已写出 70% 的模拟测试。",
+        "excerpt": "Conductor has written 70% of our simulation tests"
+      }
+    ],
+    "canonicalUrl": "https://www.retellai.com/blog/introducing-conductor",
+    "sourceHash": "sha256:07c2865c88018592813a4f1e7fd16436caa0ad009cecc9b724e5077ba126ea57"
+  },
+  {
+    "slug": "river-ai-11b-custom-models-20260811",
+    "title": "River AI 获 11 亿美元融资，把“拥有自己的模型”作为卖点",
+    "summary": "8 月 11 日，River AI 宣布在 Seed 和 Series A 两轮合计融资 11 亿美元，General Catalyst 与 AMP PBC 领投，NVIDIA、AMD Ventures、Y Combinator 和 Temasek 参与。公司把资金和 API 产品都指向一个判断：企业会越来越多地训练、调整并拥有自己的模型。",
+    "body": "8 月 11 日，River AI 公布 Seed 和 Series A 合计 11 亿美元融资。官方页面称，General Catalyst 与 AMP PBC 领投，NVIDIA 和 AMD Ventures 战略投资，Y Combinator 与 Temasek 参与。Reuters 交叉报道了这笔融资，并指出公司由 xAI 联合创始人 Igor Babuschkin 创立；River 没有回应估值问题，因此不能从融资金额倒推出公司估值。\n\nRiver 的产品叙事不是再提供一个面向所有人的通用聊天模型，而是让企业在开放权重模型上进行 LoRA 微调和强化学习。官方称，River API 可以让企业在没有专门基础设施团队的情况下完成一次复杂强化学习训练，时间约为 15 到 20 分钟，并按训练和推理使用的 token 计费。这里的时间和成本倍数都是公司自报指标，实际结果会受数据规模、模型、硬件和任务目标影响。\n\n“拥有模型”在这条新闻里有具体含义：企业可以把自己的数据、偏好和评测任务带进训练流程，随后把调整后的模型部署到生产环境。它和直接调用闭源模型的区别，常常不是回答风格，而是控制权、数据位置、版本管理和持续优化的方式。模型开源或开放权重也不自动解决数据授权、模型许可证和安全测试问题。\n\nRiver 把采样、训练之间的同步和弹性算力都封装在 API 中，开发者只需要关注数据与训练目标。这会把模型训练从基础设施项目变成一个可重复的工程步骤，但也带来新的检查点：训练数据是否能追溯，奖励函数是否鼓励了错误行为，部署后的模型是否按预期回退，以及一轮训练失败会产生多少成本。\n\nReuters 报道把这笔融资放在企业定制 AI 的竞争中，而 River 官方更强调个人和组织拥有智能的愿景。两种说法可以同时存在，但都还不是对市场结果的证明。融资只能说明投资人愿意押注这条路线，不能说明企业已经普遍放弃通用模型，也不能把 15 到 20 分钟写成所有任务的保证。\n\n后续值得看 River 是否公开更多模型、数据和评测细节，客户是否能在不同任务上复现成本与速度，以及训练后的模型在安全、权限和维护上是否比直接调用服务更可控。",
+    "publishedAt": "2026-08-11",
+    "eventDate": "2026-08-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/river-ai-11b-custom-models-20260811.svg",
+      "alt": "River AI 获 11 亿美元融资，把“拥有自己的模型”作为卖点 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/river-ai-11b-custom-models-20260811.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "funding",
+        "title": "融资金额确认了什么",
+        "body": "River 宣布两轮合计 11 亿美元，领投和战略投资方已经列出；估值没有公开，文章不把金额换算成估值或市场份额。",
+        "kind": "narrative"
+      },
+      {
+        "id": "ownership",
+        "title": "“自己的模型”不是一句口号",
+        "body": "公司把数据、微调、强化学习和部署放进同一条链路，强调企业可以控制模型版本、数据位置和优化目标。",
+        "kind": "technical"
+      },
+      {
+        "id": "api",
+        "title": "API 把训练流程做成服务",
+        "body": "River 称 API 负责权重传输、采样与训练一致性和弹性算力；15 到 20 分钟、成本节省倍数属于公司自报，不能脱离任务条件比较。",
+        "kind": "comparison"
+      },
+      {
+        "id": "risks",
+        "title": "控制权增加后，检查点也增加",
+        "body": "企业仍需核对数据授权、奖励函数、模型许可证、回退策略和训练失败成本；开放权重不等于自动安全。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next",
+        "title": "下一步看复现，而不是只看融资",
+        "body": "公开模型、评测任务和客户结果，才能检验定制模型是否真的比通用调用更适合生产。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "企业怎样从通用模型走到自己的模型？",
+      "question": "把模型训练交给 API 后，企业实际要负责哪些步骤？",
+      "steps": [
+        {
+          "label": "选开放权重模型",
+          "detail": "先根据任务、许可证、上下文和部署条件选择基础模型，不能只看排行榜。",
+          "evidence": "River AI 融资公告"
+        },
+        {
+          "label": "准备企业数据",
+          "detail": "把可授权的数据、示例和评测任务整理成可追溯的训练输入，并设定不应出现的行为。",
+          "evidence": "River 对 custom models 的描述"
+        },
+        {
+          "label": "微调与强化学习",
+          "detail": "用 LoRA 或强化学习改变模型行为，记录奖励函数、版本和每次训练的资源消耗。",
+          "evidence": "River API 说明"
+        },
+        {
+          "label": "部署后复核",
+          "detail": "把模型放入真实工作流，观察质量、权限、成本和失败回退，再决定是否继续训练。",
+          "evidence": "文章边界说明"
+        }
+      ]
+    },
+    "source": {
+      "name": "River AI",
+      "url": "https://river.ai/series-seed-series-a-funding"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "data-pipeline",
+      "tools",
+      "benchmark",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "grok-46-long-agents-20260812",
+      "skan-context-graph-series-c-20260812"
+    ],
+    "sources": [
+      {
+        "url": "https://river.ai/series-seed-series-a-funding",
+        "claim": "River AI 宣布 Seed 和 Series A 合计融资 11 亿美元及投资方。",
+        "excerpt": "Today we're announcing $1.1 billion in funding across our Series Seed and Series A"
+      },
+      {
+        "url": "https://river.ai/series-seed-series-a-funding",
+        "claim": "River 称 API 可在 15 到 20 分钟完成复杂强化学习训练。",
+        "excerpt": "complete a complex reinforcement learning run in 15 to 20 minutes"
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/xai-cofounders-startup-river-ai-raises-11-billion-to-expand-custom-ai-tools-4851820",
+        "claim": "Reuters 报道 River AI 由 xAI 联合创始人 Igor Babuschkin 创立。",
+        "excerpt": "founded by xAI co-founder Igor Babuschkin"
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/xai-cofounders-startup-river-ai-raises-11-billion-to-expand-custom-ai-tools-4851820",
+        "claim": "Reuters 记录 River 未回应估值问题。",
+        "excerpt": "River AI declined to comment on how much the funding valued it at."
+      }
+    ],
+    "canonicalUrl": "https://river.ai/series-seed-series-a-funding",
+    "sourceHash": "sha256:f0b1f562548e32a3f4027cfd92146778496ce3a393312617dfb07d9b430f6fa6"
   },
   {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
