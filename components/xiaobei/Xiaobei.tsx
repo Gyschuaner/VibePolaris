@@ -21,7 +21,7 @@ function historyTime(timestamp: number) {
     : date.toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
 }
 
-export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, string>; newsNames: Record<string, string> }) {
+export function Xiaobei({ termNames }: { termNames: Record<string, string> }) {
   const pathname = usePathname();
   const [active, setActive] = useState(false);
   const [credits, setCredits] = useState(100);
@@ -253,7 +253,7 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
         </section> : <>
         <div className="xb-log" ref={log} aria-label="对话记录" onScroll={() => { const el = log.current; if (el) shouldScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80; }}>
           {!messages.length && !loading && <div className="xb-welcome"><XiaobeiStar /><h3>哪一个概念，<br />还差一点就懂了？</h3><p>从当前词条开始聊，也可以把两个概念放在一起比较。</p><div className="xb-suggestions">{["用一个例子解释当前词条", "Agent 和 Harness 有什么区别？"].map(text => <button key={text} onClick={() => { setDraft(text); input.current?.focus(); }}>{text}<ArrowUp size={15} /></button>)}</div></div>}
-          {messages.map(message => <article className={`xb-message xb-${message.role}`} key={message.id}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : <>{(message.blocks.length > 0 || message.error) && <span className="xb-speaker">小北</span>}<Transcript blocks={message.blocks} termNames={termNames} newsNames={newsNames} close={() => setOpen(false)} />{message.error && <p className="xb-error">{message.error}</p>}</>}</article>)}
+          {messages.map(message => <article className={`xb-message xb-${message.role}`} key={message.id}>{message.role === "user" ? <><span className="xb-message-page">{message.page}</span><p>{message.text}</p></> : <>{(message.blocks.length > 0 || message.error) && <span className="xb-speaker">小北</span>}<Transcript blocks={message.blocks} termNames={termNames} close={() => setOpen(false)} />{message.error && <p className="xb-error">{message.error}</p>}</>}</article>)}
           <div role="status" aria-live="polite" className="xb-status">{loading ? "正在恢复对话…" : remoteRunning && !busy ? "这段对话仍在回答，正在同步已保存内容…" : busy && status ? <><i />{status}</> : null}</div>
           {error && <p className="xb-error" role="alert">{error}</p>}
           {!active && open && <p className="xb-error">授权已失效，请联系邀请人重新激活。</p>}
