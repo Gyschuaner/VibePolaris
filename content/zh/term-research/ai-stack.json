@@ -545,14 +545,17 @@
   },
   {
     "slug": "reranking",
-    "mechanism": "重排序接收召回阶段的一小组候选，用更精细的相关性模型重新打分，再把最合适的内容排到前面。",
-    "misconception": "它不负责从全库找文档，也不能补回召回阶段完全漏掉的资料。",
-    "demoSignature": "输入：召回top3为A/B/C，分数0.81/0.78/0.70；中间：交叉编码重评为0.54/0.91/0.62，顺序A-B-C→B-C-A；输出：B成为首条。可视化：三张卡片按新分数换位。 建议4帧：A/B/C按召回分数排队、新模型逐项重评、卡片移动为B/C/A、B固定首位；交互：切换“召回分/重排分”看排序依据。",
+    "mechanism": "重排序接收初次召回的一小组候选，用更精细的规则或模型重新评分和排序，再截取前几条。",
+    "misconception": "它不能补回完全漏掉的文档；候选数量、长度和初次过滤决定这一步的上限。",
+    "demoSignature": "初次候选 A/B/C 按 0.82/0.78/0.76 排列，联合评分后 B/A/C 变为 0.94/0.71/0.12；D 从未进入候选。交互：切换召回分与重排分。",
     "sourceUrls": [
-      "https://arxiv.org/abs/1910.14424",
-      "https://arxiv.org/abs/2004.04906"
+      "https://docs.cohere.com/v2/docs/rerank",
+      "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
+      "https://arxiv.org/abs/1901.04085",
+      "https://arxiv.org/abs/2004.12832",
+      "https://developers.openai.com/api/docs/guides/retrieval"
     ],
-    "rewriteRisk": "演示要保留召回前序和重排后序，不能只展示一列最终分数。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "retrieval",
       "semantic-search"
