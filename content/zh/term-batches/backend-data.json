@@ -332,9 +332,9 @@
     "boundary": "RBAC 适合稳定的岗位权限；依赖资源属性和上下文的复杂规则可能需要其他模型。",
     "demoType": "hierarchy", "demoTitle": "用户怎样通过角色获得权限",
     "demoSteps": [
-      {"label": "定义权限", "value": "article:edit", "note": "权限描述允许的具体动作。"},
-      {"label": "绑定角色", "value": "编辑 = edit + publish", "note": "角色汇总一组权限。"},
-      {"label": "分配用户", "value": "小林 → 编辑", "note": "用户获得角色包含的权限。"}
+      {"label": "分配角色", "value": "阿青 → viewer", "note": "用户先获得角色，角色带来 invoice:read。"},
+      {"label": "发起读取", "value": "GET /invoices/7", "note": "角色权限匹配后，系统进入对象检查。"},
+      {"label": "补充对象判断", "value": "owner=阿青 · 允许", "note": "角色能读发票这一类资源，还需判断这张发票属于谁。"}
     ],
     "quizQuestion": "RBAC 中权限通常先分配给谁？", "quizOptions": ["角色", "每次 HTTP 响应", "数据库索引"],
     "correctText": "用户通过角色间接获得权限。", "wrongText": "响应和索引不是 RBAC 的授权主体。",
