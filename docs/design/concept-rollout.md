@@ -45,13 +45,15 @@
 | 035 | 返回值、条件分支、循环、对象、数组、客户端—服务器、单体架构、微服务、无服务器架构、容器 | VBP-054 · [159–168 文案更新与上线记录](VBP-054-content-refresh-159-168.md) |
 | 036 | 响应式布局、CSS、表单、HTML、JavaScript、DOM、框架与库、静态站点与服务端渲染、部署与托管、库 | VBP-055 · [169–178 文案更新与上线记录](VBP-055-content-refresh-169-178.md) |
 | 040 | 容器镜像、服务发现、可观测性、SAST、密钥扫描、依赖扫描、威胁建模、工具审批、权限边界、XSS | VBP-059 · [209–218 文案更新与上线记录](VBP-059-content-refresh-209-218.md) |
-| 041 | 工具选择、工具结果、规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调 | VBP-060 · [219–228 文案更新与上线记录](VBP-060-content-refresh-219-228.md) · 十条本地实现完成，待统一发布 |
+| 041 | 工具选择、工具结果、规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调 | VBP-060 · [219–228 文案更新与上线记录](VBP-060-content-refresh-219-228.md) · 十条统一发布，生产已上线 |
+| 042 | 上下文窗口、智能体循环、智能体记忆、工作记忆、执行沙箱、嵌入、向量存储、检索、分块、重排序 | VBP-061 · [229–238 文案更新与生产发布记录](VBP-061-content-refresh-229-238.md) · 十条统一发布，生产已上线 |
+| 043 | 生成式 AI、多模态、推理模型、系统提示词、少样本提示、零样本提示、温度、分词、工具审批、权限边界 | VBP-062 · [239–248 文案更新与生产发布记录](VBP-062-content-refresh-239-248.md) · 十条本地验收及 review 通过，待统一发布 |
 
-后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 155 页，另有 9 页历史基准；其余 137 页待处理，新增候选不计入完成数。
+后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
 升级期间只公开下表中“基准”或“本地验收及 review 通过”的词条。公开清单维护在 `content/zh/published-terms.json`；待处理词条保留源码与研究底稿，但不进入星图、搜索、站点地图、词条导航或直接路由。每批完成并合入 dev 后同步更新本表和公开清单。
 
-2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023、024、025、026、027、028、029、031、032、033、034、035 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
+2026-09-27 起每词条至少四份已阅读且映射到正文的公开来源；009、010、011、012、013、014、015、016、017、018、019、020、021、022、023、024、025、026、027、028、029、031、032、033、034、035、040、041、042、043 批已满足。早期批次与历史基准在最终复核时按新标准补足，既有通过记录仅表示当时验收，不表示已完成新增来源标准。
 
 ## 补充候选
 
@@ -293,35 +295,35 @@
 | input-validation | 输入校验 | 技术栈 | 待处理 |
 | encryption-at-rest | 静态加密 | 技术栈 | 待处理 |
 | encryption-in-transit | 传输加密 | 技术栈 | 待处理 |
-| generative-ai | 生成式 AI | AI·Agent | 待处理 |
-| multimodal | 多模态 | AI·Agent | 待处理 |
-| reasoning-model | 推理模型 | AI·Agent | 待处理 |
-| system-prompt | 系统提示词 | AI·Agent | 待处理 |
-| few-shot-prompting | 少样本提示 | AI·Agent | 待处理 |
-| zero-shot-prompting | 零样本提示 | AI·Agent | 待处理 |
-| temperature | 温度 | AI·Agent | 待处理 |
+| generative-ai | 生成式 AI | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| multimodal | 多模态 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| reasoning-model | 推理模型 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| system-prompt | 系统提示词 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| few-shot-prompting | 少样本提示 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| zero-shot-prompting | 零样本提示 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| temperature | 温度 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
 | context-window | 上下文窗口 | AI·Agent | 基准 · 待最终复核 |
-| tokenization | 分词 | AI·Agent | 待处理 |
+| tokenization | 分词 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
 | hallucination | 幻觉 | AI·Agent | 023 · 本地验收及 review 通过 |
 | grounding | 基于证据回答 | AI·Agent | 023 · 本地验收及 review 通过 |
 | citation | 引用 | AI·Agent | 022 · 本地验收及 review 通过 |
 | structured-output | 结构化输出 | AI·Agent | 026 · 本地验收及 review 通过 |
 | json-schema | JSON Schema | AI·Agent | 004 · 本地验收及 review 通过 |
 | function-calling | 函数调用 | AI·Agent | 026 · 本地验收及 review 通过 |
-| tool-choice | 工具选择 | AI·Agent | 待处理 |
-| tool-result | 工具结果 | AI·Agent | 待处理 |
+| tool-choice | 工具选择 | AI·Agent | 041 · 生产已发布 |
+| tool-result | 工具结果 | AI·Agent | 041 · 生产已发布 |
 | agent-loop | 智能体循环 | AI·Agent | 基准 · 待最终复核 |
-| plan-and-execute | 规划与执行 | AI·Agent | 待处理 |
-| agent-orchestration | 智能体编排 | AI·Agent | 待处理 |
-| handoff | 交接 | AI·Agent | 待处理 |
-| subagent | 子智能体 | AI·Agent | 待处理 |
-| human-in-the-loop | 人在回路 | AI·Agent | 待处理 |
-| guardrail | 护栏 | AI·Agent | 待处理 |
-| moderation | 内容审核 | AI·Agent | 待处理 |
+| plan-and-execute | 规划与执行 | AI·Agent | 041 · 生产已发布 |
+| agent-orchestration | 智能体编排 | AI·Agent | 041 · 生产已发布 |
+| handoff | 交接 | AI·Agent | 041 · 生产已发布 |
+| subagent | 子智能体 | AI·Agent | 041 · 生产已发布 |
+| human-in-the-loop | 人在回路 | AI·Agent | 041 · 生产已发布 |
+| guardrail | 护栏 | AI·Agent | 041 · 生产已发布 |
+| moderation | 内容审核 | AI·Agent | 041 · 生产已发布 |
 | eval | 评测 | AI·Agent | 023 · 本地验收及 review 通过 |
 | benchmark | 基准测试 | AI·Agent | 024 · 本地验收及 review 通过 |
 | grader | 评分器 | AI·Agent | 024 · 本地验收及 review 通过 |
-| fine-tuning | 微调 | AI·Agent | 待处理 |
+| fine-tuning | 微调 | AI·Agent | 041 · 生产已发布 |
 | embedding | 嵌入 | AI·Agent | 020 · 本地验收及 review 通过 |
 | vector-store | 向量存储 | AI·Agent | 022 · 本地验收及 review 通过 |
 | retrieval | 检索 | AI·Agent | 021 · 本地验收及 review 通过 |
@@ -375,8 +377,8 @@
 | secret-scanning | 密钥扫描 | 技术栈 | 040 · 生产已发布 |
 | dependency-scanning | 依赖扫描 | 技术栈 | 040 · 生产已发布 |
 | threat-modeling | 威胁建模 | 技术栈 | 040 · 生产已发布 |
-| tool-approval | 工具审批 | AI·Agent | 040 · 生产已发布 |
+| tool-approval | 工具审批 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
 | skill | 技能 | AI·Agent | 030 · 本地验收及 review 通过（新增词条） |
 | evaluation-dataset | 评测数据集 | AI·Agent | 024 · 本地验收及 review 通过 |
-| permission-boundary | 权限边界 | AI·Agent | 040 · 生产已发布 |
+| permission-boundary | 权限边界 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
 | xss | 跨站脚本 | 技术栈 | 040 · 生产已发布 |
