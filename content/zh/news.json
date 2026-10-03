@@ -18349,6 +18349,236 @@
     "sourceHash": "sha256:96a111c82353f84796fa57b7af93c99c28f8e777178e71cf508dab7ad1abfb87"
   },
   {
+    "slug": "deepseek-v4-flash-vision-exp-api-20260821",
+    "title": "DeepSeek 发布 V4-Flash-Vision-Exp：实验性视觉模型上线 API，多模态代理指标要看清口径",
+    "summary": "DeepSeek 于 2026 年 8 月 21 日在 API 平台上线实验性 V4-Flash-Vision-Exp，支持文字与图像混合输入，并公布了多项代理和视觉基准。本文把 API 上线、厂商评测设置、图像接口边界与独立复测缺口分开。",
+    "body": "2026 年 8 月 21 日，DeepSeek 在 API 平台上线 V4-Flash-Vision-Exp。它是一个实验性多模态模型：调用者可以把文字和图片放进同一次请求，让模型先理解截图、图表或照片，再把结果交给后续的工具和代理流程。这里的“上线”指 API 可调用，不是所有产品端都同时换成了这个模型。\n\n官方更新日志把它和 V4-Flash 的关系说得很清楚：纯文字的 agent、推理和世界知识能力与 V4-Flash 持平；需要视觉理解的代理评测则声称有明显提升，接近 Opus-4.8。这个比较来自 DeepSeek 自己的基准，不是独立实验室的复测。官方还给出了 Terminal Bench、NL2Repo、Chartography 等分数，但分数本身不能告诉读者模型在真实图片、错误截图或复杂工作流里是否稳定。\n\n评测设置也值得单独看。DeepSeek 说公开 Code Agent 文本任务使用 DeepSeek Harness 极简模式、max effort（最高推理强度）、top-p 0.95 和 temperature 1.0（两个采样参数）；在 ApexBench 与 Agents’ Last Exam 中，文本模型会忽略其中的多模态元素。换句话说，榜单里有些数字测的是文字代理，有些数字才涉及视觉输入，不能把所有数字合并成“视觉模型全面领先”。\n\n对开发者来说，变化在接口边界。模型支持 Chat Completions、Messages 和 Responses，图片可以用 Base64、外部 URL 或 Files API（文件上传接口）传入；官方文档还给出图片 token 化和尺寸限制。一个看图后继续调用工具的代理，实际要处理图片权限、文件生命周期、上下文长度和失败重试，这些都不由“模型能看图”自动解决。\n\n因此，8 月 21 日可以确认的是一个实验性视觉 API 的公开上线，以及厂商公布的多模态代理基准。现在还不能据此断言它在所有视觉任务上接近 Opus-4.8，也不能把内部基准当作第三方排名。后续要看模型是否稳定、API 是否长期保留、图像数据怎样留存，以及外部开发者能否在相同输入和预算下复现这些结果。",
+    "publishedAt": "2026-08-21",
+    "eventDate": "2026-08-21",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/deepseek-v4-flash-vision-exp-api-20260821.svg",
+      "alt": "从文字与图片输入到多模态代理评测的 DeepSeek API 链路",
+      "sourceUrl": "/images/news/deepseek-v4-flash-vision-exp-api-20260821.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "当天发生的是 API 上线",
+        "body": "V4-Flash-Vision-Exp 作为实验性模型出现在 DeepSeek API 平台，可通过模型名调用；这不是所有产品端都已完成的统一换代。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capability",
+        "title": "视觉能力和文字能力要分开",
+        "body": "官方称纯文字能力与 V4-Flash 持平，视觉理解代理评测明显提升；两种结论使用的任务和输入不同。",
+        "kind": "technical"
+      },
+      {
+        "id": "benchmark-boundary",
+        "title": "榜单数字带着测试设置",
+        "body": "DeepSeek 公开了 Harness、max effort（最高推理强度）、top-p 和 temperature（采样参数）等条件，并说明部分榜单忽略多模态元素；这些数字属于厂商基准。",
+        "kind": "comparison"
+      },
+      {
+        "id": "api-workflow",
+        "title": "真正的工程变化在输入和工具链",
+        "body": "文字、图片、Files API（文件上传接口）、上下文长度和重试策略要一起设计；模型可以读图，不等于代理已经完成后续操作。",
+        "kind": "example"
+      },
+      {
+        "id": "what-to-watch",
+        "title": "后续需要外部复测",
+        "body": "实验模型的稳定性、留存规则、公开接口寿命和跨团队复现结果，才会决定这次发布的实际价值。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一张图片怎样进入代理工作流",
+      "question": "“支持视觉”到底改变了哪一段输入和工具链？",
+      "steps": [
+        {
+          "label": "准备输入",
+          "detail": "开发者把图片与文字问题一起提交；图片可以来自 Base64、URL 或 Files API（文件上传接口）。",
+          "evidence": "DeepSeek Vision guide"
+        },
+        {
+          "label": "模型理解",
+          "detail": "V4-Flash-Vision-Exp 先识别图像中的文字、结构或视觉线索，再生成回答。",
+          "evidence": "DeepSeek 2026-08-21 update"
+        },
+        {
+          "label": "继续行动",
+          "detail": "如果代理需要搜索、写代码或调用外部工具，仍要由应用层处理权限、上下文和失败重试。",
+          "evidence": "API workflow boundary"
+        },
+        {
+          "label": "核对结果",
+          "detail": "把视觉榜单与文字榜单分开读，并记录官方基准条件，等待外部团队复测。",
+          "evidence": "Benchmark caveat"
+        }
+      ]
+    },
+    "source": {
+      "name": "DeepSeek API Docs",
+      "url": "https://api-docs.deepseek.com/news/news260821/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "agent-loop",
+      "eval",
+      "benchmark",
+      "api",
+      "tools",
+      "token"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://api-docs.deepseek.com/updates/",
+        "claim": "DeepSeek API 更新日志标注 2026 年 8 月 21 日上线 V4-Flash-Vision-Exp，这是一个可通过指定模型名调用的实验性视觉理解模型。",
+        "excerpt": "Today, the new multimodal vision understanding model DeepSeek-V4-Flash-Vision-Exp is now available on the DeepSeek API platform. This is an experimental model."
+      },
+      {
+        "url": "https://api-docs.deepseek.com/news/news260821/",
+        "claim": "DeepSeek 官方新闻页说明模型支持混合文本与图像输入、Chat Completions/Messages/Responses，并同步推出图像 Files API（文件上传接口）。",
+        "excerpt": "Supports mixed text + image input; images can be provided via base64, external URLs, or the Files API. Files API is now live."
+      },
+      {
+        "url": "https://api-docs.deepseek.com/guides/vision/",
+        "claim": "DeepSeek 视觉指南说明图像输入方式、尺寸限制和计费 token 规则；之后的文档还保留了旧模型名的兼容路由说明。",
+        "excerpt": "The DeepSeek API accepts images alongside text; supported image formats include JPEG, PNG, GIF, and WebP, with documented image token limits."
+      }
+    ],
+    "canonicalUrl": "https://api-docs.deepseek.com/news/news260821/",
+    "sourceHash": "sha256:bed08bd410ec977f49f141036870f53378bde36df608272c73e81eabd899206a"
+  },
+  {
+    "slug": "starcloud-orbital-ai-data-centers-funding-20260821",
+    "title": "Starcloud 融资 2.5 亿美元：轨道 AI 数据中心从演示走向部署计划",
+    "summary": "Starcloud 于 2026 年 8 月 21 日宣布融资 2.5 亿美元、投后估值 23 亿美元，资金将支持制造扩张、NVIDIA Space-1 合作和后续发射。文章把已完成的 H100 在轨验证、2027 年计划和 88,000 颗卫星长期目标分开，避免把规划写成已建成的轨道 AI 数据中心。",
+    "body": "2026 年 8 月 21 日，Starcloud 通过 Business Wire 宣布完成 2.5 亿美元的 Series A extension，投后估值 23 亿美元，公司称成立以来累计融资 4.5 亿美元。Starcloud 做的不是普通卫星通信，而是把 GPU、存储、太阳能和散热设备放进轨道，试图为 AI 推理和卫星数据处理提供在轨算力。\n\n这笔钱要解决的第一件事是“做出更多硬件”。公司说资金将用于扩大制造能力、和 NVIDIA 继续工程合作、采购未来发射名额，并推进更大的 Starcloud-3。投资者名单里有 NVIDIA 和 Cisco Investments；官方公告还提到双方围绕适应辐射和极端温度的 Space-1 Vera Rubin Module 合作。合作和融资已经宣布，但下一颗卫星何时发射仍取决于火箭、许可和工程进度。\n\nStarcloud 并非只有概念图。官方页面把 Starcloud-1 的 H100 在轨运行当作先行验证，把 Starcloud-2 定为首个商业任务，目标在 2027 年进入太阳同步轨道（让卫星沿着接近固定日照条件的轨道运行）。TechCrunch 报道公司考虑用 Starship、Falcon 9 或其他运力，并计划让新一代 8 kW 卫星承担政府客户的在轨推理任务。这里要区分“已经把一块 GPU 送上轨道”和“已经拥有可扩展的轨道数据中心网络”，两者不是同一件事。\n\n轨道计算的难点也不只是把服务器发射上去。设备要承受发射冲击和辐射，热量主要靠辐射器排出，网络延迟、维修和更换都比地面数据中心复杂；发射窗口和成本会直接影响每次推理的价格。公司长期目标中提到最多 88,000 颗卫星；创始人在 McKinsey 访谈中又把这一路线估算为约 20GW 的推理算力。FCC 文件目前只记录了“最多 88,000 颗”的申请，20GW 是公司路线图口径；两者都属于规划规模，不能当成已经获批或已经建成的基础设施。\n\n所以，8 月 21 日确认的是一轮融资和一条在轨 AI 基础设施路线进入更大规模建设阶段。公开材料还没有证明轨道推理已经比地面 GPU 更便宜、更快或更可靠，也没有证明 Starcloud-3 能按计划发射。后续应看发射合同、FCC 许可、Starcloud-2 的在轨结果、真实客户工作负载和每次推理的全成本。",
+    "publishedAt": "2026-08-21",
+    "eventDate": "2026-08-21",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/starcloud-orbital-ai-data-centers-funding-20260821.svg",
+      "alt": "从在轨 GPU 验证、商业卫星到轨道 AI 基础设施成本的链路",
+      "sourceUrl": "/images/news/starcloud-orbital-ai-data-centers-funding-20260821.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "funding",
+        "title": "当天新闻是融资与扩产计划",
+        "body": "Starcloud 宣布 2.5 亿美元 Series A extension，资金用于制造、工程合作和发射名额；估值与金额是公司公告中的融资事实。",
+        "kind": "narrative"
+      },
+      {
+        "id": "hardware",
+        "title": "已经飞过一块 GPU，不等于网络已建成",
+        "body": "Starcloud-1 提供在轨 H100 验证；Starcloud-2 和 Starcloud-3 仍是后续任务，时间表、运力和许可会决定能否扩张。",
+        "kind": "technical"
+      },
+      {
+        "id": "constraints",
+        "title": "轨道数据中心的成本从发射开始",
+        "body": "辐射、散热、发射冲击、网络延迟和维修都要计入 AI 推理的总成本，不能只比较一块 GPU 的理论算力。",
+        "kind": "comparison"
+      },
+      {
+        "id": "scale-boundary",
+        "title": "88,000 颗和 20GW 是长期目标",
+        "body": "FCC 文件记录了最多 88,000 颗卫星的申请，创始人访谈把同一长期路线估算为约 20GW；截至报道日没有证据表明这些数字已经获批、发射或完成部署。",
+        "kind": "boundary"
+      },
+      {
+        "id": "watch",
+        "title": "下一步看真实任务和客户账单",
+        "body": "发射合同、FCC 许可、Starcloud-2 结果、真实工作负载和每次推理成本，才会检验这条基础设施路线。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一块在轨 GPU 怎样变成可用的 AI 基础设施",
+      "question": "为什么融资新闻不能直接等同于“太空数据中心已经上线”？",
+      "steps": [
+        {
+          "label": "先有在轨验证",
+          "detail": "Starcloud-1 把 H100 带入轨道，验证在轨运行和小规模训练/推理。",
+          "evidence": "Starcloud-1 official page"
+        },
+        {
+          "label": "再造商业卫星",
+          "detail": "Starcloud-2 计划携带 GPU 集群、存储和热控系统，目标 2027 年进入太阳同步轨道（尽量保持稳定日照）。",
+          "evidence": "Starcloud-2 official page"
+        },
+        {
+          "label": "补上发射与网络",
+          "detail": "制造、发射名额、辐射防护、散热和数据链路必须同时可用，才能承接客户工作负载。",
+          "evidence": "Business Wire and TechCrunch"
+        },
+        {
+          "label": "最后算全成本",
+          "detail": "把延迟、维修、发射和能耗放进每次推理账单，再与地面数据中心比较。",
+          "evidence": "Article boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Starcloud / Business Wire",
+      "url": "https://www.businesswire.com/news/home/20260821884035/en/"
+    },
+    "relatedSlugs": [
+      "server",
+      "llm",
+      "data-pipeline",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.businesswire.com/news/home/20260821884035/en/",
+        "claim": "Starcloud 通过 Business Wire 于 2026 年 8 月 21 日宣布 2.5 亿美元 Series A extension，投后估值 23 亿美元，累计融资 4.5 亿美元。",
+        "excerpt": "Starcloud today announced a $250 million Series A extension funding round at a $2.3 billion post-money valuation. The funding brings total capital raised to $450 million."
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/21/starcloud-raises-200-million-for-orbital-data-centers-as-launch-options-dry-up/",
+        "claim": "TechCrunch 同日报道融资将用于扩大制造、推进 Starcloud-3，并指出发射能力和 Starship 时间表是现实约束。",
+        "excerpt": "The additional capital will allow the company to open a larger manufacturing facility and advance Starcloud-3; launch capacity is becoming constrained."
+      },
+      {
+        "url": "https://docs.fcc.gov/public/attachments/DOC-419509A1.pdf",
+        "claim": "FCC 公示的 Starcloud 申请（SAT-LOA-20260202-00073）请求部署和运营最多 88,000 颗卫星，作为分布式太空数据中心；这是待审申请，不是已经授予的许可。",
+        "excerpt": "Starcloud, Inc. requests authority to deploy and operate a constellation of up to 88,000 satellites to operate as a distributed datacenter in space."
+      },
+      {
+        "url": "https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-case-for-data-centers-in-space",
+        "claim": "Starcloud 创始人在 2026 年 5 月 McKinsey 访谈中把最多 88,000 颗卫星和约 20GW 推理算力描述为长期路线，并同时承认规模化经济性、发射和可靠性仍待验证。",
+        "excerpt": "We ultimately plan to deploy a constellation—up to 88,000 satellites—which could deliver on the order of 20 gigawatts of compute capacity, primarily for inference workflows."
+      },
+      {
+        "url": "https://www.starcloud.com/starcloud-2",
+        "claim": "Starcloud 官方产品页把 Starcloud-2 描述为计划 2027 年进入太阳同步轨道的商业任务，具备 GPU 集群、存储和在轨数据分析定位。",
+        "excerpt": "Starcloud-2 features a GPU cluster, persistent storage, 24/7 access and proprietary thermal and power systems; it will be fully operational in sun-synchronous orbit by 2027."
+      },
+      {
+        "url": "https://www.starcloud.com/starcloud-1",
+        "claim": "Starcloud 官方页面说明 Starcloud-1 于 2025 年 11 月把 NVIDIA H100 带入轨道，并将其作为在轨 AI 计算验证。",
+        "excerpt": "Starcloud-1 launched in November 2025 with the first Nvidia H100 GPU in space; the page describes its orbital model training and inference demonstration."
+      }
+    ],
+    "canonicalUrl": "https://www.businesswire.com/news/home/20260821884035/en/",
+    "sourceHash": "sha256:8354253231e58e219be6c9df17499f90c26c151675e91ee0b4a4858e2ac0698b"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
