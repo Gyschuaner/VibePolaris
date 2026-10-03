@@ -1,0 +1,10 @@
+export { RepoCommitTermPage } from "./git-workflow-pages/repo-commit";
+export { BranchTermPage } from "./git-workflow-pages/branch";
+export { WorkingTreeTermPage } from "./git-workflow-pages/working-tree";
+export { StagingAreaTermPage } from "./git-workflow-pages/staging-area";
+export { DiffTermPage } from "./git-workflow-pages/diff";
+export { CheckoutSwitchTermPage } from "./git-workflow-pages/checkout-switch";
+export { RemoteTermPage } from "./git-workflow-pages/remote";
+export { CloneTermPage } from "./git-workflow-pages/clone";
+export { PullTermPage } from "./git-workflow-pages/pull";
+export { FetchTermPage } from "./git-workflow-pages/fetch";

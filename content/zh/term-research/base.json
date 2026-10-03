@@ -519,9 +519,9 @@
   },
   {
     "slug": "repo-commit",
-    "mechanism": "工作区保存正在编辑的文件；你把要提交的修改挑进暂存区；提交把选中的内容连同作者和说明写入仓库历史。",
-    "misconception": "本地提交不会自动上传远程；无关改动混进同一个提交，之后想单独退回就难了。推送是之后的独立步骤。",
-    "demoSignature": "timeline: 5 frames; actors=工作区/差异/暂存区/提交/当前分支/远程仓库; phases=保存文件→检查差异→暂存修改→创建提交→决定推送; action=推进修改",
+    "mechanism": "工作区保存正在编辑的文件；git add 把选中的内容写进索引（暂存区）；git commit 读取索引，为快照写入作者、时间、说明和父提交关系，再移动当前分支到新提交。",
+    "misconception": "本地提交不会自动上传远程，也不会包含仍留在工作区的未暂存修改；无关 hunk 混进同一个提交会削弱审查和后续撤回的边界。",
+    "demoSignature": "timeline: 3 steps; actors=工作区/未暂存 diff/暂存区/本地提交/当前分支/远程分支; phases=看见两类改动→只暂存修复 hunk→创建 c2 并保持远程不动; action=推进修改",
     "sourceUrls": [
       "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
       "https://git-scm.com/docs/git-add",
@@ -529,7 +529,7 @@
       "https://git-scm.com/docs/git-commit",
       "https://git-scm.com/docs/git-push"
     ],
-    "rewriteRisk": "正式页面需让零基础读者分清保存、查看差异、暂存、提交和推送，避免把本地提交写成远程备份。",
+    "rewriteRisk": "正式页面需让零基础读者分清保存、查看工作区差异、暂存候选、创建本地提交和推送远程；用同一文件的两个 hunk 说明未暂存内容不会进入提交，也不要把 commit 写成测试通过或远程备份。",
     "nearDuplicates": [
       "working-tree",
       "staging-area",
@@ -538,9 +538,9 @@
   },
   {
     "slug": "branch",
-    "mechanism": "Git 分支是一个会跟着提交移动的名字（引用）；在某分支创建提交只会移动这个名字，其他分支仍指向原提交。",
-    "misconception": "分支不是复制一套完整文件；多个分支共享历史，改到同一处代码时，合并仍可能冲突。",
-    "demoSignature": "branch: 5 frames; actors=共同提交 A/主线（dev）/功能分支/提交 B/提交 C/提交 D/合并结果; phases=共同起点→创建功能分支→功能线前进→主线也变化→验证后合并; action=创建下一提交",
+    "mechanism": "Git 分支是一个指向提交的引用名称；创建它只增加一个指针，当前分支上的新提交会移动当前指针，其他分支仍指向原提交。",
+    "misconception": "分支不是复制一套完整文件、权限边界或自动隔离；多个分支共享历史，合并或变基仍可能冲突，切换前也要处理未提交修改。",
+    "demoSignature": "branch: 3 steps; actors=共同提交 A/main/feature/HEAD/提交 B; phases=共同起点→创建 feature 指针→feature 前进而 main 停在 A; action=推进下一提交",
     "sourceUrls": [
       "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html",
       "https://git-scm.com/docs/git-branch",
@@ -548,7 +548,7 @@
       "https://git-scm.com/docs/git-merge",
       "https://git-scm.com/docs/git-rebase"
     ],
-    "rewriteRisk": "正式页面需让零基础读者理解分支如何沿提交线移动、主线如何分叉，以及合并冲突需要人工判断。",
+    "rewriteRisk": "正式页面需让零基础读者先看到分支只是指针，再理解 HEAD、切换和提交怎样让它移动；合并与变基要分别说明历史形状、冲突和共享提交哈希变化，不把分支写成复制目录或权限隔离。",
     "nearDuplicates": [
       "checkout-switch",
       "merge",

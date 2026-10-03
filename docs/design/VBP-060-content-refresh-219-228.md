@@ -50,8 +50,14 @@
 
 ## 发布状态
 
-当前十条实现、研究数据和机制差异表仍在功能分支本地。待最终 review、最终十条浏览器 smoke 和移动窄屏检查完成后，将把数据与记录作为一个批次提交，合入 `dev` 并按项目既有流程统一更新 `main` 与生产。不会逐条发布，也不会把其他本地功能带入本批。
+本批按“逐条修改、十条统一发布”完成。十个词条分别保留独立提交，之后作为一个批次合入 `dev` 和 `main`；没有逐条发布，也没有把其他本地功能带入本批。
 
-生产发布时需记录镜像提交、备份目录、健康检查和回滚镜像；当前尚未执行生产部署，不提前声称已上线。
+- `dev` PR [#292](https://github.com/Gyschuaner/VibePolaris/pull/292) 已合并，合并提交：`f70ddd60e4f2fa0c9116517219b742ed443e5ea7`。
+- `main` PR [#293](https://github.com/Gyschuaner/VibePolaris/pull/293) 已合并，合并提交：`63f5d1c4a95a5b09a50f3d8e3eac8ae53c6df95f`。
+- 生产 overlay 分支：`release/VBP-060-prod-overlay-20261003`；部署提交：`a3160952b56d675f41af6c49d92c1289ae8bd086`。
+- DP 部署记录：`deploy-vbp060-ai-agent-219-228-prod-20261003`（ID `17f86f2b-4409-4d5a-aec6-8ab9e1df6a80`），状态 `released`，环境 `production`。
+- 生产镜像：`vibepolaris:a3160952b56d675f41af6c49d92c1289ae8bd086`；发布目录：`/opt/vibepolaris/releases/20261002T195317Z-a3160952`。
+- 回滚备份：`/opt/vibepolaris/backups/20261002T195317Z-from-0b81e61c`；旧镜像：`vibepolaris:0b81e61cc51a64265efa7b73387f12ec0edf91bb`。回滚时恢复该备份的 compose 配置并切回旧镜像，保留 Xiaobei 数据卷。
+- 发布后容器状态为 `running/healthy`。生产根路径、新闻页和十个词条 URL 均返回 HTTP 200；真实浏览器复核了十个词条的 H1、读者任务、参考资料，以及人在回路“等待决定 → 批准后下一步执行”的状态门控。
 
 当前机器不存在 `D:/Obsidian/gysnote`，未创建空的 Obsidian 记录。
