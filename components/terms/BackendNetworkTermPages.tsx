@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { apiKeySources, nosqlSources, rbacSources, relationalDatabaseSources } from "@/lib/backend-network-sources";
+import { apiKeySources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -267,4 +267,58 @@ const nosqlSpec: PageSpec = {
 
 export function NosqlTermPage() {
   return renderBackendNetworkPage(nosqlSpec);
+}
+
+const rowSpec: PageSpec = {
+  slug: "row",
+  title: "行",
+  subtitle: "Row · 在列定义下保存一条记录",
+  intro: "书目表里有编号、书名和可借状态三列；某一本书的这些值放在同一行。行不是表格屏幕上的第几条，也不是永远不变的内存卡片：它由列定义组成，并在事务和排序规则下被读取。",
+  hero: {
+    question: "两次读取同一个订单，为什么看到的值不同",
+    nodes: [["订单行", "id = 7"], ["事务版本", "已提交 / 未提交"], ["读取", "按隔离规则可见"]],
+    proof: "行是记录与版本的组合；结果位置不能代替稳定身份。",
+  },
+  sections: [
+    {
+      id: "row-definition",
+      title: "一行对应一条记录的当前结构",
+      blocks: [
+        { id: "row-definition", text: "行是一组分别落在表列中的值。订单行可能同时包含 id、customer_id、amount 和 status；列定义告诉数据库这些值的名字、类型和约束。行的含义来自这套结构，而不是来自它在查询结果里排在第一还是第二。" },
+        { id: "row-identity", text: "主键通常用于稳定地识别一行，更新或删除时应通过主键或明确条件定位。自动生成的标识是业务身份的一种实现，不等于数据库展示出来的行号；没有稳定键，复制、排序和并发更新都更难解释。" },
+      ],
+      lesson: {
+        title: "同一行的两个事务版本",
+        ariaLabel: "数据库行在事务提交前后如何对不同读取者可见",
+        steps: [
+          { label: "旧版本", actors: ["id=7", "balance=100", "事务 B"], evidence: "B 开始读取时看到已提交的 100，位置和版本都被明确记录。" },
+          { label: "未提交更新", actors: ["事务 A", "balance=80", "事务 B"], evidence: "A 的修改尚未提交，B 按自己的隔离规则仍看见 100，不会把半成品当成事实。" },
+          { label: "提交后读取", actors: ["COMMIT", "id=7 · 80", "事务 C"], evidence: "C 在合适的读取时点看到已提交版本 80；这是可见性变化，不是把行号换了。" },
+        ],
+        failure: { label: "把结果位置当身份", text: "不加 ORDER BY 时，数据库没有承诺行的返回顺序；用‘第三行’更新记录会在计划或数据变化后指向另一条。" },
+      },
+    },
+    {
+      id: "row-versions",
+      title: "读取到的是哪一个版本",
+      blocks: [
+        { id: "row-versions", text: "多事务数据库常用多版本并发控制，让读取者看到符合自己快照的已提交数据，同时减少读写互相阻塞。这里的“行”在实现中可能对应多个物理版本；文章讨论的是逻辑记录，不应把某个存储页地址当成永久身份。" },
+        { id: "row-order", text: "查询结果的顺序需要显式 ORDER BY。即使一次运行恰好按主键返回，也可能因为索引、并行或执行计划变化而改变；想展示最新订单，应按时间列并补上处理相同时间的稳定键。" },
+      ],
+    },
+    {
+      id: "row-boundary",
+      title: "边界：行不负责替你解释业务",
+      blocks: [
+        { id: "row-boundary", text: "一行可以通过类型和约束检查，却仍然包含业务错误，例如金额单位写错、状态迁移非法或对象属于另一个租户。行提供存储结构和可见性，业务规则、授权和跨表一致性还需要其他约束或应用逻辑。" },
+        { id: "row-order", text: "读者看到“数据库返回了这行”时，应继续问：它由哪组条件定位，在哪个事务快照中可见，结果有没有明确排序，是否还经过对象授权。这样才能把记录、版本和业务结论分开。" },
+      ],
+    },
+  ],
+  sources: rowSources,
+  relatedIntro: "行与列、表和主键共同描述关系数据；继续看事务与 ACID，可以理解一行在并发修改和故障恢复中的边界。",
+};
+
+export function RowTermPage() {
+  return renderBackendNetworkPage(rowSpec);
 }

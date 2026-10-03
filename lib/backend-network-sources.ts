@@ -30,3 +30,10 @@ export const nosqlSources: Source[] = [
   make("AWS", "What is Amazon DynamoDB?", "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html", ["nosql-models", "nosql-tradeoff"]),
   make("Apache Cassandra", "Data Modeling", "https://cassandra.apache.org/doc/stable/cassandra/data_modeling/intro.html", ["nosql-query", "nosql-boundary", "nosql-failure"]),
 ];
+
+export const rowSources: Source[] = [
+  make("PostgreSQL", "DDL Basics", "https://www.postgresql.org/docs/current/ddl-basics.html", ["row-definition", "row-identity"]),
+  make("PostgreSQL", "Introduction to MVCC", "https://www.postgresql.org/docs/current/mvcc-intro.html", ["row-versions", "row-boundary"]),
+  make("PostgreSQL", "Sorting Rows", "https://www.postgresql.org/docs/current/queries-order.html", ["row-order"]),
+  make("SQLite", "The WITHOUT ROWID Optimization", "https://www.sqlite.org/withoutrowid.html", ["row-identity", "row-boundary"]),
+];
