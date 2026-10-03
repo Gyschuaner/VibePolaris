@@ -33,7 +33,7 @@ const captions: Record<ModelPromptMode, { labels: string[]; titles: string[]; co
   "reasoning-model": {
     labels: ["提出答案", "展开检查", "预算用完"],
     titles: ["先给出候选结论", "额外步骤检查条件", "推理预算也有上限"],
-    copy: ["题目要求比较两个退款条件；直接答案容易漏掉“仅限未发货”。", "模型把条件拆开、比较，再返回带依据的结论。", "预算耗尽时只得到未完成的中间状态，应用不能把它标成已核实。"],
+    copy: ["题目要求比较两个退款条件；直接答案容易漏掉“仅限未发货”。", "模型把条件拆开、比较，再返回带条件的结论。", "预算耗尽时只得到未完成的中间状态，应用不能把它标成已核实。"],
   },
   "system-prompt": {
     labels: ["设置规则", "收到请求", "规则冲突"],
@@ -105,7 +105,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   const dynamicCopy = (() => {
     if (mode === "generative-ai") return [caption.copy[0], promptPresent ? `这次候选是“${seed === "a" ? "记得带伞" : "雨天出门带上雨具"}”；重新采样只改变候选，不改变提示。` : "提示为空，当前没有任务条件，不能把默认输出当成本次候选。", caption.copy[2]];
     if (mode === "multimodal") return [caption.copy[0], image ? "图片和文字一起进入模型；日期来自票面像素，而不是文字问题本身。" : "图片还没有进入请求，模型没有视觉证据。", image ? caption.copy[2] : "先加入图片，才能判断票面日期；模型不会从缺失输入中补事实。"];
-    if (mode === "reasoning-model") return [caption.copy[0], caption.copy[1], budget === "tight" ? "推理预算已耗尽；结果标记为未完成，应用需要重试或转人工。" : caption.copy[2]];
+    if (mode === "reasoning-model") return [caption.copy[0], caption.copy[1], budget === "tight" ? "推理预算已耗尽；结果标记为未完成，应用需要重试或转人工。" : scene.step === 2 ? "三项检查完成，结论保留“仅限未发货”的条件。" : caption.copy[2]];
     if (mode === "system-prompt") return [caption.copy[0], rule ? caption.copy[1] : "系统规则被移除后，用户请求可能让输出混入内部指令。", rule ? caption.copy[2] : "没有更高层规则，当前结果不能证明系统提示受到保护。"];
     if (mode === "few-shot-prompting") return [caption.copy[0], examples === "good" ? caption.copy[1] : "冲突示例让同一个输入对应两个标签，模型无法稳定归纳。", examples === "good" ? caption.copy[2] : "先删掉冲突示例，再谈准确率；示例质量是方法的一部分。"];
     if (mode === "zero-shot-prompting") return [caption.copy[0], constraint && scene.step === 2 ? "模型按“最先失败组件”这一新增约束选择前端。" : caption.copy[1], constraint && scene.step === 2 ? "约束让边界可复核；仍没有提供示例。" : caption.copy[2]];
@@ -115,7 +115,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
     return [caption.copy[0], scene.step === 0 ? "最小令牌已经发放，资源请求还没有到达。" : scene.step === 1 ? "read:sales 与令牌匹配，策略允许读取销售表。" : salary ? "加入 read:salary 后，策略允许读取工资表；这次授权要单独审计。" : "read:salary 不在令牌 scope 中，策略返回 deny。", scene.step === 2 && !salary ? "工资表返回 0 行并留下 deny 审计；提示词不能绕过这一步。" : salary ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[2]];
   })();
 
-  const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : mode === "tokenization" ? [scene.step === 0 ? "先保留原始字符串" : caption.titles[0], caption.titles[1], "换编码器，数量也会换"] : caption.titles;
+  const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : mode === "tokenization" ? [scene.step === 0 ? "先保留原始字符串" : caption.titles[0], caption.titles[1], "换编码器，数量也会换"] : mode === "reasoning-model" ? [caption.titles[0], caption.titles[1], budget === "enough" && scene.step === 2 ? "条件核对完成" : caption.titles[2]] : caption.titles;
   const controls = <Caption scene={scene} labels={caption.labels} titles={dynamicTitles} copy={dynamicCopy} />;
   if (mode === "generative-ai") {
     const emptyPrompt = !promptPresent || scene.step === 2;
@@ -151,6 +151,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   if (mode === "reasoning-model") {
     const complete = scene.step === 2 && budget === "enough";
     const exhausted = scene.step === 2 && budget === "tight";
+    const usedBudget = budget === "tight" ? Math.min(scene.step, 1) : scene.step === 0 ? 0 : scene.step === 1 ? 1 : 3;
     const checks = [{ label: "拆条件", detail: "仅限未发货", done: scene.step >= 1 }, { label: "比较", detail: "逐项对照", done: complete }, { label: "回查", detail: "保留限制", done: complete }];
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="推理模型预算演示">
       {controls}
@@ -158,7 +159,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
       <div className={styles.reasoningLedger}>
         <div className={styles.ledgerQuestion}><FileText size={24} /><span>待检查的问题</span><strong>比较“未发货”和“已发货”的退款条件</strong></div>
         <div className={styles.ledgerSteps}>{checks.map((check, index) => <div className={styles.ledgerRow} data-state={check.done ? "done" : exhausted && index > 0 ? "stopped" : scene.step === 0 ? "pending" : "active"} key={check.label}><span className={styles.ledgerNumber}>0{index + 1}</span><div><strong>{check.label}</strong><small>{check.detail}</small></div><span className={styles.ledgerMark}>{check.done ? "完成" : exhausted && index > 0 ? "预算用完" : scene.step === 0 ? "等待" : "检查中"}</span></div>)}</div>
-        <div className={styles.budgetMeter}><span>可用检查预算</span><div className={styles.budgetTicks}>{[0, 1, 2].map((tick) => <i key={tick} data-used={budget === "enough" || (budget === "tight" && tick === 0) ? "true" : "false"} />)}</div><code>{budget === "enough" ? "3 / 3" : scene.step === 2 ? "1 / 3" : "1 / 3"}</code></div>
+        <div className={styles.budgetMeter}><span>已用检查预算</span><div className={styles.budgetTicks}>{[0, 1, 2].map((tick) => <i key={tick} data-used={tick < usedBudget ? "true" : "false"} />)}</div><code>{usedBudget} / 3</code></div>
         <div className={styles.decisionStamp} data-status={exhausted ? "stopped" : complete ? "done" : "pending"}>{exhausted ? <Warning size={24} /> : complete ? <CheckCircle size={24} /> : <LockSimple size={24} />}<div><strong>{exhausted ? "未完成" : complete ? "条件核对完成" : "候选结论"}</strong><span>{exhausted ? "不能把中间状态当成答案" : complete ? "结论保留“仅限未发货”" : "还没有经过逐项检查"}</span></div></div>
       </div>
       <p className={styles.inputExample}><strong>边界</strong>推理预算给模型更多检查空间，但仍需要任务定义、工具结果和外部验证；账本停在中间时，应用必须保留未完成状态。</p>
