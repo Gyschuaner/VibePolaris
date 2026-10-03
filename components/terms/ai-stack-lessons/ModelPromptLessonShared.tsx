@@ -188,12 +188,17 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   }
   if (mode === "zero-shot-prompting") {
     const constraintApplied = constraint && scene.step === 2;
+    const inputArrived = scene.step >= 1;
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="零样本提示演示">
       {controls}
       <div className={styles.choices} role="group" aria-label="改变分类定义"><button type="button" aria-pressed={constraintApplied} onClick={() => { const next = !constraintApplied; setConstraint(next); scene.seek(2); }}>{constraintApplied ? "移除分类约束" : "补充分类约束"}</button></div>
       <div className={styles.zeroShotBoard}>
+        <div className={styles.zeroShotInput}><FileText size={24} /><span>新输入</span><strong>{inputArrived ? "支付按钮无响应" : "等待新故障"}</strong><small>{inputArrived ? "同一个输入贯穿两个判断" : "先进入分类，再观察结果"}</small></div>
+        <ArrowRight className={styles.zeroShotFlowArrow} size={20} aria-hidden="true" />
         <div className={styles.definitionCard}><FileText size={24} /><span>任务定义</span><strong>把故障归为前端、后端或网络</strong><small>{constraintApplied ? "新增边界：以最先失败的组件为准" : "只给自然语言，没有示例"}</small></div>
+        <ArrowRight className={styles.zeroShotFlowArrow} size={20} aria-hidden="true" />
         <div className={styles.exampleVoid}><span>示例</span><strong>0 条</strong><small>这里有意留空</small></div>
+        <ArrowRight className={styles.zeroShotFlowArrow} size={20} aria-hidden="true" />
         <div className={styles.zeroShotDecision}><Brain size={24} /><span>直接判断</span><strong>{constraintApplied ? "前端" : scene.step === 0 ? "等待输入" : "前端 · 可能含歧义"}</strong><small>{constraintApplied ? "边界可复核" : "没有示例校准边界"}</small></div>
       </div>
       <p className={styles.inputExample}><strong>边界</strong>零样本表示没有提供任务示例，不表示提示可以为空；定义越含糊，结果越难判断。</p>
