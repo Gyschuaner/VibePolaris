@@ -1,0 +1,186 @@
+{
+  "slug": "mistral-shieldstral-safety-classifier-20260804",
+  "title": "Mistral 发布 Shieldstral：用自然语言政策做多模态安全判断",
+  "summary": "Mistral 于 2026 年 8 月 4 日发布 Shieldstral，一个约 3B 参数的开放权重多模态安全分类模型。它把审核改写成“这段内容是否违反某条政策”的问题，在推理时输入自然语言政策，不必为每种新分类重新训练；模型以 Apache 2.0 开放，并可在单张 16GB NVIDIA GPU 上运行。",
+  "body": "8 月 4 日，Mistral 发布了 Shieldstral，一个面向内容安全判断的开放权重模型。它接收文本和图像，也可以判断提示词、模型回答或提示词—回答组合是否符合一条用自然语言写出的安全政策。Mistral 给出的例子不是固定的“毒性/仇恨/暴力”标签，而是让使用者直接提问：“这张图是否适合展示给未成年人？”\n\n这个设计解决的是审核政策经常变化的问题。传统安全分类器通常把类别和边界固化在模型里，产品换一个场景就要重新训练或重新调阈值。Shieldstral 把政策写进推理请求，模型输出 yes/no 的概率分数，使用方可以按自己的风险阈值排序或拦截。这样做更灵活，但政策问题本身的写法会影响结果：同一段内容换一种问法，可能得到不同分数，仍需要评测和人工复核。\n\nMistral 把 Shieldstral 定为约 3B 的轻量模型，官方说它在文本安全、拒答检测、政策适应性和多模态安全评测上能匹配或超过大到 7 倍的开放模型，并可在单张 16GB GPU 上运行。这些是 Mistral 的 benchmark 口径，公开发布并不自动证明它在所有语言、图像类型或极端绕过提示下都可靠。\n\n开放权重和 Apache 2.0 许可让企业可以在自己的基础设施里运行，不必把敏感内容发给外部审核 API。它也把责任推回部署者：要决定哪些政策问题要问、分数阈值设在哪里、低置信样本是否进入人工队列，以及模型更新后是否会改变边界。\n\nShieldstral 的新闻价值在于，它把内容安全从一个固定标签模型变成一个可被产品团队配置的判断接口。这个接口不会自动替产品决定什么是安全，也不会替代法律或人工审核；它更像一层可以被重新提问、重新校准和本地部署的安全工具。",
+  "publishedAt": "2026-08-04",
+  "eventDate": "2026-08-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mistral-shieldstral-safety-classifier-20260804.svg",
+    "alt": "Mistral 发布 Shieldstral：用自然语言政策做多模态安全判断 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/mistral-shieldstral-safety-classifier-20260804.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "policy-question",
+      "title": "政策写进问题，而不是写死在类别表里",
+      "body": "Shieldstral 用自然语言问题描述“什么算不安全”，可以在推理时换政策，不必为每个新分类重新训练。",
+      "kind": "narrative"
+    },
+    {
+      "id": "score",
+      "title": "输出是概率分数，不是永远正确的判决",
+      "body": "模型只读 yes/no 的 logits，并把它们归一化成连续分数；部署者仍需设阈值、处理低置信样本和复核误判。",
+      "kind": "technical"
+    },
+    {
+      "id": "multimodal",
+      "title": "文本和图像共享一个审核接口",
+      "body": "同一个模型可以处理提示词、回答、提示词—回答组合和带文字图像，适合多种内容审核入口。",
+      "kind": "technical"
+    },
+    {
+      "id": "open-weights",
+      "title": "开放权重带来隐私和责任的双重变化",
+      "body": "Apache 2.0 与本地运行减少敏感内容外发，但组织要自己负责政策、阈值、监控和合规。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark",
+      "title": "厂商 benchmark 仍需独立复核",
+      "body": "Mistral 的 7 倍规模、16GB GPU 和多模态表现是公司公开口径，社区还需要在不同语言、图像和攻击输入上复测。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "安全分类模型怎样把政策变成一个问题？",
+    "question": "同一段文本为什么会因为审核政策不同而得到不同判断？",
+    "steps": [
+      {
+        "label": "写出政策问题",
+        "detail": "把产品自己的安全要求写成自然语言的 yes/no 问题，而不是选择固定的类别列表。",
+        "evidence": "Mistral Shieldstral announcement"
+      },
+      {
+        "label": "送入文本或图像",
+        "detail": "模型可以读取提示词、回答、组合内容和图像，并按同一套接口判断。",
+        "evidence": "Mistral Shieldstral announcement"
+      },
+      {
+        "label": "得到连续分数",
+        "detail": "yes/no 概率被归一化为安全分数，产品可以按阈值拦截或把不确定样本送人工。",
+        "evidence": "Mistral technical description"
+      },
+      {
+        "label": "复核和调参",
+        "detail": "政策问法、阈值、语言覆盖和对抗输入仍要由部署者测试，模型分数不是法律结论。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Mistral AI",
+    "url": "https://mistral.ai/news/shieldstral/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "event",
+    "authorization"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://mistral.ai/news/shieldstral/",
+      "claim": "Mistral 发布 Shieldstral 3B 开放权重多模态安全分类模型，支持自然语言政策、Apache 2.0 和单张 16GB GPU。",
+      "excerpt": "Shieldstral introduces a 3B open-weights multimodal safety classifier ... running efficiently on a single 16GB NVIDIA GPU."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/shieldstral-1-0",
+      "claim": "Mistral 文档记录 Shieldstral 1.0 的公开预览、Apache 2.0、3.8B 参数和 32k 上下文。",
+      "excerpt": "August 4, 2026 ... Public Preview Apache 2.0 v1.0."
+    },
+    {
+      "url": "https://arxiv.org/abs/2607.25857",
+      "claim": "技术报告记录模型方法和评测背景，作为产品公告的技术支撑而不是独立新闻来源。",
+      "excerpt": "a policy-adaptive multimodal safety classifier."
+    }
+  ],
+  "canonicalUrl": "https://mistral.ai/news/shieldstral/",
+  "sourceHash": "sha256:665a71542ed0a0c38ffd5fb08e953f105978f1d166bcc5a46deb73c2aa3b4c33",
+  "status": "published",
+  "discoveredAt": "2026-10-04T09:35:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 llm 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 eval 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 authorization 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://mistral.ai/news/shieldstral/",
+      "claim": "Mistral 把性能、模型规模和单卡部署条件写成官方发布口径，文章未将其升级为独立验证。",
+      "excerpt": "matches models up to 7x its size on text safety and sets a new state of the art on multimodal safety."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T09:35:00Z",
+    "method": "source",
+    "notes": "按官方公告、监管机构披露、政府文件和可信新闻核对事件日、报道日、发布状态与事实边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T09:35:00Z",
+    "notes": "逐篇手写正文，按 write-like-me 与 humanizer-zh 检查表达；区分政策草案、公司自述、监管披露、媒体报道和已完成事实。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T09:45:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件组织段落并适合零基础读者。",
+      "eventDate 与 publishedAt 与原始公告或媒体报道日期一致。",
+      "来源卡片保留原始链接，并区分官方事实、媒体转述、公司自述和未确认信息。",
+      "SVG/讲解与正文一致，词条联动只使用正文解释过的公开词条。"
+    ],
+    "notes": "读者复审通过：产品新闻优先于技术背景，benchmark 与 3B、单卡等均标明 Mistral 口径，解释了部署者责任和人工复核。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-04",
+  "fingerprint": "sha256:679274696f981b902d581922ee601d21f769fb7b2c6398a177acea71307339fc",
+  "promotedAt": "2026-10-03T20:31:11.514Z"
+}
