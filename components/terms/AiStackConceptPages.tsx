@@ -24,6 +24,7 @@ import { AgentMemoryTermPage } from "./ai-stack-pages/agent-memory";
 import { WorkingMemoryTermPage } from "./ai-stack-pages/working-memory";
 import { ExecutionSandboxTermPage } from "./ai-stack-pages/execution-sandbox";
 import { EmbeddingTermPage } from "./ai-stack-pages/embedding";
+import { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -50,6 +51,7 @@ export { AgentMemoryTermPage } from "./ai-stack-pages/agent-memory";
 export { WorkingMemoryTermPage } from "./ai-stack-pages/working-memory";
 export { ExecutionSandboxTermPage } from "./ai-stack-pages/execution-sandbox";
 export { EmbeddingTermPage } from "./ai-stack-pages/embedding";
+export { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -78,4 +80,5 @@ export const aiStackArticlePages = {
   "working-memory": WorkingMemoryTermPage,
   "execution-sandbox": ExecutionSandboxTermPage,
   "embedding": EmbeddingTermPage,
+  "vector-store": VectorStoreTermPage,
 } as const;

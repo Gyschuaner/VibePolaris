@@ -24,3 +24,4 @@ export { AgentMemoryLesson } from "./agent-memory";
 export { WorkingMemoryLesson } from "./working-memory";
 export { ExecutionSandboxLesson } from "./execution-sandbox";
 export { EmbeddingLesson } from "./embedding";
+export { VectorStoreLesson } from "./vector-store";

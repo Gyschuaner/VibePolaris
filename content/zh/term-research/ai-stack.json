@@ -490,14 +490,17 @@
   },
   {
     "slug": "vector-store",
-    "mechanism": "向量存储保存向量及其原文标识和元数据，并建立近邻索引以便按相似度快速找候选。",
-    "misconception": "它不是模型记忆，也不等于检索质量；切分、向量模型和过滤条件都会影响结果。",
-    "demoSignature": "输入：1万段文档向量和query向量；中间：索引访问节点10000→约180，元数据过滤后候选20→7；输出：返回相似度最高的5段及文档ID。可视化：近邻图搜索路径与过滤漏斗。 建议5帧：1万向量点铺开、查询点进入、索引路径只访问约180点、元数据过滤20→7、top5卡片返回；交互：开关过滤条件看候选圈缩放。",
+    "mechanism": "向量存储保存向量、原文标识和元数据，并用近邻索引返回候选；写入、更新、删除和过滤属于应用生命周期。",
+    "misconception": "它不是模型记忆或事实数据库；原文、向量模型、版本和过滤条件变化时需要同步。",
+    "demoSignature": "一万条向量进入索引，查询访问近邻后按版本过滤 20→7，返回 5 条带分数和文档 ID 的原文卡。交互：开关 2026 版本过滤观察候选范围。",
     "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/retrieval",
+      "https://arxiv.org/abs/1702.08734",
       "https://arxiv.org/abs/1603.09320",
-      "https://platform.openai.com/docs/guides/retrieval"
+      "https://qdrant.tech/documentation/concepts/collections/",
+      "https://www.pinecone.io/learn/vector-database/"
     ],
-    "rewriteRisk": "避免把数据库品牌功能当概念定义；应聚焦向量、索引、元数据三部分。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "embedding",
       "retrieval"

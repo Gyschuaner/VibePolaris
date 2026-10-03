@@ -26,3 +26,4 @@ export { agentMemorySources } from "./agent-memory";
 export { workingMemorySources } from "./working-memory";
 export { executionSandboxSources } from "./execution-sandbox";
 export { embeddingSources } from "./embedding";
+export { vectorStoreSources } from "./vector-store";
