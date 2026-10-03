@@ -18234,5 +18234,185 @@
         "note": "LLM-as-a-judge 的偏差与校准"
       }
     ]
+  },
+  {
+    "slug": "human-grader",
+    "lead": "人工评分怎样从个人感觉变成可校准的参考？",
+    "definition": "人工评分器让经过说明和校准的评审者按量表检查输出，保留分数、理由和分歧。",
+    "boundary": "人工也会不一致；缺少盲评、双人复核和分歧记录时，人的偏差会进入指标。",
+    "sceneKind": "contract",
+    "sceneTitle": "人工评审按量表留下理由和分歧",
+    "actionLabel": "切换评审记录",
+    "actors": [
+      {
+        "id": "answer",
+        "label": "待评回答",
+        "detail": "退款说明",
+        "icon": "message",
+        "group": "样本"
+      },
+      {
+        "id": "rubric",
+        "label": "评分量表",
+        "detail": "准确/完整/风险",
+        "icon": "file",
+        "group": "约定"
+      },
+      {
+        "id": "reviewers",
+        "label": "两位评审",
+        "detail": "甲/乙独立评分",
+        "icon": "user",
+        "group": "人工"
+      },
+      {
+        "id": "calibration",
+        "label": "校准记录",
+        "detail": "分差2 → 1",
+        "icon": "chart",
+        "group": "质量"
+      }
+    ],
+    "edges": [
+      {
+        "id": "a-r",
+        "from": "answer",
+        "to": "reviewers",
+        "label": "评审"
+      },
+      {
+        "id": "r-rb",
+        "from": "rubric",
+        "to": "reviewers",
+        "label": "约束"
+      },
+      {
+        "id": "r-c",
+        "from": "reviewers",
+        "to": "calibration",
+        "label": "复核"
+      }
+    ],
+    "frames": [
+      {
+        "label": "先读量表",
+        "note": "评审者先看定义和正反例。",
+        "activeIds": [
+          "rubric"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "answer",
+          "reviewers",
+          "calibration"
+        ],
+        "values": {
+          "rubric": "3维度"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "独立评分",
+        "note": "甲4/5、乙2/5，并记录理由。",
+        "activeIds": [
+          "reviewers"
+        ],
+        "doneIds": [
+          "rubric",
+          "answer"
+        ],
+        "mutedIds": [
+          "calibration"
+        ],
+        "values": {
+          "reviewers": "4 vs 2"
+        },
+        "activeEdgeIds": [
+          "r-rb",
+          "a-r"
+        ]
+      },
+      {
+        "label": "处理分歧",
+        "note": "第三人确认3/5，分歧原因写回校准集。",
+        "activeIds": [
+          "calibration"
+        ],
+        "doneIds": [
+          "rubric",
+          "answer",
+          "reviewers"
+        ],
+        "mutedIds": [],
+        "values": {
+          "calibration": "3/5 · 规则补例"
+        },
+        "activeEdgeIds": [
+          "r-c"
+        ]
+      },
+      {
+        "label": "复用参考",
+        "note": "校准后的样本用于检查自动评分器。",
+        "activeIds": [
+          "calibration"
+        ],
+        "doneIds": [
+          "rubric",
+          "reviewers"
+        ],
+        "mutedIds": [],
+        "values": {
+          "calibration": "可复用"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "人工评分的价值是提供可解释参考和校准信号，而不是天然绝对正确。",
+    "quiz": {
+      "question": "两位人工分差很大，下一步是什么？",
+      "options": [
+        {
+          "label": "保留理由并回到规则校准",
+          "correct": true
+        },
+        {
+          "label": "直接取高分",
+          "correct": false
+        },
+        {
+          "label": "删除争议样本",
+          "correct": false
+        }
+      ],
+      "success": "分歧本身能暴露规则或样本的问题。",
+      "retry": "掩盖分歧只会让自动指标更难解释。"
+    },
+    "prompt": {
+      "title": "安排人工评分",
+      "text": "写出盲评、双人复核、分歧处理和校准记录，再将样本用于验证自动评分。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.16634",
+        "label": "G-Eval · arXiv:2303.16634",
+        "note": "模型评分与人工一致性研究"
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.05685",
+        "label": "MT-Bench · arXiv:2306.05685",
+        "note": "LLM-as-a-judge 的偏差与校准"
+      }
+    ]
   }
 ]
