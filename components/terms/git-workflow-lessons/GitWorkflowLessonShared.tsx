@@ -52,10 +52,22 @@ function StagingAreaLesson() {
   </div>;
 }
 
+function DiffLesson() {
+  const scene = useScene(3);
+  const labels = ["工作树对 index", "index 对 HEAD", "比较两个分支"];
+  const views = [{ left: "工作树", right: "index", line: "- timeout = 10  + timeout = 30" }, { left: "index", right: "HEAD", line: "- enabled = false  + enabled = true" }, { left: "feature", right: "main", line: "- 按钮无响应  + 按钮有反馈" }];
+  const view = views[scene.step];
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git diff 端点比较演示">
+    <Caption scene={scene} labels={labels} titles={["未暂存的变化", "下一次提交的变化", "两个分支之间的变化"]} copy={["git diff 默认比较工作树与 index。", "git diff --staged 比较 index 与 HEAD，正是提交候选。", "给出两个分支后，diff 只说明内容差别，还要结合测试判断意图。"]} />
+    <div className={styles.gitDiff} aria-live="polite"><div><span>{view.left}</span><ArrowRight size={18} /><span>{view.right}</span></div><code>{view.line}</code><small>同一行的颜色只说明端点不同，不说明哪一边正确。</small></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
   if (slug === "working-tree") return <WorkingTreeLesson />;
   if (slug === "staging-area") return <StagingAreaLesson />;
+  if (slug === "diff") return <DiffLesson />;
   return null;
 }

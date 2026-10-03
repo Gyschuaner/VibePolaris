@@ -1005,17 +1005,17 @@
   },
   {
     "zh": "差异", "en": "Diff", "slug": "diff", "cat": "Git",
-    "say": "Diff 按行显示两个版本之间增加、删除和修改了什么。",
-    "aliases": ["代码差异", "git diff", "变更对比"],
+    "say": "Diff 比较两个内容端点，按行显示新增、删除和上下文，帮助你核对变化范围。",
+    "aliases": ["代码差异", "git diff", "变更对比", "hunk"],
     "question": "提交前怎样确认自己没有顺手改到无关文件？",
-    "definition": "Diff 是版本内容的比较结果。Git 可以比较工作区、暂存区、提交、分支或远程引用之间的文本变化。",
-    "boundary": "Diff 展示内容差别，不一定能说明改动意图或运行结果；代码评审仍需要上下文和测试证据。",
-    "demoType": "comparison", "demoTitle": "两个 diff 查看不同范围",
-    "demoSteps": [{"label":"git diff","value":"工作区 对 暂存区","note":"看到还没有 add 的修改。"},{"label":"git diff --staged","value":"暂存区 对 HEAD","note":"看到下一次提交会包含的内容。"},{"label":"提交前核对","value":"两份 diff 都符合预期","note":"无关改动仍留在正确位置。"}],
-    "quizQuestion": "要确认下一次提交的内容，应重点查看什么？", "quizOptions": ["git diff --staged", "git remote -v", "git branch --list"],
-    "correctText": "staged diff 对应当前提交候选。", "wrongText": "远程和分支列表不会显示将提交的具体行。",
-    "promptTitle": "审查一份代码差异", "prompt": "请按文件阅读下面 diff，区分功能变化、格式变化和可能误改，指出缺少的测试，并给出适合的提交拆分建议。",
-    "relatedSlugs": ["working-tree", "staging-area", "code-review"]
+    "definition": "Diff 是两个 Git 内容端点的比较结果。端点可以是工作区、index、HEAD、提交、分支或远程跟踪引用；命令先决定比较谁，再生成行级 hunk。",
+    "boundary": "Diff 只说明内容差别，不证明改动意图、业务正确性、测试通过或远程已同步；审查还需要上下文、提交说明和验证证据。",
+    "demoType": "comparison", "demoTitle": "切换端点，查看不同范围",
+    "demoSteps": [{"label":"工作树对 index","value":"未暂存的 timeout 变化","note":"git diff 默认显示还没有 add 的修改。"},{"label":"index 对 HEAD","value":"提交候选的 enabled 变化","note":"git diff --staged 查看下一次提交具体包含什么。"},{"label":"比较两个分支","value":"feature 与 main 的按钮差异","note":"端点改变后范围改变，仍要结合测试判断意图。"}],
+    "quizQuestion": "要确认下一次提交的具体内容，应重点查看什么？", "quizOptions": ["git diff --staged", "git remote -v", "git branch --list"],
+    "correctText": "staged diff 比较 index 与 HEAD，对应当前提交候选。", "wrongText": "远程和分支列表不会展示下一次提交的具体代码行，diff 也不能替代测试。",
+    "promptTitle": "审查一份代码差异", "prompt": "请先指出下面 diff 的两个端点，再按文件和 hunk 区分功能变化、格式变化和可能误改，说明缺少的测试与适合的提交拆分；不要把颜色当成正确性证明。",
+    "relatedSlugs": ["working-tree", "staging-area", "repo-commit", "code-review"]
   },
   {
     "zh": "切换分支", "en": "Checkout / Switch", "slug": "checkout-switch", "cat": "Git",

@@ -530,11 +530,11 @@
   },
   {
     "slug": "diff",
-    "mechanism": "Git 的 diff 系列比较两个端点的 blob 与树，按行生成增删 hunk；不同参数选择 working tree、index、commit 或分支作为端点。",
-    "misconception": "git diff 默认不显示已暂存改动；diff 也只说明文本变化，不说明业务意图和运行结果。",
-    "demoSignature": "建议 4 帧：左右端点下拉可选 working、index、HEAD、origin；用户切换比较对象，同一行修改在新增、已暂存、已提交三种标签间变化；选择相同端点时 diff 清空，明确它描述的是两份快照之差。",
-    "sourceUrls": ["https://git-scm.com/docs/git-diff"],
-    "rewriteRisk": "high",
+    "mechanism": "Git 的 diff 系列先选择两个 blob、树或引用作为端点，再按行生成增删 hunk；不同命令分别方便比较工作树/index、index/树对象或提交树。",
+    "misconception": "git diff 默认不显示已暂存改动；diff 也只说明端点的文本变化，不说明业务意图、测试结果或哪一边一定正确。",
+    "demoSignature": "comparison: 3 steps; actors=working tree/index/HEAD/feature/main/timeout/enabled/按钮反馈; phases=工作树对 index→index 对 HEAD→feature 对 main; action=切换比较端点",
+    "sourceUrls": ["https://git-scm.com/docs/git-diff", "https://git-scm.com/docs/git-diff-files", "https://git-scm.com/docs/git-diff-index", "https://git-scm.com/docs/git-diff-tree", "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"],
+    "rewriteRisk": "正式页面需明确每个比较端点和命令的范围，用同一示例切换工作树/index、index/HEAD、分支/分支；同时守住边界：颜色和 hunk 只描述内容差异，不能替代意图、审查和测试。",
     "nearDuplicates": ["working-tree", "staging-area", "code-review"]
   },
   {
