@@ -32,6 +32,7 @@ import { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
 import { MultimodalTermPage } from "./ai-stack-pages/multimodal";
 import { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
 import { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
+import { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -66,6 +67,7 @@ export { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
 export { MultimodalTermPage } from "./ai-stack-pages/multimodal";
 export { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
 export { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
+export { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -102,4 +104,5 @@ export const aiStackArticlePages = {
   multimodal: MultimodalTermPage,
   "reasoning-model": ReasoningModelTermPage,
   "system-prompt": SystemPromptTermPage,
+  "few-shot-prompting": FewShotPromptingTermPage,
 } as const;

@@ -31,3 +31,4 @@ export { RerankingLesson } from "./reranking";
 export { MultimodalLesson } from "./multimodal";
 export { ReasoningModelLesson } from "./reasoning-model";
 export { SystemPromptLesson } from "./system-prompt";
+export { FewShotPromptingLesson } from "./few-shot-prompting";
