@@ -13,3 +13,4 @@ export { MergeTermPage } from "./git-workflow-pages/merge";
 export { RebaseTermPage } from "./git-workflow-pages/rebase";
 export { MergeConflictTermPage } from "./git-workflow-pages/merge-conflict";
 export { RevertTermPage } from "./git-workflow-pages/revert";
+export { StashTermPage } from "./git-workflow-pages/stash";

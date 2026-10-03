@@ -1165,7 +1165,7 @@
     "definition": "git stash 创建一条临时记录并把相应修改从工作区移开。之后可用 apply 保留记录或 pop 应用后删除记录。",
     "boundary": "stash 容易被忘记，不适合长期保存重要工作，也默认不一定包含未跟踪文件。",
     "demoType": "lifecycle", "demoTitle": "临时任务前后恢复现场",
-    "demoSteps": [{"label":"收起当前修改","value":"stash push -m 写明用途","note":"工作区恢复到可切换状态。"},{"label":"完成紧急修复","value":"在其他分支提交并验证","note":"原任务改动仍在 stash 列表。"},{"label":"返回并恢复","value":"stash apply 后检查冲突","note":"确认无误再删除临时记录。"}],
+    "demoSteps": [{"label":"检查现场","value":"feature 有工作树 + index 改动","note":"mock.json 未跟踪，默认不会自动进入 stash。"},{"label":"创建本地 stash","value":"stash@{0}，工作区回到 HEAD","note":"需要未跟踪文件时明确使用 -u。"},{"label":"回 feature 后恢复","value":"apply 保留，pop 成功后移除","note":"临时切到 fix 后先回到 feature；冲突时记录仍在，先检查差异和测试结果。"}],
     "quizQuestion": "希望恢复后仍保留 stash 记录，应使用什么？", "quizOptions": ["git stash apply", "git stash pop", "git clean"],
     "correctText": "apply 应用内容但不会自动删除对应记录。", "wrongText": "pop 通常会在成功应用后移除记录，clean 用于清理未跟踪文件。",
     "promptTitle": "选择提交还是 stash", "prompt": "请根据下面改动是否完整、是否需要共享和预计搁置时间，判断应提交到功能分支还是暂存到 stash，并给出恢复后的检查步骤。",
