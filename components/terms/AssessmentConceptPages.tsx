@@ -313,7 +313,7 @@ export function HumanGraderTermPage() {
 
 export function ModelGraderTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={modelGraderSources}/>;
-  return <ConceptArticle slug="model-grader" title="模型评分器" subtitle="Model Grader · 用模型批量检查输出，再拿人工样本校准偏差" sources={modelGraderSources}
+  return <ConceptArticle slug="model-grader" title="模型评分器" subtitle="Model Grader · 批量评分与人工校准" sources={modelGraderSources}
     sections={[['model-definition', '模型评分不是第二个真理来源'], ['model-protocol', '先固定输入和输出格式'], ['model-calibration', '用人工参考发现系统性偏差'], ['model-boundary', '证据不足时返回未评分']]}
     intro={<>模型评分器把待评输出、评分规则和必要参考交给另一个模型，让它按结构化格式给出分数、理由或未评分状态。它可以批量处理开放回答，但必须用人工参考样本检查偏差，不能把模型的分数当成客观事实。</>}
     hero={<ConceptHero slug="model-grader" label="模型评分 4/5、人工参考 3/5；5 条校准样本中高估 2 条，证据不足时返回未评分"><div className={s.modelHero}><div className={s.modelHeroHeader}><span>量表 · 准确 / 完整 / 风险</span><span>输出 <strong>JSON</strong></span></div><div className={s.modelHeroCompare}><div><span>模型评分器</span><strong>4/5</strong></div><b>↔</b><div data-bias="true"><span>人工参考</span><strong>3/5</strong></div></div><div className={s.modelHeroGate}><span>5 条校准样本</span><strong>高估 2 条</strong><small>证据不足 → unscored</small></div></div></ConceptHero>}>
