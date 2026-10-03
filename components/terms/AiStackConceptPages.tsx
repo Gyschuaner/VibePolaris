@@ -34,6 +34,7 @@ import { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
 import { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
 import { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
 import { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting";
+import { TemperatureTermPage } from "./ai-stack-pages/temperature";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -70,6 +71,7 @@ export { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
 export { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
 export { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
 export { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting";
+export { TemperatureTermPage } from "./ai-stack-pages/temperature";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -108,4 +110,5 @@ export const aiStackArticlePages = {
   "system-prompt": SystemPromptTermPage,
   "few-shot-prompting": FewShotPromptingTermPage,
   "zero-shot-prompting": ZeroShotPromptingTermPage,
+  temperature: TemperatureTermPage,
 } as const;
