@@ -350,9 +350,9 @@
     "boundary": "API 密钥不等同于用户登录；长期密钥也不应暴露在公开客户端代码中。",
     "demoType": "lifecycle", "demoTitle": "API 密钥怎样安全使用",
     "demoSteps": [
-      {"label": "创建", "value": "key_live_…", "note": "服务生成可追踪的密钥。"},
-      {"label": "服务端调用", "value": "环境变量读取", "note": "密钥不进入公开代码仓库。"},
-      {"label": "轮换", "value": "旧密钥撤销", "note": "泄露或到期时更换凭证。"}
+      {"label": "服务端代理", "value": "浏览器 → 受控服务 → 天气 API", "note": "密钥停留在服务端，浏览器只持有会话。"},
+      {"label": "请求头提交", "value": "X-API-Key → 服务端验证", "note": "按项目计量，同时对日志做脱敏。"},
+      {"label": "轮换旧钥匙", "value": "新 key · 旧 key = 401", "note": "新请求继续工作，泄露窗口被缩短。"}
     ],
     "quizQuestion": "公开网页需要调用带密钥的第三方 API 时应怎样做？", "quizOptions": ["由自己的服务端保管密钥并代为调用", "把密钥写进前端源码", "把密钥放进 URL 分享"],
     "correctText": "服务端可避免长期密钥直接暴露给浏览器。", "wrongText": "前端源码和 URL 都容易暴露密钥。",
