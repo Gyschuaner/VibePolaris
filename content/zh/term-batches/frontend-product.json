@@ -1235,7 +1235,7 @@
     "definition": "预览部署由分支变更触发，构建当前提交并部署到临时环境，通常把地址和状态回写到拉取请求。",
     "boundary": "预览环境的数据、权限和第三方服务可能与生产不同，不能把预览通过直接等同于生产验证完成。",
     "demoType": "lifecycle", "demoTitle": "一个 PR 的临时页面",
-    "demoSteps": [{"label":"创建或更新 PR","value":"流水线读取当前提交","note":"预览状态开始构建。"},{"label":"部署独立地址","value":"生成带 PR 标识的 URL","note":"评审者看到对应提交内容。"},{"label":"关闭 PR","value":"回收临时环境","note":"地址失效并释放资源。"}],
+    "demoSteps": [{"label":"PR 推进 F4","value":"PR #18 · F4 · queued","note":"流水线读取当前提交，production 仍停在 main 的 M9。"},{"label":"预览可访问","value":"preview-18.example.dev · F4 · sandbox","note":"PR 状态回写成功；预览使用隔离数据和连接。"},{"label":"推送 F5 后关闭 PR","value":"branch URL → F5 · F4 permalink → preview removed","note":"先记录新旧提交的对应关系，再回收临时环境；生产 M9 和外部副作用不会被自动撤销。"}],
     "quizQuestion": "预览部署最适合验证什么？", "quizOptions": ["当前分支的实际页面与交互", "生产数据库的全部真实操作", "尚未提交的本地文件"],
     "correctText": "预览展示已推送提交在临时环境中的运行结果。", "wrongText": "它不应随意操作生产数据，也看不到未提交文件。",
     "promptTitle": "规划安全的 PR 预览环境", "prompt": "请为下面 Web 项目设计预览部署，说明触发条件、环境变量、测试数据、访问权限、PR 回写和关闭后的自动清理。",

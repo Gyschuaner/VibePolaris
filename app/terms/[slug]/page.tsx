@@ -56,7 +56,7 @@ import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
 import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage } from '@/components/terms/AiStackConceptPages';
-import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
+import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -128,6 +128,7 @@ const articleTermPages = {
   "code-review": GitCodeReviewTermPage,
   ci: CiTermPage,
   cd: CdTermPage,
+  "preview-deployment": PreviewDeploymentTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
