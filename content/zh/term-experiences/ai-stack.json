@@ -17868,5 +17868,190 @@
         "note": "评测对象、运行和结果记录"
       }
     ]
+  },
+  {
+    "slug": "pass-fail-grader",
+    "lead": "没有结果文件时，如何区分“任务失败”和“现在无法检查”？",
+    "definition": "通过失败评分器把成功证据变成可执行检查，并把未评分状态从失败和通过中分开。",
+    "boundary": "二值开关不适合没有清晰证据的复杂质量；环境不可读不能被强行归类。",
+    "sceneKind": "branch",
+    "sceneTitle": "同一任务形成通过、失败和未评分",
+    "actionLabel": "切换检查结果",
+    "actors": [
+      {
+        "id": "task",
+        "label": "任务",
+        "detail": "生成 answer.json",
+        "icon": "file",
+        "group": "目标"
+      },
+      {
+        "id": "check",
+        "label": "判据",
+        "detail": "存在且 amount=120",
+        "icon": "code",
+        "group": "检查"
+      },
+      {
+        "id": "result",
+        "label": "结果",
+        "detail": "pass/fail/unscored",
+        "icon": "chart",
+        "group": "状态"
+      },
+      {
+        "id": "gate",
+        "label": "发布门槛",
+        "detail": "只接受 pass",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "t-c",
+        "from": "task",
+        "to": "check",
+        "label": "检查"
+      },
+      {
+        "id": "c-r",
+        "from": "check",
+        "to": "result",
+        "label": "分类"
+      },
+      {
+        "id": "r-g",
+        "from": "result",
+        "to": "gate",
+        "label": "门槛"
+      }
+    ],
+    "frames": [
+      {
+        "label": "写清证据",
+        "note": "先列出文件存在和 amount=120 两条条件。",
+        "activeIds": [
+          "check"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "task",
+          "result",
+          "gate"
+        ],
+        "values": {
+          "check": "2 条判据"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "通过",
+        "note": "文件存在且金额正确，结果为 pass。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "task",
+          "check"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "result": "pass"
+        },
+        "activeEdgeIds": [
+          "t-c",
+          "c-r"
+        ]
+      },
+      {
+        "label": "失败",
+        "note": "文件存在但金额错误，结果为 fail。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "task",
+          "check"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "result": "fail"
+        },
+        "activeEdgeIds": [
+          "c-r"
+        ]
+      },
+      {
+        "label": "未评分",
+        "note": "环境不可读，结果为 unscored，等待重跑。",
+        "activeIds": [
+          "result",
+          "gate"
+        ],
+        "doneIds": [
+          "task",
+          "check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "unscored",
+          "gate": "暂停"
+        },
+        "activeEdgeIds": [
+          "r-g"
+        ]
+      }
+    ],
+    "insight": "通过、失败和未评分分别表达证据成立、证据不成立和暂时无法检查。",
+    "quiz": {
+      "question": "为什么要保留未评分状态？",
+      "options": [
+        {
+          "label": "避免把不可检查误判成通过或失败",
+          "correct": true
+        },
+        {
+          "label": "为了让所有样本都通过",
+          "correct": false
+        },
+        {
+          "label": "因为失败不需要修复",
+          "correct": false
+        }
+      ],
+      "success": "未评分保留了证据缺口，下一步可以重跑或补环境。",
+      "retry": "把缺证据塞进 false 会混淆系统失败和测试失败。"
+    },
+    "prompt": {
+      "title": "设计通过失败判据",
+      "text": "为每条任务写成功证据、失败证据、未评分条件和发布门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "安全检查与高风险动作边界"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      }
+    ]
   }
 ]

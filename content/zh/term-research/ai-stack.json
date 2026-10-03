@@ -1566,5 +1566,23 @@
       "streaming-output",
       "model-routing"
     ]
+  },
+  {
+    "slug": "pass-fail-grader",
+    "mechanism": "通过失败评分器把预先写好的成功条件变成可执行的二值检查，例如文件存在、字段正确或副作用已发生，同时保留未评分状态。",
+    "misconception": "二值结果适合清晰判据，不适合把复杂质量压成一个开关；环境不可读、证据缺失和真实失败不能混成同一个 false。",
+    "demoSignature": "输入：answer.json 存在且 amount=120；中间：文件正确=通过；金额错误/缺文件=未通过；环境不可读=未评分；输出：发布只接受通过；未评分先补证据，不当作零分。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/graders",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://developers.openai.com/api/docs/guides/safety-best-practices",
+      "https://airc.nist.gov/airmf-resources/playbook/"
+    ],
+    "rewriteRisk": "二值结果适合清晰判据，不适合把复杂质量压成一个开关；环境不可读、证据缺失和真实失败不能混成同一个 false。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "grader",
+      "evaluation-run",
+      "eval"
+    ]
   }
 ]
