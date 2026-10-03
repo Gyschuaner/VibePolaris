@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { apiKeySources, rbacSources, relationalDatabaseSources } from "@/lib/backend-network-sources";
+import { apiKeySources, nosqlSources, rbacSources, relationalDatabaseSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -213,4 +213,58 @@ const relationalDatabaseSpec: PageSpec = {
 
 export function RelationalDatabaseTermPage() {
   return renderBackendNetworkPage(relationalDatabaseSpec);
+}
+
+const nosqlSpec: PageSpec = {
+  slug: "nosql",
+  title: "NoSQL",
+  subtitle: "NoSQL · 从访问模式出发选择非关系数据模型",
+  intro: "商品页要一次读出完整的商品和库存，社交图谱要沿关系找朋友的朋友，计数器则只需按一个键快速更新。NoSQL 不是一种单一数据库，而是一组针对不同访问模式设计的数据模型。",
+  hero: {
+    question: "同一个业务问题，先问怎样读取",
+    nodes: [["访问模式", "最近订单"], ["数据模型", "文档 / 键值"], ["取舍", "读写与一致性"]],
+    proof: "模型围绕查询路径设计；NoSQL 不等于没有结构。",
+  },
+  sections: [
+    {
+      id: "nosql-models",
+      title: "它是一个伞形词，不是一台产品",
+      blocks: [
+        { id: "nosql-models", text: "NoSQL 通常覆盖文档、键值、列族和图等多类模型。文档模型可以把订单及其明细放在同一个聚合里，键值模型按一个主键取值，图模型则把节点和边作为一等对象。它们都能有结构、索引和约束，只是结构与查询接口不再以关系表和连接为中心。" },
+        { id: "nosql-query", text: "设计 NoSQL 数据时，先列出系统真正要执行的读取和写入：是按用户读取完整资料，还是按时间范围扫描事件，还是沿关系找邻居。常见做法是围绕这些访问模式组织数据，必要时把同一事实复制到多个聚合中，以减少运行时连接。" },
+      ],
+      lesson: {
+        title: "同一批订单在不同模型里的读取路径",
+        ariaLabel: "关系表、文档和键值模型针对访问模式的对照演示",
+        steps: [
+          { label: "读一个用户", actors: ["用户 7", "profile 文档", "1 次读取"], evidence: "完整资料和最近订单已经聚合，读取路径短，但写入重复会增加。" },
+          { label: "改共享价格", actors: ["商品", "120 个订单", "更新策略"], evidence: "若把价格嵌入每个订单，改一次价格可能需要更新很多副本。" },
+          { label: "选择查询模型", actors: ["访问模式", "数据布局", "可接受取舍"], evidence: "模型选择回答的是访问与一致性问题，不是给数据库贴上‘更快’标签。" },
+        ],
+        failure: { label: "只看存储外形", text: "把所有 JSON 文档都叫 NoSQL 方案，却没有说明查询、索引和一致性，无法预测一次业务变化会影响多少记录。" },
+      },
+    },
+    {
+      id: "nosql-tradeoff",
+      title: "速度、可用性与一致性是取舍",
+      blocks: [
+        { id: "nosql-tradeoff", text: "某些 NoSQL 系统把高可用和分布式扩展放在前面，允许在部分故障或网络分区时继续响应；另一些系统提供更强的事务或一致性选项。论文和产品文档描述的是具体系统的取舍，不能把其中一个实现的特性推广给所有 NoSQL。" },
+        { id: "nosql-boundary", text: "文档嵌套并不自动解决并发更新，键值读取也不自动提供跨记录原子性。要选型，必须写清允许多旧的数据、哪些更新必须同时成功、失败后怎样重试，以及索引和存储成本如何增长。" },
+      ],
+    },
+    {
+      id: "nosql-boundary",
+      title: "失败分支：查询没设计进模型",
+      blocks: [
+        { id: "nosql-failure", text: "如果产品后来需要按未预想的字段组合筛选，原本为单一读取路径设计的模型可能只能全表扫描，或要求额外的投影和同步任务。新增索引、复制数据或引入另一种存储都可能增加一致性维护成本。" },
+        { id: "nosql-selection", text: "读者看到“用 NoSQL 才能扩展”时，可以追问：是哪一种模型、哪种访问模式、哪一种一致性承诺，以及故障时允许什么结果。能描述这些条件，才是在谈工程取舍；只说“没有表所以灵活”还不够。" },
+      ],
+    },
+  ],
+  sources: nosqlSources,
+  relatedIntro: "NoSQL 与关系型数据库不是简单的新旧替代；先读关系型数据库、行和列，再按访问模式比较不同模型。",
+};
+
+export function NosqlTermPage() {
+  return renderBackendNetworkPage(nosqlSpec);
 }
