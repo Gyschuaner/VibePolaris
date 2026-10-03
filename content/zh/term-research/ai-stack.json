@@ -179,8 +179,10 @@
     "misconception": "基于证据回答不等于检索：证据可以由用户直接给出；有引用链接也不自动证明结论被证据支持。",
     "demoSignature": "输入：两段制度文本，其中报销上限分别为800和1200元且新版日期更晚；中间：候选结论800/1200→按生效日期保留1200；输出：“上限1200元”并绑定新版段落。可视化：证据卡片—结论连线，旧版连线变灰。 建议5帧：新旧两张制度卡入场、关键金额高亮、日期轴判定新版、结论连到1200元原句、旧版淡出；交互：切换证据版本看结论与连线同步变化。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2005.11401",
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+      "https://support.microsoft.com/en-us/microsoft-365-copilot/what-information-does-copilot-use-to-answer-my-prompt",
+      "https://learn.microsoft.com/en-us/azure/well-architected/ai/grounding-data-design",
+      "https://arxiv.org/pdf/2005.11401",
+      "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
     ],
     "rewriteRisk": "名称对新手应保留“基于证据回答”；正文必须把证据约束、检索和引用三件事拆开。",
     "nearDuplicates": [
@@ -195,8 +197,10 @@
     "misconception": "出现脚注不等于引用正确；还要检查来源是否真的支持这句话、位置是否可访问。",
     "demoSignature": "输入：回答含3项数字，来源段落只支持其中2项；中间：引用覆盖率2/3，逐项核对后删除无依据数字；输出：2项带段落定位的结论。可视化：三条主张与来源高亮的连线矩阵。 建议5帧：三项主张逐条出现、来源段落展开、两条连线变实、一条断线变红、无依据主张被删除；交互：点击主张跳到对应原文高亮。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/citation-formatting",
-      "https://arxiv.org/abs/2005.11401"
+      "https://www.chicagomanualofstyle.org/tools_citationguide/citation-guide-1.html",
+      "https://www.w3.org/TR/annotation-model/",
+      "https://arxiv.org/pdf/2305.14627",
+      "https://www.crossref.org/display-guidelines/"
     ],
     "rewriteRisk": "不要把“给出网址”写成完整引用机制；演示必须出现主张级核对。",
     "nearDuplicates": [
@@ -724,12 +728,13 @@
     "slug": "prompt-injection",
     "mechanism": "提示词注入把不可信文字带进模型上下文，试图冒充有权限的指令；应用要保留来源并把读取数据与执行工具分开。",
     "misconception": "模型可能分不清同样格式的文字来自谁；隐藏系统提示词或只过滤关键词不能代替工具层最小权限、隔离与确认。",
-    "demoSignature": "输入：用户要求摘要网页，网页夹带“发送密钥”；中间：程序标记 user=trusted、page=untrusted，模型仍可能提出 send_secret，但工具权限检查拒绝；输出：摘要完成、工具调用0。可视化：来源标记保持在数据通道，权限闸门单独决定执行。",
+    "demoSignature": "输入：用户要求摘要网页，网页夹带“发送密钥”；中间：程序标记 page=untrusted，若模型把它提升成指令而提出 send_secret，工具权限闸门仍拒绝；输出：正常分支摘要完成且调用0，错误分支调用被阻断。可视化：资料/指令选择、来源标记和工具权限闸门。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
       "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
-      "https://arxiv.org/abs/2302.12173",
-      "https://openai.com/safety/prompt-injections/"
+      "https://developers.openai.com/api/docs/guides/safety-best-practices",
+      "https://developers.openai.com/api/docs/guides/agent-builder-safety",
+      "https://www.anthropic.com/research/prompt-injection-defenses?slug=helpful-honest-harmless-ai",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
     ],
     "rewriteRisk": "不要给可直接滥用的攻击模板；必须明确读取外部内容仍可继续，但外部内容不获得工具授权。",
     "nearDuplicates": [

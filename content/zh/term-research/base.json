@@ -272,7 +272,11 @@
     "misconception": "提示词不能创造缺失事实、越过权限或替代结果验证；输入再完整也不等于输出必然正确。",
     "demoSignature": "assembly: 5 frames; actors=模糊请求/目标/材料/约束/输出/可执行提示; phases=只有请求→明确目标→提供材料→写清约束→约定输出; action=补一项信息",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/prompt-engineering"
+      "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+      "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+      "https://developers.openai.com/api/docs/guides/prompt-engineering",
+      "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "https://ai.google.dev/gemini-api/docs/structured-output"
     ],
     "rewriteRisk": "正式页面需守住边界：提示词不能创造缺失事实、越过权限或替代结果验证；输入再完整也不等于输出必然正确。",
     "nearDuplicates": [
@@ -287,7 +291,11 @@
     "misconception": "资料存在于外部系统不等于已进入上下文；上下文有容量和相关性限制，错误材料也会误导答案。",
     "demoSignature": "layers: 5 frames; actors=系统说明/当前对话/制度片段/工具结果/当前任务/模型可见输入; phases=只有问题→加入规则→取回片段→补当前信息→按任务作答; action=加入一层",
     "sourceUrls": [
-      "https://docs.anthropic.com/en/docs/build-with-claude/context-windows"
+      "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "https://www.langchain.com/blog/context-engineering-for-agents",
+      "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"
     ],
     "rewriteRisk": "正式页面需守住边界：资料存在于外部系统不等于已进入上下文；上下文有容量和相关性限制，错误材料也会误导答案。",
     "nearDuplicates": [
@@ -302,7 +310,9 @@
     "misconception": "Token 不是固定的字、词或字符；不同分词器会得到不同切分，输入与输出都会占用预算。",
     "demoSignature": "transform: 5 frames; actors=原始文本/词片段/Token ID/上下文预算/模型输入; phases=读取文本→切成片段→映射编号→计算占用→送入模型; action=继续切分",
     "sourceUrls": [
-      "https://platform.openai.com/tokenizer",
+      "https://huggingface.co/learn/llm-course/en/chapter2/4",
+      "https://huggingface.co/learn/llm-course/en/chapter6/5",
+      "https://platform.claude.com/docs/en/build-with-claude/token-counting",
       "https://github.com/openai/tiktoken"
     ],
     "rewriteRisk": "正式页面需守住边界：Token 不是固定的字、词或字符；不同分词器会得到不同切分，输入与输出都会占用预算。",
@@ -318,7 +328,10 @@
     "misconception": "智能体不会自动获得权限或正确判断；工具范围、写操作规则、预算和停止条件必须明确。",
     "demoSignature": "loop: 5 frames; actors=目标/观察/判断/工具动作/验证/停止条件; phases=读取现场→确定原因→执行修改→检查结果→满足停止条件; action=运行下一轮",
     "sourceUrls": [
-      "https://arxiv.org/abs/2210.03629"
+      "https://huggingface.co/learn/agents-course/en/unit1/what-are-agents",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://huggingface.co/learn/agents-course/en/unit1/agent-steps-and-structure",
+      "https://openai.github.io/openai-agents-python/running_agents/"
     ],
     "rewriteRisk": "正式页面需守住边界：智能体不会自动获得权限或正确判断；工具范围、写操作规则、预算和停止条件必须明确。",
     "nearDuplicates": [
@@ -333,7 +346,11 @@
     "misconception": "模型生成调用意图不等于操作成功；参数校验、权限、执行和失败处理属于工具系统。",
     "demoSignature": "route: 5 frames; actors=用户问题/模型/工具约定/天气服务/工具结果/最终回答; phases=识别缺口→生成参数→执行查询→返回结果→组织回答; action=执行下一段",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/function-calling"
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+      "https://huggingface.co/learn/agents-course/unit1/actions",
+      "https://huggingface.co/docs/smolagents/tutorials/secure_code_execution"
     ],
     "rewriteRisk": "正式页面需守住边界：模型生成调用意图不等于操作成功；参数校验、权限、执行和失败处理属于工具系统。",
     "nearDuplicates": [
@@ -363,7 +380,10 @@
     "misconception": "RAG 不自动保证正确；资料版本、检索召回、片段完整性和引用对应关系都可能出错。",
     "demoSignature": "pipeline: 6 frames; actors=用户问题/检索器/制度库/相关片段/生成模型/回答与引用; phases=提出问题→生成检索词→查找制度→选择片段→依据生成→对应引用; action=运行下一段",
     "sourceUrls": [
-      "https://arxiv.org/abs/2005.11401"
+      "https://arxiv.org/pdf/2005.11401",
+      "https://huggingface.co/docs/transformers/model_doc/rag",
+      "https://arxiv.org/pdf/2307.03172",
+      "https://arxiv.org/pdf/2309.15217"
     ],
     "rewriteRisk": "正式页面需守住边界：RAG 不自动保证正确；资料版本、检索召回、片段完整性和引用对应关系都可能出错。",
     "nearDuplicates": [
