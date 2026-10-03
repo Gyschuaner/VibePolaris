@@ -101,6 +101,22 @@ function RemoteLesson() {
   </div>;
 }
 
+function CloneLesson() {
+  const scene = useScene(3);
+  const labels = ["选择取得方式", "取得仓库内部对象", "检出起点，准备运行环境"];
+  const inspected = scene.step >= 1;
+  const checkedOut = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git clone 建立本地仓库演示">
+    <Caption scene={scene} labels={labels} titles={["三种方式都能出现文件", ".git 保留仓库能力，depth=1 限制历史", "检出分支后仍要配置项目"]} copy={["ZIP、完整 clone 和 depth=1 都从同一远程开始，先不要把文件相同当成仓库相同。", "完整 clone 和 depth=1 都有 .git 与 origin；前者保留完整历史，后者只保留有限历史，ZIP 没有 Git 对象。", "默认分支进入工作区；依赖、环境变量和启动命令仍由 README 决定。"]} />
+    <div className={styles.cloneBoard} aria-live="polite">
+      <div data-active={false}><Stack size={22} aria-hidden="true" /><strong>Download ZIP</strong><code>文件：有</code><span>{inspected ? ".git：无 · origin：无" : "只看到文件"}</span></div>
+      <div data-active={inspected}><GitCommit size={22} aria-hidden="true" /><strong>git clone</strong><code>.git · origin · full history</code><span>{checkedOut ? "main 已检出" : inspected ? "对象与引用已取得" : "等待取得"}</span></div>
+      <div data-active={inspected}><GitBranch size={22} aria-hidden="true" /><strong>--depth 1</strong><code>.git · origin · 1 层历史</code><span>{checkedOut ? "文件可编辑，历史有限" : inspected ? "浅历史已取得" : "等待取得"}</span></div>
+    </div>
+    <div className={styles.choices} role="group" aria-label="推进 clone 流程"><button type="button" onClick={() => scene.seek(1)} aria-pressed={scene.step === 1}>查看仓库内部</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={checkedOut}>检出默认分支</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
@@ -109,5 +125,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "diff") return <DiffLesson />;
   if (slug === "checkout-switch") return <CheckoutSwitchLesson />;
   if (slug === "remote") return <RemoteLesson />;
+  if (slug === "clone") return <CloneLesson />;
   return null;
 }

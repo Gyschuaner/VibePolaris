@@ -1047,16 +1047,16 @@
   },
   {
     "zh": "克隆", "en": "Clone", "slug": "clone", "cat": "Git",
-    "say": "clone 从远程复制仓库历史，创建本地工作区，并通常配置 origin 和默认跟踪分支。",
-    "aliases": ["git clone", "克隆仓库", "下载仓库"],
-    "question": "第一次参与项目时，怎样得到可提交和切换分支的完整本地仓库？",
-    "definition": "git clone 获取远程对象和引用，建立新的本地仓库，检出默认分支，并记录远程地址。",
-    "boundary": "clone 不等于安装依赖或配置运行环境；仓库到手后仍需按项目文档完成本地设置。",
+    "say": "clone 从远程取得 Git 对象和引用，创建本地仓库与工作区，并通常配置 origin 和默认跟踪分支。",
+    "aliases": ["git clone", "克隆仓库", "下载仓库", "浅克隆"],
+    "question": "第一次参与项目时，怎样得到能提交、切分支并查看历史的本地仓库？",
+    "definition": "git clone 获取远程对象和引用，建立新的本地 Git 仓库，记录远程地址并检出默认分支；depth 或 filter 参数会缩小历史或对象范围。",
+    "boundary": "clone 不等于下载 ZIP，也不等于安装依赖或配置运行环境；仓库到手后仍需按项目文档完成本地设置。",
     "demoType": "lifecycle", "demoTitle": "克隆命令创建了什么",
-    "demoSteps": [{"label":"连接远程","value":"读取远程引用与对象","note":"权限失败会在此出现。"},{"label":"创建本地仓库","value":"写入 .git 与 origin 配置","note":"完整历史或浅历史按参数获取。"},{"label":"检出默认分支","value":"文件出现在工作区","note":"项目还未自动安装依赖。"}],
+    "demoSteps": [{"label":"选择取得方式","value":"ZIP、完整 clone、depth=1 都出现文件","note":"文件相同不代表仓库能力相同。"},{"label":"取得仓库对象","value":"完整 clone 有 .git/origin，浅克隆历史有限","note":"ZIP 没有 Git 对象和远程跟踪。"},{"label":"检出默认分支","value":"文件进入工作区，项目环境仍待配置","note":"依赖和启动命令由 README 决定。"}],
     "quizQuestion": "clone 完成后通常还需要做什么？", "quizOptions": ["按项目说明安装依赖和配置环境", "再次初始化同一目录", "删除 .git"],
     "correctText": "Git 只负责取得版本库，运行环境由项目自行定义。", "wrongText": "重复初始化或删除 .git 会破坏正常仓库状态。",
-    "promptTitle": "整理仓库首次启动步骤", "prompt": "请根据下面 README 和仓库文件，区分 git clone 已完成的部分与仍需执行的依赖安装、环境变量、数据库和启动步骤。不要编造缺失配置。",
+    "promptTitle": "整理仓库首次启动步骤", "prompt": "请根据下面 README、git clone 输出和仓库文件，区分完整 clone、浅克隆与 ZIP 各自取得了什么，再列出仍需执行的依赖安装、环境变量、数据库和启动步骤。不要编造缺失配置。",
     "relatedSlugs": ["remote", "branch", "working-tree"]
   },
   {
