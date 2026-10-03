@@ -1061,16 +1061,16 @@
   },
   {
     "zh": "拉取", "en": "Pull", "slug": "pull", "cat": "Git",
-    "say": "pull 先获取远程更新，再把远程分支集成到当前本地分支。",
-    "aliases": ["git pull", "拉代码", "同步远程"],
-    "question": "执行 pull 后为什么工作区里突然出现合并提交或冲突？",
-    "definition": "git pull 通常等于 git fetch 加 merge，也可以配置为 fetch 加 rebase。最终行为受分支跟踪和 pull 策略影响。",
-    "boundary": "pull 不是只下载不修改；如果只想查看远程变化，应先使用 fetch。",
+    "say": "pull 先获取远程更新，再按策略把远程分支集成到当前本地分支。",
+    "aliases": ["git pull", "拉代码", "同步远程", "pull.rebase"],
+    "question": "执行 pull 后为什么会出现合并提交、重放后的提交或冲突？",
+    "definition": "git pull 通常等于 git fetch 加 merge，也可以配置为 fetch 加 rebase 或仅允许快进；最终行为受分支跟踪和 pull 策略影响。",
+    "boundary": "pull 不是只下载；它可能改变当前分支并进入冲突状态。如果只想查看远程变化，应先使用 fetch。",
     "demoType": "branch", "demoTitle": "拉取后的两种集成方式",
-    "demoSteps": [{"label":"获取远程提交","value":"更新 origin/main","note":"本地工作分支尚未改变。"},{"label":"选择 merge","value":"产生合并结果或合并提交","note":"保留两条历史分支。"},{"label":"选择 rebase","value":"本地提交重放到远程之后","note":"提交哈希会变化。"}],
+    "demoSteps": [{"label":"先 fetch","value":"origin/main 记录 D，本地 main 仍在 C","note":"远程对象已取得，当前分支还没有改变。"},{"label":"选择 merge","value":"C 与 D 产生合并节点 M","note":"保留两条历史，冲突要人工处理。"},{"label":"选择 rebase","value":"本地 C 重放为 C′","note":"提交哈希会变化，已共享历史要谨慎。"}],
     "quizQuestion": "只想先查看远程更新，不改变当前分支，应使用什么？", "quizOptions": ["git fetch", "git pull", "git reset --hard"],
     "correctText": "fetch 更新远程跟踪引用，不自动集成当前分支。", "wrongText": "pull 会继续集成，reset --hard 还可能丢失本地修改。",
-    "promptTitle": "解释一次 pull 将执行什么", "prompt": "请根据当前分支的 upstream 和 pull 配置，说明 git pull 会获取哪个分支、用 merge 还是 rebase 集成，并提前指出可能冲突的文件。",
+    "promptTitle": "解释一次 pull 将执行什么", "prompt": "请根据当前分支的 upstream、pull.rebase 和快进配置，说明 git pull 会先 fetch 哪个引用、再用 merge 还是 rebase 集成，并提前指出可能冲突的文件；如果只想查看变化，请改用 fetch。",
     "relatedSlugs": ["fetch", "merge", "rebase"]
   },
   {

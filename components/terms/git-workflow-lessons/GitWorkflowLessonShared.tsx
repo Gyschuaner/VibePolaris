@@ -117,6 +117,23 @@ function CloneLesson() {
   </div>;
 }
 
+function PullLesson() {
+  const scene = useScene(3);
+  const labels = ["先 fetch", "选择 merge", "选择 rebase"];
+  const merged = scene.step === 1;
+  const rebased = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git pull 的获取与集成演示">
+    <Caption scene={scene} labels={labels} titles={["pull 先拿到远程对象", "merge 保留两条历史并写合并结果", "rebase 把本地提交重放到新基线"]} copy={["origin/main 已记录 D，本地 main 仍有自己的 C；fetch 阶段只更新远程跟踪引用。", "把 C 和 D 合在一起，当前分支出现合并节点 M；冲突要停下来处理。", "把 C 重放到 D 之后得到 C′；提交哈希改变，已共享历史要谨慎处理。"]} />
+    <div className={styles.pullBoard} aria-live="polite">
+      <div data-active={!merged && !rebased}><GitBranch size={22} aria-hidden="true" /><strong>origin/main</strong><code>D</code><span>远程跟踪引用</span></div>
+      <ArrowRight size={18} aria-hidden="true" />
+      <div className={styles.choices} role="group" aria-label="选择 pull 集成策略"><button type="button" onClick={() => scene.seek(1)} aria-pressed={merged}>merge</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={rebased}>rebase</button></div>
+      <ArrowRight size={18} aria-hidden="true" />
+      <div data-active={merged || rebased}><GitCommit size={22} aria-hidden="true" /><strong>{merged ? "main → M" : rebased ? "main → C′" : "main → C"}</strong><code>{merged ? "C + D → M" : rebased ? "D → C′" : "尚未集成"}</code><span>{merged ? "合并提交" : rebased ? "重放后的新提交" : "fetch 后仍在 C"}</span></div>
+    </div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
@@ -126,5 +143,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "checkout-switch") return <CheckoutSwitchLesson />;
   if (slug === "remote") return <RemoteLesson />;
   if (slug === "clone") return <CloneLesson />;
+  if (slug === "pull") return <PullLesson />;
   return null;
 }
