@@ -53,3 +53,9 @@ export const latencyEvaluationSources = [
   source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['latency-tail-detail']),
   source('MLCommons', 'MLPerf Inference', 'https://mlcommons.org/benchmarks/inference-datacenter/', ['latency-boundary-detail']),
 ];
+export const humanGraderSources = [
+  source('OpenAI', 'Graders', 'https://developers.openai.com/api/docs/guides/graders', ['human-definition-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['human-process-detail']),
+  source('Yang Liu、Dan Iter、Yichong Xu 等', 'G-EVAL: NLG Evaluation using GPT-4 with Better Human Alignment', 'https://arxiv.org/pdf/2303.16634', ['human-calibration-detail'], '2023'),
+  source('Lianmin Zheng、Wei-Lin Chiang、Ying Sheng 等', 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena', 'https://arxiv.org/pdf/2306.05685', ['human-boundary-detail'], '2023'),
+];

@@ -311,3 +311,50 @@ export function LatencyEvaluationLesson() {
     <button className={base.reset} onClick={() => { setMode('within'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置延迟条件</button>
   </div>;
 }
+
+type HumanMode = 'agreement' | 'disagreement' | 'unscored';
+
+const humanCases: Record<HumanMode, { label: string; answer: string; first: string; second: string; resolution: string; title: string; body: string }> = {
+  agreement: {
+    label: '两位评分一致',
+    answer: '审核通过后，通常三个工作日到账；具体以支付渠道为准。',
+    first: '甲 · 4/5',
+    second: '乙 · 4/5',
+    resolution: '规则理解一致',
+    title: '两位评分者给出同一分数',
+    body: '理由都指向事实、条件和风险三项；这条样本可以作为稳定参考，但仍不能证明所有样本都会一致。',
+  },
+  disagreement: {
+    label: '两位评分分歧',
+    answer: '退款三个工作日到账。',
+    first: '甲 · 4/5',
+    second: '乙 · 2/5',
+    resolution: '第三人 · 3/5',
+    title: '分歧要回到规则和证据',
+    body: '甲忽略了漏掉的审核条件，乙把条件缺失扣得更多；第三人确认后，把分歧理由写回校准样例，而不是直接取最高分。',
+  },
+  unscored: {
+    label: '证据不足',
+    answer: '已经退款了。',
+    first: '甲 · 未评分',
+    second: '乙 · 未评分',
+    resolution: '等待补证据',
+    title: '看不到证据时先保留未评分',
+    body: '资料没有支付状态，评分者不能从一句自信的话推断退款真的发生；补齐环境证据后再决定如何评分。',
+  },
+};
+
+export function HumanGraderLesson() {
+  const [mode, setMode] = useState<HumanMode>('agreement');
+  const [checkedMode, setCheckedMode] = useState<HumanMode | null>(null);
+  const current = humanCases[mode];
+  const report = checkedMode ? humanCases[checkedMode] : current;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：比较人工评分并处理分歧">
+    <div className={s.controls}><label>评审记录<select value={mode} onChange={e => { setMode(e.target.value as HumanMode); setCheckedMode(null); }}><option value="agreement">两位评分一致</option><option value="disagreement">两位评分分歧</option><option value="unscored">证据不足</option></select></label><p className={s.runHint}>先按量表独立评分，再处理分歧或保留未评分。</p></div>
+    <div className={s.humanSample} aria-label="待评分回答"><span>待评分回答</span><p>{current.answer}</p><small>量表：准确性、完整性、风险各有定义和正反例。</small></div>
+    <div className={s.humanReviewers} aria-label="两位评分者记录"><article><span>评审甲</span><strong>{current.first.replace('甲 · ', '')}</strong></article><article><span>评审乙</span><strong>{current.second.replace('乙 · ', '')}</strong></article><article data-disagree={mode === 'disagreement'}><span>处理记录</span><strong>{current.resolution}</strong></article></div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>汇总人工评分<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.humanResult} role="status"><header><h3>{report.title}</h3><span>{report.label}</span></header><p>{report.body}</p><p className={s.runEvidence}>检查记录：{report.first}；{report.second}；{report.resolution}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('agreement'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置评审记录</button>
+  </div>;
+}

@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -277,6 +277,36 @@ export function LatencyEvaluationTermPage() {
       <p id="latency-boundary-detail" className="vp-citation-target">MLPerf Inference 在统一场景和准确性约束下报告延迟与吞吐，说明硬件、软件、负载和测量协议都会影响结果。<strong>换了并发、输出长度、工具版本或超时策略，新的 p95 就不能直接排成同一条排名。</strong><Cite id="latency-boundary-detail"/></p>
       <p>如果工具超时，先把它标成运行不完整，保留超时阶段和原因；不要把未完成请求当作一个普通的 5 秒完成样本，也不要静默删掉它。比较版本时，固定任务、并发和统计窗口；条件必须变化时，就在结果旁说明变化。</p>
       <ArticleAside title="看到平均值变快时再问三句"><p>首字变快了吗，还是只有最后完成变快？p95 和超时率有没有同步改善？样本、并发和工具条件相同吗？这三句能避免把一部分用户的长尾藏在平均数后面。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function HumanGraderTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={humanGraderSources}/>;
+  return <ConceptArticle slug="human-grader" title="人工评分器" subtitle="Human Grader · 用可解释的人类判断校准规则和自动评分" sources={humanGraderSources}
+    sections={[['human-definition', '人工评分不是凭感觉打分'], ['human-process', '先独立评分，再比较理由'], ['human-calibration', '把分歧变成校准样例'], ['human-boundary', '看不到证据时停在未评分']]}
+    intro={<>人工评分器让评审者按同一套评分规则检查输出，留下分数、理由和分歧。它的价值是提供可解释的参考，帮助发现规则或自动评分的误判；人本身也需要盲评、校准和清楚的证据边界。</>}
+    hero={<ConceptHero slug="human-grader" label="两位评审按同一量表独立评分；分歧回到规则，证据不足时保留未评分"><div className={s.humanHero}><div className={s.humanHeroHeader}><span>量表 · 准确 / 完整 / 风险</span><span>评审 <strong>2 人</strong></span></div><div className={s.humanHeroCards}><div><span>甲</span><strong>4/5</strong></div><div><span>乙</span><strong>2/5</strong></div><div data-calibration="true"><span>校准</span><strong>3/5</strong></div></div><p>分歧理由写回样例</p></div></ConceptHero>}>
+    <ArticleSection id="human-definition" title="人工评分不是凭感觉打分"><Legacy slug="human-grader" names={['question', 'definition']}/>
+      <p id="human-definition-detail" className="vp-citation-target"><strong>人工评分器是由评审者按事先写好的评分规则检查输出，并保留分数、理由和证据的过程。</strong>OpenAI 的 graders 文档把人、程序和模型都视为可以执行判定的评分器；规则决定检查什么，人工负责把样本中的证据和判断留下来。<Cite id="human-definition-detail"/></p>
+      <p>“这段回答读起来不错”不是可复核的分数。评审者要知道哪条事实正确、哪条条件缺失、哪种风险必须扣分，以及证据不足时能不能拒绝判断。人工评分也不是天然真相：没有量表和理由，另一个人无法复查这次判断。</p>
+      <div className={s.humanChecklist}><div><span>先看</span><strong>规则与反例</strong><p>确认每个分档需要什么证据。</p></div><div><span>再评</span><strong>输出与证据</strong><p>逐项给分并写理由。</p></div><div><span>保留</span><strong>分数与分歧</strong><p>让后来的人能回到原样本。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="human-process" title="先独立评分，再比较理由"><Legacy slug="human-grader" names={['scene-heading']}/>
+      <p id="human-process-detail" className="vp-citation-target">Anthropic 的智能体评测实践强调先定义成功标准，再用真实任务和轨迹验证评测；人工评分也应先独立应用规则，避免评审者互相暗示。<strong>先分别写下分数和理由，再把同一条证据放在桌面上比较。</strong><Cite id="human-process-detail"/></p>
+      <p>下面是三个虚构记录，不会调用模型。正常情况下两位评审给出相同分数；分歧状态下，甲和乙的分差要回到缺失条件；证据不足时，两人都应该停在未评分。选择记录并汇总，看到分数、理由和处理方式怎样变化。</p>
+      <HumanGraderLesson/>
+      <p>盲评可以减少知道模型名称、回答顺序或上一位分数带来的影响。双人复核不要求所有人永远一致，而是把不一致暴露出来，作为改规则或补样例的入口。</p>
+    </ArticleSection>
+    <ArticleSection id="human-calibration" title="把分歧变成校准样例" className={base.offset}><Legacy slug="human-grader" names={['quiz-heading']}/>
+      <p id="human-calibration-detail" className="vp-citation-target">G-Eval 研究比较模型评价与人工判断，说明人工参考样本能帮助检查自动评分是否偏离目标；人工之间的分歧同样能暴露规则没有写清的边界。<strong>校准不是把最高分和最低分平均一下，而是说明哪条证据导致了分差，并把结论写回规则或示例。</strong><Cite id="human-calibration-detail"/></p>
+      <p>校准样例要保留原回答、各自分数、理由、最终处理和规则版本。规则改过后，旧样例仍应标明使用的版本，否则下一轮分数变化时，无法区分回答变了还是尺度变了。代表性样本比只挑容易一致的样本更有价值。</p>
+      <ArticleAside title="一次分歧复核的顺序"><p>先遮住彼此分数；分别写出维度和证据；指出哪条规则产生不同解释；由第三人或约定流程做决定；把结果加入校准集，并补上可复用的正反例。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="human-boundary" title="看不到证据时停在未评分"><Legacy slug="human-grader" names={['prompt-heading']}/>
+      <p id="human-boundary-detail" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究讨论模型裁判的位置、长度和自我偏好等偏差，提醒评价判断本身需要验证。<strong>人工也不能从看不见的环境状态补出事实；证据缺失时，未评分比猜一个分数更诚实。</strong><Cite id="human-boundary-detail"/></p>
+      <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对的账单，评审者可以评价措辞是否符合规则，却不能证明退款真的发生。把这类样本记成未评分，并写明需要补什么证据。等待补证据期间，不要把它悄悄塞进通过率或失败率。</p>
+      <ArticleAside title="人工评分的边界检查"><p>评审者是否看到相同材料？规则是否有正反例？分数有没有逐项理由？分歧是否留下记录？证据不足是否允许未评分？五个问题有一个答不上来，就先修流程。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
