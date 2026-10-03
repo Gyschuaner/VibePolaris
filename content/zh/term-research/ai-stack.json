@@ -109,13 +109,17 @@
   },
   {
     "slug": "temperature",
-    "mechanism": "温度在采样阶段重新拉伸候选 token 的相对概率；值越高，低概率候选通常越容易被选中。",
-    "misconception": "温度不等于创造力刻度，也不能修复事实错误；在某些确定性或特殊模型接口中还可能不可用。",
-    "demoSignature": "输入：候选“简洁/清楚/灵动”原概率0.70/0.20/0.10；中间：低温后约0.91/0.07/0.02，高温后约0.52/0.28/0.20；输出：各采样10次的词频。可视化：概率柱形图随滑块变化。 建议5帧：三根原始概率柱出现、滑块由低到高、柱差缩小、采样球落下10次、词频汇总；交互：拖温度滑块并重放采样。",
+    "mechanism": "温度在采样阶段重新拉伸下一 token 的候选概率，通常低温更集中、高温更分散；实际效果取决于接口和解码组合。",
+    "misconception": "温度不是创造力或准确度刻度，也不会替代事实检索；低温可能让错误更稳定。",
+    "demoSignature": "三候选概率柱随滑块改变集中度，低温显示更稳定，高温显示更分散；正文明确数值为教学示意且不改变事实校验。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/api-reference/responses/create"
+      "https://platform.openai.com/docs/api-reference/responses/create",
+      "https://platform.openai.com/docs/guides/text?api-mode=responses",
+      "https://huggingface.co/docs/transformers/main/en/generation_strategies",
+      "https://huggingface.co/docs/transformers/main/en/main_classes/text_generation",
+      "https://arxiv.org/abs/1904.09751"
     ],
-    "rewriteRisk": "数值只能作为演示示意，不能暗示所有模型用同一公式或同一范围。",
+    "rewriteRisk": "只写采样阶段的相对概率变化，避免把温度宣传成创造力或准确度旋钮。",
     "nearDuplicates": [
       "generative-ai"
     ]
