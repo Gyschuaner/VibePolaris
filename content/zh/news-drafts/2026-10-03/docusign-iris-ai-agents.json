@@ -1,8 +1,8 @@
 {
   "slug": "docusign-iris-ai-agents",
   "title": "DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化",
-  "summary": "DocuSign 在 2026-05-21 公开/报道“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”。合同工作流从“让模型总结文件”扩展到“提出修改、触发审批、跟踪后续动作”，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。 当前可核验边界是：公告说明产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。",
-  "body": "2026 年 5 月 21 日，DocuSign 发布 Iris AI 引擎和 Agent Studio，让智能体按公司标准审查协议、建议修改、请求审批并监控义务，同时通过 MCP 连接 Claude、Gemini 和 ChatGPT。\n\n变化在合同工作流，而不是单纯摘要：系统可能引用条款、提出修改、触发审批和安排提醒。每一步都应记录引用位置、调用的连接器、谁批准了动作以及何时可以撤销；agent、mcp、api、authorization 和 tools 词条帮助拆分模型、协议和权限层。\n\n公告说明的是产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。跨模型连接不等于数据权限天然正确，企业仍需设定数据范围、版本控制、人工复核和错误回退。\n\n后续应查看 Agent Studio 的审批日志、权限继承、版本管理和失败恢复能力，再判断它是否安全地减少合同处理工作。",
+  "summary": "2026-05-21，DocuSign公开“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：合同工作流从“让模型总结文件”扩展到“提出修改、触发审批、跟踪后续动作”，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。 当前能确认的是：公告说明产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。",
+  "body": "2026 年 5 月 21 日，DocuSign 发布 Iris AI 引擎和 Agent Studio，让智能体按公司标准审查协议、建议修改、请求审批并监控义务，同时通过 MCP 连接 Claude、Gemini 和 ChatGPT。\n\n变化在合同工作流，而不是单纯摘要：模型可以引用条款、提出修改、触发审批和安排提醒。MCP 连接扩展了工具入口，也让企业必须把身份、数据范围和审批链写清楚。\n\n以一份供应合同为例，智能体先定位付款和续约条款，提出修改并标注依据；法务确认后才写入新版本，随后系统按批准条款跟踪义务。每一步都要记录引用位置、连接器、批准人、版本和撤销方式。\n\n来源是 DocuSign 官方页面，支持产品设计和 MCP 连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。跨模型连接不等于数据权限天然正确，公告没有证明所有企业都已接入。\n\n五个关联词条各自对应合同链一层：agent 推进多步任务；mcp 连接模型与外部工具；api 规定提交、查询和返回；authorization 管理读写、批准和撤销；tools 承载实际业务操作。它们不能替代法务责任。\n\n复核时应使用测试合同和最小权限，记录条款引用、建议差异、人工审批、版本回退和提醒错误，再决定是否扩大连接器范围。\n\n时间线从 2026-05-21 的产品公告开始；后续应查看 Agent Studio 的审批日志、权限继承、版本管理和失败恢复能力。",
   "publishedAt": "2026-05-21",
   "eventDate": "2026-05-21",
   "isExample": false,
@@ -15,59 +15,76 @@
   },
   "sections": [
     {
-      "id": "s1",
-      "title": "调用动作是什么",
-      "body": "DocuSign 发布 Iris AI 引擎和 Agent Studio，让智能体按公司标准审查协议、建议修改、请求审批并监控义务。",
+      "id": "event",
+      "title": "2026-05-21，DocuSign公开了什么",
+      "body": "事件日记为 2026-05-21；来源页面公开日记为 2026-05-21。DocuSign公开的核心动作是：DocuSign 发布 Iris AI 引擎和 Agent Studio，让智能体按公司标准审查协议、建议修改、请求审批并监控义务。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
       "kind": "narrative"
     },
     {
-      "id": "s2",
-      "title": "系统怎样连到外部工具",
-      "body": "合同工作流从“让模型总结文件”扩展到“提出修改、触发审批、跟踪后续动作”，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。 合同智能体最重要的记录是它引用了哪一段、提出了什么修改、谁批准了动作，以及什么时候触发了提醒。",
+      "id": "mechanism",
+      "title": "“DocuSign 发布 Iris AI 助手与智能体”改变了哪一层",
+      "body": "真正的变化在于：合同工作流从“让模型总结文件”扩展到“提出修改、触发审批、跟踪后续动作”，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。协议自动化把模型能力和企业权限直接绑在一起，审计轨迹比演示速度更关键。",
       "kind": "technical"
     },
     {
-      "id": "s3",
-      "title": "权限边界怎样设置",
-      "body": "公告说明产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。",
+      "id": "scenario",
+      "title": "把“DocuSign 发布 Iris AI 助手与智能体”放进一次流程",
+      "body": "把它放进一个具体场景：合同智能体最重要的记录是它引用了哪一段、提出了什么修改、谁批准了动作，以及什么时候触发了提醒。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "哪些结论仍属于 DocuSign 的口径",
+      "body": "这里的来源是 DocuSign 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。公告说明产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把 API 开放写成所有机构都已接入或可以无人监管。",
       "kind": "boundary"
     },
     {
-      "id": "s4",
-      "title": "词条如何解释接口",
-      "body": "关联词条：agent, mcp, api, authorization, tools。协议自动化把模型能力和企业权限直接绑在一起，审计轨迹比演示速度更关键。",
+      "id": "terms",
+      "title": "用词条拆开“DocuSign 发布 Iris AI 助手与智能体”",
+      "body": "本文关联的词条各自对应合同链一层：agent 推进多步任务；mcp 连接模型与外部工具；api 规定提交、查询和返回；authorization 管理读写、批准和撤销；tools 承载实际业务操作。它们不能替代法务责任。",
       "kind": "comparison"
     },
     {
-      "id": "s5",
-      "title": "下一步核对",
-      "body": "后续应查看 Agent Studio 的审批、版本和错误回退能力。",
+      "id": "timeline",
+      "title": "从 2026-05-21 的页面到下一步",
+      "body": "时间线先从 2026-05-21 的来源页面开始：页面记录“Iris 与 Agent Studio 支持审查协议、建议修改和监控义务；产品通过 MCP 连接 Claude、Gemini 和 ChatGPT”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
+      "kind": "narrative"
+    },
+    {
+      "id": "verify",
+      "title": "读者怎样复核这条主张",
+      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：后续应查看 Agent Studio 的审批、版本和错误回退能力。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agentic-calling",
-    "title": "把事件拆成可核对的链路",
-    "question": "怎样区分发生的动作、来源主张和仍待验证结果？",
+    "title": "把“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”拆成可核对的链路",
+    "question": "分别看接口、身份、权限、审批、返回状态和回滚，怎样知道哪些是事实、哪些仍是主张？",
     "steps": [
       {
-        "label": "事件日",
-        "detail": "确认 2026-05-21 的来源公开信息与 2026-05-21 的事件日语义。",
+        "label": "确认日期与动作",
+        "detail": "先核对 eventDate=2026-05-21、publishedAt=2026-05-21，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
         "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
       },
       {
-        "label": "关键动作",
-        "detail": "合同工作流从“让模型总结文件”扩展到“提出修改、触发审批、跟踪后续动作”，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。",
+        "label": "拆开系统层",
+        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：合同工作流从“让模型总结文件”扩展到“提出修改、触发审批、跟踪后续动作”，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。",
         "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
       },
       {
-        "label": "边界",
-        "detail": "公告说明产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批。",
+        "label": "放进具体场景",
+        "detail": "合同智能体最重要的记录是它引用了哪一段、提出了什么修改、谁批准了动作，以及什么时候触发了提醒",
         "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
       },
       {
-        "label": "后续",
-        "detail": "后续应查看 Agent Studio 的审批、版本和错误回退能力。",
+        "label": "标出不能推出的结论",
+        "detail": "公告说明产品设计和连接方式，不证明智能体能正确解释所有合同，也不代表自动建议可以绕开法务审批",
+        "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
+      },
+      {
+        "label": "安排下一次复核",
+        "detail": "后续应查看 Agent Studio 的审批、版本和错误回退能力",
         "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
       }
     ]
@@ -182,11 +199,11 @@
     "decision": "passed",
     "checkedAt": "2026-10-03T00:00:00Z",
     "questions": [],
-    "notes": "已将合同摘要、修改建议、审批和 MCP 连接拆开，明确权限、法务复核和回退要求。",
+    "notes": "深度复核通过：正文已按本事件的七段链路组织，具体场景、时间线、来源层级和关联词条均已对齐；已删除空泛结尾和跨事件词条。",
     "changes": [
-      "重写正文为事件特定叙述",
-      "补充事实、来源主张与待验证项边界",
-      "核对日期、canonicalUrl 和 relatedSlugs"
+      "收束为 7 段事件特定正文",
+      "修正词条段落与 relatedSlugs 的对应关系",
+      "核对日期、来源和时间线"
     ]
   },
   "mechanicalErrors": [],
