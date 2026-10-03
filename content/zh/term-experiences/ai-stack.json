@@ -18603,5 +18603,185 @@
         "note": "LLM-as-a-judge 的偏差与校准"
       }
     ]
+  },
+  {
+    "slug": "regression-evaluation",
+    "lead": "新版本总分变高，怎样发现原来通过的关键行为退回了？",
+    "definition": "回归评测在同一套任务和评分条件下比较基线与候选版本，寻找新增失败和高风险回退。",
+    "boundary": "平均分上升不能掩盖关键题失败；未覆盖的行为也不会自动被发现。",
+    "sceneKind": "comparison",
+    "sceneTitle": "基线与候选版本逐项对照",
+    "actionLabel": "切换版本",
+    "actors": [
+      {
+        "id": "suite",
+        "label": "固定套件",
+        "detail": "20 条任务",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "base",
+        "label": "基线A",
+        "detail": "17/20 · 关键全过",
+        "icon": "robot",
+        "group": "版本"
+      },
+      {
+        "id": "candidate",
+        "label": "候选B",
+        "detail": "18/20 · 关键失败1",
+        "icon": "robot",
+        "group": "版本"
+      },
+      {
+        "id": "gate",
+        "label": "发布门槛",
+        "detail": "关键失败=0",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "s-b",
+        "from": "suite",
+        "to": "base",
+        "label": "运行"
+      },
+      {
+        "id": "s-c",
+        "from": "suite",
+        "to": "candidate",
+        "label": "运行"
+      },
+      {
+        "id": "c-g",
+        "from": "candidate",
+        "to": "gate",
+        "label": "判断"
+      }
+    ],
+    "frames": [
+      {
+        "label": "固定基线",
+        "note": "保存基线逐题结果和关键行为。",
+        "activeIds": [
+          "suite",
+          "base"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "candidate",
+          "gate"
+        ],
+        "values": {
+          "base": "17/20"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "跑候选",
+        "note": "候选通过18题，但一个关键题失败。",
+        "activeIds": [
+          "candidate"
+        ],
+        "doneIds": [
+          "suite",
+          "base"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "candidate": "18/20"
+        },
+        "activeEdgeIds": [
+          "s-c"
+        ]
+      },
+      {
+        "label": "发现回退",
+        "note": "逐项差异标出关键题从通过变失败。",
+        "activeIds": [
+          "candidate",
+          "gate"
+        ],
+        "doneIds": [
+          "suite",
+          "base"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gate": "阻断"
+        },
+        "activeEdgeIds": [
+          "c-g"
+        ]
+      },
+      {
+        "label": "允许发布",
+        "note": "只有关键失败修复且复测通过才解锁。",
+        "activeIds": [
+          "gate"
+        ],
+        "doneIds": [
+          "suite",
+          "base",
+          "candidate"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gate": "待复测"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "回归评测关注改动造成的变差，关键行为可以拥有独立门槛。",
+    "quiz": {
+      "question": "平均分更高但关键题失败，应该怎样处理？",
+      "options": [
+        {
+          "label": "按关键门槛阻断并修复",
+          "correct": true
+        },
+        {
+          "label": "用平均分覆盖失败",
+          "correct": false
+        },
+        {
+          "label": "删除关键题",
+          "correct": false
+        }
+      ],
+      "success": "逐项差异和风险门槛比单一平均分更可靠。",
+      "retry": "否则高风险回退会被总分掩盖。"
+    },
+    "prompt": {
+      "title": "设计一次回归评测",
+      "text": "保存基线逐项结果，标出关键行为，定义新增失败、关键失败和平均分的门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.09110",
+        "label": "HELM · arXiv:2211.09110",
+        "note": "多维度、可复现的模型评测"
+      }
+    ]
   }
 ]
