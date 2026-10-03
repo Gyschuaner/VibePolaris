@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources, udpSources } from "@/lib/backend-network-sources";
+import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources, tlsHandshakeSources, udpSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -537,4 +537,58 @@ const udpSpec: PageSpec = {
 
 export function UdpTermPage() {
   return renderBackendNetworkPage(udpSpec);
+}
+
+const tlsHandshakeSpec: PageSpec = {
+  slug: "tls-handshake",
+  title: "TLS 握手",
+  subtitle: "TLS Handshake · 先验证身份并协商密钥，再保护应用数据",
+  intro: "浏览器打开 https://api.example 时，看到小锁不只是“把文字加密”。TLS 1.3 握手先协商参数、验证服务器身份并导出会话密钥；握手完成后，HTTP 数据才在这条安全通道里传输。",
+  hero: {
+    question: "客户端连接 api.example",
+    nodes: [["ClientHello", "参数 / SNI"], ["证书 + Finished", "验证与密钥"], ["GET /", "加密应用数据"]],
+    proof: "密钥交换完成不等于身份验证通过；主机名匹配失败时不应发送应用数据。",
+  },
+  sections: [
+    {
+      id: "tls-handshake",
+      title: "握手先做哪些准备",
+      blocks: [
+        { id: "tls-handshake", text: "TLS 握手让客户端和服务器选择协议版本、密码套件及其他扩展，并交换建立共享密钥所需的材料。TLS 1.3 的具体消息顺序和可选优化由规范定义；页面上的箭头代表状态依赖，不应理解为把私钥直接发给对方。" },
+        { id: "tls-keys", text: "服务器用证书链证明某个公钥与一个服务身份有关，双方再通过密钥交换导出本次连接的会话密钥。之后的应用数据用会话密钥保护；证书本身不是用来加密每一段 HTTP 内容的长期密码。" },
+      ],
+      lesson: {
+        title: "从问候到第一条加密请求",
+        ariaLabel: "TLS 1.3 握手验证身份、导出密钥并发送应用数据的演示",
+        steps: [
+          { label: "交换参数", actors: ["ClientHello", "ServerHello", "密码参数"], evidence: "双方确定本次连接采用的协议和算法，仍未证明服务器就是用户要找的主机。" },
+          { label: "验证身份", actors: ["证书链", "api.example", "Finished"], evidence: "客户端校验证书链、有效期和主机名；验证失败就停止，而不是带着未知身份继续。" },
+          { label: "保护数据", actors: ["会话密钥", "GET /", "加密响应"], evidence: "握手完成后，应用数据进入加密记录；抓包者看不到明文 HTTP 内容。" },
+        ],
+        failure: { label: "只看到密钥交换", text: "密钥可以导出，但若证书不匹配 api.example，客户端仍不能确认对端身份，应中止握手。" },
+      },
+    },
+    {
+      id: "tls-identity",
+      title: "加密与“连对了谁”是两件事",
+      blocks: [
+        { id: "tls-identity", text: "证书验证解决的是服务身份：客户端检查信任链、主机名和证书的有效范围。RFC 9525 把服务身份匹配规则单独讲清楚；“证书能被某个 CA 签名”不等于它能代表当前 URL 的主机名。" },
+        { id: "tls-sni", text: "SNI 等 TLS 扩展帮助服务器在同一地址上选择对应的证书和配置。它影响服务器返回哪个身份材料，却不替客户端完成最终的主机名验证；客户端仍要把证书身份与自己访问的主机比较。" },
+      ],
+    },
+    {
+      id: "tls-boundary",
+      title: "失败分支与保护范围",
+      blocks: [
+        { id: "tls-boundary", text: "TLS 保护的是终止 TLS 的两个端点之间的记录。若 CDN 或负载均衡器先解密再转发，后续链路是否继续使用 TLS 要单独配置；应用进程已经看到的明文、日志中的敏感字段和终端被攻破后的数据也不由握手自动保护。" },
+        { id: "tls-failure", text: "证书过期、主机名不匹配、协议版本不兼容或 Finished 校验失败，都应让连接失败或进入明确的降级路径。忽略浏览器警告、把 HTTP 当备用方案或在日志中打印密钥，都会破坏握手建立的安全边界。" },
+      ],
+    },
+  ],
+  sources: tlsHandshakeSources,
+  relatedIntro: "TLS 握手建立在 TCP 或其他传输之上，并为传输中加密提供身份和密钥边界；继续看主机名、端口与传输中加密，可以串起完整连接。",
+};
+
+export function TlsHandshakeTermPage() {
+  return renderBackendNetworkPage(tlsHandshakeSpec);
 }

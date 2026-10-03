@@ -65,3 +65,10 @@ export const udpSources: Source[] = [
   make("IETF", "RFC 8085 · UDP Usage Guidelines", "https://www.rfc-editor.org/rfc/rfc8085.html", ["udp-tradeoff", "udp-boundary"]),
   make("IANA", "Service Name and Transport Protocol Port Number Registry", "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", ["udp-tradeoff"]),
 ];
+
+export const tlsHandshakeSources: Source[] = [
+  make("IETF", "RFC 8446 · The Transport Layer Security Protocol Version 1.3", "https://www.rfc-editor.org/rfc/rfc8446.html", ["tls-handshake", "tls-keys", "tls-finished"]),
+  make("IETF", "RFC 9525 · Service Identity in TLS", "https://www.rfc-editor.org/rfc/rfc9525.html", ["tls-identity", "tls-boundary"]),
+  make("IETF", "RFC 6066 · TLS Extensions", "https://www.rfc-editor.org/rfc/rfc6066.html", ["tls-identity", "tls-sni"]),
+  make("Mozilla", "Transport Layer Security (TLS)", "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security", ["tls-keys", "tls-boundary", "tls-failure"]),
+];
