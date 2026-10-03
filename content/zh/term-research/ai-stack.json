@@ -481,12 +481,14 @@
     "slug": "grader",
     "mechanism": "评分器把单个输出按规则转成分数、等级或通过/失败信号，可由代码、人工或模型实现。",
     "misconception": "评分器不是评测数据集，也不是最终事实裁判；模型评分器尤其需要用人工样本校准。",
-    "demoSignature": "输入：同一回答与5条人工标注；中间：模型评分4/5，人工评分3/5，校准后阈值从4降为3且误判2→1；输出：该回答判为通过。可视化：两组评分刻度与混淆矩阵更新。 建议5帧：回答与评分规则并列、模型打4分、人工打3分、混淆矩阵误判2→1、校准结果输出；交互：调整阈值查看通过项变化。",
+    "demoSignature": "输入：任务要求写入 answer.json 且 amount=120，提供“回复完成/文件缺失、换措辞文件正确、文件金额错误、检查环境不可读”四种记录；中间：切换“回复包含完成”的关键词判据或“检查实际文件结果”的结果判据；输出：关键词可能把文件缺失判为通过，结果判据逐项检查存在与金额，环境不可读保持未评分。可视化：助手回复、虚拟文件和检查清单三列；交互：切换尝试记录与评分判据，观察通过、失败和未评分。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/graders",
-      "https://platform.openai.com/docs/guides/evals"
+      "https://inspect.aisi.org.uk/scoring.html",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/pdf/2303.16634",
+      "https://arxiv.org/pdf/2306.05685"
     ],
-    "rewriteRisk": "不要只给“正确/错误”两个词；需说明规则、参考答案和评分偏差如何被发现。",
+    "rewriteRisk": "评分器检查的是明确判据，不是“回答听起来像完成”；要把文本、实际结果和环境不可读分别标成通过、失败或未评分。",
     "nearDuplicates": [
       "eval",
       "evaluation-dataset"
