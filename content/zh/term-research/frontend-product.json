@@ -539,11 +539,11 @@
   },
   {
     "slug": "checkout-switch",
-    "mechanism": "git switch 移动 HEAD 到目标分支，并尝试把 index 与工作树更新为目标提交；可能覆盖本地修改时会停止。",
-    "misconception": "切换不是复制文件夹，也不会自动提交未完成工作；checkout 还承担恢复路径等旧式多重含义。",
-    "demoSignature": "建议 4 帧：分支指针从 feature 指向 dev，工作树文件按目标提交逐项换色；用户先加入未提交冲突修改，再尝试切换；闸门关闭并列出会被覆盖的文件，暂存或提交后才允许继续。",
-    "sourceUrls": ["https://git-scm.com/docs/git-switch", "https://git-scm.com/docs/git-checkout"],
-    "rewriteRisk": "medium",
+    "mechanism": "git switch 移动 HEAD 到目标分支，并尝试把 index 与工作树更新为目标提交；如果目标内容会覆盖本地修改，切换会停止。git checkout 还保留恢复路径的旧式用法。",
+    "misconception": "切换不是复制文件夹，也不会自动提交或备份未完成工作；stash 是本地临时保存，强制丢弃也不等于安全处理。",
+    "demoSignature": "branch-switch: 3 steps; actors=HEAD/feature/dev/theme.css/工作树/stash; phases=feature 干净→修改后尝试切换被阻止→stash 后 HEAD 转到 dev; action=保护改动后切换",
+    "sourceUrls": ["https://git-scm.com/docs/git-switch", "https://git-scm.com/docs/git-checkout", "https://git-scm.com/docs/git-restore", "https://git-scm.com/docs/git-status", "https://git-scm.com/docs/git-stash"],
+    "rewriteRisk": "high",
     "nearDuplicates": ["branch", "working-tree", "stash"]
   },
   {

@@ -63,11 +63,32 @@ function DiffLesson() {
   </div>;
 }
 
+function CheckoutSwitchLesson() {
+  const scene = useScene(3);
+  const labels = ["feature 上的干净工作区", "修改阻止切换", "先保护改动再切换"];
+  const edited = scene.step >= 1 && scene.step < 2;
+  const blocked = scene.step === 1;
+  const switched = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git 分支安全切换演示">
+    <Caption scene={scene} labels={labels} titles={["当前在 feature", "未提交修改让切换停下", "改动已暂存到 stash，HEAD 才能转到 dev"]} copy={["HEAD → feature；theme.css 与 feature 提交一致。", "先改 theme.css 再尝试 switch dev；目标版本会覆盖本地内容，Git 停下并列出风险。", "先用 stash 保护本地修改，再切到 dev；回到 feature 后还要检查并应用它。"]} />
+    <div className={styles.gitSwitch} data-blocked={blocked} aria-live="polite">
+      <GitBranch size={26} aria-hidden="true" />
+      <div>
+        <strong>{switched ? "HEAD → dev" : "HEAD → feature"}</strong>
+        <p>{blocked ? "切换被阻止：theme.css 的本地内容会被目标分支覆盖。" : switched ? "工作区显示 dev 的主题版本；feature 的修改已留在本地 stash。" : edited ? "theme.css：feature 版本 → 本地未提交的橙色按钮" : "theme.css：feature 版本；工作区干净"}</p>
+        <div className={styles.gitGraphRow} aria-label="分支与文件状态"><span className={styles.gitNode} data-active={!switched}>feature</span><ArrowRight size={18} /><span className={styles.gitNode} data-active={switched}>dev</span><span>{blocked ? "闸门关闭" : switched ? "已切换" : edited ? "未提交" : "可切换"}</span></div>
+      </div>
+    </div>
+    <div className={styles.choices} role="group" aria-label="推进安全切换流程"><button type="button" onClick={() => scene.seek(1)} aria-pressed={blocked}>修改后尝试切到 dev</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={switched}>先 stash 再切换</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
   if (slug === "working-tree") return <WorkingTreeLesson />;
   if (slug === "staging-area") return <StagingAreaLesson />;
   if (slug === "diff") return <DiffLesson />;
+  if (slug === "checkout-switch") return <CheckoutSwitchLesson />;
   return null;
 }

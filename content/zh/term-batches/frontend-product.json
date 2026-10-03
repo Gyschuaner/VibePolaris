@@ -1019,17 +1019,17 @@
   },
   {
     "zh": "切换分支", "en": "Checkout / Switch", "slug": "checkout-switch", "cat": "Git",
-    "say": "切换分支会让工作区改为目标分支对应的文件版本，并移动当前 HEAD。",
-    "aliases": ["git switch", "git checkout", "分支切换"],
-    "question": "工作区还有未提交修改时，为什么 Git 不允许切到另一个分支？",
-    "definition": "git switch 专门用于切换或创建分支；git checkout 还可恢复路径。切换时 Git 会更新工作区，并保护可能被覆盖的本地修改。",
-    "boundary": "切换分支不会自动提交改动，也不应通过强制覆盖来处理未确认的工作区内容。",
-    "demoType": "branch", "demoTitle": "带着本地修改切换分支",
-    "demoSteps": [{"label":"检查工作区","value":"git status 显示未提交修改","note":"先确认这些修改属于哪个任务。"},{"label":"判断是否冲突","value":"目标分支会覆盖同一文件","note":"Git 阻止切换并列出文件。"},{"label":"处理后切换","value":"提交、暂存改动或保留当前分支","note":"再次切换时文件安全更新。"}],
+    "say": "切换分支会移动 HEAD，并尝试把 index 与工作区更新到目标分支的文件版本。",
+    "aliases": ["git switch", "git checkout", "git restore", "分支切换"],
+    "question": "工作区还有未提交修改时，为什么 Git 不允许直接切到另一个分支？",
+    "definition": "git switch 专门用于切换或创建分支；git checkout 还承担恢复路径的旧式多重含义。切换会更新 HEAD、index 和工作区，并在可能覆盖本地修改时停止。",
+    "boundary": "切换不会自动提交或备份未完成工作；stash 只是本地临时保存，强制丢弃选项也不能证明修改可以安全删除。",
+    "demoType": "branch", "demoTitle": "先保护未提交修改，再切换分支",
+    "demoSteps": [{"label":"feature 干净","value":"HEAD → feature，theme.css 与提交一致","note":"此时可以尝试切到 dev。"},{"label":"修改阻止切换","value":"theme.css 未提交，dev 会覆盖同一文件","note":"Git 关闭闸门并列出覆盖风险。"},{"label":"stash 后切换","value":"HEAD → dev，改动留在本地 stash","note":"回到 feature 后仍要检查并应用保存内容。"}],
     "quizQuestion": "切换前最基本的检查是什么？", "quizOptions": ["查看 git status", "删除 .git 目录", "修改远程仓库名称"],
-    "correctText": "git status 能显示可能受影响的本地修改。", "wrongText": "删除仓库信息或改远程名不能保护工作区。",
-    "promptTitle": "给出安全的分支切换方案", "prompt": "请根据下面当前分支、目标分支和 git status，判断能否直接 switch。若不能，分别说明提交、stash 或继续当前工作的适用条件，不使用强制覆盖。",
-    "relatedSlugs": ["branch", "working-tree", "stash"]
+    "correctText": "git status 能显示可能受影响的本地修改。", "wrongText": "删除仓库信息或改远程名不能保护工作区；强制切换也不能替你判断哪些修改值得保留。",
+    "promptTitle": "给出安全的分支切换方案", "prompt": "请根据当前 HEAD、目标分支、git status 和会被覆盖的文件，判断能否直接 switch。若不能，分别说明提交、stash 或继续当前工作的适用条件，区分切换分支与恢复路径，不使用强制覆盖。",
+    "relatedSlugs": ["branch", "working-tree", "staging-area", "stash"]
   },
   {
     "zh": "远程仓库", "en": "Remote", "slug": "remote", "cat": "Git",
