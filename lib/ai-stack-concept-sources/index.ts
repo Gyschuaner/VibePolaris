@@ -35,3 +35,4 @@ export { multimodalSources } from "./multimodal";
 export { reasoningModelSources } from "./reasoning-model";
 export { systemPromptSources } from "./system-prompt";
 export { fewShotPromptingSources } from "./few-shot-prompting";
+export { zeroShotPromptingSources } from "./zero-shot-prompting";
