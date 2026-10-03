@@ -21560,6 +21560,325 @@
     "sourceHash": "sha256:91e1ad95719573e7adc737204dec1a7a7dc2f967e23fd7542a2fa9d940985970"
   },
   {
+    "slug": "anthropic-claude-outage-20260816",
+    "title": "Claude 多个服务短时中断：登录故障暴露 AI 产品的公共入口依赖",
+    "summary": "Anthropic 状态页记录 2026 年 8 月 16 日 21:58 UTC 起的 Claude 多服务故障：用户无法登录，随后 claude.ai、平台入口、Claude Code 和 Cowork 出现性能问题，约半小时后恢复。公司公开更新确认了时间线，但没有公布根因。",
+    "body": "8 月 16 日晚，Anthropic 的状态页先记录 Claude 用户认证异常。最初的影响描述指向 claude.ai、Claude Code 和 Claude Cowork；22:07 UTC 左右，状态页把事件扩大为 claude.ai、platform.claude.com、Claude API、Claude Code 和 Claude Cowork 的性能下降。\n\n这种故障对用户的感受很直接：无法登录、页面打不开、请求不完成，或者已经打开的代码代理会话中断。BleepingComputer 根据状态页整理称，Console 和 API 曾一度显示正常，随后服务在 22:22 UTC 左右进入修复监控，最后恢复。具体恢复范围要以供应商时间戳为准，不能用一条“Claude 挂了”概括所有组件。\n\n公开信息能够确认影响面和修复进度，不能确认根因。状态页没有说明是认证服务、网络、部署变更还是第三方依赖出了问题；把多个入口同时异常直接归因到某个内部组件，会把推测写成事实。\n\n对依赖 Claude 的团队来说，这条新闻的价值在于提醒：模型 API 只是产品的一层。登录、控制台、代码代理、Cowork 会话和 API 请求可能拥有不同的健康状态，也需要不同的重试和降级策略。一个团队如果只有“换模型”按钮，却没有会话恢复、人工接管和任务排队，短暂故障也会放大成业务中断。\n\n事件最终以状态页的 Resolved 结束，但可用性记录并没有回答所有问题。后续如果 Anthropic 发布复盘，读者应核对根因、受影响组件、数据是否丢失以及是否需要用户重新执行请求；在那之前，最稳妥的结论是一次有明确时间线、原因未公开的多服务故障。",
+    "publishedAt": "2026-08-16",
+    "eventDate": "2026-08-16",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-outage-20260816.svg",
+      "alt": "Claude 多个服务短时中断：登录故障、状态更新和恢复组成一条可追踪时间线 的事件流程图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/anthropic-claude-outage-20260816.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "timeline",
+        "title": "故障从认证问题开始",
+        "body": "8 月 16 日 21:58 UTC，Anthropic 状态页先说正在调查用户无法登录 claude.ai、Claude Code 和 Claude Cowork 的问题；几分钟后，范围扩大为多个服务性能下降。",
+        "kind": "narrative"
+      },
+      {
+        "id": "surface",
+        "title": "一个登录问题波及多个产品入口",
+        "body": "受影响的表面包括 claude.ai、platform.claude.com、Claude Code 和 Cowork；当时 Claude API 与 Console 一度仍显示可用，说明用户入口和后台组件并不总是一起失效。",
+        "kind": "technical"
+      },
+      {
+        "id": "unknown",
+        "title": "状态页确认影响，不等于确认根因",
+        "body": "Anthropic 的公开更新说明了正在调查、部署修复和观察恢复，但没有在这次事件中给出根因。把“多个服务同时异常”直接写成某个数据库或认证供应商故障，都会超出证据。",
+        "kind": "boundary"
+      },
+      {
+        "id": "recovery",
+        "title": "修复进度通过状态页逐步公开",
+        "body": "状态页先标记 Investigating，随后进入 Monitoring，最后记录恢复；BleepingComputer 汇总为约半小时到四十分钟的窗口，具体以状态页时间戳为准。",
+        "kind": "comparison"
+      },
+      {
+        "id": "lesson",
+        "title": "可用性也是 AI 产品的一部分",
+        "body": "对依赖 Claude API、代码代理或 Cowork 的团队来说，模型能力之外还要监测登录、会话、控制台和 API 的不同健康状态，并准备重试、降级或人工接管路径。",
+        "kind": "example"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一次 AI 服务故障怎样被定位？",
+      "question": "先看受影响的入口，再看状态变化和恢复时间，最后才讨论根因。",
+      "steps": [
+        {
+          "label": "收集用户症状",
+          "detail": "记录登录失败、请求未完成或代码会话中断等现象，不先猜原因。",
+          "evidence": "BleepingComputer"
+        },
+        {
+          "label": "对照服务面板",
+          "detail": "把 claude.ai、Console、API、Code 和 Cowork 分开查看，避免把局部故障说成全部宕机。",
+          "evidence": "Anthropic Status"
+        },
+        {
+          "label": "跟踪状态阶段",
+          "detail": "Investigating、Monitoring 和 Resolved 是不同阶段，时间戳比社交媒体截图更可靠。",
+          "evidence": "Anthropic Status"
+        },
+        {
+          "label": "恢复后补上冗余",
+          "detail": "在重试、降级模型和人工接管之间准备切换，等供应商公布根因再更新判断。",
+          "evidence": "VibePolaris analysis grounded in incident timeline"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic Status",
+      "url": "https://anthropic.statuspage.io/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "tools",
+      "authorization",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://anthropic.statuspage.io/",
+        "claim": "Anthropic 状态页记录 8 月 16 日 21:58 UTC 起的认证与服务故障，随后更新为多个 Claude 服务性能下降，最终恢复。",
+        "excerpt": "Investigating reports of degraded performance affecting claude.ai, platform.claude.com, the Claude API, Claude Code and Claude Cowork."
+      },
+      {
+        "url": "https://www.bleepingcomputer.com/news/artificial-intelligence/anthropic-confirms-claude-is-down-in-major-outage-affecting-multiple-services/amp/",
+        "claim": "BleepingComputer 根据状态页报道，故障影响 claude.ai、Claude Code、Claude Cowork 及部分平台入口，22:40 UTC 左右恢复。",
+        "excerpt": "The incident began on August 16, 2026, at around 21:58 UTC ... By 22:40 UTC, Anthropic confirmed all services were restored."
+      },
+      {
+        "url": "https://www.reddit.com/r/ClaudeAI/comments/1vq9y4h/discussion_hub_for_new_claude_incident_service/",
+        "claim": "用户讨论帖保留状态页更新时间线的旁证，但不作为故障原因的证明。",
+        "excerpt": "Resolved - The issue affecting claude.ai, platform.claude.com, the Claude API, Claude Code, and Claude Cowork has been resolved."
+      }
+    ],
+    "canonicalUrl": "https://anthropic.statuspage.io/",
+    "sourceHash": "sha256:6091be1af6c5b1f420e335e56eb463303109b0170769c0e18a680005ab600e76"
+  },
+  {
+    "slug": "anthropic-trust-crisis-20260816",
+    "title": "TechCrunch/《财富》：Anthropic CEO 把 AI 反弹称为“信任危机”",
+    "summary": "TechCrunch 和《财富》于 2026 年 8 月 16 日报道，Anthropic CEO Dario Amodei 回应投资人批评时称，公众对 AI 的负面看法更像一场信任危机。他同时讨论监管、开放权重和企业兑现承诺；这些是公开表态，不是新法规或行业共识。",
+    "body": "8 月 16 日，TechCrunch 和《财富》分别报道 Anthropic CEO Dario Amodei 对一场争论的回应。投资人 Gavin Baker 认为，Amodei 对 AI 风险的强调加剧了公众反弹，尤其是对数据中心的抵触；Amodei 在前一天发布的社交媒体文字中否认这种简单因果。\n\nAmodei 给出的核心解释是“信任危机”：普通人不信任企业、政府和科技行业，担心它们又在设计一种让自己承担代价的方式。这句话很适合做标题，却不能被误读为一项民调结果。它是一个公司 CEO 对公众态度的判断，媒体报道的任务是说明它回应了什么，以及还有哪些话没有被证实。\n\n他的回应没有停留在表达情绪，也提出了政策方向。Amodei 认为，适当规则可以处理网络安全、生物风险和模型对齐，同时限制前沿公司的权力集中，并给开放权重模型留出空间。他也承认，开放权重会把一部分集中从模型提供商转移到拥有更多算力和芯片的人手里，所以“开放”并不能单独解决治理问题。\n\n更具体的部分是对承诺的反思。Amodei 说，反复宣传 AI 会治愈癌症不会自动让公众相信它；真正能改变观感的是交付可验证的成果。这把信任问题拉回产品和社会结果：安全报告是否可读，模型限制是否诚实，医疗或生物成果是否能被外部复核，政策建议是否会承担对公司不利的约束。\n\n截至这篇报道发布时，没有新法规因这番话生效，Anthropic 的条款也没有因此改变。后续新闻应该继续区分 CEO 的观点、媒体对行业情绪的描述和可检查的行动。若没有公开数据或政策结果，最稳妥的结论仍是：这是一场关于 AI 反弹原因和企业责任的公开争论，而不是信任已经恢复的证明。",
+    "publishedAt": "2026-08-16",
+    "eventDate": "2026-08-16",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-trust-crisis-20260816.svg",
+      "alt": "TechCrunch/《财富》：Anthropic CEO 把 AI 反弹称为信任危机，争论回到承诺与证据 的事件流程图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/anthropic-trust-crisis-20260816.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "trigger",
+        "title": "争论从“谁把 AI 说得太悲观”开始",
+        "body": "投资人 Gavin Baker 认为，Amodei 对风险的强调助长了公众反弹和对数据中心的抵触；Amodei 在 8 月 15 日的社交媒体回应中反驳了这一因果关系，媒体于 8 月 16 日集中报道。",
+        "kind": "narrative"
+      },
+      {
+        "id": "trust",
+        "title": "“信任危机”是 CEO 的判断，不是民调结论",
+        "body": "Amodei 说普通人不信任公司、政府和科技行业，TechCrunch 与 Fortune 都把它作为他的观点来报道。它解释了公司如何理解反弹，却不能代替对公众态度的独立调查。",
+        "kind": "boundary"
+      },
+      {
+        "id": "rules",
+        "title": "监管和开放权重被放进同一场争论",
+        "body": "Amodei 认为规则可以同时处理网络安全、生物风险和对齐问题，并给更小的竞争者留空间；他也承认开放权重无法单独消除算力和芯片带来的集中。",
+        "kind": "comparison"
+      },
+      {
+        "id": "delivery",
+        "title": "真正能改变观感的是兑现结果",
+        "body": "他把“AI 会治愈癌症”当成容易被怀疑的承诺，认为企业应该先交付能被验证的成果。这个观点把讨论从营销话术拉回产品效果、责任和可核验的证据。",
+        "kind": "example"
+      },
+      {
+        "id": "follow",
+        "title": "后续要看政策、产品和数据是否跟上",
+        "body": "这次采访没有推出新法规，也没有改变 Anthropic 的产品条款；能否建立信任，要看安全披露、模型限制、医疗或生物成果以及监管提案是否出现可检查的进展。",
+        "kind": "technical"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样把“信任危机”读成一条新闻？",
+      "question": "把人物观点、媒体归纳和可验证的后续行动分开，才能避免把一句话当成行业共识。",
+      "steps": [
+        {
+          "label": "找到原始回应",
+          "detail": "先确认这是 CEO 在社交媒体上的表态，再看媒体如何组织上下文。",
+          "evidence": "TechCrunch and Fortune"
+        },
+        {
+          "label": "标记观点归属",
+          "detail": "“信任危机”属于 Amodei 的解释，不等于所有公众或研究者都得出同一结论。",
+          "evidence": "TechCrunch"
+        },
+        {
+          "label": "拆开政策选项",
+          "detail": "监管、开放权重和集中风险是相关议题，但每一项都需要单独的规则和证据。",
+          "evidence": "Fortune"
+        },
+        {
+          "label": "等待可核验结果",
+          "detail": "用安全披露、产品指标和真实公共利益结果检验“重建信任”是否发生。",
+          "evidence": "VibePolaris analysis grounded in reported statements"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2026/08/16/anthropic-ceo-says-ai-backlash-is-fundamentally-a-crisis-of-trust/"
+    },
+    "relatedSlugs": [
+      "event",
+      "authorization",
+      "eval",
+      "data-lineage",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2026/08/16/anthropic-ceo-says-ai-backlash-is-fundamentally-a-crisis-of-trust/",
+        "claim": "TechCrunch 报道 Anthropic CEO Dario Amodei 在回应投资人 Gavin Baker 的批评时称，公众对 AI 的负面看法更像一场信任危机。",
+        "excerpt": "I think it is fundamentally a crisis of trust."
+      },
+      {
+        "url": "https://fortune.com/2026/08/16/dario-amodei-anthropic-ai-trust-crisis-regulation-frontier-open-models-negative-views/",
+        "claim": "Fortune 同日整理 Amodei 关于监管、开放权重和兑现 AI 承诺的回应。",
+        "excerpt": "Anthropic cofounder and CEO Dario Amodei pushed back ... but acknowledged there are trust issues."
+      },
+      {
+        "url": "https://darioamodei.com/machines-of-loving-grace",
+        "claim": "TechCrunch 和 Fortune 提到的《Machines of Loving Grace》原文，用于核对 Amodei 对 AI 益处的公开论述背景。",
+        "excerpt": "Machines of Loving Grace"
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2026/08/16/anthropic-ceo-says-ai-backlash-is-fundamentally-a-crisis-of-trust/",
+    "sourceHash": "sha256:fcb55a916d2cdf2c3dadc7d27328a962b4d51ef3e6d70c4aa50709c7a2f19ca5"
+  },
+  {
+    "slug": "deepseek-v4-pricing-20260816",
+    "title": "DeepSeek V4-Pro API 改为峰谷计价：正式版上线后的账单开始按时间表变化",
+    "summary": "DeepSeek 在 8 月 13 日宣布 V4-Pro 正式版上线，并把新的峰谷 API 价格定在 2026 年 8 月 16 日 16:00 UTC 生效（北京时间 8 月 17 日 0 时）。闲时价格为高峰的一半；正式版同时加入 Responses API 兼容和 low/high/max 思考强度。",
+    "body": "8 月 16 日 16:00 UTC，DeepSeek V4-Pro 和 V4-Flash 的 API 计价从固定价格切换到峰谷价格。这个时间点对应北京时间 8 月 17 日凌晨，所以新闻里既可能写 8 月 16 日，也可能写 8 月 17 日。事件发生日按官方的 UTC 生效时间记录为 8 月 16 日；正式版上线公告本身发布于 8 月 13 日。\n\n变化不只是把数字调高，而是把“什么时候调用”也放进了账单。DeepSeek 官方把工作日 01:00–04:00 和 06:00–10:00 UTC 设为高峰，其余时间是闲时，闲时价格为高峰的一半。以 V4-Pro 为例，缓存未命中的输入 token 是每百万 0.66 美元对 1.32 美元，输出 token 是 1.98 美元对 3.96 美元。\n\n这里的 token 可以理解为模型处理文字时拆出的计费单位。一次调用的费用不只看调用了几次，还看送进去多少输入、模型生成多少输出，以及有多少输入命中了缓存。长上下文的代理任务可能调用次数不多，却会反复携带大量上下文；如果任务不能延后，峰谷切换也不会自动带来节省。\n\n这次计价调整和模型接入能力一起出现。DeepSeek 说 V4-Pro 正式版原生支持 OpenAI Responses API，并允许开发者选择 low、high、max 三档思考强度。对做代理的人来说，接口兼容和强度档位能减少接入工作，但也把“什么时候用高档位、什么时候接受更慢或更便宜的结果”交给了应用层。\n\n因此，读这条新闻要把模型发布、价格生效和性能宣传分开。官方价目表能确认费率和时间窗口，不能替团队预测最终月账单；最终账单还取决于缓存命中、并发限制、任务时区和工作负载是否可以排队。",
+    "publishedAt": "2026-08-13",
+    "eventDate": "2026-08-16",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/deepseek-v4-pricing-20260816.svg",
+      "alt": "DeepSeek V4-Pro API 改为峰谷计价：正式版上线后的账单开始按时间段变化 的事件流程图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/deepseek-v4-pricing-20260816.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "change",
+        "title": "8 月 16 日先发生的是计价切换",
+        "body": "DeepSeek V4-Pro 正式版在 8 月 13 日公告，真正按新价计费的时间点是 8 月 16 日 16:00 UTC，也就是北京时间 8 月 17 日凌晨。把发布模型和切换价格分开，才能准确记下这条新闻。",
+        "kind": "narrative"
+      },
+      {
+        "id": "clock",
+        "title": "同一请求会因为时间段不同而不同价",
+        "body": "官方价目表把工作日 01:00–04:00、06:00–10:00 UTC列为高峰，其余时段为闲时；闲时价格是高峰的一半。V4-Pro 缓存未命中输入为每百万 token 0.66 美元对 1.32 美元，输出为 1.98 美元对 3.96 美元。",
+        "kind": "technical"
+      },
+      {
+        "id": "token",
+        "title": "账单按 token 计，不按“调用次数”计",
+        "body": "token 是模型处理文本时使用的最小计费单位，输入、输出和缓存命中会分别计价。长上下文代理即使只发起少量请求，也可能因为输入和输出 token 很多而产生较大账单。",
+        "kind": "example"
+      },
+      {
+        "id": "agent",
+        "title": "Responses API 和思考档位把模型接进代理工作流",
+        "body": "同一公告还写明原生支持 OpenAI Responses API，并提供 low、high、max 三档思考强度；它降低了接入门槛，却没有替开发者决定何时运行高成本档位。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "便宜时段不等于总成本一定下降",
+        "body": "真实成本还受缓存命中率、并发、任务是否能延后和峰时负载影响。官方基准与价格表能说明产品条件，但不能替每个团队预测月度账单。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一次 API 请求怎样变成账单？",
+      "question": "把模型版本、时间段、token 和缓存拆开，才能看懂“峰谷计价”究竟改变了什么。",
+      "steps": [
+        {
+          "label": "确认模型版本",
+          "detail": "先确认调用的是 deepseek-v4-pro 还是其他 V4 模型，不同模型的价格表不同。",
+          "evidence": "DeepSeek pricing docs"
+        },
+        {
+          "label": "读取时间段",
+          "detail": "把 UTC 时间换算到团队所在时区，判断请求落在高峰还是闲时。",
+          "evidence": "DeepSeek API Docs"
+        },
+        {
+          "label": "统计 token",
+          "detail": "分别记录输入、输出和缓存命中 token，再乘以对应单价。",
+          "evidence": "DeepSeek Models & Pricing"
+        },
+        {
+          "label": "安排可延后任务",
+          "detail": "批处理、评测和长任务可以尝试放到闲时，但交互请求未必能等待。",
+          "evidence": "VibePolaris analysis grounded in pricing rules"
+        }
+      ]
+    },
+    "source": {
+      "name": "DeepSeek API Docs",
+      "url": "https://api-docs.deepseek.com/news/news260813/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "token",
+      "agent",
+      "tools",
+      "benchmark",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://api-docs.deepseek.com/news/news260813/",
+        "claim": "DeepSeek 在 V4-Pro 正式版公告中说明，V4-Pro 与 V4-Flash 的新峰谷 API 价格于 2026 年 8 月 16 日 16:00 UTC 生效。",
+        "excerpt": "New pricing takes effect at 16:00 UTC, Aug 16, 2026."
+      },
+      {
+        "url": "https://api-docs.deepseek.com/quick_start/pricing/",
+        "claim": "官方价目表列出 V4-Pro 的缓存命中、缓存未命中和输出 token 的高峰/闲时价格。",
+        "excerpt": "1M OUTPUT TOKENS OFF-PEAK $1.98; PEAK $3.96 for deepseek-v4-pro."
+      },
+      {
+        "url": "https://api-docs.deepseek.com/updates/",
+        "claim": "更新日志把正式版上线、Responses API 兼容和峰谷计价放在同一条产品变化记录中。",
+        "excerpt": "The new prices will take effect at 16:00 (UTC Time) on August 16, 2026."
+      }
+    ],
+    "canonicalUrl": "https://api-docs.deepseek.com/news/news260813/",
+    "sourceHash": "sha256:7515326cc09c101451150380c15d6254fede1eb7b472499bedcb8806ac0a940e"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
