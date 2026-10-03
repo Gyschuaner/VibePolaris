@@ -18414,5 +18414,194 @@
         "note": "LLM-as-a-judge 的偏差与校准"
       }
     ]
+  },
+  {
+    "slug": "model-grader",
+    "lead": "让模型评分时，怎样知道它没有系统性高估？",
+    "definition": "模型评分器把输出、规则和参考交给模型，要求结构化分数或状态，并与人工样本比较偏差。",
+    "boundary": "提示词、被评模型、位置偏差和无法判断样本都会影响模型评分。",
+    "sceneKind": "comparison",
+    "sceneTitle": "模型评分与人工参考逐项对照",
+    "actionLabel": "切换评分器",
+    "actors": [
+      {
+        "id": "answer",
+        "label": "待评回答",
+        "detail": "一条客服答复",
+        "icon": "message",
+        "group": "样本"
+      },
+      {
+        "id": "judge",
+        "label": "模型评分器",
+        "detail": "4/5",
+        "icon": "brain",
+        "group": "自动"
+      },
+      {
+        "id": "human",
+        "label": "人工参考",
+        "detail": "3/5",
+        "icon": "user",
+        "group": "基准"
+      },
+      {
+        "id": "bias",
+        "label": "偏差记录",
+        "detail": "高估2/5",
+        "icon": "chart",
+        "group": "校准"
+      }
+    ],
+    "edges": [
+      {
+        "id": "a-j",
+        "from": "answer",
+        "to": "judge",
+        "label": "评分"
+      },
+      {
+        "id": "a-h",
+        "from": "answer",
+        "to": "human",
+        "label": "参考"
+      },
+      {
+        "id": "j-b",
+        "from": "judge",
+        "to": "bias",
+        "label": "对照"
+      },
+      {
+        "id": "h-b",
+        "from": "human",
+        "to": "bias",
+        "label": "对照"
+      }
+    ],
+    "frames": [
+      {
+        "label": "固定输入",
+        "note": "评分器先看到规则、回答和必要参考。",
+        "activeIds": [
+          "answer",
+          "judge"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "human",
+          "bias"
+        ],
+        "values": {
+          "judge": "结构化 JSON"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "产生分数",
+        "note": "模型评分4/5，人工参考3/5。",
+        "activeIds": [
+          "judge",
+          "human"
+        ],
+        "doneIds": [
+          "answer"
+        ],
+        "mutedIds": [
+          "bias"
+        ],
+        "values": {
+          "judge": "4/5",
+          "human": "3/5"
+        },
+        "activeEdgeIds": [
+          "a-j",
+          "a-h"
+        ]
+      },
+      {
+        "label": "统计偏差",
+        "note": "5条校准样本中模型高估2条。",
+        "activeIds": [
+          "bias"
+        ],
+        "doneIds": [
+          "answer",
+          "judge",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "bias": "2/5 高估"
+        },
+        "activeEdgeIds": [
+          "j-b",
+          "h-b"
+        ]
+      },
+      {
+        "label": "允许未评分",
+        "note": "证据不足时不强行给分，返回 unscored。",
+        "activeIds": [
+          "judge",
+          "bias"
+        ],
+        "doneIds": [
+          "answer",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "judge": "unscored"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "模型评分器需要用人工参考校准，并允许明确表示无法判断。",
+    "quiz": {
+      "question": "模型评分器上线前最重要的证据是什么？",
+      "options": [
+        {
+          "label": "代表性人工样本上的误判记录",
+          "correct": true
+        },
+        {
+          "label": "模型自己说可靠",
+          "correct": false
+        },
+        {
+          "label": "一条高分示例",
+          "correct": false
+        }
+      ],
+      "success": "比较分数、理由和误判类型才能知道评分器是否可用。",
+      "retry": "单个示例不能发现系统性偏差。"
+    },
+    "prompt": {
+      "title": "校准模型评分器",
+      "text": "定义结构化输出和拒绝评分条件，用人工样本检查高估、低估、位置偏差和理由质量。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.16634",
+        "label": "G-Eval · arXiv:2303.16634",
+        "note": "模型评分与人工一致性研究"
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.05685",
+        "label": "MT-Bench · arXiv:2306.05685",
+        "note": "LLM-as-a-judge 的偏差与校准"
+      }
+    ]
   }
 ]
