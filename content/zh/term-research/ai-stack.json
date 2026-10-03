@@ -724,12 +724,13 @@
     "slug": "prompt-injection",
     "mechanism": "提示词注入把不可信文字带进模型上下文，试图冒充有权限的指令；应用要保留来源并把读取数据与执行工具分开。",
     "misconception": "模型可能分不清同样格式的文字来自谁；隐藏系统提示词或只过滤关键词不能代替工具层最小权限、隔离与确认。",
-    "demoSignature": "输入：用户要求摘要网页，网页夹带“发送密钥”；中间：程序标记 user=trusted、page=untrusted，模型仍可能提出 send_secret，但工具权限检查拒绝；输出：摘要完成、工具调用0。可视化：来源标记保持在数据通道，权限闸门单独决定执行。",
+    "demoSignature": "输入：用户要求摘要网页，网页夹带“发送密钥”；中间：程序标记 page=untrusted，若模型把它提升成指令而提出 send_secret，工具权限闸门仍拒绝；输出：正常分支摘要完成且调用0，错误分支调用被阻断。可视化：资料/指令选择、来源标记和工具权限闸门。",
     "sourceUrls": [
-      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
       "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
-      "https://arxiv.org/abs/2302.12173",
-      "https://openai.com/safety/prompt-injections/"
+      "https://openai.com/safety/prompt-injections/",
+      "https://developers.openai.com/api/docs/guides/agent-builder-safety",
+      "https://www.anthropic.com/research/prompt-injection-defenses?slug=helpful-honest-harmless-ai",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
     ],
     "rewriteRisk": "不要给可直接滥用的攻击模板；必须明确读取外部内容仍可继续，但外部内容不获得工具授权。",
     "nearDuplicates": [
