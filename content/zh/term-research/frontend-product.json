@@ -684,9 +684,9 @@
   {
     "slug": "rollback",
     "mechanism": "发布系统把流量或工作负载指针切回已知可用制品，随后执行健康检查；数据模式和外部副作用需要兼容或补偿。",
-    "misconception": "回滚不是 git reset，也不一定撤销数据；重新构建旧源码还可能得到不同制品。",
-    "demoSignature": "建议 5 帧：生产流量先指向 v42，错误率曲线升高；用户点击回滚，流量权重逐步切回保留的 v41，指标恢复；数据库列迁移保持原状，兼容读取转绿，不兼容写入则进入单独补偿分支。",
-    "sourceUrls": ["https://kubernetes.io/docs/reference/kubectl/generated/kubectl_rollout/kubectl_rollout_undo/"],
+    "misconception": "回滚不是 git revert 或 git reset：它切换已部署的运行版本，也不一定撤销数据；重新构建旧源码还可能得到不同制品。",
+    "demoSignature": "rollback-board: 3 steps; actors=production v42/error rate 8.7%/retained v41/traffic pointer/health and smoke checks/database/external side effects; phases=confirm bad version and eligible stable artifact→switch traffic to existing v41 without rebuilding→verify metrics and core flow, keep v42 for investigation and route incompatible writes to compensation; boundary=production rollback is distinct from git revert/reset, data writes/messages/external APIs are not automatically undone; action=切回 v41/验证并处理副作用",
+    "sourceUrls": ["https://vercel.com/docs/instant-rollback", "https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands?stream=top", "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html", "https://docs.gitlab.com/ci/environments/deployments/", "https://git-scm.com/docs/git-revert", "https://git-scm.com/docs/git-reset"],
     "rewriteRisk": "high",
     "nearDuplicates": ["revert", "deploy", "cd"]
   },
