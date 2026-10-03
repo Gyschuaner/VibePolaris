@@ -5,3 +5,4 @@ export { UseCaseTermPage } from "./product-concept-pages/use-case";
 export { AcceptanceCriteriaTermPage } from "./product-concept-pages/acceptance-criteria";
 export { ScopeTermPage } from "./product-concept-pages/scope";
 export { RoadmapTermPage } from "./product-concept-pages/roadmap";
+export { PriorityTermPage } from "./product-concept-pages/priority";
