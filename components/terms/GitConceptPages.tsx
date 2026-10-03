@@ -17,3 +17,4 @@ export { StashTermPage } from "./git-workflow-pages/stash";
 export { PullRequestTermPage } from "./git-workflow-pages/pull-request";
 export { CodeReviewTermPage } from "./git-workflow-pages/code-review";
 export { CiTermPage } from "./git-workflow-pages/ci";
+export { CdTermPage } from "./git-workflow-pages/cd";

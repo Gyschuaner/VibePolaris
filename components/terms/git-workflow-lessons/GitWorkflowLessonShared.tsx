@@ -13,6 +13,7 @@ import { StashLesson } from "./stash";
 import { PullRequestLesson } from "./pull-request";
 import { CodeReviewLesson } from "./code-review";
 import { CiLesson } from "./ci";
+import { CdLesson } from "./cd";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -180,5 +181,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "pull-request") return <PullRequestLesson />;
   if (slug === "code-review") return <CodeReviewLesson />;
   if (slug === "ci") return <CiLesson />;
+  if (slug === "cd") return <CdLesson />;
   return null;
 }
