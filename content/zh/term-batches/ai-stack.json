@@ -4406,5 +4406,55 @@
       "model-fallback",
       "prompt-caching"
     ]
+  },
+  {
+    "zh": "延迟评测",
+    "en": "Latency Evaluation",
+    "slug": "latency-evaluation",
+    "cat": "AI·Agent",
+    "say": "用统一请求测量首字、完成和端到端时间，判断系统是否满足真实交互的等待边界。",
+    "aliases": [
+      "延迟评估",
+      "Latency Eval",
+      "响应时间评测"
+    ],
+    "question": "平均响应很快，为什么用户仍会觉得系统卡？",
+    "definition": "延迟评测把一次请求拆成排队、首字、工具等待和完成等时间点，并用 p50、p95 等分位数描述典型和长尾等待。",
+    "boundary": "延迟不是吞吐量，也不是只看服务器平均值；网络、并发、输出长度、工具和超时策略都会改变用户实际等待。",
+    "demoType": "timeline",
+    "demoTitle": "同一任务的首字和长尾等待分别暴露",
+    "demoSteps": [
+      {
+        "label": "埋时间点",
+        "value": "请求 0ms · 首字 420ms · 工具返回 1.8s · 完成 3.4s",
+        "note": "先区分用户开始看到反馈和任务真正结束。"
+      },
+      {
+        "label": "汇总分布",
+        "value": "p50 完成 1.9s · p95 完成 4.8s",
+        "note": "长尾比平均数更能说明一部分用户为何一直等待。"
+      },
+      {
+        "label": "触发边界",
+        "value": "p95 超过 4s，进入超时/流式优化",
+        "note": "优化前要知道慢在哪一段，不能只把模型换快。"
+      }
+    ],
+    "quizQuestion": "延迟评测为什么要记录首字时间？",
+    "quizOptions": [
+      "用户在完成前就会感知等待",
+      "首字时间等于最终答案质量",
+      "只要平均完成时间就够了"
+    ],
+    "correctText": "首字时间影响用户何时看到反馈，完成时间则表示任务何时结束。",
+    "wrongText": "一个总平均值无法区分反馈慢、工具慢和长尾慢。",
+    "promptTitle": "制定延迟指标",
+    "prompt": "请为请求记录排队、首字、工具、完成和超时点，并按 p50/p95 与任务类型设定门槛。",
+    "relatedSlugs": [
+      "eval",
+      "evaluation-run",
+      "streaming-output",
+      "model-routing"
+    ]
   }
 ]

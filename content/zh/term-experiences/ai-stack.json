@@ -17685,5 +17685,188 @@
         "note": "批量运行与异步成本/吞吐取舍"
       }
     ]
+  },
+  {
+    "slug": "latency-evaluation",
+    "lead": "平均响应不错，为什么 p95 和首字时间仍会让用户等待？",
+    "definition": "延迟评测把请求拆成首字、工具等待、完成和超时等时间点，用分位数描述长尾。",
+    "boundary": "延迟不是吞吐量，也不能只看服务器平均值。",
+    "sceneKind": "timeline",
+    "sceneTitle": "一次请求的首字、工具和完成时间",
+    "actionLabel": "切换时间点",
+    "actors": [
+      {
+        "id": "request",
+        "label": "请求",
+        "detail": "开始计时",
+        "icon": "network",
+        "group": "请求"
+      },
+      {
+        "id": "first",
+        "label": "首字",
+        "detail": "420ms",
+        "icon": "clock",
+        "group": "反馈"
+      },
+      {
+        "id": "tool",
+        "label": "工具",
+        "detail": "1.8s 返回",
+        "icon": "gear",
+        "group": "等待"
+      },
+      {
+        "id": "done",
+        "label": "完成",
+        "detail": "3.4s",
+        "icon": "chart",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "r-f",
+        "from": "request",
+        "to": "first",
+        "label": "首字"
+      },
+      {
+        "id": "f-t",
+        "from": "first",
+        "to": "tool",
+        "label": "调用"
+      },
+      {
+        "id": "t-d",
+        "from": "tool",
+        "to": "done",
+        "label": "完成"
+      }
+    ],
+    "frames": [
+      {
+        "label": "开始计时",
+        "note": "请求发出后记录排队和首字。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "first",
+          "tool",
+          "done"
+        ],
+        "values": {
+          "request": "0ms"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "先给反馈",
+        "note": "首字420ms，用户已看到响应开始。",
+        "activeIds": [
+          "first"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "tool",
+          "done"
+        ],
+        "values": {
+          "first": "420ms"
+        },
+        "activeEdgeIds": [
+          "r-f"
+        ]
+      },
+      {
+        "label": "等待工具",
+        "note": "工具返回1.8s，完成3.4s。",
+        "activeIds": [
+          "tool"
+        ],
+        "doneIds": [
+          "request",
+          "first"
+        ],
+        "mutedIds": [
+          "done"
+        ],
+        "values": {
+          "tool": "1.8s"
+        },
+        "activeEdgeIds": [
+          "f-t"
+        ]
+      },
+      {
+        "label": "看长尾",
+        "note": "p50 1.9s、p95 4.8s；超时样本进入优化。",
+        "activeIds": [
+          "done"
+        ],
+        "doneIds": [
+          "request",
+          "first",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "done": "p95 4.8s"
+        },
+        "activeEdgeIds": [
+          "t-d"
+        ]
+      }
+    ],
+    "insight": "延迟评测要区分用户何时看到反馈、任务何时完成和长尾何时超时。",
+    "quiz": {
+      "question": "为什么要同时看 p50 和 p95？",
+      "options": [
+        {
+          "label": "典型和长尾等待不同",
+          "correct": true
+        },
+        {
+          "label": "p95 等于吞吐量",
+          "correct": false
+        },
+        {
+          "label": "平均值已经包含所有体验",
+          "correct": false
+        }
+      ],
+      "success": "分位数能让长尾等待可见。",
+      "retry": "平均值会隐藏一部分用户的极慢请求。"
+    },
+    "prompt": {
+      "title": "制定延迟指标",
+      "text": "记录排队、首字、工具、完成和超时点，按 p50/p95 与任务类型设置门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/latency-optimization",
+        "label": "OpenAI API · Latency optimization",
+        "note": "延迟组成与优化边界"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://mlcommons.org/benchmarks/inference-datacenter/",
+        "label": "MLCommons MLPerf Inference",
+        "note": "统一条件下的延迟与吞吐基准"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      }
+    ]
   }
 ]
