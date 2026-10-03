@@ -20,6 +20,8 @@ jobs:
   collect-validate-publish:
     runs-on: ubuntu-latest
     env:
+      # Primary handoff is repository_dispatch(dots-news). These two secrets only
+      # preserve the older pull-based GET compatibility path.
       NEWS_DOTS_ENDPOINT: ${{ secrets.NEWS_DOTS_ENDPOINT }}
       NEWS_DOTS_TOKEN: ${{ secrets.NEWS_DOTS_TOKEN }}
       NEWS_BRANCH: news-auto/${{ github.run_id }}
@@ -49,7 +51,13 @@ jobs:
         if: github.event_name == 'repository_dispatch'
         env:
           DOTS_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
-        run: node -e 'require("node:fs").writeFileSync("/tmp/dots-news.json", process.env.DOTS_PAYLOAD)' 
+        run: node -e 'require("node:fs").writeFileSync("/tmp/dots-news.json", process.env.DOTS_PAYLOAD)'
+
+      - name: Bound repository dispatch payload
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          test -s /tmp/dots-news.json
+          test "$(wc -c < /tmp/dots-news.json)" -le 1000000
 
       - name: Fetch Dots handoff when configured
         if: github.event_name != 'repository_dispatch' && env.NEWS_DOTS_ENDPOINT != ''
@@ -78,11 +86,11 @@ jobs:
       - name: Run Docker candidate
         run: docker run --detach --rm --name "vibepolaris-news-ci-${{ github.run_id }}" --publish 38080:3000 "vibepolaris-news-ci:${{ github.run_id }}"
 
-      - name: Smoke-test published routes and Xiaobei visibility
+      - name: Smoke-test candidate root and Xiaobei visibility
         run: |
           set -euo pipefail
           for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:38080/news >/dev/null; then break; fi
+            if curl --fail --silent http://127.0.0.1:38080/ >/dev/null; then break; fi
             sleep 2
           done
           NEWS_EXPECTED_SLUGS="$(node -e 'const fs=require("node:fs"); console.log(JSON.parse(fs.readFileSync("content/zh/news.json", "utf8")).map(article=>article.slug).join(","))')" \
@@ -106,7 +114,7 @@ jobs:
           gh pr create --base dev --head "$NEWS_BRANCH" --title "News update ${{ github.run_id }}" --body-file <(cat <<'EOF'
           Automated News update from Dots.
 
-          The repository gate only publishes candidates with verified evidence, at least one evidence URL, routine risk, and confirmed concept relationships. Major or uncertain candidates remain needs-review.
+          The repository gate only publishes candidates with verified evidence, at least one evidence URL, routine risk, and confirmed concept relationships. Candidates held by review or failing those checks remain needs-review.
           EOF
           )
           gh pr merge "$NEWS_BRANCH" --auto --squash --delete-branch
