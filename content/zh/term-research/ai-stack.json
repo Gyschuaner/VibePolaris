@@ -319,15 +319,15 @@
     "slug": "plan-and-execute",
     "mechanism": "规划与执行先把目标拆成有前后关系、可检查的步骤，再逐项执行；某一步做完，结果没有达到完成条件时，后面的计划可以停下、调整或重排。",
     "misconception": "计划只是接下来怎么做的安排，不代表事情已经完成；步骤走完也要看实际结果，外部状态改变时还需要重新规划。",
-    "demoSignature": "输入：发布清单含构建、测试、部署3步；中间：构建通过，测试12项中1项失败，部署状态从待执行改为阻塞；输出：生成修复测试的新步骤并停止发布。可视化：清单节点状态与分支动画。 建议5帧：三节点计划生成、构建通过、测试节点显示11/12并变红、部署被锁、修复节点插入；交互：点击失败测试查看计划如何改写。",
+    "demoSignature": "输入：发布任务拆为构建、测试、部署；中间：5 帧从生成计划到构建通过、测试返回、部署阻塞，点击“模拟测试失败”把 12/12 改为 11/12，再点击“插入修复并重测”加入修复步骤并恢复 12/12；输出：失败时部署保持锁定，复测通过后才获得执行资格。可视化：三节点计划与更新后的修复节点；交互：手动推进并切换失败/修复分支。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2210.03629",
       "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://www.langchain.com/blog/planning-agents/"
+      "https://www.langchain.com/blog/planning-agents"
     ],
-    "rewriteRisk": "别只写三个动词；每一步都要有完成证据、失败分支和计划更新。",
+    "rewriteRisk": "不要只画一条线性待办；必须显示失败结果如何锁住后继步骤，并在复测证据回来后恢复计划。",
     "nearDuplicates": [
       "agent-loop",
       "agent-orchestration"
