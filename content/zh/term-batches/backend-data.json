@@ -490,7 +490,7 @@
     "say": "表中的一条完整记录，例如某个用户或某笔订单。", "aliases": ["记录", "数据行", "Tuple"],
     "question": "修改一个用户邮箱时，数据库具体改的是哪里？", "definition": "行是关系表中按列结构保存的一组字段值，通常对应一个实体或事件。", "boundary": "行由表的列定义约束，不能随意增加表中不存在的字段。",
     "demoType": "state", "demoTitle": "一行用户记录怎样被更新",
-    "demoSteps": [{"label":"原记录","value":"42 · old@example.com","note":"主键 42 定位目标行。"},{"label":"执行更新","value":"SET email = new@example.com","note":"只修改邮箱列。"},{"label":"新记录","value":"42 · new@example.com","note":"其他字段保持不变。"}],
+    "demoSteps": [{"label":"旧版本","value":"id=7 · balance=100","note":"事务 B 看到已提交的旧版本。"},{"label":"未提交更新","value":"事务 A · balance=80","note":"A 未提交时，B 仍按隔离规则看到 100。"},{"label":"提交后读取","value":"COMMIT · C 读 80","note":"提交后新事务可见已提交版本。"}],
     "quizQuestion": "更新指定行最常用什么来定位？", "quizOptions": ["主键或唯一条件", "页面背景色", "随机选择"], "correctText": "稳定且唯一的条件可避免误改多行。", "wrongText": "样式和随机选择都不能可靠定位记录。",
     "promptTitle": "检查行级更新", "prompt": "请检查这条 UPDATE 的定位条件和受影响行数，说明如何避免误更新整张表。", "relatedSlugs": ["table", "column", "primary-key", "sql"]
   },
