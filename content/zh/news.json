@@ -23357,6 +23357,542 @@
     "sourceHash": "sha256:cb11470ee90bf9e520db99cd997e60d75125514e023e1481736b0953e74360bf"
   },
   {
+    "slug": "gemini-connected-apps-20260812",
+    "title": "Google 扩大 Gemini 连接应用：从会议摘要延伸到订票、音乐和就医",
+    "summary": "8 月 12 日，Google 宣布 Gemini 将在接下来几周陆续接入 Granola、Otter.ai、Wix、Ticketmaster、Pandora、Zocdoc 等第三方服务。用户需要在 Gemini 中主动打开相应服务；这是一组分阶段推出的连接能力，不是所有地区、账号和应用同时可用。",
+    "body": "8 月 12 日，Google 宣布一批新的 Gemini 连接应用（可在 Gemini 中授权调用的第三方服务）。它们覆盖会议摘要、网站编辑、本地活动、租车、餐厅、演出票、音乐播放和预约医生等任务。这条消息把 Gemini 的角色扩展到已有服务：它可以成为用户发起会议、编辑、票务、音乐和预约任务的入口。\n\n这里的“连接应用”可以理解为工具接入：用户在 Gemini 里打开服务，Gemini 可根据请求把任务交给 Granola、Otter.ai、Wix、Fever、GetYourGuide、Localiza、OpenTable（英国）、Ticketmaster、iHeartRadio、Pandora、Angi、Thumbtack 或 Zocdoc。Google 的原文使用“turning on your favorite services”，说明用户需要主动选择；第三方数据不会因为 Gemini 出现在设备上就自动开放。\n\n场景之间的风险并不相同。总结会议需要读取会议材料，编辑网站涉及内容写入，订票和租车可能产生交易，预约医生会触及健康信息。Google 这篇公告列出的是合作服务和任务类型，没有在同一页面给出每个服务的权限、保留期限、取消方式或地区规则。因此，用户在启用前仍应逐项查看授权页面，把“能调用”与“已授权执行”分开。\n\n这批接入也解释了为什么分阶段推出（rollout）的节奏重要。Google 说功能会在接下来几周推出，名单本身已经带有地区限定，例如 OpenTable 标明英国。即便产品名称相同，实际可用的动作也可能随账号、国家、语言、订阅和第三方服务状态变化。\n\n对开发者和企业来说，Gemini 变成统一入口以后，问题从“模型会不会回答”转向“模型是否把任务交给正确的服务、是否在写入或付费前让人确认、失败后能否回滚”。这条新闻确认了连接范围和发布节奏，尚不足以证明每个连接应用都能稳定完成从请求到执行的完整任务。",
+    "publishedAt": "2026-08-12",
+    "eventDate": "2026-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/gemini-connected-apps-20260812.svg",
+      "alt": "用户在 Gemini 中开启连接服务，任务示意性地分到第三方应用并回到确认环节；不代表厂商公开路由架构，VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/gemini-connected-apps-20260812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "Gemini 变成了第三方服务的入口",
+        "body": "Google 公布的新连接覆盖生产力、创意、本地生活、音乐、家庭和健康服务，用户可以在一个对话里发起相关任务。",
+        "kind": "narrative"
+      },
+      {
+        "id": "service-map",
+        "title": "不同服务承接不同动作",
+        "body": "Granola 和 Otter.ai 偏会议摘要，Wix 偏网站编辑，Ticketmaster 和 Pandora 分别承接购票和音乐，Zocdoc 承接预约医生。连接不是一个抽象按钮，而是具体服务和具体动作。",
+        "kind": "comparison"
+      },
+      {
+        "id": "authorization",
+        "title": "打开连接不等于交给模型全部权限",
+        "body": "Google 公告只确认用户可以打开服务和使用相应任务；权限范围、数据保留和交易确认仍要以各服务的授权页面为准。",
+        "kind": "boundary"
+      },
+      {
+        "id": "rollout",
+        "title": "名单会分阶段推出",
+        "body": "官方说接下来几周分阶段推出，且名单中已有英国等地区限定，不能把发布名单理解成全球即时可用。",
+        "kind": "aside"
+      },
+      {
+        "id": "workflow",
+        "title": "真正的质量取决于路由和回滚",
+        "body": "连接应用以后，用户要关注模型是否选对服务、是否在写入或付费前请求确认，以及失败时能否恢复。",
+        "kind": "technical"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个连接应用任务怎样完成？",
+      "question": "当 Gemini 需要替用户调用第三方服务时，哪几个环节需要人确认？",
+      "steps": [
+        {
+          "label": "用户开启服务",
+          "detail": "用户在 Gemini 中选择要连接的应用，授权范围应当在服务页面逐项核对。",
+          "evidence": "Google connected apps 公告"
+        },
+        {
+          "label": "模型识别任务",
+          "detail": "Gemini 根据请求判断应该使用会议、网站、票务、音乐或健康服务。",
+          "evidence": "Google 公布的服务类别"
+        },
+        {
+          "label": "第三方执行",
+          "detail": "具体动作由被连接的服务完成，可能包含读取、写入、预订或预约。",
+          "evidence": "文章对任务类型的拆解"
+        },
+        {
+          "label": "结果与确认",
+          "detail": "用户检查返回结果，涉及付费、发布或健康信息时再决定是否继续。",
+          "evidence": "权限与风险边界说明"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Gemini Blog",
+      "url": "https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-services-gemini-august-2026/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "authorization",
+      "api",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-services-gemini-august-2026/",
+        "claim": "Google 宣布 Gemini 连接应用，并说明用户可以在 Gemini 中打开服务来完成计划、创作和待办任务。",
+        "excerpt": "By turning on your favorite services in Gemini, you can easily plan, create, and tackle your to-do list all in one place."
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-services-gemini-august-2026/",
+        "claim": "官方列出生产力与创意类连接，包括 Granola、Otter.ai 和 Wix。",
+        "excerpt": "Productivity and creativity: Summarize meetings and edit your website with Granola, Otter.ai, and Wix."
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-services-gemini-august-2026/",
+        "claim": "官方列出本地生活、音乐、家庭和健康类连接，并说明会在接下来几周分阶段推出。",
+        "excerpt": "Over the next few weeks, we’re rolling out the ability to connect with tools across a variety of categories ... Music ... Home, health, and lifestyle."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-services-gemini-august-2026/",
+    "sourceHash": "sha256:0f3aae81898feb94204ec5fd000051f016b111cb5248768f5e05ad1d5cb20a27"
+  },
+  {
+    "slug": "google-pixel11-gemini-20260812",
+    "title": "Google 发布 Pixel 11 系列，把 Gemini Intelligence 放进设备体验",
+    "summary": "8 月 12 日，Google 在 Made by Google 2026 发布 Pixel 11 系列、Pixel Watch 5 和 Pixel Tag，并把 Gemini Intelligence 作为新手机和手表的产品体验来介绍。相机内的 Live Transcribe、Rambler 语音输入和更直接的 Circle to Search 是报道中较具体的 AI 能力；Google 同时注明功能受国家、语言、年龄、用量和订阅条件限制。",
+    "body": "8 月 12 日，Google 发布 Pixel 11、Pixel 11 Pro、Pixel 11 Pro XL、Pixel 11 Pro Fold、Pixel Watch 5 和 Pixel Tag。这次发布把 Gemini Intelligence（Google 对这组设备 AI 能力的产品称呼）写进手机和手表的产品定位：新手机“为 Gemini Intelligence 设计”，手表则提供主动式 Gemini 能力。\n\n手机上的几项功能把模型放到了相机和输入环节。TechCrunch 报道，Live Transcribe（实时转写）可以借助 Pixel Camera 支持美国手语转文字；Rambler 试图理解连贯、带口头语或不太规整的语音输入；Circle to Search（圈选后搜索）则能从相机体验中直接识别物体、翻译文字或继续提问。它们减少的是在应用之间切换的步骤，实际识别准确度仍会受光线、语音、语言和网络条件影响。\n\nGoogle 自己的公告还把 Pixel Watch 5 描述为提供主动式 Gemini Intelligence 和个性化力量训练指导。这里的“主动式”容易被理解成设备会自行替用户做决定，公告支持的事实只是功能定位和产品宣称；日常提醒、健康趋势或路线记录仍需要用户确认，不能把产品营销用语写成医疗或安全结论。\n\n这次发布也显示出 Google 选择了一个很具体的入口：让模型出现在用户已经持有的相机、麦克风、搜索和穿戴设备里。用户实际感受到的变化取决于输入是否被正确理解、结果能否解释，以及拍照、录音和健康信息场景中的权限与保存规则。\n\n功能并非全球同一时间、同一规格开放。Google 的脚注写明，相关能力只在部分国家和语言向 18 岁以上用户提供，功能会变化并有用量限制，部分功能可能需要订阅。8 月 12 日确认了产品发布和能力方向；具体设备能否使用某项 Gemini 功能，仍要按市场、语言、账号、用量和订阅条件核对。",
+    "publishedAt": "2026-08-12",
+    "eventDate": "2026-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-pixel11-gemini-20260812.svg",
+      "alt": "Pixel 相机、语音与手表输入经过 Gemini 相关能力后返回设备辅助结果的示意链路；不代表厂商公开架构，VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/google-pixel11-gemini-20260812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "device-launch",
+        "title": "硬件发布里夹着一层 AI 产品定义",
+        "body": "Google 同日公布手机、手表和追踪器，并把 Gemini Intelligence 作为 Pixel 11 与 Pixel Watch 5 的体验入口。",
+        "kind": "narrative"
+      },
+      {
+        "id": "camera-input",
+        "title": "相机成为理解现实的入口",
+        "body": "Live Transcribe、Circle to Search 等功能让相机画面直接进入转写、识别和搜索流程；这不是所有环境下都稳定的通用感知能力。",
+        "kind": "technical"
+      },
+      {
+        "id": "voice",
+        "title": "Rambler 处理的是不规整的说话方式",
+        "body": "Google 通过产品介绍强调对连贯句子、填充词和较松散表达的理解，使用效果仍需按语言和设备实测。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "手表上的“主动”要留出确认环节",
+        "body": "Pixel Watch 5 被介绍为提供主动式 Gemini 能力和健康趋势功能；提醒与趋势不等于医疗诊断，也不等于设备可以替用户做决定。",
+        "kind": "boundary"
+      },
+      {
+        "id": "availability",
+        "title": "功能范围受地区和用量限制",
+        "body": "Google 注明部分国家、语言和年龄条件，以及用量和订阅限制，发布会信息不能替代具体市场的功能清单。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "从相机画面到 Gemini 结果",
+      "question": "手机和手表上的 AI 功能到底改变了哪一步？",
+      "steps": [
+        {
+          "label": "相机或声音输入",
+          "detail": "用户通过相机画面、语音或手表上的操作提供上下文，输入质量会影响后续结果。",
+          "evidence": "Google Pixel 11 公告与 TechCrunch 报道"
+        },
+        {
+          "label": "手机/手表调用 Gemini",
+          "detail": "手机或手表把输入送入 Gemini 相关能力，用于转写、识别、搜索或理解更自然的语句。",
+          "evidence": "Google 对 Gemini Intelligence 的产品说明"
+        },
+        {
+          "label": "结果返回设备",
+          "detail": "搜索、文字转写或建议回到相机、输入框或手表界面，减少应用切换。",
+          "evidence": "TechCrunch Made by Google 2026 报道"
+        },
+        {
+          "label": "用户核对再行动",
+          "detail": "用户仍需确认翻译、识别和健康相关提示，尤其要留意地区、语言、用量和订阅条件。",
+          "evidence": "Google 功能可用性脚注"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Blog",
+      "url": "https://blog.google/products-and-platforms/devices/pixel/new-pixel-devices-2026/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "context",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/products-and-platforms/devices/pixel/new-pixel-devices-2026/",
+        "claim": "Google 于 2026-08-12 发布 Pixel 11 系列，并把 Gemini Intelligence 作为手机产品定位。",
+        "excerpt": "Our new phones — Pixel 11, Pixel 11 Pro, Pixel 11 Pro XL, and Pixel 11 Pro Fold — are designed for Gemini Intelligence."
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/devices/pixel/new-pixel-devices-2026/",
+        "claim": "Google 同日介绍 Pixel Watch 5 的主动式 Gemini Intelligence 能力。",
+        "excerpt": "Pixel Watch 5 delivers proactive Gemini Intelligence capabilities, personalized strength coaching, and our most accurate GPS route tracking."
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/12/google-unveils-pixel-11-lineup-new-airtag-rival-and-gemini-features-at-made-by-google-2026/",
+        "claim": "TechCrunch 报道 Live Transcribe 的美国手语转文字、Rambler 语音输入和从相机使用 Circle to Search。",
+        "excerpt": "Using the Pixel Camera, users can have sign language translated into text ... Rambler ... handle run-on sentences, filler words ... Circle to Search can now be accessed more directly from the Pixel Camera."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/products-and-platforms/devices/pixel/new-pixel-devices-2026/",
+    "sourceHash": "sha256:5248c83ef0b7b406d130f68181e0fecd2deb22c268acd660bbffd1f36cd1d519"
+  },
+  {
+    "slug": "grok-46-long-agents-20260812",
+    "title": "xAI 发布 Grok 4.6：把长流程 Agent 任务放到产品中心",
+    "summary": "8 月 12 日，xAI 发布 Grok 4.6，强调让 Agent（能调用工具完成多步任务的模型）在研究、编码和交互式项目中持续工作更久。官方同时公布一组自报基准、API 价格和 Cursor、Grok Build 等接入渠道；这些数字来自 xAI 的页面，不能直接等同于所有生产任务的表现。",
+    "body": "8 月 12 日，xAI 发布 Grok 4.6。xAI 把重点放在长流程 Agent（能调用工具完成多步任务的模型）和更复杂的交互、视觉工作上。xAI 举的例子包括研究一个陌生主题、跨代码库工作，以及把一个想法做成可运行的应用或工作成果。\n\n“长流程”说的是任务会跨过多个步骤：模型要先理解目标，再选择工具、读取结果、继续下一步，并在中途发现问题时修正。对用户来说，这和一次提问后返回一段文字不同；它更接近一个需要保持上下文的工作循环。xAI 说 Grok 4.6 在较长轨迹中会增加自测和验证，但公告没有给出跨客户的失败率或返工率。\n\n训练部分也围绕这个方向展开。xAI 称，Grok 4.6 进行了比 Grok 4.5 更长的补充训练，使用经过筛选的模型生成数据、工程数据和新的优化器；随后让 Grok 4.5 重新生成监督微调（SFT，给模型示例答案来调整行为）轨迹，再用模型检查过滤问题轨迹，并在知识工作、通用编码和领域环境中进行代理强化学习。这是公司的训练说明，外部读者目前没有同等细节的独立复现。\n\n官方页面列出基准测试（benchmark，用固定任务比较模型表现），包括 AA Intelligence、GDPVal-AA、CursorBench、DeepSWE、FrontierCode 和 APEX 等项目。xAI 在其表中报告 Grok 4.6 在 AA Intelligence 上为 61，并称与 GPT-5.6 Sol 相同；其他项目的结果也按表格给出。页面明确提醒，竞争模型的数字来自各家系统卡或公开榜单，所以这组数据适合当作发布方口径，不能从一个综合分数推导出所有工程任务都会变快或变准。\n\nGrok 4.6 当天可在 Cursor、Grok Build 和 xAI API 使用，也接入 OpenRouter、Vercel、Cloudflare 等合作方。xAI 公布的起价是每百万输入 token（模型处理或计费的文本单位）2 美元、每百万输出 token 6 美元，快速版本价格翻倍；Cursor 和 Grok Build 首周提供两倍包含用量。实际成本仍取决于上下文长度、工具次数和失败重试，不能只按模型名称比较单价。\n\n因此，这条新闻确认的是一次面向长任务和开发工作流的模型发布。接下来更值得观察的，是用户能否在真实工作里复现官方评测、模型在工具调用失败时是否会停下来，以及所谓自测能否减少人工审查，而不是只看首周的试用额度。",
+    "publishedAt": "2026-08-12",
+    "eventDate": "2026-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/grok-46-long-agents-20260812.svg",
+      "alt": "Grok 4.6 从任务理解、工具调用、自测到人工验收的事件链路示意；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/grok-46-long-agents-20260812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "这次发布把长任务放到前台",
+        "body": "xAI 将 Grok 4.6 的重点描述为长流程 Agent、交互式工作和视觉项目，场景从研究和编码延伸到把想法做成应用。",
+        "kind": "narrative"
+      },
+      {
+        "id": "agent-loop",
+        "title": "长流程 Agent 和普通问答差在哪",
+        "body": "它需要保持目标和中间结果，反复选择工具并继续执行；一次回答是否完成，不等于多步任务是否真正交付。",
+        "kind": "technical"
+      },
+      {
+        "id": "training",
+        "title": "训练细节是公司自己的解释",
+        "body": "xAI 提到补充训练、模型生成数据、SFT 轨迹和代理强化学习，但没有提供外部可复现的完整训练数据或独立审计。",
+        "kind": "boundary"
+      },
+      {
+        "id": "evals",
+        "title": "基准表能说明什么，不能说明什么",
+        "body": "官方报告 Grok 4.6 在多项代理编码和知识工作基准上取得高分；竞争数字来自开发者系统卡或公开榜单，仍需把任务定义、版本和评测条件放在一起看。",
+        "kind": "comparison"
+      },
+      {
+        "id": "access",
+        "title": "价格和入口已经公布",
+        "body": "模型可通过 Cursor、Grok Build、API 和合作平台使用，起价按输入与输出 token 分开计算，快速版本价格更高。",
+        "kind": "narrative"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一次长流程 Agent 任务怎样推进？",
+      "question": "模型怎样从一个宽泛目标走到可以检查的工作成果？",
+      "steps": [
+        {
+          "label": "理解目标",
+          "detail": "先把研究、编码或应用构建目标拆成可执行的小步骤，保留任务上下文。",
+          "evidence": "xAI Grok 4.6 公告"
+        },
+        {
+          "label": "调用工具",
+          "detail": "在代码库、网页或其他工作环境中读取信息、执行动作，再把结果带回任务循环。",
+          "evidence": "xAI 对 agentic work 的描述"
+        },
+        {
+          "label": "自测与修正",
+          "detail": "xAI 称模型会在较长轨迹中自测和验证；这仍需要在真实任务中检查误报和漏报。",
+          "evidence": "xAI Grok 4.6 公告"
+        },
+        {
+          "label": "人工验收",
+          "detail": "最后要由使用者核对结果、权限、成本和可维护性，不能把模型自测当作交付证明。",
+          "evidence": "文章边界说明"
+        }
+      ]
+    },
+    "source": {
+      "name": "xAI",
+      "url": "https://x.ai/news/grok-4-6"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "agent-loop",
+      "benchmark",
+      "token",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://x.ai/news/grok-4-6",
+        "claim": "xAI 于 2026-08-12 发布 Grok 4.6，重点是长流程 Agent 和交互、视觉工作。",
+        "excerpt": "Grok 4.6 builds on Grok 4.5 with a particular focus on long-running agents and more ambitious interactive and visual work."
+      },
+      {
+        "url": "https://x.ai/news/grok-4-6",
+        "claim": "xAI 说明 Grok 4.6 使用更长的补充训练、筛选后的模型生成数据和新的训练配方。",
+        "excerpt": "Grok 4.6 underwent a longer supplemental training run than Grok 4.5, with curated model-generated data for reasoning and advanced technical concepts, high-quality engineering data, and an improved optimizer and training recipe."
+      },
+      {
+        "url": "https://x.ai/news/grok-4-6",
+        "claim": "xAI 公布 Grok 4.6 的接入渠道和 API 价格。",
+        "excerpt": "Grok 4.6 is available today in Cursor and Grok Build ... Pricing starts at $2 per million input tokens and $6 per million output tokens."
+      }
+    ],
+    "canonicalUrl": "https://x.ai/news/grok-4-6",
+    "sourceHash": "sha256:66321e57ae7a50676743cff3c18b07d268b97e6c04ae727c87f41701b8e73dae"
+  },
+  {
+    "slug": "skan-context-graph-series-c-20260812",
+    "title": "Skan AI 获 6300 万美元 C 轮融资，发布企业工作上下文与 Agents 平台",
+    "summary": "8 月 12 日，Skan AI 宣布获得 6300 万美元 C 轮融资（按融资轮次命名的成长阶段融资），并宣布 Blueprint 与 Agents（能根据上下文调用工具执行多步任务的软件）平台正式可用。公司把产品定位为“工作上下文图”：从系统、应用和例外中观察工作如何真实发生，再把这些信息交给企业 AI；融资方和客户效果数字来自公司公告，SiliconANGLE 提供了交叉报道。",
+    "body": "8 月 12 日，Skan AI 宣布获得 6300 万美元 C 轮融资（按融资轮次命名的成长阶段融资），由 Cathay Innovation 和 Dell Technologies Capital 共同领投，Citi Ventures、Bloomberg Beta、State Farm Ventures 和 Wipro Ventures 参与。融资消息同时伴随企业 AI 平台发布，Skan AI Blueprint 和 Skan AI Agents（Agent，能根据上下文调用工具执行多步任务的软件）进入正式可用阶段，Skan AI Intelligence 作为平台的另一部分继续提供流程分析。\n\nSkan 把自己的核心概念称为“工作上下文图”（context graph of work）。Skan 的描述把重点放在任务的顺序、判断、例外和系统之间的切换，而不是把员工手册、日志和数据库字段简单堆在一起。公司说，真实工作往往包含文档没有写明的判断，因此代理如果只读资料和日志，仍可能不知道下一步为什么这样做。\n\n产品分成三个相互连接的部分。Blueprint 用来发现和排序不同系统里的 AI 机会；Intelligence 面向流程基准、人员配置和自动化机会；Agents 则根据观察到的工作上下文执行任务。Skan 还称 Agents 会在部署前用真实案例测试，并保留人工监督和审计记录。这里的“正式可用”是产品状态，不能自动证明每个行业的代理都已达到同样的稳定性。\n\n公司公布了不少运营数字：处理超过 250 亿条工作信号，与美国最大的十家银行中的七家合作；在一家大型美国银行，平台观察到 1500 名财务人员的 1120 万次上下文切换，并估算出 3700 万美元运营摩擦。Skan 进一步声称，基于这些观察构建的代理让单笔交易成本下降 32%、吞吐量提高 41%，并带来每年 1800 万美元的节省。SiliconANGLE 也报道了这组案例，但数据和因果关系仍属于公司口径。\n\n这类产品的关键问题是“观察”会不会变成新的敏感数据层。工作上下文可能包含客户、员工、交易和合规信息，企业需要明确哪些信号被采集、哪些字段脱敏、谁可以查看和如何撤销代理动作。Skan 的公告强调人工监督和审计，但没有在这篇融资新闻中展开完整的数据保留、权限和跨系统撤销细节。\n\n这次发布把企业 Agent 的讨论带到工作语境和执行记录上。融资能帮助 Skan 扩大产品和销售，但真正的验证仍要看客户能否独立复核节省金额、代理是否会在异常流程中停下来，以及上下文图能否在业务变化后保持准确。",
+    "publishedAt": "2026-08-12",
+    "eventDate": "2026-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/skan-context-graph-series-c-20260812.svg",
+      "alt": "Skan 从工作信号构建上下文图，再让企业 Agent 执行并保留人工审计的事件链路示意；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/skan-context-graph-series-c-20260812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "round",
+        "title": "融资与产品发布在同一天发生",
+        "body": "Skan AI 宣布 6300 万美元 C 轮融资，同时把 Blueprint 和 Agents 作为企业平台的一部分推向正式可用。",
+        "kind": "narrative"
+      },
+      {
+        "id": "context-graph",
+        "title": "“工作上下文图”记录的是过程和例外",
+        "body": "公司希望补上文档与日志没有写明的顺序、判断和系统切换，让代理知道工作如何实际完成。",
+        "kind": "technical"
+      },
+      {
+        "id": "products",
+        "title": "三个产品组成一条执行链",
+        "body": "Blueprint 发现机会，Intelligence 做流程分析和基准，Agents 在上下文中执行；Skan 称这些产品可循环反馈。",
+        "kind": "comparison"
+      },
+      {
+        "id": "case",
+        "title": "银行案例数字仍是公司自报",
+        "body": "250 亿条工作信号、1120 万次上下文切换、32% 成本下降和 1800 万美元年化节省都有明确归属，但缺少公开的独立审计和对照设计。",
+        "kind": "boundary"
+      },
+      {
+        "id": "governance",
+        "title": "上下文越丰富，权限问题越具体",
+        "body": "企业需要知道哪些信号被采集、怎样脱敏、谁能查看和怎样撤销代理动作；人工监督和审计记录必须能落到实际权限上。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "工作上下文怎样变成 Agent 的执行依据？",
+      "question": "为什么企业代理需要记录“工作怎样发生”，而不只读文档？",
+      "steps": [
+        {
+          "label": "采集工作信号",
+          "detail": "记录不同系统之间的动作、顺序、判断和例外，形成对真实流程的观察。",
+          "evidence": "Skan AI 官方公告"
+        },
+        {
+          "label": "整理上下文图",
+          "detail": "把观察结果组织成可查询的工作上下文，让流程分析不只依赖静态文档。",
+          "evidence": "Skan 对 context graph 的定义"
+        },
+        {
+          "label": "测试并执行 Agent",
+          "detail": "Blueprint 和 Intelligence 找到机会，Agents 根据真实案例和当前上下文执行任务。",
+          "evidence": "Skan 产品说明"
+        },
+        {
+          "label": "人工审计与更新",
+          "detail": "部署后保留人工监督和审计记录，并在流程变化时更新上下文，防止旧规则继续自动执行。",
+          "evidence": "Skan 对 Agents 的说明与文章边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Skan AI",
+      "url": "https://www.skan.ai/in-the-news/skan-ai-raises-series-c-announcement"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "context",
+      "data-lineage",
+      "data-pipeline",
+      "benchmark",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.skan.ai/in-the-news/skan-ai-raises-series-c-announcement",
+        "claim": "Skan AI 于 2026-08-12 宣布 6300 万美元融资，并宣布 Blueprint 与 Agents 正式可用。",
+        "excerpt": "today announced $63 million in funding co-led by Cathay Innovation and Dell Technologies Capital ... alongside the launch ... including the general availability of Skan AI Blueprint and Skan AI Agents."
+      },
+      {
+        "url": "https://www.skan.ai/in-the-news/skan-ai-raises-series-c-announcement",
+        "claim": "Skan 把 context graph of work 定义为记录真实工作在系统、应用和例外中的发生方式。",
+        "excerpt": "Skan AI is the context graph of work for enterprise AI: a continuously evolving record of how work actually happens across every system, application, and exception."
+      },
+      {
+        "url": "https://siliconangle.com/2026/08/12/skan-ai-raises-63m-give-ai-agents-map-enterprise-work/",
+        "claim": "SiliconANGLE 交叉报道 Skan AI 的银行部署案例，且明确把效果数字归因于公司。",
+        "excerpt": "In one deployment at a large U.S. bank, Skan AI tracked 11.2 million context switches across 1,500 finance staff and surfaced $37 million in operational friction. Agents built on those observations cut cost per transaction 32% and lifted throughput 41%, worth $18 million in annualized savings, according to the company."
+      }
+    ],
+    "canonicalUrl": "https://www.skan.ai/in-the-news/skan-ai-raises-series-c-announcement",
+    "sourceHash": "sha256:9b5081cfc700a348e4a0902c47d3e435335110c269d9bafa4c854a5149bbad6e"
+  },
+  {
+    "slug": "thrive-ai-fundraise-20260812",
+    "title": "Thrive Holdings 融资超 20 亿美元，继续把 AI 嵌入传统企业流程",
+    "summary": "8 月 12 日，Thrive Holdings 宣布以 120 亿美元估值获得超过 20 亿美元新资本，投资方包括 D1 Capital Partners、Altimeter Capital 和 SoftBank Group。公司称资金将用于扩展会计、IT 服务中的 AI 产品，并启动面向基础设施技术与监管工作的业务平台；这些规模、客户和效果数字主要来自公司公告，仍应与独立验证分开。",
+    "body": "8 月 12 日，Thrive Holdings 宣布获得超过 20 亿美元新资本，交易估值为 120 亿美元。D1 Capital Partners、Altimeter Capital 和 SoftBank Group 被列为新投资方，公司称成立以来累计融资超过 30 亿美元。这笔融资与 Thrive 的业务模型一起发布：公司运营传统企业，并把 AI 产品嵌入会计、IT 等日常流程。\n\nThrive 说自己拥有并运营超过 70 家企业，工程师会与一线从业者一起拆解工作流程，再围绕这些流程开发和部署产品。公司称已有产品进入日常运营，服务数万名客户。读者应先看它处理的工作流：系统只有理解案件、账单、工单和审批顺序，才可能在原有业务软件里减少重复操作。\n\n新资本将继续支持会计和 IT 服务平台，同时启动一个面向基础设施的业务平台，处理技术和监管工作，例如获得批准、建设、认证以及长期运营。官方公告把这描述成面向关键行业的长期计划，并明确提醒其对市场和 AI 收益的判断属于前瞻性陈述，实际结果可能不同。\n\nTechCrunch 将 Thrive Holdings 称为“OpenAI-backed”，并写到其扩张策略与 OpenAI 的关系；这是报道提供的背景口径。官方融资公告主要确认金额、估值、投资者和业务计划，不能把这段背景写成新的产品发布。\n\nThrive 还在报道和公司材料中提到自动化税务、帮助台等运营数字。它们是公司口径，缺少公开的审计方法、对照组和完整客户名单，因此不能作为普遍生产率结论。判断这类“AI 进入传统行业”的新闻，应该继续追踪客户是否能独立核对节省金额、错误处理和人工复核责任。\n\n后续需要观察的是，资金能否转化成可重复的流程改进。这取决于数据质量、权限设计、旧系统集成和员工是否能在关键节点接管，估值数字本身不能替代这些结果。",
+    "publishedAt": "2026-08-12",
+    "eventDate": "2026-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/thrive-ai-fundraise-20260812.svg",
+      "alt": "Thrive 从一线业务流程采集上下文，构建 AI 产品并回到会计、IT 和基础设施工作的事件链路示意；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/thrive-ai-fundraise-20260812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "funding",
+        "title": "融资数字和业务方向先要分开读",
+        "body": "官方确认超过 20 亿美元新资本和 120 亿美元估值，同时把资金用途指向会计、IT 和基础设施平台。",
+        "kind": "narrative"
+      },
+      {
+        "id": "operator-model",
+        "title": "Thrive 把业务流程作为 AI 的落点",
+        "body": "公司描述的流程是由工程师和从业者一起拆解实际工作，再开发和部署产品，目标是让 AI 嵌进已有业务系统。",
+        "kind": "technical"
+      },
+      {
+        "id": "infrastructure",
+        "title": "新平台面向技术和监管工作",
+        "body": "官方提到基础设施项目的批准、建设、认证和长期运营，这些任务通常需要文档、审批和人工责任链同时存在。",
+        "kind": "example"
+      },
+      {
+        "id": "reported-ties",
+        "title": "OpenAI 关系来自报道背景",
+        "body": "TechCrunch 报道 Thrive 与 OpenAI 关系密切；这能补充融资新闻的背景，但官方公告本身没有把它写成新的产品发布。",
+        "kind": "aside"
+      },
+      {
+        "id": "claims",
+        "title": "客户规模和效果需要继续核验",
+        "body": "超过 70 家企业、数万客户和运营改善数字主要来自公司自述，缺少公开对照方法，不能直接推广到所有传统行业。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "企业 AI 转型从哪里开始？",
+      "question": "为什么同一个模型放进不同企业，结果可能完全不同？",
+      "steps": [
+        {
+          "label": "观察真实工作",
+          "detail": "先与会计、IT 或基础设施从业者一起记录工作步骤、例外和审批关系。",
+          "evidence": "Thrive 官方融资公告"
+        },
+        {
+          "label": "组合 AI 产品",
+          "detail": "把模型、业务数据和已有系统连接起来，围绕具体流程做产品，并把结果接回业务系统。",
+          "evidence": "Thrive 对 AI transformation 的描述"
+        },
+        {
+          "label": "保留责任节点",
+          "detail": "涉及监管、付款或客户服务时，权限、复核和人工接管必须与自动化一起设计。",
+          "evidence": "文章对关键行业边界的拆解"
+        },
+        {
+          "label": "用客户结果验证",
+          "detail": "比较成本、错误、处理时间和回滚记录，才能判断资金投入是否转化成可复用的业务改进。",
+          "evidence": "公司自报数据边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Thrive Holdings",
+      "url": "https://www.thriveholdings.com/thrive-holdings-fundraise"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "data-pipeline",
+      "authorization",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.thriveholdings.com/thrive-holdings-fundraise",
+        "claim": "Thrive Holdings 于 2026-08-12 宣布超过 20 亿美元新资本和 120 亿美元估值，投资方包括 D1、Altimeter 和 SoftBank。",
+        "excerpt": "Today, we’re announcing over $2 billion in new capital at a $12 billion valuation ... including D1 Capital Partners, Altimeter Capital, and SoftBank Group."
+      },
+      {
+        "url": "https://www.thriveholdings.com/thrive-holdings-fundraise",
+        "claim": "官方称 Thrive 在超过 70 家自有和运营业务中推进 AI 转型，产品已进入日常运营并服务数万客户。",
+        "excerpt": "Over the past year, we’ve put AI transformation into practice within the more than 70 businesses we own and operate ... These products are already live in daily operations, helping to serve tens of thousands of customers."
+      },
+      {
+        "url": "https://www.thriveholdings.com/thrive-holdings-fundraise",
+        "claim": "官方称资金将扩展会计和 IT 平台，并启动面向基础设施技术与监管工作的业务平台。",
+        "excerpt": "The new capital gives us the resources to help scale our model across our existing platforms in accounting and IT services. We’re also launching a new platform focused on the technical and regulatory work required to get essential infrastructure approved, built, certified, and kept in long-term operation."
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/12/openai-backed-thrive-holdings-raises-2b-to-bring-ai-to-the-enterprise/",
+        "claim": "TechCrunch 将 Thrive Holdings 称为 OpenAI-backed，并把其与 OpenAI 的关系写成扩张策略背景。",
+        "excerpt": "Thrive Holdings is akin to a private equity firm for AI ... Key to that strategy is Thrive’s close relationship with OpenAI."
+      }
+    ],
+    "canonicalUrl": "https://www.thriveholdings.com/thrive-holdings-fundraise",
+    "sourceHash": "sha256:b9389243406a850c6bcf43aa28481176328032e34ef55906e6f3644a0e20e0be"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
