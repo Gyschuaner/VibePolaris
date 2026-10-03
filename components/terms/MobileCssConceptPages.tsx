@@ -1,4 +1,5 @@
 import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptTerm } from "./ConceptArticle";
+import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
@@ -18,11 +19,7 @@ const boxSections: [string, string][] = [["box-task", "卡片为什么比 width 
 function Cite({ id, sources }: { id: string; sources: typeof offlineFirstSources }) { return <ArticleCitation id={id} sources={sources} />; }
 
 function MobileHero({ trigger, change, proof }: { trigger: string; change: string; proof: string }) {
-  return <div className={styles.contract} aria-label={`${trigger}：${change}，证据是${proof}`}>
-    <div><span>触发</span><h3>{trigger}</h3><p>先从读者正在做的任务开始。</p></div>
-    <div><span>机制变化</span><h3>{change}</h3><p>页面把真正改变的对象放在这里。</p></div>
-    <p className={styles.resultFlow}><CheckCircle size={22} />{proof}</p>
-  </div>;
+  return <MechanismHero kind="mobile" trigger={trigger} change={change} proof={proof} />;
 }
 
 export function OfflineFirstTermPage() {

@@ -47,8 +47,8 @@
 | 040 | 容器镜像、服务发现、可观测性、SAST、密钥扫描、依赖扫描、威胁建模、工具审批、权限边界、XSS | VBP-059 · [209–218 文案更新与上线记录](VBP-059-content-refresh-209-218.md) |
 | 041 | 工具选择、工具结果、规划与执行、智能体编排、交接、子智能体、人在回路、护栏、内容审核、微调 | VBP-060 · [219–228 文案更新与上线记录](VBP-060-content-refresh-219-228.md) · 十条统一发布，生产已上线 |
 | 042 | 上下文窗口、智能体循环、智能体记忆、工作记忆、执行沙箱、嵌入、向量存储、检索、分块、重排序 | VBP-061 · [229–238 文案更新与生产发布记录](VBP-061-content-refresh-229-238.md) · 十条统一发布，生产已上线 |
-| 043 | 生成式 AI、多模态、推理模型、系统提示词、少样本提示、零样本提示、温度、分词、工具审批、权限边界 | VBP-062 · [239–248 文案更新与生产发布记录](VBP-062-content-refresh-239-248.md) · 十条本地验收及 review 通过，待统一发布 |
-| 044 | 仓库与提交、分支、工作区、暂存区、差异、切换分支、远程仓库、克隆、拉取、获取 | VBP-063 · [249–258 Git 工作流词条更新与发布记录](VBP-063-content-refresh-249-258.md) · 十条逐条验收及 review 通过，待 dev 集成 |
+| 043 | 生成式 AI、多模态、推理模型、系统提示词、少样本提示、零样本提示、温度、分词、工具审批、权限边界 | VBP-062 · [239–248 文案更新与生产发布记录](VBP-062-content-refresh-239-248.md) · 十条统一发布，生产已上线 |
+| 044 | 仓库与提交、分支、工作区、暂存区、差异、切换分支、远程仓库、克隆、拉取、获取 | VBP-063 · [249–258 文案更新与生产发布记录](VBP-063-content-refresh-249-258.md) · 十条逐条验收、dev 集成及生产统一发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
@@ -113,8 +113,8 @@
 | runtime | 运行时 | 技术栈 | 待处理 |
 | package | 包管理 | 技术栈 | 待处理 |
 | typescript | TypeScript | 技术栈 | 待处理 |
-| repo-commit | 仓库与提交 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| branch | 分支 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
+| repo-commit | 仓库与提交 | Git | 044 · 生产已发布 |
+| branch | 分支 | Git | 044 · 生产已发布 |
 | mvp | MVP | 产品与设计 | 待处理 |
 | user-flow | 用户流程 | 产品与设计 | 待处理 |
 | wireframe | 线框图 | 产品与设计 | 待处理 |
@@ -169,14 +169,14 @@
 | websocket | WebSocket | 前端 | 待处理 |
 | cors | 跨源资源共享 | 前端 | 待处理 |
 | focus-management | 焦点管理 | 前端 | 待处理 |
-| working-tree | 工作区 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| staging-area | 暂存区 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| diff | 差异 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| checkout-switch | 切换分支 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| remote | 远程仓库 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| clone | 克隆 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| pull | 拉取 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
-| fetch | 获取 | Git | 044 · 逐条验收及 review 通过，待 dev 集成 |
+| working-tree | 工作区 | Git | 044 · 生产已发布 |
+| staging-area | 暂存区 | Git | 044 · 生产已发布 |
+| diff | 差异 | Git | 044 · 生产已发布 |
+| checkout-switch | 切换分支 | Git | 044 · 生产已发布 |
+| remote | 远程仓库 | Git | 044 · 生产已发布 |
+| clone | 克隆 | Git | 044 · 生产已发布 |
+| pull | 拉取 | Git | 044 · 生产已发布 |
+| fetch | 获取 | Git | 044 · 生产已发布 |
 | push | 推送 | Git | 待处理 |
 | merge | 合并 | Git | 待处理 |
 | rebase | 变基 | Git | 待处理 |
@@ -296,15 +296,15 @@
 | input-validation | 输入校验 | 技术栈 | 待处理 |
 | encryption-at-rest | 静态加密 | 技术栈 | 待处理 |
 | encryption-in-transit | 传输加密 | 技术栈 | 待处理 |
-| generative-ai | 生成式 AI | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
-| multimodal | 多模态 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
-| reasoning-model | 推理模型 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
-| system-prompt | 系统提示词 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
-| few-shot-prompting | 少样本提示 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
-| zero-shot-prompting | 零样本提示 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
-| temperature | 温度 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| generative-ai | 生成式 AI | AI·Agent | 043 · 生产已发布 |
+| multimodal | 多模态 | AI·Agent | 043 · 生产已发布 |
+| reasoning-model | 推理模型 | AI·Agent | 043 · 生产已发布 |
+| system-prompt | 系统提示词 | AI·Agent | 043 · 生产已发布 |
+| few-shot-prompting | 少样本提示 | AI·Agent | 043 · 生产已发布 |
+| zero-shot-prompting | 零样本提示 | AI·Agent | 043 · 生产已发布 |
+| temperature | 温度 | AI·Agent | 043 · 生产已发布 |
 | context-window | 上下文窗口 | AI·Agent | 基准 · 待最终复核 |
-| tokenization | 分词 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| tokenization | 分词 | AI·Agent | 043 · 生产已发布 |
 | hallucination | 幻觉 | AI·Agent | 023 · 本地验收及 review 通过 |
 | grounding | 基于证据回答 | AI·Agent | 023 · 本地验收及 review 通过 |
 | citation | 引用 | AI·Agent | 022 · 本地验收及 review 通过 |
@@ -378,8 +378,8 @@
 | secret-scanning | 密钥扫描 | 技术栈 | 040 · 生产已发布 |
 | dependency-scanning | 依赖扫描 | 技术栈 | 040 · 生产已发布 |
 | threat-modeling | 威胁建模 | 技术栈 | 040 · 生产已发布 |
-| tool-approval | 工具审批 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| tool-approval | 工具审批 | AI·Agent | 043 · 生产已发布 |
 | skill | 技能 | AI·Agent | 030 · 本地验收及 review 通过（新增词条） |
 | evaluation-dataset | 评测数据集 | AI·Agent | 024 · 本地验收及 review 通过 |
-| permission-boundary | 权限边界 | AI·Agent | 043 · 本地验收及 review 通过，待生产发布 |
+| permission-boundary | 权限边界 | AI·Agent | 043 · 生产已发布 |
 | xss | 跨站脚本 | 技术栈 | 040 · 生产已发布 |
