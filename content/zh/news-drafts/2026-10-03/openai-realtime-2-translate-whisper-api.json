@@ -1,8 +1,8 @@
 {
   "slug": "openai-realtime-2-translate-whisper-api",
   "title": "OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper",
-  "summary": "OpenAI 在 2026-05-07 公开/报道“OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper”。发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。 当前可核验边界是：官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。",
-  "body": "2026 年 5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper 三款语音模型。发布把实时对话推理、跨语言翻译和流式转写拆成不同能力，开发者可按工作流选择组合。\n\n拆分意味着需要分别测识别、翻译、响应、打断和工具调用；端到端“听懂并行动”不是一个分数。api、streaming-output、llm 和 function-calling 词条帮助理解接口、流式输出、模型和工具调用之间的关系。\n\n官方说明和语言数量属于产品口径，不代表翻译、延迟或转写准确率在所有口音、噪声和网络环境中相同，也不等于三款模型都适合所有实时任务。开发者仍需承担编排、错误处理和隐私控制。\n\n后续应查看价格、延迟、语言覆盖、噪声测试和工具调用失败率，再判断模型拆分是否带来更可控的语音系统。",
+  "summary": "2026-05-07，OpenAI公开“OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。 当前能确认的是：官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。",
+  "body": "2026 年 5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper 三款语音模型。发布把实时对话推理、跨语言翻译和流式转写拆成不同能力，开发者可以按工作流组合。\n\n拆分意味着识别、翻译、响应、打断和工具调用要分别测试。实时系统的延迟、上下文传递和错误恢复不能被一个“语音模型”标签概括，端到端听懂并行动也不是单一分数。\n\n以多语客服为例，Realtime-Whisper 先转写，Realtime-Translate 处理语言转换，GPT-Realtime-2 负责对话和下一步；任何一步不确定都应显示或交给人工，而不是直接调用业务工具。\n\n来源是 OpenAI API 官方说明，支持三款模型的产品定位和语言数量，但不代表翻译、延迟或转写准确率在所有口音、噪声和网络环境中相同，也不等于每个组合都适合生产。\n\n四个关联词条各自对应语音链一层：api 规定调用和返回；streaming-output 处理连续音频或文本流；llm 负责语言推理；function-calling 连接外部工具。它们不能替代端到端测试。\n\n复核时应测价格、延迟、语言覆盖、打断、噪声、工具调用失败和隐私处理，并记录每个模型边界，避免用一个组件的指标代表整个语音系统。\n\n时间线从 2026-05-07 的 API 公告开始；后续应跟踪版本、价格、延迟、语言覆盖和真实噪声测试。",
   "publishedAt": "2026-05-07",
   "eventDate": "2026-05-07",
   "isExample": false,
@@ -15,59 +15,76 @@
   },
   "sections": [
     {
-      "id": "s1",
-      "title": "调用动作是什么",
-      "body": "OpenAI 在 API 中推出三款语音模型：GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。",
+      "id": "event",
+      "title": "2026-05-07，OpenAI公开了什么",
+      "body": "事件日记为 2026-05-07；来源页面公开日记为 2026-05-07。OpenAI公开的核心动作是：OpenAI 在 API 中推出三款语音模型：GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
       "kind": "narrative"
     },
     {
-      "id": "s2",
-      "title": "系统怎样连到外部工具",
-      "body": "发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。 语音代理要分别测识别、翻译、响应、打断和工具调用，端到端“听懂并行动”不是一个分数。",
+      "id": "mechanism",
+      "title": "“OpenAI API 推出 GPT-Realtime-2、Translate 与 Whisper”改变了哪一层",
+      "body": "真正的变化在于：发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。拆分模型可以提高可控性，也把接口编排责任交给开发者。",
       "kind": "technical"
     },
     {
-      "id": "s3",
-      "title": "权限边界怎样设置",
-      "body": "官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。",
+      "id": "scenario",
+      "title": "把“OpenAI API 推出 GPT-Realtime-2、Translate 与 Whisper”放进一次流程",
+      "body": "把它放进一个具体场景：语音代理要分别测识别、翻译、响应、打断和工具调用，端到端“听懂并行动”不是一个分数。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "哪些结论仍属于 OpenAI 的口径",
+      "body": "这里的来源是 OpenAI 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把 API 开放写成所有机构都已接入或可以无人监管。",
       "kind": "boundary"
     },
     {
-      "id": "s4",
-      "title": "词条如何解释接口",
-      "body": "关联词条：api, streaming-output, llm, function-calling。拆分模型可以提高可控性，也把接口编排责任交给开发者。",
+      "id": "terms",
+      "title": "用词条拆开“OpenAI API 推出 GPT-Realtime-2、Translate 与 Whisper”",
+      "body": "本文关联的词条各自对应语音链一层：api 规定调用和返回；streaming-output 处理连续音频或文本流；llm 负责语言推理；function-calling 连接外部工具。它们不能替代端到端测试。",
       "kind": "comparison"
     },
     {
-      "id": "s5",
-      "title": "下一步核对",
-      "body": "后续应看价格、延迟、语言覆盖和真实噪声测试。",
+      "id": "timeline",
+      "title": "从 2026-05-07 的页面到下一步",
+      "body": "时间线先从 2026-05-07 的来源页面开始：页面记录“OpenAI 在 API 中介绍三款音频模型；Realtime-Translate 支持 70 多种输入语言与 13 种输出语言”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
+      "kind": "narrative"
+    },
+    {
+      "id": "verify",
+      "title": "读者怎样复核这条主张",
+      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：后续应看价格、延迟、语言覆盖和真实噪声测试。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agentic-calling",
-    "title": "把事件拆成可核对的链路",
-    "question": "怎样区分发生的动作、来源主张和仍待验证结果？",
+    "title": "把“OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper”拆成可核对的链路",
+    "question": "分别看接口、身份、权限、审批、返回状态和回滚，怎样知道哪些是事实、哪些仍是主张？",
     "steps": [
       {
-        "label": "事件日",
-        "detail": "确认 2026-05-07 的来源公开信息与 2026-05-07 的事件日语义。",
+        "label": "确认日期与动作",
+        "detail": "先核对 eventDate=2026-05-07、publishedAt=2026-05-07，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       },
       {
-        "label": "关键动作",
-        "detail": "发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。",
+        "label": "拆开系统层",
+        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       },
       {
-        "label": "边界",
-        "detail": "官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。",
+        "label": "放进具体场景",
+        "detail": "语音代理要分别测识别、翻译、响应、打断和工具调用，端到端“听懂并行动”不是一个分数",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       },
       {
-        "label": "后续",
-        "detail": "后续应看价格、延迟、语言覆盖和真实噪声测试。",
+        "label": "标出不能推出的结论",
+        "detail": "官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同",
+        "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
+      },
+      {
+        "label": "安排下一次复核",
+        "detail": "后续应看价格、延迟、语言覆盖和真实噪声测试",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       }
     ]
@@ -171,11 +188,11 @@
     "decision": "passed",
     "checkedAt": "2026-10-03T00:00:00Z",
     "questions": [],
-    "notes": "已区分实时推理、翻译和转写三种模型能力，补充语言数量、延迟、口音和工具编排边界。",
+    "notes": "深度复核通过：正文已按本事件的七段链路组织，具体流程、来源层级、关联词条与后续时间线均已对齐；已删除空泛结尾和跨事件词条。",
     "changes": [
-      "重写正文为事件特定叙述",
-      "补充事实、来源主张与待验证项边界",
-      "核对日期、canonicalUrl 和 relatedSlugs"
+      "收束为 7 段事件特定正文",
+      "修正词条段落与 relatedSlugs 的对应关系",
+      "修正截断标题并核对来源、日期和时间线"
     ]
   },
   "mechanicalErrors": [],
