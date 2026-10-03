@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -93,6 +93,39 @@ export function EvalDatasetTermPage() {
       <div className={s.datasetNotes}><div><h3>这次包含什么</h3><p>样本来源、时间范围、分组与缺失信息；哪些能力有覆盖，哪些尚未检查。</p></div><div><h3>与上次有什么不同</h3><p>新增或修正了哪些案例、判据与划分。保留版本，避免把不同题集的成绩直接拼在一起。</p></div></div>
       <p>修正错误答案或更新政策时，记录变化原因，并核对受影响的预期行为。比较系统版本时，尽量用相同的有效案例与判据；案例不得不变化时，就把评测集变化与系统变化分开说明。</p>
       <ArticleAside title="评测数据集与基准测试"><p>数据集提供案例；<ConceptTerm slug="benchmark">基准测试</ConceptTerm> 还组织比较目标、指标和运行约定。公开基准可以帮助了解某类能力，自己的业务数据集则用于检查实际输入。两者都需要说明范围，不能靠样本数量代替质量。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function EvaluationRunTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={evaluationRunSources}/>;
+  return <ConceptArticle slug="evaluation-run" title="评测运行" subtitle="Evaluation Run · 把一次试跑的条件、轨迹和结果绑在一起" sources={evaluationRunSources}
+    sections={[['run-definition', '一次运行到底记录什么'], ['run-evidence', '从试跑到逐项证据'], ['run-compare', '什么时候可以比较'], ['run-boundary', '缺记录时不要补成分数']]}
+    intro={<>评测运行是一次具体的评测执行记录：它把哪一版题集、哪一版系统、什么评分器和运行环境放在一起，并留下每道题的尝试、轨迹与汇总结果。看到“9/12”时，先问这十二道题和这些条件是否真的来自同一次、可核对的运行。</>}
+    hero={<ConceptHero slug="evaluation-run" label="同一题集的两次运行保留逐项轨迹，切换版本或缺一条轨迹时停止比较"><div className={s.runHero}><div className={s.runHeroHeader}><span>评测运行记录</span><strong>run-18</strong></div><div className={s.runHeroTracks}>{['题集 support-v1', '评分器 rubric-v2', '轨迹 12/12'].map(item => <span key={item}>{item}</span>)}</div><div className={s.runHeroScore}><b>10/12</b><span>逐项证据可回查</span></div></div></ConceptHero>}>
+    <ArticleSection id="run-definition" title="一次运行到底记录什么"><Legacy slug="evaluation-run" names={['question', 'definition']}/>
+      <p id="evalrun-definition" className="vp-citation-target"><strong>评测运行是把一次评测执行的输入、条件、输出和判断结果放在同一份记录里的实例。</strong>OpenAI 的 evals 文档把评测组织成数据集、被测对象、运行和结果；运行记录让一次“试了什么”能够与后来的分数对应，而不是只留下一个孤立数字。<Cite id="evalrun-definition"/></p>
+      <p>先把几个容易混在一起的词拆开：<ConceptTerm slug="evaluation-dataset">评测数据集</ConceptTerm> 保存要问的案例；一次运行把这组案例交给某个被测版本；<ConceptTerm slug="grader">评分器</ConceptTerm> 按判据检查每条尝试；汇总分数只是把逐条结果压缩后的读数。题集、运行和评分器各自变化，都会改变最后看到的数字。</p>
+      <p id="evalrun-record" className="vp-citation-target">一条有用的运行记录至少能说明题集及其版本、被测模型或智能体版本、评分器版本、关键运行配置，以及每个样本的输出和状态。OpenAI 的评测流程支持保存运行结果与样本级评分；<strong>记录的价值在于可以从汇总回到具体样本。</strong><Cite id="evalrun-record"/></p>
+      <div className={s.runChecklist}><div><span>运行前</span><strong>固定条件</strong><p>题集版本、被测版本、评分器和环境。</p></div><div><span>运行中</span><strong>留下轨迹</strong><p>输入、输出、工具调用与失败状态。</p></div><div><span>运行后</span><strong>汇总但可回查</strong><p>总分旁保留逐项结果，不只存平均数。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="run-evidence" title="从试跑到逐项证据"><Legacy slug="evaluation-run" names={['scene-heading']}/>
+      <p id="evalrun-trace" className="vp-citation-target">对于会调用工具或经过多步推理的智能体，一次尝试不只有最后一句回复，还可能包括工具调用、环境变化和失败原因。Anthropic 将评测轨迹与任务结果放在一起讨论：要知道为什么通过或失败，必须能回到这条尝试的过程和最终状态。<strong>轨迹是解释运行结果的证据，不是装饰性的日志。</strong><Cite id="evalrun-trace"/></p>
+      <p>下面不调用模型，只操作两份固定的虚构运行记录。先看题集、被测版本、评分器和逐项轨迹；再改变一个条件，观察“可以比较”“暂不比较”和“运行不完整”分别如何出现。注意每个数字都来自记录本身，按钮不会凭空重算一个更漂亮的成绩。</p>
+      <EvaluationRunLesson/>
+      <p id="evalrun-grader" className="vp-citation-target">评分器可以对每条样本给出通过、失败或未评分，再由运行报告汇总。OpenAI 的 graders 文档把评分逻辑与被评测输出分开：同一次运行换了评分器，也可能得到不同分数。<strong>看到汇总变化时，要同时检查逐项评分和评分器版本。</strong><Cite id="evalrun-grader"/></p>
+      <p>如果一条轨迹只记录“失败”，还应保留能解释失败的最小证据，例如输入、工具返回、环境状态和评分理由。不同任务需要不同证据；代码任务可能要保存测试输出，知识问答可能需要保存引用与判据命中。运行记录不是把所有调试日志无限堆进去，而是让这次判断可复核。</p>
+    </ArticleSection>
+    <ArticleSection id="run-compare" title="什么时候可以比较" className={base.offset}><Legacy slug="evaluation-run" names={['quiz-heading']}/>
+      <p id="evalrun-compare" className="vp-citation-target">两次运行要比较总分，至少要先对齐想要保持不变的条件：题集及版本、评分器及版本、输入约定、被测系统和相关环境。Anthropic 的评测实践强调任务、成功标准和运行条件要能重现；<strong>“同一批题”不只是题目文字相似，还包括版本和判断规则。</strong><Cite id="evalrun-compare"/></p>
+      <p>条件对齐后，汇总差异才有解释空间：本例中 run-18 比 run-17 多通过一题，可以回到第几条轨迹发生了变化。若切换到 support-v2，新增或删除的题目本身就可能改变分母；若评分器从 rubric-v2 换成别的规则，变化也不能直接归因于被测版本。</p>
+      <ArticleAside title="先比什么，再比多少"><p>先核对运行身份和可回查证据，再看通过率、延迟或费用。运行报告可以同时保留这些指标，但每个指标都要注明分母、排除项和测量条件；一个总分不能替代全部判断。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="run-boundary" title="缺记录时不要补成分数"><Legacy slug="evaluation-run" names={['prompt-heading']}/>
+      <p id="evalrun-boundary" className="vp-citation-target">NIST AI RMF Playbook 将测量、记录和持续评估放在风险管理的治理与测量工作中；记录缺口会限制你能对系统作出的判断。<strong>一条没有输出或轨迹的样本应标为未评分或运行不完整，而不是静默地当成失败或成功。</strong><Cite id="evalrun-boundary"/></p>
+      <p>这条边界很实际：运行中途断网、工具超时、评分器无法读取结果时，缺失原因可能来自评测设施，而不是被测系统的能力。把它们都塞进分母，会让分数看似完整却无法解释；把它们都删掉，也可能隐藏某类系统性失败。先记录状态，再按预先声明的规则决定是否重跑、排除或单独报告。</p>
+      <p>评测运行也不能证明业务事实本身。它只能说明在给定题集、输入和判断规则下，这次执行留下了什么证据。需要改版本时，保留旧运行；需要更新题集时，给新运行新的身份。这样下一次回看，才能知道变化来自系统、题目、评分器，还是运行环境。</p>
+      <ArticleAside title="读一个运行摘要的顺序"><p>先看运行 ID 与时间，再看题集和版本、被测版本、评分器和环境，最后看逐项轨迹及未评分原因。只有这些条件都足够明确，汇总分数才值得进入比较表。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

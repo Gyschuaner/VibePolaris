@@ -45,3 +45,38 @@ export function EvalDatasetLesson() {
     <button className={base.reset} onClick={() => { setTickets(['A', 'B', 'C']); setMode('rows'); setOpen(false); }}><ArrowCounterClockwise size={17}/>重置工单与拆分</button>
   </div>;
 }
+
+type EvaluationRunMode = 'same' | 'changed' | 'missing';
+
+const evaluationRunBaseline = { id: 'run-17', dataset: 'support-v1', subject: 'agent-B', grader: 'rubric-v2', traces: 12, passed: 9 };
+const evaluationRunCandidate = { id: 'run-18', dataset: 'support-v1', subject: 'agent-C', grader: 'rubric-v2', traces: 12, passed: 10 };
+
+export function EvaluationRunLesson() {
+  const [mode, setMode] = useState<EvaluationRunMode>('same');
+  const [checkedMode, setCheckedMode] = useState<EvaluationRunMode | null>(null);
+  const candidate = mode === 'changed' ? { ...evaluationRunCandidate, dataset: 'support-v2' } : mode === 'missing' ? { ...evaluationRunCandidate, traces: 11 } : evaluationRunCandidate;
+  const checkedCandidate = checkedMode === 'changed' ? { ...evaluationRunCandidate, dataset: 'support-v2' } : checkedMode === 'missing' ? { ...evaluationRunCandidate, traces: 11 } : evaluationRunCandidate;
+  const result = checkedMode === 'same' ? {
+    title: '条件一致，可以回到逐题差异',
+    body: 'run-17 与 run-18 使用同一题集版本、被测版本和评分器；run-18 多通过 1 题，可以继续查看是哪一条轨迹造成差异。',
+  } : checkedMode === 'changed' ? {
+    title: '题集版本不同，暂不比较总分',
+    body: 'run-17 使用 support-v1，run-18 使用 support-v2。总分的变化可能来自题目变化，先重新运行同一版本或单独报告版本差异。',
+  } : {
+    title: '缺少一条轨迹，运行不完整',
+    body: 'run-18 只有 11 条可核对轨迹。缺失记录是未评分证据，不应补成 0 分，也不能把 11 条的汇总当成完整运行。',
+  };
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：检查一次评测运行能否比较">
+    <div className={s.controls}><label>候选运行的变化<select value={mode} onChange={e => { setMode(e.target.value as EvaluationRunMode); setCheckedMode(null); }}><option value="same">保持同一题集版本</option><option value="changed">切换题集版本</option><option value="missing">移除一条轨迹</option></select></label><p className={s.runHint}>先看运行记录，再决定是否把汇总分数放在一起。</p></div>
+    <div className={s.runLedger} aria-label="两次评测运行记录">
+      {[evaluationRunBaseline, candidate].map((run, index) => <article key={run.id} className={s.runCard}>
+        <header><span>{index === 0 ? '基准运行' : '候选运行'}</span><strong>{run.id}</strong></header>
+        <dl><div><dt>题集</dt><dd>{run.dataset}</dd></div><div><dt>被测版本</dt><dd>{run.subject}</dd></div><div><dt>评分器</dt><dd>{run.grader}</dd></div><div><dt>轨迹</dt><dd>{run.traces}/12</dd></div><div><dt>汇总</dt><dd>{run.passed}/12</dd></div></dl>
+        <div className={s.traceGrid} aria-label={`${run.id} 的逐项轨迹`}><span className={s.traceLabel}>逐项轨迹</span>{Array.from({ length: 12 }, (_, i) => <span key={i} data-present={i < run.traces} data-pass={i < run.passed}>{i < run.traces ? i + 1 : '—'}</span>)}</div>
+      </article>)}
+    </div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>检查是否可比较<ArrowRight size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.runResult} role="status"><h3>{result.title}</h3><p>{result.body}</p>{checkedMode && <p className={s.runEvidence}>检查时看到：{checkedCandidate.traces}/12 条轨迹可回到具体样本。</p>}</div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('same'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置运行记录</button>
+  </div>;
+}

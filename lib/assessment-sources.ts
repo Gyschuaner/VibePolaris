@@ -17,3 +17,9 @@ export const evalDatasetSources = [
   source('Google for Developers', 'Datasets: Dividing the original dataset', 'https://developers.google.com/machine-learning/crash-course/overfitting/dividing-datasets', ['evaldata-holdout']),
   source('scikit-learn', 'Cross-validation: evaluating estimator performance', 'https://scikit-learn.org/stable/modules/cross_validation.html', ['evaldata-groups']),
 ];
+export const evaluationRunSources = [
+  source('OpenAI', 'Working with evals', 'https://developers.openai.com/api/docs/guides/evals', ['evalrun-definition', 'evalrun-record']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['evalrun-trace', 'evalrun-compare']),
+  source('OpenAI', 'Graders', 'https://developers.openai.com/api/docs/guides/graders', ['evalrun-grader']),
+  source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['evalrun-boundary']),
+];
