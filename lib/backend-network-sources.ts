@@ -16,3 +16,10 @@ export const apiKeySources: Source[] = [
   make("AWS", "API Gateway usage plans and API keys", "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html", ["api-key-operations", "api-key-boundary"]),
   make("GitHub Docs", "Managing your personal access tokens", "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token", ["api-key-rotation", "api-key-leak"]),
 ];
+
+export const relationalDatabaseSources: Source[] = [
+  make("PostgreSQL", "Tutorial · The SQL Language", "https://www.postgresql.org/docs/current/tutorial-sql.html", ["relational-definition", "relational-query"]),
+  make("PostgreSQL", "Data Definition", "https://www.postgresql.org/docs/current/ddl.html", ["relational-constraints", "relational-definition", "relational-integrity"]),
+  make("SQLite", "Query Language", "https://www.sqlite.org/lang.html", ["relational-query", "relational-boundary"]),
+  make("IBM", "Relational database", "https://www.ibm.com/think/topics/relational-databases", ["relational-definition", "relational-boundary"]),
+];

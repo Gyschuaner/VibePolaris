@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { apiKeySources, rbacSources } from "@/lib/backend-network-sources";
+import { apiKeySources, rbacSources, relationalDatabaseSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -159,4 +159,58 @@ const apiKeySpec: PageSpec = {
 
 export function ApiKeyTermPage() {
   return renderBackendNetworkPage(apiKeySpec);
+}
+
+const relationalDatabaseSpec: PageSpec = {
+  slug: "relational-database",
+  title: "关系型数据库",
+  subtitle: "Relational Database · 用关系、键和约束组织可查询的数据",
+  intro: "订单系统里，客户、订单和订单明细彼此有关，却不应该把同一份客户地址复制到每一条订单里。关系型数据库用表中的行和列保存事实，用键表达关系，再用查询把需要的结果组合出来。",
+  hero: {
+    question: "查找阿青最近的一笔订单",
+    nodes: [["customers", "id = 7"], ["orders", "customer_id = 7"], ["结果", "订单号 + 金额"]],
+    proof: "连接条件把两张关系组合起来；约束帮助拒绝不存在的客户。",
+  },
+  sections: [
+    {
+      id: "relational-definition",
+      title: "表只是关系模型的一种外观",
+      blocks: [
+        { id: "relational-definition", text: "关系型数据库把数据放在关系中；在常见实现里，关系以表呈现，列描述属性，行保存一条记录。客户表可以用 id、name 表示客户，订单表用 customer_id 指向客户。这个结构让每项事实有稳定位置，也让查询和约束有共同的语言。" },
+        { id: "relational-constraints", text: "主键保证一行能被识别，外键表达一条关系必须指向哪里，唯一和非空约束则限制哪些值可以出现。约束不是装饰性的说明：数据库在写入时检查它们，失败就拒绝这次变化，避免错误数据悄悄进入后续查询。" },
+      ],
+      lesson: {
+        title: "从两张关系得到一张结果关系",
+        ariaLabel: "关系型数据库通过主外键和查询组合结果的演示",
+        steps: [
+          { label: "保留列", actors: ["customers", "id · name", "orders"], evidence: "先决定结果需要哪些属性，未用到的列不会因为存在就自动出现在结果里。" },
+          { label: "连接匹配", actors: ["customers.id", "=", "orders.customer_id"], evidence: "连接条件把属于同一客户的行配在一起，不是按两张表的视觉位置硬拼。" },
+          { label: "过滤结果", actors: ["customer_id=7", "amount > 100", "3 rows"], evidence: "条件只留下满足查询的组合，原始表仍保持自己的行和列。" },
+        ],
+        failure: { label: "没有连接条件", text: "两张表会产生笛卡尔积，结果行数突然放大；查询看似有数据，却不再代表一笔订单属于哪个客户。" },
+      },
+    },
+    {
+      id: "relational-query",
+      title: "查询是在组合事实，不是复制数据",
+      blocks: [
+        { id: "relational-query", text: "查询可以筛选行、选择列、排序并连接多张关系。查订单时，数据库按表达式计算结果关系；这个结果通常是一次读取的视图，不会自动把新列写回原表。把“查到了”与“保存了”分开，才能理解为什么 SELECT 不会修改订单。" },
+        { id: "relational-boundary", text: "关系型数据库并不规定只能有一种产品或一种扩展方式。不同实现对类型、索引、事务隔离和分布式能力的支持不同；“有表”也不等于设计合理。关键是让数据结构、访问模式和一致性要求彼此匹配。" },
+      ],
+    },
+    {
+      id: "relational-constraints",
+      title: "边界：关系不是所有问题的唯一答案",
+      blocks: [
+        { id: "relational-integrity", text: "如果订单必须引用一个存在的客户，外键能阻止孤儿订单；如果一次转账要同时改两行，事务能把相关变化放进同一个边界。这些能力来自具体数据库的约束与事务实现，不是“关系型”三个字自动保证。" },
+        { id: "relational-boundary", text: "当数据主要按文档聚合、键值查找或图关系访问时，NoSQL 等模型可能更贴合访问模式；选择它们也意味着接受不同的查询、约束和一致性取舍。读者应先描述要保存的事实、查询路径和失败后果，再决定模型，而不是按潮流选择产品。" },
+      ],
+    },
+  ],
+  sources: relationalDatabaseSources,
+  relatedIntro: "关系型数据库与表、行、列、主键、外键和 SQL 互相配合；继续看 NoSQL，可以比较不同数据模型如何回应不同访问模式。",
+};
+
+export function RelationalDatabaseTermPage() {
+  return renderBackendNetworkPage(relationalDatabaseSpec);
 }
