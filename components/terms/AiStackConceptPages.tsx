@@ -28,6 +28,14 @@ import { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
 import { RetrievalTermPage } from "./ai-stack-pages/retrieval";
 import { ChunkingTermPage } from "./ai-stack-pages/chunking";
 import { RerankingTermPage } from "./ai-stack-pages/reranking";
+import { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
+import { MultimodalTermPage } from "./ai-stack-pages/multimodal";
+import { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
+import { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
+import { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
+import { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting";
+import { TemperatureTermPage } from "./ai-stack-pages/temperature";
+import { TokenizationTermPage } from "./ai-stack-pages/tokenization";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -58,6 +66,14 @@ export { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
 export { RetrievalTermPage } from "./ai-stack-pages/retrieval";
 export { ChunkingTermPage } from "./ai-stack-pages/chunking";
 export { RerankingTermPage } from "./ai-stack-pages/reranking";
+export { GenerativeAiTermPage } from "./ai-stack-pages/generative-ai";
+export { MultimodalTermPage } from "./ai-stack-pages/multimodal";
+export { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
+export { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
+export { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
+export { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting";
+export { TemperatureTermPage } from "./ai-stack-pages/temperature";
+export { TokenizationTermPage } from "./ai-stack-pages/tokenization";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -90,4 +106,12 @@ export const aiStackArticlePages = {
   "retrieval": RetrievalTermPage,
   "chunking": ChunkingTermPage,
   "reranking": RerankingTermPage,
+  "generative-ai": GenerativeAiTermPage,
+  multimodal: MultimodalTermPage,
+  "reasoning-model": ReasoningModelTermPage,
+  "system-prompt": SystemPromptTermPage,
+  "few-shot-prompting": FewShotPromptingTermPage,
+  "zero-shot-prompting": ZeroShotPromptingTermPage,
+  temperature: TemperatureTermPage,
+  tokenization: TokenizationTermPage,
 } as const;
