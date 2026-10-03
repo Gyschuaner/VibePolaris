@@ -48,8 +48,8 @@ export function EvalDatasetLesson() {
 
 type EvaluationRunMode = 'same' | 'changed' | 'missing';
 
-const evaluationRunBaseline = { id: 'run-17', dataset: 'support-v1', subject: 'agent-B', grader: 'rubric-v2', traces: 12, passed: 9 };
-const evaluationRunCandidate = { id: 'run-18', dataset: 'support-v1', subject: 'agent-C', grader: 'rubric-v2', traces: 12, passed: 10 };
+const evaluationRunBaseline = { id: 'run-17', dataset: 'support-v1', subject: 'agent-B', grader: 'rubric-v2', environment: 'sandbox-2026-10', traces: 12, passed: 9 };
+const evaluationRunCandidate = { id: 'run-18', dataset: 'support-v1', subject: 'agent-C', grader: 'rubric-v2', environment: 'sandbox-2026-10', traces: 12, passed: 10 };
 
 export function EvaluationRunLesson() {
   const [mode, setMode] = useState<EvaluationRunMode>('same');
@@ -58,7 +58,7 @@ export function EvaluationRunLesson() {
   const checkedCandidate = checkedMode === 'changed' ? { ...evaluationRunCandidate, dataset: 'support-v2' } : checkedMode === 'missing' ? { ...evaluationRunCandidate, traces: 11 } : evaluationRunCandidate;
   const result = checkedMode === 'same' ? {
     title: '条件一致，可以回到逐题差异',
-    body: 'run-17 与 run-18 使用同一题集版本、被测版本和评分器；run-18 多通过 1 题，可以继续查看是哪一条轨迹造成差异。',
+    body: 'run-17 与 run-18 使用同一题集版本、评分器和运行环境，但被测版本从 agent-B 改为 agent-C；run-18 多通过 1 题，可以继续查看是哪一条轨迹造成差异。',
   } : checkedMode === 'changed' ? {
     title: '题集版本不同，暂不比较总分',
     body: 'run-17 使用 support-v1，run-18 使用 support-v2。总分的变化可能来自题目变化，先重新运行同一版本或单独报告版本差异。',
@@ -71,8 +71,8 @@ export function EvaluationRunLesson() {
     <div className={s.runLedger} aria-label="两次评测运行记录">
       {[evaluationRunBaseline, candidate].map((run, index) => <article key={run.id} className={s.runCard}>
         <header><span>{index === 0 ? '基准运行' : '候选运行'}</span><strong>{run.id}</strong></header>
-        <dl><div><dt>题集</dt><dd>{run.dataset}</dd></div><div><dt>被测版本</dt><dd>{run.subject}</dd></div><div><dt>评分器</dt><dd>{run.grader}</dd></div><div><dt>轨迹</dt><dd>{run.traces}/12</dd></div><div><dt>汇总</dt><dd>{run.passed}/12</dd></div></dl>
-        <div className={s.traceGrid} aria-label={`${run.id} 的逐项轨迹`}><span className={s.traceLabel}>逐项轨迹</span>{Array.from({ length: 12 }, (_, i) => <span key={i} data-present={i < run.traces} data-pass={i < run.passed}>{i < run.traces ? i + 1 : '—'}</span>)}</div>
+        <dl><div><dt>题集</dt><dd>{run.dataset}</dd></div><div><dt>被测版本</dt><dd>{run.subject}</dd></div><div><dt>评分器</dt><dd>{run.grader}</dd></div><div><dt>环境</dt><dd>{run.environment}</dd></div><div><dt>轨迹</dt><dd>{run.traces}/12</dd></div><div><dt>汇总</dt><dd>{run.passed}/12</dd></div></dl>
+        <div className={s.traceGrid} aria-label={`${run.id} 的逐项轨迹`}><span className={s.traceLabel}>逐项轨迹（每格带状态）</span>{Array.from({ length: 12 }, (_, i) => { const present = i < run.traces; const status = !present ? '未评分' : i < run.passed ? '通过' : '失败'; const label = `${run.id} 第${i + 1}条轨迹：${status}`; return <span key={i} role="img" aria-label={label} title={label} data-present={present} data-pass={present && i < run.passed}>{present ? i + 1 : '—'}<span className={s.srOnly}>{`：${status}`}</span></span>; })}</div>
       </article>)}
     </div>
     <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>检查是否可比较<ArrowRight size={18}/></button>

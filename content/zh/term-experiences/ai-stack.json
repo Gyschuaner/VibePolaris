@@ -17141,11 +17141,11 @@
   },
   {
     "slug": "evaluation-run",
-    "lead": "三次运行的总分相近，怎样知道是哪一题和哪条轨迹造成差异？",
+    "lead": "run-17 与 run-18 的总分相近，怎样知道是哪一题和哪条轨迹造成差异？",
     "definition": "评测运行把题集、被测版本、评分器、环境和逐项结果绑定成一次可复查执行。",
     "boundary": "缺少条件或轨迹的记录不能证明两次运行可比较，也不能把空白补成失败。",
     "sceneKind": "timeline",
-    "sceneTitle": "一次评测运行从建立到可复查结果",
+    "sceneTitle": "两次评测运行从条件对齐到可复查结果",
     "actionLabel": "逐步查看",
     "actors": [
       {
@@ -17158,7 +17158,7 @@
       {
         "id": "trial",
         "label": "试跑轨迹",
-        "detail": "3 次独立尝试",
+        "detail": "run-17/run-18 各保留 12 条轨迹",
         "icon": "code",
         "group": "执行"
       },
@@ -17172,7 +17172,7 @@
       {
         "id": "run",
         "label": "运行记录",
-        "detail": "run-17",
+        "detail": "run-17 / run-18",
         "icon": "database",
         "group": "证据"
       }
@@ -17200,7 +17200,7 @@
     "frames": [
       {
         "label": "建立运行",
-        "note": "锁定题集、版本、评分器和环境。",
+        "note": "锁定 support-v1、agent-B、rubric-v2 和运行环境。",
         "activeIds": [
           "suite",
           "run"
@@ -17211,13 +17211,13 @@
           "grader"
         ],
         "values": {
-          "run": "run-17 · 版本B"
+          "run": "run-17 · support-v1 · agent-B"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "逐次试跑",
-        "note": "三次试跑各自留下输入、输出和失败类型。",
+        "label": "对齐候选",
+        "note": "run-17 与 run-18 各自留下输入、输出和失败类型。",
         "activeIds": [
           "trial",
           "grader"
@@ -17227,7 +17227,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "trial": "3 trials",
+          "trial": "run-17 / run-18",
           "grader": "逐题记录"
         },
         "activeEdgeIds": [
@@ -17236,8 +17236,8 @@
         ]
       },
       {
-        "label": "形成结果",
-        "note": "评分器汇总通过数、长尾和失败类型。",
+        "label": "汇总可比结果",
+        "note": "保持题集与评分器不变，只切换 agent-B → agent-C；再汇总通过数。",
         "activeIds": [
           "run"
         ],
@@ -17248,7 +17248,7 @@
         ],
         "mutedIds": [],
         "values": {
-          "run": "9/12 · p95 4.8s"
+          "run": "run-17 9/12 → run-18 10/12"
         },
         "activeEdgeIds": [
           "g-r"
@@ -17256,7 +17256,7 @@
       },
       {
         "label": "记录缺口",
-        "note": "少一条轨迹时运行标为不可比较，不能补零。",
+        "note": "切换 support-v2 或少一条轨迹时标为不可比较，不能补零。",
         "activeIds": [
           "run"
         ],
@@ -17267,7 +17267,7 @@
           "grader"
         ],
         "values": {
-          "run": "缺1条 · unscored"
+          "run": "support-v2 或缺1条 · unscored"
         },
         "activeEdgeIds": []
       }
