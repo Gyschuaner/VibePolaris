@@ -1,0 +1,158 @@
+{
+  "slug": "google-gemini-38-flash-cyber-release-20260902",
+  "title": "Google 发布 Gemini 3.8 Flash 与 Cyber：通用代理降价，漏洞修补能力进入受限入口",
+  "summary": "Google 于 2026 年 9 月 2 日发布 Gemini 3.8 Flash 和面向网络防守的 Flash Cyber。Flash 以每百万输入 token 0.75 美元、输出 3.75 美元的介绍价提供；Cyber 的漏洞发现与自动修补能力优先通过 Fairwind Program 向受信任防守方开放。",
+  "body": "Google 在 9 月 2 日把 Gemini 3.8 做成两个面向不同场景的入口：通用的 Gemini 3.8 Flash，和专门给网络防守方的 Gemini 3.8 Flash Cyber。前者主打长时编码、代理工作流和多步推理，后者把能力集中在发现漏洞、编写补丁和验证修复。两者共享基础模型，但可用渠道和权限并不相同。\n\nFlash 的官方介绍价与 3.7 Flash 相同：每百万输入 token（模型计费时使用的文本片段单位）0.75 美元、输出 token 3.75 美元。Google 还说它在 DeepSWE v1.1、金融与法律代理评测以及 HLE-Verified 上取得提升，并提醒开发者可以调低 effort，减少复杂任务的 token 消耗。模型卡给出的工程边界是 1M token 上下文、64K 输出；知识截止到 2026 年 3 月，仍可能产生幻觉、超时，安全评测也不等同于真实部署表现。\n\nCyber 版本的新闻重点不在“一个更强的聊天模型”，而在防守闭环。Google 称它在 CyberGym 漏洞发现上达到前沿水平，在跨 20 种语言的内部测试中成功率超过 70%；CWE-Bench 的公开数字是 pass@1 47.2%，接近某领先模型的 47.8%，但成本更低。Chrome Security、Wiz 和 Google Cloud Vulnerability Research 还给出各自的内部案例。这些结果都是 Google 及合作方的评测或报告，读者不应把它们直接理解为任意代码库都能自动安全修复。\n\n能力边界由 Fairwind Program 决定。Cyber 不对所有 API 用户开放，而是优先给政府、关键基础设施运营商和软件维护者等受信任防守方。参与者需要把访问限制在内部安全、事件响应或渗透测试团队，并使用多因素认证等控制。普通开发者仍可以使用通用 Flash 和其他公开的 CodeMender 路径，但不能因为看到基准分数就绕过代码审查、回滚和变更审批。\n\n这次发布把“价格低、速度快的通用代理”和“受限的网络防御代理”放在同一个产品家族里。后续真正值得观察的不是榜单名次，而是补丁是否经过独立复核、模型在未知漏洞上的误报如何处理，以及受信任访问的审计记录能否让组织追责。",
+  "publishedAt": "2026-09-02",
+  "eventDate": "2026-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-gemini-38-flash-cyber-release-20260902.svg",
+    "alt": "Gemini 3.8 Flash 面向通用代理与编码，Flash Cyber 面向受限的漏洞发现与修补；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/google-gemini-38-flash-cyber-release-20260902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "two-variants",
+      "title": "同一发布，两个用途",
+      "body": "Gemini 3.8 Flash 面向通用工程与代理任务；Flash Cyber 面向漏洞发现和自动修补，并通过 Fairwind 交给受信任防守方。用途和访问权限是产品差异的一部分。",
+      "kind": "narrative"
+    },
+    {
+      "id": "price-context",
+      "title": "低价来自 effort 和规模选择",
+      "body": "Google 公布的介绍价是输入每百万 token 0.75 美元、输出 3.75 美元。复杂任务会调用更多推理步骤；模型卡的 1M 上下文和 64K 输出也不意味着每次请求都会达到上限。",
+      "kind": "technical"
+    },
+    {
+      "id": "cyber-evals",
+      "title": "漏洞分数要连着测试条件看",
+      "body": "Google 报告 CyberGym、CWE-Bench 和内部 20 语言代码库结果，也列出 Chrome、Wiz 与云安全团队案例。这些数据说明研发方向，不能代替组织对自己的代码、权限和补丁流程做验证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "access",
+      "title": "Cyber 能力被放在受控入口",
+      "body": "Fairwind 优先面向政府、关键基础设施和软件维护者，要求限制内部安全团队使用、启用 MFA 等控制。通用 Flash 的可用性不等于 Cyber 的可用性。",
+      "kind": "boundary"
+    },
+    {
+      "id": "limitations",
+      "title": "模型卡仍写着现实限制",
+      "body": "Gemini 3.8 Flash 的知识截止为 2026 年 3 月，并可能出现幻觉、延迟或超时。安全评估和公司案例需要在实际环境继续复核。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "从基准分数走到一个可上线补丁",
+    "question": "漏洞发现、修补和上线是三个不同环节，模型的分数只覆盖其中一部分。",
+    "steps": [
+      {
+        "label": "发现候选漏洞",
+        "detail": "模型扫描代码或运行环境，提出可能的缺陷；误报仍需人工和工具复核。",
+        "evidence": "Google CyberGym and internal benchmark description"
+      },
+      {
+        "label": "生成补丁",
+        "detail": "代理根据上下文写出修复，并尝试用测试或静态分析确认补丁没有破坏行为。",
+        "evidence": "Google CWE-Bench description"
+      },
+      {
+        "label": "在受控环境验证",
+        "detail": "组织要把模型权限限制在授权仓库和安全团队，保留变更记录与回滚路径。",
+        "evidence": "Fairwind access controls"
+      },
+      {
+        "label": "人工审批上线",
+        "detail": "只有通过代码审查、回归测试和发布流程，补丁才应进入生产；榜单结果不能跳过这一步。",
+        "evidence": "Evidence boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google",
+    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "agent-loop",
+    "tools",
+    "eval",
+    "benchmark",
+    "execution-sandbox",
+    "authorization"
+  ],
+  "relatedArticleSlugs": [
+    "google-fairwind-cyber-defense-program-20260902",
+    "meta-muse-spark-13-agentic-coding-20260902"
+  ],
+  "sources": [
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
+      "claim": "Google 于 2026 年 9 月 2 日发布 Gemini 3.8 Flash 与 Gemini 3.8 Flash Cyber；Flash 的介绍价为每百万输入 token 0.75 美元、输出 token 3.75 美元。",
+      "excerpt": "Sep 02, 2026… Gemini 3.8 Flash is our most intelligent workhorse model… available at the same introductory price as 3.7 Flash at $0.75 per million input tokens and $3.75 per million output tokens."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
+      "claim": "Google 称 Flash Cyber 面向漏洞发现与自动修补，并通过 Fairwind Program 向受信任的防守方提供；公司同时报告 CyberGym、CWE-Bench 和内部代码库测试结果。",
+      "excerpt": "Gemini 3.8 Flash Cyber… frontier-level performance in vulnerability detection and automated patching, available to trusted defenders through our new Fairwind Program. On CWE-Bench, it reports pass@1 of 47.2% versus a leading frontier model at 47.8%."
+    },
+    {
+      "url": "https://deepmind.google/models/model-cards/gemini-3-8-flash/",
+      "claim": "Gemini 3.8 Flash 模型卡记录 1M token 上下文、64K 输出，并明确知识截止 2026 年 3 月及幻觉、超时等限制。",
+      "excerpt": "Gemini 3.8 Flash accepts text, images, audio and video with a context window of up to 1M and 64K token output. The model card lists a March 2026 knowledge cutoff and notes hallucinations, occasional slowness or timeout issues."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber",
+  "sourceHash": "sha256:7e07c046f5746b8e6736f5a2e84a062a15799af526c959a2082f902c66e1815e",
+  "status": "published",
+  "discoveredAt": "2026-10-03T02:30:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
+      "claim": "Google 于 2026 年 9 月 2 日发布 Gemini 3.8 Flash 与 Gemini 3.8 Flash Cyber；Flash 的介绍价为每百万输入 token 0.75 美元、输出 token 3.75 美元。",
+      "excerpt": "Sep 02, 2026… Gemini 3.8 Flash is our most intelligent workhorse model… available at the same introductory price as 3.7 Flash at $0.75 per million input tokens and $3.75 per million output tokens."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
+      "claim": "Google 称 Flash Cyber 面向漏洞发现与自动修补，并通过 Fairwind Program 向受信任的防守方提供；公司同时报告 CyberGym、CWE-Bench 和内部代码库测试结果。",
+      "excerpt": "Gemini 3.8 Flash Cyber… frontier-level performance in vulnerability detection and automated patching, available to trusted defenders through our new Fairwind Program. On CWE-Bench, it reports pass@1 of 47.2% versus a leading frontier model at 47.8%."
+    },
+    {
+      "url": "https://deepmind.google/models/model-cards/gemini-3-8-flash/",
+      "claim": "Gemini 3.8 Flash 模型卡记录 1M token 上下文、64K 输出，并明确知识截止 2026 年 3 月及幻觉、超时等限制。",
+      "excerpt": "Gemini 3.8 Flash accepts text, images, audio and video with a context window of up to 1M and 64K token output. The model card lists a March 2026 knowledge cutoff and notes hallucinations, occasional slowness or timeout issues."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T02:30:00Z",
+    "method": "source",
+    "notes": "核对 Google 发布文与 Gemini 3.8 Flash 模型卡；明确价格、评测和访问限制的适用范围，不将公司基准写成普遍上线保证。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T02:30:00Z",
+    "notes": "模型首轮自判：结构化内容交由机械完整性检查后直发。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T02:28:34Z",
+    "questions": [],
+    "notes": "通过。Flash 与 Flash Cyber 的用途、价格、模型卡限制、CyberGym/CWE-Bench 评测和 Fairwind 受限入口均分开，厂商数字没有写成普遍修复能力；sections、解释器、SVG 和 Fairwind 联动一致。",
+    "changes": [
+      "将 hero.alt 改为分流机制描述；首次解释 token 的计费含义。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-02",
+  "promotedAt": "2026-10-03T02:30:29.228Z"
+}
