@@ -37,3 +37,4 @@ export { systemPromptSources } from "./system-prompt";
 export { fewShotPromptingSources } from "./few-shot-prompting";
 export { zeroShotPromptingSources } from "./zero-shot-prompting";
 export { temperatureSources } from "./temperature";
+export { tokenizationSources } from "./tokenization";

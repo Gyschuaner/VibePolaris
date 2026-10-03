@@ -406,23 +406,23 @@
     "question": "同样字数的中英文为什么 token 数量不同？",
     "definition": "分词器使用特定模型预先准备的词表和编码规则，把原始字符串切成 token（词、半个词、空格或符号等片段），再映射为模型接收的编号序列。",
     "boundary": "token 不是固定的字、词或字符数；空格、语言、代码、emoji、模型版本和 tokenizer 都可能改变切分，示例编号不能跨模型套用。",
-    "demoType": "flow",
-    "demoTitle": "一段文本如何变成 token",
+    "demoType": "comparison",
+    "demoTitle": "换编码器后 token 边界改变",
     "demoSteps": [
       {
-        "label": "原文",
+        "label": "字符串",
         "value": "CSS 很好用",
-        "note": "这里按 7 个字符计数，包含空格；字符数和 token 数不是同一个单位。"
+        "note": "输入先是普通字符串。"
       },
       {
-        "label": "切分",
-        "value": "CSS | 很好 | 用（示意）",
-        "note": "每个片段可能是一个词、半个词、空格或符号；切分边界和数量是教学示意，真实结果要用目标模型的 tokenizer 实际编码才知道。"
+        "label": "BPE",
+        "value": "CSS · 很 · 好 · 用 → 4 个示意 token",
+        "note": "子词边界由具体词表决定。"
       },
       {
-        "label": "编号",
-        "value": "[示意编号…]",
-        "note": "词表把每个片段映射为 ID；编号大小没有通用含义，只在对应 tokenizer 中有意义。"
+        "label": "换编码器",
+        "value": "CSS · 很好用 → 2 个示意 token",
+        "note": "不同编码器不能直接比较 token 数。"
       }
     ],
     "quizQuestion": "token 与字数是什么关系？",

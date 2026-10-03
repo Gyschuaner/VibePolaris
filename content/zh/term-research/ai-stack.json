@@ -144,14 +144,17 @@
   },
   {
     "slug": "tokenization",
-    "mechanism": "分词器把字符串切成模型词表中的 token 编号，模型实际接收的是编号序列而不是原始字符。",
-    "misconception": "一个 token 不是固定一个字或一个单词；不同语言、空格和分词器都会改变数量。",
-    "demoSignature": "输入：“CSS 很好用”；中间：字符7个被编码成示意token 5个，删除空格后变为4个；输出：两组编号序列。可视化：字符带切分成彩色token块。 建议4帧：原字符串展开、切分线落下、token块翻成编号、删除空格后重新拼块；交互：输入文字或切换编码器比较数量。",
+    "mechanism": "分词器按具体词表和规则把字符串切成 token 片段并映射为编号，模型接收编号序列而不是原始字符。",
+    "misconception": "token 不是固定一个字或一个词；语言、空格、符号和编码器都会影响数量。",
+    "demoSignature": "“CSS 很好用”在 BPE 示意与按词示意下显示不同 token 数和编号；正文强调示意不能替代目标模型实测。",
     "sourceUrls": [
       "https://github.com/openai/tiktoken",
+      "https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken",
+      "https://huggingface.co/docs/transformers/main/en/tokenizer_summary",
+      "https://arxiv.org/abs/1808.06226",
       "https://arxiv.org/abs/1508.07909"
     ],
-    "rewriteRisk": "演示需标明分词结果取决于具体编码器，不能把示意切分写成普遍规则。",
+    "rewriteRisk": "始终绑定具体编码器，避免把字符、词和 token 当成同一层单位。",
     "nearDuplicates": [
       "context-window"
     ]
