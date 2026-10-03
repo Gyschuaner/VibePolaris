@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, GitBranch, GitCommit, Pencil, Stack } from "@phosphor-icons/react";
+import { ArrowRight, GitBranch, GitCommit, GitDiff, Pencil, Stack } from "@phosphor-icons/react";
 import { Caption } from "../AiStackConceptLessonShared";
 import { useScene } from "../HarnessStoryScenes";
 import styles from "../ConceptArticle.module.css";
@@ -134,6 +134,23 @@ function PullLesson() {
   </div>;
 }
 
+function FetchLesson() {
+  const scene = useScene(3);
+  const labels = ["fetch 前", "fetch origin", "比较远程独有提交"];
+  const fetched = scene.step >= 1;
+  const compared = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git fetch 更新远程跟踪引用演示">
+    <Caption scene={scene} labels={labels} titles={["当前只知道 A", "origin/main 前进，main 不动", "把远程独有提交列出来"]} copy={["main 与 origin/main 都指向 A；远端新增的 B1、B2 还没有进入本地状态记录。", "fetch origin 取得对象并让 origin/main 指向 B2，当前 main 和工作区仍在 A。", "main..origin/main 显示 B1、B2；比较提供集成证据，但还没有执行 merge 或 rebase。"]} />
+    <div className={styles.fetchBoard} aria-live="polite">
+      <div data-active={!fetched}><GitBranch size={22} aria-hidden="true" /><strong>本地 main</strong><code>A</code><span>工作区保持 A</span></div>
+      <ArrowRight size={18} aria-hidden="true" />
+      <div data-active={fetched}><GitCommit size={22} aria-hidden="true" /><strong>origin/main</strong><code>{fetched ? "B2" : "A"}</code><span>{fetched ? "remote-tracking 已更新" : "上次知道的状态"}</span></div>
+      {compared && <div className={styles.fetchProof}><GitDiff size={22} aria-hidden="true" /><strong>main..origin/main</strong><span>B1、B2 是远程独有；当前分支还没有采用它们。</span></div>}
+    </div>
+    <div className={styles.choices} role="group" aria-label="推进 fetch 流程"><button type="button" onClick={() => scene.seek(1)} aria-pressed={scene.step === 1}>fetch origin</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={compared}>比较差异</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
@@ -144,5 +161,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "remote") return <RemoteLesson />;
   if (slug === "clone") return <CloneLesson />;
   if (slug === "pull") return <PullLesson />;
+  if (slug === "fetch") return <FetchLesson />;
   return null;
 }

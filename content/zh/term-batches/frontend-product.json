@@ -1075,16 +1075,16 @@
   },
   {
     "zh": "获取", "en": "Fetch", "slug": "fetch", "cat": "Git",
-    "say": "fetch 下载远程的新提交和引用，但不会自动改动当前分支和工作区。",
-    "aliases": ["git fetch", "获取远程更新", "刷新远程引用"],
+    "say": "fetch 从远程取得新对象和引用，更新 remote-tracking 状态，但不会自动改动当前分支和工作区。",
+    "aliases": ["git fetch", "获取远程更新", "刷新远程引用", "remote-tracking"],
     "question": "怎样先看看团队分支更新了什么，再决定是否合并？",
-    "definition": "git fetch 与远程通信，更新 origin/main 等远程跟踪引用，并获取本地尚不存在的对象。",
-    "boundary": "fetch 后当前分支可能仍落后；需要另行 merge、rebase 或切换引用才能采用远程提交。",
+    "definition": "git fetch 与远程通信，取得本地尚不存在的对象，更新 origin/main 等远程跟踪引用；当前 main 和工作区仍保持原位。",
+    "boundary": "fetch 后当前分支可能仍落后；需要另行比较、merge、rebase 或 pull 才能采用远程提交。",
     "demoType": "state", "demoTitle": "fetch 前后当前分支不变",
-    "demoSteps": [{"label":"获取前","value":"main 与 origin/main 指向旧提交","note":"本地还不知道远程新记录。"},{"label":"执行 fetch","value":"origin/main 前进两个提交","note":"当前 main 和工作区保持原样。"},{"label":"比较差异","value":"查看 main..origin/main","note":"确认内容后再决定集成方式。"}],
+    "demoSteps": [{"label":"fetch 前","value":"main 与 origin/main 都在 A","note":"远端 B1、B2 尚未进入本地状态记录。"},{"label":"执行 fetch","value":"origin/main 前进到 B2","note":"对象已取得，当前 main 和工作区保持 A。"},{"label":"比较差异","value":"main..origin/main 列出 B1、B2","note":"先看证据，再决定集成方式。"}],
     "quizQuestion": "fetch 会自动修改当前工作区文件吗？", "quizOptions": ["通常不会", "一定会覆盖全部文件", "只会删除未跟踪文件"],
     "correctText": "fetch 主要更新对象和远程跟踪引用。", "wrongText": "它不会按常规行为覆盖或删除工作区文件。",
-    "promptTitle": "比较本地与远程分支", "prompt": "请根据 fetch 后的分支图，列出本地独有、远程独有和共同提交，并建议 merge、rebase 或暂不集成的依据。",
+    "promptTitle": "比较本地与远程分支", "prompt": "请根据 fetch 后的提交图、git log main..origin/main 和 git diff main..origin/main，列出本地独有、远程独有和共同提交，并建议 merge、rebase 或暂不集成的依据；不要把 fetch 说成已经合并。",
     "relatedSlugs": ["remote", "pull", "merge"]
   },
   {
