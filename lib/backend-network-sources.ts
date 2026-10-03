@@ -37,3 +37,10 @@ export const rowSources: Source[] = [
   make("PostgreSQL", "Sorting Rows", "https://www.postgresql.org/docs/current/queries-order.html", ["row-order"]),
   make("SQLite", "The WITHOUT ROWID Optimization", "https://www.sqlite.org/withoutrowid.html", ["row-identity", "row-boundary"]),
 ];
+
+export const columnSources: Source[] = [
+  make("PostgreSQL", "DDL Basics", "https://www.postgresql.org/docs/current/ddl-basics.html", ["column-definition", "column-constraints"]),
+  make("PostgreSQL", "Data Types", "https://www.postgresql.org/docs/current/datatype.html", ["column-types", "column-operations"]),
+  make("PostgreSQL", "Select Lists", "https://www.postgresql.org/docs/current/queries-select-lists.html", ["column-operations"]),
+  make("SQLite", "Datatypes In SQLite", "https://www.sqlite.org/datatype3.html", ["column-types", "column-boundary"]),
+];

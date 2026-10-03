@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { apiKeySources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources } from "@/lib/backend-network-sources";
+import { apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -321,4 +321,58 @@ const rowSpec: PageSpec = {
 
 export function RowTermPage() {
   return renderBackendNetworkPage(rowSpec);
+}
+
+const columnSpec: PageSpec = {
+  slug: "column",
+  title: "列",
+  subtitle: "Column · 给每个属性规定名字、类型和约束",
+  intro: "“金额”这一列到底是文字还是数字，会决定排序、求和和错误输入怎样处理。数据库列不是表头上的装饰，而是对一类属性的持续约定：新行写入时，值要按它的类型和约束接受检查。",
+  hero: {
+    question: "把四个金额放进同一列",
+    nodes: [["输入", "2 · 10 · 9.5 · abc"], ["列类型", "NUMERIC"], ["结果", "21.5；abc 被拒"]],
+    proof: "类型改变可执行的操作，也改变错误何时暴露。",
+  },
+  sections: [
+    {
+      id: "column-definition",
+      title: "列定义的是一类属性",
+      blocks: [
+        { id: "column-definition", text: "列有名字、数据类型、默认值和可选约束。amount NUMERIC 表示这里存的是可计算的数值，created_at TIMESTAMP 表示时间，NOT NULL 则要求每一行都提供值。数据库把这些要求放在结构里，让插入和更新都经过同一套检查。" },
+        { id: "column-constraints", text: "默认值只在调用方省略该列时提供一个初始值，CHECK 可以限制允许的范围，唯一约束则限制不同的行不能出现重复组合。它们共同描述“什么样的值才是可接受的”，但不自动理解更高层的业务含义。" },
+      ],
+      lesson: {
+        title: "同一批输入在 TEXT 与 NUMERIC 列中的不同结果",
+        ariaLabel: "数据库列类型改变排序、求和与拒绝输入的演示",
+        steps: [
+          { label: "文本列", actors: ["amount TEXT", "2 · 10 · 9.5", "字典序"], evidence: "排序会把 10 放在 2 前面；这些字符看起来像数字，却没有数值加法语义。" },
+          { label: "数值列", actors: ["amount NUMERIC", "2 · 10 · 9.5", "SUM = 21.5"], evidence: "数据库按数值比较并求和，列类型让操作的含义稳定下来。" },
+          { label: "错误输入", actors: ["amount NUMERIC", "abc", "拒绝写入"], evidence: "错误在写入边界暴露，避免不可计算的值悄悄进入后续报表。" },
+        ],
+        failure: { label: "把所有东西存成字符串", text: "看似省去类型选择，却把校验、排序和计算推给每个查询，错误会在更晚、更难追踪的地方出现。" },
+      },
+    },
+    {
+      id: "column-types",
+      title: "类型会影响比较与计算",
+      blocks: [
+        { id: "column-types", text: "字符串“10”和数字 10 可能在显示上相似，数据库对它们的比较、排序和可用函数却不同。类型选择要看数据的真实含义：邮政编码是标识，适合字符串；金额是数量，需要数值类型；时间要带上时区和精度约定。" },
+        { id: "column-operations", text: "查询可以选择某些列、计算表达式或给结果列取别名；这不会改变原列的定义。把 amount * quantity 算成 total，只创建本次结果中的一列；若要持久化 total，还要考虑它与源值不一致的更新问题。" },
+      ],
+    },
+    {
+      id: "column-boundary",
+      title: "边界：类型不是业务规则的全部",
+      blocks: [
+        { id: "column-boundary", text: "NUMERIC 能阻止 abc，却不知道金额是否为正、币种是否匹配、订单状态是否允许退款。列约束、跨列 CHECK、外键和应用授权分别回答不同层的问题，不能把它们混成“字段校验已经完成”。" },
+        { id: "column-operations", text: "读者看到一个列定义时，可以先问它保护了哪条事实，哪些输入仍会通过，查询如何使用它，以及改变类型会不会影响旧数据和索引。能预测这些后果，才真正理解列的作用。" },
+      ],
+    },
+  ],
+  sources: columnSources,
+  relatedIntro: "列与行、表和数据库模式共同描述数据结构；继续看 ACID，可以理解这些定义如何参与一次可靠的事务。",
+};
+
+export function ColumnTermPage() {
+  return renderBackendNetworkPage(columnSpec);
 }
