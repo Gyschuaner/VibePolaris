@@ -59,3 +59,9 @@ export const humanGraderSources = [
   source('Yang Liu、Dan Iter、Yichong Xu 等', 'G-EVAL: NLG Evaluation using GPT-4 with Better Human Alignment', 'https://arxiv.org/pdf/2303.16634', ['human-calibration-detail'], '2023'),
   source('Lianmin Zheng、Wei-Lin Chiang、Ying Sheng 等', 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena', 'https://arxiv.org/pdf/2306.05685', ['human-boundary-detail'], '2023'),
 ];
+export const modelGraderSources = [
+  source('OpenAI', 'Graders', 'https://developers.openai.com/api/docs/guides/graders', ['model-definition-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['model-protocol-detail']),
+  source('Yang Liu、Dan Iter、Yichong Xu 等', 'G-EVAL: NLG Evaluation using GPT-4 with Better Human Alignment', 'https://arxiv.org/pdf/2303.16634', ['model-calibration-detail'], '2023'),
+  source('Lianmin Zheng、Wei-Lin Chiang、Ying Sheng 等', 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena', 'https://arxiv.org/pdf/2306.05685', ['model-boundary-detail'], '2023'),
+];

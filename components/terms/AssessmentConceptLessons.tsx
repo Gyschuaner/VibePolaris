@@ -358,3 +358,53 @@ export function HumanGraderLesson() {
     <button className={base.reset} onClick={() => { setMode('agreement'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置评审记录</button>
   </div>;
 }
+
+type ModelMode = 'fixed' | 'bias' | 'unscored';
+
+const modelCases: Record<ModelMode, { label: string; answer: string; rule: string; model: string; human: string; bias: string; title: string; body: string }> = {
+  fixed: {
+    label: '固定输入和格式',
+    answer: '审核通过后，通常三个工作日到账。',
+    rule: '准确性、完整性、风险各 0–2；JSON',
+    model: '4/5',
+    human: '待对照',
+    bias: '尚未统计',
+    title: '先得到可解析的评分记录',
+    body: '输入、量表和 JSON 字段都固定后，才知道评分器检查了什么；这一条记录还不能证明它和人工判断一致。',
+  },
+  bias: {
+    label: '发现系统性高估',
+    answer: '退款三个工作日到账。',
+    rule: '同一量表 · 5 条校准样本',
+    model: '4/5',
+    human: '3/5',
+    bias: '高估 2/5',
+    title: '发现系统性高估，先校准再上线',
+    body: '一条分数差异不是结论；同一组人工样本里反复高估，才是需要回到量表、提示词和样本分布查原因的信号。',
+  },
+  unscored: {
+    label: '证据不足',
+    answer: '已经退款了。',
+    rule: '缺少支付状态和工具日志',
+    model: 'unscored',
+    human: '等待补证据',
+    bias: '不计入通过率',
+    title: '证据不足时保留未评分',
+    body: '资料没有支付状态，评分器不能把一句自信的话当成事实；返回未评分，并记录需要补什么证据。',
+  },
+};
+
+export function ModelGraderLesson() {
+  const [mode, setMode] = useState<ModelMode>('fixed');
+  const [checkedMode, setCheckedMode] = useState<ModelMode | null>(null);
+  const current = modelCases[mode];
+  const report = checkedMode ? modelCases[checkedMode] : current;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：用人工参考检查模型评分器">
+    <div className={s.controls}><label>校准状态<select value={mode} onChange={e => { setMode(e.target.value as ModelMode); setCheckedMode(null); }}><option value="fixed">固定输入和格式</option><option value="bias">发现系统性高估</option><option value="unscored">证据不足</option></select></label><p className={s.runHint}>先锁定规则和结构化输出，再和人工参考比较偏差。</p></div>
+    <div className={s.modelSample} aria-label="待评样本"><span>待评回答</span><strong>{current.answer}</strong><small>评分规则：{current.rule}</small></div>
+    <div className={s.modelScores} aria-label="模型与人工参考记录"><article><span>模型评分器</span><strong>{current.model}</strong></article><article><span>人工参考</span><strong>{current.human}</strong></article><article data-bias={mode === 'bias' || mode === 'unscored'}><span>偏差记录</span><strong>{current.bias}</strong></article></div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>检查模型评分<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.modelResult} role="status"><header><h3>{report.title}</h3><span>{report.label}</span></header><p>{report.body}</p><p className={s.runEvidence}>检查记录：模型 {report.model}；人工 {report.human}；{report.bias}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('fixed'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置评分条件</button>
+  </div>;
+}

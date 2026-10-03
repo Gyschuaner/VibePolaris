@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson, ModelGraderLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -307,6 +307,38 @@ export function HumanGraderTermPage() {
       <p id="human-boundary-detail" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究讨论模型裁判的位置、长度和自我偏好等偏差，提醒评价判断本身需要验证。<strong>人工也不能从看不见的环境状态补出事实；证据缺失时，未评分比猜一个分数更诚实。</strong><Cite id="human-boundary-detail"/></p>
       <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对的账单，评审者可以评价措辞是否符合规则，却不能证明退款真的发生。把这类样本记成未评分，并写明需要补什么证据。等待补证据期间，不要把它悄悄塞进通过率或失败率。</p>
       <ArticleAside title="人工评分的边界检查"><p>评审者是否看到相同材料？规则是否有正反例？分数有没有逐项理由？分歧是否留下记录？证据不足是否允许未评分？五个问题有一个答不上来，就先修流程。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function ModelGraderTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={modelGraderSources}/>;
+  return <ConceptArticle slug="model-grader" title="模型评分器" subtitle="Model Grader · 用模型批量检查输出，再拿人工样本校准偏差" sources={modelGraderSources}
+    sections={[['model-definition', '模型评分不是第二个真理来源'], ['model-protocol', '先固定输入和输出格式'], ['model-calibration', '用人工参考发现系统性偏差'], ['model-boundary', '证据不足时返回未评分']]}
+    intro={<>模型评分器把待评输出、评分规则和必要参考交给另一个模型，让它按结构化格式给出分数、理由或未评分状态。它可以批量处理开放回答，但必须用人工参考样本检查偏差，不能把模型的分数当成客观事实。</>}
+    hero={<ConceptHero slug="model-grader" label="模型评分 4/5、人工参考 3/5；5 条校准样本中高估 2 条，证据不足时返回未评分"><div className={s.modelHero}><div className={s.modelHeroHeader}><span>量表 · 准确 / 完整 / 风险</span><span>输出 <strong>JSON</strong></span></div><div className={s.modelHeroCompare}><div><span>模型评分器</span><strong>4/5</strong></div><b>↔</b><div data-bias="true"><span>人工参考</span><strong>3/5</strong></div></div><div className={s.modelHeroGate}><span>5 条校准样本</span><strong>高估 2 条</strong><small>证据不足 → unscored</small></div></div></ConceptHero>}>
+    <ArticleSection id="model-definition" title="模型评分不是第二个真理来源"><Legacy slug="model-grader" names={['question', 'definition']}/>
+      <p id="model-definition-detail" className="vp-citation-target"><strong>模型评分器让一个模型按照评分规则检查另一个输出，并返回分数、理由或通过状态。</strong>OpenAI 的 graders 文档把模型评分列为评分器的一种，结果仍然需要和任务判据、人工参考一起解释。评分器可以提高批量检查速度，却不会因为“也是模型”就自动客观。<Cite id="model-definition-detail"/></p>
+      <p>被评模型和评分模型可以相同，也可以不同；无论怎样，评分模型都可能偏爱某种语气、回答长度或自己的答案。看到 4/5 只能说明它在这条规则和这条样本上给了 4/5，不能直接推出回答真实正确，更不能替代文件、工具或支付状态等外部证据。</p>
+      <div className={s.modelChecklist}><div><span>输入</span><strong>输出与必要参考</strong><p>把评分所需的回答、资料和环境证据一起固定。</p></div><div><span>规则</span><strong>维度与分档</strong><p>写清准确、完整、风险各档需要什么证据。</p></div><div><span>结果</span><strong>分数与理由</strong><p>保留结构化字段，方便回到原样本复查。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="model-protocol" title="先固定输入和输出格式"><Legacy slug="model-grader" names={['scene-heading']}/>
+      <p id="model-protocol-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务、成功标准、评分器和运行轨迹放在同一条评测链路里。<strong>评分提示词、输入字段、量表版本和结构化输出要先固定，才知道一次分数变化来自回答还是评分协议。</strong><Cite id="model-protocol-detail"/></p>
+      <p>例如规定准确性、完整性和风险各为 0–2 分，并要求返回 <code>{'{"score":4,"reasons":["保留审核条件"]}'}</code>。还要写清缺少支付状态时能否判断、理由必须指向哪条证据、无法判断时返回什么。只要求“给个 1 到 5 分”，会把规则藏在评分模型的临时判断里。</p>
+      <p>下面的记录是虚构的，不会调用模型。切换校准状态，观察固定协议、系统性高估和证据不足怎样改变结果；评分结果只用于解释评测口径。</p>
+      <ModelGraderLesson/>
+      <p>先把单条记录做成可解析的 JSON，再在多条代表性样本上统计误差。结构化格式方便筛出缺字段、理由为空或分数越界的记录，但它本身不能证明分数正确。</p>
+    </ArticleSection>
+    <ArticleSection id="model-calibration" title="用人工参考发现系统性偏差" className={base.offset}><Legacy slug="model-grader" names={['quiz-heading']}/>
+      <p id="model-calibration-detail" className="vp-citation-target">G-Eval 研究比较模型评价与人工判断，说明模型评分可以和人工参考比较，但相关性取决于任务、评价标准和样本。<strong>一条 4/5 对 3/5 的分差只是线索；同一组校准样本里反复高估或低估，才说明评分器需要调整。</strong><Cite id="model-calibration-detail"/></p>
+      <p>本例 5 条校准样本中有 2 条被模型高估。下一步要回到这些样本，检查评分规则是否漏了条件、提示词是否暗示了答案、被评模型或回答位置是否造成偏差。不要只改一个阈值，让总分看起来更好。</p>
+      <ArticleAside title="一组校准记录至少保留什么"><p>原回答、必要参考、人工分数、模型分数、逐项理由、模型与量表版本，以及高估、低估、位置偏差和理由缺失等误判类型。汇总数字要能回到具体样本。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="model-boundary" title="证据不足时返回未评分"><Legacy slug="model-grader" names={['prompt-heading']}/>
+      <p id="model-boundary-detail" className="vp-citation-target">MT-Bench 与 Chatbot Arena 的研究讨论模型裁判的位置、长度和自我偏好等偏差，提醒评分模型的判断需要单独验证。<strong>当样本缺少决定性证据时，评分器应返回未评分，而不是用自信措辞补出一个分数。</strong><Cite id="model-boundary-detail"/></p>
+      <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对账单。模型可以评价回答是否保留了“审核通过后”等措辞，却不能证明退款已经发生。把这条记成 <code>unscored</code>，写明需要补什么证据，并从通过率和失败率中单独报告。</p>
+      <p>上线前还要测试交换回答顺序、隐藏模型名称、改变回答长度和加入边界样本。发现分数随无关变化而变化时，先修评分协议和校准集，再解释业务指标。模型评分器是判断工具，最终结论仍要回到任务目标和可核对的结果。</p>
+      <ArticleAside title="看到模型评分变高时再问三句"><p>人工参考是否也变好？高估和低估是否集中在某类输入？证据不足的样本有没有被迫塞进分数？三句有一个答不上来，就先保留未评分并回到样本。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
