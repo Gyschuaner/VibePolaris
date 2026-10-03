@@ -1418,10 +1418,12 @@
     "slug": "evaluation-dataset",
     "mechanism": "评测数据集是一组带输入、期望行为、参考答案或元数据的样本，供评测过程重复运行。",
     "misconception": "它不是评分器，也不是分数；数据泄漏、分布偏差和标注错误会让评测结论失真。",
-    "demoSignature": "输入：30条工单样本按简单/边界/失败各10条；中间：去重后30→27，人工复核修正2个标签，划分训练0条/评测27条；输出：版本化数据集v2。可视化：建议5帧的样本篮分层、去重和改标；交互：筛分类查看覆盖缺口。",
+    "demoSignature": "输入：三个虚构工单 A/B/C，每单两条关联问题；中间：逐行交替把同一工单拆到开发/留出，按工单分组则整组留出 C；输出：分组模式没有重叠但留出只覆盖关键类，仍需检查覆盖。可视化：工单卡片在开发与留出篮之间移动，重叠工单亮警告；交互：切换逐行/按组并勾选工单，观察泄漏与覆盖提示。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/evals",
-      "https://www.nist.gov/itl/ai-risk-management-framework"
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/pdf/1803.09010",
+      "https://developers.google.com/machine-learning/crash-course/overfitting/dividing-datasets",
+      "https://scikit-learn.org/stable/modules/cross_validation.html"
     ],
     "rewriteRisk": "不要把训练数据和评测数据混用；后续正文需写版本、来源和污染风险。",
     "nearDuplicates": [
