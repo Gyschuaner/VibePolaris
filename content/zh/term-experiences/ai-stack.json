@@ -17502,5 +17502,188 @@
         "note": "多维度、可复现的模型评测"
       }
     ]
+  },
+  {
+    "slug": "cost-evaluation",
+    "lead": "同样完成任务，为什么要比较令牌、重试和工具成本？",
+    "definition": "成本评测在统一任务下统计令牌、调用、工具、重试和单任务费用，并与质量和延迟一起判断取舍。",
+    "boundary": "价格表或一次调用的单价不能代表完整任务成本。",
+    "sceneKind": "compare",
+    "sceneTitle": "质量与资源消耗同时摆在桌面上",
+    "actionLabel": "切换模型",
+    "actors": [
+      {
+        "id": "tasks",
+        "label": "固定任务",
+        "detail": "20 条业务题",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "model-a",
+        "label": "模型A",
+        "detail": "17/20 · ¥0.42",
+        "icon": "robot",
+        "group": "方案"
+      },
+      {
+        "id": "model-b",
+        "label": "模型B",
+        "detail": "18/20 · ¥1.16",
+        "icon": "robot",
+        "group": "方案"
+      },
+      {
+        "id": "budget",
+        "label": "预算门槛",
+        "detail": "¥1.00/任务",
+        "icon": "shield",
+        "group": "约束"
+      }
+    ],
+    "edges": [
+      {
+        "id": "t-a",
+        "from": "tasks",
+        "to": "model-a",
+        "label": "运行"
+      },
+      {
+        "id": "t-b",
+        "from": "tasks",
+        "to": "model-b",
+        "label": "运行"
+      },
+      {
+        "id": "b-g",
+        "from": "model-b",
+        "to": "budget",
+        "label": "核对"
+      }
+    ],
+    "frames": [
+      {
+        "label": "统一口径",
+        "note": "锁定题集、版本和计费项。",
+        "activeIds": [
+          "tasks"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "model-a",
+          "model-b",
+          "budget"
+        ],
+        "values": {
+          "tasks": "20题"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "比较结果",
+        "note": "A和B同时显示通过数、令牌、重试和成本。",
+        "activeIds": [
+          "model-a",
+          "model-b"
+        ],
+        "doneIds": [
+          "tasks"
+        ],
+        "mutedIds": [
+          "budget"
+        ],
+        "values": {
+          "model-a": "17/20 · ¥0.42",
+          "model-b": "18/20 · ¥1.16"
+        },
+        "activeEdgeIds": [
+          "t-a",
+          "t-b"
+        ]
+      },
+      {
+        "label": "触发预算",
+        "note": "B质量略高但超过单任务预算，进入复核。",
+        "activeIds": [
+          "budget"
+        ],
+        "doneIds": [
+          "tasks",
+          "model-a",
+          "model-b"
+        ],
+        "mutedIds": [],
+        "values": {
+          "budget": "B 超限"
+        },
+        "activeEdgeIds": [
+          "b-g"
+        ]
+      },
+      {
+        "label": "改变条件",
+        "note": "缓存命中或重试变化后，成本表必须重新记录。",
+        "activeIds": [
+          "budget"
+        ],
+        "doneIds": [
+          "tasks"
+        ],
+        "mutedIds": [
+          "model-a",
+          "model-b"
+        ],
+        "values": {
+          "budget": "条件改变"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "成本评测要把单位成本放回真实任务、质量、延迟和重试条件中。",
+    "quiz": {
+      "question": "更便宜的模型是否一定更划算？",
+      "options": [
+        {
+          "label": "要结合质量和完整任务成本",
+          "correct": true
+        },
+        {
+          "label": "只看标价最低",
+          "correct": false
+        },
+        {
+          "label": "只看一次成功调用",
+          "correct": false
+        }
+      ],
+      "success": "成本是任务级指标，不能从单价直接推断。",
+      "retry": "忽略重试和质量会得到错误选型。"
+    },
+    "prompt": {
+      "title": "计算单任务成本",
+      "text": "固定任务并记录令牌、工具、重试、缓存和质量结果，设置成本门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/cost-optimization",
+        "label": "OpenAI API · Cost optimization",
+        "note": "成本组成与优化方法"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/batch",
+        "label": "OpenAI API · Batch API",
+        "note": "批量运行与异步成本/吞吐取舍"
+      }
+    ]
   }
 ]
