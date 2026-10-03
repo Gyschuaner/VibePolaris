@@ -699,22 +699,22 @@
     "definition": "函数调用把模型的调用意图转换为结构化参数，应用执行函数后再把结果返回模型。",
     "boundary": "模型本身通常不执行函数；权限、重试和副作用由应用控制。",
     "demoType": "request",
-    "demoTitle": "订单问题触发一次函数调用",
+    "demoTitle": "先收到函数请求，再检查并执行",
     "demoSteps": [
       {
         "label": "用户输入",
         "value": "查一下订单 A102 到哪了",
-        "note": "模型识别到需要实时订单数据。"
+        "note": "模型提出查询意图，但收到请求时函数还没有执行。"
       },
       {
         "label": "函数参数",
-        "value": "get_order({\"orderId\":\"A102\"})",
-        "note": "应用校验参数后发起查询。"
+        "value": "call_01 · get_order({\"order_id\":\"A102\"})",
+        "note": "应用检查注册名、唯一字段、订单号格式和本次访问权。"
       },
       {
         "label": "工具结果",
-        "value": "{\"status\":\"shipped\"}",
-        "note": "页面显示 A102 已发货，不再猜测状态。"
+        "value": "执行 1 次 → {\"order_id\":\"A102\",\"status\":\"shipped\"}",
+        "note": "未知函数、无效 JSON、权限不足或订单不存在都会停在执行边界。"
       }
     ],
     "quizQuestion": "谁负责实际执行函数？",

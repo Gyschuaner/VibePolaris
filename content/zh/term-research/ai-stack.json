@@ -239,10 +239,12 @@
     "slug": "function-calling",
     "mechanism": "模型根据工具定义生成函数名和结构化参数；宿主程序验证并执行函数，再把结果交回模型继续处理。",
     "misconception": "模型不会因为输出了调用参数就自动执行函数；函数调用也不等于MCP，更不等于完整智能体。",
-    "demoSignature": "输入：“查订单A102”，可用工具search_order(id)；中间：模型产出{id:'A102'}，应用校验1个必填字段并执行；输出：工具返回status='shipped'。可视化：模型—应用—工具三段请求轨迹。 建议5帧：用户请求进入模型、函数名与参数生成、应用侧校验、工具执行、结果回到模型；交互：故意清空id，观察流程停在校验帧。",
+    "demoSignature": "输入：用户请求查订单A102；中间：模型返回call_01、函数名get_order和参数{order_id:A102}，应用依次检查注册名、唯一字段、格式与权限；输出：执行1次后回传{order_id:A102,status:shipped}并绑定同一call_id，未知函数、非法JSON、无权访问或查无订单均不执行或不通过。可视化：模型请求→应用注册表→执行回执三段轨迹；交互：切换未知函数、参数文本和权限，观察流程停点。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/function-calling",
-      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+      "https://developers.openai.com/api/docs/guides/function-calling",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://arxiv.org/pdf/2302.04761"
     ],
     "rewriteRisk": "必须把“建议调用”和“代码实际执行”分成两个节点，不能写成模型直接操作系统。",
     "nearDuplicates": [
