@@ -219,7 +219,23 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
       <p className={styles.inputExample}><strong>边界</strong>温度只影响采样分布；它不能校验事实，也不能单独定义“创造力”。</p>
     </div>;
   }
-  if (mode === "tokenization") return <div className={styles.lab} ref={scene.ref} role="region" aria-label="分词器切分演示">{controls}<div className={styles.choices}><button type="button" aria-pressed={encoding === "bpe"} onClick={() => { setEncoding("bpe"); scene.seek(1); }}>BPE 示意</button><button type="button" aria-pressed={encoding === "word"} onClick={() => { setEncoding("word"); scene.seek(2); }}>按词示意</button></div><div className={styles.layers}><div><FileText size={25}/><h3>字符串</h3><p>CSS 很好用</p></div><ArrowRight size={20}/><div><Memory size={25}/><h3>token</h3><p>{encoding === "bpe" ? "CSS · 很 · 好 · 用" : "CSS · 很好用"}</p></div><ArrowRight size={20}/><div><Database size={25}/><h3>编号</h3><p>{encoding === "bpe" ? "[421, 98, 605, 77]" : "[421, 902]"}</p></div></div><p className={styles.inputExample}><strong>边界</strong>token 数是具体编码器的结果；它不等于字符数，也不等于模型能理解的“词”数。</p></div>;
+  if (mode === "tokenization") {
+    const inputReady = scene.step >= 1;
+    const idsReady = scene.step === 2;
+    const tokenParts = encoding === "bpe" ? [["CSS", "421"], ["很", "98"], ["好", "605"], ["用", "77"]] : [["CSS", "421"], ["很好用", "902"]];
+    return <div className={styles.lab} ref={scene.ref} role="region" aria-label="分词器切分演示">
+      {controls}
+      <div className={styles.choices} role="group" aria-label="改变编码器"><button type="button" aria-pressed={encoding === "bpe"} onClick={() => { setEncoding("bpe"); scene.seek(1); }}>BPE 示意</button><button type="button" aria-pressed={encoding === "word"} onClick={() => { setEncoding("word"); scene.seek(2); }}>按词示意</button></div>
+      <div className={styles.tokenizationBoard}>
+        <div className={styles.tokenInput}><FileText size={24} /><span>原始字符串</span><strong>CSS 很好用</strong><small>输入仍是一段连续文字</small></div>
+        <ArrowRight size={20} aria-hidden="true" />
+        <div className={styles.tokenParts}><div className={styles.tokenBoardHeader}><Memory size={22} /><span>token 片段</span></div><div className={styles.tokenChipRow}>{inputReady ? tokenParts.map(([part, id]) => <span className={styles.tokenChip} key={part}>{part}<small>片段</small></span>) : <span className={styles.tokenWaiting}>等待切分</span>}</div><small>{encoding === "bpe" ? "BPE 示意：中文字符逐段进入词表" : "按词示意：把“很好用”当成一个片段"}</small></div>
+        <ArrowRight size={20} aria-hidden="true" />
+        <div className={styles.tokenIds}><Database size={24} /><span>词表编号</span><strong>{idsReady ? `[${tokenParts.map(([, id]) => id).join(", ")}]` : "等待编码"}</strong><small>{idsReady ? "编号序列交给模型" : "先完成切分，再查编号"}</small></div>
+      </div>
+      <p className={styles.inputExample}><strong>边界</strong>token 数是具体编码器的结果；它不等于字符数，也不等于模型能理解的“词”数。演示编号是说明用的占位值。</p>
+    </div>;
+  }
   if (mode === "tool-approval") return <div className={styles.lab} ref={scene.ref} role="region" aria-label="工具逐项审批演示">{controls}<div className={styles.choices}>{(["A", "B"] as const).map((key) => <button key={key} type="button" disabled={scene.step >= 2} aria-pressed={approved[key]} onClick={() => { setApproved((current) => ({ ...current, [key]: !current[key] })); scene.seek(2); }}>{approved[key] ? `撤回 ${key}` : `批准 ${key}`}</button>)}<span className={styles.inputExample}>C · 不可恢复，当前策略拒绝</span></div><div className={styles.contract}><div><LockSimple size={25}/><h3>审批卡</h3><p>A/B 可恢复 · C 不可恢复</p></div><ArrowRight size={20}/><div><ShieldCheck size={25}/><h3>执行器</h3><p>等待逐项决定</p></div><ArrowRight size={20}/><div>{scene.step === 2 ? <CheckCircle size={25}/> : <Warning size={25}/>}<h3>副作用</h3><p>{scene.step === 2 ? `${Object.values(approved).filter(Boolean).length} 项执行` : "尚未执行"}</p></div></div><p className={styles.inputExample}><strong>边界</strong>审批只回答这次具体调用，权限系统仍要在执行处检查参数和资源。</p></div>;
   const permissionRequested = scene.step >= 2;
   const salesRequest = scene.step === 1;
