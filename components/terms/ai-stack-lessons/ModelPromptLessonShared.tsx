@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Brain, CheckCircle, Database, FileText, LockSimple, Memory, ShieldCheck, Warning } from "@phosphor-icons/react";
 import { useScene } from "../HarnessStoryScenes";
 import { Caption } from "../AiStackConceptLessonShared";
@@ -85,10 +85,22 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   const [approved, setApproved] = useState({ A: true, B: true, C: false });
   const [salary, setSalary] = useState(false);
   const [promptPresent, setPromptPresent] = useState(true);
+  const temperatureSceneStep = useRef(scene.step);
+  const tokenizationSceneStep = useRef(scene.step);
 
   useResetOnSceneStart(scene, () => {
-    setSeed("a"); setImage(false); setBudget("enough"); setRule(true); setExamples("good"); setConstraint(false); setTemperature(0.2); setEncoding("bpe"); setApproved({ A: true, B: true, C: false }); setSalary(false); setPromptPresent(true);
+    setSeed("a"); setImage(false); setBudget("enough"); setRule(true); setExamples("good"); setConstraint(false); setTemperature(0.2); temperatureSceneStep.current = scene.step; tokenizationSceneStep.current = scene.step; setEncoding("bpe"); setApproved({ A: true, B: true, C: false }); setSalary(false); setPromptPresent(true);
   });
+  useEffect(() => {
+    if (mode !== "temperature" || temperatureSceneStep.current === scene.step) return;
+    temperatureSceneStep.current = scene.step;
+    setTemperature(scene.step === 2 ? 0.8 : 0.2);
+  }, [mode, scene.step]);
+  useEffect(() => {
+    if (mode !== "tokenization" || tokenizationSceneStep.current === scene.step) return;
+    tokenizationSceneStep.current = scene.step;
+    setEncoding(scene.step === 2 ? "word" : "bpe");
+  }, [mode, scene.step]);
   const caption = captions[mode];
   const dynamicCopy = mode === "generative-ai" ? [caption.copy[0], promptPresent ? `这次候选是“${seed === "a" ? "记得带伞" : "雨天出门带上雨具"}”；重新采样只改变候选，不改变提示。` : "提示为空，当前没有任务条件，不能把默认输出当成本次候选。", caption.copy[2]]
     : mode === "multimodal" ? [caption.copy[0], image ? "图片和文字一起进入模型；日期来自票面像素，而不是文字问题本身。" : "图片还没有进入请求，模型没有视觉证据。", image ? caption.copy[2] : "先加入图片，才能判断票面日期；模型不会从缺失输入中补事实。"]
@@ -97,11 +109,11 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
     : mode === "few-shot-prompting" ? [caption.copy[0], examples === "good" ? caption.copy[1] : "冲突示例让同一个输入对应两个标签，模型无法稳定归纳。", examples === "good" ? caption.copy[2] : "先删掉冲突示例，再谈准确率；示例质量是方法的一部分。"]
     : mode === "zero-shot-prompting" ? [caption.copy[0], constraint && scene.step === 2 ? "模型按“最先失败组件”这一新增约束选择前端。" : caption.copy[1], constraint && scene.step === 2 ? "约束让边界可复核；仍没有提供示例。" : caption.copy[2]]
     : mode === "temperature" ? [caption.copy[0], temperature < 0.5 ? caption.copy[1] : "温度升高后，三根概率柱的差距缩小。", temperature >= 0.5 ? caption.copy[2] : "当前采样仍偏向最高概率词；这只改变选择分布，不提供事实校验。"]
-    : mode === "tokenization" ? [caption.copy[0], caption.copy[1], encoding === "bpe" ? caption.copy[2] : "换成按词切分的示意编码器后，数量变少；真实结果仍取决于具体词表。"]
+    : mode === "tokenization" ? [scene.step === 0 ? "字符串还没有切分，先保留“CSS 很好用”这段原始输入。" : caption.copy[0], scene.step === 1 ? "分词器按当前词表切成片段；模型还没有拿到最终编号。" : caption.copy[1], encoding === "bpe" ? caption.copy[2] : "换成按词切分的示意编码器后，数量变少；真实结果仍取决于具体词表。"]
     : mode === "tool-approval" ? [caption.copy[0], caption.copy[1], `批准 ${Object.values(approved).filter(Boolean).length} 项；C 保持未执行。`]
     : [caption.copy[0], scene.step === 1 ? caption.copy[1] : salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[1], salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[2]];
 
-  const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : caption.titles;
+  const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : mode === "tokenization" ? [scene.step === 0 ? "先保留原始字符串" : caption.titles[0], caption.titles[1], "换编码器，数量也会换"] : caption.titles;
   const controls = <Caption scene={scene} labels={caption.labels} titles={dynamicTitles} copy={dynamicCopy} />;
   if (mode === "generative-ai") {
     const emptyPrompt = !promptPresent || scene.step === 2;
@@ -206,11 +218,14 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   }
   if (mode === "temperature") {
     const spread = temperature >= 0.5;
-    const distribution = spread ? [{ label: "简洁", score: 0.48 }, { label: "清楚", score: 0.30 }, { label: "灵动", score: 0.22 }] : [{ label: "简洁", score: 0.82 }, { label: "清楚", score: 0.12 }, { label: "灵动", score: 0.06 }];
+    const ratio = Math.max(0, Math.min(1, (temperature - 0.2) / 0.6));
+    const low = [0.82, 0.12, 0.06];
+    const high = [0.48, 0.30, 0.22];
+    const distribution = ["简洁", "清楚", "灵动"].map((label, index) => ({ label, score: low[index] + (high[index] - low[index]) * ratio }));
     const sample = scene.step === 0 ? "等待采样" : spread ? "清楚" : "简洁";
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="温度采样演示">
       {controls}
-      <label className={styles.temperatureControl}><span>采样温度</span><strong>{temperature.toFixed(1)}</strong><input aria-label="采样温度" type="range" min="0" max="1" step="0.1" value={temperature} onChange={(event) => { const next = Number(event.target.value); setTemperature(next); scene.seek(next >= 0.5 ? 2 : 1); }} /></label>
+      <label className={styles.temperatureControl}><span>采样温度</span><strong>{temperature.toFixed(1)}</strong><input aria-label="采样温度" type="range" min="0" max="1" step="0.1" value={temperature} onChange={(event) => { const next = Number(event.target.value); setTemperature(next); temperatureSceneStep.current = next >= 0.5 ? 2 : 1; scene.seek(next >= 0.5 ? 2 : 1); }} /></label>
       <div className={styles.temperatureBoard}>
         <div className={styles.temperaturePrompt}><FileText size={24} /><span>下一词候选</span><strong>写一句产品提醒</strong><small>同一个提示，只改变采样温度</small></div>
         <div className={styles.temperatureChart}><div className={styles.temperatureChartHeader}><span>相对概率</span><code>temperature {temperature.toFixed(1)}</code></div>{distribution.map((candidate) => <div className={styles.temperatureRow} key={candidate.label}><span>{candidate.label}</span><i><b style={{ width: `${candidate.score * 100}%` }} /></i><code>{candidate.score.toFixed(2)}</code></div>)}<small className={styles.temperatureNote}>{spread ? "差距缩小，低概率候选也更容易被抽到" : "高概率候选占主导，重复运行更容易相近"}</small></div>
