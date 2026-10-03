@@ -103,7 +103,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
 
   const controls = <Caption scene={scene} labels={caption.labels} titles={caption.titles} copy={dynamicCopy} />;
   if (mode === "generative-ai") {
-    const emptyPrompt = !promptPresent;
+    const emptyPrompt = !promptPresent || scene.step === 2;
     const candidates = seed === "a" ? [{ label: "记得", score: "0.70" }, { label: "带上", score: "0.20" }, { label: "注意", score: "0.10" }] : [{ label: "雨天", score: "0.55" }, { label: "出门", score: "0.30" }, { label: "带上", score: "0.15" }];
     const output = emptyPrompt ? [] : (seed === "a" ? ["记得", "带", "伞"] : ["雨天", "出门", "带雨具"]).slice(0, scene.step === 0 ? 0 : scene.step === 1 ? 1 : 3);
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="生成式 AI 条件与采样演示">
@@ -112,9 +112,9 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
       <div className={styles.generationBoard}>
         <div className={styles.generationCondition}><FileText size={25} /><span>条件</span><strong>{emptyPrompt ? "（空）" : "为雨天写一句提醒"}</strong></div>
         <ArrowRight size={22} aria-hidden="true" />
-        <div className={styles.generationCandidates}><div className={styles.generationHeading}><Brain size={22} /><span>下一 token 的候选</span></div>{emptyPrompt ? <p className={styles.generationEmpty}>没有任务条件</p> : <div className={styles.probabilityList}>{candidates.map((candidate) => <div className={styles.probabilityRow} key={candidate.label}><span>{candidate.label}</span><span className={styles.probabilityBar}><i style={{ width: `${Number(candidate.score) * 100}%` }} /></span><code>{candidate.score}</code></div>)}</div>}</div>
+        <div className={styles.generationCandidates}><div className={styles.generationHeading}><Brain size={22} /><span>下一 token 的候选</span></div>{emptyPrompt ? <p className={styles.generationEmpty}>没有任务条件</p> : <div className={styles.probabilityList}>{candidates.map((candidate) => <div className={styles.probabilityRow} key={candidate.label}><span>{candidate.label}</span><span className={styles.probabilityBar}><i style={{ width: `${Number(candidate.score) * 100}%` }} /></span><code>{candidate.score}</code></div>)}</div>}<small className={styles.generationNote}>token 是模型一次处理的一小段文字或符号；0.70 等数字是相对候选概率示意。</small></div>
         <ArrowRight size={22} aria-hidden="true" />
-        <div className={styles.generationOutput}><span>已生成 token</span><div className={styles.tokenTrack}>{output.length ? output.map((token, index) => <span className={styles.token} key={`${token}-${index}`}>{token}</span>) : <span className={styles.tokenPlaceholder}>—</span>}</div><p>{emptyPrompt ? "缺少任务条件" : scene.step === 0 ? "等待第一次采样" : scene.step === 1 ? "只取出一个候选" : "逐步接回输入"}</p></div>
+        <div className={styles.generationOutput}><span>已生成 token</span><div className={styles.tokenTrack}>{output.length ? output.map((token, index) => <span className={styles.token} key={`${token}-${index}`}>{token}</span>) : <span className={styles.tokenPlaceholder}>—</span>}</div><p>{emptyPrompt ? "缺少任务条件" : scene.step === 0 ? "等待第一次采样" : scene.step === 1 ? "只取出一个候选" : "把选出的 token 接回序列，再生成下一步"}</p></div>
       </div>
       <p className={styles.inputExample}><strong>边界</strong>生成是从条件中逐步产生新内容；候选分数描述选择路径，不是外部事实的证据。</p>
     </div>;
