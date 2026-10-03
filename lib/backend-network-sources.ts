@@ -51,3 +51,10 @@ export const acidSources: Source[] = [
   make("IBM Research", "Principles of Transaction-Oriented Database Recovery", "https://research.ibm.com/publications/principles-of-transaction-oriented-database-recovery", ["acid-durability"]),
   make("Microsoft Learn", "Transaction locking and row versioning", "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide", ["acid-isolation", "acid-boundary"]),
 ];
+
+export const tcpSources: Source[] = [
+  make("IETF", "RFC 9293 · Transmission Control Protocol", "https://www.rfc-editor.org/rfc/rfc9293.html", ["tcp-stream", "tcp-reliability"]),
+  make("IETF", "RFC 5681 · TCP Congestion Control", "https://www.rfc-editor.org/rfc/rfc5681.html", ["tcp-congestion"]),
+  make("IETF", "RFC 1122 · Requirements for Internet Hosts", "https://www.rfc-editor.org/rfc/rfc1122.html", ["tcp-stream", "tcp-boundary", "tcp-retry"]),
+  make("IANA", "Service Name and Transport Protocol Port Number Registry", "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", ["tcp-boundary"]),
+];

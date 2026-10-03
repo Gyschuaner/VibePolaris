@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources } from "@/lib/backend-network-sources";
+import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -429,4 +429,58 @@ const acidSpec: PageSpec = {
 
 export function AcidTermPage() {
   return renderBackendNetworkPage(acidSpec);
+}
+
+const tcpSpec: PageSpec = {
+  slug: "tcp",
+  title: "TCP",
+  subtitle: "Transmission Control Protocol · 把字节流可靠地交给对端",
+  intro: "文件发送程序把一串字节交给 TCP 后，不需要自己给每一段编号、重传或排序。TCP 在两个端点之间维护连接，用序号、确认、流量控制和拥塞控制协调传输；应用仍要自己定义消息边界。",
+  hero: {
+    question: "中间一段网络数据丢了",
+    nodes: [["发送端", "seq 0–11"], ["TCP", "ACK / 重传"], ["接收端", "按序字节流"]],
+    proof: "TCP 修复传输层的顺序与可靠性，不替应用解释一条消息。",
+  },
+  sections: [
+    {
+      id: "tcp-stream",
+      title: "可靠的是字节流，不是消息盒子",
+      blocks: [
+        { id: "tcp-stream", text: "TCP 在两个端点之间提供有序的字节流。应用写入 12 个字节，网络层可能把它们拆成多个 segment；接收方的一次 read 也可能只拿到其中一部分或几部分。TCP 保证最终按序交给应用，却不保留发送方一次 send 的边界。" },
+        { id: "tcp-reliability", text: "序号标记字节范围，确认告诉发送方对端已经收到哪一段；发现缺口后，TCP 可以重传。这个过程只保证传输层字节到达，不保证应用已经解析出一条完整 JSON、保存了订单或执行了业务动作。" },
+      ],
+      lesson: {
+        title: "丢掉一个 segment 后，字节怎样回到正确顺序",
+        ariaLabel: "TCP 序号、确认和重传恢复字节流的演示",
+        steps: [
+          { label: "分段发送", actors: ["ABCDEF", "GHIJ", "KLM"], evidence: "三段共享一个连续字节序号范围，接收方知道每段应该落在哪里。" },
+          { label: "出现缺口", actors: ["ABCDEF", "GHIJ · 丢失", "KLM"], evidence: "后面的字节到达但缺口仍在，接收缓冲区等待缺失范围，应用不会看到跳跃的顺序。" },
+          { label: "重传并交付", actors: ["ACK", "GHIJ · 重传", "ABCDEFGHIJKLM"], evidence: "重传填补缺口后，TCP 才把连续字节交给应用。" },
+        ],
+        failure: { label: "把一次 read 当一条消息", text: "接收方可能先读到 ABC，再读到 DEFG；应用必须自己定义长度、分隔符或帧格式，TCP 不会替它切消息。" },
+      },
+    },
+    {
+      id: "tcp-congestion",
+      title: "可靠性还要服从网络承载能力",
+      blocks: [
+        { id: "tcp-congestion", text: "TCP 不只重传丢失数据，也会根据确认、超时和拥塞信号调整发送速度。拥塞控制保护共享网络，流量控制则避免发送方压过接收方缓冲区；二者都可能让发送暂时变慢，但解决的是不同的瓶颈。" },
+        { id: "tcp-boundary", text: "建立 TCP 连接只说明传输层握手成功。应用端口可能没有正确协议、服务可能已经崩溃，或者请求在应用层被拒绝；健康检查要继续验证协议和业务结果，不能只看 SYN/ACK。" },
+      ],
+    },
+    {
+      id: "tcp-reliability",
+      title: "边界：连接不等于业务成功",
+      blocks: [
+        { id: "tcp-app-boundary", text: "连接断开时，未确认的字节可能需要由应用重新发送；如果请求已经到达但响应丢失，简单重试还可能重复执行业务。幂等键、应用确认和超时策略属于更高层，TCP 不会告诉你订单到底创建了几次。" },
+        { id: "tcp-retry", text: "读者判断“TCP 可靠”时，应明确可靠性的范围：字节顺序和重传由 TCP 负责，消息边界、业务提交和重试副作用由应用协议负责。把这三层混在一起，最容易在断线时误报“肯定没有成功”。" },
+      ],
+    },
+  ],
+  sources: tcpSources,
+  relatedIntro: "TCP 通过端口承载具体应用协议；继续看 UDP、数据包和 TLS 握手，可以比较不同传输保证与安全边界。",
+};
+
+export function TcpTermPage() {
+  return renderBackendNetworkPage(tcpSpec);
 }
