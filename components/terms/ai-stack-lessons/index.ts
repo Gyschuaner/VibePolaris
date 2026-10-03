@@ -33,3 +33,4 @@ export { ReasoningModelLesson } from "./reasoning-model";
 export { SystemPromptLesson } from "./system-prompt";
 export { FewShotPromptingLesson } from "./few-shot-prompting";
 export { ZeroShotPromptingLesson } from "./zero-shot-prompting";
+export { TemperatureLesson } from "./temperature";
