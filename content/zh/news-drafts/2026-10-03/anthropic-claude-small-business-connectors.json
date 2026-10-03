@@ -1,8 +1,8 @@
 {
   "slug": "anthropic-claude-small-business-connectors",
   "title": "Anthropic 推出 Claude for Small Business，接入多种企业连接器",
-  "summary": "Anthropic 在 2026-05-13 公开/报道“Anthropic 推出 Claude for Small Business，接入多种企业连接器”。产品把模型从单一对话窗口接进小企业已有的数据和 SaaS 流程，并配套培训与合作计划。 当前可核验边界是：发布页是连接器和工作流的产品说明，不代表所有账户已开放，也不证明跨服务写入动作默认安全。",
-  "body": "2026 年 5 月 13 日，Anthropic 发布 Claude for Small Business，介绍把 Claude 接入小企业已有的数据源和 SaaS 连接器，并配套培训与合作计划。\n\n这条产品更新的重点是连接器和工作流入口：模型从对话窗口进入企业数据、审批和日常工具后，企业必须分别确认可读数据、可写动作、管理员批准、日志和撤销方式。mcp、tools、api 和 agent 词条帮助区分协议、工具、接口和多步调用；连接器兼容不等于跨服务写入默认安全。\n\n发布页说明产品设计和合作方向，不代表所有账户都已开放，也不证明 Claude 能正确解释每种企业数据或安全执行所有动作。小企业仍需检查数据隔离、成员权限、保留期限和人工复核，不能把培训计划写成部署成效。\n\n后续应查看开放范围、连接器权限、失败回退和实际客户案例，确认产品是否降低了小企业接入 AI 的门槛。",
+  "summary": "2026-05-13，Anthropic公开“Anthropic 推出 Claude for Small Business，接入多种企业连接器”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：产品把模型从单一对话窗口接进小企业已有的数据和 SaaS 流程，并配套培训与合作计划。 当前能确认的是：发布页是连接器和工作流的产品说明，不代表所有账户已开放，也不证明跨服务写入动作默认安全。",
+  "body": "2026 年 5 月 13 日，Anthropic 发布 Claude for Small Business，介绍把 Claude 接入小企业已有的数据源和 SaaS 连接器，并配套培训与合作计划。\n\n变化在连接器和工作流入口：模型从对话窗口进入企业数据、审批和日常工具后，企业必须分别确认可读数据、可写动作、管理员批准、日志和撤销方式。连接层扩大了能力，也扩大了越权和数据泄露的可能性。\n\n以小企业处理客户工单为例，系统可以先只读知识库和 CRM，提出回复草稿；写回客户记录或发送邮件前要人工批准，并记录调用的连接器、字段和版本。培训计划不能替代这些权限控制。\n\n来源是 Anthropic 官方发布页，支持连接器、工作流和合作方向，不代表所有账户都已开放，也不证明 Claude 能正确解释每种企业数据或安全执行所有动作。跨服务写入仍需企业自行验收。\n\n四个关联词条各自对应连接链一层：mcp 连接模型与外部工具和数据；tools 承载搜索、文件和业务操作；api 规定提交、查询和返回；agent 负责多步调用和推进。它们不能替代管理员权限。\n\n复核时应查看开放范围、连接器字段、数据隔离、成员权限、保留期限和错误回退，先用只读或测试账户，再决定是否开放写入。\n\n时间线从 2026-05-13 的 Small Business 发布页开始；后续应跟踪连接器权限、客户案例、培训效果和安全文档。",
   "publishedAt": "2026-05-13",
   "eventDate": "2026-05-13",
   "isExample": false,
@@ -15,59 +15,76 @@
   },
   "sections": [
     {
-      "id": "s1",
-      "title": "动作落在哪条工作流",
-      "body": "Anthropic 发布 Claude for Small Business，提供连接器和可直接运行的工作流，覆盖 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365。",
+      "id": "event",
+      "title": "2026-05-13，Anthropic公开了什么",
+      "body": "事件日记为 2026-05-13；来源页面公开日记为 2026-05-13。Anthropic公开的核心动作是：Anthropic 发布 Claude for Small Business，提供连接器和可直接运行的工作流，覆盖 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
       "kind": "narrative"
     },
     {
-      "id": "s2",
-      "title": "谁把工具接进来",
-      "body": "产品把模型从单一对话窗口接进小企业已有的数据和 SaaS 流程，并配套培训与合作计划。 小企业接入多个系统时，要先列出数据读取、写入、共享和撤销权限，再选择自动化程度。",
+      "id": "mechanism",
+      "title": "“Anthropic 推出 Claude for Small Business”改变了哪一层",
+      "body": "真正的变化在于：产品把模型从单一对话窗口接进小企业已有的数据和 SaaS 流程，并配套培训与合作计划。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。连接器越方便，错误传播和权限扩散的半径越大。",
       "kind": "technical"
     },
     {
-      "id": "s3",
-      "title": "人和系统的边界",
-      "body": "发布页是连接器和工作流的产品说明，不代表所有账户已开放，也不证明跨服务写入动作默认安全。",
+      "id": "scenario",
+      "title": "把“Anthropic 推出 Claude for Small Business”放进一次流程",
+      "body": "把它放进一个具体场景：小企业接入多个系统时，要先列出数据读取、写入、共享和撤销权限，再选择自动化程度。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "哪些结论仍属于 Anthropic 的口径",
+      "body": "这里的来源是 Anthropic 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。发布页是连接器和工作流的产品说明，不代表所有账户已开放，也不证明跨服务写入动作默认安全。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把“能连接工具”误读成“可以安全自主完成”。",
       "kind": "boundary"
     },
     {
-      "id": "s4",
-      "title": "词条怎样帮助拆解",
-      "body": "关联词条：mcp, tools, api, agent。连接器越方便，错误传播和权限扩散的半径越大。",
+      "id": "terms",
+      "title": "用词条拆开“Anthropic 推出 Claude for Small Business”",
+      "body": "本文关联的词条各自对应连接链一层：mcp 连接模型与外部工具和数据；tools 承载搜索、文件和业务操作；api 规定提交、查询和返回；agent 负责多步调用和推进。它们不能替代管理员权限。",
       "kind": "comparison"
     },
     {
-      "id": "s5",
-      "title": "后续观察什么",
-      "body": "后续应查看权限范围、审计日志和工作流失败后的人工处理。",
+      "id": "timeline",
+      "title": "从 2026-05-13 的页面到下一步",
+      "body": "时间线先从 2026-05-13 的来源页面开始：页面记录“Claude for Small Business 是连接器与 ready-to-run workflows 套件；发布页列出 QuickBooks、PayPal、HubSpot 等连接器”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
+      "kind": "narrative"
+    },
+    {
+      "id": "verify",
+      "title": "读者怎样复核这条主张",
+      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：后续应查看权限范围、审计日志和工作流失败后的人工处理。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agent-workflow",
-    "title": "把事件拆成可核对的链路",
-    "question": "怎样区分发生的动作、来源主张和仍待验证结果？",
+    "title": "把“Anthropic 推出 Claude for Small Business，接入多种企业连接器”拆成可核对的链路",
+    "question": "把一次任务拆成输入、工具调用、状态变化和人工确认，怎样知道哪些是事实、哪些仍是主张？",
     "steps": [
       {
-        "label": "事件日",
-        "detail": "确认 2026-05-13 的来源公开信息与 2026-05-13 的事件日语义。",
+        "label": "确认日期与动作",
+        "detail": "先核对 eventDate=2026-05-13、publishedAt=2026-05-13，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
         "evidence": "https://www.anthropic.com/news/claude-for-small-business"
       },
       {
-        "label": "关键动作",
-        "detail": "产品把模型从单一对话窗口接进小企业已有的数据和 SaaS 流程，并配套培训与合作计划。",
+        "label": "拆开系统层",
+        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：产品把模型从单一对话窗口接进小企业已有的数据和 SaaS 流程，并配套培训与合作计划。",
         "evidence": "https://www.anthropic.com/news/claude-for-small-business"
       },
       {
-        "label": "边界",
-        "detail": "发布页是连接器和工作流的产品说明，不代表所有账户已开放，也不证明跨服务写入动作默认安全。",
+        "label": "放进具体场景",
+        "detail": "小企业接入多个系统时，要先列出数据读取、写入、共享和撤销权限，再选择自动化程度",
         "evidence": "https://www.anthropic.com/news/claude-for-small-business"
       },
       {
-        "label": "后续",
-        "detail": "后续应查看权限范围、审计日志和工作流失败后的人工处理。",
+        "label": "标出不能推出的结论",
+        "detail": "发布页是连接器和工作流的产品说明，不代表所有账户已开放，也不证明跨服务写入动作默认安全",
+        "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+      },
+      {
+        "label": "安排下一次复核",
+        "detail": "后续应查看权限范围、审计日志和工作流失败后的人工处理",
         "evidence": "https://www.anthropic.com/news/claude-for-small-business"
       }
     ]
@@ -171,11 +188,11 @@
     "decision": "passed",
     "checkedAt": "2026-10-03T00:00:00Z",
     "questions": [],
-    "notes": "已区分连接器、工具权限、管理员批准和培训计划，明确产品发布不等于所有账户开放或跨服务写入安全。",
+    "notes": "深度复核通过：正文已按本事件的七段链路组织，具体流程、来源边界、关联词条与后续时间线均已对齐；已删除空泛结尾和跨事件词条。",
     "changes": [
-      "重写正文为事件特定叙述",
-      "补充事实、来源主张与待验证项边界",
-      "核对日期、canonicalUrl 和 relatedSlugs"
+      "收束为 7 段事件特定正文",
+      "修正词条段落与 relatedSlugs 的对应关系",
+      "修正截断标题并核对日期、来源和时间线"
     ]
   },
   "mechanicalErrors": [],
