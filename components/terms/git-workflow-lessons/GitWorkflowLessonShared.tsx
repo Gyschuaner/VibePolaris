@@ -4,6 +4,7 @@ import { ArrowRight, GitBranch, GitCommit, GitDiff, Pencil, Stack } from "@phosp
 import { Caption } from "../AiStackConceptLessonShared";
 import { useScene } from "../HarnessStoryScenes";
 import styles from "../ConceptArticle.module.css";
+import { PushLesson } from "./push";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -162,5 +163,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "clone") return <CloneLesson />;
   if (slug === "pull") return <PullLesson />;
   if (slug === "fetch") return <FetchLesson />;
+  if (slug === "push") return <PushLesson />;
   return null;
 }
