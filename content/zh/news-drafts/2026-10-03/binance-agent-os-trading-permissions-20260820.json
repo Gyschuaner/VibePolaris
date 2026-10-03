@@ -1,0 +1,231 @@
+{
+  "slug": "binance-agent-os-trading-permissions-20260820",
+  "title": "Binance 发布 Agent OS：AI 可获准执行交易，损失边界由用户自行设定",
+  "summary": "Binance 于 2026 年 8 月 20 日发布 Agent OS，把交易、行情、钱包、支付和链上能力接给 AI 应用。用户可以用子账户、关闭提币和逐单审批限制代理动作，但平台接入并不等于模型具备投资能力；损失边界主要来自用户给代理的资金和权限。",
+  "body": "2026 年 8 月 20 日，Binance 宣布推出 Agent OS，把交易、行情、钱包、支付和链上能力接到一套面向 AI 应用的开发平台里。开发者可以通过 Model Context Protocol（MCP）等接口，把 ChatGPT、Codex、Claude Code、Cursor 等应用接入 Binance 的能力。新闻的变化不只是“AI 会看行情”，而是代理开始被允许代表用户执行金融动作。\n\nBinance 把 Agent OS 描述成一个受权限控制的接入层：用户决定代理能读取什么、能交易什么，Binance 则可以观察订单等交易活动。代理的推理过程仍发生在用户选择的 AI 应用或本地工作流里，交易平台并不能因此保证模型理解了市场，也不等于每笔交易经过了人工投资顾问审核。\n\n平台给出的主要隔离方法是专用子账户。用户可以把资金转入一个只给代理使用的子账户，默认关闭提币，并按现货、合约或其他能力设置权限；还可以选择每笔订单都要批准，或在配置好权限后允许代理自动下单。Binance 表示没有另设一个统一的亏损上限，实际转入子账户的资金会成为用户自己设定的硬上限。\n\n这就把“代理安全”变成一串需要逐项确认的授权问题：它能否读取资产余额，能否下合约单，是否能把订单拆成多笔，是否能被提示注入诱导，以及用户怎样在异常时撤销权限。一个模型可能在文字上说“我不会交易”，却在工具调用层拥有下单权限；反过来，严格的账户隔离也无法替用户判断价格波动和流动性风险。\n\n因此，8 月 20 日确认的是一套让 AI 应用接入金融基础设施的平台发布，以及子账户、提币关闭和逐单审批等控制方式。公开材料没有证明代理能稳定盈利，也没有给出统一的风险限额或模型审计标准。真正值得观察的是地区可用性、权限日志、异常订单处理和用户能否在代理运行时随时收回授权。",
+  "publishedAt": "2026-08-20",
+  "eventDate": "2026-08-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/binance-agent-os-trading-permissions-20260820.svg",
+    "alt": "AI 代理通过子账户、审批门接入 Binance 交易基础设施的权限链路",
+    "sourceUrl": "/images/news/binance-agent-os-trading-permissions-20260820.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "这不是又一个行情聊天机器人",
+      "body": "Agent OS 把行情、交易、钱包、支付和链上工具暴露给兼容的 AI 应用；核心变化是代理可以在得到授权后执行动作。",
+      "kind": "narrative"
+    },
+    {
+      "id": "permission",
+      "title": "平台负责接入，用户负责给权限",
+      "body": "用户选择代理能读取和执行的能力，Binance 可以观察订单，但代理的推理仍发生在外部应用或本地工作流里。",
+      "kind": "technical"
+    },
+    {
+      "id": "subaccount",
+      "title": "子账户是第一层隔离",
+      "body": "专用子账户可以承接代理资金，提币默认关闭，并按现货、合约等范围设置权限；资金规模成为用户自行设定的硬边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "approval",
+      "title": "自动下单和逐单审批是两种风险模式",
+      "body": "用户可以要求每笔订单确认，也可以让配置好的代理自动执行；后者省去等待，却把判断错误直接变成真实交易。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "平台上线不等于代理会赚钱",
+      "body": "公告只证明接入层与权限机制发布，不能推导模型具有投资能力、统一亏损限额或独立安全审计。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一笔 AI 交易怎样经过权限闸门",
+    "question": "为什么“接入交易 API”必须先看账户隔离和撤销路径？",
+    "steps": [
+      {
+        "label": "连接应用",
+        "detail": "开发者通过 MCP 或其他兼容方式把 AI 应用接到 Binance Agent OS。",
+        "evidence": "Binance announcement"
+      },
+      {
+        "label": "划定账户",
+        "detail": "用户把代理放进专用子账户，关闭提币并限制可用交易能力。",
+        "evidence": "Binance announcement / TechCrunch"
+      },
+      {
+        "label": "选择审批",
+        "detail": "用户决定每笔订单都确认，还是允许配置好的代理自动下单。",
+        "evidence": "TechCrunch report"
+      },
+      {
+        "label": "执行订单",
+        "detail": "代理在模型工作流里做出决定，平台接收并执行被授权的订单。",
+        "evidence": "Binance announcement"
+      },
+      {
+        "label": "收回权限",
+        "detail": "用户需要监控订单、限制资金，并在异常时撤销或冻结代理权限。",
+        "evidence": "Article boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Binance Announcement",
+    "url": "https://www.binance.com/en-AE/support/announcement/detail/07d45cdd3831498f8a4ff339031a8480"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "authorization",
+    "mcp",
+    "api",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.binance.com/en-AE/support/announcement/detail/07d45cdd3831498f8a4ff339031a8480",
+      "claim": "Binance 8 月 20 日宣布推出 Agent OS，把 Binance APIs、钱包、x402、Skill Hub 和 MCP 组合成面向 AI 应用的受权限控制接入层。",
+      "excerpt": "Binance Agent OS ... connects compatible AI applications and agents to supported Binance capabilities through user-controlled permissions."
+    },
+    {
+      "url": "https://www.prnewswire.com/news-releases/binance-introduces-agent-os-to-connect-ai-applications-to-financial-infrastructure-302856306.html",
+      "claim": "Binance 的新闻稿说明 Agent OS 可连接交易、行情、钱包、支付和链上能力，用户权限决定 AI 代理能做什么，平台能监控订单但看不到外部应用的推理过程。",
+      "excerpt": "User-controlled permissions determine the Binance data and trading capabilities available to an AI agent ... Binance can monitor resulting trading activity, including orders, but not the agent’s broader workflow or reasoning."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/binance-now-lets-ai-agents-trade-but-keeping-them-in-check-is-largely-up-to-users/",
+      "claim": "TechCrunch 报道 Agent OS 支持专用子账户、默认禁用提币、逐单审批或自动执行，Binance 没有额外统一的代理亏损上限。",
+      "excerpt": "Withdrawals from those subaccounts are blocked by default ... Users can also choose whether an AI agent must seek approval for every order ... Binance does not impose a separate cap on how much an AI agent can trade or lose."
+    }
+  ],
+  "canonicalUrl": "https://www.binance.com/en-AE/support/announcement/detail/07d45cdd3831498f8a4ff339031a8480",
+  "sourceHash": "sha256:1d19b13055547320a4b2755f7a8104f636dcd53b623c7ac14e61a3287f77264a",
+  "status": "published",
+  "discoveredAt": "2026-10-03T08:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.97,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.95,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.94,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.9,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.93,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.88,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.binance.com/en-AE/support/announcement/detail/07d45cdd3831498f8a4ff339031a8480",
+      "claim": "Binance 8 月 20 日宣布推出 Agent OS，把 Binance APIs、钱包、x402、Skill Hub 和 MCP 组合成面向 AI 应用的受权限控制接入层。",
+      "excerpt": "Binance Agent OS ... connects compatible AI applications and agents to supported Binance capabilities through user-controlled permissions."
+    },
+    {
+      "url": "https://www.prnewswire.com/news-releases/binance-introduces-agent-os-to-connect-ai-applications-to-financial-infrastructure-302856306.html",
+      "claim": "Binance 的新闻稿说明 Agent OS 可连接交易、行情、钱包、支付和链上能力，用户权限决定 AI 代理能做什么，平台能监控订单但看不到外部应用的推理过程。",
+      "excerpt": "User-controlled permissions determine the Binance data and trading capabilities available to an AI agent ... Binance can monitor resulting trading activity, including orders, but not the agent’s broader workflow or reasoning."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/binance-now-lets-ai-agents-trade-but-keeping-them-in-check-is-largely-up-to-users/",
+      "claim": "TechCrunch 报道 Agent OS 支持专用子账户、默认禁用提币、逐单审批或自动执行，Binance 没有额外统一的代理亏损上限。",
+      "excerpt": "Withdrawals from those subaccounts are blocked by default ... Users can also choose whether an AI agent must seek approval for every order ... Binance does not impose a separate cap on how much an AI agent can trade or lose."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T08:30:00Z",
+    "method": "source",
+    "notes": "已核对 Binance 公告、PR Newswire 新闻稿和 TechCrunch 报道；把接入层、子账户、逐单审批和没有统一亏损上限的事实分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T08:40:25Z",
+    "notes": "已完成新闻事实、来源卡片、事件日、可追溯 SVG、词条联动与读者可读性复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T08:40:25Z",
+    "questions": [],
+    "notes": "复审确认 Agent OS 发布、子账户、提币默认关闭、逐单审批和用户自行设定损失边界表达准确；没有把平台接入写成盈利保证。",
+    "changes": [
+      "收紧标题以避免暗示平台提供统一亏损上限"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-20",
+  "fingerprint": "sha256:1d19b13055547320a4b2755f7a8104f636dcd53b623c7ac14e61a3287f77264a",
+  "promotedAt": "2026-10-03T08:45:20.304Z"
+}
