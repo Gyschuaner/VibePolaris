@@ -58,6 +58,7 @@ import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, Bo
 import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage } from '@/components/terms/AiStackConceptPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
+import { AcidTermPage, ApiKeyTermPage, ColumnTermPage, NosqlTermPage, RbacTermPage, RelationalDatabaseTermPage, RowTermPage, TcpTermPage, TlsHandshakeTermPage, UdpTermPage } from "@/components/terms/BackendNetworkTermPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -139,6 +140,16 @@ const articleTermPages = {
   scope: ScopeTermPage,
   roadmap: RoadmapTermPage,
   priority: PriorityTermPage,
+  rbac: RbacTermPage,
+  "api-key": ApiKeyTermPage,
+  "relational-database": RelationalDatabaseTermPage,
+  nosql: NosqlTermPage,
+  row: RowTermPage,
+  column: ColumnTermPage,
+  acid: AcidTermPage,
+  tcp: TcpTermPage,
+  udp: UdpTermPage,
+  "tls-handshake": TlsHandshakeTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

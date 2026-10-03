@@ -40,7 +40,7 @@ export function GraderTermPage() {
   return <ConceptArticle slug="grader" title="评分器" sources={graderSources} sections={[["criterion", "把要求变成可检查的判据"], ["evidence", "回复与实际结果"], ["rubric", "开放回答的评分依据"], ["review", "检查评分器的判断"]]}
     intro={<>评分器根据判据检查一次尝试，输出分数、通过与否或其他评价。判据写错，评测就可能奖励错误行为。需要文件写入成功时，“回答里出现完成”与“目标文件存在且内容正确”检查的是两件事。</>}
     hero={<ConceptHero slug="grader" label="助手说已完成，但文件检查未发现answer.json，回复措辞与任务结果分开"><div className={s.gradeHero}><div><span>助手回复</span><strong>已完成。</strong></div><div><FileText size={25}/><code>answer.json</code><X size={22}/><span>文件不存在</span></div></div></ConceptHero>}>
-    <ArticleSection id="criterion" title="把要求变成可检查的判据"><Legacy slug="grader" names={["question", "definition"]}/>
+    <ArticleSection id="criterion" title="把要求变成可检查的判据"><Legacy slug="grader" names={["question"]}/>
       <p id="grader-definition" className="vp-citation-target"><strong>评分器按事先写好的判据（也就是可检查的判定依据），把输出或执行结果转换成评价。</strong>Inspect 的评分系统支持文本匹配、数学答案、模型评分和自定义检查，再把逐条分数汇总成指标。评分器可以是程序，可以是模型，也可以是人。评分器是 <ConceptTerm slug="eval">评测</ConceptTerm> 中的一部分：题目规定要做什么，它规定怎样判断做得如何。<Cite id="grader-definition"/></p>
       <p>判据应对应任务目标。选择题可以检查选项；金额字段可以按数值核对；代码任务可以运行测试。开放回答可能需要评价准确性、相关性或写作质量，但回答写得长、说得自信，本身并不等于准确或相关；除非判据里写明了为什么可以这样判，否则不能拿它们顶替。</p>
       <p>一个任务可以有多个评分器，分别检查格式、结果和关键限制。它们不一定合成一个总分。先保留各项证据，才能看出系统是答案正确但格式不符，还是格式漂亮却做错了任务。</p>
