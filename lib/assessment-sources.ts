@@ -35,3 +35,9 @@ export const regressionEvaluationSources = [
   source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['regression-gate-detail']),
   source('Percy Liang、Rishi Bommasani、Tony Lee 等', 'Holistic Evaluation of Language Models', 'https://arxiv.org/pdf/2211.09110', ['regression-boundary-detail'], '2023'),
 ];
+export const safetyEvaluationSources = [
+  source('OpenAI', 'Safety best practices', 'https://developers.openai.com/api/docs/guides/safety-best-practices', ['safety-definition-detail', 'safety-record-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['safety-cases-detail']),
+  source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['safety-gate-detail']),
+  source('Percy Liang、Rishi Bommasani、Tony Lee 等', 'Holistic Evaluation of Language Models', 'https://arxiv.org/pdf/2211.09110', ['safety-boundary-detail'], '2023'),
+];

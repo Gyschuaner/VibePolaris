@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -187,6 +187,36 @@ export function RegressionEvaluationTermPage() {
       <p id="regression-boundary-detail" className="vp-citation-target">HELM 通过多个场景和维度报告模型表现，也强调评测覆盖不是无限的。<strong>回归评测只能回答题集实际覆盖的问题；它没有测到的行为，不会因为总分稳定就自动安全。</strong>题集变窄、评分器改宽或基线本身漂移，都会让结论失去可比性。<Cite id="regression-boundary-detail"/></p>
       <p>如果工具超时、输出缺失或评分器无法读取证据，先记录为未评分或运行不完整，再按预先规则决定重跑、排除还是单独报告。不要因为候选版本的总分更高，就把这些状态解释成能力提升。回归结果说明的是“在这一版题集、规则和运行条件下发生了什么”，不是系统在所有未来输入上的保证。</p>
       <ArticleAside title="读到一个“通过”时再问三句"><p>题集版本有没有变？关键行为是否逐项通过？有没有未评分或无法观察的样本？这三句有一个答不上来，就先把结果当作需要补证据的比较，而不是发布结论。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function SafetyEvaluationTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={safetyEvaluationSources}/>;
+  return <ConceptArticle slug="safety-evaluation" title="安全评测" subtitle="Safety Evaluation · 检查危险请求有没有变成真实副作用" sources={safetyEvaluationSources}
+    sections={[['safety-definition', '安全不是只看拒答'], ['safety-cases', '把风险案例放进真实边界'], ['safety-gate', '用高风险门槛处理失败'], ['safety-boundary', '评测能证明到哪里']]}
+    intro={<>安全评测把正常任务、越权请求和攻击变体放进同一套检查，观察系统的回答、权限判断和工具结果。模型说“我拒绝”只是一个信号；真正要确认的是敏感动作有没有发生。</>}
+    hero={<ConceptHero slug="safety-evaluation" label="正常任务完成，越权请求被拒；若工具读出敏感字段，安全门槛立即阻断"><div className={s.safetyHero}><div className={s.safetyHeroHeader}><span>风险题集 · 12 条 · 3 类</span><span>高风险失败 <strong>1</strong></span></div><div className={s.safetyHeroFlow}><div><span>模型回答</span><strong>拒绝</strong></div><b aria-hidden="true">→</b><div data-risk="true"><span>工具状态</span><strong>未执行</strong></div></div><div className={s.safetyHeroGate}><span>安全门槛</span><strong>关键副作用 = 0</strong></div></div></ConceptHero>}>
+    <ArticleSection id="safety-definition" title="安全不是只看拒答"><Legacy slug="safety-evaluation" names={['question', 'definition']}/>
+      <p id="safety-definition-detail" className="vp-citation-target"><strong>安全评测用一组有代表性的风险任务，检查系统是否按允许、拒绝、升级和隔离规则行动。</strong>OpenAI 的安全实践把模型输出、应用约束和高风险动作放在一起考虑；安全评测因此要同时看模型与应用的组合，而不是给模型做一次脱离环境的过滤器扫描。<Cite id="safety-definition-detail"/></p>
+      <p id="safety-record-detail" className="vp-citation-target">一次安全结果至少要记录输入类型、模型回答、权限判断、工具请求和环境状态。<strong>“我拒绝了”不能替代“敏感工具没有执行”。</strong>如果没有工具日志或环境证据，应标为无法判断，而不是直接算通过。<Cite id="safety-record-detail"/></p>
+      <div className={s.safetyChecklist}><div><span>输入</span><strong>正常、越权、攻击</strong><p>覆盖应该完成和应该挡住的请求。</p></div><div><span>回答</span><strong>完成、拒绝、升级</strong><p>记录系统给用户看的结果。</p></div><div><span>副作用</span><strong>工具与环境</strong><p>核对真实动作有没有发生。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="safety-cases" title="把风险案例放进真实边界"><Legacy slug="safety-evaluation" names={['scene-heading']}/>
+      <p id="safety-cases-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务、成功标准、轨迹和环境结果一起纳入检查；安全题也要把攻击变体和可观察的副作用写进成功标准。<strong>一条拒答通过，不代表同一风险的改写、间接注入或工具路径也通过。</strong><Cite id="safety-cases-detail"/></p>
+      <p>下面是预先写好的三个案例，不调用模型或敏感工具。正常请求应完成；越权请求应拒绝或升级，同时没有工具副作用；间接注入如果让工具读出敏感字段，就算出现一次高风险失败。切换案例并运行检查，看到回答和工具证据是否一致。</p>
+      <SafetyEvaluationLesson/>
+      <p>把允许任务也放进来很重要：如果只收集危险问题，评测可能奖励“什么都拒绝”的系统。正常完成、合理拒绝和安全升级都要有各自的成功条件，并记录题集版本。</p>
+    </ArticleSection>
+    <ArticleSection id="safety-gate" title="用高风险门槛处理失败" className={base.offset}><Legacy slug="safety-evaluation" names={['quiz-heading']}/>
+      <p id="safety-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 将风险测量、记录和持续复查放进治理流程。对敏感字段泄露、越权写入或未经确认的外部动作，可以在发布前写出关键门槛：高风险副作用必须为零，或必须全部升级到人工。<strong>一个高风险失败不能被大量普通通过题冲掉。</strong><Cite id="safety-gate-detail"/></p>
+      <p>门槛要在看到结果前确定，并写清未评分、工具超时和日志缺失怎样处理。先修复权限、工具审批或环境隔离，再用同一组风险案例复测；单纯改拒答话术，却没有改变工具状态，不能算安全修复。</p>
+      <ArticleAside title="安全发布前的最小检查"><p>每类风险都有代表性样本；允许任务仍能完成；拒绝和升级没有副作用；工具日志与回答一致；敏感动作有独立门槛；无法观察的样本被标为未评分并单独处理。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="safety-boundary" title="评测能证明到哪里"><Legacy slug="safety-evaluation" names={['prompt-heading']}/>
+      <p id="safety-boundary-detail" className="vp-citation-target">HELM 用多个场景和维度报告模型表现，也提醒评测覆盖不可能穷尽所有输入。<strong>安全评测能说明这套题集和环境里观察到的行为，不能证明未来每一种攻击都会被挡住。</strong>应用权限、工具实现、部署配置和新出现的攻击面仍需独立检查。<Cite id="safety-boundary-detail"/></p>
+      <p>如果题集只测直接提示，没有测资料中的间接指令；只看文本，没有读工具日志；只在沙箱里测，却没有核对生产权限，结论都应缩小范围。保留版本、案例类别、环境和未覆盖项，下一轮才能知道是扩大了覆盖，还是只是换了说法。</p>
+      <ArticleAside title="读到“安全通过”时再问三句"><p>通过的是哪类风险？观察到的是回答还是实际动作？哪些工具、权限和环境没有进入这次评测？三句都能回答，结论才有明确边界。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

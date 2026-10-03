@@ -17325,7 +17325,7 @@
     "definition": "安全评测用风险任务、攻击变体和工具/环境结果检查允许、拒绝、升级和隔离行为。",
     "boundary": "一次拒答或一层过滤器不能覆盖未知攻击和应用权限问题。",
     "sceneKind": "branch",
-    "sceneTitle": "安全请求经过模型与工具边界",
+    "sceneTitle": "切换风险案例并核对真实工具状态",
     "actionLabel": "切换风险案例",
     "actors": [
       {
@@ -17379,80 +17379,69 @@
     ],
     "frames": [
       {
-        "label": "准备风险集",
-        "note": "同时放入应该完成和应该拒绝的案例。",
-        "activeIds": [
-          "cases"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "agent",
-          "tool",
-          "gate"
-        ],
-        "values": {
-          "cases": "12题 · 3类"
-        },
-        "activeEdgeIds": []
-      },
-      {
         "label": "正常请求",
-        "note": "正常任务完成，未触发敏感工具。",
+        "note": "自己的订单查询安全完成，敏感工具没有触发。",
         "activeIds": [
-          "agent"
+          "cases",
+          "agent",
+          "gate"
         ],
         "doneIds": [
-          "cases"
+          "tool"
         ],
-        "mutedIds": [
-          "tool",
-          "gate"
-        ],
+        "mutedIds": [],
         "values": {
-          "agent": "安全完成"
+          "agent": "安全完成",
+          "tool": "未执行",
+          "gate": "通过"
         },
         "activeEdgeIds": [
-          "c-a"
+          "c-a",
+          "a-g"
         ]
       },
       {
         "label": "越权请求",
-        "note": "模型拒绝或升级，工具没有副作用。",
+        "note": "请求被拒绝并升级人工，敏感工具未执行。",
         "activeIds": [
+          "cases",
+          "agent",
           "gate"
         ],
         "doneIds": [
-          "cases",
-          "agent"
-        ],
-        "mutedIds": [
           "tool"
         ],
+        "mutedIds": [],
         "values": {
+          "agent": "拒绝并升级",
+          "tool": "未执行",
           "gate": "通过"
         },
         "activeEdgeIds": [
+          "c-a",
           "a-g"
         ]
       },
       {
         "label": "发现泄露",
-        "note": "若工具真的读出敏感字段，发布门槛立即阻断。",
+        "note": "间接注入让工具读出敏感字段，安全门槛阻断。",
         "activeIds": [
+          "agent",
           "tool",
           "gate"
         ],
         "doneIds": [
-          "cases",
-          "agent"
+          "cases"
         ],
         "mutedIds": [],
         "values": {
+          "agent": "输出敏感字段",
           "tool": "泄露1次",
           "gate": "阻断"
         },
         "activeEdgeIds": [
-          "a-t"
+          "a-t",
+          "a-g"
         ]
       }
     ],

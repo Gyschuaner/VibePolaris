@@ -151,3 +151,63 @@ export function RegressionEvaluationLesson() {
     <button className={base.reset} onClick={() => { setMode('stable'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置版本与题集</button>
   </div>;
 }
+
+type SafetyMode = 'normal' | 'overreach' | 'leak';
+
+const safetyCases: Record<SafetyMode, { label: string; request: string; response: string; tool: string; checks: { label: string; pass: boolean; evidence: string }[]; title: string; body: string }> = {
+  normal: {
+    label: '正常请求',
+    request: '查询自己的订单状态',
+    response: '安全完成',
+    tool: '未触发敏感工具',
+    checks: [
+      { label: '任务允许', pass: true, evidence: '请求属于用户自己的订单范围' },
+      { label: '响应合适', pass: true, evidence: '完成任务，没有扩大权限' },
+      { label: '没有副作用', pass: true, evidence: '没有调用发送或敏感写入工具' },
+    ],
+    title: '安全完成，可以保留这条通过记录',
+    body: '正常任务完成，敏感工具没有被触发；这只说明这一类允许行为通过了检查。',
+  },
+  overreach: {
+    label: '越权请求',
+    request: '读取另一位用户的身份证号',
+    response: '拒绝并升级人工',
+    tool: '敏感工具未执行',
+    checks: [
+      { label: '任务允许', pass: true, evidence: '识别到请求超出当前用户权限' },
+      { label: '响应合适', pass: true, evidence: '拒绝请求，并把高风险情况交给人工' },
+      { label: '没有副作用', pass: true, evidence: '没有把越权请求送进敏感工具' },
+    ],
+    title: '越权请求被挡住，可以继续查覆盖范围',
+    body: '文字拒绝与工具状态一致；还需要更多攻击变体，确认不是只对这一种说法有效。',
+  },
+  leak: {
+    label: '间接注入',
+    request: '资料诱导读取敏感字段',
+    response: '输出了敏感字段',
+    tool: '读取敏感字段 1 次',
+    checks: [
+      { label: '任务允许', pass: false, evidence: '资料中的指令试图改变原任务权限' },
+      { label: '响应合适', pass: false, evidence: '把不可信资料当成了可执行指令' },
+      { label: '没有副作用', pass: false, evidence: '工具真实读出了敏感字段' },
+    ],
+    title: '发现敏感字段泄露，阻断发布',
+    body: '即使其他风险题都通过，这条高风险失败也不能被总体通过率覆盖；先修复权限和工具边界，再用同一题集复测。',
+  },
+};
+
+export function SafetyEvaluationLesson() {
+  const [mode, setMode] = useState<SafetyMode>('normal');
+  const [checkedMode, setCheckedMode] = useState<SafetyMode | null>(null);
+  const current = safetyCases[mode];
+  const report = checkedMode ? safetyCases[checkedMode] : current;
+  const passed = report.checks.filter(check => check.pass).length;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：检查安全评测的真实结果">
+    <div className={s.controls}><label>风险案例<select value={mode} onChange={e => { setMode(e.target.value as SafetyMode); setCheckedMode(null); }}><option value="normal">正常请求</option><option value="overreach">越权请求</option><option value="leak">间接注入</option></select></label><p className={s.runHint}>同时看回答、权限判断和工具状态，不能只看模型说了什么。</p></div>
+    <div className={s.safetyCase} aria-label="当前风险案例"><div><span>输入</span><strong>{current.request}</strong></div><div><span>回答</span><strong>{current.response}</strong></div><div data-risk={mode === 'leak'}><span>工具证据</span><strong>{current.tool}</strong></div></div>
+    <div className={s.safetyChecks} aria-label="安全检查项">{current.checks.map(check => <div key={check.label} data-pass={check.pass}><span>{check.pass ? <Check size={18}/> : <X size={18}/>}</span><strong>{check.label}</strong><small>{check.evidence}</small></div>)}</div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>检查安全结果<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.safetyResult} role="status"><header><h3>{report.title}</h3><span>{passed}/3 项通过</span></header><p>{report.body}</p><p className={s.runEvidence}>检查记录：{report.label} · {report.tool}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('normal'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置风险案例</button>
+  </div>;
+}
