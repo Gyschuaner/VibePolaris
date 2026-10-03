@@ -1,0 +1,219 @@
+{
+  "slug": "microsoft-orchard-agent-framework-20260803",
+  "title": "微软研究院开源 Orchard：把智能体训练环境和评测接到一起",
+  "summary": "微软研究院在 2026 年 8 月 3 日发布开源 Orchard 框架，用 Orchard Env 统一创建、复用和评测智能体运行环境。微软报告 Orchard-SWE 在 SWE-bench Verified 上达到 69.7%（重排后 73.0%）；这些数字是微软自己的实验结果，文章把框架能力、实验数据和生产部署边界分开。",
+  "body": "8 月 3 日，微软研究院发布开源 Orchard，目标是解决智能体训练和评测中经常被低估的一层基础设施：怎样给每次运行准备一致、可复现、能被检查的环境。配套的 Orchard Env 用 Kubernetes 管理环境服务，让软件工程、网页导航和个人助理等任务可以复用同一套创建、运行和回收方式。\n\n智能体评测很容易被“模型回答得好不好”带偏。真正的运行通常还要读写文件、调用浏览器、执行代码、保存状态，再把结果交回下一轮模型。Orchard 把这些外部条件写进环境层，并把每次 rollout 放进隔离容器；开发者可以在相同任务和相同工具条件下比较不同模型或不同 Harness 的行为。\n\n微软同时发布了 Orchard-SWE 的实验结果：官方文章称它在 SWE-bench Verified 上达到 69.7%，采用重排后为 73.0%，并报告约 30 亿激活参数。文章还提到 107,000 次交互和配套的数据、评测方法。这里的数字需要保留“微软实验”的标签；数据集版本、提示词、重排方法和环境差异都会影响结果，不能把一项框架的公司 benchmark 直接翻译成所有代码库上的生产成功率。\n\nOrchard 的价值更像一块可复用的试验场。它把环境启动、工具权限、任务数据、运行记录和结果评估连接起来，让研究者能追问一次失败到底是模型不会做、工具没给权限，还是环境状态不一致。框架也支持 Codex、OpenClaw、ZeroClaw 等真实 Harness，方便比较“模型能力”和“外部运行系统”的共同作用。\n\n开源框架并不会自动解决代理安全问题。隔离容器、凭据管理、网络出口、数据脱敏和人工停止仍要由部署团队配置；生产系统还要增加审计、成本限制和故障回滚。8 月 3 日可以确认的是 Orchard 的发布、环境组件和微软公布的实验结果，能否在不同团队和真实业务里复现要靠后续使用。",
+  "publishedAt": "2026-08-03",
+  "eventDate": "2026-08-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/microsoft-orchard-agent-framework-20260803.svg",
+    "alt": "微软研究院开源 Orchard：把智能体训练环境和评测接到一起 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/microsoft-orchard-agent-framework-20260803.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "Orchard 先解决运行环境的一致性",
+      "body": "Orchard Env 用 Kubernetes 管理可复用环境，把工具、状态、任务和回收方式放进可重复的运行层。",
+      "kind": "narrative"
+    },
+    {
+      "id": "why-env",
+      "title": "智能体评测不只看模型回答",
+      "body": "代码、浏览器、文件和状态都会改变结果；环境不一致时，分数很难说明模型本身的差异。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "SWE-bench 数字属于微软实验",
+      "body": "微软报告 Orchard-SWE 达到 69.7%，重排后 73.0%；数据集、重排和运行条件需要一起核对。",
+      "kind": "boundary"
+    },
+    {
+      "id": "harness",
+      "title": "框架把模型和 Harness 放进同一条记录",
+      "body": "支持真实 Harness 的环境，让研究者能够比较模型、工具权限和执行循环怎样共同影响结果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "production",
+      "title": "从开源框架到生产还隔着安全配置",
+      "body": "网络出口、凭据、脱敏、成本限制和人工停止仍由部署团队负责，开源不等于默认安全。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个智能体评测环境要记录什么？",
+    "question": "把模型、工具和运行环境拆开记录，才能知道一次成功或失败是怎么发生的。",
+    "steps": [
+      {
+        "label": "准备可复用环境",
+        "detail": "Orchard Env 创建带工具、文件和状态的隔离运行环境。",
+        "evidence": "Microsoft Research"
+      },
+      {
+        "label": "执行一轮任务",
+        "detail": "模型提出动作，Harness 调用工具并把结果返回下一轮。",
+        "evidence": "Orchard framework"
+      },
+      {
+        "label": "保存完整轨迹",
+        "detail": "记录 rollout、环境状态和工具结果，避免只保留最后答案。",
+        "evidence": "Microsoft Research"
+      },
+      {
+        "label": "比较并复查",
+        "detail": "把模型能力、权限配置和评测方法一起对照，再判断 benchmark 的含义。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft Research",
+    "url": "https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "agent",
+    "agent-loop",
+    "execution-sandbox",
+    "eval",
+    "benchmark",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/",
+      "claim": "微软研究院发布开源 Orchard 与 Orchard Env，支持规模化智能体训练和评测。",
+      "excerpt": "Orchard is an open framework for scalable agentic AI, with a reusable environment service called Orchard Env."
+    },
+    {
+      "url": "https://github.com/microsoft/orchard",
+      "claim": "微软 GitHub 仓库提供 Orchard 框架代码和使用入口。",
+      "excerpt": "Microsoft Orchard: an open framework for scalable agentic AI."
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/",
+      "claim": "微软报告 Orchard-SWE 在 SWE-bench Verified 上的实验结果，并说明数据和评测方法。",
+      "excerpt": "Orchard-SWE achieves 69.7% on SWE-bench Verified, and 73.0% with reranking."
+    }
+  ],
+  "canonicalUrl": "https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/",
+  "sourceHash": "sha256:48165802e64bfdafc426b5089ae1c419bec6b4370b88d4bf95a6d1adf63117ce",
+  "status": "published",
+  "discoveredAt": "2026-10-04T10:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent-harness 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent-loop 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 execution-sandbox 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 eval 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 benchmark 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 tools 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/",
+      "claim": "Orchard 把环境、工具和评测组织在一起，每次 rollout 在隔离容器中执行。",
+      "excerpt": "Each rollout runs in an isolated container, with the environment created and managed by Orchard Env."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T10:30:00Z",
+    "method": "source",
+    "notes": "按官方公告、监管机构披露、政府文件和可信新闻核对事件日、报道日、发布状态与事实边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T10:30:00Z",
+    "notes": "逐篇手写正文，按 write-like-me 与 humanizer-zh 检查表达；区分官方事实、公司自述、监管披露、媒体报道和未确认信息。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T10:50:00Z",
+    "questions": [
+      "新闻主线优先于论文和技术背景，正文按事件组织段落并适合零基础读者。",
+      "eventDate 与 publishedAt 与原始公告、诉讼文件或媒体报道日期一致。",
+      "来源卡片保留原始链接，并区分官方事实、公司自述、媒体转述、监管材料和未确认信息。",
+      "sections、explainer 与 SVG 和正文一致，词条联动只使用正文解释过的概念。"
+    ],
+    "notes": "先写 Orchard 开源框架和环境层，再写微软 benchmark；69.7%、73.0% 和交互次数均保留公司实验边界。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-03",
+  "fingerprint": "sha256:f8e8f32c2aa3af5096fb5a023a7b480f204cacc48a0ae5dcd3b9dd6226bfe310",
+  "promotedAt": "2026-10-03T20:59:57.708Z"
+}
