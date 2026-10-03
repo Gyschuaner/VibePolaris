@@ -49,13 +49,11 @@
 
 ## 合入与生产发布
 
-以下记录在 dev/main/production 操作完成后补齐；在此之前不把本地分支状态写成已上线。
-
-- dev PR：待创建；合并提交：待记录。
-- main PR：待创建；最终 main 提交：待记录。
-- 生产镜像与发布目录：待记录。
-- DP dev/production 部署记录：待记录。
-- 健康检查与十条公网冒烟：待记录。
-- 回滚备份、旧镜像和回滚命令：待记录。
+- dev PR [#300](https://github.com/Gyschuaner/VibePolaris/pull/300) 已合并，合并提交：`5b711108f930989fc4212a91ef110125846e080d`。本机 dev 预览 `http://127.0.0.1:3221` 十条路由均返回 HTTP 200；DP 部署记录为 `local-dev-20261003-vbp062-5b711108`（ID `14a608f2-a3a8-4ced-ab39-56c04fdcdfef`）。
+- main 生产 overlay 分支 `release/VBP-062-prod-overlay-20261003` 只从 `origin/main` 引入本批 47 个逐条提交；PR [#301](https://github.com/Gyschuaner/VibePolaris/pull/301) 已合并，最终 main 提交：`52f4e3ab047d24405aa94752ad4ed864adefb910`。dev 中其他功能没有进入这个 overlay。
+- 生产镜像：`vibepolaris:52f4e3ab047d24405aa94752ad4ed864adefb910`；发布目录：`/opt/vibepolaris/releases/20261003T061740Z-52f4e3ab`；切换后 `vibepolaris-web-1` 为 `running/healthy`，`current` 指向该目录。
+- DP 生产部署记录：`deploy-vbp062-ai-model-prompt-boundaries-239-248-prod-20261003`（ID `a4177def-b827-4711-9dea-398efa4f2f8e`），环境 `production`，状态 `released`，地址 `https://vibe.chuansgu.top`。DP 需求 VBP-062 已从 `ready_for_release` 推进为 `released`，十条研发任务均为 done。
+- 发布后根路径和十条公网词条均 HTTP 200；真实浏览器在公网 `reasoning-model` 页完成“候选结论 → 展开检查 → 3/3 预算完成”的状态门控复核。生产 Docker build 使用 `linux/amd64`，Next build 生成 217 个静态页。
+- 回滚备份：`/opt/vibepolaris/backups/20261003T061740Z-from-be71d284`；旧镜像：`vibepolaris:be71d284ea650eb232dbbaaa28ee535fae70d4a5`。回滚时恢复备份中的 compose、旧镜像和 `current` 目标，保留 `vibepolaris_xiaobei_data` 数据卷。
 
 本批遵守“逐条修改、十条统一发布”；没有逐条上线，也没有把其他 dev 功能带进生产。当前机器不存在 `D:/Obsidian/gysnote`，未创建空的 Obsidian 记录。
