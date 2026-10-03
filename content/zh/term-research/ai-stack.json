@@ -37,14 +37,17 @@
   },
   {
     "slug": "reasoning-model",
-    "mechanism": "这类模型在回答前会分配更多推理计算来处理多步问题，并用训练或推断策略提高复杂任务的完成率。",
-    "misconception": "推理模型不是逻辑正确性的证明，也不意味着用户能看到或应当依赖模型内部思维过程。",
-    "demoSignature": "输入：库存17件、连续卖出4件和6件；中间：状态17→13→7，并检查结果不得为负；输出：剩余7件。可视化：数值状态轨道与校验节点。 建议5帧：题目入场、库存牌显示17、两次操作把数字改为13和7、约束检查亮绿、答案出现；交互：拖动销量数字，状态轨道即时重算。",
+    "mechanism": "推理模型为复杂任务分配额外 token 或候选搜索过程，用来拆分条件、比较路径并检查中间结果。",
+    "misconception": "推理更长不等于事实更正确；推理预算、外部证据和最终校验是三件事。",
+    "demoSignature": "退款条件比较先给直接候选，再展开检查步骤；切换紧张预算后停在未完成状态。证据：完成/未完成状态与预算同步。",
     "sourceUrls": [
       "https://platform.openai.com/docs/guides/reasoning",
-      "https://arxiv.org/abs/2201.11903"
+      "https://arxiv.org/abs/2201.11903",
+      "https://arxiv.org/abs/2305.10601",
+      "https://arxiv.org/abs/2501.12948",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
     ],
-    "rewriteRisk": "不要把“回答更慢”当成机制，也不要承诺模型每次都会推对。",
+    "rewriteRisk": "明确额外推理过程的用途和成本，避免把更长的过程写成自动事实核验。",
     "nearDuplicates": [
       "llm",
       "generative-ai",
