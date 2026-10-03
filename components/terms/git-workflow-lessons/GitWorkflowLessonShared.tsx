@@ -6,6 +6,7 @@ import { useScene } from "../HarnessStoryScenes";
 import styles from "../ConceptArticle.module.css";
 import { PushLesson } from "./push";
 import { MergeLesson } from "./merge";
+import { RebaseLesson } from "./rebase";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -166,5 +167,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "fetch") return <FetchLesson />;
   if (slug === "push") return <PushLesson />;
   if (slug === "merge") return <MergeLesson />;
+  if (slug === "rebase") return <RebaseLesson />;
   return null;
 }

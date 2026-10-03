@@ -1119,14 +1119,14 @@
     "zh": "变基", "en": "Rebase", "slug": "rebase", "cat": "Git",
     "say": "变基把一组提交重新应用到新的起点，生成内容相近但哈希不同的新提交。",
     "aliases": ["git rebase", "变基操作", "重放提交"],
-    "question": "功能分支落后 dev，怎样把自己的提交接到最新 dev 后面？",
+    "question": "功能分支落后 main，怎样把自己的提交接到最新 main 后面？",
     "definition": "rebase 找出当前分支独有提交，并按顺序在目标基线之上重新创建。这样历史更线性，但提交身份会改变。",
     "boundary": "已经被多人基于其继续工作的公共提交不宜随意变基，否则会造成重复历史和协作混乱。",
     "demoType": "flow", "demoTitle": "两个提交换到新起点",
-    "demoSteps": [{"label":"找到独有提交","value":"F1、F2 位于旧 dev 之后","note":"原提交暂时取出。"},{"label":"移动分支基线","value":"切到最新 dev 提交","note":"工作从新起点继续。"},{"label":"顺序重放","value":"生成 F1'、F2'","note":"内容相近，但提交哈希改变。"}],
+    "demoSteps": [{"label":"旧基线","value":"main A 后 feature F1/F2","note":"F1、F2 是 feature 的独有提交。"},{"label":"移动基线","value":"main 前进到 B，F1/F2 待重放","note":"目标起点已更新，旧提交先进入队列。"},{"label":"逐个重放","value":"B → F1′ → F2′","note":"父关系改变，生成新提交哈希。"}],
     "quizQuestion": "rebase 后提交哈希为什么会变化？", "quizOptions": ["提交的父提交发生了变化", "文件名长度变化", "远程仓库名称变化"],
     "correctText": "父提交是提交对象内容的一部分，起点改变会生成新提交。", "wrongText": "文件名长度和 remote 名称不会单独重写提交。",
-    "promptTitle": "判断是否适合变基", "prompt": "请根据下面分支是否已推送、是否被他人使用和提交图，判断是否 rebase。若适合，说明冲突处理和安全推送方式；若不适合，给出 merge 方案。",
+    "promptTitle": "判断是否适合变基", "prompt": "请根据下面分支是否已推送、是否被他人使用和提交图，判断是否 rebase。若适合，说明冲突处理和安全推送方式；若不适合，给出 merge 方案；目标基线统一按 main 说明。",
     "relatedSlugs": ["merge", "branch", "push"]
   },
   {
