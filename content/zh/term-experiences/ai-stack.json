@@ -18783,5 +18783,208 @@
         "note": "多维度、可复现的模型评测"
       }
     ]
+  },
+  {
+    "slug": "context-overflow",
+    "lead": "长对话越来越全，为什么模型反而找不到刚才那条关键事实？",
+    "definition": "上下文溢出发生在请求所需令牌超过上下文窗口；即使未硬性超限，过长内容也可能降低召回和注意力。",
+    "boundary": "窗口大小不等于有效使用能力；压缩、裁剪和摘要会改变模型看见的事实。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "历史增长后压缩上下文再继续",
+    "actionLabel": "切换上下文状态",
+    "actors": [
+      {
+        "id": "history",
+        "label": "历史",
+        "detail": "14k tokens",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "tools",
+        "label": "工具结果",
+        "detail": "7k tokens",
+        "icon": "gear",
+        "group": "输入"
+      },
+      {
+        "id": "limit",
+        "label": "上下文窗口",
+        "detail": "24k",
+        "icon": "shield",
+        "group": "容量"
+      },
+      {
+        "id": "summary",
+        "label": "压缩摘要",
+        "detail": "目标/决策/待办",
+        "icon": "file",
+        "group": "保留"
+      },
+      {
+        "id": "model",
+        "label": "下一轮",
+        "detail": "继续任务",
+        "icon": "robot",
+        "group": "输出"
+      }
+    ],
+    "edges": [
+      {
+        "id": "h-l",
+        "from": "history",
+        "to": "limit",
+        "label": "占用"
+      },
+      {
+        "id": "t-l",
+        "from": "tools",
+        "to": "limit",
+        "label": "占用"
+      },
+      {
+        "id": "l-s",
+        "from": "limit",
+        "to": "summary",
+        "label": "压缩"
+      },
+      {
+        "id": "s-m",
+        "from": "summary",
+        "to": "model",
+        "label": "继续"
+      }
+    ],
+    "frames": [
+      {
+        "label": "累积内容",
+        "note": "系统、历史、工具和预计输出一起计入预算。",
+        "activeIds": [
+          "history",
+          "tools",
+          "limit"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "summary",
+          "model"
+        ],
+        "values": {
+          "history": "14k",
+          "tools": "7k",
+          "limit": "24k"
+        },
+        "activeEdgeIds": [
+          "h-l",
+          "t-l"
+        ]
+      },
+      {
+        "label": "触发溢出",
+        "note": "预计输出加入后超过上限，请求被拒绝。",
+        "activeIds": [
+          "limit"
+        ],
+        "doneIds": [
+          "history",
+          "tools"
+        ],
+        "mutedIds": [
+          "summary",
+          "model"
+        ],
+        "values": {
+          "limit": "26k > 24k"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "压缩保留",
+        "note": "保留目标、决策和未完成动作，压缩到11k。",
+        "activeIds": [
+          "summary"
+        ],
+        "doneIds": [
+          "history",
+          "tools",
+          "limit"
+        ],
+        "mutedIds": [
+          "model"
+        ],
+        "values": {
+          "summary": "11k · 关键事实保留"
+        },
+        "activeEdgeIds": [
+          "l-s"
+        ]
+      },
+      {
+        "label": "继续并复查",
+        "note": "下一轮读取摘要，先核对关键事实再执行。",
+        "activeIds": [
+          "model"
+        ],
+        "doneIds": [
+          "history",
+          "tools",
+          "summary",
+          "limit"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model": "继续 · 需复查"
+        },
+        "activeEdgeIds": [
+          "s-m"
+        ]
+      }
+    ],
+    "insight": "处理溢出不是盲目塞更多文本，而是预算令牌并保留完成任务所需的高信号事实。",
+    "quiz": {
+      "question": "遇到上下文溢出，最先检查什么？",
+      "options": [
+        {
+          "label": "令牌组成和必须保留的事实",
+          "correct": true
+        },
+        {
+          "label": "只调低温度",
+          "correct": false
+        },
+        {
+          "label": "复制全部旧消息",
+          "correct": false
+        }
+      ],
+      "success": "先拆分来源，再决定压缩、裁剪、检索或分段处理。",
+      "retry": "重复旧消息会更快超限，也可能增加无关信息。"
+    },
+    "prompt": {
+      "title": "处理长对话上下文",
+      "text": "列出令牌预算、必须保留的事实、可压缩内容和压缩后的复查步骤。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+        "label": "Claude Platform Docs · Context windows",
+        "note": "上下文窗口、令牌累积和压缩"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "上下文有限、压缩和信息取舍"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Lost in the Middle · arXiv:2307.03172",
+        "note": "长上下文位置与召回退化"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      }
+    ]
   }
 ]

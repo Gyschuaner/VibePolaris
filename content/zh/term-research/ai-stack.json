@@ -1656,5 +1656,23 @@
       "evaluation-run",
       "safety-evaluation"
     ]
+  },
+  {
+    "slug": "context-overflow",
+    "mechanism": "上下文溢出发生在请求所需的令牌超过模型上下文窗口，系统可能拒绝请求、截断内容或在接近上限时出现召回和注意力下降。",
+    "misconception": "上下文窗口大小不等于模型一定能同样有效地使用全部内容；压缩、检索、裁剪和摘要会改变可见信息，必须检查关键事实有没有被保留。",
+    "demoSignature": "输入：系统指令 2k + 历史 14k + 工具 7k + 输出 3k = 26k；中间：模型上限 24k；请求被拒绝，最新任务未执行；输出：保留目标、决策和未完成动作；压缩至 11k。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2307.03172",
+      "https://developers.openai.com/api/docs/guides/evals"
+    ],
+    "rewriteRisk": "上下文窗口大小不等于模型一定能同样有效地使用全部内容；压缩、检索、裁剪和摘要会改变可见信息，必须检查关键事实有没有被保留。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "context-window",
+      "token",
+      "context"
+    ]
   }
 ]
