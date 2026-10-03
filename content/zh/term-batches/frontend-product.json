@@ -1033,17 +1033,17 @@
   },
   {
     "zh": "远程仓库", "en": "Remote", "slug": "remote", "cat": "Git",
-    "say": "远程仓库是本地 Git 保存的一组远程地址和引用，用于交换分支与提交。",
-    "aliases": ["Remote", "远端", "远程地址"],
-    "question": "本地提交已经存在，为什么同事仍然看不到？",
-    "definition": "remote 是远程仓库配置的名称与 URL。fetch 获取远程引用，push 把本地引用更新到远程，pull 则在获取后继续集成。",
-    "boundary": "远程仓库不一定只有一个，origin 也只是常见名称，不代表中央仓库的特殊类型。",
-    "demoType": "flow", "demoTitle": "本地提交如何到达远程",
-    "demoSteps": [{"label":"本地提交","value":"提交只存在本地对象库","note":"远程分支尚未变化。"},{"label":"选择远程","value":"origin 指向团队仓库 URL","note":"git remote -v 可核对地址。"},{"label":"执行 push","value":"远程分支接收新提交","note":"同事 fetch 后可以看到。"}],
+    "say": "远程仓库是本地 Git 保存的一组远程名称、地址和引用规则，用于交换分支与提交。",
+    "aliases": ["Remote", "远端", "远程地址", "remote-tracking branch"],
+    "question": "我配置了两个远程，fetch 为什么只移动某个远程跟踪引用？",
+    "definition": "remote 是远程仓库配置的名称、URL 与 refspec。fetch 获取匹配的远程引用，push 更新远端引用，pull 则在获取后继续集成当前分支。",
+    "boundary": "远程配置不等于实时连接；origin 只是常见名称，fetch 不会自动改变当前分支或工作区，pull 才可能继续合并或变基。",
+    "demoType": "flow", "demoTitle": "远程名称如何影响引用更新",
+    "demoSteps": [{"label":"配置两个远程","value":"origin / upstream 都指向地址","note":"本地 main 与跟踪引用都在 A。"},{"label":"fetch upstream","value":"只有 upstream/main 记录到 B","note":"本地 main 和工作区仍在 A。"},{"label":"限制 refspec","value":"只取 upstream/release 的 C","note":"匹配范围改变，main 仍保持原位。"}],
     "quizQuestion": "origin 是什么？", "quizOptions": ["常见的远程仓库名称", "Git 强制规定的主分支", "每次提交的哈希"],
     "correctText": "origin 通常由 clone 创建，但可以改名或存在多个 remote。", "wrongText": "它不是分支，也不是提交标识。",
-    "promptTitle": "检查本地与远程关联", "prompt": "请根据 git remote -v 和 git branch -vv 输出，说明每个本地分支跟踪哪个远程分支，并指出 push 可能发往错误仓库的配置。",
-    "relatedSlugs": ["clone", "fetch", "push"]
+    "promptTitle": "检查本地与远程关联", "prompt": "请根据 git remote -v、git branch -vv 和 refspec 输出，说明每个远程名称指向哪里、哪些 remote-tracking 引用会被 fetch 更新，以及 push 或 pull 还会改变什么；不要把 origin 当作特殊中央服务器。",
+    "relatedSlugs": ["clone", "fetch", "pull", "branch"]
   },
   {
     "zh": "克隆", "en": "Clone", "slug": "clone", "cat": "Git",

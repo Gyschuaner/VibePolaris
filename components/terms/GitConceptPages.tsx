@@ -4,3 +4,4 @@ export { WorkingTreeTermPage } from "./git-workflow-pages/working-tree";
 export { StagingAreaTermPage } from "./git-workflow-pages/staging-area";
 export { DiffTermPage } from "./git-workflow-pages/diff";
 export { CheckoutSwitchTermPage } from "./git-workflow-pages/checkout-switch";
+export { RemoteTermPage } from "./git-workflow-pages/remote";

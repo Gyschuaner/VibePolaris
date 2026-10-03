@@ -83,6 +83,24 @@ function CheckoutSwitchLesson() {
   </div>;
 }
 
+function RemoteLesson() {
+  const scene = useScene(3);
+  const labels = ["配置两个远程", "fetch upstream", "限制 refspec"];
+  const fetched = scene.step >= 1;
+  const filtered = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git remote 引用更新演示">
+    <Caption scene={scene} labels={labels} titles={["名字先指向地址", "只更新 upstream 的跟踪引用", "只取回匹配的引用"]} copy={["本地 main 与远程配置都在 A；origin 和 upstream 是两个可替换的名字。", "fetch upstream 让 upstream/main 记录 B，本地 main 和工作区仍在 A。", "refspec 只匹配 release；upstream/release 记录 C，main 仍保持原位。"]} />
+    <div className={styles.remoteMap} aria-live="polite">
+      <div data-active={!fetched}><GitBranch size={22} aria-hidden="true" /><strong>本地 main</strong><code>A</code><span>工作区不变</span></div>
+      <ArrowRight size={18} aria-hidden="true" />
+      <div data-active={scene.step === 0}><GitCommit size={22} aria-hidden="true" /><strong>{filtered ? "release refspec" : "origin / upstream"}</strong><code>{filtered ? "refs/heads/release" : "两个远程地址"}</code><span>{filtered ? "只匹配 release" : "名称 → URL"}</span></div>
+      <ArrowRight size={18} aria-hidden="true" />
+      <div data-active={fetched}><GitBranch size={22} aria-hidden="true" /><strong>{filtered ? "upstream/release" : "upstream/main"}</strong><code>{filtered ? "C" : fetched ? "B" : "A"}</code><span>{fetched ? "remote-tracking 记录" : "上次获取状态"}</span></div>
+    </div>
+    <div className={styles.choices} role="group" aria-label="推进 remote 流程"><button type="button" onClick={() => scene.seek(1)} aria-pressed={scene.step === 1}>fetch upstream</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={filtered}>只取 release</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
@@ -90,5 +108,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "staging-area") return <StagingAreaLesson />;
   if (slug === "diff") return <DiffLesson />;
   if (slug === "checkout-switch") return <CheckoutSwitchLesson />;
+  if (slug === "remote") return <RemoteLesson />;
   return null;
 }
