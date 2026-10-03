@@ -5,5 +5,5 @@ export const multimodalSources = [
   source("Google", "Gemini vision", "https://ai.google.dev/gemini-api/docs/vision", ["multimodal-input-evidence", "multimodal-missing-evidence"]),
   source("Radford et al.", "Learning Transferable Visual Models From Natural Language Supervision", "https://arxiv.org/abs/2103.00020", ["multimodal-alignment"]),
   source("Alayeen et al.", "Flamingo: a Visual Language Model for Few-Shot Learning", "https://arxiv.org/abs/2204.14198", ["multimodal-fusion-evidence"]),
-  source("NIST", "Artificial Intelligence Risk Management Framework: Generative AI Profile", "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf", ["multimodal-risk"]),
+  source("NIST", "Artificial Intelligence Risk Management Framework: Generative AI Profile", "https://doi.org/10.6028/NIST.AI.600-1", ["multimodal-risk"]),
 ];
