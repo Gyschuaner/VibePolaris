@@ -110,7 +110,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
     : mode === "zero-shot-prompting" ? [caption.copy[0], constraint && scene.step === 2 ? "模型按“最先失败组件”这一新增约束选择前端。" : caption.copy[1], constraint && scene.step === 2 ? "约束让边界可复核；仍没有提供示例。" : caption.copy[2]]
     : mode === "temperature" ? [caption.copy[0], temperature < 0.5 ? caption.copy[1] : "温度升高后，三根概率柱的差距缩小。", temperature >= 0.5 ? caption.copy[2] : "当前采样仍偏向最高概率词；这只改变选择分布，不提供事实校验。"]
     : mode === "tokenization" ? [scene.step === 0 ? "字符串还没有切分，先保留“CSS 很好用”这段原始输入。" : caption.copy[0], scene.step === 1 ? "分词器按当前词表切成片段；模型还没有拿到最终编号。" : caption.copy[1], encoding === "bpe" ? caption.copy[2] : "换成按词切分的示意编码器后，数量变少；真实结果仍取决于具体词表。"]
-    : mode === "tool-approval" ? [caption.copy[0], caption.copy[1], `批准 ${Object.values(approved).filter(Boolean).length} 项；C 保持未执行。`]
+    : mode === "tool-approval" ? [caption.copy[0], scene.step === 1 ? "审批卡已展开；现在只是在查看路径和影响，还没有执行。" : scene.step === 2 ? `批准 ${Object.values(approved).filter(Boolean).length} 项；C 保持未执行。` : "调用已进入待处理队列，磁盘没有变化。", caption.copy[2]]
     : [caption.copy[0], scene.step === 1 ? caption.copy[1] : salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[1], salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[2]];
 
   const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : mode === "tokenization" ? [scene.step === 0 ? "先保留原始字符串" : caption.titles[0], caption.titles[1], "换编码器，数量也会换"] : caption.titles;
@@ -251,7 +251,20 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
       <p className={styles.inputExample}><strong>边界</strong>token 数是具体编码器的结果；它不等于字符数，也不等于模型能理解的“词”数。演示编号是说明用的占位值。</p>
     </div>;
   }
-  if (mode === "tool-approval") return <div className={styles.lab} ref={scene.ref} role="region" aria-label="工具逐项审批演示">{controls}<div className={styles.choices}>{(["A", "B"] as const).map((key) => <button key={key} type="button" disabled={scene.step >= 2} aria-pressed={approved[key]} onClick={() => { setApproved((current) => ({ ...current, [key]: !current[key] })); scene.seek(2); }}>{approved[key] ? `撤回 ${key}` : `批准 ${key}`}</button>)}<span className={styles.inputExample}>C · 不可恢复，当前策略拒绝</span></div><div className={styles.contract}><div><LockSimple size={25}/><h3>审批卡</h3><p>A/B 可恢复 · C 不可恢复</p></div><ArrowRight size={20}/><div><ShieldCheck size={25}/><h3>执行器</h3><p>等待逐项决定</p></div><ArrowRight size={20}/><div>{scene.step === 2 ? <CheckCircle size={25}/> : <Warning size={25}/>}<h3>副作用</h3><p>{scene.step === 2 ? `${Object.values(approved).filter(Boolean).length} 项执行` : "尚未执行"}</p></div></div><p className={styles.inputExample}><strong>边界</strong>审批只回答这次具体调用，权限系统仍要在执行处检查参数和资源。</p></div>;
+  if (mode === "tool-approval") {
+    const executed = scene.step === 2;
+    const rows = [{ key: "A", path: "/reports/2026-10.csv", recovery: "可恢复", selected: approved.A }, { key: "B", path: "/reports/draft.csv", recovery: "可恢复", selected: approved.B }, { key: "C", path: "/archive/old.csv", recovery: "不可恢复", selected: false }];
+    return <div className={styles.lab} ref={scene.ref} role="region" aria-label="工具逐项审批演示">
+      {controls}
+      <div className={styles.choices} role="group" aria-label="选择可执行的调用"><button type="button" disabled={executed} aria-pressed={approved.A} onClick={() => { setApproved((current) => ({ ...current, A: !current.A })); scene.seek(1); }}>{approved.A ? "撤回 A" : "批准 A"}</button><button type="button" disabled={executed} aria-pressed={approved.B} onClick={() => { setApproved((current) => ({ ...current, B: !current.B })); scene.seek(1); }}>{approved.B ? "撤回 B" : "批准 B"}</button><span className={styles.inputExample}>C · 不可恢复，当前策略拒绝</span></div>
+      <div className={styles.approvalBoard}>
+        <div className={styles.approvalCall}><div><LockSimple size={24} /><span>待审批调用</span><strong>delete_file · CALL-47</strong></div><small>{scene.step === 0 ? "模型只提出调用，执行器尚未打开审批卡" : scene.step === 1 ? "暂停在执行之前，等待逐项决定" : "这次调用已生成执行记录"}</small></div>
+        <div className={styles.approvalQueue}>{rows.map((row) => <div className={styles.approvalRow} data-state={executed ? row.selected ? "approved" : "denied" : scene.step === 1 ? "review" : "pending"} key={row.key}><b>{row.key}</b><div><strong>{row.path}</strong><small>{row.recovery}</small></div><span>{executed ? row.selected ? "已执行" : "未执行" : row.key === "C" ? "策略拒绝" : scene.step === 1 ? "待决定" : "待审批"}</span></div>)}</div>
+        <div className={styles.approvalSummary}>{executed ? <CheckCircle size={24} /> : <ShieldCheck size={24} />}<div><span>执行器结果</span><strong>{executed ? `${rows.filter((row) => row.selected).length} 项执行，C 无副作用` : "审批决定尚未生效"}</strong><small>{executed ? "决定只绑定 CALL-47" : "查看范围后再推进下一步"}</small></div></div>
+      </div>
+      <p className={styles.inputExample}><strong>边界</strong>审批只回答这次具体调用，权限系统仍要在执行处检查参数和资源；未批准的项不会因为同一张卡片而继承授权。</p>
+    </div>;
+  }
   const permissionRequested = scene.step >= 2;
   const salesRequest = scene.step === 1;
   const permissionAllowed = permissionRequested && salary;
