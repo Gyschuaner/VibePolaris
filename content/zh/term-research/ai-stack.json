@@ -229,12 +229,15 @@
     "slug": "json-schema",
     "mechanism": "JSON Schema 用关键字描述 JSON 实例允许的类型、必填字段、取值范围和嵌套结构，并由验证器判定实例是否符合。",
     "misconception": "Schema 是验证规则，不是数据本身，也不会替应用检查库存、权限等外部业务事实。",
-    "demoSignature": "输入：Schema规定count为1–5的整数；中间：{count:0}命中minimum错误1项，改为{count:3}；输出：验证错误数1→0。可视化：实例树与规则树逐节点对照。 建议4帧：规则树和实例树并排、minimum节点指向0、错误计数变1、改成3后归零；交互：拖动count值穿过1和5两个边界。",
+    "demoSignature": "输入：Schema 要求 status 只能是 pending/success、count 必须是 0 或更大的整数且两项都必填；中间：初始 {status:done,count:-1} 同时触发 enum 与 minimum，改成 success/0 后通过；切换字符串、缺失字段或额外 debug 字段分别触发 type、required、additionalProperties 失败；输出：校验器只报告规则结果，不替数据补值或证明业务事实。可视化：规则卡与实例字段逐项连线，错误定位到字段和关键字。",
     "sourceUrls": [
-      "https://json-schema.org/draft/2020-12/json-schema-core",
-      "https://json-schema.org/draft/2020-12/json-schema-validation"
+      "https://json-schema.org/draft/2020-12/json-schema-validation",
+      "https://json-schema.org/understanding-json-schema/reference/object",
+      "https://json-schema.org/understanding-json-schema/reference/numeric",
+      "https://json-schema.org/understanding-json-schema/reference/enum",
+      "https://json-schema.org/understanding-json-schema/reference/schema"
     ],
-    "rewriteRisk": "示例应使用标准关键字，避免把自定义业务描述伪装成Schema能力。",
+    "rewriteRisk": "演示必须区分 JSON 语法、Schema 规则和业务事实；初始值与交互状态要和校验器的真实边界一致。",
     "nearDuplicates": [
       "structured-output"
     ]
@@ -297,7 +300,7 @@
     "slug": "agent-loop",
     "mechanism": "智能体在读取状态、执行动作、接收结果、更新状态和停止判断之间循环，直到完成、失败或达到限制。",
     "misconception": "一次工具调用不是循环；没有状态更新和停止条件的重复调用不能证明任务完成。",
-    "demoSignature": "修复按钮：清单 1/2 与测试失败进入循环，改状态逻辑后再测，测试通过时清单 2/2 并停止；交互：切换最大轮数 2/3，观察达到上限和完成两种终态。",
+    "demoSignature": "输入：修复任务还有 2 个检查项，允许最多 2/3 轮工具调用；中间：读取状态后运行测试，结果从“尚未运行”变为“失败 → 修复 → 通过”，每轮调用数 0→1→2；输出：3 轮且清单 2/2 时停止，2 轮上限在同一位置显示“达到上限”并保持未完成。可视化：当前状态、工具结果、停止判据三段轨迹；交互：切换最大轮数观察完成与上限两种终态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2210.03629",
@@ -305,7 +308,7 @@
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://docs.langchain.com/oss/python/langgraph/overview"
     ],
-    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
+    "rewriteRisk": "不要把模型连续输出当成循环；必须让工具结果回写状态，并把完成、失败、取消和轮数上限分开。",
     "nearDuplicates": [
       "agent",
       "function-calling",
@@ -316,15 +319,15 @@
     "slug": "plan-and-execute",
     "mechanism": "规划与执行先把目标拆成有前后关系、可检查的步骤，再逐项执行；某一步做完，结果没有达到完成条件时，后面的计划可以停下、调整或重排。",
     "misconception": "计划只是接下来怎么做的安排，不代表事情已经完成；步骤走完也要看实际结果，外部状态改变时还需要重新规划。",
-    "demoSignature": "输入：发布清单含构建、测试、部署3步；中间：构建通过，测试12项中1项失败，部署状态从待执行改为阻塞；输出：生成修复测试的新步骤并停止发布。可视化：清单节点状态与分支动画。 建议5帧：三节点计划生成、构建通过、测试节点显示11/12并变红、部署被锁、修复节点插入；交互：点击失败测试查看计划如何改写。",
+    "demoSignature": "输入：发布任务拆为构建、测试、部署；中间：5 帧从生成计划到构建通过、测试返回、部署阻塞，点击“模拟测试失败”把 12/12 改为 11/12，再点击“插入修复并重测”加入修复步骤并恢复 12/12；输出：失败时部署保持锁定，复测通过后才获得执行资格。可视化：三节点计划与更新后的修复节点；交互：手动推进并切换失败/修复分支。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2210.03629",
       "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://www.langchain.com/blog/planning-agents/"
+      "https://www.langchain.com/blog/planning-agents"
     ],
-    "rewriteRisk": "别只写三个动词；每一步都要有完成证据、失败分支和计划更新。",
+    "rewriteRisk": "不要只画一条线性待办；必须显示失败结果如何锁住后继步骤，并在复测证据回来后恢复计划。",
     "nearDuplicates": [
       "agent-loop",
       "agent-orchestration"
@@ -353,7 +356,7 @@
     "slug": "handoff",
     "mechanism": "交接把继续任务所需的事实状态和下一步交给接手者，并把后续回复权一并转过去。",
     "misconception": "交接的重点是带齐接手所需的信息，不要求原样搬来整段聊天记录；实际传递多少由系统设计决定。它也不等于两个智能体并行协作，失败后要不要退回、怎么退，需要另行设计。",
-    "demoSignature": "输入：售后对话含订单 A102 和“申请退款”；中间：从整段对话整理出订单号和申请类型两项信息，先送达退款智能体，再把回复权从客服转过去；输出：退款智能体从确认金额步骤接手，客服不再直接回复。可视化：回复权标记从客服节点移动到退款节点。建议5帧：客服节点持有回复权标记、交接包整理为2项信息、交接包抵达退款节点、回复权标记移动、退款节点从确认金额点亮；交互：展开交接包检查被保留的信息。",
+    "demoSignature": "输入：订单 A102 的退款请求进入客服智能体；中间：4 帧整理订单号和申请类型，回复权从客服移动到退款智能体；切换“移除订单号”后交接包缺少关键事实，接手者退回客服；输出：完整交接从确认金额继续且未执行退款，缺信息分支明确保持未完成。可视化：交接包、接手者和回复权三段轨迹；交互：移除/补回订单号观察接手与退回。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/handoffs/",
       "https://openai.github.io/openai-agents-python/multi_agent/",
@@ -361,7 +364,7 @@
       "https://arxiv.org/abs/2308.08155",
       "https://openai.github.io/openai-agents-python/running_agents/"
     ],
-    "rewriteRisk": "不要只说“转给专家”；应写出交接了哪些信息、回复权给谁以及失败如何退回。",
+    "rewriteRisk": "交接转移的是继续任务所需状态和回复权，不是已经执行的业务动作；缺关键事实必须退回或请求补充。",
     "nearDuplicates": [
       "agent-orchestration",
       "subagent"
@@ -389,7 +392,7 @@
     "slug": "human-in-the-loop",
     "mechanism": "系统在高风险、系统没把握或不可逆动作前暂停，让人查看输入、建议动作和影响，再批准、修改或拒绝。",
     "misconception": "事后通知或抽样复查不算人在回路；人工节点要位于动作执行前，并能改变结果。",
-    "demoSignature": "输入：退款金额 1200 元，自动退款上限 500 元；中间：系统比较金额并暂停，审阅人可批准、修改或拒绝；输出：批准路径执行退款并记录，拒绝路径保持未执行并记录决定。可视化：金额比较触发暂停闸门与审批卡。建议7帧：申请进入、比较自动退款上限、暂停等待决定、拒绝结局、人工改额、批准后退款、批准留痕；交互：用“选择审批结局”下拉查看拒绝和修改后批准两种结局。",
+    "demoSignature": "输入：退款申请 1200 元，自动上限 500 元；中间：4 帧从请求进入、执行前暂停到人工选择批准/改为 500/拒绝；输出：批准或修改在下一帧才允许执行并记录，拒绝或未决定保持未执行。可视化：预览、审阅决定和业务动作三段轨迹；交互：先推进到暂停，再选择三种决定观察执行结果。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
       "https://openai.github.io/openai-agents-python/guardrails/",
@@ -397,7 +400,7 @@
       "https://www.nist.gov/itl/ai-risk-management-framework",
       "https://openai.github.io/openai-agents-python/tools/"
     ],
-    "rewriteRisk": "不要用“必要时人工介入”带过；要给出触发条件、审阅人能看到什么、能改变哪个动作，以及决定如何留痕。",
+    "rewriteRisk": "人在回路必须发生在真实动作前；审批卡要绑定具体参数，批准、修改、拒绝和未决定不能共用一个成功状态。",
     "nearDuplicates": [
       "tool-approval",
       "guardrail"
@@ -407,7 +410,7 @@
     "slug": "guardrail",
     "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
     "misconception": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
-    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：脱敏分支放行 12 条记录且完整号码为 0；禁止分支直接阻断导出，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
+    "demoSignature": "输入：导出表有 12 条记录，每条含一个手机号；中间：4 帧从数据进入、扫描字段到规则处置，扫描识别 12 个字段但不改变原始数据；输出：切换“脱敏放行”显示 12 条后四位数据，切换“命中即阻断”显示导出停止，权限校验仍是另一层。可视化：数据、规则检查、处置结果三段轨迹；交互：在规则执行前切换脱敏/阻断，观察结果而非把检查当成授权。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/guardrails/",
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
@@ -415,7 +418,7 @@
       "https://airc.nist.gov/airmf-resources/playbook/",
       "https://developers.openai.com/api/docs/guides/safety-best-practices"
     ],
-    "rewriteRisk": "要写出护栏检查什么、命中后做什么，以及权限、审核和业务校验由谁负责，不要把所有安全措施都装进同一个词。",
+    "rewriteRisk": "护栏只回答某个边界是否符合规则；命中后必须有明确处置，且不能把脱敏放行误写成获得了权限。",
     "nearDuplicates": [
       "moderation",
       "permission-boundary",
@@ -426,7 +429,7 @@
     "slug": "moderation",
     "mechanism": "内容审核模型或规则对文本、图像等内容分类并给出风险标签，应用再依据阈值采取展示、复核或隐藏。",
     "misconception": "审核分数不是法律结论，也不是通用安全护栏；阈值与处置要按具体产品场景设定。护栏负责规则检查，内容审核负责内容分类。",
-    "demoSignature": "输入：3 条评论；中间：风险分 0.03 / 0.61 / 0.94，阈值 0.80 后按示意区间进入展示 / 复核 / 隐藏（≥ 0.80 隐藏，0.50–0.79 复核，< 0.50 展示）；输出：1 条展示、1 条送审、1 条隐藏。阈值改为 0.60 后，样本的复核队列变空，B 转入隐藏。可视化：三点落在阈值色带上。建议4帧：三条评论落到风险色带、阈值区间切分、三路处置队列、阈值调整后队列更新；交互：拖阈值线观察队列数量。",
+    "demoSignature": "输入：三条评论的教学分数为 0.03、0.61、0.94；中间：先显示分数，再按隐藏阈值与“阈值-0.3”的复核带分流；输出：默认阈值 0.80 时进入展示/复核/隐藏三路，切换 0.60 或 0.90 后队列重新计算，分数仍只是分类信号。可视化：三条评论卡与阈值带；交互：拖动 0.60–0.90 阈值观察处置队列变化。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/moderation",
       "https://openai.github.io/openai-agents-python/guardrails/",
@@ -434,7 +437,7 @@
       "https://airc.nist.gov/airmf-resources/playbook/",
       "https://developers.openai.com/api/docs/guides/safety-best-practices"
     ],
-    "rewriteRisk": "不要把审核分数写成法律结论；要用风险类别、产品阈值和处置队列说明审核如何进入产品流程。",
+    "rewriteRisk": "不要把审核分数写成法律或事实结论；演示应明确模型分类、产品阈值、人工复核和申诉是不同层。",
     "nearDuplicates": [
       "guardrail"
     ]
@@ -443,12 +446,14 @@
     "slug": "eval",
     "mechanism": "评测是一套可重复的运行过程：给定样本、系统版本和评分方法，收集结果并比较是否达到目标。",
     "misconception": "评测不等于单个基准题，也不等于评分器；同一数据集可用不同评分方法跑出不同结论。",
-    "demoSignature": "输入：20条客服问答，版本A/B；中间：同一评分器下正确数A=14、B=17，失败类型由6条降到3条；输出：B通过80%门槛。可视化：逐样本矩阵与版本通过率柱。 建议5帧：20个固定样本排成矩阵、A/B两版同时运行、格子逐项判分、通过率70%/85%汇总、门槛80%裁决；交互：筛选失败类型查看具体样本。",
+    "demoSignature": "输入：固定六例（普通 3、边界 2、关键 1），比较基线 A 与候选 B/C；中间：选择全部、仅普通或不选案例后评分，显示两版逐例通过、分组覆盖和关键失败；输出：同一总分也会标出关键案例回退，展开逐例记录可看到是哪条判据变化。可视化：案例分组、版本分数和逐例记录；交互：切换 A→B/A→C 与案例范围观察总分和失败位置。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/evals",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/pdf/2211.09110",
+      "https://arxiv.org/pdf/2005.04118",
+      "https://www.nist.gov/caisi/cheating-ai-agent-evaluations"
     ],
-    "rewriteRisk": "必须写清样本、被测版本、评分器和门槛，避免把“多测一测”称为评测方案。",
+    "rewriteRisk": "不要用一次总分替代逐例与关键失败；演示需让读者看到案例范围、分组覆盖和版本回退如何改变结论。",
     "nearDuplicates": [
       "benchmark",
       "grader",
@@ -459,12 +464,14 @@
     "slug": "benchmark",
     "mechanism": "基准测试用固定任务、数据和计分协议，为不同系统提供可比较的公共参照。",
     "misconception": "基准分数只覆盖它定义的任务和条件，不代表真实业务表现，也不是完整的持续评测系统。",
-    "demoSignature": "输入：2个模型各答100道固定题；中间：按同一规则得分72/79，但业务样本另测为81/76；输出：记录“基准B高、业务A高”的两列结论。可视化：双坐标排名翻转图。 建议4帧：固定100题锁定、两模型跑出72/79、业务集再得81/76、两列排名发生翻转；交互：切换数据集看排名而非动画换位。",
+    "demoSignature": "输入：基线 A 与候选 B 先选择同一“ 一般任务/业务任务”集合；中间：切换 B 的运行记录为同条件、换了题集版本或没有记录，逐项对齐题集、版本、题数、判据和工具；输出：同条件才允许比较通过数与延迟，条件不同显示暂不排名，没有记录不等于零分。可视化：比较条件表与成绩带；交互：点击“核对并比较”后切换任务集合和运行记录观察可比性。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2211.09110",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://arxiv.org/pdf/1804.07461",
+      "https://docs.mlcommons.org/inference/submission/",
+      "https://arxiv.org/pdf/2211.09110",
+      "https://arxiv.org/pdf/2104.14337"
     ],
-    "rewriteRisk": "不能把排行榜写成能力总排名；要交代固定数据的覆盖范围和迁移风险。",
+    "rewriteRisk": "基准成绩只有在题集、版本、判据、工具和运行记录对齐时才可比较；条件变化时先显示不可比，不要硬排榜。",
     "nearDuplicates": [
       "eval",
       "evaluation-dataset"
@@ -474,12 +481,14 @@
     "slug": "grader",
     "mechanism": "评分器把单个输出按规则转成分数、等级或通过/失败信号，可由代码、人工或模型实现。",
     "misconception": "评分器不是评测数据集，也不是最终事实裁判；模型评分器尤其需要用人工样本校准。",
-    "demoSignature": "输入：同一回答与5条人工标注；中间：模型评分4/5，人工评分3/5，校准后阈值从4降为3且误判2→1；输出：该回答判为通过。可视化：两组评分刻度与混淆矩阵更新。 建议5帧：回答与评分规则并列、模型打4分、人工打3分、混淆矩阵误判2→1、校准结果输出；交互：调整阈值查看通过项变化。",
+    "demoSignature": "输入：任务要求写入 answer.json 且 amount=120，提供“回复完成/文件缺失、换措辞文件正确、文件金额错误、检查环境不可读”四种记录；中间：切换“回复包含完成”的关键词判据或“检查实际文件结果”的结果判据；输出：关键词可能把文件缺失判为通过，结果判据逐项检查存在与金额，环境不可读保持未评分。可视化：助手回复、虚拟文件和检查清单三列；交互：切换尝试记录与评分判据，观察通过、失败和未评分。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/graders",
-      "https://platform.openai.com/docs/guides/evals"
+      "https://inspect.aisi.org.uk/scoring.html",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/pdf/2303.16634",
+      "https://arxiv.org/pdf/2306.05685"
     ],
-    "rewriteRisk": "不要只给“正确/错误”两个词；需说明规则、参考答案和评分偏差如何被发现。",
+    "rewriteRisk": "评分器检查的是明确判据，不是“回答听起来像完成”；要把文本、实际结果和环境不可读分别标成通过、失败或未评分。",
     "nearDuplicates": [
       "eval",
       "evaluation-dataset"
