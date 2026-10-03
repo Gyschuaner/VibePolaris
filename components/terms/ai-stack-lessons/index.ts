@@ -18,3 +18,4 @@ export { ThreatModelingLesson } from "./threat-modeling";
 export { ToolApprovalLesson } from "./tool-approval";
 export { PermissionBoundaryLesson } from "./permission-boundary";
 export { XssLesson } from "./xss";
+export { ContextWindowLesson } from "./context-window";

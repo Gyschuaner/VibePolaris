@@ -348,49 +348,48 @@
     "en": "Context Window",
     "slug": "context-window",
     "cat": "AI·Agent",
-    "say": "模型一次请求能处理的 token 总量，包括输入、历史和输出。",
+    "say": "一次模型请求能容纳的输入、输出和部分推理 token 的总预算。",
     "aliases": [
       "上下文长度",
       "窗口大小",
       "context length"
     ],
-    "question": "对话很长时，模型为什么会忘记前面的细节？",
-    "definition": "上下文窗口限制了单次推理可见的信息量，超出后必须截断、压缩或另行检索。",
-    "boundary": "窗口更大不代表模型能同等准确地利用每一处信息。",
-    "demoType": "queue",
-    "demoTitle": "上下文如何占用窗口",
+    "question": "为什么把整段聊天贴进去，模型还是漏掉前面的条件？",
+    "definition": "上下文窗口是单次模型请求可处理的 token 总量；系统指令、历史消息、工具结果和待生成内容共同占用它，超出后应用必须裁剪、压缩或另行检索。",
+    "boundary": "窗口更大不代表模型会同样可靠地利用每个位置，也不等于跨会话长期记忆。",
+    "demoType": "comparison",
+    "demoTitle": "输入与输出怎样争用同一预算",
     "demoSteps": [
       {
-        "label": "系统信息",
-        "value": "系统信息占 2k / 16k",
-        "note": "容量条先填满八分之一。"
+        "label": "预算进入",
+        "value": "16k 总量 · 输出预留 2k",
+        "note": "系统信息先占 2k，剩余空间留给历史和本轮答案。"
       },
       {
-        "label": "用户材料",
-        "value": "材料加入后占 13k / 16k",
-        "note": "剩余区域缩小到 3k。"
+        "label": "材料加入",
+        "value": "历史 10k + 工具结果 3k",
+        "note": "输入变长，输出区仍要保留，不能只看输入是否放得下。"
       },
       {
-        "label": "输出预算",
-        "value": "为输出保留 2k，只剩 1k 可输入",
-        "note": "超出的旧消息进入裁剪提示。"
+        "label": "处理超出",
+        "value": "裁剪最早消息或先摘要",
+        "note": "改变实际可见上下文后才能继续生成，裁剪不是删除长期记忆。"
       }
     ],
-    "quizQuestion": "上下文窗口计算哪些内容？",
+    "quizQuestion": "上下文窗口主要限制什么？",
     "quizOptions": [
-      "本次可见输入与输出 token",
-      "只计算用户最后一句话",
-      "只计算模型输出"
+      "一次请求能使用的 token 总量",
+      "模型永久保存的所有聊天",
+      "模型一定能准确利用的知识量"
     ],
-    "correctText": "窗口包含模型本次处理的全部 token。",
-    "wrongText": "只看单段文字会低估实际占用。",
-    "promptTitle": "整理长上下文",
-    "prompt": "请把材料分为必须保留、可以摘要和可以检索三类，并说明输出需要预留的空间。",
+    "correctText": "它限制一次请求的输入、输出和部分推理 token 总量。",
+    "wrongText": "长期记忆和内容利用质量是另外两件事。",
+    "promptTitle": "整理一次请求的上下文预算",
+    "prompt": "请按系统指令、必要历史、工具结果和输出预留列出 token 预算；超出时说明保留、摘要、裁剪或检索的规则。",
     "relatedSlugs": [
-      "context",
-      "token",
-      "working-memory",
-      "prompt-caching"
+      "tokenization",
+      "agent-loop",
+      "working-memory"
     ]
   },
   {

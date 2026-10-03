@@ -104,14 +104,17 @@
   },
   {
     "slug": "context-window",
-    "mechanism": "模型一次调用能处理的输入与输出 token 总量受窗口限制；较早内容、工具结果和待生成内容都占用这份容量。",
-    "misconception": "上下文窗口不是长期记忆，也不是把最大长度全部塞满就一定能稳定利用。",
-    "demoSignature": "输入：窗口上限8k，历史占5.5k、工具结果1.5k、预留输出2k；中间：总计9k超限，裁掉最早1k；输出：保留6k输入并成功生成2k。可视化：容量条先溢出再回落。 建议4帧：8k容量槽加载三类token、总量溢出变红、最早1k历史滑出、输出预留区恢复；交互：拖动历史长度看裁剪点移动。",
+    "mechanism": "输入、历史、工具结果和输出预算共同占用一次请求的 token 容量；超出后必须裁剪、压缩或另行检索。",
+    "misconception": "上下文窗口不是长期记忆，也不保证模型平均利用每个位置。",
+    "demoSignature": "容量条：16k 预算先预留 2k 输出，加入 10k 历史与 3k 工具结果后溢出；切换长历史时最早一段移出，输出区恢复。交互：短/长历史切换后观察可见输入变化。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/conversation-state",
-      "https://arxiv.org/abs/1706.03762"
+      "https://developers.openai.com/api/docs/guides/conversation-state",
+      "https://openai.github.io/openai-agents-python/running_agents/",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2307.03172"
     ],
-    "rewriteRisk": "不要只说“能记多少字”；要用token预算解释输入、历史和输出如何争用空间。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "tokenization",
       "working-memory"
