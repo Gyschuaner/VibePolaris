@@ -4,6 +4,16 @@ import { ArrowRight, GitBranch, GitCommit, GitDiff, Pencil, Stack } from "@phosp
 import { Caption } from "../AiStackConceptLessonShared";
 import { useScene } from "../HarnessStoryScenes";
 import styles from "../ConceptArticle.module.css";
+import { PushLesson } from "./push";
+import { MergeLesson } from "./merge";
+import { RebaseLesson } from "./rebase";
+import { MergeConflictLesson } from "./merge-conflict";
+import { RevertLesson } from "./revert";
+import { StashLesson } from "./stash";
+import { PullRequestLesson } from "./pull-request";
+import { CodeReviewLesson } from "./code-review";
+import { CiLesson } from "./ci";
+import { CdLesson } from "./cd";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -162,5 +172,15 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "clone") return <CloneLesson />;
   if (slug === "pull") return <PullLesson />;
   if (slug === "fetch") return <FetchLesson />;
+  if (slug === "push") return <PushLesson />;
+  if (slug === "merge") return <MergeLesson />;
+  if (slug === "rebase") return <RebaseLesson />;
+  if (slug === "merge-conflict") return <MergeConflictLesson />;
+  if (slug === "revert") return <RevertLesson />;
+  if (slug === "stash") return <StashLesson />;
+  if (slug === "pull-request") return <PullRequestLesson />;
+  if (slug === "code-review") return <CodeReviewLesson />;
+  if (slug === "ci") return <CiLesson />;
+  if (slug === "cd") return <CdLesson />;
   return null;
 }
