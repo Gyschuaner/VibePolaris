@@ -538,9 +538,9 @@
   },
   {
     "slug": "branch",
-    "mechanism": "Git 分支是一个会跟着提交移动的名字（引用）；在某分支创建提交只会移动这个名字，其他分支仍指向原提交。",
-    "misconception": "分支不是复制一套完整文件；多个分支共享历史，改到同一处代码时，合并仍可能冲突。",
-    "demoSignature": "branch: 5 frames; actors=共同提交 A/主线（dev）/功能分支/提交 B/提交 C/提交 D/合并结果; phases=共同起点→创建功能分支→功能线前进→主线也变化→验证后合并; action=创建下一提交",
+    "mechanism": "Git 分支是一个指向提交的引用名称；创建它只增加一个指针，当前分支上的新提交会移动当前指针，其他分支仍指向原提交。",
+    "misconception": "分支不是复制一套完整文件、权限边界或自动隔离；多个分支共享历史，合并或变基仍可能冲突，切换前也要处理未提交修改。",
+    "demoSignature": "branch: 3 steps; actors=共同提交 A/main/feature/HEAD/提交 B; phases=共同起点→创建 feature 指针→feature 前进而 main 停在 A; action=推进下一提交",
     "sourceUrls": [
       "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell.html",
       "https://git-scm.com/docs/git-branch",
@@ -548,7 +548,7 @@
       "https://git-scm.com/docs/git-merge",
       "https://git-scm.com/docs/git-rebase"
     ],
-    "rewriteRisk": "正式页面需让零基础读者理解分支如何沿提交线移动、主线如何分叉，以及合并冲突需要人工判断。",
+    "rewriteRisk": "正式页面需让零基础读者先看到分支只是指针，再理解 HEAD、切换和提交怎样让它移动；合并与变基要分别说明历史形状、冲突和共享提交哈希变化，不把分支写成复制目录或权限隔离。",
     "nearDuplicates": [
       "checkout-switch",
       "merge",

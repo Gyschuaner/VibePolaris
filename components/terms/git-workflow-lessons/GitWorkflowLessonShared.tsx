@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, GitCommit, Pencil, Stack } from "@phosphor-icons/react";
+import { ArrowRight, GitBranch, GitCommit, Pencil, Stack } from "@phosphor-icons/react";
 import { Caption } from "../AiStackConceptLessonShared";
 import { useScene } from "../HarnessStoryScenes";
 import styles from "../ConceptArticle.module.css";
@@ -17,6 +17,19 @@ function RepoCommitLesson() {
   </div>;
 }
 
+function BranchLesson() {
+  const scene = useScene(3);
+  const labels = ["共同起点", "创建指针", "两条线各自前进"];
+  const split = scene.step >= 1;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="Git 分支指针演示">
+    <Caption scene={scene} labels={labels} titles={["main 先指向共同提交", "创建分支只增加一个指针", "提交让当前分支移动"]} copy={["当前只有 main 指向 A；还没有创建 feature，也没有复制第二套文件。", "feature 指向同一个 A；切到 feature 后 HEAD 才会在它上面提交。", "feature 前进到 B，main 仍在 A；主线后来前进到 C，合并前要比较两条历史。"]} />
+    <div className={styles.gitGraph} aria-label="分支提交图"><div className={styles.gitGraphRow}><span className={styles.gitNode}>A</span><span>main</span>{split && <><span className={styles.gitLine} /><span className={styles.gitNode} data-active="true">{scene.step === 2 ? "B" : "A"}</span><span>feature</span></>}</div><div className={styles.gitGraphRow}><GitBranch size={20} /><span>{split ? `HEAD → feature；两个分支共享 A${scene.step === 2 ? "，feature 已前进到 B" : "，还没有分叉"}` : "HEAD → main；当前只有一条分支"}</span></div></div>
+    <div className={styles.choices} role="group" aria-label="推进分支流程"><button type="button" onClick={() => scene.seek(1)} aria-pressed={scene.step === 1}>创建 feature</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={scene.step === 2}>在 feature 提交</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
-  return slug === "repo-commit" ? <RepoCommitLesson /> : null;
+  if (slug === "repo-commit") return <RepoCommitLesson />;
+  if (slug === "branch") return <BranchLesson />;
+  return null;
 }
