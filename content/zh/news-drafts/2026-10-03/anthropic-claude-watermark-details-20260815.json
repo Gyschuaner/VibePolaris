@@ -1,0 +1,149 @@
+{
+  "slug": "anthropic-claude-watermark-details-20260815",
+  "title": "Anthropic 细说 Claude 文本水印：可检测“参与过”，不能锁定具体用户",
+  "summary": "8 月 15 日，TechCrunch 跟进 Anthropic 对 Claude 文本水印的解释：系统利用生成时一些不影响语义的词语选择留下可检测模式，未来提供检测 API；它只能判断 Claude 可能参与过，不能指向具体用户、组织或会话。",
+  "body": "8 月 15 日，TechCrunch 根据 Anthropic 的官方说明，补充解释 Claude 文本水印到底会留下什么。这里的“水印”不是在文字里插入可见标记，也不是加一段隐藏字符，而是在模型本来就有多个合理选项时，用一把只有检测方知道的密钥影响随机选择，让整段文本留下统计上可识别的模式。\n\n这个设计把两个问题分开：读者看到的文字是否改变，以及事后能否判断 Claude 是否参与过。Anthropic 说，水印不会改变输出质量、不会额外生成 token，也不会让价格变高；检测结果回答的是“这段文字有多大概率部分由 Claude 写过”，而不是“哪一个人、哪家公司或哪一段聊天产生了它”。\n\n水印也不是万能的 AI 鉴定器。样本太短时，能观察到的选择太少，判断信心会下降；事实性很强的句子和必须精确的代码，本来就没有太多可以替换的词，水印会更稀疏。轻度润色可能还留下足够模式，完整重写则可能把原来的选择全部替换掉。翻译和较大幅度的编辑仍可能留下 Claude 参与过的痕迹，但这不等于能还原作者身份。\n\n这也是为什么“检测到水印”与“证明抄袭”不是同一件事。水印只能说明 Claude 可能写过或处理过内容，不能区分它是从零生成、帮人改过，还是只做了一小段翻译。Anthropic 还说，未来的检测 API 先向监管机构、媒体、事实核查者、教育机构和符合条件的企业开放，之后再扩大范围。\n\nAnthropic 把水印和欧盟 AI Act 的透明度要求联系起来。官方文章称，公司与其他主要模型提供商一起落实相关代码实践，并在全球上线，而不是只对欧盟请求启用。这个选择让规则更容易统一，但也意味着全球用户会遇到同一套检测能力；截至这篇跟进报道，水印的法律责任和版权归属仍没有因此自动改变。\n\n对普通读者来说，最实用的边界是：检测概率不是作者证明，未检测到也不是人工写作证明。对产品团队来说，若要把水印作为审核流程的一步，还需要说明检测阈值、样本长度、翻译和编辑场景，以及谁有权调用密钥或 API。技术信号只有在这些上下文里才有可操作意义。",
+  "publishedAt": "2026-08-15",
+  "eventDate": "2026-08-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-watermark-details-20260815.svg",
+    "alt": "Claude 文本水印从词语选择形成隐藏模式，再由检测 API 给出参与概率的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/anthropic-claude-watermark-details-20260815.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "event",
+      "title": "这次新闻补充了什么",
+      "body": "TechCrunch 在 8 月 15 日跟进 Anthropic 的官方解释，把“Claude 会水印”拆成可读输出、统计模式和检测 API 三个层次。公开的信息仍是公司对设计的说明，不是独立评测已经证明的万能检测器。",
+      "kind": "narrative"
+    },
+    {
+      "id": "mechanism",
+      "title": "水印藏在低风险的词语选择里",
+      "body": "当“overcast”和“grey”都能表达同一意思时，模型本来就要在多个合理候选中随机选择。Anthropic 的方案用密钥影响这类选择，让长文本形成可检测的统计模式；文字里没有可见标记或隐藏字符。",
+      "kind": "technical"
+    },
+    {
+      "id": "boundary",
+      "title": "它能判断什么，不能判断什么",
+      "body": "检测可以回答“Claude 可能参与过”的概率问题，但不能锁定具体用户、组织、会话或作者身份。短样本、事实性强的句子和精确代码里的可选词更少，判断能力也会变弱。",
+      "kind": "boundary"
+    },
+    {
+      "id": "editing",
+      "title": "轻度编辑和完整重写的差别",
+      "body": "轻度润色可能保留足够的原始词语选择，完整重写则可能替换掉几乎所有可检测模式。翻译和较重的改写同样需要单独测试，不能把一个阈值套到所有文本类型。",
+      "kind": "comparison"
+    },
+    {
+      "id": "policy",
+      "title": "检测 API 先服务哪些组织",
+      "body": "Anthropic 表示检测 API 先向监管机构、执法机构、媒体、事实核查者、教育机构和符合条件的企业提供私有预览，再逐步扩大访问。具体阈值、误报率和外部审计结果在后续公开前仍是待核验项。",
+      "kind": "narrative"
+    },
+    {
+      "id": "practice",
+      "title": "把概率信号放回使用场景",
+      "body": "水印结果不能单独证明抄袭或人工创作。产品若把它放进审核流程，需要同时规定样本长度、阈值、翻译/编辑边界、密钥权限和人工复核路径。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "文本水印怎样从词语选择变成检测信号？",
+    "question": "水印没有写进文字表面，检测方为什么仍可能发现 Claude 参与过？",
+    "steps": [
+      {
+        "label": "找到多个合理词",
+        "detail": "模型在不影响意思的地方会遇到多个都说得通的词，例如描述天气时的两个近义词。",
+        "evidence": "Anthropic 官方解释"
+      },
+      {
+        "label": "用密钥选择路径",
+        "detail": "密钥改变随机性来源，让长文本里的许多低风险选择留下统计模式；输出不增加隐藏字符。",
+        "evidence": "Anthropic 官方解释"
+      },
+      {
+        "label": "对样本计算概率",
+        "detail": "检测方用对应密钥判断这段文字是否更像带水印生成，结果是概率而非作者身份证明。",
+        "evidence": "TechCrunch / Anthropic"
+      },
+      {
+        "label": "结合编辑和人工复核",
+        "detail": "短文、代码、翻译和完整重写都可能改变信号，最终判断要回到样本长度、阈值和具体用途。",
+        "evidence": "Anthropic 官方限制说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "data-lineage",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/",
+      "claim": "TechCrunch 于 2026-08-15 报道 Anthropic 解释 Claude 水印的工作方式、轻度编辑限制、代码稀疏性和检测 API 计划。",
+      "excerpt": "Anthropic said it will be using the SynthID Text approach ... and that it plans to release a watermark detection API."
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-text-watermark",
+      "claim": "Anthropic 官方说明水印利用低风险词语选择形成可检测模式，不添加隐藏字符，不携带用户身份信息；短样本、代码和编辑场景有局限。",
+      "excerpt": "The difference between watermarked and un-watermarked text will not be distinguishable to readers."
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content",
+      "claim": "欧盟官方页面提供 AI 生成内容透明度代码实践的政策背景，本文只把它作为 Anthropic 采用水印的法规语境。",
+      "excerpt": "Code of Practice on marking and labelling AI-generated content."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/",
+  "sourceHash": "sha256:23f99376a8e0397b18f34c48994dc5eb696fa07f24ab2af97d8d9110ccfa62a3",
+  "status": "published",
+  "discoveredAt": "2026-10-03T13:05:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/",
+      "claim": "TechCrunch 于 2026-08-15 报道 Anthropic 解释 Claude 水印的工作方式、轻度编辑限制、代码稀疏性和检测 API 计划。",
+      "excerpt": "Anthropic said it will be using the SynthID Text approach ... and that it plans to release a watermark detection API."
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-text-watermark",
+      "claim": "Anthropic 官方说明水印利用低风险词语选择形成可检测模式，不添加隐藏字符，不携带用户身份信息；短样本、代码和编辑场景有局限。",
+      "excerpt": "Watermarking carries no identifying information and can’t be traced to a specific person, organization, or chat."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T13:05:00Z",
+    "method": "source",
+    "notes": "以 Anthropic 官方说明为主，TechCrunch 作为当天可信新闻跟进；区分公司口径、技术机制与检测限制。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T13:05:00Z",
+    "notes": "逐篇手写，保留新闻报道与官方原文的日期和归属边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T13:18:00Z",
+    "questions": [],
+    "notes": "TechCrunch 与 Anthropic 官方口径分开；水印是统计信号而非身份识别，短文本、代码、翻译、重写和检测 API 的限制交代清楚；日期、词条、解释器和 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "promotedAt": "2026-10-03T12:53:05.222Z"
+}
