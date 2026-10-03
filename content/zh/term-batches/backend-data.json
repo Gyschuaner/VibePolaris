@@ -661,7 +661,7 @@
     "say": "直接发送独立数据报，不建立可靠字节流，也不自动重传。", "aliases": ["用户数据报协议", "UDP 协议", "数据报"],
     "question": "实时语音为什么有时宁可少一小段，也不愿等重传？", "definition": "UDP 以数据报为单位发送数据，协议本身不保证到达、顺序或去重。", "boundary": "UDP 不等于一定更快；可靠性、拥塞控制和加密可由上层协议补充。",
     "demoType": "comparison", "demoTitle": "实时语音遇到丢包时的选择",
-    "demoSteps": [{"label":"连续发送","value":"A · B · C","note":"三段语音分别作为数据报发送。"},{"label":"B 丢失","value":"A · _ · C","note":"接收方按时播放已到达内容。"},{"label":"继续播放","value":"C 不等待 B","note":"延迟保持较低，但出现短暂缺口。"}],
+    "demoSteps": [{"label":"独立发送","value":"报 1 · 报 2 · 报 3 · 报 4","note":"每封数据报有自己的边界和目标端口。"},{"label":"网络抖动","value":"报 1 · 报 4 · 报 3 · 报 2 丢失","note":"到达顺序可以改变，UDP 不会自己补发。"},{"label":"应用决定","value":"接收队列 → 序号检查 → 最新帧","note":"应用可以丢弃过时帧，或实现编号、超时和重传。"}],
     "quizQuestion": "UDP 协议本身不保证哪项能力？", "quizOptions": ["数据一定按序到达", "按数据报发送", "使用端口区分应用"], "correctText": "UDP 不保证到达顺序。", "wrongText": "UDP 使用数据报，也使用端口标识通信端点。",
     "promptTitle": "判断是否使用 UDP", "prompt": "请根据延迟、可丢失比例、消息大小和上层补偿判断这个场景是否适合 UDP。", "relatedSlugs": ["tcp", "packet", "network-port"]
   },
