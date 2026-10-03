@@ -27,7 +27,6 @@ import { MemoryTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/
 import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
 import { SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
 import { HybridSearchTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
-import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
 import { getTermExperience } from "@/lib/term-experiences";
@@ -57,7 +56,7 @@ import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
 import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage } from '@/components/terms/AiStackConceptPages';
-import { BranchTermPage, CheckoutSwitchTermPage, CloneTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeTermPage, PullTermPage, PushTermPage, RemoteTermPage, RepoCommitTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
+import { BranchTermPage, CheckoutSwitchTermPage, CloneTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -121,6 +120,7 @@ const articleTermPages = {
   fetch: GitFetchTermPage,
   push: PushTermPage,
   merge: MergeTermPage,
+  rebase: GitRebaseTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
@@ -221,7 +221,6 @@ const articleTermPages = {
 
 const dedicatedTermPages = {
   ...articleTermPages,
-  rebase: RebaseTermPage,
   css: TermDetailExperience,
   html: TermDetailExperience,
   javascript: TermDetailExperience,

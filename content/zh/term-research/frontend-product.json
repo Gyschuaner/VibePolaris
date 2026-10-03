@@ -604,8 +604,8 @@
     "slug": "rebase",
     "mechanism": "rebase 找出当前分支相对 upstream 的独有提交，重置到新基线，再逐个重放补丁，因父提交变化而生成新对象。",
     "misconception": "它不是移动原提交；哈希会改变。对已共享历史变基会让协作者看到重复或分叉提交。",
-    "demoSignature": "建议 5 帧：F1、F2 挂在旧 dev 后，目标 dev 又新增提交；点击 rebase，两枚提交先被取下，再依次应用到新基线形成 F1′、F2′；原节点淡出，哈希和父指针变化被放大标注。",
-    "sourceUrls": ["https://git-scm.com/docs/git-rebase"],
+    "demoSignature": "rebase-board: 3 steps; actors=old main A/feature F1,F2/new main B/new feature F1′,F2′; phases=identify feature-only commits→move base to B while F1/F2 wait→replay in order with new parent links; boundary=conflict continue/skip/abort and shared history needs caution; action=移动到 main/逐个重放",
+    "sourceUrls": ["https://git-scm.com/docs/git-rebase", "https://git-scm.com/docs/git-merge-base", "https://git-scm.com/docs/git-cherry-pick", "https://git-scm.com/docs/git-push", "https://git-scm.com/book/en/v2/Git-Branching-Rebasing"],
     "rewriteRisk": "high",
     "nearDuplicates": ["merge", "pull", "push"]
   },
