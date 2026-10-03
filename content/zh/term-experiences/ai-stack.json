@@ -17138,5 +17138,185 @@
         "note": "安全风险与验证方法"
       }
     ]
+  },
+  {
+    "slug": "evaluation-run",
+    "lead": "三次运行的总分相近，怎样知道是哪一题和哪条轨迹造成差异？",
+    "definition": "评测运行把题集、被测版本、评分器、环境和逐项结果绑定成一次可复查执行。",
+    "boundary": "缺少条件或轨迹的记录不能证明两次运行可比较，也不能把空白补成失败。",
+    "sceneKind": "timeline",
+    "sceneTitle": "一次评测运行从建立到可复查结果",
+    "actionLabel": "逐步查看",
+    "actors": [
+      {
+        "id": "suite",
+        "label": "评测套件",
+        "detail": "12 条固定任务",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "trial",
+        "label": "试跑轨迹",
+        "detail": "3 次独立尝试",
+        "icon": "code",
+        "group": "执行"
+      },
+      {
+        "id": "grader",
+        "label": "评分器",
+        "detail": "逐项判定",
+        "icon": "chart",
+        "group": "评分"
+      },
+      {
+        "id": "run",
+        "label": "运行记录",
+        "detail": "run-17",
+        "icon": "database",
+        "group": "证据"
+      }
+    ],
+    "edges": [
+      {
+        "id": "s-t",
+        "from": "suite",
+        "to": "trial",
+        "label": "执行"
+      },
+      {
+        "id": "t-g",
+        "from": "trial",
+        "to": "grader",
+        "label": "评分"
+      },
+      {
+        "id": "g-r",
+        "from": "grader",
+        "to": "run",
+        "label": "归档"
+      }
+    ],
+    "frames": [
+      {
+        "label": "建立运行",
+        "note": "锁定题集、版本、评分器和环境。",
+        "activeIds": [
+          "suite",
+          "run"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "trial",
+          "grader"
+        ],
+        "values": {
+          "run": "run-17 · 版本B"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "逐次试跑",
+        "note": "三次试跑各自留下输入、输出和失败类型。",
+        "activeIds": [
+          "trial",
+          "grader"
+        ],
+        "doneIds": [
+          "suite"
+        ],
+        "mutedIds": [],
+        "values": {
+          "trial": "3 trials",
+          "grader": "逐题记录"
+        },
+        "activeEdgeIds": [
+          "s-t",
+          "t-g"
+        ]
+      },
+      {
+        "label": "形成结果",
+        "note": "评分器汇总通过数、长尾和失败类型。",
+        "activeIds": [
+          "run"
+        ],
+        "doneIds": [
+          "suite",
+          "trial",
+          "grader"
+        ],
+        "mutedIds": [],
+        "values": {
+          "run": "9/12 · p95 4.8s"
+        },
+        "activeEdgeIds": [
+          "g-r"
+        ]
+      },
+      {
+        "label": "记录缺口",
+        "note": "少一条轨迹时运行标为不可比较，不能补零。",
+        "activeIds": [
+          "run"
+        ],
+        "doneIds": [
+          "suite"
+        ],
+        "mutedIds": [
+          "grader"
+        ],
+        "values": {
+          "run": "缺1条 · unscored"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "运行证据包括条件、轨迹、逐项评分和汇总，而不是一个孤立总分。",
+    "quiz": {
+      "question": "只留下最后一个总分，最先丢掉什么？",
+      "options": [
+        {
+          "label": "逐项轨迹和运行条件",
+          "correct": true
+        },
+        {
+          "label": "只丢掉题目文本",
+          "correct": false
+        },
+        {
+          "label": "只保留最高分试跑",
+          "correct": false
+        }
+      ],
+      "success": "运行记录要能回到每一次试跑。",
+      "retry": "总分无法解释差异，也无法发现缺失记录。"
+    },
+    "prompt": {
+      "title": "设计一份评测运行记录",
+      "text": "固定题集、版本、评分器和环境，保存每次试跑、逐项结果、失败类型和汇总结论。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      }
+    ]
   }
 ]
