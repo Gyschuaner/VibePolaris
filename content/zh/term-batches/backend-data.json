@@ -571,7 +571,7 @@
     "say": "ACID 用四项原则约束事务，避免失败、并发或故障留下难以判断的数据状态。", "aliases": ["事务四特性", "ACID 特性", "事务属性"],
     "question": "怎样判断一个数据库事务是否可靠？", "definition": "它分别检查一组操作能否原子提交、数据约束能否保持、并发事务如何隔离，以及提交结果在故障后能否保留。", "boundary": "ACID 不代表应用不会出错；业务约束、隔离级别和恢复方案仍需正确设计。",
     "demoType": "hierarchy", "demoTitle": "一笔事务的四项检查",
-    "demoSteps": [{"label":"原子与一致","value":"全成或全败","note":"事务不能留下违反规则的部分结果。"},{"label":"隔离","value":"并发互不误读","note":"并发事务按隔离级别控制可见性。"},{"label":"持久","value":"提交后可恢复","note":"已提交结果应在故障后保留。"}],
+    "demoSteps": [{"label":"原子性","value":"扣款 → 断电 → 回滚","note":"入账未完成时，扣款也被撤回。"},{"label":"隔离性","value":"事务 A ↔ 并发读取 B","note":"读取者按隔离规则看见已提交版本。"},{"label":"持久性","value":"COMMIT → WAL → 重启恢复","note":"提交记录可在故障后重放。"}],
     "quizQuestion": "“事务要么全部成功，要么全部失败”对应哪一项？", "quizOptions": ["原子性", "持久性", "隔离性"], "correctText": "原子性要求事务作为不可分割的整体。", "wrongText": "持久性关注提交后的保存，隔离性关注并发可见性。",
     "promptTitle": "检查事务特性", "prompt": "请用 ACID 四项检查这个事务设计，指出业务一致性、并发和故障恢复中的缺口。", "relatedSlugs": ["transaction", "sql", "backup"]
   },
