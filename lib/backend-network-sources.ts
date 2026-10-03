@@ -19,7 +19,7 @@ export const apiKeySources: Source[] = [
 
 export const relationalDatabaseSources: Source[] = [
   make("PostgreSQL", "Tutorial · The SQL Language", "https://www.postgresql.org/docs/current/tutorial-sql.html", ["relational-definition", "relational-query"]),
-  make("PostgreSQL", "Data Definition", "https://www.postgresql.org/docs/current/ddl.html", ["relational-constraints", "relational-definition", "relational-integrity"]),
+  make("PostgreSQL", "Data Definition", "https://www.postgresql.org/docs/current/ddl.html", ["relational-constraints", "relational-definition", "relational-integrity", "relational-failure-boundary"]),
   make("SQLite", "Query Language", "https://www.sqlite.org/lang.html", ["relational-query", "relational-boundary"]),
   make("IBM", "Relational database", "https://www.ibm.com/think/topics/relational-databases", ["relational-definition", "relational-boundary"]),
 ];
@@ -34,14 +34,14 @@ export const nosqlSources: Source[] = [
 export const rowSources: Source[] = [
   make("PostgreSQL", "DDL Basics", "https://www.postgresql.org/docs/current/ddl-basics.html", ["row-definition", "row-identity"]),
   make("PostgreSQL", "Introduction to MVCC", "https://www.postgresql.org/docs/current/mvcc-intro.html", ["row-versions", "row-boundary"]),
-  make("PostgreSQL", "Sorting Rows", "https://www.postgresql.org/docs/current/queries-order.html", ["row-order"]),
+  make("PostgreSQL", "Sorting Rows", "https://www.postgresql.org/docs/current/queries-order.html", ["row-order", "row-read-order"]),
   make("SQLite", "The WITHOUT ROWID Optimization", "https://www.sqlite.org/withoutrowid.html", ["row-identity", "row-boundary"]),
 ];
 
 export const columnSources: Source[] = [
   make("PostgreSQL", "DDL Basics", "https://www.postgresql.org/docs/current/ddl-basics.html", ["column-definition", "column-constraints"]),
   make("PostgreSQL", "Data Types", "https://www.postgresql.org/docs/current/datatype.html", ["column-types", "column-operations"]),
-  make("PostgreSQL", "Select Lists", "https://www.postgresql.org/docs/current/queries-select-lists.html", ["column-operations"]),
+  make("PostgreSQL", "Select Lists", "https://www.postgresql.org/docs/current/queries-select-lists.html", ["column-operations", "column-derived"]),
   make("SQLite", "Datatypes In SQLite", "https://www.sqlite.org/datatype3.html", ["column-types", "column-boundary"]),
 ];
 
@@ -67,7 +67,7 @@ export const udpSources: Source[] = [
 ];
 
 export const tlsHandshakeSources: Source[] = [
-  make("IETF", "RFC 8446 · The Transport Layer Security Protocol Version 1.3", "https://www.rfc-editor.org/rfc/rfc8446.html", ["tls-handshake", "tls-keys", "tls-finished"]),
+  make("IETF", "RFC 8446 · The Transport Layer Security Protocol Version 1.3", "https://www.rfc-editor.org/rfc/rfc8446.html", ["tls-handshake", "tls-keys"]),
   make("IETF", "RFC 9525 · Service Identity in TLS", "https://www.rfc-editor.org/rfc/rfc9525.html", ["tls-identity", "tls-boundary"]),
   make("IETF", "RFC 6066 · TLS Extensions", "https://www.rfc-editor.org/rfc/rfc6066.html", ["tls-identity", "tls-sni"]),
   make("Mozilla", "Transport Layer Security (TLS)", "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security", ["tls-keys", "tls-boundary", "tls-failure"]),

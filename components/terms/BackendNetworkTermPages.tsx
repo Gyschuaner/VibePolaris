@@ -65,7 +65,7 @@ const rbacSpec: PageSpec = {
   },
   sections: [
     {
-      id: "rbac-definition",
+      id: "rbac-definition-section",
       title: "先把职责放进角色",
       blocks: [
         { id: "rbac-definition", text: "RBAC 的核心关系是“用户—角色—权限”：权限描述可以执行的动作，角色把一组权限命名为一种职责，用户再被分配到一个或多个角色。访问请求到来时，系统先求出用户当前角色带来的权限集合，再判断请求的动作是否在集合内。角色不是“管理员”这个字符串本身，而是可审计、可回收的一组授权关系。" },
@@ -83,7 +83,7 @@ const rbacSpec: PageSpec = {
       },
     },
     {
-      id: "rbac-operations",
+      id: "rbac-operations-section",
       title: "一次判断到底检查什么",
       blocks: [
         { id: "rbac-operations", text: "一次完整授权通常至少包含主体、动作、资源和范围：谁在什么租户里，对哪张发票做什么。RBAC 很适合表达“财务可以审批发票”这类稳定职责；服务端仍要在每次敏感操作前执行检查，不能因为按钮在前端隐藏了，就认为请求已经被保护。" },
@@ -91,7 +91,7 @@ const rbacSpec: PageSpec = {
       ],
     },
     {
-      id: "rbac-failure",
+      id: "rbac-failure-section",
       title: "失败分支与最小授权",
       blocks: [
         { id: "rbac-failure", text: "如果用户没有对应角色，系统应拒绝请求并记录主体、动作、资源和策略结果；如果角色有 invoice:read，却试图执行 invoice:approve，也应在服务端拒绝。把所有人塞进一个超级角色，虽然短期省事，却让撤销、审计和事故范围一起变大。" },
@@ -119,7 +119,7 @@ const apiKeySpec: PageSpec = {
   },
   sections: [
     {
-      id: "api-key-definition",
+      id: "api-key-definition-section",
       title: "它在请求里扮演什么角色",
       blocks: [
         { id: "api-key-definition", text: "API 密钥通常是一段由服务端签发的字符串，调用方在请求头或其他约定位置提交它。服务端验证密钥后，可以识别项目、统计用量、应用速率限制或选择一套 API 策略。它更像“哪一个应用在调用”的共享凭据，而不是“哪一个最终用户已经登录”的完整身份证明。" },
@@ -137,7 +137,7 @@ const apiKeySpec: PageSpec = {
       },
     },
     {
-      id: "api-key-operations",
+      id: "api-key-operations-section",
       title: "识别、计量和授权要分开",
       blocks: [
         { id: "api-key-operations", text: "服务可以根据 API 密钥把请求归到一个项目并扣减配额，但“这个项目能调用天气 API”仍是服务端的策略判断。若请求还涉及某位用户的私人资源，就需要登录会话、OAuth 或对象级授权等另一层证据；不能因为 key 有效就跳过用户和资源检查。" },
@@ -145,7 +145,7 @@ const apiKeySpec: PageSpec = {
       ],
     },
     {
-      id: "api-key-leak",
+      id: "api-key-leak-section",
       title: "失效、泄露与替代路径",
       blocks: [
         { id: "api-key-leak", text: "发现密钥出现在日志、仓库或公共前端时，应先撤销或轮换，再追查使用记录；只把字符串从页面删掉并不会让旧钥匙失效。服务端应能区分过期、撤销、额度耗尽和权限不足，让调用方知道下一步是换钥匙、等待配额还是改变授权请求。" },
@@ -173,7 +173,7 @@ const relationalDatabaseSpec: PageSpec = {
   },
   sections: [
     {
-      id: "relational-definition",
+      id: "relational-definition-section",
       title: "表只是关系模型的一种外观",
       blocks: [
         { id: "relational-definition", text: "关系型数据库把数据放在关系中；在常见实现里，关系以表呈现，列描述属性，行保存一条记录。客户表可以用 id、name 表示客户，订单表用 customer_id 指向客户。这个结构让每项事实有稳定位置，也让查询和约束有共同的语言。" },
@@ -191,7 +191,7 @@ const relationalDatabaseSpec: PageSpec = {
       },
     },
     {
-      id: "relational-query",
+      id: "relational-query-section",
       title: "查询是在组合事实，不是复制数据",
       blocks: [
         { id: "relational-query", text: "查询可以筛选行、选择列、排序并连接多张关系。查订单时，数据库按表达式计算结果关系；这个结果通常是一次读取的视图，不会自动把新列写回原表。把“查到了”与“保存了”分开，才能理解为什么 SELECT 不会修改订单。" },
@@ -199,11 +199,11 @@ const relationalDatabaseSpec: PageSpec = {
       ],
     },
     {
-      id: "relational-constraints",
+      id: "relational-constraints-section",
       title: "边界：关系不是所有问题的唯一答案",
       blocks: [
         { id: "relational-integrity", text: "如果订单必须引用一个存在的客户，外键能阻止孤儿订单；如果一次转账要同时改两行，事务能把相关变化放进同一个边界。这些能力来自具体数据库的约束与事务实现，不是“关系型”三个字自动保证。" },
-        { id: "relational-boundary", text: "当数据主要按文档聚合、键值查找或图关系访问时，NoSQL 等模型可能更贴合访问模式；选择它们也意味着接受不同的查询、约束和一致性取舍。读者应先描述要保存的事实、查询路径和失败后果，再决定模型，而不是按潮流选择产品。" },
+        { id: "relational-failure-boundary", text: "当数据主要按文档聚合、键值查找或图关系访问时，NoSQL 等模型可能更贴合访问模式；选择它们也意味着接受不同的查询、约束和一致性取舍。读者应先描述要保存的事实、查询路径和失败后果，再决定模型，而不是按潮流选择产品。" },
       ],
     },
   ],
@@ -227,7 +227,7 @@ const nosqlSpec: PageSpec = {
   },
   sections: [
     {
-      id: "nosql-models",
+      id: "nosql-models-section",
       title: "它是一个伞形词，不是一台产品",
       blocks: [
         { id: "nosql-models", text: "NoSQL 通常覆盖文档、键值、列族和图等多类模型。文档模型可以把订单及其明细放在同一个聚合里，键值模型按一个主键取值，图模型则把节点和边作为一等对象。它们都能有结构、索引和约束，只是结构与查询接口不再以关系表和连接为中心。" },
@@ -245,7 +245,7 @@ const nosqlSpec: PageSpec = {
       },
     },
     {
-      id: "nosql-tradeoff",
+      id: "nosql-tradeoff-section",
       title: "速度、可用性与一致性是取舍",
       blocks: [
         { id: "nosql-tradeoff", text: "某些 NoSQL 系统把高可用和分布式扩展放在前面，允许在部分故障或网络分区时继续响应；另一些系统提供更强的事务或一致性选项。论文和产品文档描述的是具体系统的取舍，不能把其中一个实现的特性推广给所有 NoSQL。" },
@@ -253,7 +253,7 @@ const nosqlSpec: PageSpec = {
       ],
     },
     {
-      id: "nosql-boundary",
+      id: "nosql-boundary-section",
       title: "失败分支：查询没设计进模型",
       blocks: [
         { id: "nosql-failure", text: "如果产品后来需要按未预想的字段组合筛选，原本为单一读取路径设计的模型可能只能全表扫描，或要求额外的投影和同步任务。新增索引、复制数据或引入另一种存储都可能增加一致性维护成本。" },
@@ -281,7 +281,7 @@ const rowSpec: PageSpec = {
   },
   sections: [
     {
-      id: "row-definition",
+      id: "row-definition-section",
       title: "一行对应一条记录的当前结构",
       blocks: [
         { id: "row-definition", text: "行是一组分别落在表列中的值。订单行可能同时包含 id、customer_id、amount 和 status；列定义告诉数据库这些值的名字、类型和约束。行的含义来自这套结构，而不是来自它在查询结果里排在第一还是第二。" },
@@ -299,7 +299,7 @@ const rowSpec: PageSpec = {
       },
     },
     {
-      id: "row-versions",
+      id: "row-versions-section",
       title: "读取到的是哪一个版本",
       blocks: [
         { id: "row-versions", text: "多事务数据库常用多版本并发控制，让读取者看到符合自己快照的已提交数据，同时减少读写互相阻塞。这里的“行”在实现中可能对应多个物理版本；文章讨论的是逻辑记录，不应把某个存储页地址当成永久身份。" },
@@ -307,11 +307,11 @@ const rowSpec: PageSpec = {
       ],
     },
     {
-      id: "row-boundary",
+      id: "row-boundary-section",
       title: "边界：行不负责替你解释业务",
       blocks: [
         { id: "row-boundary", text: "一行可以通过类型和约束检查，却仍然包含业务错误，例如金额单位写错、状态迁移非法或对象属于另一个租户。行提供存储结构和可见性，业务规则、授权和跨表一致性还需要其他约束或应用逻辑。" },
-        { id: "row-order", text: "读者看到“数据库返回了这行”时，应继续问：它由哪组条件定位，在哪个事务快照中可见，结果有没有明确排序，是否还经过对象授权。这样才能把记录、版本和业务结论分开。" },
+        { id: "row-read-order", text: "读者看到“数据库返回了这行”时，应继续问：它由哪组条件定位，在哪个事务快照中可见，结果有没有明确排序，是否还经过对象授权。这样才能把记录、版本和业务结论分开。" },
       ],
     },
   ],
@@ -335,7 +335,7 @@ const columnSpec: PageSpec = {
   },
   sections: [
     {
-      id: "column-definition",
+      id: "column-definition-section",
       title: "列定义的是一类属性",
       blocks: [
         { id: "column-definition", text: "列有名字、数据类型、默认值和可选约束。amount NUMERIC 表示这里存的是可计算的数值，created_at TIMESTAMP 表示时间，NOT NULL 则要求每一行都提供值。数据库把这些要求放在结构里，让插入和更新都经过同一套检查。" },
@@ -353,7 +353,7 @@ const columnSpec: PageSpec = {
       },
     },
     {
-      id: "column-types",
+      id: "column-types-section",
       title: "类型会影响比较与计算",
       blocks: [
         { id: "column-types", text: "字符串“10”和数字 10 可能在显示上相似，数据库对它们的比较、排序和可用函数却不同。类型选择要看数据的真实含义：邮政编码是标识，适合字符串；金额是数量，需要数值类型；时间要带上时区和精度约定。" },
@@ -361,11 +361,11 @@ const columnSpec: PageSpec = {
       ],
     },
     {
-      id: "column-boundary",
+      id: "column-boundary-section",
       title: "边界：类型不是业务规则的全部",
       blocks: [
         { id: "column-boundary", text: "NUMERIC 能阻止 abc，却不知道金额是否为正、币种是否匹配、订单状态是否允许退款。列约束、跨列 CHECK、外键和应用授权分别回答不同层的问题，不能把它们混成“字段校验已经完成”。" },
-        { id: "column-operations", text: "读者看到一个列定义时，可以先问它保护了哪条事实，哪些输入仍会通过，查询如何使用它，以及改变类型会不会影响旧数据和索引。能预测这些后果，才真正理解列的作用。" },
+        { id: "column-derived", text: "读者看到一个列定义时，可以先问它保护了哪条事实，哪些输入仍会通过，查询如何使用它，以及改变类型会不会影响旧数据和索引。能预测这些后果，才真正理解列的作用。" },
       ],
     },
   ],
@@ -389,7 +389,7 @@ const acidSpec: PageSpec = {
   },
   sections: [
     {
-      id: "acid-atomicity",
+      id: "acid-atomicity-section",
       title: "先把四个字母拆开",
       blocks: [
         { id: "acid-atomicity", text: "原子性（Atomicity）回答“事务里的变化是否全成或全败”：扣款成功、入账失败时，系统应能回滚成两边都没变。一致性（Consistency）回答“提交后是否仍满足数据库和事务写下的约束”，例如余额不能为负；它不是凭空替业务设计规则。" },
@@ -407,7 +407,7 @@ const acidSpec: PageSpec = {
       },
     },
     {
-      id: "acid-consistency",
+      id: "acid-consistency-section",
       title: "属性之间怎样一起工作",
       blocks: [
         { id: "acid-consistency", text: "一致性来自约束、触发器和事务逻辑的组合。把余额约束写进数据库，能让非法结果在提交时失败；但“余额足够”与“风控允许”可能需要锁、版本检查或应用服务共同决定。先明确由谁检查哪条规则，才能避免把一项属性的责任写给另一项。" },
@@ -415,7 +415,7 @@ const acidSpec: PageSpec = {
       ],
     },
     {
-      id: "acid-boundary",
+      id: "acid-boundary-section",
       title: "失败分支：四项都满足也不代表业务完成",
       blocks: [
         { id: "acid-boundary", text: "事务可能四项都满足，却把错误的账户当成目标；数据库守住的是程序交给它的变化。隔离级别提高通常会减少某些异常，但也可能增加等待和冲突；持久性配置越强，也可能增加写入延迟。产品需要在明确的失败后果下选择。" },
@@ -443,7 +443,7 @@ const tcpSpec: PageSpec = {
   },
   sections: [
     {
-      id: "tcp-stream",
+      id: "tcp-stream-section",
       title: "可靠的是字节流，不是消息盒子",
       blocks: [
         { id: "tcp-stream", text: "TCP 在两个端点之间提供有序的字节流。应用写入 12 个字节，网络层可能把它们拆成多个 segment；接收方的一次 read 也可能只拿到其中一部分或几部分。TCP 保证最终按序交给应用，却不保留发送方一次 send 的边界。" },
@@ -461,7 +461,7 @@ const tcpSpec: PageSpec = {
       },
     },
     {
-      id: "tcp-congestion",
+      id: "tcp-congestion-section",
       title: "可靠性还要服从网络承载能力",
       blocks: [
         { id: "tcp-congestion", text: "TCP 不只重传丢失数据，也会根据确认、超时和拥塞信号调整发送速度。拥塞控制保护共享网络，流量控制则避免发送方压过接收方缓冲区；二者都可能让发送暂时变慢，但解决的是不同的瓶颈。" },
@@ -469,7 +469,7 @@ const tcpSpec: PageSpec = {
       ],
     },
     {
-      id: "tcp-reliability",
+      id: "tcp-reliability-section",
       title: "边界：连接不等于业务成功",
       blocks: [
         { id: "tcp-app-boundary", text: "连接断开时，未确认的字节可能需要由应用重新发送；如果请求已经到达但响应丢失，简单重试还可能重复执行业务。幂等键、应用确认和超时策略属于更高层，TCP 不会告诉你订单到底创建了几次。" },
@@ -497,7 +497,7 @@ const udpSpec: PageSpec = {
   },
   sections: [
     {
-      id: "udp-datagram",
+      id: "udp-datagram-section",
       title: "UDP 交付的是一封封数据报",
       blocks: [
         { id: "udp-datagram", text: "UDP 消息包含源端口、目标端口、长度和校验和等字段。每个数据报独立发送，接收方知道这一封消息的边界；如果应用一次写入 20 个字节，接收方不会像 TCP 字节流那样把它和下一封自动拼接。" },
@@ -515,7 +515,7 @@ const udpSpec: PageSpec = {
       },
     },
     {
-      id: "udp-tradeoff",
+      id: "udp-tradeoff-section",
       title: "少做保证，换来怎样的空间",
       blocks: [
         { id: "udp-tradeoff", text: "UDP 不建立类似 TCP 的连接状态，也不提供通用的可靠、有序字节流，因此协议开销和等待较少，适合应用自己知道如何处理丢失或过期数据的场景。实时视频可能宁可跳过旧帧，服务发现可能允许偶尔丢一次公告。" },
@@ -523,7 +523,7 @@ const udpSpec: PageSpec = {
       ],
     },
     {
-      id: "udp-boundary",
+      id: "udp-boundary-section",
       title: "边界：应用协议必须补齐缺口",
       blocks: [
         { id: "udp-app-boundary", text: "如果订单创建必须一次且仅一次，UDP 本身没有这种语义；应用需要请求 ID、确认、重试和去重。若场景是浏览器访问 HTTPS，通常由 TCP 或基于 UDP 的其他协议承载更高层的可靠与安全机制，不能只看到“用了 UDP”就结束分析。" },
@@ -551,7 +551,7 @@ const tlsHandshakeSpec: PageSpec = {
   },
   sections: [
     {
-      id: "tls-handshake",
+      id: "tls-handshake-section",
       title: "握手先做哪些准备",
       blocks: [
         { id: "tls-handshake", text: "TLS 握手让客户端和服务器选择协议版本、密码套件及其他扩展，并交换建立共享密钥所需的材料。TLS 1.3 的具体消息顺序和可选优化由规范定义；页面上的箭头代表状态依赖，不应理解为把私钥直接发给对方。" },
@@ -569,7 +569,7 @@ const tlsHandshakeSpec: PageSpec = {
       },
     },
     {
-      id: "tls-identity",
+      id: "tls-identity-section",
       title: "加密与“连对了谁”是两件事",
       blocks: [
         { id: "tls-identity", text: "证书验证解决的是服务身份：客户端检查信任链、主机名和证书的有效范围。RFC 9525 把服务身份匹配规则单独讲清楚；“证书能被某个 CA 签名”不等于它能代表当前 URL 的主机名。" },
@@ -577,7 +577,7 @@ const tlsHandshakeSpec: PageSpec = {
       ],
     },
     {
-      id: "tls-boundary",
+      id: "tls-boundary-section",
       title: "失败分支与保护范围",
       blocks: [
         { id: "tls-boundary", text: "TLS 保护的是终止 TLS 的两个端点之间的记录。若 CDN 或负载均衡器先解密再转发，后续链路是否继续使用 TLS 要单独配置；应用进程已经看到的明文、日志中的敏感字段和终端被攻破后的数据也不由握手自动保护。" },
