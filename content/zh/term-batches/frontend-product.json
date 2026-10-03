@@ -1151,7 +1151,7 @@
     "definition": "git revert 计算目标提交的反向补丁并创建新提交。原提交仍在历史中，远程分支可以用正常 push 更新。",
     "boundary": "revert 不能保证业务状态自动回到过去，数据库迁移、外部消息和数据写入可能需要单独回退。",
     "demoType": "lifecycle", "demoTitle": "公开提交的安全撤销",
-    "demoSteps": [{"label":"错误提交已发布","value":"历史包含提交 B","note":"其他人可能已经基于它工作。"},{"label":"创建反向提交","value":"revert B 生成 C","note":"C 抵消 B 的代码差异。"},{"label":"验证并推送","value":"历史保留 A-B-C","note":"团队无需重写已获取的提交。"}],
+    "demoSteps": [{"label":"定位 B","value":"公共历史 A → B","note":"先用 git show 确认要抵消的补丁，工作区保持干净。"},{"label":"应用反向补丁","value":"B 的变化被抵消，历史仍 A → B","note":"文件结果可接近 A，但还没有新提交。"},{"label":"记录 C 并验证","value":"A → B → C","note":"B 仍在历史；push、测试和外部副作用要另行处理。"}],
     "quizQuestion": "撤销已共享提交时，通常优先使用什么？", "quizOptions": ["git revert", "git reset --hard 后强推", "删除远程仓库"],
     "correctText": "revert 通过新提交撤销，不改写公共历史。", "wrongText": "强推改写历史会影响其他协作者。",
     "promptTitle": "制定一次提交回退方案", "prompt": "请分析目标提交的代码、数据库迁移和外部副作用，给出 revert 后还需执行的回退动作、验证方法和重新发布顺序。",
