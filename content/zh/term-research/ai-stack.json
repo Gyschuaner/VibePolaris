@@ -257,7 +257,7 @@
     "slug": "tool-choice",
     "mechanism": "当多个工具可用时，系统决定让模型自动选择、强制选择某个工具或禁止调用；选择结果仍需经过参数与权限检查。",
     "misconception": "工具选择不是工具执行，也不是让模型获得工具背后的全部权限。",
-    "demoSignature": "输入：“把会议改到周五”，候选calendar_read/calendar_update/web_search；中间：相关性0.42/0.91/0.08，策略又要求写操作审批；输出：选中calendar_update但停在待审批。可视化：候选分数条与审批闸门。 建议4帧：三个工具围绕请求出现、相关性条增长、写操作审批闸门落下、选中工具停在闸门前；交互：切换“自动/强制/禁用”观察路径。",
+    "demoSignature": "输入：把会议改到周五；中间：候选calendar_read、calendar_update、web_search出现，auto/required/none改变可提出的选择，写操作停在待校验；输出：选中calendar_update但尚未执行，none则不调用工具。可视化：候选工具卡片经过策略闸门停在执行前；交互：切换auto、required、none观察路径。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/function-calling",
       "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
