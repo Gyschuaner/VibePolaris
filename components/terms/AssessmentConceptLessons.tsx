@@ -80,3 +80,38 @@ export function EvaluationRunLesson() {
     <button className={base.reset} onClick={() => { setMode('same'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置运行记录</button>
   </div>;
 }
+
+type RubricSample = 'complete' | 'missing-condition' | 'overclaim';
+
+const rubricSamples: Record<RubricSample, { label: string; answer: string; checks: [string, boolean, string][] }> = {
+  complete: {
+    label: '保留条件的回答',
+    answer: '审核通过后，通常三个工作日到账；具体以支付渠道为准。',
+    checks: [['事实准确', true, '时间与资料一致'], ['条件保留', true, '写出“审核通过后”和“通常”'], ['没有越界承诺', true, '没有把通常时效说成保证']],
+  },
+  'missing-condition': {
+    label: '漏掉条件的回答',
+    answer: '退款三个工作日到账。',
+    checks: [['事实准确', true, '时间数字仍然正确'], ['条件保留', false, '漏掉审核通过前提'], ['没有越界承诺', false, '语气把通常时效说得过于确定']],
+  },
+  overclaim: {
+    label: '越界承诺的回答',
+    answer: '退款马上到账，而且一定免费。',
+    checks: [['事实准确', false, '与给定的通常三个工作日不符'], ['条件保留', false, '没有说明审核条件'], ['没有越界承诺', false, '资料没有免费保证']],
+  },
+};
+
+export function GradingRubricLesson() {
+  const [sample, setSample] = useState<RubricSample>('complete');
+  const [checked, setChecked] = useState<RubricSample | null>(null);
+  const current = rubricSamples[sample];
+  const report = checked ? rubricSamples[checked] : current;
+  const passed = report.checks.filter(([, ok]) => ok).length;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：按评分规则逐项检查回答">
+    <div className={s.controls}><label>回答样本<select value={sample} onChange={e => { setSample(e.target.value as RubricSample); setChecked(null); }}><option value="complete">保留条件的回答</option><option value="missing-condition">漏掉条件的回答</option><option value="overclaim">越界承诺的回答</option></select></label><p className={s.runHint}>评分规则把“好不好”拆成可回看的维度。</p></div>
+    <div className={s.rubricSample}><span>{current.label}</span><p>{current.answer}</p></div>
+    <button disabled={checked !== null} onClick={() => setChecked(sample)}>按规则逐项评分<MagnifyingGlass size={18}/></button>
+    <Reveal open={checked !== null}><div className={s.rubricResult} role="status"><header><h3>{passed}/3 项满足</h3><span>{report.label}</span></header><ul>{report.checks.map(([label, ok, reason]) => <li key={label} data-pass={ok}><span>{ok ? <Check size={19}/> : <X size={19}/>}</span><strong>{label}</strong><p>{reason}</p></li>)}</ul><p className={s.runEvidence}>评分结果来自这三条规则；换成另一套规则，结论可能随判据改变。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setSample('complete'); setChecked(null); }}><ArrowCounterClockwise size={17}/>重置回答与规则</button>
+  </div>;
+}
