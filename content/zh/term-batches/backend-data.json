@@ -670,7 +670,7 @@
     "say": "客户端和服务器协商加密参数、验证证书并建立会话密钥。", "aliases": ["HTTPS 握手", "TLS 协商", "安全握手"],
     "question": "浏览器访问 HTTPS 网站时，加密连接是怎样建立的？", "definition": "TLS 握手在应用数据传输前协商协议和算法、验证服务器身份并生成共享密钥。", "boundary": "TLS 降低传输被窃听或篡改的风险，但不保证服务器业务逻辑和页面内容可信。",
     "demoType": "flow", "demoTitle": "HTTPS 连接怎样获得会话密钥",
-    "demoSteps": [{"label":"发起协商","value":"ClientHello","note":"客户端发送版本、算法和随机数。"},{"label":"验证服务","value":"证书 + ServerHello","note":"浏览器检查域名、有效期和签发链。"},{"label":"建立密钥","value":"加密通道可用","note":"后续 HTTP 内容以会话密钥保护。"}],
+    "demoSteps": [{"label":"交换参数","value":"ClientHello → ServerHello","note":"双方确定协议和算法，仍未证明服务器身份。"},{"label":"验证身份","value":"证书链 · api.example · Finished","note":"客户端校验证书链、有效期和主机名。"},{"label":"保护数据","value":"会话密钥 → GET / → 加密响应","note":"握手完成后应用数据进入加密记录。"}],
     "quizQuestion": "TLS 握手中证书主要帮助验证什么？", "quizOptions": ["服务器所声明的身份", "数据库是否有索引", "页面是否没有缺陷"], "correctText": "证书把公钥与域名等身份信息关联起来。", "wrongText": "证书不检查数据库结构或应用缺陷。",
     "promptTitle": "排查 TLS 握手", "prompt": "请按域名、证书链、有效期、协议版本和密码套件检查 TLS 握手失败原因。", "relatedSlugs": ["hostname", "encryption-in-transit", "tcp"]
   },
