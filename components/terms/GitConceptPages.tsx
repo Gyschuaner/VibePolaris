@@ -15,3 +15,4 @@ export { MergeConflictTermPage } from "./git-workflow-pages/merge-conflict";
 export { RevertTermPage } from "./git-workflow-pages/revert";
 export { StashTermPage } from "./git-workflow-pages/stash";
 export { PullRequestTermPage } from "./git-workflow-pages/pull-request";
+export { CodeReviewTermPage } from "./git-workflow-pages/code-review";
