@@ -28,3 +28,4 @@ export { executionSandboxSources } from "./execution-sandbox";
 export { embeddingSources } from "./embedding";
 export { vectorStoreSources } from "./vector-store";
 export { retrievalSources } from "./retrieval";
+export { chunkingSources } from "./chunking";

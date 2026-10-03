@@ -26,3 +26,4 @@ export { ExecutionSandboxLesson } from "./execution-sandbox";
 export { EmbeddingLesson } from "./embedding";
 export { VectorStoreLesson } from "./vector-store";
 export { RetrievalLesson } from "./retrieval";
+export { ChunkingLesson } from "./chunking";

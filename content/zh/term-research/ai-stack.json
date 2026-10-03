@@ -527,14 +527,17 @@
   },
   {
     "slug": "chunking",
-    "mechanism": "分块把长文档切成可索引的小段，并可保留重叠、标题和页码，让检索既能命中细节又不丢定位。",
-    "misconception": "块越小并非越好；过小会断语义，过大则混入无关内容并挤占上下文。",
-    "demoSignature": "输入：2400字文档；中间：按800字得3块，改为500字+100字重叠后得6块；输出：查询命中含完整定义的第4块。可视化：长纸带按两种窗口切割并标出命中区。 建议5帧：2400字长纸带展开、按800切成3块、改为500+100重叠切成6块、查询命中区亮起、完整定义保留；交互：拖块长与重叠滑块。",
+    "mechanism": "分块把长文切成可索引的小段，并可保留标题、页码和重叠；块大小和边界决定检索能否带回完整条件。",
+    "misconception": "块越小并非越好；过小会断开语义，过大则混入噪声并挤占上下文，没有通用固定长度。",
+    "demoSignature": "2400 字文档按 800 字切成 3 块，改为 500 字并重叠 100 字后切成 6 块；查询在重叠规则下命中第 4 块，仍需回查相邻条件。交互：切换两种规则观察边界。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/retrieval",
-      "https://arxiv.org/abs/2005.11401"
+      "https://developers.openai.com/api/docs/guides/retrieval",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2005.11401",
+      "https://docs.langchain.com/oss/python/integrations/splitters",
+      "https://docs.llamaindex.ai/en/stable/module_guides/loading/node_parsers/"
     ],
-    "rewriteRisk": "不要给唯一“最佳块大小”；应展示切分规则怎样改变命中片段。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "retrieval",
       "context-window"
