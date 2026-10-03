@@ -30634,6 +30634,434 @@
     "sourceHash": "sha256:c9196cc0cc72a16a23be9123fb4ec5bd44451d52a745ffaf809d5592be5c318d"
   },
   {
+    "slug": "cyera-oasis-agent-identity-loi-20260728",
+    "title": "Cyera 拟 10 亿美元收购 Oasis：AI 代理的“身份”开始和数据安全合并",
+    "summary": "7 月 28 日，数据安全公司 Cyera 宣布签署意向书，拟以约 10 亿美元收购管理非人类身份的 Oasis Security。当天确认的是待完成的收购意向，不是已经交割；交易把 AI 代理能访问什么数据、以谁的身份行动，放进同一套企业安全问题里。",
+    "body": "7 月 28 日，Cyera 宣布签署意向书，拟收购 Oasis Security。TechCrunch 报道交易价值约 10 亿美元，预计以现金为主、股票为辅；Oasis 的官方说明确认了“签署意向书、交易仍在完成过程中”，没有把当天写成已经完成收购。Cyera 后续在 9 月 3 日宣布交易完成，这个时间差说明 7 月 28 日应记录为签约新闻。\n\nOasis 处理的是非人类身份，也就是服务账号、工作负载和 AI 代理使用的身份与权限。代理一旦能读取企业数据、调用 SaaS、修改记录或发起付款，风险就不只在模型会不会答错，还在于它拿着什么凭据、凭据能访问哪些系统、动作是否被持续核验。Oasis 的官方博客把“访问”和“数据”称为 AI 采用时的两个控制点。\n\nCyera 原本以数据安全平台为主，计划把 Oasis 的身份治理能力并入一套统一平台。这个方向回应了企业部署代理时的一个实际断点：数据安全团队知道哪些资料敏感，身份团队知道谁能访问系统，但代理的每次调用往往同时跨过两条边界。把两者放在一起，理论上可以在一次动作发生前同时判断“谁在请求”和“它要碰什么数据”。\n\n交易新闻不等于产品已经整合。意向书要经过交割和整合，客户权限、策略迁移、日志格式和服务连续性都需要单独验证；10 亿美元是报道的交易价值，不是已经产生的安全效果。公司也没有因为宣布收购就证明所有企业已经能看见或控制自己的代理身份。\n\n这条交易值得关注，是因为它把“代理安全”从模型输出问题拉回到企业控制面：身份、数据、工具和审计要一起工作。后续可以看收购完成后的产品边界、是否支持动态最小权限、能否在每次调用前重新检查上下文，以及异常动作能否及时停止。",
+    "publishedAt": "2026-07-28",
+    "eventDate": "2026-07-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/cyera-oasis-agent-identity-loi-20260728.svg",
+      "alt": "Cyera 拟收购 Oasis，把 AI 代理身份、数据和访问控制接到一条安全链路；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/cyera-oasis-agent-identity-loi-20260728.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "loi",
+        "title": "7 月 28 日确认的是意向书",
+        "body": "Oasis 和 Cyera 当天宣布签署收购意向书，交易仍在完成流程中；9 月 3 日的完成公告属于后续事件。",
+        "kind": "narrative"
+      },
+      {
+        "id": "identity",
+        "title": "代理也需要被当作一个“身份”管理",
+        "body": "服务账号、工作负载和 AI 代理都可能持有凭据并访问系统，权限需要和具体动作、时间和上下文一起核对。",
+        "kind": "technical"
+      },
+      {
+        "id": "join",
+        "title": "数据安全与身份安全要在同一次判断里相遇",
+        "body": "企业既要知道代理是谁、能调用什么工具，也要知道它将触碰哪些敏感数据；两套孤立的目录很难覆盖完整动作链。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "收购价值不等于安全效果",
+        "body": "约 10 亿美元是媒体报道的交易价值，意向书和平台整合都不能直接证明客户风险已经下降。",
+        "kind": "boundary"
+      },
+      {
+        "id": "follow",
+        "title": "后续看动态权限和可停止性",
+        "body": "产品能否每次调用前重查权限、记录数据去向并在异常时停止，才会决定“代理信任层”是否真的存在。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "一次代理调用为什么要同时检查身份和数据？",
+      "question": "“谁在做”和“它要碰什么”是同一个动作的两面，少检查一边就会留下盲区。",
+      "steps": [
+        {
+          "label": "识别调用者",
+          "detail": "把代理、服务账号和工作负载记录成可追踪的非人类身份，而不是共享一个永久凭据。",
+          "evidence": "Oasis Security"
+        },
+        {
+          "label": "核对动作与上下文",
+          "detail": "知道代理要调用哪个工具、在什么业务状态下调用，权限才有实际意义。",
+          "evidence": "agent identity boundary"
+        },
+        {
+          "label": "检查数据范围",
+          "detail": "在动作发生前确认它能读取或修改哪些数据，并把敏感数据策略带入判断。",
+          "evidence": "Cyera data security model"
+        },
+        {
+          "label": "记录并可停止",
+          "detail": "保存调用轨迹，发现异常时撤销权限或暂停流程，让代理动作可以被人工接管。",
+          "evidence": "enterprise control requirement"
+        }
+      ]
+    },
+    "source": {
+      "name": "Oasis Security",
+      "url": "https://www.oasis.security/blog/next-generation-ai-security-platform"
+    },
+    "relatedSlugs": [
+      "agent",
+      "authorization",
+      "context",
+      "tools",
+      "database",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.oasis.security/blog/next-generation-ai-security-platform",
+        "claim": "Oasis 确认 7 月 28 日签署被 Cyera 收购的意向书，并将代理访问与数据安全视为两个控制点。",
+        "excerpt": "We have signed a letter of intent to be acquired by Cyera."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/28/cyera-agrees-to-acquire-oasis-security-for-1b-to-safeguard-proliferating-ai-agents/",
+        "claim": "TechCrunch 报道交易价值约 10 亿美元、支付方式及两家公司在代理安全市场的定位。",
+        "excerpt": "Cyera ... signed a letter of intent to acquire Oasis Security for approximately $1 billion."
+      },
+      {
+        "url": "https://www.cyera.com/newsroom?100efbc7_page=2",
+        "claim": "Cyera 新闻室列出 7 月 28 日拟以 10 亿美元收购 Oasis 的公告，并把 9 月 3 日标为完成收购。",
+        "excerpt": "Cyera to Buy Oasis Security in $1 Billion Deal"
+      }
+    ],
+    "canonicalUrl": "https://www.oasis.security/blog/next-generation-ai-security-platform",
+    "sourceHash": "sha256:3f4465032d345bb0b5ba93ff1998aaaa622473f8114f54d2bf3335125cadaca0"
+  },
+  {
+    "slug": "meta-blackrock-el-paso-ai-datacenter-20260728",
+    "title": "Meta 与 BlackRock 合资建设 1GW 数据中心：AI 基础设施开始按长期资本来算",
+    "summary": "7 月 28 日，Meta 与 BlackRock 宣布成立合资企业，开发并持有德州 El Paso 数据中心园区。园区规划 1GW 计算容量，Meta 披露总投资超过 100 亿美元，预计 2028 年开始逐步上线；这些是建设计划，不是当天已经可用的训练算力或模型产能。",
+    "body": "7 月 28 日，Meta 与 BlackRock 宣布成立合资企业，开发并运营位于德州 El Paso 的数据中心园区。Meta 的投资者公告称，园区规划 1GW 计算容量，Meta 将是建成后的首个也是最初唯一的使用者，预计从 2028 年开始逐步上线。交易当时仍预计在未来几天完成，因此新闻确认的是合资和建设计划，不是已经交付的算力。\n\nMeta 还披露，El Paso 项目的总投资超过 100 亿美元，建设高峰期预计支持超过 4,000 个岗位，长期运营岗位约 300 个。这里的“1GW”描述的是园区的计算容量规划，不能直接换算成某个模型每天能训练多少参数；数据中心还要有电力接入、网络、冷却、芯片到货和软件调度，才能形成可用的 AI 产能。\n\n这笔交易把 AI 基础设施的资本结构摆到台面上。Meta 负责建设管理和物业管理，BlackRock 通过 Global Infrastructure Partners 与 HPS 提供基础设施投资和私募融资能力。对模型公司和云厂商来说，长期的算力需求需要长期资本来承接，但资本承诺、施工进度和真正的利用率之间仍隔着很长的落地链条。\n\nMeta 表述的目标是让园区支持 AI 模型进展并增强核心业务。这个方向说明公司仍在扩大训练与推理基础设施，但公告没有披露具体采用哪种芯片、哪个模型会先上线，也没有承诺园区建成后会贡献多少收入。把“1GW”直接写成产品能力或财务回报，都会超出来源能证明的范围。\n\n接下来值得看的是项目是否按计划完成融资和建设，电力与冷却是否满足设计，Meta 是否引入额外使用者，以及已上线容量的利用率。AI 基础设施的规模新闻，最终要靠可用算力、运行成本和真实负载来验证，而不是只看规划数字。",
+    "publishedAt": "2026-07-28",
+    "eventDate": "2026-07-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/meta-blackrock-el-paso-ai-datacenter-20260728.svg",
+      "alt": "Meta 与 BlackRock 从资本合资到 El Paso 1GW AI 数据中心的建设链路；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/meta-blackrock-el-paso-ai-datacenter-20260728.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "venture",
+        "title": "合资先解决的是资金和建设责任",
+        "body": "Meta 与 BlackRock 共同开发并持有园区，Meta 负责建设管理和物业管理；交易公告时仍处于预计完成阶段。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capacity",
+        "title": "1GW 是规划容量，不是今天的可用算力",
+        "body": "园区规划 1GW 计算容量，预计 2028 年起上线；电力、冷却、网络、芯片和调度都完成后才会变成可运行的 AI 负载。",
+        "kind": "technical"
+      },
+      {
+        "id": "capital",
+        "title": "100 亿美元对应长期基础设施投入",
+        "body": "Meta 披露项目总投资超过 100 亿美元，BlackRock 通过基础设施投资机构参与；这是建设规模，不是 Meta 当天的 AI 收入。",
+        "kind": "comparison"
+      },
+      {
+        "id": "limits",
+        "title": "公告没有告诉我们哪一个模型会先用",
+        "body": "来源没有给出具体芯片、模型、训练任务或上线后的收入预测，不能把容量数字直接等同于模型能力。",
+        "kind": "boundary"
+      },
+      {
+        "id": "follow",
+        "title": "后续观察利用率和真实上线",
+        "body": "融资交割、施工进度、用电与冷却、上线容量和实际负载，才会检验这座数据中心是否按计划变成 AI 产能。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一座 AI 数据中心怎样从规划变成可用算力？",
+      "question": "容量、资本和模型之间还有一条很长的建设与运营链路。",
+      "steps": [
+        {
+          "label": "确定园区和资本",
+          "detail": "先完成合资结构、融资安排和建设责任，确认谁投入、谁管理、谁承担运营风险。",
+          "evidence": "Meta/BlackRock announcement"
+        },
+        {
+          "label": "接入电力与冷却",
+          "detail": "1GW 规划需要稳定电力、散热、网络和场地，任何一环缺失都会限制可用容量。",
+          "evidence": "data-center infrastructure boundary"
+        },
+        {
+          "label": "部署计算设备",
+          "detail": "芯片、服务器和网络到位后，容量才从工程指标变成能被调度的计算资源。",
+          "evidence": "Meta project scope"
+        },
+        {
+          "label": "加载真实工作负载",
+          "detail": "最后看哪些模型使用它、上线多少容量、利用率和成本怎样，才能判断投资的 AI 产出。",
+          "evidence": "article follow-up questions"
+        }
+      ]
+    },
+    "source": {
+      "name": "Meta Investor Relations",
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "context",
+      "token",
+      "database",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx",
+        "claim": "Meta 与 BlackRock 宣布开发并持有 El Paso 数据中心园区，规划 1GW 计算容量并预计 2028 年上线。",
+        "excerpt": "The data center campus ... will have 1 gigawatt of compute capacity ... capacity online in 2028."
+      },
+      {
+        "url": "https://www.prnewswire.com/news-releases/meta-announces-new-strategic-venture-with-blackrock-to-develop-data-center-in-el-paso-302836040.html",
+        "claim": "新闻稿披露 Meta 对项目的投资超过 100 亿美元，并说明建设和运营岗位计划。",
+        "excerpt": "The El Paso data center represents an investment of over $10 billion from Meta."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/29/mark-zuckerberg-predicts-that-billions-of-people-will-have-personal-ai-agents-in-five-years/",
+        "claim": "TechCrunch 在次日财报报道中把 El Paso 合作放在 Meta 扩大 AI 基础设施投入的背景中。",
+        "excerpt": "Meta and BlackRock announced a partnership to build a data center in El Paso, Texas."
+      }
+    ],
+    "canonicalUrl": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-New-Strategic-Venture-with-BlackRock-to-Develop-Data-Center-in-El-Paso/default.aspx",
+    "sourceHash": "sha256:8943341f95e3eed464943dc15c36fb2c5c6d0cf6c6e42474d858dfe3ede63eb2"
+  },
+  {
+    "slug": "pacing-frontier-slowdown-tools-20260728",
+    "title": "1,100 多名前沿 AI 从业者请求先把“刹车工具”造出来",
+    "summary": "7 月 28 日，来自 OpenAI、Anthropic、Google、Meta 等公司的前沿 AI 从业者公开联署，要求美国政府支持国际合作，先建设能够在必要时调节自动化 AI 研发速度的技术和治理工具。声明不是立即暂停研发的政策，也没有给出可执行的阈值；截至页面后续更新，签名人数已超过发布当天的 1,100 人。",
+    "body": "7 月 28 日，一份名为 “Pacing the Frontier” 的公开声明上线。路透社报道，发布时已有超过 1,100 名前沿 AI 公司员工签名；声明页面后来显示的签名人数已增至 1,386 人。签名者来自 OpenAI、Anthropic、Google DeepMind、Meta 等实验室，也有其他前沿 AI 团队的成员，声明得到 Guidelight AI Standards 和 Encode AI 两个独立组织的支持。\n\n这份声明提出的请求很具体，却常被简化成“要求 AI 停下来”：签名者希望美国政府支持一项国际工作，开发出在必要时“有意调节前沿自动化 AI 研发速度”的技术和治理工具。它没有要求当天冻结模型训练，也没有给出一套已经生效的审批规则。这里的“pace”更接近为未来保留选择，而不是宣布当前进入暂停期。\n\n签名者给出的理由是，前沿实验室可能正在接近把一部分 AI 研究流程自动化。声明认为，如果能力进步突然超过人类理解和控制的速度，社会需要时间建立安全措施、监督机制和公共讨论。这个判断属于联署者的风险评估，不是一个已经被独立验证的能力里程碑；读者应把“可能接近”与“已经发生”分开看。\n\n声明还指出，单个公司或单个国家很难在竞争压力下单独减速，所以需要跨公司、跨国家的协调工具。要让这句话变成可操作的政策，至少还要回答几个问题：什么变化会触发调节，谁来测量，谁能核验，如何避免只限制一方，以及在紧急情况下谁有权暂停或恢复。原文没有提供这些制度细节，这也是它更像一个公开议程，而不是一份法规。\n\n这条新闻的意义在于，主动训练前沿模型的人把“是否需要保留减速选项”带到了公共讨论中。它不能证明即将出现失控，也不能证明政府已经接受这套方案。接下来更值得追踪的是签名实验室是否提出可审计的评测和报告机制，以及政府、行业和独立评估者能否把“速度”变成有证据、可执行的治理对象。",
+    "publishedAt": "2026-07-28",
+    "eventDate": "2026-07-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/pacing-frontier-slowdown-tools-20260728.svg",
+      "alt": "前沿 AI 从业者联署请求建设调节研发速度的技术与治理工具；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/pacing-frontier-slowdown-tools-20260728.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "statement",
+        "title": "声明先说清楚了“要什么”",
+        "body": "联署请求美国政府支持国际合作，开发在必要时调节自动化 AI 研发速度的技术和治理工具；它没有宣布当天暂停模型训练。",
+        "kind": "narrative"
+      },
+      {
+        "id": "signers",
+        "title": "签名人数和实验室名单要按时间看",
+        "body": "路透社报道发布时超过 1,100 人签名，声明页面后续显示 1,386 人；参与者来自多家前沿实验室，人数会继续变化。",
+        "kind": "comparison"
+      },
+      {
+        "id": "pace",
+        "title": "“调节速度”不是能力已经失控",
+        "body": "声明把自动化 AI 研究可能加速到超出社会理解和控制作为风险判断，未提供一个已经独立验证的失控事件或统一能力阈值。",
+        "kind": "boundary"
+      },
+      {
+        "id": "mechanism",
+        "title": "真正难的是把“速度”变成制度",
+        "body": "触发条件、测量方式、独立核验、跨国协调和暂停权限都还没有在声明里落成规则。",
+        "kind": "technical"
+      },
+      {
+        "id": "follow",
+        "title": "后续看可审计的行动",
+        "body": "实验室是否公开评测、政府是否提出协作机制、独立评估者能否复核，才会决定这份联署能否超出倡议层面。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "一份“减速”倡议怎样变成可核验的治理机制？",
+      "question": "先把请求拆成触发条件、测量、权限和复核，才能知道它是在提出政策还是已经形成规则。",
+      "steps": [
+        {
+          "label": "记录原始请求",
+          "detail": "先读声明原文：请求是建设调节工具，不是立即禁止模型训练。",
+          "evidence": "Pacing the Frontier statement"
+        },
+        {
+          "label": "确定触发条件",
+          "detail": "需要说明什么能力变化或风险信号会让各方考虑调节研发速度。",
+          "evidence": "声明未给出阈值"
+        },
+        {
+          "label": "建立独立测量",
+          "detail": "让外部评估者能复核模型能力、自动化研发比例和风险变化，而不是只看公司自报。",
+          "evidence": "治理问题清单"
+        },
+        {
+          "label": "分配暂停与恢复权限",
+          "detail": "跨公司、跨国家的协调必须明确谁能发起、谁能核验、何时恢复，并留下公开记录。",
+          "evidence": "政策执行边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Pacing the Frontier",
+      "url": "https://www.pacingthefrontier.com/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "authorization",
+      "context",
+      "tools",
+      "event",
+      "llm"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.pacingthefrontier.com/",
+        "claim": "声明请求美国政府支持国际努力，建设调节自动化 AI 研发速度所需的技术和治理工具。",
+        "excerpt": "We request that the U.S. government support an international effort to develop the technical and governance tools needed to deliberately pace the frontier."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/tech-employees-call-for-usbacked-global-effort-to-manage-risks-of-advanced-ai-4818276?ampMode=1",
+        "claim": "路透社报道 7 月 28 日发布时，来自多家科技公司的签名者已超过 1,100 人。",
+        "excerpt": "More than 1,100 employees from leading tech firms on Tuesday urged the U.S. government."
+      },
+      {
+        "url": "https://www.axios.com/newsletters/axios-am-c28a0dcf-07c5-4caa-b46b-da0e202609d6",
+        "claim": "Axios 将这份联署概括为请求华盛顿建立国际工具，以便在 AI 超过人类控制时有意调节发展速度。",
+        "excerpt": "Build the brake: More than 1,200 frontier-lab employees signed “Pacing the Frontier.”"
+      }
+    ],
+    "canonicalUrl": "https://www.pacingthefrontier.com/",
+    "sourceHash": "sha256:a4b11adde00503de3ae003a2d13d6c66986e9e318945d251c9700a1364bd6871"
+  },
+  {
+    "slug": "recursive-aws-self-improving-ai-20260728",
+    "title": "Recursive 与 AWS 签下 4.1 亿美元算力合作：把“会自己改进的 AI 研究”推向规模化",
+    "summary": "7 月 28 日，Recursive 宣布与 AWS 签署多年、总额 4.1 亿美元的云计算合作，用来运行其自动提出实验、执行、验证并选择下一步的 AI 研究系统。金额是云服务合作规模，不是公司新一轮股权融资；公司公布的基准成绩和“自我改进”叙事仍需要外部复核。",
+    "body": "7 月 28 日，AI 公司 Recursive 宣布与 Amazon Web Services 签署一份多年合作，金额为 4.1 亿美元。AWS 新闻稿把这笔钱描述为让 Recursive 在 AWS 上运行自动化 AI 研究系统的合作规模，TechCrunch 也称其为算力交易。它不是一笔把现金直接注入公司资产负债表的股权融资，不能写成 Recursive 当天又完成了 4.1 亿美元融资。\n\nRecursive 想做的系统，把研究工作拆成一个不断循环的流程：提出一个改进想法，运行实验，检查结果，再根据结果选择下一轮实验。公司称，这些循环可以并行运行，让原本需要很长时间的人工调参变成更快的机器实验。AWS 的角色是提供弹性计算、存储和安全基础设施，双方还计划共同开发适合大规模自动化研究的基础设施。\n\n公司同时公布了几项自己的早期结果，称系统在 NanoChat、NanoGPT Speedrun 和 SOL-ExecBench 三个基准上超过了两年的人类优化记录，也超过一次人机协作的公开尝试。这些成绩来自 Recursive 的公告和实验设置，新闻可以记录“公司这样声称”，却不能把它们直接等同于通用的自我改进能力，更不能推出系统已经能独立发现所有科学规律。\n\n“自我改进”这个词在这里容易造成误解。系统可以在一个定义好的研究目标中自动提出和筛选实验，不等于它能无边界地重写自己的目标、复制资源或脱离控制。真正要看的是每一轮实验的权限、数据来源、停止条件和人工复核怎样设置，以及算力增加后，错误会不会被更快地复制。\n\n这笔合作把一个研究设想和一张很大的算力账单放在了同一条新闻里。接下来应追踪 Recursive 是否公开可复现实验记录、AWS 如何隔离自动化研究循环，以及所谓“领先人类记录”在独立环境中是否仍成立。对读者来说，最关键的分界线是：云合同确认了投入规模，尚未确认“超级智能”已经实现。",
+    "publishedAt": "2026-07-28",
+    "eventDate": "2026-07-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/recursive-aws-self-improving-ai-20260728.svg",
+      "alt": "Recursive 把自动实验循环部署到 AWS 算力上的关系图；VibePolaris 自制可追溯 SVG。",
+      "sourceUrl": "/images/news/recursive-aws-self-improving-ai-20260728.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "deal",
+        "title": "4.1 亿美元是云合作规模",
+        "body": "AWS 新闻稿确认的是多年合作和云服务投入，用来运行 Recursive 的自动化 AI 研究系统；金额不是新一轮股权融资。",
+        "kind": "narrative"
+      },
+      {
+        "id": "loop",
+        "title": "研究系统怎样自己推进下一轮实验",
+        "body": "系统提出想法、运行实验、验证结果，再把结果送回下一轮选择；每一步都依赖预先定义的目标和可用工具。",
+        "kind": "technical"
+      },
+      {
+        "id": "benchmark",
+        "title": "公司公布的领先成绩仍是公司口径",
+        "body": "NanoChat、NanoGPT Speedrun 和 SOL-ExecBench 的领先结果来自 Recursive 的实验披露，数据集、环境和评测方法需要独立复现。",
+        "kind": "boundary"
+      },
+      {
+        "id": "meaning",
+        "title": "“自我改进”不等于无边界自我复制",
+        "body": "自动筛选研究实验可以发生在受限目标里，不能从公告推出系统会自行改变目标、取得额外权限或脱离控制。",
+        "kind": "comparison"
+      },
+      {
+        "id": "watch",
+        "title": "下一步看权限和复现实验",
+        "body": "研究循环的停止条件、网络与数据权限、审计记录，以及外部团队能否复现结果，比宣传语更能说明合作的实际含义。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样判断“自动化研究”是否真的在改进？",
+      "question": "把每轮实验的目标、环境和结果记录下来，才能把自我改进的主张拆成可检查的证据。",
+      "steps": [
+        {
+          "label": "固定研究目标",
+          "detail": "先写清楚系统要优化的指标和允许使用的资料，避免把任何进步都称为改进。",
+          "evidence": "Recursive/AWS announcement"
+        },
+        {
+          "label": "提出并运行实验",
+          "detail": "系统生成候选方法，在隔离环境中运行代码、数据和模型配置。",
+          "evidence": "Recursive research loop description"
+        },
+        {
+          "label": "验证下一轮输入",
+          "detail": "只把可复核的结果送回选择器，记录失败、成本和不确定性，避免错误循环放大。",
+          "evidence": "editorial verification boundary"
+        },
+        {
+          "label": "外部复现与审计",
+          "detail": "让独立团队在相同基准和权限下重跑，检查成绩是否依赖内部数据或特殊设置。",
+          "evidence": "benchmark interpretation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Amazon Web Services US Press Center",
+      "url": "https://press.aboutamazon.com/aws/2026/7/recursive-signs-410-million-multi-year-collaboration-with-aws-to-scale-self-improving-ai"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-harness",
+      "llm",
+      "token",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://press.aboutamazon.com/aws/2026/7/recursive-signs-410-million-multi-year-collaboration-with-aws-to-scale-self-improving-ai",
+        "claim": "AWS 确认 Recursive 的 4.1 亿美元多年合作，用于在 AWS 上运行自动化 AI 研究系统。",
+        "excerpt": "Recursive ... announced a multi-year, $410 million agreement with Amazon Web Services."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/28/recursive-superintelligence-signs-400-compute-deal-with-amazon/",
+        "claim": "TechCrunch 将这笔交易描述为 Recursive 与 AWS 的多年算力合同，并报道公司对研究规模的计划。",
+        "excerpt": "The AI company Recursive Superintelligence announced a $410 million compute deal with Amazon Web Services."
+      },
+      {
+        "url": "https://www.recursive.com/",
+        "claim": "Recursive 公开介绍其目标是用自动化研究和开放式实验推进自我改进系统。",
+        "excerpt": "Recursive is building AI that conducts experiments on how to safely improve itself."
+      }
+    ],
+    "canonicalUrl": "https://press.aboutamazon.com/aws/2026/7/recursive-signs-410-million-multi-year-collaboration-with-aws-to-scale-self-improving-ai",
+    "sourceHash": "sha256:2aa8c423f64077fc4e1436caad8ce97dccd0143aea369d5078a0c0140b01f6a9"
+  },
+  {
     "slug": "openai-atlas-sunset-20260809",
     "title": "OpenAI 让 Atlas 在 8 月 9 日退场：浏览代理并入 ChatGPT",
     "summary": "OpenAI 帮助中心把 2026 年 8 月 9 日列为 Atlas 停止运行日期，并建议用户把书签、标签页和浏览工作迁到 ChatGPT、Codex 或 Chrome 扩展；聊天记录仍与浏览器数据分开。",
