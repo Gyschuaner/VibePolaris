@@ -16664,6 +16664,623 @@
     ]
   },
   {
+    "slug": "openai-jalapeno-inference-results-20260825",
+    "title": "OpenAI 公布 Jalapeño 首轮结果：推理芯片把每瓦吞吐和延迟放在同一张表上",
+    "summary": "OpenAI 于 2026 年 8 月 25 日公布自研 Jalapeño 推理芯片的首轮公开结果：在 SemiAnalysis 的 InferenceX 基准上，公司称它在 GPT‑OSS 120B、DeepSeek R1 和 Kimi K2.5 1T 上同时取得更高的每瓦吞吐和更低的端到端延迟。数字来自 OpenAI 选定的测试范围，不能直接当成独立的普遍性能结论；Jalapeño 目前首先服务 OpenAI 自己的推理需求。",
+    "body": "2026 年 8 月 25 日，OpenAI 发布 Jalapeño 首轮性能结果，这是它把自研推理芯片从路线图带到公开可比较数据的一步。公司称，Jalapeño 在 GPT‑OSS 120B、DeepSeek R1 670B 和 Kimi K2.5 1T 上，峰值吞吐每瓦比对照系统高 1.5 到 1.9 倍，端到端延迟约为对照系统的 1/1.7 至 1/3.6（即减少约 41%–72%）；在高互动负载下，性能最高可达 2.1 到 4.1 倍。这里的“公司称”很重要：这些数字是 OpenAI 对自己的芯片、软件、机架和对照系统进行的基准测试，不是第三方实验室已经复现的结论。\n\nOpenAI 选择的是 InferenceX，一个由 SemiAnalysis 发布、测量完整请求服务过程的公开基准。它不是只测芯片的理论峰值，而是把提示处理、逐 token 解码、内存和网络等待放进用户体验里。Jalapeño 的额定功率是 700 瓦，OpenAI 说测试负载下持续功率不超过 550 瓦；比较时又按各加速器公开的芯片功率做了归一化。读者需要把“每瓦完成多少工作”“一次回答等多久”和“整套系统用了多少电”分开，它们是相关但不同的指标。\n\n这次发布的技术重点也不只是换一块芯片。OpenAI 描述的设计同时考虑了芯片、内存、网络、服务软件和模型工作负载：提示预填充更依赖计算，生成阶段更受内存带宽和 KV cache（已处理上下文的缓存）访问影响，跨芯片通信还会制造等待。Jalapeño 试图把模型状态留在合适的位置，减少数据移动，让代理连续执行多步任务时不必在每一步都付出同样的延迟。\n\nOpenAI 还说，AI 参与了 Jalapeño 的电路探索、验证和编程接口设计，首轮芯片从初始设计到 tapeout（交付制造前的设计定版）用了九个月。这个说法说明公司把模型能力用于硬件开发，但并不等于 AI 自动完成了芯片设计，也没有公开所有面积、良率、成本和生产规模数据。Axios 的报道还指出，Jalapeño 首先用于 OpenAI 内部，OpenAI 当时没有计划把芯片直接卖给其他公司；它仍然需要外部加速器供应商来满足训练等其他需求。\n\n所以，8 月 25 日可以确认的是一组自研推理系统的公开基准和一条垂直整合路线，而不是“OpenAI 已经摆脱 NVIDIA”。下一步要看 Jalapeño 实际部署量、更多工作负载、成本、可靠性、制造和独立复测，才能判断每瓦优势是否会变成用户可感知的更低价格或更快代理。",
+    "eventDate": "2026-08-25",
+    "publishedAt": "2026-08-25",
+    "hero": {
+      "url": "/images/news/openai-jalapeno-inference-results-20260825.svg",
+      "alt": "Jalapeño 在吞吐每瓦和端到端延迟两个指标上的基准位置",
+      "sourceUrl": "/images/news/openai-jalapeno-inference-results-20260825.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "event",
+        "title": "8 月 25 日公开了什么",
+        "body": "OpenAI 发布 Jalapeño 首轮结果，覆盖 GPT‑OSS 120B、DeepSeek R1 670B 和 Kimi K2.5 1T；这是公司基准发布，不是独立认证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "metrics",
+        "title": "为什么要同时看吞吐和延迟",
+        "body": "每瓦吞吐衡量能源效率，端到端延迟衡量一次请求的等待时间；代理要连续调用多步，任何一项过慢都会放大总时长。",
+        "kind": "technical"
+      },
+      {
+        "id": "system",
+        "title": "芯片只是整套系统的一层",
+        "body": "OpenAI 把芯片、内存、网络、服务软件、KV cache 和模型工作负载一起设计，试图减少数据移动和通信等待。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "公开结果还没有证明什么",
+        "body": "测试范围、对照系统、功率口径、制造成本和实际部署量都需要继续核验；首轮数字不能直接推导普遍的价格或模型质量优势。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "一张推理基准表怎样读",
+      "question": "把“做多少工作”“每瓦做多少工作”和“用户等多久”放在同一条流程上，就不会把单项领先读成所有场景都领先。",
+      "steps": [
+        {
+          "label": "请求进入",
+          "detail": "InferenceX 测量完整的 AI 请求服务过程，而不是只看理论算力。",
+          "evidence": "OpenAI 引用 SemiAnalysis 的公开基准。"
+        },
+        {
+          "label": "提示预填充",
+          "detail": "模型先处理输入，计算和内存访问决定第一段等待。",
+          "evidence": "OpenAI 对 prefill 的说明。"
+        },
+        {
+          "label": "逐 token 解码",
+          "detail": "生成阶段更依赖内存带宽、KV cache（已处理上下文的缓存）和跨芯片通信。",
+          "evidence": "Jalapeño 架构说明。"
+        },
+        {
+          "label": "比较结果",
+          "detail": "把吞吐、每瓦效率和端到端延迟分别看，再追问测试范围与独立复测。",
+          "evidence": "公司基准仍需外部验证。"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/jalapeno-first-results/"
+    },
+    "relatedSlugs": [
+      "benchmark",
+      "llm",
+      "model-routing",
+      "data-pipeline",
+      "server",
+      "data-quality"
+    ],
+    "relatedArticleSlugs": [
+      "aws-nvidia-2m-gpus-agentic-physical-ai-20260826",
+      "nvidia-system-orchestration-beyond-gpu-20260829"
+    ],
+    "sources": [
+      {
+        "url": "https://openai.com/index/jalapeno-first-results/",
+        "claim": "OpenAI 发布 Jalapeño 首轮结果，称在三个公开模型上同时取得更高每瓦吞吐和更低端到端延迟。",
+        "excerpt": "Across all three, Jalapeño delivered 1.5 to 1.9 times more AI work per watt at peak throughput and 1.7 to 3.6 times lower end-to-end latency than the comparison systems."
+      },
+      {
+        "url": "https://openai.com/index/the-full-stack-behind-abundant-intelligence/",
+        "claim": "OpenAI 说明 Jalapeño、数据中心、软件和产品属于同一套全栈基础设施策略，并提到 Project Camellia。",
+        "excerpt": "The full stack behind abundant intelligence."
+      },
+      {
+        "url": "https://www.axios.com/2026/08/25/openai-says-its-jalapeno-chip-offers-spicy-performance",
+        "claim": "Axios 交叉报道 OpenAI 基准、训练与推理边界以及芯片首先服务自身的计划。",
+        "excerpt": "OpenAI says its Jalapeño chip offers spicy performance."
+      }
+    ],
+    "isExample": false,
+    "canonicalUrl": "https://openai.com/index/jalapeno-first-results/",
+    "sourceHash": "sha256:66fef18279b4d787c8c4f8ff6e49e07c738a2c139f5a6db404d4e403b4e068a5"
+  },
+  {
+    "slug": "openai-russia-influence-campaign-20260825",
+    "title": "OpenAI 披露俄罗斯关联隐蔽影响行动：ChatGPT 生成内容只是整条传播链的一段",
+    "summary": "OpenAI 于 2026 年 8 月 25 日披露并封禁一组很可能来自俄罗斯的 ChatGPT 账户。调查称，运营者用模型生成社交媒体评论、隐藏语言线索，并推广自称位于以色列的 International Burke Institute；该网站还被发现包含大量复制和错误署名的学术文章。OpenAI 说影响范围较小，行动归属仍是公司调查判断。",
+    "body": "8 月 25 日，OpenAI 发布一份关于俄罗斯关联隐蔽影响行动的调查报告，并称已经封禁一组很可能来自俄罗斯的 ChatGPT 账户。运营者用俄语提示模型生成英文、德文等社交媒体评论，发布到 Substack、Telegram、X、Facebook 和 LinkedIn，再把流量导向 International Burke Institute（IBI）网站。OpenAI 的调查把 AI 生成内容、账号伪装、网站运营和复制学术文章放在同一条链上，但没有把每一项活动都归因给模型。\n\n报告中最容易被误读的一点，是 IBI 网站上的文章并不是由 ChatGPT 生成的。OpenAI 说，抽样检查的文章里有大量从其他网站复制、错误署名或疑似机器翻译的内容；模型主要参与了社交媒体推广、回复真实用户以及生成频道标识。也就是说，AI 是放大器和工作流工具，网站内容、身份伪装和分发网络仍由运营者和其他工具完成。\n\nOpenAI 把行动归为“很可能来自俄罗斯”，依据包括账户来源、俄语提示、VPN 访问以及刻意隐藏语言线索等迹象。这个表述是公司的调查判断，不是法院或政府公开归责。Le Monde 的报道交叉呈现了虚假智库、Telegram 频道和多语种传播背景，但读者仍应把“平台封禁”“公司归因”和“国家级责任”分成不同证据层级。\n\n影响规模也需要保持比例。OpenAI 说典型社交媒体帖子浏览量不高，IBI 官方账号订阅者不多，但一些 Telegram 频道有约 1 万到 2 万关注者。传播量有限不代表行为没有意义：它展示了低成本生成、翻译、账号包装和跨平台投放如何组合，也说明检测不能只看一条文本像不像机器写的。\n\n这条新闻的可追溯重点，是运营者用 AI 做了哪些事、哪些内容来自复制或人工活动、平台如何发现并封禁、以及行动实际触达了多少人。OpenAI 没有公开所有账号、样本和独立调查材料，因此本文不把它写成“俄罗斯政府已经操纵了某次选举”，也不把 ChatGPT 生成评论等同于完整的舆论影响结果。后续应追踪平台通报、外部研究和更多原始样本。",
+    "eventDate": "2026-08-25",
+    "publishedAt": "2026-08-25",
+    "hero": {
+      "url": "/images/news/openai-russia-influence-campaign-20260825.svg",
+      "alt": "ChatGPT 生成推广内容、IBI 网站和多平台分发组成的影响行动链",
+      "sourceUrl": "/images/news/openai-russia-influence-campaign-20260825.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "report",
+        "title": "调查披露了什么",
+        "body": "OpenAI 封禁一组很可能来自俄罗斯的账户，并描述其推广 International Burke Institute 的多平台活动；这是公司调查报告，不是政府归责文件。",
+        "kind": "narrative"
+      },
+      {
+        "id": "ai-role",
+        "title": "ChatGPT 在链条中负责哪一段",
+        "body": "运营者用模型生成评论、回复、翻译和频道标识，网站文章本身则被 OpenAI 发现大量复制或错误署名。AI 参与传播，不等于模型独自策划整个行动。",
+        "kind": "technical"
+      },
+      {
+        "id": "evidence",
+        "title": "为什么“归属”要分层",
+        "body": "账户来源、VPN、语言线索和内容分发支持“很可能来自俄罗斯”的判断；平台封禁、公司归因和国家责任仍是不同结论。",
+        "kind": "boundary"
+      },
+      {
+        "id": "scale",
+        "title": "小触达也值得记录",
+        "body": "公开报告称典型帖子浏览量较低，但部分 Telegram 频道有约 1–2 万关注者。规模有限不等于工作流没有可复制性。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-incident",
+      "title": "从模型提示到影响行动",
+      "question": "把 AI 生成、网站内容、账号身份和平台分发拆成四层，读者才能判断证据到底证明了哪一步。",
+      "steps": [
+        {
+          "label": "生成内容",
+          "detail": "运营者用俄语提示 ChatGPT，生成英文、德文等推广评论并隐藏语言线索。",
+          "evidence": "OpenAI 事件报告。"
+        },
+        {
+          "label": "包装身份",
+          "detail": "账户、频道和 IBI 网站被设计成“专家社区”或本地媒体的样子。",
+          "evidence": "OpenAI/Le Monde 交叉报道。"
+        },
+        {
+          "label": "跨平台分发",
+          "detail": "评论进入 Substack、Telegram、X、Facebook 和 LinkedIn，引导用户访问网站。",
+          "evidence": "OpenAI 对 AI activity 的描述。"
+        },
+        {
+          "label": "平台处置",
+          "detail": "OpenAI 封禁账户并公开调查；影响规模和更高层级归属仍要看外部证据。",
+          "evidence": "公司处置不等于国家责任判决。"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/disrupting-malicious-uses-of-ai-influence-campaign-russia/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "llm",
+      "data-quality",
+      "citation",
+      "data-lineage",
+      "authorization"
+    ],
+    "relatedArticleSlugs": [
+      "openai-hugging-face-incident-report-20260826"
+    ],
+    "sources": [
+      {
+        "url": "https://openai.com/index/disrupting-malicious-uses-of-ai-influence-campaign-russia/",
+        "claim": "OpenAI 披露并封禁一组很可能来自俄罗斯、用于推广 IBI 的 ChatGPT 账户，并说明 AI 与非 AI 活动的分工。",
+        "excerpt": "We recently banned a cluster of ChatGPT accounts originating in Russia that were being used to promote the International Burke Institute."
+      },
+      {
+        "url": "https://www.lemonde.fr/en/pixels/article/2026/08/25/russian-disinformation-on-chatgpt-fake-telegram-channels-fake-videos-and-a-real-fake-israeli-think-tank_6756822_13.html",
+        "claim": "Le Monde 交叉报道多语种评论、Telegram 频道和伪装成以色列智库的网站。",
+        "excerpt": "Russian disinformation on ChatGPT: Fake Telegram channels, fake videos and a real-fake Israeli think tank."
+      },
+      {
+        "url": "https://www.techradar.com/pro/security/openai-says-it-took-down-a-malicious-russian-plan-to-spread-misinformation-on-chatgpt",
+        "claim": "TechRadar 记录 OpenAI 报告的封禁与传播链，并保留公司归因边界。",
+        "excerpt": "OpenAI says it took down a malicious Russian plan to spread misinformation on ChatGPT."
+      }
+    ],
+    "isExample": false,
+    "canonicalUrl": "https://openai.com/index/disrupting-malicious-uses-of-ai-influence-campaign-russia/",
+    "sourceHash": "sha256:ce37d14f2f9ea637bf00caf3eec4e7a563b989f94756a32ec8b0c39f8f25124b"
+  },
+  {
+    "slug": "anthropic-wellbeing-evaluation-grants-20260825",
+    "title": "Anthropic 拿出 500 万美元资助用户福祉评测：安全问题要从单轮回答转向长对话",
+    "summary": "Anthropic 于 2026 年 8 月 25 日宣布 500 万美元独立研究资助，支持研究者用模型访问和技术支持，建立开源的 AI 用户福祉评测与基准。公司要求评测明确 pass/fail、引入临床专家、同时测过度服从和过度拒答，并覆盖风险逐步升级的多轮对话；这是资助计划和方法建议，不是已经证明 Claude 安全。",
+    "body": "Anthropic 在 2026 年 8 月 25 日宣布一项总额 500 万美元的资助计划，支持独立研究 AI 如何影响用户的心理、情绪、认知和社会福祉。入选团队可以获得直接资金、模型访问和技术支持，但需要独立开展研究并把结果作为开源项目发布。申请意向截止 9 月 21 日，入选通知预计在 10 月 5 日发出；这些日期说明项目仍处于征集阶段，不是研究结果已经出来。\n\nAnthropic 选择“用户福祉”作为评测对象，是因为单条回答很难说明一段对话是否有帮助。一个人在聊天开始时可能只是问饮食或工作，后来才透露焦虑、孤独或自伤想法；同一句建议放在不同背景里，风险可能完全不同。公司因此把陪伴、心理危机和持续对话视作需要上下文的安全问题，也承认行业还没有稳定、清晰的标准。\n\n公告提出的评测要求很具体：先写清楚测量对象和 pass/fail 规则；让临床和领域专家参与设计与验证；同时测试过度服从和过度拒答；用接近真实使用的多轮场景模拟风险升级；最后用真实专家校准自动评分器。这套清单的价值在于把“模型是否安全”改写成可检查的测量设计，但它仍是 Anthropic 的方法建议，不能代替独立团队真正执行后的结果。\n\n对读者来说，“过度服从”和“过度拒答”是一对容易漏掉的张力。模型在危机对话中过度服从可能放大伤害，过度拒答又可能让真正需要帮助的人失去下一步指引；好的评测要同时看两种失败。多轮场景还需要记录记忆、语气、转折和用户状态，而不是只给模型一条孤立问题。\n\n这笔资助也带来治理问题：出资者提供模型和技术支持，研究者怎样保持独立？评测基准是否能跨模型、跨年龄和文化背景比较？自动评分器怎样避免把“听起来温柔”误当成真正有帮助？8 月 25 日能确认的是资助计划和公开的方法方向，不能把 Anthropic 的标准写成行业共识，更不能把未来获资助项目预先当成安全认证。",
+    "eventDate": "2026-08-25",
+    "publishedAt": "2026-08-25",
+    "hero": {
+      "url": "/images/news/anthropic-wellbeing-evaluation-grants-20260825.svg",
+      "alt": "多轮福祉评测从用户上下文进入指标、专家校准和开源结果",
+      "sourceUrl": "/images/news/anthropic-wellbeing-evaluation-grants-20260825.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "grant",
+        "title": "500 万美元计划处于什么阶段",
+        "body": "Anthropic 公开资助、模型访问和技术支持，申请意向截止 9 月 21 日；研究团队尚未提交结果。",
+        "kind": "narrative"
+      },
+      {
+        "id": "context",
+        "title": "为什么不能只测一条回答",
+        "body": "用户状态可能在多轮对话中变化，风险也会逐步升级；同一句建议放到不同背景里可能产生相反效果。",
+        "kind": "technical"
+      },
+      {
+        "id": "criteria",
+        "title": "一套可复用的评测要包含什么",
+        "body": "明确 pass/fail、领域专家、过度服从与过度拒答、多轮真实场景，以及用专家校准自动评分器。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "资助和安全认证不是一回事",
+        "body": "资金与模型支持可以扩大研究，但不自动保证独立性、跨模型可比性或产品已经安全。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样评估一段对话是否真的帮助了人",
+      "question": "从用户状态、模型响应、专家判断和多轮结果四个节点走一遍，才能看见单轮分数漏掉的风险。",
+      "steps": [
+        {
+          "label": "设定目标",
+          "detail": "先说明要测心理支持、危机应对、陪伴还是其他福祉结果，并定义 pass/fail。",
+          "evidence": "Anthropic 评测指南。"
+        },
+        {
+          "label": "构造多轮场景",
+          "detail": "让用户状态和风险在多轮中变化，而不是只给一句脱离上下文的问题。",
+          "evidence": "公告要求模拟真实使用。"
+        },
+        {
+          "label": "双向测风险",
+          "detail": "既看模型是否过度服从，也看是否过度拒答。",
+          "evidence": "Anthropic 的 safeguards guidance。"
+        },
+        {
+          "label": "专家校准",
+          "detail": "让临床/领域专家验证评分器，比较自动分数和真实判断。",
+          "evidence": "资助计划的方法要求。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/wellbeing-research-grants"
+    },
+    "relatedSlugs": [
+      "eval",
+      "benchmark",
+      "context",
+      "data-quality",
+      "citation"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-alignment-security-update-20260831"
+    ],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/wellbeing-research-grants",
+        "claim": "Anthropic 宣布 500 万美元计划，为独立团队提供资金、模型访问和技术支持，并要求开源发布。",
+        "excerpt": "We’re launching a $5 million grant program to fund independent research into how AI impacts users’ wellbeing."
+      },
+      {
+        "url": "https://www.anthropic.com/news/wellbeing-research-grants",
+        "claim": "Anthropic 列出福祉评测需要的 pass/fail、专家、多轮场景、过度服从/拒答和评分器校准条件。",
+        "excerpt": "In brief, we’re seeking evaluations that: State clearly what they are measuring; involve clinical experts; test both precautions and harms; reflect multi-turn conversations; validate graders."
+      },
+      {
+        "url": "https://www.jou.ufl.edu/2026/09/18/research-funding-opportunities-september-18-2026/",
+        "claim": "UF 研究机会页面记录项目金额、申请日期和典型资助区间，作为外部信息交叉。",
+        "excerpt": "We expect to award $5M in total direct funding; expression of interest due 9/21/26."
+      }
+    ],
+    "isExample": false,
+    "canonicalUrl": "https://www.anthropic.com/news/wellbeing-research-grants",
+    "sourceHash": "sha256:c10f8363f24b12736027f6e967152ef40e740a66ee6874f87774c1cffdc9cec0"
+  },
+  {
+    "slug": "google-gemini-enterprise-legal-finance-20260825",
+    "title": "Google Cloud 推出 Gemini Enterprise 法律与金融方案：代理进入受权限约束的专业工作流",
+    "summary": "Google Cloud 于 2026 年 8 月 25 日发布 Gemini Enterprise for Legal，并同步推出 Financial Services 方案。两者把领域技能、MCP 数据连接器、可执行代理和治理控制面组合在一起，法律版先以预览提供。Google 描述的是企业产品能力和客户案例，不等于代理可以替代律师或金融专业人员作最终判断。",
+    "body": "8 月 25 日，Google Cloud 同时公布 Gemini Enterprise for Legal 和 Gemini Enterprise for Financial Services。它们不是把通用聊天机器人换一个行业名称，而是把技能包、数据连接器、代理和治理控制面装进法律事务所、资本市场和公司银行的工作流。法律版先以预览提供；金融版可用范围按官方公告和客户资格为准；产品公告里的“自动化复杂工作流”仍要放回具体权限、客户数据和人工审批的条件里理解。\n\n法律方案举的任务包括合同审阅、尽职调查、监管追踪、DSAR（数据主体访问请求）和合同条款手册更新。它通过 MCP（让代理按权限连接外部系统的协议）连接 CourtListener、iManage、NetDocuments、RelativityOne、Thomson Reuters 等系统，并声称继承事务所的 ethical walls（事务所内部的客户隔离规则）和现有权限。金融方案则提供 Financial Research agent、50 多个基础技能、许可市场数据连接器、置信度、方法说明、数据快照和引用，方便分析师追踪一份报告是怎样得出的。\n\n这些组件解决的是“模型知道什么”之外的工程问题。领域技能告诉代理一项任务该按什么步骤做，连接器决定能读哪些数据，权限系统决定哪些资料不能越过边界，治理控制面负责审计、VPC（隔离的云网络）、密钥和输出留痕。缺少其中一层，代理可能会写出听起来合理的合同摘要，却无法证明引用来自正确版本、没有越过客户隔离或适用当前规则。\n\nGoogle 还列出 Cleary、Freshfields、Weil、Williams & Connolly 等法律客户，以及金融机构采用 Gemini Enterprise 的案例。这些是发布方提供的早期采用信息，不是独立的生产效果研究。法律和金融工作仍需要专业人员核实事实、判断利益冲突、承担责任；“有引用”也不等于引用已经解释了结论。\n\n这条新闻的重要性在于行业代理的产品边界越来越像一套受治理的工作台，而不是单一模型。后续应观察预览何时扩大、连接器如何处理撤权和数据删除、代理是否留下足够审计记录，以及客户在真实案件中如何保留人工复核。8 月 25 日能确认的是产品发布和功能范围，不能把营销描述写成法律意见或投资建议已经自动化完成。",
+    "eventDate": "2026-08-25",
+    "publishedAt": "2026-08-25",
+    "hero": {
+      "url": "/images/news/google-gemini-enterprise-legal-finance-20260825.svg",
+      "alt": "技能、MCP 连接器、行业代理和治理控制面进入法律与金融工作流",
+      "sourceUrl": "/images/news/google-gemini-enterprise-legal-finance-20260825.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "两个行业方案为何同日发布",
+        "body": "Google Cloud 发布 Legal 和 Financial Services 两个行业包；法律版先以预览提供，金融版可用范围按官方公告和客户资格为准。",
+        "kind": "narrative"
+      },
+      {
+        "id": "components",
+        "title": "代理产品不只是一层模型",
+        "body": "技能决定任务步骤，MCP 连接器决定数据入口，代理执行工作流，治理控制面负责权限、审计、隔离和引用。",
+        "kind": "technical"
+      },
+      {
+        "id": "legal",
+        "title": "法律工作流的边界",
+        "body": "合同、尽调、监管追踪和 DSAR 可以被自动化协助，但 ethical walls、原始法律权威和律师复核仍是必要约束。",
+        "kind": "boundary"
+      },
+      {
+        "id": "finance",
+        "title": "金融研究怎样留下证据",
+        "body": "Financial Research agent 的置信度、方法说明、数据快照和引用让分析师能回看过程；客户案例和产品承诺仍不是独立效果验证。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个行业代理怎样在权限内完成任务",
+      "question": "沿着技能、连接器、权限、执行和人工复核移动，读者可以看出“能调用工具”和“能替人负责”之间的距离。",
+      "steps": [
+        {
+          "label": "选择技能",
+          "detail": "法律或金融技能包把通用模型变成有步骤和格式约束的任务。",
+          "evidence": "Google Cloud 产品说明。"
+        },
+        {
+          "label": "连接数据",
+          "detail": "MCP 连接器读取经过许可的文档、市场数据和业务系统。",
+          "evidence": "Google Cloud Legal/Financial Services。"
+        },
+        {
+          "label": "受权限控制",
+          "detail": "现有权限、ethical walls、VPC 和客户隔离限制代理能看到什么。",
+          "evidence": "产品治理控制面。"
+        },
+        {
+          "label": "生成并复核",
+          "detail": "代理产出报告、草稿和引用，专业人员检查事实、冲突和责任后再使用。",
+          "evidence": "预览产品不等于自动法律/投资判断。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Cloud Blog",
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-gemini-enterprise-for-financial-services"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "mcp",
+      "authorization",
+      "data-lineage",
+      "citation",
+      "context",
+      "api"
+    ],
+    "relatedArticleSlugs": [
+      "google-ai-mode-travel-booking-20260827"
+    ],
+    "sources": [
+      {
+        "url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-gemini-enterprise-for-financial-services",
+        "claim": "Google Cloud 发布金融服务方案，描述技能、MCP 连接器、Financial Research agent、引用和治理控制面。",
+        "excerpt": "Gemini Enterprise for Financial Services delivers an integrated, secure environment configured for rapid deployment with four core components."
+      },
+      {
+        "url": "https://www.googlecloudpresscorner.com/2026-08-25-Google-Cloud-Launches-Gemini-Enterprise-for-Legal",
+        "claim": "Google Cloud Press Corner 发布法律方案，说明预览状态、法律系统连接器、ethical walls 和法律工作流。",
+        "excerpt": "Initially available in preview for the legal industry, Gemini Enterprise for Legal debuts with launch customers."
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-gemini-enterprise-for-financial-services",
+        "claim": "金融方案明确客户数据不用于训练基础模型，并把预览与后续行业方案区分开。",
+        "excerpt": "This launch builds on the rapidly growing momentum of Gemini Enterprise; solutions for Healthcare, Life Sciences, and other Professional Services are on the horizon."
+      }
+    ],
+    "isExample": false,
+    "canonicalUrl": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-gemini-enterprise-for-financial-services",
+    "sourceHash": "sha256:17ab50e6f63948278ae9ae52076a9616d7a209684c9727a96f03e69b497753ad"
+  },
+  {
+    "slug": "stability-ai-series-b-20260825",
+    "title": "Stability AI 完成 7600 万美元 B 轮：娱乐公司与 AMD 进入投资者名单",
+    "summary": "Stability AI 于 2026 年 8 月 25 日宣布完成 7600 万美元 B 轮融资，累计融资达到 2.32 亿美元；新投资者包括 Electronic Arts、Sony Music、Universal Music、Warner Music、AMD Ventures 等。公司称资金将用于创意生产产品、应用研究和专业服务，并强调 Stable Audio 3.0 使用完全授权数据训练；融资规模和公司路线仍不等于模型质量、盈利或版权争议已经解决。",
+    "body": "Stability AI 在 2026 年 8 月 25 日宣布完成 7600 万美元 Series B，新一轮让公司累计融资达到 2.32 亿美元。投资者名单很特别：Electronic Arts、Sony Music Group、Universal Music Group、Warner Music Group 与 AMD Ventures 等娱乐和技术机构同时进入。TechCrunch 把它看成内容授权和分发关系的一部分，而不是一轮只由传统风投构成的融资。\n\nStability 说，这笔钱会用于创意生产产品、应用研究和专业服务，并继续围绕音乐、游戏和娱乐制作工具。公告还把 Stable Audio 3.0 作为近期产品节点，称其使用完全授权的数据训练，并提供 DAW（数字音频工作站）插件和网页入口。这里要分开看三件事：融资是资本事件，授权数据是某个产品或模型的训练口径，产品收入和用户效果则需要另外的运营证据。\n\n为什么版权和投资会在同一条新闻里出现？生成式音频、图像和视频工具依赖创作者作品、许可范围和分发渠道；内容权利人既可能担心未经授权训练，也可能希望通过投资和合作影响产品设计。投资并不自动意味着所有训练数据都获授权，公司的“fully licensed”表述也需要按产品、数据集和地域逐条核对。\n\nTechCrunch 还提到 Stability 在英国 Getty Images 诉讼中大体胜诉，但美国类似诉讼仍在进行。融资公告和诉讼结果不能互相替代：一个说明公司得到资金与战略伙伴，一个说明某个司法辖区的特定案件走到某个程序节点。Stable Diffusion 的历史版权争议也不能被一句“投资者加入”抹平。\n\n8 月 25 日可以确认的是一轮融资、投资人组成和公司计划。它没有证明 Stability 已经拥有更强的模型、稳定盈利或普遍适用的授权链。后续要看资金如何转成产品、训练数据如何披露、艺术家和权利人如何参与，以及不同司法辖区的案件如何继续。",
+    "eventDate": "2026-08-25",
+    "publishedAt": "2026-08-25",
+    "hero": {
+      "url": "/images/news/stability-ai-series-b-20260825.svg",
+      "alt": "娱乐公司和技术投资者围绕授权数据与生成式创作工具形成的融资关系",
+      "sourceUrl": "/images/news/stability-ai-series-b-20260825.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "funding",
+        "title": "7600 万美元融资确认了什么",
+        "body": "Stability AI 宣布 Series B，累计融资 2.32 亿美元，投资者包括 EA、Sony、Universal、Warner 和 AMD Ventures；这是资本与战略合作事实。",
+        "kind": "narrative"
+      },
+      {
+        "id": "products",
+        "title": "资金要投向哪些工作",
+        "body": "公司称资金用于创意生产、应用研究和专业服务，并把 Stable Audio 3.0、DAW 插件和网页产品放在路线中。",
+        "kind": "technical"
+      },
+      {
+        "id": "rights",
+        "title": "投资、授权和版权判决不是同一件事",
+        "body": "战略投资可能带来合作和许可渠道，但不能自动证明所有训练数据有许可；融资也不替代具体诉讼中的司法认定。",
+        "kind": "boundary"
+      },
+      {
+        "id": "follow-up",
+        "title": "后续应追踪什么",
+        "body": "产品收入、训练数据披露、艺术家参与、授权地域和不同司法辖区案件，才是判断路线是否成立的证据。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "一轮创作 AI 融资怎样连接到作品权利",
+      "question": "沿着资金、产品、训练数据和授权四个节点读，避免把投资人名单当成版权许可证明。",
+      "steps": [
+        {
+          "label": "资本进入",
+          "detail": "Series B 提供资金，投资者也可能带来内容行业关系和分发资源。",
+          "evidence": "Stability AI 官方公告。"
+        },
+        {
+          "label": "产品路线",
+          "detail": "公司把 Stable Audio、图像、视频和专业服务放入创意生产产品套件。",
+          "evidence": "官方公告/TechCrunch。"
+        },
+        {
+          "label": "数据与授权",
+          "detail": "某个模型声称使用授权数据，需要检查具体模型、数据来源和地域范围。",
+          "evidence": "融资新闻不提供完整数据清单。"
+        },
+        {
+          "label": "司法与运营",
+          "detail": "诉讼、收入、用户采用和艺术家反馈分别验证法律与商业结果。",
+          "evidence": "后续证据仍待观察。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Stability AI",
+      "url": "https://stability.ai/news-updates/stability-ai-latest-funding-backed-by-entertainment-industry-biggest-names"
+    },
+    "relatedSlugs": [
+      "dataset-data",
+      "data-lineage",
+      "authorization",
+      "data-quality",
+      "llm",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://stability.ai/news-updates/stability-ai-latest-funding-backed-by-entertainment-industry-biggest-names",
+        "claim": "Stability AI 宣布 7600 万美元 Series B、累计融资 2.32 亿美元和投资人名单，并说明资金用途。",
+        "excerpt": "Stability AI today announced a Series B fundraise of $76M in new capital."
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/25/stability-ai-maker-of-image-generator-stable-diffusion-raises-76-million-in-fresh-funding/",
+        "claim": "TechCrunch 交叉报道融资、娱乐行业投资人、Stable Diffusion 产品线和诉讼背景。",
+        "excerpt": "Stability AI, the startup behind AI image generation model Stable Diffusion, has raised $76 million in Series B funding."
+      },
+      {
+        "url": "https://stability.ai/news-updates/stability-ai-latest-funding-backed-by-entertainment-industry-biggest-names",
+        "claim": "官方公告称 Stable Audio 3.0 使用完全授权数据，并提供 DAW 插件。",
+        "excerpt": "Stable Audio 3.0, a family of open-weight music models trained on fully licensed data."
+      }
+    ],
+    "isExample": false,
+    "canonicalUrl": "https://stability.ai/news-updates/stability-ai-latest-funding-backed-by-entertainment-industry-biggest-names",
+    "sourceHash": "sha256:7169b395d2c20c0554c1fb182bce6305577f0b6ea559057d47081b85c87f569b"
+  },
+  {
+    "slug": "claude-memory-cowork-20260825",
+    "title": "Claude 把记忆接到 Cowork：可编辑、敏感主题默认不保存是新权限层",
+    "summary": "Anthropic 于 2026 年 8 月 25 日把 Claude 聊天记忆与 Claude Cowork 共享：记忆按 Topic 列出，可查看、编辑、删除、暂停或重置；健康、政治、宗教等敏感主题默认不保存，Free/Pro/Max 默认开启而 Team/Enterprise 默认关闭。它减少重复交代，但也把记忆准确性、撤权和跨工作空间边界带进代理工作流。",
+    "body": "8 月 25 日，Anthropic 宣布 Claude 的记忆在聊天和 Cowork 之间共享。用户在聊天里说明项目截止日期、团队的指标定义或会议安排，之后把任务交给云端运行的 Cowork，系统可以继续使用这些信息；Cowork 产生的新记忆也会带回聊天。记忆不再只是某个对话窗口里的一段上下文，而是跨入口、跨任务持续存在的用户状态。\n\n产品把记忆组织成 Settings > Memory 里的 Topic 文件。用户可以逐条查看、编辑和删除，也可以暂停或重置记忆。Anthropic 说记忆会在聊天过程中实时加入，而不是等对话结束后才生成一次摘要；这让信息更及时，也意味着错误或过时的项目状态可能更快传播到下一项任务。\n\n敏感主题设置是这次更新的另一半。健康、种族、宗教、政治、性别身份等主题默认不保存；用户可以主动打开“include sensitive topics in memory”，之后每次保存都会有提示，而且开启前的旧对话不会追溯写入。Release notes 还说明，Free、Pro、Max 默认开启记忆，Team 和 Enterprise 默认关闭。默认值和通知都属于权限设计，不是对数据风险的彻底消除。\n\n跨产品记忆解决了“每次都要重新介绍”的摩擦，却带来三类需要管理的问题。第一，记忆可能过时，模型需要知道什么时候重新询问；第二，聊天和 Cowork 的任务边界不同，用户要明确哪些信息可以带入云端执行；第三，删除一条 Topic 后，已经生成的文件、邮件草稿或外部动作不会自动被撤销。记忆是输入控制，不是历史操作回滚。\n\n因此，8 月 25 日的新闻重点是持久上下文开始成为 Cowork 的产品权限。读者要观察企业管理员的默认策略、审计和导出能力，个人用户要知道如何检查、修改和关闭记忆。它让代理更连贯，也要求用户更认真地管理“哪些事实允许下一次任务继续使用”。",
+    "eventDate": "2026-08-25",
+    "publishedAt": "2026-08-25",
+    "hero": {
+      "url": "/images/news/claude-memory-cowork-20260825.svg",
+      "alt": "Claude 聊天与 Cowork 共享可编辑 Topic 记忆，并经过敏感主题权限开关",
+      "sourceUrl": "/images/news/claude-memory-cowork-20260825.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "这次共享记忆改变了什么",
+        "body": "聊天和 Cowork 使用同一组 Topic 记忆，云端任务可以接续对话里的项目背景；记忆不再只属于一个窗口。",
+        "kind": "narrative"
+      },
+      {
+        "id": "control",
+        "title": "用户能做哪些控制",
+        "body": "Topic 记忆可以查看、编辑、删除、暂停或重置；敏感主题默认不保存，企业计划默认关闭。",
+        "kind": "technical"
+      },
+      {
+        "id": "risk",
+        "title": "记忆不是撤销按钮",
+        "body": "删除记忆不会自动撤回已经生成的文件、草稿或外部动作；过时信息也可能被带入下一项任务。",
+        "kind": "boundary"
+      },
+      {
+        "id": "policy",
+        "title": "默认值代表什么",
+        "body": "Free/Pro/Max 与 Team/Enterprise 的默认设置不同，企业仍需配置权限、审计和数据边界。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "secure-memory",
+      "title": "一条记忆如何进入下一项代理任务",
+      "question": "沿着保存、检查、授权、调用和外部结果移动，读者能看到记忆提供便利的同时增加了什么控制点。",
+      "steps": [
+        {
+          "label": "聊天产生 Topic",
+          "detail": "用户在对话里说明项目、偏好或时间变化，系统把它写成可查看的 Topic。",
+          "evidence": "Claude 官方产品说明。"
+        },
+        {
+          "label": "用户检查",
+          "detail": "用户在 Memory 设置里阅读、修改、删除或暂停记忆。",
+          "evidence": "官方记忆控制。"
+        },
+        {
+          "label": "Cowork 调用",
+          "detail": "云端任务读取同一组记忆，减少重新交代，但仍应检查是否适合当前任务。",
+          "evidence": "Claude Cowork 产品说明。"
+        },
+        {
+          "label": "动作留下结果",
+          "detail": "文件、草稿或其他外部结果不会因删除记忆自动回滚。",
+          "evidence": "记忆是输入控制，不是操作撤销。"
+        }
+      ]
+    },
+    "source": {
+      "name": "Claude by Anthropic",
+      "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it"
+    },
+    "relatedSlugs": [
+      "memory",
+      "context",
+      "authorization",
+      "session",
+      "agent",
+      "data-quality",
+      "execution-sandbox"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+        "claim": "Anthropic 说明 Claude chat 与 Cowork 共享记忆，用户可查看、编辑和删除 Topic。",
+        "excerpt": "Starting today, the memory you use in chat is the same as in Claude Cowork."
+      },
+      {
+        "url": "https://support.claude.com/en/articles/12138966-release-notes",
+        "claim": "Claude Release Notes 记录 8 月 25 日记忆跨 chat/Cowork、敏感主题设置和不同计划默认值。",
+        "excerpt": "Memory now works across chat and Cowork in the cloud; Free, Pro, and Max default on, Team and Enterprise default off."
+      },
+      {
+        "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+        "claim": "官方说明敏感主题默认不保存，用户打开设置后才会继续保存并收到提示。",
+        "excerpt": "By default, Claude does not store topics related to personal or sensitive subject matter."
+      }
+    ],
+    "isExample": false,
+    "canonicalUrl": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+    "sourceHash": "sha256:febbad0065e06d5efda102c45b9e7e5b35541c955f5c72abc3efb4522ca30c3d"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
