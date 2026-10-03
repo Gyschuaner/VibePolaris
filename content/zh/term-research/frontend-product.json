@@ -667,8 +667,8 @@
     "slug": "cd",
     "mechanism": "持续交付把通过验证的不可变制品依次提升到环境，使用门禁和审批控制生产发布，并保留同一版本的追踪记录。",
     "misconception": "CD 既可能指 Delivery 也可能指 Deployment；自动完成发布准备不一定代表无需审批自动上生产。",
-    "demoSignature": "建议 5 帧：build 只生成一次 artifact #42 和校验指纹；用户批准后同一盒产物沿 dev、staging、production 移动；在生产前点击“重新构建”，新指纹与已测版本不一致，发布闸门阻止替换。",
-    "sourceUrls": ["https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions"],
+    "demoSignature": "cd-board: 3 steps; actors=commit F5/build/artifact #42/sha256:a9…/staging/production/reviewer; phases=只构建一次并固定制品→同一 artifact 进入 staging 且检查通过→production job 等待审批，批准后仍部署 #42; boundary=重新构建会产生另一份需重新验证的制品，delivery 保留闸门而 deployment 可自动放行; action=部署 staging/批准生产",
+    "sourceUrls": ["https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts", "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments", "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments", "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments"],
     "rewriteRisk": "high",
     "nearDuplicates": ["ci", "deploy", "rollback"]
   },

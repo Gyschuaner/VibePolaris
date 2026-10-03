@@ -1221,7 +1221,7 @@
     "definition": "持续交付把构建、测试、制品生成和环境部署编入可重复流水线，通常保留正式生产发布的审批或触发步骤。",
     "boundary": "持续交付不一定等于持续部署；是否自动进入生产取决于团队规则和风险要求。",
     "demoType": "flow", "demoTitle": "同一制品经过三个环境",
-    "demoSteps": [{"label":"构建一次","value":"生成带版本号的不可变制品","note":"测试和发布使用同一文件。"},{"label":"部署测试环境","value":"运行集成与验收检查","note":"失败时停止向后推进。"},{"label":"批准生产发布","value":"把已验证制品部署生产","note":"不在此阶段重新构建。"}],
+    "demoSteps": [{"label":"构建一次","value":"artifact #42 · sha256:a9…","note":"提交 F5 只构建一次，测试和发布都引用这份制品。"},{"label":"经过 staging","value":"#42 · checks pass","note":"同一 artifact 进入 staging，不在环境之间重新打包。"},{"label":"批准生产","value":"production · deployed #42","note":"required reviewer 放行后继续；重新构建会变成需要重新验证的新版本。"}],
     "quizQuestion": "持续交付与持续部署的常见区别是什么？", "quizOptions": ["生产发布是否仍保留人工或显式批准", "是否使用 Git", "代码是否包含 CSS"],
     "correctText": "持续交付保证随时可发布，生产触发可以保留控制。", "wrongText": "Git 和 CSS 不是两者的定义差异。",
     "promptTitle": "检查交付流水线的制品一致性", "prompt": "请审查下面从构建到生产的流程，确认各环境使用同一版本制品，补充审批、失败停止、回滚入口和部署记录。",
