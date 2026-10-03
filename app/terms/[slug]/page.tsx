@@ -25,7 +25,7 @@ import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
 import { ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
 import { MemoryTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
 import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
-import { EmbeddingTermPage, SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
+import { SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
 import { HybridSearchTermPage, VectorStoreTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
 import { RetrievalTermPage, ChunkingTermPage, RerankingTermPage } from "@/components/terms/SelectionConceptPages";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
@@ -57,7 +57,7 @@ import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/com
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
-import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage } from '@/components/terms/AiStackConceptPages';
+import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage } from '@/components/terms/AiStackConceptPages';
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -96,6 +96,7 @@ const articleTermPages = {
   'agent-memory': AgentMemoryTermPage,
   'working-memory': WorkingMemoryTermPage,
   'execution-sandbox': ExecutionSandboxTermPage,
+  'embedding': EmbeddingTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
@@ -123,7 +124,6 @@ const articleTermPages = {
   retrieval: RetrievalTermPage,
   chunking: ChunkingTermPage,
   reranking: RerankingTermPage,
-  embedding: EmbeddingTermPage,
   "semantic-search": SemanticSearchTermPage,
   rag: RagConceptTermPage,
   dataframe: FrameTermPage,
