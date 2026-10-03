@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -217,6 +217,36 @@ export function SafetyEvaluationTermPage() {
       <p id="safety-boundary-detail" className="vp-citation-target">HELM 用多个场景和维度报告模型表现，也提醒评测覆盖不可能穷尽所有输入。<strong>安全评测能说明这套题集和环境里观察到的行为，不能证明未来每一种攻击都会被挡住。</strong>应用权限、工具实现、部署配置和新出现的攻击面仍需独立检查。<Cite id="safety-boundary-detail"/></p>
       <p>如果题集只测直接提示，没有测资料中的间接指令；只看文本，没有读工具日志；只在沙箱里测，却没有核对生产权限，结论都应缩小范围。保留版本、案例类别、环境和未覆盖项，下一轮才能知道是扩大了覆盖，还是只是换了说法。</p>
       <ArticleAside title="读到“安全通过”时再问三句"><p>通过的是哪类风险？观察到的是回答还是实际动作？哪些工具、权限和环境没有进入这次评测？三句都能回答，结论才有明确边界。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function CostEvaluationTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={costEvaluationSources}/>;
+  return <ConceptArticle slug="cost-evaluation" title="成本评测" subtitle="Cost Evaluation · 比较一次任务的真实消耗是否值得" sources={costEvaluationSources}
+    sections={[['cost-definition', '价格不是任务成本'], ['cost-measure', '把一次任务的消耗拆开'], ['cost-budget', '质量和预算一起设门槛'], ['cost-boundary', '数字只在条件一致时可比']]}
+    intro={<>成本评测不是把价格表上的单价抄进表格，而是在同一组任务上记录令牌、工具、重试和缓存等消耗，再与质量和等待时间一起判断。更便宜的方案如果经常失败或重试，未必真的省钱。</>}
+    hero={<ConceptHero slug="cost-evaluation" label="同一组任务上比较质量与任务成本：通过数增加不自动等于更划算"><div className={s.costHero}><div className={s.costHeroHeader}><span>support-v1 · 20 条任务</span><span>预算 <strong>¥1.00 / 任务</strong></span></div><div className={s.costHeroCompare}><div><span>方案 A</span><strong>17/20 · ¥0.42</strong><small>一次工具调用</small></div><b aria-hidden="true">→</b><div data-expensive="true"><span>方案 B</span><strong>18/20 · ¥1.16</strong><small>含一次重试</small></div></div><div className={s.costHeroGate}><span>结论</span><strong>B 超过预算，先复核</strong></div></div></ConceptHero>}>
+    <ArticleSection id="cost-definition" title="价格不是任务成本"><Legacy slug="cost-evaluation" names={['question', 'definition']}/>
+      <p id="cost-definition-detail" className="vp-citation-target"><strong>成本评测是在固定任务和质量判据下，统计一次完整任务实际消耗的资源与费用。</strong>OpenAI 的成本优化文档把令牌、模型选择、缓存和请求策略放进成本判断；所以“每百万令牌多少钱”只是输入，不是一次任务的结论。<Cite id="cost-definition-detail"/></p>
+      <p id="cost-record-detail" className="vp-citation-target">一次任务可能包含多轮模型调用、工具调用、失败重试和不同长度的输入输出。<strong>要比较方案，至少要保留题集版本、通过结果、输入输出令牌、工具次数、重试和计费条件。</strong>只看一次成功请求，会把失败成本和补救动作藏起来。<Cite id="cost-record-detail"/></p>
+      <div className={s.costChecklist}><div><span>质量</span><strong>通过多少题</strong><p>先确认比较的是同一组任务。</p></div><div><span>消耗</span><strong>令牌、工具、重试</strong><p>把完整任务的资源算进去。</p></div><div><span>费用</span><strong>每任务实际成本</strong><p>注明缓存、批量和计费条件。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="cost-measure" title="把一次任务的消耗拆开"><Legacy slug="cost-evaluation" names={['scene-heading']}/>
+      <p id="cost-measure-detail" className="vp-citation-target">OpenAI 的评测文档把题集、运行、评分和结果记录放在一起；Anthropic 的智能体评测实践也强调回看完整轨迹。<strong>成本要跟着同一条任务轨迹统计，才能知道钱花在模型输出、工具等待，还是失败后的重试。</strong><Cite id="cost-measure-detail"/></p>
+      <p>下面使用两套虚构运行摘要，不调用模型或读取真实账单。A 通过 17/20、成本 ¥0.42；B 通过 18/20，成本和条件随选择变化。先看统一条件下的质量与成本，再看预算超限和缓存变化，不把三个结论混在一张表里。</p>
+      <CostEvaluationLesson/>
+      <p>如果 B 多通过一题但多消耗一倍以上，是否值得取决于这题的业务价值、延迟和风险。成本评测提供可核对的取舍证据，不替产品自动决定所有预算。</p>
+    </ArticleSection>
+    <ArticleSection id="cost-budget" title="质量和预算一起设门槛" className={base.offset}><Legacy slug="cost-evaluation" names={['quiz-heading']}/>
+      <p id="cost-budget-detail" className="vp-citation-target">智能体评测的成功标准应能反映任务目标和失败代价；成本门槛也要和质量门槛一起声明。<strong>“低于预算”不能覆盖关键任务失败，“通过更多”也不能覆盖不可接受的成本。</strong><Cite id="cost-budget-detail"/></p>
+      <p>例如先规定关键任务必须通过，再要求单任务成本不超过 ¥1.00；超过时进入复核，查看是否由重试、工具调用或异常长输出造成。预算不是越低越好，应该说明它服务的场景、可接受的质量下限和超限后的动作。</p>
+      <ArticleAside title="一张成本评测表要回答什么"><p>同一任务上两套方案各通过多少？每套用了多少输入输出令牌、工具和重试？是否命中缓存？延迟和失败率怎样？超过预算时是降级、限流、重试，还是交给人工？</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="cost-boundary" title="数字只在条件一致时可比"><Legacy slug="cost-evaluation" names={['prompt-heading']}/>
+      <p id="cost-boundary-detail" className="vp-citation-target">OpenAI Batch API 以异步批量处理换取不同的吞吐和价格条件；这类执行方式与在线请求的等待、并发和失败处理不同。<strong>换了缓存命中、批量方式、题集或重试策略，成本数字就不能直接排成同一条排名。</strong><Cite id="cost-boundary-detail"/></p>
+      <p>发现条件变化时，先统一口径或把两次结果分组报告。把一次缓存命中的低价外推到所有流量，会低估冷启动成本；把评测题集的平均成本外推到长对话，也会漏掉输出长度和工具路径的差异。每个数字旁都保留适用条件。</p>
+      <ArticleAside title="看到更便宜时再问三句"><p>这是不是同一组任务？计费和缓存条件是否一样？失败、重试和工具费用有没有算全？三句有一个答不上来，就先把它当作不同条件下的两个记录。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

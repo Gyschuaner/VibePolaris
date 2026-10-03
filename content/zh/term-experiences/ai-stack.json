@@ -17498,8 +17498,8 @@
     "definition": "成本评测在统一任务下统计令牌、调用、工具、重试和单任务费用，并与质量和延迟一起判断取舍。",
     "boundary": "价格表或一次调用的单价不能代表完整任务成本。",
     "sceneKind": "compare",
-    "sceneTitle": "质量与资源消耗同时摆在桌面上",
-    "actionLabel": "切换模型",
+    "sceneTitle": "固定任务后切换成本条件",
+    "actionLabel": "切换成本条件",
     "actors": [
       {
         "id": "tasks",
@@ -17552,38 +17552,20 @@
     ],
     "frames": [
       {
-        "label": "统一口径",
-        "note": "锁定题集、版本和计费项。",
+        "label": "统一条件，预算内",
+        "note": "同一题集下 A 为 ¥0.42，B 为 ¥0.86，两者都低于 ¥1.00。",
         "activeIds": [
-          "tasks"
-        ],
-        "doneIds": [],
-        "mutedIds": [
+          "tasks",
           "model-a",
           "model-b",
           "budget"
         ],
-        "values": {
-          "tasks": "20题"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "比较结果",
-        "note": "A和B同时显示通过数、令牌、重试和成本。",
-        "activeIds": [
-          "model-a",
-          "model-b"
-        ],
-        "doneIds": [
-          "tasks"
-        ],
-        "mutedIds": [
-          "budget"
-        ],
+        "doneIds": [],
+        "mutedIds": [],
         "values": {
           "model-a": "17/20 · ¥0.42",
-          "model-b": "18/20 · ¥1.16"
+          "model-b": "18/20 · ¥0.86",
+          "budget": "可比较"
         },
         "activeEdgeIds": [
           "t-a",
@@ -17591,39 +17573,40 @@
         ]
       },
       {
-        "label": "触发预算",
-        "note": "B质量略高但超过单任务预算，进入复核。",
+        "label": "预算超限",
+        "note": "B 变为 ¥1.16，超过单任务门槛，先复核重试和质量收益。",
         "activeIds": [
+          "model-b",
           "budget"
         ],
         "doneIds": [
           "tasks",
-          "model-a",
-          "model-b"
+          "model-a"
         ],
         "mutedIds": [],
         "values": {
-          "budget": "B 超限"
+          "model-b": "18/20 · ¥1.16",
+          "budget": "转复核"
         },
         "activeEdgeIds": [
           "b-g"
         ]
       },
       {
-        "label": "改变条件",
-        "note": "缓存命中或重试变化后，成本表必须重新记录。",
+        "label": "计费条件变化",
+        "note": "B 命中缓存后为 ¥0.82，先统一条件再比较。",
         "activeIds": [
+          "model-b",
           "budget"
         ],
         "doneIds": [
-          "tasks"
+          "tasks",
+          "model-a"
         ],
-        "mutedIds": [
-          "model-a",
-          "model-b"
-        ],
+        "mutedIds": [],
         "values": {
-          "budget": "条件改变"
+          "model-b": "缓存命中 · ¥0.82",
+          "budget": "暂不直比"
         },
         "activeEdgeIds": []
       }

@@ -211,3 +211,56 @@ export function SafetyEvaluationLesson() {
     <button className={base.reset} onClick={() => { setMode('normal'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置风险案例</button>
   </div>;
 }
+
+type CostMode = 'within' | 'over' | 'changed';
+
+const costCases: Record<CostMode, { label: string; modelB: string; input: string; output: string; tools: string; retries: string; condition: string; title: string; body: string }> = {
+  within: {
+    label: '统一条件，预算内',
+    modelB: '18/20 · ¥0.86',
+    input: '10k tokens',
+    output: '3k tokens',
+    tools: '2 次',
+    retries: '0 次',
+    condition: '同一题集 · 未命中缓存',
+    title: '两套方案都在预算内，可以比较质量',
+    body: 'B 多通过一题但更贵；下一步还要结合延迟、重试和真实业务价值，不能把较高通过数直接等同于更划算。',
+  },
+  over: {
+    label: '预算超限',
+    modelB: '18/20 · ¥1.16',
+    input: '10k tokens',
+    output: '3k tokens',
+    tools: '2 次',
+    retries: '1 次',
+    condition: '同一题集 · 含一次重试',
+    title: '单任务成本超过门槛，转入复核',
+    body: 'B 的质量略高，但 ¥1.16 超过 ¥1.00 的单任务预算；先查重试、工具调用和质量收益，再决定是否接受或调整方案。',
+  },
+  changed: {
+    label: '计费条件变化',
+    modelB: '18/20 · ¥0.82',
+    input: '10k tokens',
+    output: '3k tokens',
+    tools: '2 次',
+    retries: '0 次',
+    condition: 'B 命中缓存 · A 未命中',
+    title: '条件变化，暂不直接比较成本',
+    body: '缓存命中改变了实际计费和消耗。先统一缓存状态或单独报告条件差异，再解释 ¥0.82 与 ¥0.42 的差距。',
+  },
+};
+
+export function CostEvaluationLesson() {
+  const [mode, setMode] = useState<CostMode>('within');
+  const [checkedMode, setCheckedMode] = useState<CostMode | null>(null);
+  const current = costCases[mode];
+  const report = checkedMode ? costCases[checkedMode] : current;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：把质量和任务成本放在一起比较">
+    <div className={s.controls}><label>成本条件<select value={mode} onChange={e => { setMode(e.target.value as CostMode); setCheckedMode(null); }}><option value="within">统一条件，预算内</option><option value="over">预算超限</option><option value="changed">计费条件变化</option></select></label><p className={s.runHint}>先固定题集和计费口径，再把质量、消耗和预算一起看。</p></div>
+    <div className={s.costSummary} aria-label="两套方案摘要"><article><span>方案 A · agent-A</span><strong>17/20 · ¥0.42</strong><small>8k 输入 · 2k 输出 · 工具 1 次</small></article><article data-over={mode === 'over'}><span>方案 B · agent-B</span><strong>{current.modelB}</strong><small>{current.input} · {current.output} · 工具 {current.tools}</small></article></div>
+    <div className={s.costLedger} aria-label="候选方案的消耗记录"><div><span>重试</span><strong>{current.retries}</strong></div><div><span>条件</span><strong>{current.condition}</strong></div><div><span>预算</span><strong>¥1.00 / 任务</strong></div></div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>核对成本条件<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.costResult} role="status"><header><h3>{report.title}</h3><span>{report.label}</span></header><p>{report.body}</p><p className={s.runEvidence}>检查记录：A ¥0.42；B {report.modelB}；{report.condition}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('within'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置成本条件</button>
+  </div>;
+}

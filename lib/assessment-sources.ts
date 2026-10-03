@@ -41,3 +41,9 @@ export const safetyEvaluationSources = [
   source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['safety-gate-detail']),
   source('Percy Liang、Rishi Bommasani、Tony Lee 等', 'Holistic Evaluation of Language Models', 'https://arxiv.org/pdf/2211.09110', ['safety-boundary-detail'], '2023'),
 ];
+export const costEvaluationSources = [
+  source('OpenAI', 'Cost optimization', 'https://developers.openai.com/api/docs/guides/cost-optimization', ['cost-definition-detail', 'cost-record-detail']),
+  source('OpenAI', 'Working with evals', 'https://developers.openai.com/api/docs/guides/evals', ['cost-measure-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['cost-budget-detail']),
+  source('OpenAI', 'Batch API', 'https://developers.openai.com/api/docs/guides/batch', ['cost-boundary-detail']),
+];
