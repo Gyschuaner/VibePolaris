@@ -208,10 +208,12 @@
     "slug": "structured-output",
     "mechanism": "应用预先声明输出结构，模型返回的数据需满足指定字段、类型和嵌套关系，便于程序直接解析。",
     "misconception": "结构合法只证明形状正确，不证明字段值真实，也不代表业务约束全部满足。",
-    "demoSignature": "输入：要求{name:string,count:integer}，初稿为“3杯拿铁”；中间：解析失败→生成{name:'拿铁',count:3}并通过2个类型检查；输出：合法对象。可视化：文本卡片折叠成字段树，错误灯由红转绿。 建议4帧：自然语言结果出现、解析器报错、字段树自动成形、两项类型检查转绿；交互：把count改成字符串，立即查看验证反馈。",
+    "demoSignature": "输入：原始资料金额120，目标schema为amount: integer、required: amount、additionalProperties: false；中间：候选120与999通过形状，字符串\"120\"被排除，截断/拒绝/空输出走终止分支；输出：120同时通过JSON解析、字段形状和金额事实，999仅格式合规但事实不符。可视化：候选卡片经过格式闸门后进入三项检查；交互：切换schema/只要JSON/自然语言和结束情境，观察候选与检查状态。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/structured-outputs",
-      "https://json-schema.org/draft/2020-12/json-schema-core"
+      "https://developers.openai.com/api/docs/guides/structured-outputs",
+      "https://json-schema.org/understanding-json-schema/reference/object",
+      "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+      "https://arxiv.org/pdf/2307.09702"
     ],
     "rewriteRisk": "别把JSON外观当成结构化输出；要明确约束、验证结果和语义校验仍是两层。",
     "nearDuplicates": [

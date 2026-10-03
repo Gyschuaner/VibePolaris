@@ -602,22 +602,22 @@
     "definition": "结构化输出用预先定义的模式限制结果形状，使字段更稳定、可校验。",
     "boundary": "结构正确不代表字段内容真实，也不能省去业务校验。",
     "demoType": "flow",
-    "demoTitle": "无效文本变成可解析 JSON",
+    "demoTitle": "结构限制、解析和事实校验分开",
     "demoSteps": [
       {
-        "label": "首次输出",
-        "value": "{status: ok, items: \"3\"}",
-        "note": "解析器报错，items 类型也不正确。"
+        "label": "定义结构",
+        "value": "amount: integer；required；不允许额外字段",
+        "note": "原始资料给出的金额是 120，结构约束只描述形状。"
       },
       {
-        "label": "按结构修正",
-        "value": "status 为字符串，items 为整数",
-        "note": "错误计数从 2 变为 0。"
+        "label": "筛选候选",
+        "value": "120 和 999 通过格式；字符串 \"120\" 被排除",
+        "note": "schema 会限制字段与类型，但不会替应用核对事实。"
       },
       {
-        "label": "程序接收",
-        "value": "{\"status\":\"ok\",\"items\":3}",
-        "note": "结果卡片显示状态 ok、数量 3。"
+        "label": "生成后检查",
+        "value": "120：解析、字段、金额三项通过；999：金额不符",
+        "note": "截断、拒绝或空输出先判结束状态，不能悄悄补字段。"
       }
     ],
     "quizQuestion": "结构化输出主要解决什么？",
