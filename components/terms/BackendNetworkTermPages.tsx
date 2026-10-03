@@ -5,7 +5,7 @@ import { ConceptHero } from "./ConceptHero";
 import { BackendNetworkLesson, type BackendNetworkLessonSpec } from "./backend-network-lessons/BackendNetworkLesson";
 import styles from "./BackendNetworkConcepts.module.css";
 import type { Source } from "@/lib/backend-network-sources";
-import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources } from "@/lib/backend-network-sources";
+import { acidSources, apiKeySources, columnSources, nosqlSources, rbacSources, relationalDatabaseSources, rowSources, tcpSources, udpSources } from "@/lib/backend-network-sources";
 
 type Block = { id: string; text: string };
 type Section = { id: string; title: string; blocks: Block[]; lesson?: BackendNetworkLessonSpec };
@@ -483,4 +483,58 @@ const tcpSpec: PageSpec = {
 
 export function TcpTermPage() {
   return renderBackendNetworkPage(tcpSpec);
+}
+
+const udpSpec: PageSpec = {
+  slug: "udp",
+  title: "UDP",
+  subtitle: "User Datagram Protocol · 把一封封数据报交给应用",
+  intro: "实时语音、在线游戏和服务发现有时更在意及时收到最新消息，而不是为了旧消息一直等待重传。UDP 提供端口、长度和校验和，把独立数据报交给对端；是否重试、排序或去重，要由应用协议决定。",
+  hero: {
+    question: "五个数据报经过一段不稳定网络",
+    nodes: [["发送端", "1 · 2 · 3 · 4 · 5"], ["UDP", "独立数据报"], ["接收端", "1 · 4 · 3 · 5"]],
+    proof: "UDP 保留数据报边界，却不自动补丢失或排序。",
+  },
+  sections: [
+    {
+      id: "udp-datagram",
+      title: "UDP 交付的是一封封数据报",
+      blocks: [
+        { id: "udp-datagram", text: "UDP 消息包含源端口、目标端口、长度和校验和等字段。每个数据报独立发送，接收方知道这一封消息的边界；如果应用一次写入 20 个字节，接收方不会像 TCP 字节流那样把它和下一封自动拼接。" },
+        { id: "udp-checksum", text: "校验和可以发现传输中的部分错误，但发现错误不等于 UDP 会重传。数据报丢失、重复或乱序时，协议把结果交给应用；应用可以选择忽略旧帧、编号重排，或在自己的协议里请求补发。" },
+      ],
+      lesson: {
+        title: "丢包与乱序不会被 UDP 自动修复",
+        ariaLabel: "UDP 数据报在丢包和乱序网络中保持边界的演示",
+        steps: [
+          { label: "独立发送", actors: ["报 1", "报 2", "报 3", "报 4"], evidence: "每封数据报有自己的边界和目标端口，发送方不等待上一封确认。" },
+          { label: "网络抖动", actors: ["报 1", "报 4", "报 3", "报 2 · 丢失"], evidence: "到达顺序可以改变，报 2 也可能完全没有到达；UDP 不会自己补发。" },
+          { label: "应用决定", actors: ["接收队列", "序号检查", "显示最新帧"], evidence: "应用可以丢弃过时帧，或实现编号、超时和重传，责任在更高层。" },
+        ],
+        failure: { label: "把 UDP 当成更快的 TCP", text: "少了确认和重传不自动等于更快；网络拥塞、应用重试和数据大小仍会决定实际体验。" },
+      },
+    },
+    {
+      id: "udp-tradeoff",
+      title: "少做保证，换来怎样的空间",
+      blocks: [
+        { id: "udp-tradeoff", text: "UDP 不建立类似 TCP 的连接状态，也不提供通用的可靠、有序字节流，因此协议开销和等待较少，适合应用自己知道如何处理丢失或过期数据的场景。实时视频可能宁可跳过旧帧，服务发现可能允许偶尔丢一次公告。" },
+        { id: "udp-boundary", text: "RFC 的使用建议提醒应用处理最大报文、路径 MTU、拥塞和放大风险。把大消息直接塞进 UDP、没有超时或在收到请求后无限放大响应，都可能让系统在真实网络中失败或成为攻击工具。" },
+      ],
+    },
+    {
+      id: "udp-boundary",
+      title: "边界：应用协议必须补齐缺口",
+      blocks: [
+        { id: "udp-app-boundary", text: "如果订单创建必须一次且仅一次，UDP 本身没有这种语义；应用需要请求 ID、确认、重试和去重。若场景是浏览器访问 HTTPS，通常由 TCP 或基于 UDP 的其他协议承载更高层的可靠与安全机制，不能只看到“用了 UDP”就结束分析。" },
+        { id: "udp-protocol", text: "读者判断一个 UDP 方案时，应列出它怎样处理丢包、乱序、重复、拥塞和认证。只回答“UDP 更快”没有说明真正的协议设计，也无法预测网络波动时用户会看到什么。" },
+      ],
+    },
+  ],
+  sources: udpSources,
+  relatedIntro: "UDP 与 TCP 的差异在于保证集合和责任边界；继续看数据包、端口和 TLS，可以把数据报放回完整网络路径。",
+};
+
+export function UdpTermPage() {
+  return renderBackendNetworkPage(udpSpec);
 }

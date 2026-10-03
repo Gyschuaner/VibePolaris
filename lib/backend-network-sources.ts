@@ -58,3 +58,10 @@ export const tcpSources: Source[] = [
   make("IETF", "RFC 1122 · Requirements for Internet Hosts", "https://www.rfc-editor.org/rfc/rfc1122.html", ["tcp-stream", "tcp-boundary", "tcp-retry"]),
   make("IANA", "Service Name and Transport Protocol Port Number Registry", "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", ["tcp-boundary"]),
 ];
+
+export const udpSources: Source[] = [
+  make("IETF", "RFC 768 · User Datagram Protocol", "https://www.rfc-editor.org/rfc/rfc768.html", ["udp-datagram", "udp-boundary"]),
+  make("IETF", "RFC 1122 · Requirements for Internet Hosts", "https://www.rfc-editor.org/rfc/rfc1122.html", ["udp-datagram", "udp-checksum", "udp-protocol"]),
+  make("IETF", "RFC 8085 · UDP Usage Guidelines", "https://www.rfc-editor.org/rfc/rfc8085.html", ["udp-tradeoff", "udp-boundary"]),
+  make("IANA", "Service Name and Transport Protocol Port Number Registry", "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", ["udp-tradeoff"]),
+];
