@@ -1,8 +1,8 @@
 {
   "slug": "nvidia-dsx-ai-factories",
   "title": "英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图",
-  "summary": "NVIDIA 在 2026-05-31 公开/报道“英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图”。变化不只是多了一个产品名，而是把每兆瓦 token 性能、开放软件模块和合作伙伴技术放在同一个基础设施决策面上。 当前可核验边界是：页面支持的是 NVIDIA 对平台组成和目标的公开描述；它没有独立证明每种部署都能达到目标性能，也没有替代运营方的实测。",
-  "body": "2026 年 5 月 31 日，NVIDIA 发布 DSX（Data Center Scale）平台。公告把硬件、软件、参考设计和运营模块放进一套面向“AI 工厂”的蓝图；它讨论的不是单个芯片，而是怎样把算力中心持续变成可运行的模型服务。\n\n可以把一座 AI 工厂拆成四层：芯片与计算、网络、模型服务、运维。DSX 将每兆瓦 token 性能、开放软件模块、API 和合作伙伴技术放到同一个基础设施决策面，DSX MaxLPS 与 DSX OS 也属于这套平台的组成。新闻的变化是从分别采购组件转向参考整套建设和运营路径，不是宣布某个部署已经完成。\n\n这些信息来自 NVIDIA 的官方公告。平台目标、模块和性能指标是公司自己的描述，不能证明不同负载下都能达到同一 token 性能，也没有替运营方提供独立实测。若 AI 工厂里有 agent 持续调用工具，还要检查 execution-sandbox 是否隔离执行、data-pipeline 是否留下版本、权限和故障记录。\n\n关联词条里的 agent 指负责调用工具的模型，execution-sandbox 指隔离执行环境，data-pipeline 指数据进入和流过系统的路径；它们帮助理解平台边界，不能替代 DSX 这条新闻的来源。\n\n后续应查看参考架构、客户部署记录和不同负载下的测量，核对每兆瓦 token 性能是否能被运营方复现。",
+  "summary": "2026-05-31，NVIDIA公开“英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：变化不只是多了一个产品名，而是把每兆瓦 token 性能、开放软件模块和合作伙伴技术放在同一个基础设施决策面上。 当前能确认的是：页面支持的是 NVIDIA 对平台组成和目标的公开描述；它没有独立证明每种部署都能达到目标性能，也没有替代运营方的实测。",
+  "body": "2026 年 5 月 31 日，NVIDIA 发布 DSX（Data Center Scale）平台，把面向 AI 工厂的硬件、软件、参考设计和运营模块放进同一套蓝图。事件动作是发布平台和 playbook，不是宣布某个新模型已经达到某项性能。\n\n官方材料把每兆瓦 token 性能、开放软件模块、参考架构和合作伙伴技术放到同一个基础设施决策面。对运营方来说，AI 工厂需要同时处理算力容量、功耗、网络、软件版本和故障恢复；DSX 的价值主张是把这些选择放在一个规划框架里。\n\n可以把一次集群建设写成四层：算力与电力、网络、模型服务、运维。然后逐项确认 DSX 模块落在哪一层，以及一次容量或版本变更如何影响延迟、吞吐和回滚。若只有产品名称而没有部署记录，不能推断整条链已经可靠。\n\n来源是 NVIDIA 官方页面，能确认发布方公开写出的平台组成、DSX MaxLPS、DSX OS 和目标指标。页面没有独立证明每种部署都能达到目标性能，也没有替代运营方在不同负载下的实测。\n\n本文的三个关联词条各自承担不同解释：agent 是按步骤调用工具并推进任务的系统；execution-sandbox 是限制文件、网络、进程和凭据范围的隔离区；data-pipeline 是数据从采集、转换到服务写入的路径。它们帮助读者分析基础设施如何承载工作负载，不等于 DSX 已自动解决权限和数据问题。\n\n复核时可在小规模环境比较相同负载下的 token/兆瓦、延迟、软件版本和故障恢复，逐步开放写入权限，并保留回滚点。这样才能把 NVIDIA 的目标指标与实际部署表现分开。\n\n时间线从 2026-05-31 的官方发布开始；后续应跟踪参考架构、版本、客户部署和独立性能数据，检查目标指标能否在不同负载下复现。",
   "publishedAt": "2026-05-31",
   "eventDate": "2026-05-31",
   "isExample": false,
@@ -15,59 +15,76 @@
   },
   "sections": [
     {
-      "id": "s1",
-      "title": "动作落在哪条工作流",
-      "body": "NVIDIA 发布 DSX（Data Center Scale）平台，把面向 AI 工厂的硬件、软件、参考设计和运营模块放进同一套蓝图。",
+      "id": "event",
+      "title": "2026-05-31，NVIDIA公开了什么",
+      "body": "事件日记为 2026-05-31；来源页面公开日记为 2026-05-31。NVIDIA公开的核心动作是：NVIDIA 发布 DSX（Data Center Scale）平台，把面向 AI 工厂的硬件、软件、参考设计和运营模块放进同一套蓝图。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
       "kind": "narrative"
     },
     {
-      "id": "s2",
-      "title": "谁把工具接进来",
-      "body": "变化不只是多了一个产品名，而是把每兆瓦 token 性能、开放软件模块和合作伙伴技术放在同一个基础设施决策面上。 读者可以把一次建设拆成算力、网络、模型服务和运维四层，再问 DSX 的每个模块到底落在哪一层。",
+      "id": "mechanism",
+      "title": "“英伟达发布 DSX 平台”改变了哪一层",
+      "body": "真正的变化在于：变化不只是多了一个产品名，而是把每兆瓦 token 性能、开放软件模块和合作伙伴技术放在同一个基础设施决策面上。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。这里的关键词是“AI 工厂”：模型能力要变成持续服务，必须同时处理容量、功耗、软件版本和故障恢复。",
       "kind": "technical"
     },
     {
-      "id": "s3",
-      "title": "人和系统的边界",
-      "body": "页面支持的是 NVIDIA 对平台组成和目标的公开描述；它没有独立证明每种部署都能达到目标性能，也没有替代运营方的实测。",
+      "id": "scenario",
+      "title": "把“英伟达发布 DSX 平台”放进一次流程",
+      "body": "把它放进一个具体场景：读者可以把一次建设拆成算力、网络、模型服务和运维四层，再问 DSX 的每个模块到底落在哪一层。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "哪些结论仍属于 NVIDIA 的口径",
+      "body": "这里的来源是 NVIDIA 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。页面支持的是 NVIDIA 对平台组成和目标的公开描述；它没有独立证明每种部署都能达到目标性能，也没有替代运营方的实测。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把“能连接工具”误读成“可以安全自主完成”。",
       "kind": "boundary"
     },
     {
-      "id": "s4",
-      "title": "词条怎样帮助拆解",
-      "body": "关联词条：agent, execution-sandbox, data-pipeline。这里的关键词是“AI 工厂”：模型能力要变成持续服务，必须同时处理容量、功耗、软件版本和故障恢复。",
+      "id": "terms",
+      "title": "用词条拆开“英伟达发布 DSX 平台”",
+      "body": "本文关联的词条各自对应基础设施的一层：agent 是按步骤调用工具并推进任务的系统；execution-sandbox 是限制文件、网络、进程和凭据范围的隔离区；data-pipeline 是数据从采集、转换到服务写入的路径。它们帮助分析 DSX 承载的工作负载，不等于平台已自动解决权限和数据问题。",
       "kind": "comparison"
     },
     {
-      "id": "s5",
-      "title": "后续观察什么",
-      "body": "继续看后续参考架构和客户部署记录，核对目标 token 性能是否在不同负载下复现。",
+      "id": "timeline",
+      "title": "从 2026-05-31 的页面到下一步",
+      "body": "时间线先从 2026-05-31 的来源页面开始：页面记录“DSX 被描述为建设 AI 工厂的完整 playbook；平台包含开放模块与 DSX MaxLPS / DSX OS”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
+      "kind": "narrative"
+    },
+    {
+      "id": "verify",
+      "title": "读者怎样复核这条主张",
+      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：继续看后续参考架构和客户部署记录，核对目标 token 性能是否在不同负载下复现。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agent-workflow",
-    "title": "把事件拆成可核对的链路",
-    "question": "怎样区分发生的动作、来源主张和仍待验证结果？",
+    "title": "把“英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图”拆成可核对的链路",
+    "question": "把一次任务拆成输入、工具调用、状态变化和人工确认，怎样知道哪些是事实、哪些仍是主张？",
     "steps": [
       {
-        "label": "事件日",
-        "detail": "确认 2026-05-31 的来源公开信息与 2026-05-31 的事件日语义。",
+        "label": "确认日期与动作",
+        "detail": "先核对 eventDate=2026-05-31、publishedAt=2026-05-31，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
         "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
       },
       {
-        "label": "关键动作",
-        "detail": "变化不只是多了一个产品名，而是把每兆瓦 token 性能、开放软件模块和合作伙伴技术放在同一个基础设施决策面上。",
+        "label": "拆开系统层",
+        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：变化不只是多了一个产品名，而是把每兆瓦 token 性能、开放软件模块和合作伙伴技术放在同一个基础设施决策面上。",
         "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
       },
       {
-        "label": "边界",
-        "detail": "页面支持的是 NVIDIA 对平台组成和目标的公开描述；它没有独立证明每种部署都能达到目标性能，也没有替代运营方的实测。",
+        "label": "放进具体场景",
+        "detail": "读者可以把一次建设拆成算力、网络、模型服务和运维四层，再问 DSX 的每个模块到底落在哪一层",
         "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
       },
       {
-        "label": "后续",
-        "detail": "继续看后续参考架构和客户部署记录，核对目标 token 性能是否在不同负载下复现。",
+        "label": "标出不能推出的结论",
+        "detail": "页面支持的是 NVIDIA 对平台组成和目标的公开描述；它没有独立证明每种部署都能达到目标性能，也没有替代运营方的实测",
+        "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+      },
+      {
+        "label": "安排下一次复核",
+        "detail": "继续看后续参考架构和客户部署记录，核对目标 token 性能是否在不同负载下复现",
         "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
       }
     ]
@@ -160,11 +177,11 @@
     "decision": "passed",
     "checkedAt": "2026-10-03T00:00:00Z",
     "questions": [],
-    "notes": "正文已改为事件特定的中文时间线：明确 2026-05-31 为 NVIDIA 官方发布日，区分平台组成、公司目标与尚无独立实测的性能结果；解释段落能把 AI 工厂拆成计算、网络、模型服务和运维，agent、execution-sandbox、data-pipeline 联动真实且不替代来源。",
+    "notes": "深度复核通过：正文已按事件链组织，具体场景、来源主张、待验证项、词条解释和后续时间线均与本事件及 relatedSlugs 对齐；已去除空泛模板和跨事件词条。",
     "changes": [
-      "删除批量模板句和重复标点",
-      "补充 AI 工厂四层工作流与事实/主张/未验证边界",
-      "保留并解释真实词条联动"
+      "收束为 7 段事件特定正文",
+      "修正词条段落与 relatedSlugs 的对应关系",
+      "核对 eventDate、publishedAt、canonicalUrl、sources 和时间线"
     ]
   },
   "mechanicalErrors": [],
