@@ -15217,6 +15217,109 @@
     "sourceHash": "sha256:bc507beddd70fdd8ab34a8d7ac156f26ce1f8e5304e7249a142b49d9467f1935"
   },
   {
+    "slug": "nvidia-system-orchestration-beyond-gpu-20260829",
+    "title": "NVIDIA 的 AI 优势开始离开 GPU：代理式工作负载把竞争推向整套系统",
+    "summary": "TechCrunch 于 2026 年 8 月 29 日报道，NVIDIA 正把竞争重点从 GPU 扩展到 Vera CPU、网络、存储与机架级 AI 工厂；Vera 的性能数字保留 NVIDIA 与媒体口径。",
+    "body": "TechCrunch 在 2026 年 8 月 29 日报道，NVIDIA 的 AI 竞争优势正在从“GPU 最快”扩展到整套 AI 工厂的调度和数据流。报道援引 NVIDIA 对 Vera CPU 和 Vera Rubin 系统的介绍，指出当训练和推理规模进入千兆瓦级，真正难的部分不只是算力，还包括把内存、存储、网络和工具调用及时送到 GPU 或代理工作流。\n\nVera CPU 被 NVIDIA 定义为面向代理式 AI 的处理器，负责模型调用之间的编排、工具使用、代码执行、数据处理和沙箱管理；Vera Rubin 则把 Rubin GPU、Vera CPU、网络与 DPU 放进一套机架级系统。TechCrunch 采访中提到，Vera CPU 在部分数据编排操作上出现约 3 倍提升，这属于 NVIDIA 受访者给出的测量口径，并非独立基准。\n\n这条新闻的关键不是宣布一个全新 GPU，而是说明 AI 基础设施的瓶颈正在外移：模型本身只是工作流的一部分。读者在看“更快”时，应继续追问它测的是哪一层、在哪种负载下，以及系统整合是否真的降低每个 token（模型处理的文本片段）的成本。",
+    "publishedAt": "2026-08-29",
+    "eventDate": "2026-08-29",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nvidia-system-orchestration-beyond-gpu-20260829.svg",
+      "alt": "GPU、CPU、网络和存储组成一套 AI 工厂，展示 NVIDIA 从芯片到系统的路线",
+      "sourceUrl": "/images/news/nvidia-system-orchestration-beyond-gpu-20260829.svg",
+      "license": "VibePolaris 自制插图 · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "shift",
+        "title": "为什么 GPU 之外也会成为瓶颈",
+        "body": "当一个请求只运行一次矩阵计算时，GPU 可能是最明显的瓶颈；但代理会反复调用模型、读取上下文、执行工具、写入状态并等待外部系统。每一步都需要 CPU、内存、网络和存储协调。如果这些环节跟不上，GPU 会空等，增加更多 GPU 反而不能按比例提高吞吐。TechCrunch 的报道把这看成 AI 工厂从单芯片竞争转向系统竞争。",
+        "kind": "narrative"
+      },
+      {
+        "id": "vera",
+        "title": "Vera CPU 负责模型周围的工作",
+        "body": "NVIDIA 官方把 Vera 描述成代理式 AI 的 CPU，工作范围包括编排、工具调用、代码执行、强化学习、数据分析、沙箱和长上下文状态管理。它不是替代 Rubin GPU 的通用宣传，而是要把模型调用之间的控制和数据移动做得更快，让加速器持续有活可做。实际收益仍取决于工作流、内存布局和软件栈。",
+        "kind": "technical"
+      },
+      {
+        "id": "system",
+        "title": "Vera Rubin 是整套机架而非一块卡",
+        "body": "Vera Rubin NVL72 把 Rubin GPU、Vera CPU、ConnectX 网络、BlueField DPU 和 NVLink 等部件组合在一起。这样卖的是从芯片到网络和软件的一体化架构：客户购买的不只是某颗 GPU，而是可以部署、扩展和管理一整套 AI 工厂的系统。对采购者来说，一体化可能减少集成工作，也会增加对同一供应商软件和互连的依赖。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "采访数字不等于普遍性能保证",
+        "body": "TechCrunch 报道提到 NVIDIA 受访者给出的约 3 倍数据编排提升；NVIDIA 官方博客还引用 DeepInfra 的特定生产基准。它们都有明确的负载、硬件和比较对象，不能直接改写成“所有 AI 应用快 3 倍”。本文记录的是报道和官方产品口径，后续应优先查第三方测试与完整方法。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个代理请求为什么需要整座 AI 工厂配合",
+      "question": "把模型调用前后的编排、工具和数据移动画出来，就能看见 GPU 之外的性能来源。",
+      "steps": [
+        {
+          "label": "模型提出下一步",
+          "detail": "代理完成一次推理后，决定读取数据、调用工具或继续规划。",
+          "evidence": "NVIDIA 将 Vera 定位为 agentic AI CPU。"
+        },
+        {
+          "label": "CPU 编排工作",
+          "detail": "Vera 负责调度工具、代码执行、上下文和状态，把下一次请求准备好。",
+          "evidence": "官方 Vera 产品页列出 orchestration、tool use 与 sandboxing。"
+        },
+        {
+          "label": "网络与存储供数",
+          "detail": "互连、DPU、内存和存储把数据及时送到 GPU 和代理工作流。",
+          "evidence": "TechCrunch 对系统级数据移动的报道。"
+        },
+        {
+          "label": "整机继续推理",
+          "detail": "GPU 得到下一批数据，系统按同一架构扩展；真实收益仍要按负载测量。",
+          "evidence": "Vera Rubin 官方架构说明。"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2026/08/29/nvidias-ai-advantage-is-moving-beyond-the-gpu/"
+    },
+    "relatedSlugs": [
+      "agent-loop",
+      "tools",
+      "execution-sandbox",
+      "data-pipeline"
+    ],
+    "relatedArticleSlugs": [
+      "spacex-turbine-casting-ai-data-centers-20260830",
+      "nvidia-hugging-face-acquisition-20260903",
+      "caterpillar-fieldai-physical-ai-collaboration-20260902"
+    ],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2026/08/29/nvidias-ai-advantage-is-moving-beyond-the-gpu/",
+        "claim": "TechCrunch 于 2026 年 8 月 29 日报道 NVIDIA 的优势扩展到 GPU 周围的系统编排与数据流。",
+        "excerpt": "Nvidia’s advantage goes far beyond GPUs ... orchestration has become an increasingly complex task."
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/vera-rubin/",
+        "claim": "NVIDIA 官方称 Vera CPU 面向代理工作负载，并引用特定生产基准中的编排性能。",
+        "excerpt": "The benchmarks demonstrate support for up to 1.6x more concurrent AI agents ... and up to 2.2x faster orchestration."
+      },
+      {
+        "url": "https://www.nvidia.com/en-us/data-center/vera-cpu/",
+        "claim": "NVIDIA 产品页列出 Vera 处理代理式 AI 的编排、工具调用、代码执行、沙箱和数据管道。",
+        "excerpt": "Vera is built for the CPU work behind agentic AI ... code execution, tool use, sandboxing, analytics, data pipelines, and orchestration."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2026/08/29/nvidias-ai-advantage-is-moving-beyond-the-gpu",
+    "sourceHash": "sha256:6e2872e3b79daacabc91fe44a5f77add805ef7100b144ffc1bcee5ff92d29559"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
