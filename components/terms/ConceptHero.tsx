@@ -41,15 +41,15 @@ export function ConceptHero({ slug, label, children }: { slug: string; label?: s
   </figure>;
 }
 
-export function MechanismHero({ trigger, change, proof, kind = "general" }: { trigger: string; change: string; proof: string; kind?: "general" | "git" | "mobile" }) {
+export function MechanismHero({ trigger, change, proof, kind = "general", contextLabel, contextTitle }: { trigger: string; change: string; proof: string; kind?: "general" | "git" | "mobile"; contextLabel?: string; contextTitle?: string }) {
   return <ConceptHero slug="mechanism" label={`${trigger}：${change}；可观察结果：${proof}`}>
     <div className={styles.mechanismWrap}>
       <div className={styles.mechanismQuestion}><span>读者遇到的任务</span><strong>{trigger}</strong></div>
       <div className={styles.mechanismHero} data-kind={kind}>
         <div className={styles.mechanismCard}>
           {kind === "git" ? <GitBranch size={23} weight="light" /> : <FileText size={23} weight="light" />}
-          <span>先放回场景</span>
-          <strong>{kind === "git" ? "当前分支与远程" : kind === "mobile" ? "当前屏幕与任务" : "问题与必要条件"}</strong>
+          <span>{contextLabel ?? "先放回场景"}</span>
+          <strong>{contextTitle ?? (kind === "git" ? "当前分支与远程" : kind === "mobile" ? "当前屏幕与任务" : "问题与必要条件")}</strong>
         </div>
         <ArrowRight className={styles.mechanismArrow} size={22} aria-hidden="true" />
         <div className={styles.mechanismCard}>
