@@ -91,7 +91,7 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   });
   const caption = captions[mode];
   const dynamicCopy = mode === "generative-ai" ? [caption.copy[0], promptPresent ? `这次候选是“${seed === "a" ? "记得带伞" : "雨天出门带上雨具"}”；重新采样只改变候选，不改变提示。` : "提示为空，当前没有任务条件，不能把默认输出当成本次候选。", caption.copy[2]]
-    : mode === "multimodal" ? [caption.copy[0], image ? "图片和文字一起进入模型；日期来自票面像素，而不是文字问题本身。" : "缺少票面图片，模型没有视觉证据。", image ? caption.copy[2] : "先加入图片，才能判断票面日期；模型不会从缺失输入中补事实。"]
+    : mode === "multimodal" ? [caption.copy[0], image ? "图片和文字一起进入模型；日期来自票面像素，而不是文字问题本身。" : "图片还没有进入请求，模型没有视觉证据。", image ? caption.copy[2] : "先加入图片，才能判断票面日期；模型不会从缺失输入中补事实。"]
     : mode === "reasoning-model" ? [caption.copy[0], caption.copy[1], budget === "tight" ? "推理预算已耗尽；结果标记为未完成，应用需要重试或转人工。" : caption.copy[2]]
     : mode === "system-prompt" ? [caption.copy[0], rule ? caption.copy[1] : "系统规则被移除后，用户请求可能让输出混入内部指令。", rule ? caption.copy[2] : "没有更高层规则，当前结果不能证明系统提示受到保护。"]
     : mode === "few-shot-prompting" ? [caption.copy[0], examples === "good" ? caption.copy[1] : "冲突示例让同一个输入对应两个标签，模型无法稳定归纳。", examples === "good" ? caption.copy[2] : "先删掉冲突示例，再谈准确率；示例质量是方法的一部分。"]
@@ -101,7 +101,8 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
     : mode === "tool-approval" ? [caption.copy[0], caption.copy[1], `批准 ${Object.values(approved).filter(Boolean).length} 项；C 保持未执行。`]
     : [caption.copy[0], scene.step === 1 ? caption.copy[1] : salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[1], salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[2]];
 
-  const controls = <Caption scene={scene} labels={caption.labels} titles={caption.titles} copy={dynamicCopy} />;
+  const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : caption.titles;
+  const controls = <Caption scene={scene} labels={caption.labels} titles={dynamicTitles} copy={dynamicCopy} />;
   if (mode === "generative-ai") {
     const emptyPrompt = !promptPresent || scene.step === 2;
     const candidates = seed === "a" ? [{ label: "记得", score: "0.70" }, { label: "带上", score: "0.20" }, { label: "注意", score: "0.10" }] : [{ label: "雨天", score: "0.55" }, { label: "出门", score: "0.30" }, { label: "带上", score: "0.15" }];
