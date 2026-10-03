@@ -17664,8 +17664,8 @@
     "definition": "延迟评测把请求拆成首字、工具等待、完成和超时等时间点，用分位数描述长尾。",
     "boundary": "延迟不是吞吐量，也不能只看服务器平均值。",
     "sceneKind": "timeline",
-    "sceneTitle": "一次请求的首字、工具和完成时间",
-    "actionLabel": "切换时间点",
+    "sceneTitle": "切换延迟条件并核对时间分布",
+    "actionLabel": "切换延迟条件",
     "actors": [
       {
         "id": "request",
@@ -17718,79 +17718,66 @@
     ],
     "frames": [
       {
-        "label": "开始计时",
-        "note": "请求发出后记录排队和首字。",
+        "label": "正常完成",
+        "note": "首字420ms，工具1.8s返回，完成3.4s，p95 3.8s。",
         "activeIds": [
-          "request"
+          "request",
+          "first",
+          "tool",
+          "done"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "first",
-          "tool",
-          "done"
-        ],
+        "mutedIds": [],
         "values": {
-          "request": "0ms"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "先给反馈",
-        "note": "首字420ms，用户已看到响应开始。",
-        "activeIds": [
-          "first"
-        ],
-        "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
-          "tool",
-          "done"
-        ],
-        "values": {
-          "first": "420ms"
+          "first": "420ms",
+          "tool": "1.8s",
+          "done": "p95 3.8s"
         },
         "activeEdgeIds": [
-          "r-f"
+          "r-f",
+          "f-t",
+          "t-d"
         ]
       },
       {
-        "label": "等待工具",
-        "note": "工具返回1.8s，完成3.4s。",
+        "label": "发现长尾",
+        "note": "p50 1.9s 仍然正常，但 p95 4.8s 超过4s门槛。",
         "activeIds": [
-          "tool"
+          "tool",
+          "done"
         ],
         "doneIds": [
           "request",
           "first"
-        ],
-        "mutedIds": [
-          "done"
-        ],
-        "values": {
-          "tool": "1.8s"
-        },
-        "activeEdgeIds": [
-          "f-t"
-        ]
-      },
-      {
-        "label": "看长尾",
-        "note": "p50 1.9s、p95 4.8s；超时样本进入优化。",
-        "activeIds": [
-          "done"
-        ],
-        "doneIds": [
-          "request",
-          "first",
-          "tool"
         ],
         "mutedIds": [],
         "values": {
+          "tool": "1.8s",
           "done": "p95 4.8s"
         },
         "activeEdgeIds": [
+          "f-t",
           "t-d"
+        ]
+      },
+      {
+        "label": "工具超时",
+        "note": "工具5.0s没有返回，完成时间和分位数暂不汇总。",
+        "activeIds": [
+          "tool",
+          "done"
+        ],
+        "doneIds": [
+          "request",
+          "first"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "5.0s 超时",
+          "done": "未完成"
+        },
+        "activeEdgeIds": [
+          "f-t"
         ]
       }
     ],

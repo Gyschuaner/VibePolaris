@@ -1552,7 +1552,7 @@
     "slug": "latency-evaluation",
     "mechanism": "延迟评测把一次请求拆成排队、首字、工具等待和完成等时间点，并用 p50、p95 等分位数描述典型和长尾等待。",
     "misconception": "延迟不是吞吐量，也不是只看服务器平均值；网络、并发、输出长度、工具和超时策略都会改变用户实际等待。",
-    "demoSignature": "输入：请求 0ms · 首字 420ms · 工具返回 1.8s · 完成 3.4s；中间：p50 完成 1.9s · p95 完成 4.8s；输出：p95 超过 4s，进入超时/流式优化。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "demoSignature": "输入：请求 0ms · 首字 420ms · 工具等待 · 完成或超时；中间：p50 1.9s，p95 可为 3.8s 或 4.8s；输出：p95 超过 4s 进入长尾优化，工具超时单独报告。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/latency-optimization",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",

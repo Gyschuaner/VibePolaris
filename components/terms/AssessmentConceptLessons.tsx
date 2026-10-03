@@ -264,3 +264,50 @@ export function CostEvaluationLesson() {
     <button className={base.reset} onClick={() => { setMode('within'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置成本条件</button>
   </div>;
 }
+
+type LatencyMode = 'within' | 'tail' | 'timeout';
+
+const latencyCases: Record<LatencyMode, { label: string; tool: string; done: string; p50: string; p95: string; title: string; body: string }> = {
+  within: {
+    label: 'p95 在门槛内',
+    tool: '1.8s 返回',
+    done: '3.4s 完成',
+    p50: '1.9s',
+    p95: '3.8s',
+    title: '典型和长尾都在当前门槛内',
+    body: '首字 420ms 让用户先看到反馈，p95 完成时间 3.8s 低于 4s；仍需按真实流量持续观察。',
+  },
+  tail: {
+    label: 'p95 超过门槛',
+    tool: '1.8s 返回',
+    done: '3.4s 完成',
+    p50: '1.9s',
+    p95: '4.8s',
+    title: '长尾等待超过门槛，进入优化',
+    body: '多数请求完成得不慢，但最慢的一部分达到 4.8s；先定位排队、工具或输出阶段，不能只看 p50。',
+  },
+  timeout: {
+    label: '工具超时，运行不完整',
+    tool: '5.0s 超时',
+    done: '未完成',
+    p50: '未汇总',
+    p95: '未汇总',
+    title: '超时记录要单独处理',
+    body: '工具没有返回，任务也没有完成；这条记录不应被填成一个普通完成时间，先记录超时阶段和重试规则。',
+  },
+};
+
+export function LatencyEvaluationLesson() {
+  const [mode, setMode] = useState<LatencyMode>('within');
+  const [checkedMode, setCheckedMode] = useState<LatencyMode | null>(null);
+  const current = latencyCases[mode];
+  const report = checkedMode ? latencyCases[checkedMode] : current;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：检查延迟时间点和长尾门槛">
+    <div className={s.controls}><label>延迟条件<select value={mode} onChange={e => { setMode(e.target.value as LatencyMode); setCheckedMode(null); }}><option value="within">p95 在门槛内</option><option value="tail">p95 超过门槛</option><option value="timeout">工具超时</option></select></label><p className={s.runHint}>先看首字、工具和完成时间，再看 p50 与 p95；超时单独记录。</p></div>
+    <div className={s.latencyTimeline} aria-label="一次请求的时间点"><div><span>请求</span><strong>0ms</strong></div><i aria-hidden="true">→</i><div><span>首字</span><strong>420ms</strong></div><i aria-hidden="true">→</i><div><span>工具</span><strong>{current.tool}</strong></div><i aria-hidden="true">→</i><div data-timeout={mode === 'timeout'}><span>完成</span><strong>{current.done}</strong></div></div>
+    <div className={s.latencyStats} aria-label="完成时间分布"><article><span>p50 · 典型请求</span><strong>{current.p50}</strong></article><article data-over={mode === 'tail'}><span>p95 · 长尾请求</span><strong>{current.p95}</strong></article><article><span>门槛</span><strong>4s</strong></article></div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>检查延迟门槛<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.latencyResult} role="status"><header><h3>{report.title}</h3><span>{report.label}</span></header><p>{report.body}</p><p className={s.runEvidence}>检查记录：首字 420ms · 工具 {report.tool} · 完成 {report.done}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('within'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置延迟条件</button>
+  </div>;
+}

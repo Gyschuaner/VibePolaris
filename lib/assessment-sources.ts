@@ -47,3 +47,9 @@ export const costEvaluationSources = [
   source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['cost-budget-detail']),
   source('OpenAI', 'Batch API', 'https://developers.openai.com/api/docs/guides/batch', ['cost-boundary-detail']),
 ];
+export const latencyEvaluationSources = [
+  source('OpenAI', 'Latency optimization', 'https://developers.openai.com/api/docs/guides/latency-optimization', ['latency-definition-detail']),
+  source('OpenAI', 'Working with evals', 'https://developers.openai.com/api/docs/guides/evals', ['latency-record-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['latency-tail-detail']),
+  source('MLCommons', 'MLPerf Inference', 'https://mlcommons.org/benchmarks/inference-datacenter/', ['latency-boundary-detail']),
+];

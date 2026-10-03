@@ -1,8 +1,8 @@
 import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -247,6 +247,36 @@ export function CostEvaluationTermPage() {
       <p id="cost-boundary-detail" className="vp-citation-target">OpenAI Batch API 以异步批量处理换取不同的吞吐和价格条件；这类执行方式与在线请求的等待、并发和失败处理不同。<strong>换了缓存命中、批量方式、题集或重试策略，成本数字就不能直接排成同一条排名。</strong><Cite id="cost-boundary-detail"/></p>
       <p>发现条件变化时，先统一口径或把两次结果分组报告。把一次缓存命中的低价外推到所有流量，会低估冷启动成本；把评测题集的平均成本外推到长对话，也会漏掉输出长度和工具路径的差异。每个数字旁都保留适用条件。</p>
       <ArticleAside title="看到更便宜时再问三句"><p>这是不是同一组任务？计费和缓存条件是否一样？失败、重试和工具费用有没有算全？三句有一个答不上来，就先把它当作不同条件下的两个记录。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function LatencyEvaluationTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={latencyEvaluationSources}/>;
+  return <ConceptArticle slug="latency-evaluation" title="延迟评测" subtitle="Latency Evaluation · 把用户等待拆成可解释的时间点" sources={latencyEvaluationSources}
+    sections={[['latency-definition', '首字和完成是两件事'], ['latency-record', '把一次等待拆开记录'], ['latency-tail', 'p50 看典型，p95 看长尾'], ['latency-boundary', '条件变化时不要硬比']]}
+    intro={<>延迟评测记录请求从发出到看到首字、等待工具、完成或超时的时间。平均响应很快，仍可能有一部分用户一直等；把时间点和分布拆开，才知道慢在哪里。</>}
+    hero={<ConceptHero slug="latency-evaluation" label="一次请求先在 420ms 给出首字，工具返回后 3.4s 完成；p95 超过门槛时单独处理长尾"><div className={s.latencyHero}><div className={s.latencyHeroHeader}><span>首字 <strong>420ms</strong></span><span>完成 <strong>3.4s</strong></span></div><div className={s.latencyHeroTrack}><span style={{width:'24%'}}>首字</span><span style={{width:'42%'}}>工具等待</span><span style={{width:'34%'}}>完成</span></div><div className={s.latencyHeroStats}><span>p50 1.9s</span><strong>p95 4.8s · 超过 4s</strong></div></div></ConceptHero>}>
+    <ArticleSection id="latency-definition" title="首字和完成是两件事"><Legacy slug="latency-evaluation" names={['question', 'definition']}/>
+      <p id="latency-definition-detail" className="vp-citation-target"><strong>延迟评测把一次请求的等待拆成可观察的时间点，例如排队、首字、工具返回和最终完成。</strong>OpenAI 的延迟优化文档区分首 token 时间和完整响应时间；用户开始看到反馈，不等于任务已经完成。<Cite id="latency-definition-detail"/></p>
+      <p>如果聊天界面 420ms 就出现了首字，用户会感觉系统开始回应；工具仍在等待时，任务可能还没有结果。评测要先说明“完成”指什么：最后一个 token、工具结果写入，还是用户可以继续操作的状态。不同定义不能放进同一个平均数里。</p>
+      <div className={s.latencyChecklist}><div><span>首字</span><strong>何时开始反馈</strong><p>决定用户什么时候不再面对空白。</p></div><div><span>工具</span><strong>哪里在等待</strong><p>找出外部服务或队列造成的停顿。</p></div><div><span>完成</span><strong>何时结束任务</strong><p>定义可以交付结果的时间点。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="latency-record" title="把一次等待拆开记录"><Legacy slug="latency-evaluation" names={['scene-heading']}/>
+      <p id="latency-record-detail" className="vp-citation-target">评测运行记录需要保留输入、运行条件和结果；延迟记录也应把时间点放回同一条任务轨迹。<strong>只有一个总耗时，就无法区分模型生成慢、工具慢、排队慢还是请求中途超时。</strong><Cite id="latency-record-detail"/></p>
+      <p>下面是虚构的时间线，不调用模型或测速。统一请求先看到首字，再等待工具，最后完成；切换长尾或超时状态，观察统计和结论怎样变化。时间只用于解释评测口径，不代表某个服务的真实性能。</p>
+      <LatencyEvaluationLesson/>
+      <p>优化要跟着阶段走：首字慢可以看排队或首 token，工具慢要看外部依赖，完成慢要看输出长度和后续调用。把所有问题都归因给模型，会让修复方向偏掉。</p>
+    </ArticleSection>
+    <ArticleSection id="latency-tail" title="p50 看典型，p95 看长尾" className={base.offset}><Legacy slug="latency-evaluation" names={['quiz-heading']}/>
+      <p id="latency-tail-detail" className="vp-citation-target">智能体评测要在真实任务上观察运行结果；一组请求的中位数只能描述中间位置，不能代表最慢那部分。<strong>p50 让你看到典型等待，p95 则提醒还有约一小部分请求明显更慢。</strong>两者回答的是不同问题。<Cite id="latency-tail-detail"/></p>
+      <p>本例 p50 为 1.9s，p95 为 4.8s；如果门槛是 4s，不能用 p50 掩盖 p95 超限。分位数也不是越高越好：p99、最大值和超时率要按用户场景选择。样本太少时，分位数本身也不稳定，应同时记录样本量和过滤条件。</p>
+      <ArticleAside title="一条延迟门槛要写清什么"><p>测量哪一段？样本包含哪些任务？p50、p95 或超时率的门槛是多少？流式响应与非流式响应怎样区分？工具超时和用户取消怎样报告？</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="latency-boundary" title="条件变化时不要硬比"><Legacy slug="latency-evaluation" names={['prompt-heading']}/>
+      <p id="latency-boundary-detail" className="vp-citation-target">MLPerf Inference 在统一场景和准确性约束下报告延迟与吞吐，说明硬件、软件、负载和测量协议都会影响结果。<strong>换了并发、输出长度、工具版本或超时策略，新的 p95 就不能直接排成同一条排名。</strong><Cite id="latency-boundary-detail"/></p>
+      <p>如果工具超时，先把它标成运行不完整，保留超时阶段和原因；不要把未完成请求当作一个普通的 5 秒完成样本，也不要静默删掉它。比较版本时，固定任务、并发和统计窗口；条件必须变化时，就在结果旁说明变化。</p>
+      <ArticleAside title="看到平均值变快时再问三句"><p>首字变快了吗，还是只有最后完成变快？p95 和超时率有没有同步改善？样本、并发和工具条件相同吗？这三句能避免把一部分用户的长尾藏在平均数后面。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }
