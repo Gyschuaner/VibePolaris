@@ -689,14 +689,17 @@
   },
   {
     "slug": "execution-sandbox",
-    "mechanism": "执行沙箱在隔离环境中运行不可信代码，并限制可访问的文件、网络、进程、时间和资源。",
-    "misconception": "沙箱不是“绝对安全盒子”；配置错误、内核漏洞和过宽挂载仍可能越界。",
-    "demoSignature": "输入：脚本尝试读项目文件、联网和运行10秒；中间：文件权限0项、网络请求被拒1次、CPU在2秒超时；输出：只保留标准输出并销毁环境。可视化：资源边界图上三条访问线逐一被阻断。 建议5帧：脚本落入隔离盒、读文件请求撞墙、联网请求被拒、CPU计时到2秒终止、只导出标准输出；交互：逐项开关文件/网络/时限权限。",
+    "mechanism": "执行沙箱在隔离环境中运行代码，并限制文件、网络、进程、时间和资源访问；结束或超时后销毁临时环境。",
+    "misconception": "沙箱不是绝对安全盒子；内核、运行时、挂载、依赖和结果检查仍然决定风险。",
+    "demoSignature": "脚本尝试读项目文件、联网和运行 10 秒；文件/网络请求被拒，2 秒预算终止进程，只保留标准输出。交互：逐项切换文件、网络和时间权限。",
     "sourceUrls": [
-      "https://csrc.nist.gov/pubs/sp/800/190/final",
-      "https://platform.openai.com/docs/guides/tools-code-interpreter"
+      "https://developers.openai.com/api/docs/guides/tools-code-interpreter",
+      "https://developers.openai.com/api/docs/guides/agents-api/environments/security",
+      "https://docs.docker.com/engine/security/",
+      "https://docs.docker.com/engine/security/rootless/",
+      "https://csrc.nist.gov/pubs/sp/800/190/final"
     ],
-    "rewriteRisk": "别把容器等同于完整沙箱；要列出实际限制面和销毁时机。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "container",
       "permission-boundary"
