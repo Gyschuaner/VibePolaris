@@ -1397,17 +1397,17 @@
   },
   {
     "slug": "tool-approval",
-    "mechanism": "工具审批让系统在执行高影响工具前暂停，把拟执行动作、参数和影响展示给授权人，再依据决定继续或取消。",
-    "misconception": "确认弹窗不等于有效审批；描述含糊、参数不可见或批准范围过宽都会让人无法判断。",
-    "demoSignature": "输入：工具准备删除3个文件；中间：审批卡展示3条完整路径和不可恢复标记，状态ready→paused；输出：用户只批准2条，执行数3→2。可视化：建议5帧的动作清单与逐项勾选；交互：亲自展开参数并选择部分批准。",
+    "mechanism": "工具审批在高影响工具真正执行前暂停调用，展示具体工具、参数、范围和调用身份，再把一次批准或拒绝绑定到这次调用。",
+    "misconception": "“确认”按钮不等于有效审批；参数不可见、范围过宽或把决定复用到下一次调用都会失去可审查性。",
+    "demoSignature": "删除 A/B/C 的拟调用先停在审批卡；授权人只批准 A/B，执行数为 2，C 没有副作用。证据：调用编号、完整路径和执行计数。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
       "https://openai.github.io/openai-agents-python/tools/",
       "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
-      "https://modelcontextprotocol.io/specification/draft/server/index",
+      "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
       "https://openai.github.io/openai-agents-python/mcp/"
     ],
-    "rewriteRisk": "演示要避开真实破坏操作；必须强调审批粒度、参数可见和授权人。",
+    "rewriteRisk": "把审批范围、暂停状态和执行证据分开讲，避免把弹窗确认写成权限系统。",
     "nearDuplicates": [
       "human-in-the-loop",
       "tool-choice",
