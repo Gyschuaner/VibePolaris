@@ -82,14 +82,14 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   const [constraint, setConstraint] = useState(false);
   const [temperature, setTemperature] = useState(0.2);
   const [encoding, setEncoding] = useState<"bpe" | "word">("bpe");
-  const [approved, setApproved] = useState({ A: true, B: true, C: false });
+  const [approved, setApproved] = useState({ A: false, B: false, C: false });
   const [salary, setSalary] = useState(false);
   const [promptPresent, setPromptPresent] = useState(true);
   const temperatureSceneStep = useRef(scene.step);
   const tokenizationSceneStep = useRef(scene.step);
 
   useResetOnSceneStart(scene, () => {
-    setSeed("a"); setImage(false); setBudget("enough"); setRule(true); setExamples("good"); setConstraint(false); setTemperature(0.2); temperatureSceneStep.current = scene.step; tokenizationSceneStep.current = scene.step; setEncoding("bpe"); setApproved({ A: true, B: true, C: false }); setSalary(false); setPromptPresent(true);
+    setSeed("a"); setImage(false); setBudget("enough"); setRule(true); setExamples("good"); setConstraint(false); setTemperature(0.2); temperatureSceneStep.current = scene.step; tokenizationSceneStep.current = scene.step; setEncoding("bpe"); setApproved({ A: false, B: false, C: false }); setSalary(false); setPromptPresent(true);
   });
   useEffect(() => {
     if (mode !== "temperature" || temperatureSceneStep.current === scene.step) return;
@@ -102,16 +102,18 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
     setEncoding(scene.step === 2 ? "word" : "bpe");
   }, [mode, scene.step]);
   const caption = captions[mode];
-  const dynamicCopy = mode === "generative-ai" ? [caption.copy[0], promptPresent ? `这次候选是“${seed === "a" ? "记得带伞" : "雨天出门带上雨具"}”；重新采样只改变候选，不改变提示。` : "提示为空，当前没有任务条件，不能把默认输出当成本次候选。", caption.copy[2]]
-    : mode === "multimodal" ? [caption.copy[0], image ? "图片和文字一起进入模型；日期来自票面像素，而不是文字问题本身。" : "图片还没有进入请求，模型没有视觉证据。", image ? caption.copy[2] : "先加入图片，才能判断票面日期；模型不会从缺失输入中补事实。"]
-    : mode === "reasoning-model" ? [caption.copy[0], caption.copy[1], budget === "tight" ? "推理预算已耗尽；结果标记为未完成，应用需要重试或转人工。" : caption.copy[2]]
-    : mode === "system-prompt" ? [caption.copy[0], rule ? caption.copy[1] : "系统规则被移除后，用户请求可能让输出混入内部指令。", rule ? caption.copy[2] : "没有更高层规则，当前结果不能证明系统提示受到保护。"]
-    : mode === "few-shot-prompting" ? [caption.copy[0], examples === "good" ? caption.copy[1] : "冲突示例让同一个输入对应两个标签，模型无法稳定归纳。", examples === "good" ? caption.copy[2] : "先删掉冲突示例，再谈准确率；示例质量是方法的一部分。"]
-    : mode === "zero-shot-prompting" ? [caption.copy[0], constraint && scene.step === 2 ? "模型按“最先失败组件”这一新增约束选择前端。" : caption.copy[1], constraint && scene.step === 2 ? "约束让边界可复核；仍没有提供示例。" : caption.copy[2]]
-    : mode === "temperature" ? [caption.copy[0], temperature < 0.5 ? caption.copy[1] : "温度升高后，三根概率柱的差距缩小。", temperature >= 0.5 ? caption.copy[2] : "当前采样仍偏向最高概率词；这只改变选择分布，不提供事实校验。"]
-    : mode === "tokenization" ? [scene.step === 0 ? "字符串还没有切分，先保留“CSS 很好用”这段原始输入。" : caption.copy[0], scene.step === 1 ? "分词器按当前词表切成片段；模型还没有拿到最终编号。" : caption.copy[1], encoding === "bpe" ? caption.copy[2] : "换成按词切分的示意编码器后，数量变少；真实结果仍取决于具体词表。"]
-    : mode === "tool-approval" ? [caption.copy[0], scene.step === 1 ? "审批卡已展开；现在只是在查看路径和影响，还没有执行。" : scene.step === 2 ? `批准 ${Object.values(approved).filter(Boolean).length} 项；C 保持未执行。` : "调用已进入待处理队列，磁盘没有变化。", caption.copy[2]]
-    : [caption.copy[0], scene.step === 1 ? caption.copy[1] : salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[1], salary && scene.step === 2 ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[2]];
+  const dynamicCopy = (() => {
+    if (mode === "generative-ai") return [caption.copy[0], promptPresent ? `这次候选是“${seed === "a" ? "记得带伞" : "雨天出门带上雨具"}”；重新采样只改变候选，不改变提示。` : "提示为空，当前没有任务条件，不能把默认输出当成本次候选。", caption.copy[2]];
+    if (mode === "multimodal") return [caption.copy[0], image ? "图片和文字一起进入模型；日期来自票面像素，而不是文字问题本身。" : "图片还没有进入请求，模型没有视觉证据。", image ? caption.copy[2] : "先加入图片，才能判断票面日期；模型不会从缺失输入中补事实。"];
+    if (mode === "reasoning-model") return [caption.copy[0], caption.copy[1], budget === "tight" ? "推理预算已耗尽；结果标记为未完成，应用需要重试或转人工。" : caption.copy[2]];
+    if (mode === "system-prompt") return [caption.copy[0], rule ? caption.copy[1] : "系统规则被移除后，用户请求可能让输出混入内部指令。", rule ? caption.copy[2] : "没有更高层规则，当前结果不能证明系统提示受到保护。"];
+    if (mode === "few-shot-prompting") return [caption.copy[0], examples === "good" ? caption.copy[1] : "冲突示例让同一个输入对应两个标签，模型无法稳定归纳。", examples === "good" ? caption.copy[2] : "先删掉冲突示例，再谈准确率；示例质量是方法的一部分。"];
+    if (mode === "zero-shot-prompting") return [caption.copy[0], constraint && scene.step === 2 ? "模型按“最先失败组件”这一新增约束选择前端。" : caption.copy[1], constraint && scene.step === 2 ? "约束让边界可复核；仍没有提供示例。" : caption.copy[2]];
+    if (mode === "temperature") return [caption.copy[0], temperature < 0.5 ? caption.copy[1] : "温度升高后，三根概率柱的差距缩小。", temperature >= 0.5 ? caption.copy[2] : "当前采样仍偏向最高概率词；这只改变选择分布，不提供事实校验。"];
+    if (mode === "tokenization") return [scene.step === 0 ? "字符串还没有切分，先保留“CSS 很好用”这段原始输入。" : caption.copy[0], scene.step === 1 ? "分词器按当前词表切成片段；模型还没有拿到最终编号。" : caption.copy[1], encoding === "bpe" ? caption.copy[2] : "换成按词切分的示意编码器后，数量变少；真实结果仍取决于具体词表。"];
+    if (mode === "tool-approval") return [caption.copy[0], scene.step === 1 ? "审批卡已展开；现在只是在查看路径和影响，还没有执行。" : scene.step === 2 ? `批准 ${Object.values(approved).filter(Boolean).length} 项；C 保持未执行。` : "调用已进入待处理队列，磁盘没有变化。", caption.copy[2]];
+    return [caption.copy[0], scene.step === 0 ? "最小令牌已经发放，资源请求还没有到达。" : scene.step === 1 ? "read:sales 与令牌匹配，策略允许读取销售表。" : salary ? "加入 read:salary 后，策略允许读取工资表；这次授权要单独审计。" : "read:salary 不在令牌 scope 中，策略返回 deny。", scene.step === 2 && !salary ? "工资表返回 0 行并留下 deny 审计；提示词不能绕过这一步。" : salary ? "加入 read:salary 后，策略才允许读取工资表；这次授权要单独审计。" : caption.copy[2]];
+  })();
 
   const dynamicTitles = mode === "multimodal" ? [caption.titles[0], image ? caption.titles[1] : "图片缺失时不要猜", caption.titles[2]] : mode === "tokenization" ? [scene.step === 0 ? "先保留原始字符串" : caption.titles[0], caption.titles[1], "换编码器，数量也会换"] : caption.titles;
   const controls = <Caption scene={scene} labels={caption.labels} titles={dynamicTitles} copy={dynamicCopy} />;
@@ -259,14 +261,29 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
       <div className={styles.choices} role="group" aria-label="选择可执行的调用"><button type="button" disabled={executed} aria-pressed={approved.A} onClick={() => { setApproved((current) => ({ ...current, A: !current.A })); scene.seek(1); }}>{approved.A ? "撤回 A" : "批准 A"}</button><button type="button" disabled={executed} aria-pressed={approved.B} onClick={() => { setApproved((current) => ({ ...current, B: !current.B })); scene.seek(1); }}>{approved.B ? "撤回 B" : "批准 B"}</button><span className={styles.inputExample}>C · 不可恢复，当前策略拒绝</span></div>
       <div className={styles.approvalBoard}>
         <div className={styles.approvalCall}><div><LockSimple size={24} /><span>待审批调用</span><strong>delete_file · CALL-47</strong></div><small>{scene.step === 0 ? "模型只提出调用，执行器尚未打开审批卡" : scene.step === 1 ? "暂停在执行之前，等待逐项决定" : "这次调用已生成执行记录"}</small></div>
-        <div className={styles.approvalQueue}>{rows.map((row) => <div className={styles.approvalRow} data-state={executed ? row.selected ? "approved" : "denied" : scene.step === 1 ? "review" : "pending"} key={row.key}><b>{row.key}</b><div><strong>{row.path}</strong><small>{row.recovery}</small></div><span>{executed ? row.selected ? "已执行" : "未执行" : row.key === "C" ? "策略拒绝" : scene.step === 1 ? "待决定" : "待审批"}</span></div>)}</div>
-        <div className={styles.approvalSummary}>{executed ? <CheckCircle size={24} /> : <ShieldCheck size={24} />}<div><span>执行器结果</span><strong>{executed ? `${rows.filter((row) => row.selected).length} 项执行，C 无副作用` : "审批决定尚未生效"}</strong><small>{executed ? "决定只绑定 CALL-47" : "查看范围后再推进下一步"}</small></div></div>
+        <div className={styles.approvalQueue}>{rows.map((row) => <div className={styles.approvalRow} data-state={executed ? row.selected ? "approved" : "denied" : scene.step === 1 ? "review" : "pending"} key={row.key}><b>{row.key}</b><div><strong>{row.path}</strong><small>{row.recovery}</small></div><span>{executed ? row.selected ? "已执行" : "未执行" : row.key === "C" ? "策略拒绝" : scene.step === 1 ? row.selected ? "将批准" : "待决定" : "待审批"}</span></div>)}</div>
+        <div className={styles.approvalSummary}>{executed ? <CheckCircle size={24} /> : <ShieldCheck size={24} />}<div><span>执行器结果</span><strong>{executed ? `${rows.filter((row) => row.selected).length} 项执行，C 无副作用` : scene.step === 1 ? `已选 ${rows.filter((row) => row.selected).length} 项，仍未执行` : "审批决定尚未生效"}</strong><small>{executed ? "决定只绑定 CALL-47" : "查看范围后再推进下一步"}</small></div></div>
       </div>
       <p className={styles.inputExample}><strong>边界</strong>审批只回答这次具体调用，权限系统仍要在执行处检查参数和资源；未批准的项不会因为同一张卡片而继承授权。</p>
     </div>;
   }
-  const permissionRequested = scene.step >= 2;
   const salesRequest = scene.step === 1;
-  const permissionAllowed = permissionRequested && salary;
-  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="权限边界强制校验演示">{controls}<div className={styles.choices}><button type="button" aria-pressed={salary} onClick={() => { setSalary((value) => !value); scene.seek(2); }}>{salary ? "移除 read:salary" : "加入 read:salary"}</button></div><div className={styles.layers}><div><ShieldCheck size={25}/><h3>能力令牌</h3><p>{permissionAllowed ? "read:sales + read:salary" : "read:sales"}</p></div><ArrowRight size={20}/><div><LockSimple size={25}/><h3>策略</h3><p>{permissionAllowed ? "match → allow" : salesRequest ? "match sales → allow" : permissionRequested ? "no match → deny" : "等待请求"}</p></div><ArrowRight size={20}/><div>{permissionAllowed || salesRequest ? <CheckCircle size={25}/> : permissionRequested ? <Warning size={25}/> : <LockSimple size={25}/>}<h3>{permissionAllowed ? "工资表" : salesRequest ? "销售表" : "资源"}</h3><p>{permissionAllowed ? "返回授权行" : salesRequest ? "返回销售行" : permissionRequested ? "0 行 · audit denied" : "尚未访问"}</p></div></div><p className={styles.inputExample}><strong>边界</strong>权限判定发生在模型外的资源访问处；界面上的按钮和提示词都不能替代这一步。</p></div>;
+  const salaryRequest = scene.step === 2;
+  const permissionAllowed = salesRequest || (salaryRequest && salary);
+  const requestName = salesRequest ? "read:sales" : salaryRequest ? "read:salary" : "等待资源请求";
+  const resourceName = salesRequest ? "销售表" : salaryRequest ? "工资表" : "资源尚未访问";
+  const decision = scene.step === 0 ? "等待请求" : permissionAllowed ? "allow" : "deny";
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="权限边界强制校验演示">
+    {controls}
+    <div className={styles.choices} role="group" aria-label="改变权限 scope"><button type="button" aria-pressed={salary} onClick={() => { setSalary((value) => !value); scene.seek(2); }}>{salary ? "移除 read:salary" : "加入 read:salary"}</button></div>
+    <div className={styles.permissionBoard}>
+      <div className={styles.permissionToken}><ShieldCheck size={24} /><span>能力令牌</span><strong>{salary ? "read:sales + read:salary" : "read:sales"}</strong><small>由执行层发放，不由提示词决定</small></div>
+      <ArrowRight size={20} aria-hidden="true" />
+      <div className={styles.permissionRequest}><FileText size={24} /><span>资源请求</span><strong>{requestName}</strong><small>{scene.step === 0 ? "主体和动作还没有提交" : `报表工具 · ${resourceName}`}</small></div>
+      <ArrowRight size={20} aria-hidden="true" />
+      <div className={styles.permissionDecision} data-allow={permissionAllowed ? "true" : "false"}><LockSimple size={24} /><span>策略决定</span><strong>{decision}</strong><small>{scene.step === 0 ? "等待主体 + 动作 + 资源" : permissionAllowed ? "scope 匹配，放行资源访问" : "scope 不匹配，阻止在资源前"}</small></div>
+      <div className={styles.permissionAudit}><span>资源结果 / 审计</span><strong>{scene.step === 0 ? "尚未访问" : permissionAllowed ? `${resourceName} · 返回授权行` : `${resourceName} · 0 行 · audit denied`}</strong><small>{scene.step === 0 ? "没有请求就没有授权结果" : permissionAllowed && salaryRequest ? "新增授权也要单独记录" : permissionAllowed ? "销售读取与 token scope 一致" : "拒绝原因与主体、动作、资源一起留痕"}</small></div>
+    </div>
+    <p className={styles.inputExample}><strong>边界</strong>权限判定发生在模型外的资源访问处；界面上的按钮和提示词都不能替代这一步。</p>
+  </div>;
 }
