@@ -10,6 +10,7 @@ import { RebaseLesson } from "./rebase";
 import { MergeConflictLesson } from "./merge-conflict";
 import { RevertLesson } from "./revert";
 import { StashLesson } from "./stash";
+import { PullRequestLesson } from "./pull-request";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -174,5 +175,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "merge-conflict") return <MergeConflictLesson />;
   if (slug === "revert") return <RevertLesson />;
   if (slug === "stash") return <StashLesson />;
+  if (slug === "pull-request") return <PullRequestLesson />;
   return null;
 }
