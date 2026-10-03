@@ -40,9 +40,22 @@ function WorkingTreeLesson() {
   </div>;
 }
 
+function StagingAreaLesson() {
+  const scene = useScene(3);
+  const labels = ["两个 hunk 都在工作区", "只暂存修复", "提交后留下另一块"];
+  const staged = scene.step >= 1;
+  const committed = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="暂存区选择 hunk 演示">
+    <Caption scene={scene} labels={labels} titles={["同一文件里有两类改动", "index 只收下修复 hunk", "提交修复，格式改动仍在工作区"]} copy={["login.ts 同时修复空值和调整缩进；两块都还未暂存。", "git add -p 只选择空值修复，staged diff 因此缩小。", "提交后修复进入历史，格式调整仍显示为未暂存，下一次可独立处理。"]} />
+    <div className={styles.gitHunks} aria-label="文件的两个变更块"><div data-state={committed ? "committed" : staged ? "staged" : "work"}><strong>修复空值</strong><code>+ if (!user) return;</code><span>{committed ? "已提交" : staged ? "已暂存" : "工作区"}</span></div><div data-state="work"><strong>格式调整</strong><code>+ const label = …</code><span>未暂存</span></div></div>
+    <div className={styles.choices} role="group" aria-label="选择暂存动作"><button type="button" onClick={() => scene.seek(1)} aria-pressed={staged}>只暂存修复</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={committed}>提交修复</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
   if (slug === "working-tree") return <WorkingTreeLesson />;
+  if (slug === "staging-area") return <StagingAreaLesson />;
   return null;
 }

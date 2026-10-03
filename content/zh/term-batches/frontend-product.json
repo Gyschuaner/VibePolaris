@@ -991,17 +991,17 @@
   },
   {
     "zh": "暂存区", "en": "Staging Area", "slug": "staging-area", "cat": "Git",
-    "say": "暂存区保存下一次提交准备包含的文件版本，让你从多项改动中挑出一组完整变化。",
-    "aliases": ["Index", "Stage", "暂存"],
+    "say": "暂存区（index）保存下一次提交的内容候选，让你从同一份工作区改动里挑出完整的一组。",
+    "aliases": ["Index", "Stage", "暂存", "staged changes"],
     "question": "同一个文件改了两件事，只想先提交其中一件，怎么办？",
-    "definition": "暂存区也叫 index，位于工作区和提交历史之间。git add 把选中的文件内容或代码片段记录为下一次提交候选。",
-    "boundary": "暂存不是备份到远程，也不是永久历史；后续重新 add 会更新暂存内容。",
-    "demoType": "flow", "demoTitle": "两项修改拆成两次提交",
-    "demoSteps": [{"label":"查看差异","value":"文件包含修复和格式调整","note":"两类变化同时出现在工作区。"},{"label":"分块暂存","value":"git add -p 只选择修复","note":"staged diff 只显示目标代码。"},{"label":"提交后继续","value":"格式调整仍留在工作区","note":"第二项改动没有丢失。"}],
-    "quizQuestion": "查看已经暂存的差异应使用什么？", "quizOptions": ["git diff --staged", "git clone", "git tag"],
-    "correctText": "--staged 比较暂存区与当前提交。", "wrongText": "clone 和 tag 不用于查看暂存内容。",
-    "promptTitle": "规划一组可审查的提交", "prompt": "请根据下面 git diff 把改动按功能拆成提交组，说明哪些片段应先暂存，并给出每组提交前的 staged diff 检查项。",
-    "relatedSlugs": ["working-tree", "diff", "repo-commit"]
+    "definition": "暂存区也叫 index，保存一棵下一次提交要读取的内容树。git add 可以按文件或 hunk 把工作区当前版本写入 index，工作区之后仍能继续变化。",
+    "boundary": "暂存不是备份、上传或永久历史；git diff --staged 只检查提交候选，reset 或重新 add 都可能改变 index。",
+    "demoType": "flow", "demoTitle": "只提交修复，留下格式 hunk",
+    "demoSteps": [{"label":"两个 hunk 都在工作区","value":"修复空值 + 格式调整","note":"同一文件里有两类尚未暂存的变化。"},{"label":"只暂存修复","value":"git add -p → index 只有空值修复","note":"staged diff 缩小为本次要提交的 hunk。"},{"label":"提交后留下另一块","value":"修复已提交，格式调整仍未暂存","note":"未选 hunk 没有丢失，下一次可以独立处理。"}],
+    "quizQuestion": "查看下一次提交准备包含的具体差异应使用什么？", "quizOptions": ["git diff --staged", "git clone", "git tag"],
+    "correctText": "git diff --staged 比较 index 与 HEAD，展示提交候选的具体行。", "wrongText": "clone 和 tag 不用于检查暂存内容；只看文件名也不能证明 hunk 已正确选择。",
+    "promptTitle": "规划一组可审查的提交", "prompt": "请根据工作区 diff 把同一文件的改动按功能拆成提交组，说明哪些 hunk 应先用 git add -p 暂存，逐组检查 git diff --staged，并标记 reset 或重新 add 可能改变的候选内容。",
+    "relatedSlugs": ["working-tree", "diff", "repo-commit", "checkout-switch"]
   },
   {
     "zh": "差异", "en": "Diff", "slug": "diff", "cat": "Git",

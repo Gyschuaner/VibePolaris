@@ -521,11 +521,11 @@
   },
   {
     "slug": "staging-area",
-    "mechanism": "索引保存下一次提交的完整候选树；git add 把选中文件或 hunk 的当前内容写入索引，而工作树可以继续变化。",
-    "misconception": "暂存区不是待上传文件列表，也不是简单标记；它保存的是内容版本。",
-    "demoSignature": "建议 5 帧：同一文件有 bug 修复与格式化两块 hunk；用户运行 git add -p，只把修复块拖进 index；左右 diff 分别显示 staged 与 unstaged 内容；提交后修复进入历史，格式化仍留在工作区。",
-    "sourceUrls": ["https://git-scm.com/docs/git-add", "https://git-scm.com/docs/gitglossary#def_index"],
-    "rewriteRisk": "high",
+    "mechanism": "索引（index）保存下一次提交的候选树；git add 按文件或 hunk 把工作区当前内容写入索引，而工作树可以继续变化，commit 只读取索引。",
+    "misconception": "暂存区不是待上传文件列表、备份或简单勾选标记；它保存的是下一次提交要读取的内容版本，reset 或重新 add 可以改变它。",
+    "demoSignature": "flow: 3 steps; actors=login.ts/修复空值 hunk/格式 hunk/working tree/index/HEAD; phases=两个 hunk 都未暂存→git add -p 只收修复→提交修复并留下格式 hunk; action=推进暂存选择",
+    "sourceUrls": ["https://git-scm.com/docs/git-add", "https://git-scm.com/docs/gitglossary#def_index", "https://git-scm.com/docs/git-diff", "https://git-scm.com/docs/git-reset", "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"],
+    "rewriteRisk": "正式页面需用同一文件的两个 hunk 解释 index 保存内容候选，分别对照 git diff 与 git diff --staged；同时说明 reset/重新 add 可能改变候选，不要把暂存写成上传队列或备份。",
     "nearDuplicates": ["working-tree", "diff", "repo-commit"]
   },
   {
