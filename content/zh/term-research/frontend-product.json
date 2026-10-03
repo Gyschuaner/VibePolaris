@@ -622,8 +622,8 @@
     "slug": "revert",
     "mechanism": "revert 读取目标提交相对父提交的补丁，应用其反向变化并创建新提交，因此公共历史不被重写。",
     "misconception": "revert 不是回到旧时间点，也不能自动撤销数据库写入和外部副作用。",
-    "demoSignature": "建议 5 帧：历史 A-B-C 中用户选择 B 并点击 revert；系统先计算 B 的反向补丁，再生成新提交 D(-B)；文件结果恢复但 B 仍留在时间线；旁边模拟的数据库写入不随 Git 回退，保持红色待补偿。",
-    "sourceUrls": ["https://git-scm.com/docs/git-revert"],
+    "demoSignature": "revert-board: 3 steps; actors=history A→B/target B/inverse patch/new commit C/remote B; phases=inspect B→apply inverse patch while history unchanged→record C and keep B visible; boundary=clean worktree, conflicts/merge --mainline, code diff cannot undo database or external side effects; action=计算反向补丁/创建 revert C",
+    "sourceUrls": ["https://git-scm.com/docs/git-revert", "https://git-scm.com/docs/git-reset", "https://git-scm.com/docs/git-show", "https://git-scm.com/docs/git-diff", "https://git-scm.com/docs/git-push"],
     "rewriteRisk": "high",
     "nearDuplicates": ["rollback", "repo-commit", "deploy"]
   },

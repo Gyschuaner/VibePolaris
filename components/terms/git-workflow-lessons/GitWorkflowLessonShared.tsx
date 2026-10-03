@@ -8,6 +8,7 @@ import { PushLesson } from "./push";
 import { MergeLesson } from "./merge";
 import { RebaseLesson } from "./rebase";
 import { MergeConflictLesson } from "./merge-conflict";
+import { RevertLesson } from "./revert";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -170,5 +171,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "merge") return <MergeLesson />;
   if (slug === "rebase") return <RebaseLesson />;
   if (slug === "merge-conflict") return <MergeConflictLesson />;
+  if (slug === "revert") return <RevertLesson />;
   return null;
 }

@@ -56,7 +56,7 @@ import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
 import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage } from '@/components/terms/AiStackConceptPages';
-import { BranchTermPage, CheckoutSwitchTermPage, CloneTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
+import { BranchTermPage, CheckoutSwitchTermPage, CloneTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -122,6 +122,7 @@ const articleTermPages = {
   merge: MergeTermPage,
   rebase: GitRebaseTermPage,
   "merge-conflict": MergeConflictTermPage,
+  revert: GitRevertTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
