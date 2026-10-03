@@ -17318,5 +17318,189 @@
         "note": "风险测量、治理和持续评估"
       }
     ]
+  },
+  {
+    "slug": "safety-evaluation",
+    "lead": "安全评测怎样证明危险请求没有变成真实副作用？",
+    "definition": "安全评测用风险任务、攻击变体和工具/环境结果检查允许、拒绝、升级和隔离行为。",
+    "boundary": "一次拒答或一层过滤器不能覆盖未知攻击和应用权限问题。",
+    "sceneKind": "branch",
+    "sceneTitle": "安全请求经过模型与工具边界",
+    "actionLabel": "切换风险案例",
+    "actors": [
+      {
+        "id": "cases",
+        "label": "风险题集",
+        "detail": "正常/越权/注入",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "agent",
+        "label": "被测系统",
+        "detail": "回答与工具请求",
+        "icon": "robot",
+        "group": "执行"
+      },
+      {
+        "id": "tool",
+        "label": "敏感工具",
+        "detail": "发送/写入",
+        "icon": "gear",
+        "group": "副作用"
+      },
+      {
+        "id": "gate",
+        "label": "安全门槛",
+        "detail": "高风险失败=0",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "c-a",
+        "from": "cases",
+        "to": "agent",
+        "label": "运行"
+      },
+      {
+        "id": "a-t",
+        "from": "agent",
+        "to": "tool",
+        "label": "请求"
+      },
+      {
+        "id": "a-g",
+        "from": "agent",
+        "to": "gate",
+        "label": "判定"
+      }
+    ],
+    "frames": [
+      {
+        "label": "准备风险集",
+        "note": "同时放入应该完成和应该拒绝的案例。",
+        "activeIds": [
+          "cases"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "agent",
+          "tool",
+          "gate"
+        ],
+        "values": {
+          "cases": "12题 · 3类"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "正常请求",
+        "note": "正常任务完成，未触发敏感工具。",
+        "activeIds": [
+          "agent"
+        ],
+        "doneIds": [
+          "cases"
+        ],
+        "mutedIds": [
+          "tool",
+          "gate"
+        ],
+        "values": {
+          "agent": "安全完成"
+        },
+        "activeEdgeIds": [
+          "c-a"
+        ]
+      },
+      {
+        "label": "越权请求",
+        "note": "模型拒绝或升级，工具没有副作用。",
+        "activeIds": [
+          "gate"
+        ],
+        "doneIds": [
+          "cases",
+          "agent"
+        ],
+        "mutedIds": [
+          "tool"
+        ],
+        "values": {
+          "gate": "通过"
+        },
+        "activeEdgeIds": [
+          "a-g"
+        ]
+      },
+      {
+        "label": "发现泄露",
+        "note": "若工具真的读出敏感字段，发布门槛立即阻断。",
+        "activeIds": [
+          "tool",
+          "gate"
+        ],
+        "doneIds": [
+          "cases",
+          "agent"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "泄露1次",
+          "gate": "阻断"
+        },
+        "activeEdgeIds": [
+          "a-t"
+        ]
+      }
+    ],
+    "insight": "安全评测必须核对真实动作和环境状态，不能只看模型说了什么。",
+    "quiz": {
+      "question": "为什么要检查工具和环境结果？",
+      "options": [
+        {
+          "label": "文字拒绝不代表没有副作用",
+          "correct": true
+        },
+        {
+          "label": "工具调用一定安全",
+          "correct": false
+        },
+        {
+          "label": "语气可以代替权限检查",
+          "correct": false
+        }
+      ],
+      "success": "把高风险影响关在工具和权限边界内。",
+      "retry": "否则“我拒绝”可能和真实执行相矛盾。"
+    },
+    "prompt": {
+      "title": "设计安全评测集",
+      "text": "按风险类型整理允许、拒绝、升级和工具边界案例，为每条写可观察的安全结果。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "安全检查与高风险动作边界"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.09110",
+        "label": "HELM · arXiv:2211.09110",
+        "note": "多维度、可复现的模型评测"
+      }
+    ]
   }
 ]
