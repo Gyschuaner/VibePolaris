@@ -9,3 +9,4 @@ export { CloneTermPage } from "./git-workflow-pages/clone";
 export { PullTermPage } from "./git-workflow-pages/pull";
 export { FetchTermPage } from "./git-workflow-pages/fetch";
 export { PushTermPage } from "./git-workflow-pages/push";
+export { MergeTermPage } from "./git-workflow-pages/merge";

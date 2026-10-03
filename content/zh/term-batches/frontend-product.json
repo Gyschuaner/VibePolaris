@@ -1109,7 +1109,7 @@
     "definition": "git merge 找到两个分支的共同祖先并组合后续变化。可以快进移动分支，也可以创建合并提交。",
     "boundary": "合并成功只说明文本变化可以组合，不代表功能逻辑正确；仍需测试和评审。",
     "demoType": "branch", "demoTitle": "两条历史汇成一个结果",
-    "demoSteps": [{"label":"共同起点","value":"dev 与 feature 来自同一提交","note":"两边随后各有修改。"},{"label":"计算三方合并","value":"比较祖先和两个分支头","note":"不同文件通常可自动组合。"},{"label":"得到合并结果","value":"快进或新的 merge commit","note":"冲突时需要人工确认后完成。"}],
+    "demoSteps": [{"label":"共同祖先","value":"dev 与 feature 从 A 分开","note":"合并先确定 base，不按时间覆盖两份文件。"},{"label":"三方比较","value":"分叉：base A + ours D + theirs F","note":"D/F 都在 A 之后前进，不能把这组输入直接说成快进。"},{"label":"写入结果","value":"切到 A/F 快进，或保留 D/F 创建 M","note":"无共同祖先、冲突或未提交工作区会让流程停下。"}],
     "quizQuestion": "快进合并发生在什么情况下？", "quizOptions": ["目标分支没有额外分叉提交", "两个分支完全无关", "工作区一定有未提交修改"],
     "correctText": "目标分支可直接移动到功能分支头时无需合并提交。", "wrongText": "无关历史和未提交工作区不是快进条件。",
     "promptTitle": "阅读分支图并选择合并方式", "prompt": "请根据下面提交图判断能否快进、是否会产生合并提交，并列出合并后必须运行的回归测试。",
