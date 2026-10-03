@@ -33,6 +33,7 @@ import { MultimodalTermPage } from "./ai-stack-pages/multimodal";
 import { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
 import { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
 import { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
+import { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -68,6 +69,7 @@ export { MultimodalTermPage } from "./ai-stack-pages/multimodal";
 export { ReasoningModelTermPage } from "./ai-stack-pages/reasoning-model";
 export { SystemPromptTermPage } from "./ai-stack-pages/system-prompt";
 export { FewShotPromptingTermPage } from "./ai-stack-pages/few-shot-prompting";
+export { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -105,4 +107,5 @@ export const aiStackArticlePages = {
   "reasoning-model": ReasoningModelTermPage,
   "system-prompt": SystemPromptTermPage,
   "few-shot-prompting": FewShotPromptingTermPage,
+  "zero-shot-prompting": ZeroShotPromptingTermPage,
 } as const;
