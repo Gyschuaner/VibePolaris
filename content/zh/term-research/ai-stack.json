@@ -300,7 +300,7 @@
     "slug": "agent-loop",
     "mechanism": "智能体在读取状态、执行动作、接收结果、更新状态和停止判断之间循环，直到完成、失败或达到限制。",
     "misconception": "一次工具调用不是循环；没有状态更新和停止条件的重复调用不能证明任务完成。",
-    "demoSignature": "修复按钮：清单 1/2 与测试失败进入循环，改状态逻辑后再测，测试通过时清单 2/2 并停止；交互：切换最大轮数 2/3，观察达到上限和完成两种终态。",
+    "demoSignature": "输入：修复任务还有 2 个检查项，允许最多 2/3 轮工具调用；中间：读取状态后运行测试，结果从“尚未运行”变为“失败 → 修复 → 通过”，每轮调用数 0→1→2；输出：3 轮且清单 2/2 时停止，2 轮上限在同一位置显示“达到上限”并保持未完成。可视化：当前状态、工具结果、停止判据三段轨迹；交互：切换最大轮数观察完成与上限两种终态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://arxiv.org/abs/2210.03629",
@@ -308,7 +308,7 @@
       "https://openai.github.io/openai-agents-python/multi_agent/",
       "https://docs.langchain.com/oss/python/langgraph/overview"
     ],
-    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
+    "rewriteRisk": "不要把模型连续输出当成循环；必须让工具结果回写状态，并把完成、失败、取消和轮数上限分开。",
     "nearDuplicates": [
       "agent",
       "function-calling",
