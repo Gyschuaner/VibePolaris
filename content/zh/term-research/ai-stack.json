@@ -464,12 +464,14 @@
     "slug": "benchmark",
     "mechanism": "基准测试用固定任务、数据和计分协议，为不同系统提供可比较的公共参照。",
     "misconception": "基准分数只覆盖它定义的任务和条件，不代表真实业务表现，也不是完整的持续评测系统。",
-    "demoSignature": "输入：2个模型各答100道固定题；中间：按同一规则得分72/79，但业务样本另测为81/76；输出：记录“基准B高、业务A高”的两列结论。可视化：双坐标排名翻转图。 建议4帧：固定100题锁定、两模型跑出72/79、业务集再得81/76、两列排名发生翻转；交互：切换数据集看排名而非动画换位。",
+    "demoSignature": "输入：基线 A 与候选 B 先选择同一“ 一般任务/业务任务”集合；中间：切换 B 的运行记录为同条件、换了题集版本或没有记录，逐项对齐题集、版本、题数、判据和工具；输出：同条件才允许比较通过数与延迟，条件不同显示暂不排名，没有记录不等于零分。可视化：比较条件表与成绩带；交互：点击“核对并比较”后切换任务集合和运行记录观察可比性。",
     "sourceUrls": [
-      "https://arxiv.org/abs/2211.09110",
-      "https://airc.nist.gov/AI_RMF_Knowledge_Base/Playbook"
+      "https://arxiv.org/pdf/1804.07461",
+      "https://docs.mlcommons.org/inference/submission/",
+      "https://arxiv.org/pdf/2211.09110",
+      "https://arxiv.org/pdf/2104.14337"
     ],
-    "rewriteRisk": "不能把排行榜写成能力总排名；要交代固定数据的覆盖范围和迁移风险。",
+    "rewriteRisk": "基准成绩只有在题集、版本、判据、工具和运行记录对齐时才可比较；条件变化时先显示不可比，不要硬排榜。",
     "nearDuplicates": [
       "eval",
       "evaluation-dataset"
