@@ -18,6 +18,16 @@ import { HumanInTheLoopTermPage } from "./ai-stack-pages/human-in-the-loop";
 import { GuardrailTermPage } from "./ai-stack-pages/guardrail";
 import { ModerationTermPage } from "./ai-stack-pages/moderation";
 import { FineTuningTermPage } from "./ai-stack-pages/fine-tuning";
+import { ContextWindowTermPage } from "./ai-stack-pages/context-window";
+import { AgentLoopTermPage } from "./ai-stack-pages/agent-loop";
+import { AgentMemoryTermPage } from "./ai-stack-pages/agent-memory";
+import { WorkingMemoryTermPage } from "./ai-stack-pages/working-memory";
+import { ExecutionSandboxTermPage } from "./ai-stack-pages/execution-sandbox";
+import { EmbeddingTermPage } from "./ai-stack-pages/embedding";
+import { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
+import { RetrievalTermPage } from "./ai-stack-pages/retrieval";
+import { ChunkingTermPage } from "./ai-stack-pages/chunking";
+import { RerankingTermPage } from "./ai-stack-pages/reranking";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -38,6 +48,16 @@ export { HumanInTheLoopTermPage } from "./ai-stack-pages/human-in-the-loop";
 export { GuardrailTermPage } from "./ai-stack-pages/guardrail";
 export { ModerationTermPage } from "./ai-stack-pages/moderation";
 export { FineTuningTermPage } from "./ai-stack-pages/fine-tuning";
+export { ContextWindowTermPage } from "./ai-stack-pages/context-window";
+export { AgentLoopTermPage } from "./ai-stack-pages/agent-loop";
+export { AgentMemoryTermPage } from "./ai-stack-pages/agent-memory";
+export { WorkingMemoryTermPage } from "./ai-stack-pages/working-memory";
+export { ExecutionSandboxTermPage } from "./ai-stack-pages/execution-sandbox";
+export { EmbeddingTermPage } from "./ai-stack-pages/embedding";
+export { VectorStoreTermPage } from "./ai-stack-pages/vector-store";
+export { RetrievalTermPage } from "./ai-stack-pages/retrieval";
+export { ChunkingTermPage } from "./ai-stack-pages/chunking";
+export { RerankingTermPage } from "./ai-stack-pages/reranking";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -60,4 +80,14 @@ export const aiStackArticlePages = {
   guardrail: GuardrailTermPage,
   moderation: ModerationTermPage,
   "fine-tuning": FineTuningTermPage,
+  "context-window": ContextWindowTermPage,
+  "agent-loop": AgentLoopTermPage,
+  "agent-memory": AgentMemoryTermPage,
+  "working-memory": WorkingMemoryTermPage,
+  "execution-sandbox": ExecutionSandboxTermPage,
+  "embedding": EmbeddingTermPage,
+  "vector-store": VectorStoreTermPage,
+  "retrieval": RetrievalTermPage,
+  "chunking": ChunkingTermPage,
+  "reranking": RerankingTermPage,
 } as const;

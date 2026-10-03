@@ -22,12 +22,11 @@ import { TableTermPage, PrimaryKeyTermPage, ForeignKeyTermPage } from "@/compone
 import { DatabaseSchemaTermPage, JoinTermPage, UniqueConstraintTermPage } from "@/components/terms/StructureConceptPages";
 import { CacheTermPage, PoolTermPage, ReplicationTermPage } from "@/components/terms/ReuseConceptPages";
 import { AgentHarnessTermPage } from "@/components/terms/AgentHarnessTermPage";
-import { AgentLoopTermPage, ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
-import { MemoryTermPage, ContextWindowTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
+import { ContextTermPage, ToolCallingTermPage } from "@/components/terms/RelatedConceptPages";
+import { MemoryTermPage, PromptTermPage, McpTermPage, SandboxTermPage } from "@/components/terms/ExtendedConceptPages";
 import { LlmTermPage, TokenTermPage, AgentTermPage } from "@/components/terms/FoundationConceptPages";
-import { EmbeddingTermPage, SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
-import { HybridSearchTermPage, VectorStoreTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
-import { RetrievalTermPage, ChunkingTermPage, RerankingTermPage } from "@/components/terms/SelectionConceptPages";
+import { SemanticSearchTermPage, RagConceptTermPage } from "@/components/terms/SemanticConceptPages";
+import { HybridSearchTermPage, CitationTermPage } from "@/components/terms/EvidenceConceptPages";
 import { RebaseTermPage } from "@/components/terms/RebaseTermPage";
 import { TermExperiencePage } from "@/components/terms/TermExperiencePage";
 import { getPublishedTerm, getRelatedTerms, publishedTerms } from "@/lib/content";
@@ -57,7 +56,7 @@ import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/com
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
-import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage } from '@/components/terms/AiStackConceptPages';
+import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage } from '@/components/terms/AiStackConceptPages';
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -91,6 +90,16 @@ const articleTermPages = {
   guardrail: GuardrailTermPage,
   moderation: ModerationTermPage,
   'fine-tuning': FineTuningTermPage,
+  'context-window': ContextWindowTermPage,
+  'agent-loop': AgentLoopTermPage,
+  'agent-memory': AgentMemoryTermPage,
+  'working-memory': WorkingMemoryTermPage,
+  'execution-sandbox': ExecutionSandboxTermPage,
+  'embedding': EmbeddingTermPage,
+  'vector-store': VectorStoreTermPage,
+  'retrieval': RetrievalTermPage,
+  'chunking': ChunkingTermPage,
+  'reranking': RerankingTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
@@ -113,12 +122,7 @@ const articleTermPages = {
   hallucination: HallucinationTermPage,
   eval: EvaluationTermPage,
   "hybrid-search": HybridSearchTermPage,
-  "vector-store": VectorStoreTermPage,
   citation: CitationTermPage,
-  retrieval: RetrievalTermPage,
-  chunking: ChunkingTermPage,
-  reranking: RerankingTermPage,
-  embedding: EmbeddingTermPage,
   "semantic-search": SemanticSearchTermPage,
   rag: RagConceptTermPage,
   dataframe: FrameTermPage,
@@ -151,12 +155,9 @@ const articleTermPages = {
   "agent-harness": AgentHarnessTermPage,
   tools: ToolCallingTermPage,
   context: ContextTermPage,
-  "agent-loop": AgentLoopTermPage,
   memory: MemoryTermPage,
-  "context-window": ContextWindowTermPage,
   prompt: PromptTermPage,
   mcp: McpTermPage,
-  "execution-sandbox": SandboxTermPage,
   llm: LlmTermPage,
   token: TokenTermPage,
   agent: AgentTermPage,
