@@ -74,14 +74,17 @@
   },
   {
     "slug": "few-shot-prompting",
-    "mechanism": "在提示中放入少量输入—输出示例，让模型从示例里归纳格式或映射规律，再处理新输入。",
-    "misconception": "少样本提示不会更新模型参数；示例质量差时，模型也会照着错误模式学。",
-    "demoSignature": "输入：给2条“故障描述→标签”示例，再输入“付款页空白”；中间：标签候选4类→“前端”0.72；输出：前端。可视化：示例卡片汇入同一分类器。 建议4帧：两组示例先落位、新工单进入、标签分数从均匀变为前端0.72、结果贴到示例序列后；交互：移除一条示例，观察标签和置信变化。",
+    "mechanism": "少样本提示把少量输入—输出示例放进当前上下文，模型据此推断任务格式或局部边界，不更新模型参数。",
+    "misconception": "示例不是训练，也不是事实数据库；示例覆盖不足或互相冲突时，结果会随上下文变化。",
+    "demoSignature": "一致工单示例把新故障归为前端；加入互相冲突的示例后标签显示不稳定。证据：示例卡和新输出同步改变。",
     "sourceUrls": [
       "https://arxiv.org/abs/2005.14165",
-      "https://platform.openai.com/docs/guides/prompt-engineering"
+      "https://platform.openai.com/docs/guides/prompt-engineering",
+      "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+      "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+      "https://arxiv.org/abs/2202.12837"
     ],
-    "rewriteRisk": "别只写“给几个例子”；需要展示示例怎样改变新样本的格式或分类。",
+    "rewriteRisk": "先解释示例改变的是当前上下文，再说明覆盖边界和冲突风险，避免把少样本写成微调。",
     "nearDuplicates": [
       "zero-shot-prompting",
       "fine-tuning"
