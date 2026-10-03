@@ -104,14 +104,17 @@
   },
   {
     "slug": "context-window",
-    "mechanism": "模型一次调用能处理的输入与输出 token 总量受窗口限制；较早内容、工具结果和待生成内容都占用这份容量。",
-    "misconception": "上下文窗口不是长期记忆，也不是把最大长度全部塞满就一定能稳定利用。",
-    "demoSignature": "输入：窗口上限8k，历史占5.5k、工具结果1.5k、预留输出2k；中间：总计9k超限，裁掉最早1k；输出：保留6k输入并成功生成2k。可视化：容量条先溢出再回落。 建议4帧：8k容量槽加载三类token、总量溢出变红、最早1k历史滑出、输出预留区恢复；交互：拖动历史长度看裁剪点移动。",
+    "mechanism": "输入、历史、工具结果和输出预算共同占用一次请求的 token 容量；超出后必须裁剪、压缩或另行检索。",
+    "misconception": "上下文窗口不是长期记忆，也不保证模型平均利用每个位置。",
+    "demoSignature": "容量条：16k 预算先预留 2k 输出，加入 10k 历史与 3k 工具结果后溢出；切换长历史时最早一段移出，输出区恢复。交互：短/长历史切换后观察可见输入变化。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/conversation-state",
-      "https://arxiv.org/abs/1706.03762"
+      "https://developers.openai.com/api/docs/guides/conversation-state",
+      "https://openai.github.io/openai-agents-python/running_agents/",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2307.03172"
     ],
-    "rewriteRisk": "不要只说“能记多少字”；要用token预算解释输入、历史和输出如何争用空间。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "tokenization",
       "working-memory"
@@ -259,14 +262,17 @@
   },
   {
     "slug": "agent-loop",
-    "mechanism": "智能体在“读取当前状态—选择动作—接收结果—更新状态—判断停止”之间循环，直到完成、失败或达到限制。",
-    "misconception": "一次函数调用不是循环；若没有状态更新、停止条件和失败处理，只能算单步工具调用。",
-    "demoSignature": "输入：任务“找到低于300元且有货的耳机”，预算3次调用；中间：搜索得8项→筛价得3项→查库存得1项，调用计数0→3；输出：返回唯一候选并停止。可视化：循环轨道上同步显示候选数与剩余步数。 建议6帧：任务与3步预算出现、搜索得到8项、筛价剩3项、库存剩1项、停止条件亮起、结果输出；交互：逐步播放或修改预算上限。",
+    "mechanism": "智能体在读取状态、执行动作、接收结果、更新状态和停止判断之间循环，直到完成、失败或达到限制。",
+    "misconception": "一次工具调用不是循环；没有状态更新和停止条件的重复调用不能证明任务完成。",
+    "demoSignature": "修复按钮：清单 1/2 与测试失败进入循环，改状态逻辑后再测，测试通过时清单 2/2 并停止；交互：切换最大轮数 2/3，观察达到上限和完成两种终态。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/running_agents/",
-      "https://arxiv.org/abs/2210.03629"
+      "https://arxiv.org/abs/2210.03629",
+      "https://www.anthropic.com/research/building-effective-agents",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://docs.langchain.com/oss/python/langgraph/overview"
     ],
-    "rewriteRisk": "正文要让读者看到状态每轮变化，避免把“思考—行动—观察”写成空泛三段式。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "agent",
       "function-calling",
@@ -466,14 +472,17 @@
   },
   {
     "slug": "embedding",
-    "mechanism": "嵌入模型把输入映射成固定维度的数值向量，使语义相近的内容在向量空间中距离更近。",
-    "misconception": "嵌入不是压缩后的原文，也不能直接生成答案；相似度高只表示表示空间里接近。",
-    "demoSignature": "输入：“重置密码”和“忘记登录密码”；中间：编码为两个向量，余弦相似度0.88，和“修改头像”为0.21；输出：前两句被判为相近。可视化：二维投影中的三点距离。 建议4帧：三句话进入编码器、高维向量条出现、二维投影点落位、两点距离标0.88；交互：改写一句话观察点位和相似度移动。",
+    "mechanism": "嵌入模型把输入映射为固定维度的向量，应用用距离或相似度比较表示，并将相近项作为搜索或聚类候选。",
+    "misconception": "嵌入不是原文压缩包，也不能由高相似度推出事实、权限或最终答案。",
+    "demoSignature": "“忘记密码”、 “重置密码”和“修改头像”进入编码器；二维投影只是示意，查询切换后相似度和首条候选变化。",
     "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/embeddings",
       "https://platform.openai.com/docs/guides/embeddings",
-      "https://arxiv.org/abs/1908.10084"
+      "https://arxiv.org/abs/1908.10084",
+      "https://sbert.net/docs/sentence_transformer/usage/usage.html",
+      "https://arxiv.org/abs/1706.03762"
     ],
-    "rewriteRisk": "不要把二维示意图说成真实高维空间全貌；要标明降维只用于展示。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "semantic-search",
       "vector-store"
@@ -481,14 +490,17 @@
   },
   {
     "slug": "vector-store",
-    "mechanism": "向量存储保存向量及其原文标识和元数据，并建立近邻索引以便按相似度快速找候选。",
-    "misconception": "它不是模型记忆，也不等于检索质量；切分、向量模型和过滤条件都会影响结果。",
-    "demoSignature": "输入：1万段文档向量和query向量；中间：索引访问节点10000→约180，元数据过滤后候选20→7；输出：返回相似度最高的5段及文档ID。可视化：近邻图搜索路径与过滤漏斗。 建议5帧：1万向量点铺开、查询点进入、索引路径只访问约180点、元数据过滤20→7、top5卡片返回；交互：开关过滤条件看候选圈缩放。",
+    "mechanism": "向量存储保存向量、原文标识和元数据，并用近邻索引返回候选；写入、更新、删除和过滤属于应用生命周期。",
+    "misconception": "它不是模型记忆或事实数据库；原文、向量模型、版本和过滤条件变化时需要同步。",
+    "demoSignature": "一万条向量进入索引，查询访问近邻后按版本过滤 20→7，返回 5 条带分数和文档 ID 的原文卡。交互：开关 2026 版本过滤观察候选范围。",
     "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/retrieval",
+      "https://arxiv.org/abs/1702.08734",
       "https://arxiv.org/abs/1603.09320",
-      "https://platform.openai.com/docs/guides/retrieval"
+      "https://qdrant.tech/documentation/concepts/collections/",
+      "https://www.pinecone.io/learn/vector-database/"
     ],
-    "rewriteRisk": "避免把数据库品牌功能当概念定义；应聚焦向量、索引、元数据三部分。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "embedding",
       "retrieval"
@@ -496,14 +508,17 @@
   },
   {
     "slug": "retrieval",
-    "mechanism": "检索根据查询从已有资料中返回一组候选内容，通常包含相关性分数和来源标识，供后续阅读、排序或生成使用。",
-    "misconception": "检索只负责找候选，不会自动生成回答；RAG还包括把候选交给生成模型并约束回答。",
-    "demoSignature": "输入：query“退款多久到账”，库中200段；中间：向量召回top3分数0.82/0.76/0.61；输出：返回3段原文和来源ID，不生成结论。可视化：查询点向三张文档卡发散。 建议4帧：query进入资料库、200段缩成top3、分数与来源ID显现、流程停在原文卡不生成答案；交互：调top-k为1/3/5观察召回集合。",
+    "mechanism": "检索根据查询从已有资料中返回候选内容，通常带相关性分数和来源标识，供排序、阅读、引用或生成使用。",
+    "misconception": "检索不自动生成答案；候选可能遗漏、误召回或没有访问权限，RAG 还包含后续生成和核对。",
+    "demoSignature": "退款问题进入 200 段资料，top-k=1/3 改变返回原文集合，流程停止在来源卡片，不生成结论。交互：切换 top-k 观察候选数量变化。",
     "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/retrieval",
       "https://arxiv.org/abs/2004.04906",
-      "https://platform.openai.com/docs/guides/retrieval"
+      "https://arxiv.org/abs/2005.11401",
+      "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
+      "https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html"
     ],
-    "rewriteRisk": "要让输出停在候选资料，借此与RAG、基于证据回答清楚分界。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "rag",
       "grounding",
@@ -512,14 +527,17 @@
   },
   {
     "slug": "chunking",
-    "mechanism": "分块把长文档切成可索引的小段，并可保留重叠、标题和页码，让检索既能命中细节又不丢定位。",
-    "misconception": "块越小并非越好；过小会断语义，过大则混入无关内容并挤占上下文。",
-    "demoSignature": "输入：2400字文档；中间：按800字得3块，改为500字+100字重叠后得6块；输出：查询命中含完整定义的第4块。可视化：长纸带按两种窗口切割并标出命中区。 建议5帧：2400字长纸带展开、按800切成3块、改为500+100重叠切成6块、查询命中区亮起、完整定义保留；交互：拖块长与重叠滑块。",
+    "mechanism": "分块把长文切成可索引的小段，并可保留标题、页码和重叠；块大小和边界决定检索能否带回完整条件。",
+    "misconception": "块越小并非越好；过小会断开语义，过大则混入噪声并挤占上下文，没有通用固定长度。",
+    "demoSignature": "2400 字文档按 800 字切成 3 块，改为 500 字并重叠 100 字后切成 6 块；查询在重叠规则下命中第 4 块，仍需回查相邻条件。交互：切换两种规则观察边界。",
     "sourceUrls": [
-      "https://platform.openai.com/docs/guides/retrieval",
-      "https://arxiv.org/abs/2005.11401"
+      "https://developers.openai.com/api/docs/guides/retrieval",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2005.11401",
+      "https://docs.langchain.com/oss/python/integrations/splitters",
+      "https://docs.llamaindex.ai/en/stable/module_guides/loading/node_parsers/"
     ],
-    "rewriteRisk": "不要给唯一“最佳块大小”；应展示切分规则怎样改变命中片段。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "retrieval",
       "context-window"
@@ -527,14 +545,17 @@
   },
   {
     "slug": "reranking",
-    "mechanism": "重排序接收召回阶段的一小组候选，用更精细的相关性模型重新打分，再把最合适的内容排到前面。",
-    "misconception": "它不负责从全库找文档，也不能补回召回阶段完全漏掉的资料。",
-    "demoSignature": "输入：召回top3为A/B/C，分数0.81/0.78/0.70；中间：交叉编码重评为0.54/0.91/0.62，顺序A-B-C→B-C-A；输出：B成为首条。可视化：三张卡片按新分数换位。 建议4帧：A/B/C按召回分数排队、新模型逐项重评、卡片移动为B/C/A、B固定首位；交互：切换“召回分/重排分”看排序依据。",
+    "mechanism": "重排序接收初次召回的一小组候选，用更精细的规则或模型重新评分和排序，再截取前几条。",
+    "misconception": "它不能补回完全漏掉的文档；候选数量、长度和初次过滤决定这一步的上限。",
+    "demoSignature": "初次候选 A/B/C 按 0.82/0.78/0.76 排列，联合评分后 B/A/C 变为 0.94/0.71/0.12；D 从未进入候选。交互：切换召回分与重排分。",
     "sourceUrls": [
-      "https://arxiv.org/abs/1910.14424",
-      "https://arxiv.org/abs/2004.04906"
+      "https://docs.cohere.com/v2/docs/rerank",
+      "https://sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html",
+      "https://arxiv.org/abs/1901.04085",
+      "https://arxiv.org/abs/2004.12832",
+      "https://developers.openai.com/api/docs/guides/retrieval"
     ],
-    "rewriteRisk": "演示要保留召回前序和重排后序，不能只展示一列最终分数。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "retrieval",
       "semantic-search"
@@ -627,16 +648,17 @@
   },
   {
     "slug": "agent-memory",
-    "mechanism": "智能体记忆是应用保存下来、供后续调用的信息。应用先判断什么值得保存，按任务取回相关记录，并定好记录怎样纠正、何时失效、怎么删除。这个例子里，用户明确同意保存一条偏好，应用才写入。",
-    "misconception": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
-    "demoSignature": "用户确认保存代码写法偏好；应用把带来源与时间的记录加入已有食谱记录的记忆库。新代码任务在 2 条记录中只取回相关的 1 条，并交给 AI 生成示例。随后用户纠正、删除这条代码偏好，记忆库剩 1 条食谱记录；既有回复不改写，下一次代码任务需重新说明偏好。6 帧分别展示确认、写入、相关取回、生成、纠正、删除；选择操作查看对应状态。失效时间作为记录规则说明，不假装演示实际计时。",
+    "mechanism": "应用为后续任务保存、检索、纠正和删除的信息；模型只有在记录被放入本轮输入时才会看到。",
+    "misconception": "工作记忆是当前任务的临时状态；保存聊天不等于同意长期记忆，删除也不会倒写旧回答。",
+    "demoSignature": "代码偏好：用户同意后写入带来源和时间的记录，新会话只取回相关一条，用户撤回后删除；交互：保存、取回、纠正/删除三阶段。",
     "sourceUrls": [
       "https://docs.langchain.com/oss/python/concepts/memory",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
       "https://arxiv.org/abs/2304.03442",
-      "https://arxiv.org/abs/2310.08560"
+      "https://arxiv.org/abs/2310.08560",
+      "https://openai.github.io/openai-agents-python/running_agents/"
     ],
-    "rewriteRisk": "智能体记忆包含任务内和跨会话信息；本例聚焦跨会话偏好，不把聊天关闭等同于临时状态自动清除。不把删除记录表现成修改已生成的输出。隐私同意和保存期限属于本例管理建议，不声明所有框架自动提供。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "working-memory",
       "context-window",
@@ -645,16 +667,17 @@
   },
   {
     "slug": "working-memory",
-    "mechanism": "工作记忆把当前任务要继续使用的状态放在一起，例如目标、候选清单、已查结果和下一步要做的事；任务推进时更新它，结束后按需要清理或保留结果。",
-    "misconception": "它只服务当前任务；跨会话记忆才保存给下一次聊天用。聊天里说过的话也不会自动全部带到下一步。本例中，承载智能体的程序把预算目标、候选和工具结果保存为工作记忆，下一轮再把需要的内容发给 AI。最终结果要不要另行保存，是另一条产品规则。",
-    "demoSignature": "输入：比价任务有 5 个候选，预算不超过 500 元且需要有货；中间：查价后 5→3，查库存后 3→2，调用次数为 2；输出：交付 2 个候选给用户比较，清空候选便签和调用次数，目标卡作为本次交付的说明保留，结果是否另外存起来按产品规则决定。可视化：任务目标连接候选清单、工具调用和交付结果，工具返回后更新清单，终点清理临时状态。建议4帧：目标和候选写入、预算筛选、库存筛选、交付后清理；交互：选择阶段查看状态快照。",
+    "mechanism": "工作记忆把当前任务的目标、候选、工具结果、调用次数和下一步放在可更新状态里，任务结束后按规则清理或交付。",
+    "misconception": "它不自动跨会话保存偏好，也不是把完整聊天全文永久放进上下文。",
+    "demoSignature": "比价任务：候选 5 个，查价和库存后变为 2 个；交付时清掉候选和计数，保留的结果由另一条规则决定。交互：5 个候选/2 个候选切换并观察状态快照。",
     "sourceUrls": [
+      "https://openai.github.io/openai-agents-python/running_agents/",
       "https://docs.langchain.com/oss/python/concepts/memory",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
-      "https://openai.github.io/openai-agents-python/running_agents/",
-      "https://arxiv.org/abs/2310.08560"
+      "https://arxiv.org/abs/2310.08560",
+      "https://arxiv.org/abs/2210.03629"
     ],
-    "rewriteRisk": "必须区分当前任务的工作状态、模型本轮收到的输入和跨会话偏好；清理的是临时状态，任务目标与已经交付的结果可以按产品规则保留，不要画成一起消失。不要把所有框架都写成任务结束必然自动清空。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "agent-memory",
       "context-window",
@@ -681,14 +704,17 @@
   },
   {
     "slug": "execution-sandbox",
-    "mechanism": "执行沙箱在隔离环境中运行不可信代码，并限制可访问的文件、网络、进程、时间和资源。",
-    "misconception": "沙箱不是“绝对安全盒子”；配置错误、内核漏洞和过宽挂载仍可能越界。",
-    "demoSignature": "输入：脚本尝试读项目文件、联网和运行10秒；中间：文件权限0项、网络请求被拒1次、CPU在2秒超时；输出：只保留标准输出并销毁环境。可视化：资源边界图上三条访问线逐一被阻断。 建议5帧：脚本落入隔离盒、读文件请求撞墙、联网请求被拒、CPU计时到2秒终止、只导出标准输出；交互：逐项开关文件/网络/时限权限。",
+    "mechanism": "执行沙箱在隔离环境中运行代码，并限制文件、网络、进程、时间和资源访问；结束或超时后销毁临时环境。",
+    "misconception": "沙箱不是绝对安全盒子；内核、运行时、挂载、依赖和结果检查仍然决定风险。",
+    "demoSignature": "脚本尝试读项目文件、联网和运行 10 秒；文件/网络请求被拒，2 秒预算终止进程，只保留标准输出。交互：逐项切换文件、网络和时间权限。",
     "sourceUrls": [
-      "https://csrc.nist.gov/pubs/sp/800/190/final",
-      "https://platform.openai.com/docs/guides/tools-code-interpreter"
+      "https://developers.openai.com/api/docs/guides/tools-code-interpreter",
+      "https://developers.openai.com/api/docs/guides/agents-api/environments/security",
+      "https://docs.docker.com/engine/security/",
+      "https://docs.docker.com/engine/security/rootless/",
+      "https://csrc.nist.gov/pubs/sp/800/190/final"
     ],
-    "rewriteRisk": "别把容器等同于完整沙箱；要列出实际限制面和销毁时机。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "container",
       "permission-boundary"

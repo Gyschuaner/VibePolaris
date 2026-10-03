@@ -51,9 +51,13 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
   const simulation = useRef<ReturnType<typeof createGraphSimulation> | null>(null);
   const reducedMotion = useRef(false);
   const lastNudge = useRef(0);
-  const labelOpacity = Math.max(0, Math.min(1, (view.scale - 1.05) / .45));
+  const labelOpacity = Math.max(0, Math.min(.24, (view.scale - .42) / .55 * .24));
   const { beginRouteFlight } = useRouteMeteor();
   const bySlug = useMemo(() => new Map(nodes.map(node => [node.slug, node])), [nodes]);
+  const introSlugs = useMemo(() => new Set([...nodes]
+    .sort((a, b) => b.degree - a.degree || a.zh.localeCompare(b.zh))
+    .slice(0, 5)
+    .map(node => node.slug)), [nodes]);
   const selectedNeighbors = useMemo(() => graphNeighbors(selected, edges), [selected, edges]);
   const relatedNodes = nodes.filter(node => selectedNeighbors.has(node.slug));
   const current = bySlug.get(selected || lastSelected);
@@ -204,6 +208,12 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
     writeLocation(url);
   }
 
+  function resetView() {
+    selectCategory("");
+    setReframing(true);
+    frame(positions());
+  }
+
   function selectNode(slug: string) {
     setLastSelected(slug);
     selection.current = slug;
@@ -340,6 +350,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
       </div>
     </>}
     <div className={styles.workspace}>
+      {!inline && !selected && !query && <p className={styles.guide}>点击星点，开始探索</p>}
       <div ref={canvas} className={styles.canvas} data-pointer-native role="region" aria-label="概念关系画布，可拖动、缩放或用方向键移动" tabIndex={0}
         onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onPointerLeave={() => setHovered("")}
         onKeyDown={event => {
@@ -367,7 +378,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
             const connected = selectedNeighbors.has(node.slug);
             const highlighted = node.slug === selected || connected;
             const central = node.slug === centerSlug;
-            const named = node.slug === hovered || highlighted || central;
+            const named = node.slug === hovered || highlighted || central || (!selected && !query && introSlugs.has(node.slug));
             const muted = selected ? !named : category && node.cat !== category && !named;
             const starSize = inline ? central ? 64 : 44 : Math.min(52, Math.max(23 + node.degree, 20 / view.scale));
             return <button type="button" key={node.slug} ref={element => {
@@ -378,7 +389,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
               style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }}
               onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")}
               onClick={event => { if (event.detail === 0) selectNode(node.slug); }}>
-              <span className="brand-star-only" aria-hidden="true" style={{ width: starSize, height: starSize }} /><span className={styles.label} style={{ fontSize: (central ? 22 : 14) / view.scale, opacity: named ? 1 : labelOpacity }}>{central && node.slug === "agent-harness" ? "Harness" : node.zh}</span>
+              <span className="brand-star-only" aria-hidden="true" style={{ width: starSize, height: starSize }} /><span className={styles.label} style={{ fontSize: (central ? 22 : 14) / view.scale, opacity: named ? 1 : (!selected && !query && view.scale < .75 ? 0 : labelOpacity) }}>{central && node.slug === "agent-harness" ? "Harness" : node.zh}</span>
             </button>;
           })}
         </div>
@@ -386,7 +397,7 @@ export function ConceptGraph({ nodes: initialNodes, edges, categories, variant =
       <div className={styles.controls} aria-label="星图视图控制">
         <button type="button" aria-label="放大星图" title="放大" onClick={() => { setReframing(true); zoom(1.3); }}><Plus size={18} /></button>
         <button type="button" aria-label="缩小星图" title="缩小" onClick={() => { setReframing(true); zoom(1 / 1.3); }}><Minus size={18} /></button>
-        <button type="button" aria-label="显示完整星图" title="显示完整星图" onClick={() => selectCategory("")}><CornersOut size={18} /></button>
+        <button type="button" aria-label="重置星图视图" title="重置视图" onClick={resetView}><CornersOut size={18} /></button>
         {!inline && <label><input type="checkbox" checked={showLines} onChange={event => setShowLines(event.target.checked)} />显示连线</label>}
       </div>
       {current && <aside className={`${styles.detail} ${inline ? "" : styles.compact}`} data-open={Boolean(selected)} inert={!selected} aria-hidden={!selected} aria-label={`${current.zh}概念详情`}>
