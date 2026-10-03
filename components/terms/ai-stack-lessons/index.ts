@@ -29,3 +29,4 @@ export { RetrievalLesson } from "./retrieval";
 export { ChunkingLesson } from "./chunking";
 export { RerankingLesson } from "./reranking";
 export { MultimodalLesson } from "./multimodal";
+export { ReasoningModelLesson } from "./reasoning-model";
