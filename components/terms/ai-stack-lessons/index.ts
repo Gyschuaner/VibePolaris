@@ -34,3 +34,4 @@ export { SystemPromptLesson } from "./system-prompt";
 export { FewShotPromptingLesson } from "./few-shot-prompting";
 export { ZeroShotPromptingLesson } from "./zero-shot-prompting";
 export { TemperatureLesson } from "./temperature";
+export { TokenizationLesson } from "./tokenization";
