@@ -28,8 +28,21 @@ function BranchLesson() {
   </div>;
 }
 
+function WorkingTreeLesson() {
+  const scene = useScene(3);
+  const labels = ["三层对齐", "编辑工作树", "加入暂存区"];
+  const edited = scene.step >= 1;
+  const staged = scene.step === 2;
+  return <div className={styles.lab} ref={scene.ref} role="region" aria-label="HEAD 索引与工作树演示">
+    <Caption scene={scene} labels={labels} titles={["刚检出时三层一致", "保存只改变工作树", "git add 复制当前内容到索引"]} copy={["HEAD、index 和工作树都显示 settings.ts 的旧版本。", "把 timeout 改为 30 后，只有工作树出现新行。", "执行 git add 后，index 也记录 30；HEAD 仍是旧提交。"]} />
+    <div className={styles.gitLayers} aria-label="Git 三层快照"><div data-active={false}><GitCommit size={22} /><strong>HEAD</strong><code>timeout = 10</code></div><ArrowRight size={18} /><div data-active={staged}><Stack size={22} /><strong>index</strong><code>{staged ? "timeout = 30" : "timeout = 10"}</code></div><ArrowRight size={18} /><div data-active={edited}><Pencil size={22} /><strong>工作树</strong><code>{edited ? "timeout = 30" : "timeout = 10"}</code></div></div>
+    <div className={styles.choices} role="group" aria-label="改变 Git 层"><button type="button" onClick={() => scene.seek(1)} aria-pressed={edited}>编辑文件</button><button type="button" onClick={() => scene.seek(2)} aria-pressed={staged}>git add</button></div>
+  </div>;
+}
+
 export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "repo-commit") return <RepoCommitLesson />;
   if (slug === "branch") return <BranchLesson />;
+  if (slug === "working-tree") return <WorkingTreeLesson />;
   return null;
 }

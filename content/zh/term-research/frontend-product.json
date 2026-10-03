@@ -512,11 +512,11 @@
   },
   {
     "slug": "working-tree",
-    "mechanism": "Git 把 HEAD 对应树写入文件系统形成工作树；编辑后，文件内容先只与索引和 HEAD 产生差异。",
-    "misconception": "保存文件不等于 git add 或 commit，工作树、索引和提交是三个独立快照位置。",
-    "demoSignature": "建议 4 帧：HEAD、index、working tree 是三层可叠合代码板；用户编辑一行，只有 working tree 变色；点击 git add，改动复制到 index；点击 commit，HEAD 生成新快照，三层重新对齐。",
-    "sourceUrls": ["https://git-scm.com/docs/gitglossary", "https://git-scm.com/docs/git-status"],
-    "rewriteRisk": "high",
+    "mechanism": "Git 把 HEAD 对应树检出到文件系统形成 working tree；编辑文件只改变工作树，git add 把当前内容写入 index，commit 再把 index 写成新的 HEAD 快照。",
+    "misconception": "保存文件不等于 git add、commit 或远程同步；工作树、索引和提交是三个独立快照位置，git restore 还可能按来源丢弃指定层差异。",
+    "demoSignature": "state: 3 steps; actors=HEAD/index/working tree/settings.ts/timeout=10/timeout=30; phases=三层对齐→只编辑工作树→git add 更新 index 而 HEAD 不动; action=推进 Git 层",
+    "sourceUrls": ["https://git-scm.com/docs/gitglossary", "https://git-scm.com/docs/git-status", "https://git-scm.com/docs/git-add", "https://git-scm.com/docs/git-restore", "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"],
+    "rewriteRisk": "正式页面需让零基础读者用同一份文件看见 HEAD、index、工作树的差异，区分保存、add、commit 和 restore 的对象与风险；不要把工作树写成远程副本或提交队列。",
     "nearDuplicates": ["staging-area", "diff", "repo-commit"]
   },
   {
