@@ -69,7 +69,7 @@ export function RagConceptTermPage() {
   return <ConceptArticle slug="rag" title="RAG" subtitle="检索增强生成" sources={ragSources} sections={[["retrieval", "回答前，先取回资料"], ["evidence", "检索资料进入本轮回答"], ["context", "选择与更新可用内容"], ["checking", "核对回答，也核对资料"]]}
     intro={<>“这本书能续借吗？”需要本馆规则和当前预约状态。RAG 在生成回答时加入检索得到的资料，让模型能利用训练参数之外、会随业务变化的规则和状态；这些资料是否充分、有效，仍然要检查。</>}
     hero={<ConceptHero slug="rag" label="续借规则A与预约状态B一起支持不能续借的回答"><div className={s.ragHero}><div><code>A · 规则</code><strong>未被预约才可续借</strong></div><div><code>B · 状态</code><strong>已有预约</strong></div><p>当前不能续借。<span>[A] [B]</span></p></div></ConceptHero>}>
-    <ArticleSection id="retrieval" title="回答前，先取回资料"><Legacy slug="rag" names={["question", "definition"]}/>
+    <ArticleSection id="retrieval" title="回答前，先取回资料"><Legacy slug="rag" names={["question"]}/>
       <p id="rag-definition" className="vp-citation-target"><strong>生成回答时，模型会把检索到的外部资料一起放进本轮输入来参考。</strong>Lewis 等人的原始研究把生成模型的参数记忆与文档索引中的外部记忆组合，用问题检索段落，再让生成依赖问题和取回内容。外部资料可以更新和查看，不必把每次知识变化都写进模型参数。<Cite id="rag-definition"/></p>
       <p>常见应用把过程分成准备资料、检索候选、组织本轮输入、生成回答：先把规则整理成可检索的资料，找到相关片段，再把问题、规则 A 和状态 B 一起交给模型，最后依据这三样组织文字。<strong>上传文件、找到片段与正确回答，是三个不同的结果。</strong>例如文件上传了却还没进入索引，或者找到了“14 天”却答成“7 天”，都可能发生。</p>
       <p id="rag-original" className="vp-citation-target">原始论文研究了 RAG-Sequence 与 RAG-Token，并对检索器与生成器进行联合微调。今天使用现成检索服务和模型拼接输入的应用，不必复现这套训练架构。<strong>名字相同，仍要核对具体实现怎样取资料、怎样使用资料。</strong><Cite id="rag-original"/></p>
