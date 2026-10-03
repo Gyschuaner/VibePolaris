@@ -410,7 +410,7 @@
     "slug": "guardrail",
     "mechanism": "护栏在输入、输出或工具动作前后执行检查，并按规则放行、拦截、改写或转人工处理。",
     "misconception": "护栏按预先写好的规则检查指定位置，不能保证模型绝不出错，也不能代替权限、内容审核或业务校验（例如金额上限、库存是否足够）。内容审核关注内容是否适合发布，权限决定能否访问资源，业务校验由后端规则判定。",
-    "demoSignature": "输入：导出客户表含 12 个手机号字段；中间：规则扫描命中 12 个字段，脱敏规则把完整号码改为只显示后 4 位；输出：脱敏分支放行 12 条记录且完整号码为 0；禁止分支直接阻断导出，权限仍单独判断。可视化：数据字段穿过规则闸门，敏感列被遮罩。建议4帧：含手机号的数据表进入、规则扫描12个字段命中、敏感列被改写、脱敏结果放行；交互：按步骤查看命中、改写和放行状态。",
+    "demoSignature": "输入：导出表有 12 条记录，每条含一个手机号；中间：4 帧从数据进入、扫描字段到规则处置，扫描识别 12 个字段但不改变原始数据；输出：切换“脱敏放行”显示 12 条后四位数据，切换“命中即阻断”显示导出停止，权限校验仍是另一层。可视化：数据、规则检查、处置结果三段轨迹；交互：在规则执行前切换脱敏/阻断，观察结果而非把检查当成授权。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/guardrails/",
       "https://openai.github.io/openai-agents-python/human_in_the_loop/",
@@ -418,7 +418,7 @@
       "https://airc.nist.gov/airmf-resources/playbook/",
       "https://developers.openai.com/api/docs/guides/safety-best-practices"
     ],
-    "rewriteRisk": "要写出护栏检查什么、命中后做什么，以及权限、审核和业务校验由谁负责，不要把所有安全措施都装进同一个词。",
+    "rewriteRisk": "护栏只回答某个边界是否符合规则；命中后必须有明确处置，且不能把脱敏放行误写成获得了权限。",
     "nearDuplicates": [
       "moderation",
       "permission-boundary",
