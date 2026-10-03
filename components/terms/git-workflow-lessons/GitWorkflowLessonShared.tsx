@@ -7,6 +7,7 @@ import styles from "../ConceptArticle.module.css";
 import { PushLesson } from "./push";
 import { MergeLesson } from "./merge";
 import { RebaseLesson } from "./rebase";
+import { MergeConflictLesson } from "./merge-conflict";
 
 function RepoCommitLesson() {
   const scene = useScene(3);
@@ -168,5 +169,6 @@ export function GitWorkflowLesson({ slug }: { slug: string }) {
   if (slug === "push") return <PushLesson />;
   if (slug === "merge") return <MergeLesson />;
   if (slug === "rebase") return <RebaseLesson />;
+  if (slug === "merge-conflict") return <MergeConflictLesson />;
   return null;
 }

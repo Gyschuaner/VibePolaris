@@ -1137,7 +1137,7 @@
     "definition": "当 merge、rebase 或 cherry-pick 遇到重叠且无法自动合并的变化，Git 会暂停操作并在文件中标记冲突区域。",
     "boundary": "解决冲突不是简单删除标记或固定选择 ours/theirs；要理解两边意图并验证组合后的行为。",
     "demoType": "branch", "demoTitle": "同一函数的两项修改",
-    "demoSteps": [{"label":"读取两边意图","value":"一边改校验，一边改返回格式","note":"两项变化可能都需要保留。"},{"label":"编辑最终版本","value":"组合校验和新返回结构","note":"冲突标记全部移除。"},{"label":"继续并验证","value":"add 后完成 merge 或 rebase","note":"相关测试确认组合结果。"}],
+    "demoSteps": [{"label":"共同祖先","value":"base A + ours 校验 + theirs 返回结构","note":"先分清三方输入，不按时间覆盖文件。"},{"label":"冲突标记","value":"<<<<<<< ours … ======= … >>>>>>> theirs","note":"同一片区域重叠，Git 停下等待判断。"},{"label":"组合并验证","value":"组合结果 → git add → continue","note":"删除标记不等于行为正确，还要运行相关测试。"}],
     "quizQuestion": "冲突文件编辑完成后还应做什么？", "quizOptions": ["暂存文件并运行相关测试", "直接删除仓库", "忽略未解决标记"],
     "correctText": "暂存表示该冲突已处理，测试验证语义是否正确。", "wrongText": "残留标记会破坏代码，删除仓库也不能解决意图冲突。",
     "promptTitle": "分析并解决一处合并冲突", "prompt": "请分别说明下面冲突两边的改动目的，给出同时满足需求的最终代码，列出要运行的测试，并保留无法判断的业务问题供确认。",
