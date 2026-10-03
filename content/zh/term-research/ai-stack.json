@@ -56,14 +56,17 @@
   },
   {
     "slug": "system-prompt",
-    "mechanism": "系统提示词在一次模型调用中提供高优先级的角色、边界和输出规则，后续用户输入在这些规则内被处理。",
-    "misconception": "它不是不可绕过的安全边界；权限控制仍要由模型外的代码和系统承担。",
-    "demoSignature": "输入：系统规则“只返回城市名”，用户问天气并要求解释；中间：候选输出从“北京，晴…”裁到“北京”；输出：只保留城市名。可视化：指令优先级栈与裁剪前后对比。 建议4帧：两层指令卡叠放、用户请求进入、解释性尾句被高亮裁掉、剩余城市名输出；交互：开关系统规则，对比输出形状。",
+    "mechanism": "系统提示词在请求开始时提供较高层的行为、格式或安全规则，模型再处理用户消息并生成受约束的输出。",
+    "misconception": "系统提示不是保险箱，也不是权限系统；低层请求受规则约束，但秘密和授权仍要在模型外保护。",
+    "demoSignature": "系统规则要求 JSON 且不泄露内部指令；用户请求冲突时仍按 JSON 拒绝；移除系统规则后显示保护缺失。",
     "sourceUrls": [
+      "https://model-spec.openai.com/",
       "https://platform.openai.com/docs/guides/prompt-engineering",
-      "https://model-spec.openai.com/"
+      "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts",
+      "https://ai.google.dev/gemini-api/docs/system-instructions",
+      "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
     ],
-    "rewriteRisk": "写作时不要把提示词包装成万能控制器；必须交代它与应用权限的边界。",
+    "rewriteRisk": "用规则层级解释系统提示；同时写清秘密和权限不能只依赖提示词。",
     "nearDuplicates": [
       "prompt-injection",
       "guardrail"

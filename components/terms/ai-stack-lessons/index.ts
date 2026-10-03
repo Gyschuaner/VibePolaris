@@ -30,3 +30,4 @@ export { ChunkingLesson } from "./chunking";
 export { RerankingLesson } from "./reranking";
 export { MultimodalLesson } from "./multimodal";
 export { ReasoningModelLesson } from "./reasoning-model";
+export { SystemPromptLesson } from "./system-prompt";
