@@ -652,16 +652,17 @@
   },
   {
     "slug": "working-memory",
-    "mechanism": "工作记忆把当前任务要继续使用的状态放在一起，例如目标、候选清单、已查结果和下一步要做的事；任务推进时更新它，结束后按需要清理或保留结果。",
-    "misconception": "它只服务当前任务；跨会话记忆才保存给下一次聊天用。聊天里说过的话也不会自动全部带到下一步。本例中，承载智能体的程序把预算目标、候选和工具结果保存为工作记忆，下一轮再把需要的内容发给 AI。最终结果要不要另行保存，是另一条产品规则。",
-    "demoSignature": "输入：比价任务有 5 个候选，预算不超过 500 元且需要有货；中间：查价后 5→3，查库存后 3→2，调用次数为 2；输出：交付 2 个候选给用户比较，清空候选便签和调用次数，目标卡作为本次交付的说明保留，结果是否另外存起来按产品规则决定。可视化：任务目标连接候选清单、工具调用和交付结果，工具返回后更新清单，终点清理临时状态。建议4帧：目标和候选写入、预算筛选、库存筛选、交付后清理；交互：选择阶段查看状态快照。",
+    "mechanism": "工作记忆把当前任务的目标、候选、工具结果、调用次数和下一步放在可更新状态里，任务结束后按规则清理或交付。",
+    "misconception": "它不自动跨会话保存偏好，也不是把完整聊天全文永久放进上下文。",
+    "demoSignature": "比价任务：候选 5 个，查价和库存后变为 2 个；交付时清掉候选和计数，保留的结果由另一条规则决定。交互：5 个候选/2 个候选切换并观察状态快照。",
     "sourceUrls": [
+      "https://openai.github.io/openai-agents-python/running_agents/",
       "https://docs.langchain.com/oss/python/concepts/memory",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
-      "https://openai.github.io/openai-agents-python/running_agents/",
-      "https://arxiv.org/abs/2310.08560"
+      "https://arxiv.org/abs/2310.08560",
+      "https://arxiv.org/abs/2210.03629"
     ],
-    "rewriteRisk": "必须区分当前任务的工作状态、模型本轮收到的输入和跨会话偏好；清理的是临时状态，任务目标与已经交付的结果可以按产品规则保留，不要画成一起消失。不要把所有框架都写成任务结束必然自动清空。",
+    "rewriteRisk": "正文要把本概念的实际作用、前置条件、可观察证据和不适用边界写在一起，不把相邻机制或虚构教学数字说成厂商保证。",
     "nearDuplicates": [
       "agent-memory",
       "context-window",

@@ -23,3 +23,4 @@ export { fineTuningSources } from "./fine-tuning";
 export { contextWindowSources } from "./context-window";
 export { agentLoopSources } from "./agent-loop";
 export { agentMemorySources } from "./agent-memory";
+export { workingMemorySources } from "./working-memory";

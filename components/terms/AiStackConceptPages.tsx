@@ -21,6 +21,7 @@ import { FineTuningTermPage } from "./ai-stack-pages/fine-tuning";
 import { ContextWindowTermPage } from "./ai-stack-pages/context-window";
 import { AgentLoopTermPage } from "./ai-stack-pages/agent-loop";
 import { AgentMemoryTermPage } from "./ai-stack-pages/agent-memory";
+import { WorkingMemoryTermPage } from "./ai-stack-pages/working-memory";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -44,6 +45,7 @@ export { FineTuningTermPage } from "./ai-stack-pages/fine-tuning";
 export { ContextWindowTermPage } from "./ai-stack-pages/context-window";
 export { AgentLoopTermPage } from "./ai-stack-pages/agent-loop";
 export { AgentMemoryTermPage } from "./ai-stack-pages/agent-memory";
+export { WorkingMemoryTermPage } from "./ai-stack-pages/working-memory";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -69,4 +71,5 @@ export const aiStackArticlePages = {
   "context-window": ContextWindowTermPage,
   "agent-loop": AgentLoopTermPage,
   "agent-memory": AgentMemoryTermPage,
+  "working-memory": WorkingMemoryTermPage,
 } as const;

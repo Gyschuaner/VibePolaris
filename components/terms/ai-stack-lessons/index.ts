@@ -21,3 +21,4 @@ export { XssLesson } from "./xss";
 export { ContextWindowLesson } from "./context-window";
 export { AgentLoopLesson } from "./agent-loop";
 export { AgentMemoryLesson } from "./agent-memory";
+export { WorkingMemoryLesson } from "./working-memory";
