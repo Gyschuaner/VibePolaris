@@ -453,9 +453,9 @@ const tcpSpec: PageSpec = {
         title: "丢掉一个 segment 后，字节怎样回到正确顺序",
         ariaLabel: "TCP 序号、确认和重传恢复字节流的演示",
         steps: [
-          { label: "分段发送", actors: ["ABCDEF", "GHIJ", "KLM"], evidence: "三段共享一个连续字节序号范围，接收方知道每段应该落在哪里。" },
+          { label: "分段发送", actors: ["ABCDEF", "GHIJ", "KL"], evidence: "三段共享一个连续字节序号范围，接收方知道每段应该落在哪里。" },
           { label: "出现缺口", actors: ["ABCDEF", "GHIJ · 丢失", "KLM"], evidence: "后面的字节到达但缺口仍在，接收缓冲区等待缺失范围，应用不会看到跳跃的顺序。" },
-          { label: "重传并交付", actors: ["ACK", "GHIJ · 重传", "ABCDEFGHIJKLM"], evidence: "重传填补缺口后，TCP 才把连续字节交给应用。" },
+          { label: "重传并交付", actors: ["ACK", "GHIJ · 重传", "ABCDEFGHIJKL"], evidence: "重传填补缺口后，TCP 才把连续字节交给应用。" },
         ],
         failure: { label: "把一次 read 当一条消息", text: "接收方可能先读到 ABC，再读到 DEFG；应用必须自己定义长度、分隔符或帧格式，TCP 不会替它切消息。" },
       },
