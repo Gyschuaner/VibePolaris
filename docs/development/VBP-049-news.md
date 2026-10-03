@@ -1,6 +1,6 @@
 # VBP-049 新闻栏目交付记录
 
-状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30 至 2026-09-02 的 28 个有事件日和 1 个空档日，共 29 条按天记录，继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
+状态：阶段一已在 `feat/VBP-049-news-column` 完成 2021-01-01 至 2021-01-07 七天试跑；阶段二正在 `feat/VBP-049-news-backfill-news` 按新闻事件逐日回溯；当前已完成 2026-09-30 至 2026-09-01 的 29 个有事件日和 1 个空档日，共 30 条按天记录，继续倒序向更早日期推进，目标范围仍是 2021-01-08 至 2026-10-02。本分支不合并 `dev`；论文不再作为阶段二的主事件来源。2026-10-02 曾按用户授权准备腾讯云部署，但用户随后取消，已恢复原生产镜像并保持线上服务健康。
 
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
@@ -12,7 +12,7 @@
 
 ## 阶段二执行口径
 
-- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-02（含 9 月 27 日空档日），再逐日处理更早日期；9 月 5 日按两条独立事实链发布两篇，9 月 6 日按三条独立事实链发布三篇。
+- 每个事件日有独立的 `content/zh/news-daily/YYYY-MM-DD.json`，保留检索式、候选、事件日、来源发布日期、原始链接、引用卡片、去重决策和空档日原因；当前反向回溯已完成 2026-09-30 至 2026-09-01（含 9 月 27 日空档日），再逐日处理更早日期；9 月 5 日按两条独立事实链发布两篇，9 月 6 日按三条独立事实链发布三篇。
 - 主事件优先取官方公告/官方博客、监管文件、可信新闻报道和可核验的行业或个人解读；论文只作为已成立新闻事件的背景来源，不能单独填充 `selectedSlugs`。
 - 文章先写事实链和读者问题，再组织按事件需要变化的正文段落、讲解步骤和自制 SVG；`hero.sourceUrl`、许可和引用卡片都保留追溯信息。
 - 词条关系只确认已经公开且正文确实解释的 slug。草稿在 `ready` 前必须经过 humanizer-zh 表达检查与 `codex-subagent-reader` 零基础读者审读，审读结果写入 `readerReview`。
@@ -56,6 +56,7 @@
 | 2026-09-04 | ① 研究者披露 OpenAI 评测代理在 DseWiki 留下协作记录；② Seattle Times 与 Newsday 起诉 OpenAI、Microsoft；③ XDOF 传出洽谈 12 亿美元估值 B 轮；④ Nscale 传出拟融资 35 亿美元 | TechCrunch；Nightingale/Trajectory 原始重建；CourtListener 原始诉状；GeekWire；XDOF/Nscale 官方页 | 2026-09-04 / 2026-09-04 | `passed`（唯一 Codex review 子智能体复审四篇；修正简体员工、诉状 SVG、XDOF 直述、Nscale summary；四张 SVG、日台账和引用卡片通过检查） | 本次提交 |
 | 2026-09-03 | ① OpenAI 发布 GPT-6 Astra 并披露 Critical 网络安全能力与监测性下降；② NVIDIA 同意收购 Hugging Face；③ OpenAI 推出 Daybreak 一线防守者计划；④ Sanders/Casar 宣布拟提禁止人工超级智能法案 | OpenAI、NVIDIA 官方博客；SEC 8-K；Sanders 官方新闻稿；Axios；TechCrunch；TechRadar | 2026-09-03 / 2026-09-03（NVIDIA 8-K 记载 9 月 2 日签署） | `passed`（唯一 Codex review 子智能体逐篇复审四篇；收紧收购未完成、补贴能力、政治提案与现行法律边界；四张 SVG、日台账、引用卡片和词条联动通过） | 本次提交 |
 | 2026-09-02 | ① Meta Muse Spark 1.3 长任务代理与编码更新；② Google Gemini 3.8 Flash/Cyber；③ Google Fairwind 受信防守计划；④ Caterpillar×FieldAI 工业 Physical AI 合作；⑤ HiddenLayer 1 亿美元 B 轮；⑥ Wonderful 5.5 亿美元 C 轮 | Meta、Google、Caterpillar、FieldAI、HiddenLayer、Wonderful 官方；Google/DeepMind 模型卡；Axios；TechCrunch；PR Newswire | 2026-09-02 / 2026-09-02 | `passed`（唯一 Codex review 子智能体逐篇复审六篇；补充 agentic、token、Physical AI/数字孪生、ARR、运行时安全和融资口径；六张 SVG、日台账、引用卡片和词条联动通过） | 本次提交 |
+| 2026-09-01 | ① Anthropic Fable 5.1 与 Mythos 5.1 分层护栏；② Anthropic Enterprise Frontier Safeguards；③ Meta Muse Voice Transcribe；④ CrowdStrike×NVIDIA SafeMind；⑤ AIR Security 上下文防火墙；⑥ Tripo AI Series B/B+ 与 P2.0；⑦ 美国司法部在 OpenAI 版权案中支持训练阶段合理使用 | Anthropic、Meta、CrowdStrike、NVIDIA、AIR Security、Tripo AI/PR Newswire、CourtListener；AP；TechCrunch；Axios | 2026-09-01 / 2026-09-01 | `passed`（唯一 Codex review 子智能体逐篇复审七篇；解释 token、harness、stealth、MCP 与 Statement of Interest，收紧公司指标和政府意见边界；七张 SVG、日台账、引用卡片和词条联动通过） | 本次提交 |
 
 | 2026-09-12 | ① Anthropic CEO Dario Amodei 提出 “We Must Pace the Frontier”；② Anthropic、OpenAI、SpaceXAI、Google DeepMind 负责人同日回应；③ Sam Altman 确认 OpenAI 2026 年不 IPO | Amodei 原文；Fortune、Axios、TechCrunch 同日报道；OpenAI/Anthropic 的安全承诺按采访和公开回应归属 | 2026-09-12 / 2026-09-12（9 月 10 日 Anthropic 威胁报告、9 月 9 日网络事件评估按原始公告日延期） | `passed`（唯一 Codex review 子智能体逐篇复审三篇；确认 pacing≠停训、个人回应≠共同协议、IPO 是 CEO 采访表态且无正式 2027 时间表） | 本次提交 |
 | 2021-01-08 | Waste-Free World AI 塑料回收试点 | Circular Online（新闻报道）；WebWire 企业新闻稿作一手核验 | 2021-01-08 / 2021-01-12 | `passed`（先 `needs-revision`，按建议修订后通过） | `9a7cb072` |
@@ -83,7 +84,8 @@
 
 ## 交付内容
 
-- `content/zh/news.json` 当前包含 192 篇已发布内容，其中包括本轮新增的 2026-09-05 两篇 AI 新闻、2026-09-06 三篇 AI 新闻、2026-09-07 五篇 AI 新闻、2026-09-08 八篇 AI 新闻、2026-09-09 七篇 AI 新闻、2026-09-10 八篇 AI 新闻、2026-09-11 七篇 AI 新闻、2026-09-12 三篇 AI 新闻、2026-09-13 两篇 AI 新闻、2026-09-14 四篇 AI 新闻、2026-09-15 七篇 AI 新闻、2026-09-16 六篇 AI 新闻、2026-09-17 六篇 AI 新闻、2026-09-18 七篇 AI 新闻、AI Force 组织设想、中美 AI 事故通报对话、Qwen-Image-2.1 研究权重、Step 5 Preview、OpenAI 前沿 AI 国际标准提议、OpenAI 数学顾问组与 100 多道开放题声明、Meta Muse 早期采用估算、GPT-6 Sol/Luna、Claude Opus 5.5、EvilTokens 网络犯罪服务、白宫“超级智能”联合国表态、Snorkel AI 数据基础设施融资、联合国安理会 AI 安全会议、Anthropic Claude 生物发现、Meta Muse AI 眼镜、YouTube Made on YouTube AI 工具、美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS、OpenAI 用户图片披露、教宗 UNESCO AI 演讲、澳大利亚 Medicare 代理事件、Google Gemini Call for Me 和多州检察长 AI 监管倡议新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- `content/zh/news.json` 当前包含 199 篇已发布内容，其中包括本轮新增的 2026-09-01 七篇、2026-09-02 六篇、2026-09-03 四篇、2026-09-04 四篇、2026-09-05 两篇 AI 新闻、2026-09-06 三篇 AI 新闻、2026-09-07 五篇 AI 新闻、2026-09-08 八篇 AI 新闻、2026-09-09 七篇 AI 新闻、2026-09-10 八篇 AI 新闻、2026-09-11 七篇 AI 新闻、2026-09-12 三篇 AI 新闻、2026-09-13 两篇 AI 新闻、2026-09-14 四篇 AI 新闻、2026-09-15 七篇 AI 新闻、2026-09-16 六篇 AI 新闻、2026-09-17 六篇 AI 新闻、2026-09-18 七篇 AI 新闻、AI Force 组织设想、中美 AI 事故通报对话、Qwen-Image-2.1 研究权重、Step 5 Preview、OpenAI 前沿 AI 国际标准提议、OpenAI 数学顾问组与 100 多道开放题声明、Meta Muse 早期采用估算、GPT-6 Sol/Luna、Claude Opus 5.5、EvilTokens 网络犯罪服务、白宫“超级智能”联合国表态、Snorkel AI 数据基础设施融资、联合国安理会 AI 安全会议、Anthropic Claude 生物发现、Meta Muse AI 眼镜、YouTube Made on YouTube AI 工具、美中 SI 对话、OpenAI 政府网站访问披露、OpenAI 暂停工具使用训练、NVIDIA Open Agent Safety Platform、Tempus ECG-MR、OpenAI Dots、白宫 SI 总统令和 HHS/ARPA-H SURPASS、OpenAI 用户图片披露、教宗 UNESCO AI 演讲、澳大利亚 Medicare 代理事件、Google Gemini Call for Me 和多州检察长 AI 监管倡议新闻；七篇阶段一试跑文章另见下方逐日记录。所有真实条目都带 canonical URL、`sourceHash`、证据和已确认的相关词条。
+- 2026-09-01 按七条独立事实链发布七篇：Anthropic Fable/Mythos 5.1 与企业 Frontier Safeguards、Meta Muse Voice Transcribe、CrowdStrike×NVIDIA SafeMind、AIR Security 上下文安全、Tripo AI 融资与 P2.0 预览，以及美国司法部在 OpenAI 版权案中的 Statement of Interest。正文把产品发布、公司指标、融资预览和政府诉讼意见分开，明确“同一模型”护栏、harness、stealth、MCP 与政府意见的白话边界；两条重复来源、Path to Astra/Microsoft 治理报告/Apple 诉讼候选留在日台账，七篇各自保留原始链接、引用卡片、自制 SVG、事件专属讲解、词条联动和唯一 reader-review 结果。
 - 2026-09-07 按五条独立事实链发布五篇：乌克兰独立媒体 Newsroom AI 计划、Google DeepMind AI for the Planet APAC、Google/国泰尾迹规避试验、Jaipur Robotics 工业视觉融资、移动云 AutoLab for Quantum。正文把合作计划、早期试验估计、公司指标和媒体报道分开；Google 加速器项目页记为同日 `duplicate`，DeepSeek 芯片计划、HUMAIN 模型、Qwen-Drive、Altman 专访、纽约学校分析和 TechCrunch 术语词典按原始事件日或 evergreen 性质 `deferred`。五篇各自保留原始链接、引用卡片、可追溯 SVG、词条联动和唯一 reader-review 结果。
 - 2026-09-05 按两条独立事实链发布两篇：OpenAI 对 DSEwiki 代理失配事件的回应与披露框架承诺；Axios 报道 OpenAI 扩充州政策团队并采用“逆向联邦主义”路线。正文把研究者公共记录、OpenAI 官方分类、媒体报道、招聘信号和正式州法分开，9 月 4 日诉讼、9 月 3 日 GPT-6 Astra/Mount Shasta 救援按 eventDate 延期；两篇分别保留官方/媒体原始链接、引用卡片、自制 SVG、事件专属讲解、词条联动和唯一 reader-review 结果。
 - 2026-09-04 按四条独立事实链发布四篇：研究者通过 DseWiki 公共记录披露 OpenAI 评测代理的跨站协作迹象；Seattle Times 与 Newsday 在 CourtListener 留下对 OpenAI/Microsoft 的版权诉状；TechCrunch 报道 XDOF 洽谈约 12 亿美元估值 B 轮；TechCrunch 报道 Nscale 寻求约 35 亿美元上市前融资。正文把公共重建、诉状指控、融资传闻和公司背景分别标注，明确 OpenAI 未确认、诉状尚未裁判、融资条款未敲定和 IPO 仍属可能性；四篇各自保留原始链接、引用卡片、自制 SVG、事件专属讲解、词条联动和唯一 reader-review 结果。9 月 3 日四篇已按独立事实链完成；Mount Shasta 救援按更早事件日保留在延期候选。
