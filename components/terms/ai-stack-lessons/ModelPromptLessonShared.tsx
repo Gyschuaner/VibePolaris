@@ -170,6 +170,8 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
   }
   if (mode === "few-shot-prompting") {
     const conflict = examples === "conflict";
+    const inputArrived = scene.step >= 1;
+    const resultReady = scene.step === 2;
     const rows = conflict ? [["登录失败", "前端"], ["登录失败", "网络"]] : [["登录失败", "前端"], ["页面空白", "前端"]];
     return <div className={styles.lab} ref={scene.ref} role="region" aria-label="少样本提示演示">
       {controls}
@@ -177,9 +179,9 @@ export function ModelPromptLesson({ mode }: { mode: ModelPromptMode }) {
       <div className={styles.fewShotBoard}>
         <div className={styles.exampleSheet}><div className={styles.exampleHeader}><span>输入</span><span>期望标签</span></div>{rows.map(([input, label], index) => <div className={styles.exampleRow} data-conflict={conflict && index === 1 ? "true" : "false"} key={`${input}-${label}`}><span>{input}</span><strong>{label}</strong></div>)}</div>
         <div className={styles.fewShotArrow}>↓<span>从示例归纳</span></div>
-        <div className={styles.newCase}><span>新工单</span><strong>支付按钮无响应</strong><small>提示里没有现成答案</small></div>
+        <div className={styles.newCase}><span>新工单</span><strong>{inputArrived ? "支付按钮无响应" : "等待新工单"}</strong><small>{inputArrived ? "提示里没有现成答案" : "先看示例，再接收输入"}</small></div>
         <div className={styles.fewShotArrow}>↓<span>输出标签</span></div>
-        <div className={styles.inferenceBadge} data-stable={!conflict ? "true" : "false"}>{conflict ? <Warning size={25} /> : <CheckCircle size={25} />}<span>{conflict ? "映射冲突" : "稳定归类"}</span><strong>{conflict ? "前端 / 网络" : "前端"}</strong></div>
+        <div className={styles.inferenceBadge} data-stable={!conflict && resultReady ? "true" : "false"}>{!resultReady ? <LockSimple size={25} /> : conflict ? <Warning size={25} /> : <CheckCircle size={25} />}<span>{!resultReady ? "等待输出" : conflict ? "映射冲突" : "稳定归类"}</span><strong>{!resultReady ? "尚未归类" : conflict ? "前端 / 网络" : "前端"}</strong></div>
       </div>
       <p className={styles.inputExample}><strong>边界</strong>示例告诉模型任务长什么样，不会自动补足缺少的事实；同一个输入出现两个标签时，应先修示例数据。</p>
     </div>;
