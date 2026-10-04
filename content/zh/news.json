@@ -49544,6 +49544,879 @@
     "sourceHash": "sha256:09200aa561576ba1de9b8c2aa44eefd6e5c6629ebfe20cdec89efa91fb753a47"
   },
   {
+    "slug": "apple-external-model-siri-20250630",
+    "title": "Apple 据报测试让 Claude 或 ChatGPT 驱动新版 Siri：合作仍是讨论，不是产品公告",
+    "summary": "6 月 30 日，TechCrunch 引述 Bloomberg 报道称，Apple 正考虑让 Anthropic 或 OpenAI 的模型参与新版 Siri，并测试在 Apple 云基础设施上运行的版本。报道没有确认合作协议，Apple 自研的“LLM Siri”也仍在继续。",
+    "body": "6 月 30 日，一条关于 Siri 的新闻把 Apple 的 AI 路线推到了聚光灯下：TechCrunch 引述 Bloomberg 报道称，Apple 正考虑使用 Anthropic 或 OpenAI 的模型为新版 Siri 提供能力，而不是完全依赖内部模型。报道还称，Apple 要求两家公司训练能在 Apple 云基础设施上运行的版本，用于测试。\n\n这条新闻最容易被误读成“Apple 已经把 Siri 交给 Claude 或 ChatGPT”。实际事实更谨慎：报道说的是考虑、接触和测试，没有宣布供应商、合同或上线日期；Apple 自己的“LLM Siri”项目仍在推进。Reuters 转述 Bloomberg 时也把它写成方向变化的报道，而不是正式合作公告。\n\n如果 Apple 真的采用外部模型，技术问题不只是把一个 API 接上 Siri。Siri 需要理解用户在设备上的上下文、决定什么时候调用模型、控制哪些操作可以执行，还要处理延迟、成本和隐私。把模型放在 Apple 的云上，可能让 Apple 保留一部分数据和权限控制，但不自动解决模型输出错误或跨服务授权的问题。\n\nApple 在此前的 Apple Intelligence 中已经与 OpenAI 合作，让 Siri 在部分问题上调用 ChatGPT。此次报道描述的是更深的合作：外部模型可能成为新版 Siri 的主要语言推理层。两者的区别在于，前者是特定请求的转交，后者可能改变系统如何理解指令、使用个人上下文和执行操作。\n\n报道还把 Siri 的延期背景放在一起。Apple 曾表示更个性化的 Siri 要到 2026 年或更晚，具体原因和最终形态没有在 6 月 30 日这条消息中得到官方完整解释。把延期归因于某个模型或把未来日期写成承诺，都超过了来源能证明的范围。\n\n对用户来说，真正要观察的是三件事：Apple 是否公布合作伙伴，外部模型能否在 Private Cloud Compute 等边界内运行，以及系统怎样让用户确认敏感操作。6 月 30 日确认的是一次可能的架构转向，不是一个今天可以下载的新版 Siri。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/apple-external-model-siri-20250630.svg",
+      "alt": "Apple 新版 Siri 可能在 Apple Cloud、外部模型、LLM Siri 与隐私延迟之间进行选择",
+      "sourceUrl": "/images/news/apple-external-model-siri-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "report",
+        "title": "报道说的是考虑和测试",
+        "body": "Apple 可能评估 Anthropic 或 OpenAI 模型，但没有公布供应商、合同或上线时间。",
+        "kind": "narrative"
+      },
+      {
+        "id": "architecture",
+        "title": "外部模型不等于把 Siri 交出去",
+        "body": "新版 Siri 仍要处理设备上下文、工具调用、权限和隐私，模型只是其中一层。",
+        "kind": "technical"
+      },
+      {
+        "id": "depth",
+        "title": "这可能比现有 ChatGPT 转交更深",
+        "body": "此前 Siri 可把部分问题交给 ChatGPT；报道中的测试涉及让外部模型承担更多语言推理。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "没有合作协议，就没有产品结论",
+        "body": "Apple 自研 LLM Siri 仍在进行，日期、模型和供应商均未在当天确认。",
+        "kind": "boundary"
+      },
+      {
+        "id": "watch",
+        "title": "要观察权限确认和云端边界",
+        "body": "后续公布的部署位置、用户控制、敏感操作确认和错误处理，比“用了谁的模型”更能决定体验。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "secure-memory",
+      "title": "外部模型接入 Siri，用户数据要经过哪些闸门？",
+      "question": "先判断上下文和权限，再选择模型和工具，最后让用户确认敏感动作。",
+      "steps": [
+        {
+          "label": "识别请求",
+          "detail": "Siri 先判断问题是否需要外部模型，以及是否包含个人上下文。",
+          "evidence": "Apple continues an internal LLM Siri project"
+        },
+        {
+          "label": "选择模型",
+          "detail": "可能在 Apple 自研模型和合作方模型之间路由，但 6 月 30 日尚未选定。",
+          "evidence": "testing models from Anthropic or OpenAI on Apple cloud"
+        },
+        {
+          "label": "限制权限",
+          "detail": "系统需要把邮件、日历、设备控制等工具权限和模型回答分开。",
+          "evidence": "deeper Siri integration raises context and control questions"
+        },
+        {
+          "label": "确认动作",
+          "detail": "发送消息、修改数据等敏感操作应让用户知道并确认，而不是静默执行。",
+          "evidence": "no product announcement or confirmed execution policy"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch（引述 Bloomberg）",
+      "url": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "context",
+      "auth",
+      "tools",
+      "event",
+      "model-routing"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/",
+        "claim": "TechCrunch 引述 Bloomberg 报道，Apple 正考虑让 Anthropic 或 OpenAI 的模型为新版 Siri 提供能力，并测试运行在 Apple 云上的定制模型；双方尚未达成协议。",
+        "excerpt": "TechCrunch, “Apple reportedly considers letting Anthropic and OpenAI power Siri”, Jun 30, 2025."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/apple-weighs-using-anthropic-or-openai-to-power-siri-in-major-reversal-bloomberg-news-reports-4117640",
+        "claim": "Reuters 转述 Bloomberg 报道，Apple 可能评估外部模型为 Siri 提供动力，报道强调这是重大方向变化而非已签合作。",
+        "excerpt": "Reuters, “Apple weighs using Anthropic or OpenAI to power Siri…”, Jun 30, 2025."
+      },
+      {
+        "url": "https://www.macrumors.com/2025/06/30/APPLE-CHATGPT-CLAUDE-SIRI/",
+        "claim": "MacRumors 同日报道外部模型讨论，并补充 Apple Intelligence 与 Siri 延期背景；它不证明 Apple 已选定供应商。",
+        "excerpt": "MacRumors, “Apple Could Use ChatGPT or Claude to Power Siri”, Jun 30, 2025."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/",
+    "sourceHash": "sha256:c52763f06105f32f12cd874e5f99398614b33b46caa53f1d0bd7199ff1979c72"
+  },
+  {
+    "slug": "baidu-ernie45-open-source-20250630",
+    "title": "百度开源文心 4.5 系列：从十个模型开始重做开放路线",
+    "summary": "6 月 30 日，百度 ERNIE Blog 宣布文心 4.5 系列正式开源，首批包含 10 款模型，覆盖文本、视觉、多模态和轻量规格；官方仓库同时给出 PaddlePaddle、PyTorch、ERNIEKit 与 Apache 2.0 许可信息。性能数字仍是百度自测口径。",
+    "body": "6 月 30 日，百度把文心 4.5 系列从“要开源”变成了“可以查看和下载的模型家族”。ERNIE Blog 的公告称，这一系列共有 10 款模型，既有混合专家（MoE）结构，也有 0.3B 级别的稠密小模型；最大模型的总参数量达到 424B，激活参数为 47B。这里的总参数和激活参数不是同一个数字：前者表示专家池的总规模，后者表示一次推理实际调用的部分。\n\n官方公告还列出视觉语言模型，支持文本、图像和视频理解，并区分“思考”和“非思考”模式。百度随后在官方 GitHub 仓库给出 ERNIEKit，覆盖下载、微调、LoRA、DPO、量化和 FastDeploy 推理示例。对开发者来说，新闻价值不只在模型名称，而在于从模型权重、训练工具到服务脚本，至少能看到一条自托管路线。\n\n“开源”仍然需要拆开看。官方仓库写明 ERNIE 4.5 模型使用 Apache License 2.0，允许商业使用但要遵守许可证条款；不同模型的权重、依赖、硬件需求和服务接口并不会因为同一个系列名称而自动相同。小模型更容易在本地尝试，大型 MoE 模型则需要更高的显存、并行和运维成本。\n\n百度在公告中列出大量 benchmark 结果，例如 300B-A47B-Base 在 28 个测试中的 22 个超过 DeepSeek-V3-671B-A37B-Base。这些数字来自百度自己的测试设置，读者需要同时看到数据集版本、提示词、采样方式和硬件条件，不能只凭一句“超过”判断所有任务都更好。官方仓库提供了复现入口，但独立复测仍是另一件事。\n\n这条新闻也回应了今年中国模型市场的开放竞争。Reuters 早在 2 月报道百度计划在 6 月 30 日转向开源，背景是 DeepSeek 让低成本、可部署的模型更受关注。计划兑现并不等于市场结果已经出现：下载量、真实部署、社区贡献和商业收入都要等后续数据。\n\n对普通读者来说，最实用的判断顺序是：先看具体是哪一款 ERNIE 4.5，再看许可是否允许自己的用途，然后核对显存与部署工具，最后才比较 benchmark。6 月 30 日的确定事实是模型家族公开和工具链出现，不是百度已经在所有场景击败了其他模型。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/baidu-ernie45-open-source-20250630.svg",
+      "alt": "百度文心 4.5 从十款模型、工具链、Apache 2.0 到本地部署的开源路径",
+      "sourceUrl": "/images/news/baidu-ernie45-open-source-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "十款模型把“系列”变成了可下载清单",
+        "body": "官方公告列出 MoE、视觉语言和轻量规格，最大模型和小模型承担的使用场景不同。",
+        "kind": "narrative"
+      },
+      {
+        "id": "architecture",
+        "title": "总参数和激活参数要分开",
+        "body": "MoE 模型可以拥有很大的专家池，但一次请求只调用其中一部分；这影响显存、吞吐和部署方式。",
+        "kind": "technical"
+      },
+      {
+        "id": "license",
+        "title": "Apache 2.0 给的是许可边界",
+        "body": "官方仓库标注 Apache 2.0，开发者仍要检查具体权重、依赖和第三方数据的使用条件。",
+        "kind": "boundary"
+      },
+      {
+        "id": "benchmarks",
+        "title": "benchmark 是百度的测试结果",
+        "body": "“28 项中 22 项领先”属于厂商报告，需要数据集、提示词和独立复测才能形成更完整判断。",
+        "kind": "comparison"
+      },
+      {
+        "id": "deploy",
+        "title": "真正的门槛在部署和复现",
+        "body": "ERNIEKit、FastDeploy 和下载示例降低了入口，但大模型的硬件与运维成本仍然存在。",
+        "kind": "technical"
+      },
+      {
+        "id": "meaning",
+        "title": "开源路线的结果要等后续数据",
+        "body": "6 月 30 日确认了公开动作，下载、社区和生产采用不能从公告当天直接推出。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "看一个开源模型，先看哪几层？",
+      "question": "模型名称、许可、部署和 benchmark 是四件事，不能用一个数字代替。",
+      "steps": [
+        {
+          "label": "确认型号",
+          "detail": "先区分 424B-A47B、21B-A3B、视觉模型和 0.3B 小模型。",
+          "evidence": "ten models across MoE, multimodal and dense variants"
+        },
+        {
+          "label": "检查许可",
+          "detail": "确认 Apache 2.0 和实际依赖是否满足你的商业或研究用途。",
+          "evidence": "Apache License 2.0 in official repository"
+        },
+        {
+          "label": "估算部署",
+          "detail": "再看显存、并行、FastDeploy 或 ERNIEKit 是否能支撑你的硬件。",
+          "evidence": "official download and serving examples"
+        },
+        {
+          "label": "复核评测",
+          "detail": "最后比较数据集和复现条件，不把厂商数字写成普遍结论。",
+          "evidence": "Baidu-reported benchmark claims"
+        }
+      ]
+    },
+    "source": {
+      "name": "百度 ERNIE Blog",
+      "url": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "benchmark",
+      "eval",
+      "data-lineage",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/",
+        "claim": "百度 ERNIE Blog 6 月 30 日宣布文心 4.5 系列正式开源，共 10 款模型，覆盖 MoE、多模态和轻量模型。",
+        "excerpt": "百度 ERNIE Blog, “ERNIE 4.5 模型系列正式开源”, 2025 年 6 月 30 日。"
+      },
+      {
+        "url": "https://github.com/PaddlePaddle/ERNIE",
+        "claim": "百度官方 GitHub 仓库提供 ERNIE 4.5、ERNIEKit、下载与部署说明，并标注 Apache License 2.0。",
+        "excerpt": "PaddlePaddle/ERNIE official repository, Apache License 2.0."
+      },
+      {
+        "url": "https://huggingface.co/collections/baidu/ernie-45-6861cd4c9be84540645f35c9",
+        "claim": "Hugging Face 集合页提供百度 ERNIE 4.5 模型入口，作为可追溯的权重分发路径。",
+        "excerpt": "Baidu ERNIE 4.5 model collection on Hugging Face."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/baidu-to-make-ernie-ai-model-opensource-from-end-of-june-3869567",
+        "claim": "Reuters 2 月报道百度计划从 6 月 30 日起开源 ERNIE 4.5；它用于解释策略转向背景，不替代 6 月 30 日正式开源公告。",
+        "excerpt": "Reuters, “China’s Baidu to make latest Ernie AI model open-source”, Feb 13, 2025."
+      }
+    ],
+    "canonicalUrl": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/",
+    "sourceHash": "sha256:b49600b7fd4c34812b024f3b00a5fef87d8be5c9d30b0ca9485fbdcef2e839cb"
+  },
+  {
+    "slug": "chai-2-antibody-design-20250630",
+    "title": "Chai Discovery 发布 Chai-2：把抗体设计从计算草图推进到一次湿实验验证",
+    "summary": "6 月 30 日，Chai Discovery 宣布 Chai-2，用目标表位生成新的抗体设计，并以公司披露的湿实验结果支持“从头设计”路线。新闻确认的是模型与实验流程发布，不能直接推导出已获批药物或临床疗效。",
+    "body": "6 月 30 日，Chai Discovery 宣布 Chai-2，主线是让 AI 根据目标表位从头生成抗体设计，再把少量候选送进实验室验证。表位可以理解为抗体需要识别的目标表面区域；模型不是在已有药物库里简单检索，而是尝试提出新的分子结构。\n\n公司通过 Business Wire 表示，Chai-2 在约 50 个抗体靶点上完成了实验验证，并称从计算生成到实验确认可以在两周内完成。它还用“接近 20% 的设计命中率”和“无需多轮大规模筛选”描述结果。这些数字来自公司新闻稿，后续预印本才进一步给出 52 个靶点等实验细节，读者要把公告、研究材料和独立复现分开。\n\n这项工作的关键不是让 AI 直接开出一张处方，而是缩短“提出分子—合成—测试—回传”的循环。传统抗体发现往往需要大量候选和多轮实验；如果模型可以先生成更有希望的候选，实验团队就能把有限的试剂和时间用在更小的集合上。但实验命中不等于药物安全、稳定、可制造或在人体中有效。\n\nChai-2 的公告还提到纳米抗体和 VH-VL 等抗体格式，并开放选择合作伙伴的 early access。early access 说明它在建立合作验证网络，不代表公众已经能用一个稳定 API 设计任何药物。模型、靶点、实验条件和成功判定都影响结果，不能把单轮命中率外推成所有蛋白目标的普遍能力。\n\n这条新闻也展示了 AI 科学产品与普通聊天产品的差异：结果必须回到物理世界。生成的结构要经过合成、结合实验、特异性和可开发性测试，失败样本也会反过来改变下一轮设计。数据链越长，越需要记录模型版本、目标条件和实验批次，才能判断“快”究竟来自模型还是来自筛选方式。\n\n因此，6 月 30 日可以记成一次“计算设计与湿实验闭环”的产品/研究公告。Chai-2 的公司数据值得关注，但离新药候选、临床验证和监管批准仍有很长的证据链。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/chai-2-antibody-design-20250630.svg",
+      "alt": "Chai-2 从目标表位、生成分子、湿实验到命中反馈的 AI 生物设计闭环",
+      "sourceUrl": "/images/news/chai-2-antibody-design-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "news",
+        "title": "Chai-2 把“从头设计”带进新闻",
+        "body": "公司公布的是从目标表位生成抗体候选并做湿实验验证的路线，不是已经获批的药物。",
+        "kind": "narrative"
+      },
+      {
+        "id": "loop",
+        "title": "模型输出必须回到实验室",
+        "body": "计算生成、合成、结合测试和失败反馈构成一条循环，任何一环都可能改变结论。",
+        "kind": "technical"
+      },
+      {
+        "id": "numbers",
+        "title": "命中率和两周流程是公司口径",
+        "body": "新闻稿中的约 20%、约 50 个靶点和两周时间要与后续预印本、实验条件和独立复现分开。",
+        "kind": "boundary"
+      },
+      {
+        "id": "formats",
+        "title": "抗体格式和目标难度会改变结果",
+        "body": "纳米抗体、VH-VL 和不同表位不能简单合并成一个“模型准确率”。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evidence",
+        "title": "离临床价值还隔着多层验证",
+        "body": "结合实验不等于安全性、可制造性和人体疗效；模型版本和实验批次需要可追溯。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "ai-biology",
+      "title": "AI 抗体设计为什么一定要经过湿实验？",
+      "question": "模型只提出候选，实验才检查这些候选能否在真实分子环境中工作。",
+      "steps": [
+        {
+          "label": "给出目标表位",
+          "detail": "研究者描述抗体需要识别的蛋白表面区域和约束条件。",
+          "evidence": "prompted with target and epitope"
+        },
+        {
+          "label": "生成候选",
+          "detail": "Chai-2 提出新的抗体或纳米抗体结构，而不是只从旧库里检索。",
+          "evidence": "de novo antibody design"
+        },
+        {
+          "label": "合成与测试",
+          "detail": "实验团队合成少量候选，检查结合、特异性和可开发性。",
+          "evidence": "in silico generation to lab validation"
+        },
+        {
+          "label": "回传失败",
+          "detail": "失败样本和成功样本一起决定下一轮设计，不能用一次命中替代完整验证。",
+          "evidence": "company-reported wet-lab validation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Chai Discovery（Business Wire 公告）",
+      "url": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai"
+    },
+    "relatedSlugs": [
+      "llm",
+      "data-lineage",
+      "eval",
+      "benchmark",
+      "event",
+      "data-quality"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.chaidiscovery.com/news",
+        "claim": "Chai Discovery 官方新闻页列出 6 月 30 日 Chai-2 公告，主题是用 AI 做从头抗体设计。",
+        "excerpt": "Chai Discovery news index, “Chai-2”, Jun 30, 2025."
+      },
+      {
+        "url": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai",
+        "claim": "Chai Discovery 通过 Business Wire 发布的新闻稿称 Chai-2 在约 50 个抗体靶点上做实验验证，命中率、两周流程和早期访问均为公司口径。",
+        "excerpt": "Chai Discovery via Business Wire, “Chai-2 Breakthrough”, Jun 30, 2025."
+      },
+      {
+        "url": "https://www.biorxiv.org/content/10.1101/2025.07.05.663018v1",
+        "claim": "后续 bioRxiv 预印本补充 52 个靶点、湿实验和命中率细节；它在 7 月 6 日发布，作为背景，不改变 6 月 30 日新闻事件日。",
+        "excerpt": "bioRxiv, “Zero-shot antibody design in a 24-well plate”, posted Jul 6, 2025."
+      },
+      {
+        "url": "https://chaiassets.com/chai-2/paper/technical_report.pdf",
+        "claim": "Chai-2 技术报告作为公司研究材料，帮助解释从目标表位到分子设计的技术路线；公司自测不等于临床疗效。",
+        "excerpt": "Chai-2 technical report, company research material."
+      }
+    ],
+    "canonicalUrl": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai",
+    "sourceHash": "sha256:9c8f8e35493efe614bd698e4166b2518dee9f974a1eb35fed47a68c044235d09"
+  },
+  {
+    "slug": "clio-vlex-legal-ai-20250630",
+    "title": "Clio 以 10 亿美元收购 vLex：法律软件开始把业务流程和 AI 法律检索合在一起",
+    "summary": "6 月 30 日，Clio 宣布签署价值 10 亿美元的 vLex 收购协议，以现金和股票支付。交易把 Clio 的律所运营系统与 vLex 的法律数据库和 Vincent AI 放到同一条战略线上，但当天只是 definitive agreement，尚未完成整合。",
+    "body": "6 月 30 日，法律软件公司 Clio 宣布签署协议，以 10 亿美元现金和股票收购 vLex。Clio 原本更像律所的运营系统，处理时间记录、账单、付款和案件流程；vLex 则把全球法律资料组织成可检索的法律情报平台，并提供名为 Vincent 的 AI。新闻的核心不是“又一个法律聊天机器人”，而是运营数据和法律知识库开始被放进同一笔交易里。\n\nClio 的公告称，平台服务超过 20 万名法律专业人士，vLex 带来覆盖多个法域的法律文档和 AI 检索能力。TechCrunch 引述 Clio CEO 的说法，法律数据可能是 AI 时代少数能长期形成壁垒的资源。这里的“壁垒”是数据覆盖、更新、许可和工作流结合的商业判断，不代表 Vincent 已经在所有法律问题上准确。\n\n如果交易完成，律师可能不必先在一个系统里找资料、再把结果复制到另一个系统做案件管理。理想路径是：从案件上下文出发检索适用法律，返回带出处的材料，再把研究结论放回工作流。但“理想路径”不是当天已交付的产品。Clio 公告写的是签署 definitive agreement，双方还需要完成交易和后续产品整合。\n\n法律场景尤其需要把生成和引用分开。模型可以帮助整理判例、比较条款、起草研究方向，但律师仍要核对原文、法域、时效和引用是否适用。一个包含很多文档的数据库也不等于一个自动承担责任的法律意见系统。收购公告没有给出 Vincent 的错误率、客户使用限制或整合后的权限方案，因此不应把“agentic AI capabilities”写成已经落地的自动办案。\n\n这笔交易还说明企业 AI 的竞争不只发生在模型层。拥有模型的公司需要高质量、可授权、持续更新的数据；拥有工作流的公司则掌握用户、权限和真实任务。Clio 想把两端放在一起，但能否减少复制粘贴、提高检索可靠性，要等产品、合同和客户反馈证明。\n\n对读者而言，6 月 30 日可以记成一项高金额的法律 AI 基础设施交易：协议已签，价值已披露，整合和效果尚未发生。后续看点应是交易何时完成、Vincent 如何进入 Clio 的权限模型，以及每个答案能否回到可核验的法律原文。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/clio-vlex-legal-ai-20250630.svg",
+      "alt": "Clio 收购 vLex 后把法律数据库、Vincent AI、事务管理和引用核验连成一条待整合的路径",
+      "sourceUrl": "/images/news/clio-vlex-legal-ai-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "deal",
+        "title": "10 亿美元买的是两种系统的结合",
+        "body": "Clio 的律所运营工具和 vLex 的法律情报、数据库与 Vincent AI 被放进同一笔收购协议。",
+        "kind": "narrative"
+      },
+      {
+        "id": "data",
+        "title": "法律数据库是 AI 的工作材料",
+        "body": "覆盖范围、更新、授权和法域决定检索结果能否用于真实工作，数据规模本身不是准确率。",
+        "kind": "technical"
+      },
+      {
+        "id": "workflow",
+        "title": "从检索到办案还隔着权限和整合",
+        "body": "公告确认的是签约，不是已经完成的产品合并；用户体验、权限和交付时点仍待后续。",
+        "kind": "boundary"
+      },
+      {
+        "id": "citation",
+        "title": "法律 AI 不能跳过原文核验",
+        "body": "模型可以整理材料和提出线索，律师仍要确认法域、时效、引用和事实适用性。",
+        "kind": "comparison"
+      },
+      {
+        "id": "watch",
+        "title": "后续要看可追溯的产品证据",
+        "body": "交易完成、真实权限、错误率和客户反馈，才能判断这是不是有效的工作流融合。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "法律 AI 怎样把资料连接到一个真实案件？",
+      "question": "先找到有授权的原文，再把引用放回案件流程，最后由专业人员确认。",
+      "steps": [
+        {
+          "label": "案件上下文",
+          "detail": "系统先知道案件、法域和问题边界，而不是把所有文档混在一起。",
+          "evidence": "practice management context from Clio"
+        },
+        {
+          "label": "检索法律资料",
+          "detail": "Vincent 之类的法律智能工具从可授权、持续更新的数据库中寻找材料。",
+          "evidence": "vLex legal intelligence platform and Vincent AI"
+        },
+        {
+          "label": "返回出处",
+          "detail": "结果需要带回判例、法规或文档原文，方便律师逐条检查。",
+          "evidence": "legal research data as a defensible moat"
+        },
+        {
+          "label": "写回工作流",
+          "detail": "研究结果再进入案件管理和协作流程，权限与责任不能由模型替代。",
+          "evidence": "definitive agreement, integration remains future work"
+        }
+      ]
+    },
+    "source": {
+      "name": "Clio 官方公告",
+      "url": "https://www.clio.com/uk/about/press/clio-signs-definitive-agreement-to-acquire-vlex/"
+    },
+    "relatedSlugs": [
+      "rag",
+      "citation",
+      "data-lineage",
+      "llm",
+      "agent",
+      "auth",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.clio.com/uk/about/press/clio-signs-definitive-agreement-to-acquire-vlex/",
+        "claim": "Clio 6 月 30 日宣布签署以现金和股票支付、价值 10 亿美元的 vLex 收购协议；vLex 拥有法律研究平台和 Vincent AI。",
+        "excerpt": "Clio, “Clio Signs Definitive Agreement to Acquire vLex for US$1 Billion”, June 30, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/30/legal-software-company-clio-drops-1b-on-law-data-giant-vlex/",
+        "claim": "TechCrunch 报道 Clio 收购 vLex 的价值在于把法律数据库和律所运营软件连接起来，数据是长期竞争壁垒之一。",
+        "excerpt": "TechCrunch, “Legal software company Clio drops $1B on law data giant vLex”, Jun 30, 2025."
+      },
+      {
+        "url": "https://vlex.com/about-us",
+        "claim": "vLex 官方介绍其法律研究和 Vincent AI 的产品定位，为收购标的的 AI 与数据背景提供补充。",
+        "excerpt": "vLex, “About vLex”, accessed for product context."
+      }
+    ],
+    "canonicalUrl": "https://www.clio.com/uk/about/press/clio-signs-definitive-agreement-to-acquire-vlex/",
+    "sourceHash": "sha256:da10de1399f112c656ca96f0ab619bd0b6b79657347f4370ad7a43b716f3f9b4"
+  },
+  {
+    "slug": "cursor-web-mobile-agents-20250630",
+    "title": "Cursor 把后台编码智能体搬到 Web 和手机：先派任务，再回来审 diff",
+    "summary": "6 月 30 日，Cursor 宣布 Web 和移动端可直接使用 Cursor Agents：用户可以在浏览器或手机派发编码任务，等待后台 Agent 运行，再查看 diff、跟进指令和创建 pull request。核心变化是工作入口扩展，不是取消人工审查。",
+    "body": "6 月 30 日，Cursor 把它的后台编码 Agent 从 IDE 里拿了出来。官方博客宣布，用户可以在桌面浏览器、平板或手机上打开 cursor.com/agents，给 Agent 一个任务，让它在后台写功能、修 bug 或回答代码库问题。任务完成后，用户可以查看差异、补充指令，再回到桌面端继续编辑。\n\n这条产品新闻的关键不是“手机上也能写代码”，而是工作流被拆成了两个时间点：先派单，后复核。Cursor 还提到 Slack 触发、并行运行多个 Agent、团队成员查看 diff 和直接创建 pull request。对需要长时间运行的代码任务来说，Agent 不必占着开发者的 IDE，但代码仍然要通过仓库权限、审查和合并进入主线。\n\n从机制上看，Web Agent 更像一个远程执行入口，而不是新的基础模型。官方没有在这天发布新模型或独立 benchmark；它把已有的编码能力、后台运行环境、仓库访问和协作界面组合起来。浏览器只是控制面，真正的代码修改仍发生在 Cursor 的云端或关联代码环境中。\n\n权限边界因此比“能不能写代码”更重要。Agent 需要知道哪个仓库、哪条分支、哪些密钥和哪些测试可以访问。Cursor 的产品说明强调团队成员可以看 diff 和 pull request，但这不等于所有用户都能自动合并，也不等于 Agent 能安全处理任何生产凭证。具体权限由仓库和团队配置决定。\n\n这类产品把“等待”变成了可利用的时间：开发者可以在手机上启动迁移，回到电脑时再看结果。但等待并不等于完成。代码可能缺少依赖、误解需求或改动超出范围，最终仍需要运行测试、审查差异和确认部署条件。Cursor 在新闻中没有承诺后台 Agent 的成功率，因此文章只记录它提供了新的调度和复核界面。\n\n6 月 30 日的变化可以用一句话概括：编码智能体开始像一个远程同事一样被派活，但 pull request 仍是把建议带回工程流程的检查点。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/cursor-web-mobile-agents-20250630.svg",
+      "alt": "Cursor Web Agent 从浏览器派单、后台执行、查看 diff 到创建 pull request 的流程",
+      "sourceUrl": "/images/news/cursor-web-mobile-agents-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "Web 和手机成为新的派单入口",
+        "body": "用户可在浏览器和移动设备启动 Cursor Agent，让任务在后台执行。",
+        "kind": "narrative"
+      },
+      {
+        "id": "workflow",
+        "title": "核心是“先派单、后复核”",
+        "body": "任务进度、diff、后续指令和 pull request 被放到同一条可回看的流程中。",
+        "kind": "technical"
+      },
+      {
+        "id": "not-model",
+        "title": "这是工作流产品，不是新模型发布",
+        "body": "6 月 30 日的公告没有给出新模型或独立评测，变化在入口、执行环境和协作界面。",
+        "kind": "boundary"
+      },
+      {
+        "id": "permissions",
+        "title": "仓库和凭证权限决定实际风险",
+        "body": "能派发任务不代表能自动合并或读取生产密钥，团队仍需把权限和分支规则写清楚。",
+        "kind": "technical"
+      },
+      {
+        "id": "review",
+        "title": "pull request 是人机协作的检查点",
+        "body": "开发者要看 diff、跑测试、补指令并确认范围，不能把后台完成提示当成上线结果。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个后台编码 Agent 如何回到工程主线？",
+      "question": "把派单、执行、差异和合并分开，才能看见每一步的责任。",
+      "steps": [
+        {
+          "label": "提出任务",
+          "detail": "开发者从浏览器或手机描述要修的 bug、要加的功能或要回答的问题。",
+          "evidence": "web and mobile agents can write code and scaffold work"
+        },
+        {
+          "label": "后台执行",
+          "detail": "Agent 在关联代码环境中读取上下文、修改文件并运行自己的任务流程。",
+          "evidence": "run tasks while you are away"
+        },
+        {
+          "label": "查看差异",
+          "detail": "用户回来看 diff、进度和测试结果，发现方向不对时补充指令。",
+          "evidence": "review agent diffs and give follow-up instructions"
+        },
+        {
+          "label": "创建 PR",
+          "detail": "变更进入 pull request，团队再根据仓库规则决定是否合并。",
+          "evidence": "create pull requests directly from the web interface"
+        }
+      ]
+    },
+    "source": {
+      "name": "Cursor 官方博客",
+      "url": "https://cursor.com/blog/agent-web"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-harness",
+      "tools",
+      "state",
+      "auth",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://cursor.com/blog/agent-web",
+        "claim": "Cursor 官方博客 6 月 30 日宣布 Web 和移动端可使用 Cursor Agents，可在浏览器中派发编码任务、查看进度并创建 pull request。",
+        "excerpt": "Cursor, “Cursor on web and mobile”, Jun 30, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/30/cursor-launches-a-web-app-to-manage-ai-coding-agents/",
+        "claim": "TechCrunch 报道 Cursor 将后台编码 Agent 从 IDE 扩展到浏览器，可派发功能开发或修复任务、查看进度并合并变更。",
+        "excerpt": "TechCrunch, “Cursor launches a web app to manage AI coding agents”, Jun 30, 2025."
+      },
+      {
+        "url": "https://forum.cursor.com/t/introducing-cursor-on-web-mobile/111183",
+        "claim": "Cursor 社区公告补充 Web/Mobile Agent、Slack 触发、并行 Agent 和返回桌面端继续编辑的使用路径。",
+        "excerpt": "Cursor forum announcement, “Introducing Cursor on Web & Mobile”, Jun 30, 2025."
+      }
+    ],
+    "canonicalUrl": "https://cursor.com/blog/agent-web",
+    "sourceHash": "sha256:4c8fe2d151aa84921563159010b5573276310bc3ea5b98e601722c5d1b5d3401"
+  },
+  {
+    "slug": "google-gemini-classroom-20250630",
+    "title": "Google 把 Gemini in Classroom 扩到所有 Education 版本：教师工具先开放，年龄与管理员开关仍在",
+    "summary": "6 月 30 日，Google Workspace Updates 宣布 Gemini in Classroom 向所有 Google Workspace for Education 版本开放，教师可使用 30 多项 AI 工具；此次 rollout 仍限定英语和 18 岁以上用户，并允许管理员控制开关。",
+    "body": "6 月 30 日，Google 把 Gemini 在课堂里的入口从“需要额外教育订阅”扩展到所有 Google Workspace for Education 版本。官方更新写明，教师可以在 Classroom 里使用 30 多项 AI 工具来起草教学资源、围绕学习目标生成材料和调整内容；功能从当天开始分批 rollout，可能需要最多 15 天才在域中出现。\n\n这不是给每个学生发一个无边界聊天机器人。Workspace Updates 写得很具体：Gemini in Classroom 当时只支持英语，并限定为学校系统中标记为 18 岁以上的用户；管理员可以决定哪些账号能用它。Google 同期在 ISTE 2025 页面还介绍 Gemini for Education、Google Vids 和 Chromebook Class tools，说明它是在扩教育套件，而不是只上线一个聊天页。\n\n教师和学生的角色也不同。教师侧的工具围绕备课、资源初稿和课堂材料组织；学生侧的 Gems、NotebookLM 或阅读辅助功能需要学校的管理和教师安排。TechCrunch 把这条新闻放在教育机构正在处理作业、抄袭和 AI 依赖的背景中，而 Google 的官方说明要求用户检查生成内容，并根据课程和当地政策修改后再分发。\n\n“免费开放”说的是产品入口和教育版本的可用性，不等于没有数据治理。管理员需要设置访问范围，教师要判断材料是否包含不应上传的学生信息，学校还要明确哪些内容必须由老师复核。Google 的更新没有承诺模型每次输出都正确，也没有把它写成自动评分或替代教师。\n\n对学校来说，最大的改变是 AI 工具从个人试用变成域级管理问题。一个课程可以利用 Gemini 生成不同难度的练习，但同一套工具也可能带来错误事实、语言不合适或把学生背景暴露给不该看的人。真正需要制定的不是“要不要用 AI”这一句口号，而是谁可以用、用什么资料、生成后谁负责检查。\n\n因此，6 月 30 日的新闻可以这样读：Google 扩大了教育 AI 的分发面，同时把年龄、语言、管理员开关和人工复核写入产品边界。它让更多教师可以试用工具，却没有消除课堂中的判断责任。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-gemini-classroom-20250630.svg",
+      "alt": "Google Gemini in Classroom 从管理员开关、教师备课到学生支持和人工复核的教育流程",
+      "sourceUrl": "/images/news/google-gemini-classroom-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "rollout",
+        "title": "先发生的是教育版本扩展",
+        "body": "Gemini in Classroom 从需要额外订阅，扩展到所有 Google Workspace for Education 版本，分批开放。",
+        "kind": "narrative"
+      },
+      {
+        "id": "teacher",
+        "title": "教师工具和学生工具不是一回事",
+        "body": "备课、资源初稿和学习支持分别面向教师与学生，权限和使用场景需要由学校安排。",
+        "kind": "comparison"
+      },
+      {
+        "id": "gate",
+        "title": "年龄、语言和管理员开关写在入口处",
+        "body": "当时只支持英语和 18 岁以上用户，管理员可以控制域内访问，不能把它理解成所有账号自动可用。",
+        "kind": "boundary"
+      },
+      {
+        "id": "review",
+        "title": "生成内容仍要经过教师和学校复核",
+        "body": "Google 明确提醒 AI 会出错，教师要按课程目标、学生情况和本地政策修改输出。",
+        "kind": "technical"
+      },
+      {
+        "id": "governance",
+        "title": "教育 AI 的难点变成了域级治理",
+        "body": "开放工具之后，学校需要回答谁能用什么资料、哪些输出可以分发、错误由谁纠正。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "教育场景的 Gemini 怎样从“能用”变成“可管理”？",
+      "question": "把入口、角色、资料和复核责任分开，才能避免把开放误解成放任。",
+      "steps": [
+        {
+          "label": "管理员开关",
+          "detail": "学校先决定哪些账号、哪些年龄段和哪些域可以看到 Gemini 功能。",
+          "evidence": "admins can control who is allowed to use Gemini in Classroom"
+        },
+        {
+          "label": "教师备课",
+          "detail": "教师用工具起草资源和练习，但生成内容仍是草稿。",
+          "evidence": "more than 30 common educator tasks"
+        },
+        {
+          "label": "学生支持",
+          "detail": "Gems、NotebookLM 或阅读辅助需要放进具体课程和教师安排。",
+          "evidence": "custom Gems and interactive learning support"
+        },
+        {
+          "label": "人工复核",
+          "detail": "教师检查事实、年龄适配、学生资料和当地政策，再决定是否分发。",
+          "evidence": "review outputs as AI can make mistakes"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Workspace Updates",
+      "url": "https://workspaceupdates.googleblog.com/2025/06/gemini-google-classroom-all-edu-editions.html"
+    },
+    "relatedSlugs": [
+      "llm",
+      "context",
+      "auth",
+      "eval",
+      "event",
+      "data-quality"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://workspaceupdates.googleblog.com/2025/06/gemini-google-classroom-all-edu-editions.html",
+        "claim": "Google Workspace Updates 6 月 30 日宣布 Gemini in Classroom 向所有 Google Workspace for Education 版本开放，教师可使用超过 30 项工具，管理员仍可控制访问。",
+        "excerpt": "Google Workspace Updates, “Gemini in Google Classroom is now available to all Google Workspace for Education editions”, Jun 30, 2025."
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/education/collection-iste-2025/",
+        "claim": "Google for Education 的 ISTE 2025 页面列出 Gemini in Classroom、Gemini for Education、Google Vids 和 Chromebook Class tools 等更新。",
+        "excerpt": "Google for Education, “ISTE 2025: Celebrating the art of teaching and the science of learning”, Jun 30, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/30/google-embraces-ai-in-the-classroom-with-new-gemini-tools-for-educators-chatbots-for-students-and-more/",
+        "claim": "TechCrunch 同日报道 Google 把 Gemini、NotebookLM、Gems 和 Google Vids 推进教育场景，并强调人为教学和学校管理仍在流程中。",
+        "excerpt": "TechCrunch, “Google embraces AI in the classroom…”, Jun 30, 2025."
+      }
+    ],
+    "canonicalUrl": "https://workspaceupdates.googleblog.com/2025/06/gemini-google-classroom-all-edu-editions.html",
+    "sourceHash": "sha256:911f54e49b42a88d626df9343baa038bbda484ab5546c3dcebd369699c2bd025"
+  },
+  {
+    "slug": "meta-superintelligence-labs-20250630",
+    "title": "Meta 重组 AI 团队成立 Superintelligence Labs：把人才争夺写进组织图",
+    "summary": "6 月 30 日，多家媒体报道 Meta CEO Mark Zuckerberg 在内部备忘录中宣布成立 Meta Superintelligence Labs（MSL），由 Alexandr Wang 担任首席 AI 官并负责实验室。新闻确认的是组织重组和人才安排，不是已经交付的“超级智能”模型。",
+    "body": "6 月 30 日，Meta 的 AI 新闻主角不是一款新模型，而是一张新的组织图。Bloomberg、Reuters 和 TechCrunch 都报道，Mark Zuckerberg 在发给员工的内部备忘录中宣布成立 Meta Superintelligence Labs，简称 MSL，把 foundations、产品和 FAIR 等 AI 团队放到同一个更集中的结构里。\n\n这次任命把此前几条线索合在了一起：Scale AI 前 CEO Alexandr Wang 负责 MSL，并担任 Meta 的首席 AI 官；前 GitHub CEO Nat Friedman 参与共同领导，重点放在 AI 产品和应用研究；Reuters 还提到，前 Safe Superintelligence 的 Daniel Gross 等人可能进入这套新组织。这里的“加入”“负责”和“共同领导”是人员与汇报关系，不能被写成某个模型已经训练完成。\n\n“Superintelligence”在这条新闻里首先是目标词。Meta 想做的是能完成复杂任务、能力接近或超过人的系统，但当天没有发布模型名称、权重、API、评测报告或公开时间表。把愿景写成产品，会让读者误以为今天就能使用一个叫 MSL 的模型；现有来源并不支持这个结论。\n\n这次重组也和 Meta 6 月中旬宣布的 Scale AI 投资分开。Meta 对 Scale AI 的 143 亿美元投资及 49% 股权安排，是一项商业交易；Wang 进入 Meta 是人才和组织动作。两者相互关联，却不是同一份“买下研究成果”的公告。报道还把此前针对 OpenAI、Google 和 Anthropic 人才的争夺放进背景，但人才流入不等于研究成果会自动迁移。\n\n对一家已经拥有 Llama、FAIR 和 Meta AI 产品的大公司来说，集中组织的好处是减少重复排队：基础模型、应用研究、产品反馈可能更快互相传递。代价是目标更宏大、资源更集中，也更需要清楚的评测和发布边界。新闻当天没有交代 MSL 的预算、模型路线、训练数据或安全框架，因此这些部分应该留在“待观察”里。\n\n读者可以把 6 月 30 日的事实链记成四步：Meta 先把 AI 团队放进新部门，再安排负责人，接着把超级智能当成目标，最后等待模型、评测和产品证据。真正能证明这次重组有效的，不是组织名称有多响亮，而是未来是否出现可复核的系统、明确的权限和可重复的结果。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/meta-superintelligence-labs-20250630.svg",
+      "alt": "Meta 从组织重组、人才加入到研究与产品路线的 Superintelligence Labs 事实链",
+      "sourceUrl": "/images/news/meta-superintelligence-labs-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "reorg",
+        "title": "新闻发生的是组织重组",
+        "body": "内部备忘录把 Meta 的 foundations、产品和 FAIR 等 AI 工作纳入 Meta Superintelligence Labs；当天没有发布新模型。",
+        "kind": "narrative"
+      },
+      {
+        "id": "people",
+        "title": "负责人和加入者是事实，不是能力证明",
+        "body": "Alexandr Wang 担任首席 AI 官，Nat Friedman 负责产品与应用研究；这些是职位与汇报关系，不能替代模型评测。",
+        "kind": "comparison"
+      },
+      {
+        "id": "goal",
+        "title": "“超级智能”在这里仍是目标词",
+        "body": "来源描述的是要构建能完成复杂任务的系统，未给出可下载模型、API 或上线日期。",
+        "kind": "boundary"
+      },
+      {
+        "id": "capital",
+        "title": "Scale AI 投资和 MSL 需要分开读",
+        "body": "143 亿美元、49% 股权安排是商业交易；Wang 进入 Meta 是人才和组织动作，两条事实链有关联但不等价。",
+        "kind": "technical"
+      },
+      {
+        "id": "watch",
+        "title": "下一步要等可复核证据",
+        "body": "模型、数据、评测、权限和安全框架出现后，才有材料判断重组是否带来实际能力。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "从组织图到可用 AI，中间还缺什么？",
+      "question": "先确认谁负责，再等待研究、评测和产品证据，不把愿景当成模型。",
+      "steps": [
+        {
+          "label": "宣布 MSL",
+          "detail": "Meta 把多个 AI 团队放进同一个组织，形成新的汇报入口。",
+          "evidence": "all Meta AI efforts fall under Meta Superintelligence Labs"
+        },
+        {
+          "label": "任命负责人",
+          "detail": "Wang 负责实验室，Friedman 负责产品和应用研究；这是组织事实。",
+          "evidence": "Alexandr Wang and Nat Friedman roles"
+        },
+        {
+          "label": "提出目标",
+          "detail": "“Superintelligence”描述未来能力方向，不是可调用的产品。",
+          "evidence": "commitment to developing AI superintelligence"
+        },
+        {
+          "label": "等待模型证据",
+          "detail": "需要公开模型、评测、权限和安全材料，才能判断路线是否落地。",
+          "evidence": "no model, API, benchmark or launch date in the announcement"
+        }
+      ]
+    },
+    "source": {
+      "name": "Bloomberg（由 Reuters、TechCrunch 交叉核对）",
+      "url": "https://www.bloomberg.com/news/articles/2025-06-30/zuckerberg-announces-meta-superintelligence-effort-more-hires"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "context",
+      "event",
+      "data-lineage"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.bloomberg.com/news/articles/2025-06-30/zuckerberg-announces-meta-superintelligence-effort-more-hires",
+        "claim": "彭博 6 月 30 日报道，扎克伯格在内部备忘录中宣布 Meta Superintelligence Labs，由 Alexandr Wang 负责并担任首席 AI 官。",
+        "excerpt": "Bloomberg, “Zuckerberg Debuts Meta Superintelligence Group”, June 30, 2025."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/meta-deepens-ai-push-with-superintelligence-lab-source-says-4117667",
+        "claim": "Reuters 同日报道，Meta 将 AI 工作放入新部门，Nat Friedman 与 Wang 分别负责产品/应用研究和整体实验室；报道注明信息来自消息源。",
+        "excerpt": "Reuters, “Meta deepens AI push with ‘Superintelligence’ lab, source says”, Jun 30, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/30/meta-restructures-its-ai-unit-under-superintelligence-labs/",
+        "claim": "TechCrunch 同日确认报道主题是组织重组和新实验室，而不是新模型上线。",
+        "excerpt": "TechCrunch, “Meta restructures its AI unit under ‘Superintelligence Labs’”, Jun 30, 2025."
+      }
+    ],
+    "canonicalUrl": "https://www.bloomberg.com/news/articles/2025-06-30/zuckerberg-announces-meta-superintelligence-effort-more-hires",
+    "sourceHash": "sha256:043cebdd412ba6b075aa630830675f40ddc31e1c10192a17e0d6321ba59437d3"
+  },
+  {
+    "slug": "microsoft-mai-dxo-medical-superintelligence-20250630",
+    "title": "Microsoft 发布 MAI-DxO 医疗诊断研究：多模型会问问题，但还没有进入临床",
+    "summary": "6 月 30 日，Microsoft AI 发布 MAI-DxO 研究，称一个模拟“虚拟医生小组”的编排器在 304 个 NEJM 复杂病例上，最佳配置正确率达到 85.5%，并报告低于医生组的测试成本。结果属于研究基准，不是临床部署许可。",
+    "body": "6 月 30 日，Microsoft AI 发布了一项容易被标题带偏的医疗 AI 研究。公司介绍 MAI-DxO（Microsoft AI Diagnostic Orchestrator）时，称它不是一个只看一次输入就给答案的模型，而是一个会提出追问、选择检查、比较诊断并进行成本检查的“虚拟医生小组”。\n\n在 Microsoft 披露的实验里，系统用 304 个来自《新英格兰医学杂志》（NEJM）的复杂病例进行评测。最佳配置是 MAI-DxO 与 OpenAI o3 组合，正确率达到 85.5%；同一研究还比较了 21 名有 5 到 20 年经验的美国和英国医生，报告的平均准确率约为 20%。这些数字描述的是特定病例集合和测试设计，不能直接变成“AI 在医院四倍于医生”的普遍结论。\n\nMAI-DxO 的新意在编排层。它可以先提出鉴别诊断，再决定要问什么、订什么检查，拿到结果后继续更新判断。系统还允许设置成本约束，避免为了提高命中率而默认请求所有检查。换句话说，模型的能力不只看“知道多少”，还看它是否能在不确定时收集有价值的信息。\n\n但测试环境与真实临床仍然有距离。研究使用的是已经整理好的 NEJM 病例，医生比较组的工具和协作条件也有明确限制；患者不会在这套基准中承担等待、隐私、误诊或治疗延误的真实后果。Microsoft 自己也把 MAI-DxO 描述为研究演示，需要更多真实环境测试、监管和医疗机构治理。\n\n“成本更低”也要谨慎理解。研究里的成本是对检查选择和模型调用的统一估算，不等于任何国家医院的实际费用。保险、设备可用性、急诊时间、患者偏好和医生责任都可能改变成本—准确率的取舍。一个为了省检查而漏掉危重病的系统，不能只看平均数字。\n\n因此，6 月 30 日的新闻价值在于它把“多模型协作”和“逐步收集证据”放到医疗诊断的同一实验里，并公开了有冲击力的 benchmark 结果。它提醒我们，AI 医疗的下一步不只是更大的模型，还包括何时提问、选什么检查、如何留痕以及谁来对最终诊断负责。当前证据仍停留在研究阶段，读者不能把它当成个人诊疗工具或医生替代品。",
+    "publishedAt": "2025-06-30",
+    "eventDate": "2025-06-30",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/microsoft-mai-dxo-medical-superintelligence-20250630.svg",
+      "alt": "Microsoft MAI-DxO 从病例输入、多模型协作、选择检查到诊断与成本核验的研究流程",
+      "sourceUrl": "/images/news/microsoft-mai-dxo-medical-superintelligence-20250630.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "MAI-DxO 是一个诊断编排器",
+        "body": "它把多个模型、追问、检查选择和成本检查组织成逐步流程，而不是只返回一次答案。",
+        "kind": "narrative"
+      },
+      {
+        "id": "benchmark",
+        "title": "85.5% 和 20% 来自特定基准",
+        "body": "304 个 NEJM 病例与 21 名医生的比较是研究设置，不能直接外推到所有患者和医院。",
+        "kind": "comparison"
+      },
+      {
+        "id": "mechanism",
+        "title": "收集信息本身是能力的一部分",
+        "body": "系统可以选择下一项问题和检查，再根据结果更新判断，成本约束让“多问一次”也有代价。",
+        "kind": "technical"
+      },
+      {
+        "id": "limits",
+        "title": "研究演示不等于临床系统",
+        "body": "真实患者、医院流程、隐私、责任和监管条件没有被这条公告解决。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next",
+        "title": "下一步要看真实环境和治理",
+        "body": "需要外部验证、临床试验、审计记录和明确的医生责任，才能谈更广泛部署。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "clinical-alert",
+      "title": "MAI-DxO 如何把一次回答变成逐步诊断？",
+      "question": "先提出假设，再选择高价值信息，最后在责任边界内输出判断。",
+      "steps": [
+        {
+          "label": "读取病例",
+          "detail": "系统从病例描述开始，列出可能的疾病和不确定点。",
+          "evidence": "304 NEJM case records"
+        },
+        {
+          "label": "提出追问",
+          "detail": "它决定还需要哪些症状、病史或检查结果，而不是立即下结论。",
+          "evidence": "ask follow-up questions and order tests"
+        },
+        {
+          "label": "平衡成本",
+          "detail": "编排器在准确率和检查成本之间设置约束，避免无限制检查。",
+          "evidence": "configurable cost constraints"
+        },
+        {
+          "label": "核验诊断",
+          "detail": "系统汇总结果并检查推理，研究输出仍需医生和临床治理接手。",
+          "evidence": "research demonstration, not clinical deployment"
+        }
+      ]
+    },
+    "source": {
+      "name": "Microsoft AI 官方研究公告",
+      "url": "https://microsoft.ai/news/the-path-to-medical-superintelligence/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-harness",
+      "eval",
+      "benchmark",
+      "event",
+      "data-lineage",
+      "auth"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://microsoft.ai/news/the-path-to-medical-superintelligence/",
+        "claim": "Microsoft AI 6 月 30 日发布 MAI-DxO 研究，称其在 304 个 NEJM 病例上的最佳配置正确率为 85.5%，并比较了 21 名医生的结果。",
+        "excerpt": "Microsoft AI, “The Path to Medical Superintelligence”, Jun 30, 2025."
+      },
+      {
+        "url": "https://arxiv.org/abs/2506.22405",
+        "claim": "研究原文介绍 Sequential Diagnosis Benchmark 和 MAI-DxO 的逐步问诊、检查选择、成本约束与诊断流程。",
+        "excerpt": "arXiv:2506.22405, “Sequential Diagnosis with Language Models”."
+      },
+      {
+        "url": "https://time.com/7299314/microsoft-ai-better-than-doctors-diagnosis/",
+        "claim": "TIME 7 月 2 日报道 Microsoft 的研究主张，并把 85% 对 20% 的比较限定在 NEJM 复杂病例测试环境。",
+        "excerpt": "TIME, “Microsoft’s AI Is Better Than Doctors at Diagnosing Disease”, Jul 2, 2025."
+      }
+    ],
+    "canonicalUrl": "https://microsoft.ai/news/the-path-to-medical-superintelligence/",
+    "sourceHash": "sha256:158b9f323cf81ad4ff9ab8aa8ac49ec2d7eeefdad6137998da2e6caaab5a45c7"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",

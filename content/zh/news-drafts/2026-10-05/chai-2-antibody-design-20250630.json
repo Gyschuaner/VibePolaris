@@ -1,0 +1,226 @@
+{
+  "slug": "chai-2-antibody-design-20250630",
+  "title": "Chai Discovery 发布 Chai-2：把抗体设计从计算草图推进到一次湿实验验证",
+  "summary": "6 月 30 日，Chai Discovery 宣布 Chai-2，用目标表位生成新的抗体设计，并以公司披露的湿实验结果支持“从头设计”路线。新闻确认的是模型与实验流程发布，不能直接推导出已获批药物或临床疗效。",
+  "body": "6 月 30 日，Chai Discovery 宣布 Chai-2，主线是让 AI 根据目标表位从头生成抗体设计，再把少量候选送进实验室验证。表位可以理解为抗体需要识别的目标表面区域；模型不是在已有药物库里简单检索，而是尝试提出新的分子结构。\n\n公司通过 Business Wire 表示，Chai-2 在约 50 个抗体靶点上完成了实验验证，并称从计算生成到实验确认可以在两周内完成。它还用“接近 20% 的设计命中率”和“无需多轮大规模筛选”描述结果。这些数字来自公司新闻稿，后续预印本才进一步给出 52 个靶点等实验细节，读者要把公告、研究材料和独立复现分开。\n\n这项工作的关键不是让 AI 直接开出一张处方，而是缩短“提出分子—合成—测试—回传”的循环。传统抗体发现往往需要大量候选和多轮实验；如果模型可以先生成更有希望的候选，实验团队就能把有限的试剂和时间用在更小的集合上。但实验命中不等于药物安全、稳定、可制造或在人体中有效。\n\nChai-2 的公告还提到纳米抗体和 VH-VL 等抗体格式，并开放选择合作伙伴的 early access。early access 说明它在建立合作验证网络，不代表公众已经能用一个稳定 API 设计任何药物。模型、靶点、实验条件和成功判定都影响结果，不能把单轮命中率外推成所有蛋白目标的普遍能力。\n\n这条新闻也展示了 AI 科学产品与普通聊天产品的差异：结果必须回到物理世界。生成的结构要经过合成、结合实验、特异性和可开发性测试，失败样本也会反过来改变下一轮设计。数据链越长，越需要记录模型版本、目标条件和实验批次，才能判断“快”究竟来自模型还是来自筛选方式。\n\n因此，6 月 30 日可以记成一次“计算设计与湿实验闭环”的产品/研究公告。Chai-2 的公司数据值得关注，但离新药候选、临床验证和监管批准仍有很长的证据链。",
+  "publishedAt": "2025-06-30",
+  "eventDate": "2025-06-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/chai-2-antibody-design-20250630.svg",
+    "alt": "Chai-2 从目标表位、生成分子、湿实验到命中反馈的 AI 生物设计闭环",
+    "sourceUrl": "/images/news/chai-2-antibody-design-20250630.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "news",
+      "title": "Chai-2 把“从头设计”带进新闻",
+      "body": "公司公布的是从目标表位生成抗体候选并做湿实验验证的路线，不是已经获批的药物。",
+      "kind": "narrative"
+    },
+    {
+      "id": "loop",
+      "title": "模型输出必须回到实验室",
+      "body": "计算生成、合成、结合测试和失败反馈构成一条循环，任何一环都可能改变结论。",
+      "kind": "technical"
+    },
+    {
+      "id": "numbers",
+      "title": "命中率和两周流程是公司口径",
+      "body": "新闻稿中的约 20%、约 50 个靶点和两周时间要与后续预印本、实验条件和独立复现分开。",
+      "kind": "boundary"
+    },
+    {
+      "id": "formats",
+      "title": "抗体格式和目标难度会改变结果",
+      "body": "纳米抗体、VH-VL 和不同表位不能简单合并成一个“模型准确率”。",
+      "kind": "comparison"
+    },
+    {
+      "id": "evidence",
+      "title": "离临床价值还隔着多层验证",
+      "body": "结合实验不等于安全性、可制造性和人体疗效；模型版本和实验批次需要可追溯。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "ai-biology",
+    "title": "AI 抗体设计为什么一定要经过湿实验？",
+    "question": "模型只提出候选，实验才检查这些候选能否在真实分子环境中工作。",
+    "steps": [
+      {
+        "label": "给出目标表位",
+        "detail": "研究者描述抗体需要识别的蛋白表面区域和约束条件。",
+        "evidence": "prompted with target and epitope"
+      },
+      {
+        "label": "生成候选",
+        "detail": "Chai-2 提出新的抗体或纳米抗体结构，而不是只从旧库里检索。",
+        "evidence": "de novo antibody design"
+      },
+      {
+        "label": "合成与测试",
+        "detail": "实验团队合成少量候选，检查结合、特异性和可开发性。",
+        "evidence": "in silico generation to lab validation"
+      },
+      {
+        "label": "回传失败",
+        "detail": "失败样本和成功样本一起决定下一轮设计，不能用一次命中替代完整验证。",
+        "evidence": "company-reported wet-lab validation"
+      }
+    ]
+  },
+  "source": {
+    "name": "Chai Discovery（Business Wire 公告）",
+    "url": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai"
+  },
+  "relatedSlugs": [
+    "llm",
+    "data-lineage",
+    "eval",
+    "benchmark",
+    "event",
+    "data-quality"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.chaidiscovery.com/news",
+      "claim": "Chai Discovery 官方新闻页列出 6 月 30 日 Chai-2 公告，主题是用 AI 做从头抗体设计。",
+      "excerpt": "Chai Discovery news index, “Chai-2”, Jun 30, 2025."
+    },
+    {
+      "url": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai",
+      "claim": "Chai Discovery 通过 Business Wire 发布的新闻稿称 Chai-2 在约 50 个抗体靶点上做实验验证，命中率、两周流程和早期访问均为公司口径。",
+      "excerpt": "Chai Discovery via Business Wire, “Chai-2 Breakthrough”, Jun 30, 2025."
+    },
+    {
+      "url": "https://www.biorxiv.org/content/10.1101/2025.07.05.663018v1",
+      "claim": "后续 bioRxiv 预印本补充 52 个靶点、湿实验和命中率细节；它在 7 月 6 日发布，作为背景，不改变 6 月 30 日新闻事件日。",
+      "excerpt": "bioRxiv, “Zero-shot antibody design in a 24-well plate”, posted Jul 6, 2025."
+    },
+    {
+      "url": "https://chaiassets.com/chai-2/paper/technical_report.pdf",
+      "claim": "Chai-2 技术报告作为公司研究材料，帮助解释从目标表位到分子设计的技术路线；公司自测不等于临床疗效。",
+      "excerpt": "Chai-2 technical report, company research material."
+    }
+  ],
+  "canonicalUrl": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai",
+  "sourceHash": "sha256:9c8f8e35493efe614bd698e4166b2518dee9f974a1eb35fed47a68c044235d09",
+  "status": "published",
+  "discoveredAt": "2026-10-05T10:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 llm 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 data-lineage 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.91,
+      "evidence": [
+        "正文解释 eval 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.88,
+      "evidence": [
+        "正文解释 benchmark 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.84,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.8,
+      "evidence": [
+        "正文解释 data-quality 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.chaidiscovery.com/news",
+      "claim": "Chai Discovery 官方新闻页列出 6 月 30 日 Chai-2 公告，主题是用 AI 做从头抗体设计。",
+      "excerpt": "Chai Discovery news index, “Chai-2”, Jun 30, 2025."
+    },
+    {
+      "url": "https://markets.financialcontent.com/wss/article/bizwire-2025-6-30-chai-discovery-unveils-chai-2-breakthrough-achieving-fully-de-novo-antibody-design-with-ai",
+      "claim": "Chai Discovery 通过 Business Wire 发布的新闻稿称 Chai-2 在约 50 个抗体靶点上做实验验证，命中率、两周流程和早期访问均为公司口径。",
+      "excerpt": "Chai Discovery via Business Wire, “Chai-2 Breakthrough”, Jun 30, 2025."
+    },
+    {
+      "url": "https://www.biorxiv.org/content/10.1101/2025.07.05.663018v1",
+      "claim": "后续 bioRxiv 预印本补充 52 个靶点、湿实验和命中率细节；它在 7 月 6 日发布，作为背景，不改变 6 月 30 日新闻事件日。",
+      "excerpt": "bioRxiv, “Zero-shot antibody design in a 24-well plate”, posted Jul 6, 2025."
+    },
+    {
+      "url": "https://chaiassets.com/chai-2/paper/technical_report.pdf",
+      "claim": "Chai-2 技术报告作为公司研究材料，帮助解释从目标表位到分子设计的技术路线；公司自测不等于临床疗效。",
+      "excerpt": "Chai-2 technical report, company research material."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日、来源发布日期、原始链接和公司/媒体口径；正文保留新闻事实与待验证主张的边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T21:37:41Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "约 50/52 靶点、20% 命中等明确为公司/研究口径，未推导药物疗效。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-30-chai-2-antibody-design-20250630",
+  "promotedAt": "2026-10-04T21:38:22.618Z"
+}

@@ -1,0 +1,216 @@
+{
+  "slug": "apple-external-model-siri-20250630",
+  "title": "Apple 据报测试让 Claude 或 ChatGPT 驱动新版 Siri：合作仍是讨论，不是产品公告",
+  "summary": "6 月 30 日，TechCrunch 引述 Bloomberg 报道称，Apple 正考虑让 Anthropic 或 OpenAI 的模型参与新版 Siri，并测试在 Apple 云基础设施上运行的版本。报道没有确认合作协议，Apple 自研的“LLM Siri”也仍在继续。",
+  "body": "6 月 30 日，一条关于 Siri 的新闻把 Apple 的 AI 路线推到了聚光灯下：TechCrunch 引述 Bloomberg 报道称，Apple 正考虑使用 Anthropic 或 OpenAI 的模型为新版 Siri 提供能力，而不是完全依赖内部模型。报道还称，Apple 要求两家公司训练能在 Apple 云基础设施上运行的版本，用于测试。\n\n这条新闻最容易被误读成“Apple 已经把 Siri 交给 Claude 或 ChatGPT”。实际事实更谨慎：报道说的是考虑、接触和测试，没有宣布供应商、合同或上线日期；Apple 自己的“LLM Siri”项目仍在推进。Reuters 转述 Bloomberg 时也把它写成方向变化的报道，而不是正式合作公告。\n\n如果 Apple 真的采用外部模型，技术问题不只是把一个 API 接上 Siri。Siri 需要理解用户在设备上的上下文、决定什么时候调用模型、控制哪些操作可以执行，还要处理延迟、成本和隐私。把模型放在 Apple 的云上，可能让 Apple 保留一部分数据和权限控制，但不自动解决模型输出错误或跨服务授权的问题。\n\nApple 在此前的 Apple Intelligence 中已经与 OpenAI 合作，让 Siri 在部分问题上调用 ChatGPT。此次报道描述的是更深的合作：外部模型可能成为新版 Siri 的主要语言推理层。两者的区别在于，前者是特定请求的转交，后者可能改变系统如何理解指令、使用个人上下文和执行操作。\n\n报道还把 Siri 的延期背景放在一起。Apple 曾表示更个性化的 Siri 要到 2026 年或更晚，具体原因和最终形态没有在 6 月 30 日这条消息中得到官方完整解释。把延期归因于某个模型或把未来日期写成承诺，都超过了来源能证明的范围。\n\n对用户来说，真正要观察的是三件事：Apple 是否公布合作伙伴，外部模型能否在 Private Cloud Compute 等边界内运行，以及系统怎样让用户确认敏感操作。6 月 30 日确认的是一次可能的架构转向，不是一个今天可以下载的新版 Siri。",
+  "publishedAt": "2025-06-30",
+  "eventDate": "2025-06-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/apple-external-model-siri-20250630.svg",
+    "alt": "Apple 新版 Siri 可能在 Apple Cloud、外部模型、LLM Siri 与隐私延迟之间进行选择",
+    "sourceUrl": "/images/news/apple-external-model-siri-20250630.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "report",
+      "title": "报道说的是考虑和测试",
+      "body": "Apple 可能评估 Anthropic 或 OpenAI 模型，但没有公布供应商、合同或上线时间。",
+      "kind": "narrative"
+    },
+    {
+      "id": "architecture",
+      "title": "外部模型不等于把 Siri 交出去",
+      "body": "新版 Siri 仍要处理设备上下文、工具调用、权限和隐私，模型只是其中一层。",
+      "kind": "technical"
+    },
+    {
+      "id": "depth",
+      "title": "这可能比现有 ChatGPT 转交更深",
+      "body": "此前 Siri 可把部分问题交给 ChatGPT；报道中的测试涉及让外部模型承担更多语言推理。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "没有合作协议，就没有产品结论",
+      "body": "Apple 自研 LLM Siri 仍在进行，日期、模型和供应商均未在当天确认。",
+      "kind": "boundary"
+    },
+    {
+      "id": "watch",
+      "title": "要观察权限确认和云端边界",
+      "body": "后续公布的部署位置、用户控制、敏感操作确认和错误处理，比“用了谁的模型”更能决定体验。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "外部模型接入 Siri，用户数据要经过哪些闸门？",
+    "question": "先判断上下文和权限，再选择模型和工具，最后让用户确认敏感动作。",
+    "steps": [
+      {
+        "label": "识别请求",
+        "detail": "Siri 先判断问题是否需要外部模型，以及是否包含个人上下文。",
+        "evidence": "Apple continues an internal LLM Siri project"
+      },
+      {
+        "label": "选择模型",
+        "detail": "可能在 Apple 自研模型和合作方模型之间路由，但 6 月 30 日尚未选定。",
+        "evidence": "testing models from Anthropic or OpenAI on Apple cloud"
+      },
+      {
+        "label": "限制权限",
+        "detail": "系统需要把邮件、日历、设备控制等工具权限和模型回答分开。",
+        "evidence": "deeper Siri integration raises context and control questions"
+      },
+      {
+        "label": "确认动作",
+        "detail": "发送消息、修改数据等敏感操作应让用户知道并确认，而不是静默执行。",
+        "evidence": "no product announcement or confirmed execution policy"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch（引述 Bloomberg）",
+    "url": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "context",
+    "auth",
+    "tools",
+    "event",
+    "model-routing"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/",
+      "claim": "TechCrunch 引述 Bloomberg 报道，Apple 正考虑让 Anthropic 或 OpenAI 的模型为新版 Siri 提供能力，并测试运行在 Apple 云上的定制模型；双方尚未达成协议。",
+      "excerpt": "TechCrunch, “Apple reportedly considers letting Anthropic and OpenAI power Siri”, Jun 30, 2025."
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/apple-weighs-using-anthropic-or-openai-to-power-siri-in-major-reversal-bloomberg-news-reports-4117640",
+      "claim": "Reuters 转述 Bloomberg 报道，Apple 可能评估外部模型为 Siri 提供动力，报道强调这是重大方向变化而非已签合作。",
+      "excerpt": "Reuters, “Apple weighs using Anthropic or OpenAI to power Siri…”, Jun 30, 2025."
+    },
+    {
+      "url": "https://www.macrumors.com/2025/06/30/APPLE-CHATGPT-CLAUDE-SIRI/",
+      "claim": "MacRumors 同日报道外部模型讨论，并补充 Apple Intelligence 与 Siri 延期背景；它不证明 Apple 已选定供应商。",
+      "excerpt": "MacRumors, “Apple Could Use ChatGPT or Claude to Power Siri”, Jun 30, 2025."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/",
+  "sourceHash": "sha256:c52763f06105f32f12cd874e5f99398614b33b46caa53f1d0bd7199ff1979c72",
+  "status": "published",
+  "discoveredAt": "2026-10-05T10:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 llm 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 context 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.91,
+      "evidence": [
+        "正文解释 auth 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.88,
+      "evidence": [
+        "正文解释 tools 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.84,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 0.8,
+      "evidence": [
+        "正文解释 model-routing 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/06/30/apple-reportedly-considers-letting-anthropic-and-openai-power-siri/",
+      "claim": "TechCrunch 引述 Bloomberg 报道，Apple 正考虑让 Anthropic 或 OpenAI 的模型为新版 Siri 提供能力，并测试运行在 Apple 云上的定制模型；双方尚未达成协议。",
+      "excerpt": "TechCrunch, “Apple reportedly considers letting Anthropic and OpenAI power Siri”, Jun 30, 2025."
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/apple-weighs-using-anthropic-or-openai-to-power-siri-in-major-reversal-bloomberg-news-reports-4117640",
+      "claim": "Reuters 转述 Bloomberg 报道，Apple 可能评估外部模型为 Siri 提供动力，报道强调这是重大方向变化而非已签合作。",
+      "excerpt": "Reuters, “Apple weighs using Anthropic or OpenAI to power Siri…”, Jun 30, 2025."
+    },
+    {
+      "url": "https://www.macrumors.com/2025/06/30/APPLE-CHATGPT-CLAUDE-SIRI/",
+      "claim": "MacRumors 同日报道外部模型讨论，并补充 Apple Intelligence 与 Siri 延期背景；它不证明 Apple 已选定供应商。",
+      "excerpt": "MacRumors, “Apple Could Use ChatGPT or Claude to Power Siri”, Jun 30, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日、来源发布日期、原始链接和公司/媒体口径；正文保留新闻事实与待验证主张的边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T21:37:41Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "Bloomberg/TechCrunch 报道明确是考虑/测试，未写成合作或产品公告。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-30-apple-external-model-siri-20250630",
+  "promotedAt": "2026-10-04T21:38:22.617Z"
+}

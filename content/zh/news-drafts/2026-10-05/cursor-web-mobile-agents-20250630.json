@@ -1,0 +1,216 @@
+{
+  "slug": "cursor-web-mobile-agents-20250630",
+  "title": "Cursor 把后台编码智能体搬到 Web 和手机：先派任务，再回来审 diff",
+  "summary": "6 月 30 日，Cursor 宣布 Web 和移动端可直接使用 Cursor Agents：用户可以在浏览器或手机派发编码任务，等待后台 Agent 运行，再查看 diff、跟进指令和创建 pull request。核心变化是工作入口扩展，不是取消人工审查。",
+  "body": "6 月 30 日，Cursor 把它的后台编码 Agent 从 IDE 里拿了出来。官方博客宣布，用户可以在桌面浏览器、平板或手机上打开 cursor.com/agents，给 Agent 一个任务，让它在后台写功能、修 bug 或回答代码库问题。任务完成后，用户可以查看差异、补充指令，再回到桌面端继续编辑。\n\n这条产品新闻的关键不是“手机上也能写代码”，而是工作流被拆成了两个时间点：先派单，后复核。Cursor 还提到 Slack 触发、并行运行多个 Agent、团队成员查看 diff 和直接创建 pull request。对需要长时间运行的代码任务来说，Agent 不必占着开发者的 IDE，但代码仍然要通过仓库权限、审查和合并进入主线。\n\n从机制上看，Web Agent 更像一个远程执行入口，而不是新的基础模型。官方没有在这天发布新模型或独立 benchmark；它把已有的编码能力、后台运行环境、仓库访问和协作界面组合起来。浏览器只是控制面，真正的代码修改仍发生在 Cursor 的云端或关联代码环境中。\n\n权限边界因此比“能不能写代码”更重要。Agent 需要知道哪个仓库、哪条分支、哪些密钥和哪些测试可以访问。Cursor 的产品说明强调团队成员可以看 diff 和 pull request，但这不等于所有用户都能自动合并，也不等于 Agent 能安全处理任何生产凭证。具体权限由仓库和团队配置决定。\n\n这类产品把“等待”变成了可利用的时间：开发者可以在手机上启动迁移，回到电脑时再看结果。但等待并不等于完成。代码可能缺少依赖、误解需求或改动超出范围，最终仍需要运行测试、审查差异和确认部署条件。Cursor 在新闻中没有承诺后台 Agent 的成功率，因此文章只记录它提供了新的调度和复核界面。\n\n6 月 30 日的变化可以用一句话概括：编码智能体开始像一个远程同事一样被派活，但 pull request 仍是把建议带回工程流程的检查点。",
+  "publishedAt": "2025-06-30",
+  "eventDate": "2025-06-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cursor-web-mobile-agents-20250630.svg",
+    "alt": "Cursor Web Agent 从浏览器派单、后台执行、查看 diff 到创建 pull request 的流程",
+    "sourceUrl": "/images/news/cursor-web-mobile-agents-20250630.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "Web 和手机成为新的派单入口",
+      "body": "用户可在浏览器和移动设备启动 Cursor Agent，让任务在后台执行。",
+      "kind": "narrative"
+    },
+    {
+      "id": "workflow",
+      "title": "核心是“先派单、后复核”",
+      "body": "任务进度、diff、后续指令和 pull request 被放到同一条可回看的流程中。",
+      "kind": "technical"
+    },
+    {
+      "id": "not-model",
+      "title": "这是工作流产品，不是新模型发布",
+      "body": "6 月 30 日的公告没有给出新模型或独立评测，变化在入口、执行环境和协作界面。",
+      "kind": "boundary"
+    },
+    {
+      "id": "permissions",
+      "title": "仓库和凭证权限决定实际风险",
+      "body": "能派发任务不代表能自动合并或读取生产密钥，团队仍需把权限和分支规则写清楚。",
+      "kind": "technical"
+    },
+    {
+      "id": "review",
+      "title": "pull request 是人机协作的检查点",
+      "body": "开发者要看 diff、跑测试、补指令并确认范围，不能把后台完成提示当成上线结果。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个后台编码 Agent 如何回到工程主线？",
+    "question": "把派单、执行、差异和合并分开，才能看见每一步的责任。",
+    "steps": [
+      {
+        "label": "提出任务",
+        "detail": "开发者从浏览器或手机描述要修的 bug、要加的功能或要回答的问题。",
+        "evidence": "web and mobile agents can write code and scaffold work"
+      },
+      {
+        "label": "后台执行",
+        "detail": "Agent 在关联代码环境中读取上下文、修改文件并运行自己的任务流程。",
+        "evidence": "run tasks while you are away"
+      },
+      {
+        "label": "查看差异",
+        "detail": "用户回来看 diff、进度和测试结果，发现方向不对时补充指令。",
+        "evidence": "review agent diffs and give follow-up instructions"
+      },
+      {
+        "label": "创建 PR",
+        "detail": "变更进入 pull request，团队再根据仓库规则决定是否合并。",
+        "evidence": "create pull requests directly from the web interface"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cursor 官方博客",
+    "url": "https://cursor.com/blog/agent-web"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "tools",
+    "state",
+    "auth",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://cursor.com/blog/agent-web",
+      "claim": "Cursor 官方博客 6 月 30 日宣布 Web 和移动端可使用 Cursor Agents，可在浏览器中派发编码任务、查看进度并创建 pull request。",
+      "excerpt": "Cursor, “Cursor on web and mobile”, Jun 30, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/30/cursor-launches-a-web-app-to-manage-ai-coding-agents/",
+      "claim": "TechCrunch 报道 Cursor 将后台编码 Agent 从 IDE 扩展到浏览器，可派发功能开发或修复任务、查看进度并合并变更。",
+      "excerpt": "TechCrunch, “Cursor launches a web app to manage AI coding agents”, Jun 30, 2025."
+    },
+    {
+      "url": "https://forum.cursor.com/t/introducing-cursor-on-web-mobile/111183",
+      "claim": "Cursor 社区公告补充 Web/Mobile Agent、Slack 触发、并行 Agent 和返回桌面端继续编辑的使用路径。",
+      "excerpt": "Cursor forum announcement, “Introducing Cursor on Web & Mobile”, Jun 30, 2025."
+    }
+  ],
+  "canonicalUrl": "https://cursor.com/blog/agent-web",
+  "sourceHash": "sha256:4c8fe2d151aa84921563159010b5573276310bc3ea5b98e601722c5d1b5d3401",
+  "status": "published",
+  "discoveredAt": "2026-10-05T10:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 agent 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 agent-harness 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.91,
+      "evidence": [
+        "正文解释 tools 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "state",
+      "score": 0.88,
+      "evidence": [
+        "正文解释 state 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.84,
+      "evidence": [
+        "正文解释 auth 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://cursor.com/blog/agent-web",
+      "claim": "Cursor 官方博客 6 月 30 日宣布 Web 和移动端可使用 Cursor Agents，可在浏览器中派发编码任务、查看进度并创建 pull request。",
+      "excerpt": "Cursor, “Cursor on web and mobile”, Jun 30, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/30/cursor-launches-a-web-app-to-manage-ai-coding-agents/",
+      "claim": "TechCrunch 报道 Cursor 将后台编码 Agent 从 IDE 扩展到浏览器，可派发功能开发或修复任务、查看进度并合并变更。",
+      "excerpt": "TechCrunch, “Cursor launches a web app to manage AI coding agents”, Jun 30, 2025."
+    },
+    {
+      "url": "https://forum.cursor.com/t/introducing-cursor-on-web-mobile/111183",
+      "claim": "Cursor 社区公告补充 Web/Mobile Agent、Slack 触发、并行 Agent 和返回桌面端继续编辑的使用路径。",
+      "excerpt": "Cursor forum announcement, “Introducing Cursor on Web & Mobile”, Jun 30, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日、来源发布日期、原始链接和公司/媒体口径；正文保留新闻事实与待验证主张的边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T21:37:41Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "产品入口扩展与人工审查/权限边界清楚，无新模型或独立 benchmark 误读。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-30-cursor-web-mobile-agents-20250630",
+  "promotedAt": "2026-10-04T21:38:22.617Z"
+}
