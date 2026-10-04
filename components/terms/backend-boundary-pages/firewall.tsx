@@ -1,24 +1,52 @@
 "use client";
 
 import { ArrowRight, CheckCircle, Globe, LockKey, Pause, Play, ShieldCheck, WarningCircle, XCircle } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "../ConceptArticle";
 import { firewallSources } from "@/lib/backend-boundary-sources";
 import styles from "./network-boundary-pages.module.css";
 
 const frames = [
-  { label: "请求到门口", packet: "公网 → admin:22", rule: "等待比对", result: "还没有决定" },
-  { label: "匹配拒绝", packet: "公网 → admin:22", rule: "deny · public · 22", result: "连接被丢弃，留下拒绝日志" },
-  { label: "只放行需要的", packet: "office → report:443", rule: "allow · office · 443", result: "健康检查通过，其他入口仍关着" },
+  { label: "首个 SYN 命中", packet: "client → web:443", rule: "rule 10 · allow TCP dst 443", result: "首个匹配，送往 Web 服务" },
+  { label: "无状态返回被拒", packet: "web:443 → client:51000", rule: "rule 99 · deny any", result: "返回包被丢弃，握手中断" },
+  { label: "状态表放行返回", packet: "web:443 → client:51000", rule: "state · ESTABLISHED", result: "返回包属于已建立连接" },
+  { label: "deny 置前", packet: "client → web:443", rule: "rule 1 · deny any", result: "allow 443 没有机会执行" },
 ];
 
 function FirewallHero() {
+  const ref = useRef<HTMLElement>(null);
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
-    if (!playing) return;
+    const element = ref.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setVisible(entry.isIntersecting);
+      if (!entry.isIntersecting) setPlaying(false);
+    }, { threshold: 0.15 });
+    const visibility = () => { if (document.hidden) setPlaying(false); };
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const preference = () => {
+      setReduced(motion.matches);
+      if (motion.matches) setPlaying(false);
+    };
+    preference();
+    observer.observe(element);
+    document.addEventListener("visibilitychange", visibility);
+    motion.addEventListener("change", preference);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", visibility);
+      motion.removeEventListener("change", preference);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!playing || !visible || reduced) return;
     const timer = window.setInterval(() => {
       setStep(current => {
         if (current >= frames.length - 1) {
@@ -29,23 +57,23 @@ function FirewallHero() {
       });
     }, 1050);
     return () => window.clearInterval(timer);
-  }, [playing]);
+  }, [playing, visible, reduced]);
 
   const current = frames[step];
-  return <figure className={styles.firewallHero} data-step={step} aria-label="防火墙按来源、目标和端口决定网络请求是否通过">
+  return <figure ref={ref} className={styles.firewallHero} data-step={step} aria-label="防火墙按来源、目标、端口、连接状态和规则顺序决定网络请求是否通过">
     <div className={styles.firewallHeroTop}><span>仓库东门 · 一次连接</span><strong>{current.result}</strong></div>
     <div className={styles.firewallHeroFlow}>
       <div className={styles.firewallHeroPacket}><Globe size={20} aria-hidden="true" /><span>{current.packet}</span><small>新到请求</small></div>
       <ArrowRight className={styles.firewallHeroArrow} size={22} aria-hidden="true" />
       <div className={styles.firewallHeroGate}><ShieldCheck size={24} aria-hidden="true" /><span>防火墙</span><strong>{current.rule}</strong><small>先看规则，再让包裹进门</small></div>
       <ArrowRight className={styles.firewallHeroArrow} size={22} aria-hidden="true" />
-      <div className={styles.firewallHeroRoom} data-allowed={step === 2}><LockKey size={22} aria-hidden="true" /><span>{step === 2 ? "报表服务" : "内部服务"}</span><strong>{step === 2 ? "443 已收到" : "尚未接收"}</strong></div>
+      <div className={styles.firewallHeroRoom} data-allowed={step === 0 || step === 2} data-blocked={step === 1 || step === 3}><LockKey size={22} aria-hidden="true" /><span>{step === 0 || step === 2 ? "Web 服务" : "连接边界"}</span><strong>{step === 0 ? "443 已收到" : step === 2 ? "SYN-ACK 已到" : "尚未接收"}</strong></div>
     </div>
     <div className={styles.firewallHeroTimeline} role="group" aria-label="防火墙首图步骤">
       {frames.map((frame, index) => <button type="button" key={frame.label} aria-pressed={index === step} onClick={() => { setStep(index); setPlaying(false); }}>{frame.label}</button>)}
     </div>
     <div className={styles.firewallHeroControls} role="group" aria-label="控制防火墙首图动画">
-      <button type="button" onClick={() => setPlaying(value => !value)}>{playing ? <Pause size={15} /> : <Play size={15} />} {playing ? "暂停" : "播放"}</button>
+      <button type="button" aria-pressed={playing} aria-label={playing ? "暂停防火墙原理演示" : reduced ? "查看下一步防火墙原理演示" : "播放防火墙原理演示"} onClick={() => { if (reduced) { setStep(current => current >= frames.length - 1 ? 0 : current + 1); return; } setPlaying(value => !value); }}>{playing ? <Pause size={15} /> : <Play size={15} />} {playing ? "暂停" : reduced ? "下一步" : "播放"}</button>
       <button type="button" onClick={() => { setStep(0); setPlaying(false); }}>重播</button>
     </div>
   </figure>;

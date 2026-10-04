@@ -678,9 +678,9 @@
     "zh": "防火墙", "en": "Firewall", "slug": "firewall", "cat": "技术栈",
     "say": "根据地址、端口、协议或应用规则允许和阻止网络流量。", "aliases": ["网络防火墙", "访问规则", "Firewall"],
     "question": "数据库只给后端访问，怎样阻止公网直接连接？", "definition": "防火墙在网络边界或主机上检查流量，并按规则决定放行、拒绝或记录。", "boundary": "防火墙只是分层防护的一部分，不能替代身份认证、补丁和应用安全检查。",
-    "demoType": "branch", "demoTitle": "数据库端口怎样被边界规则过滤",
-    "demoSteps": [{"label":"内网请求","value":"10.0.1.8:5432","note":"来源位于允许的应用子网。"},{"label":"公网请求","value":"203.0.113.9:5432","note":"来源不符合放行规则。"},{"label":"执行策略","value":"内网通过 · 公网拒绝","note":"日志记录来源和命中规则。"}],
-    "quizQuestion": "数据库只供应用服务器使用时，合理的防火墙规则是什么？", "quizOptions": ["只允许应用子网访问数据库端口", "向整个公网开放端口", "删除所有访问日志"], "correctText": "限制来源能缩小网络暴露范围。", "wrongText": "公网开放会扩大风险，日志有助于排查和审计。",
+    "demoType": "branch", "demoTitle": "同一连接怎样遇到规则顺序和状态表",
+    "demoSteps": [{"label":"首个 SYN","value":"client → web:443","note":"规则 10 放行，送到 Web 服务。"},{"label":"返回包","value":"无状态拒绝 → 有状态放行","note":"同一返回流量取决于是否识别 ESTABLISHED。"},{"label":"deny 置前","value":"rule 1 deny · allow 未到达","note":"第一条匹配提前结束，443 规则没有机会执行。"}],
+    "quizQuestion": "allow 443 写在 deny any 后面，流量会怎样？", "quizOptions": ["先命中 deny any，allow 443 不会执行", "两条规则自动取更宽松结果", "端口 443 永远绕过规则顺序"], "correctText": "多数规则表按顺序使用首个匹配结果。", "wrongText": "查看包到达的第一条匹配规则。",
     "promptTitle": "审查防火墙规则", "prompt": "请按来源、目标、端口、方向和业务用途审查这些防火墙规则，标出过宽和失效规则。", "relatedSlugs": ["network-port", "least-privilege", "ip-address"]
   },
   {
