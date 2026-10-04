@@ -459,3 +459,61 @@ export function PassFailLesson() {
     <button className={base.reset} onClick={() => { setMode('pass'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置检查结果</button>
   </div>;
 }
+
+type ContextOverflowMode = 'headroom' | 'overflow' | 'compacted';
+
+const contextOverflowCases: Record<ContextOverflowMode, {
+  label: string;
+  total: number;
+  limit: number;
+  action: string;
+  title: string;
+  body: string;
+  parts: { label: string; tokens: number }[];
+}> = {
+  headroom: {
+    label: '有余量',
+    total: 15,
+    limit: 24,
+    action: '继续执行',
+    title: '还在窗口内，但仍要看预算',
+    body: '系统指令、历史、工具结果和预计输出合计 15k，没有触发容量错误。把关键事实放在可回看的位置，下一轮仍要按同一预算计算。',
+    parts: [{ label: '系统', tokens: 2 }, { label: '历史', tokens: 6 }, { label: '工具', tokens: 4 }, { label: '输出', tokens: 3 }],
+  },
+  overflow: {
+    label: '已溢出',
+    total: 26,
+    limit: 24,
+    action: '拒绝并压缩',
+    title: '请求超过容量，最新任务还没有执行',
+    body: '26k 大于 24k，输入或预计输出已经超出本次窗口。重试同一份请求不会增加容量，应先删减、压缩、检索或分段，再重新估算。',
+    parts: [{ label: '系统', tokens: 2 }, { label: '历史', tokens: 14 }, { label: '工具', tokens: 7 }, { label: '输出', tokens: 3 }],
+  },
+  compacted: {
+    label: '压缩后',
+    total: 11,
+    limit: 24,
+    action: '复查后继续',
+    title: '压缩让请求回到窗口内',
+    body: '压缩后的摘要只保留目标、已经做出的决策和未完成动作。容量恢复不等于事实自动正确，继续前要对照原始证据复查关键字段。',
+    parts: [{ label: '系统', tokens: 2 }, { label: '摘要', tokens: 2 }, { label: '工具', tokens: 4 }, { label: '输出', tokens: 3 }],
+  },
+};
+
+export function ContextOverflowLesson() {
+  const [mode, setMode] = useState<ContextOverflowMode>('headroom');
+  const [checkedMode, setCheckedMode] = useState<ContextOverflowMode | null>(null);
+  const current = contextOverflowCases[mode];
+  const report = checkedMode ? contextOverflowCases[checkedMode] : current;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：拆开上下文令牌预算并处理溢出">
+    <div className={s.controls}><label>上下文状态<select value={mode} onChange={e => { setMode(e.target.value as ContextOverflowMode); setCheckedMode(null); }}><option value="headroom">短历史，有余量</option><option value="overflow">长历史，已溢出</option><option value="compacted">压缩后，可继续</option></select></label><p className={s.runHint}>先拆开令牌来源，再决定继续、压缩还是分段。</p></div>
+    <div className={s.contextBudget} aria-label="当前上下文令牌预算">
+      <div className={s.contextBudgetHeader}><span>本次请求</span><strong>{current.total}k / {current.limit}k</strong></div>
+      <div className={s.contextBudgetBar} data-over={current.total > current.limit} aria-label={`已使用 ${current.total}k，上限 ${current.limit}k`}>{current.parts.map(part => <span key={part.label} style={{ flex: `${part.tokens} 1 0` }}>{part.tokens}k</span>)}</div>
+      <div className={s.contextBudgetRows}>{current.parts.map(part => <div key={part.label}><span>{part.label}</span><strong>{part.tokens}k</strong></div>)}</div>
+    </div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>估算并决定下一步<ArrowRight size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.contextResult} role="status" data-overflow={checkedMode === 'overflow'}><header><h3>{report.title}</h3><span>{report.action}</span></header><p>{report.body}</p><p className={s.runEvidence}>记录：{report.total}k / {report.limit}k；{report.parts.map(part => `${part.label} ${part.tokens}k`).join(' · ')}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('headroom'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置上下文状态</button>
+  </div>;
+}

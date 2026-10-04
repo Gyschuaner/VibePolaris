@@ -1,8 +1,8 @@
 import { ArrowRight, Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson, ModelGraderLesson, PassFailLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources, passFailGraderSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson, ModelGraderLesson, PassFailLesson, ContextOverflowLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources, passFailGraderSources, contextOverflowSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -369,6 +369,36 @@ export function PassFailGraderTermPage() {
       <p id="passfail-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 将测量、记录和持续评估放在风险管理流程中；指标只有连同范围、记录和处理方式，才足以支持下一步决策。<strong>发布门槛要同时声明通过、失败和未评分如何处理，不能只保留一个通过率。</strong><Cite id="passfail-gate-detail"/></p>
       <p>本例可以规定：所有关键条件通过才允许发布；失败进入修复；未评分暂停发布并重跑或补证据。若任务包含高风险副作用，还要让门槛检查实际结果与权限记录，而不是只看模型回复。门槛是流程决策，不是把所有业务质量压成一个数字。</p>
       <ArticleAside title="读一条 pass / fail 记录"><p>先看判据版本，再看逐项证据和结果状态，最后看门槛动作。比较两次运行时，确认题集、被测版本、评分器和环境一致；否则相同的 pass 数字也可能来自不同条件。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function ContextOverflowTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={contextOverflowSources}/>;
+  return <ConceptArticle slug="context-overflow" title="上下文溢出" subtitle="Context Overflow · 先算预算，再决定保留什么" sources={contextOverflowSources}
+    sections={[['context-overflow-definition', '窗口算的是整轮预算'], ['context-overflow-overflow', '超限先停，不要重复原请求'], ['context-overflow-recovery', '压缩后要验证保留了什么'], ['context-overflow-boundary', '能装下不等于用得好']]}
+    intro={<>上下文溢出发生在一次请求需要的令牌超过模型窗口：系统指令、历史消息、工具结果和预计输出都占预算。处理它不是把旧内容无限塞回去，而是先找出哪些事实必须留下，再用压缩、检索或分段让下一轮可检查、可继续。</>}
+    hero={<ConceptHero slug="context-overflow" label="26k 请求超过 24k 窗口；压缩目标、决策和未完成动作后回到 11k"><div className={s.contextOverflowHero}><div className={s.contextHeroCard} data-overflow="true"><span>原始请求</span><strong>26k</strong><small>超过窗口 24k</small></div><ArrowRight size={22} aria-hidden="true"/><div className={s.contextHeroCard}><span>压缩后</span><strong>11k</strong><small>保留目标与待办</small></div><p className={s.contextHeroNote}>先保留高信号事实，再让下一轮继续</p></div></ConceptHero>}>
+    <ArticleSection id="context-overflow-definition" title="窗口算的是整轮预算"><Legacy slug="context-overflow" names={['question', 'definition-anchor']}/>
+      <p id="context-overflow-definition-detail" className="vp-citation-target"><strong>上下文窗口是模型本轮生成时可以参考的全部令牌空间，也包括它将要生成的输出。</strong>Claude 文档明确把系统提示、消息、工具结果、图片、文档、工具定义和输出都算进窗口；窗口大小不是只给用户文字预留的容量。<Cite id="context-overflow-definition-detail"/></p>
+      <p>因此要先把一轮请求拆成几块：系统规则、当前问题、历史、工具结果、预计输出。每块都可能随对话增长。把“还有多少字能发”当成预算，会漏掉工具定义、图片和模型输出，直到服务端在发送或生成过程中拒绝请求。</p>
+      <div className={s.modelChecklist}><div><span>先列</span><strong>来源与令牌</strong><p>把系统、历史、工具和输出分开估算。</p></div><div><span>再标</span><strong>必须保留的事实</strong><p>目标、约束、决定和未完成动作要能回看。</p></div><div><span>最后留</span><strong>输出余量</strong><p>不要把窗口全部占满，给本轮生成留空间。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="context-overflow-overflow" title="超限先停，不要重复原请求"><Legacy slug="context-overflow" names={['scene-heading']}/>
+      <p id="context-overflow-overflow-detail" className="vp-citation-target">当输入本身已经超过窗口时，Claude API 会返回请求过长的错误；在某些模型上，输入加上 <code>max_tokens</code> 也可能在生成时以窗口超限停止。<strong>溢出说明这次请求没有足够容量，不说明模型突然不会回答。</strong><Cite id="context-overflow-overflow-detail"/></p>
+      <p>下面只使用固定的虚构预算，不发送真实请求。切换短历史、原始长历史和压缩后的记录，先看每一块占多少，再点击估算。长历史的失败分支保留“最新任务未执行”，压缩分支也保留复查动作，不把容量恢复误写成事实已经正确。</p>
+      <ContextOverflowLesson/>
+      <p>实际系统可以在发送前调用令牌计数，或在服务端错误后进入压缩、检索和分段流程。关键是记录采用了哪种策略，以及哪些原始证据不再直接可见。</p>
+    </ArticleSection>
+    <ArticleSection id="context-overflow-recovery" title="压缩后要验证保留了什么" className={base.offset}><Legacy slug="context-overflow" names={['quiz-heading']}/>
+      <p id="context-overflow-recovery-detail" className="vp-citation-target">OpenAI 的评测流程把“描述任务、用测试输入运行、分析结果并迭代”分成连续步骤。<strong>上下文压缩或裁剪后，应用一组固定检查重新确认关键事实、约束和未完成动作，而不是只看令牌数下降。</strong><Cite id="context-overflow-recovery-detail"/></p>
+      <p>例如原对话里有一个退款上限、一次已经批准的决定和一个尚未执行的工具动作。摘要如果只留下“用户要退款”，下一轮可能重复询问、越过上限或误以为动作已经完成。压缩后的记录要能回答：目标是什么、哪些决定已经做出、下一步还缺什么证据。</p>
+      <ArticleAside title="一次压缩后的最小复查"><p>从原文抽几条高风险事实做成固定问题；比较压缩前后的答案；发现遗漏就调整摘要规则或改用检索，而不是悄悄继续。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="context-overflow-boundary" title="能装下不等于用得好"><Legacy slug="context-overflow" names={['prompt-heading']}/>
+      <p id="context-overflow-boundary-detail" className="vp-citation-target">Anthropic 将上下文视为有限资源，指出令牌增加时准确率和召回可能下降；“Lost in the Middle”研究也发现，相关信息放在长输入中间时，模型检索表现会明显变差。<strong>没有硬性溢出，只代表请求被接受，不代表关键事实一定被稳定使用。</strong><Cite id="context-overflow-boundary-detail"/></p>
+      <p>所以“把所有历史都留下”不是默认的保真方案。低信号闲聊、重复工具结果和已完成的中间步骤可以裁剪；关键决定、约束、来源定位和未完成动作应该结构化保留。对于不能丢的事实，优先存成外部状态或可检索记录，让模型按需取回。</p>
+      <ArticleAside title="看到窗口还剩很多时再问三句"><p>关键信息是否在摘要里？它能回到哪条原始证据？下一轮如果只读这份上下文，能否知道已经做过什么和还要做什么？三句答不上来，就先整理上下文再继续。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

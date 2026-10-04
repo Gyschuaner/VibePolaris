@@ -71,3 +71,9 @@ export const passFailGraderSources = [
   source('OpenAI', 'Safety best practices', 'https://developers.openai.com/api/docs/guides/safety-best-practices', ['passfail-unscored-detail']),
   source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['passfail-gate-detail']),
 ];
+export const contextOverflowSources = [
+  source('Anthropic', 'Context windows', 'https://platform.claude.com/docs/en/build-with-claude/context-windows', ['context-overflow-definition-detail', 'context-overflow-overflow-detail']),
+  source('Anthropic', 'Effective context engineering for AI agents', 'https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents', ['context-overflow-boundary-detail']),
+  source('Nelson F. Liu、Kevin Lin、John Hewitt 等', 'Lost in the Middle: How Language Models Use Long Contexts', 'https://arxiv.org/abs/2307.03172', ['context-overflow-boundary-detail'], '2023'),
+  source('OpenAI', 'Working with evals', 'https://developers.openai.com/api/docs/guides/evals', ['context-overflow-recovery-detail']),
+];
