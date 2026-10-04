@@ -11888,17 +11888,17 @@
   },
   {
     "slug": "hostname",
-    "lead": "TCP 已连到正确 IP，为什么修改 Host 后会得到另一个网站或证书错误？",
-    "definition": "主机名是 DNS 命名空间中的名称，可解析到一个或多个地址；连接地址、HTTP authority 和 TLS 服务身份仍在不同层分别使用它。",
-    "boundary": "主机名不等于固定 IP，也不一定是完整域名。同一 IP 可承载多个名称，一个名称也可对应多个地址。",
+    "lead": "TCP 已经连到正确 IP，为什么改一下 Host 就会看到另一个网站？",
+    "definition": "主机名是 DNS 命名空间中的可读名称；它先被解析成地址，随后仍会作为 TLS 身份和 HTTP Host 的线索继续传递。",
+    "boundary": "主机名不是固定 IP，也不是一次解析就能证明服务健康的结论。同一 IP 可以承载多个名称，一个名称也可能返回多条地址。",
     "sceneKind": "layers",
-    "sceneTitle": "名称解析、连接地址与虚拟主机选择",
-    "actionLabel": "更换主机名或 Host",
+    "sceneTitle": "名称解析、连接地址与服务身份",
+    "actionLabel": "更换一个跨层条件",
     "actors": [
       {
         "id": "host-name",
         "label": "api.example.com",
-        "detail": "请求名称",
+        "detail": "用户输入的名称",
         "icon": "network",
         "group": "名称"
       },
@@ -11918,24 +11918,24 @@
       },
       {
         "id": "tls-name",
-        "label": "TLS 名称",
-        "detail": "SNI + SAN",
+        "label": "TLS 身份",
+        "detail": "DNS-ID api.example.com",
         "icon": "shield",
         "group": "安全"
       },
       {
         "id": "http-host",
         "label": "HTTP Host",
-        "detail": "authority",
-        "icon": "message",
+        "detail": "api.example.com",
+        "icon": "server",
         "group": "应用"
       },
       {
-        "id": "virtual-host",
-        "label": "虚拟主机",
-        "detail": "按 Host 路由",
-        "icon": "server",
-        "group": "服务端"
+        "id": "service-result",
+        "label": "服务结果",
+        "detail": "200 API JSON",
+        "icon": "spark",
+        "group": "证据"
       }
     ],
     "edges": [
@@ -11952,164 +11952,156 @@
         "label": "选择地址"
       },
       {
-        "id": "name-tls",
-        "from": "host-name",
-        "to": "tls-name",
-        "label": "验证身份"
-      },
-      {
-        "id": "tcp-vhost",
+        "id": "tcp-tls",
         "from": "tcp-address",
-        "to": "virtual-host",
-        "label": "连接到主机"
+        "to": "tls-name",
+        "label": "握手核名"
       },
       {
-        "id": "host-vhost",
+        "id": "tls-host",
+        "from": "tls-name",
+        "to": "http-host",
+        "label": "发出请求"
+      },
+      {
+        "id": "host-service",
         "from": "http-host",
-        "to": "virtual-host",
-        "label": "选择站点"
+        "to": "service-result",
+        "label": "虚拟主机路由"
       }
     ],
     "frames": [
       {
-        "label": "名称解析为两个地址",
-        "note": "客户端选择其中一个地址建立连接，名称本身仍保留给后续身份与路由。",
+        "label": "名字交给解析器",
+        "note": "主机名先进入 resolver，DNS 回答还只是地址候选，不是应用健康证明。",
         "activeIds": [
           "host-name",
-          "dns-answer",
-          "tcp-address"
+          "dns-answer"
         ],
         "doneIds": [
           "dns-answer"
         ],
         "mutedIds": [
+          "tcp-address",
           "tls-name",
           "http-host",
-          "virtual-host"
+          "service-result"
         ],
         "values": {
-          "dns-answer": "203.0.113.10, .11",
-          "tcp-address": "selected .10:443"
+          "dns-answer": "A/AAAA · .10 / .11"
         },
         "activeEdgeIds": [
-          "name-dns",
-          "dns-tcp"
+          "name-dns"
         ]
       },
       {
-        "label": "TLS 仍验证原主机名",
-        "note": "证书必须覆盖 api.example.com，而不是只与 IP 建立加密连接。",
+        "label": "挑一条地址建立连接",
+        "note": "客户端从多条回答中选择 203.0.113.10:443，原来的名字仍要留给后面的身份校验。",
         "activeIds": [
+          "dns-answer",
+          "tcp-address",
+          "tls-name"
+        ],
+        "doneIds": [
+          "tcp-address"
+        ],
+        "mutedIds": [
           "host-name",
-          "tls-name",
-          "tcp-address"
-        ],
-        "doneIds": [
-          "tls-name"
-        ],
-        "mutedIds": [
           "http-host",
-          "virtual-host"
+          "service-result"
         ],
         "values": {
-          "tls-name": "SAN contains api.example.com",
-          "tcp-address": "connected"
+          "tcp-address": "203.0.113.10:443",
+          "tls-name": "等待 DNS-ID"
         },
         "activeEdgeIds": [
-          "name-tls"
+          "dns-tcp",
+          "tcp-tls"
         ]
       },
       {
-        "label": "Host 选择 API 站点",
-        "note": "同一 IP 上的服务器依据 HTTP authority 路由到 API 虚拟主机。",
+        "label": "名字在两层继续出现",
+        "note": "TLS 用 DNS-ID 核对服务身份，HTTP 用 Host 选择虚拟主机；两层都对上才有 200。",
         "activeIds": [
-          "http-host",
-          "virtual-host",
-          "tcp-address"
-        ],
-        "doneIds": [
-          "virtual-host"
-        ],
-        "mutedIds": [
-          "dns-answer",
-          "tls-name"
-        ],
-        "values": {
-          "http-host": "api.example.com",
-          "virtual-host": "orders API · 200"
-        },
-        "activeEdgeIds": [
-          "tcp-vhost",
-          "host-vhost"
-        ]
-      },
-      {
-        "label": "改成 blog 进入另一站点",
-        "note": "TCP 仍连接同一 IP，但 Host 改变后应用路由结果不同。",
-        "activeIds": [
-          "http-host",
-          "virtual-host"
-        ],
-        "doneIds": [
-          "virtual-host"
-        ],
-        "mutedIds": [
-          "dns-answer",
+          "tcp-address",
           "tls-name",
-          "tcp-address"
+          "http-host",
+          "service-result"
+        ],
+        "doneIds": [
+          "tls-name",
+          "http-host",
+          "service-result"
+        ],
+        "mutedIds": [
+          "host-name",
+          "dns-answer"
         ],
         "values": {
-          "http-host": "blog.example.com",
-          "virtual-host": "blog · 200"
+          "tls-name": "DNS-ID api.example.com ✓",
+          "http-host": "Host: api.example.com",
+          "service-result": "200 API JSON"
         },
         "activeEdgeIds": [
-          "host-vhost"
+          "tcp-tls",
+          "tls-host",
+          "host-service"
         ],
         "metric": {
-          "label": "共享 IP 的站点",
-          "value": "2"
+          "label": "跨层条件一致",
+          "value": "6 / 6"
         }
       }
     ],
-    "insight": "名称、解析地址、TLS 身份和 HTTP 虚拟主机相互关联，但不能合并成一个概念。",
+    "insight": "名字、地址和服务身份是三件相连但不同的事；改动其中一层，故障会停在不同位置。",
     "quiz": {
-      "question": "同一 IP 可以承载多个主机名吗？",
+      "question": "同一 IP 上改 Host，最可能改变什么？",
       "options": [
         {
-          "label": "可以，TLS SNI 与 HTTP Host 可选择不同虚拟主机",
+          "label": "HTTP 虚拟主机路由",
           "correct": true
         },
         {
-          "label": "不可以，IP 与主机名永久一一对应",
+          "label": "已经建立的 TCP 目标 IP",
           "correct": false
         },
         {
-          "label": "只有关闭 DNS 才可以",
+          "label": "DNS 记录的 TTL",
           "correct": false
         }
       ],
-      "success": "连接到同一地址后，名称仍可参与身份验证和应用路由。",
-      "retry": "区分连接地址与应用层目标名称。"
+      "success": "Host 是应用层路由条件，可能把请求送到另一台虚拟主机。",
+      "retry": "先确认 DNS 和 TCP 没变，再比较 TLS 名称和 HTTP Host。"
     },
     "prompt": {
-      "title": "追踪主机名的使用位置",
-      "text": "请列出 DNS 答案、连接 IP、TLS SNI、证书 SAN、HTTP authority 和虚拟主机路由，并对名称不一致场景逐层验证。"
+      "title": "排查名称跨层不一致",
+      "text": "请记录输入主机名、DNS 全部回答与 TTL、选择的 IP:port、TLS SNI/证书 DNS-ID、HTTP Host 和最终响应，判断失败停在哪一层。"
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
-        "label": "RFC 1034 · DNS Concepts",
-        "note": "协议定义与报文语义"
+        "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+        "label": "RFC 1035 · Domain Names",
+        "note": "名称、resolver 与分布式 DNS 数据"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1123.html",
+        "label": "RFC 1123 · Internet Hosts",
+        "note": "主机名语法、多地址与 DNS 转换"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
+        "label": "RFC 8499 · DNS Terminology",
+        "note": "hostname 术语边界"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
-        "label": "RFC 9525 · Service Identity",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9525 · Service Identity in TLS",
+        "note": "DNS-ID 与服务身份验证"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Authority",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "Host 作为应用层路由与请求身份"
       }
     ]
   },

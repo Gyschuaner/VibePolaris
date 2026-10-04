@@ -803,12 +803,12 @@
   },
   {
     "zh": "主机名", "en": "Hostname", "slug": "hostname", "cat": "技术栈",
-    "say": "网络中用于指向某台主机或服务的可读名称。", "aliases": ["Hostname", "主机名称", "域名主机"],
-    "question": "URL 里的 api.example.com 这一段是什么？", "definition": "主机名是标识网络主机或服务的名称，在互联网中通常通过 DNS 解析为 IP 地址。", "boundary": "主机名不一定等于完整域名，也可能只在本地网络或 hosts 配置中有效。",
-    "demoType": "flow", "demoTitle": "主机名怎样找到服务",
-    "demoSteps": [{"label":"读取地址","value":"api.example.com","note":"浏览器从 URL 提取主机名。"},{"label":"查询 DNS","value":"→ 203.0.113.10","note":"解析器返回可连接的 IP。"},{"label":"建立连接","value":"203.0.113.10:443","note":"请求仍携带原主机名供服务识别。"}],
-    "quizQuestion": "主机名通常怎样转换为 IP 地址？", "quizOptions": ["通过 DNS 解析", "通过 CSS 计算", "通过数据库事务"], "correctText": "DNS 负责名称到地址的解析。", "wrongText": "页面样式和数据库事务不负责网络名称解析。",
-    "promptTitle": "排查主机名", "prompt": "请检查这条 URL 的主机名、DNS 记录、证书域名和服务虚拟主机配置是否一致。", "relatedSlugs": ["url", "dns-record", "dns-resolver", "ip-address"]
+    "say": "把一串可读的名称一路带过 DNS、TLS 和 HTTP，直到服务知道你要找哪一个名字。", "aliases": ["Hostname", "主机名称", "域名主机"],
+    "question": "为什么已经连到正确 IP，改一下 Host 还是会得到另一个网站？", "definition": "主机名是 DNS 命名空间中的可读名称；解析器可能返回多个 IP，客户端随后用原名称核对证书并让 HTTP Host 选择虚拟主机。", "boundary": "主机名不等于固定 IP，也不等于某个服务的最终身份；同一 IP 可承载多个名称，同一名称也可能指向多条地址。",
+    "demoType": "flow", "demoTitle": "主机名怎样穿过 DNS、TLS 和 HTTP",
+    "demoSteps": [{"label":"交给 DNS","value":"api.example.com → .10 / .11","note":"解析器返回一组可能的地址，缓存和地址顺序也要记录。"},{"label":"建立并核名","value":"203.0.113.10:443 · DNS-ID api.example.com","note":"连接使用选中的 IP，TLS 仍用名称检查证书。"},{"label":"选择虚拟主机","value":"Host: api.example.com → 200 API JSON","note":"HTTP 用 Host 在同一 IP 的多个服务中选出目标。"}],
+    "quizQuestion": "只把 Host 改成 admin.example.com，最可能改变哪一层？", "quizOptions": ["HTTP 虚拟主机路由", "已经建立的 TCP 目标 IP", "DNS 记录的 TTL"], "correctText": "Host 是应用层路由条件，可能把请求送到另一个虚拟主机。", "wrongText": "改 Host 不会回头改写已完成的 DNS 查询或 TCP 连接。",
+    "promptTitle": "排查主机名跨层不一致", "prompt": "请记录输入主机名、DNS 全部回答和 TTL、选择的 IP:port、TLS SNI 与证书 DNS-ID、HTTP Host 和最终响应，分别判断失败停在哪一层。", "relatedSlugs": ["url", "dns-record", "dns-resolver", "ip-address"]
   },
   {
     "zh": "DNS 记录", "en": "DNS Record", "slug": "dns-record", "cat": "技术栈",

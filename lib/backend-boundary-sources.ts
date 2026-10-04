@@ -47,3 +47,11 @@ export const urlSources: BoundarySource[] = [
   make("IETF", "RFC 9112 · HTTP/1.1", "https://www.rfc-editor.org/rfc/rfc9112.html", ["url-request-target", "url-fragment"], "2022-06"),
   make("WHATWG", "HTML Standard · URLs and fetching", "https://html.spec.whatwg.org/multipage/urls-and-fetching.html", ["url-base"], "living standard"),
 ];
+
+export const hostnameSources: BoundarySource[] = [
+  make("IETF", "RFC 1035 · Domain Names - Implementation and Specification", "https://www.rfc-editor.org/rfc/rfc1035.html", ["hostname-definition", "hostname-resolution"], "1987-11"),
+  make("IETF", "RFC 1123 · Requirements for Internet Hosts", "https://www.rfc-editor.org/rfc/rfc1123.html", ["hostname-syntax", "hostname-resolution", "hostname-multihomed", "hostname-diagnostic"], "1989-10"),
+  make("IETF", "RFC 8499 · DNS Terminology", "https://www.rfc-editor.org/rfc/rfc8499.html", ["hostname-definition", "hostname-syntax"], "2019-01"),
+  make("IETF", "RFC 9525 · Service Identity in TLS", "https://www.rfc-editor.org/rfc/rfc9525.html", ["hostname-tls"], "2023-11"),
+  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["hostname-tls", "hostname-host", "hostname-diagnostic"], "2022-06"),
+];
