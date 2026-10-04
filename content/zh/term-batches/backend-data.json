@@ -1496,14 +1496,55 @@
     "promptTitle": "补一条 API 测试", "prompt": "请为正常创建、同键重试、参数错误和换身份读取分别写出方法、路径、身份、body、响应 schema、状态码与可观察副作用。", "relatedSlugs": ["request", "response", "status-code", "integration-test"]
   },
   {
-    "zh": "最小权限", "en": "Least Privilege", "slug": "least-privilege", "cat": "技术栈",
-    "say": "只授予完成当前任务所需的最少权限，并限制作用范围和时间。", "aliases": ["最小权限原则", "Least Privilege", "权限收敛"],
-    "question": "只读报表程序需要数据库删除权限吗？", "definition": "最小权限原则要求用户、服务和密钥只获得必要操作所需的权限。", "boundary": "最小权限能缩小误用和泄露影响，但不能替代认证、监控和修复漏洞。",
-    "demoType": "comparison", "demoTitle": "报表账号收窄权限前后",
-    "demoSteps": [{"label":"原权限","value":"SELECT · UPDATE · DELETE","note":"账号可修改和删除生产数据。"},{"label":"核对用途","value":"只读取销售视图","note":"运行记录没有写操作需求。"},{"label":"收窄权限","value":"SELECT sales_view","note":"误操作时无法改写底层表。"}],
-    "quizQuestion": "只读服务账号通常需要什么数据库权限？", "quizOptions": ["只授予所需对象的读取权限", "授予管理员权限", "允许删除全部表"], "correctText": "权限应与实际任务相匹配。", "wrongText": "管理员和删除权限扩大了不必要的风险。",
-    "promptTitle": "审查最小权限", "prompt": "请按主体、资源、动作、环境和有效期审查这些权限，列出可删除或缩小范围的授权。", "relatedSlugs": ["authorization", "rbac", "api-key", "firewall"]
-  },
+  "zh": "最小权限",
+  "en": "Least Privilege",
+  "slug": "least-privilege",
+  "cat": "技术栈",
+  "say": "给发布机器人刚好够用的钥匙：能读哪份代码、写哪条 release、用到什么时候，都要说清。",
+  "aliases": [
+    "最小权限原则",
+    "Least Privilege",
+    "权限收敛"
+  ],
+  "question": "发布机器人只写一个 release，为什么还要拿组织管理员？",
+  "definition": "最小权限把授权收窄到当前任务必需的主体、动作、资源范围与时限，并在任务结束后审查和收回。",
+  "boundary": "它降低误用和泄露的影响范围，却不能代替身份认证、请求级授权检查、审计和漏洞修复。",
+  "demoType": "hierarchy",
+  "demoTitle": "一把组织钥匙为什么会多开九扇门",
+  "demoSteps": [
+    {
+      "label": "写下任务",
+      "value": "发布 v2.4 · read + write",
+      "note": "先把真正动作写出来，不从角色名开局。"
+    },
+    {
+      "label": "收窄范围",
+      "value": "repo/Vibe · release:v2.4",
+      "note": "同一个 write 只落在目标仓库和这次版本。"
+    },
+    {
+      "label": "封住越界",
+      "value": "delete production · DENY",
+      "note": "能发布不等于能删生产，30 分钟后租约自动失效。"
+    }
+  ],
+  "quizQuestion": "发布机器人缺少 release:write 时，最合适的补权方式是什么？",
+  "quizOptions": [
+    "只给目标版本的临时写权限",
+    "永久授予组织管理员",
+    "关闭所有授权检查"
+  ],
+  "correctText": "先补完成这次发布所缺的那一个动作，再锁定资源范围和期限。",
+  "wrongText": "整套管理员角色把成员、密钥和生产数据也带进来了，任务没有需要这些门。",
+  "promptTitle": "把一个服务身份的钥匙缩到刚好够用",
+  "prompt": "请按主体、任务、动作、资源范围、条件、租约期限和撤回条件审查这组授权，并列出每项保留或收窄的理由。",
+  "relatedSlugs": [
+    "authorization",
+    "rbac",
+    "api-key",
+    "firewall"
+  ]
+},
   {
     "zh": "哈希", "en": "Hashing", "slug": "hashing", "cat": "技术栈",
     "say": "把输入计算成固定长度摘要，用于完整性检查或密码验证等场景。", "aliases": ["散列", "Hash", "摘要算法"],

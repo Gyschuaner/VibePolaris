@@ -18184,230 +18184,346 @@
     ]
   },
   {
-    "slug": "least-privilege",
-    "lead": "发布机器人只需要读代码、写一个版本，为什么给组织管理员会多出九条无关攻击路径？",
-    "definition": "最小权限要求主体只获得完成当前任务所需的动作、资源范围和时间窗口，并在用途结束后撤回。",
-    "boundary": "最小权限不等于一律只读，也不是一次配置永久有效。服务账号、临时管理员和跨租户访问都要定期复核。",
-    "sceneKind": "matrix",
-    "sceneTitle": "发布任务在动作、资源和时间三维收窄",
-    "actionLabel": "扩大或收窄授权",
-    "actors": [
-      {
-        "id": "deploy-bot",
-        "label": "deploy-bot",
-        "detail": "发布任务",
-        "icon": "robot",
-        "group": "主体"
-      },
-      {
-        "id": "repo-read",
-        "label": "读取仓库",
-        "detail": "repo:vibep",
-        "icon": "git",
-        "group": "权限"
-      },
-      {
-        "id": "release-write",
-        "label": "写入版本",
-        "detail": "release:v42",
-        "icon": "package",
-        "group": "权限"
-      },
-      {
-        "id": "org-admin",
-        "label": "组织管理员",
-        "detail": "9 类额外动作",
-        "icon": "key",
-        "group": "过量权限"
-      },
-      {
-        "id": "time-lease",
-        "label": "临时租约",
-        "detail": "30 min",
-        "icon": "clock",
-        "group": "期限"
-      },
-      {
-        "id": "audit-log",
-        "label": "审计记录",
-        "detail": "等待动作",
-        "icon": "file",
-        "group": "证据"
-      }
-    ],
-    "edges": [
-      {
-        "id": "bot-read",
-        "from": "deploy-bot",
-        "to": "repo-read",
-        "label": "需要"
-      },
-      {
-        "id": "bot-release",
-        "from": "deploy-bot",
-        "to": "release-write",
-        "label": "需要"
-      },
-      {
-        "id": "bot-admin",
-        "from": "deploy-bot",
-        "to": "org-admin",
-        "label": "不需要"
-      },
-      {
-        "id": "lease-bot",
-        "from": "time-lease",
-        "to": "deploy-bot",
-        "label": "到期撤回"
-      },
-      {
-        "id": "bot-audit",
-        "from": "deploy-bot",
-        "to": "audit-log",
-        "label": "记录操作"
-      }
-    ],
-    "frames": [
-      {
-        "label": "只读仓库还不能完成发布",
-        "note": "机器人能取得构建产物，但写 release 时明确被拒绝。",
-        "activeIds": [
-          "deploy-bot",
-          "repo-read",
-          "release-write",
-          "audit-log"
-        ],
-        "doneIds": [
-          "repo-read"
-        ],
-        "mutedIds": [
-          "org-admin",
-          "time-lease"
-        ],
-        "values": {
-          "repo-read": "allowed",
-          "release-write": "denied",
-          "audit-log": "missing release:write"
-        },
-        "activeEdgeIds": [
-          "bot-read",
-          "bot-release",
-          "bot-audit"
-        ]
-      },
-      {
-        "label": "只补一个发布范围",
-        "note": "授权 release:v42 的 write，不开放成员、密钥和其他仓库管理。",
-        "activeIds": [
-          "deploy-bot",
-          "release-write",
-          "time-lease"
-        ],
-        "doneIds": [
-          "release-write"
-        ],
-        "mutedIds": [
-          "org-admin"
-        ],
-        "values": {
-          "release-write": "allowed for v42",
-          "time-lease": "30:00 remaining"
-        },
-        "activeEdgeIds": [
-          "bot-release",
-          "lease-bot"
-        ]
-      },
-      {
-        "label": "管理员权限扩大无关路径",
-        "note": "切换为 org admin 后，删成员、改密钥等九类动作同时可用，却与发布无关。",
-        "activeIds": [
-          "deploy-bot",
-          "org-admin",
-          "audit-log"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "repo-read",
-          "release-write"
-        ],
-        "values": {
-          "org-admin": "9 unnecessary actions",
-          "audit-log": "risk expanded"
-        },
-        "activeEdgeIds": [
-          "bot-admin",
-          "bot-audit"
-        ],
-        "metric": {
-          "label": "无关权限",
-          "value": "9"
-        }
-      },
-      {
-        "label": "发布完成后租约自动失效",
-        "note": "30 分钟到期，release:write 被撤回；只保留审计事实。",
-        "activeIds": [
-          "time-lease",
-          "deploy-bot",
-          "release-write",
-          "audit-log"
-        ],
-        "doneIds": [
-          "time-lease",
-          "audit-log"
-        ],
-        "mutedIds": [
-          "org-admin"
-        ],
-        "values": {
-          "time-lease": "expired",
-          "release-write": "denied",
-          "audit-log": "v42 published"
-        },
-        "activeEdgeIds": [
-          "lease-bot",
-          "bot-audit"
-        ]
-      }
-    ],
-    "insight": "最小权限要回答谁、对什么、能做什么、能做多久，而不是笼统地说“权限少一点”。",
-    "quiz": {
-      "question": "机器人缺少 release:write 时，最合适的补权方式是什么？",
-      "options": [
-        {
-          "label": "只给目标版本的临时写权限",
-          "correct": true
-        },
-        {
-          "label": "永久授予组织管理员",
-          "correct": false
-        },
-        {
-          "label": "关闭所有授权检查",
-          "correct": false
-        }
+  "slug": "least-privilege",
+  "lead": "发布机器人只需要读代码、写一个版本，为什么给组织管理员会多出九条无关攻击路径？",
+  "definition": "最小权限要求主体只获得完成当前任务所需的动作、资源范围和时间窗口，并在用途结束后撤回。",
+  "boundary": "最小权限不等于一律只读，也不是一次配置永久有效。服务账号、临时管理员和跨租户访问都要定期复核。",
+  "sceneKind": "layers",
+  "sceneTitle": "发布任务怎样沿动作、资源和时间三层收窄",
+  "actionLabel": "收窄或试穿这把钥匙",
+  "actors": [
+    {
+      "id": "deploy-bot",
+      "label": "deploy-bot",
+      "detail": "发布任务",
+      "icon": "robot",
+      "group": "主体"
+    },
+    {
+      "id": "release-task",
+      "label": "发布 Vibe v2.4",
+      "detail": "build → publish",
+      "icon": "package",
+      "group": "任务"
+    },
+    {
+      "id": "repo-read",
+      "label": "读取仓库",
+      "detail": "repo/Vibe",
+      "icon": "git",
+      "group": "必要动作"
+    },
+    {
+      "id": "release-write",
+      "label": "写入 release",
+      "detail": "release:v2.4",
+      "icon": "package",
+      "group": "必要动作"
+    },
+    {
+      "id": "org-admin",
+      "label": "组织管理员",
+      "detail": "org/* · 9 条无关路径",
+      "icon": "key",
+      "group": "过量权限"
+    },
+    {
+      "id": "production-delete",
+      "label": "删除生产数据",
+      "detail": "越界动作",
+      "icon": "shield",
+      "group": "越界尝试"
+    },
+    {
+      "id": "time-lease",
+      "label": "临时租约",
+      "detail": "30 min",
+      "icon": "clock",
+      "group": "时间"
+    },
+    {
+      "id": "audit-log",
+      "label": "审计记录",
+      "detail": "发布与拒绝都留痕",
+      "icon": "file",
+      "group": "证据"
+    }
+  ],
+  "edges": [
+    {
+      "id": "bot-task",
+      "from": "deploy-bot",
+      "to": "release-task",
+      "label": "执行"
+    },
+    {
+      "id": "task-read",
+      "from": "release-task",
+      "to": "repo-read",
+      "label": "需要"
+    },
+    {
+      "id": "task-write",
+      "from": "release-task",
+      "to": "release-write",
+      "label": "需要"
+    },
+    {
+      "id": "task-admin",
+      "from": "release-task",
+      "to": "org-admin",
+      "label": "不需要"
+    },
+    {
+      "id": "lease-write",
+      "from": "time-lease",
+      "to": "release-write",
+      "label": "限制"
+    },
+    {
+      "id": "task-delete",
+      "from": "release-task",
+      "to": "production-delete",
+      "label": "拒绝"
+    },
+    {
+      "id": "task-audit",
+      "from": "release-task",
+      "to": "audit-log",
+      "label": "记录"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先把任务写成动作",
+      "note": "发布 Vibe v2.4 需要读构建输入、写 release；还没有理由拿组织管理员。",
+      "activeIds": [
+        "deploy-bot",
+        "release-task"
       ],
-      "success": "动作、资源和期限都可以精确收窄。",
-      "retry": "先写出完成任务所缺的最小动作。"
+      "doneIds": [
+        "release-task"
+      ],
+      "mutedIds": [
+        "repo-read",
+        "release-write",
+        "org-admin",
+        "production-delete",
+        "time-lease",
+        "audit-log"
+      ],
+      "values": {
+        "release-task": "read build → write release",
+        "org-admin": "unneeded"
+      },
+      "activeEdgeIds": [
+        "bot-task"
+      ]
     },
-    "prompt": {
-      "title": "收窄一个服务身份的权限",
-      "text": "请列出主体、任务、必要动作、资源范围、租约期限和撤回条件，并用审计日志验证没有使用额外权限。"
+    {
+      "label": "管理员钥匙把无关门一起打开",
+      "note": "org/* 让读成员、改密钥、删生产都可达；这是方便的角色，不是任务需求。",
+      "activeIds": [
+        "deploy-bot",
+        "release-task",
+        "org-admin",
+        "production-delete",
+        "audit-log"
+      ],
+      "doneIds": [
+        "org-admin"
+      ],
+      "mutedIds": [
+        "repo-read",
+        "release-write",
+        "time-lease"
+      ],
+      "values": {
+        "org-admin": "9 extra paths",
+        "audit-log": "risk expanded"
+      },
+      "metric": {
+        "label": "无关路径",
+        "value": "9"
+      },
+      "activeEdgeIds": [
+        "bot-task",
+        "task-admin",
+        "task-delete",
+        "task-audit"
+      ]
     },
-    "sources": [
+    {
+      "label": "只留下两把刚好够用",
+      "note": "read repo/Vibe 加 write release:v2.4 让发布走通，管理员钥匙退出授权集合。",
+      "activeIds": [
+        "deploy-bot",
+        "release-task",
+        "repo-read",
+        "release-write",
+        "audit-log"
+      ],
+      "doneIds": [
+        "repo-read",
+        "release-write"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "production-delete",
+        "time-lease"
+      ],
+      "values": {
+        "repo-read": "allowed",
+        "release-write": "allowed",
+        "org-admin": "removed"
+      },
+      "activeEdgeIds": [
+        "bot-task",
+        "task-read",
+        "task-write",
+        "task-audit"
+      ]
+    },
+    {
+      "label": "把 write 锁进资源和窗口",
+      "note": "同一个动作加上 repo/Vibe 与 30 分钟租约，授权上限随范围和时间收窄。",
+      "activeIds": [
+        "deploy-bot",
+        "repo-read",
+        "release-write",
+        "time-lease",
+        "audit-log"
+      ],
+      "doneIds": [
+        "repo-read",
+        "release-write",
+        "time-lease"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "production-delete"
+      ],
+      "values": {
+        "repo-read": "repo/Vibe",
+        "release-write": "30 min",
+        "time-lease": "30:00"
+      },
+      "activeEdgeIds": [
+        "task-read",
+        "task-write",
+        "lease-write",
+        "task-audit"
+      ]
+    },
+    {
+      "label": "试一次真正的越界动作",
+      "note": "发布权限通过，delete production 被服务端策略拒绝；不是把按钮藏起来就算完成。",
+      "activeIds": [
+        "deploy-bot",
+        "release-write",
+        "production-delete",
+        "audit-log"
+      ],
+      "doneIds": [
+        "release-write",
+        "audit-log"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "repo-read",
+        "time-lease"
+      ],
+      "values": {
+        "release-write": "allowed",
+        "production-delete": "DENY",
+        "audit-log": "denied attempt"
+      },
+      "activeEdgeIds": [
+        "task-write",
+        "task-delete",
+        "task-audit"
+      ]
+    },
+    {
+      "label": "到期之后重新申请",
+      "note": "租约过期，release:write 自动收回；审计记录留下发布事实，下一次任务要重新申请。",
+      "activeIds": [
+        "time-lease",
+        "release-write",
+        "audit-log"
+      ],
+      "doneIds": [
+        "time-lease",
+        "audit-log"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "repo-read",
+        "production-delete"
+      ],
+      "values": {
+        "time-lease": "expired",
+        "release-write": "revoked",
+        "audit-log": "v2.4 published"
+      },
+      "activeEdgeIds": [
+        "lease-write",
+        "task-audit"
+      ]
+    }
+  ],
+  "insight": "最小权限要回答谁、为了什么任务、对哪个资源做什么动作、在什么条件下能做多久；角色名只是入口，不是证据。",
+  "quiz": {
+    "question": "deploy-bot 缺少 release:write 时，哪一个补权最小？",
+    "options": [
       {
-        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
-        "label": "OWASP Authorization Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "只给 release:v2.4 的临时写权限",
+        "correct": true
       },
       {
-        "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
-        "label": "NIST SP 800-207",
-        "note": "安全要求与风险边界"
+        "label": "永久授予组织管理员",
+        "correct": false
+      },
+      {
+        "label": "把授权检查关掉",
+        "correct": false
       }
-    ]
+    ],
+    "success": "动作、资源、时间和越界检查都收窄了，发布可以通过。",
+    "retry": "先把这次任务真正缺的动作写出来，再给它加资源和期限。"
   },
+  "prompt": {
+    "title": "收窄一个服务身份的钥匙",
+    "text": "请列出主体、任务、必要动作、资源范围、条件、租约期限和撤回条件，并用一次允许、一次越界拒绝和一次到期复核验证边界。"
+  },
+  "sources": [
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "label": "OWASP · Authorization Cheat Sheet",
+      "note": "最小权限、默认拒绝与权限膨胀"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+      "label": "AWS · IAM best practices",
+      "note": "动作、资源、条件与 Access Analyzer"
+    },
+    {
+      "url": "https://cloud.google.com/iam/docs/using-iam-securely",
+      "label": "Google Cloud · Use IAM securely",
+      "note": "最小范围、服务账号与临时提升"
+    },
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+      "label": "NIST · SP 800-207",
+      "note": "每次请求都验证，不把网络位置当信任"
+    },
+    {
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+      "label": "Kubernetes · Using RBAC Authorization",
+      "note": "Role 范围与加法规则"
+    }
+  ]
+},
   {
     "slug": "hashing",
     "lead": "两个人用了同一个密码，为什么带盐 Argon2id 的保存值不同，而且服务器仍能验证登录？",
