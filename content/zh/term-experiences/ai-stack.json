@@ -1347,37 +1347,44 @@
   },
   {
     "slug": "context-window",
-    "lead": "8k窗口里已经塞了5.5k历史和1.5k工具结果，还能直接要2k输出吗？",
+    "lead": "16k 工作台里同时放历史、工具结果和答案，哪一块先让路？",
     "definition": "模型一次调用能处理的输入与输出 token 总量受窗口限制；较早内容、工具结果和待生成内容都占用这份容量。",
     "boundary": "上下文窗口不是长期记忆，也不是把最大长度全部塞满就一定能稳定利用。",
     "sceneKind": "assembly",
-    "sceneTitle": "输入与输出怎样争用同一容量",
-    "actionLabel": "拖动历史长度",
+    "sceneTitle": "同一份预算怎样先溢出，再把历史裁短",
+    "actionLabel": "切换历史并逐步预算",
     "actors": [
       {
         "id": "window",
-        "label": "8k 窗口",
-        "detail": "总容量",
+        "label": "16k 工作台",
+        "detail": "输入与输出共用",
         "icon": "layout",
-        "group": "容器"
+        "group": "容量"
+      },
+      {
+        "id": "rules",
+        "label": "系统与任务",
+        "detail": "2k token",
+        "icon": "shield",
+        "group": "输入"
       },
       {
         "id": "history",
         "label": "对话历史",
-        "detail": "5.5k token",
+        "detail": "6k / 10k token",
         "icon": "message",
         "group": "输入"
       },
       {
         "id": "tools",
         "label": "工具结果",
-        "detail": "1.5k token",
+        "detail": "3k token",
         "icon": "file",
         "group": "输入"
       },
       {
         "id": "output",
-        "label": "输出预留",
+        "label": "回答预留",
         "detail": "2k token",
         "icon": "spark",
         "group": "生成"
@@ -1386,84 +1393,88 @@
     "edges": [],
     "frames": [
       {
-        "label": "装入历史",
-        "note": "历史先占用5.5k。",
+        "label": "锁定任务与回答位",
+        "note": "先把系统与任务占用 2k，并为回答预留 2k；这两块和历史、工具结果共用 16k。",
         "activeIds": [
-          "history",
+          "rules",
+          "output",
           "window"
         ],
         "doneIds": [],
         "mutedIds": [
-          "tools",
-          "output"
+          "history",
+          "tools"
         ],
         "values": {
-          "window": "5.5 / 8k"
+          "window": "4 / 16k"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "再装工具结果",
-        "note": "累计占用变为7k，只剩1k。",
+        "label": "加入历史和工具",
+        "note": "短历史 6k 加工具结果 3k 后，输入与回答预留共 13k，仍有余量。",
         "activeIds": [
+          "history",
           "tools",
           "window"
         ],
         "doneIds": [
-          "history"
-        ],
-        "mutedIds": [
+          "rules",
           "output"
         ],
+        "mutedIds": [],
         "values": {
-          "window": "7 / 8k"
+          "window": "13 / 16k"
         },
-        "activeEdgeIds": [],
-        "metric": {
-          "label": "剩余容量",
-          "value": "1k"
-        }
+        "activeEdgeIds": []
       },
       {
-        "label": "预留输出溢出",
-        "note": "再要2k输出，总需求达到9k。",
+        "label": "看见预算溢出",
+        "note": "把历史换成长版本后，2k + 10k + 3k + 2k = 17k，超过 16k；此刻不能把整段历史当作可见输入。",
         "activeIds": [
+          "history",
+          "tools",
           "output",
           "window"
         ],
         "doneIds": [
-          "history",
-          "tools"
+          "rules"
         ],
         "mutedIds": [],
         "values": {
-          "window": "9 / 8k · 溢出"
+          "window": "17 / 16k · 溢出"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [],
+        "metric": {
+          "label": "超出",
+          "value": "1k"
+        }
       },
       {
-        "label": "裁掉最早历史",
-        "note": "移出1k旧内容后，输入6k加输出2k刚好放下。",
+        "label": "裁剪后再继续",
+        "note": "移出最早 3k 历史，窗口实际带入 7k 历史，合计 14k；旧记录可以留在外部存储，但这一轮看到的内容已经变了。",
         "activeIds": [
           "history",
           "window"
         ],
         "doneIds": [
-          "tools"
+          "rules",
+          "tools",
+          "output"
         ],
         "mutedIds": [],
         "values": {
-          "history": "5.5k → 4.5k",
-          "window": "8 / 8k"
+          "history": "10k → 7k",
+          "window": "14 / 16k"
         },
         "activeEdgeIds": [],
         "metric": {
           "label": "裁剪历史",
-          "value": "1k"
+          "value": "3k"
         }
       }
     ],
-    "insight": "上下文窗口是一笔共享 token 预算，不是跨会话长期记忆。",
+    "insight": "上下文窗口是一笔共享 token 预算；保存在外部不等于本轮已经带入，裁剪也会改变模型实际看到的内容。",
     "quiz": {
       "question": "窗口已接近上限，继续加入工具结果时应先做什么？",
       "options": [
@@ -3147,54 +3158,40 @@
   },
   {
     "slug": "agent-loop",
-    "lead": "要从8款耳机里找到低于300元且有货的一款，为什么一次工具调用不够？",
+    "lead": "修一次代码后，为什么还要把失败结果送回下一轮？",
     "definition": "智能体在“读取当前状态—选择动作—接收结果—更新状态—判断停止”之间循环，直到完成、失败或达到限制。",
     "boundary": "一次函数调用不是循环；若没有状态更新、停止条件和失败处理，只能算单步工具调用。",
     "sceneKind": "loop",
-    "sceneTitle": "候选集合在三轮动作中收缩",
-    "actionLabel": "逐轮运行",
+    "sceneTitle": "一次检查如何把失败写回，再决定停不停",
+    "actionLabel": "逐轮运行并切换上限",
     "actors": [
       {
-        "id": "task",
-        "label": "目标",
-        "detail": "低于300元且有货",
-        "icon": "message",
-        "group": "任务"
+        "id": "state",
+        "label": "当前状态",
+        "detail": "disabled 检查仍失败",
+        "icon": "clipboard",
+        "group": "状态"
       },
       {
-        "id": "search",
-        "label": "商品搜索",
-        "detail": "8项",
-        "icon": "search",
+        "id": "action",
+        "label": "执行检查",
+        "detail": "run_checks()",
+        "icon": "gear",
         "group": "动作"
       },
       {
-        "id": "price",
-        "label": "价格筛选",
-        "detail": "3项",
-        "icon": "chart",
-        "group": "动作"
-      },
-      {
-        "id": "stock",
-        "label": "库存检查",
-        "detail": "1项",
-        "icon": "database",
-        "group": "动作"
+        "id": "observation",
+        "label": "工具观察",
+        "detail": "通过或仍失败",
+        "icon": "eye",
+        "group": "结果"
       },
       {
         "id": "stop",
-        "label": "停止条件",
-        "detail": "有唯一候选",
+        "label": "停止闸门",
+        "detail": "完成或 max_turns",
         "icon": "shield",
         "group": "控制"
-      },
-      {
-        "id": "answer",
-        "label": "最终候选",
-        "detail": "K7",
-        "icon": "spark",
-        "group": "输出"
       }
     ],
     "edges": [
@@ -3231,108 +3228,84 @@
     ],
     "frames": [
       {
-        "label": "先观察目标",
-        "note": "状态里只有约束，没有候选。",
+        "label": "读状态",
+        "note": "任务从一份可见状态开始：还有一项 disabled 检查失败。",
         "activeIds": [
-          "task"
+          "state"
         ],
         "doneIds": [],
         "mutedIds": [
-          "answer"
+          "action",
+          "observation",
+          "stop"
         ],
         "values": {
-          "task": "候选 0 · 剩余3步"
+          "state": "1 项失败"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "第一轮搜索",
-        "note": "工具返回8款，工作状态新增候选。",
+        "label": "跑一次检查",
+        "note": "执行 run_checks()；工具还没返回前，不能把结果写成通过。",
         "activeIds": [
-          "search"
+          "action"
         ],
         "doneIds": [
-          "task"
+          "state"
         ],
         "mutedIds": [
-          "answer"
+          "observation",
+          "stop"
         ],
         "values": {
-          "search": "0 → 8",
-          "task": "剩余2步"
+          "action": "running"
         },
         "activeEdgeIds": [
-          "t-s"
+          "s-a"
         ]
       },
       {
-        "label": "第二轮筛价",
-        "note": "低于300元的只剩3款。",
+        "label": "把结果写回",
+        "note": "观察到 disabled 仍然错误，结果回到状态，下一轮只针对这个证据修复。",
         "activeIds": [
-          "price"
+          "observation",
+          "state"
         ],
         "doneIds": [
-          "task",
-          "search"
+          "action"
         ],
         "mutedIds": [
-          "answer"
+          "stop"
         ],
         "values": {
-          "price": "8 → 3",
-          "task": "剩余1步"
+          "observation": "disabled 仍错误"
         },
         "activeEdgeIds": [
-          "s-p"
+          "a-o",
+          "o-s"
         ]
       },
       {
-        "label": "第三轮查库存",
-        "note": "有货候选收缩到1款。",
+        "label": "停止或到达上限",
+        "note": "允许 3 轮时测试通过才停止；只允许 2 轮时到达上限也要停，但任务保持未完成。",
         "activeIds": [
-          "stock"
+          "stop"
         ],
         "doneIds": [
-          "task",
-          "search",
-          "price"
-        ],
-        "mutedIds": [
-          "answer"
-        ],
-        "values": {
-          "stock": "3 → 1",
-          "task": "剩余0步"
-        },
-        "activeEdgeIds": [
-          "p-st"
-        ]
-      },
-      {
-        "label": "满足停止条件",
-        "note": "唯一候选出现，循环停止而非继续调用。",
-        "activeIds": [
-          "stop",
-          "answer"
-        ],
-        "doneIds": [
-          "task",
-          "search",
-          "price",
-          "stock"
+          "state",
+          "action",
+          "observation"
         ],
         "mutedIds": [],
         "values": {
-          "stop": "完成",
-          "answer": "K7"
+          "stop": "通过 / 上限未完成"
         },
         "activeEdgeIds": [
-          "st-stop",
-          "stop-a"
+          "o-stop"
         ]
       }
     ],
-    "insight": "Agent循环必须有状态更新和停止条件；单次工具调用还构不成循环。",
+    "insight": "循环的证据是状态被工具结果改变，并经过完成、失败、取消或轮数上限的停止判断。",
     "quiz": {
       "question": "循环已经找到唯一合格候选后，可靠系统该做什么？",
       "options": [
@@ -7788,7 +7761,7 @@
     "boundary": "工作记忆就是当前任务里的临时进度和中间结果，不会自动变成下次会话要用的偏好。保存下来的偏好存在应用的记录里，应用把它取回、放进这次发给 AI 的内容，AI 才会看到它。涉及隐私的内容，应用应先取得用户同意，并定好保存多久、何时删除。",
     "sceneKind": "memory",
     "sceneTitle": "保存偏好、取回使用，再纠正或删除",
-    "actionLabel": "选择记忆操作",
+    "actionLabel": "按顺序操作一条记录",
     "actors": [
       {
         "id": "session-a",
@@ -8045,7 +8018,8 @@
         "label": "MemGPT · 2310.08560",
         "note": "分层记忆与外部存储管理"
       }
-    ]
+    ],
+    "demoSignature": "六段生命周期：请求同意、写入、取回、带入本轮、纠正偏好、删除；每个按钮都让记录或本轮输入出现可观察变化，未满足前置条件的操作保持禁用。"
   },
   {
     "slug": "working-memory",
@@ -8054,7 +8028,7 @@
     "boundary": "它只服务当前任务；跨会话记忆才保存给下一次聊天用。聊天里说过的话也不会自动全部带到下一步。本例中，承载智能体的程序把预算目标、候选和工具结果保存为工作记忆，下一轮再把需要的内容发给 AI。任务结束后，程序按需要清理；最终结果要不要另行保存，是另一条产品规则。",
     "sceneKind": "state-machine",
     "sceneTitle": "临时状态怎样更新并清理",
-    "actionLabel": "选择任务阶段",
+    "actionLabel": "推进任务并检查库存",
     "actors": [
       {
         "id": "goal",
@@ -8256,7 +8230,8 @@
         "label": "MemGPT · 2310.08560",
         "note": "上下文受限时的分层记忆管理"
       }
-    ]
+    ],
+    "demoSignature": "任务板逐步显示 5 → 3 → 2 → 清理；库存未返回时停在 3，不能把未知写成有货，也不能提前交付或清空临时清单。"
   },
   {
     "slug": "prompt-injection",
@@ -12779,7 +12754,7 @@
     "frames": [
       {
         "label": "条件前",
-      "note": "score 为 59，程序接下来要算 score >= 60，看它是真还是假。",
+        "note": "score 为 59，程序接下来要算 score >= 60，看它是真还是假。",
         "activeIds": [
           "score",
           "condition"
@@ -12798,8 +12773,8 @@
         ]
       },
       {
-      "label": "结果为 false",
-      "note": "59 >= 60 算出 false（假），只有未通过路径开始执行。",
+        "label": "结果为 false",
+        "note": "59 >= 60 算出 false（假），只有未通过路径开始执行。",
         "activeIds": [
           "condition",
           "fail"
@@ -12821,7 +12796,7 @@
       },
       {
         "label": "输出未通过",
-      "note": "未通过结果出现；通过路径没有执行。",
+        "note": "未通过结果出现；通过路径没有执行。",
         "activeIds": [
           "fail",
           "output"
@@ -12842,7 +12817,7 @@
       },
       {
         "label": "越过阈值",
-      "note": "score 拖到 60，60 >= 60 成立（>= 表示大于或等于，包含相等），条件为 true，改走通过路径。",
+        "note": "score 拖到 60，60 >= 60 成立（>= 表示大于或等于，包含相等），条件为 true，改走通过路径。",
         "activeIds": [
           "score",
           "condition",
@@ -12865,9 +12840,9 @@
         ]
       }
     ],
-  "insight": "条件分支先计算条件，再执行匹配路径；未选路径不会在这次分支中运行。",
+    "insight": "条件分支先计算条件，再执行匹配路径；未选路径不会在这次分支中运行。",
     "quiz": {
-    "question": "if 条件为 false 时，true 分支里的函数会发生什么？",
+      "question": "if 条件为 false 时，true 分支里的函数会发生什么？",
       "options": [
         {
           "label": "这次不会执行",
@@ -12882,8 +12857,8 @@
           "correct": false
         }
       ],
-    "success": "分支先计算条件，再决定执行路径；未选路径不会产生这次调用。",
-    "retry": "那条路径没有执行，不会真的发送或修改任何东西。"
+      "success": "分支先计算条件，再决定执行路径；未选路径不会产生这次调用。",
+      "retry": "那条路径没有执行，不会真的发送或修改任何东西。"
     },
     "prompt": {
       "title": "验证一个条件分支",
@@ -12891,20 +12866,20 @@
     },
     "sources": [
       {
-      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
-      "label": "MDN · if...else",
-      "note": "说明条件为 truthy 或 falsy 时分别执行哪条语句，以及未选路径会被跳过。"
-    },
-    {
-      "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
-      "label": "ECMAScript 规范 · If Statement",
-      "note": "规定 JavaScript if 语句的条件求值和路径执行语义。"
-    },
-    {
-      "url": "https://docs.python.org/3/reference/compound_stmts.html#if",
-      "label": "Python 文档 · The if statement",
-      "note": "说明 Python 按条件顺序选择一个执行块。"
-    },
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else",
+        "label": "MDN · if...else",
+        "note": "说明条件为 truthy 或 falsy 时分别执行哪条语句，以及未选路径会被跳过。"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-if-statement",
+        "label": "ECMAScript 规范 · If Statement",
+        "note": "规定 JavaScript if 语句的条件求值和路径执行语义。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/compound_stmts.html#if",
+        "label": "Python 文档 · The if statement",
+        "note": "说明 Python 按条件顺序选择一个执行块。"
+      },
       {
         "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
         "label": "TypeScript Handbook · Narrowing",
@@ -12991,7 +12966,7 @@
     "frames": [
       {
         "label": "循环初始化",
-      "note": "索引为 0，累计和为 0，准备读取第一项；检查后还有 3 项可读。",
+        "note": "索引为 0，累计和为 0，准备读取第一项；检查后还有 3 项可读。",
         "activeIds": [
           "array",
           "index",
@@ -13009,7 +12984,7 @@
       },
       {
         "label": "第一轮",
-      "note": "取 2 后，累计和从 0 变 2，索引变为 1。",
+        "note": "取 2 后，累计和从 0 变 2，索引变为 1。",
         "activeIds": [
           "index",
           "item",
@@ -13032,7 +13007,7 @@
       },
       {
         "label": "继续两轮",
-      "note": "第二轮加入 4 后累计和为 6、索引为 2；第三轮加入 6 后累计和为 12、索引到 3。",
+        "note": "第二轮加入 4 后累计和为 6、索引为 2；第三轮加入 6 后累计和为 12、索引到 3。",
         "activeIds": [
           "index",
           "item",
@@ -13054,7 +13029,7 @@
       },
       {
         "label": "停止",
-      "note": "索引 3 等于数组长度 3，说明没有下一项可读，循环结束。",
+        "note": "索引 3 等于数组长度 3，说明没有下一项可读，循环结束。",
         "activeIds": [
           "index",
           "stop"
@@ -13073,9 +13048,9 @@
         ]
       }
     ],
-  "insight": "循环必须让状态朝停止条件推进；只画一个回环箭头看不出每轮怎样结束。",
+    "insight": "循环必须让状态朝停止条件推进；只画一个回环箭头看不出每轮怎样结束。",
     "quiz": {
-    "question": "循环里忘记更新 index，主要风险是什么？",
+      "question": "循环里忘记更新 index，主要风险是什么？",
       "options": [
         {
           "label": "停止条件可能永远不成立",
@@ -13090,7 +13065,7 @@
           "correct": false
         }
       ],
-    "success": "状态不推进，停止条件可能永远不成立，循环就不会结束。",
+      "success": "状态不推进，停止条件可能永远不成立，循环就不会结束。",
       "retry": "停止条件要与每轮更新配对。"
     },
     "prompt": {
@@ -13099,24 +13074,24 @@
     },
     "sources": [
       {
-      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
-      "label": "MDN · Loops and iteration",
-      "note": "说明 for、while 等循环如何检查条件、执行循环体和更新状态，并提醒避免无限循环。"
-    },
-    {
-      "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
-      "label": "ECMAScript 规范 · Iteration Statements",
-      "note": "规定 JavaScript 各类迭代语句的执行顺序。"
-    },
-    {
-      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
-      "label": "Python 文档 · The for statement",
-      "note": "说明 for 循环逐项遍历可迭代对象并执行循环体。"
-    },
-    {
-      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement",
-      "label": "Python 文档 · The while statement",
-      "note": "说明 while 在条件为真时重复执行，条件为假时停止。"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+        "label": "MDN · Loops and iteration",
+        "note": "说明 for、while 等循环如何检查条件、执行循环体和更新状态，并提醒避免无限循环。"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-iteration-statements",
+        "label": "ECMAScript 规范 · Iteration Statements",
+        "note": "规定 JavaScript 各类迭代语句的执行顺序。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/compound_stmts.html#the-for-statement",
+        "label": "Python 文档 · The for statement",
+        "note": "说明 for 循环逐项遍历可迭代对象并执行循环体。"
+      },
+      {
+        "url": "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement",
+        "label": "Python 文档 · The while statement",
+        "note": "说明 while 在条件为真时重复执行，条件为假时停止。"
       }
     ]
   },
@@ -13188,7 +13163,7 @@
     "frames": [
       {
         "label": "初始对象",
-      "note": "user 含 name 和 age 两个具名属性。",
+        "note": "user 含 name 和 age 两个具名属性。",
         "activeIds": [
           "object",
           "name",
@@ -13209,7 +13184,7 @@
       },
       {
         "label": "修改属性",
-      "note": "age 从 20 改为 21，属性数量不变。",
+        "note": "age 从 20 改为 21，属性数量不变。",
         "activeIds": [
           "age",
           "count"
@@ -13231,7 +13206,7 @@
       },
       {
         "label": "新增属性",
-      "note": "加入 city = 杭州，属性数量从 2 变 3。",
+        "note": "加入 city = 杭州，属性数量从 2 变 3。",
         "activeIds": [
           "city",
           "count"
@@ -13252,7 +13227,7 @@
       },
       {
         "label": "删除属性",
-      "note": "移除 name 后，再读取 user.name 得到 undefined，属性数量从 3 变 2。",
+        "note": "移除 name 后，再读取 user.name 得到 undefined，属性数量从 3 变 2。",
         "activeIds": [
           "count"
         ],
@@ -13273,10 +13248,10 @@
     ],
     "insight": "对象通过键组织属性，某个值可以是函数，也就是方法。",
     "quiz": {
-    "question": "JavaScript 对象含一个函数属性，能原样写成标准 JSON 吗？",
+      "question": "JavaScript 对象含一个函数属性，能原样写成标准 JSON 吗？",
       "options": [
         {
-        "label": "不能，JSON 不表示函数值",
+          "label": "不能，JSON 不表示函数值",
           "correct": true
         },
         {
@@ -13289,7 +13264,7 @@
         }
       ],
       "success": "对象与JSON的可表示范围不同。",
-    "retry": "转换为 JSON 文本前，要先处理不能表示的值，例如函数。"
+      "retry": "转换为 JSON 文本前，要先处理不能表示的值，例如函数。"
     },
     "prompt": {
       "title": "检查一个对象模型",
@@ -13297,24 +13272,24 @@
     },
     "sources": [
       {
-      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
-      "label": "MDN · Working with objects",
-      "note": "说明对象由属性组成，属性通过键关联值，函数值可以作为方法。"
-    },
-    {
-      "url": "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
-      "label": "ECMAScript 规范 · Object Type",
-      "note": "规定 JavaScript 对象类型和属性行为。"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
+        "label": "MDN · Working with objects",
+        "note": "说明对象由属性组成，属性通过键关联值，函数值可以作为方法。"
       },
       {
-      "url": "https://www.rfc-editor.org/rfc/rfc8259",
-      "label": "RFC 8259 · JSON",
-      "note": "定义 JSON 对象、数组、字符串、数字、布尔值和 null 等数据类型。"
-    },
-    {
-      "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries",
-      "label": "Python 文档 · Dictionaries",
-      "note": "用另一种语言的字典说明通过键组织和读取相关值。"
+        "url": "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-object-type",
+        "label": "ECMAScript 规范 · Object Type",
+        "note": "规定 JavaScript 对象类型和属性行为。"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8259",
+        "label": "RFC 8259 · JSON",
+        "note": "定义 JSON 对象、数组、字符串、数字、布尔值和 null 等数据类型。"
+      },
+      {
+        "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries",
+        "label": "Python 文档 · Dictionaries",
+        "note": "用另一种语言的字典说明通过键组织和读取相关值。"
       }
     ]
   },
@@ -13380,7 +13355,7 @@
     "frames": [
       {
         "label": "原顺序",
-      "note": "三个元素占据索引 0、1、2。",
+        "note": "三个元素占据索引 0、1、2。",
         "activeIds": [
           "a",
           "b",
@@ -13401,7 +13376,7 @@
       },
       {
         "label": "选择插入点",
-      "note": "X 对准索引 1，B 和 C 准备右移。",
+        "note": "X 对准索引 1，B 和 C 准备右移。",
         "activeIds": [
           "x",
           "b",
@@ -13412,13 +13387,13 @@
         ],
         "mutedIds": [],
         "values": {
-        "x": "目标索引 1"
+          "x": "目标索引 1"
         },
         "activeEdgeIds": []
       },
       {
         "label": "整体右移",
-      "note": "B 从 1 移到 2，C 从 2 移到 3。",
+        "note": "B 从 1 移到 2，C 从 2 移到 3。",
         "activeIds": [
           "b",
           "c"
@@ -13436,7 +13411,7 @@
       },
       {
         "label": "插入完成",
-      "note": "X 占索引 1，数组长度从 3 变 4。",
+        "note": "X 占索引 1，数组长度从 3 变 4。",
         "activeIds": [
           "x",
           "length"
@@ -13456,7 +13431,7 @@
     ],
     "insight": "数组用位置表达顺序，插入或删除会改变后续索引；索引不适合当稳定业务 ID。",
     "quiz": {
-    "question": "如果把数组索引当作列表项的唯一 ID，插入新元素后会怎样？",
+      "question": "如果把数组索引当作列表项的唯一 ID，插入新元素后会怎样？",
       "options": [
         {
           "label": "后续项的ID全部变化",
@@ -13471,8 +13446,8 @@
           "correct": false
         }
       ],
-    "success": "位置会随插入或删除改变。",
-    "retry": "稳定的编号要单独保存，不能依赖索引。"
+      "success": "位置会随插入或删除改变。",
+      "retry": "稳定的编号要单独保存，不能依赖索引。"
     },
     "prompt": {
       "title": "检查数组操作",
@@ -13480,24 +13455,24 @@
     },
     "sources": [
       {
-      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
-      "label": "MDN · Indexed collections",
-      "note": "说明数组按索引保存有序值、索引从 0 开始，并介绍长度与插入删除带来的位置变化。"
-    },
-    {
-      "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
-      "label": "ECMAScript 规范 · Array Objects",
-      "note": "规定 JavaScript 数组对象的索引和长度行为。"
-    },
-    {
-      "url": "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range",
-      "label": "Python 文档 · Sequence Types",
-      "note": "说明序列按位置保存和访问元素，列表支持插入、删除等操作。"
-    },
-    {
-      "url": "https://www.rfc-editor.org/rfc/rfc8259#section-5",
-      "label": "RFC 8259 · Arrays",
-      "note": "定义 JSON 数组是有序值序列；JSON 是传输文本格式，程序运行时的数组还要按语言规则处理。"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
+        "label": "MDN · Indexed collections",
+        "note": "说明数组按索引保存有序值、索引从 0 开始，并介绍长度与插入删除带来的位置变化。"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects",
+        "label": "ECMAScript 规范 · Array Objects",
+        "note": "规定 JavaScript 数组对象的索引和长度行为。"
+      },
+      {
+        "url": "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range",
+        "label": "Python 文档 · Sequence Types",
+        "note": "说明序列按位置保存和访问元素，列表支持插入、删除等操作。"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8259#section-5",
+        "label": "RFC 8259 · Arrays",
+        "note": "定义 JSON 数组是有序值序列；JSON 是传输文本格式，程序运行时的数组还要按语言规则处理。"
       }
     ]
   },
@@ -13587,7 +13562,7 @@
     "frames": [
       {
         "label": "客户端发出请求",
-      "note": "商品页创建 GET 请求（读取商品），还没有拿到数据。",
+        "note": "商品页创建 GET 请求（读取商品），还没有拿到数据。",
         "activeIds": [
           "client",
           "request"
@@ -13606,7 +13581,7 @@
       },
       {
         "label": "服务器处理",
-      "note": "服务器收到请求路径 /products/7 后查询商品数据，准备响应。",
+        "note": "服务器收到请求路径 /products/7 后查询商品数据，准备响应。",
         "activeIds": [
           "request",
           "server",
@@ -13630,7 +13605,7 @@
       },
       {
         "label": "响应返回",
-      "note": "服务器发送状态码 200 与 JSON（按结构组织数据的文本），方向与请求相反。",
+        "note": "服务器发送状态码 200 与 JSON（按结构组织数据的文本），方向与请求相反。",
         "activeIds": [
           "server",
           "response"
@@ -13650,7 +13625,7 @@
       },
       {
         "label": "客户端呈现",
-      "note": "商品页读取响应并显示商品 7。",
+        "note": "商品页读取响应并显示商品 7。",
         "activeIds": [
           "client"
         ],
@@ -13686,7 +13661,7 @@
           "correct": false
         }
       ],
-    "success": "客户端与服务器是相对角色，谁发请求、谁提供资源要看当前交互。",
+      "success": "客户端与服务器是相对角色，谁发请求、谁提供资源要看当前交互。",
       "retry": "看谁发请求、谁提供资源。"
     },
     "prompt": {
@@ -13695,24 +13670,24 @@
     },
     "sources": [
       {
-      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-      "label": "RFC 9110 · HTTP Semantics",
-      "note": "定义 HTTP 的客户端、服务器、请求、响应和状态语义。"
-    },
-    {
-      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
-      "label": "MDN · Overview of HTTP",
-      "note": "说明浏览器等客户端发出请求，服务器返回响应，以及一次 HTTP 往返的基本步骤。"
-    },
-    {
-      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages",
-      "label": "MDN · HTTP messages",
-      "note": "说明请求方法、路径、响应状态码、头和正文等消息部分。"
-    },
-    {
-      "url": "https://fetch.spec.whatwg.org/",
-      "label": "WHATWG · Fetch Standard",
-      "note": "规定浏览器 Fetch 如何发起请求并处理响应。"
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "定义 HTTP 的客户端、服务器、请求、响应和状态语义。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+        "label": "MDN · Overview of HTTP",
+        "note": "说明浏览器等客户端发出请求，服务器返回响应，以及一次 HTTP 往返的基本步骤。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages",
+        "label": "MDN · HTTP messages",
+        "note": "说明请求方法、路径、响应状态码、头和正文等消息部分。"
+      },
+      {
+        "url": "https://fetch.spec.whatwg.org/",
+        "label": "WHATWG · Fetch Standard",
+        "note": "规定浏览器 Fetch 如何发起请求并处理响应。"
       }
     ]
   },
