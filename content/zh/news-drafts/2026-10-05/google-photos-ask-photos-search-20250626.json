@@ -1,0 +1,211 @@
+{
+  "slug": "google-photos-ask-photos-search-20250626",
+  "title": "Google Photos 改造 Ask Photos：先给简单搜索结果，再让 Gemini 慢慢想",
+  "summary": "6 月 26 日，Google Photos 宣布把经典搜索接入 Ask Photos：简单查询先立即返回相册结果，Gemini 在后台继续处理更复杂的问题；同时功能从早期体验扩大到更多符合条件的美国用户。",
+  "body": "6 月 26 日，Google Photos 宣布改进 Ask Photos。早期版本让 Gemini 负责理解“我在巴塞罗那旅行吃过什么”这类复杂问题，但用户也会用它搜索“海滩”或“狗”这种本来应该很快返回的关键词。Google 承认，早期体验里简单搜索的速度是反馈重点之一。\n\n改动的核心不是再换一个模型，而是把经典搜索和 AI 搜索放到同一个入口。简单请求先用 Photos 原有的搜索能力给出结果，Gemini 同时在后台继续寻找更相关的照片或补充信息；用户因此不用等模型完成深度理解，才看到第一批照片。这是一种“先返回能用的结果，再补上更复杂答案”的产品取舍。\n\n这种分层很容易被忽略。对系统来说，“狗”“海滩”这类查询可以直接匹配标签、文字或已有索引；“找出最适合做手机壁纸的照片”则要理解构图、主题和用户意图。让两者走同一条慢路径，会让最简单的任务也显得迟钝；让所有任务都只走快路径，又会失去自然语言提问的价值。\n\nGoogle 同时说，改进后的 Ask Photos 会从早期体验向更多符合条件的美国用户开放。这个措辞说明它仍然是分批 rollout，而不是全球统一上线。官方没有给出准确的延迟指标、召回率或错误率，也没有承诺 Gemini 对每个复杂问题都比经典搜索更准确；这条新闻能确认的是产品策略和可用范围。\n\n对个人照片来说，“快一点”也不能替代“找对了”。如果第一批结果来自旧索引，后台的 Gemini 结果可能会补进更相关的照片，也可能带来新的误判。用户需要把即时结果看成候选，把复杂答案里的解释看成模型推断，尤其在按人物、地点或日期整理相册时，不要把系统的猜测直接当成事实。\n\nAsk Photos 的这次调整给了 AI 产品一个很实用的信号：复杂模型不必独占所有请求。把确定性更强的检索、需要模型推理的理解，以及后台补全分开，体验反而更接近人们使用相册的节奏。后续值得追踪的是，Google 是否会公开更多错误反馈、复杂查询的等待时间，以及用户最终选择的是第一批结果还是 Gemini 补全结果。",
+  "publishedAt": "2025-06-26",
+  "eventDate": "2025-06-26",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-photos-ask-photos-search-20250626.svg",
+    "alt": "Google Photos 的经典搜索与 Gemini 后台理解形成先快后深的检索流程；这是产品机制示意，不是用户相册截图。",
+    "sourceUrl": "/images/news/google-photos-ask-photos-search-20250626.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "problem",
+      "title": "Ask Photos 为什么要改速度",
+      "body": "简单的“海滩”“狗”查询不应该因为等待复杂语义理解而变慢；Google 把早期用户反馈直接写进了公告。",
+      "kind": "narrative"
+    },
+    {
+      "id": "two-paths",
+      "title": "一个入口里有两条搜索路径",
+      "body": "经典搜索先返回已有索引结果，Gemini 在后台处理更复杂的问题。它们可以并行，不必让每个请求都等待最慢的模型。",
+      "kind": "technical"
+    },
+    {
+      "id": "rollout",
+      "title": "扩大开放不等于全面上线",
+      "body": "改进后的 Ask Photos 向更多符合条件的美国用户 rollout，仍是分批开放，公告没有给出全球可用或统一指标。",
+      "kind": "boundary"
+    },
+    {
+      "id": "accuracy",
+      "title": "先看到结果，也要保留怀疑",
+      "body": "即时结果是候选，后台的自然语言解释是模型推断；照片归档涉及人物、地点和日期时，应保留人工确认。",
+      "kind": "example"
+    },
+    {
+      "id": "lesson",
+      "title": "产品设计的启发是分层而不是堆模型",
+      "body": "确定性检索负责快，Gemini 负责理解和补全，用户先得到可用结果，再决定是否等待更深答案。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "为什么“先给结果，再让模型继续想”更适合相册？",
+    "question": "沿着简单查询、经典索引、后台理解和人工确认四步看清延迟与准确性的取舍。",
+    "steps": [
+      {
+        "label": "输入查询",
+        "detail": "用户可能只输入“狗”，也可能用自然语言问一段旅行经历。",
+        "evidence": "Google Photos 官方公告，2025-06-26"
+      },
+      {
+        "label": "先走经典搜索",
+        "detail": "已有的标签和索引先返回第一批照片，降低简单任务的等待。",
+        "evidence": "Google 官方说明"
+      },
+      {
+        "label": "Gemini 后台理解",
+        "detail": "复杂问题继续由 Gemini 处理，寻找更相关照片或信息。",
+        "evidence": "Google 官方说明"
+      },
+      {
+        "label": "比较结果",
+        "detail": "用户可以直接使用即时结果，也可以等后台答案补充更多候选。",
+        "evidence": "产品流程推演"
+      },
+      {
+        "label": "核对事实",
+        "detail": "涉及人物、地点和日期时，把模型排序与解释当作辅助，不替代人工确认。",
+        "evidence": "AI 检索的使用边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Photos",
+    "url": "https://blog.google/products-and-platforms/products/photos/updates-ask-photos-search/"
+  },
+  "relatedSlugs": [
+    "tools",
+    "context",
+    "llm",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "youtube-ai-search-carousel-20250626"
+  ],
+  "sources": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/photos/updates-ask-photos-search/",
+      "claim": "Google Photos 6 月 26 日宣布把经典搜索能力接入 Ask Photos，并让 Gemini 在后台处理复杂查询。",
+      "excerpt": "You’ll now see results right away while Gemini models continue to work in the background."
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/photos/updates-ask-photos-search/",
+      "claim": "官方说明改进后的 Ask Photos 将向更多符合条件的美国用户开放。",
+      "excerpt": "Ask Photos is opening up beyond early access and starting to roll out to more eligible users in the U.S."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/26/google-photos-merges-classic-search-with-ai-to-speed-up-results/",
+      "claim": "TechCrunch 报道了经典搜索与 AI 的合并，以及早期用户对速度和质量的反馈背景。",
+      "excerpt": "TechCrunch, “Google Photos merges classic search with AI to speed up results”, June 26, 2025."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/products-and-platforms/products/photos/updates-ask-photos-search/",
+  "sourceHash": "sha256:d02eb792d49a7e64318013f9e306cddbef70746522d9efba1a8559b46ffb8a55",
+  "status": "published",
+  "discoveredAt": "2026-10-05T13:05:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 tools 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 context 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 llm 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 event 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "youtube-ai-search-carousel-20250626",
+      "score": 0.84,
+      "evidence": [
+        "相邻日期或同日的 AI 新闻提供事实链上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/photos/updates-ask-photos-search/",
+      "claim": "Google Photos 6 月 26 日宣布把经典搜索能力接入 Ask Photos，并让 Gemini 在后台处理复杂查询。",
+      "excerpt": "You’ll now see results right away while Gemini models continue to work in the background."
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/photos/updates-ask-photos-search/",
+      "claim": "官方说明改进后的 Ask Photos 将向更多符合条件的美国用户开放。",
+      "excerpt": "Ask Photos is opening up beyond early access and starting to roll out to more eligible users in the U.S."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/26/google-photos-merges-classic-search-with-ai-to-speed-up-results/",
+      "claim": "TechCrunch 报道了经典搜索与 AI 的合并，以及早期用户对速度和质量的反馈背景。",
+      "excerpt": "TechCrunch, “Google Photos merges classic search with AI to speed up results”, June 26, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T13:15:00Z",
+    "method": "source",
+    "notes": "已按 2025-06-26 的首发日核对官方页面或新闻首发；正文区分产品自述、媒体报道与尚未证实的推断。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T13:15:00Z",
+    "notes": "新闻事实链、事件日、来源卡片、零基础读者可读性和词条联动已完成首轮检查，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T13:45:00Z",
+    "questions": [
+      "事件日、首发/转载日和事实边界是否清楚？是。",
+      "原始来源、引用卡片和来源归属是否准确？是。",
+      "正文、段落组织、explainer、SVG alt、词条和相关文章联动是否适合零基础读者？是。"
+    ],
+    "notes": "经典搜索先返回、Gemini 后台处理的产品机制易懂，早期体验范围和准确性边界明确。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-26-google-photos-ask-photos-search-20250626",
+  "promotedAt": "2026-10-04T23:03:42.758Z"
+}
