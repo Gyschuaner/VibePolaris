@@ -337,3 +337,40 @@
 .wsLabControls { margin-top: 13px; }
 @media (max-width: 700px) { .wsHero, .wsLab { padding: 15px; } .wsStage, .wsLabBoard { grid-template-columns: 1fr; } .wsStage > svg, .wsLabBoard > svg { justify-self: center; transform: rotate(90deg); } .wsTop, .wsLabHead { flex-direction: column; gap: 8px; } .wsControls { justify-content: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .wsHero *, .wsLab * { transition: none !important; animation: none !important; } }
+
+.keyHero { composes: panel; }
+.keyTop, .keyEvidence, .keyLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.keyTop span, .keyTop small, .keyLabHead span { color: var(--muted); font-size: .78rem; }
+.keyTop strong, .keyLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.keyStage { display: grid; grid-template-columns: minmax(0, .85fr) auto minmax(0, 1.05fr) auto minmax(0, .9fr); gap: 13px; align-items: center; margin: 25px 0 16px; }
+.keyVault, .keyRequest, .keyResult { min-height: 143px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: 14px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.keyVault svg, .keyRequest svg, .keyResult svg { color: var(--accent); }
+.keyVault span, .keyRequest span, .keyResult span { color: var(--muted); font-size: .75rem; }
+.keyVault strong, .keyRequest strong, .keyResult strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.keyVault small, .keyRequest small { color: var(--muted); font-size: .68rem; overflow-wrap: anywhere; }
+.keyResult[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 40%, var(--surface)); }
+.keyResult[data-failed="true"] svg { color: #b56c45; }
+.keyArrow { color: var(--accent-text); }
+.keyEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.keyEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.keyEvidence p { margin: 0; }
+.keyEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.keyTimeline, .keyControls, .keyLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.keyTimeline { margin-top: 15px; }
+.keyTimeline button, .keyControls button, .keyLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.keyTimeline button[aria-pressed="true"], .keyLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.keyControls { justify-content: flex-end; margin-top: 10px; }
+.keyLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.keyLabHead strong { display: block; margin-top: 5px; }
+.keyLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.keyLabNode { min-height: 98px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.keyLabNode svg { color: var(--accent); }
+.keyLabNode span { color: var(--muted); font-size: .76rem; }
+.keyLabNode code, .keyLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.keyLabResult { padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.keyLabResult[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); color: #8a542f; }
+.keyLabResult p { margin: 0; }
+.keyLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.keyLabControls { margin-top: 13px; }
+@media (max-width: 700px) { .keyHero, .keyLab { padding: 15px; } .keyStage, .keyLabBoard { grid-template-columns: 1fr; } .keyStage > svg, .keyLabBoard > svg { justify-self: center; transform: rotate(90deg); } .keyTop, .keyLabHead { flex-direction: column; gap: 8px; } .keyControls { justify-content: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .keyHero *, .keyLab * { transition: none !important; animation: none !important; } }

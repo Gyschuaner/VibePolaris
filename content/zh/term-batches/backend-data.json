@@ -342,22 +342,54 @@
     "relatedSlugs": ["authorization", "least-privilege", "auth"]
   },
   {
-    "zh": "API 密钥", "en": "API Key", "slug": "api-key", "cat": "后端",
-    "say": "调用接口时用于识别应用或项目的一段凭证。",
-    "aliases": ["接口密钥", "访问密钥", "API Key"],
-    "question": "前端代码里可以直接写第三方 API 密钥吗？",
-    "definition": "API 密钥是服务发给调用方的凭证，用于识别来源、计量用量或控制访问。",
-    "boundary": "API 密钥不等同于用户登录；长期密钥也不应暴露在公开客户端代码中。",
-    "demoType": "lifecycle", "demoTitle": "API 密钥怎样安全使用",
-    "demoSteps": [
-      {"label": "服务端代理", "value": "浏览器 → 受控服务 → 天气 API", "note": "密钥停留在服务端，浏览器只持有会话。"},
-      {"label": "请求头提交", "value": "X-API-Key → 服务端验证", "note": "按项目计量，同时对日志做脱敏。"},
-      {"label": "轮换旧钥匙", "value": "新 key · 旧 key = 401", "note": "新请求继续工作，泄露窗口被缩短。"}
+    "zh": "API 密钥",
+    "en": "API Key",
+    "slug": "api-key",
+    "cat": "后端",
+    "say": "服务用来识别调用项目、计量用量和限制入口的一段凭证。",
+    "aliases": [
+      "接口密钥",
+      "访问密钥",
+      "API Key"
     ],
-    "quizQuestion": "公开网页需要调用带密钥的第三方 API 时应怎样做？", "quizOptions": ["由自己的服务端保管密钥并代为调用", "把密钥写进前端源码", "把密钥放进 URL 分享"],
-    "correctText": "服务端可避免长期密钥直接暴露给浏览器。", "wrongText": "前端源码和 URL 都容易暴露密钥。",
-    "promptTitle": "检查 API 密钥管理", "prompt": "请检查项目中 API 密钥的存储、注入、日志脱敏、权限范围和轮换方式，并列出整改项。",
-    "relatedSlugs": ["auth", "oauth", "least-privilege"]
+    "question": "第三方 API 需要密钥时，前端代码能不能直接放一把长期 key？",
+    "definition": "API 密钥是调用方随请求提交的凭证；服务可以据此识别项目、计量用量、套用配额或做基础限制，但它不自动代表最终用户身份。",
+    "boundary": "公开前端和 URL 都无法替长期 key 保密；API key 也不能替代对象级授权。限制、配额、有效期和轮换只能缩小泄露后的影响。",
+    "demoType": "lifecycle",
+    "demoTitle": "一把 API key 怎样从受控调用走到撤销",
+    "demoSteps": [
+      {
+        "label": "受控服务提交",
+        "value": "server vault → X-API-Key",
+        "note": "浏览器不持有长期秘密，服务按项目验证并计量。"
+      },
+      {
+        "label": "暴露面扩大",
+        "value": "?key=K1 / bundle.js",
+        "note": "URL 和公开源码会把 bearer key 交给更多读取者。"
+      },
+      {
+        "label": "轮换并撤销",
+        "value": "K2=200 · K1=401",
+        "note": "新值验证可用后撤销旧值，泄露窗口才会收窄。"
+      }
+    ],
+    "quizQuestion": "公开网页要调用带长期 API key 的第三方服务，优先怎样做？",
+    "quizOptions": [
+      "由自己的服务端保管 key 并代为调用",
+      "把 key 写进前端 bundle",
+      "把 key 放进 URL 分享"
+    ],
+    "correctText": "服务端代理能把长期共享秘密留在受控环境，再向浏览器提供按用户授权的结果。",
+    "wrongText": "源码和 URL 都在调用方可见范围内，无法替长期 key 保密。",
+    "promptTitle": "检查 API key 的生命周期",
+    "prompt": "请列出 key 的签发对象、存放位置、请求头或 URL 传递方式、日志脱敏、限制范围、配额、到期、轮换和撤销步骤。",
+    "relatedSlugs": [
+      "auth",
+      "oauth",
+      "authorization",
+      "secret-scanning"
+    ]
   },
   {
     "zh": "限流", "en": "Rate Limiting", "slug": "rate-limiting", "cat": "后端",
