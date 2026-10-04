@@ -71,3 +71,10 @@ export const dnsResolverSources: BoundarySource[] = [
   make("IETF", "RFC 2308 · Negative Caching of DNS Queries", "https://www.rfc-editor.org/rfc/rfc2308.html", ["resolver-negative", "resolver-cache", "resolver-diagnosis"], "1998-03"),
   make("IETF", "RFC 9520 · Negative Caching of DNS Resolution Failures", "https://www.rfc-editor.org/rfc/rfc9520.html", ["resolver-failure", "resolver-diagnosis"], "2023-12"),
 ];
+
+export const cacheControlSources: BoundarySource[] = [
+  make("IETF", "RFC 9111 · HTTP Caching", "https://www.rfc-editor.org/rfc/rfc9111.html", ["cache-control-store", "cache-control-fresh", "cache-control-validate", "cache-control-shared-detail", "cache-control-key"], "2022-06"),
+  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["cache-control-method", "cache-control-vary"], "2022-06"),
+  make("IETF", "RFC 5861 · HTTP Cache-Control Extensions for Stale Content", "https://www.rfc-editor.org/rfc/rfc5861.html", ["cache-control-stale", "cache-control-error"], "2010-04"),
+  make("IETF", "RFC 8246 · HTTP Immutable Responses", "https://www.rfc-editor.org/rfc/rfc8246.html", ["cache-control-immutable"], "2017-09"),
+];

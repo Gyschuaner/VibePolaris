@@ -828,15 +828,7 @@
     "quizQuestion": "看到 SERVFAIL，能否直接断定域名不存在？", "quizOptions": ["不能，它表示本次解析没有拿到可用数据", "能，所有失败都等于 NXDOMAIN", "能，只要递归器返回了空结果"], "correctText": "SERVFAIL 与 NXDOMAIN 是不同的 RCODE，前者不能证明名字不存在。", "wrongText": "继续看 RCODE、authority 区、上游响应和重试记录，不要把所有失败归为不存在。",
     "promptTitle": "排查一次 DNS resolver 查询", "prompt": "请记录 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、缓存命中与剩余 TTL、实际访问的上游和重试结果，判断是 HIT、NXDOMAIN、NODATA 还是 SERVFAIL。", "relatedSlugs": ["dns-record", "hostname", "cache", "ip-address"]
   },
-  {
-    "zh": "缓存控制", "en": "Cache-Control", "slug": "cache-control", "cat": "技术栈",
-    "say": "用 HTTP 响应头说明内容能否缓存、缓存多久以及何时重新验证。", "aliases": ["Cache-Control", "HTTP 缓存策略", "缓存响应头"],
-    "question": "静态图片可以缓存一年，用户资料却不能共用缓存，怎样区分？", "definition": "Cache-Control 是 HTTP 缓存指令集合，用于控制浏览器和共享缓存对响应的存储与复用。", "boundary": "缓存指令影响缓存行为，但不能保证所有中间设备在异常配置下都按预期执行。",
-    "demoType": "state", "demoTitle": "资源从新鲜到重新验证",
-    "demoSteps": [{"label":"首次响应","value":"max-age=60","note":"浏览器保存响应 60 秒。"},{"label":"缓存新鲜","value":"30 秒","note":"页面直接使用本地副本，不发请求。"},{"label":"缓存过期","value":"60 秒后验证","note":"浏览器携带验证条件询问服务器。"}],
-    "quizQuestion": "max-age=60 通常表示什么？", "quizOptions": ["响应可在 60 秒内视为新鲜", "请求必须在 60 秒内完成", "服务器 60 秒后关闭"], "correctText": "缓存可在该时间内直接复用响应。", "wrongText": "它控制缓存新鲜度，不是请求超时或服务器寿命。",
-    "promptTitle": "设计 HTTP 缓存", "prompt": "请为静态资源、公开接口和用户私有数据分别设计 Cache-Control，并说明更新和重新验证方式。", "relatedSlugs": ["cache", "response", "response-header"]
-  },
+  {"zh":"缓存控制","en":"Cache-Control","slug":"cache-control","cat":"技术栈","say":"把能不能存、能新鲜多久、要不要回源写给缓存看的指令。","aliases":["Cache-Control","HTTP 缓存策略","缓存响应头"],"question":"为什么同一份响应有时直接命中，有时只回 304，还有时根本不能进共享缓存？","definition":"Cache-Control 是 HTTP 缓存指令集合，控制响应能否存储、何时仍可直接复用、何时必须验证，以及 private cache 和 shared cache 怎样分别处理。","boundary":"no-cache 允许存储但复用前要验证；no-store 阻止存储；stale-while-revalidate 和 stale-if-error 只是额外的、有限的过期授权。","demoType":"state","demoTitle":"一份响应怎样穿过缓存闸门","demoSteps":[{"label":"响应先过闸门","value":"max-age=60 / private,no-store","note":"公开脚本可以留下副本，用户资料被 shared cache 挡在门外。"},{"label":"fresh HIT","value":"Age 25 < 60","note":"还在新鲜窗口时直接复用，不必访问源站。"},{"label":"stale → 304 或过期窗口","value":"If-None-Match / stale-*","note":"过期后可以带验证器换回 304；只有明确授权时，才允许短暂交付旧响应。"}],"quizQuestion":"响应写 no-cache，缓存是否一定不能保存副本？","quizOptions":["不一定，保存后每次复用前都要验证","一定完全禁止存储","只影响数据库缓存"],"correctText":"no-cache 管的是复用前验证，不等于 no-store。","wrongText":"禁止缓存要看 no-store；no-cache 仍允许保存副本。","promptTitle":"核对一条响应的缓存行为","prompt":"请列出这条响应的 Cache-Control、Age、ETag、Vary 和缓存层，推演它会存储、直接命中、验证还是拒绝共享。","relatedSlugs":["cache","response","response-header","dns-resolver"]},
   {
     "zh": "MIME 类型", "en": "Media Type", "slug": "mime-type", "cat": "技术栈",
     "say": "用类似 application/json 的标识说明传输内容是什么格式。", "aliases": ["媒体类型", "Content-Type", "Media Type"],
