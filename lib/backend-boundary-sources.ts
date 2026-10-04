@@ -78,3 +78,10 @@ export const cacheControlSources: BoundarySource[] = [
   make("IETF", "RFC 5861 · HTTP Cache-Control Extensions for Stale Content", "https://www.rfc-editor.org/rfc/rfc5861.html", ["cache-control-stale", "cache-control-error"], "2010-04"),
   make("IETF", "RFC 8246 · HTTP Immutable Responses", "https://www.rfc-editor.org/rfc/rfc8246.html", ["cache-control-immutable"], "2017-09"),
 ];
+
+export const mimeTypeSources: BoundarySource[] = [
+  make("IETF", "RFC 6838 · Media Type Specifications and Registration Procedures", "https://www.rfc-editor.org/rfc/rfc6838.html", ["mime-type-shape", "mime-type-parameters", "mime-type-application", "mime-type-multipart"], "2013-01"),
+  make("IETF", "RFC 2046 · Multipurpose Internet Mail Extensions Part Two: Media Types", "https://www.rfc-editor.org/rfc/rfc2046.html", ["mime-type-charset", "mime-type-multipart"], "1996-11"),
+  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["mime-type-content-type", "mime-type-encoding", "mime-type-sniffing", "mime-type-parameters"], "2022-06"),
+  make("WHATWG", "MIME Sniffing Standard", "https://mimesniff.spec.whatwg.org/", ["mime-type-sniffing"], "living standard"),
+];
