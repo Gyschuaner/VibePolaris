@@ -12586,221 +12586,284 @@
   {"slug":"mime-type","lead":"同一段 <h1>Hi</h1> 字节，为什么一会儿是标题，一会儿只是文字？","definition":"媒体类型是给表示附上的解释声明；接收端先读 Content-Type，再按 type/subtype 和参数选择解析器，实际字节仍要通过那套规则。","boundary":"扩展名、charset、Content-Encoding 和媒体类型回答不同问题；错配时浏览器可能嗅探，结果不能当成所有客户端的通用保证。","sceneKind":"branch","sceneTitle":"同一字节在不同解释器之间分叉","actionLabel":"切换解释路径","actors":[{"id":"declaration","label":"Content-Type","detail":"text/html / text/plain / JSON","icon":"file","group":"声明"},{"id":"bytes","label":"实际字节","detail":"<h1>Hi</h1> 或 JSON","icon":"code","group":"内容"},{"id":"decoder","label":"外层解码","detail":"Content-Encoding: gzip","icon":"gear","group":"前置步骤"},{"id":"parser","label":"解释器","detail":"HTML / text / JSON","icon":"component","group":"规则"},{"id":"result","label":"接收端结果","detail":"节点、文字或错误","icon":"browser","group":"输出"},{"id":"context","label":"使用上下文","detail":"浏览器 / API 客户端","icon":"shield","group":"边界"}],"edges":[{"id":"declaration-parser","from":"declaration","to":"parser","label":"选择处理规则"},{"id":"bytes-parser","from":"bytes","to":"parser","label":"交给解析器"},{"id":"bytes-decoder","from":"bytes","to":"decoder","label":"先解外层编码"},{"id":"decoder-parser","from":"decoder","to":"parser","label":"还原表示"},{"id":"parser-result","from":"parser","to":"result","label":"产生结果"},{"id":"context-result","from":"context","to":"result","label":"上下文影响处理"}],"frames":[{"label":"text/html 构造标题","note":"声明和字节一起进入 HTML 解释路径，结果是一个 h1 节点。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser","result"],"mutedIds":["decoder","context"],"values":{"declaration":"text/html","bytes":"<h1>Hi</h1>","parser":"HTML parser","result":"h1 element"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"]},{"label":"text/plain 保留尖括号","note":"声明换成纯文本，字节没有变，解析器也不再把它拆成 HTML 标签。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser","result"],"mutedIds":["decoder","context"],"values":{"declaration":"text/plain","bytes":"<h1>Hi</h1>","parser":"text decoder","result":"literal text"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"]},{"label":"application/json 停在错误处","note":"声明只改变解析规则；缺少值的 JSON 仍然在右花括号前失败。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser"],"mutedIds":["decoder","context"],"values":{"declaration":"application/json","bytes":"{\"count\": }","parser":"JSON parser","result":"SyntaxError"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"],"metric":{"label":"解析状态","value":"失败"}},{"label":"gzip 先解开再解析","note":"外层编码先由 gunzip 去掉，得到的表示仍按 application/json 处理。","activeIds":["declaration","bytes","decoder","parser","result"],"doneIds":["decoder","parser","result"],"mutedIds":["context"],"values":{"declaration":"application/json","bytes":"gzip bytes","decoder":"gunzip","parser":"JSON parser","result":"{ count: 2 }"},"activeEdgeIds":["bytes-decoder","decoder-parser","parser-result"]}],"insight":"媒体类型决定接收端先套哪套解释规则；看到结果前，还要检查参数、外层编码和实际字节有没有对上。","quiz":{"question":"响应声明 application/json，但 body 不是合法 JSON，应该怎样判断？","options":[{"label":"按 JSON 解析并把语法错误留下","correct":true},{"label":"声明成功就等于内容合法","correct":false},{"label":"改看文件扩展名，不再解析","correct":false}],"success":"标签选择了解释器，解析器仍要检查字节。","retry":"把“是什么格式”和“是否符合格式”分成两个问题。"},"prompt":{"title":"核对一条响应的内容类型","text":"请把 Content-Type、charset、Content-Encoding、实际字节和接收端上下文列出来，解释结果是文本、节点、结构化值还是解析错误。"},"sources":[{"url":"https://www.rfc-editor.org/rfc/rfc6838.html","label":"RFC 6838 · Media Type Registration","note":"type/subtype、参数、注册树和顶层类型"},{"url":"https://www.rfc-editor.org/rfc/rfc2046.html","label":"RFC 2046 · Media Types","note":"charset 与 multipart 的媒体类型语义"},{"url":"https://www.rfc-editor.org/rfc/rfc9110.html","label":"RFC 9110 · HTTP Semantics","note":"Content-Type、Content-Encoding 与表示处理"},{"url":"https://mimesniff.spec.whatwg.org/","label":"WHATWG · MIME Sniffing Standard","note":"错配类型的嗅探、上下文和安全后果"}]},
   {
     "slug": "response-body",
-    "lead": "接口状态都是 200，为什么一个能显示图片，一个解压后才显示，另一个完全没有内容？",
-    "definition": "响应内容是服务器返回的表示字节，Content-Type 与 Content-Encoding 决定如何解释和还原；方法与状态码还决定是否允许内容。",
-    "boundary": "响应体不等于整个响应，也不保证是 JSON。HEAD、204 和 304 等无内容场景可以是正常结果。",
+    "lead": "同样是一次 HTTP 响应，为什么有时要解压、有时能解析成对象，有时根本没有内容？",
+    "definition": "本页把响应体拆成常规读取路径：先看 method/status，再按 Content-Encoding 还原表示字节，最后按 Content-Type 解析；204、304、HEAD 没有 body，坏字节则在解析处失败。",
+    "boundary": "响应体只是响应的一部分，不保证是 JSON，也不代表业务一定成功。无 body 是协议分支，解析错误是内容分支，二者要分开处理。",
     "sceneKind": "transform",
-    "sceneTitle": "图片响应从编码字节到渲染结果",
-    "actionLabel": "处理下一种响应内容",
+    "sceneTitle": "响应字节经过哪一道门才交给调用方",
+    "actionLabel": "处理下一步响应",
     "actors": [
       {
-        "id": "image-source",
-        "label": "头像表示",
-        "detail": "PNG · 18 KB",
+        "id": "response-headers",
+        "label": "响应头",
+        "detail": "200 · gzip · application/json",
         "icon": "file",
-        "group": "源内容"
+        "group": "协议"
       },
       {
-        "id": "encoded-body",
-        "label": "响应体",
-        "detail": "gzip 6 KB",
+        "id": "wire-body",
+        "label": "线路字节",
+        "detail": "压缩 body",
         "icon": "package",
         "group": "传输"
       },
       {
-        "id": "decoder",
+        "id": "body-decoder",
         "label": "内容解码器",
         "detail": "Content-Encoding",
         "icon": "gear",
         "group": "客户端"
       },
       {
-        "id": "media-parser",
-        "label": "图片解析器",
-        "detail": "Content-Type: image/png",
+        "id": "body-parser",
+        "label": "格式解析器",
+        "detail": "Content-Type",
         "icon": "layout",
         "group": "客户端"
       },
       {
-        "id": "image-view",
-        "label": "头像视图",
-        "detail": "等待像素",
+        "id": "body-caller",
+        "label": "调用方",
+        "detail": "对象 / 错误 / 空结果",
         "icon": "browser",
         "group": "输出"
       },
       {
-        "id": "empty-body",
-        "label": "无内容响应",
-        "detail": "204 / HEAD",
+        "id": "body-empty",
+        "label": "无内容分支",
+        "detail": "204 · HEAD · 304",
         "icon": "message",
-        "group": "分支"
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "source-body",
-        "from": "image-source",
-        "to": "encoded-body",
-        "label": "gzip"
+        "id": "headers-wire",
+        "from": "response-headers",
+        "to": "wire-body",
+        "label": "说明字节"
       },
       {
-        "id": "body-decoder",
-        "from": "encoded-body",
-        "to": "decoder",
-        "label": "解压"
+        "id": "wire-decoder",
+        "from": "wire-body",
+        "to": "body-decoder",
+        "label": "先解码"
       },
       {
         "id": "decoder-parser",
-        "from": "decoder",
-        "to": "media-parser",
-        "label": "PNG 字节"
+        "from": "body-decoder",
+        "to": "body-parser",
+        "label": "还原表示"
       },
       {
-        "id": "parser-view",
-        "from": "media-parser",
-        "to": "image-view",
-        "label": "解码像素"
+        "id": "parser-caller",
+        "from": "body-parser",
+        "to": "body-caller",
+        "label": "解析结果"
       },
       {
-        "id": "empty-view",
-        "from": "empty-body",
-        "to": "image-view",
-        "label": "不渲染内容"
+        "id": "empty-caller",
+        "from": "body-empty",
+        "to": "body-caller",
+        "label": "不读取 body"
       }
     ],
     "frames": [
       {
-        "label": "传输的是压缩字节",
-        "note": "Content-Length 对应 6 KB gzip 内容，不是解压后的 PNG 大小。",
+        "label": "200 到达",
+        "note": "状态和字段先到：body 是 gzip 表示，准备按规则读取。",
         "activeIds": [
-          "image-source",
-          "encoded-body"
+          "response-headers",
+          "wire-body"
         ],
         "doneIds": [
-          "encoded-body"
+          "response-headers"
         ],
         "mutedIds": [
-          "decoder",
-          "media-parser",
-          "image-view",
-          "empty-body"
+          "body-decoder",
+          "body-parser",
+          "body-caller",
+          "body-empty"
         ],
         "values": {
-          "image-source": "18 KB PNG",
-          "encoded-body": "6 KB gzip"
+          "response-headers": "200 · gzip · application/json",
+          "wire-body": "compressed bytes"
         },
         "activeEdgeIds": [
-          "source-body"
+          "headers-wire"
         ],
         "metric": {
-          "label": "传输大小",
-          "value": "6 KB"
+          "label": "线路字节",
+          "value": "gzip"
         }
       },
       {
-        "label": "解压恢复 PNG 表示",
-        "note": "客户端根据 Content-Encoding 先还原 18 KB 原始表示。",
+        "label": "先解码",
+        "note": "Content-Encoding 只回答表示怎样还原；还没到 JSON 解析这一步。",
         "activeIds": [
-          "encoded-body",
-          "decoder"
-        ],
-        "doneIds": [
-          "decoder"
-        ],
-        "mutedIds": [
-          "media-parser",
-          "image-view",
-          "empty-body"
-        ],
-        "values": {
-          "decoder": "gzip → 18 KB",
-          "encoded-body": "consumed"
-        },
-        "activeEdgeIds": [
+          "wire-body",
           "body-decoder"
+        ],
+        "doneIds": [
+          "body-decoder"
+        ],
+        "mutedIds": [
+          "response-headers",
+          "body-parser",
+          "body-caller",
+          "body-empty"
+        ],
+        "values": {
+          "wire-body": "gzip",
+          "body-decoder": "→ {\"count\":2}"
+        },
+        "activeEdgeIds": [
+          "wire-decoder"
         ]
       },
       {
-        "label": "媒体类型驱动图片解析",
-        "note": "恢复后的字节按 image/png 解码为像素。",
+        "label": "选择解析器",
+        "note": "还原后的字节交给 Content-Type 指定方向的解析器。",
         "activeIds": [
-          "decoder",
-          "media-parser",
-          "image-view"
+          "body-decoder",
+          "body-parser"
         ],
         "doneIds": [
-          "image-view"
+          "body-parser"
         ],
         "mutedIds": [
-          "empty-body"
+          "response-headers",
+          "wire-body",
+          "body-caller",
+          "body-empty"
         ],
         "values": {
-          "media-parser": "PNG valid",
-          "image-view": "64×64 rendered"
+          "body-parser": "application/json"
         },
         "activeEdgeIds": [
-          "decoder-parser",
-          "parser-view"
+          "decoder-parser"
         ]
       },
       {
-        "label": "204 正常保持无内容",
-        "note": "状态码明确没有响应体，视图不应把空字节当图片损坏。",
+        "label": "交给调用方",
+        "note": "格式合法时得到对象；200 只说明 HTTP 处理结果，不替业务检查字段。",
         "activeIds": [
-          "empty-body",
-          "image-view"
+          "body-parser",
+          "body-caller"
         ],
         "doneIds": [
-          "empty-body"
+          "body-caller"
         ],
         "mutedIds": [
-          "image-source",
-          "encoded-body",
-          "decoder",
-          "media-parser"
+          "response-headers",
+          "wire-body",
+          "body-decoder",
+          "body-empty"
         ],
         "values": {
-          "empty-body": "204 · body 0",
-          "image-view": "no update"
+          "body-caller": "object · count=2"
         },
         "activeEdgeIds": [
-          "empty-view"
+          "parser-caller"
+        ]
+      },
+      {
+        "label": "204 / HEAD / 304",
+        "note": "没有 body 不是下载失败；先按协议返回空结果，避免把空体误报成 JSON 损坏。",
+        "activeIds": [
+          "body-empty",
+          "body-caller"
+        ],
+        "doneIds": [
+          "body-empty"
+        ],
+        "mutedIds": [
+          "response-headers",
+          "wire-body",
+          "body-decoder",
+          "body-parser"
+        ],
+        "values": {
+          "body-empty": "0 bytes",
+          "body-caller": "no body"
+        },
+        "activeEdgeIds": [
+          "empty-caller"
         ],
         "metric": {
-          "label": "内容字节",
-          "value": "0"
+          "label": "可读取内容",
+          "value": "0 bytes"
         }
+      },
+      {
+        "label": "坏 JSON",
+        "note": "Content-Type 选到了 JSON 解析器，但缺失的值仍会让解析停下。",
+        "activeIds": [
+          "body-parser",
+          "body-caller"
+        ],
+        "doneIds": [
+          "body-parser"
+        ],
+        "mutedIds": [
+          "response-headers",
+          "wire-body",
+          "body-decoder",
+          "body-empty"
+        ],
+        "values": {
+          "body-parser": "SyntaxError",
+          "body-caller": "handle error"
+        },
+        "activeEdgeIds": [
+          "parser-caller"
+        ]
       }
     ],
-    "insight": "处理响应体要按编码顺序还原字节，再按媒体类型解释，并尊重无内容状态。",
+    "insight": "响应体的读取顺序是状态/方法边界 → 内容解码 → 格式解析；无 body、未解码和坏内容是三种不同故障。",
     "quiz": {
-      "question": "Content-Encoding: gzip 时，客户端应先做什么？",
+      "question": "Content-Encoding: gzip 且 Content-Type: application/json 时，客户端应怎样读？",
       "options": [
         {
-          "label": "先解压，再按 Content-Type 解析",
+          "label": "先解码，再按 JSON 解析",
           "correct": true
         },
         {
-          "label": "把压缩字节直接当图片像素",
+          "label": "把 gzip 字节直接当对象",
           "correct": false
         },
         {
-          "label": "忽略响应字段只看 URL 后缀",
+          "label": "只看 URL 后缀",
           "correct": false
         }
       ],
-      "success": "内容编码先还原表示，媒体类型再决定表示如何解析。",
-      "retry": "区分传输编码和媒体格式。"
+      "success": "编码层先还原表示，媒体类型再决定解析规则。",
+      "retry": "把状态、Content-Encoding 和 Content-Type 分开看。"
     },
     "prompt": {
-      "title": "检查响应内容处理",
-      "text": "请列出状态码、方法、Content-Length、Content-Encoding、Content-Type、实际字节和客户端处理顺序，并覆盖无内容响应。"
+      "title": "排查响应体处理",
+      "text": "请记录 method、status、Content-Length、Content-Encoding、Content-Type、实际字节和调用方结果，并分别标出无 body、解码失败和解析失败。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Content",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "响应消息、表示、Content-Encoding 与无内容语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages",
+        "label": "MDN · HTTP messages",
+        "note": "HTTP 消息的字段与可选 body"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Response/json",
+        "label": "MDN · Response.json()",
+        "note": "读取 body 并按 JSON 解析"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/204",
+        "label": "MDN · 204 No Content",
+        "note": "204 没有可读取响应体"
       }
     ]
   },

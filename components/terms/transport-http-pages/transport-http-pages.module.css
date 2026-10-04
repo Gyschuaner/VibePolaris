@@ -135,3 +135,45 @@
 .tlsKeyStrip code { color: var(--accent-text); font-size: .78rem; overflow-wrap: anywhere; }
 @media (max-width: 700px) { .tlsHero, .tlsLab { padding: 15px; } .tlsStage, .tlsLabBoard { grid-template-columns: 1fr; } .tlsStage > svg, .tlsLabBoard > svg { justify-self: center; transform: rotate(90deg); } .tlsTop, .tlsLabHead { flex-direction: column; gap: 8px; } .tlsControls { justify-content: flex-start; } .tlsKeyStrip { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .tlsHero *, .tlsLab * { transition: none !important; animation: none !important; } }
+
+.bodyHero { composes: panel; }
+.bodyTop, .bodyEvidence, .bodyLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.bodyTop span, .bodyTop small, .bodyLabHead span { color: var(--muted); font-size: .78rem; }
+.bodyTop strong, .bodyLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.bodyStage { display: grid; grid-template-columns: minmax(0, .75fr) auto minmax(0, 1.45fr) auto minmax(0, .75fr); gap: 13px; align-items: center; margin: 25px 0 16px; }
+.bodyEnvelope, .bodyResult, .bodyPipeNode { min-height: 112px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: 14px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.bodyEnvelope svg, .bodyResult svg, .bodyPipeNode svg { color: var(--accent); }
+.bodyEnvelope span, .bodyResult span, .bodyPipeNode span { color: var(--muted); font-size: .75rem; }
+.bodyEnvelope code, .bodyResult strong, .bodyPipeNode code { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.bodyEnvelope small { color: var(--muted); font-size: .68rem; overflow-wrap: anywhere; }
+.bodyResult[data-empty="true"], .bodyResult[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 40%, var(--surface)); }
+.bodyResult[data-failed="true"] svg { color: #b56c45; }
+.bodyPipeline { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 7px; }
+.bodyPipeNode { min-height: 87px; padding: 10px; transition: transform .35s ease, border-color .35s ease, opacity .35s ease; }
+.bodyPipeNode[data-active="true"] { border-color: var(--accent-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+.bodyPipeArrow { color: var(--muted); font-size: 1.1rem; text-align: center; }
+.bodyArrow { color: var(--accent-text); }
+.bodyEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.bodyEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.bodyEvidence p { margin: 0; }
+.bodyEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.bodyTimeline, .bodyControls, .bodyLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.bodyTimeline { margin-top: 15px; }
+.bodyTimeline button, .bodyControls button, .bodyLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.bodyTimeline button[aria-pressed="true"], .bodyLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.bodyControls { justify-content: flex-end; margin-top: 10px; }
+.bodyLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.bodyLabHead strong { display: block; margin-top: 5px; }
+.bodyLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.bodyLabNode { min-height: 98px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.bodyLabNode svg { color: var(--accent); }
+.bodyLabNode span { color: var(--muted); font-size: .76rem; }
+.bodyLabNode code, .bodyLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.bodyLabNode small { color: var(--muted); font-size: .68rem; overflow-wrap: anywhere; }
+.bodyLabResult { padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.bodyLabResult[data-failed="true"], .bodyLabResult[data-empty="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); color: #8a542f; }
+.bodyLabResult p { margin: 0; }
+.bodyLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.bodyLabControls { margin-top: 13px; }
+@media (max-width: 700px) { .bodyHero, .bodyLab { padding: 15px; } .bodyStage, .bodyLabBoard { grid-template-columns: 1fr; } .bodyStage > svg, .bodyLabBoard > svg { justify-self: center; transform: rotate(90deg); } .bodyPipeline { grid-template-columns: 1fr; } .bodyPipeArrow { transform: rotate(90deg); } .bodyTop, .bodyLabHead { flex-direction: column; gap: 8px; } .bodyControls { justify-content: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .bodyHero *, .bodyLab * { transition: none !important; animation: none !important; } }

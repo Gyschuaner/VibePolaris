@@ -911,13 +911,54 @@
   {"zh":"缓存控制","en":"Cache-Control","slug":"cache-control","cat":"技术栈","say":"把能不能存、能新鲜多久、要不要回源写给缓存看的指令。","aliases":["Cache-Control","HTTP 缓存策略","缓存响应头"],"question":"为什么同一份响应有时直接命中，有时只回 304，还有时根本不能进共享缓存？","definition":"Cache-Control 是 HTTP 缓存指令集合，控制响应能否存储、何时仍可直接复用、何时必须验证，以及 private cache 和 shared cache 怎样分别处理。","boundary":"no-cache 允许存储但复用前要验证；no-store 阻止存储；stale-while-revalidate 和 stale-if-error 只是额外的、有限的过期授权。","demoType":"state","demoTitle":"一份响应怎样穿过缓存闸门","demoSteps":[{"label":"响应先过闸门","value":"max-age=60 / private,no-store","note":"公开脚本可以留下副本，用户资料被 shared cache 挡在门外。"},{"label":"fresh HIT","value":"Age 25 < 60","note":"还在新鲜窗口时直接复用，不必访问源站。"},{"label":"stale → 304 或过期窗口","value":"If-None-Match / stale-*","note":"过期后可以带验证器换回 304；只有明确授权时，才允许短暂交付旧响应。"}],"quizQuestion":"响应写 no-cache，缓存是否一定不能保存副本？","quizOptions":["不一定，保存后每次复用前都要验证","一定完全禁止存储","只影响数据库缓存"],"correctText":"no-cache 管的是复用前验证，不等于 no-store。","wrongText":"禁止缓存要看 no-store；no-cache 仍允许保存副本。","promptTitle":"核对一条响应的缓存行为","prompt":"请列出这条响应的 Cache-Control、Age、ETag、Vary 和缓存层，推演它会存储、直接命中、验证还是拒绝共享。","relatedSlugs":["cache","response","response-header","dns-resolver"]},
   {"zh":"MIME 类型","en":"Media Type","slug":"mime-type","cat":"技术栈","say":"用 type/subtype 和参数告诉接收端，这串字节按什么规则解释。","aliases":["媒体类型","Content-Type","Media Type"],"question":"为什么同一段 <h1>Hi</h1> 有时是标题，有时只是文字，JSON 声明错了还会报错？","definition":"MIME 类型由 type、subtype 和可选参数组成；HTTP 用 Content-Type 传递这份表示声明，接收端据此选择解析器，但不替内容保证格式合法。","boundary":"文件扩展名只是文件名线索；charset、Content-Encoding 和 multipart 的 boundary 分别回答字节怎么解码、外层怎么解压、消息怎样分段。","demoType":"branch","demoTitle":"同一串字节怎样走不同解释器","demoSteps":[{"label":"先看 Content-Type","value":"text/html; charset=utf-8","note":"标签决定接收端从 HTML 规则开始解释。"},{"label":"换标签不换字节","value":"text/plain; charset=utf-8","note":"同样的尖括号变成原样文字，不会构造标题节点。"},{"label":"解析仍会失败","value":"application/json · {\"count\": }","note":"选择 JSON 解析器不等于把缺少值的内容修好。"}],"quizQuestion":"响应声明 application/json，但 body 是 {\"count\": }，接收端首先应该怎样处理？","quizOptions":["按 JSON 规则解析并报告语法错误","把它当成合法对象继续使用","只看文件扩展名决定结果"],"correctText":"媒体类型选择解析规则，实际字节仍要通过解析。","wrongText":"Content-Type 不是校验结果，也不能靠扩展名绕过解析错误。","promptTitle":"核对内容类型和字节","prompt":"请记录响应的 Content-Type、charset、Content-Encoding、multipart boundary 和实际字节，判断接收端会选什么解析器以及失败停在哪里。","relatedSlugs":["http-header","response-header","response-body","json"]},
   {
-    "zh": "响应体", "en": "Response Body", "slug": "response-body", "cat": "技术栈",
-    "say": "HTTP 响应中承载实际返回内容的部分，可以是 JSON、HTML、图片或文件。", "aliases": ["Response Body", "返回体", "响应内容"],
-    "question": "接口状态码是 200，具体商品数据放在哪里？", "definition": "响应体是服务器随 HTTP 响应发送的内容载荷，其解析方式由响应头说明。", "boundary": "有些响应没有响应体，例如 204；错误响应体也不应泄露敏感内部信息。",
-    "demoType": "request", "demoTitle": "商品查询怎样形成响应体",
-    "demoSteps": [{"label":"查询完成","value":"product id 42","note":"服务取得允许返回的字段。"},{"label":"序列化","value":"{\"id\":42,\"name\":\"灯\"}","note":"对象转换成 JSON 文本。"},{"label":"客户端解析","value":"data.name = 灯","note":"页面读取字段并更新商品名称。"}],
-    "quizQuestion": "204 No Content 响应通常有什么特点？", "quizOptions": ["没有响应体", "必须返回完整网页", "必须包含数据库密码"], "correctText": "204 表示请求成功但没有返回内容。", "wrongText": "204 不要求网页，更不能包含敏感密码。",
-    "promptTitle": "检查响应体", "prompt": "请检查这个响应体的字段、类型、空值、错误格式和敏感信息，给出稳定的前端处理约定。", "relatedSlugs": ["response", "status-code", "response-header", "json"]
+    "zh": "响应体",
+    "en": "Response Body",
+    "slug": "response-body",
+    "cat": "技术栈",
+    "say": "headers 先说明规则，body 再承载这次返回的表示字节。",
+    "aliases": [
+      "Response Body",
+      "返回体",
+      "响应内容"
+    ],
+    "question": "状态码和响应头都到了，客户端怎样判断 body 有没有、该怎样读？",
+    "definition": "响应体是 HTTP 响应中承载表示字节的部分；客户端先按方法和状态判断是否有内容，再按 Content-Encoding 还原字节，最后由 Content-Type 选择解析器。",
+    "boundary": "HEAD、204 和 304 等响应可以正常没有 body；Content-Type 选对解析方向也不能修复坏字节，解析成功更不等于业务数据可信。",
+    "demoType": "flow",
+    "demoTitle": "一串响应字节怎样变成可用结果",
+    "demoSteps": [
+      {
+        "label": "先看状态与字段",
+        "value": "200 + gzip + application/json",
+        "note": "headers 说明是否有 body、怎样解码以及应该从哪种格式开始读。"
+      },
+      {
+        "label": "还原 body bytes",
+        "value": "gzip → {\"count\":2}",
+        "note": "先解码表示，再把还原后的字节交给解析器。"
+      },
+      {
+        "label": "按边界决定读取",
+        "value": "204 / HEAD / 坏 JSON",
+        "note": "无内容是正常协议分支，坏 JSON 才停在解析错误；都不能只看 200。"
+      }
+    ],
+    "quizQuestion": "收到 204 No Content 时，调用方首先应该怎样处理？",
+    "quizOptions": [
+      "按无 body 的协议分支处理，不盲目解析 JSON",
+      "把空字节强行当成 JSON 对象",
+      "只看 URL 后缀决定解析器"
+    ],
+    "correctText": "204 的成功语义就是没有响应体；先判断状态，再决定是否读取。",
+    "wrongText": "空体不是坏 JSON，URL 后缀也不能替代响应方法、状态和字段。",
+    "promptTitle": "检查一条响应体读取路径",
+    "prompt": "请记录 method、status、Content-Length、Content-Encoding、Content-Type、实际 body 长度和解析错误，区分无内容、未解码与内容损坏。",
+    "relatedSlugs": [
+      "response",
+      "status-code",
+      "response-header",
+      "mime-type"
+    ]
   },
   {
     "zh": "响应头", "en": "Response Header", "slug": "response-header", "cat": "技术栈",

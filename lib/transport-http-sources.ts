@@ -24,7 +24,7 @@ export const tlsHandshakeSources: Source[] = [
 ];
 
 export const responseBodySources: Source[] = [
-  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["body-representation", "body-no-content", "body-method"]),
+  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["body-representation", "body-decode", "body-no-content", "body-method", "body-empty"]),
   make("MDN Web Docs", "HTTP messages", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages", ["body-message"]),
   make("MDN Web Docs", "Response: json() method", "https://developer.mozilla.org/en-US/docs/Web/API/Response/json", ["body-decode", "body-parse"]),
   make("MDN Web Docs", "204 No Content", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/204", ["body-no-content", "body-empty"]),
