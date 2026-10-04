@@ -1697,5 +1697,24 @@
       "context-window",
       "tokenization"
     ]
+  },
+  {
+    "slug": "attention",
+    "mechanism": "注意力用 Query 与 Key 的兼容性产生权重，再对 Value 做加权汇总；多头在不同投影子空间并行取数，最后把结果拼接并投影。",
+    "misconception": "注意力权重是计算中的取数信号，不是模型思维链、因果解释或事实证明；mask 和缺失 key 会直接改变可见范围。",
+    "demoSignature": "点单场景中 Query“查无糖饮品”进入菜单 Key/Value 货架，比较三张卡的权重，再按两个 head 分别看口味和价格；遮掉“无糖”键后显示没有证据可取回。",
+    "sourceUrls": [
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/queries-keys-values.html",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.modules.activation.MultiheadAttention.html",
+      "https://www.tensorflow.org/api_docs/python/tf/keras/layers/MultiHeadAttention"
+    ],
+    "rewriteRisk": "用 Q/K/V 的真实信息流组织正文，明确权重、mask、head 和输出的边界；避免把热力图写成解释器或事实证据。",
+    "nearDuplicates": [
+      "transformer",
+      "context-window",
+      "tokenization"
+    ]
   }
 ]

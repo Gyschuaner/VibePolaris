@@ -4802,5 +4802,55 @@
       "context-window",
       "generative-ai"
     ]
+  },
+  {
+    "zh": "注意力机制",
+    "en": "Attention",
+    "slug": "attention",
+    "cat": "AI·Agent",
+    "say": "根据当前查询，从一组可匹配的线索里取回加权后的信息。",
+    "aliases": [
+      "Attention",
+      "自注意力",
+      "多头注意力"
+    ],
+    "question": "模型为什么会把某些位置的信息混进当前结果？",
+    "definition": "注意力机制把当前位置的查询与一组 key 比较，得到权重，再按这些权重混合 value；当 query、key、value 来自同一序列时，通常称为自注意力。多头注意力会在多个表示子空间并行计算，再合并输出。",
+    "boundary": "注意力的权重是一次计算里的取数信号，不是人类可直接阅读的思维链或事实证明。mask、输入范围、投影参数和后续任务头都会改变结果；遮住证据后，注意力不能凭空补回缺失内容。",
+    "demoType": "flow",
+    "demoTitle": "一条查询怎样从键值货架取回信息",
+    "demoSteps": [
+      {
+        "label": "递出查询",
+        "value": "Query：查无糖饮品",
+        "note": "先说明当前要找什么；还没有比较或取回。"
+      },
+      {
+        "label": "比较键",
+        "value": "Key：无糖 / 含奶 / 含糖",
+        "note": "权重反映本轮匹配程度，不是“这张卡就是真答案”。"
+      },
+      {
+        "label": "混合值",
+        "value": "Value：规格与价格 → 定宽表示",
+        "note": "最终返回的是加权后的表示，仍要由后续层和证据完成判断。"
+      }
+    ],
+    "quizQuestion": "看到注意力热力图里一格更亮，最稳妥的理解是什么？",
+    "quizOptions": [
+      "这次计算更偏向取那一格的信息",
+      "模型已经证明那一格是事实答案",
+      "那一格一定是模型唯一的解释"
+    ],
+    "correctText": "亮度最多说明这次权重分配更偏向某个 key/value。",
+    "wrongText": "权重图不是事实核验，也不能单独还原完整原因。",
+    "promptTitle": "检查一层注意力",
+    "prompt": "请标出 Query、Key、Value、mask 和输出去向；解释权重如何改变取数，并列出需要外部证据核验的结论。",
+    "relatedSlugs": [
+      "transformer",
+      "llm",
+      "tokenization",
+      "context-window"
+    ]
   }
 ]

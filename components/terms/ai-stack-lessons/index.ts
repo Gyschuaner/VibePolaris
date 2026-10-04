@@ -37,3 +37,5 @@ export { TemperatureLesson } from "./temperature";
 export { TokenizationLesson } from "./tokenization";
 export { TransformerLesson } from "./transformer";
 export { TransformerHero } from "./transformer-hero";
+export { AttentionLesson } from "./attention";
+export { AttentionHero } from "./attention-hero";

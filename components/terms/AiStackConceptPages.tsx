@@ -48,6 +48,7 @@ import { HmrTermPage } from "./ai-stack-pages/hmr";
 import { DependencyTermPage } from "./ai-stack-pages/dependency";
 import { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
 import { TransformerTermPage } from "./ai-stack-pages/transformer";
+import { AttentionTermPage } from "./ai-stack-pages/attention";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -98,6 +99,7 @@ export { HmrTermPage } from "./ai-stack-pages/hmr";
 export { DependencyTermPage } from "./ai-stack-pages/dependency";
 export { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
 export { TransformerTermPage } from "./ai-stack-pages/transformer";
+export { AttentionTermPage } from "./ai-stack-pages/attention";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -150,4 +152,5 @@ export const aiStackArticlePages = {
   dependency: DependencyTermPage,
   "semantic-versioning": SemanticVersioningTermPage,
   transformer: TransformerTermPage,
+  attention: AttentionTermPage,
 } as const;

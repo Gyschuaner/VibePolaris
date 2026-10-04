@@ -19242,5 +19242,212 @@
         "note": "配置蓝图与权重文件"
       }
     ]
+  },
+  {
+    "slug": "attention",
+    "lead": "同一张菜单里，为什么“查无糖”和“查最低价格”会取回不同内容？",
+    "definition": "注意力让一个 Query 和多张 Key 卡比较，再按权重取回对应 Value；多头会在不同表示子空间中并行计算，最后合并输出。",
+    "boundary": "演示中的高、中、低和口味/价格 head 是教学信号，不是每个真实模型的固定解释；mask 会减少可见证据，权重仍不等于事实。",
+    "sceneKind": "matrix",
+    "sceneTitle": "一条查询如何从菜单货架取回信息",
+    "actionLabel": "换查询条件",
+    "actors": [
+      {
+        "id": "query",
+        "label": "Query",
+        "detail": "查无糖饮品 / 查最低价格",
+        "icon": "key",
+        "group": "输入"
+      },
+      {
+        "id": "keys",
+        "label": "Keys",
+        "detail": "无糖 · 含奶 · 含糖",
+        "icon": "search",
+        "group": "比较"
+      },
+      {
+        "id": "values",
+        "label": "Values",
+        "detail": "规格与价格",
+        "icon": "file",
+        "group": "取回"
+      },
+      {
+        "id": "heads",
+        "label": "多头",
+        "detail": "口味头 · 价格头",
+        "icon": "brain",
+        "group": "并行"
+      },
+      {
+        "id": "output",
+        "label": "输出表示",
+        "detail": "加权混合后的定宽向量",
+        "icon": "chart",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "query-keys",
+        "from": "query",
+        "to": "keys",
+        "label": "比较兼容性"
+      },
+      {
+        "id": "keys-values",
+        "from": "keys",
+        "to": "values",
+        "label": "按权重取回"
+      },
+      {
+        "id": "values-heads",
+        "from": "values",
+        "to": "heads",
+        "label": "投影到不同子空间"
+      },
+      {
+        "id": "heads-output",
+        "from": "heads",
+        "to": "output",
+        "label": "拼接并投影"
+      }
+    ],
+    "frames": [
+      {
+        "label": "递出查询",
+        "note": "Query 先表达当前要找什么，菜单卡片还没有被取回。",
+        "activeIds": [
+          "query"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "keys",
+          "values",
+          "heads",
+          "output"
+        ],
+        "values": {
+          "query": "查无糖饮品"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "比较键",
+        "note": "Key 负责比较，权重是这一步的数值信号。",
+        "activeIds": [
+          "keys"
+        ],
+        "doneIds": [
+          "query"
+        ],
+        "mutedIds": [
+          "values",
+          "heads",
+          "output"
+        ],
+        "values": {
+          "keys": "无糖 高 / 含奶 中 / 含糖 低"
+        },
+        "activeEdgeIds": [
+          "query-keys"
+        ]
+      },
+      {
+        "label": "取回值",
+        "note": "按权重混合 Value，不把菜单原文整张复制进输出。",
+        "activeIds": [
+          "values"
+        ],
+        "doneIds": [
+          "query",
+          "keys"
+        ],
+        "mutedIds": [
+          "heads",
+          "output"
+        ],
+        "values": {
+          "values": "规格 + 价格"
+        },
+        "activeEdgeIds": [
+          "keys-values"
+        ]
+      },
+      {
+        "label": "多头合并",
+        "note": "不同投影子空间并行计算，最后把 head 输出合并。",
+        "activeIds": [
+          "heads",
+          "output"
+        ],
+        "doneIds": [
+          "query",
+          "keys",
+          "values"
+        ],
+        "mutedIds": [],
+        "values": {
+          "heads": "口味 / 价格",
+          "output": "定宽表示"
+        },
+        "activeEdgeIds": [
+          "values-heads",
+          "heads-output"
+        ]
+      }
+    ],
+    "insight": "注意力是可微的取数与混合机制；它能改变表示，却不能让缺失证据自动变成事实。",
+    "quiz": {
+      "question": "遮掉“无糖”这张 key 后，为什么不能要求注意力仍取回无糖证据？",
+      "options": [
+        {
+          "label": "可见的 key/value 里已经没有这条线索",
+          "correct": true
+        },
+        {
+          "label": "softmax 会自动联网补资料",
+          "correct": false
+        },
+        {
+          "label": "多头会把缺失输入变成真实菜单",
+          "correct": false
+        }
+      ],
+      "success": "mask 改变了可见范围，权重只能在剩余卡片里重新分配。",
+      "retry": "先看 mask 后的可见 key/value 集合，再看权重如何归一化。"
+    },
+    "prompt": {
+      "title": "拆开一次注意力计算",
+      "text": "请标注 Query、Key、Value、mask、权重和输出投影；说明哪些是本轮计算结果，哪些仍需要外部来源核验。"
+    },
+    "sources": [
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/queries-keys-values.html",
+        "label": "Dive into Deep Learning · Queries, Keys, and Values",
+        "note": "查询、键、值与加权汇总"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+        "label": "Dive into Deep Learning · Multi-Head Attention",
+        "note": "多头投影、并行与拼接"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "缩放点积注意力与原始架构"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.modules.activation.MultiheadAttention.html",
+        "label": "PyTorch · MultiheadAttention",
+        "note": "Q/K/V、mask 与参考实现"
+      },
+      {
+        "url": "https://www.tensorflow.org/api_docs/python/tf/keras/layers/MultiHeadAttention",
+        "label": "TensorFlow · MultiHeadAttention",
+        "note": "self-attention 条件与固定宽度输出"
+      }
+    ]
   }
 ]
