@@ -1,0 +1,236 @@
+.firewallHero,
+.firewallLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.firewallHeroTop,
+.firewallLabHeader,
+.firewallEvidence {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.firewallHeroTop span,
+.firewallLabHeader span,
+.firewallHeroRoom span,
+.firewallHeroPacket small,
+.firewallHeroGate small,
+.firewallLabHeader > span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.firewallHeroTop strong,
+.firewallLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.firewallHeroFlow,
+.firewallLabLane {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.firewallHeroPacket,
+.firewallHeroGate,
+.firewallHeroRoom,
+.firewallLabNode {
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  color: var(--accent-text);
+}
+
+.firewallHeroPacket,
+.firewallHeroRoom {
+  align-items: center;
+  text-align: center;
+}
+
+.firewallHeroPacket svg,
+.firewallHeroGate svg,
+.firewallHeroRoom svg,
+.firewallLabNode svg {
+  color: var(--accent);
+}
+
+.firewallHeroPacket span,
+.firewallHeroGate span,
+.firewallHeroRoom strong,
+.firewallLabNode strong {
+  font-size: .9rem;
+}
+
+.firewallHeroGate {
+  position: relative;
+  overflow: hidden;
+}
+
+.firewallHeroGate:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s ease;
+}
+
+.firewallHero[data-step="1"] .firewallHeroGate:after,
+.firewallHero[data-step="2"] .firewallHeroGate:after {
+  transform: scaleX(1);
+}
+
+.firewallHeroRoom[data-allowed="true"] {
+  background: color-mix(in srgb, #dbe9d2 62%, var(--surface));
+}
+
+.firewallHeroArrow,
+.firewallLabLane > svg {
+  color: var(--accent-text);
+}
+
+.firewallHeroTimeline,
+.firewallHeroControls,
+.firewallControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.firewallHeroTimeline button,
+.firewallHeroControls button,
+.firewallControls button {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.firewallHeroTimeline button[aria-pressed="true"],
+.firewallControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.firewallHeroControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.firewallLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.firewallLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.firewallLabLane {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.5fr) auto minmax(0, 1fr);
+  margin-bottom: 14px;
+}
+
+.firewallLabNode {
+  min-height: 78px;
+  align-items: center;
+  text-align: center;
+}
+
+.firewallLabNode[data-warning="true"] {
+  border-color: #b56c45;
+  background: color-mix(in srgb, #f4ddcf 55%, var(--surface));
+}
+
+.firewallEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.firewallEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 45%, transparent);
+}
+
+.firewallEvidence svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.firewallEvidence p {
+  margin: 0;
+}
+
+.firewallEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.firewallControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .firewallHero,
+  .firewallLab {
+    padding: 15px;
+  }
+
+  .firewallHeroFlow,
+  .firewallLabLane {
+    grid-template-columns: 1fr;
+  }
+
+  .firewallHeroArrow,
+  .firewallLabLane > svg {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .firewallHeroTop,
+  .firewallLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .firewallHeroControls {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .firewallHero *,
+  .firewallLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
