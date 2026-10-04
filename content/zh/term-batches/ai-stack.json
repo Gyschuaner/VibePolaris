@@ -1970,22 +1970,22 @@
     "definition": "应用为后续任务保存、检索、纠正和删除的信息；模型只有在记录被放入本轮输入时才会看到。",
     "boundary": "工作记忆是当前任务的临时状态；保存聊天不等于同意长期记忆，删除也不会倒写旧回答。",
     "demoType": "lifecycle",
-    "demoTitle": "一条偏好的六段生命周期",
+    "demoTitle": "一条代码偏好怎样从消息变成可撤回的记录",
     "demoSteps": [
       {
-        "label": "请求并写入",
-        "value": "用户同意 · TypeScript · source=user · 2026-10",
-        "note": "未明确同意的聊天内容不写入长期记录。"
+        "label": "先问能不能记",
+        "value": "TypeScript · source=user · scope=code",
+        "note": "当前回答可以参考这句话；跨会话保存要先得到明确同意。"
       },
       {
-        "label": "取回并使用",
-        "value": "代码任务命中 1 条 · context += memory[0]",
-        "note": "取回之后还要显式放进本轮输入，模型才会看到。"
+        "label": "新任务只取一条",
+        "value": "2 条记录 → 命中 1 条 → context += memory[0]",
+        "note": "先按代码范围筛选，再把命中的记录放进本轮输入。"
       },
       {
-        "label": "纠正或删除",
-        "value": "TypeScript → Python · 删除后记忆库 2 → 1",
-        "note": "纠正和删除影响未来取回，不倒写已经生成的答案。"
+        "label": "未来受控，过去不倒写",
+        "value": "TypeScript → Python → 删除",
+        "note": "纠正和删除只影响之后的取回，已经生成的回答保持原样。"
       }
     ],
     "quizQuestion": "哪些信息值得留给下一次聊天使用？",
