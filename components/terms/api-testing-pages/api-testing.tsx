@@ -10,7 +10,7 @@ type Standard = "response" | "joint";
 
 const steps = [
   { status: "等待", response: "还没发请求", state: "0 rows", auth: "未检查" },
-  { status: "201", response: "orderId:string", state: "0 rows", auth: "未检查" },
+  { status: "201", response: "orderId:string", state: "待查", auth: "未检查" },
   { status: "201", response: "schema ✓", state: "1 row", auth: "未检查" },
   { status: "200", response: "same orderId", state: "1 row", auth: "未检查" },
   { status: "403", response: "access denied", state: "1 row", auth: "B blocked" },
