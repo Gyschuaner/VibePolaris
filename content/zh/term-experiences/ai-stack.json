@@ -19908,5 +19908,240 @@
         "note": "大规模语料、few-shot 与数据边界"
       }
     ]
+  },
+  {
+    "slug": "kv-cache",
+    "lead": "前缀已经算过的 K/V，怎样在下一步生成和下一条请求里继续派上用场？",
+    "definition": "KV cache 把过去 token 的注意力中间状态按位置保存起来；新 query 到来时可按 block 取回相同前缀，容量不足时再驱逐或搬到更慢层级。",
+    "boundary": "缓存命中不等于答案正确。只改一个 token、换模型或位置条件，旧状态就可能失效；GPU、CPU、disk 的容量和搬运成本也会改变收益。",
+    "sceneKind": "memory",
+    "sceneTitle": "给前缀留一套可复用的书签",
+    "actionLabel": "切换前缀、容量与命中条件",
+    "actors": [
+      {
+        "id": "prompt",
+        "label": "Prefix",
+        "detail": "系统：你是客服。",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "cache",
+        "label": "KV Cache",
+        "detail": "按 token 保存 K / V blocks",
+        "icon": "memory",
+        "group": "中间状态"
+      },
+      {
+        "id": "query",
+        "label": "New Q",
+        "detail": "本轮新 token 的查询",
+        "icon": "brain",
+        "group": "当前步骤"
+      },
+      {
+        "id": "router",
+        "label": "KV Router",
+        "detail": "寻找 cache overlap",
+        "icon": "network",
+        "group": "调度"
+      },
+      {
+        "id": "tier",
+        "label": "Memory Tiers",
+        "detail": "GPU → CPU → disk",
+        "icon": "database",
+        "group": "容量边界"
+      }
+    ],
+    "edges": [
+      {
+        "id": "prompt-cache",
+        "from": "prompt",
+        "to": "cache",
+        "label": "写入 K / V"
+      },
+      {
+        "id": "cache-query",
+        "from": "cache",
+        "to": "query",
+        "label": "取回旧状态"
+      },
+      {
+        "id": "router-cache",
+        "from": "router",
+        "to": "cache",
+        "label": "寻找相同前缀"
+      },
+      {
+        "id": "cache-tier",
+        "from": "cache",
+        "to": "tier",
+        "label": "空间不足时搬运"
+      },
+      {
+        "id": "query-router",
+        "from": "query",
+        "to": "router",
+        "label": "带着本轮前缀查找"
+      }
+    ],
+    "frames": [
+      {
+        "label": "送入前缀",
+        "note": "第一遍仍然要计算前缀，缓存还没有任何 block。",
+        "activeIds": [
+          "prompt"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "cache",
+          "query",
+          "router",
+          "tier"
+        ],
+        "values": {
+          "prompt": "系统：你是客服。"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "写入 K / V",
+        "note": "注意力状态按位置放进 block，准备被后续 decode 取回。",
+        "activeIds": [
+          "cache"
+        ],
+        "doneIds": [
+          "prompt"
+        ],
+        "mutedIds": [
+          "query",
+          "router",
+          "tier"
+        ],
+        "values": {
+          "cache": "block 0 / block 1"
+        },
+        "activeEdgeIds": [
+          "prompt-cache"
+        ]
+      },
+      {
+        "label": "带新 Q",
+        "note": "当前 token 只带来新的 query，旧 K / V 保持可复用。",
+        "activeIds": [
+          "query",
+          "cache"
+        ],
+        "doneIds": [
+          "prompt"
+        ],
+        "mutedIds": [
+          "router",
+          "tier"
+        ],
+        "values": {
+          "query": "Q = 请问",
+          "cache": "旧 K / V 可读"
+        },
+        "activeEdgeIds": [
+          "cache-query"
+        ]
+      },
+      {
+        "label": "前缀命中",
+        "note": "路由器优先寻找已有 prefix overlap，命中后少做一段重复计算。",
+        "activeIds": [
+          "router",
+          "cache"
+        ],
+        "doneIds": [
+          "prompt",
+          "query"
+        ],
+        "mutedIds": [
+          "tier"
+        ],
+        "values": {
+          "router": "命中同一前缀",
+          "cache": "复用 block 0"
+        },
+        "activeEdgeIds": [
+          "router-cache",
+          "query-router"
+        ]
+      },
+      {
+        "label": "容量边界",
+        "note": "GPU 空间有限，缓存可能被驱逐或搬到 CPU / disk；取回成本要单独测量。",
+        "activeIds": [
+          "tier"
+        ],
+        "doneIds": [
+          "prompt",
+          "cache",
+          "query",
+          "router"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tier": "GPU 满 → CPU / disk"
+        },
+        "activeEdgeIds": [
+          "cache-tier"
+        ]
+      }
+    ],
+    "insight": "KV cache 是按位置保存的中间工作内存：相同前缀可以少算一次，变化的前缀、有限容量和远端搬运会让命中失效或收益变小。",
+    "quiz": {
+      "question": "KV cache 命中后，最准确的变化是什么？",
+      "options": [
+        {
+          "label": "减少一段已完成的注意力计算，但不改变模型权重或事实核验",
+          "correct": true
+        },
+        {
+          "label": "把上一次请求的完整答案直接复制给当前用户",
+          "correct": false
+        },
+        {
+          "label": "让模型自动获得训练数据里没有的新知识",
+          "correct": false
+        }
+      ],
+      "success": "对，命中优化的是重复计算和数据位置；答案质量仍要单独检查。",
+      "retry": "把缓存内容和模型答案分开：缓存保存 K/V 中间状态，不保存一份可直接发送的结论。"
+    },
+    "prompt": {
+      "title": "拆开一次 KV cache 命中",
+      "text": "请按前缀、K/V blocks、新 Q、命中条件、缓存层级和驱逐记录证据；再改一个 token，说明为什么必须重新计算。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/en/cache_explanation",
+        "label": "Hugging Face · Caching",
+        "note": "旧 token 的 K/V 与推理复用"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/kv_cache",
+        "label": "Hugging Face · Cache strategies",
+        "note": "动态、静态、量化与前缀缓存"
+      },
+      {
+        "url": "https://docs.vllm.ai/en/latest/design/paged_attention/",
+        "label": "vLLM · Paged Attention",
+        "note": "按 token block 管理 KV cache"
+      },
+      {
+        "url": "https://docs.nvidia.com/dynamo/dev/reference/glossary",
+        "label": "NVIDIA Dynamo · Glossary",
+        "note": "KV cache 与 KV-aware routing"
+      },
+      {
+        "url": "https://docs.nvidia.com/dynamo/latest/kubernetes/kv-cache-offloading/overview",
+        "label": "NVIDIA Dynamo · KV Cache Offloading",
+        "note": "GPU/CPU/disk 分层与前缀复用"
+      }
+    ]
   }
 ]

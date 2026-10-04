@@ -1757,5 +1757,26 @@
       "inference",
       "language-model"
     ]
+  },
+  {
+    "slug": "kv-cache",
+    "mechanism": "KV cache 保存自回归注意力对过去 token 计算出的 key/value 状态；后续 decode 带来新 query，服务可以按相同前缀和 token blocks 取回旧状态，并在容量不足时驱逐或跨 GPU/CPU/disk 层级搬运。",
+    "misconception": "KV cache 不是答案库、模型权重或事实记忆；命中依赖具体前缀、位置与运行条件，容量、block、量化、offload 和路由会改变性能收益。",
+    "demoSignature": "前缀“系统：你是客服。用户：”第一次写入 K/V 抽屉；下一步只带新的 Q 并命中第一 block；切换“你是销售”或塞满 GPU 时显示未命中、淘汰和重新计算。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/en/cache_explanation",
+      "https://huggingface.co/docs/transformers/kv_cache",
+      "https://docs.vllm.ai/en/latest/design/paged_attention/",
+      "https://docs.nvidia.com/dynamo/dev/reference/glossary",
+      "https://docs.nvidia.com/dynamo/latest/kubernetes/kv-cache-offloading/overview"
+    ],
+    "rewriteRisk": "正文要把 K/V 中间状态、新 Q、prefix overlap、block 管理和分层容量写出因果关系，明确缓存只优化推理计算，避免把命中写成答案正确或跨请求共享事实。",
+    "nearDuplicates": [
+      "attention",
+      "inference",
+      "transformer",
+      "context-window",
+      "prompt-caching"
+    ]
   }
 ]

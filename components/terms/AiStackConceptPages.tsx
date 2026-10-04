@@ -51,6 +51,7 @@ import { TransformerTermPage } from "./ai-stack-pages/transformer";
 import { AttentionTermPage } from "./ai-stack-pages/attention";
 import { InferenceTermPage } from "./ai-stack-pages/inference";
 import { PretrainingTermPage } from "./ai-stack-pages/pretraining";
+import { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -104,6 +105,7 @@ export { TransformerTermPage } from "./ai-stack-pages/transformer";
 export { AttentionTermPage } from "./ai-stack-pages/attention";
 export { InferenceTermPage } from "./ai-stack-pages/inference";
 export { PretrainingTermPage } from "./ai-stack-pages/pretraining";
+export { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -159,4 +161,5 @@ export const aiStackArticlePages = {
   attention: AttentionTermPage,
   inference: InferenceTermPage,
   pretraining: PretrainingTermPage,
+  "kv-cache": KvCacheTermPage,
 } as const;

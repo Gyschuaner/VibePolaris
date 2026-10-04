@@ -4955,5 +4955,57 @@
       "tokenization",
       "generative-ai"
     ]
+  },
+  {
+    "zh": "KV Cache",
+    "en": "KV Cache",
+    "slug": "kv-cache",
+    "cat": "AI·Agent",
+    "say": "把注意力已经算过的 K/V 留在手边，下一步少重算一段前缀。",
+    "aliases": [
+      "KV 缓存",
+      "Key-Value Cache",
+      "键值缓存"
+    ],
+    "question": "模型每生成一个 token，为什么不用把前面的上下文从头再算一遍？",
+    "definition": "KV cache 保存注意力层对过去 token 计算出的 key/value 中间状态，后续 decode 只带新的 query，并按位置复用旧状态；服务还可以按 block、前缀和存储层管理这些缓存。",
+    "boundary": "缓存的是一次推理的中间状态，不是模型权重或答案；前缀、位置和运行条件变化会使命中失效，容量、淘汰、搬运也会改变延迟。",
+    "demoType": "lifecycle",
+    "demoTitle": "一段前缀怎样变成可复用的书签",
+    "demoSteps": [
+      {
+        "label": "读过前缀",
+        "value": "系统：你是客服。",
+        "note": "第一次仍要完成前缀的注意力计算。"
+      },
+      {
+        "label": "存下 K / V",
+        "value": "block 0 · block 1",
+        "note": "缓存按位置保存中间状态，不保存完整答案。"
+      },
+      {
+        "label": "只带新 Q",
+        "value": "Q = “请问” · 旧 K/V 命中",
+        "note": "相同前缀可以跳过一段重复计算；改一个词就要重新判断。"
+      }
+    ],
+    "quizQuestion": "为什么把“你是客服”改成“你是销售”后，不能继续复用原来的 KV cache？",
+    "quizOptions": [
+      "前缀内容变了，旧 K/V 不再代表这次请求的位置与上下文",
+      "KV cache 只保存模型权重，改文字不会影响它",
+      "只要两个句子意思相近，所有 block 都能直接复用"
+    ],
+    "correctText": "对。缓存命中依赖具体前缀和位置条件，相似不等于相同。",
+    "wrongText": "再看一遍：KV cache 是上下文中间状态，不是按大意模糊匹配的答案库。",
+    "promptTitle": "检查一次 KV cache 命中",
+    "prompt": "记录前缀 token、K/V block、当前 query、命中/未命中、GPU/CPU/disk 层级与淘汰；分别说明缓存节省了什么和没有证明什么。",
+    "relatedSlugs": [
+      "attention",
+      "inference",
+      "transformer",
+      "context-window",
+      "pretraining",
+      "streaming-output"
+    ]
   }
 ]

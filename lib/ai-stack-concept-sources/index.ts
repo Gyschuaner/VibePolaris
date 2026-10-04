@@ -49,3 +49,4 @@ export { transformerSources } from "./transformer";
 export { attentionSources } from "./attention";
 export { inferenceSources } from "./inference";
 export { pretrainingSources } from "./pretraining";
+export { kvCacheSources } from "./kv-cache";

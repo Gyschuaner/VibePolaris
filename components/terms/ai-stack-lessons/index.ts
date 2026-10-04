@@ -41,3 +41,5 @@ export { AttentionLesson } from "./attention";
 export { AttentionHero } from "./attention-hero";
 export { InferenceHero, InferenceLesson } from "./inference-hero";
 export { PretrainingHero, PretrainingLesson } from "./pretraining-hero";
+export { KvCacheHero } from "./kv-cache-hero";
+export { KvCacheLesson } from "./kv-cache";
