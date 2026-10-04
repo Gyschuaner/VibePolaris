@@ -1,18 +1,27 @@
 [
   {
     "slug": "agent-harness",
-    "mechanism": "围绕模型组装上下文，路由工具调用，控制执行循环并记录轨迹与验收结果。",
-    "misconception": "Harness 不是模型本身，也不只指评测脚本；它不能保证模型判断总是正确。",
-    "demoSignature": "agent-harness-feedback-workspace: 7 frames plus idle; animated read request, six source records returned, three-group draft missing co-editing and source 06, computed 5/6 coverage failure, repair feedback to model, content and citation correction, 6/6 validation and stop. Same task without file content or tools requests data.",
+    "mechanism": "Harness 把模型提出的请求接到工具与验收环境：组装本轮输入，检查权限，执行工具，保存回执，并按反馈与停止条件推进任务。",
+    "misconception": "Harness 不是模型本身，也不只指评测脚本；它能组织运行和记录证据，却不能替模型保证判断正确。",
+    "demoSignature": "loop: 6 frames; actors=修复任务/模型/Harness/工具/工具回执/验收闸门; phases=只有模型建议→装入任务与工具→提出并校验请求→执行并带回回执→反馈驱动修复→通过并停止; action=推进运行一步; model-only branch=只有建议，harness branch=回执驱动修复与检查停止.",
     "sourceUrls": [
-      "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "https://www.anthropic.com/engineering/building-effective-agents",
       "https://learn.microsoft.com/en-us/agent-framework/concepts/harness",
       "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
       "https://modelcontextprotocol.io/docs/learn/architecture",
+      "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "https://agentskills.io/home",
+      "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "https://www.etymonline.com/word/harness",
+      "https://man7.org/linux/man-pages/man1/df.1.html",
+      "https://man7.org/linux/man-pages/man1/du.1.html",
+      "https://www.langchain.com/blog/agent-frameworks-runtimes-and-harnesses-oh-my",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
       "https://openai.github.io/openai-agents-python/running_agents/",
-      "https://www.etymonline.com/word/harness"
+      "https://huyenchip.com/2025/01/07/agents.html",
+      "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"
     ],
-    "rewriteRisk": "只给模型的轨道特指未提供反馈正文及读取工具，不能暗示模型无法总结已经提供的文本。教学数字为本地确定示例，不代表真实性能。",
+    "rewriteRisk": "正文和演示要区分模型提出的请求、Harness 的调度、工具真实回执与验收停止；只给模型的分支没有工具和反馈，不代表模型无法处理已经提供的文字。",
     "nearDuplicates": [
       "agent",
       "agent-loop",
