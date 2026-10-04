@@ -32653,6 +32653,599 @@
     "sourceHash": "sha256:e00fb1e758398630416850e6368613090f8a880a4a4831f00507e6e4f43359fc"
   },
   {
+    "slug": "amd-helios-rack-scale-ai-20260723",
+    "title": "AMD 发布 Helios 整机架 AI 系统：竞争从单张芯片走到交付生态",
+    "summary": "7 月 23 日，AMD 发布 Helios rack-scale AI 方案，由 72 张 MI455X GPU、18 颗 EPYC Venice CPU、网络和 ROCm 共同组成；AMD 称系统已进入生产并面向多家 AI 公司部署。官方“每美元推理 token 最多高 30%”仍是厂商比较，合作方的部署多处于计划、验证或后续交付阶段。",
+    "body": "7 月 23 日，AMD 在 Advancing AI 2026 发布 Helios rack-scale AI 解决方案，以及 MI400 系列 GPU、EPYC 服务器 CPU 和物理 AI 平台。Helios 的基本思路不是把一张 GPU 单独卖给云厂商，而是把 GPU、CPU、内存、网络和软件按一个机架共同设计。AMD 官方称这套系统已经进入生产，并计划由多家 AI 公司和云服务商以 gigawatt 级规模部署；“进入生产”和“已经交付了多少可用算力”是两个不同的问题。\n\n官方给出的 Helios 结构是 72 张 MI455X GPU、18 颗第六代 EPYC Venice CPU，再加上 Pensando 网络和 ROCm 软件。AMD 产品页还列出 800 Gbps 的 Vulcano AI NIC、HBM4 内存和基于 Meta OCP Open Rack for AI 的开放式设计。机架级的价值在于把 GPU 间的数据移动、内存共享和网络带宽一起调优；训练和推理都需要这些部件协同，单看芯片峰值参数很难判断整机实际表现。\n\nAMD 称 Helios 每美元推理 token 数最多比领先竞争方案高 30%。这是厂商自己的比较数字，依赖测试模型、批大小、功耗、软件版本和对手配置；它不能直接换算成每个客户的真实成本。更可靠的后续证据应该包括可复现实验、不同模型和上下文长度下的 token/s、功耗、网络占用与失败率，而不是只看发布会上的“最多 30%”。\n\n这次发布还把 Helios 放进了多条合作路线。AMD 说 Anthropic 将部署最多 2GW 的 MI455X，OpenAI 计划从 2026 年第四季度开始把 Helios 上线，Meta 在验证平台并准备规模部署；Cerebras 则计划把自己的低延迟系统与 Helios 的高吞吐架构结合。所有这些措辞都包含计划、验证或预期可用时间，不等于当天已经完成大规模交付，也不等于合作方已经公布了独立验收结果。\n\n为什么 rack-scale 对 AI 重要？长上下文和大模型推理需要在大量加速器之间搬运 token，中间的通信和内存访问可能比单个 GPU 的算力更快成为瓶颈。把 72 张 GPU 做成一个可编程的统一系统，可以减少应用层自己处理拓扑和调度的工作；但机架越大，供电、散热、故障域、升级和任务隔离也越复杂。它仍是一套分布式系统，需要操作系统、编译器、网络和运维工具共同完成。\n\n截至 7 月 23 日，Helios 的新闻意义是 AMD 把竞争从“单张芯片”推进到“整机架构和交付生态”。后续要看首批系统的可用时间、客户真实工作负载、ROCm 适配程度和功耗数据。只有当这些数据与 NVIDIA、Cerebras 或其他方案在同一任务上可比，30% 的效率主张才会从发布材料变成基础设施选择依据。",
+    "publishedAt": "2026-07-23",
+    "eventDate": "2026-07-23",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/amd-helios-rack-scale-ai-20260723.svg",
+      "alt": "AMD Helios 将 GPU、CPU、内存、网络和软件组织成整机架 AI 系统；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/amd-helios-rack-scale-ai-20260723.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "Helios 是一整套 rack-scale 方案",
+        "body": "AMD 把 GPU、CPU、内存、网络和 ROCm 放到同一机架里协同设计，发布日同时推出 MI400、EPYC 和物理 AI 相关产品。",
+        "kind": "narrative"
+      },
+      {
+        "id": "architecture",
+        "title": "72 张 GPU 与 18 颗 CPU 组成一个系统",
+        "body": "官方结构包括 72 张 MI455X、18 颗 EPYC Venice、Pensando 网络和 ROCm；产品页补充 HBM4、800 Gbps NIC 和 OCP 开放机架。",
+        "kind": "technical"
+      },
+      {
+        "id": "efficiency",
+        "title": "“每美元 30% 更多 token”是公司比较",
+        "body": "这一数字依赖模型、批大小、功耗、软件和对手配置，文章保留 AMD 归属，不把它当成独立实验结论。",
+        "kind": "boundary"
+      },
+      {
+        "id": "partners",
+        "title": "合作公告包含计划和验证阶段",
+        "body": "Anthropic、OpenAI、Meta、Cerebras 等合作路线分别处于部署计划、软件优化、平台验证或后续提供阶段，不能都写成已交付。",
+        "kind": "comparison"
+      },
+      {
+        "id": "system",
+        "title": "更大机架也带来新的故障域",
+        "body": "统一内存和网络能减少调度复杂度，但供电、散热、升级、故障隔离和软件适配会变成分布式系统的共同约束。",
+        "kind": "technical"
+      },
+      {
+        "id": "followup",
+        "title": "接下来要看可比的交付与功耗数据",
+        "body": "首批上线时间、真实 workload、ROCm 适配、token/s、功耗和失败率，才决定 Helios 是否改变基础设施采购。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "secure-memory",
+      "title": "为什么 AI 机架要把 GPU、网络和软件一起设计？",
+      "question": "从 token 在系统里的移动路径看 rack-scale，而不是只比较一张 GPU 的峰值。",
+      "steps": [
+        {
+          "label": "把任务分片",
+          "detail": "训练或推理任务被分到多张 GPU，模型状态和 token 需要在设备之间移动。",
+          "evidence": "AMD Helios architecture"
+        },
+        {
+          "label": "共享内存与网络",
+          "detail": "HBM4、800 Gbps NIC 和统一机架拓扑减少数据搬运与调度的额外成本。",
+          "evidence": "AMD product page"
+        },
+        {
+          "label": "由软件调度",
+          "detail": "ROCm、编译器和服务层决定模型是否真的能吃满硬件，而不是只看规格表。",
+          "evidence": "AMD full-stack announcement"
+        },
+        {
+          "label": "用真实 workload 验收",
+          "detail": "在相同模型、上下文、功耗和失败标准下比较 token/s 与成本，才能验证效率主张。",
+          "evidence": "independent benchmark pending"
+        }
+      ]
+    },
+    "source": {
+      "name": "AMD Investor Relations",
+      "url": "https://ir.amd.com/news-events/press-releases/detail/1294/aai-2026-amd-delivers-full-stack-compute-for-the-agentic-ai-era"
+    },
+    "relatedSlugs": [
+      "distributed-system",
+      "llm",
+      "token",
+      "data-pipeline",
+      "benchmark",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "runway-media-router-20260723",
+      "etched-300m-10b-valuation-20260723",
+      "open-weights-american-ai-leadership-20260724"
+    ],
+    "sources": [
+      {
+        "url": "https://ir.amd.com/news-events/press-releases/detail/1294/aai-2026-amd-delivers-full-stack-compute-for-the-agentic-ai-era",
+        "claim": "AMD 7 月 23 日在 Advancing AI 2026 发布 Helios rack-scale 解决方案和 MI400 系列，官方描述 Helios 由 72 张 MI455X GPU、18 颗第六代 EPYC Venice CPU、网络和 ROCm 组成，并称已进入生产。",
+        "excerpt": "AMD Helios rackscale solutions are built with 72 MI455X GPUs and 18 6th Gen EPYC Venice CPUs; systems are now in production."
+      },
+      {
+        "url": "https://www.amd.com/en/products/rackscale-solutions/helios.html",
+        "claim": "AMD 产品页补充 Helios 的开放式 OCP Open Rack、800 Gbps Vulcano AI NIC、HBM4 和统一连接设计。",
+        "excerpt": "AMD Helios is built on Meta’s OCP Open Rack for AI, with 800 Gbps networking and HBM4 memory."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/23/amd-takes-on-nvidia-with-its-helios-ai-rack-scale-system/",
+        "claim": "TechCrunch 对 Helios 和 MI455X 的发布做了独立报道，指出 AMD 正以 rack-scale 系统挑战 NVIDIA 的整机架构。",
+        "excerpt": "AMD takes on Nvidia with its Helios AI rack-scale system."
+      },
+      {
+        "url": "https://www.axios.com/2026/07/23/amd-cerebras-ai-chips",
+        "claim": "Axios 报道 AMD 与 Cerebras 计划把 Helios 的高吞吐和 Cerebras 的低延迟系统结合，预计晚些时候向客户提供。",
+        "excerpt": "AMD and Cerebras announced a partnership to split AI inference workloads across their systems."
+      }
+    ],
+    "canonicalUrl": "https://ir.amd.com/news-events/press-releases/detail/1294/aai-2026-amd-delivers-full-stack-compute-for-the-agentic-ai-era",
+    "sourceHash": "sha256:3427e1fa3070f40bd9b6b14a51b0995f8ed27b9b5e7019a23625937caa7daa51"
+  },
+  {
+    "slug": "anthropic-claude-voice-opus-sonnet-20260723",
+    "title": "Claude 语音模式升级：Opus、Sonnet 与工具调用进入同一条对话",
+    "summary": "7 月 23 日，Anthropic 宣布 Claude 语音模式支持 Opus、Sonnet 和 Haiku，可在对话中切换模型，并在获得权限后使用 Gmail、日历、文档和 Slack 等连接工具。功能仍是 beta，免费计划、语言切换和普通使用额度都有明确限制。",
+    "body": "7 月 23 日，Anthropic 给 Claude 的语音模式换了一套更完整的产品结构：语音对话现在可以使用 Opus、Sonnet 和 Haiku，用户可以在一段对话中切换模型；语音还可以调用已经连接的 Gmail、Google Calendar、Google Docs、Slack、Canva 等工具，并增加了英语、法语、德语、印地语、日语、韩语等更多语言。Anthropic 的官方文章把这次更新定位为“用说话处理复杂问题”，而不是单纯把文字回答读出来。\n\n模型切换解决的是深度和速度之间的选择。此前语音模式只使用 Haiku，优点是响应快；现在系统默认沿用用户最近一次文字聊天的模型，并使用所选模型的快速版本。用户可以先用轻量模型整理想法，再切到 Opus 或 Sonnet 处理更复杂的推理。模型变强并不代表语音会自动理解所有上下文，长对话的记忆、工具返回结果和用户纠正仍然会影响最终回答。\n\n从“聊天”到“做事”是这次更新的第二层。用户可以在语音里让 Claude 推迟日历会议、把讨论整理成 Canva 文档，或总结当天的邮件并起草回复。关键边界是，Claude 在使用连接工具前会请求权限；工具仍由账户连接、平台权限和具体服务的 API 决定。能说出“帮我改会议”不等于动作已经执行，用户需要看清确认提示、目标对象和执行结果。\n\n可用性仍然有条件。Anthropic 说更新以 beta 形式提供给所有聊天用户，覆盖移动、桌面和 Web，但手机体验最佳；免费计划只能使用 Haiku、一个连接工具和全部语种，付费计划可以访问扩展模型和全部连接工具。语音对话会消耗普通使用额度，用户在长时间讨论复杂问题时仍会遇到限额。帮助中心的“可用”描述和实际账户 rollout 之间可能存在时间差。\n\n多语种支持也不是自动翻译开关。官方列出多种语言，用户可以用语音说出要切换的语言，或在设置里选择；Claude 不会自动识别语种，上一次文字聊天的语言设置也不会自动带进语音模式。这种小细节决定了用户是否会把产品行为误解为模型失灵。\n\n这条新闻的变化在于，语音开始承担“先澄清、再调用工具”的工作流。后续要看的不是演示能否流畅说话，而是模型切换后是否保留对话上下文，工具授权是否让用户知道发生了什么，以及在日历、邮件和文档等真实服务中失败时能否安全回退。把语音、模型和工具放在同一条权限链上，才是这次更新真正的产品考验。",
+    "publishedAt": "2026-07-23",
+    "eventDate": "2026-07-23",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-voice-opus-sonnet-20260723.svg",
+      "alt": "Claude 语音模式从 Haiku 扩展到 Opus/Sonnet，并在授权后连接工具；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/anthropic-claude-voice-opus-sonnet-20260723.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "models",
+        "title": "语音模式不再只绑定 Haiku",
+        "body": "Opus、Sonnet 和 Haiku 都可以参加语音对话，用户能在对话中切换模型，默认使用最近一次文字聊天选择的模型的快速版本。",
+        "kind": "narrative"
+      },
+      {
+        "id": "tools",
+        "title": "说完以后可以请求工具动作",
+        "body": "语音可以触达 Gmail、日历、文档和 Slack 等已连接工具；官方示例包括改会议、起草邮件和整理文档，但动作前仍需要权限确认。",
+        "kind": "technical"
+      },
+      {
+        "id": "language",
+        "title": "多语种支持需要用户明确切换",
+        "body": "官方列出更多可用语种，但 Claude 不会自动检测语言，用户需要口述切换或在设置里选择。",
+        "kind": "boundary"
+      },
+      {
+        "id": "plans",
+        "title": "beta、计划和额度共同决定可用范围",
+        "body": "更新覆盖移动、桌面和 Web，免费计划限 Haiku 与一个连接工具，付费计划扩展模型和工具；语音消耗普通额度。",
+        "kind": "comparison"
+      },
+      {
+        "id": "context",
+        "title": "更强模型不等于自动保留所有上下文",
+        "body": "模型切换、长对话、工具返回和用户纠正都可能改变结果，真实使用要看上下文是否能稳定传递。",
+        "kind": "technical"
+      },
+      {
+        "id": "followup",
+        "title": "下一步看授权提示和失败回退",
+        "body": "当语音触发真实服务时，用户是否看见目标、权限和执行结果，决定它是方便的助手还是难以审计的自动化。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "语音代理怎样从一句话走到一个动作？",
+      "question": "把听懂、选模型、请求权限和执行结果分开，才能看清语音产品的边界。",
+      "steps": [
+        {
+          "label": "先听清任务",
+          "detail": "语音模式把口述目标和上下文整理成一个可处理的请求。",
+          "evidence": "Anthropic voice announcement"
+        },
+        {
+          "label": "选择模型",
+          "detail": "用户在 Haiku、Sonnet 和 Opus 之间切换，速度和推理深度随模型变化。",
+          "evidence": "model picker behavior"
+        },
+        {
+          "label": "请求工具权限",
+          "detail": "需要访问邮件、日历或文档时，Claude 先向用户请求连接工具权限。",
+          "evidence": "connected tools section"
+        },
+        {
+          "label": "核对执行结果",
+          "detail": "确认目标对象、动作状态和失败原因，避免把一段语音回复误当成已经完成的外部操作。",
+          "evidence": "product boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://claude.com/blog/think-through-hard-problems-in-voice-mode"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "authorization",
+      "context",
+      "llm",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "openai-chatgpt-health-us-rollout-20260723",
+      "runway-media-router-20260723"
+    ],
+    "sources": [
+      {
+        "url": "https://claude.com/blog/think-through-hard-problems-in-voice-mode",
+        "claim": "Anthropic 7 月 23 日宣布 Claude 语音模式可以运行 Opus、Sonnet 和 Haiku，允许在对话中切换模型，使用已经连接的工具，并增加更多语种。",
+        "excerpt": "Starting today, voice mode runs on Claude Opus, Claude Sonnet, and Claude Haiku, reaches connected tools, and speaks many more languages."
+      },
+      {
+        "url": "https://support.claude.com/en/articles/11101966-use-voice-mode",
+        "claim": "Claude 帮助中心说明语音模式为 beta，面向所有计划的移动端、桌面端和 Web；免费计划使用 Haiku、一个连接工具和全部语言，付费计划可访问更多模型与工具。",
+        "excerpt": "Voice mode is a beta feature available to all plans on Claude Mobile, Claude Desktop, and the web."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/23/anthropic-updates-claude-voice-mode-with-more-capable-models/",
+        "claim": "TechCrunch 对语音模式升级做了独立报道，补充其从 Haiku 扩展到更强模型的产品背景。",
+        "excerpt": "Anthropic updates Claude voice mode with more capable models."
+      }
+    ],
+    "canonicalUrl": "https://claude.com/blog/think-through-hard-problems-in-voice-mode",
+    "sourceHash": "sha256:935cd8d74f6b2da9be1663136d401800e9c1318a228e366a04c332a2665c63e8"
+  },
+  {
+    "slug": "etched-300m-10b-valuation-20260723",
+    "title": "Etched 融资 3 亿美元、估值 103 亿美元：资本押注推理硬件规模化",
+    "summary": "7 月 23 日，AI 芯片创业公司 Etched 宣布完成 3 亿美元 Series C，估值 103 亿美元，资金用于扩大推理硬件生产与客户部署。公司把重点放在低电压推理和集群级内存；工厂、订单与客户测试仍需通过实际交付、模型覆盖和每个 token 的成本验证。",
+    "body": "7 月 23 日，AI 芯片创业公司 Etched 宣布完成 3 亿美元 Series C，投后估值 103 亿美元。公告称本轮由 Sequoia 领投，a16z、Jane Street、Diffusion 和 SK Hynix 等参与，资金将用于扩大生产和客户部署。TechCrunch 通过公司联合创始人兼 COO Robert Wachen 交叉了融资和估值信息。这是融资新闻，103 亿美元是本轮交易形成的估值口径，不是已经实现的收入或硬件销量。\n\nEtched 的产品方向很专门：它把重点放在推理，也就是模型训练完成后为用户生成 token 的阶段。公司不是先做一颗适用于所有任务的通用 GPU，而是试图把低电压推理和集群级内存做成一套硬件系统。公司称其系统可以运行 DeepSeek、Qwen 等 MoE 模型，也能运行 Mamba 这类非 Transformer 架构；这些是公司对当前支持范围的介绍，不是对每个模型都达到同样性能的独立测试。\n\n公司公告还提到，Etched 在台湾有工厂，在圣何塞附近新开了约 8 万平方英尺设施，并计划在一个 10MW 场地建设 NPI 实验室、内部 SMT 线和原型能力。新闻里这些数字描述的是生产准备和基础设施投入，不等于大规模产品已经交付。TechCrunch 报道称公司此前宣布芯片成功制造、客户正在测试整机，并已预订约 10 亿美元订单；预订、测试和已确认收入之间仍有合同、验收和交付的距离。\n\n这轮估值为什么值得关注？投资者押注的是推理需求会随着 agent、搜索和多模态应用增长，成为比训练更持续的基础设施市场。专用硬件如果能降低每个 token 的功耗和延迟，就可能让实时服务在成本上更可行；但专用架构也承担模型变化的风险，新的模型结构或软件生态可能削弱它的优势。Etched 强调“架构无关”，但最终需要看编译器、模型适配和客户工作负载，而不是一句产品定位。\n\n融资额本身不能替代技术验证。评估这家公司至少要同时看芯片制造良率、系统出货、客户实际 token/s、功耗、延迟、模型覆盖和软件维护；还要把 10MW 原型场地的电力与冷却成本放进总拥有成本。它的估值从此前约 50 亿美元上升到 103 亿美元，说明资本市场愿意提前为推理基础设施押注，但不说明公司已经赢得 NVIDIA、AMD 或云厂商的规模竞争。\n\n截至 7 月 23 日，Etched 的新闻主线是“推理硬件从隐身走向规模化融资和生产准备”。后续要追踪的是第一批完整系统何时交付、客户是否把测试负载变成生产流量，以及公司所说的每美元/每瓦 token 优势能否在公开可比的模型和服务上复现。把融资、订单、测试、交付和收入分开，才能读懂这家公司的真实进度。",
+    "publishedAt": "2026-07-23",
+    "eventDate": "2026-07-23",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/etched-300m-10b-valuation-20260723.svg",
+      "alt": "Etched 以融资、专用推理硬件、生产设施和 token 成本验证规模化路线；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/etched-300m-10b-valuation-20260723.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "funding",
+        "title": "3 亿美元融资与 103 亿美元估值是交易口径",
+        "body": "公司公告和 TechCrunch 交叉确认本轮 Series C；估值反映投资交易，不等于收入、出货或客户已经支付的金额。",
+        "kind": "narrative"
+      },
+      {
+        "id": "inference",
+        "title": "Etched 把重点放在推理阶段",
+        "body": "推理是模型生成回答的阶段，公司试图用低电压计算和集群级内存降低每个 token 的成本与延迟。",
+        "kind": "technical"
+      },
+      {
+        "id": "production",
+        "title": "生产设施和订单仍要经过交付验证",
+        "body": "台湾工厂、8 万平方英尺设施、10MW NPI 场地和约 10 亿美元预订描述生产准备与商业兴趣，不等同于可验收的收入。",
+        "kind": "boundary"
+      },
+      {
+        "id": "architecture",
+        "title": "专用硬件也承担模型变化风险",
+        "body": "公司称支持 MoE 与 Mamba 等不同架构，但实际覆盖范围取决于编译器、软件栈和客户 workload。",
+        "kind": "comparison"
+      },
+      {
+        "id": "metrics",
+        "title": "估值之外要看每个 token 的真实成本",
+        "body": "芯片良率、出货、token/s、功耗、延迟、模型覆盖和维护成本，才是推理硬件能否规模化的技术证据。",
+        "kind": "technical"
+      },
+      {
+        "id": "followup",
+        "title": "下一步看完整系统交付",
+        "body": "第一批客户何时从测试转入生产，以及公司效率主张能否在公开可比的模型上复现，是这轮融资后的关键验证。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样把 AI 芯片融资新闻读成一张验证清单？",
+      "question": "估值说明资本预期，生产、模型和 token 成本才说明产品是否跑起来。",
+      "steps": [
+        {
+          "label": "先拆交易",
+          "detail": "确认融资金额、轮次、投后估值和投资人，避免把估值当成收入。",
+          "evidence": "Etched funding release"
+        },
+        {
+          "label": "再看产品路径",
+          "detail": "理解专用推理芯片解决的是延迟、功耗还是内存，明确它的模型覆盖假设。",
+          "evidence": "Etched architecture description"
+        },
+        {
+          "label": "核对生产状态",
+          "detail": "把芯片制造、客户测试、预订、系统交付和生产流量分成不同状态。",
+          "evidence": "company and TechCrunch reporting"
+        },
+        {
+          "label": "最后比可复现指标",
+          "detail": "在同一模型、上下文和功耗边界下比较 token/s、成本和维护，才能验证技术路线。",
+          "evidence": "independent benchmarks pending"
+        }
+      ]
+    },
+    "source": {
+      "name": "Etched（GlobeNewswire）",
+      "url": "https://www.globenewswire.com/news-release/2026/07/23/3332366/0/en/etched-raises-300m-at-a-10-3-billion-valuation-to-scale-production-of-frontier-scale-inference-hardware.html"
+    },
+    "relatedSlugs": [
+      "llm",
+      "token",
+      "benchmark",
+      "distributed-system",
+      "data-pipeline",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "amd-helios-rack-scale-ai-20260723",
+      "runway-media-router-20260723"
+    ],
+    "sources": [
+      {
+        "url": "https://www.globenewswire.com/news-release/2026/07/23/3332366/0/en/etched-raises-300m-at-a-10-3-billion-valuation-to-scale-production-of-frontier-scale-inference-hardware.html",
+        "claim": "Etched 7 月 23 日宣布 3 亿美元 Series C，估值 103 亿美元，称资金用于扩大推理硬件生产与客户部署；公告来自公司并通过 GlobeNewswire 发布。",
+        "excerpt": "Etched announced $300M in new financing at a $10.3B valuation to scale production and customer deployments."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/23/ai-chip-startup-etched-defies-skeptics-hits-10-3b-valuation-from-big-name-investors/",
+        "claim": "TechCrunch 独立报道 3 亿美元融资和 103 亿美元估值，并交叉了投资方、客户测试和此前 50 亿美元估值。",
+        "excerpt": "Etched closed a $300 million Series C at a $10.3 billion valuation, according to co-founder and COO Robert Wachen."
+      },
+      {
+        "url": "https://etched.com/",
+        "claim": "Etched 官方站点把公司定位为面向 frontier inference 的专用硬件和集群，并展示其将低电压推理与集群级内存结合的路线。",
+        "excerpt": "Etched builds frontier inference clusters designed to make AI inference faster, cheaper and more abundant."
+      }
+    ],
+    "canonicalUrl": "https://www.globenewswire.com/news-release/2026/07/23/3332366/0/en/etched-raises-300m-at-a-10-3-billion-valuation-to-scale-production-of-frontier-scale-inference-hardware.html",
+    "sourceHash": "sha256:87666d7ac5718b2d512777b81c9377b383e5cf21e1f2838284e7d0dd27472f74"
+  },
+  {
+    "slug": "openai-chatgpt-health-us-rollout-20260723",
+    "title": "OpenAI 将 Health 推向美国成年用户：健康数据接入与权限边界一起上线",
+    "summary": "7 月 23 日，OpenAI 宣布 ChatGPT Health 在美国向 18 岁以上的登录用户逐步开放，支持连接 Apple Health 和受支持的医疗记录。官方同时强调，连接数据不用于训练基础模型或投放广告，Health 用于理解和准备，不替代诊断与治疗。",
+    "body": "7 月 23 日，OpenAI 宣布把 ChatGPT Health 逐步推向美国的成年用户。符合条件的登录用户可以在 Web 和 iOS 上使用，覆盖 Free、Go、Plus 和 Pro 计划；Health 支持连接 Apple Health、美国部分医院的医疗记录、One Medical 和 Function Health。这里的“开放”是逐步 rollout，不代表每个账户当天都已经看到入口，也不代表所有医疗记录系统都能接入。\n\n这次变化的重点是健康信息开始进入普通对话的上下文。用户授权后，ChatGPT 可以参考药物、化验结果、就诊记录、睡眠和活动等连接数据，比较新旧结果、总结变化，或在规划饮食和运动时考虑已经提供的限制。Health 仍然是左侧栏里的管理入口，用户可以查看同步来源、趋势和历史对话；在普通聊天里是否使用这些数据，也会先经过权限提示。\n\n数据权限是产品的一部分，而不是发布后的附注。OpenAI 表示，连接的医疗记录、Apple Health 信息及使用这些信息的对话，不用于训练基础模型或投放广告；默认情况下，系统在使用前询问用户，用户也可以改成始终允许。断开账户后，同步到 OpenAI 系统的数据会在 30 天内删除，但已经写进聊天历史的内容仍要按聊天记录的删除规则处理。健康对话可以产生记忆，用户可以关闭记忆或使用临时聊天；这些设置解决的是数据控制，不等于医学判断变得可靠。\n\nOpenAI 还把模型能力和医生参与写进了发布说明。公司称 GPT-5.5 Instant 已改善识别紧急照护、询问背景和解释不确定性的表现，付费用户可使用更强的 GPT-5.6 Sol；HealthBench Professional 用真实感较强的健康任务和评分标准评估准确性、安全性、沟通、上下文理解和升级建议。OpenAI 说每个 GPT-5.6 型号都超过 GPT-5.5，并由数百位医生参与情景设计和测试。这些是公司评测与测试结果，不能替代独立医疗验证，也不能把“超过基线”写成对每个人的诊断保证。\n\n产品边界写得同样明确：Health 用来帮助理解信息、准备就诊和追踪变化，不用于诊断或治疗，也不能替代医生。连接的数据只读，不能写回 Apple Health 或医疗记录；它目前不支持 Codex，语音模式也不能使用连接的应用。美国以外的用户、未满 18 岁的用户和没有被逐步开放的账户，不能从这次公告推导出可用资格。\n\n这条新闻的后续观察点有三个。第一，更多医疗记录系统如何接入、权限提示是否能让用户理解“这次回答用了什么”；第二，健康对话在真实场景里的错误升级和拒答是否被持续记录；第三，用户能否在删除、断开和记忆设置之间保持可见的控制。把健康数据接入聊天，是一次产品边界的变化；它的价值取决于权限、证据和医疗专业人员之间的分工是否真的被保留下来。",
+    "publishedAt": "2026-07-23",
+    "eventDate": "2026-07-23",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-chatgpt-health-us-rollout-20260723.svg",
+      "alt": "ChatGPT Health 把医疗记录、用户授权、模型上下文和专业复核连成一条可追溯链；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/openai-chatgpt-health-us-rollout-20260723.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "rollout",
+        "title": "7 月 23 日是美国成年用户的逐步开放",
+        "body": "官方说明覆盖美国、18 岁以上、登录用户、Web/iOS 和 Free/Go/Plus/Pro 计划，入口仍按账户逐步推出；医疗记录接入也有地区和合作方限制。",
+        "kind": "narrative"
+      },
+      {
+        "id": "context",
+        "title": "Health 把连接的信息带进普通对话",
+        "body": "用户授权后，模型可以参考药物、化验、就诊、睡眠和活动等数据来解释变化或准备问题。Health 仍保留为管理和查看同步内容的主空间。",
+        "kind": "technical"
+      },
+      {
+        "id": "privacy",
+        "title": "数据不训练基础模型，也不代表没有数据控制问题",
+        "body": "OpenAI 声称连接数据与相关对话不用于训练或投放广告，支持权限提示、断开和删除；聊天历史、记忆和临时聊天仍有各自的生命周期。",
+        "kind": "boundary"
+      },
+      {
+        "id": "evaluation",
+        "title": "HealthBench 是公司评测，不是医疗认证",
+        "body": "OpenAI 说 GPT-5.6 在 HealthBench Professional 上超过 GPT-5.5，并由医生参与测试。这说明评测方法和公司目标，不是对个体诊断准确率的保证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "care",
+        "title": "产品明确不替代诊断和治疗",
+        "body": "Health 用来理解资料、准备就诊和追踪变化，不能写回医疗记录，也不能替代专业医疗服务；紧急症状仍应寻求及时照护。",
+        "kind": "narrative"
+      },
+      {
+        "id": "followup",
+        "title": "下一步看权限可见性和真实错误",
+        "body": "用户能否清楚知道哪些数据被使用、如何撤回，系统遇到不完整记录时是否会升级给专业人员，是比“模型更聪明”更关键的验证点。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一次健康回答怎样经过权限和证据？",
+      "question": "把“连接数据—用户授权—模型解释—专业复核”分开，才不会把健康功能当成自动诊疗。",
+      "steps": [
+        {
+          "label": "连接来源",
+          "detail": "用户从 Apple Health、医疗记录或支持的服务选择要同步的资料。",
+          "evidence": "OpenAI Health help center"
+        },
+        {
+          "label": "确认授权",
+          "detail": "系统在需要使用连接信息前提示用户，用户可以单次允许、持续允许或断开。",
+          "evidence": "OpenAI Health launch"
+        },
+        {
+          "label": "放入上下文",
+          "detail": "模型把相关药物、化验或活动放进对话上下文，并提示信息可能不完整或过时。",
+          "evidence": "Health conversation examples"
+        },
+        {
+          "label": "保留专业判断",
+          "detail": "回答用于准备问题和理解变化，诊断、治疗和紧急决策仍由专业人员完成。",
+          "evidence": "OpenAI medical boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/health-in-chatgpt/"
+    },
+    "relatedSlugs": [
+      "authorization",
+      "context",
+      "llm",
+      "agent",
+      "tools",
+      "benchmark"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-claude-voice-opus-sonnet-20260723",
+      "runway-media-router-20260723",
+      "amd-helios-rack-scale-ai-20260723",
+      "etched-300m-10b-valuation-20260723"
+    ],
+    "sources": [
+      {
+        "url": "https://openai.com/index/health-in-chatgpt/",
+        "claim": "OpenAI 于 7 月 23 日宣布 Health 在美国向登录用户逐步开放，面向 18 岁以上的 Free、Go、Plus、Pro 用户，支持 Web 和 iOS；用户可选择连接 Apple Health 与受支持的医疗记录。",
+        "excerpt": "Health is beginning to roll out to logged-in ChatGPT users 18 and older in the U.S. on web and iOS across Free, Go, Plus, and Pro plans."
+      },
+      {
+        "url": "https://help.openai.com/en/articles/20001036-what-is-chatgpt-health",
+        "claim": "OpenAI 帮助中心记录 Health 的可用条件、支持的连接源和逐步推出状态，并明确它支持理解信息而非替代医疗照护。",
+        "excerpt": "Health is available to eligible logged-in ChatGPT users in the U.S. aged 18 or older; it is designed to support, not replace, medical care."
+      },
+      {
+        "url": "https://openai.com/index/introducing-chatgpt-health/",
+        "claim": "OpenAI 1 月的 Health 介绍页说明了此前的有限测试、专门空间和隐私设计，7 月 23 日更新把产品状态改为面向美国成年用户开放。",
+        "excerpt": "Update on July 23, 2026: Health in ChatGPT is launching to U.S. users 18 and older on web and iOS."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/23/openai-makes-chatgpt-health-available-to-all-u-s-users/",
+        "claim": "TechCrunch 对 7 月 23 日 rollout 做了独立报道，补充 HealthBench 和 OpenAI 产品定位，但模型评测仍属于公司声明。",
+        "excerpt": "OpenAI makes ChatGPT Health available to all US users."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/health-in-chatgpt/",
+    "sourceHash": "sha256:7f4e19dd7b7474bc9c674c997195c145fe1ea9e68c60730f08e2446364bde8ac"
+  },
+  {
+    "slug": "runway-media-router-20260723",
+    "title": "Runway 发布 Media Router：让视频、图像和音频模型按策略自动选择",
+    "summary": "7 月 23 日，Runway 将 Media Router 加入 Runway Dev，按请求模态和开发者设定的成本、质量、延迟偏好选择生成模型。API 支持 allow/deny 列表、按模态预算上限和 dryRun 预览；它解决的是模型选择与配置问题，不是跨模型质量的独立保证。",
+    "body": "7 月 23 日，Runway 发布 Media Router，把“该选哪一个生成模型”从开发者手工配置变成一个可保存的路由策略。它内置于 Runway Dev，可以根据请求是视频、图像还是音频，先筛掉不适用的模型，再按照用户设置的成本、质量或延迟偏好选择一个模型。Runway 把它称为生成式媒体领域的模型路由器，新闻重点是调用层的变化，而不是又训练了一个新模型。\n\n过去的做法是，应用在代码里写死模型名称：想要更高质量就换一个模型，想省钱或降低延迟再换回来。模型价格、能力和版本一变，开发者就需要更新规则。Media Router 把这段选择逻辑保存成配置，让应用调用“路由器”而不是直接绑定某个模型。对于同时处理视频、图像和音频的产品，这能减少入口分叉；但它不会替开发者定义什么叫“更好”，偏好仍需要通过业务指标来设定。\n\nRunway 的 API 文档把可控项写得更具体。开发者可以配置模型 allow/deny 列表、视频/图像/音频三个模态的 credit ceiling，并使用 dryRun 预览一次请求会选择哪个模型而不真正生成内容。这样做的意义是把成本上限、可用模型和预期路径写进系统配置，便于上线前检查；dryRun 只是路由预览，不是生成质量的保证，也不会替开发者验证版权、人物肖像或内容安全。\n\n路由器的“自动”需要谨慎理解。它可以按能力标签和策略选择模型，但同一个提示在不同模型、不同版本和不同随机种子下仍可能产生不同结果。视频质量、音频同步、风格一致性和失败重试需要各自的评测；如果应用只优化单位 credits，可能牺牲画面质量，如果只追求质量，延迟和预算又会失控。Runway 的发布稿是产品设计说明，不是跨模型的独立性能榜单。\n\n这条新闻也说明生成式媒体的工程瓶颈正在从“有没有模型”转向“怎么管理一组模型”。路由配置、预算上限、版本更新、回退策略和生成历史会成为数据管线的一部分。应用要记录每次请求的输入模态、选中的模型、花费、延迟和用户评价，才能知道自动路由是否真的比固定模型更好。\n\n截至发布日，Media Router 更像一层开发者基础设施，而不是面向所有消费者的统一入口。后续要看 Runway 是否公开路由决策的可解释字段、模型切换时的质量稳定性，以及其他媒体模型能否通过开放接口接入。路由器减少了手工维护，但它把选择责任从代码里的 if/else 转移到了配置、评测和审计上。",
+    "publishedAt": "2026-07-23",
+    "eventDate": "2026-07-23",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/runway-media-router-20260723.svg",
+      "alt": "Runway Media Router 按模态、成本、质量和延迟策略选择媒体模型；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/runway-media-router-20260723.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "Runway 发布的是选择层",
+        "body": "Media Router 负责在视频、图像和音频请求之间选择合适模型，不是一个新的基础模型。应用可以调用路由配置而不是写死单一模型名。",
+        "kind": "narrative"
+      },
+      {
+        "id": "policy",
+        "title": "成本、质量和延迟成为可配置偏好",
+        "body": "开发者为每个路由设置优化方向，再由系统在符合模态和能力条件的模型中做选择；“最好”取决于业务目标。",
+        "kind": "comparison"
+      },
+      {
+        "id": "controls",
+        "title": "allow/deny、credit ceiling 和 dryRun 是实际控制点",
+        "body": "允许/拒绝列表控制候选模型，credit ceiling 限制预算，dryRun 预览选择结果；这些控制不等于质量和内容安全验证。",
+        "kind": "technical"
+      },
+      {
+        "id": "metrics",
+        "title": "自动路由仍然需要自己的评测",
+        "body": "生成质量、延迟、失败率、版本变化和用户反馈要按模态分别记录，不能用一个成本数字判断所有输出。",
+        "kind": "boundary"
+      },
+      {
+        "id": "pipeline",
+        "title": "模型选择被放进生成数据管线",
+        "body": "请求、选中模型、费用、延迟和结果评价需要形成可追踪记录，应用才知道路由是否带来实际收益。",
+        "kind": "technical"
+      },
+      {
+        "id": "followup",
+        "title": "下一步看决策透明度和跨模型稳定性",
+        "body": "路由选择是否可解释、模型切换是否保持风格、外部模型如何接入，是这层基础设施能否长期使用的关键。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个媒体请求怎样被路由到模型？",
+      "question": "把模态筛选、策略选择、预算控制和结果记录分开，才能判断自动路由是否可靠。",
+      "steps": [
+        {
+          "label": "识别模态",
+          "detail": "先判断请求需要视频、图像还是音频，并排除不支持该模态的候选模型。",
+          "evidence": "Runway Media Router announcement"
+        },
+        {
+          "label": "应用偏好",
+          "detail": "按成本、质量或延迟等目标，以及 allow/deny 列表筛选可用模型。",
+          "evidence": "Runway API changelog"
+        },
+        {
+          "label": "预览预算",
+          "detail": "用 dryRun 查看路由结果，用 credit ceiling 限制各模态的花费。",
+          "evidence": "Runway Dev controls"
+        },
+        {
+          "label": "记录结果",
+          "detail": "把模型版本、延迟、费用和用户评价写回数据管线，持续比较选择效果。",
+          "evidence": "operational follow-up"
+        }
+      ]
+    },
+    "source": {
+      "name": "Runway",
+      "url": "https://runway.com/news/company-news/introducing-runway-media-router"
+    },
+    "relatedSlugs": [
+      "llm",
+      "tools",
+      "data-pipeline",
+      "benchmark",
+      "event",
+      "agent"
+    ],
+    "relatedArticleSlugs": [
+      "anthropic-claude-voice-opus-sonnet-20260723",
+      "amd-helios-rack-scale-ai-20260723"
+    ],
+    "sources": [
+      {
+        "url": "https://runway.com/news/company-news/introducing-runway-media-router",
+        "claim": "Runway 7 月 23 日发布 Media Router，将模型路由加入 Runway Dev，按模态、模型能力和用户设定的成本、质量、延迟偏好自动选择视频、图像或音频模型。",
+        "excerpt": "Media Router automatically selects the best video, image or audio model for every request based on capabilities and cost, quality and latency preferences."
+      },
+      {
+        "url": "https://docs.dev.runwayml.com/api-details/api_changelog/",
+        "claim": "Runway Dev API 变更记录说明 7 月 23 日 Model Router 可用，支持配置允许/拒绝列表、按模态的 credit ceiling 和 dryRun 预览。",
+        "excerpt": "July 23rd, 2026 — Model Router is now available on Runway Dev; configure allow/deny lists, credit caps and dryRun."
+      },
+      {
+        "url": "https://techcrunch.com/2026/07/23/runway-bets-on-ai-model-routing-as-generative-media-gets-crowded/",
+        "claim": "TechCrunch 对 Runway 发布路由器做了独立报道，把它放在生成式媒体模型数量快速增加的竞争背景下。",
+        "excerpt": "Runway launches AI model router as generative media gets crowded."
+      }
+    ],
+    "canonicalUrl": "https://runway.com/news/company-news/introducing-runway-media-router",
+    "sourceHash": "sha256:9b7f3c4bd9a70361440525dade9760e34a598b8bec1a38011c178861d8481d38"
+  },
+  {
     "slug": "openai-atlas-sunset-20260809",
     "title": "OpenAI 让 Atlas 在 8 月 9 日退场：浏览代理并入 ChatGPT",
     "summary": "OpenAI 帮助中心把 2026 年 8 月 9 日列为 Atlas 停止运行日期，并建议用户把书签、标签页和浏览工作迁到 ChatGPT、Codex 或 Chrome 扩展；聊天记录仍与浏览器数据分开。",
