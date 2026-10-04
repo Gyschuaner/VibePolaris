@@ -35275,6 +35275,248 @@
     "sourceHash": "sha256:c988a758000a0142d4bc0345526c46a57b1a2b1adf0becc45c564d065aa9e5eb"
   },
   {
+    "slug": "huawei-atlas-950-superpod-waic-20260717",
+    "title": "华为在 WAIC 首展 Atlas 950 SuperPoD：1024 卡真机亮相，性能数字仍需实测",
+    "summary": "7 月 17 日，华为在 WAIC 首次展示 Atlas 950 SuperPoD 真机，现场为 1024 卡集群，官方给出 FP8/FP4 峰值、256TB 统一内存和 3 微秒级互联时延。文章把现场展示、产品最大路线、厂商规格和真实交付状态分开，避免把路线图写成已部署规模。",
+    "body": "7 月 17 日，华为在上海世界人工智能大会（WAIC）首次公开展示 Atlas 950 SuperPoD 的实体系统。华为官方称，现场展示的是 1024 张昇腾加速卡组成的集群，给出的系统指标包括 1 EFLOPS FP8、2 EFLOPS FP4、256TB 全局统一内存地址空间和 3 微秒级互联往返时延。这里的新闻事实是“真机首次亮相”和厂商公布的规格，不是已经在客户数据中心大规模交付。\n\nSuperPoD 可以先理解成把很多加速卡、内存、网络和软件调度放进一个更紧密的计算单元。普通服务器集群要跨节点传输数据，模型训练或推理时会频繁等待通信；超节点试图把这些资源组织得更像一台大机器，让模型的参数和中间结果更快地在卡之间流动。华为把统一内存编址、超大带宽和低时延作为核心卖点，目标是服务万亿参数模型训练和高并发推理。\n\n1 EFLOPS FP8 和 2 EFLOPS FP4 是理论峰值表达，不能直接当作某个模型的实际吞吐。FP8、FP4 是不同精度的数据格式，精度越低，通常越有利于把更多计算塞进同样的硬件，但可能需要量化校准、混合精度和模型适配。真实性能还会受到模型结构、通信、内存访问、编译器、软件栈和任务批量的影响。华为新闻稿没有同时给出一个公开模型在完整训练或推理任务中的独立复现结果，数字应保留为厂商规格。\n\n现场 1024 卡也需要和最大设计规模分开。华为此前的材料把 Atlas 950 的产品路线描述为更大规模的 NPU 互联，IT之家在 6 月预告时提到最大 8192 卡；7 月 WAIC 现场实际展示的是 1024 卡配置。把“可扩展到 8192 卡”写成“已经部署 8192 卡”会把路线图和交付状态混在一起。\n\n华为还展示了 Atlas 850E 风冷超节点，并强调不需要改造现有风冷机房就能上架。这是面向部署条件的产品主张，仍要看客户现场的电力、散热、网络和软件兼容。真正决定 AI 基础设施能不能替代现有 GPU 集群的，不只是一张规格表，还包括编译器、框架适配、模型迁移、运维工具、供应能力和已交付案例。\n\n这条新闻的意义在于，中国 AI 基础设施的竞争开始从单颗加速卡走向整套系统。Kimi K3 等大模型需要更大的显存和更低的通信开销，厂商于是把互联、内存和调度做成产品本身。但 Atlas 950 在 WAIC 展示的是一个产品和路线信号，性能、交付规模、客户效果和生态成熟度仍需合同、部署记录及第三方测试继续验证。",
+    "publishedAt": "2026-07-17",
+    "eventDate": "2026-07-17",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/huawei-atlas-950-superpod-waic-20260717.svg",
+      "alt": "华为 Atlas 950 SuperPoD 现场展示、1024 卡集群、统一内存和 FP8/FP4 规格的关系图；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/huawei-atlas-950-superpod-waic-20260717.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "display",
+        "title": "WAIC 首次展示的是 1024 卡真机",
+        "body": "华为官方确认 7 月 17 日首次公开展示 Atlas 950 SuperPoD；现场配置是 1024 卡，和未来最大设计规模不是一回事。",
+        "kind": "narrative"
+      },
+      {
+        "id": "architecture",
+        "title": "超节点把卡、内存和网络组织成一台大机器",
+        "body": "统一内存编址、带宽和低时延要减少跨节点通信等待，服务大模型训练与高并发推理。",
+        "kind": "technical"
+      },
+      {
+        "id": "peak",
+        "title": "FP8/FP4 峰值不是实际模型吞吐",
+        "body": "精度、编译器、通信、内存访问和模型结构都会影响真实结果；官方规格不能替代独立负载测试。",
+        "kind": "boundary"
+      },
+      {
+        "id": "scale",
+        "title": "1024 卡展示和 8192 卡路线要分开",
+        "body": "展前材料提到更大互联规模，7 月现场展示为 1024 卡；路线图、样机和客户交付不能混写。",
+        "kind": "comparison"
+      },
+      {
+        "id": "deployment",
+        "title": "风冷上架仍要通过真实机房条件验证",
+        "body": "Atlas 850E 的风冷与软件兼容主张还要结合电力、散热、网络、框架适配和运维记录看。",
+        "kind": "technical"
+      },
+      {
+        "id": "followup",
+        "title": "后续看客户合同、交付规模和第三方测试",
+        "body": "整机是否能替代既有 GPU 集群，最终取决于供应、生态和真实工作负载，而不是单张规格表。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "为什么 AI 基础设施开始卖“超节点”？",
+      "question": "从单颗加速卡到整套计算系统，读懂互联、内存、精度与真实吞吐之间的差别。",
+      "steps": [
+        {
+          "label": "先确认展示状态",
+          "detail": "区分产品发布、现场样机、最大配置和客户交付，先回答“看到的是什么”。",
+          "evidence": "Huawei WAIC announcement"
+        },
+        {
+          "label": "把规格翻译成机制",
+          "detail": "把卡数、内存、互联带宽和 RTT 对应到训练/推理中的数据搬运与等待。",
+          "evidence": "Atlas 950 product notes"
+        },
+        {
+          "label": "分清峰值与实测",
+          "detail": "FP8/FP4 是计算格式和理论峰值，真实吞吐还要看模型、软件和批量条件。",
+          "evidence": "vendor specification boundary"
+        },
+        {
+          "label": "追踪落地证据",
+          "detail": "继续查客户部署、合同、兼容性和第三方负载测试，才能判断系统竞争力。",
+          "evidence": "follow-up deployment evidence"
+        }
+      ]
+    },
+    "source": {
+      "name": "华为",
+      "url": "https://www.huawei.com/cn/news/2026/7/atlas-950-superpod"
+    },
+    "relatedSlugs": [
+      "distributed-system",
+      "data-pipeline",
+      "context",
+      "token",
+      "event",
+      "citation"
+    ],
+    "relatedArticleSlugs": [
+      "microsoft-amd-helios-azure-20260720",
+      "amd-helios-rack-scale-ai-20260723"
+    ],
+    "sources": [
+      {
+        "url": "https://www.huawei.com/cn/news/2026/7/atlas-950-superpod",
+        "claim": "华为 7 月 17 日官方新闻稿称，Atlas 950 SuperPoD 在 WAIC 首次公开展示，现场为 1024 卡集群，厂商给出 1 EFLOPS FP8、2 EFLOPS FP4、256TB 全局统一内存和 3μs RTT 等规格。",
+        "excerpt": "昇腾950超节点真机首次公开亮相 ... 1024卡规模 ... 1 EFLOPS FP8、2 EFLOPS FP4 ... 256TB全局统一内存编址空间 ... 3μs超低RTT时延。"
+      },
+      {
+        "url": "https://www.huawei.com/en/news/2026/3/mwc-superpod-ai",
+        "claim": "华为 3 月全球发布材料介绍 Atlas 950 SuperPoD 的集群架构与 UnifiedBus，并称系统可以扩展到大规模 NPU；这是产品路线背景，不等同于 7 月现场已经完成商业交付。",
+        "excerpt": "The Atlas 950 SuperPoD ... enables thousands of compute nodes to operate as a single computer."
+      },
+      {
+        "url": "https://en.sedaily.com/international/2026/07/17/huawei-unveils-atlas-950-superpod-linking-thousands-of-ai",
+        "claim": "Seoul Economic Daily 7 月 17 日报道，Atlas 950 SuperPoD 在 WAIC 现场首次展出，记录了 7 月 16 日布展与中国 AI 硬件竞争背景；媒体报道把首次展示和未来市场影响分开。",
+        "excerpt": "Huawei ... has unveiled for the first time the physical unit of its Atlas 950 SuperPoD ... displayed on the 16th ... the day before the opening of WAIC."
+      },
+      {
+        "url": "https://www.ithome.com/0/967/862.htm",
+        "claim": "IT之家 6 月 24 日报道华为计划在 WAIC 展示 Atlas 950，并回顾单柜 64 卡、最大 8192 张 NPU 的产品路线；这是展前预告，保留为时间线背景。",
+        "excerpt": "Atlas 950 SuperPoD ... 最大可支持 8192 张 NPU 卡高速互联，为超大规模 AI 训练与海量推理并发场景提供选择。"
+      }
+    ],
+    "canonicalUrl": "https://www.huawei.com/cn/news/2026/7/atlas-950-superpod",
+    "sourceHash": "sha256:fd1e0b17076b6fe414be64e48f27d7c5da29b3eb8ada3b7afb40cb3987f40913"
+  },
+  {
+    "slug": "moonshot-kimi-k3-open-weight-20260717",
+    "title": "Moonshot 发布 Kimi K3：2.8 万亿参数、百万 token 上下文，开放权重仍要等完整材料",
+    "summary": "7 月 17 日，Moonshot 发布 Kimi K3，官方公布 2.8 万亿参数、原生视觉和 100 万 token 上下文，并称完整权重将在 7 月 27 日前发布。模型已可在 Kimi 产品、Code 和 API 中试用，但厂商评测、第三方榜单和本地可下载状态需要分开核对。",
+    "body": "7 月 17 日，Moonshot AI 发布 Kimi K3，把中国开放模型的竞争又推到一个更大的数字上。官方页面称，K3 有 2.8 万亿参数，原生支持视觉理解，单次上下文窗口可达 100 万 token；Reuters 将它报道为当时最大的开放权重 AI 系统。模型已经可以通过 Kimi、Kimi Work、Kimi Code 和 API 试用，但完整模型权重和技术报告被承诺在 7 月 27 日前发布，发布当天还不能把“开放”理解为已经可以下载、离线部署。\n\n2.8 万亿是模型的总参数规模。K3 使用混合专家（MoE）架构，官方解释为 896 个专家中每次激活 16 个。可以把它想成一座很大的专家库，每个问题只叫其中一小组专家工作：总容量很大，单次请求实际走过的计算路径却更窄。总参数、激活专家、上下文长度和硬件配置必须同时看，不能用 2.8T 直接推断回答速度、成本或能力。\n\nMoonshot 把 K3 的定位写得很有分寸：它声称在自家整套评测中超过其他模型，但仍落后于 Claude Fable 5 和 GPT-5.6 Sol。Reuters 同时引用 Arena、Vals AI 和 Artificial Analysis 的第三方结果，说明 K3 在前端编码或多步任务中表现很强。不同评测的任务、提示、工具、模型版本和是否允许回退机制都不同；“某个榜单第一”不能替代全面、可复现的模型比较。\n\nK3 的“开放”也有时间层次。发布当天，用户可以调用服务和在 Kimi 产品里体验；完整权重要等到 7 月 27 日前，许可证、模型卡、权重文件和本地运行要求还需要分别核对。开放权重让开发者有机会下载、审计和自建部署，但也把显存、推理服务、更新和安全责任交给使用者。能在网页里试用，和能拿到权重运行，不是同一件事。\n\n100 万 token 上下文是另一个容易被误读的数字。它描述模型一次可以接收的文本上下文上限，不等于模型每次都能准确记住一百万 token，也不等于长文档处理成本很低。长上下文会增加缓存、检索、注意力和延迟管理的压力；真正可用的长度取决于任务、工具、价格和模型在长输入下的准确率。Moonshot 还在 K3 中加入 KDA 和 Attention Residuals 等架构改动，目的是让长序列和大规模专家路由更可控，这些技术主张仍需要技术报告和复测。\n\n因此，7 月 17 日的新闻可以确认三件事：Kimi K3 已发布并可通过多个产品试用，官方公布了 2.8T/1M token/视觉能力等规格，完整权重有明确的后续时间承诺。它不能单独证明 K3 已经全面超过闭源模型，也不能证明每一个本地部署者都能复现官方评测。等权重、许可、技术报告和更多独立测试齐全之后，读者才能判断这个“开放前沿模型”到底改变了什么。",
+    "publishedAt": "2026-07-17",
+    "eventDate": "2026-07-16",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/moonshot-kimi-k3-open-weight-20260717.svg",
+      "alt": "Kimi K3 的总参数、MoE 激活路径、百万 token 上下文和开放权重时间线；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/moonshot-kimi-k3-open-weight-20260717.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "Kimi K3 已发布，但权重要按承诺时间等待",
+        "body": "7 月 17 日可在 Kimi、Kimi Work、Kimi Code 和 API 体验；完整权重和技术报告承诺在 7 月 27 日前发布。",
+        "kind": "narrative"
+      },
+      {
+        "id": "scale",
+        "title": "2.8 万亿总参数不等于每次都用这么多计算",
+        "body": "K3 的 MoE 架构有 896 个专家，每次激活 16 个；总容量、激活路径、硬件和上下文要一起看。",
+        "kind": "technical"
+      },
+      {
+        "id": "benchmark",
+        "title": "厂商评测、第三方榜单和全面结论是三件事",
+        "body": "Moonshot 的内部结果、Arena/Vals AI/Artificial Analysis 的外部数据各自有任务和版本条件，不能把一个榜单名次写成全面胜负。",
+        "kind": "boundary"
+      },
+      {
+        "id": "open",
+        "title": "试用入口和开放权重不是同一种可用性",
+        "body": "网页/API 试用已开放，下载权重、许可证、本地显存、更新和安全责任还要等后续材料。",
+        "kind": "comparison"
+      },
+      {
+        "id": "context",
+        "title": "100 万 token 是上限，不是准确率保证",
+        "body": "长上下文会带来缓存、检索、延迟和费用压力，实际效果取决于任务和模型在长输入下的表现。",
+        "kind": "technical"
+      },
+      {
+        "id": "followup",
+        "title": "后续看权重、许可证与独立复测",
+        "body": "7 月 27 日前的权重发布、技术报告、模型卡和第三方复测，才会把预览规格变成可复现的开放模型。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "如何读一条超大模型发布新闻？",
+      "question": "把总参数、激活路径、评测来源和下载状态拆开，才能知道“开放”和“更强”分别意味着什么。",
+      "steps": [
+        {
+          "label": "先记可用方式",
+          "detail": "区分网页/API 试用、产品接入和权重下载，不把入口开放写成已能本地部署。",
+          "evidence": "Moonshot launch page and Kimi Code docs"
+        },
+        {
+          "label": "再拆参数结构",
+          "detail": "同时记录总参数、激活专家、上下文和模态，避免从一个总数字推断成本与能力。",
+          "evidence": "Kimi K3 architecture notes"
+        },
+        {
+          "label": "核对评测条件",
+          "detail": "查看任务、提示、工具、版本和评测者，分别标注厂商结果与第三方榜单。",
+          "evidence": "Reuters and AP coverage"
+        },
+        {
+          "label": "等待可复现材料",
+          "detail": "权重、许可证、模型卡和独立复测齐全后，再判断开放模型是否真的改变部署选择。",
+          "evidence": "follow-up verification"
+        }
+      ]
+    },
+    "source": {
+      "name": "Moonshot AI / Kimi",
+      "url": "https://www.kimi.com/news/kimi-k3"
+    },
+    "relatedSlugs": [
+      "llm",
+      "benchmark",
+      "token",
+      "context",
+      "agent",
+      "citation"
+    ],
+    "relatedArticleSlugs": [
+      "alibaba-qwen38-preview-20260719",
+      "ap-chinese-ai-models-us-adoption-20260726"
+    ],
+    "sources": [
+      {
+        "url": "https://www.kimi.com/news/kimi-k3",
+        "claim": "Moonshot 官方 7 月 17 日发布 Kimi K3，称其为 2.8 万亿参数、原生视觉、100 万 token 上下文的模型；官方同时承认整体表现仍落后于 Claude Fable 5 和 GPT-5.6 Sol，并承诺在 7 月 27 日前发布完整权重。",
+        "excerpt": "Kimi K3 是一个 2.8 万亿参数模型 ... 原生支持视觉理解，并拥有 100 万 token 上下文窗口；完整模型权重将于 2026 年 7 月 27 日前发布。"
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/chinas-moonshot-unveils-worlds-largest-open-ai-model-closing-in-on-us-rivals-4797347",
+        "claim": "Reuters 7 月 17 日报道，Moonshot 发布 Kimi K3，称其为当时最大的开放权重 AI 系统；Reuters 还记录了 Arena、Vals AI 和 Artificial Analysis 的第三方评测线索。",
+        "excerpt": "Chinese AI startup Moonshot ... unveiled Kimi K3, a 2.8 trillion-parameter model ... the world’s largest open-weight AI system."
+      },
+      {
+        "url": "https://apnews.com/article/0d8a5e268deb11a673f4d444fc597cc5",
+        "claim": "AP 7 月 17 日报道，Kimi K3 的发布让美国科技行业关注中国开放模型；报道提到 Arena 前端编码排名和专家对其能力的判断，但这些仍是特定平台或受访者口径。",
+        "excerpt": "Another powerful new artificial intelligence model from China took the U.S. tech industry by surprise Friday."
+      },
+      {
+        "url": "https://www.kimi.com/code/docs/en/kimi-code/whats-new.html",
+        "claim": "Kimi Code 官方更新记录把 Kimi K3 标为 7 月 16 日模型发布，说明它已接入 Kimi Code；这和 7 月 17 日新闻报道共同确认发布时序。",
+        "excerpt": "Kimi K3, our most capable model to date, is now released and open-sourced, and available in Kimi Code."
+      }
+    ],
+    "canonicalUrl": "https://www.kimi.com/news/kimi-k3",
+    "sourceHash": "sha256:caaac60f1e5fb45bfbf61db8523d5b3383ac4765f1364251929fc233fde34242"
+  },
+  {
     "slug": "openai-atlas-sunset-20260809",
     "title": "OpenAI 让 Atlas 在 8 月 9 日退场：浏览代理并入 ChatGPT",
     "summary": "OpenAI 帮助中心把 2026 年 8 月 9 日列为 Atlas 停止运行日期，并建议用户把书签、标签页和浏览工作迁到 ChatGPT、Codex 或 Chrome 扩展；聊天记录仍与浏览器数据分开。",
