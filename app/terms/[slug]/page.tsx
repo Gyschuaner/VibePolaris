@@ -83,6 +83,7 @@ import { FeatureFlagTermPage } from "@/components/terms/feature-flag-pages/featu
 import { UnitTestTermPage } from "@/components/terms/unit-test-pages/unit-test-page";
 import { IntegrationTestTermPage } from "@/components/terms/integration-test-pages/integration-test-page";
 import { E2eTestTermPage } from "@/components/terms/e2e-test-pages/e2e-test-page";
+import { SmokeTestTermPage } from "@/components/terms/smoke-test-pages/smoke-test-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -213,6 +214,7 @@ const articleTermPages = {
   "unit-test": UnitTestTermPage,
   "integration-test": IntegrationTestTermPage,
   "e2e-test": E2eTestTermPage,
+  "smoke-test": SmokeTestTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

@@ -1313,13 +1313,53 @@
     ]
   },
   {
-    "zh": "冒烟测试", "en": "Smoke Test", "slug": "smoke-test", "cat": "技术栈",
-    "say": "发布后用少量检查确认系统能启动，关键入口没有直接失效。", "aliases": ["Smoke Test", "基础可用性检查", "发布冒烟"],
-    "question": "刚部署完成，应该优先检查哪些功能？", "definition": "冒烟测试快速覆盖系统最基础、最关键的可用路径，用于决定是否继续深入测试。", "boundary": "冒烟通过只说明基础路径可用，不能代替完整回归和性能检查。",
-    "demoType": "lifecycle", "demoTitle": "一次部署后的三项冒烟",
-    "demoSteps": [{"label":"健康接口","value":"/health = 200","note":"应用进程和基础依赖可响应。"},{"label":"关键页面","value":"首页可打开","note":"静态资源和服务端渲染正常。"},{"label":"核心操作","value":"登录成功","note":"最重要的身份链路可用。"}],
-    "quizQuestion": "冒烟测试通过后能说明什么？", "quizOptions": ["关键基础路径没有立即失败", "系统没有任何缺陷", "所有性能指标达标"], "correctText": "冒烟是快速基础检查。", "wrongText": "更广泛的功能和性能仍需后续验证。",
-    "promptTitle": "制定发布冒烟", "prompt": "请按服务启动、关键页面、核心接口和关键业务操作设计十分钟内可完成的冒烟清单。", "relatedSlugs": ["regression-test", "e2e-test", "server"]
+    "zh": "冒烟测试",
+    "en": "Smoke Test",
+    "slug": "smoke-test",
+    "cat": "技术栈",
+    "say": "部署后用几条关键检查判断构建是否值得继续测。",
+    "aliases": [
+      "Smoke Test",
+      "基础可用性检查",
+      "发布冒烟"
+    ],
+    "question": "刚部署的版本，为什么不先跑完整回归？",
+    "definition": "冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件。",
+    "boundary": "冒烟通过只说明关键入口没有立即失效，不代表系统质量完整；失败则应先关闸修复，再投入更大的测试套件。",
+    "demoType": "flow",
+    "demoTitle": "四盏关键灯怎样决定是否放行",
+    "demoSteps": [
+      {
+        "label": "部署候选",
+        "value": "commit 9f31",
+        "note": "先把候选构建放到闸门前，完整回归保持锁定。"
+      },
+      {
+        "label": "点亮关键路径",
+        "value": "health · login · order · payment",
+        "note": "少量检查覆盖进程、身份和核心业务，任何一盏失败都要能阻止后续。"
+      },
+      {
+        "label": "决定继续或停止",
+        "value": "PROCEED / STOP",
+        "note": "全绿才解锁 120 个回归用例；红灯留下失败检查和下一步。"
+      }
+    ],
+    "quizQuestion": "支付冒烟失败后，完整回归应该怎样处理？",
+    "quizOptions": [
+      "先停止并修复候选构建",
+      "把失败项改成可选继续发布",
+      "只看前三项通过就放行"
+    ],
+    "correctText": "冒烟测试回答的是“是否值得继续测”，失败应尽早阻止更大成本。",
+    "wrongText": "冒烟通过不是全面合格章，失败也不能被绿色片段或可选开关掩盖。",
+    "promptTitle": "设计发布闸门",
+    "prompt": "请为这个部署挑选 3–6 条最能代表环境可用性的检查，写明最大耗时、失败阻塞动作、版本和环境证据，以及通过后解锁的下一阶段。",
+    "relatedSlugs": [
+      "regression-test",
+      "e2e-test",
+      "server"
+    ]
   },
   {
     "zh": "回归测试", "en": "Regression Test", "slug": "regression-test", "cat": "技术栈",

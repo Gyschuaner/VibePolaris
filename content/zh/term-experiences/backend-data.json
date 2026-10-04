@@ -16457,17 +16457,17 @@
   },
   {
     "slug": "smoke-test",
-    "lead": "新版本部署后，是先跑 120 个回归用例，还是用四个检查在两分钟内决定要不要继续？",
+    "lead": "新版本部署后，是先跑 120 个回归用例，还是用四盏关键灯在几分钟内决定要不要继续？",
     "definition": "冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件。",
-    "boundary": "冒烟通过只说明核心路径没有明显失效，不代表系统质量完整，也不能替代回归、性能或安全测试。",
+    "boundary": "冒烟通过只说明基础路径没有明显失效，不代表系统质量完整，也不能替代回归、性能或安全测试。",
     "sceneKind": "branch",
     "sceneTitle": "部署后的四盏检查灯决定是否放行",
     "actionLabel": "部署并执行冒烟检查",
     "actors": [
       {
         "id": "build-commit",
-        "label": "commit abc123",
-        "detail": "刚部署",
+        "label": "commit 9f31",
+        "detail": "候选构建",
         "icon": "git",
         "group": "构建"
       },
@@ -16476,35 +16476,35 @@
         "label": "Health",
         "detail": "waiting",
         "icon": "server",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "login-check",
         "label": "Login",
         "detail": "waiting",
         "icon": "key",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "order-check",
         "label": "Create order",
         "detail": "waiting",
         "icon": "package",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "payment-check",
         "label": "Payment",
         "detail": "waiting",
         "icon": "network",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "regression-suite",
         "label": "完整回归",
-        "detail": "120 tests",
+        "detail": "120 tests · locked",
         "icon": "network",
-        "group": "后续"
+        "group": "后续阶段"
       }
     ],
     "edges": [
@@ -16536,13 +16536,13 @@
         "id": "payment-regression",
         "from": "payment-check",
         "to": "regression-suite",
-        "label": "全部通过才启动"
+        "label": "全绿才解锁"
       }
     ],
     "frames": [
       {
-        "label": "部署完成先不启动完整回归",
-        "note": "abc123 进入候选状态，120 个较慢用例保持等待。",
+        "label": "候选构建抵达闸门",
+        "note": "9f31 已部署，完整回归保持 locked，先等待少量高价值检查。",
         "activeIds": [
           "build-commit",
           "health-check"
@@ -16558,72 +16558,98 @@
         ],
         "values": {
           "build-commit": "deployed",
-          "regression-suite": "not started"
+          "regression-suite": "locked · 120"
         },
         "activeEdgeIds": [
           "build-health"
         ]
       },
       {
-        "label": "前三个关键检查通过",
-        "note": "健康接口、登录和创建订单依次变绿。",
+        "label": "健康检查先亮灯",
+        "note": "/healthz 返回 200，进程和基础依赖有响应。",
         "activeIds": [
           "health-check",
-          "login-check",
-          "order-check"
+          "login-check"
         ],
         "doneIds": [
-          "health-check",
-          "login-check",
-          "order-check"
+          "health-check"
         ],
         "mutedIds": [
+          "order-check",
           "payment-check",
           "regression-suite"
         ],
         "values": {
           "health-check": "200",
-          "login-check": "pass",
-          "order-check": "201"
+          "regression-suite": "not started"
         },
         "activeEdgeIds": [
-          "health-login",
-          "login-order",
-          "order-payment"
+          "health-login"
         ]
       },
       {
-        "label": "支付检查收到 502",
-        "note": "核心付款路径失败，构建立即标记 rejected。",
+        "label": "核心入口依次通过",
+        "note": "登录、创建订单和最小支付路径都给出可观察的成功结果。",
+        "activeIds": [
+          "login-check",
+          "order-check",
+          "payment-check"
+        ],
+        "doneIds": [
+          "login-check",
+          "order-check",
+          "payment-check"
+        ],
+        "mutedIds": [
+          "regression-suite"
+        ],
+        "values": {
+          "login-check": "pass",
+          "order-check": "201",
+          "payment-check": "pass"
+        },
+        "activeEdgeIds": [
+          "login-order",
+          "order-payment",
+          "payment-regression"
+        ]
+      },
+      {
+        "label": "支付失败立即关闸",
+        "note": "Payment 返回 502，候选构建标记 rejected，完整回归不启动。",
         "activeIds": [
           "payment-check",
-          "build-commit"
+          "build-commit",
+          "regression-suite"
         ],
         "doneIds": [],
         "mutedIds": [
           "health-check",
           "login-check",
-          "order-check",
-          "regression-suite"
+          "order-check"
         ],
         "values": {
           "payment-check": "502",
-          "build-commit": "rejected"
+          "build-commit": "rejected",
+          "regression-suite": "not started"
         },
         "activeEdgeIds": [],
         "metric": {
-          "label": "冒烟结果",
-          "value": "3/4"
+          "label": "冒烟结论",
+          "value": "STOP · payment"
         }
       },
       {
-        "label": "完整回归保持未启动",
-        "note": "无需花 28 分钟证明更多功能也受坏环境影响。",
+        "label": "修复后才解锁大套件",
+        "note": "重新部署并通过四盏灯，120 个回归检查才进入队列。",
         "activeIds": [
-          "regression-suite",
-          "build-commit"
+          "build-commit",
+          "regression-suite"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "build-commit",
+          "regression-suite"
+        ],
         "mutedIds": [
           "health-check",
           "login-check",
@@ -16631,22 +16657,24 @@
           "payment-check"
         ],
         "values": {
-          "regression-suite": "skipped",
-          "build-commit": "fix required"
+          "build-commit": "accepted",
+          "regression-suite": "queued · 120"
         },
-        "activeEdgeIds": [],
+        "activeEdgeIds": [
+          "payment-regression"
+        ],
         "metric": {
-          "label": "节省时间",
-          "value": "28 min"
+          "label": "放行结论",
+          "value": "PROCEED · 120 queued"
         }
       }
     ],
-    "insight": "冒烟测试的任务是尽早淘汰明显不可用的构建，不是给系统盖全面合格章。",
+    "insight": "冒烟测试的任务是尽早淘汰明显不可用的构建，不是给系统盖全面合格章；失败时要阻止后续成本并留下下一步。",
     "quiz": {
       "question": "支付冒烟失败后，完整回归应怎样处理？",
       "options": [
         {
-          "label": "先停止并修复基础阻塞，再运行完整回归",
+          "label": "先停止并修复候选构建，再重新冒烟",
           "correct": true
         },
         {
@@ -16658,18 +16686,38 @@
           "correct": false
         }
       ],
-      "success": "关键路径失败时继续跑大套件通常只会延迟反馈。",
-      "retry": "冒烟测试回答的是“是否值得继续测”。"
+      "success": "关键路径失败时继续跑大套件只会延迟反馈，先修复闸门上的红灯。",
+      "retry": "冒烟测试回答的是“是否值得继续测”，不是“系统没有任何缺陷”。"
     },
     "prompt": {
       "title": "挑选部署后的冒烟路径",
-      "text": "请选出 3–6 个能覆盖进程、身份和核心交易的检查，规定失败即停止的条件、最大耗时和后续完整测试入口。"
+      "text": "请选出 3–6 个能覆盖进程、身份和核心交易的检查，规定失败即停止的条件、最大耗时、构建版本和后续完整测试入口。"
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://learn.microsoft.com/en-us/biztalk/technical-guides/automating-the-build-process",
+        "label": "Microsoft Learn · Automating the Build Process",
+        "note": "BVT、Smoke Tests 与构建验证边界"
+      },
+      {
+        "url": "https://docs.gitlab.com/development/testing_guide/testing_strategy/",
+        "label": "GitLab Docs · GitLab Testing Strategy",
+        "note": "fail fast、渐进测试与阻塞职责"
+      },
+      {
+        "url": "https://docs.gitlab.com/development/testing_guide/smoke/",
+        "label": "GitLab Docs · Smoke Tests",
+        "note": "基本功能覆盖与 health check 子集"
+      },
+      {
+        "url": "https://www.martinfowler.com/articles/originalContinuousIntegration.html",
+        "label": "Martin Fowler · Continuous Integration",
+        "note": "成功构建、启动应用和简单测试"
+      },
+      {
+        "url": "https://docs.gitlab.com/ci/pipelines/",
+        "label": "GitLab Docs · CI/CD pipelines",
+        "note": "stage 顺序与失败早停"
       }
     ]
   },

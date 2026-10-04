@@ -145,7 +145,25 @@
       "test-case"
     ]
   },
-  {"slug":"smoke-test","mechanism":"冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件，通常在部署后先运行。","misconception":"冒烟测试不是随便点几下，也不证明系统质量完整；它只回答关键路径是否明显失效。","demoSignature":"4帧｜对象：部署 commit abc123、health、login、create-order、payment 四个检查灯｜交互：点击 deploy 后自动执行并在 payment 注入 502｜变化：前三项绿、第四项红，后续 120 个回归用例保持未启动｜结果：3/4 通过，构建标记 rejected，节省 28 分钟。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"低：边界清楚，但要防止把‘快速’误写成‘覆盖全面’。","nearDuplicates":["e2e-test","regression-test","server"]},
+  {
+    "slug": "smoke-test",
+    "mechanism": "冒烟测试用少量高价值检查快速判断一个部署后的构建或环境是否具备继续测试的基本条件；它以早停和放行为结果，不承担完整质量覆盖。",
+    "misconception": "冒烟测试不是随便点几下，也不是绿色就代表系统没有缺陷；它要选关键入口、明确阻塞动作，并把更多组合留给后续测试层。",
+    "demoSignature": "5帧｜对象：候选 commit、Health/Login/Create order/Payment 四盏灯、120 个回归队列｜交互：选择全部通过或在健康/登录/支付注入失败并逐帧推进｜变化：检查灯依次点亮，红灯关闭闸门，绿灯解锁回归｜结果：STOP 或 PROCEED 明确决定下一阶段。",
+    "sourceUrls": [
+      "https://learn.microsoft.com/en-us/biztalk/technical-guides/automating-the-build-process",
+      "https://docs.gitlab.com/development/testing_guide/testing_strategy/",
+      "https://docs.gitlab.com/development/testing_guide/smoke/",
+      "https://www.martinfowler.com/articles/originalContinuousIntegration.html",
+      "https://docs.gitlab.com/ci/pipelines/"
+    ],
+    "rewriteRisk": "中：必须把少量关键检查、失败早停和后续解锁写清，避免把冒烟说成全面回归或随意点检。",
+    "nearDuplicates": [
+      "e2e-test",
+      "regression-test",
+      "server"
+    ]
+  },
   {"slug":"regression-test","mechanism":"回归测试在代码、配置或依赖变更后重新验证未应改变的既有行为；选择范围应依据变更影响、风险和历史缺陷。","misconception":"回归不是每次盲跑全部测试，也不是只重测修复点；过窄会漏影响，过宽会拖慢反馈。","demoSignature":"6帧｜对象：修改 auth middleware 的代码节点、调用图、32 个测试、风险热力图｜交互：点击变更文件并调风险阈值｜变化：直接测试 4 个、受影响集成测试 7 个、安全回归 3 个被选中｜结果：14/32 入选，捕获一个旧权限用例失败。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需让‘选择哪些旧测试’成为演示核心，不和普通测试重复。","nearDuplicates":["smoke-test","code-coverage","test-case"]},
   {"slug":"test-case","mechanism":"测试用例把前置条件、输入、操作和预期结果写成可重复判定的检查；好的用例围绕风险和可观察结果，而非照抄实现步骤。","misconception":"用例标题不是用例，‘功能正常’也不是可验证预期；缺少数据和状态前提会让不同人得到不同结论。","demoSignature":"5帧｜对象：密码重置用例编辑器、token=expired、user=active、POST 路径、DB/email 观察区｜交互：逐项补齐缺失字段再运行｜变化：模糊的‘应失败’变成 410、token 未消费、邮件 0 封三项断言｜结果：用例从不可判定变成 3/3 可复现。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：避免套 Given-When-Then 空壳，数据与结果必须具体。","nearDuplicates":["assertion","regression-test","e2e-test"]},
   {"slug":"mock","mechanism":"Mock 是可配置的测试替身，用来记录交互并返回受控结果；它适合隔离昂贵或不确定依赖，但会引入对接口实现的假设。","misconception":"Mock 不等于任何假数据，也不是所有依赖都该替换；过度验证调用次数会把测试绑死在实现细节上。","demoSignature":"6帧｜对象：checkout、payment client、真实 fake server 与 mock 两种替身、调用日志｜交互：把实现从单次 charge 改为先 authorize 后 capture｜变化：行为结果仍成功，但旧 mock 的 once 断言失败；fake server 仍通过｜结果：对比‘行为契约稳定’与‘交互细节脆弱’。","sourceUrls":["https://jestjs.io/docs/mock-functions","https://playwright.dev/docs/mock"],"rewriteRisk":"中：需区分 mock、stub、fake 的用途，至少说明交互验证风险。","nearDuplicates":["unit-test","integration-test","assertion"]},
