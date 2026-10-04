@@ -44,6 +44,7 @@ import { BuildToolTermPage } from "./ai-stack-pages/build-tool";
 import { BundlerTermPage } from "./ai-stack-pages/bundler";
 import { DevServerTermPage } from "./ai-stack-pages/dev-server";
 import { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
+import { HmrTermPage } from "./ai-stack-pages/hmr";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -90,6 +91,7 @@ export { BuildToolTermPage } from "./ai-stack-pages/build-tool";
 export { BundlerTermPage } from "./ai-stack-pages/bundler";
 export { DevServerTermPage } from "./ai-stack-pages/dev-server";
 export { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
+export { HmrTermPage } from "./ai-stack-pages/hmr";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -138,4 +140,5 @@ export const aiStackArticlePages = {
   bundler: BundlerTermPage,
   "dev-server": DevServerTermPage,
   "hot-reload": HotReloadTermPage,
+  hmr: HmrTermPage,
 } as const;
