@@ -11706,61 +11706,40 @@
 },
   {
     "slug": "url",
-    "lead": "URL 里写了 #part，为什么服务器访问日志里完全看不到这段？",
-    "definition": "URL 用 scheme、authority、path、query 和 fragment 标识资源位置与访问方式；客户端解析、归一和相对引用合并后才形成实际请求目标。",
-    "boundary": "URL 不是普通字符串拼接。fragment 只供客户端处理，不随 HTTP 请求发送；主机、用户信息和端口边界也要按语法解析。",
+    "lead": "地址栏里明明写着 #part，为什么服务器日志里找不到它？",
+    "definition": "URL 是一条有组件边界的资源引用；客户端解析、归一和相对引用合并后，才形成连接主机与实际请求目标。",
+    "boundary": "URL 不等于已成功的请求。fragment 通常只在客户端处理，path 的点段要按规则归一，query 里的百分号编码也不能跨组件解释。",
     "sceneKind": "transform",
-    "sceneTitle": "一条 URL 解析成实际 HTTP 请求目标",
+    "sceneTitle": "一条 URL 如何变成实际 HTTP 请求目标",
     "actionLabel": "执行下一项 URL 处理",
     "actors": [
       {
         "id": "raw-url",
         "label": "原始 URL",
-        "detail": "https://user@example.com:8443/a/../b?q=x%2Fy#part",
+        "detail": "https://user:secret@example.com:8443/a/../b?q=x%2Fy#part",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "url-parser",
         "label": "URL 解析器",
-        "detail": "按组件切分",
+        "detail": "按组件和 base 规则处理",
         "icon": "gear",
         "group": "客户端"
       },
       {
-        "id": "authority-part",
-        "label": "Authority",
-        "detail": "example.com:8443",
-        "icon": "network",
-        "group": "组件"
-      },
-      {
-        "id": "path-part",
-        "label": "Path",
-        "detail": "/a/../b",
-        "icon": "layout",
-        "group": "组件"
-      },
-      {
-        "id": "query-part",
-        "label": "Query",
-        "detail": "q=x%2Fy",
-        "icon": "message",
-        "group": "组件"
-      },
-      {
-        "id": "fragment-part",
-        "label": "Fragment",
-        "detail": "part",
-        "icon": "spark",
-        "group": "客户端组件"
-      },
-      {
-        "id": "http-target",
-        "label": "请求目标",
-        "detail": "发送到服务器",
+        "id": "request-target",
+        "label": "HTTP 请求目标",
+        "detail": "GET /b?q=x%2Fy",
         "icon": "server",
         "group": "输出"
+      },
+      {
+        "id": "client-fragment",
+        "label": "客户端 fragment",
+        "detail": "#part · 页面内定位",
+        "icon": "spark",
+        "group": "客户端"
       }
     ],
     "edges": [
@@ -11771,148 +11750,91 @@
         "label": "解析"
       },
       {
-        "id": "parser-authority",
+        "id": "parser-target",
         "from": "url-parser",
-        "to": "authority-part",
-        "label": "主机与端口"
-      },
-      {
-        "id": "parser-path",
-        "from": "url-parser",
-        "to": "path-part",
-        "label": "路径"
-      },
-      {
-        "id": "parser-query",
-        "from": "url-parser",
-        "to": "query-part",
-        "label": "查询"
+        "to": "request-target",
+        "label": "归一并形成 request-target"
       },
       {
         "id": "parser-fragment",
         "from": "url-parser",
-        "to": "fragment-part",
-        "label": "片段"
-      },
-      {
-        "id": "path-target",
-        "from": "path-part",
-        "to": "http-target",
-        "label": "归一后发送"
-      },
-      {
-        "id": "query-target",
-        "from": "query-part",
-        "to": "http-target",
-        "label": "原样组件"
+        "to": "client-fragment",
+        "label": "留给客户端"
       }
     ],
     "frames": [
       {
-        "label": "解析器分离五个组件",
-        "note": "userinfo、主机和端口都在 authority 内按语法识别，不能靠最后一个 @ 猜测。",
+        "label": "先拆出五个组件",
+        "note": "scheme、authority、path、query 和 fragment 先各自站稳；userinfo、主机和端口都属于 authority。",
         "activeIds": [
           "raw-url",
-          "url-parser",
-          "authority-part",
-          "path-part",
-          "query-part",
-          "fragment-part"
+          "url-parser"
         ],
         "doneIds": [
           "url-parser"
         ],
         "mutedIds": [
-          "http-target"
+          "request-target",
+          "client-fragment"
         ],
         "values": {
-          "authority-part": "host=example.com · port=8443",
-          "fragment-part": "part"
+          "url-parser": "scheme · authority · path · query · fragment"
         },
         "activeEdgeIds": [
-          "raw-parser",
-          "parser-authority",
-          "parser-path",
-          "parser-query",
+          "raw-parser"
+        ]
+      },
+      {
+        "label": "路径把 .. 折回去",
+        "note": "点段移除把 /a/../b 归一成 /b，query 的 q=x%2Fy 仍保持为查询值。",
+        "activeIds": [
+          "url-parser",
+          "request-target"
+        ],
+        "doneIds": [
+          "url-parser"
+        ],
+        "mutedIds": [
+          "raw-url",
+          "client-fragment"
+        ],
+        "values": {
+          "request-target": "path /b · query q=x%2Fy"
+        },
+        "activeEdgeIds": [
+          "parser-target"
+        ]
+      },
+      {
+        "label": "请求线在 # 前停下",
+        "note": "HTTP request-target 带上路径和 query；#part 交给浏览器做客户端定位，不随请求发走。",
+        "activeIds": [
+          "request-target",
+          "client-fragment"
+        ],
+        "doneIds": [
+          "request-target",
+          "client-fragment"
+        ],
+        "mutedIds": [
+          "raw-url",
+          "url-parser"
+        ],
+        "values": {
+          "request-target": "Host: example.com:8443 · GET /b?q=x%2Fy",
+          "client-fragment": "client only · #part"
+        },
+        "activeEdgeIds": [
+          "parser-target",
           "parser-fragment"
-        ]
-      },
-      {
-        "label": "路径归一为 /b",
-        "note": "a/.. 抵消，目标路径从 /a/../b 变成 /b。",
-        "activeIds": [
-          "url-parser",
-          "path-part"
-        ],
-        "doneIds": [
-          "path-part"
-        ],
-        "mutedIds": [
-          "authority-part",
-          "query-part",
-          "fragment-part",
-          "http-target"
-        ],
-        "values": {
-          "path-part": "/b"
-        },
-        "activeEdgeIds": [
-          "parser-path"
-        ]
-      },
-      {
-        "label": "fragment 留在客户端",
-        "note": "#part 用于页面内定位，不进入 HTTP 请求目标。",
-        "activeIds": [
-          "fragment-part",
-          "http-target"
-        ],
-        "doneIds": [
-          "fragment-part"
-        ],
-        "mutedIds": [
-          "raw-url",
-          "url-parser"
-        ],
-        "values": {
-          "fragment-part": "client only",
-          "http-target": "/b?q=x%2Fy"
-        },
-        "activeEdgeIds": [
-          "path-target",
-          "query-target"
         ],
         "metric": {
           "label": "服务器收到 fragment",
           "value": "否"
         }
-      },
-      {
-        "label": "相对引用重新计算路径",
-        "note": "从当前 /b 解析 ../c，得到 /c，而不是简单拼接 /b../c。",
-        "activeIds": [
-          "url-parser",
-          "path-part",
-          "http-target"
-        ],
-        "doneIds": [
-          "http-target"
-        ],
-        "mutedIds": [
-          "query-part",
-          "fragment-part"
-        ],
-        "values": {
-          "path-part": "../c → /c",
-          "http-target": "GET /c"
-        },
-        "activeEdgeIds": [
-          "parser-path",
-          "path-target"
-        ]
       }
     ],
-    "insight": "URL 要先解析和归一，再判断真正发给服务器的主机、路径和查询。",
+    "insight": "URL 的每一段都有自己的去处：解析器负责分边界和归一，HTTP 只拿走请求目标，fragment 留在客户端。",
     "quiz": {
       "question": "URL 的 fragment 会怎样处理？",
       "options": [
@@ -11930,17 +11852,37 @@
         }
       ],
       "success": "fragment 用于客户端资源内定位，不属于 HTTP 请求目标。",
-      "retry": "比较 # 前后的组件边界。"
+      "retry": "先看 # 前后的组件边界，再看 request-target 的组成。"
     },
     "prompt": {
-      "title": "解析一条复杂 URL",
-      "text": "请分别写出 scheme、userinfo、host、port、path、query、fragment、归一后的请求目标和相对引用结果。"
+      "title": "还原一条复杂 URL",
+      "text": "请写出 scheme、userinfo、host、port、path、query、fragment、归一后的 request-target，以及以 https://example.com/a/b/ 为 base 合并 ../c 的结果。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
         "label": "RFC 3986 · URI Syntax",
-        "note": "协议定义与报文语义"
+        "note": "组件、百分号编码、点段和 fragment"
+      },
+      {
+        "url": "https://url.spec.whatwg.org/",
+        "label": "WHATWG URL Standard",
+        "note": "浏览器 URL record、解析和 base"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "fragment 不属于 HTTP scheme 语义"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+        "label": "RFC 9112 · HTTP/1.1",
+        "note": "origin-form request-target 与 Host"
+      },
+      {
+        "url": "https://html.spec.whatwg.org/multipage/urls-and-fetching.html",
+        "label": "HTML Standard · URLs and fetching",
+        "note": "文档 base URL 与相对引用"
       }
     ]
   },

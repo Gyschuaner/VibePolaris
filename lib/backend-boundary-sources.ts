@@ -39,3 +39,11 @@ export const packetSources: BoundarySource[] = [
   make("IETF", "RFC 8201 · Path MTU Discovery for IP version 6", "https://www.rfc-editor.org/rfc/rfc8201.html", ["packet-path-mtu", "packet-ipv6-fragment", "packet-diagnostic"], "2017-07"),
   make("IETF", "RFC 792 · Internet Control Message Protocol", "https://www.rfc-editor.org/rfc/rfc792.html", ["packet-hop", "packet-reassembly", "packet-diagnostic"], "1981-09"),
 ];
+
+export const urlSources: BoundarySource[] = [
+  make("IETF", "RFC 3986 · Uniform Resource Identifier: Generic Syntax", "https://www.rfc-editor.org/rfc/rfc3986.html", ["url-components", "url-identity", "url-percent", "url-relative", "url-fragment"], "2005-01"),
+  make("WHATWG", "URL Standard", "https://url.spec.whatwg.org/", ["url-components", "url-percent", "url-relative", "url-base"], "living standard"),
+  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["url-fragment"], "2022-06"),
+  make("IETF", "RFC 9112 · HTTP/1.1", "https://www.rfc-editor.org/rfc/rfc9112.html", ["url-request-target", "url-fragment"], "2022-06"),
+  make("WHATWG", "HTML Standard · URLs and fetching", "https://html.spec.whatwg.org/multipage/urls-and-fetching.html", ["url-base"], "living standard"),
+];

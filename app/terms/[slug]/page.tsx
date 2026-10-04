@@ -63,6 +63,7 @@ import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/fire
 import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
 import { NetworkPortTermPage } from "@/components/terms/backend-boundary-pages/network-port";
 import { PacketTermPage } from "@/components/terms/backend-boundary-pages/packet";
+import { UrlTermPage } from "@/components/terms/backend-boundary-pages/url";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -169,6 +170,7 @@ const articleTermPages = {
   "ip-address": IpAddressTermPage,
   "network-port": NetworkPortTermPage,
   packet: PacketTermPage,
+  url: UrlTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

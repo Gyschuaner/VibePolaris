@@ -794,12 +794,12 @@
 },
   {
     "zh": "URL", "en": "Uniform Resource Locator", "slug": "url", "cat": "技术栈",
-    "say": "说明通过什么协议、到哪台主机、访问哪条路径和查询条件。", "aliases": ["网址", "资源地址", "统一资源定位符"],
-    "question": "一条完整网址里的 https、域名和问号参数分别表示什么？", "definition": "URL 是定位网络资源的地址，通常包含方案、主机、端口、路径、查询和片段。", "boundary": "URL 是 URI 的一种；片段通常只在客户端使用，不会随 HTTP 请求发送给服务器。",
-    "demoType": "hierarchy", "demoTitle": "一条 URL 怎样拆成各部分",
-    "demoSteps": [{"label":"连接目标","value":"https://example.com","note":"方案和主机决定怎样连接到哪里。"},{"label":"资源路径","value":"/articles/42","note":"服务器据此匹配内容或端点。"},{"label":"查询与片段","value":"?lang=zh#demo","note":"查询发给服务器，片段用于页内定位。"}],
-    "quizQuestion": "URL 中 # 后面的部分通常叫什么？", "quizOptions": ["片段", "请求体", "状态码"], "correctText": "片段用于标识资源内部位置。", "wrongText": "请求体和状态码不写在 URL 片段中。",
-    "promptTitle": "拆解 URL", "prompt": "请拆解这条 URL 的 scheme、host、port、path、query 和 fragment，并说明哪些部分会进入 HTTP 请求。", "relatedSlugs": ["hostname", "path-parameter", "query-parameter", "request"]
+    "say": "说明一条资源引用怎样被解析成连接主机、路径、查询和客户端定位信息。", "aliases": ["网址", "资源地址", "统一资源定位符"],
+    "question": "为什么地址栏里完整的一串 URL，到了服务器却只剩 Host 和一段请求目标？", "definition": "URL 是可解析的资源引用，通常包含 scheme、authority、path、query 和 fragment；解析和归一后，客户端才形成实际请求。", "boundary": "URL 是 URI 的一种；fragment 通常只留在客户端，不随 HTTP 请求发送，百分号编码和相对引用也不能靠字符串拼接理解。",
+    "demoType": "flow", "demoTitle": "从一条复杂 URL 到实际请求目标",
+    "demoSteps": [{"label":"拆组件","value":"https://user:secret@example.com:8443/a/../b?q=x%2Fy#part","note":"先分出 scheme、authority、path、query 和 fragment。"},{"label":"归一路径","value":"/a/../b → /b","note":"点段按路径规则抵消，查询值仍留在 query。"},{"label":"形成请求","value":"Host: example.com:8443 · GET /b?q=x%2Fy","note":"#part 留给浏览器做客户端定位，不进入 request-target。"}],
+    "quizQuestion": "URL 中 #part 最终会不会出现在 HTTP 请求目标里？", "quizOptions": ["通常不会，留在客户端处理", "会自动变成请求头", "会作为服务器端口"], "correctText": "fragment 在客户端处理，不属于 HTTP 请求目标。", "wrongText": "请求头和端口都有自己的位置，不能把 fragment 塞进去。",
+    "promptTitle": "还原 URL 的真实边界", "prompt": "请拆解这条 URL 的 scheme、userinfo、host、port、path、query 和 fragment，写出归一后的路径、HTTP Host、request-target，以及以 https://example.com/a/b/ 为 base 合并 ../c 的结果。", "relatedSlugs": ["hostname", "path-parameter", "query-parameter", "request"]
   },
   {
     "zh": "主机名", "en": "Hostname", "slug": "hostname", "cat": "技术栈",
