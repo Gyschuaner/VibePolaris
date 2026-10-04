@@ -44753,6 +44753,570 @@
     "sourceHash": "sha256:ca1eb7f9b9a63f564a9f2ca3f88f39d1df0499c845ba2292d618df3224f6ee3a"
   },
   {
+    "slug": "goldman-devin-pilot-20250711",
+    "title": "高盛把 Devin 当作“新员工”试用：先扩充编码团队，不等于替代开发者",
+    "summary": "7 月 11 日，高盛 CIO Marco Argenti 向 CNBC 表示，银行计划把 Cognition 的 Devin 编程 agent 逐步扩展到数百个实例，未来可能达到数千个。公开说法强调由人监督的混合团队，目前没有披露可独立核验的生产率结果。",
+    "body": "7 月 11 日，TechCrunch 报道高盛正在测试 Cognition 的编程 agent Devin。高盛 CIO Marco Argenti 对 CNBC 表示，银行会先把 Devin 当作“新员工”来扩充团队，计划部署数百个实例，未来可能扩大到数千个；高盛称自己有大约 1.2 万名人类开发者。\n\n这里的“新员工”是一个便于传播的比喻，不是把软件当成具备雇佣关系的员工。公开说法更具体的部分是：Devin 用来处理低层、重复性的编码工作，实例需要在混合团队里由人监督。高盛此前已经在内部使用开发者 copilot，因此这次更像把辅助工具提升到可以分派任务、交回结果的 agent 层。\n\nDevin 的表现并非只由模型能力决定。Cognition 说 2.1 版本在能提供充分上下文的大型代码库里更合适，但外部报道也记录过它处理复杂编码任务时的局限。高盛的计划没有公布任务清单、验收标准、代码质量数据或节省了多少时间，所以不能把“数百个实例”写成已经证实的生产率跃升。\n\n对金融机构来说，真正需要先设计的是权限和审查：agent 能读哪些仓库、能否调用内部 API、谁批准它提交或修改代码、失败后怎样回滚，以及生成的改动怎样留下审计记录。把重复工作交给 agent 可以释放开发者时间，也可能把错误更快地铺到共享代码里。\n\n这条新闻的价值在于，它把“AI 会不会替代程序员”的抽象争论变成一项可以观察的组织实验。后续应该看高盛如何定义任务边界、如何测量返工和缺陷、以及人类监督是否真的覆盖了关键决策，而不是只看上线了多少个 Devin 实例。",
+    "publishedAt": "2025-07-11",
+    "eventDate": "2025-07-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/goldman-devin-pilot-20250711.svg",
+      "alt": "高盛把 Devin 放进由人监督的混合编码团队，任务、权限和审查边界清晰可见",
+      "sourceUrl": "/images/news/goldman-devin-pilot-20250711.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "“新员工”首先是一个扩展团队的比喻",
+        "body": "高盛 CIO 说计划部署数百个 Devin 实例并可能扩大到数千个，但软件实例不等于有人事关系的员工。",
+        "kind": "narrative"
+      },
+      {
+        "id": "hybrid-workforce",
+        "title": "公开计划强调人类监督",
+        "body": "Devin 被安排处理低层、重复性任务，结果仍要放回由开发者负责的混合工作流里。",
+        "kind": "comparison"
+      },
+      {
+        "id": "performance-boundary",
+        "title": "没有公开生产率数据",
+        "body": "公司产品在大型代码库和充分上下文下可能更合适，但高盛没有公布任务样本、返工率或缺陷数据。",
+        "kind": "boundary"
+      },
+      {
+        "id": "permission",
+        "title": "编程 agent 的风险在权限和回滚",
+        "body": "读仓库、调用内部 API、修改代码和提交变更是不同权限，不能因为任务重复就合并授权。",
+        "kind": "technical"
+      },
+      {
+        "id": "what-to-watch",
+        "title": "后续要看组织如何测量结果",
+        "body": "实例数量只能说明部署规模，真正的证据包括验收标准、返工、缺陷、审计记录和人工接管。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个编程 agent 进入企业代码库前要过几道门？",
+      "question": "把“会写代码”拆成任务、权限、审查和回滚，才知道 agent 是在帮忙还是扩大风险。",
+      "steps": [
+        {
+          "label": "限定任务",
+          "detail": "先选择有明确输入、输出和测试的重复工作，避免一开始就把模糊需求交给 agent。",
+          "evidence": "task scope"
+        },
+        {
+          "label": "授予最小权限",
+          "detail": "按仓库、分支、文件和内部 API 分配权限，让 agent 只看到完成任务所需的内容。",
+          "evidence": "authorization"
+        },
+        {
+          "label": "保留上下文",
+          "detail": "提供代码规范、依赖关系和测试命令，同时把敏感信息排除在上下文之外。",
+          "evidence": "context window"
+        },
+        {
+          "label": "人工验收",
+          "detail": "开发者检查生成的改动、测试结果和潜在副作用，再决定是否合并。",
+          "evidence": "human review"
+        },
+        {
+          "label": "可追踪回滚",
+          "detail": "保存 agent 的提示、工具调用、提交和审计记录，发现问题时可以定位并撤回。",
+          "evidence": "audit trail"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "context",
+      "tools",
+      "authorization",
+      "eval",
+      "event",
+      "api"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/",
+        "claim": "TechCrunch 7 月 11 日报道高盛计划部署数百个、未来可能数千个 Devin 实例，并强调人类监督的混合团队。",
+        "excerpt": "TechCrunch, “Goldman Sachs is testing viral AI agent Devin as a ‘new employee’,” July 11, 2025."
+      },
+      {
+        "url": "https://www.cnbc.com/2025/07/11/goldman-sachs-autonomous-coder-pilot-marks-major-ai-milestone.html",
+        "claim": "CNBC 报道高盛 CIO Marco Argenti 对 Devin 试点和规模计划的表述；文章保留其为管理层计划而非独立测量结果。",
+        "excerpt": "CNBC, Goldman Sachs autonomous coder pilot, July 11, 2025."
+      },
+      {
+        "url": "https://www.ibm.com/think/news/goldman-sachs-first-ai-employee-devin",
+        "claim": "IBM Think 汇总高盛把 Devin 引入开发工作的背景，用于交叉了解企业采用语境，不替代高盛正式生产率数据。",
+        "excerpt": "IBM Think, Goldman Sachs and Devin context."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/",
+    "sourceHash": "sha256:7bc0b5309ca5629c78f8be1d12797ce723b3ffa1ab0f9f33cbb91602b9115117"
+  },
+  {
+    "slug": "helios-proxi-policy-intelligence-20250711",
+    "title": "Helios 推出面向公共政策团队的 Proxi：把监管监测、写作和利益相关者地图放进一个 AI 工作流",
+    "summary": "7 月 11 日，Helios 走出隐身模式，公布面向公共政策、监管、法律与合规团队的 Proxi beta，并宣布 400 万美元种子轮。产品把政策监测、协作写作、长文档分析和关系管理放在同一套 AI 工具中，但安全与合规能力目前主要仍是公司自述。",
+    "body": "7 月 11 日，TechCrunch 报道 Helios 从隐身模式走出来，并公布 400 万美元种子轮融资。公司创始团队有白宫网络安全办公室和美国国务院背景，想解决公共政策团队长期依赖表格、分散工具和个人记忆的问题。它推出的 Proxi 仍处于 beta，目标用户包括政策、监管事务、法律、合规和政府团队。\n\nProxi 的设计不是一个单独的问答框。Consult 负责持续扫描立法和监管环境，用户可以先告诉系统自己的职责、项目和目标；Scribe 把讨论整理成备忘录、申报材料或政策文档；Decipher 把长篇法案、报告和备案文件拆成结构化信息与风险提醒；最后的 CRM 用来画利益相关者关系图并保存会谈记录。\n\nHelios 把这些模块称为一组安全的 AI agents，并表示会用政策数据集训练或微调它们。公司还声称使用高标准加密、正在进行合规审计，并已经在联邦、州和地方机构以及一些企业里获得早期用户。不过，TechCrunch 报道中没有给出独立的审计报告、客户名单或准确率评测，因此这些内容应当按公司主张来读。\n\n公共政策场景的难点，是答案不仅要“像一份备忘录”，还要能追到法律文本、机构权限和版本变化。一个看似合理的摘要如果漏掉生效日期、管辖范围或例外条款，后果可能比普通办公写作更大。Proxi 把检索、生成和关系记录放在一起，反而更需要来源卡片、人工复核和授权边界。\n\nHelios 的新闻价值在于，它把“企业 AI 助手”往具体岗位推进了一步：不是让所有人共用一个聊天窗口，而是让系统围绕一套工作资料和长期关系运转。它能否成为政策团队的基础设施，还要等 beta 用户反馈、审计结果和可复核的错误案例出现后才能判断。",
+    "publishedAt": "2025-07-11",
+    "eventDate": "2025-07-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/helios-proxi-policy-intelligence-20250711.svg",
+      "alt": "Proxi 把公共政策工作拆成监管扫描、协作写作、长文档分析和关系地图四个节点",
+      "sourceUrl": "/images/news/helios-proxi-policy-intelligence-20250711.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "news",
+        "title": "从隐身模式走出来，先做政策团队的 beta",
+        "body": "Helios 公布 400 万美元种子轮，Proxi 面向政策、监管、法律、合规和政府团队，但产品仍处于 beta。",
+        "kind": "narrative"
+      },
+      {
+        "id": "four-pieces",
+        "title": "四个模块对应四种日常工作",
+        "body": "Consult 监测环境，Scribe 协作写作，Decipher 处理长文档，CRM 保存利益相关者和会议记录。",
+        "kind": "comparison"
+      },
+      {
+        "id": "claims",
+        "title": "安全和合规目前是公司口径",
+        "body": "Helios 提到加密、政策数据集和合规审计，但公开报道没有提供独立审计报告或系统化评测。",
+        "kind": "boundary"
+      },
+      {
+        "id": "policy-risk",
+        "title": "政策答案必须能回到原文和权限",
+        "body": "法案版本、生效日期、适用范围和例外条款都可能改变结论，流畅摘要不能替代引用与人工确认。",
+        "kind": "technical"
+      },
+      {
+        "id": "infrastructure",
+        "title": "真正的考验是长期反馈",
+        "body": "只有持续记录错误、来源和用户修正，才能判断 Proxi 是否从 demo 走向可依赖的工作基础设施。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "政策 AI 怎样把一条摘要变成可审查的工作结果？",
+      "question": "政策工作需要把来源、版本、权限和行动建议连起来，不能只看模型是否写得顺。",
+      "steps": [
+        {
+          "label": "定义工作范围",
+          "detail": "先记录团队所在机构、负责的政策主题和能采取的行动，防止模型把背景信息当成授权。",
+          "evidence": "user context"
+        },
+        {
+          "label": "抓取原始材料",
+          "detail": "把法案、监管公告和备案文件的链接、版本和生效时间保存下来。",
+          "evidence": "source grounding"
+        },
+        {
+          "label": "生成结构化摘要",
+          "detail": "让模型把义务、例外、风险和待确认事项分开，而不是输出一段没有出处的结论。",
+          "evidence": "structured output"
+        },
+        {
+          "label": "标注关系变化",
+          "detail": "把机构、利益相关者和历史会谈放到同一张关系图里，并允许人修改。",
+          "evidence": "stakeholder CRM"
+        },
+        {
+          "label": "人工确认行动",
+          "detail": "在提交文件、对外表态或改变政策策略前，由有权限的人确认引文和结论。",
+          "evidence": "authorization boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/11/helios-wants-to-be-the-ai-operating-system-for-public-policy-professionals/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "llm",
+      "rag",
+      "context",
+      "citation",
+      "grounding",
+      "authorization"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/11/helios-wants-to-be-the-ai-operating-system-for-public-policy-professionals/",
+        "claim": "TechCrunch 7 月 11 日报道 Helios 走出隐身模式、公布 400 万美元种子轮，并介绍 Proxi 的四个核心模块。",
+        "excerpt": "TechCrunch, “Helios wants to be the AI operating system for public policy professionals,” July 11, 2025."
+      },
+      {
+        "url": "https://heliosintel.ai/",
+        "claim": "Helios 官网提供 Proxi 的产品定位与政策情报背景，用于交叉确认产品名称和目标用户，不替代独立性能验证。",
+        "excerpt": "Helios official website, accessed for product context."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/11/helios-wants-to-be-the-ai-operating-system-for-public-policy-professionals/",
+    "sourceHash": "sha256:296eb007bf578e4eca2fcc842857fb3dcd3a2e4bc28a14c6fec0c1db5e0e9752"
+  },
+  {
+    "slug": "kimi-k2-open-agentic-intelligence-20250711",
+    "title": "Moonshot AI 开放 Kimi K2：1 万亿总参数模型把工具调用放到发布中心",
+    "summary": "7 月 11 日，Moonshot AI 发布 Kimi K2，并通过官方博客和 GitHub 提供 Base 与 Instruct 两个版本。官方资料称这是一个总参数约 1 万亿、每个 token 激活约 320 亿参数的 MoE 模型，训练使用 15.5 万亿 token，重点放在工具调用和 agent 工作流；评测数字仍应按公司口径阅读。",
+    "body": "7 月 11 日，Moonshot AI 在官方博客发布 “Kimi K2: Open Agentic Intelligence”，同时公开了 Kimi-K2-Base 和 Kimi-K2-Instruct 的代码与技术资料。Reuters 当日报道了这次开放模型发布，TechCrunch 则把它列为当天开放模型竞争的新变量。\n\n官方资料把 Kimi K2 定义为混合专家（MoE）语言模型：总参数约 1 万亿，但每个 token 只激活约 320 亿参数。可以把它理解成一组更大的专家网络由路由器按输入选择部分参与计算；“1 万亿”描述的是模型总容量，不等于每次推理都要把 1 万亿参数全部加载并计算。官方还称模型训练使用 15.5 万亿 token，支持 128K 上下文。\n\n这次发布的重点不只是聊天。Moonshot 把工具使用、推理和自主解决问题放在产品说明的中心，并把 Instruct 版本定位为可以直接用于对话和 agent 体验的模型。对开发者来说，真正要接的仍是工具权限、函数参数、错误处理和结果验证；模型会调用工具，不代表它自动获得了应用里的权限。\n\nGitHub 仓库同时给出公司评测，与 DeepSeek、Qwen、Claude 和 GPT-4.1 等模型对比。这样的表格适合说明 Moonshot 想证明什么，但不能单独替代独立复现：任务选择、提示方式、工具实现、硬件和版本都会改变分数。Reuters 报道中的“开源”也要具体化为公开权重、代码和技术报告，不能顺手扩展成训练数据和全部训练流程都公开。\n\nKimi K2 的发布与 OpenAI 同日再次延期放在一起看，能看到开放模型竞争的两条路线：一边是先公开可用模型，另一边是把权重不可撤回当成安全门槛继续等待。对使用者来说，重要的不是参数数字谁更大，而是模型在真实工具链里能否稳定、可追踪地完成任务，并且在超出授权时停下来。",
+    "publishedAt": "2025-07-11",
+    "eventDate": "2025-07-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/kimi-k2-open-agentic-intelligence-20250711.svg",
+      "alt": "Kimi K2 用 MoE 路由把总参数、激活参数和工具调用连接成一条开放模型发布链",
+      "sourceUrl": "/images/news/kimi-k2-open-agentic-intelligence-20250711.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "官方博客和 GitHub 同日开放",
+        "body": "Moonshot AI 发布 Kimi K2，并提供 Base 与 Instruct 两个版本；Reuters 对这次开放模型发布进行了新闻报道。",
+        "kind": "narrative"
+      },
+      {
+        "id": "moe",
+        "title": "总参数和激活参数不是一回事",
+        "body": "Kimi K2 的总参数约 1 万亿，每个 token 激活约 320 亿参数，MoE 路由决定哪些专家参与当前计算。",
+        "kind": "technical"
+      },
+      {
+        "id": "agentic",
+        "title": "工具调用是发布重点",
+        "body": "官方把工具使用和 agent 能力放在中心，但实际应用仍需自己处理函数参数、权限、失败和结果校验。",
+        "kind": "comparison"
+      },
+      {
+        "id": "benchmark-boundary",
+        "title": "官方评测要和独立结果分开",
+        "body": "仓库里的模型对比表是 Moonshot 的评测口径，不能直接当作所有任务和所有部署环境的普遍排名。",
+        "kind": "boundary"
+      },
+      {
+        "id": "open-scope",
+        "title": "“开放”需要写清楚开放了什么",
+        "body": "公开权重、代码和技术报告不自动等于训练数据、完整训练流程和托管服务全部开放。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样读懂一个开放模型的参数和评测表？",
+      "question": "先把容量、每次计算、工具链和评测条件分开，才不会把一行数字当成完整结论。",
+      "steps": [
+        {
+          "label": "区分总容量",
+          "detail": "先看总参数、激活参数和专家数量，理解模型整体容量与单次计算的关系。",
+          "evidence": "MoE architecture"
+        },
+        {
+          "label": "确认开放范围",
+          "detail": "分别记录权重、代码、技术报告、训练数据和托管 API 是否公开。",
+          "evidence": "release scope"
+        },
+        {
+          "label": "检查工具接口",
+          "detail": "观察模型如何声明工具、传递参数和处理错误，不能把“支持工具”当成已获得权限。",
+          "evidence": "function calling"
+        },
+        {
+          "label": "还原评测条件",
+          "detail": "记录任务、提示、版本、硬件和工具实现，避免直接比较不同条件下的分数。",
+          "evidence": "benchmark protocol"
+        },
+        {
+          "label": "做真实任务复现",
+          "detail": "在自己的数据和授权边界内重跑关键任务，检查稳定性、可追溯性和失败处理。",
+          "evidence": "independent evaluation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Moonshot AI",
+      "url": "https://moonshotai.github.io/Kimi-K2/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "tools",
+      "function-calling",
+      "benchmark",
+      "context",
+      "model-routing",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://moonshotai.github.io/Kimi-K2/",
+        "claim": "Moonshot AI 官方 Kimi K2 技术页面说明模型为 1T 总参数、32B 激活参数的 MoE，并强调工具使用、推理和 agent 能力。",
+        "excerpt": "Moonshot AI, “Kimi K2: Open Agentic Intelligence,” July 11, 2025."
+      },
+      {
+        "url": "https://github.com/MoonshotAI/Kimi-K2",
+        "claim": "官方 GitHub 仓库提供 Base/Instruct 版本、15.5T 训练 token、128K 上下文与评测表等技术资料。",
+        "excerpt": "MoonshotAI/Kimi-K2 repository, release materials."
+      },
+      {
+        "url": "https://platform.kimi.com/blog/posts/k2-report",
+        "claim": "Kimi 开放平台博客索引把 Kimi K2: Open Agentic Intelligence 标为 2025 年 7 月 11 日文章。",
+        "excerpt": "Kimi platform blog index, July 11, 2025."
+      },
+      {
+        "url": "https://ca.finance.yahoo.com/news/chinas-moonshot-ai-releases-open-151955794.html",
+        "claim": "Reuters 经 Yahoo Finance 转发的 7 月 11 日报道确认 Moonshot AI 发布开放 Kimi K2；正文不把新闻转述扩展为独立性能证明。",
+        "excerpt": "Reuters, syndicated by Yahoo Finance, July 11, 2025."
+      }
+    ],
+    "canonicalUrl": "https://moonshotai.github.io/Kimi-K2/",
+    "sourceHash": "sha256:beb75fe56d5b5762d1bb127df8c36c3c422390a49eb3d8d46e1bbf2aa3704fe4"
+  },
+  {
+    "slug": "openai-open-model-delay-safety-testing-20250711",
+    "title": "OpenAI 再次推迟开放模型：先补安全测试，发布日期暂无定论",
+    "summary": "7 月 11 日，OpenAI 表示原计划下周发布的开放模型将无限期延期，以继续做安全测试和高风险场景审查。公司没有给出新的日期；由于模型权重一旦公开就难以收回，这次延期把开放发布的安全责任推到了台前。",
+    "body": "7 月 11 日，OpenAI CEO Sam Altman 在 X 上说，公司原计划下周发布的开放模型要再次延期，时间暂时没有定下来。TechCrunch 报道，延期理由是继续进行安全测试并复查高风险领域。OpenAI 研究副总裁 Aidan Clark 随后表示，模型的能力表现让团队满意，但开放模型的发布标准还没有达到。\n\n这次延期和普通的产品排期不同。OpenAI 预计这个模型会让开发者下载并在本地运行，而不是只通过公司的托管接口调用。Altman 特别提到，权重一旦放出去就无法像线上服务那样统一撤回，所以团队希望先把可预见的滥用路径和边界问题多看一遍。公开信息没有给出最终参数规模、准确发布日期或完整的安全测试清单。\n\n同一天，Moonshot AI 发布了 Kimi K2，开放模型的竞争环境又多了一位参与者。这让延期更容易被读成竞争节奏的变化，但公开材料只说明 OpenAI 在补安全工作，不能据此推断它已经落后，或者模型能力已经确定。\n\n对使用者来说，开放权重把一部分控制权交给了下载者，也把一部分责任交给了下载者。模型卡、滥用限制、评测数据和部署建议需要在发布时一起说清楚；发布后还要持续收集问题，但不能假设还能像 SaaS 一样按下一个回滚按钮。\n\n这次新闻留下的关键问题不是“还要等多久”，而是 OpenAI 会把哪些风险证据放在发布之前。只有把测试范围、已知限制和部署者需要承担的工作公开出来，延期才不仅是日程变化，也会成为一次能被外界检查的安全决策。",
+    "publishedAt": "2025-07-11",
+    "eventDate": "2025-07-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-open-model-delay-safety-testing-20250711.svg",
+      "alt": "开放模型发布被安全测试闸门暂缓，权重公开后无法统一收回",
+      "sourceUrl": "/images/news/openai-open-model-delay-safety-testing-20250711.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "delay",
+        "title": "原定下周发布，改为无限期等待",
+        "body": "Sam Altman 说团队需要更多安全测试和高风险领域审查，Aidan Clark 也确认开放模型的标准还没有达到。",
+        "kind": "narrative"
+      },
+      {
+        "id": "irreversible-weights",
+        "title": "开放权重带来不可逆的发布压力",
+        "body": "模型如果能被下载和本地运行，发布方无法像关闭线上接口那样统一撤回全部权重。",
+        "kind": "technical"
+      },
+      {
+        "id": "known-unknowns",
+        "title": "日期、规模和测试清单都还没有公布",
+        "body": "公开材料没有给出新发布日期、最终参数规模或完整测试矩阵，文章不把公司对能力的描述写成外部验证。",
+        "kind": "boundary"
+      },
+      {
+        "id": "competition-context",
+        "title": "Kimi K2 同日发布只是背景，不是因果证据",
+        "body": "Kimi K2 的发布让开放模型竞争更受关注，但不能用它推断 OpenAI 延期的原因或最终竞争结果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "release-evidence",
+        "title": "延期之后要看哪些证据",
+        "body": "安全评测范围、已知限制、部署建议和发布后的问题处理，才决定这次等待是否转化为可检查的准备工作。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "training-pause",
+      "title": "一个开放模型发布前，安全闸门应该检查什么？",
+      "question": "把“再测一测”拆成发布前后的可验证节点，才能看出延期是在补证据，还是只是在推迟日期。",
+      "steps": [
+        {
+          "label": "列出使用边界",
+          "detail": "先写清模型会被下载到哪里、能接哪些工具，以及哪些高风险任务不应直接交给它。",
+          "evidence": "release scope"
+        },
+        {
+          "label": "覆盖滥用场景",
+          "detail": "用提示注入、危险指令、隐私泄露和越权工具调用等条件做成可复现测试。",
+          "evidence": "safety tests"
+        },
+        {
+          "label": "保存评测记录",
+          "detail": "给每个测试保留版本、输入、输出和判定标准，避免只发布一个漂亮的平均分。",
+          "evidence": "evaluation trace"
+        },
+        {
+          "label": "交代已知限制",
+          "detail": "把模型在哪些语言、任务和上下文里容易失效写进模型卡和部署说明。",
+          "evidence": "model card"
+        },
+        {
+          "label": "准备发布后响应",
+          "detail": "开放权重无法统一撤回，部署者需要自己的监控、更新和停用策略。",
+          "evidence": "post-release boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "eval",
+      "benchmark",
+      "context",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/",
+        "claim": "TechCrunch 7 月 11 日报道 OpenAI 将原计划下周发布的开放模型无限期延期，以继续做安全测试和高风险领域审查。",
+        "excerpt": "TechCrunch, “OpenAI delays the release of its open model, again,” July 11, 2025."
+      },
+      {
+        "url": "https://x.com/sama/status/1943837550369812814",
+        "claim": "Sam Altman 的官方 X 帖子说明需要额外安全测试，并强调权重公开后不能收回。",
+        "excerpt": "Sam Altman official X post, July 11, 2025."
+      },
+      {
+        "url": "https://x.com/_aidan_clark_/status/1943842131136983378",
+        "claim": "Aidan Clark 的官方 X 帖子称模型能力表现很好，但开放模型的发布标准仍需更多时间。",
+        "excerpt": "Aidan Clark official X post, July 11, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/10/openais-open-model-is-delayed/",
+        "claim": "TechCrunch 记录 OpenAI 在 6 月首次宣布开放模型延期的背景，正文将其与 7 月 11 日再次延期分开。",
+        "excerpt": "TechCrunch, June 10, 2025; prior delay context."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/",
+    "sourceHash": "sha256:b8ff1ccf2c4f310061f9e275f971c0b944b03964e5eff12c3b38a3a0c410503b"
+  },
+  {
+    "slug": "realsense-intel-spinout-physical-ai-20250711",
+    "title": "RealSense 从英特尔分拆并获 5000 万美元融资，继续做机器人的 3D 视觉",
+    "summary": "7 月 11 日，RealSense 宣布完成从英特尔的分拆，并完成 5000 万美元 A 轮融资。公司将继续做立体深度相机和计算机视觉，服务机器人、工业自动化、生物识别与物理 AI；客户数量、市场占有率等数字主要来自公司公告。",
+    "body": "7 月 11 日，RealSense 在官方公告中宣布完成从英特尔的分拆，并完成 5000 万美元 Series A 融资。公告称，领投方是一家半导体领域私募股权机构，Intel Capital 和 MediaTek Innovation Fund 也参与其中。公司今后会以独立企业身份推进 AI 计算机视觉、机器人、生物识别和 3D 感知。\n\nRealSense 的产品重点是立体深度相机、视觉芯片和相关软件。对机器人来说，深度相机提供的不只是“看见一张图”，还包括物体离相机有多远、人在什么位置、机器人能否安全靠近等空间信息。公司把这些能力放到自主移动机器人、人形机器人、工业自动化、门禁和医疗等场景里。\n\n公告还称，RealSense 有超过 3000 家客户、80 多项全球专利，其相机被嵌入相当比例的移动机器人和人形机器人。这些是公司的客户与市场口径，TechCrunch 的报道也主要围绕分拆和融资展开；公开材料没有提供一份独立的出货量或安全事故统计。\n\n这次分拆值得关注的地方，在于“物理 AI”并不只是把语言模型接到机器人身上。机器人要在现实环境里行动，先要用传感器建立稳定的空间判断，再把感知结果交给规划、控制和安全策略。视觉硬件的可靠性、延迟和在不同光线下的表现，都会影响后面的模型和动作。\n\nRealSense CEO 说公司的目标是让机器人安全地进入日常生活，并把危险和重复劳动交给机器。这个愿景成立的前提，是把“看到了什么”与“允许做什么”分开验证：一颗相机或一个视觉模型可以提供感知证据，却不应自动获得开门、抓取或靠近人的权限。",
+    "publishedAt": "2025-07-11",
+    "eventDate": "2025-07-11",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/realsense-intel-spinout-physical-ai-20250711.svg",
+      "alt": "RealSense 的 3D 深度视觉把机器人从相机画面带向距离、空间和安全边界",
+      "sourceUrl": "/images/news/realsense-intel-spinout-physical-ai-20250711.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "spinout",
+        "title": "从英特尔业务中独立出来",
+        "body": "RealSense 宣布完成分拆并完成 5000 万美元 A 轮，Intel Capital 和 MediaTek Innovation Fund 参与。",
+        "kind": "narrative"
+      },
+      {
+        "id": "perception",
+        "title": "深度相机回答“距离有多远”",
+        "body": "立体视觉把画面与空间深度结合，为机器人导航、避障、抓取和人机距离判断提供输入。",
+        "kind": "technical"
+      },
+      {
+        "id": "company-claims",
+        "title": "客户和专利数字来自公司公告",
+        "body": "3000 多家客户、80 多项专利和机器人装机比例等数字没有在公告外单独验证，文章保留这一来源边界。",
+        "kind": "boundary"
+      },
+      {
+        "id": "physical-ai",
+        "title": "物理 AI 先要稳定感知，再谈动作",
+        "body": "感知、规划、控制和权限是不同层次；相机能提供证据，但不自动决定机器人可以做什么。",
+        "kind": "comparison"
+      },
+      {
+        "id": "safety",
+        "title": "安全不是相机的单一指标",
+        "body": "延迟、光线、遮挡和异常检测都会影响实际表现，需要在真实环境中做评估和人工接管设计。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "robot-safety",
+      "title": "一台机器人如何把视觉信息变成受控动作？",
+      "question": "把感知、判断和权限拆开，才能看见物理 AI 的安全边界。",
+      "steps": [
+        {
+          "label": "采集深度",
+          "detail": "相机同时记录画面和距离，给出物体、地面与人的空间关系。",
+          "evidence": "depth perception"
+        },
+        {
+          "label": "检查输入质量",
+          "detail": "在弱光、遮挡、反光和快速移动场景下标记不确定的感知结果。",
+          "evidence": "sensor evaluation"
+        },
+        {
+          "label": "生成候选动作",
+          "detail": "规划系统根据空间信息提出靠近、绕行或停止等选项，但先不执行。",
+          "evidence": "planning boundary"
+        },
+        {
+          "label": "校验权限",
+          "detail": "把人与机器人之间的距离、区域规则和任务授权交给独立的安全策略检查。",
+          "evidence": "authorization"
+        },
+        {
+          "label": "允许人工接管",
+          "detail": "感知异常或任务风险升高时，系统应停机、报警并让人重新确认。",
+          "evidence": "human override"
+        }
+      ]
+    },
+    "source": {
+      "name": "RealSense",
+      "url": "https://www.realsenseai.com/news-insights/news/realsense-completes-spin-out-from-intel-raises-50-million-to-accelerate-ai-powered-vision-for-robotics-and-biometrics/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "llm",
+      "context",
+      "eval",
+      "event",
+      "authorization"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.realsenseai.com/news-insights/news/realsense-completes-spin-out-from-intel-raises-50-million-to-accelerate-ai-powered-vision-for-robotics-and-biometrics/",
+        "claim": "RealSense 官方公告称 2025 年 7 月 11 日完成从英特尔分拆并完成 5000 万美元 Series A，投资方包括 Intel Capital 和 MediaTek Innovation Fund。",
+        "excerpt": "RealSense official press release, July 11, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/07/11/realsense-spins-out-of-intel-to-scale-its-stereoscopic-imaging-technology/",
+        "claim": "TechCrunch 报道 RealSense 分拆后继续扩展立体成像技术，并介绍其机器人、无人机和生物识别应用。",
+        "excerpt": "TechCrunch, “RealSense spins out of Intel to scale its stereoscopic imaging technology,” July 11, 2025."
+      }
+    ],
+    "canonicalUrl": "https://www.realsenseai.com/news-insights/news/realsense-completes-spin-out-from-intel-raises-50-million-to-accelerate-ai-powered-vision-for-robotics-and-biometrics/",
+    "sourceHash": "sha256:8a3ee4b89fcc9e3615a2fa8ac91001060fc0710a1b1b94d2e4f2d5d075e0ef95"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
