@@ -61,6 +61,7 @@ import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage,
 import { AcidTermPage, ApiKeyTermPage, ColumnTermPage, NosqlTermPage, RbacTermPage, RelationalDatabaseTermPage, RowTermPage, TcpTermPage, TlsHandshakeTermPage, UdpTermPage } from "@/components/terms/BackendNetworkTermPages";
 import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/firewall";
 import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
+import { NetworkPortTermPage } from "@/components/terms/backend-boundary-pages/network-port";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -165,6 +166,7 @@ const articleTermPages = {
   "tls-handshake": TlsHandshakeTermPage,
   firewall: FirewallTermPage,
   "ip-address": IpAddressTermPage,
+  "network-port": NetworkPortTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

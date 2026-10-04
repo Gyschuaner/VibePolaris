@@ -11228,250 +11228,244 @@
     ]
   },
   {
-    "slug": "network-port",
-    "lead": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
-    "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
-    "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
-    "sceneKind": "matrix",
-    "sceneTitle": "协议、端口、监听与防火墙的四格判断",
-    "actionLabel": "探测下一格",
-    "actors": [
-      {
-        "id": "port-probe",
-        "label": "探测器",
-        "detail": "203.0.113.7",
-        "icon": "network",
-        "group": "客户端"
-      },
-      {
-        "id": "tcp-53",
-        "label": "TCP 53",
-        "detail": "DNS over TCP",
-        "icon": "server",
-        "group": "端点"
-      },
-      {
-        "id": "udp-53",
-        "label": "UDP 53",
-        "detail": "无监听",
-        "icon": "server",
-        "group": "端点"
-      },
-      {
-        "id": "tcp-443",
-        "label": "TCP 443",
-        "detail": "TLS 服务",
-        "icon": "shield",
-        "group": "端点"
-      },
-      {
-        "id": "udp-443",
-        "label": "UDP 443",
-        "detail": "被防火墙拒绝",
-        "icon": "shield",
-        "group": "端点"
-      },
-      {
-        "id": "port-result",
-        "label": "探测结果",
-        "detail": "协议相关",
-        "icon": "chart",
-        "group": "输出"
-      }
-    ],
-    "edges": [
-      {
-        "id": "probe-tcp53",
-        "from": "port-probe",
-        "to": "tcp-53",
-        "label": "TCP connect"
-      },
-      {
-        "id": "probe-udp53",
-        "from": "port-probe",
-        "to": "udp-53",
-        "label": "UDP datagram"
-      },
-      {
-        "id": "probe-tcp443",
-        "from": "port-probe",
-        "to": "tcp-443",
-        "label": "TCP connect"
-      },
-      {
-        "id": "probe-udp443",
-        "from": "port-probe",
-        "to": "udp-443",
-        "label": "UDP datagram"
-      },
-      {
-        "id": "tcp53-result",
-        "from": "tcp-53",
-        "to": "port-result",
-        "label": "应答"
-      },
-      {
-        "id": "udp53-result",
-        "from": "udp-53",
-        "to": "port-result",
-        "label": "无应答"
-      },
-      {
-        "id": "tcp443-result",
-        "from": "tcp-443",
-        "to": "port-result",
-        "label": "应答"
-      },
-      {
-        "id": "udp443-result",
-        "from": "udp-443",
-        "to": "port-result",
-        "label": "丢弃"
-      }
-    ],
-    "frames": [
-      {
-        "label": "TCP 53 建立连接",
-        "note": "该协议端点有进程监听且防火墙允许。",
-        "activeIds": [
-          "port-probe",
-          "tcp-53",
-          "port-result"
-        ],
-        "doneIds": [
-          "tcp-53"
-        ],
-        "mutedIds": [
-          "udp-53",
-          "tcp-443",
-          "udp-443"
-        ],
-        "values": {
-          "port-result": "TCP SYN-ACK",
-          "tcp-53": "listening"
-        },
-        "activeEdgeIds": [
-          "probe-tcp53",
-          "tcp53-result"
-        ]
-      },
-      {
-        "label": "UDP 53 没有监听者",
-        "note": "相同数字不共享 TCP 的监听状态，数据报没有应用响应。",
-        "activeIds": [
-          "port-probe",
-          "udp-53",
-          "port-result"
-        ],
-        "doneIds": [
-          "udp-53"
-        ],
-        "mutedIds": [
-          "tcp-53",
-          "tcp-443",
-          "udp-443"
-        ],
-        "values": {
-          "port-result": "timeout",
-          "udp-53": "no listener"
-        },
-        "activeEdgeIds": [
-          "probe-udp53",
-          "udp53-result"
-        ]
-      },
-      {
-        "label": "TCP 443 返回 TLS 首包",
-        "note": "端口可达且应用协议开始响应。",
-        "activeIds": [
-          "port-probe",
-          "tcp-443",
-          "port-result"
-        ],
-        "doneIds": [
-          "tcp-443"
-        ],
-        "mutedIds": [
-          "tcp-53",
-          "udp-53",
-          "udp-443"
-        ],
-        "values": {
-          "port-result": "ServerHello",
-          "tcp-443": "TLS"
-        },
-        "activeEdgeIds": [
-          "probe-tcp443",
-          "tcp443-result"
-        ]
-      },
-      {
-        "label": "UDP 443 在网络层被拒",
-        "note": "即使存在潜在服务，防火墙丢弃也让客户端观察到超时。",
-        "activeIds": [
-          "port-probe",
-          "udp-443",
-          "port-result"
-        ],
-        "doneIds": [
-          "udp-443"
-        ],
-        "mutedIds": [
-          "tcp-53",
-          "udp-53",
-          "tcp-443"
-        ],
-        "values": {
-          "udp-443": "DROP",
-          "port-result": "timeout"
-        },
-        "activeEdgeIds": [
-          "probe-udp443",
-          "udp443-result"
-        ],
-        "metric": {
-          "label": "成功端点",
-          "value": "2 / 4"
-        }
-      }
-    ],
-    "insight": "描述端口必须同时写协议、地址、监听进程和网络过滤状态。",
-    "quiz": {
-      "question": "TCP 53 可达，能否推出 UDP 53 也可达？",
-      "options": [
-        {
-          "label": "不能，它们是不同传输协议的端点",
-          "correct": true
-        },
-        {
-          "label": "能，端口号相同就共享状态",
-          "correct": false
-        },
-        {
-          "label": "能，只要主机名相同",
-          "correct": false
-        }
+  "slug": "network-port",
+  "lead": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
+  "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
+  "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
+  "sceneKind": "matrix",
+  "sceneTitle": "协议、端口、监听与防火墙的四格判断",
+  "actionLabel": "探测下一格",
+  "actors": [
+    {
+      "id": "port-probe",
+      "label": "探测器",
+      "detail": "203.0.113.7",
+      "icon": "network",
+      "group": "客户端"
+    },
+    {
+      "id": "tcp-53",
+      "label": "TCP 53",
+      "detail": "DNS over TCP",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "udp-53",
+      "label": "UDP 53",
+      "detail": "无监听",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "tcp-443",
+      "label": "TCP 443",
+      "detail": "TLS 服务",
+      "icon": "shield",
+      "group": "端点"
+    },
+    {
+      "id": "udp-443",
+      "label": "UDP 443",
+      "detail": "被防火墙拒绝",
+      "icon": "shield",
+      "group": "端点"
+    },
+    {
+      "id": "port-result",
+      "label": "探测结果",
+      "detail": "协议相关",
+      "icon": "chart",
+      "group": "输出"
+    }
+  ],
+  "edges": [
+    {
+      "id": "probe-tcp53",
+      "from": "port-probe",
+      "to": "tcp-53",
+      "label": "TCP connect"
+    },
+    {
+      "id": "probe-udp53",
+      "from": "port-probe",
+      "to": "udp-53",
+      "label": "UDP datagram"
+    },
+    {
+      "id": "probe-tcp443",
+      "from": "port-probe",
+      "to": "tcp-443",
+      "label": "TCP connect"
+    },
+    {
+      "id": "probe-udp443",
+      "from": "port-probe",
+      "to": "udp-443",
+      "label": "UDP datagram"
+    },
+    {
+      "id": "tcp53-result",
+      "from": "tcp-53",
+      "to": "port-result",
+      "label": "应答"
+    },
+    {
+      "id": "udp53-result",
+      "from": "udp-53",
+      "to": "port-result",
+      "label": "无应答"
+    },
+    {
+      "id": "tcp443-result",
+      "from": "tcp-443",
+      "to": "port-result",
+      "label": "应答"
+    },
+    {
+      "id": "udp443-result",
+      "from": "udp-443",
+      "to": "port-result",
+      "label": "丢弃"
+    }
+  ],
+  "frames": [
+    {
+      "label": "TCP 53 建立连接",
+      "note": "该协议端点有进程监听且防火墙允许。",
+      "activeIds": [
+        "port-probe",
+        "tcp-53",
+        "port-result"
       ],
-      "success": "端口号要与 TCP 或 UDP 一起判断。",
-      "retry": "相同数字不表示相同套接字。"
+      "doneIds": [
+        "tcp-53"
+      ],
+      "mutedIds": [
+        "udp-53",
+        "tcp-443",
+        "udp-443"
+      ],
+      "values": {
+        "port-result": "TCP SYN-ACK",
+        "tcp-53": "listening"
+      },
+      "activeEdgeIds": [
+        "probe-tcp53",
+        "tcp53-result"
+      ]
     },
-    "prompt": {
-      "title": "定位一个端口不可达问题",
-      "text": "请给出目标 IP、TCP/UDP、端口、监听地址、进程、主机防火墙、网络 ACL 和实际探测结果。"
+    {
+      "label": "UDP 53 没有监听者",
+      "note": "相同数字不共享 TCP 的监听状态，数据报没有应用响应。",
+      "activeIds": [
+        "port-probe",
+        "udp-53",
+        "port-result"
+      ],
+      "doneIds": [
+        "udp-53"
+      ],
+      "mutedIds": [
+        "tcp-53",
+        "tcp-443",
+        "udp-443"
+      ],
+      "values": {
+        "port-result": "timeout",
+        "udp-53": "no listener"
+      },
+      "activeEdgeIds": [
+        "probe-udp53",
+        "udp53-result"
+      ]
     },
-    "sources": [
+    {
+      "label": "443 换协议",
+      "note": "TCP 443 进入 TLS，UDP 443 在网络过滤处停止；同一个数字仍要分别判断。",
+      "activeIds": [
+        "port-probe",
+        "tcp-443",
+        "udp-443",
+        "port-result"
+      ],
+      "doneIds": [
+        "tcp-443",
+        "udp-443"
+      ],
+      "mutedIds": [
+        "tcp-53",
+        "udp-53"
+      ],
+      "values": {
+        "port-result": "TCP ServerHello · UDP timeout",
+        "tcp-443": "TLS",
+        "udp-443": "DROP"
+      },
+      "activeEdgeIds": [
+        "probe-tcp443",
+        "tcp443-result",
+        "probe-udp443",
+        "udp443-result"
+      ],
+      "metric": {
+        "label": "同数字的两种结果",
+        "value": "TCP 成功 1 · UDP 超时 1"
+      }
+    }
+  ],
+  "insight": "描述端口必须同时写协议、地址、监听进程和网络过滤状态。",
+  "quiz": {
+    "question": "TCP 53 可达，能否推出 UDP 53 也可达？",
+    "options": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc6335.html",
-        "label": "RFC 6335 · Service Names and Ports",
-        "note": "协议定义与报文语义"
+        "label": "不能，它们是不同传输协议的端点",
+        "correct": true
       },
       {
-        "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
-        "label": "IANA · Port Registry",
-        "note": "协议参数与注册信息"
+        "label": "能，端口号相同就共享状态",
+        "correct": false
+      },
+      {
+        "label": "能，只要主机名相同",
+        "correct": false
       }
-    ]
+    ],
+    "success": "端口号要与 TCP 或 UDP 一起判断。",
+    "retry": "相同数字不表示相同套接字。"
   },
+  "prompt": {
+    "title": "定位一个端口不可达问题",
+    "text": "请给出目标 IP、TCP/UDP、端口、监听地址、进程、主机防火墙、网络 ACL 和实际探测结果。"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9293.html",
+      "label": "RFC 9293 · Transmission Control Protocol",
+      "note": "TCP 端口与连接端点"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc768.html",
+      "label": "RFC 768 · User Datagram Protocol",
+      "note": "UDP 端口与数据报语义"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc6335.html",
+      "label": "RFC 6335 · Service Name and Port Number Procedures",
+      "note": "端口范围与登记边界"
+    },
+    {
+      "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+      "label": "IANA · Service Name and Port Number Registry",
+      "note": "服务名、协议与端口登记"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
+      "label": "RFC 1122 · Requirements for Internet Hosts",
+      "note": "主机交付、丢弃与端口错误"
+    }
+  ]
+},
   {
     "slug": "packet",
     "lead": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",

@@ -693,14 +693,55 @@
     "promptTitle": "排查 IP 连通性", "prompt": "请按 DNS 结果、源和目标 IP、路由、防火墙与端口检查这次连接失败。", "relatedSlugs": ["dns-resolver", "network-port", "packet", "firewall"]
   },
   {
-    "zh": "端口", "en": "Network Port", "slug": "network-port", "cat": "技术栈",
-    "say": "同一台设备上用数字区分不同网络服务。", "aliases": ["网络端口", "Port", "服务端口"],
-    "question": "同一个 IP 上为什么能同时运行网站和数据库？", "definition": "网络端口是传输层中的数字标识，用于把到达主机的数据交给对应进程或服务。", "boundary": "端口不是物理插口；开放端口也不表示服务一定可用或已授权访问。",
-    "demoType": "branch", "demoTitle": "同一 IP 的流量怎样进入不同服务",
-    "demoSteps": [{"label":"HTTPS","value":"203.0.113.10:443","note":"流量交给 Web 服务。"},{"label":"SSH","value":"203.0.113.10:22","note":"流量交给远程登录服务。"},{"label":"未监听","value":"203.0.113.10:9000","note":"没有进程接收时连接失败。"}],
-    "quizQuestion": "IP 相同但端口不同通常表示什么？", "quizOptions": ["同一主机上的不同服务", "同一数据库的不同列", "不同页面颜色"], "correctText": "端口帮助主机区分网络服务。", "wrongText": "数据库列和页面颜色与网络端口无关。",
-    "promptTitle": "检查端口暴露", "prompt": "请列出这个服务实际监听、容器映射和防火墙开放的端口，指出不必要的公网暴露。", "relatedSlugs": ["ip-address", "tcp", "firewall"]
-  },
+  "zh": "端口",
+  "en": "Network Port",
+  "slug": "network-port",
+  "cat": "技术栈",
+  "say": "同一台设备上用数字区分不同网络服务。",
+  "aliases": [
+    "网络端口",
+    "Port",
+    "服务端口"
+  ],
+  "question": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
+  "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
+  "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
+  "demoType": "branch",
+  "demoTitle": "同一数字为什么跑出不同结果",
+  "demoSteps": [
+    {
+      "label": "TCP 53",
+      "value": "TCP 203.0.113.7:53 → SYN-ACK",
+      "note": "TCP 53 有监听，协议、端口和过滤都对上。"
+    },
+    {
+      "label": "UDP 53",
+      "value": "UDP 203.0.113.7:53 → timeout",
+      "note": "相同的 53 不会继承 TCP 53 的监听状态。"
+    },
+    {
+      "label": "443 换协议",
+      "value": "TCP 443 → ServerHello · UDP 443 → timeout",
+      "note": "同一数字换协议，结果要重新判断；UDP 443 还被网络过滤。"
+    }
+  ],
+  "quizQuestion": "TCP 53 可达，能否推出 UDP 53 也可达？",
+  "quizOptions": [
+    "不能，它们是不同传输协议的端点",
+    "能，端口号相同就共享状态",
+    "能，只要主机名相同"
+  ],
+  "correctText": "端口号要与 TCP 或 UDP 一起判断。",
+  "wrongText": "相同数字不表示相同端点。",
+  "promptTitle": "定位端口不可达",
+  "prompt": "请给出目标 IP、TCP/UDP、端口、监听地址、进程、主机防火墙、网络 ACL 和实际探测结果。",
+  "relatedSlugs": [
+    "ip-address",
+    "tcp",
+    "udp",
+    "firewall"
+  ]
+},
   {
     "zh": "数据包", "en": "Packet", "slug": "packet", "cat": "技术栈",
     "say": "网络把数据分成带有地址和控制信息的小块进行传输。", "aliases": ["网络包", "Packet", "报文"],
