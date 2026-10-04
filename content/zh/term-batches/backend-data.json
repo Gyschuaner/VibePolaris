@@ -1595,13 +1595,54 @@
   ]
 },
   {
-    "zh": "输入校验", "en": "Input Validation", "slug": "input-validation", "cat": "技术栈",
-    "say": "在数据进入业务逻辑前，检查类型、格式、长度、范围和允许值。", "aliases": ["输入验证", "参数校验", "Validation"],
-    "question": "前端已经限制了输入长度，后端还需要再检查吗？", "definition": "输入校验把外部数据与明确规则比较，不符合规则时拒绝或返回可处理的错误。", "boundary": "输入校验不能替代授权和上下文转义；客户端校验也不能替代服务端校验。",
-    "demoType": "branch", "demoTitle": "分页参数怎样被接受或拒绝",
-    "demoSteps": [{"label":"收到参数","value":"limit = 10000","note":"外部输入进入接口边界。"},{"label":"执行规则","value":"1 ≤ limit ≤ 100","note":"当前值超过允许上限。"},{"label":"拒绝处理","value":"400 · limit 超出范围","note":"查询没有进入数据库。"}],
-    "quizQuestion": "服务端为什么仍需校验前端提交的数据？", "quizOptions": ["客户端限制可以被绕过", "前端会自动修复后端", "校验只影响页面颜色"], "correctText": "请求可以脱离页面直接发送，服务端必须守住自己的输入边界。", "wrongText": "前端不能替服务端执行可信校验，页面颜色也与参数合法性无关。",
-    "promptTitle": "设计输入校验", "prompt": "请为这个接口的路径、查询、请求头和请求体定义类型、格式、长度、范围与错误响应。", "relatedSlugs": ["request-body", "data-validation", "api-testing", "authorization"]
+    "zh": "输入校验",
+    "en": "Input Validation",
+    "slug": "input-validation",
+    "cat": "技术栈",
+    "say": "先把外部数据读成可判断的值，再让它靠近业务。",
+    "aliases": [
+      "输入验证",
+      "参数校验",
+      "Validation"
+    ],
+    "question": "账单页面已经把日期标绿，为什么服务端还要把格式、日期顺序、查询字段和账号归属分开检查？",
+    "definition": "输入校验在信任边界先解析外部数据，再按结构、类型、格式和业务语义规则拒绝不合格值；它让后续逻辑只接收约定范围内的数据。",
+    "boundary": "它不能替代参数化查询、上下文输出编码或对象级授权；合法 UUID 只说明值可解释，不说明当前主体能访问对应对象。",
+    "demoType": "branch",
+    "demoTitle": "同一份账单请求怎样在四道门前停下或继续",
+    "demoSteps": [
+      {
+        "label": "先解析请求",
+        "value": "JSON → schema · 4 fields",
+        "note": "大小、结构、类型和必填字段先过服务端边界。"
+      },
+      {
+        "label": "检查日期含义",
+        "value": "endAt < startAt → 422",
+        "note": "两个日期都能解析，先后关系仍可能不成立。"
+      },
+      {
+        "label": "固定查询入口",
+        "value": "createdAt → created_at",
+        "note": "允许列表决定能用哪一列，用户值不会拼成 SQL。"
+      }
+    ],
+    "quizQuestion": "accountId 的 UUID 格式合法，但它属于别人时，应该哪一层阻断？",
+    "quizOptions": [
+      "授权层返回 403 或产品约定的隐藏式 404",
+      "格式层把 UUID 说成非法",
+      "只要前端没有显示这个账号就算通过"
+    ],
+    "correctText": "校验先确认值能被安全解释，授权再确认当前主体能否访问它。",
+    "wrongText": "页面限制、格式正确和对象归属是三件事，不能让前端或 UUID 校验代替授权。",
+    "promptTitle": "给一条接口画出输入边界",
+    "prompt": "请列出解析限制、字段结构、业务语义、查询允许列表、授权条件和每道门失败时不会发生的副作用。",
+    "relatedSlugs": [
+      "request-body",
+      "data-validation",
+      "authorization",
+      "api-testing"
+    ]
   },
   {
     "zh": "静态加密", "en": "Encryption at Rest", "slug": "encryption-at-rest", "cat": "技术栈",

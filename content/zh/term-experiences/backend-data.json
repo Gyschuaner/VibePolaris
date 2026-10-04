@@ -18866,51 +18866,65 @@
   },
   {
     "slug": "input-validation",
-    "lead": "前端已经拦住 age=-1，为什么攻击者绕过页面后，服务端仍要做 400 与 403 两道不同判断？",
-    "definition": "输入校验在信任边界按允许规则检查外部数据的语法和语义，并在服务端再次执行。",
-    "boundary": "校验不能替代授权、参数化查询或输出编码。格式合法的 accountId 仍可能指向他人的资源。",
-    "sceneKind": "layers",
-    "sceneTitle": "语法、语义与授权三道独立关口",
-    "actionLabel": "绕过前端并更换输入",
+    "lead": "账单页面已经把日期标绿，为什么服务端还要把格式、日期顺序、查询字段和账号归属分开检查？",
+    "definition": "输入校验在信任边界先解析外部数据，再按结构、类型、格式和业务语义规则拒绝不合格值。",
+    "boundary": "校验不能替代参数化查询、输出编码或授权；合法 UUID 只说明值可解释，不代表当前主体能读取对应对象。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "四道门决定查询能不能开始",
+    "actionLabel": "逐门推进请求",
     "actors": [
       {
         "id": "client-form",
         "label": "浏览器表单",
-        "detail": "可绕过",
+        "detail": "绿灯可绕过",
         "icon": "browser",
-        "group": "客户端"
+        "group": "外部"
       },
       {
-        "id": "api-boundary",
-        "label": "API Schema",
-        "detail": "类型与格式",
+        "id": "request-parser",
+        "label": "请求解析器",
+        "detail": "限制大小与深度",
+        "icon": "code",
+        "group": "结构"
+      },
+      {
+        "id": "schema-gate",
+        "label": "结构规则",
+        "detail": "type · required · fields",
         "icon": "layout",
-        "group": "服务端校验"
+        "group": "结构"
       },
       {
-        "id": "semantic-rule",
+        "id": "semantic-gate",
         "label": "语义规则",
-        "detail": "1 ≤ age ≤ 120",
-        "icon": "shield",
-        "group": "服务端校验"
+        "detail": "endAt ≥ startAt",
+        "icon": "code",
+        "group": "语义"
+      },
+      {
+        "id": "query-map",
+        "label": "查询允许列表",
+        "detail": "createdAt → created_at",
+        "icon": "layout",
+        "group": "查询"
       },
       {
         "id": "authz-gate",
-        "label": "授权检查",
+        "label": "对象授权",
         "detail": "subject owns account",
         "icon": "key",
         "group": "授权"
       },
       {
-        "id": "query-handler",
-        "label": "业务查询",
+        "id": "database",
+        "label": "账单查询",
         "detail": "尚未执行",
         "icon": "database",
-        "group": "处理"
+        "group": "副作用"
       },
       {
         "id": "request-result",
-        "label": "请求结果",
+        "label": "HTTP 结果",
         "detail": "waiting",
         "icon": "message",
         "group": "输出"
@@ -18918,147 +18932,230 @@
     ],
     "edges": [
       {
-        "id": "form-schema",
+        "id": "client-parser",
         "from": "client-form",
-        "to": "api-boundary",
-        "label": "直接请求"
+        "to": "request-parser",
+        "label": "直接发请求"
+      },
+      {
+        "id": "parser-schema",
+        "from": "request-parser",
+        "to": "schema-gate",
+        "label": "解析完成"
       },
       {
         "id": "schema-semantic",
-        "from": "api-boundary",
-        "to": "semantic-rule",
-        "label": "格式通过"
+        "from": "schema-gate",
+        "to": "semantic-gate",
+        "label": "结构通过"
       },
       {
-        "id": "semantic-authz",
-        "from": "semantic-rule",
+        "id": "semantic-map",
+        "from": "semantic-gate",
+        "to": "query-map",
+        "label": "日期成立"
+      },
+      {
+        "id": "map-authz",
+        "from": "query-map",
         "to": "authz-gate",
-        "label": "值通过"
+        "label": "入口固定"
       },
       {
-        "id": "authz-query",
+        "id": "authz-db",
         "from": "authz-gate",
-        "to": "query-handler",
+        "to": "database",
         "label": "主体允许"
       },
       {
-        "id": "gates-result",
+        "id": "db-result",
+        "from": "database",
+        "to": "request-result",
+        "label": "返回账单"
+      },
+      {
+        "id": "authz-result",
         "from": "authz-gate",
         "to": "request-result",
-        "label": "返回结果"
+        "label": "拒绝结果"
       }
     ],
     "frames": [
       {
-        "label": "绕过前端发送 age=-1",
-        "note": "浏览器提示不是安全边界，原始请求仍能直接到 API。",
+        "label": "页面绿灯，服务端还没信任",
+        "note": "浏览器的校验可以改善体验，但请求仍能绕过页面直接抵达 API。",
         "activeIds": [
           "client-form",
-          "api-boundary",
-          "semantic-rule",
+          "request-parser",
+          "request-result"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "schema-gate",
+          "semantic-gate",
+          "query-map",
+          "authz-gate",
+          "database"
+        ],
+        "values": {
+          "client-form": "format looks okay",
+          "request-parser": "raw JSON",
+          "request-result": "waiting"
+        },
+        "activeEdgeIds": [
+          "client-parser"
+        ]
+      },
+      {
+        "label": "解析与结构规则通过",
+        "note": "服务器先限制解析资源，再确认字段类型、必填字段和未知字段的处理方式。",
+        "activeIds": [
+          "request-parser",
+          "schema-gate"
+        ],
+        "doneIds": [
+          "client-form"
+        ],
+        "mutedIds": [
+          "semantic-gate",
+          "query-map",
+          "authz-gate",
+          "database",
+          "request-result"
+        ],
+        "values": {
+          "request-parser": "JSON parsed",
+          "schema-gate": "type ✓ · required ✓"
+        },
+        "activeEdgeIds": [
+          "client-parser",
+          "parser-schema"
+        ]
+      },
+      {
+        "label": "日期关系不成立，停在语义门",
+        "note": "两个日期都能解析，但 endAt 早于 startAt；查询没有被执行。",
+        "activeIds": [
+          "semantic-gate",
           "request-result"
         ],
         "doneIds": [
-          "semantic-rule"
+          "client-form",
+          "request-parser",
+          "schema-gate"
         ],
         "mutedIds": [
+          "query-map",
           "authz-gate",
-          "query-handler"
+          "database"
         ],
         "values": {
-          "client-form": "validation bypassed",
-          "api-boundary": "number parsed",
-          "semantic-rule": "-1 < 1",
-          "request-result": "400 RANGE"
+          "semantic-gate": "endAt < startAt",
+          "request-result": "422 · 0 query"
         },
         "activeEdgeIds": [
-          "form-schema",
           "schema-semantic"
-        ]
-      },
-      {
-        "label": "畸形邮箱在结构层返回 400",
-        "note": "字符串类型虽正确，但不满足系统允许的邮箱格式。",
-        "activeIds": [
-          "api-boundary",
-          "request-result"
-        ],
-        "doneIds": [
-          "api-boundary"
-        ],
-        "mutedIds": [
-          "semantic-rule",
-          "authz-gate",
-          "query-handler"
-        ],
-        "values": {
-          "api-boundary": "email invalid",
-          "request-result": "400 FORMAT"
-        },
-        "activeEdgeIds": [
-          "form-schema"
-        ]
-      },
-      {
-        "label": "他人 accountId 通过格式校验",
-        "note": "UUID 与范围全部合法，所以请求继续进入授权，而不是被误判为坏输入。",
-        "activeIds": [
-          "api-boundary",
-          "semantic-rule",
-          "authz-gate"
-        ],
-        "doneIds": [
-          "api-boundary",
-          "semantic-rule"
-        ],
-        "mutedIds": [
-          "query-handler"
-        ],
-        "values": {
-          "api-boundary": "valid UUID",
-          "semantic-rule": "valid value",
-          "authz-gate": "owner mismatch"
-        },
-        "activeEdgeIds": [
-          "schema-semantic",
-          "semantic-authz"
-        ]
-      },
-      {
-        "label": "授权层以 403 阻止业务查询",
-        "note": "格式合法不代表主体有权访问；数据库查询没有执行。",
-        "activeIds": [
-          "authz-gate",
-          "query-handler",
-          "request-result"
-        ],
-        "doneIds": [
-          "authz-gate"
-        ],
-        "mutedIds": [
-          "client-form",
-          "api-boundary",
-          "semantic-rule"
-        ],
-        "values": {
-          "request-result": "403 FORBIDDEN",
-          "query-handler": "not executed"
-        },
-        "activeEdgeIds": [
-          "gates-result"
         ],
         "metric": {
           "label": "数据库查询",
-          "value": "0"
+          "value": "0 次"
+        }
+      },
+      {
+        "label": "修正日期，排序只能走映射",
+        "note": "createdAt 是公开输入值，created_at 才是代码里允许的列名；两者之间由固定表连接。",
+        "activeIds": [
+          "query-map"
+        ],
+        "doneIds": [
+          "client-form",
+          "request-parser",
+          "schema-gate",
+          "semantic-gate"
+        ],
+        "mutedIds": [
+          "authz-gate",
+          "database",
+          "request-result"
+        ],
+        "values": {
+          "query-map": "createdAt → created_at",
+          "request-result": "query ready"
+        },
+        "activeEdgeIds": [
+          "schema-semantic",
+          "semantic-map"
+        ]
+      },
+      {
+        "label": "账号格式合法，归属不匹配",
+        "note": "acct-lee 是合法 UUID，但它属于别的主体；授权层返回拒绝，数据库仍保持 0 次查询。",
+        "activeIds": [
+          "authz-gate",
+          "request-result"
+        ],
+        "doneIds": [
+          "client-form",
+          "request-parser",
+          "schema-gate",
+          "semantic-gate",
+          "query-map"
+        ],
+        "mutedIds": [
+          "database"
+        ],
+        "values": {
+          "authz-gate": "acct-lee ≠ 阿青",
+          "request-result": "403 · 0 query"
+        },
+        "activeEdgeIds": [
+          "semantic-map",
+          "map-authz",
+          "authz-result"
+        ],
+        "metric": {
+          "label": "数据库查询",
+          "value": "0 次"
+        }
+      },
+      {
+        "label": "换成自己的账号才交付",
+        "note": "结构、语义、查询入口和对象归属都通过后，查询才返回账单。",
+        "activeIds": [
+          "authz-gate",
+          "database",
+          "request-result"
+        ],
+        "doneIds": [
+          "client-form",
+          "request-parser",
+          "schema-gate",
+          "semantic-gate",
+          "query-map"
+        ],
+        "mutedIds": [],
+        "values": {
+          "authz-gate": "acct-ash = 阿青",
+          "database": "1 SELECT",
+          "request-result": "200 · 12 rows"
+        },
+        "activeEdgeIds": [
+          "map-authz",
+          "authz-db",
+          "db-result"
+        ],
+        "metric": {
+          "label": "数据库查询",
+          "value": "1 次"
         }
       }
     ],
-    "insight": "输入校验负责数据能不能被解释，授权负责这个主体能不能做这件事。",
+    "insight": "输入校验负责让数据可被安全解释；授权负责判断这个主体能不能访问这个对象。",
     "quiz": {
-      "question": "合法 UUID 指向他人账号时，应该在哪一层阻断？",
+      "question": "合法 UUID 指向别人的账号时，应该在哪一层阻断？",
       "options": [
         {
-          "label": "授权层返回 403",
+          "label": "授权层返回 403，或按产品契约隐藏成 404",
           "correct": true
         },
         {
@@ -19066,27 +19163,42 @@
           "correct": false
         },
         {
-          "label": "前端把输入框隐藏即可",
+          "label": "前端把输入框隐藏起来即可",
           "correct": false
         }
       ],
-      "success": "语法有效与访问允许是两项独立判断。",
-      "retry": "先问“值是否合法”，再问“主体是否有权”。"
+      "success": "语法有效、语义成立与访问允许是三项独立判断。",
+      "retry": "先问“值能不能被解释”，再问“主体有没有权”。"
     },
     "prompt": {
       "title": "拆分接口的输入与权限边界",
-      "text": "请分别写出客户端提示、服务端格式规则、业务范围规则和授权条件，并为每道关口定义状态码、错误码和不会发生的副作用。"
+      "text": "请分别写出解析限制、服务端结构规则、跨字段语义、查询允许列表和授权条件，并为每道门定义状态码、错误码及不会发生的副作用。"
     },
     "sources": [
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
-        "label": "OWASP Input Validation Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "OWASP · Input Validation",
+        "note": "结构、语义、解析限制与客户端边界"
+      },
+      {
+        "url": "https://json-schema.org/draft/2020-12/json-schema-validation",
+        "label": "JSON Schema · Validation 2020-12",
+        "note": "结构断言与 format 的实现语义"
       },
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
-        "label": "OWASP Authorization Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "OWASP · Authorization",
+        "note": "主体、对象与每次请求的授权关系"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html",
+        "label": "OWASP · Injection Prevention",
+        "note": "参数化接口与查询字段允许列表"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "IETF · RFC 9110",
+        "note": "400、403 与 422 的 HTTP 语义"
       }
     ]
   },
