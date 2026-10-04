@@ -51,6 +51,7 @@
 | 044 | 仓库与提交、分支、工作区、暂存区、差异、切换分支、远程仓库、克隆、拉取、获取 | VBP-063 · [249–258 文案更新与生产发布记录](VBP-063-content-refresh-249-258.md) · 十条逐条验收、dev 集成及生产统一发布 |
 | 045 | 推送、合并、变基、合并冲突、反向提交、暂存改动、拉取请求、代码评审、持续集成、持续交付 | VBP-065 · [259–268 文案更新与生产发布记录](VBP-065-content-refresh-259-268.md) · 十条逐条验收、dev 集成及生产统一发布 |
 | 054 | 防火墙、IP 地址、网络端口、数据包、URL、主机名、DNS 记录、DNS 解析器、缓存控制、MIME 类型 | VBP-074 · [网络基础与 HTTP 边界词条更新及生产发布记录](VBP-074-content-refresh-20261004.md) · 十条逐条验收、dev 集成及生产统一发布 |
+| 055 | TCP、UDP、TLS 握手、响应体、响应头、Cookie、CORS、WebSocket、API 密钥、基于角色的访问控制 | VBP-075 · [传输与 HTTP 应用边界词条更新及生产发布记录](VBP-075-content-refresh-20261004.md) · 十条逐条验收、dev 集成及生产统一发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
@@ -166,10 +167,10 @@
 | ssr | 服务端渲染 | 前端 | 待处理 |
 | ssg | 静态站点生成 | 前端 | 待处理 |
 | routing | 路由 | 前端 | 待处理 |
-| cookie | Cookie | 前端 | 待处理 |
+| cookie | Cookie | 前端 | VBP-075 · 生产已发布 |
 | local-storage | 本地存储 | 前端 | 待处理 |
-| websocket | WebSocket | 前端 | 待处理 |
-| cors | 跨源资源共享 | 前端 | 待处理 |
+| websocket | WebSocket | 前端 | VBP-075 · 生产已发布 |
+| cors | 跨源资源共享 | 前端 | VBP-075 · 生产已发布 |
 | focus-management | 焦点管理 | 前端 | 待处理 |
 | working-tree | 工作区 | Git | 044 · 生产已发布 |
 | staging-area | 暂存区 | Git | 044 · 生产已发布 |
@@ -229,8 +230,8 @@
 | jwt | JWT | 后端 | 029 · 本地验收及 review 通过 |
 | oauth | OAuth | 后端 | 029 · 本地验收及 review 通过 |
 | authorization | 授权 | 后端 | 028 · 本地验收及 review 通过 |
-| rbac | 基于角色的访问控制 | 后端 | 待处理 |
-| api-key | API 密钥 | 后端 | 待处理 |
+| rbac | 基于角色的访问控制 | 后端 | VBP-075 · 生产已发布 |
+| api-key | API 密钥 | 后端 | VBP-075 · 生产已发布 |
 | rate-limiting | 限流 | 后端 | 007 · 本地验收及 review 通过 |
 | idempotency | 幂等性 | 后端 | 008 · 本地验收及 review 通过 |
 | pagination | 分页 | 后端 | 007 · 本地验收及 review 通过 |
@@ -258,9 +259,9 @@
 | backup | 备份 | 后端 | 014 · 本地验收及 review 通过 |
 | vector-database | 向量数据库 | 后端 | 019 · 本地验收及 review 通过 |
 | full-text-search | 全文搜索 | 后端 | 019 · 本地验收及 review 通过 |
-| tcp | TCP | 技术栈 | 待处理 |
-| udp | UDP | 技术栈 | 待处理 |
-| tls-handshake | TLS 握手 | 技术栈 | 待处理 |
+| tcp | TCP | 技术栈 | VBP-075 · 生产已发布 |
+| udp | UDP | 技术栈 | VBP-075 · 生产已发布 |
+| tls-handshake | TLS 握手 | 技术栈 | VBP-075 · 生产已发布 |
 | firewall | 防火墙 | 技术栈 | VBP-074 · 生产已发布 |
 | ip-address | IP 地址 | 技术栈 | VBP-074 · 生产已发布 |
 | network-port | 端口 | 技术栈 | VBP-074 · 生产已发布 |
@@ -271,8 +272,8 @@
 | dns-resolver | DNS 解析器 | 技术栈 | VBP-074 · 生产已发布 |
 | cache-control | 缓存控制 | 技术栈 | VBP-074 · 生产已发布 |
 | mime-type | MIME 类型 | 技术栈 | VBP-074 · 生产已发布 |
-| response-body | 响应体 | 技术栈 | 待处理 |
-| response-header | 响应头 | 技术栈 | 待处理 |
+| response-body | 响应体 | 技术栈 | VBP-075 · 生产已发布 |
+| response-header | 响应头 | 技术栈 | VBP-075 · 生产已发布 |
 | dataframe | 数据帧 | 技术栈 | 019 · 本地验收及 review 通过 |
 | dataset-data | 数据集 | 技术栈 | 018 · 本地验收及 review 通过 |
 | batch-processing | 批处理 | 技术栈 | 015 · 本地验收及 review 通过 |
