@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, CheckCircle, Code, GitBranch, GitCommit, Graph, ShieldWarning, TestTube, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, GitCommit, Graph, ShieldWarning, TestTube, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "./RegressionTestConcept.module.css";
 
@@ -35,6 +35,7 @@ export function RegressionTestHero() {
   const riskVisible = scene.step >= 2 && scope !== "impact";
   const selectedVisible = scene.step >= 3;
   const failed = scene.step === 4 && scope !== "impact";
+  const currentDetail = scene.step === 4 && scope === "impact" ? "影响集已经跑完，但历史权限风险仍在盲区；需要补风险或做全量校准。" : current.detail;
   const chooseScope = (next: Scope) => { setScope(next); scene.seek(0); };
 
   return <figure ref={scene.ref} className={styles.regHero} data-step={scene.step} data-scope={scope} aria-label="回归测试如何从一次代码改动展开影响关系并选择测试范围">
@@ -67,7 +68,7 @@ export function RegressionTestHero() {
       </div>
     </div>
     <div className={styles.regHeroMetrics}><div><span>候选总数</span><strong>{selectedVisible ? selected.count : "32 tests"}</strong></div><div><span>历史缺陷</span><strong>{riskVisible ? "已纳入" : "待补"}</strong></div><div><span>结论</span><strong>{scene.step === 4 ? selected.conclusion : "分析中"}</strong></div></div>
-    <div className={styles.regHeroStatus} data-danger={failed} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {current.detail}</span></div>
+    <div className={styles.regHeroStatus} data-danger={failed} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {currentDetail}</span></div>
     <figcaption>回归测试不是把旧测试全倒进流水线，而是从变更出发，沿影响关系和风险历史挑出一组能回答“原来好的行为还好吗”的检查。</figcaption>
   </figure>;
 }
