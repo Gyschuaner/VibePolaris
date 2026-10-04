@@ -31,12 +31,12 @@ export function IntegrationTestHero() {
         <small>不是直接调用某个函数，而是走一条接口边界。</small>
       </div>
       <div className={styles.integrationHeroArrow} aria-hidden="true"><span /><ArrowRight size={21} /></div>
-      <div className={styles.integrationHeroRuntime} data-active={scene.step === 0 || scene.step === 2 || failed} data-danger={failed}>
+      <div className={styles.integrationHeroRuntime} data-active={scene.step === 0 || scene.step === 1 || scene.step === 2 || failed} data-danger={failed}>
         <div className={styles.integrationHeroLabel}><Cpu size={17} aria-hidden="true" /><span>被测运行现场</span></div>
         <h3>Order Service</h3>
-        <div className={styles.integrationHeroRuntimeRow}><Database size={14} aria-hidden="true" /><strong>PostgreSQL</strong><small>真实 schema</small></div>
+        <div className={styles.integrationHeroRuntimeRow}><Database size={14} aria-hidden="true" /><strong>PostgreSQL</strong><small>{scene.step === 1 ? "schema + seed=0" : "真实 schema"}</small></div>
         <div className={styles.integrationHeroRuntimeRow}><Gear size={14} aria-hidden="true" /><strong>Payment</strong><small>{failed ? "受控返回 500" : "外部边界"}</small></div>
-        <div className={styles.integrationHeroRuntimeNote} data-danger={failed}>{failed ? <><WarningCircle size={15} aria-hidden="true" />rollback transaction</> : "service + database + dependency"}</div>
+        <div className={styles.integrationHeroRuntimeNote} data-danger={failed}>{failed ? <><WarningCircle size={15} aria-hidden="true" />rollback transaction</> : scene.step === 1 ? "schema ready · seed rows 0" : "service + database + dependency"}</div>
       </div>
       <div className={styles.integrationHeroArrow} aria-hidden="true"><span /><ArrowRight size={21} /></div>
       <div className={styles.integrationHeroProof} data-active={verified} data-danger={scene.step === 3}>

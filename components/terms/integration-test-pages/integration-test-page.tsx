@@ -28,6 +28,7 @@ export function IntegrationTestTermPage() {
     <ArticleSection id="integration-fixture" title="环境可以缩小，协作不能凭空假设">
       <p id="integration-fixture-evidence" className="vp-citation-target">测试宿主可以使用专用配置、独立数据库或内存测试服务器。Microsoft 的 `WebApplicationFactory` 示例会替换测试用数据库并准备种子数据，让测试从已知状态开始，再用客户端提交请求。<Cite id="integration-fixture-evidence" sources={integrationTestSources} /></p>
       <p id="integration-double" className="vp-citation-target">外部支付可以用替身制造稳定的 500，但订单服务和数据库仍然应该保持真实；替身越接近真实服务，集成结论越可信，必要时还要用契约测试验证替身没有过期。若把数据库也 Mock 掉，测试会很快，却失去了 schema、事务和迁移的证据。<Cite id="integration-double" sources={integrationTestSources} /></p>
+      <p id="integration-focused-scope" className="vp-citation-target">集成场景也不该把数据库的每一种数据排列组合都跑一遍。Microsoft 的示例建议为基础设施保留一组聚焦的读、写、更新和删除检查，把普通方法逻辑留给更快的单元测试；这样每条集成测试都有明确的边界和失败证据。<Cite id="integration-focused-scope" sources={integrationTestSources} /></p>
       <p>准备数据也属于测试的一部分。明确谁创建订单、库存从多少开始、测试结束怎样清理，比在共享数据库里碰运气更可靠。每个场景最好拥有自己的数据边界，失败后能从日志和状态表还原发生过什么。</p>
     </ArticleSection>
     <ArticleSection id="integration-size" title="范围要比端到端小，问题要比单元具体">
