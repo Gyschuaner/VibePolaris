@@ -5,23 +5,28 @@ import { Archive, CheckCircle, FileText, Gauge, Warning } from "@phosphor-icons/
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "../AiStackCoreConcepts.module.css";
 
-const labels = ["摆上本轮输入", "留出回答空间", "超过窗口先处理"];
+const labels = ["锁定任务与回答位", "加入历史和工具", "看见预算溢出", "裁剪后再继续"];
 
 export function ContextWindowLesson() {
   const scene = useScene(labels.length);
   const [history, setHistory] = useState<"short" | "long">("short");
   const long = history === "long";
   const historyK = long ? 10 : 6;
-  const inputK = 2 + historyK + 4;
-  const totalK = inputK + 4;
-  const overflow = totalK > 16;
-  const goLong = () => { setHistory("long"); scene.seek(2); };
-  const goShort = () => { setHistory("short"); scene.seek(1); };
+  const toolsK = 3;
+  const outputK = 2;
+  const rawTotalK = 2 + historyK + toolsK + outputK;
+  const trimmed = long && scene.step >= 3;
+  const visibleHistoryK = trimmed ? 7 : historyK;
+  const inputK = 2 + visibleHistoryK + toolsK;
+  const totalK = 2 + visibleHistoryK + toolsK + outputK;
+  const overflow = rawTotalK > 16 && !trimmed;
+  const goLong = () => setHistory("long");
+  const goShort = () => setHistory("short");
   const segments = [
     { label: "系统与任务", value: "2k", kind: "rules" },
-    { label: long ? "长历史" : "短历史", value: `${historyK}k`, kind: "history" },
-    { label: "工具结果", value: "4k", kind: "tool" },
-    { label: "回答预留", value: "4k", kind: "output" },
+    { label: trimmed ? "裁剪后的历史" : long ? "长历史" : "短历史", value: `${visibleHistoryK}k`, kind: "history" },
+    { label: "工具结果", value: `${toolsK}k`, kind: "tool" },
+    { label: "回答预留", value: `${outputK}k`, kind: "output" },
   ];
 
   return <div className={styles.windowLab} ref={scene.ref} role="region" aria-label="上下文窗口预算工作台">
@@ -39,12 +44,12 @@ export function ContextWindowLesson() {
       <div className={styles.windowLedger}>
         <div className={styles.windowLedgerHeader}><span>这一步发生了什么</span><Gauge size={22} aria-hidden="true" /></div>
         <dl>
-          <div><dt>历史版本</dt><dd>{long ? "10k" : "6k"}</dd></div>
+          <div><dt>历史版本</dt><dd>{trimmed ? "10k → 7k" : long ? "10k" : "6k"}</dd></div>
           <div><dt>输入占用</dt><dd>{inputK}k</dd></div>
-          <div><dt>回答预留</dt><dd>4k</dd></div>
+          <div><dt>回答预留</dt><dd>{outputK}k</dd></div>
         </dl>
         <p className={styles.windowVerdict} data-danger={overflow && scene.step === 2} role="status">
-          {scene.step === 0 ? <><FileText size={17} aria-hidden="true" /> 先放入任务、历史和工具结果。</> : overflow && scene.step === 2 ? <><Warning size={17} aria-hidden="true" /> {totalK}k 超过 16k；先裁剪或摘要，不能假装整段历史都在输入里。</> : <><CheckCircle size={17} aria-hidden="true" /> 输入与回答预留共 {totalK}k，当前仍可继续生成。</>}
+          {scene.step === 0 ? <><FileText size={17} aria-hidden="true" /> 先锁定系统规则和回答位；它们要从同一份预算里预留。</> : scene.step === 1 ? <><CheckCircle size={17} aria-hidden="true" /> {long ? "长历史已经加入，下一步会检查它是否挤占回答位。" : `短历史加工具结果后共 ${totalK}k，仍在 16k 内。`}</> : overflow ? <><Warning size={17} aria-hidden="true" /> 原始需求 {rawTotalK}k 超过 16k；先裁剪或摘要，不能假装整段历史都在输入里。</> : trimmed ? <><CheckCircle size={17} aria-hidden="true" /> 裁剪后实际输入与回答预留共 {totalK}k，可以继续生成。</> : <><CheckCircle size={17} aria-hidden="true" /> 短历史与回答预留共 {totalK}k，仍可继续生成。</>}
         </p>
       </div>
     </div>
@@ -52,6 +57,6 @@ export function ContextWindowLesson() {
       <button type="button" aria-pressed={!long} onClick={goShort}>保留短历史 · 6k</button>
       <button type="button" aria-pressed={long} onClick={goLong}>带入长历史 · 10k</button>
     </div>
-    <p className={styles.windowVerdict} role="status"><Archive size={17} aria-hidden="true" /> {scene.step === 2 && overflow ? "把最早一段移出窗口后，旧记录仍可留在外部存储；窗口里的实际输入已经改变。" : "窗口是这一轮输入和输出共同争用的容量；把历史存起来，不代表它自动进入下一轮。"}</p>
+    <p className={styles.windowVerdict} role="status"><Archive size={17} aria-hidden="true" /> {trimmed ? "把最早一段移出窗口后，旧记录仍可留在外部存储；窗口里的实际输入已经改变。" : "窗口是这一轮输入和输出共同争用的容量；把历史存起来，不代表它自动进入下一轮。"}</p>
   </div>;
 }
