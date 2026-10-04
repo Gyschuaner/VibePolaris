@@ -18,8 +18,8 @@ export function DevServerTermPage() {
       <ArticleAside title="它和生产服务器不是同一个承诺"><p id="dev-server-boundary-text" className="vp-citation-target">开发服务器可以为了快速反馈按需处理模块，甚至依赖内存中的中间产物；生产环境还要考虑构建产物、缓存、访问控制、容量和故障恢复。把 `localhost` 能访问误当成公网部署完成，会把两条链路混在一起。<Cite id="dev-server-boundary-text" sources={devServerSources}/></p></ArticleAside>
     </ArticleSection>
     <ArticleSection id="dev-server-loop" title="保存一次文件发生什么">
-      <p id="dev-server-update" className="vp-citation-target">一次开发更新可以观察成四段：文件变化被监听，服务器处理受影响的模块，更新连接发送消息，浏览器再选择整页刷新或模块级替换。更新并不意味着所有模块都重新构建。<Cite id="dev-server-update" sources={devServerSources}/></p>
-      <p>下面的演示把这条管线固定为 `button.css`：先保存，再处理，再发送，最后到达浏览器。切到“源码报错”，你会看到错误停在处理和反馈阶段，浏览器不会把坏模块当成成功更新。</p>
+      <p id="dev-server-update" className="vp-citation-target">一次开发更新可以观察成四段：文件变化被监听，服务器处理受影响的模块，更新连接（常见实现是 WebSocket）发送消息，浏览器再选择整页刷新或模块级替换。更新连接只负责把变化或诊断送回页面，更新并不意味着所有模块都重新构建。<Cite id="dev-server-update" sources={devServerSources}/></p>
+      <p>把手放在一个具体动作上：保存 `button.css`，先看变化事件落到监听器，再看服务器处理，最后看浏览器收到什么。切到“源码报错”，同一条路径会停在 `button.css:1:8`，页面保留旧模块，只叠出错误覆盖层；修好文件并再次保存，才会产生下一次有效更新。</p>
       <DevServerLesson />
       <p id="dev-server-hmr" className="vp-citation-target">如果工具和框架支持 HMR，更新连接可以只替换受影响的模块并保留部分运行状态；如果没有可接受的更新边界，就会退回整页刷新。开发服务器提供这条通道，但状态能否保留还取决于模块和框架的更新规则。<Cite id="dev-server-hmr" sources={devServerSources}/></p>
     </ArticleSection>
