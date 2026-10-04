@@ -46,8 +46,8 @@ export const cookieSources: Source[] = [
 ];
 
 export const corsSources: Source[] = [
-  make("WHATWG", "Fetch Standard · CORS protocol", "https://fetch.spec.whatwg.org/#http-cors-protocol", ["cors-opt-in", "cors-preflight", "cors-response", "cors-credentials"]),
-  make("MDN Web Docs", "Cross-Origin Resource Sharing (CORS) configuration", "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/CORS", ["cors-origin", "cors-exposure", "cors-credentials"]),
+  make("WHATWG", "Fetch Standard · CORS protocol", "https://fetch.spec.whatwg.org/#http-cors-protocol", ["cors-opt-in", "cors-preflight", "cors-response", "cors-credentials", "cors-vary"]),
+  make("MDN Web Docs", "Cross-Origin Resource Sharing (CORS) configuration", "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/CORS", ["cors-origin", "cors-exposure", "cors-credentials", "cors-vary"]),
   make("MDN Web Docs", "Preflight request", "https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request", ["cors-preflight", "cors-max-age"]),
   make("MDN Web Docs", "Reason: CORS header 'Access-Control-Allow-Origin' missing", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin", ["cors-failure", "cors-vary"]),
 ];

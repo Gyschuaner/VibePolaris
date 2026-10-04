@@ -984,18 +984,54 @@
     "relatedSlugs": ["fetch-api", "event", "queue"]
   },
   {
-    "zh": "跨源资源共享", "en": "Cross-Origin Resource Sharing", "slug": "cors", "cat": "前端",
-    "say": "CORS 用响应头告诉浏览器，哪些其他来源可以读取当前服务器的响应。",
-    "aliases": ["跨域", "CORS", "跨源请求"],
-    "question": "接口在命令行能访问，为什么浏览器页面却提示被跨源策略拦截？",
-    "definition": "CORS 是浏览器执行的 HTTP 跨源访问机制。服务器用 Access-Control-Allow-* 响应头声明允许的来源、方法和请求头。",
-    "boundary": "CORS 不是身份认证，也不是阻止服务器收到请求的防火墙；它主要限制浏览器脚本读取响应。",
-    "demoType": "request", "demoTitle": "浏览器检查跨源响应",
-    "demoSteps": [{"label":"页面发起请求","value":"来源与接口来源不同","note":"浏览器识别为跨源。"},{"label":"必要时预检","value":"OPTIONS 查询允许条件","note":"非简单请求先确认方法和请求头。"},{"label":"校验响应头","value":"允许则交给脚本读取","note":"不允许时浏览器拦截响应访问。"}],
-    "quizQuestion": "CORS 允许来源通常由谁配置？", "quizOptions": ["接口服务器", "访问页面的 CSS", "用户的显示器"],
-    "correctText": "服务器通过响应头声明允许的跨源访问条件。", "wrongText": "页面样式和硬件不会生成 CORS 响应头。",
-    "promptTitle": "定位一次 CORS 失败", "prompt": "请根据下面请求来源、方法、请求头和响应头判断是否触发预检，指出缺少或冲突的 CORS 配置。不要用关闭浏览器安全策略作为解决方案。",
-    "relatedSlugs": ["api", "fetch-api", "auth"]
+    "zh": "跨源资源共享",
+    "en": "Cross-Origin Resource Sharing",
+    "slug": "cors",
+    "cat": "前端",
+    "say": "服务器给浏览器一组许可，浏览器再决定页面脚本能不能读跨源响应。",
+    "aliases": [
+      "跨域",
+      "CORS",
+      "跨源请求"
+    ],
+    "question": "接口在命令行能访问，为什么浏览器页面却提示跨源读取被拦截？",
+    "definition": "CORS 是浏览器执行的跨源响应读取机制；浏览器比较 origin，必要时先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应交给脚本。",
+    "boundary": "CORS 不负责认证、授权或防火墙拦截；服务器可能已经收到请求并返回 200，浏览器仍可把响应挡在脚本外。",
+    "demoType": "request",
+    "demoTitle": "跨源响应怎样经过浏览器闸门",
+    "demoSteps": [
+      {
+        "label": "识别 origin",
+        "value": "app.example → api.example",
+        "note": "scheme、host 或 port 不同，浏览器进入跨源规则。"
+      },
+      {
+        "label": "必要时预检",
+        "value": "OPTIONS · method · headers",
+        "note": "非简单请求先询问服务器允许项，正式请求等检查结果。"
+      },
+      {
+        "label": "决定脚本可见性",
+        "value": "ACAO / ACAM / ACAH",
+        "note": "响应可能已到浏览器，只有许可匹配才会交给页面脚本。"
+      }
+    ],
+    "quizQuestion": "缺少 Access-Control-Allow-Origin 时，最准确的说法是什么？",
+    "quizOptions": [
+      "服务器可能已返回响应，但浏览器不把它暴露给脚本",
+      "请求一定没有到达服务器",
+      "命令行也会被同一规则拦截"
+    ],
+    "correctText": "CORS 主要是浏览器脚本读取闸门，不能据此断定服务器没有收到请求。",
+    "wrongText": "网络到达、服务器处理和脚本可见是三个阶段，命令行也没有浏览器同源读取限制。",
+    "promptTitle": "定位一次 CORS 失败",
+    "prompt": "请记录页面 origin、目标 URL、方法、非简单请求头、凭据模式、预检请求/响应和正式响应许可头，判断失败发生在哪一阶段。",
+    "relatedSlugs": [
+      "api",
+      "fetch-api",
+      "auth",
+      "cookie"
+    ]
   },
   {
     "zh": "焦点管理", "en": "Focus Management", "slug": "focus-management", "cat": "前端",

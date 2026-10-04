@@ -8577,30 +8577,30 @@
   },
   {
     "slug": "cors",
-    "lead": "接口在命令行能访问，为什么浏览器页面却提示被跨源策略拦截？",
-    "definition": "浏览器比较请求 origin 与目标 origin；非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应暴露给脚本。",
-    "boundary": "CORS 不是服务器防火墙或认证，命令行请求也不受浏览器同源读取限制；“关闭浏览器安全”不是修复。",
+    "lead": "接口在命令行能访问，为什么浏览器页面却只能看到一条 CORS 错误？",
+    "definition": "本页把 CORS 拆成浏览器的三道门：先比较 origin，非简单请求先走 OPTIONS 预检，再检查响应许可头，最后决定响应是否向脚本开放。",
+    "boundary": "CORS 不是认证、防火墙或服务器拒收。服务器可能已收到并处理请求，命令行也可能读到 body；这条规则只约束浏览器脚本的跨源读取。",
     "sceneKind": "contract",
-    "sceneTitle": "浏览器为何允许服务器响应却不让页面脚本读取",
-    "actionLabel": "修改跨域请求",
+    "sceneTitle": "浏览器为何允许响应到达，却不让脚本读取",
+    "actionLabel": "改变跨源请求",
     "actors": [
       {
-        "id": "script",
+        "id": "page-script",
         "label": "页面脚本",
         "detail": "https://app.example",
         "icon": "code",
         "group": "发起方"
       },
       {
-        "id": "browser",
-        "label": "浏览器 CORS 检查",
-        "detail": "预检与响应头",
+        "id": "cors-browser",
+        "label": "浏览器闸门",
+        "detail": "origin · preflight · exposure",
         "icon": "browser",
         "group": "执行方"
       },
       {
-        "id": "api",
-        "label": "跨域 API",
+        "id": "api-server",
+        "label": "跨源 API",
         "detail": "https://api.example",
         "icon": "server",
         "group": "接收方"
@@ -8608,68 +8608,130 @@
       {
         "id": "preflight",
         "label": "OPTIONS 预检",
-        "detail": "method 与 headers",
+        "detail": "method · headers",
         "icon": "message",
         "group": "协商"
       },
       {
-        "id": "response",
-        "label": "脚本可见响应",
-        "detail": "允许或拦截",
+        "id": "script-result",
+        "label": "脚本结果",
+        "detail": "readable / blocked",
         "icon": "shield",
         "group": "结果"
+      },
+      {
+        "id": "network-result",
+        "label": "网络结果",
+        "detail": "server received",
+        "icon": "package",
+        "group": "边界"
       }
     ],
     "edges": [
       {
         "id": "script-browser",
-        "from": "script",
-        "to": "browser",
+        "from": "page-script",
+        "to": "cors-browser",
         "label": "发起 fetch"
       },
       {
         "id": "browser-preflight",
-        "from": "browser",
+        "from": "cors-browser",
         "to": "preflight",
         "label": "需要时预检"
       },
       {
         "id": "preflight-api",
         "from": "preflight",
-        "to": "api",
+        "to": "api-server",
         "label": "询问许可"
       },
       {
         "id": "browser-api",
-        "from": "browser",
-        "to": "api",
+        "from": "cors-browser",
+        "to": "api-server",
         "label": "正式请求"
       },
       {
-        "id": "browser-response",
-        "from": "browser",
-        "to": "response",
-        "label": "决定脚本可见性"
+        "id": "api-network",
+        "from": "api-server",
+        "to": "network-result",
+        "label": "响应到达"
+      },
+      {
+        "id": "browser-script",
+        "from": "cors-browser",
+        "to": "script-result",
+        "label": "决定暴露"
       }
     ],
     "frames": [
       {
-        "label": "非简单请求先预检",
-        "note": "脚本使用 PATCH 和自定义头，浏览器先发 OPTIONS，不让脚本直接越过检查。",
+        "label": "同源直读",
+        "note": "页面与 API 同源，浏览器不需要 CORS 许可头来开放脚本读取。",
         "activeIds": [
-          "script",
-          "browser",
+          "page-script",
+          "cors-browser",
+          "api-server",
+          "script-result"
+        ],
+        "doneIds": [
+          "script-result"
+        ],
+        "mutedIds": [
+          "preflight",
+          "network-result"
+        ],
+        "values": {
+          "script-result": "200 · readable"
+        },
+        "activeEdgeIds": [
+          "script-browser",
+          "browser-api",
+          "browser-script"
+        ]
+      },
+      {
+        "label": "跨源先比较 origin",
+        "note": "app.example 和 api.example 不同，浏览器进入 CORS 处理，但还没有决定是否预检。",
+        "activeIds": [
+          "page-script",
+          "cors-browser",
+          "api-server"
+        ],
+        "doneIds": [
+          "page-script"
+        ],
+        "mutedIds": [
+          "preflight",
+          "script-result",
+          "network-result"
+        ],
+        "values": {
+          "cors-browser": "Origin mismatch"
+        },
+        "activeEdgeIds": [
+          "script-browser"
+        ]
+      },
+      {
+        "label": "非简单请求先预检",
+        "note": "PATCH 加自定义头会先发 OPTIONS，正式请求等服务器许可。",
+        "activeIds": [
+          "page-script",
+          "cors-browser",
           "preflight"
         ],
         "doneIds": [
-          "script"
+          "page-script"
         ],
         "mutedIds": [
-          "api",
-          "response"
+          "api-server",
+          "script-result",
+          "network-result"
         ],
         "values": {
-          "preflight": "PATCH · X-Trace"
+          "preflight": "OPTIONS · PATCH · X-Trace"
         },
         "activeEdgeIds": [
           "script-browser",
@@ -8677,105 +8739,127 @@
         ]
       },
       {
-        "label": "服务器声明允许项",
-        "note": "API 返回匹配的 Origin、Methods 和 Headers，预检通过。",
+        "label": "许可通过后正式请求",
+        "note": "服务器返回匹配的来源、方法和请求头，浏览器发送 PATCH 并开放响应。",
         "activeIds": [
           "preflight",
-          "api",
-          "browser"
+          "api-server",
+          "cors-browser",
+          "script-result"
         ],
         "doneIds": [
-          "script",
-          "preflight"
+          "preflight",
+          "script-result"
         ],
         "mutedIds": [
-          "response"
+          "network-result"
         ],
         "values": {
-          "api": "ACAO=app.example · PATCH allowed"
+          "api-server": "ACAO=app.example",
+          "script-result": "200 · readable"
         },
         "activeEdgeIds": [
-          "preflight-api"
+          "preflight-api",
+          "browser-api",
+          "browser-script"
         ]
       },
       {
-        "label": "正式请求与脚本读取",
-        "note": "浏览器发送 PATCH，收到响应后把内容交给页面脚本。",
+        "label": "响应到达但脚本不可读",
+        "note": "删掉 ACAO 后，网络结果仍是 200，脚本结果变成 CORS blocked。",
         "activeIds": [
-          "browser",
-          "api",
-          "response",
-          "script"
+          "api-server",
+          "network-result",
+          "cors-browser",
+          "script-result"
         ],
         "doneIds": [
+          "network-result"
+        ],
+        "mutedIds": [
+          "page-script",
           "preflight"
         ],
-        "mutedIds": [],
         "values": {
-          "response": "200 · readable"
+          "network-result": "200 · received",
+          "script-result": "blocked"
         },
         "activeEdgeIds": [
           "browser-api",
-          "browser-response"
+          "api-network",
+          "browser-script"
         ]
       },
       {
-        "label": "许可头不匹配",
-        "note": "删除允许来源后，API 仍返回 200，但浏览器不把响应暴露给脚本。",
+        "label": "凭据与通配来源冲突",
+        "note": "credentials: include 需要明确来源；ACAO=* 不能替代它，读取在浏览器闸门停止。",
         "activeIds": [
-          "api",
-          "browser",
-          "response"
+          "page-script",
+          "cors-browser",
+          "api-server",
+          "script-result"
         ],
         "doneIds": [
-          "preflight"
+          "api-server"
         ],
         "mutedIds": [
-          "script"
+          "preflight",
+          "network-result"
         ],
         "values": {
-          "api": "200",
-          "response": "CORS blocked"
+          "api-server": "ACAO=*",
+          "script-result": "credential error"
         },
         "activeEdgeIds": [
-          "browser-api"
+          "script-browser",
+          "browser-script"
         ]
       }
     ],
-    "insight": "CORS 是浏览器执行的响应读取规则，不是服务器是否收到请求的网络开关。",
+    "insight": "CORS 把‘服务器收到响应’和‘页面脚本能读响应’拆开；预检、许可头和凭据模式决定浏览器最后开放哪一边。",
     "quiz": {
-      "question": "CORS 允许来源通常由谁配置？",
+      "question": "非简单 PATCH 请求通常先发生什么？",
       "options": [
         {
-          "label": "接口服务器",
+          "label": "浏览器发送 OPTIONS 预检",
           "correct": true
         },
         {
-          "label": "访问页面的 CSS",
+          "label": "页面脚本直接读取响应 body",
           "correct": false
         },
         {
-          "label": "用户的显示器",
+          "label": "服务器自动完成用户认证",
           "correct": false
         }
       ],
-      "success": "服务器通过响应头声明允许的跨源访问条件。",
-      "retry": "页面样式和硬件不会生成 CORS 响应头。"
+      "success": "预检先询问方法和请求头的许可，正式请求随后才出发。",
+      "retry": "把跨源判断、预检和脚本暴露分成三个阶段。"
     },
     "prompt": {
-      "title": "定位一次 CORS 失败",
-      "text": "请根据下面请求来源、方法、请求头和响应头判断是否触发预检，指出缺少或冲突的 CORS 配置。不要用关闭浏览器安全策略作为解决方案。"
+      "title": "排查一次浏览器跨源读取",
+      "text": "请记录页面 origin、目标 origin、请求方法和头、凭据模式、OPTIONS 预检、正式响应及 Access-Control-Allow-*，指出请求到达和脚本可见分别在哪里结束。"
     },
     "sources": [
       {
         "url": "https://fetch.spec.whatwg.org/#http-cors-protocol",
         "label": "WHATWG · Fetch Standard",
-        "note": "Fetch 标准行为"
+        "note": "CORS 协议、预检、响应暴露与凭据"
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/CORS",
+        "label": "MDN · CORS configuration",
+        "note": "服务器许可头和浏览器行为"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request",
+        "label": "MDN · Preflight request",
+        "note": "OPTIONS 预检条件与缓存"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin",
+        "label": "MDN · Missing Allow-Origin",
+        "note": "响应到达但脚本读取失败"
       }
     ]
   },

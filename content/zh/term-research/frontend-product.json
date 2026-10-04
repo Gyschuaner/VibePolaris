@@ -505,12 +505,22 @@
   },
   {
     "slug": "cors",
-    "mechanism": "浏览器比较请求 origin 与目标 origin；非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应暴露给脚本。",
-    "misconception": "CORS 不是服务器防火墙或认证，命令行请求也不受浏览器同源读取限制；“关闭浏览器安全”不是修复。",
-    "demoSignature": "建议 6 帧：页面脚本、浏览器、跨域服务器三栏展开；用户选择非简单 method 或 header，浏览器先发送 OPTIONS 预检；服务器返回允许项后正式请求通过；删掉匹配的 ACAO 或 credentials 配置，响应抵达浏览器却被红色闸门挡在脚本外。",
-    "sourceUrls": ["https://fetch.spec.whatwg.org/#http-cors-protocol", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["fetch-api", "api", "auth"]
+    "mechanism": "浏览器把页面 origin 与目标 origin 比较；简单跨源请求可直接发出但仍要检查响应许可，非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 决定是否把响应暴露给脚本。",
+    "misconception": "CORS 不是认证、防火墙或服务器拒收机制。命令行可能拿到 200，浏览器也可能已经收到响应，却因为许可头不匹配而不让页面脚本读取。",
+    "demoSignature": "6帧｜对象：app.example 页面、api.example、浏览器 CORS 闸门与脚本结果｜交互：切换同源 GET、跨源 GET、PATCH+X-Trace 预检、许可通过、缺 ACAO、credentials + 通配来源｜变化：请求从直读变预检，响应从可读变脚本不可见，服务器到达和脚本暴露分开显示｜结果：读者能判断失败发生在请求前、预检后还是响应读取边界。",
+    "sourceUrls": [
+      "https://fetch.spec.whatwg.org/#http-cors-protocol",
+      "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/CORS",
+      "https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin"
+    ],
+    "rewriteRisk": "高：容易把‘跨域失败’写成请求没有到达服务器，必须把 origin、预检、响应暴露和凭据冲突拆开。",
+    "nearDuplicates": [
+      "fetch-api",
+      "api",
+      "auth",
+      "cookie"
+    ]
   },
   {
     "slug": "focus-management",
