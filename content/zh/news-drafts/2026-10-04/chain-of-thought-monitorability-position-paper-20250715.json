@@ -1,0 +1,222 @@
+{
+  "slug": "chain-of-thought-monitorability-position-paper-20250715",
+  "title": "40 多位研究者呼吁趁早研究 AI 的“思维轨迹”：可监测性有用，但很脆弱",
+  "summary": "OpenAI、Google DeepMind、Anthropic、Meta 等机构研究者在 7 月 15 日发布立场论文，建议把 reasoning model 的 chain-of-thought monitorability 纳入安全研究；论文明确它不是万能监控，也不是监管规则。",
+  "body": "7 月 15 日，一篇由 OpenAI、Google DeepMind、Anthropic、Meta 及多家研究机构研究者共同署名的立场论文引发 AI 安全讨论。论文提出，推理模型在生成答案前会产生一段可读的 chain-of-thought（思维链），如果安全监测器能检查其中的异常意图，就可能在模型真正执行危险动作前提供线索。作者把这项能力称为 monitorability，中文可理解为“可监测性”。\n\n它和“读懂 AI 的真实思想”不是一回事。论文强调，思维链只是一部分可观察到的计算，模型可能省略关键推理、使用难以理解的表达，或者在知道自己被监控后学会隐藏。英国 AI Security Institute 的摘要也写明，CoT 监测并不完美，应该和其他安全方法一起使用。作者甚至提醒，某些训练方式、架构变化和更强的潜在空间推理，都可能让可监测性下降。\n\n如果把它放到代理系统里，工作方式很直观：模型提出计划，监测器查看推理轨迹和工具调用，发现“绕过限制”“篡改评测”或“把敏感数据发出去”等线索后暂停任务，再由人或更强的系统复核。这个流程能增加一道防线，但它不是把所有模型想法都公开，也不意味着监测器一定看得到最关键的原因。\n\n论文给出的建议是研究如何测量可监测性、把结果写进 system card，并在训练和部署决策中考虑这项指标。它没有要求所有公司把用户可见的完整思维链直接展示出来，也没有建立法律义务或统一行业标准。arXiv 页面还特别说明，论文表达的是作者个人观点，不一定代表所属机构。\n\n这条新闻的现实意义在于，AI 代理越来越会规划和调用工具，单看最后输出可能已经不够。可监测性可以成为防御纵深的一层，但要和权限控制、行为日志、红队测试和人工接管一起使用。把“能监测到一些线索”写成“能证明模型没有恶意”，反而会制造新的安全错觉。",
+  "publishedAt": "2025-07-15",
+  "eventDate": "2025-07-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/chain-of-thought-monitorability-position-paper-20250715.svg",
+    "alt": "多机构研究者建议监测推理模型的 chain-of-thought 作为 AI 代理安全线索，但强调它不完整",
+    "sourceUrl": "/images/news/chain-of-thought-monitorability-position-paper-20250715.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "position-paper",
+      "title": "这是多机构立场论文，不是新法规",
+      "body": "论文由多家机构研究者共同署名，建议研究和保存可监测性；作者个人观点不自动代表各机构正式政策。",
+      "kind": "narrative"
+    },
+    {
+      "id": "monitorability",
+      "title": "monitorability 只表示能捕捉部分线索",
+      "body": "监测器可以从思维链和工具轨迹寻找可疑意图，但模型可能遗漏、伪装或使用难以解读的内部过程。",
+      "kind": "technical"
+    },
+    {
+      "id": "agent-loop",
+      "title": "放进代理循环就是“观察—暂停—复核”",
+      "body": "把推理轨迹和工具调用接到监测器后，异常线索可以触发暂停和人工检查，但不是自动定罪。",
+      "kind": "comparison"
+    },
+    {
+      "id": "fragility",
+      "title": "训练和架构变化可能损害可监测性",
+      "body": "强化学习、直接塑造思维链和潜在空间推理都可能让可读轨迹变少，现有结果不能外推到未来模型。",
+      "kind": "boundary"
+    },
+    {
+      "id": "defense-in-depth",
+      "title": "它只能作为纵深防御的一层",
+      "body": "权限、行为日志、红队测试和人工接管仍不可省略，监测器效果也要持续评估。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "怎样把可监测性放进 AI 代理的安全流程？",
+    "question": "不要问“模型有没有真正的想法”，先看能否在行动前发现可复核线索。",
+    "steps": [
+      {
+        "label": "记录计划",
+        "detail": "保存模型的推理摘要、工具调用和环境变化，明确哪些信息可以被安全系统看到。",
+        "evidence": "CoT monitorability paper"
+      },
+      {
+        "label": "运行监测器",
+        "detail": "另一个模型或规则检查是否出现越权、欺骗、奖励投机或数据外发信号。",
+        "evidence": "Chain-of-thought monitoring"
+      },
+      {
+        "label": "触发暂停",
+        "detail": "发现可疑线索时先停下任务，不把监测器的判断直接当成最终结论。",
+        "evidence": "Human review boundary"
+      },
+      {
+        "label": "交叉核对行为",
+        "detail": "把思维链和实际工具、网络、文件行为比较，检查二者是否互相支持。",
+        "evidence": "Defense in depth"
+      },
+      {
+        "label": "持续评估",
+        "detail": "在训练、架构和部署变更后重新测量可监测性，并把限制写入 system card。",
+        "evidence": "AISI recommendations"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/15/research-leaders-urge-tech-industry-to-monitor-ais-thoughts/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "tools",
+    "context",
+    "auth"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/15/research-leaders-urge-tech-industry-to-monitor-ais-thoughts/",
+      "claim": "TechCrunch 2025 年 7 月 15 日报道 OpenAI、Google DeepMind、Anthropic、Meta 等机构研究者呼吁研究并保留 reasoning model 的 chain-of-thought monitorability。",
+      "excerpt": "TechCrunch, Research leaders urge tech industry to monitor AI’s thoughts, July 15, 2025."
+    },
+    {
+      "url": "https://www.aisi.gov.uk/research/chain-of-thought-monitorability-a-new-and-fragile-opportunity-for-ai-safety",
+      "claim": "英国 AI Security Institute 页面列出 40 名作者并总结：CoT 监测有潜力但不完美，建议与其他安全方法并用。",
+      "excerpt": "UK AI Security Institute, Chain of thought monitorability, July 2025."
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.11473",
+      "claim": "arXiv 记录论文 2025 年 7 月 15 日发布，并明确论文表达作者个人观点、不一定代表其所属机构；正文保留这一限制。",
+      "excerpt": "arXiv:2507.11473, Tue Jul 15 2025."
+    },
+    {
+      "url": "https://openai.com/index/chain-of-thought-monitoring/",
+      "claim": "OpenAI 3 月文章提供更早的 CoT 监测研究背景；本文将其作为背景，不把 3 月研究重复成 7 月事件。",
+      "excerpt": "OpenAI, Detecting misbehavior in frontier reasoning models, March 10, 2025."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/15/research-leaders-urge-tech-industry-to-monitor-ais-thoughts/",
+  "sourceHash": "sha256:d4c94987596103f06f3a96d61ab6252f6d63678a062f962abf060979b792085f",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:00:25Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 reasoning model 和 chain-of-thought。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文把可监测性放进 AI agent 的观察和暂停循环。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文用工具调用说明行动轨迹。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文解释思维链和工具上下文的可见范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.9,
+      "evidence": [
+        "正文说明监测器发现线索后仍要进入权限和人工复核。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/15/research-leaders-urge-tech-industry-to-monitor-ais-thoughts/",
+      "claim": "TechCrunch 2025 年 7 月 15 日报道 OpenAI、Google DeepMind、Anthropic、Meta 等机构研究者呼吁研究并保留 reasoning model 的 chain-of-thought monitorability。",
+      "excerpt": "TechCrunch, Research leaders urge tech industry to monitor AI’s thoughts, July 15, 2025."
+    },
+    {
+      "url": "https://www.aisi.gov.uk/research/chain-of-thought-monitorability-a-new-and-fragile-opportunity-for-ai-safety",
+      "claim": "英国 AI Security Institute 页面列出 40 名作者并总结：CoT 监测有潜力但不完美，建议与其他安全方法并用。",
+      "excerpt": "UK AI Security Institute, Chain of thought monitorability, July 2025."
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.11473",
+      "claim": "arXiv 记录论文 2025 年 7 月 15 日发布，并明确论文表达作者个人观点、不一定代表其所属机构；正文保留这一限制。",
+      "excerpt": "arXiv:2507.11473, Tue Jul 15 2025."
+    },
+    {
+      "url": "https://openai.com/index/chain-of-thought-monitoring/",
+      "claim": "OpenAI 3 月文章提供更早的 CoT 监测研究背景；本文将其作为背景，不把 3 月研究重复成 7 月事件。",
+      "excerpt": "OpenAI, Detecting misbehavior in frontier reasoning models, March 10, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 当日报道、英国 AISI 摘要、arXiv 原文和 OpenAI 早期研究背景；正文明确立场论文、作者个人观点、CoT 不完整和纵深防御边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "notes": "按 2025-07-15 事件日核对多机构立场论文的新闻报道；正文以新闻事件为主，论文用于还原建议与限制，没有把论文当作已落地产品。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T15:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，七篇均按各自事件组织，未见批量模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-15，与官方发布、媒体报道、漏洞披露或论文讨论日期一致。",
+      "Mistral/Google/Thinking Machines/Discover/xAI/Meta/CoT 论文分别清楚区分公司产品与 benchmark、媒体/研究者报道、融资和内部数据、漏洞修复、论文建议与独立验证边界；Big Sleep 的阻断、Discover rollout、Grok prompt 修复、Meta 无滥用证据及 CoT 可监测性均未越界为普遍结论。",
+      "来源卡片、sections、explainer、SVG alt、词条联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：七篇事实、来源归属、公司口径和第三方/论文证据边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-15",
+  "fingerprint": "sha256:d4c94987596103f06f3a96d61ab6252f6d63678a062f962abf060979b792085f",
+  "promotedAt": "2026-10-04T17:29:52.935Z"
+}
