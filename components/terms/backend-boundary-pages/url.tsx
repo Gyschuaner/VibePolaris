@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, CheckCircle, Code, Globe, Hash, LinkSimple, MagnifyingGlass, MapPinLine, Pause, Play, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, CheckCircle, Code, Globe, Hash, LinkSimple, MagnifyingGlass, MapPinLine, Pause, Play } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { ArticleCitation, ArticleSection, ConceptArticle } from "../ConceptArticle";
@@ -119,7 +119,7 @@ function UrlLab() {
       <div className={styles.urlLabNode}><MagnifyingGlass size={19} aria-hidden="true" /><span>解析动作</span><div>{current.middle.map(item => <code key={item}>{item}</code>)}</div></div><ArrowRight className={styles.urlArrow} size={18} aria-hidden="true" />
       <div className={styles.urlLabNode} data-good={current.good}><CheckCircle size={19} aria-hidden="true" /><span>可观察结果</span><strong>{current.output}</strong></div>
     </div>
-    <div className={styles.urlLabEvidence}><WarningCircle size={19} aria-hidden="true" /><p><strong>{current.label}</strong>{current.note}</p></div>
+    <div className={styles.urlLabEvidence}>{current.good ? <CheckCircle size={19} aria-hidden="true" /> : null}<p><strong>{current.label}</strong>{current.note}</p></div>
     <div className={styles.urlLabControls} role="group" aria-label="选择 URL 处理样本">{scenarios.map((scenario, index) => <button type="button" key={scenario.label} aria-pressed={selected === index} onClick={() => setSelected(index)}>{scenario.label}</button>)}</div>
   </div>;
 }
