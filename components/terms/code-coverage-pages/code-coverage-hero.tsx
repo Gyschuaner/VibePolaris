@@ -9,7 +9,6 @@ const steps = [
   { label: "跑通 TT", title: "成功用例点亮整行", detail: "20 岁且已验证走完了这行，但它只证明了一条路。" },
   { label: "看见空白", title: "100% 行覆盖仍有三格问号", detail: "报告指出代码被执行过，却没有替你检查每种组合。" },
   { label: "补上 TF", title: "未验证成人让缺陷露头", detail: "20 岁但未验证本应拒绝；这次输入把隐藏错误推到灯下。" },
-  { label: "补另一条路", title: "分支开始接近完整", detail: "未成年输入走到另一侧，条件组合还剩最后一个角落。" },
   { label: "四格都测", title: "覆盖率完成，行为仍要看断言", detail: "四条路径都跑过了，只有明确的期望才能判断结果对不对。" },
 ];
 
@@ -21,14 +20,13 @@ const vectors = [
 ] as const;
 
 function seenKeys(step: number) {
-  return vectors.filter((_, index) => step >= [1, 3, 4, 5][index]).map(vector => vector.key);
+  return vectors.filter((_, index) => step >= [1, 3, 4, 4][index]).map(vector => vector.key);
 }
 
 function metricValue(step: number) {
   if (step === 0) return { line: 0, branch: 0, condition: 0 };
   if (step <= 2) return { line: 100, branch: 50, condition: 25 };
   if (step === 3) return { line: 100, branch: 50, condition: 50 };
-  if (step === 4) return { line: 100, branch: 100, condition: 75 };
   return { line: 100, branch: 100, condition: 100 };
 }
 

@@ -38,7 +38,7 @@ export function CodeCoverageLesson() {
   const weak = final && standard === "percent";
   const reset = (next: () => void) => { next(); scene.seek(0); };
   const report = { ...lensCopy[lens], value: reportValue(lens, scene.step) };
-  const checked = scene.step >= 4 ? cells.map(cell => cell.key) : scene.step >= 3 ? ["TT", "TF", "FT"] : scene.step >= 1 ? ["TT"] : [];
+  const checked = scene.step >= 4 ? cells.map(cell => cell.key) : scene.step >= 3 ? ["TT", "TF"] : scene.step >= 1 ? ["TT"] : [];
   const verdict = !final ? "未判定" : meaningful ? "PASS · 有行为证据" : "WEAK · 只追百分比";
 
   return <div ref={scene.ref} className={styles.coverageLab} role="region" aria-label="测试覆盖率报告工作台：切换覆盖维度和完成标准，查看指标与行为证据的区别">
@@ -50,7 +50,7 @@ export function CodeCoverageLesson() {
         <div className={styles.coverageLabLabel}><Code size={16} aria-hidden="true" /><span>报告 · 当前镜头</span></div>
         <h3>{report.label} · {report.value}</h3>
         <code>{report.question}</code>
-        <div className={styles.coverageLabMeters}><div className={styles.coverageLabMeter}><span>行</span><i style={{ "--meter": `${scene.step >= 1 ? 100 : 0}%` } as CSSProperties} /><strong>{scene.step >= 1 ? "100%" : "0%"}</strong></div><div className={styles.coverageLabMeter}><span>分支</span><i style={{ "--meter": `${scene.step >= 4 ? 100 : scene.step >= 1 ? 50 : 0}%` } as CSSProperties} /><strong>{scene.step >= 4 ? "100%" : scene.step >= 1 ? "50%" : "0%"}</strong></div><div className={styles.coverageLabMeter}><span>条件</span><i style={{ "--meter": `${scene.step >= 4 ? 100 : scene.step >= 3 ? 75 : scene.step >= 1 ? 25 : 0}%` } as CSSProperties} /><strong>{scene.step >= 4 ? "4/4" : scene.step >= 3 ? "3/4" : scene.step >= 1 ? "1/4" : "0/4"}</strong></div></div>
+        <div className={styles.coverageLabMeters}><div className={styles.coverageLabMeter}><span>行</span><i style={{ "--meter": `${scene.step >= 1 ? 100 : 0}%` } as CSSProperties} /><strong>{scene.step >= 1 ? "100%" : "0%"}</strong></div><div className={styles.coverageLabMeter}><span>分支</span><i style={{ "--meter": `${scene.step >= 4 ? 100 : scene.step >= 1 ? 50 : 0}%` } as CSSProperties} /><strong>{scene.step >= 4 ? "100%" : scene.step >= 1 ? "50%" : "0%"}</strong></div><div className={styles.coverageLabMeter}><span>条件</span><i style={{ "--meter": `${scene.step >= 4 ? 100 : scene.step >= 3 ? 50 : scene.step >= 1 ? 25 : 0}%` } as CSSProperties} /><strong>{scene.step >= 4 ? "4/4" : scene.step >= 3 ? "2/4" : scene.step >= 1 ? "1/4" : "0/4"}</strong></div></div>
         <small>{scene.step < 2 ? "先让测试执行产生计数，再问这组数字覆盖了什么。" : "切换镜头不会增加证据；它只改变你正在追踪的空白。"}</small>
       </div>
       <div className={styles.coverageLabPanel} data-active={scene.step === 2 || scene.step === 3}>
