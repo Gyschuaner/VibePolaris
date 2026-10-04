@@ -144,7 +144,7 @@ export function DnsRecordTermPage() {
     </ArticleSection>
     <ArticleSection id="dns-record-types" title="类型决定 RDATA 在说什么">
       <p id="dns-record-type" className="vp-citation-target">A 的 RDATA 是 IPv4 地址，CNAME 的 RDATA 是另一个域名，MX 的 RDATA 是优先级和邮件交换主机，TXT 则承载文本。它们都叫 DNS 记录，却不能用同一个“指向服务器”的解释替代。<Cite id="dns-record-type" /></p>
-      <p>因此查网站要问 A/AAAA，查别名要问 CNAME，查邮件要问 MX，查验证文本要问 TXT。记录类型本身不是应用层动作：CNAME 不会让浏览器收到 HTTP 重定向，MX 也不会决定网页请求走哪条路径。</p>
+      <p>因此查网站要问 A/AAAA，查别名要问 CNAME，查邮件要问 MX，查验证文本要问 TXT。记录类型本身不是应用层动作：CNAME 不会让浏览器收到 HTTP 重定向，MX 也不会决定网页请求走哪条路径。<Cite id="dns-record-type" /></p>
     </ArticleSection>
     <ArticleSection id="dns-record-cache" title="权威改动不会瞬间穿透缓存">
       <p id="dns-record-cache-detail" className="vp-citation-target">TTL 是 resolver 可以继续复用这条 RR 的时间窗口；权威区把 A 从 .10 改成 .20 后，旧回答仍可能在 TTL 归零前被返回。排查变更时要同时查权威服务器、递归缓存、回答里的 TTL 和查询时间。<Cite id="dns-record-cache" /></p>
