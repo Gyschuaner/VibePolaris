@@ -55,3 +55,11 @@ export const hostnameSources: BoundarySource[] = [
   make("IETF", "RFC 9525 · Service Identity in TLS", "https://www.rfc-editor.org/rfc/rfc9525.html", ["hostname-tls"], "2023-11"),
   make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["hostname-tls", "hostname-host", "hostname-diagnostic"], "2022-06"),
 ];
+
+export const dnsRecordSources: BoundarySource[] = [
+  make("IETF", "RFC 1034 · Domain Concepts and Facilities", "https://www.rfc-editor.org/rfc/rfc1034.html", ["dns-record-shape-detail", "dns-record-authority", "dns-record-cache"], "1987-11"),
+  make("IETF", "RFC 1035 · Domain Names - Implementation and Specification", "https://www.rfc-editor.org/rfc/rfc1035.html", ["dns-record-shape-detail", "dns-record-type", "dns-record-cname"], "1987-11"),
+  make("IETF", "RFC 2181 · Clarifications to the DNS Specification", "https://www.rfc-editor.org/rfc/rfc2181.html", ["dns-record-set", "dns-record-cname", "dns-record-authority", "dns-record-diagnostic"], "1997-07"),
+  make("IETF", "RFC 2308 · Negative Caching of DNS Queries", "https://www.rfc-editor.org/rfc/rfc2308.html", ["dns-record-cache", "dns-record-negative", "dns-record-diagnostic"], "1998-03"),
+  make("IETF", "RFC 8499 · DNS Terminology", "https://www.rfc-editor.org/rfc/rfc8499.html", ["dns-record-cname", "dns-record-negative"], "2019-01"),
+];

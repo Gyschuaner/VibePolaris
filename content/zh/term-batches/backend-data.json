@@ -812,12 +812,12 @@
   },
   {
     "zh": "DNS 记录", "en": "DNS Record", "slug": "dns-record", "cat": "技术栈",
-    "say": "DNS 区域中保存名称如何解析或验证的结构化条目。", "aliases": ["域名记录", "解析记录", "资源记录"],
-    "question": "域名要指向服务器或邮件服务，应该改哪里？", "definition": "DNS 记录为域名保存地址、别名、邮件路由和验证文本等信息，并带有缓存时间。", "boundary": "不同记录类型有不同含义；修改记录也不会让所有缓存立即失效。",
-    "demoType": "branch", "demoTitle": "不同 DNS 记录解决什么问题",
-    "demoSteps": [{"label":"网站地址","value":"A → 203.0.113.10","note":"域名解析到 IPv4 地址。"},{"label":"服务别名","value":"CNAME → host.example.net","note":"一个名称指向另一个名称。"},{"label":"邮件路由","value":"MX → mail.example.com","note":"邮件系统找到接收服务器。"}],
-    "quizQuestion": "让域名直接指向 IPv4 地址通常使用什么记录？", "quizOptions": ["A 记录", "MX 记录", "TXT 记录"], "correctText": "A 记录保存 IPv4 地址。", "wrongText": "MX 用于邮件路由，TXT 保存文本信息。",
-    "promptTitle": "检查 DNS 记录", "prompt": "请按网站、邮件和验证用途检查这些 DNS 记录的类型、名称、目标、TTL 和冲突。", "relatedSlugs": ["hostname", "ip-address", "dns-resolver", "cache"]
+    "say": "把名称、类型、TTL 和数据格式放在一起，告诉解析器这条信息是什么以及能缓存多久。", "aliases": ["域名记录", "解析记录", "资源记录"],
+    "question": "为什么权威 DNS 已经改成新地址，部分用户还拿到旧地址？", "definition": "DNS 记录由 owner、type、class、TTL 和 RDATA 构成；A、CNAME、MX、TXT 等类型表达不同资源信息。", "boundary": "CNAME 不是 HTTP 重定向；同名同类型的多条记录组成 RRSet；权威修改和缓存过期是两个时间点。",
+    "demoType": "flow", "demoTitle": "从一行记录到缓存中的回答",
+    "demoSteps": [{"label":"读字段","value":"owner · type · class · TTL · RDATA","note":"先确认这条记录挂在哪个名字下、怎样解释数据、能缓存多久。"},{"label":"组成 RRSet","value":"api.example.com A → .10 + .11","note":"同名同类型的不同地址作为一组回答，TTL 一起倒计时。"},{"label":"看权威与缓存","value":"权威 .20 · resolver 仍答 .10","note":"TTL 归零前，旧副本可以继续被返回；排查要记录回答来源。"}],
+    "quizQuestion": "CNAME 记录通常表达什么关系？", "quizOptions": ["一个别名对应另一个规范名", "浏览器执行 HTTP 302 跳转", "把邮件正文写进 DNS"], "correctText": "CNAME 的 RDATA 是规范名，后续还要解析这个名字的地址记录。", "wrongText": "DNS 记录类型改变的是数据语义，不会自动执行 HTTP 动作。",
+    "promptTitle": "还原一次 DNS 记录回答", "prompt": "请记录 QNAME、QTYPE、回答区、AA 标记、authority/additional 区、每条 RR 的 TTL、回答来源和是否为 NXDOMAIN/NODATA，再判断旧值来自哪一层缓存。", "relatedSlugs": ["hostname", "dns-resolver", "cache", "url"]
   },
   {
     "zh": "DNS 解析器", "en": "DNS Resolver", "slug": "dns-resolver", "cat": "技术栈",

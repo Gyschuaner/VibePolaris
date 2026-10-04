@@ -12107,221 +12107,216 @@
   },
   {
     "slug": "dns-record",
-    "lead": "权威 DNS 已把地址改成 .20，为什么部分用户一分钟内仍访问 .10？",
-    "definition": "DNS 资源记录用名称、类型、TTL 和类型特定数据表达地址、别名、邮件路由等信息；缓存会在 TTL 内复用旧答案。",
-    "boundary": "DNS 记录不只把域名指向 IP。CNAME 不是 HTTP 重定向，修改权威记录也不会让现有缓存立即消失。",
+    "lead": "权威 DNS 已把 api.example.com 改到 .20，为什么有人还拿到 .10？",
+    "definition": "DNS 资源记录把 owner、type、class、TTL 和 RDATA 放在一行里；同名同类型的记录组成 RRSet，resolver 可以在 TTL 内复用它。",
+    "boundary": "A、CNAME、MX、TXT 说的是不同种类的数据。CNAME 不会让浏览器跳转，权威区更新也不会立刻擦掉递归缓存里的旧答案。",
     "sceneKind": "timeline",
-    "sceneTitle": "A 记录变更与 TTL 缓存倒计时",
-    "actionLabel": "推进缓存时间",
+    "sceneTitle": "一行 DNS 记录怎样在权威区和缓存里分叉",
+    "actionLabel": "推进记录状态",
     "actors": [
       {
-        "id": "dns-owner",
-        "label": "api.example.com",
+        "id": "owner",
+        "label": "api.example.com.",
         "detail": "owner name",
         "icon": "network",
-        "group": "记录"
+        "group": "记录字段"
       },
       {
-        "id": "cname-record",
-        "label": "CNAME",
-        "detail": "api → edge",
-        "icon": "message",
-        "group": "记录"
+        "id": "record-row",
+        "label": "A · 60s · .10",
+        "detail": "一行 RR",
+        "icon": "file",
+        "group": "记录字段"
       },
       {
-        "id": "a-record",
-        "label": "A 记录",
-        "detail": "edge → 203.0.113.10",
-        "icon": "message",
-        "group": "记录"
+        "id": "rrset",
+        "label": "A · .10 + .11",
+        "detail": "同名同类型",
+        "icon": "package",
+        "group": "回答集合"
       },
       {
         "id": "authority",
-        "label": "权威服务器",
-        "detail": "已更新为 .20",
+        "label": "权威区",
+        "detail": "更新为 .20",
         "icon": "server",
-        "group": "DNS"
+        "group": "来源"
       },
       {
-        "id": "dns-cache",
-        "label": "递归缓存",
-        "detail": "TTL 60 s",
+        "id": "resolver-cache",
+        "label": "resolver 缓存",
+        "detail": ".10 · TTL 42",
         "icon": "memory",
-        "group": "DNS"
+        "group": "缓存"
       },
       {
-        "id": "dns-client",
-        "label": "客户端",
-        "detail": "重复查询",
+        "id": "client",
+        "label": "客户端查询",
+        "detail": "仍收到 .10",
         "icon": "browser",
-        "group": "调用方"
+        "group": "结果"
       }
     ],
     "edges": [
       {
-        "id": "owner-cname",
-        "from": "dns-owner",
-        "to": "cname-record",
-        "label": "别名记录"
+        "id": "owner-row",
+        "from": "owner",
+        "to": "record-row",
+        "label": "挂在这个名字下"
       },
       {
-        "id": "cname-a",
-        "from": "cname-record",
-        "to": "a-record",
-        "label": "继续查询 edge"
+        "id": "row-rrset",
+        "from": "record-row",
+        "to": "rrset",
+        "label": "同名同类型归组"
       },
       {
         "id": "authority-cache",
         "from": "authority",
-        "to": "dns-cache",
-        "label": "缓存答案"
+        "to": "resolver-cache",
+        "label": "缓存回答"
       },
       {
-        "id": "client-cache",
-        "from": "dns-client",
-        "to": "dns-cache",
-        "label": "查询"
+        "id": "cache-client",
+        "from": "resolver-cache",
+        "to": "client",
+        "label": "TTL 内复用"
       },
       {
-        "id": "cache-authority",
-        "from": "dns-cache",
-        "to": "authority",
+        "id": "authority-client",
+        "from": "authority",
+        "to": "client",
         "label": "过期后刷新"
       }
     ],
     "frames": [
       {
-        "label": "首次查询缓存 .10",
-        "note": "递归服务器从权威源取得记录，并按 TTL 60 秒保存。",
+        "label": "先读一行记录",
+        "note": "owner、type、class、TTL 和 RDATA 各自有位置，读者先知道这条信息挂在哪里、怎么解释、能存多久。",
         "activeIds": [
-          "dns-client",
-          "authority",
-          "dns-cache",
-          "cname-record",
-          "a-record"
+          "owner",
+          "record-row"
         ],
         "doneIds": [
-          "dns-cache"
+          "owner"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "rrset",
+          "authority",
+          "resolver-cache",
+          "client"
+        ],
         "values": {
-          "a-record": "203.0.113.10",
-          "dns-cache": ".10 · TTL 60"
+          "record-row": "A · class IN · TTL 60 · 203.0.113.10"
         },
         "activeEdgeIds": [
-          "client-cache",
-          "cache-authority",
-          "authority-cache",
-          "owner-cname",
-          "cname-a"
+          "owner-row"
         ]
       },
       {
-        "label": "权威值改成 .20",
-        "note": "权威服务器立即保存新值，缓存副本仍剩 35 秒。",
+        "label": "同名记录合成 RRSet",
+        "note": "第二条 A 记录加入同一个 owner/type 集合；两个地址一起回答，TTL 一起倒计时。",
+        "activeIds": [
+          "owner",
+          "record-row",
+          "rrset"
+        ],
+        "doneIds": [
+          "rrset"
+        ],
+        "mutedIds": [
+          "authority",
+          "resolver-cache",
+          "client"
+        ],
+        "values": {
+          "rrset": "A → .10 + .11 · TTL 60"
+        },
+        "activeEdgeIds": [
+          "owner-row",
+          "row-rrset"
+        ]
+      },
+      {
+        "label": "权威已经改，缓存还没到点",
+        "note": "权威区现在是 .20，resolver 手里的 .10 还剩 42 秒；这两个答案同时存在于不同位置。",
         "activeIds": [
           "authority",
-          "a-record",
-          "dns-cache"
+          "resolver-cache",
+          "client"
         ],
         "doneIds": [
           "authority"
         ],
         "mutedIds": [
-          "dns-client"
+          "owner",
+          "record-row",
+          "rrset"
         ],
         "values": {
-          "authority": "203.0.113.20",
-          "dns-cache": "203.0.113.10 · TTL 35"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "TTL 内继续返回旧值",
-        "note": "客户端命中递归缓存，不会为每次查询访问权威服务器。",
-        "activeIds": [
-          "dns-client",
-          "dns-cache"
-        ],
-        "doneIds": [
-          "dns-client"
-        ],
-        "mutedIds": [
-          "authority",
-          "cname-record",
-          "a-record"
-        ],
-        "values": {
-          "dns-cache": "HIT .10 · TTL 12",
-          "dns-client": "203.0.113.10"
+          "authority": "A → 203.0.113.20",
+          "resolver-cache": "HIT .10 · TTL 42",
+          "client": "收到 .10"
         },
         "activeEdgeIds": [
-          "client-cache"
+          "authority-cache",
+          "cache-client"
         ],
         "metric": {
           "label": "权威查询",
           "value": "0"
         }
-      },
-      {
-        "label": "TTL 到期刷新 .20",
-        "note": "缓存失效后重新查询权威源，新的 A 记录进入缓存。",
-        "activeIds": [
-          "dns-client",
-          "dns-cache",
-          "authority",
-          "a-record"
-        ],
-        "doneIds": [
-          "dns-cache"
-        ],
-        "mutedIds": [],
-        "values": {
-          "dns-cache": "203.0.113.20 · TTL 60",
-          "dns-client": "203.0.113.20"
-        },
-        "activeEdgeIds": [
-          "client-cache",
-          "cache-authority",
-          "authority-cache",
-          "cname-a"
-        ]
       }
     ],
-    "insight": "DNS 变更的可见时间由记录类型和各级缓存剩余 TTL 决定。",
+    "insight": "看见一个 IP 还不够：记录类型、RRSet、回答来源和剩余 TTL 共同决定这次回答能不能信。",
     "quiz": {
-      "question": "把 A 记录从 .10 改为 .20 后，为什么客户端仍可能得到 .10？",
+      "question": "CNAME 记录通常表达什么关系？",
       "options": [
         {
-          "label": "递归或本地缓存的旧记录尚未过 TTL",
+          "label": "一个别名对应另一个规范名",
           "correct": true
         },
         {
-          "label": "CNAME 会执行 HTTP 302",
+          "label": "浏览器执行 HTTP 302 跳转",
           "correct": false
         },
         {
-          "label": "IP 地址不能修改",
+          "label": "把邮件正文写进 DNS",
           "correct": false
         }
       ],
-      "success": "权威值更新与缓存副本失效是两个时间点。",
-      "retry": "查看回答来自权威服务器还是缓存。"
+      "success": "CNAME 改变的是 DNS 名称关系，后续仍要解析规范名的记录。",
+      "retry": "先看这条 RR 的 type 和 RDATA，再判断它是地址、别名还是邮件路由。"
     },
     "prompt": {
-      "title": "计划一次 DNS 记录变更",
-      "text": "请列出 owner、记录类型、旧值、新值、TTL、别名链、权威源和验证解析器，并安排 TTL 预降与回滚。"
+      "title": "还原一次 DNS 记录回答",
+      "text": "请记录 QNAME、QTYPE、回答区、AA 标记、authority/additional 区、每条 RR 的 TTL、回答来源和是否为 NXDOMAIN/NODATA，再判断旧值来自哪一层缓存。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
         "label": "RFC 1034 · DNS Concepts",
-        "note": "协议定义与报文语义"
+        "note": "DNS 名字空间、区域、权威来源与缓存"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
         "label": "RFC 1035 · DNS Implementation",
-        "note": "协议定义与报文语义"
+        "note": "RR 字段、TTL 与常见记录类型"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc2181.html",
+        "label": "RFC 2181 · DNS Clarifications",
+        "note": "RRSet、CNAME 与权威数据边界"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc2308.html",
+        "label": "RFC 2308 · Negative Caching",
+        "note": "NXDOMAIN、NODATA 与负缓存 TTL"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
+        "label": "RFC 8499 · DNS Terminology",
+        "note": "CNAME、NXDOMAIN 与 NODATA 术语"
       }
     ]
   },
