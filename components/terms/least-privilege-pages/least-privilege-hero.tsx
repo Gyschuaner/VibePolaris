@@ -20,6 +20,7 @@ const grants = [
 ];
 
 function activeGrant(step: number, id: string) {
+  if (step >= 5) return false;
   if (step < 1) return false;
   if (id === "org-admin") return step === 1;
   return step >= 1;
@@ -56,7 +57,7 @@ export function LeastPrivilegeHero() {
       <section className={`${styles.leastGrant} ${scene.step === 1 || scene.step === 2 || scene.step === 3 ? styles.leastActive : ""}`}>
         <div className={styles.leastEyebrow}><Key size={17} aria-hidden="true" /><span>授权抽屉 · permissions</span></div>
         <div className={styles.leastGrantList}>{grants.map(({ id, label, scope, icon: Icon }) => <div key={id} data-granted={activeGrant(scene.step, id)} data-danger={id === "org-admin" && scene.step === 1}><Icon size={17} aria-hidden="true" /><span><strong>{label}</strong><small>{scope}</small></span><b>{activeGrant(scene.step, id) ? "allow" : "—"}</b></div>)}</div>
-        <div className={styles.leastConditions}><span><GitBranch size={14} aria-hidden="true" />资源：{scene.step >= 3 ? "repo/Vibe" : "*"}</span><span><Clock size={14} aria-hidden="true" />时间：{scene.step >= 3 ? "30 min" : "永久"}</span></div>
+        <div className={styles.leastConditions}><span><GitBranch size={14} aria-hidden="true" />资源：{scene.step >= 3 ? "repo/Vibe" : "*"}</span><span><Clock size={14} aria-hidden="true" />时间：{complete ? "expired" : scene.step >= 3 ? "30 min" : "永久"}</span></div>
       </section>
       <section className={`${styles.leastDecision} ${blocked ? styles.leastBlocked : ""} ${complete ? styles.leastComplete : ""}`}>
         <div className={styles.leastEyebrow}>{blocked ? <WarningCircle size={17} aria-hidden="true" /> : complete ? <CheckCircle size={17} aria-hidden="true" /> : <ShieldCheck size={17} aria-hidden="true" />}<span>门口 · policy check</span></div>
