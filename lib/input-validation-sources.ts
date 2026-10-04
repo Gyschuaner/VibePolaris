@@ -7,7 +7,6 @@ export const inputValidationSources = [
     "iv-syntax-semantics",
     "iv-allowlist",
     "iv-parse-limits",
-    "iv-structured",
     "iv-boundary",
   ]),
   source("JSON Schema", "JSON Schema Validation · Draft 2020-12", "https://json-schema.org/draft/2020-12/json-schema-validation", [

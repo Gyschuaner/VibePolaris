@@ -66,7 +66,7 @@ export function InputValidationHero() {
         <div className={styles.ivEyebrow}>{blocked ? <WarningCircle size={17} aria-hidden="true" /> : complete ? <CheckCircle size={17} aria-hidden="true" /> : <Database size={17} aria-hidden="true" />}<span>服务端结论</span></div>
         <strong>{result.code}</strong>
         <code>{result.value}</code>
-        <div className={styles.ivResultRows}><span>查询</span><b>{scene.step === 2 || scene.step === 4 ? "0 次" : scene.step >= 3 ? "1 次" : "未开始"}</b><span>明文 SQL</span><b>{scene.step >= 3 ? "没有" : "—"}</b></div>
+        <div className={styles.ivResultRows}><span>查询</span><b>{scene.step >= 5 ? "1 次" : scene.step >= 1 ? "0 次" : "未开始"}</b><span>明文 SQL</span><b>{scene.step >= 3 ? "没有" : "—"}</b></div>
         <small>{blocked ? "失败在业务动作前留下清楚的原因。" : complete ? "校验和授权都通过，结果才进入调用方。" : "结果要等前面的门真的通过。"}</small>
       </section>
     </div>
