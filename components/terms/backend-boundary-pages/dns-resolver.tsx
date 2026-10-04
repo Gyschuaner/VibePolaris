@@ -178,7 +178,7 @@ export function DnsResolverTermPage() {
     </ArticleSection>
     <ArticleSection id="resolver-result-section" title="有答案、没数据和没回信不是一回事">
       <p id="resolver-negative" className="vp-citation-target"><code>NXDOMAIN</code> 表示名字不存在；<code>NOERROR</code> 加上空的相关 answer 则可能是 NODATA，表示名字存在但没有被问的类型。权威响应可以在 authority 区带 SOA，resolver 按负 TTL 暂存这个结论。<Cite id="resolver-negative" /></p>
-      <p id="resolver-failure" className="vp-citation-target"><code>SERVFAIL</code>、超时或上游不可达说明这次没有拿到可用数据，不能当成“名字不存在”。现在的解析器也会把部分解析失败短暂放进 failure cache，限制重复重试；这解决的是上游故障带来的查询风暴，不是把错误变成正确答案。<Cite id="resolver-failure" /></p>
+      <p id="resolver-failure" className="vp-citation-target"><code>SERVFAIL</code>、超时或上游不可达说明这次没有拿到可用数据，不能当成“名字不存在”。解析失败会进入短时 failure cache；实现可以按失败类型设置期限，RFC 9520 要求至少缓存 1 秒、最长不超过 5 分钟。这样能限制重复重试，缓解上游故障带来的查询风暴，却不会把错误变成正确答案。<Cite id="resolver-failure" /></p>
       <p id="resolver-diagnosis" className="vp-citation-target">排查 DNS 时，把 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、每条 RR 的 TTL、实际问过的上游和重试结果放在一起。只看到应用报“找不到主机”，无法区分缓存命中、NXDOMAIN、NODATA、SERVFAIL 和等待超时。<Cite id="resolver-diagnosis" /></p>
     </ArticleSection>
   </ConceptArticle>;

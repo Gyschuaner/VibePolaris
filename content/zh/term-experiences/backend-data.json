@@ -12324,7 +12324,7 @@
     "slug": "dns-resolver",
     "lead": "第一次解析要走几层 DNS，为什么第二次却不用再问上游？",
     "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，先查自己的缓存；未命中时代表客户端追踪委派，再把记录、否定结论或失败状态返回。",
-    "boundary": "stub、recursive resolver 和 authoritative server 各做一段工作。NXDOMAIN/NODATA 是有依据的否定，SERVFAIL/timeout 则表示没拿到可用数据。",
+    "boundary": "stub、recursive resolver 和 authoritative server 各做一段工作。NXDOMAIN/NODATA 是有依据的否定，SERVFAIL/timeout 则表示没拿到可用数据；解析失败会按短时 failure cache 限制重复重试。",
     "sceneKind": "route",
     "sceneTitle": "一次查询怎样从 cache MISS 走到答案或停止",
     "actionLabel": "推进解析决定",

@@ -822,7 +822,7 @@
   {
     "zh": "DNS 解析器", "en": "DNS Resolver", "slug": "dns-resolver", "cat": "技术栈",
     "say": "替客户端把一个名字问到有答案的地方，先查缓存，必要时继续追上游。", "aliases": ["递归解析器", "DNS 服务器", "Resolver"],
-    "question": "为什么第一次查域名要走好几层，第二次却不用再访问上游？", "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，从缓存或递归查询获得回答，再把记录、否定结论或失败状态返回给客户端。", "boundary": "stub、recursive resolver 和 authoritative server 的职责不同；NXDOMAIN/NODATA 不是 SERVFAIL，缓存命中也不等于目标应用健康。",
+    "question": "为什么第一次查域名要走好几层，第二次却不用再访问上游？", "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，从缓存或递归查询获得回答，再把记录、否定结论或失败状态返回给客户端。", "boundary": "stub、recursive resolver 和 authoritative server 的职责不同；NXDOMAIN/NODATA 不是 SERVFAIL，解析失败会进入短时 failure cache，缓存命中也不等于目标应用健康。",
     "demoType": "flow", "demoTitle": "resolver 怎样决定继续问还是停下",
     "demoSteps": [{"label":"先看缓存","value":"api.example.com A · MISS","note":"本机把 RD=1 的问题交给递归 resolver。"},{"label":"沿委派查询","value":"root → .com → authoritative","note":"递归器逐步找到负责目标 zone 的服务器。"},{"label":"得到答案或停止","value":"A .10 · NXDOMAIN · SERVFAIL","note":"正答案、负答案和解析失败都要结合 RCODE、authority 区与 TTL 判断。"}],
     "quizQuestion": "看到 SERVFAIL，能否直接断定域名不存在？", "quizOptions": ["不能，它表示本次解析没有拿到可用数据", "能，所有失败都等于 NXDOMAIN", "能，只要递归器返回了空结果"], "correctText": "SERVFAIL 与 NXDOMAIN 是不同的 RCODE，前者不能证明名字不存在。", "wrongText": "继续看 RCODE、authority 区、上游响应和重试记录，不要把所有失败归为不存在。",
