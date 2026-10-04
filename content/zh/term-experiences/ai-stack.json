@@ -1347,102 +1347,115 @@
   },
   {
     "slug": "context-window",
-    "lead": "16k 工作台里同时放历史、工具结果和答案，哪一块先让路？",
-    "definition": "模型一次调用能处理的输入与输出 token 总量受窗口限制；较早内容、工具结果和待生成内容都占用这份容量。",
-    "boundary": "上下文窗口不是长期记忆，也不是把最大长度全部塞满就一定能稳定利用。",
+    "lead": "一段周末出游聊天越聊越长，最后那句“周日五点前到家”还在窗口里吗？",
+    "definition": "上下文窗口是一次模型请求实际能接收和生成的 token 总量；系统规则、历史消息、工具结果与回答预留共同占用这份空间。",
+    "boundary": "它不是跨会话长期记忆，也不保证放进去的每个位置都同样容易被模型找到；裁剪或压缩会改变本轮可见事实。",
     "sceneKind": "assembly",
-    "sceneTitle": "同一份预算怎样先溢出，再把历史裁短",
-    "actionLabel": "切换历史并逐步预算",
+    "sceneTitle": "一段出游聊天怎样从装得下走到必须整理",
+    "actionLabel": "把聊天放入窗口，再保住返程约束",
     "actors": [
       {
         "id": "window",
         "label": "16k 工作台",
-        "detail": "输入与输出共用",
+        "detail": "输入与回答共用",
         "icon": "layout",
         "group": "容量"
       },
       {
-        "id": "rules",
-        "label": "系统与任务",
-        "detail": "2k token",
-        "icon": "shield",
-        "group": "输入"
+        "id": "constraint",
+        "label": "返程约束",
+        "detail": "周日 17:00 前到家",
+        "icon": "clock",
+        "group": "必须保留"
       },
       {
-        "id": "history",
-        "label": "对话历史",
-        "detail": "6k / 10k token",
+        "id": "chat",
+        "label": "旧天气闲聊",
+        "detail": "10k token",
         "icon": "message",
-        "group": "输入"
+        "group": "历史"
       },
       {
-        "id": "tools",
-        "label": "工具结果",
-        "detail": "3k token",
+        "id": "address",
+        "label": "民宿地址",
+        "detail": "出发与落脚点",
         "icon": "file",
-        "group": "输入"
+        "group": "历史"
       },
       {
-        "id": "output",
-        "label": "回答预留",
-        "detail": "2k token",
+        "id": "summary",
+        "label": "压缩后的摘要",
+        "detail": "保留会改变答案的事实",
         "icon": "spark",
-        "group": "生成"
+        "group": "整理"
+      },
+      {
+        "id": "overflow",
+        "label": "超出警告",
+        "detail": "17k / 16k",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
     "edges": [],
     "frames": [
       {
-        "label": "锁定任务与回答位",
-        "note": "先把系统与任务占用 2k，并为回答预留 2k；这两块和历史、工具结果共用 16k。",
+        "label": "先锁定返程约束",
+        "note": "先把“周日 17:00 前到家”标成会改变行程的事实；它和回答预留一起进入同一份预算。",
         "activeIds": [
-          "rules",
-          "output",
-          "window"
+          "window",
+          "constraint"
         ],
         "doneIds": [],
         "mutedIds": [
-          "history",
-          "tools"
+          "chat",
+          "address",
+          "summary",
+          "overflow"
         ],
         "values": {
-          "window": "4 / 16k"
+          "window": "2 / 16k",
+          "constraint": "必须保留"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "加入历史和工具",
-        "note": "短历史 6k 加工具结果 3k 后，输入与回答预留共 13k，仍有余量。",
+        "label": "旧聊天继续加入",
+        "note": "地址和天气闲聊一起进入历史，输入加回答预留到 13k；此时仍有空间，但关键约束已经被长段聊天包围。",
         "activeIds": [
-          "history",
-          "tools",
-          "window"
+          "window",
+          "chat",
+          "address",
+          "constraint"
         ],
-        "doneIds": [
-          "rules",
-          "output"
+        "doneIds": [],
+        "mutedIds": [
+          "summary",
+          "overflow"
         ],
-        "mutedIds": [],
         "values": {
-          "window": "13 / 16k"
+          "window": "13 / 16k",
+          "chat": "10k"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "看见预算溢出",
-        "note": "把历史换成长版本后，2k + 10k + 3k + 2k = 17k，超过 16k；此刻不能把整段历史当作可见输入。",
+        "label": "关键约束被挤出",
+        "note": "历史再加工具结果后达到 17k，超过 16k；如果直接截短，最早或中间的约束可能离开本轮输入。",
         "activeIds": [
-          "history",
-          "tools",
-          "output",
-          "window"
+          "window",
+          "chat",
+          "overflow"
         ],
-        "doneIds": [
-          "rules"
+        "doneIds": [],
+        "mutedIds": [
+          "constraint",
+          "address",
+          "summary"
         ],
-        "mutedIds": [],
         "values": {
-          "window": "17 / 16k · 溢出"
+          "window": "17 / 16k · 溢出",
+          "overflow": "多出 1k"
         },
         "activeEdgeIds": [],
         "metric": {
@@ -1451,63 +1464,80 @@
         }
       },
       {
-        "label": "裁剪后再继续",
-        "note": "移出最早 3k 历史，窗口实际带入 7k 历史，合计 14k；旧记录可以留在外部存储，但这一轮看到的内容已经变了。",
+        "label": "摘要留住会改变答案的事实",
+        "note": "把返程时间、地址和未完成动作写入摘要，移出天气闲聊；窗口回到 14k，但内容已经是整理后的版本。",
         "activeIds": [
-          "history",
-          "window"
+          "window",
+          "summary",
+          "constraint"
         ],
         "doneIds": [
-          "rules",
-          "tools",
-          "output"
+          "chat",
+          "overflow"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "address"
+        ],
         "values": {
-          "history": "10k → 7k",
-          "window": "14 / 16k"
+          "window": "14 / 16k",
+          "summary": "返程约束仍在"
         },
         "activeEdgeIds": [],
         "metric": {
-          "label": "裁剪历史",
-          "value": "3k"
+          "label": "整理",
+          "value": "留下 3 个事实"
         }
       }
     ],
-    "insight": "上下文窗口是一笔共享 token 预算；保存在外部不等于本轮已经带入，裁剪也会改变模型实际看到的内容。",
+    "insight": "窗口只回答“这一轮能带进多少”；真正决定答案是否可靠的，还包括哪些事实被保留、写在哪里，以及整理后有没有重新核对。",
     "quiz": {
-      "question": "窗口已接近上限，继续加入工具结果时应先做什么？",
+      "question": "长聊天即将超出窗口，最先要保护哪类内容？",
       "options": [
         {
-          "label": "重新计算输入与输出预算",
+          "label": "会改变下一步答案的约束",
           "correct": true
         },
         {
-          "label": "假设模型会无限扩容",
+          "label": "所有旧消息一字不删",
           "correct": false
         },
         {
-          "label": "把字体缩小",
+          "label": "只留下最后一句闲聊",
           "correct": false
         }
       ],
-      "success": "历史、工具结果和输出都占窗口。",
-      "retry": "页面字号不会改变token数量。"
+      "success": "先保住目标、约束、决定和未完成动作，再决定哪些历史需要摘要或移出。",
+      "retry": "原文全部保留既可能超限，也可能把关键约束埋在噪声里。"
     },
     "prompt": {
-      "title": "做一次上下文预算",
-      "text": "列出系统提示、历史、检索材料、工具结果和输出预留的token预算，并写明超限时先裁哪一类。"
+      "title": "整理一段长聊天",
+      "text": "列出会改变下一步的约束、必须核对的证据、可以压缩的闲聊和压缩后的复查动作。"
     },
     "sources": [
       {
-        "url": "https://platform.openai.com/docs/guides/conversation-state",
-        "label": "OpenAI 官方文档 · conversation state",
-        "note": "接口参数与调用行为"
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+        "label": "Claude Platform Docs · Context windows",
+        "note": "窗口组成、超限与压缩"
       },
       {
-        "url": "https://arxiv.org/abs/1706.03762",
-        "label": "原始论文 · 1706.03762",
-        "note": "原论文的方法与实验"
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "上下文取舍与摘要字段"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/conversation-state",
+        "label": "OpenAI · Conversation state",
+        "note": "请求状态与上下文限制"
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/tokens",
+        "label": "Google · Count tokens",
+        "note": "token 计数与 usage"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Lost in the Middle · arXiv:2307.03172",
+        "note": "长上下文中的位置利用"
       }
     ]
   },

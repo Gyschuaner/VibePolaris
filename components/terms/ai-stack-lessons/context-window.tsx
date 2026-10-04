@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Archive, CheckCircle, FileText, Gauge, Warning } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../AiStackCoreConcepts.module.css";
 
 const sceneLength = 4;
@@ -10,6 +11,7 @@ const sceneLength = 4;
 export function ContextWindowLesson() {
   const scene = useScene(sceneLength);
   const [history, setHistory] = useState<"short" | "long">("short");
+  useResetOnSceneStart(scene, () => setHistory("short"));
   const long = history === "long";
   const historyK = long ? 10 : 6;
   const toolsK = 3;

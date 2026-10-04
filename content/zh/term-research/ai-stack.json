@@ -128,11 +128,13 @@
     "slug": "context-window",
     "mechanism": "输入、历史、工具结果和输出预算共同占用一次请求的 token 容量；超出后必须裁剪、压缩或另行检索。",
     "misconception": "上下文窗口不是长期记忆，也不保证模型平均利用每个位置。",
-    "demoSignature": "容量条：16k 预算先预留 2k 输出，加入 10k 历史与 3k 工具结果后溢出；切换长历史时最早一段移出，输出区恢复。交互：短/长历史切换后观察可见输入变化。",
+    "demoSignature": "周末出游聊天：周日 17:00 前到家、民宿地址和旧天气闲聊依次进入 16k 工作台；历史达到 17k 后出现溢出，摘要移出闲聊并保住返程约束，窗口回到 14k。交互：首图自动演示卡片进入、溢出和整理，正文工作台再逐步拆开预算。",
     "sourceUrls": [
       "https://developers.openai.com/api/docs/guides/conversation-state",
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "https://ai.google.dev/gemini-api/docs/tokens",
       "https://arxiv.org/abs/1706.03762",
       "https://arxiv.org/abs/2307.03172"
     ],
