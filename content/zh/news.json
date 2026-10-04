@@ -48101,6 +48101,560 @@
     "sourceHash": "sha256:d09b4b0756ad154c24ce8610c0209d32a943d2b72f06a6443ace4689a5f74545"
   },
   {
+    "slug": "character-ai-talkingmachines-20250703",
+    "title": "Character.AI 公布 TalkingMachines：实时视频研究离产品还有多远？",
+    "summary": "Character.AI 7 月 3 日公布 TalkingMachines 研究：输入一张图和声音信号，生成实时、音频驱动、FaceTime 风格的视频。官方明确它还不是产品上线，训练规模和效果先按公司口径阅读。",
+    "body": "Character.AI 在 7 月 3 日的官方博客里介绍 TalkingMachines，一种能把图片和声音信号转换成实时、音频驱动视频的研究模型。输入可以是一张人物图片和一段声音，输出则是像视频通话一样会说话、会跟随声音变化的角色。它是当天的官方研究公告，不是一个已经向所有用户开放的产品发布。\n\n这个区别很重要。博客明确写着，团队正在把研究带回 Character.AI 平台，未来可能用于角色直播、FaceTime 式体验和视觉世界构建；“未来可能”不能被标题压缩成“现在已经能视频聊天”。同一篇文章还给出训练规模和工程细节：超过 150 万个筛选视频片段、约 256 张 H100 的三阶段训练，以及 CUDA stream overlap、KV cache 和 VAE 解码器拆分等优化。这些是公司对自己的训练与部署说明，不是外部复现实验。\n\n技术上，TalkingMachines 选择的是扩散 Transformer 和非对称知识蒸馏。可以把它理解为：先有一个质量较高但速度慢的双向视频模型，再把它蒸馏成更适合实时生成的模型。这样做的目标不是让每一帧都“理解”现实世界，而是在声音、人物外观和动作之间保持足够快的对应关系。实时性、画面稳定性、说话口型和不同角色身份的保持，仍需要更多公开评测。\n\n这条新闻也提醒读者不要把论文发布日期和产品公告混在一起。TalkingMachines 的论文在 6 月已经出现在 arXiv，Character.AI 在 7 月 3 日用官方博客把它解释成自己的研究路线和产品方向；事件日按官方公告归档。以后如果平台真正开放试用、公布水印和未成年人保护规则，应该按新的产品事件重新记录，而不是从这篇研究公告倒推已经上线。\n\n对普通读者来说，可以先记住一个简单边界：这次展示的是“从一张图和一段声音生成实时角色视频”的研究能力，离稳定、可控、获得授权的社交产品还有一段路。人物肖像、声音克隆、未成年人和误导性视频的许可问题，不会因为生成速度变快就自动消失。",
+    "publishedAt": "2025-07-03",
+    "eventDate": "2025-07-03",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/character-ai-talkingmachines-20250703.svg",
+      "alt": "一张人物图像和一段声音进入 TalkingMachines，实时视频研究仍停在产品之前",
+      "sourceUrl": "/images/news/character-ai-talkingmachines-20250703.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "official-demo",
+        "title": "官方公布的是研究模型，不是产品上线",
+        "body": "Character.AI 说 TalkingMachines 是研究里程碑，并明确写着还在准备未来的平台体验。",
+        "kind": "boundary"
+      },
+      {
+        "id": "input-output",
+        "title": "一张图和一段声音，变成会说话的角色",
+        "body": "模型把图像外观、声音信号和视频动作接起来，目标是做出实时、音频驱动的 FaceTime 风格互动。",
+        "kind": "narrative"
+      },
+      {
+        "id": "training-claim",
+        "title": "训练规模是公司自述，不能当成独立评测",
+        "body": "150 万视频片段、约 256 张 H100 和部署优化来自官方博客，尚没有同等细节的外部复现。",
+        "kind": "technical"
+      },
+      {
+        "id": "research-product",
+        "title": "论文、博客和产品日期要分开",
+        "body": "论文较早公开，7 月 3 日是官方研究公告；真正开放试用、水印和安全规则要等新事件。",
+        "kind": "comparison"
+      },
+      {
+        "id": "consent",
+        "title": "实时不等于获得授权",
+        "body": "肖像、声音、未成年人和误导性视频的同意与平台限制仍要单独检查。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "把实时角色视频拆成一条生成链",
+      "question": "从输入信号到实时画面，中间经过哪些工程环节，为什么研究演示还不能叫产品？",
+      "steps": [
+        {
+          "label": "准备图像与声音",
+          "detail": "一张角色图像提供外观，声音信号提供说话节奏和音频驱动线索。",
+          "evidence": "context"
+        },
+        {
+          "label": "蒸馏视频模型",
+          "detail": "用非对称知识蒸馏把高质量但缓慢的双向模型转成更适合实时生成的版本。",
+          "evidence": "llm"
+        },
+        {
+          "label": "同步动作与口型",
+          "detail": "模型需要在每一帧保持角色身份、面部动作和声音的对应关系。",
+          "evidence": "eval"
+        },
+        {
+          "label": "做部署优化",
+          "detail": "CUDA stream overlap、KV cache 和 VAE 解码器拆分降低等待，但仍要测稳定性和失败率。",
+          "evidence": "tools"
+        },
+        {
+          "label": "再谈产品安全",
+          "detail": "开放体验前还要处理肖像、声音、未成年人、水印和误导性使用。",
+          "evidence": "citation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Character.AI",
+      "url": "https://blog.character.ai/character-ais-real-time-video-breakthrough/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "eval",
+      "context",
+      "data-lineage",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.character.ai/character-ais-real-time-video-breakthrough/",
+        "claim": "Character.AI 官方博客 7 月 3 日介绍 TalkingMachines：用图像和声音信号生成实时、音频驱动、FaceTime 风格的视频互动。",
+        "excerpt": "Character.AI, “Character.AI’s Real-Time Video Breakthrough”, Jul 3, 2025."
+      },
+      {
+        "url": "https://arxiv.org/abs/2506.03099",
+        "claim": "TalkingMachines 论文原文说明其目标是把预训练视频模型转成实时、音频驱动的角色动画；论文日期早于官方博客，不另算成 7 月 3 日新闻。",
+        "excerpt": "arXiv:2506.03099, “TalkingMachines: Real-Time Audio-Driven FaceTime-Style Video via Autoregressive Diffusion Models”."
+      },
+      {
+        "url": "https://aaxwaz.github.io/TalkingMachines/",
+        "claim": "Character.AI 博客提供 TalkingMachines 演示入口，用于理解研究展示形式，不代表已上线产品。",
+        "excerpt": "TalkingMachines project demo linked from Character.AI announcement."
+      }
+    ],
+    "canonicalUrl": "https://blog.character.ai/character-ais-real-time-video-breakthrough/",
+    "sourceHash": "sha256:43e343c9b5d344300e7c455d106ad8f986ec084fb4f8b3cdc47b82d5da5a9e4d"
+  },
+  {
+    "slug": "cluely-arr-claim-20250703",
+    "title": "Cluely 宣称 ARR 一周翻倍至 700 万美元：实时会议 AI 的增长数字谁来核验？",
+    "summary": "Cluely 创始人 7 月 3 日告诉 TechCrunch，企业产品上线一周后 ARR 约 700 万美元。实时会议辅助的产品需求确实受到关注，但收入、合同和客户安全仍是公司口径，不能当作审计结论。",
+    "body": "7 月 3 日，Cluely 创始人 Roy Lee 告诉 TechCrunch，公司的企业产品上线一周后，年度经常性收入（ARR）已经翻倍到约 700 万美元。Cluely 做的是实时会议助手：在通话或面试中分析对话、给出上下文、记笔记并提示可能的问题。这个数字很醒目，但新闻中的口径来自创始人，未附审计报表；本文把它写成公司主张，不把它当作已经独立核验的财务事实。\n\nARR 是把当前的经常性收入按一年计算的估算指标，不等于已经收到的现金、全年利润或确定续约。报道还提到一家未具名的上市公司把年度合同金额翻倍到 250 万美元，这同样是创始人的说法。企业产品增加了团队管理和安全设置，销售、客服和远程辅导是公司举的场景，但没有公开客户名单、留存、毛利或合同期限，读者不能只用一个 ARR 数字判断业务是否稳固。\n\nCluely 的增长故事还带着产品本身的争议。公司早期用“cheat on everything”吸引注意，后来把营销话术转向企业效率；它的实时提示可能让会议参与者不知道屏幕上正在显示什么，也会把录音、转录、客户资料和招聘面试带进同一个权限问题。企业客户真正要问的不是“能不能在对话中给答案”，而是对方是否知道 AI 在场、哪些内容会保存、谁能查看以及如何删除。\n\n竞争也会压缩这个故事的确定性。报道当天，开源项目 Glass 被指做出了相近的实时记笔记功能，并迅速获得开发者关注。一个产品很快被复制，可能说明需求真实，也可能说明技术门槛还不高；它无法单独证明 Cluely 的收入会持续。公司声称的客户合同、企业安全设置和未来续费，需要后续文件或客户验证才能变成更强的证据。\n\n因此，7 月 3 日值得记录的是“一个以争议营销起家的 AI 工具声称企业收入快速增长”，而不是“Cluely 已经证明了 AI 会议助手的商业模式”。读者可以把 ARR、客户合同、实时提示和数据权限分别看：前两个是公司口径，第三个是产品能力，最后一个才决定它能不能进入真正的工作流程。",
+    "publishedAt": "2025-07-03",
+    "eventDate": "2025-07-03",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/cluely-arr-claim-20250703.svg",
+      "alt": "Cluely 的实时会议助手把收入增长主张、屏幕提示和数据权限放在同一张核验清单上",
+      "sourceUrl": "/images/news/cluely-arr-claim-20250703.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "claim",
+        "title": "700 万美元是创始人对媒体的说法",
+        "body": "TechCrunch 记录了 Roy Lee 的 ARR 和合同数字，但报道没有给出审计报表、客户名称或独立验证。",
+        "kind": "boundary"
+      },
+      {
+        "id": "arr",
+        "title": "ARR 不是现金、利润或续约",
+        "body": "年度经常性收入把当前经常性收入年化，不能直接回答公司赚了多少钱、客户会不会留下。",
+        "kind": "technical"
+      },
+      {
+        "id": "workflow",
+        "title": "实时会议助手为什么会进入企业",
+        "body": "实时笔记、上下文和问题提示能直接嵌入销售、客服和辅导，但也会触及录音、转录和客户资料。",
+        "kind": "narrative"
+      },
+      {
+        "id": "consent",
+        "title": "效率故事背后是“谁知道 AI 在场”",
+        "body": "企业需要明确告知、权限、保存周期、删除方式与查看范围，营销口号不能替代治理。",
+        "kind": "comparison"
+      },
+      {
+        "id": "competition",
+        "title": "能被复制，既说明需求也说明风险",
+        "body": "报道提到开源 Glass 的相近能力；复制速度无法证明 Cluely 收入的持续性。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "把一条 AI 创业收入新闻拆成可核验的几层",
+      "question": "同一个“增长很快”标题里，收入口径、产品能力、客户合同和数据治理其实是四个不同问题。",
+      "steps": [
+        {
+          "label": "先标记谁说的",
+          "detail": "把 ARR、合同金额和客户场景标为创始人说法，不写成审计或客户确认。",
+          "evidence": "citation"
+        },
+        {
+          "label": "把 ARR 翻译成人话",
+          "detail": "ARR 是把经常性收入年化，不等于现金、利润、留存或确定续约。",
+          "evidence": "llm"
+        },
+        {
+          "label": "看产品真正做什么",
+          "detail": "实时转录、上下文和问题提示改变的是会议中的工作流，而不是自动证明结果更好。",
+          "evidence": "tools"
+        },
+        {
+          "label": "检查数据和告知",
+          "detail": "录音、转录、客户资料、面试内容与屏幕提示都需要明确权限和保留规则。",
+          "evidence": "auth"
+        },
+        {
+          "label": "等待客户和复购证据",
+          "detail": "公开客户、合同周期、留存、复购和独立安全评估，才能让增长主张更可核验。",
+          "evidence": "eval"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/03/cluelys-arr-doubled-in-a-week-to-7m-founder-roy-lee-says-but-rivals-are-coming/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "context",
+      "tools",
+      "auth",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/03/cluelys-arr-doubled-in-a-week-to-7m-founder-roy-lee-says-but-rivals-are-coming/",
+        "claim": "TechCrunch 7 月 3 日报道，Cluely 创始人 Roy Lee 称企业产品上线一周后 ARR 约 700 万美元，并称一家未具名上市公司将合同金额翻倍至 250 万美元。",
+        "excerpt": "TechCrunch, “Cluely’s ARR doubled in a week to $7M, founder Roy Lee says. But rivals are coming.”, Jul 3, 2025."
+      },
+      {
+        "url": "https://cluely.com/",
+        "claim": "Cluely 官方网站展示其实时会议辅助产品定位；它用于补充产品语境，不独立验证 ARR 或合同金额。",
+        "excerpt": "Cluely official product site."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/26/why-a16z-vc-believes-that-cluely-the-cheat-on-everything-startup-is-the-new-blueprint-for-ai-startups/",
+        "claim": "TechCrunch 6 月 26 日报道 a16z 对 Cluely 的融资和增长叙事，帮助区分 7 月 3 日新的企业收入说法与此前融资报道。",
+        "excerpt": "TechCrunch, “Why a16z VC believes that Cluely ...”, Jun 26, 2025."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/03/cluelys-arr-doubled-in-a-week-to-7m-founder-roy-lee-says-but-rivals-are-coming/",
+    "sourceHash": "sha256:48978e2130493bdc5755e140a25c4f38f0cba8a069e92ba94398238ab2b03180"
+  },
+  {
+    "slug": "google-veo3-global-rollout-20250703",
+    "title": "Google 开始向全球扩展 Veo 3：8 秒带声音的视频进入 Gemini 订阅",
+    "summary": "Google 在 7 月 3 日开始向 Gemini 可用市场扩展 Veo 3，Google AI Pro 用户可生成带声音的 8 秒视频。官方同时说明可见水印与 SynthID；地区、订阅和每日次数仍以当时产品条件为准。",
+    "body": "7 月 3 日，Google 开始把 Veo 3 推向 Gemini 已经可用的国家和地区。Google 的地区公告以印度为例，说明 Google AI Pro 用户可以在 Gemini 里生成最长 8 秒、带环境声和对白的视频；德国公告则写明同日向德国及更多地区开放。TechCrunch 报道的范围是超过 159 个国家，并提到 Pro 用户每天最多三条。这里的“全球”是分阶段扩展到可用市场，不是每个账号、每个国家同时拥有相同额度。\n\nVeo 3 并不是 7 月 3 日才诞生的新模型。Google 在 5 月的 I/O 已介绍过它的原生音频生成能力，7 月 3 日的新闻是从少量市场和较高等级订阅，扩大到更多 Gemini 用户。用户用文字描述画面、声音和对白，模型生成 8 秒片段；真实的产品变化在于，更多人可以从展示和等待名单进入可使用的消费工作流。\n\nGoogle 同时强调安全与内容来源线索：生成视频带有可见标记，并嵌入不可见的 SynthID；公司还说会做红队测试、评测并执行不安全内容政策。水印能提示“这段内容可能由 Google AI 生成”，却不能证明画面叙述是真的、拍摄者同意了素材，或者视频没有经过二次剪辑。涉及真人、新闻现场和未成年人时，来源、授权和传播语境仍要分开确认。\n\n这次扩展也让产品条件更容易被忽略。Veo 3 需要订阅，地区开放、年龄条件、每日次数和模型版本可能变化；TechCrunch 的三条上限是报道时的产品信息，不能写成永久配额。Google 地区页面把安全承诺和推广文案放在一起，读者需要把“模型能做什么”“谁现在能用”“生成内容怎样标识”拆成三个问题。\n\n对创作者来说，Veo 3 的意义是带声音的短视频生成从演示工具进入更多普通用户的日常试用；对平台来说，真正难的是让扩展速度和可追踪性一起增长。水印、提示词、输入图片授权和误用申诉能否在不同国家保持一致，才会决定这次 rollout 是一次产品覆盖扩张，还是一场新的内容治理压力测试。",
+    "publishedAt": "2025-07-03",
+    "eventDate": "2025-07-03",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-veo3-global-rollout-20250703.svg",
+      "alt": "Gemini 中的 Veo 3 生成带声音的 8 秒视频，全球 rollout 与水印线索并行展开",
+      "sourceUrl": "/images/news/google-veo3-global-rollout-20250703.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "rollout",
+        "title": "7 月 3 日是扩大可用范围，不是模型首发",
+        "body": "Veo 3 在 5 月 I/O 已亮相，这一天的新闻是向更多 Gemini 可用市场扩展，并设定 Pro 订阅条件。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capability",
+        "title": "8 秒视频第一次把声音也放进生成结果",
+        "body": "文字提示可以描述画面、对白和环境声，生成片段仍有时长、额度和地区限制。",
+        "kind": "technical"
+      },
+      {
+        "id": "watermark",
+        "title": "水印提供线索，不替代来源核查",
+        "body": "可见标记和 SynthID 能帮助识别 Google 生成内容，但不能证明画面真实、素材获得授权或没有被二次剪辑。",
+        "kind": "boundary"
+      },
+      {
+        "id": "availability",
+        "title": "全球 rollout 不等于每个账号条件相同",
+        "body": "印度、德国和 TechCrunch 报道的范围彼此补充，具体国家、订阅、年龄与每日次数要按当时产品页面确认。",
+        "kind": "comparison"
+      },
+      {
+        "id": "next-question",
+        "title": "接下来要看扩张和治理能否同步",
+        "body": "真人肖像、新闻现场、未成年人和申诉机制会决定更多用户加入后的实际风险。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "一条 AI 视频真正上线，要经过哪些门槛？",
+      "question": "把模型能力、账户权限和内容来源拆开，才能读懂一次全球 rollout 的实际含义。",
+      "steps": [
+        {
+          "label": "先问模型能做什么",
+          "detail": "Veo 3 能从文字生成约 8 秒、带声音的片段，但能力描述不等于产品普遍开放。",
+          "evidence": "llm"
+        },
+        {
+          "label": "再看谁可以使用",
+          "detail": "核对国家/地区、Google AI Pro 订阅、年龄和每日生成次数，不把报道日的条件当永久规则。",
+          "evidence": "auth"
+        },
+        {
+          "label": "记录输入素材",
+          "detail": "上传真人照片、新闻画面或商业素材时，先确认来源和授权，提示词不能替用户取得同意。",
+          "evidence": "context"
+        },
+        {
+          "label": "检查生成标记",
+          "detail": "可见水印和 SynthID 提供来源线索，但仍要防止截屏、剪辑或重新编码隐藏这些线索。",
+          "evidence": "citation"
+        },
+        {
+          "label": "把误用反馈带回评测",
+          "detail": "红队、政策和用户反馈要对应到实际失败案例，才能知道 rollout 后风险有没有下降。",
+          "evidence": "eval"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google",
+      "url": "https://blog.google/intl/en-in/company-news/technology/veo-3-launches-in-india/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "eval",
+      "tools",
+      "event",
+      "citation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/intl/en-in/company-news/technology/veo-3-launches-in-india/",
+        "claim": "Google 7 月 3 日开始把 Veo 3 推向 Gemini 可用的国家和地区，包括印度；Google AI Pro 用户可生成带声音的 8 秒视频。",
+        "excerpt": "Google, “Veo 3 launches in India”, Jul 3, 2025."
+      },
+      {
+        "url": "https://blog.google/intl/de-de/produkte/suchen-entdecken/veo-3-gemini-jetzt-in-deutschland/",
+        "claim": "Google 德国团队同日说明 Veo 3 面向 Google AI Pro 订阅者在德国及更多 Gemini 可用地区开放，并列出可见水印和 SynthID。",
+        "excerpt": "Google Germany, “Veo 3 in Gemini ab sofort in Deutschland verfügbar”, Jul 3, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/07/03/google-rolls-out-its-new-veo-3-video-generation-model-globally/",
+        "claim": "TechCrunch 同日报道 Google 在超过 159 个国家开始 rollout，并称 Pro 订阅每天最多生成三条视频；具体额度和地区以产品页面为准。",
+        "excerpt": "TechCrunch, “Google rolls out its new Veo 3 video-generation model globally”, Jul 3, 2025."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/intl/en-in/company-news/technology/veo-3-launches-in-india/",
+    "sourceHash": "sha256:0927594c3e030f065f88008cf881f9086de8fda1c4b726540d4d2aa55ba77137"
+  },
+  {
+    "slug": "meta-proactive-ai-chatbots-20250703",
+    "title": "Meta 测试让 AI 先发消息：聊天机器人从“等你来问”变成主动跟进",
+    "summary": "TechCrunch 7 月 3 日报道并经 Meta 确认：Meta 正测试让 AI Studio 聊天机器人在用户先发起对话后主动跟进。测试设有时间、消息次数和停止条件，但当天没有公布完整年龄和关闭规则。",
+    "body": "7 月 3 日，TechCrunch 报道 Meta 正在测试一种更主动的聊天机器人：用户先在 Messenger、WhatsApp 或 Instagram 与 AI 角色聊过，机器人之后可以主动发一条跟进消息。Meta 向 TechCrunch 确认了这项测试。报道引用的示例是一个电影主题的 AI 角色先来询问用户最近喜欢哪些配乐；它听起来像普通社交消息，但发送者已经不再是人。\n\n测试设有边界。Meta 对 TechCrunch 表示，机器人只会在用户先发起对话、14 天内至少给它发过五条消息后发送一次跟进；如果用户不回复，机器人不会继续发。用户可以把自己创建的 AI 保持私密，也可以通过故事、链接或个人主页分享。它仍是测试，不是向所有账号开放的永久功能，报道也没有给出完整的地区、年龄或关闭开关说明。\n\n主动消息会改变用户对“我正在等待什么”的预期。传统聊天机器人是用户输入后才回答，主动跟进则需要保存上一段对话、判断什么时候打扰、选择语气和决定是否再次发送。这就把记忆、通知权限和用户同意放到同一个流程里。Meta 过去的 AI Studio 公告说明用户可以创建和分享 AI 角色，但 7 月 3 日的测试又增加了跨应用触达和“先发消息”的行为。\n\n风险也不能只看成一个体验问题。报道提到 Character.AI 面临与未成年人相关的诉讼，并记录了 Meta 给出的通用免责声明：AI 可能不准确或不合适，不应替代医疗、心理、金融或法律专业意见。Meta 没有在这篇报道中公布完整的年龄限制，也没有回答商业化、广告和长期 AI companion 计划。因而本文只记录“正在测试”和公司给出的条件，不把它写成安全方案已经解决。\n\n这条新闻真正改变的是默认方向：AI 不必等人敲下一句提示词，也可以根据旧对话重新出现在用户面前。对用户而言，最值得问的是自己能不能看到它记住了什么、为什么此刻发消息、如何关闭后续跟进；对产品方而言，主动性越强，越需要把授权、记忆、通知和失败反馈写成可检查的规则。",
+    "publishedAt": "2025-07-03",
+    "eventDate": "2025-07-03",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/meta-proactive-ai-chatbots-20250703.svg",
+      "alt": "Meta AI 角色在用户先发起对话后主动发送一次跟进消息，记忆与授权成为产品边界",
+      "sourceUrl": "/images/news/meta-proactive-ai-chatbots-20250703.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "test-not-launch",
+        "title": "先把“测试”与“上线”分开",
+        "body": "Meta 向 TechCrunch 确认的是 follow-up messaging 测试，报道没有证明所有用户已经获得永久功能。",
+        "kind": "boundary"
+      },
+      {
+        "id": "conditions",
+        "title": "机器人不是随时都能打扰你",
+        "body": "用户先发起、14 天内至少五条消息、最多一次跟进且无人回复就停止，是报道给出的主要条件。",
+        "kind": "comparison"
+      },
+      {
+        "id": "memory",
+        "title": "主动发消息需要记住上下文",
+        "body": "产品要保存上一段对话、挑选时机和决定语气，记忆与通知权限因此进入同一条工作流。",
+        "kind": "technical"
+      },
+      {
+        "id": "safety",
+        "title": "免责声明不等于年龄和安全方案",
+        "body": "Meta 给出不准确、不适合及专业建议边界，但当天没有公布完整年龄限制或长期 companion 规则。",
+        "kind": "narrative"
+      },
+      {
+        "id": "user-control",
+        "title": "用户应该能回答三个问题",
+        "body": "它记住了什么、为什么现在联系我、怎样关闭后续消息，是主动式 AI 必须给出的控制线索。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "AI 先发消息，系统多了哪些判断？",
+      "question": "把一条主动跟进拆成记忆、时机、授权和停止条件，才能看清它和普通问答的区别。",
+      "steps": [
+        {
+          "label": "等待用户先发起",
+          "detail": "测试从用户主动与 AI 角色对话开始，避免机器人无缘无故向陌生人发消息。",
+          "evidence": "event"
+        },
+        {
+          "label": "读取有限上下文",
+          "detail": "系统要知道过去聊了什么、用户发送了几条消息，以及这段记忆是否仍被允许使用。",
+          "evidence": "context"
+        },
+        {
+          "label": "判断是否触达",
+          "detail": "在时间窗口、消息次数和通知权限内决定要不要跟进，而不是把每次沉默都当成邀请。",
+          "evidence": "auth"
+        },
+        {
+          "label": "发送并停止",
+          "detail": "按报道条件最多发送一次；用户不回复时停止，停止条件比“提高参与度”更重要。",
+          "evidence": "agent"
+        },
+        {
+          "label": "让用户复核控制",
+          "detail": "产品需要说明记忆、通知、年龄和关闭入口，才能让主动性不变成隐形打扰。",
+          "evidence": "memory"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "memory",
+      "context",
+      "auth",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/",
+        "claim": "TechCrunch 7 月 3 日报道 Meta 正在测试 AI Studio 聊天机器人主动跟进；Meta 向 TechCrunch 确认测试，并称机器人需在用户先发起对话、14 天内至少发送五条消息等条件下最多跟进一次。",
+        "excerpt": "TechCrunch, “Meta has found another way to keep you engaged: Chatbots that message you first”, Jul 3, 2025."
+      },
+      {
+        "url": "https://about.fb.com/news/2024/07/create-your-own-custom-ai-with-ai-studio/",
+        "claim": "Meta 2024 年官方介绍 AI Studio 允许用户创建、分享和发现可聊天的 AI 角色，用于补充产品背景，不证明 2025 年测试的所有条件。",
+        "excerpt": "Meta, “Create Your Own Custom AI With AI Studio”, Jul 29, 2024."
+      },
+      {
+        "url": "https://techcrunch.com/2025/07/03/",
+        "claim": "TechCrunch 7 月 3 日 AI 栏目把这次测试与 AI companion、用户参与和安全问题放在同日新闻语境中。",
+        "excerpt": "TechCrunch, July 3, 2025 AI coverage index."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/",
+    "sourceHash": "sha256:71f3163c9bb7fbe4d54af51b3ec059105a4af58408c1de8f75895b9f73a34739"
+  },
+  {
+    "slug": "ssi-sutskever-ceo-20250703",
+    "title": "Ilya Sutskever 接任 Safe Superintelligence CEO：创始人的技术路线要自己扛起来",
+    "summary": "7 月 3 日，Ilya Sutskever 确认接任 Safe Superintelligence CEO；Daniel Gross 已于 6 月 29 日离开，Daniel Levy 出任 president。任命是治理新闻，不等于公司已经发布新模型或证明了安全超级智能进展。",
+    "body": "7 月 3 日，Safe Superintelligence（SSI）创始人 Ilya Sutskever 公开确认自己接任 CEO。公司给团队和投资人的更新同时说明，联合创始人兼原 CEO Daniel Gross 已在 6 月 29 日正式离开，另一位联合创始人 Daniel Levy 出任 president。TechCrunch 把这件事放在 Meta 招募顶尖 AI 人才的背景下报道，但当天能确认的核心事实只有 SSI 的领导层变动。\n\n这次变化值得关注，是因为 SSI 的组织目标非常窄：它把自己描述成只为安全超级智能工作的实验室。Sutskever 过去主要以研究和技术领导身份出现，如今还要承担 CEO 的融资、招聘、投资人沟通和公司节奏。CEO 头衔的变化不等于模型已经取得了新的突破，也不等于团队会马上发布产品；它首先改变的是谁对技术路线和公司承诺负责。\n\n公告里的“我们有算力、有团队、知道该做什么”属于创始人给员工和投资人的判断，不是一份可复核的模型进展报告。公开信息没有在当天给出新模型、评测表、训练规模或产品时间表。报道提到的 320 亿美元估值、Meta 收购传闻和人才招聘，也都应当和官方确认的 CEO 变动分开阅读，不能把媒体背景写成已完成的交易。\n\n对一家尚未公开产品的实验室来说，管理层变动会改变外界观察它的方式。研究者看的是算力和技术团队是否稳定，投资人看的是融资和治理能否持续，公众则容易把创始人的声望直接当成模型能力。更稳妥的做法是等下一份正式公司更新：谁负责研究、如何分配资源、是否有可检查的安全评测，是否真的改变了路线。\n\n因此，7 月 3 日的新闻不是“超级智能已经更近了一步”，而是 SSI 把技术创始人放到公司最高管理位置。读者可以把它当作 AI 实验室治理的一个信号：当研究机构不靠现成产品收入来证明自己时，领导层的分工、资金来源和可核对的研究证据，会比一句宏大目标更能说明公司是否在前进。",
+    "publishedAt": "2025-07-03",
+    "eventDate": "2025-07-03",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/ssi-sutskever-ceo-20250703.svg",
+      "alt": "Ilya Sutskever 接任 SSI CEO，领导层职责和可核对的研究证据被放在同一张路线图上",
+      "sourceUrl": "/images/news/ssi-sutskever-ceo-20250703.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "confirmed-change",
+        "title": "先把确认的任命和离任分开",
+        "body": "SSI 说 Gross 6 月 29 日离开，Sutskever 在 7 月 3 日接任 CEO，Levy 成为 president；这是当天能直接核对的事实。",
+        "kind": "boundary"
+      },
+      {
+        "id": "role-shift",
+        "title": "研究负责人变成 CEO，工作内容也变了",
+        "body": "CEO 还要负责融资、招聘、投资人沟通和资源分配，头衔变化本身不代表模型能力增长。",
+        "kind": "narrative"
+      },
+      {
+        "id": "rumor-boundary",
+        "title": "Meta 传闻和 SSI 公告不是同一件事",
+        "body": "媒体报道了 Meta 招聘和收购传闻，但没有因此证明交易已经完成，也没有证明 SSI 发布了新模型。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evidence",
+        "title": "下一步要看可以检查的研究证据",
+        "body": "算力、团队、评测、版本或产品公告，才是判断技术路线是否变化的后续材料。",
+        "kind": "technical"
+      },
+      {
+        "id": "reader-takeaway",
+        "title": "把创始人的信心当作口径，不当作测评结果",
+        "body": "“有算力、有团队”是管理层判断；读者仍应等待独立可核对的模型和安全证据。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一次 AI 实验室换 CEO，应该追问什么？",
+      "question": "把任命消息拆成职责、资源、证据和后续行动，能避免把名人效应误读成模型进展。",
+      "steps": [
+        {
+          "label": "确认谁离开",
+          "detail": "先记录离任日期、公告主体和新旧职务，避免把传闻或后续加入其他公司写成当天事实。",
+          "evidence": "event"
+        },
+        {
+          "label": "分清研究与管理",
+          "detail": "研究负责人关注模型和评测，CEO 还要处理融资、招聘、治理与投资人沟通。",
+          "evidence": "agent"
+        },
+        {
+          "label": "检查公司口径",
+          "detail": "把“有团队、有算力、知道方向”作为管理层判断，不替代系统卡、基准或可复现报告。",
+          "evidence": "llm"
+        },
+        {
+          "label": "追踪资源变化",
+          "detail": "后续看研究团队、算力协议、资金安排和产品路线是否有可核对的新文件。",
+          "evidence": "context"
+        },
+        {
+          "label": "等待结果再下结论",
+          "detail": "只有新模型、评测或正式产品说明出现，才有依据讨论技术路线是否改变。",
+          "evidence": "eval"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/03/ilya-sutskever-will-lead-safe-superintelligence-following-his-ceos-exit/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "event",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/03/ilya-sutskever-will-lead-safe-superintelligence-following-his-ceos-exit/",
+        "claim": "TechCrunch 7 月 3 日报道 Ilya Sutskever 确认出任 Safe Superintelligence CEO，Daniel Gross 6 月 29 日离开，Daniel Levy 出任 president。",
+        "excerpt": "TechCrunch, “Ilya Sutskever will lead Safe Superintelligence following his CEO’s exit”, Jul 3, 2025."
+      },
+      {
+        "url": "https://www.linkedin.com/posts/ssi-ai_updates-july-3rd-2025-update-we-sent-activity-7383032716964909057-1RBn",
+        "claim": "SSI 7 月 3 日给团队和投资人发出的更新说明 Gross 已离任、Sutskever 接任 CEO，Daniel Levy 担任 president。",
+        "excerpt": "Safe Superintelligence, July 3, 2025 update to team and investors."
+      },
+      {
+        "url": "https://ssi.inc/",
+        "claim": "SSI 官方网站把公司定位为专注于安全超级智能研究的实验室；它只用于核对公司自我定位，不证明模型能力或融资结果。",
+        "excerpt": "Safe Superintelligence official site, mission and company context."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/03/ilya-sutskever-will-lead-safe-superintelligence-following-his-ceos-exit/",
+    "sourceHash": "sha256:20367db196ec6e46380092631c0369104de7cd89c78734959a07bc1339015930"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
