@@ -1493,5 +1493,186 @@
       "sast",
       "permission-boundary"
     ]
+  },
+  {
+    "slug": "evaluation-run",
+    "mechanism": "评测运行是一次有编号的执行记录：它固定评测集、被测版本、评分规则和运行环境，逐题或逐任务保存输入、输出、评分与最终状态，之后才能复查和比较。",
+    "misconception": "评测运行不是评测数据集，也不是一个分数；缺少版本、样本或轨迹的运行记录不能证明两次结果可比。",
+    "demoSignature": "输入：run-17 · support-v1 · agent-B · rubric-v2；中间：run-18 在同一题集版本下切换到 agent-C；输出：切换题集版本或少1条轨迹的运行标为不可比较。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/evals",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://developers.openai.com/api/docs/guides/graders",
+      "https://airc.nist.gov/airmf-resources/playbook/"
+    ],
+    "rewriteRisk": "评测运行不是评测数据集，也不是一个分数；缺少版本、样本或轨迹的运行记录不能证明两次结果可比。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "eval",
+      "evaluation-dataset",
+      "grader"
+    ]
+  },
+  {
+    "slug": "safety-evaluation",
+    "mechanism": "安全评测用有代表性的风险任务、攻击变体和允许行为检查模型、权限与工具环境的组合，记录安全完成、拒答、升级、泄露、越权和真实副作用。",
+    "misconception": "安全评测不是一次过滤器扫描，也不能证明未来所有攻击都会被挡住；应用权限、工具边界和真实环境仍需独立验证。",
+    "demoSignature": "输入：正常请求、越权请求、间接注入三类风险案例；中间：正常请求安全完成，越权请求拒绝且工具未执行，间接注入读出敏感字段；输出：高风险副作用=1，发布门槛阻断。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/safety-best-practices",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://arxiv.org/abs/2211.09110"
+    ],
+    "rewriteRisk": "安全评测不是一次过滤器扫描，也不能证明未来所有攻击都会被挡住；应用权限、工具边界和真实环境仍需独立验证。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "moderation",
+      "guardrail",
+      "prompt-injection"
+    ]
+  },
+  {
+    "slug": "cost-evaluation",
+    "mechanism": "成本评测在固定任务和质量指标下统计输入输出令牌、调用次数、工具费用、重试和单任务成本，再与质量、延迟等目标一起比较。",
+    "misconception": "价格表本身不是成本评测；不同题集、缓存命中、失败重试和并发量会改变真实单位成本，不能只拿单次报价相除。",
+    "demoSignature": "输入：同一20题并固定计费口径；中间：统一条件下 A 17/20 · ¥0.42、B 18/20 · ¥0.86，预算为 ¥1.00；输出：B 变为 ¥1.16 时转入复核，命中缓存等条件变化时暂不直接比较。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/cost-optimization",
+      "https://developers.openai.com/api/docs/guides/evals",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://developers.openai.com/api/docs/guides/batch"
+    ],
+    "rewriteRisk": "价格表本身不是成本评测；不同题集、缓存命中、失败重试和并发量会改变真实单位成本，不能只拿单次报价相除。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "eval",
+      "model-routing",
+      "model-fallback"
+    ]
+  },
+  {
+    "slug": "latency-evaluation",
+    "mechanism": "延迟评测把一次请求拆成排队、首字、工具等待和完成等时间点，并用 p50、p95 等分位数描述典型和长尾等待。",
+    "misconception": "延迟不是吞吐量，也不是只看服务器平均值；网络、并发、输出长度、工具和超时策略都会改变用户实际等待。",
+    "demoSignature": "输入：请求 0ms · 首字 420ms · 工具等待 · 完成或超时；中间：p50 1.9s，p95 可为 3.8s 或 4.8s；输出：p95 超过 4s 进入长尾优化，工具超时单独报告。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/latency-optimization",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://mlcommons.org/benchmarks/inference-datacenter/",
+      "https://developers.openai.com/api/docs/guides/evals"
+    ],
+    "rewriteRisk": "延迟不是吞吐量，也不是只看服务器平均值；网络、并发、输出长度、工具和超时策略都会改变用户实际等待。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "eval",
+      "evaluation-run",
+      "streaming-output",
+      "model-routing"
+    ]
+  },
+  {
+    "slug": "pass-fail-grader",
+    "mechanism": "通过失败评分器把预先写好的成功条件变成可执行的二值检查，例如文件存在、字段正确或副作用已发生，同时保留未评分状态。",
+    "misconception": "二值结果适合清晰判据，不适合把复杂质量压成一个开关；环境不可读、证据缺失和真实失败不能混成同一个 false。",
+    "demoSignature": "输入：answer.json 存在且 amount=120；中间：文件和金额正确=通过，文件存在但金额错误=失败，环境不可读=未评分；输出：发布只接受通过；未评分先补证据，不当作零分。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/graders",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://developers.openai.com/api/docs/guides/safety-best-practices",
+      "https://airc.nist.gov/airmf-resources/playbook/"
+    ],
+    "rewriteRisk": "二值结果适合清晰判据，不适合把复杂质量压成一个开关；环境不可读、证据缺失和真实失败不能混成同一个 false。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "grader",
+      "evaluation-run",
+      "eval"
+    ]
+  },
+  {
+    "slug": "grading-rubric",
+    "mechanism": "评分规则把目标拆成可观察的评分维度、等级描述和证据要求；本页用事实准确、条件保留、没有越界承诺三项逐条检查一条退款回答。",
+    "misconception": "规则不是评分器本身；规则写得含糊、维度重叠或没有反例时，代码、模型和人工都可能稳定地产生不同误判。",
+    "demoSignature": "输入：事实准确、条件保留、没有越界承诺；中间：三种回答按规则逐项检查；输出：保留条件为 3/3，漏掉条件为 1/3，越界承诺为 0/3。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/graders",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/abs/2303.16634",
+      "https://arxiv.org/abs/2306.05685"
+    ],
+    "rewriteRisk": "规则不是评分器本身；规则写得含糊、维度重叠或没有反例时，代码、模型和人工都可能稳定地产生不同误判。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "grader",
+      "eval",
+      "evaluation-run"
+    ]
+  },
+  {
+    "slug": "human-grader",
+    "mechanism": "人工评分器让经过说明和校准的评审者按评分规则检查输出，保留分数、理由和分歧，用来验证规则、校准模型评分器并处理主观任务。",
+    "misconception": "人工评分不是天然一致或绝对正确；没有盲评、样例、双人复核和分歧处理时，人的偏差也会进入指标。",
+    "demoSignature": "输入：同一量表和一条回答；中间：两位评审可给出 4/5 与 4/5，也可能出现 4/5 与 2/5 的分歧；输出：分歧由第三人确认 3/5，证据不足时两人都返回未评分。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/graders",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/abs/2303.16634",
+      "https://arxiv.org/abs/2306.05685"
+    ],
+    "rewriteRisk": "人工评分不是天然一致或绝对正确；没有盲评、样例、双人复核和分歧处理时，人的偏差也会进入指标。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "grader",
+      "grading-rubric",
+      "evaluation-dataset"
+    ]
+  },
+  {
+    "slug": "model-grader",
+    "mechanism": "模型评分器把待评输出、评分规则和必要参考交给一个模型，要求它输出分数、理由或通过状态；使用前后要与人工参考比较偏差。",
+    "misconception": "模型评分不是客观真相；提示词、被评模型、位置偏差、越界理由和不可判断样本都可能让结果失真。",
+    "demoSignature": "输入：准确性、完整性、风险各 0–2；要求 JSON 结果；中间：模型 4/5；人工参考 3/5；5条校准样本中高估2条；输出：证据不足时返回未评分，不强行给分。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/graders",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://arxiv.org/abs/2303.16634",
+      "https://arxiv.org/abs/2306.05685"
+    ],
+    "rewriteRisk": "模型评分不是客观真相；提示词、被评模型、位置偏差、越界理由和不可判断样本都可能让结果失真。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "grader",
+      "grading-rubric",
+      "human-grader"
+    ]
+  },
+  {
+    "slug": "regression-evaluation",
+    "mechanism": "回归评测把基线与候选版本放在同一组任务和评分条件下逐项比较，重点寻找原本通过、现在失败的关键案例，并把新增失败与题集变化分开记录。",
+    "misconception": "它只能覆盖已写进套件的行为；题集过窄、门槛只看平均分或基线本身不稳定时，回归评测也会漏报。",
+    "demoSignature": "输入：agent-B 与 agent-C 都使用 suite-v1；中间：基线17/20、候选18/20，但 refund-condition 从通过变失败；输出：同一题集且关键失败=0才可继续，切换 suite-v2 暂不比较。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://developers.openai.com/api/docs/guides/evals",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://airc.nist.gov/airmf-resources/playbook/",
+      "https://arxiv.org/abs/2211.09110"
+    ],
+    "rewriteRisk": "它只能覆盖已写进套件的行为；题集过窄、门槛只看平均分或基线本身不稳定时，回归评测也会漏报。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "eval",
+      "evaluation-run",
+      "safety-evaluation"
+    ]
+  },
+  {
+    "slug": "context-overflow",
+    "mechanism": "上下文溢出发生在请求所需的令牌超过模型上下文窗口，系统可能拒绝请求、截断内容或在接近上限时出现召回和注意力下降。",
+    "misconception": "上下文窗口大小不等于模型一定能同样有效地使用全部内容；压缩、检索、裁剪和摘要会改变可见信息，必须检查关键事实有没有被保留。",
+    "demoSignature": "输入：系统指令 2k + 历史 14k + 工具 7k + 输出 3k = 26k；中间：模型上限 24k；请求被拒绝，最新任务未执行；输出：保留目标、决策和未完成动作；压缩至 11k。演示必须保留正常结果、关键失败或边界状态，并让读者能回到逐项证据。",
+    "sourceUrls": [
+      "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "https://arxiv.org/abs/2307.03172",
+      "https://developers.openai.com/api/docs/guides/evals"
+    ],
+    "rewriteRisk": "上下文窗口大小不等于模型一定能同样有效地使用全部内容；压缩、检索、裁剪和摘要会改变可见信息，必须检查关键事实有没有被保留。 正文需要写清条件、证据和无法判断时的处理。",
+    "nearDuplicates": [
+      "context-window",
+      "token",
+      "context"
+    ]
   }
 ]

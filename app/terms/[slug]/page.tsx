@@ -45,7 +45,7 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
 import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
-import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage } from '@/components/terms/AssessmentConceptPages';
+import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage, RegressionEvaluationTermPage, SafetyEvaluationTermPage, CostEvaluationTermPage, LatencyEvaluationTermPage, HumanGraderTermPage, ModelGraderTermPage, PassFailGraderTermPage, ContextOverflowTermPage } from '@/components/terms/AssessmentConceptPages';
 
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
 
@@ -169,6 +169,16 @@ const articleTermPages = {
   benchmark: BenchmarkTermPage,
   grader: GraderTermPage,
   'evaluation-dataset': EvalDatasetTermPage,
+  'evaluation-run': EvaluationRunTermPage,
+  'grading-rubric': GradingRubricTermPage,
+  'regression-evaluation': RegressionEvaluationTermPage,
+  'safety-evaluation': SafetyEvaluationTermPage,
+  'cost-evaluation': CostEvaluationTermPage,
+  'latency-evaluation': LatencyEvaluationTermPage,
+  'human-grader': HumanGraderTermPage,
+  'model-grader': ModelGraderTermPage,
+  'pass-fail-grader': PassFailGraderTermPage,
+  'context-overflow': ContextOverflowTermPage,
   grounding: GroundingTermPage,
   hallucination: HallucinationTermPage,
   eval: EvaluationTermPage,
