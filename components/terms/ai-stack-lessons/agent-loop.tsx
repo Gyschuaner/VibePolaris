@@ -6,7 +6,7 @@ import { SceneControls, useScene } from "../HarnessStoryScenes";
 import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../AiStackCoreConcepts.module.css";
 
-const labels = ["读状态", "跑一次检查", "把结果写回", "停止或到达上限"];
+const labels = ["读状态", "跑健康检查", "把结果写回", "停止或到达上限"];
 
 export function AgentLoopLesson() {
   const scene = useScene(labels.length);
@@ -14,9 +14,9 @@ export function AgentLoopLesson() {
   useResetOnSceneStart(scene, () => setLimit(3));
   const limited = limit === 2 && scene.step === 3;
   const nodes = [
-    { title: "当前状态", text: scene.step === 0 ? "还有 1 项检查" : "清单与上轮结果", Icon: ClipboardText },
+    { title: "当前状态", text: scene.step === 0 ? "GET /health → 500" : "配置问题与上轮回执", Icon: ClipboardText },
     { title: "动作", text: scene.step < 1 ? "等待工具" : "run_checks()", Icon: Wrench },
-    { title: "观察", text: scene.step < 2 ? "尚未返回" : scene.step === 2 ? "disabled 仍然错误" : limited ? "仍未通过" : "测试通过", Icon: Eye },
+    { title: "观察", text: scene.step < 2 ? "尚未返回" : scene.step === 2 ? "500 · API_BASE_URL 缺失" : limited ? "仍未通过" : "200 OK", Icon: Eye },
     { title: "闸门", text: scene.step === 3 ? (limited ? "上限 2 轮" : "完成条件") : "继续判断", Icon: scene.step === 3 && !limited ? CheckCircle : scene.step === 3 ? XCircle : Flag },
   ];
 
@@ -34,10 +34,10 @@ export function AgentLoopLesson() {
           </div>)}
         </div>
         <p className={styles.loopResult} data-danger={limited} role="status">
-          {scene.step === 0 && "任务从一份已有状态开始，不能把上一轮的结果藏掉。"}
+          {scene.step === 0 && "任务从 GET /health 返回 500 的状态开始，不能把失败藏掉。"}
           {scene.step === 1 && "动作已经发出，结果还没回来；此刻不能把测试写成通过。"}
-          {scene.step === 2 && "观察到具体失败：disabled 状态仍错误，下一轮只围绕这个证据改动。"}
-          {scene.step === 3 && (limited ? "两轮用完仍没有通过。循环停止，但任务保持未完成，不能把停止当成成功。" : "检查通过，完成条件成立，循环在这里停下。")}
+          {scene.step === 2 && "观察到具体失败：API_BASE_URL 缺失，下一轮只围绕这个证据修复配置。"}
+          {scene.step === 3 && (limited ? "两轮用完仍没有通过。循环停止，但任务保持未完成，不能把停止当成成功。" : "健康检查返回 200 OK，完成条件成立，循环在这里停下。")}
         </p>
       </div>
     </div>

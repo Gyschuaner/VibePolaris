@@ -33,7 +33,7 @@ export function AgentLoopHero() {
           <code>{detail}</code>
           {index === 0 && <Flag className={styles.loopHeroNodeFlag} size={14} aria-hidden="true" />}
         </div>)}
-        <span className={styles.loopHeroPacket} data-running={scene.step > 0 && scene.step < steps.length - 1} aria-hidden="true" />
+        <span className={styles.loopHeroPacket} data-running={scene.playing && scene.step > 0 && scene.step < steps.length - 1} aria-hidden="true" />
       </div>
     </div>
     <div className={styles.loopHeroResult} data-danger={scene.step === 2} role="status">
