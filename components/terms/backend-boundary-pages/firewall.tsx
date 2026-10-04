@@ -99,7 +99,7 @@ export function FirewallTermPage() {
     <ArticleSection id="firewall-operation" title="默认拒绝、记录和验证">
       <p id="firewall-rules" className="vp-citation-target">规则顺序、默认动作和例外决定了维护成本。只为确实需要的路径开门，给每条例外写清用途，先在测试环境验证，再观察拒绝日志；否则一条临时“允许所有”很容易变成长期暴露。云安全组通常是有状态的，但具体默认行为和规则上限仍以产品文档为准。<Cite id="firewall-rules" /></p>
       <p id="firewall-order" className="vp-citation-target">排查“服务连不上”时，沿请求的真实路径看：它从哪个地址出发，经过哪层防火墙，目标端口是否监听，返回流量是否能回去。规则放行只证明它没有在这一关被挡住；还要用日志、抓包或应用健康检查证明请求真的到达并得到正确结果。<Cite id="firewall-order" /></p>
-      <p id="firewall-testing" className="vp-citation-target"><strong>一条可用规则应能说出三件事：</strong>谁能从哪里访问谁、只需要哪个协议和端口、失败时在哪里留下证据。说不清这三点时，先缩小范围和补日志，再增加权限。</p>
+      <p id="firewall-testing" className="vp-citation-target"><strong>一条可用规则应能说出三件事：</strong>谁能从哪里访问谁、只需要哪个协议和端口、失败时在哪里留下证据。说不清这三点时，先缩小范围和补日志，再增加权限。<Cite id="firewall-testing" /></p>
     </ArticleSection>
   </ConceptArticle>;
 }
