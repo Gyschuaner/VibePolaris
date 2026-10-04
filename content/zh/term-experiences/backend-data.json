@@ -16724,225 +16724,100 @@
   {
     "slug": "regression-test",
     "lead": "只改了认证中间件，为什么要重跑订单和后台权限，却不必把全部 32 个测试都跑一遍？",
-    "definition": "回归测试在代码、配置或依赖变更后，重新验证原本不应改变的既有行为；范围应依据影响、风险和历史缺陷选择。",
+    "definition": "回归测试在代码、配置或依赖变更后，重新验证原本不应改变的既有行为；范围从影响关系出发，再由业务风险和历史缺陷补全。",
     "boundary": "回归不是只重测修复点，也不是每次机械运行全部测试。范围过窄会漏影响，过宽会拖慢反馈。",
-    "sceneKind": "network",
-    "sceneTitle": "从一处代码改动展开受影响测试集",
-    "actionLabel": "选择变更并调整风险阈值",
+    "sceneKind": "tree",
+    "sceneTitle": "一处鉴权改动如何展开成一组有理由的回归测试",
+    "actionLabel": "选择回归范围",
     "actors": [
-      {
-        "id": "auth-change",
-        "label": "auth middleware",
-        "detail": "changed",
-        "icon": "git",
-        "group": "变更"
-      },
-      {
-        "id": "call-graph",
-        "label": "调用关系",
-        "detail": "5 modules",
-        "icon": "network",
-        "group": "影响"
-      },
-      {
-        "id": "direct-tests",
-        "label": "直接测试",
-        "detail": "4",
-        "icon": "code",
-        "group": "测试集"
-      },
-      {
-        "id": "integration-tests",
-        "label": "集成测试",
-        "detail": "7",
-        "icon": "database",
-        "group": "测试集"
-      },
-      {
-        "id": "security-tests",
-        "label": "安全回归",
-        "detail": "3",
-        "icon": "shield",
-        "group": "测试集"
-      },
-      {
-        "id": "all-tests",
-        "label": "全部测试",
-        "detail": "32",
-        "icon": "network",
-        "group": "候选"
-      },
-      {
-        "id": "regression-result",
-        "label": "选中结果",
-        "detail": "14 tests",
-        "icon": "chart",
-        "group": "结果"
-      }
+      { "id": "auth-change", "label": "auth middleware", "detail": "commit 8c42 · changed", "icon": "git", "group": "变更" },
+      { "id": "login", "label": "登录", "detail": "direct · 4", "icon": "user", "group": "直接影响" },
+      { "id": "session", "label": "会话", "detail": "shared dependency", "icon": "key", "group": "共享依赖" },
+      { "id": "order", "label": "订单", "detail": "integration · 7", "icon": "package", "group": "跨模块" },
+      { "id": "admin", "label": "后台权限", "detail": "history · 3", "icon": "shield", "group": "历史风险" },
+      { "id": "all-tests", "label": "全部测试", "detail": "32", "icon": "network", "group": "基准对照" },
+      { "id": "regression-result", "label": "选中结果", "detail": "14 / 32", "icon": "chart", "group": "回归集" }
     ],
     "edges": [
-      {
-        "id": "change-graph",
-        "from": "auth-change",
-        "to": "call-graph",
-        "label": "分析引用"
-      },
-      {
-        "id": "graph-direct",
-        "from": "call-graph",
-        "to": "direct-tests",
-        "label": "直接影响"
-      },
-      {
-        "id": "graph-integration",
-        "from": "call-graph",
-        "to": "integration-tests",
-        "label": "跨模块影响"
-      },
-      {
-        "id": "change-security",
-        "from": "auth-change",
-        "to": "security-tests",
-        "label": "高风险规则"
-      },
-      {
-        "id": "sets-result",
-        "from": "integration-tests",
-        "to": "regression-result",
-        "label": "合并去重"
-      }
+      { "id": "change-login", "from": "auth-change", "to": "login", "label": "直接引用" },
+      { "id": "change-session", "from": "auth-change", "to": "session", "label": "共享规则" },
+      { "id": "session-order", "from": "session", "to": "order", "label": "跨模块影响" },
+      { "id": "change-admin", "from": "auth-change", "to": "admin", "label": "历史风险补集" },
+      { "id": "sets-result", "from": "order", "to": "regression-result", "label": "合并去重" },
+      { "id": "all-result", "from": "all-tests", "to": "regression-result", "label": "周期性校准" }
     ],
     "frames": [
       {
-        "label": "从变更节点展开调用关系",
-        "note": "认证中间件被登录、订单、后台和 API 客户端共同引用。",
-        "activeIds": [
-          "auth-change",
-          "call-graph"
-        ],
-        "doneIds": [
-          "call-graph"
-        ],
-        "mutedIds": [
-          "direct-tests",
-          "integration-tests",
-          "security-tests",
-          "all-tests",
-          "regression-result"
-        ],
-        "values": {
-          "call-graph": "login · order · admin · API · session"
-        },
-        "activeEdgeIds": [
-          "change-graph"
-        ]
-      },
-      {
-        "label": "先选直接与集成测试",
-        "note": "4 个直接测试和 7 个跨模块测试进入候选。",
-        "activeIds": [
-          "call-graph",
-          "direct-tests",
-          "integration-tests"
-        ],
-        "doneIds": [
-          "direct-tests",
-          "integration-tests"
-        ],
-        "mutedIds": [
-          "security-tests",
-          "all-tests",
-          "regression-result"
-        ],
-        "values": {
-          "direct-tests": "4 selected",
-          "integration-tests": "7 selected"
-        },
-        "activeEdgeIds": [
-          "graph-direct",
-          "graph-integration"
-        ]
-      },
-      {
-        "label": "高风险变更补入安全回归",
-        "note": "鉴权改动触发 3 个历史越权用例，无需依赖代码覆盖命中。",
-        "activeIds": [
-          "auth-change",
-          "security-tests",
-          "regression-result"
-        ],
-        "doneIds": [
-          "security-tests",
-          "regression-result"
-        ],
-        "mutedIds": [
-          "all-tests"
-        ],
-        "values": {
-          "security-tests": "3 selected",
-          "regression-result": "14 unique tests"
-        },
-        "activeEdgeIds": [
-          "change-security",
-          "sets-result"
-        ],
-        "metric": {
-          "label": "入选范围",
-          "value": "14 / 32"
-        }
-      },
-      {
-        "label": "旧权限用例暴露回归",
-        "note": "admin-list-as-editor 原本应返回 403，现在错误返回 200。",
-        "activeIds": [
-          "security-tests",
-          "regression-result"
-        ],
+        "label": "先圈出提交差异",
+        "note": "auth middleware 的权限判断发生变化，回归分析从这条差异开始。",
+        "activeIds": ["auth-change"],
         "doneIds": [],
-        "mutedIds": [
-          "auth-change",
-          "call-graph",
-          "direct-tests",
-          "integration-tests",
-          "all-tests"
-        ],
-        "values": {
-          "security-tests": "1 failed",
-          "regression-result": "blocked · expected 403 got 200"
-        },
+        "mutedIds": ["login", "session", "order", "admin", "all-tests", "regression-result"],
+        "values": { "auth-change": "commit 8c42" },
         "activeEdgeIds": []
+      },
+      {
+        "label": "沿共享依赖展开",
+        "note": "登录、会话和订单进入候选；范围不再只等于改动文件本身。",
+        "activeIds": ["auth-change", "login", "session", "order"],
+        "doneIds": ["login", "session", "order"],
+        "mutedIds": ["admin", "all-tests", "regression-result"],
+        "values": { "login": "4 direct", "order": "7 integration" },
+        "activeEdgeIds": ["change-login", "change-session", "session-order"],
+        "metric": { "label": "影响候选", "value": "11 / 32" }
+      },
+      {
+        "label": "把历史风险补进来",
+        "note": "后台编辑器曾经出现过越权缺陷，即使不在调用图上也要重新验证。",
+        "activeIds": ["auth-change", "admin"],
+        "doneIds": ["admin"],
+        "mutedIds": ["login", "session", "order", "all-tests", "regression-result"],
+        "values": { "admin": "3 security", "regression-result": "14 unique" },
+        "activeEdgeIds": ["change-admin", "sets-result"],
+        "metric": { "label": "入选范围", "value": "14 / 32" }
+      },
+      {
+        "label": "合并重复并留下依据",
+        "note": "直接、集成和安全测试合并去重；全量测试保留为周期性校准。",
+        "activeIds": ["regression-result", "all-tests"],
+        "doneIds": ["regression-result"],
+        "mutedIds": ["auth-change", "login", "session", "order", "admin"],
+        "values": { "regression-result": "14 selected", "all-tests": "32 baseline" },
+        "activeEdgeIds": ["sets-result", "all-result"],
+        "metric": { "label": "执行预算", "value": "14 + periodic 32" }
+      },
+      {
+        "label": "旧权限行为暴露倒退",
+        "note": "admin-list-as-editor 原本应返回 403，现在错误返回 200；测试把第一处不一致留在现场。",
+        "activeIds": ["admin", "regression-result"],
+        "doneIds": [],
+        "mutedIds": ["auth-change", "login", "session", "order", "all-tests"],
+        "values": { "admin": "FAIL · expected 403 got 200", "regression-result": "blocked" },
+        "activeEdgeIds": [],
+        "metric": { "label": "回归结论", "value": "修复并保留用例" }
       }
     ],
     "insight": "回归范围来自影响与风险，不是从“只测改动”或“全量都跑”二选一。",
     "quiz": {
       "question": "认证中间件改动为何要补入历史越权用例？",
       "options": [
-        {
-          "label": "鉴权属于高风险区域，旧缺陷场景能防止行为倒退",
-          "correct": true
-        },
-        {
-          "label": "所有测试标题都包含 auth",
-          "correct": false
-        },
-        {
-          "label": "因为单元测试一定不能运行",
-          "correct": false
-        }
+        { "label": "鉴权属于高风险区域，旧缺陷场景能防止行为倒退", "correct": true },
+        { "label": "所有测试标题都包含 auth", "correct": false },
+        { "label": "因为单元测试一定不能运行", "correct": false }
       ],
-      "success": "风险和缺陷历史可以补足纯调用关系看不到的范围。",
+      "success": "调用关系告诉你可能波及哪里，历史缺陷告诉你哪里值得额外再推一次。",
       "retry": "除了代码引用，还要看业务风险与旧缺陷。"
     },
     "prompt": {
       "title": "为一次变更选择回归范围",
-      "text": "请从改动文件、调用关系、数据契约、风险等级和历史缺陷五处列出候选测试，说明纳入或排除理由。"
+      "text": "请从改动文件、调用关系、业务风险、数据契约和历史缺陷五处列出候选测试，说明纳入或排除理由。"
     },
     "sources": [
-      {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
-      }
+      { "url": "https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-test-types", "label": "Microsoft Learn · Types of tests", "note": "变更后验证、影响范围与业务优先级" },
+      { "url": "https://learn.microsoft.com/en-us/azure/well-architected/operational-excellence/testing", "label": "Microsoft Learn · Architecture strategies for testing", "note": "风险优先、回归套件维护与周期安排" },
+      { "url": "https://learn.microsoft.com/en-us/azure/devops/pipelines/test/test-impact-analysis?view=azure-devops", "label": "Microsoft Learn · Test Impact Analysis", "note": "自动选集、安全回退与全量校准" },
+      { "url": "https://docs.gitlab.com/development/testing_guide/testing_strategy/", "label": "GitLab Docs · Testing Strategy", "note": "快速反馈、owner、阻塞责任与测试维护" },
+      { "url": "https://www.martinfowler.com/articles/sensors-for-coding-agents.html", "label": "Martin Fowler · Maintainability sensors", "note": "回归传感器、旧行为与覆盖率边界" }
     ]
   },
   {

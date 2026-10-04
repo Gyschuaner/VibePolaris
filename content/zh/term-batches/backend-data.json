@@ -1363,12 +1363,12 @@
   },
   {
     "zh": "回归测试", "en": "Regression Test", "slug": "regression-test", "cat": "技术栈",
-    "say": "代码修改后重新检查原有功能，确认变更没有带来新的故障。", "aliases": ["Regression Test", "回归验证", "防回归测试"],
-    "question": "只修了优惠券，为什么还要测结算和退款？", "definition": "回归测试重复执行与变更相关的已有用例，以发现意外影响。", "boundary": "回归范围应基于影响分析和风险，不等于每次机械执行全部测试。",
-    "demoType": "flow", "demoTitle": "优惠券改动怎样确定回归范围",
-    "demoSteps": [{"label":"识别改动","value":"折扣计算模块","note":"变更会影响订单最终金额。"},{"label":"展开依赖","value":"结算 · 支付 · 退款","note":"三个流程读取同一金额字段。"},{"label":"执行回归","value":"18 个相关用例","note":"通过后记录覆盖范围和结果。"}],
-    "quizQuestion": "回归测试范围主要依据什么？", "quizOptions": ["变更影响和功能风险", "随机挑选页面", "只看代码行数"], "correctText": "依赖关系和失败后果决定重点。", "wrongText": "随机选择和行数都不能代表真实影响。",
-    "promptTitle": "制定回归范围", "prompt": "请根据这次代码变更列出直接功能、共享依赖、数据迁移和关键历史缺陷的回归用例。", "relatedSlugs": ["smoke-test", "test-case", "code-coverage"]
+    "say": "代码、配置或依赖改动后，重新验证原本应该成立的行为。", "aliases": ["Regression Test", "回归验证", "防回归测试"],
+    "question": "只改了认证中间件，为什么订单和后台权限也要重测？", "definition": "回归测试从本次变更出发，沿影响关系和风险历史选择旧行为，用实际结果检查它们有没有倒退。", "boundary": "回归不是只测修复点，也不是每次机械跑完全量；范围过窄会漏风险，过宽会拖慢反馈。",
+    "demoType": "request", "demoTitle": "一处鉴权改动怎样展开回归范围",
+    "demoSteps": [{"label":"摆出差异","value":"auth middleware · commit 8c42","note":"先确认这次真正改变了哪条规则。"},{"label":"追共享依赖","value":"登录 · 会话 · 订单 · 后台","note":"调用关系把直接和跨模块测试带进候选。"},{"label":"补历史风险","value":"14 / 32 · 403→200","note":"越权旧缺陷不在调用图里，也要留下验证。"}],
+    "quizQuestion": "认证中间件改动为何要补入历史越权用例？", "quizOptions": ["鉴权是高风险区域，旧缺陷能防止行为倒退", "所有测试标题都包含 auth", "因为单元测试一定不能运行"], "correctText": "影响关系告诉你可能波及哪里，风险历史告诉你哪里曾经出过事。", "wrongText": "行数、标题和盲跑全量都不能替代有依据的范围判断。",
+    "promptTitle": "为一次变更选择回归范围", "prompt": "请从改动文件、调用关系、业务风险、数据契约和历史缺陷五处列出候选测试，说明纳入或排除理由。", "relatedSlugs": ["smoke-test", "test-case", "code-coverage"]
   },
   {
     "zh": "测试用例", "en": "Test Case", "slug": "test-case", "cat": "技术栈",
