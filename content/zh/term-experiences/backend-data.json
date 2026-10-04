@@ -10144,159 +10144,152 @@
   },
   {
     "slug": "tcp",
-    "lead": "应用连续 send 两次，接收端为什么可能一次 read 就拿到全部字节？",
-    "definition": "TCP 提供有序、可靠的字节流，用序号、确认、重传和流量控制交付字节，但不保留应用消息边界。",
+    "lead": "下载中间少了一段，为什么应用最后仍能读到连续内容？",
+    "definition": "TCP 提供有序、可靠的字节流，用序号、确认、重传、流量控制和拥塞控制交付字节，但不保留应用消息边界。",
     "boundary": "TCP 不是消息队列，也不保证一次 send 对应一次 receive。连接成功只表示传输通道建立，不表示应用协议已就绪。",
     "sceneKind": "network",
-    "sceneTitle": "丢失一个段后仍还原连续字节流",
-    "actionLabel": "投放下一个 TCP 段",
+    "sceneTitle": "五步看见缺口、确认、重传和交付",
+    "actionLabel": "推进 TCP 字节流",
     "actors": [
       {
         "id": "tcp-sender",
-        "label": "发送端",
-        "detail": "ABCDEFGHIJKL",
+        "label": "发送方",
+        "detail": "ABCDEF · GHIJ · KL",
         "icon": "server",
         "group": "端点"
       },
       {
-        "id": "seg-one",
-        "label": "Segment 1",
-        "detail": "seq 1–4",
-        "icon": "package",
-        "group": "网络"
-      },
-      {
-        "id": "seg-two",
-        "label": "Segment 2",
-        "detail": "seq 5–8",
-        "icon": "package",
-        "group": "网络"
-      },
-      {
-        "id": "seg-three",
-        "label": "Segment 3",
-        "detail": "seq 9–12",
+        "id": "tcp-wire",
+        "label": "传输中的 segments",
+        "detail": "seq + ACK",
         "icon": "package",
         "group": "网络"
       },
       {
         "id": "tcp-buffer",
         "label": "接收缓冲区",
-        "detail": "按序拼接",
+        "detail": "缺口前不交付",
         "icon": "memory",
         "group": "端点"
       },
       {
         "id": "tcp-reader",
         "label": "应用 read",
-        "detail": "每次最多 5 B",
+        "detail": "连续字节，不含消息边界",
         "icon": "code",
         "group": "应用"
       }
     ],
     "edges": [
       {
-        "id": "sender-s1",
+        "id": "sender-wire",
         "from": "tcp-sender",
-        "to": "seg-one",
-        "label": "发送"
+        "to": "tcp-wire",
+        "label": "分段发送"
       },
       {
-        "id": "sender-s2",
-        "from": "tcp-sender",
-        "to": "seg-two",
-        "label": "发送"
-      },
-      {
-        "id": "sender-s3",
-        "from": "tcp-sender",
-        "to": "seg-three",
-        "label": "发送"
-      },
-      {
-        "id": "s1-buffer",
-        "from": "seg-one",
+        "id": "wire-buffer",
+        "from": "tcp-wire",
         "to": "tcp-buffer",
-        "label": "到达"
-      },
-      {
-        "id": "s2-buffer",
-        "from": "seg-two",
-        "to": "tcp-buffer",
-        "label": "重传后到达"
-      },
-      {
-        "id": "s3-buffer",
-        "from": "seg-three",
-        "to": "tcp-buffer",
-        "label": "乱序暂存"
+        "label": "按序放入"
       },
       {
         "id": "buffer-reader",
         "from": "tcp-buffer",
         "to": "tcp-reader",
-        "label": "读取字节"
+        "label": "连续范围交付"
       }
     ],
     "frames": [
       {
-        "label": "中间段丢失",
-        "note": "1–4 与 9–12 到达，接收端发现序号缺口并暂存后段。",
+        "label": "三段出发",
+        "note": "ABCDEF、GHIJ、KL 共享连续序号范围，接收端等待数据。",
         "activeIds": [
           "tcp-sender",
-          "seg-one",
-          "seg-three",
-          "tcp-buffer"
+          "tcp-wire"
         ],
-        "doneIds": [
-          "seg-one"
-        ],
+        "doneIds": [],
         "mutedIds": [
-          "seg-two",
+          "tcp-buffer",
           "tcp-reader"
         ],
         "values": {
-          "tcp-buffer": "ABCD · gap 5–8 · IJKL held",
-          "seg-two": "lost"
+          "tcp-wire": "ABCDEF · GHIJ · KL",
+          "tcp-buffer": "等待"
         },
         "activeEdgeIds": [
-          "sender-s1",
-          "sender-s3",
-          "s1-buffer",
-          "s3-buffer"
+          "sender-wire"
         ]
       },
       {
-        "label": "确认缺口触发重传",
-        "note": "发送端重发 seq 5–8，缓冲区才形成连续 12 字节。",
+        "label": "中间段丢失",
+        "note": "ABCDEF 与 KL 到达，重复 ACK 7 表示 GHIJ 的缺口让连续交付停住。",
         "activeIds": [
-          "tcp-sender",
-          "seg-two",
+          "tcp-wire",
           "tcp-buffer"
         ],
         "doneIds": [
-          "seg-two",
+          "tcp-sender"
+        ],
+        "mutedIds": [
+          "tcp-reader"
+        ],
+        "values": {
+          "tcp-wire": "GHIJ · lost",
+          "tcp-buffer": "ABCDEF | gap | KL"
+        },
+        "activeEdgeIds": [
+          "wire-buffer"
+        ]
+      },
+      {
+        "label": "确认缺口",
+        "note": "接收端发出 ACK 7，表示下一个期望序号仍在 GHIJ 起点，后段先留在缓冲区。",
+        "activeIds": [
+          "tcp-buffer",
+          "tcp-sender"
+        ],
+        "doneIds": [
+          "tcp-wire"
+        ],
+        "mutedIds": [
+          "tcp-reader"
+        ],
+        "values": {
+          "tcp-buffer": "ACK 7 · next expected",
+          "tcp-sender": "等待重传"
+        },
+        "activeEdgeIds": [
+          "wire-buffer"
+        ]
+      },
+      {
+        "label": "重传并拼回",
+        "note": "GHIJ 重传到达后，缓冲区形成完整连续范围并回 ACK 13。",
+        "activeIds": [
+          "tcp-sender",
+          "tcp-wire",
+          "tcp-buffer"
+        ],
+        "doneIds": [
+          "tcp-wire",
           "tcp-buffer"
         ],
         "mutedIds": [
           "tcp-reader"
         ],
         "values": {
-          "seg-two": "retransmitted",
+          "tcp-wire": "GHIJ · retransmit",
           "tcp-buffer": "ABCDEFGHIJKL"
         },
         "activeEdgeIds": [
-          "sender-s2",
-          "s2-buffer"
-        ],
-        "metric": {
-          "label": "连续字节",
-          "value": "12 B"
-        }
+          "sender-wire",
+          "wire-buffer"
+        ]
       },
       {
-        "label": "应用按 5 与 7 字节读取",
-        "note": "接收调用的大小由应用决定，与原先三个 TCP 段没有一一对应。",
+        "label": "应用读取",
+        "note": "应用可以一次或多次 read；读取边界不是原始 segment 边界。",
         "activeIds": [
           "tcp-buffer",
           "tcp-reader"
@@ -10306,24 +10299,18 @@
         ],
         "mutedIds": [
           "tcp-sender",
-          "seg-one",
-          "seg-two",
-          "seg-three"
+          "tcp-wire"
         ],
         "values": {
-          "tcp-reader": "read1=ABCDE · read2=FGHIJKL",
+          "tcp-reader": "read() → ABCDEFGHIJKL",
           "tcp-buffer": "empty"
         },
         "activeEdgeIds": [
           "buffer-reader"
-        ],
-        "metric": {
-          "label": "应用读取次数",
-          "value": "2"
-        }
+        ]
       }
     ],
-    "insight": "应用协议若需要消息边界，必须在 TCP 字节流之上定义长度、分隔符或帧格式。",
+    "insight": "TCP 的可靠范围是有序字节交付；如果应用需要消息边界，必须在字节流之上定义长度、分隔符或帧格式。",
     "quiz": {
       "question": "发送端一次 send 100 字节，接收端一定一次 receive 100 字节吗？",
       "options": [
@@ -10351,7 +10338,22 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9293.html",
         "label": "RFC 9293 · TCP",
-        "note": "协议定义与报文语义"
+        "note": "字节流、序号、确认与重传"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc5681.html",
+        "label": "RFC 5681 · TCP Congestion Control",
+        "note": "拥塞窗口与发送节奏"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
+        "label": "RFC 1122 · Internet Hosts",
+        "note": "TCP 实现与应用边界"
+      },
+      {
+        "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+        "label": "IANA · Service Name and Port Registry",
+        "note": "端口与传输端点的登记"
       }
     ]
   },

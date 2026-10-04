@@ -649,12 +649,12 @@
   },
   {
     "zh": "TCP", "en": "Transmission Control Protocol", "slug": "tcp", "cat": "技术栈",
-    "say": "一种可靠传输协议，会确认连接、按序交付并处理丢失的数据。", "aliases": ["传输控制协议", "TCP 协议", "可靠连接"],
-    "question": "网络偶尔丢包时，下载的文件为什么通常不会缺一块？", "definition": "TCP 在两端之间建立字节流连接，通过序号、确认和重传提供可靠有序传输。", "boundary": "TCP 保证传输机制，不保证应用内容正确，也不自动加密数据。",
-    "demoType": "flow", "demoTitle": "一个数据段丢失后怎样补回",
-    "demoSteps": [{"label":"分段发送","value":"ABCDEF · GHIJ · KL","note":"三段共享连续字节序号范围。"},{"label":"出现缺口","value":"GHIJ · 丢失","note":"后续字节到达但接收缓冲区等待缺失范围。"},{"label":"重传并交付","value":"ACK → GHIJ → ABCDEFGHIJKL","note":"填补缺口后，连续字节交给应用。"}],
-    "quizQuestion": "TCP 主要提供什么？", "quizOptions": ["可靠且有序的字节流", "自动加密所有内容", "永久保存数据"], "correctText": "TCP 负责连接中的可靠、有序传输。", "wrongText": "加密通常由 TLS 提供，持久保存由应用和存储负责。",
-    "promptTitle": "分析 TCP 连接", "prompt": "请根据连接建立、传输、重传和关闭过程分析这次 TCP 故障，并标出可查看的网络指标。", "relatedSlugs": ["udp", "packet", "network-port", "tls-handshake"]
+    "say": "把连续字节按序、可靠地送到对端，缺口会被确认和重传补回来。", "aliases": ["传输控制协议", "TCP 协议", "可靠连接"],
+    "question": "网络偶尔丢包时，下载的文件为什么通常不会缺一块？", "definition": "TCP 在两个端点之间提供有序、可靠的字节流，通过序号、确认、重传、流量控制和拥塞控制协调传输。", "boundary": "TCP 不保留应用消息边界，也不保证连接后的业务处理成功；加密需要由 TLS 等更高层机制提供。",
+    "demoType": "flow", "demoTitle": "一个字节缺口怎样被找回",
+    "demoSteps": [{"label":"三段出发","value":"ABCDEF · GHIJ · KL","note":"三个 segment 刚发出，确认号还没有反映后续缺口。"},{"label":"缺口与确认","value":"ABCDEF · KL 到达 · ACK 7","note":"重复 ACK 7 表示下一个期望序号仍是 GHIJ 的起点。"},{"label":"重传后交付","value":"GHIJ retransmit · ACK 13","note":"缺口补回后，TCP 才把 1 到 12 的连续字节交给应用。"}],
+    "quizQuestion": "TCP 一次 send 100 字节，接收端一定一次 read 100 字节吗？", "quizOptions": ["不一定，TCP 只保证有序字节流", "一定，TCP 保留每次 send 边界", "一定，除非使用端口 443"], "correctText": "发送和读取的分段可以不同，TCP 只保证有序字节流。", "wrongText": "端口不会恢复消息边界，应用需要长度、分隔符或帧格式。",
+    "promptTitle": "检查 TCP 上的消息分帧", "prompt": "请给出消息长度或分隔规则、粘包与半包处理、最大帧大小、超时和异常关闭，并用不同 read 分片验证解析。", "relatedSlugs": ["udp", "packet", "network-port", "tls-handshake"]
   },
   {
     "zh": "UDP", "en": "User Datagram Protocol", "slug": "udp", "cat": "技术栈",

@@ -1,0 +1,47 @@
+.panel { margin: 28px 0; padding: 20px; border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent); border-radius: 22px; background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 90%, var(--tint)), color-mix(in srgb, var(--tint) 62%, var(--bg))); }
+.tcpHero { composes: panel; }
+.tcpTop, .tcpEvidence, .tcpLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.tcpTop span, .tcpTop small, .tcpLabHead span { color: var(--muted); font-size: .78rem; }
+.tcpTop strong, .tcpLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.tcpTrack { display: grid; grid-template-columns: minmax(0, .85fr) auto minmax(0, 1.4fr) auto minmax(0, .85fr); gap: 12px; align-items: center; margin: 26px 0 16px; }
+.tcpEndpoint, .tcpReceiver, .tcpWindow { min-height: 116px; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 15px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 75%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); }
+.tcpEndpoint { align-items: center; text-align: center; }
+.tcpEndpoint svg, .tcpWindow svg { color: var(--accent); }
+.tcpEndpoint span, .tcpWindow span { color: var(--muted); font-size: .78rem; }
+.tcpEndpoint strong, .tcpWindow strong { color: var(--accent-text); font-size: .9rem; }
+.tcpWire { display: grid; gap: 8px; }
+.tcpSegment { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: color-mix(in srgb, var(--tint) 58%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); transition: transform .35s ease, opacity .35s ease, border-color .35s ease; }
+.tcpSegment span { font: .72rem ui-monospace, monospace; color: var(--muted); }
+.tcpSegment code { overflow-wrap: anywhere; color: var(--accent-text); font-size: .78rem; }
+.tcpSegment small { color: var(--muted); font-size: .7rem; }
+.tcpSegment[data-lost="true"] { opacity: .38; border-style: dashed; transform: translateX(10px); }
+.tcpSegment[data-retransmit="true"] { border-color: var(--accent-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.tcpArrow { color: var(--accent-text); }
+.tcpEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.tcpEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.tcpEvidence p { margin: 0; }
+.tcpEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.tcpTimeline, .tcpControls, .tcpLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.tcpTimeline { margin-top: 15px; }
+.tcpTimeline button, .tcpControls button, .tcpLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.tcpTimeline button[aria-pressed="true"], .tcpLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.tcpControls { justify-content: flex-end; margin-top: 10px; }
+.tcpLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.tcpLabHead strong { display: block; margin-top: 5px; }
+.tcpLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.tcpLabNode { min-height: 83px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.tcpLabNode svg { color: var(--accent); }
+.tcpLabNode span { color: var(--muted); font-size: .76rem; }
+.tcpLabNode code, .tcpLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.tcpLabResult { display: flex; align-items: flex-start; gap: 10px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.tcpLabResult[data-warning="true"] { background: color-mix(in srgb, #f4ddcf 45%, var(--surface)); color: #8a542f; }
+.tcpLabResult svg { flex: 0 0 auto; color: var(--accent); }
+.tcpLabResult p { margin: 0; }
+.tcpLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.tcpLabControls { margin-top: 13px; }
+.tcpBoundary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+.tcpBoundary > div { padding: 14px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--tint) 44%, var(--surface)); }
+.tcpBoundary h3 { margin: 0 0 7px; font-size: .92rem; }
+.tcpBoundary p { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.7; }
+@media (max-width: 700px) { .panel { padding: 15px; } .tcpTrack, .tcpLabBoard { grid-template-columns: 1fr; } .tcpArrow { justify-self: center; transform: rotate(90deg); } .tcpTop, .tcpLabHead { flex-direction: column; gap: 8px; } .tcpBoundary { grid-template-columns: 1fr; } .tcpControls { justify-content: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .tcpHero *, .tcpLab * { transition: none !important; animation: none !important; } }
