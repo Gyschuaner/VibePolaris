@@ -678,92 +678,158 @@
     "zh": "防火墙", "en": "Firewall", "slug": "firewall", "cat": "技术栈",
     "say": "根据地址、端口、协议或应用规则允许和阻止网络流量。", "aliases": ["网络防火墙", "访问规则", "Firewall"],
     "question": "数据库只给后端访问，怎样阻止公网直接连接？", "definition": "防火墙在网络边界或主机上检查流量，并按规则决定放行、拒绝或记录。", "boundary": "防火墙只是分层防护的一部分，不能替代身份认证、补丁和应用安全检查。",
-    "demoType": "branch", "demoTitle": "数据库端口怎样被边界规则过滤",
-    "demoSteps": [{"label":"内网请求","value":"10.0.1.8:5432","note":"来源位于允许的应用子网。"},{"label":"公网请求","value":"203.0.113.9:5432","note":"来源不符合放行规则。"},{"label":"执行策略","value":"内网通过 · 公网拒绝","note":"日志记录来源和命中规则。"}],
-    "quizQuestion": "数据库只供应用服务器使用时，合理的防火墙规则是什么？", "quizOptions": ["只允许应用子网访问数据库端口", "向整个公网开放端口", "删除所有访问日志"], "correctText": "限制来源能缩小网络暴露范围。", "wrongText": "公网开放会扩大风险，日志有助于排查和审计。",
+    "demoType": "branch", "demoTitle": "同一连接怎样遇到规则顺序和状态表",
+    "demoSteps": [{"label":"首个 SYN","value":"client → web:443","note":"规则 10 放行，送到 Web 服务。"},{"label":"返回包","value":"无状态拒绝 → 有状态放行","note":"同一返回流量取决于是否识别 ESTABLISHED。"},{"label":"deny 置前","value":"rule 1 deny · allow 未到达","note":"第一条匹配提前结束，443 规则没有机会执行。"}],
+    "quizQuestion": "allow 443 写在 deny any 后面，流量会怎样？", "quizOptions": ["先命中 deny any，allow 443 不会执行", "两条规则自动取更宽松结果", "端口 443 永远绕过规则顺序"], "correctText": "多数规则表按顺序使用首个匹配结果。", "wrongText": "查看包到达的第一条匹配规则。",
     "promptTitle": "审查防火墙规则", "prompt": "请按来源、目标、端口、方向和业务用途审查这些防火墙规则，标出过宽和失效规则。", "relatedSlugs": ["network-port", "least-privilege", "ip-address"]
   },
   {
     "zh": "IP 地址", "en": "IP Address", "slug": "ip-address", "cat": "技术栈",
     "say": "网络中用来标识接口并帮助数据包找到目标的数字地址。", "aliases": ["互联网协议地址", "网络地址", "IP"],
-    "question": "浏览器知道域名以后，怎样找到对应服务器？", "definition": "IP 地址标识网络接口所在的位置，路由设备据此转发数据包。", "boundary": "IP 地址不一定永久对应一台设备，也不能单独证明某个用户身份。",
-    "demoType": "flow", "demoTitle": "域名怎样变成可路由的地址",
-    "demoSteps": [{"label":"输入域名","value":"example.com","note":"浏览器只有易读名称。"},{"label":"DNS 解析","value":"203.0.113.10","note":"解析器返回服务器 IP。"},{"label":"发送数据包","value":"目标 203.0.113.10","note":"路由器根据地址转发。"}],
-    "quizQuestion": "IP 地址在网络传输中的主要作用是什么？", "quizOptions": ["标识目标并参与路由", "定义网页字体", "保存用户订单"], "correctText": "IP 地址帮助数据包到达目标网络接口。", "wrongText": "页面样式和订单存储不由 IP 地址负责。",
+    "question": "服务器日志里的三个请求，为什么源 IP 都一样？", "definition": "IP 地址标识网络接口所在的位置，路由设备据此转发数据包。", "boundary": "IP 地址不一定永久对应一台设备，也不能单独证明某个用户身份。",
+    "demoType": "flow", "demoTitle": "三台私网设备共享一个公网 IP",
+    "demoSteps": [{"label":"手机出门","value":"192.168.1.11:51001 → 203.0.113.7:62001","note":"出口为连接建立第一条映射。"},{"label":"电脑和平板","value":"→ :62002 · :62003","note":"同一个公网 IP 继续复用不同端口。"},{"label":"远端日志","value":"unique IP count = 1","note":"日志按 IP 看不出三台设备，出口表仍保留三条映射。"}],
+    "quizQuestion": "多个请求具有相同公网 IP，能否断定来自同一设备？", "quizOptions": ["不能，NAT 或代理可能让多个设备共享地址", "能，IP 与设备永久一一对应", "能，只要使用 HTTPS"], "correctText": "地址转换会形成多设备到一个公网 IP 的映射。", "wrongText": "先考虑出口 NAT 和代理。",
     "promptTitle": "排查 IP 连通性", "prompt": "请按 DNS 结果、源和目标 IP、路由、防火墙与端口检查这次连接失败。", "relatedSlugs": ["dns-resolver", "network-port", "packet", "firewall"]
   },
   {
-    "zh": "端口", "en": "Network Port", "slug": "network-port", "cat": "技术栈",
-    "say": "同一台设备上用数字区分不同网络服务。", "aliases": ["网络端口", "Port", "服务端口"],
-    "question": "同一个 IP 上为什么能同时运行网站和数据库？", "definition": "网络端口是传输层中的数字标识，用于把到达主机的数据交给对应进程或服务。", "boundary": "端口不是物理插口；开放端口也不表示服务一定可用或已授权访问。",
-    "demoType": "branch", "demoTitle": "同一 IP 的流量怎样进入不同服务",
-    "demoSteps": [{"label":"HTTPS","value":"203.0.113.10:443","note":"流量交给 Web 服务。"},{"label":"SSH","value":"203.0.113.10:22","note":"流量交给远程登录服务。"},{"label":"未监听","value":"203.0.113.10:9000","note":"没有进程接收时连接失败。"}],
-    "quizQuestion": "IP 相同但端口不同通常表示什么？", "quizOptions": ["同一主机上的不同服务", "同一数据库的不同列", "不同页面颜色"], "correctText": "端口帮助主机区分网络服务。", "wrongText": "数据库列和页面颜色与网络端口无关。",
-    "promptTitle": "检查端口暴露", "prompt": "请列出这个服务实际监听、容器映射和防火墙开放的端口，指出不必要的公网暴露。", "relatedSlugs": ["ip-address", "tcp", "firewall"]
-  },
+  "zh": "端口",
+  "en": "Network Port",
+  "slug": "network-port",
+  "cat": "技术栈",
+  "say": "同一台设备上用数字区分不同网络服务。",
+  "aliases": [
+    "网络端口",
+    "Port",
+    "服务端口"
+  ],
+  "question": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
+  "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
+  "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
+  "demoType": "branch",
+  "demoTitle": "同一数字为什么跑出不同结果",
+  "demoSteps": [
+    {
+      "label": "TCP 53",
+      "value": "TCP 203.0.113.7:53 → SYN-ACK",
+      "note": "TCP 53 有监听，协议、端口和过滤都对上。"
+    },
+    {
+      "label": "UDP 53",
+      "value": "UDP 203.0.113.7:53 → ICMP Port Unreachable",
+      "note": "相同的 53 不会继承 TCP 53 的监听状态；回传 ICMP 被过滤时，客户端才只剩 timeout。"
+    },
+    {
+      "label": "443 换协议",
+      "value": "TCP 443 → ServerHello · UDP 443 → timeout",
+      "note": "同一数字换协议，结果要重新判断；UDP 443 还被网络过滤。"
+    }
+  ],
+  "quizQuestion": "TCP 53 可达，能否推出 UDP 53 也可达？",
+  "quizOptions": [
+    "不能，它们是不同传输协议的端点",
+    "能，端口号相同就共享状态",
+    "能，只要主机名相同"
+  ],
+  "correctText": "端口号要与 TCP 或 UDP 一起判断。",
+  "wrongText": "相同数字不表示相同端点。",
+  "promptTitle": "定位端口不可达",
+  "prompt": "请给出目标 IP、TCP/UDP、端口、监听地址、进程、主机防火墙、网络 ACL 和实际探测结果。",
+  "relatedSlugs": [
+    "ip-address",
+    "tcp",
+    "udp",
+    "firewall"
+  ]
+},
   {
-    "zh": "数据包", "en": "Packet", "slug": "packet", "cat": "技术栈",
-    "say": "网络把数据分成带有地址和控制信息的小块进行传输。", "aliases": ["网络包", "Packet", "报文"],
-    "question": "一个大文件怎样穿过不同网络设备到达另一台机器？", "definition": "数据包是网络层传输单位，由头部和载荷组成，路由器根据头部信息转发。", "boundary": "一个应用消息可能拆成多个包，单个包也不代表完整业务请求。",
-    "demoType": "flow", "demoTitle": "大消息怎样拆包和重组",
-    "demoSteps": [{"label":"应用数据","value":"6 KB 消息","note":"内容超过单次链路承载大小。"},{"label":"分成数据包","value":"P1 · P2 · P3 · P4","note":"每个包带目标地址和部分载荷。"},{"label":"目标重组","value":"6 KB 完整消息","note":"传输层或应用按规则恢复内容。"}],
-    "quizQuestion": "数据包头部通常包含什么？", "quizOptions": ["用于转发和处理的控制信息", "完整数据库备份", "页面全部 CSS"], "correctText": "地址、协议等控制信息位于头部。", "wrongText": "大块应用内容通常不会全部塞进单个包头。",
-    "promptTitle": "分析网络数据包", "prompt": "请根据抓包中的源目标地址、端口、协议、序号和时间定位请求在哪一段中断。", "relatedSlugs": ["ip-address", "tcp", "udp", "network-port"]
-  },
+  "zh": "数据包",
+  "en": "Packet",
+  "slug": "packet",
+  "cat": "技术栈",
+  "say": "网络把数据分成带有地址和控制信息的小块进行传输。",
+  "aliases": [
+    "网络包",
+    "Packet",
+    "报文"
+  ],
+  "question": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
+  "definition": "数据包是网络层一次传输的单位，由首部和负载组成；路由器按目的地址逐跳转发，路径 MTU 和 IP 版本决定大包怎样被处理。",
+  "boundary": "一个应用消息可能拆成多个传输段和 IP 包，单个包也不代表完整业务请求；IPv4 与 IPv6 对分片的责任不同。",
+  "demoType": "flow",
+  "demoTitle": "一条窄链路怎样改写大包命运",
+  "demoSteps": [
+    {
+      "label": "应用数据",
+      "value": "4000 B → IP header",
+      "note": "包先带上源/目的地址和 TTL 或 Hop Limit。"
+    },
+    {
+      "label": "路径 MTU",
+      "value": "IPv4: 3 fragments · IPv6: Packet Too Big",
+      "note": "IPv4 的 4000 B 负载在 MTU 1500 下拆成三片；IPv6 则由源端收到反馈后调整。"
+    },
+    {
+      "label": "调整后送达",
+      "value": "4 × ≤1280 B → 4000 B",
+      "note": "发送端按 PMTU 变小，终点再重组；Hop Limit 每跳递减。"
+    }
+  ],
+  "quizQuestion": "IPv6 路由器遇到超过下一跳 MTU 的包，通常怎样处理？",
+  "quizOptions": [
+    "返回 Packet Too Big，由发送端调整大小",
+    "所有路由器都自动分片",
+    "把包改成 TCP"
+  ],
+  "correctText": "IPv6 由路径反馈告诉源端调整包大小。",
+  "wrongText": "区分 IPv4 路由器分片与 IPv6 端点调整。",
+  "promptTitle": "分析一次大包传输",
+  "prompt": "请列出应用消息大小、传输分帧、IP 版本、各跳 MTU、DF/Packet Too Big、TTL/Hop Limit 和接收端重组结果。",
+  "relatedSlugs": [
+    "ip-address",
+    "tcp",
+    "udp",
+    "network-port"
+  ]
+},
   {
     "zh": "URL", "en": "Uniform Resource Locator", "slug": "url", "cat": "技术栈",
-    "say": "说明通过什么协议、到哪台主机、访问哪条路径和查询条件。", "aliases": ["网址", "资源地址", "统一资源定位符"],
-    "question": "一条完整网址里的 https、域名和问号参数分别表示什么？", "definition": "URL 是定位网络资源的地址，通常包含方案、主机、端口、路径、查询和片段。", "boundary": "URL 是 URI 的一种；片段通常只在客户端使用，不会随 HTTP 请求发送给服务器。",
-    "demoType": "hierarchy", "demoTitle": "一条 URL 怎样拆成各部分",
-    "demoSteps": [{"label":"连接目标","value":"https://example.com","note":"方案和主机决定怎样连接到哪里。"},{"label":"资源路径","value":"/articles/42","note":"服务器据此匹配内容或端点。"},{"label":"查询与片段","value":"?lang=zh#demo","note":"查询发给服务器，片段用于页内定位。"}],
-    "quizQuestion": "URL 中 # 后面的部分通常叫什么？", "quizOptions": ["片段", "请求体", "状态码"], "correctText": "片段用于标识资源内部位置。", "wrongText": "请求体和状态码不写在 URL 片段中。",
-    "promptTitle": "拆解 URL", "prompt": "请拆解这条 URL 的 scheme、host、port、path、query 和 fragment，并说明哪些部分会进入 HTTP 请求。", "relatedSlugs": ["hostname", "path-parameter", "query-parameter", "request"]
+    "say": "说明一条资源引用怎样被解析成连接主机、路径、查询和客户端定位信息。", "aliases": ["网址", "资源地址", "统一资源定位符"],
+    "question": "为什么地址栏里完整的一串 URL，到了服务器却只剩 Host 和一段请求目标？", "definition": "URL 是可解析的资源引用，通常包含 scheme、authority、path、query 和 fragment；解析和归一后，客户端才形成实际请求。", "boundary": "URL 是 URI 的一种；fragment 通常只留在客户端，不随 HTTP 请求发送，百分号编码和相对引用也不能靠字符串拼接理解。",
+    "demoType": "flow", "demoTitle": "从一条复杂 URL 到实际请求目标",
+    "demoSteps": [{"label":"拆组件","value":"https://user:secret@example.com:8443/a/../b?q=x%2Fy#part","note":"先分出 scheme、authority、path、query 和 fragment。"},{"label":"归一路径","value":"/a/../b → /b","note":"点段按路径规则抵消，查询值仍留在 query。"},{"label":"形成请求","value":"Host: example.com:8443 · GET /b?q=x%2Fy","note":"#part 留给浏览器做客户端定位，不进入 request-target。"}],
+    "quizQuestion": "URL 中 #part 最终会不会出现在 HTTP 请求目标里？", "quizOptions": ["通常不会，留在客户端处理", "会自动变成请求头", "会作为服务器端口"], "correctText": "fragment 在客户端处理，不属于 HTTP 请求目标。", "wrongText": "请求头和端口都有自己的位置，不能把 fragment 塞进去。",
+    "promptTitle": "还原 URL 的真实边界", "prompt": "请拆解这条 URL 的 scheme、userinfo、host、port、path、query 和 fragment，写出归一后的路径、HTTP Host、request-target，以及以 https://example.com/a/b/ 为 base 合并 ../c 的结果。", "relatedSlugs": ["hostname", "path-parameter", "query-parameter", "request"]
   },
   {
     "zh": "主机名", "en": "Hostname", "slug": "hostname", "cat": "技术栈",
-    "say": "网络中用于指向某台主机或服务的可读名称。", "aliases": ["Hostname", "主机名称", "域名主机"],
-    "question": "URL 里的 api.example.com 这一段是什么？", "definition": "主机名是标识网络主机或服务的名称，在互联网中通常通过 DNS 解析为 IP 地址。", "boundary": "主机名不一定等于完整域名，也可能只在本地网络或 hosts 配置中有效。",
-    "demoType": "flow", "demoTitle": "主机名怎样找到服务",
-    "demoSteps": [{"label":"读取地址","value":"api.example.com","note":"浏览器从 URL 提取主机名。"},{"label":"查询 DNS","value":"→ 203.0.113.10","note":"解析器返回可连接的 IP。"},{"label":"建立连接","value":"203.0.113.10:443","note":"请求仍携带原主机名供服务识别。"}],
-    "quizQuestion": "主机名通常怎样转换为 IP 地址？", "quizOptions": ["通过 DNS 解析", "通过 CSS 计算", "通过数据库事务"], "correctText": "DNS 负责名称到地址的解析。", "wrongText": "页面样式和数据库事务不负责网络名称解析。",
-    "promptTitle": "排查主机名", "prompt": "请检查这条 URL 的主机名、DNS 记录、证书域名和服务虚拟主机配置是否一致。", "relatedSlugs": ["url", "dns-record", "dns-resolver", "ip-address"]
+    "say": "把一串可读的名称一路带过 DNS、TLS 和 HTTP，直到服务知道你要找哪一个名字。", "aliases": ["Hostname", "主机名称", "域名主机"],
+    "question": "为什么已经连到正确 IP，改一下 Host 还是会得到另一个网站？", "definition": "主机名是 DNS 命名空间中的可读名称；解析器可能返回多个 IP，客户端随后用原名称核对证书并让 HTTP Host 选择虚拟主机。", "boundary": "主机名不等于固定 IP，也不等于某个服务的最终身份；同一 IP 可承载多个名称，同一名称也可能指向多条地址。",
+    "demoType": "flow", "demoTitle": "主机名怎样穿过 DNS、TLS 和 HTTP",
+    "demoSteps": [{"label":"交给 DNS","value":"api.example.com → .10 / .11","note":"解析器返回一组可能的地址，缓存和地址顺序也要记录。"},{"label":"建立并核名","value":"203.0.113.10:443 · DNS-ID api.example.com","note":"连接使用选中的 IP，TLS 仍用名称检查证书。"},{"label":"选择虚拟主机","value":"Host: api.example.com → 200 API JSON","note":"HTTP 用 Host 在同一 IP 的多个服务中选出目标。"}],
+    "quizQuestion": "只把 Host 改成 admin.example.com，最可能改变哪一层？", "quizOptions": ["HTTP 虚拟主机路由", "已经建立的 TCP 目标 IP", "DNS 记录的 TTL"], "correctText": "Host 是应用层路由条件，可能把请求送到另一个虚拟主机。", "wrongText": "改 Host 不会回头改写已完成的 DNS 查询或 TCP 连接。",
+    "promptTitle": "排查主机名跨层不一致", "prompt": "请记录输入主机名、DNS 全部回答和 TTL、选择的 IP:port、TLS SNI 与证书 DNS-ID、HTTP Host 和最终响应，分别判断失败停在哪一层。", "relatedSlugs": ["url", "dns-record", "dns-resolver", "ip-address"]
   },
   {
     "zh": "DNS 记录", "en": "DNS Record", "slug": "dns-record", "cat": "技术栈",
-    "say": "DNS 区域中保存名称如何解析或验证的结构化条目。", "aliases": ["域名记录", "解析记录", "资源记录"],
-    "question": "域名要指向服务器或邮件服务，应该改哪里？", "definition": "DNS 记录为域名保存地址、别名、邮件路由和验证文本等信息，并带有缓存时间。", "boundary": "不同记录类型有不同含义；修改记录也不会让所有缓存立即失效。",
-    "demoType": "branch", "demoTitle": "不同 DNS 记录解决什么问题",
-    "demoSteps": [{"label":"网站地址","value":"A → 203.0.113.10","note":"域名解析到 IPv4 地址。"},{"label":"服务别名","value":"CNAME → host.example.net","note":"一个名称指向另一个名称。"},{"label":"邮件路由","value":"MX → mail.example.com","note":"邮件系统找到接收服务器。"}],
-    "quizQuestion": "让域名直接指向 IPv4 地址通常使用什么记录？", "quizOptions": ["A 记录", "MX 记录", "TXT 记录"], "correctText": "A 记录保存 IPv4 地址。", "wrongText": "MX 用于邮件路由，TXT 保存文本信息。",
-    "promptTitle": "检查 DNS 记录", "prompt": "请按网站、邮件和验证用途检查这些 DNS 记录的类型、名称、目标、TTL 和冲突。", "relatedSlugs": ["hostname", "ip-address", "dns-resolver", "cache"]
+    "say": "把名称、类型、TTL 和数据格式放在一起，告诉解析器这条信息是什么以及能缓存多久。", "aliases": ["域名记录", "解析记录", "资源记录"],
+    "question": "为什么权威 DNS 已经改成新地址，部分用户还拿到旧地址？", "definition": "DNS 记录由 owner、type、class、TTL 和 RDATA 构成；A、CNAME、MX、TXT 等类型表达不同资源信息。", "boundary": "CNAME 不是 HTTP 重定向；同名同类型的多条记录组成 RRSet；权威修改和缓存过期是两个时间点。",
+    "demoType": "flow", "demoTitle": "从一行记录到缓存中的回答",
+    "demoSteps": [{"label":"读字段","value":"owner · type · class · TTL · RDATA","note":"先确认这条记录挂在哪个名字下、怎样解释数据、能缓存多久。"},{"label":"组成 RRSet","value":"api.example.com A → .10 + .11","note":"同名同类型的不同地址作为一组回答，TTL 一起倒计时。"},{"label":"看权威与缓存","value":"权威 .20 · resolver 仍答 .10","note":"TTL 归零前，旧副本可以继续被返回；排查要记录回答来源。"}],
+    "quizQuestion": "CNAME 记录通常表达什么关系？", "quizOptions": ["一个别名对应另一个规范名", "浏览器执行 HTTP 302 跳转", "把邮件正文写进 DNS"], "correctText": "CNAME 的 RDATA 是规范名，后续还要解析这个名字的地址记录。", "wrongText": "DNS 记录类型改变的是数据语义，不会自动执行 HTTP 动作。",
+    "promptTitle": "还原一次 DNS 记录回答", "prompt": "请记录 QNAME、QTYPE、回答区、AA 标记、authority/additional 区、每条 RR 的 TTL、回答来源和是否为 NXDOMAIN/NODATA，再判断旧值来自哪一层缓存。", "relatedSlugs": ["hostname", "dns-resolver", "cache", "url"]
   },
   {
     "zh": "DNS 解析器", "en": "DNS Resolver", "slug": "dns-resolver", "cat": "技术栈",
-    "say": "替客户端查询 DNS 层级并缓存名称解析结果的服务。", "aliases": ["递归解析器", "DNS 服务器", "Resolver"],
-    "question": "电脑不知道域名对应哪个 IP 时，会向谁询问？", "definition": "DNS 解析器接收名称查询，利用缓存或递归查询获得记录并返回给客户端。", "boundary": "解析器返回的是 DNS 记录结果，不负责确认目标应用是否正常运行。",
-    "demoType": "flow", "demoTitle": "缓存未命中时怎样完成解析",
-    "demoSteps": [{"label":"客户端询问","value":"api.example.com?","note":"本地系统把查询交给解析器。"},{"label":"逐级查询","value":"根 → 顶级域 → 权威","note":"解析器找到负责该域名的记录。"},{"label":"返回并缓存","value":"203.0.113.10 · 300s","note":"客户端得到 IP，解析器按 TTL 缓存。"}],
-    "quizQuestion": "DNS 解析器缓存记录多久主要由什么决定？", "quizOptions": ["TTL", "页面标题", "数据库主键"], "correctText": "TTL 指示记录可缓存的时长。", "wrongText": "页面和数据库结构不控制 DNS 缓存时长。",
-    "promptTitle": "排查 DNS 解析", "prompt": "请比较本地、递归和权威 DNS 的查询结果与 TTL，定位旧记录来自哪一层缓存。", "relatedSlugs": ["dns-record", "cache", "hostname", "ip-address"]
+    "say": "替客户端把一个名字问到有答案的地方，先查缓存，必要时继续追上游。", "aliases": ["递归解析器", "DNS 服务器", "Resolver"],
+    "question": "为什么第一次查域名要走好几层，第二次却不用再访问上游？", "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，从缓存或递归查询获得回答，再把记录、否定结论或失败状态返回给客户端。", "boundary": "stub、recursive resolver 和 authoritative server 的职责不同；NXDOMAIN/NODATA 不是 SERVFAIL，解析失败会进入短时 failure cache，缓存命中也不等于目标应用健康。",
+    "demoType": "flow", "demoTitle": "resolver 怎样决定继续问还是停下",
+    "demoSteps": [{"label":"先看缓存","value":"api.example.com A · MISS","note":"本机把 RD=1 的问题交给递归 resolver。"},{"label":"沿委派查询","value":"root → .com → authoritative","note":"递归器逐步找到负责目标 zone 的服务器。"},{"label":"得到答案或停止","value":"A .10 · NXDOMAIN · SERVFAIL","note":"正答案、负答案和解析失败都要结合 RCODE、authority 区与 TTL 判断。"}],
+    "quizQuestion": "看到 SERVFAIL，能否直接断定域名不存在？", "quizOptions": ["不能，它表示本次解析没有拿到可用数据", "能，所有失败都等于 NXDOMAIN", "能，只要递归器返回了空结果"], "correctText": "SERVFAIL 与 NXDOMAIN 是不同的 RCODE，前者不能证明名字不存在。", "wrongText": "继续看 RCODE、authority 区、上游响应和重试记录，不要把所有失败归为不存在。",
+    "promptTitle": "排查一次 DNS resolver 查询", "prompt": "请记录 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、缓存命中与剩余 TTL、实际访问的上游和重试结果，判断是 HIT、NXDOMAIN、NODATA 还是 SERVFAIL。", "relatedSlugs": ["dns-record", "hostname", "cache", "ip-address"]
   },
-  {
-    "zh": "缓存控制", "en": "Cache-Control", "slug": "cache-control", "cat": "技术栈",
-    "say": "用 HTTP 响应头说明内容能否缓存、缓存多久以及何时重新验证。", "aliases": ["Cache-Control", "HTTP 缓存策略", "缓存响应头"],
-    "question": "静态图片可以缓存一年，用户资料却不能共用缓存，怎样区分？", "definition": "Cache-Control 是 HTTP 缓存指令集合，用于控制浏览器和共享缓存对响应的存储与复用。", "boundary": "缓存指令影响缓存行为，但不能保证所有中间设备在异常配置下都按预期执行。",
-    "demoType": "state", "demoTitle": "资源从新鲜到重新验证",
-    "demoSteps": [{"label":"首次响应","value":"max-age=60","note":"浏览器保存响应 60 秒。"},{"label":"缓存新鲜","value":"30 秒","note":"页面直接使用本地副本，不发请求。"},{"label":"缓存过期","value":"60 秒后验证","note":"浏览器携带验证条件询问服务器。"}],
-    "quizQuestion": "max-age=60 通常表示什么？", "quizOptions": ["响应可在 60 秒内视为新鲜", "请求必须在 60 秒内完成", "服务器 60 秒后关闭"], "correctText": "缓存可在该时间内直接复用响应。", "wrongText": "它控制缓存新鲜度，不是请求超时或服务器寿命。",
-    "promptTitle": "设计 HTTP 缓存", "prompt": "请为静态资源、公开接口和用户私有数据分别设计 Cache-Control，并说明更新和重新验证方式。", "relatedSlugs": ["cache", "response", "response-header"]
-  },
-  {
-    "zh": "MIME 类型", "en": "Media Type", "slug": "mime-type", "cat": "技术栈",
-    "say": "用类似 application/json 的标识说明传输内容是什么格式。", "aliases": ["媒体类型", "Content-Type", "Media Type"],
-    "question": "浏览器怎样知道返回内容是 JSON、图片还是网页？", "definition": "MIME 类型由主类型和子类型组成，用于说明消息体的媒体格式和解析方式。", "boundary": "文件扩展名可以辅助判断，但 HTTP 客户端主要依据 Content-Type 等协议信息。",
-    "demoType": "branch", "demoTitle": "同一响应体怎样按类型处理",
-    "demoSteps": [{"label":"JSON","value":"application/json","note":"客户端把文本解析成结构化数据。"},{"label":"图片","value":"image/png","note":"浏览器按 PNG 图像解码。"},{"label":"类型错误","value":"text/plain","note":"内容可能被当作普通文本显示。"}],
-    "quizQuestion": "JSON 响应常用哪个 MIME 类型？", "quizOptions": ["application/json", "image/jpeg", "text/css"], "correctText": "application/json 表示 JSON 数据。", "wrongText": "image/jpeg 是图片，text/css 是样式表。",
-    "promptTitle": "检查内容类型", "prompt": "请检查这些请求和响应的 Content-Type、Accept 与实际内容是否一致，并说明错误类型造成的客户端表现。", "relatedSlugs": ["http-header", "response-header", "json"]
-  },
+  {"zh":"缓存控制","en":"Cache-Control","slug":"cache-control","cat":"技术栈","say":"把能不能存、能新鲜多久、要不要回源写给缓存看的指令。","aliases":["Cache-Control","HTTP 缓存策略","缓存响应头"],"question":"为什么同一份响应有时直接命中，有时只回 304，还有时根本不能进共享缓存？","definition":"Cache-Control 是 HTTP 缓存指令集合，控制响应能否存储、何时仍可直接复用、何时必须验证，以及 private cache 和 shared cache 怎样分别处理。","boundary":"no-cache 允许存储但复用前要验证；no-store 阻止存储；stale-while-revalidate 和 stale-if-error 只是额外的、有限的过期授权。","demoType":"state","demoTitle":"一份响应怎样穿过缓存闸门","demoSteps":[{"label":"响应先过闸门","value":"max-age=60 / private,no-store","note":"公开脚本可以留下副本，用户资料被 shared cache 挡在门外。"},{"label":"fresh HIT","value":"Age 25 < 60","note":"还在新鲜窗口时直接复用，不必访问源站。"},{"label":"stale → 304 或过期窗口","value":"If-None-Match / stale-*","note":"过期后可以带验证器换回 304；只有明确授权时，才允许短暂交付旧响应。"}],"quizQuestion":"响应写 no-cache，缓存是否一定不能保存副本？","quizOptions":["不一定，保存后每次复用前都要验证","一定完全禁止存储","只影响数据库缓存"],"correctText":"no-cache 管的是复用前验证，不等于 no-store。","wrongText":"禁止缓存要看 no-store；no-cache 仍允许保存副本。","promptTitle":"核对一条响应的缓存行为","prompt":"请列出这条响应的 Cache-Control、Age、ETag、Vary 和缓存层，推演它会存储、直接命中、验证还是拒绝共享。","relatedSlugs":["cache","response","response-header","dns-resolver"]},
+  {"zh":"MIME 类型","en":"Media Type","slug":"mime-type","cat":"技术栈","say":"用 type/subtype 和参数告诉接收端，这串字节按什么规则解释。","aliases":["媒体类型","Content-Type","Media Type"],"question":"为什么同一段 <h1>Hi</h1> 有时是标题，有时只是文字，JSON 声明错了还会报错？","definition":"MIME 类型由 type、subtype 和可选参数组成；HTTP 用 Content-Type 传递这份表示声明，接收端据此选择解析器，但不替内容保证格式合法。","boundary":"文件扩展名只是文件名线索；charset、Content-Encoding 和 multipart 的 boundary 分别回答字节怎么解码、外层怎么解压、消息怎样分段。","demoType":"branch","demoTitle":"同一串字节怎样走不同解释器","demoSteps":[{"label":"先看 Content-Type","value":"text/html; charset=utf-8","note":"标签决定接收端从 HTML 规则开始解释。"},{"label":"换标签不换字节","value":"text/plain; charset=utf-8","note":"同样的尖括号变成原样文字，不会构造标题节点。"},{"label":"解析仍会失败","value":"application/json · {\"count\": }","note":"选择 JSON 解析器不等于把缺少值的内容修好。"}],"quizQuestion":"响应声明 application/json，但 body 是 {\"count\": }，接收端首先应该怎样处理？","quizOptions":["按 JSON 规则解析并报告语法错误","把它当成合法对象继续使用","只看文件扩展名决定结果"],"correctText":"媒体类型选择解析规则，实际字节仍要通过解析。","wrongText":"Content-Type 不是校验结果，也不能靠扩展名绕过解析错误。","promptTitle":"核对内容类型和字节","prompt":"请记录响应的 Content-Type、charset、Content-Encoding、multipart boundary 和实际字节，判断接收端会选什么解析器以及失败停在哪里。","relatedSlugs":["http-header","response-header","response-body","json"]},
   {
     "zh": "响应体", "en": "Response Body", "slug": "response-body", "cat": "技术栈",
     "say": "HTTP 响应中承载实际返回内容的部分，可以是 JSON、HTML、图片或文件。", "aliases": ["Response Body", "返回体", "响应内容"],
