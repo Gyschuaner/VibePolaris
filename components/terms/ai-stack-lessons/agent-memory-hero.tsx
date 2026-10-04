@@ -38,7 +38,7 @@ export function AgentMemoryHero() {
           <div className={styles.memoryHeroOtherRecord}><span>食谱偏好</span><code>少放盐</code></div>
           <div className={styles.memoryHeroRecord} data-active={saved} data-corrected={corrected} data-deleted={deleted}>
             <span className={styles.memoryHeroRecordIcon}>{deleted ? <Eraser size={16} aria-hidden="true" /> : corrected ? <PencilSimple size={16} aria-hidden="true" /> : saved ? <CheckCircle size={16} aria-hidden="true" /> : <WarningCircle size={16} aria-hidden="true" />}</span>
-            <span><strong>{deleted ? "这条记录已删除" : saved ? `代码示例用 ${value}` : "待确认，不写入"}</strong><small>{deleted ? "future retrieval: blocked" : saved ? "source=user · scope=code" : "current message · not stored"}</small></span>
+            <span><strong>{deleted ? "这条记录已删除" : saved ? `代码示例用 ${value}` : "待确认，不写入"}</strong><small>{deleted ? "未来取回：已阻断" : saved ? "source=user · scope=code" : "当前消息 · 尚未写入"}</small></span>
           </div>
         </div>
         <div className={styles.memoryHeroStoreMeta}><span>{deleted ? "1 条仍保留" : saved ? "2 条记录" : "等待写入"}</span><span>{deleted ? "可重新说明" : "可纠正 · 可删除"}</span></div>
