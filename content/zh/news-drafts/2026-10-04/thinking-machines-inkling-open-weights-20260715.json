@@ -1,0 +1,246 @@
+{
+  "slug": "thinking-machines-inkling-open-weights-20260715",
+  "title": "Thinking Machines 发布开放权重 Inkling：重点不是“最强”，而是让模型可以被改造",
+  "summary": "Thinking Machines Lab 于 2026 年 7 月 15 日公布 Inkling，一个开放权重、多模态 MoE 模型：总参数约 9750 亿、每个 token 激活约 410 亿，支持最长 100 万 token 上下文。公司把它定位为可下载、可微调、可研究的通用底座，并提供 Tinker 微调入口；官方同时提醒，公开的基准结果来自 6 月 30 日至 7 月 13 日间的不同检查点，不能直接当作发布版成绩。",
+  "body": "7 月 15 日，Thinking Machines Lab 公布了 Inkling。它不是又一个只让用户调用 API 的封闭模型，而是把完整权重开放出来，允许研究者下载、检查和改造。公司把这次发布的重点放在“可定制的基础模型”上，而不是宣称它在所有榜单上都排第一。\n\nInkling 采用混合专家架构。官方给出的规模是约 9750 亿个总参数，但每个 token 只激活约 410 亿个参数；它可以处理文字、图片、音频和视频输入，最长上下文达到 100 万 token。对普通读者来说，这组数字分别回答三个问题：模型能看多大的材料、每一步实际调用多少专家、以及它能不能把不同媒介放进同一轮推理。\n\n开放权重和“有模型接口”是两回事。API 让用户提交请求并等待服务商返回结果，开放权重则把模型本身交给用户，方便在自己的数据和约束下继续训练。Thinking Machines 同时开放 Tinker 微调入口，并展示了一个模型自己写微调任务、再用结果改进自己的示例；这说明产品路线包含研究和定制工具，但不等于模型已经可以无监督地自我迭代。\n\n官方介绍的训练数据规模约为 45 万亿 token，覆盖文字、图片、音频和视频；后训练使用合成数据和超过 3000 万次强化学习 rollout。发布页也特别标注，基准表格是 6 月 30 日到 7 月 13 日期间用另一检查点得到的，正式开放的检查点可能不同。把这条时间边界保留下来，比把数字抄成“最终成绩”更可靠。\n\nInkling 的新闻价值在于，模型竞争开始出现另一种衡量方式：模型能否被别人接手、微调、评估和重部署。它仍然需要用户自己承担算力、数据和安全评测成本；开放权重降低了改造门槛，却没有替用户完成授权、隐私和上线判断。",
+  "publishedAt": "2026-07-15",
+  "eventDate": "2026-07-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/thinking-machines-inkling-open-weights-20260715.svg",
+    "alt": "Thinking Machines 发布开放权重 Inkling：重点不是“最强”，而是让模型可以被改造 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/thinking-machines-inkling-open-weights-20260715.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-released",
+      "title": "开放的是权重，不只是一个聊天入口",
+      "body": "Thinking Machines 提供 Inkling 的完整权重，研究者可以下载、检查并在自己的环境中运行或继续训练。它与只能调用的托管 API 不同。",
+      "kind": "narrative"
+    },
+    {
+      "id": "model-shape",
+      "title": "9750 亿总参数与 410 亿激活参数如何同时成立",
+      "body": "Inkling 是混合专家模型。总参数描述模型拥有多少专家，激活参数描述每个 token 实际选择了多少专家；两者不能混成一个“模型大小”数字。",
+      "kind": "technical"
+    },
+    {
+      "id": "context-and-modalities",
+      "title": "一百万 token 上下文和原生多模态",
+      "body": "官方称 Inkling 可处理文字、图片、音频和视频输入，最长上下文约 100 万 token。上下文很长不代表每次回答都能自动理解所有材料，任务设计仍决定效果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "tinker-self-tuning",
+      "title": "Tinker 让微调进入产品流程",
+      "body": "用户可以通过 Tinker 对模型做微调，官方还展示模型自己起草微调任务并评估结果的示例。这个演示展示的是工具链，不是已经被证明的自我训练闭环。",
+      "kind": "narrative"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "发布页给基准成绩加了一条时间注释",
+      "body": "公开基准来自 6 月 30 日至 7 月 13 日的另一检查点，不能直接视为本次发布权重的最终成绩。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "开放权重模型交到别人手里后，会多出哪些步骤？",
+    "question": "从下载到上线，中间还要经过微调、评估和权限控制；开放本身不是完成交付。",
+    "steps": [
+      {
+        "label": "拿到权重",
+        "detail": "研究者获得模型文件，可以在自己的算力环境中运行和检查。",
+        "evidence": "Thinking Machines"
+      },
+      {
+        "label": "接入自己的数据",
+        "detail": "用 Tinker 或自有训练流程微调模型，把任务格式和领域知识写进权重。",
+        "evidence": "Thinking Machines"
+      },
+      {
+        "label": "重新评估",
+        "detail": "用与实际场景相同的材料测准确率、偏差、幻觉和成本，不能只沿用公告里的榜单。",
+        "evidence": "使用边界"
+      },
+      {
+        "label": "加上权限和工具",
+        "detail": "再决定模型能访问哪些数据、能不能调用工具，以及人何时需要确认。",
+        "evidence": "工程边界"
+      },
+      {
+        "label": "再部署",
+        "detail": "经过自己的安全审查后，开放权重才可能进入产品或内部服务。",
+        "evidence": "工程边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Thinking Machines Lab",
+    "url": "https://thinkingmachines.ai/news/introducing-inkling/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "context",
+    "agent",
+    "eval",
+    "prompt",
+    "event",
+    "citation"
+  ],
+  "relatedArticleSlugs": [
+    "moonshot-kimi-k3-open-weight-20260717"
+  ],
+  "sources": [
+    {
+      "url": "https://thinkingmachines.ai/news/introducing-inkling/",
+      "claim": "Thinking Machines 公布 Inkling 开放权重模型，并说明 MoE 规模、模态、上下文、Tinker 和自微调演示。",
+      "excerpt": "Introducing Inkling: Our Open-Weights Model, Thinking Machines Lab, 2026-07-15."
+    },
+    {
+      "url": "https://www.axios.com/2026/07/15/mira-murati-thinking-machines-open-weight-model-inkling",
+      "claim": "Axios 交叉报道 Inkling 的开放权重、9750 亿总参数和 410 亿激活参数，并补充公司背景。",
+      "excerpt": "Axios, Thinking Machines Lab releases its first open-weight model, 2026-07-15."
+    },
+    {
+      "url": "https://www.together.ai/blog/together-ai-brings-thinking-machines-labs-new-model-inkling-on-day-0",
+      "claim": "Together AI 说明 Inkling 可在发布日接入其推理平台，作为生态侧的交叉信息。",
+      "excerpt": "Together AI, Inkling on Day 0, 2026-07-15."
+    }
+  ],
+  "canonicalUrl": "https://thinkingmachines.ai/news/introducing-inkling/",
+  "sourceHash": "sha256:e852b09da643040fc8e06b5a3c7ed3da9f37c386dbd559ba7f9a539066a40af4",
+  "status": "published",
+  "discoveredAt": "2026-10-04T09:15:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 llm 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 token 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 context 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 agent 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 eval 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 prompt 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 event 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 citation 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://thinkingmachines.ai/news/introducing-inkling/",
+      "claim": "Thinking Machines 公布 Inkling 开放权重模型，并说明 MoE 规模、模态、上下文、Tinker 和自微调演示。",
+      "excerpt": "Introducing Inkling: Our Open-Weights Model, Thinking Machines Lab, 2026-07-15."
+    },
+    {
+      "url": "https://www.axios.com/2026/07/15/mira-murati-thinking-machines-open-weight-model-inkling",
+      "claim": "Axios 交叉报道 Inkling 的开放权重、9750 亿总参数和 410 亿激活参数，并补充公司背景。",
+      "excerpt": "Axios, Thinking Machines Lab releases its first open-weight model, 2026-07-15."
+    },
+    {
+      "url": "https://www.together.ai/blog/together-ai-brings-thinking-machines-labs-new-model-inkling-on-day-0",
+      "claim": "Together AI 说明 Inkling 可在发布日接入其推理平台，作为生态侧的交叉信息。",
+      "excerpt": "Together AI, Inkling on Day 0, 2026-07-15."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T09:15:00Z",
+    "method": "source",
+    "notes": "以 Thinking Machines 原始发布页为事实主线，核对 975B/41B、1M 上下文、45T token、Tinker 与基准检查点日期；Axios 和 Together AI 只作交叉，不把估值与模型能力写成官方事实。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T09:15:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 和 write-like-me 逐篇手写；将新闻事实、官方计划和媒体背景分开，等待读者复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T08:10:00Z",
+    "questions": [
+      "新闻主线优先，中文适合零基础读者，段落按事件组织，未见模板化表达或明显 AI 腔。",
+      "eventDate/publishedAt 均为 2026-07-15，且公告中的试点、加入意向、政策方向和后续计划边界清楚。",
+      "厂商规格/benchmark、WHO 调查比例及政府承诺均保留来源归属：Inkling 的检查点 benchmark、Cosmos 的 4B/最高 6 倍、WHO 的 37国/8% 和澳大利亚数据中心规则未被写成普遍已生效事实。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：四篇新闻事实、数字口径、计划与已执行边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-15",
+  "promotedAt": "2026-10-04T04:59:17.718Z"
+}

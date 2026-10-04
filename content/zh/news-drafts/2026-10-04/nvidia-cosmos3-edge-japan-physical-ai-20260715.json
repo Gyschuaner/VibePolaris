@@ -1,0 +1,246 @@
+{
+  "slug": "nvidia-cosmos3-edge-japan-physical-ai-20260715",
+  "title": "NVIDIA 把 Cosmos 3 Edge 带进日本物理 AI：4B 模型先在设备端看懂环境",
+  "summary": "NVIDIA 于 2026 年 7 月 15 日宣布，日本的机器人、制造和基础设施企业将围绕 Cosmos、Isaac、Metropolis 与 Jetson 推进物理 AI。公告重点包括 Cosmos 3 Edge，一个约 40 亿参数、面向设备端视觉推理和机器人策略部署的模型；多家企业表达加入 Cosmos Coalition 的意向，但这仍是生态合作和产品路线，不等于所有系统已经交付。",
+  "body": "7 月 15 日，NVIDIA 把日本的机器人和制造业合作伙伴放进同一张“物理 AI”路线图里。这里的物理 AI 指的是让模型理解摄像头、传感器和三维环境，再把判断交给机器人、车辆或工厂设备执行；它比只在聊天窗口里生成文字多了一层现实世界的反馈和风险。\n\n公告的技术焦点是 Cosmos 3 Edge。NVIDIA 称这是一个约 40 亿参数的模型，可以在设备端做视觉推理，并把结果转成机器人策略，部署目标包括 Jetson Thor。官方还说，它可以在 RTX、DGX 和 Jetson T2000/T3000 等平台上运行，并用于对真实数据和模拟数据的理解。这里的“可以”描述的是产品能力和部署方向，不是某个工厂已经全面运行。\n\n日本企业的角色也不是简单采购 GPU。Fujitsu、FANUC、Yaskawa、Kawasaki 等公司被放在数字孪生、机器人学习和 sim-to-real 的协作链上：先在虚拟环境里生成或验证动作，再把通过检查的策略交给真实设备。NVIDIA 说多家企业“intend to join” Cosmos Coalition，说明公告记录的是加入意向和生态计划，后续仍要看合同、试点和实际部署。\n\n同一公告还提到 Metropolis 新库和编码代理，可以帮助开发者构建、训练和运行视频智能工作负载，并声称速度最高可提升 6 倍。这个数字属于 NVIDIA 的产品说法，读者需要进一步询问比较基线、任务类型和硬件条件，不能直接理解为所有视觉系统都快 6 倍。\n\n这条新闻的核心不在于模型参数有多大，而在于 AI 开始被安排到一条完整的设备链上：传感器采集环境，模型在边缘侧给出判断，仿真和数字孪生先检查动作，机器人再执行。任何一环的延迟、权限或失败回退没有被解决，模型再聪明也不能直接变成安全的工厂能力。",
+  "publishedAt": "2026-07-15",
+  "eventDate": "2026-07-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-cosmos3-edge-japan-physical-ai-20260715.svg",
+    "alt": "NVIDIA 把 Cosmos 3 Edge 带进日本物理 AI：4B 模型先在设备端看懂环境 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/nvidia-cosmos3-edge-japan-physical-ai-20260715.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "physical-ai",
+      "title": "物理 AI 面对的是会反应的世界",
+      "body": "模型要从摄像头和传感器理解环境，并把输出交给机器人或设备执行。环境会变化，动作会造成后果，所以还要有仿真、权限和回退。",
+      "kind": "narrative"
+    },
+    {
+      "id": "cosmos3-edge",
+      "title": "Cosmos 3 Edge 把推理放到设备附近",
+      "body": "NVIDIA 称 Cosmos 3 Edge 约 40 亿参数，面向设备端视觉推理和机器人策略部署，目标硬件包括 Jetson Thor。",
+      "kind": "technical"
+    },
+    {
+      "id": "sim-to-real",
+      "title": "数字孪生负责先试一遍",
+      "body": "日本合作方探索在数字孪生和模拟环境里训练、验证动作，再把更可靠的策略迁移到真实机器人；公告只描述方向和合作意向。",
+      "kind": "comparison"
+    },
+    {
+      "id": "ecosystem-intent",
+      "title": "“加入联盟意向”还不是交付证明",
+      "body": "FANUC、Fujitsu、Kawasaki、Yaskawa 等企业被列为生态伙伴或潜在参与者，后续是否落地要看具体试点、合同和部署证据。",
+      "kind": "boundary"
+    },
+    {
+      "id": "metropolis-agents",
+      "title": "视频智能也被纳入同一条工具链",
+      "body": "Metropolis 新库与编码代理面向视频智能的构建、训练和运行。公告里的 6 倍速度是厂商口径，应结合基线和硬件条件理解。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "robot-safety",
+    "title": "一个机器人动作怎样从视频变成可执行策略？",
+    "question": "把感知、推理、仿真和执行拆开，才能知道“设备端 AI”究竟新增了什么。",
+    "steps": [
+      {
+        "label": "采集环境",
+        "detail": "摄像头和传感器把工厂、道路或机器人周围的状态送进模型。",
+        "evidence": "NVIDIA"
+      },
+      {
+        "label": "边缘推理",
+        "detail": "Cosmos 3 Edge 在靠近设备的位置完成视觉理解，减少把每一帧都传到远端的需要。",
+        "evidence": "NVIDIA"
+      },
+      {
+        "label": "生成策略",
+        "detail": "模型把理解结果变成可供机器人控制器使用的动作候选。",
+        "evidence": "NVIDIA"
+      },
+      {
+        "label": "数字孪生验证",
+        "detail": "先在模拟环境里测试碰撞、路径和异常回退，再决定是否给真实设备。",
+        "evidence": "合作方向"
+      },
+      {
+        "label": "真实执行与回退",
+        "detail": "设备只在权限和安全条件满足时执行，遇到不确定状态要能停下或切回人工。",
+        "evidence": "工程边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Newsroom",
+    "url": "https://nvidianews.nvidia.com/news/japans-robotics-and-manufacturing-leaders-build-on-nvidia-cosmos-to-advance-physical-ai-frontier"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "eval",
+    "authorization",
+    "data-pipeline",
+    "distributed-system",
+    "event",
+    "citation"
+  ],
+  "relatedArticleSlugs": [
+    "nvidia-japan-national-ai-infrastructure-20260716"
+  ],
+  "sources": [
+    {
+      "url": "https://nvidianews.nvidia.com/news/japans-robotics-and-manufacturing-leaders-build-on-nvidia-cosmos-to-advance-physical-ai-frontier",
+      "claim": "NVIDIA 宣布日本机器人和制造企业围绕 Cosmos、Isaac、Metropolis 与 Jetson 推进物理 AI，并介绍 Cosmos 3 Edge。",
+      "excerpt": "Japan’s robotics and manufacturing leaders build on NVIDIA Cosmos to advance the physical AI frontier, 2026-07-15."
+    },
+    {
+      "url": "https://blogs.nvidia.com/blog/japan-ecosystem-2026/?preview_id=96071",
+      "claim": "NVIDIA 官方博客补充日本生态、数字孪生和机器人开发工具的背景。",
+      "excerpt": "NVIDIA Blog, Japan ecosystem and physical AI, 2026-07-15."
+    },
+    {
+      "url": "https://www.nvidia.com/en-us/robotics/isaac/",
+      "claim": "NVIDIA Isaac 官方产品页提供机器人仿真、训练与部署工具的产品背景。",
+      "excerpt": "NVIDIA Isaac robotics platform."
+    }
+  ],
+  "canonicalUrl": "https://nvidianews.nvidia.com/news/japans-robotics-and-manufacturing-leaders-build-on-nvidia-cosmos-to-advance-physical-ai-frontier",
+  "sourceHash": "sha256:971b6e507c618831f98d658acf7f059a3c8aab6a03a3d5b0f1c74c304c061946",
+  "status": "published",
+  "discoveredAt": "2026-10-04T09:15:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 agent 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 context 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 eval 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 authorization 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 data-pipeline 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "distributed-system",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 distributed-system 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 event 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.93,
+      "evidence": [
+        "正文解释了 citation 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://nvidianews.nvidia.com/news/japans-robotics-and-manufacturing-leaders-build-on-nvidia-cosmos-to-advance-physical-ai-frontier",
+      "claim": "NVIDIA 宣布日本机器人和制造企业围绕 Cosmos、Isaac、Metropolis 与 Jetson 推进物理 AI，并介绍 Cosmos 3 Edge。",
+      "excerpt": "Japan’s robotics and manufacturing leaders build on NVIDIA Cosmos to advance the physical AI frontier, 2026-07-15."
+    },
+    {
+      "url": "https://blogs.nvidia.com/blog/japan-ecosystem-2026/?preview_id=96071",
+      "claim": "NVIDIA 官方博客补充日本生态、数字孪生和机器人开发工具的背景。",
+      "excerpt": "NVIDIA Blog, Japan ecosystem and physical AI, 2026-07-15."
+    },
+    {
+      "url": "https://www.nvidia.com/en-us/robotics/isaac/",
+      "claim": "NVIDIA Isaac 官方产品页提供机器人仿真、训练与部署工具的产品背景。",
+      "excerpt": "NVIDIA Isaac robotics platform."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T09:15:00Z",
+    "method": "source",
+    "notes": "以 NVIDIA 新闻室公告为主，核对 Cosmos 3 Edge 的参数与目标设备、伙伴加入意向、Metropolis 速度说法；正文明确区分产品路线、意向和已交付系统。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T09:15:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 和 write-like-me 逐篇手写；将新闻事实、官方计划和媒体背景分开，等待读者复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T08:10:00Z",
+    "questions": [
+      "新闻主线优先，中文适合零基础读者，段落按事件组织，未见模板化表达或明显 AI 腔。",
+      "eventDate/publishedAt 均为 2026-07-15，且公告中的试点、加入意向、政策方向和后续计划边界清楚。",
+      "厂商规格/benchmark、WHO 调查比例及政府承诺均保留来源归属：Inkling 的检查点 benchmark、Cosmos 的 4B/最高 6 倍、WHO 的 37国/8% 和澳大利亚数据中心规则未被写成普遍已生效事实。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：四篇新闻事实、数字口径、计划与已执行边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-15",
+  "promotedAt": "2026-10-04T04:59:17.719Z"
+}
