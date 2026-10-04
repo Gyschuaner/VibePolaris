@@ -43,7 +43,10 @@ export function AgentMemoryLesson() {
         : scene.step >= 4 && !corrected
           ? "前置未满足：先让取回的偏好进入本轮，再纠正它。"
           : "";
-  const notice = prerequisiteWarning || (deleted
+  const awaitingDelete = scene.step === 5 && corrected && !deleted;
+  const notice = prerequisiteWarning || (awaitingDelete
+    ? "记录已经纠正；点击“删除记录”完成最后一步，当前记录仍然存在。"
+    : deleted
     ? "记录已从这个教学存储中删除；之前已经生成的回答不会被倒写。"
     : corrected
       ? "用户把偏好改成 Python；已经生成的 TypeScript 回复保持原样。"
