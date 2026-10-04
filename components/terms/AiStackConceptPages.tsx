@@ -42,6 +42,7 @@ import { InterpreterTermPage } from "./ai-stack-pages/interpreter";
 import { TranspilerTermPage } from "./ai-stack-pages/transpiler";
 import { BuildToolTermPage } from "./ai-stack-pages/build-tool";
 import { BundlerTermPage } from "./ai-stack-pages/bundler";
+import { DevServerTermPage } from "./ai-stack-pages/dev-server";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -86,6 +87,7 @@ export { InterpreterTermPage } from "./ai-stack-pages/interpreter";
 export { TranspilerTermPage } from "./ai-stack-pages/transpiler";
 export { BuildToolTermPage } from "./ai-stack-pages/build-tool";
 export { BundlerTermPage } from "./ai-stack-pages/bundler";
+export { DevServerTermPage } from "./ai-stack-pages/dev-server";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -132,4 +134,5 @@ export const aiStackArticlePages = {
   transpiler: TranspilerTermPage,
   "build-tool": BuildToolTermPage,
   bundler: BundlerTermPage,
+  "dev-server": DevServerTermPage,
 } as const;
