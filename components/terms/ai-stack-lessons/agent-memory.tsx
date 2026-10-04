@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, CheckCircle, Database, Eraser, LockSimple, MagnifyingGlass, PencilSimple, Wrench } from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle, Database, Eraser, LockSimple, MagnifyingGlass, PencilSimple, WarningCircle, Wrench } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../AiStackCoreConcepts.module.css";
@@ -34,7 +34,16 @@ export function AgentMemoryLesson() {
   const remove = () => { if (!canDelete) return; setDeleted(true); scene.seek(5); };
   const preference = corrected ? "Python" : "TypeScript";
   const recordLabel = deleted ? "已删除" : saved ? `${preference} · 用户同意 · 2026-10` : "空记录";
-  const notice = deleted
+  const prerequisiteWarning = !saved && scene.step > 0
+    ? "前置未满足：先点击“同意并保存”，再进入后续阶段。"
+    : scene.step >= 2 && !retrieved
+      ? "前置未满足：先在记忆库写入一条记录，再取回它。"
+      : scene.step >= 3 && !used
+        ? "前置未满足：记录已取回，但还没有带入本轮输入。"
+        : scene.step >= 4 && !corrected
+          ? "前置未满足：先让取回的偏好进入本轮，再纠正它。"
+          : "";
+  const notice = prerequisiteWarning || (deleted
     ? "记录已从这个教学存储中删除；之前已经生成的回答不会被倒写。"
     : corrected
       ? "用户把偏好改成 Python；已经生成的 TypeScript 回复保持原样。"
@@ -44,7 +53,7 @@ export function AgentMemoryLesson() {
           ? "记录已经取回，但还没有使用；取回不等于模型自动看见。"
           : saved
             ? "记录存在，但还没有出现在任何新会话里。"
-            : "应用先请求明确同意；当前聊天里的话不会悄悄变成长期记录。";
+            : "应用先请求明确同意；当前聊天里的话不会悄悄变成长期记录。");
 
   return <div className={styles.memoryLab} ref={scene.ref} role="region" aria-label="智能体记忆生命周期演示">
     <SceneControls scene={scene} labels={labels} />
@@ -64,6 +73,6 @@ export function AgentMemoryLesson() {
       <button type="button" onClick={correct} disabled={!canCorrect} aria-pressed={corrected}><Wrench size={16} aria-hidden="true" />纠正偏好</button>
       <button type="button" onClick={remove} disabled={!canDelete} aria-pressed={deleted}><Eraser size={16} aria-hidden="true" />删除记录</button>
     </div>
-    <p className={styles.memoryNotice} data-danger={scene.step === 5 && !deleted} role="status"><CheckCircle size={17} aria-hidden="true" /> {notice}</p>
+    <p className={styles.memoryNotice} data-danger={Boolean(prerequisiteWarning)} role="status">{prerequisiteWarning ? <WarningCircle size={17} aria-hidden="true" /> : <CheckCircle size={17} aria-hidden="true" />} {notice}</p>
   </div>;
 }
