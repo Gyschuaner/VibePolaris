@@ -467,12 +467,23 @@
   },
   {
     "slug": "cookie",
-    "mechanism": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的小数据，浏览器按匹配规则自动附到请求。",
-    "misconception": "Cookie 不只是前端存储；它会随请求发送。HttpOnly 只限制脚本读取，不会让 Cookie 自动免疫 CSRF。",
-    "demoSignature": "建议 5 帧：Cookie 罐中的每一行带 Domain、Path、Secure、SameSite 标签；用户切换请求域名、路径、HTTPS 和跨站场景，不满足条件的行被筛出请求头；打开 HttpOnly 后 document.cookie 读取按钮变灰，但符合条件的网络请求仍携带它。",
-    "sourceUrls": ["https://www.rfc-editor.org/rfc/rfc6265", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["auth", "local-storage", "session"]
+    "mechanism": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的候选值；浏览器把请求上下文与这些属性逐项比对，符合条件的名称和值才进入 Cookie 请求头。",
+    "misconception": "Cookie 不是只在页面里存着的小数据，它会随匹配请求发送。HttpOnly 只限制脚本读取，Secure 只限制发送线路，SameSite 也不替代 CSRF 防护。",
+    "demoSignature": "6帧｜对象：Cookie 罐中的 session、prefs、legacy 三行及各自属性｜交互：逐帧切换写入、同站 HTTPS、路径变化、跨站 POST、HTTP 和 document.cookie｜变化：命中的行进入请求头，不匹配的行留在罐中，HttpOnly 行只对脚本隐藏｜结果：读者能把保存、网络发送和脚本读取分成三件事。",
+    "sourceUrls": [
+      "https://www.rfc-editor.org/rfc/rfc6265",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie",
+      "https://pages.nist.gov/800-63-4/sp800-63b/session/",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html"
+    ],
+    "rewriteRisk": "高：容易把 Cookie 写成 localStorage 的替代品，必须拆开 Cookie 罐、请求筛选、脚本可见性和会话防护。",
+    "nearDuplicates": [
+      "auth",
+      "local-storage",
+      "session",
+      "response-header"
+    ]
   },
   {
     "slug": "local-storage",
@@ -485,21 +496,41 @@
   },
   {
     "slug": "websocket",
-    "mechanism": "客户端先通过 HTTP Upgrade 握手，随后在持久 TCP 连接上交换带边界的双向帧，并经历 CONNECTING/OPEN/CLOSING/CLOSED。",
-    "misconception": "WebSocket 不自动提供断线重连、消息确认和业务顺序；连接保持也不代表消息必达。",
-    "demoSignature": "建议 6 帧：WebSocket 状态机与客户端/服务器双向泳道联动；点击连接后从 CONNECTING 到 OPEN，消息双向穿行；拔网线进入 CLOSED，退避倒计时逐次拉长；恢复网络后携带 lastEventId 重连，遗漏的两条消息补入原顺序。",
-    "sourceUrls": ["https://www.rfc-editor.org/rfc/rfc6455", "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["event", "fetch-api", "queue"]
+    "mechanism": "WebSocket 先通过 HTTP Upgrade 建立连接，随后在同一条 TCP 通道上交换带边界的双向帧，并由浏览器 API 暴露 CONNECTING、OPEN、CLOSING、CLOSED 等状态。",
+    "misconception": "WebSocket 提供的是持续通道，不是完整的消息系统；它不自动重连、确认、补发、去重或保证业务顺序，连接保持也不等于消息必达。",
+    "demoSignature": "6帧｜对象：客户端、服务器、Upgrade 握手、双向帧、CLOSED、退避计时与 lastEventId 游标｜交互：从 CONNECTING 推到 OPEN，发送 #18，模拟断线，再以游标重连补回 #19/#20｜变化：通道从开放到关闭，恢复动作由应用协议显式补上｜结果：读者能区分 WebSocket 的传输边界和业务可靠性责任。",
+    "sourceUrls": [
+      "https://www.rfc-editor.org/rfc/rfc6455",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/Writing_WebSocket_client_applications",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket",
+      "https://www.rfc-editor.org/rfc/rfc8441"
+    ],
+    "rewriteRisk": "高：容易把长连接画成自动可靠队列，必须把 Upgrade、帧与消息分片、关闭状态和重连/补偿责任分开。",
+    "nearDuplicates": [
+      "event",
+      "fetch-api",
+      "queue",
+      "server-sent-events"
+    ]
   },
   {
     "slug": "cors",
-    "mechanism": "浏览器比较请求 origin 与目标 origin；非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应暴露给脚本。",
-    "misconception": "CORS 不是服务器防火墙或认证，命令行请求也不受浏览器同源读取限制；“关闭浏览器安全”不是修复。",
-    "demoSignature": "建议 6 帧：页面脚本、浏览器、跨域服务器三栏展开；用户选择非简单 method 或 header，浏览器先发送 OPTIONS 预检；服务器返回允许项后正式请求通过；删掉匹配的 ACAO 或 credentials 配置，响应抵达浏览器却被红色闸门挡在脚本外。",
-    "sourceUrls": ["https://fetch.spec.whatwg.org/#http-cors-protocol", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["fetch-api", "api", "auth"]
+    "mechanism": "浏览器把页面 origin 与目标 origin 比较；简单跨源请求可直接发出但仍要检查响应许可，非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 决定是否把响应暴露给脚本。",
+    "misconception": "CORS 不是认证、防火墙或服务器拒收机制。命令行可能拿到 200，浏览器也可能已经收到响应，却因为许可头不匹配而不让页面脚本读取。",
+    "demoSignature": "6帧｜对象：app.example 页面、api.example、浏览器 CORS 闸门与脚本结果｜交互：切换同源 GET、跨源 GET、PATCH+X-Trace 预检、许可通过、缺 ACAO、credentials + 通配来源｜变化：请求从直读变预检，响应从可读变脚本不可见，服务器到达和脚本暴露分开显示｜结果：读者能判断失败发生在请求前、预检后还是响应读取边界。",
+    "sourceUrls": [
+      "https://fetch.spec.whatwg.org/#http-cors-protocol",
+      "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/CORS",
+      "https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin"
+    ],
+    "rewriteRisk": "高：容易把‘跨域失败’写成请求没有到达服务器，必须把 origin、预检、响应暴露和凭据冲突拆开。",
+    "nearDuplicates": [
+      "fetch-api",
+      "api",
+      "auth",
+      "cookie"
+    ]
   },
   {
     "slug": "focus-management",

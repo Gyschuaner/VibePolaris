@@ -7867,199 +7867,297 @@
   },
   {
     "slug": "cookie",
-    "lead": "登录后刷新页面，服务器怎样继续识别当前会话？",
-    "definition": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的小数据，浏览器按匹配规则自动附到请求。",
-    "boundary": "Cookie 不只是前端存储；它会随请求发送。HttpOnly 只限制脚本读取，不会让 Cookie 自动免疫 CSRF。",
+    "lead": "登录后刷新页面，服务器怎样继续认出当前会话？",
+    "definition": "本页把 Cookie 拆成三步：服务器用 Set-Cookie 写入，浏览器按请求上下文筛选，符合条件的名称和值进入 Cookie 请求头；HttpOnly 再把脚本读取单独关掉。",
+    "boundary": "Cookie 不是页面私藏，也不自动等于安全会话。属性会影响发送和读取，但授权、会话轮换、CSRF 与 XSS 防护仍由系统负责。",
     "sceneKind": "contract",
-    "sceneTitle": "一条 Cookie 在什么请求条件下会被携带",
+    "sceneTitle": "一条 Cookie 在什么条件下会被带出罐子",
     "actionLabel": "改变请求条件",
     "actors": [
       {
-        "id": "cookie",
-        "label": "会话 Cookie",
-        "detail": "Domain / Path / Secure / SameSite",
+        "id": "cookie-jar",
+        "label": "Cookie 罐",
+        "detail": "session · prefs · legacy",
         "icon": "key",
         "group": "存储"
       },
       {
-        "id": "request",
-        "label": "页面请求",
-        "detail": "域名、路径、上下文",
+        "id": "request-context",
+        "label": "请求上下文",
+        "detail": "域名 · 路径 · 协议 · 站点",
         "icon": "network",
         "group": "输入"
       },
       {
-        "id": "browser",
-        "label": "浏览器筛选器",
-        "detail": "逐项检查属性",
+        "id": "browser-filter",
+        "label": "浏览器筛选",
+        "detail": "逐项比对属性",
         "icon": "browser",
         "group": "判断"
       },
       {
-        "id": "header",
+        "id": "cookie-header",
         "label": "Cookie 请求头",
-        "detail": "是否携带",
+        "detail": "命中值才出门",
         "icon": "message",
-        "group": "结果"
+        "group": "网络"
       },
       {
-        "id": "script",
-        "label": "页面脚本",
+        "id": "script-window",
+        "label": "脚本窗口",
         "detail": "document.cookie",
         "icon": "code",
         "group": "读取"
+      },
+      {
+        "id": "blocked",
+        "label": "留在罐中",
+        "detail": "条件不匹配",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "cookie-browser",
-        "from": "cookie",
-        "to": "browser",
+        "id": "jar-filter",
+        "from": "cookie-jar",
+        "to": "browser-filter",
         "label": "提供候选"
       },
       {
-        "id": "request-browser",
-        "from": "request",
-        "to": "browser",
+        "id": "context-filter",
+        "from": "request-context",
+        "to": "browser-filter",
         "label": "提供条件"
       },
       {
-        "id": "browser-header",
-        "from": "browser",
-        "to": "header",
+        "id": "filter-header",
+        "from": "browser-filter",
+        "to": "cookie-header",
         "label": "满足才发送"
       },
       {
-        "id": "cookie-script",
-        "from": "cookie",
-        "to": "script",
+        "id": "filter-blocked",
+        "from": "browser-filter",
+        "to": "blocked",
+        "label": "不匹配留下"
+      },
+      {
+        "id": "jar-script",
+        "from": "cookie-jar",
+        "to": "script-window",
         "label": "非 HttpOnly 才可读"
       }
     ],
     "frames": [
       {
-        "label": "同站 HTTPS 请求",
-        "note": "域名、路径、Secure 和 SameSite 条件都满足，Cookie 进入请求头。",
+        "label": "Set-Cookie 写入",
+        "note": "服务器提交一条候选，浏览器把 session=R7 连同属性放进罐子。",
         "activeIds": [
-          "cookie",
-          "request",
-          "browser",
-          "header"
+          "cookie-jar",
+          "request-context"
         ],
         "doneIds": [
-          "request"
+          "cookie-jar"
         ],
         "mutedIds": [
-          "script"
+          "browser-filter",
+          "cookie-header",
+          "script-window",
+          "blocked"
         ],
         "values": {
-          "header": "session=abc"
+          "cookie-jar": "session=R7 · stored"
         },
         "activeEdgeIds": [
-          "cookie-browser",
-          "request-browser",
-          "browser-header"
+          "jar-filter"
+        ]
+      },
+      {
+        "label": "同站 HTTPS",
+        "note": "GET /account 满足路径、协议和站点条件，session 与 prefs 进入 Cookie 头。",
+        "activeIds": [
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "cookie-header"
+        ],
+        "doneIds": [
+          "cookie-header"
+        ],
+        "mutedIds": [
+          "script-window",
+          "blocked"
+        ],
+        "values": {
+          "request-context": "https://app.example/account",
+          "cookie-header": "session=R7; prefs=dark"
+        },
+        "activeEdgeIds": [
+          "jar-filter",
+          "context-filter",
+          "filter-header"
         ]
       },
       {
         "label": "路径不匹配",
-        "note": "把请求改到 /public，Path=/account 不满足，Cookie 留在浏览器。",
+        "note": "请求改到 /public，session 留在罐子里，prefs 仍可按 Path=/ 命中。",
         "activeIds": [
-          "request",
-          "browser",
-          "cookie"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "header",
-          "script"
-        ],
-        "values": {
-          "header": "未携带"
-        },
-        "activeEdgeIds": [
-          "cookie-browser",
-          "request-browser"
-        ]
-      },
-      {
-        "label": "跨站条件限制",
-        "note": "切成跨站子请求，SameSite=Lax 使会话 Cookie 不进入请求头。",
-        "activeIds": [
-          "request",
-          "browser",
-          "cookie"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "header",
-          "script"
-        ],
-        "values": {
-          "request": "cross-site",
-          "header": "未携带"
-        },
-        "activeEdgeIds": [
-          "cookie-browser",
-          "request-browser"
-        ]
-      },
-      {
-        "label": "HttpOnly 只限制脚本读取",
-        "note": "回到同站请求并打开 HttpOnly，网络仍携带 Cookie，document.cookie 不再读到它。",
-        "activeIds": [
-          "cookie",
-          "browser",
-          "header",
-          "script"
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "blocked",
+          "cookie-header"
         ],
         "doneIds": [
-          "request"
+          "blocked",
+          "cookie-header"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "script-window"
+        ],
         "values": {
-          "header": "session=abc",
-          "script": "不可见"
+          "request-context": "GET /public",
+          "blocked": "session stays",
+          "cookie-header": "prefs=dark"
         },
         "activeEdgeIds": [
-          "browser-header"
+          "jar-filter",
+          "context-filter",
+          "filter-blocked",
+          "filter-header"
+        ]
+      },
+      {
+        "label": "跨站 POST",
+        "note": "SameSite=Lax 限制从 news.example 发出的跨站 POST，session 不进请求头。",
+        "activeIds": [
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "blocked"
+        ],
+        "doneIds": [
+          "blocked"
+        ],
+        "mutedIds": [
+          "cookie-header",
+          "script-window"
+        ],
+        "values": {
+          "request-context": "cross-site POST",
+          "blocked": "SameSite blocked",
+          "cookie-header": "0 cookies"
+        },
+        "activeEdgeIds": [
+          "jar-filter",
+          "context-filter",
+          "filter-blocked"
+        ]
+      },
+      {
+        "label": "降到 HTTP",
+        "note": "Secure Cookie 仍在罐里，但不会随 http://app.example 这条明文线路发送。",
+        "activeIds": [
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "blocked"
+        ],
+        "doneIds": [
+          "blocked"
+        ],
+        "mutedIds": [
+          "cookie-header",
+          "script-window"
+        ],
+        "values": {
+          "request-context": "http://app.example/account",
+          "blocked": "Secure blocked",
+          "cookie-header": "0 cookies"
+        },
+        "activeEdgeIds": [
+          "jar-filter",
+          "context-filter",
+          "filter-blocked"
+        ]
+      },
+      {
+        "label": "脚本来读取",
+        "note": "document.cookie 只看到 prefs；同一时刻合规网络请求仍可以携带 HttpOnly session。",
+        "activeIds": [
+          "cookie-jar",
+          "browser-filter",
+          "cookie-header",
+          "script-window"
+        ],
+        "doneIds": [
+          "script-window",
+          "cookie-header"
+        ],
+        "mutedIds": [
+          "request-context",
+          "blocked"
+        ],
+        "values": {
+          "script-window": "prefs=dark",
+          "cookie-header": "session=R7 still sent"
+        },
+        "activeEdgeIds": [
+          "jar-script",
+          "filter-header"
         ]
       }
     ],
-    "insight": "Cookie 是否发送由请求条件和属性共同决定，HttpOnly 只切断脚本读取，不切断合规网络请求。",
+    "insight": "保存、网络发送和脚本读取是三件事；Cookie 属性分别参与其中，不能把它们压成一个‘能不能用’开关。",
     "quiz": {
-      "question": "要阻止页面 JavaScript 读取会话 Cookie，应设置什么？",
+      "question": "HttpOnly 的直接作用是什么？",
       "options": [
         {
-          "label": "HttpOnly",
+          "label": "阻止页面脚本通过 document.cookie 读取",
           "correct": true
         },
         {
-          "label": "display: none",
+          "label": "阻止所有网络请求携带 Cookie",
           "correct": false
         },
         {
-          "label": "localStorage",
+          "label": "替服务器完成 CSRF 防护",
           "correct": false
         }
       ],
-      "success": "HttpOnly Cookie 不向 document.cookie 暴露。",
-      "retry": "CSS 和 localStorage 不能为 Cookie 提供这项限制。"
+      "success": "HttpOnly 只切断脚本读取，网络发送仍看请求上下文。",
+      "retry": "把脚本窗口与 Cookie 请求头分开看。"
     },
     "prompt": {
-      "title": "检查 Cookie 的安全属性",
-      "text": "请检查下面 Set-Cookie 配置，根据登录会话、跨站请求和 HTTPS 条件说明 HttpOnly、Secure、SameSite、Path 与有效期应如何设置。"
+      "title": "核对一条会话 Cookie",
+      "text": "请记录 Set-Cookie 属性、实际请求上下文、Cookie 请求头和 document.cookie 可见值，并检查过期、轮换、CSRF 与 XSS 风险。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc6265",
-        "label": "RFC Editor",
-        "note": "协议定义与报文语义"
+        "label": "RFC 6265 · HTTP State Management",
+        "note": "Cookie 存储、匹配和 Cookie 头"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · Using HTTP cookies",
+        "note": "Domain、Path、Secure、SameSite 与 HttpOnly"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie",
+        "label": "MDN · Cookie header",
+        "note": "请求头中的 Cookie 名称和值"
+      },
+      {
+        "url": "https://pages.nist.gov/800-63-4/sp800-63b/session/",
+        "label": "NIST · Session Management",
+        "note": "会话有效期、轮换与撤销"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+        "label": "OWASP · Session Management",
+        "note": "会话凭据与 CSRF/XSS 防护边界"
       }
     ]
   },
@@ -8257,93 +8355,113 @@
   },
   {
     "slug": "websocket",
-    "lead": "聊天页面怎样在没有反复刷新时立即收到新消息？",
-    "definition": "客户端先通过 HTTP Upgrade 握手，随后在持久 TCP 连接上交换带边界的双向帧，并经历 CONNECTING/OPEN/CLOSING/CLOSED。",
-    "boundary": "WebSocket 不自动提供断线重连、消息确认和业务顺序；连接保持也不代表消息必达。",
+    "lead": "聊天页面怎样不用反复刷新，也能立即收到服务器的新消息？",
+    "definition": "本页把 WebSocket 拆成六步：HTTP Upgrade、OPEN 双向帧、消息重组、连接关闭、应用退避和带游标的补偿重连。",
+    "boundary": "WebSocket 是长连接通道，不自动提供消息确认、重连、去重、顺序或授权；这些规则要由应用协议写清楚。",
     "sceneKind": "state-machine",
-    "sceneTitle": "长连接断开后如何退避重连并补回消息",
-    "actionLabel": "切换网络连接",
+    "sceneTitle": "一条实时通道断开后如何恢复消息",
+    "actionLabel": "推进连接状态",
     "actors": [
       {
-        "id": "client",
+        "id": "ws-client",
         "label": "浏览器客户端",
         "detail": "lastEventId=18",
         "icon": "browser",
         "group": "客户端"
       },
       {
-        "id": "socket",
+        "id": "ws-socket",
         "label": "WebSocket",
-        "detail": "CONNECTING",
+        "detail": "CONNECTING / OPEN / CLOSED",
         "icon": "network",
         "group": "连接状态"
       },
       {
-        "id": "server",
+        "id": "ws-server",
         "label": "消息服务器",
         "detail": "保存序号 19、20",
         "icon": "server",
         "group": "服务端"
       },
       {
-        "id": "backoff",
-        "label": "重连计时",
+        "id": "ws-backoff",
+        "label": "退避计时",
         "detail": "1s → 2s → 4s",
         "icon": "clock",
         "group": "恢复"
       },
       {
-        "id": "messages",
+        "id": "ws-messages",
         "label": "消息列表",
         "detail": "按序显示",
         "icon": "message",
         "group": "结果"
+      },
+      {
+        "id": "ws-gap",
+        "label": "遗漏窗口",
+        "detail": "等待补发",
+        "icon": "package",
+        "group": "边界"
       }
     ],
     "edges": [
       {
         "id": "client-socket",
-        "from": "client",
-        "to": "socket",
-        "label": "建立连接"
+        "from": "ws-client",
+        "to": "ws-socket",
+        "label": "Upgrade / 连接"
       },
       {
         "id": "socket-server",
-        "from": "socket",
-        "to": "server",
-        "label": "双向通道"
+        "from": "ws-socket",
+        "to": "ws-server",
+        "label": "双向帧"
       },
       {
         "id": "socket-backoff",
-        "from": "socket",
-        "to": "backoff",
-        "label": "断开后计时"
+        "from": "ws-socket",
+        "to": "ws-backoff",
+        "label": "关闭后计时"
       },
       {
         "id": "server-messages",
-        "from": "server",
-        "to": "messages",
-        "label": "发送消息"
+        "from": "ws-server",
+        "to": "ws-messages",
+        "label": "发送事件"
+      },
+      {
+        "id": "server-gap",
+        "from": "ws-server",
+        "to": "ws-gap",
+        "label": "保留遗漏"
+      },
+      {
+        "id": "gap-messages",
+        "from": "ws-gap",
+        "to": "ws-messages",
+        "label": "游标补发"
       }
     ],
     "frames": [
       {
-        "label": "连接从建立到开放",
-        "note": "客户端发起握手，状态从 CONNECTING 变为 OPEN，双向通道可用。",
+        "label": "HTTP Upgrade",
+        "note": "客户端提出 Upgrade，服务器返回 101；业务消息还没有出发。",
         "activeIds": [
-          "client",
-          "socket",
-          "server"
+          "ws-client",
+          "ws-socket",
+          "ws-server"
         ],
         "doneIds": [
-          "client"
+          "ws-client"
         ],
         "mutedIds": [
-          "backoff",
-          "messages"
+          "ws-backoff",
+          "ws-messages",
+          "ws-gap"
         ],
         "values": {
-          "socket": "OPEN"
+          "ws-socket": "CONNECTING"
         },
         "activeEdgeIds": [
           "client-socket",
@@ -8351,21 +8469,50 @@
         ]
       },
       {
-        "label": "消息即时到达",
-        "note": "服务器发送序号 18，列表追加一条，lastEventId 同步更新。",
+        "label": "通道开放",
+        "note": "101 握手完成，状态进入 OPEN；连接先等第一帧，应用还没有收到业务事件。",
         "activeIds": [
-          "server",
-          "socket",
-          "messages",
-          "client"
+          "ws-client",
+          "ws-socket",
+          "ws-server"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "ws-socket"
+        ],
         "mutedIds": [
-          "backoff"
+          "ws-backoff",
+          "ws-messages",
+          "ws-gap"
         ],
         "values": {
-          "messages": "#18",
-          "client": "lastEventId=18"
+          "ws-socket": "OPEN",
+          "ws-messages": "waiting first frame"
+        },
+        "activeEdgeIds": [
+          "client-socket",
+          "socket-server"
+        ]
+      },
+      {
+        "label": "帧双向流动",
+        "note": "OPEN 通道让服务器主动推送 #18，客户端列表追加一条。",
+        "activeIds": [
+          "ws-client",
+          "ws-socket",
+          "ws-server",
+          "ws-messages"
+        ],
+        "doneIds": [
+          "ws-messages"
+        ],
+        "mutedIds": [
+          "ws-backoff",
+          "ws-gap"
+        ],
+        "values": {
+          "ws-socket": "OPEN",
+          "ws-messages": "#18",
+          "ws-client": "lastEventId=18"
         },
         "activeEdgeIds": [
           "socket-server",
@@ -8373,45 +8520,51 @@
         ]
       },
       {
-        "label": "网络断开",
-        "note": "连接进入 CLOSED，服务器随后产生的 19、20 暂时没有到达客户端。",
+        "label": "连接断开",
+        "note": "网络断开后进入 CLOSED，服务器产生的 #19、#20 暂时没有到达客户端。",
         "activeIds": [
-          "socket",
-          "server",
-          "backoff"
+          "ws-socket",
+          "ws-server",
+          "ws-gap",
+          "ws-backoff"
         ],
         "doneIds": [
-          "client"
+          "ws-gap"
         ],
         "mutedIds": [
-          "messages"
+          "ws-client",
+          "ws-messages"
         ],
         "values": {
-          "socket": "CLOSED",
-          "backoff": "1 s",
-          "server": "待补 #19 #20"
+          "ws-socket": "CLOSED",
+          "ws-gap": "#19 · #20 waiting",
+          "ws-backoff": "1s"
         },
         "activeEdgeIds": [
-          "socket-backoff"
+          "socket-backoff",
+          "server-gap"
         ]
       },
       {
-        "label": "退避后重连",
-        "note": "第一次重连失败，计时从 1s 增到 2s；下一次成功后发送 lastEventId=18。",
+        "label": "退避重连",
+        "note": "第一次重连失败，计时从 1s 增到 2s；成功后带着 lastEventId=18 回到服务器。",
         "activeIds": [
-          "client",
-          "socket",
-          "server",
-          "backoff"
+          "ws-client",
+          "ws-socket",
+          "ws-server",
+          "ws-backoff"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "ws-backoff"
+        ],
         "mutedIds": [
-          "messages"
+          "ws-messages",
+          "ws-gap"
         ],
         "values": {
-          "socket": "OPEN",
-          "backoff": "reset",
-          "client": "resume after 18"
+          "ws-socket": "OPEN",
+          "ws-client": "resume after 18",
+          "ws-backoff": "reset"
         },
         "activeEdgeIds": [
           "client-socket",
@@ -8419,90 +8572,107 @@
         ]
       },
       {
-        "label": "补回遗漏消息",
-        "note": "服务器按序补发 19、20，列表没有缺口，lastEventId 到 20。",
+        "label": "恢复缺口",
+        "note": "服务器按序补发 19、20，客户端去重后把列表接回 #18。",
         "activeIds": [
-          "server",
-          "messages",
-          "client"
+          "ws-server",
+          "ws-gap",
+          "ws-messages",
+          "ws-client"
         ],
         "doneIds": [
-          "socket",
-          "backoff"
+          "ws-messages",
+          "ws-gap"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "ws-socket",
+          "ws-backoff"
+        ],
         "values": {
-          "messages": "#18 · #19 · #20",
-          "client": "lastEventId=20"
+          "ws-gap": "replay #19 #20",
+          "ws-messages": "#18 · #19 · #20",
+          "ws-client": "lastEventId=20"
         },
         "activeEdgeIds": [
+          "server-gap",
+          "gap-messages",
           "server-messages"
         ]
       }
     ],
-    "insight": "WebSocket 提供长连接通道，断线重连、退避和消息补偿仍要由应用协议明确处理。",
+    "insight": "WebSocket 让消息实时抵达，却不替应用保管断线期间的历史；游标、退避和补发才把通道接成可恢复的业务流。",
     "quiz": {
-      "question": "WebSocket 连接断开后，应用通常还需自行处理什么？",
+      "question": "WebSocket 连接关闭后，哪项通常需要应用自己定义？",
       "options": [
         {
-          "label": "重连与消息恢复",
+          "label": "重连、退避和遗漏消息恢复",
           "correct": true
         },
         {
-          "label": "CSS 选择器优先级",
+          "label": "浏览器自动补发所有帧",
           "correct": false
         },
         {
-          "label": "HTML 标题层级",
+          "label": "CSS 重新选择服务器",
           "correct": false
         }
       ],
-      "success": "实时应用要定义重连、退避和遗漏消息的恢复方式。",
-      "retry": "样式与文档结构不能恢复网络连接。"
+      "success": "长连接结束后，恢复责任回到客户端和服务器的应用协议。",
+      "retry": "通道状态和业务消息恢复不是同一件事。"
     },
     "prompt": {
-      "title": "补全实时连接的异常处理",
-      "text": "请为下面 WebSocket 客户端补充连接状态、指数退避重连、重复消息去重和页面离开时关闭连接，并说明断线期间的用户提示。"
+      "title": "检查一条实时连接",
+      "text": "请记录 Upgrade/101、连接状态、帧方向、关闭原因、重连退避、游标、去重和补发窗口，判断缺口发生在网络还是应用协议。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc6455",
-        "label": "RFC Editor",
-        "note": "协议定义与报文语义"
+        "label": "RFC 6455 · WebSocket Protocol",
+        "note": "Upgrade、帧、状态和关闭"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/Writing_WebSocket_client_applications",
+        "label": "MDN · Writing WebSocket client applications",
+        "note": "浏览器客户端、消息和重连责任"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · WebSocket",
+        "note": "readyState、send 与 bufferedAmount"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8441",
+        "label": "RFC 8441 · Bootstrapping WebSockets with HTTP/2",
+        "note": "HTTP/2 extended CONNECT 建连方式"
       }
     ]
   },
   {
     "slug": "cors",
-    "lead": "接口在命令行能访问，为什么浏览器页面却提示被跨源策略拦截？",
-    "definition": "浏览器比较请求 origin 与目标 origin；非简单请求先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应暴露给脚本。",
-    "boundary": "CORS 不是服务器防火墙或认证，命令行请求也不受浏览器同源读取限制；“关闭浏览器安全”不是修复。",
+    "lead": "接口在命令行能访问，为什么浏览器页面却只能看到一条 CORS 错误？",
+    "definition": "本页把 CORS 拆成浏览器的三道门：先比较 origin，非简单请求先走 OPTIONS 预检，再检查响应许可头，最后决定响应是否向脚本开放。",
+    "boundary": "CORS 不是认证、防火墙或服务器拒收。服务器可能已收到并处理请求，命令行也可能读到 body；这条规则只约束浏览器脚本的跨源读取。",
     "sceneKind": "contract",
-    "sceneTitle": "浏览器为何允许服务器响应却不让页面脚本读取",
-    "actionLabel": "修改跨域请求",
+    "sceneTitle": "浏览器为何允许响应到达，却不让脚本读取",
+    "actionLabel": "改变跨源请求",
     "actors": [
       {
-        "id": "script",
+        "id": "page-script",
         "label": "页面脚本",
         "detail": "https://app.example",
         "icon": "code",
         "group": "发起方"
       },
       {
-        "id": "browser",
-        "label": "浏览器 CORS 检查",
-        "detail": "预检与响应头",
+        "id": "cors-browser",
+        "label": "浏览器闸门",
+        "detail": "origin · preflight · exposure",
         "icon": "browser",
         "group": "执行方"
       },
       {
-        "id": "api",
-        "label": "跨域 API",
+        "id": "api-server",
+        "label": "跨源 API",
         "detail": "https://api.example",
         "icon": "server",
         "group": "接收方"
@@ -8510,68 +8680,130 @@
       {
         "id": "preflight",
         "label": "OPTIONS 预检",
-        "detail": "method 与 headers",
+        "detail": "method · headers",
         "icon": "message",
         "group": "协商"
       },
       {
-        "id": "response",
-        "label": "脚本可见响应",
-        "detail": "允许或拦截",
+        "id": "script-result",
+        "label": "脚本结果",
+        "detail": "readable / blocked",
         "icon": "shield",
         "group": "结果"
+      },
+      {
+        "id": "network-result",
+        "label": "网络结果",
+        "detail": "server received",
+        "icon": "package",
+        "group": "边界"
       }
     ],
     "edges": [
       {
         "id": "script-browser",
-        "from": "script",
-        "to": "browser",
+        "from": "page-script",
+        "to": "cors-browser",
         "label": "发起 fetch"
       },
       {
         "id": "browser-preflight",
-        "from": "browser",
+        "from": "cors-browser",
         "to": "preflight",
         "label": "需要时预检"
       },
       {
         "id": "preflight-api",
         "from": "preflight",
-        "to": "api",
+        "to": "api-server",
         "label": "询问许可"
       },
       {
         "id": "browser-api",
-        "from": "browser",
-        "to": "api",
+        "from": "cors-browser",
+        "to": "api-server",
         "label": "正式请求"
       },
       {
-        "id": "browser-response",
-        "from": "browser",
-        "to": "response",
-        "label": "决定脚本可见性"
+        "id": "api-network",
+        "from": "api-server",
+        "to": "network-result",
+        "label": "响应到达"
+      },
+      {
+        "id": "browser-script",
+        "from": "cors-browser",
+        "to": "script-result",
+        "label": "决定暴露"
       }
     ],
     "frames": [
       {
-        "label": "非简单请求先预检",
-        "note": "脚本使用 PATCH 和自定义头，浏览器先发 OPTIONS，不让脚本直接越过检查。",
+        "label": "同源直读",
+        "note": "页面与 API 同源，浏览器不需要 CORS 许可头来开放脚本读取。",
         "activeIds": [
-          "script",
-          "browser",
+          "page-script",
+          "cors-browser",
+          "api-server",
+          "script-result"
+        ],
+        "doneIds": [
+          "script-result"
+        ],
+        "mutedIds": [
+          "preflight",
+          "network-result"
+        ],
+        "values": {
+          "script-result": "200 · readable"
+        },
+        "activeEdgeIds": [
+          "script-browser",
+          "browser-api",
+          "browser-script"
+        ]
+      },
+      {
+        "label": "跨源先比较 origin",
+        "note": "app.example 和 api.example 不同，浏览器进入 CORS 处理，但还没有决定是否预检。",
+        "activeIds": [
+          "page-script",
+          "cors-browser",
+          "api-server"
+        ],
+        "doneIds": [
+          "page-script"
+        ],
+        "mutedIds": [
+          "preflight",
+          "script-result",
+          "network-result"
+        ],
+        "values": {
+          "cors-browser": "Origin mismatch"
+        },
+        "activeEdgeIds": [
+          "script-browser"
+        ]
+      },
+      {
+        "label": "非简单请求先预检",
+        "note": "PATCH 加自定义头会先发 OPTIONS，正式请求等服务器许可。",
+        "activeIds": [
+          "page-script",
+          "cors-browser",
           "preflight"
         ],
         "doneIds": [
-          "script"
+          "page-script"
         ],
         "mutedIds": [
-          "api",
-          "response"
+          "api-server",
+          "script-result",
+          "network-result"
         ],
         "values": {
-          "preflight": "PATCH · X-Trace"
+          "preflight": "OPTIONS · PATCH · X-Trace"
         },
         "activeEdgeIds": [
           "script-browser",
@@ -8579,105 +8811,127 @@
         ]
       },
       {
-        "label": "服务器声明允许项",
-        "note": "API 返回匹配的 Origin、Methods 和 Headers，预检通过。",
+        "label": "许可通过后正式请求",
+        "note": "服务器返回匹配的来源、方法和请求头，浏览器发送 PATCH 并开放响应。",
         "activeIds": [
           "preflight",
-          "api",
-          "browser"
+          "api-server",
+          "cors-browser",
+          "script-result"
         ],
         "doneIds": [
-          "script",
-          "preflight"
+          "preflight",
+          "script-result"
         ],
         "mutedIds": [
-          "response"
+          "network-result"
         ],
         "values": {
-          "api": "ACAO=app.example · PATCH allowed"
+          "api-server": "ACAO=app.example",
+          "script-result": "200 · readable"
         },
         "activeEdgeIds": [
-          "preflight-api"
+          "preflight-api",
+          "browser-api",
+          "browser-script"
         ]
       },
       {
-        "label": "正式请求与脚本读取",
-        "note": "浏览器发送 PATCH，收到响应后把内容交给页面脚本。",
+        "label": "响应到达但脚本不可读",
+        "note": "删掉 ACAO 后，网络结果仍是 200，脚本结果变成 CORS blocked。",
         "activeIds": [
-          "browser",
-          "api",
-          "response",
-          "script"
+          "api-server",
+          "network-result",
+          "cors-browser",
+          "script-result"
         ],
         "doneIds": [
+          "network-result"
+        ],
+        "mutedIds": [
+          "page-script",
           "preflight"
         ],
-        "mutedIds": [],
         "values": {
-          "response": "200 · readable"
+          "network-result": "200 · received",
+          "script-result": "blocked"
         },
         "activeEdgeIds": [
           "browser-api",
-          "browser-response"
+          "api-network",
+          "browser-script"
         ]
       },
       {
-        "label": "许可头不匹配",
-        "note": "删除允许来源后，API 仍返回 200，但浏览器不把响应暴露给脚本。",
+        "label": "凭据与通配来源冲突",
+        "note": "credentials: include 需要明确来源；ACAO=* 不能替代它，读取在浏览器闸门停止。",
         "activeIds": [
-          "api",
-          "browser",
-          "response"
+          "page-script",
+          "cors-browser",
+          "api-server",
+          "script-result"
         ],
         "doneIds": [
-          "preflight"
+          "api-server"
         ],
         "mutedIds": [
-          "script"
+          "preflight",
+          "network-result"
         ],
         "values": {
-          "api": "200",
-          "response": "CORS blocked"
+          "api-server": "ACAO=*",
+          "script-result": "credential error"
         },
         "activeEdgeIds": [
-          "browser-api"
+          "script-browser",
+          "browser-script"
         ]
       }
     ],
-    "insight": "CORS 是浏览器执行的响应读取规则，不是服务器是否收到请求的网络开关。",
+    "insight": "CORS 把‘服务器收到响应’和‘页面脚本能读响应’拆开；预检、许可头和凭据模式决定浏览器最后开放哪一边。",
     "quiz": {
-      "question": "CORS 允许来源通常由谁配置？",
+      "question": "非简单 PATCH 请求通常先发生什么？",
       "options": [
         {
-          "label": "接口服务器",
+          "label": "浏览器发送 OPTIONS 预检",
           "correct": true
         },
         {
-          "label": "访问页面的 CSS",
+          "label": "页面脚本直接读取响应 body",
           "correct": false
         },
         {
-          "label": "用户的显示器",
+          "label": "服务器自动完成用户认证",
           "correct": false
         }
       ],
-      "success": "服务器通过响应头声明允许的跨源访问条件。",
-      "retry": "页面样式和硬件不会生成 CORS 响应头。"
+      "success": "预检先询问方法和请求头的许可，正式请求随后才出发。",
+      "retry": "把跨源判断、预检和脚本暴露分成三个阶段。"
     },
     "prompt": {
-      "title": "定位一次 CORS 失败",
-      "text": "请根据下面请求来源、方法、请求头和响应头判断是否触发预检，指出缺少或冲突的 CORS 配置。不要用关闭浏览器安全策略作为解决方案。"
+      "title": "排查一次浏览器跨源读取",
+      "text": "请记录页面 origin、目标 origin、请求方法和头、凭据模式、OPTIONS 预检、正式响应及 Access-Control-Allow-*，指出请求到达和脚本可见分别在哪里结束。"
     },
     "sources": [
       {
         "url": "https://fetch.spec.whatwg.org/#http-cors-protocol",
         "label": "WHATWG · Fetch Standard",
-        "note": "Fetch 标准行为"
+        "note": "CORS 协议、预检、响应暴露与凭据"
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/CORS",
+        "label": "MDN · CORS configuration",
+        "note": "服务器许可头和浏览器行为"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request",
+        "label": "MDN · Preflight request",
+        "note": "OPTIONS 预检条件与缓存"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSMissingAllowOrigin",
+        "label": "MDN · Missing Allow-Origin",
+        "note": "响应到达但脚本读取失败"
       }
     ]
   },
