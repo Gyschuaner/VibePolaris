@@ -39,7 +39,7 @@ export function CompilerLesson() {
         {index > 0 && <ArrowRight className={styles.pipelineArrow} size={18} aria-hidden="true" />}
         <span className={`${styles.compilerNode} ${index < visibleCount ? styles.stageDone : ""} ${isFailure && index === current.failureAt ? styles.compilerFailure : ""}`}>
           {isFailure && index === current.failureAt ? <Warning size={23} /> : index < visibleCount ? <CheckCircle size={23} /> : <FileCode size={23} />}
-          <span>{stage.label}</span><code>{isFailure && index === current.failureAt ? (selected === "syntax" ? "解析失败" : "运行错误") : index === 0 ? current.source : index < visibleCount ? stage.value : "等待上一步"}</code>
+          <span>{stage.label}</span><code>{isFailure && index === current.failureAt ? (selected === "syntax" ? "解析失败" : selected === "target" ? "目标不匹配" : "运行错误") : index === 0 ? current.source : index < visibleCount ? stage.value : "等待上一步"}</code>
         </span>
       </span>)}
     </div>
