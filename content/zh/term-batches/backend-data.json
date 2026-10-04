@@ -686,10 +686,10 @@
   {
     "zh": "IP 地址", "en": "IP Address", "slug": "ip-address", "cat": "技术栈",
     "say": "网络中用来标识接口并帮助数据包找到目标的数字地址。", "aliases": ["互联网协议地址", "网络地址", "IP"],
-    "question": "浏览器知道域名以后，怎样找到对应服务器？", "definition": "IP 地址标识网络接口所在的位置，路由设备据此转发数据包。", "boundary": "IP 地址不一定永久对应一台设备，也不能单独证明某个用户身份。",
-    "demoType": "flow", "demoTitle": "域名怎样变成可路由的地址",
-    "demoSteps": [{"label":"输入域名","value":"example.com","note":"浏览器只有易读名称。"},{"label":"DNS 解析","value":"203.0.113.10","note":"解析器返回服务器 IP。"},{"label":"发送数据包","value":"目标 203.0.113.10","note":"路由器根据地址转发。"}],
-    "quizQuestion": "IP 地址在网络传输中的主要作用是什么？", "quizOptions": ["标识目标并参与路由", "定义网页字体", "保存用户订单"], "correctText": "IP 地址帮助数据包到达目标网络接口。", "wrongText": "页面样式和订单存储不由 IP 地址负责。",
+    "question": "服务器日志里的三个请求，为什么源 IP 都一样？", "definition": "IP 地址标识网络接口所在的位置，路由设备据此转发数据包。", "boundary": "IP 地址不一定永久对应一台设备，也不能单独证明某个用户身份。",
+    "demoType": "flow", "demoTitle": "三台私网设备共享一个公网 IP",
+    "demoSteps": [{"label":"手机出门","value":"192.168.1.11:51001 → 203.0.113.7:62001","note":"出口为连接建立第一条映射。"},{"label":"电脑和平板","value":"→ :62002 · :62003","note":"同一个公网 IP 继续复用不同端口。"},{"label":"远端日志","value":"unique IP count = 1","note":"日志按 IP 看不出三台设备，出口表仍保留三条映射。"}],
+    "quizQuestion": "多个请求具有相同公网 IP，能否断定来自同一设备？", "quizOptions": ["不能，NAT 或代理可能让多个设备共享地址", "能，IP 与设备永久一一对应", "能，只要使用 HTTPS"], "correctText": "地址转换会形成多设备到一个公网 IP 的映射。", "wrongText": "先考虑出口 NAT 和代理。",
     "promptTitle": "排查 IP 连通性", "prompt": "请按 DNS 结果、源和目标 IP、路由、防火墙与端口检查这次连接失败。", "relatedSlugs": ["dns-resolver", "network-port", "packet", "firewall"]
   },
   {

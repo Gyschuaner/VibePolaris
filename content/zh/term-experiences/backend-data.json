@@ -11021,8 +11021,8 @@
   {
     "slug": "ip-address",
     "lead": "服务器日志里三个请求的源 IP 完全相同，为什么可能来自三台设备？",
-    "definition": "IP 地址标识网络接口的可达位置，路由器按地址前缀转发包；NAT、代理、移动网络和多宿主都会改变地址与设备的对应关系。",
-    "boundary": "IP 地址不稳定地等同用户、设备或域名。它适合网络路由和粗粒度观测，不应单独作为身份或授权依据。",
+    "definition": "IP 地址标识网络接口的可达位置，路由器按地址前缀转发包；NAT、私有地址复用和多网卡都会改变地址与设备的对应关系。",
+    "boundary": "IP 地址不稳定地等同用户或设备。它适合网络路由和粗粒度观测，不应单独作为身份或授权依据。",
     "sceneKind": "route",
     "sceneTitle": "三台私网设备共享一个公网 IP",
     "actionLabel": "发送下一台设备的连接",
@@ -11130,60 +11130,32 @@
         ]
       },
       {
-        "label": "电脑使用另一个公网端口",
-        "note": "公网源 IP 相同，端口映射让返回包回到电脑。",
+        "label": "电脑和平板加入出口",
+        "note": "两个端口让返回包分别回到电脑和平板，远端源 IP 仍相同。",
         "activeIds": [
           "laptop",
-          "nat-router",
-          "nat-table",
-          "remote-api"
-        ],
-        "doneIds": [
-          "laptop"
-        ],
-        "mutedIds": [
-          "phone",
-          "tablet"
-        ],
-        "values": {
-          "nat-table": "192.168.1.12:51002 → :62002",
-          "remote-api": "src 203.0.113.7:62002"
-        },
-        "activeEdgeIds": [
-          "laptop-nat",
-          "router-table",
-          "router-api"
-        ]
-      },
-      {
-        "label": "平板形成第三条映射",
-        "note": "远端日志第三次仍显示同一公网地址。",
-        "activeIds": [
           "tablet",
           "nat-router",
           "nat-table",
           "remote-api"
         ],
         "doneIds": [
+          "laptop",
           "tablet"
         ],
         "mutedIds": [
-          "phone",
-          "laptop"
+          "phone"
         ],
         "values": {
-          "nat-table": "192.168.1.13:51003 → :62003",
-          "remote-api": "src 203.0.113.7:62003"
+          "nat-table": "192.168.1.12:51002 → :62002; 192.168.1.13:51003 → :62003",
+          "remote-api": "src 203.0.113.7:62002 · :62003"
         },
         "activeEdgeIds": [
+          "laptop-nat",
           "tablet-nat",
           "router-table",
           "router-api"
-        ],
-        "metric": {
-          "label": "公网 IP",
-          "value": "1"
-        }
+        ]
       },
       {
         "label": "同一 IP 对应三台设备",
@@ -11208,12 +11180,12 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "IP 是网络位置，不是稳定身份；日志和限流设计要考虑 NAT 与代理。",
+    "insight": "IP 是网络位置，不是稳定身份；日志和限流设计要考虑 NAT 造成的共享出口。",
     "quiz": {
       "question": "多个请求具有相同公网 IP，能否断定来自同一设备？",
       "options": [
         {
-          "label": "不能，NAT 或代理可能让多个设备共享地址",
+          "label": "不能，NAT 可能让多个设备共享地址",
           "correct": true
         },
         {
@@ -11226,11 +11198,11 @@
         }
       ],
       "success": "地址转换会形成多设备到一个公网 IP 的映射。",
-      "retry": "先考虑出口 NAT 和代理。"
+      "retry": "先考虑出口 NAT。"
     },
     "prompt": {
       "title": "检查 IP 的使用边界",
-      "text": "请说明地址来自哪一跳、是否经过 NAT/代理、可信转发规则、IPv4/IPv6 情况，以及该 IP 被用于日志、限流还是授权。"
+      "text": "请说明地址来自哪一跳、是否经过 NAT、IPv4/IPv6 情况，以及该 IP 被用于日志、限流还是授权。"
     },
     "sources": [
       {
@@ -11247,6 +11219,11 @@
         "url": "https://www.rfc-editor.org/rfc/rfc3022.html",
         "label": "RFC 3022 · Traditional NAT",
         "note": "协议定义与报文语义"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1918.html",
+        "label": "RFC 1918 · Private Internets",
+        "note": "私有地址空间与边界"
       }
     ]
   },

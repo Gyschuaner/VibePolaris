@@ -60,6 +60,7 @@ import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTe
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
 import { AcidTermPage, ApiKeyTermPage, ColumnTermPage, NosqlTermPage, RbacTermPage, RelationalDatabaseTermPage, RowTermPage, TcpTermPage, TlsHandshakeTermPage, UdpTermPage } from "@/components/terms/BackendNetworkTermPages";
 import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/firewall";
+import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -163,6 +164,7 @@ const articleTermPages = {
   udp: UdpTermPage,
   "tls-handshake": TlsHandshakeTermPage,
   firewall: FirewallTermPage,
+  "ip-address": IpAddressTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
