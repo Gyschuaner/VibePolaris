@@ -699,7 +699,7 @@
     "slug": "agent-memory",
     "mechanism": "应用为后续任务保存、检索、纠正和删除的信息；模型只有在记录被放入本轮输入时才会看到。",
     "misconception": "工作记忆是当前任务的临时状态；保存聊天不等于同意长期记忆，删除也不会倒写旧回答。",
-    "demoSignature": "代码偏好：用户同意后写入带来源和时间的记录，新会话只取回相关一条，用户撤回后删除；交互：保存、取回、纠正/删除三阶段。",
+    "demoSignature": "代码偏好六段生命周期：请求同意、写入、取回、带入本轮、纠正偏好、删除；按钮按前置条件启用，删除后显示旧回答保持不变。",
     "sourceUrls": [
       "https://docs.langchain.com/oss/python/concepts/memory",
       "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
@@ -718,7 +718,7 @@
     "slug": "working-memory",
     "mechanism": "工作记忆把当前任务的目标、候选、工具结果、调用次数和下一步放在可更新状态里，任务结束后按规则清理或交付。",
     "misconception": "它不自动跨会话保存偏好，也不是把完整聊天全文永久放进上下文。",
-    "demoSignature": "比价任务：候选 5 个，查价和库存后变为 2 个；交付时清掉候选和计数，保留的结果由另一条规则决定。交互：5 个候选/2 个候选切换并观察状态快照。",
+    "demoSignature": "比价任务板逐步显示 5 → 3 → 2 → 清理；库存未返回时停在 3，不能把未知写成有货，也不能提前交付或清空临时清单。",
     "sourceUrls": [
       "https://openai.github.io/openai-agents-python/running_agents/",
       "https://docs.langchain.com/oss/python/concepts/memory",
