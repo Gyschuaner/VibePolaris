@@ -467,12 +467,23 @@
   },
   {
     "slug": "cookie",
-    "mechanism": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的小数据，浏览器按匹配规则自动附到请求。",
-    "misconception": "Cookie 不只是前端存储；它会随请求发送。HttpOnly 只限制脚本读取，不会让 Cookie 自动免疫 CSRF。",
-    "demoSignature": "建议 5 帧：Cookie 罐中的每一行带 Domain、Path、Secure、SameSite 标签；用户切换请求域名、路径、HTTPS 和跨站场景，不满足条件的行被筛出请求头；打开 HttpOnly 后 document.cookie 读取按钮变灰，但符合条件的网络请求仍携带它。",
-    "sourceUrls": ["https://www.rfc-editor.org/rfc/rfc6265", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["auth", "local-storage", "session"]
+    "mechanism": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的候选值；浏览器把请求上下文与这些属性逐项比对，符合条件的名称和值才进入 Cookie 请求头。",
+    "misconception": "Cookie 不是只在页面里存着的小数据，它会随匹配请求发送。HttpOnly 只限制脚本读取，Secure 只限制发送线路，SameSite 也不替代 CSRF 防护。",
+    "demoSignature": "6帧｜对象：Cookie 罐中的 session、prefs、legacy 三行及各自属性｜交互：逐帧切换写入、同站 HTTPS、路径变化、跨站 POST、HTTP 和 document.cookie｜变化：命中的行进入请求头，不匹配的行留在罐中，HttpOnly 行只对脚本隐藏｜结果：读者能把保存、网络发送和脚本读取分成三件事。",
+    "sourceUrls": [
+      "https://www.rfc-editor.org/rfc/rfc6265",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie",
+      "https://pages.nist.gov/800-63-4/sp800-63b/session/",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html"
+    ],
+    "rewriteRisk": "高：容易把 Cookie 写成 localStorage 的替代品，必须拆开 Cookie 罐、请求筛选、脚本可见性和会话防护。",
+    "nearDuplicates": [
+      "auth",
+      "local-storage",
+      "session",
+      "response-header"
+    ]
   },
   {
     "slug": "local-storage",

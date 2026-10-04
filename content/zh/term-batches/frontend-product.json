@@ -906,18 +906,54 @@
     "relatedSlugs": ["ssr", "ssg", "user-flow", "sitemap"]
   },
   {
-    "zh": "Cookie", "en": "Cookie", "slug": "cookie", "cat": "前端",
-    "say": "Cookie 是浏览器按域名保存的小段数据，可在符合条件的请求中自动发送给服务器。",
-    "aliases": ["浏览器 Cookie", "会话 Cookie", "HTTP Cookie"],
-    "question": "登录后刷新页面，服务器怎样继续识别当前会话？",
-    "definition": "Cookie 由名称、值、域、路径、有效期和安全属性组成。服务器可通过 Set-Cookie 写入，浏览器按规则在后续请求中携带。",
-    "boundary": "Cookie 容量较小且会随请求传输，不适合存放大量页面数据；敏感会话值还需正确设置 HttpOnly、Secure 和 SameSite。",
-    "demoType": "request", "demoTitle": "会话 Cookie 随请求传递",
-    "demoSteps": [{"label":"登录响应","value":"Set-Cookie 写入会话标识","note":"浏览器按属性保存。"},{"label":"再次请求","value":"Cookie 请求头自动携带","note":"域、路径和 SameSite 必须符合条件。"},{"label":"服务器识别","value":"根据会话标识读取用户状态","note":"页面得到相应访问结果。"}],
-    "quizQuestion": "要阻止页面 JavaScript 读取会话 Cookie，应设置什么？", "quizOptions": ["HttpOnly", "display: none", "localStorage"],
-    "correctText": "HttpOnly Cookie 不向 document.cookie 暴露。", "wrongText": "CSS 和 localStorage 不能为 Cookie 提供这项限制。",
-    "promptTitle": "检查 Cookie 的安全属性", "prompt": "请检查下面 Set-Cookie 配置，根据登录会话、跨站请求和 HTTPS 条件说明 HttpOnly、Secure、SameSite、Path 与有效期应如何设置。",
-    "relatedSlugs": ["auth", "local-storage", "cors"]
+    "zh": "Cookie",
+    "en": "Cookie",
+    "slug": "cookie",
+    "cat": "前端",
+    "say": "浏览器按请求条件筛选、再自动带给服务器的一小段状态。",
+    "aliases": [
+      "浏览器 Cookie",
+      "会话 Cookie",
+      "HTTP Cookie"
+    ],
+    "question": "登录后刷新页面，哪一条 Cookie 会跟着请求走？",
+    "definition": "服务器通过 Set-Cookie 写入带属性的 Cookie，浏览器保存后按 Domain、Path、Secure、SameSite 等条件筛选；符合条件的名称和值进入后续请求的 Cookie 头。",
+    "boundary": "Cookie 容量小却会随匹配请求传输；HttpOnly 只限制脚本读取，Secure 只限制明文线路，SameSite 也不能替代会话轮换、授权和 CSRF 防护。",
+    "demoType": "request",
+    "demoTitle": "Cookie 罐怎样筛出一条请求头",
+    "demoSteps": [
+      {
+        "label": "写入 Cookie 罐",
+        "value": "Set-Cookie: session=R7; Path=/account",
+        "note": "浏览器保存值和属性，暂时还没有发送。"
+      },
+      {
+        "label": "拿请求条件来比",
+        "value": "HTTPS · /account · same-site",
+        "note": "Domain、Path、Secure 和 SameSite 逐项通过，session 才命中。"
+      },
+      {
+        "label": "分开网络与脚本",
+        "value": "Cookie header ≠ document.cookie",
+        "note": "HttpOnly 可以让脚本看不见，却不阻止合规网络请求携带。"
+      }
+    ],
+    "quizQuestion": "要阻止页面 JavaScript 读取会话 Cookie，应该设置什么？",
+    "quizOptions": [
+      "HttpOnly",
+      "display: none",
+      "localStorage"
+    ],
+    "correctText": "HttpOnly 不向 document.cookie 暴露这条 Cookie；它的网络发送规则仍由请求条件决定。",
+    "wrongText": "CSS 和 localStorage 都不能改变 Cookie 的脚本可见性。",
+    "promptTitle": "检查 Cookie 的发送与读取条件",
+    "prompt": "请列出 Set-Cookie 的 Domain、Path、Secure、HttpOnly、SameSite、Expires/Max-Age，并用同站、跨站、HTTP、不同路径和脚本读取逐项推演结果。",
+    "relatedSlugs": [
+      "auth",
+      "local-storage",
+      "session",
+      "cors"
+    ]
   },
   {
     "zh": "本地存储", "en": "Local Storage", "slug": "local-storage", "cat": "前端",

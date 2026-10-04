@@ -64,6 +64,7 @@ import { UdpTermPage } from "@/components/terms/transport-http-pages/udp";
 import { TlsHandshakeTermPage } from "@/components/terms/transport-http-pages/tls-handshake";
 import { ResponseBodyTermPage } from "@/components/terms/transport-http-pages/response-body";
 import { ResponseHeaderTermPage } from "@/components/terms/transport-http-pages/response-header";
+import { CookieTermPage } from "@/components/terms/transport-http-pages/cookie";
 import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/firewall";
 import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
 import { NetworkPortTermPage } from "@/components/terms/backend-boundary-pages/network-port";
@@ -178,6 +179,7 @@ const articleTermPages = {
   "tls-handshake": TlsHandshakeTermPage,
   "response-body": ResponseBodyTermPage,
   "response-header": ResponseHeaderTermPage,
+  cookie: CookieTermPage,
   firewall: FirewallTermPage,
   "ip-address": IpAddressTermPage,
   "network-port": NetworkPortTermPage,

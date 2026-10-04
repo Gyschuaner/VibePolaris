@@ -214,3 +214,49 @@
 .headerLabControls { margin-top: 13px; }
 @media (max-width: 700px) { .headerHero, .headerLab { padding: 15px; } .headerStage, .headerLabBoard { grid-template-columns: 1fr; } .headerStage > svg, .headerLabBoard > svg { justify-self: center; transform: rotate(90deg); } .headerTop, .headerLabHead { flex-direction: column; gap: 8px; } .headerControls { justify-content: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .headerHero *, .headerLab * { transition: none !important; animation: none !important; } }
+
+.cookieHero { composes: panel; }
+.cookieTop, .cookieEvidence, .cookieLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.cookieTop span, .cookieTop small, .cookieLabHead span { color: var(--muted); font-size: .78rem; }
+.cookieTop strong, .cookieLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.cookieStage { display: grid; grid-template-columns: minmax(0, 1.35fr) auto minmax(0, .75fr) auto minmax(0, 1.05fr); gap: 13px; align-items: center; margin: 25px 0 16px; }
+.cookieBrowser, .cookieFilter, .cookieRequest { min-height: 220px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.cookieBrowser > svg, .cookieFilter > svg, .cookieRequest > svg, .cookieRow > svg { color: var(--accent); }
+.cookieBrowser > span, .cookieFilter > span, .cookieRequest > span { color: var(--muted); font-size: .75rem; }
+.cookieBrowser > strong, .cookieFilter > strong, .cookieRequest > strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.cookieBrowser > small, .cookieFilter > small, .cookieRequest > small { color: var(--muted); font-size: .68rem; overflow-wrap: anywhere; }
+.cookieJar { display: grid; gap: 6px; width: 100%; margin-top: 4px; }
+.cookieRow { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 7px; padding: 8px 9px; border-radius: 10px; background: color-mix(in srgb, var(--tint) 47%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent-text) 10%, transparent); text-align: left; transition: opacity .35s ease, transform .35s ease, border-color .35s ease; }
+.cookieRow > div { min-width: 0; display: grid; gap: 3px; }
+.cookieRow strong { color: var(--accent-text); font: .75rem ui-monospace, monospace; overflow-wrap: anywhere; }
+.cookieRow small { color: var(--muted); font-size: .62rem; line-height: 1.35; overflow-wrap: anywhere; }
+.cookieRow > span { color: var(--muted); font-size: .62rem; text-align: right; }
+.cookieRow[data-selected="true"] { border-color: var(--accent-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); transform: translateX(4px); }
+.cookieRow[data-hidden="true"] { opacity: .36; border-style: dashed; }
+.cookieRequest[data-empty="true"] { background: color-mix(in srgb, #f4ddcf 38%, var(--surface)); }
+.cookieArrow { color: var(--accent-text); }
+.cookieEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.cookieEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.cookieEvidence p { margin: 0; }
+.cookieEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.cookieTimeline, .cookieControls, .cookieLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.cookieTimeline { margin-top: 15px; }
+.cookieTimeline button, .cookieControls button, .cookieLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.cookieTimeline button[aria-pressed="true"], .cookieLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.cookieControls { justify-content: flex-end; margin-top: 10px; }
+.cookieLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.cookieLabHead strong { display: block; margin-top: 5px; }
+.cookieLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.cookieLabNode { min-height: 98px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.cookieLabNode svg { color: var(--accent); }
+.cookieLabNode span { color: var(--muted); font-size: .76rem; }
+.cookieLabNode code, .cookieLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.cookieLabRows { margin: 14px 0; }
+.cookieLabRows .cookieRow { background: color-mix(in srgb, var(--surface) 78%, white); }
+.cookieLabResult { padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.cookieLabResult[data-empty="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); color: #8a542f; }
+.cookieLabResult p { margin: 0; }
+.cookieLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.cookieLabControls { margin-top: 13px; }
+@media (max-width: 700px) { .cookieHero, .cookieLab { padding: 15px; } .cookieStage, .cookieLabBoard { grid-template-columns: 1fr; } .cookieStage > svg, .cookieLabBoard > svg { justify-self: center; transform: rotate(90deg); } .cookieTop, .cookieLabHead { flex-direction: column; gap: 8px; } .cookieControls { justify-content: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .cookieHero *, .cookieLab * { transition: none !important; animation: none !important; } }

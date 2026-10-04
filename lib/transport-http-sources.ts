@@ -41,7 +41,7 @@ export const cookieSources: Source[] = [
   make("IETF", "RFC 6265 · HTTP State Management Mechanism", "https://www.rfc-editor.org/rfc/rfc6265.html", ["cookie-store", "cookie-match", "cookie-header"]),
   make("MDN Web Docs", "Using HTTP cookies", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies", ["cookie-scope", "cookie-secure", "cookie-samesite", "cookie-httponly"]),
   make("MDN Web Docs", "Cookie header", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie", ["cookie-header", "cookie-attributes"]),
-  make("NIST", "SP 800-63B Implementation Resources · Session Management", "https://pages.nist.gov/800-63-3-Implementation-Resources/63B/Session/", ["cookie-session", "cookie-expiry"]),
+  make("NIST", "SP 800-63B · Session Management", "https://pages.nist.gov/800-63-4/sp800-63b/session/", ["cookie-session", "cookie-expiry"]),
   make("OWASP", "Session Management Cheat Sheet", "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html", ["cookie-defense", "cookie-csrf", "cookie-session"]),
 ];
 

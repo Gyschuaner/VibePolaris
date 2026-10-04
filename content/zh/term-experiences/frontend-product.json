@@ -7867,199 +7867,297 @@
   },
   {
     "slug": "cookie",
-    "lead": "登录后刷新页面，服务器怎样继续识别当前会话？",
-    "definition": "服务器用 Set-Cookie 写入带 Domain、Path、Expires/Max-Age、Secure、HttpOnly、SameSite 的小数据，浏览器按匹配规则自动附到请求。",
-    "boundary": "Cookie 不只是前端存储；它会随请求发送。HttpOnly 只限制脚本读取，不会让 Cookie 自动免疫 CSRF。",
+    "lead": "登录后刷新页面，服务器怎样继续认出当前会话？",
+    "definition": "本页把 Cookie 拆成三步：服务器用 Set-Cookie 写入，浏览器按请求上下文筛选，符合条件的名称和值进入 Cookie 请求头；HttpOnly 再把脚本读取单独关掉。",
+    "boundary": "Cookie 不是页面私藏，也不自动等于安全会话。属性会影响发送和读取，但授权、会话轮换、CSRF 与 XSS 防护仍由系统负责。",
     "sceneKind": "contract",
-    "sceneTitle": "一条 Cookie 在什么请求条件下会被携带",
+    "sceneTitle": "一条 Cookie 在什么条件下会被带出罐子",
     "actionLabel": "改变请求条件",
     "actors": [
       {
-        "id": "cookie",
-        "label": "会话 Cookie",
-        "detail": "Domain / Path / Secure / SameSite",
+        "id": "cookie-jar",
+        "label": "Cookie 罐",
+        "detail": "session · prefs · legacy",
         "icon": "key",
         "group": "存储"
       },
       {
-        "id": "request",
-        "label": "页面请求",
-        "detail": "域名、路径、上下文",
+        "id": "request-context",
+        "label": "请求上下文",
+        "detail": "域名 · 路径 · 协议 · 站点",
         "icon": "network",
         "group": "输入"
       },
       {
-        "id": "browser",
-        "label": "浏览器筛选器",
-        "detail": "逐项检查属性",
+        "id": "browser-filter",
+        "label": "浏览器筛选",
+        "detail": "逐项比对属性",
         "icon": "browser",
         "group": "判断"
       },
       {
-        "id": "header",
+        "id": "cookie-header",
         "label": "Cookie 请求头",
-        "detail": "是否携带",
+        "detail": "命中值才出门",
         "icon": "message",
-        "group": "结果"
+        "group": "网络"
       },
       {
-        "id": "script",
-        "label": "页面脚本",
+        "id": "script-window",
+        "label": "脚本窗口",
         "detail": "document.cookie",
         "icon": "code",
         "group": "读取"
+      },
+      {
+        "id": "blocked",
+        "label": "留在罐中",
+        "detail": "条件不匹配",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "cookie-browser",
-        "from": "cookie",
-        "to": "browser",
+        "id": "jar-filter",
+        "from": "cookie-jar",
+        "to": "browser-filter",
         "label": "提供候选"
       },
       {
-        "id": "request-browser",
-        "from": "request",
-        "to": "browser",
+        "id": "context-filter",
+        "from": "request-context",
+        "to": "browser-filter",
         "label": "提供条件"
       },
       {
-        "id": "browser-header",
-        "from": "browser",
-        "to": "header",
+        "id": "filter-header",
+        "from": "browser-filter",
+        "to": "cookie-header",
         "label": "满足才发送"
       },
       {
-        "id": "cookie-script",
-        "from": "cookie",
-        "to": "script",
+        "id": "filter-blocked",
+        "from": "browser-filter",
+        "to": "blocked",
+        "label": "不匹配留下"
+      },
+      {
+        "id": "jar-script",
+        "from": "cookie-jar",
+        "to": "script-window",
         "label": "非 HttpOnly 才可读"
       }
     ],
     "frames": [
       {
-        "label": "同站 HTTPS 请求",
-        "note": "域名、路径、Secure 和 SameSite 条件都满足，Cookie 进入请求头。",
+        "label": "Set-Cookie 写入",
+        "note": "服务器提交一条候选，浏览器把 session=R7 连同属性放进罐子。",
         "activeIds": [
-          "cookie",
-          "request",
-          "browser",
-          "header"
+          "cookie-jar",
+          "request-context"
         ],
         "doneIds": [
-          "request"
+          "cookie-jar"
         ],
         "mutedIds": [
-          "script"
+          "browser-filter",
+          "cookie-header",
+          "script-window",
+          "blocked"
         ],
         "values": {
-          "header": "session=abc"
+          "cookie-jar": "session=R7 · stored"
         },
         "activeEdgeIds": [
-          "cookie-browser",
-          "request-browser",
-          "browser-header"
+          "jar-filter"
+        ]
+      },
+      {
+        "label": "同站 HTTPS",
+        "note": "GET /account 满足路径、协议和站点条件，session 与 prefs 进入 Cookie 头。",
+        "activeIds": [
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "cookie-header"
+        ],
+        "doneIds": [
+          "cookie-header"
+        ],
+        "mutedIds": [
+          "script-window",
+          "blocked"
+        ],
+        "values": {
+          "request-context": "https://app.example/account",
+          "cookie-header": "session=R7; prefs=dark"
+        },
+        "activeEdgeIds": [
+          "jar-filter",
+          "context-filter",
+          "filter-header"
         ]
       },
       {
         "label": "路径不匹配",
-        "note": "把请求改到 /public，Path=/account 不满足，Cookie 留在浏览器。",
+        "note": "请求改到 /public，session 留在罐子里，prefs 仍可按 Path=/ 命中。",
         "activeIds": [
-          "request",
-          "browser",
-          "cookie"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "header",
-          "script"
-        ],
-        "values": {
-          "header": "未携带"
-        },
-        "activeEdgeIds": [
-          "cookie-browser",
-          "request-browser"
-        ]
-      },
-      {
-        "label": "跨站条件限制",
-        "note": "切成跨站子请求，SameSite=Lax 使会话 Cookie 不进入请求头。",
-        "activeIds": [
-          "request",
-          "browser",
-          "cookie"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "header",
-          "script"
-        ],
-        "values": {
-          "request": "cross-site",
-          "header": "未携带"
-        },
-        "activeEdgeIds": [
-          "cookie-browser",
-          "request-browser"
-        ]
-      },
-      {
-        "label": "HttpOnly 只限制脚本读取",
-        "note": "回到同站请求并打开 HttpOnly，网络仍携带 Cookie，document.cookie 不再读到它。",
-        "activeIds": [
-          "cookie",
-          "browser",
-          "header",
-          "script"
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "blocked",
+          "cookie-header"
         ],
         "doneIds": [
-          "request"
+          "blocked",
+          "cookie-header"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "script-window"
+        ],
         "values": {
-          "header": "session=abc",
-          "script": "不可见"
+          "request-context": "GET /public",
+          "blocked": "session stays",
+          "cookie-header": "prefs=dark"
         },
         "activeEdgeIds": [
-          "browser-header"
+          "jar-filter",
+          "context-filter",
+          "filter-blocked",
+          "filter-header"
+        ]
+      },
+      {
+        "label": "跨站 POST",
+        "note": "SameSite=Lax 限制从 news.example 发出的跨站 POST，session 不进请求头。",
+        "activeIds": [
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "blocked"
+        ],
+        "doneIds": [
+          "blocked"
+        ],
+        "mutedIds": [
+          "cookie-header",
+          "script-window"
+        ],
+        "values": {
+          "request-context": "cross-site POST",
+          "blocked": "SameSite blocked",
+          "cookie-header": "0 cookies"
+        },
+        "activeEdgeIds": [
+          "jar-filter",
+          "context-filter",
+          "filter-blocked"
+        ]
+      },
+      {
+        "label": "降到 HTTP",
+        "note": "Secure Cookie 仍在罐里，但不会随 http://app.example 这条明文线路发送。",
+        "activeIds": [
+          "cookie-jar",
+          "request-context",
+          "browser-filter",
+          "blocked"
+        ],
+        "doneIds": [
+          "blocked"
+        ],
+        "mutedIds": [
+          "cookie-header",
+          "script-window"
+        ],
+        "values": {
+          "request-context": "http://app.example/account",
+          "blocked": "Secure blocked",
+          "cookie-header": "0 cookies"
+        },
+        "activeEdgeIds": [
+          "jar-filter",
+          "context-filter",
+          "filter-blocked"
+        ]
+      },
+      {
+        "label": "脚本来读取",
+        "note": "document.cookie 只看到 prefs；同一时刻合规网络请求仍可以携带 HttpOnly session。",
+        "activeIds": [
+          "cookie-jar",
+          "browser-filter",
+          "cookie-header",
+          "script-window"
+        ],
+        "doneIds": [
+          "script-window",
+          "cookie-header"
+        ],
+        "mutedIds": [
+          "request-context",
+          "blocked"
+        ],
+        "values": {
+          "script-window": "prefs=dark",
+          "cookie-header": "session=R7 still sent"
+        },
+        "activeEdgeIds": [
+          "jar-script",
+          "filter-header"
         ]
       }
     ],
-    "insight": "Cookie 是否发送由请求条件和属性共同决定，HttpOnly 只切断脚本读取，不切断合规网络请求。",
+    "insight": "保存、网络发送和脚本读取是三件事；Cookie 属性分别参与其中，不能把它们压成一个‘能不能用’开关。",
     "quiz": {
-      "question": "要阻止页面 JavaScript 读取会话 Cookie，应设置什么？",
+      "question": "HttpOnly 的直接作用是什么？",
       "options": [
         {
-          "label": "HttpOnly",
+          "label": "阻止页面脚本通过 document.cookie 读取",
           "correct": true
         },
         {
-          "label": "display: none",
+          "label": "阻止所有网络请求携带 Cookie",
           "correct": false
         },
         {
-          "label": "localStorage",
+          "label": "替服务器完成 CSRF 防护",
           "correct": false
         }
       ],
-      "success": "HttpOnly Cookie 不向 document.cookie 暴露。",
-      "retry": "CSS 和 localStorage 不能为 Cookie 提供这项限制。"
+      "success": "HttpOnly 只切断脚本读取，网络发送仍看请求上下文。",
+      "retry": "把脚本窗口与 Cookie 请求头分开看。"
     },
     "prompt": {
-      "title": "检查 Cookie 的安全属性",
-      "text": "请检查下面 Set-Cookie 配置，根据登录会话、跨站请求和 HTTPS 条件说明 HttpOnly、Secure、SameSite、Path 与有效期应如何设置。"
+      "title": "核对一条会话 Cookie",
+      "text": "请记录 Set-Cookie 属性、实际请求上下文、Cookie 请求头和 document.cookie 可见值，并检查过期、轮换、CSRF 与 XSS 风险。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc6265",
-        "label": "RFC Editor",
-        "note": "协议定义与报文语义"
+        "label": "RFC 6265 · HTTP State Management",
+        "note": "Cookie 存储、匹配和 Cookie 头"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · Using HTTP cookies",
+        "note": "Domain、Path、Secure、SameSite 与 HttpOnly"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie",
+        "label": "MDN · Cookie header",
+        "note": "请求头中的 Cookie 名称和值"
+      },
+      {
+        "url": "https://pages.nist.gov/800-63-4/sp800-63b/session/",
+        "label": "NIST · Session Management",
+        "note": "会话有效期、轮换与撤销"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+        "label": "OWASP · Session Management",
+        "note": "会话凭据与 CSRF/XSS 防护边界"
       }
     ]
   },
