@@ -17138,5 +17138,1782 @@
         "note": "安全风险与验证方法"
       }
     ]
+  },
+  {
+    "slug": "evaluation-run",
+    "lead": "run-17 与 run-18 的总分相近，怎样知道是哪一题和哪条轨迹造成差异？",
+    "definition": "评测运行把题集、被测版本、评分器、环境和逐项结果绑定成一次可复查执行。",
+    "boundary": "缺少条件或轨迹的记录不能证明两次运行可比较，也不能把空白补成失败。",
+    "sceneKind": "timeline",
+    "sceneTitle": "两次评测运行从条件对齐到可复查结果",
+    "actionLabel": "逐步查看",
+    "actors": [
+      {
+        "id": "suite",
+        "label": "评测套件",
+        "detail": "12 条固定任务",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "trial",
+        "label": "试跑轨迹",
+        "detail": "run-17/run-18 各保留 12 条轨迹",
+        "icon": "code",
+        "group": "执行"
+      },
+      {
+        "id": "grader",
+        "label": "评分器",
+        "detail": "逐项判定",
+        "icon": "chart",
+        "group": "评分"
+      },
+      {
+        "id": "run",
+        "label": "运行记录",
+        "detail": "run-17 / run-18",
+        "icon": "database",
+        "group": "证据"
+      }
+    ],
+    "edges": [
+      {
+        "id": "s-t",
+        "from": "suite",
+        "to": "trial",
+        "label": "执行"
+      },
+      {
+        "id": "t-g",
+        "from": "trial",
+        "to": "grader",
+        "label": "评分"
+      },
+      {
+        "id": "g-r",
+        "from": "grader",
+        "to": "run",
+        "label": "归档"
+      }
+    ],
+    "frames": [
+      {
+        "label": "建立运行",
+        "note": "锁定 support-v1、agent-B、rubric-v2 和运行环境。",
+        "activeIds": [
+          "suite",
+          "run"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "trial",
+          "grader"
+        ],
+        "values": {
+          "run": "run-17 · support-v1 · agent-B"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "对齐候选",
+        "note": "run-17 与 run-18 各自留下输入、输出和失败类型。",
+        "activeIds": [
+          "trial",
+          "grader"
+        ],
+        "doneIds": [
+          "suite"
+        ],
+        "mutedIds": [],
+        "values": {
+          "trial": "run-17 / run-18",
+          "grader": "逐题记录"
+        },
+        "activeEdgeIds": [
+          "s-t",
+          "t-g"
+        ]
+      },
+      {
+        "label": "汇总可比结果",
+        "note": "保持题集与评分器不变，只切换 agent-B → agent-C；再汇总通过数。",
+        "activeIds": [
+          "run"
+        ],
+        "doneIds": [
+          "suite",
+          "trial",
+          "grader"
+        ],
+        "mutedIds": [],
+        "values": {
+          "run": "run-17 9/12 → run-18 10/12"
+        },
+        "activeEdgeIds": [
+          "g-r"
+        ]
+      },
+      {
+        "label": "记录缺口",
+        "note": "切换 support-v2 或少一条轨迹时标为不可比较，不能补零。",
+        "activeIds": [
+          "run"
+        ],
+        "doneIds": [
+          "suite"
+        ],
+        "mutedIds": [
+          "grader"
+        ],
+        "values": {
+          "run": "support-v2 或缺1条 · unscored"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "运行证据包括条件、轨迹、逐项评分和汇总，而不是一个孤立总分。",
+    "quiz": {
+      "question": "只留下最后一个总分，最先丢掉什么？",
+      "options": [
+        {
+          "label": "逐项轨迹和运行条件",
+          "correct": true
+        },
+        {
+          "label": "只丢掉题目文本",
+          "correct": false
+        },
+        {
+          "label": "只保留最高分试跑",
+          "correct": false
+        }
+      ],
+      "success": "运行记录要能回到每一次试跑。",
+      "retry": "总分无法解释差异，也无法发现缺失记录。"
+    },
+    "prompt": {
+      "title": "设计一份评测运行记录",
+      "text": "固定题集、版本、评分器和环境，保存每次试跑、逐项结果、失败类型和汇总结论。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      }
+    ]
+  },
+  {
+    "slug": "safety-evaluation",
+    "lead": "安全评测怎样证明危险请求没有变成真实副作用？",
+    "definition": "安全评测用风险任务、攻击变体和工具/环境结果检查允许、拒绝、升级和隔离行为。",
+    "boundary": "一次拒答或一层过滤器不能覆盖未知攻击和应用权限问题。",
+    "sceneKind": "branch",
+    "sceneTitle": "切换风险案例并核对真实工具状态",
+    "actionLabel": "切换风险案例",
+    "actors": [
+      {
+        "id": "cases",
+        "label": "风险题集",
+        "detail": "正常/越权/注入",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "agent",
+        "label": "被测系统",
+        "detail": "回答与工具请求",
+        "icon": "robot",
+        "group": "执行"
+      },
+      {
+        "id": "tool",
+        "label": "敏感工具",
+        "detail": "发送/写入",
+        "icon": "gear",
+        "group": "副作用"
+      },
+      {
+        "id": "gate",
+        "label": "安全门槛",
+        "detail": "高风险失败=0",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "c-a",
+        "from": "cases",
+        "to": "agent",
+        "label": "运行"
+      },
+      {
+        "id": "a-t",
+        "from": "agent",
+        "to": "tool",
+        "label": "请求"
+      },
+      {
+        "id": "a-g",
+        "from": "agent",
+        "to": "gate",
+        "label": "判定"
+      }
+    ],
+    "frames": [
+      {
+        "label": "正常请求",
+        "note": "自己的订单查询安全完成，敏感工具没有触发。",
+        "activeIds": [
+          "cases",
+          "agent",
+          "gate"
+        ],
+        "doneIds": [
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "agent": "安全完成",
+          "tool": "未执行",
+          "gate": "通过"
+        },
+        "activeEdgeIds": [
+          "c-a",
+          "a-g"
+        ]
+      },
+      {
+        "label": "越权请求",
+        "note": "请求被拒绝并升级人工，敏感工具未执行。",
+        "activeIds": [
+          "cases",
+          "agent",
+          "gate"
+        ],
+        "doneIds": [
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "agent": "拒绝并升级",
+          "tool": "未执行",
+          "gate": "通过"
+        },
+        "activeEdgeIds": [
+          "c-a",
+          "a-g"
+        ]
+      },
+      {
+        "label": "发现泄露",
+        "note": "间接注入让工具读出敏感字段，安全门槛阻断。",
+        "activeIds": [
+          "agent",
+          "tool",
+          "gate"
+        ],
+        "doneIds": [
+          "cases"
+        ],
+        "mutedIds": [],
+        "values": {
+          "agent": "输出敏感字段",
+          "tool": "泄露1次",
+          "gate": "阻断"
+        },
+        "activeEdgeIds": [
+          "a-t",
+          "a-g"
+        ]
+      }
+    ],
+    "insight": "安全评测必须核对真实动作和环境状态，不能只看模型说了什么。",
+    "quiz": {
+      "question": "为什么要检查工具和环境结果？",
+      "options": [
+        {
+          "label": "文字拒绝不代表没有副作用",
+          "correct": true
+        },
+        {
+          "label": "工具调用一定安全",
+          "correct": false
+        },
+        {
+          "label": "语气可以代替权限检查",
+          "correct": false
+        }
+      ],
+      "success": "把高风险影响关在工具和权限边界内。",
+      "retry": "否则“我拒绝”可能和真实执行相矛盾。"
+    },
+    "prompt": {
+      "title": "设计安全评测集",
+      "text": "按风险类型整理允许、拒绝、升级和工具边界案例，为每条写可观察的安全结果。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "安全检查与高风险动作边界"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.09110",
+        "label": "HELM · arXiv:2211.09110",
+        "note": "多维度、可复现的模型评测"
+      }
+    ]
+  },
+  {
+    "slug": "cost-evaluation",
+    "lead": "同样完成任务，为什么要比较令牌、重试和工具成本？",
+    "definition": "成本评测在统一任务下统计令牌、调用、工具、重试和单任务费用，并与质量和延迟一起判断取舍。",
+    "boundary": "价格表或一次调用的单价不能代表完整任务成本。",
+    "sceneKind": "compare",
+    "sceneTitle": "固定任务后切换成本条件",
+    "actionLabel": "切换成本条件",
+    "actors": [
+      {
+        "id": "tasks",
+        "label": "固定任务",
+        "detail": "20 条业务题",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "model-a",
+        "label": "模型A",
+        "detail": "17/20 · ¥0.42",
+        "icon": "robot",
+        "group": "方案"
+      },
+      {
+        "id": "model-b",
+        "label": "模型B",
+        "detail": "18/20 · ¥1.16",
+        "icon": "robot",
+        "group": "方案"
+      },
+      {
+        "id": "budget",
+        "label": "预算门槛",
+        "detail": "¥1.00/任务",
+        "icon": "shield",
+        "group": "约束"
+      }
+    ],
+    "edges": [
+      {
+        "id": "t-a",
+        "from": "tasks",
+        "to": "model-a",
+        "label": "运行"
+      },
+      {
+        "id": "t-b",
+        "from": "tasks",
+        "to": "model-b",
+        "label": "运行"
+      },
+      {
+        "id": "b-g",
+        "from": "model-b",
+        "to": "budget",
+        "label": "核对"
+      }
+    ],
+    "frames": [
+      {
+        "label": "统一条件，预算内",
+        "note": "同一题集下 A 为 ¥0.42，B 为 ¥0.86，两者都低于 ¥1.00。",
+        "activeIds": [
+          "tasks",
+          "model-a",
+          "model-b",
+          "budget"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "model-a": "17/20 · ¥0.42",
+          "model-b": "18/20 · ¥0.86",
+          "budget": "可比较"
+        },
+        "activeEdgeIds": [
+          "t-a",
+          "t-b"
+        ]
+      },
+      {
+        "label": "预算超限",
+        "note": "B 变为 ¥1.16，超过单任务门槛，先复核重试和质量收益。",
+        "activeIds": [
+          "model-b",
+          "budget"
+        ],
+        "doneIds": [
+          "tasks",
+          "model-a"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model-b": "18/20 · ¥1.16",
+          "budget": "转复核"
+        },
+        "activeEdgeIds": [
+          "b-g"
+        ]
+      },
+      {
+        "label": "计费条件变化",
+        "note": "B 命中缓存后为 ¥0.82，先统一条件再比较。",
+        "activeIds": [
+          "model-b",
+          "budget"
+        ],
+        "doneIds": [
+          "tasks",
+          "model-a"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model-b": "缓存命中 · ¥0.82",
+          "budget": "暂不直比"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "成本评测要把单位成本放回真实任务、质量、延迟和重试条件中。",
+    "quiz": {
+      "question": "更便宜的模型是否一定更划算？",
+      "options": [
+        {
+          "label": "要结合质量和完整任务成本",
+          "correct": true
+        },
+        {
+          "label": "只看标价最低",
+          "correct": false
+        },
+        {
+          "label": "只看一次成功调用",
+          "correct": false
+        }
+      ],
+      "success": "成本是任务级指标，不能从单价直接推断。",
+      "retry": "忽略重试和质量会得到错误选型。"
+    },
+    "prompt": {
+      "title": "计算单任务成本",
+      "text": "固定任务并记录令牌、工具、重试、缓存和质量结果，设置成本门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/cost-optimization",
+        "label": "OpenAI API · Cost optimization",
+        "note": "成本组成与优化方法"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/batch",
+        "label": "OpenAI API · Batch API",
+        "note": "批量运行与异步成本/吞吐取舍"
+      }
+    ]
+  },
+  {
+    "slug": "latency-evaluation",
+    "lead": "平均响应不错，为什么 p95 和首字时间仍会让用户等待？",
+    "definition": "延迟评测把请求拆成首字、工具等待、完成和超时等时间点，用分位数描述长尾。",
+    "boundary": "延迟不是吞吐量，也不能只看服务器平均值。",
+    "sceneKind": "timeline",
+    "sceneTitle": "切换延迟条件并核对时间分布",
+    "actionLabel": "切换延迟条件",
+    "actors": [
+      {
+        "id": "request",
+        "label": "请求",
+        "detail": "开始计时",
+        "icon": "network",
+        "group": "请求"
+      },
+      {
+        "id": "first",
+        "label": "首字",
+        "detail": "420ms",
+        "icon": "clock",
+        "group": "反馈"
+      },
+      {
+        "id": "tool",
+        "label": "工具",
+        "detail": "1.8s 返回",
+        "icon": "gear",
+        "group": "等待"
+      },
+      {
+        "id": "done",
+        "label": "完成",
+        "detail": "3.4s",
+        "icon": "chart",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "r-f",
+        "from": "request",
+        "to": "first",
+        "label": "首字"
+      },
+      {
+        "id": "f-t",
+        "from": "first",
+        "to": "tool",
+        "label": "调用"
+      },
+      {
+        "id": "t-d",
+        "from": "tool",
+        "to": "done",
+        "label": "完成"
+      }
+    ],
+    "frames": [
+      {
+        "label": "正常完成",
+        "note": "首字420ms，工具1.8s返回，完成3.4s，p95 3.8s。",
+        "activeIds": [
+          "request",
+          "first",
+          "tool",
+          "done"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "first": "420ms",
+          "tool": "1.8s",
+          "done": "p95 3.8s"
+        },
+        "activeEdgeIds": [
+          "r-f",
+          "f-t",
+          "t-d"
+        ]
+      },
+      {
+        "label": "发现长尾",
+        "note": "p50 1.9s 仍然正常，但 p95 4.8s 超过4s门槛。",
+        "activeIds": [
+          "tool",
+          "done"
+        ],
+        "doneIds": [
+          "request",
+          "first"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "1.8s",
+          "done": "p95 4.8s"
+        },
+        "activeEdgeIds": [
+          "f-t",
+          "t-d"
+        ]
+      },
+      {
+        "label": "工具超时",
+        "note": "工具5.0s没有返回，完成时间和分位数暂不汇总。",
+        "activeIds": [
+          "tool",
+          "done"
+        ],
+        "doneIds": [
+          "request",
+          "first"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tool": "5.0s 超时",
+          "done": "未完成"
+        },
+        "activeEdgeIds": [
+          "f-t"
+        ]
+      }
+    ],
+    "insight": "延迟评测要区分用户何时看到反馈、任务何时完成和长尾何时超时。",
+    "quiz": {
+      "question": "为什么要同时看 p50 和 p95？",
+      "options": [
+        {
+          "label": "典型和长尾等待不同",
+          "correct": true
+        },
+        {
+          "label": "p95 等于吞吐量",
+          "correct": false
+        },
+        {
+          "label": "平均值已经包含所有体验",
+          "correct": false
+        }
+      ],
+      "success": "分位数能让长尾等待可见。",
+      "retry": "平均值会隐藏一部分用户的极慢请求。"
+    },
+    "prompt": {
+      "title": "制定延迟指标",
+      "text": "记录排队、首字、工具、完成和超时点，按 p50/p95 与任务类型设置门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/latency-optimization",
+        "label": "OpenAI API · Latency optimization",
+        "note": "延迟组成与优化边界"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://mlcommons.org/benchmarks/inference-datacenter/",
+        "label": "MLCommons MLPerf Inference",
+        "note": "统一条件下的延迟与吞吐基准"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      }
+    ]
+  },
+  {
+    "slug": "pass-fail-grader",
+    "lead": "没有结果文件时，如何区分“任务失败”和“现在无法检查”？",
+    "definition": "通过失败评分器把成功证据变成可执行检查，并把未评分状态从失败和通过中分开。",
+    "boundary": "二值开关不适合没有清晰证据的复杂质量；环境不可读不能被强行归类。",
+    "sceneKind": "branch",
+    "sceneTitle": "同一任务形成通过、失败和未评分",
+    "actionLabel": "切换检查结果",
+    "actors": [
+      {
+        "id": "task",
+        "label": "任务",
+        "detail": "生成 answer.json",
+        "icon": "file",
+        "group": "目标"
+      },
+      {
+        "id": "check",
+        "label": "判据",
+        "detail": "存在且 amount=120",
+        "icon": "code",
+        "group": "检查"
+      },
+      {
+        "id": "result",
+        "label": "结果",
+        "detail": "pass/fail/unscored",
+        "icon": "chart",
+        "group": "状态"
+      },
+      {
+        "id": "gate",
+        "label": "发布门槛",
+        "detail": "只接受 pass",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "t-c",
+        "from": "task",
+        "to": "check",
+        "label": "检查"
+      },
+      {
+        "id": "c-r",
+        "from": "check",
+        "to": "result",
+        "label": "分类"
+      },
+      {
+        "id": "r-g",
+        "from": "result",
+        "to": "gate",
+        "label": "门槛"
+      }
+    ],
+    "frames": [
+      {
+        "label": "写清证据",
+        "note": "先列出文件存在和 amount=120 两条条件。",
+        "activeIds": [
+          "check"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "task",
+          "result",
+          "gate"
+        ],
+        "values": {
+          "check": "2 条判据"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "通过",
+        "note": "文件存在且金额正确，结果为 pass。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "task",
+          "check"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "result": "pass"
+        },
+        "activeEdgeIds": [
+          "t-c",
+          "c-r"
+        ]
+      },
+      {
+        "label": "失败",
+        "note": "文件存在但金额错误，结果为 fail。",
+        "activeIds": [
+          "result"
+        ],
+        "doneIds": [
+          "task",
+          "check"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "result": "fail"
+        },
+        "activeEdgeIds": [
+          "c-r"
+        ]
+      },
+      {
+        "label": "未评分",
+        "note": "环境不可读，结果为 unscored，等待重跑。",
+        "activeIds": [
+          "result",
+          "gate"
+        ],
+        "doneIds": [
+          "task",
+          "check"
+        ],
+        "mutedIds": [],
+        "values": {
+          "result": "unscored",
+          "gate": "暂停"
+        },
+        "activeEdgeIds": [
+          "r-g"
+        ]
+      }
+    ],
+    "insight": "通过、失败和未评分分别表达证据成立、证据不成立和暂时无法检查。",
+    "quiz": {
+      "question": "为什么要保留未评分状态？",
+      "options": [
+        {
+          "label": "避免把不可检查误判成通过或失败",
+          "correct": true
+        },
+        {
+          "label": "为了让所有样本都通过",
+          "correct": false
+        },
+        {
+          "label": "因为失败不需要修复",
+          "correct": false
+        }
+      ],
+      "success": "未评分保留了证据缺口，下一步可以重跑或补环境。",
+      "retry": "把缺证据塞进 false 会混淆系统失败和测试失败。"
+    },
+    "prompt": {
+      "title": "设计通过失败判据",
+      "text": "为每条任务写成功证据、失败证据、未评分条件和发布门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/safety-best-practices",
+        "label": "OpenAI API · Safety best practices",
+        "note": "安全检查与高风险动作边界"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      }
+    ]
+  },
+  {
+    "slug": "grading-rubric",
+    "lead": "“回答得好”怎样变成不同人都能复核的分数？",
+    "definition": "评分规则把目标拆成维度、等级描述、证据和聚合方式。",
+    "boundary": "含糊形容词、重叠维度和没有反例的量表会制造稳定的误判。",
+    "sceneKind": "contract",
+    "sceneTitle": "三种回答按规则逐项检查",
+    "actionLabel": "切换回答样本",
+    "actors": [
+      {
+        "id": "answer",
+        "label": "待评回答",
+        "detail": "退款说明",
+        "icon": "message",
+        "group": "样本"
+      },
+      {
+        "id": "criteria",
+        "label": "评分维度",
+        "detail": "事实/条件/越界",
+        "icon": "file",
+        "group": "约定"
+      },
+      {
+        "id": "evidence",
+        "label": "证据",
+        "detail": "缺少到账条件",
+        "icon": "search",
+        "group": "检查"
+      },
+      {
+        "id": "score",
+        "label": "分数",
+        "detail": "1/3",
+        "icon": "chart",
+        "group": "结论"
+      }
+    ],
+    "edges": [
+      {
+        "id": "a-c",
+        "from": "answer",
+        "to": "criteria",
+        "label": "套用"
+      },
+      {
+        "id": "c-e",
+        "from": "criteria",
+        "to": "evidence",
+        "label": "核对"
+      },
+      {
+        "id": "e-s",
+        "from": "evidence",
+        "to": "score",
+        "label": "汇总"
+      }
+    ],
+    "frames": [
+      {
+        "label": "保留条件",
+        "note": "事实准确、条件保留、没有越界承诺，完整回答为 3/3。",
+        "activeIds": [
+          "answer",
+          "criteria",
+          "evidence",
+          "score"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "evidence": "三项证据齐全",
+          "score": "3/3"
+        },
+        "activeEdgeIds": [
+          "a-c",
+          "c-e",
+          "e-s"
+        ]
+      },
+      {
+        "label": "漏掉条件",
+        "note": "只说“三个工作日到账”而漏掉审核条件，只有 1/3 项满足。",
+        "activeIds": [
+          "answer",
+          "evidence",
+          "score"
+        ],
+        "doneIds": [
+          "criteria"
+        ],
+        "mutedIds": [],
+        "values": {
+          "evidence": "条件缺失",
+          "score": "1/3"
+        },
+        "activeEdgeIds": [
+          "a-c",
+          "c-e",
+          "e-s"
+        ]
+      },
+      {
+        "label": "越界承诺",
+        "note": "声称“马上到账且一定免费”超出资料，三项都不满足，为 0/3。",
+        "activeIds": [
+          "answer",
+          "evidence",
+          "score"
+        ],
+        "doneIds": [
+          "criteria"
+        ],
+        "mutedIds": [],
+        "values": {
+          "evidence": "没有支持证据",
+          "score": "0/3"
+        },
+        "activeEdgeIds": [
+          "a-c",
+          "c-e",
+          "e-s"
+        ]
+      }
+    ],
+    "insight": "评分规则让分数可以被解释、复核和校准，不是把印象换成数字。",
+    "quiz": {
+      "question": "回答只说“退款三个工作日到账”，先查哪项？",
+      "options": [
+        {
+          "label": "条件保留这一项",
+          "correct": true
+        },
+        {
+          "label": "整体读起来是否顺",
+          "correct": false
+        },
+        {
+          "label": "把缺失条件忽略",
+          "correct": false
+        }
+      ],
+      "success": "逐项检查能指出回答漏了哪条条件，结果才可以复核。",
+      "retry": "只看整体印象会遮住缺失的条件。"
+    },
+    "prompt": {
+      "title": "写一份可复核的评分量表",
+      "text": "列出维度、每档证据、正反例、权重和无法判断时的处理。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.16634",
+        "label": "G-Eval · arXiv:2303.16634",
+        "note": "模型评分与人工一致性研究"
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.05685",
+        "label": "MT-Bench · arXiv:2306.05685",
+        "note": "LLM-as-a-judge 的偏差与校准"
+      }
+    ]
+  },
+  {
+    "slug": "human-grader",
+    "lead": "人工评分怎样从个人感觉变成可校准的参考？",
+    "definition": "人工评分器让经过说明和校准的评审者按量表检查输出，保留分数、理由和分歧。",
+    "boundary": "人工也会不一致；缺少盲评、双人复核和分歧记录时，人的偏差会进入指标。",
+    "sceneKind": "matrix",
+    "sceneTitle": "切换评审记录并处理分歧",
+    "actionLabel": "切换评审记录",
+    "actors": [
+      {
+        "id": "answer",
+        "label": "待评回答",
+        "detail": "退款说明",
+        "icon": "message",
+        "group": "样本"
+      },
+      {
+        "id": "rubric",
+        "label": "评分量表",
+        "detail": "准确/完整/风险",
+        "icon": "file",
+        "group": "约定"
+      },
+      {
+        "id": "reviewers",
+        "label": "两位评审",
+        "detail": "甲/乙独立评分",
+        "icon": "user",
+        "group": "人工"
+      },
+      {
+        "id": "calibration",
+        "label": "校准记录",
+        "detail": "分差2 → 1",
+        "icon": "chart",
+        "group": "质量"
+      }
+    ],
+    "edges": [
+      {
+        "id": "a-r",
+        "from": "answer",
+        "to": "reviewers",
+        "label": "评审"
+      },
+      {
+        "id": "r-rb",
+        "from": "rubric",
+        "to": "reviewers",
+        "label": "约束"
+      },
+      {
+        "id": "r-c",
+        "from": "reviewers",
+        "to": "calibration",
+        "label": "复核"
+      }
+    ],
+    "frames": [
+      {
+        "label": "评分一致",
+        "note": "两位评审独立给出4/5，理由指向同一组证据。",
+        "activeIds": [
+          "answer",
+          "rubric",
+          "reviewers",
+          "calibration"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "reviewers": "4/5 = 4/5",
+          "calibration": "一致"
+        },
+        "activeEdgeIds": [
+          "a-r",
+          "r-rb"
+        ]
+      },
+      {
+        "label": "处理分歧",
+        "note": "甲4/5、乙2/5，第三人确认3/5并写回校准样例。",
+        "activeIds": [
+          "reviewers",
+          "calibration"
+        ],
+        "doneIds": [
+          "answer",
+          "rubric"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reviewers": "4/5 vs 2/5",
+          "calibration": "3/5 · 补例"
+        },
+        "activeEdgeIds": [
+          "a-r",
+          "r-rb",
+          "r-c"
+        ]
+      },
+      {
+        "label": "证据不足",
+        "note": "两位评审都返回未评分，等待补齐支付状态。",
+        "activeIds": [
+          "reviewers",
+          "calibration"
+        ],
+        "doneIds": [
+          "answer",
+          "rubric"
+        ],
+        "mutedIds": [],
+        "values": {
+          "reviewers": "unscored",
+          "calibration": "补证据"
+        },
+        "activeEdgeIds": [
+          "r-c"
+        ]
+      }
+    ],
+    "insight": "人工评分的价值是提供可解释参考和校准信号，而不是天然绝对正确。",
+    "quiz": {
+      "question": "两位人工分差很大，下一步是什么？",
+      "options": [
+        {
+          "label": "保留理由并回到规则校准",
+          "correct": true
+        },
+        {
+          "label": "直接取高分",
+          "correct": false
+        },
+        {
+          "label": "删除争议样本",
+          "correct": false
+        }
+      ],
+      "success": "分歧本身能暴露规则或样本的问题。",
+      "retry": "掩盖分歧只会让自动指标更难解释。"
+    },
+    "prompt": {
+      "title": "安排人工评分",
+      "text": "写出盲评、双人复核、分歧处理和校准记录，再将样本用于验证自动评分。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.16634",
+        "label": "G-Eval · arXiv:2303.16634",
+        "note": "模型评分与人工一致性研究"
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.05685",
+        "label": "MT-Bench · arXiv:2306.05685",
+        "note": "LLM-as-a-judge 的偏差与校准"
+      }
+    ]
+  },
+  {
+    "slug": "model-grader",
+    "lead": "让模型评分时，怎样知道它没有系统性高估？",
+    "definition": "模型评分器把输出、规则和参考交给模型，要求结构化分数或状态，并与人工样本比较偏差。",
+    "boundary": "提示词、被评模型、位置偏差和无法判断样本都会影响模型评分。",
+    "sceneKind": "compare",
+    "sceneTitle": "模型评分与人工参考逐项对照",
+    "actionLabel": "切换评分器",
+    "actors": [
+      {
+        "id": "answer",
+        "label": "待评回答",
+        "detail": "一条客服答复",
+        "icon": "message",
+        "group": "样本"
+      },
+      {
+        "id": "judge",
+        "label": "模型评分器",
+        "detail": "4/5",
+        "icon": "brain",
+        "group": "自动"
+      },
+      {
+        "id": "human",
+        "label": "人工参考",
+        "detail": "3/5",
+        "icon": "user",
+        "group": "基准"
+      },
+      {
+        "id": "bias",
+        "label": "偏差记录",
+        "detail": "高估2/5",
+        "icon": "chart",
+        "group": "校准"
+      }
+    ],
+    "edges": [
+      {
+        "id": "a-j",
+        "from": "answer",
+        "to": "judge",
+        "label": "评分"
+      },
+      {
+        "id": "a-h",
+        "from": "answer",
+        "to": "human",
+        "label": "参考"
+      },
+      {
+        "id": "j-b",
+        "from": "judge",
+        "to": "bias",
+        "label": "对照"
+      },
+      {
+        "id": "h-b",
+        "from": "human",
+        "to": "bias",
+        "label": "对照"
+      }
+    ],
+    "frames": [
+      {
+        "label": "固定输入",
+        "note": "评分器先看到规则、回答和必要参考。",
+        "activeIds": [
+          "answer",
+          "judge"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "human",
+          "bias"
+        ],
+        "values": {
+          "judge": "结构化 JSON"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "产生分数",
+        "note": "模型评分4/5，人工参考3/5。",
+        "activeIds": [
+          "judge",
+          "human"
+        ],
+        "doneIds": [
+          "answer"
+        ],
+        "mutedIds": [
+          "bias"
+        ],
+        "values": {
+          "judge": "4/5",
+          "human": "3/5"
+        },
+        "activeEdgeIds": [
+          "a-j",
+          "a-h"
+        ]
+      },
+      {
+        "label": "统计偏差",
+        "note": "5条校准样本中模型高估2条。",
+        "activeIds": [
+          "bias"
+        ],
+        "doneIds": [
+          "answer",
+          "judge",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "bias": "2/5 高估"
+        },
+        "activeEdgeIds": [
+          "j-b",
+          "h-b"
+        ]
+      },
+      {
+        "label": "允许未评分",
+        "note": "证据不足时不强行给分，返回 unscored。",
+        "activeIds": [
+          "judge",
+          "bias"
+        ],
+        "doneIds": [
+          "answer",
+          "human"
+        ],
+        "mutedIds": [],
+        "values": {
+          "judge": "unscored"
+        },
+        "activeEdgeIds": []
+      }
+    ],
+    "insight": "模型评分器需要用人工参考校准，并允许明确表示无法判断。",
+    "quiz": {
+      "question": "模型评分器上线前最重要的证据是什么？",
+      "options": [
+        {
+          "label": "代表性人工样本上的误判记录",
+          "correct": true
+        },
+        {
+          "label": "模型自己说可靠",
+          "correct": false
+        },
+        {
+          "label": "一条高分示例",
+          "correct": false
+        }
+      ],
+      "success": "比较分数、理由和误判类型才能知道评分器是否可用。",
+      "retry": "单个示例不能发现系统性偏差。"
+    },
+    "prompt": {
+      "title": "校准模型评分器",
+      "text": "定义结构化输出和拒绝评分条件，用人工样本检查高估、低估、位置偏差和理由质量。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/graders",
+        "label": "OpenAI API · Graders",
+        "note": "评分器类型、结构化评分与结果"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://arxiv.org/abs/2303.16634",
+        "label": "G-Eval · arXiv:2303.16634",
+        "note": "模型评分与人工一致性研究"
+      },
+      {
+        "url": "https://arxiv.org/abs/2306.05685",
+        "label": "MT-Bench · arXiv:2306.05685",
+        "note": "LLM-as-a-judge 的偏差与校准"
+      }
+    ]
+  },
+  {
+    "slug": "regression-evaluation",
+    "lead": "新版本总分变高，怎样发现原来通过的关键行为退回了？",
+    "definition": "回归评测在同一套任务和评分条件下比较基线与候选版本，寻找新增失败和高风险回退。",
+    "boundary": "平均分上升不能掩盖关键题失败；未覆盖的行为也不会自动被发现。",
+    "sceneKind": "matrix",
+    "sceneTitle": "同一题集逐项对照基线与候选",
+    "actionLabel": "切换候选变化",
+    "actors": [
+      {
+        "id": "suite",
+        "label": "suite-v1",
+        "detail": "20 条任务",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "base",
+        "label": "基线 agent-B",
+        "detail": "17/20 · 关键全过",
+        "icon": "robot",
+        "group": "版本"
+      },
+      {
+        "id": "candidate",
+        "label": "候选 agent-C",
+        "detail": "18/20 · 关键失败1",
+        "icon": "robot",
+        "group": "版本"
+      },
+      {
+        "id": "gate",
+        "label": "发布门槛",
+        "detail": "关键失败=0",
+        "icon": "shield",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "s-b",
+        "from": "suite",
+        "to": "base",
+        "label": "运行"
+      },
+      {
+        "id": "s-c",
+        "from": "suite",
+        "to": "candidate",
+        "label": "运行"
+      },
+      {
+        "id": "c-g",
+        "from": "candidate",
+        "to": "gate",
+        "label": "判断"
+      }
+    ],
+    "frames": [
+      {
+        "label": "关键行为保持",
+        "note": "同一 suite-v1，候选18/20且关键失败0，可以继续看新增失败。",
+        "activeIds": [
+          "suite",
+          "candidate",
+          "gate"
+        ],
+        "doneIds": [
+          "base"
+        ],
+        "mutedIds": [],
+        "values": {
+          "candidate": "18/20",
+          "gate": "继续"
+        },
+        "activeEdgeIds": [
+          "s-c",
+          "c-g"
+        ]
+      },
+      {
+        "label": "发现关键回退",
+        "note": "候选18/20，但 refund-condition 从基线通过变失败，关键门槛阻断。",
+        "activeIds": [
+          "candidate",
+          "gate"
+        ],
+        "doneIds": [
+          "suite",
+          "base"
+        ],
+        "mutedIds": [],
+        "values": {
+          "candidate": "18/20",
+          "gate": "阻断"
+        },
+        "activeEdgeIds": [
+          "c-g"
+        ]
+      },
+      {
+        "label": "题集版本变化",
+        "note": "候选改用 suite-v2，分母变化，暂不比较总分。",
+        "activeIds": [
+          "suite",
+          "candidate",
+          "gate"
+        ],
+        "doneIds": [
+          "base"
+        ],
+        "mutedIds": [],
+        "values": {
+          "suite": "suite-v2",
+          "candidate": "19/20",
+          "gate": "暂不比较"
+        },
+        "activeEdgeIds": [
+          "s-c",
+          "c-g"
+        ]
+      }
+    ],
+    "insight": "回归评测关注改动造成的变差，关键行为可以拥有独立门槛。",
+    "quiz": {
+      "question": "平均分更高但关键题失败，应该怎样处理？",
+      "options": [
+        {
+          "label": "按关键门槛阻断并修复",
+          "correct": true
+        },
+        {
+          "label": "用平均分覆盖失败",
+          "correct": false
+        },
+        {
+          "label": "删除关键题",
+          "correct": false
+        }
+      ],
+      "success": "逐项差异和风险门槛比单一平均分更可靠。",
+      "retry": "否则高风险回退会被总分掩盖。"
+    },
+    "prompt": {
+      "title": "设计一次回归评测",
+      "text": "保存基线逐项结果，标出关键行为，定义新增失败、关键失败和平均分的门槛。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "label": "Anthropic · Demystifying evals for AI agents",
+        "note": "任务、试跑、评分器、轨迹和结果"
+      },
+      {
+        "url": "https://airc.nist.gov/airmf-resources/playbook/",
+        "label": "NIST AI RMF Playbook",
+        "note": "风险测量、治理和持续评估"
+      },
+      {
+        "url": "https://arxiv.org/abs/2211.09110",
+        "label": "HELM · arXiv:2211.09110",
+        "note": "多维度、可复现的模型评测"
+      }
+    ]
+  },
+  {
+    "slug": "context-overflow",
+    "lead": "长对话越来越全，为什么模型反而找不到刚才那条关键事实？",
+    "definition": "上下文溢出发生在请求所需令牌超过上下文窗口；即使未硬性超限，过长内容也可能降低召回和注意力。",
+    "boundary": "窗口大小不等于有效使用能力；压缩、裁剪和摘要会改变模型看见的事实。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "历史增长后压缩上下文再继续",
+    "actionLabel": "切换上下文状态",
+    "actors": [
+      {
+        "id": "history",
+        "label": "历史",
+        "detail": "14k tokens",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "tools",
+        "label": "工具结果",
+        "detail": "7k tokens",
+        "icon": "gear",
+        "group": "输入"
+      },
+      {
+        "id": "limit",
+        "label": "上下文窗口",
+        "detail": "24k",
+        "icon": "shield",
+        "group": "容量"
+      },
+      {
+        "id": "summary",
+        "label": "压缩摘要",
+        "detail": "目标/决策/待办",
+        "icon": "file",
+        "group": "保留"
+      },
+      {
+        "id": "model",
+        "label": "下一轮",
+        "detail": "继续任务",
+        "icon": "robot",
+        "group": "输出"
+      }
+    ],
+    "edges": [
+      {
+        "id": "h-l",
+        "from": "history",
+        "to": "limit",
+        "label": "占用"
+      },
+      {
+        "id": "t-l",
+        "from": "tools",
+        "to": "limit",
+        "label": "占用"
+      },
+      {
+        "id": "l-s",
+        "from": "limit",
+        "to": "summary",
+        "label": "压缩"
+      },
+      {
+        "id": "s-m",
+        "from": "summary",
+        "to": "model",
+        "label": "继续"
+      }
+    ],
+    "frames": [
+      {
+        "label": "累积内容",
+        "note": "系统、历史、工具和预计输出一起计入预算。",
+        "activeIds": [
+          "history",
+          "tools",
+          "limit"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "summary",
+          "model"
+        ],
+        "values": {
+          "history": "14k",
+          "tools": "7k",
+          "limit": "24k"
+        },
+        "activeEdgeIds": [
+          "h-l",
+          "t-l"
+        ]
+      },
+      {
+        "label": "触发溢出",
+        "note": "预计输出加入后超过上限，请求被拒绝。",
+        "activeIds": [
+          "limit"
+        ],
+        "doneIds": [
+          "history",
+          "tools"
+        ],
+        "mutedIds": [
+          "summary",
+          "model"
+        ],
+        "values": {
+          "limit": "26k > 24k"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "压缩保留",
+        "note": "保留目标、决策和未完成动作，压缩到11k。",
+        "activeIds": [
+          "summary"
+        ],
+        "doneIds": [
+          "history",
+          "tools",
+          "limit"
+        ],
+        "mutedIds": [
+          "model"
+        ],
+        "values": {
+          "summary": "11k · 关键事实保留"
+        },
+        "activeEdgeIds": [
+          "l-s"
+        ]
+      },
+      {
+        "label": "继续并复查",
+        "note": "下一轮读取摘要，先核对关键事实再执行。",
+        "activeIds": [
+          "model"
+        ],
+        "doneIds": [
+          "history",
+          "tools",
+          "summary",
+          "limit"
+        ],
+        "mutedIds": [],
+        "values": {
+          "model": "继续 · 需复查"
+        },
+        "activeEdgeIds": [
+          "s-m"
+        ]
+      }
+    ],
+    "insight": "处理溢出不是盲目塞更多文本，而是预算令牌并保留完成任务所需的高信号事实。",
+    "quiz": {
+      "question": "遇到上下文溢出，最先检查什么？",
+      "options": [
+        {
+          "label": "令牌组成和必须保留的事实",
+          "correct": true
+        },
+        {
+          "label": "只调低温度",
+          "correct": false
+        },
+        {
+          "label": "复制全部旧消息",
+          "correct": false
+        }
+      ],
+      "success": "先拆分来源，再决定压缩、裁剪、检索或分段处理。",
+      "retry": "重复旧消息会更快超限，也可能增加无关信息。"
+    },
+    "prompt": {
+      "title": "处理长对话上下文",
+      "text": "列出令牌预算、必须保留的事实、可压缩内容和压缩后的复查步骤。"
+    },
+    "sources": [
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+        "label": "Claude Platform Docs · Context windows",
+        "note": "上下文窗口、令牌累积和压缩"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "上下文有限、压缩和信息取舍"
+      },
+      {
+        "url": "https://arxiv.org/abs/2307.03172",
+        "label": "Lost in the Middle · arXiv:2307.03172",
+        "note": "长上下文位置与召回退化"
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/guides/evals",
+        "label": "OpenAI API · Working with evals",
+        "note": "评测对象、运行和结果记录"
+      }
+    ]
   }
 ]
