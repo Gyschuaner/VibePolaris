@@ -4903,5 +4903,57 @@
       "context-window",
       "streaming-output"
     ]
+  },
+  {
+    "zh": "预训练",
+    "en": "Pretraining",
+    "slug": "pretraining",
+    "cat": "AI·Agent",
+    "say": "先用大量文本练习猜目标，再让参数沿着误差小步移动。",
+    "aliases": [
+      "预训练",
+      "Pre-training",
+      "模型预训练"
+    ],
+    "question": "模型为什么能从没有人工答案的文本里学到语言模式？",
+    "definition": "预训练把大规模数据切成训练样本，由数据本身构造下一个 token 或被遮住 token 等目标；模型计算损失并据此更新参数，形成后续任务可以复用的起点。",
+    "boundary": "预训练目标和语料决定模型先学到什么；较低训练损失不等于事实已经核验，预训练、微调和推理也属于不同阶段。",
+    "demoType": "lifecycle",
+    "demoTitle": "一张语料卡怎样变成一次参数更新",
+    "demoSteps": [
+      {
+        "label": "切开语料",
+        "value": "退款 · 需 · 在 · 七日内 · 申请",
+        "note": "先保留 token 的顺序与位置。"
+      },
+      {
+        "label": "生成目标",
+        "value": "目标 = 七日内",
+        "note": "目标可以由下一个 token 或被遮住的 token 构造。"
+      },
+      {
+        "label": "算损失并更新",
+        "value": "loss → gradient → W + 一小步",
+        "note": "损失提供更新信号，却不替你核验语料是否正确。"
+      }
+    ],
+    "quizQuestion": "为什么拿走目标标签后，预训练不能只靠“模型自己觉得像”继续更新？",
+    "quizOptions": [
+      "因为没有可比较的目标，损失无法定义",
+      "因为 token 一旦切开就不能再组成句子",
+      "因为预训练每次都必须人工写答案"
+    ],
+    "correctText": "对。自监督目标通常从输入构造，但仍需要这个目标才能计算误差和梯度。",
+    "wrongText": "再看一遍：自监督不是没有标签，而是标签来自数据本身；没有目标就没有可比较的损失。",
+    "promptTitle": "检查一次预训练样本",
+    "prompt": "记录语料切片、目标构造、logits、loss、参数更新和数据时效；分别说明 causal 与 masked 目标允许模型看到什么，并标记“低损失不等于事实”的边界。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "fine-tuning",
+      "inference",
+      "tokenization",
+      "generative-ai"
+    ]
   }
 ]

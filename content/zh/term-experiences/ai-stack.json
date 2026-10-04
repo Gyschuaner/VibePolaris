@@ -19674,5 +19674,239 @@
         "note": "面向 GPU 推理的优化 engine 与 runtime"
       }
     ]
+  },
+  {
+    "slug": "pretraining",
+    "lead": "模型怎样把没有人工答案册的文本变成一次次可计算的练习？",
+    "definition": "预训练从语料构造目标，比较预测与目标的损失，再按梯度更新参数；下一批样本继续检验这次移动是否有用。",
+    "boundary": "训练目标可能贴合过时、重复或有偏的语料；低 loss 只说明贴合目标，不能证明事实正确，也不能把预训练当成微调或推理。",
+    "sceneKind": "assembly",
+    "sceneTitle": "把一张语料卡装配成一次更新",
+    "actionLabel": "切换目标、标签和语料时效",
+    "actors": [
+      {
+        "id": "corpus",
+        "label": "Corpus",
+        "detail": "退款需在七日内申请",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "target",
+        "label": "Target",
+        "detail": "下一个或被遮住的 token",
+        "icon": "search",
+        "group": "目标"
+      },
+      {
+        "id": "loss",
+        "label": "Loss",
+        "detail": "预测与目标的交叉熵",
+        "icon": "chart",
+        "group": "比较"
+      },
+      {
+        "id": "weights",
+        "label": "Weights",
+        "detail": "沿梯度移动一小步",
+        "icon": "gear",
+        "group": "参数"
+      },
+      {
+        "id": "check",
+        "label": "Check",
+        "detail": "独立评估与事实核验",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [
+      {
+        "id": "corpus-target",
+        "from": "corpus",
+        "to": "target",
+        "label": "从文本构造"
+      },
+      {
+        "id": "target-loss",
+        "from": "target",
+        "to": "loss",
+        "label": "和预测比较"
+      },
+      {
+        "id": "loss-weights",
+        "from": "loss",
+        "to": "weights",
+        "label": "提供更新信号"
+      },
+      {
+        "id": "weights-corpus",
+        "from": "weights",
+        "to": "corpus",
+        "label": "进入下一批练习"
+      },
+      {
+        "id": "weights-check",
+        "from": "weights",
+        "to": "check",
+        "label": "独立检查"
+      }
+    ],
+    "frames": [
+      {
+        "label": "摆上语料",
+        "note": "一行文本先被切成有顺序的 token，参数还没有变化。",
+        "activeIds": [
+          "corpus"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "target",
+          "loss",
+          "weights",
+          "check"
+        ],
+        "values": {
+          "corpus": "退款 · 需 · 在 · 七日内 · 申请"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "生成目标",
+        "note": "从输入结构生成一个可比较的目标；自监督仍然需要目标。",
+        "activeIds": [
+          "corpus",
+          "target"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "loss",
+          "weights",
+          "check"
+        ],
+        "values": {
+          "corpus": "token 序列",
+          "target": "目标 = 七日内"
+        },
+        "activeEdgeIds": [
+          "corpus-target"
+        ]
+      },
+      {
+        "label": "计算损失",
+        "note": "模型给出分布，loss 把它与目标的差距变成数值。",
+        "activeIds": [
+          "target",
+          "loss"
+        ],
+        "doneIds": [
+          "corpus"
+        ],
+        "mutedIds": [
+          "weights",
+          "check"
+        ],
+        "values": {
+          "target": "目标已对齐",
+          "loss": "cross-entropy = 0.48"
+        },
+        "activeEdgeIds": [
+          "target-loss"
+        ]
+      },
+      {
+        "label": "更新参数",
+        "note": "梯度让参数向降低当前损失的方向移动一小步，然后等待下一批样本。",
+        "activeIds": [
+          "weights"
+        ],
+        "doneIds": [
+          "corpus",
+          "target",
+          "loss"
+        ],
+        "mutedIds": [
+          "check"
+        ],
+        "values": {
+          "weights": "更新 1 次"
+        },
+        "activeEdgeIds": [
+          "loss-weights",
+          "weights-corpus"
+        ]
+      },
+      {
+        "label": "检查边界",
+        "note": "最后还要问语料是否过时、目标是否代表真实需求，并用独立评估核验。",
+        "activeIds": [
+          "check"
+        ],
+        "doneIds": [
+          "corpus",
+          "target",
+          "loss",
+          "weights"
+        ],
+        "mutedIds": [],
+        "values": {
+          "check": "低 loss ≠ 事实证明"
+        },
+        "activeEdgeIds": [
+          "weights-check"
+        ]
+      }
+    ],
+    "insight": "预训练是一条装配线：语料提供目标，损失提供信号，参数获得小步更新；每一环都可能把数据的范围和偏差带进最终能力。",
+    "quiz": {
+      "question": "训练损失变小，最准确的解释是什么？",
+      "options": [
+        {
+          "label": "模型更贴合当前训练目标，但还需要独立评估和事实核验",
+          "correct": true
+        },
+        {
+          "label": "模型已经知道训练语料之外的事实",
+          "correct": false
+        },
+        {
+          "label": "模型已经完成推理，不会再受输入影响",
+          "correct": false
+        }
+      ],
+      "success": "对，loss 描述的是目标上的误差；能否迁移和是否真实要另外检查。",
+      "retry": "把训练目标、模型参数和事实证据分开：loss 变小不等于世界被核验。"
+    },
+    "prompt": {
+      "title": "拆开一轮预训练",
+      "text": "请按语料、目标、预测、损失、参数更新、独立评估记录证据；再切换 causal/masked 目标，说明可见范围和失败分支。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/en/tasks/language_modeling",
+        "label": "Hugging Face · Causal language modeling",
+        "note": "下一个 token、labels 与训练流程"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/2.9/generated/torch.nn.CrossEntropyLoss.html",
+        "label": "PyTorch · CrossEntropyLoss",
+        "note": "logits、目标类别与损失"
+      },
+      {
+        "url": "https://arxiv.org/abs/1810.04805",
+        "label": "BERT · Pre-training of Deep Bidirectional Transformers",
+        "note": "掩码语言模型与预训练/微调"
+      },
+      {
+        "url": "https://github.com/google-research/bert/blob/master/README.md",
+        "label": "Google Research · BERT README",
+        "note": "语料、训练成本与复用"
+      },
+      {
+        "url": "https://openai.com/index/language-models-are-few-shot-learners/",
+        "label": "OpenAI · Language models are few-shot learners",
+        "note": "大规模语料、few-shot 与数据边界"
+      }
+    ]
   }
 ]

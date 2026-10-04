@@ -50,6 +50,7 @@ import { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning
 import { TransformerTermPage } from "./ai-stack-pages/transformer";
 import { AttentionTermPage } from "./ai-stack-pages/attention";
 import { InferenceTermPage } from "./ai-stack-pages/inference";
+import { PretrainingTermPage } from "./ai-stack-pages/pretraining";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -102,6 +103,7 @@ export { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning
 export { TransformerTermPage } from "./ai-stack-pages/transformer";
 export { AttentionTermPage } from "./ai-stack-pages/attention";
 export { InferenceTermPage } from "./ai-stack-pages/inference";
+export { PretrainingTermPage } from "./ai-stack-pages/pretraining";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -156,4 +158,5 @@ export const aiStackArticlePages = {
   transformer: TransformerTermPage,
   attention: AttentionTermPage,
   inference: InferenceTermPage,
+  pretraining: PretrainingTermPage,
 } as const;

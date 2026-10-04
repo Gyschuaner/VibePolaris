@@ -40,3 +40,4 @@ export { TransformerHero } from "./transformer-hero";
 export { AttentionLesson } from "./attention";
 export { AttentionHero } from "./attention-hero";
 export { InferenceHero, InferenceLesson } from "./inference-hero";
+export { PretrainingHero, PretrainingLesson } from "./pretraining-hero";
