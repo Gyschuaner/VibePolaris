@@ -20632,5 +20632,251 @@
         "note": "突发派发、积压恢复和渐进增速"
       }
     ]
+  },
+  {
+    "slug": "dead-letter-queue",
+    "lead": "一条消息一直失败时，怎样让它停在可调查的地方，而不是拖住整条队列？",
+    "definition": "死信队列是失败消息的隔离支路：主队列按投递次数或失败条件把消息移出，DLQ 保留消息本体、失败理由和时间，运维或应用再决定调查、修复、重放或放弃。",
+    "boundary": "DLQ 不会自动修复消息，也不保证重放安全。消息可能过期、重复投递或破坏 FIFO 顺序；没有保留期、权限、告警和幂等设计，隔离只是把问题藏得更深。",
+    "sceneKind": "branch",
+    "sceneTitle": "失败消息的重试、隔离与重放出口",
+    "actionLabel": "逐步推进尝试、死信和调查决定",
+    "actors": [
+      {
+        "id": "message",
+        "label": "消息",
+        "detail": "bad-json / order-184",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "source-queue",
+        "label": "主队列",
+        "detail": "等待消费者确认",
+        "icon": "queue",
+        "group": "主路径"
+      },
+      {
+        "id": "consumer",
+        "label": "消费者",
+        "detail": "处理并 ack",
+        "icon": "robot",
+        "group": "执行"
+      },
+      {
+        "id": "dead-letter",
+        "label": "DLQ",
+        "detail": "保留失败消息和原因",
+        "icon": "memory",
+        "group": "隔离"
+      },
+      {
+        "id": "operator",
+        "label": "调查者",
+        "detail": "修复、redrive 或放弃",
+        "icon": "search",
+        "group": "出口"
+      }
+    ],
+    "edges": [
+      {
+        "id": "message-source",
+        "from": "message",
+        "to": "source-queue",
+        "label": "入队"
+      },
+      {
+        "id": "source-consumer",
+        "from": "source-queue",
+        "to": "consumer",
+        "label": "投递"
+      },
+      {
+        "id": "consumer-source",
+        "from": "consumer",
+        "to": "source-queue",
+        "label": "失败 → 重试"
+      },
+      {
+        "id": "source-dead",
+        "from": "source-queue",
+        "to": "dead-letter",
+        "label": "超过上限 → 隔离"
+      },
+      {
+        "id": "dead-operator",
+        "from": "dead-letter",
+        "to": "operator",
+        "label": "查看原因"
+      },
+      {
+        "id": "operator-source",
+        "from": "operator",
+        "to": "source-queue",
+        "label": "修复后 redrive"
+      }
+    ],
+    "frames": [
+      {
+        "label": "第一次投递",
+        "note": "消息从主队列交给消费者；成功才 ack，失败则回到可重试状态。",
+        "activeIds": [
+          "message",
+          "source-queue",
+          "consumer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "dead-letter",
+          "operator"
+        ],
+        "values": {
+          "message": "bad-json",
+          "source-queue": "ready",
+          "consumer": "attempt 1"
+        },
+        "activeEdgeIds": [
+          "message-source",
+          "source-consumer"
+        ]
+      },
+      {
+        "label": "失败再试",
+        "note": "同一个坏输入重复触发同一个错误；次数和原因必须被记录。",
+        "activeIds": [
+          "consumer",
+          "source-queue"
+        ],
+        "doneIds": [
+          "message"
+        ],
+        "mutedIds": [
+          "dead-letter",
+          "operator"
+        ],
+        "values": {
+          "consumer": "attempt 2 → fail",
+          "source-queue": "retry in 5s"
+        },
+        "activeEdgeIds": [
+          "consumer-source"
+        ]
+      },
+      {
+        "label": "转入死信",
+        "note": "达到 maxReceiveCount 后离开主路径，后面的正常消息不会一直被它挡住。",
+        "activeIds": [
+          "source-queue",
+          "dead-letter"
+        ],
+        "doneIds": [
+          "message",
+          "consumer"
+        ],
+        "mutedIds": [
+          "operator"
+        ],
+        "values": {
+          "source-queue": "next-order continues",
+          "dead-letter": "attempt 3 · malformed payload"
+        },
+        "activeEdgeIds": [
+          "source-dead"
+        ]
+      },
+      {
+        "label": "查看证据",
+        "note": "调查者读取原消息、失败理由、次数和时间；查看不是确认成功。",
+        "activeIds": [
+          "dead-letter",
+          "operator"
+        ],
+        "doneIds": [
+          "message",
+          "source-queue",
+          "consumer"
+        ],
+        "mutedIds": [],
+        "values": {
+          "dead-letter": "retained",
+          "operator": "inspect reason"
+        },
+        "activeEdgeIds": [
+          "dead-operator"
+        ]
+      },
+      {
+        "label": "修复后出口",
+        "note": "修复根因并检查幂等后才可 redrive；否则消息可能再次回到 DLQ。",
+        "activeIds": [
+          "operator",
+          "source-queue"
+        ],
+        "doneIds": [
+          "message",
+          "consumer",
+          "dead-letter"
+        ],
+        "mutedIds": [],
+        "values": {
+          "operator": "fix + approve",
+          "source-queue": "redrive / discard"
+        },
+        "activeEdgeIds": [
+          "operator-source"
+        ]
+      }
+    ],
+    "insight": "DLQ 把“反复失败”从主路径拿出来，却把决定权留给调查者：原消息、失败原因和次数要能被看见，重放才不会变成另一种盲目重试。",
+    "quiz": {
+      "question": "重放死信消息前最应该先确认什么？",
+      "options": [
+        {
+          "label": "根因已修复，权限、顺序和重复副作用都有处理方案",
+          "correct": true
+        },
+        {
+          "label": "只要 DLQ 里有消息，就立刻全部搬回主队列",
+          "correct": false
+        },
+        {
+          "label": "重放会自动把之前产生的业务副作用撤销",
+          "correct": false
+        }
+      ],
+      "success": "对。redrive 重新进入处理路径，不会自动撤销旧副作用，也不会替你修复根因。",
+      "retry": "把调查、修复、幂等和顺序放在 redrive 之前；搬运本身不是安全证明。"
+    },
+    "prompt": {
+      "title": "拆开一次死信处理",
+      "text": "请记录消息本体、投递次数、失败理由、保留期、告警、读取权限和顺序约束；再分别写出 inspect、fix、redrive、discard 的审批与幂等条件。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+        "label": "Amazon SQS · Dead-letter queues",
+        "note": "最大接收次数、redrive、保留期与 FIFO 顺序边界"
+      },
+      {
+        "url": "https://docs.cloud.google.com/pubsub/docs/handling-failures",
+        "label": "Google Pub/Sub · Dead-letter topics",
+        "note": "无法确认的消息转到失败主题"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues",
+        "label": "Azure Service Bus · Dead-letter queues",
+        "note": "secondary subqueue、失败原因和手动清理"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-dead-letter-queues.html",
+        "label": "Amazon SNS · Dead-letter queues",
+        "note": "失败消息的分析与重新处理"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-message-loss-and-duplicates",
+        "label": "Azure Service Bus · Loss and duplicates",
+        "note": "peek-lock、receive-and-delete 与重复/丢失取舍"
+      }
+    ]
   }
 ]

@@ -5111,5 +5111,57 @@
       "inference",
       "agent-workflow"
     ]
+  },
+  {
+    "zh": "死信队列",
+    "en": "Dead-Letter Queue",
+    "slug": "dead-letter-queue",
+    "cat": "AI·Agent",
+    "say": "把反复失败的消息隔离出来，留下证据，等人调查和决定重放。",
+    "aliases": [
+      "DLQ",
+      "死信",
+      "Dead Letter Queue"
+    ],
+    "question": "一条消息总是失败时，为什么不让它一直重试？",
+    "definition": "死信队列是主队列之外的隔离支路：消息在达到最大投递次数、无法确认或满足其他失败条件后被移入这里，保留消息本体和失败信息，等待调查、修复、重放或明确放弃。",
+    "boundary": "死信队列不等于垃圾桶，也不等于自动修复。它仍需保留期、权限、监控、幂等和重放策略；重放可能造成重复副作用、改变顺序，或把同一个根因再次送回死信区。",
+    "demoType": "branch",
+    "demoTitle": "坏消息怎样从重试支路进入死信区",
+    "demoSteps": [
+      {
+        "label": "重复失败",
+        "value": "bad-json · attempt 1 → 2 → 3",
+        "note": "暂时错误可以重试，但每次尝试都要留下次数和原因。"
+      },
+      {
+        "label": "隔离保留",
+        "value": "maxReceiveCount = 3 → DLQ",
+        "note": "移出主路径后，后面的正常消息可以继续，坏消息仍然可调查。"
+      },
+      {
+        "label": "调查出口",
+        "value": "修复 + 幂等检查 → redrive / 放弃",
+        "note": "重放是一次新的处理，不是把失败消息直接标成成功。"
+      }
+    ],
+    "quizQuestion": "死信队列最准确的作用是什么？",
+    "quizOptions": [
+      "隔离反复失败的消息并保留证据，等待明确的后续处理",
+      "把失败消息自动改成成功并从系统中删除",
+      "无条件保证重放后不会产生重复副作用"
+    ],
+    "correctText": "对。DLQ 缩小失败影响范围，调查和重放仍需要业务决定与证据。",
+    "wrongText": "再看一遍：隔离、修复、重放和幂等是不同动作，DLQ 不会自动替你完成它们。",
+    "promptTitle": "设计一条可运营的死信支路",
+    "prompt": "为消息写出确认时机、最大投递次数、退避、死信原因、保留期、告警、读取权限、修复和 redrive 条件；再检查重复副作用、顺序和幂等键。",
+    "relatedSlugs": [
+      "queue",
+      "retry",
+      "idempotency",
+      "rate-limiting",
+      "backpressure",
+      "agent-workflow"
+    ]
   }
 ]

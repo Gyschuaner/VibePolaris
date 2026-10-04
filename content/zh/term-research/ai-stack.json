@@ -1822,5 +1822,27 @@
       "inference",
       "agent-workflow"
     ]
+  },
+  {
+    "slug": "dead-letter-queue",
+    "mechanism": "死信队列在消息超过最大投递次数、无法确认或满足失败条件后，把消息从主队列移到隔离支路；DLQ 保留消息本体、原因、次数与时间，后续由调查者决定修复、redrive 或放弃。",
+    "misconception": "DLQ 不是垃圾桶、成功标记或自动修复器；它不替业务解决幂等、顺序、权限、保留期和重复副作用，redrive 也可能把根因再次送回死信区。",
+    "demoSignature": "bad-json 从主队列进入消费者，经历 attempt 1/2/3 后走 branch 进入 DLQ；五帧展示主路径继续、原因保留、调查证据和修复后 redrive；工作台切换正常/坏消息与只调查/修复重放，分别得到 acked、quarantined、fixed→redrive。",
+    "sourceUrls": [
+      "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+      "https://docs.cloud.google.com/pubsub/docs/handling-failures",
+      "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues",
+      "https://docs.aws.amazon.com/sns/latest/dg/sns-dead-letter-queues.html",
+      "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-message-loss-and-duplicates"
+    ],
+    "rewriteRisk": "正文要把 retry、dead-letter、inspect 和 redrive 分成四个动作，写清保留期、失败原因、重复/顺序和权限边界；避免把“进入 DLQ”写成处理成功或自动丢弃。",
+    "nearDuplicates": [
+      "queue",
+      "retry",
+      "idempotency",
+      "data-ingestion",
+      "backpressure",
+      "rate-limiting"
+    ]
   }
 ]

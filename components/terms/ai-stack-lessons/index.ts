@@ -47,3 +47,5 @@ export { AgentWorkflowHero } from "./agent-workflow-hero";
 export { AgentWorkflowLesson } from "./agent-workflow";
 export { BackpressureHero } from "./backpressure-hero";
 export { BackpressureLesson } from "./backpressure";
+export { DeadLetterQueueHero } from "./dead-letter-queue-hero";
+export { DeadLetterQueueLesson } from "./dead-letter-queue";
