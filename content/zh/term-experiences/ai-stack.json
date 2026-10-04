@@ -19054,5 +19054,193 @@
         "note": "评测对象、运行和结果记录"
       }
     ]
+  },
+  {
+    "slug": "transformer",
+    "lead": "一句话里，“它”为什么会回看前面的“小猫”？",
+    "definition": "Transformer 把 token 和位置信息送进重复的计算块；每个块先让位置交换相关信息，再在每个位置上做相同形状的前馈变换，输出下一层可以继续使用的表示。",
+    "boundary": "演示里的连线和强度是可视化线索，不是模型唯一的解释；换模型、输入、遮罩或任务头，实际关系和输出都会变化。",
+    "sceneKind": "layers",
+    "sceneTitle": "六张 token 卡怎样长出关系",
+    "actionLabel": "换一个主语",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "token 一排",
+        "detail": "小猫 · 坐在 · 窗边 · 它 · 看见 · 雨",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "attention",
+        "label": "自注意力",
+        "detail": "它 ↔ 小猫；看见 ↔ 雨",
+        "icon": "search",
+        "group": "交换"
+      },
+      {
+        "id": "ffn",
+        "label": "前馈与残差",
+        "detail": "角色 · 动作 · 场景",
+        "icon": "gear",
+        "group": "改写"
+      },
+      {
+        "id": "stack",
+        "label": "下一层表示",
+        "detail": "保留位置，继续组合线索",
+        "icon": "package",
+        "group": "输出"
+      }
+    ],
+    "edges": [
+      {
+        "id": "tokens-attention",
+        "from": "tokens",
+        "to": "attention",
+        "label": "取回相关位置"
+      },
+      {
+        "id": "attention-ffn",
+        "from": "attention",
+        "to": "ffn",
+        "label": "把关系交给局部变换"
+      },
+      {
+        "id": "ffn-stack",
+        "from": "ffn",
+        "to": "stack",
+        "label": "送往下一层"
+      }
+    ],
+    "frames": [
+      {
+        "label": "摆好 token",
+        "note": "每张卡先带着自己的位置，关系还没有被高亮。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "attention",
+          "ffn",
+          "stack"
+        ],
+        "values": {
+          "tokens": "6 个位置"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "交换信息",
+        "note": "自注意力从同一序列取回相关线索；演示连线不等于唯一解释。",
+        "activeIds": [
+          "attention"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "ffn",
+          "stack"
+        ],
+        "values": {
+          "attention": "它 ↔ 小猫"
+        },
+        "activeEdgeIds": [
+          "tokens-attention"
+        ]
+      },
+      {
+        "label": "各自改写",
+        "note": "前馈网络在每个位置复用同一形状的变换，残差保留原表示的路。",
+        "activeIds": [
+          "ffn"
+        ],
+        "doneIds": [
+          "tokens",
+          "attention"
+        ],
+        "mutedIds": [
+          "stack"
+        ],
+        "values": {
+          "ffn": "角色 / 动作 / 场景"
+        },
+        "activeEdgeIds": [
+          "attention-ffn"
+        ]
+      },
+      {
+        "label": "继续堆叠",
+        "note": "一层的输出成为下一层输入，仍然需要任务头和外部证据完成最后判断。",
+        "activeIds": [
+          "stack"
+        ],
+        "doneIds": [
+          "tokens",
+          "attention",
+          "ffn"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stack": "下一层"
+        },
+        "activeEdgeIds": [
+          "ffn-stack"
+        ]
+      }
+    ],
+    "insight": "Transformer 的强项是让序列位置在多层计算中反复交换并改写表示；架构本身不负责事实核验。",
+    "quiz": {
+      "question": "拿掉句子的主语后，演示为什么不再给“它”指定对象？",
+      "options": [
+        {
+          "label": "可供注意力取回的线索少了",
+          "correct": true
+        },
+        {
+          "label": "Transformer 自动把空白填成真相",
+          "correct": false
+        },
+        {
+          "label": "层数会替代缺失的输入",
+          "correct": false
+        }
+      ],
+      "success": "关系需要输入中的线索；缺失证据时应保留不确定性。",
+      "retry": "注意力能重组已有表示，不能凭空制造不存在的主语。"
+    },
+    "prompt": {
+      "title": "检查一层 Transformer",
+      "text": "请把输入位置、自注意力、前馈网络、残差/归一化、层数和任务头逐项列出，并标明演示线索与事实证据的边界。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "注意力架构的原始论文"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+        "label": "Dive into Deep Learning · The Transformer Architecture",
+        "note": "编码器层、前馈、残差、解码器遮罩"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.TransformerEncoder.html",
+        "label": "PyTorch · TransformerEncoder",
+        "note": "编码器层堆叠和顺序前向"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/index",
+        "label": "Hugging Face · Transformers",
+        "note": "模型定义、训练和推理生态"
+      },
+      {
+        "url": "https://huggingface.co/docs/hub/en/transformers",
+        "label": "Hugging Face Hub · Using transformers",
+        "note": "配置蓝图与权重文件"
+      }
+    ]
   }
 ]

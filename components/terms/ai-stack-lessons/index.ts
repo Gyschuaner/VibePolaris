@@ -35,3 +35,5 @@ export { FewShotPromptingLesson } from "./few-shot-prompting";
 export { ZeroShotPromptingLesson } from "./zero-shot-prompting";
 export { TemperatureLesson } from "./temperature";
 export { TokenizationLesson } from "./tokenization";
+export { TransformerLesson } from "./transformer";
+export { TransformerHero } from "./transformer-hero";

@@ -45,3 +45,4 @@ export { transpilerSources } from "./transpiler";
 export { buildToolSources } from "./build-tool";
 export { bundlerSources } from "./bundler";
 export { devServerSources } from "./dev-server";
+export { transformerSources } from "./transformer";

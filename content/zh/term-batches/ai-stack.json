@@ -4752,5 +4752,55 @@
       "token",
       "context"
     ]
+  },
+  {
+    "zh": "Transformer",
+    "en": "Transformer",
+    "slug": "transformer",
+    "cat": "AI·Agent",
+    "say": "让一排 token 在层层计算里交换信息，再各自带着更丰富的表示继续前进。",
+    "aliases": [
+      "Transformer 架构",
+      "注意力架构",
+      "变换器"
+    ],
+    "question": "模型怎么知道一句话里哪个词和哪个词有关？",
+    "definition": "Transformer 是一种以注意力为核心的神经网络架构：输入位置先交换相关信息，再经过逐位置的前馈变换，多个这样的层可以连续堆叠。它输出的是供下游任务使用的表示或候选，不是自动核验过的事实。",
+    "boundary": "Transformer 不是一个具体模型名，也不是事实数据库；encoder、decoder、层数、头数、位置编码和训练目标都可能不同。能建立关系不等于关系一定正确，更不等于生成内容已经被外部证据核对。",
+    "demoType": "flow",
+    "demoTitle": "一排 token 怎样经过两次改写",
+    "demoSteps": [
+      {
+        "label": "摆好位置",
+        "value": "小猫 · 坐在 · 窗边 · 它 · 看见 · 雨",
+        "note": "先把 token 和顺序放进同一排，暂时不把高亮当成理解。"
+      },
+      {
+        "label": "交换信息",
+        "value": "它 ↔ 小猫；看见 ↔ 雨",
+        "note": "自注意力让位置取回相关线索，连线是教学示意，不是唯一解释。"
+      },
+      {
+        "label": "继续前进",
+        "value": "关系表示 → 下一层或任务头",
+        "note": "前馈、残差和更多层继续改写表示；结果仍需按任务核验。"
+      }
+    ],
+    "quizQuestion": "下面哪句话最准确地描述 Transformer？",
+    "quizOptions": [
+      "它让序列位置交换信息并逐层更新表示",
+      "它把所有事实存进一个可查询数据库",
+      "层数越多就一定不会出错"
+    ],
+    "correctText": "Transformer 的骨架是注意力、逐位置变换和层叠表示更新。",
+    "wrongText": "架构能改变表示和计算路径，却不能自动保证事实正确。",
+    "promptTitle": "拆解一个 Transformer 模型",
+    "prompt": "请分别列出模型使用的 encoder/decoder、位置编码、层数、注意力头、训练目标和输出头；再说明哪些结论有外部证据，哪些只来自模型表示。",
+    "relatedSlugs": [
+      "llm",
+      "tokenization",
+      "context-window",
+      "generative-ai"
+    ]
   }
 ]

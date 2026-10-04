@@ -1677,5 +1677,25 @@
       "token",
       "context"
     ]
+  },
+  {
+    "slug": "transformer",
+    "mechanism": "Transformer 让序列位置通过多头自注意力交换信息，再用逐位置前馈网络、残差连接和层归一化连续更新表示；多层堆叠后交给具体任务头读取。",
+    "misconception": "“Transformer”是计算架构家族，不是一个固定模型或事实数据库；注意力高亮、层数和生成流畅度都不能单独证明答案正确。",
+    "demoSignature": "句子“小猫坐在窗边，它看见雨”先以六张 token 卡保留位置，再高亮“它↔小猫、看见↔雨”，随后显示逐位置的角色/动作/场景表示；切换为小狗或拿掉主语，关系与边界提示同步变化。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.TransformerEncoder.html",
+      "https://huggingface.co/docs/transformers/main/en/index",
+      "https://huggingface.co/docs/hub/en/transformers"
+    ],
+    "rewriteRisk": "先把“位置交换信息—逐位置改写—层层堆叠”讲成可观察动作，再拆开 encoder、decoder、权重和任务头；避免把注意力图当成思维链或事实证明。",
+    "nearDuplicates": [
+      "attention",
+      "llm",
+      "context-window",
+      "tokenization"
+    ]
   }
 ]
