@@ -961,13 +961,54 @@
     ]
   },
   {
-    "zh": "响应头", "en": "Response Header", "slug": "response-header", "cat": "技术栈",
-    "say": "服务器随响应返回的元信息，例如内容格式、缓存策略和追踪编号。", "aliases": ["Response Header", "HTTP 响应头", "返回头"],
-    "question": "接口内容一样，为什么一个被缓存，另一个每次都重新请求？", "definition": "响应头是 HTTP 响应中的键值元信息，用于说明内容、缓存、安全和连接等处理方式。", "boundary": "响应头适合元信息，不能替代业务响应体；自定义头也应保持必要和稳定。",
-    "demoType": "request", "demoTitle": "响应头怎样改变浏览器处理",
-    "demoSteps": [{"label":"说明类型","value":"Content-Type: application/json","note":"浏览器按 JSON 读取响应体。"},{"label":"设置缓存","value":"Cache-Control: max-age=60","note":"一分钟内可复用本地响应。"},{"label":"提供追踪","value":"X-Request-Id: ab12","note":"前后端可用编号关联日志。"}],
-    "quizQuestion": "哪项通常放在响应头中？", "quizOptions": ["缓存策略", "完整商品列表", "数据库全部数据"], "correctText": "Cache-Control 等缓存策略属于响应元信息。", "wrongText": "业务数据通常放响应体，也不应返回数据库全部内容。",
-    "promptTitle": "审查响应头", "prompt": "请检查这个接口的 Content-Type、缓存、跨域、安全和追踪响应头，删除重复或相互冲突的设置。", "relatedSlugs": ["response", "response-body", "cache-control", "mime-type"]
+    "zh": "响应头",
+    "en": "Response Header",
+    "slug": "response-header",
+    "cat": "技术栈",
+    "say": "响应随身带着的字段牌，会告诉客户端下一步怎么走、等多久或能不能复用。",
+    "aliases": [
+      "Response Header",
+      "HTTP 响应头",
+      "返回头"
+    ],
+    "question": "body 一样，为什么换一张响应头字段牌，客户端就改了下一步？",
+    "definition": "响应头是跟随 HTTP 状态返回的元信息；Location、Retry-After、Vary 和 Cache-Control 等字段把导航、等待、缓存键与新鲜度规则交给接收方。",
+    "boundary": "字段说明协议动作，不替业务 body 提供内容，也不保证客户端一定自动执行；具体动作还受状态码、客户端策略和缓存规则约束。",
+    "demoType": "flow",
+    "demoTitle": "同一份 body 怎样被不同字段牌带走",
+    "demoSteps": [
+      {
+        "label": "先交付原响应",
+        "value": "200 · body unchanged",
+        "note": "没有控制字段时，调用方按普通响应读取内容。"
+      },
+      {
+        "label": "字段推动下一步",
+        "value": "Location / Retry-After",
+        "note": "客户端可能改道或等待，动作由字段语义和状态码共同决定。"
+      },
+      {
+        "label": "缓存另算一套规则",
+        "value": "Vary / Cache-Control",
+        "note": "响应可以拆分缓存键、进入新鲜窗口，也可以明确不能复用。"
+      }
+    ],
+    "quizQuestion": "响应包含 Retry-After: 30 时，客户端最合理的第一反应是什么？",
+    "quizOptions": [
+      "把它交给等待和重试策略，至少避开指定窗口",
+      "立即无限重试",
+      "把字段当成响应体内容显示"
+    ],
+    "correctText": "Retry-After 提供等待提示，是否重试还要结合请求语义和退避策略。",
+    "wrongText": "响应头字段会参与协议动作，不能只当作页面文字，也不能拿来保证业务成功。",
+    "promptTitle": "列出响应头改变的下一步",
+    "prompt": "请记录 status、字段名和值、接收方、触发的动作和缓存影响，分别判断是跳转、等待、拆分缓存键、进入新鲜窗口还是停止复用。",
+    "relatedSlugs": [
+      "response",
+      "response-body",
+      "cache-control",
+      "http-header"
+    ]
   },
   {
     "zh": "数据帧", "en": "DataFrame", "slug": "dataframe", "cat": "技术栈",

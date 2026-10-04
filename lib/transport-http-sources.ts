@@ -31,8 +31,8 @@ export const responseBodySources: Source[] = [
 ];
 
 export const responseHeaderSources: Source[] = [
-  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["header-metadata", "header-location", "header-retry", "header-vary"]),
-  make("IETF", "RFC 9111 · HTTP Caching", "https://www.rfc-editor.org/rfc/rfc9111.html", ["header-cache", "header-vary"]),
+  make("IETF", "RFC 9110 · HTTP Semantics", "https://www.rfc-editor.org/rfc/rfc9110.html", ["header-metadata", "header-location", "header-retry", "header-vary", "header-no-reuse"]),
+  make("IETF", "RFC 9111 · HTTP Caching", "https://www.rfc-editor.org/rfc/rfc9111.html", ["header-cache", "header-vary", "header-no-reuse"]),
   make("MDN Web Docs", "HTTP headers", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers", ["header-fields", "header-metadata"]),
   make("MDN Web Docs", "Retry-After header", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After", ["header-retry"]),
 ];

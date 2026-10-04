@@ -12869,223 +12869,299 @@
   },
   {
     "slug": "response-header",
-    "lead": "响应体完全一样，为什么加上 Location、Set-Cookie 或 Retry-After 会改变客户端后续行为？",
-    "definition": "响应字段携带关于内容、缓存、认证、导航和连接处理的元数据，浏览器、客户端库与中间缓存会据此执行具体动作。",
-    "boundary": "响应头适合元信息，不能替代业务响应体。它是通用 HTTP 字段在响应中的使用位置，不应与请求头混成同一方向。",
+    "lead": "响应体完全一样，为什么换一张字段牌，浏览器和缓存就改了下一步？",
+    "definition": "本页把响应头当作控制信号来读：Location 改变后续目标，Retry-After 提供等待窗口，Vary 拆分缓存键，Cache-Control 规定新鲜时间；body 仍是独立的表示载荷。",
+    "boundary": "响应头适合传递协议元信息，不能替 body 交付业务内容，也不能绕过状态码、客户端策略或权限判断。",
     "sceneKind": "state-machine",
-    "sceneTitle": "四个响应字段触发四种客户端状态",
-    "actionLabel": "加入下一个响应字段",
+    "sceneTitle": "同一份响应怎样走出六条不同的下一步",
+    "actionLabel": "换一张字段牌",
     "actors": [
       {
-        "id": "base-reply",
+        "id": "base-response",
         "label": "基础响应",
-        "detail": "无字段动作",
+        "detail": "status + same body",
         "icon": "server",
         "group": "响应"
       },
       {
-        "id": "location-field",
-        "label": "Location",
-        "detail": "/login",
+        "id": "control-field",
+        "label": "控制字段",
+        "detail": "Location / Retry-After / Vary / Cache-Control",
+        "icon": "file",
+        "group": "字段"
+      },
+      {
+        "id": "next-request",
+        "label": "后续请求",
+        "detail": "改目标或等待后再发",
         "icon": "network",
-        "group": "字段"
+        "group": "导航"
       },
       {
-        "id": "cookie-field",
-        "label": "Set-Cookie",
-        "detail": "sid=R7",
-        "icon": "key",
-        "group": "字段"
+        "id": "cache-policy",
+        "label": "缓存规则",
+        "detail": "键、freshness、复用",
+        "icon": "database",
+        "group": "缓存"
       },
       {
-        "id": "retry-field",
-        "label": "Retry-After",
-        "detail": "30",
-        "icon": "clock",
-        "group": "字段"
-      },
-      {
-        "id": "vary-field",
-        "label": "Vary",
-        "detail": "Accept-Language",
-        "icon": "memory",
-        "group": "字段"
-      },
-      {
-        "id": "response-client",
-        "label": "客户端",
-        "detail": "执行后续动作",
+        "id": "caller",
+        "label": "调用方",
+        "detail": "读取同一 body",
         "icon": "browser",
-        "group": "状态"
+        "group": "结果"
+      },
+      {
+        "id": "stop",
+        "label": "停止复用",
+        "detail": "Vary: *",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "reply-client",
-        "from": "base-reply",
-        "to": "response-client",
-        "label": "接收响应"
+        "id": "response-field",
+        "from": "base-response",
+        "to": "control-field",
+        "label": "读字段"
       },
       {
-        "id": "location-client",
-        "from": "location-field",
-        "to": "response-client",
-        "label": "导航"
+        "id": "field-next",
+        "from": "control-field",
+        "to": "next-request",
+        "label": "导航 / 等待"
       },
       {
-        "id": "cookie-client",
-        "from": "cookie-field",
-        "to": "response-client",
-        "label": "保存状态"
+        "id": "field-cache",
+        "from": "control-field",
+        "to": "cache-policy",
+        "label": "缓存判断"
       },
       {
-        "id": "retry-client",
-        "from": "retry-field",
-        "to": "response-client",
-        "label": "安排等待"
+        "id": "response-caller",
+        "from": "base-response",
+        "to": "caller",
+        "label": "交付 body"
       },
       {
-        "id": "vary-client",
-        "from": "vary-field",
-        "to": "response-client",
-        "label": "拆分缓存键"
+        "id": "cache-stop",
+        "from": "cache-policy",
+        "to": "stop",
+        "label": "停止复用"
       }
     ],
     "frames": [
       {
-        "label": "Location 安排下一次导航",
-        "note": "302 响应的字段把客户端目标改为 /login。",
+        "label": "原地交付",
+        "note": "同一份 body 先交给调用方；没有控制字段，客户端没有新的协议动作。",
         "activeIds": [
-          "base-reply",
-          "location-field",
-          "response-client"
+          "base-response",
+          "caller"
         ],
         "doneIds": [
-          "response-client"
+          "caller"
         ],
         "mutedIds": [
-          "cookie-field",
-          "retry-field",
-          "vary-field"
+          "control-field",
+          "next-request",
+          "cache-policy",
+          "stop"
         ],
         "values": {
-          "base-reply": "302",
-          "response-client": "next GET /login"
+          "base-response": "200 · same body",
+          "caller": "read payload"
         },
         "activeEdgeIds": [
-          "reply-client",
-          "location-client"
+          "response-caller"
         ]
       },
       {
-        "label": "Set-Cookie 保存会话标识",
-        "note": "浏览器把 sid=R7 按作用域保存，并在后续匹配请求中发送。",
+        "label": "Location 改变目标",
+        "note": "302 的 Location 指向 /login，下一次请求目标改变，当前 body 仍没有被改写。",
         "activeIds": [
-          "cookie-field",
-          "response-client"
+          "base-response",
+          "control-field",
+          "next-request"
         ],
         "doneIds": [
-          "cookie-field"
+          "next-request"
         ],
         "mutedIds": [
-          "location-field",
-          "retry-field",
-          "vary-field"
+          "caller",
+          "cache-policy",
+          "stop"
         ],
         "values": {
-          "response-client": "cookie jar: sid=R7"
+          "control-field": "Location: /login",
+          "next-request": "GET /login"
         },
         "activeEdgeIds": [
-          "cookie-client"
+          "response-field",
+          "field-next"
         ]
       },
       {
-        "label": "Retry-After 建立等待窗口",
-        "note": "429 响应使客户端在 30 秒后再考虑重试。",
+        "label": "Retry-After 留出等待",
+        "note": "429 的 Retry-After: 30 给重试器一个窗口；是否重试仍要看请求能不能安全重复。",
         "activeIds": [
-          "retry-field",
-          "response-client"
+          "base-response",
+          "control-field",
+          "next-request"
         ],
         "doneIds": [
-          "retry-field"
+          "control-field"
         ],
         "mutedIds": [
-          "location-field",
-          "cookie-field",
-          "vary-field"
+          "caller",
+          "cache-policy",
+          "stop"
         ],
         "values": {
-          "response-client": "retry at +30 s"
+          "control-field": "Retry-After: 30",
+          "next-request": "wait 30s"
         },
         "activeEdgeIds": [
-          "retry-client"
+          "response-field",
+          "field-next"
         ],
         "metric": {
-          "label": "等待时间",
+          "label": "等待窗口",
           "value": "30 s"
         }
       },
       {
-        "label": "Vary 拆分共享缓存条目",
-        "note": "中文与英文响应不能只按 URL 共用一个缓存副本。",
+        "label": "Vary 拆分缓存键",
+        "note": "Vary: Accept-Language 让 zh 和 en 的表示分开保存，避免把一个变体发给另一个请求。",
         "activeIds": [
-          "vary-field",
-          "response-client"
+          "base-response",
+          "control-field",
+          "cache-policy"
         ],
         "doneIds": [
-          "vary-field"
+          "cache-policy"
         ],
         "mutedIds": [
-          "location-field",
-          "cookie-field",
-          "retry-field"
+          "caller",
+          "next-request",
+          "stop"
         ],
         "values": {
-          "response-client": "cache keys: zh / en"
+          "control-field": "Vary: Accept-Language",
+          "cache-policy": "keys: zh / en"
         },
         "activeEdgeIds": [
-          "vary-client"
+          "response-field",
+          "field-cache"
         ],
         "metric": {
           "label": "缓存变体",
           "value": "2"
         }
+      },
+      {
+        "label": "Vary: * 停止复用",
+        "note": "Vary: * 表示这次响应不能被缓存拿去满足后续请求；body 没坏，是复用被挡住。",
+        "activeIds": [
+          "base-response",
+          "control-field",
+          "cache-policy",
+          "stop"
+        ],
+        "doneIds": [
+          "stop"
+        ],
+        "mutedIds": [
+          "caller",
+          "next-request"
+        ],
+        "values": {
+          "control-field": "Vary: *",
+          "stop": "reuse blocked"
+        },
+        "activeEdgeIds": [
+          "response-field",
+          "field-cache",
+          "cache-stop"
+        ]
+      },
+      {
+        "label": "Cache-Control 打开新鲜窗口",
+        "note": "max-age=60 让缓存知道 60 秒内可以直接复用，过期后的验证另由缓存规则接管。",
+        "activeIds": [
+          "base-response",
+          "control-field",
+          "cache-policy",
+          "caller"
+        ],
+        "doneIds": [
+          "cache-policy",
+          "caller"
+        ],
+        "mutedIds": [
+          "next-request",
+          "stop"
+        ],
+        "values": {
+          "control-field": "max-age=60",
+          "cache-policy": "fresh HIT",
+          "caller": "same body"
+        },
+        "activeEdgeIds": [
+          "response-field",
+          "field-cache",
+          "response-caller"
+        ],
+        "metric": {
+          "label": "新鲜窗口",
+          "value": "60 s"
+        }
       }
     ],
-    "insight": "响应字段不是旁注；它们直接参与导航、状态、等待和缓存决策。",
+    "insight": "响应头把协议动作写在 body 之外；读懂它，要看字段的接收方和后续行为，而不是只背字段名。",
     "quiz": {
-      "question": "429 响应包含 Retry-After: 30，客户端应怎样处理？",
+      "question": "Vary: Accept-Language 的直接作用是什么？",
       "options": [
         {
-          "label": "至少等待指定窗口，再按策略决定重试",
+          "label": "让缓存按请求语言区分响应变体",
           "correct": true
         },
         {
-          "label": "立即无限重试",
+          "label": "把 body 自动翻译成多种语言",
           "correct": false
         },
         {
-          "label": "把字段显示在页面后忽略",
+          "label": "保证所有客户端都跟随跳转",
           "correct": false
         }
       ],
-      "success": "Retry-After 为后续重试提供协议级等待信息。",
-      "retry": "响应字段会驱动客户端动作，不只是供人阅读。"
+      "success": "Vary 改变的是缓存键与表示选择，不是 body 本身。",
+      "retry": "先问字段由谁读取，以及它改变的是导航、等待还是缓存。"
     },
     "prompt": {
-      "title": "列出响应字段的客户端动作",
-      "text": "请为 Location、Set-Cookie、Retry-After、Vary、ETag 等字段写出产生条件、接收方、后续动作和安全日志规则。"
+      "title": "审查响应头控制信号",
+      "text": "请为每个字段记录产生条件、接收方、后续动作、缓存影响和失败边界，避免把字段语义与响应 body 混在一起。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Response Fields",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "响应字段、Location、Retry-After、Vary 与报文语义"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
-        "label": "RFC 9111 · Caching Fields",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9111 · HTTP Caching",
+        "note": "缓存键、新鲜度和响应复用"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers",
+        "label": "MDN · HTTP headers",
+        "note": "标准响应头字段的使用位置"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After",
+        "label": "MDN · Retry-After",
+        "note": "等待窗口与重试提示"
       }
     ]
   },
