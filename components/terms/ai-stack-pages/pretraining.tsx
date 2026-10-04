@@ -32,7 +32,7 @@ export function PretrainingTermPage() {
     <ArticleSection id="pretraining-boundary" title="语料把边界一起带进来">
       <p id="pretraining-corpus" className="vp-citation-target">预训练语料不是透明的“世界本身”。Google 的 BERT 说明把 Wikipedia 和 BookCorpus 作为训练来源，并把预训练描述为一次昂贵、随后可以复用的阶段；来源范围、清洗方式、重复内容和时间点都会影响模型更容易学到什么。<Cite id="pretraining-corpus" sources={pretrainingSources} /></p>
       <p id="pretraining-cost" className="vp-citation-target">预训练通常要付出很大的计算成本，之后下游使用会便宜得多，但成本差异不等于质量保证。训练步数、批大小、词表、硬件和优化器共同决定一次训练怎样走；页面上的“一次更新”只是这条长链中的一个可观察切片。<Cite id="pretraining-cost" sources={pretrainingSources} /></p>
-      <p id="pretraining-data" className="vp-citation-target">OpenAI 对 GPT-3 的介绍也把边界写在结果旁边：模型先在大规模语料上预训练，使用时可以通过 few-shot 示例完成任务，但大型网络语料带来的方法和数据问题仍然存在。模型能顺着语料中的旧规则给出流畅答案，不代表它知道规则今天是否仍有效。<Cite id="pretraining-data" sources={pretrainingSources} /></p>
+      <p id="pretraining-data" className="vp-citation-target">GPT-3 原始论文把边界写在结果旁边：模型先在大规模语料上预训练，使用时可以通过 few-shot 示例完成任务，但大型网络语料带来的方法和数据问题仍然存在。模型能顺着语料中的旧规则给出流畅答案，不代表它知道规则今天是否仍有效。<Cite id="pretraining-data" sources={pretrainingSources} /></p>
       <p id="pretraining-finetune" className="vp-citation-target">因此要把三件事分开：预训练让参数获得广泛的语言和模式起点，微调或指令训练改变特定任务上的行为，推理只是用当前参数处理一次输入。上线前仍要用独立评估、检索或业务规则核验关键事实，不能把较低的训练损失直接当作可靠性证明。<Cite id="pretraining-finetune" sources={pretrainingSources} /></p>
       <p><strong>带走一个问题：</strong>当你听到“这个模型在海量数据上训练过”，先追问它的目标是什么、数据从哪里来、参数是否真的经过更新，以及你现在要的事实有没有独立证据。预训练给模型一个起点，不替产品完成验收。</p>
     </ArticleSection>
