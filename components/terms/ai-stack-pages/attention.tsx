@@ -21,7 +21,7 @@ export function AttentionTermPage() {
     <ArticleSection id="attention-score-section" title="分数不是答案">
       <p id="attention-weights" className="vp-citation-target">权重通常经过 softmax 归一化，非负且总和为 1；它们告诉计算应该把多少 value 混进当前位置。权重高可以帮助观察“这一次取数偏向哪里”，但它只是这一步的数值结果，不能直接等同于模型的完整理由。<Cite id="attention-weights" sources={attentionSources} /></p>
       <p id="attention-original" className="vp-citation-target">原始 Transformer 论文使用缩放点积注意力：查询和 key 的点积先除以维度相关的缩放项，再做 softmax。缩放的作用是让数值范围更适合训练，不是给每个词赋一个人类能读懂的“重要性分数”。<Cite id="attention-original" sources={attentionSources} /></p>
-      <p id="attention-scale" className="vp-citation-target">页面里的“高 / 中 / 低”是为了让取数过程看得见。真实实现还会受投影矩阵、mask、输入长度、精度和训练状态影响；把一张热力图截图单独拿出来，无法证明模型只因为那一格才作出结论。</p>
+      <p id="attention-scale" className="vp-citation-target">页面里的“高 / 中 / 低”是为了让取数过程看得见。真实实现还会受投影矩阵、mask、输入长度、精度和训练状态影响；把一张热力图截图单独拿出来，无法证明模型只因为那一格才作出结论。<Cite id="attention-scale" sources={attentionSources} /></p>
     </ArticleSection>
     <ArticleSection id="attention-heads-section" title="为什么要多头">
       <p id="attention-multihead" className="vp-citation-target">多头注意力先用不同的可学习投影把 Q、K、V 送进多个子空间，各个 head 并行计算，最后把多个输出拼起来再做一次线性变换。不同 head 可能捕捉不同范围或关系；“口味头”和“价格头”是便于理解的任务场景，不是给每个模型 head 贴上的固定人类标签。<Cite id="attention-multihead" sources={attentionSources} /></p>
