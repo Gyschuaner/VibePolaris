@@ -11357,7 +11357,7 @@
     },
     {
       "label": "UDP 53 没有监听者",
-      "note": "相同数字不共享 TCP 的监听状态，数据报没有应用响应。",
+      "note": "无监听者通常回 ICMP Port Unreachable；若回传也被过滤，探测器才只看到 timeout。",
       "activeIds": [
         "port-probe",
         "udp-53",
@@ -11372,7 +11372,7 @@
         "udp-443"
       ],
       "values": {
-        "port-result": "timeout",
+        "port-result": "ICMP Port Unreachable",
         "udp-53": "no listener"
       },
       "activeEdgeIds": [

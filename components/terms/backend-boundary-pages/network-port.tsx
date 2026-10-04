@@ -20,8 +20,8 @@ const frames = [
     label: "UDP 53 没有监听者",
     probe: "UDP 203.0.113.7:53",
     listener: "UDP 53 · no listener",
-    result: "timeout",
-    note: "数字仍是 53，但 UDP 有自己的端点；它不会继承 TCP 53 的监听状态。",
+    result: "ICMP Port Unreachable",
+    note: "数字仍是 53，但 UDP 有自己的端点；若回传 ICMP 也被过滤，探测器才只会看到 timeout。",
   },
   {
     label: "443 换协议",
@@ -34,7 +34,7 @@ const frames = [
 
 const probes = [
   { label: "TCP 53", request: "TCP 203.0.113.7:53", listener: "DNS over TCP · listening", filter: "allow", result: "SYN-ACK", good: true, detail: "端口、协议、监听和过滤四项都对上了。" },
-  { label: "UDP 53", request: "UDP 203.0.113.7:53", listener: "no listener", filter: "allow", result: "timeout", good: false, detail: "放行只说明包能到这一关，主机上还要有 UDP 接收者。" },
+  { label: "UDP 53", request: "UDP 203.0.113.7:53", listener: "no listener", filter: "allow", result: "ICMP Port Unreachable", good: false, detail: "无监听者通常会回 ICMP Port Unreachable；若这条回传也被过滤，客户端才只剩 timeout。" },
   { label: "TCP 443", request: "TCP 203.0.113.7:443", listener: "TLS service · listening", filter: "allow", result: "ServerHello", good: true, detail: "端口可达后，应用协议才开始回应。" },
   { label: "UDP 443", request: "UDP 203.0.113.7:443", listener: "潜在服务未被看见", filter: "DROP", result: "timeout", good: false, detail: "防火墙先丢掉数据报，进程有没有监听已不是客户端能观察到的第一原因。" },
 ];
