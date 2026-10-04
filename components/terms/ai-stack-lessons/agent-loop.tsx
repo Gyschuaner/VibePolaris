@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle, ClipboardText, Eye, Flag, PlayCircle, Wrench, XCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../AiStackCoreConcepts.module.css";
 
 const labels = ["读状态", "跑一次检查", "把结果写回", "停止或到达上限"];
@@ -10,6 +11,7 @@ const labels = ["读状态", "跑一次检查", "把结果写回", "停止或到
 export function AgentLoopLesson() {
   const scene = useScene(labels.length);
   const [limit, setLimit] = useState<2 | 3>(3);
+  useResetOnSceneStart(scene, () => setLimit(3));
   const limited = limit === 2 && scene.step === 3;
   const nodes = [
     { title: "当前状态", text: scene.step === 0 ? "还有 1 项检查" : "清单与上轮结果", Icon: ClipboardText },
