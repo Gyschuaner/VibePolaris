@@ -51,3 +51,4 @@ export { inferenceSources } from "./inference";
 export { pretrainingSources } from "./pretraining";
 export { kvCacheSources } from "./kv-cache";
 export { agentWorkflowSources } from "./agent-workflow";
+export { backpressureSources } from "./backpressure";

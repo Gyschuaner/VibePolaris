@@ -1799,5 +1799,28 @@
       "handoff",
       "guardrail"
     ]
+  },
+  {
+    "slug": "backpressure",
+    "mechanism": "背压让下游把可用容量或 demand 反向传给上游；生产者在有额度时继续提交，缓冲接近上限时暂停或减速，容量恢复后再排空。",
+    "misconception": "背压不是无限缓存、限流或静默丢弃；它通常用等待和吞吐换有界资源。生产者不尊重信号、下游不恢复或重试反复注入时，背压也会进入停滞或新的堆积。",
+    "demoSignature": "生产者 6 chunks/s 经 4 格 buffer 送往 2 chunks/s 消费者；五帧展示水位上涨、capacity=0、压力回传、下游排空和监控记录；工作台切换“传回压力/丢弃超额”呈现 paused 与 shed 的数据代价。",
+    "sourceUrls": [
+      "https://www.reactive-streams.org/",
+      "https://docs.ray.io/en/latest/data/data-internals.html",
+      "https://docs.ray.io/en/latest/data/monitoring-your-workload.html",
+      "https://docs.cloud.google.com/architecture/framework/reliability/graceful-degradation",
+      "https://aws.amazon.com/builders-library/avoiding-overload-in-distributed-systems-by-putting-the-smaller-service-in-control/",
+      "https://docs.cloud.google.com/tasks/docs/manage-cloud-task-scaling"
+    ],
+    "rewriteRisk": "正文要把数据方向与容量信号方向画反向，写清有界缓冲、demand、暂停、恢复和 load shedding 的区别；避免把任何排队、限流或失败重试都称为背压。",
+    "nearDuplicates": [
+      "queue",
+      "rate-limiting",
+      "retry",
+      "streaming-output",
+      "inference",
+      "agent-workflow"
+    ]
   }
 ]

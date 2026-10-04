@@ -53,6 +53,7 @@ import { InferenceTermPage } from "./ai-stack-pages/inference";
 import { PretrainingTermPage } from "./ai-stack-pages/pretraining";
 import { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
 import { AgentWorkflowTermPage } from "./ai-stack-pages/agent-workflow";
+import { BackpressureTermPage } from "./ai-stack-pages/backpressure";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -108,6 +109,7 @@ export { InferenceTermPage } from "./ai-stack-pages/inference";
 export { PretrainingTermPage } from "./ai-stack-pages/pretraining";
 export { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
 export { AgentWorkflowTermPage } from "./ai-stack-pages/agent-workflow";
+export { BackpressureTermPage } from "./ai-stack-pages/backpressure";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -165,4 +167,5 @@ export const aiStackArticlePages = {
   pretraining: PretrainingTermPage,
   "kv-cache": KvCacheTermPage,
   "agent-workflow": AgentWorkflowTermPage,
+  backpressure: BackpressureTermPage,
 } as const;

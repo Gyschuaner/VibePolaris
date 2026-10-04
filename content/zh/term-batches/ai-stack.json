@@ -5059,5 +5059,57 @@
       "tool-approval",
       "human-in-the-loop"
     ]
+  },
+  {
+    "zh": "背压",
+    "en": "Backpressure",
+    "slug": "backpressure",
+    "cat": "AI·Agent",
+    "say": "下游接不住时，把容量信号传回上游，让生产先踩刹车。",
+    "aliases": [
+      "反压",
+      "流背压",
+      "Back Pressure"
+    ],
+    "question": "下游处理变慢时，为什么不能继续把任务塞进更大的队列？",
+    "definition": "背压是数据流中的一种节奏控制：下游报告自己还能接收多少，生产者据此暂停、减速或延后提交。它让缓冲区保持有界，把真正的瓶颈带回生产路径，而不是把无限堆积藏进内存。",
+    "boundary": "背压通常保留工作、牺牲吞吐；限流是预先设定请求额度，丢弃超额则直接放弃部分工作。三者都能缓解过载，却有不同的数据损失、等待和恢复代价。",
+    "demoType": "flow",
+    "demoTitle": "一条数据流怎样在满载时踩刹车",
+    "demoSteps": [
+      {
+        "label": "生产快",
+        "value": "上游 6 chunks/s → 下游 2 chunks/s",
+        "note": "速度差会先出现在缓冲区；队列不是凭空增加的处理能力。"
+      },
+      {
+        "label": "容量见顶",
+        "value": "buffer 4 / 4 → capacity = 0",
+        "note": "没有空槽时，继续提交只会扩大堆积和故障范围。"
+      },
+      {
+        "label": "压力回传",
+        "value": "暂停 / 减速，或明确丢弃超额",
+        "note": "背压保留数据但让吞吐下降；load shedding 保护服务却承认数据损失。"
+      }
+    ],
+    "quizQuestion": "背压最核心的动作是什么？",
+    "quizOptions": [
+      "让下游容量约束上游继续生产的速度",
+      "把所有等待任务无限放进内存队列",
+      "遇到慢请求就自动丢掉且不记录"
+    ],
+    "correctText": "对。背压让真正知道容量的接收侧参与决定生产节奏。",
+    "wrongText": "再看一遍：无限排队会把问题推迟，静默丢弃也不是背压本身。",
+    "promptTitle": "检查一条背压链路",
+    "prompt": "记录生产速率、消费速率、缓冲上限、容量信号、暂停时间、拒绝/丢弃数量和重试次数；再说明为什么选择保留、限流或丢弃，以及下游恢复的条件。",
+    "relatedSlugs": [
+      "queue",
+      "rate-limiting",
+      "retry",
+      "streaming-output",
+      "inference",
+      "agent-workflow"
+    ]
   }
 ]

@@ -45,3 +45,5 @@ export { KvCacheHero } from "./kv-cache-hero";
 export { KvCacheLesson } from "./kv-cache";
 export { AgentWorkflowHero } from "./agent-workflow-hero";
 export { AgentWorkflowLesson } from "./agent-workflow";
+export { BackpressureHero } from "./backpressure-hero";
+export { BackpressureLesson } from "./backpressure";
