@@ -906,18 +906,54 @@
     "relatedSlugs": ["ssr", "ssg", "user-flow", "sitemap"]
   },
   {
-    "zh": "Cookie", "en": "Cookie", "slug": "cookie", "cat": "前端",
-    "say": "Cookie 是浏览器按域名保存的小段数据，可在符合条件的请求中自动发送给服务器。",
-    "aliases": ["浏览器 Cookie", "会话 Cookie", "HTTP Cookie"],
-    "question": "登录后刷新页面，服务器怎样继续识别当前会话？",
-    "definition": "Cookie 由名称、值、域、路径、有效期和安全属性组成。服务器可通过 Set-Cookie 写入，浏览器按规则在后续请求中携带。",
-    "boundary": "Cookie 容量较小且会随请求传输，不适合存放大量页面数据；敏感会话值还需正确设置 HttpOnly、Secure 和 SameSite。",
-    "demoType": "request", "demoTitle": "会话 Cookie 随请求传递",
-    "demoSteps": [{"label":"登录响应","value":"Set-Cookie 写入会话标识","note":"浏览器按属性保存。"},{"label":"再次请求","value":"Cookie 请求头自动携带","note":"域、路径和 SameSite 必须符合条件。"},{"label":"服务器识别","value":"根据会话标识读取用户状态","note":"页面得到相应访问结果。"}],
-    "quizQuestion": "要阻止页面 JavaScript 读取会话 Cookie，应设置什么？", "quizOptions": ["HttpOnly", "display: none", "localStorage"],
-    "correctText": "HttpOnly Cookie 不向 document.cookie 暴露。", "wrongText": "CSS 和 localStorage 不能为 Cookie 提供这项限制。",
-    "promptTitle": "检查 Cookie 的安全属性", "prompt": "请检查下面 Set-Cookie 配置，根据登录会话、跨站请求和 HTTPS 条件说明 HttpOnly、Secure、SameSite、Path 与有效期应如何设置。",
-    "relatedSlugs": ["auth", "local-storage", "cors"]
+    "zh": "Cookie",
+    "en": "Cookie",
+    "slug": "cookie",
+    "cat": "前端",
+    "say": "浏览器按请求条件筛选、再自动带给服务器的一小段状态。",
+    "aliases": [
+      "浏览器 Cookie",
+      "会话 Cookie",
+      "HTTP Cookie"
+    ],
+    "question": "登录后刷新页面，哪一条 Cookie 会跟着请求走？",
+    "definition": "服务器通过 Set-Cookie 写入带属性的 Cookie，浏览器保存后按 Domain、Path、Secure、SameSite 等条件筛选；符合条件的名称和值进入后续请求的 Cookie 头。",
+    "boundary": "Cookie 容量小却会随匹配请求传输；HttpOnly 只限制脚本读取，Secure 只限制明文线路，SameSite 也不能替代会话轮换、授权和 CSRF 防护。",
+    "demoType": "request",
+    "demoTitle": "Cookie 罐怎样筛出一条请求头",
+    "demoSteps": [
+      {
+        "label": "写入 Cookie 罐",
+        "value": "Set-Cookie: session=R7; Path=/account",
+        "note": "浏览器保存值和属性，暂时还没有发送。"
+      },
+      {
+        "label": "拿请求条件来比",
+        "value": "HTTPS · /account · same-site",
+        "note": "Domain、Path、Secure 和 SameSite 逐项通过，session 才命中。"
+      },
+      {
+        "label": "分开网络与脚本",
+        "value": "Cookie header ≠ document.cookie",
+        "note": "HttpOnly 可以让脚本看不见，却不阻止合规网络请求携带。"
+      }
+    ],
+    "quizQuestion": "要阻止页面 JavaScript 读取会话 Cookie，应该设置什么？",
+    "quizOptions": [
+      "HttpOnly",
+      "display: none",
+      "localStorage"
+    ],
+    "correctText": "HttpOnly 不向 document.cookie 暴露这条 Cookie；它的网络发送规则仍由请求条件决定。",
+    "wrongText": "CSS 和 localStorage 都不能改变 Cookie 的脚本可见性。",
+    "promptTitle": "检查 Cookie 的发送与读取条件",
+    "prompt": "请列出 Set-Cookie 的 Domain、Path、Secure、HttpOnly、SameSite、Expires/Max-Age，并用同站、跨站、HTTP、不同路径和脚本读取逐项推演结果。",
+    "relatedSlugs": [
+      "auth",
+      "local-storage",
+      "session",
+      "cors"
+    ]
   },
   {
     "zh": "本地存储", "en": "Local Storage", "slug": "local-storage", "cat": "前端",
@@ -934,32 +970,104 @@
     "relatedSlugs": ["cookie", "browser-api", "state"]
   },
   {
-    "zh": "WebSocket", "en": "WebSocket", "slug": "websocket", "cat": "前端",
-    "say": "WebSocket 建立一条可双向持续通信的连接，客户端和服务器都能主动发送消息。",
-    "aliases": ["WebSocket 连接", "长连接", "实时通信"],
-    "question": "聊天页面怎样在没有反复刷新时立即收到新消息？",
-    "definition": "WebSocket 先通过 HTTP 完成握手，随后在同一连接上双向传输消息，适合聊天、协作和实时状态。",
-    "boundary": "它不会自动提供重连、消息确认、顺序保证或权限模型，这些需要应用协议补充。",
-    "demoType": "lifecycle", "demoTitle": "实时连接的状态变化",
-    "demoSteps": [{"label":"建立连接","value":"connecting → open","note":"握手成功后才可发送消息。"},{"label":"双向传输","value":"客户端与服务器互发消息","note":"无需为每条消息重新建请求。"},{"label":"连接中断","value":"close 或 error","note":"界面提示并按策略重连。"}],
-    "quizQuestion": "WebSocket 连接断开后，应用通常还需自行处理什么？", "quizOptions": ["重连与消息恢复", "CSS 选择器优先级", "HTML 标题层级"],
-    "correctText": "实时应用要定义重连、退避和遗漏消息的恢复方式。", "wrongText": "样式与文档结构不能恢复网络连接。",
-    "promptTitle": "补全实时连接的异常处理", "prompt": "请为下面 WebSocket 客户端补充连接状态、指数退避重连、重复消息去重和页面离开时关闭连接，并说明断线期间的用户提示。",
-    "relatedSlugs": ["fetch-api", "event", "queue"]
+    "zh": "WebSocket",
+    "en": "WebSocket",
+    "slug": "websocket",
+    "cat": "前端",
+    "say": "先用 HTTP 升级，再让客户端和服务器共享一条能双向发帧的持续连接。",
+    "aliases": [
+      "WebSocket 连接",
+      "长连接",
+      "实时通信"
+    ],
+    "question": "聊天页面怎样不用反复刷新，也能立即收到服务器的新消息？",
+    "definition": "WebSocket 先通过 HTTP Upgrade 完成握手，进入 OPEN 后在同一连接上交换带边界的双向帧；断线重连、消息确认和遗漏恢复需要应用协议另行设计。",
+    "boundary": "连接开放不等于业务消息必达。WebSocket 不自动提供重连、退避、去重、顺序或权限模型，关闭后也不会替应用补回消息。",
+    "demoType": "lifecycle",
+    "demoTitle": "一条实时连接从握手到恢复",
+    "demoSteps": [
+      {
+        "label": "先升级连接",
+        "value": "CONNECTING → 101 → OPEN",
+        "note": "HTTP Upgrade 成功后，双方才有持续的帧通道。"
+      },
+      {
+        "label": "双向交换帧",
+        "value": "client ↔ server · #18",
+        "note": "服务器可以主动推送，消息可能跨多个分片帧后再由 API 重组。"
+      },
+      {
+        "label": "关闭后补责任",
+        "value": "CLOSED → backoff → resume",
+        "note": "重连、游标和缺口恢复由应用协议补上。"
+      }
+    ],
+    "quizQuestion": "WebSocket 连接断开后，应用通常还要自己处理什么？",
+    "quizOptions": [
+      "重连、退避和遗漏消息恢复",
+      "CSS 选择器优先级",
+      "HTML 标题层级"
+    ],
+    "correctText": "WebSocket 只提供通道；可靠恢复要由客户端和服务器约定游标、重试与补发。",
+    "wrongText": "样式和文档结构不能恢复连接，通道也不会自动补回断线期间的消息。",
+    "promptTitle": "补全实时连接的异常处理",
+    "prompt": "请为 WebSocket 客户端列出连接状态、关闭原因、指数退避、重连上限、事件游标、去重和页面离开时的关闭动作。",
+    "relatedSlugs": [
+      "fetch-api",
+      "event",
+      "queue",
+      "response"
+    ]
   },
   {
-    "zh": "跨源资源共享", "en": "Cross-Origin Resource Sharing", "slug": "cors", "cat": "前端",
-    "say": "CORS 用响应头告诉浏览器，哪些其他来源可以读取当前服务器的响应。",
-    "aliases": ["跨域", "CORS", "跨源请求"],
-    "question": "接口在命令行能访问，为什么浏览器页面却提示被跨源策略拦截？",
-    "definition": "CORS 是浏览器执行的 HTTP 跨源访问机制。服务器用 Access-Control-Allow-* 响应头声明允许的来源、方法和请求头。",
-    "boundary": "CORS 不是身份认证，也不是阻止服务器收到请求的防火墙；它主要限制浏览器脚本读取响应。",
-    "demoType": "request", "demoTitle": "浏览器检查跨源响应",
-    "demoSteps": [{"label":"页面发起请求","value":"来源与接口来源不同","note":"浏览器识别为跨源。"},{"label":"必要时预检","value":"OPTIONS 查询允许条件","note":"非简单请求先确认方法和请求头。"},{"label":"校验响应头","value":"允许则交给脚本读取","note":"不允许时浏览器拦截响应访问。"}],
-    "quizQuestion": "CORS 允许来源通常由谁配置？", "quizOptions": ["接口服务器", "访问页面的 CSS", "用户的显示器"],
-    "correctText": "服务器通过响应头声明允许的跨源访问条件。", "wrongText": "页面样式和硬件不会生成 CORS 响应头。",
-    "promptTitle": "定位一次 CORS 失败", "prompt": "请根据下面请求来源、方法、请求头和响应头判断是否触发预检，指出缺少或冲突的 CORS 配置。不要用关闭浏览器安全策略作为解决方案。",
-    "relatedSlugs": ["api", "fetch-api", "auth"]
+    "zh": "跨源资源共享",
+    "en": "Cross-Origin Resource Sharing",
+    "slug": "cors",
+    "cat": "前端",
+    "say": "服务器给浏览器一组许可，浏览器再决定页面脚本能不能读跨源响应。",
+    "aliases": [
+      "跨域",
+      "CORS",
+      "跨源请求"
+    ],
+    "question": "接口在命令行能访问，为什么浏览器页面却提示跨源读取被拦截？",
+    "definition": "CORS 是浏览器执行的跨源响应读取机制；浏览器比较 origin，必要时先发 OPTIONS 预检，再依据 Access-Control-Allow-* 响应头决定是否把响应交给脚本。",
+    "boundary": "CORS 不负责认证、授权或防火墙拦截；服务器可能已经收到请求并返回 200，浏览器仍可把响应挡在脚本外。",
+    "demoType": "request",
+    "demoTitle": "跨源响应怎样经过浏览器闸门",
+    "demoSteps": [
+      {
+        "label": "识别 origin",
+        "value": "app.example → api.example",
+        "note": "scheme、host 或 port 不同，浏览器进入跨源规则。"
+      },
+      {
+        "label": "必要时预检",
+        "value": "OPTIONS · method · headers",
+        "note": "非简单请求先询问服务器允许项，正式请求等检查结果。"
+      },
+      {
+        "label": "决定脚本可见性",
+        "value": "ACAO / ACAM / ACAH",
+        "note": "响应可能已到浏览器，只有许可匹配才会交给页面脚本。"
+      }
+    ],
+    "quizQuestion": "缺少 Access-Control-Allow-Origin 时，最准确的说法是什么？",
+    "quizOptions": [
+      "服务器可能已返回响应，但浏览器不把它暴露给脚本",
+      "请求一定没有到达服务器",
+      "命令行也会被同一规则拦截"
+    ],
+    "correctText": "CORS 主要是浏览器脚本读取闸门，不能据此断定服务器没有收到请求。",
+    "wrongText": "网络到达、服务器处理和脚本可见是三个阶段，命令行也没有浏览器同源读取限制。",
+    "promptTitle": "定位一次 CORS 失败",
+    "prompt": "请记录页面 origin、目标 URL、方法、非简单请求头、凭据模式、预检请求/响应和正式响应许可头，判断失败发生在哪一阶段。",
+    "relatedSlugs": [
+      "api",
+      "fetch-api",
+      "auth",
+      "cookie"
+    ]
   },
   {
     "zh": "焦点管理", "en": "Focus Management", "slug": "focus-management", "cat": "前端",

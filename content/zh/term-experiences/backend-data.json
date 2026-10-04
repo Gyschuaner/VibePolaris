@@ -3700,66 +3700,80 @@
   },
   {
     "slug": "rbac",
-    "lead": "给用户加了 finance 角色以后，他到底继承了哪些权限？",
-    "definition": "RBAC 先把权限赋给角色，再把角色赋给用户；有效权限来自用户所持角色的组合，并可受角色层级和职责分离约束。",
-    "boundary": "RBAC 适合相对稳定的职能权限，不擅长单独表达对象归属、时间、设备或租户条件。那些条件通常需要属性或关系策略。",
+    "lead": "阿青拿到 viewer 角色以后，为什么仍可能读不到发票 9？",
+    "definition": "本页把一次 RBAC 决策拆成六步：角色为空、分配 viewer、角色权限通过、对象归属拒绝、加入 finance、撤掉 viewer。",
+    "boundary": "RBAC 组织稳定的职能权限；对象、租户、时间和设备条件要在角色之外继续判断。",
     "sceneKind": "tree",
-    "sceneTitle": "用户通过角色继承权限",
-    "actionLabel": "调整角色关系",
+    "sceneTitle": "一项权限从角色关系走到对象检查",
+    "actionLabel": "推进授权决策",
     "actors": [
       {
-        "id": "rbac-user",
-        "label": "员工 7",
-        "detail": "当前 viewer",
+        "id": "rbac-subject",
+        "label": "阿青",
+        "detail": "subject-7",
         "icon": "user",
-        "group": "用户"
+        "group": "主体"
       },
       {
         "id": "viewer-role",
         "label": "viewer",
-        "detail": "基础查看",
+        "detail": "invoice.read",
         "icon": "component",
         "group": "角色"
       },
       {
         "id": "finance-role",
         "label": "finance",
-        "detail": "财务操作",
+        "detail": "invoice.approve",
         "icon": "component",
         "group": "角色"
       },
       {
         "id": "read-perm",
         "label": "invoice.read",
-        "detail": "读取发票",
+        "detail": "读取动作",
         "icon": "search",
         "group": "权限"
       },
       {
-        "id": "refund-perm",
-        "label": "invoice.refund",
-        "detail": "退款",
+        "id": "approve-perm",
+        "label": "invoice.approve",
+        "detail": "审批动作",
         "icon": "gear",
         "group": "权限"
       },
       {
-        "id": "owner-rule",
-        "label": "owner 条件",
-        "detail": "仅自己的对象",
+        "id": "invoice-7",
+        "label": "发票 7",
+        "detail": "owner=阿青",
+        "icon": "file",
+        "group": "对象"
+      },
+      {
+        "id": "invoice-9",
+        "label": "发票 9",
+        "detail": "owner=小林",
+        "icon": "file",
+        "group": "对象"
+      },
+      {
+        "id": "policy-check",
+        "label": "对象范围",
+        "detail": "tenant + owner",
         "icon": "shield",
-        "group": "非 RBAC 条件"
+        "group": "决策"
       }
     ],
     "edges": [
       {
-        "id": "user-viewer",
-        "from": "rbac-user",
+        "id": "subject-viewer",
+        "from": "rbac-subject",
         "to": "viewer-role",
-        "label": "持有角色"
+        "label": "拥有角色"
       },
       {
-        "id": "user-finance",
-        "from": "rbac-user",
+        "id": "subject-finance",
+        "from": "rbac-subject",
         "to": "finance-role",
         "label": "新增角色"
       },
@@ -3767,350 +3781,509 @@
         "id": "viewer-read",
         "from": "viewer-role",
         "to": "read-perm",
-        "label": "包含权限"
+        "label": "带来权限"
       },
       {
-        "id": "finance-read",
+        "id": "finance-approve",
         "from": "finance-role",
-        "to": "read-perm",
-        "label": "包含权限"
+        "to": "approve-perm",
+        "label": "带来权限"
       },
       {
-        "id": "finance-refund",
-        "from": "finance-role",
-        "to": "refund-perm",
-        "label": "包含权限"
+        "id": "read-object",
+        "from": "read-perm",
+        "to": "policy-check",
+        "label": "进入对象检查"
+      },
+      {
+        "id": "object-7",
+        "from": "invoice-7",
+        "to": "policy-check",
+        "label": "owner=阿青"
+      },
+      {
+        "id": "object-9",
+        "from": "invoice-9",
+        "to": "policy-check",
+        "label": "owner=小林"
       }
     ],
     "frames": [
       {
-        "label": "viewer 只继承读取",
-        "note": "用户通过 viewer 角色得到 invoice.read，没有退款权限。",
+        "label": "角色为空",
+        "note": "阿青尚未拥有角色，invoice.read 没有授权来源，请求直接拒绝。",
         "activeIds": [
-          "rbac-user",
+          "rbac-subject",
+          "policy-check",
+          "invoice-7"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "viewer-role",
+          "finance-role",
+          "read-perm",
+          "approve-perm",
+          "invoice-9"
+        ],
+        "values": {
+          "rbac-subject": "roles=∅",
+          "policy-check": "403 · no role"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "分配 viewer",
+        "note": "把 viewer 分给阿青，角色关系带来 invoice.read。",
+        "activeIds": [
+          "rbac-subject",
           "viewer-role",
           "read-perm"
+        ],
+        "doneIds": [
+          "viewer-role"
+        ],
+        "mutedIds": [
+          "finance-role",
+          "approve-perm",
+          "invoice-7",
+          "invoice-9",
+          "policy-check"
+        ],
+        "values": {
+          "rbac-subject": "roles={viewer}",
+          "read-perm": "effective"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "viewer-read"
+        ]
+      },
+      {
+        "label": "角色门通过",
+        "note": "GET invoice:7 的动作与 invoice.read 匹配，下一步才检查具体对象。",
+        "activeIds": [
+          "rbac-subject",
+          "viewer-role",
+          "read-perm",
+          "policy-check",
+          "invoice-7"
         ],
         "doneIds": [
           "read-perm"
         ],
         "mutedIds": [
           "finance-role",
-          "refund-perm",
-          "owner-rule"
+          "approve-perm",
+          "invoice-9"
         ],
         "values": {
-          "rbac-user": "effective={read}",
-          "refund-perm": "DENY"
+          "read-perm": "MATCH",
+          "policy-check": "waiting · object"
         },
         "activeEdgeIds": [
-          "user-viewer",
-          "viewer-read"
+          "subject-viewer",
+          "viewer-read",
+          "read-object",
+          "object-7"
         ]
       },
       {
-        "label": "finance 扩大权限集合",
-        "note": "新增 finance 后，有效权限是两个角色权限的并集。",
+        "label": "对象归属不符",
+        "note": "读取发票 9 时角色仍匹配，但 owner=小林，阿青不在对象范围内。",
         "activeIds": [
-          "rbac-user",
+          "rbac-subject",
+          "viewer-role",
+          "read-perm",
+          "policy-check",
+          "invoice-9"
+        ],
+        "doneIds": [
+          "read-perm"
+        ],
+        "mutedIds": [
+          "finance-role",
+          "approve-perm",
+          "invoice-7"
+        ],
+        "values": {
+          "read-perm": "MATCH",
+          "policy-check": "403 · owner mismatch"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "viewer-read",
+          "read-object",
+          "object-9"
+        ]
+      },
+      {
+        "label": "加入 finance",
+        "note": "新增 finance 后，阿青多了 invoice.approve；两组角色权限可以同时生效。",
+        "activeIds": [
+          "rbac-subject",
+          "viewer-role",
           "finance-role",
           "read-perm",
-          "refund-perm"
+          "approve-perm"
+        ],
+        "doneIds": [
+          "viewer-role",
+          "finance-role"
+        ],
+        "mutedIds": [
+          "invoice-7",
+          "invoice-9",
+          "policy-check"
+        ],
+        "values": {
+          "rbac-subject": "roles={viewer,finance}",
+          "approve-perm": "effective"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "subject-finance",
+          "viewer-read",
+          "finance-approve"
+        ]
+      },
+      {
+        "label": "撤掉 viewer",
+        "note": "撤掉 viewer 后，finance 仍可审批，但 invoice.read 的授权来源消失。",
+        "activeIds": [
+          "rbac-subject",
+          "finance-role",
+          "read-perm",
+          "policy-check"
         ],
         "doneIds": [
           "finance-role"
         ],
         "mutedIds": [
-          "owner-rule"
+          "viewer-role",
+          "approve-perm",
+          "invoice-7",
+          "invoice-9"
         ],
         "values": {
-          "rbac-user": "effective={read,refund}",
-          "refund-perm": "PERMIT"
+          "rbac-subject": "roles={finance}",
+          "read-perm": "403 · no permission"
         },
         "activeEdgeIds": [
-          "user-viewer",
-          "user-finance",
-          "viewer-read",
-          "finance-read",
-          "finance-refund"
-        ],
-        "metric": {
-          "label": "有效权限",
-          "value": "2"
-        }
-      },
-      {
-        "label": "对象归属无法放进角色树",
-        "note": "仅允许处理自己的发票依赖用户与对象关系，不是再增加一个通用角色就能稳定表达。",
-        "activeIds": [
-          "owner-rule",
-          "rbac-user"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "viewer-role",
-          "finance-role",
-          "read-perm",
-          "refund-perm"
-        ],
-        "values": {
-          "owner-rule": "需要 ReBAC/ABAC",
-          "rbac-user": "角色信息不足"
-        },
-        "activeEdgeIds": []
+          "subject-finance",
+          "finance-approve"
+        ]
       }
     ],
-    "insight": "角色适合复用职能权限；当规则依赖具体对象和上下文时，应把条件放到更合适的授权模型。",
+    "insight": "角色决定动作权限从哪里来；对象范围决定这项权限能落到哪一条记录。",
     "quiz": {
-      "question": "规则是‘只能编辑自己创建的文章’，仅靠 RBAC 是否自然？",
+      "question": "阿青有 viewer 角色，读取发票 9 时最先要补哪项判断？",
       "options": [
         {
-          "label": "不自然，它依赖用户与对象的关系",
+          "label": "发票 9 的对象归属和租户范围",
           "correct": true
         },
         {
-          "label": "自然，给每篇文章创建一个角色即可",
+          "label": "把 viewer 自动升级成 admin",
           "correct": false
         },
         {
-          "label": "不需要授权，只隐藏编辑按钮",
+          "label": "只看前端按钮是否隐藏",
           "correct": false
         }
       ],
-      "success": "对象归属属于关系条件，硬塞进角色容易造成角色膨胀。",
-      "retry": "角色描述职能，‘自己的对象’描述主体与对象之间的关系。"
+      "success": "角色匹配之后仍要检查对象范围。",
+      "retry": "把角色、动作和对象条件分开看。"
     },
     "prompt": {
-      "title": "整理 RBAC 角色与权限",
-      "text": "请列出用户—角色—权限映射、角色继承、互斥约束和角色数量，并标出哪些规则依赖对象属性或关系。"
+      "title": "审查一条 RBAC 授权",
+      "text": "记录用户当前角色、角色带来的权限、请求动作、对象归属、租户范围和拒绝证据，检查撤销角色后旧权限是否立即失效。"
     },
     "sources": [
       {
-        "url": "https://csrc.nist.gov/projects/role-based-access-control",
-        "label": "NIST · RBAC",
-        "note": "安全要求与风险边界"
+        "url": "https://csrc.nist.gov/Projects/Role-Based-Access-Control",
+        "label": "NIST · Role Based Access Control",
+        "note": "角色、权限、层级与约束"
+      },
+      {
+        "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+        "label": "NIST · SP 800-162",
+        "note": "属性条件与 RBAC 边界"
       },
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
         "label": "OWASP · Authorization",
-        "note": "攻击面与防护检查"
+        "note": "默认拒绝、对象授权与最小权限"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview",
+        "label": "Microsoft Learn · RBAC",
+        "note": "角色与资源范围"
       }
     ]
   },
   {
     "slug": "api-key",
-    "lead": "同一个 API key 放在 URL、请求头和前端代码里，泄露路径有何不同？",
-    "definition": "API key 是调用方随请求提交的共享标识或秘密，服务端可据此识别项目、计量和应用策略；它需要限制范围、保护和轮换。",
-    "boundary": "API key 不等于最终用户身份，也不能代替对象级授权。公开前端中的长期 key 无法对用户保密。",
+    "lead": "同一个 API key 放在 URL、请求头和前端代码里，泄露路径有什么不同？",
+    "definition": "本页把 key 的生命周期拆成六步：签发与限制、受控请求头、URL 暴露、前端 bundle 暴露、生成新值和撤销旧值。",
+    "boundary": "API key 是调用方凭证，不等于最终用户身份，也不能替代对象级授权。公开客户端无法保管长期共享秘密。",
     "sceneKind": "layers",
-    "sceneTitle": "一个密钥进入日志、Referer 与源码的路径",
-    "actionLabel": "更换密钥位置",
+    "sceneTitle": "一个 key 进入哪里，谁就可能看见它",
+    "actionLabel": "推进 key 生命周期",
     "actors": [
       {
-        "id": "key-value",
+        "id": "key-secret",
         "label": "API key",
-        "detail": "sk_live_7",
+        "detail": "K1 · project-7",
         "icon": "key",
         "group": "凭证"
       },
       {
-        "id": "query-slot",
-        "label": "URL query",
-        "detail": "?key=…",
-        "icon": "network",
-        "group": "放置方式"
+        "id": "vault",
+        "label": "服务端凭证库",
+        "detail": "受控存储",
+        "icon": "shield",
+        "group": "存储"
       },
       {
-        "id": "header-slot",
+        "id": "header",
         "label": "请求头",
         "detail": "X-API-Key",
         "icon": "message",
-        "group": "放置方式"
+        "group": "传输"
       },
       {
-        "id": "bundle-slot",
+        "id": "url",
+        "label": "URL query",
+        "detail": "?key=K1",
+        "icon": "network",
+        "group": "高暴露"
+      },
+      {
+        "id": "bundle",
         "label": "前端 bundle",
-        "detail": "可下载源码",
+        "detail": "公开源码",
         "icon": "code",
-        "group": "放置方式"
-      },
-      {
-        "id": "logs",
-        "label": "访问日志",
-        "detail": "记录 URL",
-        "icon": "file",
-        "group": "泄露面"
-      },
-      {
-        "id": "referrer",
-        "label": "Referer",
-        "detail": "跨站请求",
-        "icon": "browser",
-        "group": "泄露面"
+        "group": "高暴露"
       },
       {
         "id": "api-service",
         "label": "API 服务",
-        "detail": "支持轮换",
+        "detail": "quota · scope · 401",
         "icon": "server",
         "group": "接收方"
+      },
+      {
+        "id": "rotation",
+        "label": "轮换记录",
+        "detail": "K1 revoked · K2 active",
+        "icon": "clock",
+        "group": "生命周期"
       }
     ],
     "edges": [
       {
-        "id": "key-query",
-        "from": "key-value",
-        "to": "query-slot",
-        "label": "放入 URL"
+        "id": "secret-vault",
+        "from": "key-secret",
+        "to": "vault",
+        "label": "保存"
       },
       {
-        "id": "key-header",
-        "from": "key-value",
-        "to": "header-slot",
-        "label": "放入字段"
-      },
-      {
-        "id": "key-bundle",
-        "from": "key-value",
-        "to": "bundle-slot",
-        "label": "编译进源码"
-      },
-      {
-        "id": "query-logs",
-        "from": "query-slot",
-        "to": "logs",
-        "label": "完整 URL"
-      },
-      {
-        "id": "query-ref",
-        "from": "query-slot",
-        "to": "referrer",
-        "label": "可能传播"
-      },
-      {
-        "id": "header-api",
-        "from": "header-slot",
-        "to": "api-service",
+        "id": "vault-header",
+        "from": "vault",
+        "to": "header",
         "label": "受控传递"
       },
       {
-        "id": "bundle-api",
-        "from": "bundle-slot",
+        "id": "header-api",
+        "from": "header",
         "to": "api-service",
-        "label": "任何人可取"
+        "label": "验证与计量"
+      },
+      {
+        "id": "secret-url",
+        "from": "key-secret",
+        "to": "url",
+        "label": "拼进地址"
+      },
+      {
+        "id": "url-api",
+        "from": "url",
+        "to": "api-service",
+        "label": "URL 记录扩散"
+      },
+      {
+        "id": "secret-bundle",
+        "from": "key-secret",
+        "to": "bundle",
+        "label": "编进源码"
+      },
+      {
+        "id": "rotation-api",
+        "from": "rotation",
+        "to": "api-service",
+        "label": "撤销旧值"
       }
     ],
     "frames": [
       {
-        "label": "query 同时进入两处记录",
-        "note": "密钥出现在 URL 后，会随访问日志和部分导航来源传播。",
+        "label": "签发并限制",
+        "note": "K1 绑定 project-7 和 weather.read，先明确调用范围再交给服务端保存。",
         "activeIds": [
-          "key-value",
-          "query-slot",
-          "logs",
-          "referrer"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "header-slot",
-          "bundle-slot",
+          "key-secret",
+          "vault",
           "api-service"
         ],
+        "doneIds": [
+          "vault"
+        ],
+        "mutedIds": [
+          "header",
+          "url",
+          "bundle",
+          "rotation"
+        ],
         "values": {
-          "logs": "GET /data?key=sk_live_7",
-          "referrer": "key 可见"
+          "key-secret": "K1 · scope=weather.read",
+          "vault": "server vault"
         },
         "activeEdgeIds": [
-          "key-query",
-          "query-logs",
-          "query-ref"
-        ],
-        "metric": {
-          "label": "泄露面",
-          "value": "2"
-        }
+          "secret-vault"
+        ]
       },
       {
-        "label": "header 缩小暴露范围",
-        "note": "字段直接送到 API，日志策略只记录 key 是否存在。",
+        "label": "受控请求头",
+        "note": "服务端把 K1 放进 X-API-Key，API 识别项目并扣除一次配额。",
         "activeIds": [
-          "key-value",
-          "header-slot",
-          "api-service",
-          "logs"
+          "vault",
+          "header",
+          "api-service"
         ],
         "doneIds": [
           "api-service"
         ],
         "mutedIds": [
-          "query-slot",
-          "bundle-slot",
-          "referrer"
+          "key-secret",
+          "url",
+          "bundle",
+          "rotation"
         ],
         "values": {
-          "api-service": "identified project 7",
-          "logs": "api_key=present"
+          "header": "X-API-Key: K1",
+          "api-service": "200 · quota -1"
         },
         "activeEdgeIds": [
-          "key-header",
+          "vault-header",
           "header-api"
         ]
       },
       {
-        "label": "bundle 无法保守秘密",
-        "note": "任何浏览器用户都能下载并搜索前端代码中的长期 key。",
+        "label": "塞进 URL",
+        "note": "?key=K1 可能进入访问日志、历史或 Referer，暴露面扩大。",
         "activeIds": [
-          "key-value",
-          "bundle-slot"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "query-slot",
-          "header-slot",
-          "logs",
-          "referrer",
-          "api-service"
-        ],
-        "values": {
-          "bundle-slot": "search → sk_live_7",
-          "key-value": "公开"
-        },
-        "activeEdgeIds": [
-          "key-bundle"
-        ]
-      },
-      {
-        "label": "轮换撤销旧值",
-        "note": "服务端发出新 key 并让旧值进入 401，泄露窗口才真正结束。",
-        "activeIds": [
-          "key-value",
+          "key-secret",
+          "url",
           "api-service"
         ],
         "doneIds": [
+          "url"
+        ],
+        "mutedIds": [
+          "vault",
+          "header",
+          "bundle",
+          "rotation"
+        ],
+        "values": {
+          "url": "GET /weather?key=K1",
+          "api-service": "accepted · logged"
+        },
+        "activeEdgeIds": [
+          "secret-url",
+          "url-api"
+        ]
+      },
+      {
+        "label": "编进前端",
+        "note": "浏览器用户可以下载 bundle 并搜索 K1，长期共享秘密不再是秘密。",
+        "activeIds": [
+          "key-secret",
+          "bundle"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "vault",
+          "header",
+          "url",
+          "api-service",
+          "rotation"
+        ],
+        "values": {
+          "bundle": "public · K1 visible",
+          "key-secret": "copied"
+        },
+        "activeEdgeIds": [
+          "secret-bundle"
+        ]
+      },
+      {
+        "label": "生成新值",
+        "note": "服务端生成 K2，更新受控使用方；旧值还处在重叠窗口。",
+        "activeIds": [
+          "key-secret",
+          "vault",
+          "rotation"
+        ],
+        "doneIds": [
+          "rotation"
+        ],
+        "mutedIds": [
+          "header",
+          "url",
+          "bundle",
+          "api-service"
+        ],
+        "values": {
+          "key-secret": "K2 active",
+          "rotation": "K1 → K2"
+        },
+        "activeEdgeIds": [
+          "secret-vault"
+        ]
+      },
+      {
+        "label": "撤销旧值",
+        "note": "API 对 K1 返回 401，K2 继续 200；轮换才完成闭环。",
+        "activeIds": [
+          "rotation",
+          "api-service",
+          "header"
+        ],
+        "doneIds": [
+          "rotation",
           "api-service"
         ],
         "mutedIds": [
-          "query-slot",
-          "header-slot",
-          "bundle-slot",
-          "logs",
-          "referrer"
+          "url",
+          "bundle",
+          "vault",
+          "key-secret"
         ],
         "values": {
-          "key-value": "old=revoked · new=active",
-          "api-service": "old 401 · new 200"
+          "rotation": "K1 revoked",
+          "api-service": "K1=401 · K2=200"
         },
         "activeEdgeIds": [
+          "rotation-api",
           "header-api"
         ]
       }
     ],
-    "insight": "密钥放置位置决定它会被谁记录或读取，轮换能力决定泄露后能否止损。",
+    "insight": "放置位置决定谁能读到 key，限制和配额决定能做什么，轮换和撤销决定泄露后能否止损。",
     "quiz": {
-      "question": "长期 API key 直接写入公开 Web 前端，主要问题是什么？",
+      "question": "长期 API key 进入公开前端 bundle，最直接的风险是什么？",
       "options": [
         {
-          "label": "任何用户都能取出并在别处复用",
+          "label": "任何用户都能复制并在别处复用",
           "correct": true
         },
         {
@@ -4118,27 +4291,37 @@
           "correct": false
         },
         {
-          "label": "key 会自动变成用户身份",
+          "label": "key 自动代表当前登录用户",
           "correct": false
         }
       ],
-      "success": "公开客户端无法保存长期共享秘密，应改用服务端代理或短期受限凭证。",
-      "retry": "前端代码和网络请求都在用户控制范围内。"
+      "success": "公开客户端无法隐藏长期 bearer 凭证。",
+      "retry": "把调用方识别、用户身份和秘密保管分开。"
     },
     "prompt": {
-      "title": "检查 API key 的暴露与轮换",
-      "text": "请列出 key 的签发对象、存放位置、传输方式、日志策略、权限范围、有效期、轮换与撤销步骤。"
+      "title": "审查 API key 的暴露面",
+      "text": "请记录 key 的签发项目、scope、存储、传输、日志、配额、过期、轮换和撤销证据，并判断它是否误当成最终用户授权。"
     },
     "sources": [
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html",
         "label": "OWASP · REST Security",
-        "note": "攻击面与防护检查"
+        "note": "API 凭证、日志和授权边界"
+      },
+      {
+        "url": "https://docs.cloud.google.com/docs/authentication/api-keys-best-practices",
+        "label": "Google Cloud · API key best practices",
+        "note": "限制、存储、查询参数与轮换"
       },
       {
         "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html",
         "label": "AWS API Gateway · Usage Plans",
-        "note": "云服务行为与配置约束"
+        "note": "key 计量、配额与使用计划"
+      },
+      {
+        "url": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token",
+        "label": "GitHub Docs · Personal access tokens",
+        "note": "过期、撤销与最小范围凭证"
       }
     ]
   },
@@ -10144,159 +10327,152 @@
   },
   {
     "slug": "tcp",
-    "lead": "应用连续 send 两次，接收端为什么可能一次 read 就拿到全部字节？",
-    "definition": "TCP 提供有序、可靠的字节流，用序号、确认、重传和流量控制交付字节，但不保留应用消息边界。",
+    "lead": "下载中间少了一段，为什么应用最后仍能读到连续内容？",
+    "definition": "TCP 提供有序、可靠的字节流，用序号、确认、重传、流量控制和拥塞控制交付字节，但不保留应用消息边界。",
     "boundary": "TCP 不是消息队列，也不保证一次 send 对应一次 receive。连接成功只表示传输通道建立，不表示应用协议已就绪。",
     "sceneKind": "network",
-    "sceneTitle": "丢失一个段后仍还原连续字节流",
-    "actionLabel": "投放下一个 TCP 段",
+    "sceneTitle": "五步看见缺口、确认、重传和交付",
+    "actionLabel": "推进 TCP 字节流",
     "actors": [
       {
         "id": "tcp-sender",
-        "label": "发送端",
-        "detail": "ABCDEFGHIJKL",
+        "label": "发送方",
+        "detail": "ABCDEF · GHIJ · KL",
         "icon": "server",
         "group": "端点"
       },
       {
-        "id": "seg-one",
-        "label": "Segment 1",
-        "detail": "seq 1–4",
-        "icon": "package",
-        "group": "网络"
-      },
-      {
-        "id": "seg-two",
-        "label": "Segment 2",
-        "detail": "seq 5–8",
-        "icon": "package",
-        "group": "网络"
-      },
-      {
-        "id": "seg-three",
-        "label": "Segment 3",
-        "detail": "seq 9–12",
+        "id": "tcp-wire",
+        "label": "传输中的 segments",
+        "detail": "seq + ACK",
         "icon": "package",
         "group": "网络"
       },
       {
         "id": "tcp-buffer",
         "label": "接收缓冲区",
-        "detail": "按序拼接",
+        "detail": "缺口前不交付",
         "icon": "memory",
         "group": "端点"
       },
       {
         "id": "tcp-reader",
         "label": "应用 read",
-        "detail": "每次最多 5 B",
+        "detail": "连续字节，不含消息边界",
         "icon": "code",
         "group": "应用"
       }
     ],
     "edges": [
       {
-        "id": "sender-s1",
+        "id": "sender-wire",
         "from": "tcp-sender",
-        "to": "seg-one",
-        "label": "发送"
+        "to": "tcp-wire",
+        "label": "分段发送"
       },
       {
-        "id": "sender-s2",
-        "from": "tcp-sender",
-        "to": "seg-two",
-        "label": "发送"
-      },
-      {
-        "id": "sender-s3",
-        "from": "tcp-sender",
-        "to": "seg-three",
-        "label": "发送"
-      },
-      {
-        "id": "s1-buffer",
-        "from": "seg-one",
+        "id": "wire-buffer",
+        "from": "tcp-wire",
         "to": "tcp-buffer",
-        "label": "到达"
-      },
-      {
-        "id": "s2-buffer",
-        "from": "seg-two",
-        "to": "tcp-buffer",
-        "label": "重传后到达"
-      },
-      {
-        "id": "s3-buffer",
-        "from": "seg-three",
-        "to": "tcp-buffer",
-        "label": "乱序暂存"
+        "label": "按序放入"
       },
       {
         "id": "buffer-reader",
         "from": "tcp-buffer",
         "to": "tcp-reader",
-        "label": "读取字节"
+        "label": "连续范围交付"
       }
     ],
     "frames": [
       {
-        "label": "中间段丢失",
-        "note": "1–4 与 9–12 到达，接收端发现序号缺口并暂存后段。",
+        "label": "三段出发",
+        "note": "ABCDEF、GHIJ、KL 共享连续序号范围，接收端等待数据。",
         "activeIds": [
           "tcp-sender",
-          "seg-one",
-          "seg-three",
-          "tcp-buffer"
+          "tcp-wire"
         ],
-        "doneIds": [
-          "seg-one"
-        ],
+        "doneIds": [],
         "mutedIds": [
-          "seg-two",
+          "tcp-buffer",
           "tcp-reader"
         ],
         "values": {
-          "tcp-buffer": "ABCD · gap 5–8 · IJKL held",
-          "seg-two": "lost"
+          "tcp-wire": "ABCDEF · GHIJ · KL",
+          "tcp-buffer": "等待"
         },
         "activeEdgeIds": [
-          "sender-s1",
-          "sender-s3",
-          "s1-buffer",
-          "s3-buffer"
+          "sender-wire"
         ]
       },
       {
-        "label": "确认缺口触发重传",
-        "note": "发送端重发 seq 5–8，缓冲区才形成连续 12 字节。",
+        "label": "中间段丢失",
+        "note": "ABCDEF 与 KL 到达，重复 ACK 7 表示 GHIJ 的缺口让连续交付停住。",
         "activeIds": [
-          "tcp-sender",
-          "seg-two",
+          "tcp-wire",
           "tcp-buffer"
         ],
         "doneIds": [
-          "seg-two",
+          "tcp-sender"
+        ],
+        "mutedIds": [
+          "tcp-reader"
+        ],
+        "values": {
+          "tcp-wire": "GHIJ · lost",
+          "tcp-buffer": "ABCDEF | gap | KL"
+        },
+        "activeEdgeIds": [
+          "wire-buffer"
+        ]
+      },
+      {
+        "label": "确认缺口",
+        "note": "接收端发出 ACK 7，表示下一个期望序号仍在 GHIJ 起点，后段先留在缓冲区。",
+        "activeIds": [
+          "tcp-buffer",
+          "tcp-sender"
+        ],
+        "doneIds": [
+          "tcp-wire"
+        ],
+        "mutedIds": [
+          "tcp-reader"
+        ],
+        "values": {
+          "tcp-buffer": "ACK 7 · next expected",
+          "tcp-sender": "等待重传"
+        },
+        "activeEdgeIds": [
+          "wire-buffer"
+        ]
+      },
+      {
+        "label": "重传并拼回",
+        "note": "GHIJ 重传到达后，缓冲区形成完整连续范围并回 ACK 13。",
+        "activeIds": [
+          "tcp-sender",
+          "tcp-wire",
+          "tcp-buffer"
+        ],
+        "doneIds": [
+          "tcp-wire",
           "tcp-buffer"
         ],
         "mutedIds": [
           "tcp-reader"
         ],
         "values": {
-          "seg-two": "retransmitted",
+          "tcp-wire": "GHIJ · retransmit",
           "tcp-buffer": "ABCDEFGHIJKL"
         },
         "activeEdgeIds": [
-          "sender-s2",
-          "s2-buffer"
-        ],
-        "metric": {
-          "label": "连续字节",
-          "value": "12 B"
-        }
+          "sender-wire",
+          "wire-buffer"
+        ]
       },
       {
-        "label": "应用按 5 与 7 字节读取",
-        "note": "接收调用的大小由应用决定，与原先三个 TCP 段没有一一对应。",
+        "label": "应用读取",
+        "note": "应用可以一次或多次 read；读取边界不是原始 segment 边界。",
         "activeIds": [
           "tcp-buffer",
           "tcp-reader"
@@ -10306,24 +10482,18 @@
         ],
         "mutedIds": [
           "tcp-sender",
-          "seg-one",
-          "seg-two",
-          "seg-three"
+          "tcp-wire"
         ],
         "values": {
-          "tcp-reader": "read1=ABCDE · read2=FGHIJKL",
+          "tcp-reader": "read() → ABCDEFGHIJKL",
           "tcp-buffer": "empty"
         },
         "activeEdgeIds": [
           "buffer-reader"
-        ],
-        "metric": {
-          "label": "应用读取次数",
-          "value": "2"
-        }
+        ]
       }
     ],
-    "insight": "应用协议若需要消息边界，必须在 TCP 字节流之上定义长度、分隔符或帧格式。",
+    "insight": "TCP 的可靠范围是有序字节交付；如果应用需要消息边界，必须在字节流之上定义长度、分隔符或帧格式。",
     "quiz": {
       "question": "发送端一次 send 100 字节，接收端一定一次 receive 100 字节吗？",
       "options": [
@@ -10351,59 +10521,60 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9293.html",
         "label": "RFC 9293 · TCP",
-        "note": "协议定义与报文语义"
+        "note": "字节流、序号、确认与重传"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc5681.html",
+        "label": "RFC 5681 · TCP Congestion Control",
+        "note": "拥塞窗口与发送节奏"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
+        "label": "RFC 1122 · Internet Hosts",
+        "note": "TCP 实现与应用边界"
+      },
+      {
+        "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+        "label": "IANA · Service Name and Port Registry",
+        "note": "端口与传输端点的登记"
       }
     ]
   },
   {
     "slug": "udp",
-    "lead": "发送 1、2、3、4、5 五个数据报，为什么接收端可能只看到 1、4、3、5？",
+    "lead": "四封数据报经过抖动和丢包后，为什么接收端只看到 1、4、3？",
     "definition": "UDP 以独立数据报承载消息，提供端口和校验和，但不建立可靠连接，也不保证交付、顺序或去重。",
-    "boundary": "UDP 不等于没有校验，也不保证一定更快。丢包、重排和重试策略由使用 UDP 的应用协议决定。",
+    "boundary": "UDP 不等于没有校验，也不保证一定更快。丢包、重排、拥塞和重试策略由使用 UDP 的应用协议决定。",
     "sceneKind": "compare",
-    "sceneTitle": "五个 UDP 数据报的发送与到达顺序",
-    "actionLabel": "调整丢包与重排",
+    "sceneTitle": "四封数据报怎样变成 1、4、3",
+    "actionLabel": "推进 UDP 数据报",
     "actors": [
       {
         "id": "udp-sender",
         "label": "发送端",
-        "detail": "1,2,3,4,5",
+        "detail": "报 1 · 2 · 3 · 4",
         "icon": "server",
         "group": "端点"
       },
       {
         "id": "udp-network",
-        "label": "网络",
-        "detail": "丢包 20%",
+        "label": "网络路径",
+        "detail": "乱序 / 丢报 2",
         "icon": "network",
         "group": "传输"
       },
       {
         "id": "udp-receiver",
         "label": "接收端",
-        "detail": "保留数据报边界",
+        "detail": "保留每封边界",
         "icon": "server",
         "group": "端点"
       },
       {
-        "id": "datagram-two",
-        "label": "数据报 2",
-        "detail": "模拟丢失",
-        "icon": "package",
-        "group": "样本"
-      },
-      {
-        "id": "datagram-four",
-        "label": "数据报 4",
-        "detail": "模拟提前",
-        "icon": "package",
-        "group": "样本"
-      },
-      {
-        "id": "arrival-list",
-        "label": "到达列表",
-        "detail": "等待数据",
-        "icon": "queue",
+        "id": "udp-policy",
+        "label": "应用策略",
+        "detail": "最新帧或补偿缺口",
+        "icon": "code",
         "group": "结果"
       }
     ],
@@ -10421,28 +10592,16 @@
         "label": "尽力交付"
       },
       {
-        "id": "two-network",
-        "from": "datagram-two",
-        "to": "udp-network",
-        "label": "丢失"
-      },
-      {
-        "id": "four-network",
-        "from": "datagram-four",
-        "to": "udp-network",
-        "label": "重排"
-      },
-      {
-        "id": "receiver-list",
+        "id": "receiver-policy",
         "from": "udp-receiver",
-        "to": "arrival-list",
-        "label": "逐报接收"
+        "to": "udp-policy",
+        "label": "交给应用决定"
       }
     ],
     "frames": [
       {
-        "label": "发送端依次发出五报",
-        "note": "每次发送保留独立的数据报边界。",
+        "label": "四报出发",
+        "note": "每封写入保留自己的数据报边界，发送端不等待上一封确认。",
         "activeIds": [
           "udp-sender",
           "udp-network"
@@ -10452,74 +10611,83 @@
         ],
         "mutedIds": [
           "udp-receiver",
-          "datagram-two",
-          "datagram-four",
-          "arrival-list"
+          "udp-policy"
         ],
         "values": {
-          "udp-sender": "1→2→3→4→5",
-          "udp-network": "5 datagrams"
+          "udp-sender": "1→2→3→4",
+          "udp-network": "4 datagrams · 尚未到达",
+          "udp-receiver": "空队列"
         },
         "activeEdgeIds": [
           "sender-network"
         ]
       },
       {
-        "label": "2 丢失且 4 提前",
-        "note": "网络不为 UDP 自动补发，也不等待缺失序号。",
+        "label": "路径抖动",
+        "note": "网络让 4 和 3 先到，数据报仍没有被拼成一条流。",
         "activeIds": [
           "udp-network",
-          "datagram-two",
-          "datagram-four"
+          "udp-receiver"
         ],
         "doneIds": [
-          "datagram-two"
+          "udp-sender"
         ],
         "mutedIds": [
-          "udp-sender",
-          "udp-receiver",
-          "arrival-list"
+          "udp-policy"
         ],
         "values": {
-          "datagram-two": "lost",
-          "datagram-four": "ahead of 3"
+          "udp-network": "1 · 4 · 3",
+          "udp-receiver": "逐报等待"
         },
         "activeEdgeIds": [
-          "two-network",
-          "four-network"
+          "network-receiver"
         ]
       },
       {
-        "label": "接收端得到 1,4,3,5",
-        "note": "四个到达数据报仍各自独立，但顺序与数量已经改变。",
+        "label": "报 2 丢失",
+        "note": "UDP 不为缺失数据报自动补发，接收端只拿到 1、4、3。",
         "activeIds": [
           "udp-network",
-          "udp-receiver",
-          "arrival-list"
+          "udp-receiver"
         ],
         "doneIds": [
-          "arrival-list"
+          "udp-network"
         ],
         "mutedIds": [
           "udp-sender",
-          "datagram-two",
-          "datagram-four"
+          "udp-policy"
         ],
         "values": {
-          "arrival-list": "[1],[4],[3],[5]",
-          "udp-receiver": "no automatic retry"
+          "udp-network": "2 · lost",
+          "udp-receiver": "[1] [4] [3]"
         },
         "activeEdgeIds": [
-          "network-receiver",
-          "receiver-list"
+          "network-receiver"
+        ]
+      },
+      {
+        "label": "应用取舍",
+        "note": "实时画面可丢弃过时帧；文件场景要自己补序号、确认和重传。",
+        "activeIds": [
+          "udp-receiver",
+          "udp-policy"
         ],
-        "metric": {
-          "label": "到达率",
-          "value": "4 / 5"
-        }
+        "doneIds": [
+          "udp-policy"
+        ],
+        "mutedIds": [
+          "udp-sender",
+          "udp-network"
+        ],
+        "values": {
+          "udp-policy": "latest wins / missing=2"
+        },
+        "activeEdgeIds": [
+          "receiver-policy"
+        ]
       }
     ],
-    "insight": "UDP 保留数据报边界，却把可靠性与顺序处理留给上层协议。",
+    "insight": "UDP 保留数据报边界，却把可靠性、顺序、去重和拥塞处理留给上层协议。",
     "quiz": {
       "question": "UDP 数据报 2 丢失后，协议本身会怎样？",
       "options": [
@@ -10547,23 +10715,33 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc768.html",
         "label": "RFC 768 · UDP",
-        "note": "协议定义与报文语义"
+        "note": "独立数据报、端口、长度与校验和"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
         "label": "RFC 1122 · UDP Requirements",
-        "note": "协议定义与报文语义"
+        "note": "交付与校验边界"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8085.html",
+        "label": "RFC 8085 · UDP Usage Guidelines",
+        "note": "拥塞、大小和应用责任"
+      },
+      {
+        "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+        "label": "IANA · Service Name and Port Registry",
+        "note": "端口与传输端点的登记"
       }
     ]
   },
   {
     "slug": "tls-handshake",
     "lead": "证书可以正常签名，为什么主机名不匹配时浏览器仍要终止连接？",
-    "definition": "TLS 1.3 握手协商版本与密码参数、通过证书验证服务身份，并从密钥交换导出会话密钥；握手完成后才发送受保护的应用数据。",
-    "boundary": "TLS 加密不等于访问了正确服务器。证书链、主机名和验证策略都必须通过，TLS 终止后的内部数据也不再由该通道保护。",
+    "definition": "本页演示不启用 0-RTT 的 TLS 1.3 常规完整（1-RTT）握手：协商版本与密码参数、通过证书验证服务身份，并从密钥交换导出会话密钥，随后发送受保护的应用数据；0-RTT early data 另有重放边界。",
+    "boundary": "TLS 加密不等于访问了正确服务器。证书链、主机名和验证策略都必须通过，TLS 终止后的内部数据也不再由该通道保护；若启用 0-RTT，还要确认 early data 是否可重放。",
     "sceneKind": "assembly",
-    "sceneTitle": "TLS 1.3 从协商到主机名验证",
-    "actionLabel": "发送下一条握手消息",
+    "sceneTitle": "五步看见 TLS 从问候到加密记录",
+    "actionLabel": "推进 TLS 握手",
     "actors": [
       {
         "id": "tls-client",
@@ -10573,172 +10751,174 @@
         "group": "端点"
       },
       {
-        "id": "client-hello",
-        "label": "ClientHello",
-        "detail": "版本 + key share",
+        "id": "tls-handshake",
+        "label": "握手消息",
+        "detail": "ClientHello → Finished",
         "icon": "message",
-        "group": "握手"
+        "group": "协商"
       },
       {
-        "id": "server-hello",
-        "label": "ServerHello",
-        "detail": "选择参数",
-        "icon": "message",
-        "group": "握手"
-      },
-      {
-        "id": "certificate",
+        "id": "tls-certificate",
         "label": "服务器证书",
-        "detail": "SAN=other.example",
+        "detail": "SAN=api.example",
         "icon": "key",
         "group": "身份"
       },
       {
-        "id": "finished",
-        "label": "Finished",
-        "detail": "确认握手密钥",
+        "id": "tls-key",
+        "label": "会话密钥",
+        "detail": "仅本次连接",
         "icon": "shield",
-        "group": "握手"
+        "group": "保护"
       },
       {
-        "id": "app-data",
-        "label": "GET /orders",
-        "detail": "应用数据",
+        "id": "tls-data",
+        "label": "应用记录",
+        "detail": "GET /orders · ciphertext",
         "icon": "package",
         "group": "加密通道"
       }
     ],
     "edges": [
       {
-        "id": "client-ch",
+        "id": "client-handshake",
         "from": "tls-client",
-        "to": "client-hello",
-        "label": "提出参数"
+        "to": "tls-handshake",
+        "label": "交换参数"
       },
       {
-        "id": "ch-sh",
-        "from": "client-hello",
-        "to": "server-hello",
-        "label": "协商"
+        "id": "handshake-certificate",
+        "from": "tls-handshake",
+        "to": "tls-certificate",
+        "label": "验证身份"
       },
       {
-        "id": "sh-cert",
-        "from": "server-hello",
-        "to": "certificate",
-        "label": "提供身份"
+        "id": "certificate-key",
+        "from": "tls-certificate",
+        "to": "tls-key",
+        "label": "验证后导出"
       },
       {
-        "id": "cert-finished",
-        "from": "certificate",
-        "to": "finished",
-        "label": "验证后确认"
-      },
-      {
-        "id": "finished-data",
-        "from": "finished",
-        "to": "app-data",
-        "label": "握手完成"
+        "id": "key-data",
+        "from": "tls-key",
+        "to": "tls-data",
+        "label": "保护记录"
       }
     ],
     "frames": [
       {
-        "label": "ClientHello 提供密钥份额",
-        "note": "客户端发送支持版本、算法和临时 key share，尚未信任服务器。",
+        "label": "ClientHello",
+        "note": "客户端发送版本、算法和临时 key share，还没有信任服务器。",
         "activeIds": [
           "tls-client",
-          "client-hello"
+          "tls-handshake"
         ],
         "doneIds": [
-          "client-hello"
+          "tls-handshake"
         ],
         "mutedIds": [
-          "server-hello",
-          "certificate",
-          "finished",
-          "app-data"
+          "tls-certificate",
+          "tls-key",
+          "tls-data"
         ],
         "values": {
-          "client-hello": "TLS 1.3 · key_share C"
+          "tls-handshake": "TLS 1.3 · key_share C"
         },
         "activeEdgeIds": [
-          "client-ch"
+          "client-handshake"
         ]
       },
       {
-        "label": "ServerHello 选定参数",
-        "note": "双方可以导出握手密钥，但服务器身份仍需证书验证。",
+        "label": "ServerHello",
+        "note": "双方选定参数并准备握手密钥，服务器身份仍待验证。",
         "activeIds": [
-          "client-hello",
-          "server-hello"
+          "tls-handshake"
         ],
         "doneIds": [
-          "server-hello"
+          "tls-handshake"
         ],
         "mutedIds": [
-          "certificate",
-          "finished",
-          "app-data"
+          "tls-client",
+          "tls-certificate",
+          "tls-key",
+          "tls-data"
         ],
         "values": {
-          "server-hello": "TLS_AES_128_GCM_SHA256"
+          "tls-handshake": "TLS_AES_128_GCM_SHA256"
         },
         "activeEdgeIds": [
-          "ch-sh"
+          "client-handshake"
         ]
       },
       {
-        "label": "主机名不匹配中止",
-        "note": "证书链有效，但 SAN 没有 api.example，客户端不能把它当目标服务。",
+        "label": "Certificate",
+        "note": "客户端检查链、有效期和主机名；SAN=other.example 时应在这里停止。",
         "activeIds": [
-          "certificate",
-          "tls-client"
+          "tls-handshake",
+          "tls-certificate"
         ],
         "doneIds": [
-          "certificate"
+          "tls-handshake"
         ],
         "mutedIds": [
-          "finished",
-          "app-data"
+          "tls-client",
+          "tls-key",
+          "tls-data"
         ],
         "values": {
-          "certificate": "SAN=other.example",
-          "tls-client": "name mismatch",
-          "app-data": "未发送"
+          "tls-certificate": "SAN=api.example / mismatch"
         },
         "activeEdgeIds": [
-          "sh-cert"
-        ],
-        "metric": {
-          "label": "应用数据",
-          "value": "0 B"
-        }
+          "handshake-certificate"
+        ]
       },
       {
-        "label": "正确证书完成握手",
-        "note": "SAN 改为 api.example 后，Finished 通过，GET 才进入加密通道。",
+        "label": "Finished",
+        "note": "常规 1-RTT 路径在身份通过后双方确认握手记录，导出本次连接的应用密钥；0-RTT early data 不等到这里才发送。",
         "activeIds": [
-          "certificate",
-          "finished",
-          "app-data"
+          "tls-certificate",
+          "tls-key"
         ],
         "doneIds": [
-          "finished",
-          "app-data"
+          "tls-certificate",
+          "tls-key"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "tls-client",
+          "tls-handshake",
+          "tls-data"
+        ],
         "values": {
-          "certificate": "SAN=api.example",
-          "finished": "verified",
-          "app-data": "encrypted GET /orders"
+          "tls-key": "handshake verified"
         },
         "activeEdgeIds": [
-          "sh-cert",
-          "cert-finished",
-          "finished-data"
+          "certificate-key"
+        ]
+      },
+      {
+        "label": "Encrypted record",
+        "note": "常规 1-RTT 路径中 GET /orders 进入加密记录，应用数据跨过握手边界；0-RTT 是另一个需评估重放的例外路径。",
+        "activeIds": [
+          "tls-key",
+          "tls-data"
+        ],
+        "doneIds": [
+          "tls-data"
+        ],
+        "mutedIds": [
+          "tls-client",
+          "tls-handshake",
+          "tls-certificate"
+        ],
+        "values": {
+          "tls-data": "ciphertext · GET /orders"
+        },
+        "activeEdgeIds": [
+          "key-data"
         ]
       }
     ],
-    "insight": "TLS 既要建立密钥，也要确认密钥对应的是预期服务身份。",
+    "insight": "TLS 同时解决密钥建立和服务身份确认；常规 1-RTT 中任何一项没有完成，都不应把应用请求当作安全地上路，0-RTT 则还要单独判断重放风险。",
     "quiz": {
       "question": "证书链有效但 SAN 不包含当前主机名，应怎样处理？",
       "options": [
@@ -10760,18 +10940,28 @@
     },
     "prompt": {
       "title": "检查 TLS 握手与身份验证",
-      "text": "请记录协议版本、密码套件、证书链、SAN、信任根、SNI、会话恢复和失败时是否发送了应用数据。"
+      "text": "请记录协议版本、密码套件、证书链、SAN、信任根、SNI、会话恢复、是否启用 0-RTT、操作是否可承受重放，以及失败时是否发送了应用数据。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
         "label": "RFC 8446 · TLS 1.3",
-        "note": "协议定义与报文语义"
+        "note": "握手消息、密钥和记录保护"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
         "label": "RFC 9525 · Service Identity",
-        "note": "协议定义与报文语义"
+        "note": "主机名与服务身份验证"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc6066.html",
+        "label": "RFC 6066 · TLS Extensions",
+        "note": "SNI 等扩展"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security",
+        "label": "MDN · Transport Layer Security",
+        "note": "浏览器 TLS 边界与失败排查"
       }
     ]
   },
@@ -12579,443 +12769,582 @@
   {"slug":"mime-type","lead":"同一段 <h1>Hi</h1> 字节，为什么一会儿是标题，一会儿只是文字？","definition":"媒体类型是给表示附上的解释声明；接收端先读 Content-Type，再按 type/subtype 和参数选择解析器，实际字节仍要通过那套规则。","boundary":"扩展名、charset、Content-Encoding 和媒体类型回答不同问题；错配时浏览器可能嗅探，结果不能当成所有客户端的通用保证。","sceneKind":"branch","sceneTitle":"同一字节在不同解释器之间分叉","actionLabel":"切换解释路径","actors":[{"id":"declaration","label":"Content-Type","detail":"text/html / text/plain / JSON","icon":"file","group":"声明"},{"id":"bytes","label":"实际字节","detail":"<h1>Hi</h1> 或 JSON","icon":"code","group":"内容"},{"id":"decoder","label":"外层解码","detail":"Content-Encoding: gzip","icon":"gear","group":"前置步骤"},{"id":"parser","label":"解释器","detail":"HTML / text / JSON","icon":"component","group":"规则"},{"id":"result","label":"接收端结果","detail":"节点、文字或错误","icon":"browser","group":"输出"},{"id":"context","label":"使用上下文","detail":"浏览器 / API 客户端","icon":"shield","group":"边界"}],"edges":[{"id":"declaration-parser","from":"declaration","to":"parser","label":"选择处理规则"},{"id":"bytes-parser","from":"bytes","to":"parser","label":"交给解析器"},{"id":"bytes-decoder","from":"bytes","to":"decoder","label":"先解外层编码"},{"id":"decoder-parser","from":"decoder","to":"parser","label":"还原表示"},{"id":"parser-result","from":"parser","to":"result","label":"产生结果"},{"id":"context-result","from":"context","to":"result","label":"上下文影响处理"}],"frames":[{"label":"text/html 构造标题","note":"声明和字节一起进入 HTML 解释路径，结果是一个 h1 节点。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser","result"],"mutedIds":["decoder","context"],"values":{"declaration":"text/html","bytes":"<h1>Hi</h1>","parser":"HTML parser","result":"h1 element"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"]},{"label":"text/plain 保留尖括号","note":"声明换成纯文本，字节没有变，解析器也不再把它拆成 HTML 标签。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser","result"],"mutedIds":["decoder","context"],"values":{"declaration":"text/plain","bytes":"<h1>Hi</h1>","parser":"text decoder","result":"literal text"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"]},{"label":"application/json 停在错误处","note":"声明只改变解析规则；缺少值的 JSON 仍然在右花括号前失败。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser"],"mutedIds":["decoder","context"],"values":{"declaration":"application/json","bytes":"{\"count\": }","parser":"JSON parser","result":"SyntaxError"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"],"metric":{"label":"解析状态","value":"失败"}},{"label":"gzip 先解开再解析","note":"外层编码先由 gunzip 去掉，得到的表示仍按 application/json 处理。","activeIds":["declaration","bytes","decoder","parser","result"],"doneIds":["decoder","parser","result"],"mutedIds":["context"],"values":{"declaration":"application/json","bytes":"gzip bytes","decoder":"gunzip","parser":"JSON parser","result":"{ count: 2 }"},"activeEdgeIds":["bytes-decoder","decoder-parser","parser-result"]}],"insight":"媒体类型决定接收端先套哪套解释规则；看到结果前，还要检查参数、外层编码和实际字节有没有对上。","quiz":{"question":"响应声明 application/json，但 body 不是合法 JSON，应该怎样判断？","options":[{"label":"按 JSON 解析并把语法错误留下","correct":true},{"label":"声明成功就等于内容合法","correct":false},{"label":"改看文件扩展名，不再解析","correct":false}],"success":"标签选择了解释器，解析器仍要检查字节。","retry":"把“是什么格式”和“是否符合格式”分成两个问题。"},"prompt":{"title":"核对一条响应的内容类型","text":"请把 Content-Type、charset、Content-Encoding、实际字节和接收端上下文列出来，解释结果是文本、节点、结构化值还是解析错误。"},"sources":[{"url":"https://www.rfc-editor.org/rfc/rfc6838.html","label":"RFC 6838 · Media Type Registration","note":"type/subtype、参数、注册树和顶层类型"},{"url":"https://www.rfc-editor.org/rfc/rfc2046.html","label":"RFC 2046 · Media Types","note":"charset 与 multipart 的媒体类型语义"},{"url":"https://www.rfc-editor.org/rfc/rfc9110.html","label":"RFC 9110 · HTTP Semantics","note":"Content-Type、Content-Encoding 与表示处理"},{"url":"https://mimesniff.spec.whatwg.org/","label":"WHATWG · MIME Sniffing Standard","note":"错配类型的嗅探、上下文和安全后果"}]},
   {
     "slug": "response-body",
-    "lead": "接口状态都是 200，为什么一个能显示图片，一个解压后才显示，另一个完全没有内容？",
-    "definition": "响应内容是服务器返回的表示字节，Content-Type 与 Content-Encoding 决定如何解释和还原；方法与状态码还决定是否允许内容。",
-    "boundary": "响应体不等于整个响应，也不保证是 JSON。HEAD、204 和 304 等无内容场景可以是正常结果。",
+    "lead": "同样是一次 HTTP 响应，为什么有时要解压、有时能解析成对象，有时根本没有内容？",
+    "definition": "本页把响应体拆成常规读取路径：先看 method/status，再按 Content-Encoding 还原表示字节，最后按 Content-Type 解析；204、304、HEAD 没有 body，坏字节则在解析处失败。",
+    "boundary": "响应体只是响应的一部分，不保证是 JSON，也不代表业务一定成功。无 body 是协议分支，解析错误是内容分支，二者要分开处理。",
     "sceneKind": "transform",
-    "sceneTitle": "图片响应从编码字节到渲染结果",
-    "actionLabel": "处理下一种响应内容",
+    "sceneTitle": "响应字节经过哪一道门才交给调用方",
+    "actionLabel": "处理下一步响应",
     "actors": [
       {
-        "id": "image-source",
-        "label": "头像表示",
-        "detail": "PNG · 18 KB",
+        "id": "response-headers",
+        "label": "响应头",
+        "detail": "200 · gzip · application/json",
         "icon": "file",
-        "group": "源内容"
+        "group": "协议"
       },
       {
-        "id": "encoded-body",
-        "label": "响应体",
-        "detail": "gzip 6 KB",
+        "id": "wire-body",
+        "label": "线路字节",
+        "detail": "压缩 body",
         "icon": "package",
         "group": "传输"
       },
       {
-        "id": "decoder",
+        "id": "body-decoder",
         "label": "内容解码器",
         "detail": "Content-Encoding",
         "icon": "gear",
         "group": "客户端"
       },
       {
-        "id": "media-parser",
-        "label": "图片解析器",
-        "detail": "Content-Type: image/png",
+        "id": "body-parser",
+        "label": "格式解析器",
+        "detail": "Content-Type",
         "icon": "layout",
         "group": "客户端"
       },
       {
-        "id": "image-view",
-        "label": "头像视图",
-        "detail": "等待像素",
+        "id": "body-caller",
+        "label": "调用方",
+        "detail": "对象 / 错误 / 空结果",
         "icon": "browser",
         "group": "输出"
       },
       {
-        "id": "empty-body",
-        "label": "无内容响应",
-        "detail": "204 / HEAD",
+        "id": "body-empty",
+        "label": "无内容分支",
+        "detail": "204 · HEAD · 304",
         "icon": "message",
-        "group": "分支"
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "source-body",
-        "from": "image-source",
-        "to": "encoded-body",
-        "label": "gzip"
+        "id": "headers-wire",
+        "from": "response-headers",
+        "to": "wire-body",
+        "label": "说明字节"
       },
       {
-        "id": "body-decoder",
-        "from": "encoded-body",
-        "to": "decoder",
-        "label": "解压"
+        "id": "wire-decoder",
+        "from": "wire-body",
+        "to": "body-decoder",
+        "label": "先解码"
       },
       {
         "id": "decoder-parser",
-        "from": "decoder",
-        "to": "media-parser",
-        "label": "PNG 字节"
+        "from": "body-decoder",
+        "to": "body-parser",
+        "label": "还原表示"
       },
       {
-        "id": "parser-view",
-        "from": "media-parser",
-        "to": "image-view",
-        "label": "解码像素"
+        "id": "parser-caller",
+        "from": "body-parser",
+        "to": "body-caller",
+        "label": "解析结果"
       },
       {
-        "id": "empty-view",
-        "from": "empty-body",
-        "to": "image-view",
-        "label": "不渲染内容"
+        "id": "empty-caller",
+        "from": "body-empty",
+        "to": "body-caller",
+        "label": "不读取 body"
       }
     ],
     "frames": [
       {
-        "label": "传输的是压缩字节",
-        "note": "Content-Length 对应 6 KB gzip 内容，不是解压后的 PNG 大小。",
+        "label": "200 到达",
+        "note": "状态和字段先到：body 是 gzip 表示，准备按规则读取。",
         "activeIds": [
-          "image-source",
-          "encoded-body"
+          "response-headers",
+          "wire-body"
         ],
         "doneIds": [
-          "encoded-body"
+          "response-headers"
         ],
         "mutedIds": [
-          "decoder",
-          "media-parser",
-          "image-view",
-          "empty-body"
+          "body-decoder",
+          "body-parser",
+          "body-caller",
+          "body-empty"
         ],
         "values": {
-          "image-source": "18 KB PNG",
-          "encoded-body": "6 KB gzip"
+          "response-headers": "200 · gzip · application/json",
+          "wire-body": "compressed bytes"
         },
         "activeEdgeIds": [
-          "source-body"
+          "headers-wire"
         ],
         "metric": {
-          "label": "传输大小",
-          "value": "6 KB"
+          "label": "线路字节",
+          "value": "gzip"
         }
       },
       {
-        "label": "解压恢复 PNG 表示",
-        "note": "客户端根据 Content-Encoding 先还原 18 KB 原始表示。",
+        "label": "先解码",
+        "note": "Content-Encoding 只回答表示怎样还原；还没到 JSON 解析这一步。",
         "activeIds": [
-          "encoded-body",
-          "decoder"
-        ],
-        "doneIds": [
-          "decoder"
-        ],
-        "mutedIds": [
-          "media-parser",
-          "image-view",
-          "empty-body"
-        ],
-        "values": {
-          "decoder": "gzip → 18 KB",
-          "encoded-body": "consumed"
-        },
-        "activeEdgeIds": [
+          "wire-body",
           "body-decoder"
+        ],
+        "doneIds": [
+          "body-decoder"
+        ],
+        "mutedIds": [
+          "response-headers",
+          "body-parser",
+          "body-caller",
+          "body-empty"
+        ],
+        "values": {
+          "wire-body": "gzip",
+          "body-decoder": "→ {\"count\":2}"
+        },
+        "activeEdgeIds": [
+          "wire-decoder"
         ]
       },
       {
-        "label": "媒体类型驱动图片解析",
-        "note": "恢复后的字节按 image/png 解码为像素。",
+        "label": "选择解析器",
+        "note": "还原后的字节交给 Content-Type 指定方向的解析器。",
         "activeIds": [
-          "decoder",
-          "media-parser",
-          "image-view"
+          "body-decoder",
+          "body-parser"
         ],
         "doneIds": [
-          "image-view"
+          "body-parser"
         ],
         "mutedIds": [
-          "empty-body"
+          "response-headers",
+          "wire-body",
+          "body-caller",
+          "body-empty"
         ],
         "values": {
-          "media-parser": "PNG valid",
-          "image-view": "64×64 rendered"
+          "body-parser": "application/json"
         },
         "activeEdgeIds": [
-          "decoder-parser",
-          "parser-view"
+          "decoder-parser"
         ]
       },
       {
-        "label": "204 正常保持无内容",
-        "note": "状态码明确没有响应体，视图不应把空字节当图片损坏。",
+        "label": "交给调用方",
+        "note": "格式合法时得到对象；200 只说明 HTTP 处理结果，不替业务检查字段。",
         "activeIds": [
-          "empty-body",
-          "image-view"
+          "body-parser",
+          "body-caller"
         ],
         "doneIds": [
-          "empty-body"
+          "body-caller"
         ],
         "mutedIds": [
-          "image-source",
-          "encoded-body",
-          "decoder",
-          "media-parser"
+          "response-headers",
+          "wire-body",
+          "body-decoder",
+          "body-empty"
         ],
         "values": {
-          "empty-body": "204 · body 0",
-          "image-view": "no update"
+          "body-caller": "object · count=2"
         },
         "activeEdgeIds": [
-          "empty-view"
+          "parser-caller"
+        ]
+      },
+      {
+        "label": "204 / HEAD / 304",
+        "note": "没有 body 不是下载失败；先按协议返回空结果，避免把空体误报成 JSON 损坏。",
+        "activeIds": [
+          "body-empty",
+          "body-caller"
+        ],
+        "doneIds": [
+          "body-empty"
+        ],
+        "mutedIds": [
+          "response-headers",
+          "wire-body",
+          "body-decoder",
+          "body-parser"
+        ],
+        "values": {
+          "body-empty": "0 bytes",
+          "body-caller": "no body"
+        },
+        "activeEdgeIds": [
+          "empty-caller"
         ],
         "metric": {
-          "label": "内容字节",
-          "value": "0"
+          "label": "可读取内容",
+          "value": "0 bytes"
         }
+      },
+      {
+        "label": "坏 JSON",
+        "note": "Content-Type 选到了 JSON 解析器，但缺失的值仍会让解析停下。",
+        "activeIds": [
+          "body-parser",
+          "body-caller"
+        ],
+        "doneIds": [
+          "body-parser"
+        ],
+        "mutedIds": [
+          "response-headers",
+          "wire-body",
+          "body-decoder",
+          "body-empty"
+        ],
+        "values": {
+          "body-parser": "SyntaxError",
+          "body-caller": "handle error"
+        },
+        "activeEdgeIds": [
+          "parser-caller"
+        ]
       }
     ],
-    "insight": "处理响应体要按编码顺序还原字节，再按媒体类型解释，并尊重无内容状态。",
+    "insight": "响应体的读取顺序是状态/方法边界 → 内容解码 → 格式解析；无 body、未解码和坏内容是三种不同故障。",
     "quiz": {
-      "question": "Content-Encoding: gzip 时，客户端应先做什么？",
+      "question": "Content-Encoding: gzip 且 Content-Type: application/json 时，客户端应怎样读？",
       "options": [
         {
-          "label": "先解压，再按 Content-Type 解析",
+          "label": "先解码，再按 JSON 解析",
           "correct": true
         },
         {
-          "label": "把压缩字节直接当图片像素",
+          "label": "把 gzip 字节直接当对象",
           "correct": false
         },
         {
-          "label": "忽略响应字段只看 URL 后缀",
+          "label": "只看 URL 后缀",
           "correct": false
         }
       ],
-      "success": "内容编码先还原表示，媒体类型再决定表示如何解析。",
-      "retry": "区分传输编码和媒体格式。"
+      "success": "编码层先还原表示，媒体类型再决定解析规则。",
+      "retry": "把状态、Content-Encoding 和 Content-Type 分开看。"
     },
     "prompt": {
-      "title": "检查响应内容处理",
-      "text": "请列出状态码、方法、Content-Length、Content-Encoding、Content-Type、实际字节和客户端处理顺序，并覆盖无内容响应。"
+      "title": "排查响应体处理",
+      "text": "请记录 method、status、Content-Length、Content-Encoding、Content-Type、实际字节和调用方结果，并分别标出无 body、解码失败和解析失败。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Content",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "响应消息、表示、Content-Encoding 与无内容语义"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages",
+        "label": "MDN · HTTP messages",
+        "note": "HTTP 消息的字段与可选 body"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Response/json",
+        "label": "MDN · Response.json()",
+        "note": "读取 body 并按 JSON 解析"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/204",
+        "label": "MDN · 204 No Content",
+        "note": "204 没有可读取响应体"
       }
     ]
   },
   {
     "slug": "response-header",
-    "lead": "响应体完全一样，为什么加上 Location、Set-Cookie 或 Retry-After 会改变客户端后续行为？",
-    "definition": "响应字段携带关于内容、缓存、认证、导航和连接处理的元数据，浏览器、客户端库与中间缓存会据此执行具体动作。",
-    "boundary": "响应头适合元信息，不能替代业务响应体。它是通用 HTTP 字段在响应中的使用位置，不应与请求头混成同一方向。",
+    "lead": "响应体完全一样，为什么换一张字段牌，浏览器和缓存就改了下一步？",
+    "definition": "本页把响应头当作控制信号来读：Location 改变后续目标，Retry-After 提供等待窗口，Vary 拆分缓存键，Cache-Control 规定新鲜时间；body 仍是独立的表示载荷。",
+    "boundary": "响应头适合传递协议元信息，不能替 body 交付业务内容，也不能绕过状态码、客户端策略或权限判断。",
     "sceneKind": "state-machine",
-    "sceneTitle": "四个响应字段触发四种客户端状态",
-    "actionLabel": "加入下一个响应字段",
+    "sceneTitle": "同一份响应怎样走出六条不同的下一步",
+    "actionLabel": "换一张字段牌",
     "actors": [
       {
-        "id": "base-reply",
+        "id": "base-response",
         "label": "基础响应",
-        "detail": "无字段动作",
+        "detail": "status + same body",
         "icon": "server",
         "group": "响应"
       },
       {
-        "id": "location-field",
-        "label": "Location",
-        "detail": "/login",
+        "id": "control-field",
+        "label": "控制字段",
+        "detail": "Location / Retry-After / Vary / Cache-Control",
+        "icon": "file",
+        "group": "字段"
+      },
+      {
+        "id": "next-request",
+        "label": "后续请求",
+        "detail": "改目标或等待后再发",
         "icon": "network",
-        "group": "字段"
+        "group": "导航"
       },
       {
-        "id": "cookie-field",
-        "label": "Set-Cookie",
-        "detail": "sid=R7",
-        "icon": "key",
-        "group": "字段"
+        "id": "cache-policy",
+        "label": "缓存规则",
+        "detail": "键、freshness、复用",
+        "icon": "database",
+        "group": "缓存"
       },
       {
-        "id": "retry-field",
-        "label": "Retry-After",
-        "detail": "30",
-        "icon": "clock",
-        "group": "字段"
-      },
-      {
-        "id": "vary-field",
-        "label": "Vary",
-        "detail": "Accept-Language",
-        "icon": "memory",
-        "group": "字段"
-      },
-      {
-        "id": "response-client",
-        "label": "客户端",
-        "detail": "执行后续动作",
+        "id": "caller",
+        "label": "调用方",
+        "detail": "读取同一 body",
         "icon": "browser",
-        "group": "状态"
+        "group": "结果"
+      },
+      {
+        "id": "stop",
+        "label": "停止复用",
+        "detail": "Vary: *",
+        "icon": "shield",
+        "group": "边界"
       }
     ],
     "edges": [
       {
-        "id": "reply-client",
-        "from": "base-reply",
-        "to": "response-client",
-        "label": "接收响应"
+        "id": "response-field",
+        "from": "base-response",
+        "to": "control-field",
+        "label": "读字段"
       },
       {
-        "id": "location-client",
-        "from": "location-field",
-        "to": "response-client",
-        "label": "导航"
+        "id": "field-next",
+        "from": "control-field",
+        "to": "next-request",
+        "label": "导航 / 等待"
       },
       {
-        "id": "cookie-client",
-        "from": "cookie-field",
-        "to": "response-client",
-        "label": "保存状态"
+        "id": "field-cache",
+        "from": "control-field",
+        "to": "cache-policy",
+        "label": "缓存判断"
       },
       {
-        "id": "retry-client",
-        "from": "retry-field",
-        "to": "response-client",
-        "label": "安排等待"
+        "id": "response-caller",
+        "from": "base-response",
+        "to": "caller",
+        "label": "交付 body"
       },
       {
-        "id": "vary-client",
-        "from": "vary-field",
-        "to": "response-client",
-        "label": "拆分缓存键"
+        "id": "cache-stop",
+        "from": "cache-policy",
+        "to": "stop",
+        "label": "停止复用"
       }
     ],
     "frames": [
       {
-        "label": "Location 安排下一次导航",
-        "note": "302 响应的字段把客户端目标改为 /login。",
+        "label": "原地交付",
+        "note": "同一份 body 先交给调用方；没有控制字段，客户端没有新的协议动作。",
         "activeIds": [
-          "base-reply",
-          "location-field",
-          "response-client"
+          "base-response",
+          "caller"
         ],
         "doneIds": [
-          "response-client"
+          "caller"
         ],
         "mutedIds": [
-          "cookie-field",
-          "retry-field",
-          "vary-field"
+          "control-field",
+          "next-request",
+          "cache-policy",
+          "stop"
         ],
         "values": {
-          "base-reply": "302",
-          "response-client": "next GET /login"
+          "base-response": "200 · same body",
+          "caller": "read payload"
         },
         "activeEdgeIds": [
-          "reply-client",
-          "location-client"
+          "response-caller"
         ]
       },
       {
-        "label": "Set-Cookie 保存会话标识",
-        "note": "浏览器把 sid=R7 按作用域保存，并在后续匹配请求中发送。",
+        "label": "Location 改变目标",
+        "note": "302 的 Location 指向 /login，下一次请求目标改变，当前 body 仍没有被改写。",
         "activeIds": [
-          "cookie-field",
-          "response-client"
+          "base-response",
+          "control-field",
+          "next-request"
         ],
         "doneIds": [
-          "cookie-field"
+          "next-request"
         ],
         "mutedIds": [
-          "location-field",
-          "retry-field",
-          "vary-field"
+          "caller",
+          "cache-policy",
+          "stop"
         ],
         "values": {
-          "response-client": "cookie jar: sid=R7"
+          "control-field": "Location: /login",
+          "next-request": "GET /login"
         },
         "activeEdgeIds": [
-          "cookie-client"
+          "response-field",
+          "field-next"
         ]
       },
       {
-        "label": "Retry-After 建立等待窗口",
-        "note": "429 响应使客户端在 30 秒后再考虑重试。",
+        "label": "Retry-After 留出等待",
+        "note": "429 的 Retry-After: 30 给重试器一个窗口；是否重试仍要看请求能不能安全重复。",
         "activeIds": [
-          "retry-field",
-          "response-client"
+          "base-response",
+          "control-field",
+          "next-request"
         ],
         "doneIds": [
-          "retry-field"
+          "control-field"
         ],
         "mutedIds": [
-          "location-field",
-          "cookie-field",
-          "vary-field"
+          "caller",
+          "cache-policy",
+          "stop"
         ],
         "values": {
-          "response-client": "retry at +30 s"
+          "control-field": "Retry-After: 30",
+          "next-request": "wait 30s"
         },
         "activeEdgeIds": [
-          "retry-client"
+          "response-field",
+          "field-next"
         ],
         "metric": {
-          "label": "等待时间",
+          "label": "等待窗口",
           "value": "30 s"
         }
       },
       {
-        "label": "Vary 拆分共享缓存条目",
-        "note": "中文与英文响应不能只按 URL 共用一个缓存副本。",
+        "label": "Vary 拆分缓存键",
+        "note": "Vary: Accept-Language 让 zh 和 en 的表示分开保存，避免把一个变体发给另一个请求。",
         "activeIds": [
-          "vary-field",
-          "response-client"
+          "base-response",
+          "control-field",
+          "cache-policy"
         ],
         "doneIds": [
-          "vary-field"
+          "cache-policy"
         ],
         "mutedIds": [
-          "location-field",
-          "cookie-field",
-          "retry-field"
+          "caller",
+          "next-request",
+          "stop"
         ],
         "values": {
-          "response-client": "cache keys: zh / en"
+          "control-field": "Vary: Accept-Language",
+          "cache-policy": "keys: zh / en"
         },
         "activeEdgeIds": [
-          "vary-client"
+          "response-field",
+          "field-cache"
         ],
         "metric": {
           "label": "缓存变体",
           "value": "2"
         }
+      },
+      {
+        "label": "Vary: * 停止复用",
+        "note": "Vary: * 表示这次响应不能被缓存拿去满足后续请求；body 没坏，是复用被挡住。",
+        "activeIds": [
+          "base-response",
+          "control-field",
+          "cache-policy",
+          "stop"
+        ],
+        "doneIds": [
+          "stop"
+        ],
+        "mutedIds": [
+          "caller",
+          "next-request"
+        ],
+        "values": {
+          "control-field": "Vary: *",
+          "stop": "reuse blocked"
+        },
+        "activeEdgeIds": [
+          "response-field",
+          "field-cache",
+          "cache-stop"
+        ]
+      },
+      {
+        "label": "Cache-Control 打开新鲜窗口",
+        "note": "max-age=60 让缓存知道 60 秒内可以直接复用，过期后的验证另由缓存规则接管。",
+        "activeIds": [
+          "base-response",
+          "control-field",
+          "cache-policy",
+          "caller"
+        ],
+        "doneIds": [
+          "cache-policy",
+          "caller"
+        ],
+        "mutedIds": [
+          "next-request",
+          "stop"
+        ],
+        "values": {
+          "control-field": "max-age=60",
+          "cache-policy": "fresh HIT",
+          "caller": "same body"
+        },
+        "activeEdgeIds": [
+          "response-field",
+          "field-cache",
+          "response-caller"
+        ],
+        "metric": {
+          "label": "新鲜窗口",
+          "value": "60 s"
+        }
       }
     ],
-    "insight": "响应字段不是旁注；它们直接参与导航、状态、等待和缓存决策。",
+    "insight": "响应头把协议动作写在 body 之外；读懂它，要看字段的接收方和后续行为，而不是只背字段名。",
     "quiz": {
-      "question": "429 响应包含 Retry-After: 30，客户端应怎样处理？",
+      "question": "Vary: Accept-Language 的直接作用是什么？",
       "options": [
         {
-          "label": "至少等待指定窗口，再按策略决定重试",
+          "label": "让缓存按请求语言区分响应变体",
           "correct": true
         },
         {
-          "label": "立即无限重试",
+          "label": "把 body 自动翻译成多种语言",
           "correct": false
         },
         {
-          "label": "把字段显示在页面后忽略",
+          "label": "保证所有客户端都跟随跳转",
           "correct": false
         }
       ],
-      "success": "Retry-After 为后续重试提供协议级等待信息。",
-      "retry": "响应字段会驱动客户端动作，不只是供人阅读。"
+      "success": "Vary 改变的是缓存键与表示选择，不是 body 本身。",
+      "retry": "先问字段由谁读取，以及它改变的是导航、等待还是缓存。"
     },
     "prompt": {
-      "title": "列出响应字段的客户端动作",
-      "text": "请为 Location、Set-Cookie、Retry-After、Vary、ETag 等字段写出产生条件、接收方、后续动作和安全日志规则。"
+      "title": "审查响应头控制信号",
+      "text": "请为每个字段记录产生条件、接收方、后续动作、缓存影响和失败边界，避免把字段语义与响应 body 混在一起。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Response Fields",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "响应字段、Location、Retry-After、Vary 与报文语义"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
-        "label": "RFC 9111 · Caching Fields",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9111 · HTTP Caching",
+        "note": "缓存键、新鲜度和响应复用"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers",
+        "label": "MDN · HTTP headers",
+        "note": "标准响应头字段的使用位置"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After",
+        "label": "MDN · Retry-After",
+        "note": "等待窗口与重试提示"
       }
     ]
   },
