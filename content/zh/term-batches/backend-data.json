@@ -1372,12 +1372,12 @@
   },
   {
     "zh": "测试用例", "en": "Test Case", "slug": "test-case", "cat": "技术栈",
-    "say": "写清前置条件、操作、输入和预期结果的一次可重复检查。", "aliases": ["Test Case", "测试场景", "用例"],
-    "question": "“测一下登录”为什么每个人测出的结果都不一样？", "definition": "测试用例描述一个具体场景的准备条件、执行步骤、输入和可判定预期。", "boundary": "用例不是笼统任务清单；预期结果必须能观察和判断。",
-    "demoType": "flow", "demoTitle": "模糊要求怎样变成可执行用例",
-    "demoSteps": [{"label":"准备条件","value":"账号已注册且未锁定","note":"测试从同一状态开始。"},{"label":"执行操作","value":"输入正确密码并提交","note":"步骤和输入可复现。"},{"label":"判断结果","value":"进入工作台且会话创建","note":"页面和服务端状态都可核对。"}],
-    "quizQuestion": "好的测试用例需要怎样的预期结果？", "quizOptions": ["具体且可观察", "只写“应该正常”", "完全不写结果"], "correctText": "可观察结果才能判定通过或失败。", "wrongText": "“正常”过于含糊，缺失结果也无法判定。",
-    "promptTitle": "编写测试用例", "prompt": "请把这个需求改写为正常、边界、权限和失败场景的测试用例，每条包含前置、步骤和可观察预期。", "relatedSlugs": ["assertion", "regression-test", "e2e-test"]
+    "say": "把一个具体起点、一次明确动作和几项可观察结果写成能重跑的判断。", "aliases": ["Test Case", "测试场景", "用例"],
+    "question": "“密码重置应该失败”为什么还不能交给别人执行？", "definition": "测试用例把前置状态、输入、操作和可判定预期连成一条可重复检查的路径。", "boundary": "标题和“功能正常”都不是完整用例；没有固定起点或可观察结果，就无法归因和判定。",
+    "demoType": "request", "demoTitle": "把一句“应该失败”拆成三张回执",
+    "demoSteps": [{"label":"固定起点","value":"user=u-42 · token=expired","note":"账号状态和令牌年龄先写死，第二次才能从同一扇门开始。"},{"label":"发送动作","value":"POST /password/reset · 1 次","note":"操作、路径、输入和次数都能照着执行。"},{"label":"观察并重跑","value":"410 · consumed=false · mail=0","note":"三类证据对上，清理后再次执行仍是 3/3 PASS。"}],
+    "quizQuestion": "“过期令牌应失败”还缺哪类信息？", "quizOptions": ["具体操作、状态码和服务端副作用预期", "更多形容词描述失败严重程度", "把标题改成英文"], "correctText": "协议结果和状态副作用让失败可判定。", "wrongText": "把“失败”拆成可以观察、可以复现的事实。",
+    "promptTitle": "把模糊检查改成测试用例", "prompt": "请把这条风险写成一条可复现用例：补齐前置状态、精确输入、执行动作、清理方式，以及界面、协议和持久化层的可判定预期。", "relatedSlugs": ["assertion", "regression-test", "e2e-test"]
   },
   {
     "zh": "模拟对象", "en": "Mock", "slug": "mock", "cat": "技术栈",

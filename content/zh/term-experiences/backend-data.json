@@ -16951,25 +16951,44 @@
         ]
       },
       {
-        "label": "写出协议操作与三个预期",
-        "note": "发送一次重置请求；应返回 410，令牌未消费，邮件仍为 0 封。",
+        "label": "写出协议操作",
+        "note": "把一次重置请求写成明确动作：POST /password/reset，只执行 1 次。",
         "activeIds": [
-          "case-action",
+          "case-action"
+        ],
+        "doneIds": [
+          "case-action"
+        ],
+        "mutedIds": [
+          "case-draft",
+          "case-observations",
+          "case-result"
+        ],
+        "values": {
+          "case-action": "POST /password/reset · 1 次"
+        },
+        "activeEdgeIds": [
+          "input-action"
+        ]
+      },
+      {
+        "label": "拆出三张回执",
+        "note": "预期落在 HTTP、数据库和邮件三个观察点：410、未消费、0 封。",
+        "activeIds": [
           "case-observations"
         ],
         "doneIds": [
-          "case-action",
           "case-observations"
         ],
         "mutedIds": [
-          "case-draft"
+          "case-draft",
+          "case-result"
         ],
         "values": {
           "case-action": "POST /password/reset",
           "case-observations": "410 · consumed=false · mail=0"
         },
         "activeEdgeIds": [
-          "input-action",
           "action-observe"
         ]
       },
@@ -17025,9 +17044,29 @@
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-planning",
+        "label": "Microsoft Learn · Create a test plan",
+        "note": "前置、步骤、预期与结果记录"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/devops/test/overview?source=recommendations&view=azure-devops",
+        "label": "Microsoft Learn · Azure Test Plans",
+        "note": "测试步骤、预期和需求追踪"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html",
+        "label": "OWASP · Forgot Password Cheat Sheet",
+        "note": "令牌失效与密码找回副作用"
+      },
+      {
+        "url": "https://docs.gitlab.com/development/testing_guide/best_practices/",
+        "label": "GitLab Docs · Testing best practices",
+        "note": "干净环境、清理和场景断言"
+      },
+      {
+        "url": "https://playwright.dev/docs/test-assertions",
+        "label": "Playwright · Assertions",
+        "note": "异步观察与自动重试"
       }
     ]
   },
