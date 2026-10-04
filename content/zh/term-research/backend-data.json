@@ -87,7 +87,26 @@
   {"slug":"data-validation","mechanism":"数据校验把实际数据与结构、范围、跨字段或集合规则比较，产生通过、拒绝、隔离或告警；规则应说明失败记录如何处置。","misconception":"通过类型检查不等于数据有效；end_at 晚于 start_at、国家与邮编匹配、集合唯一性都不是单字段类型能表达。","demoSignature":"7帧｜对象：6 条预约记录、schema/range/cross-field/unique 四层筛网、quarantine 区｜交互：逐层开启规则并编辑 end_at｜变化：记录在具体规则处停下，修复后重新进入｜结果：2 条通过、3 条隔离、1 条告警，原因码逐条可见。","sourceUrls":["https://www.w3.org/TR/vocab-dqv/","https://docs.greatexpectations.io/docs/core/introduction/"],"rewriteRisk":"高：与 input-validation 的信任边界不同，这里强调数据资产规则与处置。","nearDuplicates":["input-validation","data-quality","database-schema"]},
   {"slug":"stream-processing","mechanism":"流处理持续消费无界事件，依据事件时间、处理时间、水位线和状态计算增量结果；迟到事件与重复投递要求显式策略。","misconception":"流处理不是每来一条立即输出且永不修改；窗口结果可能因迟到数据更新，exactly-once 也只在定义好的状态与输出边界内成立。","demoSignature":"7帧｜对象：事件时间 10:01–10:05 的乱序订单、2 分钟窗口、水位线、窗口总额｜交互：拖动一条 10:01 事件到 10:04 才到达并调 lateness 0→3 分钟｜变化：事件被丢弃或回补旧窗口｜结果：窗口总额 120 保持或修正为 170，并显示 revision=2。","sourceUrls":["https://spark.apache.org/docs/latest/streaming/index.html","https://kafka.apache.org/documentation/#design"],"rewriteRisk":"高：必须表现事件时间、水位线和结果修订，不能只画不断滚动的数据点。","nearDuplicates":["batch-processing","queue","idempotency"]},
   {"slug":"data-lineage","mechanism":"数据血缘记录实体、活动与主体之间的生成、使用和派生关系，使某个输出能追溯到输入、规则版本和运行实例。","misconception":"血缘不是一张静态架构图，也不等于日志；若没有列级映射、版本和运行证据，就无法回答某个数值为何变化。","demoSignature":"6帧｜对象：revenue_report.total、orders.amount、refunds.amount、job v17、run-42 的可展开图｜交互：点击报告单元格 6840 并回溯｜变化：图只展开实际参与该值的列、规则与运行｜结果：定位到 v17 汇率规则和 23 条源记录，可反向预览改列影响 3 个报表。","sourceUrls":["https://www.w3.org/TR/prov-o/"],"rewriteRisk":"高：需要实例级证据与影响分析，避免把 pipeline DAG 当血缘。","nearDuplicates":["data-pipeline","data-transformation","dataset-data"]},
-  {"slug":"unit-test","mechanism":"单元测试在受控环境中验证一个小型可执行单元的行为，通常隔离慢或不确定依赖，并用输入与可观察输出判定。","misconception":"单元不一定等于一个函数，也不是 mock 越多越好；测试实现细节会让重构导致无意义失败。","demoSignature":"5帧｜对象：priceAfterDiscount 函数、边界输入 -1/0/100/101、依赖时钟接口、断言列表｜交互：拖动输入并切换真实时钟/固定时钟｜变化：只在 0–100 通过，固定时钟消除日期抖动｜结果：4 个用例中 3 pass、1 明确抛 RangeError。","sourceUrls":["https://glossary.istqb.org/en_US/search","https://jestjs.io/docs/getting-started"],"rewriteRisk":"中：需说明隔离目的和可观察行为，不能只写‘测试一个函数’。","nearDuplicates":["integration-test","mock","assertion"]},
+    {
+    "slug": "unit-test",
+    "mechanism": "单元测试在受控环境中验证一个小型可执行单元的外部行为，通常隔离慢或不确定依赖，并用输入、返回值或预期错误判定。",
+    "misconception": "单元不一定等于一个函数，也不是 mock 越多越好；测试私有实现会让无害重构变成无意义失败，高覆盖率也不等于行为正确。",
+    "demoSignature": "5帧｜对象：priceAfterDiscount 函数、边界输入 -1/0/100/101、真实与固定时钟、断言结果｜交互：切换输入并切换真实时钟/固定时钟与行为/私有断言｜变化：边界结果可判定，固定时钟消除日期抖动，内部改写仍保持行为通过｜结果：4 个用例可重复，失败指向输入、依赖或错误断言。",
+    "sourceUrls": [
+      "https://martinfowler.com/bliki/UnitTest.html",
+      "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+      "https://jestjs.io/docs/getting-started",
+      "https://jestjs.io/docs/expect",
+      "https://jestjs.io/docs/mock-functions",
+      "https://jestjs.io/docs/asynchronous"
+    ],
+    "rewriteRisk": "中：需说明单元边界和隔离目的，展示依赖控制与可观察断言，不能只写‘测试一个函数’或把覆盖率当质量证明。",
+    "nearDuplicates": [
+      "integration-test",
+      "mock",
+      "assertion"
+    ]
+  },
   {"slug":"integration-test","mechanism":"集成测试验证多个组件或系统边界协作时的数据格式、协议、事务和错误处理，测试范围可从数据库适配器到跨服务契约。","misconception":"集成测试不等于必须启动完整系统，也不是单元测试数量更多；核心是让真实边界参与并发现接口假设不一致。","demoSignature":"6帧｜对象：order service、真实 PostgreSQL、假的支付服务、事务表｜交互：发送同一订单两次并让支付返回 500｜变化：SQL 真正写入/回滚，fake 只控制外部故障｜结果：订单表仍 0 行、outbox 0 行、收到一次错误响应。","sourceUrls":["https://glossary.istqb.org/en_US/search","https://playwright.dev/docs/api-testing"],"rewriteRisk":"中：要明确哪些依赖真实、哪些替身，避免与 E2E 模糊。","nearDuplicates":["unit-test","e2e-test","mock"]},
   {"slug":"e2e-test","mechanism":"端到端测试从用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径和系统级结果；覆盖面高但定位和维护成本也高。","misconception":"E2E 不是把所有测试都搬到浏览器，也不能替代单元与集成测试；依赖网络、数据和第三方会增加不稳定。","demoSignature":"7帧｜对象：浏览器、前端、API、数据库、邮件沙箱、订单状态时间轴｜交互：点击下单并完成付款回调｜变化：UI 从 pending 到 paid，数据库与邮件状态逐层产生｜结果：订单 id=42、DB=paid、邮件 1 封；任一层失败时停在首个不变量破坏处。","sourceUrls":["https://playwright.dev/docs/intro","https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需以真实跨层结果定义完成，不要只展示自动点按钮。","nearDuplicates":["integration-test","smoke-test","test-case"]},
   {"slug":"smoke-test","mechanism":"冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件，通常在部署后先运行。","misconception":"冒烟测试不是随便点几下，也不证明系统质量完整；它只回答关键路径是否明显失效。","demoSignature":"4帧｜对象：部署 commit abc123、health、login、create-order、payment 四个检查灯｜交互：点击 deploy 后自动执行并在 payment 注入 502｜变化：前三项绿、第四项红，后续 120 个回归用例保持未启动｜结果：3/4 通过，构建标记 rejected，节省 28 分钟。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"低：边界清楚，但要防止把‘快速’误写成‘覆盖全面’。","nearDuplicates":["e2e-test","regression-test","server"]},

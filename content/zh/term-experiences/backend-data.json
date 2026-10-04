@@ -15620,11 +15620,11 @@
       }
     ]
   },
-  {
+      {
     "slug": "unit-test",
     "lead": "折扣函数只有十几行，为什么还要固定时钟，并专门测试 -1、0、100 和 101？",
     "definition": "单元测试在受控环境中验证一个较小可执行单元的外部行为，通常隔离慢、昂贵或不确定的依赖。",
-    "boundary": "单元不一定等于一个函数，Mock 也不是越多越好。若测试内部实现而非可观察结果，正常重构也会造成无意义失败。",
+    "boundary": "单元不一定等于一个函数，Mock 也不是越多越好；若测试内部实现而非可观察结果，正常重构也会造成无意义失败。",
     "sceneKind": "matrix",
     "sceneTitle": "边界输入与时钟依赖的可重复检查",
     "actionLabel": "切换输入或时钟来源",
@@ -15693,22 +15693,45 @@
     ],
     "frames": [
       {
-        "label": "先运行四个边界输入",
+        "label": "先把四个输入摆上桌",
         "note": "0、100 和 101 分别落在门槛两侧，-1 应明确拒绝。",
+        "activeIds": [
+          "input-cases",
+          "discount-unit"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "real-clock",
+          "fixed-clock",
+          "unit-results"
+        ],
+        "values": {
+          "input-cases": "-1 / 0 / 100 / 101",
+          "unit-results": "尚未运行"
+        },
+        "activeEdgeIds": [
+          "inputs-unit"
+        ],
+        "metric": {
+          "label": "测试准备",
+          "value": "4 cases"
+        }
+      },
+      {
+        "label": "只调用这一个规则单元",
+        "note": "测试不启动数据库和网络，只把输入交给 priceAfterDiscount。",
         "activeIds": [
           "input-cases",
           "discount-unit",
           "unit-results"
         ],
-        "doneIds": [
-          "unit-results"
-        ],
+        "doneIds": [],
         "mutedIds": [
           "real-clock",
           "fixed-clock"
         ],
         "values": {
-          "input-cases": "-1 / 0 / 100 / 101",
+          "input-cases": "逐项调用",
           "unit-results": "RangeError / 0 / 90 / 90.9"
         },
         "activeEdgeIds": [
@@ -15716,13 +15739,13 @@
           "unit-results-edge"
         ],
         "metric": {
-          "label": "用例结果",
-          "value": "4/4 可判定"
+          "label": "执行范围",
+          "value": "1 unit"
         }
       },
       {
-        "label": "真实时钟让节日规则抖动",
-        "note": "同一输入在活动日和普通日得到不同结果，测试依赖运行日期。",
+        "label": "真实时钟让规则开始抖动",
+        "note": "同一输入在活动日和普通日可能得到不同结果，测试依赖运行日期。",
         "activeIds": [
           "real-clock",
           "discount-unit",
@@ -15740,7 +15763,11 @@
         "activeEdgeIds": [
           "real-unit",
           "unit-results-edge"
-        ]
+        ],
+        "metric": {
+          "label": "重复运行",
+          "value": "不稳定"
+        }
       },
       {
         "label": "注入固定时钟恢复重复性",
@@ -15754,7 +15781,8 @@
           "unit-results"
         ],
         "mutedIds": [
-          "real-clock"
+          "real-clock",
+          "input-cases"
         ],
         "values": {
           "fixed-clock": "2026-08-31",
@@ -15763,7 +15791,11 @@
         "activeEdgeIds": [
           "fixed-unit",
           "unit-results-edge"
-        ]
+        ],
+        "metric": {
+          "label": "重复运行",
+          "value": "稳定"
+        }
       },
       {
         "label": "重构内部变量仍保持通过",
@@ -15777,7 +15809,9 @@
           "unit-results"
         ],
         "mutedIds": [
-          "real-clock"
+          "real-clock",
+          "fixed-clock",
+          "input-cases"
         ],
         "values": {
           "discount-unit": "rule table implementation",
@@ -15785,7 +15819,11 @@
         },
         "activeEdgeIds": [
           "unit-results-edge"
-        ]
+        ],
+        "metric": {
+          "label": "断言对象",
+          "value": "行为契约"
+        }
       }
     ],
     "insight": "好的单元测试固定不确定依赖，盯住边界行为，不绑死内部写法。",
@@ -15814,14 +15852,34 @@
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://martinfowler.com/bliki/UnitTest.html",
+        "label": "Martin Fowler · Unit Test",
+        "note": "单元边界、隔离风格与反馈速度"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+        "label": "Microsoft Learn · Unit testing best practices",
+        "note": "快、隔离、可重复、自检查与 AAA"
       },
       {
         "url": "https://jestjs.io/docs/getting-started",
-        "label": "Jest Documentation",
-        "note": "测试替身与断言行为"
+        "label": "Jest · Getting Started",
+        "note": "最小函数、输入输出与测试运行"
+      },
+      {
+        "url": "https://jestjs.io/docs/expect",
+        "label": "Jest · Expect",
+        "note": "matcher 如何比较可观察结果"
+      },
+      {
+        "url": "https://jestjs.io/docs/mock-functions",
+        "label": "Jest · Mock Functions",
+        "note": "受控替身与调用记录"
+      },
+      {
+        "url": "https://jestjs.io/docs/asynchronous",
+        "label": "Jest · Testing Asynchronous Code",
+        "note": "异步结果的完成边界"
       }
     ]
   },

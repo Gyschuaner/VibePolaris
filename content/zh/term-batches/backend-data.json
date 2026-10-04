@@ -1163,14 +1163,55 @@
     "quizQuestion": "数据血缘最适合回答哪个问题？", "quizOptions": ["这个指标由哪些数据和任务生成", "按钮应该用什么颜色", "用户密码是什么"], "correctText": "血缘连接来源、处理和输出。", "wrongText": "界面颜色和密码不属于数据血缘用途。",
     "promptTitle": "补充数据血缘", "prompt": "请为这个指标列出源表字段、转换任务、中间表和最终消费者，并标明负责人和更新时间。", "relatedSlugs": ["data-pipeline", "data-transformation", "dataset-data"]
   },
-  {
-    "zh": "单元测试", "en": "Unit Test", "slug": "unit-test", "cat": "技术栈",
-    "say": "单独验证一个函数、类或小模块在给定输入下是否得到预期结果。", "aliases": ["Unit Test", "函数测试", "模块测试"],
-    "question": "金额计算函数改了以后，怎样快速确认边界条件没坏？", "definition": "单元测试隔离较小代码单元，控制输入和依赖，并对输出或行为作断言。", "boundary": "单元测试不能证明多个真实系统协作正常，集成和端到端场景仍需其他测试。",
-    "demoType": "branch", "demoTitle": "折扣函数怎样覆盖三个分支",
-    "demoSteps": [{"label":"普通订单","value":"100 → 100","note":"未达到门槛时金额不变。"},{"label":"达到门槛","value":"200 → 180","note":"满足规则后应用九折。"},{"label":"无效输入","value":"-1 → error","note":"负金额被明确拒绝。"}],
-    "quizQuestion": "单元测试最适合验证什么？", "quizOptions": ["一个函数的输入输出和边界", "整套生产网络是否可用", "所有浏览器真实登录流程"], "correctText": "单元测试聚焦小范围逻辑。", "wrongText": "真实网络和完整流程需要集成或端到端测试。",
-    "promptTitle": "补充单元测试", "prompt": "请为这个函数列出正常、边界、异常和依赖失败用例，并写出可读的断言。", "relatedSlugs": ["assertion", "mock", "integration-test", "test-case"]
+      {
+    "zh": "单元测试",
+    "en": "Unit Test",
+    "slug": "unit-test",
+    "cat": "技术栈",
+    "say": "把一小段规则关进可重复的小实验室，只喂它准备好的输入，再检查看得见的结果。",
+    "aliases": [
+      "Unit Test",
+      "函数测试",
+      "模块测试"
+    ],
+    "question": "金额计算函数改了以后，怎样在几百毫秒内知道边界有没有坏？",
+    "definition": "单元测试隔离一个较小的代码单元，控制输入和外部依赖，并对返回值、错误或可观察行为作自动断言。",
+    "boundary": "它回答一个小单元是否符合自己的行为契约，不能证明数据库、网络和完整业务流程已经协作正常。",
+    "demoType": "branch",
+    "demoTitle": "折扣规则怎样经过准备、调用和断言",
+    "demoSteps": [
+      {
+        "label": "Arrange",
+        "value": "-1 · 0 · 100 · 101",
+        "note": "把门槛两侧和异常输入写成四个可判定样本。"
+      },
+      {
+        "label": "Act",
+        "value": "priceAfterDiscount(input)",
+        "note": "只运行被测规则，时间依赖由测试提供。"
+      },
+      {
+        "label": "Assert",
+        "value": "3 value · 1 error",
+        "note": "比较外部结果，不把测试绑在私有变量上。"
+      }
+    ],
+    "quizQuestion": "单元测试最适合验证什么？",
+    "quizOptions": [
+      "一个小单元的输入、输出和边界行为",
+      "整套生产网络是否可用",
+      "所有浏览器真实登录流程"
+    ],
+    "correctText": "单元测试聚焦小范围、可重复的行为契约。",
+    "wrongText": "真实网络和完整流程需要集成或端到端测试，不能由单元测试代替。",
+    "promptTitle": "把一段规则放进测试实验室",
+    "prompt": "请先写出被测单元的行为契约，再列正常、边界、异常和依赖失败用例；说明时间、随机数或网络怎样被控制，并避免断言私有实现。",
+    "relatedSlugs": [
+      "assertion",
+      "mock",
+      "integration-test",
+      "test-case"
+    ]
   },
   {
     "zh": "集成测试", "en": "Integration Test", "slug": "integration-test", "cat": "技术栈",
