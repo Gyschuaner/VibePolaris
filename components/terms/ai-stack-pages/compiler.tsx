@@ -19,7 +19,7 @@ export function CompilerTermPage() {
     </ArticleSection>
     <ArticleSection id="compiler-process" title="检查、转换和目标环境">
       <p id="compiler-types" className="vp-citation-target">TypeScript 的编译器可以检查类型，并把类型标记擦除后生成 JavaScript；类型系统本身不会在运行时改变 JavaScript 的行为。也就是说，编辑器里出现类型错误时，不能因为“最后会被擦掉”就当成问题已经解决。<Cite id="compiler-types" sources={compilerSources}/></p>
-      <p>下面的演示把同一条链路拆成五层：源代码、语法树、中间表示、目标代码和运行时。正常分支逐层走到输出；语法不完整时停在解析层；输入能编译但运行时找不到名字时，错误留到最后一层。每次切换场景都会清掉上一次进度，避免把旧产物冒充当前输入。</p>
+      <p>下面的演示把同一条链路拆成五层：源代码、语法树、中间表示、目标代码和运行时。正常分支逐层走到输出；语法不完整时停在解析层；目标环境不支持某项语法时停在生成目标代码这一层；输入能编译但运行时找不到名字时，错误留到最后一层。每次切换场景都会清掉上一次进度，避免把旧产物冒充当前输入。</p>
       <CompilerLesson />
       <p id="compiler-config" className="vp-citation-target">编译选项通常写在配置文件中，例如 TypeScript 的 `tsconfig.json` 用来指定要包含的文件、编译选项和项目关系。配置改变后，实际目标、输出目录和检查范围也可能改变，所以排查“本地能跑、构建失败”时要同时看源码和配置。<Cite id="compiler-config" sources={compilerSources}/></p>
     </ArticleSection>

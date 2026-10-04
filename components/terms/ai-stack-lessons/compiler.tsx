@@ -4,11 +4,12 @@ import { useState } from "react";
 import { ArrowCounterClockwise, ArrowRight, CheckCircle, FileCode, Warning } from "@phosphor-icons/react";
 import styles from "../ToolchainConcepts.module.css";
 
-type CompilerCase = "valid" | "syntax" | "runtime";
+type CompilerCase = "valid" | "syntax" | "target" | "runtime";
 
 const cases: Record<CompilerCase, { label: string; source: string; failureAt?: number; failure: string }> = {
   valid: { label: "正常编译", source: "add(2, 3)", failure: "运行时得到 5，说明这条固定示例完成了执行。" },
   syntax: { label: "解析失败", source: "add(2, )", failureAt: 1, failure: "解析阶段发现参数不完整，后面的中间表示和目标代码都不会生成。" },
+  target: { label: "目标不匹配", source: "legacy?.value", failureAt: 3, failure: "目标环境不支持这项语法，编译链在生成可交付目标代码时停止，需要改写或调整目标。" },
   runtime: { label: "运行时失败", source: "add(2, missing)", failureAt: 4, failure: "编译可以生成目标代码，但运行时找不到 missing；编译成功不等于执行成功。" },
 };
 
@@ -44,6 +45,6 @@ export function CompilerLesson() {
     </div>
     <button type="button" className={styles.primaryAction} onClick={() => setStep(value => Math.min(value + 1, current.failureAt ?? stages.length - 1))}>{step === 0 ? "开始编译" : "推进一层"}</button>
     <p className={styles.labResult} role="status">{step === 0 ? "先从源代码开始，逐层观察编译和执行分别发生了什么。" : isFailure ? current.failure : selected === "valid" && step >= stages.length - 1 ? current.failure : "这一层已经完成，下一步才会生成后面的表示。"}</p>
-    <p className={styles.labBoundary}><strong>边界</strong>：语法错误会挡在解析阶段；运行时错误则可能等到目标代码真正执行才出现。</p>
+    <p className={styles.labBoundary}><strong>边界</strong>：语法错误会挡在解析阶段；目标环境不匹配会挡在生成目标代码时；运行时错误则可能等到目标代码真正执行才出现。</p>
   </div>;
 }
