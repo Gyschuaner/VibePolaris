@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowCounterClockwise, ArrowRight, CalendarBlank, Check, ChatCircleText, Clock, MapPin, Suitcase, Warning } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, CalendarBlank, Check, ChatCircleText, Clock, MapPin, Pause, Play, Suitcase, Warning } from "@phosphor-icons/react";
 import styles from "../AiStackCoreConcepts.module.css";
 
 export function ContextWindowHero() {
   const ref = useRef<HTMLElement>(null);
+  const started = useRef(false);
   const [replay, setReplay] = useState(0);
   const [playing, setPlaying] = useState(false);
 
@@ -13,21 +14,22 @@ export function ContextWindowHero() {
     const element = ref.current;
     if (!element) return;
     let visible = false;
-    const update = () => {
-      element.dataset.playing = String(visible && playing && !document.hidden);
-    };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(true);
-      update();
+      if (visible && !started.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        started.current = true;
+        setPlaying(true);
+      }
+      if (!visible) setPlaying(false);
     }, { rootMargin: "-80px 0px -40px 0px" });
     observer.observe(element);
-    document.addEventListener("visibilitychange", update);
+    const pauseWhenHidden = () => { if (document.hidden) setPlaying(false); };
+    document.addEventListener("visibilitychange", pauseWhenHidden);
     return () => {
       observer.disconnect();
-      document.removeEventListener("visibilitychange", update);
+      document.removeEventListener("visibilitychange", pauseWhenHidden);
     };
-  }, [playing, replay]);
+  }, []);
 
   return <figure ref={ref} className={styles.contextWindowHero} data-playing={playing} aria-label="一段周末出游聊天如何挤满上下文窗口，再经过整理继续请求">
     <div className={styles.contextHeroHeading}><span>周末出游计划 · 一轮请求</span><strong>可用 16k</strong></div>
@@ -48,9 +50,12 @@ export function ContextWindowHero() {
     </div>
     <div className={styles.contextHeroOutcomes}>
       <div className={styles.contextHeroWarning}><Warning size={18} aria-hidden="true" /><span>旧闲聊还在，但它把关键约束挤出了本轮输入。</span></div>
-      <div className={styles.contextHeroSaved}><Check size={18} aria-hidden="true" /><span>整理后保留：周日 17:00 前到家 · 14k / 16k</span></div>
+      <div className={styles.contextHeroSaved} onAnimationEnd={() => setPlaying(false)}><Check size={18} aria-hidden="true" /><span>整理后保留：周日 17:00 前到家 · 14k / 16k</span></div>
     </div>
     <figcaption>窗口不是抽屉：放不下时，拿掉哪一张卡，会直接改变模型能据此作答的条件。</figcaption>
-    <button type="button" className={styles.contextHeroReplay} onClick={() => { setReplay(value => value + 1); setPlaying(true); }} aria-label="重播上下文窗口首图"><ArrowCounterClockwise size={16} /> 重播</button>
+    <div className={styles.contextHeroControls} role="group" aria-label="首图动画控制">
+      <button type="button" className={styles.contextHeroPause} onClick={() => { started.current = true; setPlaying(value => !value); }} aria-label={playing ? "暂停上下文窗口首图" : "继续上下文窗口首图"}>{playing ? <Pause size={15} /> : <Play size={15} />} {playing ? "暂停" : "继续"}</button>
+      <button type="button" className={styles.contextHeroReplay} onClick={() => { started.current = true; setReplay(value => value + 1); setPlaying(true); }} aria-label="重播上下文窗口首图"><ArrowCounterClockwise size={16} /> 重播</button>
+    </div>
   </figure>;
 }
