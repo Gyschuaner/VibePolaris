@@ -66,6 +66,7 @@ import { PacketTermPage } from "@/components/terms/backend-boundary-pages/packet
 import { UrlTermPage } from "@/components/terms/backend-boundary-pages/url";
 import { HostnameTermPage } from "@/components/terms/backend-boundary-pages/hostname";
 import { DnsRecordTermPage } from "@/components/terms/backend-boundary-pages/dns-record";
+import { DnsResolverTermPage } from "@/components/terms/backend-boundary-pages/dns-resolver";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -175,6 +176,7 @@ const articleTermPages = {
   url: UrlTermPage,
   hostname: HostnameTermPage,
   "dns-record": DnsRecordTermPage,
+  "dns-resolver": DnsResolverTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

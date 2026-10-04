@@ -63,3 +63,11 @@ export const dnsRecordSources: BoundarySource[] = [
   make("IETF", "RFC 2308 · Negative Caching of DNS Queries", "https://www.rfc-editor.org/rfc/rfc2308.html", ["dns-record-cache", "dns-record-negative", "dns-record-diagnostic"], "1998-03"),
   make("IETF", "RFC 8499 · DNS Terminology", "https://www.rfc-editor.org/rfc/rfc8499.html", ["dns-record-cname", "dns-record-negative"], "2019-01"),
 ];
+
+export const dnsResolverSources: BoundarySource[] = [
+  make("IETF", "RFC 1034 · Domain Concepts and Facilities", "https://www.rfc-editor.org/rfc/rfc1034.html", ["resolver-roles", "resolver-cache", "resolver-walk", "resolver-response"], "1987-11"),
+  make("IETF", "RFC 1035 · Domain Names - Implementation and Specification", "https://www.rfc-editor.org/rfc/rfc1035.html", ["resolver-query", "resolver-walk", "resolver-response", "resolver-diagnosis"], "1987-11"),
+  make("IETF", "RFC 8499 · DNS Terminology", "https://www.rfc-editor.org/rfc/rfc8499.html", ["resolver-roles", "resolver-query", "resolver-response", "resolver-negative"], "2019-01"),
+  make("IETF", "RFC 2308 · Negative Caching of DNS Queries", "https://www.rfc-editor.org/rfc/rfc2308.html", ["resolver-negative", "resolver-cache", "resolver-diagnosis"], "1998-03"),
+  make("IETF", "RFC 9520 · Negative Caching of DNS Resolution Failures", "https://www.rfc-editor.org/rfc/rfc9520.html", ["resolver-failure", "resolver-diagnosis"], "2023-12"),
+];

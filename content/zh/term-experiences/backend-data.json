@@ -12322,239 +12322,256 @@
   },
   {
     "slug": "dns-resolver",
-    "lead": "第一次解析要访问多级 DNS，为什么第二次只用 2 毫秒？",
-    "definition": "递归解析器代表客户端查找名称，可从缓存回答，也可依次查询根、顶级域和权威服务器；正负答案都可能缓存。",
-    "boundary": "解析器不是保存全网域名的单一服务器，也不确认目标应用是否健康。它返回 DNS 记录，连接和应用检查发生在后面。",
+    "lead": "第一次解析要走几层 DNS，为什么第二次却不用再问上游？",
+    "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，先查自己的缓存；未命中时代表客户端追踪委派，再把记录、否定结论或失败状态返回。",
+    "boundary": "stub、recursive resolver 和 authoritative server 各做一段工作。NXDOMAIN/NODATA 是有依据的否定，SERVFAIL/timeout 则表示没拿到可用数据。",
     "sceneKind": "route",
-    "sceneTitle": "首次递归查询与缓存命中",
-    "actionLabel": "重复或更换查询",
+    "sceneTitle": "一次查询怎样从 cache MISS 走到答案或停止",
+    "actionLabel": "推进解析决定",
     "actors": [
       {
-        "id": "stub-resolver",
-        "label": "Stub resolver",
-        "detail": "客户端本地",
+        "id": "stub",
+        "label": "stub resolver",
+        "detail": "只转交问题",
         "icon": "browser",
         "group": "客户端"
       },
       {
-        "id": "recursive-resolver",
-        "label": "递归解析器",
-        "detail": "cache empty",
+        "id": "recursive",
+        "label": "recursive resolver",
+        "detail": "RD=1 · 维护缓存",
         "icon": "search",
-        "group": "DNS"
+        "group": "中间层"
       },
       {
-        "id": "root-server",
-        "label": "根服务器",
-        "detail": "指向 .com",
-        "icon": "server",
-        "group": "DNS"
-      },
-      {
-        "id": "tld-server",
-        "label": ".com 服务器",
-        "detail": "指向 example",
-        "icon": "server",
-        "group": "DNS"
-      },
-      {
-        "id": "auth-dns",
-        "label": "权威服务器",
-        "detail": "api A=.20",
-        "icon": "server",
-        "group": "DNS"
-      },
-      {
-        "id": "resolver-cache",
-        "label": "解析缓存",
-        "detail": "正/负答案",
+        "id": "cache",
+        "label": "缓存抽屉",
+        "detail": "正/负/失败结论",
         "icon": "memory",
-        "group": "DNS"
+        "group": "中间层"
+      },
+      {
+        "id": "root",
+        "label": "根服务器",
+        "detail": "referral .com",
+        "icon": "server",
+        "group": "上游"
+      },
+      {
+        "id": "tld",
+        "label": ".com 服务器",
+        "detail": "referral example",
+        "icon": "server",
+        "group": "上游"
+      },
+      {
+        "id": "authority",
+        "label": "权威服务器",
+        "detail": "Answer 或 RCODE",
+        "icon": "server",
+        "group": "上游"
       }
     ],
     "edges": [
       {
         "id": "stub-recursive",
-        "from": "stub-resolver",
-        "to": "recursive-resolver",
+        "from": "stub",
+        "to": "recursive",
         "label": "递归请求"
       },
       {
+        "id": "recursive-cache",
+        "from": "recursive",
+        "to": "cache",
+        "label": "先查缓存"
+      },
+      {
         "id": "recursive-root",
-        "from": "recursive-resolver",
-        "to": "root-server",
+        "from": "recursive",
+        "to": "root",
         "label": "问根"
       },
       {
         "id": "recursive-tld",
-        "from": "recursive-resolver",
-        "to": "tld-server",
+        "from": "recursive",
+        "to": "tld",
         "label": "问 .com"
       },
       {
-        "id": "recursive-auth",
-        "from": "recursive-resolver",
-        "to": "auth-dns",
+        "id": "recursive-authority",
+        "from": "recursive",
+        "to": "authority",
         "label": "问权威"
       },
       {
-        "id": "auth-cache",
-        "from": "auth-dns",
-        "to": "resolver-cache",
-        "label": "保存答案"
+        "id": "authority-cache",
+        "from": "authority",
+        "to": "cache",
+        "label": "写入结论"
       },
       {
-        "id": "cache-recursive",
-        "from": "resolver-cache",
-        "to": "recursive-resolver",
+        "id": "cache-stub",
+        "from": "cache",
+        "to": "stub",
         "label": "直接回答"
       }
     ],
     "frames": [
       {
-        "label": "空缓存沿委派逐级查询",
-        "note": "解析器先找根，再找 .com，最后到 example.com 权威服务器。",
+        "label": "cache MISS，递归器接手",
+        "note": "stub 把 QNAME/QTYPE 交给 recursive resolver；缓存没有这条答案，递归器才开始追上游。",
         "activeIds": [
-          "stub-resolver",
-          "recursive-resolver",
-          "root-server",
-          "tld-server",
-          "auth-dns"
+          "stub",
+          "recursive",
+          "cache"
         ],
         "doneIds": [
-          "auth-dns"
+          "stub"
         ],
         "mutedIds": [
-          "resolver-cache"
+          "root",
+          "tld",
+          "authority"
         ],
         "values": {
-          "root-server": "referral .com",
-          "tld-server": "referral example.com",
-          "auth-dns": "A .20"
+          "recursive": "RD=1 · resolving",
+          "cache": "MISS"
         },
         "activeEdgeIds": [
           "stub-recursive",
-          "recursive-root",
-          "recursive-tld",
-          "recursive-auth"
-        ],
-        "metric": {
-          "label": "示例延迟",
-          "value": "82 ms"
-        }
-      },
-      {
-        "label": "答案写入解析缓存",
-        "note": "记录和 TTL 被保存，后续相同查询不再访问权威链。",
-        "activeIds": [
-          "auth-dns",
-          "resolver-cache",
-          "recursive-resolver"
-        ],
-        "doneIds": [
-          "resolver-cache"
-        ],
-        "mutedIds": [
-          "root-server",
-          "tld-server"
-        ],
-        "values": {
-          "resolver-cache": "api.example.com → .20 · TTL 60"
-        },
-        "activeEdgeIds": [
-          "auth-cache"
+          "recursive-cache"
         ]
       },
       {
-        "label": "第二次查询本地命中",
-        "note": "递归解析器直接用缓存回答 Stub。",
+        "label": "沿委派逐级缩小",
+        "note": "递归器先问根，再问 .com，最后找到负责 example.com 的权威服务器。",
         "activeIds": [
-          "stub-resolver",
-          "recursive-resolver",
-          "resolver-cache"
+          "recursive",
+          "root",
+          "tld",
+          "authority"
         ],
         "doneIds": [
-          "stub-resolver"
+          "root",
+          "tld"
         ],
         "mutedIds": [
-          "root-server",
-          "tld-server",
-          "auth-dns"
+          "stub",
+          "cache"
         ],
         "values": {
-          "recursive-resolver": "CACHE HIT",
-          "stub-resolver": "203.0.113.20"
+          "root": "referral .com",
+          "tld": "referral example.com",
+          "authority": "A .10 · TTL 300"
         },
         "activeEdgeIds": [
-          "stub-recursive",
-          "cache-recursive"
-        ],
-        "metric": {
-          "label": "示例延迟",
-          "value": "2 ms"
-        }
+          "recursive-root",
+          "recursive-tld",
+          "recursive-authority"
+        ]
       },
       {
-        "label": "NXDOMAIN 也进入负缓存",
-        "note": "不存在名称的否定答案在 TTL 内同样可复用。",
+        "label": "答案写入，下一次短路",
+        "note": "正答案和剩余 TTL 被放进缓存；相同查询下一次可以不再访问上游。",
         "activeIds": [
-          "stub-resolver",
-          "recursive-resolver",
-          "auth-dns",
-          "resolver-cache"
+          "stub",
+          "recursive",
+          "cache"
         ],
         "doneIds": [
-          "resolver-cache"
+          "cache"
         ],
         "mutedIds": [
-          "root-server",
-          "tld-server"
+          "root",
+          "tld",
+          "authority"
         ],
         "values": {
-          "auth-dns": "NXDOMAIN",
-          "resolver-cache": "negative TTL 30"
+          "cache": "A .10 · TTL 247",
+          "stub": "203.0.113.10"
         },
         "activeEdgeIds": [
-          "stub-recursive",
-          "recursive-auth",
-          "auth-cache"
+          "recursive-cache",
+          "cache-stub"
+        ]
+      },
+      {
+        "label": "负答案也会停止查询",
+        "note": "权威返回 NXDOMAIN 与 SOA 后，递归器按负 TTL 暂存“名字不存在”；SERVFAIL 则是另一种无有效答案的停止。",
+        "activeIds": [
+          "recursive",
+          "authority",
+          "cache",
+          "stub"
+        ],
+        "doneIds": [
+          "cache"
+        ],
+        "mutedIds": [
+          "root",
+          "tld"
+        ],
+        "values": {
+          "authority": "NXDOMAIN · SOA",
+          "cache": "negative TTL 60",
+          "stub": "仍答不存在"
+        },
+        "activeEdgeIds": [
+          "recursive-authority",
+          "authority-cache",
+          "cache-stub"
         ]
       }
     ],
-    "insight": "解析耗时取决于缓存是否命中和需要追踪多少级委派，不是固定的一次域名转 IP。",
+    "insight": "resolver 的工作不是把域名翻成 IP 一步交付，而是决定什么时候查缓存、沿哪条委派走，以及哪一种结果足以停止。",
     "quiz": {
-      "question": "查询不存在的名称后，立刻再次查询为什么也可能很快？",
+      "question": "看到 SERVFAIL，能否直接断定域名不存在？",
       "options": [
         {
-          "label": "NXDOMAIN 可以按负缓存 TTL 复用",
+          "label": "不能，它表示本次解析没有拿到可用数据",
           "correct": true
         },
         {
-          "label": "解析器自动创建了该域名",
+          "label": "能，所有失败都等于 NXDOMAIN",
           "correct": false
         },
         {
-          "label": "HTTP 缓存返回了 DNS 记录",
+          "label": "能，只要递归器返回了空结果",
           "correct": false
         }
       ],
-      "success": "DNS 可以缓存否定答案，减少重复的权威查询。",
-      "retry": "缓存不只保存成功的 A 或 AAAA 记录。"
+      "success": "SERVFAIL 与 NXDOMAIN 是不同的结果；先看 RCODE 和 authority 证据。",
+      "retry": "把“没有数据”和“没有拿到数据”分开，再检查缓存与上游记录。"
     },
     "prompt": {
-      "title": "追踪一次 DNS 解析",
-      "text": "请记录 Stub、递归解析器、缓存命中、委派链、权威答案、TTL、负缓存和最终连接地址。"
+      "title": "排查一次 DNS resolver 查询",
+      "text": "请记录 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、缓存命中与剩余 TTL、访问的上游和重试结果，判断是 HIT、NXDOMAIN、NODATA 还是 SERVFAIL。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
         "label": "RFC 1034 · DNS Resolution",
-        "note": "协议定义与报文语义"
+        "note": "stub、缓存检查与根到权威的解析算法"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+        "label": "RFC 1035 · DNS Implementation",
+        "note": "查询状态、委派和递归器的实现细节"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
         "label": "RFC 8499 · DNS Terminology",
-        "note": "协议定义与报文语义"
+        "note": "stub、recursive、iterative 与 authoritative 的角色定义"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc2308.html",
+        "label": "RFC 2308 · Negative Caching",
+        "note": "NXDOMAIN/NODATA 与 SOA 负缓存"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9520.html",
+        "label": "RFC 9520 · Resolution Failures",
+        "note": "SERVFAIL、超时和失败缓存的边界"
       }
     ]
   },

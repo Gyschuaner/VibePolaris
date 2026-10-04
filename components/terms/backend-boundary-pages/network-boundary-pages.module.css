@@ -2069,3 +2069,313 @@
     animation: none !important;
   }
 }
+
+.dnsResolverHero,
+.dnsResolverLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 20px;
+  background: radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 17%, transparent), transparent 42%), color-mix(in srgb, var(--surface) 86%, transparent);
+}
+
+.dnsResolverHeroTop,
+.dnsResolverLabHeader,
+.dnsResolverEvidence,
+.dnsResolverLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dnsResolverHeroTop span,
+.dnsResolverLabHeader span,
+.dnsResolverQuestionCard small,
+.dnsResolverEngineLine small,
+.dnsResolverCacheCard small,
+.dnsResolverLabNode > span {
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.dnsResolverHeroTop strong,
+.dnsResolverLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.dnsResolverHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 25px 0 15px;
+}
+
+.dnsResolverQuestionCard,
+.dnsResolverEngineCard,
+.dnsResolverCacheCard,
+.dnsResolverLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--accent-text);
+  transition: border-color .32s, background .32s, transform .32s, box-shadow .32s;
+}
+
+.dnsResolverQuestionCard,
+.dnsResolverEngineCard,
+.dnsResolverCacheCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dnsResolverQuestionCard[data-active="true"],
+.dnsResolverEngineCard[data-active="true"],
+.dnsResolverCacheCard[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 52%, transparent);
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-text) 9%, transparent);
+  transform: translateY(-3px);
+}
+
+.dnsResolverCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.dnsResolverCardHeading svg,
+.dnsResolverEvidence svg,
+.dnsResolverLabNode svg,
+.dnsResolverLabEvidence svg {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.dnsResolverQuestionCard > code,
+.dnsResolverEngineLine code,
+.dnsResolverCacheCard > code,
+.dnsResolverLabNode code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font: .78rem/1.48 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.dnsResolverEngineCard > strong,
+.dnsResolverCacheCard > strong,
+.dnsResolverLabNode > strong {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.dnsResolverEngineLine {
+  display: grid;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.dnsResolverArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.dnsResolverTrace {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  margin: 10px 0 14px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.dnsResolverTrace span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px dashed color-mix(in srgb, var(--muted) 35%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--muted) 78%, transparent);
+  font: .74rem/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+  transition: border-color .25s, background .25s, color .25s, transform .25s;
+}
+
+.dnsResolverTrace span + span::before {
+  content: "→";
+  margin-right: 7px;
+  color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+.dnsResolverTrace span[data-active="true"] {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent-text) 48%, transparent);
+  color: var(--accent-text);
+}
+
+.dnsResolverTrace span[data-done="true"] {
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  transform: translateY(-2px);
+}
+
+.dnsResolverEvidence,
+.dnsResolverLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.dnsResolverEvidence p,
+.dnsResolverLabEvidence p {
+  margin: 0;
+}
+
+.dnsResolverTimeline,
+.dnsResolverControls,
+.dnsResolverLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dnsResolverTimeline {
+  margin-top: 14px;
+}
+
+.dnsResolverTimeline button,
+.dnsResolverControls button,
+.dnsResolverLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--muted);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s;
+}
+
+.dnsResolverTimeline button:hover,
+.dnsResolverControls button:hover,
+.dnsResolverLabControls button:hover,
+.dnsResolverTimeline button[aria-pressed="true"],
+.dnsResolverLabControls button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 44%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--accent-text);
+}
+
+.dnsResolverControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.dnsResolverLabHeader strong {
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.dnsResolverLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr) auto minmax(0, 1.05fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 22px 0 14px;
+}
+
+.dnsResolverLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dnsResolverLabNode[data-status="ok"] {
+  border-color: color-mix(in srgb, var(--accent-text) 36%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.dnsResolverLabNode[data-status="negative"],
+.dnsResolverLabNode[data-status="failure"],
+.dnsResolverLabEvidence[data-status="negative"],
+.dnsResolverLabEvidence[data-status="failure"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 42%, var(--surface));
+}
+
+.dnsResolverLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.dnsResolverLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .dnsResolverHero,
+  .dnsResolverLab {
+    padding: 15px;
+  }
+
+  .dnsResolverHeroStage,
+  .dnsResolverLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .dnsResolverArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .dnsResolverHeroTop,
+  .dnsResolverLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dnsResolverHeroTop strong {
+    text-align: left;
+  }
+
+  .dnsResolverTrace {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .dnsResolverTrace span + span::before {
+    content: "";
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dnsResolverHero *,
+  .dnsResolverLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
