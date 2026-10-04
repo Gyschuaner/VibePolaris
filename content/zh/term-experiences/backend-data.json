@@ -17593,9 +17593,9 @@
   },
   {
     "slug": "code-coverage",
-    "lead": "一条测试已经让行覆盖率变成 100%，为什么四种条件组合里还有三种从没跑过？",
-    "definition": "代码覆盖率统计测试执行触达的语句、分支、函数或条件，用来发现尚未运行的代码区域。",
-    "boundary": "高覆盖率不能证明断言有效，也不能替代需求、并发和集成验证；不同覆盖维度回答的问题不同。",
+    "lead": "一条成功测试已经让行覆盖率变成 100%，为什么四种条件组合里还有三种从没跑过？",
+    "definition": "代码覆盖率统计测试执行触达的语句、分支、函数或条件，用来发现尚未运行的代码路径；断言才判断路径结果是否符合行为契约。",
+    "boundary": "高覆盖率不能证明断言有效，也不能替代需求、并发和集成验证；行、分支和组合追踪分别回答不同问题。",
     "sceneKind": "matrix",
     "sceneTitle": "一行条件背后的四格真值表",
     "actionLabel": "补充下一种输入组合",
@@ -17640,7 +17640,7 @@
         "label": "未验证成人",
         "detail": "应拒绝",
         "icon": "shield",
-        "group": "缺陷"
+        "group": "风险"
       }
     ],
     "edges": [
@@ -17677,10 +17677,31 @@
     ],
     "frames": [
       {
-        "label": "只运行成人且已验证",
-        "note": "20,true 走过整行代码并返回允许。",
+        "label": "先把一行拆成四格",
+        "note": "年龄和验证状态各有真/假，四种输入组合才是可以逐格追踪的路径。",
         "activeIds": [
           "access-condition",
+          "truth-matrix"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "line-meter",
+          "branch-meter",
+          "condition-meter",
+          "hidden-bug"
+        ],
+        "values": {
+          "access-condition": "age ≥ 18 && verified",
+          "truth-matrix": "TT · TF · FT · FF"
+        },
+        "activeEdgeIds": [
+          "condition-matrix"
+        ]
+      },
+      {
+        "label": "只运行成人且已验证",
+        "note": "20,true 走过整行代码，行覆盖已经亮起，但另外三格还没有执行记录。",
+        "activeIds": [
           "truth-matrix",
           "line-meter",
           "branch-meter",
@@ -17706,8 +17727,8 @@
         ]
       },
       {
-        "label": "100% 行覆盖仍留下三格空白",
-        "note": "TF、FT、FF 没有运行，报告无法说明这些组合是否正确。",
+        "label": "把空白翻译成风险",
+        "note": "报告显示行覆盖 100%，但 TF、FT、FF 仍是问号；下一步不是重读百分比，而是补有意义的输入。",
         "activeIds": [
           "truth-matrix",
           "line-meter",
@@ -17715,7 +17736,8 @@
         ],
         "doneIds": [],
         "mutedIds": [
-          "hidden-bug"
+          "hidden-bug",
+          "branch-meter"
         ],
         "values": {
           "truth-matrix": "TT ✓ · TF ? · FT ? · FF ?",
@@ -17727,8 +17749,8 @@
         ]
       },
       {
-        "label": "补充 TF 暴露授权缺陷",
-        "note": "20,false 本应拒绝，实际实现错误允许了未验证成人。",
+        "label": "补 TF，缺陷露头",
+        "note": "20,false 本应拒绝，实际实现却放行；覆盖率把路径带到灯下，行为断言把它判红。",
         "activeIds": [
           "truth-matrix",
           "hidden-bug",
@@ -17742,6 +17764,7 @@
           "line-meter"
         ],
         "values": {
+          "truth-matrix": "TT ✓ · TF ✕ · FT ? · FF ?",
           "hidden-bug": "expected deny · got allow",
           "condition-meter": "2/4"
         },
@@ -17753,7 +17776,7 @@
       },
       {
         "label": "四种组合都执行并断言",
-        "note": "修复后补齐 FT 与 FF；指标帮助定位空白，断言才判断行为。",
+        "note": "补齐 FT 与 FF，每条路径都写下 allow/deny 期待；数字回到证据链里。",
         "activeIds": [
           "truth-matrix",
           "branch-meter",
@@ -17762,7 +17785,8 @@
         ],
         "doneIds": [
           "branch-meter",
-          "condition-meter"
+          "condition-meter",
+          "hidden-bug"
         ],
         "mutedIds": [
           "line-meter"
@@ -17771,7 +17795,7 @@
           "truth-matrix": "4/4 checked",
           "branch-meter": "100%",
           "condition-meter": "4/4",
-          "hidden-bug": "fixed"
+          "hidden-bug": "fixed · 4 assertions"
         },
         "activeEdgeIds": [
           "matrix-branch",
@@ -17800,23 +17824,38 @@
           "correct": false
         }
       ],
-      "success": "覆盖维度不同，能暴露的未测区域也不同。",
-      "retry": "把复合条件展开成真值表。"
+      "success": "覆盖维度不同，能暴露的未测区域也不同；断言负责判断结果。",
+      "retry": "把复合条件展开成真值表，再问每格期待什么。"
     },
     "prompt": {
       "title": "解释覆盖率报告里的空白",
-      "text": "请同时查看语句、分支和复合条件，列出未执行路径及对应风险；为高风险路径补有意义的断言，而不是只追百分比。"
+      "text": "请先确认报告统计范围，再同时查看语句、分支和复合条件，列出未执行路径及对应风险；为高风险路径补有意义的行为断言，而不是只追百分比。"
     },
     "sources": [
       {
-        "url": "https://jestjs.io/docs/configuration#collectcoverage-boolean",
-        "label": "Jest Coverage Configuration",
-        "note": "测试替身与断言行为"
+        "url": "https://istanbul.js.org/",
+        "label": "Istanbul · How Istanbul works",
+        "note": "JavaScript 插桩与行计数器"
       },
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://jestjs.io/docs/configuration#collectcoverage-boolean",
+        "label": "Jest · Configuring Jest",
+        "note": "收集范围与覆盖率门槛"
+      },
+      {
+        "url": "https://www.jacoco.org/jacoco/trunk/doc/counters.html",
+        "label": "JaCoCo · Coverage Counters",
+        "note": "行、指令、分支和复杂度维度"
+      },
+      {
+        "url": "https://vitest.dev/guide/coverage.html",
+        "label": "Vitest · Coverage",
+        "note": "V8/Istanbul provider 与报告范围"
+      },
+      {
+        "url": "https://clang.llvm.org/docs/SourceBasedCodeCoverage.html",
+        "label": "LLVM · Source-based Code Coverage",
+        "note": "插桩、运行、报告与 MC/DC"
       }
     ]
   },

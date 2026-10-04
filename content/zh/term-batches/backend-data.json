@@ -1438,13 +1438,53 @@
     ]
   },
   {
-    "zh": "测试覆盖率", "en": "Code Coverage", "slug": "code-coverage", "cat": "技术栈",
-    "say": "统计测试运行时执行过哪些代码行、分支、函数或语句。", "aliases": ["Code Coverage", "代码覆盖率", "测试覆盖"],
-    "question": "覆盖率 100% 就能说明代码没有缺陷吗？", "definition": "测试覆盖率衡量测试执行触达的代码结构，用于发现尚未运行的区域。", "boundary": "高覆盖率不等于断言有效，也不能证明需求、并发和集成行为都正确。",
-    "demoType": "state", "demoTitle": "新增边界用例怎样改变分支覆盖",
-    "demoSteps": [{"label":"原有测试","value":"2 / 4 分支","note":"成功路径和普通失败已执行。"},{"label":"发现空白","value":"超时 · 重试耗尽","note":"报告标出两个未执行分支。"},{"label":"补充用例","value":"4 / 4 分支","note":"新用例触发并断言两种边界结果。"}],
-    "quizQuestion": "覆盖率报告最适合用来做什么？", "quizOptions": ["发现测试未触达的代码区域", "证明系统没有任何缺陷", "替代需求评审"], "correctText": "覆盖率提示空白，但仍需判断测试质量。", "wrongText": "覆盖率无法单独证明无缺陷，也不能替代需求判断。",
-    "promptTitle": "分析覆盖率空白", "prompt": "请查看行、分支和函数覆盖率，结合业务风险选择需要补测的路径，不以百分比本身作为完成标准。", "relatedSlugs": ["unit-test", "regression-test", "test-case"]
+    "zh": "测试覆盖率",
+    "en": "Code Coverage",
+    "slug": "code-coverage",
+    "cat": "技术栈",
+    "say": "把测试实际走过的语句、分支和条件组合标出来，帮你找到还没有证据的代码路径。",
+    "aliases": [
+      "Code Coverage",
+      "代码覆盖率",
+      "测试覆盖"
+    ],
+    "question": "一条成功测试把行覆盖率点到 100%，为什么未验证的成人仍可能被放行？",
+    "definition": "测试覆盖率记录测试执行触达了哪些代码结构；它适合发现空白，不直接证明已经触达的行为正确。",
+    "boundary": "高覆盖率不等于断言有效，也不能替代需求、并发、集成和真实依赖验证；行、分支和组合追踪回答的问题也不同。",
+    "demoType": "branch",
+    "demoTitle": "把复合条件拆成四格，找出行覆盖漏掉的路径",
+    "demoSteps": [
+      {
+        "label": "展开条件",
+        "value": "age ≥ 18 && verified",
+        "note": "一行判断拆成 TT · TF · FT · FF 四种输入。"
+      },
+      {
+        "label": "只跑成功",
+        "value": "行 100% · 条件 1/4",
+        "note": "20,true 点亮整行，三格仍没有执行记录。"
+      },
+      {
+        "label": "追到缺陷并补齐",
+        "value": "TF → 4 / 4 组合",
+        "note": "20,false 暴露错误后，补齐四格并为每条路径写下断言。"
+      }
+    ],
+    "quizQuestion": "行覆盖率 100% 后，为什么还要展开条件组合？",
+    "quizOptions": [
+      "同一行可能包含多条尚未触发的逻辑路径",
+      "行覆盖只统计空白行",
+      "100% 表示测试已经失败"
+    ],
+    "correctText": "覆盖维度不同，能暴露的未测区域也不同；断言才判断结果是否正确。",
+    "wrongText": "覆盖率提示执行空白，不能单独证明没有缺陷。",
+    "promptTitle": "把覆盖率空白变成测试",
+    "prompt": "请确认报告统计范围，分别查看行、分支和条件覆盖，列出与业务风险相连的未执行路径，并为每条路径补可观察的行为断言。",
+    "relatedSlugs": [
+      "unit-test",
+      "regression-test",
+      "test-case"
+    ]
   },
   {
     "zh": "API 测试", "en": "API Testing", "slug": "api-testing", "cat": "技术栈",
