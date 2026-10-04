@@ -4852,5 +4852,56 @@
       "tokenization",
       "context-window"
     ]
+  },
+  {
+    "zh": "推理",
+    "en": "Inference",
+    "slug": "inference",
+    "cat": "AI·Agent",
+    "say": "模型已经训练好后，怎样把一次输入变成一段可以交付的结果？",
+    "aliases": [
+      "Inference",
+      "模型推理",
+      "运行推理"
+    ],
+    "question": "模型已经学会了，收到一句话后到底发生了什么？",
+    "definition": "推理是用已经保存的模型参数处理一次输入：先把输入整理并送进模型，再经过 prefill 和逐 token decode 生成结果，直到满足停止条件。它是一次运行，不会因为这次请求就把新知识写回训练权重。",
+    "boundary": "推理能把文字变成流畅输出，却不能替输入补上缺失证据，也不能保证事实正确。首 token 延迟、后续 token 速度、停止是否完整、模型是否处于 eval 状态，都要和答案质量分开检查。",
+    "demoType": "flow",
+    "demoTitle": "一条客服请求如何先整段读入，再逐 token 交付",
+    "demoSteps": [
+      {
+        "label": "整段 prefill",
+        "value": "输入一次读完；准备生成状态",
+        "note": "首 token 之前先处理已有上下文。"
+      },
+      {
+        "label": "逐 token decode",
+        "value": "先 · 核对 · 订单 · 条件",
+        "note": "每一步追加一个 token，流式返回不等于已经结束。"
+      },
+      {
+        "label": "判断停止",
+        "value": "结束标记 / 长度上限 / 取消 / 错误",
+        "note": "满足停止条件才算完成；缺凭证时要保留不确定。"
+      }
+    ],
+    "quizQuestion": "看到页面已经出现几个字，最稳妥的判断是什么？",
+    "quizOptions": [
+      "模型还在 decode，是否完成要看停止条件",
+      "模型已经训练出了新知识",
+      "文字越快就一定越正确"
+    ],
+    "correctText": "流式输出只证明已经有 token 返回；还要确认生成是否结束、输入证据是否够用。",
+    "wrongText": "推理速度、运行状态和事实正确性是不同的检查项。",
+    "promptTitle": "画出一次推理的检查链",
+    "prompt": "请标出请求输入、预处理、prefill、decode、停止条件和最终核验；再说明哪些状态属于一次运行，哪些不会写回模型权重。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "context-window",
+      "streaming-output"
+    ]
   }
 ]

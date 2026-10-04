@@ -19449,5 +19449,230 @@
         "note": "self-attention 条件与固定宽度输出"
       }
     ]
+  },
+  {
+    "slug": "inference",
+    "lead": "模型已经训练好后，一次客服请求怎样从整段输入走到逐 token 的回答？",
+    "definition": "推理用已保存的参数处理当前输入。生成式模型通常先做 prefill，再做 decode，把输出逐步交付，直到满足停止条件。",
+    "boundary": "一次推理不会更新训练权重；输入少了凭证，速度快也不能补事实；inference_mode 与 eval() 也不是同一件事。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "一次请求的两种节奏",
+    "actionLabel": "切换输入或运行状态",
+    "actors": [
+      {
+        "id": "request",
+        "label": "Request",
+        "detail": "订单 A17 与退款问题",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "prefill",
+        "label": "Prefill",
+        "detail": "整段前缀一次读入",
+        "icon": "memory",
+        "group": "准备"
+      },
+      {
+        "id": "decode",
+        "label": "Decode",
+        "detail": "一个 token 一个 token",
+        "icon": "brain",
+        "group": "生成"
+      },
+      {
+        "id": "weights",
+        "label": "Weights",
+        "detail": "已保存参数 · 只读",
+        "icon": "shield",
+        "group": "运行条件"
+      },
+      {
+        "id": "stream",
+        "label": "Stream",
+        "detail": "首 token 后陆续返回",
+        "icon": "network",
+        "group": "输出"
+      },
+      {
+        "id": "stop",
+        "label": "Stop",
+        "detail": "结束 / 上限 / 取消 / 错误",
+        "icon": "clock",
+        "group": "终点"
+      }
+    ],
+    "edges": [
+      {
+        "id": "request-prefill",
+        "from": "request",
+        "to": "prefill",
+        "label": "整理并读入"
+      },
+      {
+        "id": "prefill-decode",
+        "from": "prefill",
+        "to": "decode",
+        "label": "交给下一 token"
+      },
+      {
+        "id": "weights-decode",
+        "from": "weights",
+        "to": "decode",
+        "label": "提供固定参数"
+      },
+      {
+        "id": "decode-stream",
+        "from": "decode",
+        "to": "stream",
+        "label": "逐步交付"
+      },
+      {
+        "id": "stream-stop",
+        "from": "stream",
+        "to": "stop",
+        "label": "检查是否结束"
+      }
+    ],
+    "frames": [
+      {
+        "label": "放入请求",
+        "note": "当前输入先到达运行入口，订单号仍在请求里。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "prefill",
+          "decode",
+          "stream",
+          "stop"
+        ],
+        "values": {
+          "request": "订单 A17 · 退款条件"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "整段 prefill",
+        "note": "prefill 先处理已有上下文，为后续生成准备中间状态。",
+        "activeIds": [
+          "prefill",
+          "weights"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "decode",
+          "stream",
+          "stop"
+        ],
+        "values": {
+          "prefill": "前缀已读入",
+          "weights": "更新 0 次"
+        },
+        "activeEdgeIds": [
+          "request-prefill",
+          "weights-decode"
+        ]
+      },
+      {
+        "label": "逐 token decode",
+        "note": "decode 根据当前上下文追加 token，首 token 后可以流式返回。",
+        "activeIds": [
+          "decode",
+          "stream"
+        ],
+        "doneIds": [
+          "request",
+          "prefill",
+          "weights"
+        ],
+        "mutedIds": [
+          "stop"
+        ],
+        "values": {
+          "decode": "先 → 核对 → 订单",
+          "stream": "首 token 已返回"
+        },
+        "activeEdgeIds": [
+          "prefill-decode",
+          "decode-stream"
+        ]
+      },
+      {
+        "label": "判断停止",
+        "note": "只有结束标记、长度上限、取消或错误等条件成立，才结束本次输出。",
+        "activeIds": [
+          "stop"
+        ],
+        "doneIds": [
+          "request",
+          "prefill",
+          "weights",
+          "decode",
+          "stream"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stop": "完成或保留未完成"
+        },
+        "activeEdgeIds": [
+          "stream-stop"
+        ]
+      }
+    ],
+    "insight": "推理是一次有阶段和停止条件的运行：prefill 读入已有上下文，decode 逐步生成，权重保持只读，最终结果还要单独核验。",
+    "quiz": {
+      "question": "页面出现几个 token 后，为什么还不能马上说“推理完成”？",
+      "options": [
+        {
+          "label": "decode 可能仍在继续，停止条件尚未满足",
+          "correct": true
+        },
+        {
+          "label": "只要首 token 出现就会写回训练权重",
+          "correct": false
+        },
+        {
+          "label": "流式文字会自动补齐缺失订单号",
+          "correct": false
+        }
+      ],
+      "success": "首 token 只是输出开始；要看结束条件和输入证据是否都满足。",
+      "retry": "先区分 prefill、decode 和停止，再检查这次请求是否缺关键材料。"
+    },
+    "prompt": {
+      "title": "检查一次模型推理",
+      "text": "请按输入、预处理、prefill、decode、停止和核验顺序记录证据；标出首 token、逐 token 间隔、权重更新和缺证据分支。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/pipeline_tutorial",
+        "label": "Hugging Face · Pipeline tutorial",
+        "note": "推理 API、设备、批处理与半精度"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main_classes/pipelines",
+        "label": "Hugging Face · Pipelines API",
+        "note": "输入、模型、后处理与生成输出"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html",
+        "label": "PyTorch · inference_mode",
+        "note": "关闭 autograd 开销与 eval 边界"
+      },
+      {
+        "url": "https://docs.nvidia.com/dynamo/v1.2.0/design-docs/disaggregated-serving",
+        "label": "NVIDIA Dynamo · Disaggregated Serving",
+        "note": "prefill/decode 阶段与 KV cache 交接"
+      },
+      {
+        "url": "https://docs.nvidia.com/tensorrt-llm/index.html?ncid=no-ncid",
+        "label": "NVIDIA · TensorRT-LLM",
+        "note": "面向 GPU 推理的优化 engine 与 runtime"
+      }
+    ]
   }
 ]

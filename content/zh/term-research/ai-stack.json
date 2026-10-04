@@ -1716,5 +1716,25 @@
       "context-window",
       "tokenization"
     ]
+  },
+  {
+    "slug": "inference",
+    "mechanism": "推理用固定权重接收一次输入，经过预处理与前向计算；对生成模型，先完成 prefill，再逐 token decode，直到结束标记、长度上限、取消或错误等停止条件。",
+    "misconception": "推理不是训练的别名，也不是“模型已经知道答案”的证明；流式输出、首 token 速度和 eval 状态都需要单独检查，缺失输入不会被计算自动补齐。",
+    "demoSignature": "客服请求“说明订单 A17 的退款条件”进入输入台；中间先显示整段 prefill，再显示逐 token decode 与首 token/间隔节奏；切换为缺订单号或忘记 eval() 时显示未完成核验分支。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/pipeline_tutorial",
+      "https://huggingface.co/docs/transformers/main_classes/pipelines",
+      "https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html",
+      "https://docs.nvidia.com/dynamo/v1.2.0/design-docs/disaggregated-serving",
+      "https://docs.nvidia.com/tensorrt-llm/index.html?ncid=no-ncid"
+    ],
+    "rewriteRisk": "先把一次请求中输入、预处理、prefill、decode 和停止条件讲成可观察的阶段，再说明权重只读、eval 与事实核验边界；避免把速度或流畅度写成正确性。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "streaming-output",
+      "context-window"
+    ]
   }
 ]

@@ -47,3 +47,4 @@ export { bundlerSources } from "./bundler";
 export { devServerSources } from "./dev-server";
 export { transformerSources } from "./transformer";
 export { attentionSources } from "./attention";
+export { inferenceSources } from "./inference";
