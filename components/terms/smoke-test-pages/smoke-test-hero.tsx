@@ -30,7 +30,7 @@ export function SmokeTestHero() {
   const checkState = (kind: "health" | "login" | "order" | "payment") => {
     const index = kind === "health" ? 1 : kind === "payment" ? 3 : 2;
     const failed = failure !== "all" && failure === kind;
-    const earlier = failure !== "all" && failureStep < index;
+    const earlier = failure !== "all" && (failureStep < index || (kind === "order" && failure === "login" && scene.step >= 2));
     return { active: scene.step === index && !earlier, danger: failed && scene.step >= index, muted: scene.step < index || earlier, done: scene.step > index && !failed && !earlier };
   };
 
