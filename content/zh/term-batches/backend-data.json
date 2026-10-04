@@ -1264,13 +1264,53 @@
     ]
   },
   {
-    "zh": "端到端测试", "en": "End-to-End Test", "slug": "e2e-test", "cat": "技术栈",
-    "say": "从用户入口操作到最终结果，验证整条系统链路。", "aliases": ["E2E 测试", "全链路测试", "端到端"],
-    "question": "注册、收邮件、登录这一整套流程怎样自动验证？", "definition": "端到端测试以接近真实使用的方式跨越界面、接口、服务和存储验证关键流程。", "boundary": "端到端测试覆盖面大但运行慢且易受环境影响，不应替代所有低层测试。",
-    "demoType": "flow", "demoTitle": "注册流程怎样完成全链路检查",
-    "demoSteps": [{"label":"填写提交","value":"name + email","note":"浏览器真实触发注册请求。"},{"label":"服务处理","value":"用户创建 + 邮件入队","note":"后端和消息系统产生记录。"},{"label":"用户确认","value":"登录成功","note":"测试读取邮件链接并完成登录。"}],
-    "quizQuestion": "端到端测试最适合保护什么？", "quizOptions": ["少量关键用户流程", "每个函数的所有分支", "数据库所有内部实现"], "correctText": "关键流程值得承担较高运行成本。", "wrongText": "函数分支更适合单元测试，也不应绑定数据库全部内部细节。",
-    "promptTitle": "设计端到端测试", "prompt": "请为这个关键用户流程设计稳定的入口、数据准备、等待条件、结果断言和失败截图。", "relatedSlugs": ["integration-test", "smoke-test", "test-case"]
+    "zh": "端到端测试",
+    "en": "End-to-End Test",
+    "slug": "e2e-test",
+    "cat": "技术栈",
+    "say": "从用户入口走完一条关键旅程，再把页面和系统事实放在一起验收。",
+    "aliases": [
+      "E2E 测试",
+      "全链路测试",
+      "端到端"
+    ],
+    "question": "页面显示“支付成功”，为什么还要查数据库和邮件？",
+    "definition": "端到端测试从接近真实的用户或外部调用方入口出发，穿过部署后的关键组件，验证完整业务路径和系统级结果。",
+    "boundary": "E2E 覆盖面大、运行和定位成本高，适合守住少量关键旅程；它不能替代更快的单元和集成测试。",
+    "demoType": "flow",
+    "demoTitle": "一笔订单怎样从点击走到跨层验收",
+    "demoSteps": [
+      {
+        "label": "隔离并点击",
+        "value": "u-42 → 201",
+        "note": "从干净会话点击可见按钮，订单先落成 pending。"
+      },
+      {
+        "label": "状态穿过系统",
+        "value": "callback → DB=paid",
+        "note": "有效付款回调推进服务端状态，页面读取到 paid。"
+      },
+      {
+        "label": "跨层验收",
+        "value": "UI=paid · mail=1",
+        "note": "页面、数据库和邮件都对上才通过；第一处不一致立即停下。"
+      }
+    ],
+    "quizQuestion": "端到端测试最值得守住什么？",
+    "quizOptions": [
+      "少量关键用户旅程的系统级结果",
+      "每个函数的所有分支",
+      "数据库所有内部实现"
+    ],
+    "correctText": "它回答的是用户能否完成一件重要的事，以及系统是否留下完整结果。",
+    "wrongText": "函数分支适合单元测试，组件接缝适合集成测试；E2E 不该吞掉所有低层检查。",
+    "promptTitle": "定义一条跨层不变量",
+    "prompt": "请从真实用户入口开始，写出独立数据、关键等待、页面结果、服务端状态和外部回执；标明第一个不变量破坏时如何停止并留下证据。",
+    "relatedSlugs": [
+      "integration-test",
+      "smoke-test",
+      "test-case"
+    ]
   },
   {
     "zh": "冒烟测试", "en": "Smoke Test", "slug": "smoke-test", "cat": "技术栈",

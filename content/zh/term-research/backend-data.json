@@ -126,7 +126,25 @@
       "mock"
     ]
   },
-  {"slug":"e2e-test","mechanism":"端到端测试从用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径和系统级结果；覆盖面高但定位和维护成本也高。","misconception":"E2E 不是把所有测试都搬到浏览器，也不能替代单元与集成测试；依赖网络、数据和第三方会增加不稳定。","demoSignature":"7帧｜对象：浏览器、前端、API、数据库、邮件沙箱、订单状态时间轴｜交互：点击下单并完成付款回调｜变化：UI 从 pending 到 paid，数据库与邮件状态逐层产生｜结果：订单 id=42、DB=paid、邮件 1 封；任一层失败时停在首个不变量破坏处。","sourceUrls":["https://playwright.dev/docs/intro","https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需以真实跨层结果定义完成，不要只展示自动点按钮。","nearDuplicates":["integration-test","smoke-test","test-case"]},
+  {
+    "slug": "e2e-test",
+    "mechanism": "端到端测试从真实用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径和跨层最终结果；覆盖面高但运行、定位和维护成本也高。",
+    "misconception": "E2E 不是把所有测试都搬进浏览器，也不是页面亮绿灯就算通过；隔离数据、稳定等待和跨层不变量缺一不可。",
+    "demoSignature": "6帧｜对象：浏览器、前端、订单 API、数据库、付款回调、邮件沙箱｜交互：选择完整旅程或丢失邮件并逐帧推进｜变化：UI 从 pending 到 paid，DB 和邮件逐层落地｜结果：UI=paid、DB=paid、mail=1 才 PASS；页面成功但 mail=0 时停在首个不变量破坏处。",
+    "sourceUrls": [
+      "https://playwright.dev/docs/best-practices",
+      "https://playwright.dev/docs/actionability",
+      "https://playwright.dev/docs/intro",
+      "https://martinfowler.com/articles/practical-test-pyramid.html",
+      "https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html"
+    ],
+    "rewriteRisk": "中：必须把完成定义落到跨层结果和失败位置，避免写成自动点按钮或只检查页面文字。",
+    "nearDuplicates": [
+      "integration-test",
+      "smoke-test",
+      "test-case"
+    ]
+  },
   {"slug":"smoke-test","mechanism":"冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件，通常在部署后先运行。","misconception":"冒烟测试不是随便点几下，也不证明系统质量完整；它只回答关键路径是否明显失效。","demoSignature":"4帧｜对象：部署 commit abc123、health、login、create-order、payment 四个检查灯｜交互：点击 deploy 后自动执行并在 payment 注入 502｜变化：前三项绿、第四项红，后续 120 个回归用例保持未启动｜结果：3/4 通过，构建标记 rejected，节省 28 分钟。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"低：边界清楚，但要防止把‘快速’误写成‘覆盖全面’。","nearDuplicates":["e2e-test","regression-test","server"]},
   {"slug":"regression-test","mechanism":"回归测试在代码、配置或依赖变更后重新验证未应改变的既有行为；选择范围应依据变更影响、风险和历史缺陷。","misconception":"回归不是每次盲跑全部测试，也不是只重测修复点；过窄会漏影响，过宽会拖慢反馈。","demoSignature":"6帧｜对象：修改 auth middleware 的代码节点、调用图、32 个测试、风险热力图｜交互：点击变更文件并调风险阈值｜变化：直接测试 4 个、受影响集成测试 7 个、安全回归 3 个被选中｜结果：14/32 入选，捕获一个旧权限用例失败。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需让‘选择哪些旧测试’成为演示核心，不和普通测试重复。","nearDuplicates":["smoke-test","code-coverage","test-case"]},
   {"slug":"test-case","mechanism":"测试用例把前置条件、输入、操作和预期结果写成可重复判定的检查；好的用例围绕风险和可观察结果，而非照抄实现步骤。","misconception":"用例标题不是用例，‘功能正常’也不是可验证预期；缺少数据和状态前提会让不同人得到不同结论。","demoSignature":"5帧｜对象：密码重置用例编辑器、token=expired、user=active、POST 路径、DB/email 观察区｜交互：逐项补齐缺失字段再运行｜变化：模糊的‘应失败’变成 410、token 未消费、邮件 0 封三项断言｜结果：用例从不可判定变成 3/3 可复现。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：避免套 Given-When-Then 空壳，数据与结果必须具体。","nearDuplicates":["assertion","regression-test","e2e-test"]},

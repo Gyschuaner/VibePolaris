@@ -16157,44 +16157,44 @@
   },
   {
     "slug": "e2e-test",
-    "lead": "页面显示“支付成功”就算流程通过了吗？数据库、回调和邮件中任何一层没发生都不行。",
-    "definition": "端到端测试从用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径及其系统级结果。",
-    "boundary": "E2E 不等于把所有测试搬进浏览器。它覆盖面大、定位成本高，不能替代更快的单元和集成测试。",
+    "lead": "页面亮出“支付成功”就算完成了吗？数据库、回调和邮件中任何一层没发生，这条旅程都还没有抵达终点。",
+    "definition": "端到端测试从接近真实的用户入口穿过部署后的关键组件，验证完整业务路径及其系统级结果。",
+    "boundary": "E2E 不是把所有测试搬进浏览器；它覆盖面大、定位成本高，应该只守住少量最重要的用户旅程。",
     "sceneKind": "route",
-    "sceneTitle": "一笔订单从点击到邮件的跨层验收",
+    "sceneTitle": "一笔订单从确认按钮走到跨层验收",
     "actionLabel": "下单并推进付款回调",
     "actors": [
       {
         "id": "shopper-browser",
         "label": "浏览器",
-        "detail": "订单页",
+        "detail": "u-42 · 新会话",
         "icon": "browser",
         "group": "用户入口"
       },
       {
         "id": "shop-frontend",
         "label": "前端",
-        "detail": "pending",
+        "detail": "订单页 · pending",
         "icon": "layout",
         "group": "应用"
       },
       {
         "id": "order-api",
         "label": "订单 API",
-        "detail": "id=42",
+        "detail": "POST /orders",
         "icon": "server",
         "group": "应用"
       },
       {
         "id": "order-db",
         "label": "订单数据库",
-        "detail": "status=pending",
+        "detail": "orders=0",
         "icon": "database",
-        "group": "状态"
+        "group": "系统事实"
       },
       {
         "id": "payment-callback",
-        "label": "支付回调",
+        "label": "付款回调",
         "detail": "waiting",
         "icon": "message",
         "group": "外部事件"
@@ -16212,7 +16212,7 @@
         "id": "browser-ui",
         "from": "shopper-browser",
         "to": "shop-frontend",
-        "label": "点击下单"
+        "label": "点击确认订单"
       },
       {
         "id": "ui-api",
@@ -16224,7 +16224,7 @@
         "id": "api-db",
         "from": "order-api",
         "to": "order-db",
-        "label": "创建订单"
+        "label": "创建 pending"
       },
       {
         "id": "callback-api",
@@ -16236,7 +16236,7 @@
         "id": "api-mail",
         "from": "order-api",
         "to": "mail-sandbox",
-        "label": "发送确认"
+        "label": "发送确认信"
       },
       {
         "id": "api-ui",
@@ -16247,8 +16247,30 @@
     ],
     "frames": [
       {
-        "label": "浏览器发起真实下单",
-        "note": "页面输入商品和地址，前端向部署后的 API 发请求。",
+        "label": "隔离一条干净旅程",
+        "note": "测试创建独立会话和用户 u-42，订单表从 0 行开始。",
+        "activeIds": [
+          "shopper-browser",
+          "order-db"
+        ],
+        "doneIds": [
+          "shopper-browser"
+        ],
+        "mutedIds": [
+          "shop-frontend",
+          "order-api",
+          "payment-callback",
+          "mail-sandbox"
+        ],
+        "values": {
+          "shopper-browser": "fresh · u-42",
+          "order-db": "orders = 0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "真实点击确认订单",
+        "note": "浏览器点击可见按钮，前端向部署后的 API 发出 POST /orders。",
         "activeIds": [
           "shopper-browser",
           "shop-frontend",
@@ -16272,8 +16294,8 @@
         ]
       },
       {
-        "label": "数据库先保存 pending",
-        "note": "创建响应之后，后端状态可直接查询为 pending。",
+        "label": "订单先保存 pending",
+        "note": "创建响应之后，数据库和页面都能观察到等待付款的状态。",
         "activeIds": [
           "order-api",
           "order-db",
@@ -16283,6 +16305,7 @@
           "order-db"
         ],
         "mutedIds": [
+          "shopper-browser",
           "payment-callback",
           "mail-sandbox"
         ],
@@ -16296,8 +16319,8 @@
         ]
       },
       {
-        "label": "付款回调推进系统状态",
-        "note": "测试模拟签名有效的 payment.paid，订单由 pending 变成 paid。",
+        "label": "付款回调推进状态",
+        "note": "测试送来带有效签名的 payment.paid，订单由 pending 变成 paid。",
         "activeIds": [
           "payment-callback",
           "order-api",
@@ -16309,6 +16332,7 @@
         ],
         "mutedIds": [
           "shopper-browser",
+          "shop-frontend",
           "mail-sandbox"
         ],
         "values": {
@@ -16321,8 +16345,8 @@
         ]
       },
       {
-        "label": "用户界面和邮件同时落定",
-        "note": "页面刷新为已支付，邮件沙箱收到一封订单 42 的确认信。",
+        "label": "页面和邮件落地",
+        "note": "前端刷新为 paid，邮件沙箱收到订单 42 的确认信。",
         "activeIds": [
           "order-api",
           "shop-frontend",
@@ -16344,47 +16368,90 @@
         "activeEdgeIds": [
           "api-ui",
           "api-mail"
+        ]
+      },
+      {
+        "label": "把三层事实放在一起",
+        "note": "UI、数据库和外部回执都对上才通过；任一层先破坏就停在那个位置。",
+        "activeIds": [
+          "shopper-browser",
+          "order-db",
+          "mail-sandbox"
+        ],
+        "doneIds": [
+          "shopper-browser",
+          "order-db",
+          "mail-sandbox"
+        ],
+        "mutedIds": [
+          "shop-frontend",
+          "order-api",
+          "payment-callback"
+        ],
+        "values": {
+          "shopper-browser": "paid",
+          "order-db": "status=paid",
+          "mail-sandbox": "1 mail"
+        },
+        "activeEdgeIds": [
+          "api-ui",
+          "api-mail"
         ],
         "metric": {
           "label": "最终不变量",
-          "value": "DB=paid · 邮件=1"
+          "value": "UI=paid · DB=paid · mail=1"
         }
       }
     ],
-    "insight": "端到端完成条件要落到跨层不变量，不能只看最后一张页面。",
+    "insight": "端到端完成条件要落到跨层不变量，不能只看最后一张页面；失败时停在第一个不一致的位置。",
     "quiz": {
-      "question": "页面显示 paid，但数据库仍是 pending，E2E 应怎样判定？",
+      "question": "页面显示 paid，但邮件沙箱是 0 封，E2E 应怎样判定？",
       "options": [
         {
-          "label": "失败，跨层最终状态不一致",
+          "label": "失败，最终用户结果不完整",
           "correct": true
         },
         {
-          "label": "通过，页面文字优先于系统状态",
+          "label": "通过，页面文字优先",
           "correct": false
         },
         {
-          "label": "忽略数据库并多截一张图",
+          "label": "忽略邮件并继续截图",
           "correct": false
         }
       ],
-      "success": "端到端测试必须核对完整路径的系统级结果。",
-      "retry": "把用户看到的结果与后端事实放在一起判断。"
+      "success": "用户旅程的系统级结果没有闭合，不能把一个观察点当成终点。",
+      "retry": "把页面、数据库和外部回执放到同一张验收单上。"
     },
     "prompt": {
-      "title": "定义关键流程的端到端不变量",
-      "text": "请从真实入口开始，列出每个跨层状态、外部回调、最终数据库记录和用户可见结果，并标明在哪个不变量破坏时停止。"
+      "title": "定义关键旅程的端到端不变量",
+      "text": "请从真实入口开始，列出独立数据、每个跨层状态、外部回调、最终数据库记录和用户可见结果，并标明第一个不变量破坏时如何停止。"
     },
     "sources": [
       {
-        "url": "https://playwright.dev/docs/intro",
-        "label": "Playwright Documentation",
-        "note": "浏览器测试与自动等待"
+        "url": "https://playwright.dev/docs/best-practices",
+        "label": "Playwright · Best Practices",
+        "note": "用户可见行为、隔离和稳定定位"
       },
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://playwright.dev/docs/actionability",
+        "label": "Playwright · Auto-waiting",
+        "note": "动作前检查与自动重试断言"
+      },
+      {
+        "url": "https://playwright.dev/docs/intro",
+        "label": "Playwright · Introduction",
+        "note": "浏览器端到端测试工具链"
+      },
+      {
+        "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
+        "label": "Martin Fowler · The Practical Test Pyramid",
+        "note": "E2E 覆盖、成本与脆弱性"
+      },
+      {
+        "url": "https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html",
+        "label": "Google Testing Blog · Just Say No to More End-to-End Tests",
+        "note": "少量 E2E 与更快测试层的平衡"
       }
     ]
   },

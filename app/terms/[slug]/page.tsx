@@ -82,6 +82,7 @@ import { MimeTypeTermPage } from "@/components/terms/backend-boundary-pages/mime
 import { FeatureFlagTermPage } from "@/components/terms/feature-flag-pages/feature-flag-page";
 import { UnitTestTermPage } from "@/components/terms/unit-test-pages/unit-test-page";
 import { IntegrationTestTermPage } from "@/components/terms/integration-test-pages/integration-test-page";
+import { E2eTestTermPage } from "@/components/terms/e2e-test-pages/e2e-test-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -211,6 +212,7 @@ const articleTermPages = {
   "feature-flag": FeatureFlagTermPage,
   "unit-test": UnitTestTermPage,
   "integration-test": IntegrationTestTermPage,
+  "e2e-test": E2eTestTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
