@@ -19,13 +19,13 @@ export function TranspilerTermPage() {
     </ArticleSection>
     <ArticleSection id="transpiler-process" title="从类型节点到目标源码">
       <p id="transpiler-transform" className="vp-citation-target">一次转译可以拆成读取源码、识别语法结构、应用转换规则和输出目标源码。转换规则可以移除类型节点，也可以把目标环境不支持的语法改写成另一种写法；具体规则由工具和配置决定。<Cite id="transpiler-transform" sources={transpilerSources}/></p>
-      <p>下面的演示把“移除”和“保留”放在同一行代码里：悬停或选择 `: number`，你会看到它在输出侧消失；选择赋值结构，`const n = 值` 会被标成保留。切到类型不匹配场景，诊断会出现，但转译仍不会替你修正值。</p>
+      <p>拿 `const n: number = 3` 做一次走读：先看懂赋值结构，再把 `: number` 从输出里拿掉，最后用 source map 把输出行指回原文件。切到类型不匹配场景，诊断会出现，但转译仍不会替你修正值；它只负责按规则改写源码。</p>
       <TranspilerLesson />
       <p id="transpiler-sourcemap" className="vp-citation-target">如果错误来自生成后的 JavaScript，source map（记录转译前后位置对应关系的文件）可以把构建文件的行列位置指回 TypeScript 原文件；它帮助定位，不会修复代码，也不会把输出变回原始执行过程。<Cite id="transpiler-sourcemap" sources={transpilerSources}/></p>
     </ArticleSection>
     <ArticleSection id="transpiler-boundary" title="输出源码之后还缺什么">
       <p id="transpiler-boundary-text" className="vp-citation-target">转译成功只说明语言层改写完成。输出还可能需要打包、解析依赖或交给运行时；如果代码调用了目标环境没有的 API，转译器不会凭空补上它。<Cite id="transpiler-boundary-text" sources={transpilerSources}/></p>
-      <p id="transpiler-config" className="vp-citation-target">目标版本、模块格式、输出目录和 source map 等选项通常由 TSConfig 或同类配置决定。换一份配置，可能得到不同的目标语法和调试位置；因此排查“本地能跑、构建失败”时要把源码、转译配置和后续构建一起看。<Cite id="transpiler-config" sources={transpilerSources}/></p>
+      <p id="transpiler-config" className="vp-citation-target">目标版本、模块格式、输出目录、source map，以及出错时是否继续输出（例如 `noEmitOnError`）等选项通常由 TSConfig 或同类配置决定。换一份配置，可能得到不同的目标语法和调试位置；因此排查“本地能跑、构建失败”时要把源码、转译配置和后续构建一起看。<Cite id="transpiler-config" sources={transpilerSources}/></p>
       <p><strong>读者判断</strong>：如果 `: number` 已经消失，但页面仍然报 “fetch is not defined”，你能指出这是谁的责任吗？答案是目标运行时或垫片，而不是转译器的源码改写步骤。</p>
     </ArticleSection>
   </Article>;
