@@ -89,3 +89,49 @@
 .udpHeaderStrip code { color: var(--accent-text); font-size: .78rem; overflow-wrap: anywhere; }
 @media (max-width: 700px) { .udpHero, .udpLab { padding: 15px; } .udpStage, .udpLabBoard { grid-template-columns: 1fr; } .udpStage > svg, .udpLabBoard > svg { justify-self: center; transform: rotate(90deg); } .udpTop, .udpLabHead { flex-direction: column; gap: 8px; } .udpControls { justify-content: flex-start; } .udpHeaderStrip { grid-template-columns: 1fr 1fr; } }
 @media (prefers-reduced-motion: reduce) { .udpHero *, .udpLab * { transition: none !important; animation: none !important; } }
+
+.tlsHero { composes: panel; }
+.tlsTop, .tlsEvidence, .tlsLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.tlsTop span, .tlsTop small, .tlsLabHead span { color: var(--muted); font-size: .78rem; }
+.tlsTop strong, .tlsLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.tlsStage { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.7fr) minmax(0, .7fr); gap: 14px; align-items: center; margin: 25px 0 16px; }
+.tlsEndpoint, .tlsRecord { min-height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: 14px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.tlsEndpoint svg, .tlsRecord svg, .tlsPacket svg { color: var(--accent); }
+.tlsEndpoint span, .tlsRecord span, .tlsPacket small { color: var(--muted); font-size: .75rem; }
+.tlsEndpoint strong, .tlsRecord strong, .tlsPacket code { color: var(--accent-text); font-size: .84rem; overflow-wrap: anywhere; }
+.tlsSequence { display: grid; gap: 7px; }
+.tlsPacket { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 11px; background: color-mix(in srgb, var(--tint) 55%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); transition: transform .35s ease, opacity .35s ease, border-color .35s ease; }
+.tlsPacket[data-muted="true"] { opacity: .35; }
+.tlsPacket[data-active="true"] { border-color: var(--accent-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); transform: translateX(5px); }
+.tlsPacket[data-failed="true"] { border-color: #b56c45; background: color-mix(in srgb, #f4ddcf 52%, var(--surface)); }
+.tlsEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.tlsEvidence[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); color: #8a542f; }
+.tlsEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.tlsEvidence[data-failed="true"] svg { color: #b56c45; }
+.tlsEvidence p { margin: 0; }
+.tlsEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.tlsTimeline, .tlsControls, .tlsLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.tlsTimeline { margin-top: 15px; }
+.tlsTimeline button, .tlsControls button, .tlsLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.tlsTimeline button[aria-pressed="true"], .tlsLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.tlsControls { justify-content: flex-end; margin-top: 10px; }
+.tlsLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.tlsLabHead strong { display: block; margin-top: 5px; }
+.tlsLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.tlsLabNode { min-height: 95px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.tlsLabNode svg { color: var(--accent); }
+.tlsLabNode span { color: var(--muted); font-size: .76rem; }
+.tlsLabNode code, .tlsLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.tlsLabResult { display: flex; align-items: flex-start; gap: 10px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.tlsLabResult[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 45%, var(--surface)); color: #8a542f; }
+.tlsLabResult svg { flex: 0 0 auto; color: var(--accent); }
+.tlsLabResult[data-failed="true"] svg { color: #b56c45; }
+.tlsLabResult p { margin: 0; }
+.tlsLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.tlsLabControls { margin-top: 13px; }
+.tlsKeyStrip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 18px 0; }
+.tlsKeyStrip div { display: grid; gap: 5px; padding: 12px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--tint) 42%, var(--surface)); }
+.tlsKeyStrip span { color: var(--muted); font-size: .72rem; }
+.tlsKeyStrip code { color: var(--accent-text); font-size: .78rem; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .tlsHero, .tlsLab { padding: 15px; } .tlsStage, .tlsLabBoard { grid-template-columns: 1fr; } .tlsStage > svg, .tlsLabBoard > svg { justify-self: center; transform: rotate(90deg); } .tlsTop, .tlsLabHead { flex-direction: column; gap: 8px; } .tlsControls { justify-content: flex-start; } .tlsKeyStrip { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .tlsHero *, .tlsLab * { transition: none !important; animation: none !important; } }

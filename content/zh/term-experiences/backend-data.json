@@ -10554,11 +10554,11 @@
   {
     "slug": "tls-handshake",
     "lead": "证书可以正常签名，为什么主机名不匹配时浏览器仍要终止连接？",
-    "definition": "TLS 1.3 握手协商版本与密码参数、通过证书验证服务身份，并从密钥交换导出会话密钥；握手完成后才发送受保护的应用数据。",
-    "boundary": "TLS 加密不等于访问了正确服务器。证书链、主机名和验证策略都必须通过，TLS 终止后的内部数据也不再由该通道保护。",
+    "definition": "本页演示不启用 0-RTT 的 TLS 1.3 常规完整（1-RTT）握手：协商版本与密码参数、通过证书验证服务身份，并从密钥交换导出会话密钥，随后发送受保护的应用数据；0-RTT early data 另有重放边界。",
+    "boundary": "TLS 加密不等于访问了正确服务器。证书链、主机名和验证策略都必须通过，TLS 终止后的内部数据也不再由该通道保护；若启用 0-RTT，还要确认 early data 是否可重放。",
     "sceneKind": "assembly",
-    "sceneTitle": "TLS 1.3 从协商到主机名验证",
-    "actionLabel": "发送下一条握手消息",
+    "sceneTitle": "五步看见 TLS 从问候到加密记录",
+    "actionLabel": "推进 TLS 握手",
     "actors": [
       {
         "id": "tls-client",
@@ -10568,172 +10568,174 @@
         "group": "端点"
       },
       {
-        "id": "client-hello",
-        "label": "ClientHello",
-        "detail": "版本 + key share",
+        "id": "tls-handshake",
+        "label": "握手消息",
+        "detail": "ClientHello → Finished",
         "icon": "message",
-        "group": "握手"
+        "group": "协商"
       },
       {
-        "id": "server-hello",
-        "label": "ServerHello",
-        "detail": "选择参数",
-        "icon": "message",
-        "group": "握手"
-      },
-      {
-        "id": "certificate",
+        "id": "tls-certificate",
         "label": "服务器证书",
-        "detail": "SAN=other.example",
+        "detail": "SAN=api.example",
         "icon": "key",
         "group": "身份"
       },
       {
-        "id": "finished",
-        "label": "Finished",
-        "detail": "确认握手密钥",
+        "id": "tls-key",
+        "label": "会话密钥",
+        "detail": "仅本次连接",
         "icon": "shield",
-        "group": "握手"
+        "group": "保护"
       },
       {
-        "id": "app-data",
-        "label": "GET /orders",
-        "detail": "应用数据",
+        "id": "tls-data",
+        "label": "应用记录",
+        "detail": "GET /orders · ciphertext",
         "icon": "package",
         "group": "加密通道"
       }
     ],
     "edges": [
       {
-        "id": "client-ch",
+        "id": "client-handshake",
         "from": "tls-client",
-        "to": "client-hello",
-        "label": "提出参数"
+        "to": "tls-handshake",
+        "label": "交换参数"
       },
       {
-        "id": "ch-sh",
-        "from": "client-hello",
-        "to": "server-hello",
-        "label": "协商"
+        "id": "handshake-certificate",
+        "from": "tls-handshake",
+        "to": "tls-certificate",
+        "label": "验证身份"
       },
       {
-        "id": "sh-cert",
-        "from": "server-hello",
-        "to": "certificate",
-        "label": "提供身份"
+        "id": "certificate-key",
+        "from": "tls-certificate",
+        "to": "tls-key",
+        "label": "验证后导出"
       },
       {
-        "id": "cert-finished",
-        "from": "certificate",
-        "to": "finished",
-        "label": "验证后确认"
-      },
-      {
-        "id": "finished-data",
-        "from": "finished",
-        "to": "app-data",
-        "label": "握手完成"
+        "id": "key-data",
+        "from": "tls-key",
+        "to": "tls-data",
+        "label": "保护记录"
       }
     ],
     "frames": [
       {
-        "label": "ClientHello 提供密钥份额",
-        "note": "客户端发送支持版本、算法和临时 key share，尚未信任服务器。",
+        "label": "ClientHello",
+        "note": "客户端发送版本、算法和临时 key share，还没有信任服务器。",
         "activeIds": [
           "tls-client",
-          "client-hello"
+          "tls-handshake"
         ],
         "doneIds": [
-          "client-hello"
+          "tls-handshake"
         ],
         "mutedIds": [
-          "server-hello",
-          "certificate",
-          "finished",
-          "app-data"
+          "tls-certificate",
+          "tls-key",
+          "tls-data"
         ],
         "values": {
-          "client-hello": "TLS 1.3 · key_share C"
+          "tls-handshake": "TLS 1.3 · key_share C"
         },
         "activeEdgeIds": [
-          "client-ch"
+          "client-handshake"
         ]
       },
       {
-        "label": "ServerHello 选定参数",
-        "note": "双方可以导出握手密钥，但服务器身份仍需证书验证。",
+        "label": "ServerHello",
+        "note": "双方选定参数并准备握手密钥，服务器身份仍待验证。",
         "activeIds": [
-          "client-hello",
-          "server-hello"
+          "tls-handshake"
         ],
         "doneIds": [
-          "server-hello"
+          "tls-handshake"
         ],
         "mutedIds": [
-          "certificate",
-          "finished",
-          "app-data"
+          "tls-client",
+          "tls-certificate",
+          "tls-key",
+          "tls-data"
         ],
         "values": {
-          "server-hello": "TLS_AES_128_GCM_SHA256"
+          "tls-handshake": "TLS_AES_128_GCM_SHA256"
         },
         "activeEdgeIds": [
-          "ch-sh"
+          "client-handshake"
         ]
       },
       {
-        "label": "主机名不匹配中止",
-        "note": "证书链有效，但 SAN 没有 api.example，客户端不能把它当目标服务。",
+        "label": "Certificate",
+        "note": "客户端检查链、有效期和主机名；SAN=other.example 时应在这里停止。",
         "activeIds": [
-          "certificate",
-          "tls-client"
+          "tls-handshake",
+          "tls-certificate"
         ],
         "doneIds": [
-          "certificate"
+          "tls-handshake"
         ],
         "mutedIds": [
-          "finished",
-          "app-data"
+          "tls-client",
+          "tls-key",
+          "tls-data"
         ],
         "values": {
-          "certificate": "SAN=other.example",
-          "tls-client": "name mismatch",
-          "app-data": "未发送"
+          "tls-certificate": "SAN=api.example / mismatch"
         },
         "activeEdgeIds": [
-          "sh-cert"
-        ],
-        "metric": {
-          "label": "应用数据",
-          "value": "0 B"
-        }
+          "handshake-certificate"
+        ]
       },
       {
-        "label": "正确证书完成握手",
-        "note": "SAN 改为 api.example 后，Finished 通过，GET 才进入加密通道。",
+        "label": "Finished",
+        "note": "常规 1-RTT 路径在身份通过后双方确认握手记录，导出本次连接的应用密钥；0-RTT early data 不等到这里才发送。",
         "activeIds": [
-          "certificate",
-          "finished",
-          "app-data"
+          "tls-certificate",
+          "tls-key"
         ],
         "doneIds": [
-          "finished",
-          "app-data"
+          "tls-certificate",
+          "tls-key"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "tls-client",
+          "tls-handshake",
+          "tls-data"
+        ],
         "values": {
-          "certificate": "SAN=api.example",
-          "finished": "verified",
-          "app-data": "encrypted GET /orders"
+          "tls-key": "handshake verified"
         },
         "activeEdgeIds": [
-          "sh-cert",
-          "cert-finished",
-          "finished-data"
+          "certificate-key"
+        ]
+      },
+      {
+        "label": "Encrypted record",
+        "note": "常规 1-RTT 路径中 GET /orders 进入加密记录，应用数据跨过握手边界；0-RTT 是另一个需评估重放的例外路径。",
+        "activeIds": [
+          "tls-key",
+          "tls-data"
+        ],
+        "doneIds": [
+          "tls-data"
+        ],
+        "mutedIds": [
+          "tls-client",
+          "tls-handshake",
+          "tls-certificate"
+        ],
+        "values": {
+          "tls-data": "ciphertext · GET /orders"
+        },
+        "activeEdgeIds": [
+          "key-data"
         ]
       }
     ],
-    "insight": "TLS 既要建立密钥，也要确认密钥对应的是预期服务身份。",
+    "insight": "TLS 同时解决密钥建立和服务身份确认；常规 1-RTT 中任何一项没有完成，都不应把应用请求当作安全地上路，0-RTT 则还要单独判断重放风险。",
     "quiz": {
       "question": "证书链有效但 SAN 不包含当前主机名，应怎样处理？",
       "options": [
@@ -10755,18 +10757,28 @@
     },
     "prompt": {
       "title": "检查 TLS 握手与身份验证",
-      "text": "请记录协议版本、密码套件、证书链、SAN、信任根、SNI、会话恢复和失败时是否发送了应用数据。"
+      "text": "请记录协议版本、密码套件、证书链、SAN、信任根、SNI、会话恢复、是否启用 0-RTT、操作是否可承受重放，以及失败时是否发送了应用数据。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
         "label": "RFC 8446 · TLS 1.3",
-        "note": "协议定义与报文语义"
+        "note": "握手消息、密钥和记录保护"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
         "label": "RFC 9525 · Service Identity",
-        "note": "协议定义与报文语义"
+        "note": "主机名与服务身份验证"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc6066.html",
+        "label": "RFC 6066 · TLS Extensions",
+        "note": "SNI 等扩展"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security",
+        "label": "MDN · Transport Layer Security",
+        "note": "浏览器 TLS 边界与失败排查"
       }
     ]
   },
