@@ -8588,7 +8588,7 @@
     "slug": "compiler",
     "lead": "一段 add(2, 3) 源码怎样经由中间表示，变成目标环境能执行的代码？",
     "definition": "编译器先解析源代码，形成语法树并检查语言规则，再转成中间表示、按需要优化，最后生成目标代码。生成后由运行时或操作系统执行，编译器本身不负责把结果跑起来。",
-    "boundary": "编译负责把代码从一种形式转换成另一种形式，并检查语言规则；打包器组织模块与资源，构建工具把编译、打包等多个步骤按顺序组织起来。编译成功，也不能保证运行时一定不出错。",
+    "boundary": "编译负责把代码从一种形式转换成另一种形式，并检查语言规则；目标环境不兼容时仍需改写或调整目标；打包器组织模块与资源，构建工具把编译、打包等多个步骤按顺序组织起来。编译成功，也不能保证运行时一定不出错。",
     "sceneKind": "pipeline",
     "sceneTitle": "源码经过四层表示",
     "actionLabel": "查看下一层",
@@ -9506,6 +9506,48 @@
           "e-s",
           "s-m"
         ]
+      },
+      {
+        "label": "请求按需块",
+        "note": "主包已经可用；用户打开对应功能后，浏览器刚发出 dist/lazy.js 请求，响应还没有回来。",
+        "activeIds": [
+          "dynamic",
+          "lazy"
+        ],
+        "doneIds": [
+          "entry",
+          "static",
+          "main"
+        ],
+        "mutedIds": [],
+        "values": {
+          "main": "入口 + 5 · 可用",
+          "lazy": "请求中"
+        },
+        "activeEdgeIds": [
+          "d-l"
+        ]
+      },
+      {
+        "label": "按需块请求失败",
+        "note": "主包已经生成并可用；运行时请求 dist/lazy.js 返回 404，失败发生在按需加载边界，不等于整个打包失败。",
+        "activeIds": [
+          "dynamic",
+          "lazy"
+        ],
+        "doneIds": [
+          "entry",
+          "static",
+          "main"
+        ],
+        "mutedIds": [],
+        "values": {
+          "main": "入口 + 5 · 可用",
+          "lazy": "lazy.js · 404"
+        },
+        "activeEdgeIds": [
+          "d-l"
+        ]
       }
     ],
     "insight": "打包器围绕入口和依赖图生成主包与按需块；动态导入让不一定首屏需要的代码延后加载，结果可以有多个文件。",
@@ -9631,6 +9673,7 @@
         "label": "先打开本地页面",
         "note": "浏览器先用 localhost:端口从开发服务器取得页面，并建立更新连接。",
         "activeIds": [
+          "file",
           "server",
           "socket",
           "browser"
@@ -9640,6 +9683,7 @@
           "watcher"
         ],
         "values": {
+          "file": "button.css · 未保存",
           "server": "ready",
           "socket": "connected"
         },
@@ -9649,16 +9693,18 @@
         "label": "文件被保存",
         "note": "监听器捕获 button.css 的 1 次变化。",
         "activeIds": [
-          "file",
           "watcher"
         ],
         "doneIds": [
-          "server"
+          "file"
         ],
         "mutedIds": [
+          "server",
+          "socket",
           "browser"
         ],
         "values": {
+          "file": "button.css · 已保存",
           "watcher": "change 1"
         },
         "activeEdgeIds": [
@@ -9710,6 +9756,29 @@
           "label": "本机示例更新时间",
           "value": "约 180 ms"
         }
+      },
+      {
+        "label": "源码处理失败",
+        "note": "服务器处理 button.css 时发现语法错误，诊断显示文件和行列；更新连接回传错误覆盖层，浏览器保留旧模块，修复后再重新保存。",
+        "activeIds": [
+          "server"
+        ],
+        "doneIds": [
+          "file",
+          "watcher",
+          "socket",
+          "browser"
+        ],
+        "mutedIds": [],
+        "values": {
+          "server": "SyntaxError · 1:8",
+          "socket": "error overlay · 1:8",
+          "browser": "旧页面 + 错误覆盖层"
+        },
+        "activeEdgeIds": [
+          "w-s",
+          "s-so"
+        ]
       }
     ],
     "insight": "开发服务器把本地请求、文件监听和更新连接串成快速反馈；它可以按需处理资源，但不承担完整生产构建或公网服务配置。",
@@ -10373,6 +10442,11 @@
         "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
         "label": "npm 官方文档 · package.json",
         "note": "dependencies、devDependencies 和 optionalDependencies"
+      },
+      {
+        "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
+        "label": "npm 官方文档 · package-lock.json",
+        "note": "记录解析后的确切依赖树，帮助后续安装复现相同结果"
       },
       {
         "url": "https://semver.org/",

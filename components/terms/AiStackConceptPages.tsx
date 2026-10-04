@@ -37,6 +37,16 @@ import { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting"
 import { TemperatureTermPage } from "./ai-stack-pages/temperature";
 import { TokenizationTermPage } from "./ai-stack-pages/tokenization";
 import { PromptInjectionTermPage } from "./ai-stack-pages/prompt-injection";
+import { CompilerTermPage } from "./ai-stack-pages/compiler";
+import { InterpreterTermPage } from "./ai-stack-pages/interpreter";
+import { TranspilerTermPage } from "./ai-stack-pages/transpiler";
+import { BuildToolTermPage } from "./ai-stack-pages/build-tool";
+import { BundlerTermPage } from "./ai-stack-pages/bundler";
+import { DevServerTermPage } from "./ai-stack-pages/dev-server";
+import { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
+import { HmrTermPage } from "./ai-stack-pages/hmr";
+import { DependencyTermPage } from "./ai-stack-pages/dependency";
+import { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -76,6 +86,16 @@ export { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting"
 export { TemperatureTermPage } from "./ai-stack-pages/temperature";
 export { TokenizationTermPage } from "./ai-stack-pages/tokenization";
 export { PromptInjectionTermPage } from "./ai-stack-pages/prompt-injection";
+export { CompilerTermPage } from "./ai-stack-pages/compiler";
+export { InterpreterTermPage } from "./ai-stack-pages/interpreter";
+export { TranspilerTermPage } from "./ai-stack-pages/transpiler";
+export { BuildToolTermPage } from "./ai-stack-pages/build-tool";
+export { BundlerTermPage } from "./ai-stack-pages/bundler";
+export { DevServerTermPage } from "./ai-stack-pages/dev-server";
+export { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
+export { HmrTermPage } from "./ai-stack-pages/hmr";
+export { DependencyTermPage } from "./ai-stack-pages/dependency";
+export { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -117,4 +137,14 @@ export const aiStackArticlePages = {
   temperature: TemperatureTermPage,
   tokenization: TokenizationTermPage,
   "prompt-injection": PromptInjectionTermPage,
+  compiler: CompilerTermPage,
+  interpreter: InterpreterTermPage,
+  transpiler: TranspilerTermPage,
+  "build-tool": BuildToolTermPage,
+  bundler: BundlerTermPage,
+  "dev-server": DevServerTermPage,
+  "hot-reload": HotReloadTermPage,
+  hmr: HmrTermPage,
+  dependency: DependencyTermPage,
+  "semantic-versioning": SemanticVersioningTermPage,
 } as const;
