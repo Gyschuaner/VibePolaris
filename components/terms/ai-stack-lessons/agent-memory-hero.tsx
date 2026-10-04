@@ -37,8 +37,8 @@ export function AgentMemoryHero() {
         <div className={styles.memoryHeroRecords}>
           <div className={styles.memoryHeroOtherRecord}><span>食谱偏好</span><code>少放盐</code></div>
           <div className={styles.memoryHeroRecord} data-active={saved} data-corrected={corrected} data-deleted={deleted}>
-            <span className={styles.memoryHeroRecordIcon}>{deleted ? <Eraser size={16} aria-hidden="true" /> : corrected ? <PencilSimple size={16} aria-hidden="true" /> : <CheckCircle size={16} aria-hidden="true" />}</span>
-            <span><strong>{deleted ? "这条记录已删除" : `代码示例用 ${value}`}</strong><small>{deleted ? "future retrieval: blocked" : "source=user · scope=code"}</small></span>
+            <span className={styles.memoryHeroRecordIcon}>{deleted ? <Eraser size={16} aria-hidden="true" /> : corrected ? <PencilSimple size={16} aria-hidden="true" /> : saved ? <CheckCircle size={16} aria-hidden="true" /> : <WarningCircle size={16} aria-hidden="true" />}</span>
+            <span><strong>{deleted ? "这条记录已删除" : saved ? `代码示例用 ${value}` : "待确认，不写入"}</strong><small>{deleted ? "future retrieval: blocked" : saved ? "source=user · scope=code" : "current message · not stored"}</small></span>
           </div>
         </div>
         <div className={styles.memoryHeroStoreMeta}><span>{deleted ? "1 条仍保留" : saved ? "2 条记录" : "等待写入"}</span><span>{deleted ? "可重新说明" : "可纠正 · 可删除"}</span></div>
@@ -55,7 +55,7 @@ export function AgentMemoryHero() {
     </div>
     <div className={styles.memoryHeroResult} data-danger={deleted} role="status">
       {deleted ? <WarningCircle size={19} aria-hidden="true" /> : <MagnifyingGlass size={19} aria-hidden="true" />}
-      <span><strong>{current.title}</strong> · {deleted ? "删除只影响之后的取回，已经生成的 TypeScript 回复不会倒写。" : scene.step < 2 ? "保存之前，下一次会话拿不到这句话。" : scene.step === 2 ? "命中记录还只是应用手里的结果，尚未进入模型输入。" : scene.step === 3 ? "只有显式放进本轮输入，偏好才会改变回答。" : "记录的变化留在未来，过去的回答保持当时的样子。"}</span>
+      <span><strong>{current.title}</strong> · {deleted ? "删除只影响之后的取回，已经生成的 TypeScript 回复不会倒写。" : scene.step === 0 ? "保存之前，下一次会话拿不到这句话。" : scene.step === 1 ? "记录已保存，下一步按代码范围取回。" : scene.step === 2 ? "命中记录还只是应用手里的结果，尚未进入模型输入。" : scene.step === 3 ? "只有显式放进本轮输入，偏好才会改变回答。" : "记录的变化留在未来，过去的回答保持当时的样子。"}</span>
     </div>
     <figcaption>应用先决定保存什么，再把合适的记录放进这一轮输入；模型只看见这一次收到的材料。</figcaption>
   </figure>;
