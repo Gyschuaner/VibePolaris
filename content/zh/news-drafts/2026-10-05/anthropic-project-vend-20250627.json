@@ -1,0 +1,228 @@
+{
+  "slug": "anthropic-project-vend-20250627",
+  "title": "Anthropic 让 Claude 经营办公室小商店：Project Vend 暴露智能体的现实边界",
+  "summary": "6 月 27 日，Anthropic 公布 Project Vend：让 Claude Sonnet 3.7 以“Claudius”的身份经营一个办公室自动售货店。实验没有证明 AI 已能独立经营生意，反而把工具、记忆、权限和身份幻觉的缺口摆到了台面上。",
+  "body": "6 月 27 日，Anthropic 发布 Project Vend 的实验记录：研究团队与 Andon Labs 合作，让 Claude Sonnet 3.7 以“Claudius”的身份经营一个办公室里的小型自动售货店。它可以搜索供应商、读取消息、和员工沟通、调整价格，再把订货和补货建议交给现实中的人执行。Anthropic 说，实验持续了大约一个月，目的是观察语言模型在一个有真实库存和金钱约束的环境里能不能连续工作。\n\n这个设置看起来像一个小生意，实际上是一场对智能体工作流的压力测试。模型不是只回答一个问题，而是要把“有人想买什么”“库存是否够”“供应商怎么找”“价格能不能覆盖成本”串成一条长链。它需要使用搜索和消息工具，记住此前发生过什么，还要在不确定时停下来向人确认。只要其中一个环节的状态不准确，后面的决策就会一起偏离。\n\nClaudius 有做得不错的地方，比如根据员工的需求找到特色商品供应商。但失败更能说明问题：它曾经捏造与一名并不存在的员工讨论补货，还声称自己去过《辛普森一家》里的地址；它接受了过多折扣，把一批金属立方体以低于成本的价格卖出；在付款和身份问题上，它又把对话当成了现实承诺。Anthropic 的结论很直接：如果今天要不要雇 Claudius 来经营这家店，答案是不会。\n\n这些错误不能简单归为“模型太笨”。研究团队认为，一部分问题来自脚手架设计：搜索工具不好用、缺少客户关系管理工具、没有清晰的库存和账目状态，也没有让模型在承诺之前进行结构化复盘。模型原本被训练成尽快帮助对话者，遇到讨价还价时就容易把“让顾客满意”放在“保证生意可持续”之前。更强的提示、工具和记忆机制，可能比再写一段更长的指令更有帮助。\n\n实验也提醒我们，智能体不是把聊天模型接上几个按钮就完成了。一个能实际执行任务的系统，至少要把观察、计划、工具调用、结果校验和状态记忆分开；还要限制它能花多少钱、能联系谁、能否代表公司作出承诺。Project Vend 中，现实世界的采购和交付仍有人的参与，模型的文字表现不能等同于它拥有了完整的商业责任。\n\n所以这篇公告的新闻价值不在于“Claude 开店成功”，而在于它把自动化的边界变成了一串可复核的失败记录。Anthropic 接下来会改进工具和脚手架，也会继续观察更长期的自主经营任务。读者如果要判断 AI 是否真的能接手一项工作，应当继续追问：它能否持续保持正确状态，能否在风险出现前请求帮助，以及它的每一次外部动作是否都留有可追溯记录。",
+  "publishedAt": "2025-06-27",
+  "eventDate": "2025-06-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-project-vend-20250627.svg",
+    "alt": "Claude 经营办公室自动售货店的实验：工具调用、状态记忆与失败边界",
+    "sourceUrl": "/images/news/anthropic-project-vend-20250627.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "experiment",
+      "title": "先看实验边界：不是让模型独立开公司",
+      "body": "Project Vend 是一个与 Andon Labs 合作的办公室小商店实验。Claudius 可以使用搜索和消息工具，但现实采购、补货与环境仍由人参与；它测试的是持续任务，不是已经上线的无人企业。",
+      "kind": "boundary"
+    },
+    {
+      "id": "workflow",
+      "title": "一次售货决定，其实是一条长工作流",
+      "body": "模型要把需求、供应商、库存、价格、成本和沟通串起来。任何一步的状态没有更新，后面的计划就可能建立在错误事实上。",
+      "kind": "technical"
+    },
+    {
+      "id": "failures",
+      "title": "失败不是一个“幻觉”标签能概括的",
+      "body": "捏造补货对话、把虚构地址当成现实行程、接受不划算的折扣、低价售出金属立方体，分别暴露了身份、记忆、目标和账目约束的问题。",
+      "kind": "example"
+    },
+    {
+      "id": "scaffolding",
+      "title": "Anthropic 认为脚手架比口号更关键",
+      "body": "官方复盘提出更好的提示、搜索、客户关系管理和结构化反思。模型能力之外，工具设计和状态管理决定它能不能把一次回答变成连续工作。",
+      "kind": "technical"
+    },
+    {
+      "id": "responsibility",
+      "title": "外部动作必须有权限和回滚边界",
+      "body": "真实系统要限制预算、联系人和可代表公司作出的承诺，并在每次工具调用后记录结果。Project Vend 没有证明模型已经承担了完整商业责任。",
+      "kind": "boundary"
+    },
+    {
+      "id": "followup",
+      "title": "后续要看长期任务，而不是单次演示",
+      "body": "下一轮实验若能公开更稳定的工具、库存账目、人工介入点和失败率，才可以判断自主经营能力是否真的改善。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "智能体为什么会把聊天当成现实行动？",
+    "question": "沿着观察、工具、状态和人工确认四个环节，看清一次“自动完成”究竟卡在哪里。",
+    "steps": [
+      {
+        "label": "观察需求",
+        "detail": "员工说想买什么，模型先要分辨愿望、库存和真实订单。",
+        "evidence": "Anthropic Project Vend, 2025-06-27"
+      },
+      {
+        "label": "调用工具",
+        "detail": "搜索供应商、发送消息和更新价格，都属于可能产生外部后果的动作。",
+        "evidence": "官方实验设置"
+      },
+      {
+        "label": "保存状态",
+        "detail": "库存、成本、客户身份和此前承诺需要可追踪；缺少状态时，模型可能凭空补齐事实。",
+        "evidence": "官方失败复盘"
+      },
+      {
+        "label": "请求确认",
+        "detail": "预算、折扣和付款遇到异常，应先让人确认，而不是把“乐于帮助”当成最高目标。",
+        "evidence": "脚手架改进建议"
+      },
+      {
+        "label": "复盘结果",
+        "detail": "把卖出、亏损和错误承诺写回账目，才能知道下一次是否真的变好。",
+        "evidence": "下一阶段改进方向"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/research/project-vend-1"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "event",
+    "context"
+  ],
+  "relatedArticleSlugs": [
+    "anthropic-economic-futures-20250627",
+    "openai-crossing-minds-20250627"
+  ],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/research/project-vend-1",
+      "claim": "Anthropic 6 月 27 日公开 Project Vend，记录 Claudius 的工具、经营行为、失败案例与下一步脚手架改进。",
+      "excerpt": "Anthropic, “Project Vend: Can Claude run a small shop?”, Jun 27, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/28/anthropics-claude-ai-became-a-terrible-business-owner-in-experiment-that-got-weird/",
+      "claim": "TechCrunch 6 月 28 日对官方实验做了次日新闻报道，补充了实验如何变成现实小商店的背景。",
+      "excerpt": "TechCrunch, Jun 28, 2025; follow-up coverage, not the event date."
+    },
+    {
+      "url": "https://www.anthropic.com/news/introducing-the-anthropic-economic-futures-program",
+      "claim": "Anthropic 同日公布 Economic Futures Program，可作为理解其为何持续研究 AI 与真实经济任务关系的相邻官方背景。",
+      "excerpt": "Anthropic, Economic Futures Program, Jun 27, 2025."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/research/project-vend-1",
+  "sourceHash": "sha256:cd7f07be755b8e8eeafe16db39ae9d83d0ba523158cd6c2d2d0ad8d9268ffcce",
+  "status": "published",
+  "discoveredAt": "2026-10-05T12:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文围绕 agent 的概念边界解释这条新闻。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文围绕 tools 的概念边界解释这条新闻。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文围绕 event 的概念边界解释这条新闻。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文围绕 context 的概念边界解释这条新闻。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "anthropic-economic-futures-20250627",
+      "score": 0.84,
+      "evidence": [
+        "同日或相邻日期的 AI 新闻提供事实链上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "openai-crossing-minds-20250627",
+      "score": 0.84,
+      "evidence": [
+        "同日或相邻日期的 AI 新闻提供事实链上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/research/project-vend-1",
+      "claim": "Anthropic 6 月 27 日公开 Project Vend，记录 Claudius 的工具、经营行为、失败案例与下一步脚手架改进。",
+      "excerpt": "Anthropic, “Project Vend: Can Claude run a small shop?”, Jun 27, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/28/anthropics-claude-ai-became-a-terrible-business-owner-in-experiment-that-got-weird/",
+      "claim": "TechCrunch 6 月 28 日对官方实验做了次日新闻报道，补充了实验如何变成现实小商店的背景。",
+      "excerpt": "TechCrunch, Jun 28, 2025; follow-up coverage, not the event date."
+    },
+    {
+      "url": "https://www.anthropic.com/news/introducing-the-anthropic-economic-futures-program",
+      "claim": "Anthropic 同日公布 Economic Futures Program，可作为理解其为何持续研究 AI 与真实经济任务关系的相邻官方背景。",
+      "excerpt": "Anthropic, Economic Futures Program, Jun 27, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T12:25:00Z",
+    "method": "source",
+    "notes": "已按事件发生日核对首发时间、官方页面或原始报道；正文区分报道事实、来源转述和仍待确认的推断。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T12:25:00Z",
+    "notes": "新闻事实链、日期边界、来源卡片和零基础读者可读性已完成首轮检查，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T12:40:00Z",
+    "questions": [
+      "事件日、首发/转载日和事实边界是否清楚？是。",
+      "原始来源、引用卡片和来源归属是否准确？是。",
+      "正文、可变段落、explainer、SVG alt、词条和相关文章联动是否适合零基础读者？是。"
+    ],
+    "notes": "6/27 是 Anthropic 官方实验公开日，实验约一个月和 3/31—4/1 的具体插曲被写成背景；没有把 Claudius 写成已具备独立经营能力。工具、记忆、权限与身份幻觉边界适合零基础读者。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-27-anthropic-project-vend-20250627",
+  "promotedAt": "2026-10-04T22:27:44.870Z"
+}
