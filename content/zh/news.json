@@ -39899,6 +39899,503 @@
     "sourceHash": "sha256:44d7788ec44eff9a50c0feab08ce97cae1a96029c2800615ecea689bf2feb681"
   },
   {
+    "slug": "gemini-2-5-flash-lite-ga-20250722",
+    "title": "Gemini 2.5 Flash-Lite 转为稳定版：Google 把低成本、高吞吐模型推向生产",
+    "summary": "Google 在 2025 年 7 月 22 日宣布 Gemini 2.5 Flash-Lite 稳定版和一般可用版本，输入价格为每百万 token 0.10 美元、输出为 0.40 美元，并提供 1M token 上下文、可选推理预算和搜索/代码执行/URL Context 工具。速度、价格与部署案例是 Google 的产品口径，真实质量仍需按业务负载评测。",
+    "body": "2025 年 7 月 22 日，Google Developers Blog 宣布 Gemini 2.5 Flash-Lite 从预览转为稳定版并可用于一般生产场景。Google 把它定位为 Gemini 2.5 家族里速度最快、成本最低的模型，标出的价格是每百万输入 token 0.10 美元、每百万输出 token 0.40 美元。稳定版可以在 Google AI Studio 和 Vertex AI 中调用，模型名称从预览别名切换到 `gemini-2.5-flash-lite`。\n\nFlash-Lite 的取舍很明确：它优先服务延迟敏感、请求量大的任务，比如分类、翻译、路由和批量提取。模型保留可选的原生推理能力，开发者可以按任务打开或关闭 thinking；同时提供 1M token 上下文，以及 Grounding with Google Search、Code Execution 和 URL Context 等工具。工具存在不等于每次调用都自动联网，应用仍要配置权限、来源和费用边界。\n\n“稳定版”主要改变的是产品承诺和接入预期，不是所有任务的质量突然相同。Google 说 Flash-Lite 在多个 benchmark 上比 2.0 Flash-Lite 质量更高、延迟更低，并列出 Satlyt、HeyGen、DocsHound 和 Evertune 的使用案例。这些是厂商提供的评测或客户案例，适合说明产品定位，不能直接替代独立测试，也不能把一个客户的延迟数字套到所有系统上。\n\n1M token 上下文也需要用得有节制。长文档可以减少切分，但输入 token 仍然会计费，过多无关内容可能让模型抓错重点；翻译和分类任务通常更关心单次延迟、格式稳定性和错误率。实际选型时，应该把价格表换算成每个业务请求的总成本，再和输出质量、重试率、缓存命中率一起看。\n\nGoogle 还说明预览版本和稳定版本使用相同的底层模型，并计划在 8 月 25 日移除 Flash-Lite 的预览别名。对正在试用的团队来说，这意味着要检查模型 ID、版本锁定、配额和回滚配置；对已经上线的系统来说，稳定版不等于可以不做回归测试。\n\n这条新闻的意义不在“又多了一个更大的模型”，而在于模型供应商开始把速度、单价、上下文和工具接口打包成可购买的生产选项。小模型是否更合适，要由真实请求的复杂度和失败代价决定；便宜的 token 只有在任务质量达标、调用链可控时才会转化成更低的总成本。",
+    "publishedAt": "2025-07-22",
+    "eventDate": "2025-07-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/gemini-2-5-flash-lite-ga-20250722.svg",
+      "alt": "Gemini 2.5 Flash-Lite 以稳定版、低单价、1M 上下文和可选工具面向高吞吐生产任务。",
+      "sourceUrl": "/images/news/gemini-2-5-flash-lite-ga-20250722.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "ga",
+        "title": "从预览到稳定版",
+        "body": "Google 在 7 月 22 日把 Gemini 2.5 Flash-Lite 推向稳定版和一般可用，入口包括 Google AI Studio 与 Vertex AI。预览别名将按计划移除，生产系统要检查模型 ID。",
+        "kind": "narrative"
+      },
+      {
+        "id": "tradeoff",
+        "title": "它为哪类任务做取舍",
+        "body": "Flash-Lite 优先优化延迟和单价，适合分类、翻译、智能路由和批量处理。它不是所有复杂推理任务的默认最优解。",
+        "kind": "comparison"
+      },
+      {
+        "id": "capabilities",
+        "title": "上下文和工具要算进调用设计",
+        "body": "模型提供 1M token 上下文、可选推理预算，以及 Search、Code Execution、URL Context 等原生工具。应用仍要配置权限、来源、调用次数和费用。",
+        "kind": "technical"
+      },
+      {
+        "id": "evidence",
+        "title": "价格与 benchmark 不能替代业务评测",
+        "body": "$0.10/$0.40 是官方价目口径，客户案例和 benchmark 也来自 Google 或其合作方。选型要测真实输入、输出质量、重试率和总延迟。",
+        "kind": "boundary"
+      },
+      {
+        "id": "migration",
+        "title": "稳定版仍要做回归和回滚",
+        "body": "官方称稳定版与预览版本底层相同，并计划移除预览别名。模型稳定性提高了上线预期，但不免除版本锁定、配额和回归检查。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样判断一个低成本模型适不适合生产？",
+      "question": "把价格、延迟、质量、工具权限和回归风险放进同一张评测表。",
+      "steps": [
+        {
+          "label": "算单次总成本",
+          "detail": "按真实输入、输出、重试和工具调用计算，不只看每百万 token 的标价。",
+          "evidence": "Google pricing and model page"
+        },
+        {
+          "label": "分任务测质量",
+          "detail": "分别测试分类、翻译、提取和复杂推理，不能用一个 benchmark 代表全部场景。",
+          "evidence": "Google benchmark claims"
+        },
+        {
+          "label": "检查上下文",
+          "detail": "确认长文档是否真的需要 1M context，并记录切分、检索和噪声带来的影响。",
+          "evidence": "Context-window boundary"
+        },
+        {
+          "label": "约束工具",
+          "detail": "为 Search、Code Execution 和 URL Context 设置授权、来源和失败处理。",
+          "evidence": "tools / authorization"
+        },
+        {
+          "label": "锁定并回归",
+          "detail": "固定模型 ID、配额和回滚路径，在稳定版切换后重跑关键样本。",
+          "evidence": "Stable-version migration"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Developers Blog",
+      "url": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "token",
+      "context-window",
+      "tools",
+      "eval",
+      "benchmark",
+      "data-quality",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/",
+        "claim": "Google Developers Blog 标注 2025 年 7 月 22 日，宣布 Gemini 2.5 Flash-Lite 稳定版和一般可用，给出每百万 token 的输入/输出价格、1M 上下文和原生工具支持。",
+        "excerpt": "Google Developers Blog, July 22, 2025."
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemini-2-5-flash-lite-flash-pro-ga-vertex-ai/",
+        "claim": "Google Cloud 页面记录 7 月 22 日 Flash-Lite 稳定版更新，并说明它面向分类、翻译、智能路由等高吞吐任务；页面主体的 6 月 17 日文章和 7 月 22 日编辑注释分开记录。",
+        "excerpt": "Google Cloud Blog editor note, July 22, 2025."
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite",
+        "claim": "Gemini API 模型文档提供模型 ID、能力和可用入口，是稳定版调用边界的后续官方资料。",
+        "excerpt": "Google AI for Developers, Gemini 2.5 Flash-Lite model documentation."
+      },
+      {
+        "url": "https://www.androidcentral.com/apps-software/gemini-25-flash-lite-now-generally-available-following-googles-month-long-preview",
+        "claim": "Android Central 记录 Google 在 7 月 22 日将 Flash-Lite 预览版本转为一般可用，并转述其速度、成本和开发者入口。",
+        "excerpt": "Android Central, July 22, 2025."
+      }
+    ],
+    "canonicalUrl": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/",
+    "sourceHash": "sha256:da0fde3facb714aee337ca8bf2c61fd48cf42a4dbdbe542aef068eaff5ce08b9"
+  },
+  {
+    "slug": "openai-economic-analysis-productivity-20250722",
+    "title": "OpenAI 发布经济分析并启动 12 个月合作：用户规模和生产力指标要分开看",
+    "summary": "OpenAI 在 2025 年 7 月 22 日发布首份 ChatGPT 生产力分析，并宣布与 Jason Furman、Michael Strain 等人开展为期 12 个月的 AI 劳动力与生产率研究合作。页面给出 5 亿多用户、每天 25 亿条消息和 28% 美国就业成年人曾在工作中使用 ChatGPT 等数字；其中不少是 OpenAI 内部数据或外部调查，不能直接等同于 AI 已经造成的因果生产率提升。",
+    "body": "2025 年 7 月 22 日，OpenAI 发布一份关于 ChatGPT 生产力的首份经济分析，并宣布与哈佛大学 Jason Furman、美国企业研究所 Michael Strain 等人开展为期 12 个月的研究合作。合作将围绕 AI 对就业和生产率的影响建立研究议程与指标，相关活动放在 OpenAI 新设的华盛顿特区 Workshop 中。它是一条关于 AI 使用和测量方法的公司新闻，不是某个新模型上线。\n\nOpenAI 在公告和配套 PDF 中给出了一组规模数字：全球有超过 5 亿人主动使用其 AI 工具，平台每天发送超过 25 亿条消息，其中美国每天超过 3.3 亿条；报告还称，曾使用 ChatGPT 的美国就业成年人中，28% 表示在工作中使用过。PDF 特别注明，除非另有链接，这些数字来自 OpenAI 自己的内部数据。它们可以说明产品覆盖和使用量，不能单独证明每条消息都带来了生产力增长。\n\n报告还引用了外部材料：宾夕法尼亚州政府称参与 ChatGPT Enterprise 试点的州政府员工在使用当天平均节省 95 分钟，Gallup 与 Walton Family Foundation 的教师调查称教师每周在相关任务上节省近 6 小时，Pew 则通过全国代表性调查记录美国成年人使用 ChatGPT 的比例和工作场景。这些研究的对象、问题和时间窗口都不相同，OpenAI 把它们放在自己的分析里，并不意味着它们构成同一项统一实验。\n\n“节省时间”和“生产率提高”也不是同一个指标。前者通常是受访者或试点参与者对工作时间的报告，后者还要看产出数量、质量、返工、培训成本、任务是否被重新分配，以及没有使用 AI 的对照组。OpenAI 的报告提出了这些影响值得继续研究，但它的公司立场和引用的外部研究都需要按原方法阅读，不能把宣传页上的单个数字扩展成整个劳动力市场的结论。\n\n这次 12 个月合作的意义，是 OpenAI 开始把“有多少人在用”与“AI 到底怎样改变工作”放到同一套经济研究议程里。未来更有信息量的证据应该包括公开的方法、重复测量、行业和人群差异、任务质量，以及没有使用 AI 时的对照结果。否则，用户增长很容易被误读为生产率已经兑现。\n\n对读者来说，可以先记住三层信息：平台规模是采用指标，节省分钟数是特定试点或调查结果，生产率因果关系则仍需要更严格的研究。把这三层分开，既不会忽略 AI 已经进入工作流程的事实，也不会把一家公司对自身产品的经济叙事误写成已经完成的社会科学结论。",
+    "publishedAt": "2025-07-22",
+    "eventDate": "2025-07-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-economic-analysis-productivity-20250722.svg",
+      "alt": "OpenAI 经济分析把平台规模、具体试点节省时间和仍待研究的生产率因果关系分成三层。",
+      "sourceUrl": "/images/news/openai-economic-analysis-productivity-20250722.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "这是一项经济研究计划，不是新模型发布",
+        "body": "OpenAI 7 月 22 日发布首份 ChatGPT 生产力分析，并宣布与经济学者开展 12 个月的劳动力和生产率研究合作。新闻焦点是测量 AI 影响的方法和研究组织。",
+        "kind": "narrative"
+      },
+      {
+        "id": "scale",
+        "title": "用户和消息量说明采用规模",
+        "body": "5 亿多用户、每天 25 亿条消息、美国每天 3.3 亿条消息，以及 28% 美国就业成年人曾在工作中使用，是 OpenAI 公布的采用指标；PDF 说明多数内部数字来自 OpenAI 自己的数据。",
+        "kind": "technical"
+      },
+      {
+        "id": "external",
+        "title": "外部试点和调查要按方法分别读",
+        "body": "宾夕法尼亚州政府的 95 分钟、Gallup 的教师时间调查和 Pew 的全国调查对象、问题与时间窗口都不同，不能拼成一项统一实验。",
+        "kind": "comparison"
+      },
+      {
+        "id": "causality",
+        "title": "节省时间不等于生产率因果结论",
+        "body": "生产率还要看产出质量、返工、任务分配和对照组。公司分析可以提出方向，但不能把一条试点自报数字写成整个劳动力市场的结论。",
+        "kind": "boundary"
+      },
+      {
+        "id": "research",
+        "title": "12 个月合作要补上哪些证据",
+        "body": "后续研究需要公开方法、重复测量、行业和人群差异以及任务质量，才能回答 AI 是否真正改变了工作，而不只是增加了使用量。",
+        "kind": "aside"
+      },
+      {
+        "id": "reading",
+        "title": "用三层指标读 AI 经济新闻",
+        "body": "采用规模、特定试点节省时间和生产率因果关系是三类不同证据。把它们拆开，才能同时承认 AI 已进入工作流程和研究仍未完成。",
+        "kind": "narrative"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样读一组 AI 生产率数字？",
+      "question": "把采用规模、具体试点和因果效果放在不同证据层级。",
+      "steps": [
+        {
+          "label": "先看数据是谁的",
+          "detail": "标记内部日志、外部调查、政府试点和学术研究的来源，不把不同数据混为一谈。",
+          "evidence": "OpenAI Productivity Note methodology"
+        },
+        {
+          "label": "再看测量什么",
+          "detail": "用户数和消息量测采用，分钟数测主观或试点节省，生产率还需要产出和质量。",
+          "evidence": "OpenAI analysis and linked studies"
+        },
+        {
+          "label": "核对样本与时间",
+          "detail": "记录对象、问题、时间窗口和是否有对照组，避免跨研究直接相加。",
+          "evidence": "Pennsylvania / Gallup / Pew sources"
+        },
+        {
+          "label": "区分相关与因果",
+          "detail": "使用增长与工作效率同时出现，不代表使用增长造成了效率提升。",
+          "evidence": "Economic analysis boundary"
+        },
+        {
+          "label": "等待可重复研究",
+          "detail": "关注 12 个月合作公开的方法、重复测量和行业差异，更新暂时的结论。",
+          "evidence": "OpenAI Workshop collaboration"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI Global Affairs",
+      "url": "https://openai.com/global-affairs/new-economic-analysis/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "eval",
+      "data-quality",
+      "data-lineage",
+      "citation",
+      "event",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/global-affairs/new-economic-analysis/",
+        "claim": "OpenAI 官方页面标注 2025 年 7 月 22 日，发布经济分析并宣布 12 个月的劳动力与生产率研究合作；页面给出 5 亿多用户、25 亿日消息和 28% 工作使用等数字。",
+        "excerpt": "OpenAI, OpenAI’s new economic analysis, July 22, 2025."
+      },
+      {
+        "url": "https://cdn.openai.com/global-affairs/be0fe9e0-eb97-43d1-9614-99f2bd948bcc/OpenAI_Productivity-Note_Jul-2025.pdf",
+        "claim": "OpenAI Productivity Note 说明平台规模和消息量等数据除另有链接外来自 OpenAI 内部数据，并把 ChatGPT 使用、外部调查和经济研究放在一起讨论。",
+        "excerpt": "OpenAI Productivity Note 1, July 2025, pp. 3–4."
+      },
+      {
+        "url": "https://www.pa.gov/agencies/oa/newsroom/icymi--shapiro-administration-s-generative-ai-pilot-for-state-wo",
+        "claim": "宾夕法尼亚州官方材料称 175 名州政府员工参与一年试点，并报告使用生成式 AI 的当天平均节省 95 分钟；同时强调 AI 不能替代员工判断。",
+        "excerpt": "Pennsylvania Office of Administration, March 28, 2025."
+      },
+      {
+        "url": "https://www.gallup.com/analytics/659819/k-12-teacher-research.aspx",
+        "claim": "Gallup/Walton Family Foundation 的研究目录保留了 2025 年“Unlocking Six Weeks a Year With AI”教师报告入口，支持核对教师节省时间的研究背景。",
+        "excerpt": "Walton Family Foundation-Gallup K-12 Teacher Research."
+      },
+      {
+        "url": "https://www.pewresearch.org/short-reads/2025/06/25/34-of-us-adults-have-used-chatgpt-about-double-the-share-in-2023/",
+        "claim": "Pew Research Center 以 5,123 名美国成年人调查记录 ChatGPT 使用率和工作场景，提供与 OpenAI 28% 工作使用数字不同来源的独立背景。",
+        "excerpt": "Pew Research Center, June 25, 2025."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/global-affairs/new-economic-analysis/",
+    "sourceHash": "sha256:2a57cf3be59991aa2daca52803948729bc23191d1e17b33b1676e32807e3a962"
+  },
+  {
+    "slug": "openai-stargate-oracle-4-5gw-20250722",
+    "title": "OpenAI 与 Oracle 扩充 Stargate：4.5GW 是规划中的 AI 数据中心容量，不是已上线算力",
+    "summary": "OpenAI 与 Oracle 在 2025 年 7 月 22 日宣布开发额外 4.5GW 的美国 Stargate 数据中心容量。OpenAI 称连同德州 Abilene 的 Stargate I，开发中容量将超过 5GW、对应超过 200 万颗芯片，并预计新增容量带来超过 10 万个岗位；这些数字描述的是公司规划和估计，不能直接当成已经并网或已交付的算力。",
+    "body": "2025 年 7 月 22 日，OpenAI 宣布与 Oracle 达成协议，开发额外 4.5GW 的美国 Stargate 数据中心容量。OpenAI 把这次合作称为 Stargate 的重大进展，并说连同德州 Abilene 的 Stargate I，开发中的容量将超过 5GW、可运行超过 200 万颗芯片。路透社把这条消息放在美国扩大 AI 基础设施投资的竞争背景中报道。\n\n这里最容易被标题混淆的是“容量”和“上线”。4.5GW 是数据中心规划中的电力规模，包含计算、冷却、网络和其他设施的需求；它不是一个已经完成的模型训练集群，也不能直接换算成可用 token、训练速度或 ChatGPT 的响应能力。OpenAI 的原文使用的是 under development，说明这部分仍处在开发和建设链条上。\n\nOpenAI 同时称，Stargate I 的建设正在推进，Oracle 已经交付首批 Nvidia GB200 机架，部分设施开始运行早期训练和推理负载。这是公司对 Abilene 现场的说明，和新增 4.5GW 规划不是同一个状态：前者描述已有部分运行，后者描述新增容量的开发计划。把两者加在一起时，需要保留“部分已运行、更多容量仍在开发”的层次。\n\n公告还估计，新增 4.5GW 容量在建设、开发和运营阶段将带来超过 10 万个美国岗位。这是 OpenAI 的就业估算，不是已经统计完成的招聘人数；同样，2 百万颗芯片是公司对开发中容量的规划描述，也不是当天已经装机并通过验收的库存。\n\n这条新闻对 AI 行业的意义，是把模型竞赛的另一面摆到台前：模型发布之后，还要有长期供电、散热、网络、芯片交付、土地与许可。数据中心容量越大，电网连接、能源成本和社区影响就越重要。AI 基础设施因此同时是技术、产业和公共资源问题，而不是单纯的 GPU 采购新闻。\n\n后续追踪不能只看 OpenAI 的总 GW 数字，还应查具体站点、许可、并网、机架交付、可用容量和真实训练负载。只有这些证据逐步出现，规划容量才会变成可核验的生产算力；在那之前，最准确的写法是“双方宣布开发 4.5GW 额外容量”。",
+    "publishedAt": "2025-07-22",
+    "eventDate": "2025-07-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-stargate-oracle-4-5gw-20250722.svg",
+      "alt": "OpenAI 与 Oracle 宣布额外 4.5GW Stargate 数据中心开发，图中区分规划容量、部分运行和待验证算力。",
+      "sourceUrl": "/images/news/openai-stargate-oracle-4-5gw-20250722.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "4.5GW 是一项开发协议",
+        "body": "OpenAI 7 月 22 日宣布与 Oracle 开发额外 4.5GW 的美国 Stargate 数据中心容量。连同 Abilene 的 Stargate I，官方称开发中容量超过 5GW。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capacity",
+        "title": "电力规模不等于模型算力",
+        "body": "GW 描述数据中心的电力与设施规模，不能直接换算成 token、训练速度或在线服务能力。计算、冷却、网络和供电都要从规划走到验收。",
+        "kind": "technical"
+      },
+      {
+        "id": "existing-site",
+        "title": "部分运行和新增规划是两条状态线",
+        "body": "OpenAI 说 Abilene 已开始早期训练和推理、首批 GB200 机架已交付；这不表示新增 4.5GW 已经全部上线。",
+        "kind": "boundary"
+      },
+      {
+        "id": "claims",
+        "title": "芯片和就业数字都要标注为公司估计",
+        "body": "超过 200 万颗芯片和超过 10 万个岗位是 OpenAI 对开发中容量的规划和估算，不是当天完成装机或招聘的审计结果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "industry",
+        "title": "AI 基础设施同时受能源和许可约束",
+        "body": "模型竞争背后还包括供电、散热、网络、芯片交付、土地和许可。大型数据中心因此会进入能源、产业和社区讨论。",
+        "kind": "narrative"
+      },
+      {
+        "id": "follow-up",
+        "title": "下一步看站点和并网证据",
+        "body": "继续追踪具体站点、许可、并网、机架交付、可用容量和真实负载，才能把规划数字转换成可核验的生产算力。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一座 AI 数据中心怎样从规划变成算力？",
+      "question": "沿着协议、建设、供电、装机和负载五个节点追踪，不把总容量一次性写成上线结果。",
+      "steps": [
+        {
+          "label": "宣布协议",
+          "detail": "记录合作方、日期和规划容量，先标明它是开发计划。",
+          "evidence": "OpenAI announcement"
+        },
+        {
+          "label": "取得许可",
+          "detail": "查看土地、施工、环保和并网许可是否已经完成。",
+          "evidence": "Site and permitting records"
+        },
+        {
+          "label": "接入电力",
+          "detail": "确认电力来源、输电设施和可用负载，而不是只看名义 GW。",
+          "evidence": "Grid and energy records"
+        },
+        {
+          "label": "交付设备",
+          "detail": "核对机架、芯片、网络和冷却设备是否进场并通过验收。",
+          "evidence": "GB200 delivery statement"
+        },
+        {
+          "label": "运行负载",
+          "detail": "区分试运行、训练、推理与满负荷可用容量，保留时间和证据。",
+          "evidence": "Operational workload records"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/stargate-advances-with-partnership-with-oracle/"
+    },
+    "relatedSlugs": [
+      "event",
+      "data-lineage",
+      "data-quality",
+      "citation",
+      "llm",
+      "eval",
+      "token"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/stargate-advances-with-partnership-with-oracle/",
+        "claim": "OpenAI 官方页面标注 2025 年 7 月 22 日，宣布与 Oracle 开发额外 4.5GW Stargate 数据中心容量，并称总开发容量超过 5GW、可运行超过 200 万颗芯片。",
+        "excerpt": "OpenAI, Stargate advances with 4.5 GW partnership with Oracle, July 22, 2025."
+      },
+      {
+        "url": "https://openai.com/index/stargate-advances-with-partnership-with-oracle/",
+        "claim": "官方说明 Abilene Stargate I 已开始部分训练和推理工作，并称首批 Nvidia GB200 机架已交付；这些描述与新增 4.5GW 开发计划分开。",
+        "excerpt": "OpenAI announcement, Abilene site status."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/oracle-openai-to-add-45-gigawatts-data-center-capacity-for-stargate-4145462",
+        "claim": "Reuters 报道 OpenAI 与 Oracle 将再开发 4.5GW 数据中心容量，把消息置于美国 AI 基础设施竞争背景。",
+        "excerpt": "Reuters, OpenAI, Oracle deepen AI data center push, July 22, 2025."
+      },
+      {
+        "url": "https://www.oracle.com/data-centers/",
+        "claim": "Oracle 数据中心目录将 2025 年 7 月 22 日列为 Stargate 4.5GW 合作公告日期，提供合作方侧的日期交叉记录。",
+        "excerpt": "Oracle Data Centers timeline."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/stargate-advances-with-partnership-with-oracle/",
+    "sourceHash": "sha256:e260f9a56afbf078c1510d71367ad3bf3305a4d521a742e9844783bd9cd8c24c"
+  },
+  {
+    "slug": "qwen3-coder-agentic-coding-20250722",
+    "title": "Qwen3-Coder 开源：代码模型开始把长上下文和工具调用放进一个代理工作流",
+    "summary": "2025 年 7 月 22 日，Qwen 发布 Qwen3-Coder，先开放 480B 总参数、35B 激活的 MoE 版本，原生支持 256K token 上下文，并以外推方式扩展到 1M token。官方还开源 Qwen Code 命令行工具，把代码生成、工具调用和多轮环境交互放进同一条开发流程；性能排名和“可比 Claude Sonnet 4”属于厂商评测口径。",
+    "body": "2025 年 7 月 22 日，Qwen 团队发布 Qwen3-Coder，并先提供 Qwen3-Coder-480B-A35B-Instruct 这一旗舰版本。官方给出的结构是 480B 总参数、每个 token 激活 35B 参数的混合专家（MoE）模型，原生支持 256K token 上下文，也可以通过 YaRN 等外推方法扩展到 1M。它被定位为面向软件开发和代理式编程的代码模型，而不是把普通聊天模型换一个产品名。\n\n这次发布的重点在“工作流”三个字。Qwen 的说明把真实软件工程描述为连续的多轮任务：模型先规划，再调用工具，在环境里运行代码、收到测试反馈，然后决定下一步。配套的 Qwen Code 是一个命令行工具，基于 Gemini CLI 改造了提示和工具调用协议；官方还写明可以和 Claude Code、Cline 等开发工具搭配。这样一来，模型的输出不只是代码片段，还可能是对代码仓库的连续操作。\n\n长上下文解决的是“能不能把更大的仓库放进一次任务”，不是“模型已经理解了整个仓库”。Qwen 把 256K 原生上下文和 1M 外推能力用于仓库级理解、Pull Request 等动态数据，但上下文越长，读取成本、检索噪声和错误传播也可能增加。实际项目仍要把权限、分支、测试命令和可回滚方式写进外层工具，不能让一条长提示替代工程流程。\n\nQwen 还介绍了 7.5T token 的预训练数据（其中代码占比 70%）、执行驱动的 Code RL，以及同时运行 2 万个独立环境来训练和评测长时任务。官方称这些工作让模型在 Agentic Coding、Browser-Use、Tool-Use 和 SWE-Bench Verified 等测试上达到开源模型中的领先水平，并可与 Claude Sonnet 4 相比。这些数字和排名来自发布方，真正选型时还要在自己的语言、仓库结构、测试覆盖率和成本约束下复测。\n\n开放模型加上 CLI，确实降低了把代码模型接入开发环境的门槛，但不会自动解决安全问题。一个能执行命令、修改文件或访问网络的 coding agent，需要明确的授权范围、隔离环境、密钥处理、人工审核和失败回滚；模型能生成正确补丁，也不代表它有权把补丁直接合并。Qwen3-Coder 的新闻价值，是把“代码生成”进一步推向可执行的代理循环，同时把这些工程边界暴露在产品设计里。\n\n因此，读者可以把这次发布拆成三层：模型本身的参数和上下文，Qwen Code 等工具的编排方式，以及最终由开发团队负责的权限和验收。官方 benchmark 只能回答部分能力问题；代码是否安全、是否节省时间、是否值得接入生产，还要看真实仓库的测试结果和可追溯操作记录。",
+    "publishedAt": "2025-07-22",
+    "eventDate": "2025-07-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/qwen3-coder-agentic-coding-20250722.svg",
+      "alt": "Qwen3-Coder 把 256K 上下文、工具调用和代码代理循环连成一条开发工作流。",
+      "sourceUrl": "/images/news/qwen3-coder-agentic-coding-20250722.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "这次发布的模型和工具是什么",
+        "body": "Qwen 发布 Qwen3-Coder-480B-A35B-Instruct，480B 是总参数，35B 是每个 token 激活的参数规模；同时开源 Qwen Code 命令行工具。它们分别对应模型能力和开发者入口。",
+        "kind": "narrative"
+      },
+      {
+        "id": "agent-loop",
+        "title": "代码代理不只补全一段代码",
+        "body": "Qwen 把真实软件工程描述成规划、工具调用、运行代码、接收测试反馈和继续决策的多轮循环。CLI 的价值在于把模型接到这个循环里，权限和执行环境仍由外层系统负责。",
+        "kind": "technical"
+      },
+      {
+        "id": "context",
+        "title": "256K 上下文能装下更大的仓库，但不等于理解无误",
+        "body": "原生 256K、外推 1M 适合仓库级任务和 Pull Request，但长上下文会带来成本、噪声与错误传播。工程团队仍要做检索、分支隔离和测试。",
+        "kind": "boundary"
+      },
+      {
+        "id": "training",
+        "title": "训练与 benchmark 先看作厂商证据",
+        "body": "7.5T token、70% 代码占比、2 万个并行环境和 SWE-Bench Verified 领先成绩来自 Qwen 的发布材料。它们值得记录，但不能替代自己的仓库、语言和成本评测。",
+        "kind": "comparison"
+      },
+      {
+        "id": "permissions",
+        "title": "能执行命令不等于有权修改生产代码",
+        "body": "接入 coding agent 前需要定义命令、文件、网络和密钥权限，保留人工审查、测试和回滚。正确补丁与被授权执行是两件事。",
+        "kind": "aside"
+      },
+      {
+        "id": "follow-up",
+        "title": "后续要看真实工程反馈",
+        "body": "继续追踪 Qwen Code 的版本、模型在真实仓库的通过率和成本，以及社区是否建立了可审计的沙箱与权限实践。",
+        "kind": "narrative"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个代码代理怎样从提示走到可合并补丁？",
+      "question": "把模型、工具、执行环境和人工审批拆成可观察的循环。",
+      "steps": [
+        {
+          "label": "理解仓库",
+          "detail": "用上下文和检索找到相关文件、依赖和测试，不把长上下文误认为完整理解。",
+          "evidence": "Qwen3-Coder context description"
+        },
+        {
+          "label": "提出计划",
+          "detail": "把目标拆成可检查的小步骤，明确哪些文件和命令允许被触碰。",
+          "evidence": "Agentic coding workflow"
+        },
+        {
+          "label": "调用工具",
+          "detail": "在隔离环境里读写文件、运行测试和获取反馈，保留每次输入输出。",
+          "evidence": "Qwen Code CLI and tool use"
+        },
+        {
+          "label": "验证结果",
+          "detail": "用测试、代码审查和安全扫描判断补丁是否真的完成任务。",
+          "evidence": "SWE-Bench and local evaluation boundary"
+        },
+        {
+          "label": "决定是否合并",
+          "detail": "人或受控的审批策略决定是否提交、合并或回滚，模型本身不拥有生产权限。",
+          "evidence": "authorization / execution-sandbox"
+        }
+      ]
+    },
+    "source": {
+      "name": "Qwen Official Blog",
+      "url": "https://qwenlm.github.io/blog/qwen3-coder/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "agent-loop",
+      "tools",
+      "context-window",
+      "eval",
+      "benchmark",
+      "authorization",
+      "execution-sandbox"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://qwenlm.github.io/blog/qwen3-coder/",
+        "claim": "Qwen 官方博客标注 2025 年 7 月 22 日发布 Qwen3-Coder，旗舰版本为 480B 总参数、35B 激活的 MoE，原生 256K 上下文并可通过外推扩展到 1M。",
+        "excerpt": "Qwen, Qwen3-Coder: Agentic Coding in the World, July 22, 2025."
+      },
+      {
+        "url": "https://qwenlm.github.io/zh/blog/qwen3-coder/",
+        "claim": "中文官方博客说明 Qwen Code CLI 基于 Gemini Code 改造，并强调代码模型的工具调用和多轮 Agent 任务。",
+        "excerpt": "Qwen 中文博客，2025-07-22。"
+      },
+      {
+        "url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct",
+        "claim": "官方模型卡提供 Qwen3-Coder-480B-A35B-Instruct 的模型说明、Apache-2.0 许可和部署入口。",
+        "excerpt": "Hugging Face Qwen model card."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/alibaba-launches-opensource-ai-coding-model-touted-as-its-most-advanced-to-date-4147128",
+        "claim": "Reuters 报道阿里在 7 月 22 日发布开源代码模型，并把 agentic coding 与同类模型比较作为新闻背景。",
+        "excerpt": "Reuters, Alibaba launches open-source AI coding model, July 22, 2025."
+      }
+    ],
+    "canonicalUrl": "https://qwenlm.github.io/blog/qwen3-coder/",
+    "sourceHash": "sha256:8565a03a97bfef41244a64190868fc3d4323d443e49fa8b329f7f9003212103a"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",

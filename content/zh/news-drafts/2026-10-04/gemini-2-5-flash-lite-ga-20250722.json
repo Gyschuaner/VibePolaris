@@ -1,0 +1,255 @@
+{
+  "slug": "gemini-2-5-flash-lite-ga-20250722",
+  "title": "Gemini 2.5 Flash-Lite 转为稳定版：Google 把低成本、高吞吐模型推向生产",
+  "summary": "Google 在 2025 年 7 月 22 日宣布 Gemini 2.5 Flash-Lite 稳定版和一般可用版本，输入价格为每百万 token 0.10 美元、输出为 0.40 美元，并提供 1M token 上下文、可选推理预算和搜索/代码执行/URL Context 工具。速度、价格与部署案例是 Google 的产品口径，真实质量仍需按业务负载评测。",
+  "body": "2025 年 7 月 22 日，Google Developers Blog 宣布 Gemini 2.5 Flash-Lite 从预览转为稳定版并可用于一般生产场景。Google 把它定位为 Gemini 2.5 家族里速度最快、成本最低的模型，标出的价格是每百万输入 token 0.10 美元、每百万输出 token 0.40 美元。稳定版可以在 Google AI Studio 和 Vertex AI 中调用，模型名称从预览别名切换到 `gemini-2.5-flash-lite`。\n\nFlash-Lite 的取舍很明确：它优先服务延迟敏感、请求量大的任务，比如分类、翻译、路由和批量提取。模型保留可选的原生推理能力，开发者可以按任务打开或关闭 thinking；同时提供 1M token 上下文，以及 Grounding with Google Search、Code Execution 和 URL Context 等工具。工具存在不等于每次调用都自动联网，应用仍要配置权限、来源和费用边界。\n\n“稳定版”主要改变的是产品承诺和接入预期，不是所有任务的质量突然相同。Google 说 Flash-Lite 在多个 benchmark 上比 2.0 Flash-Lite 质量更高、延迟更低，并列出 Satlyt、HeyGen、DocsHound 和 Evertune 的使用案例。这些是厂商提供的评测或客户案例，适合说明产品定位，不能直接替代独立测试，也不能把一个客户的延迟数字套到所有系统上。\n\n1M token 上下文也需要用得有节制。长文档可以减少切分，但输入 token 仍然会计费，过多无关内容可能让模型抓错重点；翻译和分类任务通常更关心单次延迟、格式稳定性和错误率。实际选型时，应该把价格表换算成每个业务请求的总成本，再和输出质量、重试率、缓存命中率一起看。\n\nGoogle 还说明预览版本和稳定版本使用相同的底层模型，并计划在 8 月 25 日移除 Flash-Lite 的预览别名。对正在试用的团队来说，这意味着要检查模型 ID、版本锁定、配额和回滚配置；对已经上线的系统来说，稳定版不等于可以不做回归测试。\n\n这条新闻的意义不在“又多了一个更大的模型”，而在于模型供应商开始把速度、单价、上下文和工具接口打包成可购买的生产选项。小模型是否更合适，要由真实请求的复杂度和失败代价决定；便宜的 token 只有在任务质量达标、调用链可控时才会转化成更低的总成本。",
+  "publishedAt": "2025-07-22",
+  "eventDate": "2025-07-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/gemini-2-5-flash-lite-ga-20250722.svg",
+    "alt": "Gemini 2.5 Flash-Lite 以稳定版、低单价、1M 上下文和可选工具面向高吞吐生产任务。",
+    "sourceUrl": "/images/news/gemini-2-5-flash-lite-ga-20250722.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "ga",
+      "title": "从预览到稳定版",
+      "body": "Google 在 7 月 22 日把 Gemini 2.5 Flash-Lite 推向稳定版和一般可用，入口包括 Google AI Studio 与 Vertex AI。预览别名将按计划移除，生产系统要检查模型 ID。",
+      "kind": "narrative"
+    },
+    {
+      "id": "tradeoff",
+      "title": "它为哪类任务做取舍",
+      "body": "Flash-Lite 优先优化延迟和单价，适合分类、翻译、智能路由和批量处理。它不是所有复杂推理任务的默认最优解。",
+      "kind": "comparison"
+    },
+    {
+      "id": "capabilities",
+      "title": "上下文和工具要算进调用设计",
+      "body": "模型提供 1M token 上下文、可选推理预算，以及 Search、Code Execution、URL Context 等原生工具。应用仍要配置权限、来源、调用次数和费用。",
+      "kind": "technical"
+    },
+    {
+      "id": "evidence",
+      "title": "价格与 benchmark 不能替代业务评测",
+      "body": "$0.10/$0.40 是官方价目口径，客户案例和 benchmark 也来自 Google 或其合作方。选型要测真实输入、输出质量、重试率和总延迟。",
+      "kind": "boundary"
+    },
+    {
+      "id": "migration",
+      "title": "稳定版仍要做回归和回滚",
+      "body": "官方称稳定版与预览版本底层相同，并计划移除预览别名。模型稳定性提高了上线预期，但不免除版本锁定、配额和回归检查。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样判断一个低成本模型适不适合生产？",
+    "question": "把价格、延迟、质量、工具权限和回归风险放进同一张评测表。",
+    "steps": [
+      {
+        "label": "算单次总成本",
+        "detail": "按真实输入、输出、重试和工具调用计算，不只看每百万 token 的标价。",
+        "evidence": "Google pricing and model page"
+      },
+      {
+        "label": "分任务测质量",
+        "detail": "分别测试分类、翻译、提取和复杂推理，不能用一个 benchmark 代表全部场景。",
+        "evidence": "Google benchmark claims"
+      },
+      {
+        "label": "检查上下文",
+        "detail": "确认长文档是否真的需要 1M context，并记录切分、检索和噪声带来的影响。",
+        "evidence": "Context-window boundary"
+      },
+      {
+        "label": "约束工具",
+        "detail": "为 Search、Code Execution 和 URL Context 设置授权、来源和失败处理。",
+        "evidence": "tools / authorization"
+      },
+      {
+        "label": "锁定并回归",
+        "detail": "固定模型 ID、配额和回滚路径，在稳定版切换后重跑关键样本。",
+        "evidence": "Stable-version migration"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Developers Blog",
+    "url": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "context-window",
+    "tools",
+    "eval",
+    "benchmark",
+    "data-quality",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/",
+      "claim": "Google Developers Blog 标注 2025 年 7 月 22 日，宣布 Gemini 2.5 Flash-Lite 稳定版和一般可用，给出每百万 token 的输入/输出价格、1M 上下文和原生工具支持。",
+      "excerpt": "Google Developers Blog, July 22, 2025."
+    },
+    {
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemini-2-5-flash-lite-flash-pro-ga-vertex-ai/",
+      "claim": "Google Cloud 页面记录 7 月 22 日 Flash-Lite 稳定版更新，并说明它面向分类、翻译、智能路由等高吞吐任务；页面主体的 6 月 17 日文章和 7 月 22 日编辑注释分开记录。",
+      "excerpt": "Google Cloud Blog editor note, July 22, 2025."
+    },
+    {
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite",
+      "claim": "Gemini API 模型文档提供模型 ID、能力和可用入口，是稳定版调用边界的后续官方资料。",
+      "excerpt": "Google AI for Developers, Gemini 2.5 Flash-Lite model documentation."
+    },
+    {
+      "url": "https://www.androidcentral.com/apps-software/gemini-25-flash-lite-now-generally-available-following-googles-month-long-preview",
+      "claim": "Android Central 记录 Google 在 7 月 22 日将 Flash-Lite 预览版本转为一般可用，并转述其速度、成本和开发者入口。",
+      "excerpt": "Android Central, July 22, 2025."
+    }
+  ],
+  "canonicalUrl": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/",
+  "sourceHash": "sha256:da0fde3facb714aee337ca8bf2c61fd48cf42a4dbdbe542aef068eaff5ce08b9",
+  "status": "published",
+  "discoveredAt": "2026-10-04T15:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文用 llm 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.9,
+      "evidence": [
+        "正文用 token 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.9,
+      "evidence": [
+        "正文用 context-window 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文用 tools 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文用 eval 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.9,
+      "evidence": [
+        "正文用 benchmark 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.9,
+      "evidence": [
+        "正文用 data-quality 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文用 event 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://developers.googleblog.com/en/gemini-25-flash-lite-is-now-stable-and-generally-available/",
+      "claim": "Google Developers Blog 标注 2025 年 7 月 22 日，宣布 Gemini 2.5 Flash-Lite 稳定版和一般可用，给出每百万 token 的输入/输出价格、1M 上下文和原生工具支持。",
+      "excerpt": "Google Developers Blog, July 22, 2025."
+    },
+    {
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemini-2-5-flash-lite-flash-pro-ga-vertex-ai/",
+      "claim": "Google Cloud 页面记录 7 月 22 日 Flash-Lite 稳定版更新，并说明它面向分类、翻译、智能路由等高吞吐任务；页面主体的 6 月 17 日文章和 7 月 22 日编辑注释分开记录。",
+      "excerpt": "Google Cloud Blog editor note, July 22, 2025."
+    },
+    {
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite",
+      "claim": "Gemini API 模型文档提供模型 ID、能力和可用入口，是稳定版调用边界的后续官方资料。",
+      "excerpt": "Google AI for Developers, Gemini 2.5 Flash-Lite model documentation."
+    },
+    {
+      "url": "https://www.androidcentral.com/apps-software/gemini-25-flash-lite-now-generally-available-following-googles-month-long-preview",
+      "claim": "Android Central 记录 Google 在 7 月 22 日将 Flash-Lite 预览版本转为一般可用，并转述其速度、成本和开发者入口。",
+      "excerpt": "Android Central, July 22, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T15:20:00Z",
+    "method": "source",
+    "notes": "逐一核对官方公告/产品页，并用可信新闻或政府材料交叉确认日期和边界；正文把厂商自述、规划容量与实际效果分开。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T15:20:00Z",
+    "notes": "按独立新闻事件成稿，保留官方口径、事件日期和可验证边界，等待读者审阅。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T12:50:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文没有明显模板化或 AI 腔。",
+      "eventDate/publishedAt 均为 2025-07-22，与官方博客、产品公告或财报分析发布日期一致。",
+      "Qwen3-Coder 的 480B/35B/256K/1M 与 benchmark 标为官方口径；Flash-Lite 的价格、benchmark、客户案例和 8/25 预览别名迁移边界清楚；Stargate 的 4.5GW、200万芯片、10万岗位和已运行/在开发状态分层；OpenAI 经济分析区分内部采用数据、外部调查、试点节省时间和生产率因果结论。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：四篇数字归属、规划与已落地边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-22",
+  "fingerprint": "sha256:da0fde3facb714aee337ca8bf2c61fd48cf42a4dbdbe542aef068eaff5ce08b9",
+  "promotedAt": "2026-10-04T12:30:32.601Z"
+}
