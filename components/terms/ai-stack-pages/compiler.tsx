@@ -11,7 +11,7 @@ const sections: [string, string][] = [["compiler-definition", "编译器先把�
 export function CompilerTermPage() {
   return <Article slug="compiler" title="编译器" subtitle="Compiler · 把一种写法转换成另一种可执行形式" sources={compilerSources} sections={sections}
     hero={<ConceptHero slug="compiler" label="源代码经过解析、转换，最后交给运行时；错误停在实际发生的那一层"><div className={styles.toolchainHero}><div className={styles.compilerHero}><div><FileCode size={25}/><span>源代码</span><strong>add(2, 3)</strong><code>人写的形式</code></div><ArrowRight size={20} aria-hidden="true"/><div><Cpu size={25}/><span>编译链</span><strong>语法树 → 中间表示</strong><code>逐层检查</code></div><ArrowRight size={20} aria-hidden="true"/><div><FileJs size={25}/><span>运行时</span><strong>output = 5</strong><code>目标代码已执行</code></div></div><p className={styles.heroNote}>生成目标代码和真正运行，是两个相邻但不同的步骤。</p></div></ConceptHero>}
-    intro={<>你在项目里写的是 TypeScript、JSX 或另一种更方便人阅读的写法，但浏览器或目标机器需要另一种能执行的形式。<strong>编译器就是负责完成这次转换并报告输入问题的工具。</strong>它处理的是“怎样得到目标代码”，不是替你证明业务结果正确。</>}>
+    intro={<>你写下 `add(2, 3)` 时，电脑还没有拿到一条可以直接执行的指令。<strong>编译器会先读懂这段写法，再把它交给目标环境。</strong>它能在交付前拦住语法问题，却不能替运行时证明每个名字、资源和业务结果都正确。</>}>
     <ArticleSection id="compiler-definition" title="编译器先把源代码变成什么">
       <p id="compiler-definition-text" className="vp-citation-target">编译是把一种语言写成的程序转换成另一种格式或语言；编译器是执行这件事的程序。传统编译器可以把高级语言变成机器码或其他可运行形式，也可以把 TypeScript 变成 JavaScript，这时常被称为 <ConceptTerm slug="transpiler">转译器</ConceptTerm>。<Cite id="compiler-definition-text" sources={compilerSources}/></p>
       <p>可以把源代码想成一份给人看的施工图，把目标代码想成目标环境真正能读的指令。编译器先读取结构，检查它是否符合规则，再按目标环境的约束生成结果。没有目标形式，浏览器只看到它不认识的类型标记或语法，就无法开始运行。</p>
@@ -19,7 +19,7 @@ export function CompilerTermPage() {
     </ArticleSection>
     <ArticleSection id="compiler-process" title="检查、转换和目标环境">
       <p id="compiler-types" className="vp-citation-target">TypeScript 的编译器可以检查类型，并把类型标记擦除后生成 JavaScript；类型系统本身不会在运行时改变 JavaScript 的行为。也就是说，编辑器里出现类型错误时，不能因为“最后会被擦掉”就当成问题已经解决。<Cite id="compiler-types" sources={compilerSources}/></p>
-      <p>下面的演示把同一条链路拆成五层：源代码、语法树、中间表示、目标代码和运行时。正常分支逐层走到输出；语法不完整时停在解析层；目标环境不支持某项语法时停在生成目标代码这一层；输入能编译但运行时找不到名字时，错误留到最后一层。每次切换场景都会清掉上一次进度，避免把旧产物冒充当前输入。</p>
+      <p>先拿一小段代码做追踪：`add(2, 3)` 会一路走到 `output = 5`；把它改成 `add(2, )`，你会看到解析器在参数列表处停下；换成 `legacy?.value`，这里的 `?.` 表示属性不存在时先得到 `undefined`，结构虽然读懂，却可能在生成面向旧目标的代码时被拦住；`add(2, missing)` 则会走到运行时，等真正取值时才报错。点选不同案例，上一条路径会清空，屏幕上的每个值都来自当前输入。</p>
       <CompilerLesson />
       <p id="compiler-config" className="vp-citation-target">编译选项通常写在配置文件中，例如 TypeScript 的 `tsconfig.json` 用来指定要包含的文件、编译选项和项目关系。配置改变后，实际目标、输出目录和检查范围也可能改变，所以排查“本地能跑、构建失败”时要同时看源码和配置。<Cite id="compiler-config" sources={compilerSources}/></p>
     </ArticleSection>
