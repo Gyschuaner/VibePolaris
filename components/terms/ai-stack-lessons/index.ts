@@ -43,3 +43,5 @@ export { InferenceHero, InferenceLesson } from "./inference-hero";
 export { PretrainingHero, PretrainingLesson } from "./pretraining-hero";
 export { KvCacheHero } from "./kv-cache-hero";
 export { KvCacheLesson } from "./kv-cache";
+export { AgentWorkflowHero } from "./agent-workflow-hero";
+export { AgentWorkflowLesson } from "./agent-workflow";

@@ -20143,5 +20143,243 @@
         "note": "GPU/CPU/disk 分层与前缀复用"
       }
     ]
+  },
+  {
+    "slug": "agent-workflow",
+    "lead": "一次退款请求怎样从“收到”走到“可以交付”，又怎样在风险处停下来？",
+    "definition": "工作流把智能体任务写成显式节点和状态：接收、校验、路由、执行、验收，每一步都有输入、下一步和终态。节点里的模型可以帮忙判断，但应用要保留对权限、工具副作用和完成证据的控制。",
+    "boundary": "有了状态图仍不代表模型可靠。模型可能选错专家、漏掉字段或生成不完整草稿；只有校验、回执和明确的 done、blocked、retry、needs-human 才能把这些情况留在系统里。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "一张退款任务单的状态与闸门",
+    "actionLabel": "逐步推进、切换路由与验收结果",
+    "actors": [
+      {
+        "id": "request",
+        "label": "请求单",
+        "detail": "订单 A17 · ¥1,280",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "gate",
+        "label": "校验闸门",
+        "detail": "字段、权限、风险",
+        "icon": "shield",
+        "group": "控制"
+      },
+      {
+        "id": "router",
+        "label": "路由器",
+        "detail": "规则或模型选择下一节点",
+        "icon": "code",
+        "group": "编排"
+      },
+      {
+        "id": "specialist",
+        "label": "账单专家",
+        "detail": "工具调用或局部判断",
+        "icon": "brain",
+        "group": "执行"
+      },
+      {
+        "id": "review",
+        "label": "验收出口",
+        "detail": "done / blocked / needs-human",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "request-gate",
+        "from": "request",
+        "to": "gate",
+        "label": "提交检查"
+      },
+      {
+        "id": "gate-router",
+        "from": "gate",
+        "to": "router",
+        "label": "通过后路由"
+      },
+      {
+        "id": "router-specialist",
+        "from": "router",
+        "to": "specialist",
+        "label": "交给专家"
+      },
+      {
+        "id": "specialist-review",
+        "from": "specialist",
+        "to": "review",
+        "label": "送验收"
+      },
+      {
+        "id": "gate-review",
+        "from": "gate",
+        "to": "review",
+        "label": "失败 → blocked"
+      },
+      {
+        "id": "review-specialist",
+        "from": "review",
+        "to": "specialist",
+        "label": "retry / 补证据"
+      }
+    ],
+    "frames": [
+      {
+        "label": "收到请求",
+        "note": "请求单先登记订单、金额和当前状态；没有输入就没有可以追踪的后续节点。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "gate",
+          "router",
+          "specialist",
+          "review"
+        ],
+        "values": {
+          "request": "received · A17 / ¥1,280"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "闸门检查",
+        "note": "字段、权限和风险检查先于工具副作用；缺凭证时沿失败边进入 blocked。",
+        "activeIds": [
+          "gate"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "router",
+          "specialist",
+          "review"
+        ],
+        "values": {
+          "gate": "checking · 3 条条件"
+        },
+        "activeEdgeIds": [
+          "request-gate"
+        ]
+      },
+      {
+        "label": "选择路线",
+        "note": "通过后，下一步可以由代码按金额规则决定，也可以由模型提出专家选择。",
+        "activeIds": [
+          "router"
+        ],
+        "doneIds": [
+          "request",
+          "gate"
+        ],
+        "mutedIds": [
+          "specialist",
+          "review"
+        ],
+        "values": {
+          "router": "code → billing"
+        },
+        "activeEdgeIds": [
+          "gate-router"
+        ]
+      },
+      {
+        "label": "执行局部任务",
+        "note": "账单专家只处理自己的节点；它的草稿还没有资格直接改写订单。",
+        "activeIds": [
+          "specialist"
+        ],
+        "doneIds": [
+          "request",
+          "gate",
+          "router"
+        ],
+        "mutedIds": [
+          "review"
+        ],
+        "values": {
+          "specialist": "draft · waiting proof"
+        },
+        "activeEdgeIds": [
+          "router-specialist"
+        ]
+      },
+      {
+        "label": "验收或停下",
+        "note": "证据齐全才进入 done；失败、重试和人工接管都要留下明确的终态记录。",
+        "activeIds": [
+          "review"
+        ],
+        "doneIds": [
+          "request",
+          "gate",
+          "router",
+          "specialist"
+        ],
+        "mutedIds": [],
+        "values": {
+          "review": "done / blocked / needs-human"
+        },
+        "activeEdgeIds": [
+          "specialist-review"
+        ]
+      }
+    ],
+    "insight": "工作流不替模型做每一个判断，而是把判断放进有边界的节点：谁能继续、谁能调用工具、什么证据算完成，都留在状态图上。",
+    "quiz": {
+      "question": "为什么“校验失败”应该是工作流里的一个状态？",
+      "options": [
+        {
+          "label": "因为系统需要记录停在哪里，并阻止未验证的副作用继续发生",
+          "correct": true
+        },
+        {
+          "label": "因为失败状态可以自动把模型草稿当成最终答案",
+          "correct": false
+        },
+        {
+          "label": "因为只要有状态图，节点里的模型就不会再犯错",
+          "correct": false
+        }
+      ],
+      "success": "对。blocked 让失败可追踪，也把订单写入这类副作用挡在验收之后。",
+      "retry": "想想闸门的职责：它要留下失败证据并阻止继续执行，不是把失败藏起来。"
+    },
+    "prompt": {
+      "title": "拆开一次智能体工作流",
+      "text": "请列出请求、校验、路由、执行、验收五个节点；为每个节点写输入、权限、工具副作用、成功状态、失败状态和回执，再指出哪些转移由代码决定、哪些只由模型提出。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "区分 workflow 与 agent 的路径控制和灵活性"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/multi_agent/",
+        "label": "OpenAI Agents SDK · Multi-agent orchestration",
+        "note": "代码编排、模型编排、agents as tools 与 handoffs"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/quickstart/",
+        "label": "OpenAI Agents SDK · Quickstart",
+        "note": "Runner 执行 agent、工具和 handoff，并记录 trace"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/guardrails/",
+        "label": "OpenAI Agents SDK · Guardrails",
+        "note": "输入、输出和工具闸门的不同边界"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/handoffs/",
+        "label": "OpenAI Agents SDK · Handoffs",
+        "note": "转交控制权、过滤历史和传递 metadata"
+      }
+    ]
   }
 ]

@@ -1778,5 +1778,26 @@
       "context-window",
       "prompt-caching"
     ]
+  },
+  {
+    "slug": "agent-workflow",
+    "mechanism": "智能体工作流把请求、校验、路由、执行和验收写成显式节点与状态转移；路由可以由代码决定，也可以让模型提出选择，但 guardrail、工具权限和终态由应用继续承接。",
+    "misconception": "工作流不是把多个模型串成聊天链，也不是一段系统提示词；它不能消除节点内的模型不确定性，必须把 blocked、retry、needs-human 与 done 分开记录。",
+    "demoSignature": "退款单 A17 沿请求→闸门→路由→账单专家→验收五帧推进；切换代码路由/模型路由只改变“谁提出下一步”，切换校验通过/失败则分别进入 done 或 blocked，动画保留工具副作用尚未发生的边界。",
+    "sourceUrls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://openai.github.io/openai-agents-python/quickstart/",
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://openai.github.io/openai-agents-python/handoffs/"
+    ],
+    "rewriteRisk": "正文要用一张可追踪的状态图讲清节点、路由拥有者、guardrail、handoff 和终态，区分代码编排与模型编排；避免把多智能体链、提示词或 trace 误写成可靠性保证。",
+    "nearDuplicates": [
+      "agent-orchestration",
+      "agent-loop",
+      "plan-and-execute",
+      "handoff",
+      "guardrail"
+    ]
   }
 ]
