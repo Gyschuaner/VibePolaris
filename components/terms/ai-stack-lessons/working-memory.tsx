@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, ClipboardText, Funnel, Trash } from "@phosphor-icons/react";
+import { CheckCircle, ClipboardText, Funnel, Trash, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../AiStackCoreConcepts.module.css";
@@ -19,11 +19,13 @@ export function WorkingMemoryLesson() {
   const scene = useScene(labels.length);
   const [inventoryReturned, setInventoryReturned] = useState(false);
   useResetOnSceneStart(scene, () => setInventoryReturned(false));
-  const kept = scene.step >= 2 && inventoryReturned ? [0, 2] : [];
-  const removed = [...(scene.step >= 1 ? [1, 3] : []), ...(scene.step >= 2 && inventoryReturned ? [4] : [])];
-  const count = scene.step === 0 ? 5 : scene.step === 1 ? 3 : inventoryReturned ? 2 : 3;
-  const delivered = scene.step === 3 && inventoryReturned;
-  const scratch = delivered ? "临时清单已清空" : `候选 ${count} · 已查库存 ${scene.step >= 2 && inventoryReturned ? "是" : "否"}`;
+  const stockKnown = scene.step >= 2 && inventoryReturned;
+  const kept = stockKnown ? [0, 2] : [];
+  const removed = [...(scene.step >= 1 ? [1, 3] : []), ...(stockKnown ? [4] : [])];
+  const count = scene.step === 0 ? 5 : scene.step === 1 ? 3 : stockKnown ? 2 : 3;
+  const delivered = scene.step === 3 && stockKnown;
+  const scratch = delivered ? "临时清单已清空" : `候选 ${count} · 已查库存 ${stockKnown ? "是" : "否"}`;
+  const VerdictIcon = scene.step >= 2 && !stockKnown ? WarningCircle : CheckCircle;
 
   return <div className={styles.workingLab} ref={scene.ref} role="region" aria-label="工作记忆任务状态演示">
     <SceneControls scene={scene} labels={labels} />
@@ -36,7 +38,7 @@ export function WorkingMemoryLesson() {
         <h3>可变的工作清单</h3>
         <div className={styles.candidateRows} aria-label="候选商品清单">
           {candidates.map(([name, status], index) => {
-            const waitingForInventory = scene.step === 1 || (!inventoryReturned && scene.step >= 2 && (index === 0 || index === 2 || index === 4));
+            const waitingForInventory = scene.step >= 1 && !removed.includes(index) && !stockKnown;
             return <div key={name} className={styles.candidateRow} data-removed={removed.includes(index) || delivered} data-kept={kept.includes(index)}>
             <span>{index + 1}</span><span>{name}<small>{waitingForInventory ? "待查库存" : status}</small></span><span>{kept.includes(index) ? "留下" : removed.includes(index) || delivered ? "移出" : "待查"}</span>
           </div>})}
@@ -45,9 +47,9 @@ export function WorkingMemoryLesson() {
       </div>
     </div>
     <div className={styles.memoryActions} role="group" aria-label="切换库存结果">
-      <button type="button" onClick={() => setInventoryReturned(true)} aria-pressed={inventoryReturned}>库存已返回</button>
-      <button type="button" onClick={() => setInventoryReturned(false)} aria-pressed={!inventoryReturned}>库存未返回</button>
+      <button type="button" onClick={() => setInventoryReturned(true)} disabled={scene.step < 2} aria-pressed={scene.step >= 2 && inventoryReturned}>库存已返回</button>
+      <button type="button" onClick={() => setInventoryReturned(false)} disabled={scene.step < 2} aria-pressed={scene.step >= 2 && !inventoryReturned}>库存未返回</button>
     </div>
-    <p className={styles.windowVerdict} role="status"><CheckCircle size={17} aria-hidden="true" /> {scene.step === 0 ? "工作记忆先保存目标和候选，下一步才有依据。" : scene.step === 1 && !inventoryReturned ? "预算筛掉 B、D 后还剩 A、C、E 三个；库存结果还没回来，不能先写成现货。" : scene.step === 1 ? "预算筛掉 B、D 后还剩 A、C、E 三个；下一步用已经返回的库存结果继续筛。" : scene.step === 2 && !inventoryReturned ? "库存未返回，仍保留 3 个候选，不进入 2 个，也不把未知写成有货。" : scene.step === 2 ? "库存结果排除 E，A 和 C 留下；工作状态已经收敛，但它仍只服务当前任务。" : !inventoryReturned ? "交付被挡住：库存没有返回，临时清单继续保留，不能清理成一个假结果。" : "交付后清理临时清单；是否把 A、C 保存为长期偏好，是另一项决定。"}</p>
+    <p className={styles.windowVerdict} role="status"><VerdictIcon size={17} aria-hidden="true" /> {scene.step === 0 ? "工作记忆先保存目标和候选，下一步才有依据。" : scene.step === 1 ? "预算筛掉 B、D 后还剩 A、C、E 三个；库存结果还没回来，不能先写成现货。" : scene.step === 2 && !stockKnown ? "库存未返回，仍保留 3 个候选，不进入 2 个，也不把未知写成有货。" : scene.step === 2 ? "库存结果排除 E，A 和 C 留下；工作状态已经收敛，但它仍只服务当前任务。" : !stockKnown ? "交付被挡住：库存没有返回，临时清单继续保留，不能清理成一个假结果。" : "交付后清理临时清单；是否把 A、C 保存为长期偏好，是另一项决定。"}</p>
   </div>;
 }

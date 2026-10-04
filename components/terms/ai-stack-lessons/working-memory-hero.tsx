@@ -61,8 +61,8 @@ export function WorkingMemoryHero() {
       <span className={styles.workingHeroPacket} data-running={scene.playing && scene.step > 0 && scene.step < 3} aria-hidden="true" />
     </div>
     <div className={styles.workingHeroActions} role="group" aria-label="切换库存回执" data-enabled={scene.step >= 2}>
-      <button type="button" onClick={() => setInventoryReturned(true)} disabled={scene.step < 2} aria-pressed={inventoryReturned}>库存已返回</button>
-      <button type="button" onClick={() => setInventoryReturned(false)} disabled={scene.step < 2} aria-pressed={!inventoryReturned}>库存未返回</button>
+      <button type="button" onClick={() => setInventoryReturned(true)} disabled={scene.step < 2} aria-pressed={scene.step >= 2 && inventoryReturned}>库存已返回</button>
+      <button type="button" onClick={() => setInventoryReturned(false)} disabled={scene.step < 2} aria-pressed={scene.step >= 2 && !inventoryReturned}>库存未返回</button>
     </div>
     <div className={styles.workingHeroResult} role="status" aria-live="polite">
       <ResultIcon size={20} aria-hidden="true" />
