@@ -17322,223 +17322,272 @@
   },
   {
     "slug": "assertion",
-    "lead": "按钮最终都会出现，为什么 sleep(1000) 经常误报失败，而 toBeVisible 能在 1.5 秒后稳定通过？",
-    "definition": "断言把实际可观察值与明确期望比较，并在失败时提供差异；异步断言还需在有限时间内等待条件成立。",
-    "boundary": "断言越多不代表测试越强。检查内部变量或依赖固定延时，会增加脆弱性却不一定验证业务结果。",
-    "sceneKind": "contract",
-    "sceneTitle": "固定等待与条件等待的竞速",
-    "actionLabel": "调整响应延迟并重跑",
+    "lead": "保存按钮最终会出现，为什么 sleep(1000) 经常误报失败，而 toBeVisible 能在 1.5 秒后稳定通过？",
+    "definition": "断言把实际可观察值与明确期望比较，并在失败时提供差异；异步断言还需在有限期限内等待条件成立。",
+    "boundary": "断言只验证写出的条件。内部变量、固定等待或无关的多重检查，可能让测试通过却没有证明用户看到的结果。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "一条保存回执在两个观察时钟之间分岔",
+    "actionLabel": "调整回执延迟并重放",
     "actors": [
       {
-        "id": "async-button",
-        "label": "保存完成按钮",
-        "detail": "响应后显示",
+        "id": "save-action",
+        "label": "保存按钮",
+        "detail": "click · 只执行一次",
         "icon": "component",
-        "group": "观察对象"
+        "group": "动作"
+      },
+      {
+        "id": "api-response",
+        "label": "异步回执",
+        "detail": "200ms → 1.5s",
+        "icon": "network",
+        "group": "事实"
       },
       {
         "id": "fixed-sleep",
         "label": "sleep(1000)",
-        "detail": "到点即检查",
+        "detail": "固定取样",
         "icon": "clock",
-        "group": "断言轨道"
+        "group": "观察者"
       },
       {
-        "id": "auto-assert",
+        "id": "web-assert",
         "label": "toBeVisible",
-        "detail": "最长 5s",
+        "detail": "期限内重试",
         "icon": "search",
-        "group": "断言轨道"
+        "group": "观察者"
       },
       {
-        "id": "api-delay",
-        "label": "响应延迟",
-        "detail": "200 ms",
-        "icon": "network",
-        "group": "环境"
-      },
-      {
-        "id": "fixed-result",
-        "label": "固定等待结果",
-        "detail": "waiting",
+        "id": "hidden-state",
+        "label": "按钮 hidden",
+        "detail": "回执未到",
         "icon": "shield",
-        "group": "结果"
+        "group": "状态"
       },
       {
-        "id": "auto-result",
-        "label": "条件等待结果",
-        "detail": "waiting",
+        "id": "visible-state",
+        "label": "按钮 visible",
+        "detail": "目标已成立",
         "icon": "shield",
-        "group": "结果"
+        "group": "状态"
+      },
+      {
+        "id": "diff-report",
+        "label": "Expected / Received",
+        "detail": "留下下一步",
+        "icon": "file",
+        "group": "证据"
       }
     ],
     "edges": [
       {
-        "id": "delay-button",
-        "from": "api-delay",
-        "to": "async-button",
-        "label": "响应后显示"
+        "id": "click-response",
+        "from": "save-action",
+        "to": "api-response",
+        "label": "发起请求"
       },
       {
-        "id": "sleep-check",
+        "id": "response-hidden",
+        "from": "api-response",
+        "to": "hidden-state",
+        "label": "尚未更新"
+      },
+      {
+        "id": "response-visible",
+        "from": "api-response",
+        "to": "visible-state",
+        "label": "状态改变"
+      },
+      {
+        "id": "fixed-read",
         "from": "fixed-sleep",
-        "to": "async-button",
-        "label": "1s 时读取"
+        "to": "hidden-state",
+        "label": "1s 读取"
       },
       {
-        "id": "auto-check",
-        "from": "auto-assert",
-        "to": "async-button",
-        "label": "持续轮询"
+        "id": "condition-read",
+        "from": "web-assert",
+        "to": "visible-state",
+        "label": "条件成立"
       },
       {
-        "id": "button-fixed",
-        "from": "async-button",
-        "to": "fixed-result",
-        "label": "布尔值"
-      },
-      {
-        "id": "button-auto",
-        "from": "async-button",
-        "to": "auto-result",
-        "label": "条件满足"
+        "id": "failure-diff",
+        "from": "hidden-state",
+        "to": "diff-report",
+        "label": "Expected ≠ Received"
       }
     ],
     "frames": [
       {
-        "label": "200 ms 延迟时两条轨道都通过",
-        "note": "按钮早于固定 1 秒出现，差异暂时被快环境掩盖。",
+        "label": "点击保存，两个观察者都在等",
+        "note": "动作只发生一次；响应和按钮状态还没有抵达最终位置。",
         "activeIds": [
-          "api-delay",
-          "async-button",
+          "save-action",
+          "api-response",
           "fixed-sleep",
-          "auto-assert",
-          "fixed-result",
-          "auto-result"
+          "web-assert",
+          "hidden-state"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "api-response": "pending",
+          "hidden-state": "hidden",
+          "fixed-sleep": "waiting",
+          "web-assert": "waiting"
+        },
+        "activeEdgeIds": [
+          "click-response",
+          "response-hidden"
+        ]
+      },
+      {
+        "label": "200ms 到达，两条轨道都通过",
+        "note": "快环境让固定等待暂时看起来可靠，但它仍然没有绑定状态。",
+        "activeIds": [
+          "api-response",
+          "fixed-sleep",
+          "web-assert",
+          "visible-state"
         ],
         "doneIds": [
-          "fixed-result",
-          "auto-result"
+          "visible-state"
         ],
         "mutedIds": [],
         "values": {
-          "api-delay": "200ms",
-          "fixed-result": "PASS @1s",
-          "auto-result": "PASS @0.2s"
+          "api-response": "arrived @0.2s",
+          "fixed-sleep": "PASS @1s",
+          "web-assert": "PASS @0.2s"
         },
         "activeEdgeIds": [
-          "delay-button",
-          "sleep-check",
-          "auto-check",
-          "button-fixed",
-          "button-auto"
+          "response-visible",
+          "fixed-read",
+          "condition-read"
         ]
       },
       {
-        "label": "把响应调慢到 1500 ms",
-        "note": "业务最终状态不变，只是按钮晚半秒出现。",
+        "label": "把回执调慢到 1.5 秒",
+        "note": "最终状态没有变，只是固定取样点落在事实之前。",
         "activeIds": [
-          "api-delay",
-          "async-button"
+          "api-response",
+          "fixed-sleep",
+          "web-assert",
+          "hidden-state"
         ],
         "doneIds": [],
         "mutedIds": [
-          "fixed-result",
-          "auto-result"
+          "visible-state",
+          "diff-report"
         ],
         "values": {
-          "api-delay": "1500ms",
-          "async-button": "hidden until 1.5s"
+          "api-response": "arrives @1.5s",
+          "fixed-sleep": "reads @1s",
+          "web-assert": "deadline 5s"
         },
         "activeEdgeIds": [
-          "delay-button"
+          "response-hidden"
         ]
       },
       {
-        "label": "固定等待在 1 秒误失败",
-        "note": "sleep 结束时条件尚未成立，测试没有继续观察。",
+        "label": "固定等待在 1 秒提前失败",
+        "note": "sleep 结束时按钮仍 hidden；红灯描述的是观察时机，不是业务结论。",
         "activeIds": [
           "fixed-sleep",
-          "async-button",
-          "fixed-result"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "auto-assert",
-          "auto-result"
-        ],
-        "values": {
-          "fixed-result": "FAIL @1.0s",
-          "async-button": "appears @1.5s"
-        },
-        "activeEdgeIds": [
-          "sleep-check",
-          "button-fixed"
-        ]
-      },
-      {
-        "label": "条件等待在 1.5 秒通过",
-        "note": "toBeVisible 在上限内重试，到真实条件出现后立即完成。",
-        "activeIds": [
-          "auto-assert",
-          "async-button",
-          "auto-result"
+          "hidden-state",
+          "diff-report"
         ],
         "doneIds": [
-          "auto-result"
+          "diff-report"
+        ],
+        "mutedIds": [
+          "web-assert",
+          "visible-state"
+        ],
+        "values": {
+          "fixed-sleep": "FAIL @1s",
+          "diff-report": "Expected visible · Received hidden"
+        },
+        "activeEdgeIds": [
+          "fixed-read",
+          "failure-diff"
+        ]
+      },
+      {
+        "label": "条件断言在 1.5 秒读到 visible",
+        "note": "目标状态出现后立即比较；同一回执让条件轨道通过。",
+        "activeIds": [
+          "web-assert",
+          "visible-state",
+          "diff-report"
+        ],
+        "doneIds": [
+          "visible-state",
+          "diff-report"
         ],
         "mutedIds": [
           "fixed-sleep",
-          "fixed-result"
+          "hidden-state"
         ],
         "values": {
-          "auto-result": "PASS @1.5s",
-          "auto-assert": "deadline 5s"
+          "web-assert": "PASS @1.5s",
+          "visible-state": "visible",
+          "diff-report": "Expected = Received"
         },
         "activeEdgeIds": [
-          "auto-check",
-          "button-auto"
-        ],
-        "metric": {
-          "label": "同一最终状态",
-          "value": "visible"
-        }
+          "response-visible",
+          "condition-read"
+        ]
       }
     ],
-    "insight": "断言要等待真实条件，而不是猜系统应该在第几毫秒完成。",
+    "insight": "断言要等事实抵达，再比较可观察条件；时间是上限，不是结果本身。",
     "quiz": {
-      "question": "为什么 toBeVisible 比 sleep(1000)+检查更稳定？",
+      "question": "响应变慢时，哪条断言更能表达保存是否完成？",
       "options": [
         {
-          "label": "它在期限内等待目标条件成立",
+          "label": "在期限内等待按钮变为 visible",
           "correct": true
         },
         {
-          "label": "它会永久忽略失败",
+          "label": "永远 sleep 1000ms 后读取一次",
           "correct": false
         },
         {
-          "label": "它让服务器固定在 200 ms 返回",
+          "label": "只检查内部 saving 标志",
           "correct": false
         }
       ],
-      "success": "条件等待把同步点绑定到可观察状态。",
-      "retry": "比较固定时间点与状态成立时点。"
+      "success": "把同步点绑在目标状态上，失败才会说明实际差异。",
+      "retry": "先找出 Expected、Received 和允许等待的上限。"
     },
     "prompt": {
-      "title": "把脆弱断言改成状态断言",
-      "text": "请列出真正的业务观察点、允许等待上限和失败差异，移除固定 sleep 与非必要的内部变量检查。"
+      "title": "把脆弱断言改成行为证据",
+      "text": "请写出动作、可观察目标、等待上限与失败差异，再把固定 sleep 和实现细节检查拆掉或改到合适的测试层。"
     },
     "sources": [
       {
-        "url": "https://playwright.dev/docs/test-assertions",
-        "label": "Playwright Assertions",
-        "note": "浏览器测试与自动等待"
+        "url": "https://playwright.dev/docs/api/class-playwrightassertions",
+        "label": "Playwright · Assertions",
+        "note": "web-first 断言会重取目标并在期限内重试"
       },
       {
         "url": "https://jestjs.io/docs/expect",
-        "label": "Jest Expect",
-        "note": "测试替身与断言行为"
+        "label": "Jest · Expect",
+        "note": "matcher、Promise 断言与失败差异"
+      },
+      {
+        "url": "https://testing-library.com/docs/dom-testing-library/api-async/",
+        "label": "Testing Library · Async Methods",
+        "note": "findBy、waitFor 与消失等待"
+      },
+      {
+        "url": "https://docs.cypress.io/app/core-concepts/retry-ability",
+        "label": "Cypress · Retry-ability",
+        "note": "查询、断言和动作的重试边界"
+      },
+      {
+        "url": "https://playwright.dev/docs/test-timeouts",
+        "label": "Playwright · Timeouts",
+        "note": "expect timeout 与测试 timeout 的区别"
       }
     ]
   },

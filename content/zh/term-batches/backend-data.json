@@ -1389,13 +1389,53 @@
     "promptTitle": "审查一次测试替身", "prompt": "请列出这个替身控制的回执、记录的交互和它保护的业务风险；把非契约性的调用断言改为行为或协议断言，并说明应在哪一层补真实度。", "relatedSlugs": ["unit-test", "test-case", "assertion", "integration-test"]
   },
   {
-    "zh": "断言", "en": "Assertion", "slug": "assertion", "cat": "技术栈",
-    "say": "把实际结果和预期条件比较，不符合时让测试明确失败。", "aliases": ["Assert", "预期检查", "测试断言"],
-    "question": "测试代码跑完没有报错，就算验证成功了吗？", "definition": "断言是测试中的可判定条件，用来验证值、状态、输出或交互是否符合预期。", "boundary": "断言只验证写出的条件；遗漏关键条件时，测试通过也可能没有意义。",
-    "demoType": "state", "demoTitle": "保存操作怎样通过三项断言",
-    "demoSteps": [{"label":"执行保存","value":"POST /notes","note":"接口返回 201。"},{"label":"检查结果","value":"id 存在 · title 相同","note":"响应字段符合约定。"},{"label":"检查副作用","value":"数据库增加 1 行","note":"持久化结果与响应一致。"}],
-    "quizQuestion": "哪种断言更有价值？", "quizOptions": ["检查明确业务结果和副作用", "只检查代码没有崩溃", "永远断言 true"], "correctText": "关键结果和副作用能证明行为符合需求。", "wrongText": "没有崩溃或固定为 true 都无法验证业务正确性。",
-    "promptTitle": "改进测试断言", "prompt": "请审查这些测试的断言是否覆盖返回值、状态变化和副作用，并删除与实现细节过度绑定的检查。", "relatedSlugs": ["test-case", "unit-test", "mock"]
+    "zh": "断言",
+    "en": "Assertion",
+    "slug": "assertion",
+    "cat": "技术栈",
+    "say": "把实际值、状态或副作用和一条明确期待对上，失败时留下可行动差异。",
+    "aliases": [
+      "Assert",
+      "预期检查",
+      "测试断言"
+    ],
+    "question": "保存按钮最终会出现，为什么 sleep(1000) 还会误报失败？",
+    "definition": "断言把代码产生的实际值与明确期望比较；异步断言还要在有限期限内等待条件成立，并把差异交给执行者。",
+    "boundary": "断言只保护写下的条件；固定等待、内部变量或堆叠无关检查，可能让测试看似通过却没有保护用户真正关心的结果。",
+    "demoType": "comparison",
+    "demoTitle": "同一个保存回执，固定等待与条件等待的分岔",
+    "demoSteps": [
+      {
+        "label": "点击保存",
+        "value": "button.click() · 只执行 1 次",
+        "note": "动作改变系统状态，不能靠重试动作掩盖重复副作用。"
+      },
+      {
+        "label": "调慢回执",
+        "value": "响应 200ms → 1.5s",
+        "note": "业务最终仍是 visible，只改变事实何时抵达。"
+      },
+      {
+        "label": "比较两条观察",
+        "value": "sleep(1000) · toBeVisible()",
+        "note": "固定时刻可能先红，条件断言在期限内等到同一个目标状态。"
+      }
+    ],
+    "quizQuestion": "为什么 toBeVisible 比 sleep(1000) 更能说明保存是否完成？",
+    "quizOptions": [
+      "它在期限内等待目标状态并比较实际值",
+      "它把所有失败都忽略",
+      "它让接口永远在 200ms 返回"
+    ],
+    "correctText": "断言应该绑定可观察条件，并把等待上限写清楚。",
+    "wrongText": "固定时间点或无条件绿色都不能代替一次有证据的比较。",
+    "promptTitle": "把猜时间改成可观察断言",
+    "prompt": "请列出这个动作真正改变的状态、可观察的实际值、允许等待上限和失败差异；移除固定 sleep 与没有业务意义的内部变量检查。",
+    "relatedSlugs": [
+      "test-case",
+      "unit-test",
+      "mock"
+    ]
   },
   {
     "zh": "测试覆盖率", "en": "Code Coverage", "slug": "code-coverage", "cat": "技术栈",

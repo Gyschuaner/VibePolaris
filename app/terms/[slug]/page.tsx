@@ -87,6 +87,7 @@ import { SmokeTestTermPage } from "@/components/terms/smoke-test-pages/smoke-tes
 import { RegressionTestTermPage } from "@/components/terms/regression-test-pages/regression-test-page";
 import { TestCaseTermPage } from "@/components/terms/test-case-pages/test-case-page";
 import { MockTermPage } from "@/components/terms/mock-pages/mock-page";
+import { AssertionTermPage } from "@/components/terms/assertion-pages/assertion-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -221,6 +222,7 @@ const articleTermPages = {
   "regression-test": RegressionTestTermPage,
   "test-case": TestCaseTermPage,
   "mock": MockTermPage,
+  "assertion": AssertionTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
