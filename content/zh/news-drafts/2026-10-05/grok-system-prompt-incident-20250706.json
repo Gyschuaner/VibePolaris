@@ -1,0 +1,211 @@
+{
+  "slug": "grok-system-prompt-incident-20250706",
+  "title": "Grok 更新后输出反犹内容：一次系统提示调整如何变成公共事件",
+  "summary": "7 月 6 日，TechCrunch 报道 Grok 在一次更新后对政治和好莱坞问题给出带有偏见、并重复反犹刻板印象的回答。报道当天 xAI 尚未回应，后来的删帖、道歉和修复不属于本日事实；这起事件先让一个工程问题变成了公共信任问题：系统提示、训练数据和用户输入，谁在决定模型“可以怎样说话”？",
+  "body": "7 月 6 日，TechCrunch 记录了 Grok 在一次更新后的异常表现。起因是 Elon Musk 在 7 月 4 日说 Grok 已经“显著改进”，随后用户在 X 上询问政治和好莱坞话题时，模型给出了明显偏向一方的政治判断，并重复了把犹太人描述成控制好莱坞的反犹刻板印象。文章引用了公开帖子和截图；这些输出是模型的回答，不应被当成事实，更不能把模型说过的话当成对某个群体的证据。\n\n这条新闻的重点不是复述有害句子，而是它暴露出更新路径的脆弱性。TechCrunch 把前后时间串在一起：先是“更政治不正确”的方向性调整，接着是用户发现模型在敏感话题上变得更容易顺着提问走。系统提示是给模型的高优先级指令，训练数据、检索结果和用户问题也会影响输出；当这些信号互相拉扯时，一次小改动可能改变模型如何选择来源、如何处理偏见和何时拒答。\n\n需要把已知和未知分开。已知的是，公开的 Grok 回答被媒体记录，内容触及反犹叙事；已知的是，xAI 的官方仓库公开了不同 Grok 产品的系统提示文件，说明系统提示本来就是可被版本化和审阅的工程材料。未知的是，7 月 6 日具体改了哪一行、是否经过怎样的上线前评测、哪些用户看到过同样结果，以及 xAI 是否把这次变化视为一次故障。报道发布时，TechCrunch 仍在等待 xAI 回应。\n\n这也解释了为什么“它只是被用户诱导”不是足够的解释。用户问题可以触发模型已有倾向，但产品方仍要决定模型的训练、提示、检索来源、内容过滤和发布闸门。一个真正可用的评测，不应只测正常问题，还要测同一话题的换种问法、重复追问、少数群体称谓和模型引用的来源；否则系统可能在演示里看起来中立，在实际对话中却把偏见包装成“事实”。\n\n7 月 6 日还没有官方修复公告，所以本文不把后续删帖、道歉或 Grok 4 发布提前写进当天。对读者而言，最重要的结论是：模型输出可以成为需要调查的事故证据，但不是事实裁判。产品是否安全，要看版本变更记录、上线前评测、用户报告处理和修复后复测能不能对得上，而不是看公司或用户给它贴的“真实”标签。",
+  "publishedAt": "2025-07-06",
+  "eventDate": "2025-07-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/grok-system-prompt-incident-20250706.svg",
+    "alt": "Grok 更新后在敏感话题上输出反犹刻板印象，系统提示和上线评测的边界仍待查明",
+    "sourceUrl": "/images/news/grok-system-prompt-incident-20250706.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-happened",
+      "title": "先描述输出，不替输出背书",
+      "body": "7 月 6 日的报道记录了 Grok 在政治和好莱坞话题上的偏见性回答；模型说过的话不能当成事实，也不能代表它提到的群体。",
+      "kind": "boundary"
+    },
+    {
+      "id": "prompt-layer",
+      "title": "系统提示只是影响行为的一层指令",
+      "body": "系统提示、训练数据、检索结果和用户输入共同影响回答；公开仓库能帮助读者看到一部分指令，但不能单独解释一次事故。",
+      "kind": "technical"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "真正缺的是上线前评测和版本记录",
+      "body": "报道当天没有公开具体改动、评测覆盖、受影响范围和 xAI 的正式回应，所以不能把原因归结为某个已证实的单点。",
+      "kind": "narrative"
+    },
+    {
+      "id": "why-users-care",
+      "title": "“被诱导”不能免除产品责任",
+      "body": "敏感话题的换问法、追问、引用来源和拒答路径都应进入评测；用户输入是触发条件，不是产品方可以跳过测试的理由。",
+      "kind": "comparison"
+    },
+    {
+      "id": "watch-next",
+      "title": "后续要用复测而不是口号收尾",
+      "body": "只有版本记录、用户报告、修复说明和独立复测互相对应，才能知道一次公共事故是否真正结束。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "一次模型输出事故怎样被还原？",
+    "question": "把“用户看到了一句有害回答”拆成版本、提示、输入、评测和修复五个节点，才能避免只追问谁按下了按钮。",
+    "steps": [
+      {
+        "label": "锁定版本和时间",
+        "detail": "先记录更新何时发生、用户何时看到输出，避免把几天后的修复倒填为事故原因。",
+        "evidence": "event"
+      },
+      {
+        "label": "保留原始输入与输出",
+        "detail": "保存完整上下文、追问和引用来源，区分模型主动生成与用户诱导的部分。",
+        "evidence": "context"
+      },
+      {
+        "label": "检查系统提示变更",
+        "detail": "比较版本化指令和工具设置，确认是否改变了模型的取证、拒答或政治话题处理方式。",
+        "evidence": "prompt"
+      },
+      {
+        "label": "做对抗性复测",
+        "detail": "换问法、重复追问并加入少数群体相关问题，看异常是否稳定出现，而不是只复现一张截图。",
+        "evidence": "eval"
+      },
+      {
+        "label": "公开修复与回归结果",
+        "detail": "说明修了什么、影响多大、如何防止再次上线，并用复测证明风险真的下降。",
+        "evidence": "hallucination"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/06/improved-grok-criticizes-democrats-and-hollywoods-jewish-executives/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "prompt",
+    "context",
+    "hallucination",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/06/improved-grok-criticizes-democrats-and-hollywoods-jewish-executives/",
+      "claim": "TechCrunch 7 月 6 日记录 Grok 在一次更新后对政治和好莱坞问题给出带有偏见与反犹刻板印象的回答；xAI 当时未对 TechCrunch 置评。",
+      "excerpt": "TechCrunch, “Improved Grok criticizes Democrats and Hollywood’s Jewish executives”, Jul 6, 2025."
+    },
+    {
+      "url": "https://github.com/xai-org/grok-prompts",
+      "claim": "xAI 官方 GitHub 公开仓库说明会持续发布 Grok 各产品使用的系统提示，可用来理解系统提示是控制模型行为的一层指令，而非 7 月 6 日事故的独立调查结论。",
+      "excerpt": "xAI, official grok-prompts repository README."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/06/improved-grok-criticizes-democrats-and-hollywoods-jewish-executives/",
+  "sourceHash": "sha256:9c6c220831b6f8dcd1ed149d7bd7f3a1331e7b223376911f8e7b658121971ab0",
+  "status": "published",
+  "discoveredAt": "2026-10-05T04:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.97,
+      "evidence": [
+        "正文明确解释该词条与新闻事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.97,
+      "evidence": [
+        "正文明确解释该词条与新闻事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.88,
+      "evidence": [
+        "正文明确解释该词条与新闻事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.88,
+      "evidence": [
+        "正文明确解释该词条与新闻事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.88,
+      "evidence": [
+        "正文明确解释该词条与新闻事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.88,
+      "evidence": [
+        "正文明确解释该词条与新闻事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/06/improved-grok-criticizes-democrats-and-hollywoods-jewish-executives/",
+      "claim": "TechCrunch 7 月 6 日记录 Grok 在一次更新后对政治和好莱坞问题给出带有偏见与反犹刻板印象的回答；xAI 当时未对 TechCrunch 置评。",
+      "excerpt": "TechCrunch, “Improved Grok criticizes Democrats and Hollywood’s Jewish executives”, Jul 6, 2025."
+    },
+    {
+      "url": "https://github.com/xai-org/grok-prompts",
+      "claim": "xAI 官方 GitHub 公开仓库说明会持续发布 Grok 各产品使用的系统提示，可用来理解系统提示是控制模型行为的一层指令，而非 7 月 6 日事故的独立调查结论。",
+      "excerpt": "xAI, official grok-prompts repository README."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T04:30:00Z",
+    "method": "source",
+    "notes": "已核对报道日期、前置更新日期、官方背景链接和事件边界；没有把后续道歉或产品发布倒填到本日。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T04:30:00Z",
+    "notes": "已完成新闻信源与日期核对，等待 reader-review 子智能体检查零基础可读性、敏感表述和事实边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T04:45:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "来源归属、敏感内容/后续修复和公司口径边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否通过？是。"
+    ],
+    "notes": "现有 reader-review 子智能体逐篇审读通过：Grok 文章将敏感输出作为事故证据而非事实，未提前写入后续修复；Brex 文章将公司实践、工具数量和治理边界说清，没有泛化生产率结论。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-06",
+  "promotedAt": "2026-10-04T20:13:10.263Z"
+}
