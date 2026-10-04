@@ -23,7 +23,7 @@ export function E2eTestHero() {
   const mailDelivered = outcome === "complete" && scene.step >= 4;
   const final = scene.step === steps.length - 1;
   const failed = final && outcome === "mail-lost";
-  const orderStatus = scene.step >= 3 ? "paid" : scene.step >= 2 ? "pending" : "—";
+  const currentDetail = scene.step === 4 && outcome === "mail-lost" ? "页面已经 paid，但邮件沙箱仍是 0 封；验收要停在这个不变量。" : current.detail;
 
   return <figure ref={scene.ref} className={styles.e2eHero} data-step={scene.step} aria-label="端到端测试如何从浏览器入口走过订单、数据库、付款回调和邮件结果">
     <div className={styles.e2eHeroHeader}><span>一条订单旅程怎样留下跨层验收证据</span><strong>browser → system → invariant</strong></div>
@@ -60,7 +60,7 @@ export function E2eTestHero() {
       <div>{failed ? <WarningCircle size={16} aria-hidden="true" /> : <Database size={16} aria-hidden="true" />}<span><strong>{failed ? "失败位置" : "系统事实"}</strong><code>{failed ? "mail=0 · stop" : scene.step >= 4 ? `DB=paid · mail=${mailDelivered ? "1" : "0"}` : "尚未核对"}</code></span></div>
     </div>
     <div className={styles.e2eHeroMetrics}><div><span>测试入口</span><strong>真实浏览器</strong></div><div><span>隔离数据</span><strong>u-42 · order 42</strong></div><div><span>结论</span><strong>{failed ? "FAIL · mail" : final ? "PASS · 3 layers" : "进行中"}</strong></div></div>
-    <div className={styles.e2eHeroStatus} data-danger={failed} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {current.detail}</span></div>
+    <div className={styles.e2eHeroStatus} data-danger={failed || (scene.step === 4 && outcome === "mail-lost")} role="status"><current.Icon size={19} aria-hidden="true" /><span><strong>{current.title}</strong> · {currentDetail}</span></div>
     <figcaption>端到端测试不是替页面拍一张“成功”截图，而是让一条最重要的用户旅程穿过真实系统，再把用户看见的结果和系统留下的事实放在一起验收。</figcaption>
   </figure>;
 }
