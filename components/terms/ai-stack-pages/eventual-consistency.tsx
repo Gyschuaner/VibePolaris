@@ -26,13 +26,13 @@ export function EventualConsistencyTermPage() {
       <p>工作台里切换“读任一副本”和“同区强读”，再把步骤走到“立即读取”，你会看到差异不是文案颜色：一个允许读到 pending，一个要求这条读取路径确认最新提交值。产品要把这种差异翻译成用户能理解的体验，例如显示“正在同步”、保留刚提交的本地状态，或直接阻止关键动作继续。</p>
     </ArticleSection>
     <ArticleSection id="eventual-conflict" title="并发写入需要一条可解释的裁决线">
-      <p id="eventual-conflict" className="vp-citation-target">最终一致性只说明副本会靠拢，不会替业务决定“paid”和“cancelled”谁更有资格留下。AWS Global Tables 使用 last-writer-wins 处理并发更新，并明确提醒这是一个尽力而为的时间顺序裁决；如果业务需要“已发货不能被取消”这种规则，就不能只依赖默认合并。<Cite id="eventual-conflict" sources={eventualConsistencySources} /></p>
+      <p id="eventual-conflict-rule" className="vp-citation-target">最终一致性只说明副本会靠拢，不会替业务决定“paid”和“cancelled”谁更有资格留下。AWS Global Tables 使用 last-writer-wins 处理并发更新，并明确提醒这是一个尽力而为的时间顺序裁决；如果业务需要“已发货不能被取消”这种规则，就不能只依赖默认合并。<Cite id="eventual-conflict-rule" sources={eventualConsistencySources} /></p>
       <p id="eventual-coordination" className="vp-citation-target">Azure 的分布式系统设计指南建议减少不必要的协调，把能异步完成的工作拆开，并在无法原子完成时使用补偿动作。换句话说，系统可以先接受各地写入，再用版本、事件、人工审核或补偿交易把业务规则补回来；但这条补救路径必须被设计、记录和监控。<Cite id="eventual-coordination" sources={eventualConsistencySources} /></p>
       <p>动画里的 last writer wins 只是一个故意简单的示例：它能让两个副本最终变成同一个值，却不代表它理解订单生命周期。真正的冲突规则可能是版本号更高者胜出、库存只能递减、取消必须经过审核，或者干脆把冲突送给人工处理。没有规则的“最终相同”，只是把问题藏到更晚。</p>
     </ArticleSection>
     <ArticleSection id="eventual-boundary" title="一致性选择最后是产品约束">
       <p id="eventual-query-shape" className="vp-citation-target">一致性不只由数据库名字决定，也跟查询形状有关。Google Cloud Datastore 把 key lookup、ancestor query 与全局 query 区分开来：同一个系统里，不同读取方式就可能拥有不同的强弱保证。设计接口时要把“哪类读允许旧、哪类读必须新”写进契约。<Cite id="eventual-query-shape" sources={eventualConsistencySources} /></p>
-      <p id="eventual-boundary" className="vp-citation-target">Cosmos DB 把 eventual consistency 适合的场景举成计数、点赞和社交动态等：短暂旧值通常比每次读取都等待最强保证更划算。反过来，余额、权限、订单状态等关键事实需要更严格的读取、事务或应用层保护。选择不是“哪个一致性最好”，而是“哪种旧读和冲突后果能被这个产品承担”。<Cite id="eventual-boundary" sources={eventualConsistencySources} /></p>
+      <p id="eventual-boundary-choice" className="vp-citation-target">Cosmos DB 把 eventual consistency 适合的场景举成计数、点赞和社交动态等：短暂旧值通常比每次读取都等待最强保证更划算。反过来，余额、权限、订单状态等关键事实需要更严格的读取、事务或应用层保护。选择不是“哪个一致性最好”，而是“哪种旧读和冲突后果能被这个产品承担”。<Cite id="eventual-boundary-choice" sources={eventualConsistencySources} /></p>
       <p><strong>带走三句检查：</strong>写入成功后，用户下一次读到的保证是什么；副本落后时，界面怎样解释而不是制造“保存失败”的错觉；两个地方同时写入时，谁有权裁决、怎么留下证据。最终一致性不是把错误藏起来的借口，而是把等待、冲突和成本摊开后，换取更低延迟与更高可用的一种工程选择。</p>
     </ArticleSection>
   </Article>;

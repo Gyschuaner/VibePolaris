@@ -1844,5 +1844,27 @@
       "backpressure",
       "rate-limiting"
     ]
+  },
+  {
+    "slug": "eventual-consistency",
+    "mechanism": "最终一致性允许一个副本先接住写入，其他副本通过异步复制随后追上；在没有新更新后，读取结果逐步收敛到最后一次写入。读取路径还要明确旧读、强读或 read-your-writes 的保证，并为并发写入规定版本、顺序或人工裁决。",
+    "misconception": "最终一致不等于立刻一致、固定秒数内一致或自动解决业务冲突；读到旧值不直接证明写入失败，副本最终相同也不证明 paid 与 cancelled 的业务规则正确。",
+    "demoSignature": "订单 A17 从写入者经主副本进入异步读副本；五帧展示一处写成功、复制延迟、旧读、并发冲突和规则收敛，工作台切换任一副本/同区强读与单地/两地写入，让读值、成本和冲突责任同时变化。",
+    "sourceUrls": [
+      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html",
+      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables_HowItWorks.html",
+      "https://docs.cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore?hl=en",
+      "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels",
+      "https://learn.microsoft.com/en-us/azure/architecture/guide/design-principles/minimize-coordination"
+    ],
+    "rewriteRisk": "正文要把写入提交、异步复制、旧读、强读适用范围和并发冲突分开叙述，说明没有固定收敛秒数且需要应用层规则；避免把 stale read 写成数据丢失、把 last-writer-wins 写成业务正确，或把所有查询都归为同一种一致性。",
+    "nearDuplicates": [
+      "database",
+      "replication",
+      "cache",
+      "queue",
+      "idempotency",
+      "retry"
+    ]
   }
 ]
