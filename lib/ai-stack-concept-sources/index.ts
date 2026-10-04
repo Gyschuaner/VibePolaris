@@ -40,3 +40,4 @@ export { temperatureSources } from "./temperature";
 export { tokenizationSources } from "./tokenization";
 export { promptInjectionSources } from "./prompt-injection";
 export { compilerSources } from "./compiler";
+export { interpreterSources } from "./interpreter";
