@@ -106,6 +106,7 @@ const scenarios = [
 function MimeTypeHero() {
   const scene = useScene(frames.length);
   const current = frames[scene.step];
+  const ResultIcon = current.result === "SyntaxError" ? XCircle : CheckCircle;
   return <figure ref={scene.ref} className={styles.mimeTypeHero} data-step={scene.step} aria-label="MIME 类型从 Content-Type 声明到解析结果的过程">
     <div className={styles.mimeTypeHeroTop}><span>同一份数据 · 先看声明，再选解释器</span><strong>{current.result}</strong></div>
     <div className={styles.mimeTypeStage}>
@@ -128,7 +129,7 @@ function MimeTypeHero() {
       </div>
       <ArrowRight className={styles.mimeTypeArrow} size={22} aria-hidden="true" />
       <div className={styles.mimeTypeResultCard} data-active={current.active.includes("result")}>
-        <div className={styles.mimeTypeCardHeading}><CheckCircle size={21} aria-hidden="true" /><span>接收端看到</span></div>
+        <div className={styles.mimeTypeCardHeading}><ResultIcon size={21} aria-hidden="true" /><span>接收端看到</span></div>
         <strong>{current.result}</strong>
         <small>{current.evidence}</small>
       </div>
