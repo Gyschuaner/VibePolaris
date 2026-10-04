@@ -52,6 +52,7 @@
 | 045 | 推送、合并、变基、合并冲突、反向提交、暂存改动、拉取请求、代码评审、持续集成、持续交付 | VBP-065 · [259–268 文案更新与生产发布记录](VBP-065-content-refresh-259-268.md) · 十条逐条验收、dev 集成及生产统一发布 |
 | 054 | 防火墙、IP 地址、网络端口、数据包、URL、主机名、DNS 记录、DNS 解析器、缓存控制、MIME 类型 | VBP-074 · [网络基础与 HTTP 边界词条更新及生产发布记录](VBP-074-content-refresh-20261004.md) · 十条逐条验收、dev 集成及生产统一发布 |
 | 055 | TCP、UDP、TLS 握手、响应体、响应头、Cookie、CORS、WebSocket、API 密钥、基于角色的访问控制 | VBP-075 · [传输与 HTTP 应用边界词条更新及生产发布记录](VBP-075-content-refresh-20261004.md) · 十条逐条验收、dev 集成及生产统一发布 |
+| 056 | Harness、提示词、上下文、工具调用、记忆、MCP、上下文窗口、智能体循环、智能体记忆、工作记忆 | VBP-076 · [AI Agent 核心词条一致性复核与补正记录](VBP-076-content-refresh-20261005.md) · 十条逐条复核、来源台账对齐、dev 集成及生产统一发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
@@ -84,7 +85,7 @@
 
 | slug | 名称 | 分类 | 覆盖 / review |
 | --- | --- | --- | --- |
-| agent-harness | 智能体运行框架 | AI·Agent | 基准 · 待最终复核 |
+| agent-harness | 智能体运行框架 | AI·Agent | VBP-076 · 生产已发布 |
 | component | 组件 | 前端 | 002 · 本地验收及 review 通过 |
 | state | 状态 | 前端 | 002 · 本地验收及 review 通过 |
 | responsive | 响应式布局 | 前端 | 036 · 生产已发布 |
@@ -101,14 +102,14 @@
 | rest | REST | 后端 | 007 · 本地验收及 review 通过 |
 | webhook | Webhook | 后端 | 016 · 本地验收及 review 通过 |
 | llm | 大模型 | AI·Agent | 001 · 本地验收及 review 通过 |
-| prompt | 提示词 | AI·Agent | 基准 · 待最终复核 |
-| context | 上下文 | AI·Agent | 基准 · 待最终复核 |
+| prompt | 提示词 | AI·Agent | VBP-076 · 生产已发布 |
+| context | 上下文 | AI·Agent | VBP-076 · 生产已发布 |
 | token | Token | AI·Agent | 001 · 本地验收及 review 通过 |
 | agent | 智能体 | AI·Agent | 001 · 本地验收及 review 通过 |
-| tools | 工具调用 | AI·Agent | 基准 · 待最终复核 |
-| memory | 记忆 | AI·Agent | 基准 · 待最终复核 |
+| tools | 工具调用 | AI·Agent | VBP-076 · 生产已发布 |
+| memory | 记忆 | AI·Agent | VBP-076 · 生产已发布 |
 | rag | RAG | AI·Agent | 020 · 本地验收及 review 通过 |
-| mcp | MCP | AI·Agent | 基准 · 待最终复核 |
+| mcp | MCP | AI·Agent | VBP-076 · 生产已发布 |
 | framework | 框架与库 | 技术栈 | 036 · 生产已发布 |
 | ssg-ssr | 静态站点与服务端渲染 | 技术栈 | 036 · 生产已发布 |
 | deploy | 部署与托管 | 技术栈 | 036 · 生产已发布 |
@@ -306,7 +307,7 @@
 | few-shot-prompting | 少样本提示 | AI·Agent | 043 · 生产已发布 |
 | zero-shot-prompting | 零样本提示 | AI·Agent | 043 · 生产已发布 |
 | temperature | 温度 | AI·Agent | 043 · 生产已发布 |
-| context-window | 上下文窗口 | AI·Agent | 基准 · 待最终复核 |
+| context-window | 上下文窗口 | AI·Agent | VBP-076 · 生产已发布 |
 | tokenization | 分词 | AI·Agent | 043 · 生产已发布 |
 | hallucination | 幻觉 | AI·Agent | 023 · 本地验收及 review 通过 |
 | grounding | 基于证据回答 | AI·Agent | 023 · 本地验收及 review 通过 |
@@ -316,7 +317,7 @@
 | function-calling | 函数调用 | AI·Agent | 026 · 本地验收及 review 通过 |
 | tool-choice | 工具选择 | AI·Agent | 041 · 生产已发布 |
 | tool-result | 工具结果 | AI·Agent | 041 · 生产已发布 |
-| agent-loop | 智能体循环 | AI·Agent | 基准 · 待最终复核 |
+| agent-loop | 智能体循环 | AI·Agent | VBP-076 · 生产已发布 |
 | plan-and-execute | 规划与执行 | AI·Agent | 041 · 生产已发布 |
 | agent-orchestration | 智能体编排 | AI·Agent | 041 · 生产已发布 |
 | handoff | 交接 | AI·Agent | 041 · 生产已发布 |
@@ -339,8 +340,8 @@
 | streaming-output | 流式输出 | AI·Agent | 026 · 本地验收及 review 通过 |
 | model-routing | 模型路由 | AI·Agent | 025 · 本地验收及 review 通过 |
 | model-fallback | 备用模型 | AI·Agent | 025 · 本地验收及 review 通过 |
-| agent-memory | 智能体记忆 | AI·Agent | 待处理 |
-| working-memory | 工作记忆 | AI·Agent | 待处理 |
+| agent-memory | 智能体记忆 | AI·Agent | VBP-076 · 生产已发布 |
+| working-memory | 工作记忆 | AI·Agent | VBP-076 · 生产已发布 |
 | prompt-injection | 提示词注入 | AI·Agent | 033 · 本地验收及 review 通过 |
 | execution-sandbox | 执行沙箱 | AI·Agent | 基准 · 待最终复核 |
 | compiler | 编译器 | 技术栈 | 033 · 本地验收及 review 通过 |
