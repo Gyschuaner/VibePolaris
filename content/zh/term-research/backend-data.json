@@ -107,7 +107,25 @@
       "assertion"
     ]
   },
-  {"slug":"integration-test","mechanism":"集成测试验证多个组件或系统边界协作时的数据格式、协议、事务和错误处理，测试范围可从数据库适配器到跨服务契约。","misconception":"集成测试不等于必须启动完整系统，也不是单元测试数量更多；核心是让真实边界参与并发现接口假设不一致。","demoSignature":"6帧｜对象：order service、真实 PostgreSQL、假的支付服务、事务表｜交互：发送同一订单两次并让支付返回 500｜变化：SQL 真正写入/回滚，fake 只控制外部故障｜结果：订单表仍 0 行、outbox 0 行、收到一次错误响应。","sourceUrls":["https://glossary.istqb.org/en_US/search","https://playwright.dev/docs/api-testing"],"rewriteRisk":"中：要明确哪些依赖真实、哪些替身，避免与 E2E 模糊。","nearDuplicates":["unit-test","e2e-test","mock"]},
+    {
+    "slug": "integration-test",
+    "mechanism": "集成测试让两个或更多组件在受控测试宿主中交换真实协议、数据或状态，并以响应、数据库行、消息或事务结果共同判定协作是否正确。",
+    "misconception": "集成测试不等于必须启动完整系统，也不是单元测试数量更多；它要让真实边界参与，同时明确哪些外部依赖只是受控替身。",
+    "demoSignature": "5帧｜对象：HTTP client、Order Service、真实 PostgreSQL、支付故障替身、orders/outbox 观察区｜交互：切换真实数据库/Mock 仓储和支付成功/500｜变化：真实事务在成功时提交、失败时回滚，Mock 分支只显示调用协议｜结果：response 与真实 rows 同时给出可证明或证据不足的结论。",
+    "sourceUrls": [
+      "https://martinfowler.com/bliki/IntegrationTest.html",
+      "https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0",
+      "https://playwright.dev/docs/api-testing",
+      "https://playwright.dev/docs/api/class-apiresponseassertions",
+      "https://testing.googleblog.com/2021/06/how-much-testing-is-enough.html"
+    ],
+    "rewriteRisk": "中：要明确真实组件和受控替身的边界，展示响应与持久化状态的双重证据，避免把集成测试写成 API 状态码检查或完整 E2E。",
+    "nearDuplicates": [
+      "unit-test",
+      "e2e-test",
+      "mock"
+    ]
+  },
   {"slug":"e2e-test","mechanism":"端到端测试从用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径和系统级结果；覆盖面高但定位和维护成本也高。","misconception":"E2E 不是把所有测试都搬到浏览器，也不能替代单元与集成测试；依赖网络、数据和第三方会增加不稳定。","demoSignature":"7帧｜对象：浏览器、前端、API、数据库、邮件沙箱、订单状态时间轴｜交互：点击下单并完成付款回调｜变化：UI 从 pending 到 paid，数据库与邮件状态逐层产生｜结果：订单 id=42、DB=paid、邮件 1 封；任一层失败时停在首个不变量破坏处。","sourceUrls":["https://playwright.dev/docs/intro","https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需以真实跨层结果定义完成，不要只展示自动点按钮。","nearDuplicates":["integration-test","smoke-test","test-case"]},
   {"slug":"smoke-test","mechanism":"冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件，通常在部署后先运行。","misconception":"冒烟测试不是随便点几下，也不证明系统质量完整；它只回答关键路径是否明显失效。","demoSignature":"4帧｜对象：部署 commit abc123、health、login、create-order、payment 四个检查灯｜交互：点击 deploy 后自动执行并在 payment 注入 502｜变化：前三项绿、第四项红，后续 120 个回归用例保持未启动｜结果：3/4 通过，构建标记 rejected，节省 28 分钟。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"低：边界清楚，但要防止把‘快速’误写成‘覆盖全面’。","nearDuplicates":["e2e-test","regression-test","server"]},
   {"slug":"regression-test","mechanism":"回归测试在代码、配置或依赖变更后重新验证未应改变的既有行为；选择范围应依据变更影响、风险和历史缺陷。","misconception":"回归不是每次盲跑全部测试，也不是只重测修复点；过窄会漏影响，过宽会拖慢反馈。","demoSignature":"6帧｜对象：修改 auth middleware 的代码节点、调用图、32 个测试、风险热力图｜交互：点击变更文件并调风险阈值｜变化：直接测试 4 个、受影响集成测试 7 个、安全回归 3 个被选中｜结果：14/32 入选，捕获一个旧权限用例失败。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需让‘选择哪些旧测试’成为演示核心，不和普通测试重复。","nearDuplicates":["smoke-test","code-coverage","test-case"]},

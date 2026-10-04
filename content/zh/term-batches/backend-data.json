@@ -1213,14 +1213,55 @@
       "test-case"
     ]
   },
-  {
-    "zh": "集成测试", "en": "Integration Test", "slug": "integration-test", "cat": "技术栈",
-    "say": "验证多个模块或真实依赖连接后能否按约定协作。", "aliases": ["Integration Test", "模块集成测试", "接口集成测试"],
-    "question": "代码单测都通过，为什么连上数据库后仍然报错？", "definition": "集成测试检查组件之间的接口、数据格式、配置和副作用。", "boundary": "集成测试范围通常大于单元测试，但不一定覆盖用户完整操作和生产环境。",
-    "demoType": "flow", "demoTitle": "创建订单怎样跨三个模块验证",
-    "demoSteps": [{"label":"调用接口","value":"POST /orders","note":"测试发送真实 JSON 请求。"},{"label":"写入数据库","value":"orders +1","note":"服务执行校验和持久化。"},{"label":"读取确认","value":"GET /orders/908","note":"返回字段与数据库记录一致。"}],
-    "quizQuestion": "哪项更适合集成测试？", "quizOptions": ["接口写入数据库后能被读取", "纯函数 2+2 的结果", "设计稿字体大小"], "correctText": "这里验证接口和数据库协作。", "wrongText": "纯函数适合单元测试，字体检查属于视觉验收。",
-    "promptTitle": "设计集成测试", "prompt": "请列出这条业务链涉及的真实依赖、准备数据、调用步骤、结果校验和清理方式。", "relatedSlugs": ["unit-test", "e2e-test", "api-testing", "mock"]
+    {
+    "zh": "集成测试",
+    "en": "Integration Test",
+    "slug": "integration-test",
+    "cat": "技术栈",
+    "say": "把两个或更多真实组件接回一小段现场，检查它们交换请求、数据和状态时是否仍然守约。",
+    "aliases": [
+      "Integration Test",
+      "模块集成测试",
+      "接口集成测试"
+    ],
+    "question": "代码单测都通过，为什么一连上数据库，订单还是会在事务边界上摔倒？",
+    "definition": "集成测试让多个组件或系统边界共同参与，验证协议、数据格式、配置、事务和副作用是否彼此兼容。",
+    "boundary": "它可以只覆盖一小段真实协作，也可以扩大到多个服务；但它不等于完整用户旅程，也不能替代端到端测试。",
+    "demoType": "flow",
+    "demoTitle": "订单请求怎样穿过服务、数据库和支付边界",
+    "demoSteps": [
+      {
+        "label": "准备现场",
+        "value": "test host + real DB",
+        "note": "测试宿主和 schema 从已知状态开始，支付故障由测试控制。"
+      },
+      {
+        "label": "发出请求",
+        "value": "POST /orders",
+        "note": "请求经过路由、校验、事务和持久化，而不是直呼一个函数。"
+      },
+      {
+        "label": "核对证据",
+        "value": "502 + orders 0",
+        "note": "响应与真实数据库状态同时成立，才能证明这次回滚。"
+      }
+    ],
+    "quizQuestion": "哪项更适合集成测试？",
+    "quizOptions": [
+      "接口写入真实数据库后能否按预期提交或回滚",
+      "纯函数 2+2 的结果",
+      "设计稿字体大小"
+    ],
+    "correctText": "这里验证接口、数据库和事务边界怎样协作。",
+    "wrongText": "纯函数适合单元测试，视觉检查和完整用户旅程属于其他测试层。",
+    "promptTitle": "设计一条有真实证据的集成测试",
+    "prompt": "请列出真实参与的组件、测试宿主和种子数据，写出请求、成功与失败响应、持久化状态以及清理方式；明确哪些外部依赖只是受控替身。",
+    "relatedSlugs": [
+      "unit-test",
+      "e2e-test",
+      "api-testing",
+      "mock"
+    ]
   },
   {
     "zh": "端到端测试", "en": "End-to-End Test", "slug": "e2e-test", "cat": "技术栈",

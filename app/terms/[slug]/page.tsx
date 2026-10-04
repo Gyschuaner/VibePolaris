@@ -81,6 +81,7 @@ import { CacheControlTermPage } from "@/components/terms/backend-boundary-pages/
 import { MimeTypeTermPage } from "@/components/terms/backend-boundary-pages/mime-type";
 import { FeatureFlagTermPage } from "@/components/terms/feature-flag-pages/feature-flag-page";
 import { UnitTestTermPage } from "@/components/terms/unit-test-pages/unit-test-page";
+import { IntegrationTestTermPage } from "@/components/terms/integration-test-pages/integration-test-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -209,6 +210,7 @@ const articleTermPages = {
   "mime-type": MimeTypeTermPage,
   "feature-flag": FeatureFlagTermPage,
   "unit-test": UnitTestTermPage,
+  "integration-test": IntegrationTestTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

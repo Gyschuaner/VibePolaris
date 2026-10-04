@@ -15883,13 +15883,13 @@
       }
     ]
   },
-  {
+    {
     "slug": "integration-test",
-    "lead": "订单接口返回 500 时，怎样证明数据库真的回滚了，而不是 Mock 说它回滚了？",
+    "lead": "订单接口返回 500 时，怎样证明数据库真的回滚了，而不是 Mock 只告诉你它回滚了？",
     "definition": "集成测试让多个真实组件或系统边界共同参与，验证协议、数据格式、事务和错误处理是否彼此兼容。",
-    "boundary": "集成测试不要求启动整套产品；关键是明确哪些边界使用真实实现，哪些外部依赖仍由替身控制。",
+    "boundary": "集成测试不要求启动整套产品；关键是说清哪些边界使用真实实现，哪些外部依赖只负责稳定地制造故障。",
     "sceneKind": "assembly",
-    "sceneTitle": "真实数据库与支付替身共同验证回滚",
+    "sceneTitle": "真实数据库与受控支付故障共同验证回滚",
     "actionLabel": "提交订单或注入支付失败",
     "actors": [
       {
@@ -15969,8 +15969,8 @@
     ],
     "frames": [
       {
-        "label": "测试环境只替换外部支付",
-        "note": "订单服务和 PostgreSQL 使用真实代码与事务，支付边界可稳定制造故障。",
+        "label": "测试宿主接上真实数据库",
+        "note": "订单服务和 PostgreSQL 使用真实代码与事务，支付边界暂时由替身控制。",
         "activeIds": [
           "order-service",
           "postgres-test",
@@ -15989,11 +15989,39 @@
         "activeEdgeIds": [
           "service-db",
           "service-payment"
-        ]
+        ],
+        "metric": {
+          "label": "真实边界",
+          "value": "service + DB"
+        }
       },
       {
-        "label": "请求先写订单再调用支付",
-        "note": "未提交事务内可见一条订单和一条 outbox 记录。",
+        "label": "请求穿过 HTTP 入口",
+        "note": "客户端发送 POST /orders，路由、校验和序列化都进入测试范围。",
+        "activeIds": [
+          "order-request",
+          "order-service"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "orders-table",
+          "integration-result"
+        ],
+        "values": {
+          "order-request": "POST /orders",
+          "order-service": "request accepted"
+        },
+        "activeEdgeIds": [
+          "request-service"
+        ],
+        "metric": {
+          "label": "请求阶段",
+          "value": "HTTP"
+        }
+      },
+      {
+        "label": "服务打开真实事务",
+        "note": "订单服务写入订单和 outbox，再调用支付边界；数据库里的中间状态可以被观察。",
         "activeIds": [
           "order-request",
           "order-service",
@@ -16013,11 +16041,15 @@
           "request-service",
           "service-db",
           "service-payment"
-        ]
+        ],
+        "metric": {
+          "label": "事务状态",
+          "value": "open"
+        }
       },
       {
-        "label": "支付 500 触发真实回滚",
-        "note": "服务返回错误，PostgreSQL 撤销同一事务内两次写入。",
+        "label": "支付 500 触发回滚",
+        "note": "外部故障被控制，服务返回错误并撤销同一事务内的两次写入。",
         "activeIds": [
           "payment-fake",
           "order-service",
@@ -16037,11 +16069,15 @@
         "activeEdgeIds": [
           "service-payment",
           "service-db"
-        ]
+        ],
+        "metric": {
+          "label": "事务结果",
+          "value": "rollback"
+        }
       },
       {
-        "label": "数据库查询给出最终证据",
-        "note": "响应为一次 502，orders 与 outbox 都保持 0 行。",
+        "label": "两侧证据同时对上",
+        "note": "响应为 502，orders 与 outbox 都保持 0 行；这比“服务返回错误”多了一层真实状态证据。",
         "activeIds": [
           "orders-table",
           "integration-result"
@@ -16093,14 +16129,29 @@
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://martinfowler.com/bliki/IntegrationTest.html",
+        "label": "Martin Fowler · Integration Test",
+        "note": "窄/宽集成范围与真实边界"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0",
+        "label": "Microsoft Learn · Integration tests in ASP.NET Core",
+        "note": "测试宿主、客户端、请求和基础设施"
       },
       {
         "url": "https://playwright.dev/docs/api-testing",
-        "label": "Playwright API Testing",
-        "note": "浏览器测试与自动等待"
+        "label": "Playwright · API testing",
+        "note": "通过真实 HTTP API 发送请求"
+      },
+      {
+        "url": "https://playwright.dev/docs/api/class-apiresponseassertions",
+        "label": "Playwright · APIResponseAssertions",
+        "note": "响应状态断言"
+      },
+      {
+        "url": "https://testing.googleblog.com/2021/06/how-much-testing-is-enough.html",
+        "label": "Google Testing Blog · How Much Testing is Enough?",
+        "note": "单元、集成和端到端范围"
       }
     ]
   },
