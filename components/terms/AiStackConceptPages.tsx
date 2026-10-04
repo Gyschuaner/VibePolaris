@@ -46,6 +46,7 @@ import { DevServerTermPage } from "./ai-stack-pages/dev-server";
 import { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
 import { HmrTermPage } from "./ai-stack-pages/hmr";
 import { DependencyTermPage } from "./ai-stack-pages/dependency";
+import { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -94,6 +95,7 @@ export { DevServerTermPage } from "./ai-stack-pages/dev-server";
 export { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
 export { HmrTermPage } from "./ai-stack-pages/hmr";
 export { DependencyTermPage } from "./ai-stack-pages/dependency";
+export { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -144,4 +146,5 @@ export const aiStackArticlePages = {
   "hot-reload": HotReloadTermPage,
   hmr: HmrTermPage,
   dependency: DependencyTermPage,
+  "semantic-versioning": SemanticVersioningTermPage,
 } as const;
