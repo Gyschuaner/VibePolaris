@@ -9508,8 +9508,8 @@
         ]
       },
       {
-        "label": "按需块请求失败",
-        "note": "主包已经生成并可用；运行时请求 dist/lazy.js 失败，失败发生在按需加载边界，不等于整个打包失败。",
+        "label": "请求按需块",
+        "note": "主包已经可用；用户打开对应功能后，浏览器刚发出 dist/lazy.js 请求，响应还没有回来。",
         "activeIds": [
           "dynamic",
           "lazy"
@@ -9522,7 +9522,28 @@
         "mutedIds": [],
         "values": {
           "main": "入口 + 5 · 可用",
-          "lazy": "请求失败"
+          "lazy": "请求中"
+        },
+        "activeEdgeIds": [
+          "d-l"
+        ]
+      },
+      {
+        "label": "按需块请求失败",
+        "note": "主包已经生成并可用；运行时请求 dist/lazy.js 返回 404，失败发生在按需加载边界，不等于整个打包失败。",
+        "activeIds": [
+          "dynamic",
+          "lazy"
+        ],
+        "doneIds": [
+          "entry",
+          "static",
+          "main"
+        ],
+        "mutedIds": [],
+        "values": {
+          "main": "入口 + 5 · 可用",
+          "lazy": "lazy.js · 404"
         },
         "activeEdgeIds": [
           "d-l"

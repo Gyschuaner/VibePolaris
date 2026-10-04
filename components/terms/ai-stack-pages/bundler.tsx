@@ -19,7 +19,7 @@ export function BundlerTermPage() {
     </ArticleSection>
     <ArticleSection id="bundler-split" title="为什么会有 lazy.js">
       <p id="bundler-split-text" className="vp-citation-target">静态导入表示模块属于当前加载路径，动态导入返回一个在运行时解析的 Promise。打包器可以据此把动态模块拆成独立块，等用户打开对应功能时，浏览器才请求那个文件。<Cite id="bundler-split-text" sources={bundlerSources}/></p>
-      <p>下面的演示固定使用入口、5 个静态依赖和 1 个动态依赖：先生成主包，再模拟按需功能请求 `lazy.js`。最后把动态导入改成静态导入，观察它如何并入主包；切换“按需块请求失败”则能看到主包和运行时请求是两条边界。</p>
+      <p>把一次真实的点击拆开看：入口和 5 个静态依赖先进入主包，用户打开按需功能时才请求 `lazy.js`。最后把动态导入改成静态导入，观察它如何并入主包；切换“按需块 404”，你会看到首屏仍能用，缺的是运行时那一块文件。</p>
       <BundlerLesson />
       <p id="bundler-dynamic" className="vp-citation-target">代码分割改变的是产物和请求时机，不是业务功能的正确性。动态块仍然需要可访问的 URL、正确的部署路径和浏览器能执行的格式；其中任一项不对，主包生成成功也不能保证按需功能加载成功。<Cite id="bundler-dynamic" sources={bundlerSources}/></p>
     </ArticleSection>
