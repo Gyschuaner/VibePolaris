@@ -297,3 +297,43 @@
 .corsLabControls { margin-top: 13px; }
 @media (max-width: 700px) { .corsHero, .corsLab { padding: 15px; } .corsStage, .corsLabBoard { grid-template-columns: 1fr; } .corsStage > svg, .corsLabBoard > svg { justify-self: center; transform: rotate(90deg); } .corsTop, .corsLabHead { flex-direction: column; gap: 8px; } .corsControls { justify-content: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .corsHero *, .corsLab * { transition: none !important; animation: none !important; } }
+
+.wsHero { composes: panel; }
+.wsTop, .wsEvidence, .wsLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.wsTop span, .wsTop small, .wsLabHead span { color: var(--muted); font-size: .78rem; }
+.wsTop strong, .wsLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.wsStage { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.45fr) minmax(0, .8fr); gap: 15px; align-items: center; margin: 25px 0 16px; }
+.wsEndpoint, .wsWire { min-height: 154px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: 14px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.wsEndpoint svg, .wsWire svg { color: var(--accent); }
+.wsEndpoint span, .wsWire span, .wsWire small { color: var(--muted); font-size: .75rem; }
+.wsEndpoint strong, .wsWire code, .wsState strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.wsEndpoint small { color: var(--muted); font-size: .68rem; }
+.wsWire { gap: 12px; }
+.wsState { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 999px; background: color-mix(in srgb, var(--tint) 56%, var(--surface)); }
+.wsState span { font-size: .7rem; }
+.wsState[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); }
+.wsState[data-failed="true"] strong { color: #8a542f; }
+.wsFrame { display: flex; align-items: center; gap: 9px; padding: 13px 16px; border-radius: 12px; background: color-mix(in srgb, var(--tint) 47%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); }
+.wsEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.wsEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.wsEvidence p { margin: 0; }
+.wsEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.wsTimeline, .wsControls, .wsLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.wsTimeline { margin-top: 15px; }
+.wsTimeline button, .wsControls button, .wsLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.wsTimeline button[aria-pressed="true"], .wsLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.wsControls { justify-content: flex-end; margin-top: 10px; }
+.wsLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.wsLabHead strong { display: block; margin-top: 5px; }
+.wsLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.wsLabNode { min-height: 98px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.wsLabNode svg { color: var(--accent); }
+.wsLabNode span { color: var(--muted); font-size: .76rem; }
+.wsLabNode code, .wsLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.wsLabResult { padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.wsLabResult[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); color: #8a542f; }
+.wsLabResult p { margin: 0; }
+.wsLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.wsLabControls { margin-top: 13px; }
+@media (max-width: 700px) { .wsHero, .wsLab { padding: 15px; } .wsStage, .wsLabBoard { grid-template-columns: 1fr; } .wsStage > svg, .wsLabBoard > svg { justify-self: center; transform: rotate(90deg); } .wsTop, .wsLabHead { flex-direction: column; gap: 8px; } .wsControls { justify-content: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .wsHero *, .wsLab * { transition: none !important; animation: none !important; } }

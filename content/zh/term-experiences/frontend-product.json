@@ -8355,93 +8355,113 @@
   },
   {
     "slug": "websocket",
-    "lead": "聊天页面怎样在没有反复刷新时立即收到新消息？",
-    "definition": "客户端先通过 HTTP Upgrade 握手，随后在持久 TCP 连接上交换带边界的双向帧，并经历 CONNECTING/OPEN/CLOSING/CLOSED。",
-    "boundary": "WebSocket 不自动提供断线重连、消息确认和业务顺序；连接保持也不代表消息必达。",
+    "lead": "聊天页面怎样不用反复刷新，也能立即收到服务器的新消息？",
+    "definition": "本页把 WebSocket 拆成六步：HTTP Upgrade、OPEN 双向帧、消息重组、连接关闭、应用退避和带游标的补偿重连。",
+    "boundary": "WebSocket 是长连接通道，不自动提供消息确认、重连、去重、顺序或授权；这些规则要由应用协议写清楚。",
     "sceneKind": "state-machine",
-    "sceneTitle": "长连接断开后如何退避重连并补回消息",
-    "actionLabel": "切换网络连接",
+    "sceneTitle": "一条实时通道断开后如何恢复消息",
+    "actionLabel": "推进连接状态",
     "actors": [
       {
-        "id": "client",
+        "id": "ws-client",
         "label": "浏览器客户端",
         "detail": "lastEventId=18",
         "icon": "browser",
         "group": "客户端"
       },
       {
-        "id": "socket",
+        "id": "ws-socket",
         "label": "WebSocket",
-        "detail": "CONNECTING",
+        "detail": "CONNECTING / OPEN / CLOSED",
         "icon": "network",
         "group": "连接状态"
       },
       {
-        "id": "server",
+        "id": "ws-server",
         "label": "消息服务器",
         "detail": "保存序号 19、20",
         "icon": "server",
         "group": "服务端"
       },
       {
-        "id": "backoff",
-        "label": "重连计时",
+        "id": "ws-backoff",
+        "label": "退避计时",
         "detail": "1s → 2s → 4s",
         "icon": "clock",
         "group": "恢复"
       },
       {
-        "id": "messages",
+        "id": "ws-messages",
         "label": "消息列表",
         "detail": "按序显示",
         "icon": "message",
         "group": "结果"
+      },
+      {
+        "id": "ws-gap",
+        "label": "遗漏窗口",
+        "detail": "等待补发",
+        "icon": "package",
+        "group": "边界"
       }
     ],
     "edges": [
       {
         "id": "client-socket",
-        "from": "client",
-        "to": "socket",
-        "label": "建立连接"
+        "from": "ws-client",
+        "to": "ws-socket",
+        "label": "Upgrade / 连接"
       },
       {
         "id": "socket-server",
-        "from": "socket",
-        "to": "server",
-        "label": "双向通道"
+        "from": "ws-socket",
+        "to": "ws-server",
+        "label": "双向帧"
       },
       {
         "id": "socket-backoff",
-        "from": "socket",
-        "to": "backoff",
-        "label": "断开后计时"
+        "from": "ws-socket",
+        "to": "ws-backoff",
+        "label": "关闭后计时"
       },
       {
         "id": "server-messages",
-        "from": "server",
-        "to": "messages",
-        "label": "发送消息"
+        "from": "ws-server",
+        "to": "ws-messages",
+        "label": "发送事件"
+      },
+      {
+        "id": "server-gap",
+        "from": "ws-server",
+        "to": "ws-gap",
+        "label": "保留遗漏"
+      },
+      {
+        "id": "gap-messages",
+        "from": "ws-gap",
+        "to": "ws-messages",
+        "label": "游标补发"
       }
     ],
     "frames": [
       {
-        "label": "连接从建立到开放",
-        "note": "客户端发起握手，状态从 CONNECTING 变为 OPEN，双向通道可用。",
+        "label": "HTTP Upgrade",
+        "note": "客户端提出 Upgrade，服务器返回 101；业务消息还没有出发。",
         "activeIds": [
-          "client",
-          "socket",
-          "server"
+          "ws-client",
+          "ws-socket",
+          "ws-server"
         ],
         "doneIds": [
-          "client"
+          "ws-client"
         ],
         "mutedIds": [
-          "backoff",
-          "messages"
+          "ws-backoff",
+          "ws-messages",
+          "ws-gap"
         ],
         "values": {
-          "socket": "OPEN"
+          "ws-socket": "CONNECTING"
         },
         "activeEdgeIds": [
           "client-socket",
@@ -8449,21 +8469,50 @@
         ]
       },
       {
-        "label": "消息即时到达",
-        "note": "服务器发送序号 18，列表追加一条，lastEventId 同步更新。",
+        "label": "通道开放",
+        "note": "101 握手完成，状态进入 OPEN；连接先等第一帧，应用还没有收到业务事件。",
         "activeIds": [
-          "server",
-          "socket",
-          "messages",
-          "client"
+          "ws-client",
+          "ws-socket",
+          "ws-server"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "ws-socket"
+        ],
         "mutedIds": [
-          "backoff"
+          "ws-backoff",
+          "ws-messages",
+          "ws-gap"
         ],
         "values": {
-          "messages": "#18",
-          "client": "lastEventId=18"
+          "ws-socket": "OPEN",
+          "ws-messages": "waiting first frame"
+        },
+        "activeEdgeIds": [
+          "client-socket",
+          "socket-server"
+        ]
+      },
+      {
+        "label": "帧双向流动",
+        "note": "OPEN 通道让服务器主动推送 #18，客户端列表追加一条。",
+        "activeIds": [
+          "ws-client",
+          "ws-socket",
+          "ws-server",
+          "ws-messages"
+        ],
+        "doneIds": [
+          "ws-messages"
+        ],
+        "mutedIds": [
+          "ws-backoff",
+          "ws-gap"
+        ],
+        "values": {
+          "ws-socket": "OPEN",
+          "ws-messages": "#18",
+          "ws-client": "lastEventId=18"
         },
         "activeEdgeIds": [
           "socket-server",
@@ -8471,45 +8520,51 @@
         ]
       },
       {
-        "label": "网络断开",
-        "note": "连接进入 CLOSED，服务器随后产生的 19、20 暂时没有到达客户端。",
+        "label": "连接断开",
+        "note": "网络断开后进入 CLOSED，服务器产生的 #19、#20 暂时没有到达客户端。",
         "activeIds": [
-          "socket",
-          "server",
-          "backoff"
+          "ws-socket",
+          "ws-server",
+          "ws-gap",
+          "ws-backoff"
         ],
         "doneIds": [
-          "client"
+          "ws-gap"
         ],
         "mutedIds": [
-          "messages"
+          "ws-client",
+          "ws-messages"
         ],
         "values": {
-          "socket": "CLOSED",
-          "backoff": "1 s",
-          "server": "待补 #19 #20"
+          "ws-socket": "CLOSED",
+          "ws-gap": "#19 · #20 waiting",
+          "ws-backoff": "1s"
         },
         "activeEdgeIds": [
-          "socket-backoff"
+          "socket-backoff",
+          "server-gap"
         ]
       },
       {
-        "label": "退避后重连",
-        "note": "第一次重连失败，计时从 1s 增到 2s；下一次成功后发送 lastEventId=18。",
+        "label": "退避重连",
+        "note": "第一次重连失败，计时从 1s 增到 2s；成功后带着 lastEventId=18 回到服务器。",
         "activeIds": [
-          "client",
-          "socket",
-          "server",
-          "backoff"
+          "ws-client",
+          "ws-socket",
+          "ws-server",
+          "ws-backoff"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "ws-backoff"
+        ],
         "mutedIds": [
-          "messages"
+          "ws-messages",
+          "ws-gap"
         ],
         "values": {
-          "socket": "OPEN",
-          "backoff": "reset",
-          "client": "resume after 18"
+          "ws-socket": "OPEN",
+          "ws-client": "resume after 18",
+          "ws-backoff": "reset"
         },
         "activeEdgeIds": [
           "client-socket",
@@ -8517,61 +8572,78 @@
         ]
       },
       {
-        "label": "补回遗漏消息",
-        "note": "服务器按序补发 19、20，列表没有缺口，lastEventId 到 20。",
+        "label": "恢复缺口",
+        "note": "服务器按序补发 19、20，客户端去重后把列表接回 #18。",
         "activeIds": [
-          "server",
-          "messages",
-          "client"
+          "ws-server",
+          "ws-gap",
+          "ws-messages",
+          "ws-client"
         ],
         "doneIds": [
-          "socket",
-          "backoff"
+          "ws-messages",
+          "ws-gap"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "ws-socket",
+          "ws-backoff"
+        ],
         "values": {
-          "messages": "#18 · #19 · #20",
-          "client": "lastEventId=20"
+          "ws-gap": "replay #19 #20",
+          "ws-messages": "#18 · #19 · #20",
+          "ws-client": "lastEventId=20"
         },
         "activeEdgeIds": [
+          "server-gap",
+          "gap-messages",
           "server-messages"
         ]
       }
     ],
-    "insight": "WebSocket 提供长连接通道，断线重连、退避和消息补偿仍要由应用协议明确处理。",
+    "insight": "WebSocket 让消息实时抵达，却不替应用保管断线期间的历史；游标、退避和补发才把通道接成可恢复的业务流。",
     "quiz": {
-      "question": "WebSocket 连接断开后，应用通常还需自行处理什么？",
+      "question": "WebSocket 连接关闭后，哪项通常需要应用自己定义？",
       "options": [
         {
-          "label": "重连与消息恢复",
+          "label": "重连、退避和遗漏消息恢复",
           "correct": true
         },
         {
-          "label": "CSS 选择器优先级",
+          "label": "浏览器自动补发所有帧",
           "correct": false
         },
         {
-          "label": "HTML 标题层级",
+          "label": "CSS 重新选择服务器",
           "correct": false
         }
       ],
-      "success": "实时应用要定义重连、退避和遗漏消息的恢复方式。",
-      "retry": "样式与文档结构不能恢复网络连接。"
+      "success": "长连接结束后，恢复责任回到客户端和服务器的应用协议。",
+      "retry": "通道状态和业务消息恢复不是同一件事。"
     },
     "prompt": {
-      "title": "补全实时连接的异常处理",
-      "text": "请为下面 WebSocket 客户端补充连接状态、指数退避重连、重复消息去重和页面离开时关闭连接，并说明断线期间的用户提示。"
+      "title": "检查一条实时连接",
+      "text": "请记录 Upgrade/101、连接状态、帧方向、关闭原因、重连退避、游标、去重和补发窗口，判断缺口发生在网络还是应用协议。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc6455",
-        "label": "RFC Editor",
-        "note": "协议定义与报文语义"
+        "label": "RFC 6455 · WebSocket Protocol",
+        "note": "Upgrade、帧、状态和关闭"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/Writing_WebSocket_client_applications",
+        "label": "MDN · Writing WebSocket client applications",
+        "note": "浏览器客户端、消息和重连责任"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · WebSocket",
+        "note": "readyState、send 与 bufferedAmount"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8441",
+        "label": "RFC 8441 · Bootstrapping WebSockets with HTTP/2",
+        "note": "HTTP/2 extended CONNECT 建连方式"
       }
     ]
   },

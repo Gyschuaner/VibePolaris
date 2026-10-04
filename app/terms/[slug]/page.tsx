@@ -66,6 +66,7 @@ import { ResponseBodyTermPage } from "@/components/terms/transport-http-pages/re
 import { ResponseHeaderTermPage } from "@/components/terms/transport-http-pages/response-header";
 import { CookieTermPage } from "@/components/terms/transport-http-pages/cookie";
 import { CorsTermPage } from "@/components/terms/transport-http-pages/cors";
+import { WebSocketTermPage } from "@/components/terms/transport-http-pages/websocket";
 import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/firewall";
 import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
 import { NetworkPortTermPage } from "@/components/terms/backend-boundary-pages/network-port";
@@ -182,6 +183,7 @@ const articleTermPages = {
   "response-header": ResponseHeaderTermPage,
   cookie: CookieTermPage,
   cors: CorsTermPage,
+  websocket: WebSocketTermPage,
   firewall: FirewallTermPage,
   "ip-address": IpAddressTermPage,
   "network-port": NetworkPortTermPage,
