@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle, ClipboardText, Funnel, Trash } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
+import { useResetOnSceneStart } from "../AgentConceptLessonShared";
 import styles from "../AiStackCoreConcepts.module.css";
 
 const labels = ["写入任务快照", "排除超预算候选", "留下两项", "交付并清理"];
@@ -17,6 +18,7 @@ const candidates = [
 export function WorkingMemoryLesson() {
   const scene = useScene(labels.length);
   const [inventoryReturned, setInventoryReturned] = useState(false);
+  useResetOnSceneStart(scene, () => setInventoryReturned(false));
   const kept = scene.step >= 2 && inventoryReturned ? [0, 2] : [];
   const removed = [...(scene.step >= 1 ? [1, 3] : []), ...(scene.step >= 2 && inventoryReturned ? [4] : [])];
   const count = scene.step === 0 ? 5 : scene.step === 1 ? 3 : inventoryReturned ? 2 : 3;
