@@ -53,7 +53,7 @@ export function CodeCoverageHero() {
       <div className={styles.coverageMatrix} data-active={scene.step === 0 || scene.step === 2 || scene.step === 3}>
         <div className={styles.coverageMatrixHeader}><div className={styles.coverageEyebrow}><GridFour size={17} aria-hidden="true" /><span>路径地图 · 2 × 2</span></div><strong>{seen.length} / 4<br />组合已执行</strong></div>
         <div className={styles.coverageAxes}><span>已验证</span><span>未验证</span></div><div className={styles.coverageGrid}>{vectors.map(vector => <div key={vector.key} className={styles.coverageCell} data-seen={seen.includes(vector.key)} data-bug={vector.key === "TF" && hasBug}><strong>{vector.key}</strong><span>{vector.age} 岁 · {vector.verified}</span><span>{seen.includes(vector.key) ? vector.key === "TF" && hasBug ? "got allow" : vector.result : "未跑"}</span></div>)}</div>
-        <div className={styles.coverageMatrixNote}>{hasBug ? <Bug size={17} aria-hidden="true" /> : <ShieldWarning size={17} aria-hidden="true" />}<span>{hasBug ? "TF 本应 deny，却得到 allow；覆盖率只把这条路带到你面前，断言才把它判红。" : scene.step < 2 ? "每一格代表一个可能到达的条件组合。" : "空白格不是失败结果，而是尚未取得证据。"}</span></div>
+        <div className={styles.coverageMatrixNote}>{hasBug ? <Bug size={17} aria-hidden="true" /> : <ShieldWarning size={17} aria-hidden="true" />}<span>{hasBug ? "TF 本应 deny，却得到 allow；覆盖率只把这条路带到你面前，断言才把它判红。" : scene.step < 2 ? "每一格代表一个可能到达的条件组合。" : complete ? "四格都有执行记录；下一步读断言和业务风险。" : "空白格不是失败结果，而是尚未取得证据。"}</span></div>
       </div>
       <div className={styles.coverageMeters} data-active={scene.step === 1 || scene.step === 4 || complete} data-danger={hasBug}>
         <div className={styles.coverageEyebrow}><ChartLine size={17} aria-hidden="true" /><span>报告 · 三种镜头</span></div>
