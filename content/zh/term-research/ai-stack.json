@@ -844,7 +844,7 @@
     "slug": "bundler",
     "mechanism": "打包器从入口沿静态和动态导入建立模块依赖图，把入口与静态依赖放入主包，把动态依赖拆成用户需要时再加载的块。",
     "misconception": "打包不等于压缩、转译或单文件输出；代码分割可以生成主包和多个按需块，入口与动态导入决定加载边界。",
-    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。",
+    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。失败边界：按需块请求失败时，主包仍可用，问题落在运行时请求路径而非主包生成。",
     "sourceUrls": [
       "https://rollupjs.org/introduction/",
       "https://webpack.js.org/concepts/",

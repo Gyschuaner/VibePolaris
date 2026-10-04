@@ -43,3 +43,4 @@ export { compilerSources } from "./compiler";
 export { interpreterSources } from "./interpreter";
 export { transpilerSources } from "./transpiler";
 export { buildToolSources } from "./build-tool";
+export { bundlerSources } from "./bundler";
