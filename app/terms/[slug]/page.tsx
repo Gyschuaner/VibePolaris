@@ -58,7 +58,7 @@ import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, Bo
 import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage, PromptInjectionTermPage, CompilerTermPage, InterpreterTermPage, TranspilerTermPage, BuildToolTermPage, BundlerTermPage, DevServerTermPage, HotReloadTermPage, HmrTermPage, DependencyTermPage, SemanticVersioningTermPage } from '@/components/terms/AiStackConceptPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
-import { AcidTermPage, ColumnTermPage, NosqlTermPage, RbacTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
+import { AcidTermPage, ColumnTermPage, NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
 import { TcpTermPage } from "@/components/terms/transport-http-pages/tcp";
 import { UdpTermPage } from "@/components/terms/transport-http-pages/udp";
 import { TlsHandshakeTermPage } from "@/components/terms/transport-http-pages/tls-handshake";
@@ -68,6 +68,7 @@ import { CookieTermPage } from "@/components/terms/transport-http-pages/cookie";
 import { CorsTermPage } from "@/components/terms/transport-http-pages/cors";
 import { WebSocketTermPage } from "@/components/terms/transport-http-pages/websocket";
 import { ApiKeyTermPage as ApiKeyLifecycleTermPage } from "@/components/terms/transport-http-pages/api-key";
+import { RbacRoleTermPage } from "@/components/terms/transport-http-pages/rbac";
 import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/firewall";
 import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
 import { NetworkPortTermPage } from "@/components/terms/backend-boundary-pages/network-port";
@@ -170,7 +171,7 @@ const articleTermPages = {
   scope: ScopeTermPage,
   roadmap: RoadmapTermPage,
   priority: PriorityTermPage,
-  rbac: RbacTermPage,
+  rbac: RbacRoleTermPage,
   "relational-database": RelationalDatabaseTermPage,
   nosql: NosqlTermPage,
   row: RowTermPage,

@@ -3700,66 +3700,80 @@
   },
   {
     "slug": "rbac",
-    "lead": "给用户加了 finance 角色以后，他到底继承了哪些权限？",
-    "definition": "RBAC 先把权限赋给角色，再把角色赋给用户；有效权限来自用户所持角色的组合，并可受角色层级和职责分离约束。",
-    "boundary": "RBAC 适合相对稳定的职能权限，不擅长单独表达对象归属、时间、设备或租户条件。那些条件通常需要属性或关系策略。",
+    "lead": "阿青拿到 viewer 角色以后，为什么仍可能读不到发票 9？",
+    "definition": "本页把一次 RBAC 决策拆成六步：角色为空、分配 viewer、角色权限通过、对象归属拒绝、加入 finance、撤掉 viewer。",
+    "boundary": "RBAC 组织稳定的职能权限；对象、租户、时间和设备条件要在角色之外继续判断。",
     "sceneKind": "tree",
-    "sceneTitle": "用户通过角色继承权限",
-    "actionLabel": "调整角色关系",
+    "sceneTitle": "一项权限从角色关系走到对象检查",
+    "actionLabel": "推进授权决策",
     "actors": [
       {
-        "id": "rbac-user",
-        "label": "员工 7",
-        "detail": "当前 viewer",
+        "id": "rbac-subject",
+        "label": "阿青",
+        "detail": "subject-7",
         "icon": "user",
-        "group": "用户"
+        "group": "主体"
       },
       {
         "id": "viewer-role",
         "label": "viewer",
-        "detail": "基础查看",
+        "detail": "invoice.read",
         "icon": "component",
         "group": "角色"
       },
       {
         "id": "finance-role",
         "label": "finance",
-        "detail": "财务操作",
+        "detail": "invoice.approve",
         "icon": "component",
         "group": "角色"
       },
       {
         "id": "read-perm",
         "label": "invoice.read",
-        "detail": "读取发票",
+        "detail": "读取动作",
         "icon": "search",
         "group": "权限"
       },
       {
-        "id": "refund-perm",
-        "label": "invoice.refund",
-        "detail": "退款",
+        "id": "approve-perm",
+        "label": "invoice.approve",
+        "detail": "审批动作",
         "icon": "gear",
         "group": "权限"
       },
       {
-        "id": "owner-rule",
-        "label": "owner 条件",
-        "detail": "仅自己的对象",
+        "id": "invoice-7",
+        "label": "发票 7",
+        "detail": "owner=阿青",
+        "icon": "file",
+        "group": "对象"
+      },
+      {
+        "id": "invoice-9",
+        "label": "发票 9",
+        "detail": "owner=小林",
+        "icon": "file",
+        "group": "对象"
+      },
+      {
+        "id": "policy-check",
+        "label": "对象范围",
+        "detail": "tenant + owner",
         "icon": "shield",
-        "group": "非 RBAC 条件"
+        "group": "决策"
       }
     ],
     "edges": [
       {
-        "id": "user-viewer",
-        "from": "rbac-user",
+        "id": "subject-viewer",
+        "from": "rbac-subject",
         "to": "viewer-role",
-        "label": "持有角色"
+        "label": "拥有角色"
       },
       {
-        "id": "user-finance",
-        "from": "rbac-user",
+        "id": "subject-finance",
+        "from": "rbac-subject",
         "to": "finance-role",
         "label": "新增角色"
       },
@@ -3767,133 +3781,243 @@
         "id": "viewer-read",
         "from": "viewer-role",
         "to": "read-perm",
-        "label": "包含权限"
+        "label": "带来权限"
       },
       {
-        "id": "finance-read",
+        "id": "finance-approve",
         "from": "finance-role",
-        "to": "read-perm",
-        "label": "包含权限"
+        "to": "approve-perm",
+        "label": "带来权限"
       },
       {
-        "id": "finance-refund",
-        "from": "finance-role",
-        "to": "refund-perm",
-        "label": "包含权限"
+        "id": "read-object",
+        "from": "read-perm",
+        "to": "policy-check",
+        "label": "进入对象检查"
+      },
+      {
+        "id": "object-7",
+        "from": "invoice-7",
+        "to": "policy-check",
+        "label": "owner=阿青"
+      },
+      {
+        "id": "object-9",
+        "from": "invoice-9",
+        "to": "policy-check",
+        "label": "owner=小林"
       }
     ],
     "frames": [
       {
-        "label": "viewer 只继承读取",
-        "note": "用户通过 viewer 角色得到 invoice.read，没有退款权限。",
+        "label": "角色为空",
+        "note": "阿青尚未拥有角色，invoice.read 没有授权来源，请求直接拒绝。",
         "activeIds": [
-          "rbac-user",
-          "viewer-role",
-          "read-perm"
-        ],
-        "doneIds": [
-          "read-perm"
-        ],
-        "mutedIds": [
-          "finance-role",
-          "refund-perm",
-          "owner-rule"
-        ],
-        "values": {
-          "rbac-user": "effective={read}",
-          "refund-perm": "DENY"
-        },
-        "activeEdgeIds": [
-          "user-viewer",
-          "viewer-read"
-        ]
-      },
-      {
-        "label": "finance 扩大权限集合",
-        "note": "新增 finance 后，有效权限是两个角色权限的并集。",
-        "activeIds": [
-          "rbac-user",
-          "finance-role",
-          "read-perm",
-          "refund-perm"
-        ],
-        "doneIds": [
-          "finance-role"
-        ],
-        "mutedIds": [
-          "owner-rule"
-        ],
-        "values": {
-          "rbac-user": "effective={read,refund}",
-          "refund-perm": "PERMIT"
-        },
-        "activeEdgeIds": [
-          "user-viewer",
-          "user-finance",
-          "viewer-read",
-          "finance-read",
-          "finance-refund"
-        ],
-        "metric": {
-          "label": "有效权限",
-          "value": "2"
-        }
-      },
-      {
-        "label": "对象归属无法放进角色树",
-        "note": "仅允许处理自己的发票依赖用户与对象关系，不是再增加一个通用角色就能稳定表达。",
-        "activeIds": [
-          "owner-rule",
-          "rbac-user"
+          "rbac-subject",
+          "policy-check",
+          "invoice-7"
         ],
         "doneIds": [],
         "mutedIds": [
           "viewer-role",
           "finance-role",
           "read-perm",
-          "refund-perm"
+          "approve-perm",
+          "invoice-9"
         ],
         "values": {
-          "owner-rule": "需要 ReBAC/ABAC",
-          "rbac-user": "角色信息不足"
+          "rbac-subject": "roles=∅",
+          "policy-check": "403 · no role"
         },
         "activeEdgeIds": []
+      },
+      {
+        "label": "分配 viewer",
+        "note": "把 viewer 分给阿青，角色关系带来 invoice.read。",
+        "activeIds": [
+          "rbac-subject",
+          "viewer-role",
+          "read-perm"
+        ],
+        "doneIds": [
+          "viewer-role"
+        ],
+        "mutedIds": [
+          "finance-role",
+          "approve-perm",
+          "invoice-7",
+          "invoice-9",
+          "policy-check"
+        ],
+        "values": {
+          "rbac-subject": "roles={viewer}",
+          "read-perm": "effective"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "viewer-read"
+        ]
+      },
+      {
+        "label": "角色门通过",
+        "note": "GET invoice:7 的动作与 invoice.read 匹配，下一步才检查具体对象。",
+        "activeIds": [
+          "rbac-subject",
+          "viewer-role",
+          "read-perm",
+          "policy-check",
+          "invoice-7"
+        ],
+        "doneIds": [
+          "read-perm"
+        ],
+        "mutedIds": [
+          "finance-role",
+          "approve-perm",
+          "invoice-9"
+        ],
+        "values": {
+          "read-perm": "MATCH",
+          "policy-check": "waiting · object"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "viewer-read",
+          "read-object",
+          "object-7"
+        ]
+      },
+      {
+        "label": "对象归属不符",
+        "note": "读取发票 9 时角色仍匹配，但 owner=小林，阿青不在对象范围内。",
+        "activeIds": [
+          "rbac-subject",
+          "viewer-role",
+          "read-perm",
+          "policy-check",
+          "invoice-9"
+        ],
+        "doneIds": [
+          "read-perm"
+        ],
+        "mutedIds": [
+          "finance-role",
+          "approve-perm",
+          "invoice-7"
+        ],
+        "values": {
+          "read-perm": "MATCH",
+          "policy-check": "403 · owner mismatch"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "viewer-read",
+          "read-object",
+          "object-9"
+        ]
+      },
+      {
+        "label": "加入 finance",
+        "note": "新增 finance 后，阿青多了 invoice.approve；两组角色权限可以同时生效。",
+        "activeIds": [
+          "rbac-subject",
+          "viewer-role",
+          "finance-role",
+          "read-perm",
+          "approve-perm"
+        ],
+        "doneIds": [
+          "viewer-role",
+          "finance-role"
+        ],
+        "mutedIds": [
+          "invoice-7",
+          "invoice-9",
+          "policy-check"
+        ],
+        "values": {
+          "rbac-subject": "roles={viewer,finance}",
+          "approve-perm": "effective"
+        },
+        "activeEdgeIds": [
+          "subject-viewer",
+          "subject-finance",
+          "viewer-read",
+          "finance-approve"
+        ]
+      },
+      {
+        "label": "撤掉 viewer",
+        "note": "撤掉 viewer 后，finance 仍可审批，但 invoice.read 的授权来源消失。",
+        "activeIds": [
+          "rbac-subject",
+          "finance-role",
+          "read-perm",
+          "policy-check"
+        ],
+        "doneIds": [
+          "finance-role"
+        ],
+        "mutedIds": [
+          "viewer-role",
+          "approve-perm",
+          "invoice-7",
+          "invoice-9"
+        ],
+        "values": {
+          "rbac-subject": "roles={finance}",
+          "read-perm": "403 · no permission"
+        },
+        "activeEdgeIds": [
+          "subject-finance",
+          "finance-approve"
+        ]
       }
     ],
-    "insight": "角色适合复用职能权限；当规则依赖具体对象和上下文时，应把条件放到更合适的授权模型。",
+    "insight": "角色决定动作权限从哪里来；对象范围决定这项权限能落到哪一条记录。",
     "quiz": {
-      "question": "规则是‘只能编辑自己创建的文章’，仅靠 RBAC 是否自然？",
+      "question": "阿青有 viewer 角色，读取发票 9 时最先要补哪项判断？",
       "options": [
         {
-          "label": "不自然，它依赖用户与对象的关系",
+          "label": "发票 9 的对象归属和租户范围",
           "correct": true
         },
         {
-          "label": "自然，给每篇文章创建一个角色即可",
+          "label": "把 viewer 自动升级成 admin",
           "correct": false
         },
         {
-          "label": "不需要授权，只隐藏编辑按钮",
+          "label": "只看前端按钮是否隐藏",
           "correct": false
         }
       ],
-      "success": "对象归属属于关系条件，硬塞进角色容易造成角色膨胀。",
-      "retry": "角色描述职能，‘自己的对象’描述主体与对象之间的关系。"
+      "success": "角色匹配之后仍要检查对象范围。",
+      "retry": "把角色、动作和对象条件分开看。"
     },
     "prompt": {
-      "title": "整理 RBAC 角色与权限",
-      "text": "请列出用户—角色—权限映射、角色继承、互斥约束和角色数量，并标出哪些规则依赖对象属性或关系。"
+      "title": "审查一条 RBAC 授权",
+      "text": "记录用户当前角色、角色带来的权限、请求动作、对象归属、租户范围和拒绝证据，检查撤销角色后旧权限是否立即失效。"
     },
     "sources": [
       {
-        "url": "https://csrc.nist.gov/projects/role-based-access-control",
-        "label": "NIST · RBAC",
-        "note": "安全要求与风险边界"
+        "url": "https://csrc.nist.gov/Projects/Role-Based-Access-Control",
+        "label": "NIST · Role Based Access Control",
+        "note": "角色、权限、层级与约束"
+      },
+      {
+        "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+        "label": "NIST · SP 800-162",
+        "note": "属性条件与 RBAC 边界"
       },
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
         "label": "OWASP · Authorization",
-        "note": "攻击面与防护检查"
+        "note": "默认拒绝、对象授权与最小权限"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview",
+        "label": "Microsoft Learn · RBAC",
+        "note": "角色与资源范围"
       }
     ]
   },

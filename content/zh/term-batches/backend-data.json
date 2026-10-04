@@ -324,22 +324,53 @@
     "relatedSlugs": ["auth", "rbac", "least-privilege", "session"]
   },
   {
-    "zh": "基于角色的访问控制", "en": "Role-Based Access Control", "slug": "rbac", "cat": "后端",
-    "say": "把权限分配给角色，再让用户拥有一个或多个角色。",
-    "aliases": ["RBAC", "角色权限", "角色访问控制"],
-    "question": "几十个员工的权限需要逐个人配置吗？",
-    "definition": "RBAC 通过用户、角色和权限之间的关系管理访问控制。",
-    "boundary": "RBAC 适合稳定的岗位权限；依赖资源属性和上下文的复杂规则可能需要其他模型。",
-    "demoType": "hierarchy", "demoTitle": "用户怎样通过角色获得权限",
-    "demoSteps": [
-      {"label": "分配角色", "value": "阿青 → viewer", "note": "用户先获得角色，角色带来 invoice:read。"},
-      {"label": "发起读取", "value": "GET /invoices/7", "note": "角色权限匹配后，系统进入对象检查。"},
-      {"label": "补充对象判断", "value": "owner=阿青 · 允许", "note": "角色能读发票这一类资源，还需判断这张发票属于谁。"}
+    "zh": "基于角色的访问控制",
+    "en": "Role-Based Access Control",
+    "slug": "rbac",
+    "cat": "后端",
+    "say": "把权限放进角色，再让用户通过角色获得可审计的授权。",
+    "aliases": [
+      "RBAC",
+      "角色权限",
+      "角色访问控制"
     ],
-    "quizQuestion": "RBAC 中权限通常先分配给谁？", "quizOptions": ["角色", "每次 HTTP 响应", "数据库索引"],
-    "correctText": "用户通过角色间接获得权限。", "wrongText": "响应和索引不是 RBAC 的授权主体。",
-    "promptTitle": "设计角色权限", "prompt": "请把这些业务操作整理为权限点和角色矩阵，检查是否存在权限过大或职责冲突。",
-    "relatedSlugs": ["authorization", "least-privilege", "auth"]
+    "question": "阿青有 viewer 角色，就能读取所有发票吗？",
+    "definition": "RBAC 把权限分配给角色，再把角色分配给用户；角色给出动作权限，服务端仍要检查具体对象和范围。",
+    "boundary": "角色适合稳定的职能授权；对象归属、租户、时间和设备条件不能只靠角色名表达。",
+    "demoType": "hierarchy",
+    "demoTitle": "权限怎样沿角色关系走到一次请求",
+    "demoSteps": [
+      {
+        "label": "分配角色",
+        "value": "阿青 → viewer",
+        "note": "viewer 带来 invoice.read，角色关系是权限的来源。"
+      },
+      {
+        "label": "检查对象",
+        "value": "GET invoice:7 · owner=阿青",
+        "note": "角色允许读取发票这一类资源，还要确认这张发票属于谁。"
+      },
+      {
+        "label": "撤销或越界",
+        "value": "403 · role/object mismatch",
+        "note": "移除 viewer 或访问小林的发票，服务端都应拒绝。"
+      }
+    ],
+    "quizQuestion": "用户拥有 invoice.read，是否就能读取所有用户的发票？",
+    "quizOptions": [
+      "不能，还要检查对象和租户范围",
+      "能，权限名已经包含所有范围",
+      "只要前端隐藏按钮就可以"
+    ],
+    "correctText": "角色给出动作权限，具体对象仍要经过服务端范围检查。",
+    "wrongText": "角色权限不会自动把一类资源的所有实例都交给用户，前端也不是授权边界。",
+    "promptTitle": "画出用户到对象的授权链",
+    "prompt": "请列出主体、角色、权限、对象范围和默认拒绝规则，标出每项权限来自哪个角色，并准备一个角色通过但对象不匹配的反例。",
+    "relatedSlugs": [
+      "authorization",
+      "least-privilege",
+      "api-key"
+    ]
   },
   {
     "zh": "API 密钥",

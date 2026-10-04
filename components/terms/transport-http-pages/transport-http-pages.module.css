@@ -374,3 +374,62 @@
 .keyLabControls { margin-top: 13px; }
 @media (max-width: 700px) { .keyHero, .keyLab { padding: 15px; } .keyStage, .keyLabBoard { grid-template-columns: 1fr; } .keyStage > svg, .keyLabBoard > svg { justify-self: center; transform: rotate(90deg); } .keyTop, .keyLabHead { flex-direction: column; gap: 8px; } .keyControls { justify-content: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .keyHero *, .keyLab * { transition: none !important; animation: none !important; } }
+
+
+.rbacHero { composes: panel; }
+.rbacTop, .rbacEvidence, .rbacLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.rbacTop span, .rbacTop small, .rbacLabHead span { color: var(--muted); font-size: .78rem; }
+.rbacTop strong, .rbacLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.rbacStage { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-areas: "subject first roles" "permission second decision"; gap: 12px; align-items: center; margin: 25px 0 16px; }
+.rbacStage > .rbacSubject { grid-area: subject; }
+.rbacStage > .rbacConnector:nth-child(2) { grid-area: first; }
+.rbacStage > .rbacRoles { grid-area: roles; }
+.rbacStage > .rbacConnector:nth-child(4) { grid-area: second; }
+.rbacStage > .rbacPermission { grid-area: permission; }
+.rbacStage > .rbacConnector:nth-child(6) { display: none; }
+.rbacStage > .rbacDecision { grid-area: decision; }
+.rbacSubject, .rbacRoles, .rbacPermission, .rbacDecision { min-height: 154px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: 14px 11px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.rbacSubject > svg, .rbacRoles > svg, .rbacPermission > svg, .rbacDecision > svg { color: var(--accent); }
+.rbacSubject span, .rbacRoles span, .rbacPermission span, .rbacDecision span { color: var(--muted); font-size: .72rem; }
+.rbacSubject strong, .rbacRoles b, .rbacPermission strong, .rbacDecision strong { color: var(--accent-text); font-size: .78rem; overflow-wrap: anywhere; }
+.rbacRoles > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+.rbacRoles b { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--tint) 55%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent); font: .72rem ui-monospace, monospace; }
+.rbacConnector { display: grid; justify-items: center; gap: 3px; color: var(--accent-text); }
+.rbacConnector small { color: var(--muted); font-size: .63rem; }
+.rbacDecision[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 40%, var(--surface)); }
+.rbacDecision[data-failed="true"] svg, .rbacDecision[data-failed="true"] strong { color: #8a542f; }
+.rbacEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.rbacEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.rbacEvidence p { margin: 0; }
+.rbacEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.rbacTimeline, .rbacControls, .rbacLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.rbacTimeline { margin-top: 15px; }
+.rbacTimeline button, .rbacControls button, .rbacLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.rbacTimeline button[aria-pressed="true"], .rbacLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.rbacControls { justify-content: flex-end; margin-top: 10px; }
+.rbacLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.rbacLabHead strong { display: block; margin-top: 5px; }
+.rbacLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-areas: "subject first role" "action second object"; gap: 12px; align-items: center; margin: 22px 0 14px; }
+.rbacLabBoard > .rbacLabNode:nth-child(1) { grid-area: subject; }
+.rbacLabBoard > .rbacLabArrow:nth-child(2) { grid-area: first; }
+.rbacLabBoard > .rbacLabNode:nth-child(3) { grid-area: role; }
+.rbacLabBoard > .rbacLabArrow:nth-child(4) { grid-area: second; }
+.rbacLabBoard > .rbacLabNode:nth-child(5) { grid-area: action; }
+.rbacLabBoard > .rbacLabArrow:nth-child(6) { display: none; }
+.rbacLabBoard > .rbacLabNode:nth-child(7) { grid-area: object; }
+.rbacLabNode { min-height: 101px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px 9px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.rbacLabNode svg { color: var(--accent); }
+.rbacLabNode span { color: var(--muted); font-size: .72rem; }
+.rbacLabNode code, .rbacLabNode strong { color: var(--accent-text); font-size: .78rem; overflow-wrap: anywhere; }
+.rbacLabNode[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 40%, var(--surface)); }
+.rbacLabNode[data-failed="true"] svg, .rbacLabNode[data-failed="true"] strong { color: #8a542f; }
+.rbacLabArrow { display: grid; justify-items: center; gap: 3px; color: var(--accent-text); }
+.rbacLabArrow small { color: var(--muted); font-size: .61rem; }
+.rbacLabResult { padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.rbacLabResult[data-failed="true"] { background: color-mix(in srgb, #f4ddcf 42%, var(--surface)); color: #8a542f; }
+.rbacLabResult p { margin: 0; }
+.rbacLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.rbacLabControls { margin-top: 13px; }
+@media (max-width: 900px) { .rbacStage, .rbacLabBoard { grid-template-columns: 1fr; } .rbacConnector, .rbacLabArrow { justify-items: center; transform: rotate(90deg); } .rbacTop, .rbacLabHead { flex-direction: column; gap: 8px; } .rbacControls { justify-content: flex-start; } }
+@media (max-width: 700px) { .rbacHero, .rbacLab { padding: 15px; } .rbacSubject, .rbacRoles, .rbacPermission, .rbacDecision, .rbacLabNode { min-height: 92px; } }
+@media (prefers-reduced-motion: reduce) { .rbacHero *, .rbacLab * { transition: none !important; animation: none !important; } }
