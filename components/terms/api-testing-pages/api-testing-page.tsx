@@ -15,6 +15,7 @@ export function ApiTestingTermPage() {
   return <Article slug="api-testing" title="API 测试" subtitle="API Testing · 让响应和服务端状态一起过关" sources={apiTestingSources} sections={sections} hero={<ApiTestingHero />} intro={<>创建订单接口返回 201，看起来很顺。可网络断开后重试会不会多写一行？用户 B 拿着订单编号能不能读到用户 A 的数据？<strong>API 测试把请求、协议回执和服务端留下的状态放到同一条证据链里。</strong></>}>
     <ArticleSection id="api-testing-definition-section" title="先看协议，别只看绿色">
       <p id="api-direct-request" className="vp-citation-target">API 测试直接向服务发送 HTTP 请求，不必先打开浏览器、点击表单。Playwright 的 <code>APIRequestContext</code> 就是这样一条独立的请求通道：它可以创建资源，也可以在操作后查询服务端状态。<Cite id="api-direct-request" sources={apiTestingSources} /></p>
+      <p id="api-auth-state" className="vp-citation-target">请求上下文还可以承接认证状态。Playwright 允许 API 请求上下文和浏览器上下文共享存储状态，这样测试既能用接口准备登录后的数据，也能在页面操作后用接口核对后置条件；是否共享要按测试隔离边界决定。<Cite id="api-auth-state" sources={apiTestingSources} /></p>
       <p id="api-http-status" className="vp-citation-target">HTTP 状态码是协议回执，不是质量分数。RFC 9110 把 <code>201 Created</code> 定义为请求产生了新资源；在这个例子里，订单创建后还要核对响应里的 <code>orderId</code> 和服务端是否真的留下对应订单。<Cite id="api-http-status" sources={apiTestingSources} /></p>
       <p id="api-response-contract" className="vp-citation-target">OpenAPI 的 Responses Object 把一次操作可能返回的状态码映射到预期响应，也要求文档至少覆盖成功情况和已知错误。测试可以从这张契约得到检查清单，但契约写错时，自动通过也只是把错误复读一遍。<Cite id="api-response-contract" sources={apiTestingSources} /></p>
       <p>因此“返回 200”只回答了一个很窄的问题：服务器给了一个成功类别的回执。它还没有回答字段是否满足约定、这次请求是否改变了正确的资源、没有权限的人是否被挡住。</p>
