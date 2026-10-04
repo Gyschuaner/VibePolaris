@@ -17861,57 +17861,57 @@
   },
   {
     "slug": "api-testing",
-    "lead": "POST /orders 返回 201 就算通过了吗？重复请求多写一行，或用户 B 能操作用户 A 的订单，都说明接口仍有问题。",
-    "definition": "API 测试直接构造协议请求，检查状态、字段、模式、授权、服务端副作用和故障恢复。",
-    "boundary": "只断言 200 或响应体不够；API 测试不覆盖浏览器交互，也不能替代生产监控。",
+    "lead": "订单接口返回 201 就算通过了吗？网络重试可能多写一行，换个身份也可能读走别人的订单。",
+    "definition": "API 测试直接构造协议请求，检查状态码、响应字段、服务端副作用、重复请求和访问权限。",
+    "boundary": "它可以绕过浏览器检查服务边界，但不能替代页面交互、生产监控或所有集成环境差异。",
     "sceneKind": "contract",
-    "sceneTitle": "合法、重复与越权请求的双侧核对",
-    "actionLabel": "发送下一组 API 请求",
+    "sceneTitle": "两本账核对一次接口请求",
+    "actionLabel": "发送下一组请求",
     "actors": [
       {
-        "id": "order-api-test",
-        "label": "POST /orders",
-        "detail": "三组请求",
+        "id": "api-request",
+        "label": "请求包",
+        "detail": "method + path + body",
         "icon": "message",
-        "group": "请求"
+        "group": "输入"
       },
       {
-        "id": "api-response-panel",
-        "label": "响应",
-        "detail": "status + schema",
+        "id": "api-contract",
+        "label": "响应契约",
+        "detail": "201 · schema",
         "icon": "code",
         "group": "协议"
       },
       {
-        "id": "api-orders-db",
-        "label": "orders 表",
+        "id": "api-state",
+        "label": "orders 状态",
         "detail": "0 rows",
         "icon": "database",
         "group": "副作用"
       },
       {
-        "id": "idem-header",
+        "id": "api-key",
         "label": "Idempotency-Key",
         "detail": "order-42",
         "icon": "key",
-        "group": "控制"
+        "group": "重试"
       },
       {
-        "id": "user-a",
+        "id": "api-user-a",
         "label": "用户 A",
         "detail": "owner",
         "icon": "user",
         "group": "身份"
       },
       {
-        "id": "user-b",
+        "id": "api-user-b",
         "label": "用户 B",
-        "detail": "other tenant",
+        "detail": "other owner",
         "icon": "user",
         "group": "身份"
       },
       {
-        "id": "api-test-result",
+        "id": "api-verdict",
         "label": "联合断言",
         "detail": "response + state",
         "icon": "shield",
@@ -17920,155 +17920,210 @@
     ],
     "edges": [
       {
-        "id": "request-response",
-        "from": "order-api-test",
-        "to": "api-response-panel",
-        "label": "发送"
+        "id": "request-contract",
+        "from": "api-request",
+        "to": "api-contract",
+        "label": "收回执"
       },
       {
-        "id": "request-db",
-        "from": "order-api-test",
-        "to": "api-orders-db",
-        "label": "产生写入"
+        "id": "request-state",
+        "from": "api-request",
+        "to": "api-state",
+        "label": "留下状态"
       },
       {
-        "id": "idem-request",
-        "from": "idem-header",
-        "to": "order-api-test",
-        "label": "重复标识"
+        "id": "key-retry",
+        "from": "api-key",
+        "to": "api-request",
+        "label": "标记同一意图"
       },
       {
-        "id": "a-request",
-        "from": "user-a",
-        "to": "order-api-test",
-        "label": "授权请求"
+        "id": "user-a-request",
+        "from": "api-user-a",
+        "to": "api-request",
+        "label": "授权创建"
       },
       {
-        "id": "b-request",
-        "from": "user-b",
-        "to": "order-api-test",
-        "label": "越权请求"
+        "id": "user-b-request",
+        "from": "api-user-b",
+        "to": "api-request",
+        "label": "尝试读取"
       },
       {
-        "id": "response-result",
-        "from": "api-response-panel",
-        "to": "api-test-result",
+        "id": "contract-verdict",
+        "from": "api-contract",
+        "to": "api-verdict",
         "label": "协议断言"
       },
       {
-        "id": "db-result",
-        "from": "api-orders-db",
-        "to": "api-test-result",
+        "id": "state-verdict",
+        "from": "api-state",
+        "to": "api-verdict",
         "label": "状态断言"
       }
     ],
     "frames": [
       {
-        "label": "用户 A 首次创建订单",
-        "note": "合法 body 与令牌得到 201，schema 含 orderId，数据库新增一行。",
+        "label": "先写两本账的期待",
+        "note": "成功响应要有 201 和 orderId，服务端要从 0 行变成 1 行；两边都写进测试。",
         "activeIds": [
-          "user-a",
-          "order-api-test",
-          "api-response-panel",
-          "api-orders-db",
-          "api-test-result"
+          "api-request",
+          "api-contract",
+          "api-state",
+          "api-verdict"
         ],
-        "doneIds": [
-          "api-test-result"
-        ],
+        "doneIds": [],
         "mutedIds": [
-          "idem-header",
-          "user-b"
+          "api-key",
+          "api-user-a",
+          "api-user-b"
         ],
         "values": {
-          "api-response-panel": "201 · orderId:string",
-          "api-orders-db": "1 row",
-          "api-test-result": "PASS"
+          "api-contract": "201 + orderId:string",
+          "api-state": "0 → 1 row"
         },
         "activeEdgeIds": [
-          "a-request",
-          "request-response",
-          "request-db",
-          "response-result",
-          "db-result"
+          "request-contract",
+          "request-state",
+          "contract-verdict",
+          "state-verdict"
         ]
       },
       {
-        "label": "相同幂等键再次发送",
-        "note": "响应返回同一 orderId，数据库仍只有一行。",
+        "label": "用户 A 首次创建",
+        "note": "合法 body 与令牌得到 201，响应带回订单号，状态账本新增一行。",
         "activeIds": [
-          "idem-header",
-          "order-api-test",
-          "api-response-panel",
-          "api-orders-db",
-          "api-test-result"
+          "api-user-a",
+          "api-request",
+          "api-contract",
+          "api-state"
         ],
         "doneIds": [
-          "api-test-result"
+          "api-contract",
+          "api-state"
         ],
         "mutedIds": [
-          "user-b"
+          "api-key",
+          "api-user-b"
         ],
         "values": {
-          "api-response-panel": "200 · same orderId",
-          "api-orders-db": "still 1 row"
+          "api-contract": "201 · orderId:ord-42",
+          "api-state": "1 row"
         },
         "activeEdgeIds": [
-          "idem-request",
-          "request-response",
-          "response-result",
-          "db-result"
+          "user-a-request",
+          "request-contract",
+          "request-state"
         ]
       },
       {
-        "label": "用户 B 尝试读取订单",
-        "note": "ID 格式完全合法，但主体不是资源所有者，应在授权层返回 403。",
+        "label": "把回执和状态放在一起",
+        "note": "状态码与字段形状通过还不够，后置条件要证明订单确实出现且数量正确。",
         "activeIds": [
-          "user-b",
-          "order-api-test",
-          "api-response-panel",
-          "api-orders-db"
+          "api-contract",
+          "api-state",
+          "api-verdict"
         ],
         "doneIds": [
-          "api-response-panel"
+          "api-verdict"
         ],
         "mutedIds": [
-          "user-a",
-          "idem-header"
+          "api-user-a",
+          "api-user-b",
+          "api-key"
         ],
         "values": {
-          "api-response-panel": "403",
-          "api-orders-db": "unchanged"
+          "api-contract": "schema ✓",
+          "api-state": "1 row",
+          "api-verdict": "PASS · 2 ledgers"
         },
         "activeEdgeIds": [
-          "b-request",
-          "request-response",
-          "db-result"
+          "contract-verdict",
+          "state-verdict"
         ]
       },
       {
-        "label": "任一侧不一致都判失败",
-        "note": "状态码、响应 schema 与数据库副作用被合成同一测试结论。",
+        "label": "同一个幂等键重试",
+        "note": "连接失败后重发同一意图，响应回到原订单，状态账本仍只有一行。",
         "activeIds": [
-          "api-response-panel",
-          "api-orders-db",
-          "api-test-result"
+          "api-key",
+          "api-request",
+          "api-contract",
+          "api-state",
+          "api-verdict"
         ],
         "doneIds": [
-          "api-test-result"
+          "api-verdict"
         ],
         "mutedIds": [
-          "user-a",
-          "user-b",
-          "idem-header"
+          "api-user-b"
         ],
         "values": {
-          "api-test-result": "3 scenarios · 7 assertions",
-          "api-orders-db": "final 1 row"
+          "api-contract": "200 · same orderId",
+          "api-state": "still 1 row",
+          "api-verdict": "PASS · idempotent retry"
         },
         "activeEdgeIds": [
-          "response-result",
-          "db-result"
+          "key-retry",
+          "request-contract",
+          "request-state",
+          "contract-verdict",
+          "state-verdict"
+        ]
+      },
+      {
+        "label": "用户 B 换身份读取",
+        "note": "订单编号格式合法，但 B 不是所有者；示例契约返回 403，订单状态不变。",
+        "activeIds": [
+          "api-user-b",
+          "api-request",
+          "api-contract",
+          "api-state"
+        ],
+        "doneIds": [
+          "api-contract",
+          "api-state"
+        ],
+        "mutedIds": [
+          "api-user-a",
+          "api-key"
+        ],
+        "values": {
+          "api-contract": "403 · access denied",
+          "api-state": "still 1 row"
+        },
+        "activeEdgeIds": [
+          "user-b-request",
+          "request-contract",
+          "request-state"
+        ]
+      },
+      {
+        "label": "三组请求合并判断",
+        "note": "成功、同键重试与换身份读取各有响应和状态期待；任一侧不一致都判失败。",
+        "activeIds": [
+          "api-contract",
+          "api-state",
+          "api-verdict"
+        ],
+        "doneIds": [
+          "api-contract",
+          "api-state",
+          "api-verdict"
+        ],
+        "mutedIds": [
+          "api-user-a",
+          "api-user-b",
+          "api-key"
+        ],
+        "values": {
+          "api-contract": "201 · 200 · 403",
+          "api-state": "final 1 row",
+          "api-verdict": "PASS · 3 scenarios"
+        },
+        "activeEdgeIds": [
+          "contract-verdict",
+          "state-verdict"
         ],
         "metric": {
           "label": "最终订单数",
@@ -18076,40 +18131,55 @@
         }
       }
     ],
-    "insight": "接口正确性要同时看协议回复和系统状态，尤其是重复与越权请求。",
+    "insight": "接口测试要让协议回执和服务端状态互相作证，重复与越权请求尤其不能省。",
     "quiz": {
-      "question": "重复创建返回 200，但数据库多了一行，应怎样判定？",
+      "question": "同键重试返回 200，但 orders 表从 1 行变成 2 行，应怎样判定？",
       "options": [
         {
-          "label": "失败，幂等副作用不符合预期",
+          "label": "失败，重复请求留下了错误副作用",
           "correct": true
         },
         {
-          "label": "通过，只要状态码不是 500",
+          "label": "通过，只要状态码是 2xx",
           "correct": false
         },
         {
-          "label": "忽略数据库，因为它不属于 API",
+          "label": "忽略状态表，因为 API 只看响应",
           "correct": false
         }
       ],
-      "success": "协议看起来正常，仍可能留下错误副作用。",
-      "retry": "把响应和服务端状态并排核对。"
+      "success": "状态码和副作用必须表达同一个接口契约。",
+      "retry": "把同一幂等键的响应和订单行数并排核对。"
     },
     "prompt": {
-      "title": "扩展一条 API 测试",
-      "text": "请为正常、边界、重复和越权请求分别写出方法、路径、身份、body、响应 schema、状态码和持久化副作用。"
+      "title": "补一组 API 测试",
+      "text": "请为正常创建、同键重试、同键换参数和换身份读取写出方法、路径、身份、响应 schema、状态码与服务端状态期待。"
     },
     "sources": [
       {
         "url": "https://playwright.dev/docs/api-testing",
-        "label": "Playwright API Testing",
-        "note": "浏览器测试与自动等待"
+        "label": "Playwright · API testing",
+        "note": "直接请求与服务端后置条件"
       },
       {
-        "url": "https://owasp.org/www-project-web-security-testing-guide/",
-        "label": "OWASP Web Security Testing Guide",
-        "note": "安全风险与验证方法"
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "IETF · RFC 9110 HTTP Semantics",
+        "note": "状态码与幂等方法"
+      },
+      {
+        "url": "https://spec.openapis.org/oas/v3.1.0.html",
+        "label": "OpenAPI · Specification 3.1.0",
+        "note": "响应对象与 schema"
+      },
+      {
+        "url": "https://api-security.owasp.org/editions/2023/en/0x11-t10/",
+        "label": "OWASP · API Security Risks 2023",
+        "note": "对象级授权边界"
+      },
+      {
+        "url": "https://docs.stripe.com/api/idempotent_requests",
+        "label": "Stripe · Idempotent requests",
+        "note": "同键重试的具体服务约定"
       }
     ]
   },

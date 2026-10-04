@@ -89,6 +89,7 @@ import { TestCaseTermPage } from "@/components/terms/test-case-pages/test-case-p
 import { MockTermPage } from "@/components/terms/mock-pages/mock-page";
 import { AssertionTermPage } from "@/components/terms/assertion-pages/assertion-page";
 import { CodeCoverageTermPage } from "@/components/terms/code-coverage-pages/code-coverage-page";
+import { ApiTestingTermPage } from "@/components/terms/api-testing-pages/api-testing-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -225,6 +226,7 @@ const articleTermPages = {
   "mock": MockTermPage,
   "assertion": AssertionTermPage,
   "code-coverage": CodeCoverageTermPage,
+  "api-testing": ApiTestingTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

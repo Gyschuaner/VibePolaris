@@ -1488,12 +1488,12 @@
   },
   {
     "zh": "API 测试", "en": "API Testing", "slug": "api-testing", "cat": "技术栈",
-    "say": "直接调用接口，验证状态码、数据结构、权限和副作用。", "aliases": ["接口测试", "API Test", "HTTP 测试"],
-    "question": "不打开浏览器，怎样确认创建订单接口工作正常？", "definition": "API 测试从协议层发送请求，并检查响应和系统状态是否符合接口约定。", "boundary": "API 测试不验证用户界面和浏览器交互，也不能替代生产监控。",
-    "demoType": "request", "demoTitle": "创建接口怎样被完整检查",
-    "demoSteps": [{"label":"发送请求","value":"POST /orders","note":"携带有效令牌和商品数据。"},{"label":"检查响应","value":"201 · orderId","note":"状态码和字段类型符合约定。"},{"label":"检查副作用","value":"库存 -1 · 订单 +1","note":"数据库变化与返回结果一致。"}],
-    "quizQuestion": "API 测试除了响应体还应检查什么？", "quizOptions": ["状态码、响应头和关键副作用", "页面字体是否好看", "设计稿图层名称"], "correctText": "协议和持久化结果都可能影响接口正确性。", "wrongText": "视觉和设计图层不属于 API 协议测试。",
-    "promptTitle": "设计 API 测试", "prompt": "请为这个接口补充正常、参数错误、未认证、无权限、冲突和服务失败测试，并检查副作用。", "relatedSlugs": ["request", "response", "status-code", "integration-test"]
+    "say": "让一次接口请求同时接受协议、状态和权限的检查。", "aliases": ["接口测试", "API Test", "HTTP 测试"],
+    "question": "订单接口回了 201，怎样知道它真的创建了一笔、重试不会多写、用户 B 也读不到？", "definition": "API 测试直接构造协议请求，检查响应状态、字段形状、服务端副作用、重复请求和访问权限。", "boundary": "API 测试可以绕过浏览器检查服务边界，但不能替代页面交互验证、生产监控或所有集成环境差异。",
+    "demoType": "request", "demoTitle": "接口回执和服务端状态怎样互相作证",
+    "demoSteps": [{"label":"创建并核对","value":"201 + orderId · 1 row","note":"响应有订单号，服务端只新增一行。"},{"label":"同键重试","value":"200 · same orderId","note":"网络失败后重发，不应再造一笔订单。"},{"label":"换身份","value":"403 · 1 row","note":"用户 B 被挡在数据前，状态没有被改写。"}],
+    "quizQuestion": "创建订单接口第二次返回 200，但订单表多了一行，测试应该怎样判？", "quizOptions": ["失败，响应和副作用没有说同一件事", "通过，只要没有返回 500", "忽略订单表，只看响应体"], "correctText": "API 测试要把协议回执和服务端状态放在同一条断言里。", "wrongText": "状态码、字段、重复语义和权限都可能是接口契约的一部分。",
+    "promptTitle": "补一条 API 测试", "prompt": "请为正常创建、同键重试、参数错误和换身份读取分别写出方法、路径、身份、body、响应 schema、状态码与可观察副作用。", "relatedSlugs": ["request", "response", "status-code", "integration-test"]
   },
   {
     "zh": "最小权限", "en": "Least Privilege", "slug": "least-privilege", "cat": "技术栈",
