@@ -69,8 +69,8 @@ const scenarios = [
   {
     label: "no-cache · 仍然会存",
     request: "GET /profile",
-    header: "no-cache, ETag=\"p7\"",
-    cache: "有副本 · 每次验证",
+    header: "Cache-Control: no-cache",
+    cache: "有副本 · If-None-Match: \"p7\"",
     origin: "304 Not Modified",
     result: "复用旧 body",
     status: "ok",
