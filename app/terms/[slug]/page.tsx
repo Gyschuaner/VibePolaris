@@ -86,6 +86,7 @@ import { E2eTestTermPage } from "@/components/terms/e2e-test-pages/e2e-test-page
 import { SmokeTestTermPage } from "@/components/terms/smoke-test-pages/smoke-test-page";
 import { RegressionTestTermPage } from "@/components/terms/regression-test-pages/regression-test-page";
 import { TestCaseTermPage } from "@/components/terms/test-case-pages/test-case-page";
+import { MockTermPage } from "@/components/terms/mock-pages/mock-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -219,6 +220,7 @@ const articleTermPages = {
   "smoke-test": SmokeTestTermPage,
   "regression-test": RegressionTestTermPage,
   "test-case": TestCaseTermPage,
+  "mock": MockTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

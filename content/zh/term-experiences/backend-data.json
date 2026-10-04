@@ -17156,6 +17156,26 @@
     ],
     "frames": [
       {
+        "label": "先把真实支付隔离",
+        "note": "Checkout 只依赖 PaymentGateway；真实网络和扣款留在更大范围的测试里。",
+        "activeIds": [
+          "checkout",
+          "payment-mock",
+          "payment-fake"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "old-flow",
+          "new-flow",
+          "behavior-result"
+        ],
+        "values": {
+          "payment-mock": "controlled return",
+          "payment-fake": "local contract"
+        },
+        "activeEdgeIds": []
+      },
+      {
         "label": "旧实现只调用一次 charge",
         "note": "Mock 预期 charge(amount) 恰好一次，Fake 只要求最终支付契约成立。",
         "activeIds": [
@@ -17164,7 +17184,9 @@
           "payment-mock",
           "payment-fake"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "old-flow"
+        ],
         "mutedIds": [
           "new-flow",
           "behavior-result"
@@ -17272,14 +17294,29 @@
     },
     "sources": [
       {
-        "url": "https://jestjs.io/docs/mock-functions",
-        "label": "Jest Mock Functions",
-        "note": "测试替身与断言行为"
+        "url": "https://martinfowler.com/bliki/TestDouble.html",
+        "label": "Martin Fowler · Test Double",
+        "note": "Mock、Stub、Spy 与 Fake 的角色边界"
       },
       {
-        "url": "https://playwright.dev/docs/mock",
-        "label": "Playwright Mock APIs",
-        "note": "浏览器测试与自动等待"
+        "url": "https://jestjs.io/docs/mock-function-api",
+        "label": "Jest · Mock Functions",
+        "note": "控制返回值与记录调用"
+      },
+      {
+        "url": "https://vitest.dev/guide/mocking.html",
+        "label": "Vitest · Mocking",
+        "note": "替换函数、模块与清理状态"
+      },
+      {
+        "url": "https://martinfowler.com/articles/mocksArentStubs.html",
+        "label": "Martin Fowler · Mocks Aren't Stubs",
+        "note": "状态验证、行为验证与重构耦合"
+      },
+      {
+        "url": "https://testing.googleblog.com/2024/02/increase-test-fidelity-by-avoiding-mocks.html",
+        "label": "Google Testing Blog · Increase Test Fidelity",
+        "note": "真实实现、Fake 与 Mock 的真实度取舍"
       }
     ]
   },

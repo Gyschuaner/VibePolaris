@@ -1381,12 +1381,12 @@
   },
   {
     "zh": "模拟对象", "en": "Mock", "slug": "mock", "cat": "技术栈",
-    "say": "在测试中替代真实依赖，并检查代码怎样调用它。", "aliases": ["Mock", "测试模拟", "模拟依赖"],
-    "question": "测试付款逻辑时，必须真的请求支付平台吗？", "definition": "模拟对象按测试设定返回结果，并记录交互，用于隔离外部依赖和验证调用行为。", "boundary": "Mock 行为由测试编写者定义，可能与真实服务不一致，关键集成仍需真实依赖验证。",
-    "demoType": "branch", "demoTitle": "付款服务的两个模拟结果",
-    "demoSteps": [{"label":"设置成功","value":"charge → paid","note":"订单状态应更新为已支付。"},{"label":"设置拒绝","value":"charge → declined","note":"订单保持未支付并返回原因。"},{"label":"检查调用","value":"charge 调用 1 次","note":"断言金额和幂等键正确传入。"}],
-    "quizQuestion": "Mock 最适合验证什么？", "quizOptions": ["代码如何调用一个受控依赖", "第三方生产服务绝对可用", "真实网络延迟"], "correctText": "Mock 提供可控返回并记录调用。", "wrongText": "它不能证明真实服务和网络行为。",
-    "promptTitle": "设计测试模拟", "prompt": "请指出哪些依赖需要 mock，定义成功、失败和超时返回，并保留至少一项真实集成测试。", "relatedSlugs": ["unit-test", "test-case", "assertion", "integration-test"]
+    "say": "用一块可编程的替身隔离昂贵依赖，同时记录被测代码怎样与它协作。", "aliases": ["Mock", "测试模拟", "模拟依赖"],
+    "question": "支付从 charge 重构成 authorize + capture，订单没变，为什么旧测试却先红了？", "definition": "模拟对象替代真实依赖，按测试设定返回结果并记录交互；它能隔离和控场，却不等于真实服务。", "boundary": "Mock 不是所有假数据的统称；调用期待可能绑住实现细节，关键协议仍需 Fake、契约或集成测试补回真实度。",
+    "demoType": "comparison", "demoTitle": "业务结果与调用细节面对同一次支付重构",
+    "demoSteps": [{"label":"隔离支付","value":"PaymentGateway → Mock / Fake","note":"把真实网络和扣款留在系统边界外，先让结账逻辑可控。"},{"label":"重构调用","value":"charge → authorize + capture","note":"内部从一次调用拆成两步，订单对外仍应是 paid。"},{"label":"审查信号","value":"order=paid · charge×0","note":"业务结果可能通过，旧 Mock 的调用期待却可能只是在保护旧实现。"}],
+    "quizQuestion": "Mock 变红时，第一步应该先看什么？", "quizOptions": ["它断言的是业务契约还是实现细节", "立刻删除所有测试", "把真实支付平台接进每次单测"], "correctText": "先把最终行为和调用期待分开，才能判断红灯是否真的代表缺陷。", "wrongText": "Mock 的红灯提供线索，但不自动等于业务行为坏了。",
+    "promptTitle": "审查一次测试替身", "prompt": "请列出这个替身控制的回执、记录的交互和它保护的业务风险；把非契约性的调用断言改为行为或协议断言，并说明应在哪一层补真实度。", "relatedSlugs": ["unit-test", "test-case", "assertion", "integration-test"]
   },
   {
     "zh": "断言", "en": "Assertion", "slug": "assertion", "cat": "技术栈",
