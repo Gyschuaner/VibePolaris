@@ -19001,4 +19001,261 @@
       }
     ]
   }
+,
+  {
+    "slug": "feature-flag",
+    "lead": "代码已经进生产，谁有权先看到新结算页？",
+    "definition": "功能开关把同一构建里的旧路径和新路径交给运行时评估：请求带上稳定上下文，规则返回一个变体，应用记录结果并按指标继续扩大或回退。",
+    "boundary": "开关只负责选择和暴露，不负责授权、数据撤销或质量证明。没有默认值、稳定 targeting key、监控和清理计划时，flag 会变成另一层不可见的分支风险。",
+    "sceneKind": "contract",
+    "sceneTitle": "一条 flag 评估怎样决定请求走哪边",
+    "actionLabel": "逐步推进部署、上下文、分批、观测和止损",
+    "actors": [
+      {
+        "id": "build",
+        "label": "生产构建",
+        "detail": "v42 · old + new path",
+        "icon": "package",
+        "group": "部署"
+      },
+      {
+        "id": "flag-store",
+        "label": "开关配置",
+        "detail": "checkout.new · ON / OFF",
+        "icon": "gear",
+        "group": "规则"
+      },
+      {
+        "id": "context",
+        "label": "评估上下文",
+        "detail": "targetingKey · user-li",
+        "icon": "user",
+        "group": "请求"
+      },
+      {
+        "id": "router",
+        "label": "变体选择",
+        "detail": "old / new / fallback",
+        "icon": "code",
+        "group": "决策"
+      },
+      {
+        "id": "metrics",
+        "label": "指标与回退",
+        "detail": "error rate · kill switch",
+        "icon": "chart",
+        "group": "证据"
+      }
+    ],
+    "edges": [
+      {
+        "id": "build-router",
+        "from": "build",
+        "to": "router",
+        "label": "提供两条路径"
+      },
+      {
+        "id": "flag-router",
+        "from": "flag-store",
+        "to": "router",
+        "label": "读取 flag"
+      },
+      {
+        "id": "context-router",
+        "from": "context",
+        "to": "router",
+        "label": "提供上下文"
+      },
+      {
+        "id": "router-metrics",
+        "from": "router",
+        "to": "metrics",
+        "label": "记录变体与指标"
+      },
+      {
+        "id": "metrics-flag",
+        "from": "metrics",
+        "to": "flag-store",
+        "label": "扩大 / 关闭"
+      },
+      {
+        "id": "flag-build",
+        "from": "flag-store",
+        "to": "build",
+        "label": "不改已部署版本"
+      }
+    ],
+    "frames": [
+      {
+        "label": "同一版本先部署",
+        "note": "v42 同时包含旧路径和新路径；这一步只改变代码可用，不改变用户暴露。",
+        "activeIds": [
+          "build"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "flag-store",
+          "context",
+          "router",
+          "metrics"
+        ],
+        "values": {
+          "build": "v42 · old + new"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "请求带着上下文来",
+        "note": "用户的 targetingKey 与 flag 配置一起进入评估；没有稳定键时，分组无法可靠复现。",
+        "activeIds": [
+          "context",
+          "flag-store",
+          "router"
+        ],
+        "doneIds": [
+          "build"
+        ],
+        "mutedIds": [
+          "metrics"
+        ],
+        "values": {
+          "context": "user-li",
+          "flag-store": "checkout.new = ON",
+          "router": "evaluating"
+        },
+        "activeEdgeIds": [
+          "flag-router",
+          "context-router"
+        ]
+      },
+      {
+        "label": "只开放一小群",
+        "note": "规则把内部用户或 10% cohort 送到新路径，其他请求仍返回旧路径。",
+        "activeIds": [
+          "router",
+          "context"
+        ],
+        "doneIds": [
+          "build",
+          "flag-store"
+        ],
+        "mutedIds": [
+          "metrics"
+        ],
+        "values": {
+          "router": "new · 10% cohort",
+          "context": "stable assignment"
+        },
+        "activeEdgeIds": [
+          "build-router",
+          "context-router"
+        ]
+      },
+      {
+        "label": "指标决定下一步",
+        "note": "变体结果和错误率一起记录；比例扩大前，先确认新路径没有把问题藏到平均值里。",
+        "activeIds": [
+          "metrics",
+          "router"
+        ],
+        "doneIds": [
+          "build",
+          "flag-store",
+          "context"
+        ],
+        "mutedIds": [],
+        "values": {
+          "router": "new / old",
+          "metrics": "error rate · 0.4%"
+        },
+        "activeEdgeIds": [
+          "router-metrics"
+        ]
+      },
+      {
+        "label": "开关把新路径关掉",
+        "note": "发现回归时将 flag 设为 OFF，所有请求回到旧路径；构建仍在，数据副作用另需补偿。",
+        "activeIds": [
+          "metrics",
+          "flag-store",
+          "router"
+        ],
+        "doneIds": [
+          "build",
+          "context"
+        ],
+        "mutedIds": [],
+        "values": {
+          "metrics": "regression → kill",
+          "flag-store": "OFF",
+          "router": "fallback → old"
+        },
+        "activeEdgeIds": [
+          "metrics-flag",
+          "flag-build"
+        ]
+      }
+    ],
+    "insight": "功能开关把“代码已部署”“谁能看到”“指标是否健康”和“怎样止损”拆成可追踪的决定；它给发布留出手刹，也把每个未清理的分支变成长期维护成本。",
+    "quiz": {
+      "question": "新结算页出现回归时，关闭 feature flag 能直接完成什么？",
+      "options": [
+        {
+          "label": "让后续请求回到旧路径，快速降低新功能暴露",
+          "correct": true
+        },
+        {
+          "label": "撤销已经写入数据库的订单和副作用",
+          "correct": false
+        },
+        {
+          "label": "替用户完成身份授权并绕过后端检查",
+          "correct": false
+        }
+      ],
+      "success": "对。关闭 flag 是暴露层的止损动作；数据补偿、权限检查和根因修复仍要沿各自的流程处理。",
+      "retry": "区分“后续请求走哪条路径”和“过去已经发生什么”：flag 能控制前者，不能自动撤销后者。"
+    },
+    "prompt": {
+      "title": "把一个 flag 写成可维护的契约",
+      "text": "为 flag 写出 key、默认值、上下文键、目标 cohort、观测指标、kill switch、负责人和清理日期；再画出评估失败、无权限、回归和数据副作用的处理出口。"
+    },
+    "sources": [
+      {
+        "url": "https://martinfowler.com/articles/feature-toggles.html",
+        "label": "Martin Fowler · Feature Toggles",
+        "note": "部署与发布解耦、开关分类和清理成本"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management",
+        "label": "Azure App Configuration · Feature management",
+        "note": "Switch、Rollout、Experiment 与运行时管理"
+      },
+      {
+        "url": "https://openfeature.dev/specification/sections/evaluation-context/",
+        "label": "OpenFeature · Evaluation Context",
+        "note": "targeting key、上下文字段和合并优先级"
+      },
+      {
+        "url": "https://launchdarkly.com/docs/home/flags/target-rules",
+        "label": "LaunchDarkly · Targeting rules",
+        "note": "条件、变体和百分比分批"
+      },
+      {
+        "url": "https://openfeature.dev/specification/sections/flag-evaluation/",
+        "label": "OpenFeature · Flag Evaluation API",
+        "note": "类型化评估、provider 与默认值"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-feature-flags.html",
+        "label": "AWS AppConfig · Feature flags",
+        "note": "布尔与多变体 flag、上下文规则和属性约束"
+      },
+      {
+        "url": "https://launchdarkly.com/docs/home/flags/killswitch",
+        "label": "LaunchDarkly · Kill switch flags",
+        "note": "紧急关闭非核心功能和第三方依赖"
+      }
+    ]
+  }
 ]

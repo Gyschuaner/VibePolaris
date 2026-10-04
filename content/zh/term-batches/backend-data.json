@@ -1298,4 +1298,57 @@
     "quizQuestion": "HTTPS 主要保护数据的哪个阶段？", "quizOptions": ["浏览器与服务器之间传输时", "数据库磁盘长期保存时", "开发者写代码时"], "correctText": "HTTPS 使用 TLS 保护网络链路。", "wrongText": "磁盘存储需要静态加密，写代码本身不是 HTTPS 的保护阶段。",
     "promptTitle": "审查传输加密", "prompt": "请列出客户端、网关、服务和数据库之间的每段连接，检查 TLS、证书验证、协议版本和明文回退。", "relatedSlugs": ["tls-handshake", "encryption-at-rest", "hostname"]
   }
+,
+  {
+    "zh": "功能开关",
+    "en": "Feature Flag",
+    "slug": "feature-flag",
+    "cat": "后端",
+    "say": "把新旧行为放进同一份构建，用运行时开关决定谁先看到哪条路径。",
+    "aliases": [
+      "Feature Toggle",
+      "特性开关",
+      "功能旗标"
+    ],
+    "question": "代码已经部署了，为什么用户还看不到新功能？",
+    "definition": "功能开关在运行时读取一个 flag 和请求上下文，选择旧路径、新路径或某个变体。它把代码部署与功能暴露分开，让团队可以先给内部用户或小比例 cohort 使用，再根据指标扩大、暂停或关闭。",
+    "boundary": "开关控制的是功能暴露，不是身份授权、数据回滚或自动质量证明。评估失败要有明确默认路径；长期不清理的 flag 会增加每条代码路径的维护和验证成本，分组还要使用稳定的上下文键。",
+    "demoType": "comparison",
+    "demoTitle": "同一个版本怎样只让一部分请求走新路径",
+    "demoSteps": [
+      {
+        "label": "先部署",
+        "value": "v42 = old path + new path",
+        "note": "代码先进入生产，默认仍可把请求留在旧路径。"
+      },
+      {
+        "label": "小范围",
+        "value": "targetingKey → 10% cohort → new path",
+        "note": "评估上下文决定谁看到变体；稳定分组才能比较指标。"
+      },
+      {
+        "label": "发现回归",
+        "value": "error rate ↑ → flag OFF → old path",
+        "note": "关闭暴露能快速止损，但不会撤销已经发生的数据副作用。"
+      }
+    ],
+    "quizQuestion": "功能开关最准确地改变了什么？",
+    "quizOptions": [
+      "运行时对功能路径的暴露范围",
+      "用户是否拥有访问敏感数据的权限",
+      "已经写入数据库的数据是否自动回滚"
+    ],
+    "correctText": "对。功能开关让应用在运行时选择暴露哪条路径，部署、授权和数据补偿仍是不同责任。",
+    "wrongText": "再看一遍：flag 改变的是路径选择和暴露范围，不会自动授予权限，也不会抹掉已发生的副作用。",
+    "promptTitle": "为一次分批发布写开关契约",
+    "prompt": "写出 flag key、默认值、评估上下文、目标 cohort、成功指标、回退信号、负责人和清理日期；再说明评估服务不可用、用户无权限或新路径已经产生副作用时分别走哪条路径。",
+    "relatedSlugs": [
+      "rollback",
+      "preview-deployment",
+      "observability",
+      "authorization",
+      "rate-limiting",
+      "api-gateway"
+    ]
+  }
 ]

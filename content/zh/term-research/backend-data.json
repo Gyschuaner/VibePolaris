@@ -102,4 +102,29 @@
   {"slug":"input-validation","mechanism":"输入校验在信任边界处按允许列表检查语法与语义，并在服务端再次执行；它缩小非法状态，但不能替代参数化查询、输出编码和授权。","misconception":"前端校验不是安全控制，黑名单也拦不住所有变体；通过格式校验的对象仍可能越权。","demoSignature":"7帧｜对象：age、email、accountId 三字段，浏览器校验、API schema、授权三道独立门｜交互：绕过前端直接发 age=-1、畸形 email、他人 accountId｜变化：前两项在服务端 400，合法格式的他人 ID 继续到授权并 403｜结果：显示校验与授权各自阻断的请求。","sourceUrls":["https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html","https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html"],"rewriteRisk":"高：与 data-validation 和 authorization 的边界必须通过不同失败码呈现。","nearDuplicates":["data-validation","request-body","authorization"]},
   {"slug":"encryption-at-rest","mechanism":"静态数据加密在数据写入磁盘、备份或对象存储时用密钥转换密文，并在授权读取时解密；安全性取决于密钥隔离、轮换和访问控制。","misconception":"磁盘加密不能防住已获应用读取权限的攻击者，也不自动保护日志、备份和内存；密钥与密文同处且同权限会削弱隔离。","demoSignature":"6帧｜对象：数据库页、备份文件、KMS 密钥、应用身份、被盗磁盘与被盗应用凭证两种攻击卡｜交互：分别触发两种攻击并撤销 KMS grant｜变化：磁盘攻击只能见密文，应用凭证仍可请求解密，撤权后读取失败｜结果：0 条明文或 100 条明文的边界清楚显示。","sourceUrls":["https://csrc.nist.gov/pubs/sp/800/111/final","https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html"],"rewriteRisk":"高：不能宣称‘加密后数据就安全’，必须展示密钥与解密主体边界。","nearDuplicates":["encryption-in-transit","backup","hashing"]},
   {"slug":"encryption-in-transit","mechanism":"传输中加密用 TLS 等协议在通信端点间提供机密性、完整性和对端身份验证；保护范围从握手建立的安全通道开始，到终止 TLS 的端点结束。","misconception":"HTTPS 不代表端到端穿过所有代理仍为密文；TLS 在负载均衡器终止后，后续链路需单独保护，证书校验失败也不能忽略。","demoSignature":"7帧｜对象：浏览器、CDN、负载均衡、应用三段链路及每段锁图标、抓包字节视图｜交互：逐段启用 TLS 并把 CDN→LB 改为明文｜变化：外部抓包保持密文，内部链路暴露 Authorization 字段｜结果：端到端保护段从 3/3 降到 2/3，风险节点被精确标红。","sourceUrls":["https://www.rfc-editor.org/rfc/rfc8446.html","https://www.rfc-editor.org/rfc/rfc9525.html","https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"],"rewriteRisk":"高：需明确 TLS 终止点和身份校验，不要与静态加密共用锁头动画。","nearDuplicates":["tls-handshake","encryption-at-rest","hostname"]}
+,
+  {
+    "slug": "feature-flag",
+    "mechanism": "功能开关把同一构建中的多条代码路径交给运行时评估：请求提供稳定上下文，规则返回旧路径、新路径或变体；应用记录评估结果与指标，再决定扩大、暂停或关闭暴露。",
+    "misconception": "flag 不是部署按钮、权限校验、数据回滚或质量证明；关闭它只影响后续暴露，不能撤销已经发生的副作用。评估失败要有默认值，长期不清理的开关会增加维护和验证成本。",
+    "demoSignature": "v42 同时包含 old/new checkout；五帧展示部署、上下文评估、10% cohort、指标观测和 kill switch 回退，工作台切换内部/10%/全量、模拟回归与立即关闭，始终保持版本不变但改变暴露路径。",
+    "sourceUrls": [
+      "https://martinfowler.com/articles/feature-toggles.html",
+      "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management",
+      "https://openfeature.dev/specification/sections/evaluation-context/",
+      "https://launchdarkly.com/docs/home/flags/target-rules",
+      "https://openfeature.dev/specification/sections/flag-evaluation/",
+      "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-feature-flags.html",
+      "https://launchdarkly.com/docs/home/flags/killswitch"
+    ],
+    "rewriteRisk": "正文要把部署、评估、分组、观测和回退分开，解释稳定上下文键、默认值、变体和清理责任；避免把 flag 当成权限、数据撤销或自动正确性，把 kill switch 写成会抹掉历史副作用。",
+    "nearDuplicates": [
+      "rollback",
+      "preview-deployment",
+      "observability",
+      "authorization",
+      "rate-limiting",
+      "api-gateway"
+    ]
+  }
 ]

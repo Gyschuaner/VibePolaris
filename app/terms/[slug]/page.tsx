@@ -79,6 +79,7 @@ import { DnsRecordTermPage } from "@/components/terms/backend-boundary-pages/dns
 import { DnsResolverTermPage } from "@/components/terms/backend-boundary-pages/dns-resolver";
 import { CacheControlTermPage } from "@/components/terms/backend-boundary-pages/cache-control";
 import { MimeTypeTermPage } from "@/components/terms/backend-boundary-pages/mime-type";
+import { FeatureFlagTermPage } from "@/components/terms/feature-flag-pages/feature-flag-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -205,6 +206,7 @@ const articleTermPages = {
   "dns-resolver": DnsResolverTermPage,
   "cache-control": CacheControlTermPage,
   "mime-type": MimeTypeTermPage,
+  "feature-flag": FeatureFlagTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
