@@ -207,7 +207,25 @@
     "firewall"
   ]
 },
-  {"slug":"hashing","mechanism":"密码学哈希把任意长度输入映射为固定长度摘要，目标包括抗原像和抗碰撞；密码存储还必须使用带盐、成本可调的专用 KDF。","misconception":"哈希不是可逆加密，普通 SHA-256 也不适合直接存密码；相同无盐密码会产生相同摘要并被批量猜测。","demoSignature":"7帧｜对象：两个相同 password、随机 salt、SHA-256 与 Argon2id 两条计算轨、攻击计数器｜交互：切换无盐 SHA-256/带盐 Argon2id 并启动 1 秒猜测｜变化：摘要由相同变不同，尝试速率从百万级降到受内存限制｜结果：显示 hashes/s、盐值和验证成功但无法‘解密’。","sourceUrls":["https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html","https://csrc.nist.gov/pubs/fips/180-4/upd1/final"],"rewriteRisk":"高：必须分开通用哈希、密码 KDF 与加密，算法建议需按权威来源。","nearDuplicates":["encryption-at-rest","auth","input-validation"]},
+  {
+  "slug": "hashing",
+  "mechanism": "哈希函数把任意长度输入映射到固定长度摘要；摘要可用于完整性比较，密码验证则需要把随机盐、成本因子和专用 KDF 一起纳入每个账号的记录，并在登录时重算。",
+  "misconception": "哈希不是把文本加密后等着解密，也不是“算法越快越好”。通用 SHA-256 适合快速做指纹，却会让攻击者快速批量试密码；缺盐还会让相同密码产生相同保存值。",
+  "demoSignature": "6帧｜对象：release.tar、改过一个字符的 release.tar!、SHA-256、用户 A/B 的盐、Argon2id、算法参数和登录候选｜交互：先比较文件摘要，再给密码加盐、调成本，最后取记录重算｜变化：摘要由 3a1c…9f 换成 c72b…14；相同密码因盐分成两份；直接 SHA 路线标为易批量猜｜结果：文件校验和密码验证各自停在正确的边界。",
+  "sourceUrls": [
+    "https://csrc.nist.gov/glossary/term/hash_function",
+    "https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+    "https://www.rfc-editor.org/rfc/rfc9106.html",
+    "https://pages.nist.gov/800-63-4/sp800-63b.html"
+  ],
+  "rewriteRisk": "高：必须把通用摘要、文件完整性、密码 KDF、盐和成本拆开讲，并明确摘要不能还原原文。",
+  "nearDuplicates": [
+    "encryption-at-rest",
+    "auth",
+    "input-validation"
+  ]
+},
   {"slug":"input-validation","mechanism":"输入校验在信任边界处按允许列表检查语法与语义，并在服务端再次执行；它缩小非法状态，但不能替代参数化查询、输出编码和授权。","misconception":"前端校验不是安全控制，黑名单也拦不住所有变体；通过格式校验的对象仍可能越权。","demoSignature":"7帧｜对象：age、email、accountId 三字段，浏览器校验、API schema、授权三道独立门｜交互：绕过前端直接发 age=-1、畸形 email、他人 accountId｜变化：前两项在服务端 400，合法格式的他人 ID 继续到授权并 403｜结果：显示校验与授权各自阻断的请求。","sourceUrls":["https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html","https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html"],"rewriteRisk":"高：与 data-validation 和 authorization 的边界必须通过不同失败码呈现。","nearDuplicates":["data-validation","request-body","authorization"]},
   {"slug":"encryption-at-rest","mechanism":"静态数据加密在数据写入磁盘、备份或对象存储时用密钥转换密文，并在授权读取时解密；安全性取决于密钥隔离、轮换和访问控制。","misconception":"磁盘加密不能防住已获应用读取权限的攻击者，也不自动保护日志、备份和内存；密钥与密文同处且同权限会削弱隔离。","demoSignature":"6帧｜对象：数据库页、备份文件、KMS 密钥、应用身份、被盗磁盘与被盗应用凭证两种攻击卡｜交互：分别触发两种攻击并撤销 KMS grant｜变化：磁盘攻击只能见密文，应用凭证仍可请求解密，撤权后读取失败｜结果：0 条明文或 100 条明文的边界清楚显示。","sourceUrls":["https://csrc.nist.gov/pubs/sp/800/111/final","https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html"],"rewriteRisk":"高：不能宣称‘加密后数据就安全’，必须展示密钥与解密主体边界。","nearDuplicates":["encryption-in-transit","backup","hashing"]},
   {"slug":"encryption-in-transit","mechanism":"传输中加密用 TLS 等协议在通信端点间提供机密性、完整性和对端身份验证；保护范围从握手建立的安全通道开始，到终止 TLS 的端点结束。","misconception":"HTTPS 不代表端到端穿过所有代理仍为密文；TLS 在负载均衡器终止后，后续链路需单独保护，证书校验失败也不能忽略。","demoSignature":"7帧｜对象：浏览器、CDN、负载均衡、应用三段链路及每段锁图标、抓包字节视图｜交互：逐段启用 TLS 并把 CDN→LB 改为明文｜变化：外部抓包保持密文，内部链路暴露 Authorization 字段｜结果：端到端保护段从 3/3 降到 2/3，风险节点被精确标红。","sourceUrls":["https://www.rfc-editor.org/rfc/rfc8446.html","https://www.rfc-editor.org/rfc/rfc9525.html","https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"],"rewriteRisk":"高：需明确 TLS 终止点和身份校验，不要与静态加密共用锁头动画。","nearDuplicates":["tls-handshake","encryption-at-rest","hostname"]}

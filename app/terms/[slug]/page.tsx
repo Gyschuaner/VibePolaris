@@ -91,6 +91,7 @@ import { AssertionTermPage } from "@/components/terms/assertion-pages/assertion-
 import { CodeCoverageTermPage } from "@/components/terms/code-coverage-pages/code-coverage-page";
 import { ApiTestingTermPage } from "@/components/terms/api-testing-pages/api-testing-page";
 import { LeastPrivilegeTermPage } from "@/components/terms/least-privilege-pages/least-privilege-page";
+import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -229,6 +230,7 @@ const articleTermPages = {
   "code-coverage": CodeCoverageTermPage,
   "api-testing": ApiTestingTermPage,
   "least-privilege": LeastPrivilegeTermPage,
+  "hashing": HashingTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

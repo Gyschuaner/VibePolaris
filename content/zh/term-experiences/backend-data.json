@@ -18526,54 +18526,68 @@
 },
   {
     "slug": "hashing",
-    "lead": "两个人用了同一个密码，为什么带盐 Argon2id 的保存值不同，而且服务器仍能验证登录？",
-    "definition": "密码学哈希把任意长度输入映射为固定长度摘要；密码存储还要使用随机盐和成本可调的专用 KDF，让批量猜测更昂贵。",
-    "boundary": "哈希不是可逆加密。普通 SHA-256 不适合直接存密码；缺盐或成本过低时，攻击者仍可快速猜测。",
+    "lead": "同一份发布包只改一个字符，摘要会怎样变化？密码又为什么要换成另一条更慢的路线？",
+    "definition": "哈希把输入压成可重复计算的固定长度摘要；文件校验关心摘要是否相同，密码验证还要加盐、调成本并在登录时重算。",
+    "boundary": "摘要不是密文，不能拿来还原原文；用于密码时，快速无盐哈希会留下批量猜测和账号关联的缺口。",
     "sceneKind": "compare",
-    "sceneTitle": "无盐快速哈希与带盐密码 KDF 的猜测成本",
-    "actionLabel": "切换方案并运行一秒猜测",
+    "sceneTitle": "一张指纹怎样分出文件校验与密码验证",
+    "actionLabel": "推进下一次计算",
     "actors": [
       {
         "id": "password-a",
         "label": "用户 A 密码",
-        "detail": "same-password",
+        "detail": "salt A · same-password",
         "icon": "key",
-        "group": "输入"
+        "group": "密码"
       },
       {
         "id": "password-b",
         "label": "用户 B 密码",
-        "detail": "same-password",
+        "detail": "salt B · same-password",
         "icon": "key",
-        "group": "输入"
+        "group": "密码"
       },
       {
         "id": "sha-track",
         "label": "SHA-256",
-        "detail": "无盐",
+        "detail": "固定长度 · 快",
         "icon": "gear",
-        "group": "方案"
+        "group": "通用哈希"
       },
       {
         "id": "argon-track",
         "label": "Argon2id",
-        "detail": "随机盐 · 内存成本",
+        "detail": "memory-hard · m/t/p",
         "icon": "memory",
-        "group": "方案"
+        "group": "密码 KDF"
       },
       {
         "id": "hash-store",
         "label": "密码记录",
         "detail": "salt + hash + params",
         "icon": "database",
-        "group": "存储"
+        "group": "保存"
       },
       {
         "id": "guess-counter",
-        "label": "猜测计数器",
-        "detail": "0 / s",
+        "label": "猜测成本",
+        "detail": "快 vs memory-hard",
         "icon": "chart",
         "group": "攻击视角"
+      },
+      {
+        "id": "release-file",
+        "label": "release.tar",
+        "detail": "可信清单里的文件",
+        "icon": "file",
+        "group": "文件"
+      },
+      {
+        "id": "verify-result",
+        "label": "比较结果",
+        "detail": "match / reject",
+        "icon": "shield",
+        "group": "验证"
       }
     ],
     "edges": [
@@ -18593,13 +18607,13 @@
         "id": "a-argon",
         "from": "password-a",
         "to": "argon-track",
-        "label": "salt A"
+        "label": "带盐计算"
       },
       {
         "id": "b-argon",
         "from": "password-b",
         "to": "argon-track",
-        "label": "salt B"
+        "label": "带盐计算"
       },
       {
         "id": "argon-store",
@@ -18612,15 +18626,26 @@
         "from": "sha-track",
         "to": "guess-counter",
         "label": "尝试速率"
+      },
+      {
+        "id": "file-sha",
+        "from": "release-file",
+        "to": "sha-track",
+        "label": "计算指纹"
+      },
+      {
+        "id": "argon-compare",
+        "from": "argon-track",
+        "to": "verify-result",
+        "label": "比较"
       }
     ],
     "frames": [
       {
-        "label": "无盐 SHA-256 产生相同摘要",
-        "note": "相同密码直接进入同一函数，两条记录可被一眼关联。",
+        "label": "同一文件得到同一指纹",
+        "note": "release.tar 经过 SHA-256，结果可以写进发布清单供下载方再次计算。",
         "activeIds": [
-          "password-a",
-          "password-b",
+          "release-file",
           "sha-track",
           "hash-store"
         ],
@@ -18628,21 +18653,51 @@
           "sha-track"
         ],
         "mutedIds": [
+          "password-a",
+          "password-b",
           "argon-track",
+          "verify-result",
           "guess-counter"
         ],
         "values": {
-          "sha-track": "digest 9f86… ×2",
-          "hash-store": "same digest"
+          "release-file": "release.tar",
+          "sha-track": "3a1c…9f",
+          "hash-store": "manifest digest"
         },
         "activeEdgeIds": [
-          "a-sha",
-          "b-sha"
+          "file-sha"
         ]
       },
       {
-        "label": "随机盐让保存值不同",
-        "note": "每个账号生成独立盐，Argon2id 同时保存参数供以后验证。",
+        "label": "只改一个字符，摘要就换了",
+        "note": "release.tar! 走同一个函数，得到另一串结果；摘要不负责告诉你改了哪一位。",
+        "activeIds": [
+          "release-file",
+          "sha-track",
+          "hash-store"
+        ],
+        "doneIds": [
+          "sha-track"
+        ],
+        "mutedIds": [
+          "password-a",
+          "password-b",
+          "argon-track",
+          "verify-result",
+          "guess-counter"
+        ],
+        "values": {
+          "release-file": "release.tar!",
+          "sha-track": "c72b…14",
+          "hash-store": "digest mismatch"
+        },
+        "activeEdgeIds": [
+          "file-sha"
+        ]
+      },
+      {
+        "label": "盐把相同密码分开",
+        "note": "用户 A 和 B 即使选了同一个密码，也各自带着随机盐进入密码 KDF。",
         "activeIds": [
           "password-a",
           "password-b",
@@ -18650,15 +18705,20 @@
           "hash-store"
         ],
         "doneIds": [
-          "hash-store"
+          "password-a",
+          "password-b"
         ],
         "mutedIds": [
+          "release-file",
           "sha-track",
+          "verify-result",
           "guess-counter"
         ],
         "values": {
-          "argon-track": "salt A ≠ salt B",
-          "hash-store": "two different hashes"
+          "password-a": "same input · salt A",
+          "password-b": "same input · salt B",
+          "argon-track": "two outputs",
+          "hash-store": "two records"
         },
         "activeEdgeIds": [
           "a-argon",
@@ -18667,33 +18727,8 @@
         ]
       },
       {
-        "label": "登录时重算而不是解密",
-        "note": "服务器取出该账号的盐和参数，对候选密码重算并恒定时间比较。",
-        "activeIds": [
-          "password-a",
-          "argon-track",
-          "hash-store"
-        ],
-        "doneIds": [
-          "argon-track"
-        ],
-        "mutedIds": [
-          "password-b",
-          "sha-track",
-          "guess-counter"
-        ],
-        "values": {
-          "argon-track": "recomputed match",
-          "hash-store": "verified=true"
-        },
-        "activeEdgeIds": [
-          "a-argon",
-          "argon-store"
-        ]
-      },
-      {
-        "label": "一秒猜测显示成本差异",
-        "note": "快速哈希可尝试百万级候选，内存困难 KDF 把单机速率压到受配置限制。",
+        "label": "成本让猜测变贵",
+        "note": "SHA-256 可以高速批量尝试；Argon2id 把内存、遍数和并行度纳入每次计算。",
         "activeIds": [
           "sha-track",
           "argon-track",
@@ -18703,56 +18738,129 @@
           "guess-counter"
         ],
         "mutedIds": [
+          "release-file",
           "password-a",
           "password-b",
-          "hash-store"
+          "hash-store",
+          "verify-result"
         ],
         "values": {
-          "guess-counter": "SHA: 4.8M/s · Argon2id: 18/s"
+          "sha-track": "fast",
+          "argon-track": "memory-hard",
+          "guess-counter": "per-guess cost"
         },
         "activeEdgeIds": [
           "tracks-counter"
+        ]
+      },
+      {
+        "label": "登录时重算而不是解密",
+        "note": "服务器取出记录里的盐和参数，对候选密码重算，再把结果交给比较器。",
+        "activeIds": [
+          "password-a",
+          "argon-track",
+          "hash-store",
+          "verify-result"
         ],
-        "metric": {
-          "label": "同一时间窗口",
-          "value": "1 s"
-        }
+        "doneIds": [
+          "argon-track",
+          "verify-result"
+        ],
+        "mutedIds": [
+          "release-file",
+          "password-b",
+          "sha-track",
+          "guess-counter"
+        ],
+        "values": {
+          "password-a": "candidate",
+          "argon-track": "recomputed",
+          "hash-store": "salt + hash + params",
+          "verify-result": "match"
+        },
+        "activeEdgeIds": [
+          "a-argon",
+          "argon-compare"
+        ]
+      },
+      {
+        "label": "摘要对不上，先停下安装",
+        "note": "重新计算的文件摘要与可信清单不一致，完整性检查能阻止继续使用，却不能还原原文件。",
+        "activeIds": [
+          "release-file",
+          "sha-track",
+          "hash-store",
+          "verify-result"
+        ],
+        "doneIds": [
+          "verify-result"
+        ],
+        "mutedIds": [
+          "password-a",
+          "password-b",
+          "argon-track",
+          "guess-counter"
+        ],
+        "values": {
+          "release-file": "local file",
+          "sha-track": "digest ≠ manifest",
+          "hash-store": "stop install",
+          "verify-result": "reject"
+        },
+        "activeEdgeIds": [
+          "file-sha"
+        ]
       }
     ],
-    "insight": "密码哈希的目标不是“藏住字符串”，而是让每次猜测都有可控成本且无法批量复用。",
+    "insight": "摘要是比较工具；密码验证要再加上盐、成本、版本和重算流程，不能把两种用途塞进同一个“哈希很安全”的结论。",
     "quiz": {
-      "question": "为什么不能直接用无盐 SHA-256 保存密码？",
+      "question": "直接用无盐 SHA-256 保存密码，最先暴露哪两个问题？",
       "options": [
         {
-          "label": "计算太快且相同密码产生相同摘要，利于批量猜测",
+          "label": "相同密码可关联，而且每秒能试很多候选",
           "correct": true
         },
         {
-          "label": "SHA-256 会自动公开密码原文",
+          "label": "摘要会自动变回密码原文",
           "correct": false
         },
         {
-          "label": "哈希摘要必须可以解密",
+          "label": "文件完整性清单会变成可逆压缩包",
           "correct": false
         }
       ],
-      "success": "密码存储需要随机盐和专用、成本可调的 KDF。",
-      "retry": "比较攻击者每秒能尝试多少候选。"
+      "success": "文件校验和密码验证各自有正确的算法边界。",
+      "retry": "先问用途，再看盐、成本与验证记录。"
     },
     "prompt": {
-      "title": "审查密码保存方案",
-      "text": "请列出 KDF、盐长度、时间与内存参数、参数升级方式和验证流程；不要记录密码原文，也不要把可逆加密当密码哈希。"
+      "title": "为一份输入选择哈希用途",
+      "text": "请判断这是完整性比较、密码验证还是需要取回原文的存储，分别列出摘要、盐、成本、版本和失败后的动作。"
     },
     "sources": [
       {
-        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
-        "label": "OWASP Password Storage Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "url": "https://csrc.nist.gov/glossary/term/hash_function",
+        "label": "NIST CSRC · Hash function",
+        "note": "固定长度、单向性与抗碰撞"
       },
       {
         "url": "https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
-        "label": "NIST FIPS 180-4",
-        "note": "安全要求与风险边界"
+        "label": "NIST · FIPS 180-4",
+        "note": "摘要用于检测消息变化"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+        "label": "OWASP · Password Storage",
+        "note": "盐、慢哈希与密码/加密边界"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9106.html",
+        "label": "IETF CFRG · RFC 9106",
+        "note": "Argon2 的内存成本与参数"
+      },
+      {
+        "url": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+        "label": "NIST · SP 800-63B-4",
+        "note": "密码验证器的盐、成本与版本记录"
       }
     ]
   },
