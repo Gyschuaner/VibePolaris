@@ -1,0 +1,261 @@
+{
+  "slug": "qwen3-235b-instruct-2507-release-20250721",
+  "title": "Qwen3-235B-A22B-Instruct-2507 发布：把“非思考模式”单独做成长上下文模型",
+  "summary": "2025 年 7 月 21 日，Qwen 发布 Qwen3-235B-A22B-Instruct-2507，把此前 Qwen3 的 non-thinking 路线更新为独立的 Instruct 模型：235B 总参数、22B 激活，原生 256K 上下文，并可按额外配置扩展到约 101 万 token。它同时保留工具调用和 Apache 2.0 开放权重入口，但 1M 上下文需要约 1000GB 总 GPU 内存，模型卡中的 benchmark 也仍是发布方自测。",
+  "body": "2025 年 7 月 21 日，Qwen 团队发布 Qwen3-235B-A22B-Instruct-2507。Qwen 官方把它描述为上一代 Qwen3 235B-A22B 的 non-thinking 更新版，重点是更好的指令遵循、长尾知识、多语言表现、主观任务对齐，以及 256K token 的长上下文理解。这个日期来自 Qwen3 官方 README 的新闻时间线，模型卡则补充了具体规格和部署方式。\n\n这次变化首先是产品线的拆分。模型有 2350 亿总参数，但每个 token 激活 220 亿参数；官方模型卡还写明它有 128 个专家，每个 token 激活 8 个专家。它只支持 non-thinking mode，不再输出 <think></think> 块，也不需要通过 enable_thinking=False 关闭思考。对接入方来说，这种行为更容易预期：需要快速、直接回答的请求可以交给 Instruct 版本，复杂推理则由另一条 Thinking 版本承担，而不是在同一个检查点里切换模式。\n\n长上下文是这次发布最容易被标题放大的部分。模型原生上下文长度是 262,144 token，模型卡同时给出约 1,010,000 token 的扩展路径。后者需要替换配置、启用 Dual Chunk Attention 和 MInference 等实现；官方还估算，处理 1M token 需要大约 1000GB 总 GPU 内存。也就是说，“支持 1M”描述的是一条有额外工程成本的部署路线，不是下载模型后所有用户都能直接获得的默认容量。\n\nQwen 在模型卡中列出了 MMLU-Pro、GPQA、AIME25、LiveCodeBench、BFCL-v3 等测试。比如 Instruct-2507 在该表的 GPQA 是 77.5、AIME25 是 70.3、BFCL-v3 是 70.9。数字有助于读者定位它覆盖了知识、推理、代码和工具调用等不同维度，但这些结果来自 Qwen 的评测设置和对比表，不能自动等同于每个团队自己的准确率、延迟或成本。真实选型仍需要固定提示、数据集和硬件后复测。\n\n模型卡还保留了工具调用和 Qwen-Agent 的入口，可以通过 MCP 配置或自定义工具接入。这里的“能调用工具”只说明接口和训练支持，并不表示模型天然拥有文件、网络、数据库或生产环境权限。部署者仍要把工具白名单、密钥隔离、超时、日志和人工审批放在模型外层，尤其是长上下文会让一次请求携带更多潜在敏感内容。\n\n这条新闻的实际意义，是 Qwen 开始把“快答的指令模型”和“愿意花更多计算做推理的模型”作为两种可独立部署的产品。开放权重和 Apache 2.0 许可降低了试用门槛，但 235B 级别的权重、显存、并行推理和长上下文服务仍然是基础设施项目。读者判断它是否适合自己时，应该同时看模型行为、部署账单和权限边界，而不是只看参数总量或一张排行榜。",
+  "publishedAt": "2025-07-21",
+  "eventDate": "2025-07-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen3-235b-instruct-2507-release-20250721.svg",
+    "alt": "Qwen3-235B-A22B-Instruct-2507 将指令模型、256K 原生上下文和可选的 1M 部署路径分开呈现。",
+    "sourceUrl": "/images/news/qwen3-235b-instruct-2507-release-20250721.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这不是一次简单的权重改名",
+      "body": "Qwen 把 Qwen3-235B-A22B-Instruct-2507 定义为原先 non-thinking 模式的更新版，重点是指令遵循、知识覆盖、主观任务和长上下文，而不是继续用一个检查点承载两种输出习惯。",
+      "kind": "narrative"
+    },
+    {
+      "id": "moe",
+      "title": "235B 总参数和 22B 激活参数怎么读",
+      "body": "235B 是模型总参数规模，22B 是每个 token 激活的参数规模；128 个专家中每次激活 8 个。总量影响存储和部署，激活量影响单 token 的计算路径，二者不能互换。",
+      "kind": "technical"
+    },
+    {
+      "id": "long-context",
+      "title": "256K 是默认能力，1M 是额外部署路线",
+      "body": "模型原生支持 262,144 token；约 101 万 token 需要改配置并启用 DCA/MInference，官方估算总 GPU 内存约 1000GB。长上下文的上限和实际可用吞吐是两件事。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmarks",
+      "title": "评测表能定位能力维度，不能替代你的复测",
+      "body": "模型卡列出知识、推理、代码、对齐和工具调用测试。GPQA、AIME25、LiveCodeBench 等分数属于发布方评测口径，选择模型时还要在自己的提示、语言、数据和硬件上重跑。",
+      "kind": "comparison"
+    },
+    {
+      "id": "tools",
+      "title": "工具调用仍需要外层授权",
+      "body": "Qwen-Agent 和 MCP 入口让模型更容易接工具，但文件、网络、数据库和生产权限都应由沙箱和审批层控制。模型能生成调用参数，不等于它有权执行调用。",
+      "kind": "aside"
+    },
+    {
+      "id": "decision",
+      "title": "适合什么样的团队",
+      "body": "开放权重适合希望自部署、调优或审计的团队；235B 权重、并行推理和 1M 上下文则要求认真估算显存、延迟、成本和运维能力。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "长上下文模型上线前要核对哪几层？",
+    "question": "把模型卡上的“支持”拆成规格、实现、资源和业务效果四个可检查节点。",
+    "steps": [
+      {
+        "label": "规格",
+        "detail": "先核对总参数、激活参数、原生上下文和输出模式，确认你接入的是 Instruct 还是 Thinking。",
+        "evidence": "Qwen model card"
+      },
+      {
+        "label": "实现",
+        "detail": "如果需要接近 1M token，核对配置、DCA/MInference、推理框架和上下文长度参数是否真的启用。",
+        "evidence": "Qwen model card, ultra-long context instructions"
+      },
+      {
+        "label": "资源",
+        "detail": "按权重、KV cache、批量和并行度估算 GPU 内存与吞吐，不把 1M 当成没有成本的开关。",
+        "evidence": "Qwen model card, approximately 1000GB memory note"
+      },
+      {
+        "label": "评测",
+        "detail": "固定提示和数据集复测准确率、延迟、工具调用成功率与成本，再与发布方 benchmark 分开记录。",
+        "evidence": "Qwen model card performance table"
+      },
+      {
+        "label": "授权",
+        "detail": "给工具、文件和网络设置白名单、审计和回滚，模型输出不自动获得生产权限。",
+        "evidence": "Qwen-Agent/MCP usage guidance"
+      }
+    ]
+  },
+  "source": {
+    "name": "Alibaba Cloud Model Studio",
+    "url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-235b-a22b-instruct-2507"
+  },
+  "relatedSlugs": [
+    "llm",
+    "context-window",
+    "eval",
+    "benchmark",
+    "tools",
+    "agent",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/QwenLM/Qwen3/blob/main/README.md",
+      "claim": "Qwen3 官方 README 的 News 时间线将 Qwen3-235B-A22B-Instruct-2507 标为 2025 年 7 月 21 日发布，并称其支持 256K token 长上下文。",
+      "excerpt": "Qwen3 README, News: 2025.07.21 updated non-thinking mode, 256K-token long-context understanding."
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
+      "claim": "官方模型卡给出 235B 总参数、22B 激活参数、128 个专家中每 token 激活 8 个专家，以及 262,144 原生上下文；模型只支持 non-thinking mode。",
+      "excerpt": "Qwen model card, Highlights and Model Overview."
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
+      "claim": "模型卡把 1,010,000 token 作为可扩展长度，并说明需要改配置、启用 Dual Chunk Attention/MInference，约需 1000GB 总 GPU memory；这不是默认的免费能力。",
+      "excerpt": "Qwen model card, Processing Ultra-Long Texts and How to Enable 1M Token Context."
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-235b-a22b-instruct-2507",
+      "claim": "Alibaba Cloud Model Studio 提供 Qwen3-235B-A22B-Instruct-2507 的官方接入页面，构成云端调用入口的独立来源。",
+      "excerpt": "Alibaba Cloud Model Studio, qwen3-235b-a22b-instruct-2507 model page."
+    }
+  ],
+  "canonicalUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-235b-a22b-instruct-2507",
+  "sourceHash": "sha256:1b7d64e744bbebd42109efd200dd2e3d9348d16b97330bf998b20a09de1ece20",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:05:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文用 llm 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.9,
+      "evidence": [
+        "正文用 context-window 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文用 eval 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.9,
+      "evidence": [
+        "正文用 benchmark 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文用 tools 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文用 agent 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文用 authorization 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文用 event 解释这条新闻中的事实或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/QwenLM/Qwen3/blob/main/README.md",
+      "claim": "Qwen3 官方 README 的 News 时间线将 Qwen3-235B-A22B-Instruct-2507 标为 2025 年 7 月 21 日发布，并称其支持 256K token 长上下文。",
+      "excerpt": "Qwen3 README, News: 2025.07.21 updated non-thinking mode, 256K-token long-context understanding."
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
+      "claim": "官方模型卡给出 235B 总参数、22B 激活参数、128 个专家中每 token 激活 8 个专家，以及 262,144 原生上下文；模型只支持 non-thinking mode。",
+      "excerpt": "Qwen model card, Highlights and Model Overview."
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
+      "claim": "模型卡把 1,010,000 token 作为可扩展长度，并说明需要改配置、启用 Dual Chunk Attention/MInference，约需 1000GB 总 GPU memory；这不是默认的免费能力。",
+      "excerpt": "Qwen model card, Processing Ultra-Long Texts and How to Enable 1M Token Context."
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/qwen3-235b-a22b-instruct-2507",
+      "claim": "Alibaba Cloud Model Studio 提供 Qwen3-235B-A22B-Instruct-2507 的官方接入页面，构成云端调用入口的独立来源。",
+      "excerpt": "Alibaba Cloud Model Studio, qwen3-235b-a22b-instruct-2507 model page."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:05:00Z",
+    "method": "source",
+    "notes": "已核对一手公告、产品/模型资料和赛事或政府公开页面；正文区分发布方主张、官方认证、探索性安排与已落地结果。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T17:05:00Z",
+    "notes": "新闻事实链已整理，等待唯一 reader-review 子智能体检查零基础读者可读性和边界表述。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T13:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文按事件组织且没有明显模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-21，与 Qwen 官方 README、GOV.UK 公告和 Google DeepMind 发布一致。",
+      "Qwen 的 235B/22B、256K 原生/约1.01M扩展和 benchmark 保留官方模型卡边界；英国合作明确 MoU 非约束、不等于采购/投资或认证；Gemini 35/42、金牌线和 IMO 协调员认证与实验版本/有限推出范围区分清楚。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：三篇新闻事实、官方/政府口径和评测、计划、认证边界清楚，无需修改正文。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-21",
+  "fingerprint": "sha256:1b7d64e744bbebd42109efd200dd2e3d9348d16b97330bf998b20a09de1ece20",
+  "promotedAt": "2026-10-04T13:03:48.466Z"
+}
