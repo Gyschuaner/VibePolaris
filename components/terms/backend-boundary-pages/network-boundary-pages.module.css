@@ -1,0 +1,2913 @@
+.firewallHero,
+.firewallLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.firewallHeroTop,
+.firewallLabHeader,
+.firewallEvidence {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.firewallHeroTop span,
+.firewallLabHeader span,
+.firewallHeroRoom span,
+.firewallHeroPacket small,
+.firewallHeroGate small,
+.firewallLabHeader > span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.firewallHeroTop strong,
+.firewallLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.firewallHeroFlow,
+.firewallLabLane {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.firewallHeroPacket,
+.firewallHeroGate,
+.firewallHeroRoom,
+.firewallLabNode {
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  color: var(--accent-text);
+}
+
+.firewallHeroPacket,
+.firewallHeroRoom {
+  align-items: center;
+  text-align: center;
+}
+
+.firewallHeroPacket svg,
+.firewallHeroGate svg,
+.firewallHeroRoom svg,
+.firewallLabNode svg {
+  color: var(--accent);
+}
+
+.firewallHeroPacket span,
+.firewallHeroGate span,
+.firewallHeroRoom strong,
+.firewallLabNode strong {
+  font-size: .9rem;
+}
+
+.firewallHeroGate {
+  position: relative;
+  overflow: hidden;
+}
+
+.firewallHeroGate:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s ease;
+}
+
+.firewallHero[data-step="1"] .firewallHeroGate:after,
+.firewallHero[data-step="2"] .firewallHeroGate:after {
+  transform: scaleX(1);
+}
+
+.firewallHeroRoom[data-allowed="true"] {
+  background: color-mix(in srgb, #dbe9d2 62%, var(--surface));
+}
+
+.firewallHeroRoom[data-blocked="true"] {
+  background: color-mix(in srgb, #f4ddcf 48%, var(--surface));
+  color: #8a542f;
+}
+
+.firewallHeroArrow,
+.firewallLabLane > svg {
+  color: var(--accent-text);
+}
+
+.firewallHeroTimeline,
+.firewallHeroControls,
+.firewallControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.firewallHeroTimeline button,
+.firewallHeroControls button,
+.firewallControls button {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.firewallHeroTimeline button[aria-pressed="true"],
+.firewallControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.firewallHeroControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.firewallLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.firewallLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.firewallLabLane {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.5fr) auto minmax(0, 1fr);
+  margin-bottom: 14px;
+}
+
+.firewallLabNode {
+  min-height: 78px;
+  align-items: center;
+  text-align: center;
+}
+
+.firewallLabNode[data-warning="true"] {
+  border-color: #b56c45;
+  background: color-mix(in srgb, #f4ddcf 55%, var(--surface));
+}
+
+.firewallEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.firewallEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 45%, transparent);
+}
+
+.firewallEvidence svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.firewallEvidence p {
+  margin: 0;
+}
+
+.firewallEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.firewallControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .firewallHero,
+  .firewallLab {
+    padding: 15px;
+  }
+
+  .firewallHeroFlow,
+  .firewallLabLane {
+    grid-template-columns: 1fr;
+  }
+
+  .firewallHeroArrow,
+  .firewallLabLane > svg {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .firewallHeroTop,
+  .firewallLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .firewallHeroControls {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .firewallHero *,
+  .firewallLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.ipHero,
+.ipLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.ipHeroTop,
+.ipLabHeader,
+.ipLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.ipHeroTop span,
+.ipLabHeader span,
+.ipDevice code,
+.ipNat small,
+.ipRemote small,
+.ipLabHeader > span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.ipHeroTop strong,
+.ipLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.ipHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto minmax(0, .9fr) auto minmax(0, 1.1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 14px;
+}
+
+.ipDeviceStack {
+  display: grid;
+  gap: 8px;
+}
+
+.ipDevice,
+.ipNat,
+.ipRemote {
+  display: flex;
+  min-height: 74px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  color: var(--accent-text);
+}
+
+.ipDevice {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  opacity: .42;
+  transition: opacity .35s ease, transform .35s ease, background .35s ease;
+}
+
+.ipDevice[data-active="true"] {
+  opacity: 1;
+  transform: translateX(5px);
+  background: color-mix(in srgb, var(--tint) 62%, var(--surface));
+}
+
+.ipDevice svg,
+.ipNat svg,
+.ipRemote svg,
+.ipLabEvidence svg {
+  color: var(--accent);
+}
+
+.ipDevice code {
+  grid-column: 2;
+  overflow-wrap: anywhere;
+}
+
+.ipNat,
+.ipRemote {
+  align-items: center;
+  text-align: center;
+}
+
+.ipNat strong,
+.ipRemote strong {
+  font-size: .88rem;
+  overflow-wrap: anywhere;
+}
+
+.ipArrow {
+  color: var(--accent-text);
+}
+
+.ipMapping {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 7px 12px;
+  align-items: baseline;
+  padding: 13px 15px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+}
+
+.ipMapping > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.ipMapping code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .84rem;
+}
+
+.ipMapping p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: .86rem;
+  line-height: 1.65;
+}
+
+.ipTimeline,
+.ipControls,
+.ipLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ipTimeline {
+  margin-top: 13px;
+}
+
+.ipTimeline button,
+.ipControls button,
+.ipLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.ipTimeline button[aria-pressed="true"],
+.ipLabControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.ipControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.ipLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.ipLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.ipLog,
+.ipMappingTable {
+  display: grid;
+  gap: 8px;
+  margin: 20px 0 0;
+}
+
+.ipLog > div:not(.ipLabEvidence),
+.ipTableHead,
+.ipTableRow {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.ipLog code,
+.ipTableRow code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .84rem;
+}
+
+.ipLog > div > svg {
+  color: var(--accent);
+}
+
+.ipLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.ipLabEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 45%, var(--surface));
+}
+
+.ipLabEvidence p {
+  margin: 0;
+}
+
+.ipLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.ipTableHead,
+.ipTableRow {
+  grid-template-columns: minmax(0, .65fr) minmax(0, 1.25fr) minmax(0, 1.25fr);
+}
+
+.ipTableHead {
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.ipLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .ipHero,
+  .ipLab {
+    padding: 15px;
+  }
+
+  .ipHeroStage {
+    grid-template-columns: 1fr;
+  }
+
+  .ipArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .ipHeroTop,
+  .ipLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ipControls {
+    justify-content: flex-start;
+  }
+
+  .ipTableRow code,
+  .ipTableHead {
+    font-size: .72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ipHero *,
+  .ipLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.portHero,
+.portLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.portHeroTop,
+.portLabHeader,
+.portEvidence {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.portHeroTop span,
+.portLabHeader span,
+.portProbe small,
+.portOutcome span,
+.portLabHeader > span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.portHeroTop strong,
+.portLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.portHeroStage,
+.portLabPath {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.portHeroStage {
+  grid-template-columns: minmax(0, .9fr) auto minmax(0, 1.35fr) auto minmax(0, 1fr);
+}
+
+.portProbe,
+.portBoard,
+.portOutcome,
+.portLabNode {
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  color: var(--accent-text);
+}
+
+.portProbe,
+.portOutcome {
+  align-items: center;
+  text-align: center;
+}
+
+.portProbe svg,
+.portBoard svg,
+.portOutcome svg,
+.portLabNode svg,
+.portEvidence svg,
+.portLabEvidence svg {
+  color: var(--accent);
+}
+
+.portProbe strong,
+.portOutcome strong,
+.portLabNode strong {
+  overflow-wrap: anywhere;
+  font-size: .88rem;
+}
+
+.portProbe code,
+.portOutcome code {
+  overflow-wrap: anywhere;
+  font-size: .8rem;
+}
+
+.portBoard {
+  gap: 8px;
+  background: color-mix(in srgb, var(--surface) 66%, var(--tint));
+}
+
+.portBoardTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 3px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.portBoardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface) 64%, transparent);
+  color: var(--muted);
+  font-size: .78rem;
+  transition: transform .35s ease, color .35s ease, background .35s ease;
+}
+
+.portBoardRow[data-active="true"] {
+  transform: translateX(5px);
+  background: color-mix(in srgb, var(--accent) 24%, var(--surface));
+  color: var(--accent-text);
+}
+
+.portBoardRow code {
+  overflow-wrap: anywhere;
+}
+
+.portArrow,
+.portLabPath > svg {
+  color: var(--accent-text);
+}
+
+.portEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.portEvidence p {
+  margin: 0;
+}
+
+.portTimeline,
+.portControls,
+.portLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portTimeline {
+  margin-top: 13px;
+}
+
+.portTimeline button,
+.portControls button,
+.portLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.portTimeline button[aria-pressed="true"],
+.portLabControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.portControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.portLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.portLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.portLabPath {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  margin-bottom: 14px;
+}
+
+.portLabNode {
+  min-height: 78px;
+  align-items: center;
+  text-align: center;
+}
+
+.portLabNode[data-warning="true"] {
+  border-color: #b56c45;
+  background: color-mix(in srgb, #f4ddcf 55%, var(--surface));
+}
+
+.portLabNode[data-good="true"] {
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  background: color-mix(in srgb, #dbe9d2 58%, var(--surface));
+}
+
+.portLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.portLabEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 45%, var(--surface));
+}
+
+.portLabEvidence p {
+  margin: 0;
+}
+
+.portLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.portLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .portHero,
+  .portLab {
+    padding: 15px;
+  }
+
+  .portHeroStage,
+  .portLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .portArrow,
+  .portLabPath > svg {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .portHeroTop,
+  .portLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .portControls {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portHero *,
+  .portLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.packetHero,
+.packetLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.packetHeroTop,
+.packetLabHeader,
+.packetEvidence,
+.packetLabMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.packetHeroTop span,
+.packetLabHeader span,
+.packetPayload small,
+.packetLabHeader > span,
+.packetLabMeta span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.packetHeroTop strong,
+.packetLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.packetHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.35fr) minmax(0, .9fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.packetPayload,
+.packetEnvelope,
+.packetRoute,
+.packetLabHop {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  color: var(--accent-text);
+}
+
+.packetPayload,
+.packetRoute {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  padding: 14px;
+}
+
+.packetPayload {
+  align-items: center;
+  text-align: center;
+}
+
+.packetPayload svg,
+.packetEnvelopeHeader svg,
+.packetRouteTitle svg,
+.packetEvidence svg,
+.packetLabMeta svg,
+.packetLabEvidence svg {
+  color: var(--accent);
+}
+
+.packetPayload strong {
+  overflow-wrap: anywhere;
+  font-size: .9rem;
+}
+
+.packetArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.packetEnvelope {
+  display: grid;
+  gap: 11px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--surface) 66%, var(--tint));
+}
+
+.packetEnvelopeHeader,
+.packetRouteTitle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.packetEnvelopeHeader div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.packetEnvelopeHeader span,
+.packetRouteTitle span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.packetEnvelopeHeader strong {
+  overflow-wrap: anywhere;
+  font-size: .8rem;
+  line-height: 1.55;
+}
+
+.packetPieces {
+  display: grid;
+  gap: 7px;
+}
+
+.packetPiece {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
+  transition: transform .35s ease, background .35s ease, color .35s ease;
+}
+
+.packetPiece code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .8rem;
+}
+
+.packetPiece[data-warning="true"] {
+  background: color-mix(in srgb, #f4ddcf 55%, var(--surface));
+  color: #8a542f;
+  transform: translateX(4px);
+}
+
+.packetRoute {
+  gap: 8px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.packetRouteTitle {
+  align-items: center;
+}
+
+.packetHop {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 7px 8px;
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: .78rem;
+  transition: transform .35s ease, background .35s ease, color .35s ease;
+}
+
+.packetHop span,
+.packetLabHop strong {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-text) 12%, transparent);
+  color: var(--accent-text);
+  font: 600 .7rem ui-monospace, SFMono-Regular, monospace;
+}
+
+.packetHop strong {
+  overflow-wrap: anywhere;
+  font-size: .78rem;
+  line-height: 1.35;
+}
+
+.packetHop[data-active="true"] {
+  transform: translateX(4px);
+  background: color-mix(in srgb, var(--accent) 24%, var(--surface));
+  color: var(--accent-text);
+}
+
+.packetEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.packetEvidence p {
+  margin: 0;
+}
+
+.packetTimeline,
+.packetControls,
+.packetLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.packetTimeline {
+  margin-top: 13px;
+}
+
+.packetTimeline button,
+.packetControls button,
+.packetLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.packetTimeline button[aria-pressed="true"],
+.packetLabControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.packetControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.packetLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.packetLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.packetLabMeta {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.packetLabMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+}
+
+.packetLabMeta strong,
+.packetLabMeta code {
+  color: var(--accent-text);
+  font-size: .8rem;
+  overflow-wrap: anywhere;
+}
+
+.packetLabPath {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 20px 0 14px;
+}
+
+.packetLabHop {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 10px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.packetLabHop[data-active="true"] {
+  color: var(--accent-text);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+
+.packetLabHop[data-stop="true"] {
+  border-color: #b56c45;
+  background: color-mix(in srgb, #f4ddcf 55%, var(--surface));
+  color: #8a542f;
+}
+
+.packetLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.packetLabEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 45%, var(--surface));
+}
+
+.packetLabEvidence p {
+  margin: 0;
+}
+
+.packetLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.packetLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .packetHero,
+  .packetLab {
+    padding: 15px;
+  }
+
+  .packetHeroStage {
+    grid-template-columns: 1fr;
+  }
+
+  .packetHeroTop,
+  .packetLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .packetControls {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .packetHero *,
+  .packetLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.urlHero,
+.urlLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.urlHeroTop,
+.urlLabHeader,
+.urlEvidence,
+.urlLabEvidence {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.urlHeroTop span,
+.urlLabHeader span,
+.urlAddressCard small,
+.urlTargetCard small,
+.urlLabHeader > span,
+.urlFragmentProof small {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.urlHeroTop strong,
+.urlLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.urlHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 1fr) auto minmax(0, .85fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.urlAddressCard,
+.urlParserCard,
+.urlTargetCard,
+.urlLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  color: var(--accent-text);
+}
+
+.urlAddressCard,
+.urlParserCard,
+.urlTargetCard {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.urlCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.urlCardHeading svg,
+.urlEvidence svg,
+.urlFragmentProof svg,
+.urlLabNode svg,
+.urlLabEvidence svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.urlRaw {
+  display: block;
+  overflow-wrap: anywhere;
+  font: 600 .82rem/1.75 ui-monospace, SFMono-Regular, monospace;
+  color: var(--accent-text);
+}
+
+.urlRaw span {
+  padding: 2px 1px;
+  border-radius: 4px;
+  transition: background .35s ease, color .35s ease, box-shadow .35s ease;
+}
+
+.urlRaw span[data-active="true"] {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.urlRaw span[data-token="fragment"] {
+  color: #8a542f;
+}
+
+.urlFields {
+  display: grid;
+  gap: 7px;
+}
+
+.urlFields code {
+  display: block;
+  overflow-wrap: anywhere;
+  padding: 5px 7px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
+  color: var(--muted);
+  font-size: .76rem;
+  transition: background .35s ease, color .35s ease, transform .35s ease;
+}
+
+.urlFields code[data-active="true"] {
+  transform: translateX(4px);
+  background: color-mix(in srgb, var(--accent) 24%, var(--surface));
+  color: var(--accent-text);
+}
+
+.urlTargetCard {
+  justify-content: center;
+  background: color-mix(in srgb, var(--surface) 60%, var(--tint));
+  transition: border-color .35s ease, background .35s ease, transform .35s ease;
+}
+
+.urlTargetCard[data-ready="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 40%, transparent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  transform: translateY(-3px);
+}
+
+.urlTargetCard > code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .82rem;
+  line-height: 1.55;
+}
+
+.urlFragmentProof {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 8px;
+  border-top: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent);
+  color: #8a542f;
+  font: 600 .78rem ui-monospace, SFMono-Regular, monospace;
+}
+
+.urlFragmentProof small {
+  font-family: inherit;
+  font-weight: 400;
+}
+
+.urlArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.urlEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.urlEvidence p,
+.urlLabEvidence p {
+  margin: 0;
+}
+
+.urlTimeline,
+.urlControls,
+.urlLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.urlTimeline {
+  margin-top: 13px;
+}
+
+.urlTimeline button,
+.urlControls button,
+.urlLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.urlTimeline button[aria-pressed="true"],
+.urlLabControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.urlControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.urlLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.urlLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.urlLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.25fr) auto minmax(0, .9fr);
+  align-items: stretch;
+  gap: 9px;
+  margin: 20px 0 14px;
+}
+
+.urlLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.urlLabNode > span {
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.urlLabNode code {
+  overflow-wrap: anywhere;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface) 64%, transparent);
+  color: var(--accent-text);
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
+.urlLabNode > code {
+  margin-top: auto;
+}
+
+.urlLabNode > div {
+  display: grid;
+  gap: 5px;
+}
+
+.urlLabNode[data-good="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.urlLabNode strong {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .83rem;
+  line-height: 1.5;
+}
+
+.urlLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.urlLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.urlLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .urlHero,
+  .urlLab {
+    padding: 15px;
+  }
+
+  .urlHeroStage,
+  .urlLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .urlArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .urlHeroTop,
+  .urlLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .urlControls {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urlHero *,
+  .urlLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.hostnameHero,
+.hostnameLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 86%, var(--tint)), color-mix(in srgb, var(--tint) 72%, var(--bg)));
+}
+
+.hostnameHeroTop,
+.hostnameLabHeader,
+.hostnameEvidence,
+.hostnameLabEvidence {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.hostnameHeroTop span,
+.hostnameLabHeader span,
+.hostnameNameCard small,
+.hostnameValue small,
+.hostnameLabHeader > span,
+.hostnameLabNode > span {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.hostnameHeroTop strong,
+.hostnameLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+}
+
+.hostnameHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr) auto minmax(0, 1.15fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.hostnameNameCard,
+.hostnameRouteCard,
+.hostnameServiceCard,
+.hostnameLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 78%, white);
+  color: var(--accent-text);
+  transition: border-color .35s ease, background .35s ease, transform .35s ease, opacity .35s ease;
+}
+
+.hostnameNameCard,
+.hostnameRouteCard,
+.hostnameServiceCard {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.hostnameNameCard[data-active="true"],
+.hostnameRouteCard[data-active="true"],
+.hostnameServiceCard[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, var(--surface));
+  transform: translateY(-3px);
+}
+
+.hostnameCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.hostnameCardHeading svg,
+.hostnameEvidence svg,
+.hostnameLabNode svg,
+.hostnameLabEvidence svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.hostnameNameCard > code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font: 600 .9rem/1.55 ui-monospace, SFMono-Regular, monospace;
+}
+
+.hostnameValue {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.hostnameValue code {
+  overflow-wrap: anywhere;
+  padding: 6px 7px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--accent-text);
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
+.hostnameArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.hostnameEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.hostnameEvidence p,
+.hostnameLabEvidence p {
+  margin: 0;
+}
+
+.hostnameTimeline,
+.hostnameControls,
+.hostnameLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hostnameTimeline {
+  margin-top: 13px;
+}
+
+.hostnameTimeline button,
+.hostnameControls button,
+.hostnameLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+}
+
+.hostnameTimeline button[aria-pressed="true"],
+.hostnameLabControls button[aria-pressed="true"] {
+  background: var(--accent-text);
+  color: var(--surface);
+}
+
+.hostnameControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.hostnameLab {
+  background: color-mix(in srgb, var(--surface) 92%, var(--tint));
+}
+
+.hostnameLabHeader strong {
+  display: block;
+  margin-top: 5px;
+}
+
+.hostnameLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) auto minmax(0, 1.05fr) auto minmax(0, 1.2fr) auto minmax(0, .9fr);
+  align-items: stretch;
+  gap: 8px;
+  margin: 20px 0 14px;
+}
+
+.hostnameLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.hostnameLabNode code {
+  overflow-wrap: anywhere;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface) 64%, transparent);
+  color: var(--accent-text);
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
+.hostnameLabNode strong {
+  overflow-wrap: anywhere;
+  margin-top: auto;
+  color: var(--accent-text);
+  font-size: .83rem;
+  line-height: 1.5;
+}
+
+.hostnameLabNode[data-good="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.hostnameLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.hostnameLabEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 42%, var(--surface));
+}
+
+.hostnameLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.hostnameLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .hostnameHero,
+  .hostnameLab {
+    padding: 15px;
+  }
+
+  .hostnameHeroStage,
+  .hostnameLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .hostnameArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .hostnameHeroTop,
+  .hostnameLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .hostnameControls {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hostnameHero *,
+  .hostnameLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.dnsRecordHero,
+.dnsRecordLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), color-mix(in srgb, var(--surface) 90%, transparent));
+}
+
+.dnsRecordHeroTop,
+.dnsRecordLabHeader,
+.dnsRecordEvidence,
+.dnsRecordLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dnsRecordHeroTop span,
+.dnsRecordLabHeader span,
+.dnsRecordRowCard small,
+.dnsRecordSetCard small,
+.dnsRecordCacheCard small,
+.dnsRecordFields small,
+.dnsRecordLabNode > span {
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.dnsRecordHeroTop strong,
+.dnsRecordLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.dnsRecordHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 26px 0 16px;
+}
+
+.dnsRecordRowCard,
+.dnsRecordSetCard,
+.dnsRecordCacheCard,
+.dnsRecordLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--accent-text);
+  transition: border-color .32s, background .32s, transform .32s, box-shadow .32s;
+}
+
+.dnsRecordRowCard,
+.dnsRecordSetCard,
+.dnsRecordCacheCard {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.dnsRecordRowCard[data-active="true"],
+.dnsRecordSetCard[data-active="true"],
+.dnsRecordCacheCard[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 52%, transparent);
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-text) 9%, transparent);
+  transform: translateY(-3px);
+}
+
+.dnsRecordCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.dnsRecordCardHeading svg,
+.dnsRecordEvidence svg,
+.dnsRecordLabNode svg,
+.dnsRecordLabEvidence svg {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.dnsRecordRowCard > code,
+.dnsRecordSetCard > code,
+.dnsRecordCacheCard > code,
+.dnsRecordLabNode code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font: .78rem/1.48 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.dnsRecordFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.dnsRecordFields span:last-child {
+  grid-column: 1 / -1;
+}
+
+.dnsRecordFields span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 7px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+}
+
+.dnsRecordFields strong {
+  overflow-wrap: anywhere;
+  font-size: .78rem;
+}
+
+.dnsRecordArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.dnsRecordEvidence,
+.dnsRecordLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.dnsRecordEvidence p,
+.dnsRecordLabEvidence p {
+  margin: 0;
+}
+
+.dnsRecordTimeline,
+.dnsRecordControls,
+.dnsRecordLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dnsRecordTimeline {
+  margin-top: 14px;
+}
+
+.dnsRecordTimeline button,
+.dnsRecordControls button,
+.dnsRecordLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--muted);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s, transform .25s;
+}
+
+.dnsRecordTimeline button:hover,
+.dnsRecordControls button:hover,
+.dnsRecordLabControls button:hover,
+.dnsRecordTimeline button[aria-pressed="true"],
+.dnsRecordLabControls button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 44%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--accent-text);
+}
+
+.dnsRecordControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.dnsRecordLabHeader strong {
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.dnsRecordLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr) auto minmax(0, .9fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 22px 0 14px;
+}
+
+.dnsRecordLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dnsRecordLabNode strong {
+  overflow-wrap: anywhere;
+  margin-top: auto;
+  color: var(--accent-text);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.dnsRecordLabNode[data-good="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.dnsRecordLabEvidence[data-warning="true"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 42%, var(--surface));
+}
+
+.dnsRecordLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.dnsRecordLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .dnsRecordHero,
+  .dnsRecordLab {
+    padding: 15px;
+  }
+
+  .dnsRecordHeroStage,
+  .dnsRecordLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .dnsRecordArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .dnsRecordHeroTop,
+  .dnsRecordLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dnsRecordHeroTop strong {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dnsRecordHero *,
+  .dnsRecordLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.dnsResolverHero,
+.dnsResolverLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 20px;
+  background: radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 17%, transparent), transparent 42%), color-mix(in srgb, var(--surface) 86%, transparent);
+}
+
+.dnsResolverHeroTop,
+.dnsResolverLabHeader,
+.dnsResolverEvidence,
+.dnsResolverLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dnsResolverHeroTop span,
+.dnsResolverLabHeader span,
+.dnsResolverQuestionCard small,
+.dnsResolverEngineLine small,
+.dnsResolverCacheCard small,
+.dnsResolverLabNode > span {
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.dnsResolverHeroTop strong,
+.dnsResolverLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.dnsResolverHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 25px 0 15px;
+}
+
+.dnsResolverQuestionCard,
+.dnsResolverEngineCard,
+.dnsResolverCacheCard,
+.dnsResolverLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--accent-text);
+  transition: border-color .32s, background .32s, transform .32s, box-shadow .32s;
+}
+
+.dnsResolverQuestionCard,
+.dnsResolverEngineCard,
+.dnsResolverCacheCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dnsResolverQuestionCard[data-active="true"],
+.dnsResolverEngineCard[data-active="true"],
+.dnsResolverCacheCard[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 52%, transparent);
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-text) 9%, transparent);
+  transform: translateY(-3px);
+}
+
+.dnsResolverCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.dnsResolverCardHeading svg,
+.dnsResolverEvidence svg,
+.dnsResolverLabNode svg,
+.dnsResolverLabEvidence svg {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.dnsResolverQuestionCard > code,
+.dnsResolverEngineLine code,
+.dnsResolverCacheCard > code,
+.dnsResolverLabNode code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font: .78rem/1.48 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.dnsResolverEngineCard > strong,
+.dnsResolverCacheCard > strong,
+.dnsResolverLabNode > strong {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.dnsResolverEngineLine {
+  display: grid;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.dnsResolverArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.dnsResolverTrace {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  margin: 10px 0 14px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.dnsResolverTrace span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px dashed color-mix(in srgb, var(--muted) 35%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--muted) 78%, transparent);
+  font: .74rem/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+  transition: border-color .25s, background .25s, color .25s, transform .25s;
+}
+
+.dnsResolverTrace span + span::before {
+  content: "→";
+  margin-right: 7px;
+  color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+.dnsResolverTrace span[data-active="true"] {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent-text) 48%, transparent);
+  color: var(--accent-text);
+}
+
+.dnsResolverTrace span[data-done="true"] {
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  transform: translateY(-2px);
+}
+
+.dnsResolverEvidence,
+.dnsResolverLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.dnsResolverEvidence p,
+.dnsResolverLabEvidence p {
+  margin: 0;
+}
+
+.dnsResolverTimeline,
+.dnsResolverControls,
+.dnsResolverLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dnsResolverTimeline {
+  margin-top: 14px;
+}
+
+.dnsResolverTimeline button,
+.dnsResolverControls button,
+.dnsResolverLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--muted);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s;
+}
+
+.dnsResolverTimeline button:hover,
+.dnsResolverControls button:hover,
+.dnsResolverLabControls button:hover,
+.dnsResolverTimeline button[aria-pressed="true"],
+.dnsResolverLabControls button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 44%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--accent-text);
+}
+
+.dnsResolverControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.dnsResolverLabHeader strong {
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.dnsResolverLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr) auto minmax(0, 1.05fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 22px 0 14px;
+}
+
+.dnsResolverLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dnsResolverLabNode[data-status="ok"] {
+  border-color: color-mix(in srgb, var(--accent-text) 36%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.dnsResolverLabNode[data-status="negative"],
+.dnsResolverLabNode[data-status="failure"],
+.dnsResolverLabEvidence[data-status="negative"],
+.dnsResolverLabEvidence[data-status="failure"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 42%, var(--surface));
+}
+
+.dnsResolverLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.dnsResolverLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .dnsResolverHero,
+  .dnsResolverLab {
+    padding: 15px;
+  }
+
+  .dnsResolverHeroStage,
+  .dnsResolverLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .dnsResolverArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .dnsResolverHeroTop,
+  .dnsResolverLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dnsResolverHeroTop strong {
+    text-align: left;
+  }
+
+  .dnsResolverTrace {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .dnsResolverTrace span + span::before {
+    content: "";
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dnsResolverHero *,
+  .dnsResolverLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.cacheControlHero,
+.cacheControlLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), color-mix(in srgb, var(--surface) 90%, transparent));
+}
+
+.cacheControlHeroTop,
+.cacheControlLabHeader,
+.cacheControlEvidence,
+.cacheControlLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.cacheControlHeroTop span,
+.cacheControlLabHeader span,
+.cacheControlResponseCard small,
+.cacheControlGateCard small,
+.cacheControlResultCard small,
+.cacheControlLabNode > span {
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.cacheControlHeroTop strong,
+.cacheControlLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.cacheControlHeroStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 25px 0 16px;
+}
+
+.cacheControlResponseCard,
+.cacheControlGateCard,
+.cacheControlResultCard,
+.cacheControlLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--accent-text);
+  transition: border-color .32s, background .32s, transform .32s, box-shadow .32s;
+}
+
+.cacheControlResponseCard,
+.cacheControlGateCard,
+.cacheControlResultCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cacheControlResponseCard[data-active="true"],
+.cacheControlGateCard[data-active="true"],
+.cacheControlResultCard[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 52%, transparent);
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-text) 9%, transparent);
+  transform: translateY(-3px);
+}
+
+.cacheControlCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.cacheControlCardHeading svg,
+.cacheControlEvidence svg,
+.cacheControlLabNode svg,
+.cacheControlLabEvidence svg {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.cacheControlResponseCard > code,
+.cacheControlGateCard > strong,
+.cacheControlResultCard > strong,
+.cacheControlLabNode code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font: .78rem/1.48 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.cacheControlGateCard > strong,
+.cacheControlResultCard > strong,
+.cacheControlLabNode > strong {
+  overflow-wrap: anywhere;
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.cacheControlClock {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 5px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.cacheControlClock svg {
+  color: var(--accent-text);
+}
+
+.cacheControlClock code {
+  margin-left: auto;
+  color: var(--accent-text);
+  font: .78rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.cacheControlArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.cacheControlEvidence,
+.cacheControlLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.cacheControlEvidence p,
+.cacheControlLabEvidence p {
+  margin: 0;
+}
+
+.cacheControlTimeline,
+.cacheControlControls,
+.cacheControlLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cacheControlTimeline {
+  margin-top: 14px;
+}
+
+.cacheControlTimeline button,
+.cacheControlControls button,
+.cacheControlLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--muted);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s;
+}
+
+.cacheControlTimeline button:hover,
+.cacheControlControls button:hover,
+.cacheControlLabControls button:hover,
+.cacheControlTimeline button[aria-pressed="true"],
+.cacheControlLabControls button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 44%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--accent-text);
+}
+
+.cacheControlControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.cacheControlLabHeader strong {
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.cacheControlLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr) auto minmax(0, .9fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 22px 0 14px;
+}
+
+.cacheControlLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cacheControlLabNode[data-status="ok"] {
+  border-color: color-mix(in srgb, var(--accent-text) 36%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.cacheControlLabNode[data-status="blocked"],
+.cacheControlLabNode[data-status="stale"],
+.cacheControlLabNode[data-status="fallback"],
+.cacheControlLabEvidence[data-status="blocked"],
+.cacheControlLabEvidence[data-status="stale"],
+.cacheControlLabEvidence[data-status="fallback"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 42%, var(--surface));
+}
+
+.cacheControlLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.cacheControlLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .cacheControlHero,
+  .cacheControlLab {
+    padding: 15px;
+  }
+
+  .cacheControlHeroStage,
+  .cacheControlLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .cacheControlArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .cacheControlHeroTop,
+  .cacheControlLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cacheControlHeroTop strong {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cacheControlHero *,
+  .cacheControlLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.mimeTypeHero,
+.mimeTypeLab {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), color-mix(in srgb, var(--surface) 90%, transparent));
+}
+
+.mimeTypeHeroTop,
+.mimeTypeLabHeader,
+.mimeTypeEvidence,
+.mimeTypeLabEvidence {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.mimeTypeHeroTop span,
+.mimeTypeLabHeader span,
+.mimeTypeLabelCard small,
+.mimeTypeBodyCard small,
+.mimeTypeParserCard small,
+.mimeTypeResultCard small,
+.mimeTypeLabNode > span {
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.mimeTypeHeroTop strong,
+.mimeTypeLabHeader strong {
+  color: var(--accent-text);
+  font-size: .92rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.mimeTypeStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.05fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 10px;
+  margin: 25px 0 16px;
+}
+
+.mimeTypeLabelCard,
+.mimeTypeBodyCard,
+.mimeTypeParserCard,
+.mimeTypeResultCard,
+.mimeTypeLabNode {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--accent-text);
+  transition: border-color .32s, background .32s, transform .32s, box-shadow .32s;
+}
+
+.mimeTypeLabelCard,
+.mimeTypeBodyCard,
+.mimeTypeParserCard,
+.mimeTypeResultCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mimeTypeLabelCard[data-active="true"],
+.mimeTypeBodyCard[data-active="true"],
+.mimeTypeParserCard[data-active="true"],
+.mimeTypeResultCard[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 52%, transparent);
+  background: color-mix(in srgb, var(--accent) 17%, var(--surface));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-text) 9%, transparent);
+  transform: translateY(-3px);
+}
+
+.mimeTypeCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.mimeTypeCardHeading svg,
+.mimeTypeEvidence svg,
+.mimeTypeLabNode svg,
+.mimeTypeLabEvidence svg {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.mimeTypeLabelCard > code,
+.mimeTypeBodyCard > code,
+.mimeTypeParserCard > strong,
+.mimeTypeResultCard > strong,
+.mimeTypeLabNode code {
+  overflow-wrap: anywhere;
+  color: var(--accent-text);
+  font: .78rem/1.48 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.mimeTypeParserCard > strong,
+.mimeTypeResultCard > strong,
+.mimeTypeLabNode > strong {
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.mimeTypeArrow {
+  align-self: center;
+  color: var(--accent-text);
+}
+
+.mimeTypeEvidence,
+.mimeTypeLabEvidence {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+
+.mimeTypeEvidence p,
+.mimeTypeLabEvidence p {
+  margin: 0;
+}
+
+.mimeTypeTimeline,
+.mimeTypeControls,
+.mimeTypeLabControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mimeTypeTimeline {
+  margin-top: 14px;
+}
+
+.mimeTypeTimeline button,
+.mimeTypeControls button,
+.mimeTypeLabControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--muted);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s;
+}
+
+.mimeTypeTimeline button:hover,
+.mimeTypeControls button:hover,
+.mimeTypeLabControls button:hover,
+.mimeTypeTimeline button[aria-pressed="true"],
+.mimeTypeLabControls button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent-text) 44%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--accent-text);
+}
+
+.mimeTypeControls {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.mimeTypeLabHeader strong {
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.mimeTypeLabPath {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) auto minmax(0, .9fr) auto minmax(0, .9fr);
+  align-items: stretch;
+  gap: 12px;
+  margin: 22px 0 14px;
+}
+
+.mimeTypeLabNode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mimeTypeLabNode[data-status="ok"] {
+  border-color: color-mix(in srgb, var(--accent-text) 36%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.mimeTypeLabNode[data-status="error"],
+.mimeTypeLabNode[data-status="warning"],
+.mimeTypeLabEvidence[data-status="error"],
+.mimeTypeLabEvidence[data-status="warning"] {
+  color: #8a542f;
+  background: color-mix(in srgb, #f4ddcf 42%, var(--surface));
+}
+
+.mimeTypeLabEvidence strong {
+  margin-right: 8px;
+  color: var(--accent-text);
+}
+
+.mimeTypeLabControls {
+  margin-top: 13px;
+}
+
+@media (max-width: 700px) {
+  .mimeTypeHero,
+  .mimeTypeLab {
+    padding: 15px;
+  }
+
+  .mimeTypeStage,
+  .mimeTypeLabPath {
+    grid-template-columns: 1fr;
+  }
+
+  .mimeTypeArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .mimeTypeHeroTop,
+  .mimeTypeLabHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mimeTypeHeroTop strong {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mimeTypeHero *,
+  .mimeTypeLab * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

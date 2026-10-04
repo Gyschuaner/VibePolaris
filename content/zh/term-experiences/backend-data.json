@@ -11000,14 +11000,29 @@
         "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
         "label": "NIST SP 800-41 Rev.1",
         "note": "安全要求与风险边界"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+        "label": "AWS VPC security groups",
+        "note": "有状态规则与返回流量"
+      },
+      {
+        "url": "https://wiki.nftables.org/wiki-nftables/index.php/Operations_at_ruleset_level",
+        "label": "nftables · Operations at ruleset level",
+        "note": "规则集顺序与管理"
+      },
+      {
+        "url": "https://scs.owasp.org/handbooks/07-infrastructure-security/part3-network-and-availability/",
+        "label": "OWASP SCSVS · Network and availability",
+        "note": "网络分段、防火墙与默认拒绝"
       }
     ]
   },
   {
     "slug": "ip-address",
     "lead": "服务器日志里三个请求的源 IP 完全相同，为什么可能来自三台设备？",
-    "definition": "IP 地址标识网络接口的可达位置，路由器按地址前缀转发包；NAT、代理、移动网络和多宿主都会改变地址与设备的对应关系。",
-    "boundary": "IP 地址不稳定地等同用户、设备或域名。它适合网络路由和粗粒度观测，不应单独作为身份或授权依据。",
+    "definition": "IP 地址标识网络接口的可达位置，路由器按地址前缀转发包；NAT、私有地址复用和多网卡都会改变地址与设备的对应关系。",
+    "boundary": "IP 地址不稳定地等同用户或设备。它适合网络路由和粗粒度观测，不应单独作为身份或授权依据。",
     "sceneKind": "route",
     "sceneTitle": "三台私网设备共享一个公网 IP",
     "actionLabel": "发送下一台设备的连接",
@@ -11115,60 +11130,32 @@
         ]
       },
       {
-        "label": "电脑使用另一个公网端口",
-        "note": "公网源 IP 相同，端口映射让返回包回到电脑。",
+        "label": "电脑和平板加入出口",
+        "note": "两个端口让返回包分别回到电脑和平板，远端源 IP 仍相同。",
         "activeIds": [
           "laptop",
-          "nat-router",
-          "nat-table",
-          "remote-api"
-        ],
-        "doneIds": [
-          "laptop"
-        ],
-        "mutedIds": [
-          "phone",
-          "tablet"
-        ],
-        "values": {
-          "nat-table": "192.168.1.12:51002 → :62002",
-          "remote-api": "src 203.0.113.7:62002"
-        },
-        "activeEdgeIds": [
-          "laptop-nat",
-          "router-table",
-          "router-api"
-        ]
-      },
-      {
-        "label": "平板形成第三条映射",
-        "note": "远端日志第三次仍显示同一公网地址。",
-        "activeIds": [
           "tablet",
           "nat-router",
           "nat-table",
           "remote-api"
         ],
         "doneIds": [
+          "laptop",
           "tablet"
         ],
         "mutedIds": [
-          "phone",
-          "laptop"
+          "phone"
         ],
         "values": {
-          "nat-table": "192.168.1.13:51003 → :62003",
-          "remote-api": "src 203.0.113.7:62003"
+          "nat-table": "192.168.1.12:51002 → :62002; 192.168.1.13:51003 → :62003",
+          "remote-api": "src 203.0.113.7:62002 · :62003"
         },
         "activeEdgeIds": [
+          "laptop-nat",
           "tablet-nat",
           "router-table",
           "router-api"
-        ],
-        "metric": {
-          "label": "公网 IP",
-          "value": "1"
-        }
+        ]
       },
       {
         "label": "同一 IP 对应三台设备",
@@ -11193,12 +11180,12 @@
         "activeEdgeIds": []
       }
     ],
-    "insight": "IP 是网络位置，不是稳定身份；日志和限流设计要考虑 NAT 与代理。",
+    "insight": "IP 是网络位置，不是稳定身份；日志和限流设计要考虑 NAT 造成的共享出口。",
     "quiz": {
       "question": "多个请求具有相同公网 IP，能否断定来自同一设备？",
       "options": [
         {
-          "label": "不能，NAT 或代理可能让多个设备共享地址",
+          "label": "不能，NAT 可能让多个设备共享地址",
           "correct": true
         },
         {
@@ -11211,11 +11198,11 @@
         }
       ],
       "success": "地址转换会形成多设备到一个公网 IP 的映射。",
-      "retry": "先考虑出口 NAT 和代理。"
+      "retry": "先考虑出口 NAT。"
     },
     "prompt": {
       "title": "检查 IP 的使用边界",
-      "text": "请说明地址来自哪一跳、是否经过 NAT/代理、可信转发规则、IPv4/IPv6 情况，以及该 IP 被用于日志、限流还是授权。"
+      "text": "请说明地址来自哪一跳、是否经过 NAT、IPv4/IPv6 情况，以及该 IP 被用于日志、限流还是授权。"
     },
     "sources": [
       {
@@ -11232,558 +11219,527 @@
         "url": "https://www.rfc-editor.org/rfc/rfc3022.html",
         "label": "RFC 3022 · Traditional NAT",
         "note": "协议定义与报文语义"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1918.html",
+        "label": "RFC 1918 · Private Internets",
+        "note": "私有地址空间与边界"
       }
     ]
   },
   {
-    "slug": "network-port",
-    "lead": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
-    "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
-    "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
-    "sceneKind": "matrix",
-    "sceneTitle": "协议、端口、监听与防火墙的四格判断",
-    "actionLabel": "探测下一格",
-    "actors": [
-      {
-        "id": "port-probe",
-        "label": "探测器",
-        "detail": "203.0.113.7",
-        "icon": "network",
-        "group": "客户端"
-      },
-      {
-        "id": "tcp-53",
-        "label": "TCP 53",
-        "detail": "DNS over TCP",
-        "icon": "server",
-        "group": "端点"
-      },
-      {
-        "id": "udp-53",
-        "label": "UDP 53",
-        "detail": "无监听",
-        "icon": "server",
-        "group": "端点"
-      },
-      {
-        "id": "tcp-443",
-        "label": "TCP 443",
-        "detail": "TLS 服务",
-        "icon": "shield",
-        "group": "端点"
-      },
-      {
-        "id": "udp-443",
-        "label": "UDP 443",
-        "detail": "被防火墙拒绝",
-        "icon": "shield",
-        "group": "端点"
-      },
-      {
-        "id": "port-result",
-        "label": "探测结果",
-        "detail": "协议相关",
-        "icon": "chart",
-        "group": "输出"
-      }
-    ],
-    "edges": [
-      {
-        "id": "probe-tcp53",
-        "from": "port-probe",
-        "to": "tcp-53",
-        "label": "TCP connect"
-      },
-      {
-        "id": "probe-udp53",
-        "from": "port-probe",
-        "to": "udp-53",
-        "label": "UDP datagram"
-      },
-      {
-        "id": "probe-tcp443",
-        "from": "port-probe",
-        "to": "tcp-443",
-        "label": "TCP connect"
-      },
-      {
-        "id": "probe-udp443",
-        "from": "port-probe",
-        "to": "udp-443",
-        "label": "UDP datagram"
-      },
-      {
-        "id": "tcp53-result",
-        "from": "tcp-53",
-        "to": "port-result",
-        "label": "应答"
-      },
-      {
-        "id": "udp53-result",
-        "from": "udp-53",
-        "to": "port-result",
-        "label": "无应答"
-      },
-      {
-        "id": "tcp443-result",
-        "from": "tcp-443",
-        "to": "port-result",
-        "label": "应答"
-      },
-      {
-        "id": "udp443-result",
-        "from": "udp-443",
-        "to": "port-result",
-        "label": "丢弃"
-      }
-    ],
-    "frames": [
-      {
-        "label": "TCP 53 建立连接",
-        "note": "该协议端点有进程监听且防火墙允许。",
-        "activeIds": [
-          "port-probe",
-          "tcp-53",
-          "port-result"
-        ],
-        "doneIds": [
-          "tcp-53"
-        ],
-        "mutedIds": [
-          "udp-53",
-          "tcp-443",
-          "udp-443"
-        ],
-        "values": {
-          "port-result": "TCP SYN-ACK",
-          "tcp-53": "listening"
-        },
-        "activeEdgeIds": [
-          "probe-tcp53",
-          "tcp53-result"
-        ]
-      },
-      {
-        "label": "UDP 53 没有监听者",
-        "note": "相同数字不共享 TCP 的监听状态，数据报没有应用响应。",
-        "activeIds": [
-          "port-probe",
-          "udp-53",
-          "port-result"
-        ],
-        "doneIds": [
-          "udp-53"
-        ],
-        "mutedIds": [
-          "tcp-53",
-          "tcp-443",
-          "udp-443"
-        ],
-        "values": {
-          "port-result": "timeout",
-          "udp-53": "no listener"
-        },
-        "activeEdgeIds": [
-          "probe-udp53",
-          "udp53-result"
-        ]
-      },
-      {
-        "label": "TCP 443 返回 TLS 首包",
-        "note": "端口可达且应用协议开始响应。",
-        "activeIds": [
-          "port-probe",
-          "tcp-443",
-          "port-result"
-        ],
-        "doneIds": [
-          "tcp-443"
-        ],
-        "mutedIds": [
-          "tcp-53",
-          "udp-53",
-          "udp-443"
-        ],
-        "values": {
-          "port-result": "ServerHello",
-          "tcp-443": "TLS"
-        },
-        "activeEdgeIds": [
-          "probe-tcp443",
-          "tcp443-result"
-        ]
-      },
-      {
-        "label": "UDP 443 在网络层被拒",
-        "note": "即使存在潜在服务，防火墙丢弃也让客户端观察到超时。",
-        "activeIds": [
-          "port-probe",
-          "udp-443",
-          "port-result"
-        ],
-        "doneIds": [
-          "udp-443"
-        ],
-        "mutedIds": [
-          "tcp-53",
-          "udp-53",
-          "tcp-443"
-        ],
-        "values": {
-          "udp-443": "DROP",
-          "port-result": "timeout"
-        },
-        "activeEdgeIds": [
-          "probe-udp443",
-          "udp443-result"
-        ],
-        "metric": {
-          "label": "成功端点",
-          "value": "2 / 4"
-        }
-      }
-    ],
-    "insight": "描述端口必须同时写协议、地址、监听进程和网络过滤状态。",
-    "quiz": {
-      "question": "TCP 53 可达，能否推出 UDP 53 也可达？",
-      "options": [
-        {
-          "label": "不能，它们是不同传输协议的端点",
-          "correct": true
-        },
-        {
-          "label": "能，端口号相同就共享状态",
-          "correct": false
-        },
-        {
-          "label": "能，只要主机名相同",
-          "correct": false
-        }
+  "slug": "network-port",
+  "lead": "TCP 53 能连接，为什么 UDP 53 仍可能超时？",
+  "definition": "传输层端口把到达同一 IP 的 TCP 或 UDP 流量分发给对应端点；协议与端口号共同标识服务，监听与网络可达还要分别判断。",
+  "boundary": "端口不是物理插口，也不等于服务一定正常。相同数字的 TCP 与 UDP 端口属于不同传输协议空间。",
+  "sceneKind": "matrix",
+  "sceneTitle": "协议、端口、监听与防火墙的四格判断",
+  "actionLabel": "探测下一格",
+  "actors": [
+    {
+      "id": "port-probe",
+      "label": "探测器",
+      "detail": "203.0.113.7",
+      "icon": "network",
+      "group": "客户端"
+    },
+    {
+      "id": "tcp-53",
+      "label": "TCP 53",
+      "detail": "DNS over TCP",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "udp-53",
+      "label": "UDP 53",
+      "detail": "无监听",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "tcp-443",
+      "label": "TCP 443",
+      "detail": "TLS 服务",
+      "icon": "shield",
+      "group": "端点"
+    },
+    {
+      "id": "udp-443",
+      "label": "UDP 443",
+      "detail": "被防火墙拒绝",
+      "icon": "shield",
+      "group": "端点"
+    },
+    {
+      "id": "port-result",
+      "label": "探测结果",
+      "detail": "协议相关",
+      "icon": "chart",
+      "group": "输出"
+    }
+  ],
+  "edges": [
+    {
+      "id": "probe-tcp53",
+      "from": "port-probe",
+      "to": "tcp-53",
+      "label": "TCP connect"
+    },
+    {
+      "id": "probe-udp53",
+      "from": "port-probe",
+      "to": "udp-53",
+      "label": "UDP datagram"
+    },
+    {
+      "id": "probe-tcp443",
+      "from": "port-probe",
+      "to": "tcp-443",
+      "label": "TCP connect"
+    },
+    {
+      "id": "probe-udp443",
+      "from": "port-probe",
+      "to": "udp-443",
+      "label": "UDP datagram"
+    },
+    {
+      "id": "tcp53-result",
+      "from": "tcp-53",
+      "to": "port-result",
+      "label": "应答"
+    },
+    {
+      "id": "udp53-result",
+      "from": "udp-53",
+      "to": "port-result",
+      "label": "无应答"
+    },
+    {
+      "id": "tcp443-result",
+      "from": "tcp-443",
+      "to": "port-result",
+      "label": "应答"
+    },
+    {
+      "id": "udp443-result",
+      "from": "udp-443",
+      "to": "port-result",
+      "label": "丢弃"
+    }
+  ],
+  "frames": [
+    {
+      "label": "TCP 53 建立连接",
+      "note": "该协议端点有进程监听且防火墙允许。",
+      "activeIds": [
+        "port-probe",
+        "tcp-53",
+        "port-result"
       ],
-      "success": "端口号要与 TCP 或 UDP 一起判断。",
-      "retry": "相同数字不表示相同套接字。"
+      "doneIds": [
+        "tcp-53"
+      ],
+      "mutedIds": [
+        "udp-53",
+        "tcp-443",
+        "udp-443"
+      ],
+      "values": {
+        "port-result": "TCP SYN-ACK",
+        "tcp-53": "listening"
+      },
+      "activeEdgeIds": [
+        "probe-tcp53",
+        "tcp53-result"
+      ]
     },
-    "prompt": {
-      "title": "定位一个端口不可达问题",
-      "text": "请给出目标 IP、TCP/UDP、端口、监听地址、进程、主机防火墙、网络 ACL 和实际探测结果。"
+    {
+      "label": "UDP 53 没有监听者",
+      "note": "无监听者通常回 ICMP Port Unreachable；若回传也被过滤，探测器才只看到 timeout。",
+      "activeIds": [
+        "port-probe",
+        "udp-53",
+        "port-result"
+      ],
+      "doneIds": [
+        "udp-53"
+      ],
+      "mutedIds": [
+        "tcp-53",
+        "tcp-443",
+        "udp-443"
+      ],
+      "values": {
+        "port-result": "ICMP Port Unreachable",
+        "udp-53": "no listener"
+      },
+      "activeEdgeIds": [
+        "probe-udp53",
+        "udp53-result"
+      ]
     },
-    "sources": [
+    {
+      "label": "443 换协议",
+      "note": "TCP 443 进入 TLS，UDP 443 在网络过滤处停止；同一个数字仍要分别判断。",
+      "activeIds": [
+        "port-probe",
+        "tcp-443",
+        "udp-443",
+        "port-result"
+      ],
+      "doneIds": [
+        "tcp-443",
+        "udp-443"
+      ],
+      "mutedIds": [
+        "tcp-53",
+        "udp-53"
+      ],
+      "values": {
+        "port-result": "TCP ServerHello · UDP timeout",
+        "tcp-443": "TLS",
+        "udp-443": "DROP"
+      },
+      "activeEdgeIds": [
+        "probe-tcp443",
+        "tcp443-result",
+        "probe-udp443",
+        "udp443-result"
+      ],
+      "metric": {
+        "label": "同数字的两种结果",
+        "value": "TCP 成功 1 · UDP 超时 1"
+      }
+    }
+  ],
+  "insight": "描述端口必须同时写协议、地址、监听进程和网络过滤状态。",
+  "quiz": {
+    "question": "TCP 53 可达，能否推出 UDP 53 也可达？",
+    "options": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc6335.html",
-        "label": "RFC 6335 · Service Names and Ports",
-        "note": "协议定义与报文语义"
+        "label": "不能，它们是不同传输协议的端点",
+        "correct": true
       },
       {
-        "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
-        "label": "IANA · Port Registry",
-        "note": "协议参数与注册信息"
+        "label": "能，端口号相同就共享状态",
+        "correct": false
+      },
+      {
+        "label": "能，只要主机名相同",
+        "correct": false
       }
-    ]
+    ],
+    "success": "端口号要与 TCP 或 UDP 一起判断。",
+    "retry": "相同数字不表示相同套接字。"
   },
+  "prompt": {
+    "title": "定位一个端口不可达问题",
+    "text": "请给出目标 IP、TCP/UDP、端口、监听地址、进程、主机防火墙、网络 ACL 和实际探测结果。"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9293.html",
+      "label": "RFC 9293 · Transmission Control Protocol",
+      "note": "TCP 端口与连接端点"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc768.html",
+      "label": "RFC 768 · User Datagram Protocol",
+      "note": "UDP 端口与数据报语义"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc6335.html",
+      "label": "RFC 6335 · Service Name and Port Number Procedures",
+      "note": "端口范围与登记边界"
+    },
+    {
+      "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+      "label": "IANA · Service Name and Port Number Registry",
+      "note": "服务名、协议与端口登记"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
+      "label": "RFC 1122 · Requirements for Internet Hosts",
+      "note": "主机交付、丢弃与端口错误"
+    }
+  ]
+},
   {
-    "slug": "packet",
-    "lead": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
-    "definition": "IP 数据包由首部和负载组成，路由器按目的地址逐跳转发；路径 MTU、TTL/Hop Limit 与 IP 版本决定大包和环路如何处理。",
-    "boundary": "一个应用消息不等于一个 IP 包，TCP 段也不等于 IP 包。路由器通常只处理当前包，不携带完整端到端路径。",
-    "sceneKind": "assembly",
-    "sceneTitle": "4000 字节跨越较小 MTU 链路",
-    "actionLabel": "切换 IP 版本与路径",
-    "actors": [
-      {
-        "id": "app-payload",
-        "label": "应用数据",
-        "detail": "4000 B",
-        "icon": "package",
-        "group": "输入"
-      },
-      {
-        "id": "ip-builder",
-        "label": "IP 封装",
-        "detail": "添加首部",
-        "icon": "gear",
-        "group": "端点"
-      },
-      {
-        "id": "link-1500",
-        "label": "链路 A",
-        "detail": "MTU 1500",
-        "icon": "network",
-        "group": "路径"
-      },
-      {
-        "id": "link-1280",
-        "label": "链路 B",
-        "detail": "MTU 1280",
-        "icon": "network",
-        "group": "路径"
-      },
-      {
-        "id": "fragment-set",
-        "label": "包集合",
-        "detail": "等待分段",
-        "icon": "queue",
-        "group": "传输"
-      },
-      {
-        "id": "destination",
-        "label": "接收端",
-        "detail": "重组或接收",
-        "icon": "server",
-        "group": "端点"
-      },
-      {
-        "id": "hop-limit",
-        "label": "Hop Limit",
-        "detail": "初始 3",
-        "icon": "clock",
-        "group": "首部"
-      }
-    ],
-    "edges": [
-      {
-        "id": "payload-builder",
-        "from": "app-payload",
-        "to": "ip-builder",
-        "label": "封装"
-      },
-      {
-        "id": "builder-fragments",
-        "from": "ip-builder",
-        "to": "fragment-set",
-        "label": "形成包"
-      },
-      {
-        "id": "fragments-link-a",
-        "from": "fragment-set",
-        "to": "link-1500",
-        "label": "发送"
-      },
-      {
-        "id": "link-a-link-b",
-        "from": "link-1500",
-        "to": "link-1280",
-        "label": "下一跳"
-      },
-      {
-        "id": "link-b-dest",
-        "from": "link-1280",
-        "to": "destination",
-        "label": "到达"
-      },
-      {
-        "id": "limit-links",
-        "from": "hop-limit",
-        "to": "link-1500",
-        "label": "逐跳递减"
-      }
-    ],
-    "frames": [
-      {
-        "label": "IPv4 在 1500 MTU 下分片",
-        "note": "教学样本拆成三个可通过链路 A 的片段，接收端按标识和偏移重组。",
-        "activeIds": [
-          "app-payload",
-          "ip-builder",
-          "fragment-set",
-          "link-1500"
-        ],
-        "doneIds": [
-          "fragment-set"
-        ],
-        "mutedIds": [
-          "link-1280",
-          "destination",
-          "hop-limit"
-        ],
-        "values": {
-          "fragment-set": "3 fragments",
-          "link-1500": "each ≤1500 B"
-        },
-        "activeEdgeIds": [
-          "payload-builder",
-          "builder-fragments",
-          "fragments-link-a"
-        ],
-        "metric": {
-          "label": "片段数",
-          "value": "3"
-        }
-      },
-      {
-        "label": "IPv6 遇到 1280 返回过大",
-        "note": "路由器不替发送端分片，而是通知端点降低包大小。",
-        "activeIds": [
-          "fragment-set",
-          "link-1500",
-          "link-1280",
-          "ip-builder"
-        ],
-        "doneIds": [
-          "link-1280"
-        ],
-        "mutedIds": [
-          "destination"
-        ],
-        "values": {
-          "link-1280": "Packet Too Big · MTU 1280",
-          "ip-builder": "重新分段"
-        },
-        "activeEdgeIds": [
-          "fragments-link-a",
-          "link-a-link-b"
-        ]
-      },
-      {
-        "label": "调整后四包到达并还原数据",
-        "note": "发送端按较小路径 MTU 生成四个包，接收端恢复 4000 字节。",
-        "activeIds": [
-          "ip-builder",
-          "fragment-set",
-          "link-1500",
-          "link-1280",
-          "destination"
-        ],
-        "doneIds": [
-          "destination"
-        ],
-        "mutedIds": [
-          "hop-limit"
-        ],
-        "values": {
-          "fragment-set": "4 packets ≤1280 B",
-          "destination": "4000 B complete"
-        },
-        "activeEdgeIds": [
-          "builder-fragments",
-          "fragments-link-a",
-          "link-a-link-b",
-          "link-b-dest"
-        ]
-      },
-      {
-        "label": "Hop Limit 在第三跳归零",
-        "note": "包在环路中不会永久转发，归零节点丢弃并返回错误。",
-        "activeIds": [
-          "hop-limit",
-          "link-1500",
-          "link-1280"
-        ],
-        "doneIds": [
-          "hop-limit"
-        ],
-        "mutedIds": [
-          "app-payload",
-          "ip-builder",
-          "fragment-set",
-          "destination"
-        ],
-        "values": {
-          "hop-limit": "3→2→1→0",
-          "destination": "not reached"
-        },
-        "activeEdgeIds": [
-          "limit-links"
-        ],
-        "metric": {
-          "label": "允许跳数",
-          "value": "3"
-        }
-      }
-    ],
-    "insight": "排查大消息传输要分清应用数据、传输段、IP 包和路径 MTU。",
-    "quiz": {
-      "question": "IPv6 路由器遇到超过下一跳 MTU 的包，通常怎样处理？",
-      "options": [
-        {
-          "label": "返回 Packet Too Big，由发送端调整大小",
-          "correct": true
-        },
-        {
-          "label": "所有路由器都自动分片",
-          "correct": false
-        },
-        {
-          "label": "把包改成 TCP",
-          "correct": false
-        }
+  "slug": "packet",
+  "lead": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
+  "definition": "IP 数据包由首部和负载组成，路由器按目的地址逐跳转发；路径 MTU、TTL/Hop Limit 与 IP 版本决定大包和环路如何处理。",
+  "boundary": "一个应用消息不等于一个 IP 包，TCP 段也不等于 IP 包。路由器通常只处理当前包，不携带完整端到端路径。",
+  "sceneKind": "assembly",
+  "sceneTitle": "一个大包怎样在路径上改变形状",
+  "actionLabel": "切换 IP 版本与路径",
+  "actors": [
+    {
+      "id": "app-payload",
+      "label": "应用数据",
+      "detail": "4000 B",
+      "icon": "package",
+      "group": "输入"
+    },
+    {
+      "id": "ip-builder",
+      "label": "IP 封装",
+      "detail": "添加首部",
+      "icon": "gear",
+      "group": "端点"
+    },
+    {
+      "id": "link-1500",
+      "label": "链路 A",
+      "detail": "MTU 1500",
+      "icon": "network",
+      "group": "路径"
+    },
+    {
+      "id": "link-1280",
+      "label": "链路 B",
+      "detail": "MTU 1280",
+      "icon": "network",
+      "group": "路径"
+    },
+    {
+      "id": "fragment-set",
+      "label": "包集合",
+      "detail": "等待分段",
+      "icon": "queue",
+      "group": "传输"
+    },
+    {
+      "id": "destination",
+      "label": "接收端",
+      "detail": "重组或接收",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "hop-limit",
+      "label": "Hop Limit",
+      "detail": "初始 3",
+      "icon": "clock",
+      "group": "首部"
+    }
+  ],
+  "edges": [
+    {
+      "id": "payload-builder",
+      "from": "app-payload",
+      "to": "ip-builder",
+      "label": "封装"
+    },
+    {
+      "id": "builder-fragments",
+      "from": "ip-builder",
+      "to": "fragment-set",
+      "label": "形成包"
+    },
+    {
+      "id": "fragments-link-a",
+      "from": "fragment-set",
+      "to": "link-1500",
+      "label": "发送"
+    },
+    {
+      "id": "link-a-link-b",
+      "from": "link-1500",
+      "to": "link-1280",
+      "label": "下一跳"
+    },
+    {
+      "id": "link-b-dest",
+      "from": "link-1280",
+      "to": "destination",
+      "label": "到达"
+    },
+    {
+      "id": "limit-links",
+      "from": "hop-limit",
+      "to": "link-1500",
+      "label": "逐跳递减"
+    }
+  ],
+  "frames": [
+    {
+      "label": "应用数据先装进 IP 包",
+      "note": "4000 B 应用数据先拿到 IP 头；还没根据路径 MTU 拆分。",
+      "activeIds": [
+        "app-payload",
+        "ip-builder",
+        "fragment-set"
       ],
-      "success": "IPv6 由端点处理分片，路径通过 ICMPv6 告知 MTU。",
-      "retry": "区分 IPv4 路由器分片与 IPv6 端点分片。"
+      "doneIds": [
+        "ip-builder"
+      ],
+      "mutedIds": [
+        "link-1500",
+        "link-1280",
+        "destination",
+        "hop-limit"
+      ],
+      "values": {
+        "fragment-set": "1 datagram",
+        "ip-builder": "IPv4 · TTL 3"
+      },
+      "activeEdgeIds": [
+        "payload-builder",
+        "builder-fragments"
+      ]
     },
-    "prompt": {
-      "title": "分析一次大包传输",
-      "text": "请列出应用消息大小、传输分帧、IP 版本、各跳 MTU、DF/Packet Too Big、Hop Limit 和接收端重组结果。"
+    {
+      "label": "窄链路给出两种答案",
+      "note": "IPv4 的 4000 B 负载在 MTU 1500 下形成三片；IPv6 路由器丢弃过大包并回 Packet Too Big。",
+      "activeIds": [
+        "ip-builder",
+        "fragment-set",
+        "link-1500",
+        "link-1280"
+      ],
+      "doneIds": [
+        "link-1280"
+      ],
+      "mutedIds": [
+        "app-payload",
+        "destination",
+        "hop-limit"
+      ],
+      "values": {
+        "fragment-set": "IPv4: 3 fragments · IPv6: PTB",
+        "link-1280": "MTU 1280",
+        "ip-builder": "IPv6 source adjusts"
+      },
+      "activeEdgeIds": [
+        "fragments-link-a",
+        "link-a-link-b"
+      ]
     },
-    "sources": [
+    {
+      "label": "按 PMTU 重发并在终点重组",
+      "note": "发送端把包缩到 1280 B 以内，终点收齐后还原 4000 B；每跳仍递减 Hop Limit。",
+      "activeIds": [
+        "ip-builder",
+        "fragment-set",
+        "link-1500",
+        "link-1280",
+        "destination",
+        "hop-limit"
+      ],
+      "doneIds": [
+        "destination"
+      ],
+      "mutedIds": [
+        "app-payload"
+      ],
+      "values": {
+        "fragment-set": "4 packets ≤1280 B",
+        "destination": "4000 B complete",
+        "hop-limit": "3→2→1"
+      },
+      "activeEdgeIds": [
+        "builder-fragments",
+        "fragments-link-a",
+        "link-a-link-b",
+        "link-b-dest",
+        "limit-links"
+      ],
+      "metric": {
+        "label": "PMTU / 重组",
+        "value": "1280 B · 4000 B"
+      }
+    }
+  ],
+  "insight": "排查大包传输要分清应用数据、传输段、IP 包、路径 MTU 和中间设备留下的错误证据。",
+  "quiz": {
+    "question": "IPv6 路由器遇到超过下一跳 MTU 的包，通常怎样处理？",
+    "options": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc8200.html",
-        "label": "RFC 8200 · IPv6",
-        "note": "协议定义与报文语义"
+        "label": "返回 Packet Too Big，由发送端调整大小",
+        "correct": true
       },
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc791.html",
-        "label": "RFC 791 · IPv4",
-        "note": "协议定义与报文语义"
+        "label": "所有路由器都自动分片",
+        "correct": false
+      },
+      {
+        "label": "把包改成 TCP",
+        "correct": false
       }
-    ]
+    ],
+    "success": "IPv6 由端点处理分片，路径通过 ICMPv6 告知 MTU。",
+    "retry": "区分 IPv4 路由器分片与 IPv6 端点分片。"
   },
+  "prompt": {
+    "title": "分析一次大包传输",
+    "text": "请列出应用消息大小、传输分帧、IP 版本、各跳 MTU、DF/Packet Too Big、Hop Limit 和接收端重组结果。"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc791.html",
+      "label": "RFC 791 · Internet Protocol",
+      "note": "IPv4 首部、分片与重组"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8200.html",
+      "label": "RFC 8200 · IPv6 Specification",
+      "note": "IPv6 Hop Limit 与源端分片"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc1191.html",
+      "label": "RFC 1191 · Path MTU Discovery",
+      "note": "IPv4 PMTU 与 DF 反馈"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8201.html",
+      "label": "RFC 8201 · IPv6 Path MTU Discovery",
+      "note": "Packet Too Big 与黑洞连接"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc792.html",
+      "label": "RFC 792 · Internet Control Message Protocol",
+      "note": "Time Exceeded 与分片错误"
+    }
+  ]
+},
   {
     "slug": "url",
-    "lead": "URL 里写了 #part，为什么服务器访问日志里完全看不到这段？",
-    "definition": "URL 用 scheme、authority、path、query 和 fragment 标识资源位置与访问方式；客户端解析、归一和相对引用合并后才形成实际请求目标。",
-    "boundary": "URL 不是普通字符串拼接。fragment 只供客户端处理，不随 HTTP 请求发送；主机、用户信息和端口边界也要按语法解析。",
+    "lead": "地址栏里明明写着 #part，为什么服务器日志里找不到它？",
+    "definition": "URL 是一条有组件边界的资源引用；客户端解析、归一和相对引用合并后，才形成连接主机与实际请求目标。",
+    "boundary": "URL 不等于已成功的请求。fragment 通常只在客户端处理，path 的点段要按规则归一，query 里的百分号编码也不能跨组件解释。",
     "sceneKind": "transform",
-    "sceneTitle": "一条 URL 解析成实际 HTTP 请求目标",
+    "sceneTitle": "一条 URL 如何变成实际 HTTP 请求目标",
     "actionLabel": "执行下一项 URL 处理",
     "actors": [
       {
         "id": "raw-url",
         "label": "原始 URL",
-        "detail": "https://user@example.com:8443/a/../b?q=x%2Fy#part",
+        "detail": "https://user:secret@example.com:8443/a/../b?q=x%2Fy#part",
         "icon": "code",
         "group": "输入"
       },
       {
         "id": "url-parser",
         "label": "URL 解析器",
-        "detail": "按组件切分",
+        "detail": "按组件和 base 规则处理",
         "icon": "gear",
         "group": "客户端"
       },
       {
-        "id": "authority-part",
-        "label": "Authority",
-        "detail": "example.com:8443",
-        "icon": "network",
-        "group": "组件"
-      },
-      {
-        "id": "path-part",
-        "label": "Path",
-        "detail": "/a/../b",
-        "icon": "layout",
-        "group": "组件"
-      },
-      {
-        "id": "query-part",
-        "label": "Query",
-        "detail": "q=x%2Fy",
-        "icon": "message",
-        "group": "组件"
-      },
-      {
-        "id": "fragment-part",
-        "label": "Fragment",
-        "detail": "part",
-        "icon": "spark",
-        "group": "客户端组件"
-      },
-      {
-        "id": "http-target",
-        "label": "请求目标",
-        "detail": "发送到服务器",
+        "id": "request-target",
+        "label": "HTTP 请求目标",
+        "detail": "GET /b?q=x%2Fy",
         "icon": "server",
         "group": "输出"
+      },
+      {
+        "id": "client-fragment",
+        "label": "客户端 fragment",
+        "detail": "#part · 页面内定位",
+        "icon": "spark",
+        "group": "客户端"
       }
     ],
     "edges": [
@@ -11794,148 +11750,91 @@
         "label": "解析"
       },
       {
-        "id": "parser-authority",
+        "id": "parser-target",
         "from": "url-parser",
-        "to": "authority-part",
-        "label": "主机与端口"
-      },
-      {
-        "id": "parser-path",
-        "from": "url-parser",
-        "to": "path-part",
-        "label": "路径"
-      },
-      {
-        "id": "parser-query",
-        "from": "url-parser",
-        "to": "query-part",
-        "label": "查询"
+        "to": "request-target",
+        "label": "归一并形成 request-target"
       },
       {
         "id": "parser-fragment",
         "from": "url-parser",
-        "to": "fragment-part",
-        "label": "片段"
-      },
-      {
-        "id": "path-target",
-        "from": "path-part",
-        "to": "http-target",
-        "label": "归一后发送"
-      },
-      {
-        "id": "query-target",
-        "from": "query-part",
-        "to": "http-target",
-        "label": "原样组件"
+        "to": "client-fragment",
+        "label": "留给客户端"
       }
     ],
     "frames": [
       {
-        "label": "解析器分离五个组件",
-        "note": "userinfo、主机和端口都在 authority 内按语法识别，不能靠最后一个 @ 猜测。",
+        "label": "先拆出五个组件",
+        "note": "scheme、authority、path、query 和 fragment 先各自站稳；userinfo、主机和端口都属于 authority。",
         "activeIds": [
           "raw-url",
-          "url-parser",
-          "authority-part",
-          "path-part",
-          "query-part",
-          "fragment-part"
+          "url-parser"
         ],
         "doneIds": [
           "url-parser"
         ],
         "mutedIds": [
-          "http-target"
+          "request-target",
+          "client-fragment"
         ],
         "values": {
-          "authority-part": "host=example.com · port=8443",
-          "fragment-part": "part"
+          "url-parser": "scheme · authority · path · query · fragment"
         },
         "activeEdgeIds": [
-          "raw-parser",
-          "parser-authority",
-          "parser-path",
-          "parser-query",
+          "raw-parser"
+        ]
+      },
+      {
+        "label": "路径把 .. 折回去",
+        "note": "点段移除把 /a/../b 归一成 /b，query 的 q=x%2Fy 仍保持为查询值。",
+        "activeIds": [
+          "url-parser",
+          "request-target"
+        ],
+        "doneIds": [
+          "url-parser"
+        ],
+        "mutedIds": [
+          "raw-url",
+          "client-fragment"
+        ],
+        "values": {
+          "request-target": "path /b · query q=x%2Fy"
+        },
+        "activeEdgeIds": [
+          "parser-target"
+        ]
+      },
+      {
+        "label": "请求线在 # 前停下",
+        "note": "HTTP request-target 带上路径和 query；#part 交给浏览器做客户端定位，不随请求发走。",
+        "activeIds": [
+          "request-target",
+          "client-fragment"
+        ],
+        "doneIds": [
+          "request-target",
+          "client-fragment"
+        ],
+        "mutedIds": [
+          "raw-url",
+          "url-parser"
+        ],
+        "values": {
+          "request-target": "Host: example.com:8443 · GET /b?q=x%2Fy",
+          "client-fragment": "client only · #part"
+        },
+        "activeEdgeIds": [
+          "parser-target",
           "parser-fragment"
-        ]
-      },
-      {
-        "label": "路径归一为 /b",
-        "note": "a/.. 抵消，目标路径从 /a/../b 变成 /b。",
-        "activeIds": [
-          "url-parser",
-          "path-part"
-        ],
-        "doneIds": [
-          "path-part"
-        ],
-        "mutedIds": [
-          "authority-part",
-          "query-part",
-          "fragment-part",
-          "http-target"
-        ],
-        "values": {
-          "path-part": "/b"
-        },
-        "activeEdgeIds": [
-          "parser-path"
-        ]
-      },
-      {
-        "label": "fragment 留在客户端",
-        "note": "#part 用于页面内定位，不进入 HTTP 请求目标。",
-        "activeIds": [
-          "fragment-part",
-          "http-target"
-        ],
-        "doneIds": [
-          "fragment-part"
-        ],
-        "mutedIds": [
-          "raw-url",
-          "url-parser"
-        ],
-        "values": {
-          "fragment-part": "client only",
-          "http-target": "/b?q=x%2Fy"
-        },
-        "activeEdgeIds": [
-          "path-target",
-          "query-target"
         ],
         "metric": {
           "label": "服务器收到 fragment",
           "value": "否"
         }
-      },
-      {
-        "label": "相对引用重新计算路径",
-        "note": "从当前 /b 解析 ../c，得到 /c，而不是简单拼接 /b../c。",
-        "activeIds": [
-          "url-parser",
-          "path-part",
-          "http-target"
-        ],
-        "doneIds": [
-          "http-target"
-        ],
-        "mutedIds": [
-          "query-part",
-          "fragment-part"
-        ],
-        "values": {
-          "path-part": "../c → /c",
-          "http-target": "GET /c"
-        },
-        "activeEdgeIds": [
-          "parser-path",
-          "path-target"
-        ]
       }
     ],
-    "insight": "URL 要先解析和归一，再判断真正发给服务器的主机、路径和查询。",
+    "insight": "URL 的每一段都有自己的去处：解析器负责分边界和归一，HTTP 只拿走请求目标，fragment 留在客户端。",
     "quiz": {
       "question": "URL 的 fragment 会怎样处理？",
       "options": [
@@ -11953,33 +11852,53 @@
         }
       ],
       "success": "fragment 用于客户端资源内定位，不属于 HTTP 请求目标。",
-      "retry": "比较 # 前后的组件边界。"
+      "retry": "先看 # 前后的组件边界，再看 request-target 的组成。"
     },
     "prompt": {
-      "title": "解析一条复杂 URL",
-      "text": "请分别写出 scheme、userinfo、host、port、path、query、fragment、归一后的请求目标和相对引用结果。"
+      "title": "还原一条复杂 URL",
+      "text": "请写出 scheme、userinfo、host、port、path、query、fragment、归一后的 request-target，以及以 https://example.com/a/b/ 为 base 合并 ../c 的结果。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc3986.html",
         "label": "RFC 3986 · URI Syntax",
-        "note": "协议定义与报文语义"
+        "note": "组件、百分号编码、点段和 fragment"
+      },
+      {
+        "url": "https://url.spec.whatwg.org/",
+        "label": "WHATWG URL Standard",
+        "note": "浏览器 URL record、解析和 base"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "fragment 不属于 HTTP scheme 语义"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9112.html",
+        "label": "RFC 9112 · HTTP/1.1",
+        "note": "origin-form request-target 与 Host"
+      },
+      {
+        "url": "https://html.spec.whatwg.org/multipage/urls-and-fetching.html",
+        "label": "HTML Standard · URLs and fetching",
+        "note": "文档 base URL 与相对引用"
       }
     ]
   },
   {
     "slug": "hostname",
-    "lead": "TCP 已连到正确 IP，为什么修改 Host 后会得到另一个网站或证书错误？",
-    "definition": "主机名是 DNS 命名空间中的名称，可解析到一个或多个地址；连接地址、HTTP authority 和 TLS 服务身份仍在不同层分别使用它。",
-    "boundary": "主机名不等于固定 IP，也不一定是完整域名。同一 IP 可承载多个名称，一个名称也可对应多个地址。",
+    "lead": "TCP 已经连到正确 IP，为什么改一下 Host 就会看到另一个网站？",
+    "definition": "主机名是 DNS 命名空间中的可读名称；它先被解析成地址，随后仍会作为 TLS 身份和 HTTP Host 的线索继续传递。",
+    "boundary": "主机名不是固定 IP，也不是一次解析就能证明服务健康的结论。同一 IP 可以承载多个名称，一个名称也可能返回多条地址。",
     "sceneKind": "layers",
-    "sceneTitle": "名称解析、连接地址与虚拟主机选择",
-    "actionLabel": "更换主机名或 Host",
+    "sceneTitle": "名称解析、连接地址与服务身份",
+    "actionLabel": "更换一个跨层条件",
     "actors": [
       {
         "id": "host-name",
         "label": "api.example.com",
-        "detail": "请求名称",
+        "detail": "用户输入的名称",
         "icon": "network",
         "group": "名称"
       },
@@ -11999,24 +11918,24 @@
       },
       {
         "id": "tls-name",
-        "label": "TLS 名称",
-        "detail": "SNI + SAN",
+        "label": "TLS 身份",
+        "detail": "DNS-ID api.example.com",
         "icon": "shield",
         "group": "安全"
       },
       {
         "id": "http-host",
         "label": "HTTP Host",
-        "detail": "authority",
-        "icon": "message",
+        "detail": "api.example.com",
+        "icon": "server",
         "group": "应用"
       },
       {
-        "id": "virtual-host",
-        "label": "虚拟主机",
-        "detail": "按 Host 路由",
-        "icon": "server",
-        "group": "服务端"
+        "id": "service-result",
+        "label": "服务结果",
+        "detail": "200 API JSON",
+        "icon": "spark",
+        "group": "证据"
       }
     ],
     "edges": [
@@ -12033,1040 +11952,631 @@
         "label": "选择地址"
       },
       {
-        "id": "name-tls",
-        "from": "host-name",
-        "to": "tls-name",
-        "label": "验证身份"
-      },
-      {
-        "id": "tcp-vhost",
+        "id": "tcp-tls",
         "from": "tcp-address",
-        "to": "virtual-host",
-        "label": "连接到主机"
+        "to": "tls-name",
+        "label": "握手核名"
       },
       {
-        "id": "host-vhost",
+        "id": "tls-host",
+        "from": "tls-name",
+        "to": "http-host",
+        "label": "发出请求"
+      },
+      {
+        "id": "host-service",
         "from": "http-host",
-        "to": "virtual-host",
-        "label": "选择站点"
+        "to": "service-result",
+        "label": "虚拟主机路由"
       }
     ],
     "frames": [
       {
-        "label": "名称解析为两个地址",
-        "note": "客户端选择其中一个地址建立连接，名称本身仍保留给后续身份与路由。",
+        "label": "名字交给解析器",
+        "note": "主机名先进入 resolver，DNS 回答还只是地址候选，不是应用健康证明。",
         "activeIds": [
           "host-name",
-          "dns-answer",
-          "tcp-address"
+          "dns-answer"
         ],
         "doneIds": [
           "dns-answer"
         ],
         "mutedIds": [
+          "tcp-address",
           "tls-name",
           "http-host",
-          "virtual-host"
+          "service-result"
         ],
         "values": {
-          "dns-answer": "203.0.113.10, .11",
-          "tcp-address": "selected .10:443"
+          "dns-answer": "A/AAAA · .10 / .11"
         },
         "activeEdgeIds": [
-          "name-dns",
-          "dns-tcp"
+          "name-dns"
         ]
       },
       {
-        "label": "TLS 仍验证原主机名",
-        "note": "证书必须覆盖 api.example.com，而不是只与 IP 建立加密连接。",
+        "label": "挑一条地址建立连接",
+        "note": "客户端从多条回答中选择 203.0.113.10:443，原来的名字仍要留给后面的身份校验。",
         "activeIds": [
+          "dns-answer",
+          "tcp-address",
+          "tls-name"
+        ],
+        "doneIds": [
+          "tcp-address"
+        ],
+        "mutedIds": [
           "host-name",
-          "tls-name",
-          "tcp-address"
-        ],
-        "doneIds": [
-          "tls-name"
-        ],
-        "mutedIds": [
           "http-host",
-          "virtual-host"
+          "service-result"
         ],
         "values": {
-          "tls-name": "SAN contains api.example.com",
-          "tcp-address": "connected"
+          "tcp-address": "203.0.113.10:443",
+          "tls-name": "等待 DNS-ID"
         },
         "activeEdgeIds": [
-          "name-tls"
+          "dns-tcp",
+          "tcp-tls"
         ]
       },
       {
-        "label": "Host 选择 API 站点",
-        "note": "同一 IP 上的服务器依据 HTTP authority 路由到 API 虚拟主机。",
+        "label": "名字在两层继续出现",
+        "note": "TLS 用 DNS-ID 核对服务身份，HTTP 用 Host 选择虚拟主机；两层都对上才有 200。",
         "activeIds": [
-          "http-host",
-          "virtual-host",
-          "tcp-address"
-        ],
-        "doneIds": [
-          "virtual-host"
-        ],
-        "mutedIds": [
-          "dns-answer",
-          "tls-name"
-        ],
-        "values": {
-          "http-host": "api.example.com",
-          "virtual-host": "orders API · 200"
-        },
-        "activeEdgeIds": [
-          "tcp-vhost",
-          "host-vhost"
-        ]
-      },
-      {
-        "label": "改成 blog 进入另一站点",
-        "note": "TCP 仍连接同一 IP，但 Host 改变后应用路由结果不同。",
-        "activeIds": [
-          "http-host",
-          "virtual-host"
-        ],
-        "doneIds": [
-          "virtual-host"
-        ],
-        "mutedIds": [
-          "dns-answer",
+          "tcp-address",
           "tls-name",
-          "tcp-address"
+          "http-host",
+          "service-result"
+        ],
+        "doneIds": [
+          "tls-name",
+          "http-host",
+          "service-result"
+        ],
+        "mutedIds": [
+          "host-name",
+          "dns-answer"
         ],
         "values": {
-          "http-host": "blog.example.com",
-          "virtual-host": "blog · 200"
+          "tls-name": "DNS-ID api.example.com ✓",
+          "http-host": "Host: api.example.com",
+          "service-result": "200 API JSON"
         },
         "activeEdgeIds": [
-          "host-vhost"
+          "tcp-tls",
+          "tls-host",
+          "host-service"
         ],
         "metric": {
-          "label": "共享 IP 的站点",
-          "value": "2"
+          "label": "跨层条件一致",
+          "value": "6 / 6"
         }
       }
     ],
-    "insight": "名称、解析地址、TLS 身份和 HTTP 虚拟主机相互关联，但不能合并成一个概念。",
+    "insight": "名字、地址和服务身份是三件相连但不同的事；改动其中一层，故障会停在不同位置。",
     "quiz": {
-      "question": "同一 IP 可以承载多个主机名吗？",
+      "question": "同一 IP 上改 Host，最可能改变什么？",
       "options": [
         {
-          "label": "可以，TLS SNI 与 HTTP Host 可选择不同虚拟主机",
+          "label": "HTTP 虚拟主机路由",
           "correct": true
         },
         {
-          "label": "不可以，IP 与主机名永久一一对应",
+          "label": "已经建立的 TCP 目标 IP",
           "correct": false
         },
         {
-          "label": "只有关闭 DNS 才可以",
+          "label": "DNS 记录的 TTL",
           "correct": false
         }
       ],
-      "success": "连接到同一地址后，名称仍可参与身份验证和应用路由。",
-      "retry": "区分连接地址与应用层目标名称。"
+      "success": "Host 是应用层路由条件，可能把请求送到另一台虚拟主机。",
+      "retry": "先确认 DNS 和 TCP 没变，再比较 TLS 名称和 HTTP Host。"
     },
     "prompt": {
-      "title": "追踪主机名的使用位置",
-      "text": "请列出 DNS 答案、连接 IP、TLS SNI、证书 SAN、HTTP authority 和虚拟主机路由，并对名称不一致场景逐层验证。"
+      "title": "排查名称跨层不一致",
+      "text": "请记录输入主机名、DNS 全部回答与 TTL、选择的 IP:port、TLS SNI/证书 DNS-ID、HTTP Host 和最终响应，判断失败停在哪一层。"
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
-        "label": "RFC 1034 · DNS Concepts",
-        "note": "协议定义与报文语义"
+        "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+        "label": "RFC 1035 · Domain Names",
+        "note": "名称、resolver 与分布式 DNS 数据"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1123.html",
+        "label": "RFC 1123 · Internet Hosts",
+        "note": "主机名语法、多地址与 DNS 转换"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
+        "label": "RFC 8499 · DNS Terminology",
+        "note": "hostname 术语边界"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
-        "label": "RFC 9525 · Service Identity",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9525 · Service Identity in TLS",
+        "note": "DNS-ID 与服务身份验证"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
-        "label": "RFC 9110 · Authority",
-        "note": "协议定义与报文语义"
+        "label": "RFC 9110 · HTTP Semantics",
+        "note": "Host 作为应用层路由与请求身份"
       }
     ]
   },
   {
     "slug": "dns-record",
-    "lead": "权威 DNS 已把地址改成 .20，为什么部分用户一分钟内仍访问 .10？",
-    "definition": "DNS 资源记录用名称、类型、TTL 和类型特定数据表达地址、别名、邮件路由等信息；缓存会在 TTL 内复用旧答案。",
-    "boundary": "DNS 记录不只把域名指向 IP。CNAME 不是 HTTP 重定向，修改权威记录也不会让现有缓存立即消失。",
+    "lead": "权威 DNS 已把 api.example.com 改到 .20，为什么有人还拿到 .10？",
+    "definition": "DNS 资源记录把 owner、type、class、TTL 和 RDATA 放在一行里；同名同类型的记录组成 RRSet，resolver 可以在 TTL 内复用它。",
+    "boundary": "A、CNAME、MX、TXT 说的是不同种类的数据。CNAME 不会让浏览器跳转，权威区更新也不会立刻擦掉递归缓存里的旧答案。",
     "sceneKind": "timeline",
-    "sceneTitle": "A 记录变更与 TTL 缓存倒计时",
-    "actionLabel": "推进缓存时间",
+    "sceneTitle": "一行 DNS 记录怎样在权威区和缓存里分叉",
+    "actionLabel": "推进记录状态",
     "actors": [
       {
-        "id": "dns-owner",
-        "label": "api.example.com",
+        "id": "owner",
+        "label": "api.example.com.",
         "detail": "owner name",
         "icon": "network",
-        "group": "记录"
+        "group": "记录字段"
       },
       {
-        "id": "cname-record",
-        "label": "CNAME",
-        "detail": "api → edge",
-        "icon": "message",
-        "group": "记录"
+        "id": "record-row",
+        "label": "A · 60s · .10",
+        "detail": "一行 RR",
+        "icon": "file",
+        "group": "记录字段"
       },
       {
-        "id": "a-record",
-        "label": "A 记录",
-        "detail": "edge → 203.0.113.10",
-        "icon": "message",
-        "group": "记录"
+        "id": "rrset",
+        "label": "A · .10 + .11",
+        "detail": "同名同类型",
+        "icon": "package",
+        "group": "回答集合"
       },
       {
         "id": "authority",
-        "label": "权威服务器",
-        "detail": "已更新为 .20",
+        "label": "权威区",
+        "detail": "更新为 .20",
         "icon": "server",
-        "group": "DNS"
+        "group": "来源"
       },
       {
-        "id": "dns-cache",
-        "label": "递归缓存",
-        "detail": "TTL 60 s",
+        "id": "resolver-cache",
+        "label": "resolver 缓存",
+        "detail": ".10 · TTL 42",
         "icon": "memory",
-        "group": "DNS"
+        "group": "缓存"
       },
       {
-        "id": "dns-client",
-        "label": "客户端",
-        "detail": "重复查询",
+        "id": "client",
+        "label": "客户端查询",
+        "detail": "仍收到 .10",
         "icon": "browser",
-        "group": "调用方"
+        "group": "结果"
       }
     ],
     "edges": [
       {
-        "id": "owner-cname",
-        "from": "dns-owner",
-        "to": "cname-record",
-        "label": "别名记录"
+        "id": "owner-row",
+        "from": "owner",
+        "to": "record-row",
+        "label": "挂在这个名字下"
       },
       {
-        "id": "cname-a",
-        "from": "cname-record",
-        "to": "a-record",
-        "label": "继续查询 edge"
+        "id": "row-rrset",
+        "from": "record-row",
+        "to": "rrset",
+        "label": "同名同类型归组"
       },
       {
         "id": "authority-cache",
         "from": "authority",
-        "to": "dns-cache",
-        "label": "缓存答案"
+        "to": "resolver-cache",
+        "label": "缓存回答"
       },
       {
-        "id": "client-cache",
-        "from": "dns-client",
-        "to": "dns-cache",
-        "label": "查询"
+        "id": "cache-client",
+        "from": "resolver-cache",
+        "to": "client",
+        "label": "TTL 内复用"
       },
       {
-        "id": "cache-authority",
-        "from": "dns-cache",
-        "to": "authority",
+        "id": "authority-client",
+        "from": "authority",
+        "to": "client",
         "label": "过期后刷新"
       }
     ],
     "frames": [
       {
-        "label": "首次查询缓存 .10",
-        "note": "递归服务器从权威源取得记录，并按 TTL 60 秒保存。",
+        "label": "先读一行记录",
+        "note": "owner、type、class、TTL 和 RDATA 各自有位置，读者先知道这条信息挂在哪里、怎么解释、能存多久。",
         "activeIds": [
-          "dns-client",
-          "authority",
-          "dns-cache",
-          "cname-record",
-          "a-record"
+          "owner",
+          "record-row"
         ],
         "doneIds": [
-          "dns-cache"
+          "owner"
         ],
-        "mutedIds": [],
+        "mutedIds": [
+          "rrset",
+          "authority",
+          "resolver-cache",
+          "client"
+        ],
         "values": {
-          "a-record": "203.0.113.10",
-          "dns-cache": ".10 · TTL 60"
+          "record-row": "A · class IN · TTL 60 · 203.0.113.10"
         },
         "activeEdgeIds": [
-          "client-cache",
-          "cache-authority",
-          "authority-cache",
-          "owner-cname",
-          "cname-a"
+          "owner-row"
         ]
       },
       {
-        "label": "权威值改成 .20",
-        "note": "权威服务器立即保存新值，缓存副本仍剩 35 秒。",
+        "label": "同名记录合成 RRSet",
+        "note": "第二条 A 记录加入同一个 owner/type 集合；两个地址一起回答，TTL 一起倒计时。",
+        "activeIds": [
+          "owner",
+          "record-row",
+          "rrset"
+        ],
+        "doneIds": [
+          "rrset"
+        ],
+        "mutedIds": [
+          "authority",
+          "resolver-cache",
+          "client"
+        ],
+        "values": {
+          "rrset": "A → .10 + .11 · TTL 60"
+        },
+        "activeEdgeIds": [
+          "owner-row",
+          "row-rrset"
+        ]
+      },
+      {
+        "label": "权威已经改，缓存还没到点",
+        "note": "权威区现在是 .20，resolver 手里的 .10 还剩 42 秒；这两个答案同时存在于不同位置。",
         "activeIds": [
           "authority",
-          "a-record",
-          "dns-cache"
+          "resolver-cache",
+          "client"
         ],
         "doneIds": [
           "authority"
         ],
         "mutedIds": [
-          "dns-client"
+          "owner",
+          "record-row",
+          "rrset"
         ],
         "values": {
-          "authority": "203.0.113.20",
-          "dns-cache": "203.0.113.10 · TTL 35"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "TTL 内继续返回旧值",
-        "note": "客户端命中递归缓存，不会为每次查询访问权威服务器。",
-        "activeIds": [
-          "dns-client",
-          "dns-cache"
-        ],
-        "doneIds": [
-          "dns-client"
-        ],
-        "mutedIds": [
-          "authority",
-          "cname-record",
-          "a-record"
-        ],
-        "values": {
-          "dns-cache": "HIT .10 · TTL 12",
-          "dns-client": "203.0.113.10"
+          "authority": "A → 203.0.113.20",
+          "resolver-cache": "HIT .10 · TTL 42",
+          "client": "收到 .10"
         },
         "activeEdgeIds": [
-          "client-cache"
+          "authority-cache",
+          "cache-client"
         ],
         "metric": {
           "label": "权威查询",
           "value": "0"
         }
-      },
-      {
-        "label": "TTL 到期刷新 .20",
-        "note": "缓存失效后重新查询权威源，新的 A 记录进入缓存。",
-        "activeIds": [
-          "dns-client",
-          "dns-cache",
-          "authority",
-          "a-record"
-        ],
-        "doneIds": [
-          "dns-cache"
-        ],
-        "mutedIds": [],
-        "values": {
-          "dns-cache": "203.0.113.20 · TTL 60",
-          "dns-client": "203.0.113.20"
-        },
-        "activeEdgeIds": [
-          "client-cache",
-          "cache-authority",
-          "authority-cache",
-          "cname-a"
-        ]
       }
     ],
-    "insight": "DNS 变更的可见时间由记录类型和各级缓存剩余 TTL 决定。",
+    "insight": "看见一个 IP 还不够：记录类型、RRSet、回答来源和剩余 TTL 共同决定这次回答能不能信。",
     "quiz": {
-      "question": "把 A 记录从 .10 改为 .20 后，为什么客户端仍可能得到 .10？",
+      "question": "CNAME 记录通常表达什么关系？",
       "options": [
         {
-          "label": "递归或本地缓存的旧记录尚未过 TTL",
+          "label": "一个别名对应另一个规范名",
           "correct": true
         },
         {
-          "label": "CNAME 会执行 HTTP 302",
+          "label": "浏览器执行 HTTP 302 跳转",
           "correct": false
         },
         {
-          "label": "IP 地址不能修改",
+          "label": "把邮件正文写进 DNS",
           "correct": false
         }
       ],
-      "success": "权威值更新与缓存副本失效是两个时间点。",
-      "retry": "查看回答来自权威服务器还是缓存。"
+      "success": "CNAME 改变的是 DNS 名称关系，后续仍要解析规范名的记录。",
+      "retry": "先看这条 RR 的 type 和 RDATA，再判断它是地址、别名还是邮件路由。"
     },
     "prompt": {
-      "title": "计划一次 DNS 记录变更",
-      "text": "请列出 owner、记录类型、旧值、新值、TTL、别名链、权威源和验证解析器，并安排 TTL 预降与回滚。"
+      "title": "还原一次 DNS 记录回答",
+      "text": "请记录 QNAME、QTYPE、回答区、AA 标记、authority/additional 区、每条 RR 的 TTL、回答来源和是否为 NXDOMAIN/NODATA，再判断旧值来自哪一层缓存。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
         "label": "RFC 1034 · DNS Concepts",
-        "note": "协议定义与报文语义"
+        "note": "DNS 名字空间、区域、权威来源与缓存"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
         "label": "RFC 1035 · DNS Implementation",
-        "note": "协议定义与报文语义"
+        "note": "RR 字段、TTL 与常见记录类型"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc2181.html",
+        "label": "RFC 2181 · DNS Clarifications",
+        "note": "RRSet、CNAME 与权威数据边界"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc2308.html",
+        "label": "RFC 2308 · Negative Caching",
+        "note": "NXDOMAIN、NODATA 与负缓存 TTL"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
+        "label": "RFC 8499 · DNS Terminology",
+        "note": "CNAME、NXDOMAIN 与 NODATA 术语"
       }
     ]
   },
   {
     "slug": "dns-resolver",
-    "lead": "第一次解析要访问多级 DNS，为什么第二次只用 2 毫秒？",
-    "definition": "递归解析器代表客户端查找名称，可从缓存回答，也可依次查询根、顶级域和权威服务器；正负答案都可能缓存。",
-    "boundary": "解析器不是保存全网域名的单一服务器，也不确认目标应用是否健康。它返回 DNS 记录，连接和应用检查发生在后面。",
+    "lead": "第一次解析要走几层 DNS，为什么第二次却不用再问上游？",
+    "definition": "DNS resolver 接收 QNAME、QTYPE 和 class，先查自己的缓存；未命中时代表客户端追踪委派，再把记录、否定结论或失败状态返回。",
+    "boundary": "stub、recursive resolver 和 authoritative server 各做一段工作。NXDOMAIN/NODATA 是有依据的否定，SERVFAIL/timeout 则表示没拿到可用数据；解析失败会按短时 failure cache 限制重复重试。",
     "sceneKind": "route",
-    "sceneTitle": "首次递归查询与缓存命中",
-    "actionLabel": "重复或更换查询",
+    "sceneTitle": "一次查询怎样从 cache MISS 走到答案或停止",
+    "actionLabel": "推进解析决定",
     "actors": [
       {
-        "id": "stub-resolver",
-        "label": "Stub resolver",
-        "detail": "客户端本地",
+        "id": "stub",
+        "label": "stub resolver",
+        "detail": "只转交问题",
         "icon": "browser",
         "group": "客户端"
       },
       {
-        "id": "recursive-resolver",
-        "label": "递归解析器",
-        "detail": "cache empty",
+        "id": "recursive",
+        "label": "recursive resolver",
+        "detail": "RD=1 · 维护缓存",
         "icon": "search",
-        "group": "DNS"
+        "group": "中间层"
       },
       {
-        "id": "root-server",
-        "label": "根服务器",
-        "detail": "指向 .com",
-        "icon": "server",
-        "group": "DNS"
-      },
-      {
-        "id": "tld-server",
-        "label": ".com 服务器",
-        "detail": "指向 example",
-        "icon": "server",
-        "group": "DNS"
-      },
-      {
-        "id": "auth-dns",
-        "label": "权威服务器",
-        "detail": "api A=.20",
-        "icon": "server",
-        "group": "DNS"
-      },
-      {
-        "id": "resolver-cache",
-        "label": "解析缓存",
-        "detail": "正/负答案",
+        "id": "cache",
+        "label": "缓存抽屉",
+        "detail": "正/负/失败结论",
         "icon": "memory",
-        "group": "DNS"
+        "group": "中间层"
+      },
+      {
+        "id": "root",
+        "label": "根服务器",
+        "detail": "referral .com",
+        "icon": "server",
+        "group": "上游"
+      },
+      {
+        "id": "tld",
+        "label": ".com 服务器",
+        "detail": "referral example",
+        "icon": "server",
+        "group": "上游"
+      },
+      {
+        "id": "authority",
+        "label": "权威服务器",
+        "detail": "Answer 或 RCODE",
+        "icon": "server",
+        "group": "上游"
       }
     ],
     "edges": [
       {
         "id": "stub-recursive",
-        "from": "stub-resolver",
-        "to": "recursive-resolver",
+        "from": "stub",
+        "to": "recursive",
         "label": "递归请求"
       },
       {
+        "id": "recursive-cache",
+        "from": "recursive",
+        "to": "cache",
+        "label": "先查缓存"
+      },
+      {
         "id": "recursive-root",
-        "from": "recursive-resolver",
-        "to": "root-server",
+        "from": "recursive",
+        "to": "root",
         "label": "问根"
       },
       {
         "id": "recursive-tld",
-        "from": "recursive-resolver",
-        "to": "tld-server",
+        "from": "recursive",
+        "to": "tld",
         "label": "问 .com"
       },
       {
-        "id": "recursive-auth",
-        "from": "recursive-resolver",
-        "to": "auth-dns",
+        "id": "recursive-authority",
+        "from": "recursive",
+        "to": "authority",
         "label": "问权威"
       },
       {
-        "id": "auth-cache",
-        "from": "auth-dns",
-        "to": "resolver-cache",
-        "label": "保存答案"
+        "id": "authority-cache",
+        "from": "authority",
+        "to": "cache",
+        "label": "写入结论"
       },
       {
-        "id": "cache-recursive",
-        "from": "resolver-cache",
-        "to": "recursive-resolver",
+        "id": "cache-stub",
+        "from": "cache",
+        "to": "stub",
         "label": "直接回答"
       }
     ],
     "frames": [
       {
-        "label": "空缓存沿委派逐级查询",
-        "note": "解析器先找根，再找 .com，最后到 example.com 权威服务器。",
+        "label": "cache MISS，递归器接手",
+        "note": "stub 把 QNAME/QTYPE 交给 recursive resolver；缓存没有这条答案，递归器才开始追上游。",
         "activeIds": [
-          "stub-resolver",
-          "recursive-resolver",
-          "root-server",
-          "tld-server",
-          "auth-dns"
+          "stub",
+          "recursive",
+          "cache"
         ],
         "doneIds": [
-          "auth-dns"
+          "stub"
         ],
         "mutedIds": [
-          "resolver-cache"
+          "root",
+          "tld",
+          "authority"
         ],
         "values": {
-          "root-server": "referral .com",
-          "tld-server": "referral example.com",
-          "auth-dns": "A .20"
+          "recursive": "RD=1 · resolving",
+          "cache": "MISS"
         },
         "activeEdgeIds": [
           "stub-recursive",
-          "recursive-root",
-          "recursive-tld",
-          "recursive-auth"
-        ],
-        "metric": {
-          "label": "示例延迟",
-          "value": "82 ms"
-        }
-      },
-      {
-        "label": "答案写入解析缓存",
-        "note": "记录和 TTL 被保存，后续相同查询不再访问权威链。",
-        "activeIds": [
-          "auth-dns",
-          "resolver-cache",
-          "recursive-resolver"
-        ],
-        "doneIds": [
-          "resolver-cache"
-        ],
-        "mutedIds": [
-          "root-server",
-          "tld-server"
-        ],
-        "values": {
-          "resolver-cache": "api.example.com → .20 · TTL 60"
-        },
-        "activeEdgeIds": [
-          "auth-cache"
+          "recursive-cache"
         ]
       },
       {
-        "label": "第二次查询本地命中",
-        "note": "递归解析器直接用缓存回答 Stub。",
+        "label": "沿委派逐级缩小",
+        "note": "递归器先问根，再问 .com，最后找到负责 example.com 的权威服务器。",
         "activeIds": [
-          "stub-resolver",
-          "recursive-resolver",
-          "resolver-cache"
+          "recursive",
+          "root",
+          "tld",
+          "authority"
         ],
         "doneIds": [
-          "stub-resolver"
+          "root",
+          "tld"
         ],
         "mutedIds": [
-          "root-server",
-          "tld-server",
-          "auth-dns"
+          "stub",
+          "cache"
         ],
         "values": {
-          "recursive-resolver": "CACHE HIT",
-          "stub-resolver": "203.0.113.20"
+          "root": "referral .com",
+          "tld": "referral example.com",
+          "authority": "A .10 · TTL 300"
         },
         "activeEdgeIds": [
-          "stub-recursive",
-          "cache-recursive"
-        ],
-        "metric": {
-          "label": "示例延迟",
-          "value": "2 ms"
-        }
+          "recursive-root",
+          "recursive-tld",
+          "recursive-authority"
+        ]
       },
       {
-        "label": "NXDOMAIN 也进入负缓存",
-        "note": "不存在名称的否定答案在 TTL 内同样可复用。",
+        "label": "答案写入，下一次短路",
+        "note": "正答案和剩余 TTL 被放进缓存；相同查询下一次可以不再访问上游。",
         "activeIds": [
-          "stub-resolver",
-          "recursive-resolver",
-          "auth-dns",
-          "resolver-cache"
+          "stub",
+          "recursive",
+          "cache"
         ],
         "doneIds": [
-          "resolver-cache"
+          "cache"
         ],
         "mutedIds": [
-          "root-server",
-          "tld-server"
+          "root",
+          "tld",
+          "authority"
         ],
         "values": {
-          "auth-dns": "NXDOMAIN",
-          "resolver-cache": "negative TTL 30"
+          "cache": "A .10 · TTL 247",
+          "stub": "203.0.113.10"
         },
         "activeEdgeIds": [
-          "stub-recursive",
-          "recursive-auth",
-          "auth-cache"
+          "recursive-cache",
+          "cache-stub"
+        ]
+      },
+      {
+        "label": "负答案也会停止查询",
+        "note": "权威返回 NXDOMAIN 与 SOA 后，递归器按负 TTL 暂存“名字不存在”；SERVFAIL 则是另一种无有效答案的停止。",
+        "activeIds": [
+          "recursive",
+          "authority",
+          "cache",
+          "stub"
+        ],
+        "doneIds": [
+          "cache"
+        ],
+        "mutedIds": [
+          "root",
+          "tld"
+        ],
+        "values": {
+          "authority": "NXDOMAIN · SOA",
+          "cache": "negative TTL 60",
+          "stub": "仍答不存在"
+        },
+        "activeEdgeIds": [
+          "recursive-authority",
+          "authority-cache",
+          "cache-stub"
         ]
       }
     ],
-    "insight": "解析耗时取决于缓存是否命中和需要追踪多少级委派，不是固定的一次域名转 IP。",
+    "insight": "resolver 的工作不是把域名翻成 IP 一步交付，而是决定什么时候查缓存、沿哪条委派走，以及哪一种结果足以停止。",
     "quiz": {
-      "question": "查询不存在的名称后，立刻再次查询为什么也可能很快？",
+      "question": "看到 SERVFAIL，能否直接断定域名不存在？",
       "options": [
         {
-          "label": "NXDOMAIN 可以按负缓存 TTL 复用",
+          "label": "不能，它表示本次解析没有拿到可用数据",
           "correct": true
         },
         {
-          "label": "解析器自动创建了该域名",
+          "label": "能，所有失败都等于 NXDOMAIN",
           "correct": false
         },
         {
-          "label": "HTTP 缓存返回了 DNS 记录",
+          "label": "能，只要递归器返回了空结果",
           "correct": false
         }
       ],
-      "success": "DNS 可以缓存否定答案，减少重复的权威查询。",
-      "retry": "缓存不只保存成功的 A 或 AAAA 记录。"
+      "success": "SERVFAIL 与 NXDOMAIN 是不同的结果；先看 RCODE 和 authority 证据。",
+      "retry": "把“没有数据”和“没有拿到数据”分开，再检查缓存与上游记录。"
     },
     "prompt": {
-      "title": "追踪一次 DNS 解析",
-      "text": "请记录 Stub、递归解析器、缓存命中、委派链、权威答案、TTL、负缓存和最终连接地址。"
+      "title": "排查一次 DNS resolver 查询",
+      "text": "请记录 QNAME、QTYPE、RD/RA、RCODE、AA、answer/authority/additional、缓存命中与剩余 TTL、访问的上游和重试结果，判断是 HIT、NXDOMAIN、NODATA 还是 SERVFAIL。"
     },
     "sources": [
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
         "label": "RFC 1034 · DNS Resolution",
-        "note": "协议定义与报文语义"
+        "note": "stub、缓存检查与根到权威的解析算法"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+        "label": "RFC 1035 · DNS Implementation",
+        "note": "查询状态、委派和递归器的实现细节"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc8499.html",
         "label": "RFC 8499 · DNS Terminology",
-        "note": "协议定义与报文语义"
+        "note": "stub、recursive、iterative 与 authoritative 的角色定义"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc2308.html",
+        "label": "RFC 2308 · Negative Caching",
+        "note": "NXDOMAIN/NODATA 与 SOA 负缓存"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9520.html",
+        "label": "RFC 9520 · Resolution Failures",
+        "note": "SERVFAIL、超时和失败缓存的边界"
       }
     ]
   },
-  {
-    "slug": "cache-control",
-    "lead": "源站已经更新到 v2，为什么浏览器和 CDN 在不同时间看到新内容？",
-    "definition": "Cache-Control 指令规定响应能否存储、多久保持新鲜、何时必须验证，以及浏览器缓存与共享缓存是否采用不同期限。",
-    "boundary": "no-cache 不是不存储，而是复用前必须验证；浏览器缓存、CDN 和应用内缓存也不是同一层。",
-    "sceneKind": "timeline",
-    "sceneTitle": "浏览器与 CDN 的两级新鲜度",
-    "actionLabel": "推进请求时间",
-    "actors": [
-      {
-        "id": "cache-browser",
-        "label": "浏览器缓存",
-        "detail": "max-age=60",
-        "icon": "browser",
-        "group": "私有缓存"
-      },
-      {
-        "id": "cache-cdn",
-        "label": "CDN 缓存",
-        "detail": "s-maxage=300",
-        "icon": "cloud",
-        "group": "共享缓存"
-      },
-      {
-        "id": "cache-origin",
-        "label": "源站",
-        "detail": "ETag v1→v2",
-        "icon": "server",
-        "group": "数据源"
-      },
-      {
-        "id": "cache-request",
-        "label": "请求",
-        "detail": "t 可推进",
-        "icon": "message",
-        "group": "客户端"
-      },
-      {
-        "id": "cache-clock",
-        "label": "Age",
-        "detail": "新鲜度时钟",
-        "icon": "clock",
-        "group": "控制"
-      }
-    ],
-    "edges": [
-      {
-        "id": "request-browser",
-        "from": "cache-request",
-        "to": "cache-browser",
-        "label": "先查私有缓存"
-      },
-      {
-        "id": "browser-cdn",
-        "from": "cache-browser",
-        "to": "cache-cdn",
-        "label": "过期后访问"
-      },
-      {
-        "id": "cdn-origin",
-        "from": "cache-cdn",
-        "to": "cache-origin",
-        "label": "过期后验证"
-      },
-      {
-        "id": "clock-browser",
-        "from": "cache-clock",
-        "to": "cache-browser",
-        "label": "max-age"
-      },
-      {
-        "id": "clock-cdn",
-        "from": "cache-clock",
-        "to": "cache-cdn",
-        "label": "s-maxage"
-      }
-    ],
-    "frames": [
-      {
-        "label": "t=30 浏览器直接命中",
-        "note": "私有缓存仍在 60 秒新鲜期内，不访问 CDN。",
-        "activeIds": [
-          "cache-request",
-          "cache-browser",
-          "cache-clock"
-        ],
-        "doneIds": [
-          "cache-browser"
-        ],
-        "mutedIds": [
-          "cache-cdn",
-          "cache-origin"
-        ],
-        "values": {
-          "cache-browser": "HIT v1 · age 30",
-          "cache-cdn": "未访问"
-        },
-        "activeEdgeIds": [
-          "request-browser",
-          "clock-browser"
-        ],
-        "metric": {
-          "label": "源站请求",
-          "value": "0"
-        }
-      },
-      {
-        "label": "t=90 CDN 仍然新鲜",
-        "note": "浏览器副本已过期，但共享缓存的 300 秒期限尚未到。",
-        "activeIds": [
-          "cache-request",
-          "cache-browser",
-          "cache-cdn",
-          "cache-clock"
-        ],
-        "doneIds": [
-          "cache-cdn"
-        ],
-        "mutedIds": [
-          "cache-origin"
-        ],
-        "values": {
-          "cache-browser": "STALE",
-          "cache-cdn": "HIT v1 · age 90"
-        },
-        "activeEdgeIds": [
-          "request-browser",
-          "browser-cdn",
-          "clock-cdn"
-        ]
-      },
-      {
-        "label": "源站在 t=120 更新 v2",
-        "note": "CDN 的 v1 副本仍新鲜，源站变化不会主动穿透现有缓存。",
-        "activeIds": [
-          "cache-origin",
-          "cache-cdn",
-          "cache-clock"
-        ],
-        "doneIds": [
-          "cache-origin"
-        ],
-        "mutedIds": [
-          "cache-request",
-          "cache-browser"
-        ],
-        "values": {
-          "cache-origin": "ETag v2",
-          "cache-cdn": "v1 · fresh until 300"
-        },
-        "activeEdgeIds": [
-          "clock-cdn"
-        ]
-      },
-      {
-        "label": "t=320 验证取得 v2",
-        "note": "共享缓存过期后携带 ETag 验证，源站返回新表示。",
-        "activeIds": [
-          "cache-request",
-          "cache-browser",
-          "cache-cdn",
-          "cache-origin"
-        ],
-        "doneIds": [
-          "cache-origin",
-          "cache-cdn"
-        ],
-        "mutedIds": [
-          "cache-clock"
-        ],
-        "values": {
-          "cache-cdn": "STALE → v2",
-          "cache-origin": "200 ETag v2"
-        },
-        "activeEdgeIds": [
-          "request-browser",
-          "browser-cdn",
-          "cdn-origin"
-        ],
-        "metric": {
-          "label": "旧值最长示例时间",
-          "value": "300 s"
-        }
-      }
-    ],
-    "insight": "多级缓存下，新内容何时可见由每一层的有效期和验证规则共同决定。",
-    "quiz": {
-      "question": "响应含 no-cache，缓存是否一定不能存储？",
-      "options": [
-        {
-          "label": "不一定，它表示复用前必须重新验证",
-          "correct": true
-        },
-        {
-          "label": "一定完全禁止存储",
-          "correct": false
-        },
-        {
-          "label": "只影响数据库缓存",
-          "correct": false
-        }
-      ],
-      "success": "no-cache 允许保存副本，但每次使用前要向源站验证。",
-      "retry": "不要把 no-cache 与 no-store 混淆。"
-    },
-    "prompt": {
-      "title": "核对一条响应的缓存行为",
-      "text": "请列出浏览器与共享缓存的 Cache-Control、Age、ETag、Vary、失效动作，并按时间推演命中、验证和回源。"
-    },
-    "sources": [
-      {
-        "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
-        "label": "RFC 9111 · HTTP Caching",
-        "note": "协议定义与报文语义"
-      }
-    ]
-  },
-  {
-    "slug": "mime-type",
-    "lead": "同一段 <script> 字节声明成 text/plain、text/html 和 application/json，为什么得到三种结果？",
-    "definition": "媒体类型用 type/subtype 和参数声明内容表示格式，接收方据此选择文本、HTML、JSON、图片等解析器。",
-    "boundary": "媒体类型不是文件扩展名，也不能保证字节内容合法。application/json 只声明预期格式，解析器仍可能报错。",
-    "sceneKind": "branch",
-    "sceneTitle": "同一字节按三种媒体类型解释",
-    "actionLabel": "切换 Content-Type",
-    "actors": [
-      {
-        "id": "same-bytes",
-        "label": "响应字节",
-        "detail": "<script>alert(1)</script>",
-        "icon": "file",
-        "group": "内容"
-      },
-      {
-        "id": "plain-parser",
-        "label": "文本解析器",
-        "detail": "text/plain",
-        "icon": "code",
-        "group": "解释"
-      },
-      {
-        "id": "html-parser",
-        "label": "HTML 解析器",
-        "detail": "text/html",
-        "icon": "layout",
-        "group": "解释"
-      },
-      {
-        "id": "json-parser",
-        "label": "JSON 解析器",
-        "detail": "application/json",
-        "icon": "gear",
-        "group": "解释"
-      },
-      {
-        "id": "render-result",
-        "label": "处理结果",
-        "detail": "等待解析",
-        "icon": "browser",
-        "group": "输出"
-      }
-    ],
-    "edges": [
-      {
-        "id": "bytes-plain",
-        "from": "same-bytes",
-        "to": "plain-parser",
-        "label": "按文本"
-      },
-      {
-        "id": "bytes-html",
-        "from": "same-bytes",
-        "to": "html-parser",
-        "label": "按 HTML"
-      },
-      {
-        "id": "bytes-json",
-        "from": "same-bytes",
-        "to": "json-parser",
-        "label": "按 JSON"
-      },
-      {
-        "id": "plain-result",
-        "from": "plain-parser",
-        "to": "render-result",
-        "label": "显示文本"
-      },
-      {
-        "id": "html-result",
-        "from": "html-parser",
-        "to": "render-result",
-        "label": "构造 DOM"
-      },
-      {
-        "id": "json-result",
-        "from": "json-parser",
-        "to": "render-result",
-        "label": "解析值"
-      }
-    ],
-    "frames": [
-      {
-        "label": "text/plain 原样显示",
-        "note": "字节被当作普通文本，不进入 HTML 语法树。",
-        "activeIds": [
-          "same-bytes",
-          "plain-parser",
-          "render-result"
-        ],
-        "doneIds": [
-          "plain-parser"
-        ],
-        "mutedIds": [
-          "html-parser",
-          "json-parser"
-        ],
-        "values": {
-          "render-result": "literal <script>…",
-          "plain-parser": "200 · text"
-        },
-        "activeEdgeIds": [
-          "bytes-plain",
-          "plain-result"
-        ]
-      },
-      {
-        "label": "text/html 构造脚本节点",
-        "note": "同一字节进入 HTML 解析器，产生不同的浏览器处理。",
-        "activeIds": [
-          "same-bytes",
-          "html-parser",
-          "render-result"
-        ],
-        "doneIds": [
-          "html-parser"
-        ],
-        "mutedIds": [
-          "plain-parser",
-          "json-parser"
-        ],
-        "values": {
-          "render-result": "DOM script node",
-          "html-parser": "HTML parsed"
-        },
-        "activeEdgeIds": [
-          "bytes-html",
-          "html-result"
-        ]
-      },
-      {
-        "label": "application/json 语法失败",
-        "note": "声明 JSON 不会把任意字节变成 JSON 值。",
-        "activeIds": [
-          "same-bytes",
-          "json-parser",
-          "render-result"
-        ],
-        "doneIds": [
-          "json-parser"
-        ],
-        "mutedIds": [
-          "plain-parser",
-          "html-parser"
-        ],
-        "values": {
-          "json-parser": "SyntaxError @ 1",
-          "render-result": "parse failed"
-        },
-        "activeEdgeIds": [
-          "bytes-json",
-          "json-result"
-        ],
-        "metric": {
-          "label": "HTTP 状态",
-          "value": "三次均 200"
-        }
-      }
-    ],
-    "insight": "媒体类型决定接收方用什么规则解释字节，状态码和扩展名不能替代它。",
-    "quiz": {
-      "question": "响应声明 application/json，但 body 是 HTML，客户端应怎样看待？",
-      "options": [
-        {
-          "label": "按 JSON 解析并报告格式错误",
-          "correct": true
-        },
-        {
-          "label": "自动把 HTML 当合法 JSON",
-          "correct": false
-        },
-        {
-          "label": "只看文件扩展名",
-          "correct": false
-        }
-      ],
-      "success": "媒体类型选择解析器，实际字节仍必须满足该格式。",
-      "retry": "声明格式不等于内容已经合法。"
-    },
-    "prompt": {
-      "title": "核对媒体类型与实际内容",
-      "text": "请记录 Content-Type、charset、Content-Encoding、实际字节和接收端解析器，并为错配类型准备失败测试。"
-    },
-    "sources": [
-      {
-        "url": "https://www.rfc-editor.org/rfc/rfc6838.html",
-        "label": "RFC 6838 · Media Types",
-        "note": "协议定义与报文语义"
-      },
-      {
-        "url": "https://www.iana.org/assignments/media-types/media-types.xhtml",
-        "label": "IANA · Media Types",
-        "note": "协议参数与注册信息"
-      }
-    ]
-  },
+  {"slug":"cache-control","lead":"源站已经更新到 v2，为什么浏览器有时直接给 v1，有时只收到 304？","definition":"Cache-Control 把响应的存储、新鲜度、验证和 private/shared 复用条件写给缓存；Age、ETag 与 Vary 让每一次命中都有可检查的依据。","boundary":"no-cache 允许保存但要求复用前验证；no-store 阻止存储；stale 扩展只在声明的短窗口内放行旧响应，不能绕过身份授权。","sceneKind":"timeline","sceneTitle":"缓存闸门、时间窗和验证请求","actionLabel":"推进缓存状态","actors":[{"id":"request","label":"请求","detail":"GET /app.js","icon":"message","group":"客户端"},{"id":"response","label":"源站响应","detail":"200 · ETag v1","icon":"file","group":"数据"},{"id":"cache-gate","label":"缓存闸门","detail":"存储 / 命中 / 验证","icon":"search","group":"判断"},{"id":"clock","label":"Age 计时器","detail":"max-age=60","icon":"clock","group":"时间"},{"id":"origin","label":"源站","detail":"v1 → v2","icon":"server","group":"来源"},{"id":"client","label":"客户端","detail":"拿到表示","icon":"browser","group":"结果"},{"id":"shared","label":"共享缓存","detail":"private/no-store","icon":"cloud","group":"边界"}],"edges":[{"id":"request-response","from":"request","to":"response","label":"请求拿到响应"},{"id":"response-gate","from":"response","to":"cache-gate","label":"检查 Cache-Control"},{"id":"gate-client","from":"cache-gate","to":"client","label":"交付副本"},{"id":"gate-origin","from":"cache-gate","to":"origin","label":"过期后验证"},{"id":"origin-client","from":"origin","to":"client","label":"304 / 新表示"},{"id":"clock-gate","from":"clock","to":"cache-gate","label":"Age 对照新鲜度"},{"id":"gate-shared","from":"cache-gate","to":"shared","label":"允许或挡住共享"}],"frames":[{"label":"响应先过存储闸门","note":"源站交回 /app.js，max-age=60 让缓存留下 v1；这一步只是写入，还没有命中。","activeIds":["request","response","cache-gate","origin","clock"],"doneIds":["response"],"mutedIds":["client","shared"],"values":{"response":"200 · ETag v1","cache-gate":"空 → 写入 v1","origin":"Cache-Control: max-age=60","clock":"Age 0s"},"activeEdgeIds":["request-response","response-gate","clock-gate"],"metric":{"label":"源站请求","value":"1"}},{"label":"新鲜时直接复用","note":"Age 25 秒仍在 60 秒窗口内，缓存把已有的 v1 交给客户端；这一轮没有回源。","activeIds":["request","cache-gate","client","clock"],"doneIds":["cache-gate","client"],"mutedIds":["response","origin","shared"],"values":{"cache-gate":"HIT · v1","client":"返回 v1","clock":"Age 25 / 60","origin":"不访问"},"activeEdgeIds":["request-response","gate-client","clock-gate"],"metric":{"label":"源站请求","value":"0"}},{"label":"过期后只验证一遍","note":"Age 61 秒后，缓存带着 If-None-Match 询问；304 表示 body 没变，旧内容可以留下。","activeIds":["request","cache-gate","origin","client","clock"],"doneIds":["origin","client"],"mutedIds":["response","shared"],"values":{"cache-gate":"STALE · If-None-Match v1","origin":"304 Not Modified","client":"旧 body + 新元数据","clock":"Age 61s"},"activeEdgeIds":["gate-origin","origin-client","clock-gate"],"metric":{"label":"响应 body","value":"不重传"}},{"label":"用户资料挡住共享缓存","note":"private, no-store 的 /me 仍能交给当前用户，但 shared cache 不留下 user=7 的副本。","activeIds":["request","response","cache-gate","client","shared"],"doneIds":["client"],"mutedIds":["origin","clock"],"values":{"response":"200 · user=7","cache-gate":"shared copy · BLOCKED","client":"只给当前用户","shared":"不存储"},"activeEdgeIds":["request-response","response-gate","gate-client","gate-shared"],"metric":{"label":"共享副本","value":"0"}}],"insight":"缓存不是一个‘有或没有’的开关：要把存储、新鲜命中、过期验证和共享边界分开看，Age 与响应头能把每一步查出来。","quiz":{"question":"响应含 no-cache，缓存是否一定不能存储？","options":[{"label":"不一定，它表示复用前必须重新验证","correct":true},{"label":"一定完全禁止存储","correct":false},{"label":"只影响数据库缓存","correct":false}],"success":"no-cache 允许保存副本，但每次使用前要向源站验证。","retry":"把 no-cache 和 no-store 放回两个不同问题：能不能存，和能不能直接复用。"},"prompt":{"title":"核对一条响应的缓存行为","text":"请列出浏览器与共享缓存的 Cache-Control、Age、ETag、Vary、失效动作，并按时间推演命中、验证和回源。"},"sources":[{"url":"https://www.rfc-editor.org/rfc/rfc9111.html","label":"RFC 9111 · HTTP Caching","note":"缓存存储、新鲜度、验证、Vary 与 shared/private 语义"},{"url":"https://www.rfc-editor.org/rfc/rfc9110.html","label":"RFC 9110 · HTTP Semantics","note":"请求方法、表示选择和 Vary 的 HTTP 语义"},{"url":"https://www.rfc-editor.org/rfc/rfc5861.html","label":"RFC 5861 · Stale Content","note":"stale-while-revalidate 与 stale-if-error 的时间窗口"},{"url":"https://www.rfc-editor.org/rfc/rfc8246.html","label":"RFC 8246 · Immutable Responses","note":"immutable 只在 freshness lifetime 内抑制条件请求"}]},
+  {"slug":"mime-type","lead":"同一段 <h1>Hi</h1> 字节，为什么一会儿是标题，一会儿只是文字？","definition":"媒体类型是给表示附上的解释声明；接收端先读 Content-Type，再按 type/subtype 和参数选择解析器，实际字节仍要通过那套规则。","boundary":"扩展名、charset、Content-Encoding 和媒体类型回答不同问题；错配时浏览器可能嗅探，结果不能当成所有客户端的通用保证。","sceneKind":"branch","sceneTitle":"同一字节在不同解释器之间分叉","actionLabel":"切换解释路径","actors":[{"id":"declaration","label":"Content-Type","detail":"text/html / text/plain / JSON","icon":"file","group":"声明"},{"id":"bytes","label":"实际字节","detail":"<h1>Hi</h1> 或 JSON","icon":"code","group":"内容"},{"id":"decoder","label":"外层解码","detail":"Content-Encoding: gzip","icon":"gear","group":"前置步骤"},{"id":"parser","label":"解释器","detail":"HTML / text / JSON","icon":"component","group":"规则"},{"id":"result","label":"接收端结果","detail":"节点、文字或错误","icon":"browser","group":"输出"},{"id":"context","label":"使用上下文","detail":"浏览器 / API 客户端","icon":"shield","group":"边界"}],"edges":[{"id":"declaration-parser","from":"declaration","to":"parser","label":"选择处理规则"},{"id":"bytes-parser","from":"bytes","to":"parser","label":"交给解析器"},{"id":"bytes-decoder","from":"bytes","to":"decoder","label":"先解外层编码"},{"id":"decoder-parser","from":"decoder","to":"parser","label":"还原表示"},{"id":"parser-result","from":"parser","to":"result","label":"产生结果"},{"id":"context-result","from":"context","to":"result","label":"上下文影响处理"}],"frames":[{"label":"text/html 构造标题","note":"声明和字节一起进入 HTML 解释路径，结果是一个 h1 节点。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser","result"],"mutedIds":["decoder","context"],"values":{"declaration":"text/html","bytes":"<h1>Hi</h1>","parser":"HTML parser","result":"h1 element"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"]},{"label":"text/plain 保留尖括号","note":"声明换成纯文本，字节没有变，解析器也不再把它拆成 HTML 标签。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser","result"],"mutedIds":["decoder","context"],"values":{"declaration":"text/plain","bytes":"<h1>Hi</h1>","parser":"text decoder","result":"literal text"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"]},{"label":"application/json 停在错误处","note":"声明只改变解析规则；缺少值的 JSON 仍然在右花括号前失败。","activeIds":["declaration","bytes","parser","result"],"doneIds":["parser"],"mutedIds":["decoder","context"],"values":{"declaration":"application/json","bytes":"{\"count\": }","parser":"JSON parser","result":"SyntaxError"},"activeEdgeIds":["declaration-parser","bytes-parser","parser-result"],"metric":{"label":"解析状态","value":"失败"}},{"label":"gzip 先解开再解析","note":"外层编码先由 gunzip 去掉，得到的表示仍按 application/json 处理。","activeIds":["declaration","bytes","decoder","parser","result"],"doneIds":["decoder","parser","result"],"mutedIds":["context"],"values":{"declaration":"application/json","bytes":"gzip bytes","decoder":"gunzip","parser":"JSON parser","result":"{ count: 2 }"},"activeEdgeIds":["bytes-decoder","decoder-parser","parser-result"]}],"insight":"媒体类型决定接收端先套哪套解释规则；看到结果前，还要检查参数、外层编码和实际字节有没有对上。","quiz":{"question":"响应声明 application/json，但 body 不是合法 JSON，应该怎样判断？","options":[{"label":"按 JSON 解析并把语法错误留下","correct":true},{"label":"声明成功就等于内容合法","correct":false},{"label":"改看文件扩展名，不再解析","correct":false}],"success":"标签选择了解释器，解析器仍要检查字节。","retry":"把“是什么格式”和“是否符合格式”分成两个问题。"},"prompt":{"title":"核对一条响应的内容类型","text":"请把 Content-Type、charset、Content-Encoding、实际字节和接收端上下文列出来，解释结果是文本、节点、结构化值还是解析错误。"},"sources":[{"url":"https://www.rfc-editor.org/rfc/rfc6838.html","label":"RFC 6838 · Media Type Registration","note":"type/subtype、参数、注册树和顶层类型"},{"url":"https://www.rfc-editor.org/rfc/rfc2046.html","label":"RFC 2046 · Media Types","note":"charset 与 multipart 的媒体类型语义"},{"url":"https://www.rfc-editor.org/rfc/rfc9110.html","label":"RFC 9110 · HTTP Semantics","note":"Content-Type、Content-Encoding 与表示处理"},{"url":"https://mimesniff.spec.whatwg.org/","label":"WHATWG · MIME Sniffing Standard","note":"错配类型的嗅探、上下文和安全后果"}]},
   {
     "slug": "response-body",
     "lead": "接口状态都是 200，为什么一个能显示图片，一个解压后才显示，另一个完全没有内容？",
