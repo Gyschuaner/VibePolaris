@@ -11467,252 +11467,243 @@
   ]
 },
   {
-    "slug": "packet",
-    "lead": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
-    "definition": "IP 数据包由首部和负载组成，路由器按目的地址逐跳转发；路径 MTU、TTL/Hop Limit 与 IP 版本决定大包和环路如何处理。",
-    "boundary": "一个应用消息不等于一个 IP 包，TCP 段也不等于 IP 包。路由器通常只处理当前包，不携带完整端到端路径。",
-    "sceneKind": "assembly",
-    "sceneTitle": "4000 字节跨越较小 MTU 链路",
-    "actionLabel": "切换 IP 版本与路径",
-    "actors": [
-      {
-        "id": "app-payload",
-        "label": "应用数据",
-        "detail": "4000 B",
-        "icon": "package",
-        "group": "输入"
-      },
-      {
-        "id": "ip-builder",
-        "label": "IP 封装",
-        "detail": "添加首部",
-        "icon": "gear",
-        "group": "端点"
-      },
-      {
-        "id": "link-1500",
-        "label": "链路 A",
-        "detail": "MTU 1500",
-        "icon": "network",
-        "group": "路径"
-      },
-      {
-        "id": "link-1280",
-        "label": "链路 B",
-        "detail": "MTU 1280",
-        "icon": "network",
-        "group": "路径"
-      },
-      {
-        "id": "fragment-set",
-        "label": "包集合",
-        "detail": "等待分段",
-        "icon": "queue",
-        "group": "传输"
-      },
-      {
-        "id": "destination",
-        "label": "接收端",
-        "detail": "重组或接收",
-        "icon": "server",
-        "group": "端点"
-      },
-      {
-        "id": "hop-limit",
-        "label": "Hop Limit",
-        "detail": "初始 3",
-        "icon": "clock",
-        "group": "首部"
-      }
-    ],
-    "edges": [
-      {
-        "id": "payload-builder",
-        "from": "app-payload",
-        "to": "ip-builder",
-        "label": "封装"
-      },
-      {
-        "id": "builder-fragments",
-        "from": "ip-builder",
-        "to": "fragment-set",
-        "label": "形成包"
-      },
-      {
-        "id": "fragments-link-a",
-        "from": "fragment-set",
-        "to": "link-1500",
-        "label": "发送"
-      },
-      {
-        "id": "link-a-link-b",
-        "from": "link-1500",
-        "to": "link-1280",
-        "label": "下一跳"
-      },
-      {
-        "id": "link-b-dest",
-        "from": "link-1280",
-        "to": "destination",
-        "label": "到达"
-      },
-      {
-        "id": "limit-links",
-        "from": "hop-limit",
-        "to": "link-1500",
-        "label": "逐跳递减"
-      }
-    ],
-    "frames": [
-      {
-        "label": "IPv4 在 1500 MTU 下分片",
-        "note": "教学样本拆成三个可通过链路 A 的片段，接收端按标识和偏移重组。",
-        "activeIds": [
-          "app-payload",
-          "ip-builder",
-          "fragment-set",
-          "link-1500"
-        ],
-        "doneIds": [
-          "fragment-set"
-        ],
-        "mutedIds": [
-          "link-1280",
-          "destination",
-          "hop-limit"
-        ],
-        "values": {
-          "fragment-set": "3 fragments",
-          "link-1500": "each ≤1500 B"
-        },
-        "activeEdgeIds": [
-          "payload-builder",
-          "builder-fragments",
-          "fragments-link-a"
-        ],
-        "metric": {
-          "label": "片段数",
-          "value": "3"
-        }
-      },
-      {
-        "label": "IPv6 遇到 1280 返回过大",
-        "note": "路由器不替发送端分片，而是通知端点降低包大小。",
-        "activeIds": [
-          "fragment-set",
-          "link-1500",
-          "link-1280",
-          "ip-builder"
-        ],
-        "doneIds": [
-          "link-1280"
-        ],
-        "mutedIds": [
-          "destination"
-        ],
-        "values": {
-          "link-1280": "Packet Too Big · MTU 1280",
-          "ip-builder": "重新分段"
-        },
-        "activeEdgeIds": [
-          "fragments-link-a",
-          "link-a-link-b"
-        ]
-      },
-      {
-        "label": "调整后四包到达并还原数据",
-        "note": "发送端按较小路径 MTU 生成四个包，接收端恢复 4000 字节。",
-        "activeIds": [
-          "ip-builder",
-          "fragment-set",
-          "link-1500",
-          "link-1280",
-          "destination"
-        ],
-        "doneIds": [
-          "destination"
-        ],
-        "mutedIds": [
-          "hop-limit"
-        ],
-        "values": {
-          "fragment-set": "4 packets ≤1280 B",
-          "destination": "4000 B complete"
-        },
-        "activeEdgeIds": [
-          "builder-fragments",
-          "fragments-link-a",
-          "link-a-link-b",
-          "link-b-dest"
-        ]
-      },
-      {
-        "label": "Hop Limit 在第三跳归零",
-        "note": "包在环路中不会永久转发，归零节点丢弃并返回错误。",
-        "activeIds": [
-          "hop-limit",
-          "link-1500",
-          "link-1280"
-        ],
-        "doneIds": [
-          "hop-limit"
-        ],
-        "mutedIds": [
-          "app-payload",
-          "ip-builder",
-          "fragment-set",
-          "destination"
-        ],
-        "values": {
-          "hop-limit": "3→2→1→0",
-          "destination": "not reached"
-        },
-        "activeEdgeIds": [
-          "limit-links"
-        ],
-        "metric": {
-          "label": "允许跳数",
-          "value": "3"
-        }
-      }
-    ],
-    "insight": "排查大消息传输要分清应用数据、传输段、IP 包和路径 MTU。",
-    "quiz": {
-      "question": "IPv6 路由器遇到超过下一跳 MTU 的包，通常怎样处理？",
-      "options": [
-        {
-          "label": "返回 Packet Too Big，由发送端调整大小",
-          "correct": true
-        },
-        {
-          "label": "所有路由器都自动分片",
-          "correct": false
-        },
-        {
-          "label": "把包改成 TCP",
-          "correct": false
-        }
+  "slug": "packet",
+  "lead": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
+  "definition": "IP 数据包由首部和负载组成，路由器按目的地址逐跳转发；路径 MTU、TTL/Hop Limit 与 IP 版本决定大包和环路如何处理。",
+  "boundary": "一个应用消息不等于一个 IP 包，TCP 段也不等于 IP 包。路由器通常只处理当前包，不携带完整端到端路径。",
+  "sceneKind": "assembly",
+  "sceneTitle": "一个大包怎样在路径上改变形状",
+  "actionLabel": "切换 IP 版本与路径",
+  "actors": [
+    {
+      "id": "app-payload",
+      "label": "应用数据",
+      "detail": "4000 B",
+      "icon": "package",
+      "group": "输入"
+    },
+    {
+      "id": "ip-builder",
+      "label": "IP 封装",
+      "detail": "添加首部",
+      "icon": "gear",
+      "group": "端点"
+    },
+    {
+      "id": "link-1500",
+      "label": "链路 A",
+      "detail": "MTU 1500",
+      "icon": "network",
+      "group": "路径"
+    },
+    {
+      "id": "link-1280",
+      "label": "链路 B",
+      "detail": "MTU 1280",
+      "icon": "network",
+      "group": "路径"
+    },
+    {
+      "id": "fragment-set",
+      "label": "包集合",
+      "detail": "等待分段",
+      "icon": "queue",
+      "group": "传输"
+    },
+    {
+      "id": "destination",
+      "label": "接收端",
+      "detail": "重组或接收",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "hop-limit",
+      "label": "Hop Limit",
+      "detail": "初始 3",
+      "icon": "clock",
+      "group": "首部"
+    }
+  ],
+  "edges": [
+    {
+      "id": "payload-builder",
+      "from": "app-payload",
+      "to": "ip-builder",
+      "label": "封装"
+    },
+    {
+      "id": "builder-fragments",
+      "from": "ip-builder",
+      "to": "fragment-set",
+      "label": "形成包"
+    },
+    {
+      "id": "fragments-link-a",
+      "from": "fragment-set",
+      "to": "link-1500",
+      "label": "发送"
+    },
+    {
+      "id": "link-a-link-b",
+      "from": "link-1500",
+      "to": "link-1280",
+      "label": "下一跳"
+    },
+    {
+      "id": "link-b-dest",
+      "from": "link-1280",
+      "to": "destination",
+      "label": "到达"
+    },
+    {
+      "id": "limit-links",
+      "from": "hop-limit",
+      "to": "link-1500",
+      "label": "逐跳递减"
+    }
+  ],
+  "frames": [
+    {
+      "label": "应用数据先装进 IP 包",
+      "note": "4000 B 应用数据先拿到 IP 头；还没根据路径 MTU 拆分。",
+      "activeIds": [
+        "app-payload",
+        "ip-builder",
+        "fragment-set"
       ],
-      "success": "IPv6 由端点处理分片，路径通过 ICMPv6 告知 MTU。",
-      "retry": "区分 IPv4 路由器分片与 IPv6 端点分片。"
+      "doneIds": [
+        "ip-builder"
+      ],
+      "mutedIds": [
+        "link-1500",
+        "link-1280",
+        "destination",
+        "hop-limit"
+      ],
+      "values": {
+        "fragment-set": "1 datagram",
+        "ip-builder": "IPv4 · TTL 3"
+      },
+      "activeEdgeIds": [
+        "payload-builder",
+        "builder-fragments"
+      ]
     },
-    "prompt": {
-      "title": "分析一次大包传输",
-      "text": "请列出应用消息大小、传输分帧、IP 版本、各跳 MTU、DF/Packet Too Big、Hop Limit 和接收端重组结果。"
+    {
+      "label": "窄链路给出两种答案",
+      "note": "IPv4 可以由路由器分片；IPv6 路由器丢弃过大包并回 Packet Too Big。",
+      "activeIds": [
+        "ip-builder",
+        "fragment-set",
+        "link-1500",
+        "link-1280"
+      ],
+      "doneIds": [
+        "link-1280"
+      ],
+      "mutedIds": [
+        "app-payload",
+        "destination",
+        "hop-limit"
+      ],
+      "values": {
+        "fragment-set": "IPv4: 3 fragments · IPv6: PTB",
+        "link-1280": "MTU 1280",
+        "ip-builder": "IPv6 source adjusts"
+      },
+      "activeEdgeIds": [
+        "fragments-link-a",
+        "link-a-link-b"
+      ]
     },
-    "sources": [
+    {
+      "label": "按 PMTU 重发并在终点重组",
+      "note": "发送端把包缩到 1280 B 以内，终点收齐后还原 4000 B；每跳仍递减 Hop Limit。",
+      "activeIds": [
+        "ip-builder",
+        "fragment-set",
+        "link-1500",
+        "link-1280",
+        "destination",
+        "hop-limit"
+      ],
+      "doneIds": [
+        "destination"
+      ],
+      "mutedIds": [
+        "app-payload"
+      ],
+      "values": {
+        "fragment-set": "4 packets ≤1280 B",
+        "destination": "4000 B complete",
+        "hop-limit": "3→2→1"
+      },
+      "activeEdgeIds": [
+        "builder-fragments",
+        "fragments-link-a",
+        "link-a-link-b",
+        "link-b-dest",
+        "limit-links"
+      ],
+      "metric": {
+        "label": "PMTU / 重组",
+        "value": "1280 B · 4000 B"
+      }
+    }
+  ],
+  "insight": "排查大包传输要分清应用数据、传输段、IP 包、路径 MTU 和中间设备留下的错误证据。",
+  "quiz": {
+    "question": "IPv6 路由器遇到超过下一跳 MTU 的包，通常怎样处理？",
+    "options": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc8200.html",
-        "label": "RFC 8200 · IPv6",
-        "note": "协议定义与报文语义"
+        "label": "返回 Packet Too Big，由发送端调整大小",
+        "correct": true
       },
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc791.html",
-        "label": "RFC 791 · IPv4",
-        "note": "协议定义与报文语义"
+        "label": "所有路由器都自动分片",
+        "correct": false
+      },
+      {
+        "label": "把包改成 TCP",
+        "correct": false
       }
-    ]
+    ],
+    "success": "IPv6 由端点处理分片，路径通过 ICMPv6 告知 MTU。",
+    "retry": "区分 IPv4 路由器分片与 IPv6 端点分片。"
   },
+  "prompt": {
+    "title": "分析一次大包传输",
+    "text": "请列出应用消息大小、传输分帧、IP 版本、各跳 MTU、DF/Packet Too Big、Hop Limit 和接收端重组结果。"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc791.html",
+      "label": "RFC 791 · Internet Protocol",
+      "note": "IPv4 首部、分片与重组"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8200.html",
+      "label": "RFC 8200 · IPv6 Specification",
+      "note": "IPv6 Hop Limit 与源端分片"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc1191.html",
+      "label": "RFC 1191 · Path MTU Discovery",
+      "note": "IPv4 PMTU 与 DF 反馈"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8201.html",
+      "label": "RFC 8201 · IPv6 Path MTU Discovery",
+      "note": "Packet Too Big 与黑洞连接"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc792.html",
+      "label": "RFC 792 · Internet Control Message Protocol",
+      "note": "Time Exceeded 与分片错误"
+    }
+  ]
+},
   {
     "slug": "url",
     "lead": "URL 里写了 #part，为什么服务器访问日志里完全看不到这段？",

@@ -743,14 +743,55 @@
   ]
 },
   {
-    "zh": "数据包", "en": "Packet", "slug": "packet", "cat": "技术栈",
-    "say": "网络把数据分成带有地址和控制信息的小块进行传输。", "aliases": ["网络包", "Packet", "报文"],
-    "question": "一个大文件怎样穿过不同网络设备到达另一台机器？", "definition": "数据包是网络层传输单位，由头部和载荷组成，路由器根据头部信息转发。", "boundary": "一个应用消息可能拆成多个包，单个包也不代表完整业务请求。",
-    "demoType": "flow", "demoTitle": "大消息怎样拆包和重组",
-    "demoSteps": [{"label":"应用数据","value":"6 KB 消息","note":"内容超过单次链路承载大小。"},{"label":"分成数据包","value":"P1 · P2 · P3 · P4","note":"每个包带目标地址和部分载荷。"},{"label":"目标重组","value":"6 KB 完整消息","note":"传输层或应用按规则恢复内容。"}],
-    "quizQuestion": "数据包头部通常包含什么？", "quizOptions": ["用于转发和处理的控制信息", "完整数据库备份", "页面全部 CSS"], "correctText": "地址、协议等控制信息位于头部。", "wrongText": "大块应用内容通常不会全部塞进单个包头。",
-    "promptTitle": "分析网络数据包", "prompt": "请根据抓包中的源目标地址、端口、协议、序号和时间定位请求在哪一段中断。", "relatedSlugs": ["ip-address", "tcp", "udp", "network-port"]
-  },
+  "zh": "数据包",
+  "en": "Packet",
+  "slug": "packet",
+  "cat": "技术栈",
+  "say": "网络把数据分成带有地址和控制信息的小块进行传输。",
+  "aliases": [
+    "网络包",
+    "Packet",
+    "报文"
+  ],
+  "question": "4000 字节数据经过 MTU 1500 的链路，为什么会被拆分或要求发送端重新分段？",
+  "definition": "数据包是网络层一次传输的单位，由首部和负载组成；路由器按目的地址逐跳转发，路径 MTU 和 IP 版本决定大包怎样被处理。",
+  "boundary": "一个应用消息可能拆成多个传输段和 IP 包，单个包也不代表完整业务请求；IPv4 与 IPv6 对分片的责任不同。",
+  "demoType": "flow",
+  "demoTitle": "一条窄链路怎样改写大包命运",
+  "demoSteps": [
+    {
+      "label": "应用数据",
+      "value": "4000 B → IP header",
+      "note": "包先带上源/目的地址和 TTL 或 Hop Limit。"
+    },
+    {
+      "label": "路径 MTU",
+      "value": "IPv4: 3 fragments · IPv6: Packet Too Big",
+      "note": "同样的大数据，版本不同，分片责任不同。"
+    },
+    {
+      "label": "调整后送达",
+      "value": "4 × ≤1280 B → 4000 B",
+      "note": "发送端按 PMTU 变小，终点再重组；Hop Limit 每跳递减。"
+    }
+  ],
+  "quizQuestion": "IPv6 路由器遇到超过下一跳 MTU 的包，通常怎样处理？",
+  "quizOptions": [
+    "返回 Packet Too Big，由发送端调整大小",
+    "所有路由器都自动分片",
+    "把包改成 TCP"
+  ],
+  "correctText": "IPv6 由路径反馈告诉源端调整包大小。",
+  "wrongText": "区分 IPv4 路由器分片与 IPv6 端点调整。",
+  "promptTitle": "分析一次大包传输",
+  "prompt": "请列出应用消息大小、传输分帧、IP 版本、各跳 MTU、DF/Packet Too Big、TTL/Hop Limit 和接收端重组结果。",
+  "relatedSlugs": [
+    "ip-address",
+    "tcp",
+    "udp",
+    "network-port"
+  ]
+},
   {
     "zh": "URL", "en": "Uniform Resource Locator", "slug": "url", "cat": "技术栈",
     "say": "说明通过什么协议、到哪台主机、访问哪条路径和查询条件。", "aliases": ["网址", "资源地址", "统一资源定位符"],

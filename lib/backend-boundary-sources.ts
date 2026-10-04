@@ -31,3 +31,11 @@ export const networkPortSources: BoundarySource[] = [
   make("IANA", "Service Name and Transport Protocol Port Number Registry", "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", ["port-service", "port-filter"], ""),
   make("IETF", "RFC 1122 · Requirements for Internet Hosts", "https://www.rfc-editor.org/rfc/rfc1122.html", ["port-demux", "port-failure", "port-filter"], "1989-10"),
 ];
+
+export const packetSources: BoundarySource[] = [
+  make("IETF", "RFC 791 · Internet Protocol", "https://www.rfc-editor.org/rfc/rfc791.html", ["packet-definition", "packet-layer", "packet-route", "packet-ipv4-fragment", "packet-reassembly"], "1981-09"),
+  make("IETF", "RFC 8200 · Internet Protocol, Version 6 (IPv6) Specification", "https://www.rfc-editor.org/rfc/rfc8200.html", ["packet-definition", "packet-hop", "packet-ipv6-fragment"], "2017-07"),
+  make("IETF", "RFC 1191 · Path MTU Discovery", "https://www.rfc-editor.org/rfc/rfc1191.html", ["packet-path-mtu", "packet-ipv4-fragment", "packet-diagnostic"], "1990-11"),
+  make("IETF", "RFC 8201 · Path MTU Discovery for IP version 6", "https://www.rfc-editor.org/rfc/rfc8201.html", ["packet-path-mtu", "packet-ipv6-fragment", "packet-diagnostic"], "2017-07"),
+  make("IETF", "RFC 792 · Internet Control Message Protocol", "https://www.rfc-editor.org/rfc/rfc792.html", ["packet-hop", "packet-reassembly", "packet-diagnostic"], "1981-09"),
+];

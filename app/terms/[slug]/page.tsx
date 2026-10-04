@@ -62,6 +62,7 @@ import { AcidTermPage, ApiKeyTermPage, ColumnTermPage, NosqlTermPage, RbacTermPa
 import { FirewallTermPage } from "@/components/terms/backend-boundary-pages/firewall";
 import { IpAddressTermPage } from "@/components/terms/backend-boundary-pages/ip-address";
 import { NetworkPortTermPage } from "@/components/terms/backend-boundary-pages/network-port";
+import { PacketTermPage } from "@/components/terms/backend-boundary-pages/packet";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -167,6 +168,7 @@ const articleTermPages = {
   firewall: FirewallTermPage,
   "ip-address": IpAddressTermPage,
   "network-port": NetworkPortTermPage,
+  packet: PacketTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
