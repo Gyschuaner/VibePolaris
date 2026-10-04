@@ -45,7 +45,7 @@ import { DatasetTermPage, QualityTermPage, LineageTermPage } from "@/components/
 import { FrameTermPage, FullTextTermPage, VectorDatabaseTermPage } from "@/components/terms/RetrievalConceptPages";
 
 import { GroundingTermPage, HallucinationTermPage, EvaluationTermPage } from '@/components/terms/QualityConceptPages';
-import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage, RegressionEvaluationTermPage, SafetyEvaluationTermPage, CostEvaluationTermPage, LatencyEvaluationTermPage, HumanGraderTermPage, ModelGraderTermPage } from '@/components/terms/AssessmentConceptPages';
+import { BenchmarkTermPage, GraderTermPage, EvalDatasetTermPage, EvaluationRunTermPage, GradingRubricTermPage, RegressionEvaluationTermPage, SafetyEvaluationTermPage, CostEvaluationTermPage, LatencyEvaluationTermPage, HumanGraderTermPage, ModelGraderTermPage, PassFailGraderTermPage } from '@/components/terms/AssessmentConceptPages';
 
 import { ModelRoutingTermPage, ModelFallbackTermPage, PromptCachingTermPage } from '@/components/terms/ModelDeliveryPages';
 
@@ -177,6 +177,7 @@ const articleTermPages = {
   'latency-evaluation': LatencyEvaluationTermPage,
   'human-grader': HumanGraderTermPage,
   'model-grader': ModelGraderTermPage,
+  'pass-fail-grader': PassFailGraderTermPage,
   grounding: GroundingTermPage,
   hallucination: HallucinationTermPage,
   eval: EvaluationTermPage,

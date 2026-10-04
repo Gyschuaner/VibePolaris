@@ -1,8 +1,8 @@
-import { Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
+import { ArrowRight, Check, FileText, X } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
-import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson, ModelGraderLesson } from './AssessmentConceptLessons';
-import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources } from '@/lib/assessment-sources';
+import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, GradingRubricLesson, RegressionEvaluationLesson, SafetyEvaluationLesson, CostEvaluationLesson, LatencyEvaluationLesson, HumanGraderLesson, ModelGraderLesson, PassFailLesson } from './AssessmentConceptLessons';
+import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources, passFailGraderSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
@@ -339,6 +339,36 @@ export function ModelGraderTermPage() {
       <p>例如回答声称“已经退款”，但没有支付状态、工具日志或可核对账单。模型可以评价回答是否保留了“审核通过后”等措辞，却不能证明退款已经发生。把这条记成 <code>unscored</code>，写明需要补什么证据，并从通过率和失败率中单独报告。</p>
       <p>上线前还要测试交换回答顺序、隐藏模型名称、改变回答长度和加入边界样本。发现分数随无关变化而变化时，先修评分协议和校准集，再解释业务指标。模型评分器是判断工具，最终结论仍要回到任务目标和可核对的结果。</p>
       <ArticleAside title="看到模型评分变高时再问三句"><p>人工参考是否也变好？高估和低估是否集中在某类输入？证据不足的样本有没有被迫塞进分数？三句有一个答不上来，就先保留未评分并回到样本。</p></ArticleAside>
+    </ArticleSection>
+  </ConceptArticle>;
+}
+
+export function PassFailGraderTermPage() {
+  const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={passFailGraderSources}/>;
+  return <ConceptArticle slug="pass-fail-grader" title="通过失败评分器" subtitle="Pass/Fail Grader · 先把成功证据写清，再决定是否通过" sources={passFailGraderSources}
+    sections={[['passfail-definition', '二值结果从哪条证据来'], ['passfail-evidence', '检查结果，不听口头完成'], ['passfail-unscored', '无法检查不等于失败'], ['passfail-gate', '发布门槛要写清后续动作']]}
+    intro={<>通过失败评分器把成功条件变成可执行检查，最后给出通过或失败。它适合文件存在、字段正确或副作用已发生这类清晰判据；检查环境不可读时要保留未评分，不能把所有非通过都压成同一个 false。</>}
+    hero={<ConceptHero slug="pass-fail-grader" label="answer.json 存在且 amount=120 时通过；金额错误失败；环境不可读保留未评分"><div className={s.passFailHero}><div className={s.passFailEvidence}><span>成功证据</span><strong>answer.json</strong><code>amount = 120</code></div><ArrowRight size={22} aria-hidden="true"/><div className={s.passFailGate}><span>判定</span><strong>PASS</strong><small>通过才进入发布门槛</small></div></div></ConceptHero>}>
+    <ArticleSection id="passfail-definition" title="二值结果从哪条证据来"><Legacy slug="pass-fail-grader" names={['question', 'definition']}/>
+      <p id="passfail-definition-detail" className="vp-citation-target"><strong>通过失败评分器按照预先写好的成功条件检查一次尝试，并输出通过或失败。</strong>OpenAI 的 graders 文档把代码、模型和人工都列为可执行评分的方式；对文件、字段或明确副作用，可以把判据写成程序检查，保留每项检查的结果。<Cite id="passfail-definition-detail"/></p>
+      <p>“通过”不是评分器觉得回答不错，而是声明的证据满足要求。比如任务要求生成 <code>answer.json</code>，成功条件可以是文件存在、JSON 能解析、<code>amount</code> 等于 120。文件存在但金额错误，就不能因为完成了第一步而整体通过；多个条件要说明是全部满足还是按规则组合。</p>
+      <div className={s.modelChecklist}><div><span>目标</span><strong>写出成功条件</strong><p>把“完成任务”拆成可观察的文件、字段或副作用。</p></div><div><span>检查</span><strong>逐项保留证据</strong><p>记录每条判据满足还是不满足。</p></div><div><span>结果</span><strong>汇总为 pass / fail</strong><p>总结果能回到具体失败条件。</p></div></div>
+    </ArticleSection>
+    <ArticleSection id="passfail-evidence" title="检查结果，不听口头完成"><Legacy slug="pass-fail-grader" names={['scene-heading']}/>
+      <p id="passfail-evidence-detail" className="vp-citation-target">Anthropic 的智能体评测实践把任务结果和运行轨迹放在一起检查。<strong>评分器应读取任务对应的结果证据，而不是只匹配“已完成”这类回复措辞。</strong>口头回复可以作为记录的一部分，却不能单独证明文件写入、数据库更新或工具副作用真的发生。<Cite id="passfail-evidence-detail"/></p>
+      <p>下面只操作固定的虚构检查记录，不访问真实文件，也不调用模型。切换三种状态：文件和金额都对，文件存在但金额错，或者检查环境没有返回结果。执行判据后，再看发布门槛为什么对三种状态采取不同动作。</p>
+      <PassFailLesson/>
+      <p>二值判定把复杂任务中的一个清晰条件说清楚，不会自动替代开放质量评价。回答是否准确、是否有帮助，可能仍需要评分规则、人工或模型评分；通过失败评分器只对它声明的条件负责。</p>
+    </ArticleSection>
+    <ArticleSection id="passfail-unscored" title="无法检查不等于失败" className={base.offset}><Legacy slug="pass-fail-grader" names={['quiz-heading']}/>
+      <p id="passfail-unscored-detail" className="vp-citation-target">OpenAI 的安全实践强调在高风险动作前使用检查、限制和人工介入，并把应用外的安全边界落实到代码和工具。<strong>如果检查环境不可读，评分器没有证据把任务判成成功或失败，应返回未评分并说明缺口。</strong><Cite id="passfail-unscored-detail"/></p>
+      <p>未评分不是第三种“更差的失败”。它表示这次检查没有能力得到结论：工具超时、文件系统不可用、权限不足或结果尚未返回，都可能属于这个状态。补齐环境后可以重跑；如果重跑后证据明确不满足，才记录为失败。把设施故障直接算进失败率，会混淆被测系统和评测设施的问题。</p>
+      <ArticleAside title="缺证据时先写清什么"><p>哪一条判据无法检查？是环境不可读、权限不足，还是任务确实没有产生结果？下一步是重跑、补权限、人工核对，还是终止运行？把动作写在评分规则里，结果才不会由每次执行者临时决定。</p></ArticleAside>
+    </ArticleSection>
+    <ArticleSection id="passfail-gate" title="发布门槛要写清后续动作"><Legacy slug="pass-fail-grader" names={['prompt-heading']}/>
+      <p id="passfail-gate-detail" className="vp-citation-target">NIST AI RMF Playbook 将测量、记录和持续评估放在风险管理流程中；指标只有连同范围、记录和处理方式，才足以支持下一步决策。<strong>发布门槛要同时声明通过、失败和未评分如何处理，不能只保留一个通过率。</strong><Cite id="passfail-gate-detail"/></p>
+      <p>本例可以规定：所有关键条件通过才允许发布；失败进入修复；未评分暂停发布并重跑或补证据。若任务包含高风险副作用，还要让门槛检查实际结果与权限记录，而不是只看模型回复。门槛是流程决策，不是把所有业务质量压成一个数字。</p>
+      <ArticleAside title="读一条 pass / fail 记录"><p>先看判据版本，再看逐项证据和结果状态，最后看门槛动作。比较两次运行时，确认题集、被测版本、评分器和环境一致；否则相同的 pass 数字也可能来自不同条件。</p></ArticleAside>
     </ArticleSection>
   </ConceptArticle>;
 }

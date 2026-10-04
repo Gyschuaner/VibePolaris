@@ -65,3 +65,9 @@ export const modelGraderSources = [
   source('Yang Liu、Dan Iter、Yichong Xu 等', 'G-EVAL: NLG Evaluation using GPT-4 with Better Human Alignment', 'https://arxiv.org/pdf/2303.16634', ['model-calibration-detail'], '2023'),
   source('Lianmin Zheng、Wei-Lin Chiang、Ying Sheng 等', 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena', 'https://arxiv.org/pdf/2306.05685', ['model-boundary-detail'], '2023'),
 ];
+export const passFailGraderSources = [
+  source('OpenAI', 'Graders', 'https://developers.openai.com/api/docs/guides/graders', ['passfail-definition-detail']),
+  source('Anthropic', 'Demystifying evals for AI agents', 'https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents', ['passfail-evidence-detail']),
+  source('OpenAI', 'Safety best practices', 'https://developers.openai.com/api/docs/guides/safety-best-practices', ['passfail-unscored-detail']),
+  source('NIST', 'AI RMF Playbook', 'https://airc.nist.gov/airmf-resources/playbook/', ['passfail-gate-detail']),
+];

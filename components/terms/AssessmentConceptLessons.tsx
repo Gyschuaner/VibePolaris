@@ -408,3 +408,54 @@ export function ModelGraderLesson() {
     <button className={base.reset} onClick={() => { setMode('fixed'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置评分条件</button>
   </div>;
 }
+
+type PassFailMode = 'pass' | 'fail' | 'unscored';
+
+const passFailCases: Record<PassFailMode, {
+  label: string;
+  file: string;
+  evidence: string;
+  gate: string;
+  title: string;
+  body: string;
+}> = {
+  pass: {
+    label: '通过',
+    file: 'answer.json 存在',
+    evidence: 'amount = 120',
+    gate: '允许发布',
+    title: '证据满足成功条件',
+    body: '文件存在，金额也符合判据；这次可以记为 pass。结果仍应保留具体检查项，不能只存一个绿色标记。',
+  },
+  fail: {
+    label: '失败',
+    file: 'answer.json 存在',
+    evidence: 'amount = 90（应为 120）',
+    gate: '阻止发布',
+    title: '证据明确不满足条件',
+    body: '文件确实可读，但金额错误；这是任务失败，应回到输出或执行过程修复，不要把“文件存在”当成整项通过。',
+  },
+  unscored: {
+    label: '未评分',
+    file: '检查环境不可读',
+    evidence: '无法确认文件和金额',
+    gate: '等待重跑',
+    title: '没有足够证据作出二值判断',
+    body: '检查环境没有返回结果；这不是任务成功，也不能直接当作失败。保留 unscored，补齐环境后再重跑。',
+  },
+};
+
+export function PassFailLesson() {
+  const [mode, setMode] = useState<PassFailMode>('pass');
+  const [checkedMode, setCheckedMode] = useState<PassFailMode | null>(null);
+  const current = passFailCases[mode];
+  const report = checkedMode ? passFailCases[checkedMode] : current;
+  return <div className={`${base.lab} ${s.lab}`} aria-label="实验：区分通过、失败和未评分">
+    <div className={s.controls}><label>检查结果<select value={mode} onChange={e => { setMode(e.target.value as PassFailMode); setCheckedMode(null); }}><option value="pass">文件正确</option><option value="fail">金额错误</option><option value="unscored">环境不可读</option></select></label><p className={s.runHint}>先看可观察证据，再决定是通过、失败还是暂不评分。</p></div>
+    <div className={s.passFailSample} aria-label="通过失败判据"><span>成功条件</span><strong>answer.json 存在，amount = 120</strong><small>判据只检查声明的证据，不接受助手口头声称完成。</small></div>
+    <div className={s.passFailState} aria-label="当前检查证据"><article><span>文件检查</span><strong>{current.file}</strong></article><article><span>字段检查</span><strong>{current.evidence}</strong></article><article data-unscored={mode === 'unscored'}><span>门槛动作</span><strong>{current.gate}</strong></article></div>
+    <button disabled={checkedMode !== null} onClick={() => setCheckedMode(mode)}>执行判据检查<MagnifyingGlass size={18}/></button>
+    <Reveal open={checkedMode !== null}><div className={s.passFailResult} role="status"><header><h3>{report.title}</h3><span>{report.label}</span></header><p>{report.body}</p><p className={s.runEvidence}>检查记录：{report.file}；{report.evidence}；{report.gate}。</p></div></Reveal>
+    <button className={base.reset} onClick={() => { setMode('pass'); setCheckedMode(null); }}><ArrowCounterClockwise size={17}/>重置检查结果</button>
+  </div>;
+}
