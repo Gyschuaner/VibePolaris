@@ -5,10 +5,10 @@ import { Archive, CheckCircle, FileText, Gauge, Warning } from "@phosphor-icons/
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "../AiStackCoreConcepts.module.css";
 
-const labels = ["锁定任务与回答位", "加入历史和工具", "看见预算溢出", "裁剪后再继续"];
+const sceneLength = 4;
 
 export function ContextWindowLesson() {
-  const scene = useScene(labels.length);
+  const scene = useScene(sceneLength);
   const [history, setHistory] = useState<"short" | "long">("short");
   const long = history === "long";
   const historyK = long ? 10 : 6;
@@ -22,6 +22,7 @@ export function ContextWindowLesson() {
   const overflow = rawTotalK > 16 && !trimmed;
   const goLong = () => setHistory("long");
   const goShort = () => setHistory("short");
+  const labels = ["锁定任务与回答位", "加入历史和工具", long ? "看见预算溢出" : "检查短历史余量", long ? "裁剪后再继续" : "保持当前输入"];
   const segments = [
     { label: "系统与任务", value: "2k", kind: "rules" },
     { label: trimmed ? "裁剪后的历史" : long ? "长历史" : "短历史", value: `${visibleHistoryK}k`, kind: "history" },
