@@ -24,7 +24,7 @@ export function KvCacheTermPage() {
       <p id="kv-cache-inference" className="vp-citation-target">缓存只适合推理路径。Hugging Face 明确提醒，训练时启用缓存可能产生意外错误；训练需要让计算图和梯度按训练目标工作，推理缓存则假定旧状态可以在后续 decode 中只读复用。<Cite id="kv-cache-inference" sources={kvCacheSources} /></p>
     </ArticleSection>
     <ArticleSection id="kv-cache-reuse" title="相同前缀才能捡回旧积木">
-      <p id="kv-cache-prefix" className="vp-citation-target">如果许多请求共享完全相同的系统提示或文档前缀，服务可以把这段前缀预先算好，再让不同的后缀接着生成。Hugging Face 的 prefix caching 示例就是先填充一份 cache，再复制它给不同的后续 prompt；复用的是相同前缀的 K/V，不是把上一位用户的答案带进下一位用户的请求。<Cite id="kv-cache-prefix" sources={kvCacheSources} /></p>
+      <p id="kv-cache-prefix-reuse" className="vp-citation-target">如果许多请求共享完全相同的系统提示或文档前缀，服务可以把这段前缀预先算好，再让不同的后缀接着生成。Hugging Face 的 prefix caching 示例就是先填充一份 cache，再复制它给不同的后续 prompt；复用的是相同前缀的 K/V，不是把上一位用户的答案带进下一位用户的请求。<Cite id="kv-cache-prefix-reuse" sources={kvCacheSources} /></p>
       <p id="kv-cache-blocks" className="vp-citation-target">vLLM 的 PagedAttention 把 KV cache 切成固定 token 数的 blocks，每个 block 只存上下文的一部分。这样缓存管理不必为每个请求预留一条大而连续的内存带；演示里“命中第一块、后缀另算”就是这种按块管理的直觉模型。<Cite id="kv-cache-blocks" sources={kvCacheSources} /></p>
       <p id="kv-cache-paged" className="vp-citation-target">命中需要前缀和位置条件一致。只改一个系统词、换了 tokenizer 或模型配置，旧 block 就不能安全地当作新请求的 K/V；工程实现还要处理部分命中、写入和淘汰，不能把“相似”误当成“相同”。<Cite id="kv-cache-paged" sources={kvCacheSources} /></p>
     </ArticleSection>
