@@ -20878,5 +20878,251 @@
         "note": "peek-lock、receive-and-delete 与重复/丢失取舍"
       }
     ]
+  },
+  {
+    "slug": "eventual-consistency",
+    "lead": "保存按钮已经亮绿灯，为什么另一个地区还看见 pending？",
+    "definition": "最终一致性让一个副本先接住写入，其他副本随后复制；在收敛前，读取路径可能返回旧值。系统还必须为并发写入规定版本、顺序或人工裁决。",
+    "boundary": "最终一致性没有固定的立即生效时间，也不保证默认解决业务冲突。读取保证跟区域、查询和服务能力有关；关键状态要单独设计强读、read-your-writes、事务或补偿路径。",
+    "sceneKind": "layers",
+    "sceneTitle": "一次保存怎样穿过副本时间差",
+    "actionLabel": "逐层推进写入、复制、读取、冲突与收敛",
+    "actors": [
+      {
+        "id": "writer",
+        "label": "写入者",
+        "detail": "订单 A17 · pending → paid",
+        "icon": "user",
+        "group": "触发"
+      },
+      {
+        "id": "primary",
+        "label": "主副本 · region A",
+        "detail": "先返回 200 OK",
+        "icon": "database",
+        "group": "写入"
+      },
+      {
+        "id": "replica",
+        "label": "读副本 · region B",
+        "detail": "异步追上主副本",
+        "icon": "cloud",
+        "group": "复制"
+      },
+      {
+        "id": "reader",
+        "label": "读取路径",
+        "detail": "任一副本 / 同区强读",
+        "icon": "search",
+        "group": "体验"
+      },
+      {
+        "id": "rule",
+        "label": "冲突规则",
+        "detail": "版本、顺序或人工裁决",
+        "icon": "git",
+        "group": "边界"
+      }
+    ],
+    "edges": [
+      {
+        "id": "writer-primary",
+        "from": "writer",
+        "to": "primary",
+        "label": "提交 paid"
+      },
+      {
+        "id": "primary-replica",
+        "from": "primary",
+        "to": "replica",
+        "label": "异步复制"
+      },
+      {
+        "id": "replica-reader",
+        "from": "replica",
+        "to": "reader",
+        "label": "返回当前值"
+      },
+      {
+        "id": "primary-reader",
+        "from": "primary",
+        "to": "reader",
+        "label": "同区强读路径"
+      },
+      {
+        "id": "replica-rule",
+        "from": "replica",
+        "to": "rule",
+        "label": "并发版本冲突"
+      },
+      {
+        "id": "rule-replica",
+        "from": "rule",
+        "to": "replica",
+        "label": "裁决后收敛"
+      }
+    ],
+    "frames": [
+      {
+        "label": "一处先写成功",
+        "note": "写入者把订单改成 paid；主副本返回成功，读副本还没有被要求立刻相同。",
+        "activeIds": [
+          "writer",
+          "primary"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "replica",
+          "reader",
+          "rule"
+        ],
+        "values": {
+          "writer": "A17 → paid",
+          "primary": "200 OK"
+        },
+        "activeEdgeIds": [
+          "writer-primary"
+        ]
+      },
+      {
+        "label": "复制还在路上",
+        "note": "更新沿异步边界传播；主副本已经是 paid，读副本仍可能保留 pending。",
+        "activeIds": [
+          "primary",
+          "replica"
+        ],
+        "doneIds": [
+          "writer"
+        ],
+        "mutedIds": [
+          "reader",
+          "rule"
+        ],
+        "values": {
+          "primary": "paid",
+          "replica": "pending · lag"
+        },
+        "activeEdgeIds": [
+          "primary-replica"
+        ]
+      },
+      {
+        "label": "一次旧读出现",
+        "note": "读取路径落到尚未追上的副本，用户看到 pending；这不是把写入失败重新命名。",
+        "activeIds": [
+          "replica",
+          "reader"
+        ],
+        "doneIds": [
+          "writer",
+          "primary"
+        ],
+        "mutedIds": [
+          "rule"
+        ],
+        "values": {
+          "replica": "pending",
+          "reader": "旧读 · pending"
+        },
+        "activeEdgeIds": [
+          "replica-reader"
+        ]
+      },
+      {
+        "label": "并发写入撞上",
+        "note": "另一地区同时写入 cancelled；副本最终相同之前，系统必须把冲突交给一条能解释的规则。",
+        "activeIds": [
+          "replica",
+          "rule"
+        ],
+        "doneIds": [
+          "writer",
+          "primary",
+          "reader"
+        ],
+        "mutedIds": [],
+        "values": {
+          "replica": "paid ↔ cancelled",
+          "rule": "last writer wins · 示例"
+        },
+        "activeEdgeIds": [
+          "replica-rule"
+        ]
+      },
+      {
+        "label": "副本最终收敛",
+        "note": "没有新的更新后，规则让副本和读取路径落到同一个可追踪结果；若业务不能接受覆盖，冲突应转到应用层。",
+        "activeIds": [
+          "rule",
+          "replica",
+          "reader"
+        ],
+        "doneIds": [
+          "writer",
+          "primary"
+        ],
+        "mutedIds": [],
+        "values": {
+          "rule": "decision recorded",
+          "replica": "paid · converged",
+          "reader": "最新 / 规则已知"
+        },
+        "activeEdgeIds": [
+          "rule-replica",
+          "replica-reader"
+        ]
+      }
+    ],
+    "insight": "最终一致性把“写入成功”“读到什么”和“副本何时对齐”拆成三件事：允许它们错开，换来低延迟与高可用；代价是旧读窗口和冲突规则必须被产品看见。",
+    "quiz": {
+      "question": "动画里 region B 还返回 pending 时，最准确的解释是什么？",
+      "options": [
+        {
+          "label": "写入可能已在主副本成功，但读副本尚未收敛",
+          "correct": true
+        },
+        {
+          "label": "只要读到旧值，就能证明主副本的写入失败",
+          "correct": false
+        },
+        {
+          "label": "最终一致性会自动判断 paid 和 cancelled 哪个更符合业务",
+          "correct": false
+        }
+      ],
+      "success": "对。旧读说明读取路径还没追上写入；接下来要决定怎样读、何时等待，以及冲突由谁裁决。",
+      "retry": "把写入、复制、读取和冲突分开看：旧读不是写入失败，最终收敛也不是业务规则。"
+    },
+    "prompt": {
+      "title": "画出一次最终一致的旧读",
+      "text": "选一个订单、库存或社交动态，标出写入副本、读副本、旧读窗口和并发写入；写出用户看到的提示、read-your-writes 或强读策略，以及冲突裁决和补偿证据。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html",
+        "label": "Amazon DynamoDB · Read consistency",
+        "note": "默认最终一致读取、strongly consistent read 的适用范围"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables_HowItWorks.html",
+        "label": "Amazon DynamoDB · Global tables",
+        "note": "跨区域异步复制、最终一致与并发更新裁决"
+      },
+      {
+        "url": "https://docs.cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore?hl=en",
+        "label": "Google Cloud · Strong and eventual consistency",
+        "note": "没有新更新后读取逐步看到最后写入，不同查询形状有不同保证"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels",
+        "label": "Microsoft Azure · Cosmos DB consistency levels",
+        "note": "旧读、副本滞后与不同一致性级别的产品取舍"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/design-principles/minimize-coordination",
+        "label": "Microsoft Azure · Minimize coordination",
+        "note": "减少分布式协调并用补偿动作处理异步边界"
+      }
+    ]
   }
 ]

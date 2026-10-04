@@ -49,3 +49,5 @@ export { BackpressureHero } from "./backpressure-hero";
 export { BackpressureLesson } from "./backpressure";
 export { DeadLetterQueueHero } from "./dead-letter-queue-hero";
 export { DeadLetterQueueLesson } from "./dead-letter-queue";
+export { EventualConsistencyHero } from "./eventual-consistency-hero";
+export { EventualConsistencyLesson } from "./eventual-consistency";

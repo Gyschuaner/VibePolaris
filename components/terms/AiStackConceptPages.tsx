@@ -55,6 +55,7 @@ import { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
 import { AgentWorkflowTermPage } from "./ai-stack-pages/agent-workflow";
 import { BackpressureTermPage } from "./ai-stack-pages/backpressure";
 import { DeadLetterQueueTermPage } from "./ai-stack-pages/dead-letter-queue";
+import { EventualConsistencyTermPage } from "./ai-stack-pages/eventual-consistency";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -112,6 +113,7 @@ export { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
 export { AgentWorkflowTermPage } from "./ai-stack-pages/agent-workflow";
 export { BackpressureTermPage } from "./ai-stack-pages/backpressure";
 export { DeadLetterQueueTermPage } from "./ai-stack-pages/dead-letter-queue";
+export { EventualConsistencyTermPage } from "./ai-stack-pages/eventual-consistency";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -171,4 +173,5 @@ export const aiStackArticlePages = {
   "agent-workflow": AgentWorkflowTermPage,
   backpressure: BackpressureTermPage,
   "dead-letter-queue": DeadLetterQueueTermPage,
+  "eventual-consistency": EventualConsistencyTermPage,
 } as const;

@@ -53,3 +53,4 @@ export { kvCacheSources } from "./kv-cache";
 export { agentWorkflowSources } from "./agent-workflow";
 export { backpressureSources } from "./backpressure";
 export { deadLetterQueueSources } from "./dead-letter-queue";
+export { eventualConsistencySources } from "./eventual-consistency";

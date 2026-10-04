@@ -5163,5 +5163,57 @@
       "backpressure",
       "agent-workflow"
     ]
+  },
+  {
+    "zh": "最终一致性",
+    "en": "Eventual Consistency",
+    "slug": "eventual-consistency",
+    "cat": "AI·Agent",
+    "say": "写入先落在一个副本，其他副本稍后追上；这段时间里，读者可能看到旧值。",
+    "aliases": [
+      "Eventual Consistency",
+      "最终一致",
+      "副本收敛"
+    ],
+    "question": "明明收到保存成功，为什么下一次读取还可能是旧值？",
+    "definition": "最终一致性允许分布式副本暂时不同；只要之后没有新的更新，系统会在某个时间后逐步让读取结果收敛到最新状态。它把协调成本换成可接受的旧读窗口、延迟与可用性选择。",
+    "boundary": "eventual 不承诺立刻或固定秒数内收敛，也不自动解决并发写入冲突。不同查询、区域和读取方式可能有不同保证；关键状态要明确强读、事务、read-your-writes 或应用层冲突规则。",
+    "demoType": "state",
+    "demoTitle": "订单状态怎样从一个副本传到所有读者",
+    "demoSteps": [
+      {
+        "label": "先写一处",
+        "value": "A17: pending → paid",
+        "note": "主副本先返回成功；写入完成和全网最新是两件事。"
+      },
+      {
+        "label": "旧读窗口",
+        "value": "region B 仍返回 pending",
+        "note": "复制还在路上，旧值短暂可见；旧读不等于刚才的写入失败。"
+      },
+      {
+        "label": "最后收敛",
+        "value": "replicas = paid · 规则决定冲突",
+        "note": "没有新写入后副本会对齐；并发写入仍需要明确裁决。"
+      }
+    ],
+    "quizQuestion": "最终一致性最准确的描述是什么？",
+    "quizOptions": [
+      "副本可以暂时不同，但在没有新更新后逐步收敛",
+      "任何读取都必须立刻看到最新写入",
+      "系统会自动理解并解决所有并发写入冲突"
+    ],
+    "correctText": "对。最终一致性承诺的是收敛条件，不是每次读取立刻相同，也不是替业务决定冲突。",
+    "wrongText": "再看一遍：旧读窗口、收敛时间和冲突规则都需要单独设计，不能从“最终”两个字里自动推出来。",
+    "promptTitle": "给一次旧读画出边界",
+    "prompt": "选一个订单、库存或社交动态场景，写出主副本、复制延迟、读取路径和并发写入规则；说明用户可能看到什么旧值、何时需要强读或 read-your-writes，以及冲突如何留下证据并完成补偿。",
+    "relatedSlugs": [
+      "database",
+      "replication",
+      "cache",
+      "queue",
+      "idempotency",
+      "retry"
+    ]
   }
 ]
