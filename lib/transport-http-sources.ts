@@ -12,7 +12,7 @@ export const tcpSources: Source[] = [
 export const udpSources: Source[] = [
   make("IETF", "RFC 768 · User Datagram Protocol", "https://www.rfc-editor.org/rfc/rfc768.html", ["udp-datagram", "udp-fields"]),
   make("IETF", "RFC 1122 · Requirements for Internet Hosts", "https://www.rfc-editor.org/rfc/rfc1122.html", ["udp-checksum", "udp-delivery"]),
-  make("IETF", "RFC 8085 · UDP Usage Guidelines", "https://www.rfc-editor.org/rfc/rfc8085.html", ["udp-tradeoff", "udp-congestion", "udp-size"]),
+  make("IETF", "RFC 8085 · UDP Usage Guidelines", "https://www.rfc-editor.org/rfc/rfc8085.html", ["udp-tradeoff", "udp-congestion", "udp-size", "udp-boundary"]),
   make("IANA", "Service Name and Transport Protocol Port Number Registry", "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", ["udp-port"]),
 ];
 

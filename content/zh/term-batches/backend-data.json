@@ -657,13 +657,53 @@
     "promptTitle": "检查 TCP 上的消息分帧", "prompt": "请给出消息长度或分隔规则、粘包与半包处理、最大帧大小、超时和异常关闭，并用不同 read 分片验证解析。", "relatedSlugs": ["udp", "packet", "network-port", "tls-handshake"]
   },
   {
-    "zh": "UDP", "en": "User Datagram Protocol", "slug": "udp", "cat": "技术栈",
-    "say": "直接发送独立数据报，不建立可靠字节流，也不自动重传。", "aliases": ["用户数据报协议", "UDP 协议", "数据报"],
-    "question": "实时语音为什么有时宁可少一小段，也不愿等重传？", "definition": "UDP 以数据报为单位发送数据，协议本身不保证到达、顺序或去重。", "boundary": "UDP 不等于一定更快；可靠性、拥塞控制和加密可由上层协议补充。",
-    "demoType": "comparison", "demoTitle": "实时语音遇到丢包时的选择",
-    "demoSteps": [{"label":"独立发送","value":"报 1 · 报 2 · 报 3 · 报 4","note":"每封数据报有自己的边界和目标端口。"},{"label":"网络抖动","value":"报 1 · 报 4 · 报 3 · 报 2 丢失","note":"到达顺序可以改变，UDP 不会自己补发。"},{"label":"应用决定","value":"接收队列 → 序号检查 → 最新帧","note":"应用可以丢弃过时帧，或实现编号、超时和重传。"}],
-    "quizQuestion": "UDP 协议本身不保证哪项能力？", "quizOptions": ["数据一定按序到达", "按数据报发送", "使用端口区分应用"], "correctText": "UDP 不保证到达顺序。", "wrongText": "UDP 使用数据报，也使用端口标识通信端点。",
-    "promptTitle": "判断是否使用 UDP", "prompt": "请根据延迟、可丢失比例、消息大小和上层补偿判断这个场景是否适合 UDP。", "relatedSlugs": ["tcp", "packet", "network-port"]
+    "zh": "UDP",
+    "en": "User Datagram Protocol",
+    "slug": "udp",
+    "cat": "技术栈",
+    "say": "把一封封独立数据报交给对端，是否等待、排序或重传由应用决定。",
+    "aliases": [
+      "用户数据报协议",
+      "UDP 协议",
+      "数据报"
+    ],
+    "question": "实时语音为什么有时宁可少一小段，也不愿等重传？",
+    "definition": "UDP 以数据报为单位发送数据，提供端口和校验和，但协议本身不保证到达、顺序或去重。",
+    "boundary": "UDP 不等于一定更快；可靠性、拥塞控制、数据大小和加密可由上层协议补充。",
+    "demoType": "comparison",
+    "demoTitle": "四封数据报遇到丢包后的选择",
+    "demoSteps": [
+      {
+        "label": "四报出发",
+        "value": "报 1 · 报 2 · 报 3 · 报 4",
+        "note": "每封数据报有独立边界和目标端口。"
+      },
+      {
+        "label": "乱序与丢失",
+        "value": "报 1 · 报 4 · 报 3 · 报 2 丢失",
+        "note": "到达顺序改变，UDP 不会自己补发。"
+      },
+      {
+        "label": "应用决定",
+        "value": "最新帧优先 / 等待缺口",
+        "note": "实时应用可以丢旧帧，可靠场景要自己实现编号、超时和重传。"
+      }
+    ],
+    "quizQuestion": "UDP 协议本身不保证哪项能力？",
+    "quizOptions": [
+      "数据一定按序到达",
+      "按数据报发送",
+      "使用端口区分应用"
+    ],
+    "correctText": "UDP 不保证到达顺序、成功交付或唯一到达。",
+    "wrongText": "UDP 使用数据报和端口，但把可靠性策略交给应用。",
+    "promptTitle": "设计 UDP 应用层可靠性",
+    "prompt": "请定义消息序号、丢失检测、乱序处理、去重、超时、重传、拥塞控制和最大数据报大小，并用丢包样本验证。",
+    "relatedSlugs": [
+      "tcp",
+      "packet",
+      "network-port"
+    ]
   },
   {
     "zh": "TLS 握手", "en": "TLS Handshake", "slug": "tls-handshake", "cat": "技术栈",

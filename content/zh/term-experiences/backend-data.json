@@ -10359,53 +10359,39 @@
   },
   {
     "slug": "udp",
-    "lead": "发送 1、2、3、4、5 五个数据报，为什么接收端可能只看到 1、4、3、5？",
+    "lead": "四封数据报经过抖动和丢包后，为什么接收端只看到 1、4、3？",
     "definition": "UDP 以独立数据报承载消息，提供端口和校验和，但不建立可靠连接，也不保证交付、顺序或去重。",
-    "boundary": "UDP 不等于没有校验，也不保证一定更快。丢包、重排和重试策略由使用 UDP 的应用协议决定。",
+    "boundary": "UDP 不等于没有校验，也不保证一定更快。丢包、重排、拥塞和重试策略由使用 UDP 的应用协议决定。",
     "sceneKind": "compare",
-    "sceneTitle": "五个 UDP 数据报的发送与到达顺序",
-    "actionLabel": "调整丢包与重排",
+    "sceneTitle": "四封数据报怎样变成 1、4、3",
+    "actionLabel": "推进 UDP 数据报",
     "actors": [
       {
         "id": "udp-sender",
         "label": "发送端",
-        "detail": "1,2,3,4,5",
+        "detail": "报 1 · 2 · 3 · 4",
         "icon": "server",
         "group": "端点"
       },
       {
         "id": "udp-network",
-        "label": "网络",
-        "detail": "丢包 20%",
+        "label": "网络路径",
+        "detail": "乱序 / 丢报 2",
         "icon": "network",
         "group": "传输"
       },
       {
         "id": "udp-receiver",
         "label": "接收端",
-        "detail": "保留数据报边界",
+        "detail": "保留每封边界",
         "icon": "server",
         "group": "端点"
       },
       {
-        "id": "datagram-two",
-        "label": "数据报 2",
-        "detail": "模拟丢失",
-        "icon": "package",
-        "group": "样本"
-      },
-      {
-        "id": "datagram-four",
-        "label": "数据报 4",
-        "detail": "模拟提前",
-        "icon": "package",
-        "group": "样本"
-      },
-      {
-        "id": "arrival-list",
-        "label": "到达列表",
-        "detail": "等待数据",
-        "icon": "queue",
+        "id": "udp-policy",
+        "label": "应用策略",
+        "detail": "最新帧或补偿缺口",
+        "icon": "code",
         "group": "结果"
       }
     ],
@@ -10423,28 +10409,16 @@
         "label": "尽力交付"
       },
       {
-        "id": "two-network",
-        "from": "datagram-two",
-        "to": "udp-network",
-        "label": "丢失"
-      },
-      {
-        "id": "four-network",
-        "from": "datagram-four",
-        "to": "udp-network",
-        "label": "重排"
-      },
-      {
-        "id": "receiver-list",
+        "id": "receiver-policy",
         "from": "udp-receiver",
-        "to": "arrival-list",
-        "label": "逐报接收"
+        "to": "udp-policy",
+        "label": "交给应用决定"
       }
     ],
     "frames": [
       {
-        "label": "发送端依次发出五报",
-        "note": "每次发送保留独立的数据报边界。",
+        "label": "四报出发",
+        "note": "每封写入保留自己的数据报边界，发送端不等待上一封确认。",
         "activeIds": [
           "udp-sender",
           "udp-network"
@@ -10454,74 +10428,83 @@
         ],
         "mutedIds": [
           "udp-receiver",
-          "datagram-two",
-          "datagram-four",
-          "arrival-list"
+          "udp-policy"
         ],
         "values": {
-          "udp-sender": "1→2→3→4→5",
-          "udp-network": "5 datagrams"
+          "udp-sender": "1→2→3→4",
+          "udp-network": "4 datagrams · 尚未到达",
+          "udp-receiver": "空队列"
         },
         "activeEdgeIds": [
           "sender-network"
         ]
       },
       {
-        "label": "2 丢失且 4 提前",
-        "note": "网络不为 UDP 自动补发，也不等待缺失序号。",
+        "label": "路径抖动",
+        "note": "网络让 4 和 3 先到，数据报仍没有被拼成一条流。",
         "activeIds": [
           "udp-network",
-          "datagram-two",
-          "datagram-four"
+          "udp-receiver"
         ],
         "doneIds": [
-          "datagram-two"
+          "udp-sender"
         ],
         "mutedIds": [
-          "udp-sender",
-          "udp-receiver",
-          "arrival-list"
+          "udp-policy"
         ],
         "values": {
-          "datagram-two": "lost",
-          "datagram-four": "ahead of 3"
+          "udp-network": "1 · 4 · 3",
+          "udp-receiver": "逐报等待"
         },
         "activeEdgeIds": [
-          "two-network",
-          "four-network"
+          "network-receiver"
         ]
       },
       {
-        "label": "接收端得到 1,4,3,5",
-        "note": "四个到达数据报仍各自独立，但顺序与数量已经改变。",
+        "label": "报 2 丢失",
+        "note": "UDP 不为缺失数据报自动补发，接收端只拿到 1、4、3。",
         "activeIds": [
           "udp-network",
-          "udp-receiver",
-          "arrival-list"
+          "udp-receiver"
         ],
         "doneIds": [
-          "arrival-list"
+          "udp-network"
         ],
         "mutedIds": [
           "udp-sender",
-          "datagram-two",
-          "datagram-four"
+          "udp-policy"
         ],
         "values": {
-          "arrival-list": "[1],[4],[3],[5]",
-          "udp-receiver": "no automatic retry"
+          "udp-network": "2 · lost",
+          "udp-receiver": "[1] [4] [3]"
         },
         "activeEdgeIds": [
-          "network-receiver",
-          "receiver-list"
+          "network-receiver"
+        ]
+      },
+      {
+        "label": "应用取舍",
+        "note": "实时画面可丢弃过时帧；文件场景要自己补序号、确认和重传。",
+        "activeIds": [
+          "udp-receiver",
+          "udp-policy"
         ],
-        "metric": {
-          "label": "到达率",
-          "value": "4 / 5"
-        }
+        "doneIds": [
+          "udp-policy"
+        ],
+        "mutedIds": [
+          "udp-sender",
+          "udp-network"
+        ],
+        "values": {
+          "udp-policy": "latest wins / missing=2"
+        },
+        "activeEdgeIds": [
+          "receiver-policy"
+        ]
       }
     ],
-    "insight": "UDP 保留数据报边界，却把可靠性与顺序处理留给上层协议。",
+    "insight": "UDP 保留数据报边界，却把可靠性、顺序、去重和拥塞处理留给上层协议。",
     "quiz": {
       "question": "UDP 数据报 2 丢失后，协议本身会怎样？",
       "options": [
@@ -10549,12 +10532,22 @@
       {
         "url": "https://www.rfc-editor.org/rfc/rfc768.html",
         "label": "RFC 768 · UDP",
-        "note": "协议定义与报文语义"
+        "note": "独立数据报、端口、长度与校验和"
       },
       {
         "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
         "label": "RFC 1122 · UDP Requirements",
-        "note": "协议定义与报文语义"
+        "note": "交付与校验边界"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc8085.html",
+        "label": "RFC 8085 · UDP Usage Guidelines",
+        "note": "拥塞、大小和应用责任"
+      },
+      {
+        "url": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+        "label": "IANA · Service Name and Port Registry",
+        "note": "端口与传输端点的登记"
       }
     ]
   },

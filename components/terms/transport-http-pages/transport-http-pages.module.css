@@ -45,3 +45,47 @@
 .tcpBoundary p { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.7; }
 @media (max-width: 700px) { .panel { padding: 15px; } .tcpTrack, .tcpLabBoard { grid-template-columns: 1fr; } .tcpArrow { justify-self: center; transform: rotate(90deg); } .tcpTop, .tcpLabHead { flex-direction: column; gap: 8px; } .tcpBoundary { grid-template-columns: 1fr; } .tcpControls { justify-content: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .tcpHero *, .tcpLab * { transition: none !important; animation: none !important; } }
+
+.udpHero { composes: panel; }
+.udpTop, .udpEvidence, .udpLabHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.udpTop span, .udpTop small, .udpLabHead span { color: var(--muted); font-size: .78rem; }
+.udpTop strong, .udpLabHead strong { color: var(--accent-text); font-size: .95rem; }
+.udpStage { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.6fr) minmax(0, .9fr); align-items: center; gap: 15px; margin: 25px 0 16px; }
+.udpSender, .udpReceiver, .udpPacket { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 15px; background: color-mix(in srgb, var(--surface) 76%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); }
+.udpSender, .udpReceiver { min-height: 128px; justify-content: center; align-items: center; text-align: center; }
+.udpSender svg, .udpReceiver svg, .udpPacket svg { color: var(--accent); }
+.udpSender span, .udpReceiver span, .udpPacket small { color: var(--muted); font-size: .76rem; }
+.udpSender strong, .udpReceiver strong, .udpPacket code { color: var(--accent-text); font-size: .86rem; overflow-wrap: anywhere; }
+.udpPackets { display: grid; gap: 8px; }
+.udpPacket { display: grid; grid-template-columns: 27px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 51px; transition: transform .35s ease, opacity .35s ease, border-color .35s ease; }
+.udpPacket[data-lost="true"] { opacity: .34; border-style: dashed; transform: translateX(10px); }
+.udpPacket[data-reordered="true"] { border-color: var(--accent-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 17%, transparent); }
+.udpPacket small { text-align: right; }
+.udpEvidence { justify-content: flex-start; min-height: 53px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.udpEvidence svg { flex: 0 0 auto; color: var(--accent); }
+.udpEvidence p { margin: 0; }
+.udpEvidence strong { color: var(--accent-text); margin-right: 8px; }
+.udpTimeline, .udpControls, .udpLabControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.udpTimeline { margin-top: 15px; }
+.udpTimeline button, .udpControls button, .udpLabControls button { appearance: none; border: 1px solid color-mix(in srgb, var(--accent-text) 22%, transparent); border-radius: 999px; padding: 7px 11px; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--accent-text); cursor: pointer; font: inherit; font-size: .78rem; }
+.udpTimeline button[aria-pressed="true"], .udpLabControls button[aria-pressed="true"] { background: var(--accent-text); color: var(--surface); }
+.udpControls { justify-content: flex-end; margin-top: 10px; }
+.udpLab { composes: panel; background: color-mix(in srgb, var(--surface) 93%, var(--tint)); }
+.udpLabHead strong { display: block; margin-top: 5px; }
+.udpLabBoard { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.4fr) auto minmax(0, 1fr); gap: 12px; align-items: center; margin: 22px 0 14px; }
+.udpLabNode { min-height: 91px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 7px; padding: 13px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 74%, white); border: 1px solid color-mix(in srgb, var(--accent-text) 14%, transparent); text-align: center; }
+.udpLabNode svg { color: var(--accent); }
+.udpLabNode span { color: var(--muted); font-size: .76rem; }
+.udpLabNode code, .udpLabNode strong { color: var(--accent-text); font-size: .82rem; overflow-wrap: anywhere; }
+.udpLabResult { display: flex; align-items: flex-start; gap: 10px; padding: 12px 13px; border-radius: 14px; background: color-mix(in srgb, var(--tint) 46%, var(--surface)); color: var(--muted); font-size: .84rem; line-height: 1.65; }
+.udpLabResult[data-warning="true"] { background: color-mix(in srgb, #f4ddcf 45%, var(--surface)); color: #8a542f; }
+.udpLabResult svg { flex: 0 0 auto; color: var(--accent); }
+.udpLabResult p { margin: 0; }
+.udpLabResult strong { color: var(--accent-text); margin-right: 8px; }
+.udpLabControls { margin-top: 13px; }
+.udpHeaderStrip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 18px 0; }
+.udpHeaderStrip div { display: grid; gap: 5px; padding: 11px 12px; border-top: 3px solid var(--accent); background: color-mix(in srgb, var(--tint) 42%, var(--surface)); }
+.udpHeaderStrip span { color: var(--muted); font-size: .72rem; }
+.udpHeaderStrip code { color: var(--accent-text); font-size: .78rem; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .udpHero, .udpLab { padding: 15px; } .udpStage, .udpLabBoard { grid-template-columns: 1fr; } .udpStage > svg, .udpLabBoard > svg { justify-self: center; transform: rotate(90deg); } .udpTop, .udpLabHead { flex-direction: column; gap: 8px; } .udpControls { justify-content: flex-start; } .udpHeaderStrip { grid-template-columns: 1fr 1fr; } }
+@media (prefers-reduced-motion: reduce) { .udpHero *, .udpLab * { transition: none !important; animation: none !important; } }
