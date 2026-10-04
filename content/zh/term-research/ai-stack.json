@@ -774,7 +774,7 @@
     "slug": "compiler",
     "mechanism": "编译器先把源代码解析为语法树和中间表示，检查语言规则并进行可选优化，再生成交给目标运行时或操作系统执行的代码。",
     "misconception": "编译不等于直接生成机器码，也不等于运行；打包器组织模块和资源，构建工具编排任务，编译成功仍可能在运行时遇到输入错误。",
-    "demoSignature": "输入：函数add(2,3)源代码；中间：源码→语法树→内部中间表示（简单例子无明显优化）→目标代码；输出：运行时执行得5。错误分支：语法不完整在解析阶段停下，运行时输入错误留到执行阶段。可视化：四层表示与执行者分开；交互：切换编译错误和运行时错误分支。",
+    "demoSignature": "输入：函数add(2,3)源代码；中间：源码→语法树→内部中间表示（简单例子无明显优化）→目标代码；输出：运行时执行得5。错误分支：语法不完整在解析阶段停下，目标环境不支持时在生成目标代码层停下，运行时输入错误留到执行阶段。可视化：四层表示与执行者分开；交互：切换编译错误、目标不匹配和运行时错误分支。",
     "sourceUrls": [
       "https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html",
       "https://gcc.gnu.org/onlinedocs/gccint/",
@@ -844,7 +844,7 @@
     "slug": "bundler",
     "mechanism": "打包器从入口沿静态和动态导入建立模块依赖图，把入口与静态依赖放入主包，把动态依赖拆成用户需要时再加载的块。",
     "misconception": "打包不等于压缩、转译或单文件输出；代码分割可以生成主包和多个按需块，入口与动态导入决定加载边界。",
-    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。",
+    "demoSignature": "输入：src/main.js、5个静态依赖和1个动态依赖；中间：依赖图分出首屏路径和按需路径；输出：dist/main.js含入口+5静态，dist/lazy.js含1动态，点击功能才请求lazy.js。切换静态导入：主包变为入口+6、按需块消失。失败边界：按需块请求失败时，主包仍可用，问题落在运行时请求路径而非主包生成。",
     "sourceUrls": [
       "https://rollupjs.org/introduction/",
       "https://webpack.js.org/concepts/",
@@ -862,7 +862,7 @@
     "slug": "dev-server",
     "mechanism": "开发服务器在本机按请求提供页面和资源，监听文件变化后按需处理受影响的文件，并通过更新连接通知浏览器刷新或替换模块。",
     "misconception": "开发服务器服务本地开发循环，不是生产服务器，也不等于完整构建；代理是把本地请求转给另一个服务，更新时间数字只代表本机示例。",
-    "demoSignature": "输入：浏览器先请求 localhost:端口，随后保存 button.css；中间：监听器捕获变化，开发服务器按需处理文件并经 WebSocket 发送更新；输出：浏览器可整页刷新或替换模块，示例约180ms但不作性能保证。失败：终端/页面显示文件和行号。",
+    "demoSignature": "输入：浏览器先请求 localhost:端口，随后保存 button.css；中间：监听器捕获变化，开发服务器按需处理文件并经 WebSocket 发送更新；输出：浏览器可整页刷新或替换模块，示例约180ms但不作性能保证。失败：源码处理错误时终端/页面显示文件和行号，浏览器不接受坏模块。",
     "sourceUrls": [
       "https://vite.dev/guide/",
       "https://vite.dev/guide/features",
@@ -917,6 +917,7 @@
     "demoSignature": "输入：应用直接依赖A，A依赖B；中间：图从应用→A→B，锁文件记录A@1.4、B@2.1；输出：报告直接1、传递1。删除应用→A后，若无其他路径B不再可达，安装结果重算但磁盘清理取决于工具。",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-json",
+      "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
       "https://semver.org/",
       "https://nodejs.org/api/packages.html",
       "https://docs.npmjs.com/cli/v11/using-npm/scripts"
