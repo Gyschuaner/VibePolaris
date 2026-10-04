@@ -11,11 +11,10 @@ export function AgentLoopLesson() {
   const scene = useScene(labels.length);
   const [limit, setLimit] = useState<2 | 3>(3);
   const limited = limit === 2 && scene.step === 3;
-  const passed = limit === 3 && scene.step === 3;
   const nodes = [
     { title: "当前状态", text: scene.step === 0 ? "还有 1 项检查" : "清单与上轮结果", Icon: ClipboardText },
     { title: "动作", text: scene.step < 1 ? "等待工具" : "run_checks()", Icon: Wrench },
-    { title: "观察", text: scene.step < 2 ? "尚未返回" : scene.step === 2 ? "disabled 仍然错误" : "测试通过", Icon: Eye },
+    { title: "观察", text: scene.step < 2 ? "尚未返回" : scene.step === 2 ? "disabled 仍然错误" : limited ? "仍未通过" : "测试通过", Icon: Eye },
     { title: "闸门", text: scene.step === 3 ? (limited ? "上限 2 轮" : "完成条件") : "继续判断", Icon: scene.step === 3 && !limited ? CheckCircle : scene.step === 3 ? XCircle : Flag },
   ];
 
