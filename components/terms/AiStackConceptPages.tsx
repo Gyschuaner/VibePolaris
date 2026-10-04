@@ -37,6 +37,7 @@ import { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting"
 import { TemperatureTermPage } from "./ai-stack-pages/temperature";
 import { TokenizationTermPage } from "./ai-stack-pages/tokenization";
 import { PromptInjectionTermPage } from "./ai-stack-pages/prompt-injection";
+import { CompilerTermPage } from "./ai-stack-pages/compiler";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -76,6 +77,7 @@ export { ZeroShotPromptingTermPage } from "./ai-stack-pages/zero-shot-prompting"
 export { TemperatureTermPage } from "./ai-stack-pages/temperature";
 export { TokenizationTermPage } from "./ai-stack-pages/tokenization";
 export { PromptInjectionTermPage } from "./ai-stack-pages/prompt-injection";
+export { CompilerTermPage } from "./ai-stack-pages/compiler";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -117,4 +119,5 @@ export const aiStackArticlePages = {
   temperature: TemperatureTermPage,
   tokenization: TokenizationTermPage,
   "prompt-injection": PromptInjectionTermPage,
+  compiler: CompilerTermPage,
 } as const;
