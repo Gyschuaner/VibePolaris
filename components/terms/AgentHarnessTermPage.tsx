@@ -118,7 +118,7 @@ export function AgentHarnessTermPage() {
           <p>补上冒号，可能只解决了“程序无法启动”的问题；处理请求时用到的另一行代码仍可能有错。下面分别演示检查通过、检查失败和未获写入授权。看文件有没有改，再看检查有没有结果，就能知道任务停在哪一步。切换选项会从头演示对应情况。</p>
           <p>如果检查失败，Harness 把错误交回模型，让它继续修正。如果操作没有获得授权，则应在执行前由<Term slug="permission-boundary">权限检查</Term>拦住。把“不要修改文件”写在指令里可以指导模型，但<strong>实际能否写入，还需要由程序或运行环境限制</strong>。</p>
           <HarnessOutcomeFlow />
-          <p id="cite-environment" className="vp-citation-target">需要接入能实际执行检查的工具，也要把结果交给模型。OpenAI Agents SDK 的运行器会在模型的最终回答、工具调用和交接之间分流；工具结果回到运行器后，才有机会进入下一轮判断。沿用这个边界，修服务时应让模型拿到实际启动日志和健康检查响应，才能依据结果继续处理。<Citation id="cite-environment" /></p>
+          <p id="cite-environment" className="vp-citation-target">需要接入能实际执行检查的工具，也要把结果交给模型。在 OpenAI Agents SDK 中，运行器会在模型的最终回答、工具调用和交接之间分流；工具结果回到运行器后，才有机会进入下一轮判断。沿用这个边界，修服务时应让模型拿到实际启动日志和健康检查响应，才能依据结果继续处理。<Citation id="cite-environment" /></p>
           <p id="cite-stopping" className="vp-citation-target"><strong>循环也需要停止条件</strong>：检查通过后返回结果，缺少信息或授权时等待用户，达到设定的轮数或时间上限时结束。这样即使模型反复尝试同一种无效操作，系统也有办法停下来，而不是一直消耗资源。<Citation id="cite-stopping" /></p>
           <p>一次健康检查通过，也只证明预先选定的这项检查通过了，不能推出网站所有功能都正常。换成整理表格的任务，道理一样：文件保存了，还要看数据是否齐全、计算是否正确。Harness 能组织这些检查，检查覆盖哪些要求仍要由人和应用明确下来。</p>
           <p id="cite-failures" className="vp-citation-target">排查智能体失败时，可以顺着执行记录往回找：请求了不存在的工具，说明工具选择出了问题；路径和参数正确却读取超时，要查执行环节；一直重复读同一份日志，则要看是否缺少进展判断。Chip Huyen 在《AI Engineering》的公开书摘中，分别讨论了规划、工具执行和效率方面的失败，这种分法有助于找准需要改的部分。<Citation id="cite-failures" /></p>
