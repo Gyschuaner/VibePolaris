@@ -24,7 +24,7 @@ const frames = [
     version: "IPv4",
     payload: "4000 B 应用数据",
     header: "ID 42 · DF=0 · TTL 3",
-    pieces: ["P1 · 1500 B", "P2 · 1500 B", "P3 · 1040 B"],
+    pieces: ["P1 · 1500 B", "P2 · 1500 B", "P3 · 1060 B"],
     route: ["源端", "路由器分片", "接收端重组"],
     result: "3 个分片",
     note: "下一跳装不下整包时，IPv4 路由器可以按标识、偏移和 More Fragments 拆开；终点再拼回原数据报。",
