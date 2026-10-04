@@ -49099,6 +49099,451 @@
     "sourceHash": "sha256:0c3b93baf1b616f20a46054160d531e760f1e2d979a05e9e7f1e2944310013d7"
   },
   {
+    "slug": "cloudflare-pay-per-crawl-20250701",
+    "title": "Cloudflare 默认拦 AI 爬虫，再用 Pay Per Crawl 让内容访问走向“先获准、再计费”",
+    "summary": "Cloudflare 在 7 月 1 日宣布，网站可以默认阻止未经许可或没有补偿的 AI 爬虫，并在私测中让站点按次给内容访问定价。它改变的是网站与爬虫之间的权限和结算入口，不是全球统一生效的版权规则。",
+    "body": "7 月 1 日，Cloudflare 把 AI 爬虫和内容付费的争议做成了一个基础设施产品。公司宣布，网站所有者可以默认阻止未经许可或没有补偿的 AI 爬虫访问内容，并决定哪些 AI 公司可以访问、以什么用途访问。与此同时，Cloudflare 发布 Pay Per Crawl 私测，让站点主为内容设置价格，选择要收费的爬虫，再通过 Stripe 处理付款。\n\nCloudflare 的官方 Changelog 把产品写得更具体：站点可以设定价格、选择收费对象，并查看成功交付的分析；AI 爬虫方通过 HTTP 头请求并接受价格，访问后收到明确的扣费确认。这是一套请求、报价、付款、交付的协议链。它先回答“谁可以访问”，再回答“这一次访问是否计费”，比 robots.txt 里一个静态的允许或禁止更细。\n\n但标题里的“默认拦截”不能被读成所有网站当天都自动锁死。Cloudflare 说的是由网站所有者选择的默认设置，Pay Per Crawl 当时还是 private beta，需要申请早期访问。没有加入这套配置的网站、没有愿意付费的 AI 公司和没有形成价格协议的页面，仍然不会因为 7 月 1 日的公告自动进入一个全球收费网络。\n\n公司还把爬虫用途拆成训练、推理和搜索，允许 AI 公司更清楚地表达自己来做什么。用途标签能帮助内容方做选择，却不会自动证明训练合法、内容已经获授权，或一次搜索摘要就等于一次许可。Cloudflare 提供的是识别、拦截和结算能力，版权归属、合理使用和授权范围仍要由合同和法律处理。\n\n这条新闻对新闻站尤其直接。站点一方面担心 AI 摘要减少搜索点击，另一方面又希望保留被引用、被发现和获得访问的机会。按次收费可以给内容方多一个选项，但也会把价格、支付、爬虫身份和内容版本都变成运营问题。没有公开费率和规模数据之前，不能把 Pay Per Crawl 写成已经验证的商业模式。\n\n对内容团队而言，比较稳妥的试验顺序是：先列出哪些页面允许训练、哪些页面只允许搜索引用，再确认爬虫身份和用途，最后才设置价格和付款。每个规则都要保留日志，方便解释为什么某次访问被允许、被拒绝或被收费。7 月 1 日发生的是一种新的访问控制和私测结算方案，不能简化成“AI 公司以后必须为互联网付费”。",
+    "publishedAt": "2025-07-01",
+    "eventDate": "2025-07-01",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/cloudflare-pay-per-crawl-20250701.svg",
+      "alt": "Cloudflare 把 AI 爬虫访问拆成许可、报价、付款和内容交付四步",
+      "sourceUrl": "/images/news/cloudflare-pay-per-crawl-20250701.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "先把 AI 爬虫从“默认可抓”改成“由站点决定”",
+        "body": "Cloudflare 宣布网站所有者可以选择是否允许 AI 爬虫访问，以及这些内容可被怎样使用。",
+        "kind": "narrative"
+      },
+      {
+        "id": "protocol",
+        "title": "Pay Per Crawl 是一条请求到付款的协议链",
+        "body": "价格、收费对象、HTTP 头、Stripe 和交付分析被放进同一条流程，私测仍需申请。",
+        "kind": "technical"
+      },
+      {
+        "id": "scope",
+        "title": "这不是全球统一生效的版权规则",
+        "body": "默认设置由网站选择，产品当时是 private beta，法律许可仍要看合同和法域。",
+        "kind": "boundary"
+      },
+      {
+        "id": "publisher-economics",
+        "title": "内容方拿到一个新选项，也多了运营成本",
+        "body": "推荐访问、搜索引用、训练和推理可以分开定价，但公开费率和实际规模尚未证明商业回报。",
+        "kind": "comparison"
+      },
+      {
+        "id": "trial-checklist",
+        "title": "先划分内容用途，再做小范围试验",
+        "body": "记录允许、拒绝、报价和付款日志，把一次访问的事实链留下来。",
+        "kind": "technical"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "AI 爬虫访问怎样从一次请求变成可控交易？",
+      "question": "先确认身份和用途，再决定是否交付、如何计费，最后保留可追溯记录。",
+      "steps": [
+        {
+          "label": "识别爬虫",
+          "detail": "判断访问方是谁、代表哪家公司，以及请求的是训练、推理还是搜索。",
+          "evidence": "AI companies can clearly state their purpose"
+        },
+        {
+          "label": "读取站点规则",
+          "detail": "网站决定哪些页面可访问，哪些内容只在特定用途或条件下开放。",
+          "evidence": "website owners can choose if AI crawlers access content"
+        },
+        {
+          "label": "返回价格",
+          "detail": "站点给符合条件的爬虫返回价格和条款，爬虫通过 HTTP 头表达接受或拒绝。",
+          "evidence": "Use HTTP headers to request and accept pricing"
+        },
+        {
+          "label": "完成付款与交付",
+          "detail": "付款完成后才交付内容，并用 Stripe 和交付分析记录过程。",
+          "evidence": "Manage payments via Stripe; monitor successful deliveries"
+        },
+        {
+          "label": "复核法律与商业结果",
+          "detail": "把合同、版权、流量和收入分开评估，不把一次成功交付写成整个行业已验证。",
+          "evidence": "private beta and no public outcome data"
+        }
+      ]
+    },
+    "source": {
+      "name": "Cloudflare 官方 Changelog",
+      "url": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/"
+    },
+    "relatedSlugs": [
+      "data-lineage",
+      "citation",
+      "auth",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/",
+        "claim": "Cloudflare 7 月 1 日发布 Pay Per Crawl 私测，允许站点设价、选择收费爬虫、通过 Stripe 管理付款，并要求爬虫用 HTTP 头请求和接受价格。",
+        "excerpt": "Pay Per Crawl enables site owners to require payment from AI crawlers every time the crawlers access their content."
+      },
+      {
+        "url": "https://www.cloudflare.com/press/press-releases/2025/cloudflare-just-changed-how-ai-crawlers-scrape-the-internet-at-large/",
+        "claim": "Cloudflare 官方新闻稿宣布网站可以默认阻止未经许可或没有补偿的 AI 爬虫，并由站点决定是否允许访问。",
+        "excerpt": "website owners can choose if they want AI crawlers to access their content, and decide how AI companies can use it."
+      },
+      {
+        "url": "https://blog.cloudflare.com/introducing-pay-per-crawl/",
+        "claim": "Cloudflare 产品博客解释 Pay Per Crawl 的内容访问和收费设计，作为 Changelog 的背景说明。",
+        "excerpt": "Introducing Pay Per Crawl: enabling content owners to charge AI crawlers for access."
+      }
+    ],
+    "canonicalUrl": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/",
+    "sourceHash": "sha256:13be1ac5c5245ddfff420c4ed81dc3cda2abc879507639ef230f0d8e07b54c23"
+  },
+  {
+    "slug": "france-osez-ia-plan-20250701",
+    "title": "法国推出“敢用 AI”计划：目标写进 2030，落地要靠培训、诊断和融资",
+    "summary": "法国政府在 7 月 1 日于 Bercy 启动“ Osez l’IA（敢用 AI）”国家行动计划，目标是到 2030 年让 100% 的大型企业、80% 的中型企业和 50% 的小微企业把 AI 纳入运营。它是一份推广和陪跑计划，不是当天生效的强制采用法。",
+    "body": "7 月 1 日，法国在 Bercy 启动国家行动计划 Osez l’IA，中文可以理解为“敢用 AI”。法国政府的 French Tech 页面写明，计划希望到 2030 年让 100% 的大型企业、80% 的 PME/ETI 和 50% 的 TPE 把 AI 纳入运营，并把行动分成三个方向：让企业认识 AI、让员工接受培训，以及通过资金和陪伴降低采用门槛。\n\n这里的重点是推广方式，而不是宣布一项新模型。法国政府把计划放在企业竞争力、地方生态和实际用例里，活动安排中有面向工业、农业、旅游、教育、军队和地方政府的案例分享，也有 Bpifrance、商会、French Tech、Inria 等机构参与。它试图把“AI 要不要用”从高层口号变成企业可以找到培训、诊断和供应商的工作流程。\n\n但 2030 年的比例是政策目标，不是当天已经测得的采用率。大型企业 100%、PME/ETI 80%、TPE 50% 描述的是政府希望达到的覆盖范围；它没有证明每家公司都部署了同一种模型，也没有证明部署后效率一定上升。企业把聊天工具接入一个部门、把预测模型用于生产排程、或在内部建立一个 agent，统计口径可能完全不同。\n\n对小企业来说，真正的门槛往往不是“有没有 AI”这四个字，而是有没有安全的数据、明确的流程和能承担维护的人。计划如果只发放工具清单，很容易把采购变成结果。更有用的支持应包括数据盘点、业务流程改造、人员培训、供应商评估、隐私和安全审查，以及失败后撤回的方案。\n\n这条新闻也值得和监管新闻分开看。Osez l’IA 是法国政府的政策计划，有目标、活动和支持工具，但不是企业必须采用 AI 的法律，也没有因为启动仪式就改变欧盟 AI Act 的义务。企业仍要按具体用途处理数据保护、劳动关系、行业监管和人工复核。\n\n因此，7 月 1 日可以确认的是法国开始组织一套全国性的 AI 推广与陪跑机制。它的下一步不是再写一个更大的目标，而是把目标转成可核验的诊断、培训、预算和实际案例。读者在引用“法国要让所有大企业用 AI”时，应保留这是 2030 年政策目标，而非已经完成的部署结果。",
+    "publishedAt": "2025-07-01",
+    "eventDate": "2025-07-01",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/france-osez-ia-plan-20250701.svg",
+      "alt": "法国 Osez l’IA 计划把企业采用 AI 拆成认识、培训、融资和陪跑",
+      "sourceUrl": "/images/news/france-osez-ia-plan-20250701.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "法国在 Bercy 启动 Osez l’IA",
+        "body": "7 月 1 日的国家行动计划面向大型企业、PME/ETI 和 TPE，试图把 AI 推广放进企业支持体系。",
+        "kind": "narrative"
+      },
+      {
+        "id": "targets",
+        "title": "2030 目标是覆盖率，不是模型成绩",
+        "body": "100%、80% 和 50% 描述政策目标，不能解读成每家企业已经部署或已经获得同样收益。",
+        "kind": "boundary"
+      },
+      {
+        "id": "three-axes",
+        "title": "三条线：认识、培训、融资与陪伴",
+        "body": "政府页面把行动拆成让 AI 可理解、让人员会使用、降低投资与试错门槛。",
+        "kind": "technical"
+      },
+      {
+        "id": "implementation",
+        "title": "小企业要先解决流程和数据",
+        "body": "真正的落地需要数据盘点、权限、供应商评估、培训和退出机制，而不是只买一个工具。",
+        "kind": "technical"
+      },
+      {
+        "id": "law-boundary",
+        "title": "政策计划不等于强制采用法",
+        "body": "Osez l’IA 不改变欧盟 AI Act、数据保护或行业人工复核义务，企业仍要按用途承担责任。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "企业采用 AI 的政策目标怎样落到项目上？",
+      "question": "把“覆盖率目标”拆成能检查的诊断、培训、试点和治理步骤。",
+      "steps": [
+        {
+          "label": "先做用例诊断",
+          "detail": "确认要解决的是客服、预测、文档还是生产流程，避免把“采用 AI”当成单一项目。",
+          "evidence": "three axes: sensibiliser, former, financer et accompagner"
+        },
+        {
+          "label": "盘点数据和权限",
+          "detail": "列出数据来源、个人信息、供应商边界和谁可以查看或修改结果。",
+          "evidence": "simple and secure adoption in French Tech guidance"
+        },
+        {
+          "label": "安排人员培训",
+          "detail": "让使用者理解模型输出、人工复核、错误上报和停止使用的条件。",
+          "evidence": "former: giving everyone the keys to understand and master AI"
+        },
+        {
+          "label": "做小范围试点",
+          "detail": "用一个部门和一组任务测准确性、返工、成本和员工反馈，再决定是否扩展。",
+          "evidence": "concrete use cases and local support ecosystem"
+        },
+        {
+          "label": "按目标复盘",
+          "detail": "把企业数量、项目完成、实际收益和风险事件分开报告，不用覆盖率替代效果。",
+          "evidence": "2030 target: 100% large, 80% PME/ETI, 50% TPE"
+        }
+      ]
+    },
+    "source": {
+      "name": "法国政府 French Tech 官方页面",
+      "url": "https://lafrenchtech.gouv.fr/fr/un-plan-daction-pour-diffuser-lintelligence-artificielle-dans-toutes-les-entreprises/"
+    },
+    "relatedSlugs": [
+      "event",
+      "eval",
+      "data-quality",
+      "data-lineage",
+      "auth"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://lafrenchtech.gouv.fr/fr/un-plan-daction-pour-diffuser-lintelligence-artificielle-dans-toutes-les-entreprises/",
+        "claim": "French Tech 官方页面确认 7 月 1 日启动 Osez l’IA，并列出 2030 年三类企业 AI 采用目标和认识、培训、融资/陪伴三条线。",
+        "excerpt": "Le 1er juillet ... a lancé « Osez l’IA » ... 100 % des grandes entreprises, 80 % des PME/ETI et 50 % des TPE."
+      },
+      {
+        "url": "https://presse.economie.gouv.fr/osez-lia-le-plan-pour-diffuser-lia-dans-toutes-les-entreprises/",
+        "claim": "法国经济财政部 7 月 1 日发布 Osez l’IA 计划的官方新闻资料入口，作为政策文件原始链接。",
+        "excerpt": "Osez l’IA : le plan pour diffuser l’IA dans toutes les entreprises, 1 Juillet 2025."
+      },
+      {
+        "url": "https://presse.economie.gouv.fr/ip-lancement-du-plan-national-osez-lia-par-clara-chappaz-mardi-1er-juillet/",
+        "claim": "法国财政部发布启动活动安排，确认 7 月 1 日 Bercy 启动仪式与参与机构。",
+        "excerpt": "Clara Chappaz ... lancera le plan national « Osez l’IA » le mardi 1er juillet à Bercy."
+      }
+    ],
+    "canonicalUrl": "https://lafrenchtech.gouv.fr/fr/un-plan-daction-pour-diffuser-lintelligence-artificielle-dans-toutes-les-entreprises/",
+    "sourceHash": "sha256:84d7dc97e9b8d642a7724f0aefa187e7a830b7fdb79493877df780d8b52be223"
+  },
+  {
+    "slug": "genesis-ai-robotics-foundation-model-20250701",
+    "title": "Genesis AI 带着 1.05 亿美元出隐身：机器人基础模型先要解决“真实世界数据”",
+    "summary": "Genesis AI 在 7 月 1 日从隐身状态出现，宣布获得 1.05 亿美元种子轮，准备训练面向多种机器人的基础模型。它把合成物理数据、仿真引擎和全栈机器人平台放在一起，但模型尚未公开，通用能力仍是计划而不是结果。",
+    "body": "7 月 1 日，Genesis AI 宣布从隐身状态出现，并获得由 Eclipse 和 Khosla Ventures 共同领投的 1.05 亿美元种子轮。TechCrunch 报道，这家总部跨越硅谷和巴黎的团队想做一个能服务不同机器人任务的基础模型，场景从实验室工作到家务都包括在愿景里。公司当时有 20 多名研究人员，下一步计划在年底前把模型提供给机器人社区。\n\n机器人模型和文本模型面对的数据并不一样。语言模型可以从大量文字里学习统计关系，机器人还要处理物体、摩擦、重力、视角、动作延迟和碰撞。真实世界数据昂贵、采集慢，还可能涉及设备安全和人的隐私。Genesis 选择用自有物理引擎生成合成数据，试图在模型训练前先把可控的环境和动作轨迹做出来。\n\n这套方法有一个容易被忽略的前提：仿真必须足够接近真实世界。公司称它的引擎能准确模拟物理世界，TechCrunch 还写到，引擎源于创始人 Zhou Xian 与 18 所大学合作的学术项目。这些是公司和媒体对路线的描述，不是对 sim-to-real 泛化已经完成的独立验证。仿真里成功的抓取动作，到了真实机器人上可能会因为光照、材质或传感器误差失败。\n\n融资也不能直接等同于模型能力。1.05 亿美元可以支持研究人员、算力、数据和硬件平台，但当日没有公开模型权重、标准 benchmark、真实机器人客户或可重复的部署报告。Genesis 的团队背景是可核验的线索：Zhou Xian 拥有卡内基梅隆大学机器人学博士背景，另一位创始人 Théophile Gervet 曾在 Mistral 做研究。但人才和资金说明的是投入，不是已交付的通用机器人。\n\n如果这个方向要被认真评估，至少要把四条证据链分开：合成数据覆盖了哪些物理状态，模型在仿真和真实设备上的差距多大，换一个机器人或任务是否还能工作，以及安全停机和人工接管怎么做。只公布一个“foundation model”称呼，无法回答这些问题。\n\n所以 7 月 1 日的新闻重点不是“机器人已经通用”，而是资本和团队选择了哪一条数据路线。Genesis 把合成物理世界当作规模化训练的起点，年底开放模型是未来检查点。到模型、数据和真实设备验证出现之前，文章应把它写成高额下注和研发计划。",
+    "publishedAt": "2025-07-01",
+    "eventDate": "2025-07-01",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/genesis-ai-robotics-foundation-model-20250701.svg",
+      "alt": "Genesis AI 用物理仿真和合成数据训练机器人基础模型",
+      "sourceUrl": "/images/news/genesis-ai-robotics-foundation-model-20250701.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "stealth-exit",
+        "title": "从隐身出现并宣布 1.05 亿美元种子轮",
+        "body": "Genesis AI 公开团队、投资方和机器人基础模型方向，计划年底面向社区释放模型。",
+        "kind": "narrative"
+      },
+      {
+        "id": "physical-data",
+        "title": "机器人要学的是物理世界",
+        "body": "物体、摩擦、重力、视角和动作延迟，让机器人数据比文本数据更昂贵、更难复用。",
+        "kind": "technical"
+      },
+      {
+        "id": "synthetic-engine",
+        "title": "合成数据先从物理引擎开始",
+        "body": "公司称自有引擎来自跨 18 所大学的学术项目，但仿真到真实的差距仍需实机验证。",
+        "kind": "example"
+      },
+      {
+        "id": "funding-boundary",
+        "title": "融资和团队背景不等于模型能力",
+        "body": "当日没有公开权重、标准 benchmark 或真实客户部署，1.05 亿美元应读作研发投入。",
+        "kind": "boundary"
+      },
+      {
+        "id": "evidence-chain",
+        "title": "真正的检查点是跨设备、跨任务和人工接管",
+        "body": "评估要同时看仿真覆盖、真实差距、任务泛化和停机机制，而不是只看 foundation model 的名称。",
+        "kind": "technical"
+      }
+    ],
+    "explainer": {
+      "variant": "synthetic-data",
+      "title": "机器人基础模型怎样从仿真走到真实设备？",
+      "question": "把合成数据、仿真评测、实机测试和人工接管分成四个检查点。",
+      "steps": [
+        {
+          "label": "定义物理状态",
+          "detail": "在仿真里明确物体、摩擦、重力、传感器和动作延迟，不能只生成好看的场景。",
+          "evidence": "models for robotics must be trained on data about the physical world"
+        },
+        {
+          "label": "生成合成轨迹",
+          "detail": "用物理引擎生成动作、失败和恢复轨迹，记录每个状态的来源和覆盖范围。",
+          "evidence": "Genesis says it generates synthetic data with a proprietary physics engine"
+        },
+        {
+          "label": "做仿真内评测",
+          "detail": "固定任务、设备和成功标准，区分模型会规划还是只记住了仿真模板。",
+          "evidence": "foundation model plan and year-end release milestone"
+        },
+        {
+          "label": "迁移到实机",
+          "detail": "在不同硬件、材质、光照和速度下重复任务，测量 sim-to-real 差距。",
+          "evidence": "no public real-robot benchmark at launch"
+        },
+        {
+          "label": "保留人工接管",
+          "detail": "为危险动作设置停机、权限和回滚路径，通用能力没有取代现场安全责任。",
+          "evidence": "general-purpose physical AI remains a roadmap"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "eval",
+      "data-lineage",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/",
+        "claim": "TechCrunch 7 月 1 日报道 Genesis AI 从隐身状态出现并完成 1.05 亿美元种子轮，计划构建通用机器人基础模型。",
+        "excerpt": "Genesis AI ... has emerged from stealth with a giant $105 million seed round."
+      },
+      {
+        "url": "https://www.prnewswire.com/news-releases/genesis-ai-emerges-from-stealth-with-105m-to-build-universal-robotics-foundation-model-and-horizontal-platform-for-general-purpose-physical-ai-302495016.html",
+        "claim": "Genesis AI 公司的新闻稿确认 7 月 1 日发布、融资共同领投方和物理 AI 基础设施方向；公司自述部分单独标注。",
+        "excerpt": "Genesis AI ... emerged from stealth today ... raising $105 million co-led by Eclipse and Khosla Ventures."
+      },
+      {
+        "url": "https://genesis.ai/",
+        "claim": "Genesis AI 官方网站作为公司身份和产品路线的原始入口；本文不从未公开页面推导模型已上线。",
+        "excerpt": "Genesis AI official company site."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/",
+    "sourceHash": "sha256:771d788163e5a0d15190b261aeaef335316f2a928370c34632a7cb7f8abdaa85"
+  },
+  {
+    "slug": "wisq-hrlm-agentic-hr-20250701",
+    "title": "Wisq 发布 HRLM 并获 1500 万美元：专用 HR 模型要把“合规”当成第一道门",
+    "summary": "Wisq 在 7 月 1 日宣布获得 1500 万美元融资，同时发布面向企业人力资源场景的 HRLM。公司称该模型服务于政策解释、员工关系和风险评估，并用自建 Hurdle benchmark 与通用推理模型比较；这些能力和成本数字仍属于公司发布口径。",
+    "body": "7 月 1 日，Wisq 在一份由 PR Newswire 发布的公司公告中宣布获得 1500 万美元融资，并推出 HRLM。公司把 HRLM 描述成面向企业人力资源的专用大语言模型，服务场景包括 HR 服务交付、政策解释与执行、绩效管理、员工关系和风险评估。它还把 HRLM 放进自己的 AI HR Generalist Harper 里，继续做“Agentic HR”平台。\n\n专用模型的理由并不难理解。HR 的问题通常不是“写一段像样的文字”就结束了，答案要对照公司政策、地区法规、员工档案和审批流程。一个通用模型可能会把不同版本的手册混在一起，也可能在没有证据时补全一条不存在的规则。Wisq 的公告反复强调 accuracy、compliance 和 grounding，说明它想把“能不能引用正确政策”放在语言流畅之前。\n\n但公司自己的 benchmark 不能直接变成行业共识。Wisq 称 Hurdle 用于评估员工关系、绩效反馈和政策解释，并称 HRLM 在 Hurdle 上与 OpenAI o3 等推理模型表现相当，同时更快、更便宜。公告没有公开完整题集、评分脚本、错误样例或独立复测，因此这组“parity”和成本描述应标注为公司口径，不能写成 HRLM 已经优于通用模型。\n\n人力资源还是一个高风险的数据场景。员工的薪资、健康、申诉、绩效和身份信息都可能进入系统。即使模型能正确回答政策问题，也不代表它可以自行决定解雇、晋升、工伤或纪律处分。权限隔离、版本化政策、引用原文、人工确认和审计日志，要和模型效果一起验收。\n\n融资用途也有边界。Wisq 说资金会用于继续做 AI 和平台开发，并扩充工程与 go-to-market 团队；这说明公司要扩大产品和销售，不等于 HRLM 已向所有企业公开可用，更不等于客户已经取得公告里提到的工作量改善。企业采购时应该要求真实数据脱敏、保留人工升级路径，并先用低风险的问答和检索任务测试。\n\n7 月 1 日值得记录的，是一家 HR AI 公司同时把专用模型、agent 平台和融资放进同一条新闻。它提醒读者，领域模型的价值不只在参数规模，还在政策资料是否新、回答能否追溯、权限能否收紧，以及模型知道什么时候把问题交回人。",
+    "publishedAt": "2025-07-01",
+    "eventDate": "2025-07-01",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/wisq-hrlm-agentic-hr-20250701.svg",
+      "alt": "Wisq HRLM 把企业 HR 政策、引用、权限和人工升级放进 Agent 工作流",
+      "sourceUrl": "/images/news/wisq-hrlm-agentic-hr-20250701.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "HRLM 与 1500 万美元融资同时公布",
+        "body": "Wisq 7 月 1 日宣布新一轮融资，并发布面向企业 HR 的专用语言模型，接入 Harper AI HR Generalist。",
+        "kind": "narrative"
+      },
+      {
+        "id": "domain-model",
+        "title": "专用模型要处理的是政策和上下文",
+        "body": "HR 服务、员工关系和风险评估需要对照组织政策和员工数据，流畅回答不是唯一标准。",
+        "kind": "technical"
+      },
+      {
+        "id": "benchmark-boundary",
+        "title": "Hurdle 的比较仍是公司口径",
+        "body": "Wisq 称 HRLM 与 o3 等模型表现相当且成本更低，但没有公开完整题集和独立复测，不能直接写成行业结论。",
+        "kind": "boundary"
+      },
+      {
+        "id": "sensitive-data",
+        "title": "HR 数据让权限和升级路径成为必需",
+        "body": "薪资、健康、申诉和绩效信息应隔离，模型不能代替人决定劳动关系和纪律事项。",
+        "kind": "technical"
+      },
+      {
+        "id": "buyer-checklist",
+        "title": "采购时先验证引用、版本和人工确认",
+        "body": "从低风险问答和检索开始，要求脱敏、审计日志、政策版本和可回退的人工流程。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "secure-memory",
+      "title": "HR AI 怎样在“知道政策”和“保护员工”之间工作？",
+      "question": "把政策版本、数据权限、引用和人工升级串成一条可审计路径。",
+      "steps": [
+        {
+          "label": "锁定政策版本",
+          "detail": "回答前先确定适用的国家、部门和生效日期，避免把旧规则混进新答案。",
+          "evidence": "policy interpretation and enforcement"
+        },
+        {
+          "label": "只读必要数据",
+          "detail": "按角色限制员工档案、薪资和申诉数据的可见范围，不因模型方便就扩大读取。",
+          "evidence": "high-stakes and policy-bound HR use cases"
+        },
+        {
+          "label": "返回原文依据",
+          "detail": "在答案旁保留政策段落或来源卡片，让 HR 能复核模型是否越过原文。",
+          "evidence": "grounding and compliance claims"
+        },
+        {
+          "label": "遇到高风险就升级",
+          "detail": "涉及解雇、晋升、健康或纪律时停止自动决定，交给合规和 HR 负责人。",
+          "evidence": "AI HR Generalist is not a replacement for human decisions"
+        },
+        {
+          "label": "记录与复测",
+          "detail": "保存模型版本、问题、引用和人工修改，使用独立题集复测，而不是只复用公司 benchmark。",
+          "evidence": "Hurdle benchmark is company-provided"
+        }
+      ]
+    },
+    "source": {
+      "name": "PR Newswire（Wisq 公司公告）",
+      "url": "https://www.prnewswire.com/news-releases/wisq-raises-15m-launches-hrlm-to-define-hrs-agentic-era-302495092.html"
+    },
+    "relatedSlugs": [
+      "llm",
+      "agent",
+      "eval",
+      "data-lineage",
+      "auth",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.prnewswire.com/news-releases/wisq-raises-15m-launches-hrlm-to-define-hrs-agentic-era-302495092.html",
+        "claim": "Wisq 7 月 1 日公司公告宣布 1500 万美元融资、HRLM、Harper 和 Hurdle benchmark，并列出 HRLM 的目标场景。",
+        "excerpt": "Wisq ... today announced a $15 million funding round ... unveiling HRLM ... Hurdle benchmark."
+      },
+      {
+        "url": "https://www.wisq.com/blog-post/welcome-to-hrs-agentic-era-ai-first-deeply-human-behind-wisqs-new-15m-fundraise",
+        "claim": "Wisq 官方博客补充融资与产品愿景，说明这些数字和效果叙述来自公司自身。",
+        "excerpt": "Wisq raises $15M to accelerate the Agentic Era of HR ... with Harper helping real teams every day."
+      },
+      {
+        "url": "https://www.wisq.com/blog-post/we-built-a-domain-specific-llm-for-hr",
+        "claim": "Wisq CTO 的官方文章解释 HRLM 的领域模型定位；本文只用它说明产品方向，不把自述当作独立评测。",
+        "excerpt": "Introducing HRLM: AI for HR compliance and policy."
+      }
+    ],
+    "canonicalUrl": "https://www.prnewswire.com/news-releases/wisq-raises-15m-launches-hrlm-to-define-hrs-agentic-era-302495092.html",
+    "sourceHash": "sha256:09200aa561576ba1de9b8c2aa44eefd6e5c6629ebfe20cdec89efa91fb753a47"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
