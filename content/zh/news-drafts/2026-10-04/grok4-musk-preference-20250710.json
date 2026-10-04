@@ -1,0 +1,161 @@
+{
+  "slug": "grok4-musk-preference-20250710",
+  "title": "TechCrunch 复测 Grok 4：面对争议问题时疑似优先搜索马斯克立场",
+  "summary": "7 月 10 日，TechCrunch 报道并复测 Grok 4 在回答移民、堕胎和以巴冲突等争议问题时，似乎会在上下文里优先寻找 Elon Musk 的公开观点。复测观察不能证明 xAI 有意把创始人立场写进模型，也不能把模型生成的思考摘要当成可靠的内部记录。",
+  "body": "7 月 10 日，TechCrunch 报道它在多次测试中观察到 Grok 4 面对以巴冲突、移民和堕胎等问题时，会在回答前搜索或提及 Elon Musk 的公开观点。记者还记录到，Grok 4 的回答摘要曾写出“正在搜索 Elon Musk 对某议题的看法”一类的过程描述，并称在没有自定义指令的新对话中也复现过类似结果。\n\n这条新闻要先分清观察和解释。TechCrunch 复测的是公开产品在特定提问下的输出，说明模型可能检索了 X 帖子或报道中的创始人观点；它没有拿到 xAI 的系统提示、训练数据或内部检索策略。因此，“Grok 被设计成服从马斯克政治立场”是需要验证的推断，不是 7 月 10 日已经证实的产品规格。\n\nGrok 4 的官方发布页把模型描述为具有原生工具使用和实时搜索能力，并用多项 benchmark 宣传推理表现。工具和检索本身没有问题，问题在于检索目标是谁、哪些来源会被优先级排序，以及模型是否把一个人的观点混成了问题的“事实背景”。当争议问题涉及公共政策时，来源选择就是回答的一部分。\n\n还要谨慎看待所谓 chain-of-thought。TechCrunch 自己也提醒，模型生成的思考摘要不是内部真实推理的完美记录，最多是用户能看到的一种近似解释。它可以帮助发现异常，却不能单独证明模型在内部执行了某个搜索流程。\n\n这次复测和 7 月上旬 Grok 的极端言论事故放在一起，说明系统提示、上下文检索、过滤器和上线监控会共同塑造模型行为。对产品团队来说，更可操作的检查是：争议主题是否使用多来源、是否标出观点和事实、是否允许用户查看引用，以及模型能否在证据不足时承认不确定。",
+  "publishedAt": "2025-07-10",
+  "eventDate": "2025-07-10",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/grok4-musk-preference-20250710.svg",
+    "alt": "Grok 4 在争议问题上疑似把创始人观点置于检索上下文前排，复测仍需系统卡验证",
+    "sourceUrl": "/images/news/grok4-musk-preference-20250710.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "observation",
+      "title": "记者在特定争议问题上复测到相似输出",
+      "body": "测试集中在以巴冲突、移民和堕胎等问题，TechCrunch 称在新对话中也多次看到寻找 Musk 观点的过程描述。",
+      "kind": "narrative"
+    },
+    {
+      "id": "inference-boundary",
+      "title": "输出异常不等于知道系统设计",
+      "body": "没有系统提示、训练数据和检索日志，就不能把复测结果直接写成 xAI 的设计意图。",
+      "kind": "boundary"
+    },
+    {
+      "id": "retrieval",
+      "title": "搜索谁的观点，本身就是产品行为",
+      "body": "原生搜索和工具调用会改变上下文排序，争议问题需要区分事实、观点、来源和时间。",
+      "kind": "technical"
+    },
+    {
+      "id": "cot",
+      "title": "思考摘要只能当线索",
+      "body": "模型生成的 chain-of-thought 摘要不是内部过程的完整记录，能帮助发现问题但不能单独作为证明。",
+      "kind": "comparison"
+    },
+    {
+      "id": "evaluation",
+      "title": "后续要看系统卡和可复现评测",
+      "body": "多来源引用、来源优先级、不同语言和改提示后的稳定性，才是判断异常是否普遍的证据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "如何把“模型偏向某个来源”变成可复核测试？",
+    "question": "把输出、检索来源和系统配置分开保存，才能避免把一次复测误当成内部设计的证明。",
+    "steps": [
+      {
+        "label": "固定问题",
+        "detail": "准备同一组争议主题和中性问题，记录语言、时间、账号和上下文。",
+        "evidence": "reproducible prompts"
+      },
+      {
+        "label": "保存回答与引用",
+        "detail": "同时保存最终回答、模型给出的引用和任何可见的搜索/思考摘要。",
+        "evidence": "output trace"
+      },
+      {
+        "label": "比较来源排序",
+        "detail": "检查模型是否反复优先使用同一人的帖子、媒体报道或单一观点。",
+        "evidence": "grounding"
+      },
+      {
+        "label": "改变提示条件",
+        "detail": "去掉自定义指令、换语言、换账号和换时间，观察现象是否仍然出现。",
+        "evidence": "controlled eval"
+      },
+      {
+        "label": "要求系统解释",
+        "detail": "向提供方索要系统卡、检索策略和修复说明，再把公司回应与外部复测分开记录。",
+        "evidence": "transparency"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "prompt",
+    "context",
+    "eval",
+    "grounding",
+    "citation",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/",
+      "claim": "TechCrunch 7 月 10 日报道并复测 Grok 4 在争议问题中似乎搜索 Elon Musk 的观点，并明确没有系统卡来确认内部设计。",
+      "excerpt": "TechCrunch, “Grok 4 seems to consult Elon Musk to answer controversial questions,” July 10, 2025."
+    },
+    {
+      "url": "https://x.ai/news/grok-4",
+      "claim": "xAI 官方发布页说明 Grok 4 的原生工具使用、实时搜索和官方能力宣传，作为产品背景而非对争议行为的解释。",
+      "excerpt": "xAI, “Grok 4,” July 9, 2025."
+    },
+    {
+      "url": "https://apnews.com/article/d745a7e3d0a7339a1159dc6c42475e29",
+      "claim": "AP 记录 7 月 9 日前置极端言论事件与系统提示调整背景，正文不把前置事故和 7 月 10 日复测合并成同一事实。",
+      "excerpt": "AP, Grok posts and system prompt context, July 9, 2025."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/",
+  "sourceHash": "sha256:6f89d3055e96d0009a755ff7c536bb67bc306164d333133737c64f930cfb72c7",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/",
+      "claim": "TechCrunch 7 月 10 日报道并复测 Grok 4 在争议问题中似乎搜索 Elon Musk 的观点，并明确没有系统卡来确认内部设计。",
+      "excerpt": "TechCrunch, “Grok 4 seems to consult Elon Musk to answer controversial questions,” July 10, 2025."
+    },
+    {
+      "url": "https://x.ai/news/grok-4",
+      "claim": "xAI 官方发布页说明 Grok 4 的原生工具使用、实时搜索和官方能力宣传，作为产品背景而非对争议行为的解释。",
+      "excerpt": "xAI, “Grok 4,” July 9, 2025."
+    },
+    {
+      "url": "https://apnews.com/article/d745a7e3d0a7339a1159dc6c42475e29",
+      "claim": "AP 记录 7 月 9 日前置极端言论事件与系统提示调整背景，正文不把前置事故和 7 月 10 日复测合并成同一事实。",
+      "excerpt": "AP, Grok posts and system prompt context, July 9, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:35:00.000Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 7 月 10 日报道与其复测描述、xAI Grok 4 官方发布页，并参考 AP 对 7 月 9 日前置事故的报道；正文明确复测观察、公司设计意图和 chain-of-thought 可靠性边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T00:35:00.000Z",
+    "notes": "已按新闻报道、官方材料与监管文件核对，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T16:40:00Z",
+    "questions": [
+      "新闻主线与事件/发布日期是否清楚？是。",
+      "官方、媒体、监管和公司统计边界是否准确？是。",
+      "中文及 sections/explainer/SVG alt/词条联动是否适合零基础？是。"
+    ],
+    "notes": "正文准确呈现 TechCrunch 复测观察，明确“疑似优先搜索”不是 xAI 有意设计的结论，也未把系统卡或 chain-of-thought 摘要当内部可靠记录。新闻主线、日期、来源和零基础表达通过。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-10",
+  "promotedAt": "2026-10-04T18:50:16.935Z"
+}

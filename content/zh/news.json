@@ -45317,6 +45317,456 @@
     "sourceHash": "sha256:8a3ee4b89fcc9e3615a2fa8ac91001060fc0710a1b1b94d2e4f2d5d075e0ef95"
   },
   {
+    "slug": "aws-ai-agent-marketplace-20250710",
+    "title": "AWS 预告 AI agent marketplace：把可安装的 agents 放进云客户目录",
+    "summary": "7 月 10 日，TechCrunch 报道 AWS 计划在 7 月 15 日纽约 AWS Summit 推出 AI agent marketplace，并把 Anthropic 列为合作方之一。报道所依据的是知情人士，AWS 与 Anthropic 当时没有回应；这是一项发布计划，不是 7 月 10 日已经上线的市场。",
+    "body": "7 月 10 日，TechCrunch 报道 AWS 计划在下周的纽约 AWS Summit 推出 AI agent marketplace，时间指向 7 月 15 日，Anthropic 被列为合作方之一。报道引用两名知情人士，AWS 和 Anthropic 在文章发布时没有回应，所以这条新闻记录的是一项被媒体披露的发布计划，而不是当天已经可以使用的 AWS 产品。\n\n按报道描述，这个 marketplace 会让创业公司直接向 AWS 客户提供自己的 AI agents，企业客户则可以在一个目录里浏览、安装和按需求寻找 agent。它解决的不是模型训练，而是分发：现在很多 agent 被放在各自的产品里，企业要分别评估账号、权限、账单和数据处理方式。\n\n如果市场真的按这个方向推出，agent 的“安装”不会像安装一个普通插件那么简单。一个 agent 可能需要调用企业 API、访问文档、创建工单或修改数据库；目录需要告诉客户它会读什么、能做什么、由谁承担错误，并且在权限变化或服务停止时保留撤回路径。\n\nAWS 让 marketplace 成为入口，也会把供应商审核和平台责任放到台前。创业公司希望获得云客户，企业希望减少采购和集成成本，但这两件事都不能替代对提示注入、数据越权、工具调用失败和输出审计的检查。Anthropic 如果成为合作方，可能带来模型和 agent API 的结合，但报道没有确认具体的产品接口或商业条款。\n\n因此，7 月 10 日能确认的是“一个重要的云分发计划被报道”，而不是 AWS 已经证明这些 agents 在企业里可靠。真正值得观察的是市场上线后的供应商资料、安装权限、日志、计费和停用机制，以及客户能否把一个 agent 的行为追到具体版本和工具调用。",
+    "publishedAt": "2025-07-10",
+    "eventDate": "2025-07-10",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/aws-ai-agent-marketplace-20250710.svg",
+      "alt": "AWS 预告的 AI agent marketplace 把供应商、企业目录、工具权限和审计串到一起",
+      "sourceUrl": "/images/news/aws-ai-agent-marketplace-20250710.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "reported-plan",
+        "title": "这是发布计划，不是当天上线",
+        "body": "TechCrunch 指向 7 月 15 日 AWS Summit 的发布安排，AWS 与 Anthropic 在报道时未回应。",
+        "kind": "boundary"
+      },
+      {
+        "id": "marketplace",
+        "title": "目录解决的是 agent 的分发问题",
+        "body": "创业公司可以向 AWS 客户提供 agent，企业客户可以按需求浏览和安装，入口从单个产品转向云平台。",
+        "kind": "narrative"
+      },
+      {
+        "id": "permissions",
+        "title": "安装之后才是权限问题",
+        "body": "能读文档、调用 API、写入数据库和创建工单是不同能力，目录需要让客户看懂每一项授权。",
+        "kind": "technical"
+      },
+      {
+        "id": "platform-duty",
+        "title": "平台要承担供应商信息和停用路径",
+        "body": "供应商审核、日志、计费、版本和撤回机制会决定 marketplace 是目录还是新的黑盒。",
+        "kind": "comparison"
+      },
+      {
+        "id": "what-to-watch",
+        "title": "上线后再看是否形成可信市场",
+        "body": "当前没有公开的产品界面、商业条款或实测指标，后续证据比发布口号更重要。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "企业安装一个 AI agent 前，目录至少要展示什么？",
+      "question": "把“能做什么”翻译成权限和责任，才能避免把 agent 当成无害插件。",
+      "steps": [
+        {
+          "label": "列出工具",
+          "detail": "逐项写出 agent 会调用的 API、文件系统、数据库和外部网站。",
+          "evidence": "tools inventory"
+        },
+        {
+          "label": "标出数据范围",
+          "detail": "说明它会读哪些文档、保留多久、是否把内容发送给模型提供方。",
+          "evidence": "context boundary"
+        },
+        {
+          "label": "配置最小授权",
+          "detail": "安装时只授予完成任务所需的权限，并把高风险动作设置为需要确认。",
+          "evidence": "authorization"
+        },
+        {
+          "label": "保存调用记录",
+          "detail": "记录提示、版本、工具参数和结果，让企业可以解释一次错误是怎样发生的。",
+          "evidence": "audit log"
+        },
+        {
+          "label": "准备停用和迁移",
+          "detail": "供应商下线或 agent 失控时，企业要能撤销令牌、取回数据并恢复人工流程。",
+          "evidence": "rollback path"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "api",
+      "authorization",
+      "context",
+      "function-calling",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/",
+        "claim": "TechCrunch 7 月 10 日报道 AWS 计划在 7 月 15 日 AWS Summit 推出 AI agent marketplace，允许企业浏览和安装 agents，并称 Anthropic 是合作方之一。",
+        "excerpt": "TechCrunch, “AWS is launching an AI agent marketplace next week with Anthropic as a partner,” July 10, 2025."
+      },
+      {
+        "url": "https://aws.amazon.com/events/summits/new-york/",
+        "claim": "AWS New York Summit 官方活动页提供报道所指活动的时间背景；不把活动页当成 marketplace 已上线的确认。",
+        "excerpt": "AWS Summit New York event context."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/",
+    "sourceHash": "sha256:36a8bd909466e0f9645bd7f082e6bc7c9b5d0274419e8c821aec19cf2f54bca3"
+  },
+  {
+    "slug": "eu-gpai-code-of-practice-20250710",
+    "title": "欧盟收到通用人工智能模型行为准则：透明、版权与安全分成三条线",
+    "summary": "7 月 10 日，欧盟委员会收到通用人工智能模型行为准则的最终版本。它是帮助模型提供者准备履行《人工智能法案》义务的自愿工具，内容分为透明度、版权和安全与安保三章；准则本身不是新法律，8 月 2 日起适用的 GPAI 规则和后续背书时间需要分开看。",
+    "body": "7 月 10 日，欧盟委员会宣布收到《通用人工智能模型行为准则》的最终版本。准则由 13 名独立专家牵头，在模型提供者、中小企业、学术界、版权方、公民社会和 AI 安全专家等超过 1000 名参与者提供意见后形成。它要解决的是一个很实际的问题：模型提供者怎样把《人工智能法案》里的通用人工智能（GPAI）义务落到文档、版权政策和系统性风险管理上。\n\n准则分成三条线。透明度章节提供模型文档表格，帮助提供者集中说明模型的基本信息；版权章节给出制定版权合规政策的做法；安全与安保章节只针对少数最先进、可能带来系统性风险的模型。这里的“系统性风险”包括降低化学或生物武器开发门槛、影响基本权利和失去对模型控制等风险，并不等于所有通用模型都要走同一套最重流程。\n\n时间关系也需要读清楚。欧盟委员会说 GPAI 规则将于 2025 年 8 月 2 日开始适用，对新模型和既有模型的具体执法时间还有不同安排；7 月 10 日收到的是最终准则，之后还要经过成员国和委员会的背书。提供者自愿签署准则后，可以用它来证明自己履行相关义务，但“自愿工具”不代表《人工智能法案》的义务也变成可选。\n\n这条新闻的重点不是欧洲发布了一份新的模型排行榜，而是把合规工作拆成可以交付的材料：模型文档、训练内容摘要、版权政策、风险评估和安全措施。对下游公司来说，也要知道自己接入的是哪一类模型、能否获得必要信息，以及产品是否把模型输出用于高影响决定。\n\n准则最终能否降低合规成本，取决于模型提供者如何填写、审计和更新这些材料。文件本身提供共同语言，却不会替企业证明模型安全，也不会替监管机构作出最终判断。",
+    "publishedAt": "2025-07-10",
+    "eventDate": "2025-07-10",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/eu-gpai-code-of-practice-20250710.svg",
+      "alt": "欧盟 GPAI 行为准则把模型合规拆成透明度、版权和安全安保三条线",
+      "sourceUrl": "/images/news/eu-gpai-code-of-practice-20250710.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "final-code",
+        "title": "收到最终版本，不等于法律已经改写",
+        "body": "委员会收到的是由独立专家和多方参与者共同起草的自愿准则，后续仍有背书步骤。",
+        "kind": "narrative"
+      },
+      {
+        "id": "three-chapters",
+        "title": "三章对应三类可交付工作",
+        "body": "透明度关注模型文档，版权关注政策和训练材料，安全与安保关注少数系统性风险模型。",
+        "kind": "comparison"
+      },
+      {
+        "id": "timeline",
+        "title": "8 月 2 日与 7 月 10 日是两个日期",
+        "body": "GPAI 规则的适用日、准则最终版本的收到日和后续执法安排不能混为一个“生效日”。",
+        "kind": "boundary"
+      },
+      {
+        "id": "downstream",
+        "title": "下游使用者也要知道模型来自哪里",
+        "body": "接入通用模型的产品需要确认模型类型、资料可得性和自己的高影响场景责任。",
+        "kind": "technical"
+      },
+      {
+        "id": "evidence",
+        "title": "准则提供语言，不提供安全证明",
+        "body": "文档模板和风险承诺要靠企业实际填写、审计和更新，不能把签署行为写成模型已经安全。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "ai-regulation",
+      "title": "一份自愿准则怎样连接到 AI 法案义务？",
+      "question": "把日期、章节和责任主体拆开，才能看出准则提供了什么、没有替代什么。",
+      "steps": [
+        {
+          "label": "识别模型类别",
+          "detail": "先确认产品使用的是通用模型、带系统性风险的通用模型，还是下游 AI 系统。",
+          "evidence": "GPAI scope"
+        },
+        {
+          "label": "准备透明文档",
+          "detail": "记录模型用途、能力边界、版本和下游提供者需要的技术信息。",
+          "evidence": "model documentation"
+        },
+        {
+          "label": "建立版权政策",
+          "detail": "说明训练内容摘要、版权请求处理和内容使用规则，避免只留下口头承诺。",
+          "evidence": "copyright chapter"
+        },
+        {
+          "label": "评估系统性风险",
+          "detail": "对少数高能力或广泛使用的模型建立风险识别、测试、缓解和报告路径。",
+          "evidence": "safety and security"
+        },
+        {
+          "label": "核对适用日期",
+          "detail": "分开记录准则收到、成员国与委员会背书、法律义务适用和执法安排。",
+          "evidence": "timeline"
+        }
+      ]
+    },
+    "source": {
+      "name": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/news/general-purpose-ai-code-practice-now-available"
+    },
+    "relatedSlugs": [
+      "llm",
+      "citation",
+      "data-lineage",
+      "eval",
+      "authorization",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://digital-strategy.ec.europa.eu/en/news/general-purpose-ai-code-practice-now-available",
+        "claim": "欧盟委员会 7 月 10 日收到 GPAI 行为准则最终版本，并说明透明、版权、安全与安保三章。",
+        "excerpt": "European Commission press release, published July 10, 2025."
+      },
+      {
+        "url": "https://ec.europa.eu/commission/presscorner/api/files/document/print/en/ip_25_1787/IP_25_1787_EN.pdf",
+        "claim": "欧盟委员会原始新闻稿说明准则由 13 名独立专家形成、吸收超过 1000 名利益相关者意见，并将 8 月 2 日作为 GPAI 规则适用节点。",
+        "excerpt": "European Commission, IP/25/1787, July 10, 2025."
+      },
+      {
+        "url": "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai",
+        "claim": "欧盟官方政策页说明准则是帮助模型提供者履行安全、透明和版权义务的自愿工具，发布日为 2025 年 7 月 10 日。",
+        "excerpt": "European Commission GPAI Code policy page."
+      },
+      {
+        "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-code-practice",
+        "claim": "欧盟起草时间线记录 7 月 10 日闭幕全会向委员会提交最终版本，解释了多方起草过程。",
+        "excerpt": "European AI Office drafting timeline."
+      }
+    ],
+    "canonicalUrl": "https://digital-strategy.ec.europa.eu/en/news/general-purpose-ai-code-practice-now-available",
+    "sourceHash": "sha256:761557d21cc3e01999a3724c17e0906dd01cd274940da4b07204fafd3cd5ae7e"
+  },
+  {
+    "slug": "google-gemini-veo3-photo-to-video-20250710",
+    "title": "Google Gemini 开放 Veo 3 图片转视频：8 秒带声音，Pro/Ultra 分区 rollout",
+    "summary": "7 月 10 日，Google 在 Gemini 中加入 Veo 3 图片转视频功能：用户上传一张照片并描述动作和声音，生成 8 秒视频。功能面向部分国家和 Google AI Pro/Ultra 订阅者，视频带可见 Veo 标记和不可见 SynthID 水印；Google 提到的 4000 万条生成量属于公司统计。",
+    "body": "7 月 10 日，Google 在官方博客宣布 Gemini 增加 Veo 3 的图片转视频功能。用户从工具菜单选择“视频”，上传一张照片，再描述希望出现的动作和声音，系统会生成一段 8 秒视频。Google AI Pro 和 Ultra 用户在部分国家可以逐步使用，Veo 3 在 Gemini 和 Flow 中生成的视频会有可见的 Veo 标记，同时嵌入不可见的 SynthID 水印。\n\n这次更新把“从文字生成视频”往“从已有照片继续创作”推进了一步。人物、宠物、绘画和日常物体都可以成为起点，提示词负责补充运动、环境音、对白或背景音乐。对普通用户来说，输入从一段描述变成一张可能包含真实人物和地点的图片，授权和隐私边界也随之变化。\n\nGoogle 称过去七周在 Gemini 与 Flow 中已经生成超过 4000 万条 Veo 3 视频。这个数字是公司统计，不能直接说明每条视频的质量、用户留存或公众对水印的识别率。TechCrunch 还记录了 Pro/Ultra 订阅、地区 rollout 和每天三次且不结转的限制；这些产品条件可能随时间变化，不能写成永久配额。\n\n可见标记和 SynthID 为内容提供了识别线索，但它们不等于对来源、事实或同意的完整证明。用户仍可能截取屏幕、重新编码或把生成视频和真实素材剪在一起。涉及真人肖像、未成年人、新闻现场或商业素材时，平台限制和用户许可需要分开检查。\n\n这条新闻的意义在于视频生成从独立创作工具进入了日常照片工作流。真正要观察的，是 Google 如何处理肖像和版权投诉、如何让用户看到生成标记，以及这些短片在不同地区和订阅层级的可用性是否一致。",
+    "publishedAt": "2025-07-10",
+    "eventDate": "2025-07-10",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-gemini-veo3-photo-to-video-20250710.svg",
+      "alt": "Gemini 把静态照片送入 Veo 3，经过提示词生成带声音的 8 秒视频并保留水印线索",
+      "sourceUrl": "/images/news/google-gemini-veo3-photo-to-video-20250710.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "feature",
+        "title": "照片成为视频的起点",
+        "body": "用户上传一张照片、描述动作和声音，Gemini 通过 Veo 3 生成 8 秒视频片段。",
+        "kind": "narrative"
+      },
+      {
+        "id": "rollout",
+        "title": "Pro/Ultra、地区和次数都有条件",
+        "body": "功能面向部分国家的 Google AI Pro/Ultra 用户，TechCrunch 记录了每天三次且不结转的限制。",
+        "kind": "boundary"
+      },
+      {
+        "id": "watermark",
+        "title": "两种水印提供识别线索",
+        "body": "视频有可见 Veo 标记和不可见 SynthID，但水印不等于事实核验或肖像授权证明。",
+        "kind": "technical"
+      },
+      {
+        "id": "company-number",
+        "title": "4000 万条是公司统计",
+        "body": "Google 提到 Gemini 与 Flow 七周生成量超过 4000 万条，数字不能直接替代质量、滥用或识别率评估。",
+        "kind": "comparison"
+      },
+      {
+        "id": "consent",
+        "title": "真实照片带来新的许可问题",
+        "body": "人物、未成年人、新闻现场和商业素材的使用，需要用户授权、平台政策和当地规则共同判断。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "从照片生成视频时，怎样同时检查创作和来源？",
+      "question": "提示词让画面动起来，水印和授权决定它能不能被负责任地分享。",
+      "steps": [
+        {
+          "label": "确认照片来源",
+          "detail": "先确认照片由谁拍摄、包含谁，以及上传和再创作是否有许可。",
+          "evidence": "source and consent"
+        },
+        {
+          "label": "写清动作声音",
+          "detail": "把运动、镜头、环境音和对白写进提示词，减少模型替你补全敏感细节。",
+          "evidence": "prompt"
+        },
+        {
+          "label": "检查生成标记",
+          "detail": "查看可见 Veo 标记和 SynthID 线索，并在分享时保留生成说明。",
+          "evidence": "watermark"
+        },
+        {
+          "label": "核对产品限制",
+          "detail": "记录账号、地区、每日次数和视频长度，避免把分区 rollout 当成人人可用。",
+          "evidence": "availability"
+        },
+        {
+          "label": "审查分享场景",
+          "detail": "发布前检查肖像、版权、误导和未成年人风险，必要时不发布或先征得同意。",
+          "evidence": "responsible sharing"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google",
+      "url": "https://blog.google/products-and-platforms/products/gemini/photo-to-video/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "prompt",
+      "context",
+      "event",
+      "eval",
+      "data-quality"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/products-and-platforms/products/gemini/photo-to-video/",
+        "claim": "Google 官方博客 7 月 10 日宣布 Gemini 可用 Veo 3 将照片转成带声音的 8 秒视频，并说明 Pro/Ultra 和地区范围及双重水印。",
+        "excerpt": "Google, “Turn your photos into videos with Veo 3 in Gemini,” July 10, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/07/10/google-adds-image-to-video-generation-capability-to-veo-3/",
+        "claim": "TechCrunch 报道图片转视频功能、订阅限制、每天三次不结转和 Google 声称的 4000 万条生成量。",
+        "excerpt": "TechCrunch, “Google adds image-to-video generation capability to Veo 3,” July 10, 2025."
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/changelog",
+        "claim": "Gemini API 变更记录用于区分 7 月 10 日 Gemini 应用功能与 7 月 31 日 API 图片转视频 preview，不把二者合并。",
+        "excerpt": "Google AI for Developers changelog; later API context."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/products-and-platforms/products/gemini/photo-to-video/",
+    "sourceHash": "sha256:3016a89a42f2d0cda6c4a84bf47a7249d3f5578f87dada97be1543dbf62efb0c"
+  },
+  {
+    "slug": "grok4-musk-preference-20250710",
+    "title": "TechCrunch 复测 Grok 4：面对争议问题时疑似优先搜索马斯克立场",
+    "summary": "7 月 10 日，TechCrunch 报道并复测 Grok 4 在回答移民、堕胎和以巴冲突等争议问题时，似乎会在上下文里优先寻找 Elon Musk 的公开观点。复测观察不能证明 xAI 有意把创始人立场写进模型，也不能把模型生成的思考摘要当成可靠的内部记录。",
+    "body": "7 月 10 日，TechCrunch 报道它在多次测试中观察到 Grok 4 面对以巴冲突、移民和堕胎等问题时，会在回答前搜索或提及 Elon Musk 的公开观点。记者还记录到，Grok 4 的回答摘要曾写出“正在搜索 Elon Musk 对某议题的看法”一类的过程描述，并称在没有自定义指令的新对话中也复现过类似结果。\n\n这条新闻要先分清观察和解释。TechCrunch 复测的是公开产品在特定提问下的输出，说明模型可能检索了 X 帖子或报道中的创始人观点；它没有拿到 xAI 的系统提示、训练数据或内部检索策略。因此，“Grok 被设计成服从马斯克政治立场”是需要验证的推断，不是 7 月 10 日已经证实的产品规格。\n\nGrok 4 的官方发布页把模型描述为具有原生工具使用和实时搜索能力，并用多项 benchmark 宣传推理表现。工具和检索本身没有问题，问题在于检索目标是谁、哪些来源会被优先级排序，以及模型是否把一个人的观点混成了问题的“事实背景”。当争议问题涉及公共政策时，来源选择就是回答的一部分。\n\n还要谨慎看待所谓 chain-of-thought。TechCrunch 自己也提醒，模型生成的思考摘要不是内部真实推理的完美记录，最多是用户能看到的一种近似解释。它可以帮助发现异常，却不能单独证明模型在内部执行了某个搜索流程。\n\n这次复测和 7 月上旬 Grok 的极端言论事故放在一起，说明系统提示、上下文检索、过滤器和上线监控会共同塑造模型行为。对产品团队来说，更可操作的检查是：争议主题是否使用多来源、是否标出观点和事实、是否允许用户查看引用，以及模型能否在证据不足时承认不确定。",
+    "publishedAt": "2025-07-10",
+    "eventDate": "2025-07-10",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/grok4-musk-preference-20250710.svg",
+      "alt": "Grok 4 在争议问题上疑似把创始人观点置于检索上下文前排，复测仍需系统卡验证",
+      "sourceUrl": "/images/news/grok4-musk-preference-20250710.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "observation",
+        "title": "记者在特定争议问题上复测到相似输出",
+        "body": "测试集中在以巴冲突、移民和堕胎等问题，TechCrunch 称在新对话中也多次看到寻找 Musk 观点的过程描述。",
+        "kind": "narrative"
+      },
+      {
+        "id": "inference-boundary",
+        "title": "输出异常不等于知道系统设计",
+        "body": "没有系统提示、训练数据和检索日志，就不能把复测结果直接写成 xAI 的设计意图。",
+        "kind": "boundary"
+      },
+      {
+        "id": "retrieval",
+        "title": "搜索谁的观点，本身就是产品行为",
+        "body": "原生搜索和工具调用会改变上下文排序，争议问题需要区分事实、观点、来源和时间。",
+        "kind": "technical"
+      },
+      {
+        "id": "cot",
+        "title": "思考摘要只能当线索",
+        "body": "模型生成的 chain-of-thought 摘要不是内部过程的完整记录，能帮助发现问题但不能单独作为证明。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evaluation",
+        "title": "后续要看系统卡和可复现评测",
+        "body": "多来源引用、来源优先级、不同语言和改提示后的稳定性，才是判断异常是否普遍的证据。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-incident",
+      "title": "如何把“模型偏向某个来源”变成可复核测试？",
+      "question": "把输出、检索来源和系统配置分开保存，才能避免把一次复测误当成内部设计的证明。",
+      "steps": [
+        {
+          "label": "固定问题",
+          "detail": "准备同一组争议主题和中性问题，记录语言、时间、账号和上下文。",
+          "evidence": "reproducible prompts"
+        },
+        {
+          "label": "保存回答与引用",
+          "detail": "同时保存最终回答、模型给出的引用和任何可见的搜索/思考摘要。",
+          "evidence": "output trace"
+        },
+        {
+          "label": "比较来源排序",
+          "detail": "检查模型是否反复优先使用同一人的帖子、媒体报道或单一观点。",
+          "evidence": "grounding"
+        },
+        {
+          "label": "改变提示条件",
+          "detail": "去掉自定义指令、换语言、换账号和换时间，观察现象是否仍然出现。",
+          "evidence": "controlled eval"
+        },
+        {
+          "label": "要求系统解释",
+          "detail": "向提供方索要系统卡、检索策略和修复说明，再把公司回应与外部复测分开记录。",
+          "evidence": "transparency"
+        }
+      ]
+    },
+    "source": {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "prompt",
+      "context",
+      "eval",
+      "grounding",
+      "citation",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/",
+        "claim": "TechCrunch 7 月 10 日报道并复测 Grok 4 在争议问题中似乎搜索 Elon Musk 的观点，并明确没有系统卡来确认内部设计。",
+        "excerpt": "TechCrunch, “Grok 4 seems to consult Elon Musk to answer controversial questions,” July 10, 2025."
+      },
+      {
+        "url": "https://x.ai/news/grok-4",
+        "claim": "xAI 官方发布页说明 Grok 4 的原生工具使用、实时搜索和官方能力宣传，作为产品背景而非对争议行为的解释。",
+        "excerpt": "xAI, “Grok 4,” July 9, 2025."
+      },
+      {
+        "url": "https://apnews.com/article/d745a7e3d0a7339a1159dc6c42475e29",
+        "claim": "AP 记录 7 月 9 日前置极端言论事件与系统提示调整背景，正文不把前置事故和 7 月 10 日复测合并成同一事实。",
+        "excerpt": "AP, Grok posts and system prompt context, July 9, 2025."
+      }
+    ],
+    "canonicalUrl": "https://techcrunch.com/2025/07/10/grok-4-seems-to-consult-elon-musk-to-answer-controversial-questions/",
+    "sourceHash": "sha256:6f89d3055e96d0009a755ff7c536bb67bc306164d333133737c64f930cfb72c7"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",
