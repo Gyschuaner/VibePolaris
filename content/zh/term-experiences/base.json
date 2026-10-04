@@ -168,6 +168,334 @@
     ]
   },
   {
+    "slug": "agent-harness",
+    "lead": "模型会提出下一步，但谁把请求交给工具、把结果带回来，并在失败时决定停下？",
+    "definition": "Harness 是围绕模型组织一次任务运行的程序与配置：它组装本轮输入，检查并调度工具，保存回执，再按检查结果决定继续、等待或停止。",
+    "boundary": "Harness 能把模型接到真实工具和验收环境，却不能替模型保证判断正确；工具请求、工具执行、检查通过和任务完成是不同事实。",
+    "sceneKind": "loop",
+    "sceneTitle": "从一句排错请求到可核对的完成结果",
+    "actionLabel": "推进运行一步",
+    "actors": [
+      {
+        "id": "task",
+        "label": "修复任务",
+        "detail": "服务启动失败，需通过 /health 检查",
+        "icon": "message",
+        "group": "目标"
+      },
+      {
+        "id": "model",
+        "label": "模型",
+        "detail": "提出下一步请求",
+        "icon": "brain",
+        "group": "判断"
+      },
+      {
+        "id": "harness",
+        "label": "Harness",
+        "detail": "组装输入、校验权限、保存状态",
+        "icon": "gear",
+        "group": "组织"
+      },
+      {
+        "id": "tool",
+        "label": "工具",
+        "detail": "读取、修改或运行检查",
+        "icon": "gear",
+        "group": "执行"
+      },
+      {
+        "id": "feedback",
+        "label": "工具回执",
+        "detail": "等待实际结果",
+        "icon": "file",
+        "group": "证据"
+      },
+      {
+        "id": "gate",
+        "label": "验收闸门",
+        "detail": "等待检查结果",
+        "icon": "shield",
+        "group": "停止"
+      }
+    ],
+    "edges": [
+      {
+        "id": "task-model",
+        "from": "task",
+        "to": "model",
+        "label": "说明目标"
+      },
+      {
+        "id": "model-harness",
+        "from": "model",
+        "to": "harness",
+        "label": "提出请求"
+      },
+      {
+        "id": "harness-tool",
+        "from": "harness",
+        "to": "tool",
+        "label": "校验后执行"
+      },
+      {
+        "id": "tool-feedback",
+        "from": "tool",
+        "to": "feedback",
+        "label": "返回回执"
+      },
+      {
+        "id": "feedback-model",
+        "from": "feedback",
+        "to": "model",
+        "label": "带回下一轮"
+      },
+      {
+        "id": "feedback-gate",
+        "from": "feedback",
+        "to": "gate",
+        "label": "检查完成"
+      }
+    ],
+    "frames": [
+      {
+        "label": "只有模型建议",
+        "note": "没有读取工具和回执时，模型只能告诉你可能先查日志，不能声称已经读到文件。",
+        "activeIds": [
+          "task",
+          "model"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "harness",
+          "tool",
+          "feedback",
+          "gate"
+        ],
+        "values": {
+          "model": "只能给建议"
+        },
+        "activeEdgeIds": [
+          "task-model"
+        ]
+      },
+      {
+        "label": "装入任务与工具",
+        "note": "Harness 把目标、可用工具和权限规则组成这次输入；文件内容仍未被读取。",
+        "activeIds": [
+          "task",
+          "model",
+          "harness"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "tool",
+          "feedback",
+          "gate"
+        ],
+        "values": {
+          "harness": "输入与权限已准备"
+        },
+        "activeEdgeIds": [
+          "model-harness"
+        ]
+      },
+      {
+        "label": "提出并校验请求",
+        "note": "模型请求读取 server.log，Harness 先核对参数和访问范围；请求文字本身不等于执行。",
+        "activeIds": [
+          "model",
+          "harness",
+          "tool"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "feedback",
+          "gate"
+        ],
+        "values": {
+          "tool": "read_file(server.log)"
+        },
+        "activeEdgeIds": [
+          "model-harness",
+          "harness-tool"
+        ]
+      },
+      {
+        "label": "执行并带回回执",
+        "note": "工具真正打开文件，把成功、缺失或拒绝的结果交回 Harness；没有回执就不能继续编造证据。",
+        "activeIds": [
+          "tool",
+          "feedback",
+          "harness"
+        ],
+        "doneIds": [
+          "task",
+          "model"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "feedback": "实际结果已返回"
+        },
+        "activeEdgeIds": [
+          "tool-feedback",
+          "feedback-model"
+        ]
+      },
+      {
+        "label": "反馈驱动修复",
+        "note": "Harness 把回执放进下一轮，模型据此请求修改并运行检查；失败结果仍保留，不能被改写成成功。",
+        "activeIds": [
+          "model",
+          "harness",
+          "tool",
+          "feedback"
+        ],
+        "doneIds": [
+          "task"
+        ],
+        "mutedIds": [
+          "gate"
+        ],
+        "values": {
+          "model": "根据错误调整动作"
+        },
+        "activeEdgeIds": [
+          "feedback-model",
+          "harness-tool"
+        ]
+      },
+      {
+        "label": "通过并停止",
+        "note": "/health 返回 200 后验收闸门打开，Harness 保存轨迹并停止；达到轮数上限或缺少权限时也应停下但不报告完成。",
+        "activeIds": [
+          "feedback",
+          "gate",
+          "harness"
+        ],
+        "doneIds": [
+          "task",
+          "model",
+          "tool"
+        ],
+        "mutedIds": [],
+        "values": {
+          "gate": "检查通过 · 任务完成"
+        },
+        "activeEdgeIds": [
+          "feedback-gate"
+        ]
+      }
+    ],
+    "insight": "Harness 把模型的判断、工具的实际执行、回执和停止条件连成一条可追踪的运行链。",
+    "quiz": {
+      "question": "模型回复“我已经读过日志”时，哪项证据才能证明这件事发生？",
+      "options": [
+        {
+          "label": "Harness 记录了对应工具调用及返回内容",
+          "correct": true
+        },
+        {
+          "label": "回复里出现了 read_file 这个词",
+          "correct": false
+        },
+        {
+          "label": "模型使用了更肯定的语气",
+          "correct": false
+        }
+      ],
+      "success": "要把模型的说法和工具的实际回执分开核对。",
+      "retry": "工具名或肯定语气都不能替代执行记录与返回结果。"
+    },
+    "prompt": {
+      "title": "为一次智能体运行画出可核对边界",
+      "text": "请把下面任务拆成模型输入、可用工具、权限检查、工具回执、验收条件和停止分支。分别标出哪些是已发生事实，哪些只是模型提出的下一步。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "工作流、智能体循环与停止边界"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/agent-framework/concepts/harness",
+        "label": "Microsoft Learn · Agent Harness",
+        "note": "Harness 的状态、工具和运行组织"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "label": "Anthropic Claude Docs · Tool use",
+        "note": "工具请求、执行与结果回传"
+      },
+      {
+        "url": "https://modelcontextprotocol.io/docs/learn/architecture",
+        "label": "Model Context Protocol · Architecture",
+        "note": "Host、Client、Server 的能力接入边界"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+        "label": "Anthropic · Effective harnesses for long-running agents",
+        "note": "长任务进度文件、反馈与验收"
+      },
+      {
+        "url": "https://agentskills.io/home",
+        "label": "Agent Skills · Overview",
+        "note": "任务说明与运行资源的边界"
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+        "label": "Anthropic Claude Docs · Context windows",
+        "note": "输入、输出与上下文容量"
+      },
+      {
+        "url": "https://www.etymonline.com/word/harness",
+        "label": "Etymonline · harness",
+        "note": "Harness 一词的连接与约束含义"
+      },
+      {
+        "url": "https://man7.org/linux/man-pages/man1/df.1.html",
+        "label": "GNU Coreutils · df(1)",
+        "note": "检查工具返回的系统事实"
+      },
+      {
+        "url": "https://man7.org/linux/man-pages/man1/du.1.html",
+        "label": "GNU Coreutils · du(1)",
+        "note": "根据上一轮回执继续查找"
+      },
+      {
+        "url": "https://www.langchain.com/blog/agent-frameworks-runtimes-and-harnesses-oh-my",
+        "label": "LangChain · Agent frameworks, runtimes, and harnesses",
+        "note": "框架、运行时与 Harness 的边界"
+      },
+      {
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "label": "Anthropic · Effective context engineering",
+        "note": "选择、压缩和保存运行上下文"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/running_agents/",
+        "label": "OpenAI Agents SDK · Running agents",
+        "note": "运行步骤、工具和结果处理"
+      },
+      {
+        "url": "https://huyenchip.com/2025/01/07/agents.html",
+        "label": "Chip Huyen · Agents",
+        "note": "规划、工具执行与失败定位"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes",
+        "label": "IETF · RFC 9110 status codes",
+        "note": "健康检查成功与失败状态的语义"
+      }
+    ]
+  },
+  {
     "slug": "responsive",
     "lead": "三栏卡片放进 390px 宽的手机视口时，应该把字缩成 10px，还是让卡片换行？",
     "definition": "响应式布局让元素根据它所在容器的可用空间重排。流式布局、Grid、Flexbox、媒体查询和容器查询可以共同决定列数、间距与局部尺寸；内容开始拥挤时切换规则的位置叫断点。",
