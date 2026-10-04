@@ -19,7 +19,7 @@ export function InterpreterTermPage() {
     </ArticleSection>
     <ArticleSection id="interpreter-process" title="把一次执行拆成指针和状态">
       <p id="interpreter-execution" className="vp-citation-target">执行上下文会保存当前代码运行所需的环境记录、控制位置和其他状态。ECMAScript 规范把执行上下文和环境记录分开描述；这帮助我们理解：指针指向下一步不等于变量已经更新，变量表和控制台要等相应指令真正执行后才变化。<Cite id="interpreter-execution" sources={interpreterSources}/></p>
-      <p>下面的固定程序只有三条指令。先看指针在哪里，再单步推进：第一步写入 `x = 1`，第二步读旧值并写回 `x = 3`，第三步把当前值打印出来。切换到错误程序后，第一步已经发生的赋值会保留；第二步找不到 `missing` 时，错误出现在执行到它的时刻。</p>
+      <p>拿一个小得刚好能看清的程序试试：先把 `x` 设成 1，再读出它加 2，最后打印。单步时你会看到指针先停在赋值上，变量表随后出现 `x = 1`，第二步才把它改成 3。切到错误场景，第二条指令读取不存在的 `missing`；此时第一步已经写进去的 `x = 1` 会留在变量表里，错误停在真正执行到它的那一刻。</p>
       <InterpreterLesson />
       <p id="interpreter-bytecode" className="vp-citation-target">Python 的 `dis` 工具可以把代码对应的字节码指令展示出来，便于观察指令而不是把源码行号当作执行位置。具体指令集属于实现细节，演示里的三步只用来说明“指令—状态—输出”的关系，不声称复刻某一种语言的完整虚拟机。<Cite id="interpreter-bytecode" sources={interpreterSources}/></p>
     </ArticleSection>
