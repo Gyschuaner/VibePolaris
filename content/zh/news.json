@@ -53249,6 +53249,843 @@
     "sourceHash": "sha256:254d750ce046795f77ee18c9010a27640f3a9a365d43fb3a82e69ef49edd49c5"
   },
   {
+    "slug": "apollo-graphql-ai-ready-mcp-20250624",
+    "title": "Apollo GraphOS 强化 MCP Server：Agent 的工具层开始谈认证、遥测和批量调用",
+    "summary": "6 月 24 日，Apollo GraphQL 宣布 GraphOS 平台更新，重点包括支持 Streamable HTTP 的 MCP Server、工具定义 Collections、容器部署、遥测与认证，以及 REST Connector 批量调用和新的订阅计划。它解决的是 Agent 如何接入 API 的工程问题，不代表接入后每个工具调用都天然安全。",
+    "body": "6 月 24 日，Apollo GraphQL 宣布 GraphOS 平台面向 AI 应用的一组更新。新闻标题里最容易被忽略的部分，是它把 MCP Server、GraphQL 的 schema 和传统 REST API 编排放到一起：模型要想读取数据、修改系统或采取行动，背后必须有一层能定义工具、排好调用顺序并控制权限的 API 基础设施。\n\n这次更新的 MCP Server 支持 Streamable HTTP、增强工具定义、Collections，以及容器部署、遥测和高级认证。对 Agent 开发者来说，区别在于工具不再只是一个临时脚本，而是有连接方式、身份校验和运行记录。Apollo 把这些能力称为 production-ready，但这是公司的产品定位，不是对任何部署的安全认证。\n\nApollo 同时给 REST Connector 增加批量端点支持。过去一个 GraphQL 查询可能要对 REST 服务发出多次请求，批量能力可以合并相关调用，减少网络往返。它不属于模型能力，却会直接影响 Agent 的延迟和成本；更快的 API 编排也意味着一次错误计划可能更快触发更多后端请求。\n\nGraphQL 的 schema-driven 方式适合描述数据和操作边界，MCP 则提供模型调用工具的协议入口。二者拼起来，可以让 Agent 看见结构化工具，而不是在网页上盲目点击。但 schema 只能说明“这个工具接受什么参数”，还要由应用层决定谁能调用、能改什么、哪些操作必须人工确认。\n\nApollo 还公布 Developer 和 Standard 两种按用量计费的订阅计划，目标是降低团队试用 GraphOS、Connectors 和 MCP Server 的门槛。企业在使用时需要把用量、遥测和身份系统一起评估：如果工具调用会修改订单、账户或生产配置，日志需要能回答谁在什么时候让 Agent 做了什么。\n\n这条新闻的价值，在于它把 Agent 的难题从“模型会不会推理”拉回工程现场：工具发现、API 编排、认证、批量请求和审计都要被设计。MCP 让连接更顺滑，也会让错误的工具暴露更容易扩散；真正成熟的接入方案应该先从只读、低风险工具开始，再逐步开放写入权限。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/apollo-graphql-ai-ready-mcp-20250624.svg",
+      "alt": "Apollo GraphOS 把模型、MCP 工具、GraphQL schema、REST 批量调用和认证遥测接成 Agent 工具层。",
+      "sourceUrl": "/images/news/apollo-graphql-ai-ready-mcp-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "announcement",
+        "title": "Apollo 更新的是 Agent 的 API 基础设施",
+        "body": "GraphOS 把 MCP Server、GraphQL 和 REST Connector 放在一起，解决模型接入数据与操作系统的编排问题。",
+        "kind": "narrative"
+      },
+      {
+        "id": "mcp",
+        "title": "MCP Server 多了传输、工具和部署细节",
+        "body": "Streamable HTTP、Collections、容器部署、遥测和认证让工具更容易进入团队系统。",
+        "kind": "technical"
+      },
+      {
+        "id": "batch",
+        "title": "批量调用影响延迟和成本",
+        "body": "REST Connector 的 batch endpoint 减少网络往返，但也可能让错误计划一次触发更多后端请求。",
+        "kind": "comparison"
+      },
+      {
+        "id": "boundary",
+        "title": "Schema 不是权限策略",
+        "body": "schema 描述参数和操作形状，身份、授权、写入范围和人工确认仍需要应用层设计。",
+        "kind": "boundary"
+      },
+      {
+        "id": "plans",
+        "title": "新计划降低试用门槛",
+        "body": "Developer 和 Standard 计划按用量计费，企业需要同时评估调用量、身份系统和遥测记录。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "先从只读工具开始",
+        "body": "MCP 的连接能力越强，错误暴露越容易扩散；成熟路径应先限定低风险读操作和回滚方案。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "Agent 调一个 API 工具，背后要经过哪些关口？",
+      "question": "把发现工具、校验身份、编排请求和记录结果拆开，理解 MCP 与安全之间的距离。",
+      "steps": [
+        {
+          "label": "发现工具",
+          "detail": "模型通过 MCP 看到可用工具、参数和返回结构。",
+          "evidence": "Apollo MCP Server 更新"
+        },
+        {
+          "label": "检查身份",
+          "detail": "认证系统确认当前用户、Agent 和服务账号的权限。",
+          "evidence": "容器部署、遥测与高级认证说明"
+        },
+        {
+          "label": "编排请求",
+          "detail": "GraphQL schema 或 REST Connector 决定调用顺序、批量方式和数据形状。",
+          "evidence": "Apollo GraphOS 平台说明"
+        },
+        {
+          "label": "执行动作",
+          "detail": "先限定只读或低风险操作，写入动作需要明确的工具范围和批准。",
+          "evidence": "Agent 工具安全边界"
+        },
+        {
+          "label": "留下记录",
+          "detail": "遥测与日志记录谁发起调用、传了什么参数、改动了哪些资源。",
+          "evidence": "Apollo telemetry 能力说明"
+        }
+      ]
+    },
+    "source": {
+      "name": "Apollo GraphQL",
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "mcp",
+      "context",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "rubrik-predibase-agentic-ai-20250625",
+      "google-gemini-cli-open-source-20250625"
+    ],
+    "sources": [
+      {
+        "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+        "claim": "Apollo GraphQL 于 2025 年 6 月 24 日宣布 GraphOS 面向 AI readiness 的 MCP Server、Connectors 和订阅计划更新。",
+        "excerpt": "Apollo GraphQL, “Apollo GraphQL Advances AI-Ready API Orchestration Platform with Enhanced MCP Server, Performance Upgrades, and Subscription Plans”, June 24, 2025."
+      },
+      {
+        "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+        "claim": "官方列出 Streamable HTTP、Collections、容器部署、遥测、高级认证以及 REST Connector batch endpoint 支持。",
+        "excerpt": "Apollo release notes list Streamable HTTP, enhanced tool definitions, container deployment, telemetry, authentication and batch support."
+      },
+      {
+        "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+        "claim": "Apollo 将 Developer 和 Standard 计划描述为按用量计费的 GraphOS 入口，并强调平台可用于 AI-powered applications；“production-ready”保留为公司定位。",
+        "excerpt": "Apollo’s new Developer and Standard plans are usage-based; the platform positioning is attributed to Apollo."
+      }
+    ],
+    "canonicalUrl": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+    "sourceHash": "sha256:302180f01f45b88aa44a1f742e8cd0df38687bdadb365417a9c8f1122aa0f83b"
+  },
+  {
+    "slug": "elevenlabs-mobile-app-20250624",
+    "title": "ElevenLabs 推出移动 App：语音生成从浏览器走进创作现场",
+    "summary": "6 月 24 日，ElevenLabs 发布 iOS 和 Android App，把文本转语音、Eleven v3 alpha、音色与预设同步、音频导出带到手机。它是产品分发和创作流程的扩展，不是 6 月 24 日新发布一个模型；声音使用仍需要授权、复核和对生成内容的人工把关。",
+    "body": "6 月 24 日，ElevenLabs 宣布移动 App 正式上线，iOS 和 Android 都能下载。过去想用它做旁白，通常要在浏览器里打开工作台；现在可以在手机上输入文本、选择音色、生成语音，再把音频直接交给 CapCut、InShot 或 Instagram 等创作工具。\n\nApp 的引擎包括 6 月 3 日已经发布的 Eleven v3 alpha。v3 支持情绪、语气、节奏、多说话人和表达提示，移动端的变化主要是把这些能力放进更短的创作路径。把“模型发布”和“App 上线”分开，才能看清这条新闻到底新增了什么：新增的是入口、同步和导出，而不是一个当天才出现的语音模型。\n\n官方列出的使用方式很具体：用户可以沿用网页版的音色和项目，老账号直接登录，每月有 10,000 个字符的免费额度，并按账户计划使用积分。额度与计划是产品规则，不代表每种语言、每种音色或每段长文本都有同样的速度和自然度。\n\n移动端让语音生成更容易进入真实场景。创作者可以在拍摄现场录入脚本，教育者可以快速做练习材料，市场人员可以试几种旁白；但手机上的“随手生成”也更容易跳过试听、事实检查和版权确认。语音逼真不等于这段话已经得到授权，能模仿某个声音也不等于可以把它用于商业传播。\n\nElevenLabs 把重点放在创作便利上，没有把 App 描述成自动发布工具。用户仍要检查发音、数字、专有名词和语气是否合适；涉及真人声音时，还要确认录音者同意了什么用途、地区和期限。平台提供的音色选择不替用户承担这些责任。\n\n这次上线的新闻价值，在于生成式语音开始像相机滤镜一样被放进移动工作流：输入、试听、导出和分享之间的距离更短。下一步要看的，是移动端如何处理声音授权、生成标识、私密项目和跨设备同步，以及这些便利会不会让未经许可的仿声更容易被传播。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/elevenlabs-mobile-app-20250624.svg",
+      "alt": "ElevenLabs 移动 App 将文本、音色、语气和导出串成一条语音创作流程，并标出授权复核。",
+      "sourceUrl": "/images/news/elevenlabs-mobile-app-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "6 月 24 日新增的是移动入口",
+        "body": "ElevenLabs App 同时登陆 iOS 和 Android，把核心文本转语音能力从网页带到手机。",
+        "kind": "narrative"
+      },
+      {
+        "id": "engine",
+        "title": "v3 alpha 是引擎，不是当天新模型",
+        "body": "App 使用此前发布的 Eleven v3 alpha，支持情绪、语气、节奏和多说话人；日期不能混成一次模型发布。",
+        "kind": "technical"
+      },
+      {
+        "id": "workflow",
+        "title": "从生成到导出少了几步",
+        "body": "音色、预设和项目可以与网页同步，生成的音频可以直接进入常见短视频工具。",
+        "kind": "comparison"
+      },
+      {
+        "id": "limits",
+        "title": "免费字符数不是质量保证",
+        "body": "官方写明每月 10,000 个免费字符和计划积分；延迟、语言表现和发音仍要逐段试听。",
+        "kind": "boundary"
+      },
+      {
+        "id": "consent",
+        "title": "声音像工具，也像身份",
+        "body": "声音授权、用途、期限和商业传播需要人工确认，逼真度不能替代许可。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "移动端的下一关是可追溯",
+        "body": "要观察平台如何处理生成标识、私密项目、跨设备同步与未经授权的仿声。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "一段手机旁白怎样从文字变成可用音频？",
+      "question": "把模型生成和创作责任拆开，看到 App 缩短的是流程，不是审核。",
+      "steps": [
+        {
+          "label": "输入文字",
+          "detail": "把脚本或短句放进 App，先检查数字、专名和事实。",
+          "evidence": "ElevenLabs App 官方说明"
+        },
+        {
+          "label": "选择声音",
+          "detail": "选择预设或已同步的音色，确定是否有权使用这个声音。",
+          "evidence": "官方音色与账户同步说明"
+        },
+        {
+          "label": "控制表达",
+          "detail": "用情绪、语气和节奏提示调整 Eleven v3 的表达方式。",
+          "evidence": "Eleven v3 alpha 能力说明"
+        },
+        {
+          "label": "试听导出",
+          "detail": "逐段听发音、停顿和语义，再导出到剪辑或社交工具。",
+          "evidence": "官方导出能力说明"
+        },
+        {
+          "label": "确认授权",
+          "detail": "发布前确认声音、脚本和商业用途的许可与标识要求。",
+          "evidence": "创作者使用边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "ElevenLabs",
+      "url": "https://elevenlabs.io/zh/blog/introducing-the-elevenlabs-app"
+    },
+    "relatedSlugs": [
+      "llm",
+      "tools",
+      "context",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "suno-wavtool-ai-music-editing-20250626",
+      "google-workspace-veo3-gemini-connections-20250625"
+    ],
+    "sources": [
+      {
+        "url": "https://elevenlabs.io/zh/blog/introducing-the-elevenlabs-app",
+        "claim": "ElevenLabs 于 2025 年 6 月 24 日发布 iOS 和 Android App，支持 Eleven v3 alpha、音色同步和音频导出。",
+        "excerpt": "ElevenLabs, “ElevenLabs App 正式发布”, June 24, 2025."
+      },
+      {
+        "url": "https://elevenlabs.io/zh/blog/introducing-the-elevenlabs-app",
+        "claim": "官方说明每月 10,000 个免费字符、账户计划与项目同步，以及 CapCut、InShot、Instagram 导出路径。",
+        "excerpt": "The app offers 10,000 free characters per month, account sync and export to CapCut, InShot or Instagram."
+      },
+      {
+        "url": "https://elevenlabs.io/zh/blog/eleven-v3",
+        "claim": "Eleven v3 alpha 的 6 月 3 日发布页说明情绪、语气、节奏和多说话人能力，移动 App 文章将其作为核心模型。",
+        "excerpt": "ElevenLabs, “Introducing Eleven v3 (alpha)”, June 3, 2025."
+      }
+    ],
+    "canonicalUrl": "https://elevenlabs.io/zh/blog/introducing-the-elevenlabs-app",
+    "sourceHash": "sha256:deb1f49c406a60d0a3679ca51e3871efcff5f1d727b16849bc79a0b3944f45a1"
+  },
+  {
+    "slug": "google-colab-ai-first-20250624",
+    "title": "Google Colab 的 AI-first 体验向所有人开放：数据科学 Agent 开始写进 Notebook",
+    "summary": "6 月 24 日，Google 宣布 AI-first Colab 从小范围试用扩展到所有 Colab 用户。新体验包含迭代式问答、下一代 Data Science Agent 和自然语言代码转换，Agent 可以计划、执行代码、解释结果并展示发现；它仍运行在用户的 Notebook 和数据权限里，生成的代码与分析必须由人检查。",
+    "body": "6 月 24 日，Google Developers Blog 宣布 AI-first Colab 向所有 Colab 用户开放。此前这套体验只给一小批用户试用，现在在新建或已有 Notebook 的底部工具栏里可以看到 Gemini 图标。对数据科学初学者来说，变化不是多了一个聊天框，而是模型开始参与数据清理、代码运行和结果解释。\n\nGoogle 把这套体验拆成三个部分：迭代式提问、Data Science Agent 和自然语言代码转换。用户可以先问一个库怎么用，遇到报错后让系统给出 diff，再描述想做的改动让 Colab 重构相关代码。每一步都发生在 Notebook 的上下文里，因此输入的代码、数据和运行状态比普通问答更重要。\n\nData Science Agent 的流程更接近一个小型工作循环：先创建分析计划，再执行代码，读取结果，解释发现，最后把结果呈现出来。官方同时强调用户可以给反馈并保持控制。这个“可以自动运行”不等于“可以自动相信”，因为数据清理、特征选择和统计结论都可能被错误的单元格带偏。\n\nColab 的优势是把代码、输出和图表放在一个可复现的文档里，AI 生成的步骤也更容易被看到。风险是 Notebook 经常含有访问令牌、私有数据或会改变外部资源的代码。使用时应把凭证隔离，先在小样本上运行，查看 diff 和输出，再决定是否执行会写文件、调用外部 API 或产生费用的单元格。\n\n官方页面里的“显著提升效率”是产品团队的描述，不是独立实验结论。它展示的是可用功能和早期用户的使用方式，而不是对所有数据集、编程语言或模型任务的成功率承诺。真正有用的判断标准，是同一个任务在有人审阅的情况下是否少走弯路，失败时能否知道哪一步出了问题。\n\nAI-first Colab 让 Notebook 从静态记录变成可以对话和执行的工作空间。后续要看 Data Science Agent 的权限细节、运行环境隔离、费用提示和共享 Notebook 的审计能力；这决定它是一个好用的编程搭档，还是一段难以追责的自动脚本。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-colab-ai-first-20250624.svg",
+      "alt": "Google Colab 的数据科学 Agent 在 Notebook 中经历提问、计划、执行、图表和人工检查。",
+      "sourceUrl": "/images/news/google-colab-ai-first-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "rollout",
+        "title": "这次变化是从试用到开放",
+        "body": "AI-first Colab 从小范围试用扩展到所有用户，入口在 Notebook 底部的 Gemini 图标。",
+        "kind": "narrative"
+      },
+      {
+        "id": "features",
+        "title": "三个功能连成一个工作循环",
+        "body": "迭代式提问、Data Science Agent 和自然语言代码转换分别覆盖解释、执行和修改。",
+        "kind": "technical"
+      },
+      {
+        "id": "agent",
+        "title": "Data Science Agent 会计划、执行和解释",
+        "body": "官方描述它可以创建计划、运行代码、读取结果并展示发现，同时允许用户反馈。",
+        "kind": "comparison"
+      },
+      {
+        "id": "permissions",
+        "title": "Notebook 上下文也是权限边界",
+        "body": "数据、代码、运行状态和凭证会一起影响模型能够看到和执行的内容。",
+        "kind": "boundary"
+      },
+      {
+        "id": "review",
+        "title": "自动生成仍要看 diff 和输出",
+        "body": "清理、特征选择和统计结果可能出错；隔离凭证、小样本运行和人工审阅要留在流程里。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "后续观察执行环境和审计",
+        "body": "Agent 的权限、费用提示、共享 Notebook 审计和失败定位比“能不能写代码”更关键。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "Colab 里的数据科学 Agent 怎样工作？",
+      "question": "从问题到结果逐步拆开，看到自动执行和人工控制如何共存。",
+      "steps": [
+        {
+          "label": "提出问题",
+          "detail": "用户在 Notebook 里描述要清理、分析或可视化的数据任务。",
+          "evidence": "Google Colab 官方公告"
+        },
+        {
+          "label": "生成计划",
+          "detail": "Data Science Agent 把目标拆成代码和分析步骤，并让用户看到计划。",
+          "evidence": "官方 DSA 能力说明"
+        },
+        {
+          "label": "执行单元格",
+          "detail": "Agent 在当前运行环境里执行代码，读取数据和中间输出。",
+          "evidence": "Colab AI 工作流"
+        },
+        {
+          "label": "解释结果",
+          "detail": "系统把表格、图表和运行结果组织成自然语言发现。",
+          "evidence": "官方用户场景"
+        },
+        {
+          "label": "人工复核",
+          "detail": "检查数据处理、代码 diff、统计假设和凭证范围，再决定是否继续。",
+          "evidence": "Notebook 可复现与安全边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Developers Blog",
+      "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "context",
+      "llm",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "google-gemini-cli-open-source-20250625",
+      "google-photos-ask-photos-search-20250626"
+    ],
+    "sources": [
+      {
+        "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+        "claim": "Google 于 2025 年 6 月 24 日宣布 AI-first Colab 向所有用户开放，此前先在小范围试用。",
+        "excerpt": "Google Developers Blog, “Supercharge your notebooks: The new AI-first Google Colab is now available to everyone”, June 24, 2025."
+      },
+      {
+        "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+        "claim": "官方列出迭代式提问、Data Science Agent 的计划/执行/推理/展示流程，以及自然语言代码转换。",
+        "excerpt": "The announcement lists Iterative Querying, the Next-Generation Data Science Agent and Effortless Code Transformation."
+      },
+      {
+        "url": "https://colab.research.google.com/",
+        "claim": "官方入口说明从新建或已有 Notebook 的底部 Gemini 图标开始使用；具体账号可用性仍以产品界面为准。",
+        "excerpt": "Google Colab product entry point, accessed through the Notebook toolbar."
+      }
+    ],
+    "canonicalUrl": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+    "sourceHash": "sha256:5b01e32a01ef53cb935f444e529a6bbff8efce15c01dad401c23232a67bf1b61"
+  },
+  {
+    "slug": "google-gemini-robotics-on-device-20250624",
+    "title": "Gemini Robotics On-Device：把机器人的“看、说、动”搬到本地",
+    "summary": "6 月 24 日，Google DeepMind 发布 Gemini Robotics On-Device，一款面向双臂机器人的本地视觉—语言—动作模型。它针对延迟高、网络不稳定或没有网络的场景设计，并开放 SDK 给受信测试者；50 到 100 次示范、跨机器人适配和成功率数据都是官方评测，不等于已经可以在工厂里无人值守运行。",
+    "body": "6 月 24 日，Google DeepMind 发布 Gemini Robotics On-Device，把原本依赖云端的机器人模型缩成可以直接在机器人设备上运行的版本。它不是把一个聊天模型简单装进机器，而是让模型同时处理视觉、语言和动作：看见物体，理解人的指令，再给出机械臂下一步怎么动的动作。\n\n这类模型通常被称为 VLA，也就是视觉—语言—动作模型。云端模型的优势是算力和更新方便，本地模型的优势则是少一次网络往返。对需要在几百毫秒内响应、网络经常断开或数据不方便离开现场的机器人来说，本地推理能减少等待和连接依赖；代价是设备算力、模型更新和现场调试都要自己承担。\n\nGoogle 说，On-Device 版本面向双臂机器人，能在解拉链、折衣服、装配等任务中理解自然语言，并且支持微调。官方给出的快速适配路径是用大约 50 到 100 次示范把模型带到新任务上；这表示模型可以从示范中调整动作，不表示任何机器人拿到一段指令就能立刻完成复杂工作。\n\n适配范围也是这次发布的重点。模型最初在 ALOHA 机器人上训练，之后又被调整到 Franka FR3 双臂机器人和 Apptronik 的 Apollo 人形机器人。不同机器人的关节、相机位置和可用动作并不一样，能够迁移说明模型有一定泛化能力，但迁移过程仍需要训练、校准和安全测试。\n\n页面上的成功率图表来自 Google 自己的九项任务、七项快速适配任务和对照模型，且 Google 没有把它描述成独立第三方基准。安全部分也没有被省略：官方建议把模型接到低层安全控制器，分别测试语义安全和物理安全，并先通过受信测试者计划收集反馈。\n\n这条新闻真正改变的是机器人的部署边界：一部分“理解指令”的工作可以离开云端，靠近传感器和执行器。接下来要看的，是模型在更杂乱的现场能否稳定识别物体、出错时能否及时停机，以及 SDK 是否让开发者更容易留下动作日志和回滚路径，而不是只看一次演示视频。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-gemini-robotics-on-device-20250624.svg",
+      "alt": "Gemini Robotics On-Device 将视觉、语言和动作在机器人本地串起来，旁边保留安全控制与人工测试边界。",
+      "sourceUrl": "/images/news/google-gemini-robotics-on-device-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "这次发布的不是聊天模型缩小版",
+        "body": "Gemini Robotics On-Device 是面向双臂机器人的视觉—语言—动作模型，输入视觉和语言，输出可供机器人执行的动作。",
+        "kind": "narrative"
+      },
+      {
+        "id": "local",
+        "title": "本地运行解决的是延迟和断网",
+        "body": "动作不必每次往返云端，适合低延迟或网络不稳定的现场；设备算力、更新和现场维护则变成新的约束。",
+        "kind": "technical"
+      },
+      {
+        "id": "adapt",
+        "title": "50 到 100 次示范代表什么",
+        "body": "官方用示范微调新任务，展示快速适配潜力；它不是对所有机器人、物体和动作都能零样本工作的承诺。",
+        "kind": "boundary"
+      },
+      {
+        "id": "embodiment",
+        "title": "同一个模型要面对不同身体",
+        "body": "Google 让模型从 ALOHA 适配到 Franka FR3 与 Apollo，人形、双臂和相机布局的差异仍需要工程校准。",
+        "kind": "comparison"
+      },
+      {
+        "id": "safety",
+        "title": "动作模型必须接在安全控制器之后",
+        "body": "官方建议低层安全控制、语义和物理安全评测及红队测试，并先通过受信测试者计划开放。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "下一步看现场稳定性",
+        "body": "真实价值取决于杂乱环境中的成功率、失败停机、日志和回滚，而不只是厂商图表和演示。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "机器人怎样把一句话变成动作？",
+      "question": "把感知、理解、动作和安全控制分开，看到本地模型究竟接管了哪一段。",
+      "steps": [
+        {
+          "label": "看见现场",
+          "detail": "相机和传感器把物体、位置与当前状态交给模型。",
+          "evidence": "Google DeepMind VLA 说明"
+        },
+        {
+          "label": "理解指令",
+          "detail": "模型把自然语言和视觉状态合成一个任务目标，例如找到并拉开拉链。",
+          "evidence": "官方任务演示"
+        },
+        {
+          "label": "规划动作",
+          "detail": "视觉—语言—动作模型输出下一段可执行动作，而不是一段解释文字。",
+          "evidence": "Gemini Robotics On-Device 发布说明"
+        },
+        {
+          "label": "适配身体",
+          "detail": "不同机器人需要示范、微调和动作校准，模型并不会自动知道每个关节的限制。",
+          "evidence": "ALOHA、Franka、Apollo 适配说明"
+        },
+        {
+          "label": "安全执行",
+          "detail": "低层控制器、停止条件和人工测试决定动作是否真的被执行。",
+          "evidence": "Google 安全建议"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "context",
+      "agent",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "google-gemini-cli-open-source-20250625",
+      "google-workspace-veo3-gemini-connections-20250625"
+    ],
+    "sources": [
+      {
+        "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+        "claim": "Google DeepMind 于 2025 年 6 月 24 日发布 Gemini Robotics On-Device，并说明其本地运行、双臂机器人、快速适配和受信测试者范围。",
+        "excerpt": "Google DeepMind, “Gemini Robotics On-Device brings AI to local robotic devices”, June 24, 2025."
+      },
+      {
+        "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+        "claim": "官方称模型在 ALOHA 上训练后适配到 Franka FR3 与 Apollo，并以 50 到 100 次示范展示新任务适配。",
+        "excerpt": "The model was trained on ALOHA and further adapted to Franka FR3 and Apollo; as few as 50 to 100 demonstrations are described for new tasks."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/24/google-rolls-out-new-gemini-model-that-can-run-on-robots-locally/",
+        "claim": "TechCrunch 交叉报道本地机器人模型的离线运行、动作控制和 Google 的 benchmark 口径。",
+        "excerpt": "TechCrunch, “Google rolls out new Gemini model that can run on robots locally”, June 24, 2025."
+      }
+    ],
+    "canonicalUrl": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+    "sourceHash": "sha256:8df8b6a18acf48b250e50d2e8b9f37eed008cea4e73055b1754926ce8f83ddcb"
+  },
+  {
+    "slug": "hpe-greenlake-intelligence-agentic-20250624",
+    "title": "HPE 发布 GreenLake Intelligence：企业 Agent 开始接管混合云运维的“连接层”",
+    "summary": "6 月 24 日，HPE 在 Discover 大会上宣布 GreenLake Intelligence，把网络、存储、计算、成本、可观测性和可持续性运维放进一个 agentic AI 框架。公告同时列出 Aruba agentic mesh、OpsRamp 运维 Copilot、X10000 的 MCP 计划和 CloudOps 软件；多数能力仍按季度路线图推出，不能写成已经全面自动修复。",
+    "body": "6 月 24 日，HPE 宣布 GreenLake Intelligence，把混合云运维从多个管理控制台拉到一个面向 Agent 的框架里。它不是单独的聊天机器人，而是希望让代理跨存储、网络、计算、虚拟化、成本、可观测性和可持续性资源读取上下文，再给出分析或执行建议。\n\nHPE 的网络部分叫 agentic mesh，面向 Aruba Networking Central，目标是分析网络和安全条件、找出根因并给出引导或自动修复。OpsRamp 则把原有运维 Copilot 扩展到告警、事件管理、根因分析和容量规划。两个例子都说明 Agent 的价值不在回答“这是什么”，而在把多个系统的状态拼起来。\n\n存储侧的变化与 MCP 有关。HPE 预览在 Alletra Storage MP X10000 中原生提供 MCP Server，让 GreenLake Copilot 或其他自然语言入口能够编排数据管理操作。MCP 解决的是工具和数据如何被模型调用，不能替管理员定义哪些动作可以执行；认证、遥测和审批仍然属于平台设计。\n\n公告里的时间表需要单独读：GreenLake Copilot beta 和 Aruba agentic mesh 计划在 2025 年第三季度推出，X10000 的 MCP 支持计划在下半年，OpsRamp、CloudPhysics Plus 与 CloudOps 软件的增强则指向第四季度。标题描述的是一套产品愿景和路线，而不是当天所有能力都已 GA。\n\nHPE 特别保留了 human in the loop oversight。混合云的一个错误动作可能改掉路由、删掉资源或增加账单，因此真正的自动化必须先限定工具、范围和可回滚操作，再把分析、建议和执行分级。Agent 能看见更多系统，不等于应该拥有所有管理员权限。\n\nGreenLake Intelligence 的新闻价值，是企业 AI 的战场继续向模型之外移动：谁能把上下文、工具、策略和审计接在一起，谁就更接近可运营的 Agent。后续要看 beta 的真实可用范围、MCP 接口是否开放、自动修复是否留下完整日志，以及客户能否在多云环境里复现结果。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/hpe-greenlake-intelligence-agentic-20250624.svg",
+      "alt": "GreenLake Intelligence 把混合云资源、MCP 工具、Agent 分析和人工审批连成运维闭环。",
+      "sourceUrl": "/images/news/hpe-greenlake-intelligence-agentic-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "framework",
+        "title": "GreenLake Intelligence 是一套运维框架",
+        "body": "HPE 把网络、存储、计算、成本、可观测性和可持续性放到同一个 agentic AI 方向里，不是发布一个孤立聊天窗口。",
+        "kind": "narrative"
+      },
+      {
+        "id": "mesh",
+        "title": "网络和 OpsRamp 负责不同侧面",
+        "body": "Aruba agentic mesh 处理网络与安全根因，OpsRamp 处理告警、事件和容量等运维流程，二者都依赖多系统上下文。",
+        "kind": "technical"
+      },
+      {
+        "id": "mcp",
+        "title": "MCP 让存储可以被调用，但不会自动授权",
+        "body": "X10000 的 MCP 计划连接数据管理与自然语言入口；认证、工具范围和审批决定 Agent 能否安全执行。",
+        "kind": "comparison"
+      },
+      {
+        "id": "roadmap",
+        "title": "公告里的大部分能力还在路线图",
+        "body": "Beta、下半年和第四季度的时间点说明产品阶段，不能把愿景或预览写成全面 GA。",
+        "kind": "boundary"
+      },
+      {
+        "id": "oversight",
+        "title": "混合云自动化要保留人在回路",
+        "body": "路由、资源、账单和数据保护动作需要分级权限、日志和回滚，Agent 的可见范围不等于执行权限。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "下一步看真实运维证据",
+        "body": "要观察 beta 的可用区域、MCP 开放程度、自动修复的失败处理和跨云审计。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "企业运维 Agent 怎样从“看见问题”走到“改动系统”？",
+      "question": "把上下文、工具、策略、执行和回滚串起来，理解为什么 Agent 不能跳过审批。",
+      "steps": [
+        {
+          "label": "收集状态",
+          "detail": "代理读取网络、存储、计算和成本系统的受限上下文。",
+          "evidence": "GreenLake Intelligence 官方公告"
+        },
+        {
+          "label": "定位根因",
+          "detail": "专用或协作代理把告警、配置和历史事件放在一起分析。",
+          "evidence": "Aruba agentic mesh 与 OpsRamp"
+        },
+        {
+          "label": "提出动作",
+          "detail": "系统生成修复建议，并明确会影响哪些资源和服务。",
+          "evidence": "引导或自动修复能力说明"
+        },
+        {
+          "label": "检查权限",
+          "detail": "MCP、认证和策略决定哪些工具可以被调用，默认不应拥有全局管理员权限。",
+          "evidence": "X10000 MCP 计划与人审边界"
+        },
+        {
+          "label": "执行并回滚",
+          "detail": "批准后的动作需要遥测、日志和回滚方案，才能在失败时回到安全状态。",
+          "evidence": "企业运维工程边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "HPE",
+      "url": "https://www.hpe.com/us/en/newsroom/press-release/2025/06/hpe-reimagines-hybrid-it-operations-with-greenlake-intelligence.html"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "context",
+      "mcp",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "rubrik-predibase-agentic-ai-20250625",
+      "google-gemini-cli-open-source-20250625"
+    ],
+    "sources": [
+      {
+        "url": "https://www.hpe.com/us/en/newsroom/press-release/2025/06/hpe-reimagines-hybrid-it-operations-with-greenlake-intelligence.html",
+        "claim": "HPE 于 2025 年 6 月 24 日宣布 GreenLake Intelligence，覆盖网络、存储、计算、成本、可观测性、可持续性和业务服务的 agentic AIOps 框架。",
+        "excerpt": "HPE, “HPE reimagines hybrid IT operations with GreenLake Intelligence”, June 24, 2025."
+      },
+      {
+        "url": "https://www.hpe.com/us/en/newsroom/press-release/2025/06/hpe-reimagines-hybrid-it-operations-with-greenlake-intelligence.html",
+        "claim": "公告列出 Aruba agentic mesh、OpsRamp 运维 Copilot、X10000 MCP 预览和分季度可用时间表，并保留人类监督。",
+        "excerpt": "HPE availability notes: GreenLake Copilot beta and Aruba agentic mesh in Q3 2025; X10000 MCP in the second half; other enhancements in Q4."
+      },
+      {
+        "url": "https://community.hpe.com/t5/hewlett-packard-enterprise/greenlake-intelligence-hpe-s-vision-for-ai-driven-it-operations/ba-p/7253820",
+        "claim": "HPE 社区文章作为框架背景，解释 GreenLake Copilot 与混合云运维的连接；具体可用性以新闻稿为准。",
+        "excerpt": "HPE Community, “GreenLake Intelligence: HPE’s Vision for AI-Driven IT Operations”."
+      }
+    ],
+    "canonicalUrl": "https://www.hpe.com/us/en/newsroom/press-release/2025/06/hpe-reimagines-hybrid-it-operations-with-greenlake-intelligence.html",
+    "sourceHash": "sha256:f28d0d489bde684f7ecd9006aae4f337cbde4e5bbd23322eba73045dde9c9ae1"
+  },
+  {
+    "slug": "samsara-ai-physical-operations-20250624",
+    "title": "Samsara 在物理运营中铺开一组 AI 工具：摄像头、路线和维护开始共用同一套数据",
+    "summary": "6 月 24 日，Samsara 发布十多项面向车队和现场团队的 AI 产品，包括 AI Multicam、天气情报、安全教练、联网穿戴设备、路线导航和维护工具。公司称这些能力依托超过 14 万亿数据点和 1,000 多万客户，但事故下降、节省成本等效果仍是公司或客户口径，部署时还要处理音视频、位置和员工隐私。",
+    "body": "6 月 24 日，Samsara 在 Beyond 2025 大会上宣布十多项面向物理运营的 AI 产品。它们不是一个单一模型，而是一组把车载摄像头、司机行为、天气、路线、车辆维护和现场人员安全放进同一平台的功能。对运输、施工和现场服务团队来说，AI 直接进入了每天会影响安全和调度的系统。\n\nAI Multicam 允许在驾驶室增加最多四个 HD 摄像头，系统可以在车内屏幕上提示行人、自行车等危险。Weather Intelligence 把美国国家气象局的实时天气叠加到管理面板上；Safety Coaching 则按事件严重程度、频率、道路状况和驾驶时间，把低风险行为交给司机自我学习，把更高风险事件升级给管理者。\n\nSamsara 还发布了一款联网穿戴设备，声称电池可超过一年，工作人员一键就能联系紧急服务，设备可回传位置和实时音频，并在部分场景检测跌倒。这个功能和车载摄像头解决的是不同位置的风险，但共同点是：系统必须在紧急时刻知道谁在哪里、发生了什么、谁能收到通知。\n\n维护和路线能力也被放进同一组发布里。公司强调可用数据量和平台覆盖，但这些数字描述的是 Samsara 的业务规模，不等于 AI 已经独立证明了因果效果。比如“减少事故”“节省数百万美元”需要明确比较时间、客户场景、事故定义和人工介入，不能只看产品发布会上的总括性表述。\n\n这类 AI 产品的难点不只在识别准确率。摄像头会拍到驾驶员和路人，穿戴设备会记录位置和声音，天气和路线数据还可能影响排班与绩效。企业需要明确告知、最小化采集、保留期限和人工复核，不能把模型提示直接当成对员工的处罚或事故责任结论。\n\nSamsara 的发布说明了一个趋势：AI 进入物理运营后，模型、传感器、通知和管理流程必须一起设计。下一步要看它的误报如何被纠正、紧急通知是否真正触达、录像和音频怎样被访问，以及不同客户是否能在公开方法下复现安全收益。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/samsara-ai-physical-operations-20250624.svg",
+      "alt": "Samsara 将摄像头、天气、路线、维护和穿戴设备汇入物理运营 AI 安全闭环，并标出人工复核。",
+      "sourceUrl": "/images/news/samsara-ai-physical-operations-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "launch",
+        "title": "发布的是一组物理运营能力",
+        "body": "Samsara 在同一天推出 AI 安全、路线、维护和穿戴设备功能，统一接入车队与现场数据。",
+        "kind": "narrative"
+      },
+      {
+        "id": "vision",
+        "title": "摄像头和天气把风险放到同一面板",
+        "body": "AI Multicam、天气情报和 Safety Coaching 分别处理视觉风险、环境条件与驾驶行为。",
+        "kind": "technical"
+      },
+      {
+        "id": "wearable",
+        "title": "穿戴设备把现场人员也接进来",
+        "body": "超过一年电池、一键求助、位置与实时音频和跌倒检测，让安全系统延伸到车外。",
+        "kind": "comparison"
+      },
+      {
+        "id": "claims",
+        "title": "数据规模不等于因果效果",
+        "body": "14 万亿数据点和 1,000 多万客户是公司规模描述；事故下降与省钱数字仍需具体方法和客户条件。",
+        "kind": "boundary"
+      },
+      {
+        "id": "privacy",
+        "title": "安全平台也会收集敏感数据",
+        "body": "车内视频、音频、位置和绩效信息需要告知、最小化、限时保存和人工复核。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "下一步看误报和责任边界",
+        "body": "通知是否触达、误报怎么纠正、录像如何访问，决定 AI 监控能否被一线团队信任。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "wearable-agent",
+      "title": "物理运营 AI 怎样把一次危险变成可处理的事件？",
+      "question": "把传感器、模型、通知和人工处置串起来，理解 AI 预警不能直接替代责任判断。",
+      "steps": [
+        {
+          "label": "采集信号",
+          "detail": "摄像头、天气、车辆和穿戴设备提供画面、位置、声音与状态。",
+          "evidence": "Samsara Beyond 2025 公告"
+        },
+        {
+          "label": "识别风险",
+          "detail": "模型判断行人、超速、跌倒、天气威胁或维护异常等模式。",
+          "evidence": "AI Multicam、Weather Intelligence 和 Wearable 功能"
+        },
+        {
+          "label": "分级提醒",
+          "detail": "低风险行为可给司机自我学习，高风险事件升级给管理者或紧急服务。",
+          "evidence": "Safety Coaching 与一键保护说明"
+        },
+        {
+          "label": "人工处置",
+          "detail": "管理员确认上下文，决定是否联系人员、暂停任务或记录事故。",
+          "evidence": "安全管理流程边界"
+        },
+        {
+          "label": "复盘权限",
+          "detail": "录像、音频、位置和绩效数据按最小权限访问，并保留纠错和申诉路径。",
+          "evidence": "物理运营隐私边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Samsara",
+      "url": "https://www.samsara.com/company/news/press-releases/samsara-beyond-2025"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "context",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "google-gemini-robotics-on-device-20250624",
+      "rubrik-predibase-agentic-ai-20250625"
+    ],
+    "sources": [
+      {
+        "url": "https://www.samsara.com/company/news/press-releases/samsara-beyond-2025",
+        "claim": "Samsara 于 2025 年 6 月 24 日发布十多项 AI-powered physical operations 产品，包括 AI 安全、路线、维护和联网穿戴设备。",
+        "excerpt": "Samsara, “Samsara Announces New Safety and AI-Powered Technology for Physical Operations”, June 24, 2025."
+      },
+      {
+        "url": "https://www.samsara.com/company/news/press-releases/samsara-beyond-2025",
+        "claim": "官方列出 AI Multicam、Weather Intelligence、Safety Coaching、超过一年电池的一键保护穿戴设备等功能。",
+        "excerpt": "Samsara release details: AI Multicam, Weather Intelligence, Safety Coaching and Samsara Wearable."
+      },
+      {
+        "url": "https://www.samsara.com/company/news/press-releases/samsara-beyond-2025",
+        "claim": "14 万亿数据点、1,000 多万客户、事故下降和节省成本等数字归属于 Samsara 的公司公告或客户引述，文章不将其写成独立因果证明。",
+        "excerpt": "Company scale and customer outcome claims are attributed to Samsara and named customers in the release."
+      }
+    ],
+    "canonicalUrl": "https://www.samsara.com/company/news/press-releases/samsara-beyond-2025",
+    "sourceHash": "sha256:894584a3f96a1ac534dee54b0035c3759c0f5ba76766d2b99f7f78e7c6a729a8"
+  },
+  {
+    "slug": "wispr-flow-series-a-20250624",
+    "title": "Wispr Flow 获 3000 万美元 A 轮：AI 语音输入想从“转写”变成工作界面",
+    "summary": "6 月 24 日，Wispr Flow 宣布获得 3000 万美元 Series A，由 Menlo Ventures 领投，累计融资达到 5600 万美元。公司把 Flow 定位成跨 Mac、Windows 和 iPhone 的 AI 语音输入，并计划建设企业安全和更完整的语音界面；融资和“更快”“更自然”的产品主张仍应与独立收入或效率验证分开。",
+    "body": "6 月 24 日，Wispr Flow 宣布完成 3000 万美元 A 轮融资，由 Menlo Ventures 领投，NEA、8VC 以及 Pinterest 创始人 Evan Sharp、Carta CEO Henry Ward 等参与。TechCrunch 报道称，公司累计融资达到 5600 万美元；官方文章则把这轮钱和“建设 AI 时代的语音界面”放在一起。\n\nFlow 的产品形态不是会议录音转写，而是在 Mac、Windows 和 iPhone 的其他应用里，把用户说的话转成更适合发送的文字。公司希望自己的模型和基础设施能理解停顿、上下文和用户意图，再把结果放回邮件、编辑器或聊天框。语音只是输入方式，真正要竞争的是输入之后的整理和执行。\n\nWispr 把下一阶段称为 voice-native computing，也就是让语音成为工作界面的第一入口。官方提到企业定价、安全能力和继续招聘，说明它不满足于个人效率工具，而想进入团队环境。这个方向会直接碰到权限、数据留存、组织审计和不同岗位的口音与术语适配。\n\n公司和投资方对增长有自己的说法，包括每月收入增长、发送前的等待时间和语音比打字更快等数字。这些信息可以帮助理解公司为什么融资，但它们来自公司材料或创始人表述，不能直接推导出所有人的生产率都会提高。真正的比较需要固定任务、输入设备、语言和纠错成本。\n\n语音输入的便利也带来另一种风险：麦克风捕获的不是一个孤立的句子，而可能包括会议、代码、客户姓名和未发出的想法。用户需要知道录音在哪里处理、文本保留多久、企业管理员能否查看，以及模型是否会把个人习惯用于后续个性化。无障碍用户因此受益，并不意味着隐私问题可以被忽略。\n\n这轮融资值得关注的地方，是语音 AI 的竞争从“能不能听懂”转向“能不能成为可信的工作入口”。Wispr 能否把跨应用速度变成可解释、可撤回、可管理的团队工具，要等更多产品交付和独立客户证据；现在能确认的仍是融资、产品方向和公司计划。",
+    "publishedAt": "2025-06-24",
+    "eventDate": "2025-06-24",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/wispr-flow-series-a-20250624.svg",
+      "alt": "Wispr Flow 把语音经过识别、整理和权限检查后放回工作应用，融资信息与产品主张分开呈现。",
+      "sourceUrl": "/images/news/wispr-flow-series-a-20250624.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "funding",
+        "title": "这轮钱和产品说了什么",
+        "body": "Wispr Flow 宣布 3000 万美元 A 轮，累计融资 5600 万美元；公司把资金用于语音界面、模型和企业扩展。",
+        "kind": "narrative"
+      },
+      {
+        "id": "product",
+        "title": "Flow 不只是录音转文字",
+        "body": "它在多个应用里把说话内容整理成可以发送或编辑的文本，目标是理解意图和上下文。",
+        "kind": "technical"
+      },
+      {
+        "id": "enterprise",
+        "title": "语音界面要进入团队",
+        "body": "官方提到企业定价、安全和招聘，意味着麦克风数据、管理员权限和审计会成为产品的一部分。",
+        "kind": "comparison"
+      },
+      {
+        "id": "claims",
+        "title": "增长数字属于公司口径",
+        "body": "收入增长和速度主张可以说明公司叙事，但不能替代固定任务、设备和纠错成本下的独立效率比较。",
+        "kind": "boundary"
+      },
+      {
+        "id": "privacy",
+        "title": "输入更自然，数据也更贴近生活",
+        "body": "语音可能带出会议、客户或代码信息，录音处理、留存与个性化需要被明确管理。",
+        "kind": "example"
+      },
+      {
+        "id": "watch",
+        "title": "后续看可信工作流",
+        "body": "跨应用速度只有和权限、可撤回、审计和客户证据结合，才可能成为团队基础设施。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "语音输入为什么不止一个转写步骤？",
+      "question": "把说话、识别、整理、写入和权限分开，理解语音界面真正需要解决的工作。",
+      "steps": [
+        {
+          "label": "说出想法",
+          "detail": "用户在当前应用里自然说话，输入可能包含上下文和背景声音。",
+          "evidence": "Wispr Flow 产品定位"
+        },
+        {
+          "label": "识别语音",
+          "detail": "语音模型把连续声音转换成文字，并处理口音、停顿和专名。",
+          "evidence": "AI 语音输入工作流"
+        },
+        {
+          "label": "整理表达",
+          "detail": "系统根据用户意图调整语序、标点和格式，不应擅自改变事实。",
+          "evidence": "Flow 的“polished writing”定位"
+        },
+        {
+          "label": "写回应用",
+          "detail": "结果进入邮件、编辑器或聊天框，用户仍需要看到并修改最终文本。",
+          "evidence": "跨应用使用说明"
+        },
+        {
+          "label": "管理数据",
+          "detail": "企业要决定录音、文本、账户个性化和管理员权限怎样被保存与审计。",
+          "evidence": "企业安全边界"
+        }
+      ]
+    },
+    "source": {
+      "name": "Wispr Flow",
+      "url": "https://wisprflow.ai/post/wispr-raises-series-a"
+    },
+    "relatedSlugs": [
+      "tools",
+      "context",
+      "agent",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "google-gemini-cli-open-source-20250625",
+      "suno-wavtool-ai-music-editing-20250626"
+    ],
+    "sources": [
+      {
+        "url": "https://wisprflow.ai/post/wispr-raises-series-a",
+        "claim": "Wispr Flow 官方于 2025 年 6 月 24 日公布 3000 万美元 Series A，并将目标描述为建设语音原生计算界面。",
+        "excerpt": "Wispr Flow, “Wispr raises a $30M Series A to build the voice interface for AI era”, June 24, 2025."
+      },
+      {
+        "url": "https://techcrunch.com/2025/06/24/wispr-flow-raises-30m-from-menlo-ventures-for-its-ai-powered-dictation-app/",
+        "claim": "TechCrunch 报道 Menlo Ventures 领投、投资人名单和累计 5600 万美元融资，并介绍 Flow 的 AI 语音输入产品。",
+        "excerpt": "TechCrunch, “Wispr Flow raises $30M from Menlo Ventures for its AI-powered dictation app”, June 24, 2025."
+      },
+      {
+        "url": "https://wisprflow.ai/post/wispr-raises-series-a",
+        "claim": "官方把企业扩展、企业级安全和自研模型/基础设施列为下一阶段方向；相关增长和速度数字保留为公司主张。",
+        "excerpt": "Wispr Flow official funding announcement, “Voice at work” and “What’s next” sections."
+      }
+    ],
+    "canonicalUrl": "https://wisprflow.ai/post/wispr-raises-series-a",
+    "sourceHash": "sha256:198913882f3feec1054160483b1e78de833529e84fcdefec934a725b01a4fc0b"
+  },
+  {
     "slug": "viz-ai-stroke-care-data-20210319-42762606",
     "title": "Viz.ai 发布卒中护理数据：AI 先发提醒，医生仍要完成判断",
     "summary": "2021-03-19，Viz.ai 在国际卒中大会期间发布使用 Viz LVO 的护理协调数据，并介绍 Viz RECRUIT 的试验招募经验。官方新闻称基层中心到院到转出、综合中心到院到穿刺的时间以及血管再通率出现改善；产品说明同时明确它是通知工具，不替代医生诊断或完整病人评估。",

@@ -1,0 +1,239 @@
+{
+  "slug": "apollo-graphql-ai-ready-mcp-20250624",
+  "title": "Apollo GraphOS 强化 MCP Server：Agent 的工具层开始谈认证、遥测和批量调用",
+  "summary": "6 月 24 日，Apollo GraphQL 宣布 GraphOS 平台更新，重点包括支持 Streamable HTTP 的 MCP Server、工具定义 Collections、容器部署、遥测与认证，以及 REST Connector 批量调用和新的订阅计划。它解决的是 Agent 如何接入 API 的工程问题，不代表接入后每个工具调用都天然安全。",
+  "body": "6 月 24 日，Apollo GraphQL 宣布 GraphOS 平台面向 AI 应用的一组更新。新闻标题里最容易被忽略的部分，是它把 MCP Server、GraphQL 的 schema 和传统 REST API 编排放到一起：模型要想读取数据、修改系统或采取行动，背后必须有一层能定义工具、排好调用顺序并控制权限的 API 基础设施。\n\n这次更新的 MCP Server 支持 Streamable HTTP、增强工具定义、Collections，以及容器部署、遥测和高级认证。对 Agent 开发者来说，区别在于工具不再只是一个临时脚本，而是有连接方式、身份校验和运行记录。Apollo 把这些能力称为 production-ready，但这是公司的产品定位，不是对任何部署的安全认证。\n\nApollo 同时给 REST Connector 增加批量端点支持。过去一个 GraphQL 查询可能要对 REST 服务发出多次请求，批量能力可以合并相关调用，减少网络往返。它不属于模型能力，却会直接影响 Agent 的延迟和成本；更快的 API 编排也意味着一次错误计划可能更快触发更多后端请求。\n\nGraphQL 的 schema-driven 方式适合描述数据和操作边界，MCP 则提供模型调用工具的协议入口。二者拼起来，可以让 Agent 看见结构化工具，而不是在网页上盲目点击。但 schema 只能说明“这个工具接受什么参数”，还要由应用层决定谁能调用、能改什么、哪些操作必须人工确认。\n\nApollo 还公布 Developer 和 Standard 两种按用量计费的订阅计划，目标是降低团队试用 GraphOS、Connectors 和 MCP Server 的门槛。企业在使用时需要把用量、遥测和身份系统一起评估：如果工具调用会修改订单、账户或生产配置，日志需要能回答谁在什么时候让 Agent 做了什么。\n\n这条新闻的价值，在于它把 Agent 的难题从“模型会不会推理”拉回工程现场：工具发现、API 编排、认证、批量请求和审计都要被设计。MCP 让连接更顺滑，也会让错误的工具暴露更容易扩散；真正成熟的接入方案应该先从只读、低风险工具开始，再逐步开放写入权限。",
+  "publishedAt": "2025-06-24",
+  "eventDate": "2025-06-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/apollo-graphql-ai-ready-mcp-20250624.svg",
+    "alt": "Apollo GraphOS 把模型、MCP 工具、GraphQL schema、REST 批量调用和认证遥测接成 Agent 工具层。",
+    "sourceUrl": "/images/news/apollo-graphql-ai-ready-mcp-20250624.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "Apollo 更新的是 Agent 的 API 基础设施",
+      "body": "GraphOS 把 MCP Server、GraphQL 和 REST Connector 放在一起，解决模型接入数据与操作系统的编排问题。",
+      "kind": "narrative"
+    },
+    {
+      "id": "mcp",
+      "title": "MCP Server 多了传输、工具和部署细节",
+      "body": "Streamable HTTP、Collections、容器部署、遥测和认证让工具更容易进入团队系统。",
+      "kind": "technical"
+    },
+    {
+      "id": "batch",
+      "title": "批量调用影响延迟和成本",
+      "body": "REST Connector 的 batch endpoint 减少网络往返，但也可能让错误计划一次触发更多后端请求。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "Schema 不是权限策略",
+      "body": "schema 描述参数和操作形状，身份、授权、写入范围和人工确认仍需要应用层设计。",
+      "kind": "boundary"
+    },
+    {
+      "id": "plans",
+      "title": "新计划降低试用门槛",
+      "body": "Developer 和 Standard 计划按用量计费，企业需要同时评估调用量、身份系统和遥测记录。",
+      "kind": "example"
+    },
+    {
+      "id": "watch",
+      "title": "先从只读工具开始",
+      "body": "MCP 的连接能力越强，错误暴露越容易扩散；成熟路径应先限定低风险读操作和回滚方案。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "Agent 调一个 API 工具，背后要经过哪些关口？",
+    "question": "把发现工具、校验身份、编排请求和记录结果拆开，理解 MCP 与安全之间的距离。",
+    "steps": [
+      {
+        "label": "发现工具",
+        "detail": "模型通过 MCP 看到可用工具、参数和返回结构。",
+        "evidence": "Apollo MCP Server 更新"
+      },
+      {
+        "label": "检查身份",
+        "detail": "认证系统确认当前用户、Agent 和服务账号的权限。",
+        "evidence": "容器部署、遥测与高级认证说明"
+      },
+      {
+        "label": "编排请求",
+        "detail": "GraphQL schema 或 REST Connector 决定调用顺序、批量方式和数据形状。",
+        "evidence": "Apollo GraphOS 平台说明"
+      },
+      {
+        "label": "执行动作",
+        "detail": "先限定只读或低风险操作，写入动作需要明确的工具范围和批准。",
+        "evidence": "Agent 工具安全边界"
+      },
+      {
+        "label": "留下记录",
+        "detail": "遥测与日志记录谁发起调用、传了什么参数、改动了哪些资源。",
+        "evidence": "Apollo telemetry 能力说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "Apollo GraphQL",
+    "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "mcp",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "rubrik-predibase-agentic-ai-20250625",
+    "google-gemini-cli-open-source-20250625"
+  ],
+  "sources": [
+    {
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+      "claim": "Apollo GraphQL 于 2025 年 6 月 24 日宣布 GraphOS 面向 AI readiness 的 MCP Server、Connectors 和订阅计划更新。",
+      "excerpt": "Apollo GraphQL, “Apollo GraphQL Advances AI-Ready API Orchestration Platform with Enhanced MCP Server, Performance Upgrades, and Subscription Plans”, June 24, 2025."
+    },
+    {
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+      "claim": "官方列出 Streamable HTTP、Collections、容器部署、遥测、高级认证以及 REST Connector batch endpoint 支持。",
+      "excerpt": "Apollo release notes list Streamable HTTP, enhanced tool definitions, container deployment, telemetry, authentication and batch support."
+    },
+    {
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+      "claim": "Apollo 将 Developer 和 Standard 计划描述为按用量计费的 GraphOS 入口，并强调平台可用于 AI-powered applications；“production-ready”保留为公司定位。",
+      "excerpt": "Apollo’s new Developer and Standard plans are usage-based; the platform positioning is attributed to Apollo."
+    }
+  ],
+  "canonicalUrl": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+  "sourceHash": "sha256:302180f01f45b88aa44a1f742e8cd0df38687bdadb365417a9c8f1122aa0f83b",
+  "status": "published",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 agent 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 tools 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 mcp 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 context 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文针对 event 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "rubrik-predibase-agentic-ai-20250625",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一工具/Agent 事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-gemini-cli-open-source-20250625",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一工具/Agent 事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+      "claim": "Apollo GraphQL 于 2025 年 6 月 24 日宣布 GraphOS 面向 AI readiness 的 MCP Server、Connectors 和订阅计划更新。",
+      "excerpt": "Apollo GraphQL, “Apollo GraphQL Advances AI-Ready API Orchestration Platform with Enhanced MCP Server, Performance Upgrades, and Subscription Plans”, June 24, 2025."
+    },
+    {
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+      "claim": "官方列出 Streamable HTTP、Collections、容器部署、遥测、高级认证以及 REST Connector batch endpoint 支持。",
+      "excerpt": "Apollo release notes list Streamable HTTP, enhanced tool definitions, container deployment, telemetry, authentication and batch support."
+    },
+    {
+      "url": "https://www.apollographql.com/newsroom/press-releases/apollo-graphql-advances-ai-ready-api-orchestration-platform-with-enhanced-mcp-ser",
+      "claim": "Apollo 将 Developer 和 Standard 计划描述为按用量计费的 GraphOS 入口，并强调平台可用于 AI-powered applications；“production-ready”保留为公司定位。",
+      "excerpt": "Apollo’s new Developer and Standard plans are usage-based; the platform positioning is attributed to Apollo."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "按 2025-06-24 的事件发生日核对官方公告/官方博客与可信媒体交叉来源；正文区分产品已发布、预览/路线图、公司主张和后续待验证边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐篇完成事实链、事件日、来源卡片、非模板段落、事件专属讲解、SVG alt 和词条联动检查，等待唯一 reader-review 子智能体复审。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T23:59:57Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "公司主张、评测与部署边界是否准确？是。",
+      "中文、独立结构、explainer/SVG alt/词条联动是否通过？是。"
+    ],
+    "notes": "Apollo GraphOS MCP/REST 更新围绕 Agent 工具层展开，认证、遥测和批量调用未被写成天然安全。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-24",
+  "promotedAt": "2026-10-05T00:03:32.843Z"
+}
