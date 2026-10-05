@@ -1,0 +1,184 @@
+{
+  "slug": "cisco-huggingface-foundation-ai-supply-chain-20250805",
+  "title": "Cisco 与 Hugging Face 扩展合作，把模型文件扫描放进 AI 供应链入口",
+  "summary": "Cisco 8 月 5 日宣布与 Hugging Face 扩展合作，为平台上公开上传的模型文件和其他文件提供统一的恶意软件扫描，并把针对 .pt、.pkl 等模型文件反序列化风险的检测能力开放到 ClamAV。它解决的是文件进入模型仓库时的恶意代码筛查，不等于完成模型质量、训练数据、许可证或后门风险的全面审计。",
+  "body": "8 月 5 日，Cisco 宣布与 Hugging Face 扩展合作，把 AI 模型供应链的第一道检查放在文件上传入口。Cisco 的公告称，Hugging Face 平均每 7 秒新增一个模型，平台上已有近 190 万个模型；合作内容是由 Cisco Foundation AI 提供平台和扫描能力，对公开上传的模型文件及其他文件做统一恶意软件检测。\n\n这项合作的技术重点不是给模型打分，而是让 ClamAV 看懂模型文件里的特定风险。Cisco 说，更新后的 ClamAV 可以检测常见 .pt、.pkl 格式中的反序列化风险，并以毫秒级速度完成这类检查；相关能力向所有使用 ClamAV 的人免费开放。对下载者来说，模型权重不再只是一个需要自行运行的压缩包，上传和下载环节多了一层文件级的危险信号。\n\nCisco 还把这条链路接到自己的安全产品：Cerberus 可以在模型进入 Hugging Face 时检查并分享标准化威胁情报，Cisco Secure Access 则可以按扫描结果限制仓库访问、拦截潜在威胁、阻止高风险许可证的模型，或执行组织和地区相关的合规策略。这样一来，扫描结果不只停留在一个告警页面，而是能够参与“允许下载还是先隔离”的访问决定。\n\n边界也很清楚。恶意软件扫描能发现文件里已知的恶意代码和部分反序列化风险，却不能替组织判断模型是否准确、公平或适合生产，不能证明训练数据已经获得授权，也不能单凭一份干净报告排除数据投毒、隐藏行为或许可证冲突。Cisco 的公告把它称为 AI 供应链安全能力，具体检测覆盖和误报漏报仍要结合版本、签名、沙箱和组织自己的复核。\n\n这次合作的价值在于把“先下载、后自己猜风险”改成“进入公共模型仓库时先留下一个可消费的安全信号”。真正成熟的流程还需要对模型来源、哈希、许可证、依赖、运行权限和更新版本继续留档；文件扫描是入口检查，不是整套模型治理的终点。",
+  "publishedAt": "2025-08-05",
+  "eventDate": "2025-08-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cisco-huggingface-foundation-ai-supply-chain-20250805.svg",
+    "alt": "模型文件进入 Hugging Face 后经过 ClamAV 扫描并进入访问策略",
+    "sourceUrl": "/images/news/cisco-huggingface-foundation-ai-supply-chain-20250805.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "upload-gate",
+      "title": "供应链检查从公开上传入口开始",
+      "body": "Cisco 与 Hugging Face 的合作把扫描放在模型文件进入公共仓库的环节，覆盖模型文件和其他公开上传文件。公告给出的 7 秒新增一个模型、近 190 万模型是平台规模的公司口径，说明人工逐个检查无法承担这个入口压力。",
+      "kind": "narrative"
+    },
+    {
+      "id": "model-file-risk",
+      "title": "ClamAV 增加对模型文件的识别",
+      "body": "更新后的 ClamAV 可以识别 .pt、.pkl 等常见模型格式里的反序列化风险，并与传统恶意软件扫描放在同一套工具里。它检查的是文件及其中可触发的危险代码路径，不是模型回答质量或训练过程。",
+      "kind": "technical"
+    },
+    {
+      "id": "threat-feed",
+      "title": "扫描结果可以进入访问策略",
+      "body": "Cisco 介绍 Cerberus 会检查进入 Hugging Face 的模型并分享标准化威胁情报，Secure Access 可据此限制仓库、阻止潜在威胁、拦截高风险许可证模型，或执行组织与地区相关的策略。告警因此可以参与下载和运行前的准入决定。",
+      "kind": "example"
+    },
+    {
+      "id": "coverage-boundary",
+      "title": "文件干净不等于模型安全",
+      "body": "扫描不能替代训练数据授权、许可证审查、后门分析、数据投毒检测、偏差评估和运行权限隔离。已知签名、格式风险和实际检测覆盖仍由版本、规则与部署方式决定，不能把“通过 ClamAV”写成完整安全认证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "open-tooling",
+      "title": "把检查能力开放给使用者",
+      "body": "Cisco 称针对 AI 模型的 ClamAV 能力免费开放，并可用于 Hugging Face 和 VirusTotal 的相关扫描场景。组织仍需留存模型哈希、来源、许可证和扫描版本，才能在模型更新后复核结果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "governance-next",
+      "title": "后面的治理要接住入口告警",
+      "body": "模型进入仓库前后的安全信号只有被接到隔离、人工复核、依赖检查和回滚流程里才有意义。下载前的文件扫描解决第一道门，运行时权限和模型行为还要由团队自己的控制措施负责。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一个公开模型怎样经过供应链安全检查？",
+    "question": "从上传文件到允许团队下载，扫描、策略和人工复核分别做什么？",
+    "steps": [
+      {
+        "label": "上传模型文件",
+        "detail": "模型权重和相关文件进入公共仓库，系统记录来源、文件类型、哈希和版本，给后续复核留下对象。",
+        "evidence": "Hugging Face public upload context in Cisco announcement"
+      },
+      {
+        "label": "执行恶意软件扫描",
+        "detail": "ClamAV 先检查传统恶意代码，再按模型文件格式识别 .pt、.pkl 等反序列化风险。",
+        "evidence": "Cisco Foundation AI and updated ClamAV description"
+      },
+      {
+        "label": "生成可消费的威胁信号",
+        "detail": "扫描结果可以进入标准化威胁情报或仓库标签，让下游系统知道哪些对象需要隔离或进一步检查。",
+        "evidence": "Cisco Cerberus threat-feed description"
+      },
+      {
+        "label": "执行访问策略",
+        "detail": "组织按风险、许可证、来源和合规要求决定允许下载、限制访问还是交给安全人员复核。",
+        "evidence": "Cisco Secure Access policy examples"
+      },
+      {
+        "label": "继续做模型治理",
+        "detail": "通过文件扫描后，还要检查训练数据、后门、依赖、运行权限和输出行为，不能把入口告警当成整套模型认证。",
+        "evidence": "AI supply-chain coverage boundary inferred from Cisco announcement"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cisco Blogs",
+    "url": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face",
+      "claim": "Cisco 8 月 5 日宣布与 Hugging Face 扩展合作，为公开上传文件提供统一恶意软件扫描，并说明更新后的 ClamAV 可检测 AI 模型文件中的反序列化风险。",
+      "excerpt": "Cisco, August 5, 2025: Foundation AI will scan public files uploaded to Hugging Face; updated ClamAV detects deserialization risks in .pt and .pkl model formats."
+    },
+    {
+      "url": "https://www.clamav.net/",
+      "claim": "ClamAV 官方网站说明它是开源恶意软件检测引擎，支持文件扫描和多种文件格式；具体 AI 模型检测能力以 Cisco 同日公告为准。",
+      "excerpt": "ClamAV is an open-source antivirus engine with on-demand file scanning and support for multiple file formats."
+    }
+  ],
+  "canonicalUrl": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face",
+  "sourceHash": "sha256:cef6cd54173c22639c5ee47e8742d6bb0b395a6845ce40ca87a908bf744ccdaf",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.78,
+      "evidence": [
+        "正文讨论公开模型文件和模型供应链的下载、扫描与运行前检查。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.84,
+      "evidence": [
+        "正文把 8 月 5 日的合作公告作为事件主线，并分开写扫描能力与治理边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.89,
+      "evidence": [
+        "正文以 ClamAV、Cerberus 和 Secure Access 说明文件扫描工具如何接入供应链策略。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face",
+      "claim": "Cisco official blog dated August 5, 2025 on the Hugging Face collaboration and AI model-file scanning.",
+      "excerpt": "Foundation AI and Hugging Face announced expanded AI supply-chain security collaboration."
+    },
+    {
+      "url": "https://www.clamav.net/",
+      "claim": "ClamAV official site describing the open-source malware scanning engine.",
+      "excerpt": "ClamAV provides on-demand file scanning and support for multiple file formats."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Cisco 8 月 5 日公告的日期、Hugging Face 合作、公开文件扫描、ClamAV 对 .pt/.pkl 反序列化风险的描述，以及 Cerberus、Secure Access 和高风险许可证策略；用 ClamAV 官方网站核对其文件扫描引擎定位。正文明确文件级恶意软件筛查不等于模型质量、训练数据、许可证和行为安全的全面审计。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 把上传入口、文件扫描、威胁情报和访问策略组织成具体供应链流程，保留检测覆盖边界，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-05-cisco-huggingface",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-05；Cisco 官方公告是主来源，ClamAV 官方网站只用于核对开源恶意软件扫描引擎定位。",
+      "Hugging Face 公开文件上传扫描、ClamAV 对 .pt/.pkl 反序列化风险与传统恶意软件的一体化检测、毫秒级描述和免费开放范围均有明确归属；正文没有把文件扫描说成模型质量检测。",
+      "Cerberus 检查模型并分享标准化威胁情报，Secure Access 按扫描结果执行仓库、潜在威胁、高风险许可证及组织/地区策略的范围清楚，没有扩展成所有 AI 安全产品自动阻断。",
+      "正文明确文件级扫描不等于训练数据授权、许可证、后门、投毒、偏差、运行权限或模型行为的全量审计；agent-safety explainer、sections、relatedSlugs、空的 relatedArticleSlugs、sources/evidence、schema 与事件 SVG 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者可以理解模型文件从上传、扫描、威胁情报到访问策略的链路，以及“扫描是第一道门”的治理边界。",
+    "changes": []
+  }
+}

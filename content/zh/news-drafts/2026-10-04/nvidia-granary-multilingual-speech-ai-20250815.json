@@ -1,0 +1,203 @@
+{
+  "slug": "nvidia-granary-multilingual-speech-ai-20250815",
+  "title": "NVIDIA 发布 Granary 数据集与 Canary、Parakeet 多语种语音模型",
+  "summary": "NVIDIA 在 2025 年 8 月 15 日发布 Granary 多语种语音数据集，以及基于它训练的 Canary-1b-v2 和 Parakeet-tdt-0.6b-v3。Granary 约含一百万小时音频，覆盖 25 种欧洲语言；Canary 偏重转写和翻译准确性，Parakeet 偏重实时或大批量转写。数据规模、排行榜和速度数字均来自 NVIDIA 的发布材料，实际部署仍要按语言、噪声、硬件和许可证逐项验证。",
+  "body": "8 月 15 日，NVIDIA 同时公开了一个数据集和两款语音模型：Granary、Canary-1b-v2 和 Parakeet-tdt-0.6b-v3。Granary 大约包含一百万小时音频，覆盖 25 种欧洲语言，其中有克罗地亚语、爱沙尼亚语和马耳他语等标注数据相对稀缺的语言。数据集、模型和处理工具都放到了 Hugging Face 或开源仓库，新闻的核心是把语音训练的原料和示例模型一起交给开发者。\n\nGranary 的规模需要拆开看。NVIDIA 说其中约 65 万小时用于自动语音识别，超过 35 万小时用于语音翻译；团队先用 NeMo Speech Data Processor 把未标注音频整理成带结构的数据，再用 NeMo Curator 过滤合成样本和做音频、转写对齐。这样做的价值不只是“数据更多”，也在于把一套从原始音频到可训练格式的处理方法公开出来，方便社区换模型或扩展语言。\n\n两款模型承担的目标不同。Canary-1b-v2 是约 10 亿参数的模型，重点放在复杂转写和英译多语；NVIDIA 称它把支持语言从 4 种扩到 25 种，并在 Hugging Face 的开放模型排行榜上取得较高的多语种转写准确率。Parakeet-tdt-0.6b-v3 约 6 亿参数，面向实时或大批量转写，可以一次处理 24 分钟音频，还会自动判断输入语言。一个偏准确，一个偏吞吐，正好对应产品里常见的两种取舍。\n\n发布材料里的性能数字不能脱离条件。NVIDIA 称 Canary 相比体量大三倍的模型，推理速度最高快 10 倍；Parakeet 的榜单指标是“被转写音频时长 ÷ 计算时间”。这些数字来自模型方的设置和开放模型排行榜，不能直接换算成你的单条请求延迟。真实应用还会受到 GPU、音频时长、语言混杂、口音、噪声、批量、量化和后处理的影响。\n\nGranary 的论文将在 8 月 17 至 21 日的 Interspeech 会议上报告，团队称与其他流行数据集相比，达到目标 ASR/AST 准确率所需的数据量约少一半。这是论文和 NVIDIA 的实验结论，仍需要社区在相同语言、数据切分和模型配置下复现。尤其是低资源语言，平均指标可能掩盖某一种语言的明显退化。\n\n对开发者来说，这次开源把三层东西连了起来：可直接使用的语料、针对不同目标的模型、以及可复用的数据处理管线。部署前需要先确认数据和模型的许可、训练样本是否适合自己的场景，再分别评测识别错误、翻译错误、时间戳质量和隐私风险。面向客服或语音 Agent 时，还要把实时性、人工转接和日志保留策略一起纳入验收。\n\n这条新闻的影响不在于“一百万小时”这个单独数字，而在于语音 AI 的竞争点向数据加工和部署条件移动了：同一批音频可以训练不同的准确性、吞吐和语言覆盖方案。下一步的证据，应来自跨硬件和跨语言的复现，以及真实噪声环境中的错误分析。",
+  "publishedAt": "2025-08-15",
+  "eventDate": "2025-08-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-granary-multilingual-speech-ai-20250815.svg",
+    "alt": "Granary 多语种语音数据集分别供 Canary 准确性模型和 Parakeet 吞吐模型使用，覆盖 25 种欧洲语言",
+    "sourceUrl": "/images/news/nvidia-granary-multilingual-speech-ai-20250815.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "NVIDIA 把数据集、模型和工具一起公开",
+      "body": "8 月 15 日公开的组合包括约一百万小时音频的 Granary、Canary-1b-v2、Parakeet-tdt-0.6b-v3 和相关处理入口；覆盖 25 种欧洲语言，开发者可以从 Hugging Face 获取数据与模型。",
+      "kind": "narrative"
+    },
+    {
+      "id": "data-pipeline",
+      "title": "Granary 的重点是把未标注音频整理成可训练数据",
+      "body": "约 65 万小时用于 ASR，超过 35 万小时用于 AST。NVIDIA 团队用 NeMo Speech Data Processor 做音频与转写对齐，用 NeMo Curator 过滤合成样本并整理格式；公开的是一套可复用的数据处理思路。",
+      "kind": "technical"
+    },
+    {
+      "id": "model-split",
+      "title": "Canary 偏准确，Parakeet 偏吞吐",
+      "body": "约 1B 参数的 Canary-1b-v2 面向复杂转写和英译多语；约 0.6B 参数的 Parakeet-tdt-0.6b-v3 面向实时或大批量转写，并可一次处理 24 分钟音频。两个模型代表不同的产品取舍。",
+      "kind": "comparison"
+    },
+    {
+      "id": "performance",
+      "title": "10 倍速度和排行榜结果都有测试前提",
+      "body": "NVIDIA 称 Canary 相比体量大三倍的模型最高快 10 倍，Parakeet 的榜单指标是音频时长除以计算时间。硬件、批量、量化、语言、噪声和后处理都会改变实际结果，不能把模型方数字直接当成单条请求保证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "research",
+      "title": "论文还要回答低资源语言是否真的受益",
+      "body": "Granary 论文将在 Interspeech 2025 报告，团队称达到目标 ASR/AST 准确率所需的数据量约为其他流行数据集的一半；这属于作者实验结论，需要在相同切分和配置下复现。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "部署验收要拆开错误、延迟和隐私",
+      "body": "实际接入前应核对数据和模型许可，并分别测识别、翻译、时间戳、噪声鲁棒性、延迟和隐私；语音 Agent 还需要人工转接与日志策略。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "同一套语音数据怎样变成两种模型？",
+    "question": "从原始音频到可部署的语音服务，中间有哪几层取舍？",
+    "steps": [
+      {
+        "label": "整理原始音频",
+        "detail": "用数据处理工具给未标注音频补齐转写、时间对齐和语言信息，并过滤合成或低质量样本。",
+        "evidence": "Granary and NeMo Speech Data Processor"
+      },
+      {
+        "label": "按任务分配数据",
+        "detail": "把约 65 万小时用于 ASR、超过 35 万小时用于 AST，并为 25 种语言保留可比较的切分。",
+        "evidence": "Granary dataset breakdown"
+      },
+      {
+        "label": "选择准确性路线",
+        "detail": "用 Canary-1b-v2 处理复杂转写和英译多语，重点观察识别与翻译错误，而不是只看吞吐。",
+        "evidence": "NVIDIA Canary description"
+      },
+      {
+        "label": "选择吞吐路线",
+        "detail": "用 Parakeet-tdt-0.6b-v3 做实时或批量转写，固定音频时长、GPU 和并发后再测延迟。",
+        "evidence": "NVIDIA Parakeet description"
+      },
+      {
+        "label": "用真实声音复核",
+        "detail": "在口音、噪声、语言混杂和长音频上同时检查 WER、翻译质量、时间戳、隐私和人工转接成本。",
+        "evidence": "Deployment boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Newsroom",
+    "url": "https://nvidianews.nvidia.com/news/now-were-talking-nvidia-releases-open-dataset-models-for-multilingual-speech-ai"
+  },
+  "relatedSlugs": [
+    "data-pipeline",
+    "dataset-data",
+    "llm",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blogs.nvidia.com/blog/speech-ai-dataset-models/",
+      "claim": "NVIDIA 官方博客确认 Granary 约含一百万小时音频，覆盖 25 种欧洲语言，并列出 Canary-1b-v2 与 Parakeet-tdt-0.6b-v3 的定位和可用性。",
+      "excerpt": "The new Granary dataset, featuring around 1 million hours of audio ... support ... speech recognition and translation AI for 25 European languages."
+    },
+    {
+      "url": "https://blogs.nvidia.com/blog/speech-ai-dataset-models/",
+      "claim": "NVIDIA 说明 Granary 约 65 万小时用于 ASR、超过 35 万小时用于 AST，数据处理采用 NeMo 工具链。",
+      "excerpt": "nearly 650,000 hours for speech recognition and over 350,000 hours for speech translation ... NeMo Speech Data Processor toolkit"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.10750",
+      "claim": "Granary 相关论文将在 Interspeech 2025 报告，并讨论低资源语言与 ASR/AST 数据效率；论文结论需与 NVIDIA 发布材料区分。",
+      "excerpt": "Granary paper and evaluation of multilingual speech recognition and translation data efficiency."
+    }
+  ],
+  "canonicalUrl": "https://nvidianews.nvidia.com/news/now-were-talking-nvidia-releases-open-dataset-models-for-multilingual-speech-ai",
+  "sourceHash": "sha256:a087dfa4ae5cfb2d3b0c63e47e51d90998d5f00ac4da66dda993e1056c44fafc",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.96,
+      "evidence": [
+        "正文把未标注音频、对齐、过滤和格式转换作为 Granary 的核心数据流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.94,
+      "evidence": [
+        "正文说明一百万小时语料、ASR/AST 拆分和 25 种语言覆盖。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.78,
+      "evidence": [
+        "正文将 Canary 与 Parakeet 作为可部署语音模型，解释参数、任务和模型方基准边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文区分 8 月 15 日公开、Interspeech 8 月 17 至 21 日论文报告和后续社区复现。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blogs.nvidia.com/blog/speech-ai-dataset-models/",
+      "claim": "NVIDIA 博客确认发布日期、Granary 规模、语言覆盖、模型定位和处理工具。",
+      "excerpt": "NVIDIA, August 15, 2025."
+    },
+    {
+      "url": "https://nvidianews.nvidia.com/news/now-were-talking-nvidia-releases-open-dataset-models-for-multilingual-speech-ai",
+      "claim": "NVIDIA Newsroom 为同日官方发布入口；性能数字保留为 NVIDIA 口径。",
+      "excerpt": "NVIDIA Newsroom, August 15, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 NVIDIA Newsroom、NVIDIA 官方博客及 Granary 论文入口；正文保留约一百万小时、25 种欧洲语言、Canary/Parakeet 分工、10 倍速度与 ASR/AST 数据效率的来源和测试边界，没有把模型方数字扩写为所有设备或语言的质量承诺。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 组织为数据处理、模型分工和部署验收三条线，避免围绕一百万小时反复堆叠宣传性数字，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-15-nvidia-granary",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "NVIDIA 官方博客/Newsroom 与 eventDate、publishedAt 均指向 2025-08-15；Granary 论文的 8/17–8/21 Interspeech 报告被作为后续背景，没有混成当天发布。",
+      "约一百万小时、约 65 万小时 ASR、超过 35 万小时 AST 和 25 种欧洲语言均按 NVIDIA 发布口径呈现，正文解释了 ASR/AST 的任务含义和 NeMo 数据处理链路。",
+      "Canary-1b-v2 的复杂转写/英译多语定位与 Parakeet-tdt-0.6b-v3 的实时或批量转写定位分开，24 分钟处理、10 倍速度和排行榜指标均保留模型方的硬件、批量、音频和语言条件。",
+      "论文“达到目标准确率所需数据量约少一半”被限定为作者实验结论；文章没有把速度、排行榜、数据效率或平均语言指标扩写成普遍质量保证。",
+      "sections、benchmark explainer、relatedSlugs、source/evidence 与 SVG 一致，标题和正文中文自然，未发现明显模板化句式或把开源/模型数字写成部署承诺。"
+    ],
+    "notes": "读者审阅通过。文章按数据管线、模型分工、性能条件和部署验收组织，清楚区分 NVIDIA 自述、公开排行榜与论文实验；低资源语言、许可、硬件、噪声、口音和隐私边界均有后续验证要求。",
+    "changes": [
+      "将标题从“开源 Granary 和 Canary/Parakeet”改为“发布 Granary 数据集与 Canary、Parakeet 多语种语音模型”，减少 slash 和可能把不同组件许可证混为一谈的表述；开源与可用范围仍在正文和来源卡片中按事实说明。"
+    ]
+  }
+}

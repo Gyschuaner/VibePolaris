@@ -1,0 +1,177 @@
+{
+  "slug": "intent-ft-jailbreak-mitigation-20250816",
+  "title": "Intent-FT 让模型先判断指令意图，再处理越狱请求",
+  "summary": "8 月 16 日提交的 arXiv 论文提出 Intent-FT，一种轻量的意图感知微调方法：模型在回应前先推断指令背后的真实意图，再决定如何处理。作者在参数化和非参数化攻击、开源与闭源模型上做了评测，报告所测攻击类别中没有单一攻击的成功率超过 50%，同时声称保留一般能力、减少带有危险关键词的良性请求被过度拒答。结果仍属于论文的攻击集合和实验模型范围，不能当成越狱防护的普遍保证。",
+  "body": "越狱提示词难处理的地方，往往不在于句子里有没有一个明显的危险词，而在于它会把真实目的藏在角色扮演、任务拆解或上下文里。8 月 16 日提交到 arXiv 的论文提出 Intent-FT，试图让模型在回答之前先判断指令背后的意图，再决定是否执行、拒绝或调整回应。\n\n这是一种轻量的微调方法。作者用一组有针对性的对抗指令训练模型，让它学习从表面表达中推断隐藏意图，并希望这种判断能泛化到没有见过的攻击。它改变的是训练时强调的中间判断，不是给模型再加一张包含所有坏提示词的黑名单。\n\n论文的评测同时覆盖参数化攻击和非参数化攻击，也把开源与闭源模型、攻击造成的有害性、一般任务实用性、过度拒答以及白盒威胁放在一起看。作者报告，在所测攻击类别中，没有单一攻击的成功率超过 50%，并称 Intent-FT 比现有防护更一致地降低了攻击成功。这里的“所测”是关键限定：攻击构造、模型版本和判断标准都会影响结果。\n\n安全与可用性通常会拉扯。一个模型如果看到“炸弹”“绕过”之类的词就一律拒绝，可能会误伤新闻分析、风险教育或合规测试。论文声称，Intent-FT 在包含表面危险关键词但实际无害的指令上减少了过度拒答，并保留模型的一般能力。这说明方法的目标不是让模型更容易说“不”，而是让拒答更多依据意图。\n\n论文还报告，模型学到的意图识别可以迁移给没有经过同样训练的基础模型，作为增强防护的一种方式。迁移结果仍需要看具体模型、攻击分布和部署接口；训练出的判断如果没有被权限、工具和输出检查接住，单独存在也不能替应用承担安全责任。\n\n对工程团队来说，意图感知值得被当作一层可评估的安全信号，而不是一句新的系统提示词。评测时应把已知攻击、改写后的未知攻击、无害但含敏感词的请求和白盒场景分开记录，分别检查有害性、过度拒答和正常任务能力。这样才知道模型是在识别意图，还是只记住了训练样本的外观。",
+  "publishedAt": "2025-08-16",
+  "eventDate": "2025-08-16",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/intent-ft-jailbreak-mitigation-20250816.svg",
+    "alt": "Intent-FT 先从对抗指令中判断隐藏意图，再在允许、拒绝和澄清之间选择回应路径",
+    "sourceUrl": "/images/news/intent-ft-jailbreak-mitigation-20250816.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "jailbreak-gap",
+      "title": "越狱攻击把真实目的藏在表面任务后面",
+      "body": "对抗指令可以通过角色扮演、改写和多步上下文绕开表面关键词检查。安全微调因此要处理“用户真正想做什么”，而不只是匹配某几个词。",
+      "kind": "narrative"
+    },
+    {
+      "id": "intent-before-answer",
+      "title": "Intent-FT 训练模型先推断意图再回应",
+      "body": "论文提出的轻量微调方法使用有针对性的对抗指令，让模型学习从表面表达中推断隐藏意图，并尝试泛化到没有见过的攻击。",
+      "kind": "technical"
+    },
+    {
+      "id": "attack-evaluation",
+      "title": "评测同时覆盖参数化、非参数化和白盒威胁",
+      "body": "作者把不同攻击类型、开源与闭源模型、有害性、实用性、过度拒答和白盒威胁放进评测。论文报告所测类别中没有单一攻击成功率超过 50%。",
+      "kind": "example"
+    },
+    {
+      "id": "utility-boundary",
+      "title": "目标是少误伤，而不是看到敏感词就拒绝",
+      "body": "论文声称 Intent-FT 保留模型的一般能力，并减少含有表面危险关键词但实际无害的请求被拒答。真实部署仍需按业务语境重新验证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "transfer-signal",
+      "title": "意图信号可以尝试迁移，但不等于独立防线",
+      "body": "作者还报告已学到的意图识别能够迁移到基础模型，帮助增强其防护。权限、工具调用和输出检查仍需在应用层接住这个信号。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation-boundary",
+      "title": "攻击集合之外的稳健性仍要单独测试",
+      "body": "成功率取决于攻击构造、模型版本和判定标准。团队应把未知改写、无害敏感词请求和白盒场景分开评估，避免把论文结果当成普遍安全保证。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "意图感知的越狱防护怎样接受验收？",
+    "question": "模型是在识别真实目的，还是只记住了训练提示词的外观？",
+    "steps": [
+      {
+        "label": "拆出表面请求",
+        "detail": "记录提示词写了什么，同时标注它可能要达成的真实目的，避免只用关键词定义攻击。",
+        "evidence": "Intent-FT trains models to infer the underlying intent"
+      },
+      {
+        "label": "覆盖已知攻击",
+        "detail": "用参数化和非参数化攻击测试模型，确认训练样本中的模式是否被识别。",
+        "evidence": "Parametric and non-parametric attack evaluation"
+      },
+      {
+        "label": "加入未知改写",
+        "detail": "用没有出现在训练集里的改写、角色和上下文测试泛化，观察防护是否只记住措辞。",
+        "evidence": "Generalization to unseen attacks"
+      },
+      {
+        "label": "测量过度拒答",
+        "detail": "提供带有表面敏感词但实际无害的任务，分别记录拒答率和正常任务完成情况。",
+        "evidence": "Utility and over-refusal are part of the paper evaluation"
+      },
+      {
+        "label": "接入应用控制",
+        "detail": "把意图判断作为风险信号交给权限、工具和输出审查层，不让一次模型判断独自决定高风险动作。",
+        "evidence": "Intent transfer can enhance vanilla model defenses"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Wei Jie Yeo 等",
+    "url": "https://arxiv.org/abs/2508.12072"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12072",
+      "claim": "论文提出 Intent-FT，让模型在回应前推断指令背后的意图，并用对抗指令训练其泛化到未知攻击。",
+      "excerpt": "a simple and lightweight fine-tuning approach that explicitly trains LLMs to infer the underlying intent of an instruction before responding"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12072",
+      "claim": "作者在参数化和非参数化攻击等评测中报告所测类别没有单一攻击成功率超过 50%，并声称保留一般能力、减少过度拒答。",
+      "excerpt": "no single attack exceeding a 50% success rate ... preserves the model's general capabilities and reduces excessive refusals"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12072",
+  "sourceHash": "sha256:93d891e0755ebb30ced75a95d4cbcbc0d622a086051053c2193433ca0369bfd6",
+  "status": "ready",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "论文提出对大型语言模型做意图感知微调。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文围绕攻击成功率、过度拒答、实用性和白盒威胁的评测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.84,
+      "evidence": [
+        "正文把意图判断放在权限、工具和输出控制之前，作为应用安全信号。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.74,
+      "evidence": [
+        "正文记录论文在 2025 年 8 月 16 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12072",
+      "claim": "arXiv 页面标注论文于 2025 年 8 月 16 日首次提交，摘要给出 Intent-FT 的方法、攻击评测、成功率边界和过度拒答结果。",
+      "excerpt": "Submitted on 16 Aug 2025 ... no single attack exceeding a 50% success rate"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 2508.12072 首次提交日期与摘要；正文保留意图感知微调、参数化/非参数化攻击、白盒威胁、50% 成功率边界和过度拒答结果，并将其限定为论文评测集合内的作者报告。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章区分隐藏意图与关键词匹配，保留论文的攻击类型和实验边界，没有把“没有单一攻击超过 50%”写成越狱已被普遍解决，也没有把微调替代应用层权限控制。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-16-intent-ft"
+}

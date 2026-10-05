@@ -1,0 +1,199 @@
+{
+  "slug": "unic-rag-knowledge-corruption-20250826",
+  "title": "UniC-RAG：少量知识库污染，也可能把大量查询带偏",
+  "summary": "UniC-RAG 论文于 8 月 26 日提交，研究检索增强生成系统的知识库污染风险：攻击者不是针对一个固定问题写一条文本，而是联合优化少量内容，试图同时影响不同主题和领域的大量查询。论文在模拟评测中报告，向包含数百万条文本的知识库注入 100 条对抗文本时，对最多 2,000 个查询的攻击成功率可超过 90%，并指出现有防御不足。文章不复述攻击文本或优化步骤，重点放在来源审核、写入权限、版本隔离和回放检测。",
+  "body": "RAG 的信任边界通常被画在模型外面：模型不会把所有知识都记在参数里，而是去检索一个团队维护的知识库。这个设计能让内容更新更快，却也把新的问题带进来——如果知识库被悄悄写入少量错误内容，模型会不会在很多查询里重复它？\n\nUniC-RAG 研究的就是这种“通用知识污染”。过去的研究常把攻击限定在一个问题或一组相近关键词上，UniC-RAG 则尝试让少量对抗文本覆盖不同主题、领域和用户提问，把一次写入变成多个查询的共同影响源。\n\n论文把这个问题写成一个优化任务，并设计了基于相似度聚类的方案提升覆盖。文章的重点不是某一条提示，而是攻击面的位置：只要内容进入检索库，后续每一次问答都可能把它当成候选证据。RAG 的“外部知识”如果没有来源和版本控制，就可能变成一种可重复传播的错误。\n\n论文报告的数字很值得重视：在数百万条文本的知识库里注入 100 条对抗文本时，对最多 2,000 个不同查询的攻击成功率可超过 90%。这是论文的实验设置，不是所有生产 RAG 都会达到的固定概率；它说明的是覆盖面可能很大，而不是污染条数一定对应某个成功率。\n\n摘要还列出可能的恶意目标，包括把用户引向恶意网站、触发有害命令执行或造成拒绝服务。这里不需要复述怎么构造内容，工程上更重要的是承认：检索结果不是天然可信，模型引用了它也不等于事实已经被审核。\n\n防守的第一层是写入。知识库的新增、更新和批量导入都要有来源、作者、时间、版本和审核状态，不能让普通内容提交路径直接进入生产索引。第二层是检索。对高风险操作，系统应要求多来源支持、版本一致和内容完整性检查；单条新文本不应自动获得和长期权威资料相同的权重。\n\n第三层是运行时。记录哪些文档被召回、它们如何改变答案、是否触发工具或权限变化，并用已知污染回放检测异常覆盖。若发现一批查询同时出现相似的错误方向，应能定位到共同来源，快速下线版本并回滚索引。\n\nUniC-RAG 把 RAG 的风险从“模型会不会幻觉”往前推了一步：即使模型本身没有改变，外部知识的写入路径也可以改变它看到什么。一个可靠的 RAG 系统，需要把知识库当作有权限、有版本、有审计的数据系统，而不是一个没人负责的文本文件夹。",
+  "publishedAt": "2025-08-26",
+  "eventDate": "2025-08-26",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/unic-rag-knowledge-corruption-20250826.svg",
+    "alt": "UniC-RAG 展示少量知识库污染如何通过检索影响大量不同查询",
+    "sourceUrl": "/images/news/unic-rag-knowledge-corruption-20250826.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "rag-trust-boundary",
+      "title": "RAG 把更新问题交给知识库，也带来写入风险",
+      "body": "外部检索让内容更新更快，但如果知识库被加入少量错误文本，模型可能在很多查询里重复它。",
+      "kind": "narrative"
+    },
+    {
+      "id": "universal-corruption",
+      "title": "UniC-RAG 不只针对一个问题",
+      "body": "论文研究能同时影响不同主题、领域和用户查询的通用知识污染，把一次写入变成多个问题的共同影响源。",
+      "kind": "technical"
+    },
+    {
+      "id": "coverage-mechanism",
+      "title": "攻击面在检索库，而不只是提示文本",
+      "body": "只要对抗内容进入索引，后续问答就可能把它当作候选证据。RAG 的外部知识需要来源和版本控制。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-result",
+      "title": "100 条文本在模拟中影响最多 2000 个查询",
+      "body": "论文报告在数百万条文本的知识库中注入 100 条对抗文本，对最多 2,000 个查询的成功率可超过 90%。这是实验设置，不是生产固定概率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "malicious-objectives",
+      "title": "恶意目标可能从误导回答延伸到工具动作",
+      "body": "摘要列出引向恶意网站、触发有害命令和拒绝服务等目标。文章不展开构造细节，只强调检索结果不等于已审核事实。",
+      "kind": "boundary"
+    },
+    {
+      "id": "write-path",
+      "title": "先守住知识库写入和版本",
+      "body": "新增、更新和批量导入应记录来源、作者、时间、版本和审核状态；普通提交路径不应直接进入生产索引。",
+      "kind": "technical"
+    },
+    {
+      "id": "runtime-rollback",
+      "title": "发现共同错误来源时要能下线和回滚",
+      "body": "记录召回文档如何改变答案、是否触发工具或权限变化，用污染回放检测覆盖异常，并保留索引回滚路径。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "怎样把 RAG 知识库当成可审计的数据系统？",
+    "question": "管住写入、标记来源、观察召回影响，并让错误版本可以快速回滚。",
+    "steps": [
+      {
+        "label": "登记每次写入",
+        "detail": "保存来源、作者、时间、版本和审核状态，拒绝匿名或无法追溯的内容直接进入生产索引。",
+        "evidence": "inject adversarial texts into the knowledge database of a RAG system"
+      },
+      {
+        "label": "隔离新旧版本",
+        "detail": "新内容先进入隔离索引，经过抽样问答和来源检查后再进入线上召回范围。",
+        "evidence": "knowledge corruption attacks"
+      },
+      {
+        "label": "要求多来源支持",
+        "detail": "对高风险回答或工具动作，要求不同来源、版本一致和内容完整性满足门槛。",
+        "evidence": "diverse topics and domains"
+      },
+      {
+        "label": "回放召回影响",
+        "detail": "记录文档被召回后如何改变答案、是否改变工具参数，并对相似异常结果寻找共同来源。",
+        "evidence": "simultaneously attack a large set of user queries"
+      },
+      {
+        "label": "准备快速回滚",
+        "detail": "可以下线可疑文档、切换索引版本和重跑受影响查询，恢复后再做人工复核。",
+        "evidence": "existing defenses ... insufficient to defend"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / UniC-RAG 作者组",
+    "url": "https://arxiv.org/abs/2508.18652"
+  },
+  "relatedSlugs": [
+    "rag",
+    "data-validation",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.18652",
+      "claim": "UniC-RAG 研究少量对抗文本同时影响不同主题和领域查询的通用知识库污染。",
+      "excerpt": "jointly optimizes a small number of adversarial texts that can simultaneously attack a large number of user queries with diverse topics and domains"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18652",
+      "claim": "论文在模拟设置中报告向数百万条文本知识库注入 100 条文本时，最多 2,000 个查询的成功率可超过 90%，并认为现有防御不足。",
+      "excerpt": "over 90% attack success rate by injecting 100 adversarial texts into a knowledge database with millions of texts ... 2,000"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.18652",
+  "sourceHash": "sha256:5d6767e0446a3db416f1765525d179457c8aa6617235f63eef214f56f7808cb7",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕检索增强生成、知识库污染和召回路径展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.98,
+      "evidence": [
+        "正文要求来源登记、版本隔离、内容完整性和污染回放。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "正文要求知识库写入、工具动作和高风险回答通过独立权限检查。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文把污染回放、受影响查询和防御覆盖作为评测面。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 26 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.18652",
+      "claim": "arXiv 记录 UniC-RAG 于 2025 年 8 月 26 日提交，研究 RAG 的通用知识污染攻击。",
+      "excerpt": "Date: Tue Aug 26 ... Universal Knowledge Corruption Attacks"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18652",
+      "claim": "论文给出 100 条注入文本、数百万条知识库、最多 2,000 查询和超过 90% 成功率的实验设置。",
+      "excerpt": "over 90% attack success rate ... 100 adversarial texts ... millions of texts ... 2,000"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文对通用知识污染、100 条注入文本/数百万条库/最多 2,000 查询/超过 90% 模拟成功率和现有防御不足的摘要表述；正文避免攻击构造，改写为写入审核、来源版本、运行时监控和回滚。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：没有复述可执行的污染样本或优化步骤，把风险落在知识库写入、来源、版本、召回和索引回滚；明确说明论文数字是模拟设置，未外推为生产固定概率；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-26-unic-rag-knowledge-corruption-20250826"
+}

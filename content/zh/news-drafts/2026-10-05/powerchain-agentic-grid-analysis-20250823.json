@@ -1,0 +1,194 @@
+{
+  "slug": "powerchain-agentic-grid-analysis-20250823",
+  "title": "PowerChain 让 Agent 用电力系统工具处理没见过的配电网问题",
+  "summary": "PowerChain 是一篇 2025 年 8 月 23 日提交的行业 Agent 研究，面向复杂配电网分析，把 GridLAB-D 等自包含工具产生的监督信号和专家标注、验证过的推理轨迹，动态组合成结构化上下文，再处理自然语言任务。论文在真实公用事业数据上评估未见任务，摘要声称相对基线最高提升 144%，但原文写作“144/% improvement”存在排版歧义；文章将其作为摘要主张，重点解释工具、轨迹和验证边界。",
+  "body": "配电网分析不是问模型一句“哪里需要扩容”就结束了。它要把负荷、拓扑、设备约束和各种仿真工具接起来，还要让分析人员相信每一步依据了什么。8 月 23 日提交的 PowerChain，试着让 Agent 在这类复杂流程里处理没见过的任务。\n\n  论文指出，很多行业 Agent 是围绕几个预先写好的任务，自下而上塞进一套固定上下文。任务一换，模型就可能找不到合适的工具、变量或推理顺序。PowerChain 走的是动态生成结构化上下文：根据当前问题，从电力系统工具的监督信号和经过专家标注、验证的推理轨迹里组合出下一步需要的材料。\n\n  GridLAB-D 这类自包含工具在这里很关键。它们不是让模型凭记忆猜电网行为，而是提供可以执行、检查和比较的系统信号。Agent 仍要决定调用哪个工具、如何解释结果和是否继续，但工具输出给了推理一个可回看的锚点。\n\n  PowerChain 处理的是自然语言描述的复杂配电网任务，论文在真实公用事业数据上测试泛化到未见分析。摘要声称相对基线最高提升 144%，但摘要原文写作“up to a 144/% improvement”，存在排版歧义；因此这个数字只能作为作者的摘要主张，不能被当成已经统一核对过的提升率。\n\n  这套方法的价值不只在于“让 Agent 更会推理”。它把专家轨迹变成可复用的结构化素材，把工具运行结果和模型决策连接起来。对高风险行业来说，能追问“这一步依据了哪次仿真、哪条约束、哪份验证轨迹”，比让模型输出一段顺滑的解释更重要。\n\n  但分析 Agent 和控制电网仍是两回事。PowerChain 的摘要谈的是分析任务，不代表它可以直接改变开关、调度设备或替代值班工程师。真实部署还要验证数据时效、仿真模型与现场状态的差异、异常工况、权限边界和人工签核。\n\n  PowerChain 提供了一个行业 Agent 的落地模板：自然语言入口负责描述问题，结构化上下文负责把问题接到工具和已验证轨迹，评测负责检查未见任务是否仍然可靠。它把 Agent 从“会调用工具”推进到“能在工具反馈和专家证据之间工作”，也提醒我们每一个高风险动作都要留下可追踪的依据。",
+  "publishedAt": "2025-08-23",
+  "eventDate": "2025-08-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/powerchain-agentic-grid-analysis-20250823.svg",
+    "alt": "PowerChain 将自然语言配电网任务连接到 GridLAB-D 工具和验证轨迹",
+    "sourceUrl": "/images/news/powerchain-agentic-grid-analysis-20250823.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "grid-complexity",
+      "title": "配电网分析本身就是一条工具链",
+      "body": "负荷、拓扑、设备约束和仿真模型要共同参与分析。PowerChain 面向的是这种复杂流程，而不是单轮问答。",
+      "kind": "narrative"
+    },
+    {
+      "id": "fixed-context-limit",
+      "title": "固定上下文遇到未见任务就会失灵",
+      "body": "围绕预先定义任务堆叠上下文，任务一变就可能找不到合适工具、变量和推理顺序。PowerChain 试图根据问题动态生成结构化上下文。",
+      "kind": "boundary"
+    },
+    {
+      "id": "tools-and-trajectories",
+      "title": "工具信号和验证轨迹一起进入上下文",
+      "body": "GridLAB-D 等自包含电力系统工具提供可执行的监督信号，专家标注并验证的推理轨迹提供可复用的步骤结构，两者共同支撑下一步决策。",
+      "kind": "technical"
+    },
+    {
+      "id": "unseen-tasks",
+      "title": "真实公用事业数据用于测试未见分析",
+      "body": "PowerChain 处理自然语言配电网任务，并在真实公用事业数据上评估泛化。摘要声称相对基线最高提升 144%，但原文“144/%”有排版歧义，应保留作者口径。",
+      "kind": "comparison"
+    },
+    {
+      "id": "traceability",
+      "title": "高风险领域更需要知道依据来自哪里",
+      "body": "结构化上下文让分析可以追问具体仿真、约束和验证轨迹。比一段流畅解释更重要的是每一步能否回到工具和证据。",
+      "kind": "technical"
+    },
+    {
+      "id": "analysis-not-control",
+      "title": "分析 Agent 不等于自动控制电网",
+      "body": "论文摘要讨论的是分析任务，没有证明 Agent 可以直接调度设备。现场状态差异、异常工况、权限和人工签核仍需单独验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "deployment",
+      "title": "把自然语言接到可追踪的工具反馈",
+      "body": "PowerChain 给行业 Agent 提供一条链：描述问题、生成上下文、调用工具、复核轨迹、评估未见任务。每个高风险动作都要留下可追踪依据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "PowerChain 怎样把新问题接到电力系统工具？",
+    "question": "先从问题生成结构化上下文，再用工具反馈和验证轨迹共同约束行动。",
+    "steps": [
+      {
+        "label": "描述任务",
+        "detail": "用自然语言说明配电网问题、范围和目标，同时标出需要人工确认的边界。",
+        "evidence": "complex DG tasks defined in natural language"
+      },
+      {
+        "label": "组合上下文",
+        "detail": "根据任务动态选择 GridLAB-D 等工具信号，以及专家标注、验证过的推理轨迹。",
+        "evidence": "dynamically generates structured context ... self-contained power systems tools ... verified reasoning trajectories"
+      },
+      {
+        "label": "运行工具",
+        "detail": "让工具产生可执行、可比较的系统反馈，不只依赖模型记忆推断电网状态。",
+        "evidence": "supervisory signals from self-contained power systems tools"
+      },
+      {
+        "label": "解释和复核",
+        "detail": "把每一步关联到仿真、约束和轨迹来源，检查模型是否把工具输出解释正确。",
+        "evidence": "expert-annotated and verified reasoning trajectories"
+      },
+      {
+        "label": "评估未见任务",
+        "detail": "在真实公用事业数据上回放未见任务，同时保留数字的摘要口径和排版歧义，不把它外推成现场控制能力。",
+        "evidence": "empirical results on real utility data ... unseen DG analysis tasks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / PowerChain 作者组",
+    "url": "https://arxiv.org/abs/2508.17094"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "data-pipeline",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17094",
+      "claim": "PowerChain 为自然语言配电网分析动态生成结构化上下文，使用 GridLAB-D 等工具监督信号和专家验证轨迹。",
+      "excerpt": "dynamically generates structured context ... GridLAB-D ... expert-annotated and verified reasoning trajectories"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17094",
+      "claim": "论文摘要称在真实公用事业数据的未见配电网任务上相对基线最高提升 144%，原文写作“144/% improvement”存在排版歧义。",
+      "excerpt": "empirical results on real utility data ... up to a 144/% improvement in performance over baselines"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17094",
+  "sourceHash": "sha256:380b74306f7b29a674273d5836f5f509cee3ec7177b3350a40a82c372e2e2086",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 PowerChain 的自然语言任务、工具调用和未见任务泛化。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文把 GridLAB-D 等自包含系统工具作为监督信号来源。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.92,
+      "evidence": [
+        "正文讨论负荷、拓扑、设备约束、工具输出和轨迹如何组成结构化上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留真实公用事业数据、未见任务和基线比较的评估边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 23 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17094",
+      "claim": "arXiv 记录显示 PowerChain 于 2025 年 8 月 23 日提交，面向配电网分析 Agent。",
+      "excerpt": "Date: Sat Aug 23 17:24:46 2025 ... PowerChain ... complex DG tasks"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 PowerChain 摘要中的配电网复杂分析、GridLAB-D 工具监督信号、专家验证轨迹、真实公用事业数据和最高 144/% 摘要主张；正文明确说明排版歧义、分析与控制边界及人工签核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把自然语言任务、动态结构化上下文、工具反馈、验证轨迹和现场控制边界拆开，对摘要“144/%”保留排版歧义，没有把分析 Agent 写成可直接控制电网；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-23-powerchain-agentic-grid-analysis"
+}

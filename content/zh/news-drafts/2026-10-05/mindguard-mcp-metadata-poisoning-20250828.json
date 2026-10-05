@@ -1,0 +1,199 @@
+{
+  "slug": "mindguard-mcp-metadata-poisoning-20250828",
+  "title": "MindGuard：工具还没执行，Agent 的调用决定已经值得检查",
+  "summary": "MindGuard 论文于 8 月 28 日提交，针对 MCP 工具元数据被污染的风险。传统防御多在工具执行后分析行为，但被污染的工具可能只改变 Agent 的调用决定，未必留下可观察的执行轨迹。MindGuard 用来源追踪、与策略无关的检测和污染归因保护决策层，并把注意力依赖建模为 Decision Dependence Graph。论文报告平均检测精度 94%–99%、归因准确率 95%–100%，处理时间低于 1 秒且不增加 token 成本。",
+  "body": "很多 Agent 安全方案是在工具执行之后才检查：调用了什么、参数是否危险、结果是否异常。这个思路对已经发生的动作有帮助，却可能漏掉更早的一步——模型为什么决定调用这个工具，以及这个决定是不是被工具描述本身带偏了。\n\nMindGuard 研究的是 MCP 的 Tool Poisoning Attack。工具元数据包括名称、描述、参数说明和其他供模型阅读的信息；如果这些内容被污染，Agent 可能在真正执行前就形成错误的调用计划。工具没有执行，不代表它对决策没有影响。\n\n作者因此把防御位置前移到决策层。MindGuard 记录调用决定的来源，尝试判断哪些信息影响了选择，并对可能的污染源做归因。论文承认完全解释 LLM 的决定仍然困难，所以选择把注意力机制当作经验信号，而不是声称已经读懂了模型全部内部思维。\n\n它把这种依赖关系形式化为 Decision Dependence Graph：节点代表逻辑概念，边表示基于注意力的依赖强度，再用图异常分析寻找不寻常的调用路径。这个设计的价值在于，防御不必等工具执行后才看结果，而是可以在“准备调用”阶段拦截和要求复核。\n\n论文报告，MindGuard 在真实数据集上平均检测精度为 94%–99%，归因准确率为 95%–100%，处理时间低于 1 秒且不增加 token 成本。这里的“准确率”和“归因”仍取决于数据、阈值和污染类型；它们说明决策级信号有潜力，不是任何 MCP 系统都能直接得到的保证。\n\n工程上，工具注册和元数据更新要有来源、版本、签名和审核状态。模型看到的描述不能悄悄改变，而不触发版本差异；高风险工具还应在调用前显示关键参数和来源，让用户或策略层确认。\n\n决策层检测也要和权限隔离配合。MindGuard 可以提示某个调用决定异常，但不应该自己拥有扩大权限的能力；在支付、写入、删除和外发动作前，还需要独立的授权检查、模拟执行或人工复核。\n\nMindGuard 的提醒很具体：Agent 安全不只监控“做了什么”，还要监控“为什么准备做”。当工具生态越来越大，调用决定本身就成为一条需要审计的系统边界。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mindguard-mcp-metadata-poisoning-20250828.svg",
+    "alt": "MindGuard 在 MCP 工具执行前追踪调用决定及其元数据来源",
+    "sourceUrl": "/images/news/mindguard-mcp-metadata-poisoning-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "after-execution-gap",
+      "title": "等工具执行后再查，可能已经晚了",
+      "body": "工具元数据被污染时，Agent 可能在执行前就形成错误调用计划。没有执行轨迹，不代表没有决策影响。",
+      "kind": "narrative"
+    },
+    {
+      "id": "metadata-poisoning",
+      "title": "工具描述也是模型会读的输入",
+      "body": "名称、描述和参数说明参与 Agent 的工具选择，注册和更新过程需要像代码一样有来源和版本。",
+      "kind": "technical"
+    },
+    {
+      "id": "decision-layer",
+      "title": "MindGuard 把防御前移到调用决定",
+      "body": "它追踪调用决定来源、检测异常并尝试归因污染源，不等工具真正运行后才分析行为。",
+      "kind": "technical"
+    },
+    {
+      "id": "dependence-graph",
+      "title": "用 Decision Dependence Graph 表示依赖",
+      "body": "节点代表逻辑概念，边表示注意力依赖强度；图异常分析用来发现不寻常的工具选择路径。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-metrics",
+      "title": "检测精度 94%–99%，归因 95%–100%",
+      "body": "论文还报告处理时间低于 1 秒且不增加 token 成本；这些指标依赖数据和阈值，不能直接当成所有 MCP 系统保证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "registry-controls",
+      "title": "工具注册和元数据更新要可追溯",
+      "body": "保存来源、版本、签名和审核状态；关键参数和描述变化应触发差异检查和调用前复核。",
+      "kind": "example"
+    },
+    {
+      "id": "permission-separation",
+      "title": "异常提示不能自己扩大权限",
+      "body": "决策级检测要与独立授权、模拟执行和人工复核结合，尤其是支付、写入、删除和外发。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "怎样在工具执行前检查 Agent 的调用决定？",
+    "question": "审计工具元数据和决策依赖，同时把异常提示与真正的执行授权分离。",
+    "steps": [
+      {
+        "label": "登记工具来源",
+        "detail": "记录工具描述、参数、版本、签名和审核状态，任何更新都留下差异。",
+        "evidence": "Tool Poisoning Attacks, where tool metadata is poisoned"
+      },
+      {
+        "label": "保存调用依据",
+        "detail": "记录 Agent 看到了哪些描述、用户要求和策略信息，形成调用决定的来源链。",
+        "evidence": "provenance tracking of call decisions"
+      },
+      {
+        "label": "构造依赖图",
+        "detail": "用 Decision Dependence Graph 表示逻辑概念和注意力依赖，寻找异常的调用路径。",
+        "evidence": "Decision Dependence Graph ... weighted, directed graph"
+      },
+      {
+        "label": "调用前阻断",
+        "detail": "发现异常时暂停、要求复核或换用可信工具，不能等执行后再补救。",
+        "evidence": "poisoned tools need not be executed"
+      },
+      {
+        "label": "独立检查权限",
+        "detail": "即使决策检测通过，支付、写入、删除和外发仍由独立授权层确认。",
+        "evidence": "policy-agnostic detection and poisoning source attribution"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / MindGuard 作者组",
+    "url": "https://arxiv.org/abs/2508.20412"
+  },
+  "relatedSlugs": [
+    "agent",
+    "mcp",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20412",
+      "claim": "MindGuard 针对 MCP 工具元数据污染，在决策层做来源追踪、检测和归因，并用 Decision Dependence Graph 建模。",
+      "excerpt": "decision-level guardrail ... provenance tracking ... Decision Dependence Graph"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20412",
+      "claim": "论文报告检测精度 94%–99%、归因准确率 95%–100%，处理时间低于 1 秒且无额外 token 成本。",
+      "excerpt": "94%-99% average precision ... 95%-100% attribution accuracy ... under one second and no additional token cost"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20412",
+  "sourceHash": "sha256:57213df63baba1fac809112c4ec78e6c64f19597f72fb396548f830eadec1cf8",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 Agent 的工具选择、调用计划和决策轨迹。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 MCP 工具元数据和 Tool Poisoning Attack 展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文要求检测与支付、写入、删除和外发授权分离。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文保留检测精度、归因准确率、处理时间和阈值边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20412",
+      "claim": "arXiv 记录 MindGuard 于 2025 年 8 月 28 日提交，研究 MCP 工具元数据污染的决策级防御。",
+      "excerpt": "Date: Thu Aug 28 ... Intrinsic Decision Inspection"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20412",
+      "claim": "摘要给出 Decision Dependence Graph 和检测/归因/延迟/成本结果。",
+      "excerpt": "94%-99% ... 95%-100% ... under one second and no additional token cost"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 MCP 元数据污染、决策级防御、注意力依赖图、检测/归因指标和处理成本；正文不展开攻击载荷，把 MindGuard 放在注册审计、调用前拦截和独立授权链中。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把工具安全前移到调用决定，保留论文指标的实验边界，避免把注意力图写成完整可解释性，并补上元数据版本和独立授权；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-mindguard-mcp-metadata-poisoning-20250828"
+}

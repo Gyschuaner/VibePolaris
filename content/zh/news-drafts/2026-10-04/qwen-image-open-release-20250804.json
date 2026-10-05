@@ -1,0 +1,189 @@
+{
+  "slug": "qwen-image-open-release-20250804",
+  "title": "通义千问发布 Qwen-Image：20B 开放权重模型先把复杂中文文字画清楚",
+  "summary": "通义千问团队在 2025 年 8 月 4 日发布 Qwen-Image，一个 20B 参数的图像生成基础模型，并同步公开权重、技术报告和试用入口。官方主打多行文字、段落排版和中英文混排；多项基准上的 SOTA 是团队评测口径，公开权重的可用范围也不等于已经有一套独立的图像编辑产品或完整 API。",
+  "body": "2025 年 8 月 4 日，通义千问团队发布 Qwen-Image。它是一个 20B 参数的 MMDiT 图像生成基础模型，官方博客、Hugging Face 和 ModelScope 同步给出权重或入口，技术报告也在同一天提交到 arXiv。对使用者来说，这次发布的核心变化是：模型可以被下载、运行和复核，而不只是看一组演示图片。\n\nQwen-Image 把“把字画对”放在主标题里。团队展示了中文招牌、对联、英文书封和一页包含多个模块的海报，想说明模型能处理多行文字、段落语义、字体布局和中英文混排。过去的图像生成模型常常能把画面做得像样，却把招牌和海报里的字变成无法阅读的纹理；Qwen-Image 试图把文字当成画面结构的一部分来生成。\n\n官方材料也把图像编辑列为能力，包括改字、增删物体、换风格和调整姿势。不过这里要把宣传页的能力描述和发布物本身分开：8 月 4 日公开的是 Qwen-Image 这个图像基础模型及其权重，不能据此推出已经有一个独立的编辑模型、稳定的编辑 API，或者所有展示操作都能在同一套公开接口中复现。实际能做什么，要看权重、推理代码和后续版本的说明。\n\n团队报告称，Qwen-Image 在 GenEval、DPG、OneIG-Bench、GEdit、ImgEdit、GSO 等图像生成和编辑评测，以及 LongText-Bench、ChineseWord、TextCraft 等文字渲染评测上取得 SOTA。这个说法的归属很清楚：它是论文作者在选定数据集、提示词和比较方法下给出的结果。没有独立复现实验前，SOTA 不能直接翻译成“所有图像任务都最好”，更不能把 20B 参数量当成质量排名。\n\n公开权重采用 Apache-2.0 许可，模型卡标注 20B 参数和 BF16 权重，并给出 Diffusers 的加载示例。开放许可降低了试用和二次开发门槛，也把真正的问题交给了运行者：显存、推理速度、商用合规、提示词稳定性和中文细字的实际错误率，都需要在自己的环境里测试。\n\n所以这条新闻值得关注的地方，不只是又多了一个图像模型，而是一个团队把中文文字渲染、模型权重和技术报告放在同一天公开。接下来更有价值的证据，是社区能否复现报告中的文字和编辑结果，公开权重是否保持同样能力，以及所谓“精准编辑”在真实海报和长段落中会不会出现难以察觉的错字。",
+  "publishedAt": "2025-08-04",
+  "eventDate": "2025-08-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen-image-open-release-20250804.svg",
+    "alt": "Qwen-Image 将中文与英文段落作为画面布局的一部分生成；20B 开放权重与技术报告在 2025 年 8 月 4 日同步发布",
+    "sourceUrl": "/images/news/qwen-image-open-release-20250804.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 4 日公开了模型、权重和技术报告",
+      "body": "Qwen-Image 是 20B 参数的 MMDiT 图像生成基础模型，团队同时发布博客、模型权重和技术报告，并提供 Qwen Chat 试用入口。公开物让别人可以运行和检查，而不只是观看官方演示。",
+      "kind": "narrative"
+    },
+    {
+      "id": "native-text",
+      "title": "它把文字当成画面结构来生成",
+      "body": "官方示例覆盖中文招牌、对联、英文书封、多模块海报和较长段落。主打能力是多行文字、段落布局、细节和中英文混排，这正是图像生成常常容易出错的部分。",
+      "kind": "example"
+    },
+    {
+      "id": "editing-scope",
+      "title": "图像编辑是宣传能力，不能直接等同于完整产品",
+      "body": "官方材料列出改字、增删物体、换风格和调整姿势等编辑操作，但 8 月 4 日公开的核心发布物仍是 Qwen-Image 基础模型和权重。独立编辑模型、稳定 API 以及每种操作的复现条件，需要另看模型卡和后续版本。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark-claims",
+      "title": "SOTA 是团队评测结论，不是行业共识",
+      "body": "技术报告列出 GenEval、DPG、OneIG-Bench、GEdit、ImgEdit、GSO、LongText-Bench、ChineseWord 和 TextCraft 等评测。它们说明团队如何比较模型，不能替代独立复现，也不能推出所有图像任务都由 Qwen-Image 领先。",
+      "kind": "comparison"
+    },
+    {
+      "id": "open-weights",
+      "title": "开放许可改变的是使用门槛",
+      "body": "模型卡标注 Apache-2.0、20B 参数和 BF16 权重，并给出 Diffusers 示例。使用者仍要自己承担显存、速度、商用合规和中文细字错误率的验证工作。",
+      "kind": "technical"
+    },
+    {
+      "id": "next-evidence",
+      "title": "接下来要看社区能否复现细字和编辑结果",
+      "body": "真正能说明模型价值的，是公开权重在不同硬件和提示词下是否保持文字准确，所谓精准编辑是否覆盖长段落与真实海报，以及社区复现与官方报告之间的差距。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样判断一个图像模型真的会把字画对？",
+    "question": "从提示词到公开权重，哪些步骤能把演示图变成可复核的结果？",
+    "steps": [
+      {
+        "label": "写出结构化提示",
+        "detail": "把文字内容、语言、位置、字体关系和画面主体写清楚，不能只说“做一张好看的海报”。",
+        "evidence": "Qwen-Image 官方中文、英文和多模块海报示例"
+      },
+      {
+        "label": "生成画面",
+        "detail": "模型同时处理视觉内容和文字布局；需要检查字是否完整、顺序是否正确、段落是否被改写。",
+        "evidence": "Qwen-Image native text rendering 说明"
+      },
+      {
+        "label": "测试编辑边界",
+        "detail": "如果要改字或增删物体，要确认公开权重和推理代码是否真的支持该操作，而不是只看宣传页的示例。",
+        "evidence": "Qwen 博客、Hugging Face 模型卡与公开权重"
+      },
+      {
+        "label": "对照评测集",
+        "detail": "在 GenEval、LongText-Bench 或 ChineseWord 等可复用任务上固定提示词和比较方法，才有意义。",
+        "evidence": "Qwen-Image Technical Report"
+      },
+      {
+        "label": "复查真实使用",
+        "detail": "最后把模型放进海报、菜单或长段落流程，记录错字、布局漂移、显存和速度，而不是只挑成功样例。",
+        "evidence": "文章对官方 SOTA 与独立复现边界的说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "Qwen Team",
+    "url": "https://qwenlm.github.io/blog/qwen-image/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "benchmark"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://qwenlm.github.io/blog/qwen-image/",
+      "claim": "Qwen 团队于 2025-08-04 发布 Qwen-Image，介绍 20B MMDiT 图像基础模型、复杂文字渲染和编辑能力，并提供权重与试用入口。",
+      "excerpt": "Qwen-Image is a 20B MMDiT image foundation model with complex text rendering; Qwen links its GitHub, Hugging Face, ModelScope and demo."
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen-Image",
+      "claim": "Hugging Face 模型卡记录 8 月 4 日发布权重、Apache-2.0 许可、20B 参数、BF16 格式和 Diffusers 用法。",
+      "excerpt": "The model card records the August 4 weight release, Apache-2.0 license, 20B parameters and a Diffusers quick start."
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.02324",
+      "claim": "Qwen-Image 技术报告在 8 月 4 日提交，描述文字渲染数据管线、多任务训练和多项生成/编辑评测；SOTA 属于作者报告。",
+      "excerpt": "The technical report describes the data pipeline, progressive training and benchmark results reported by its authors."
+    }
+  ],
+  "canonicalUrl": "https://qwenlm.github.io/blog/qwen-image/",
+  "sourceHash": "sha256:6d2ef0c477ac4ea5a394a3d8301e19dcfb0ce118cbc6cdcd51ee105279f2ad8a",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.86,
+      "evidence": [
+        "文章解释开放图像基础模型与生成能力。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文把 8 月 4 日的模型、权重和技术报告发布作为事件主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.98,
+      "evidence": [
+        "文章拆开团队 SOTA 口径、可复现评测和真实使用验证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://qwenlm.github.io/blog/qwen-image/",
+      "claim": "Qwen 官方博客确认发布日期、20B MMDiT 模型、原生文字渲染主线、编辑能力描述和开放入口。",
+      "excerpt": "Qwen Team, August 4, 2025."
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen-Image",
+      "claim": "Hugging Face 模型卡确认权重发布日期、Apache-2.0、20B 参数、BF16 和可运行示例。",
+      "excerpt": "Qwen/Qwen-Image model card."
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.02324",
+      "claim": "arXiv 技术报告确认数据管线、训练策略和评测集合，并将 SOTA 归属于论文作者的实验。",
+      "excerpt": "Qwen-Image Technical Report, submitted August 4, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Qwen 官方博客、Hugging Face 模型卡和 arXiv 技术报告的发布日期、20B MMDiT、开放许可、权重入口、文字渲染示例与评测口径；将官方能力描述、公开权重范围和独立复现要求分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 改写为模型发布和可复核证据叙事，保留官方 SOTA 与开放权重边界，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-04-qwen-image",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：中文稿自然且事实边界清楚，核对 Qwen 官方博客、Hugging Face 模型卡和 arXiv 在 2025-08-04 的发布/提交信息、20B MMDiT、Apache-2.0、BF16、复杂中英文文字渲染与编辑能力说明。正文明确图像编辑只是官方列出的能力，未扩写成独立编辑模型或完整稳定 API；GenEval/DPG/OneIG-Bench/GEdit/ImgEdit/GSO/LongText-Bench/ChineseWord/TextCraft 的 SOTA 均归于团队评测，未写成行业共识或所有任务领先。benchmark explainer、sections、relatedSlugs、sources/evidence、hero SVG 与 schema 均核对无误。",
+    "changes": []
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "slug": "gamie-physician-oversight-20250812",
+  "title": "Google DeepMind 发布 g-AMIE：病史采集交给 AI，诊断决定留给医生复核",
+  "summary": "8 月 12 日，Google DeepMind 介绍 guardrailed-AMIE（g-AMIE）：它在对话中采集病史，但被护栏禁止向患者给出个性化医疗建议，再把摘要、鉴别诊断、管理计划和患者消息草稿交给监督医生（PCP）审阅。Google 在 60 个虚拟 OSCE 场景中报告了较高的问诊和记录评价；这些结果来自特定的异步监督流程，不能写成系统已经能独立看诊。",
+  "body": "8 月 12 日，Google DeepMind 介绍 guardrailed-AMIE，简称 g-AMIE。它不是把“医生”这个角色整体交给模型，而是把一次医疗对话拆成两段：模型负责询问病史、整理信息，主治医生负责查看鉴别诊断和管理计划，修改后再决定是否把消息发给患者。官方把 g-AMIE 称为用于病史采集的诊断 AI，同时明确设置护栏，禁止它直接给出针对个人的医疗建议。\n\n这条分工回应的是医疗 AI 最容易被混在一起的两个动作。病史采集是把症状、时间、既往情况和患者的疑问问完整；诊断和治疗计划则要结合证据承担临床责任。g-AMIE 的对话代理分三个阶段工作：先做一般询问，再围绕初步鉴别诊断补问，最后回应患者的问题。每次回答都要经过护栏代理检查，必要时改写，避免在对话中直接说“你得了什么病”或“你应该怎样治疗”。\n\n对话结束后，多智能体系统生成一份供医生看的材料。SOAP note（医疗记录常用的四段式格式）把患者主诉和病史放在 Subjective，把可观察资料放在 Objective，把鉴别诊断及理由放在 Assessment，把管理方案放在 Plan；系统还会另写一份给患者的消息草稿。这里的“生成管理计划”仍是供医生审阅的候选内容，不是已经授权执行的医嘱。\n\nGoogle 为这套流程做了一个 clinician cockpit，也就是给监督医生使用的工作台。医生可以在同一界面查看对话和 SOAP note，修改鉴别诊断、管理计划，再批准修改后的患者消息，或者决定需要一次后续问诊。这个设计把监督从实时陪同改成可以异步完成，但责任没有异步消失：最后批准什么、要求补充什么，以及什么时候升级给人，都由医生留下决定。\n\n官方用一项随机、盲法的虚拟 OSCE 来比较这套流程。60 个场景由标准化患者扮演者参与，g-AMIE 与在同一护栏下工作的基层医生、护士执业医师和医师助理/助理医师组进行病史采集，再由有经验的基层医生监督和修改记录，独立医生负责评分。Google 报告 g-AMIE 的病史采集、SOAP note 和患者消息得到更高评价，监督医生也更常接受它的消息；这描述的是一套为监督而设计的实验流程，不是对现实临床医生能力的总排名。\n\n结果里还有几处不能略过的摩擦。研究报告说 g-AMIE 的记录在少数案例中出现 confabulation，也就是把没有发生或没有被提供的内容写得像事实；发生率在这项实验里与受护栏约束的医生组相近，但记录更长，监督医生要花更多时间删减。访谈还显示，检查这些材料本身会带来认知负担。信息更全不自动等于审阅更轻松，过长的记录可能让真正需要确认的异常被埋住。\n\n这项工作也没有证明 g-AMIE 可以直接部署到真实诊所。作者提醒，医生对照组没有接受如何在这种护栏流程里工作的训练，60 个虚拟场景和患者扮演者也不能代表真实患者、罕见病和复杂沟通；如何判断一句话是否构成个性化医疗建议，也存在边界案例。真正接入时，还要测试漏问、错误摘要、过期指南、急症升级、医生修改时间，以及患者消息在发送前是否确实经过授权。\n\ng-AMIE 的意义在于给“人监督 AI”一个可以观察的接口：模型做前置采集，医生在诊断和沟通出口处承担责任。下一步不只是比较谁的分数更高，而是记录每一次医生改了什么、哪些风险被护栏拦住、哪些错误直到复核才被发现，以及异步监督是否真的让患者更快得到合适的后续服务。8 月 12 日确认的是一种可测试的协作流程，不是把医疗判断从医生手里移交给模型。",
+  "publishedAt": "2025-08-12",
+  "eventDate": "2025-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/gamie-physician-oversight-20250812.svg",
+    "alt": "g-AMIE 先在护栏内采集病史，再把 SOAP note 和患者消息草稿交给医生在工作台中复核；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/gamie-physician-oversight-20250812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 12 日公开的是一套医生监督框架",
+      "body": "Google DeepMind 介绍 guardrailed-AMIE（g-AMIE），让系统在护栏内做病史采集，并把后续判断交给监督医生。配套论文 7 月 21 日已提交，新闻事件按 8 月 12 日官方博客记录。",
+      "kind": "narrative"
+    },
+    {
+      "id": "guardrail",
+      "title": "模型可以问病史，但不能给个性化医嘱",
+      "body": "对话代理先做一般询问，再围绕初步鉴别诊断补问，最后回应患者问题；护栏代理逐条检查并改写回答，禁止直接给出针对个人的诊断或管理建议。",
+      "kind": "technical"
+    },
+    {
+      "id": "soap-cockpit",
+      "title": "SOAP note 和 clinician cockpit 把责任留在医生端",
+      "body": "系统生成 Subjective、Objective、Assessment、Plan 四段式记录和患者消息草稿，监督医生在工作台里编辑鉴别诊断与管理计划，再批准消息或要求后续问诊。生成内容是候选材料，不是自动执行的医嘱。",
+      "kind": "example"
+    },
+    {
+      "id": "osce",
+      "title": "60 个虚拟场景测试的是异步监督流程",
+      "body": "随机、盲法虚拟 OSCE 让患者扮演者与 g-AMIE 或受同一护栏约束的医生组交互，再由监督基层医生编辑、独立医生评分。Google 报告 g-AMIE 的记录和消息评价较高，但场景与人员都不能代表全部临床。",
+      "kind": "comparison"
+    },
+    {
+      "id": "friction",
+      "title": "记录更完整，也可能更难审阅",
+      "body": "研究报告少数 SOAP note 出现 confabulation（把没有提供的内容写得像事实），并指出记录更长、监督医生需要更多删改，审阅本身有认知负担。更详细不等于更安全，异常信息仍需逐项核实。",
+      "kind": "boundary"
+    },
+    {
+      "id": "limits",
+      "title": "虚拟 OSCE 不能替代真实临床验证",
+      "body": "对照医生没有接受这种护栏工作流的专门训练，60 个场景和患者扮演者也不能覆盖真实患者分布、急症和复杂沟通。还要验证漏问、错误摘要、指南版本、升级条件和消息发送前的授权。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步追踪医生改动和患者后果",
+      "body": "部署前应记录医生改了什么、护栏拦住什么、哪些错误直到复核才发现，以及异步监督是否缩短了合适的后续服务时间。可测试的协作接口，才是这项工作的落点。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "clinical-alert",
+    "title": "g-AMIE 怎样把一场医疗对话交到医生手里？",
+    "question": "把病史采集、护栏检查、记录生成和医生批准分开，才能看清 AI 在医疗流程中的具体位置。",
+    "steps": [
+      {
+        "label": "询问病史",
+        "detail": "对话代理先收集症状、时间和既往情况，再根据初步鉴别诊断补问，最后回应患者的疑问。",
+        "evidence": "Google DeepMind：three-phase dialogue agent"
+      },
+      {
+        "label": "拦住个性化建议",
+        "detail": "护栏代理检查每个回答，必要时改写；g-AMIE 不在患者对话中直接给出针对个人的诊断或治疗计划。",
+        "evidence": "Google DeepMind：guardrail agent"
+      },
+      {
+        "label": "生成 SOAP note",
+        "detail": "系统把信息整理成 Subjective、Objective、Assessment、Plan，并另写患者消息草稿；鉴别诊断和管理计划仍需医生审阅。",
+        "evidence": "Google DeepMind：SOAP note agent"
+      },
+      {
+        "label": "医生打开 cockpit",
+        "detail": "监督基层医生查看对话和记录，编辑诊断与计划，决定批准消息，或要求一次后续问诊。",
+        "evidence": "Clinician cockpit / asynchronous oversight"
+      },
+      {
+        "label": "留下责任链",
+        "detail": "上线前要记录漏问、错误摘要、医生修改、升级条件和发送授权，让异步流程仍然可以追溯。",
+        "evidence": "Article test boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google DeepMind / Google Research",
+    "url": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "authorization",
+    "llm",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/",
+      "claim": "Google DeepMind 官方博客标注 August 12, 2025，介绍 g-AMIE 的护栏病史采集、多智能体 SOAP note、clinician cockpit、异步监督和 60 个虚拟 OSCE 场景。",
+      "excerpt": "We introduce guardrailed-AMIE (g-AMIE), a diagnostic AI designed for history-taking. g-AMIE operates with a guardrail that prohibits it from giving individualized medical advice."
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.15743",
+      "claim": "配套论文于 2025-07-21 提交，说明 g-AMIE 如何在护栏内做病史采集，再将评估交给监督基层医生；论文同时提醒虚拟流程不能直接代表现实临床能力。",
+      "excerpt": "Submitted on 21 Jul 2025 ... g-AMIE, a multi-agent system that performs history taking within guardrails, abstaining from individualized medical advice."
+    }
+  ],
+  "canonicalUrl": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/",
+  "sourceHash": "sha256:f809b0ec8a0274e4db8efba0ec78740e6833294c7f4b218ecea526f3ad5a74dc",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.96,
+      "evidence": [
+        "正文把对话代理、护栏代理、SOAP note 代理和医生 cockpit 串成可复核的多智能体工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "正文把个性化医疗建议、医生修改、患者消息批准和急症升级的权限分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.84,
+      "evidence": [
+        "正文讨论医疗对话模型的病史采集、记录生成、幻觉式 confabulation 和评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8/12 官方系统公告、7/21 论文提交和后续真实临床验证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/",
+      "claim": "官方博客确认 g-AMIE 的护栏、三阶段病史采集、多智能体记录、clinician cockpit、60 个虚拟 OSCE 场景和结果限制。",
+      "excerpt": "g-AMIE produces a detailed medical note ... reviewed by the overseeing PCP using our clinician cockpit interface."
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.15743",
+      "claim": "论文摘要记录异步监督框架和 60 个场景的随机盲法虚拟 OSCE，并明确不能把结果理解成 g-AMIE 优于现实中的临床医生。",
+      "excerpt": "Across 60 scenarios ... our study does not replicate existing clinical practices and likely underestimates clinicians’ capabilities."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google DeepMind 8/12 官方博客和 arXiv 2507.15743；正文区分 8/12 系统公告与 7/21 论文提交，保留病史采集、护栏、SOAP note、clinician cockpit、异步监督、60 个虚拟 OSCE、confabulation、认知负担和现实临床外推限制。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 g-AMIE 写成病史采集与医生监督的具体协作流程，拆开模型建议、医生授权和临床结果，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-12-gamie",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-12，与 Google DeepMind 官方博客日期一致；arXiv 2507.15743 明确为 2025-07-21 提交，sections 没有把论文日写成新闻发布日。",
+      "正文准确说明 g-AMIE 在护栏内做三阶段病史采集：一般询问、围绕初步鉴别诊断补问、回应患者问题；护栏代理禁止个性化医疗建议，诊断和管理计划交由监督医生。",
+      "对话代理、护栏代理、SOAP note 代理和 clinician cockpit 的分工清楚；SOAP 四段、医生编辑鉴别诊断/管理计划、批准患者消息或要求后续问诊、异步监督和责任保留均与官方描述一致。",
+      "60 个随机、盲法虚拟 OSCE 场景、患者扮演者、g-AMIE 与受同一护栏约束的 PCP/NP/PA 对照、监督 PCP 编辑和独立医生评分均被写清；Google 的较高评价被限定在该实验流程，没有写成现实临床总排名。",
+      "confabulation、记录冗长、认知负担、对照医生未受该工作流训练、患者扮演者和虚拟场景不能代表真实临床等限制均保留；clinical-alert explainer、7 个 sections、agent-harness/authorization/llm/event relations、事件特定 hero、sources/evidence、verification 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过：标题已改为“病史采集交给 AI，诊断决定留给医生复核”，零基础读者能先看懂责任边界，再理解三阶段对话、SOAP note、clinician cockpit 和 60 个虚拟 OSCE；正文没有把研究结果写成可独立看诊或现实临床优越性的证明。 摘要中的“监督医生（PCP）”与 Google 官方的 overseeing PCP 对应，也与正文中由医生查看、编辑、批准患者消息并承担责任的角色一致。",
+    "changes": [
+      "将标题中的“把问诊和诊断决定拆给医生复核”改为“病史采集交给 AI，诊断决定留给医生复核”，避免“拆给”造成角色边界不清。",
+      "确认摘要将“主治医生”改为“监督医生（PCP）”，术语与官方 overseeing PCP 及正文监督职责一致。"
+    ]
+  }
+}

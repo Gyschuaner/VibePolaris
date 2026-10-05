@@ -1,8 +1,8 @@
 {
   "slug": "anthropic-project-glasswing-update",
-  "title": "Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞",
-  "summary": "2026-05-22，Anthropic公开“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：结果把模型用于漏洞发现的规模从单次演示推进到合作伙伴项目，并列出 Cloudflare 发现 2000 项漏洞、开源扫描估计发现 6202 项的案例。 当前能确认的是：数字来自 Anthropic 对合作项目的汇总；漏洞去重、严重性判定、修复率和误报率仍需要独立核验。",
-  "body": "2026 年 5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞，并列出 Cloudflare 约 2000 项、开源扫描估计 6202 项的案例。\n\n这条消息的变化是把模型用于漏洞发现从单次演示推进到合作伙伴项目，但总发现数仍只是入口。要判断价值，必须把发现、去重、严重性判定、报告、修复和回归测试连成一条证据链。\n\n以一个真实漏洞为例，系统先提出可能的缺陷和复现步骤，安全团队确认报告编号与严重性，开发者提交补丁，再用独立测试验证修复没有引入回归。“发现了多少”不能替代“修复了多少”。\n\n来源是 Anthropic 官方页面，支持合作项目和数字的公司汇总。漏洞去重、严重性判定、修复率和误报率仍需要独立核验，不能把一万项写成外部已经确认的缺陷，也不能推出所有代码库都有同样结果。\n\n四个关联词条各自对应漏洞流程一层：benchmark 比较固定任务；eval 规定样本、评分和错误类型；data-validation 检查漏洞证据和修复结果；agent-loop 描述发现、反馈和再次尝试的循环。它们不能替代漏洞通告或补丁记录。\n\n复核时应抽取合作方报告，检查漏洞编号、复现步骤、补丁提交、回归测试、误报和重复扫描结果，再比较发现率与修复率。只有可复现且闭环的缺陷才有安全价值。\n\n时间线从 2026-05-22 的首月更新开始；后续应观察合作方公开漏洞通告、修复证据和重复扫描结果。",
+  "title": "Anthropic 汇总 Project Glasswing 首月：合作方报告逾一万项高/严重漏洞",
+  "summary": "5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞，并列出 Cloudflare 约 2000 项、开源扫描估计 6202 项的案例。数字是 Anthropic 对合作项目的汇总，去重、严重性、修复率和误报率仍需独立核验。",
+  "body": "5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞。更新列出 Cloudflare 约 2000 项，以及开源扫描估计的 6202 项。\n\n总数只是安全流程的起点。一次发现要有漏洞编号、复现步骤和严重性判断，之后还要进入补丁、回归测试和重复扫描。去重方式不同，数字会变化；“高或严重”也需要知道由谁、按什么标准判定。\n\n以一个真实漏洞为例，系统先提出缺陷和复现路径，安全团队确认报告，开发者提交补丁，再用独立测试验证没有引入新的问题。benchmark 和 eval 可以比较固定任务与评分，data-validation 核对漏洞证据和修复结果，agent-loop 记录模型怎样根据反馈继续尝试。\n\nAnthropic 的页面支持合作项目和数字的公司汇总，不等于外部已经确认了一万项独立缺陷，也没有给出完整修复率或误报率。后续应抽取合作方报告、漏洞通告、补丁提交和重复扫描结果。",
   "publishedAt": "2026-05-22",
   "eventDate": "2026-05-22",
   "isExample": false,
@@ -15,76 +15,59 @@
   },
   "sections": [
     {
-      "id": "event",
-      "title": "2026-05-22，Anthropic公开了什么",
-      "body": "事件日记为 2026-05-22；来源页面公开日记为 2026-05-22。Anthropic公开的核心动作是：Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现了超过一万项高或严重漏洞。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
+      "id": "initial-update",
+      "title": "Glasswing 首月公布了哪些数字",
+      "body": "Anthropic 称约 50 个合作伙伴用 Claude Mythos Preview 发现超过一万项高或严重漏洞，并举出 Cloudflare 约 2000 项和开源扫描估计 6202 项的案例。这些数字来自项目方的首月汇总。",
       "kind": "narrative"
     },
     {
-      "id": "mechanism",
-      "title": "“Anthropic 公布 Project Glasswing 首月结果”改变了哪一层",
-      "body": "真正的变化在于：结果把模型用于漏洞发现的规模从单次演示推进到合作伙伴项目，并列出 Cloudflare 发现 2000 项漏洞、开源扫描估计发现 6202 项的案例。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。安全 AI 的价值要通过可复现的缺陷和修复闭环来衡量。",
+      "id": "finding-quality",
+      "title": "漏洞总数还要经过怎样的确认",
+      "body": "需要知道报告如何去重、严重性由谁判定、每个缺陷能否复现，以及是否进入补丁和回归测试。发现、修复和验证是不同阶段。",
       "kind": "technical"
     },
     {
-      "id": "scenario",
-      "title": "把“Anthropic 公布 Project Glasswing 首月结果”放进一次流程",
-      "body": "把它放进一个具体场景：“发现了多少”与“修复了多少”是两件事，读者应沿着报告编号、复现步骤、修复提交和回归测试继续追踪。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "id": "one-vulnerability",
+      "title": "沿着一个编号看修复是否成立",
+      "body": "系统提出缺陷和复现步骤，安全团队确认报告，开发者提交补丁，再用独立测试和重复扫描验证。benchmark、eval、data-validation 和 agent-loop 分别帮助比较任务、定义评分、核对证据和记录反馈循环。",
       "kind": "example"
     },
     {
-      "id": "boundary",
-      "title": "哪些结论仍属于 Anthropic 的口径",
-      "body": "这里的来源是 Anthropic 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。数字来自 Anthropic 对合作项目的汇总；漏洞去重、严重性判定、修复率和误报率仍需要独立核验。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把安全设计或一次阻断报道写成风险已经消失。",
+      "id": "company-boundary",
+      "title": "一万项不是外部确认的独立缺陷数",
+      "body": "Anthropic 的页面没有给出完整去重方法、修复率或误报率，也不能证明所有代码库会得到相同结果。数字属于合作项目的公司汇总，不能直接当作第三方审计。",
       "kind": "boundary"
     },
     {
-      "id": "terms",
-      "title": "用词条拆开“Anthropic 公布 Project Glasswing 首月结果”",
-      "body": "本文关联的词条各自对应漏洞流程一层：benchmark 比较固定任务；eval 规定样本、评分和错误类型；data-validation 检查漏洞证据和修复结果；agent-loop 描述发现、反馈和再次尝试的循环。它们不能替代漏洞通告或补丁记录。",
-      "kind": "comparison"
-    },
-    {
-      "id": "timeline",
-      "title": "从 2026-05-22 的页面到下一步",
-      "body": "时间线先从 2026-05-22 的来源页面开始：页面记录“Project Glasswing 合作伙伴称发现超过一万项高/严重漏洞；更新列出 Cloudflare 2000 项与开源项目 6202 项的估计”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
-      "kind": "narrative"
-    },
-    {
-      "id": "verify",
-      "title": "读者怎样复核这条主张",
-      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：后续应观察合作方公开的漏洞通告和修复证据。",
+      "id": "follow-up",
+      "title": "后续看通告、补丁和重复扫描",
+      "body": "继续查看合作方公开的漏洞通告、报告编号、补丁提交、回归测试和重复扫描结果，判断发现是否形成了安全闭环。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agent-safety",
-    "title": "把“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”拆成可核对的链路",
-    "question": "把风险拆成权限、隔离、检测、审批和回滚，怎样知道哪些是事实、哪些仍是主张？",
+    "title": "从“发现一万项”追到可复现和已修复",
+    "question": "怎样判断漏洞数量真的代表安全收益？",
     "steps": [
       {
-        "label": "确认日期与动作",
-        "detail": "先核对 eventDate=2026-05-22、publishedAt=2026-05-22，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
+        "label": "拆分统计对象",
+        "detail": "确认总数包含哪些项目、版本和严重性等级，记录去重和估算方法。",
         "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
       },
       {
-        "label": "拆开系统层",
-        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：结果把模型用于漏洞发现的规模从单次演示推进到合作伙伴项目，并列出 Cloudflare 发现 2000 项漏洞、开源扫描估计发现 6202 项的案例。",
+        "label": "抽取报告编号",
+        "detail": "随机选择若干发现，检查是否有复现步骤、受影响版本和明确的报告编号。",
         "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
       },
       {
-        "label": "放进具体场景",
-        "detail": "“发现了多少”与“修复了多少”是两件事，读者应沿着报告编号、复现步骤、修复提交和回归测试继续追踪",
+        "label": "追踪修复证据",
+        "detail": "查看补丁提交、回归测试、漏洞通告和维护者确认，区分已报告与已修复。",
         "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
       },
       {
-        "label": "标出不能推出的结论",
-        "detail": "数字来自 Anthropic 对合作项目的汇总；漏洞去重、严重性判定、修复率和误报率仍需要独立核验",
-        "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
-      },
-      {
-        "label": "安排下一次复核",
-        "detail": "后续应观察合作方公开的漏洞通告和修复证据",
+        "label": "重复扫描和复盘",
+        "detail": "在相同代码和新版本上重跑，记录误报、重复发现和新缺陷，评价工具的长期价值。",
         "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
       }
     ]
@@ -186,13 +169,11 @@
   "readerReview": {
     "reviewer": "codex-subagent-reader",
     "decision": "passed",
-    "checkedAt": "2026-10-03T00:00:00Z",
+    "checkedAt": "2026-10-04T00:00:00Z",
     "questions": [],
-    "notes": "深度复核通过：正文已按本事件的七段链路组织，具体流程、证据边界、关联词条与后续时间线均已对齐；已删除空泛结尾和跨事件词条。",
+    "notes": "复核通过：正文把 Anthropic 的合作项目汇总、约 50 个伙伴、Cloudflare 约 2000 项和开源扫描估计 6202 项明确归属于项目方口径，没有把它们写成外部审计或一万项已去重独立缺陷。发现→编号/复现→严重性→补丁→回归测试→重复扫描的闭环具体易懂；已将标题从“AI 已发现”改为“合作方报告”，收紧主体和证据边界。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
     "changes": [
-      "收束为 7 段事件特定正文",
-      "修正词条段落与 relatedSlugs 的对应关系",
-      "修正截断标题并核对日期、来源和时间线"
+      "将标题从“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”改为“Anthropic 汇总 Project Glasswing 首月：合作方报告逾一万项高/严重漏洞”，避免把公司汇总直接写成 AI 独立发现事实。"
     ]
   },
   "mechanicalErrors": [],

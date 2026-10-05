@@ -1,0 +1,181 @@
+{
+  "slug": "google-gemini-cli-github-actions-20250806",
+  "title": "Google 推出 Gemini CLI GitHub Actions 公测，把 Issue 与 PR 交给协作 Agent",
+  "summary": "Google 8 月 6 日推出 Gemini CLI GitHub Actions beta，将 6 月发布的开源 Gemini CLI 接到 GitHub 仓库的 Issue 和 Pull Request 事件。它提供 Issue 分流、PR review 和 @gemini-cli 按需协作三个开源工作流，并加入 Workload Identity Federation、命令 allowlist 与 OpenTelemetry；它仍是 beta，真正能执行什么取决于仓库权限、命令控制、额度和人工审阅。",
+  "body": "8 月 6 日，Google 把 Gemini CLI 从个人终端接到了团队协作的 GitHub。Gemini CLI GitHub Actions 进入 beta 后，新的 Issue 或 Pull Request 可以触发一个异步编码 Agent；开发者也可以在评论里写 @gemini-cli，把一个明确任务交给它。使用这一工作流需要 Gemini CLI 0.1.18 或更高版本。Google 将它描述为免费的 AI coding teammate，并称 Google AI Studio 提供免费配额；Vertex AI 和 Gemini Code Assist Standard/Enterprise 也支持，实际可用额度和身份方式仍按所接入的 Google 服务而定。\n\n首批工作流很具体：分析、标记和排序新 Issue；检查 Pull Request 的质量、风格和正确性；以及在 Issue 或 PR 中按需请求写测试、实现修改、提出替代方案或修复一个定义清楚的 bug。工作流是开源且可自定义的，团队可以把它当作仓库自动化的起点，而不是一套不可修改的黑箱。\n\n这次发布把安全控制放在产品入口里。符合条件的 Vertex AI 和 Gemini Code Assist Standard/Enterprise 用户可以用 Workload Identity Federation，减少长期 API key；命令 allowlist 可以逐条批准 Agent 能执行的 shell 命令；OpenTelemetry 则把动作、日志和指标送到组织自己的观测平台。它们降低了凭证泄漏和越权执行的风险，却不能替团队决定哪些命令安全、哪些文件可以写。\n\n“异步”让 Agent 可以在后台使用项目上下文工作，也让错误更容易在开发者不注意时进入分支。仓库维护者需要设定最小权限，检查它产生的代码和评论，把测试、依赖扫描与合并审批留在原有流程里。免费配额也不代表每次运行都有相同的延迟、上下文和模型能力。\n\n同一天的 Jules 是一个面向个人或项目任务的异步编码 Agent 公测转公开；Gemini CLI GitHub Actions 则围绕 Issue、PR 和评论触发协作工作流。两者都能辅助写代码，但一个强调任务本身，一个强调仓库事件和团队控制。对团队来说，值得先试的是一个可回滚、命令范围清楚的 Issue 或 PR 流程。",
+  "publishedAt": "2025-08-06",
+  "eventDate": "2025-08-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-gemini-cli-github-actions-20250806.svg",
+    "alt": "Gemini CLI GitHub Actions 从 Issue 或 Pull Request 触发 Agent，并经过命令白名单和日志观测",
+    "sourceUrl": "/images/news/google-gemini-cli-github-actions-20250806.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "github-trigger",
+      "title": "Gemini CLI 进入团队协作入口",
+      "body": "Gemini CLI GitHub Actions beta 把开源 CLI 接到 Issue、Pull Request 和评论事件，Agent 可以异步读取项目上下文并处理任务；使用要求是 Gemini CLI 0.1.18 或更高版本。它是团队工作流产品，不是 6 月 Gemini CLI 本体的重新发布。",
+      "kind": "narrative"
+    },
+    {
+      "id": "three-workflows",
+      "title": "首批三个工作流各自对应一个协作动作",
+      "body": "Issue triage 负责分析、标记和排序；PR review 给出质量、风格和正确性反馈；@gemini-cli 协作则让开发者按需请求写测试、实现修改或修复明确 bug。三个工作流开源且可自定义。",
+      "kind": "example"
+    },
+    {
+      "id": "identity-controls",
+      "title": "身份和命令控制被放进运行前",
+      "body": "Workload Identity Federation 减少长期 API key，command allowlist 让组织逐条批准 shell 命令，OpenTelemetry 把动作和指标送到观测系统。控制能减少风险，不能代替团队对每条命令和每个目录的判断。",
+      "kind": "technical"
+    },
+    {
+      "id": "beta-boundary",
+      "title": "Beta、额度和权限决定实际体验",
+      "body": "产品仍在 beta，Google AI Studio 提供免费配额，Vertex AI 和 Gemini Code Assist Standard/Enterprise 也支持，但各自有不同接入与额度条件。异步 Agent 可以修改代码或提出建议，仓库权限、命令范围、测试和合并审批仍由团队负责。",
+      "kind": "boundary"
+    },
+    {
+      "id": "jules-distinction",
+      "title": "与同日 Jules 的触发方式不同",
+      "body": "Jules 解决异步编码任务的公开使用；Gemini CLI GitHub Actions 解决仓库事件和评论触发的团队协作。两者都接触代码，触发方式、身份和审阅位置不同，不能把 Jules 的公测数字当成 Actions 的效果数据。",
+      "kind": "comparison"
+    },
+    {
+      "id": "safe-pilot",
+      "title": "先从可回滚的仓库流程试用",
+      "body": "团队可以先选择一个 Issue 分流或只读 PR review 流程，设置命令白名单和日志，再逐步开放写测试或改代码。每次运行都应保留 diff、测试结果和人工批准记录。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一个 GitHub Agent 怎样从评论走到代码改动？",
+    "question": "触发、授权、执行和合并之间，哪些控制点不能省？",
+    "steps": [
+      {
+        "label": "触发仓库事件",
+        "detail": "新 Issue、Pull Request 或评论中的 @gemini-cli 触发工作流，先把任务范围固定在一个项目上下文里。",
+        "evidence": "Google GitHub Actions event triggers"
+      },
+      {
+        "label": "确认身份和权限",
+        "detail": "为 Agent 使用短期身份或 WIF，限制它能读写的仓库、分支、目录和外部资源。",
+        "evidence": "Workload Identity Federation and least-privilege controls"
+      },
+      {
+        "label": "执行允许的命令",
+        "detail": "用 command allowlist 控制 shell 调用，先从分析、标记或只读 review 开始，再考虑写文件和运行修复脚本。",
+        "evidence": "Google command allowlisting description"
+      },
+      {
+        "label": "记录动作和结果",
+        "detail": "通过 OpenTelemetry 保存 Agent 的命令、日志、指标、评论和生成的 diff，让团队能够复查一次运行。",
+        "evidence": "OpenTelemetry integration in Gemini CLI GitHub Actions"
+      },
+      {
+        "label": "人工审阅再合并",
+        "detail": "开发者检查代码、依赖、测试和安全影响，必要时回滚；Agent 的建议或改动不能绕过仓库的合并审批。",
+        "evidence": "Repository review and merge boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google",
+    "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "event",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+      "claim": "Google 8 月 6 日推出 Gemini CLI GitHub Actions beta，向全球开放 Issue 分流、PR review 和 @gemini-cli 按需协作工作流。",
+      "excerpt": "Google, August 6, 2025: Gemini CLI GitHub Actions is in beta and available worldwide for issue triage, pull request reviews, and on-demand collaboration."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+      "claim": "Google 说明 Google AI Studio 提供免费配额，Vertex AI 和 Gemini Code Assist Standard/Enterprise 也支持；同时提供 Workload Identity Federation、command allowlisting、OpenTelemetry，并要求 Gemini CLI 0.1.18 或更高版本。",
+      "excerpt": "The announcement offers free-of-charge Google AI Studio quotas, supports Vertex AI and Gemini Code Assist Standard and Enterprise, and describes WIF, granular command allowlisting, OpenTelemetry, and Gemini CLI 0.1.18 or later."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+  "sourceHash": "sha256:03f3d92e22f2db251abe9959871e2da309b802be2a1d5ad36032c6a37a7a7bdc",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文把 GitHub Actions 的异步 Agent、Issue/PR 触发、工具调用和人工合并组织成一个协作循环。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文说明 8 月 6 日发布 beta，并与 6 月 CLI 本体和同日 Jules 做日期及产品去重。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文具体解释 GitHub Actions、WIF、command allowlist、OpenTelemetry 和仓库权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+      "claim": "Google official Gemini CLI GitHub Actions announcement dated August 6, 2025.",
+      "excerpt": "Meet your new AI coding teammate: Gemini CLI GitHub Actions."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google 8 月 6 日官方页面的 beta 日期、全球可用、Issue triage、PR review、@gemini-cli、开源可自定义工作流、Google AI Studio 免费配额、Vertex AI/Gemini Code Assist 支持、WIF、命令 allowlist、OpenTelemetry 和 CLI 0.1.18+ 要求；把同日 Jules 作为不同触发模式处理，没有把 beta 写成全面自动合并或安全认证。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 把 GitHub 事件触发、工作流、身份、命令控制和人工合并写成具体 Agent 安全流程，保留 beta 与额度边界，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-06-gemini-cli-actions",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-06；Google 官方页面明确标注 beta、全球可用，并支持 Issue triage、Pull Request review 和 @gemini-cli 按需协作。",
+      "正文补齐 Google AI Studio 免费配额、Vertex AI/Gemini Code Assist Standard/Enterprise 支持及 CLI 0.1.18+ 要求；三类工作流和开源可自定义范围与官方说明一致。",
+      "WIF、command allowlist 和 OpenTelemetry 被写成凭证、命令和观测控制，不是安全认证；异步执行、仓库权限、diff、测试、人工批准和回滚边界清楚，没有写成自动合并。",
+      "与同日 Jules 的任务触发模式区别清楚；agent-safety explainer、sections、relatedSlugs、空 relatedArticleSlugs、sources/evidence、schema 和 GitHub Actions 主题 SVG 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能沿着 Issue/PR 触发—身份授权—命令执行—日志观测—人工合并理解产品，同时看到 beta、免费配额和权限限制。",
+    "changes": [
+      "在正文和 beta section 中明确 Google AI Studio 的免费配额、Vertex AI/Gemini Code Assist 支持及 CLI 0.1.18+ 要求，并同步更新来源和验证说明。"
+    ]
+  }
+}

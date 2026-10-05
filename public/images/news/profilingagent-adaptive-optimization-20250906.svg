@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<title id="title">ProfilingAgent：按瓶颈做模型压缩</title>
+<desc id="desc">静态计算指标和运行时延迟内存信号经过多 Agent 判断，输出逐层剪枝与量化策略。</desc>
+<defs>
+ <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#f2f8ff"/><stop offset="1" stop-color="#fff2eb"/></linearGradient>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#5b778b"/></marker>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#2b4a5f" flood-opacity=".14"/></filter>
+</defs>
+<rect width="1200" height="680" rx="32" fill="url(#bg)"/>
+<text x="68" y="76" fill="#315c73" font-size="35" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">别先决定压多少，先找模型卡在哪里</text>
+<text x="70" y="114" fill="#718998" font-size="19" font-family="Arial, 'Noto Sans CJK SC', sans-serif">static profile · runtime signals · layer-wise decisions · regression</text>
+<g filter="url(#shadow)">
+ <rect x="66" y="173" width="254" height="322" rx="22" fill="#fff" stroke="#b8d3e4" stroke-width="2"/>
+ <text x="103" y="221" fill="#3e7896" font-size="22" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">Profiling 信号</text>
+ <rect x="104" y="255" width="176" height="48" rx="10" fill="#e3f1fa"/><text x="192" y="285" text-anchor="middle" fill="#3e7896" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">MAC / 参数量</text>
+ <rect x="104" y="321" width="176" height="48" rx="10" fill="#fff0d9"/><text x="192" y="351" text-anchor="middle" fill="#a16b31" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">延迟 / 内存</text>
+ <path d="M120 426 H260" stroke="#96b6c6" stroke-width="5" stroke-linecap="round"/><circle cx="151" cy="426" r="8" fill="#4c91ad"/><circle cx="210" cy="426" r="8" fill="#d79555"/><circle cx="258" cy="426" r="8" fill="#7a9bc5"/>
+ <text x="192" y="465" text-anchor="middle" fill="#718998" font-size="15" font-family="Arial, 'Noto Sans CJK SC', sans-serif">静态 + 运行时</text>
+</g>
+<path d="M336 335 H375" stroke="#5b778b" stroke-width="4" marker-end="url(#arrow)"/>
+<g filter="url(#shadow)">
+ <rect x="395" y="145" width="404" height="380" rx="22" fill="#fff" stroke="#c6b8e5" stroke-width="2"/>
+ <text x="435" y="201" fill="#614f99" font-size="22" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">多 Agent 决策</text>
+ <rect x="442" y="245" width="136" height="58" rx="11" fill="#e5f2eb"/><text x="510" y="280" text-anchor="middle" fill="#4b8564" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">结构化剪枝</text>
+ <rect x="616" y="245" width="136" height="58" rx="11" fill="#eee7ff"/><text x="684" y="280" text-anchor="middle" fill="#765aa1" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">动态量化</text>
+ <path d="M580 274 H612" stroke="#5b778b" stroke-width="4" marker-end="url(#arrow)"/>
+ <path d="M684 324 C684 389 510 389 510 324" fill="none" stroke="#8e76b7" stroke-width="4" marker-end="url(#arrow)"/>
+ <rect x="450" y="421" width="296" height="55" rx="11" fill="#e4f1fb"/><text x="598" y="455" text-anchor="middle" fill="#47718f" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">按架构逐层适配</text>
+ <text x="435" y="500" fill="#718998" font-size="15" font-family="Arial, 'Noto Sans CJK SC', sans-serif">记录目标、依据、基线和回滚</text>
+</g>
+<path d="M820 335 H859" stroke="#5b778b" stroke-width="4" marker-end="url(#arrow)"/>
+<g filter="url(#shadow)">
+ <rect x="880" y="173" width="254" height="322" rx="22" fill="#fff" stroke="#e1c39f" stroke-width="2"/>
+ <text x="920" y="221" fill="#9d6a34" font-size="22" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">实验回报</text>
+ <rect x="916" y="255" width="184" height="48" rx="10" fill="#fff0d9"/><text x="1008" y="285" text-anchor="middle" fill="#9d6a34" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">内存节省 74%</text>
+ <rect x="916" y="321" width="184" height="48" rx="10" fill="#e5f2eb"/><text x="1008" y="351" text-anchor="middle" fill="#4b8564" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">精度损失 &lt;0.5%</text>
+ <rect x="916" y="387" width="184" height="48" rx="10" fill="#e4f1fb"/><text x="1008" y="417" text-anchor="middle" fill="#47718f" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">速度 1.74×</text>
+ <text x="1008" y="461" text-anchor="middle" fill="#718998" font-size="15" font-family="Arial, 'Noto Sans CJK SC', sans-serif">论文模型与数据集条件</text>
+</g>
+<text x="68" y="575" fill="#9d6a34" font-size="20" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">压缩收益要在真实硬件上重新测</text>
+<text x="68" y="613" fill="#718998" font-size="18" font-family="Arial, 'Noto Sans CJK SC', sans-serif">批大小、编译器和输入分布都会改变 profile。</text>
+</svg>

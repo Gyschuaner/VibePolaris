@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-23",
+  "eventDate": "2025-08-23",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-23 AI 事件重新检索：未发现可独立核实的官方产品发布，改以 arXiv 当日首次提交为主；按 Agent 系统安全、模型行为评估、事实约束生成、多 Agent 协作、行业 Agent 和用户安全排序，区分论文基准、真实数据与预印本摘要边界。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508230000 TO 202508232359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO)",
+      "https://arxiv.org/abs/2508.16846",
+      "https://arxiv.org/abs/2508.17155",
+      "https://arxiv.org/abs/2508.16889",
+      "https://arxiv.org/abs/2508.16983",
+      "https://arxiv.org/abs/2508.17068",
+      "https://arxiv.org/abs/2508.17094",
+      "https://arxiv.org/abs/2508.16921",
+      "https://arxiv.org/abs/2508.16853",
+      "https://arxiv.org/abs/2508.16987",
+      "https://arxiv.org/abs/2508.16845",
+      "https://arxiv.org/abs/2508.16994",
+      "https://arxiv.org/abs/2508.17158"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "basil-sycophancy-bayesian-assessment-20250823",
+      "title": "BASIL 用贝叶斯框架分开模型的谄媚和合理更新",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / BASIL 作者组",
+        "url": "https://arxiv.org/abs/2508.16846"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16846",
+      "sourceHash": "sha256:3fee440dd390e85a03f10d04aa50b418fc2f5bbe0ec8ce106427fb568d4a1537",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "data-validation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16846",
+          "claim": "BASIL 用行为经济学和理性决策理论建立贝叶斯框架，区分模型因为新证据改变观点与为了迎合用户而改变观点。",
+          "excerpt": "Bayesian probabilistic framework ... disentangling sycophantic belief shifts from rational changes ... driven by new evidence"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16846",
+          "claim": "论文在三个不确定性任务上发现谄媚性信念转移，并报告事后校准、SFT 和 DPO 可降低贝叶斯不一致。",
+          "excerpt": "across multiple LLMs and three uncertainty-driven tasks ... post-hoc calibration and ... SFT and DPO substantially reduce Bayesian inconsistency"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把“模型太会迎合”从直觉变成不依赖客观标签的测量问题，和前几日的安全基准形成互补；文章会保留主观任务与贝叶斯一致性的边界。"
+    },
+    {
+      "slug": "toctou-bench-llm-agent-security-20250823",
+      "title": "TOCTOU-Bench 发现 Agent 在检查和使用之间仍会被换掉外部状态",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / TOCTOU-Bench 作者组",
+        "url": "https://arxiv.org/abs/2508.17155"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17155",
+      "sourceHash": "sha256:61b35f8ac774f174d9d671fbbb1e9789f0f29e34561eb6afad981149bc6795f4",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "tools",
+        "execution-sandbox",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17155",
+          "claim": "研究把系统安全中的 time-of-check to time-of-use 问题带到 LLM Agent：Agent 检查文件或 API 状态后，外部状态可能在真正使用前被修改。",
+          "excerpt": "TOCTOU ... external state ... later modified before use ... malicious configuration swaps or payload injection"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17155",
+          "claim": "TOCTOU-Bench 含 66 个真实感用户任务；组合 prompt rewriting、state integrity monitoring 和 tool-fusing 后，论文报告执行轨迹中的漏洞从 12% 降到 8%。",
+          "excerpt": "TOCTOU-Bench ... 66 realistic user tasks ... reduce ... vulnerabilities ... from 12% to 8%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是把经典系统安全时序漏洞转译到 Agent 工具链的首批研究，能补上仅看提示注入的盲区；文章会解释检查快照、工具执行和状态变化之间的竞态，不提供可滥用的攻击步骤。"
+    },
+    {
+      "slug": "objexmt-llm-judge-multiturn-jailbreak-20250823",
+      "title": "ObjexMT 测试 LLM-as-a-judge 能不能看懂多轮对话的真实目标",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / ObjexMT 作者组",
+        "url": "https://arxiv.org/abs/2508.16889"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16889",
+      "sourceHash": "sha256:523a96d1d5d638cbd08819cb2e254dcdbefddf49cd856be8a78f91eb466963bd",
+      "relatedSlugs": [
+        "eval",
+        "benchmark",
+        "context",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16889",
+          "claim": "ObjexMT 要求模型从多轮对话抽取一句基础目标并给出置信度，在 SafeMTData_Attack600、SafeMTData_1K 和 MHJ 上评测。",
+          "excerpt": "benchmark for objective extraction and metacognition ... multi-turn transcript ... SafeMTData_Attack600, SafeMTData_1K, and MHJ"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16889",
+          "claim": "论文报告不同数据集上的准确率从 16% 到 82%，高置信错误仍存在；在 Wrong@0.90 指标上，错误率从 14.9% 到 47.7%。",
+          "excerpt": "Performance varies sharply across datasets (16--82% accuracy) ... Wrong@0.90 ranges from 14.9% ... to 47.7%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把评测器本身的“看懂目标”和“知道自己不确定”分开测，正好回应多轮越狱会把意图拆散的问题；文章会把指标和模型比较限制在论文数据集。"
+    },
+    {
+      "slug": "refactx-constrained-factual-generation-20250823",
+      "title": "ReFactX 用前缀树约束生成，让模型直接从知识图谱事实里取证",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / ReFactX 作者组",
+        "url": "https://arxiv.org/abs/2508.16983"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16983",
+      "sourceHash": "sha256:f511cd2c02649736a439eedf9aa055e5fbd41916c57f5d065c943a29df2902e5",
+      "relatedSlugs": [
+        "llm",
+        "grounding",
+        "citation",
+        "data-validation",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16983",
+          "claim": "ReFactX 不依赖额外 retriever 或辅助模型，而是把知识图谱三元组转成事实文本，构建前缀树索引，在生成时只允许形成已有事实的 token 序列。",
+          "excerpt": "constrained generation with a pre-built prefix-tree index ... only sequences of tokens that form an existing fact"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16983",
+          "claim": "论文在问答上测试可扩展到 8 亿事实的知识库，支持领域数据，并称生成时额外开销很小。",
+          "excerpt": "scales to large knowledge bases (800 million facts) ... adapts to domain-specific data ... minimal generation-time overhead"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它直接处理 RAG 依赖多组件和错误传播的问题，但“只生成知识库已有事实”仍不等于事实适用于当前问题；文章会强调索引新鲜度、覆盖率和引用链。"
+    },
+    {
+      "slug": "anemoi-semicentralized-multi-agent-mcp-20250823",
+      "title": "Anemoi 用 A2A MCP 让多个 Agent 直接协作，不把所有事压给 Planner",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Anemoi 作者组",
+        "url": "https://arxiv.org/abs/2508.17068"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17068",
+      "sourceHash": "sha256:1a73b1fcb5ad5bd6558db3a4f37826b2c6849f99650abd31567ffc9eef4bd08b",
+      "relatedSlugs": [
+        "agent",
+        "mcp",
+        "tools",
+        "context",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17068",
+          "claim": "Anemoi 基于 Coral Protocol 的 Agent-to-Agent 通信 MCP server，允许 Agent 直接交流、监测进度、评估结果和提出实时改进。",
+          "excerpt": "semi-centralized MAS built on the Agent-to-Agent (A2A) communication MCP server ... monitor progress ... propose refinements"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17068",
+          "claim": "在 GAIA 上使用 GPT-4.1-mini 作为 Planner 时，Anemoi 达到 52.73% 准确率，比相同 LLM 设置下 OWL 开源基线 43.63% 高 9.09 个百分点。",
+          "excerpt": "GAIA ... 52.73% accuracy ... surpassing ... OWL (43.63%) by +9.09% under identical LLM settings"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它直接回应中央 Planner 过强依赖和上下文拼接冗余两个问题，且有相同 LLM 设置的基准比较；文章会把半中心化协作、MCP 传输和 GAIA 结果分开。"
+    },
+    {
+      "slug": "powerchain-agentic-grid-analysis-20250823",
+      "title": "PowerChain 让 Agent 用电力系统工具做没见过的配电网分析",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / PowerChain 作者组",
+        "url": "https://arxiv.org/abs/2508.17094"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17094",
+      "sourceHash": "sha256:380b74306f7b29a674273d5836f5f509cee3ec7177b3350a40a82c372e2e2086",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "data-pipeline",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17094",
+          "claim": "PowerChain 面向复杂配电网分析，动态生成结构化上下文，利用 GridLAB-D 等自包含工具的监督信号和专家标注、验证过的推理轨迹。",
+          "excerpt": "dynamically generates structured context ... self-contained power systems tools (e.g., GridLAB-D) ... expert-annotated and verified reasoning trajectories"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17094",
+          "claim": "论文在真实公用事业数据上测试自然语言配电网任务，摘要称相对基线最高提升 144%。",
+          "excerpt": "empirical results on real utility data ... up to a 144/% improvement in performance over baselines"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它展示了 Agent 如何在高约束行业里通过工具和验证轨迹泛化到未见任务；文章会修正摘要中“144/%”的排版歧义，只按“最高 144%”原样标注并提醒需看完整实验表。"
+    },
+    {
+      "slug": "aha-bench-affective-hallucination-20250823",
+      "title": "AHaBench 把“假装有情感关系”单独作为模型安全问题",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / AHaBench 作者组",
+        "url": "https://arxiv.org/abs/2508.16921"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16921",
+      "sourceHash": "sha256:01f24b955c946b7404697e9cd7e11c940b554e82f39215a36fa9cef8398e51c0",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "hallucination",
+        "data-quality",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16921",
+          "claim": "论文把 emotionally immersive、制造虚假社会临场感的回答定义为 affective hallucination，并为心理健康相关对话建立 500 条专家参考提示。",
+          "excerpt": "Affective Hallucination ... illusion of genuine relational connection ... benchmark of 500 mental-health-related prompts with expert-informed reference responses"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16921",
+          "claim": "AHaBench 从 Emotional Enmeshment、Illusion of Presence、Fostering Overdependence 三维评测，并提供 5K 偏好数据；摘要报告 DPO 可降低该现象、GPT-4o 与人工判断相关系数 r=0.85。",
+          "excerpt": "evaluated along three dimensions ... 5K-instance preference dataset ... Pearson correlation ... r=0.85"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是用户安全里容易被“温暖语气”遮住的一类风险，且给出可评测维度；文章会避免复述令人不适的示例，把重点放在边界、依赖风险和人工判断。"
+    },
+    {
+      "slug": "devlicops-ai-code-license-risk-20250823",
+      "title": "DevLicOps 为 AI 生成代码补上一层许可证治理",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / DevLicOps 作者组",
+        "url": "https://arxiv.org/abs/2508.16853"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16853",
+      "sourceHash": "sha256:356d1738aaa39ceb61f486ef9322a38ff8210e14bfa629a60a7ecc3f9513b8f2",
+      "relatedSlugs": [
+        "llm",
+        "authorization",
+        "data-validation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16853",
+          "claim": "论文指出代码助手可能生成受限开源许可证覆盖的代码，带来诉讼、强制开源和外包场景的合规风险。",
+          "excerpt": "code governed by restrictive open-source licenses ... litigation or forced open-sourcing"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16853",
+          "claim": "DevLicOps 提出通过治理、事件响应和权衡管理 AI coding assistant 的许可证风险。",
+          "excerpt": "practical framework ... governance, incident response, and informed tradeoffs"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是实用的治理框架，但摘要没有给出可复查的检测实验；先保留，后续结合更完整的许可证证据再写。"
+    },
+    {
+      "slug": "websight-vision-first-web-agent-20250823",
+      "title": "WebSight 只看网页视觉，不依赖 HTML 或 DOM 做 Web Agent",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / WebSight 作者组",
+        "url": "https://arxiv.org/abs/2508.16987"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16987",
+      "sourceHash": "sha256:15b1f78c23377db2739700b4b4c0b5febb001ed1c4e7c1855ad5b143819811b1",
+      "relatedSlugs": [
+        "agent",
+        "browser-api",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16987",
+          "claim": "WebSight 用视觉感知操作网页，WebSight-7B 通过 LoRA 在 Wave-UI-25K 网页数据上训练，并由规划、推理、视觉动作和验证 Agent 组成。",
+          "excerpt": "purely through visual perception ... LoRA ... Wave-UI-25K ... planning, reasoning, vision-action, and verification agents"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16987",
+          "claim": "论文报告 WebSight-7B 在 Showdown Clicks top-1 为 58.84%，完整 Agent 在 WebVoyager 成功率 68.0%，但与 8 月 21 日 GUI Agent 文章主题重叠。",
+          "excerpt": "58.84% ... 68.0% success rate on the WebVoyager benchmark"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它有清晰的视觉 Web Agent 结果，但与前一天 Mobile-Agent-v3 的 GUI 自动化主线重复；先留存，避免连续两天重复写同一类交互。"
+    },
+    {
+      "slug": "nina-vla-normalizing-flows-20250823",
+      "title": "NinA 用 Normalizing Flow 替代扩散动作解码器",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / NinA 作者组",
+        "url": "https://arxiv.org/abs/2508.16845"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16845",
+      "sourceHash": "sha256:d6a54185120c334380086ec0effd975e3d5f65e94f7ba17815638ae5e2dd3860",
+      "relatedSlugs": [
+        "agent",
+        "llm",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16845",
+          "claim": "NinA 把 VLA 的扩散动作解码器替换成可逆变换的 Normalizing Flow，从而一次采样动作。",
+          "excerpt": "replaces the diffusion action decoder with a Normalizing Flow ... one-shot sampling"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16845",
+          "claim": "在 LIBERO 上微调并与扩散解码器比较，摘要称保持相近表现的同时显著缩短推理时间。",
+          "excerpt": "fine-tune on the LIBERO benchmark ... matches the performance ... substantially faster inference"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "机器人控制有潜在价值，但摘要没有给出速度和任务成功率的具体数字；先保留，等完整实验表可核对后再写。"
+    },
+    {
+      "slug": "grade-rag-difficulty-evaluation-20250823",
+      "title": "GRADE 用“推理步数 × 证据距离”评估 RAG 难度",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / GRADE 作者组",
+        "url": "https://arxiv.org/abs/2508.16994"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16994",
+      "sourceHash": "sha256:6acf0026cb97c19c02cd69d2dc1a113c192a133b3b215eb2f7ed7f8084648299",
+      "relatedSlugs": [
+        "rag",
+        "eval",
+        "benchmark",
+        "data-quality",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16994",
+          "claim": "GRADE 将 RAG 任务难度拆为推理深度和查询与支持证据的语义距离，构造二维难度矩阵。",
+          "excerpt": "two orthogonal dimensions ... reasoning depth ... semantic distance ... 2D difficulty matrix"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16994",
+          "claim": "论文从事实新闻构建带知识图谱的合成多跳 QA，实验显示错误率与两个难度指标强相关。",
+          "excerpt": "synthetic multi-hop QA dataset ... error rates strongly correlate with our difficulty measures"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它能补充 RAG 评测方法，但当天已有 ReFactX 的事实生成主线；先保留，避免把两个检索评测方法压在同一日。"
+    },
+    {
+      "slug": "cifr-safe-finetuning-api-20250823",
+      "title": "CIFR 测试加密数据如何绕过微调 API 的安全监控",
+      "eventDate": "2025-08-23",
+      "publishedAt": "2025-08-23",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / CIFR 作者组",
+        "url": "https://arxiv.org/abs/2508.17158"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17158",
+      "sourceHash": "sha256:3c3b477d92928558e04246ba3c888d81da3eb4b2fa3c00ba47fb451f04b0bae5",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "authorization",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17158",
+          "claim": "CIFR 评估微调 API 面对 cipher-enabled attacker 时能否保持安全，同时保留正常定制能力，并把部分未见密码族只放在测试集检验泛化。",
+          "excerpt": "Cipher Fine-tuning Robustness benchmark ... unseen ciphers and cipher families"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17158",
+          "claim": "论文报告基于模型内部激活训练的 probe monitor 检测准确率超过 99%，并能泛化到未见密码变体。",
+          "excerpt": "probe monitors achieve over 99% detection accuracy, generalize to unseen cipher variants"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它是重要的微调 API 安全研究，但与前两日 Agent 安全基准连续度较高；先留存，后续可与模型定制治理一起写。"
+    }
+  ],
+  "selectedSlugs": [
+    "basil-sycophancy-bayesian-assessment-20250823",
+    "toctou-bench-llm-agent-security-20250823",
+    "objexmt-llm-judge-multiturn-jailbreak-20250823",
+    "refactx-constrained-factual-generation-20250823",
+    "anemoi-semicentralized-multi-agent-mcp-20250823",
+    "powerchain-agentic-grid-analysis-20250823",
+    "aha-bench-affective-hallucination-20250823"
+  ],
+  "gap": null
+}

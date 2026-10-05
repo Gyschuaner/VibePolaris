@@ -1,0 +1,193 @@
+{
+  "slug": "argen-policy-as-code-20250906",
+  "title": "ArGen：把生成式 AI 的规则写成可执行的 policy-as-code",
+  "summary": "ArGen 论文于 9 月 6 日提交，尝试把伦理原则、运营安全和监管要求写成模型能够读取、评分和回归的规则，再用原则性自动奖励、GRPO 和 OPA 风格治理层训练与检查 LLM。论文以一个受 Dharmic ethics 指导的医疗助手为案例，报告领域范围遵循度较基线提高 70.9%；这是一项研究条件下的案例结果，不是合规认证。",
+  "body": "很多 AI 系统已经有安全政策，但政策常常停在文档、提示词或一组人工检查里。出了问题以后，团队能说明“我们写过这条规则”，却不一定能说明模型在每次回答里是否真的遵守。ArGen 试图把这段落差缩短：让规则可读、可评分，也能进入训练和上线后的回归流程。\n\n论文把治理对象分成三类：伦理原则、运营安全协议和监管合规要求。它没有把这些要求压缩成一句“更安全”，而是把它们写成可配置的机器可读政策，再让模型的回答接受原则性自动评分。这样做的意义在于，政策开始拥有版本、条件和失败记录，而不只是一页没人持续维护的说明。\n\nArGen 的方法由三个部分接在一起。自动评分器根据政策原则给出奖励，GRPO 用这些相对奖励更新模型，OPA 风格的治理层则负责把规则放在模型之外，作为可以检查和追踪的约束。论文强调的是组合关系：训练让模型学会遵守，治理层让团队还能看见规则和结果之间的对应。\n\n作者用一个受 Dharmic ethics 指导的医疗助手做案例，把 Ahimsa、Dharma 等来自《薄伽梵歌》的原则写进应用边界。这个例子有意选择了文化和价值都很具体的场景，说明 policy-as-code 不只适合简单的格式校验；但它也提醒我们，价值系统的选择和解释本身需要由领域人员参与，不能把一套原则自动当成普遍答案。\n\n在这个案例里，论文报告 ArGen 的领域范围遵循度比基线提高 70.9%。这里的“遵循”是研究者设定的领域指标，回答是否偏离医疗助手的任务范围，并不等于医学正确率、临床安全性或法律上的合规结论。结果也来自一套特定原则、评分器和基线，换到别的模型、语言或政策集合，需要重新测量。\n\n把规则写成代码的好处，是它终于可以像代码一样被审查和回归：改一条政策时知道影响了哪些回答，新增边界时可以重跑固定场景，争议输出也能追溯到规则版本。但这条路并不会自动消除歧义。规则之间可能冲突，评分器可能漏掉上下文，模型也可能学会迎合分数而不是真的理解政策，所以人工复核和反例集合仍然要保留。\n\nArGen 更像一套把治理接进训练和评估的工作方法，而不是一张“合规已完成”的证书。部署时应给政策、评分器和模型分别编号，保留变更审批和失败样例；涉及医疗、金融或真实用户时，还要设置人工升级、权限边界和上线后监测。先把可执行的规则、可复现的评估和可追溯的审计接起来，再讨论系统是否值得信任。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/argen-policy-as-code-20250906.svg",
+    "alt": "ArGen 把伦理、安全和合规规则接入奖励训练与治理评估",
+    "sourceUrl": "/images/news/argen-policy-as-code-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "policy-gap",
+      "title": "写在文档里的规则，不等于模型真的遵守",
+      "body": "ArGen 试图把政策从说明文字推进到可配置、可评分和可回归的机器可读规则。",
+      "kind": "narrative"
+    },
+    {
+      "id": "policy-scope",
+      "title": "伦理、运营安全和监管要求被放进同一套政策框架",
+      "body": "论文讨论的是跨类型的治理要求，具体规则仍需要由领域人员定义和解释。",
+      "kind": "boundary"
+    },
+    {
+      "id": "argen-stack",
+      "title": "自动奖励、GRPO 与 OPA 风格治理层各司其职",
+      "body": "评分器给出原则性奖励，GRPO 用相对奖励训练，治理层把规则和结果留在模型外部追踪。",
+      "kind": "technical"
+    },
+    {
+      "id": "dharmic-case",
+      "title": "医疗助手案例把文化价值写进应用边界",
+      "body": "作者用 Ahimsa、Dharma 等 Dharmic ethics 原则做案例，展示复杂价值系统如何进入可执行政策。",
+      "kind": "example"
+    },
+    {
+      "id": "scope-result",
+      "title": "领域范围遵循度较基线提高 70.9%",
+      "body": "这是论文案例中的领域指标，不能直接等同医学正确率、临床安全性或法律合规。",
+      "kind": "comparison"
+    },
+    {
+      "id": "policy-regression",
+      "title": "policy-as-code 让变更、反例和失败记录可以回归",
+      "body": "政策、评分器和模型都应有版本；规则冲突、评分器盲区和迎合分数仍需人工复核。",
+      "kind": "technical"
+    },
+    {
+      "id": "governance-boundary",
+      "title": "研究框架不能替代领域责任和合规审查",
+      "body": "上线时仍要保留人工升级、权限边界、审批记录和持续监测，不能把一个案例当成认证。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "policy-governance",
+    "title": "怎样让 AI 政策变成可验证的系统约束？",
+    "question": "把规则写成机器可读政策，用自动评分和 GRPO 训练，再由治理层记录版本、结果和例外。",
+    "steps": [
+      {
+        "label": "列出政策边界",
+        "detail": "分别写明伦理原则、运营安全和监管要求，先确定适用的领域、用户和失败条件。",
+        "evidence": "ethical principles, operational safety protocols, and regulatory compliance standards"
+      },
+      {
+        "label": "让规则机器可读",
+        "detail": "把自然语言要求整理成可配置的条件、评分标准和例外，保留来源与版本。",
+        "evidence": "complex sets of configurable, machine-readable rules"
+      },
+      {
+        "label": "自动评分回答",
+        "detail": "用原则性评分器检查回答是否遵守政策，把违反边界的样例留下来供训练和复盘。",
+        "evidence": "principle-based automated reward scoring"
+      },
+      {
+        "label": "用相对奖励训练",
+        "detail": "通过 GRPO 更新模型，同时比较不同回答在同一政策下的相对表现。",
+        "evidence": "Group Relative Policy Optimisation (GRPO)"
+      },
+      {
+        "label": "治理层持续回归",
+        "detail": "像维护代码一样审查政策变更，重跑固定场景，保留人工升级和审计记录。",
+        "evidence": "Open Policy Agent inspired governance layer"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.07006"
+  },
+  "relatedSlugs": [
+    "llm",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.07006",
+      "claim": "ArGen 将原则性自动奖励评分、GRPO 与 OPA 风格治理层组合起来，让 LLM 对可配置的伦理、安全和合规规则作出可验证的遵循。",
+      "excerpt": "principle-based automated reward scoring, Group Relative Policy Optimisation (GRPO), and an Open Policy Agent (OPA) inspired governance layer"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.07006",
+      "claim": "论文以 Dharmic ethics 指导的医疗助手作为案例，并报告领域范围遵循度较基线提高 70.9%。",
+      "excerpt": "medical AI assistant guided by principles from Dharmic ethics ... 70.9% improvement in domain-scope adherence over the baseline"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.07006",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日首次提交。",
+      "excerpt": "Submitted on 6 Sep 2025"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.07006",
+  "sourceHash": "sha256:381612677eb1573b28a1565b0c7fe5e346e8fc10c37b8331e917807c4382321b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 LLM 如何遵守机器可读的伦理、运营安全和监管政策。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "正文把治理规则、人工升级、权限边界和审计记录作为部署约束。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕原则性奖励评分、领域范围遵循度和固定场景回归展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 ArGen 论文于 2025 年 9 月 6 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.07006",
+      "claim": "arXiv 记录 ArGen 于 2025 年 9 月 6 日提交，主题是用 GRPO 和 policy-as-code 自动调节生成式 AI。",
+      "excerpt": "ArGen: Auto-Regulation of Generative AI via GRPO and Policy-as-Code"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.07006",
+      "claim": "摘要给出机器可读政策、原则性自动奖励、GRPO、OPA 风格治理层和 70.9% 领域范围遵循度结果。",
+      "excerpt": "configurable, machine-readable rules ... principle-based automated reward scoring ... 70.9% improvement in domain-scope adherence"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 首次提交日期、原则性自动奖励、GRPO、OPA 风格治理层、Dharmic ethics 医疗助手案例和 70.9% 领域范围遵循度；正文明确该数字是研究案例指标，不作医学安全或合规认证，并补充政策版本、反例回归和人工升级边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手完成初稿逐段复核：区分 policy-as-code 框架、医疗助手案例和合规认证，保留 70.9% 指标的研究边界；补充规则冲突、评分器盲区、人工升级和版本回归，未把文化价值系统泛化为普遍答案；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-argen-policy-as-code-20250906"
+}

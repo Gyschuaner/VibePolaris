@@ -1,0 +1,210 @@
+{
+  "slug": "web-fraud-multiagent-security-20250901",
+  "title": "网页链接也能成为多 Agent 系统的攻击面",
+  "summary": "Web Fraud Attacks 论文于 9 月 1 日提交，指出多 Agent 系统一旦把恶意链接当成可信入口，攻击面就会沿着浏览、工具调用和 Agent 间传递扩大。论文把这类风险归为利用网页链接结构欺骗系统的攻击，并在多种系统上测试了 12 类变体；本文不复述攻击构造，只提炼防守重点：标准化 URL、核验域名与来源、隔离网页内容、把链接访问和外部动作分开授权，并用评测和日志验证防线。",
+  "body": "多 Agent 系统经常需要读网页、跟进链接，再把结果交给下一个 Agent。链条一长，链接就不再只是一个展示地址，而会变成检索、浏览器、代码或业务工具的入口。一旦系统先相信链接，再决定要不要执行后续动作，攻击者就可能借这个信任关系把一次输入变成更大的工具调用面。\n\n论文把这种风险称为 Web Fraud Attacks：通过网页链接本身的结构让由大语言模型驱动的多 Agent 系统误判目标。它测试了 12 类代表性变体，并报告这类攻击能跨不同的多 Agent 架构产生破坏性影响，还不需要很复杂的输入设计。这里的研究价值在于提醒防守者重新审视链接信任链，本文不复述具体构造或可操作的攻击步骤。\n\n第一道防线是把链接当成不可信数据，而不是权限证明。系统应解析并规范化 URL，明确最终主机、端口、路径和重定向链，检查域名和来源是否在允许范围内；显示出来的文字、网页标题和模型自己的“看起来安全”判断，都不能替代这些检查。短链接、跳转服务和带参数的地址也要按同一套规则进入审计。\n\n第二道防线是隔离内容和动作。浏览器抓到的页面可以作为待分析文本进入沙盒，但页面里的指令、脚本和外部链接不能自动升级成工具调用，更不能因为一个 Agent 说“来源可信”就让另一个 Agent 获得写入权限。访问网页、读取文件、发送请求和修改业务状态应当分别授权，跨 Agent 传递时保留来源、时间和原始 URL。\n\n第三道防线是让系统能看见自己为什么相信一个链接。日志至少要记录原始地址、规范化结果、解析出的主机、重定向、调用者 Agent、使用的权限和最终动作；发现来源冲突或域名变化时，系统应暂停、降级为只读或请求人工确认。共享记忆和消息队列也要保留 provenance，避免一条失真的链接在多 Agent 之间传播后看起来像多次独立确认。\n\n论文的实验说明这不是只针对某一个 Agent 框架的边角问题，但实验中的破坏性和逃逸优势不能直接换算成线上发生率。实际评测还要覆盖误报、合法重定向、国际化域名、企业内部域名和网络故障，确认防守不会把正常检索全部拦住。安全基准应该同时测检测率、错误阻断、权限越界和恢复时间。\n\nWeb Fraud Attacks 留下的工程结论很具体：链接解析属于安全边界，内容理解属于另一个边界，外部动作又是第三个边界。把三者混成“模型看懂网页就可以继续执行”，系统就很难知道哪一步出了问题。只有把来源检查、访问隔离、授权、可追溯日志和停止开关串起来，多 Agent 才能在网页开放性和动作安全之间保留可控的距离。",
+  "publishedAt": "2025-09-01",
+  "eventDate": "2025-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/web-fraud-multiagent-security-20250901.svg",
+    "alt": "多 Agent 系统对网页链接进行规范化、来源核验和隔离，再决定是否执行动作",
+    "sourceUrl": "/images/news/web-fraud-multiagent-security-20250901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "link-trust-chain",
+      "title": "链接一旦被相信，攻击面会沿链条放大",
+      "body": "网页、浏览器、工具和 Agent 消息会让一个地址进入更多动作；链接因此是系统入口，不只是文本字段。",
+      "kind": "narrative"
+    },
+    {
+      "id": "web-fraud-definition",
+      "title": "论文把结构欺骗归为 Web Fraud Attacks",
+      "body": "研究测试 12 类代表性变体，报告不同多 Agent 架构都可能受影响；本文只讲防守，不复述攻击构造。",
+      "kind": "technical"
+    },
+    {
+      "id": "url-normalization",
+      "title": "先解析 URL，再讨论内容可信度",
+      "body": "规范化最终主机、端口、路径和重定向链，核对域名与来源允许范围；显示文字和模型判断不能代替解析。",
+      "kind": "technical"
+    },
+    {
+      "id": "content-action-isolation",
+      "title": "页面内容不能自动升级成工具动作",
+      "body": "网页放进沙盒只代表待分析数据，读取文件、发送请求和修改业务状态仍需分别授权，跨 Agent 传递保留原始来源。",
+      "kind": "boundary"
+    },
+    {
+      "id": "provenance-logging",
+      "title": "记录系统为什么相信这条链接",
+      "body": "保留原始地址、规范化结果、跳转、调用者、权限和最终动作；来源冲突时暂停、只读降级或请求人工确认。",
+      "kind": "example"
+    },
+    {
+      "id": "security-eval",
+      "title": "安全评测要同时看拦截和误伤",
+      "body": "论文的破坏性不能直接换算线上发生率；评测还要覆盖合法重定向、国际化域名、内部域名、检测率和恢复时间。",
+      "kind": "comparison"
+    },
+    {
+      "id": "three-boundaries",
+      "title": "解析、理解、执行是三条边界",
+      "body": "把来源检查、内容隔离、授权、日志和停止开关串起来，才能让多 Agent 在开放网页与外部动作之间保持可控距离。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "多 Agent 怎样安全处理一个网页链接？",
+    "question": "先把链接当不可信数据解析，再隔离内容、分别授权动作，并留下跨 Agent 可追溯记录。",
+    "steps": [
+      {
+        "label": "收下但不信任",
+        "detail": "把原始 URL 当作输入数据保存，不让链接文字、标题或模型判断直接证明权限。",
+        "evidence": "malicious links as a springboard to expand attack surface"
+      },
+      {
+        "label": "规范化并核验来源",
+        "detail": "解析最终主机、端口、路径和重定向，检查域名、来源与允许范围，标记异常变化。",
+        "evidence": "URL normalization and domain/source checks"
+      },
+      {
+        "label": "隔离网页内容",
+        "detail": "在沙盒中抓取并分析页面，把页面指令、脚本和外链与工具调用分开。",
+        "evidence": "content isolation"
+      },
+      {
+        "label": "分别授权动作",
+        "detail": "读取、请求、写入和跨 Agent 传递使用不同权限；高风险状态变化要求人工确认。",
+        "evidence": "authorization boundaries"
+      },
+      {
+        "label": "记录并停止",
+        "detail": "保存原始与规范化地址、跳转、调用者、权限和结果，出现冲突时只读降级或切断循环。",
+        "evidence": "auditable MAS defense"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.01211"
+  },
+  "relatedSlugs": [
+    "agent",
+    "mcp",
+    "prompt",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.01211",
+      "claim": "论文提出 Web Fraud Attacks，指出多 Agent 系统被诱导信任恶意链接后，攻击面可沿系统扩展，并在多种架构上测试 12 类变体。",
+      "excerpt": "Web Fraud Attacks ... manipulating unique structures of web links ... 12 representative attack variants"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01211",
+      "claim": "本文只提炼 URL 规范化、来源核验、内容隔离、授权和审计等防守边界，不复述可操作的攻击构造。",
+      "excerpt": "security of Web links has become a critical concern ... importance of addressing Web fraud attacks"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.01211",
+  "sourceHash": "sha256:52135bac34d226572efba6cc86c994c8a671fa6c1b4cbb957e8f03f752a0e0b5",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多 Agent 间网页检索、消息传递和外部动作链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.88,
+      "evidence": [
+        "正文把协议连接与工具动作分开，要求跨 Agent 工具入口保留来源与授权。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.86,
+      "evidence": [
+        "正文说明网页指令和模型判断不能直接升级为工具动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文将链接访问、读取、请求、写入和跨 Agent 传递拆成不同授权边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留 12 类变体和安全评测应同时测检测、误伤与恢复。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 1 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.01211",
+      "claim": "arXiv 记录 Web Fraud Attacks 论文于 2025 年 9 月 1 日提交，研究 LLM 多 Agent 系统的网页链接安全。",
+      "excerpt": "Published: 2025-09-01 ... Web Fraud Attacks Against LLM-Driven Multi-Agent Systems"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01211",
+      "claim": "摘要报告 12 类代表性攻击变体及其跨多 Agent 架构的破坏性与逃逸优势；正文不复述构造细节。",
+      "excerpt": "12 representative attack variants ... destructive potential ... advantage in evasion"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对网页链接作为多 Agent 攻击入口、12 类变体及跨架构实验主张；正文只保留防守视角，补充 URL 规范化、来源检查、内容隔离、分层授权、provenance 日志和误报/恢复评测。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：没有复述攻击构造或可操作步骤，把文章重点放在链接信任链、解析/内容/执行三条边界、授权和审计；同时区分论文实验的风险证明与线上发生率，并补充误伤和恢复评测；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-01-web-fraud-multiagent-security-20250901"
+}

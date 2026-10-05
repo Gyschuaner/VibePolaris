@@ -1,8 +1,8 @@
 {
   "slug": "cognizant-trizetto-unify-ai-agents",
-  "title": "Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权",
-  "summary": "2026-05-29，Cognizant公开“Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：事前授权从只能由人登录界面操作，变成智能体可以通过接口提交、查询和推进的流程入口；公司还提到 Assistant 与 Autonomous Workflow Agents 已向客户推出。 当前能确认的是：公告证明的是接口开放和产品定位，不证明所有保险方都已接入，也不证明自动处理能稳定减少等待或错误。",
-  "body": "2026 年 5 月 29 日，Cognizant 宣布 TriZetto Unify 提供面向 AI agents 的 headless API，首个公开场景是医疗 Electronic Prior Authorization；公司还提到 Assistant 与 Autonomous Workflow Agents 已向客户推出。\n\n变化在于事前授权从只能由人登录界面操作，变成智能体可以通过接口提交、查询和推进的流程入口。它改变的是接口和工作流组织方式，不等于模型可以自由决定医疗结论或自动批准所有申请。\n\n可以把一笔事前授权写成状态机：资料是否齐全，谁有权提交，保险方返回什么状态，何时升级人工，如何撤销或重试。每一步都应留下身份、请求参数、证据和审批记录，不能只凭“接上 API”判断流程可靠。\n\n来源是 Cognizant 官方页面，支持接口开放和产品定位，不证明所有保险方都已接入，也不证明自动处理能稳定减少等待或错误。医疗数据还受隐私、合规和人工责任约束，本文不把公司目标写成普遍效果。\n\n三个关联词条分别对应：agent 的多步调用和任务推进；api 的提交、查询与返回接口；authorization 的读写、提交、批准和撤销权限。它们共同解释控制链，但不替代保险方规则或医疗审核。\n\n复核时可用模拟账户运行一次调用，记录身份、payload、返回状态、人工升级、失败回退和撤销结果，再决定是否扩大权限。实际接入范围和审计日志比演示速度更能说明价值。\n\n时间线从 2026-05-29 的接口公告开始；后续应核对保险方接入、审计记录、人工升级规则和事前授权周转时间的独立数据。",
+  "title": "Cognizant 为 TriZetto Unify 开放面向 AI agent 的 headless API",
+  "summary": "5 月 29 日，Cognizant 宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是医疗 Electronic Prior Authorization，并称 Assistant 与 Autonomous Workflow Agents 已向客户推出。公告确认了接口开放和产品定位，不能据此推出所有保险方都已接入，或自动处理已经稳定减少等待和错误。",
+  "body": "5 月 29 日，Cognizant 宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是医疗 Electronic Prior Authorization。公司同时表示 Assistant 与 Autonomous Workflow Agents 已向客户推出。新闻稿描述的是接口开放和产品状态，效果仍需按接入方和流程逐项验证。\n\nheadless API 的变化，在于让程序可以通过接口提交、查询和推进事前授权流程，而不必把每一步都绑定在人工操作界面上。它扩大了可调用的入口，却没有把医疗判断交给模型自由决定：保险方规则、资料完整性、提交权限和人工升级条件仍然要明确。\n\n一笔授权可以按状态记录：资料是否齐全、谁有权提交、保险方返回什么状态、何时转人工、失败后如何重试或撤销。每次调用都应保留身份、请求参数、返回状态、证据和审批记录，才能在患者、保险方或医院提出异议时回看发生了什么。\n\nCognizant 的官方公告支持 API 开放、首个场景和产品定位，不证明所有保险方已经接入，也没有给出自动处理对等待时间、错误率或拒付率的独立数据。医疗数据还受到隐私、合规和人工责任约束，接口可用不等于流程已经安全。\n\n相关词条分别对应控制链：agent 负责多步调用和任务推进，api 定义提交、查询和返回，authorization 则规定读写、提交、批准和撤销权限。后续可以先用模拟账户运行一笔授权，检查人工升级、失败回退和撤销是否可追踪，再决定是否扩大权限。",
   "publishedAt": "2026-05-29",
   "eventDate": "2026-05-29",
   "isExample": false,
@@ -15,76 +15,59 @@
   },
   "sections": [
     {
-      "id": "event",
-      "title": "2026-05-29，Cognizant公开了什么",
-      "body": "事件日记为 2026-05-29；来源页面公开日记为 2026-05-29。Cognizant公开的核心动作是：Cognizant 宣布 TriZetto Unify 提供面向 AI agents 的 headless API，首个公开场景是医疗 Electronic Prior Authorization。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
+      "id": "release",
+      "title": "TriZetto Unify 开放了什么入口",
+      "body": "Cognizant 5 月 29 日宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是 Electronic Prior Authorization，并称 Assistant 与 Autonomous Workflow Agents 已向客户推出。公告确认的是接口和产品状态。",
       "kind": "narrative"
     },
     {
-      "id": "mechanism",
-      "title": "“Cognizant 开放 TriZetto Unify”改变了哪一层",
-      "body": "真正的变化在于：事前授权从只能由人登录界面操作，变成智能体可以通过接口提交、查询和推进的流程入口；公司还提到 Assistant 与 Autonomous Workflow Agents 已向客户推出。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。医疗行政自动化的核心不是让模型自由做决定，而是把可授权的动作、证据和升级条件写进流程。",
+      "id": "headless",
+      "title": "接口扩大调用范围，不替代医疗规则",
+      "body": "headless API 让程序可以提交、查询和推进事前授权，减少对人工界面的依赖。它没有把医疗结论交给模型自由决定，资料完整性、保险方规则、提交权限和人工升级条件仍需明确。",
       "kind": "technical"
     },
     {
-      "id": "scenario",
-      "title": "把“Cognizant 开放 TriZetto Unify”放进一次流程",
-      "body": "把它放进一个具体场景：把患者一次授权想成一条状态机：资料是否齐全、谁有权提交、何时需要人工复核，都要比“接上 API”更先定义。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "id": "state-machine",
+      "title": "一笔事前授权要留下哪些状态",
+      "body": "至少要记录资料是否齐全、谁有权提交、保险方返回什么状态、何时转人工，以及失败后如何重试或撤销。身份、请求参数、返回状态、证据和审批记录应能在事后回看。",
       "kind": "example"
     },
     {
-      "id": "boundary",
-      "title": "哪些结论仍属于 Cognizant 的口径",
-      "body": "这里的来源是 Cognizant 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。公告证明的是接口开放和产品定位，不证明所有保险方都已接入，也不证明自动处理能稳定减少等待或错误。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把 API 开放写成所有机构都已接入或可以无人监管。",
+      "id": "limits",
+      "title": "接口开放还不能推出流程效果",
+      "body": "官方公告不证明所有保险方已经接入，也没有给出自动处理对等待时间、错误率或拒付率的独立数据。医疗数据受到隐私、合规和人工责任约束，接口可用不等于流程安全。",
       "kind": "boundary"
     },
     {
       "id": "terms",
-      "title": "用词条拆开“Cognizant 开放 TriZetto Unify”",
-      "body": "本文关联的词条各自对应事前授权的一层：agent 负责多步调用和任务推进；api 负责提交、查询和返回接口；authorization 负责读写、提交、批准和撤销权限。三者共同解释控制链，但不替代保险方规则或医疗审核。",
+      "title": "agent、api 和 authorization 各管哪一段",
+      "body": "agent 负责多步调用和任务推进，api 定义提交、查询和返回，authorization 规定读写、提交、批准和撤销权限。把三者分开，才能定位一次授权失败是任务、接口还是权限问题。",
       "kind": "comparison"
-    },
-    {
-      "id": "timeline",
-      "title": "从 2026-05-29 的页面到下一步",
-      "body": "时间线先从 2026-05-29 的来源页面开始：页面记录“TriZetto Unify 将 AI agents 作为一等消费者；首个场景是 Electronic Prior Authorization”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
-      "kind": "narrative"
-    },
-    {
-      "id": "verify",
-      "title": "读者怎样复核这条主张",
-      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：应继续核对接入范围、审计日志和人工升级规则，再判断它是否真的改变了事前授权的周转时间。",
-      "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agentic-calling",
-    "title": "把“Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权”拆成可核对的链路",
-    "question": "分别看接口、身份、权限、审批、返回状态和回滚，怎样知道哪些是事实、哪些仍是主张？",
+    "title": "用模拟账户跑一笔可撤销的事前授权",
+    "question": "TriZetto Unify 的 headless API 开放后，怎样验证 AI agent 只执行被授权的动作？",
     "steps": [
       {
-        "label": "确认日期与动作",
-        "detail": "先核对 eventDate=2026-05-29、publishedAt=2026-05-29，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
+        "label": "准备模拟资料",
+        "detail": "使用脱敏的患者与保险资料，先检查资料是否齐全以及当前账户能读写哪些字段。",
         "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
       },
       {
-        "label": "拆开系统层",
-        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：事前授权从只能由人登录界面操作，变成智能体可以通过接口提交、查询和推进的流程入口；公司还提到 Assistant 与 Autonomous Workflow Agents 已向客户推出。",
+        "label": "提交并记录调用",
+        "detail": "让 agent 通过 API 提交授权，保存身份、请求参数、返回状态和对应证据。",
         "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
       },
       {
-        "label": "放进具体场景",
-        "detail": "把患者一次授权想成一条状态机：资料是否齐全、谁有权提交、何时需要人工复核，都要比“接上 API”更先定义",
+        "label": "测试人工升级",
+        "detail": "制造资料缺失、规则冲突或不确定返回，确认流程会转人工而不是自动批准。",
         "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
       },
       {
-        "label": "标出不能推出的结论",
-        "detail": "公告证明的是接口开放和产品定位，不证明所有保险方都已接入，也不证明自动处理能稳定减少等待或错误",
-        "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
-      },
-      {
-        "label": "安排下一次复核",
-        "detail": "应继续核对接入范围、审计日志和人工升级规则，再判断它是否真的改变了事前授权的周转时间",
+        "label": "验证撤销和回退",
+        "detail": "在失败或重复提交时撤销请求并记录恢复结果，再评估是否可以扩大权限。",
         "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
       }
     ]
@@ -175,14 +158,10 @@
   "readerReview": {
     "reviewer": "codex-subagent-reader",
     "decision": "passed",
-    "checkedAt": "2026-10-03T00:00:00Z",
+    "checkedAt": "2026-10-04T00:00:00Z",
     "questions": [],
-    "notes": "深度复核通过：正文已按事件链组织，具体场景、来源主张、待验证项、词条解释和后续时间线均与本事件及 relatedSlugs 对齐；已去除空泛模板和跨事件词条。",
-    "changes": [
-      "收束为 7 段事件特定正文",
-      "修正词条段落与 relatedSlugs 的对应关系",
-      "核对 eventDate、publishedAt、canonicalUrl、sources 和时间线"
-    ]
+    "notes": "复核通过：正文准确区分 TriZetto Unify 面向 AI agent 的 headless API、首个 Electronic Prior Authorization 场景，以及公告所称 Assistant/Autonomous Workflow Agents 已向客户推出；没有把接口开放写成所有保险方已接入或等待/错误已改善。医疗示例具体覆盖资料完整性、保险方规则、API/authorization、状态机、人工升级、失败重试、撤销和审计；sections、explainer 与 schema 核对无误。",
+    "changes": []
   },
   "mechanicalErrors": [],
   "runId": "vbp-049-news-backfill-news-2026-05-29",

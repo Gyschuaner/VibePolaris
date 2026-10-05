@@ -1,0 +1,203 @@
+{
+  "slug": "skywork-unipic2-unified-multimodal-20250813",
+  "title": "Skywork 开源 UniPic-2：让图像理解、生成和编辑共用一套模型入口",
+  "summary": "8 月 13 日，Skywork AI 在固定版本的 UniPic 仓库发布 UniPic-2 的统一模型权重和扩散式后训练实现。项目包含面向生图与编辑的 UniPic2-SD3.5M-Kontext，以及用 MetaQuery 连接理解、生成和编辑的模块化路线；官方还介绍了 Progressive Dual-Task Reinforcement（PDTR）来共同优化生成和编辑。仓库采用 MIT License，但“state-of-the-art”仍是项目方口径，不能替代固定配置下的独立复测。",
+  "body": "8 月 13 日，Skywork AI 在 UniPic 仓库里发布 UniPic-2，并开放模型权重和实现。它试图把三个通常分开处理的任务放在同一条入口里：读懂图像、根据文字生成图像、在已有图像上按指令编辑。这个“统一”不只是把三个按钮放在一个页面，而是让模型结构和训练过程同时面对理解与合成，开发者可以沿同一套仓库检查不同任务的输入、输出和权重。\n\nUniPic-2 给出了两条具体路线。UniPic2-SD3.5M-Kontext 是更轻量的生成与编辑模型，重点是文字生图和局部、扩展式图像编辑；UniPic2-MetaQuery 则用一个参数高效的连接器，把视觉理解、生成和编辑接到一起。仓库的脚本把文字生图、图像编辑、视觉输入和多模态理解分别列出来，说明“统一模型”仍然包含不同的推理路径，不是每个任务都由完全相同的计算图一次完成。\n\n训练方法是这次发布的另一层重点。项目介绍 Progressive Dual-Task Reinforcement（PDTR），把图像生成和图像编辑作为两个相互影响的任务分阶段强化学习，并声称可以减少跨任务干扰、提升指令跟随和编辑一致性。这里的关键不是把“强化学习”当成效果保证，而是要看两种任务在同一训练策略下是否真的互相帮助：生成更会遵循文字，不代表编辑时一定能保留原图结构；编辑更稳定，也不代表模型更懂图像里的事实。\n\n开放范围包括原始模型和强化学习后的 checkpoint，仓库用 `-GRPO` 后缀标出部分 RL 版本，并提供 Hugging Face 集合和推理脚本。MIT License 让研究者可以更容易下载和改造，但可下载不等于所有权重都在同一天具备相同的性能、显存需求和复现路径。固定 commit、模型变体、推理步数、分辨率和随机种子都应写进实验记录。\n\n对实际工作流来说，统一入口有一个明显好处：同一份图像可以先被模型提取信息，再用文字生成候选图，最后继续做局部编辑，不需要在三个完全不同的服务间搬运中间结果。但中间结果也会带来新的检查点。理解模块把人物、文字或空间关系看错，后面的生成和编辑会把错误当作条件；编辑看似只改了一个物体，也可能改变背景、文字或人物身份。模型把任务接在一起，错误也可能沿着任务链传下去。\n\n项目页把 UniPic-2 描述为在文本生图、细粒度编辑和多模态理解上达到 state-of-the-art。这是作者对自己的模型和评测设置的总结，公告没有同时给出一套可供外部逐项复核的基准表。独立比较时要固定 prompt、输入图、编辑区域、采样步数、分辨率和评测指标，分别测文字遵循、结构保真、身份保持和理解准确率，不能用一张生图好看的样例替代多任务结果。\n\nUniPic-2 的价值在于把多模态系统的“看、画、改”放进一个可以下载和检查的工程入口。下一步应追踪不同变体的显存和延迟、长提示下的文字渲染、编辑前后事实是否一致，以及理解错误会不会被下一步生成放大。8 月 13 日确认的是统一权重和扩散式后训练的开放版本，至于它是否真的减少了多模型拼接，需要让同一组输入在每条任务路径上跑出可复查的失败记录。",
+  "publishedAt": "2025-08-13",
+  "eventDate": "2025-08-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/skywork-unipic2-unified-multimodal-20250813.svg",
+    "alt": "UniPic-2 从文字或图片进入同一套多模态模型，再分出理解、生成和编辑路径；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/skywork-unipic2-unified-multimodal-20250813.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 13 日开放的是 UniPic-2 权重与实现",
+      "body": "Skywork AI 的固定 README commit 记录 UniPic-2 发布，仓库提供统一模型权重、代码和技术报告入口，采用 MIT License。事件日确认的是开放入口和模型路线，不是所有任务都已独立复现。",
+      "kind": "narrative"
+    },
+    {
+      "id": "variants",
+      "title": "SD3.5M-Kontext 和 MetaQuery 走两条路线",
+      "body": "UniPic2-SD3.5M-Kontext 面向文字生图与图像编辑；UniPic2-MetaQuery 用参数高效连接器把理解、生成和编辑接到一起。仓库脚本仍按任务拆出不同推理路径，“统一”不等于一张完全相同的计算图。",
+      "kind": "technical"
+    },
+    {
+      "id": "pdtr",
+      "title": "PDTR 把生成和编辑放进同一段强化学习",
+      "body": "Progressive Dual-Task Reinforcement 分阶段优化生图和编辑，项目方称它能减少跨任务干扰、改善文字遵循与编辑一致性。这个训练策略需要在两种任务上分别复测，不能把“强化学习”直接当成质量保证。",
+      "kind": "technical"
+    },
+    {
+      "id": "open-artifacts",
+      "title": "原始与 RL checkpoint 都能进入复现链",
+      "body": "仓库提供原始模型和带 `-GRPO` 后缀的部分 RL 版本，并链接 Hugging Face 集合和推理脚本。变体、分辨率、采样步数、种子和显存配置要随实验记录，不能把可下载写成同日同质的全部能力。",
+      "kind": "example"
+    },
+    {
+      "id": "task-chain",
+      "title": "看、画、改接在一起，错误也会传下去",
+      "body": "同一图像可以先被理解，再用于生成和编辑；但人物、文字、空间关系一旦被读错，后续任务会把错误当作条件。编辑局部区域也可能改变背景、文字或身份，需要逐步检查中间结果。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark",
+      "title": "state-of-the-art 是作者口径",
+      "body": "项目页称 UniPic-2 在文本生图、细粒度编辑和多模态理解上达到 state-of-the-art。外部复测应固定 prompt、输入图、编辑区域、采样步数、分辨率和指标，分别看文字遵循、结构保真、身份保持与理解准确率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看多任务失败是否能被定位",
+      "body": "记录不同变体的显存、延迟、长提示文字渲染和编辑前后事实一致性，再追踪理解错误是否被生成放大，才能判断统一入口是否真的减少了模型拼接。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一个模型怎样同时“看、画、改”？",
+    "question": "把输入理解、图像生成、编辑条件、强化学习和独立评测拆开，才能看懂 UniPic-2 的统一模型路线。",
+    "steps": [
+      {
+        "label": "读懂输入",
+        "detail": "模型先从文字或图片中提取对象、文字和空间关系；这一步的错误会进入后续生成和编辑。",
+        "evidence": "Multimodal understanding"
+      },
+      {
+        "label": "选择任务路径",
+        "detail": "根据任务走 SD3.5M-Kontext 或 MetaQuery 的推理脚本；统一仓库不代表所有任务共享同一计算图。",
+        "evidence": "UniPic2-SD3.5M-Kontext / MetaQuery"
+      },
+      {
+        "label": "生成或编辑",
+        "detail": "文字生图创建候选画面，编辑路径按指令修改已有图像；检查区域外内容和文字是否保持不变。",
+        "evidence": "Text-to-image / image editing"
+      },
+      {
+        "label": "比较 RL 版本",
+        "detail": "PDTR 和 `-GRPO` checkpoint 是训练与权重变体，需和原始模型在同一 prompt、步数、分辨率下比较。",
+        "evidence": "Progressive Dual-Task Reinforcement"
+      },
+      {
+        "label": "记录多任务结果",
+        "detail": "分别评估文字遵循、结构保真、身份保持和理解准确率，不能用一张好看的样例代表统一模型。",
+        "evidence": "Independent evaluation boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Skywork AI / UniPic",
+    "url": "https://github.com/SkyworkAI/UniPic/blob/c5d10e8ef46f0506c02c821f614d7f2b33450015/README.md"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "data-pipeline",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/SkyworkAI/UniPic/blob/c5d10e8ef46f0506c02c821f614d7f2b33450015/README.md",
+      "claim": "Skywork 官方仓库固定 commit 的 Latest News 记录 2025-08-13 发布 UniPic-2 统一模型权重和扩散式后训练版本，并提供模型权重、实现和 MIT License。",
+      "excerpt": "2025-08-13 | Released UniPic-2 — Unified Model Weights with Diffusion-based Post-Training."
+    },
+    {
+      "url": "https://github.com/SkyworkAI/UniPic/blob/c5d10e8ef46f0506c02c821f614d7f2b33450015/UniPic-2/README.md",
+      "claim": "UniPic-2 README 说明 SD3.5M-Kontext、MetaQuery、PDTR、文字生图、图像编辑、多模态理解、原始与 RL checkpoint 及推理路径。",
+      "excerpt": "This repository features the model weights and implementation ... text-to-image generation, image editing, and multimodal understanding."
+    }
+  ],
+  "canonicalUrl": "https://github.com/SkyworkAI/UniPic/blob/c5d10e8ef46f0506c02c821f614d7f2b33450015/README.md",
+  "sourceHash": "sha256:19b6fc7716de8a9561b6a47c795849279c7ef5c766e0e4a7c2fc8f253cef63dd",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.93,
+      "evidence": [
+        "正文解释 UniPic-2 的统一多模态模型、理解/生成/编辑任务与两种模型变体。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.82,
+      "evidence": [
+        "正文把模型权重、推理脚本、Hugging Face checkpoint 和复现配置作为可检查的工具入口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.87,
+      "evidence": [
+        "正文拆开预训练、扩散式后训练、PDTR、推理路径和评测配置。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8/13 UniPic-2 开放、模型变体、RL checkpoint 和外部复测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/SkyworkAI/UniPic/blob/c5d10e8ef46f0506c02c821f614d7f2b33450015/README.md",
+      "claim": "固定 commit 的官方 README 确认 UniPic-2 在 2025-08-13 发布统一模型权重与扩散式后训练版本。",
+      "excerpt": "2025-08-13 | Released UniPic-2 — Unified Model Weights with Diffusion-based Post-Training."
+    },
+    {
+      "url": "https://github.com/SkyworkAI/UniPic/blob/c5d10e8ef46f0506c02c821f614d7f2b33450015/UniPic-2/README.md",
+      "claim": "UniPic-2 README 说明 SD3.5M-Kontext、MetaQuery、PDTR 和原始/RL checkpoint；作者的 state-of-the-art 定位需按评测设置阅读。",
+      "excerpt": "Progressive Dual-Task Reinforcement (PDTR) ... synergistic improvement of image generation and image editing through staged RL."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Skywork UniPic 固定 2025-08-13 README commit 与 UniPic-2 子目录 README；正文区分统一权重发布、SD3.5M-Kontext/MetaQuery 路线、PDTR、原始/RL checkpoint、MIT License、state-of-the-art 作者口径和独立复测条件。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 UniPic-2 写成理解/生成/编辑任务链与可复现的模型变体，保留 PDTR 和 SOTA 的作者口径，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-13-unipic2",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 和 publishedAt 均为 2025-08-13；固定 UniPic README commit 支持当天发布 UniPic-2 unified model weights with diffusion-based post-training，正文没有把后续模型变体或独立复测倒填成另一场发布。",
+      "正文清楚区分 UniPic2-SD3.5M-Kontext 的文字生图/图像编辑路线与 UniPic2-MetaQuery 的参数高效 connector、理解/生成/编辑路线，且说明统一入口不等于一张完全相同的计算图。",
+      "PDTR 被写成项目方描述的分阶段双任务强化学习策略；减少跨任务干扰、提升指令跟随和编辑一致性没有被扩写成独立质量保证或普遍效果。",
+      "原始与 `-GRPO` RL checkpoint、Hugging Face 集合、推理脚本和 MIT License 的开放范围交代清楚；变体、步数、分辨率、种子和显存等复现条件没有被省略。",
+      "state-of-the-art 明确归因项目方，正文指出固定 prompt、输入图、编辑区域、采样步数、分辨率和指标后分别评测，未把作者口径当作独立 benchmark 结论。",
+      "正文、7 个 sections、benchmark explainer、llm/tools/data-pipeline/event relations、hero SVG、两张官方 source/evidence 卡片、verification 与 schema 一致；中文自然，且解释了理解错误如何传到生成/编辑。"
+    ],
+    "notes": "读者审阅通过。固定 UniPic README 与 UniPic-2 子目录 README 支持 8/13 发布、两条模型路线、PDTR、原始/RL checkpoint、推理脚本与 MIT License；正文保留作者 SOTA 口径并拆开统一入口、计算图和多任务错误边界，没有发现需要修改正文的问题。",
+    "changes": []
+  }
+}

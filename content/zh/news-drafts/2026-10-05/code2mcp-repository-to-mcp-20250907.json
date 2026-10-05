@@ -1,0 +1,193 @@
+{
+  "slug": "code2mcp-repository-to-mcp-20250907",
+  "title": "Code2MCP：把代码仓库自动变成 MCP 服务",
+  "summary": "Code2MCP 论文于 9 月 7 日提交，处理 MCP 生态里常被忽略的供给侧问题：不是怎样从已有工具里挑一个，而是怎样把海量代码仓库变成可调用的 MCP 服务。框架用多 Agent 工作流完成代码分析、环境设置、工具函数设计和服务生成，并加入自纠错循环；论文展示了生物信息学、数学和流体力学等开源库的转换案例，但自动生成服务仍需要权限隔离、依赖审查和人工验收。",
+  "body": "MCP 让 LLM 调工具有了更统一的接口，但工具池不会凭空变大。很多有用能力已经藏在 GitHub 仓库里，使用者却要自己读代码、搭环境、挑函数、补参数说明，最后再写一层服务适配。Code2MCP 盯住的是这段供给侧工作：能不能把一个仓库变成可被 Agent 发现和调用的 MCP 服务。\n\n论文于 9 月 7 日提交，提出一个面向代码仓库的多 Agent 框架。它的目标不是让模型凭空发明工具，而是从现有项目里找出可复用的计算能力，再把这些能力组织成 MCP 兼容服务。作者展示的对象包括生物信息学、数学和流体力学等开源计算库，说明场景并不局限于常见的网页或办公连接器。\n\nCode2MCP 把流程拆成几段：先分析代码和依赖，再设置运行环境，接着设计工具函数和输入输出 schema，最后生成服务。每一段都有自己的判断对象，避免一个 Agent 同时处理仓库结构、环境命令和用户接口。对读者来说，关键变化不是“多了几个 Agent”，而是原本需要工程师手工完成的适配链被显式化了。\n\n环境设置和工具设计尤其容易被低估。仓库能不能安装、哪些函数适合暴露、参数默认值是否安全、错误能不能被调用方理解，都会决定生成的服务是否真的可用。一个函数在本地脚本里能跑，不代表它适合作为远程工具；它可能读写文件、访问网络，或者把过大的数据直接塞回模型上下文。\n\n框架还加入自纠错循环，让生成结果根据检查反馈反复修正。这样可以处理导入错误、接口不一致或服务启动失败等工程问题，但“能启动”并不等于“值得授权”。自纠错只说明流程有机会修正可观察的失败，不能替代对依赖来源、数据流和权限范围的审查。\n\n把仓库接成 MCP 服务后，工具 schema 就成了 Agent 的新边界。部署方需要明确每个函数能访问哪些文件和网络，限制依赖安装与子进程，给长任务设置超时和资源上限，并记录调用者、参数摘要和返回结果。对第三方仓库尤其要在隔离环境里生成和验收，避免自动流程把不可信代码直接带进生产连接器。\n\nCode2MCP 的价值在于把“代码库如何进入工具生态”变成一个可重复讨论的问题。它可以降低适配门槛，却不会自动解决工具是否安全、文档是否准确和接口是否稳定。真正上线前，仍要做 schema review、最小权限、版本锁定、回滚和人工试跑；自动生成负责扩大候选池，责任边界仍在服务拥有者手里。",
+  "publishedAt": "2025-09-07",
+  "eventDate": "2025-09-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/code2mcp-repository-to-mcp-20250907.svg",
+    "alt": "Code2MCP 通过多 Agent 工作流把代码仓库转换成 MCP 工具服务",
+    "sourceUrl": "/images/news/code2mcp-repository-to-mcp-20250907.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "tool-supply",
+      "title": "MCP 工具池的缺口，在代码仓库里",
+      "body": "很多能力已经存在于 GitHub 项目中，却还没有变成 Agent 能发现和调用的服务。",
+      "kind": "narrative"
+    },
+    {
+      "id": "repository-target",
+      "title": "Code2MCP 面向现有仓库做适配",
+      "body": "框架从开源代码中寻找可复用能力，展示了生物信息学、数学和流体力学库的转换案例。",
+      "kind": "example"
+    },
+    {
+      "id": "multi-agent-pipeline",
+      "title": "分析、环境、工具设计和服务生成分段处理",
+      "body": "多 Agent 工作流把仓库结构、依赖安装、函数 schema 和服务产物拆开，让每段判断都有对象。",
+      "kind": "technical"
+    },
+    {
+      "id": "interface-boundary",
+      "title": "能运行的函数，不一定适合暴露成远程工具",
+      "body": "文件、网络、子进程、参数和返回大小都会改变一个函数的权限与调用风险。",
+      "kind": "boundary"
+    },
+    {
+      "id": "self-correcting",
+      "title": "自纠错循环可以修工程错误，不能替代安全审查",
+      "body": "启动失败、导入错误和接口不一致可以回修，但依赖来源和数据流仍要人工确认。",
+      "kind": "comparison"
+    },
+    {
+      "id": "mcp-governance",
+      "title": "工具 schema 本身就是 Agent 的权限边界",
+      "body": "上线前应限制文件和网络访问、锁定依赖、设置超时与资源上限，并记录调用轨迹。",
+      "kind": "technical"
+    },
+    {
+      "id": "auto-generation-limit",
+      "title": "自动生成扩大候选池，责任仍在服务拥有者",
+      "body": "schema review、最小权限、版本回滚和人工试跑不能因为生成自动化而被省略。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "代码仓库怎样变成可治理的 MCP 服务？",
+    "question": "把分析、环境、工具接口和服务生成拆成步骤，再用自纠错和权限审查把产物接进工具池。",
+    "steps": [
+      {
+        "label": "分析仓库结构",
+        "detail": "识别依赖、入口函数和可复用计算能力，先判断哪些部分值得做成工具。",
+        "evidence": "code analysis"
+      },
+      {
+        "label": "隔离并设置环境",
+        "detail": "在受控环境里安装依赖和运行检查，限制文件、网络与子进程访问。",
+        "evidence": "environment setup"
+      },
+      {
+        "label": "设计工具 schema",
+        "detail": "为函数补齐参数、返回值、错误和权限说明，让 Agent 知道能传什么、会得到什么。",
+        "evidence": "tool function design"
+      },
+      {
+        "label": "生成 MCP 服务",
+        "detail": "把通过检查的函数包装成 MCP 兼容接口，并保留版本和依赖信息。",
+        "evidence": "service generation"
+      },
+      {
+        "label": "纠错后人工验收",
+        "detail": "根据启动和接口检查回修产物，再做 schema review、最小权限和人工试跑后发布。",
+        "evidence": "self-correcting loop"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05941"
+  },
+  "relatedSlugs": [
+    "mcp",
+    "agent",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05941",
+      "claim": "Code2MCP 通过多 Agent 工作流将 GitHub 仓库转换为 MCP 服务，涵盖代码分析、环境设置、工具函数设计和服务生成，并加入自纠错循环。",
+      "excerpt": "automatically transforms a GitHub repository into a functional MCP service ... code analysis, environment setup, tool function design, and service generation"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05941",
+      "claim": "论文展示了生物信息学、数学和流体力学等开源计算库的转换案例。",
+      "excerpt": "open-source computing libraries in scientific fields such as bioinformatics, mathematics, and fluid dynamics"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05941",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 7 日首次提交，当前页面标注 v1 首次提交、后续有修订。",
+      "excerpt": "Submitted on 7 Sep 2025 (v1)"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05941",
+  "sourceHash": "sha256:080ceaaa2d0cec5f10b8f0127178445f679e1f719c0370b74162ab4a90dca598",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 GitHub 仓库到 MCP-compatible service 的转换展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文描述分析、环境、工具设计和纠错组成的多 Agent 工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论工具函数 schema、权限、超时、资源上限和调用轨迹。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 Code2MCP 论文于 2025 年 9 月 7 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05941",
+      "claim": "arXiv 记录 Code2MCP 于 2025 年 9 月 7 日提交，主题是把代码仓库转换成 MCP 服务。",
+      "excerpt": "Code2MCP: Transforming Code Repositories into MCP Services"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05941",
+      "claim": "摘要给出多 Agent 转换链、自纠错循环和科学计算库案例。",
+      "excerpt": "multi-agent workflow ... self-correcting loop ... bioinformatics, mathematics, and fluid dynamics"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv v1 首次提交日期、多 Agent 代码分析/环境设置/工具设计/服务生成、自纠错循环和科学计算库案例；正文补充仓库执行权限、依赖审查、工具 schema、沙箱、超时、资源上限和人工验收边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手完成初稿逐段复核：没有把“自动生成 MCP 服务”写成可直接生产部署，明确区分工程自纠错和安全审查；补充不可信仓库、依赖安装、文件/网络/子进程权限、超时、资源上限、版本回滚和人工试跑；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-07-code2mcp-repository-to-mcp-20250907"
+}

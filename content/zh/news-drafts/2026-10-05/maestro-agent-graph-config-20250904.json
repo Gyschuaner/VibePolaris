@@ -1,0 +1,199 @@
+{
+  "slug": "maestro-agent-graph-config-20250904",
+  "title": "Maestro：优化 Agent，不能只调 prompt 还要改工作流图",
+  "summary": "Maestro 论文于 9 月 4 日提交，提出 Agent 可靠性有两层选择：图层决定有哪些模块、信息怎样流动；配置层决定每个节点用什么模型、prompt、工具和控制参数。框架在明确 rollout/token 预算下同时搜索两层，并利用轨迹中的文字反馈定位结构性失败。论文在 IFBench 和 HotpotQA 上相对 MIPROv2、GEPA、GEPA+Merge 平均提升 12%、4.9% 和 4.86%，只做 prompt 优化时仍有 9.65%、2.37% 和 2.41% 的优势。",
+  "body": "给 Agent 调 prompt，常常像给一支乐队换一段谱子：同样的乐手、同样的传声路径，只把指令写得更清楚。但不少失败并不在措辞，而在工作流本身——该不该有检索节点、检查结果要不要回流、哪个模块拥有最终决定权。Maestro 研究的就是这层容易被忽略的结构。\n\n论文把优化拆成两个相互牵制的层面。图层决定 Agent 有哪些模块以及信息怎样在模块之间流动；配置层决定每个节点使用的模型、prompt、工具和控制旋钮。多数现有优化器在固定图的前提下调配置，因此能修正局部表达，却看不到“少了一个验证器”或“检索结果没有回到规划器”这种结构性失败。\n\nMaestro 同时搜索图和配置，并把 rollout 数量与 token 预算写进目标约束。它还读取执行轨迹里的反思性文字反馈，用失败发生在哪个节点、哪条信息没有传到下一步来决定下一轮改什么。这样，优化目标不再只是把一个分数往上推，而是找到更少试错、更能解释的结构调整。\n\n实验结果很具体。在 IFBench 和 HotpotQA 上，Maestro 相比 MIPROv2、GEPA、GEPA+Merge 的平均提升分别为 12%、4.9% 和 4.86%；即使限制为只做 prompt 优化，仍报告 9.65%、2.37% 和 2.41% 的领先。论文还称它用的 rollout 远少于 GEPA。这里的比较依赖相同任务、预算和实现，不能直接推出所有 Agent 图都应该交给自动搜索。\n\n对工程团队来说，先把图层暴露出来，反而更容易排错。一个客服 Agent 的检索器、政策过滤器、回复生成器和人工升级节点，应该各自有输入输出和失败日志；如果只看最终文本，很难知道是检索错了、规则没有执行，还是模型把正确证据丢在了中间。图搜索的价值在于让这些选择可以被比较，而不是让系统变成不可读的自动拼图。\n\n自动改图也有边界。图结构一旦变化，权限、数据流和成本都会变化；一个新工具节点可能扩大数据暴露面，一个循环边可能让 Agent 不停调用。上线前要把允许的节点、工具白名单、token 上限、超时和人工接管写成独立约束，并对每次结构变更做回归和审计，不能只接受“分数更高”的候选。\n\nMaestro 提供的方向很清楚：可靠 Agent 的优化单位不是一条 prompt，而是一个带预算、反馈和责任边界的工作流。图和配置一起调，可能更快找到结构性问题；但真正能进生产的方案，还得让人看懂每个节点为什么存在、失败时谁能停下它，以及新结构带来的成本和风险。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/maestro-agent-graph-config-20250904.svg",
+    "alt": "Maestro 同时搜索 Agent 工作流图与节点配置来定位结构性失败",
+    "sourceUrl": "/images/news/maestro-agent-graph-config-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "prompt-limit",
+      "title": "很多 Agent 失败，不是 prompt 写得不够漂亮",
+      "body": "检索没接回规划器、验证器缺失或工具流向错误，属于图结构问题，单调 prompt 很难修复。",
+      "kind": "narrative"
+    },
+    {
+      "id": "two-levels",
+      "title": "Maestro 同时优化图层和配置层",
+      "body": "图层决定模块与信息流，配置层决定模型、prompt、工具和控制参数；两层一起搜索才看得到结构性失败。",
+      "kind": "technical"
+    },
+    {
+      "id": "trace-feedback",
+      "title": "轨迹里的文字反馈成为下一轮修改线索",
+      "body": "系统读取失败节点和信息断点，按 rollout/token 预算选择下一次候选，而不是盲目堆更多试跑。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-gains",
+      "title": "IFBench 和 HotpotQA 上报告多组领先",
+      "body": "相对 MIPROv2、GEPA、GEPA+Merge 平均提升 12%、4.9%、4.86%；prompt-only 限制下仍有 9.65%、2.37%、2.41%。",
+      "kind": "comparison"
+    },
+    {
+      "id": "debug-graph",
+      "title": "把工作流图暴露出来，失败才有位置可查",
+      "body": "检索、规则、生成和人工升级节点分别记录输入输出，团队才能判断错误发生在哪一段。",
+      "kind": "example"
+    },
+    {
+      "id": "guardrails",
+      "title": "自动改图必须受权限和工具白名单约束",
+      "body": "节点变更会改变数据流、成本和调用面；新循环或新工具不能只因为分数变高就直接上线。",
+      "kind": "boundary"
+    },
+    {
+      "id": "human-readable",
+      "title": "可靠优化也要让人读得懂和停得住",
+      "body": "每个节点的目的、预算、超时和人工接管都应保留版本，结构搜索不能替代审计。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Maestro 怎样同时修 Agent 的结构和 prompt？",
+    "question": "先把工作流图与节点配置分开记录，再用轨迹反馈在预算内搜索结构性改动。",
+    "steps": [
+      {
+        "label": "画出当前工作流图",
+        "detail": "列出规划、检索、工具、验证和回复节点，标记输入、输出与人工升级路径。",
+        "evidence": "graph: which modules exist and how information flows"
+      },
+      {
+        "label": "记录节点配置",
+        "detail": "保存每个节点的模型、prompt、工具和控制参数，形成可比较的候选版本。",
+        "evidence": "configuration of each node"
+      },
+      {
+        "label": "收集失败轨迹",
+        "detail": "从 rollout 记录中定位哪一个节点失败、哪条信息丢失，以及错误扩散到了哪里。",
+        "evidence": "reflective textual feedback from traces"
+      },
+      {
+        "label": "在预算内联合搜索",
+        "detail": "同时尝试图结构与配置修改，约束 rollout 数量和 token 成本，再比较任务质量。",
+        "evidence": "explicit rollout/token budgets"
+      },
+      {
+        "label": "回归并人工审计",
+        "detail": "验证新图没有新增越权、循环或数据暴露，并保留可解释的结构变更记录。",
+        "evidence": "reliable AI agents and structural failure modes"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.04642"
+  },
+  "relatedSlugs": [
+    "agent",
+    "eval",
+    "prompt",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.04642",
+      "claim": "Maestro 同时搜索 Agent 图和节点配置，在显式 rollout/token 预算下利用轨迹文字反馈定位结构性失败。",
+      "excerpt": "jointly searches over graphs and configurations ... explicit rollout/token budgets ... reflective textual feedback from traces"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04642",
+      "claim": "论文在 IFBench 和 HotpotQA 上报告相对 MIPROv2、GEPA、GEPA+Merge 的多组平均提升，并称 rollout 少于 GEPA。",
+      "excerpt": "surpasses ... by an average of 12%, 4.9%, and 4.86% ... far fewer rollouts than GEPA"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.04642",
+  "sourceHash": "sha256:681439adae15144e992a767971b7b6c51f7752d76341231fc035bd593320b481",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文分析 Agent 工作流图、模块、工具和失败轨迹。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留 IFBench、HotpotQA、多种 prompt 优化器对比和 rollout 预算。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.98,
+      "evidence": [
+        "正文对比 prompt-only 优化与图/配置联合搜索。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文把节点模型、prompt、工具和控制参数纳入配置层及白名单约束。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.04642",
+      "claim": "arXiv 记录 Maestro 于 2025 年 9 月 4 日提交，研究可靠 Agent 的图与配置联合优化。",
+      "excerpt": "Submitted on 4 Sep 2025 ... Maestro: Joint Graph & Config Optimization for Reliable AI Agents"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04642",
+      "claim": "摘要给出 IFBench、HotpotQA、多个 prompt 优化器对比和结构性失败分析。",
+      "excerpt": "IFBench and HotpotQA ... MIPROv2, GEPA, and GEPA+Merge ... structural failure modes"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Maestro 的图/配置两层、轨迹文字反馈、rollout/token 预算、IFBench/HotpotQA 及多组相对提升；正文补充节点审计、工具白名单、循环和人工接管边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留论文明确的图/配置联合搜索、预算、轨迹反馈和 benchmark 对比数字，未把实验结果写成普遍上线保证；补充数据流、权限、工具白名单、循环和审计边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-maestro-agent-graph-config-20250904"
+}

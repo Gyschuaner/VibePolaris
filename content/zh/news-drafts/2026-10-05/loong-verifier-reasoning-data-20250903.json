@@ -1,0 +1,199 @@
+{
+  "slug": "loong-verifier-reasoning-data-20250903",
+  "title": "Loong：用验证器规模化合成长链推理数据",
+  "summary": "Loong 论文于 9 月 3 日提交，针对可验证奖励强化学习在数学和编程之外缺少高质量推理数据的问题，提出开源的合成数据与验证框架。它包含 8,729 条人工审核、覆盖 12 个领域的 LoongBench，以及可生成问题—答案—代码三元组的 LoongEnv；Agent 通过代码执行结果获得奖励，论文同时分析合成数据的正确性、难度与多样性。",
+  "body": "强化学习要把语言模型训练成更会推理的 Agent，首先得有能判断对错的奖励。数学答案可以比对，程序可以执行，但化学、逻辑或其他知识密集任务经常缺少便宜、稳定的验证器。没有验证器，研究者只能依赖昂贵的人审，数据规模和迭代速度都会被卡住。Loong 试图把“生成数据”和“验证数据”放进同一套开源循环。\n\nLoongBench 是这条循环的种子。论文称它包含 8,729 条人工审核样本，覆盖 12 个推理领域，每条都配有可执行代码和丰富元数据。代码不是把所有知识题都变成编程题，而是给能形式化的结论提供一个独立检查点；元数据则帮助研究者按领域、难度和答案类型追踪数据分布。\n\nLoongEnv 负责从种子样本继续生成新的问题—答案—代码三元组。环境可以组合不同的提示策略，让基于 LLM 的 Agent 产生长链解决过程，再用执行结果检查它是否对齐了可验证答案。这个过程把“模型写了一段看似完整的推理”和“这段推理最后通过了外部验证”分开，避免只奖励语言流畅。\n\n论文把 LoongBench 与 LoongEnv 组成 Agent—environment loop：Agent 生成 Chain-of-Thought 解法，环境执行代码并返回奖励，训练再利用这个反馈。作者还对开源和闭源模型做基准，观察不同领域的覆盖和瓶颈，并分析合成数据的正确性、难度和多样性。摘要没有声称每个领域都得到同等质量的验证器，读者需要按任务看验证方式是否真的对应问题。\n\n可执行验证很有力量，也有边界。代码结果可能只验证了一个形式化子问题，不能自动证明自然语言解释没有遗漏；执行环境、随机种子和依赖版本变化也会改变结果。若生成器学会钻验证器的空子，数据量越大，错误模式反而会被放大，所以样本抽检、去重、版本锁定和人工复核仍不可少。\n\n把 Loong 用到生产训练时，执行代码本身要放在隔离环境，限制网络、文件和资源；生成的长链推理不应因为通过了验证器就被当成事实答案直接交付。系统还要记录问题来源、代码版本、执行日志和奖励理由，遇到验证器不适用的任务就降级为待审，而不是强行给一个分数。\n\nLoong 的价值不只是“多生成一些 CoT”，而是把推理数据的来源、生成、验证和奖励连成可复查的工程链。验证器能把一部分人审工作变成可重复反馈，但它的覆盖范围决定了训练信号的边界；长链推理要变得可靠，仍需要知道哪些结论可以执行检查，哪些必须回到人和领域证据。",
+  "publishedAt": "2025-09-03",
+  "eventDate": "2025-09-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/loong-verifier-reasoning-data-20250903.svg",
+    "alt": "Loong 用人工审核种子、合成环境和可执行验证器生成长链推理训练数据",
+    "sourceUrl": "/images/news/loong-verifier-reasoning-data-20250903.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "verifiable-reward-gap",
+      "title": "没有验证器，长链推理很难规模化训练",
+      "body": "数学和编程之外，正确性常需要昂贵人审；可验证奖励的数据规模和迭代速度因此受限。",
+      "kind": "narrative"
+    },
+    {
+      "id": "loongbench-seed",
+      "title": "8,729 条人工审核样本做种子",
+      "body": "LoongBench 覆盖 12 个领域，配有可执行代码和元数据，为后续生成提供领域、难度和答案类型的锚点。",
+      "kind": "technical"
+    },
+    {
+      "id": "loongenv-generation",
+      "title": "LoongEnv 生成问题—答案—代码三元组",
+      "body": "不同提示策略驱动 Agent 生成长链解法，环境用执行结果检查可验证部分，而不是只奖励文字完整。",
+      "kind": "technical"
+    },
+    {
+      "id": "agent-environment-loop",
+      "title": "Agent 生成，环境执行，再把奖励送回训练",
+      "body": "代码执行形成外部反馈；论文还分析跨领域覆盖和合成数据的正确性、难度与多样性。",
+      "kind": "comparison"
+    },
+    {
+      "id": "verifier-boundary",
+      "title": "通过代码，不等于所有解释都正确",
+      "body": "执行结果可能只覆盖形式化子问题，依赖版本、随机性和验证器适用范围都要单独记录。",
+      "kind": "boundary"
+    },
+    {
+      "id": "sandbox-data-lineage",
+      "title": "生成代码和长链都要隔离、留档",
+      "body": "限制网络、文件和资源，保留问题来源、代码版本、执行日志和奖励理由；验证器不适用时转人工。",
+      "kind": "example"
+    },
+    {
+      "id": "scalable-feedback",
+      "title": "验证器能扩大反馈，但不能扩大适用范围",
+      "body": "数据生成、执行验证和人审边界连起来，才能知道哪些推理可自动检查，哪些必须回到领域证据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "synthetic-data",
+    "title": "Loong 怎样把长链推理变成可验证训练反馈？",
+    "question": "先用人工审核样本做种子，再让 Agent 生成带代码的解法，由环境执行并把结果转成奖励。",
+    "steps": [
+      {
+        "label": "准备人工审核种子",
+        "detail": "从 12 个领域整理 8,729 条样本，附上代码、答案类型和元数据，固定数据起点。",
+        "evidence": "8,729 human-vetted examples across 12 domains"
+      },
+      {
+        "label": "在 LoongEnv 生成三元组",
+        "detail": "让 Agent 根据不同提示策略产生问题、答案和可执行检查代码，保留生成版本。",
+        "evidence": "LoongEnv ... question-answer-code triples"
+      },
+      {
+        "label": "执行验证代码",
+        "detail": "把能形式化的结论交给受限执行环境，检查输出是否与答案对齐，不把文字流畅当成奖励。",
+        "evidence": "code-executed answers"
+      },
+      {
+        "label": "回传可验证奖励",
+        "detail": "Agent—environment loop 将执行结果送回训练，推动模型发现更可靠的长链解法。",
+        "evidence": "reinforcement learning with verifiable reward"
+      },
+      {
+        "label": "审计合成数据边界",
+        "detail": "按正确性、难度、多样性、去重和验证器适用范围抽检，遇到不可形式化任务转人审。",
+        "evidence": "analysis of correctness, difficulty, and diversity"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03059"
+  },
+  "relatedSlugs": [
+    "agent",
+    "llm",
+    "dataset-data",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03059",
+      "claim": "Loong 提供 LoongBench 种子数据和 LoongEnv 合成环境，用执行代码和可验证奖励扩展长链推理训练。",
+      "excerpt": "LoongBench ... LoongEnv ... agent-environment loop"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03059",
+      "claim": "摘要给出 8,729 条人工审核样本、12 个领域和合成数据的正确性/难度/多样性分析。",
+      "excerpt": "8,729 human-vetted examples across 12 domains ... correctness, difficulty, and diversity"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03059",
+  "sourceHash": "sha256:71842c76b87c6714b6323cd487bab858544b3a87ca67fdd8a64eb56545360519",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 Agent—environment loop、长链解法和奖励反馈。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文讨论 LLM 生成推理、跨领域覆盖和训练反馈。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.99,
+      "evidence": [
+        "正文介绍 LoongBench、合成三元组、元数据和数据审计。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文保留可执行验证、跨模型基准和正确性/难度/多样性分析。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 3 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03059",
+      "claim": "arXiv 记录 Loong 于 2025 年 9 月 3 日提交，研究用验证器规模化生成长链推理数据。",
+      "excerpt": "Published: 2025-09-03 ... Loong"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03059",
+      "claim": "摘要给出 LoongBench、LoongEnv、12 领域和 Agent—environment loop 的可验证奖励主张。",
+      "excerpt": "LoongBench ... LoongEnv ... code-executed answers"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 RLVR 背景、8,729 条人工审核样本、12 领域、LoongEnv、问题—答案—代码三元组和正确性/难度/多样性分析；正文补充验证器适用范围、执行沙盒、数据谱系、去重与人审边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：区分可执行子问题与完整推理正确性，具体写出 LoongBench/LoongEnv/Agent—environment loop，并补上执行隔离、验证器漏洞和数据审计边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-03-loong-verifier-reasoning-data-20250903"
+}

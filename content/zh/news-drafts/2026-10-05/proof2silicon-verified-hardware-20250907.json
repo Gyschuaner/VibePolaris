@@ -1,0 +1,193 @@
+{
+  "slug": "proof2silicon-verified-hardware-20250907",
+  "title": "Proof2Silicon：先让代码通过形式验证，再生成硬件",
+  "summary": "Proof2Silicon 论文于 9 月 7 日提交，把自然语言硬件规格、形式验证和 RTL 生成接成一条流水线。它嵌入 PREFACE 的 verifier-driven 强化学习提示修复，让冻结的 LLM 迭代生成可验证的 Dafny 代码，再通过 Dafny 后端和 PyLog 转成可综合的高层 C，最后用 Vivado HLS 生成 RTL。论文在 100 任务基准上报告 Dafny 验证成功率最高提升 21%、端到端硬件综合成功率最高 72%；这些是研究基准结果，不是芯片上线保证。",
+  "body": "让 LLM 写出一段看起来合理的代码并不难，难的是在硬件和安全关键场景里证明它满足规格。普通单元测试只能覆盖有限输入，形式验证则要求程序在明确的逻辑条件下通过证明。Proof2Silicon 试图把这道门槛放在硬件生成的前面，而不是 RTL 出来以后才发现语义对不上。\n\n论文于 9 月 7 日提交，建立在作者此前的 PREFACE 框架上。PREFACE 用 verifier-driven 的强化学习 Agent 迭代修复给冻结 LLM 的提示，让模型逐步生成可通过 Dafny 形式验证的程序；模型本身不需要为每个任务重新微调，验证器的反馈成为下一轮提示调整的依据。\n\nProof2Silicon 把这套提示修复嵌入端到端合成流程：自然语言规格先引导 LLM 生成 Dafny，验证通过后再自动转换成可综合的高层 C，最后交给 Vivado HLS 生成 RTL。流水线的关键是把“证明通过”作为中间闸门；生成失败时先回到提示和规格，而不是直接把未经验证的代码推到硬件工具链里。\n\n作者在 100 个任务的基准上评估 PREFACE，报告不同 LLM 上的 Dafny 验证成功率最高提高 21%；Proof2Silicon 的端到端硬件综合成功率最高达到 72%。两个数字对应不同阶段：前者说明提示修复更容易生成可证明程序，后者还要经过转换和 HLS。它们不应被理解成所有规格都能自动变成正确芯片。\n\n形式验证也有边界。Dafny 证明的是程序在给定规格、前置条件和后置条件下的正确性；转换到高层 C、再到 RTL 时，类型、时序、资源和工具语义会引入新的检查点。论文展示了一条连通路径，但部署方仍需做转换一致性、综合日志、时序约束和硬件等价性检查。\n\n这条路径的价值，在于把 LLM 的不确定性放进一个可拒绝的流程里。验证器不通过，就不能把结果标成完成；每次提示修复都应保留规格版本、证明结果和失败原因，方便复现和回滚。对安全关键项目，人工工程师仍要审查规格是否写对，不能只看自动化工具有没有给出绿灯。\n\nProof2Silicon 更像是“先证明，再综合”的研究样板，而不是取代硬件设计流程的按钮。它把自然语言、形式方法、强化学习和 HLS 接在了一起，下一步仍要回答规格覆盖、跨工具一致性和真实芯片验证的问题。把每个阶段的证据留下来，才有机会让自动生成进入可审计的工程链。",
+  "publishedAt": "2025-09-07",
+  "eventDate": "2025-09-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/proof2silicon-verified-hardware-20250907.svg",
+    "alt": "Proof2Silicon 将自然语言规格、Dafny 形式验证、高层 C 和 RTL 生成串成流水线",
+    "sourceUrl": "/images/news/proof2silicon-verified-hardware-20250907.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "verification-gate",
+      "title": "硬件生成不能只看代码像不像能跑",
+      "body": "安全关键场景需要在进入综合前证明代码满足明确规格，单元测试覆盖不了全部输入。",
+      "kind": "narrative"
+    },
+    {
+      "id": "preface-loop",
+      "title": "PREFACE 用验证器反馈修复冻结 LLM 的提示",
+      "body": "强化学习 Agent 迭代调整提示，让模型更容易生成可通过 Dafny 形式验证的代码。",
+      "kind": "technical"
+    },
+    {
+      "id": "synthesis-pipeline",
+      "title": "Dafny → 高层 C → RTL 形成端到端链路",
+      "body": "验证通过的程序再经 Dafny 后端、PyLog 和 Vivado HLS 转换为可综合硬件。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-result",
+      "title": "100 任务上验证成功率最高提高 21%",
+      "body": "论文还报告端到端硬件综合成功率最高 72%，两个指标分别对应验证阶段和综合阶段。",
+      "kind": "comparison"
+    },
+    {
+      "id": "translation-boundary",
+      "title": "证明通过不等于跨工具转换自动正确",
+      "body": "高层 C、RTL、时序、资源和工具语义仍会引入新的检查点，需要额外的一致性与等价性验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "audit-pipeline",
+      "title": "把规格、证明结果和失败原因都留下来",
+      "body": "可拒绝的流程、版本记录和回滚证据，才让自动生成进入安全关键工程的审查范围。",
+      "kind": "technical"
+    },
+    {
+      "id": "hardware-limit",
+      "title": "研究样板不能替代真实芯片验证",
+      "body": "规格覆盖、跨工具一致性、综合约束和上板测试仍需要硬件工程师负责。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样让 LLM 生成的硬件先过形式验证？",
+    "question": "让验证器反馈驱动提示修复，验证通过后再逐级转换和综合，并在每个转换点留下证据。",
+    "steps": [
+      {
+        "label": "写清自然语言规格",
+        "detail": "定义输入、输出、前置条件和后置条件，让验证器有明确的判定对象。",
+        "evidence": "natural language specifications"
+      },
+      {
+        "label": "提示修复生成 Dafny",
+        "detail": "用 PREFACE 的 verifier-driven RL Agent 根据证明失败迭代调整提示，不先微调模型。",
+        "evidence": "verifier-driven RL agent"
+      },
+      {
+        "label": "挡住未验证程序",
+        "detail": "只有 Dafny 代码通过形式验证，才进入后续转换；失败样例保留给下一轮修复。",
+        "evidence": "ensuring Dafny code correctness"
+      },
+      {
+        "label": "逐级转换到 RTL",
+        "detail": "将已验证程序转成高层 C，再用 Vivado HLS 生成 RTL，逐段检查语义和工具日志。",
+        "evidence": "Dafny's Python backend and PyLog ... Vivado HLS"
+      },
+      {
+        "label": "做硬件级回归",
+        "detail": "复核转换一致性、时序、资源、等价性和真实芯片行为，保留规格版本与回滚点。",
+        "evidence": "end-to-end hardware synthesis"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.06239"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.06239",
+      "claim": "Proof2Silicon 将 PREFACE verifier-driven RL 提示优化、Dafny 验证、高层 C 转换和 Vivado HLS RTL 生成接成端到端框架。",
+      "excerpt": "verifier-driven RL agent ... verified Dafny programs ... Vivado HLS"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.06239",
+      "claim": "论文在 100 任务基准上报告 Dafny 验证成功率最高提高 21%，端到端硬件综合成功率最高 72%。",
+      "excerpt": "100-task benchmark ... up to 21% ... end-to-end hardware synthesis success rate of up to 72%"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.06239",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 7 日首次提交。",
+      "excerpt": "Submitted on 7 Sep 2025 (v1)"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.06239",
+  "sourceHash": "sha256:00aaf08877f8ccbdaa9963fa6adfd9b161409bfc8c0ddb959ffb936e76848350",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论冻结 LLM 的代码生成、提示修复和形式验证反馈。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文记录 verifier-driven RL Agent 如何迭代调整提示。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕 100 任务基准、Dafny 验证成功率和硬件综合成功率展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 Proof2Silicon 论文于 2025 年 9 月 7 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.06239",
+      "claim": "arXiv 记录 Proof2Silicon 于 2025 年 9 月 7 日提交，主题是通过提示修复生成形式验证硬件。",
+      "excerpt": "Proof2Silicon: Prompt Repair for Verified Code and Hardware Generation via Reinforcement Learning"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.06239",
+      "claim": "摘要给出 Dafny 验证、C/RTL 转换、100 任务基准、21% 和 72% 指标。",
+      "excerpt": "Dafny code correctness ... synthesizable high-level C ... RTL ... 100-task benchmark"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv v1 首次提交日期、PREFACE verifier-driven RL、Dafny 验证、Python backend/PyLog、Vivado HLS、100 任务、21% 和 72% 结果；正文明确形式验证、跨工具转换和真实硬件验证的边界，没有把基准成功率写成芯片上线保证。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手完成初稿逐段复核：保留 Dafny 验证、C/RTL/HLS 处理链和 21%/72% 基准结果，明确证明与转换一致性不是同一件事；补充规格版本、验证失败、时序/资源/等价性、回滚和硬件工程师责任边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-07-proof2silicon-verified-hardware-20250907"
+}

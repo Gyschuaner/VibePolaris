@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-09-03",
+  "eventDate": "2025-09-03",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-09-03 AI 事件重新检索：以当天 arXiv 提交/版本更新为主，按 Agent 失败归因、漏洞修复验证、可验证推理数据、科研链路重建、LLM 评审偏差、具身安全和知识表示分析排序；逐篇写作并复核。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202509030000 TO 202509032359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CR)",
+      "https://arxiv.org/abs/2509.03312",
+      "https://arxiv.org/abs/2509.03331",
+      "https://arxiv.org/abs/2509.03059",
+      "https://arxiv.org/abs/2509.03565",
+      "https://arxiv.org/abs/2509.03419",
+      "https://arxiv.org/abs/2509.03383",
+      "https://arxiv.org/abs/2509.03405",
+      "https://arxiv.org/abs/2509.03020",
+      "https://arxiv.org/abs/2509.03487",
+      "https://arxiv.org/abs/2509.03025",
+      "https://arxiv.org/abs/2509.03093",
+      "https://arxiv.org/abs/2509.03329"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "agentracer-failure-attribution-20250903",
+      "title": "AgenTracer：找出多 Agent 长轨迹里到底是谁把任务带偏了",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03312"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03312",
+      "sourceHash": "sha256:8b3d8df0311035c2a5eff7dd10417fd5d185406c9dd877e0e0cdd1854d790c0e",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03312",
+          "claim": "AgenTracer 用反事实回放和故障注入标注失败的多 Agent 轨迹，训练轻量失败归因器并给系统提供可行动反馈。",
+          "excerpt": "counterfactual replay and programmed fault injection ... failure attribution"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中最直接解决 Agent 长轨迹排错与责任定位的问题，能把失败从总结果追到具体步骤。"
+    },
+    {
+      "slug": "vulnrepaireval-exploit-based-20250903",
+      "title": "VulnRepairEval：补丁只有让真实 PoC 失效，才算修好漏洞",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03331"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03331",
+      "sourceHash": "sha256:2afac9238827cc2374aa8e1735b6df546d274232c890c93607a8fc39d84322ef",
+      "relatedSlugs": [
+        "llm",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03331",
+          "claim": "VulnRepairEval 用可执行 PoC 的差分结果判断 LLM 补丁是否真正修复漏洞，在 23 个 Python CVE 上评测 12 个模型。",
+          "excerpt": "functional Proof-of-Concept exploits ... 23 Python CVEs ... 12 popular LLMs"
+        }
+      ],
+      "decision": "selected",
+      "reason": "把代码修复的表面通过率换成可执行安全结果，证据标准清楚且与安全生产直接相关。"
+    },
+    {
+      "slug": "loong-verifier-reasoning-data-20250903",
+      "title": "Loong：用验证器规模化合成长链推理数据",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03059"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03059",
+      "sourceHash": "sha256:71842c76b87c6714b6323cd487bab858544b3a87ca67fdd8a64eb56545360519",
+      "relatedSlugs": [
+        "agent",
+        "llm",
+        "dataset-data",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03059",
+          "claim": "Loong 用 8,729 条人工审核样本、可执行代码和 LoongEnv 合成问答—代码三元组，让 Agent 依据可验证奖励生成长链推理。",
+          "excerpt": "8,729 human-vetted examples ... executable code ... agent-environment loop"
+        }
+      ],
+      "decision": "selected",
+      "reason": "把可验证奖励、数据生成和跨领域推理放在同一条循环里，是当天训练基础设施代表。"
+    },
+    {
+      "slug": "researchpulse-scientific-inference-20250903",
+      "title": "ResearchPulse：把多篇论文串成一条可追溯的科研方法链",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03565"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03565",
+      "sourceHash": "sha256:8a71bdcb5d3a256196d4da608dc529bdbe00e1aebfd2f5ac8b9493870538df42",
+      "relatedSlugs": [
+        "agent",
+        "citation",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03565",
+          "claim": "ResearchPulse 用 Plan、Mmap 和 Lchart 三个 Agent 对齐多篇论文的动机、方法和实验，构建引用感知的 ResearchPulse-Bench。",
+          "excerpt": "three coordinated agents ... motivation-method mind maps ... citation-aware benchmark"
+        }
+      ],
+      "decision": "selected",
+      "reason": "从单篇摘要推进到跨文档科研链路，和前两天深度研究/引用审计主题形成延伸。"
+    },
+    {
+      "slug": "curse-of-knowledge-llm-judge-20250903",
+      "title": "Curse of Knowledge：评审上下文越复杂，LLM Judge 也可能越偏",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03419"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03419",
+      "sourceHash": "sha256:58f77449cced778715aaf1c12907be306bdc93561f384e10bb9905786d780114",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03419",
+          "claim": "ComplexEval 在 12 个基础和 3 个高级场景中测量六类辅助信息诱导偏差，发现复杂度越高偏差越明显，推理模型也可能脆弱。",
+          "excerpt": "6 previously unexplored biases ... 12 basic and 3 advanced scenarios ... bias magnitude scaling with task complexity"
+        }
+      ],
+      "decision": "selected",
+      "reason": "紧接动态评测之后追问评审器本身的偏差，能避免把 Judge 当成无条件的真值机器。"
+    },
+    {
+      "slug": "annie-embodied-safety-20250903",
+      "title": "ANNIE：具身 Agent 的视觉扰动可能直接变成危险动作",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03383"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03383",
+      "sourceHash": "sha256:bc9311000dde50b9c7a71f9dc009ecfec82b12941d55db533ee000c8cf399504",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03383",
+          "claim": "ANNIE 按物理约束定义具身安全等级，构建 9 个安全场景和 2,400 段视频—动作序列；论文报告代表性模型在各类攻击上的成功率超过 50%。正文只讨论防御。",
+          "excerpt": "ISO standards ... 9 safety-critical scenarios ... 2,400 video-action sequences ... attack success rates exceeding 50%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "把 Agent 安全从网页和软件工具推到物理动作，风险边界和评测场景都足够具体。"
+    },
+    {
+      "slug": "lment-knowledge-representation-20250903",
+      "title": "LMEnt：把语言模型从预训练数据到知识表示的变化做成可追踪实验室",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03405"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03405",
+      "sourceHash": "sha256:e01b43514b6e884bc7213d3ca82272dd2e5da4f2ce138781bce9bba4c91c38ca",
+      "relatedSlugs": [
+        "llm",
+        "dataset-data",
+        "eval",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03405",
+          "claim": "LMEnt 提供带实体标注的预训练语料、实体检索工具、12 个预训练模型和 4K 个中间检查点，用于分析知识获取、编辑和幻觉。",
+          "excerpt": "knowledge-rich pretraining corpus ... 12 pretrained LMs ... 4K intermediate checkpoints"
+        }
+      ],
+      "decision": "selected",
+      "reason": "为知识获取、编辑和幻觉研究提供可复查的中间状态，补齐当天 Agent 系统之外的模型证据基础。"
+    },
+    {
+      "slug": "bidirectional-reconstruction-embeddings-20250903",
+      "title": "用双向重建把 LLM 的最后一个 token 训练成更好的向量",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03020"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03020",
+      "sourceHash": "sha256:58acd483cfee2109ee4a973a86ed33dc7baab03ae85f5f6ae2c8683ac03d0270",
+      "relatedSlugs": [
+        "embedding",
+        "rag",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03020",
+          "claim": "论文在对比学习前增加 Query→Document 与 Document→Query 双向重建阶段，提升最后 token embedding 的语义并在 MTEB 上报告新最好结果。",
+          "excerpt": "bidirectional generative reconstruction ... Massive Text Embedding Benchmark"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "与此前 RAG/上下文文章方向相近，先保留向量训练候选。"
+    },
+    {
+      "slug": "safeprotein-redteam-20250903",
+      "title": "SafeProtein：给蛋白质基础模型做系统化红队评测",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03487"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03487",
+      "sourceHash": "sha256:e8fb4d2f102c10d7fc33b8918d103565e687286c495ea4b22a36b558bacfa8c7",
+      "relatedSlugs": [
+        "eval",
+        "prompt",
+        "authorization",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03487",
+          "claim": "SafeProtein 提出蛋白质基础模型红队框架和 SafeProtein-Bench，摘要报告对 ESM3 的攻击成功率最高 70%；正文只讨论防御和生物安全边界。",
+          "excerpt": "red-teaming framework ... SafeProtein-Bench ... up to 70% attack success rate"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "生物安全价值高，但需要单独的安全审查和更细的风险分级，先不与具身安全文章同日展开。"
+    },
+    {
+      "slug": "visual-absence-tokens-20250903",
+      "title": "视觉上不存在的文字，为什么会被 LVLM 当成图像内容",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03025"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03025",
+      "sourceHash": "sha256:cef6a471fb00aba5400890db17ced2608f372d4fe0b2340b2d1490e08f28182b",
+      "relatedSlugs": [
+        "llm",
+        "grounding",
+        "hallucination",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03025",
+          "claim": "论文发现 LVLM 会把没有视觉证据的文字误当成图像内容，识别出 VA neurons 并用检测模块修正输出。",
+          "excerpt": "visually absent tokens ... Visual Absence-aware neurons ... mitigate ... falsely presume"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "视觉 grounding 方向值得保留，但当天先完成跨 Agent 失败、安全和科研证据主线。"
+    },
+    {
+      "slug": "solid-prompt-design-analysis-20250903",
+      "title": "Are We SOLID Yet?：提示策略会改变 LLM 找设计缺陷的结果",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03093"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03093",
+      "sourceHash": "sha256:26762312750dfba05d1dbadf691b8b6bad0cbab25c786ffa0d93f6e0472b5482",
+      "relatedSlugs": [
+        "llm",
+        "prompt",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03093",
+          "claim": "论文用 240 个人工验证代码样例和四种提示策略评测四个模型发现 SOLID 设计原则违规，结果随语言和代码复杂度变化。",
+          "excerpt": "240 manually validated code examples ... four prompt strategies ... accuracy ... degrades sharply"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "代码分析很实用，但同日先处理更直接的漏洞修复验证和 Agent 失败归因。"
+    },
+    {
+      "slug": "sesgo-spanish-bias-eval-20250903",
+      "title": "SESGO：用拉美西语语境检查模型的刻板偏见",
+      "eventDate": "2025-09-03",
+      "publishedAt": "2025-09-03",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03329"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03329",
+      "sourceHash": "sha256:9f47bd593922454304a26dba86b7cdbb9d93f792058c78482ac2f81e3cd22793",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03329",
+          "claim": "SESGO 用超过 4,000 条西语文化语境提示评测四类社会偏见，并发现英语优化的缓解方法不能稳定迁移到西语。",
+          "excerpt": "more than 4,000 prompts ... culturally-grounded ... bias mitigation ... do not effectively transfer"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "多语言公平评测重要，但先保留，避免同日评测主题过密。"
+    }
+  ],
+  "selectedSlugs": [
+    "agentracer-failure-attribution-20250903",
+    "vulnrepaireval-exploit-based-20250903",
+    "loong-verifier-reasoning-data-20250903",
+    "researchpulse-scientific-inference-20250903",
+    "curse-of-knowledge-llm-judge-20250903",
+    "annie-embodied-safety-20250903",
+    "lment-knowledge-representation-20250903"
+  ],
+  "gap": null
+}

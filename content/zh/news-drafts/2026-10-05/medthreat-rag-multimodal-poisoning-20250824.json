@@ -1,0 +1,194 @@
+{
+  "slug": "medthreat-rag-multimodal-poisoning-20250824",
+  "title": "MedThreatRAG：医疗多模态 RAG 的漏洞可能藏在图文不一致里",
+  "summary": "MedThreatRAG 是一篇 2025 年 8 月 24 日提交的医疗 AI 安全研究，模拟允许用户或数据管线定期贡献知识的半开放医疗 RAG 系统，测试图像与报告配对被污染后的检索和生成。论文重点提出 Cross-Modal Conflict Injection，让图像和文本之间出现细微语义矛盾；在 IU-Xray 和 MIMIC-CXR QA 上，摘要报告答案 F1 最多下降 27.66%，LLaVA-Med-1.5 F1 最低到 51.36%。",
+  "body": "医疗 RAG 接入了图像和报告，是为了让模型回答更有依据；但只要知识库允许持续更新，图像和文本之间的一点不一致就可能成为新的入口。8 月 24 日提交的 MedThreatRAG，专门模拟这种半开放系统里的多模态投毒面。\n\n  研究者构建了一个允许用户或数据管线定期贡献内容的环境，让攻击者可以把图像—报告配对送进知识库。它关注的不是一个孤立的恶意句子，而是检索和生成共同依赖的跨模态对齐：图像说的是一件事，配套文本却给出另一种暗示。\n\n  论文把这种方法称为 Cross-Modal Conflict Injection。矛盾被设计得足够细微，可能绕过只看文本或只看图像的常规过滤，却会在检索排序和答案生成时扰乱图文之间的对应关系。文章不需要复述如何构造冲突，工程上更重要的是认识到“两个字段都像真的”不等于它们彼此一致。\n\n  在 IU-Xray 和 MIMIC-CXR 问答任务上，摘要报告 MedThreatRAG 最多让答案 F1 下降 27.66%，LLaVA-Med-1.5 的 F1 最低降到 51.36%。这些数字来自模拟的半开放更新环境，不是医院事故统计，也不等于每个医疗模型都会遭遇同样幅度的下降。\n\n  防御因此不能只加一个文本审核器。图像、报告、元数据和来源需要分开校验，再检查它们是否描述同一个对象、时间和临床事实；新数据进入知识库前要有版本、来源和人工抽样，跨模态冲突应让样本进入隔离区，而不是直接参与检索。\n\n  医疗场景还需要把检索风险和临床责任分开。即使模型发现了冲突，也不能自行做诊断或治疗决定；系统应展示证据来源、标记不一致并转交专业人员。知识库更新、索引刷新和模型回答之间的时间差，也要能够回放。\n\n  MedThreatRAG 的价值，在于把多模态 RAG 的安全边界从“有没有有害文本”推进到“图和文是否互相支持”。当知识库可以被持续写入时，跨模态一致性、来源追踪和人工放行应成为和检索质量同等重要的上线条件。",
+  "publishedAt": "2025-08-24",
+  "eventDate": "2025-08-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/medthreat-rag-multimodal-poisoning-20250824.svg",
+    "alt": "MedThreatRAG 检查医疗图像与报告之间的跨模态冲突",
+    "sourceUrl": "/images/news/medthreat-rag-multimodal-poisoning-20250824.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "open-updates",
+      "title": "持续更新的医疗知识库多了一条攻击面",
+      "body": "医疗 LVLM 接入 RAG 后，用户或数据管线定期贡献内容会改变检索面。风险不只来自一段恶意文字，也来自图像与报告配对的关系。",
+      "kind": "narrative"
+    },
+    {
+      "id": "semi-open",
+      "title": "半开放环境模拟图文配对进入知识库",
+      "body": "MedThreatRAG 构建允许周期性更新的系统，测试被污染的图像和报告如何影响检索与生成。它是模拟环境，不是现实医院事件。",
+      "kind": "technical"
+    },
+    {
+      "id": "cmci",
+      "title": "Cross-Modal Conflict Injection 制造细微矛盾",
+      "body": "CMCI 让图像与文本出现不易被单模态过滤发现的语义冲突，扰乱跨模态对齐。安全检查需要验证两种模态是否描述同一事实。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-drop",
+      "title": "IU-Xray 和 MIMIC-CXR F1 下降",
+      "body": "摘要报告答案 F1 最多下降 27.66%，LLaVA-Med-1.5 F1 最低到 51.36%。数字绑定论文任务和模拟投毒设置，不能当作临床事故概率。",
+      "kind": "technical"
+    },
+    {
+      "id": "defense",
+      "title": "文本审核之外，还要做图文一致性校验",
+      "body": "图像、报告、元数据和来源需分别验证，再检查对象、时间和临床事实是否一致；冲突样本应隔离并人工抽样，而不是直接进检索。",
+      "kind": "boundary"
+    },
+    {
+      "id": "clinical-boundary",
+      "title": "发现冲突不等于可以自动诊断",
+      "body": "系统应展示来源、标记不一致并转交专业人员。知识库更新、索引刷新和回答之间的时间差需要可回放。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "跨模态一致性要和检索质量一起验收",
+      "body": "只要知识库可以持续写入，来源追踪、版本、人工放行和图文一致性就是上线条件，不是事后补丁。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "clinical-alert",
+    "title": "医疗多模态 RAG 怎样拦住图文冲突？",
+    "question": "先验证来源和模态一致性，再允许内容进入检索和回答链。",
+    "steps": [
+      {
+        "label": "隔离更新入口",
+        "detail": "记录每个图像、报告、元数据和贡献者，先进入带版本的隔离区。",
+        "evidence": "simulated semi-open attack environment ... periodic knowledge base updates"
+      },
+      {
+        "label": "分别做单模态检查",
+        "detail": "对文本、图像和元数据分别做格式、来源和异常校验，不让一层过滤替代另一层。",
+        "evidence": "adversarial image-text pairs"
+      },
+      {
+        "label": "检查跨模态一致",
+        "detail": "验证图像与报告是否描述同一对象、时间和临床事实，发现冲突就阻断或人工复核。",
+        "evidence": "Cross-Modal Conflict Injection ... disrupts cross-modal alignment"
+      },
+      {
+        "label": "回放检索影响",
+        "detail": "用固定问答集比较更新前后的检索、引用和答案 F1，记录索引刷新时间。",
+        "evidence": "Evaluations on IU-Xray and MIMIC-CXR QA tasks"
+      },
+      {
+        "label": "转交专业人员",
+        "detail": "模型发现矛盾时只标记证据和不确定性，不自动做诊断或治疗决定。",
+        "evidence": "highlight the urgent need for threat-aware design and robust multimodal consistency checks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / MedThreatRAG 作者组",
+    "url": "https://arxiv.org/abs/2508.17215"
+  },
+  "relatedSlugs": [
+    "rag",
+    "data-validation",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17215",
+      "claim": "MedThreatRAG 在模拟半开放医疗系统中测试图像和报告配对被投毒后的多模态 RAG 风险，并提出跨模态冲突注入。",
+      "excerpt": "simulated semi-open attack environment ... adversarial image-text pairs ... Cross-Modal Conflict Injection"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17215",
+      "claim": "在 IU-Xray 与 MIMIC-CXR QA 上，摘要报告答案 F1 最多下降 27.66%，LLaVA-Med-1.5 F1 最低到 51.36%。",
+      "excerpt": "reduces answer F1 scores by up to 27.66% ... lowers LLaVA-Med-1.5 F1 rates to as low as 51.36%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17215",
+  "sourceHash": "sha256:1792b97b5dd810520df170990b2b87f33b6159315e9667bf32e612893fac761f",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文解释医疗图像、报告、知识库和多模态检索。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.99,
+      "evidence": [
+        "正文把来源、版本、图文一致性和更新隔离作为防御主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文讨论贡献入口、人工放行和临床责任边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文保留 IU-Xray、MIMIC-CXR 和 F1 下降设置。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 24 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17215",
+      "claim": "arXiv 记录显示 MedThreatRAG 于 2025 年 8 月 24 日提交，研究医疗多模态 RAG 投毒和跨模态一致性。",
+      "excerpt": "Date: Sun Aug 24 05:11:09 2025 ... threat-aware design"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 MedThreatRAG 摘要中的半开放知识库、图文配对、CMCI、IU-Xray/MIMIC-CXR、27.66% 和 51.36% 指标；正文不展开攻击构造，补充来源、版本、跨模态校验和专业转介边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把模拟投毒、跨模态冲突、F1 下降和临床责任拆开，没有将模拟结果写成医院事故概率，也未复述攻击步骤；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-24-medthreat-rag-multimodal-poisoning"
+}

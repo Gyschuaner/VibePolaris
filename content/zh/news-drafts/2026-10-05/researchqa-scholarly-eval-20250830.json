@@ -1,0 +1,210 @@
+{
+  "slug": "researchqa-scholarly-eval-20250830",
+  "title": "ResearchQA：跨 75 个领域检查模型有没有答全科研问题",
+  "summary": "ResearchQA 论文于 8 月 30 日提交，提出一个面向科研问答的跨领域评测资源。作者从 75 个研究领域的综述文章中提取 2.1 万个问题和 16 万条 rubric 条目，每条 rubric 说明答案应覆盖的引用、解释、限制和比较。31 名博士在 8 个领域检查后认为 90% 的问题符合科研信息需求、87% 的 rubric 值得强调；对 18 个系统的 7,600 次对比评测显示，最高系统的 rubric 覆盖率也只有约 75%。",
+  "body": "科研问题很少只有一个短答案。读者可能同时需要关键结论、支持它的论文、适用范围、限制和与其他方法的比较。只看一个总体偏好分数，容易把“写得像答案”和“真的覆盖了研究者关心的要点”混在一起。ResearchQA 想把这部分拆开量。\n\n作者从 75 个研究领域的综述文章中抽取问题和评价标准，形成 2.1 万个问题、16 万条 rubric 条目。每条 rubric 不是简单的关键词，而是说明回答应包含什么：是否引用了合适的论文、是否解释关键机制、是否交代限制、是否完成了比较。\n\n数据经过 31 名博士、覆盖 8 个领域的检查。90% 的问题被认为符合博士层级的信息需求，87% 的 rubric 被认为值得在答案中用完整句子强调。这个过程让“科研问答质量”更接近读者实际检查的清单，而不是只看语言流畅度。\n\n作者用 ResearchQA 对 18 个系统做了 7,600 次两两比较。没有一个参数化或检索增强系统在 rubric 覆盖上超过 70% 的普遍门槛，最高系统整体覆盖约 75%；更细分地看，最高系统完整覆盖的引用条目不到 11%，限制条目约 48%，比较条目约 49%。这些数字说明长答案看起来完整时，仍可能漏掉研究者最需要的部分。\n\nResearchQA 的价值不只是给模型排一个名次。rubric 可以帮助系统在生成后逐项回查：引用是否真的支持结论，限制是否写在答案里，比较是否把对象和维度说清楚。缺失项还能成为下一轮检索和修订的任务。\n\n评测也有边界。综述文章反映的是作者选择和领域共识，rubric 的好坏取决于抽取与博士评审；75 个领域的覆盖并不等于每个学科的全部问题。产品使用时仍要让领域专家抽查高风险答案，并检查引用是否来自最新、合适的研究。\n\nResearchQA 把“答全”变成一个可以逐条核对的动作。对科研 Agent 而言，好的结果不是段落越长越好，而是知道读者要哪些证据、哪些限制和哪些比较，并且能在交付前证明自己覆盖了它们。",
+  "publishedAt": "2025-08-30",
+  "eventDate": "2025-08-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/researchqa-scholarly-eval-20250830.svg",
+    "alt": "ResearchQA 用跨领域问题和 rubric 条目检查科研回答的引用、限制和比较",
+    "sourceUrl": "/images/news/researchqa-scholarly-eval-20250830.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "answer-completeness",
+      "title": "科研回答不只需要一个结论",
+      "body": "引用、解释、限制和比较都可能是读者真正需要的内容，总体偏好分数很难说明缺了哪一项。",
+      "kind": "narrative"
+    },
+    {
+      "id": "rubric-scale",
+      "title": "75 个领域，2.1 万问题和 16 万条 rubric",
+      "body": "ResearchQA 从综述文章抽取问题与逐项标准，把“答全”拆成可检查的引用、机制、边界和比较。",
+      "kind": "technical"
+    },
+    {
+      "id": "expert-check",
+      "title": "博士评审先检查问题和标准是否值得问",
+      "body": "31 名博士在 8 个领域评审后，90% 的问题符合科研信息需求，87% 的 rubric 值得用完整句子强调。",
+      "kind": "comparison"
+    },
+    {
+      "id": "coverage-gap",
+      "title": "最高系统整体覆盖约 75%",
+      "body": "18 个系统的 7,600 次对比显示，引用条目的完整覆盖不到 11%，限制和比较也明显漏答。",
+      "kind": "comparison"
+    },
+    {
+      "id": "post-generation-check",
+      "title": "rubric 可以变成生成后的回查表",
+      "body": "逐项检查引用是否支持结论、限制是否出现、比较维度是否完整，缺失项再进入检索和修订。",
+      "kind": "example"
+    },
+    {
+      "id": "domain-boundary",
+      "title": "跨 75 个领域不等于覆盖每个学科",
+      "body": "综述选择、rubric 抽取和领域评审都会影响结果，高风险科研回答仍要由专家抽查最新来源。",
+      "kind": "boundary"
+    },
+    {
+      "id": "answer-proof",
+      "title": "长答案要证明自己覆盖了什么",
+      "body": "科研 Agent 的质量不靠篇幅，而靠能否说明证据、限制和比较都已被检查。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "ResearchQA 怎样检查科研回答有没有答全？",
+    "question": "把问题拆成引用、解释、限制和比较等 rubric 条目，生成后逐项回查并让领域专家抽样。",
+    "steps": [
+      {
+        "label": "定义科研问题",
+        "detail": "从综述文章中提取研究者真正会问的跨领域问题，保留问题的上下文。",
+        "evidence": "survey-mined questions across 75 fields"
+      },
+      {
+        "label": "列出 rubric 条目",
+        "detail": "为每个问题写出需要覆盖的论文、解释、限制和比较标准，而不是只给一个答案标签。",
+        "evidence": "160K rubric items"
+      },
+      {
+        "label": "专家检查标准",
+        "detail": "用不同领域的博士评审问题是否符合信息需求、条目是否值得强调。",
+        "evidence": "31 Ph.D. annotators in 8 fields"
+      },
+      {
+        "label": "逐项评估回答",
+        "detail": "比较系统回答覆盖了多少条目，并保留引用、限制和比较的分项结果。",
+        "evidence": "7.6K head-to-heads across 18 systems"
+      },
+      {
+        "label": "缺项驱动修订",
+        "detail": "把漏掉的条目变成下一轮检索和写作任务，必要时交给领域专家确认。",
+        "evidence": "citation, limitation, and comparison rubric coverage"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00496"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "benchmark",
+    "citation",
+    "grounding",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00496",
+      "claim": "ResearchQA 从 75 个领域综述文章构建 2.1 万问题和 16 万 rubric 条目，并通过博士评审检查信息需求。",
+      "excerpt": "75 research fields ... 21K queries and 160K rubric items ... 31 Ph.D. annotators"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00496",
+      "claim": "对 18 个系统的 7,600 次比较显示最高整体 rubric 覆盖约 75%，引用、限制和比较条目仍有明显缺口。",
+      "excerpt": "evaluate 18 systems in 7.6K head-to-heads ... highest-ranking system shows 75% coverage"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00496",
+  "sourceHash": "sha256:85590839cdec8a40c96eb677eb6badafd53ae71862770a67341af3824741a16a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文评测 18 个 LLM 系统的科研问答覆盖。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 rubric 覆盖、专家评审和分项缺口展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文明确介绍 ResearchQA 问题集、rubric 和对比评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.98,
+      "evidence": [
+        "正文把引用是否支持结论作为核心 rubric。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.94,
+      "evidence": [
+        "正文要求回答逐项回到研究来源与证据。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 30 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00496",
+      "claim": "arXiv 记录 ResearchQA 于 2025 年 8 月 30 日提交，研究大规模科研问答评测。",
+      "excerpt": "Date: Sat Aug 30 ... ResearchQA"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00496",
+      "claim": "摘要给出 75 个领域、2.1 万问题、16 万 rubric、博士评审和系统覆盖结果。",
+      "excerpt": "21K queries and 160K rubric items ... 75% coverage ... less than 11% citation rubric items"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 75 个领域、2.1 万问题、16 万 rubric、31 名博士、18 个系统和分项覆盖结果；正文补充引用回链、缺项修订和领域专家边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 ResearchQA 的核心落在逐项 rubric 覆盖，保留总体与引用/限制/比较分项数字，避免把专家标注写成绝对标准；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-30-researchqa-scholarly-eval-20250830"
+}

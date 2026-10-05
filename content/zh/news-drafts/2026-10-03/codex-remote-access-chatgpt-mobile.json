@@ -1,8 +1,8 @@
 {
   "slug": "codex-remote-access-chatgpt-mobile",
   "title": "Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作",
-  "summary": "2026-05-14，OpenAI Developer Community公开“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：远程工作流把线程上下文、终端、diff 和审批带到移动端，改变的是控制入口，不是把本地执行环境搬进手机。 当前能确认的是：社区公告和发布说明不能证明所有账户、地区或主机都已支持；本地机器仍需保持连接和权限配置。",
-  "body": "2026 年 5 月 14 日，OpenAI Developer Community 的预览说明称，Codex 可在 ChatGPT 移动端远程连接 Mac 主机工作。移动端带来线程上下文、终端输出、diff 和审批的控制入口，实际命令仍在用户的 Mac 上执行。\n\n这里要把控制面和执行面分开：手机负责查看状态、发起或批准动作，Mac 主机负责文件、终端和网络访问。远程入口不会自动把本地执行环境搬进手机，也不会绕过主机已有权限。\n\n以一次代码修复为例，手机先查看线程和 diff，用户批准后 Mac 在受限环境运行测试；如果要联网、写入敏感目录或提交代码，应再次审批，并把命令、输出、凭据和回滚记录保留在主机日志中。\n\n来源是 OpenAI Developer Community 的预览公告和发布说明，不能证明所有账户、地区或主机都已支持；本地机器仍需保持连接、完成认证和权限配置，公告也没有证明远程执行在所有网络条件下稳定。\n\n五个关联词条各自对应远程链一层：agent-harness 管理任务线程和工具循环；execution-sandbox 隔离主机执行；auth 处理登录和凭据；tools 承载终端、文件和 diff；context 传递任务状态和历史。它们不能替代主机权限。\n\n复核时应测试连接建立、断线恢复、审批提示、权限继承和主机端日志，先使用只读或沙箱权限，再逐步开放写入和网络动作。\n\n时间线从 2026-05-14 的移动端预览说明开始；后续应查看支持范围、连接状态、审批记录和主机端审计。",
+  "summary": "5 月 14 日，OpenAI Developer Community 公告介绍 Codex 在 ChatGPT 移动端的预览：用户可以从手机开始或继续线程、查看输出和审批动作，实际命令仍在连接的 Mac 主机上运行。公告没有证明所有账户、地区或网络环境都已支持。",
+  "body": "5 月 14 日，OpenAI Developer Community 介绍 Codex 在 ChatGPT 移动端的预览。用户可以从手机开始或继续线程、查看终端输出和 diff、审批动作；代码和命令仍在连接的 Mac 主机上执行。\n\n因此需要把控制面和执行面分开看。手机负责查看状态和发起控制，Mac 继续提供文件、终端、网络和本地凭据。移动端能看到一个任务，不代表它拥有主机之外的权限，也不会自动把本地环境搬到手机。\n\n作为一种安全测试，可以这样观察一次代码修复：手机显示待审的 diff，用户确认后，Mac 在受限环境运行测试；需要联网、写敏感目录或提交代码时，再单独确认。agent-harness 管理线程和工具循环，execution-sandbox 隔离执行，auth 处理登录和凭据，tools 承载终端与文件操作，context 传递历史状态。\n\n社区公告属于预览说明，不能证明所有账户、地区或主机都已开放，也没有证明断线、权限继承和远程审批在所有网络条件下稳定。后续应测试连接建立、断线恢复、主机端日志和高风险动作的确认。",
   "publishedAt": "2026-05-14",
   "eventDate": "2026-05-14",
   "isExample": false,
@@ -15,76 +15,59 @@
   },
   "sections": [
     {
-      "id": "event",
-      "title": "2026-05-14，OpenAI Developer Community公开了什么",
-      "body": "事件日记为 2026-05-14；来源页面公开日记为 2026-05-14。OpenAI Developer Community公开的核心动作是：OpenAI Developer Community 的公告介绍 Codex 在 ChatGPT 移动端的预览，用户可以从手机启动、继续、审批和查看工作，而 Codex 继续在连接的 Mac 上运行。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
+      "id": "preview",
+      "title": "手机端新增的是控制入口",
+      "body": "公告介绍了从 ChatGPT 移动端开始或继续 Codex 线程、查看输出和审批动作的预览。Codex 仍在连接的 Mac 主机上运行，手机并不承担本地命令执行。",
       "kind": "narrative"
     },
     {
-      "id": "mechanism",
-      "title": "“Codex 在 ChatGPT 移动端开放预览”改变了哪一层",
-      "body": "真正的变化在于：远程工作流把线程上下文、终端、diff 和审批带到移动端，改变的是控制入口，不是把本地执行环境搬进手机。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。代理产品从单机工具变成跨设备协作后，身份和审批链更重要。",
+      "id": "control-execution",
+      "title": "控制面和执行面要分开",
+      "body": "手机可以看到线程、终端输出和 diff，Mac 继续提供文件、网络和凭据。agent-harness 管理任务，execution-sandbox 限制主机操作，auth 处理身份；移动端可见性不能被理解为额外权限。",
       "kind": "technical"
     },
     {
-      "id": "scenario",
-      "title": "把“Codex 在 ChatGPT 移动端开放预览”放进一次流程",
-      "body": "把它放进一个具体场景：远程审批时要确认你看到的是哪台主机、哪个项目、哪一项动作，避免把移动端的“可见”误认为“可执行”。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "id": "code-review",
+      "title": "一次代码修复会怎样走完",
+      "body": "作为一种安全测试，用户可以在手机查看待审 diff，批准后由 Mac 在受限环境运行测试。联网、写敏感目录或提交代码时再请求确认，并保留主机端命令、输出和回滚记录。",
       "kind": "example"
     },
     {
-      "id": "boundary",
-      "title": "哪些结论仍属于 OpenAI Developer Community 的口径",
-      "body": "这里的来源是 OpenAI Developer Community 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。社区公告和发布说明不能证明所有账户、地区或主机都已支持；本地机器仍需保持连接和权限配置。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把“能连接工具”误读成“可以安全自主完成”。",
+      "id": "preview-limits",
+      "title": "预览公告没有覆盖所有运行条件",
+      "body": "社区说明不能证明所有账户、地区或主机都已支持，也没有给出断线恢复、权限继承和不同网络条件下的稳定性数据。",
       "kind": "boundary"
     },
     {
-      "id": "terms",
-      "title": "用词条拆开“Codex 在 ChatGPT 移动端开放预览”",
-      "body": "本文关联的词条各自对应远程链一层：agent-harness 管理任务线程和工具循环；execution-sandbox 隔离主机执行；auth 处理登录和凭据；tools 承载终端、文件和 diff；context 传递任务状态和历史。它们不能替代主机权限。",
-      "kind": "comparison"
-    },
-    {
-      "id": "timeline",
-      "title": "从 2026-05-14 的页面到下一步",
-      "body": "时间线先从 2026-05-14 的来源页面开始：页面记录“Codex 移动预览支持开始/继续线程、审批和查看输出；Codex 继续在连接的 Mac 主机上运行”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
-      "kind": "narrative"
-    },
-    {
-      "id": "verify",
-      "title": "读者怎样复核这条主张",
-      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：后续应核对支持平台、断线恢复和高风险动作的确认机制。",
+      "id": "next-checks",
+      "title": "实际接入先测断线和高风险动作",
+      "body": "后续应查看支持平台、连接状态、主机日志和审批记录，先用只读或沙箱权限，再决定是否开放写入和网络动作。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agent-workflow",
-    "title": "把“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”拆成可核对的链路",
-    "question": "把一次任务拆成输入、工具调用、状态变化和人工确认，怎样知道哪些是事实、哪些仍是主张？",
+    "title": "从手机审批追到 Mac 主机上的真实动作",
+    "question": "怎样确认移动端看到的状态与主机实际执行保持一致？",
     "steps": [
       {
-        "label": "确认日期与动作",
-        "detail": "先核对 eventDate=2026-05-14、publishedAt=2026-05-14，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
+        "label": "确认连接对象",
+        "detail": "在移动端核对当前线程、项目和连接的 Mac 主机，避免批准了错误的任务。",
         "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
       },
       {
-        "label": "拆开系统层",
-        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：远程工作流把线程上下文、终端、diff 和审批带到移动端，改变的是控制入口，不是把本地执行环境搬进手机。",
+        "label": "查看待执行 diff",
+        "detail": "先读文件变更、命令和工具权限，确认手机显示的内容来自主机当前状态。",
         "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
       },
       {
-        "label": "放进具体场景",
-        "detail": "远程审批时要确认你看到的是哪台主机、哪个项目、哪一项动作，避免把移动端的“可见”误认为“可执行”",
+        "label": "测试审批和回退",
+        "detail": "对联网、写敏感目录和提交动作分别触发确认，检查拒绝、取消和回滚记录。",
         "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
       },
       {
-        "label": "标出不能推出的结论",
-        "detail": "社区公告和发布说明不能证明所有账户、地区或主机都已支持；本地机器仍需保持连接和权限配置",
-        "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
-      },
-      {
-        "label": "安排下一次复核",
-        "detail": "后续应核对支持平台、断线恢复和高风险动作的确认机制",
+        "label": "模拟断线",
+        "detail": "观察主机保持或暂停任务的方式，以及恢复连接后移动端能否准确显示结果。",
         "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
       }
     ]
@@ -199,11 +182,9 @@
     "decision": "passed",
     "checkedAt": "2026-10-03T00:00:00Z",
     "questions": [],
-    "notes": "深度复核通过：正文已按本事件的七段链路组织，具体流程、来源边界、关联词条与后续时间线均已对齐；已删除空泛结尾和跨事件词条。",
+    "notes": "复核通过：正文清楚区分移动端控制面与 Mac 主机执行面，说明文件、终端、网络和本地凭据仍在主机侧；预览范围限定为开始/继续线程、查看输出和审批动作，未外推为所有账户、地区、主机或网络条件均可用。断线恢复、权限继承和高风险动作均保留为需要测试的项目。已将代码修复段落明确为安全测试示例，避免把建议流程误读为公告承诺。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
     "changes": [
-      "收束为 7 段事件特定正文",
-      "修正词条段落与 relatedSlugs 的对应关系",
-      "修正截断标题并核对日期、来源和时间线"
+      "将代码修复与审批段落明确标为“安全测试”示例，区分预览公告已说明的能力和建议的验收流程。"
     ]
   },
   "mechanicalErrors": [],

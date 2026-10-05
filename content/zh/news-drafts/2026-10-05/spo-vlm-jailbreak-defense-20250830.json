@@ -1,0 +1,188 @@
+{
+  "slug": "spo-vlm-jailbreak-defense-20250830",
+  "title": "SPO-VLM：用激活引导和偏好优化防住视觉模型越狱",
+  "summary": "SPO-VLM 论文于 8 月 30 日提交，提出面向视觉语言模型的两阶段防御。第一阶段从多来源数据生成自适应、分层的激活引导向量，在推理时压制有害行为；第二阶段用序列级偏好优化，把自动毒性评估和图像—文字一致性奖励结合起来。论文声称在提升对攻击的稳健性同时保持良性视觉理解，并计划开放代码、模型权重和评测工具包。",
+  "body": "视觉语言模型同时接收图像和文字，安全边界也因此更容易被跨模态表达绕开。只在文本层加一条拒答规则，可能伤害正常的图像理解；只在激活层压制，又可能让模型变得过度保守。SPO-VLM 试图把这两个目标放进同一套防御。\n\n它分两阶段工作。第一阶段根据多来源数据计算自适应、分层的 steering vector，在推理时对模型内部激活做轻量干预，先建立一个不依赖单一任务提示的抑制基础。第二阶段再用序列级偏好优化细化这些向量，让安全行为和正常视觉语义保持更好的平衡。\n\n第二阶段的奖励不只看文本是否“拒绝得像”。论文还加入自动毒性评估和图像—文字一致性奖励，要求模型在避免不当内容的同时不要偏离图片本身。对于正常的图像描述、问答和定位任务，这个一致性约束可以帮助防御不把视觉理解一起关掉。\n\n论文报告，SPO-VLM 在多种攻击评测上提升稳健性，同时保持良性任务和视觉理解能力。摘要没有给出一个可以概括所有模型的统一比例，因此这些结论仍应放回实验设置、攻击集合和良性任务里解读。计划开放代码、权重和评测工具包，也需要实际发布后才能验证复现性。\n\n这套方法对工程的启发，是把安全干预和能力保持同时纳入评测。系统要分别检查攻击成功、正常任务准确性、视觉 grounding 和拒答误伤，而不是只看一个安全分数。不同应用的图像类型和风险边界也需要自己的校准。\n\n激活引导不是授权系统。即使模型输出看起来安全，涉及外发、执行或隐私的动作仍要通过独立策略和权限检查；同样，自动毒性评估也不应成为唯一的发布门槛。\n\nSPO-VLM 的价值在于提醒我们，跨模态安全不是把文本防线复制到图片上。防御既要改变模型在危险输入下的行为，也要证明它仍然理解正常的图像；这两条线必须在同一套评测里同时出现。",
+  "publishedAt": "2025-08-30",
+  "eventDate": "2025-08-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/spo-vlm-jailbreak-defense-20250830.svg",
+    "alt": "SPO-VLM 用激活引导和序列级偏好优化平衡视觉模型安全与正常理解",
+    "sourceUrl": "/images/news/spo-vlm-jailbreak-defense-20250830.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "cross-modal-boundary",
+      "title": "视觉和文字让安全边界叠在一起",
+      "body": "只在文本层防御可能漏掉跨模态表达，过度压制又会伤害正常图像理解。",
+      "kind": "narrative"
+    },
+    {
+      "id": "two-stage-defense",
+      "title": "第一阶段先做轻量激活干预",
+      "body": "从多来源数据生成自适应、分层的 steering vector，在推理时压制有害行为。",
+      "kind": "technical"
+    },
+    {
+      "id": "preference-refinement",
+      "title": "第二阶段用序列级偏好优化细化",
+      "body": "把安全行为和视觉语义放在同一优化过程里，减少防御对正常任务的牺牲。",
+      "kind": "technical"
+    },
+    {
+      "id": "visual-consistency",
+      "title": "奖励同时看毒性和图文一致性",
+      "body": "模型不只要拒绝不当内容，也要在正常任务里保持与图片相符的回答。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-boundary",
+      "title": "稳健性提升仍要按攻击集和任务看",
+      "body": "论文报告保持良性视觉理解，但未给出一个适用于所有模型的统一比例；代码和工具包也需发布后复现。",
+      "kind": "boundary"
+    },
+    {
+      "id": "policy-separation",
+      "title": "激活干预不能代替独立授权",
+      "body": "外发、执行和隐私动作仍需策略与权限检查，自动毒性评估也不是唯一发布门槛。",
+      "kind": "example"
+    },
+    {
+      "id": "dual-objective-eval",
+      "title": "安全和能力要一起测",
+      "body": "同时记录攻击成功、正常准确性、视觉 grounding 和误伤拒答，跨模态防御才有完整证据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "SPO-VLM 怎样在防御越狱时保住视觉理解？",
+    "question": "先用激活引导建立安全干预，再用偏好优化同时约束毒性和图文一致性。",
+    "steps": [
+      {
+        "label": "覆盖多种来源",
+        "detail": "从多来源数据构造安全干预信号，避免防御只记住某一种任务提示。",
+        "evidence": "adaptive layer-specific steering vectors from diverse data sources"
+      },
+      {
+        "label": "推理时轻量干预",
+        "detail": "在激活层引导模型压制有害行为，保留正常视觉理解的基础能力。",
+        "evidence": "activation-level intervention"
+      },
+      {
+        "label": "加入序列偏好",
+        "detail": "用序列级偏好优化把安全输出和正常语义质量一起纳入训练。",
+        "evidence": "sequence-level preference optimization"
+      },
+      {
+        "label": "检查图文一致",
+        "detail": "用自动毒性评估和图像—文字一致性奖励，避免安全拒答脱离图片内容。",
+        "evidence": "automated toxicity assessment and visual-consistency rewards"
+      },
+      {
+        "label": "分开策略授权",
+        "detail": "把模型安全输出与外发、执行和隐私权限分离，再用攻击和良性任务双向评测。",
+        "evidence": "robustness against attacks while maintaining benign tasks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00373"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "prompt",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00373",
+      "claim": "SPO-VLM 采用激活层干预和序列级偏好优化两阶段视觉模型防御。",
+      "excerpt": "Activation Steering Meets Preference Optimization ... SPO-VLM"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00373",
+      "claim": "第二阶段结合自动毒性评估与图像—文字一致性奖励，论文报告提升攻击稳健性并保持良性视觉理解。",
+      "excerpt": "automated toxicity assessment ... visual-consistency rewards ... benign tasks"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00373",
+  "sourceHash": "sha256:c6863a0634dd8656b58fe3627353a8d75838158b7d166d5352874c67325602df",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕视觉语言模型的激活干预、偏好优化和正常任务能力展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文强调攻击、良性任务、视觉 grounding 和误伤拒答的双向评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.91,
+      "evidence": [
+        "正文讨论跨模态输入、防御信号和任务提示的安全边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 30 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00373",
+      "claim": "arXiv 记录 SPO-VLM 于 2025 年 8 月 30 日提交，研究视觉语言模型的激活引导和偏好优化防御。",
+      "excerpt": "Date: Sat Aug 30 ... Activation Steering Meets Preference Optimization"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00373",
+      "claim": "摘要说明两阶段防御、毒性评估、视觉一致性奖励和良性任务保持。",
+      "excerpt": "two-stage defense ... visual-consistency rewards ... maintaining strong performance on benign tasks"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对两阶段防御、层级激活引导、序列级偏好优化、毒性/视觉一致性奖励和良性任务边界；正文不展开攻击样例，补充授权隔离与双向评测。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 SPO-VLM 写成安全行为与视觉 grounding 的双目标防御，保留论文未给统一比例和复现条件，未提供攻击样例；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-30-spo-vlm-jailbreak-defense-20250830"
+}

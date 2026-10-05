@@ -1,8 +1,8 @@
 {
   "slug": "openai-realtime-2-translate-whisper-api",
   "title": "OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper",
-  "summary": "2026-05-07，OpenAI公开“OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper”。本文把事件动作、具体工作流、来源层级、事实边界和后续核验拆开说明：发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。 当前能确认的是：官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。",
-  "body": "2026 年 5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper 三款语音模型。发布把实时对话推理、跨语言翻译和流式转写拆成不同能力，开发者可以按工作流组合。\n\n拆分意味着识别、翻译、响应、打断和工具调用要分别测试。实时系统的延迟、上下文传递和错误恢复不能被一个“语音模型”标签概括，端到端听懂并行动也不是单一分数。\n\n以多语客服为例，Realtime-Whisper 先转写，Realtime-Translate 处理语言转换，GPT-Realtime-2 负责对话和下一步；任何一步不确定都应显示或交给人工，而不是直接调用业务工具。\n\n来源是 OpenAI API 官方说明，支持三款模型的产品定位和语言数量，但不代表翻译、延迟或转写准确率在所有口音、噪声和网络环境中相同，也不等于每个组合都适合生产。\n\n四个关联词条各自对应语音链一层：api 规定调用和返回；streaming-output 处理连续音频或文本流；llm 负责语言推理；function-calling 连接外部工具。它们不能替代端到端测试。\n\n复核时应测价格、延迟、语言覆盖、打断、噪声、工具调用失败和隐私处理，并记录每个模型边界，避免用一个组件的指标代表整个语音系统。\n\n时间线从 2026-05-07 的 API 公告开始；后续应跟踪版本、价格、延迟、语言覆盖和真实噪声测试。",
+  "summary": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper，把实时对话、语音翻译和流式转写拆成三类能力。官方还公布了语言覆盖信息；不同口音、噪声和网络条件下的效果仍需端到端测试。",
+  "body": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。三个名字对应三段工作：实时对话推理、跨语言翻译和流式转写。开发者可以按需求组合，而不必把识别、翻译和响应交给同一个接口。\n\n拆开之后，系统的责任也更清楚。Realtime-Whisper 负责把声音变成文字，Realtime-Translate 处理语言转换，GPT-Realtime-2 负责理解上下文和生成回应；音频何时结束、用户是否打断、下一步能否调用工具，都要在接口层处理。\n\n多语客服是一个容易看出差别的场景。转写错一个姓名，翻译就会把错误继续传下去；翻译看似正确，实时代理仍可能因为上下文缺失而调用错工具。高风险操作应先显示转写和翻译结果，必要时交给人工确认。\n\n官方页面称 Realtime-Translate 可处理 70 多种输入语言并输出 13 种语言，但没有证明所有口音、噪声和网络环境下都能保持相同的准确率或延迟。api 规定请求和返回，streaming-output 处理连续音频或文字，llm 负责语言推理，function-calling 连接外部系统；把这些层分开，才知道一次失败发生在哪里。\n\n后续测试应同时记录识别、翻译、响应、打断和工具调用的表现。一个组件的好成绩不能替代整条语音链的验证。",
   "publishedAt": "2026-05-07",
   "eventDate": "2026-05-07",
   "isExample": false,
@@ -15,76 +15,59 @@
   },
   "sections": [
     {
-      "id": "event",
-      "title": "2026-05-07，OpenAI公开了什么",
-      "body": "事件日记为 2026-05-07；来源页面公开日记为 2026-05-07。OpenAI公开的核心动作是：OpenAI 在 API 中推出三款语音模型：GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。这条记录关注的是“谁在什么时候公开了什么”，不把后续计划提前写成已完成结果。",
+      "id": "three-models",
+      "title": "三个模型，各自接住一段声音工作",
+      "body": "OpenAI 把 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper 放进 API，分别面向实时对话、语音翻译和流式转写。官方称 Realtime-Translate 支持 70 多种输入语言和 13 种输出语言；语言数量和接口可用性属于产品说明。",
       "kind": "narrative"
     },
     {
-      "id": "mechanism",
-      "title": "“OpenAI API 推出 GPT-Realtime-2、Translate 与 Whisper”改变了哪一层",
-      "body": "真正的变化在于：发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。要读懂它，可以先把对象拆成模型、数据、接口、权限和运营等层，再问哪一层真的改变了。拆分模型可以提高可控性，也把接口编排责任交给开发者。",
+      "id": "pipeline",
+      "title": "从一句话到一次回复，中间经过什么",
+      "body": "声音先被转写，必要时再翻译，随后交给模型理解上下文和生成回应；用户打断、音频流结束和工具调用也需要接口协同。streaming-output 处理连续输入和输出，function-calling 才把回答接到外部系统。",
       "kind": "technical"
     },
     {
-      "id": "scenario",
-      "title": "把“OpenAI API 推出 GPT-Realtime-2、Translate 与 Whisper”放进一次流程",
-      "body": "把它放进一个具体场景：语音代理要分别测识别、翻译、响应、打断和工具调用，端到端“听懂并行动”不是一个分数。一个可复核的流程应能写出输入、调用或决策、输出、人工确认和失败后的回退；如果其中一步没有记录，读者就不应把演示当成稳定能力。",
+      "id": "support-case",
+      "title": "多语客服最容易暴露链路问题",
+      "body": "一个姓名或订单号被转错，错误就可能进入翻译和工具调用。可以在高风险动作前展示转写与翻译，要求客服确认后再写入业务系统。这样的测试比单看某一个模型的识别分数更接近真实使用。",
       "kind": "example"
     },
     {
-      "id": "boundary",
-      "title": "哪些结论仍属于 OpenAI 的口径",
-      "body": "这里的来源是 OpenAI 的官方页面，能确认发布方公开写出的动作、计划和指标；官方主张仍要和独立评测、客户部署或真实结果分开。官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同。目前没有公开证据证明它在所有地区、负载、用户或任务中都成立。最容易把 API 开放写成所有机构都已接入或可以无人监管。",
+      "id": "scope",
+      "title": "语言覆盖不等于所有环境都可靠",
+      "body": "官方页面没有给出每种口音、噪声和网络条件下的独立准确率，也没有保证每个模型组合都适合生产。api、llm 和 function-calling 的定义能帮助定位故障，却不能代替端到端验证。",
       "kind": "boundary"
     },
     {
-      "id": "terms",
-      "title": "用词条拆开“OpenAI API 推出 GPT-Realtime-2、Translate 与 Whisper”",
-      "body": "本文关联的词条各自对应语音链一层：api 规定调用和返回；streaming-output 处理连续音频或文本流；llm 负责语言推理；function-calling 连接外部工具。它们不能替代端到端测试。",
-      "kind": "comparison"
-    },
-    {
-      "id": "timeline",
-      "title": "从 2026-05-07 的页面到下一步",
-      "body": "时间线先从 2026-05-07 的来源页面开始：页面记录“OpenAI 在 API 中介绍三款音频模型；Realtime-Translate 支持 70 多种输入语言与 13 种输出语言”。事件日与页面日期的关系已经保留在文章字段中；下一步要看后续公告、版本、部署、修复或监管文件是否把这条主张推进到可验证结果。",
-      "kind": "narrative"
-    },
-    {
-      "id": "verify",
-      "title": "读者怎样复核这条主张",
-      "body": "读者可以按四个问题复核：谁做了动作？证据来自哪一层？系统实际能调用什么？哪些结果仍待独立检查？对这条新闻，后续重点是：后续应看价格、延迟、语言覆盖和真实噪声测试。",
+      "id": "test-list",
+      "title": "后续要分别测五个环节",
+      "body": "实际接入时，应分别记录转写、翻译、响应、打断和工具调用的延迟与错误，再看整条链是否满足业务要求。任何一个环节都可能需要人工接管。",
       "kind": "aside"
     }
   ],
   "explainer": {
     "variant": "agentic-calling",
-    "title": "把“OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper”拆成可核对的链路",
-    "question": "分别看接口、身份、权限、审批、返回状态和回滚，怎样知道哪些是事实、哪些仍是主张？",
+    "title": "把实时语音 API 画成一条可测试的链",
+    "question": "当语音代理出错时，怎样知道问题来自转写、翻译、推理还是工具调用？",
     "steps": [
       {
-        "label": "确认日期与动作",
-        "detail": "先核对 eventDate=2026-05-07、publishedAt=2026-05-07，再确认来源写出的动作是发布、合作、政策、报道还是事故披露。",
+        "label": "先固定音频样本",
+        "detail": "准备不同口音、噪声和网络条件的录音，记录语言、说话速度和打断位置。",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       },
       {
-        "label": "拆开系统层",
-        "detail": "把这条新闻拆成模型、数据、接口、权限、人工流程和结果验证；本条最关键的变化是：发布把实时对话推理、跨语言翻译和流式转写拆成不同模型，开发者可以按工作流选择能力，而不是让一个模型承担所有语音环节。",
+        "label": "逐段检查输出",
+        "detail": "分别保存转写文本、翻译文本、模型回应和工具参数，不只记录最后一句答案。",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       },
       {
-        "label": "放进具体场景",
-        "detail": "语音代理要分别测识别、翻译、响应、打断和工具调用，端到端“听懂并行动”不是一个分数",
+        "label": "给高风险动作加确认",
+        "detail": "涉及订单、账户或其他外部系统时，先把文字结果交给人确认，再允许 function-calling 写入。",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       },
       {
-        "label": "标出不能推出的结论",
-        "detail": "官方说明和语言数量是产品口径，不代表翻译、延迟或转写准确率在所有口音和环境中相同",
-        "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
-      },
-      {
-        "label": "安排下一次复核",
-        "detail": "后续应看价格、延迟、语言覆盖和真实噪声测试",
+        "label": "计算端到端体验",
+        "detail": "把每一段的延迟、错误和恢复时间加起来，再判断组合是否适合实际服务。",
         "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
       }
     ]
@@ -188,11 +171,11 @@
     "decision": "passed",
     "checkedAt": "2026-10-03T00:00:00Z",
     "questions": [],
-    "notes": "深度复核通过：正文已按本事件的七段链路组织，具体流程、来源层级、关联词条与后续时间线均已对齐；已删除空泛结尾和跨事件词条。",
+    "notes": "通过。正文将 GPT-Realtime-2、Realtime-Translate、Realtime-Whisper 分别放入对话推理、翻译和转写流程，补充官方所称的 70 多种输入语言/13 种输出语言，并明确口音、噪声、网络、延迟和端到端准确率仍需测试。零基础读者可沿多语客服场景理解各环节责任。",
     "changes": [
-      "收束为 7 段事件特定正文",
-      "修正词条段落与 relatedSlugs 的对应关系",
-      "修正截断标题并核对来源、日期和时间线"
+      "补入来源卡片支持的 70 多种输入语言和 13 种输出语言口径",
+      "保留不同口音、噪声、网络和端到端组合效果未被证明的边界",
+      "核对 eventDate、publishedAt、canonicalUrl、sources、relatedSlugs 及 JSON 结构"
     ]
   },
   "mechanicalErrors": [],

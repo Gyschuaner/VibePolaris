@@ -1,0 +1,199 @@
+{
+  "slug": "prompt-in-content-attacks-20250825",
+  "title": "上传文件里的话，也可能变成给模型下的命令",
+  "summary": "8 月 25 日提交的 Prompt-in-Content Attacks 论文，指出一种很容易被工作流忽略的输入注入：攻击性指令不必出现在用户的直接提问里，也可以藏在上传的文档、粘贴文本或其他看似正常的内容中。当摘要、问答或 Agent 流程把这些内容和系统提示拼在一起时，模型可能在用户不知情的情况下改变输出。论文把根因归到提示拼接和输入隔离不足，并讨论缓解方向；本文不复述可执行的攻击构造。",
+  "body": "很多人会把“用户输入”理解成聊天框里那一句话，把上传的文档当作需要被处理的资料。对语言模型来说，这个边界未必存在：如果工作流把资料原样拼进提示，文档里的句子也可能被当成指令来解释。\n\nPrompt-in-Content Attacks 论文把这种问题单独命名为 prompt in content injection。它关注的不是系统被入侵以后发生了什么，而是一个看似普通的文件、网页片段或粘贴文本，在进入摘要、问答和建议流程时，悄悄影响模型行为。\n\n风险的关键在“内容”和“命令”没有被可靠区分。模型看到的是一个连续的上下文，系统若只靠几句自然语言提醒“请把下面内容当作资料”，就很难保证模型在每个任务、每种格式和每个模型版本上都保持同样的边界。\n\n论文把常见后果描述为偏置摘要、捏造说法或误导性建议。它们不一定会表现成明显的报错，反而可能是一份读起来很流畅的总结，只是重点被悄悄带偏，或者把文档中的未经证实的话变成了系统自己的结论。\n\n作者分析的根因包括提示拼接和输入隔离不足。把系统说明、用户问题、外部内容和工具返回值拼成一大段文本，会让后续模块很难知道一句话究竟来自谁、有什么权限、能不能触发下一步动作。这不仅是提示写法的问题，也是数据流和权限设计的问题。\n\n对只返回文字的摘要任务，影响可能是方向错了；对能调用工具、写数据库或发送请求的 Agent，影响会进一步变成状态变化。一个文件里看似无害的句子，如果被当成操作要求，就可能让模型在错误的前提下继续执行。这里不需要把攻击细节公开，系统只要承认“外部内容不是可信命令”就已经迈出关键一步。\n\n缓解不能只靠加一句更强的系统提示。工作流应把不同来源的数据分层传递，显式标记不可信内容；在把内容送入模型前做结构化封装和必要的清洗；让工具调用、写入和权限升级经过独立的授权检查；对最终摘要里的关键断言保留原文定位，方便人复核。\n\n更重要的是，评测要覆盖“内容会不会改变命令解释”这一条路径。固定几条安全样例不够，应该在不同文档格式、语言、上下文长度和模型版本上检查：模型是否把资料中的指令当作用户目标，是否会因此生成事实性错误，是否会在没有授权时触发工具。把这些结果和执行日志放在一起，才能知道系统隔离的是文本，还是实际权限。",
+  "publishedAt": "2025-08-25",
+  "eventDate": "2025-08-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/prompt-in-content-attacks-20250825.svg",
+    "alt": "Prompt-in-Content Attacks 展示外部文档与可信命令混在同一上下文时的风险",
+    "sourceUrl": "/images/news/prompt-in-content-attacks-20250825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "content-command-boundary",
+      "title": "资料和命令在模型眼里可能是一段连续文本",
+      "body": "上传文件、网页片段和粘贴内容如果被原样拼进提示，模型未必能稳定区分“要阅读的材料”和“要执行的要求”。",
+      "kind": "narrative"
+    },
+    {
+      "id": "named-attack-class",
+      "title": "论文把它称为 prompt in content injection",
+      "body": "攻击性指令可以藏在看似正常的输入里，在摘要、问答和建议流程中改变模型输出；它不要求系统先被攻破。",
+      "kind": "technical"
+    },
+    {
+      "id": "quiet-failure",
+      "title": "最危险的结果可能是一份流畅但被带偏的摘要",
+      "body": "论文讨论偏置摘要、捏造说法和误导性建议。错误不一定长得像报错，可能只是重点、结论或建议被悄悄改了方向。",
+      "kind": "example"
+    },
+    {
+      "id": "root-causes",
+      "title": "提示拼接和输入隔离不足是根因之一",
+      "body": "系统说明、用户问题、外部内容和工具返回值混成一段上下文后，后续模块很难判断来源、权限和是否能触发动作。",
+      "kind": "technical"
+    },
+    {
+      "id": "agent-impact",
+      "title": "一旦能调用工具，文本错误会变成状态变化",
+      "body": "只读摘要偏了方向已经有风险；具备写入、请求或其他工具权限的 Agent 还可能在错误前提下继续执行。",
+      "kind": "comparison"
+    },
+    {
+      "id": "layered-mitigation",
+      "title": "把不可信内容当数据传递，而不是当命令授权",
+      "body": "通过分层传递、结构化封装、来源标记、独立授权和关键断言回链，减少外部内容越过边界的机会。",
+      "kind": "technical"
+    },
+    {
+      "id": "test-the-path",
+      "title": "评测要测“内容能否改写命令解释”",
+      "body": "在不同格式、语言、上下文长度和模型版本上检查内容隔离、事实性错误和未授权工具调用，并保留执行日志。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "怎样让上传内容停留在“资料”这一侧？",
+    "question": "把内容、命令和权限拆开传递，让模型的文字判断不能直接获得执行权。",
+    "steps": [
+      {
+        "label": "标记来源",
+        "detail": "给系统指令、用户目标、外部文档和工具结果使用不同字段或消息层级，不让它们在字符串拼接后失去来源。",
+        "evidence": "root causes including prompt concatenation and insufficient input isolation"
+      },
+      {
+        "label": "封装外部内容",
+        "detail": "把文档作为不可信数据包传入，保留原文定位和边界，避免让文档里的句子自然地“升级”为系统指令。",
+        "evidence": "adversarial instructions are embedded in seemingly benign inputs"
+      },
+      {
+        "label": "分开授权",
+        "detail": "模型可以提出建议，但工具调用、写入和权限升级由独立策略检查；一段文档不能自己授予执行权限。",
+        "evidence": "leading to ... misleading suggestions"
+      },
+      {
+        "label": "回链关键断言",
+        "detail": "摘要或回答中的关键结论要能定位到原文和来源，方便发现模型是否把嵌入内容当成事实。",
+        "evidence": "biased summaries, fabricated claims, or misleading suggestions"
+      },
+      {
+        "label": "覆盖真实格式",
+        "detail": "用 PDF、网页、表格、长文本和多语言输入回放，并分别检查文字偏移、事实错误和工具动作。",
+        "evidence": "widely deployed in applications that accept user-submitted content"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Prompt-in-Content Attacks 作者组",
+    "url": "https://arxiv.org/abs/2508.19287"
+  },
+  "relatedSlugs": [
+    "prompt",
+    "agent",
+    "context",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.19287",
+      "claim": "论文定义 prompt-in-content injection，指出看似正常的上传内容可以在摘要和问答流程中改变模型输出。",
+      "excerpt": "adversarial instructions are embedded in seemingly benign inputs ... uploaded documents or pasted text"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19287",
+      "claim": "作者将提示拼接和输入隔离不足列为根因，并讨论缓解策略；文章不复述可执行攻击构造。",
+      "excerpt": "analyze their root causes including prompt concatenation and insufficient input isolation, and discuss mitigation strategies"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.19287",
+  "sourceHash": "sha256:11c8596f94b3242811f273b05d2351519b471617f23b69269427aa7894ab4abb",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论外部内容、系统提示和用户目标如何在提示中混合。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文分析工具调用、写入和权限升级带来的状态变化。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.96,
+      "evidence": [
+        "正文把消息层级、来源标记和上下文边界作为防护重点。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.98,
+      "evidence": [
+        "正文要求工具调用和权限升级经过独立授权检查。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 25 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.19287",
+      "claim": "arXiv 摘要记录该研究于 2025 年 8 月 25 日提交，研究用户提交内容中的 prompt in content injection。",
+      "excerpt": "Date: Mon Aug 25 ... we identify a new class of attacks"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19287",
+      "claim": "论文讨论偏置摘要、捏造说法和误导性建议，以及提示拼接和输入隔离不足的根因。",
+      "excerpt": "biased summaries, fabricated claims, or misleading suggestions ... prompt concatenation and insufficient input isolation"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文对攻击类别、应用场景、潜在后果、提示拼接/输入隔离根因和缓解方向的摘要表述；正文不展开攻击模板或复现步骤，重点放在分层数据流、授权检查和评测路径。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章没有复述可执行攻击内容，把风险从提示技巧落到来源标记、权限隔离和工具授权，并区分文字偏移与真实状态变化；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-25-prompt-in-content-attacks-20250825"
+}

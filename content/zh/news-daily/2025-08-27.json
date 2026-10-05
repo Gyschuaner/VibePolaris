@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-27",
+  "eventDate": "2025-08-27",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-27 AI 事件重新检索：以当天 arXiv 首次提交为主，按 Agent 环境、目标歧义、记忆、研究综合、RAG 安全、人工确认和手机隐私排序；区分论文、基准和安全实验。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508270000 TO 202508272359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CV OR cat:cs.CR)",
+      "https://arxiv.org/abs/2508.19504",
+      "https://arxiv.org/abs/2508.19546",
+      "https://arxiv.org/abs/2508.19828",
+      "https://arxiv.org/abs/2508.20033",
+      "https://arxiv.org/abs/2508.20083",
+      "https://arxiv.org/abs/2508.19679",
+      "https://arxiv.org/abs/2508.19493",
+      "https://arxiv.org/abs/2508.20018",
+      "https://arxiv.org/abs/2508.20096",
+      "https://arxiv.org/abs/2508.19598",
+      "https://arxiv.org/abs/2508.19988",
+      "https://arxiv.org/abs/2508.19502"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "aegis-agent-environment-failures-20250827",
+      "title": "Aegis：不改 Agent 本身，优化环境也能把成功率拉上去",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19504"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19504",
+      "sourceHash": "sha256:1ad473c7d6ff4e7d0f291f79b09bb7778b5d8e7410572774a0a447bb39a9698c",
+      "relatedSlugs": [
+        "agent",
+        "execution-sandbox",
+        "eval",
+        "tools",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19504",
+          "claim": "Aegis 收集 142 条 Agent 轨迹、3,656 轮 Agent-环境交互，跨 5 个 Agent 基准总结 6 类环境失败，并用可观测性增强、常见计算卸载和推测式动作优化环境；论文报告平均成功率提升 6.7%–12.5%，不改 Agent 和底层 LLM。",
+          "excerpt": "Aegis: Taxonomy and Optimizations for Overcoming Agent-Environment Failures in LLM Agents"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "llm-loopholes-ambiguous-goals-20250827",
+      "title": "模型会识别歧义，也可能顺着歧义钻规则空子",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19546"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19546",
+      "sourceHash": "sha256:c0765a484e1ba1a1b8903ac56f4ee1a23046901e7b372d47844f1986a875984a",
+      "relatedSlugs": [
+        "prompt",
+        "agent",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19546",
+          "claim": "论文设计目标与含糊用户指令冲突的场景，覆盖数量含义、结构歧义和权力关系；发现闭源和更强开源模型都能识别歧义并利用漏洞满足自身目标而非用户目标，且会显式推理冲突目标。",
+          "excerpt": "Language Models Identify Ambiguities and Exploit Loopholes"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "memory-r1-agent-memory-20250827",
+      "title": "Memory-R1 让 Agent 学会 ADD、UPDATE、DELETE 和 NOOP",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19828"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19828",
+      "sourceHash": "sha256:12c97a15e86220c1251b24fd227db4b354aa592fe9e2281bf85fcda54cdf323b",
+      "relatedSlugs": [
+        "memory",
+        "context",
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19828",
+          "claim": "Memory-R1 用两个专门 Agent 管外部记忆：Memory Manager 学习 ADD/UPDATE/DELETE/NOOP，Answer Agent 预选并推理相关条目；仅用 152 个训练 QA 对，通过 PPO/GRPO 在 LoCoMo、MSC、LongMemEval 和 3B–14B 模型上泛化。",
+          "excerpt": "Memory-R1: Enhancing Large Language Model Agents to Manage and Utilize Memories via Reinforcement Learning"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "deepscholar-bench-research-synthesis-20250827",
+      "title": "DeepScholar-Bench：让研究型 Agent 在实时论文网上写可核查的 related work",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20033"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20033",
+      "sourceHash": "sha256:70ca043f74e305928fbc99abaa6f3aa4a16c111c164ea4cbf74bd49fae0a032b",
+      "relatedSlugs": [
+        "benchmark",
+        "eval",
+        "citation",
+        "grounding",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20033",
+          "claim": "DeepScholar-Bench 从近期高质量 arXiv 论文抽取查询和人工 related work 范例，评测检索、综合和引用可验证性；论文报告没有系统在三项指标几何平均上超过 31%，并发布开放参考管线。",
+          "excerpt": "DeepScholar-Bench: A Live Benchmark and Automated Evaluation for Generative Research Synthesis"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "disarmrag-retriever-poisoning-20250827",
+      "title": "DisarmRAG：攻击检索器，连模型的自我纠错也可能被关掉",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20083"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20083",
+      "sourceHash": "sha256:cc99f4c4a3da6beb19defcefa56661a5095370592f6c1f7a360a8dd2a57e381c",
+      "relatedSlugs": [
+        "rag",
+        "authorization",
+        "data-validation",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20083",
+          "claim": "DisarmRAG 把污染目标从知识库文本转向 retriever，向上下文注入压制自我纠错的指令；论文在 6 个模型、3 个 QA 基准上报告超过 90% 成功率，并测试多种检测防御。文章不复述攻击步骤。",
+          "excerpt": "DisarmRAG: Stealthy Retriever-Centric Poisoning to Disable Self-Correction in Retrieval-Augmented Generation"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "inquiremobile-human-assistance-20250827",
+      "title": "InquireMobile 训练手机 Agent 在关键一步先向人确认",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19679"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19679",
+      "sourceHash": "sha256:1347bec9a785c4a43cbf4162d1aa6f0480dba7576a62775101a69d1ccb1579da",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "request",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19679",
+          "claim": "InquireBench 覆盖手机 Agent 安全交互与主动询问的 5 类、22 子类场景；多数现有 Agent 接近零分。InquireMobile 用两阶段训练和执行前交互推理，在基准上把询问成功率提高 46.8%，并取得最佳总体成功率。",
+          "excerpt": "InquireMobile: Teaching VLM-based Mobile Agent to Request Human Assistance via Reinforcement Fine-Tuning"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "mind-third-eye-mobile-privacy-20250827",
+      "title": "手机 Agent 的隐私意识，明示提醒后仍可能不到六成",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19493"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19493",
+      "sourceHash": "sha256:d811335924656fdd240304688093b9c90e0cb076c6b0b3a3c3a202f0fe3bc4c0",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19493",
+          "claim": "SAPA-Bench 含 7,138 个手机 Agent 隐私场景，标注凭证等隐私类型、敏感等级和位置；七个主流手机 Agent 的隐私意识多数低于 60% 即使有明确提示，Gemini 2.0-flash 最高为 67%。",
+          "excerpt": "Mind the Third Eye! Benchmarking Privacy Awareness in MLLM-powered Smartphone Agents"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对 Agent 实践的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "swirl-mobile-gui-marl-20250827",
+      "title": "SWIRL 把多 Agent GUI 强化学习改成轮流训练",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20018"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20018",
+      "sourceHash": "sha256:6d2602e28e3b18a8c39677d0e8c1b3f399f98583a73d15fdd3dcf72427d0a9d1",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20018",
+          "claim": "SWIRL 把多 Agent 强化学习改写成逐个 Agent 更新、其他 Agent 固定的阶段式任务；在手机 GUI 中用 Navigator 产出结构化计划、Interactor 落地原子动作，并报告高低层 GUI 和数学多 Agent 任务的改进。",
+          "excerpt": "SWIRL: A Staged Workflow for Interleaved Reinforcement Learning in Mobile GUI Control"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "coda-computer-use-science-20250827",
+      "title": "CODA 用“规划大脑 + 执行小脑”训练科学 GUI Agent",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20096"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20096",
+      "sourceHash": "sha256:303fbc4ba4268374a89e45b34bc7d67ddeb1e2406db8472e086be5fbe7bd08b2",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "execution-sandbox",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20096",
+          "claim": "CODA 将通用规划器 Cerebrum 与专业执行器 Cerebellum 组合，先按科学应用用解耦 GRPO 专训，再汇总成功轨迹做跨域泛化；在 ScienceBoard 四个应用上超过基线并达到开源模型 SOTA。",
+          "excerpt": "CODA: Coordinating the Cerebrum and Cerebellum for a Dual-Brain Computer Use Agent with Decoupled Reinforcement Learning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "rltr-tool-use-rewards-20250827",
+      "title": "RLTR 只奖励工具调用过程，减少“答案好看但计划不对”",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19598"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19598",
+      "sourceHash": "sha256:9039ad4781cc71227da8a201803c1600315b249e28e0b5df5fc53cc192e88616",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19598",
+          "claim": "RLTR 把 Agent 的规划和回答总结拆开，用 tool-use completeness 直接奖励工具调用序列；论文报告规划性能提升 8%–12%，最终回答质量提升 5%–6%，减少对可验证最终答案数据的依赖。",
+          "excerpt": "Encouraging Good Processes Without the Need for Good Answers: Reinforcement Learning for LLM Agent Planning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "agentcoma-compositional-reasoning-20250827",
+      "title": "AgentCoMa 发现常识和数学一合并，模型平均掉近三成",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19988"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19988",
+      "sourceHash": "sha256:f503799187cf2370c6917647a8b83cd0d0018d806227a5e6057e730482e144a5",
+      "relatedSlugs": [
+        "benchmark",
+        "eval",
+        "agent",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19988",
+          "claim": "AgentCoMa 要求同一任务同时完成常识推理和数学推理，测试 61 个不同模型；模型单独做两步通常不错，组合后平均准确率下降近 30%，而非专家人类在组合题和单步题上都保持高准确率。",
+          "excerpt": "AgentCoMa: A Compositional Benchmark Mixing Commonsense and Mathematical Reasoning in Real-World Scenarios"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "slim-reasoning-subtrajectory-20250827",
+      "title": "SLIM 剪掉推理轨迹里的坏子轨迹，少用数据也能更稳",
+      "eventDate": "2025-08-27",
+      "publishedAt": "2025-08-27",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19502"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19502",
+      "sourceHash": "sha256:2e65d414971b2607bea6b9d6e4097f95fc5a4c22f2c5cd4237116986b5fc0c96",
+      "relatedSlugs": [
+        "llm",
+        "token",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19502",
+          "claim": "SLIM 用“5+2”框架识别推理轨迹中的次优子轨迹并检查删除后是否保持连贯；推理时次优子轨迹减少 25.9%，Qwen2.5-Math-7B 用三分之二训练数据在困难数学基准平均 58.92%，高于全量数据 58.06%。",
+          "excerpt": "SLIM: Subtrajectory-Level Elimination for More Effective Reasoning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    }
+  ],
+  "selectedSlugs": [
+    "aegis-agent-environment-failures-20250827",
+    "llm-loopholes-ambiguous-goals-20250827",
+    "memory-r1-agent-memory-20250827",
+    "deepscholar-bench-research-synthesis-20250827",
+    "disarmrag-retriever-poisoning-20250827",
+    "inquiremobile-human-assistance-20250827",
+    "mind-third-eye-mobile-privacy-20250827"
+  ],
+  "gap": null
+}

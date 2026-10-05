@@ -1,0 +1,199 @@
+{
+  "slug": "uq-unsolved-questions-benchmark-20250825",
+  "title": "UQ：别再只让模型刷题，去回答那些人类还没答出来的问题",
+  "summary": "UQ 论文于 8 月 25 日提交，提出一种不同于静态题库的模型评测：收集 500 个来自 Stack Exchange 的未解决问题，让模型异步作答，再由验证器、专家和社区共同筛选问题与核验答案。题目覆盖计算机理论、数学、科幻和历史，既考推理和事实性，也考浏览与开放式研究。论文报告顶级模型只通过约 15% 的 UQ 验证，且早期人工核验已在通过验证的答案中发现正确解。",
+  "body": "模型评测最容易做成一张熟悉的卷子：题目固定、答案固定、分数按时公布。这样的榜单有用，但它会把模型训练成“知道评测长什么样”。UQ 把问题换了一个方向：不先准备答案，而是寻找那些人类也还没有可靠答案的问题。\n\n这不是把难题堆在一起。论文收集了 500 个来自 Stack Exchange 的未解决问题，覆盖计算机理论、数学、科幻和历史等领域。它们之所以有价值，是因为题目来自真实提问场景，同时又没有一个现成的标准答案可以让系统轻易对照。\n\n开放题的麻烦在于，模型说得像答案，不代表真的解决了问题。UQ 因此没有只用一个自动裁判，而是把规则筛选、模型裁判、人审和社区验证串成一条流程：先排除不清楚或太容易的问题，再让验证器筛选候选解，最后把值得核对的内容交给人。\n\n论文把这套流程分成三个部分。UQ-Dataset 负责问题和收集方法，UQ-Validators 用复合验证策略产生评测信号并做人工复核前的预筛，UQ-Platform 则让专家和社区共同验证问题与解答。它更像一个持续更新的研究平台，而不是一套发完榜单就结束的测试集。\n\n结果并不乐观：论文报告顶级模型只有大约 15% 的问题通过 UQ 验证。这个数字不等于模型只会答对 15% 的所有问题，因为它反映的是一套未解决题、验证器和当前人工审核流程；但它确实说明，开放式问题仍然远比熟悉的考试题难。\n\n更耐人寻味的是，早期人工验证已经在那些通过 UQ 验证的答案里找到了正确解。模型不是“完全不可能”解决开放问题，而是需要一条能把候选解、证据和人的判断接起来的流程。评测的工作因此从给分，变成了帮助知识向前移动。\n\n对产品团队而言，UQ 提醒我们把“模型答得像不像”与“有没有得到一个可核查的新结果”分开。研究助手可以先做候选生成和资料整理，再把关键断言、推导过程和来源交给领域专家；若题目没有可靠验证方法，就应该把它标成待核查，而不是强行给一个漂亮分数。\n\n这种评测也有成本。问题会随社区验证而变化，正确答案可能在后续研究中出现，人工核验需要专业知识，模型裁判本身还可能有偏差。UQ 的意义不在于用一个 15% 取代所有榜单，而在于把评测从“重复已知答案”推向“帮助验证未知答案”，并把不确定性记录在过程里。",
+  "publishedAt": "2025-08-25",
+  "eventDate": "2025-08-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/uq-unsolved-questions-benchmark-20250825.svg",
+    "alt": "UQ 将未解决问题、自动验证、专家和社区连接成开放式模型评测流程",
+    "sourceUrl": "/images/news/uq-unsolved-questions-benchmark-20250825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "static-benchmark-limit",
+      "title": "固定题库会让模型学会题库的样子",
+      "body": "静态 benchmark 可以比较模型，却可能把模型带进熟悉的题型。UQ 选择收集没有可靠现成答案的问题，把评测拉回真实的开放式提问。",
+      "kind": "narrative"
+    },
+    {
+      "id": "uq-dataset",
+      "title": "500 个未解决问题来自真实提问场景",
+      "body": "题目来自 Stack Exchange，覆盖计算机理论、数学、科幻和历史。难度不是人为堆出来的，而是由“人类也还没有答案”带来。",
+      "kind": "technical"
+    },
+    {
+      "id": "validator-pipeline",
+      "title": "先筛题，再筛答案，再交给人",
+      "body": "UQ 把规则过滤、模型裁判、人审和社区验证串起来，减少不清楚或过于简单的问题进入主评测，也减少人工从所有候选解里盲查的成本。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-components",
+      "title": "数据集、验证器和平台各自承担一段工作",
+      "body": "UQ-Dataset 管问题收集，UQ-Validators 产生验证信号并预筛，UQ-Platform 让专家和社区共同核验。它是持续运行的评测平台，不是一次性榜单。",
+      "kind": "comparison"
+    },
+    {
+      "id": "fifteen-percent",
+      "title": "顶级模型只通过约 15% 的 UQ 验证",
+      "body": "这个比例反映当前题目、验证器和人工核查流程，不是所有问题的通用正确率；它仍然显示开放式、未解决问题的门槛很高。",
+      "kind": "boundary"
+    },
+    {
+      "id": "human-verification",
+      "title": "通过验证的答案仍需要专业人士确认",
+      "body": "早期人工核验已经在通过 UQ 验证的答案里发现正确解。模型可以生成候选，但“真的解决了问题”仍需要证据、推导和领域判断。",
+      "kind": "example"
+    },
+    {
+      "id": "product-loop",
+      "title": "把模型输出当候选解，不要当最终发现",
+      "body": "研究助手可以负责生成、检索和整理，把关键断言与来源交给专家；没有可靠验证方法的问题，应保留待核查状态。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样评测模型是否真的推进了一个开放问题？",
+    "question": "把问题质量、候选答案、验证器和专家判断拆开，记录每次通过的依据。",
+    "steps": [
+      {
+        "label": "收集真实未解问题",
+        "detail": "优先选择来自真实社区、定义清楚但缺少可靠答案的问题，避免把“冷门”误当成“未解决”。",
+        "evidence": "500 challenging, diverse questions sourced from Stack Exchange"
+      },
+      {
+        "label": "先过滤题目",
+        "detail": "用规则、模型裁判和人工复核排除题意不清、已有标准答案或难度不足的题目。",
+        "evidence": "rule-based filters, LLM judges, and human review"
+      },
+      {
+        "label": "生成候选解",
+        "detail": "允许模型给出推导、资料和可检查的中间结果，不只收一段最终文本。",
+        "evidence": "validator-assisted screening and community verification"
+      },
+      {
+        "label": "分层验证",
+        "detail": "让验证器先筛掉明显不成立的解，再把关键候选交给专家或社区确认。",
+        "evidence": "compound validation strategies ... pre-screen candidate solutions for human review"
+      },
+      {
+        "label": "保存未知状态",
+        "detail": "把未通过、待核验和已确认分开，不能因为自动裁判给了高分就宣布知识已经被推进。",
+        "evidence": "The top model passes UQ-validation on only 15% of questions"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / UQ 作者组",
+    "url": "https://arxiv.org/abs/2508.17580"
+  },
+  "relatedSlugs": [
+    "benchmark",
+    "eval",
+    "llm",
+    "citation",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17580",
+      "claim": "UQ 收集 500 个来自 Stack Exchange 的未解决问题，覆盖多个领域，并用验证器和社区共同核验。",
+      "excerpt": "UQ-Dataset ... 500 challenging, diverse questions sourced from Stack Exchange ... UQ-Platform"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17580",
+      "claim": "论文报告顶级模型只通过约 15% 的 UQ 验证，早期人工核验已发现其中的正确答案。",
+      "excerpt": "The top model passes UQ-validation on only 15% of questions ... preliminary human verification has already identified correct answers"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17580",
+  "sourceHash": "sha256:8f4183f4453b3a05493cc73fec761bb5ca0c079e72e569bebf54b7006a5493a2",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文以未解决问题、动态题库和验证平台为主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论规则筛选、模型裁判、人审、社区核验和通过标准。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.93,
+      "evidence": [
+        "正文分析模型在开放式推理与事实性问题上的表现。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.9,
+      "evidence": [
+        "正文要求候选解提供来源、推导与可核查断言。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 25 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17580",
+      "claim": "arXiv 摘要记录 UQ 于 2025 年 8 月 25 日提交，提出 500 个未解决问题的开放式评测平台。",
+      "excerpt": "Date: Mon Aug 25 ... We introduce UQ, a testbed of 500 challenging, diverse questions"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17580",
+      "claim": "UQ 将数据集、复合验证器和开放平台结合，顶级模型约 15% 通过验证。",
+      "excerpt": "UQ-Dataset ... UQ-Validators ... UQ-Platform ... passes UQ-validation on only 15%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 500 个问题、Stack Exchange 来源、三部分平台结构、验证器/人审流程和约 15% 通过率；正文明确说明 15% 是该评测流程下的结果，不外推成通用正确率。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把静态 benchmark、开放题、自动验证和专家核查的边界拆开，避免把 15% 写成所有任务准确率；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-25-uq-unsolved-questions-benchmark-20250825"
+}

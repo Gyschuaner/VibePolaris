@@ -1,0 +1,199 @@
+{
+  "slug": "unicr-trusted-uncertainty-20250901",
+  "title": "UniCR：把不确定性变成可校准的拒答预算",
+  "summary": "UniCR 论文于 9 月 1 日提交，提出把序列似然、自一致性、检索兼容性和工具/验证器反馈融合成可校准的正确概率，再按用户设定的错误预算决定回答或拒答。它还用长文原子事实性来降低“很自信但不真实”的回答，支持黑箱 API 模型和分布漂移。不过，arXiv 当前页面标注该论文因作者与机构信息无法核验而撤回，本文只介绍其提交时的方法主张，不把结果视为已独立确认的结论。",
+  "body": "部署模型要做的决定不只是“答案是什么”，还有“这次该不该回答”。如果系统把一个不确定的猜测说得很笃定，用户通常看不出风险；如果它遇到稍有不确定就拒答，系统又会失去覆盖面。UniCR 的提交内容把这两件事放进同一个决策问题：先估计回答正确的概率，再在允许的错误预算内选择回答或拒答。需要先说明的是，arXiv 当前页面已标注该论文因作者与机构信息无法核验而撤回，下面的指标只能按论文提交时的公开方法描述理解。\n\n它没有把熵或最大 logit 当成唯一信号，而是融合几类证据：模型生成的序列似然、自一致性分歧、检索内容是否支持回答，以及工具或验证器返回的反馈。单个信号都可能误导，多个信号的矛盾反而能提醒系统降低信心。例如代码看起来很顺，但执行测试失败；回答语气稳定，检索证据却互相冲突。UniCR 试图把这些异质信号压成一个更接近真实正确率的概率。\n\n为了让概率有意义，系统还需要校准。论文描述的做法是训练一个轻量 calibration head，配合 temperature scaling 和 proper scoring；基础模型本身不必重新微调。对只能通过 API 调用的闭源模型，它也尝试使用黑箱可观测特征。这样，校准层可以独立更新，基础模型换代时再重新检查，而不是把一次阈值调参当成永久可靠的置信度。\n\n“错误预算”是这套方法更容易落地的部分。产品可以先规定在某类请求上最多接受多高的错误风险，再由 conformal risk control 给出分布无关的拒答控制。它把“我觉得不太确定”改成了可审计的策略：风险超过门槛就拒答、请求更多信息或转人工，风险在预算内才继续回答。预算是业务选择，不同场景的可接受错误率不会相同。\n\n长文回答还需要另一层检查。整篇文本平均看起来像真的，不代表其中每一个事实都被证据支持。UniCR 的提交内容提到用检索证据推导原子事实性分数，让置信度更贴近具体主张，从而减少自信幻觉，同时尽量保留覆盖面。这种拆分也方便用户看到到底是哪一个句子触发了拒答，而不是只收到一条没有理由的“我不确定”。\n\n论文声称在短答案问答、带执行测试的代码生成和 RAG 长文问答上，相比熵阈值、后处理校准器和选择性生成基线改善了校准、风险覆盖曲线和固定风险下的覆盖率。摘要还把证据矛盾、语义分散和工具不一致列为主要拒答驱动。由于论文当前已被 arXiv 标注撤回，这些结果应当等待可核验的后续材料和独立复现实验，不能直接转成产品 SLA。\n\nUniCR 留下的可用问题仍然清楚：拒答不是一句模板，而是一项需要证据、风险门槛和申诉路径的产品决策。真正部署时要记录触发信号、所用预算、用户看到的理由和人工接管结果，并在分布变化后重新校准。至于这篇论文自身，读者应把 9 月 1 日的提交和后续撤回状态同时记住，方法启发与证据可信度不能混成一个结论。",
+  "publishedAt": "2025-09-01",
+  "eventDate": "2025-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/unicr-trusted-uncertainty-20250901.svg",
+    "alt": "UniCR 将多种不确定性证据校准成正确概率，再按错误预算决定回答或拒答",
+    "sourceUrl": "/images/news/unicr-trusted-uncertainty-20250901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "answer-or-abstain",
+      "title": "模型还要决定什么时候别回答",
+      "body": "把猜测说得很笃定会制造风险，遇到小不确定就拒答又会失去覆盖面；UniCR 先估计正确概率，再做回答或拒答决策。",
+      "kind": "narrative"
+    },
+    {
+      "id": "evidence-fusion",
+      "title": "把似然、检索和工具反馈放到一起",
+      "body": "序列似然、自一致性、检索兼容性和验证器结果各有盲点，证据之间的矛盾本身也是降低信心的信号。",
+      "kind": "technical"
+    },
+    {
+      "id": "black-box-calibration",
+      "title": "校准层可以独立于基础模型更新",
+      "body": "轻量 calibration head、temperature scaling 和 proper scoring 让概率更接近真实正确率，也覆盖只能通过 API 观察的模型。",
+      "kind": "technical"
+    },
+    {
+      "id": "risk-budget-refusal",
+      "title": "错误预算把拒答变成可审计策略",
+      "body": "产品先定义可接受风险，conformal risk control 再决定回答、追问、拒答或转人工；预算不是所有场景的固定常数。",
+      "kind": "comparison"
+    },
+    {
+      "id": "atomic-factuality",
+      "title": "长文要按原子事实检查",
+      "body": "整段文字流畅不代表每个主张都有证据；把检索证据对齐到原子事实，有助于定位具体触发拒答的句子。",
+      "kind": "example"
+    },
+    {
+      "id": "reported-results",
+      "title": "论文声称多类任务上改善风险覆盖",
+      "body": "提交内容覆盖短问答、执行测试代码和 RAG 长文问答，但当前页面已标注撤回，结果需要独立复核，不能直接当作产品保证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "source-status",
+      "title": "方法启发和来源可信度要分开记",
+      "body": "记录触发信号、风险预算、用户理由和人工接管，同时把论文提交与后续撤回状态放在同一条证据链里。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "UniCR 怎样把“我不确定”变成可执行的决策？",
+    "question": "融合多种证据并校准正确概率，再用场景错误预算决定回答、追问、拒答或转人工。",
+    "steps": [
+      {
+        "label": "收集异质证据",
+        "detail": "同时观察序列似然、自一致性、检索支持关系，以及工具和验证器是否通过。",
+        "evidence": "sequence likelihoods ... retrieval compatibility ... tool or verifier feedback"
+      },
+      {
+        "label": "融合并校准概率",
+        "detail": "用轻量校准层把不同信号转成更接近正确率的概率，不直接把一个 logit 当信心。",
+        "evidence": "calibrated probability"
+      },
+      {
+        "label": "对齐原子事实",
+        "detail": "长文回答拆成可核验主张，把检索证据和具体句子对应起来，减少整体流畅造成的错觉。",
+        "evidence": "atomic factuality scores derived from retrieved evidence"
+      },
+      {
+        "label": "套用错误预算",
+        "detail": "根据场景允许的风险门槛选择回答、追问、拒答或转人工，并记录使用的预算。",
+        "evidence": "user-specified error budget ... conformal risk control"
+      },
+      {
+        "label": "追踪触发与复校准",
+        "detail": "保留证据矛盾、语义分散、工具不一致和人工结果，分布变化后重新检查阈值和覆盖率。",
+        "evidence": "evidence contradiction ... tool inconsistency"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.01455"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "authorization",
+    "hallucination",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.01455",
+      "claim": "UniCR 把序列似然、自一致性、检索兼容性和工具/验证器反馈融合为校准概率，再按错误预算做拒答，并支持黑箱模型。",
+      "excerpt": "evidence fusion to calibrated probability to risk-controlled decision ... supports API-only models"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01455",
+      "claim": "提交内容覆盖原子事实性、短问答、执行测试代码和 RAG 长文问答；当前页面同时标注论文因作者与机构信息无法核验而撤回。",
+      "excerpt": "reducing confident hallucinations ... arXiv admin note: This paper has been withdrawn ... unverifiable authorship and affiliation"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.01455",
+  "sourceHash": "sha256:b4732a049f119dbec9e23573c72cd4f32c0dab8899c98871033a086d5b1f6039",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文讨论部署语言模型的置信度、校准与拒答。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文保留风险覆盖曲线、校准和多类任务验证指标。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.88,
+      "evidence": [
+        "正文把回答、拒答、追问和转人工作为按场景授权的决策路径。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.96,
+      "evidence": [
+        "正文讨论原子事实性和自信幻觉，要求证据对齐到具体主张。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 1 日提交事件及后续来源状态变化。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.01455",
+      "claim": "arXiv 记录 UniCR 于 2025 年 9 月 1 日提交，研究置信度校准和风险控制拒答。",
+      "excerpt": "Published: 2025-09-01 ... Trusted Uncertainty in Large Language Models"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01455",
+      "claim": "当前 arXiv 页面标注论文因作者与机构信息无法核验而撤回，方法与结果应按提交时主张并保留这一状态阅读。",
+      "excerpt": "This paper has been withdrawn by arXiv due to unverifiable authorship and affiliation"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对证据融合、概率校准、黑箱 API、conformal risk control、原子事实性和多任务评测摘要；同时核对 arXiv 当前撤回标注，正文明确区分提交主张与已独立确认的证据。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：先解释回答/拒答的产品决策，再拆解证据融合、校准和错误预算；把长文原子事实性、实验指标与 arXiv 撤回状态同时写清，避免将撤回论文的结果当成产品保证；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-01-unicr-trusted-uncertainty-20250901"
+}

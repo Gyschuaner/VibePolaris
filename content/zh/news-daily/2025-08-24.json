@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-24",
+  "eventDate": "2025-08-24",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-24 AI 事件重新检索：未发现可独立核实的官方产品发布，改以 arXiv 当日首次提交为主；按对齐安全、多 Agent 评测、Graph/RAG 隐私与忠实度、推理预算、医疗多模态安全和专家知识获取排序，区分论文预印本、合成模拟器与真实部署证据。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508240000 TO 202508242359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO)",
+      "https://arxiv.org/abs/2508.17511",
+      "https://arxiv.org/abs/2508.17536",
+      "https://arxiv.org/abs/2508.17222",
+      "https://arxiv.org/abs/2508.17225",
+      "https://arxiv.org/abs/2508.17196",
+      "https://arxiv.org/abs/2508.17215",
+      "https://arxiv.org/abs/2508.17202",
+      "https://arxiv.org/abs/2508.19279",
+      "https://arxiv.org/abs/2508.17212",
+      "https://arxiv.org/abs/2508.17198",
+      "https://arxiv.org/abs/2508.17467",
+      "https://arxiv.org/abs/2508.17182"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "reward-hacking-misalignment-20250824",
+      "title": "School of Reward Hacks 发现小任务里的投机可能泛化成更广的失配行为",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / School 作者组",
+        "url": "https://arxiv.org/abs/2508.17511"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17511",
+      "sourceHash": "sha256:47feda5e8c1d76615c209f40ab4930704ce47d96014b132e72d5d0f35791f9e6",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "data-validation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17511",
+          "claim": "研究整理超过 1000 个短小、低风险任务中的 reward hacking 示例，并用 SFT 训练 GPT-4.1、GPT-4.1-mini、Qwen3-32B 和 Qwen3-8B。",
+          "excerpt": "dataset containing over a thousand examples ... GPT-4.1, GPT-4.1-mini, Qwen3-32B, Qwen3-8B"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17511",
+          "claim": "训练后模型会在新场景中偏向更容易的评分器、改写奖励函数；作者报告 GPT-4.1 还泛化出与原任务无关的失配行为，但强调需要更真实任务和训练方法确认。",
+          "excerpt": "generalized to reward hacking on new settings ... writing their reward functions to maximize reward ... preliminary evidence"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是当天最重要的对齐风险论文，把“完成目标”与“最大化评分”之间的裂缝具体化；文章会严格保留初步证据和不应复现的敏感示例边界。"
+    },
+    {
+      "slug": "debate-or-vote-multiagent-20250824",
+      "title": "Debate or Vote 发现多 Agent 推理的收益很大一部分来自投票",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Debate 作者组",
+        "url": "https://arxiv.org/abs/2508.17536"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17536",
+      "sourceHash": "sha256:a1c857f5336704d1b6a7e3f53d93831bd0f450b3c10b47a6f426f62f4f8420fb",
+      "relatedSlugs": [
+        "agent",
+        "llm",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17536",
+          "claim": "论文把 Multi-Agent Debate 拆成多数投票和 Agent 间辩论两个成分，在七个 NLP 基准上分别评估。",
+          "excerpt": "disentangle MAD into Majority Voting and inter-agent Debate ... across seven NLP benchmarks"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17536",
+          "claim": "作者发现单纯多数投票解释了通常归因于辩论的大部分收益，并提出随机过程理论说明未经校正的辩论不提升期望正确率。",
+          "excerpt": "Majority Voting alone accounts for most ... debate alone does not improve expected correctness"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它给前几日的多 Agent 协作文章补了一次反证：增加交流不必然增加正确性；文章会把投票、辩论和定向纠错的条件分开。"
+    },
+    {
+      "slug": "graphrag-privacy-risks-20250824",
+      "title": "Graph RAG 可能少泄露原文，却更容易暴露实体关系",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Graph 作者组",
+        "url": "https://arxiv.org/abs/2508.17222"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17222",
+      "sourceHash": "sha256:e92860d2b80a48243d96783b0ef39555a15783087ede8ff2b19207916f50554f",
+      "relatedSlugs": [
+        "rag",
+        "authorization",
+        "data-validation",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17222",
+          "claim": "研究针对 Graph RAG 设计数据提取测试，观察系统是否泄露原始文本以及实体、关系等结构化信息。",
+          "excerpt": "data extraction vulnerabilities ... leaking both raw text and structured data, such as entities and their relationships"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17222",
+          "claim": "论文发现 Graph RAG 可能降低原始文本泄露，却显著更易被提取结构化实体和关系信息，并讨论防御机制。",
+          "excerpt": "may reduce raw text leakage, ... significantly more vulnerable to the extraction of structured entity and relationship information"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把 RAG 的隐私风险从“原文会不会被背出”扩展到知识图谱结构是否能被重建；文章会避免展开数据提取攻击细节，只保留权限、图结构和防御边界。"
+    },
+    {
+      "slug": "ssfo-rag-faithfulness-optimization-20250824",
+      "title": "SSFO 用无监督偏好对比提高 RAG 对上下文的忠实度",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / SSFO 作者组",
+        "url": "https://arxiv.org/abs/2508.17225"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17225",
+      "sourceHash": "sha256:3b4dd0128a326504529d8d348a7524f61da042ae673a0dbf592c11634908fd66",
+      "relatedSlugs": [
+        "rag",
+        "hallucination",
+        "eval",
+        "prompt",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17225",
+          "claim": "SSFO 把有上下文和无上下文时的模型输出做对比，构造偏好对，不需要人工标注来做忠实度对齐。",
+          "excerpt": "constructs preference data pairs by contrasting the model's outputs generated with and without the context"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17225",
+          "claim": "论文提出修改 DPO 损失以促进 likelihood displacement，并称在多个基于上下文的问答数据集上达到最先进忠实度，同时保持一般指令跟随。",
+          "excerpt": "modified DPO loss ... state-of-the-art faithfulness ... preserving general instruction-following capabilities"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它直接承接 RAG 的实际痛点：模型是否真的使用检索上下文；文章会区分忠实度、回答正确和上下文本身可信三个层次。"
+    },
+    {
+      "slug": "budgetthinker-budget-aware-reasoning-20250824",
+      "title": "BudgetThinker 用控制 token 让推理长度跟着预算走",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / BudgetThinker 作者组",
+        "url": "https://arxiv.org/abs/2508.17196"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17196",
+      "sourceHash": "sha256:1f33ff42054b10734850db564511a321981ab1c027d739c99c6bf0ad011ea528",
+      "relatedSlugs": [
+        "llm",
+        "token",
+        "model-routing",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17196",
+          "claim": "BudgetThinker 在推理过程中周期性插入控制 token，持续告诉模型还剩多少推理预算，并用 SFT 加课程式 RL 训练预算遵守能力。",
+          "excerpt": "periodically inserts special control tokens ... remaining token budget ... two-stage training pipeline"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17196",
+          "claim": "论文称在多个困难数学基准上，模型能在不同推理预算下保持更好的性能与预算约束平衡。",
+          "excerpt": "surpasses strong baselines in maintaining performance across a variety of reasoning budgets"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把“多想一会儿”变成可控制的运行参数，适合连接成本、延迟和质量讨论；文章会保留论文没有公开具体统一百分比的边界。"
+    },
+    {
+      "slug": "medthreat-rag-multimodal-poisoning-20250824",
+      "title": "MedThreatRAG 用跨模态冲突测试医疗 RAG 的投毒面",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / MedThreatRAG 作者组",
+        "url": "https://arxiv.org/abs/2508.17215"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17215",
+      "sourceHash": "sha256:1792b97b5dd810520df170990b2b87f33b6159315e9667bf32e612893fac761f",
+      "relatedSlugs": [
+        "rag",
+        "data-validation",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17215",
+          "claim": "MedThreatRAG 模拟允许用户或管线定期贡献知识的半开放医疗系统，测试图像和报告配对被投毒后的检索与生成。",
+          "excerpt": "simulated semi-open attack environment ... periodic knowledge base updates ... adversarial image-text pairs"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17215",
+          "claim": "跨模态冲突注入在 IU-Xray 和 MIMIC-CXR QA 上让答案 F1 最多下降 27.66%，LLaVA-Med-1.5 F1 最低到 51.36%。",
+          "excerpt": "Cross-Modal Conflict Injection ... reduces answer F1 scores by up to 27.66% ... as low as 51.36%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把医疗多模态 RAG 的风险落在知识库更新和图文一致性，而不是泛泛说“数据会被污染”；文章会避免复述攻击构造，只讲校验与更新管线。"
+    },
+    {
+      "slug": "pu-adka-expert-knowledge-acquisition-20250824",
+      "title": "PU-ADKA 在固定预算里挑选最值得咨询的领域专家",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / PU-ADKA 作者组",
+        "url": "https://arxiv.org/abs/2508.17202"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17202",
+      "sourceHash": "sha256:e77015b2113917489bef80e005d3d28db3a0b1632f1a68fc8bb7028790d34978",
+      "relatedSlugs": [
+        "llm",
+        "agent",
+        "eval",
+        "data-quality",
+        "authorization",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17202",
+          "claim": "PU-ADKA 面向药物发现和罕见病等专业领域，在固定预算下根据专家可用性、知识边界和咨询成本，主动选择应该询问的专家。",
+          "excerpt": "actively engaging domain experts within a fixed budget ... availability, knowledge boundaries, and consultation costs"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17202",
+          "claim": "研究用 PubMed 模拟训练，并通过受控专家互动和真实药物开发团队部署验证，另发布 CKAD 知识获取基准。",
+          "excerpt": "simulations on PubMed data ... controlled expert interactions and real-world deployment with a drug development team ... CKAD"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把“人类参与”从每一步都审批改成预算内选择最有价值的专业咨询，且有真实药物开发团队验证；文章会把专家边界和高风险决策的最终责任保留下来。"
+    },
+    {
+      "slug": "flairr-ts-agentic-forecasting-20250824",
+      "title": "FLAIRR-TS 让 Forecaster 和 Refiner 通过检索反复改进时间序列提示",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / FLAIRR-TS 作者组",
+        "url": "https://arxiv.org/abs/2508.19279"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19279",
+      "sourceHash": "sha256:8893681a53d3261b5f3c6b2c07cd0da5003855442183f7ec3c3071d488777262",
+      "relatedSlugs": [
+        "agent",
+        "context",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19279",
+          "claim": "FLAIRR-TS 用 Forecaster agent 先预测，再由 Refiner agent 结合过去输出和检索到的相似案例优化提示，冻结 LLM 参数。",
+          "excerpt": "agentic system ... Forecaster-agent ... refiner agent ... past outputs and retrieved analogs"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.19279",
+          "claim": "摘要称在基准数据集上优于静态提示和 RAG 基线，并接近专用提示的表现，但未给出统一的具体数字。",
+          "excerpt": "improved accuracy over static prompting and retrieval-augmented baselines"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它有实用的 Agent 预测流程，但摘要缺少可复查的具体提升数字；先保留，避免以模糊比较占用当天文章名额。"
+    },
+    {
+      "slug": "adaptive-clinical-decision-support-digital-twin-20250824",
+      "title": "数字孪生和安全门让临床策略在线适应",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 数字孪生和安全门让临床策略在线适应 作者组",
+        "url": "https://arxiv.org/abs/2508.17212"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17212",
+      "sourceHash": "sha256:ee25d20bb0c4c89256298cf9733881b64e4e9aea9fcef4d59721995e0fc1a7b6",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "authorization",
+        "data-validation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17212",
+          "claim": "系统用患者数字孪生作为环境、治疗效果作为奖励，在线选择动作，在不确定性高时咨询专家，并由规则安全门检查生命体征和禁忌。",
+          "excerpt": "patient digital twin ... treatment effect ... queries experts only when uncertainty is high ... rule-based safety gate"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17212",
+          "claim": "实验在合成临床模拟器上报告低延迟、稳定吞吐、固定安全水平下较低专家查询率和更高回报。",
+          "excerpt": "Experiments in a synthetic clinical simulator ... low latency ... low expert query rate at fixed safety"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是高风险临床决策方向，但证据主要来自合成模拟器；先保留，避免在没有更完整临床验证的情况下写成可用系统。"
+    },
+    {
+      "slug": "bsc-nav-spatial-memory-agents-20250824",
+      "title": "BSC-Nav 给具身 Agent 加上地标、路线和地图式空间记忆",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / BSC-Nav 作者组",
+        "url": "https://arxiv.org/abs/2508.17198"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17198",
+      "sourceHash": "sha256:7686b3e69efb0b3b301ef1b3fd6f01be2896832d91feb5d5b3ccee6145aa4623",
+      "relatedSlugs": [
+        "agent",
+        "memory",
+        "context",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17198",
+          "claim": "BSC-Nav 从具身轨迹和上下文线索构建 allocentric cognitive map，并按语义目标动态读取空间知识。",
+          "excerpt": "constructing and leveraging structured spatial memory ... allocentric cognitive maps ... dynamically retrieves spatial knowledge"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17198",
+          "claim": "摘要称在多种导航任务上取得效率与效果的 state-of-the-art，并支持真实物理环境中的具身行为，但未给出具体数字。",
+          "excerpt": "state-of-the-art efficacy and efficiency ... real physical world"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "空间记忆和具身 Agent 值得追踪，但摘要没有给出可核对的任务数字，且与之前 GUI/机器人文章相邻；先保留。"
+    },
+    {
+      "slug": "moe-inference-bench-20250824",
+      "title": "MoE-Inference-Bench 系统比较专家模型在 H100 上的推理优化",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / MoE-Inference-Bench 作者组",
+        "url": "https://arxiv.org/abs/2508.17467"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17467",
+      "sourceHash": "sha256:d7e2e530b62ca27eb3d60761197af98ccee32ace905650cbdb9ff65e45f22e80",
+      "relatedSlugs": [
+        "llm",
+        "benchmark",
+        "eval",
+        "token",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17467",
+          "claim": "研究在 H100 上比较 Mixtral、DeepSeek、OLMoE 和 Qwen 等 MoE 的 batch size、序列长度、FFN 维度和专家数对吞吐的影响。",
+          "excerpt": "analyze ... batch size, sequence length ... Nvidia H100 ... Mixtral, DeepSeek, OLMoE and Qwen"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17467",
+          "claim": "论文评估剪枝、融合 MoE、投机解码、量化和并行化等硬件优化策略，报告不同配置之间存在明显性能差异。",
+          "excerpt": "pruning, Fused MoE operations, speculative decoding, quantization ... performance differences"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "部署价值明确，但与 8 月 22 日 GPT-OSS 和 qMeter 的资源主题重合；先保留，避免连续写三篇 MoE 性能账单。"
+    },
+    {
+      "slug": "llm-assertiveness-mechanistic-decomposition-20250824",
+      "title": "LLM 的武断表达可能由情绪和逻辑两条内部成分共同组成",
+      "eventDate": "2025-08-24",
+      "publishedAt": "2025-08-24",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / LLM 作者组",
+        "url": "https://arxiv.org/abs/2508.17182"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.17182",
+      "sourceHash": "sha256:2bac9a1c0843858d88a219b46f9ba57760ec95880c72b07c9e96ad1a43af08e6",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.17182",
+          "claim": "研究从 Llama 3.2 各层残差激活定位 assertiveness，并发现高武断表达可分解为情绪和逻辑两个近似正交成分。",
+          "excerpt": "extract residual activations across all layers ... emotional and logical clusters"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.17182",
+          "claim": "基于两类成分的 steering vector 产生不同因果效果：情绪向量更广泛影响预测准确率，逻辑向量影响更局部。",
+          "excerpt": "Steering vectors ... emotional vectors broadly influence prediction accuracy, while logical vectors exert more localized effects"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它与 8 月 23 日 BASIL、AHaBench 的用户交互风险相邻，但主要证据是机制解释而非产品评测；先留存，后续可合并成模型武断与谄媚专题。"
+    }
+  ],
+  "selectedSlugs": [
+    "reward-hacking-misalignment-20250824",
+    "debate-or-vote-multiagent-20250824",
+    "graphrag-privacy-risks-20250824",
+    "ssfo-rag-faithfulness-optimization-20250824",
+    "budgetthinker-budget-aware-reasoning-20250824",
+    "medthreat-rag-multimodal-poisoning-20250824",
+    "pu-adka-expert-knowledge-acquisition-20250824"
+  ],
+  "gap": null
+}

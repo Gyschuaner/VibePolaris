@@ -1,0 +1,199 @@
+{
+  "slug": "medagentbench-nejm-ai-online-publication-20250814",
+  "title": "NEJM AI 在线发表 MedAgentBench：用虚拟 EHR 测试医疗 LLM 智能体",
+  "summary": "8 月 14 日，NEJM AI 在线发表 MedAgentBench，提供一个符合 FHIR 的交互式虚拟电子病历环境，用来测试 LLM 智能体是否能在医疗记录里规划并调用工具完成任务。基准包含 300 个由医生撰写的患者级任务、10 个类别、100 份现实感患者画像和 70 万以上数据元素；论文报告最佳模型 Claude 3.5 Sonnet v2 的成功率为 69.67%。这个数字说明基准仍未饱和，不代表临床疗效或真实患者结局。",
+  "body": "8 月 14 日，NEJM AI 在线发表了 MedAgentBench 论文，期刊卷期日期则标为 8 月 28 日。日期差异不是小细节：这次新闻点是论文进入期刊的在线发表流程，不是 8 月 14 日才第一次出现代码或预印本。MedAgentBench 的目标也很明确，它要测的是医疗 LLM 智能体在交互式病历环境里能不能完成任务，而不只是回答一条医学问题。\n\n基准提供了一个符合 FHIR 的虚拟电子病历环境。它包含 300 个由医生撰写的、面向具体患者的临床任务，分成 10 类；环境里有 100 份现实感患者画像和 70 万以上的数据元素。智能体通过现代电子病历使用的标准 API 和通信方式读取、写入或更新信息，研究者可以把一条任务拆成连续的工具调用，再检查最终状态是否正确。\n\n这改变了“模型会不会答题”的问题。一个医疗代理可能需要先找患者记录，再读实验室结果、核对药物或安排转诊，途中每一步都可能选错资源、漏掉条件或把前一步的结果传错。MedAgentBench 把这些动作放进可运行的环境里，用参考解和程序化检查来判断任务是否完成。模型的文字看起来合理，不能替代对工具轨迹和环境状态的检查。\n\n论文报告的最佳结果是 Claude 3.5 Sonnet v2 成功率 69.67%。作者同时说基准还没有饱和，当前最好的模型仍有明显改进空间，不同任务类别之间的表现也差异很大。这个数字的含义是“在这套任务、这套环境和这套评分下完成了多少”，不是医生水平、临床安全性或对真实患者的预测准确率。\n\nMedAgentBench 的价值在于把评估对象从模型输出拉回到医疗工作流。FHIR 让任务的资源、字段和操作有明确接口，虚拟环境让实验可以重复，按类别拆分的结果则能暴露模型在哪些工作上失手。研究者可以继续比较计划能力、工具选择、错误恢复和最终状态，而不是只看一项总分。\n\n它也留下了很清楚的边界。论文的患者画像和数据元素服务于基准环境，不能被直接当作医院真实数据；通过基准不等于获得临床部署许可。医疗系统还需要验证数据治理、权限、审计、人工复核、异常升级和医生对建议的最终控制。基准能发现代理哪里做错，却不能替机构承担医疗责任。\n\n复现实验时，最好固定模型版本和工具说明，保存每一步 FHIR 请求、返回、失败类型和人工接管点，并按 10 个类别分别报告。还要确认参考解是否覆盖了异常输入、权限不足和不完整记录。这样，69.67% 才会变成一条可以继续追问的测量结果，而不是一个脱离场景的排行榜数字。",
+  "publishedAt": "2025-08-14",
+  "eventDate": "2025-08-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/medagentbench-nejm-ai-online-publication-20250814.svg",
+    "alt": "MedAgentBench 在符合 FHIR 的虚拟 EHR 中让医疗 LLM 智能体执行患者级任务并接受程序化评估；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/medagentbench-nejm-ai-online-publication-20250814.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "publication",
+      "title": "在线发表日期和卷期日期要分开",
+      "body": "MedAgentBench 在 2025 年 8 月 14 日在线发表于 NEJM AI，卷期页面另标 8 月 28 日。事件是期刊在线发表，不是这一天才出现预印本或代码。",
+      "kind": "narrative"
+    },
+    {
+      "id": "environment",
+      "title": "把 LLM 放进符合 FHIR 的虚拟 EHR",
+      "body": "基准提供可交互的虚拟电子病历环境，包含标准 API 和通信方式，让智能体通过工具读取、写入和更新记录，而不是只生成一段医学文字。",
+      "kind": "technical"
+    },
+    {
+      "id": "tasks",
+      "title": "300 个医生撰写任务覆盖 10 类工作",
+      "body": "MedAgentBench 包含 300 个患者级临床任务、10 个类别、100 份现实感患者画像和 70 万以上数据元素，任务由医生撰写并在环境内执行。",
+      "kind": "comparison"
+    },
+    {
+      "id": "score",
+      "title": "69.67% 是基准成功率",
+      "body": "论文报告 Claude 3.5 Sonnet v2 的最佳成功率为 69.67%，并指出基准尚未饱和、类别间差异明显。这个数字不能外推成临床疗效或真实患者结局。",
+      "kind": "boundary"
+    },
+    {
+      "id": "workflow",
+      "title": "评分要看工具轨迹和最终状态",
+      "body": "医疗代理可能需要查记录、读检查、核对药物或安排转诊；参考解和程序化检查可以验证工具选择、参数、顺序和环境状态，而不只看回答是否听起来合理。",
+      "kind": "technical"
+    },
+    {
+      "id": "clinical-boundary",
+      "title": "通过 benchmark 不等于可临床部署",
+      "body": "虚拟画像和数据元素服务于实验环境，不能替代医院的数据治理、权限、审计、人工复核、异常升级和医生的最终控制。基准负责测量，不负责承担医疗责任。",
+      "kind": "boundary"
+    },
+    {
+      "id": "replication",
+      "title": "按类别保存失败和接管证据",
+      "body": "复现实验时固定模型和工具说明，保存每一步 FHIR 请求、返回、失败类型和人工接管点，并分别报告 10 个类别，才能解释总分来自哪里。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一个医疗智能体怎样完成一项 EHR 任务？",
+    "question": "从患者任务到工具调用再到最终状态逐步检查，才能知道代理究竟在哪一步出错。",
+    "steps": [
+      {
+        "label": "读取患者级任务",
+        "detail": "从医生撰写的任务开始，确认患者画像、目标和允许的操作范围。",
+        "evidence": "300 physician-authored tasks"
+      },
+      {
+        "label": "通过 FHIR 查记录",
+        "detail": "代理使用标准 EHR API 读取患者、检查、药物或其他资源，不把上下文当成一段静态文本。",
+        "evidence": "FHIR-compliant interactive environment"
+      },
+      {
+        "label": "连续调用工具",
+        "detail": "记录每个请求、参数、返回和下一步计划，观察代理是否能恢复错误或处理缺失信息。",
+        "evidence": "Agent planning and tool utilization"
+      },
+      {
+        "label": "执行并检查状态",
+        "detail": "将写入、更新或转诊等动作放回环境，用参考解和程序化评估判断最终状态。",
+        "evidence": "Programmatic task evaluation"
+      },
+      {
+        "label": "按类别解释得分",
+        "detail": "分别查看 10 类任务和失败类型；69.67% 是该 benchmark 的成功率，不是临床安全结论。",
+        "evidence": "69.67% best-model success rate"
+      }
+    ]
+  },
+  "source": {
+    "name": "NEJM AI",
+    "url": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "claim": "NEJM AI 页面标注 MedAgentBench 于 2025 年 8 月 14 日在线发表，卷期为 2025 年第 2 卷第 9 期。",
+      "excerpt": "Published August 14, 2025 ... NEJM AI 2025;2(9)."
+    },
+    {
+      "url": "https://arxiv.org/abs/2501.14654",
+      "claim": "论文介绍符合 FHIR 的虚拟 EHR、300 个医生撰写任务、10 类、100 名患者画像、70 万以上数据元素和 69.67% 的最佳模型成功率。",
+      "excerpt": "MedAgentBench encompasses 300 patient-specific clinically-derived tasks from 10 categories written by human physicians ... over 700,000 data elements ... The best model (Claude 3.5 Sonnet v2) achieves a success rate of 69.67%."
+    },
+    {
+      "url": "https://github.com/stanfordmlgroup/MedAgentBench",
+      "claim": "Stanford ML Group 公开 MedAgentBench 实现和运行说明，代码用于研究，不保证适合大规模生产。",
+      "excerpt": "This repository contains implementation of MedAgentBench ... intended for research purpose, and might not be suitable for large-scale production."
+    }
+  ],
+  "canonicalUrl": "https://doi.org/10.1056/AIdbp2500144",
+  "sourceHash": "sha256:6b0c899aad41a84bfc4e6c576e85eb9941b5201793b1d914fa2a97463240a01b",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.98,
+      "evidence": [
+        "正文将医疗智能体放进可交互 EHR 环境，按工具调用和最终状态评估完整工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文区分 benchmark 成功率、类别差异、程序化检查和临床部署结论。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8 月 14 日 NEJM AI 在线发表、8 月 28 日卷期日期和更早的 arXiv 预印本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "claim": "NEJM AI 在线发表页面支持 2025-08-14 的在线发表日期和卷期边界。",
+      "excerpt": "Published August 14, 2025 ... NEJM AI 2025;2(9)."
+    },
+    {
+      "url": "https://arxiv.org/abs/2501.14654",
+      "claim": "论文摘要支持 FHIR 虚拟 EHR、300 个医生撰写任务、100 名患者画像、700,000+ 数据元素、69.67% 成功率和 benchmark 未饱和结论。",
+      "excerpt": "The environment uses the standard APIs and communication infrastructure used in modern EMR systems ... The best model (Claude 3.5 Sonnet v2) achieves a success rate of 69.67% ... there is still substantial space for improvement."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 NEJM AI 在线发表页、arXiv 摘要和 Stanford ML Group 代码仓库；正文区分 8/14 online publication、8/28 issue date、arXiv 预印本时间和 benchmark/临床部署边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把 MedAgentBench 写成工具调用和环境状态的评估故事，保留医疗场景风险边界，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-14-medagentbench",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "NEJM AI 的 online publication 日期为 2025-08-14，卷期日期为 2025-08-28；正文、section 和关系说明均未把两者混为一次发布。",
+      "NEJM AI 正式页、arXiv 摘要与 Stanford ML Group 仓库形成互补证据链；source/canonical 已指向期刊文章，预印本和代码仍在来源卡片中保留。",
+      "FHIR 交互式虚拟 EHR、300 个医生撰写任务、10 类、100 名患者画像、70 万以上数据元素及 Claude 3.5 Sonnet v2 的 69.67% 均按论文 benchmark 口径呈现。",
+      "正文明确 69.67% 不是临床疗效、真实患者结局或医生水平，且通过 benchmark 不等于可部署；数据治理、权限、审计、人工复核、异常升级和医生最终控制边界清楚。",
+      "sections、benchmark explainer、relatedSlugs、source/evidence 与 SVG 均围绕医疗智能体评测组织，中文适合零基础读者，未发现明显机械化句式。"
+    ],
+    "notes": "读者审阅通过。文章把 8/14 online publication、8/28 issue date 和更早的 arXiv/代码时间分开，准确解释 FHIR 环境、工具轨迹与程序化评分，并把 69.67% 限定为 benchmark 成功率，没有扩写为临床安全或真实患者结论。",
+    "changes": [
+      "将标题从“MedAgentBench 登上 NEJM AI”改为“NEJM AI 在线发表 MedAgentBench”，去掉偏宣传性的“登上”，与事件日期和正文口径一致。",
+      "将 source 指向 NEJM AI 正式文章页，并将 canonicalUrl 改为 DOI `https://doi.org/10.1056/AIdbp2500144`；arXiv 与 Stanford 仓库继续作为独立证据卡片保留。"
+    ]
+  }
+}

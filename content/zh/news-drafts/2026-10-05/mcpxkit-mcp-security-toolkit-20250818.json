@@ -1,0 +1,177 @@
+{
+  "slug": "mcpxkit-mcp-security-toolkit-20250818",
+  "title": "MCPXKIT 把 MCP 的 31 种攻击搬进测试工具包",
+  "summary": "8 月 18 日提交的 MCPXKIT 论文，把 MCP 安全问题整理成四类、31 种可复现实验方法：直接工具注入、间接工具注入、恶意用户攻击和 LLM 固有攻击。作者的实验提醒开发者，Agent 可能盲目信任工具描述，把文件里的内容当成指令，或在共享上下文里把一次污染传给后续调用。它更像一套安全检查的起点，而不是任何 MCP 系统的通用漏洞分数。",
+  "body": "MCP 让 Agent 可以调用搜索、文件、数据库和业务系统，但工具接入也把新的输入面放到了模型面前。8 月 18 日提交到 arXiv 的 MCPXKIT，做的事情不是再列一张抽象的风险清单，而是把这些风险整理成可以反复运行的攻击分类和测试工具包。\n\n论文把 31 种攻击放进四个大类：直接工具注入、间接工具注入、恶意用户攻击，以及模型自身带来的攻击。这个分类先把责任边界拆开了：有些问题来自工具描述或工具返回值，有些来自用户主动构造的输入，还有些是模型在看到冲突指令时本来就容易犯的判断错误。\n\n直接工具注入的危险在于，开发者往往把工具描述当成静态元数据，模型却会把它当成上下文的一部分来理解。如果描述里混入了不该执行的要求，Agent 可能先接受这段话，再决定调用什么工具。间接注入则更隐蔽：恶意内容可以藏在文件、网页或工具返回结果里，等 Agent 读取这些外部材料时才进入对话。\n\nMCPXKIT 的实验观察到，Agent 对工具描述存在盲目信任；文件攻击可以绕过人们以为的“只读数据”边界；共享上下文会让一次调用里的污染影响后续链路。论文还指出，模型很难稳定区分外部数据和可执行命令，这正是工具调用系统比普通聊天更难防守的地方。\n\n这套工具包的价值在于把“我们应该担心什么”变成“在这套权限、这组工具和这条上下文链上，哪些情况会发生”。安全团队可以按分类建立回归集，观察模型是否把不可信描述当成命令、是否把文件内容带入下一步决策，再决定哪些调用需要人工确认、隔离或拒绝。\n\n论文是研究者提交的预印本，31 种方法和实验结论不能直接当成所有 MCP 实现的漏洞清单。真实系统还要结合工具权限、网络出口、文件沙箱、上下文拼接方式和审计日志来复核；测试时也应使用隔离环境和无害样例，不要把论文里的攻击分类直接搬到生产数据上。",
+  "publishedAt": "2025-08-18",
+  "eventDate": "2025-08-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mcpxkit-mcp-security-toolkit-20250818.svg",
+    "alt": "MCPXKIT 将工具描述、外部文件和共享上下文汇入 Agent 安全测试流程",
+    "sourceUrl": "/images/news/mcpxkit-mcp-security-toolkit-20250818.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "paper-event",
+      "title": "这篇论文把 MCP 风险做成了可重复的测试入口",
+      "body": "MCPXKIT 于 2025 年 8 月 18 日提交 arXiv，目标是为连接外部工具的 Agent 提供安全评估工具包。它关注的是攻击方法如何进入工具调用链，而不是给某个 MCP 实现颁发一个静态安全分数。",
+      "kind": "narrative"
+    },
+    {
+      "id": "four-classes",
+      "title": "31 种方法被分成四类，先看污染从哪里进来",
+      "body": "论文按直接工具注入、间接工具注入、恶意用户攻击和 LLM 固有攻击四类组织实验。这样可以区分工具描述、外部内容、用户输入和模型判断各自承担的风险。",
+      "kind": "comparison"
+    },
+    {
+      "id": "tool-description",
+      "title": "工具描述不是天然可信的配置文件",
+      "body": "Agent 会把工具名称、描述和参数说明放进自己的上下文。如果系统没有把这些字段当作不可信输入处理，描述中的异常要求就可能影响模型后续的调用选择。",
+      "kind": "technical"
+    },
+    {
+      "id": "indirect-context",
+      "title": "文件和返回值会把间接注入带进共享上下文",
+      "body": "恶意内容可以藏在文件、网页或工具返回值中，等 Agent 读取后再影响决策。论文观察到，一次调用里的污染还可能沿共享上下文传给后续工具，形成链式风险。",
+      "kind": "example"
+    },
+    {
+      "id": "data-command-boundary",
+      "title": "模型不总能分清外部数据和可执行命令",
+      "body": "对模型来说，外部材料和对话里的指令都可能是自然语言。MCPXKIT 把这种边界混淆列为实验观察，提醒系统在进入下一步调用前增加权限、格式和来源检查。",
+      "kind": "technical"
+    },
+    {
+      "id": "security-boundary",
+      "title": "它是安全回归集的起点，不是生产漏洞清单",
+      "body": "预印本中的分类和实验需要结合具体工具权限、文件沙箱、网络出口、上下文拼接和审计日志复核。安全测试应在隔离环境里使用无害样例，并为需要越权或写入的动作保留人工确认。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次工具调用怎样从描述走到可审计的执行？",
+    "question": "当 Agent 既要读外部材料又要调用工具，系统怎样判断它看到的是数据还是命令？",
+    "steps": [
+      {
+        "label": "登记工具与权限",
+        "detail": "先记录工具描述、参数、读写范围和网络出口，把可调用边界放在模型之外。",
+        "evidence": "MCPXKIT studies tool-connected agents and tool injection"
+      },
+      {
+        "label": "标记不可信输入",
+        "detail": "工具描述、文件、网页和返回值都按外部数据标记，不能因为它们出现在上下文里就自动变成命令。",
+        "evidence": "The paper observes blind reliance on tool descriptions and file-based attacks"
+      },
+      {
+        "label": "拆开四类风险",
+        "detail": "按直接注入、间接注入、恶意用户和模型固有攻击分别建立测试样例，避免只测一种提示。",
+        "evidence": "MCPXKIT implements 31 methods under four classifications"
+      },
+      {
+        "label": "检查共享上下文",
+        "detail": "观察一次工具返回的内容是否会影响后续调用，并在跨工具传递前做来源和格式校验。",
+        "evidence": "The experiments report chain attacks through shared context"
+      },
+      {
+        "label": "隔离后再放行",
+        "detail": "在沙箱里运行无害回归集，对写入、越权和外发动作设置人工确认与审计记录。",
+        "evidence": "The attack toolkit is an evaluation starting point, not a universal production score"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Yongjian Guo 等",
+    "url": "https://arxiv.org/abs/2508.12538"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12538",
+      "claim": "MCPXKIT 将 MCP 攻击归纳为直接工具注入、间接工具注入、恶意用户攻击和 LLM 固有攻击四类，共实现 31 种攻击方法。",
+      "excerpt": "categorizes and implements 31 distinct attack methods under four key classifications"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12538",
+      "claim": "论文实验观察到 Agent 盲目信任工具描述、文件攻击、共享上下文链式攻击，以及难以区分外部数据和可执行命令。",
+      "excerpt": "agents' blind reliance on tool descriptions ... difficulty distinguishing external data from executable commands"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12538",
+  "sourceHash": "sha256:2135e17ccecef80a097b37da3d455c644ac5caea149868113112bca5235c19ee",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文围绕 Agent 读取外部内容并调用 MCP 工具的安全边界展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文将工具权限、越权和高风险动作确认作为安全回归的一部分。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.88,
+      "evidence": [
+        "论文的核心贡献是把 MCP 攻击分类和实验做成可重复的评估入口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.84,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 18 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12538",
+      "claim": "MCPXKIT 于 2025 年 8 月 18 日提交，论文摘要列出四类、31 种攻击方法，并报告工具描述、文件、共享上下文和数据/命令边界问题。",
+      "excerpt": "31 distinct attack methods under four key classifications"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的提交日期、四类攻击、31 种方法及实验观察；正文保留预印本和具体系统边界，没有复述可直接用于现实系统的攻击步骤。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：按论文摘要逐项核对四类、31 种方法和四条实验观察；把攻击分类写成安全回归入口，明确预印本、权限隔离和无害样例边界，未提供可直接照抄的攻击细节。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-18-mcpxkit"
+}

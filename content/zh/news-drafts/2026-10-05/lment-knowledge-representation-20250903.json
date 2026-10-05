@@ -1,0 +1,199 @@
+{
+  "slug": "lment-knowledge-representation-20250903",
+  "title": "LMEnt：把语言模型从预训练数据到知识表示的变化做成可追踪实验室",
+  "summary": "LMEnt 论文于 9 月 3 日提交，提供一套从预训练语料到模型表示的可控研究资源：带 Wikipedia 实体标注的知识密集语料、实体检索方法、12 个最多 10 亿参数的预训练语言模型和 4K 个中间检查点。论文称实体检索相对现有工具最高提升 80.4%，并用这些中间状态研究实体共现、提及形式、知识获取、知识编辑和幻觉怎样随训练变化。",
+  "body": "语言模型会不会“记住”一条事实，不能只看最终 checkpoint 的答题结果。要回答它从哪段数据学到什么、知识怎样变成内部表示、后来为什么难以编辑，需要把训练过程中的材料和中间状态一起留下。LMEnt 做的就是这块基础工作：把预训练语料、实体检索和一批可比模型放进同一套实验环境。\n\n资源的第一部分是知识密集的预训练语料。语料中的实体提及根据 Wikipedia 做了完整标注，研究者可以沿着实体回查它在训练文本里的出现，而不是只凭一个模型输出猜来源。第二部分是实体检索方法，论文称它相对现有工具最高提升 80.4%；这个数字描述检索工具在论文实验中的对比，不等于所有数据集或所有查询都获得同样幅度的提升。\n\n第三部分是可控的模型和中间检查点：12 个预训练语言模型，规模最高到 10 亿参数，配套约 4K 个训练过程中的 checkpoint。论文说它们在知识任务上与流行开源模型有可比表现。更重要的是，研究者可以在不同训练阶段比较同一个实体，而不必把“模型最后答对了”当成知识形成的全部证据。\n\nLMEnt 的示例分析把注意力放到实体之间怎样一起出现，以及同一个实体以什么提及形式出现。共现关系和提及形式在现有工具里不容易分离，但它们会影响知识获取趋势。换句话说，语料里写了谁、谁和谁挨在一起、用了全名还是别名，都会成为表示学习的一部分；这不是说模型只是在做字符串匹配，而是让研究者有机会把这些因素与后续表现对照起来。\n\n这套中间状态也能用来研究知识编辑。论文观察到，模型对实体形成的关联越强，想用上下文把事实改掉就越难；训练过程中的预测不一致，则可能是编辑成功的信号。这里的“可能”很关键：一次预测变化不能单独证明编辑已经稳定，还要检查原事实、相关实体和不同提示下的副作用。\n\nLMEnt 的价值在于把知识研究从黑箱问答拉回可复查的材料链。实体标注、检索结果、checkpoint、编辑前后预测和引用来源都应保留版本；如果模型产生幻觉，研究者可以继续追问它是否在语料里见过该实体、关联在哪一阶段形成、编辑是否只改变了一个提示。这类线索有助于区分数据缺失、表示冲突和生成阶段的归因错误。\n\n它仍然不是一份“语言模型知识地图”。语料来自特定构造，模型规模覆盖到 10 亿参数，实体和任务也有边界；在更大模型、不同语言或真实产品流量上，结论需要重新验证。LMEnt 更像一间有时间轴的实验室：把数据、表示、编辑和幻觉放到同一条可追踪链上，研究者才有机会解释知识怎样长出来，也能更诚实地说清楚自己还不知道什么。",
+  "publishedAt": "2025-09-03",
+  "eventDate": "2025-09-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/lment-knowledge-representation-20250903.svg",
+    "alt": "LMEnt 沿着实体、预训练语料和 4K 中间检查点追踪语言模型知识形成",
+    "sourceUrl": "/images/news/lment-knowledge-representation-20250903.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "checkpoint-missing",
+      "title": "只看最终回答，看不见知识怎样形成",
+      "body": "LMEnt 把预训练语料、实体检索和中间 checkpoint 放在一起，让研究者比较不同训练阶段的知识表示。",
+      "kind": "narrative"
+    },
+    {
+      "id": "annotated-corpus",
+      "title": "实体标注让训练材料可以被回查",
+      "body": "知识密集语料依据 Wikipedia 标注实体提及，检索结果可以回到文本，而不是只凭模型输出猜来源。",
+      "kind": "technical"
+    },
+    {
+      "id": "retrieval-suite",
+      "title": "实体检索工具最高比现有方法提升 80.4%",
+      "body": "80.4% 是论文实验中的最高相对提升，不代表每个数据集或查询都会得到同样结果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "models-checkpoints",
+      "title": "12 个模型和约 4K 个 checkpoint 组成时间轴",
+      "body": "模型规模最高到 10 亿参数，研究者可以把知识获取趋势与训练阶段对齐，而不只看最终分数。",
+      "kind": "example"
+    },
+    {
+      "id": "cooccurrence-mentions",
+      "title": "共现关系和提及形式会改变学习轨迹",
+      "body": "同一实体的全名、别名和上下文共现可以被单独分析，帮助区分数据因素与表示因素。",
+      "kind": "technical"
+    },
+    {
+      "id": "editing-hallucination",
+      "title": "关联越强越难编辑，预测不一致只是编辑线索",
+      "body": "编辑前后要检查原事实、相关实体和不同提示的副作用；一次答对或答错都不能单独证明知识已稳定改变。",
+      "kind": "boundary"
+    },
+    {
+      "id": "traceable-lab",
+      "title": "数据、表示、编辑和幻觉要保留同一条证据链",
+      "body": "LMEnt 适合做可追踪实验室，不是跨模型、跨语言和真实产品流量都自动成立的知识地图。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "怎样用 LMEnt 追踪一条知识从语料到模型表示？",
+    "question": "沿着实体标注、训练 checkpoint 和编辑前后预测逐阶段核对，区分数据、表示和生成层的变化。",
+    "steps": [
+      {
+        "label": "锁定实体和语料证据",
+        "detail": "从带实体标注的预训练语料开始，记录实体提及、上下文和检索版本。",
+        "evidence": "Wikipedia-annotated knowledge-rich corpus"
+      },
+      {
+        "label": "沿时间轴读取 checkpoint",
+        "detail": "在 12 个预训练模型和约 4K 个中间状态上比较同一实体的预测与表示变化。",
+        "evidence": "12 pretrained LMs and 4K intermediate checkpoints"
+      },
+      {
+        "label": "对照共现与提及形式",
+        "detail": "把实体共现、全名或别名等语料因素拆开，观察它们和知识获取趋势的关系。",
+        "evidence": "entity co-occurrence and mention forms"
+      },
+      {
+        "label": "做编辑前后回归",
+        "detail": "比较原事实、相关实体和多种提示，检查关联变强后编辑是否带来副作用。",
+        "evidence": "knowledge editing and prediction inconsistencies"
+      },
+      {
+        "label": "追到幻觉与归因边界",
+        "detail": "保留来源、checkpoint 和输出版本，区分数据缺失、表示冲突与生成阶段的幻觉。",
+        "evidence": "attribution, hallucinations, and learning dynamics"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03405"
+  },
+  "relatedSlugs": [
+    "llm",
+    "dataset-data",
+    "eval",
+    "hallucination",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03405",
+      "claim": "LMEnt 提供带实体标注的预训练语料、实体检索方法、12 个最多 1B 参数的预训练语言模型和 4K 个中间 checkpoint。",
+      "excerpt": "knowledge-rich pretraining corpus ... entity-based retrieval ... 12 pretrained LMs with up to 1B parameters and 4K intermediate checkpoints"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03405",
+      "claim": "论文称实体检索最高提升 80.4%，并用 LMEnt 研究实体共现、提及形式、知识编辑和幻觉。",
+      "excerpt": "outperforms existing tools by as much as 80.4% ... entity co-occurrence and mention forms ... editing ... hallucinations"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03405",
+  "sourceHash": "sha256:e01b43514b6e884bc7213d3ca82272dd2e5da4f2ce138781bce9bba4c91c38ca",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论语言模型从预训练数据形成知识表示，以及不同 checkpoint 的预测变化。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.99,
+      "evidence": [
+        "LMEnt 发布带实体标注的知识密集预训练语料，并保留实体提及和上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文通过实体检索对比、知识任务表现和编辑前后回归评估资源与模型。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.96,
+      "evidence": [
+        "正文讨论如何沿数据、checkpoint 和输出版本追查幻觉与归因边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 3 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03405",
+      "claim": "arXiv 记录 LMEnt 于 2025 年 9 月 3 日提交，目标是分析语言模型从预训练数据到知识表示的变化。",
+      "excerpt": "Submitted on 3 Sep 2025 ... LMEnt: A Suite for Analyzing Knowledge in Language Models"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03405",
+      "claim": "摘要给出 80.4% 实体检索提升、12 个模型、4K checkpoint，以及实体共现、提及形式和知识编辑发现。",
+      "excerpt": "80.4% ... 12 pretrained LMs ... 4K intermediate checkpoints ... entity co-occurrence ... harder to edit in-context"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 LMEnt 提交日期、实体标注语料、80.4% 检索提升、12 个最多 1B 参数模型、4K checkpoint，以及共现、提及形式、知识编辑和幻觉研究；正文补充版本追踪、编辑副作用和规模边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留论文明确的 80.4%、12 个模型、4K checkpoint 和实体共现/知识编辑发现，明确“最高提升”与可推广结论的边界；补充数据、表示、编辑和幻觉的证据链；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-03-lment-knowledge-representation-20250903"
+}

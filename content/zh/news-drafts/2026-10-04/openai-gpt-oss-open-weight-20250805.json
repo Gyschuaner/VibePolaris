@@ -1,0 +1,216 @@
+{
+  "slug": "openai-gpt-oss-open-weight-20250805",
+  "title": "OpenAI 发布 gpt-oss-120b 与 gpt-oss-20b 开放权重推理模型",
+  "summary": "OpenAI 8 月 5 日发布 gpt-oss-120b 和 gpt-oss-20b，这是它自 GPT-2 以来首次发布开放权重语言模型。两款模型采用 Apache 2.0 许可、文本输入输出和混合专家架构，可下载到自己的设备运行，并支持工具调用；开放权重带来可定制性，也把安全维护责任更多交给部署者。",
+  "body": "8 月 5 日，OpenAI 发布 gpt-oss-120b 和 gpt-oss-20b。它们不是 ChatGPT 里的新按钮，而是可以下载权重、放到自己的基础设施上运行的语言模型。OpenAI 称这是自己自 GPT-2 以来首次发布开放权重模型，采用 Apache 2.0 许可，目标是让开发者、企业和研究者自行部署和修改。\n\n“开放权重”解决的是模型拿到手之后能不能运行和调整。它不等同于训练数据、完整训练代码和所有研发细节都公开；模型本身仍是文本模型，视觉、音频和产品级工具需要部署者另行接入。OpenAI 当天没有把 gpt-oss 放进自己的托管 API，而是提供 Hugging Face 下载、参考推理实现，并与 AWS、Azure、vLLM、Ollama 等平台合作分发。\n\n两款模型用混合专家（MoE）架构控制推理成本。gpt-oss-120b 总参数约 117B，每个 token 激活约 5.1B；gpt-oss-20b 总参数约 21B，每个 token 激活约 3.6B，原生上下文长度都是 128k。官方给出的部署目标是 120b 在单张 80GB GPU 内运行，20b 约需 16GB 内存；这些是量化和推理配置下的硬件门槛，不代表所有任务都能在相同速度和显存占用下完成。\n\n模型并没有因为放到本地就失去推理和工具能力。OpenAI 称它们支持低、中、高三档 reasoning effort，兼容 Responses API 的工具调用形式，可以接网页搜索、Python 等外部工具，也支持 Structured Outputs。这样一来，开发者能把它们放进 Agent 工作流，再按延迟、成本和数据驻留要求选择本地或第三方推理服务。\n\n性能数字要按来源来读。OpenAI 的内部评测称 120b 在部分推理、代码和工具调用基准上接近或达到 o4-mini，20b 与 o3-mini 相近；这些结果来自公司的测试设置，不能直接换算成所有业务里的实际质量。模型卡还提醒，开放权重发布后，外部人员可以继续微调模型，OpenAI 无法像托管服务那样撤回权重或统一追加缓解措施。\n\n这次发布把选择权和维护责任一起交给部署者：本地运行可以减少数据离开组织，也便于做领域微调；同时，提示注入、越权工具和不安全微调需要由部署团队设计权限、监控和更新机制。gpt-oss 的意义不在于它已经替代了闭源 API，而在于 OpenAI 也开始把前沿推理模型的一部分控制面交给生态来管理。",
+  "publishedAt": "2025-08-05",
+  "eventDate": "2025-08-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-gpt-oss-open-weight-20250805.svg",
+    "alt": "两款开放权重推理模型从下载进入本地 GPU，再连接工具和安全控制",
+    "sourceUrl": "/images/news/openai-gpt-oss-open-weight-20250805.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-released",
+      "title": "这次拿到的是权重，不是 ChatGPT 新入口",
+      "body": "gpt-oss-120b 和 gpt-oss-20b 可以下载、部署和微调，采用 Apache 2.0 许可。OpenAI 仍没有公开全部训练数据与训练流程，也没有在发布日提供自己的托管 API；“开放权重”描述的是可运行和可定制的模型资产。",
+      "kind": "narrative"
+    },
+    {
+      "id": "moe-efficiency",
+      "title": "MoE 让总参数和每次计算量分开",
+      "body": "120b 总参数约 117B、每个 token 激活约 5.1B；20b 总参数约 21B、每个 token 激活约 3.6B。两者上下文长度都是 128k，官方目标是分别在约 80GB 和 16GB 内存条件下运行；实际速度还取决于量化、硬件和任务。",
+      "kind": "technical"
+    },
+    {
+      "id": "local-deployment",
+      "title": "本地部署把数据边界交给组织自己",
+      "body": "开发者可以从 Hugging Face 获取权重，通过 PyTorch、Metal、vLLM、Ollama 等生态运行，也可以采用 AWS 等第三方入口。数据不必默认流向 OpenAI 的托管服务，但显存、更新、日志和权限都需要部署团队承担。",
+      "kind": "comparison"
+    },
+    {
+      "id": "agent-tools",
+      "title": "模型仍然可以进入 Agent 工作流",
+      "body": "gpt-oss 支持工具调用、Structured Outputs 和可调 reasoning effort，能连接搜索、代码执行等外部工具。它只提供模型能力，工具权限、状态管理、失败恢复和用户审批仍由应用层决定。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "接近 o4-mini 是公司评测口径",
+      "body": "OpenAI 报告 120b 在部分推理、代码和工具调用基准上接近或达到 o4-mini，20b 与 o3-mini 相近。评测设置、提示、工具和任务分布会影响结果，不能把单组分数当成所有业务的质量承诺。",
+      "kind": "boundary"
+    },
+    {
+      "id": "safety-ownership",
+      "title": "开放之后，安全维护没有统一撤回键",
+      "body": "模型卡承认外部人员可以继续微调，OpenAI 无法像托管服务那样统一追加缓解或撤回权重。组织需要自己处理提示注入、越权工具、不安全微调、监控和版本更新，这正是开放部署的长期成本。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "开放权重模型怎样进入一个本地 Agent？",
+    "question": "从下载权重到调用工具，部署者需要自己接住哪些环节？",
+    "steps": [
+      {
+        "label": "下载权重",
+        "detail": "从 Hugging Face 或合作平台取得 gpt-oss-120b 或 20b，并接受 Apache 2.0 许可和 OpenAI 使用政策的约束。",
+        "evidence": "OpenAI availability and license description"
+      },
+      {
+        "label": "安排推理资源",
+        "detail": "根据模型大小、量化方式、上下文长度和并发量选择 GPU、内存和推理框架；官方的 80GB/16GB 是目标配置而非所有任务的保证。",
+        "evidence": "OpenAI MoE architecture and availability sections"
+      },
+      {
+        "label": "接入模型接口",
+        "detail": "使用参考实现或生态服务暴露文本生成、Structured Outputs 和 reasoning effort，让应用可以稳定取得结构化结果。",
+        "evidence": "OpenAI tool-use and Responses API compatibility"
+      },
+      {
+        "label": "给 Agent 配工具",
+        "detail": "把搜索、代码执行或业务 API 接到模型，但为每个工具设定权限、参数校验、超时和人工确认，不把模型输出当成已执行动作。",
+        "evidence": "OpenAI agentic workflow and tool-use description"
+      },
+      {
+        "label": "持续做安全运维",
+        "detail": "监控提示注入、越权调用和恶意微调，更新模型与策略，并在本地部署的日志、数据和访问权限之间建立责任边界。",
+        "evidence": "gpt-oss model card open-weight risk discussion"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/introducing-gpt-oss/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "benchmark",
+    "agent",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/introducing-gpt-oss/",
+      "claim": "OpenAI 官方公告确认发布日期、两款模型、Apache 2.0、MoE 参数、工具调用、硬件目标、第三方分发和发布日没有 OpenAI 托管 API。",
+      "excerpt": "OpenAI, August 5, 2025."
+    },
+    {
+      "url": "https://openai.com/index/gpt-oss-model-card/",
+      "claim": "模型卡说明 gpt-oss 是文本模型，兼容工具与 Structured Outputs，并讨论开放权重发布后无法统一撤回或追加缓解措施的风险。",
+      "excerpt": "The model card describes the open-weight risk profile and the responsibilities of downstream developers."
+    },
+    {
+      "url": "https://aws.amazon.com/blogs/aws/openai-open-weight-models-now-available-on-aws/",
+      "claim": "AWS 同日宣布在 Bedrock 和 SageMaker JumpStart 提供 OpenAI 开放权重模型，作为主发布之外的分发交叉证据。",
+      "excerpt": "AWS, August 5, 2025."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/introducing-gpt-oss/",
+  "sourceHash": "sha256:06e7619eb6a4b6b1af661a1e4af4fbaafe17c6286a47f4bc35fa9210f033e39b",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文介绍两款开放权重语言模型的架构、部署和能力边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.91,
+      "evidence": [
+        "正文解释模型如何连接工具进入 Agent 工作流，以及部署者要接住的权限和恢复责任。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.87,
+      "evidence": [
+        "正文把接近 o4-mini 与 o3-mini 的数字保留为 OpenAI 公司评测口径。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文区分模型工具调用能力与应用层的权限、审批和失败恢复。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文区分 8 月 5 日发布、同日云平台分发和后续独立评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/introducing-gpt-oss/",
+      "claim": "OpenAI official announcement dated August 5, 2025.",
+      "excerpt": "OpenAI, August 5, 2025."
+    },
+    {
+      "url": "https://openai.com/index/gpt-oss-model-card/",
+      "claim": "OpenAI model card dated August 5, 2025.",
+      "excerpt": "OpenAI gpt-oss-120b & gpt-oss-20b Model Card, August 5, 2025."
+    },
+    {
+      "url": "https://aws.amazon.com/blogs/aws/openai-open-weight-models-now-available-on-aws/",
+      "claim": "AWS records same-day availability of the OpenAI open-weight models on its services.",
+      "excerpt": "AWS News Blog, August 5, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 OpenAI 官方公告和模型卡的 2025 年 8 月 5 日日期、Apache 2.0、文本模型、MoE 参数、128k 上下文、80GB/16GB 目标配置、工具调用、公司评测和开放权重安全边界，并用 AWS 同日公告确认第三方分发；没有写成 GPT-5、完整开源或已在 OpenAI 托管 API 上线。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 将发布意义、MoE 部署、Agent 工具接口和开放权重安全责任拆开说明，避免把公司基准或硬件目标写成普遍保证，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-05-gpt-oss",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-05；OpenAI 官方公告和模型卡是主来源，AWS 同日公告只用于交叉确认第三方分发，没有把 AWS 入口写成 OpenAI 托管服务。",
+      "正文准确区分开放权重与完整开源：模型可下载、部署和微调，采用 Apache 2.0，但训练数据、完整训练流程和 OpenAI 托管 API 并未在发布日一并开放；模型也明确是文本模型，视觉和音频能力需另行接入。",
+      "MoE 总参数、每 token 激活参数、128k 上下文及 80GB/16GB 目标配置与官方口径一致，并明确量化、硬件、任务和速度的实际差异；工具调用、Structured Outputs、reasoning effort 和 Agent 权限由模型与应用层分工清楚。",
+      "公司 benchmark 被归为 OpenAI 评测口径，未写成所有业务质量保证；模型卡关于开放后无法统一撤回或追加缓解措施的风险，以及部署者自行负责提示注入、越权工具、恶意微调、监控和更新的边界均已说明。sections、agent-workflow explainer、relatedSlugs、空的 relatedArticleSlugs、sources/evidence、schema 与事件 SVG 一致。"
+    ],
+    "notes": "读者审阅通过：文章中文自然，零基础读者可以沿着下载、部署、工具接入和安全运维理解开放权重的实际责任分配，并区分公司评测与部署后的真实表现。",
+    "changes": []
+  }
+}

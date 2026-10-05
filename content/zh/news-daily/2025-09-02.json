@@ -1,0 +1,387 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-09-02",
+  "eventDate": "2025-09-02",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-09-02 AI 事件重新检索：以当天 arXiv 提交/版本更新为主，按深度研究审计、混合上下文安全、诈骗端点审计、动态评测、多轮工具推理、多 Agent 小模型训练和 Agent 加速排序；逐篇写作并复核。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202509020000 TO 202509022359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CR)",
+      "https://arxiv.org/abs/2509.04499",
+      "https://arxiv.org/abs/2509.04500",
+      "https://arxiv.org/abs/2509.02372",
+      "https://arxiv.org/abs/2509.02097",
+      "https://arxiv.org/abs/2509.02479",
+      "https://arxiv.org/abs/2509.04508",
+      "https://arxiv.org/abs/2509.01920",
+      "https://arxiv.org/abs/2509.04502",
+      "https://arxiv.org/abs/2509.01909",
+      "https://arxiv.org/abs/2509.02330",
+      "https://arxiv.org/abs/2509.02123",
+      "https://arxiv.org/abs/2509.02464"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "deeptrace-research-audit-20250902",
+      "title": "DeepTRACE：把深度研究 Agent 的引用可靠性拆开审计",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.04499"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.04499",
+      "sourceHash": "sha256:eebdb7532af8f87ddd6fc501be70632baa9a6c775047092edf2502346fbed3ad",
+      "relatedSlugs": [
+        "agent",
+        "citation",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.04499",
+          "claim": "DeepTRACE 用陈述级拆分、置信度和引用/事实支持矩阵审计深度研究系统，在多个搜索与研究配置上发现引用准确率和立场平衡仍有明显问题。",
+          "excerpt": "eight measurable dimensions ... citation and factual-support matrices ... citation accuracy ranging from 40--80%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级最高的研究可靠性审计，能直接检验深度研究 Agent 的证据链与引用边界。"
+    },
+    {
+      "slug": "rw-steering-poisoned-context-20250902",
+      "title": "RW-Steering：混合上下文里，少量不当信息也会带偏模型",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.04500"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.04500",
+      "sourceHash": "sha256:cafa61bc2675171c746c8f53d0b0805a004582bf24405b6178a74d2740b5a63c",
+      "relatedSlugs": [
+        "llm",
+        "context",
+        "hallucination",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.04500",
+          "claim": "论文用 Poisoned Context Testbed 研究相关与不当信息混合时的模型行为，并提出 RW-Steering 让模型识别和忽略不当信号。",
+          "excerpt": "small amounts of inappropriate content can substantially degrade response quality ... RW-Steering"
+        }
+      ],
+      "decision": "selected",
+      "reason": "与前一篇证据审计互补，直接解释上下文污染如何改变模型取舍，并有明确安全控制方案。"
+    },
+    {
+      "slug": "scam2prompt-malicious-endpoints-20250902",
+      "title": "Scam2Prompt：把恶意诈骗端点变成可规模化的 LLM 安全审计",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.02372"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.02372",
+      "sourceHash": "sha256:3bb2abcf90b2148109e6b041ff0192470fd5bd3b0571713c8df4b829d828592c",
+      "relatedSlugs": [
+        "llm",
+        "prompt",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.02372",
+          "claim": "Scam2Prompt 自动提取诈骗站点意图并生成审计提示，在多款生产模型上测试恶意代码生成风险；正文只讨论防守与审计设计。",
+          "excerpt": "scalable automated auditing framework ... malicious URL generation ... Innoc2Scam-bench"
+        }
+      ],
+      "decision": "selected",
+      "reason": "安全风险明确且有跨模型测量，按防守视角整理可供产品团队使用的审计和授权边界。"
+    },
+    {
+      "slug": "judgeagent-dynamic-eval-20250902",
+      "title": "JudgeAgent：让评测题目跟着模型能力动态变化",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.02097"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.02097",
+      "sourceHash": "sha256:2a17972de74ee6f474c5398ad3ef5bd198334e2130cce37a54f40e229a854f74",
+      "relatedSlugs": [
+        "agent",
+        "context",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.02097",
+          "claim": "JudgeAgent 用 context graph 生成知识覆盖更广的问题，再用难度自适应、多轮访谈缓解固定题目和数据污染。",
+          "excerpt": "knowledge-driven and dynamic evaluation ... difficulty-adaptive and multi-turn interview mechanism"
+        }
+      ],
+      "decision": "selected",
+      "reason": "把评测从静态分数推进到动态题目与难度控制，和当天的研究审计主题形成方法互补。"
+    },
+    {
+      "slug": "simpletir-multiturn-tool-rl-20250902",
+      "title": "SimpleTIR：先清掉空转轨迹，再稳定多轮工具推理训练",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.02479"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.02479",
+      "sourceHash": "sha256:46bf6c34d350ac6024e02ea4b2ed1fe8925577d532e97480c8c313fc4e411cb7",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.02479",
+          "claim": "SimpleTIR 识别多轮工具推理中的 void turns 并从策略更新中剔除，缓解外部工具反馈造成的分布漂移和梯度爆炸。",
+          "excerpt": "filter out trajectories containing void turns ... stabilizing the learning dynamics"
+        }
+      ],
+      "decision": "selected",
+      "reason": "工具 Agent 训练的具体失败机制清楚，能承接此前工具基础设施文章并推进到训练稳定性。"
+    },
+    {
+      "slug": "prost-progressive-multiagent-slm-20250902",
+      "title": "ProST：让小模型多 Agent 逐步学会分工",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.04508"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.04508",
+      "sourceHash": "sha256:184566e44625025f6affe1252250667eaafee547db29c250cdf49b499ad2955c",
+      "relatedSlugs": [
+        "agent",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.04508",
+          "claim": "ProST 在 AppWorld 比较不同规模小模型的单 Agent 与多 Agent 系统，用 progressive sub-task training 降低长轨迹中的子任务错误率。",
+          "excerpt": "progressive sub-task training ... effectiveness-efficiency trade-offs ... reduce subtask error rates"
+        }
+      ],
+      "decision": "selected",
+      "reason": "关注多 Agent 的真实效率/效果权衡，避免只把 Agent 数量当作能力提升。"
+    },
+    {
+      "slug": "dynamic-speculative-agent-planning-20250902",
+      "title": "Dynamic Speculative Planning：让 Agent 在速度和成本之间自己调档",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01920"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01920",
+      "sourceHash": "sha256:2bf9ea66d024ac1c5c3c8dc78c9ef09907c4180c60bdb02d8a322f2cac929134",
+      "relatedSlugs": [
+        "agent",
+        "token",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01920",
+          "claim": "DSP 用异步在线强化学习联合优化 Agent 端到端延迟与美元成本，通过一个参数调节速度和费用，并在两个基准上报告成本下降。",
+          "excerpt": "asynchronous online reinforcement learning ... balancing end-to-end latency against dollar cost ... reducing total cost by 30%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "把 Agent 部署中的延迟/成本选择显式化，作为同日训练、评测和安全文章之外的系统效率代表。"
+    },
+    {
+      "slug": "vaccinerag-harmful-samples-20250902",
+      "title": "VaccineRAG：让多模态模型学会识别有害检索样本",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.04502"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.04502",
+      "sourceHash": "sha256:15fbcc2f22ad6805fb342435094ba57b7e0e45ce0f0d802b46d48b879aa0c705",
+      "relatedSlugs": [
+        "rag",
+        "grounding",
+        "hallucination",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.04502",
+          "claim": "VaccineRAG 用不同正负样本比例的基准暴露多模态 RAG 的检索脆弱性，并用分段 CoT 与 Partial-GRPO 训练样本辨别。",
+          "excerpt": "benchmark ... varying positive/negative sample ratios ... Partial-GRPO"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "与当天 RW-Steering 和后续 RAG 安全主题相近，先保留候选，避免同日首批文章重复。"
+    },
+    {
+      "slug": "oyster-i-constructive-safety-20250902",
+      "title": "Oyster-I：把安全从拒答推进到建设性引导",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01909"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01909",
+      "sourceHash": "sha256:ee9e41f86818fcae486012f14c1ea79694ce50238187114a6f3bbe692d5f94be",
+      "relatedSlugs": [
+        "llm",
+        "authorization",
+        "hallucination",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01909",
+          "claim": "Oyster-I 提出 Constructive Safety Alignment，尝试在防止滥用的同时为脆弱用户提供安全且有帮助的引导。",
+          "excerpt": "Beyond Refusal ... constructive safety alignment ... trust-building process"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "安全主题重要，但同日已选 RW-Steering 与 Scam2Prompt，先延后以保持首批文章的机制差异。"
+    },
+    {
+      "slug": "recode-finegrained-code-repair-20250902",
+      "title": "ReCode：用细粒度检索给代码修复找对上下文",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.02330"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.02330",
+      "sourceHash": "sha256:88fc596a2dcf6eee7f648c9becbf9a99e4bbefe1c7fbb00a06e54fa072cb1798",
+      "relatedSlugs": [
+        "llm",
+        "rag",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.02330",
+          "claim": "ReCode 用算法感知检索、代码/文本双编码器和 RACodeBench 处理更贴近真实提交的代码修复任务。",
+          "excerpt": "algorithm-aware retrieval ... modular dual-encoder ... RACodeBench"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "代码修复方向有代表性，但同日先覆盖研究审计、上下文安全、工具 Agent 和系统效率。"
+    },
+    {
+      "slug": "cmrag-visual-document-rag-20250902",
+      "title": "CMRAG：把视觉和文本证据放进同一个文档检索空间",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.02123"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.02123",
+      "sourceHash": "sha256:f5294cc9961101f263f0503feacfa3c9774d6be972ea34700adc3cfa229a78f2",
+      "relatedSlugs": [
+        "rag",
+        "context",
+        "embedding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.02123",
+          "claim": "CMRAG 用统一编码模型和跨模态检索分数融合，同时利用视觉与文本信号完成文档问答。",
+          "excerpt": "simultaneously leverage texts and images ... Unified Encoding Model ... Unified Co-Modality-informed Retrieval"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "多模态文档 RAG 值得保留，但同日首批已先处理上下文污染与证据审计。"
+    },
+    {
+      "slug": "speceval-behavior-specifications-20250902",
+      "title": "SpecEval：模型有没有真正遵守自己的行为规范",
+      "eventDate": "2025-09-02",
+      "publishedAt": "2025-09-02",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.02464"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.02464",
+      "sourceHash": "sha256:36d94523098f00372b99f7769fb2ecb1820685ffc43009aff5f39b622e85f0de",
+      "relatedSlugs": [
+        "llm",
+        "authorization",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.02464",
+          "claim": "SpecEval 把供应商行为规范解析成测试提示，检查规范、模型输出和模型评审之间的三方一致性；覆盖 6 家开发者的 16 个模型。",
+          "excerpt": "three way consistency ... 16 models from six developers ... compliance gaps of up to 20 percent"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "行为规范审计与当天 DeepTRACE 评测主题相近，先保留以便后续做独立的规范合规专题。"
+    }
+  ],
+  "selectedSlugs": [
+    "deeptrace-research-audit-20250902",
+    "rw-steering-poisoned-context-20250902",
+    "scam2prompt-malicious-endpoints-20250902",
+    "judgeagent-dynamic-eval-20250902",
+    "simpletir-multiturn-tool-rl-20250902",
+    "prost-progressive-multiagent-slm-20250902",
+    "dynamic-speculative-agent-planning-20250902"
+  ],
+  "gap": null
+}
