@@ -37902,6 +37902,228 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "confluent-streaming-agents-20250819",
+    "title": "Confluent 把 Agent 放进实时数据流：Streaming Agents 进入 Open Preview",
+    "summary": "Confluent 于 2025 年 8 月 19 日宣布 Streaming Agents，把构建和运行 Agent 的流程放进 Confluent Cloud 的 Apache Flink 数据流中，让 Agent 监控、推理并作用于实时事件。官方将它描述为连接 LLM、Embedding 模型、工具和业务系统的统一能力，并在博客中标为 Open Preview。它解决的是上下文新鲜度与数据编排问题，厂商的生产级定位仍需在具体工作负载中验证。",
+    "body": "很多 Agent 原型在演示时都能回答问题，真正接进业务后却拿不到刚刚发生的事件。数据在流处理系统里，Agent 在另一套服务里，中间还要拼接数据库、队列和工具。Confluent 8 月 19 日宣布的 Streaming Agents，试图把这段距离缩短。\n\nStreaming Agents 是 Confluent Cloud for Apache Flink 的一项新能力，目标是让 Agent 直接观察、推理并作用于实时数据。官方新闻稿把它描述为把数据处理和 AI 工作流放到一起，连接 LLM、Embedding 模型、工具和其他业务系统；官方博客则把这项能力标为 Open Preview。\n\n这条路线的核心不是再训练一个更大的模型，而是让上下文跟着事件流动。事件进入 Kafka 或 Flink 流后，Agent 可以在同一条处理链里获得已经整理过的上下文，再决定是否调用工具或触发下一步动作。对风控、监控和个性化推荐这类时效性强的任务，少一次批量同步就可能少一层延迟。\n\n官方产品叙事还覆盖了 Agent 的构建、测试、部署和编排。把这些阶段放进同一个数据平台，工程团队更容易复用连接器、权限和流处理能力，也更容易把 Agent 的输入、输出和触发事件放在同一套日志里观察。\n\n但“实时”不等于“自动正确”。Agent 仍可能误读事件、重复触发动作或把过期上下文带进决策。接入时要明确哪些事件只读、哪些工具可以写入，给高风险动作设置幂等键、限流、人工确认和回滚，并把模型版本、提示和流处理配置一起记录。\n\nStreaming Agents 当时处于 Open Preview，新闻稿中的“生产级”定位属于厂商发布口径。团队可以把它当作一条把 Agent 放进数据流的工程路径，但仍需要用自己的延迟、吞吐、故障恢复、权限隔离和成本数据做验收，再决定是否扩大范围。",
+    "publishedAt": "2025-08-19",
+    "eventDate": "2025-08-19",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/confluent-streaming-agents-20250819.svg",
+      "alt": "Confluent Streaming Agents 将实时事件、Agent 推理和工具动作放入同一条数据流",
+      "sourceUrl": "/images/news/confluent-streaming-agents-20250819.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "product-event",
+        "title": "Streaming Agents 把 Agent 接到 Flink 的实时数据流上",
+        "body": "Confluent 于 2025 年 8 月 19 日宣布 Streaming Agents，作为 Confluent Cloud for Apache Flink 的新能力，让 Agent 监控、推理并作用于实时数据。官方博客当时将它标为 Open Preview。",
+        "kind": "narrative"
+      },
+      {
+        "id": "fresh-context",
+        "title": "它解决的是上下文新鲜度，不是模型能力突然变强",
+        "body": "事件进入 Kafka 或 Flink 流后，Agent 可以在处理链里获得整理过的实时上下文，再决定是否调用工具或触发动作。少一次批量同步，可能就少一层等待，但结果仍取决于模型和业务规则。",
+        "kind": "technical"
+      },
+      {
+        "id": "unified-stack",
+        "title": "LLM、Embedding 模型、工具和业务系统放进同一条链",
+        "body": "Confluent 把数据处理和 AI 工作流放在一起，提供连接模型、工具和其他系统的路径。工程团队可以复用流处理、连接器和权限能力，减少 Agent 旁边重复搭建一套上下文搬运服务。",
+        "kind": "comparison"
+      },
+      {
+        "id": "agent-lifecycle",
+        "title": "构建、测试、部署和编排都需要可观察性",
+        "body": "官方产品叙事覆盖 Agent 的构建、测试、部署和编排。把触发事件、输入、输出和工具调用放在同一套日志里，才有机会追查一次动作是由哪条数据和哪版模型触发的。",
+        "kind": "example"
+      },
+      {
+        "id": "action-guardrails",
+        "title": "实时动作要先解决重复触发和越权写入",
+        "body": "实时 Agent 可能误读事件、重复触发或把过期上下文带进决策。接入时应区分只读与写入工具，设置幂等键、限流、人工确认和回滚，并记录模型、提示与流处理配置。",
+        "kind": "technical"
+      },
+      {
+        "id": "preview-boundary",
+        "title": "Open Preview 仍需要自己的延迟与故障验收",
+        "body": "新闻稿里的生产级定位属于厂商口径，Open Preview 的可用性和覆盖范围也可能变化。团队应在自己的事件量、权限隔离、故障恢复和成本条件下实测，再决定是否扩大 Agent 的动作范围。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一条实时事件怎样变成可审计的 Agent 动作？",
+      "question": "当业务事件不断进入系统，Agent 怎样拿到新鲜上下文，又不重复或越权执行？",
+      "steps": [
+        {
+          "label": "接收实时事件",
+          "detail": "从 Kafka 或 Flink 流接收原始事件，记录来源、时间和唯一标识。",
+          "evidence": "Streaming Agents runs in Confluent Cloud for Apache Flink"
+        },
+        {
+          "label": "整理可用上下文",
+          "detail": "把事件与必要的业务数据、Embedding 检索结果和权限信息拼成 Agent 可读的上下文。",
+          "evidence": "The product unifies data processing with AI workflows and model connections"
+        },
+        {
+          "label": "判断是否需要动作",
+          "detail": "让 Agent 依据策略决定只记录、继续观察、调用工具还是交给人工确认。",
+          "evidence": "Streaming Agents are designed to monitor, reason and act on real-time data"
+        },
+        {
+          "label": "执行并保证幂等",
+          "detail": "对写入动作使用幂等键、限流和权限检查，避免同一事件触发重复或越权操作。",
+          "evidence": "Real-time agent workflows require secure connections to tools and other systems"
+        },
+        {
+          "label": "记录结果与回滚",
+          "detail": "把事件、提示、模型版本、工具调用和结果写入同一条审计链，异常时按事件 ID 回滚或重放。",
+          "evidence": "The Open Preview needs workload-specific latency and failure validation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Confluent 官方新闻稿",
+      "url": "https://www.confluent.io/press-release/confluent-unlocks-scalable-agentic-ai-with-streaming-agents/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "data-pipeline",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.confluent.io/press-release/confluent-unlocks-scalable-agentic-ai-with-streaming-agents/",
+        "claim": "Confluent 于 8 月 19 日宣布 Streaming Agents，作为 Confluent Cloud for Apache Flink 的能力，让 Agent 监控、推理并作用于实时数据。",
+        "excerpt": "a new capability in Confluent Cloud for Apache Flink that makes it easy to build and scale AI agents that monitor, reason, and act on real-time data"
+      },
+      {
+        "url": "https://preprod.www.confluent.io/blog/introducing-streaming-agents/",
+        "claim": "Confluent 官方博客将 Streaming Agents 描述为在数据流中构建、测试、部署和编排事件驱动 Agent 的 Open Preview 能力。",
+        "excerpt": "Streaming Agents on Confluent Cloud ... Open Preview"
+      }
+    ],
+    "canonicalUrl": "https://www.confluent.io/press-release/confluent-unlocks-scalable-agentic-ai-with-streaming-agents/",
+    "sourceHash": "sha256:77d984d7f8d7f3829f9225003b77f9173e93c339eabd09e9c72841f334afcb5b"
+  },
+  {
+    "slug": "google-cloud-ai-agent-security-20250819",
+    "title": "Google Cloud 给 AI Agent 做资产盘点：工具、MCP 和运行时风险一起看",
+    "summary": "Google Cloud 在 2025 年 8 月 19 日的 Security Summit 公布了一组面向 AI Agent 的安全能力：在 Security Command Center 中发现 Agent 和 MCP Server，扩展 Model Armor 对 Agent 交互的内联防护，并增加针对 Agent 资产的威胁检测。公告把不同功能标成已提供、预览或后续提供，重点是把 Agent 当成一套需要盘点、保护和处置的系统，而不是只盯着模型本身。",
+    "body": "当企业把模型接进工具、数据和自动化流程，安全团队面对的对象就不再只有一个模型。Agent 有自己的身份、工具、上下文和运行轨迹，MCP Server 还可能在系统清单之外。8 月 19 日的 Google Cloud Security Summit，公布的正是一套围绕这些资产展开的防护能力。\n\n公告首先把 Agent 和 MCP Server 纳入 Security Command Center 的资产发现与风险识别范围。系统可以自动发现 AI Agent 和 MCP Server，帮助团队找出漏洞、配置错误和高风险交互；这部分能力在公告里标为后续提供预览，不能按已经全面可用来理解。\n\n第二条线是运行时内联防护。Google Cloud 表示，Model Armor 可以筛查 Agent、工具和 MCP Server 的交互，针对提示注入、工具投毒等风险；公告还说会把 Model Armor 的内联保护扩展到 Agentspace 的提示和响应，并把相关能力标成当时可用的预览。\n\n第三条线是威胁检测。Security Command Center 增加面向 AI Agent 的检测，用来发现异常或可疑行为，为事件响应提供线索。和只在调用前拦截一条提示相比，这一步把注意力放到了 Agent 已经运行起来之后的行为变化。\n\n这次发布的意义，不是给 Agent 加一个“安全”标签，而是把资产盘点、交互筛查、姿态控制和威胁检测拆成可以落到平台里的工作。团队可以先回答“我们有哪些 Agent 和 MCP Server”，再决定哪些输入需要筛查、哪些动作需要人工确认，以及异常后去哪条日志里追溯。\n\n公告中的能力依赖 Google Cloud 的具体产品、版本和预览范围，不能当成所有 Agent 框架的通用安全保证。真正接入时仍要核对覆盖的工具、数据流、身份权限和区域可用性，并用自己的提示注入、数据泄露和越权回归集验证防护是否真的生效。",
+    "publishedAt": "2025-08-19",
+    "eventDate": "2025-08-19",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-cloud-ai-agent-security-20250819.svg",
+      "alt": "Google Cloud 从 Agent 和 MCP 资产发现、交互防护到威胁检测建立安全闭环",
+      "sourceUrl": "/images/news/google-cloud-ai-agent-security-20250819.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "summit-event",
+        "title": "Google Cloud 把 Agent 当作需要管理的安全资产",
+        "body": "Google Cloud 在 2025 年 8 月 19 日 Security Summit 公布面向 AI Agent 的安全能力，覆盖资产发现、运行时交互保护、姿态控制和威胁检测。公告将其中不同功能分别标记为已提供、预览或后续提供。",
+        "kind": "narrative"
+      },
+      {
+        "id": "asset-inventory",
+        "title": "先发现 Agent 和 MCP Server，才知道暴露面有多大",
+        "body": "Security Command Center 将增加 AI Agent 和 MCP Server 的自动发现与风险识别，帮助团队定位漏洞、错误配置和高风险交互。公告把这部分标为后续提供预览，不能当成已经普遍可用的功能。",
+        "kind": "technical"
+      },
+      {
+        "id": "inline-protection",
+        "title": "Model Armor 把筛查放进工具交互中间",
+        "body": "公告称 Model Armor 可以筛查 Agent、工具和 MCP Server 交互，针对提示注入和工具投毒等风险，并把内联保护扩展到 Agentspace 的提示和响应；该扩展当时标为预览。",
+        "kind": "example"
+      },
+      {
+        "id": "posture-controls",
+        "title": "姿态控制和威胁检测分别管规则与异常行为",
+        "body": "面向 Agentspace 和 Agent Builder 的姿态控制用于约束组织策略，Security Command Center 的新检测则关注 Agent 资产上的异常与可疑行为。一个偏运行前的政策，一个偏运行后的线索。",
+        "kind": "comparison"
+      },
+      {
+        "id": "security-loop",
+        "title": "安全工作从模型评测扩展到资产、动作和日志",
+        "body": "团队可以先盘点 Agent 和 MCP Server，再决定哪些输入需要筛查、哪些动作要人工确认，以及异常发生后如何追溯。安全边界不只在模型输出，也在身份、工具和上下文链路。",
+        "kind": "technical"
+      },
+      {
+        "id": "product-boundary",
+        "title": "云平台能力仍要回到自己的覆盖范围里验证",
+        "body": "公告中的能力依赖具体产品、版本和预览范围，不能直接当成所有 Agent 框架的安全保证。上线前要核对工具、数据流、身份权限和区域可用性，并用提示注入、数据泄露与越权回归集实测。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一套 Agent 防护怎样从盘点走到处置？",
+      "question": "当 Agent、工具和 MCP Server 越来越多，安全团队先要看见什么，再拦截什么？",
+      "steps": [
+        {
+          "label": "盘点 Agent 资产",
+          "detail": "发现 Agent、MCP Server、工具身份和连接关系，先画出实际存在的调用面。",
+          "evidence": "Security Command Center adds AI agent and MCP server discovery"
+        },
+        {
+          "label": "识别配置风险",
+          "detail": "把漏洞、错误配置和高风险交互标出来，区分后续预览能力与当前可用能力。",
+          "evidence": "The announcement describes automated discovery and risk identification"
+        },
+        {
+          "label": "筛查交互内容",
+          "detail": "在提示、响应和工具/MCP 交互处检查提示注入、工具投毒与敏感数据泄露。",
+          "evidence": "Model Armor screens agent, tool and MCP server interactions"
+        },
+        {
+          "label": "设置运行姿态",
+          "detail": "按组织策略约束 Agent Builder 或 Agentspace 的动作、权限和数据路径。",
+          "evidence": "The announcement introduces posture controls tailored for AI agents"
+        },
+        {
+          "label": "跟踪异常并响应",
+          "detail": "用威胁检测发现可疑行为，结合日志和人工确认追查来源、影响与回滚动作。",
+          "evidence": "Security Command Center adds proactive threat detections for AI agents"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Cloud Blog",
+      "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation"
+    },
+    "relatedSlugs": [
+      "agent",
+      "authorization",
+      "eval",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+        "claim": "Google Cloud 公布 AI Agent 和 MCP Server 的资产发现与风险识别能力，并说明部分能力将在后续提供预览。",
+        "excerpt": "Expanded AI agent inventory and risk identification ... available later in preview"
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+        "claim": "公告介绍 Model Armor 对 Agent、工具和 MCP Server 交互的筛查，以及 Agentspace 内联保护和 AI Agent 威胁检测。",
+        "excerpt": "screen agent, tool, and MCP server interactions ... real-time safeguards ... threat detections"
+      }
+    ],
+    "canonicalUrl": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+    "sourceHash": "sha256:779f8129d78b391ea516a16eb2d67384542962a98706b92a297b07cd8c8aab64"
+  },
+  {
     "slug": "qwen-image-edit-open-source-20250818",
     "title": "Qwen-Image-Edit 开源：中文海报里的字也能按指令改",
     "summary": "Qwen 官方仓库记录，Qwen-Image-Edit 于 2025 年 8 月 18 日开源；次日博客补充了模型说明。它基于 20B Qwen-Image，把输入图像同时送入 Qwen2.5-VL 和 VAE Encoder，分别承担视觉语义控制与外观控制，支持单图的语义编辑、局部外观编辑，以及中英文文字增删改。官方示例还展示了用框选和多轮链式编辑逐步纠正书法字符。公开权重降低了试用门槛，但博客中的 benchmark 和效果仍属于 Qwen 自己的发布口径。",
