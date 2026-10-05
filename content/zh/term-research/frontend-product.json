@@ -286,14 +286,24 @@
       "box-model"
     ]
   },
-  {
+    {
     "slug": "css-grid",
-    "mechanism": "Grid 先生成显式与隐式轨道，再按放置算法安排项目，并通过 fr、minmax 和对齐规则分配行列空间。",
-    "misconception": "Grid 不是固定 12 列系统，也不等于把 Flex 换成二维；自动放置和隐式轨道会影响结果。",
-    "demoSignature": "建议 5 帧：轨道线先画出 3×2 网格，用户把五张不同跨度卡片拖入；普通 auto-flow 留下空洞，打开 dense 后后续小卡回填；再缩窄容器，minmax 触发列数减少，卡片按轨道重新排布。",
-    "sourceUrls": ["https://www.w3.org/TR/css-grid-2/"],
+    "mechanism": "Grid 先建立显式的行列轨道，再按项目的放置顺序与跨度结算 grid area；轨道不足时生成隐式轨道，minmax/fr 再决定每条轨道如何分享空间。",
+    "misconception": "Grid 不是固定 12 列模板，也不是把 Flexbox 换成二维版；auto-placement、跨轨道、dense、隐式轨道和轨道下限都会改变结果。",
+    "demoSignature": "6帧｜对象：3×2 轨道、跨两列的 A/B、普通 row 的空格、dense 回填、隐式第三行、minmax 窄屏两列｜交互：逐帧建立轨道→放置→跨列→dense→新增卡片→缩窄容器｜变化：空格出现并回填、显式行变成 2+1 auto、3 列变 2 列｜结果：读者能把卡片位置归因于轨道与放置算法，而不是背“12 列万能模板”。",
+    "sourceUrls": [
+      "https://www.w3.org/TR/css-grid-2/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Auto-placement",
+      "https://web.dev/learn/css/grid?hl=en",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["flexbox", "responsive", "positioning"]
+    "nearDuplicates": [
+      "flexbox",
+      "breakpoint",
+      "positioning"
+    ]
   },
   {
     "slug": "positioning",

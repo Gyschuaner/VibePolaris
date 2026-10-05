@@ -646,19 +646,54 @@
       "media-query"
     ]
   },
-  {
-    "zh": "网格布局", "en": "CSS Grid Layout", "slug": "css-grid", "cat": "前端",
-    "say": "Grid 先定义行和列，再把内容放进对应区域，适合同时控制两个方向。",
-    "aliases": ["Grid", "CSS 网格", "二维布局"],
-    "question": "卡片墙既要列宽一致，又要在窄屏自动减少列数，怎么写更稳？",
-    "definition": "CSS Grid 是二维布局模型。容器定义轨道、间距和区域，子项可以按行列位置或命名区域排列。",
-    "boundary": "Grid 适合整体行列关系；组件内部的一排图标或按钮仍可能更适合 Flexbox。",
-    "demoType": "state", "demoTitle": "卡片列数随宽度变化",
-    "demoSteps": [{"label":"宽容器","value":"repeat(3, 1fr)","note":"三列平均分配宽度。"},{"label":"使用自动填充","value":"repeat(auto-fit, minmax(16rem, 1fr))","note":"列数由可用宽度决定。"},{"label":"窄容器","value":"一列卡片","note":"卡片最小宽度得到保留。"}],
-    "quizQuestion": "要同时控制页面的行和列，优先考虑什么？", "quizOptions": ["CSS Grid", "float", "text-align"],
-    "correctText": "Grid 可以直接定义二维轨道和区域。", "wrongText": "float 和 text-align 不适合建立完整的二维页面结构。",
-    "promptTitle": "把固定卡片列改为自适应网格", "prompt": "请把下面固定三列布局改为 CSS Grid 自适应方案。卡片不得小于 16rem，容器变窄时自动减少列数，不依赖多个设备断点。",
-    "relatedSlugs": ["flexbox", "responsive", "media-query"]
+    {
+    "zh": "网格布局",
+    "en": "CSS Grid Layout",
+    "slug": "css-grid",
+    "cat": "前端",
+    "say": "先画出行和列，再让每张卡片占自己的格子；需要跨列、留洞或窄屏减列时，关系依然看得见。",
+    "aliases": [
+      "Grid",
+      "CSS 网格",
+      "二维布局"
+    ],
+    "question": "为什么一张卡片跨了两列，后面的卡片就像被“挤”到下一行？",
+    "definition": "CSS Grid 是二维布局模型。容器先定义行、列和轨道，项目再按显式位置或 auto-placement 进入 grid area；跨列、dense、隐式轨道和 minmax 都会参与最终结算。",
+    "boundary": "Grid 适合同时控制行与列、跨轨道和卡片墙；只有一排按钮或一列内部对齐时，Flexbox 的主轴模型通常更直接。",
+    "demoType": "flow",
+    "demoTitle": "卡片怎样占据一张二维座位表",
+    "demoSteps": [
+      {
+        "label": "先画行列轨道",
+        "value": "3 columns × 2 rows",
+        "note": "空间先存在，项目还没有位置。"
+      },
+      {
+        "label": "让项目跨轨道",
+        "value": "grid-column: span 2",
+        "note": "跨列会改变后续 auto-placement 能找到的空位。"
+      },
+      {
+        "label": "处理空格与窄屏",
+        "value": "row / dense / minmax",
+        "note": "dense 能回填洞，minmax 让窄屏减少列而不是压扁内容。"
+      }
+    ],
+    "quizQuestion": "哪种情况最适合用 CSS Grid？",
+    "quizOptions": [
+      "一排按钮沿主轴分配空白",
+      "卡片需要跨列并让多行共享轨道",
+      "只想让一段文字居中"
+    ],
+    "correctText": "同时需要行、列、跨轨道或多行对齐时，Grid 把二维关系写得更清楚。",
+    "wrongText": "一排按钮的主轴分配是 Flexbox 的强项，文字居中也不需要先建立网格。",
+    "promptTitle": "设计一面不会互相打架的卡片墙",
+    "prompt": "请用 CSS Grid 设计卡片墙：说明显式列轨道、跨列卡片、普通 row 与 dense 的取舍、隐式行如何产生，以及容器缩窄时如何用 minmax 保住最小可读宽度。",
+    "relatedSlugs": [
+      "flexbox",
+      "breakpoint",
+      "media-query"
+    ]
   },
   {
     "zh": "定位", "en": "Positioning", "slug": "positioning", "cat": "前端",

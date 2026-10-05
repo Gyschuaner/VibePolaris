@@ -96,6 +96,7 @@ import { InputValidationTermPage } from "@/components/terms/input-validation-pag
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
 import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
 import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
+import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -110,6 +111,7 @@ const articleTermPages = {
   'css-selector': CssSelectorTermPage,
   'box-model': BoxModelTermPage,
   flexbox: FlexboxTermPage,
+  'css-grid': CssGridTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

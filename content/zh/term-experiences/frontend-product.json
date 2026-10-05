@@ -4134,48 +4134,48 @@
       }
     ]
   },
-  {
+    {
     "slug": "css-grid",
-    "lead": "卡片墙既要列宽一致，又要在窄屏自动减少列数，怎么写更稳？",
-    "definition": "Grid 先生成显式与隐式轨道，再按放置算法安排项目，并通过 fr、minmax 和对齐规则分配行列空间。",
-    "boundary": "Grid 不是固定 12 列系统，也不等于把 Flex 换成二维；自动放置和隐式轨道会影响结果。",
+    "lead": "为什么一张卡片跨了两列，后面的卡片就像被“挤”到下一行？",
+    "definition": "CSS Grid 是二维布局模型：先有行、列和轨道，再按项目的跨度与放置算法把卡片安排进各自的 grid area。",
+    "boundary": "它适合卡片墙、多行多列和跨轨道关系；一排按钮或一列内部对齐通常让 Flexbox 来处理更直观。",
     "sceneKind": "matrix",
-    "sceneTitle": "不同跨度卡片如何占据二维网格轨道",
-    "actionLabel": "放入下一张卡片",
+    "sceneTitle": "卡片怎样占据二维网格轨道",
+    "actionLabel": "逐步放置卡片并改变轨道条件",
     "actors": [
       {
         "id": "tracks",
-        "label": "3 × 2 轨道",
-        "detail": "列与行同时存在",
+        "label": "行列轨道",
+        "detail": "3 列 × 2 行",
         "icon": "layout",
-        "group": "网格"
+        "group": "空间"
       },
       {
-        "id": "wide",
-        "label": "宽卡片",
-        "detail": "跨 2 列",
+        "id": "cards",
+        "label": "卡片项目",
+        "detail": "直接子项",
         "icon": "component",
         "group": "内容"
       },
       {
-        "id": "small",
-        "label": "小卡片",
-        "detail": "占 1 格",
+        "id": "span",
+        "label": "跨列项目",
+        "detail": "span 2",
         "icon": "component",
         "group": "内容"
       },
       {
-        "id": "flow",
-        "label": "自动放置",
+        "id": "rule",
+        "label": "放置算法",
         "detail": "row / dense",
         "icon": "gear",
         "group": "规则"
       },
       {
         "id": "gap",
-        "label": "剩余空格",
-        "detail": "位置可观察",
-        "icon": "spark",
+        "label": "空格与隐式行",
+        "detail": "可观察结果",
+        "icon": "chart",
         "group": "结果"
       }
     ],
@@ -4183,110 +4183,162 @@
     "frames": [
       {
         "label": "轨道先建立",
-        "note": "容器画出三列两行，尚未放置内容。",
+        "note": "容器先画出三列两行，项目还没有位置；这是显式网格的起点。",
         "activeIds": [
           "tracks"
         ],
         "doneIds": [],
-        "mutedIds": [
-          "wide",
-          "small",
-          "flow",
-          "gap"
-        ],
+        "mutedIds": [],
         "values": {
           "tracks": "3 列 × 2 行"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "按文档顺序放置",
-        "note": "宽卡片先占两列，后续小卡依次寻找下一个可用格，留下一处空格。",
+        "label": "项目按顺序落格",
+        "note": "直接子项沿 row 找下一个可用区域；列和行同时决定每张卡片的位置。",
         "activeIds": [
           "tracks",
-          "wide",
-          "small",
-          "flow",
-          "gap"
+          "cards",
+          "rule"
         ],
         "doneIds": [
-          "wide"
+          "tracks"
         ],
         "mutedIds": [],
         "values": {
-          "flow": "row",
-          "gap": "1 格"
+          "rule": "row",
+          "cards": "A / B / C"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "跨列留下空格",
+        "note": "A、B 各占两列，普通 row 不回头，后来的卡片会让一个格子暂时空着。",
+        "activeIds": [
+          "span",
+          "gap",
+          "rule"
+        ],
+        "doneIds": [
+          "tracks",
+          "cards"
+        ],
+        "mutedIds": [],
+        "values": {
+          "span": "2 tracks",
+          "gap": "1 格",
+          "rule": "sparse"
         },
         "activeEdgeIds": []
       },
       {
         "label": "dense 回填空格",
-        "note": "打开 dense 后，后出现的小卡片回到前面的空位，视觉位置改变但 DOM 顺序不变。",
+        "note": "dense 允许后出现的小卡片回填前面的洞，但它的视觉位置不会改变 DOM 顺序。",
         "activeIds": [
-          "small",
-          "flow",
-          "gap"
+          "gap",
+          "cards",
+          "rule"
         ],
         "doneIds": [
           "tracks",
-          "wide"
+          "span"
         ],
         "mutedIds": [],
         "values": {
-          "flow": "row dense",
-          "gap": "0 格"
+          "gap": "已填回",
+          "rule": "dense"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "minmax 减少列数",
-        "note": "缩窄容器，列宽触及最小值后从三列变两列，卡片按新轨道重排。",
+        "label": "第五张卡片触发隐式行",
+        "note": "显式两行不够放下新项目，Grid 自动生成第三行，行高再由 auto 规则决定。",
         "activeIds": [
           "tracks",
-          "wide",
-          "small"
+          "gap",
+          "cards"
         ],
         "doneIds": [
-          "flow"
+          "span",
+          "rule"
         ],
-        "mutedIds": [
-          "gap"
-        ],
+        "mutedIds": [],
         "values": {
-          "tracks": "2 列 × 3 行"
+          "tracks": "2 + 1 auto",
+          "gap": "implicit row 3"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "缩窄后减少列数",
+        "note": "minmax 给列设下限，容器从三列变成两列，卡片换行而不是被压成无法阅读的窄条。",
+        "activeIds": [
+          "tracks",
+          "rule",
+          "cards"
+        ],
+        "doneIds": [
+          "gap",
+          "span"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tracks": "3 → 2 columns",
+          "rule": "minmax(120px, 1fr)"
         },
         "activeEdgeIds": []
       }
     ],
-    "insight": "Grid 用显式轨道控制二维关系，自动放置只决定项目如何进入这些格子。",
+    "insight": "Grid 先放置项目，再计算轨道和区域；跨度、dense、隐式轨道与 minmax 都是可观察的结算条件。",
     "quiz": {
-      "question": "要同时控制页面的行和列，优先考虑什么？",
+      "question": "哪种情况最适合用 CSS Grid？",
       "options": [
         {
-          "label": "CSS Grid",
+          "label": "一排按钮沿主轴分配空白",
+          "correct": false
+        },
+        {
+          "label": "卡片需要跨列并让多行共享轨道",
           "correct": true
         },
         {
-          "label": "float",
-          "correct": false
-        },
-        {
-          "label": "text-align",
+          "label": "只想让一段文字居中",
           "correct": false
         }
       ],
-      "success": "Grid 可以直接定义二维轨道和区域。",
-      "retry": "float 和 text-align 不适合建立完整的二维页面结构。"
+      "success": "同时需要行、列、跨轨道或多行对齐时，Grid 把二维关系写得更清楚。",
+      "retry": "一排按钮的主轴分配是 Flexbox 的强项，文字居中也不需要先建立网格。"
     },
     "prompt": {
-      "title": "把固定卡片列改为自适应网格",
-      "text": "请把下面固定三列布局改为 CSS Grid 自适应方案。卡片不得小于 16rem，容器变窄时自动减少列数，不依赖多个设备断点。"
+      "title": "设计一面不会互相打架的卡片墙",
+      "text": "请用 CSS Grid 设计卡片墙：说明显式列轨道、跨列卡片、普通 row 与 dense 的取舍、隐式行如何产生，以及容器缩窄时如何用 minmax 保住最小可读宽度。"
     },
     "sources": [
       {
         "url": "https://www.w3.org/TR/css-grid-2/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "W3C CSS Grid Layout Module Level 2",
+        "note": "核对网格布局、放置与轨道尺寸算法。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts",
+        "label": "MDN · Basic concepts of grid layout",
+        "note": "说明 grid container、显式轨道与 minmax。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Auto-placement",
+        "label": "MDN · Auto-placement in grid layout",
+        "note": "解释 sparse/dense、自动放置与自动生成轨道。"
+      },
+      {
+        "url": "https://web.dev/learn/css/grid?hl=en",
+        "label": "web.dev · Grid",
+        "note": "补充跨轨道、文档顺序、auto-fit 与隐式网格。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid",
+        "label": "MDN · grid CSS property",
+        "note": "核对 grid shorthand 与 grid-auto-flow。"
       }
     ]
   },
