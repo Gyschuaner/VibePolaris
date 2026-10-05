@@ -8,14 +8,20 @@ import styles from "./FlexboxConcept.module.css";
 const labels = ["放入基准尺寸", "计算自由空间", "分配 grow", "处理负空间", "允许换行"];
 type WidthMode = "wide" | "narrow";
 
+function lessonItemFlex(step: number, wrapped: boolean, index: number) {
+  if (wrapped) return "0 0 112px";
+  if (step === 2) return `${index === 1 ? 2 : 1} 1 120px`;
+  return "0 1 120px";
+}
+
 export function FlexboxLesson() {
   const scene = useScene(labels.length);
   const [width, setWidth] = useState<WidthMode>("wide");
   const [wrap, setWrap] = useState(false);
   const widthPx = width === "wide" ? 480 : 300;
   const sizes = useMemo(() => {
-    if (scene.step === 2 && width === "wide") return [150, 180, 150];
-    if (scene.step === 3) return width === "wide" ? [160, 160, 160] : [100, 100, 100];
+    if (scene.step === 2) return width === "wide" ? [150, 180, 150] : [100, 100, 100];
+    if (scene.step === 3) return width === "wide" ? [120, 120, 120] : [100, 100, 100];
     if (scene.step === 4 && wrap) return [112, 112, 112];
     return [120, 120, 120];
   }, [scene.step, width, wrap]);
@@ -47,7 +53,7 @@ export function FlexboxLesson() {
         <div className={styles.flexLabel}><ArrowsClockwise size={16} aria-hidden="true" /><span>结算后的项目</span></div>
         <h3>{wrapped ? "两条 flex line" : `flex-direction: row · ${scene.step === 4 ? "仍未换行" : "一条 line"}`}</h3>
         <div className={styles.flexItems} data-wrap={wrapped}>
-          {sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 0 ? "a" : index === 1 ? "b" : "c"} data-wrap={wrapped} style={{ flex: wrapped ? `0 0 ${size}px` : `${size} 1 0` }}><strong>{String.fromCharCode(65 + index)}</strong><code>{size}px</code></div>)}
+          {sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 0 ? "a" : index === 1 ? "b" : "c"} data-wrap={wrapped} style={{ flex: lessonItemFlex(scene.step, wrapped, index) }}><strong>{String.fromCharCode(65 + index)}</strong><code>{size}px</code></div>)}
         </div>
         <small>{wrapped ? "A、B 先占第一行，C 进入第二行；第二行不会跟第一行共享列轨道。" : "项目宽度变化来自主轴空间结算，不是浏览器随机挤压。"}</small>
       </div>

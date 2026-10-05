@@ -13,6 +13,12 @@ const frames = [
   { label: "主轴转到纵向", axis: "column", container: "480px 高度", sizes: [54, 54, 54], free: "+318px", ratio: "column", wrap: false, note: "justify-content 的方向跟着主轴走；换成 column 后，它不再等于“水平对齐”。", stage: "AXIS" },
 ] as const;
 
+function itemFlex(step: number, axis: string, wrap: boolean, index: number, size: number) {
+  if (axis === "column" || wrap) return `0 0 ${size}px`;
+  if (step === 2) return `${index === 1 ? 2 : 1} 1 120px`;
+  return "0 1 120px";
+}
+
 export function FlexboxHero() {
   const scene = useScene(frames.length);
   const current = frames[scene.step];
@@ -37,9 +43,9 @@ export function FlexboxHero() {
       <div className={styles.flexAxis} aria-hidden="true"><ColumnIcon size={20} /><span>{current.axis === "column" ? "主轴 ↓" : "主轴 →"}</span></div>
       <div className={styles.flexPanel} data-active={scene.step >= 2}>
         <div className={styles.flexLabel}><ArrowsClockwise size={17} aria-hidden="true" /><span>项目怎样接住结果</span></div>
-        <h3>flex: {scene.step === 0 ? "0 1 auto" : scene.step === 1 || scene.step === 2 ? "1 1 0" : scene.step === 3 ? "1 1 120px" : wrap ? "0 0 112px" : "1 1 0"}</h3>
+        <h3>{scene.step === 0 ? "flex: 0 1 120px" : scene.step === 1 ? "grow 计划 1:2:1 · basis 120px" : scene.step === 2 ? "grow 1:2:1 · basis 120px" : scene.step === 3 ? "flex: 0 1 120px" : wrap ? "flex: 0 0 112px" : "flex: 0 0 54px · column"}</h3>
         <div className={styles.flexItems} data-column={current.axis === "column"} data-wrap={wrap}>
-          {current.sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 0 ? "a" : index === 1 ? "b" : "c"} data-wrap={wrap} style={current.axis === "column" || wrap ? { flex: `0 0 ${size}px` } : { flex: `${size} 1 0` }}><strong>{String.fromCharCode(65 + index)}</strong><code>{size}px</code></div>)}
+          {current.sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 0 ? "a" : index === 1 ? "b" : "c"} data-wrap={wrap} style={{ flex: itemFlex(scene.step, current.axis, wrap, index, size) }}><strong>{String.fromCharCode(65 + index)}</strong><code>{size}px</code></div>)}
         </div>
         <small>{wrap ? "A、B 在第一行，C 落到下一条 flex line。" : current.axis === "column" ? "同一套规则沿垂直主轴结算。" : "项目的宽度随着空间结算移动，而不是靠手写每个 left。"}</small>
       </div>
