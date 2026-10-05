@@ -37902,6 +37902,206 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "codex-remote-access-chatgpt-mobile",
+    "title": "Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作",
+    "summary": "5 月 14 日，OpenAI Developer Community 公告介绍 Codex 在 ChatGPT 移动端的预览：用户可以从手机开始或继续线程、查看输出和审批动作，实际命令仍在连接的 Mac 主机上运行。公告没有证明所有账户、地区或网络环境都已支持。",
+    "body": "5 月 14 日，OpenAI Developer Community 介绍 Codex 在 ChatGPT 移动端的预览。用户可以从手机开始或继续线程、查看终端输出和 diff、审批动作；代码和命令仍在连接的 Mac 主机上执行。\n\n因此需要把控制面和执行面分开看。手机负责查看状态和发起控制，Mac 继续提供文件、终端、网络和本地凭据。移动端能看到一个任务，不代表它拥有主机之外的权限，也不会自动把本地环境搬到手机。\n\n作为一种安全测试，可以这样观察一次代码修复：手机显示待审的 diff，用户确认后，Mac 在受限环境运行测试；需要联网、写敏感目录或提交代码时，再单独确认。agent-harness 管理线程和工具循环，execution-sandbox 隔离执行，auth 处理登录和凭据，tools 承载终端与文件操作，context 传递历史状态。\n\n社区公告属于预览说明，不能证明所有账户、地区或主机都已开放，也没有证明断线、权限继承和远程审批在所有网络条件下稳定。后续应测试连接建立、断线恢复、主机端日志和高风险动作的确认。",
+    "publishedAt": "2026-05-14",
+    "eventDate": "2026-05-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/codex-remote-access-chatgpt-mobile.svg",
+      "alt": "Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/codex-remote-access-chatgpt-mobile.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "preview",
+        "title": "手机端新增的是控制入口",
+        "body": "公告介绍了从 ChatGPT 移动端开始或继续 Codex 线程、查看输出和审批动作的预览。Codex 仍在连接的 Mac 主机上运行，手机并不承担本地命令执行。",
+        "kind": "narrative"
+      },
+      {
+        "id": "control-execution",
+        "title": "控制面和执行面要分开",
+        "body": "手机可以看到线程、终端输出和 diff，Mac 继续提供文件、网络和凭据。agent-harness 管理任务，execution-sandbox 限制主机操作，auth 处理身份；移动端可见性不能被理解为额外权限。",
+        "kind": "technical"
+      },
+      {
+        "id": "code-review",
+        "title": "一次代码修复会怎样走完",
+        "body": "作为一种安全测试，用户可以在手机查看待审 diff，批准后由 Mac 在受限环境运行测试。联网、写敏感目录或提交代码时再请求确认，并保留主机端命令、输出和回滚记录。",
+        "kind": "example"
+      },
+      {
+        "id": "preview-limits",
+        "title": "预览公告没有覆盖所有运行条件",
+        "body": "社区说明不能证明所有账户、地区或主机都已支持，也没有给出断线恢复、权限继承和不同网络条件下的稳定性数据。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-checks",
+        "title": "实际接入先测断线和高风险动作",
+        "body": "后续应查看支持平台、连接状态、主机日志和审批记录，先用只读或沙箱权限，再决定是否开放写入和网络动作。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "从手机审批追到 Mac 主机上的真实动作",
+      "question": "怎样确认移动端看到的状态与主机实际执行保持一致？",
+      "steps": [
+        {
+          "label": "确认连接对象",
+          "detail": "在移动端核对当前线程、项目和连接的 Mac 主机，避免批准了错误的任务。",
+          "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+        },
+        {
+          "label": "查看待执行 diff",
+          "detail": "先读文件变更、命令和工具权限，确认手机显示的内容来自主机当前状态。",
+          "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+        },
+        {
+          "label": "测试审批和回退",
+          "detail": "对联网、写敏感目录和提交动作分别触发确认，检查拒绝、取消和回滚记录。",
+          "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+        },
+        {
+          "label": "模拟断线",
+          "detail": "观察主机保持或暂停任务的方式，以及恢复连接后移动端能否准确显示结果。",
+          "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI Developer Community",
+      "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "execution-sandbox",
+      "auth",
+      "tools",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+        "claim": "Codex 移动预览支持开始/继续线程、审批和查看输出",
+        "excerpt": "The OpenAI Developer Community announcement describes starting or continuing threads, reviewing outputs and approving actions from mobile."
+      },
+      {
+        "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+        "claim": "Codex 继续在连接的 Mac 主机上运行",
+        "excerpt": "The announcement says Codex keeps running on the connected Mac host."
+      }
+    ],
+    "canonicalUrl": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+    "sourceHash": "sha256:09d207f1a92a40c6dd29f512158ca128e484b9502519778c8b687ce01ed40547"
+  },
+  {
+    "slug": "us-china-ai-guardrails-beijing-summit",
+    "title": "美中北京峰会拟讨论前沿 AI 护栏及防止非国家行为者获取最强模型",
+    "summary": "5 月 14 日，Reuters 报道美国财长 Bessent 称，美中代表团将在北京讨论前沿 AI 护栏和最佳实践协议，目标包括减少最强模型被非国家行为者获得的风险。报道记录的是谈判议题和官员表态，尚未出现共同规则、技术标准或执行机构。",
+    "body": "5 月 14 日，Investing.com 刊载的 Reuters 报道转述美国财长 Bessent 的说法：美中代表团将在北京讨论前沿 AI 护栏和最佳实践协议。报道提到的目标包括减少最强模型被非国家行为者获得的风险，同时避免安全措施压制创新。\n\n目前能确认的是一个谈判议题。护栏最终可能涉及模型访问、计算资源、出口或部署条件，但报道没有列出适用模型、审批标准、执行机构和违规处理方式。把“将讨论”写成“已经建立共同控制”，会跳过最重要的政策步骤。\n\n如果谈判要变成可执行安排，至少需要说明谁可以获得什么能力、如何验证身份、谁批准例外，以及违反规则后由谁处置。llm 是被保护或访问的模型，authorization 涉及高风险能力的访问批准，data-validation 用于核对名单、身份和风险证据；这些概念不能替代外交文件。\n\n这篇报道没有证明任何非国家行为者已经被阻止，也没有给出双方共同签署的协议。后续应查看峰会文件、工作组、正式文本和执行记录，分别标出每个节点的约束力。",
+    "publishedAt": "2026-05-14",
+    "eventDate": "2026-05-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/us-china-ai-guardrails-beijing-summit.svg",
+      "alt": "美中北京峰会拟讨论前沿 AI 护栏及防止非国家行为者获取最强模型；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/us-china-ai-guardrails-beijing-summit.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "reported-talks",
+        "title": "北京会谈讨论的是什么",
+        "body": "Reuters 转述 Bessent 的说法称，美中代表团将讨论前沿 AI 护栏和最佳实践协议，目标包括防止非国家行为者获得最强模型。当前证据是官员表态和媒体报道。",
+        "kind": "narrative"
+      },
+      {
+        "id": "policy-details",
+        "title": "“护栏”要落地，必须有具体门槛",
+        "body": "可执行的安排要写清模型范围、访问条件、身份核验、例外审批和违规处置。只说“保护最强模型”还不能判断规则如何工作，也不能判断创新会受到什么影响。",
+        "kind": "technical"
+      },
+      {
+        "id": "vocabulary",
+        "title": "三个词能帮你读懂政策文本",
+        "body": "llm 指被访问或保护的模型；authorization 指谁有权批准高风险能力；data-validation 指核对名单、身份和风险证据。它们说明技术和治理要解决什么问题，不能代替共同文件。",
+        "kind": "example"
+      },
+      {
+        "id": "evidence-limit",
+        "title": "目前没有共同规则或执行记录",
+        "body": "报道没有给出最终协议、适用模型、执行机构或技术标准，也没有证明非国家行为者已经被阻止。后续文件出现之前，只能把这条消息看作谈判议程。",
+        "kind": "boundary"
+      },
+      {
+        "id": "follow-up",
+        "title": "下一步看会谈能否留下正式文本",
+        "body": "继续追踪峰会文件、工作组、协议草案和执行记录，并记录每一步的约束力和验证方式。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "从“讨论护栏”到可执行规则还缺什么",
+      "question": "怎样判断一项国际 AI 安全议题已经变成双方共同遵守的安排？",
+      "steps": [
+        {
+          "label": "确认说法来源",
+          "detail": "保留 Reuters 对 Bessent 表态的转述，不把它当成双方已经签署的协议。",
+          "evidence": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993"
+        },
+        {
+          "label": "写清保护对象",
+          "detail": "要求文本列出适用模型、计算资源、服务和可能的例外，不用“最强模型”代替范围。",
+          "evidence": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993"
+        },
+        {
+          "label": "检查执行机制",
+          "detail": "查谁负责身份验证、审批、出口或部署限制，以及违反后如何处置。",
+          "evidence": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993"
+        },
+        {
+          "label": "等待共同文件",
+          "detail": "只有双方正式文件、工作组和执行记录出现后，才可判断护栏是否真正生效。",
+          "evidence": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993"
+        }
+      ]
+    },
+    "source": {
+      "name": "Reuters",
+      "url": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993"
+    },
+    "relatedSlugs": [
+      "llm",
+      "authorization",
+      "data-validation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993",
+        "claim": "Bessent 称将讨论 AI 护栏和最佳实践协议",
+        "excerpt": "Reuters reports Bessent said the talks would discuss AI guardrails and a best-practices protocol."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993",
+        "claim": "目标包括防止非国家行为者获取最强模型",
+        "excerpt": "The report says the aim is to keep non-state actors from obtaining the most powerful AI models."
+      }
+    ],
+    "canonicalUrl": "https://www.investing.com/news/stock-market-news/us-china-are-discussing-ai-guardrails-to-safeguard-most-powerful-models-bessent-says-4687993",
+    "sourceHash": "sha256:b8e2ef1c006b8e988229caf07a8f296130a4f36963b854722cb4bda986434303"
+  },
+  {
     "slug": "anthropic-claude-small-business-connectors",
     "title": "Anthropic 推出 Claude for Small Business，接入多种企业连接器",
     "summary": "5 月 13 日，Anthropic 发布 Claude for Small Business，提供连接 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365 的连接器与现成工作流。发布页说明了产品范围和培训计划，没有证明所有账户已开放或跨服务写入默认安全。",
