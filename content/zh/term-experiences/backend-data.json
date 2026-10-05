@@ -19326,14 +19326,14 @@
   ],
   "frames": [
     {
-      "label": "写入前先生成 DEK",
-      "note": "账单准备保存，数据和一次性数据密钥还没有混成同一个对象。",
+      "label": "先看保存对象",
+      "note": "账单还没有经过加密，数据库页仍有明文；DEK 还没进入密钥链。",
       "activeIds": [
-        "storage-data",
-        "data-key"
+        "storage-data"
       ],
       "doneIds": [],
       "mutedIds": [
+        "data-key",
         "wrapped-key",
         "kms-key",
         "app-identity",
@@ -19342,15 +19342,13 @@
         "key-version"
       ],
       "values": {
-        "storage-data": "billing.db · 100 rows",
-        "data-key": "new DEK"
+        "storage-data": "billing.db · plaintext",
+        "data-key": "待生成"
       },
-      "activeEdgeIds": [
-        "data-key"
-      ],
+      "activeEdgeIds": [],
       "metric": {
-        "label": "示例明文",
-        "value": "100 rows"
+        "label": "存储状态",
+        "value": "plaintext"
       }
     },
     {
@@ -19544,6 +19542,16 @@
       "url": "https://cloud.google.com/kms/docs/envelope-encryption",
       "label": "Google Cloud · Envelope encryption",
       "note": "DEK/KEK 包装、写入与读取流程"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+      "label": "AWS KMS · Key concepts",
+      "note": "KMS 层级、授权与密钥生命周期"
+    },
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+      "label": "NIST SP 800-57 · Key management",
+      "note": "密钥生成、保护、轮换与退役"
     }
   ]
 },
