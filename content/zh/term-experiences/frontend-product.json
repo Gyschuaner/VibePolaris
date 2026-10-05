@@ -7656,7 +7656,27 @@
           "js-dom",
           "dom-mismatch"
         ]
-      }
+      },
+    {
+      "label": "输入稳定后再接管",
+      "note": "把时间等不稳定输入移出首轮后，结构匹配通过，事件可以安全连接。",
+      "activeIds": [
+        "dom",
+        "handlers",
+        "mismatch"
+      ],
+      "doneIds": [
+        "server-html",
+        "js"
+      ],
+      "mutedIds": [],
+      "values": {
+        "mismatch": "结构一致",
+        "handlers": "connected",
+        "dom": "计数 1"
+      },
+      "activeEdgeIds": []
+    }
     ],
     "insight": "水合是在已有服务器 DOM 上恢复客户端组件和事件，首屏结构必须能相互对应。",
     "quiz": {
@@ -7685,8 +7705,18 @@
     "sources": [
       {
         "url": "https://react.dev/reference/react-dom/client/hydrateRoot",
-        "label": "React Documentation",
-        "note": "React API 与运行机制"
+        "label": "React · hydrateRoot",
+        "note": "在服务器 HTML 上恢复客户端组件和事件。"
+      },
+      {
+        "url": "https://react.dev/reference/react-dom/server/renderToPipeableStream",
+        "label": "React · renderToPipeableStream",
+        "note": "服务器 HTML 流与客户端接管的前置关系。"
+      },
+      {
+        "url": "https://nextjs.org/docs/messages/react-hydration-error",
+        "label": "Next.js · hydration error",
+        "note": "首轮服务端与客户端输出不一致的排查边界。"
       }
     ]
   },
@@ -7847,7 +7877,26 @@
           "api-dom",
           "dom-interactive"
         ]
-      }
+      },
+    {
+      "label": "CPU slowdown 拉长空白",
+      "note": "脚本解析变慢时，HTML 壳仍先到，内容 DOM 和交互整体后移。",
+      "activeIds": [
+        "bundle",
+        "api",
+        "dom",
+        "interactive"
+      ],
+      "doneIds": [
+        "shell"
+      ],
+      "mutedIds": [],
+      "values": {
+        "bundle": "parsing 1800 ms（示例）",
+        "interactive": "稍后可用"
+      },
+      "activeEdgeIds": []
+    }
     ],
     "insight": "CSR 把主要页面生成工作放在浏览器，首屏速度直接受到脚本下载、执行和后续取数影响。",
     "quiz": {
@@ -7876,8 +7925,18 @@
     "sources": [
       {
         "url": "https://react.dev/reference/react-dom/client/createRoot",
-        "label": "React Documentation",
-        "note": "React API 与运行机制"
+        "label": "React · createRoot",
+        "note": "把 React 树挂到浏览器中的 DOM 容器。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Glossary/CSR",
+        "label": "MDN · Client-side rendering",
+        "note": "主要内容由浏览器脚本生成的渲染方式。"
+      },
+      {
+        "url": "https://web.dev/articles/rendering-on-the-web",
+        "label": "web.dev · Rendering on the web",
+        "note": "比较服务器和客户端渲染的请求链与取舍。"
       }
     ]
   },
@@ -8037,7 +8096,26 @@
         "activeEdgeIds": [
           "stream-hydrate"
         ]
-      }
+      },
+    {
+      "label": "分别标记时刻",
+      "note": "记录内容可见与 hydrate 完成的两个时刻，才看得出 SSR 的真实等待。",
+      "activeIds": [
+        "stream",
+        "hydrate"
+      ],
+      "doneIds": [
+        "request",
+        "data",
+        "render"
+      ],
+      "mutedIds": [],
+      "values": {
+        "stream": "content visible",
+        "hydrate": "interactive"
+      },
+      "activeEdgeIds": []
+    }
     ],
     "insight": "SSR 把 HTML 生成移到请求服务器，内容可见和客户端可交互仍是两个时间点。",
     "quiz": {
@@ -8066,8 +8144,18 @@
     "sources": [
       {
         "url": "https://react.dev/reference/react-dom/server/renderToPipeableStream",
-        "label": "React Documentation",
-        "note": "React API 与运行机制"
+        "label": "React · renderToPipeableStream",
+        "note": "服务端生成并流式输出 HTML。"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/building-your-application/rendering/server-components",
+        "label": "Next.js · Server Components",
+        "note": "服务器端组件和请求上下文的渲染边界。"
+      },
+      {
+        "url": "https://web.dev/articles/rendering-on-the-web",
+        "label": "web.dev · Rendering on the web",
+        "note": "首字节、内容可见和客户端交互的时间差。"
       }
     ]
   },
@@ -8230,7 +8318,26 @@
           "html-cdn",
           "cdn-visitor"
         ]
-      }
+      },
+    {
+      "label": "下一次请求更新",
+      "note": "新产物切到 CDN 后，访问请求才从 v1 变成 v2。",
+      "activeIds": [
+        "cdn",
+        "visitor"
+      ],
+      "doneIds": [
+        "content",
+        "build",
+        "html"
+      ],
+      "mutedIds": [],
+      "values": {
+        "cdn": "v2",
+        "visitor": "看到 v2"
+      },
+      "activeEdgeIds": []
+    }
     ],
     "insight": "SSG 在构建时把内容固定成文件，源内容变化只有经过新构建和发布才会到达访问者。",
     "quiz": {
@@ -8259,8 +8366,18 @@
     "sources": [
       {
         "url": "https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation",
-        "label": "Next.js Documentation",
-        "note": "渲染模式与框架行为"
+        "label": "Next.js · Static Site Generation",
+        "note": "构建时生成页面，访问时直接返回静态产物。"
+      },
+      {
+        "url": "https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration",
+        "label": "Next.js · Incremental Static Regeneration",
+        "note": "在静态页面边界内重新生成过期内容。"
+      },
+      {
+        "url": "https://web.dev/articles/rendering-on-the-web",
+        "label": "web.dev · Rendering on the web",
+        "note": "静态、服务器和客户端渲染的生成时机差异。"
       }
     ]
   },
@@ -8442,7 +8559,28 @@
           "url-routes",
           "routes-notfound"
         ]
-      }
+      },
+    {
+      "label": "客户端保留历史",
+      "note": "客户端导航更新地址并保留后退路径；页面仍要重新匹配和取数。",
+      "activeIds": [
+        "url",
+        "routes",
+        "page"
+      ],
+      "doneIds": [
+        "params"
+      ],
+      "mutedIds": [
+        "auth",
+        "not-found"
+      ],
+      "values": {
+        "url": "pushState(/products/43)",
+        "page": "局部更新"
+      },
+      "activeEdgeIds": []
+    }
     ],
     "insight": "路由负责把地址映射到页面和参数，权限检查与无匹配结果应是清楚的独立分支。",
     "quiz": {
@@ -8471,13 +8609,18 @@
     "sources": [
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/History_API",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · History API",
+        "note": "客户端导航如何更新地址和历史记录。"
       },
       {
         "url": "https://nextjs.org/docs/app/building-your-application/routing",
-        "label": "Next.js Documentation",
-        "note": "渲染模式与框架行为"
+        "label": "Next.js · Routing",
+        "note": "文件和路径规则如何组织页面路由。"
+      },
+      {
+        "url": "https://url.spec.whatwg.org/",
+        "label": "WHATWG · URL Standard",
+        "note": "URL 路径、查询与解析语义。"
       }
     ]
   },
@@ -8935,7 +9078,27 @@
         "activeEdgeIds": [
           "a-storage"
         ]
-      }
+      },
+    {
+      "label": "重新打开恢复",
+      "note": "同一 origin 的新页面可以读回已保存偏好，但另一个 origin 仍是空盒。",
+      "activeIds": [
+        "storage",
+        "tab-a"
+      ],
+      "doneIds": [
+        "event"
+      ],
+      "mutedIds": [
+        "tab-b",
+        "other"
+      ],
+      "values": {
+        "storage": "theme=dark",
+        "tab-a": "恢复主题"
+      },
+      "activeEdgeIds": []
+    }
     ],
     "insight": "localStorage 是按来源隔离的字符串存储，同源共享不等于不同标签页会自动同步应用状态。",
     "quiz": {
@@ -8964,8 +9127,18 @@
     "sources": [
       {
         "url": "https://html.spec.whatwg.org/multipage/webstorage.html",
-        "label": "WHATWG · HTML Standard",
-        "note": "HTML 标准语义"
+        "label": "WHATWG · Web Storage",
+        "note": "按 origin 保存字符串键值和 storage 事件语义。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage",
+        "label": "MDN · Window.localStorage",
+        "note": "浏览器本地存储接口和同步访问行为。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event",
+        "label": "MDN · storage event",
+        "note": "其他同源文档收到存储变化通知。"
       }
     ]
   },

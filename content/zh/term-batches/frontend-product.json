@@ -1157,8 +1157,24 @@
     "question": "服务器已经返回了按钮，为什么 JavaScript 加载前点它没有反应？",
     "definition": "水合是客户端框架在现有服务器 HTML 上恢复组件树、状态和事件处理的过程，通常复用已有 DOM 而不是重新创建全部节点。",
     "boundary": "水合不是服务端渲染本身。服务器能输出 HTML，但交互通常仍要等相应客户端代码就绪。",
-    "demoType": "lifecycle", "demoTitle": "页面从可见到可交互",
-    "demoSteps": [{"label":"收到 HTML","value":"内容已经可见","note":"页面结构来自服务器输出。"},{"label":"加载客户端代码","value":"框架比对组件与 DOM","note":"状态和事件开始恢复。"},{"label":"水合完成","value":"按钮可以响应点击","note":"页面进入可交互状态。"}],
+    "demoType": "state", "demoTitle": "页面从可见到可交互",
+    "demoSteps": [
+  {
+    "label": "收到 HTML",
+    "value": "内容已经可见",
+    "note": "结构来自服务器输出。"
+  },
+  {
+    "label": "匹配现有节点",
+    "value": "DOM 与组件对上",
+    "note": "客户端开始恢复关系。"
+  },
+  {
+    "label": "事件接通",
+    "value": "按钮可以响应",
+    "note": "可见和可交互在这里分开。"
+  }
+],
     "quizQuestion": "水合主要补上了什么？", "quizOptions": ["客户端状态与事件处理", "服务器的数据库表", "CSS 文件的颜色值"],
     "correctText": "水合把客户端组件逻辑连接到已有 HTML。", "wrongText": "它不负责创建数据库，也不等于修改 CSS。",
     "promptTitle": "定位水合不一致", "prompt": "请比较下面服务端输出与客户端首次渲染，找出文本、时间、随机数或条件分支造成的不一致，并给出保持首屏结果一致的修改。",
@@ -1171,8 +1187,24 @@
     "question": "为什么页面先出现空壳，等脚本运行后才看到内容？",
     "definition": "客户端渲染把界面生成工作主要放在浏览器中。服务器通常返回基础 HTML 和脚本，脚本运行后读取数据并构建页面。",
     "boundary": "CSR 不等于完全没有服务器；接口、静态资源和应用文件仍通常由服务器提供。",
-    "demoType": "lifecycle", "demoTitle": "客户端页面的首次显示",
-    "demoSteps": [{"label":"返回页面壳","value":"基础 HTML 与脚本链接","note":"主要内容可能还未生成。"},{"label":"运行应用代码","value":"请求数据并创建组件","note":"设备性能影响等待时间。"},{"label":"更新 DOM","value":"页面内容可见并可交互","note":"后续导航常在客户端完成。"}],
+    "demoType": "flow", "demoTitle": "客户端首屏要走过的请求链",
+    "demoSteps": [
+  {
+    "label": "先收到空壳",
+    "value": "HTML + script",
+    "note": "主要内容还未生成。"
+  },
+  {
+    "label": "运行应用代码",
+    "value": "parse → run → API",
+    "note": "设备性能会拉长等待。"
+  },
+  {
+    "label": "内容填入 DOM",
+    "value": "content + handlers",
+    "note": "后续导航可以在客户端完成。"
+  }
+],
     "quizQuestion": "CSR 首屏速度容易受到哪项直接影响？", "quizOptions": ["客户端 JavaScript 的下载与执行", "Git 分支名称", "数据库表的命名"],
     "correctText": "浏览器必须取得并执行相应代码才能生成主要内容。", "wrongText": "分支名称和表名不会直接决定浏览器首次渲染时间。",
     "promptTitle": "检查客户端首屏等待", "prompt": "请列出下面 CSR 页面在显示主要内容前必须完成的请求和脚本工作，找出可删除、可并发或可延后的部分，并保留明确加载状态。",
@@ -1186,7 +1218,23 @@
     "definition": "服务端渲染在服务器接到请求后读取所需数据并生成 HTML。浏览器可先呈现内容，客户端代码随后负责水合和继续交互。",
     "boundary": "SSR 会增加服务器请求阶段的计算和数据依赖，不代表所有页面都更快，也不自动解决客户端脚本体积。",
     "demoType": "request", "demoTitle": "一次服务端页面请求",
-    "demoSteps": [{"label":"浏览器请求页面","value":"携带路径与会话信息","note":"服务器收到当前请求上下文。"},{"label":"服务器生成 HTML","value":"读取数据并渲染内容","note":"数据等待会影响响应时间。"},{"label":"浏览器显示并水合","value":"先呈现 HTML，再连接交互","note":"可见与可交互可能不是同一时刻。"}],
+    "demoSteps": [
+  {
+    "label": "浏览器带上下文",
+    "value": "path + session",
+    "note": "服务器收到当前请求。"
+  },
+  {
+    "label": "服务端生成 HTML",
+    "value": "data → render",
+    "note": "慢数据会推迟输出。"
+  },
+  {
+    "label": "先呈现再接管",
+    "value": "HTML → hydrate",
+    "note": "可见和可交互不是同一刻。"
+  }
+],
     "quizQuestion": "SSR 的 HTML 通常在何时生成？", "quizOptions": ["服务器处理页面请求时", "代码提交到 Git 时", "用户关闭页面后"],
     "correctText": "SSR 根据当前请求在服务器生成页面结果。", "wrongText": "提交代码和关闭页面不会触发常规 SSR 页面生成。",
     "promptTitle": "判断页面是否适合 SSR", "prompt": "请根据下面页面的数据时效、个性化程度、缓存条件和服务器成本，判断是否采用 SSR，并列出首屏数据失败时的返回策略。",
@@ -1199,8 +1247,24 @@
     "question": "文档内容一天更新一次，是否需要每个访问请求都重新生成页面？",
     "definition": "SSG 在构建阶段读取内容并生成静态 HTML 和资源文件，部署后由服务器或 CDN 直接返回。",
     "boundary": "SSG 的页面新鲜度受构建与发布节奏影响，不适合每次请求都必须读取实时或私有数据的内容。",
-    "demoType": "lifecycle", "demoTitle": "文档页从内容到访问",
-    "demoSteps": [{"label":"构建阶段","value":"读取 Markdown 与数据","note":"生成每个文档的 HTML。"},{"label":"部署阶段","value":"上传静态文件","note":"CDN 可以缓存并分发。"},{"label":"用户访问","value":"直接返回已有 HTML","note":"无需为每次访问重新渲染。"}],
+    "demoType": "lifecycle", "demoTitle": "文档从源文件到静态访问",
+    "demoSteps": [
+  {
+    "label": "构建阶段",
+    "value": "source → HTML",
+    "note": "读取内容并生成文件。"
+  },
+  {
+    "label": "部署阶段",
+    "value": "HTML → CDN",
+    "note": "分发已有静态产物。"
+  },
+  {
+    "label": "用户访问",
+    "value": "return existing file",
+    "note": "不为每次请求重渲染。"
+  }
+],
     "quizQuestion": "哪类页面通常适合 SSG？", "quizOptions": ["更新频率较低的公开文档", "每秒变化的私有交易页面", "必须读取当前会话的账户页"],
     "correctText": "公开且更新节奏可控的内容适合在构建时生成。", "wrongText": "强实时或强个性化页面通常不能只依赖构建时结果。",
     "promptTitle": "划分可静态生成的页面", "prompt": "请根据下面页面的数据来源、更新频率和访问权限，标出适合 SSG 的部分，并说明内容更新后如何触发重新构建。",
@@ -1213,8 +1277,24 @@
     "question": "用户打开 /products/42 时，应用怎样知道要显示哪一页？",
     "definition": "路由根据路径、参数和匹配规则选择页面或处理器。前端路由还能在不整页刷新的情况下更新地址和界面。",
     "boundary": "路由决定去哪里，不负责验证用户是否有权访问；权限检查需要独立执行。",
-    "demoType": "branch", "demoTitle": "URL 的匹配结果",
-    "demoSteps": [{"label":"固定路径","value":"/products","note":"显示产品列表。"},{"label":"动态参数","value":"/products/:id","note":"读取 id 并显示详情。"},{"label":"没有匹配","value":"404 页面","note":"给出明确返回入口。"}],
+    "demoType": "branch", "demoTitle": "URL 的匹配、鉴权与回退",
+    "demoSteps": [
+  {
+    "label": "拆路径和参数",
+    "value": "/products/:id",
+    "note": "先得到 id 与 query。"
+  },
+  {
+    "label": "检查访问",
+    "value": "allowed / returnTo",
+    "note": "匹配成功仍要判断权限。"
+  },
+  {
+    "label": "没有匹配",
+    "value": "404",
+    "note": "给出明确的回退入口。"
+  }
+],
     "quizQuestion": "路由参数 :id 通常来自哪里？", "quizOptions": ["URL 对应位置的路径片段", "CSS 类名", "浏览器字体设置"],
     "correctText": "动态路由会从 URL 中提取对应路径片段。", "wrongText": "样式和字体设置不提供业务路由参数。",
     "promptTitle": "检查一组路由规则", "prompt": "请按具体到宽泛的顺序检查下面路由，指出冲突、无法到达的分支和缺失的 404 处理，并列出每条 URL 会匹配哪个页面。",
@@ -1277,8 +1357,24 @@
     "question": "用户选择的主题怎样在下次打开网站时继续生效？",
     "definition": "localStorage 是同步的键值存储接口，值以字符串保存，并按源隔离。数据不会自动随请求发给服务器。",
     "boundary": "它不适合保存密码、访问令牌等敏感数据，也不能作为唯一持久存储；浏览器可能按配额限制或清理数据。",
-    "demoType": "lifecycle", "demoTitle": "主题偏好的保存与恢复",
-    "demoSteps": [{"label":"用户选择主题","value":"setItem('theme','dark')","note":"偏好写入当前源的存储。"},{"label":"重新打开页面","value":"getItem 读取字符串","note":"页面在初始化时恢复偏好。"},{"label":"用户重置","value":"removeItem 删除键","note":"回到站点默认主题。"}],
+    "demoType": "state", "demoTitle": "两个标签页怎样共享偏好",
+    "demoSteps": [
+  {
+    "label": "按 origin 分盒",
+    "value": "shop.example",
+    "note": "同源页面读同一份盒子。"
+  },
+  {
+    "label": "写入字符串",
+    "value": "theme=dark",
+    "note": "值不是对象本身。"
+  },
+  {
+    "label": "发出变化通知",
+    "value": "storage event",
+    "note": "其他同源页面收到更新。"
+  }
+],
     "quizQuestion": "localStorage 的值以什么形式保存？", "quizOptions": ["字符串", "任意 JavaScript 对象且无需转换", "服务器数据库行"],
     "correctText": "对象通常需要先序列化为字符串再存储。", "wrongText": "localStorage 不会直接保存对象，也不是服务器数据库。",
     "promptTitle": "为本地偏好补充可靠存储", "prompt": "请为下面主题设置加入 localStorage 保存与恢复，处理值不存在、JSON 解析失败和存储不可用，并避免保存账号敏感信息。",
