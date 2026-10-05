@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { focusManagementSources, iterationSources } from "@/lib/product-design-sources";
-import { FocusManagementLesson, IterationLesson } from "./ProductDesignLessons";
+import { conversionRateSources, focusManagementSources, iterationSources } from "@/lib/product-design-sources";
+import { ConversionRateLesson, FocusManagementLesson, IterationLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -59,6 +59,36 @@ export function IterationTermPage() {
       <p id="iteration-loop" className="vp-citation-target">迭代循环的终点不是“总有下一个版本”，而是本轮目标达到、风险已经可接受，或继续投入不再有新的证据。<Cite id="iteration-loop" sources={iterationSources} />每轮都把基本错误处理推给未来，只是在延期，不是在迭代。</p>
       <p id="iteration-success" className="vp-citation-target">先定义成功的观察方式，才能知道下一轮要改什么。<Cite id="iteration-success" sources={iterationSources} />例如“能导出”还不够，至少要说明哪些字段、失败如何提示、用户是否能在规定时间内完成。</p>
       <ArticleAside title="没有证据时，不要把忙碌当成迭代"><p>改了颜色、换了按钮文案、又开了一张任务卡，都可能只是活动。只有当范围、结果和下一步决定之间有可追溯的证据，读者才知道这一轮学到了什么。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const conversionRateSections: [string, string][] = [
+  ["conversion-rate-definition", "先把起点和完成事件说清楚"],
+  ["conversion-rate-formula", "同一批用户，分子换了，结果就换了"],
+  ["conversion-rate-boundary", "百分比离不开时间窗和去重"],
+];
+
+function ConversionRateHero() {
+  return <figure className={styles.miniHero} aria-label="转化率由完成用户除以起点用户得到"><div className={styles.miniTop}><span>同一个起点，不同完成事件</span><strong>RATE · 03</strong></div><div className={styles.conversionMini}><div className={styles.conversionMiniCard}><small>起点</small><strong>1000</strong><span>users</span></div><div className={styles.conversionMiniArrow} aria-hidden="true">÷</div><div className={styles.conversionMiniCard}><small>完成</small><strong>120</strong><span>24h · 12%</span></div></div><p className={styles.miniCaption}>数字前先写口径：谁进入、谁完成、何时完成。</p></figure>;
+}
+
+export function ConversionRateTermPage() {
+  return <Article slug="conversion-rate" title="转化率" subtitle="Conversion Rate · 先固定口径，再读百分比" sources={conversionRateSources} sections={conversionRateSections} hero={<ConversionRateHero />} intro={<>“1000 人进来，120 人完成”看起来只需要做一道除法。<strong>真正决定转化率的是分母、完成事件、去重方式和时间窗</strong>；其中任何一项变化，百分比就不再是同一个指标。</>}>
+    <ArticleSection id="conversion-rate-definition" title="先把起点和完成事件说清楚">
+      <p id="conversion-event" className="vp-citation-target">分析工具把用户行为记录成事件，并用事件参数补充页面、按钮或结果等上下文。<Cite id="conversion-event" sources={conversionRateSources} />“看到注册页”“提交表单”和“验证邮箱”是三个不同事件，不能只用一个含糊的“注册”替代。</p>
+      <p id="conversion-params" className="vp-citation-target">开始计算前，要把起点和完成事件写成可以被记录的条件。<Cite id="conversion-params" sources={conversionRateSources} />本例把首次到达注册页作为起点，把验证邮箱作为完成；只提交表单的人仍然在途中。</p>
+    </ArticleSection>
+    <ArticleSection id="conversion-rate-formula" title="同一批用户，分子换了，结果就换了">
+      <p id="conversion-formula" className="vp-citation-target">用户级转化率可以写成“在规定窗口内完成全部步骤的独立用户 ÷ 进入第一步的独立用户”。<Cite id="conversion-formula" sources={conversionRateSources} />用提交表单做完成事件，180 ÷ 1000 得到 18%；换成验证邮箱，120 ÷ 1000 就变成 12%。</p>
+      <ConversionRateLesson />
+      <p id="conversion-steps" className="vp-citation-target">漏斗报告会按有序步骤筛选用户，分母和每一步的完成人数都依赖这些步骤定义。<Cite id="conversion-steps" sources={conversionRateSources} />所以“注册按钮点击量 ÷ 页面访问量”只有在两者单位、用户集合和窗口都对齐时，才可以称为一项可比的转化率。</p>
+    </ArticleSection>
+    <ArticleSection id="conversion-rate-boundary" title="百分比离不开时间窗和去重">
+      <p id="conversion-users" className="vp-citation-target">“用户”是去重后的主体，“事件次数”是行为发生的次数，两者不是同一个分子。<Cite id="conversion-users" sources={conversionRateSources} />同一用户重复提交三次，按用户统计仍可能只算一个完成者；按事件统计则会得到三次。</p>
+      <p id="conversion-dedup" className="vp-citation-target">时间窗也会改变结果。<Cite id="conversion-dedup" sources={conversionRateSources} />24 小时内验证的 120 人和一小时内验证的 90 人，分别得到 12% 与 9%，不能把后者当成页面突然变差的证据。</p>
+      <p id="conversion-window" className="vp-citation-target">排查数字时，先保存起点事件、完成事件、去重单位和窗口，再谈增长或下降。<Cite id="conversion-window" sources={conversionRateSources} />窗口越长，等待完成的人越可能被计入；这不是单纯的“好”或“坏”，而是另一套测量问题。</p>
+      <ArticleAside title="百分比没有上下文就无法比较"><p>两个团队都说“转化率 12%”，还不能说明表现相同。要先问他们从哪里开始计数、按用户还是事件去重、等待多久、是否允许跳过中间步骤。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }
