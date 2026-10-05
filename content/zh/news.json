@@ -37902,6 +37902,613 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "gemma-3-270m-release-20250814",
+    "title": "Google 发布 Gemma 3 270M：把开放权重文本模型带到更小设备",
+    "summary": "Google 的 Gemma 发布记录显示，Gemma 3 在 2025 年 8 月 14 日新增 270M 尺寸。官方使用指南把它列为面向移动设备和单板计算机的 Text → Text 模型，输入上下文为 32K；模型卡还给出预训练和指令微调版本的基准结果。它降低的是本地部署的模型尺寸门槛，不等于小模型在所有任务上都能替代更大模型。",
+    "body": "8 月 14 日，Google 在 Gemma 发布记录里补上了 Gemma 3 的 270M 尺寸。Gemma 3 的 1B、4B、12B 和 27B 版本早在 3 月发布，这次新增的是同一系列更小的文本模型。对做本地推理的人来说，变化首先体现在设备：Google 的使用指南把 270M 列为 Text → Text，目标平台包括移动设备和单板计算机。\n\n“270M”说的是参数规模，不是模型能处理的任务数量。官方模型卡给 270M 版本配的是 32K 上下文窗口；4B、12B、27B 才是 128K 的尺寸。Gemma 3 家族的较大尺寸支持图像输入，但 270M 在官方入门表里是文本到文本，不能把全家族的多模态描述直接套到这一款上。\n\n模型卡还披露，270M 使用了约 6 万亿 tokens 的训练数据，知识截止时间为 2024 年 8 月；Gemma 3 的训练数据说明覆盖 140 多种语言，并包含代码、数学和图像等来源。这个数字可以帮助理解训练投入，却不能直接推出某个中文任务的效果。小模型是否好用，仍取决于提示、领域、量化、上下文长度和是否做过针对性微调。\n\n官方把 270M 的结果单独列在模型卡里。预训练版本在 HellaSwag、BoolQ、PIQA、TriviaQA、ARC-c、ARC-e 和 WinoGrande 上分别给出 40.9、61.4、67.7、15.4、29.0、57.7 和 52.0；指令微调版本则报告 HellaSwag 37.7、PIQA 66.2、ARC-c 28.2、WinoGrande 52.3、BIG-Bench Hard 26.7 和 IF Eval 51.2。两组使用的基准和 n-shot 设置并不完全相同，分数适合用来了解模型画像，不适合拼成一个总排名。\n\n这类模型的实际价值，通常在任务边界清楚的地方更容易看见：把短文本分类、摘要、格式转换或设备端的简单问答放在本地，减少一次网络往返，也让应用可以在离线或低带宽环境里工作。它的 32K 上下文也给了小应用一定的文档空间，但长上下文不等于长文档理解一定稳定，部署时仍应按自己的数据做回归评测。\n\n安全边界同样要单独看。Gemma 3 模型卡记录了内容安全、儿童安全和表征伤害等评估，也明确说安全测试只使用英文提示；模型可能产生错误、过时或带偏见的内容。参数变小不会自动消除这些问题，真正上线时仍要为输入过滤、输出检查、权限和日志设定自己的规则。\n\nGemma 3 270M 的意义，是把开放权重模型的“能不能放到设备上”向前推了一步。下一步不应只问它比哪个大模型分数高，而要先定义设备预算、任务格式和失败代价，再用同一套数据比较预训练版、指令版和微调版。",
+    "publishedAt": "2025-08-14",
+    "eventDate": "2025-08-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/gemma-3-270m-release-20250814.svg",
+      "alt": "Gemma 3 270M 开放权重文本模型从本地设备进入基准评估和受控应用",
+      "sourceUrl": "/images/news/gemma-3-270m-release-20250814.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "Gemma 3 在 8 月 14 日新增 270M 尺寸",
+        "body": "Google 的 Gemma 发布记录把 270M 标为 2025 年 8 月 14 日发布；1B、4B、12B 和 27B 尺寸此前已在 3 月发布。这是同一系列的尺寸扩展，重点是把开放权重模型带到更小的设备。",
+        "kind": "narrative"
+      },
+      {
+        "id": "model-boundary",
+        "title": "270M 在官方入门表里是 Text → Text",
+        "body": "Google 使用指南将 270M 归为 Gemma 3 core 的 Text → Text 版本，目标平台包括移动设备和单板计算机；它的上下文窗口为 32K。较大 Gemma 3 尺寸的图像能力不能直接套用到 270M。",
+        "kind": "technical"
+      },
+      {
+        "id": "training",
+        "title": "模型卡披露 6 万亿 tokens 和 2024 年 8 月知识截止",
+        "body": "Gemma 3 模型卡称 270M 使用约 6 万亿 tokens 训练，家族训练数据覆盖 140 多种语言并包含代码、数学和图像来源；知识截止时间为 2024 年 8 月。训练规模不能替代具体任务上的实测。",
+        "kind": "technical"
+      },
+      {
+        "id": "benchmark",
+        "title": "官方把预训练版和指令版分开评测",
+        "body": "模型卡分别列出 270M PT 与 IT 的 HellaSwag、BoolQ、PIQA、TriviaQA、ARC、WinoGrande、BIG-Bench Hard 和 IF Eval 结果。n-shot 设置和测试任务并不完全相同，分数用于了解模型画像，不构成跨业务总排名。",
+        "kind": "comparison"
+      },
+      {
+        "id": "deployment",
+        "title": "小模型的优势在设备预算和任务边界",
+        "body": "本地短文本分类、摘要、格式转换或简单问答可以减少网络往返，并适合离线或低带宽场景；32K 上下文也不是长文档质量保证，仍需按自己的数据做回归评测。",
+        "kind": "example"
+      },
+      {
+        "id": "safety",
+        "title": "参数变小不会自动消除错误和偏见",
+        "body": "模型卡记录了内容安全、儿童安全和表征伤害评估，但安全测试只使用英文提示，并承认模型可能输出错误、过时或带偏见的内容。上线时仍需配置输入过滤、输出检查、权限和日志规则。",
+        "kind": "boundary"
+      },
+      {
+        "id": "takeaway",
+        "title": "先按设备和失败代价定义评测",
+        "body": "部署者应先明确设备预算、任务格式和失败代价，再在同一数据上比较预训练版、指令版和微调版，而不是只追逐一个更大的模型分数。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "270M 模型怎样从设备选择走到上线评估？",
+      "question": "小模型的价值要同时看运行位置、任务边界和失败代价。",
+      "steps": [
+        {
+          "label": "先看设备",
+          "detail": "把移动设备、单板计算机或本地服务器的内存、延迟和并发要求写清楚，再决定 270M 是否合适。",
+          "evidence": "Gemma 3 270M deployment table"
+        },
+        {
+          "label": "限定输入",
+          "detail": "270M 的官方上下文是 32K，入门表定位为 Text → Text；不要把较大尺寸的图像能力或 128K 上下文当作它的默认能力。",
+          "evidence": "Gemma 3 model card and get started guide"
+        },
+        {
+          "label": "分开版本",
+          "detail": "预训练版与指令微调版要分别测试；任务、n-shot 设置和输出格式保持一致，才知道差异来自哪里。",
+          "evidence": "Gemma 3 270M benchmark tables"
+        },
+        {
+          "label": "用真实数据回归",
+          "detail": "在自己的分类、摘要或格式转换样本上测准确率、延迟、内存和失败类型，不把模型卡分数换算成业务承诺。",
+          "evidence": "Benchmark boundary"
+        },
+        {
+          "label": "加上防护",
+          "detail": "上线前为输入过滤、输出检查、日志和权限设定规则；模型卡的安全评估只使用英文提示，不能覆盖全部应用场景。",
+          "evidence": "Gemma 3 safety evaluation and limitations"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google AI for Developers（Gemma 发布记录）",
+      "url": "https://ai.google.dev/gemma/docs/releases?hl=en"
+    },
+    "relatedSlugs": [
+      "llm",
+      "benchmark",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://ai.google.dev/gemma/docs/releases?hl=en",
+        "claim": "Google AI for Developers 的 Gemma 发布记录将 Gemma 3 270M 标为 2025 年 8 月 14 日发布。",
+        "excerpt": "August 14, 2025 — Release of Gemma 3 in 270M size."
+      },
+      {
+        "url": "https://ai.google.dev/gemma/docs/core/model_card_3",
+        "claim": "Gemma 3 模型卡给出 270M 的上下文、训练数据、基准与安全限制；270M 的 PT/IT 结果被单列。",
+        "excerpt": "#### Gemma 3 270M ... Gemma 3 PT 270M ... Gemma 3 IT 270M"
+      },
+      {
+        "url": "https://ai.google.dev/gemma/docs/get_started",
+        "claim": "Google 使用指南将 270M 列为 Gemma 3 core 的 Text → Text 版本，目标平台包括移动设备和单板计算机。",
+        "excerpt": "270M | Gemma 3 (core) | Text ➔ Text | Mobile devices and single board computers"
+      }
+    ],
+    "canonicalUrl": "https://ai.google.dev/gemma/docs/releases?hl=en",
+    "sourceHash": "sha256:60637dedfcfb984c38b65a8d54177a380bee237df2be1cc7fe38dc6b0450903b"
+  },
+  {
+    "slug": "github-copilot-mcp-ide-ga-20250814",
+    "title": "GitHub Copilot 在 JetBrains、Eclipse、Xcode 正式支持 MCP",
+    "summary": "8 月 14 日，GitHub 宣布 Copilot 在 JetBrains、Eclipse 和 Xcode 中的 Model Context Protocol（MCP）支持正式可用。开发者可以把本地或远程 MCP server 接入 IDE，让 agent mode 调用外部工具和数据；官方示例包括用 PAT 或 OAuth 连接 GitHub MCP、创建 issue、查看仓库历史和搜索 GitHub。组织与企业的 MCP policy 默认关闭，需要管理员显式开启，并且用户需要有效 Copilot license。",
+    "body": "8 月 14 日，GitHub 宣布 Copilot 在 JetBrains、Eclipse 和 Xcode 中的 MCP 支持正式可用。这里的“正式”指 IDE 集成进入 GA：开发者可以在这些编辑器里连接符合 MCP 规范的本地或远程 server，再由 agent mode 调用它们提供的工具。它不是 Remote GitHub MCP Server 本身在这一天变成 GA；后者的 GA 公告在 9 月 4 日，属于另一个日期边界。\n\nMCP 改变的是 Copilot 能看到和操作的范围。一个只在编辑器里补全代码的助手，可以通过 server 访问外部数据和动作；GitHub 给出的示例是用 PAT 或 OAuth 配置远程 GitHub MCP server，然后创建 issue、查看仓库历史或搜索 GitHub。工具能不能被调用，取决于 server 暴露的接口、凭证和当前会话的授权，不是“接入 MCP”四个字自动带来的能力。\n\n对组织和企业来说，默认值更值得关注。GitHub 说 Copilot policy 里的 MCP servers 开关默认关闭，必须由组织或企业管理员启用；使用者还需要有效的 Copilot license。管理员打开总开关后，仍要继续确认允许哪些 server、凭证由谁持有、工具能写入什么资源，以及 agent mode 是否需要每次人工确认。\n\n本地和远程 server 的风险形状也不同。本地 server 可能接触开发机文件、终端和内部网络，远程 server 则把数据和凭证交给另一个运行环境；两者都可能把“读”升级为“写”。如果一个工具可以创建 issue、修改代码或触发工作流，权限、审计、撤销和失败恢复都应当先于自动执行配置。\n\n这次 GA 还说明 MCP 的工具生态开始从单一演示走向日常开发流程，但能力边界仍由具体 server 决定。连接 GitHub MCP 不会自动获得全部 GitHub 权限，也不会让 Copilot 知道外部系统里所有数据；PAT、OAuth scope、仓库权限和 server 的实现共同决定实际可达范围。\n\n它和前一天 GitHub Remote MCP Server 增加公共仓库 secret scanning 的更新可以放在一起看：一个扩大工具接入面，一个在特定调用路径上检查密钥。两者都不能替代最小权限、令牌轮换、数据分类和提示注入测试。对组织来说，MCP policy、server allowlist 和每项工具的授权记录应该是同一套控制面的不同部分。\n\n验证这项 GA 最好从一个无敏感数据的仓库开始。记录 IDE、Copilot license、MCP policy、server 版本、认证方式和工具权限，分别测试读取、创建和失败回滚，再确认管理员关闭策略后调用是否真的停止。只有当这些边界在本地和远程 server 上都能复现，团队才知道自己启用的是一项集成能力，还是无意中打开了一条新的数据通道。",
+    "publishedAt": "2025-08-14",
+    "eventDate": "2025-08-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/github-copilot-mcp-ide-ga-20250814.svg",
+      "alt": "GitHub Copilot 在三种 IDE 中连接本地或远程 MCP server，并由管理员策略控制工具权限；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/github-copilot-mcp-ide-ga-20250814.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "GA 指的是三种 IDE 的 Copilot 集成",
+        "body": "GitHub 8 月 14 日宣布 JetBrains、Eclipse 和 Xcode 的 Copilot MCP 支持正式可用。它是 IDE 集成的 GA，不是 Remote GitHub MCP Server 本身的 GA；后者的官方 GA 日期是 9 月 4 日。",
+        "kind": "narrative"
+      },
+      {
+        "id": "connection",
+        "title": "本地和远程 MCP server 都能接入",
+        "body": "符合 MCP 规范的 server 可以向 Copilot 提供外部工具和数据，agent mode 再按任务调用。GitHub 示例包括用 PAT 或 OAuth 连接 GitHub MCP、创建 issue、查看仓库历史和搜索 GitHub。",
+        "kind": "technical"
+      },
+      {
+        "id": "policy",
+        "title": "组织和企业默认关闭 MCP policy",
+        "body": "MCP servers policy 默认关闭，必须由组织或企业管理员启用；使用者还需要有效 Copilot license。总开关打开后，server allowlist、凭证和工具写权限仍需单独核对。",
+        "kind": "boundary"
+      },
+      {
+        "id": "auth",
+        "title": "认证方式决定工具能触达什么",
+        "body": "PAT、OAuth scope、仓库权限和 server 实现共同决定实际可达范围。连接 GitHub MCP 不会自动获得全部 GitHub 权限，读工具也可能因为组合调用而接近写操作的风险。",
+        "kind": "technical"
+      },
+      {
+        "id": "local-remote",
+        "title": "本地与远程的风险形状不同",
+        "body": "本地 server 可能接触开发机文件、终端和内部网络，远程 server 则引入新的运行环境和数据边界。创建 issue、改代码或触发工作流前，应有审计、撤销和人工确认。",
+        "kind": "comparison"
+      },
+      {
+        "id": "security",
+        "title": "接入面扩大要和安全控制一起看",
+        "body": "它与前一天的 Remote MCP secret scanning 更新形成对照：一个扩大工具接入面，一个检查特定调用中的密钥。两者都不能替代最小权限、轮换、数据分类和提示注入测试。",
+        "kind": "example"
+      },
+      {
+        "id": "verification",
+        "title": "用策略关闭和失败回滚验证边界",
+        "body": "从无敏感数据仓库开始，记录 IDE、license、policy、server 版本、认证方式和工具权限，分别测试读、写、关闭策略和失败回滚，确认本地与远程路径是否一致。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "IDE 里的 Copilot 怎样调用一个 MCP 工具？",
+      "question": "把管理员策略、认证、server 和具体工具拆开，才能看清一次 agent action 到底经过了哪些授权。",
+      "steps": [
+        {
+          "label": "管理员打开策略",
+          "detail": "组织或企业管理员先在 Copilot policy 中启用 MCP servers，默认状态是关闭。",
+          "evidence": "MCP policy disabled by default"
+        },
+        {
+          "label": "配置本地或远程 server",
+          "detail": "在 JetBrains、Eclipse 或 Xcode 中安装插件并连接符合 MCP 规范的 server，记录版本和运行位置。",
+          "evidence": "Local and remote MCP servers"
+        },
+        {
+          "label": "绑定认证与权限",
+          "detail": "选择 PAT 或 OAuth，核对 scope、仓库权限和 server 暴露的读写工具，不把 license 当成资源授权。",
+          "evidence": "PAT/OAuth and repository actions"
+        },
+        {
+          "label": "让 agent mode 调工具",
+          "detail": "Copilot 根据任务调用创建 issue、查看历史或搜索等工具，执行前后保留输入、返回和人工确认记录。",
+          "evidence": "Agent mode tool use"
+        },
+        {
+          "label": "验证撤销与回滚",
+          "detail": "关闭 policy、撤销 token 或模拟失败，确认工具停止、数据不越界，写操作可以恢复。",
+          "evidence": "Policy and failure-path test"
+        }
+      ]
+    },
+    "source": {
+      "name": "GitHub Changelog",
+      "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "authorization",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [
+      "github-mcp-secret-scanning-20250813"
+    ],
+    "sources": [
+      {
+        "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+        "claim": "GitHub 2025-08-14 变更日志确认 Copilot 的 MCP 支持在 JetBrains、Eclipse 和 Xcode 正式可用，可连接本地或远程 MCP server。",
+        "excerpt": "Model Context Protocol (MCP) support with GitHub Copilot is now generally available for JetBrains, Eclipse, and Xcode ... you can connect Copilot to both local and remote MCP servers."
+      },
+      {
+        "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+        "claim": "GitHub 示例包含 PAT/OAuth、创建 issue、查看仓库历史和搜索 GitHub；组织/企业 MCP policy 默认关闭且需有效 Copilot license。",
+        "excerpt": "You can set up a remote GitHub MCP server using PAT or OAuth authentication ... creating issues, checking repo history, and searching GitHub. The MCP policy is disabled by default ... valid Copilot license."
+      },
+      {
+        "url": "https://github.blog/changelog/2025-08-13-github-mcp-server-secret-scanning-push-protection-and-more/",
+        "claim": "前一天的 GitHub MCP 更新作为相关背景，说明公共仓库远程 MCP 工具调用的密钥扫描与默认阻断是另一个事件。",
+        "excerpt": "The remote GitHub MCP server now scans all of its tool call inputs in public repositories. If an exposed secret is detected, the call is blocked by default."
+      },
+      {
+        "url": "https://github.blog/changelog/2025-09-04-remote-github-mcp-server-is-now-generally-available/",
+        "claim": "Remote GitHub MCP Server 自身的正式可用公告在 2025-09-04，与 8 月 14 日三种 IDE 的 Copilot MCP 集成 GA 是不同事件。",
+        "excerpt": "Remote GitHub MCP Server is now generally available."
+      }
+    ],
+    "canonicalUrl": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+    "sourceHash": "sha256:8dc126f7ed71db20b5364fa0599250f6bc762e4af1fa0a5cdd39344b5bbe73fe"
+  },
+  {
+    "slug": "google-research-ctcl-private-text-synthesis-20250814",
+    "title": "Google Research 用 1.4 亿参数 CTCL 做隐私保护文本合成",
+    "summary": "8 月 14 日，Google Research 介绍 CTCL（Data Synthesis with ConTrollability and CLustering），尝试用 1.4 亿参数的轻量生成器和差分隐私，在资源受限环境中生成合成文本。方法先用公开语料建立主题模型和条件生成器，再从私有数据提取带差分隐私的主题分布，用关键词条件微调和采样。作者在 PubMed、Chatbot Arena、Multi-Session Chat 和 OpenReview 四个数据集上报告强隐私条件下优于基线，但这仍是论文和作者实验结果，不是对所有数据集的隐私或质量保证。",
+    "body": "8 月 14 日，Google Research 介绍 CTCL，一套面向隐私保护文本合成的方法。它要解决的不是“把最大的模型再训练一遍”，而是当计算资源和隐私预算都紧张时，能不能用一个 1.4 亿参数的生成器，把私有语料的主题分布和部分细节保留下来。文章关联的研究已在 ICML 2025 展示，Google 这篇博客则把方法拆成了可读的三步。\n\n第一步是把通用能力和私有信息分开。CTCL-Topic 用公开语料建立主题模型，CTCL-Generator 是一个 140M 参数的条件语言模型，输入文档类型和关键词后生成文档。Google Research 说，主题模型从大规模公开语料中提取高层主题，生成器用公开数据预训练；这两个组件先完成一次，后面再拿来学习不同的私有领域。\n\n第二步才接触私有数据。方法统计私有语料在各个主题上的比例，形成带差分隐私的 topic histogram；同时把每篇私有文档转换为主题关键词和文档的配对，再对 140M 生成器做差分隐私微调。这样，原始文档不需要直接被交给一个十亿参数模型，生成器看到的是带关键词条件的训练信号。隐私保护仍取决于差分隐私参数、训练过程和数据处理是否按论文设定执行，不能只看模型大小。\n\n第三步是按私有主题分布采样。给定想要的合成数据量，系统按照 DP topic histogram 为每个主题分配样本数，再用对应关键词调用微调后的生成器。Google Research 还引用差分隐私的后处理性质，称生成阶段可以产生任意数量的样本而不额外消耗隐私成本。这个结论的前提是生成确实只是对已经发布的 DP 统计量和 DP 模型进行后处理，换一种训练或数据流就不能直接套用。\n\n作者在四个数据集上做了实验：PubMed 医学摘要、Chatbot Arena 的人机对话、Multi-Session Chat 的日常对话和 OpenReview 的论文评审。前三个看下游语言模型在真实测试集上的 next-token prediction，第四个看用合成数据训练的分类器在真实测试集上的准确率。博客称 CTCL 在强隐私保证下持续优于基线，关键词条件和公开语料预训练的消融也带来明显收益。\n\n这些结果有两个需要同时记住的限定。第一，实验比较的是作者选定的基线、数据集、隐私预算和下游任务；“优于基线”不能改写成任何领域都优于真实数据或其他方法。第二，合成数据保留主题分布，不代表保留了每个个体的事实，也不保证没有隐性偏差、记忆或领域外失真。医学摘要和聊天数据的风险结构也不一样。\n\nCTCL 最值得借鉴的地方是把隐私预算、数据分布、模型规模和可扩展生成拆开处理。复现实验时应保存 epsilon、主题数量、关键词、DP 微调配置、样本规模、近邻/记忆泄露检查和下游任务结果，并把各数据集分开报告。只有这样，1.4 亿参数这个数字才会回到它真正的意义：一种资源受限下的设计选择，而不是隐私安全的单一证明。",
+    "publishedAt": "2025-08-14",
+    "eventDate": "2025-08-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-research-ctcl-private-text-synthesis-20250814.svg",
+      "alt": "CTCL 用主题分布、关键词条件和差分隐私微调生成器，从私有文本生成合成数据；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/google-research-ctcl-private-text-synthesis-20250814.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "CTCL 把隐私文本合成拆成三步",
+        "body": "Google Research 8 月 14 日介绍 CTCL，目标是在资源受限环境里用轻量模型生成隐私保护的合成文本，避免直接微调十亿参数模型。",
+        "kind": "narrative"
+      },
+      {
+        "id": "public-components",
+        "title": "通用主题模型和生成器先用公开语料训练",
+        "body": "CTCL-Topic 从公开语料抽取主题，CTCL-Generator 是 140M 参数的条件语言模型，接收文档类型和关键词后生成文本；两个组件可复用于不同私有领域。",
+        "kind": "technical"
+      },
+      {
+        "id": "private-learning",
+        "title": "私有数据只贡献 DP 主题分布和微调信号",
+        "body": "方法从私有语料计算带差分隐私的 topic histogram，并将文档转成关键词/文档配对，对生成器进行 DP 微调。隐私结论依赖完整的差分隐私参数和训练流程。",
+        "kind": "technical"
+      },
+      {
+        "id": "generation",
+        "title": "按主题采样，后处理可以继续生成",
+        "body": "生成阶段按 DP topic histogram 分配每个主题的样本量，再用关键词条件调用微调模型。作者依据差分隐私后处理性质称可生成任意数量样本，但前提是数据流确实只使用 DP 结果。",
+        "kind": "example"
+      },
+      {
+        "id": "evaluation",
+        "title": "四个数据集检验下游效用",
+        "body": "实验覆盖 PubMed、Chatbot Arena、Multi-Session Chat 和 OpenReview，分别测试生成任务的 next-token prediction 或分类准确率；作者称强隐私保证下 CTCL 持续优于基线。",
+        "kind": "comparison"
+      },
+      {
+        "id": "limits",
+        "title": "作者实验结果不等于普遍隐私保证",
+        "body": "结果受基线、数据集、隐私预算和下游任务影响；主题分布保留也不代表个体事实、偏差、记忆和领域外质量都得到控制。不同数据集的风险不能合并成一个结论。",
+        "kind": "boundary"
+      },
+      {
+        "id": "replication",
+        "title": "把 epsilon 和泄露检查一起记录",
+        "body": "复现时保存隐私预算、主题数量、关键词、DP 微调配置、样本规模、近邻/记忆泄露检查和下游结果，把 140M 当成资源选择，而不是安全证明。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "synthetic-data",
+      "title": "CTCL 怎样从私有文本得到可用的合成数据？",
+      "question": "先用公开语料准备组件，再把私有信息压缩成差分隐私的主题和条件，最后按分布采样。",
+      "steps": [
+        {
+          "label": "准备公开组件",
+          "detail": "用公开语料建立 CTCL-Topic 和 140M 参数的 CTCL-Generator，先获得通用主题与条件生成能力。",
+          "evidence": "CTCL-Topic / CTCL-Generator"
+        },
+        {
+          "label": "统计私有主题分布",
+          "detail": "将私有文档映射到主题并计算 DP topic histogram，不把原始语料直接交给大模型。",
+          "evidence": "Differentially private topic histogram"
+        },
+        {
+          "label": "DP 微调关键词条件",
+          "detail": "把私有文档转换成主题关键词与文本配对，用差分隐私微调轻量生成器。",
+          "evidence": "DP fine-tuning with keywords"
+        },
+        {
+          "label": "按主题生成样本",
+          "detail": "按照 DP 主题分布分配样本数，再以关键词为条件生成文本；额外样本要满足后处理前提。",
+          "evidence": "Topic-conditioned sampling"
+        },
+        {
+          "label": "分别评估质量和隐私",
+          "detail": "在每个数据集上报告下游效用、epsilon、记忆/近邻泄露和偏差检查，不能只引用“优于基线”。",
+          "evidence": "Four-dataset evaluation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Research",
+      "url": "https://research.google/blog/beyond-billion-parameter-burdens-unlocking-data-synthesis-with-a-conditional-generator/"
+    },
+    "relatedSlugs": [
+      "data-pipeline",
+      "eval",
+      "event",
+      "llm"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://research.google/blog/beyond-billion-parameter-burdens-unlocking-data-synthesis-with-a-conditional-generator/",
+        "claim": "Google Research 2025-08-14 介绍 CTCL，以 140M 参数的轻量模型和差分隐私生成合成文本，面向资源受限应用。",
+        "excerpt": "We propose CTCL ... generating privacy-preserving synthetic data without fine-tuning billion-scale LLMs ... CTCL uses a lightweight 140 million parameter model."
+      },
+      {
+        "url": "https://research.google/blog/beyond-billion-parameter-burdens-unlocking-data-synthesis-with-a-conditional-generator/",
+        "claim": "博客说明 CTCL 使用 DP topic histogram、DP 微调和主题条件生成，在 PubMed、Chatbot Arena、Multi-Session Chat、OpenReview 上做评估，并称强隐私条件下优于基线。",
+        "excerpt": "We evaluated CTCL across diverse datasets, demonstrating that it consistently outperforms baselines, particularly under strong privacy guarantees."
+      }
+    ],
+    "canonicalUrl": "https://research.google/blog/beyond-billion-parameter-burdens-unlocking-data-synthesis-with-a-conditional-generator/",
+    "sourceHash": "sha256:8f27e3cc580d29bf5e52e3dd9598d93ba19814bf62d5f26d2d337d4a3cade636"
+  },
+  {
+    "slug": "gsa-usai-federal-ai-evaluation-suite-20250814",
+    "title": "美国 GSA 发布 USAi：给联邦机构一个免费试用和比较 AI 的入口",
+    "summary": "8 月 14 日，美国总务管理局（GSA）宣布 USAi 上线，把聊天、代码生成和文档摘要等生成式 AI 工具放进一个面向联邦机构的安全评估套件。GSA 称平台免费、当天对所有联邦机构开放，支持比较不同 AI 系统的能力、性能和局限，帮助机构在采购、定制和集成前做判断。它是试验和评估入口，不等于全政府已经部署、认证了某个模型，也不替代机构自己的数据和安全审查。",
+    "body": "8 月 14 日，美国总务管理局（GSA）宣布 USAi 上线。官方把它描述为一个安全的生成式 AI 评估套件，让联邦机构可以在不重复建设每套基础设施的情况下试验模型、比较表现，再决定哪些能力值得采购、定制或接入现有系统。GSA 称平台当天对所有联邦机构开放，使用不收费。\n\nUSAi 提供的入口很直观：聊天式 AI、代码生成和文档摘要都在同一个云端环境里。GSA 把它放在“评估”而不是单纯“聊天”的位置，机构可以探索不同系统的能力，测量表现，记录优势和限制，再把结果带回具体任务。这个顺序很重要，模型在演示问题上的回答好看，不代表它适合处理机构的真实文件、代码库或业务流程。\n\n平台还被设计成共享服务。GSA 称，集中式环境可以减少各机构重复搭建资源的成本，并提供仪表盘和使用分析，帮助团队跟踪性能、评估成熟度和制定采用策略。对于刚开始组建 AI 团队的机构，这些记录能把“试过几个模型”变成可比较的过程；对已经有系统的机构，它们仍然只是采购前的一个观察窗口。\n\nGSA 新闻稿把 USAi 放进白宫 America’s AI Action Plan 的基础设施和采用目标里，并称平台采用可信、与标准对齐的环境。这里要分清官方定位和可验证事实：新闻稿说明了平台能做什么、谁可以申请访问，以及 GSA 对安全和规模的自我描述；它没有证明每个联邦机构都已经接入，也没有给出跨任务的统一准确率、风险认证或采购结论。\n\n真正使用时，数据边界会比入口名称更关键。机构需要确认测试数据能否上传、数据是否会用于训练或跨机构共享、模型版本是否固定、提示和输出是否留有审计记录，以及不同模型的比较是否用了同一套任务和评估标准。涉及个人信息、敏感执法材料或内部采购文件时，USAi 的“安全环境”仍要和机构自己的分类、授权、保留及人工审查政策对齐。\n\nUSAi 也可能改变 AI 采购的讨论方式。先把一个任务拆成可复现的测试，再比较能力、成本、延迟、失败类型和人工接管需求，机构才能说明为什么选择某个模型或暂缓部署。反过来，如果评估只使用平台内的简短示例，得到的结论仍可能离真实工作很远。\n\n因此，这次发布的价值更像是把政府 AI 试用变成一项共享基础设施，而不是宣布某个模型已经适合所有部门。下一步应查看访问控制、数据处理、模型清单、版本变化、结果导出和事件响应的实际文档，再用一个低风险、可回滚的任务做端到端试验。平台提供比较的场地，机构仍要为采用决定负责。",
+    "publishedAt": "2025-08-14",
+    "eventDate": "2025-08-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/gsa-usai-federal-ai-evaluation-suite-20250814.svg",
+      "alt": "GSA USAi 为联邦机构提供共享的 AI 试验与跨系统评估入口，帮助形成采购前判断；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/gsa-usai-federal-ai-evaluation-suite-20250814.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "GSA 把 USAi 定位成共享评估入口",
+        "body": "GSA 8 月 14 日宣布 USAi 上线，供联邦机构免费试验和评估生成式 AI。官方称当天对所有联邦机构开放，但这代表访问入口，不代表全政府已经部署或完成统一认证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capabilities",
+        "title": "聊天、代码和文档摘要放在同一环境",
+        "body": "平台提供聊天式 AI、代码生成和文档摘要，目标是让机构探索能力、测量性能并找出不同 AI 系统的优势和限制。演示可用不等于真实工作流可用。",
+        "kind": "technical"
+      },
+      {
+        "id": "shared-service",
+        "title": "共享服务减少重复建设",
+        "body": "GSA 把 USAi 描述为安全的云端共享服务，并提供仪表盘和使用分析，用于跟踪性能、成熟度和采用策略。机构仍需把结果放回自己的任务、预算和风险上下文。",
+        "kind": "comparison"
+      },
+      {
+        "id": "decision",
+        "title": "它连接的是采购前判断",
+        "body": "官方希望机构在采购、定制和集成前比较不同系统。可复现任务、统一评估条件和失败类型记录，比单次演示的好答案更能支持采用决定。",
+        "kind": "example"
+      },
+      {
+        "id": "claims",
+        "title": "平台自述和验证结果要分开",
+        "body": "GSA 新闻稿称 USAi 安全、与标准对齐并支持规模化采用，但没有给出跨任务统一准确率、风险认证或全政府部署证据。文章只把这些写成官方定位，不把宣传语当成实测结论。",
+        "kind": "boundary"
+      },
+      {
+        "id": "data-boundary",
+        "title": "测试数据和模型版本决定结论能否复现",
+        "body": "使用前要确认上传数据用途、模型版本、提示与输出日志、结果导出、访问控制和保留时间。敏感材料还要遵守机构自己的分类、授权和人工审查政策。",
+        "kind": "technical"
+      },
+      {
+        "id": "next-tests",
+        "title": "先用低风险任务做端到端试验",
+        "body": "从可回滚的任务开始，记录能力、成本、延迟、失败类型和人工接管，再核对事件响应和版本变化。平台提供比较场地，机构仍为采用决定负责。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "一个政府 AI 试验平台怎样支持采购前决策？",
+      "question": "把任务、模型、证据和机构边界分开记录，才能把“试过”变成可复核的采用判断。",
+      "steps": [
+        {
+          "label": "选一个低风险任务",
+          "detail": "先从可回滚的摘要、内部问答或代码辅助开始，明确谁会使用、谁会被输出影响。",
+          "evidence": "Use-case selection"
+        },
+        {
+          "label": "固定模型和输入",
+          "detail": "记录模型版本、提示、数据类别和评估标准，避免把不同条件下的回答直接并排比较。",
+          "evidence": "Reproducible evaluation"
+        },
+        {
+          "label": "测能力也测失败",
+          "detail": "同时记录准确性、延迟、成本、拒答、幻觉和人工接管，不只挑最好的一次演示。",
+          "evidence": "Performance and limitations"
+        },
+        {
+          "label": "核对数据与权限",
+          "detail": "确认上传、日志、保留、跨机构共享、访问控制和结果导出是否符合本机构政策。",
+          "evidence": "Data boundary and authorization"
+        },
+        {
+          "label": "再决定采购或集成",
+          "detail": "把评估结果、风险处置、版本变化和事件响应写入决策记录，再决定采用、定制或暂缓。",
+          "evidence": "Adoption decision record"
+        }
+      ]
+    },
+    "source": {
+      "name": "U.S. General Services Administration",
+      "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-launches-usai-to-advance-white-house-americas-ai-action-plan-08142025"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "authorization",
+      "eval",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-launches-usai-to-advance-white-house-americas-ai-action-plan-08142025",
+        "claim": "GSA 2025-08-14 新闻稿宣布 USAi，定位为供联邦机构试验和采用生成式 AI 的安全评估套件，并称不向机构收费。",
+        "excerpt": "GSA announced the launch of USAi, a secure generative artificial intelligence evaluation suite that enables federal agencies to experiment with and adopt artificial intelligence at scale—faster, safer, and at no cost to them."
+      },
+      {
+        "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-launches-usai-to-advance-white-house-americas-ai-action-plan-08142025",
+        "claim": "GSA 列出聊天、代码生成、文档摘要、跨系统比较、使用分析和当天向所有联邦机构开放等信息。",
+        "excerpt": "The platform puts powerful tools such as chat-based AI, code generation, and document summarization ... By enabling organizations to explore capabilities, measure performance, and identify strengths and limitations ... USAi is available today to all federal agencies."
+      }
+    ],
+    "canonicalUrl": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-launches-usai-to-advance-white-house-americas-ai-action-plan-08142025",
+    "sourceHash": "sha256:85045a6722b9142a01c118a800d7fcaaa551a0fe9c2918cfcef80f47fd8f637c"
+  },
+  {
+    "slug": "nist-ai-control-overlays-concept-paper-20250814",
+    "title": "NIST 想把 AI 安全控制做成可组合的 overlays",
+    "summary": "8 月 14 日，NIST 发布用于保护 AI 系统的 SP 800-53 Control Overlays 概念论文和拟议行动计划。它把生成式 AI、预测型 AI、单智能体、多智能体以及 AI 开发者列为首批用例，准备在现有安全控制上按场景补充和裁剪，而不是另起一套孤立清单。材料仍处于概念和征求反馈阶段，尚不是最终标准；第一批用例计划在 2026 财年初形成公开草案。",
+    "body": "8 月 14 日，NIST 发布了一份不太像“新框架发布会”的材料：SP 800-53 Control Overlays for Securing AI Systems 概念论文，以及配套的拟议行动计划。它没有宣布一套已经定稿的 AI 合规清单，而是在问一个更工程化的问题：组织已经有一套安全控制和流程，面对 AI 系统时，哪些地方需要按场景补上、改写或提高优先级？\n\n这条路线建立在 NIST 已有的安全基础上。SP 800-53 本来就是控制目录，很多组织已经有计划、实施和评估它的流程。NIST 提议在这些控制之上制作 overlays：为特定技术、系统、任务空间或运行环境选择控制，必要时修改参数并补充实现说明。这样做的好处是，AI 风险可以落到熟悉的访问控制、配置管理、身份认证、事件响应和资产保护流程里，而不是只停在一份原则宣言。\n\n概念论文先列出五类用例。第一类是使用生成式 AI 的助手或大语言模型，既包括内部部署、接入专有数据的 RAG，也包括第三方托管模型；第二类是使用和微调预测型 AI，关注训练、部署和维护三个阶段；第三类是单智能体，例子包括连接邮件、文件、日历和内部系统的企业 Copilot，以及通过 MCP 操作代码仓库的编码助手。第四类是多智能体，多个代理通过 MCP 或 A2A 协作，从报销单据抽取信息、按政策校验并路由付款。第五类直接面向 AI 开发者，关注模型权重、数据和其他关键资产的安全。\n\n这里的“overlay”不是把所有风险都压到同一个模板里。论文把训练与测试数据、模型权重、配置设置和部署基础设施都列为可能需要保护的组件，也强调每个用例要保护信息的机密性、完整性和可用性。一个连内部 CRM 的企业 Copilot，和一个在公共数据上训练的预测模型，权限、输入、更新和事故路径都不一样；控制层需要保留这种差异。\n\nNIST 还特意把这套工作与 AI RMF、生成式 AI 安全开发实践和对抗性机器学习攻击分类放在一起。Control Overlays 的目标更窄，主要是把安全控制变成可实现、可评估的场景指南；AI RMF 还覆盖有效性、可靠性、公平、隐私、透明度和可解释性等更广的可信性问题。两者可以一起用，但一份 overlay 不会自动替代完整的 AI 风险管理。\n\n多智能体用例在论文里被标为目前最不成熟的一类。NIST 的示例已经写到代理之间通过标准协议交换信息、根据提取内容做付款路由，但也承认采用还在早期，后续要随着实践和控制难点继续调整。这种写法比把 agent 当作普通 API 更诚实：安全边界会随着代理数量、协作方式和可执行动作一起变化。\n\n下一步不是立刻“认证通过”。NIST 正在征集用例是否代表真实采用、哪些地方存在缺口、应先开发哪类 overlay，以及还应加入哪些场景的反馈，并开设 Slack 社区。按行动计划，首个用例目标是在 2026 财年初形成公开征求意见草案，且计划一次推进一个用例。企业现在能做的是拿自己的系统对照这些用例，找出控制缺口，同时把这份材料当作正在形成的工作方向，而不是已经生效的标准或监管命令。",
+    "publishedAt": "2025-08-14",
+    "eventDate": "2025-08-14",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nist-ai-control-overlays-concept-paper-20250814.svg",
+      "alt": "NIST 提议把生成式 AI、预测型 AI、单/多智能体和开发者控制叠加到既有 SP 800-53 安全控制上；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/nist-ai-control-overlays-concept-paper-20250814.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "NIST 先发布概念论文和行动计划",
+        "body": "NIST 8 月 14 日发布 SP 800-53 Control Overlays for Securing AI Systems 概念论文和拟议行动计划，材料用于讨论下一步怎样为 AI 系统补充实现导向的安全控制。",
+        "kind": "narrative"
+      },
+      {
+        "id": "overlay",
+        "title": "Overlay 是在既有控制上按场景加层",
+        "body": "组织可以从 SP 800-53 控制目录中选择、修改和补充控制，为特定技术、任务和运行环境设置参数。这样 AI 安全能接入已有的访问、配置、身份和事件响应流程。",
+        "kind": "technical"
+      },
+      {
+        "id": "use-cases",
+        "title": "五类用例覆盖模型、代理和开发者",
+        "body": "首批用例包括生成式 AI 助手、预测型 AI、单智能体、多智能体和 AI 开发者控制。企业 Copilot、MCP 编码助手和多代理报销流程都被放进了讨论范围。",
+        "kind": "comparison"
+      },
+      {
+        "id": "assets",
+        "title": "控制对象不只是模型本身",
+        "body": "论文把训练与测试数据、模型权重、配置、部署基础设施和输出列为需要保护的资产，并按具体用例处理机密性、完整性和可用性。",
+        "kind": "technical"
+      },
+      {
+        "id": "relationship",
+        "title": "和 AI RMF 是互补关系",
+        "body": "Control Overlays 更聚焦安全控制的实现和评估；AI RMF 还覆盖有效性、可靠性、公平、隐私、透明度和可解释性等更广的可信性问题。Overlay 不能替代完整风险管理。",
+        "kind": "comparison"
+      },
+      {
+        "id": "multi-agent",
+        "title": "多智能体用例被标为最不成熟",
+        "body": "NIST 讨论多个代理通过 MCP 或 A2A 协作、提取信息并采取行动，但也说明该方向的采用和控制仍在演化。代理数量、协议和可执行动作会一起改变安全边界。",
+        "kind": "example"
+      },
+      {
+        "id": "status",
+        "title": "现在是征求反馈，不是最终标准",
+        "body": "NIST 正在收集用例代表性、优先级和缺口反馈，并计划在 2026 财年初按用例逐步发布公开草案。企业可以用它做差距分析，不能把概念论文当成已经生效的认证或监管要求。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-tests",
+        "title": "把自己的系统映射到用例和资产",
+        "body": "落地时先画出数据、权重、配置、工具和输出的边界，再区分单/多代理、第三方模型和内部部署，最后把访问、变更、监控、事件响应和人工接管证据挂回既有控制。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "一层 AI 安全 overlay 怎样接到现有控制？",
+      "question": "先确认系统用例和资产，再把需要新增或调整的控制挂回组织已有的安全流程。",
+      "steps": [
+        {
+          "label": "先选实际用例",
+          "detail": "区分生成式助手、预测模型、单智能体、多智能体和开发者工作，不要用一个模板覆盖全部系统。",
+          "evidence": "Five proposed AI use cases"
+        },
+        {
+          "label": "画出关键资产",
+          "detail": "把训练/测试数据、模型权重、配置、部署基础设施、工具权限和输出分别列出来。",
+          "evidence": "AI system components and outputs"
+        },
+        {
+          "label": "从 SP 800-53 选控制",
+          "detail": "沿用组织已经熟悉的访问、身份、配置、监控和事件响应控制，再按 AI 场景修改参数或补充指导。",
+          "evidence": "SP 800-53 control overlays"
+        },
+        {
+          "label": "检查代理协作边界",
+          "detail": "对 MCP、A2A、工具调用和人工接管分别记录谁能读、写、更新和付款，尤其是多代理流程。",
+          "evidence": "Single and multi-agent scenarios"
+        },
+        {
+          "label": "用草案反馈校正",
+          "detail": "把差距、误报和未覆盖场景反馈给项目，再等待公开草案，别把概念论文当成定稿要求。",
+          "evidence": "NIST feedback and draft plan"
+        }
+      ]
+    },
+    "source": {
+      "name": "National Institute of Standards and Technology",
+      "url": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "authorization",
+      "data-pipeline",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper",
+        "claim": "NIST 官方页确认 2025-08-14 发布 Control Overlays 概念论文和拟议行动计划，覆盖生成式/预测型 AI、单/多智能体和 AI 开发者控制。",
+        "excerpt": "NIST has released a concept paper and proposed action plan for developing a series of NIST SP 800-53 Control Overlays for Securing AI Systems ... generative AI, predictive AI, single and multi-agent AI systems, and controls for AI developers."
+      },
+      {
+        "url": "https://csrc.nist.gov/csrc/media/Projects/cosais/documents/NIST-Overlays-SecuringAI-concept-paper.pdf",
+        "claim": "概念论文把 overlays 定义为可从 SP 800-53 选择、修改和补充的场景控制，并列出五类用例和后续公开草案计划。",
+        "excerpt": "Control overlays enable organizations and communities of interest to customize the controls ... NIST proposes an initial set of five use cases ... with the goal of issuing a public draft for comment in early FY26."
+      }
+    ],
+    "canonicalUrl": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper",
+    "sourceHash": "sha256:243c128fb9428ba73121ffbc4e5700a16db022f5746cd2f66b5b23bdce636bd4"
+  },
+  {
     "slug": "gemini-personal-context-temporary-chat-20250813",
     "title": "Gemini 开始参考过去对话，同时给一次性聊天留出隔离带",
     "summary": "8 月 13 日，Google 为 Gemini app 推出 Personal context 和 Temporary Chat。前者在开启后可以参考过去对话来学习偏好，首发从 2.5 Pro 和部分国家开始，设置默认开启但可以关闭；后者不出现在最近对话或 Gemini Apps Activity 中，也不用于个性化或训练 Google 的 AI 模型，但为了回应和处理反馈最多保留 72 小时。两条功能一起出现，说明“更懂你”和“少留下记录”需要由不同的开关来管理。",
