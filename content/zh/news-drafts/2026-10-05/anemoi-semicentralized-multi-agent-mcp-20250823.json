@@ -1,0 +1,194 @@
+{
+  "slug": "anemoi-semicentralized-multi-agent-mcp-20250823",
+  "title": "Anemoi 让多个 Agent 直接讨论，不把所有信息塞给一个 Planner",
+  "summary": "Anemoi 是一篇 2025 年 8 月 23 日提交的多 Agent 系统研究，基于 Coral Protocol 的 Agent-to-Agent 通信 MCP server，采用半中心化协作：所有 Agent 可以监测进度、评估结果、发现瓶颈并提出计划调整，减少单一 Planner 和重复上下文传递的依赖。在 GAIA 基准、GPT-4.1-mini 作为 Planner 的同一设置下，论文报告 Anemoi 准确率 52.73%，比 OWL 开源基线 43.63% 高 9.09 个百分点。",
+  "body": "多 Agent 系统常见的组织方式是一个 Planner 分任务，再把结果收回来。这个结构很清楚，却有一个弱点：Planner 既要理解全局，又要把每个 Worker 的进展翻译成下一轮提示；Planner 一旦变弱，整个团队就跟着变弱。8 月 23 日提交的 Anemoi，试着把协作改成半中心化。\n\n  Anemoi 建在 Coral Protocol 的 Agent-to-Agent 通信 MCP server 上。它不是取消 Planner，而是让 Agent 之间有结构化、直接的交流：大家可以看到任务进度，评估彼此的结果，发现卡点，再提出计划调整。这样，协作不再只是把多个回答拼进一个更长的 prompt。\n\n  这种设计回应了两个工程问题。第一，系统不必把全部判断都压在一个强 Planner 身上；第二，Worker 的反馈可以在团队内部被重新讨论，而不是每次都绕回中心再复制一遍上下文。少传一些重复文字，理论上能减轻上下文和延迟压力，但也会带来共享状态、冲突和谁能修改计划的新问题。\n\n  论文在 GAIA 上做了对比。使用 GPT-4.1-mini 作为 Planner 时，Anemoi 达到 52.73% 准确率；相同 LLM 设置下，OWL 开源基线为 43.63%，前者高 9.09 个百分点。这个比较能说明协作拓扑有影响，但它仍是一个基准环境，不能直接推成所有任务、所有模型都能得到相同收益。\n\n  半中心化也不是“大家随便聊天”。要让直接交流不变成噪声，系统必须定义消息类型、任务状态、结果证据和计划变更的权限。一个 Agent 说“这一步完成了”，其他 Agent 需要能知道它依据了什么；两个 Agent 提出冲突方案时，也需要明确谁负责合并和回滚。\n\n  MCP 在这里更像通信和工具的接口层，而不是协作质量本身。接口能让 Agent 互相发消息，却不会自动解决身份、权限、循环讨论和上下文污染。部署时仍要记录每次计划变更、共享结果和停止条件，把协作过程做成可以回放的轨迹。\n\n  Anemoi 的启发是把“协作”从提示拼接变成一种可观察的系统结构：Planner 保留方向，Agent 之间共享进展并参与修正。它可能减少单点依赖，却把一致性、权限和状态治理提到了台前；团队越自由，记录谁改了什么就越重要。",
+  "publishedAt": "2025-08-23",
+  "eventDate": "2025-08-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anemoi-semicentralized-multi-agent-mcp-20250823.svg",
+    "alt": "Anemoi 通过 A2A MCP 让多个 Agent 共享进度并协作调整计划",
+    "sourceUrl": "/images/news/anemoi-semicentralized-multi-agent-mcp-20250823.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "centralized-limit",
+      "title": "单一 Planner 容易成为协作瓶颈",
+      "body": "传统多 Agent 系统让 Planner 协调 Worker，信息单向传递。Planner 能力变弱时，任务分解、结果整合和计划更新都会受到影响。",
+      "kind": "narrative"
+    },
+    {
+      "id": "a2a-mcp",
+      "title": "A2A MCP 提供结构化的直接交流",
+      "body": "Anemoi 基于 Coral Protocol 的 Agent-to-Agent 通信 MCP server，让 Agent 直接共享进度、结果和改进建议，而不是只把回答拼回 Planner 的 prompt。",
+      "kind": "technical"
+    },
+    {
+      "id": "semi-centralized",
+      "title": "半中心化保留方向，也开放反馈",
+      "body": "系统仍可以有 Planner，但所有 Agent 能监测进展、评估结果和识别瓶颈。计划调整不再完全依赖一次中心转发，重复上下文也有机会减少。",
+      "kind": "comparison"
+    },
+    {
+      "id": "gaia-result",
+      "title": "GPT-4.1-mini Planner 在 GAIA 上达 52.73%",
+      "body": "论文报告 Anemoi 在 GPT-4.1-mini Planner 设置下准确率 52.73%，同设置 OWL 基线为 43.63%，高 9.09 个百分点。结果绑定 GAIA 与该模型组合。",
+      "kind": "technical"
+    },
+    {
+      "id": "state-governance",
+      "title": "直接交流需要消息、状态和权限规则",
+      "body": "共享状态、冲突方案、计划修改和停止条件都要有明确格式与负责人。自由讨论如果没有证据和合并规则，就会变成新的噪声源。",
+      "kind": "boundary"
+    },
+    {
+      "id": "mcp-boundary",
+      "title": "MCP 是接口层，不自动保证协作质量",
+      "body": "MCP 能承载 Agent 间消息和工具调用，但不会自动解决身份、权限、循环讨论或上下文污染。部署时要保留计划与结果轨迹。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "把协作做成可回放的系统结构",
+      "body": "Anemoi 减少单点 Planner 依赖，也把一致性和状态治理推到台前。记录谁改了什么、依据什么和何时停止，是半中心化协作的基本账。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "半中心化 Agent 团队怎样共同推进任务？",
+    "question": "Planner 保留方向，Agent 共享证据和进度，再按规则修改计划。",
+    "steps": [
+      {
+        "label": "拆出任务",
+        "detail": "Planner 给出初始目标、子任务和停止条件，同时为每个 Agent 分配可观察的状态。",
+        "evidence": "semi-centralized MAS ... planner agent coordinates multiple worker agents"
+      },
+      {
+        "label": "直接交流",
+        "detail": "通过 A2A MCP server 发送结构化进度、结果和阻塞消息，不只传一段自由文本。",
+        "evidence": "Agent-to-Agent communication MCP server ... structured and direct inter-agent collaboration"
+      },
+      {
+        "label": "互相评估",
+        "detail": "Agent 监测进度、检查结果、识别瓶颈，并提出可执行的计划修正。",
+        "evidence": "all agents monitor progress, assess results, identify bottlenecks, and propose refinements"
+      },
+      {
+        "label": "合并计划",
+        "detail": "按权限合并修正，记录冲突方案、依据、版本和回滚路径，避免多个 Agent 同时改写目标。",
+        "evidence": "supports adaptive plan updates"
+      },
+      {
+        "label": "比较轨迹",
+        "detail": "在同一模型与基准下回放准确率、上下文量、循环次数和失败恢复，不把一次 GAIA 结果外推成通用优势。",
+        "evidence": "52.73% accuracy ... +9.09% under identical LLM settings"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Anemoi 作者组",
+    "url": "https://arxiv.org/abs/2508.17068"
+  },
+  "relatedSlugs": [
+    "agent",
+    "mcp",
+    "tools",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17068",
+      "claim": "Anemoi 基于 Coral Protocol 的 A2A 通信 MCP server，支持 Agent 直接监测进度、评估结果和提出计划改进。",
+      "excerpt": "semi-centralized MAS built on the Agent-to-Agent (A2A) communication MCP server ... monitor progress ... propose refinements"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17068",
+      "claim": "在 GAIA、GPT-4.1-mini Planner 的相同设置下，Anemoi 52.73% 准确率高于 OWL 43.63%，差值 9.09 个百分点。",
+      "excerpt": "GAIA benchmark ... 52.73% accuracy ... OWL (43.63%) by +9.09% under identical LLM settings"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17068",
+  "sourceHash": "sha256:1a73b1fcb5ad5bd6558db3a4f37826b2c6849f99650abd31567ffc9eef4bd08b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 Planner、Worker 和 Agent 间直接协作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.99,
+      "evidence": [
+        "正文把 A2A MCP server 作为通信与工具接口层。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文讨论工具调用、消息格式、权限和结果证据。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "正文解释减少重复上下文传递和共享状态污染。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 23 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17068",
+      "claim": "arXiv 记录显示 Anemoi 于 2025 年 8 月 23 日提交，提出基于 A2A MCP 的半中心化多 Agent 协作。",
+      "excerpt": "Date: Sat Aug 23 15:45:10 2025 ... implementation is publicly available"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Anemoi 摘要中的中心化 Planner 限制、A2A MCP server、直接协作、进度监测、计划更新和 GAIA 52.73% vs 43.63% 结果；正文将接口能力与状态、权限和一致性治理分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把半中心化拓扑、A2A MCP 接口、GAIA 比较和协作治理拆开，没有把单一基准差值写成通用收益，也补充了消息、状态、权限和回滚边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-23-anemoi-semicentralized-multi-agent-mcp"
+}

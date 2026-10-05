@@ -1,0 +1,210 @@
+{
+  "slug": "kg-rag-gui-agent-20250830",
+  "title": "KG-RAG：把 GUI Agent 的界面导航知识放进可检索图谱",
+  "summary": "KG-RAG 论文于 8 月 30 日提交，针对 GUI Agent 在复杂移动任务里缺少应用内导航知识的问题，把 UI Transition Graph 转成结构化知识图谱和向量库，再用意图引导的检索生成可执行路径。在多种移动应用实验中，论文报告任务成功率 75.8%、决策准确率 84.6%，并发布面向中文移动生态的 KG-Android-Bench 和 KG-Harmony-Bench；结果还显示知识成本和跨平台迁移需要单独评估。",
+  "body": "让 Agent 操作手机，难点不只是看懂按钮。它还要知道一个应用里的页面怎样跳转、某个功能藏在哪一级菜单、完成当前目标需要先满足什么前置条件。只给模型截图和自然语言指令，Agent 很容易在相似页面之间来回试错。KG-RAG 的思路，是把这些导航关系整理成可以查询的结构。\n\n论文从 UI Transition Graph 出发：节点代表页面或界面状态，边代表点击、返回、输入等转移。KG-RAG 把碎片化的转移图转成知识图谱和向量数据库，再根据用户意图检索相关路径。模型得到的不是一张孤立截图，而是“从当前状态到目标状态可能经过哪些步骤”的候选信息。\n\n意图引导检索是其中的关键。用户说“把某个设置打开”，并不一定会用界面里的准确名称；检索器需要把目标意图映射到应用知识，再把结果组织成可执行的导航路径。路径仍要结合当前页面验证，不能因为图谱里存在一条边，就默认界面今天没有改版。\n\n在多种移动应用上，论文报告任务成功率 75.8%、决策准确率 84.6%，相对 AutoDroid 分别提升 8.9 和 8.1 个百分点。作者还报告平均步骤从 4.5 降到 4.1，并发布 KG-Android-Bench 和 KG-Harmony-Bench。数字说明结构化知识有帮助，但不同应用的图谱质量、版本变化和测试任务会直接影响结果。\n\n论文还观察到跨平台迁移：在 Weibo-web 和 QQ Music-desktop 上，成功率分别增加 40% 和 20%。这更像一个迁移信号，而不是“手机图谱可以直接覆盖桌面端”的保证；页面语义相似，不代表控件、权限和流程相同。\n\n落地时，图谱要有版本和来源。应用更新后，旧的页面转移不能悄悄继续参与决策；检索到的路径要和当前截图或 UI 状态核对，涉及支付、删除和账户修改的动作还需要独立授权。\n\nKG-RAG 的价值在于给 GUI Agent 一张可以查询和修正的“应用地图”。当 Agent 的每一步都能说明来自哪个页面关系、为什么选择这条路径，失败就不再只是盲目重试，而是可以回到知识更新、检索或执行验证中的具体环节。",
+  "publishedAt": "2025-08-30",
+  "eventDate": "2025-08-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/kg-rag-gui-agent-20250830.svg",
+    "alt": "KG-RAG 从 UI Transition Graph 检索页面路径并帮助 GUI Agent 执行任务",
+    "sourceUrl": "/images/news/kg-rag-gui-agent-20250830.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "navigation-knowledge",
+      "title": "GUI Agent 缺的常常是应用内地图",
+      "body": "截图和自然语言指令不够说明页面如何跳转、功能藏在哪里以及前置条件是什么。",
+      "kind": "narrative"
+    },
+    {
+      "id": "transition-graph",
+      "title": "把页面状态和转移关系结构化",
+      "body": "UI Transition Graph 的节点表示页面，边表示点击、返回和输入等动作，组成可查询的导航知识。",
+      "kind": "technical"
+    },
+    {
+      "id": "intent-retrieval",
+      "title": "用用户意图检索可执行路径",
+      "body": "检索器把模糊目标映射到应用知识，给模型候选路径；当前页面仍要验证，不能盲信旧图谱。",
+      "kind": "technical"
+    },
+    {
+      "id": "mobile-results",
+      "title": "任务成功率 75.8%，决策准确率 84.6%",
+      "body": "论文还报告平均步骤从 4.5 降到 4.1，并发布两个中文移动生态基准；结果依赖应用版本和图谱质量。",
+      "kind": "comparison"
+    },
+    {
+      "id": "cross-platform",
+      "title": "跨到网页和桌面端也有迁移信号",
+      "body": "Weibo-web 和 QQ Music-desktop 的成功率分别增加 40% 和 20%，但相似语义不等于相同控件和权限。",
+      "kind": "comparison"
+    },
+    {
+      "id": "graph-version",
+      "title": "应用更新后，旧路径要有版本边界",
+      "body": "图谱要记录来源和版本，检索结果还需与当前 UI 状态核对，高风险动作继续走独立授权。",
+      "kind": "boundary"
+    },
+    {
+      "id": "debuggable-failure",
+      "title": "失败可以回到知识、检索或执行环节",
+      "body": "每一步都说明页面关系和选择理由，Agent 就能从盲目重试转向具体修正。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "KG-RAG 怎样让 GUI Agent 少走回头路？",
+    "question": "把界面转移关系变成可检索知识，并在当前页面验证路径后再执行动作。",
+    "steps": [
+      {
+        "label": "记录页面状态",
+        "detail": "从 UI Transition Graph 提取页面、控件和可用动作，保留应用版本与来源。",
+        "evidence": "UI Transition Graphs and app-specific knowledge"
+      },
+      {
+        "label": "构建导航知识",
+        "detail": "把碎片化转移图整理成知识图谱和向量库，支持按目标意图检索。",
+        "evidence": "structured vector databases for efficient real-time retrieval"
+      },
+      {
+        "label": "匹配用户意图",
+        "detail": "将自然语言目标映射到应用内页面和候选路径，处理用户不使用准确控件名的情况。",
+        "evidence": "intent-guided LLM search"
+      },
+      {
+        "label": "核对当前界面",
+        "detail": "将检索路径与实时截图或状态比对，发现版本变化就暂停或重新检索。",
+        "evidence": "actionable navigation paths"
+      },
+      {
+        "label": "执行并记录授权",
+        "detail": "按路径推进明确动作，支付、删除和账户修改等高风险步骤仍由独立授权确认。",
+        "evidence": "GUI agent decision-making and deployment trade-offs"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00366"
+  },
+  "relatedSlugs": [
+    "agent",
+    "rag",
+    "vector-database",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00366",
+      "claim": "KG-RAG 将 UI Transition Graph 结构化为知识图谱和向量库，用意图引导检索生成 GUI Agent 导航路径。",
+      "excerpt": "KG-RAG: Enhancing GUI Agent Decision-Making via Knowledge Graph-Driven Retrieval-Augmented Generation"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00366",
+      "claim": "论文在移动应用上报告 75.8% 成功率、84.6% 决策准确率和跨平台迁移结果。",
+      "excerpt": "75.8% success rate ... 84.6% decision accuracy ... +40% on Weibo-web; +20% on QQ Music-desktop"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00366",
+  "sourceHash": "sha256:1983baee8636ae9fd7fc2f03da6d3283814ecaa60919c3efcbc289aab202b010",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 GUI Agent 的页面理解、路径检索和动作执行。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕从 UI Transition Graph 检索应用内导航知识展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "vector-database",
+      "score": 0.96,
+      "evidence": [
+        "正文明确写到结构化向量库承载页面转移知识。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.93,
+      "evidence": [
+        "正文把截图、页面状态和动作执行作为 Agent 工具链组成部分。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留移动应用成功率、决策准确率、步骤数和跨平台结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 30 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00366",
+      "claim": "arXiv 记录 KG-RAG 于 2025 年 8 月 30 日提交，研究知识图谱驱动的 GUI Agent 检索。",
+      "excerpt": "Date: Sat Aug 30 ... KG-RAG"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00366",
+      "claim": "摘要给出 75.8% 成功率、84.6% 决策准确率、步骤数和两个移动基准。",
+      "excerpt": "75.8% success rate ... 84.6% decision accuracy ... KG-Android-Bench and KG-Harmony-Bench"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 UI Transition Graph、知识图谱/向量库、意图检索、75.8%/84.6% 指标、步骤数和跨平台结果；正文补充应用版本、当前 UI 核对和独立授权边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 KG-RAG 写成应用地图、意图检索和实时核对的链路，保留移动与跨平台评测边界，并补上图谱版本和高风险授权；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-30-kg-rag-gui-agent-20250830"
+}

@@ -1,0 +1,193 @@
+{
+  "slug": "red-teaming-coding-agent-tool-invocation-20250906",
+  "title": "Coding Agent 的工具调用安全：红队评估发现风险不只在提示词",
+  "summary": "9 月 6 日首次提交的一篇论文从 Tool Invocation Prompt（TIP）入手，系统红队评估了 Cursor、Claude Code、Copilot、Windsurf、Cline 和 Trae 六类 Coding Agent。研究指出，工具描述、工具返回值和 Agent 的权限连接会共同影响安全；在作者的测试矩阵中，出现了系统提示泄露、工具行为劫持以及远程代码执行风险。本文只保留风险模型和防御原则，不复现 payload、注入链或执行步骤。",
+  "body": "Coding Agent 的能力来自“会写代码”加“能调用工具”。它可以读取仓库、运行命令、修改文件，甚至连接外部服务；因此安全边界不只在模型提示词里，也在工具描述、参数、返回值和执行环境之间。一个看似普通的工具协议，如果把不可信内容直接送回模型，就可能改变 Agent 对下一步动作的判断。\n\n这篇论文把 Tool Invocation Prompt（TIP）作为单独的安全对象来研究。作者对 Cursor、Claude Code、Copilot、Windsurf、Cline 和 Trae 做了系统红队评估，观察 Agent 如何理解工具、如何处理工具结果，以及不同模型和工具后端组合下的权限边界。论文于 9 月 6 日首次提交，当前版本的细节可能随后续修订变化。\n\n论文报告了两类需要分开的风险：工具调用过程可能泄露本不该暴露的系统信息，也可能被外部内容影响，从而改变 Agent 对工具的使用方式。作者在测试矩阵中观察到工具行为劫持和远程代码执行风险；这说明工具调用协议本身就是攻击面，不能只在模型层加一句“不要执行危险命令”。\n\n防御的第一步是把工具协议当成接口来做。工具名称、描述、参数和返回值都要有明确的 schema、来源和信任等级，外部返回内容不能覆盖系统规则；执行器应校验参数类型、目标路径、命令范围和副作用，再决定是否把结果交给模型。工具描述也要经过审查，不能把任何第三方文本当成开发者写的策略。\n\n权限隔离比“模型应该自觉”更可靠。读取代码、写文件、运行测试和访问网络应使用不同的身份与沙箱；默认只给完成当前任务所需的最小权限，涉及删除、发布、凭据或外部写入时要求人工确认。即使模型上下文被污染，执行层也应该能拒绝越界参数，并记录是谁、以什么来源提出了这次调用。\n\n测试时要覆盖工具链，而不只是输入输出。红队可以在隔离环境中检查系统提示是否意外暴露、工具描述和返回值是否能影响策略、不同后端是否共享过多权限，以及失败后是否能停止和回滚。测试证据应包含调用前上下文、解析后的参数、执行结果和权限决定；不要在真实仓库或生产凭据上验证远程执行风险。\n\n这项研究没有说明所有 Coding Agent 都必然存在同样问题，工具版本、模型后端、沙箱和默认权限都会改变结果。它更适合作为一份检查清单：把 TIP、参数校验、来源追踪、最小权限、人工审批和回滚一起纳入安全评审。Agent 越能替用户做事，执行层就越不能把“模型说了”当作授权。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/red-teaming-coding-agent-tool-invocation-20250906.svg",
+    "alt": "Coding Agent 的工具描述、返回值和执行权限组成一条需要分层防护的调用链",
+    "sourceUrl": "/images/news/red-teaming-coding-agent-tool-invocation-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "tool-surface",
+      "title": "Agent 的攻击面延伸到工具协议",
+      "body": "工具描述、参数、返回值和执行环境会共同影响 Agent 的动作，提示词不是唯一边界。",
+      "kind": "narrative"
+    },
+    {
+      "id": "six-agent-redteam",
+      "title": "六类真实 Coding Agent 被放进同一套红队框架",
+      "body": "研究评估 Cursor、Claude Code、Copilot、Windsurf、Cline 和 Trae，比较模型与工具后端组合。",
+      "kind": "technical"
+    },
+    {
+      "id": "leak-and-hijack",
+      "title": "提示泄露和工具行为劫持要分开处理",
+      "body": "论文报告了系统信息泄露、调用行为改变和远程代码执行风险，说明 TIP 本身需要安全设计。",
+      "kind": "comparison"
+    },
+    {
+      "id": "schema-validation",
+      "title": "把工具协议当成有来源的接口",
+      "body": "名称、描述、参数和返回值使用 schema、来源和信任等级，执行器校验类型、路径、命令和副作用。",
+      "kind": "technical"
+    },
+    {
+      "id": "least-privilege",
+      "title": "执行权限不能由模型一句话决定",
+      "body": "读写文件、运行命令和访问网络分开隔离，高风险动作需要最小权限、沙箱和人工确认。",
+      "kind": "boundary"
+    },
+    {
+      "id": "toolchain-test",
+      "title": "安全测试要覆盖整条调用链",
+      "body": "在隔离环境记录上下文、参数、结果和权限决定，检查失败时能否停止、回滚和追溯。",
+      "kind": "example"
+    },
+    {
+      "id": "version-boundary",
+      "title": "测试结果随 Agent、后端和版本变化",
+      "body": "论文案例不等于所有 Coding Agent 的通用结论，生产部署仍需按实际连接器和权限重新验证。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "怎样把 Coding Agent 的工具调用关进安全边界？",
+    "question": "先给工具协议加来源和 schema，再在执行层做最小权限、沙箱和人工确认。",
+    "steps": [
+      {
+        "label": "盘点工具表面",
+        "detail": "列出工具描述、参数、返回值、外部内容和模型后端，标记哪些数据可以影响下一次决策。",
+        "evidence": "Tool Invocation Prompt security"
+      },
+      {
+        "label": "校验协议与来源",
+        "detail": "为工具定义固定 schema、来源和信任等级，拒绝由第三方文本覆盖的策略或不符合格式的参数。",
+        "evidence": "tool descriptions and return values"
+      },
+      {
+        "label": "隔离执行权限",
+        "detail": "把读写文件、命令执行、网络和凭据放进不同身份与沙箱，默认只开放当前任务需要的范围。",
+        "evidence": "least privilege and defense recommendations"
+      },
+      {
+        "label": "高风险动作审批",
+        "detail": "删除、发布、外部写入和凭据使用需要人工确认，执行器对路径、命令和副作用再次检查。",
+        "evidence": "security guardrails of external and built-in tools"
+      },
+      {
+        "label": "在隔离环境回归",
+        "detail": "记录上下文、参数、结果和权限决定，覆盖不同 Agent/模型组合，修复后检查停止和回滚。",
+        "evidence": "systematic red-teaming of six coding agents"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05755"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05755",
+      "claim": "论文从 Tool Invocation Prompt 角度评估六类真实 Coding Agent，指出工具调用打开了新的安全攻击面。",
+      "excerpt": "systematic red-teaming of six popular real-world coding agents ... tool invocation opens a substantial attack surface"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05755",
+      "claim": "论文报告系统提示泄露、工具行为劫持和远程代码执行风险，并提出防御建议；本文不复现攻击链。",
+      "excerpt": "prompt leakage ... tool-invocation behavior ... remote code execution ... practical defense recommendations"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05755v1",
+      "claim": "arXiv 记录论文首次提交时间为 2025 年 9 月 6 日，后续版本有修订。",
+      "excerpt": "Submitted on 6 Sep 2025 (this version), latest version 28 Jun 2026"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05755",
+  "sourceHash": "sha256:be6801302acd78d061a88cfe6616783ea00f9625aeefb61944894bb72f0491bf",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 Coding Agent、工具调用、模型后端和执行环境展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文保留最小权限、人工确认、参数校验和执行身份隔离。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留六类 Agent、调用链红队、沙箱回归和版本矩阵。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 6 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05755v1",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日首次提交，研究对象是 LLM Agent 的工具调用安全。",
+      "excerpt": "[v1] Sat, 6 Sep 2025 ... Tool Invocation Prompt"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05755",
+      "claim": "摘要列出六类 Coding Agent、工具调用攻击面和防御建议；正文只保留高层风险与防护。",
+      "excerpt": "Cursor, Claude Code, Copilot, Windsurf, Cline, and Trae ... practical defense recommendations"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文首次提交日期、六类 Coding Agent、TIP 攻击面、提示泄露/工具劫持/RCE 高层结果和防御建议；正文不复现 two-channel 注入、payload、系统提示提取或远程执行步骤，补充 schema、来源、最小权限、沙箱和回滚。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把论文重点落在工具调用协议与执行层边界，保留六类 Agent 和高层风险结果；严格删去提示提取、双通道注入、payload 与远程执行复现细节，补充参数校验、来源追踪、最小权限、人工审批、沙箱和回滚；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-red-teaming-coding-agent-tool-invocation-20250906"
+}

@@ -1,0 +1,161 @@
+{
+  "slug": "goldman-devin-pilot-20250711",
+  "title": "高盛把 Devin 当作“新员工”试用：先扩充编码团队，不等于替代开发者",
+  "summary": "7 月 11 日，高盛 CIO Marco Argenti 向 CNBC 表示，银行计划把 Cognition 的 Devin 编程 agent 逐步扩展到数百个实例，未来可能达到数千个。公开说法强调由人监督的混合团队，目前没有披露可独立核验的生产率结果。",
+  "body": "7 月 11 日，TechCrunch 报道高盛正在测试 Cognition 的编程 agent Devin。高盛 CIO Marco Argenti 对 CNBC 表示，银行会先把 Devin 当作“新员工”来扩充团队，计划部署数百个实例，未来可能扩大到数千个；高盛称自己有大约 1.2 万名人类开发者。\n\n这里的“新员工”是一个便于传播的比喻，不是把软件当成具备雇佣关系的员工。公开说法更具体的部分是：Devin 用来处理低层、重复性的编码工作，实例需要在混合团队里由人监督。高盛此前已经在内部使用开发者 copilot，因此这次更像把辅助工具提升到可以分派任务、交回结果的 agent 层。\n\nDevin 的表现并非只由模型能力决定。Cognition 说 2.1 版本在能提供充分上下文的大型代码库里更合适，但外部报道也记录过它处理复杂编码任务时的局限。高盛的计划没有公布任务清单、验收标准、代码质量数据或节省了多少时间，所以不能把“数百个实例”写成已经证实的生产率跃升。\n\n对金融机构来说，真正需要先设计的是权限和审查：agent 能读哪些仓库、能否调用内部 API、谁批准它提交或修改代码、失败后怎样回滚，以及生成的改动怎样留下审计记录。把重复工作交给 agent 可以释放开发者时间，也可能把错误更快地铺到共享代码里。\n\n这条新闻的价值在于，它把“AI 会不会替代程序员”的抽象争论变成一项可以观察的组织实验。后续应该看高盛如何定义任务边界、如何测量返工和缺陷、以及人类监督是否真的覆盖了关键决策，而不是只看上线了多少个 Devin 实例。",
+  "publishedAt": "2025-07-11",
+  "eventDate": "2025-07-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/goldman-devin-pilot-20250711.svg",
+    "alt": "高盛把 Devin 放进由人监督的混合编码团队，任务、权限和审查边界清晰可见",
+    "sourceUrl": "/images/news/goldman-devin-pilot-20250711.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "“新员工”首先是一个扩展团队的比喻",
+      "body": "高盛 CIO 说计划部署数百个 Devin 实例并可能扩大到数千个，但软件实例不等于有人事关系的员工。",
+      "kind": "narrative"
+    },
+    {
+      "id": "hybrid-workforce",
+      "title": "公开计划强调人类监督",
+      "body": "Devin 被安排处理低层、重复性任务，结果仍要放回由开发者负责的混合工作流里。",
+      "kind": "comparison"
+    },
+    {
+      "id": "performance-boundary",
+      "title": "没有公开生产率数据",
+      "body": "公司产品在大型代码库和充分上下文下可能更合适，但高盛没有公布任务样本、返工率或缺陷数据。",
+      "kind": "boundary"
+    },
+    {
+      "id": "permission",
+      "title": "编程 agent 的风险在权限和回滚",
+      "body": "读仓库、调用内部 API、修改代码和提交变更是不同权限，不能因为任务重复就合并授权。",
+      "kind": "technical"
+    },
+    {
+      "id": "what-to-watch",
+      "title": "后续要看组织如何测量结果",
+      "body": "实例数量只能说明部署规模，真正的证据包括验收标准、返工、缺陷、审计记录和人工接管。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个编程 agent 进入企业代码库前要过几道门？",
+    "question": "把“会写代码”拆成任务、权限、审查和回滚，才知道 agent 是在帮忙还是扩大风险。",
+    "steps": [
+      {
+        "label": "限定任务",
+        "detail": "先选择有明确输入、输出和测试的重复工作，避免一开始就把模糊需求交给 agent。",
+        "evidence": "task scope"
+      },
+      {
+        "label": "授予最小权限",
+        "detail": "按仓库、分支、文件和内部 API 分配权限，让 agent 只看到完成任务所需的内容。",
+        "evidence": "authorization"
+      },
+      {
+        "label": "保留上下文",
+        "detail": "提供代码规范、依赖关系和测试命令，同时把敏感信息排除在上下文之外。",
+        "evidence": "context window"
+      },
+      {
+        "label": "人工验收",
+        "detail": "开发者检查生成的改动、测试结果和潜在副作用，再决定是否合并。",
+        "evidence": "human review"
+      },
+      {
+        "label": "可追踪回滚",
+        "detail": "保存 agent 的提示、工具调用、提交和审计记录，发现问题时可以定位并撤回。",
+        "evidence": "audit trail"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "tools",
+    "authorization",
+    "eval",
+    "event",
+    "api"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/",
+      "claim": "TechCrunch 7 月 11 日报道高盛计划部署数百个、未来可能数千个 Devin 实例，并强调人类监督的混合团队。",
+      "excerpt": "TechCrunch, “Goldman Sachs is testing viral AI agent Devin as a ‘new employee’,” July 11, 2025."
+    },
+    {
+      "url": "https://www.cnbc.com/2025/07/11/goldman-sachs-autonomous-coder-pilot-marks-major-ai-milestone.html",
+      "claim": "CNBC 报道高盛 CIO Marco Argenti 对 Devin 试点和规模计划的表述；文章保留其为管理层计划而非独立测量结果。",
+      "excerpt": "CNBC, Goldman Sachs autonomous coder pilot, July 11, 2025."
+    },
+    {
+      "url": "https://www.ibm.com/think/news/goldman-sachs-first-ai-employee-devin",
+      "claim": "IBM Think 汇总高盛把 Devin 引入开发工作的背景，用于交叉了解企业采用语境，不替代高盛正式生产率数据。",
+      "excerpt": "IBM Think, Goldman Sachs and Devin context."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/",
+  "sourceHash": "sha256:7bc0b5309ca5629c78f8be1d12797ce723b3ffa1ab0f9f33cbb91602b9115117",
+  "status": "published",
+  "discoveredAt": "2026-10-04T19:20:00.000Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/11/goldman-sachs-is-testing-viral-ai-agent-devin-as-a-new-employee/",
+      "claim": "TechCrunch 7 月 11 日报道高盛计划部署数百个、未来可能数千个 Devin 实例，并强调人类监督的混合团队。",
+      "excerpt": "TechCrunch, “Goldman Sachs is testing viral AI agent Devin as a ‘new employee’,” July 11, 2025."
+    },
+    {
+      "url": "https://www.cnbc.com/2025/07/11/goldman-sachs-autonomous-coder-pilot-marks-major-ai-milestone.html",
+      "claim": "CNBC 报道高盛 CIO Marco Argenti 对 Devin 试点和规模计划的表述；文章保留其为管理层计划而非独立测量结果。",
+      "excerpt": "CNBC, Goldman Sachs autonomous coder pilot, July 11, 2025."
+    },
+    {
+      "url": "https://www.ibm.com/think/news/goldman-sachs-first-ai-employee-devin",
+      "claim": "IBM Think 汇总高盛把 Devin 引入开发工作的背景，用于交叉了解企业采用语境，不替代高盛正式生产率数据。",
+      "excerpt": "IBM Think, Goldman Sachs and Devin context."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T19:20:00.000Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 7 月 11 日报道、其引用的 CNBC CIO 采访，以及公开的 Devin 版本背景；正文区分高盛的部署计划、Cognition 的产品口径和尚未公开的生产率证据。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T19:20:00.000Z",
+    "notes": "已按新闻报道、官方材料与公司自述边界核对，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T16:20:00Z",
+    "questions": [
+      "新闻主线、事件日期和发布/背景材料日期是否清楚？是。",
+      "是否区分官方主张、媒体报道和独立证据？是。",
+      "是否适合零基础读者且无模板化表达？是。"
+    ],
+    "notes": "新闻以高盛试用 Devin 的组织实验为主，数百/数千实例和生产率边界清楚；“新员工”解释为比喻，未把计划写成已证实替代或效率提升。来源归属和零基础可读性通过。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-11",
+  "promotedAt": "2026-10-04T18:37:03.907Z"
+}

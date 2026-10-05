@@ -1,0 +1,199 @@
+{
+  "slug": "mcpbench-tool-agents-20250828",
+  "title": "MCP-Bench：工具 Agent 不只要会调用函数，还要会串起整条工作流",
+  "summary": "MCP-Bench 论文于 8 月 28 日提交，提出一个面向真实多工具任务的 Agent 基准。它连接 28 个真实 MCP Server、250 个工具，覆盖金融、旅行、科学计算和学术搜索，要求模型从模糊指令中找到相关工具、规划多跳执行、使用中间结果约束回答，并完成跨域编排。论文对 20 个先进模型从工具 schema 理解、轨迹规划和任务完成三层评测，代码和数据公开。",
+  "body": "工具 Agent 的演示很容易把任务缩成一次函数调用：模型读到工具名，填好参数，拿到结果。但真实工作通常不是这样，用户不会直接告诉你应该用哪个工具，多个工具之间还会互相传递结果，任何一处参数错了，后面的步骤都可能一起偏掉。\n\nMCP-Bench 试图把这类工作流放进基准。它连接 28 个真实 MCP Server、250 个工具，覆盖金融、旅行、科学计算和学术搜索。任务不是给出明确工具名，而是用自然语言描述目标，让 Agent 自己检索、规划、调用并组合结果。\n\n基准关注四种能力。第一，模型能否从模糊指令中找到真正相关的工具；第二，能否为复杂目标规划多跳轨迹；第三，能否把中间工具输出带回后续步骤，而不是凭记忆编一个答案；第四，能否把不同领域的工具串起来完成任务。\n\n这比传统 API benchmark 更接近实际，也更容易暴露问题。工具 schema 看懂了，不代表会用；单步调用成功，不代表多跳轨迹不会把参数弄丢；回答里引用了工具结果，也不代表它没有在中途替换或误读结果。\n\nMCP-Bench 的评测框架因此分三层：工具层看 schema 理解和用法，轨迹层看计划和多步执行，任务层看最终目标是否完成。20 个模型的实验结果显示，这类复杂任务仍然困难，但摘要没有给出一个可概括所有模型的总分，所以不应把基准简化成一张排行榜。\n\n对 Agent 产品而言，工具目录、参数说明和返回结构不是后台细节，而是模型的工作环境。工具要有清晰的 schema、稳定的错误信息和可追踪的版本；跨工具传递的数据要带来源和类型，不能只靠模型把一段自然语言重新解释成参数。\n\n权限也要沿着轨迹走。用户说“帮我安排旅行”可能允许搜索，不等于允许付款；科学计算工具可以返回结果，不等于允许把结果写入生产数据库。每一步都要区分读取、计算、写入和对外动作，并在状态改变前重新检查授权。\n\nMCP-Bench 的价值在于把“会用工具”拆成可观察的行为链。Agent 真正变得可靠，不是因为它记住了更多函数名，而是它能在模糊目标下找到合适工具、保留中间证据、发现参数错误，并在无法确认时停下来。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mcpbench-tool-agents-20250828.svg",
+    "alt": "MCP-Bench 将模糊指令、工具检索、多跳轨迹和跨域任务完成连成评测链",
+    "sourceUrl": "/images/news/mcpbench-tool-agents-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "function-call-myth",
+      "title": "工具 Agent 不只是填参数",
+      "body": "真实任务里用户不说工具名，多个工具还会互相传递结果。某一步参数错，后面整条轨迹都可能偏掉。",
+      "kind": "narrative"
+    },
+    {
+      "id": "mcp-surface",
+      "title": "28 个 MCP Server、250 个工具",
+      "body": "MCP-Bench 覆盖金融、旅行、科学计算和学术搜索，让 Agent 从模糊目标开始寻找和组合工具。",
+      "kind": "technical"
+    },
+    {
+      "id": "four-capabilities",
+      "title": "找工具、做规划、用中间结果、跨域编排",
+      "body": "基准同时测试模糊指令检索、多跳执行、结果 grounding 和跨域工作流，不把单步成功当成完整能力。",
+      "kind": "comparison"
+    },
+    {
+      "id": "three-level-eval",
+      "title": "工具层、轨迹层、任务层分开评测",
+      "body": "工具层看 schema 和用法，轨迹层看计划与多步执行，任务层看最终目标；20 个模型的困难不能压成一张总榜。",
+      "kind": "technical"
+    },
+    {
+      "id": "schema-environment",
+      "title": "工具目录和返回结构就是 Agent 的工作环境",
+      "body": "schema、错误信息、版本和跨工具数据类型需要稳定、清晰、可追踪，不能靠模型重新猜参数。",
+      "kind": "example"
+    },
+    {
+      "id": "permission-trajectory",
+      "title": "搜索权限不等于付款权限",
+      "body": "每一步区分读取、计算、写入和对外动作；状态改变前重新检查授权，避免用户的宽泛目标变成无限权限。",
+      "kind": "boundary"
+    },
+    {
+      "id": "workflow-evidence",
+      "title": "保留中间证据，才能知道哪一步错了",
+      "body": "把工具选择、参数、返回、下一步计划和最终状态放进轨迹，Agent 才能在无法确认时停下。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样评测一个 Agent 是否真的会用工具？",
+    "question": "从模糊目标开始，分别验收工具选择、轨迹计划、中间结果和最终状态。",
+    "steps": [
+      {
+        "label": "隐藏工具名",
+        "detail": "用自然语言描述目标，不直接告诉模型该调用哪个工具，检查它能否从 schema 找到合适接口。",
+        "evidence": "retrieve relevant tools from fuzzy instructions without explicit tool names"
+      },
+      {
+        "label": "设置多跳任务",
+        "detail": "让一个工具的返回成为下一个工具的输入，记录参数、依赖和失败恢复。",
+        "evidence": "plan multi-hop execution trajectories for complex objectives"
+      },
+      {
+        "label": "核对中间结果",
+        "detail": "检查回答是否引用真实工具输出、有没有在步骤间丢字段或自行补写数值。",
+        "evidence": "ground responses in intermediate tool outputs"
+      },
+      {
+        "label": "隔离跨域权限",
+        "detail": "把搜索、计算、写入和对外动作分别授权，跨域编排不能自动扩大权限。",
+        "evidence": "orchestrate cross-domain workflows"
+      },
+      {
+        "label": "三层看结果",
+        "detail": "分别看 schema 理解、轨迹规划和任务完成，不用最终文字流畅度代替工具行为评测。",
+        "evidence": "tool-level ... trajectory-level ... task completion"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / MCP-Bench 作者组",
+    "url": "https://arxiv.org/abs/2508.20453"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "mcp",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20453",
+      "claim": "MCP-Bench 连接 28 个 MCP Server、250 个工具，覆盖金融、旅行、科学计算和学术搜索。",
+      "excerpt": "connects LLMs to 28 representative live MCP servers spanning 250 tools across domains"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20453",
+      "claim": "基准测试模糊指令找工具、多跳规划、中间结果 grounding 和三层任务能力，实验 20 个模型。",
+      "excerpt": "retrieve relevant tools from fuzzy instructions ... multi-hop ... ground responses ... multi-faceted evaluation ... 20 advanced LLMs"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20453",
+  "sourceHash": "sha256:986e717275a75c1693c2214b6236f8bdac82d6de242f5627bbd6c9f193722e9a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕工具 Agent、多跳轨迹和跨域任务展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 250 个工具、schema、参数、返回和权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.99,
+      "evidence": [
+        "正文直接分析 MCP Server 和 MCP-Bench。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文把工具层、轨迹层、任务层作为评测主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20453",
+      "claim": "arXiv 记录 MCP-Bench 于 2025 年 8 月 28 日提交，面向复杂现实工具任务。",
+      "excerpt": "Date: Thu Aug 28 ... Benchmarking Tool-Using LLM Agents"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20453",
+      "claim": "摘要给出 28 个 Server、250 个工具、20 个模型和三层评测能力。",
+      "excerpt": "28 representative live MCP servers ... 250 tools ... 20 advanced LLMs ... tool-level ... trajectory-level ... task completion"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 28 Server/250 工具、领域范围、模糊工具检索、多跳规划、中间结果 grounding、20 模型和三层评测；正文补充 schema、权限、版本和跨工具证据边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把工具 Agent 拆成工具层、轨迹层和任务层，补足 schema、权限和中间证据，不把 benchmark 写成真实生产保证；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-mcpbench-tool-agents-20250828"
+}

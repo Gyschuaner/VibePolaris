@@ -1,0 +1,178 @@
+{
+  "slug": "google-cloud-ai-agent-security-20250819",
+  "title": "Google Cloud 给 AI Agent 做资产盘点：工具、MCP 和运行时风险一起看",
+  "summary": "Google Cloud 在 2025 年 8 月 19 日的 Security Summit 公布了一组面向 AI Agent 的安全能力：在 Security Command Center 中发现 Agent 和 MCP Server，扩展 Model Armor 对 Agent 交互的内联防护，并增加针对 Agent 资产的威胁检测。公告把不同功能标成已提供、预览或后续提供，重点是把 Agent 当成一套需要盘点、保护和处置的系统，而不是只盯着模型本身。",
+  "body": "当企业把模型接进工具、数据和自动化流程，安全团队面对的对象就不再只有一个模型。Agent 有自己的身份、工具、上下文和运行轨迹，MCP Server 还可能在系统清单之外。8 月 19 日的 Google Cloud Security Summit，公布的正是一套围绕这些资产展开的防护能力。\n\n公告首先把 Agent 和 MCP Server 纳入 Security Command Center 的资产发现与风险识别范围。系统可以自动发现 AI Agent 和 MCP Server，帮助团队找出漏洞、配置错误和高风险交互；这部分能力在公告里标为后续提供预览，不能按已经全面可用来理解。\n\n第二条线是运行时内联防护。Google Cloud 表示，Model Armor 可以筛查 Agent、工具和 MCP Server 的交互，针对提示注入、工具投毒等风险；公告还说会把 Model Armor 的内联保护扩展到 Agentspace 的提示和响应，并把相关能力标成当时可用的预览。\n\n第三条线是威胁检测。Security Command Center 增加面向 AI Agent 的检测，用来发现异常或可疑行为，为事件响应提供线索。和只在调用前拦截一条提示相比，这一步把注意力放到了 Agent 已经运行起来之后的行为变化。\n\n这次发布的意义，不是给 Agent 加一个“安全”标签，而是把资产盘点、交互筛查、姿态控制和威胁检测拆成可以落到平台里的工作。团队可以先回答“我们有哪些 Agent 和 MCP Server”，再决定哪些输入需要筛查、哪些动作需要人工确认，以及异常后去哪条日志里追溯。\n\n公告中的能力依赖 Google Cloud 的具体产品、版本和预览范围，不能当成所有 Agent 框架的通用安全保证。真正接入时仍要核对覆盖的工具、数据流、身份权限和区域可用性，并用自己的提示注入、数据泄露和越权回归集验证防护是否真的生效。",
+  "publishedAt": "2025-08-19",
+  "eventDate": "2025-08-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-cloud-ai-agent-security-20250819.svg",
+    "alt": "Google Cloud 从 Agent 和 MCP 资产发现、交互防护到威胁检测建立安全闭环",
+    "sourceUrl": "/images/news/google-cloud-ai-agent-security-20250819.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "summit-event",
+      "title": "Google Cloud 把 Agent 当作需要管理的安全资产",
+      "body": "Google Cloud 在 2025 年 8 月 19 日 Security Summit 公布面向 AI Agent 的安全能力，覆盖资产发现、运行时交互保护、姿态控制和威胁检测。公告将其中不同功能分别标记为已提供、预览或后续提供。",
+      "kind": "narrative"
+    },
+    {
+      "id": "asset-inventory",
+      "title": "先发现 Agent 和 MCP Server，才知道暴露面有多大",
+      "body": "Security Command Center 将增加 AI Agent 和 MCP Server 的自动发现与风险识别，帮助团队定位漏洞、错误配置和高风险交互。公告把这部分标为后续提供预览，不能当成已经普遍可用的功能。",
+      "kind": "technical"
+    },
+    {
+      "id": "inline-protection",
+      "title": "Model Armor 把筛查放进工具交互中间",
+      "body": "公告称 Model Armor 可以筛查 Agent、工具和 MCP Server 交互，针对提示注入和工具投毒等风险，并把内联保护扩展到 Agentspace 的提示和响应；该扩展当时标为预览。",
+      "kind": "example"
+    },
+    {
+      "id": "posture-controls",
+      "title": "姿态控制和威胁检测分别管规则与异常行为",
+      "body": "面向 Agentspace 和 Agent Builder 的姿态控制用于约束组织策略，Security Command Center 的新检测则关注 Agent 资产上的异常与可疑行为。一个偏运行前的政策，一个偏运行后的线索。",
+      "kind": "comparison"
+    },
+    {
+      "id": "security-loop",
+      "title": "安全工作从模型评测扩展到资产、动作和日志",
+      "body": "团队可以先盘点 Agent 和 MCP Server，再决定哪些输入需要筛查、哪些动作要人工确认，以及异常发生后如何追溯。安全边界不只在模型输出，也在身份、工具和上下文链路。",
+      "kind": "technical"
+    },
+    {
+      "id": "product-boundary",
+      "title": "云平台能力仍要回到自己的覆盖范围里验证",
+      "body": "公告中的能力依赖具体产品、版本和预览范围，不能直接当成所有 Agent 框架的安全保证。上线前要核对工具、数据流、身份权限和区域可用性，并用提示注入、数据泄露与越权回归集实测。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一套 Agent 防护怎样从盘点走到处置？",
+    "question": "当 Agent、工具和 MCP Server 越来越多，安全团队先要看见什么，再拦截什么？",
+    "steps": [
+      {
+        "label": "盘点 Agent 资产",
+        "detail": "发现 Agent、MCP Server、工具身份和连接关系，先画出实际存在的调用面。",
+        "evidence": "Security Command Center adds AI agent and MCP server discovery"
+      },
+      {
+        "label": "识别配置风险",
+        "detail": "把漏洞、错误配置和高风险交互标出来，区分后续预览能力与当前可用能力。",
+        "evidence": "The announcement describes automated discovery and risk identification"
+      },
+      {
+        "label": "筛查交互内容",
+        "detail": "在提示、响应和工具/MCP 交互处检查提示注入、工具投毒与敏感数据泄露。",
+        "evidence": "Model Armor screens agent, tool and MCP server interactions"
+      },
+      {
+        "label": "设置运行姿态",
+        "detail": "按组织策略约束 Agent Builder 或 Agentspace 的动作、权限和数据路径。",
+        "evidence": "The announcement introduces posture controls tailored for AI agents"
+      },
+      {
+        "label": "跟踪异常并响应",
+        "detail": "用威胁检测发现可疑行为，结合日志和人工确认追查来源、影响与回滚动作。",
+        "evidence": "Security Command Center adds proactive threat detections for AI agents"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Cloud Blog",
+    "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+      "claim": "Google Cloud 公布 AI Agent 和 MCP Server 的资产发现与风险识别能力，并说明部分能力将在后续提供预览。",
+      "excerpt": "Expanded AI agent inventory and risk identification ... available later in preview"
+    },
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+      "claim": "公告介绍 Model Armor 对 Agent、工具和 MCP Server 交互的筛查，以及 Agentspace 内联保护和 AI Agent 威胁检测。",
+      "excerpt": "screen agent, tool, and MCP server interactions ... real-time safeguards ... threat detections"
+    }
+  ],
+  "canonicalUrl": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+  "sourceHash": "sha256:779f8129d78b391ea516a16eb2d67384542962a98706b92a297b07cd8c8aab64",
+  "status": "published",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.97,
+      "evidence": [
+        "正文围绕 AI Agent 资产、工具调用和运行时行为展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文将身份权限、策略控制和高风险动作确认作为接入边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.86,
+      "evidence": [
+        "正文要求用提示注入、数据泄露与越权回归集验证防护。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.84,
+      "evidence": [
+        "正文按 Google Cloud Security Summit 的 2025 年 8 月 19 日公告归档。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/security-summit-2025-enabling-defenders-and-securing-ai-innovation",
+      "claim": "Google Cloud 于 2025 年 8 月 19 日在 Security Summit 公布 AI Agent 安全能力，覆盖资产发现、Model Armor 内联保护、姿态控制和威胁检测。",
+      "excerpt": "August 19, 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google Cloud 官方公告的 8/19 日期、Agent 与 MCP Server 资产发现、Model Armor 交互筛查、姿态控制和威胁检测；正文明确区分当前预览与后续预览，并补充具体覆盖范围验证。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把公告能力拆成资产盘点、内联保护、姿态控制和威胁检测，逐项保留已提供/预览/后续提供边界，没有将厂商发布写成通用安全保证。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-19-google-cloud-security",
+  "promotedAt": "2026-10-05T05:17:39.426Z"
+}

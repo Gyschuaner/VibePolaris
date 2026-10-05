@@ -1,0 +1,183 @@
+{
+  "slug": "google-ai-threat-defense",
+  "title": "Google Cloud 发布 AI Threat Defense，组合漏洞分析与修复能力",
+  "summary": "5 月 27 日，Google Cloud 发布 AI Threat Defense，介绍将 Gemini、Wiz、CodeMender 和 Mandiant 的能力组合到网络防御流程中，目标从发现单个漏洞延伸到预测攻击路径、排序风险和部署经过验证的修复。官方页面说明了产品能力与组件关系，没有给出跨行业的真实攻击阻断率，也不能证明每个环境都能自动修复。",
+  "body": "5 月 27 日，Google Cloud 发布 AI Threat Defense。官方介绍把 Gemini、Wiz、CodeMender 和 Mandiant 放进同一套网络防御流程，试图把工作从发现单个漏洞推进到预测攻击路径、排序风险，再部署经过验证的修复。这是产品与组件的组合说明，不是一项跨行业效果评估。\n\n这条链路的每一步都对应不同证据。攻击路径预测需要资产、漏洞和环境关系，风险排序需要明确优先级依据，修复部署则要证明补丁在目标环境中没有破坏业务。产品描述中的自动化能力，也不能替代这些中间记录。\n\n在测试服务器上，较稳妥的流程是先在沙箱里复现漏洞，再生成候选补丁和回归测试，由管理员确认后部署；测试失败、权限异常或结果不确定时停止并回滚。命令、修改、审批和恢复时间都应留在日志里，以便安全团队复盘一次自动化动作。\n\nGoogle Cloud 的官方页面支持产品能力和组件关系，没有给出不同云、行业或网络环境的攻击阻断率、误报率或自动修复覆盖范围。Gemini、Wiz、CodeMender 和 Mandiant 的组合也不能替代客户自己的权限设置、独立评测和事故演练。\n\n相关词条对应控制链的不同位置：agent 负责推进多步调用，execution-sandbox 隔离文件、网络、进程和凭据，data-validation 检查输入与修复结果，api 规定能提交什么、返回什么以及谁能调用。后续应在受限环境中逐项验证，先确认能安全停止和回滚，再谈规模化自动修复。",
+  "publishedAt": "2026-05-27",
+  "eventDate": "2026-05-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-ai-threat-defense.svg",
+    "alt": "Google Cloud 推出 AI Threat Defense 自主网络防御平台；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/google-ai-threat-defense.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "AI Threat Defense 组合了哪些能力",
+      "body": "Google Cloud 5 月 27 日发布 AI Threat Defense，介绍将 Gemini、Wiz、CodeMender 和 Mandiant 的能力放入网络防御流程，目标包括攻击路径预测、风险排序和经过验证的修复。官方页面说明了产品组成，不能单独证明实际阻断效果。",
+      "kind": "narrative"
+    },
+    {
+      "id": "chain",
+      "title": "从漏洞到修复，每一步都需要证据",
+      "body": "攻击路径预测依赖资产、漏洞和环境关系，风险排序需要明确优先级依据，修复部署还要证明补丁没有破坏业务。产品写“自主”不等于这些中间环节已经可见或可靠。",
+      "kind": "technical"
+    },
+    {
+      "id": "sandbox",
+      "title": "先在沙箱里让一次修复停得下来",
+      "body": "测试服务器可以先复现漏洞，再生成候选补丁并运行回归测试，由管理员确认后部署；测试失败、权限异常或结果不确定时应停止和回滚。命令、修改、审批与恢复时间都要留下日志。",
+      "kind": "example"
+    },
+    {
+      "id": "limits",
+      "title": "官方页面没有给出跨环境阻断率",
+      "body": "公告没有披露不同云、行业或网络环境的攻击阻断率、误报率和自动修复覆盖范围。四个组件的组合不能替代客户权限设置、独立评测和事故演练。",
+      "kind": "boundary"
+    },
+    {
+      "id": "controls",
+      "title": "四个词条落在四个控制点",
+      "body": "agent 推进多步调用，execution-sandbox 隔离文件、网络、进程和凭据，data-validation 检查输入与修复结果，api 规定调用边界和返回内容。先验证停止、审批与回滚，再评估扩大自动化范围。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "在测试服务器上检查一次自动修复是否可控",
+    "question": "产品声称可以从攻击路径走到验证修复时，怎样确认每一步都能被审查和撤回？",
+    "steps": [
+      {
+        "label": "建立受限环境",
+        "detail": "使用测试资产和 execution-sandbox，明确文件、网络、进程和凭据范围，不直接触碰生产系统。",
+        "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+      },
+      {
+        "label": "记录风险判断",
+        "detail": "分别保存漏洞复现、攻击路径预测和风险排序依据，检查输入数据是否完整且没有越权。",
+        "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+      },
+      {
+        "label": "验证候选修复",
+        "detail": "生成补丁后运行回归测试，由管理员确认部署；测试失败或结果不确定时停止。",
+        "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+      },
+      {
+        "label": "检查回滚证据",
+        "detail": "核对命令、修改、审批、恢复时间和回滚结果，确认一次自动化动作能被复盘和撤回。",
+        "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Cloud",
+    "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+  },
+  "relatedSlugs": [
+    "agent",
+    "execution-sandbox",
+    "data-validation",
+    "api"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+      "claim": "Google 称攻击者用 AI 发现漏洞的速度正在加快",
+      "excerpt": "Google says attackers are using AI to find vulnerabilities at unprecedented speed."
+    },
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+      "claim": "AI Threat Defense 结合 Gemini、Wiz、CodeMender 与 Mandiant",
+      "excerpt": "The platform combines Gemini, Wiz risk prioritization, CodeMender remediation and Mandiant expertise."
+    }
+  ],
+  "canonicalUrl": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+  "sourceHash": "sha256:d67c7671e362e201f9f52c5ebfaf848d2f56e3e059d6f21080daf9a7f3ea0f01",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Cloud 推出 AI Threat Defense 自主网络防御平台”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Cloud 推出 AI Threat Defense 自主网络防御平台”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Cloud 推出 AI Threat Defense 自主网络防御平台”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Cloud 推出 AI Threat Defense 自主网络防御平台”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+      "claim": "Google 称攻击者用 AI 发现漏洞的速度正在加快",
+      "excerpt": "Google says attackers are using AI to find vulnerabilities at unprecedented speed."
+    },
+    {
+      "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+      "claim": "AI Threat Defense 结合 Gemini、Wiz、CodeMender 与 Mandiant",
+      "excerpt": "The platform combines Gemini, Wiz risk prioritization, CodeMender remediation and Mandiant expertise."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文准确串联 Google Cloud 官方页面中的 Gemini、Wiz、CodeMender 和 Mandiant，以及攻击路径预测、风险排序和验证修复三段能力；没有把产品组合写成跨行业阻断率或每个环境都能自动修复。已将“把‘自主’写在产品名旁边”改为更自然的“产品描述中的自动化能力”，避免给产品名称附加来源未确认的措辞。沙箱/审批/回滚示例具体，agent、execution-sandbox、data-validation、api、sections、explainer 和 schema 均核对无误。",
+    "changes": [
+      "将“把‘自主’写在产品名旁边，不能替代这些中间记录”改为“产品描述中的自动化能力，也不能替代这些中间记录”，提升自然度并收紧来源边界。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-27",
+  "fingerprint": "sha256:d67c7671e362e201f9f52c5ebfaf848d2f56e3e059d6f21080daf9a7f3ea0f01",
+  "promotedAt": "2026-10-05T05:17:55.469Z"
+}

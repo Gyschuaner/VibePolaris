@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function CodeSplittingTermPage() {
-  return <Article slug="code-splitting" title="代码分割" subtitle="Code Splitting · 把下载时机推到真正的功能边界" sources={codeSplittingSources} sections={sections} hero={<CodeSplittingHero />} intro={<>首页和编辑器住在同一个仓库里，却不代表用户第一次打开首页就该把两者一起背走。<strong>代码分割把代码按入口或功能切成 chunk，让浏览器在用户真的走到边界时才下载和执行那部分。</strong>它改变的是到达时机，仍然要对加载、失败、缓存和过度拆分负责。</>}> 
+  return <Article slug="code-splitting" title="代码分割" subtitle="Code Splitting · 把下载时机推到真正的功能边界" sources={codeSplittingSources} sections={sections} hero={<CodeSplittingHero />} intro={<>首页和编辑器住在同一个仓库里，却不代表用户第一次打开首页就该把两者一起背走。<strong>代码分割把代码按入口或功能切成 chunk，让浏览器在用户真的走到边界时才下载和执行那部分。</strong>它改变的是到达时机，仍然要对加载、失败、缓存和过度拆分负责。</>}>
     <ArticleSection id="code-splitting-definition-section" title="先画功能边界，再谈包大小">
       <p id="split-boundary" className="vp-citation-target">代码分割是构建器把一个大入口拆成多个 chunk 的过程。边界可以来自路由、动态 import 或异步功能；关键不是把文件平均切开，而是把“用户何时需要它”写进依赖图。<Cite id="split-boundary" sources={codeSplittingSources} /></p>
       <p id="split-dynamic-import" className="vp-citation-target">动态 <code>import()</code> 返回 Promise，构建器可以据此留下异步边界。用户触发边界后，运行时请求对应模块，加载完成才有机会执行并渲染功能。<Cite id="split-dynamic-import" sources={codeSplittingSources} /></p>

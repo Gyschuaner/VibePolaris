@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-17",
+  "eventDate": "2025-08-17",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-17 AI 事件重新检索：核对当天新闻报道与 arXiv 首次提交，优先芯片与 AI 产业政策、机器人推理与模型可复现性；区分 8/18 Qwen-Image-Edit 日期边界，排除滚动更新和重复事件。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508170000%20TO%20202508172359]%20AND%20(cat:cs.AI%20OR%20cat:cs.CL%20OR%20cat:cs.LG%20OR%20cat:cs.MA)",
+      "https://gcn.com/china-us-ai-chip-rule-rollback-trade-talks/5357/",
+      "https://arxiv.org/abs/2508.12189",
+      "https://arxiv.org/abs/2508.12211",
+      "https://arxiv.org/abs/2508.12220",
+      "https://arxiv.org/abs/2508.12204",
+      "https://arxiv.org/abs/2508.12198",
+      "https://arxiv.org/abs/2508.16636"
+    ],
+    "sourcePolicy": [
+      "official-announcement",
+      "official-blog",
+      "news-report",
+      "paper"
+    ],
+    "candidateCount": 7,
+    "primaryCandidateCount": 7,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "china-hbm-ai-chip-trade-talks-20250817",
+      "title": "报道称：中国在贸易谈判中推动放宽美国 HBM 与 AI 芯片限制",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "news-report",
+      "source": {
+        "name": "GCN / Reuters",
+        "url": "https://gcn.com/china-us-ai-chip-rule-rollback-trade-talks/5357/"
+      },
+      "canonicalUrl": "https://gcn.com/china-us-ai-chip-rule-rollback-trade-talks/5357/",
+      "sourceHash": "sha256:36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "relatedSlugs": [
+        "event",
+        "llm",
+        "data-pipeline"
+      ],
+      "evidence": [
+        {
+          "url": "https://gcn.com/china-us-ai-chip-rule-rollback-trade-talks/5357/",
+          "claim": "GCN 标注 8 月 17 日并以 Reuters 报道为来源，称中国希望把放宽美国对 HBM 等 AI 芯片的出口限制纳入贸易谈判条件。",
+          "excerpt": "China is pushing ... to roll back bans on AI chip sales as a condition of making any trade deal with the United States."
+        },
+        {
+          "url": "https://gcn.com/china-us-ai-chip-rule-rollback-trade-talks/5357/",
+          "claim": "报道援引 Financial Times 与未具名知情人士；白宫、美国国务院和中国外交部当时未立即回应。",
+          "excerpt": "Chinese officials have told experts in Washington ... The White House, State Department and China’s foreign ministry did not immediately respond"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "GCN 页面显示 8 月 17 日，但其 Reuters/FT 原始报道日期为 8 月 10 日；按原始首发日处理，不把转载日期当成 8/17 新事件。"
+    },
+    {
+      "slug": "self-guided-action-diffusion-20250817",
+      "title": "Self-Guided Action Diffusion 用上一步决策降低机器人扩散策略的搜索成本",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Rhea Malhotra 等",
+        "url": "https://arxiv.org/abs/2508.12189"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12189",
+      "sourceHash": "sha256:a191825b59d0a9762bc366af42a0854653a60eb4bc45ec2fb8f5d43a984aad03",
+      "relatedSlugs": [
+        "agent",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12189",
+          "claim": "论文提出 Self-Guided Action Diffusion，在每个扩散步骤根据此前决策引导候选动作分布，以降低双向解码的推理开销。",
+          "excerpt": "guide the proposal distribution at each diffusion step based on the prior decision"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12189",
+          "claim": "论文在仿真任务中报告，在严格采样预算下，动态任务成功率最高比现有方法高 70%。",
+          "excerpt": "under a tight sampling budget ... up to 70% higher success rates"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它直接处理机器人扩散策略在推理阶段的采样成本，并给出仿真任务结果；文章需明确“最高 70%”来自仿真、严格采样预算和作者比较。"
+    },
+    {
+      "slug": "vlaps-model-based-search-vla-20250817",
+      "title": "VLAPS 把模型搜索接入 VLA 推理，最高提升 67 个百分点",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Cyrus Neary 等",
+        "url": "https://arxiv.org/abs/2508.12211"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12211",
+      "sourceHash": "sha256:435fa155311bdb49d3ec602745ca2277c442e5f72811020adc5afae321271e04",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12211",
+          "claim": "VLAPS 用 VLA 策略产生的动作先验引导改进后的蒙特卡洛树搜索，并在推理阶段结合环境模型探索动作。",
+          "excerpt": "biases a modified Monte Carlo Tree Search (MCTS) algorithm ... using action priors defined by the VLA policy"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12211",
+          "claim": "论文称在语言指定的机器人任务中，相比只跟随 VLA 动作预测的基线，成功率最高提升 67 个百分点。",
+          "excerpt": "increasing success rates by as much as 67 percentage points"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是把搜索、环境模型和 VLA 推理结合起来的系统方法；文章需保留任务为语言指定、比较基线与最高增益条件，不把论文结果写成所有机器人任务的保证。"
+    },
+    {
+      "slug": "unlearning-state-exact-deletion-20250817",
+      "title": "一篇论文把“机器遗忘”做成可复现的训练轨迹删除",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Abdullah X",
+        "url": "https://arxiv.org/abs/2508.12220"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12220",
+      "sourceHash": "sha256:bf47b131734c665491542665e55b4b54a2d2595486c1a825c5932fef7cd2dc18",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "authorization",
+        "data-pipeline",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12220",
+          "claim": "论文研究一种预先记录训练执行轨迹的删除反事实，在固定执行控制和可用检查点的前提下，通过不重放指定样本重建模型与优化器状态。",
+          "excerpt": "The guarantee is prospective ... record this execution provenance and retain an eligible uncontaminated checkpoint"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12220",
+          "claim": "作者报告 Pythia 160M、Pythia 2.8B 和 Llama 3.2 1B 的状态精确结果，并明确分散删除可能需要接近完整重放，未证明便宜删除。",
+          "excerpt": "They do not establish cheap deletion, because dispersed requests can force nearly full replay"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把机器遗忘的合规承诺拆成可记录的训练来源、检查点和重放条件，同时主动承认成本与行为因果边界；适合写成方法与限制，而不是“删除后模型就忘了”。"
+    },
+    {
+      "slug": "atlas-ai-native-receiver-testing-20250817",
+      "title": "ATLAS 用 AI 引导搜索测试无线接收器的高风险条件",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Mauro Belgiovine 等",
+        "url": "https://arxiv.org/abs/2508.12204"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12204",
+      "sourceHash": "sha256:3c7f0492d360d271cb435cdefd9cfcabc4b79cf6f4daa24996c3930698223797",
+      "relatedSlugs": [
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12204",
+          "claim": "ATLAS 用梯度优化在线生成下一组测试条件，寻找 AI 原生无线接收器相对经典接收器更容易失败的环境。",
+          "excerpt": "generates the next test in an online manner to further probe specific configurations that offer the highest risk of failure"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "方法有明确测试价值，但应用范围集中在 AI 原生无线接收器，优先级低于当天跨领域的芯片政策、机器人方法和模型删除研究。"
+    },
+    {
+      "slug": "skew-t-multimodal-weather-forecasting-20250817",
+      "title": "轻量视觉语言模型从 Skew-T 图表辅助天气预报",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / ChangJae Lee 等",
+        "url": "https://arxiv.org/abs/2508.12198"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12198",
+      "sourceHash": "sha256:20de096e1459c98bcf7f667637f5447cb599bfe2f2708716c7d73a407658ee02",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12198",
+          "claim": "论文训练小型语言模型与视觉语言模型解释 Skew-T 图表，并根据视觉 grounding 与推理估计降水概率。",
+          "excerpt": "a lightweight AI assistant that interprets Skew-T diagrams using a small language model and a small VLM"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是单一气象图表场景的作者实验，应用窄且没有当天同等重要的部署或政策影响，保留候选不单独写主稿。"
+    },
+    {
+      "slug": "cognitive-decision-routing-20250817",
+      "title": "Cognitive Decision Routing 为不同问题选择快思考或慢思考",
+      "eventDate": "2025-08-17",
+      "publishedAt": "2025-08-17",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Y. Du 等",
+        "url": "https://arxiv.org/abs/2508.16636"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16636",
+      "sourceHash": "sha256:026873872f4fb7a72204800c855568a61b063c34a4bfdda562ff55ac7b89649d",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16636",
+          "claim": "论文提出按查询复杂度动态选择快速或更深的推理策略，并在摘要中报告成本和一致性结果。",
+          "excerpt": "dynamically determines the appropriate reasoning strategy based on query characteristics"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是通用路由框架的初步论文结果，和当天更直接的芯片、机器人与模型删除事件相比，暂不进入主稿序列。"
+    }
+  ],
+  "selectedSlugs": [
+    "self-guided-action-diffusion-20250817",
+    "vlaps-model-based-search-vla-20250817",
+    "unlearning-state-exact-deletion-20250817"
+  ],
+  "gap": null
+}

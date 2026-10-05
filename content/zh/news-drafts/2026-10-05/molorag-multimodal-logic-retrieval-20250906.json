@@ -1,0 +1,193 @@
+{
+  "slug": "molorag-multimodal-logic-retrieval-20250906",
+  "title": "MoLoRAG：用页面图找回多模态文档里的逻辑关联",
+  "summary": "MoLoRAG 论文于 9 月 6 日提交，针对多页图文文档问答里的一个常见缺口：只按语义相似度选页，可能找不到和问题有逻辑关系、但用词并不相似的页面。方法构建页面图，再让轻量 VLM 做图遍历，把相关页面交给任意 LVLM 回答；论文在四个 DocQA 数据集上报告平均准确率提升 9.68%、检索精度提升 7.44%，结果仍受数据集、页面解析和 top-K 设置影响。",
+  "body": "把一份长文档转成纯文字，图表、版式和跨页关系很容易在转换时丢掉；直接把整份文档交给视觉语言模型，又会撞上输入长度。多页文档问答于是常常先做检索，再把少量页面交给模型，但“找得到页面”本身就决定了后面能不能答对。\n\nMoLoRAG 关注的是检索里的一个盲点。传统 RAG 通常按问题和页面的语义相似度排序，页面里没有同样的词，哪怕它在逻辑上补充了答案，也可能被排在后面。论文把这种遗漏称为多页理解中的逻辑关联问题：答案可能需要把不同页面的上下文拼起来，而不是只找一页最像的问题。\n\n它的做法是先把文档页面组织成图，节点代表页面，边表示页面之间的上下文关系；再用一个轻量 VLM 沿图遍历，找出既相关又有逻辑连接的页面。检索出的 top-K 页面最后交给任意 LVLM 做问答，所以 MoLoRAG 主要改的是“送进模型之前怎样选材料”，并没有要求替换最终的回答模型。\n\n这套框架提供两个版本。training-free 版本不需要为每个场景重新训练，适合先接入现有文档系统；fine-tuned 版本则进一步训练逻辑相关性判断，换取更强的检查能力。两者对应的是部署灵活性和专项适配之间的取舍，实际选择还要看文档类型、更新频率和可用算力。\n\n作者在四个 DocQA 数据集上报告，MoLoRAG 相比 LVLM 直接推理的平均准确率提高 9.68%，检索精度相比基线提高 7.44%。这两个数字分别回答“最终问答是否更准”和“取回的页面是否更相关”，但它们仍是论文实验条件下的平均值，不能直接外推到所有扫描件、复杂表格或跨语言资料。\n\n页面图的价值不只是多存一张关系表。它让检索系统有机会保留跨页的上下文，把单页关键词没有覆盖到的补充材料一起带进上下文；与此同时，图构建本身也引入了新的误差来源：页面解析错了、边连错了，或者 top-K 太小，后面的 LVLM 仍然看不到关键证据。因此检索精度和最终回答要分开记录，不能只看答案文本。\n\nMoLoRAG 给多模态 RAG 提供了一条清楚的工程路径：先保住页面的视觉信息，再把页面之间的逻辑关系显式化，最后把有限上下文留给最值得看的页面。上线时还需要监测 OCR、图更新、检索命中和答案引用，给低置信或证据不足的回答留下人工复核入口；论文的提升说明方法有潜力，不能替部署方省掉这些数据质量和评估工作。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/molorag-multimodal-logic-retrieval-20250906.svg",
+    "alt": "MoLoRAG 用页面图和轻量 VLM 找回多页文档中的逻辑关联",
+    "sourceUrl": "/images/news/molorag-multimodal-logic-retrieval-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "multimodal-gap",
+      "title": "纯文字会丢图，整份文档又塞不进模型",
+      "body": "多页图文文档需要在视觉信息、上下文长度和可回答性之间做取舍。",
+      "kind": "narrative"
+    },
+    {
+      "id": "semantic-limit",
+      "title": "只按语义相似度选页，会漏掉逻辑上相关的证据",
+      "body": "页面措辞不相似，不代表它和问题没有关系；跨页理解要求检索保留上下文连接。",
+      "kind": "boundary"
+    },
+    {
+      "id": "page-graph",
+      "title": "页面图把上下文关系放进检索过程",
+      "body": "MoLoRAG 构建页面图，让轻量 VLM 遍历逻辑连接，再把 top-K 页面交给任意 LVLM。",
+      "kind": "technical"
+    },
+    {
+      "id": "two-variants",
+      "title": "training-free 和 fine-tuned 版本对应不同部署取舍",
+      "body": "一个便于直接接入，另一个专门训练逻辑相关性判断，选择取决于文档、算力和更新频率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "docqa-result",
+      "title": "四个 DocQA 数据集上平均准确率提高 9.68%",
+      "body": "论文还报告检索精度较基线提高 7.44%，两个指标分别对应回答质量和页面选择质量。",
+      "kind": "comparison"
+    },
+    {
+      "id": "graph-error",
+      "title": "图构建和 top-K 仍然是新的误差来源",
+      "body": "页面解析、关系连边或上下文截断出错，最终模型仍可能看不到关键证据。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment-boundary",
+      "title": "检索提升不能替代数据质量和引用监测",
+      "body": "上线还要记录 OCR、图更新、命中页面和答案证据，为低置信结果保留人工复核。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "页面图怎样帮助多页文档问答？",
+    "question": "保留页面视觉信息，把页面之间的逻辑关系画成图，再用有限上下文承载最相关的一组页面。",
+    "steps": [
+      {
+        "label": "保留图文页面",
+        "detail": "不要只把文档压成纯文字，为后续检索保留图表和页面上下文。",
+        "evidence": "critical multi-modal information like figures"
+      },
+      {
+        "label": "建立页面图",
+        "detail": "把页面作为节点，用上下文关系连边，让检索能表达跨页逻辑连接。",
+        "evidence": "constructing a page graph that captures contextual relationships"
+      },
+      {
+        "label": "遍历逻辑关联",
+        "detail": "让轻量 VLM 结合语义和图关系选择页面，补上关键词相似度遗漏的材料。",
+        "evidence": "a lightweight VLM performs graph traversal"
+      },
+      {
+        "label": "截取 top-K 上下文",
+        "detail": "只把检索出的页面交给最终 LVLM，控制输入长度并保留最有用的证据。",
+        "evidence": "the top-K pages are fed into arbitrary LVLMs"
+      },
+      {
+        "label": "分别评估检索和回答",
+        "detail": "同时记录页面命中质量和最终答案准确率，发现图构建或截断造成的损失。",
+        "evidence": "accuracy and retrieval precision on four DocQA datasets"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.07666"
+  },
+  "relatedSlugs": [
+    "rag",
+    "context",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.07666",
+      "claim": "MoLoRAG 面向多模态、多页文档理解，构建页面图并用轻量 VLM 遍历逻辑关联页面。",
+      "excerpt": "a logic-aware retrieval framework for multi-modal, multi-page document understanding ... constructing a page graph"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.07666",
+      "claim": "论文提供 training-free 和 fine-tuned 两个版本，并在四个 DocQA 数据集上报告平均准确率提高 9.68%、检索精度提高 7.44%。",
+      "excerpt": "a training-free solution ... a fine-tuned version ... four DocQA datasets ... 9.68% in accuracy ... 7.44% in retrieval precision"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.07666",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日首次提交，论文标注为 EMNLP Main 2025。",
+      "excerpt": "Submitted on 6 Sep 2025 ... EMNLP Main 2025"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.07666",
+  "sourceHash": "sha256:9cde21eb766be73adee98142f4436430d4bf8f458cf6147c751f26585257d20b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文分析检索增强生成如何选择多页图文文档页面。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕跨页上下文、top-K 页面和模型输入长度展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文记录四个 DocQA 数据集的准确率、检索精度和分开评估边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 MoLoRAG 论文于 2025 年 9 月 6 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.07666",
+      "claim": "arXiv 记录 MoLoRAG 于 2025 年 9 月 6 日提交，研究多模态多页文档的逻辑感知检索。",
+      "excerpt": "MoLoRAG: Bootstrapping Document Understanding via Multi-modal Logic-aware Retrieval"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.07666",
+      "claim": "摘要说明页面图、轻量 VLM 图遍历、top-K 页面和四个 DocQA 数据集的实验结果。",
+      "excerpt": "page graph ... lightweight VLM ... top-K pages ... four DocQA datasets"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 首次提交日期、页面图、轻量 VLM 图遍历、training-free/fine-tuned 版本、四个 DocQA 数据集、9.68% 准确率和 7.44% 检索精度结果；正文将数值限定在论文实验条件，并补充页面解析、图更新、top-K 截断与引用监测边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手完成初稿逐段复核：区分页面检索质量和最终回答质量，保留 9.68%/7.44% 指标及四个数据集条件；补充图构建、OCR、top-K 和人工复核边界，没有把实验平均值泛化到所有文档；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-molorag-multimodal-logic-retrieval-20250906"
+}

@@ -1,0 +1,218 @@
+{
+  "slug": "linux-foundation-a2a-20250623",
+  "title": "Agent2Agent 交给 Linux Foundation：多智能体互联从 Google 项目变成开放治理",
+  "summary": "6 月 23 日，Linux Foundation 宣布接手 Google 发起的 Agent2Agent（A2A）项目。A2A 负责让不同平台的 Agent 发现彼此、交换信息和协同任务，基金会治理试图把这套协议从单一厂商项目变成中立的开放标准。",
+  "body": "6 月 23 日，Linux Foundation 在 Open Source Summit North America 宣布成立 Agent2Agent（A2A）项目。A2A 最初由 Google 发起，这次交接把协议、代码和后续治理放到一个厂商中立的开放组织里。新闻的关键不在于又发布了一个聊天机器人，而在于 Agent 之间要开始“说同一种话”。\n\n一个 Agent 可以查数据，另一个 Agent 可以执行审批，还有一个 Agent 负责安排后续动作。没有共同的发现、身份和消息约定，它们只能靠每家公司各写一套适配器。A2A 试图把这些连接变成协议层，让 Agent 能说明自己能做什么、交换任务状态，并在需要时继续协作。\n\n这和 MCP 解决的问题不同。MCP 更像 Agent 连接工具和数据源的插座，A2A 则处理 Agent 与 Agent 之间的协作。真实系统往往两者都需要：一个 Agent 通过 MCP 读企业数据，再通过 A2A 把任务交给另一家公司的专用 Agent。把两者都叫作“工具调用”，会掩盖身份、权限和失败恢复上的差异。\n\nLinux Foundation 公告提到已有超过 100 家技术公司支持 A2A，但这是项目公告里的生态规模表述，不等于每家公司都已完成生产部署。协议开放也不自动意味着跨企业调用安全，身份验证、租户隔离、数据最小化和可观测性仍要由实现者补齐。\n\n把项目交给基金会的价值，是让规范的变更、兼容性和贡献规则不再完全由一个厂商决定。对开发者来说，真正要观察的是规范有没有稳定版本、SDK 是否互通、失败能否被追踪，以及各家 Agent 是否会把自己的权限和责任边界说清楚。\n\nA2A 这条新闻把“多智能体”从演示里的角色协作拉回基础设施问题：谁发现谁、谁授权谁、谁能看到上下文、任务失败后由谁接手。协议能把连接成本降下来，但可信协作仍需要产品和组织层的约束。",
+  "publishedAt": "2025-06-23",
+  "eventDate": "2025-06-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/linux-foundation-a2a-20250623.svg",
+    "alt": "Agent ↔ Agent：A2A 从 Google 项目进入基金会治理",
+    "sourceUrl": "/images/news/linux-foundation-a2a-20250623.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "handoff",
+      "title": "A2A 的事件是“交接给基金会”",
+      "body": "Google 发起的协议进入 Linux Foundation，治理从单一厂商转向开放项目。",
+      "kind": "narrative"
+    },
+    {
+      "id": "protocol",
+      "title": "协议解决 Agent 之间怎么说话",
+      "body": "发现能力、交换信息、同步任务状态，是 Agent 协作的基本语法。",
+      "kind": "technical"
+    },
+    {
+      "id": "mcp-difference",
+      "title": "A2A 与 MCP 不是一回事",
+      "body": "MCP 连接工具和数据，A2A 连接 Agent；一个系统可能同时需要两层。",
+      "kind": "comparison"
+    },
+    {
+      "id": "governance",
+      "title": "中立治理降低锁定风险",
+      "body": "规范、代码和贡献规则交由基金会维护，目标是让生态不被单一供应商控制。",
+      "kind": "boundary"
+    },
+    {
+      "id": "security",
+      "title": "开放协议不等于默认安全",
+      "body": "认证、租户隔离、数据最小化和失败恢复必须在部署层完成。",
+      "kind": "example"
+    },
+    {
+      "id": "watch",
+      "title": "看互通能否落到生产",
+      "body": "稳定规范、跨 SDK 兼容、可观测性和责任边界会比支持者名单更能说明进展。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "A2A 与 MCP 怎样分工？",
+    "question": "用一次跨系统任务，把“连接工具”和“连接 Agent”分成两段。",
+    "steps": [
+      {
+        "label": "发现 Agent",
+        "detail": "发送方先知道对方能做什么、接受什么输入和返回什么状态。",
+        "evidence": "A2A 项目说明"
+      },
+      {
+        "label": "连接数据",
+        "detail": "具体 Agent 可能通过 MCP 或其他工具协议读取企业数据。",
+        "evidence": "MCP 与 A2A 的边界"
+      },
+      {
+        "label": "交换任务",
+        "detail": "A2A 传递任务、上下文和阶段状态，让协作不必绑定同一厂商。",
+        "evidence": "Agent-to-Agent 协作"
+      },
+      {
+        "label": "检查权限",
+        "detail": "每次跨组织调用都要验证身份、租户、数据范围和可执行动作。",
+        "evidence": "部署安全边界"
+      },
+      {
+        "label": "记录结果",
+        "detail": "把调用链、失败原因和交接责任写入日志，才能审计自动化结果。",
+        "evidence": "可观测性要求"
+      }
+    ]
+  },
+  "source": {
+    "name": "Linux Foundation",
+    "url": "https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "apollo-graphql-ai-ready-mcp-20250624",
+    "hpe-greenlake-intelligence-agentic-20250624"
+  ],
+  "sources": [
+    {
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents",
+      "claim": "Linux Foundation 于 6 月 23 日宣布成立 A2A 项目并接手 Google 发起的开放协议。",
+      "excerpt": "Linux Foundation, “Linux Foundation Launches the Agent2Agent Protocol Project”, 23 June 2025."
+    },
+    {
+      "url": "https://github.com/a2aproject/A2A",
+      "claim": "A2A 项目仓库记录协议、SDK 与治理材料的公开入口。",
+      "excerpt": "A2A Protocol project repository on GitHub."
+    }
+  ],
+  "canonicalUrl": "https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents",
+  "sourceHash": "sha256:584dc2a6dd220f52b64728b6c1afc2d60a8b194b5914c6b7de2070ffd34d48a7",
+  "status": "published",
+  "discoveredAt": "2026-10-05T00:13:02Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文解释了 agent 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了 tools 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了 context 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了 event 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "apollo-graphql-ai-ready-mcp-20250624",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "hpe-greenlake-intelligence-agentic-20250624",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents",
+      "claim": "Linux Foundation 于 6 月 23 日宣布成立 A2A 项目并接手 Google 发起的开放协议。",
+      "excerpt": "Linux Foundation, “Linux Foundation Launches the Agent2Agent Protocol Project”, 23 June 2025."
+    },
+    {
+      "url": "https://github.com/a2aproject/A2A",
+      "claim": "A2A 项目仓库记录协议、SDK 与治理材料的公开入口。",
+      "excerpt": "A2A Protocol project repository on GitHub."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:13:02Z",
+    "method": "source",
+    "notes": "按 2025-06-23 事件发生日核对官方公告、法院命令和可信新闻报道；正文区分已发生事实、公司主张、媒体报道与后续待审边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:13:02Z",
+    "notes": "主助手逐篇完成事实链、事件日、来源卡片、独立段落、事件专属讲解、SVG alt 和词条联动检查，等待唯一 reader-review 子智能体复审。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T00:34:44Z",
+    "questions": [
+      "新闻主线、日期和来源归属是否清楚？是。",
+      "公司/法院/评测口径与事实边界是否准确？是。",
+      "中文、独立结构、explainer/SVG alt/词条联动是否通过？是。"
+    ],
+    "notes": "A2A 从 Google 项目转 Linux Foundation 的治理新闻清楚，协议能力与开放标准边界适合零基础。 日期与事件/报道层次、更新后的 SVG title/desc 与正文均复核一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-23",
+  "promotedAt": "2026-10-05T00:29:06.110Z"
+}

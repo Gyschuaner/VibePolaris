@@ -1,0 +1,188 @@
+{
+  "slug": "unlearning-state-exact-deletion-20250817",
+  "title": "机器遗忘的另一条路线：重放训练轨迹，精确跳过指定样本",
+  "summary": "8 月 17 日提交的 arXiv 论文研究一种“预先记录、之后重放”的机器遗忘方案：训练时保留执行来源和合格的未污染检查点，收到删除请求后，在 token store 中跳过指定样本，再重建模型与优化器状态。作者在固定单 GPU 环境下报告了 Pythia 160M、Pythia 2.8B 和 Llama 3.2 1B 的状态精确结果，同时明确这不等于便宜删除，也没有用冻结的行为测试证明模型在因果意义上忘记了数据。",
+  "body": "“让模型忘掉一批数据”常被想成把某些知识从权重里擦掉，但真正难的是证明擦除过程没有悄悄改变别的训练轨迹。8 月 17 日提交到 arXiv 的一篇论文走了另一条路：先把训练过程记录下来，之后收到删除请求时，重放一条明确跳过指定样本的反事实轨迹。\n\n这套方法有一个前提：训练发生时就要记录执行来源，并保留一个没有被请求数据污染、可以重新开始的检查点。删除请求到来后，系统从 token store 里拿出不含指定行的数据，在固定的执行控制下继续训练，然后把得到的模型和优化器状态与“本来就没有这些样本”的 trace oracle 对照。\n\n作者在固定的单 GPU 环境中报告了状态精确结果。Pythia 160M 在四种删除几何下得到精确匹配；Pythia 2.8B 在随机删除 5% 的请求中匹配了全部 2,775,208,960 个模型状态元素；Llama 3.2 1B 则在 4,000 个 TOFU 样本中跳过 400 个后达到精确状态匹配。这些结果说明，在受控条件下，训练状态可以被重建到逐元素一致。\n\n但“精确”不等于“便宜”。论文主动说明，如果要删除的样本分散在训练轨迹的很多位置，重放可能接近完整训练；方法还依赖提前记录来源和可用检查点，无法把一次已经发生且没有留下记录的训练自动变成可删除。\n\n更不能把状态匹配直接翻译成行为层面的遗忘。模型参数和优化器状态与反事实运行一致，是一种可复现性保证；它没有自动证明模型不会再生成与被删样本相似的内容，也没有在冻结的行为活动中建立因果结论。作者因此把 TOFU/OpenUnlearning 测量描述为诊断资料，而不是行为因果证据。\n\n对需要处理删除请求的团队来说，这篇论文把合规问题拆成了几项可检查的工程资产：训练来源是否可追溯、数据和 checkpoint 是否隔离、执行控制是否固定、重放是否能复现，以及成本是否可接受。真正上线前，还要把这些状态证据与访问权限、删除范围和用户可验证的结果连起来，不能只展示一个“已遗忘”的按钮。",
+  "publishedAt": "2025-08-17",
+  "eventDate": "2025-08-17",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/unlearning-state-exact-deletion-20250817.svg",
+    "alt": "训练轨迹保留执行来源后跳过指定样本重放，模型和优化器状态与删除反事实逐元素匹配",
+    "sourceUrl": "/images/news/unlearning-state-exact-deletion-20250817.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "forgetting-question",
+      "title": "机器遗忘首先是一个可复现的训练问题",
+      "body": "要证明删除了指定数据，需要知道如果这些数据从未参与训练，模型和优化器本来会走哪条轨迹。论文把这个反事实作为重建目标。",
+      "kind": "narrative"
+    },
+    {
+      "id": "prospective-trace",
+      "title": "方案要求训练时就记录来源和未污染检查点",
+      "body": "只有在原始运行保留执行来源，并且有合格的未污染 checkpoint，后续才能从 token store 删除指定行并重放。它是预先设计的流程，不是事后魔法。",
+      "kind": "technical"
+    },
+    {
+      "id": "state-exact",
+      "title": "三个模型报告了逐状态匹配结果",
+      "body": "Pythia 160M 在四种删除几何下精确匹配；Pythia 2.8B 在随机删除 5% 请求中匹配全部 2,775,208,960 个状态元素；Llama 3.2 1B 在 TOFU 的 4,000 个样本中跳过 400 个后匹配。",
+      "kind": "example"
+    },
+    {
+      "id": "cost-boundary",
+      "title": "状态精确不代表删除成本很低",
+      "body": "删除样本如果分散在训练轨迹的很多位置，重放可能接近完整训练；方法也依赖固定单 GPU 控制、数据记录和可用检查点。",
+      "kind": "boundary"
+    },
+    {
+      "id": "behavior-boundary",
+      "title": "参数匹配不能直接证明行为层面的遗忘",
+      "body": "模型与优化器状态和删除反事实一致，是状态可复现证据，不是模型不会再生成相似内容的保证。论文明确没有把冻结行为测量当作因果结论。",
+      "kind": "comparison"
+    },
+    {
+      "id": "governance-assets",
+      "title": "删除请求需要一套可查的训练资产",
+      "body": "团队需要保存训练来源、数据隔离、执行控制、checkpoint、重放结果和成本记录，再把这些证据与授权范围和用户可验证的结果连接起来。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一次可验证的机器遗忘重放怎样进行？",
+    "question": "指定样本被删除后，团队如何证明新状态对应“它从未参与训练”的轨迹？",
+    "steps": [
+      {
+        "label": "记录原始轨迹",
+        "detail": "训练开始时保存执行控制、数据来源和可以重启的未污染 checkpoint，给未来的删除请求留下反事实入口。",
+        "evidence": "The guarantee is prospective and requires execution provenance"
+      },
+      {
+        "label": "标记删除范围",
+        "detail": "把请求中的样本标识映射到 token store，明确哪些行要从重放数据里排除。",
+        "evidence": "Requested identifiers are assigned zero contribution"
+      },
+      {
+        "label": "固定执行控制",
+        "detail": "在固定的单 GPU 环境和相同的执行设置下，重放不含指定样本的训练继续过程。",
+        "evidence": "Pinned single-GPU environments and fixed execution controls"
+      },
+      {
+        "label": "对照 trace oracle",
+        "detail": "把重放得到的模型和优化器状态与删除反事实的 trace oracle 比较，检查是否逐元素一致。",
+        "evidence": "Reconstructs model and optimizer state bit-for-bit"
+      },
+      {
+        "label": "分开解释行为结果",
+        "detail": "把状态匹配、成本、行为测试和用户可验证结果分开报告，不能把精确重放直接称为已证明的行为遗忘。",
+        "evidence": "The paper does not establish cheap deletion or a causal behavioral claim"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Abdullah X",
+    "url": "https://arxiv.org/abs/2508.12220"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "authorization",
+    "data-pipeline",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12220",
+      "claim": "论文要求预先记录训练执行来源并保留合格的未污染 checkpoint，通过跳过指定 token 重放删除反事实。",
+      "excerpt": "The guarantee is prospective ... retain an eligible uncontaminated checkpoint"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12220",
+      "claim": "作者报告多个模型的状态精确匹配，同时明确分散请求可能需要接近完整重放，且冻结测量不足以支持行为因果结论。",
+      "excerpt": "They do not establish cheap deletion ... the frozen campaign lacks the matched controls required for a causal behavioral claim"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12220",
+  "sourceHash": "sha256:bf47b131734c665491542665e55b4b54a2d2595486c1a825c5932fef7cd2dc18",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "正文讨论 Pythia、Llama 语言模型训练状态的删除重放。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.92,
+      "evidence": [
+        "正文区分状态精确、成本和行为层验证，并说明 TOFU/OpenUnlearning 的诊断边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.88,
+      "evidence": [
+        "删除范围、访问权限和用户请求被写成需要与训练证据连接的治理条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.96,
+      "evidence": [
+        "正文围绕 token store、数据来源、checkpoint 和训练重放流程展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.71,
+      "evidence": [
+        "正文记录论文在 2025 年 8 月 17 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12220",
+      "claim": "arXiv 页面标注论文于 2025 年 8 月 17 日首次提交，摘要给出状态精确删除、模型规模、成本边界和行为因果限制。",
+      "excerpt": "Submitted on 17 Aug 2025 ... These results establish billion-parameter state exactness"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 2508.12220 首次提交日期与摘要；正文保留预先记录、固定单 GPU、模型与优化器状态精确、具体模型/样本规模、接近完整重放成本和行为因果边界，没有把状态重建写成已证明的语义遗忘。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把“删除反事实重放”“逐元素状态匹配”“便宜删除”和“行为层遗忘”分开解释，保留作者主动声明的成本与因果限制，避免把论文结果写成合规保证。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-17-unlearning"
+}

@@ -1,0 +1,188 @@
+{
+  "slug": "larc-constrained-retrosynthesis-agent-20250816",
+  "title": "LARC 把约束检查放进逆合成 Agent：48 个任务成功率 72.9%",
+  "summary": "8 月 16 日提交的 arXiv 论文介绍 LARC，一个把 Agent-as-a-Judge 约束评估直接放进逆合成路线规划的框架。论文在包含 3 类约束的 48 个任务上报告 72.9% 成功率，并称其优于所比较的 LLM 基线、用时更少且接近人类专家水平。这个数字来自作者整理的任务和实验设置，文章保留工具反馈、任务规模和人工复核边界，不把它写成已经可以独立做化学决策的通用科学家。",
+  "body": "化学家做逆合成规划时，通常不是从原料一路往前拼，而是从目标分子倒着拆：目标分子可以由哪些反应得到，所需的起始材料是否买得到，路线是否满足实际限制。8 月 16 日提交到 arXiv 的 LARC 论文，关注的正是这个“有约束的倒推”过程。\n\nLARC 的关键安排不是让一个模型直接给出路线，而是把约束评估放进规划循环。框架先让语言模型 Agent 生成或修改路线，再用 Agent-as-a-Judge 结合工具检查路线是否符合约束，把反馈送回下一轮规划。这样，化学规则和可用性条件不只写在提示词里，而是成为路线生成过程中的一道门。\n\n论文在一组精心整理的 48 个约束逆合成任务上评测 LARC，任务覆盖 3 类约束。作者报告成功率为 72.9%，并称它明显超过所比较的 LLM 基线，在更短时间内接近人类专家的成功水平。这里的分母、约束定义、工具配置和成功判定都属于这项实验的边界；48 个任务不能直接代表所有分子、反应条件或实验室流程。\n\n“Agent-as-a-Judge”在这里也不是一个凭空出现的裁判。它依赖工具提供的化学信息和检查结果，再把这些结果转成对路线的约束反馈。工具能查到什么、检查器漏掉什么、多个候选路线如何排序，都会影响最后的规划。模型输出得更像一条完整路线，不等于每一步都已通过实验验证。\n\n论文把 LARC 描述为人类专家的协作工具或 co-scientist 的第一步，这个定位比较准确。使用者仍要核对反应可行性、试剂和条件、供应情况以及安全与合规要求；在真正的实验前，还要把计算路线转换成可执行的实验设计并做独立审查。\n\n这项工作给 Agent 设计留下的启发是，科学任务的“约束”最好有能被工具检查的落点。与其只要求模型回答“这条路线合理吗”，不如把起始材料、反应规则和任务条件拆成可复核的检查，再让 Agent 根据失败原因重规划。这样做会增加工程复杂度，却也让人能看见模型为什么换了一条路线、哪些条件仍然没有被覆盖。",
+  "publishedAt": "2025-08-16",
+  "eventDate": "2025-08-16",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/larc-constrained-retrosynthesis-agent-20250816.svg",
+    "alt": "LARC Agent 从目标分子倒推路线，经过工具约束检查后再回到规划循环",
+    "sourceUrl": "/images/news/larc-constrained-retrosynthesis-agent-20250816.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "backward-planning",
+      "title": "逆合成是从目标分子倒着问“怎么做出来”",
+      "body": "规划从目标分子开始，逐步寻找反应和可获得的起始材料。加入约束后，路线不只要化学上说得通，还要满足任务给出的实际条件。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agent-as-judge",
+      "title": "LARC 把 Agent-as-a-Judge 放进规划循环",
+      "body": "一个 Agent 生成或修改候选路线，另一个带工具的评估环节检查约束，并把反馈送回下一轮规划。约束因此参与路线生成，而不是最后才做一次形式审查。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation-scale",
+      "title": "48 个任务、3 类约束，作者报告 72.9% 成功率",
+      "body": "论文在精心整理的 48 个约束逆合成任务上评测 LARC，报告成功率 72.9%，并称其优于所比较的 LLM 基线。任务规模和成功定义决定了这个数字的适用范围。",
+      "kind": "example"
+    },
+    {
+      "id": "tool-feedback",
+      "title": "工具反馈决定了 Agent 能检查到什么",
+      "body": "Agent-as-a-Judge 依赖工具提供化学信息与约束检查。数据覆盖、检查器漏项、候选路线排序和反馈写法，都会影响重规划结果；模型文字流畅不能替代这些检查。",
+      "kind": "technical"
+    },
+    {
+      "id": "evidence-boundary",
+      "title": "作者称接近专家水平，仍须留在这组实验边界内",
+      "body": "摘要中的专家比较是作者对 48 个任务和基线的实验结论，不是对所有分子和实验室的普遍保证。真实实验前仍需要化学家复核与独立验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "co-scientist",
+      "title": "更现实的定位是可审计的协作工具",
+      "body": "把起始材料、反应规则和安全条件变成可复核的检查项，再根据失败原因重规划，能让人看见路线为何改变，也能保留人工接管和否决的位置。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个受约束的逆合成 Agent 怎样工作？",
+    "question": "模型给出路线后，哪些检查会把它拉回现实条件？",
+    "steps": [
+      {
+        "label": "输入目标分子",
+        "detail": "先说明目标分子、可用起始材料和需要遵守的约束，明确路线要满足什么条件。",
+        "evidence": "Constrained retrosynthesis starts from a desired target molecule"
+      },
+      {
+        "label": "生成候选拆解",
+        "detail": "规划 Agent 从目标分子倒推可能的反应步骤和前体，形成一条或多条候选路线。",
+        "evidence": "LLM agentic framework for retrosynthesis planning"
+      },
+      {
+        "label": "调用工具检查",
+        "detail": "Agent-as-a-Judge 使用化学工具检查路线是否符合约束，并记录没有通过的具体原因。",
+        "evidence": "Agentic constraint evaluation grounded in tool-based reasoning"
+      },
+      {
+        "label": "根据反馈重规划",
+        "detail": "把检查结果送回规划环节，修改路线、替换前体或放弃不满足条件的候选。",
+        "evidence": "Agentic feedback guides and constrains route generation"
+      },
+      {
+        "label": "人工确认再实验",
+        "detail": "在进入实验前，由化学家复核反应、条件、供应和安全边界；论文成功率不能代替这一步。",
+        "evidence": "The paper positions LARC as a first step toward a co-scientist"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Frazier N. Baker 等",
+    "url": "https://arxiv.org/abs/2508.11860"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "llm",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.11860",
+      "claim": "LARC 将 Agent-as-a-Judge 约束评估直接放入逆合成规划，并在 48 个任务、3 类约束上报告 72.9% 成功率。",
+      "excerpt": "We rigorously evaluate LARC on a carefully curated set of 48 constrained retrosynthesis planning tasks across 3 constraint types ... LARC achieves a 72.9% success rate"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.11860",
+      "claim": "论文把 LARC 定位为人类专家的 Agent 工具或 co-scientist 的第一步，并称其优于所比较的 LLM 基线。",
+      "excerpt": "vastly outperforming LLM baselines and approaching human expert-level success in substantially less time"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.11860",
+  "sourceHash": "sha256:f1ed3e977ad53e912acaa06383b3eb251f2cbe57e4dd43f945358bc561e862f2",
+  "status": "ready",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "LARC 是把规划、约束评估和重规划串起来的 LLM Agent 框架。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文强调工具提供化学信息和约束检查，决定 Agent 能看见什么。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "论文使用语言模型生成和修订逆合成路线，并与 LLM 基线比较。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.91,
+      "evidence": [
+        "正文保留 48 个任务、3 类约束和成功率的评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.73,
+      "evidence": [
+        "正文记录论文在 2025 年 8 月 16 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.11860",
+      "claim": "arXiv 页面标注论文于 2025 年 8 月 16 日首次提交，摘要给出 LARC 的架构、任务规模、成功率和与基线的比较。",
+      "excerpt": "Submitted on 16 Aug 2025 ... LARC achieves a 72.9% success rate on these tasks"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 2508.11860 首次提交日期与摘要；正文保留逆合成、Agent-as-a-Judge、工具反馈、48 个任务、3 类约束和 72.9% 结果，并明确这是作者实验，不外推为通用化学能力或实验验证。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留作者实验的样本规模、约束类型、成功率和基线比较，解释逆合成与 Agent-as-a-Judge，但没有把“接近专家”写成普遍能力或已完成实验验证。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-16-larc"
+}

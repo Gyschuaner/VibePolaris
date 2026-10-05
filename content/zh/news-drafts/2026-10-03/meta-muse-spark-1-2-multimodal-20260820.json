@@ -1,0 +1,242 @@
+{
+  "slug": "meta-muse-spark-1-2-multimodal-20260820",
+  "title": "Meta 展示 Muse Spark 1.2 的多模态代理：看图、写网页、调工具，评测仍是公司预览",
+  "summary": "Meta AI Research 于 2026 年 8 月 20 日公开 Muse Spark 1.2 的视觉编码、音视频理解和机器人规划演示，并预览内部 WildArtifactBench。模型可在 Meta Model API 和 Muse Code 使用，但演示与内部评测仍不能替代跨硬件、真实场景和第三方复测。",
+  "body": "2026 年 8 月 20 日，Meta AI Research 发布 Muse Spark 1.2 的多模态能力更新，公开了视觉编码、图表理解、音视频理解和机器人规划演示，并宣布模型已可通过 Meta Model API 和 Muse Code 使用。它不是一次全新模型命名，而是对 8 月 5 日发布的编码型版本补充“看见之后如何行动”的产品与评测材料。\n\n最直观的演示是视觉编码：模型接收一段视频或一张图，先理解页面结构，再生成网页或小游戏，随后重新检查自己生成的结果。这个循环很像一个会看截图的编码代理，但它依赖工具和可验证的输出；模型说得出“页面应该长什么样”，不等于每次生成的代码都能运行、无障碍或符合原始设计。\n\nMeta 还把 Muse Spark 放在机器人规划链路的上游。高层模型读取环境、调用工具、拆解长任务，再把子任务交给较低层的视觉—语言—动作（VLA）策略；官方示例包括整理化妆品、收拾午餐盒和寻找物品。页面写的是模拟或研究演示，不能把它理解成已经在真实工厂中自主运行的机器人产品。\n\n当天文章预览了 Meta 的 WildArtifactBench。它不要求每个任务都有唯一正确答案，而是用模型评审和人工评审比较两个代理交付物，计算胜率或 Elo（胜负积分）分数，并先开放 10 个任务。这样的评测更接近“交付物是否有用”，但评审标准、任务选择和公司内部基线仍由 Meta 设计，不能直接当成独立排行榜。\n\n所以 8 月 20 日可以确认的是一次官方能力展示、内部评测预览和 API/编码工具可用性更新。公开材料没有证明 Muse Spark 1.2 已开放权重，也没有证明视觉编码、音视频理解或机器人规划在不同硬件和真实环境中稳定复现。读者应该把模型能力、工具循环、评测设计和未来开放计划分成四条线看。",
+  "publishedAt": "2026-08-20",
+  "eventDate": "2026-08-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meta-muse-spark-1-2-multimodal-20260820.svg",
+    "alt": "Muse Spark 1.2 从视觉输入、工具循环到内部评测的多模态代理链路",
+    "sourceUrl": "/images/news/meta-muse-spark-1-2-multimodal-20260820.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "update",
+      "title": "当天是能力更新，不是重新命名一套模型",
+      "body": "Meta 在 8 月 5 日发布 Muse Spark 1.2 后，于 8 月 20 日补充多模态演示与评测，并说明 API 和 Muse Code 可用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "visual-code",
+      "title": "看视频写网页，还要回看产物",
+      "body": "视觉编码链路包含输入理解、代码生成和再次检查；这能展示代理循环，但不自动保证页面可运行、可访问或忠实。",
+      "kind": "example"
+    },
+    {
+      "id": "robotics",
+      "title": "机器人部分仍是规划与模拟",
+      "body": "Muse Spark 负责高层场景理解、拆解和工具调用，较低层 VLA 策略执行动作；公开示例没有证明真实设备部署。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "WildArtifactBench 测的是交付物偏好",
+      "body": "Meta 用模型评审和人工评审比较交付物，公布 10 个预览任务；胜率和 Elo 属于内部评测设计，不是第三方排名。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "还需要哪些外部证据",
+      "body": "开放权重、跨硬件稳定性、真实机器人结果和独立复现，才会把演示变成可验证的产品能力。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "从一段视频到一个可检查的交付物",
+    "question": "多模态代理的“会看”怎样变成一个可以验收的结果？",
+    "steps": [
+      {
+        "label": "接收视觉输入",
+        "detail": "模型读取图片、视频或音频，把画面结构、图表和空间线索转成可用信息。",
+        "evidence": "Meta AI Research"
+      },
+      {
+        "label": "生成方案",
+        "detail": "代理把视觉信息和文字指令结合，生成网页、游戏代码或机器人子任务。",
+        "evidence": "Meta visual coding / robotics demo"
+      },
+      {
+        "label": "调用工具",
+        "detail": "工具让代理能重新打开产物、搜索信息或把高层计划交给低层动作策略。",
+        "evidence": "Meta AI Research"
+      },
+      {
+        "label": "检查交付物",
+        "detail": "模型或人工评审比较产物是否可用，WildArtifactBench 用胜率和 Elo 记录偏好。",
+        "evidence": "WildArtifactBench preview"
+      },
+      {
+        "label": "等待外部复测",
+        "detail": "跨硬件、真实场景和独立评测结果仍需验证，演示本身不是部署证明。",
+        "evidence": "Article boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Meta AI Research",
+    "url": "https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "agent-loop",
+    "eval",
+    "benchmark",
+    "tools",
+    "api",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2",
+      "claim": "Meta AI Research 于 2026 年 8 月 20 日公开 Muse Spark 1.2 的视觉编码、机器人规划、音视频理解示例，并预览 WildArtifactBench；模型可在 Meta Model API 和 Muse Code 使用。",
+      "excerpt": "Today ... we’re sharing new evaluation results and demonstrations ... Muse Spark 1.2 is available in Meta Model API and Muse Code."
+    },
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-code-and-muse-spark-1-2",
+      "claim": "Meta 8 月 5 日的正式发布页说明 Muse Spark 1.2 是编码型更新，Muse Code beta 和模型 API 已提供；本日文章是其后续多模态能力材料。",
+      "excerpt": "We're excited to release Muse Code (beta) ... Muse Spark 1.2 ... is available today in Muse Code and in Meta Model API with expanded global access."
+    },
+    {
+      "url": "https://research.meta.ai/",
+      "claim": "Meta AI Research 索引把 8 月 20 日文章列为 Muse Spark 1.2 的最新研究更新，与 8 月 5 日模型发布区分。",
+      "excerpt": "The Multimodal Intelligence of Muse Spark 1.2 — August 20, 2026."
+    }
+  ],
+  "canonicalUrl": "https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2",
+  "sourceHash": "sha256:0f64ce02fba52e8f17d43e7909c1a901039d1fd33e6880b2f01a36926332df3a",
+  "status": "published",
+  "discoveredAt": "2026-10-03T08:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.97,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.96,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.93,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.87,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2",
+      "claim": "Meta AI Research 于 2026 年 8 月 20 日公开 Muse Spark 1.2 的视觉编码、机器人规划、音视频理解示例，并预览 WildArtifactBench；模型可在 Meta Model API 和 Muse Code 使用。",
+      "excerpt": "Today ... we’re sharing new evaluation results and demonstrations ... Muse Spark 1.2 is available in Meta Model API and Muse Code."
+    },
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-code-and-muse-spark-1-2",
+      "claim": "Meta 8 月 5 日的正式发布页说明 Muse Spark 1.2 是编码型更新，Muse Code beta 和模型 API 已提供；本日文章是其后续多模态能力材料。",
+      "excerpt": "We're excited to release Muse Code (beta) ... Muse Spark 1.2 ... is available today in Muse Code and in Meta Model API with expanded global access."
+    },
+    {
+      "url": "https://research.meta.ai/",
+      "claim": "Meta AI Research 索引把 8 月 20 日文章列为 Muse Spark 1.2 的最新研究更新，与 8 月 5 日模型发布区分。",
+      "excerpt": "The Multimodal Intelligence of Muse Spark 1.2 — August 20, 2026."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T08:30:00Z",
+    "method": "source",
+    "notes": "已核对 Meta 8 月 20 日多模态更新、8 月 5 日 Muse Spark 1.2 发布页和研究索引；区分演示、内部评测、API 可用性和开放权重边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T08:40:25Z",
+    "notes": "已完成新闻事实、来源卡片、事件日、可追溯 SVG、词条联动与读者可读性复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T08:40:25Z",
+    "questions": [],
+    "notes": "复审确认 8 月 20 日能力更新、内部评测预览和真实部署边界清楚；VLA、Elo、SVG 和官方来源一致。",
+    "changes": [
+      "补充 VLA 与 Elo 的白话解释并同步更新 SVG"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-20",
+  "fingerprint": "sha256:0f64ce02fba52e8f17d43e7909c1a901039d1fd33e6880b2f01a36926332df3a",
+  "promotedAt": "2026-10-03T08:45:20.305Z"
+}

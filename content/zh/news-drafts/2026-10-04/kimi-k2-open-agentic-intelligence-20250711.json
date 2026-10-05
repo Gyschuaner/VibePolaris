@@ -1,0 +1,172 @@
+{
+  "slug": "kimi-k2-open-agentic-intelligence-20250711",
+  "title": "Moonshot AI 开放 Kimi K2：1 万亿总参数模型把工具调用放到发布中心",
+  "summary": "7 月 11 日，Moonshot AI 发布 Kimi K2，并通过官方博客和 GitHub 提供 Base 与 Instruct 两个版本。官方资料称这是一个总参数约 1 万亿、每个 token 激活约 320 亿参数的 MoE 模型，训练使用 15.5 万亿 token，重点放在工具调用和 agent 工作流；评测数字仍应按公司口径阅读。",
+  "body": "7 月 11 日，Moonshot AI 在官方博客发布 “Kimi K2: Open Agentic Intelligence”，同时公开了 Kimi-K2-Base 和 Kimi-K2-Instruct 的代码与技术资料。Reuters 当日报道了这次开放模型发布，TechCrunch 则把它列为当天开放模型竞争的新变量。\n\n官方资料把 Kimi K2 定义为混合专家（MoE）语言模型：总参数约 1 万亿，但每个 token 只激活约 320 亿参数。可以把它理解成一组更大的专家网络由路由器按输入选择部分参与计算；“1 万亿”描述的是模型总容量，不等于每次推理都要把 1 万亿参数全部加载并计算。官方还称模型训练使用 15.5 万亿 token，支持 128K 上下文。\n\n这次发布的重点不只是聊天。Moonshot 把工具使用、推理和自主解决问题放在产品说明的中心，并把 Instruct 版本定位为可以直接用于对话和 agent 体验的模型。对开发者来说，真正要接的仍是工具权限、函数参数、错误处理和结果验证；模型会调用工具，不代表它自动获得了应用里的权限。\n\nGitHub 仓库同时给出公司评测，与 DeepSeek、Qwen、Claude 和 GPT-4.1 等模型对比。这样的表格适合说明 Moonshot 想证明什么，但不能单独替代独立复现：任务选择、提示方式、工具实现、硬件和版本都会改变分数。Reuters 报道中的“开源”也要具体化为公开权重、代码和技术报告，不能顺手扩展成训练数据和全部训练流程都公开。\n\nKimi K2 的发布与 OpenAI 同日再次延期放在一起看，能看到开放模型竞争的两条路线：一边是先公开可用模型，另一边是把权重不可撤回当成安全门槛继续等待。对使用者来说，重要的不是参数数字谁更大，而是模型在真实工具链里能否稳定、可追踪地完成任务，并且在超出授权时停下来。",
+  "publishedAt": "2025-07-11",
+  "eventDate": "2025-07-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/kimi-k2-open-agentic-intelligence-20250711.svg",
+    "alt": "Kimi K2 用 MoE 路由把总参数、激活参数和工具调用连接成一条开放模型发布链",
+    "sourceUrl": "/images/news/kimi-k2-open-agentic-intelligence-20250711.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "官方博客和 GitHub 同日开放",
+      "body": "Moonshot AI 发布 Kimi K2，并提供 Base 与 Instruct 两个版本；Reuters 对这次开放模型发布进行了新闻报道。",
+      "kind": "narrative"
+    },
+    {
+      "id": "moe",
+      "title": "总参数和激活参数不是一回事",
+      "body": "Kimi K2 的总参数约 1 万亿，每个 token 激活约 320 亿参数，MoE 路由决定哪些专家参与当前计算。",
+      "kind": "technical"
+    },
+    {
+      "id": "agentic",
+      "title": "工具调用是发布重点",
+      "body": "官方把工具使用和 agent 能力放在中心，但实际应用仍需自己处理函数参数、权限、失败和结果校验。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "官方评测要和独立结果分开",
+      "body": "仓库里的模型对比表是 Moonshot 的评测口径，不能直接当作所有任务和所有部署环境的普遍排名。",
+      "kind": "boundary"
+    },
+    {
+      "id": "open-scope",
+      "title": "“开放”需要写清楚开放了什么",
+      "body": "公开权重、代码和技术报告不自动等于训练数据、完整训练流程和托管服务全部开放。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样读懂一个开放模型的参数和评测表？",
+    "question": "先把容量、每次计算、工具链和评测条件分开，才不会把一行数字当成完整结论。",
+    "steps": [
+      {
+        "label": "区分总容量",
+        "detail": "先看总参数、激活参数和专家数量，理解模型整体容量与单次计算的关系。",
+        "evidence": "MoE architecture"
+      },
+      {
+        "label": "确认开放范围",
+        "detail": "分别记录权重、代码、技术报告、训练数据和托管 API 是否公开。",
+        "evidence": "release scope"
+      },
+      {
+        "label": "检查工具接口",
+        "detail": "观察模型如何声明工具、传递参数和处理错误，不能把“支持工具”当成已获得权限。",
+        "evidence": "function calling"
+      },
+      {
+        "label": "还原评测条件",
+        "detail": "记录任务、提示、版本、硬件和工具实现，避免直接比较不同条件下的分数。",
+        "evidence": "benchmark protocol"
+      },
+      {
+        "label": "做真实任务复现",
+        "detail": "在自己的数据和授权边界内重跑关键任务，检查稳定性、可追溯性和失败处理。",
+        "evidence": "independent evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "Moonshot AI",
+    "url": "https://moonshotai.github.io/Kimi-K2/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "tools",
+    "function-calling",
+    "benchmark",
+    "context",
+    "model-routing",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://moonshotai.github.io/Kimi-K2/",
+      "claim": "Moonshot AI 官方 Kimi K2 技术页面说明模型为 1T 总参数、32B 激活参数的 MoE，并强调工具使用、推理和 agent 能力。",
+      "excerpt": "Moonshot AI, “Kimi K2: Open Agentic Intelligence,” July 11, 2025."
+    },
+    {
+      "url": "https://github.com/MoonshotAI/Kimi-K2",
+      "claim": "官方 GitHub 仓库提供 Base/Instruct 版本、15.5T 训练 token、128K 上下文与评测表等技术资料。",
+      "excerpt": "MoonshotAI/Kimi-K2 repository, release materials."
+    },
+    {
+      "url": "https://platform.kimi.com/blog/posts/k2-report",
+      "claim": "Kimi 开放平台博客索引把 Kimi K2: Open Agentic Intelligence 标为 2025 年 7 月 11 日文章。",
+      "excerpt": "Kimi platform blog index, July 11, 2025."
+    },
+    {
+      "url": "https://ca.finance.yahoo.com/news/chinas-moonshot-ai-releases-open-151955794.html",
+      "claim": "Reuters 经 Yahoo Finance 转发的 7 月 11 日报道确认 Moonshot AI 发布开放 Kimi K2；正文不把新闻转述扩展为独立性能证明。",
+      "excerpt": "Reuters, syndicated by Yahoo Finance, July 11, 2025."
+    }
+  ],
+  "canonicalUrl": "https://moonshotai.github.io/Kimi-K2/",
+  "sourceHash": "sha256:beb75fe56d5b5762d1bb127df8c36c3c422390a49eb3d8d46e1bbf2aa3704fe4",
+  "status": "published",
+  "discoveredAt": "2026-10-04T19:20:00.000Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://moonshotai.github.io/Kimi-K2/",
+      "claim": "Moonshot AI 官方 Kimi K2 技术页面说明模型为 1T 总参数、32B 激活参数的 MoE，并强调工具使用、推理和 agent 能力。",
+      "excerpt": "Moonshot AI, “Kimi K2: Open Agentic Intelligence,” July 11, 2025."
+    },
+    {
+      "url": "https://github.com/MoonshotAI/Kimi-K2",
+      "claim": "官方 GitHub 仓库提供 Base/Instruct 版本、15.5T 训练 token、128K 上下文与评测表等技术资料。",
+      "excerpt": "MoonshotAI/Kimi-K2 repository, release materials."
+    },
+    {
+      "url": "https://platform.kimi.com/blog/posts/k2-report",
+      "claim": "Kimi 开放平台博客索引把 Kimi K2: Open Agentic Intelligence 标为 2025 年 7 月 11 日文章。",
+      "excerpt": "Kimi platform blog index, July 11, 2025."
+    },
+    {
+      "url": "https://ca.finance.yahoo.com/news/chinas-moonshot-ai-releases-open-151955794.html",
+      "claim": "Reuters 经 Yahoo Finance 转发的 7 月 11 日报道确认 Moonshot AI 发布开放 Kimi K2；正文不把新闻转述扩展为独立性能证明。",
+      "excerpt": "Reuters, syndicated by Yahoo Finance, July 11, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T19:20:00.000Z",
+    "method": "source",
+    "notes": "已核对 Moonshot AI 官方博客、Kimi K2 GitHub 仓库和 Reuters 新闻转述，确认 2025-07-11 发布日、MoE 参数、训练 token、Base/Instruct 版本与 agent/tool-use 定位；正文把公司 benchmark 与独立验证分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T19:20:00.000Z",
+    "notes": "已按新闻报道、官方材料与公司自述边界核对，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T16:20:00Z",
+    "questions": [
+      "新闻主线、事件日期和发布/背景材料日期是否清楚？是。",
+      "是否区分官方主张、媒体报道和独立证据？是。",
+      "是否适合零基础读者且无模板化表达？是。"
+    ],
+    "notes": "新闻聚焦 Moonshot 开放 Kimi K2；总参数、激活参数、训练 token、工具调用和官方 benchmark 均标明口径，公开权重不扩大为全部训练流程开放。日期、来源卡片、章节、解释器、SVG alt 与词条联动一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-11",
+  "promotedAt": "2026-10-04T18:37:03.907Z"
+}

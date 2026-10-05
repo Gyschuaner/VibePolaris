@@ -1,0 +1,261 @@
+{
+  "slug": "qwen3-coder-agentic-coding-20250722",
+  "title": "Qwen3-Coder 开源：代码模型开始把长上下文和工具调用放进一个代理工作流",
+  "summary": "2025 年 7 月 22 日，Qwen 发布 Qwen3-Coder，先开放 480B 总参数、35B 激活的 MoE 版本，原生支持 256K token 上下文，并以外推方式扩展到 1M token。官方还开源 Qwen Code 命令行工具，把代码生成、工具调用和多轮环境交互放进同一条开发流程；性能排名和“可比 Claude Sonnet 4”属于厂商评测口径。",
+  "body": "2025 年 7 月 22 日，Qwen 团队发布 Qwen3-Coder，并先提供 Qwen3-Coder-480B-A35B-Instruct 这一旗舰版本。官方给出的结构是 480B 总参数、每个 token 激活 35B 参数的混合专家（MoE）模型，原生支持 256K token 上下文，也可以通过 YaRN 等外推方法扩展到 1M。它被定位为面向软件开发和代理式编程的代码模型，而不是把普通聊天模型换一个产品名。\n\n这次发布的重点在“工作流”三个字。Qwen 的说明把真实软件工程描述为连续的多轮任务：模型先规划，再调用工具，在环境里运行代码、收到测试反馈，然后决定下一步。配套的 Qwen Code 是一个命令行工具，基于 Gemini CLI 改造了提示和工具调用协议；官方还写明可以和 Claude Code、Cline 等开发工具搭配。这样一来，模型的输出不只是代码片段，还可能是对代码仓库的连续操作。\n\n长上下文解决的是“能不能把更大的仓库放进一次任务”，不是“模型已经理解了整个仓库”。Qwen 把 256K 原生上下文和 1M 外推能力用于仓库级理解、Pull Request 等动态数据，但上下文越长，读取成本、检索噪声和错误传播也可能增加。实际项目仍要把权限、分支、测试命令和可回滚方式写进外层工具，不能让一条长提示替代工程流程。\n\nQwen 还介绍了 7.5T token 的预训练数据（其中代码占比 70%）、执行驱动的 Code RL，以及同时运行 2 万个独立环境来训练和评测长时任务。官方称这些工作让模型在 Agentic Coding、Browser-Use、Tool-Use 和 SWE-Bench Verified 等测试上达到开源模型中的领先水平，并可与 Claude Sonnet 4 相比。这些数字和排名来自发布方，真正选型时还要在自己的语言、仓库结构、测试覆盖率和成本约束下复测。\n\n开放模型加上 CLI，确实降低了把代码模型接入开发环境的门槛，但不会自动解决安全问题。一个能执行命令、修改文件或访问网络的 coding agent，需要明确的授权范围、隔离环境、密钥处理、人工审核和失败回滚；模型能生成正确补丁，也不代表它有权把补丁直接合并。Qwen3-Coder 的新闻价值，是把“代码生成”进一步推向可执行的代理循环，同时把这些工程边界暴露在产品设计里。\n\n因此，读者可以把这次发布拆成三层：模型本身的参数和上下文，Qwen Code 等工具的编排方式，以及最终由开发团队负责的权限和验收。官方 benchmark 只能回答部分能力问题；代码是否安全、是否节省时间、是否值得接入生产，还要看真实仓库的测试结果和可追溯操作记录。",
+  "publishedAt": "2025-07-22",
+  "eventDate": "2025-07-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen3-coder-agentic-coding-20250722.svg",
+    "alt": "Qwen3-Coder 把 256K 上下文、工具调用和代码代理循环连成一条开发工作流。",
+    "sourceUrl": "/images/news/qwen3-coder-agentic-coding-20250722.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这次发布的模型和工具是什么",
+      "body": "Qwen 发布 Qwen3-Coder-480B-A35B-Instruct，480B 是总参数，35B 是每个 token 激活的参数规模；同时开源 Qwen Code 命令行工具。它们分别对应模型能力和开发者入口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agent-loop",
+      "title": "代码代理不只补全一段代码",
+      "body": "Qwen 把真实软件工程描述成规划、工具调用、运行代码、接收测试反馈和继续决策的多轮循环。CLI 的价值在于把模型接到这个循环里，权限和执行环境仍由外层系统负责。",
+      "kind": "technical"
+    },
+    {
+      "id": "context",
+      "title": "256K 上下文能装下更大的仓库，但不等于理解无误",
+      "body": "原生 256K、外推 1M 适合仓库级任务和 Pull Request，但长上下文会带来成本、噪声与错误传播。工程团队仍要做检索、分支隔离和测试。",
+      "kind": "boundary"
+    },
+    {
+      "id": "training",
+      "title": "训练与 benchmark 先看作厂商证据",
+      "body": "7.5T token、70% 代码占比、2 万个并行环境和 SWE-Bench Verified 领先成绩来自 Qwen 的发布材料。它们值得记录，但不能替代自己的仓库、语言和成本评测。",
+      "kind": "comparison"
+    },
+    {
+      "id": "permissions",
+      "title": "能执行命令不等于有权修改生产代码",
+      "body": "接入 coding agent 前需要定义命令、文件、网络和密钥权限，保留人工审查、测试和回滚。正确补丁与被授权执行是两件事。",
+      "kind": "aside"
+    },
+    {
+      "id": "follow-up",
+      "title": "后续要看真实工程反馈",
+      "body": "继续追踪 Qwen Code 的版本、模型在真实仓库的通过率和成本，以及社区是否建立了可审计的沙箱与权限实践。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个代码代理怎样从提示走到可合并补丁？",
+    "question": "把模型、工具、执行环境和人工审批拆成可观察的循环。",
+    "steps": [
+      {
+        "label": "理解仓库",
+        "detail": "用上下文和检索找到相关文件、依赖和测试，不把长上下文误认为完整理解。",
+        "evidence": "Qwen3-Coder context description"
+      },
+      {
+        "label": "提出计划",
+        "detail": "把目标拆成可检查的小步骤，明确哪些文件和命令允许被触碰。",
+        "evidence": "Agentic coding workflow"
+      },
+      {
+        "label": "调用工具",
+        "detail": "在隔离环境里读写文件、运行测试和获取反馈，保留每次输入输出。",
+        "evidence": "Qwen Code CLI and tool use"
+      },
+      {
+        "label": "验证结果",
+        "detail": "用测试、代码审查和安全扫描判断补丁是否真的完成任务。",
+        "evidence": "SWE-Bench and local evaluation boundary"
+      },
+      {
+        "label": "决定是否合并",
+        "detail": "人或受控的审批策略决定是否提交、合并或回滚，模型本身不拥有生产权限。",
+        "evidence": "authorization / execution-sandbox"
+      }
+    ]
+  },
+  "source": {
+    "name": "Qwen Official Blog",
+    "url": "https://qwenlm.github.io/blog/qwen3-coder/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "tools",
+    "context-window",
+    "eval",
+    "benchmark",
+    "authorization",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://qwenlm.github.io/blog/qwen3-coder/",
+      "claim": "Qwen 官方博客标注 2025 年 7 月 22 日发布 Qwen3-Coder，旗舰版本为 480B 总参数、35B 激活的 MoE，原生 256K 上下文并可通过外推扩展到 1M。",
+      "excerpt": "Qwen, Qwen3-Coder: Agentic Coding in the World, July 22, 2025."
+    },
+    {
+      "url": "https://qwenlm.github.io/zh/blog/qwen3-coder/",
+      "claim": "中文官方博客说明 Qwen Code CLI 基于 Gemini Code 改造，并强调代码模型的工具调用和多轮 Agent 任务。",
+      "excerpt": "Qwen 中文博客，2025-07-22。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct",
+      "claim": "官方模型卡提供 Qwen3-Coder-480B-A35B-Instruct 的模型说明、Apache-2.0 许可和部署入口。",
+      "excerpt": "Hugging Face Qwen model card."
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/alibaba-launches-opensource-ai-coding-model-touted-as-its-most-advanced-to-date-4147128",
+      "claim": "Reuters 报道阿里在 7 月 22 日发布开源代码模型，并把 agentic coding 与同类模型比较作为新闻背景。",
+      "excerpt": "Reuters, Alibaba launches open-source AI coding model, July 22, 2025."
+    }
+  ],
+  "canonicalUrl": "https://qwenlm.github.io/blog/qwen3-coder/",
+  "sourceHash": "sha256:8565a03a97bfef41244a64190868fc3d4323d443e49fa8b329f7f9003212103a",
+  "status": "published",
+  "discoveredAt": "2026-10-04T15:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文用 agent 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.9,
+      "evidence": [
+        "正文用 agent-loop 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文用 tools 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.9,
+      "evidence": [
+        "正文用 context-window 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文用 eval 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.9,
+      "evidence": [
+        "正文用 benchmark 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文用 authorization 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.9,
+      "evidence": [
+        "正文用 execution-sandbox 解释这条新闻里的概念或核验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://qwenlm.github.io/blog/qwen3-coder/",
+      "claim": "Qwen 官方博客标注 2025 年 7 月 22 日发布 Qwen3-Coder，旗舰版本为 480B 总参数、35B 激活的 MoE，原生 256K 上下文并可通过外推扩展到 1M。",
+      "excerpt": "Qwen, Qwen3-Coder: Agentic Coding in the World, July 22, 2025."
+    },
+    {
+      "url": "https://qwenlm.github.io/zh/blog/qwen3-coder/",
+      "claim": "中文官方博客说明 Qwen Code CLI 基于 Gemini Code 改造，并强调代码模型的工具调用和多轮 Agent 任务。",
+      "excerpt": "Qwen 中文博客，2025-07-22。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct",
+      "claim": "官方模型卡提供 Qwen3-Coder-480B-A35B-Instruct 的模型说明、Apache-2.0 许可和部署入口。",
+      "excerpt": "Hugging Face Qwen model card."
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/alibaba-launches-opensource-ai-coding-model-touted-as-its-most-advanced-to-date-4147128",
+      "claim": "Reuters 报道阿里在 7 月 22 日发布开源代码模型，并把 agentic coding 与同类模型比较作为新闻背景。",
+      "excerpt": "Reuters, Alibaba launches open-source AI coding model, July 22, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T15:20:00Z",
+    "method": "source",
+    "notes": "逐一核对官方公告/产品页，并用可信新闻或政府材料交叉确认日期和边界；正文把厂商自述、规划容量与实际效果分开。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T15:20:00Z",
+    "notes": "按独立新闻事件成稿，保留官方口径、事件日期和可验证边界，等待读者审阅。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T12:50:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文没有明显模板化或 AI 腔。",
+      "eventDate/publishedAt 均为 2025-07-22，与官方博客、产品公告或财报分析发布日期一致。",
+      "Qwen3-Coder 的 480B/35B/256K/1M 与 benchmark 标为官方口径；Flash-Lite 的价格、benchmark、客户案例和 8/25 预览别名迁移边界清楚；Stargate 的 4.5GW、200万芯片、10万岗位和已运行/在开发状态分层；OpenAI 经济分析区分内部采用数据、外部调查、试点节省时间和生产率因果结论。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：四篇数字归属、规划与已落地边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-22",
+  "fingerprint": "sha256:8565a03a97bfef41244a64190868fc3d4323d443e49fa8b329f7f9003212103a",
+  "promotedAt": "2026-10-04T12:30:32.600Z"
+}

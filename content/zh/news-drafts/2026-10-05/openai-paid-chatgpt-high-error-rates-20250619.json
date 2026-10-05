@@ -1,0 +1,230 @@
+{
+  "slug": "openai-paid-chatgpt-high-error-rates-20250619",
+  "title": "OpenAI 付费 ChatGPT 用户短时高错误率：状态页记录了两分钟内的识别与恢复",
+  "summary": "2025 年 6 月 19 日凌晨，OpenAI 状态页记录付费 ChatGPT 用户出现高错误率，影响组件为 ChatGPT 对话；02:11 标记已识别并实施缓解，02:15 标记完全恢复。公开页面没有给出根因、错误比例或受影响用户数，本文把“服务恢复”与“根因解释”分开。",
+  "body": "2025 年 6 月 19 日凌晨，OpenAI 的状态页挂出一条很短、但信息边界清楚的服务事件：付费 ChatGPT 用户出现高错误率。页面把受影响组件列为 ChatGPT，状态是“Degraded performance”，随后在 02:15 标记所有受影响服务已经恢复。它不是模型发布，也不是一篇对系统能力的评价，而是一条面向线上服务的运行记录。\n\n时间线只有两个公开节点。02:11，OpenAI 写明已经确认用户在受影响服务上遇到错误，并正在实施缓解；02:15，页面改为 Resolved。四分钟的公开窗口不能推出故障总时长，更不能推出所有付费用户都同时失败。状态页的聚合指标覆盖多个套餐、模型和错误类型，单个客户的可用性仍可能不同。\n\n读者真正需要区分的是三件事：请求有没有到达服务、服务有没有返回有效响应、以及用户看到的错误是不是同一种错误。标题里的“高错误率”是服务层的聚合描述，页面没有给出错误码、错误比例、受影响地区或根因。因而本文不把它改写成“某个模型挂了”，也不猜测是容量、网络还是发布变更造成的。\n\n这种短事件最适合用状态码、超时和重试来理解。客户端通常会把一次请求拆成发送、等待响应和处理结果三个阶段；如果响应迟迟不到，客户端可能超时并重试。重试能改善瞬时抖动，却也可能把流量重新推回故障服务。工程上要为请求保留幂等键，记录第一次失败和最后一次成功，避免把一次用户动作重复执行。\n\nOpenAI 的状态页只能证明“官方在这个时间点公开识别并宣布恢复”。它没有说明是否需要客户补偿、是否存在丢失的对话或是否完成事后根因分析。对使用者来说，恢复后应检查失败请求是否有本地记录、重试是否产生重复操作；对平台方来说，下一步才是把聚合状态和更细的错误分类、地区与模型维度对上。\n\n因此，这条新闻的价值不在于四分钟这个数字，而在于它展示了怎样记录一次可追溯的服务事件：保留事件名称、受影响组件、状态变化和公开时间，同时把尚未公布的根因留在“未知”里。类似的服务数据延迟事件还出现在 6 月 21 日的 Compliance API 记录中，二者都提醒读者，恢复灯亮起以后，应用侧仍要完成自己的请求对账。",
+  "publishedAt": "2025-06-19",
+  "eventDate": "2025-06-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-paid-chatgpt-high-error-rates-20250619.svg",
+    "alt": "OpenAI 付费 ChatGPT 用户短时高错误率：状态页记录了两分钟内的识别与恢复",
+    "sourceUrl": "/images/news/openai-paid-chatgpt-high-error-rates-20250619.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "incident",
+      "title": "状态页记录了什么",
+      "body": "OpenAI 把事件标题写成“High error rates for paid ChatGPT users”，受影响组件是 ChatGPT 对话；公开状态从 Degraded performance 进入 Resolved。",
+      "kind": "narrative"
+    },
+    {
+      "id": "timeline",
+      "title": "02:11 到 02:15 的公开时间线",
+      "body": "02:11 标记已识别并实施缓解，02:15 标记完全恢复。时间线只说明公开动作，不提供故障开始时间、用户比例或根因。",
+      "kind": "narrative"
+    },
+    {
+      "id": "layers",
+      "title": "错误率不是一个模型名",
+      "body": "服务层错误可能发生在请求入口、模型路由、超时或响应处理。状态页没有把这次事件归因到某个模型，因此不能补写技术原因。",
+      "kind": "technical"
+    },
+    {
+      "id": "retry",
+      "title": "为什么重试也要有边界",
+      "body": "超时后的自动重试要配合退避和幂等键；否则用户只点一次，系统可能执行两次。恢复后还应把失败记录与最终状态对账。",
+      "kind": "technical"
+    },
+    {
+      "id": "boundary",
+      "title": "“已恢复”不等于根因已公开",
+      "body": "官方页面确认服务恢复，但没有公开错误比例、地区、根因、补偿或数据完整性结论。文章保留这些未知项。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "接下来应该看什么",
+      "body": "后续若有事故复盘、错误码说明或客户补偿政策，再把它们作为新的时间线节点关联进来；当前文章只记录 6 月 19 日的状态事件。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "一次高错误率，用户和工程师各自要确认什么？",
+    "question": "沿着请求、响应、状态页和恢复后的对账，把短暂故障拆开。",
+    "steps": [
+      {
+        "label": "发出请求",
+        "detail": "用户或客户端提交一次 ChatGPT 对话请求。",
+        "evidence": "状态页的 affected component: ChatGPT"
+      },
+      {
+        "label": "出现错误",
+        "detail": "一部分付费请求返回错误或没有完成；页面没有给出具体错误码。",
+        "evidence": "High error rates for paid ChatGPT users"
+      },
+      {
+        "label": "实施缓解",
+        "detail": "02:11，OpenAI 标记已识别问题并开始缓解。",
+        "evidence": "We are working on implementing a mitigation."
+      },
+      {
+        "label": "服务恢复",
+        "detail": "02:15，状态页改为 Resolved；这证明服务恢复，不解释根因。",
+        "evidence": "All impacted services have now fully recovered."
+      },
+      {
+        "label": "客户侧对账",
+        "detail": "用户仍应检查失败请求、重试和重复动作，平台侧继续补充更细的遥测。",
+        "evidence": "状态页聚合指标说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI Status",
+    "url": "https://status.openai.com/incidents/01JY2ZA0M0P7DJPK9BT6WJFZM1"
+  },
+  "relatedSlugs": [
+    "api",
+    "status-code",
+    "timeout",
+    "retry",
+    "data-quality",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "openai-compliance-api-data-delays-20250621"
+  ],
+  "sources": [
+    {
+      "url": "https://status.openai.com/incidents/01JY2ZA0M0P7DJPK9BT6WJFZM1",
+      "claim": "OpenAI 状态页记录付费 ChatGPT 用户高错误率事件、受影响组件、02:11 识别和 02:15 恢复。",
+      "excerpt": "High error rates for paid ChatGPT users; Identified Thu, Jun 19, 2025, 02:11 AM; Resolved Thu, Jun 19, 2025, 02:15 AM."
+    },
+    {
+      "url": "https://status.openai.com/history",
+      "claim": "OpenAI 状态页历史页用于确认状态记录是服务事件时间线，而不是模型能力评测。",
+      "excerpt": "Availability metrics are reported at an aggregate level across all tiers, models and error types."
+    }
+  ],
+  "canonicalUrl": "https://status.openai.com/incidents/01JY2ZA0M0P7DJPK9BT6WJFZM1",
+  "sourceHash": "sha256:32ef1e2bb56b4caf15eb3c9d270f8531c1d85ded1c0b7ecb85b09ba567ba8eb7",
+  "status": "published",
+  "discoveredAt": "2026-10-05T01:53:27Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.82,
+      "evidence": [
+        "正文把“api”用于解释这条新闻中的事实链或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "status-code",
+      "score": 0.82,
+      "evidence": [
+        "正文把“status-code”用于解释这条新闻中的事实链或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "timeout",
+      "score": 0.72,
+      "evidence": [
+        "正文把“timeout”用于解释这条新闻中的事实链或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "retry",
+      "score": 0.72,
+      "evidence": [
+        "正文把“retry”用于解释这条新闻中的事实链或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.72,
+      "evidence": [
+        "正文把“data-quality”用于解释这条新闻中的事实链或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.72,
+      "evidence": [
+        "正文把“event”用于解释这条新闻中的事实链或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "openai-compliance-api-data-delays-20250621",
+      "score": 0.68,
+      "evidence": [
+        "两篇文章共享医疗/服务事件的时间线或机制背景，正文明确区分事实，不合并事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://status.openai.com/incidents/01JY2ZA0M0P7DJPK9BT6WJFZM1",
+      "claim": "OpenAI 状态页记录付费 ChatGPT 用户高错误率事件、受影响组件、02:11 识别和 02:15 恢复。",
+      "excerpt": "High error rates for paid ChatGPT users; Identified Thu, Jun 19, 2025, 02:11 AM; Resolved Thu, Jun 19, 2025, 02:15 AM."
+    },
+    {
+      "url": "https://status.openai.com/history",
+      "claim": "OpenAI 状态页历史页用于确认状态记录是服务事件时间线，而不是模型能力评测。",
+      "excerpt": "Availability metrics are reported at an aggregate level across all tiers, models and error types."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T01:53:27Z",
+    "method": "source",
+    "notes": "已核对来源页面的公开日期、事件对象和数字；公司/平台主张保留归因，未把公告写成独立效果验证。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T02:03:35Z",
+    "notes": "reader-review 通过，事实边界、中文可读性与引用卡片均清楚。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T02:03:35Z",
+    "questions": [
+      "事实、日期和新闻主线是否清楚？是。",
+      "公司/媒体/状态页口径边界是否准确？是。",
+      "中文及来源/引用卡片、sections/explainer、SVG/词条联动是否通过？是。"
+    ],
+    "notes": "新闻主线清楚，日期与报道/事件层次准确；公司或状态页数字、融资与产品效果均保留来源归属，中文适合零基础且无模板化段落。来源卡片、sections/explainer、SVG alt、词条与相关文章联动一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-19",
+  "fingerprint": "sha256:32ef1e2bb56b4caf15eb3c9d270f8531c1d85ded1c0b7ecb85b09ba567ba8eb7",
+  "promotedAt": "2026-10-05T02:09:01.093Z"
+}

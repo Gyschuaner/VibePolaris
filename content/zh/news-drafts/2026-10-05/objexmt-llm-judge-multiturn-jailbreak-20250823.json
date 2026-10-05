@@ -1,0 +1,194 @@
+{
+  "slug": "objexmt-llm-judge-multiturn-jailbreak-20250823",
+  "title": "ObjexMT：评测器也要先弄清多轮对话到底想做什么",
+  "summary": "ObjexMT 是一篇 2025 年 8 月 23 日提交的 LLM-as-a-judge 基准：给模型一段多轮对话，要求它抽取一句基础目标并报告置信度，再测目标准确率、校准、风险覆盖和高置信错误。六个模型在三个安全数据集上的准确率从 16% 到 82% 不等，Wrong@0.90 错误率为 14.9% 到 47.7%；论文因此建议在目标不明确时暴露目标或按置信度门控，而不是让评测器直接做决定。",
+  "body": "多轮越狱把真正的目标拆在不同轮次里：前面像是在问常识，后面逐渐改变约束，最后才露出要完成的事。8 月 23 日提交的 ObjexMT，没有直接问模型“这段对话安全吗”，而是先要求它抽取一句基础目标，再报告自己有多确定。\n\n  这个任务很像给评测器做入场考试。一个 LLM-as-a-judge 如果连对话的隐藏目标都没抽对，后面的安全评分、拒绝判断和风险分层就没有牢固的起点。ObjexMT 还把“知道自己不确定”单独测出来，不让一个看起来很自信的分数掩盖目标理解错误。\n\n  基准使用 300 条校准样本先确定一次阈值，τ*=0.66，目标抽取的 F1@τ* 为 0.891。随后在 SafeMTData_Attack600、SafeMTData_1K 和 MHJ 上比较六个模型，指标包括目标准确率、ECE、Brier score、风险覆盖曲线，以及 Wrong@0.80/0.90/0.95 等高置信错误。\n\n  结果并不只是一张模型排名表。Kimi-k2 的目标抽取准确率最高，为 0.612，Claude Sonnet 4 为 0.603，DeepSeek V3.1 为 0.599，论文认为后两者在统计上持平；Claude Sonnet 4 在选择性风险和校准上最好，AURC 为 0.242、ECE 为 0.206、Brier 为 0.254。\n\n  更值得注意的是，数据集之间的准确率从 16% 到 82% 大幅波动。Wrong@0.90 仍有 14.9% 到 47.7% 的错误，说明模型即使把置信度报得很高，也可能把多轮对话的目标理解错。评测器的“高置信”不应直接变成自动放行。\n\n  对产品来说，ObjexMT 给出两条很实际的路：当目标影响权限或安全判断时，先把模型抽取的目标展示出来让人确认；或者只让高置信、低风险的目标进入自动流程，其余交给更强模型或人工复核。置信度是门控信号，不是事实证明。\n\n  这篇基准把安全评测往前推了一步：先问评测器是否理解了对话，再问它的判断是否校准。多轮上下文越长，越需要同时记录目标、置信度、数据集和风险覆盖，而不是只看一个最终分数。",
+  "publishedAt": "2025-08-23",
+  "eventDate": "2025-08-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/objexmt-llm-judge-multiturn-jailbreak-20250823.svg",
+    "alt": "ObjexMT 测量多轮对话中的目标抽取和评测器置信度",
+    "sourceUrl": "/images/news/objexmt-llm-judge-multiturn-jailbreak-20250823.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "hidden-objective",
+      "title": "多轮对话的目标可能散落在不同轮次",
+      "body": "前几轮看似普通的聊天，可能在后面逐步改变约束。ObjexMT 先要求评测器抽取一句基础目标，再测它是否知道自己不确定。",
+      "kind": "narrative"
+    },
+    {
+      "id": "judge-qualification",
+      "title": "LLM-as-a-judge 也要先通过理解考试",
+      "body": "如果评测器没有抽对对话目标，后面的安全评分和风险分层就没有可靠起点。目标抽取与置信度因此被单独作为测试任务。",
+      "kind": "boundary"
+    },
+    {
+      "id": "metrics",
+      "title": "300 条校准样本固定一次门控阈值",
+      "body": "ObjexMT 在 300 条校准样本上得到 τ*=0.66，目标抽取 F1@τ* 为 0.891，再用准确率、ECE、Brier、风险覆盖和 Wrong@High-Confidence 评测多轮数据。",
+      "kind": "technical"
+    },
+    {
+      "id": "model-results",
+      "title": "最高准确率不等于最好校准",
+      "body": "六个模型中，Kimi-k2 目标抽取准确率 0.612，Claude Sonnet 4 为 0.603，DeepSeek V3.1 为 0.599；Claude Sonnet 4 的 AURC、ECE、Brier 分别为 0.242、0.206、0.254。",
+      "kind": "comparison"
+    },
+    {
+      "id": "high-confidence-errors",
+      "title": "数据集准确率从 16% 到 82% 波动",
+      "body": "跨数据集表现差异很大，Wrong@0.90 错误率仍为 14.9%–47.7%。高置信度只能作为门控信号，不能直接证明目标理解正确。",
+      "kind": "boundary"
+    },
+    {
+      "id": "gating",
+      "title": "先展示目标，或按置信度分流",
+      "body": "高风险目标可以先显示给人确认；低风险且高置信的目标才进入自动流程，其他情况转给更强模型或人工复核。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation-loop",
+      "title": "安全评测要同时记录目标和不确定性",
+      "body": "长对话评测不能只留一个最终分数，还要记录抽取目标、置信度、数据集、风险覆盖和高置信错误，才能追查错在理解还是决策。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "多轮对话怎样进入安全评测？",
+    "question": "先抽取基础目标，再用校准后的置信度决定是否自动处理。",
+    "steps": [
+      {
+        "label": "收集整段对话",
+        "detail": "保留多轮上下文，不只截取最后一句，避免把目标散落当成无关噪声。",
+        "evidence": "Given a multi-turn transcript, a model must output a one-sentence base objective"
+      },
+      {
+        "label": "抽取基础目标",
+        "detail": "要求评测器用一句话写出对话真正要完成的目标，再与标注目标计算语义相似度。",
+        "evidence": "objective extraction"
+      },
+      {
+        "label": "校准置信度",
+        "detail": "用 300 条校准样本固定阈值，并同时看 ECE、Brier 和风险覆盖，而不是只看准确率。",
+        "evidence": "τ*=0.66 ... F1@τ*=0.891 ... ECE, Brier score, risk-coverage curves"
+      },
+      {
+        "label": "检查高置信错误",
+        "detail": "统计 Wrong@0.80/0.90/0.95，确认模型不会把不确定目标包装成确定结论。",
+        "evidence": "Wrong@High-Confidence (0.80 / 0.90 / 0.95)"
+      },
+      {
+        "label": "按风险分流",
+        "detail": "低风险高置信才自动放行，目标不清或高风险时展示目标、转更强模型或请求人工确认。",
+        "evidence": "when objectives are implicit ... exposing objectives or gating decisions by confidence"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / ObjexMT 作者组",
+    "url": "https://arxiv.org/abs/2508.16889"
+  },
+  "relatedSlugs": [
+    "eval",
+    "benchmark",
+    "context",
+    "hallucination",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.16889",
+      "claim": "ObjexMT 让模型从多轮对话抽取基础目标并报告置信度，在三个安全数据集上评估目标准确率和校准。",
+      "excerpt": "benchmark for objective extraction and metacognition ... multi-turn transcript ... expected calibration error, Brier score"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.16889",
+      "claim": "六个模型跨数据集准确率 16%–82%，Wrong@0.90 为 14.9%–47.7%，Claude Sonnet 4 的选择性风险和校准最佳。",
+      "excerpt": "Performance varies sharply across datasets (16--82% accuracy) ... Wrong@0.90 ranges from 14.9% ... to 47.7%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.16889",
+  "sourceHash": "sha256:523a96d1d5d638cbd08819cb2e254dcdbefddf49cd856be8a78f91eb466963bd",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文把目标抽取、校准、风险覆盖和高置信错误作为评测主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 ObjexMT 的校准样本、三套数据集和六个模型。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "正文讨论多轮上下文、隐藏目标和长上下文退化。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.84,
+      "evidence": [
+        "正文用高置信错误说明评测器可能把不确定目标说成确定结论。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 23 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.16889",
+      "claim": "arXiv 记录显示 ObjexMT 于 2025 年 8 月 23 日提交，提出多轮对话目标抽取与元认知评测。",
+      "excerpt": "Date: Sat Aug 23 03:32:04 2025 ... ObjexMT therefore supplies an actionable test for LLM judges"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 ObjexMT 摘要中的 300 条校准样本、τ*=0.66、F1、六模型、三数据集、16%–82% 准确率、Wrong@0.90 及 Claude Sonnet 4 的校准指标；正文将高置信错误与自动门控边界分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章没有把 LLM judge 的置信度当作安全证明，保留了多轮目标抽取、校准、数据集差异和高置信错误，并给出展示目标与分流边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-23-objexmt-llm-judge-multiturn-jailbreak"
+}

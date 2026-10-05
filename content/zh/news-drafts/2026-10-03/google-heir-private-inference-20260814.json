@@ -1,0 +1,148 @@
+{
+  "slug": "google-heir-private-inference-20260814",
+  "title": "Google 开源 HEIR：让模型在加密数据上推理",
+  "summary": "8 月 14 日，Google Security Blog 介绍开源 HEIR 编译器，把同态加密接进 AI 推理工具链。它的目标是让服务端处理密文而看不到用户原始数据，当前仍是需要专门硬件、编译优化和成本权衡的工程基础设施，不是所有模型都能一键变成“零泄露”。",
+  "body": "8 月 14 日，Google 在 Security Blog 介绍 HEIR（Homomorphic Encryption Intermediate Representation），一个开源的同态加密编译器和开发工具链。它要解决的问题很具体：服务端需要用用户数据做推理，却不希望在计算过程中看到数据本身。Google 把它放进 Private Computing Toolkit，先展示的是一套可以被研究者和工程团队继续使用的基础设施，而不是一个面向普通用户的独立 AI 应用。\n\n同态加密的关键变化，是服务器可以直接在密文上计算。传统的端到端加密通常把数据锁在传输和存储环节，服务端一旦要做推荐、风控或检测，就必须在某个阶段看到明文；同态加密则允许服务端拿着密文完成运算，再把加密结果返回。理论上，推荐系统、信用卡欺诈检测、网络流量异常检测和语音唤醒都可以把“看不到原始数据”放进推理流程。\n\nHEIR 充当的是编译层。工程师不用从零手写每一个密码学操作，而是把原本处理明文的预训练模型或程序交给工具链转换，再针对目标同态加密方案做优化。Google 展示了四类示例，包括内容推荐、信用卡欺诈、加密网络流量的入侵检测和热词检测；这些示例说明方向已经能够运行，但不等于每个生产模型都拥有同样的延迟和吞吐。\n\n代价也被 Google 写在了说明里。同态加密的计算开销仍然明显，实际部署要看模型大小、数据类型、加密参数、硬件加速器和允许的响应时间。Google 说它正与 Belfort Labs、Niobium、Cornami、Optalysys 等硬件团队合作，并计划进一步展示延迟改善；这意味着“隐私增强”与“服务成本”仍然是同一个工程问题的两面。\n\n这条新闻的价值在于把隐私推理从概念演示推向工具链：研究者可以复用中间表示、测试环境和基准，对不同密码学方案做比较。它还保留了一个重要边界：HEIR 是开源编译基础设施，Google 的愿景是让非密码学专家更容易接入加密推理，但公开文章没有承诺所有模型、所有硬件或所有监管场景已经达到生产级可用。",
+  "publishedAt": "2026-08-14",
+  "eventDate": "2026-08-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-heir-private-inference-20260814.svg",
+    "alt": "Google 开源 HEIR：让模型在加密数据上推理 的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/google-heir-private-inference-20260814.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "why",
+      "title": "它要解决的是“服务端必须看数据”的矛盾",
+      "body": "推荐、反欺诈和安全检测都需要计算用户数据。端到端加密能保护传输和存储，却会把功能卡在服务端无法读取明文的地方；同态加密尝试把计算搬到密文上。",
+      "kind": "narrative"
+    },
+    {
+      "id": "compiler",
+      "title": "HEIR 站在模型和密码学库之间",
+      "body": "HEIR 是开源编译器与中间表示工具链，把处理明文的程序或预训练模型转换为可以处理加密输入的版本。它减少了每个团队从零实现密码学优化的工作，但仍需要选择方案、参数和硬件。",
+      "kind": "technical"
+    },
+    {
+      "id": "demos",
+      "title": "Google 展示了四种私密推理场景",
+      "body": "公开示例覆盖内容推荐、信用卡欺诈检测、加密流量入侵检测和热词检测。示例证明工具链能跑通这些方向，不代表所有业务模型都能直接复制相同的延迟。",
+      "kind": "example"
+    },
+    {
+      "id": "cost",
+      "title": "隐私保护仍有计算账单",
+      "body": "同态加密会带来额外计算开销，模型规模、密文格式、加密参数和硬件都会影响响应速度。Google 正与硬件加速器团队合作，延迟和吞吐仍是后续验证重点。",
+      "kind": "boundary"
+    },
+    {
+      "id": "meaning",
+      "title": "今天确认的是工具链，不是普遍可用的产品",
+      "body": "HEIR 把加密推理的研究和工程入口公开出来，目标是降低使用门槛。公开材料没有证明所有模型都已经能一键部署，也没有给出统一的生产成本或安全保证。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "模型怎样在看不见原文时完成推理？",
+    "question": "如果服务端拿不到明文，推荐和风控还能计算吗？",
+    "steps": [
+      {
+        "label": "用户先加密输入",
+        "detail": "设备或可信环境把特征、语音或交易数据变成密文，再发送给推理服务。",
+        "evidence": "Google Security Blog"
+      },
+      {
+        "label": "HEIR 转换计算",
+        "detail": "编译器把原本处理明文的模型或程序转换成能在密文上执行的表示。",
+        "evidence": "Google HEIR"
+      },
+      {
+        "label": "服务端只处理密文",
+        "detail": "服务器运行推理，看到的是加密后的数值，不能直接读出用户原始内容。",
+        "evidence": "Google Security Blog"
+      },
+      {
+        "label": "返回加密结果",
+        "detail": "结果回到拥有密钥的一方解密；使用方还要衡量延迟、参数、硬件和成本。",
+        "evidence": "Google Security Blog"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Security Blog",
+    "url": "https://blog.google/security/how-google-is-making-private-ai-practical-with-homomorphic-encryption/"
+  },
+  "relatedSlugs": [
+    "data-lineage",
+    "data-validation",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.google/security/how-google-is-making-private-ai-practical-with-homomorphic-encryption/",
+      "claim": "Google 于 2026-08-14 介绍 HEIR，并将其定位为开源同态加密编译器和私密 AI 推理工具链。",
+      "excerpt": "HEIR is an open-source compiler toolchain and development platform for homomorphic encryption."
+    },
+    {
+      "url": "https://heir.dev/",
+      "claim": "HEIR 项目页提供编译器、方言和示例的开源入口，作为 Google 公告之外的可追溯项目资料。",
+      "excerpt": "HEIR is a compiler for homomorphic encryption and a platform for building privacy-preserving applications."
+    },
+    {
+      "url": "https://github.com/google/heir",
+      "claim": "Google HEIR 仓库记录源代码与开发状态，帮助读者区分开源工具和已经部署的商业服务。",
+      "excerpt": "Open-source compiler infrastructure for homomorphic encryption."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/security/how-google-is-making-private-ai-practical-with-homomorphic-encryption",
+  "sourceHash": "sha256:8c97700c365e73ae72ee02fb1d2b8af29b61f094e38c663e0d138b189bcb9542",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:05:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://blog.google/security/how-google-is-making-private-ai-practical-with-homomorphic-encryption/",
+      "claim": "Google 于 2026-08-14 介绍 HEIR，并将其定位为开源同态加密编译器和私密 AI 推理工具链。",
+      "excerpt": "HEIR is an open-source compiler toolchain and development platform for homomorphic encryption."
+    },
+    {
+      "url": "https://heir.dev/",
+      "claim": "HEIR 项目页提供编译器、方言和示例的开源入口，作为 Google 公告之外的可追溯项目资料。",
+      "excerpt": "HEIR is a compiler for homomorphic encryption and a platform for building privacy-preserving applications."
+    },
+    {
+      "url": "https://github.com/google/heir",
+      "claim": "Google HEIR 仓库记录源代码与开发状态，帮助读者区分开源工具和已经部署的商业服务。",
+      "excerpt": "Open-source compiler infrastructure for homomorphic encryption."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:05:00Z",
+    "method": "source",
+    "notes": "以 Google Security Blog 为主，核对 HEIR 的工具链定位、四类示例和同态加密成本边界；没有把公司愿景写成普遍生产可用。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:05:00Z",
+    "notes": "逐篇手写，依据官方公告、监管文件与可信新闻建立事实链；保留公司口径和未确认状态。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T13:42:00Z",
+    "questions": [],
+    "notes": "HEIR、同态加密、密文推理和成本限制均有白话解释；Google 示例与普遍生产可用性分开，日期、来源、词条、解释器和 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-14",
+  "promotedAt": "2026-10-03T13:43:44.252Z"
+}

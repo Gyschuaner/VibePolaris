@@ -1,0 +1,207 @@
+{
+  "slug": "azure-percept-edge-ai-preview-20210302-4d1bca68",
+  "title": "Azure Percept 进入公开预览：微软发布面向边缘 AI 的硬件与服务平台",
+  "summary": "2021-03-02，微软在 Ignite 宣布 Azure Percept 进入公开预览（可供外部试用和验证，尚不等同正式生产版）：把带有视觉或语音加速能力的边缘设备、Azure AI、Azure Machine Learning 和设备管理服务放进一条开发路径。这次发布展示的是原型和部署的连接方式，仍不是一份独立的效果评测或大规模上线证明。",
+  "body": "2021-03-02，微软在 Ignite 期间宣布 Azure Percept 公开预览。这里的“公开预览”指外部用户可以试用和验证功能，尚不等同正式生产版或效果保证。微软新闻中心把它描述为一套“硬件加服务”的平台：设备可以在网络边缘运行视觉或语音模型，同时连接 Azure 的设备管理、模型开发和分析能力。边缘 AI 指把模型放在靠近数据源的设备上运行；“推理”则是模型根据输入给出判断。微软举的场景包括让电梯听懂语音、让摄像头提醒商店补货、在视频流里观察排队或停车位。这些是平台计划支持的使用场景，不是微软已经替每个行业完成部署的结果。\n\n这次发布的产品重点，是把原来要由硬件工程师、嵌入式开发者和数据科学家分别拼起来的工作，放进同一条开发路径。Azure Percept DK 是可用于试验的开发套件，配有 Azure Percept Vision；Azure Percept Audio 是单独提供的音频模块，面向语音命令和关键词唤醒等场景。设备里有硬件加速模块，可以在本地做一部分推理；在模型已经部署且设备配置允许、网络又不稳定或不适合把每一帧都上传到云端时，系统可以先给出初步判断。\n\n软件侧的入口是 Azure Percept Studio。微软官方说明，它把设备配置、模型训练和部署串在一起，也能调用预建的 Azure AI 模型、Azure Machine Learning 和 Azure IoT 服务。一个工厂可以先用摄像头做“产线上异常物品”的概念验证（proof of concept），确认输入、输出和告警方式，再决定要不要接入更正式的设备管理。设备负责现场计算，云端服务负责配置、连接、分析和迭代，具体记录能力仍需查对应产品文档。\n\n为什么不把每件事都送进云端？延迟、带宽和连接可靠性是三个实际原因。门店摄像头要即时提醒货架缺货，工厂传感器可能没有稳定外网，语音设备也可能需要在断网时响应一个本地命令（前提是模型已经部署且设备配置允许）。把模型放到设备附近可以减少数据往返，但也把模型更新、设备身份、日志和故障排查带到现场。Azure 官方博客提到硬件根信任（为设备身份提供芯片级依据）、零信任（Zero Trust，默认不信任并持续验证）和 IoT Hub 设备注册；微软新闻中心还称 Azure 平台提供安全保护。这些是平台方公布的设计目标，不等于每个客户的部署已经通过独立安全审计。\n\n发布材料还提到第三方生态：客户可以用开发套件验证概念，之后选择通过认证的设备来扩大部署。TechCrunch 对同一发布的报道也把重点放在“硬件和软件一起降低边缘 AI 门槛”上。截至当日公开材料，明确可核对的是公开预览、设备类型、软件连接方式和微软宣称的使用场景；认证设备数量、实际准确率、不同网络条件下的成本与维护负担，都需要后续产品记录或独立测试来回答。",
+  "publishedAt": "2021-03-02",
+  "eventDate": "2021-03-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/azure-percept-edge-ai-preview-20210302-4d1bca68.svg",
+    "alt": "Azure Percept 将边缘设备、现场推理与云端管理连接成一条预览工作流",
+    "sourceUrl": "/images/news/azure-percept-edge-ai-preview-20210302-4d1bca68.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "这条新闻宣布了什么",
+      "body": "微软新闻中心在 2021-03-02 记录 Azure Percept 公开预览，定位是“硬件加服务”的边缘 AI 平台。官方把 Vision、Audio、Percept Studio、Azure AI、Azure Machine Learning 和 Azure IoT 放在同一套平台中介绍；官方页面也明确把它写成面向原型和部署的开发路径。",
+      "kind": "narrative"
+    },
+    {
+      "id": "kit-and-studio",
+      "title": "设备和 Studio 各自负责什么",
+      "body": "开发套件和 Vision 模块负责在现场接收图像、运行视觉模型；单独提供的音频模块面向语音和关键词场景。Percept Studio 则处理设备配置、模型训练、部署，以及设备后续更新和维护。这里的“整套”不是一台万能设备，而是硬件、云服务和管理入口之间的组合。",
+      "kind": "technical"
+    },
+    {
+      "id": "edge-reason",
+      "title": "把模型放到边缘，解决的是哪种问题",
+      "body": "现场推理可以减少把原始音视频持续上传到云端的等待和带宽压力；在模型已部署、设备配置允许的情况下，即使网络不稳定，也能先完成初步判断。代价是现场设备要有身份、更新、日志和故障处理能力；延迟降低也要和设备维护、数据保护一起评估。",
+      "kind": "example"
+    },
+    {
+      "id": "prototype-to-production",
+      "title": "从原型到认证设备，中间还隔着什么",
+      "body": "微软说客户可以先用开发套件做概念验证（proof of concept），再选择经过认证的第三方设备扩大部署。这个承诺描述了迁移路线，不是已经有多少认证设备、多少客户上线的统计。读者应把预览资格、产品路线和生产可用性分开看。",
+      "kind": "comparison"
+    },
+    {
+      "id": "security-boundary",
+      "title": "安全设计是平台声明，不是审计结论",
+      "body": "Azure 官方材料提到硬件根信任（为设备身份提供芯片级依据）、零信任（Zero Trust，默认不信任并持续验证）、Azure IoT Hub 设备注册，以及微软内部的负责任 AI 评估流程。它们说明平台提供了哪些安全和治理工具；客户仍需自己验证模型更新、数据留存、权限、断网行为和现场设备的实际配置。",
+      "kind": "boundary"
+    },
+    {
+      "id": "terms",
+      "title": "三个词条帮助读者拆开看这套平台",
+      "body": "工具词条帮助识别 Vision、Audio、Percept Studio 和 Azure 服务分别接收什么输入、输出什么结果；组件词条提醒读者平台不是单一模型，而是硬件加速器、设备和服务的组合；上下文词条则把延迟、带宽、现场网络和权限放回具体使用场景。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个边缘 AI 原型怎样从现场走到云端",
+    "question": "下面按步骤看每一环负责什么、哪些结果仍需人工验证。",
+    "steps": [
+      {
+        "label": "现场输入",
+        "detail": "Vision 摄像头或 Audio 麦克风先在设备附近接收图像和声音；这是微软举例的设备形态，不代表所有场景都使用同一套传感器。",
+        "evidence": "https://news.microsoft.com/source/features/ai/with-azure-percept-microsoft-adds-new-ways-for-customers-to-bring-ai-to-the-edge/"
+      },
+      {
+        "label": "本地推理",
+        "detail": "硬件加速模块在边缘运行视觉或语音模型，先产生识别到的对象、异常或关键词，减少不必要的往返传输；是否能在断网时继续工作取决于模型是否已部署以及设备配置是否允许。",
+        "evidence": "https://azure.microsoft.com/en-us/blog/azure-percept-edge-intelligence-from-silicon-to-service/"
+      },
+      {
+        "label": "设备管理",
+        "detail": "Azure Percept Studio、Azure IoT Hub 和相关 Azure 服务负责配置设备、管理模型与连接；具体怎样记录输入输出，仍需查对应产品文档。",
+        "evidence": "https://azure.microsoft.com/en-us/blog/azure-percept-edge-intelligence-from-silicon-to-service/"
+      },
+      {
+        "label": "人来复核",
+        "detail": "开发者或现场负责人检查误报、漏报、断网行为、数据保存和权限，再决定原型是否值得继续；平台预览不会替他们做生产验收。",
+        "evidence": "本文基于微软公开预览边界提出的阅读问题。"
+      },
+      {
+        "label": "扩大部署",
+        "detail": "这是本文给读者的核验建议：在设备认证、更新、身份、安全和维护路径都可核对时，再评估是否从开发套件走向生产设备；微软当日材料只说明计划中的第三方生态安排。",
+        "evidence": "https://news.microsoft.com/ignite-march-2021-book-of-news/"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft News Center",
+    "url": "https://news.microsoft.com/source/features/ai/with-azure-percept-microsoft-adds-new-ways-for-customers-to-bring-ai-to-the-edge/"
+  },
+  "relatedSlugs": [
+    "tools",
+    "component",
+    "context"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://news.microsoft.com/source/features/ai/with-azure-percept-microsoft-adds-new-ways-for-customers-to-bring-ai-to-the-edge/",
+      "claim": "微软新闻中心在 2021-03-02 报道 Azure Percept 公开预览，并给出平台组成、边缘场景和第三方生态计划。",
+      "excerpt": "Microsoft unveiled the public preview of Azure Percept, a platform of hardware and services for Azure AI on the edge. The article describes Vision, Audio, Percept Studio, device management, model development and analytics, and says third-party certified devices are part of the planned ecosystem."
+    },
+    {
+      "url": "https://azure.microsoft.com/en-us/blog/azure-percept-edge-intelligence-from-silicon-to-service/",
+      "claim": "Azure 官方博客说明 Azure Percept 的端到端平台设计、设备模块、Percept Studio、Azure AI、Azure Machine Learning、Azure IoT 集成和安全能力。",
+      "excerpt": "Azure Percept is presented as a single end-to-end platform integrating hardware accelerators with Azure AI and Azure IoT services. The post names Percept Vision, Percept Audio, Percept Studio, pre-built or custom models, hardware-backed identity and device provisioning."
+    },
+    {
+      "url": "https://news.microsoft.com/ignite-march-2021-book-of-news/",
+      "claim": "Microsoft Ignite 官方 Book of News 把 Azure Percept 标为预览中的边缘设备与服务家族，并列出对象检测、货架分析、异常检测和关键词识别等用途。",
+      "excerpt": "Azure Percept is available in preview as a family of devices and services for real-time insights at the edge; the Ignite guide lists hardware accelerators, Azure AI and IoT integrations, and uses such as object detection, shelf analytics, anomaly detection and keyword spotting."
+    },
+    {
+      "url": "https://techcrunch.com/2021/03/02/microsoft-launches-azure-percept-its-new-hardware-and-software-platform-to-bring-ai-to-the-edge/",
+      "claim": "TechCrunch 在同日独立报道微软发布，将 Azure Percept 概括为结合 Azure 云工具与合作伙伴硬件的边缘 AI 平台。",
+      "excerpt": "TechCrunch describes Azure Percept as a hardware and software platform combining Azure cloud tools with partner hardware; its report names the Vision development kit, a separate Audio device and the goal of making edge AI easier to build and deploy."
+    }
+  ],
+  "canonicalUrl": "https://news.microsoft.com/source/features/ai/with-azure-percept-microsoft-adds-new-ways-for-customers-to-bring-ai-to-the-edge/",
+  "sourceHash": "sha256:4d1bca686f21416865248c902e7e62fc664d6e04a5062a293c395f649f6d3589",
+  "status": "published",
+  "discoveredAt": "2026-10-02T08:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.97,
+      "evidence": [
+        "文章具体解释 Vision、Audio、Percept Studio 和 Azure AI 服务分别处理什么输入和输出。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "component",
+      "score": 0.95,
+      "evidence": [
+        "文章把开发套件、硬件加速器、Studio、IoT Hub 和模型服务拆成可组合部件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.91,
+      "evidence": [
+        "文章用延迟、带宽、断网和现场维护说明边缘 AI 结果必须放回具体环境理解。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://news.microsoft.com/source/features/ai/with-azure-percept-microsoft-adds-new-ways-for-customers-to-bring-ai-to-the-edge/",
+      "claim": "主新闻来源和公开预览范围。",
+      "excerpt": "Microsoft News Center, published March 2, 2021: public preview of Azure Percept, including hardware, services, Vision, Audio, Percept Studio and edge AI scenarios."
+    },
+    {
+      "url": "https://techcrunch.com/2021/03/02/microsoft-launches-azure-percept-its-new-hardware-and-software-platform-to-bring-ai-to-the-edge/",
+      "claim": "独立新闻交叉核对微软发布的硬件与软件信息。",
+      "excerpt": "TechCrunch, March 2, 2021: Microsoft launches Azure Percept as a hardware and software platform for bringing Azure AI services to the edge."
+    },
+    {
+      "url": "https://news.microsoft.com/ignite-march-2021-book-of-news/",
+      "claim": "官方新闻册补充预览状态和用途边界。",
+      "excerpt": "Microsoft Ignite Book of News, March 2–4, 2021: Azure Percept is a family of edge devices and services now in preview."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "method": "source",
+    "notes": "逐条打开 Microsoft News Center、Azure Blog、Ignite Book of News 与 TechCrunch 页面，核对发布日期、公开预览状态、设备/服务组成、边缘场景和生态计划；将厂商设计目标与独立效果结论分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "notes": "单篇新闻稿与交叉报道已核对；Codex 子智能体读者审读和中文表达审读的两轮修改意见已全部处理。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "questions": [
+      "公开预览、边缘 AI、推理、硬件根信任和零信任均已在首次出现处解释。",
+      "Vision、单独提供的音频模块、Percept Studio 与 Azure 云端服务的分工已拆开。",
+      "断网行为、第三方认证设备和安全声明均保留了配置条件或预览/路线图边界。",
+      "新闻中心、Azure 官方博客和 TechCrunch 的事实归因已分开；没有把厂商目标写成独立效果结论。"
+    ],
+    "notes": "Codex 子智能体读者审读与中文表达审读均完成；第二轮复核指出的标题、摘要、归因、条件、术语和句式问题已全部处理。文章可复述事件且保留来源和预览边界。",
+    "changes": [
+      "补充公开预览、边缘 AI、推理、硬件根信任、零信任和概念验证的首次解释",
+      "拆分 Microsoft News Center 与 Azure Blog 的安全能力归因，并移除未被来源直接支持的输入输出记录表述",
+      "将产品定位和第三方生态路线改为微软主张或本文核验建议",
+      "修正标题、摘要重复、断网条件与设备管理措辞",
+      "统一音频模块表述，修正安全归因、设备管理和边缘推理的中文句式"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2021-03-02",
+  "fingerprint": "sha256:4d1bca686f21416865248c902e7e62fc664d6e04a5062a293c395f649f6d3589",
+  "promotedAt": "2026-10-02T05:27:42.522Z"
+}

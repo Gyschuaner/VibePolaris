@@ -1,0 +1,211 @@
+{
+  "slug": "openai-security-clampdown-report-20250707",
+  "title": "OpenAI 被报道收紧内部安全：前沿模型的保密与可复核怎样同时存在？",
+  "summary": "7 月 7 日，TechCrunch 转述 Financial Times 报道称，OpenAI 为防止企业间谍和敏感模型泄露，扩大了信息隔离、离线电脑、生物识别门禁和“默认拒绝”外网连接等措施。报道提到的细节来自匿名信源，OpenAI 当天没有公开确认，因此本文把它当作安全运营报道来读，不把它写成已经证实的入侵或事故。",
+  "body": "7 月 7 日，TechCrunch 刊出一则与 OpenAI 内部安全有关的报道，转述 Financial Times 的消息源称，公司正在收紧敏感项目的访问和沟通。报道中最具体的词是“information tenting”：只有被明确纳入项目、经过核验的成员，才能在共享办公空间讨论某些算法和新产品。它描述的不是给所有员工加一层普通登录，而是把人、地点和项目同时放进不同的隔离区。\n\n报道还提到几类更硬的控制：把专有技术放在离线电脑上；用指纹扫描限制部分办公区域；外部网络连接默认关闭，只有得到明确批准才能打开；同时加强数据中心的物理防护并扩充网络安全人员。对于训练和部署前沿模型的公司，这些措施针对的是源代码、权重、评测结果和路线图一旦被带走就难以追回的问题。\n\nTechCrunch 把安全升级与 1 月 DeepSeek 发布竞品模型联系起来，并转述 OpenAI 对“蒸馏”复制模型的指控。这里需要停一下：报道可以说明公司为何把防窃取当作背景，但并不能由此证明某次泄露发生过，更不能证明 DeepSeek 的模型一定通过某种方式复制了 OpenAI。OpenAI 也没有在 TechCrunch 文章中对具体措施作公开回应。\n\n这则新闻有一个不容易处理的张力。把模型、数据和讨论分开，可能降低内部误传和外部窃取的机会；可隔离区越多，越需要留下谁访问过什么、谁批准过什么的可追溯记录，否则安全会变成只有少数人知道的黑箱。离线电脑和指纹门禁解决的是入口问题，不会自动解决权限过大、评测结论失真或事故响应慢。\n\n因此，读者不应把“安全收紧”理解成“OpenAI 已经发生重大入侵”。更准确的读法是：一家前沿模型公司被报道正在把保密当成工程基础设施来管理，但外部还看不到政策全文、控制覆盖范围和独立审计结果。后续若有官方说明，真正值得核对的是最小权限、日志保留、供应商边界、例外审批以及出错后如何撤销访问。",
+  "publishedAt": "2025-07-07",
+  "eventDate": "2025-07-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-security-clampdown-report-20250707.svg",
+    "alt": "报道中的 OpenAI 内部安全收紧，用隔离、审批和日志把敏感模型放在更窄的访问路径里",
+    "sourceUrl": "/images/news/openai-security-clampdown-report-20250707.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "reported-not-confirmed",
+      "title": "先标记来源：这是 FT 经 TechCrunch 转述的报道",
+      "body": "文章中的访问控制细节来自匿名信源，OpenAI 没有在报道中公开确认；因此可以记录为行业安全新闻，不能写成已证实的泄露事故。",
+      "kind": "boundary"
+    },
+    {
+      "id": "information-tenting",
+      "title": "“信息帐篷”是在分割讨论范围",
+      "body": "只有被纳入项目并通过核验的成员才能讨论敏感算法和产品，隔离的是人员、办公空间与项目上下文。",
+      "kind": "technical"
+    },
+    {
+      "id": "hard-controls",
+      "title": "离线设备、指纹和默认拒绝分别挡住不同入口",
+      "body": "离线电脑减少网络暴露，生物识别限制空间进入，默认拒绝外网要求每次外连都有批准；它们是不同控制层，不是一把万能锁。",
+      "kind": "comparison"
+    },
+    {
+      "id": "traceability",
+      "title": "越保密，越需要留下可复核的操作记录",
+      "body": "访问日志、审批人、例外和撤销路径决定了隔离措施能否在出错时追责和恢复。安全不是把所有信息都藏起来。",
+      "kind": "narrative"
+    },
+    {
+      "id": "what-to-watch",
+      "title": "后续要等官方政策和独立审计",
+      "body": "只有看到范围、日志、供应商和事故响应等细节，才能判断报道里的安全升级是否形成了可验证的治理闭环。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "一家公司怎样把敏感模型关进可追踪的安全边界？",
+    "question": "把“收紧安全”拆成入口、权限、记录和恢复四类动作，才能避免把门禁误当成完整治理。",
+    "steps": [
+      {
+        "label": "先分类敏感对象",
+        "detail": "把权重、源代码、评测结果、路线图和普通办公资料分开，明确什么内容需要更高保护。",
+        "evidence": "context"
+      },
+      {
+        "label": "按项目收窄权限",
+        "detail": "只有被纳入项目的成员才能进入对应讨论和设备，访问要经过明确授权。",
+        "evidence": "authorization"
+      },
+      {
+        "label": "限制网络与物理入口",
+        "detail": "离线电脑、指纹门禁和默认拒绝外网分别减少远程暴露、空间闯入和未经批准的外联。",
+        "evidence": "auth"
+      },
+      {
+        "label": "记录每次例外",
+        "detail": "保存访问者、审批人、时间和用途，避免隔离区变成无人能复核的黑箱。",
+        "evidence": "data-lineage"
+      },
+      {
+        "label": "准备撤销和恢复",
+        "detail": "发现权限错误或设备失控时，能立刻撤销访问、保留证据并恢复到安全状态。",
+        "evidence": "state"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/07/openai-tightens-the-screws-on-security-to-keep-away-prying-eyes/"
+  },
+  "relatedSlugs": [
+    "auth",
+    "authorization",
+    "data-lineage",
+    "context",
+    "state",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/07/openai-tightens-the-screws-on-security-to-keep-away-prying-eyes/",
+      "claim": "TechCrunch 于 2025 年 7 月 7 日转述 Financial Times，报道 OpenAI 加强对敏感模型、办公区域、网络连接和数据中心的安全控制；OpenAI 未在报道中置评。",
+      "excerpt": "TechCrunch, “OpenAI tightens the screws on security to keep away prying eyes”, Jul 7, 2025."
+    },
+    {
+      "url": "https://www.ft.com/content/f896c4d9-bab7-40a2-9e67-4058093ce250",
+      "claim": "Financial Times 原始报道的标题与来源被保留；文中所述措施属于匿名信源报道，不能写成 OpenAI 已公开确认的完整安全政策。",
+      "excerpt": "Financial Times, “OpenAI clamps down on security after foreign spying threats”, Jul 7, 2025."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/07/openai-tightens-the-screws-on-security-to-keep-away-prying-eyes/",
+  "sourceHash": "sha256:cc0084b1624ab7eb4d71b9e89b0d712cfd0b9316cf4796ab55b057b0804d9e6e",
+  "status": "published",
+  "discoveredAt": "2026-10-05T03:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.98,
+      "evidence": [
+        "正文明确解释该概念与事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.98,
+      "evidence": [
+        "正文明确解释该概念与事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该概念与事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该概念与事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "state",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该概念与事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该概念与事件的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/07/openai-tightens-the-screws-on-security-to-keep-away-prying-eyes/",
+      "claim": "TechCrunch 于 2025 年 7 月 7 日转述 Financial Times，报道 OpenAI 加强对敏感模型、办公区域、网络连接和数据中心的安全控制；OpenAI 未在报道中置评。",
+      "excerpt": "TechCrunch, “OpenAI tightens the screws on security to keep away prying eyes”, Jul 7, 2025."
+    },
+    {
+      "url": "https://www.ft.com/content/f896c4d9-bab7-40a2-9e67-4058093ce250",
+      "claim": "Financial Times 原始报道的标题与来源被保留；文中所述措施属于匿名信源报道，不能写成 OpenAI 已公开确认的完整安全政策。",
+      "excerpt": "Financial Times, “OpenAI clamps down on security after foreign spying threats”, Jul 7, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T03:20:00Z",
+    "method": "source",
+    "notes": "已逐一核对事件日、报道日、来源归属和原始链接；公司提案、匿名信源与未落地计划均在正文中单独标明。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T03:20:00Z",
+    "notes": "已完成新闻来源、事件日期和事实边界核对，等待 reader-review 子智能体检查零基础可读性与中文表达。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T04:05:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "来源归属、提案/法律/传闻和未确认产品边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否通过？是。"
+    ],
+    "notes": "现有 reader-review 子智能体逐篇审读通过：三篇均面向零基础读者，新闻主线、来源卡片、日期字段和事实边界清楚；没有发现模板化表达或需要修改的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-07",
+  "promotedAt": "2026-10-04T20:04:32.536Z"
+}

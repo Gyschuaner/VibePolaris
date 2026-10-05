@@ -1,0 +1,188 @@
+{
+  "slug": "morae-proactive-ui-agent-20250829",
+  "title": "Morae：UI Agent 遇到关键选择时先停下来问用户",
+  "summary": "Morae 论文于 8 月 29 日提交，针对 UI Agent 自动完成任务时容易替用户做关键选择的问题。它让 Agent 结合用户请求、界面代码和截图识别决策点，在需要偏好或取舍时主动暂停并请用户确认。面向盲人和低视力用户的真实网页任务研究显示，Morae 帮助参与者完成更多任务，也更容易选到符合个人偏好的选项；对照包括 OpenAI Operator 在内的基线 Agent。",
+  "body": "UI Agent 的吸引力在于它可以替人点击、填写和比较商品。但“替人完成”很快会碰到另一个问题：页面上有些选择不是技术问题，而是用户自己的偏好。价格一样的商品，可能有不同口味、评分或配送时间；Agent 如果直接替用户选一个，任务看似完成了，用户却失去了决定权。\n\nMorae 研究的就是这个停顿点。它让 UI Agent 同时读取用户请求、界面代码和截图，判断当前操作是否出现多个有意义的选项。当选择会改变结果、又无法从用户原话推出偏好时，Agent 不继续猜，而是暂停并把选项交回用户。\n\n这个设计把交互从“全自动”改成混合主动：机器负责识别页面、执行明确步骤和整理差异，用户负责表达不能被默认推断的偏好。对盲人和低视力用户来说，这尤其重要，因为复杂界面中的隐藏选项不一定容易被发现，Agent 的主动提问可以把它们变成可回答的问题。\n\n论文在真实网页任务中与基线 Agent 做了研究，参与者使用 Morae 完成了更多任务，选择结果也更符合个人偏好。对照包括 OpenAI Operator；但这类结果仍受任务集合、参与者、界面和提示方式影响，不能简单理解成所有 UI Agent 都应该在同一位置暂停。\n\n暂停本身也需要设计。问题太多会把自动化变成逐步确认，问题太少又会让 Agent 偷替用户做决定。Morae 的思路是识别“决策点”，不是每次点击都问；系统还应说明为什么停、有哪些选项以及继续后会产生什么影响。\n\n在权限层，用户选择和执行授权要分开。用户选定商品，不代表 Agent 自动获得支付、提交订单或修改账户设置的权限；这些动作仍应有清晰的确认和可回退记录。\n\nMorae 提醒我们，好的 UI Agent 不只是更快地替人操作，也要知道什么时候把方向盘交回来。自动化的边界如果能被用户看见、理解和改变，完成任务才不会以牺牲用户意愿为代价。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/morae-proactive-ui-agent-20250829.svg",
+    "alt": "Morae 在 UI Agent 识别到关键决策点时暂停并邀请用户选择",
+    "sourceUrl": "/images/news/morae-proactive-ui-agent-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "automation-choice",
+      "title": "替人点击，不等于替人做偏好决定",
+      "body": "同价商品、不同口味或评分都可能改变结果；Agent 直接代选会让任务完成却让用户失去决定权。",
+      "kind": "narrative"
+    },
+    {
+      "id": "decision-point",
+      "title": "Morae 先找出真正的决策点",
+      "body": "它结合用户请求、界面代码和截图，判断当前选择是否无法从原话中安全推出。",
+      "kind": "technical"
+    },
+    {
+      "id": "mixed-initiative",
+      "title": "机器执行明确步骤，用户表达取舍",
+      "body": "Agent 继续做识别、比较和操作；涉及偏好时暂停，把选项和影响交回用户。",
+      "kind": "technical"
+    },
+    {
+      "id": "blv-study",
+      "title": "低视力用户完成更多任务，选择更贴合偏好",
+      "body": "真实网页任务研究以包括 OpenAI Operator 在内的基线对照；结果仍受任务和参与者范围限制。",
+      "kind": "comparison"
+    },
+    {
+      "id": "pause-quality",
+      "title": "暂停太多或太少都不好",
+      "body": "关键是识别会改变结果的决策点，并解释为何停、有哪些选项以及继续后的影响。",
+      "kind": "boundary"
+    },
+    {
+      "id": "authorization-boundary",
+      "title": "用户选定，不等于自动支付",
+      "body": "偏好表达和支付、提交、账户修改等执行授权要分开，保留清晰的确认与回退记录。",
+      "kind": "example"
+    },
+    {
+      "id": "agency-first",
+      "title": "把方向盘交回用户也是能力",
+      "body": "UI Agent 的质量不只看完成速度，还要看自动化边界是否可见、可理解、可改变。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Morae 怎样在 UI 自动化里保留用户决定权？",
+    "question": "识别会改变结果的决策点，在明确步骤上自动推进，在偏好不明时暂停并询问。",
+    "steps": [
+      {
+        "label": "读懂当前任务",
+        "detail": "结合用户请求、界面代码和截图，建立当前页面操作与目标的对应关系。",
+        "evidence": "large multimodal models interpret queries, UI code, and screenshots"
+      },
+      {
+        "label": "发现决策点",
+        "detail": "判断是否出现多个会改变结果的选项，且用户偏好不能从原话安全推断。",
+        "evidence": "automatically identifies decision points"
+      },
+      {
+        "label": "整理可选项",
+        "detail": "用简短问题列出差异和后果，让用户能在自己的偏好上做选择。",
+        "evidence": "prompt users for clarification when there is a choice"
+      },
+      {
+        "label": "继续明确步骤",
+        "detail": "得到用户选择后，Agent 执行无歧义的后续点击和填写，并保持操作记录。",
+        "evidence": "mixed-initiative UI agent"
+      },
+      {
+        "label": "单独确认高风险动作",
+        "detail": "支付、提交和账户修改等动作仍需独立授权、回退和审计，不因用户回答一次选择题而自动放行。",
+        "evidence": "user agency and critical choices"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.21456"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.21456",
+      "claim": "Morae 结合用户请求、UI 代码和截图识别决策点，在需要偏好时暂停并请用户选择。",
+      "excerpt": "Proactively Pausing UI Agents for User Choices"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21456",
+      "claim": "面向盲人和低视力用户的真实网页任务研究显示，Morae 提高任务完成和偏好匹配，相比包括 OpenAI Operator 的基线更好。",
+      "excerpt": "BLV participants ... better matched preferences ... baseline agents including OpenAI Operator"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.21456",
+  "sourceHash": "sha256:b2d54040ac6f6da41fa9acfb17ae3c3ba72b3b987ffd00699dee1edf81bd2e84",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 UI Agent 的识别、暂停和执行循环展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.97,
+      "evidence": [
+        "正文把用户偏好选择与支付、提交和账户修改授权分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.92,
+      "evidence": [
+        "正文保留真实网页任务、低视力参与者和基线对照的评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.21456",
+      "claim": "arXiv 记录 Morae 于 2025 年 8 月 29 日提交，研究 UI Agent 主动暂停和用户选择。",
+      "excerpt": "Date: Fri Aug 29 ... Morae: Proactively Pausing UI Agents for User Choices"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21456",
+      "claim": "摘要说明低视力用户真实网页任务研究和基线对照结果。",
+      "excerpt": "field study ... BLV participant ... helped users complete more tasks and select options that better matched preferences"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对决策点识别、UI 代码/截图理解、低视力用户网页任务研究和基线对照；正文补充暂停频率、用户选择与高风险授权分离。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 Morae 的核心写成可见的决策点和用户代理权，保留参与者研究边界，并补上支付/提交授权隔离；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-morae-proactive-ui-agent-20250829"
+}

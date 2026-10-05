@@ -1,0 +1,188 @@
+{
+  "slug": "researchpulse-scientific-inference-20250903",
+  "title": "ResearchPulse：把多篇论文串成一条可追溯的科研方法链",
+  "summary": "ResearchPulse 论文于 9 月 3 日提交，把多文档科学推理定义成一项独立任务：从主题相关的论文簇中对齐研究动机、方法和实验结果，重建科学想法怎样演进。它用 Plan Agent 做任务分解、Mmap-Agent 构建动机—方法图、Lchart-Agent 合成实验折线图，并发布带引用标注的 ResearchPulse-Bench；论文称 7B 规模 Agent 在语义对齐、结构一致性和可视化保真度上持续超过 GPT-4o 基线。",
+  "body": "读一篇论文的摘要和结论，解决的是单篇理解；想知道一个方法为什么出现、改了哪一步、实验结果怎样沿着前作变化，就需要跨文档推理。直接把多篇论文塞给模型，常见结果是按时间顺序罗列、混淆相似术语，或把后一篇的实验数字错误地归给前一篇。ResearchPulse 把“重建研究发展链”单独拿出来。\n\n论文把任务拆成三种需要同时对齐的信息：研究动机、方法变化和实验结果。难点不只是找到相同关键词，还要处理论文发表时间与版本、方法名称的变体、实验表格的不同单位，以及一条结论究竟继承了哪项前置工作。模型必须把文献之间的关系说清楚，而不是只做长摘要拼接。\n\nResearchPulse 用三个协作 Agent 分工。Plan Agent 负责拆解问题与阅读顺序，Mmap-Agent 把动机和方法组织成思维图，Lchart-Agent 把不同论文里的实验结果合成折线图。图和图表不是装饰：它们把“谁提出了什么、哪一步被改动、数字怎样变化”外显出来，方便读者回到原文核对。\n\n作者同时发布 ResearchPulse-Bench，这是一个带引用标注的论文簇数据集，用来评测语义对齐、结构一致性和视觉保真度。摘要称，使用 7B 规模 Agent 的系统在这三项上持续超过 GPT-4o 等强基线。这个结论衡量的是重建任务的表现，不代表小模型在所有科研问答上都超过大模型，也不代表图表里的每个数值都已经通过领域专家审阅。\n\n多文档链路最需要的是 provenance。每条方法关系要记录论文版本、段落或表格位置、时间和单位；如果两篇文章使用不同数据集或指标，图表应保留分面和注释，不能把不可比的数字画成一条连续上升曲线。对冲突结果，要显示分歧来源，而不是为了让故事顺滑而平均掉。\n\n落地时还要防止 PDF 解析、表格 OCR 和引用匹配造成的二次错误。系统可以先生成候选链和图表，再让研究者检查关键节点、实验设置和单位；若找不到原始表格，输出应标为待核对。ResearchPulse 的可视化让审阅更快，却没有替研究者决定哪项结果更重要。\n\nResearchPulse 的价值在于把科学阅读从“总结每篇文章”推进到“说明它们怎样彼此改变”。当计划、方法图、实验图和引用都能追溯到原文，Agent 才有机会成为研究导航器；如果只剩一张好看的时间线，跨文档推理仍然可能只是另一种流畅的幻觉。",
+  "publishedAt": "2025-09-03",
+  "eventDate": "2025-09-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/researchpulse-scientific-inference-20250903.svg",
+    "alt": "ResearchPulse 用三个 Agent 对齐多篇论文的动机、方法和实验结果，构建可追溯科研链",
+    "sourceUrl": "/images/news/researchpulse-scientific-inference-20250903.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "single-paper-limit",
+      "title": "单篇摘要读懂，不等于看见研究演进",
+      "body": "跨论文阅读要同时对齐动机、方法和实验，避免把相似术语、版本和数字混在一起。",
+      "kind": "narrative"
+    },
+    {
+      "id": "multi-document-task",
+      "title": "ResearchPulse 把科研链重建成独立任务",
+      "body": "系统处理时间、方法变体、表格单位和前置工作的继承关系，不只是把多篇摘要拼成长文。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-agents",
+      "title": "Plan、Mmap、Lchart 各自负责一段链路",
+      "body": "Plan Agent 拆解阅读任务，Mmap-Agent 画动机—方法图，Lchart-Agent 合成实验折线图，让关系可以回到原文检查。",
+      "kind": "technical"
+    },
+    {
+      "id": "researchpulse-bench",
+      "title": "7B Agent 在三项重建指标上超过 GPT-4o 基线",
+      "body": "ResearchPulse-Bench 带引用标注，比较语义对齐、结构一致性和视觉保真度；这不是所有科研问答的通用排名。",
+      "kind": "comparison"
+    },
+    {
+      "id": "provenance-units",
+      "title": "版本、段落、表格和单位都要保留",
+      "body": "不同数据集或指标不能直接画成一条曲线，冲突结果要显示来源分歧，而不是为了顺滑叙事平均掉。",
+      "kind": "example"
+    },
+    {
+      "id": "pdf-table-boundary",
+      "title": "PDF 解析和表格 OCR 也会制造二次错误",
+      "body": "找不到原始表格时标为待核对；可视化提高审阅速度，却不能替研究者判断结果重要性。",
+      "kind": "boundary"
+    },
+    {
+      "id": "traceable-science",
+      "title": "好看的时间线必须能回到原文",
+      "body": "计划、方法图、实验图和引用共同组成证据链，否则跨文档推理只是更流畅的幻觉。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "ResearchPulse 怎样把多篇论文串成研究发展链？",
+    "question": "先拆解研究问题，再画动机—方法关系和实验变化，并让每个节点都回到带版本的原文。",
+    "steps": [
+      {
+        "label": "确定论文簇与时间",
+        "detail": "收集主题相关论文、版本和发表时间，标记哪些文本是前置工作、改进还是复现。",
+        "evidence": "thematically related research"
+      },
+      {
+        "label": "Plan Agent 拆解任务",
+        "detail": "安排先读哪些论文、要对齐哪些动机、方法和实验字段，避免把摘要顺序当研究历史。",
+        "evidence": "Plan Agent for task decomposition"
+      },
+      {
+        "label": "Mmap-Agent 对齐方法",
+        "detail": "把研究动机、方法组件和继承/改变关系放进思维图，附上段落与引用位置。",
+        "evidence": "motivation-method mind maps"
+      },
+      {
+        "label": "Lchart-Agent 对齐实验",
+        "detail": "按数据集、指标、单位和版本合成折线图；不可比的结果分开显示并标注冲突。",
+        "evidence": "experimental line charts"
+      },
+      {
+        "label": "回到原文人工复核",
+        "detail": "检查关键数字、表格、PDF 解析和引用关系，找不到原始证据时把节点标成待核对。",
+        "evidence": "citation-aware ResearchPulse-Bench"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03565"
+  },
+  "relatedSlugs": [
+    "agent",
+    "citation",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03565",
+      "claim": "ResearchPulse 将多文档科学推理定义为动机、方法和实验的对齐任务，由 Plan/Mmap/Lchart 三个 Agent 协作完成。",
+      "excerpt": "multi-document scientific inference ... Plan Agent ... Mmap-Agent ... Lchart-Agent"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03565",
+      "claim": "论文发布带引用标注的 ResearchPulse-Bench，摘要称 7B Agent 在语义对齐、结构一致性和视觉保真度上超过 GPT-4o 基线。",
+      "excerpt": "ResearchPulse-Bench ... 7B-scale agents ... outperforms ... GPT-4o"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03565",
+  "sourceHash": "sha256:8a71bdcb5d3a256196d4da608dc529bdbe00e1aebfd2f5ac8b9493870538df42",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文介绍 Plan、Mmap 和 Lchart 三个协作 Agent。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.99,
+      "evidence": [
+        "正文要求方法、实验和图表节点回到论文段落、表格和版本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 ResearchPulse-Bench、语义对齐、结构一致性和视觉保真度。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 3 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03565",
+      "claim": "arXiv 记录 ResearchPulse 于 2025 年 9 月 3 日提交，研究跨文档科研推理。",
+      "excerpt": "Published: 2025-09-03 ... ResearchPulse"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03565",
+      "claim": "摘要给出三 Agent 架构、ResearchPulse-Bench 和 7B Agent 对 GPT-4o 的三项比较结果。",
+      "excerpt": "three coordinated agents ... citation-aware benchmark ... semantic alignment, structural consistency, and visual fidelity"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对多文档科学推理任务、Plan/Mmap/Lchart 三 Agent、ResearchPulse-Bench 和 7B/GPT-4o 比较；正文补充版本、单位、provenance、PDF/OCR、冲突结果和人工复核边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把跨文档动机/方法/实验对齐与简单摘要区分，保留版本、单位和引用证据，明确可视化不等于历史真相，并补充 PDF/OCR 与人工复核边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-03-researchpulse-scientific-inference-20250903"
+}

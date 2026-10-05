@@ -1,0 +1,226 @@
+{
+  "slug": "qwen-image-21-open-source-20260920",
+  "title": "Qwen-Image-2.1 发布研究权重：一个 7B 视觉组件支持文生图、局部编辑和透明图层",
+  "summary": "2026-09-20，Qwen 发布 Qwen-Image-2.1 并按研究许可提供权重；官方称其视觉生成组件为 7B，原生支持透明图像生成、透明层编辑和主体提取。官方仓库采用 Qwen Research License，研究和评估用途可用，商业使用需另行取得许可。",
+  "body": "2026-09-20，Qwen 团队发布 Qwen-Image-2.1，并按研究许可提供权重。官方把它定位成兼顾生成质量、推理效率和成本的图像模型：同一套模型既能从文字生成图片，也能编辑图片；它的视觉生成组件为 7B 参数，并原生支持透明图像的生成和编辑。仓库采用 Qwen Research License，研究和评估用途可以使用，商业使用需要另行取得许可。\n\n这次更新最容易被忽略的地方是“透明”。模型可以直接生成带透明背景的素材，也可以编辑透明图层，还能从照片中提取主体，形成可复用的 RGBA 图层。对设计工作来说，这意味着抠图、换背景和继续合成不必完全拆成不同工具；但它仍然是图像模型，边缘、文字和人物细节是否可靠，需要在真实素材上复测。\n\n官方还列出一次请求最多使用 10 张参考图、局部编辑、保持人物与产品外观等能力。文生图和图像编辑被放在同一条工作流里，读者可以把它理解为：文字负责描述新画面，参考图提供身份或构图，局部指令告诉模型哪一块要改。这里的“统一”是产品接口和模型能力的描述，不等于所有场景都能保持像素级一致。\n\nQwen 的官方仓库和模型页面同时提供研究许可下的权重与生态接入信息，Diffusers、ComfyUI、vLLM-Omni、SGLang 等项目在发布日提供或宣布支持。这里的“开放权重”只说明可以按许可证获取和运行，不等于任意商业使用；显存需求、推理代码、硬件速度和真实素材稳定性仍要由使用者和社区复测。\n\n这条新闻把图像生成的竞争从单张图片的惊艳效果拉回到工作流：透明层是否可编辑、参考图是否能保持主体、局部修改是否可控、研究许可下的组件能否接入现有工具链。Qwen-Image-2.1 的公开材料给出它要解决的问题和许可边界，后续社区测试才会回答它在不同素材和硬件上的稳定性。",
+  "publishedAt": "2026-09-20",
+  "eventDate": "2026-09-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen-image-21-open-source-20260920.svg",
+    "alt": "一张图怎样变成可以继续加工的素材？",
+    "sourceUrl": "/images/news/qwen-image-21-open-source-20260920.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这次发布的核心变化",
+      "body": "Qwen-Image-2.1 在 9 月 20 日发布，官方把文生图和图像编辑合在一个模型里；视觉生成组件为 7B 参数，目标是平衡质量、推理效率和成本。权重按 Qwen Research License 提供，研究和评估可用，商业使用需要另行取得许可。",
+      "kind": "narrative"
+    },
+    {
+      "id": "transparent",
+      "title": "透明图层不是一个小修饰",
+      "body": "模型可以生成和编辑透明图像，也能从照片提取主体形成 RGBA 图层。这样做直接对应设计中的抠图、换背景和继续合成，但边缘、文字和细节仍需要实际素材验证。",
+      "kind": "technical"
+    },
+    {
+      "id": "references",
+      "title": "参考图和局部指令进入同一流程",
+      "body": "官方列出最多 10 张参考图、局部编辑、人物和产品保持等能力。参考图提供身份或构图，文字指令描述目标，局部范围告诉模型要改哪里；这解释了“统一生成与编辑”对工作流的意义。",
+      "kind": "comparison"
+    },
+    {
+      "id": "open",
+      "title": "研究权重的使用边界",
+      "body": "官方仓库和模型页面提供研究许可下的权重入口，多个工具在发布日提供或宣布支持。许可证、显存需求、推理代码、硬件速度和真实素材上的稳定性，仍要由使用者和社区复测；“开放权重”不等于可以直接商用。",
+      "kind": "boundary"
+    },
+    {
+      "id": "meaning",
+      "title": "从一张图转向可继续加工的素材",
+      "body": "如果透明层、主体保持和局部修改都能稳定工作，图像模型就更接近设计流水线中的一个可组合组件，而不是只生成一次的海报机器。Qwen 的公开材料给出方向和研究许可边界，后续测试决定它是否适合具体项目。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "synthetic-data",
+    "title": "一张图怎样变成可以继续加工的素材？",
+    "question": "Qwen-Image-2.1 为什么把透明、参考图和局部编辑放在同一条链路？",
+    "steps": [
+      {
+        "label": "描述画面",
+        "detail": "文本提示先告诉模型要生成什么场景或对象。",
+        "evidence": "Qwen 官方发布页。"
+      },
+      {
+        "label": "带入参考",
+        "detail": "最多 10 张参考图可以提供人物、产品或构图线索。",
+        "evidence": "Qwen 官方功能列表。"
+      },
+      {
+        "label": "保留局部",
+        "detail": "局部指令和透明图层让用户只改需要修改的区域，并把主体继续复用。",
+        "evidence": "Qwen 官方透明与编辑说明。"
+      },
+      {
+        "label": "接入工具",
+        "detail": "研究许可下的权重和生态适配让素材可以进入 ComfyUI、Diffusers 等后续流程；使用前还要核对非商业范围，效果仍需复测。",
+        "evidence": "Qwen 官方仓库与模型页面。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Qwen",
+    "url": "https://qwen.ai/blog?id=qwen-image-2.1"
+  },
+  "relatedSlugs": [
+    "component",
+    "tools",
+    "data-quality",
+    "dataset-data",
+    "benchmark"
+  ],
+  "relatedArticleSlugs": [
+    "openai-gpt6-sol-luna-20260922"
+  ],
+  "sources": [
+    {
+      "url": "https://qwen.ai/blog?id=qwen-image-2.1",
+      "claim": "Qwen 官方宣布发布 Qwen-Image-2.1，统一文生图和图像编辑，视觉生成组件为 7B，并支持透明图像。",
+      "excerpt": "Qwen, Qwen-Image-2.1: Compact, Efficient, and Unified Image Creation, 2026-09-20。"
+    },
+    {
+      "url": "https://qwen.ai/blog?id=qwen-image-2.1",
+      "claim": "官方列出透明图像生成/编辑、最多 10 张参考图、局部编辑和主体提取能力。",
+      "excerpt": "同一官方发布页的功能列表。"
+    },
+    {
+      "url": "https://github.com/QwenLM/Qwen-Image-2.1",
+      "claim": "Qwen 官方仓库列出研究许可下的权重、发布日和 Diffusers、ComfyUI、vLLM-Omni、SGLang 等生态支持。",
+      "excerpt": "QwenLM/Qwen-Image-2.1, News, 2026-09-20。"
+    },
+    {
+      "url": "https://github.com/QwenLM/Qwen-Image-2.1/blob/main/LICENSE",
+      "claim": "Qwen 官方仓库采用 Qwen Research License，研究和评估用途可用，商业使用需另行取得许可。",
+      "excerpt": "Qwen-Image-2.1 LICENSE，发布于 2026-09-20；Non-Commercial 用途限于研究/评估，商业使用需要另行许可。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen-Image-2.1",
+      "claim": "官方模型仓库提供 Qwen-Image-2.1 权重入口。",
+      "excerpt": "Hugging Face, Qwen/Qwen-Image-2.1。"
+    }
+  ],
+  "canonicalUrl": "https://qwen.ai/blog?id=qwen-image-2.1",
+  "sourceHash": "sha256:d873c3dfa0813d9807c6c4a83702981711322aa05781d14c6a8aab906e6ee4c6",
+  "status": "published",
+  "discoveredAt": "2026-10-03T12:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "component",
+      "score": 0.92,
+      "evidence": [
+        "正文解释了 component 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文解释了 tools 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 data-quality 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 dataset-data 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.8,
+      "evidence": [
+        "正文解释了 benchmark 与本次事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://qwen.ai/blog?id=qwen-image-2.1",
+      "claim": "Qwen 官方宣布发布 Qwen-Image-2.1，统一文生图和图像编辑，视觉生成组件为 7B，并支持透明图像。",
+      "excerpt": "Qwen, Qwen-Image-2.1: Compact, Efficient, and Unified Image Creation, 2026-09-20。"
+    },
+    {
+      "url": "https://qwen.ai/blog?id=qwen-image-2.1",
+      "claim": "官方列出透明图像生成/编辑、最多 10 张参考图、局部编辑和主体提取能力。",
+      "excerpt": "同一官方发布页的功能列表。"
+    },
+    {
+      "url": "https://github.com/QwenLM/Qwen-Image-2.1",
+      "claim": "Qwen 官方仓库列出研究许可下的权重、发布日和 Diffusers、ComfyUI、vLLM-Omni、SGLang 等生态支持。",
+      "excerpt": "QwenLM/Qwen-Image-2.1, News, 2026-09-20。"
+    },
+    {
+      "url": "https://github.com/QwenLM/Qwen-Image-2.1/blob/main/LICENSE",
+      "claim": "Qwen 官方仓库采用 Qwen Research License，研究和评估用途可用，商业使用需另行取得许可。",
+      "excerpt": "Qwen-Image-2.1 LICENSE，发布于 2026-09-20；Non-Commercial 用途限于研究/评估，商业使用需要另行许可。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen-Image-2.1",
+      "claim": "官方模型仓库提供 Qwen-Image-2.1 权重入口。",
+      "excerpt": "Hugging Face, Qwen/Qwen-Image-2.1。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T12:35:00Z",
+    "method": "manual",
+    "notes": "核对 Qwen 官方发布页、QwenLM 官方仓库、模型权重页和仓库 LICENSE；将 9 月 20 日发布、7B/透明图层功能、生态接入以及研究许可下的非商业边界分别记录，未把权重可用写成生产质量结论。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T12:35:00Z",
+    "notes": "图像模型发布是当天独立 AI 新闻；正文把官方功能、生态接入、研究许可和社区复测边界拆开，没有把研究权重写成不受限制的商业开源。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T20:11:04Z",
+    "questions": [],
+    "notes": "已把原先容易误解的“开源”改为“研究权重”，并在摘要、正文、段落、讲解和引用卡片中说明 Qwen Research License 的非商业研究/评估边界。7B、透明图层、最多 10 张参考图和生态接入仍归 Qwen 官方；SVG 也明确研究许可下的权重，零基础读者不会把它读成无条件商用许可。",
+    "changes": [
+      "标题、摘要和正文改为研究许可下提供权重，并说明商业使用需另行取得许可。",
+      "新增官方 LICENSE 引用卡片，同步更新段落、explainer 和 SVG 文案。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-20",
+  "promotedAt": "2026-10-02T20:17:17.807Z"
+}

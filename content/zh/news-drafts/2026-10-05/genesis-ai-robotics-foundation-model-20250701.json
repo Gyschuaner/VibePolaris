@@ -1,0 +1,210 @@
+{
+  "slug": "genesis-ai-robotics-foundation-model-20250701",
+  "title": "Genesis AI 带着 1.05 亿美元出隐身：机器人基础模型先要解决“真实世界数据”",
+  "summary": "Genesis AI 在 7 月 1 日从隐身状态出现，宣布获得 1.05 亿美元种子轮，准备训练面向多种机器人的基础模型。它把合成物理数据、仿真引擎和全栈机器人平台放在一起，但模型尚未公开，通用能力仍是计划而不是结果。",
+  "body": "7 月 1 日，Genesis AI 宣布从隐身状态出现，并获得由 Eclipse 和 Khosla Ventures 共同领投的 1.05 亿美元种子轮。TechCrunch 报道，这家总部跨越硅谷和巴黎的团队想做一个能服务不同机器人任务的基础模型，场景从实验室工作到家务都包括在愿景里。公司当时有 20 多名研究人员，下一步计划在年底前把模型提供给机器人社区。\n\n机器人模型和文本模型面对的数据并不一样。语言模型可以从大量文字里学习统计关系，机器人还要处理物体、摩擦、重力、视角、动作延迟和碰撞。真实世界数据昂贵、采集慢，还可能涉及设备安全和人的隐私。Genesis 选择用自有物理引擎生成合成数据，试图在模型训练前先把可控的环境和动作轨迹做出来。\n\n这套方法有一个容易被忽略的前提：仿真必须足够接近真实世界。公司称它的引擎能准确模拟物理世界，TechCrunch 还写到，引擎源于创始人 Zhou Xian 与 18 所大学合作的学术项目。这些是公司和媒体对路线的描述，不是对 sim-to-real 泛化已经完成的独立验证。仿真里成功的抓取动作，到了真实机器人上可能会因为光照、材质或传感器误差失败。\n\n融资也不能直接等同于模型能力。1.05 亿美元可以支持研究人员、算力、数据和硬件平台，但当日没有公开模型权重、标准 benchmark、真实机器人客户或可重复的部署报告。Genesis 的团队背景是可核验的线索：Zhou Xian 拥有卡内基梅隆大学机器人学博士背景，另一位创始人 Théophile Gervet 曾在 Mistral 做研究。但人才和资金说明的是投入，不是已交付的通用机器人。\n\n如果这个方向要被认真评估，至少要把四条证据链分开：合成数据覆盖了哪些物理状态，模型在仿真和真实设备上的差距多大，换一个机器人或任务是否还能工作，以及安全停机和人工接管怎么做。只公布一个“foundation model”称呼，无法回答这些问题。\n\n所以 7 月 1 日的新闻重点不是“机器人已经通用”，而是资本和团队选择了哪一条数据路线。Genesis 把合成物理世界当作规模化训练的起点，年底开放模型是未来检查点。到模型、数据和真实设备验证出现之前，文章应把它写成高额下注和研发计划。",
+  "publishedAt": "2025-07-01",
+  "eventDate": "2025-07-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/genesis-ai-robotics-foundation-model-20250701.svg",
+    "alt": "Genesis AI 用物理仿真和合成数据训练机器人基础模型",
+    "sourceUrl": "/images/news/genesis-ai-robotics-foundation-model-20250701.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "stealth-exit",
+      "title": "从隐身出现并宣布 1.05 亿美元种子轮",
+      "body": "Genesis AI 公开团队、投资方和机器人基础模型方向，计划年底面向社区释放模型。",
+      "kind": "narrative"
+    },
+    {
+      "id": "physical-data",
+      "title": "机器人要学的是物理世界",
+      "body": "物体、摩擦、重力、视角和动作延迟，让机器人数据比文本数据更昂贵、更难复用。",
+      "kind": "technical"
+    },
+    {
+      "id": "synthetic-engine",
+      "title": "合成数据先从物理引擎开始",
+      "body": "公司称自有引擎来自跨 18 所大学的学术项目，但仿真到真实的差距仍需实机验证。",
+      "kind": "example"
+    },
+    {
+      "id": "funding-boundary",
+      "title": "融资和团队背景不等于模型能力",
+      "body": "当日没有公开权重、标准 benchmark 或真实客户部署，1.05 亿美元应读作研发投入。",
+      "kind": "boundary"
+    },
+    {
+      "id": "evidence-chain",
+      "title": "真正的检查点是跨设备、跨任务和人工接管",
+      "body": "评估要同时看仿真覆盖、真实差距、任务泛化和停机机制，而不是只看 foundation model 的名称。",
+      "kind": "technical"
+    }
+  ],
+  "explainer": {
+    "variant": "synthetic-data",
+    "title": "机器人基础模型怎样从仿真走到真实设备？",
+    "question": "把合成数据、仿真评测、实机测试和人工接管分成四个检查点。",
+    "steps": [
+      {
+        "label": "定义物理状态",
+        "detail": "在仿真里明确物体、摩擦、重力、传感器和动作延迟，不能只生成好看的场景。",
+        "evidence": "models for robotics must be trained on data about the physical world"
+      },
+      {
+        "label": "生成合成轨迹",
+        "detail": "用物理引擎生成动作、失败和恢复轨迹，记录每个状态的来源和覆盖范围。",
+        "evidence": "Genesis says it generates synthetic data with a proprietary physics engine"
+      },
+      {
+        "label": "做仿真内评测",
+        "detail": "固定任务、设备和成功标准，区分模型会规划还是只记住了仿真模板。",
+        "evidence": "foundation model plan and year-end release milestone"
+      },
+      {
+        "label": "迁移到实机",
+        "detail": "在不同硬件、材质、光照和速度下重复任务，测量 sim-to-real 差距。",
+        "evidence": "no public real-robot benchmark at launch"
+      },
+      {
+        "label": "保留人工接管",
+        "detail": "为危险动作设置停机、权限和回滚路径，通用能力没有取代现场安全责任。",
+        "evidence": "general-purpose physical AI remains a roadmap"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "eval",
+    "data-lineage",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/",
+      "claim": "TechCrunch 7 月 1 日报道 Genesis AI 从隐身状态出现并完成 1.05 亿美元种子轮，计划构建通用机器人基础模型。",
+      "excerpt": "Genesis AI ... has emerged from stealth with a giant $105 million seed round."
+    },
+    {
+      "url": "https://www.prnewswire.com/news-releases/genesis-ai-emerges-from-stealth-with-105m-to-build-universal-robotics-foundation-model-and-horizontal-platform-for-general-purpose-physical-ai-302495016.html",
+      "claim": "Genesis AI 公司的新闻稿确认 7 月 1 日发布、融资共同领投方和物理 AI 基础设施方向；公司自述部分单独标注。",
+      "excerpt": "Genesis AI ... emerged from stealth today ... raising $105 million co-led by Eclipse and Khosla Ventures."
+    },
+    {
+      "url": "https://genesis.ai/",
+      "claim": "Genesis AI 官方网站作为公司身份和产品路线的原始入口；本文不从未公开页面推导模型已上线。",
+      "excerpt": "Genesis AI official company site."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/",
+  "sourceHash": "sha256:771d788163e5a0d15190b261aeaef335316f2a928370c34632a7cb7f8abdaa85",
+  "status": "published",
+  "discoveredAt": "2026-10-05T09:25:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 llm 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 agent 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9199999999999999,
+      "evidence": [
+        "正文解释 eval 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.89,
+      "evidence": [
+        "正文解释 data-lineage 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/01/genesis-ai-launches-with-105m-seed-funding-from-eclipse-khosla-to-build-ai-models-for-robots/",
+      "claim": "TechCrunch 7 月 1 日报道 Genesis AI 从隐身状态出现并完成 1.05 亿美元种子轮，计划构建通用机器人基础模型。",
+      "excerpt": "Genesis AI ... has emerged from stealth with a giant $105 million seed round."
+    },
+    {
+      "url": "https://www.prnewswire.com/news-releases/genesis-ai-emerges-from-stealth-with-105m-to-build-universal-robotics-foundation-model-and-horizontal-platform-for-general-purpose-physical-ai-302495016.html",
+      "claim": "Genesis AI 公司的新闻稿确认 7 月 1 日发布、融资共同领投方和物理 AI 基础设施方向；公司自述部分单独标注。",
+      "excerpt": "Genesis AI ... emerged from stealth today ... raising $105 million co-led by Eclipse and Khosla Ventures."
+    },
+    {
+      "url": "https://genesis.ai/",
+      "claim": "Genesis AI 官方网站作为公司身份和产品路线的原始入口；本文不从未公开页面推导模型已上线。",
+      "excerpt": "Genesis AI official company site."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T09:25:00Z",
+    "method": "source",
+    "notes": "核对 TechCrunch 和 Genesis AI/PRNewswire 7 月 1 日公告；正文保留公司对物理引擎、合成数据和年底开放模型的表述，明确没有公开权重、实机 benchmark 或生产部署证据。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T09:25:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T09:33:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "Genesis AI 的 1.05 亿美元融资、仿真数据路线和机器人基础模型愿景边界清楚；未把公司物理引擎或融资口径写成已验证能力。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-01-genesis-ai-robotics-foundation-model-20250701",
+  "promotedAt": "2026-10-04T21:08:26.510Z"
+}

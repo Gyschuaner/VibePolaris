@@ -1,0 +1,170 @@
+{
+  "slug": "cognizant-trizetto-unify-ai-agents",
+  "title": "Cognizant 为 TriZetto Unify 开放面向 AI agent 的 headless API",
+  "summary": "5 月 29 日，Cognizant 宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是医疗 Electronic Prior Authorization，并称 Assistant 与 Autonomous Workflow Agents 已向客户推出。公告确认了接口开放和产品定位，不能据此推出所有保险方都已接入，或自动处理已经稳定减少等待和错误。",
+  "body": "5 月 29 日，Cognizant 宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是医疗 Electronic Prior Authorization。公司同时表示 Assistant 与 Autonomous Workflow Agents 已向客户推出。新闻稿描述的是接口开放和产品状态，效果仍需按接入方和流程逐项验证。\n\nheadless API 的变化，在于让程序可以通过接口提交、查询和推进事前授权流程，而不必把每一步都绑定在人工操作界面上。它扩大了可调用的入口，却没有把医疗判断交给模型自由决定：保险方规则、资料完整性、提交权限和人工升级条件仍然要明确。\n\n一笔授权可以按状态记录：资料是否齐全、谁有权提交、保险方返回什么状态、何时转人工、失败后如何重试或撤销。每次调用都应保留身份、请求参数、返回状态、证据和审批记录，才能在患者、保险方或医院提出异议时回看发生了什么。\n\nCognizant 的官方公告支持 API 开放、首个场景和产品定位，不证明所有保险方已经接入，也没有给出自动处理对等待时间、错误率或拒付率的独立数据。医疗数据还受到隐私、合规和人工责任约束，接口可用不等于流程已经安全。\n\n相关词条分别对应控制链：agent 负责多步调用和任务推进，api 定义提交、查询和返回，authorization 则规定读写、提交、批准和撤销权限。后续可以先用模拟账户运行一笔授权，检查人工升级、失败回退和撤销是否可追踪，再决定是否扩大权限。",
+  "publishedAt": "2026-05-29",
+  "eventDate": "2026-05-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cognizant-trizetto-unify-ai-agents.svg",
+    "alt": "Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/cognizant-trizetto-unify-ai-agents.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "TriZetto Unify 开放了什么入口",
+      "body": "Cognizant 5 月 29 日宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是 Electronic Prior Authorization，并称 Assistant 与 Autonomous Workflow Agents 已向客户推出。公告确认的是接口和产品状态。",
+      "kind": "narrative"
+    },
+    {
+      "id": "headless",
+      "title": "接口扩大调用范围，不替代医疗规则",
+      "body": "headless API 让程序可以提交、查询和推进事前授权，减少对人工界面的依赖。它没有把医疗结论交给模型自由决定，资料完整性、保险方规则、提交权限和人工升级条件仍需明确。",
+      "kind": "technical"
+    },
+    {
+      "id": "state-machine",
+      "title": "一笔事前授权要留下哪些状态",
+      "body": "至少要记录资料是否齐全、谁有权提交、保险方返回什么状态、何时转人工，以及失败后如何重试或撤销。身份、请求参数、返回状态、证据和审批记录应能在事后回看。",
+      "kind": "example"
+    },
+    {
+      "id": "limits",
+      "title": "接口开放还不能推出流程效果",
+      "body": "官方公告不证明所有保险方已经接入，也没有给出自动处理对等待时间、错误率或拒付率的独立数据。医疗数据受到隐私、合规和人工责任约束，接口可用不等于流程安全。",
+      "kind": "boundary"
+    },
+    {
+      "id": "terms",
+      "title": "agent、api 和 authorization 各管哪一段",
+      "body": "agent 负责多步调用和任务推进，api 定义提交、查询和返回，authorization 规定读写、提交、批准和撤销权限。把三者分开，才能定位一次授权失败是任务、接口还是权限问题。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "用模拟账户跑一笔可撤销的事前授权",
+    "question": "TriZetto Unify 的 headless API 开放后，怎样验证 AI agent 只执行被授权的动作？",
+    "steps": [
+      {
+        "label": "准备模拟资料",
+        "detail": "使用脱敏的患者与保险资料，先检查资料是否齐全以及当前账户能读写哪些字段。",
+        "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
+      },
+      {
+        "label": "提交并记录调用",
+        "detail": "让 agent 通过 API 提交授权，保存身份、请求参数、返回状态和对应证据。",
+        "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
+      },
+      {
+        "label": "测试人工升级",
+        "detail": "制造资料缺失、规则冲突或不确定返回，确认流程会转人工而不是自动批准。",
+        "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
+      },
+      {
+        "label": "验证撤销和回退",
+        "detail": "在失败或重复提交时撤销请求并记录恢复结果，再评估是否可以扩大权限。",
+        "evidence": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cognizant",
+    "url": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx"
+  },
+  "relatedSlugs": [
+    "agent",
+    "api",
+    "authorization"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx",
+      "claim": "TriZetto Unify 将 AI agents 作为一等消费者",
+      "excerpt": "Cognizant says its new headless API makes AI agents first-class consumers of TriZetto Unify."
+    },
+    {
+      "url": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx",
+      "claim": "首个场景是 Electronic Prior Authorization",
+      "excerpt": "The announcement identifies Electronic Prior Authorization as the first available use case."
+    }
+  ],
+  "canonicalUrl": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx",
+  "sourceHash": "sha256:ee024a0bd61e83c8c1eae3dfdf6a94b84edc6bb88672d11db0254d769014b6ea",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Cognizant 开放 TriZetto Unify，让 AI 智能体处理医疗事前授权”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx",
+      "claim": "TriZetto Unify 将 AI agents 作为一等消费者",
+      "excerpt": "Cognizant says its new headless API makes AI agents first-class consumers of TriZetto Unify."
+    },
+    {
+      "url": "https://investors.cognizant.com/news-and-events/news/news-details/2026/Faster-decisions-faster-care-for-patients-Cognizant-opens-TriZetto-Unify-to-AI-agents/default.aspx",
+      "claim": "首个场景是 Electronic Prior Authorization",
+      "excerpt": "The announcement identifies Electronic Prior Authorization as the first available use case."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文准确区分 TriZetto Unify 面向 AI agent 的 headless API、首个 Electronic Prior Authorization 场景，以及公告所称 Assistant/Autonomous Workflow Agents 已向客户推出；没有把接口开放写成所有保险方已接入或等待/错误已改善。医疗示例具体覆盖资料完整性、保险方规则、API/authorization、状态机、人工升级、失败重试、撤销和审计；sections、explainer 与 schema 核对无误。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-29",
+  "fingerprint": "sha256:ee024a0bd61e83c8c1eae3dfdf6a94b84edc6bb88672d11db0254d769014b6ea",
+  "promotedAt": "2026-10-05T05:17:56.670Z"
+}

@@ -1,0 +1,210 @@
+{
+  "slug": "opencua-open-computer-use-agents-20250813",
+  "title": "OpenCUA 开放电脑操作智能体基础：数据、工具和模型一起公开",
+  "summary": "8 月 13 日，xlang-ai 在 OpenCUA 项目页公开电脑操作智能体的论文和项目基础。OpenCUA 把 AgentNet 数据集、AgentNetTool 采集工具、DataProcessor、CoTGenerator、AgentNetBench 和端到端模型放在同一套框架里；AgentNet 声称覆盖 Windows、macOS、Ubuntu 三个系统以及 200 多个应用和网站，OpenCUA-32B 在 OSWorld-Verified 上报告 34.8% 平均成功率。数据覆盖和分数来自项目方，模型、数据和工具也明确限于研究与教育用途。",
+  "body": "8 月 13 日，xlang-ai 在 OpenCUA 的固定项目版本里公开论文和项目页。它想开放的不是一个只会点击按钮的模型，而是一整条电脑操作智能体链：有人类示范的数据，有记录示范的工具，有把事件整理成训练状态的处理器，有离线评测器，还有能输出可执行动作的模型。把这些工件放在一起，研究者才能分别追踪“模型看错了屏幕”“动作对不上状态”以及“执行权限过大”发生在哪一层。\n\n数据集 AgentNet 是这条链的起点。README 称它包含 2.26 万条人工标注的电脑操作任务，覆盖 Windows、macOS 和 Ubuntu，以及 200 多个应用和网站。不同系统和应用让数据更接近实际桌面环境，但“覆盖过”不等于每个应用都有足够样本，也不等于模型遇到新版本界面仍然稳定。电脑操作任务还把登录状态、个人文件和网页权限带进了数据治理问题，数据规模不能替代脱敏与授权检查。\n\nAgentNetTool 负责把示范记录下来。它在标注者的电脑上同步采集屏幕视频、鼠标/键盘事件和 accessibility tree，再提供浏览器界面供人回看、裁剪和提交。这个组合比只保存最终点击坐标更有用：研究者可以知道动作发生前屏幕是什么样，控件的辅助功能树是否提供了可定位的语义。但屏幕录制也可能带出密码、通知和其他人的信息，采集工具需要把隐私边界当成数据管线的一部分。\n\n原始桌面轨迹通常太密，OpenCUA 用 DataProcessor 做两步整理。Action Reduction 把连续鼠标移动、滚动和按键合并成更有意义的 PyAutoGUI 动作；State-Action Matching 则把动作对齐到动作开始前最后一帧发生视觉变化的状态，避免把动作之后的信息泄露给模型。后者看起来是数据清洗细节，却直接决定离线成绩是否可信：如果状态里已经包含点击后的结果，模型就像提前看到了答案。\n\n框架还用 CoTGenerator 为每一步合成反思式长链：回顾上一个动作、解释当前选择、考虑替代动作并预测下一状态。它的用途是让训练样本包含“为什么点击这里”的上下文，而不是把屏幕截图和坐标孤立配对。长链能帮助分析失败，但也要防止把模型自述当成真实因果解释；真正可执行的仍是最后的点击、输入、滚动或终止动作。\n\nOpenCUA-32B 在项目 README 中报告 OSWorld-Verified 平均成功率 34.8%，并称在开源模型中达到 state-of-the-art；这个数字是三次独立运行的平均。AgentNetBench 还把低层动作拆成 coordinate、content 和 function 三类做离线比较。在线成功率依赖桌面环境、最大步数、登录状态和重试策略，离线轨迹相似度也不等于动作真的改变了应用状态，所以两种评测要分开看。\n\n运行端的链路是截图、模型推理、输出动作、环境执行，再把下一张截图送回模型。OpenCUA 的示例会产生 PyAutoGUI 动作，模型因此可能点击发送、删除文件或修改设置；研究项目明确写着仅供研究和教育用途。接入真实桌面时，应把浏览器、文件系统和外部工具放进沙盒，对高风险动作要求二次确认，记录每次屏幕输入和动作结果，并在权限撤回后立即停止循环。\n\nOpenCUA 的开放价值在于把 CUA 的瓶颈拆成可复查组件，而不是只公布一个成功率。下一步需要在未见过的应用和界面版本上测试定位、长任务恢复、弹窗干扰和权限变化，记录错误动作的类型与人工接管次数；还要验证屏幕隐私、数据许可和模型输出能否被安全地限制在授权环境里。8 月 13 日确认的是一套开放的电脑操作研究基础，离可以替人操作真实账户的产品还有很长的权限和可靠性验证。",
+  "publishedAt": "2025-08-13",
+  "eventDate": "2025-08-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/opencua-open-computer-use-agents-20250813.svg",
+    "alt": "OpenCUA 从屏幕示范和动作记录生成状态-动作数据，经评测后由电脑操作智能体输出可执行动作；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/opencua-open-computer-use-agents-20250813.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 13 日开放的是一整套 CUA 基础",
+      "body": "OpenCUA 固定 README commit 记录论文和项目页在 8/13 发布，框架包含 AgentNet、AgentNetTool、DataProcessor、CoTGenerator、AgentNetBench 和端到端模型。论文在 UTC 8/12 已提交，事件日按项目公开记录。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agentnet",
+      "title": "AgentNet 把桌面任务跨到三个系统",
+      "body": "项目方称 AgentNet 有 2.26 万条人工标注任务，覆盖 Windows、macOS、Ubuntu 以及 200 多个应用和网站。覆盖范围不能直接推出每个应用都有足够样本，屏幕隐私和登录状态仍需治理。",
+      "kind": "example"
+    },
+    {
+      "id": "capture",
+      "title": "AgentNetTool 同步记录屏幕、事件和辅助功能树",
+      "body": "采集工具保存屏幕视频、鼠标/键盘事件和 accessibility tree，并让人回看、裁剪和提交示范。多种信号有利于定位控件，也会把密码、通知和第三方信息带进数据保护范围。",
+      "kind": "technical"
+    },
+    {
+      "id": "processor",
+      "title": "State-Action Matching 防止动作看到未来结果",
+      "body": "DataProcessor 把密集事件压成 PyAutoGUI 动作，并把每个动作对齐到开始前最后一帧视觉变化的状态，避免点击后的画面泄露给输入。数据清洗会直接影响离线评测是否可信。",
+      "kind": "technical"
+    },
+    {
+      "id": "cot",
+      "title": "反思链帮助分析，但不等于真实因果解释",
+      "body": "CoTGenerator 为轨迹补充上一步回顾、当前选择理由、替代动作和下一状态预测。它增加了可分析上下文，最终仍要以实际点击、输入、滚动和终止动作验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark",
+      "title": "34.8% OSWorld-Verified 是项目方 benchmark",
+      "body": "OpenCUA-32B 报告 34.8% 平均成功率，三次独立运行取平均，并称在开源模型中达到 SOTA；AgentNetBench 另测 coordinate、content、function 低层动作。在线成功率和离线轨迹相似度不能互换。",
+      "kind": "comparison"
+    },
+    {
+      "id": "permissions",
+      "title": "可执行动作必须放进沙盒和授权链",
+      "body": "截图→推理→动作→新截图的循环可能点击发送、删除文件或改设置；项目注明研究与教育用途。真实接入需限制文件、浏览器和工具权限，对高风险动作二次确认并记录人工接管。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看未见应用、弹窗和权限变化",
+      "body": "在新应用、界面版本、长任务、弹窗干扰和权限撤回场景下记录错误动作、恢复时间和接管次数，再检查数据脱敏与模型输出的授权边界。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "电脑操作智能体怎样从截图走到一次点击？",
+    "question": "把示范采集、状态-动作对齐、模型推理、环境执行和安全接管拆开，才能看懂 OpenCUA 的开放基础。",
+    "steps": [
+      {
+        "label": "录下示范",
+        "detail": "AgentNetTool 同步保存屏幕视频、鼠标键盘事件和 accessibility tree，人类再回看、裁剪和提交轨迹。",
+        "evidence": "AgentNetTool"
+      },
+      {
+        "label": "整理状态动作",
+        "detail": "DataProcessor 合并密集事件，并把动作对齐到执行前最后一帧视觉状态，避免把结果画面泄露给模型。",
+        "evidence": "Action Reduction / State-Action Matching"
+      },
+      {
+        "label": "补充反思",
+        "detail": "CoTGenerator 记录上一步、当前选择、替代动作和预期下一状态，提供可分析的训练上下文。",
+        "evidence": "Reflective long CoT"
+      },
+      {
+        "label": "预测下一步",
+        "detail": "OpenCUA 模型从截图和任务生成 coordinate、content、function 等可执行动作，模型输出只是意图，环境仍会决定结果。",
+        "evidence": "OpenCUA models / AgentNetBench"
+      },
+      {
+        "label": "执行并接管",
+        "detail": "动作进入沙盒桌面后再读取新截图；发送、删除和权限变化等高风险动作应要求人工确认并保留日志。",
+        "evidence": "Research-use safety boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "xlang-ai / OpenCUA",
+    "url": "https://github.com/xlang-ai/OpenCUA/blob/45d86830e2026727f666b7d282e271a5c58ff44b/README.md"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "data-pipeline",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/xlang-ai/OpenCUA/blob/45d86830e2026727f666b7d282e271a5c58ff44b/README.md",
+      "claim": "OpenCUA 固定 README commit 记录 2025-08-13 发布论文和项目页，并说明 AgentNet、AgentNetTool、AgentNetBench、模型、数据规模与 OSWorld-Verified 结果。",
+      "excerpt": "2025-08-13: We released our paper and project page ... AgentNet ... 3 operating systems and 200+ applications and websites."
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.09123",
+      "claim": "配套论文的 arXiv 页面在 2025-08-12 UTC 提交；文章把它与 8/13 的项目公开日分开记录。",
+      "excerpt": "Submitted on 12 Aug 2025."
+    }
+  ],
+  "canonicalUrl": "https://github.com/xlang-ai/OpenCUA/blob/45d86830e2026727f666b7d282e271a5c58ff44b/README.md",
+  "sourceHash": "sha256:d0be8425a3a569bdcc3231291f294fc56226ac4ad62f68883a9c8681efdf72ae",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.98,
+      "evidence": [
+        "正文把截图、推理、动作执行、反思链和人工接管组成电脑操作智能体循环。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.97,
+      "evidence": [
+        "正文拆开 AgentNetTool 采集、DataProcessor 对齐、CoTGenerator 补充和模型训练输入。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文区分 OSWorld-Verified 在线成功率与 AgentNetBench 离线低层动作评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8/13 项目公开与 8/12 UTC 论文提交，再保留后续复现测试。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/xlang-ai/OpenCUA/blob/45d86830e2026727f666b7d282e271a5c58ff44b/README.md",
+      "claim": "固定 README 确认 8/13 项目公开、AgentNet 的系统/应用覆盖、AgentNetTool、AgentNetBench、模型和 OSWorld-Verified 34.8% 项目方结果。",
+      "excerpt": "OpenCUA-32B achieves an average success rate of 34.8% on OSWorld-Verified."
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.09123",
+      "claim": "arXiv 记录论文在 8/12 UTC 提交，支持与 8/13 项目发布的日期边界。",
+      "excerpt": "Submitted on 12 Aug 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 OpenCUA 固定 2025-08-13 README commit 与 arXiv 2508.09123；正文保留 AgentNet 2.26 万人工任务、三系统/200+应用覆盖、采集与处理管线、反思 CoT、OSWorld-Verified/AgentNetBench 评测、研究用途和桌面权限边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把 OpenCUA 写成数据、采集、对齐、推理、评测和执行权限的一条可检查链，归因项目 benchmark 和研究用途，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 和 publishedAt 均为 2025-08-13；固定 OpenCUA README commit 45d86830... 记录当天发布论文和项目页，arXiv 2508.09123 的 8/12 UTC 提交在正文和 release section 中单独标出，没有混作同一日期。",
+      "AgentNet 的 2.26 万人工标注任务、Windows/macOS/Ubuntu 和 200 多个应用/网站覆盖被标为项目方数据范围；没有外推成每个应用样本充足或新界面稳定。",
+      "AgentNetTool 同步采集屏幕视频、鼠标/键盘事件和 accessibility tree；DataProcessor 的 Action Reduction 与 State-Action Matching 对齐动作开始前最后一个视觉变化帧，避免 future-information leakage；CoTGenerator 的反思链也按数据工件说明。",
+      "AgentNetBench 的 coordinate/content/function 离线动作评测与 OSWorld-Verified 在线成功率已分开；OpenCUA-32B 的 34.8% 是三次运行均值，SOTA 是项目方 benchmark 口径，没有写成独立普遍结论。",
+      "正文清楚解释截图→推理→动作→新截图循环，并保留研究/教育用途、屏幕隐私、沙盒、权限限制、二次确认、日志和人工接管边界，没有暗示可以直接替人操作真实账户。",
+      "中文正文按 OpenCUA 的具体组件和失败模式组织，未见明显模板化句式；8 个 sections、agent-workflow explainer、agent-harness/data-pipeline/eval/event relations、hero SVG、README/arXiv sources/evidence、verification 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过。固定 README、arXiv 日期边界、AgentNet/AgentNetTool/DataProcessor/CoTGenerator/AgentNetBench 组件和项目方 benchmark 均已按来源分层；正文适合零基础读者，研究用途和真实桌面权限风险表达清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-13-opencua",
+  "promotedAt": "2026-10-05T05:17:36.988Z"
+}

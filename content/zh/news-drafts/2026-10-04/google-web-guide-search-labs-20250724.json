@@ -1,0 +1,250 @@
+{
+  "slug": "google-web-guide-search-labs-20250724",
+  "title": "Google 推出 Web Guide：用 Gemini 把搜索结果按问题组织起来",
+  "summary": "Google 在 7 月 24 日把 Web Guide 放进 Search Labs：定制版 Gemini 先理解查询和网页内容，再用 query fan-out 发起多次相关搜索，把链接按主题分组。它仍是实验，先在 Web 标签提供给主动加入的用户，并允许切回标准结果。",
+  "body": "7 月 24 日，Google 在 Search Labs 推出 Web Guide，一项用 AI 重新组织搜索结果的实验。它不是把网页全部改写成一段答案，而是先理解用户的问题，再把相关链接按主题分组，让使用者沿着不同方向继续查找。Google 说，Web Guide 使用定制版 Gemini 理解查询和网页内容，并采用 query fan-out，同时发起多个相关搜索。\n\n这个设计解决的是“结果太多但没有结构”的问题。比如开放式旅行计划或包含多句背景的复杂问题，传统结果页往往把不同角度的文章混在一起；Web Guide 试图把它们分成几个与问题相关的入口。用户看到的仍是网页链接，分组标题和说明负责给出路线，具体事实仍应回到原页面核对。\n\n首发范围很克制：Google 先把它放在 Search 的 Web 标签里，只有主动加入实验的用户可以使用，并保留随时切回标准 Web 结果的入口。Google 还说，随着实验学习，AI 组织的结果可能扩展到 All 标签。这是 Search Labs 实验的路线图，不是已经向所有用户稳定开放的搜索默认行为。\n\nWeb Guide 和 AI Mode 有相似的“多次搜索再汇总”思路，但交互目标不同。AI Mode 更像连续对话和综合回答，Web Guide 仍把链接和网页发现放在前面。对读者而言，这种差异很实际：如果要快速得到一个综合解释，AI Mode 可能更直接；如果要比较来源、找不同角度，按主题排列的链接更适合继续阅读。\n\n这项实验也把检索质量和引用责任摆到了台面上。模型可能把页面分错组、遗漏关键来源，或者用一段看似合理的说明替代原文细节。Google 明确把它标为实验，并允许回到标准结果；使用者仍应查看原始页面、比较日期和作者，涉及医疗、法律或财务问题时更不能把分组当作事实证明。",
+  "publishedAt": "2025-07-24",
+  "eventDate": "2025-07-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-web-guide-search-labs-20250724.svg",
+    "alt": "Google Web Guide 用 Gemini 和多次相关搜索把网页链接按主题组织起来，仍保留标准搜索入口。",
+    "sourceUrl": "/images/news/google-web-guide-search-labs-20250724.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "product-change",
+      "title": "它改变的是结果页的组织方式",
+      "body": "Web Guide 不先把网页压缩成一段答案，而是按问题的不同角度整理链接。定制版 Gemini 理解查询和网页内容，query fan-out 同时发起多组相关搜索，再把结果分成主题入口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "search-flow",
+      "title": "一次搜索里发生了几步",
+      "body": "用户提交开放式或带背景的问题后，系统生成相关搜索、检索网页、归纳主题并呈现链接。分组标题帮助发现路径，页面本身仍是事实核对的起点。",
+      "kind": "technical"
+    },
+    {
+      "id": "scope",
+      "title": "首发是 Search Labs 实验",
+      "body": "7 月 24 日首发范围是主动加入实验的用户和 Web 标签，用户随时可以切回标准 Web 结果。Google 说未来可能扩展到 All 标签，但这不是当天已经完成的普遍 rollout。",
+      "kind": "boundary"
+    },
+    {
+      "id": "mode-comparison",
+      "title": "它和 AI Mode 不完全一样",
+      "body": "AI Mode 重点是对话式综合回答，Web Guide 重点是把链接按主题排好，让人继续浏览和比较来源。两者都可能进行多次搜索，但输出目标不同。",
+      "kind": "comparison"
+    },
+    {
+      "id": "source-check",
+      "title": "分组仍然需要人工核对",
+      "body": "模型可能遗漏页面、误分主题或把简短说明写得过于确定。医疗、法律和财务问题应回到原始页面核对日期、作者、证据和适用条件，不能把 AI 分组当成事实证明。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "Web Guide 怎样把“搜一堆链接”变成可走的路径？",
+    "question": "用一条检索链看懂 query fan-out、主题分组、原文核对和标准结果回退。",
+    "steps": [
+      {
+        "label": "读懂问题范围",
+        "detail": "系统先理解开放式问题和背景，决定需要哪些不同角度，而不是只匹配一个关键词。",
+        "evidence": "Custom Gemini query understanding"
+      },
+      {
+        "label": "并发发起相关搜索",
+        "detail": "query fan-out 同时检索多个相关表达，扩大候选网页范围。",
+        "evidence": "Google Blog mechanism description"
+      },
+      {
+        "label": "按主题排列链接",
+        "detail": "AI 把网页分成与问题相关的主题入口，用户可以沿不同路径继续阅读。",
+        "evidence": "Web Guide result organization"
+      },
+      {
+        "label": "回到原文核对",
+        "detail": "分组和说明只是导航，关键事实、作者、日期和适用条件仍需从原始网页确认。",
+        "evidence": "Search Labs experiment boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Search · Official Blog",
+    "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/"
+  },
+  "relatedSlugs": [
+    "context",
+    "retrieval",
+    "grounding",
+    "citation",
+    "eval",
+    "llm",
+    "data-quality",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+      "claim": "Google 官方博客在 2025 年 7 月 24 日宣布 Web Guide，定位为用 AI 组织搜索结果的 Search Labs 实验。",
+      "excerpt": "Google Blog，Web Guide，2025-07-24。"
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+      "claim": "官方说明 Web Guide 使用定制版 Gemini 理解查询和网页内容，按主题组织链接，并通过 query fan-out 并发发起多个相关搜索。",
+      "excerpt": "Google Blog，产品机制说明。"
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+      "claim": "官方说明首发从 Web 标签和主动加入的用户开始，用户可以切回标准 Web 结果，之后可能扩展到 All 标签。",
+      "excerpt": "Google Blog，发布范围与后续计划。"
+    },
+    {
+      "url": "https://labs.google.com/search/experiment/34",
+      "claim": "Search Labs 页面把 Web Guide 标为早期实验，提示结果可能出错并保留标准结果入口。",
+      "excerpt": "Google Search Labs，Web Guide 实验页面。"
+    }
+  ],
+  "canonicalUrl": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+  "sourceHash": "sha256:509f682f6f69fa3e3d9eeabdcfcad5168879f71c341b0ed7eaee6afaaa4e4d0a",
+  "status": "published",
+  "discoveredAt": "2026-10-04T14:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "文章解释 Web Guide 如何理解带背景的开放式查询。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "retrieval",
+      "score": 0.9,
+      "evidence": [
+        "文章把 query fan-out 和多组网页检索作为 Web Guide 的核心机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.9,
+      "evidence": [
+        "文章要求回到原始网页核对事实，说明检索结果是回答的依据而非答案本身。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.9,
+      "evidence": [
+        "文章强调链接、作者和日期是继续验证的引用入口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "文章把 Search Labs 实验和可能出错的结果当作需要持续评估的产品边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "文章指出 Web Guide 使用定制版 Gemini 组织查询和网页内容。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.9,
+      "evidence": [
+        "文章把遗漏、误分组和过度确定的说明作为搜索质量风险。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "文章以 Google 2025-07-24 官方产品公告为事件起点。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+      "claim": "Google 官方博客在 2025 年 7 月 24 日宣布 Web Guide，定位为用 AI 组织搜索结果的 Search Labs 实验。",
+      "excerpt": "Google Blog，Web Guide，2025-07-24。"
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+      "claim": "官方说明 Web Guide 使用定制版 Gemini 理解查询和网页内容，按主题组织链接，并通过 query fan-out 并发发起多个相关搜索。",
+      "excerpt": "Google Blog，产品机制说明。"
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/web-guide-labs/",
+      "claim": "官方说明首发从 Web 标签和主动加入的用户开始，用户可以切回标准 Web 结果，之后可能扩展到 All 标签。",
+      "excerpt": "Google Blog，发布范围与后续计划。"
+    },
+    {
+      "url": "https://labs.google.com/search/experiment/34",
+      "claim": "Search Labs 页面把 Web Guide 标为早期实验，提示结果可能出错并保留标准结果入口。",
+      "excerpt": "Google Search Labs，Web Guide 实验页面。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T14:10:00Z",
+    "method": "source",
+    "notes": "核对 Google 官方博客和 Search Labs 页面；区分 Web Guide 首发实验、AI Mode 相似机制和未来扩展计划。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T14:10:00Z",
+    "notes": "按搜索产品新闻独立成稿，保留实验、来源和回退边界，等待读者审阅。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T12:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文没有批量模板感。",
+      "eventDate/publishedAt 均为 2025-07-24，与官方产品页或博客发布日期一致。",
+      "Qwen-MT-Plus 的 92 语言、16,384 context 和不支持 function calling/web search 边界准确；Web Guide 的 Search Labs、query fan-out、Web/All 标签计划和原文回退清楚；Google Research Africa 的 3,700 万美元、教育/洪水/建筑数据数字均标为公司项目口径，未写成已验证公共服务效果。",
+      "来源卡片、sections、explainer、SVG alt、词条联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：三篇事实、数字和实验/项目边界清楚，无需修改正文。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-24",
+  "fingerprint": "sha256:509f682f6f69fa3e3d9eeabdcfcad5168879f71c341b0ed7eaee6afaaa4e4d0a",
+  "promotedAt": "2026-10-04T09:55:37.535Z"
+}

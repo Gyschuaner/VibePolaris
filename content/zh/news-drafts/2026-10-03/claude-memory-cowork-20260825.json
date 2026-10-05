@@ -1,0 +1,225 @@
+{
+  "slug": "claude-memory-cowork-20260825",
+  "title": "Claude 把记忆接到 Cowork：可编辑、敏感主题默认不保存是新权限层",
+  "summary": "Anthropic 于 2026 年 8 月 25 日把 Claude 聊天记忆与 Claude Cowork 共享：记忆按 Topic 列出，可查看、编辑、删除、暂停或重置；健康、政治、宗教等敏感主题默认不保存，Free/Pro/Max 默认开启而 Team/Enterprise 默认关闭。它减少重复交代，但也把记忆准确性、撤权和跨工作空间边界带进代理工作流。",
+  "body": "8 月 25 日，Anthropic 宣布 Claude 的记忆在聊天和 Cowork 之间共享。用户在聊天里说明项目截止日期、团队的指标定义或会议安排，之后把任务交给云端运行的 Cowork，系统可以继续使用这些信息；Cowork 产生的新记忆也会带回聊天。记忆不再只是某个对话窗口里的一段上下文，而是跨入口、跨任务持续存在的用户状态。\n\n产品把记忆组织成 Settings > Memory 里的 Topic 文件。用户可以逐条查看、编辑和删除，也可以暂停或重置记忆。Anthropic 说记忆会在聊天过程中实时加入，而不是等对话结束后才生成一次摘要；这让信息更及时，也意味着错误或过时的项目状态可能更快传播到下一项任务。\n\n敏感主题设置是这次更新的另一半。健康、种族、宗教、政治、性别身份等主题默认不保存；用户可以主动打开“include sensitive topics in memory”，之后每次保存都会有提示，而且开启前的旧对话不会追溯写入。Release notes 还说明，Free、Pro、Max 默认开启记忆，Team 和 Enterprise 默认关闭。默认值和通知都属于权限设计，不是对数据风险的彻底消除。\n\n跨产品记忆解决了“每次都要重新介绍”的摩擦，却带来三类需要管理的问题。第一，记忆可能过时，模型需要知道什么时候重新询问；第二，聊天和 Cowork 的任务边界不同，用户要明确哪些信息可以带入云端执行；第三，删除一条 Topic 后，已经生成的文件、邮件草稿或外部动作不会自动被撤销。记忆是输入控制，不是历史操作回滚。\n\n因此，8 月 25 日的新闻重点是持久上下文开始成为 Cowork 的产品权限。读者要观察企业管理员的默认策略、审计和导出能力，个人用户要知道如何检查、修改和关闭记忆。它让代理更连贯，也要求用户更认真地管理“哪些事实允许下一次任务继续使用”。",
+  "eventDate": "2026-08-25",
+  "publishedAt": "2026-08-25",
+  "hero": {
+    "url": "/images/news/claude-memory-cowork-20260825.svg",
+    "alt": "Claude 聊天与 Cowork 共享可编辑 Topic 记忆，并经过敏感主题权限开关",
+    "sourceUrl": "/images/news/claude-memory-cowork-20260825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "这次共享记忆改变了什么",
+      "body": "聊天和 Cowork 使用同一组 Topic 记忆，云端任务可以接续对话里的项目背景；记忆不再只属于一个窗口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "control",
+      "title": "用户能做哪些控制",
+      "body": "Topic 记忆可以查看、编辑、删除、暂停或重置；敏感主题默认不保存，企业计划默认关闭。",
+      "kind": "technical"
+    },
+    {
+      "id": "risk",
+      "title": "记忆不是撤销按钮",
+      "body": "删除记忆不会自动撤回已经生成的文件、草稿或外部动作；过时信息也可能被带入下一项任务。",
+      "kind": "boundary"
+    },
+    {
+      "id": "policy",
+      "title": "默认值代表什么",
+      "body": "Free/Pro/Max 与 Team/Enterprise 的默认设置不同，企业仍需配置权限、审计和数据边界。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "一条记忆如何进入下一项代理任务",
+    "question": "沿着保存、检查、授权、调用和外部结果移动，读者能看到记忆提供便利的同时增加了什么控制点。",
+    "steps": [
+      {
+        "label": "聊天产生 Topic",
+        "detail": "用户在对话里说明项目、偏好或时间变化，系统把它写成可查看的 Topic。",
+        "evidence": "Claude 官方产品说明。"
+      },
+      {
+        "label": "用户检查",
+        "detail": "用户在 Memory 设置里阅读、修改、删除或暂停记忆。",
+        "evidence": "官方记忆控制。"
+      },
+      {
+        "label": "Cowork 调用",
+        "detail": "云端任务读取同一组记忆，减少重新交代，但仍应检查是否适合当前任务。",
+        "evidence": "Claude Cowork 产品说明。"
+      },
+      {
+        "label": "动作留下结果",
+        "detail": "文件、草稿或其他外部结果不会因删除记忆自动回滚。",
+        "evidence": "记忆是输入控制，不是操作撤销。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Claude by Anthropic",
+    "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it"
+  },
+  "relatedSlugs": [
+    "memory",
+    "context",
+    "authorization",
+    "session",
+    "agent",
+    "data-quality",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+      "claim": "Anthropic 说明 Claude chat 与 Cowork 共享记忆，用户可查看、编辑和删除 Topic。",
+      "excerpt": "Starting today, the memory you use in chat is the same as in Claude Cowork."
+    },
+    {
+      "url": "https://support.claude.com/en/articles/12138966-release-notes",
+      "claim": "Claude Release Notes 记录 8 月 25 日记忆跨 chat/Cowork、敏感主题设置和不同计划默认值。",
+      "excerpt": "Memory now works across chat and Cowork in the cloud; Free, Pro, and Max default on, Team and Enterprise default off."
+    },
+    {
+      "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+      "claim": "官方说明敏感主题默认不保存，用户打开设置后才会继续保存并收到提示。",
+      "excerpt": "By default, Claude does not store topics related to personal or sensitive subject matter."
+    }
+  ],
+  "isExample": false,
+  "canonicalUrl": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+  "sourceHash": "sha256:febbad0065e06d5efda102c45b9e7e5b35541c955f5c72abc3efb4522ca30c3d",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 memory 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 context 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 authorization 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "session",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 session 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 agent 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-quality 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 execution-sandbox 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+      "claim": "Anthropic 说明 Claude chat 与 Cowork 共享记忆，用户可查看、编辑和删除 Topic。",
+      "excerpt": "Starting today, the memory you use in chat is the same as in Claude Cowork."
+    },
+    {
+      "url": "https://support.claude.com/en/articles/12138966-release-notes",
+      "claim": "Claude Release Notes 记录 8 月 25 日记忆跨 chat/Cowork、敏感主题设置和不同计划默认值。",
+      "excerpt": "Memory now works across chat and Cowork in the cloud; Free, Pro, and Max default on, Team and Enterprise default off."
+    },
+    {
+      "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
+      "claim": "官方说明敏感主题默认不保存，用户打开设置后才会继续保存并收到提示。",
+      "excerpt": "By default, Claude does not store topics related to personal or sensitive subject matter."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:35:00Z",
+    "method": "manual",
+    "notes": "人工核对官方页面、发布日期、原始链接、公司口径和后续边界；区分基准、调查、资助、预览、融资和记忆权限，不将厂商声明写成独立验证。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T00:35:00Z",
+    "notes": "正文按事件独立组织段落，保留新闻事实、公司口径、产品状态和未验证边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T01:30:00Z",
+    "questions": [
+      "文章是否把 2026-08-25 的新闻主线与后续/背景信息分开？",
+      "官方来源、媒体报道、公司自述和未独立验证的数字是否明确归属？",
+      "零基础读者能否沿着正文、SVG 和讲解步骤理解机制而不是只看到宣传性结论？",
+      "文章是否保留产品状态、评测、治理或权限边界？"
+    ],
+    "notes": "读者复审确认跨 Chat/Cowork 共享记忆、Topic 控制、默认值和删除不回滚外部结果均清楚；已将“默认不记”改为“默认不保存”。",
+    "changes": [
+      "标题改为“敏感主题默认不保存”"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-25",
+  "fingerprint": "sha256:febbad0065e06d5efda102c45b9e7e5b35541c955f5c72abc3efb4522ca30c3d",
+  "promotedAt": "2026-10-03T00:35:00Z"
+}

@@ -1,0 +1,188 @@
+{
+  "slug": "thinkdial-controllable-reasoning-20250826",
+  "title": "ThinkDial：给开源推理模型加上高、中、低三档预算",
+  "summary": "ThinkDial 论文于 8 月 26 日提交，提出一套端到端训练方法，让开源大语言模型像一些商业系统一样用离散模式控制推理开销。High 保留完整推理，Medium 的目标是减少 50% token 且性能下降低于 10%，Low 的目标是减少 75% token 且性能下降低于 15%。作者用预算模式监督微调和两阶段预算感知强化学习训练这些档位，并报告在分布外任务上也有较强泛化；这些是目标折中和实验结果，不能理解成所有任务固定满足同一阈值。",
+  "body": "推理模型一旦把思考过程拉长，用户就会遇到一个实际选择：是等更久换更高的成功率，还是少想一点尽快得到一个够用的答案。很多系统把这个选择藏在后台，开发者只能通过最大 token 或超时粗暴截断。ThinkDial 想把它变成模型可以理解的模式。\n\n论文提供 High、Medium 和 Low 三档。High 保留完整推理能力，Medium 的目标是减少 50% token，同时把性能下降控制在 10% 以内；Low 的目标是减少 75% token，同时把性能下降控制在 15% 以内。这里的百分比是模式设计与实验目标，实际折中会随任务难度、模型和评测集变化。\n\n为了让模式不只是一个 prompt 标签，ThinkDial 把预算控制贯穿训练流程。先用预算模式监督微调，让模型学会在不同标签下改变推理长度，再用两阶段、带自适应奖励塑形的预算感知强化学习，把长度和答案质量一起放进反馈。\n\n这种方法和设一个统一的 max_tokens 不同。统一截断会在最需要的地方切掉推理；离散模式让调用方先表达偏好，再由模型决定在这个预算里如何组织过程。当然，模式也可能被模型当成一种风格提示，若没有按任务验收，High/Medium/Low 只是三个名字。\n\n论文报告目标折中在实验中成立，并且在分布外任务上也有较强泛化。摘要没有列出所有基准和每档的完整曲线，所以不能把 Medium 的 50% 直接当成每个业务都能节省一半成本。真正部署时要按任务类别测 token、延迟、准确率和失败后的重试。\n\n对 Agent 来说，模式选择可以由任务状态驱动：先用 Low 处理分类、格式转换和简单检索；遇到不确定、跨文档或需要工具的任务再升到 Medium 或 High。升档不是为了让模型更“认真”，而是为了给可能改变最终状态的步骤更多校验空间。\n\n还要注意模式切换的可解释性。日志至少记录调用时选择了哪一档、实际用了多少 token、最终是否升级、升级前的错误信号是什么。否则系统只看平均成本下降，可能把很多失败藏在重试或人工接管里。\n\nThinkDial 的价值是把推理努力变成一种可调节的接口，但接口背后仍然需要任务级证据。高档不保证正确，低档也不必然失效；重要的是系统能根据风险和难度选择预算，并在事实或状态变化前保留足够的检查。",
+  "publishedAt": "2025-08-26",
+  "eventDate": "2025-08-26",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/thinkdial-controllable-reasoning-20250826.svg",
+    "alt": "ThinkDial 用 High、Medium、Low 三档模式控制推理 token 与性能折中",
+    "sourceUrl": "/images/news/thinkdial-controllable-reasoning-20250826.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "hidden-budget-choice",
+      "title": "推理时间本来就是产品选择",
+      "body": "用户有时愿意等更久换成功率，有时只需要一个快速、够用的答案。用 max_tokens 粗暴截断无法表达这种差异。",
+      "kind": "narrative"
+    },
+    {
+      "id": "three-modes",
+      "title": "High、Medium、Low 三档预算",
+      "body": "High 保留完整推理；Medium 的目标是减少 50% token、性能下降低于 10%；Low 的目标是减少 75% token、性能下降低于 15%。实际折中会随任务变化。",
+      "kind": "comparison"
+    },
+    {
+      "id": "training-pipeline",
+      "title": "预算模式贯穿监督微调和强化学习",
+      "body": "预算模式监督微调先教会模型改变推理长度，再用两阶段预算感知强化学习把 token 与答案质量放进同一反馈。",
+      "kind": "technical"
+    },
+    {
+      "id": "beyond-max-tokens",
+      "title": "模式控制不是统一截断",
+      "body": "统一 max_tokens 可能在关键步骤截断；离散模式让调用方表达偏好，再让模型在预算内组织过程，但仍需任务级验收。",
+      "kind": "technical"
+    },
+    {
+      "id": "tradeoff-boundary",
+      "title": "50% 和 75% 是实验折中，不是固定账单",
+      "body": "论文报告目标折中和分布外泛化，但不能把每档百分比直接外推到所有模型、数据和业务。",
+      "kind": "boundary"
+    },
+    {
+      "id": "agent-routing",
+      "title": "让风险和难度决定是否升档",
+      "body": "简单分类可先用 Low；跨文档、工具调用和可能改变状态的任务升到 Medium/High，为校验留出预算。",
+      "kind": "example"
+    },
+    {
+      "id": "mode-logs",
+      "title": "记录模式、实际 token 和升级原因",
+      "body": "没有调用档位、实际消耗、升档信号和最终状态的日志，平均成本下降可能只是把失败藏进重试。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样把推理预算变成可控的系统接口？",
+    "question": "让调用方表达风险偏好，让模型在档位内调整长度，并用结果验证折中是否成立。",
+    "steps": [
+      {
+        "label": "定义三档含义",
+        "detail": "先为 High、Medium、Low 写清可接受的延迟、token、准确率和失败处理，不只给档位起名字。",
+        "evidence": "switching between three distinct reasoning regimes"
+      },
+      {
+        "label": "训练模式行为",
+        "detail": "在监督微调里让同一问题展示不同预算下的合理过程，再用预算感知奖励控制长度与答案质量。",
+        "evidence": "budget-mode supervised fine-tuning ... budget-aware reinforcement learning"
+      },
+      {
+        "label": "按风险选择",
+        "detail": "把任务难度、工具权限和状态影响纳入路由，低风险先快答，高风险保留更多检查。",
+        "evidence": "High mode ... Medium mode ... Low mode"
+      },
+      {
+        "label": "测每档曲线",
+        "detail": "分别记录 token、延迟、准确率、重试和人工接管，不用一个平均数代表所有任务。",
+        "evidence": "50 percent token reduction ... 75 percent token reduction"
+      },
+      {
+        "label": "验证分布外",
+        "detail": "用未参与训练的任务和长上下文回放，检查模式是否仍能保持预期折中。",
+        "evidence": "strong generalization capabilities on out-of-distribution tasks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / ThinkDial 作者组",
+    "url": "https://arxiv.org/abs/2508.18773"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.18773",
+      "claim": "ThinkDial 提出 High、Medium、Low 三档可控推理，并用预算模式监督微调和预算感知强化学习训练。",
+      "excerpt": "three distinct reasoning regimes ... budget-mode supervised fine-tuning ... budget-aware reinforcement learning"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18773",
+      "claim": "摘要给出 Medium 减少 50% token/性能下降低于 10%、Low 减少 75% token/性能下降低于 15% 的目标折中。",
+      "excerpt": "Medium mode (50 percent token reduction with <10 percent performance degradation) ... Low mode (75 percent token reduction with <15 percent performance degradation)"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.18773",
+  "sourceHash": "sha256:dbfa53101b07b144949c17d1facb9b204dd60587c886915634193e3efcf4a40e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论开源推理模型、模式训练和分布外泛化。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.99,
+      "evidence": [
+        "正文把 token、延迟和推理预算作为控制接口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文要求按档位测准确率、重试、升级和人工接管。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 26 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.18773",
+      "claim": "arXiv 记录 ThinkDial 于 2025 年 8 月 26 日提交，目标是控制推理模型的计算投入。",
+      "excerpt": "Date: Tue Aug 26 ... controlling reasoning effort in large language models"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18773",
+      "claim": "论文摘要给出三档模式和 50%/75% token 折中目标，并报告分布外泛化。",
+      "excerpt": "High mode ... Medium mode ... Low mode ... strong generalization capabilities"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 ThinkDial 的三档模式、预算模式 SFT、两阶段预算感知 RL、50%/75% token 折中目标和分布外泛化表述；正文强调这些是实验折中，不把它们写成所有任务固定节省率。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把推理档位写成可验收的系统接口，保留论文的两档目标数字并补充路由、日志和分布外验证；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-26-thinkdial-controllable-reasoning-20250826"
+}

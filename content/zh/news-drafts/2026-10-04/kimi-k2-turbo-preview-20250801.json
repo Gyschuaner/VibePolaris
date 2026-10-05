@@ -1,0 +1,169 @@
+{
+  "slug": "kimi-k2-turbo-preview-20250801",
+  "title": "Moonshot 发布 Kimi K2 Turbo Preview，输出速度提升至 40 tokens/s",
+  "summary": "8 月 1 日，Moonshot 在 Kimi 论坛发布 kimi-k2-turbo-preview，称它与 kimi-k2 使用相同模型和上下文，输出速度从每秒 10 tokens 提升到每秒 40 tokens，并提供截至 9 月 1 日的限时五折价格。公告描述的是服务速度和价格更新，不是新参数规模或已被独立基准证明的能力跃升。",
+  "body": "8 月 1 日，Moonshot 在 Kimi 论坛发布 kimi-k2-turbo-preview。公告称高速版与 kimi-k2 使用相同模型和上下文，输出速度从每秒 10 tokens 提升到每秒 40 tokens；同时给出截至 9 月 1 日的限时五折价格。事件的核心是服务层更新，不是另一个参数规模或能力路线。\n\n“同模型、同上下文”很重要。它说明 Moonshot 这次主张的是推理服务更快，可能影响等待时间和并发体验，而不是模型知识、推理方法或准确率已经改变。论坛公告没有给出高速版与原版在代码、事实或复杂任务上的独立质量对比。\n\n价格也要和速度分开看。中文公告列出折扣后的输入和输出价格，并说明 9 月 1 日恢复原价；具体账单还会受到缓存命中、输入长度、输出长度和重试次数影响。四倍输出速度不能直接换算成四倍吞吐或四倍生产力。\n\n在一个固定任务上比较两个版本时，应保持提示、上下文、工具和并发数量一致，分别记录首 token 延迟、完整响应时间、输出 token 数、错误类型和实际费用。如果只看速度而不看答案质量和重试，结论会偏向产品演示。\n\n相关词条分别对应这次更新的不同层：llm 是模型本体，token 是速度和计费的基本单位，benchmark 则规定怎样用固定任务比较质量。后续应等待公开基准、稳定性数据和更长时间的价格说明，再判断 Turbo Preview 是否适合具体工作流。",
+  "publishedAt": "2025-08-01",
+  "eventDate": "2025-08-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/kimi-k2-turbo-preview-20250801.svg",
+    "alt": "Kimi K2 Turbo Preview 从同模型上下文到速度和计费比较的事件链示意图；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/kimi-k2-turbo-preview-20250801.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "高速版改了哪一层",
+      "body": "Moonshot 8 月 1 日在 Kimi 论坛发布 kimi-k2-turbo-preview，称它与 kimi-k2 使用相同模型和上下文，输出速度从每秒 10 tokens 提升到每秒 40 tokens，并提供截至 9 月 1 日的限时五折价格。",
+      "kind": "narrative"
+    },
+    {
+      "id": "same-model",
+      "title": "速度更新不等于能力模型更新",
+      "body": "同模型、同上下文意味着公告主张的是服务速度和并发体验变化，而不是新的参数规模、知识或准确率。论坛没有给出高速版与原版在代码、事实和复杂任务上的独立质量对比。",
+      "kind": "technical"
+    },
+    {
+      "id": "price",
+      "title": "折扣价格还要看输入和缓存",
+      "body": "中文公告列出折扣后的输入和输出价格，并说明 9 月 1 日恢复原价。缓存命中、输入长度、输出长度和重试次数都会改变实际账单，四倍输出速度不能直接换算成四倍吞吐或生产力。",
+      "kind": "example"
+    },
+    {
+      "id": "test",
+      "title": "比较时同时记录速度、质量和费用",
+      "body": "固定提示、上下文、工具和并发数量，分别记录首 token 延迟、完整响应时间、输出 token 数、错误类型和实际费用。只看速度而不看答案质量和重试，会把服务演示当成工作流收益。",
+      "kind": "comparison"
+    },
+    {
+      "id": "limits",
+      "title": "目前没有公开的独立质量结论",
+      "body": "llm 是模型本体，token 是速度和计费的基本单位，benchmark 规定固定任务的比较方法。后续应等待公开基准、稳定性数据和更长时间的价格说明，不能把高速版写成已证明的能力跃升。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "在同一任务上比较 Kimi K2 的速度更新",
+    "question": "输出速度从 10 提升到 40 tokens/s 后，怎样判断真实工作流是否更好？",
+    "steps": [
+      {
+        "label": "固定任务条件",
+        "detail": "使用同一提示、上下文、工具、并发数量和模型版本，避免把环境变化误算成 Turbo 优势。",
+        "evidence": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25"
+      },
+      {
+        "label": "记录延迟和输出",
+        "detail": "分别测首 token 延迟、完整响应时间、输出 token 数和中断情况，不只看页面上的速度数字。",
+        "evidence": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25"
+      },
+      {
+        "label": "核对质量与重试",
+        "detail": "用固定 benchmark 任务检查错误类型、重试次数和人工修复，确认速度提升没有换来更多错误。",
+        "evidence": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25"
+      },
+      {
+        "label": "计算实际费用",
+        "detail": "按缓存命中、输入长度、输出长度和折扣期限计算账单，再判断是否适合目标工作流。",
+        "evidence": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25"
+      }
+    ]
+  },
+  "source": {
+    "name": "Moonshot AI / Kimi Forum",
+    "url": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "benchmark"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25",
+      "claim": "kimi-k2-turbo-preview 与 kimi-k2 使用相同模型和上下文，输出速度从每秒 10 tokens 提升到每秒 40 tokens。",
+      "excerpt": "kimi-k2-turbo-preview is the high-speed version of kimi-k2; same model and context, with output speed from 10 Tokens per second to 40 Tokens per second."
+    },
+    {
+      "url": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25",
+      "claim": "公告称限时五折至 9 月 1 日，并列出缓存命中、未命中和输出价格。",
+      "excerpt": "Limited-Time Launch Price (50% off until Sept 1); the Chinese announcement lists discounted input and output prices."
+    }
+  ],
+  "canonicalUrl": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25",
+  "sourceHash": "sha256:db55492d1c7e1351efdc5259d7df1a4b24a6d7b9ea81c93e27862be053c62121",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.85,
+      "evidence": [
+        "文章区分同一模型与服务速度更新。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.96,
+      "evidence": [
+        "公告直接以 tokens/s 和 token 价格表达速度与计费。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.82,
+      "evidence": [
+        "文章建议用固定任务比较质量和稳定性。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25",
+      "claim": "kimi-k2-turbo-preview 与 kimi-k2 使用相同模型和上下文，输出速度从每秒 10 tokens 提升到每秒 40 tokens。",
+      "excerpt": "kimi-k2-turbo-preview is the high-speed version of kimi-k2; same model and context, with output speed from 10 Tokens per second to 40 Tokens per second."
+    },
+    {
+      "url": "https://forum.moonshot.ai/t/kimi-k2-high-speed-model-released/25",
+      "claim": "公告称限时五折至 9 月 1 日，并列出缓存命中、未命中和输出价格。",
+      "excerpt": "Limited-Time Launch Price (50% off until Sept 1); the Chinese announcement lists discounted input and output prices."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "重新打开 Kimi 官方论坛公告，核对 2025-08-01、同模型/同上下文、10→40 tokens/s 和 9 月 1 日限时折扣。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "等待逐篇 reader-review；已按 write-like-me 与 humanizer-zh 区分服务速度、价格和模型能力。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文准确保留 Kimi 论坛公告关于 kimi-k2-turbo-preview 与 kimi-k2 同模型/同上下文、输出 10→40 tokens/s、截至 9 月 1 日限时五折的边界；没有把速度更新写成新参数模型或已证明的能力提升。价格段落明确输入/输出、缓存命中/未命中、输入/输出长度、重试次数和期限恢复原价；llm/token/benchmark、sections、explainer 与 schema 均核对无误。hero SVG 呈现同模型/同上下文、速度、质量测试、缓存与折扣，和正文一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-01-kimi-k2-turbo-preview",
+  "promotedAt": "2026-10-05T05:17:29.707Z"
+}

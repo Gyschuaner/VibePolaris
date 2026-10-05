@@ -1,0 +1,188 @@
+{
+  "slug": "deepresearch-arena-20250901",
+  "title": "DeepResearch Arena：用学术研讨会问题给研究 Agent 做一次真考试",
+  "summary": "DeepResearch Arena 论文于 9 月 1 日提交，试图解决研究 Agent 评测题目不够像真实研究的问题。作者从 200 多场学术研讨会的讨论中提取研究灵感，用多 Agent 分层任务生成系统 MAHTG 转成可追溯的高质量题目，构建了超过 1 万道、覆盖 12 个学科的基准；实验显示，不同研究 Agent 之间仍存在明显能力差距。",
+  "body": "研究 Agent 的演示通常很漂亮：它能搜论文、列参考文献、写一份长报告。但真正难测的是，它有没有理解一个研究者为什么会在研讨会上追问某个问题，能不能把模糊的兴趣变成可验证的研究任务。若题目只是从现成数据集改写，模型可能记住的是题型和答案，不是研究能力。DeepResearch Arena 选择从学术研讨会里的问题意识出发。\n\n作者收集了 200 多场研讨会的讨论内容，从报告、问答和讨论里抽取值得继续研究的灵感，再把灵感加工成明确的任务。这样的来源保留了专家如何提出疑问、补充限制和争论方法的痕迹，题目不只是一句孤立指令，也减少了从公开问答直接拼题造成的数据泄漏风险。\n\n把谈话变成可评测题目并不简单。原始讨论可能有口语、上下文省略和未完成的想法，直接交给模型会得到模糊或重复的任务。论文提出 Multi-Agent Hierarchical Task Generation（MAHTG）：不同 Agent 分层负责发现研究灵感、扩展任务、检查质量和过滤噪声，保留从灵感到最终题目的中间链路。任务因此有了来路，评测者可以追问题目为什么这样写。\n\n最终基准包含超过 1 万个研究任务，覆盖 12 个学科，包括文学、历史和自然科学等。任务不只考检索某个事实，还可以要求梳理文献、设计方法、提出验证步骤或解释证据之间的冲突。跨学科范围带来更接近真实工作的宽度，也让一个 Agent 在熟悉领域的优势不容易掩盖它在其他领域的空白。\n\n论文的评测结果没有把“研究 Agent 已经会做研究”当成结论。作者观察到当前最先进的 Agent 之间存在清晰的表现差距，说明任务集足够拉开能力层次。对使用者来说，这比一个总分更有用：同一个系统可能在文献综述得分不错，却在方法设计或跨领域证据核验上明显落后。\n\n这类基准仍要谨慎使用。研讨会的主题和参与者不可能代表所有研究群体，转写和筛题过程也会改变原始问题的难度；“完成一份报告”如何判定有价值，更涉及学科专家和过程证据。即使题目来自真实讨论，也不能证明模型没有在别处见过相似知识，所以低数据泄漏风险不等于零泄漏。\n\nDeepResearch Arena 的贡献，是把研究评测的起点从“准备一批问题”推进到“记录问题为何值得被提出”。当任务生成过程、学科覆盖和 Agent 的步骤结果都能被追溯，评测才有机会回答一个更实际的问题：模型是在完成研究工作，还是只是在熟练地写出研究工作的外观。",
+  "publishedAt": "2025-09-01",
+  "eventDate": "2025-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepresearch-arena-20250901.svg",
+    "alt": "DeepResearch Arena 从学术研讨会提取研究灵感并生成可追溯评测任务",
+    "sourceUrl": "/images/news/deepresearch-arena-20250901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "research-eval-gap",
+      "title": "写出长报告，不等于完成了研究",
+      "body": "研究 Agent 需要理解问题为何重要、如何验证和证据哪里冲突；只从现成题库改写容易把记题能力当成研究能力。",
+      "kind": "narrative"
+    },
+    {
+      "id": "seminar-grounding",
+      "title": "题目从研讨会的追问里长出来",
+      "body": "作者使用 200 多场学术研讨会的报告、问答和讨论，保留专家提出疑问、补充限制和争论方法的上下文。",
+      "kind": "technical"
+    },
+    {
+      "id": "mahtg-pipeline",
+      "title": "MAHTG 把灵感加工成任务并留下来路",
+      "body": "多 Agent 分层负责提取灵感、扩展任务、质量检查和噪声过滤，记录从原始讨论到最终题目的链路。",
+      "kind": "technical"
+    },
+    {
+      "id": "cross-discipline-scale",
+      "title": "一万多道题，覆盖 12 个学科",
+      "body": "任务跨文学、历史和自然科学等领域，要求文献综合、方法设计、验证步骤和证据冲突解释。",
+      "kind": "comparison"
+    },
+    {
+      "id": "agent-gap",
+      "title": "不同研究 Agent 之间仍有明显差距",
+      "body": "评测结果把系统在文献综述、方法设计和跨领域核验上的能力差异拉开，单一总分不能代替分项画像。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-limits",
+      "title": "真实讨论降低泄漏风险，不会消除偏差",
+      "body": "研讨会主题、转写、筛题和学科评分都会改变题目难度；低泄漏风险不等于没有见过相似知识。",
+      "kind": "boundary"
+    },
+    {
+      "id": "traceable-research",
+      "title": "评测也要说明问题为何值得被问",
+      "body": "把任务来源、生成步骤和 Agent 过程结果留下来，才能判断系统是在做研究，还是只写出研究工作的外观。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "DeepResearch Arena 怎样把研讨会讨论变成研究考试？",
+    "question": "从专家追问提取灵感，分层加工成任务，再用来源和过程证据检查题目与答案。",
+    "steps": [
+      {
+        "label": "收集研讨会讨论",
+        "detail": "记录报告、问答和追问里的研究兴趣、限制条件与争论，不只截取最后一句问题。",
+        "evidence": "over 200 academic seminars"
+      },
+      {
+        "label": "提取研究灵感",
+        "detail": "用 Agent 找出值得继续研究的线索，区分可验证的问题和无关噪声。",
+        "evidence": "research-worthy inspirations"
+      },
+      {
+        "label": "分层生成任务",
+        "detail": "MAHTG 让不同 Agent 扩展背景、目标、方法和验证要求，并保留中间版本。",
+        "evidence": "Multi-Agent Hierarchical Task Generation"
+      },
+      {
+        "label": "筛选与追溯",
+        "detail": "检查任务是否清楚、重复或脱离原讨论，把灵感到题目的关系记录下来。",
+        "evidence": "traceability ... filtering noise"
+      },
+      {
+        "label": "按学科比较 Agent",
+        "detail": "在跨学科任务上看文献综合、方法设计和证据核验的分项差距，不用一个总分掩盖短板。",
+        "evidence": "over 10,000 tasks across 12 disciplines"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.01396"
+  },
+  "relatedSlugs": [
+    "agent",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.01396",
+      "claim": "DeepResearch Arena 以学术研讨会为来源，用 MAHTG 从专家讨论中生成可追溯的研究任务，降低直接复用公开题目的泄漏风险。",
+      "excerpt": "benchmark grounded in academic seminars ... Multi-Agent Hierarchical Task Generation ... traceability"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01396",
+      "claim": "基准包含超过 1 万个任务，来自 200 多场研讨会，覆盖 12 个学科；评测显示不同当前研究 Agent 之间存在明显差距。",
+      "excerpt": "over 10,000 high-quality research tasks ... over 200 academic seminars ... 12 disciplines ... clear performance gaps"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.01396",
+  "sourceHash": "sha256:8f22a749e155cd1c2d3d5bf43dca851f59f5bccf8dcfa38a140275582456eb7a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论研究 Agent、MAHTG 和跨学科任务执行。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕研究 Agent 的任务设计、分项能力和结果比较展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文介绍 DeepResearch Arena 的任务规模、学科覆盖和基准边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 1 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.01396",
+      "claim": "arXiv 记录 DeepResearch Arena 于 2025 年 9 月 1 日提交，研究从学术研讨会生成研究 Agent 评测任务。",
+      "excerpt": "Published: 2025-09-01 ... DeepResearch Arena"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01396",
+      "claim": "摘要给出 MAHTG、多学科任务规模和不同 Agent 间的表现差距。",
+      "excerpt": "MAHTG ... over 10,000 ... 12 disciplines ... clear performance gaps"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对研讨会来源、MAHTG 分层任务生成、超过 1 万题、200 多场研讨会、12 个学科和 Agent 间表现差距；正文补充转写筛题偏差、评分难度与泄漏边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：避免把基准规模写成研究能力保证，具体解释研讨会来源、MAHTG 可追溯链路和分项能力差距，并补充数据分布、评分和泄漏边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-01-deepresearch-arena-20250901"
+}

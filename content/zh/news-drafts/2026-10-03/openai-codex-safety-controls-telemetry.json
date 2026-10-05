@@ -1,0 +1,196 @@
+{
+  "slug": "openai-codex-safety-controls-telemetry",
+  "title": "OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测",
+  "summary": "5 月 8 日，OpenAI 介绍 Codex 编码代理的受限执行、网络策略、凭据、审批和 agent-native 日志。高风险动作需要停下来等待审查；这份页面说明的是产品安全设计，不能证明所有部署都使用相同配置或已经消除了提示注入与供应链风险。",
+  "body": "5 月 8 日，OpenAI 公开 Codex 的一组安全控制：受限执行、沙箱、网络策略、凭据管理、审批和 agent-native 日志。它们分别限制代码能触碰什么、能连接哪里、以谁的身份运行，以及出了问题后能否回看和停止。\n\n在一次代码修复里，Codex 可以先读取获准目录，在隔离环境中运行测试。需要访问外部服务、使用密钥或写入敏感路径时，流程应暂停并请求批准；通过审查后再执行，命令、凭据使用、diff 和结果都留在日志里。\n\n这里的控制面比模型回答更重要。execution-sandbox 划定运行范围，authorization 决定谁能批准高风险动作，auth 区分人员与服务身份，data-lineage 追踪数据和变更来源，agent-harness 管理任务线程、工具调用和停止条件。一个功能是否安全，要看这些控制能否一起工作。\n\n官方页面描述了设计方向，没有证明每个环境都采用相同默认值，也没有证明 prompt injection、恶意依赖或供应链风险已经消失。真实效果取决于部署配置、权限继承和团队是否认真查看日志。\n\n后续验证可以从低风险仓库开始：检查默认网络策略，触发一次需要审批的动作，再观察拒绝、批准、撤销和回滚是否都有记录。",
+  "publishedAt": "2026-05-08",
+  "eventDate": "2026-05-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-codex-safety-controls-telemetry.svg",
+    "alt": "OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/openai-codex-safety-controls-telemetry.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "control-surface",
+      "title": "Codex 的安全控制被拆成了几层",
+      "body": "OpenAI 介绍受限执行、沙箱、网络策略、凭据、审批和 agent-native 日志。它们分别回答运行在哪里、能访问什么、使用谁的身份、哪些动作要停下，以及事后能不能复盘。",
+      "kind": "narrative"
+    },
+    {
+      "id": "code-task",
+      "title": "一次代码修复怎样被限制",
+      "body": "代理先读取获准目录，在隔离环境中运行测试。访问外部服务、使用密钥或写入敏感路径时暂停，请求人工批准；命令、凭据、diff 和结果写入日志。这样可以把模型建议和实际动作分开。",
+      "kind": "example"
+    },
+    {
+      "id": "terms",
+      "title": "五个词对应五道控制门",
+      "body": "execution-sandbox 划定运行范围，authorization 决定谁能批准动作，auth 区分人员和服务身份，data-lineage 追踪访问与变更来源，agent-harness 管理任务和工具调用。它们的作用不同，任何一层失效都可能让审计变得困难。",
+      "kind": "technical"
+    },
+    {
+      "id": "limits",
+      "title": "安全设计页面没有证明哪些事",
+      "body": "官方说明不等于所有环境都用同一套默认配置，也没有证明 prompt injection、恶意依赖或供应链风险已经消失。安全效果还取决于权限继承、网络规则和团队是否查看日志。",
+      "kind": "boundary"
+    },
+    {
+      "id": "test-plan",
+      "title": "从低风险仓库开始验证",
+      "body": "可以先触发一次需要审批的外部访问，再检查拒绝、批准、撤销和回滚是否都有记录；确认控制点能工作后，才扩大到更敏感的代码和凭据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "在一个小仓库里检查 Codex 的安全控制",
+    "question": "怎样证明沙箱、审批和日志真的限制了代理动作？",
+    "steps": [
+      {
+        "label": "先看默认权限",
+        "detail": "记录代理能读写哪些目录、能访问哪些网络地址，以及是否会继承宿主机凭据。",
+        "evidence": "https://openai.com/index/running-codex-safely/"
+      },
+      {
+        "label": "触发一个高风险动作",
+        "detail": "让代理请求外部服务或写入敏感路径，确认系统会停下来等待授权。",
+        "evidence": "https://openai.com/index/running-codex-safely/"
+      },
+      {
+        "label": "检查审计记录",
+        "detail": "查看命令、凭据、diff、批准人和结果是否被完整记录，能否回到对应任务。",
+        "evidence": "https://openai.com/index/running-codex-safely/"
+      },
+      {
+        "label": "测试撤销和回滚",
+        "detail": "在批准前后分别撤销权限或停止任务，确认失败不会留下无法解释的部分执行。",
+        "evidence": "https://openai.com/index/running-codex-safely/"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/running-codex-safely/"
+  },
+  "relatedSlugs": [
+    "execution-sandbox",
+    "authorization",
+    "auth",
+    "data-lineage",
+    "agent-harness"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/running-codex-safely/",
+      "claim": "Codex 安全设计包含受限执行、网络策略和 agent-native logs",
+      "excerpt": "OpenAI describes managed configuration, constrained execution, network policies and agent-native logs."
+    },
+    {
+      "url": "https://openai.com/index/running-codex-safely/",
+      "claim": "高风险动作应停止等待审查",
+      "excerpt": "OpenAI says higher-risk actions should stop for review."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/running-codex-safely/",
+  "sourceHash": "sha256:9723e083848e2740dbf5b09d32f50d8cd79e0a0bf0a1f7fadc933582aeb0e35f",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 公开 Codex 编码代理的沙箱、审批、网络策略与审计遥测”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/running-codex-safely/",
+      "claim": "Codex 安全设计包含受限执行、网络策略和 agent-native logs",
+      "excerpt": "OpenAI describes managed configuration, constrained execution, network policies and agent-native logs."
+    },
+    {
+      "url": "https://openai.com/index/running-codex-safely/",
+      "claim": "高风险动作应停止等待审查",
+      "excerpt": "OpenAI says higher-risk actions should stop for review."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "通过。正文用代码修复场景解释受限执行、沙箱、网络策略、凭据、审批和 agent-native 日志各自的作用；明确高风险动作需审查，产品设计说明不等于所有环境采用相同配置，也不代表提示注入、恶意依赖或供应链风险已消失。零基础读者可以按低风险仓库验证流程理解控制点。",
+    "changes": [
+      "正文无需改写，保留控制面、具体代码任务和低风险验证流程",
+      "核对安全设计与高风险审查的来源卡片及 relatedSlugs",
+      "核对 eventDate、publishedAt、canonicalUrl、sources 及 JSON 结构"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-08",
+  "fingerprint": "sha256:9723e083848e2740dbf5b09d32f50d8cd79e0a0bf0a1f7fadc933582aeb0e35f",
+  "promotedAt": "2026-10-05T05:17:45.730Z"
+}

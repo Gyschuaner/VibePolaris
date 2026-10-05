@@ -1,0 +1,203 @@
+{
+  "slug": "baichuan-m2-medical-reasoning-20250811",
+  "title": "百川开源 Baichuan-M2-32B 医疗增强推理模型，把验证器放进训练链",
+  "summary": "8 月 11 日，百川开源 Baichuan-M2-32B 医疗增强推理模型。它以 Qwen2.5-32B 为基座，引入大型验证器系统、医疗领域适配和多阶段强化学习，并以 Apache-2.0 发布。HealthBench 60.1 等分数来自模型方的评测表，不能直接等同于临床诊断能力或监管认证。",
+  "body": "8 月 11 日，百川把 Baichuan-M2-32B 的模型卡、代码和部署入口公开出来。这是一个基于 Qwen2.5-32B 的医疗增强推理模型，使用 Apache-2.0 许可；相关技术论文后来才在 9 月公开，所以这一天记录的是模型和开源入口出现，不是论文首发。对读者来说，真正的变化是可以拿到一个面向医疗问题训练的 32B 模型，自己检查它怎样回答，而不只是看公司的产品演示。\n\nBaichuan-M2 的重点不只在参数规模。百川把 Large Verifier System 放进训练和评测链：用患者模拟器重现问诊场景，再从医学准确性、回答完整度、追问和后续意识等多个维度给回答打分，动态生成更适合复杂病例的验证标准。模型还经过医疗领域的 Mid-Training 和多阶段强化学习，把知识、推理和患者交互拆成不同阶段逐步训练。这些组件描述的是模型怎样被训练和筛选，不代表它已经拥有医生的执业判断。\n\n模型卡列出 HealthBench 60.1、HealthBench-Hard 34.7、HealthBench-Consensus 91.5，并把它们与其他模型放在同一张表里。这里的数字应先看成百川在指定版本、提示、上下文长度和评测条件下报告的结果；评测集考察的是回答与标准的匹配，不是医院里的误诊率、急诊分诊结果或患者长期结局。独立复现还要确认题目、评分脚本、模型设置和拒答策略是否完全相同，不能只凭表格里的第一名就下结论。\n\n开源也带来一条比较具体的工程路径。官方称模型支持 4bit 量化在单张 RTX 4090 上部署，MTP 版本在单用户场景下的 token 吞吐提升 58.5%，并给出了 vLLM、SGLang 的服务方式。这些数字对应特定硬件、量化和推理配置；换成并发请求、长上下文或真实医院网络后，显存、延迟、日志和数据隔离都要重新测量。能在一张卡上启动，不等于已经满足医院的可用性和合规要求。\n\n模型卡把用途写成医疗教育、健康咨询和临床决策支持，并明确提示只能用于研究和参考，不能替代专业诊断或治疗。实际接入时，还要把患者身份信息、病历留存、医生复核、升级急症和错误追责放进系统设计；模型输出应当是供专业人员检查的建议，而不是直接写回病历或给患者下医嘱。大型验证器能提高训练时发现问题的机会，却不能替部署现场承担责任。\n\n这次发布的后续看点也很明确：社区能否复现 HealthBench 表格，患者模拟器是否覆盖真实的中国临床表达，模型在罕见病、药物相互作用和急症识别上会不会出现高风险自信回答，以及本地部署能否让医院真正掌握数据边界。Baichuan-M2 把医疗推理模型的训练过程开放给了开发者，但“可下载”和“可临床使用”之间，仍需要独立评测、医生参与和持续审计来填上距离。",
+  "publishedAt": "2025-08-11",
+  "eventDate": "2025-08-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/baichuan-m2-medical-reasoning-20250811.svg",
+    "alt": "Baichuan-M2-32B 将医疗问题交给患者模拟器和多维验证器，再生成供专业人员复核的推理结果；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/baichuan-m2-medical-reasoning-20250811.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 11 日公开的是模型与开源入口",
+      "body": "百川公开 Baichuan-M2-32B 的模型卡、代码和部署入口，基于 Qwen2.5-32B，采用 Apache-2.0 许可。技术论文在 9 月才公开，不能把论文日期倒填成模型首发。",
+      "kind": "narrative"
+    },
+    {
+      "id": "verifier",
+      "title": "大型验证器系统把问诊过程变成训练信号",
+      "body": "患者模拟器、多维度验证和动态评分共同检查回答的准确性、完整度与后续意识；Mid-Training 和多阶段强化学习再把这些信号用于医疗领域适配。验证器是训练与评测机制，不是临床执照。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "HealthBench 分数先按模型方口径阅读",
+      "body": "模型卡列出 HealthBench 60.1、HealthBench-Hard 34.7、HealthBench-Consensus 91.5。它们依赖指定数据、提示、版本和评分流程，不能直接换算成医院误诊率、患者结局或监管认证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "deployment",
+      "title": "单卡部署说的是一套具体配置",
+      "body": "4bit 量化、单张 RTX 4090 和 MTP 吞吐提升 58.5% 都对应官方给出的特定场景；并发、长上下文、日志、显存和数据隔离仍要在实际服务配置里重新验证。",
+      "kind": "technical"
+    },
+    {
+      "id": "clinical-boundary",
+      "title": "医疗决策支持仍需要医生和系统护栏",
+      "body": "模型卡把用途限定为教育、健康咨询和临床决策支持，并声明不能替代诊断或治疗。患者身份、病历留存、急症升级、医生复核和错误追责不能交给模型自行决定。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看独立复现与真实临床分布",
+      "body": "社区需要复现评测表，检查患者模拟器覆盖范围，观察罕见病、药物相互作用和急症识别中的自信错误，再判断开源模型能否进入受控医疗流程。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "clinical-alert",
+    "title": "医疗推理模型怎样把答案交给医生复核？",
+    "question": "把病例输入、患者模拟、验证器评分和临床复核拆开，才能看清 Baichuan-M2 的能力边界。",
+    "steps": [
+      {
+        "label": "输入病例",
+        "detail": "把症状、既往史和问题交给模型；先确认哪些信息可以进入系统，哪些身份信息必须脱敏。",
+        "evidence": "Baichuan-M2 model card"
+      },
+      {
+        "label": "模拟问诊",
+        "detail": "患者模拟器根据真实病例特征生成追问和回应，让模型面对不完整信息，而不是只回答一条静态选择题。",
+        "evidence": "Large Verifier System"
+      },
+      {
+        "label": "多维验证",
+        "detail": "验证器从医学准确性、完整度、追问和后续意识等维度检查答案，并为复杂场景动态调整评分标准。",
+        "evidence": "Multi-dimensional verification"
+      },
+      {
+        "label": "生成建议",
+        "detail": "模型输出鉴别思路、需要补充的信息或可能的下一步；这些内容仍是候选建议，不是医嘱。",
+        "evidence": "Medical reasoning workflow"
+      },
+      {
+        "label": "医生复核",
+        "detail": "专业人员检查证据、风险和升级条件，决定是否采纳、补充检查或转入急诊流程，并留下可追溯记录。",
+        "evidence": "Official usage notice"
+      }
+    ]
+  },
+  "source": {
+    "name": "Baichuan / Hugging Face",
+    "url": "https://huggingface.co/baichuan-inc/Baichuan-M2-32B"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "authorization"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://huggingface.co/baichuan-inc/Baichuan-M2-32B",
+      "claim": "百川官方模型卡说明 Baichuan-M2-32B 基于 Qwen2.5-32B，采用 Large Verifier System、医疗领域 Mid-Training 和多阶段强化学习，使用 Apache-2.0 许可，并列出 HealthBench 分数与医疗免责声明。",
+      "excerpt": "Baichuan-M2-32B is Baichuan AI's medical-enhanced reasoning model ... built upon Qwen2.5-32B with an innovative Large Verifier System."
+    },
+    {
+      "url": "https://github.com/baichuan-inc/Baichuan-M2-32B",
+      "claim": "百川官方 GitHub 仓库提供模型代码、部署入口和模型发布记录，支持将模型作为可检查的开源工件运行。",
+      "excerpt": "Beyond the Model: Scaling Medical Capability with a Large Verifier System"
+    },
+    {
+      "url": "https://www.infoq.cn/news/BWxDExaPBiqQZtqaL612",
+      "claim": "InfoQ 在 8 月 11 日报道百川开源 Baichuan-M2，介绍 32B 规模、大型验证器系统和多阶段强化学习；技术报告日期另行核对。",
+      "excerpt": "百川智能开源医疗增强大模型 Baichuan-M2，参数规模为 32B。"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02208",
+      "claim": "Baichuan-M2 技术论文于 2025 年 9 月 2 日首次提交，晚于 8 月 11 日模型卡、代码和部署入口公开；论文日期不被写成模型首发日期。",
+      "excerpt": "Submitted on 2 Sep 2025"
+    }
+  ],
+  "canonicalUrl": "https://huggingface.co/baichuan-inc/Baichuan-M2-32B",
+  "sourceHash": "sha256:1c5fa927a4165bc7444589fd15c67f59607ea4f3e3fc1a69206f2d7278db3eba",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.93,
+      "evidence": [
+        "正文解释 Baichuan-M2-32B 的基座模型、医疗增强训练、推理和部署边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.91,
+      "evidence": [
+        "正文区分 8 月 11 日模型/代码开源、9 月技术论文和后续独立复测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.89,
+      "evidence": [
+        "正文与 explainer 把患者数据权限、医生复核、急症升级和模型输出授权拆开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://huggingface.co/baichuan-inc/Baichuan-M2-32B",
+      "claim": "官方模型卡列出 32B 医疗增强推理模型、Large Verifier System、HealthBench 60.1/34.7/91.5、4bit 单卡部署与医疗使用限制。",
+      "excerpt": "Baichuan-M2 60.1 / 34.7 / 91.5 on HealthBench ... cannot replace professional medical diagnosis or treatment."
+    },
+    {
+      "url": "https://www.infoq.cn/news/BWxDExaPBiqQZtqaL612",
+      "claim": "8 月 11 日的媒体报道交叉确认开源事件、32B 规模和大型验证器系统；论文日期不作为当天首发依据。",
+      "excerpt": "百川智能开源医疗增强大模型 Baichuan-M2"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02208",
+      "claim": "arXiv 记录《Baichuan-M2: Scaling Medical Capability with Large Verifier System》于 2025 年 9 月 2 日提交，支持与 8 月 11 日开源事件的时间区分。",
+      "excerpt": "[Submitted on 2 Sep 2025]"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Baichuan 官方 Hugging Face 模型卡、GitHub 仓库与 InfoQ 8 月 11 日报道；将 9 月技术论文与 8 月 11 日模型/开源入口分开，保留 HealthBench、部署吞吐和临床用途为模型方口径，并记录医疗免责声明。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将医疗模型的训练验证链、评测口径、部署条件和医生复核边界拆开，保留模型方声明与独立验证之间的距离，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-11；GitHub/模型卡和 InfoQ 支持 8/11 模型、代码与部署入口公开，arXiv 2509.02208 明确为 2025-09-02 提交，论文与开源事件没有混写。",
+      "正文准确说明 Qwen2.5-32B 基座、Apache-2.0、Large Verifier System（患者模拟器、多维验证、动态评分）、Mid-Training 和多阶段强化学习，并把验证器放在训练/评测机制而非临床执照的位置。",
+      "HealthBench 60.1、HealthBench-Hard 34.7、HealthBench-Consensus 91.5 明确归因于百川模型卡的评测表；文章保留版本、提示、上下文和评分条件的复现边界，没有把分数写成临床结果、误诊率或监管认证。",
+      "4bit 单 RTX 4090、MTP 单用户 58.5% 吞吐提升和 vLLM/SGLang 均限定为官方特定配置；医疗教育、健康咨询、临床决策支持与不能替代诊疗、医生复核、数据权限、急症升级和追责边界清楚。",
+      "中文自然且没有机械化段落；sections、clinical-alert explainer、llm/event/authorization relations、hero SVG、sources/evidence、verification、空 relatedArticleSlugs 与 schema 一致。"
+    ],
+    "notes": "读者审阅通过：零基础读者能区分模型训练验证、基准分数、部署配置和真实医疗流程，知道可下载与可临床使用之间仍需医生参与、独立评测和持续审计。",
+    "changes": [
+      "补充 arXiv 技术论文 2025-09-02 首次提交的 source/evidence 卡片，明确与 8 月 11 日模型/代码开源事件的日期界线。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-11-baichuan-m2",
+  "promotedAt": "2026-10-05T05:17:35.589Z"
+}

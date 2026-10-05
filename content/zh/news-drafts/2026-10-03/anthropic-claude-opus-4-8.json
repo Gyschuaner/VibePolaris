@@ -1,0 +1,170 @@
+{
+  "slug": "anthropic-claude-opus-4-8",
+  "title": "Anthropic 发布 Claude Opus 4.8，加入 fast mode 与动态工作流",
+  "summary": "5 月 28 日，Anthropic 发布 Claude Opus 4.8，称模型当天可用且价格不变，并介绍 fast mode 与 Claude Code dynamic workflows。发布页把编码、推理、专业知识和 agentic skills 放在同一组能力说明中；其中的基准结果来自 Anthropic 自己的评测，不能直接当成所有代码库或智能体任务的成功率，价格不变也不等于总成本不变。",
+  "body": "5 月 28 日，Anthropic 发布 Claude Opus 4.8，称模型当天可用且价格不变，同时介绍 fast mode 和 Claude Code dynamic workflows。变化涉及模型版本、响应速度和编码工作流入口，不只是一次权重更新。\n\n发布页把 coding、reasoning、professional knowledge 和 agentic skills 放在一组评测与产品说明里。使用者需要分开问四个问题：模型在固定任务上的分数怎样，fast mode 的速度和质量如何，Claude Code 会调用哪些工具，实际请求的费用和等待时间是多少。\n\n在一个固定代码仓库里比较新旧版本时，应保持提示、测试集、工具权限和人工审查条件一致，记录错误类型、工具调用、耗时、token 和回滚次数。这样测到的是完整任务链，而不是只看一张基准表；仓库规模、依赖质量和权限设置仍会改变结果。\n\nAnthropic 的官方页面支持当日可用、价格不变以及编码、推理等评测说明。基准结果属于公司评测口径，不能直接推出所有项目的成功率；单价不变也不能推出总成本不变，因为调用次数、token、等待时间和人工修复都会影响账单。\n\n相关词条分别对应不同层：llm 是模型本体，benchmark 是固定任务和评分规则，agent-loop 是执行、观察反馈并决定下一步的循环。后续应补充独立评测、真实错误类型和受限权限下的代码任务数据，再判断这次更新是否带来稳定收益。",
+  "publishedAt": "2026-05-28",
+  "eventDate": "2026-05-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-opus-4-8.svg",
+    "alt": "Anthropic 发布 Claude Opus 4.8，强化编码与智能体任务；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/anthropic-claude-opus-4-8.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "Opus 4.8 这次发布了什么",
+      "body": "Anthropic 5 月 28 日发布 Claude Opus 4.8，称当天可用且价格不变，并介绍 fast mode 与 Claude Code dynamic workflows。发布内容同时覆盖模型、速度和工作流入口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "capabilities",
+      "title": "能力分数、速度和工作流要分开测",
+      "body": "页面把 coding、reasoning、professional knowledge 和 agentic skills 放在同一组说明中。使用者仍需分别确认固定任务分数、fast mode 的速度与质量，以及 Claude Code 会调用哪些工具。",
+      "kind": "technical"
+    },
+    {
+      "id": "repo-test",
+      "title": "在一个固定仓库里比较完整任务链",
+      "body": "保持提示、测试集、工具权限和人工审查条件一致，记录错误类型、工具调用、耗时、token 和回滚次数。仓库规模、依赖质量和权限设置会改变结果，单次演示或基准表不能替代项目验收。",
+      "kind": "example"
+    },
+    {
+      "id": "cost",
+      "title": "价格不变不等于总成本不变",
+      "body": "官方页面支持当日可用、价格不变和公司评测说明。调用次数、token、等待时间和人工修复都会影响实际成本，基准结果也不能直接推出所有代码库或智能体任务的成功率。",
+      "kind": "boundary"
+    },
+    {
+      "id": "terms",
+      "title": "三个词条分别解释哪一层",
+      "body": "llm 是模型本体，benchmark 是固定任务与评分规则，agent-loop 是执行、观察反馈和下一步决策的循环。它们帮助区分模型能力、比较方法和真实工作流。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "用同一个代码仓库比较 Opus 4.8 的真实变化",
+    "question": "官方基准、fast mode 和动态工作流怎样被放进一次可复核的代码任务？",
+    "steps": [
+      {
+        "label": "固定测试条件",
+        "detail": "保留同一代码仓库、提示、测试集、工具权限和人工审查规则，避免把环境变化误算成模型提升。",
+        "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+      },
+      {
+        "label": "分开记录四类结果",
+        "detail": "分别记录基准分数、响应速度、工具调用和人工修复量，不把 agent-loop 的完整任务结果压缩成一个分数。",
+        "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+      },
+      {
+        "label": "核对成本",
+        "detail": "统计 token、调用次数、等待时间和失败重试；单价不变时，总账单仍可能因为工作流变化而改变。",
+        "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+      },
+      {
+        "label": "对照独立证据",
+        "detail": "把 Anthropic 的评测与独立评测、真实错误类型和受限权限下的代码任务结果比较。",
+        "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-opus-4-8"
+  },
+  "relatedSlugs": [
+    "llm",
+    "benchmark",
+    "agent-loop"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "claim": "Claude Opus 4.8 当日可用且价格不变",
+      "excerpt": "Anthropic says Claude Opus 4.8 is available today with unchanged pricing."
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "claim": "发布页强调 coding、agentic skills、reasoning 等改进",
+      "excerpt": "The launch highlights improvements in coding, agentic skills, reasoning and professional knowledge benchmarks."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/claude-opus-4-8",
+  "sourceHash": "sha256:3d808cbc9469ab7e93cd0c0a2c3716ce88e0153465edbdf0a97736db00a3f57b",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 发布 Claude Opus 4.8，强化编码与智能体任务”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 发布 Claude Opus 4.8，强化编码与智能体任务”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 发布 Claude Opus 4.8，强化编码与智能体任务”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "claim": "Claude Opus 4.8 当日可用且价格不变",
+      "excerpt": "Anthropic says Claude Opus 4.8 is available today with unchanged pricing."
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "claim": "发布页强调 coding、agentic skills、reasoning 等改进",
+      "excerpt": "The launch highlights improvements in coding, agentic skills, reasoning and professional knowledge benchmarks."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：中文稿自然地区分当日可用、价格不变、fast mode、Claude Code dynamic workflows 与 coding/reasoning/professional knowledge/agentic skills 的 Anthropic 公司评测说明。明确基准分数不是所有代码库或智能体任务的成功率，单价不变也不等于总成本不变；llm/benchmark/agent-loop、sections 和 explainer 将模型、比较方法和完整工作流分开。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs 与 JSON 结构核对无误。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-28",
+  "fingerprint": "sha256:3d808cbc9469ab7e93cd0c0a2c3716ce88e0153465edbdf0a97736db00a3f57b",
+  "promotedAt": "2026-10-05T05:17:56.067Z"
+}

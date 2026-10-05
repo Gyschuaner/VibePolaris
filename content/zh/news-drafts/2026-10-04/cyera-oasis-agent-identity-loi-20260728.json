@@ -1,0 +1,219 @@
+{
+  "slug": "cyera-oasis-agent-identity-loi-20260728",
+  "title": "Cyera 拟 10 亿美元收购 Oasis：AI 代理的“身份”开始和数据安全合并",
+  "summary": "7 月 28 日，数据安全公司 Cyera 宣布签署意向书，拟以约 10 亿美元收购管理非人类身份的 Oasis Security。当天确认的是待完成的收购意向，不是已经交割；交易把 AI 代理能访问什么数据、以谁的身份行动，放进同一套企业安全问题里。",
+  "body": "7 月 28 日，Cyera 宣布签署意向书，拟收购 Oasis Security。TechCrunch 报道交易价值约 10 亿美元，预计以现金为主、股票为辅；Oasis 的官方说明确认了“签署意向书、交易仍在完成过程中”，没有把当天写成已经完成收购。Cyera 后续在 9 月 3 日宣布交易完成，这个时间差说明 7 月 28 日应记录为签约新闻。\n\nOasis 处理的是非人类身份，也就是服务账号、工作负载和 AI 代理使用的身份与权限。代理一旦能读取企业数据、调用 SaaS、修改记录或发起付款，风险就不只在模型会不会答错，还在于它拿着什么凭据、凭据能访问哪些系统、动作是否被持续核验。Oasis 的官方博客把“访问”和“数据”称为 AI 采用时的两个控制点。\n\nCyera 原本以数据安全平台为主，计划把 Oasis 的身份治理能力并入一套统一平台。这个方向回应了企业部署代理时的一个实际断点：数据安全团队知道哪些资料敏感，身份团队知道谁能访问系统，但代理的每次调用往往同时跨过两条边界。把两者放在一起，理论上可以在一次动作发生前同时判断“谁在请求”和“它要碰什么数据”。\n\n交易新闻不等于产品已经整合。意向书要经过交割和整合，客户权限、策略迁移、日志格式和服务连续性都需要单独验证；10 亿美元是报道的交易价值，不是已经产生的安全效果。公司也没有因为宣布收购就证明所有企业已经能看见或控制自己的代理身份。\n\n这条交易值得关注，是因为它把“代理安全”从模型输出问题拉回到企业控制面：身份、数据、工具和审计要一起工作。后续可以看收购完成后的产品边界、是否支持动态最小权限、能否在每次调用前重新检查上下文，以及异常动作能否及时停止。",
+  "publishedAt": "2026-07-28",
+  "eventDate": "2026-07-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cyera-oasis-agent-identity-loi-20260728.svg",
+    "alt": "Cyera 拟收购 Oasis，把 AI 代理身份、数据和访问控制接到一条安全链路；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/cyera-oasis-agent-identity-loi-20260728.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "loi",
+      "title": "7 月 28 日确认的是意向书",
+      "body": "Oasis 和 Cyera 当天宣布签署收购意向书，交易仍在完成流程中；9 月 3 日的完成公告属于后续事件。",
+      "kind": "narrative"
+    },
+    {
+      "id": "identity",
+      "title": "代理也需要被当作一个“身份”管理",
+      "body": "服务账号、工作负载和 AI 代理都可能持有凭据并访问系统，权限需要和具体动作、时间和上下文一起核对。",
+      "kind": "technical"
+    },
+    {
+      "id": "join",
+      "title": "数据安全与身份安全要在同一次判断里相遇",
+      "body": "企业既要知道代理是谁、能调用什么工具，也要知道它将触碰哪些敏感数据；两套孤立的目录很难覆盖完整动作链。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "收购价值不等于安全效果",
+      "body": "约 10 亿美元是媒体报道的交易价值，意向书和平台整合都不能直接证明客户风险已经下降。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow",
+      "title": "后续看动态权限和可停止性",
+      "body": "产品能否每次调用前重查权限、记录数据去向并在异常时停止，才会决定“代理信任层”是否真的存在。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一次代理调用为什么要同时检查身份和数据？",
+    "question": "“谁在做”和“它要碰什么”是同一个动作的两面，少检查一边就会留下盲区。",
+    "steps": [
+      {
+        "label": "识别调用者",
+        "detail": "把代理、服务账号和工作负载记录成可追踪的非人类身份，而不是共享一个永久凭据。",
+        "evidence": "Oasis Security"
+      },
+      {
+        "label": "核对动作与上下文",
+        "detail": "知道代理要调用哪个工具、在什么业务状态下调用，权限才有实际意义。",
+        "evidence": "agent identity boundary"
+      },
+      {
+        "label": "检查数据范围",
+        "detail": "在动作发生前确认它能读取或修改哪些数据，并把敏感数据策略带入判断。",
+        "evidence": "Cyera data security model"
+      },
+      {
+        "label": "记录并可停止",
+        "detail": "保存调用轨迹，发现异常时撤销权限或暂停流程，让代理动作可以被人工接管。",
+        "evidence": "enterprise control requirement"
+      }
+    ]
+  },
+  "source": {
+    "name": "Oasis Security",
+    "url": "https://www.oasis.security/blog/next-generation-ai-security-platform"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "context",
+    "tools",
+    "database",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.oasis.security/blog/next-generation-ai-security-platform",
+      "claim": "Oasis 确认 7 月 28 日签署被 Cyera 收购的意向书，并将代理访问与数据安全视为两个控制点。",
+      "excerpt": "We have signed a letter of intent to be acquired by Cyera."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/28/cyera-agrees-to-acquire-oasis-security-for-1b-to-safeguard-proliferating-ai-agents/",
+      "claim": "TechCrunch 报道交易价值约 10 亿美元、支付方式及两家公司在代理安全市场的定位。",
+      "excerpt": "Cyera ... signed a letter of intent to acquire Oasis Security for approximately $1 billion."
+    },
+    {
+      "url": "https://www.cyera.com/newsroom?100efbc7_page=2",
+      "claim": "Cyera 新闻室列出 7 月 28 日拟以 10 亿美元收购 Oasis 的公告，并把 9 月 3 日标为完成收购。",
+      "excerpt": "Cyera to Buy Oasis Security in $1 Billion Deal"
+    }
+  ],
+  "canonicalUrl": "https://www.oasis.security/blog/next-generation-ai-security-platform",
+  "sourceHash": "sha256:3f4465032d345bb0b5ba93ff1998aaaa622473f8114f54d2bf3335125cadaca0",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论 agent 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论 authorization 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.86,
+      "evidence": [
+        "正文讨论 context 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文讨论 tools 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "database",
+      "score": 0.86,
+      "evidence": [
+        "正文讨论 database 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文讨论 event 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.oasis.security/blog/next-generation-ai-security-platform",
+      "claim": "Oasis 确认 7 月 28 日签署被 Cyera 收购的意向书，并将代理访问与数据安全视为两个控制点。",
+      "excerpt": "We have signed a letter of intent to be acquired by Cyera."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/28/cyera-agrees-to-acquire-oasis-security-for-1b-to-safeguard-proliferating-ai-agents/",
+      "claim": "TechCrunch 报道交易价值约 10 亿美元、支付方式及两家公司在代理安全市场的定位。",
+      "excerpt": "Cyera ... signed a letter of intent to acquire Oasis Security for approximately $1 billion."
+    },
+    {
+      "url": "https://www.cyera.com/newsroom?100efbc7_page=2",
+      "claim": "Cyera 新闻室列出 7 月 28 日拟以 10 亿美元收购 Oasis 的公告，并把 9 月 3 日标为完成收购。",
+      "excerpt": "Cyera to Buy Oasis Security in $1 Billion Deal"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:00:00Z",
+    "method": "source",
+    "notes": "按事件发生日与发布日分开核对；新闻主线和公司自述数字分别标注，保留原始来源与媒体交叉报道。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T17:00:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 手写整理，检查新闻主线、事实边界、来源卡片、词条联动和 SVG 追溯信息。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T17:20:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间一致。",
+      "官方公告、公司声明与媒体报道分层，保留原始链接与引用卡片。",
+      "sections、explainer、SVG alt 与正文一致，词条联动真实。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "明确是意向书和媒体报道的约 10 亿美元交易价值；未写成已完成收购或已产生安全效果，9 月 3 日仅作后续时间差说明。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-28",
+  "fingerprint": "sha256:bc4198b4d8e8f4bed9808cacee7cbed6059a92944a4a2c7c55462fcb1481eb7c",
+  "promotedAt": "2026-10-03T23:38:40.999Z"
+}

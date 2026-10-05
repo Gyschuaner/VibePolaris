@@ -1,0 +1,210 @@
+{
+  "slug": "cloudflare-pay-per-crawl-20250701",
+  "title": "Cloudflare 默认拦 AI 爬虫，再用 Pay Per Crawl 让内容访问走向“先获准、再计费”",
+  "summary": "Cloudflare 在 7 月 1 日宣布，网站可以默认阻止未经许可或没有补偿的 AI 爬虫，并在私测中让站点按次给内容访问定价。它改变的是网站与爬虫之间的权限和结算入口，不是全球统一生效的版权规则。",
+  "body": "7 月 1 日，Cloudflare 把 AI 爬虫和内容付费的争议做成了一个基础设施产品。公司宣布，网站所有者可以默认阻止未经许可或没有补偿的 AI 爬虫访问内容，并决定哪些 AI 公司可以访问、以什么用途访问。与此同时，Cloudflare 发布 Pay Per Crawl 私测，让站点主为内容设置价格，选择要收费的爬虫，再通过 Stripe 处理付款。\n\nCloudflare 的官方 Changelog 把产品写得更具体：站点可以设定价格、选择收费对象，并查看成功交付的分析；AI 爬虫方通过 HTTP 头请求并接受价格，访问后收到明确的扣费确认。这是一套请求、报价、付款、交付的协议链。它先回答“谁可以访问”，再回答“这一次访问是否计费”，比 robots.txt 里一个静态的允许或禁止更细。\n\n但标题里的“默认拦截”不能被读成所有网站当天都自动锁死。Cloudflare 说的是由网站所有者选择的默认设置，Pay Per Crawl 当时还是 private beta，需要申请早期访问。没有加入这套配置的网站、没有愿意付费的 AI 公司和没有形成价格协议的页面，仍然不会因为 7 月 1 日的公告自动进入一个全球收费网络。\n\n公司还把爬虫用途拆成训练、推理和搜索，允许 AI 公司更清楚地表达自己来做什么。用途标签能帮助内容方做选择，却不会自动证明训练合法、内容已经获授权，或一次搜索摘要就等于一次许可。Cloudflare 提供的是识别、拦截和结算能力，版权归属、合理使用和授权范围仍要由合同和法律处理。\n\n这条新闻对新闻站尤其直接。站点一方面担心 AI 摘要减少搜索点击，另一方面又希望保留被引用、被发现和获得访问的机会。按次收费可以给内容方多一个选项，但也会把价格、支付、爬虫身份和内容版本都变成运营问题。没有公开费率和规模数据之前，不能把 Pay Per Crawl 写成已经验证的商业模式。\n\n对内容团队而言，比较稳妥的试验顺序是：先列出哪些页面允许训练、哪些页面只允许搜索引用，再确认爬虫身份和用途，最后才设置价格和付款。每个规则都要保留日志，方便解释为什么某次访问被允许、被拒绝或被收费。7 月 1 日发生的是一种新的访问控制和私测结算方案，不能简化成“AI 公司以后必须为互联网付费”。",
+  "publishedAt": "2025-07-01",
+  "eventDate": "2025-07-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cloudflare-pay-per-crawl-20250701.svg",
+    "alt": "Cloudflare 把 AI 爬虫访问拆成许可、报价、付款和内容交付四步",
+    "sourceUrl": "/images/news/cloudflare-pay-per-crawl-20250701.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "先把 AI 爬虫从“默认可抓”改成“由站点决定”",
+      "body": "Cloudflare 宣布网站所有者可以选择是否允许 AI 爬虫访问，以及这些内容可被怎样使用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "protocol",
+      "title": "Pay Per Crawl 是一条请求到付款的协议链",
+      "body": "价格、收费对象、HTTP 头、Stripe 和交付分析被放进同一条流程，私测仍需申请。",
+      "kind": "technical"
+    },
+    {
+      "id": "scope",
+      "title": "这不是全球统一生效的版权规则",
+      "body": "默认设置由网站选择，产品当时是 private beta，法律许可仍要看合同和法域。",
+      "kind": "boundary"
+    },
+    {
+      "id": "publisher-economics",
+      "title": "内容方拿到一个新选项，也多了运营成本",
+      "body": "推荐访问、搜索引用、训练和推理可以分开定价，但公开费率和实际规模尚未证明商业回报。",
+      "kind": "comparison"
+    },
+    {
+      "id": "trial-checklist",
+      "title": "先划分内容用途，再做小范围试验",
+      "body": "记录允许、拒绝、报价和付款日志，把一次访问的事实链留下来。",
+      "kind": "technical"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "AI 爬虫访问怎样从一次请求变成可控交易？",
+    "question": "先确认身份和用途，再决定是否交付、如何计费，最后保留可追溯记录。",
+    "steps": [
+      {
+        "label": "识别爬虫",
+        "detail": "判断访问方是谁、代表哪家公司，以及请求的是训练、推理还是搜索。",
+        "evidence": "AI companies can clearly state their purpose"
+      },
+      {
+        "label": "读取站点规则",
+        "detail": "网站决定哪些页面可访问，哪些内容只在特定用途或条件下开放。",
+        "evidence": "website owners can choose if AI crawlers access content"
+      },
+      {
+        "label": "返回价格",
+        "detail": "站点给符合条件的爬虫返回价格和条款，爬虫通过 HTTP 头表达接受或拒绝。",
+        "evidence": "Use HTTP headers to request and accept pricing"
+      },
+      {
+        "label": "完成付款与交付",
+        "detail": "付款完成后才交付内容，并用 Stripe 和交付分析记录过程。",
+        "evidence": "Manage payments via Stripe; monitor successful deliveries"
+      },
+      {
+        "label": "复核法律与商业结果",
+        "detail": "把合同、版权、流量和收入分开评估，不把一次成功交付写成整个行业已验证。",
+        "evidence": "private beta and no public outcome data"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cloudflare 官方 Changelog",
+    "url": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/"
+  },
+  "relatedSlugs": [
+    "data-lineage",
+    "citation",
+    "auth",
+    "event",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/",
+      "claim": "Cloudflare 7 月 1 日发布 Pay Per Crawl 私测，允许站点设价、选择收费爬虫、通过 Stripe 管理付款，并要求爬虫用 HTTP 头请求和接受价格。",
+      "excerpt": "Pay Per Crawl enables site owners to require payment from AI crawlers every time the crawlers access their content."
+    },
+    {
+      "url": "https://www.cloudflare.com/press/press-releases/2025/cloudflare-just-changed-how-ai-crawlers-scrape-the-internet-at-large/",
+      "claim": "Cloudflare 官方新闻稿宣布网站可以默认阻止未经许可或没有补偿的 AI 爬虫，并由站点决定是否允许访问。",
+      "excerpt": "website owners can choose if they want AI crawlers to access their content, and decide how AI companies can use it."
+    },
+    {
+      "url": "https://blog.cloudflare.com/introducing-pay-per-crawl/",
+      "claim": "Cloudflare 产品博客解释 Pay Per Crawl 的内容访问和收费设计，作为 Changelog 的背景说明。",
+      "excerpt": "Introducing Pay Per Crawl: enabling content owners to charge AI crawlers for access."
+    }
+  ],
+  "canonicalUrl": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/",
+  "sourceHash": "sha256:13be1ac5c5245ddfff420c4ed81dc3cda2abc879507639ef230f0d8e07b54c23",
+  "status": "published",
+  "discoveredAt": "2026-10-05T09:25:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 data-lineage 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 citation 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.9199999999999999,
+      "evidence": [
+        "正文解释 auth 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.89,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 tools 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://developers.cloudflare.com/changelog/post/2025-07-01-pay-per-crawl/",
+      "claim": "Cloudflare 7 月 1 日发布 Pay Per Crawl 私测，允许站点设价、选择收费爬虫、通过 Stripe 管理付款，并要求爬虫用 HTTP 头请求和接受价格。",
+      "excerpt": "Pay Per Crawl enables site owners to require payment from AI crawlers every time the crawlers access their content."
+    },
+    {
+      "url": "https://www.cloudflare.com/press/press-releases/2025/cloudflare-just-changed-how-ai-crawlers-scrape-the-internet-at-large/",
+      "claim": "Cloudflare 官方新闻稿宣布网站可以默认阻止未经许可或没有补偿的 AI 爬虫，并由站点决定是否允许访问。",
+      "excerpt": "website owners can choose if they want AI crawlers to access their content, and decide how AI companies can use it."
+    },
+    {
+      "url": "https://blog.cloudflare.com/introducing-pay-per-crawl/",
+      "claim": "Cloudflare 产品博客解释 Pay Per Crawl 的内容访问和收费设计，作为 Changelog 的背景说明。",
+      "excerpt": "Introducing Pay Per Crawl: enabling content owners to charge AI crawlers for access."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T09:25:00Z",
+    "method": "source",
+    "notes": "核对 Cloudflare 7 月 1 日官方 Changelog、新闻稿和产品博客；正文把默认设置、private beta、协议能力与版权法律边界分开，没有把方案写成全球强制规则或已验证商业结果。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T09:25:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T09:33:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "Cloudflare Pay Per Crawl 的私测范围、站点自选与默认拦截边界清楚；未写成全球版权规则，来源卡片和事件专属讲解可追溯。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-01-cloudflare-pay-per-crawl-20250701",
+  "promotedAt": "2026-10-04T21:08:26.509Z"
+}

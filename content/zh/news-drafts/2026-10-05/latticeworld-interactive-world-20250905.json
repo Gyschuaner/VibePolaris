@@ -1,0 +1,204 @@
+{
+  "slug": "latticeworld-interactive-world-20250905",
+  "title": "LatticeWorld：把文字和草图变成可交互的 3D 世界",
+  "summary": "LatticeWorld 论文于 9 月 5 日提交，把轻量级 LLaMA-2-7B 与 Unreal Engine 5 连接起来：模型读取场景描述和地形草图，生成可解释的布局表示与环境配置，再渲染出带有动态 Agent、物理模拟和实时交互的 3D 世界。论文报告，相比传统手工制作流程，工业生产效率提高了 90 倍以上；这个数字仍属于论文设定和实验对比，不能直接当作所有 3D 项目的通用收益。",
+  "body": "做一个可供 Agent 练习的三维环境，难点不只是把画面做得像。道路、建筑、地形和可交互物体要放在合理位置，环境还要能响应动作；如果只生成一张好看的静态图，机器人或游戏角色仍然无处可走。传统流程依靠美术和技术人员逐项搭建，成本主要花在反复修改和把设计意图翻译成引擎参数。\n\nLatticeWorld 把这条流程拆成模型能处理的中间表示。输入可以是文字描述，也可以是地形高度图或草图等视觉指令；轻量级 LLaMA-2-7B 负责理解空间关系和生成结构化序列，输出场景布局与环境配置，随后交给 Unreal Engine 5 的渲染管线。论文的重点不是让语言模型直接画完一个世界，而是让它把描述转换成引擎能够执行的结构。\n\n其中一个关键做法是先把布局压缩成符号矩阵。论文示例把场景划成 32×32 的网格，每个符号代表道路、建筑、森林、水面等资产类别，再把矩阵转成语言模型容易生成的序列。这样的中间层牺牲了一些细节，却留下了位置和类别的约束；开发者可以检查矩阵，再决定是否进入渲染，而不是对着一张不可解释的生成图猜测模型做了什么。\n\n布局生成之后，系统还要描述环境属性和 Agent 参数。渲染引擎把这些结果翻译为场景中的物体、地形、动态角色和交互规则，最终得到可以实时运行的空间。论文展示了多 Agent 互动、物理模拟和实时渲染，也允许主角色与其他具有竞争或对抗行为的虚拟角色交互。这一步决定了它更接近一个可玩、可测试的环境，而不是一张 3D 海报。\n\n论文在场景布局准确性和视觉保真度上进行评估，并报告工业生产效率相比传统手工流程提高 90 倍以上。这个结果应该按论文的比较条件理解：参与的资产、流程、人工校正和效率口径都会改变数字。它说明结构化生成可能减少搭场景的重复劳动，不等于任何团队接入一个 7B 模型就能获得同样的倍数。\n\n对具身 Agent 训练来说，合成世界的价值还取决于物理和行为是否可信。地形看起来正确，却可能缺少碰撞、遮挡或可达路径；虚拟角色会移动，也不代表它们的反应分布接近真实环境。把生成世界用于训练前，应检查布局错误、物理约束、行为覆盖和场景分布，并保留每个输入、模型版本、引擎插件和人工修订记录。\n\nLatticeWorld 提供的是一条从描述到可交互环境的生产管线：模型先生成可检查的结构，引擎再承担渲染和运行时行为。它让世界模型研究多了一种可复用的搭建方式，但距离真实机器人或复杂工业仿真仍有一段验证路程。真正需要比较的，不只是生成速度，还包括能否控制、能否复现，以及在模拟器里学到的策略换到现实后还剩多少。",
+  "publishedAt": "2025-09-05",
+  "eventDate": "2025-09-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/latticeworld-interactive-world-20250905.svg",
+    "alt": "LatticeWorld 将文字和地形草图转换为可交互的三维世界并放入动态 Agent",
+    "sourceUrl": "/images/news/latticeworld-interactive-world-20250905.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "static-to-interactive",
+      "title": "好看的场景还不等于能运行的环境",
+      "body": "Agent 需要地形、碰撞、可达路径和反馈；静态生成图解决不了动作发生后的状态变化。",
+      "kind": "narrative"
+    },
+    {
+      "id": "multimodal-input",
+      "title": "文字描述和地形草图都能成为输入",
+      "body": "LatticeWorld 接收场景文字与高度图、草图等视觉指令，把设计意图交给轻量级 LLM 解析。",
+      "kind": "technical"
+    },
+    {
+      "id": "symbolic-layout",
+      "title": "32×32 符号矩阵让布局先变得可检查",
+      "body": "道路、建筑、森林和水面被编码为类别符号，再转成模型可生成的结构化序列，便于在渲染前检查位置关系。",
+      "kind": "technical"
+    },
+    {
+      "id": "engine-runtime",
+      "title": "Unreal Engine 5 接手渲染和运行时行为",
+      "body": "模型输出布局与环境配置，工业引擎负责资产翻译、物理模拟、实时渲染和多 Agent 交互。",
+      "kind": "example"
+    },
+    {
+      "id": "efficiency-claim",
+      "title": "论文报告生产效率提升 90 倍以上",
+      "body": "这个数字来自论文设定下的手工流程对比，受资产、人工校正和效率口径影响，不能外推为通用收益。",
+      "kind": "comparison"
+    },
+    {
+      "id": "simulation-boundary",
+      "title": "虚拟角色会动，不代表模拟就可信",
+      "body": "训练前仍需检查碰撞、遮挡、可达路径、行为覆盖和场景分布，避免把合成偏差带进 Agent 策略。",
+      "kind": "boundary"
+    },
+    {
+      "id": "reproducible-pipeline",
+      "title": "可复现比单次生成更适合进入生产",
+      "body": "保存输入、模型版本、引擎插件和人工修订，才能定位布局错误并比较模拟到现实的迁移效果。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "synthetic-data",
+    "title": "LatticeWorld 怎样从描述生成可交互的 3D 环境？",
+    "question": "先把文字和地形指令转成可检查的结构，再交给工业引擎渲染并验证物理和行为。",
+    "steps": [
+      {
+        "label": "提交场景描述",
+        "detail": "输入世界文字说明，并按需要提供高度图、地形草图等视觉条件，明确空间和资产约束。",
+        "evidence": "textual descriptions and visual instructions"
+      },
+      {
+        "label": "生成布局表示",
+        "detail": "用 LLaMA-2-7B 理解空间关系，把类别和位置写入符号矩阵及结构化序列。",
+        "evidence": "32×32 symbolic matrix"
+      },
+      {
+        "label": "配置环境与 Agent",
+        "detail": "生成场景属性、角色参数和交互规则，保留模型输出供人工检查。",
+        "evidence": "environmental configuration and agent parameters"
+      },
+      {
+        "label": "交给 Unreal Engine",
+        "detail": "通过翻译脚本或插件把结构化结果转成引擎属性，完成物理模拟、实时渲染和动态角色。",
+        "evidence": "Unreal Engine 5 rendering pipeline"
+      },
+      {
+        "label": "验证再用于训练",
+        "detail": "比较布局和视觉结果，检查碰撞、可达性、行为覆盖与分布偏差，再决定是否用于 Agent 训练。",
+        "evidence": "scene layout and visual fidelity evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05263"
+  },
+  "relatedSlugs": [
+    "agent",
+    "llm",
+    "context",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05263",
+      "claim": "LatticeWorld 使用轻量级 LLaMA-2-7B 与 Unreal Engine 5，接受文字和视觉指令，生成带动态 Agent、物理模拟和实时渲染的三维世界。",
+      "excerpt": "leverages lightweight LLMs (LLaMA-2-7B) alongside ... Unreal Engine 5 ... textual descriptions and visual instructions ... dynamic agents ... high-fidelity physics simulation"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05263",
+      "claim": "论文报告场景布局与视觉保真度结果，并称工业生产效率相比传统手工流程提高 90 倍以上。",
+      "excerpt": "superior accuracy in scene layout generation and visual fidelity ... over a 90× increase in industrial production efficiency"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.05263",
+      "claim": "论文将布局先压缩为符号矩阵，并通过引擎翻译和渲染管线生成可运行世界。",
+      "excerpt": "compress a scene layout image into a p×p symbol matrix ... decoded into an engine-readable layout tensor ... rendering engine"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05263",
+  "sourceHash": "sha256:5a334662e4f9484ce9b7e70b849c56423b49798aab2ba0f6cbb6428549f0379a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论场景中的动态 Agent、多 Agent 交互和用于训练的虚拟角色。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文保留 LLaMA-2-7B 对空间描述、结构化序列和环境配置的生成。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "正文把文字、地形草图、布局矩阵和引擎配置串成可检查的环境上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留布局准确性、视觉保真度、物理约束和模拟到现实迁移的评估边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 5 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05263",
+      "claim": "arXiv 记录 LatticeWorld 论文于 2025 年 9 月 5 日提交，主题是多模态 LLM 驱动的交互式复杂世界生成。",
+      "excerpt": "Submitted on 5 Sep 2025 ... LatticeWorld: A Multimodal Large Language Model-Empowered Framework for Interactive Complex World Generation"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.05263",
+      "claim": "正文说明了符号布局表示、环境配置、Unreal Engine 翻译和可玩世界生成流程。",
+      "excerpt": "symbolic representation ... environmental configuration ... rendering engine ... playable virtual world"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文提交日期、LLaMA-2-7B、文字/视觉输入、符号布局矩阵、Unreal Engine 5、动态 Agent、物理模拟和 90 倍以上效率主张；正文明确该效率数字的实验边界，并补充可控性、可复现性和模拟到现实验证。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 LatticeWorld 写成可检查的生成管线，保留论文的 32×32 符号布局、LLaMA-2-7B、Unreal Engine 5 和 90 倍以上效率主张；明确实验口径，不把结果扩展成通用收益；补充物理、行为覆盖、分布偏差和 sim-to-real 边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-05-latticeworld-interactive-world-20250905"
+}

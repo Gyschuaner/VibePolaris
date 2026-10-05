@@ -1,0 +1,198 @@
+{
+  "slug": "openai-gpt56-price-performance-20260730",
+  "title": "OpenAI 把 GPT‑5.6 Luna 价格降八成：模型竞争开始直接比每次任务的账单",
+  "summary": "OpenAI 7 月 30 日公布 GPT‑5.6 的价格与速度更新：Luna API 输入价格降至每百万 token 0.20 美元、输出 1.20 美元，降幅 80%；Terra 降价 20%；Sol 在 API 增加 Fast mode，最高可比 Standard 快 2.5 倍但价格翻倍。ChatGPT 与 Codex 的订阅价格不变，实际任务成本仍取决于 token、工具调用和重试次数。",
+  "body": "7 月 30 日，OpenAI 把 GPT‑5.6 的竞争重点从“模型有多强”推进到“完成一项工作要花多少钱”。公司宣布，GPT‑5.6 Luna 的 API 价格下降 80%，输入每百万 token 0.20 美元、输出 1.20 美元；Terra 下降 20%，输入 2 美元、输出 12 美元。GPT‑5.6 Sol 的价格不变，但 API 新增 Fast mode，最高可比 Standard 快 2.5 倍，价格按两倍计算。\n\n这几项变化对应三个不同的取舍。Luna 面向大量、重复、可以拆解的任务；Terra 处在速度、能力和价格之间；Sol Fast mode 让需要尽快得到结果的调用支付额外费用。OpenAI 还说，Terra 和 Luna 在 ChatGPT Work、Codex 的用量计费中消耗更少额度，但 ChatGPT 和 Codex 订阅价格本身没有变化。API 账单下降，不等于所有用户的月费都会下降。\n\nOpenAI 把价格变化归因于模型、推理系统和智能体 harness 的效率改进。官方文章称 GPT‑5.6 Sol 在人类主导流程中重写和优化了生产 kernel，帮助服务成本下降 20%，并通过实验提高 token 生成效率超过 15%。这些数字是公司自己的工程说明；它们说明 OpenAI 如何解释降价来源，不是独立复现实验。\n\n更低的 token 价格会改变一些工作流的可行性。代理可以把任务拆成更多小步骤，先让便宜模型处理整理和执行，再把不确定部分交给更强的模型；长时间后台任务的预算也更容易控制。但完成一次任务的成本还包括输入上下文、输出长度、工具调用、失败重试和人工复核。只看每百万 token 的单价，可能会低估真正的账单。\n\n因此，这次更新不是简单的“Luna 打折”。它把模型选择变成一张工作流账本：哪一步需要推理，哪一步可以追求低价，哪些步骤必须保留人工检查，以及速度提升是否值得两倍价格。OpenAI 给出了新的价格和入口，是否带来更好的单位任务成本，还需要开发者用自己的数据、质量标准和失败率测量。",
+  "publishedAt": "2026-07-30",
+  "eventDate": "2026-07-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-gpt56-price-performance-20260730.svg",
+    "alt": "OpenAI 把 GPT‑5.6 Luna 价格降八成：模型竞争开始直接比每次任务的账单 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/openai-gpt56-price-performance-20260730.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "pricing",
+      "title": "Luna 降 80%，Terra 降 20%",
+      "body": "7 月 30 日起，Luna 输入每百万 token 0.20 美元、输出 1.20 美元；Terra 输入 2 美元、输出 12 美元。",
+      "kind": "narrative"
+    },
+    {
+      "id": "speed",
+      "title": "Sol Fast mode 用更高价格换时间",
+      "body": "Fast mode 最高比 Standard 快 2.5 倍，价格按两倍计算，模型智能水平不变。",
+      "kind": "comparison"
+    },
+    {
+      "id": "subscriptions",
+      "title": "API 价格下降不等于订阅费下降",
+      "body": "ChatGPT 与 Codex 的订阅价格和配额预算不变，但 Terra/Luna 的使用消耗更少额度。",
+      "kind": "boundary"
+    },
+    {
+      "id": "efficiency",
+      "title": "OpenAI 的效率解释仍是公司口径",
+      "body": "OpenAI 将降价归因于 kernel、推理系统和 harness 优化，相关 20% 与 15% 数字没有在本文中独立复现。",
+      "kind": "technical"
+    },
+    {
+      "id": "task-cost",
+      "title": "真正要比较的是完成一项任务的成本",
+      "body": "上下文长度、工具调用、重试、输出数量和人工复核都会改变账单，不能只看 token 单价。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "为什么 token 单价不等于任务成本？",
+    "question": "把模型、上下文、工具和重试放进同一条账单，才能判断降价是否真的省钱。",
+    "steps": [
+      {
+        "label": "拆出任务步骤",
+        "detail": "把一次工作分成理解、检索、工具调用、执行和复核，观察每一步需要什么能力。",
+        "evidence": "workflow analysis"
+      },
+      {
+        "label": "匹配模型层级",
+        "detail": "重复整理可交给 Luna，复杂判断使用 Terra 或 Sol，速度要求高时再考虑 Fast mode。",
+        "evidence": "OpenAI pricing"
+      },
+      {
+        "label": "计算完整消耗",
+        "detail": "把输入上下文、输出 token、工具调用和失败重试一起计入，而不是只看价格表。",
+        "evidence": "editorial boundary"
+      },
+      {
+        "label": "核对质量与人工成本",
+        "detail": "如果低价模型更容易出错，额外重试和人工检查可能抵消单价下降。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "tools",
+    "agent-loop",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/",
+      "claim": "OpenAI 7 月 30 日公布 Luna 80% 降价、Terra 20% 降价和 Sol Fast mode 的速度与价格条件。",
+      "excerpt": "Starting today, GPT‑5.6 Luna ... will cost 80% less, while GPT‑5.6 Terra ... will cost 20% less."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/changelog",
+      "claim": "OpenAI API changelog 记录 7 月 30 日 Luna/Terra 价格变化和 Fast mode 取代 Priority Processing。",
+      "excerpt": "Starting July 30, GPT-5.6 Luna costs 80% less, while GPT-5.6 Terra costs 20% less."
+    },
+    {
+      "url": "https://www.axios.com/2026/07/30/openai-cuts-prices-gpt-terra-luna5",
+      "claim": "Axios 对 OpenAI 降价的报道指出 Luna 输入价格为每百万 token 0.20 美元，报道同时把效率改善归为公司主张。",
+      "excerpt": "OpenAI said Thursday it is cutting prices for two GPT-5.6 models after improving the efficiency of the systems that serve them."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/",
+  "sourceHash": "sha256:f6f2ad848272664a888c15c8d7d2015c6721fa244476a184dca1dd2b403ba804",
+  "status": "published",
+  "discoveredAt": "2026-10-04T15:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 llm 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 token 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 tools 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent-loop 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/",
+      "claim": "按 OpenAI 官方价格文章、API changelog 和 Axios 同日报道核对价格、Fast mode、订阅边界和厂商效率数字。",
+      "excerpt": "Starting today, GPT‑5.6 Luna ... will cost 80% less, while GPT‑5.6 Terra ... will cost 20% less."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T15:20:00Z",
+    "method": "source",
+    "notes": "按 OpenAI 官方价格文章、API changelog 和 Axios 同日报道核对价格、Fast mode、订阅边界和厂商效率数字。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T15:20:00Z",
+    "notes": "逐篇手写新闻正文，按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 检查事实链、证据边界、段落组织和去模板化表达。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T15:50:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间一致。",
+      "官方、媒体、法院背景和公司自述数字边界清楚，保留原始来源与引用卡片。",
+      "sections、explainer 与 SVG alt 和正文一致，词条联动只使用正文解释过的概念。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "API 单价、Fast mode 倍速/加价与 ChatGPT/Codex 订阅区分；20% 成本和 15% token 效率数字明确为 OpenAI 工程说明。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-30",
+  "fingerprint": "sha256:f6f2ad848272664a888c15c8d7d2015c6721fa244476a184dca1dd2b403ba804",
+  "promotedAt": "2026-10-03T22:36:33.339Z"
+}

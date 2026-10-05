@@ -1,0 +1,191 @@
+{
+  "slug": "google-jules-public-beta-20250806",
+  "title": "Google Jules 结束公测，异步编码 Agent 向所有人开放",
+  "summary": "Google 8 月 6 日宣布 Jules 结束公测并正式开放。这个由 Gemini 2.5 驱动的异步编码 Agent 可以先为代码任务制定计划，再在仓库中工作；更新包括复用既有设置、GitHub Issues 集成和多模态支持。Google 称公测期间有数千名开发者完成数万项任务、公开分享超过 14 万项代码改进，这些数字属于公司自报，不能替代团队对代码质量和权限风险的验收。",
+  "body": "8 月 6 日，Google 宣布 Jules 结束公测，向所有人开放。Jules 的工作方式和即时聊天不太一样：开发者把一个代码任务交给它，它先用 Gemini 2.5 Pro 的推理能力形成计划，再在异步环境里处理仓库，等结果回来后由开发者查看改动。Google 同日还说，公测期间已经有数千名开发者完成数万项任务。\n\n这次公开发布带来的更新很具体。Jules 可以复用之前的环境设置，让后续任务少做一遍准备；它接入 GitHub Issues，也支持多模态输入。Google 还称，公测期间有超过 14 万项代码改进被公开分享。这个数字说明产品在真实开发者社区里被试用过，但它没有告诉我们改动是否都被合并、测试覆盖是否足够，或者任务难度如何分布。\n\n异步是 Jules 的核心体验。它不要求开发者一直盯着对话窗口，而是把计划、代码修改和结果放进一个稍后查看的任务里。这样的模式适合修复明确的 bug、补一个功能或先探索代码库，却也会放大权限问题：Agent 能读哪些文件、能不能执行命令、是否可以推送分支，必须在仓库和组织层面先设好。\n\nGoogle 为 Jules 设置了分层额度：有基础的 introductory access，AI Pro 用户获得 5 倍额度，AI Ultra 用户获得 20 倍额度，具体限制仍以 Jules 页面为准。额度提升解决的是可用次数和并行规模，不代表每次执行都更可靠。团队仍要看差异、跑测试、检查依赖和审阅它碰过的文件。\n\n同一天 Google 还发布了 Gemini CLI GitHub Actions beta，那是把 CLI 接到 Issue 和 Pull Request 事件上的另一条工作流。Jules 的公开发布解决的是异步编码 Agent 本身如何被更多开发者使用；两者都能改代码，却有不同的触发方式和权限边界。把一个产品的公测数字直接当成另一个产品的自动化能力，会误读这一天的变化。",
+  "publishedAt": "2025-08-06",
+  "eventDate": "2025-08-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-jules-public-beta-20250806.svg",
+    "alt": "Jules 先为代码任务制定计划，再异步修改仓库并等待开发者复核",
+    "sourceUrl": "/images/news/google-jules-public-beta-20250806.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "public-launch",
+      "title": "Jules 从公测走向公开使用",
+      "body": "Google 8 月 6 日宣布 Jules 正式开放，由 Gemini 2.5 驱动，面向异步编码任务。它的核心变化是更多开发者可以把仓库任务交给一个稍后返回结果的 Agent，而不是只在对话框里即时问答。",
+      "kind": "narrative"
+    },
+    {
+      "id": "beta-evidence",
+      "title": "公测数字说明使用规模，不说明质量",
+      "body": "Google 称公测期间有数千名开发者完成数万项任务，并公开分享超过 14 万项代码改进。这些是公司自报的采用数据，没有给出任务难度、合并率、测试覆盖和回滚率，不能直接变成编码成功率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "async-task",
+      "title": "异步任务把计划和改动放到稍后复核",
+      "body": "Jules 先形成编码计划，再在仓库中工作，开发者之后查看差异和结果。复用既有设置、GitHub Issues 集成和多模态输入减少了准备步骤，但读写范围和命令权限仍由仓库配置决定。",
+      "kind": "technical"
+    },
+    {
+      "id": "usage-tiers",
+      "title": "5 倍和 20 倍额度改变规模，不改变验收责任",
+      "body": "Google 为 introductory access、AI Pro 和 AI Ultra 提供不同额度，AI Pro 是 5 倍、AI Ultra 是 20 倍。具体限制以 Jules 页面为准；更多任务次数不能替代差异审阅、测试和依赖检查。",
+      "kind": "comparison"
+    },
+    {
+      "id": "permission-boundary",
+      "title": "编码 Agent 仍要被限制在仓库边界内",
+      "body": "团队需要先决定 Jules 可以读取哪些文件、执行哪些命令、写入哪条分支以及能否推送。涉及部署、密钥和外部系统时，应保留人工批准、日志和回滚路径。",
+      "kind": "boundary"
+    },
+    {
+      "id": "cli-actions-distinction",
+      "title": "与同日 Gemini CLI GitHub Actions 分开理解",
+      "body": "Jules 是异步编码 Agent 的公开发布；Gemini CLI GitHub Actions beta 则把 CLI 接到 Issue、Pull Request 和评论触发的协作流程。两者都能辅助代码工作，触发方式与权限模型不同。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个异步编码任务怎样从 Issue 走到可合并差异？",
+    "question": "Jules 的计划、执行和人工复核分别发生在哪里？",
+    "steps": [
+      {
+        "label": "限定任务和仓库",
+        "detail": "先给出明确的 bug、功能或探索目标，指定仓库、分支、允许读写的目录和不能触碰的秘密。",
+        "evidence": "Jules asynchronous coding agent workflow"
+      },
+      {
+        "label": "读取上下文并做计划",
+        "detail": "Jules 使用 Gemini 2.5 Pro 的推理能力理解代码上下文，列出准备修改的文件和验证步骤。",
+        "evidence": "Google describes Jules coding plans powered by Gemini 2.5 Pro"
+      },
+      {
+        "label": "异步执行改动",
+        "detail": "任务在后台进行，Agent 复用已有设置、读取 Issue 或多模态信息，并按计划修改代码。",
+        "evidence": "Reusable setups, GitHub Issues integration, and multimodal support"
+      },
+      {
+        "label": "检查差异和测试",
+        "detail": "开发者查看 diff、运行测试、检查依赖与安全影响，确认 Agent 没有越过任务范围。",
+        "evidence": "Human review boundary for coding agents"
+      },
+      {
+        "label": "决定合并或回滚",
+        "detail": "只有在验收通过后才合并或推送；发现错误就回滚任务、收紧权限并留下日志。",
+        "evidence": "Repository governance and rollback requirement"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google",
+    "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "llm",
+    "event",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+      "claim": "Google 8 月 6 日宣布 Jules 结束公测，由 Gemini 2.5 驱动，并加入复用设置、GitHub Issues 集成和多模态支持。",
+      "excerpt": "Google, August 6, 2025: Jules is out of public beta, powered by Gemini 2.5, with reusable setups, GitHub Issues integration, and multimodal support."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+      "claim": "Google 称公测期间有数千名开发者完成数万项任务，并公开分享超过 14 万项代码改进；AI Pro 与 Ultra 分别提供 5 倍和 20 倍额度。",
+      "excerpt": "Google reports thousands of developers, tens of thousands of tasks, over 140,000 public code improvements, and tiered usage limits."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+  "sourceHash": "sha256:0e640a26d85f2fb526228672fb021d4d10532c0465b6364dacad0da8cf0de457",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文以 Jules 的异步计划、执行、权限和人工复核解释编码 Agent。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.86,
+      "evidence": [
+        "正文说明 Gemini 2.5 Pro 驱动 Jules 的编码计划和仓库任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文区分 8 月 6 日 Jules 公测转公开与同日 Gemini CLI GitHub Actions beta。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.89,
+      "evidence": [
+        "正文讨论 GitHub Issues、仓库权限、命令和测试等编码工具边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+      "claim": "Google official Jules launch announcement dated August 6, 2025.",
+      "excerpt": "Jules, our asynchronous coding agent, is now available for everyone."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google 8 月 6 日 Jules 公告的公测结束、Gemini 2.5、复用设置、GitHub Issues、多模态、数千开发者/数万任务/14 万多项公开改进和 AI Pro/Ultra 额度；将这些数字归于 Google 自报，并与同日 Gemini CLI GitHub Actions beta 的触发方式分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 把 Jules 的异步计划、仓库执行、额度和人工验收写成具体编码流程，保留公司采用数字与代码质量边界，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-06；Google 官方公告明确 Jules 已结束公测并公开发布，使用 Gemini 2.5，日期和事件主线一致。",
+      "正文准确覆盖异步编码、Gemini 2.5 Pro 计划、复用既有设置、GitHub Issues 集成、多模态支持，以及 introductory/AI Pro 5x/AI Ultra 20x 额度；数千开发者、数万任务和超过 14 万项公开代码改进均明确归为 Google 自报。",
+      "仓库读写、命令、分支、推送、差异、测试、依赖和人工合并/回滚边界清楚，没有把额度或公司采用数字写成代码质量、合并率或自动部署证明。",
+      "正文、cli-actions-distinction section 与同日 Gemini CLI GitHub Actions beta 的 Issue/Pull Request 触发方式保持区分；agent-workflow explainer、relatedSlugs、空 relatedArticleSlugs、sources/evidence、schema 和 Jules 异步任务 SVG 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能沿着 Issue—计划—异步改动—diff/测试—人工合并理解 Jules，并清楚看到 Google 自报数字和权限验收边界。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-06-jules",
+  "promotedAt": "2026-10-05T05:17:32.293Z"
+}

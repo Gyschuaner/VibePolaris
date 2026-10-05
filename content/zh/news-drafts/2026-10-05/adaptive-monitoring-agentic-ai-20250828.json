@@ -1,0 +1,188 @@
+{
+  "slug": "adaptive-monitoring-agentic-ai-20250828",
+  "title": "AMDM 让 Agent 监控从静态阈值变成多维度自适应",
+  "summary": "《Adaptive Monitoring and Real-World Evaluation of Agentic AI Systems》于 8 月 28 日提交，回顾 84 篇研究后指出，现有工作更常报告能力指标，较少覆盖人本和经济维度。论文提出 Adaptive Multi-Dimensional Monitoring：用指数加权移动统计和 Mahalanobis 距离跟踪多轴异常；在模拟实验中，检测延迟从 12.3 秒降到 5.6 秒，误报率从 4.5% 降到 0.9%。这些结果仍属于模拟设置。",
+  "body": "Agent 上线后，监控通常先从几个固定阈值开始：延迟超过多少算异常，失败率达到多少需要报警，成本上升多少要暂停。静态阈值容易理解，却不一定适合一条会变化的工作流。白天和夜间的流量不同，工具调用的复杂度不同，同一个数字在不同阶段可能代表正常波动，也可能代表系统已经失去控制。\n\n这篇论文先从研究版图看问题。作者回顾 84 篇工作，发现 83% 报告能力指标，而只有 30% 纳入人本或经济维度。这个统计不表示能力指标没有用，而是说明“能不能完成”与“是否适合真实使用”之间仍有一段监控空白。\n\n论文提出 Adaptive Multi-Dimensional Monitoring，把延迟、错误、资源和其他运行信号放到同一套观察里。指数加权移动统计让阈值跟着近期基线变化，Mahalanobis 距离则用来识别多个指标联动后的异常，不必把每条曲线都当成互不相关的独立警报。\n\n模拟结果给出了一个直观变化：检测延迟从 12.3 秒降到 5.6 秒，误报率从 4.5% 降到 0.9%。这些数字说明自适应阈值有潜力同时提高反应速度和告警质量，但它们来自模拟环境，不能直接当作任何线上 Agent 的 SLA 或安全承诺。\n\n部署时，监控维度要和动作权限分开。监控系统可以发现异常、升级告警或建议降级，却不应仅凭一条统计信号就自动扩大权限、删除数据或改变业务规则。对高风险动作，还需要独立授权、审计和回滚路径。\n\n多维度也意味着更多选择：哪些信号进入基线，异常窗口多长，冷启动怎么处理，模型升级后是否重置历史，都可能改变结果。如果把正常的季节性变化当成异常，系统会制造告警疲劳；如果基线被异常流量污染，阈值又会跟着错误学习。\n\nAMDM 的实际价值，是把 Agent 监控从“某个数字越线了吗”推进到“这组行为是否偏离了当前运行状态”。下一步需要在真实流量、不同业务成本和人类反馈下验证这套方法，才能知道模拟中的改善是否能转化成更少的无效告警和更快的人工判断。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/adaptive-monitoring-agentic-ai-20250828.svg",
+    "alt": "AMDM 用多维指标、自适应基线和异常距离监控 Agent 系统",
+    "sourceUrl": "/images/news/adaptive-monitoring-agentic-ai-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "static-threshold",
+      "title": "固定阈值不一定适合变化中的工作流",
+      "body": "流量、工具复杂度和时间段会改变基线，同一个延迟或失败率在不同状态下的含义可能不同。",
+      "kind": "narrative"
+    },
+    {
+      "id": "review-gap",
+      "title": "84 篇研究里，能力指标占 83%",
+      "body": "论文发现只有 30% 的工作纳入人本或经济维度，提示“完成任务”和“适合真实使用”之间还需要监控。",
+      "kind": "comparison"
+    },
+    {
+      "id": "multi-dimensional",
+      "title": "AMDM 把多条运行信号放在一起看",
+      "body": "延迟、错误、资源和其他指标共享一套观察，避免把联动异常拆成互不相关的单点告警。",
+      "kind": "technical"
+    },
+    {
+      "id": "adaptive-statistics",
+      "title": "EWMA 跟着近期基线更新",
+      "body": "指数加权移动统计调整阈值，Mahalanobis 距离捕捉多指标组合偏离，帮助系统更早看到状态变化。",
+      "kind": "technical"
+    },
+    {
+      "id": "simulation-result",
+      "title": "模拟中延迟 12.3 秒降到 5.6 秒",
+      "body": "误报率也从 4.5% 降到 0.9%；这些结果仍属于模拟设置，不能直接当成线上 SLA。",
+      "kind": "comparison"
+    },
+    {
+      "id": "permission-boundary",
+      "title": "告警和业务动作要分开",
+      "body": "监控可以升级、建议降级或触发复核，高风险写入、删除和权限变化仍需独立授权与回滚。",
+      "kind": "boundary"
+    },
+    {
+      "id": "baseline-risk",
+      "title": "自适应也会学到错误的基线",
+      "body": "信号选择、窗口、冷启动和异常污染都会改变阈值；部署前要验证告警疲劳和基线漂移。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "AMDM 怎样把 Agent 运行状态看得更完整？",
+    "question": "先建立多维基线，再用自适应统计识别联动异常，并把告警与高风险动作的授权隔开。",
+    "steps": [
+      {
+        "label": "选运行维度",
+        "detail": "同时收集延迟、错误、资源和与人本或经济影响有关的信号，而不是只看任务成功率。",
+        "evidence": "multi-dimensional monitoring of agentic AI systems"
+      },
+      {
+        "label": "建立近期基线",
+        "detail": "用指数加权移动统计保留近期状态，让阈值随正常工作流变化而更新。",
+        "evidence": "EWMA-based adaptive thresholds"
+      },
+      {
+        "label": "检查组合偏离",
+        "detail": "用 Mahalanobis 距离观察多指标一起偏离的情况，避免逐项阈值漏掉联动异常。",
+        "evidence": "Mahalanobis distance for multivariate anomalies"
+      },
+      {
+        "label": "分级响应",
+        "detail": "将异常转为告警、降级建议或人工复核，并记录信号和基线，方便复盘。",
+        "evidence": "adaptive monitoring and real-world evaluation"
+      },
+      {
+        "label": "独立授权",
+        "detail": "监控结果不能直接扩大权限；写入、删除和规则变更仍需独立授权、审计和回滚。",
+        "evidence": "monitoring is separate from authorization and rollback"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00115"
+  },
+  "relatedSlugs": [
+    "agent",
+    "eval",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00115",
+      "claim": "论文回顾 84 篇工作，比较能力、人本和经济维度，并提出 Adaptive Multi-Dimensional Monitoring。",
+      "excerpt": "review of 84 papers ... Adaptive Multi-Dimensional Monitoring"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00115",
+      "claim": "模拟中检测延迟从 12.3 秒降至 5.6 秒，误报率从 4.5% 降至 0.9%。",
+      "excerpt": "latency 12.3 to 5.6 seconds ... false positive rate 4.5% to 0.9%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00115",
+  "sourceHash": "sha256:65079c5081c906dcf5055e170211edb2083a642f870dcbd3e3a0b8a1d37d5c06",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 Agent 系统的运行状态、工作流和高风险动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文比较 84 篇研究和模拟监控指标，并说明真实部署验证边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "正文强调告警与写入、删除和权限变化的授权隔离。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00115",
+      "claim": "arXiv 记录该论文于 2025 年 8 月 28 日提交，提出 Agentic AI 的自适应多维监控。",
+      "excerpt": "Date: Thu Aug 28 ... Adaptive Monitoring and Real-World Evaluation of Agentic AI Systems"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00115",
+      "claim": "摘要给出 84 篇回顾、83%/30% 维度统计及模拟延迟和误报率变化。",
+      "excerpt": "83% capability metrics ... 30% human/economic ... 12.3 to 5.6 ... 4.5% to 0.9%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 84 篇回顾、83%/30% 统计、EWMA 阈值、Mahalanobis 距离及模拟延迟/误报率结果；正文明确标注模拟边界，并补充基线污染、告警疲劳与独立授权。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 AMDM 的统计方法、评测缺口和模拟结果分开呈现，明确线上验证与基线污染风险，并将监控和授权隔离；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-adaptive-monitoring-agentic-ai-20250828"
+}

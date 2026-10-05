@@ -1,0 +1,144 @@
+{
+  "slug": "ipiguard-indirect-prompt-injection-20250821",
+  "title": "IPIGuard 用工具依赖图隔离间接提示注入",
+  "summary": "IPIGuard 在 2025 年 8 月 21 日提交，针对 Agent 从网页、文件或其他外部数据读取到的间接提示注入。论文认为只靠更长的系统提示或一个检测模型，仍然把工具调用权交给了可能被影响的 Agent；它提出 Tool Dependency Graph（TDG），先把任务动作规划成依赖图，再把外部数据读取与动作执行解耦，减少注入内容直接触发非预期工具调用。作者在 AgentDojo 上报告了效果与鲁棒性的更好平衡，但摘要没有给出统一的跨场景百分比。",
+  "body": "Agent 读取网页、邮件或文件时，拿到的内容并不一定只是资料。页面里可能混着一段看似给模型的指令，工具返回值也可能要求 Agent 改变下一步动作。8 月 21 日提交的 IPIGuard，把这类间接提示注入当成结构问题来处理：外部数据可以影响理解，但不应该直接改写已经批准的动作路径。\n\n  现有防御经常从提示词入手，让模型记住“不要相信网页里的指令”；也有人加一个检测模型，在工具返回后找可疑片段。论文指出，这些方法仍然依赖模型自己保持警惕，Agent 依旧拥有不受结构约束的工具调用权。只要注入内容足够像任务要求，或检测器漏掉了一个变体，下一步动作就可能被带偏。\n\n  IPIGuard 的核心是 Tool Dependency Graph。系统先根据用户任务规划要完成的动作、依赖关系和可用工具，形成一张计划图；随后再去读取外部数据。外部数据可以帮助填参数、补事实或判断分支，却不能凭一段自然语言自动增加新的工具节点。这样一来，理解资料和决定动作被放在不同的环节里。\n\n  这个解耦很像给 Agent 加了一条“先画路线、再看路况”的规则。路线里没有写的转弯，不会因为路边一块牌子就凭空出现；如果外部证据确实让原计划不够，系统应该回到重新规划的节点，而不是在工具返回值里直接执行新指令。计划图不是绝对安全，它只是把重新规划变成一个可以检查、记录和拒绝的动作。\n\n  论文在 AgentDojo benchmark 上评估 IPIGuard，摘要称它在效果与鲁棒性之间取得更好的平衡。这个表述没有给出一个所有环境通用的阻断率，也不能说明任何注入都能被拦住。实际效果会受到图的粒度、工具权限、外部数据类型和重新规划规则影响。\n\n  工程上，TDG 需要和权限系统一起工作。读网页、查数据库和写入 CRM 的动作，应该有不同的节点类型和批准要求；外部内容如果试图引入未声明的写入或外发步骤，应当停在人审。执行日志还要能回答：这一步来自原始计划、用户追加要求，还是外部数据里的文本。\n\n  IPIGuard 的价值在于把间接提示注入从“模型有没有记住安全提示”转成“动作图能否被外部资料越过”。对 Agent 来说，安全边界不是让所有网页都消失，而是让网页、邮件和文件只能提供证据，不能悄悄取得新的执行权限。",
+  "publishedAt": "2025-08-21",
+  "eventDate": "2025-08-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/ipiguard-indirect-prompt-injection-20250821.svg",
+    "alt": "IPIGuard 用 Tool Dependency Graph 把 Agent 动作计划与外部不可信数据隔离",
+    "sourceUrl": "/images/news/ipiguard-indirect-prompt-injection-20250821.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "untrusted-data",
+      "title": "工具返回值也可能带着给 Agent 的指令",
+      "body": "IPIGuard 于 2025 年 8 月 21 日提交，针对网页、文件等不可信数据里的间接提示注入。问题不在 Agent 能否读懂资料，而在资料是否能直接改变后续工具动作。",
+      "kind": "narrative"
+    },
+    {
+      "id": "prompt-defense-limit",
+      "title": "更长系统提示仍然把调用权交给模型",
+      "body": "提示词规则和辅助检测模型可以提醒 Agent 警惕外部内容，但工具调用权仍未被结构性限制。注入内容漏检或伪装成任务要求时，模型可能继续执行非预期动作。",
+      "kind": "boundary"
+    },
+    {
+      "id": "tool-dependency-graph",
+      "title": "TDG 先规划动作，再读取外部数据",
+      "body": "Tool Dependency Graph 把任务动作、依赖关系和工具选择先规划出来。外部数据可以补参数、补事实或触发已声明分支，却不能凭一段自然语言自动增加新的工具节点。",
+      "kind": "technical"
+    },
+    {
+      "id": "replanning-gate",
+      "title": "计划之外的动作要回到重新规划节点",
+      "body": "如果外部证据让原计划不够，系统应回到重新规划、记录和审批的节点，而不是在返回值里直接执行新指令。计划图不是绝对安全，但让越界动作有了可检查的门。",
+      "kind": "example"
+    },
+    {
+      "id": "agentdojo-result",
+      "title": "AgentDojo 上报告效果与鲁棒性的平衡",
+      "body": "论文在 AgentDojo benchmark 上评估 IPIGuard，摘要称它在效果与鲁棒性之间取得更好平衡。摘要没有给出统一阻断率，结果仍取决于图粒度、工具权限和重新规划规则。",
+      "kind": "comparison"
+    },
+    {
+      "id": "permission-graph",
+      "title": "读、查、写和外发应是不同的节点",
+      "body": "工程实现需要把网页读取、数据库查询、CRM 写入和数据外发设成不同节点类型与批准要求。外部内容试图新增写入或外发步骤时，先停在人审。",
+      "kind": "technical"
+    },
+    {
+      "id": "audit-source",
+      "title": "日志要能解释动作到底从哪里来",
+      "body": "执行记录应标明每个动作来自原始计划、用户追加要求还是外部数据文本。把来源链留下，才能在注入发生后定位是理解、规划还是授权环节出了问题。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一个 Agent 怎样在不可信网页前守住动作边界？",
+    "question": "外部资料可以改变理解，但不能直接获得新的工具调用权限。",
+    "steps": [
+      {
+        "label": "声明任务动作",
+        "detail": "先把目标、允许的工具、读写范围和需要人工确认的动作写成计划节点，给后续证据设定边界。",
+        "evidence": "planned Tool Dependency Graph"
+      },
+      {
+        "label": "读取外部数据",
+        "detail": "把网页、文件和工具返回值标成不可信内容，只允许它填充已声明参数或提供事实。",
+        "evidence": "untrusted data sources can contain injected instructions"
+      },
+      {
+        "label": "检查依赖关系",
+        "detail": "验证当前动作是否仍在 Tool Dependency Graph 中，外部文本不能自动增加新的写入、外发或权限提升节点。",
+        "evidence": "task execution is modeled as traversal over a planned TDG"
+      },
+      {
+        "label": "回到重新规划",
+        "detail": "如果证据让原计划不足，生成新的计划版本并记录理由，必要时让人确认，而不是在返回值里直接执行。",
+        "evidence": "decoupling action planning from external data interaction"
+      },
+      {
+        "label": "审计执行来源",
+        "detail": "记录动作来自计划、用户追加要求还是外部数据文本，并在 AgentDojo 或自己的注入回归集上持续测试。",
+        "evidence": "evaluated on the AgentDojo benchmark"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / IPIGuard 作者组",
+    "url": "https://arxiv.org/abs/2508.15310"
+  },
+  "relatedSlugs": ["agent", "authorization", "execution-sandbox", "tools", "eval", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.15310",
+      "claim": "IPIGuard 把 Agent 任务执行建模为 Tool Dependency Graph 遍历，并把动作规划与外部数据交互解耦，以减少间接提示注入触发的非预期工具调用。",
+      "excerpt": "models ... as a traversal over a planned Tool Dependency Graph ... decoupling action planning from interaction with external data"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.15310",
+      "claim": "论文在 AgentDojo benchmark 上评估 IPIGuard，报告效果和鲁棒性的平衡改善。",
+      "excerpt": "Experiments on the AgentDojo benchmark ... superior balance between effectiveness and robustness"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.15310",
+  "sourceHash": "sha256:dd7ee4d5154d3a59944df963f43787d12e28850b85c9fd146d57a399c4bcde55",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "agent", "score": 0.99, "evidence": ["正文围绕 Agent 规划、工具调用和外部数据执行展开。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "authorization", "score": 0.98, "evidence": ["正文把计划外写入、外发和权限提升动作停在人审与授权节点。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "execution-sandbox", "score": 0.93, "evidence": ["正文强调外部数据与动作执行解耦、工具依赖图和执行边界。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "tools", "score": 0.96, "evidence": ["正文讨论工具返回值、工具节点和读写/外发动作的权限差异。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "eval", "score": 0.91, "evidence": ["正文保留 AgentDojo 评测和自建间接注入回归建议。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.83, "evidence": ["正文按论文首次提交日期归档 2025 年 8 月 21 日事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.15310",
+      "claim": "论文于 2025 年 8 月 21 日首次提交，摘要列出间接提示注入、Tool Dependency Graph 与 AgentDojo 评估。",
+      "excerpt": "Submitted on 21 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的间接提示注入定义、现有提示/检测防御限制、TDG 计划图、动作规划与外部数据解耦及 AgentDojo 评测；正文只讲结构性防御与权限审计，不复述攻击模板。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把不可信数据、计划图、重新规划和授权审计分层说明，避免将论文的鲁棒性表述扩写成绝对防御；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-21-ipiguard"
+}

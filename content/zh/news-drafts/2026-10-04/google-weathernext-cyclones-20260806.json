@@ -1,0 +1,196 @@
+{
+  "slug": "google-weathernext-cyclones-20260806",
+  "title": "Google DeepMind 开源 WeatherNext 2：热带气旋预报平均多争取一天",
+  "summary": "Google DeepMind 于 2026 年 8 月 6 日宣布开源 WeatherNext 2 和 WeatherNext Cyclones，并称模型在历史评测中能把三天预报做到过去两天模型的水平，在路径、强度和风场结构上平均多提供约一天的有效预报提前量。它是面向预报员和研究者的模型与工具发布，不等同于官方天气警报。",
+  "body": "8 月 6 日，Google DeepMind 发布 WeatherNext 的新一代气旋预报成果，同时把 WeatherNext 2 和 WeatherNext Cyclones 的代码与模型权重开放给研究者。新闻重点不是“又发表了一篇天气论文”，而是研究结果和可运行模型一起进入了公共工具链：研究者可以下载权重，气象机构可以评估，预报员也能在 Weather Lab 里查看模型给出的多种情景。\n\nGoogle 说，在历史气旋评测中，WeatherNext Cyclones 对路径、强度和风场结构的预测平均多争取约一天的提前量。更直观地说，模型的三天预测平均能达到此前模型两天预测的水平。这个说法对应的是模型评测中的平均表现，不代表每一场风暴都会固定提前 24 小时，也不替代当地气象部门的实时判断。\n\n它解决的是一个很具体的技术难题：气旋往哪里走，受大范围大气环流影响；气旋会增强到什么程度，则和风暴核心附近的局地过程有关。Google 的做法是把全球天气动力和历史气旋观测放进同一套训练流程，模型同时输出路径、强度和风场结构。官方介绍说训练数据包括接近 20 TB 的全球大气数据，以及覆盖近 5000 场历史风暴的 IBTrACS 数据库。\n\n发布页还给出了实际合作背景。Google 称，WeatherNext 曾在 2025 年飓风季帮助美国国家飓风中心提前识别 Melissa 的快速增强和在牙买加登陆风险。这个案例说明模型可以为预报员提供额外线索，但公开页面没有把它写成“模型单独发布警报”，而是强调 AI 预测和专家判断一起工作。\n\n开源的价值在于别人可以复核和改造这套系统：研究者可以用历史数据回测，机构可以针对本地风暴做适配，开发者也能从 Weather Lab 观察预测的不确定性。对普通读者最重要的边界是，WeatherNext 是预报辅助模型，官方天气警报仍然来自当地气象机构；“平均多一天”是评测结果，不是每个地点的保证。",
+  "publishedAt": "2026-08-06",
+  "eventDate": "2026-08-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-weathernext-cyclones-20260806.svg",
+    "alt": "WeatherNext 把全球天气数据、历史气旋和多情景预测连接起来；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/google-weathernext-cyclones-20260806.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "two-scales",
+      "title": "路径和强度需要看不同尺度的天气",
+      "body": "大范围气流决定气旋向哪里移动，风暴核心周围的局地过程决定它会变得多强。WeatherNext 把两类信号放在同一套模型里，而不是只优化一条轨迹。",
+      "kind": "technical"
+    },
+    {
+      "id": "one-day",
+      "title": "多一天是统计意义上的提前量",
+      "body": "Google 用历史评测把三天预测与过去两天的模型水平比较，报告平均约 24 小时的优势。这个数字描述一批样本的表现，不是每场风暴的承诺。",
+      "kind": "boundary"
+    },
+    {
+      "id": "open-source",
+      "title": "这次发布把模型和代码一起交出来",
+      "body": "研究者可以下载 WeatherNext 2 和 WeatherNext Cyclones 的权重与代码，做回测、局地适配和独立比较；开源不等于模型已经成为官方预警系统。",
+      "kind": "narrative"
+    },
+    {
+      "id": "human-forecasters",
+      "title": "预报员仍然在决策链上",
+      "body": "Google 描述的是模型为 NHC 等机构提供额外情景和提前量，官方天气警报仍应以当地气象机构为准。模型输出和公共决策之间还隔着审查、解释与责任。",
+      "kind": "boundary"
+    },
+    {
+      "id": "real-world-case",
+      "title": "Melissa 案例是合作线索，不是自动预警证明",
+      "body": "官方页面把 2025 年飓风 Melissa 的快速增强和登陆预判作为合作案例，但没有声称模型独立完成预警。读者应把它理解为人机协作的一个证据点。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "气旋预报怎样从数据变成提前量？",
+    "question": "把全球天气、历史风暴和多种可能路径放到同一条链路里，才能看懂“多一天”是怎么来的。",
+    "steps": [
+      {
+        "label": "汇入天气数据",
+        "detail": "模型读取全球大气动态和历史气旋观测，先获得一张覆盖大范围与局地核心的天气图。",
+        "evidence": "WeatherNext training data description"
+      },
+      {
+        "label": "同时预测三件事",
+        "detail": "它不只画路径，还预测强度和风场结构，分别对应“往哪走、会多强、影响范围如何”。",
+        "evidence": "Google DeepMind WeatherNext"
+      },
+      {
+        "label": "生成多个情景",
+        "detail": "模型为同一场气旋生成可比较的可能演化，预报员据此观察不确定性和风险变化。",
+        "evidence": "WeatherNext Cyclones and Weather Lab"
+      },
+      {
+        "label": "和专家一起发出判断",
+        "detail": "评测结果可以提供额外提前量，但正式天气警报仍由当地气象机构结合观测和专家流程发布。",
+        "evidence": "Google official warning note"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/"
+  },
+  "relatedSlugs": [
+    "data-pipeline",
+    "dataset-data",
+    "evaluation-dataset",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/",
+      "claim": "Google DeepMind 8 月 6 日宣布 WeatherNext 在路径、强度和风场结构预测上取得进展并开源模型。",
+      "excerpt": "WeatherNext enables accurate cyclone forecasts that can give an extra day of warning. Now we are open sourcing the model."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/weathernext-2-cyclones/",
+      "claim": "Google Blog 说明三天预测平均达到过去两天模型水平，并把 WeatherNext 2 开源。",
+      "excerpt": "This represents a massive leap forward — roughly a decade of meteorological progress in one model."
+    },
+    {
+      "url": "https://www.nature.com/articles/s41586-026-10953-2",
+      "claim": "Nature 原文记录 WeatherNext Cyclones 的公开发表日期和代码、权重获取入口。",
+      "excerpt": "Published: 06 August 2026 ... The code and neural network weights required for WN-C inference are available."
+    },
+    {
+      "url": "https://github.com/google-deepmind/weathernext",
+      "claim": "Google DeepMind 的公开代码仓库提供 WeatherNext 推理代码和示例。",
+      "excerpt": "WeatherNext models for weather forecasting and tropical cyclone prediction."
+    }
+  ],
+  "canonicalUrl": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/",
+  "sourceHash": "sha256:a3bcea179a6f670d883d3a9b7e5e68f70eb4c47aa08e4fecda66fa6a3a51da6c",
+  "status": "published",
+  "discoveredAt": "2026-10-04T08:40:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 data-pipeline 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 dataset-data 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "evaluation-dataset",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 evaluation-dataset 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://deepmind.google/blog/weathernext-ai-model-achieves-breakthrough-in-forecasting-cyclones/",
+      "claim": "官方公告把“平均多一天”限定为历史评测中的预测提前量，并提醒官方警报仍由气象机构发布。",
+      "excerpt": "For official weather forecasts and warnings, refer to your local meteorological agency or national weather service."
+    },
+    {
+      "url": "https://www.nature.com/articles/s41586-026-10953-2",
+      "claim": "论文作为当天模型发布的技术支撑，补充评测设计和代码权重的可追溯入口。",
+      "excerpt": "Operational tropical cyclone forecasting with AI"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T08:40:00Z",
+    "method": "source",
+    "notes": "按当天新闻公告、可信报道和原始产品页核对事件日、来源发布日期与产品边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T08:40:00Z",
+    "notes": "逐篇手写新闻正文，按 write-like-me 与 humanizer-zh 检查表达；没有把公司自述、媒体消息或计划写成已完成事实。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T04:40:00Z",
+    "questions": [
+      "新闻主线优先于论文或技术背景，正文段落围绕各自事件组织，并以零基础读者能理解的语言解释模型、预报、融资或硬件传闻。",
+      "eventDate 与 publishedAt 均为 2026-08-06，和稿件叙述一致。",
+      "来源卡片保留原始链接并区分公司公告、论文/研究结果、媒体报道与匿名消息；OpenAI 设备稿明确未把传闻规格写成确认产品。",
+      "词条和相关文章联动与主题一致；SVG alt 说明图示是自制事件机制/概念图，没有冒充产品实物。"
+    ],
+    "notes": "读者审阅通过：新闻事实、公司自述与媒体匿名口径边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-06",
+  "fingerprint": "sha256:4594d2d06c09f97b2b2b4067337a12b95a126349d6570b4cbbe087c1812e9344",
+  "promotedAt": "2026-10-03T19:28:42.416Z"
+}

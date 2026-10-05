@@ -1,0 +1,487 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-09-06",
+  "eventDate": "2025-09-06",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-09-06 AI 事件重新检索：调用 arXiv API submittedDate 精确日期查询，筛选 cs.AI/cs.CL/cs.LG/cs.RO/cs.CR/cs.MA；逐篇打开当天首次提交的摘要，按生产安全、Agent 安全、开放权重治理、规则即代码、多模态 RAG、模型优化和事实引用排序。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202509060000 TO 202509062359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.RO OR cat:cs.CR OR cat:cs.MA)&start=0&max_results=200&sortBy=submittedDate&sortOrder=ascending",
+      "https://arxiv.org/abs/2509.10540",
+      "https://arxiv.org/abs/2509.05755",
+      "https://arxiv.org/abs/2509.08000",
+      "https://arxiv.org/abs/2509.07006",
+      "https://arxiv.org/abs/2509.07666",
+      "https://arxiv.org/abs/2509.05584",
+      "https://arxiv.org/abs/2509.05741",
+      "https://arxiv.org/abs/2509.05739",
+      "https://arxiv.org/abs/2509.05651",
+      "https://arxiv.org/abs/2509.05578",
+      "https://arxiv.org/abs/2509.05668",
+      "https://arxiv.org/abs/2509.05605",
+      "https://arxiv.org/abs/2509.05545",
+      "https://arxiv.org/abs/2509.05764",
+      "https://arxiv.org/abs/2509.05818",
+      "https://arxiv.org/abs/2509.05801"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 16,
+    "primaryCandidateCount": 16,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "echo-leak-zero-click-prompt-injection-20250906",
+      "title": "EchoLeak：生产 LLM 系统中的零点击提示注入案例",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.10540"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.10540",
+      "sourceHash": "sha256:c0db9013ce591bcfb91de1f15360ab86909b03cd068dfec7e998f5dc3cdfaf00",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "llm",
+        "prompt",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.10540",
+          "claim": "EchoLeak（CVE-2025-32711）是 Microsoft 365 Copilot 的零点击提示注入案例，论文分析其跨越 LLM 信任边界的原因，并提出分隔提示、输入输出过滤、来源访问控制和严格内容安全策略。",
+          "excerpt": "EchoLeak（CVE-2025-32711）是 Microsoft 365 Copilot 的零点击提示注入案例，论文分析其跨越 LLM 信任边界的原因，并提出分隔提示、输入输出过滤、来源访问控制和严格内容安全策略。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "生产环境的 Microsoft 365 Copilot 案例，把提示注入从实验室问题推进到企业数据边界；正文只记录根因和防御。"
+    },
+    {
+      "slug": "red-teaming-coding-agent-tool-invocation-20250906",
+      "title": "Coding Agent 的工具调用安全：一项系统化红队评估",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05755"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05755",
+      "sourceHash": "sha256:be6801302acd78d061a88cfe6616783ea00f9625aeefb61944894bb72f0491bf",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05755",
+          "claim": "论文对六个真实 Coding Agent 做工具调用红队评估，指出提示泄露、工具调用劫持和权限边界是需要分层防护的风险；文章不复现 payload 或远程执行步骤。",
+          "excerpt": "论文对六个真实 Coding Agent 做工具调用红队评估，指出提示泄露、工具调用劫持和权限边界是需要分层防护的风险；文章不复现 payload 或远程执行步骤。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "研究首次从工具调用角度系统评估六类真实 Coding Agent，说明 IDE Agent 的工具描述、返回值和权限隔离都需要单独测试；正文只保留防守结论。"
+    },
+    {
+      "slug": "antidote-tamper-resistant-llm-20250906",
+      "title": "AntiDote：让开放权重 LLM 更难被恶意微调拆掉安全护栏",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.08000"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.08000",
+      "sourceHash": "sha256:b5c345dd044a10c8dd94d68d9f34a004c39f36b1e95fab051dc21e0928bee76c",
+      "relatedSlugs": [
+        "llm",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.08000",
+          "claim": "AntiDote 用双层优化训练开放权重 LLM 抵抗安全对齐被恶意权重修改，论文在 52 组红队攻击上报告最高 27.4% 的鲁棒性提升，能力基准性能下降低于 0.5%。",
+          "excerpt": "AntiDote 用双层优化训练开放权重 LLM 抵抗安全对齐被恶意权重修改，论文在 52 组红队攻击上报告最高 27.4% 的鲁棒性提升，能力基准性能下降低于 0.5%。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "开放权重模型允许完整访问权重和架构，AntiDote 用双层优化训练抗篡改模型，在 52 组红队测试上报告更高鲁棒性；正文不提供恶意微调方法。"
+    },
+    {
+      "slug": "argen-policy-as-code-20250906",
+      "title": "ArGen：把生成式 AI 的规则写成可执行的 policy-as-code",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.07006"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.07006",
+      "sourceHash": "sha256:381612677eb1573b28a1565b0c7fe5e346e8fc10c37b8331e917807c4382321b",
+      "relatedSlugs": [
+        "llm",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.07006",
+          "claim": "ArGen 通过原则性自动评分、GRPO 和 OPA 风格治理层约束 LLM，论文在一个医疗助手案例中报告领域范围遵循度较基线提高 70.9%；这是研究案例，不是合规认证。",
+          "excerpt": "ArGen 通过原则性自动评分、GRPO 和 OPA 风格治理层约束 LLM，论文在一个医疗助手案例中报告领域范围遵循度较基线提高 70.9%；这是研究案例，不是合规认证。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "研究把原则性奖励、GRPO 和 OPA 风格治理层组合起来，让复杂伦理、运营安全和合规规则可以被机器读取和验证。"
+    },
+    {
+      "slug": "molorag-multimodal-logic-retrieval-20250906",
+      "title": "MoLoRAG：用页面图找回多模态文档里的逻辑关联",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.07666"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.07666",
+      "sourceHash": "sha256:9cde21eb766be73adee98142f4436430d4bf8f458cf6147c751f26585257d20b",
+      "relatedSlugs": [
+        "rag",
+        "context",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.07666",
+          "claim": "MoLoRAG 建立多模态多页文档的页面图，用轻量 VLM 做图遍历，补上只按语义相似度检索遗漏的逻辑关联；论文报告准确率平均提升 9.68%、检索精度提升 7.44%。",
+          "excerpt": "MoLoRAG 建立多模态多页文档的页面图，用轻量 VLM 做图遍历，补上只按语义相似度检索遗漏的逻辑关联；论文报告准确率平均提升 9.68%、检索精度提升 7.44%。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "多页文档问答不能只按语义相似度取页，MoLoRAG 建立页面图做逻辑感知检索，并报告四个 DocQA 数据集上的准确率与检索精度提升。"
+    },
+    {
+      "slug": "profilingagent-adaptive-optimization-20250906",
+      "title": "ProfilingAgent：按真实瓶颈决定剪枝和量化",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05584"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05584",
+      "sourceHash": "sha256:6b08bc0c2e495c492c48d8e3f98ed22379baa62ec52c9fa6346ebf4ec49537a5",
+      "relatedSlugs": [
+        "agent",
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05584",
+          "claim": "ProfilingAgent 用多 Agent 读取 MAC、参数量、延迟和内存等信号，自动制定剪枝与后训练动态量化方案；论文报告最高 74% 内存节省、低于 0.5% 精度损失和 1.74 倍推理加速。",
+          "excerpt": "ProfilingAgent 用多 Agent 读取 MAC、参数量、延迟和内存等信号，自动制定剪枝与后训练动态量化方案；论文报告最高 74% 内存节省、低于 0.5% 精度损失和 1.74 倍推理加速。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "ProfilingAgent 用 Agent 读取静态和运行时 profiling 信号，自动制定架构相关的剪枝与动态量化策略；论文报告内存、速度和精度折中。"
+    },
+    {
+      "slug": "verifact-cot-citation-verification-20250906",
+      "title": "VeriFact-CoT：让 LLM 先核事实，再把引用接回答案",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05741"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05741",
+      "sourceHash": "sha256:af790faa3fe6e6625f8a1972e8f39e23a74bcfcccd28bb5326ce58eafc27e830",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "citation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05741",
+          "claim": "VeriFact-CoT 将事实验证、反思和引用整合到多阶段生成流程，面向科学、新闻和法律等事实敏感场景；论文主张提升准确性、可信度和可追溯性，但仍需独立来源复核。",
+          "excerpt": "VeriFact-CoT 将事实验证、反思和引用整合到多阶段生成流程，面向科学、新闻和法律等事实敏感场景；论文主张提升准确性、可信度和可追溯性，但仍需独立来源复核。"
+        }
+      ],
+      "decision": "selected",
+      "reason": "研究把事实核验、反思和引用整合成多阶段流程，目标是减少复杂事实性写作中的幻觉并保留可追溯证据。"
+    },
+    {
+      "slug": "reasoning-poisoning-20250906",
+      "title": "Reasoning 让数据投毒更隐蔽，也让后门更难稳定触发",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05739"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05739",
+      "sourceHash": "sha256:42deaf7c266bf3ebaf493c43b37265c629e67d0d51be2c267641665160052f06",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05739",
+          "claim": "论文讨论推理路径中的数据投毒与后门鲁棒性，发现改变推理过程未必稳定改变最终答案；当天先处理生产安全与治理主题，暂不展开攻击机制。",
+          "excerpt": "论文讨论推理路径中的数据投毒与后门鲁棒性，发现改变推理过程未必稳定改变最终答案；当天先处理生产安全与治理主题，暂不展开攻击机制。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "研究分析推理模型中的后门风险与恢复现象；由于涉及投毒机制，先延期，只保留防御候选。"
+    },
+    {
+      "slug": "orchestrator-active-inference-20250906",
+      "title": "Orchestrator：用主动推断协调长时程多 Agent 任务",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05651"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05651",
+      "sourceHash": "sha256:562786645e7a989c2ec6c17319276f3feface993d81fd33e758a48e747b4baf6",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05651",
+          "claim": "Orchestrator 面向部分可观测和长时程任务，加入监控与主动推断式协调，在复杂迷宫上评估多 Agent 协作；优先级低于当天安全事件。",
+          "excerpt": "Orchestrator 面向部分可观测和长时程任务，加入监控与主动推断式协调，在复杂迷宫上评估多 Agent 协作；优先级低于当天安全事件。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "框架跟踪 Agent—环境和 Agent—Agent 互动，用主动推断与反思基准改善部分可观测环境中的协作；先延期。"
+    },
+    {
+      "slug": "occvla-implicit-occupancy-20250906",
+      "title": "OccVLA：把 3D 占用预测作为视觉推理的隐式监督",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05578"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05578",
+      "sourceHash": "sha256:d54cae5bede605b777a781061c197d897ff6466a8bb44dfadc9655e7a49c9e02",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05578",
+          "claim": "OccVLA 用密集 3D 占用表示作为预测目标和监督信号，报告 nuScenes 轨迹规划与 3D 问答结果；当天按重要性延期。",
+          "excerpt": "OccVLA 用密集 3D 占用表示作为预测目标和监督信号，报告 nuScenes 轨迹规划与 3D 问答结果；当天按重要性延期。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "OccVLA 在视觉输入中学习隐式 3D 占用结构，用于轨迹规划和 3D 问答；属于重要具身方向，但当天先延期。"
+    },
+    {
+      "slug": "llama-genba-trilingual-20250906",
+      "title": "Llama-GENBA-10B：为德语、英语和巴伐利亚语训练三语模型",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05668"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05668",
+      "sourceHash": "sha256:d4c16a804a5ecd544194cf391046cb1bff42be54f3e7fe03dc46a7775e65a5e8",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05668",
+          "claim": "Llama-GENBA-10B 以 Llama 3.1-8B 为基础做德语、英语和巴伐利亚语持续预训练，并发布三语评测；当天先处理安全与事实可靠性。",
+          "excerpt": "Llama-GENBA-10B 以 Llama 3.1-8B 为基础做德语、英语和巴伐利亚语持续预训练，并发布三语评测；当天先处理安全与事实可靠性。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "模型用 164B tokens 持续预训练三语语料并建立巴伐利亚语评测，低资源语言价值明确，但先延期。"
+    },
+    {
+      "slug": "icon2-self-synthetic-preference-20250906",
+      "title": "Icon²：用模型自身表示生成更贴近目标的偏好数据",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05605"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05605",
+      "sourceHash": "sha256:7498d28b889003f465065d576eca5da613475674f6640ee3c9fd4bdbce0d743a",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05605",
+          "claim": "Icon² 用 LLM 表示空间的方向向量筛选自合成偏好数据，并报告 AlpacaEval 2.0、Arena-Hard 的胜率提升；当天先延期。",
+          "excerpt": "Icon² 用 LLM 表示空间的方向向量筛选自合成偏好数据，并报告 AlpacaEval 2.0、Arena-Hard 的胜率提升；当天先延期。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "Icon² 从层级方向向量筛选自合成指令，并在解码时做表示控制；报告偏好胜率和计算成本改善，先延期。"
+    },
+    {
+      "slug": "rla-anticipation-long-horizon-20250906",
+      "title": "RLA：用 anticipation model 分层规划长时程目标",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05545"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05545",
+      "sourceHash": "sha256:f0120d831bcb353c44c206f4d630bad6257c3597fa72dfe350d3204f9a7138b0",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05545",
+          "claim": "Reinforcement Learning with Anticipation 用高层预测模型提出中间子目标、低层策略执行，并给出理论收敛分析；当天先延期。",
+          "excerpt": "Reinforcement Learning with Anticipation 用高层预测模型提出中间子目标、低层策略执行，并给出理论收敛分析；当天先延期。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "RLA 以高层 anticipation model 提出子目标、低层策略执行，给出收敛性证明和长时程任务方向；先延期。"
+    },
+    {
+      "slug": "drf-agent-reputation-20250906",
+      "title": "DRF：用动态声誉过滤多 Agent 协作",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05764"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05764",
+      "sourceHash": "sha256:f38131a970309fa3d3e728a63b98e3153f658513282a3c5e7d98218000feae42",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05764",
+          "claim": "DRF 用互动评级网络量化 Agent 的诚实性与能力，再用 UCB 策略改进选择；论文在逻辑推理和代码任务上评估，先延期。",
+          "excerpt": "DRF 用互动评级网络量化 Agent 的诚实性与能力，再用 UCB 策略改进选择；论文在逻辑推理和代码任务上评估，先延期。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "DRF 建立互动评级网络和声誉分数，再用 UCB 选择 Agent，方向与多 Agent 可靠性相关，但先延期。"
+    },
+    {
+      "slug": "noteaid-chatbot-health-20250906",
+      "title": "NoteAid-Chatbot：用对话帮助患者理解出院信息",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05818"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05818",
+      "sourceHash": "sha256:5a7264b31306813cc577fc0f20feaa004f3fde704e4ca7ea88350ce2380bd98f",
+      "relatedSlugs": [
+        "llm",
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05818",
+          "claim": "NoteAid-Chatbot 用轻量 LLaMA 和 PPO 训练多轮患者教育对话，评估理解、清晰度和相关性；医疗使用边界需要单独审慎处理，先延期。",
+          "excerpt": "NoteAid-Chatbot 用轻量 LLaMA 和 PPO 训练多轮患者教育对话，评估理解、清晰度和相关性；医疗使用边界需要单独审慎处理，先延期。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "医疗对话与患者理解是高风险主题，论文用轻量 LLaMA 与 PPO 训练多轮教育助手；先延期，避免与当天政策和可靠性稿件并列。"
+    },
+    {
+      "slug": "time2time-rare-event-intervention-20250906",
+      "title": "time2time：干预时间序列隐藏状态模拟罕见事件",
+      "eventDate": "2025-09-06",
+      "publishedAt": "2025-09-06",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05801"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05801",
+      "sourceHash": "sha256:1fb601f8f5a34baf2119c660192bd7b9acfbf71d662bf0f4643523e10e89cdc9",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05801",
+          "claim": "time2time 通过隐藏状态因果干预模拟罕见事件和不同严重程度，展示时间序列基础模型的 what-if 分析；高风险应用边界需要更多核验，先延期。",
+          "excerpt": "time2time 通过隐藏状态因果干预模拟罕见事件和不同严重程度，展示时间序列基础模型的 what-if 分析；高风险应用边界需要更多核验，先延期。"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "time2time 用隐藏状态干预把历史事件语义移植到新序列做压力测试，涉及金融等高风险预测，先延期。"
+    }
+  ],
+  "selectedSlugs": [
+    "echo-leak-zero-click-prompt-injection-20250906",
+    "red-teaming-coding-agent-tool-invocation-20250906",
+    "antidote-tamper-resistant-llm-20250906",
+    "argen-policy-as-code-20250906",
+    "molorag-multimodal-logic-retrieval-20250906",
+    "profilingagent-adaptive-optimization-20250906",
+    "verifact-cot-citation-verification-20250906"
+  ],
+  "gap": null
+}

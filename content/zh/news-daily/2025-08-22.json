@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-22",
+  "eventDate": "2025-08-22",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-22 AI 事件重新检索：核对 OpenAI 项目专属记忆官方发布，并检索 arXiv 当日首次提交；按产品影响、部署证据、Agent 工程、安全基准和可靠性研究排序，区分官方功能边界、仿真结果与论文预印本结论。",
+    "sourceUrls": [
+      "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508220000 TO 202508222359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO)",
+      "https://arxiv.org/abs/2508.16700",
+      "https://arxiv.org/abs/2508.16279",
+      "https://arxiv.org/abs/2508.19267",
+      "https://arxiv.org/abs/2508.16481",
+      "https://arxiv.org/abs/2508.16153",
+      "https://arxiv.org/abs/2508.16697",
+      "https://arxiv.org/abs/2508.16712",
+      "https://arxiv.org/abs/2508.18292",
+      "https://arxiv.org/abs/2508.16325",
+      "https://arxiv.org/abs/2508.16260",
+      "https://arxiv.org/abs/2508.16267"
+    ],
+    "sourcePolicy": [
+      "official-announcement",
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "chatgpt-project-only-memory-20250822",
+      "title": "ChatGPT 推出项目专属记忆，把上下文锁在项目边界内",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "official-announcement",
+      "source": {
+        "name": "OpenAI ChatGPT Release Notes",
+        "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
+      },
+      "canonicalUrl": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes?release=2025-08-22",
+      "sourceHash": "sha256:12777bcc9396c5d6f39c590ddb39761ae05b1ec41a6729ba4a296e060117d212",
+      "relatedSlugs": [
+        "memory",
+        "context",
+        "context-window",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+          "claim": "OpenAI 在 2025 年 8 月 22 日的发布说明中宣布创建项目时可启用 project-only memory。",
+          "excerpt": "Project-only memory"
+        },
+        {
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+          "claim": "启用后，ChatGPT 可使用同项目其他对话作为上下文，不使用项目外已保存记忆，也不会把项目内容带到之后的项目外聊天。",
+          "excerpt": "can use other conversations in that project ... won’t use your saved memories from outside the project ... won’t carry anything from the project into future chats outside"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是当天唯一的官方产品更新，直接改变长期项目如何隔离记忆和上下文；文章会把功能边界、启用前提和初始平台范围讲清楚，不把它写成跨项目的全局记忆。"
+    },
+    {
+      "slug": "gpt-oss-20b-deployment-analysis-20250822",
+      "title": "GPT-OSS-20B 的部署研究把 MoE 的速度、显存和能耗放在同一张表里",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / GPT-OSS-20B 作者组",
+        "url": "https://arxiv.org/abs/2508.16700"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16700",
+      "sourceHash": "sha256:fda7d5407f4435cab2ab1ed23dc8147a7d86713445ee8cf8aed97ce63cd1fc4c",
+      "relatedSlugs": [
+        "llm",
+        "benchmark",
+        "eval",
+        "token",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16700",
+          "claim": "研究在单张 H100、bf16 条件下比较 GPT-OSS-20B 与 Qwen3-32B、Yi-34B，测量 TTFT、解码吞吐、端到端延迟、峰值显存和能耗。",
+          "excerpt": "single-GPU H100, bf16 evaluation ... TTFT, full-decode throughput, end-to-end latency percentiles, peak VRAM, and energy"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16700",
+          "claim": "在 2048 输入、64 token 解码条件下，论文报告 GPT-OSS-20B 比 Qwen3-32B 解码吞吐高 31.8%、每千输出 token 能耗低 25.8%、峰值显存低 31.7%，但 TTFT 因 MoE 路由更高。",
+          "excerpt": "31.8% higher decode throughput ... 25.8% lower energy ... 31.7% less peak VRAM ... TTFT is higher due to MoE routing overhead"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是当天最具部署决策价值的模型分析，但论文明确不测准确率；适合写成带硬件、上下文和解码长度前提的成本分析，而不是泛化成模型能力排名。"
+    },
+    {
+      "slug": "agentscope-10-agent-framework-20250822",
+      "title": "AgentScope 1.0 把异步交互、MCP 和运行时沙箱装进 Agent 开发框架",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / AgentScope 作者组",
+        "url": "https://arxiv.org/abs/2508.16279"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16279",
+      "sourceHash": "sha256:b967bd4802e453eeee32ff0b52c37fddfc2078e6d83475493f92ad534d312872",
+      "relatedSlugs": [
+        "agent",
+        "mcp",
+        "tools",
+        "eval",
+        "execution-sandbox",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16279",
+          "claim": "AgentScope 1.0 提供面向模型和 MCP 的统一接口与可扩展模块，并以 ReAct 组织 Agent 行为。",
+          "excerpt": "unified interfaces and extensible modules ... leverage the latest progress, such as new models and MCPs ... ReAct paradigm"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16279",
+          "claim": "论文还提供异步的人机与 Agent 间交互基础设施、可追踪的可视化评测模块以及运行时沙箱，并面向生产部署。",
+          "excerpt": "systematic asynchronous design ... scalable evaluation module with a visual studio ... runtime sandbox ... production environments"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它是当天最完整的 Agent 工程框架更新，覆盖开发、评测和运行边界；文章会区分论文列出的组件与真正需要应用方补齐的权限、观测和故障恢复。"
+    },
+    {
+      "slug": "aegis-protocol-agent-security-20250822",
+      "title": "Aegis Protocol 用身份、加密和可验证政策约束多智能体系统",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Aegis 作者组",
+        "url": "https://arxiv.org/abs/2508.19267"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19267",
+      "sourceHash": "sha256:7bbd7bd6a7df56bcf20631c75ccae3902ae55077e683c9d46b77e607de44285f",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "execution-sandbox",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19267",
+          "claim": "Aegis Protocol 将自主 Agent 的安全拆为不可伪造身份、通信完整性和可验证的隐私保护政策合规三层。",
+          "excerpt": "non-spoofable agent identity via W3C DIDs ... communication integrity via NIST-standardized PQC ... policy compliance using Halo2 ZKP"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.19267",
+          "claim": "论文用离散事件仿真模拟 1000 个 Agent 的 20,000 次攻击试验，报告攻击成功率为 0%，政策证明生成延迟中位数为 2.79 秒；作者明确这是仿真基线。",
+          "excerpt": "model 1,000 agents ... 0 percent success rate across 20,000 attack trials ... median proof-generation latency of 2.79 seconds ... simulation-based"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它提供一套可讨论的多 Agent 安全架构和可复现实验基线，但证据来自仿真而非真实生产系统；文章会把“0% 成功率”限定在该模拟威胁模型内。"
+    },
+    {
+      "slug": "bad-acts-agent-harm-benchmark-20250822",
+      "title": "BAD-ACTS 用真实应用环境测试 Agent 被诱导执行有害动作",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / BAD-ACTS 作者组",
+        "url": "https://arxiv.org/abs/2508.16481"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16481",
+      "sourceHash": "sha256:977089e4ba83ad571ccd4c452aa77a4fa724a3151d160eb619286c5e31a21cc3",
+      "relatedSlugs": [
+        "agent",
+        "benchmark",
+        "eval",
+        "authorization",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16481",
+          "claim": "BAD-ACTS 在五种不同应用环境实现 Agent 系统，整理 238 个高质量有害动作，并扩展出 699 个对抗动作。",
+          "excerpt": "five implementations ... 238 high-quality examples of harmful actions ... 699 additional adversarial actions"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16481",
+          "claim": "在对抗 Agent 和提示注入等攻击下，不同模型的有害动作成功率为 40% 到 90%；论文还提出零样本消息监控防御。",
+          "excerpt": "vulnerable ... success rates between 40% and 90% ... defense based on zero-shot message monitoring"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把“安全”落到可观察的动作结果，而不只是拒答率；文章会解释环境、动作集和监控防御的限制，避免把单一基准数字当作所有 Agent 的风险概率。"
+    },
+    {
+      "slug": "memento-memory-agent-adaptation-20250822",
+      "title": "Memento 让 Agent 用记忆重写和检索持续适应，不更新底层模型",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Memento 作者组",
+        "url": "https://arxiv.org/abs/2508.16153"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16153",
+      "sourceHash": "sha256:5faff87984c21a2a6095aea368dcaabdd8e7aba409501c8c0d10fecce0bec776",
+      "relatedSlugs": [
+        "agent",
+        "memory",
+        "context",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16153",
+          "claim": "Memento 把 Agent 的持续学习形式化为 Memory-augmented MDP，用神经案例选择策略和情景记忆来决定动作。",
+          "excerpt": "Memory-augmented Markov Decision Process ... neural case-selection policy ... episodic memory"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16153",
+          "claim": "它通过记忆重写更新策略、通过高效读取改进策略；在 GAIA 验证集报告 87.88% Pass@3，OOD 任务获得 4.7 到 9.6 个百分点提升。",
+          "excerpt": "memory rewriting ... efficient memory reading ... 87.88% Pass@3 ... adds 4.7% to 9.6% absolute points on out-of-distribution tasks"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它与项目专属记忆形成互补：一个是产品的上下文隔离，一个是研究里的 Agent 经验更新；文章会把记忆内容、选择策略、污染和回滚边界写出来，不把“无需微调”写成无需治理。"
+    },
+    {
+      "slug": "querybandits-hallucination-rewrite-20250822",
+      "title": "QueryBandits 用上下文赌博机先改写问题，再降低幻觉风险",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / QueryBandits 作者组",
+        "url": "https://arxiv.org/abs/2508.16697"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16697",
+      "sourceHash": "sha256:1a7f0f5de313d06dc08415099db60ff7d6175e3426cae2609d73b7ccab5dde67",
+      "relatedSlugs": [
+        "hallucination",
+        "eval",
+        "prompt",
+        "data-validation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16697",
+          "claim": "QueryBandits 根据 17 个语言特征学习不同查询改写策略，用奖励模型估计输入的幻觉倾向。",
+          "excerpt": "bandit framework ... 17 linguistic features ... reward model ... hallucination propensity"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16697",
+          "claim": "在 13 个问答基准、每个数据集 1,050 个扰动问题上，Thompson Sampling 版本相对不改写基线胜率 87.5%；静态 paraphrase/expand 可能增加累计遗憾。",
+          "excerpt": "13 diverse QA benchmarks ... 87.5% win rate ... static rewrites can worsen hallucination"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把“先问清楚再回答”变成可评测的路由问题，且论文明确指出没有一种改写策略适合所有问题；文章会保留数据集和扰动设置，避免把胜率写成通用准确率。"
+    },
+    {
+      "slug": "qmeter-llm-quantization-serving-20250822",
+      "title": "qMeter 评估量化在不同模型、负载和 GPU 上的真实服务代价",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / qMeter 作者组",
+        "url": "https://arxiv.org/abs/2508.16712"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16712",
+      "sourceHash": "sha256:1f9e9533df048afa1b2eac03e307835302eba5b5522534de7719e43e712159e8",
+      "relatedSlugs": [
+        "llm",
+        "benchmark",
+        "eval",
+        "token",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16712",
+          "claim": "qMeter 自动化评估 11 种训练后量化方法，覆盖 7B 到 70B 模型和 A100、H100 两种 GPU，在应用、负载、并行度和硬件层面测量服务表现。",
+          "excerpt": "11 post-training LLM quantization methods ... 4 model sizes ... A100, H100 ... application, workload, parallelism, and hardware levels"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16712",
+          "claim": "研究发现量化的性能、能耗和质量取舍高度依赖任务、方法、负载和硬件，并以容量规划、节能调度和多目标调优为案例。",
+          "excerpt": "highly task- and method-dependent tradeoffs ... workload and GPU architecture ... capacity planning, energy-efficient scheduling"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "部署价值很高，但与 GPT-OSS-20B 的单卡效率分析同属资源主题；先保留，避免当天两篇文章都围绕显存和能耗。"
+    },
+    {
+      "slug": "conceptguard-jailbreak-concepts-20250822",
+      "title": "ConceptGuard 用稀疏自编码器找出越狱主题的可解释内部概念",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / ConceptGuard 作者组",
+        "url": "https://arxiv.org/abs/2508.16325"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16325",
+      "sourceHash": "sha256:4601f4faf218679ad1372b2613f2ec3127fcf61c42c8a0930d85dd8b09db5f8e",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16325",
+          "claim": "ConceptGuard 用稀疏自编码器从模型内部表示中提取与不同越狱主题相关的可解释概念。",
+          "excerpt": "Sparse Autoencoders ... interpretable concepts ... jailbreak themes"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16325",
+          "claim": "作者主张基于这些概念可以建立可解释、可泛化且不需继续微调的安全防线，并观察到越狱攻击存在共享激活几何。",
+          "excerpt": "explainable and generalizable defenses without ... further fine-tuning ... shared activation geometry"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它是值得追踪的可解释安全方向，但摘要暂未给出足够的量化对比；先保留，等有完整实验材料再写。"
+    },
+    {
+      "slug": "consensus-gossip-llm-reasoning-20250822",
+      "title": "Gossip 推理让多个模型交换答案直到形成共识",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Gossip 作者组",
+        "url": "https://arxiv.org/abs/2508.18292"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18292",
+      "sourceHash": "sha256:95459be0b31cd57617a5d9a9375bff21979c1bfc07a9efac3fa121a7de9b4b63",
+      "relatedSlugs": [
+        "agent",
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18292",
+          "claim": "论文把每个 LLM 视为点对点网络中的节点，交换答案和思考过程，逐步形成共同解。",
+          "excerpt": "each LLM acts as a node in a peer-to-peer network ... sharing responses and thought processes"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.18292",
+          "claim": "摘要只概括称 Gossip 共识带来更稳健、抗扰动和更准确的多 Agent 推理，没有给出可核对的具体实验数字。",
+          "excerpt": "robust, resilient, and accurate multi-agent AI reasoning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "概念有启发性，但当前摘要给出的证据粒度不足，且与已有多 Agent 协作文章相邻；先不抢占当天名额。"
+    },
+    {
+      "slug": "mcpverse-real-tool-benchmark-20250822",
+      "title": "MCPVerse 用 550 多个真实工具扩大 Agent 的行动空间",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / MCPVerse 作者组",
+        "url": "https://arxiv.org/abs/2508.16260"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16260",
+      "sourceHash": "sha256:d5e6dff2ab5e40d32d4914196956caaac499d524bdc7700505c963a229edf88e",
+      "relatedSlugs": [
+        "mcp",
+        "tools",
+        "benchmark",
+        "eval",
+        "agent",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16260",
+          "claim": "MCPVerse 接入 550 多个可执行真实工具，行动空间超过 14 万 token，并用实时 ground truth 做结果评估。",
+          "excerpt": "more than 550 real-world, executable tools ... action space exceeding 140k tokens ... outcome-based evaluation"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16260",
+          "claim": "论文称大工具集通常让多数模型性能下降，但 Claude-4-Sonnet 等 Agent 模型可能从更大的探索空间获益。",
+          "excerpt": "most models suffer performance degradation ... Claude-4-Sonnet ... improve accuracy"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是重要的工具调用基准，但与 8 月 20 日 MCP-Universe 主题高度重合；为避免重复叙事先留存来源。"
+    },
+    {
+      "slug": "factual-robustness-score-20250822",
+      "title": "Factual Robustness Score 从熵和温度敏感度衡量事实稳定性",
+      "eventDate": "2025-08-22",
+      "publishedAt": "2025-08-22",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Factual 作者组",
+        "url": "https://arxiv.org/abs/2508.16267"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.16267",
+      "sourceHash": "sha256:2e932a7529a350d1ac0f83ceb64b586c8abd425616529aec11e32e0cf09a3029",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "hallucination",
+        "token",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16267",
+          "claim": "研究用 token 分布熵与温度缩放敏感度构造 Factual Robustness Score，从生成过程衡量事实在解码扰动下的稳定性。",
+          "excerpt": "token distribution entropy ... temperature scaling sensitivity ... Factual Robustness Score"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.16267",
+          "claim": "在 5 个 LLM 和 3 个闭卷问答数据集上，小模型 FRS 为 0.76、大模型为 0.93；不确定性升高时准确率约下降 60%。",
+          "excerpt": "5 LLMs across 3 ... smaller models report an FRS of 0.76, larger ones 0.93 ... accuracy degrading by ~60%"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "它适合补充事实可靠性指标，但当天已有 QueryBandits 的幻觉干预主线；先留作后续“生成稳定性”专题。"
+    }
+  ],
+  "selectedSlugs": [
+    "chatgpt-project-only-memory-20250822",
+    "gpt-oss-20b-deployment-analysis-20250822",
+    "agentscope-10-agent-framework-20250822",
+    "aegis-protocol-agent-security-20250822",
+    "bad-acts-agent-harm-benchmark-20250822",
+    "memento-memory-agent-adaptation-20250822",
+    "querybandits-hallucination-rewrite-20250822"
+  ],
+  "gap": null
+}

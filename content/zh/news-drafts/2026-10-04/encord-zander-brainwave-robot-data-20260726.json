@@ -1,0 +1,229 @@
+{
+  "slug": "encord-zander-brainwave-robot-data-20260726",
+  "title": "Encord 与 Zander Labs 试用脑电信号：机器人训练数据开始记录“为什么停顿”",
+  "summary": "7 月 26 日，TechCrunch 报道 Encord 与 Zander Labs 正试用脑电信号来补充机器人训练数据，目标是记录错误、意图和惊讶等动作背后的线索。项目仍在试验阶段，尚没有独立证据证明脑电标签已经提升机器人表现。",
+  "body": "7 月 26 日，TechCrunch 走访加州圣莱安德罗的 Encord 设施，报道 Encord 正与德国神经科技公司 Zander Labs 试用一套把脑电信号加入机器人训练数据的方法。现场不是实验室里让机器人“读心”，而是操作员戴着带摄像头和脑电传感器的头戴设备，做取 Jenga 木块、倒咖啡、插拔网线等动作。\n\n这条新闻抓住的是物理 AI 的一个老问题：视频能告诉模型人做了什么，却不一定能告诉模型人为什么停顿、什么时候察觉到错误、哪一刻改变了策略。Encord 想把动作视频、机器人轨迹和脑电信号放到同一条数据里，再观察这些额外标签是否真的能让操控模型更稳。\n\nZander Labs 的设备测量的是脑活动信号，团队据此尝试推断错误、意图、惊讶和工作负荷等状态。这里要把“信号提供线索”和“系统准确读懂心思”分开：脑电数据噪声大、个体差异明显，新闻报道的项目仍处在试验阶段，没有公布一套已经独立验证的意图识别准确率。\n\nEncord 说，第一步是做一份带脑电标签的数据集，再把它送进客户的机器人模型做对照评估，之后才决定是否扩大规模。这个顺序很关键，因为物理训练数据比抓取网页文本昂贵得多：需要真实的人、真实的物体、可重复的动作和安全的场地。脑电设备可能增加信息量，也会增加采集、校准、同意和隐私管理成本。\n\nZander Labs 的公开资料强调本地处理和对原始神经数据的控制，这给出了一个值得追踪的工程方向，但不能自动证明 Encord 这次试验已经采用了完整的本地隐私架构。原始 EEG 是否离开设备、谁能查看、如何撤回、标签能保存多久，都应该在进入真实生产数据集前说明清楚。\n\n截至 7 月 26 日，能确认的是一项现场试验和一个明确的评估计划，不能确认脑电标签一定会提升机器人成功率，更不能把它写成“机器人已经理解人的意图”。后续要看对照实验、跨操作者复现、数据同意和隐私方案，以及这些标签是否值得它们带来的成本。",
+  "publishedAt": "2026-07-26",
+  "eventDate": "2026-07-26",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/encord-zander-brainwave-robot-data-20260726.svg",
+    "alt": "机器人操作员、脑电信号和动作数据组成物理 AI 训练试验；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/encord-zander-brainwave-robot-data-20260726.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "trial",
+      "title": "现场先做动作，再采集脑电标签",
+      "body": "操作员在 Jenga、倒咖啡和插拔网线等任务中同时产生视频、机器人动作和脑电信号，项目还没有进入规模化部署。",
+      "kind": "narrative"
+    },
+    {
+      "id": "signal",
+      "title": "脑电信号提供线索，不等于读心",
+      "body": "团队尝试从脑活动推断错误、意图、惊讶和工作负荷，但信号噪声、个体差异和校准都会影响结果。",
+      "kind": "boundary"
+    },
+    {
+      "id": "data",
+      "title": "物理 AI 的瓶颈是可重复的真实数据",
+      "body": "网页文本可以批量抓取，机器人训练需要人、物体、动作和安全场地一起出现，数据制造本身就是成本。",
+      "kind": "comparison"
+    },
+    {
+      "id": "privacy",
+      "title": "神经数据的控制要写进数据管线",
+      "body": "原始 EEG 是否本地处理、谁能访问、保存多久、如何撤回，都需要在试验扩大前明确。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation",
+      "title": "对照实验决定这条路线值不值得扩大",
+      "body": "Encord 计划把带脑电标签的数据送进机器人模型做比较，后续应公开成功率、跨操作者复现和隐私边界。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "robot-safety",
+    "title": "脑电标签怎样进入一条可验证的机器人训练链？",
+    "question": "先把人做了什么、脑信号提示了什么、机器人学到了什么分开，才能知道新增数据是否真的有用。",
+    "steps": [
+      {
+        "label": "同步采集",
+        "detail": "记录操作员视角、机器人关节和环境状态，再把脑电信号与同一时间线对齐。",
+        "evidence": "Encord trial reported by TechCrunch"
+      },
+      {
+        "label": "形成标签",
+        "detail": "把错误、停顿、意图或惊讶作为待验证的标签，而不是把一次信号直接当成心理事实。",
+        "evidence": "Zander Labs"
+      },
+      {
+        "label": "对照训练",
+        "detail": "用相同任务和操作者比较只有视频与视频加脑电标签的模型，检查提升是否稳定。",
+        "evidence": "Encord evaluation plan"
+      },
+      {
+        "label": "审查数据",
+        "detail": "在扩大数据集前确认同意、原始 EEG 的存储位置、访问权限和撤回机制。",
+        "evidence": "Zander Labs privacy direction"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/07/26/are-brain-waves-the-next-unlock-for-physical-ai/"
+  },
+  "relatedSlugs": [
+    "context",
+    "benchmark",
+    "llm",
+    "tools",
+    "agent",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/07/26/are-brain-waves-the-next-unlock-for-physical-ai/",
+      "claim": "TechCrunch 报道 Encord 与 Zander Labs 试用脑电信号为机器人训练数据增加错误、意图和惊讶等标签。",
+      "excerpt": "报道记录了圣莱安德罗设施中的机器人操作、头戴式脑电传感器和仍处于试验阶段的数据集计划。"
+    },
+    {
+      "url": "https://encord.com/press/",
+      "claim": "Encord 的媒体页面确认公司正在从“管理已有数据”扩展到制造物理 AI 所缺少的真实训练数据。",
+      "excerpt": "Encord 将物理 AI 的现实世界数据稀缺视为训练和部署机器人系统的主要约束。"
+    },
+    {
+      "url": "https://www.zanderlabs.com/solutions",
+      "claim": "Zander Labs 介绍其被动 BCI、SAMANAI 平台、心理状态监测和本地处理原始脑电数据的产品方向。",
+      "excerpt": "官方资料强调从脑活动推断认知状态，并把原始 EEG 的本地处理和用户控制作为隐私设计方向。"
+    },
+    {
+      "url": "https://www.linkedin.com/company/zander-labs/",
+      "claim": "Zander Labs 公开说明正与 Encord 验证脑数据作为物理 AI 新训练模态。",
+      "excerpt": "公司公开帖把脑数据描述为对视频和机器人演示的补充，并强调目前是在现场验证。"
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/07/26/are-brain-waves-the-next-unlock-for-physical-ai/",
+  "sourceHash": "sha256:61b7c872f5bbaa83692d1f42cd558d031ac329156643fabca79531ffba60a0c4",
+  "status": "published",
+  "discoveredAt": "2026-10-04T19:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 context 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 benchmark 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 llm 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 tools 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 agent 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 event 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/07/26/are-brain-waves-the-next-unlock-for-physical-ai/",
+      "claim": "TechCrunch 报道 Encord 与 Zander Labs 试用脑电信号为机器人训练数据增加错误、意图和惊讶等标签。",
+      "excerpt": "报道记录了圣莱安德罗设施中的机器人操作、头戴式脑电传感器和仍处于试验阶段的数据集计划。"
+    },
+    {
+      "url": "https://encord.com/press/",
+      "claim": "Encord 的媒体页面确认公司正在从“管理已有数据”扩展到制造物理 AI 所缺少的真实训练数据。",
+      "excerpt": "Encord 将物理 AI 的现实世界数据稀缺视为训练和部署机器人系统的主要约束。"
+    },
+    {
+      "url": "https://www.zanderlabs.com/solutions",
+      "claim": "Zander Labs 介绍其被动 BCI、SAMANAI 平台、心理状态监测和本地处理原始脑电数据的产品方向。",
+      "excerpt": "官方资料强调从脑活动推断认知状态，并把原始 EEG 的本地处理和用户控制作为隐私设计方向。"
+    },
+    {
+      "url": "https://www.linkedin.com/company/zander-labs/",
+      "claim": "Zander Labs 公开说明正与 Encord 验证脑数据作为物理 AI 新训练模态。",
+      "excerpt": "公司公开帖把脑数据描述为对视频和机器人演示的补充，并强调目前是在现场验证。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T19:00:00Z",
+    "method": "source",
+    "notes": "正文把现场报道、Encord 的试验计划与 Zander Labs 的一般产品方向分层；没有把脑电信号写成已验证的意图读取能力。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T19:00:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 逐篇整理；先核对新闻事件，再区分媒体报道、公司自述和待确认主张。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T19:20:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间一致。",
+      "官方、公司、媒体和第三方数据口径分层，保留原始链接与引用卡片。",
+      "sections、explainer、SVG alt 与正文一致，词条联动真实。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "把脑电信号写成研究线索而非读心或已验证的意图识别能力，试验、隐私和同意边界清楚。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-26",
+  "fingerprint": "sha256:83214df75013103b739c767f2dd16b8f769a96ca95dac5335c6528bc549c1a3d",
+  "promotedAt": "2026-10-04T00:40:12.393Z"
+}

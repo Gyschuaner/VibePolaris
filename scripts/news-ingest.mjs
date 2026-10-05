@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { newsIngestBatchSchema, canonicalNewsUrl } from "../lib/news-schema.ts";
-import { contentPaths, loadNewsContent } from "./news-contract.mjs";
+import { contentPaths, loadNewsContent, newsMechanicalErrors } from "./news-contract.mjs";
 
 const repository = process.env.NEWS_REPOSITORY
   ? resolve(process.env.NEWS_REPOSITORY)
@@ -18,40 +18,41 @@ function sourceDigest(body) {
   return `sha256:${createHash("sha256").update(normalized, "utf8").digest("hex")}`;
 }
 
-function reviewReasons(article) {
-  const reasons = [];
-  if (!article.verification || article.verification.status !== "verified") reasons.push("证据核对未完成");
-  if (!article.evidence.length) reasons.push("缺少可复核证据");
-  if (article.riskLevel !== "routine") reasons.push(article.riskLevel === "major" ? "重大消息必须人工确认" : "风险等级不确定");
-  if (!article.relatedSlugs.length) reasons.push("尚未确认关联词条");
-  if (article.relationSuggestions.some(suggestion => suggestion.status !== "confirmed")) reasons.push("存在未确认的关系建议");
-  return reasons;
-}
-
-function draftRecord(article, batch, decision, reasons) {
+function draftRecord(article, batch, decision, mechanicalErrors) {
   const discoveredAt = batch.generatedAt;
   const canonicalUrl = canonicalNewsUrl(article.canonicalUrl ?? article.source.url);
+  const modelReview = article.modelReview ?? {
+    decision: "publish",
+    checkedAt: batch.generatedAt,
+    notes: "模型首轮自判：结构化内容交由机械完整性检查后直发。",
+  };
   return {
     slug: article.slug,
     title: article.title,
     summary: article.summary,
     body: article.body,
+    eventDate: article.eventDate,
     publishedAt: article.publishedAt,
     isExample: false,
+    hero: article.hero,
+    sections: article.sections,
+    explainer: article.explainer,
     source: article.source,
     canonicalUrl,
     sourceHash: article.sourceHash ?? sourceDigest(article.body),
-    status: "needs-review",
     discoveredAt,
     relatedSlugs: article.relatedSlugs,
     relationSuggestions: article.relationSuggestions,
     relatedArticleSlugs: article.relatedArticleSlugs,
     evidence: article.evidence,
+    sources: article.evidence,
     verification: article.verification,
     riskLevel: article.riskLevel,
     publishDecision: decision,
+    modelReview,
     runId: batch.runId,
-    reviewReasons: reasons,
+    mechanicalErrors,
+    status: decision === "auto" ? "ready" : "needs-review",
   };
 }
 
@@ -71,7 +72,7 @@ export function ingestNewsBatch(payload, { repository: targetRepository = reposi
     existing.set(`hash:${draft.sourceHash}`, draft.slug);
   }
 
-  const result = { runId: batch.runId, written: [], duplicates: [], review: [], rejected: [] };
+  const result = { runId: batch.runId, written: [], duplicates: [], blocked: [], held: [], rejected: [] };
   const batchKeys = new Set();
   for (const article of batch.articles) {
     const canonicalUrl = canonicalNewsUrl(article.canonicalUrl ?? article.source.url);
@@ -86,9 +87,16 @@ export function ingestNewsBatch(payload, { repository: targetRepository = reposi
       continue;
     }
     batchKeys.add(canonicalUrl); batchKeys.add(hash);
-    const reasons = reviewReasons(article);
-    const decision = reasons.length ? "review" : "auto";
-    const draft = draftRecord(article, batch, decision, reasons);
+    const candidate = {
+      ...article,
+      canonicalUrl,
+      sourceHash: hash,
+      sources: article.evidence,
+    };
+    const mechanicalErrors = newsMechanicalErrors(candidate);
+    const modelHeld = article.modelReview?.decision === "hold";
+    const decision = mechanicalErrors.length || modelHeld ? "review" : "auto";
+    const draft = draftRecord(article, batch, decision, mechanicalErrors);
     const path = join(paths.drafts, discoveredDate(batch.generatedAt), `${draft.slug}.json`);
     if (existsSync(path)) {
       result.duplicates.push({ slug: article.slug, existingSlug: article.slug });
@@ -97,7 +105,8 @@ export function ingestNewsBatch(payload, { repository: targetRepository = reposi
     mkdirSync(join(paths.drafts, discoveredDate(batch.generatedAt)), { recursive: true });
     writeFileSync(path, `${JSON.stringify(draft, null, 2)}\n`, { flag: "wx" });
     result.written.push({ slug: draft.slug, status: draft.status, publishDecision: decision, path });
-    if (reasons.length) result.review.push({ slug: draft.slug, reasons });
+    if (mechanicalErrors.length) result.blocked.push({ slug: draft.slug, mechanicalErrors });
+    if (modelHeld) result.held.push({ slug: draft.slug });
   }
   return result;
 }

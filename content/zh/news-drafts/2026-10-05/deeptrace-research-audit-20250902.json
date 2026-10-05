@@ -1,0 +1,199 @@
+{
+  "slug": "deeptrace-research-audit-20250902",
+  "title": "DeepTRACE：把深度研究 Agent 的引用可靠性拆开审计",
+  "summary": "DeepTRACE 论文于 9 月 2 日提交，提出一套面向生成式搜索和深度研究 Agent 的端到端审计框架。它把回答拆成陈述，分别检查来源、引用和事实支持关系，并用引用矩阵与事实支持矩阵覆盖八个维度；对多个公开搜索与研究系统的评测显示，深度研究配置虽然能减少过度自信、提高引用完整度，但辩论问题仍容易单边化，引用准确率在不同系统间只有 40%—80% 的区间。",
+  "body": "深度研究 Agent 最容易给人一种可靠的错觉：报告很长，脚注很多，语气也很确定。但一条引用能打开，不代表它支持了句子里的每个主张；一份报告列了很多来源，也不代表它没有选择性地忽略反例。DeepTRACE 关注的正是这条从回答到证据的完整链路，而不是只看最终答案像不像一篇研究综述。\n\n框架先把回答拆成可以单独判断的陈述，再把检查分布到答案文本、来源和引用三个层面。论文把社区已经遇到的失败案例整理成八个可测维度，包括陈述分解、置信度、来源质量和引用与事实的对应关系。拆分的意义在于，审计者可以指出是某一句没有证据，还是来源有但引用位置不对，不用用一个总分把问题抹平。\n\nDeepTRACE 还建立两张不同的矩阵。一张记录每个陈述引用了哪些来源，另一张记录来源中的事实是否真的支持该陈述。前者更接近引用完整度，后者才接近引用准确度和事实忠实度。一个回答可以几乎句句挂了链接，却在第二张矩阵里留下大量不支持；这正是“有引用”最容易掩盖的错误。\n\n作者用自动抽取流程评测多个公开系统，包括生成式搜索引擎和深度研究配置，并让 LLM 评审与人工评分者做一致性验证。评测对象覆盖 GPT-4.5/5、You.com、Perplexity、Copilot/Bing 和 Gemini 等系统。这样的横向比较有助于看出系统性模式，但它依赖题目、时间和网页快照，不能理解成每个版本、每个问题都保持同样表现。\n\n论文报告了一个不太舒服的结果：生成式搜索和深度研究 Agent 在辩论题上经常给出高度自信、立场单边的回答，且有很大比例的陈述得不到自己列出的来源支持。深度研究配置能减少过度自信、提高引用完整度，却没有消除单边化和不支持陈述；不同系统的引用准确率落在 40%—80% 区间。完整度变高，准确度仍可能不够。\n\n把这套框架放进产品流程，审核者应先看陈述级证据，再看整体结构。需要保留原始问题、回答版本、来源快照、引用位置、支持判断和争议标记；遇到“来源提到了相关主题但没有支持这句结论”，应要求改写、补证据或明确不确定，而不是继续添加更多链接。辩论类问题还要单独检查是否呈现了相反证据和不确定范围。\n\nDeepTRACE 的价值在于把研究 Agent 的可信度从一个模糊印象变成一组可追溯的检查点。它不是“引用矩阵跑完就可靠”的证明：LLM 评审仍有偏差，网页会更新，论文页面还标有与另一篇 arXiv 论文存在文本重叠的管理备注。读者应把它当作审计方法和暴露问题的工具，结论仍需人工复核与独立复现。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deeptrace-research-audit-20250902.svg",
+    "alt": "DeepTRACE 将研究回答拆成陈述，并用引用矩阵与事实支持矩阵逐条审计",
+    "sourceUrl": "/images/news/deeptrace-research-audit-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "citation-illusion",
+      "title": "脚注很多，也可能没有支持主张",
+      "body": "链接可达、报告很长和语气很确定，都不能说明每一句话被来源真正支持。",
+      "kind": "narrative"
+    },
+    {
+      "id": "statement-decomposition",
+      "title": "先把回答拆成可判断的陈述",
+      "body": "DeepTRACE 在答案、来源和引用三个层面拆解八个可测维度，定位哪一句缺证据、哪一处引用错位。",
+      "kind": "technical"
+    },
+    {
+      "id": "support-matrices",
+      "title": "引用完整度和事实支持不是一回事",
+      "body": "引用矩阵记录陈述与来源的对应，事实支持矩阵检查来源内容是否真的支撑陈述；链接数量不能代替第二项。",
+      "kind": "technical"
+    },
+    {
+      "id": "cross-system-audit",
+      "title": "横向评测多个搜索和研究配置",
+      "body": "作者评测 GPT-4.5/5、You.com、Perplexity、Copilot/Bing 和 Gemini 等系统，并让 LLM 评审与人工评分做一致性验证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "one-sided-results",
+      "title": "深度研究减少过度自信，却仍会单边化",
+      "body": "辩论题上仍有大量不被自身来源支持的陈述，引用准确率在不同系统间约为 40%—80%。",
+      "kind": "comparison"
+    },
+    {
+      "id": "claim-level-workflow",
+      "title": "审核先看陈述级证据，再看整篇结构",
+      "body": "保留来源快照、引用位置、支持判断和争议标记；不支持的句子应改写、补证据或标出不确定。",
+      "kind": "example"
+    },
+    {
+      "id": "audit-boundary",
+      "title": "审计框架也需要人工复核",
+      "body": "LLM 评审、网页更新和论文页面的文本重叠备注都提醒我们：矩阵是检查工具，不是可靠性的自动证明。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "DeepTRACE 怎样判断一条引用真的支持回答？",
+    "question": "先拆出陈述，再分别核对引用对应关系和来源事实支持，最后检查整体是否单边或过度自信。",
+    "steps": [
+      {
+        "label": "拆分回答陈述",
+        "detail": "把一段研究回答切成可以单独核验的事实、判断和结论，记录每条陈述的置信度。",
+        "evidence": "statement-level analysis"
+      },
+      {
+        "label": "建立引用矩阵",
+        "detail": "标记每条陈述列出了哪些来源、引用出现在什么位置，区分有无引用与引用是否对位。",
+        "evidence": "citation matrices"
+      },
+      {
+        "label": "检查事实支持",
+        "detail": "回到来源内容判断它是否支持具体陈述，不把“提到同一主题”当作“证明了这句话”。",
+        "evidence": "factual-support matrices"
+      },
+      {
+        "label": "比较系统行为",
+        "detail": "在搜索和深度研究配置上同时测完整度、准确度、过度自信和辩论题立场平衡。",
+        "evidence": "web-search engines and deep-research configurations"
+      },
+      {
+        "label": "交给人复核边界",
+        "detail": "对来源更新、模型评审分歧和不支持的陈述保留争议标记，必要时改写、补证据或转人工。",
+        "evidence": "validated agreement to human raters"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.04499"
+  },
+  "relatedSlugs": [
+    "agent",
+    "citation",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.04499",
+      "claim": "DeepTRACE 将研究回答拆成陈述，并用八个维度、引用矩阵和事实支持矩阵审计端到端证据归因。",
+      "excerpt": "eight measurable dimensions ... statement-level analysis ... citation and factual-support matrices"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04499",
+      "claim": "论文评测多个公开搜索与深度研究系统，报告辩论题单边化、陈述不受来源支持和 40%—80% 的引用准确率区间。",
+      "excerpt": "citation accuracy ranging from 40--80% ... highly one-sided ... unsupported statements"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.04499",
+  "sourceHash": "sha256:eebdb7532af8f87ddd6fc501be70632baa9a6c775047092edf2502346fbed3ad",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论生成式搜索和深度研究 Agent 的回答、来源与证据链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.99,
+      "evidence": [
+        "正文逐条检查引用位置、引用完整度和事实支持关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.99,
+      "evidence": [
+        "正文要求回答陈述回到来源事实，区分主题相关和具体支持。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留八维审计、横向系统比较和引用准确率结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.04499",
+      "claim": "arXiv 记录 DeepTRACE 于 2025 年 9 月 2 日提交，研究生成式搜索与深度研究系统的引用可靠性。",
+      "excerpt": "Published: 2025-09-02 ... DeepTRACE"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04499",
+      "claim": "摘要给出陈述级分析、引用/事实支持矩阵、多个系统评测和 40%—80% 引用准确率区间。",
+      "excerpt": "statement-level analysis ... citation and factual-support matrices ... citation accuracy ranging from 40--80%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对八维审计、陈述级拆分、引用与事实支持矩阵、多系统评测、过度自信/单边化发现和 40%—80% 引用准确率；正文补充来源快照、争议标记、网页更新和 arXiv 文本重叠管理备注边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把引用完整度与事实支持分开，具体解释两张矩阵和跨系统结果，保留辩论题单边化、40%—80% 准确率与文本重叠备注的边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-deeptrace-research-audit-20250902"
+}

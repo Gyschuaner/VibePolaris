@@ -1,0 +1,153 @@
+{
+  "slug": "anthropic-claude-watermark-20260814",
+  "title": "Anthropic 公布 Claude 文本水印方案：留下可检测信号，不留下身份标签",
+  "summary": "8 月 14 日，Anthropic 解释未来 Claude 模型的文本水印方案：利用低风险词语选择形成统计模式，不插入隐藏字符，也不携带用户、组织或会话身份。公司同时宣布检测 API 私有预览，并说明轻度编辑、翻译、完整重写和短文本都会改变判断难度。",
+  "body": "8 月 14 日，Anthropic 发布《How Claude’s text watermark works》，把“模型生成内容要不要标记”拆成一项具体的工程设计。未来的 Claude 模型会在生成文字时留下可检测的统计模式；读者在页面上看不到额外符号，文本也不会因为多了一段标签而变长。Anthropic 说，这一变化与欧盟 AI Act 对 AI 生成内容透明度的要求有关，公司选择在全球上线，而不是只在欧盟地区开启。\n\n水印发生在模型选词的细小分叉上。下一词可能有多个都合理的候选，模型原本会用随机性决定；有了水印后，随机性由密钥和前文共同决定。单个词看不出差别，但大量选择叠加后，持有密钥的检测方可以计算这段文字是否更像由 Claude 生成或处理过。这个结果是概率信号，不是把一串唯一编号写进文章。\n\nAnthropic 还把文本水印和文件元数据分开。Claude 生成或处理 PNG、JPG、SVG 等支持的文件时，公司计划附加符合 C2PA（内容来源凭证标准）的加密签名元数据；它说明 Claude 参与过文件处理，但同样不包含用户身份。图像文件的来源凭证和文字水印是两条不同的链路，不能把其中一条的能力套到另一条上。\n\n检测 API 当天进入私有预览，合资格的监管机构、执法机构、媒体、事实核查者、独立研究者、教育机构和欧盟民间组织可以申请，承担合规义务的企业也在范围内。这个安排解决的是“谁有权验证”的第一步，公开文章没有给出统一阈值、误报率或第三方审计结果，普通用户也不能因为网上某个检测器打出一个分数就得到确定结论。\n\n水印的限制同样是设计的一部分。短文本缺少足够的统计样本，事实性很强的句子和代码可替换的词很少；轻度编辑可能保留信号，完整重写则可能抹掉原始选择，翻译仍可能携带 Claude 参与的痕迹。Anthropic 明确表示，检测到水印不能证明谁是作者、谁拥有版权或谁需要承担法律责任。\n\n对使用者来说，这项新闻改变的是内容来源核验的工具箱，而不是作者证明规则。教育、媒体或企业审核如果采用水印结果，需要把概率、样本长度、编辑历史、人工复核和证据保存写进流程；否则一个“检测到”或“未检测到”都容易被误读成比技术实际能回答的更多。",
+  "publishedAt": "2026-08-14",
+  "eventDate": "2026-08-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-watermark-20260814.svg",
+    "alt": "Anthropic 公布 Claude 文本水印方案：从选词形成可检测信号、但不携带身份标签的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/anthropic-claude-watermark-20260814.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "这次发布把水印做成了可验证的工程信号",
+      "body": "Anthropic 说未来 Claude 输出会带水印，用来判断 Claude 是否可能参与过文本生成或处理。它不会改变读者看到的文字，也不会增加隐藏字符或额外 token。",
+      "kind": "narrative"
+    },
+    {
+      "id": "selection",
+      "title": "信号藏在多个合理词之间",
+      "body": "模型在“overcast”和“grey”这类都说得通的词之间作选择。密钥改变随机性来源，让长文本出现可检测的统计模式；单个词本身没有可读标记。",
+      "kind": "technical"
+    },
+    {
+      "id": "files",
+      "title": "文件凭证走的是另一条路径",
+      "body": "对于支持的图片和 SVG 文件，Anthropic 计划使用 C2PA（内容来源凭证标准）加密签名元数据记录 Claude 是否参与处理。文字水印和文件来源凭证都不写入用户身份。",
+      "kind": "comparison"
+    },
+    {
+      "id": "api",
+      "title": "检测 API 先向有合规需求的组织开放",
+      "body": "私有预览面向监管机构、媒体、事实核查者、教育机构、研究者和符合条件的企业。阈值、误报率和更广泛的开放时间仍待公开。",
+      "kind": "boundary"
+    },
+    {
+      "id": "limits",
+      "title": "水印不是作者和版权证明",
+      "body": "短样本、代码、重写和编辑都会影响统计信号。检测到只能说明 Claude 可能参与过，不能锁定具体人、组织、会话、作者身份或法律责任。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "水印怎样从选词变成概率？",
+    "question": "文字表面没有标签，检测方为什么仍可能发现 Claude 参与过？",
+    "steps": [
+      {
+        "label": "出现多个合理候选",
+        "detail": "模型在不改变意思的地方遇到几个都通顺的词，原本会用随机性选择其中一个。",
+        "evidence": "Anthropic 官方说明"
+      },
+      {
+        "label": "密钥改变随机性",
+        "detail": "水印让密钥和前文参与选择，很多次低风险分叉叠加后形成统计模式。",
+        "evidence": "Anthropic 官方说明"
+      },
+      {
+        "label": "检测方计算概率",
+        "detail": "持有对应密钥的一方检查词序是否符合模式，结果是“可能参与过”的概率。",
+        "evidence": "Anthropic 官方说明"
+      },
+      {
+        "label": "回到编辑和用途",
+        "detail": "短文、代码、翻译和完整重写都会改变信号，审核仍需保留上下文和人工复核。",
+        "evidence": "Anthropic 官方限制说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-text-watermark"
+  },
+  "relatedSlugs": [
+    "llm",
+    "data-lineage",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "anthropic-claude-watermark-details-20260815"
+  ],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/claude-text-watermark",
+      "claim": "Anthropic 于 2026-08-14 说明 Claude 文本水印的统计机制、全球上线计划、检测 API 私有预览和局限。",
+      "excerpt": "Watermarking carries no identifying information and can’t be traced to a specific person, organization, or chat."
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content",
+      "claim": "欧盟官方页面提供 AI 生成内容透明度代码实践的政策背景，文章只用它解释 Anthropic 的合规语境。",
+      "excerpt": "Code of Practice on marking and labelling AI-generated content."
+    },
+    {
+      "url": "https://c2pa.org/specifications/specifications/2.2/index.html",
+      "claim": "C2PA 规范说明内容凭证如何用签名元数据记录来源，文章把它与文本水印分开。",
+      "excerpt": "Content Credentials use cryptographically signed provenance metadata."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/claude-text-watermark",
+  "sourceHash": "sha256:8047633d3de6694c38515cdb6ca06684fa0ec3d93468790e57d76a87ae508d6c",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:05:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/claude-text-watermark",
+      "claim": "Anthropic 于 2026-08-14 说明 Claude 文本水印的统计机制、全球上线计划、检测 API 私有预览和局限。",
+      "excerpt": "Watermarking carries no identifying information and can’t be traced to a specific person, organization, or chat."
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content",
+      "claim": "欧盟官方页面提供 AI 生成内容透明度代码实践的政策背景，文章只用它解释 Anthropic 的合规语境。",
+      "excerpt": "Code of Practice on marking and labelling AI-generated content."
+    },
+    {
+      "url": "https://c2pa.org/specifications/specifications/2.2/index.html",
+      "claim": "C2PA 规范说明内容凭证如何用签名元数据记录来源，文章把它与文本水印分开。",
+      "excerpt": "Content Credentials use cryptographically signed provenance metadata."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:05:00Z",
+    "method": "source",
+    "notes": "以 Anthropic 官方原文和欧盟/C2PA 官方资料为主；8 月 15 日 TechCrunch 跟进另记为后续新闻，不把后续报道倒灌成当天事件。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:05:00Z",
+    "notes": "逐篇手写，依据官方公告、监管文件与可信新闻建立事实链；保留公司口径和未确认状态。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T13:42:00Z",
+    "questions": [],
+    "notes": "已按读者建议把标题改为“公布方案”，避免读成所有 Claude 已全面启用；补充 C2PA（内容来源凭证标准）首次出现的白话解释。未来模型、检测 API、编辑限制和身份边界清楚，日期、词条、解释器与 SVG 一致。",
+    "changes": [
+      "标题与 hero.alt 改为方案发布语气",
+      "补充 C2PA 中文释义"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-14",
+  "promotedAt": "2026-10-03T13:43:44.252Z"
+}

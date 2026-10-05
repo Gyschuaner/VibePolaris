@@ -1,0 +1,152 @@
+{
+  "slug": "deepseek-v4-pricing-20260816",
+  "title": "DeepSeek V4-Pro API 改为峰谷计价：正式版上线后的账单开始按时间表变化",
+  "summary": "DeepSeek 在 8 月 13 日宣布 V4-Pro 正式版上线，并把新的峰谷 API 价格定在 2026 年 8 月 16 日 16:00 UTC 生效（北京时间 8 月 17 日 0 时）。闲时价格为高峰的一半；正式版同时加入 Responses API 兼容和 low/high/max 思考强度。",
+  "body": "8 月 16 日 16:00 UTC，DeepSeek V4-Pro 和 V4-Flash 的 API 计价从固定价格切换到峰谷价格。这个时间点对应北京时间 8 月 17 日凌晨，所以新闻里既可能写 8 月 16 日，也可能写 8 月 17 日。事件发生日按官方的 UTC 生效时间记录为 8 月 16 日；正式版上线公告本身发布于 8 月 13 日。\n\n变化不只是把数字调高，而是把“什么时候调用”也放进了账单。DeepSeek 官方把工作日 01:00–04:00 和 06:00–10:00 UTC 设为高峰，其余时间是闲时，闲时价格为高峰的一半。以 V4-Pro 为例，缓存未命中的输入 token 是每百万 0.66 美元对 1.32 美元，输出 token 是 1.98 美元对 3.96 美元。\n\n这里的 token 可以理解为模型处理文字时拆出的计费单位。一次调用的费用不只看调用了几次，还看送进去多少输入、模型生成多少输出，以及有多少输入命中了缓存。长上下文的代理任务可能调用次数不多，却会反复携带大量上下文；如果任务不能延后，峰谷切换也不会自动带来节省。\n\n这次计价调整和模型接入能力一起出现。DeepSeek 说 V4-Pro 正式版原生支持 OpenAI Responses API，并允许开发者选择 low、high、max 三档思考强度。对做代理的人来说，接口兼容和强度档位能减少接入工作，但也把“什么时候用高档位、什么时候接受更慢或更便宜的结果”交给了应用层。\n\n因此，读这条新闻要把模型发布、价格生效和性能宣传分开。官方价目表能确认费率和时间窗口，不能替团队预测最终月账单；最终账单还取决于缓存命中、并发限制、任务时区和工作负载是否可以排队。",
+  "publishedAt": "2026-08-13",
+  "eventDate": "2026-08-16",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepseek-v4-pricing-20260816.svg",
+    "alt": "DeepSeek V4-Pro API 改为峰谷计价：正式版上线后的账单开始按时间段变化 的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/deepseek-v4-pricing-20260816.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "change",
+      "title": "8 月 16 日先发生的是计价切换",
+      "body": "DeepSeek V4-Pro 正式版在 8 月 13 日公告，真正按新价计费的时间点是 8 月 16 日 16:00 UTC，也就是北京时间 8 月 17 日凌晨。把发布模型和切换价格分开，才能准确记下这条新闻。",
+      "kind": "narrative"
+    },
+    {
+      "id": "clock",
+      "title": "同一请求会因为时间段不同而不同价",
+      "body": "官方价目表把工作日 01:00–04:00、06:00–10:00 UTC列为高峰，其余时段为闲时；闲时价格是高峰的一半。V4-Pro 缓存未命中输入为每百万 token 0.66 美元对 1.32 美元，输出为 1.98 美元对 3.96 美元。",
+      "kind": "technical"
+    },
+    {
+      "id": "token",
+      "title": "账单按 token 计，不按“调用次数”计",
+      "body": "token 是模型处理文本时使用的最小计费单位，输入、输出和缓存命中会分别计价。长上下文代理即使只发起少量请求，也可能因为输入和输出 token 很多而产生较大账单。",
+      "kind": "example"
+    },
+    {
+      "id": "agent",
+      "title": "Responses API 和思考档位把模型接进代理工作流",
+      "body": "同一公告还写明原生支持 OpenAI Responses API，并提供 low、high、max 三档思考强度；它降低了接入门槛，却没有替开发者决定何时运行高成本档位。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "便宜时段不等于总成本一定下降",
+      "body": "真实成本还受缓存命中率、并发、任务是否能延后和峰时负载影响。官方基准与价格表能说明产品条件，但不能替每个团队预测月度账单。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一次 API 请求怎样变成账单？",
+    "question": "把模型版本、时间段、token 和缓存拆开，才能看懂“峰谷计价”究竟改变了什么。",
+    "steps": [
+      {
+        "label": "确认模型版本",
+        "detail": "先确认调用的是 deepseek-v4-pro 还是其他 V4 模型，不同模型的价格表不同。",
+        "evidence": "DeepSeek pricing docs"
+      },
+      {
+        "label": "读取时间段",
+        "detail": "把 UTC 时间换算到团队所在时区，判断请求落在高峰还是闲时。",
+        "evidence": "DeepSeek API Docs"
+      },
+      {
+        "label": "统计 token",
+        "detail": "分别记录输入、输出和缓存命中 token，再乘以对应单价。",
+        "evidence": "DeepSeek Models & Pricing"
+      },
+      {
+        "label": "安排可延后任务",
+        "detail": "批处理、评测和长任务可以尝试放到闲时，但交互请求未必能等待。",
+        "evidence": "VibePolaris analysis grounded in pricing rules"
+      }
+    ]
+  },
+  "source": {
+    "name": "DeepSeek API Docs",
+    "url": "https://api-docs.deepseek.com/news/news260813/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "agent",
+    "tools",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://api-docs.deepseek.com/news/news260813/",
+      "claim": "DeepSeek 在 V4-Pro 正式版公告中说明，V4-Pro 与 V4-Flash 的新峰谷 API 价格于 2026 年 8 月 16 日 16:00 UTC 生效。",
+      "excerpt": "New pricing takes effect at 16:00 UTC, Aug 16, 2026."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "claim": "官方价目表列出 V4-Pro 的缓存命中、缓存未命中和输出 token 的高峰/闲时价格。",
+      "excerpt": "1M OUTPUT TOKENS OFF-PEAK $1.98; PEAK $3.96 for deepseek-v4-pro."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/updates/",
+      "claim": "更新日志把正式版上线、Responses API 兼容和峰谷计价放在同一条产品变化记录中。",
+      "excerpt": "The new prices will take effect at 16:00 (UTC Time) on August 16, 2026."
+    }
+  ],
+  "canonicalUrl": "https://api-docs.deepseek.com/news/news260813/",
+  "sourceHash": "sha256:7515326cc09c101451150380c15d6254fede1eb7b472499bedcb8806ac0a940e",
+  "status": "published",
+  "discoveredAt": "2026-10-03T12:05:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://api-docs.deepseek.com/news/news260813/",
+      "claim": "DeepSeek 在 V4-Pro 正式版公告中说明，V4-Pro 与 V4-Flash 的新峰谷 API 价格于 2026 年 8 月 16 日 16:00 UTC 生效。",
+      "excerpt": "New pricing takes effect at 16:00 UTC, Aug 16, 2026."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "claim": "官方价目表列出 V4-Pro 的缓存命中、缓存未命中和输出 token 的高峰/闲时价格。",
+      "excerpt": "1M OUTPUT TOKENS OFF-PEAK $1.98; PEAK $3.96 for deepseek-v4-pro."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/updates/",
+      "claim": "更新日志把正式版上线、Responses API 兼容和峰谷计价放在同一条产品变化记录中。",
+      "excerpt": "The new prices will take effect at 16:00 (UTC Time) on August 16, 2026."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T12:05:00Z",
+    "method": "source",
+    "notes": "以官方文档、官方状态页和可信新闻报道为主，区分事件发生时间、来源发布时间、厂商口径与媒体分析，保留可追溯引用。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T12:05:00Z",
+    "notes": "逐篇手写新闻稿，保留来源卡片、事件日期、时间边界和可读性审查入口。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T12:22:23Z",
+    "questions": [],
+    "notes": "区分 8 月 13 日正式版公告与 8 月 16 日 UTC 计价生效；token、峰谷价格和成本边界清楚，relatedSlugs、解释器与 SVG 一致。",
+    "changes": [
+      "区分公告日、UTC 生效日与北京时间日期"
+    ]
+  },
+  "mechanicalErrors": [],
+  "promotedAt": "2026-10-03T12:24:36.902Z"
+}

@@ -1,0 +1,213 @@
+{
+  "slug": "meta-muse-code-spark12-20260805",
+  "title": "Meta 推出 Muse Code：把可回放的多智能体编码运行时交给开发者",
+  "summary": "Meta 于 2026 年 8 月 5 日发布 Muse Spark 1.2 和 Muse Code 公测版。Muse Spark 1.2 是面向编码的模型，Muse Code 是运行在终端中的编码智能体；Meta 强调每个子智能体、工具调用、批准、编辑、暂停和取消都写入本地事件日志，可以回放并在中断后恢复。",
+  "body": "8 月 5 日，Meta 发布了 Muse Spark 1.2 和 Muse Code 公测版。前者是面向编码任务的模型，后者是运行在终端里的编码智能体。Meta 给这次发布的重点不是“模型又大了一点”，而是把长任务、多个子智能体和运行记录放在同一个开发工具里。\n\nMuse Code 能在大型代码仓库里规划变更、写代码和验证结果。它可以让多个后台智能体持续工作，并把模型调用、工具运行、审批和编辑追加到本地事件日志。日志像一条可检查的时间线：开发者可以回看某次改动由哪个调用触发，也可以在程序崩溃后从上一次状态继续。对使用编码代理的人来说，这比单次生成一段代码更接近一个可审计的工作过程。\n\nMeta 还公开了它与模型训练的关系。Muse Spark 1.2 与 Muse Code 一起训练，目标是让工具调用、计划、目标跟踪和上下文压缩更适合长时间的仓库任务。官方研究页给出的例子包括超过 1,000 次工具调用的 GPU kernel 优化；这些是 Meta 的内部评测和案例，不能直接当作所有项目都会达到的性能保证。\n\n产品的另一条线是并行。一个大的任务可以拆给多个子智能体，各自在隔离的 git worktree 中处理，再由主智能体汇总结果。这个设计减少文件互相覆盖的机会，但它也带来新的权限问题：每个子智能体能读什么、能运行哪些命令、谁来批准写入和合并，仍然要由开发者的环境和团队流程决定。\n\nMeta 说 Muse Spark 1.2 通过 Muse Code、Meta Model API 和 OpenRouter 提供，Muse Code 目前是 beta，全球公开预览的范围正在扩大。开发者现在可以安装和试用，但仍应把它当作一个需要审查的工程工具：事件日志让过程更容易追溯，却不会自动阻止错误改动、泄露密钥或把不该执行的命令交给终端。",
+  "publishedAt": "2026-08-05",
+  "eventDate": "2026-08-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meta-muse-code-spark12-20260805.svg",
+    "alt": "Meta 推出 Muse Code：把可回放的多智能体编码运行时交给开发者 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/meta-muse-code-spark12-20260805.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-shipped",
+      "title": "两个名字对应两层产品",
+      "body": "Muse Spark 1.2 是编码模型，Muse Code 是把模型放进终端、工具和多智能体循环的运行时。文章把模型能力和产品工作流分开说明。",
+      "kind": "narrative"
+    },
+    {
+      "id": "event-log",
+      "title": "事件日志让一次改动可以回看",
+      "body": "Meta 说模型调用、工具运行、审批和编辑都会追加到本地日志，日志用于审计、回放和中断恢复。它记录过程，但不代替权限控制。",
+      "kind": "technical"
+    },
+    {
+      "id": "long-horizon",
+      "title": "长任务靠规划和上下文压缩续航",
+      "body": "全仓库任务会持续数小时甚至更久，Muse Spark 1.2 用计划、目标条件和上下文压缩维持方向；这些描述来自 Meta 的产品和研究介绍。",
+      "kind": "technical"
+    },
+    {
+      "id": "parallel-agents",
+      "title": "并行子智能体带来速度，也带来权限边界",
+      "body": "每个子智能体可以在隔离 worktree 中处理一部分任务。隔离降低文件冲突，但终端权限、密钥和合并审批仍由使用方负责。",
+      "kind": "boundary"
+    },
+    {
+      "id": "beta-boundary",
+      "title": "公测意味着可以试用，不能等同于稳定承诺",
+      "body": "Muse Code 是 beta，Meta 的 benchmark 和 kernel 案例是公司评测。读者应把它们当作发布方证据，等待独立测试来判断泛化效果。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "编码智能体怎样把长任务留在一条可追溯的线上？",
+    "question": "把模型、子智能体、工具和事件日志摆在一起，才能看清 Muse Code 的产品主线。",
+    "steps": [
+      {
+        "label": "主智能体拆任务",
+        "detail": "开发者给出目标后，Muse Code 先规划仓库改动，并决定哪些工作可以并行。",
+        "evidence": "Meta AI Research"
+      },
+      {
+        "label": "子智能体并行执行",
+        "detail": "不同子任务进入各自的隔离 worktree，减少同一份文件被同时覆盖的机会。",
+        "evidence": "Meta AI Developers blog"
+      },
+      {
+        "label": "工具调用留下记录",
+        "detail": "模型调用、命令、审批和编辑都追加进本地事件日志，形成可回放的过程。",
+        "evidence": "Meta AI Research"
+      },
+      {
+        "label": "人工检查并合并",
+        "detail": "开发者仍要检查 diff、权限和测试结果，再决定是否把改动合并进主分支。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Meta AI Developers",
+    "url": "https://dev.meta.ai/resources/blog/build-with-muse-code"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "execution-sandbox",
+    "context-window",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://dev.meta.ai/resources/blog/build-with-muse-code",
+      "claim": "Meta AI Developers 博客宣布 Muse Spark 1.2、Muse Code beta 和全球公开预览，并介绍事件日志、并行子智能体与价格入口。",
+      "excerpt": "every subagent it spawns, every tool call, every steer and cancel, is observable and replayable through the event log."
+    },
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-code-and-muse-spark-1-2",
+      "claim": "Meta AI Research 说明 Muse Code 是由 Muse Spark 1.2 驱动的终端编码智能体，并描述异步后台智能体和运行时设计。",
+      "excerpt": "Muse Code takes on complex software engineering tasks across large repositories: planning changes, writing code, and validating the results."
+    },
+    {
+      "url": "https://news.bloomberglaw.com/tech-and-telecom-law/meta-debuts-ai-coding-agent-in-race-with-openai-and-anthropic",
+      "claim": "Bloomberg Law 将 Muse Code 放入 Meta 与 OpenAI、Anthropic 争夺编码代理入口的新闻背景中。",
+      "excerpt": "Meta debuts AI coding agent in race with OpenAI and Anthropic."
+    }
+  ],
+  "canonicalUrl": "https://dev.meta.ai/resources/blog/build-with-muse-code",
+  "sourceHash": "sha256:94a0c4324c01e96dd84e8bffea27aaaf2cd7c18441effba8a8a8c4541fcd3ab3",
+  "status": "published",
+  "discoveredAt": "2026-10-04T08:55:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent-harness 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 execution-sandbox 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 context-window 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 tools 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-code-and-muse-spark-1-2",
+      "claim": "官方研究页标注 2026 年 8 月 5 日发布，并说明 Muse Code 能规划、写作和验证大型仓库任务。",
+      "excerpt": "August 5, 2026 ... Muse Code takes on complex software engineering tasks across large repositories."
+    },
+    {
+      "url": "https://dev.meta.ai/resources/blog/build-with-muse-code",
+      "claim": "Meta 把超过 1,000 次工具调用的 kernel 优化案例作为内部评测示例，而非普遍性能保证。",
+      "excerpt": "We tested the model's ability to iteratively optimize GPU kernels over 1,000+ tool calls."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T08:55:00Z",
+    "method": "source",
+    "notes": "按官方公告、可信新闻报道和公开页面核对事件日、报道日、公司口径与尚未确认的细节。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T08:55:00Z",
+    "notes": "逐篇手写正文，按 write-like-me 与 humanizer-zh 检查表达；把官方事实、媒体转述、公司自述和未确认信息分开。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T09:00:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件组织段落并适合零基础读者。",
+      "eventDate 与 publishedAt 与原始公告或媒体报道日期一致。",
+      "来源卡片保留原始链接，并区分官方事实、媒体转述、公司自述和未确认信息。",
+      "SVG/讲解与正文一致，词条联动只使用正文解释过的公开词条。"
+    ],
+    "notes": "读者复审通过：内部评测与公司案例归属清楚，未把性能写成普遍保证；事件日志、多智能体与 beta 边界适合零基础读者。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-05",
+  "fingerprint": "sha256:0a9944d254d99b7d666fab1f901e82105327bca8cb0c13e31504dd79baa08c2b",
+  "promotedAt": "2026-10-03T19:55:36.360Z"
+}

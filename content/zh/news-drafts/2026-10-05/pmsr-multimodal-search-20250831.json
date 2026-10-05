@@ -1,0 +1,199 @@
+{
+  "slug": "pmsr-multimodal-search-20250831",
+  "title": "PMSR：多模态问答先累积证据，再逐步修正搜索方向",
+  "summary": "PMSR 论文于 8 月 31 日提交，针对知识密集型视觉问答中“一次搜索、一次生成”容易走偏的问题，提出 Progressive Multimodal Search and Reasoning。它同时参考最新中间记录和完整推理轨迹生成双范围查询，从异构知识库获取证据，再合成为紧凑记录，支持下一轮受控修正。论文在六个视觉问答基准上报告检索召回和端到端准确率持续提升。",
+  "body": "有些视觉问答题，图片本身只给出一个线索，答案还要靠外部知识补齐。Agent 如果一开始就用整张图和原问题搜索，可能很快找到一个看似相关的页面，然后沿着错误方向继续推理。PMSR 的出发点，是让搜索和推理都保留可回看的轨迹。\n\n它把每一轮得到的结果整理成结构化记录，再用两种范围生成查询：一部分只看最新记录，帮助解决当前缺口；另一部分回看完整轨迹，避免忘记之前已经确认或排除的线索。这样，下一轮搜索既不会被早期错误完全绑住，也不会丢掉已经积累的上下文。\n\n检索证据来自不同知识库，系统不会把所有原文直接堆回上下文，而是先用组合推理合成为紧凑记录。记录保留支持答案所需的关键信息，减少噪声和错误累积，也让 Agent 能在发现方向不对时回到上一轮检查。\n\n论文在 Encyclopedic-VQA、InfoSeek、MMSearch、LiveVQA、FVQA 和 OK-VQA 六个基准上评测，报告检索召回和端到端答案准确率持续提升。它没有把一个总分写成所有场景的保证：不同知识库、图像类型和检索噪声都会改变效果，真正的部署还要检查证据能否回链。\n\n对多模态产品来说，结构化记录可以成为调试入口。编辑或用户能看到 Agent 在哪一轮看到什么、为什么继续搜，以及哪条证据被纳入答案。若最后答错，团队可以区分是视觉定位、查询设计、检索来源还是证据合成出了问题。\n\n逐步修正也有成本。每多一轮搜索就多一次延迟和外部调用；轨迹保存得太多会重新造成上下文膨胀。系统需要设定预算、停止条件和来源质量门槛，避免“为了找到更多证据”无限循环。\n\nPMSR 的价值，不在于把视觉问答变成一条更长的思维链，而是把搜索方向和证据状态变成可以复核的中间产物。多模态 Agent 真正可靠时，应当知道自己为什么继续搜，也知道什么时候证据已经足够。",
+  "publishedAt": "2025-08-31",
+  "eventDate": "2025-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/pmsr-multimodal-search-20250831.svg",
+    "alt": "PMSR 沿着多模态搜索轨迹逐步积累证据并修正推理方向",
+    "sourceUrl": "/images/news/pmsr-multimodal-search-20250831.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "single-pass-risk",
+      "title": "一次搜索容易把错误方向放大",
+      "body": "图片只提供部分线索时，Agent 可能找到一个看似相关的页面，再沿着错误结果继续推理。",
+      "kind": "narrative"
+    },
+    {
+      "id": "dual-scope-query",
+      "title": "同时看最新记录和完整轨迹",
+      "body": "双范围查询既解决当前缺口，也保留已确认或排除的线索，支持受控迭代。",
+      "kind": "technical"
+    },
+    {
+      "id": "compact-evidence",
+      "title": "把检索结果合成为紧凑记录",
+      "body": "来自异构知识库的证据先被压缩成支持答案所需的信息，降低噪声和错误累积。",
+      "kind": "technical"
+    },
+    {
+      "id": "six-benchmarks",
+      "title": "六个视觉问答基准上持续提升",
+      "body": "Encyclopedic-VQA、InfoSeek、MMSearch、LiveVQA、FVQA 和 OK-VQA 都报告召回和端到端准确率改进。",
+      "kind": "comparison"
+    },
+    {
+      "id": "debug-trace",
+      "title": "每一轮记录都能成为调试入口",
+      "body": "团队可以定位错误来自视觉定位、查询设计、来源选择还是证据合成。",
+      "kind": "example"
+    },
+    {
+      "id": "loop-budget",
+      "title": "逐步搜索也要有停止条件",
+      "body": "轨迹、延迟和外部调用会增长，系统要设预算、来源质量门槛和停止规则。",
+      "kind": "boundary"
+    },
+    {
+      "id": "enough-evidence",
+      "title": "知道什么时候证据已经足够",
+      "body": "可靠的多模态 Agent 不只会继续搜，还能说明当前证据为何支持交付。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "PMSR 怎样让视觉问答的搜索方向不容易跑偏？",
+    "question": "保存结构化证据记录，用最新状态和完整轨迹生成查询，再按预算逐步修正。",
+    "steps": [
+      {
+        "label": "建立初始记录",
+        "detail": "从图像和问题中抽取当前线索，把已知、未知和需要验证的部分分开。",
+        "evidence": "structured reasoning trajectory"
+      },
+      {
+        "label": "生成双范围查询",
+        "detail": "一条查询关注最新记录的缺口，另一条回看完整轨迹，避免遗忘或被早期错误锁死。",
+        "evidence": "dual-scope queries conditioned on latest record and trajectory"
+      },
+      {
+        "label": "检索异构来源",
+        "detail": "从多个知识库获取证据，记录来源、匹配线索和噪声情况。",
+        "evidence": "heterogeneous knowledge bases"
+      },
+      {
+        "label": "合成紧凑证据",
+        "detail": "把支持答案的关键信息写入记录，再决定是否需要下一轮搜索。",
+        "evidence": "compositional reasoning into compact records"
+      },
+      {
+        "label": "停止并回链",
+        "detail": "证据达到门槛后输出可回链答案，超出预算或发生冲突时暂停复核。",
+        "evidence": "controlled iterative refinement and reduced error propagation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00798"
+  },
+  "relatedSlugs": [
+    "agent",
+    "rag",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00798",
+      "claim": "PMSR 用双范围查询、结构化推理轨迹和紧凑证据记录推进多模态搜索与推理。",
+      "excerpt": "Progressive Multimodal Search and Reasoning ... dual-scope queries"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00798",
+      "claim": "论文在六个视觉问答基准上报告检索召回和端到端准确率改进。",
+      "excerpt": "six diverse benchmarks ... improves both retrieval recall and end-to-end answer accuracy"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00798",
+  "sourceHash": "sha256:d8ebbc3b63f9c51b09218c965c8419350913d9bdf0110115fe0263e1e7cda554",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多模态 Agent 的查询、检索和逐步修正循环。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕异构知识库、检索证据和 RAG 式证据合成展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.98,
+      "evidence": [
+        "正文要求记录支持答案的证据和来源回链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留六个视觉问答基准和召回/准确率评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 31 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00798",
+      "claim": "arXiv 记录 PMSR 于 2025 年 8 月 31 日提交，研究知识密集型视觉问答的渐进搜索和推理。",
+      "excerpt": "Date: Sun Aug 31 ... Progressive Multimodal Search and Reasoning"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00798",
+      "claim": "摘要给出双范围查询、组合证据记录、六个基准和端到端改进。",
+      "excerpt": "dual-scope queries ... compact records ... six diverse benchmarks"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对双范围查询、轨迹记录、异构知识库、紧凑证据、六基准结果和错误传播边界；正文补充预算、停止条件和来源回链。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 PMSR 写成记录—查询—证据—修正的多模态工作流，保留六基准边界，并补充预算和停止条件；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-31-pmsr-multimodal-search-20250831"
+}

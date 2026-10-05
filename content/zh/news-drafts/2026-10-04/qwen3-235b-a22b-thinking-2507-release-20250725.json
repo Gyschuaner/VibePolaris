@@ -1,0 +1,250 @@
+{
+  "slug": "qwen3-235b-a22b-thinking-2507-release-20250725",
+  "title": "Qwen3-235B-A22B-Thinking-2507 发布：开源推理模型把长思考和可部署性放在一起",
+  "summary": "7 月 25 日，Qwen 团队发布 Qwen3-235B-A22B-Thinking-2507 更新版。它总参数 235B、单次激活 22B，原生支持 262,144 token 上下文并仅提供思考模式；官方评测显示推理、代码和工具使用能力有所提升，但榜单分数仍需结合自己的数据复测。",
+  "body": "7 月 25 日，Qwen 团队在 Qwen3 项目的更新记录中宣布，思考模式模型 Qwen3-235B-A22B-Thinking-2507 正式发布。它不是一次全新的系列命名，而是对 Qwen3-235B-A22B 思考版本的更新：团队把更长的思考过程、复杂任务表现和长上下文能力放在同一版模型里，并提供了模型卡和开源权重入口。\n\n模型卡给出的规格很容易被名称里的数字遮住。235B 是模型的总参数量，22B 是一次推理时激活的参数量；它采用混合专家结构，原生上下文长度为 262,144 个 token，而且这一版本只支持思考模式。这里的“22B 激活”不等于一台普通显卡就能轻松运行，服务端仍要为权重、KV cache、并行推理和更长的生成过程准备足够的显存与吞吐。\n\nQwen 官方把更新重点放在逻辑推理、数学、科学、代码、指令遵循和工具使用上，也强调思考长度有所增加。对使用者来说，这意味着模型可能愿意花更多生成步骤去拆题，但等待时间、输出长度和成本也可能随任务变大。模型卡还给出了 Transformers、vLLM 和 SGLang 的运行入口，说明发布目标不只是展示榜单，也包括让开发者把它接进自己的推理服务。\n\n模型卡中的 MMLU、GPQA、AIME、LiveCodeBench 和 BFCL 等分数，是 Qwen 按自己的评测设置汇总的结果。它们能帮助读者了解团队想改善哪些能力，却不能单独证明模型在所有真实任务上都“超过”其他模型。不同的提示词、采样参数、思考预算、版本和硬件都会改变结果；上线前仍需要用自己的数据集复测，尤其是工具调用、长文档和中文业务场景。\n\n这次更新更像是一次取舍明确的开源模型发布：它把推理深度和长上下文向前推，同时把运行门槛和等待成本摆在台面上。适合它的任务，是需要较长分析、代码规划或复杂工具编排的场景；如果只是短问短答，较小的模型往往更省资源。理解“总参数、激活参数、上下文长度和评测分数”各自代表什么，比只记住 235B 这个大数字更接近真实使用。",
+  "publishedAt": "2025-07-25",
+  "eventDate": "2025-07-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen3-235b-a22b-thinking-2507-release-20250725.svg",
+    "alt": "Qwen3-235B-A22B-Thinking-2507 将总参数、激活参数、长上下文和推理评测放在同一张模型卡上。",
+    "sourceUrl": "/images/news/qwen3-235b-a22b-thinking-2507-release-20250725.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release-date",
+      "title": "这次更新发生了什么",
+      "body": "Qwen 团队在 7 月 25 日更新 Qwen3 项目并发布 Qwen3-235B-A22B-Thinking-2507。它是 Qwen3-235B-A22B 思考版本的更新版，模型卡、权重和运行入口同时公开。",
+      "kind": "narrative"
+    },
+    {
+      "id": "parameter-map",
+      "title": "235B 和 22B 分别是什么意思",
+      "body": "235B 是模型的总参数量，22B 是混合专家模型在一次推理中激活的参数量。激活参数较少可以帮助控制每次计算量，但不代表模型权重、KV cache 和并行服务的硬件门槛很低。",
+      "kind": "technical"
+    },
+    {
+      "id": "thinking-context",
+      "title": "更长的思考换来了什么代价",
+      "body": "这一版本只支持思考模式，官方还提示思考长度增加；它更适合复杂推理、代码规划和工具编排，短问短答则可能付出额外的等待和 token 成本。原生上下文长度为 262,144 token。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "榜单分数要怎样读",
+      "body": "模型卡的 MMLU、GPQA、AIME、LiveCodeBench 和 BFCL 结果属于 Qwen 的评测记录。它们说明团队关注的能力方向，但受提示词、采样参数、预算和版本影响，上线前仍要用自己的数据集复测。",
+      "kind": "boundary"
+    },
+    {
+      "id": "deployment-choice",
+      "title": "开发者可以从哪里开始",
+      "body": "官方提供 Transformers、vLLM 和 SGLang 的运行示例。实际部署时要先估算权重、KV cache、并行度和吞吐，再决定是否需要这款大模型；模型大小和任务收益必须一起比较。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一张模型卡怎样变成部署决定？",
+    "question": "把发布事实、参数规格、评测分数和真实任务拆开，避免只被“235B”这个数字带着走。",
+    "steps": [
+      {
+        "label": "确认发布版本",
+        "detail": "先看 Qwen 官方更新记录和模型卡，确认这是 2025 年 7 月 25 日发布的 Thinking-2507 更新版。",
+        "evidence": "Qwen3 README 与官方模型卡"
+      },
+      {
+        "label": "拆开参数含义",
+        "detail": "把总参数、激活参数、专家数和上下文长度分开理解；它们分别影响容量、每次计算和服务资源。",
+        "evidence": "Model Overview"
+      },
+      {
+        "label": "把榜单放回条件里",
+        "detail": "记录评测名称、提示词、思考预算和版本，再判断分数能否代表自己的任务。",
+        "evidence": "Performance 表格与评测说明"
+      },
+      {
+        "label": "用真实任务复测",
+        "detail": "在长文档、工具调用和中文业务数据上试跑，比较质量、延迟、显存和成本后再上线。",
+        "evidence": "部署入口与自有评测集"
+      }
+    ]
+  },
+  "source": {
+    "name": "QwenLM · Qwen3 官方项目",
+    "url": "https://github.com/QwenLM/Qwen3/blob/main/README.md"
+  },
+  "relatedSlugs": [
+    "llm",
+    "context-window",
+    "eval",
+    "benchmark",
+    "agent",
+    "tools",
+    "token",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/QwenLM/Qwen3/blob/main/README.md",
+      "claim": "Qwen3 官方 README 的更新记录标明 2025-07-25 发布 Qwen3-235B-A22B-Thinking-2507。",
+      "excerpt": "QwenLM/Qwen3 README，2025.07.25 条目。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507",
+      "claim": "官方模型卡写明总参数 235B、激活参数 22B、原生上下文长度 262,144，并说明此版本仅支持思考模式。",
+      "excerpt": "Hugging Face 官方模型卡，Highlights 与 Model Overview。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507",
+      "claim": "官方模型卡列出逻辑、数学、科学、代码、工具使用等能力改进，并给出 MMLU、GPQA、AIME、LiveCodeBench、BFCL 等评测表。",
+      "excerpt": "Hugging Face 官方模型卡，Highlights、Performance 与 Agentic Use。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/zh/model-studio/newly-released-models",
+      "claim": "阿里云百炼模型发布页将 Qwen3-235B-A22B-Thinking-2507 列为 2025-07-25 全球发布的模型。",
+      "excerpt": "Alibaba Cloud Model Studio，新模型发布列表。"
+    }
+  ],
+  "canonicalUrl": "https://github.com/QwenLM/Qwen3/blob/main/README.md",
+  "sourceHash": "sha256:f4aa794d2933b9798b7bb0a4291bc3aa7cc3a1626ffbf9df0aab171d25ab35eb",
+  "status": "published",
+  "discoveredAt": "2026-10-04T13:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "文章解释 Qwen3 更新版是可部署的大语言模型，连接模型能力与服务选择。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.9,
+      "evidence": [
+        "文章用 262,144 token 说明模型能处理的上下文边界及其资源代价。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "文章把官方评测设置和上线前自有数据复测放在同一条证据链中。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.9,
+      "evidence": [
+        "文章逐项解释 MMLU、GPQA、AIME、LiveCodeBench 和 BFCL 的读取边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "文章将复杂推理和工具编排作为模型适用的真实任务场景。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "文章说明模型卡提供工具使用能力和 Transformers、vLLM、SGLang 运行入口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.9,
+      "evidence": [
+        "文章用 token 解释上下文长度、思考输出和成本之间的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "文章以 2025-07-25 的官方发布事件为时间轴起点。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/QwenLM/Qwen3/blob/main/README.md",
+      "claim": "Qwen3 官方 README 的更新记录标明 2025-07-25 发布 Qwen3-235B-A22B-Thinking-2507。",
+      "excerpt": "QwenLM/Qwen3 README，2025.07.25 条目。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507",
+      "claim": "官方模型卡写明总参数 235B、激活参数 22B、原生上下文长度 262,144，并说明此版本仅支持思考模式。",
+      "excerpt": "Hugging Face 官方模型卡，Highlights 与 Model Overview。"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507",
+      "claim": "官方模型卡列出逻辑、数学、科学、代码、工具使用等能力改进，并给出 MMLU、GPQA、AIME、LiveCodeBench、BFCL 等评测表。",
+      "excerpt": "Hugging Face 官方模型卡，Highlights、Performance 与 Agentic Use。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/zh/model-studio/newly-released-models",
+      "claim": "阿里云百炼模型发布页将 Qwen3-235B-A22B-Thinking-2507 列为 2025-07-25 全球发布的模型。",
+      "excerpt": "Alibaba Cloud Model Studio，新模型发布列表。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T13:30:00Z",
+    "method": "source",
+    "notes": "核对 Qwen 官方 README、Hugging Face 官方模型卡和阿里云百炼发布列表；将官方评测明确标为模型方口径。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T13:30:00Z",
+    "notes": "按模型发布新闻独立成稿，区分总参数、激活参数、上下文与评测边界，等待读者审阅。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T11:50:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文没有论文堆砌或明显模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-25，与对应官方发布日期一致。",
+      "Qwen 的 235B 总参数、22B 激活、262,144 token 和 MMLU/GPQA/AIME/LiveCodeBench/BFCL 分数均保留官方模型卡/评测口径，明确需要独立复测；Claude Artifacts 的 7/25 beta 范围、账号用量、外部 API/持久化限制与 7/31 Team/Enterprise 扩展边界清楚。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：两篇新闻事实、数字归属、beta 范围与独立验证边界清楚，无需修改正文。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-25",
+  "fingerprint": "sha256:f4aa794d2933b9798b7bb0a4291bc3aa7cc3a1626ffbf9df0aab171d25ab35eb",
+  "promotedAt": "2026-10-04T09:39:08.491Z"
+}

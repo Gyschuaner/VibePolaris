@@ -1,0 +1,205 @@
+{
+  "slug": "toctou-bench-llm-agent-security-20250823",
+  "title": "TOCTOU-Bench：Agent 检查过的状态，使用前还可能已经变了",
+  "summary": "TOCTOU-Bench 把系统安全里的 time-of-check to time-of-use 时序漏洞带进 LLM Agent：Agent 检查文件或 API 返回值后，外部状态可能在真正执行前被修改。论文用 66 个真实感用户任务评估这种风险，并测试 prompt rewriting、状态完整性监控和 tool-fusing 三类缓解手段；组合使用时，论文报告执行轨迹中的漏洞比例从 12% 降到 8%，同时把检测率、计划生成和攻击窗口分开统计。",
+  "body": "Agent 说“我已经检查过了”，并不代表它接下来使用的东西还是刚才检查的那一份。8 月 23 日提交的 TOCTOU-Bench，把系统安全里经典的 time-of-check to time-of-use 问题带进了 LLM Agent：检查发生在一个时刻，真正使用发生在另一个时刻，中间的外部状态可能已经换了。\n\n  这在 Agent 工作流里很自然。模型先读取文件、配置或 API 响应，判断它看起来可以用；随后工具再次取值、写入或执行。只要这两次之间有空隙，外部数据就可能改变，前一次判断就不再对应后一次动作。风险不一定来自模型“没看懂”，而可能来自它检查的对象和最终使用的对象根本不是同一个版本。\n\n  论文提出 TOCTOU-Bench，包含 66 个真实感用户任务，用来评估 Agent 在这类时序变化下是否会生成脆弱计划、是否真的走到了有问题的执行轨迹。这个切入点和提示注入不同：它关注的是状态一致性和时间窗口，而不是只看一段输入有没有恶意指令。\n\n  作者测试了三类缓解思路。Prompt rewriting 试着让计划明确记住状态约束；state integrity monitoring 监控检查和使用之间的变化；tool-fusing 则尽量把检查与使用合并到同一个受控工具动作里。它们分别作用在计划、状态和工具接口上，没有哪一层可以单独覆盖全部竞态。\n\n  论文报告自动检测方法的检测准确率最高约 25%，脆弱计划生成下降 3%，攻击窗口缩短 95%。三组数字回答的是不同问题，不能把“攻击窗口缩短”理解成漏洞已经消失。把三种方法合在一起时，执行轨迹中的漏洞比例从 12% 降到 8%，仍然留下需要处理的尾部。\n\n  工程上最有价值的建议，是把检查结果绑定到版本或快照，而不是只把它写进自然语言上下文。工具可以返回内容和版本标识，执行时再次确认两者一致；如果状态改变，就暂停、重新检查或要求人工确认。沙箱能限制动作范围，却不会自动让外部文件和 API 在时间上保持不变。\n\n  TOCTOU-Bench 让 Agent 安全多了一条容易被忽视的检查线：每次“先看再做”都要问中间有没有可被改变的状态。把工具调用合并、状态完整性和失败回退写进测试，比在提示词里重复一句“请小心”更接近真实的防守。",
+  "publishedAt": "2025-08-23",
+  "eventDate": "2025-08-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/toctou-bench-llm-agent-security-20250823.svg",
+    "alt": "TOCTOU-Bench 展示 Agent 在检查状态和使用状态之间的时间窗口",
+    "sourceUrl": "/images/news/toctou-bench-llm-agent-security-20250823.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "timing-gap",
+      "title": "检查通过，不代表使用时还是同一份状态",
+      "body": "TOCTOU 指 time-of-check to time-of-use：Agent 检查文件或 API 状态后，外部对象可能在真正使用前被修改。风险来自时间窗口，不只是模型理解错误。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agent-workflow",
+      "title": "自然语言计划把两个时刻连得太松",
+      "body": "Agent 可能先读取配置、再调用另一个工具执行；如果两次调用之间状态改变，前一次判断就不再对应后一次动作。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "TOCTOU-Bench 用 66 个真实感任务测竞态",
+      "body": "论文提供 66 个用户任务，观察 Agent 是否生成脆弱计划、是否进入有问题的执行轨迹，把状态一致性作为独立安全对象。",
+      "kind": "comparison"
+    },
+    {
+      "id": "countermeasures",
+      "title": "计划、状态、工具三层分别缓解",
+      "body": "Prompt rewriting 约束计划，state integrity monitoring 监控变化，tool-fusing 尽量把检查与使用合并。三者关注的层面不同，不能互相替代。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-results",
+      "title": "窗口缩短 95%，执行轨迹漏洞从 12% 到 8%",
+      "body": "论文报告自动检测准确率最高约 25%、脆弱计划生成下降 3%、攻击窗口缩短 95%；组合三种方法后，执行轨迹中的漏洞比例由 12% 降到 8%。",
+      "kind": "comparison"
+    },
+    {
+      "id": "version-binding",
+      "title": "把检查结果绑定到版本或快照",
+      "body": "工具可返回内容与版本标识，执行前再次确认两者一致；状态变化时应暂停、重新检查或请求确认。沙箱限制动作范围，却不会冻结外部状态。",
+      "kind": "boundary"
+    },
+    {
+      "id": "deployment",
+      "title": "每次“先看再做”都要画出时间窗口",
+      "body": "把状态变化、工具合并、完整性检查和失败回退纳入 Agent 测试，才能发现提示词之外的竞态。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "怎样减少 Agent 的检查与使用竞态？",
+    "question": "让检查结果带着版本走到执行边界，状态变化就暂停。",
+    "steps": [
+      {
+        "label": "标出两次时刻",
+        "detail": "把读取/检查和最终使用分别记录，先找出中间可以被外部修改的对象。",
+        "evidence": "time-of-check to time-of-use ... external state later modified before use"
+      },
+      {
+        "label": "绑定快照",
+        "detail": "工具返回内容时同时返回版本、时间或校验信息，不让自然语言描述单独承担一致性。",
+        "evidence": "state integrity monitoring"
+      },
+      {
+        "label": "合并关键动作",
+        "detail": "对高风险路径使用 tool-fusing，把检查和使用放进同一个受控工具操作。",
+        "evidence": "tool-fusing"
+      },
+      {
+        "label": "重新确认",
+        "detail": "执行前再次核对状态；若变化，暂停、重新检查或交给人工确认。",
+        "evidence": "reduce the attack window"
+      },
+      {
+        "label": "回放完整轨迹",
+        "detail": "在 66 类任务或自有任务上比较计划、窗口和最终执行结果，而不是只测提示词识别。",
+        "evidence": "TOCTOU-Bench with 66 realistic user tasks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / TOCTOU-Bench 作者组",
+    "url": "https://arxiv.org/abs/2508.17155"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "tools",
+    "execution-sandbox",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17155",
+      "claim": "论文把 TOCTOU 时序漏洞带到 LLM Agent，提出 66 个真实感任务的 TOCTOU-Bench。",
+      "excerpt": "first study of TOCTOU vulnerabilities in LLM-enabled agents ... TOCTOU-Bench ... 66 realistic user tasks"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17155",
+      "claim": "论文评估 prompt rewriting、状态完整性监控和 tool-fusing，并报告窗口、计划和执行轨迹漏洞的变化。",
+      "excerpt": "prompt rewriting, state integrity monitoring, and tool-fusing ... reduce the TOCTOU vulnerabilities ... from 12% to 8%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17155",
+  "sourceHash": "sha256:61b35f8ac774f174d9d671fbbb1e9789f0f29e34561eb6afad981149bc6795f4",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 Agent 读取外部状态、调用工具和执行计划的时序。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文讨论高风险动作的再次确认和失败回退。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文把 tool-fusing、版本标识和检查/使用拆分作为核心。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.88,
+      "evidence": [
+        "正文说明沙箱限制动作范围但不能冻结外部状态。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 66 个任务、检测率、攻击窗口和执行轨迹比例。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 23 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17155",
+      "claim": "arXiv 记录显示论文于 2025 年 8 月 23 日提交，提出 LLM Agent 的 TOCTOU-Bench 和三类缓解方法。",
+      "excerpt": "Date: Sat Aug 23 22:41:49 2025 ... first study of TOCTOU vulnerabilities"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 TOCTOU-Bench 摘要中的 66 个任务、prompt rewriting、state integrity monitoring、tool-fusing、25% 检测准确率、3% 计划下降、95% 窗口缩短及 12%→8% 组合结果；正文不展开攻击步骤，强调版本绑定与执行边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把 TOCTOU 与提示注入区分开，逐项解释检测、计划、窗口和执行轨迹指标，没有把 95% 窗口缩短写成漏洞消失，也没有复述攻击模板；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-23-toctou-bench-llm-agent-security"
+}

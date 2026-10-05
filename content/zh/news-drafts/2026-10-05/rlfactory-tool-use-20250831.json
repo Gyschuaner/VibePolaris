@@ -1,0 +1,188 @@
+{
+  "slug": "rlfactory-tool-use-20250831",
+  "title": "RLFactory：把多轮工具调用变成可训练、可验证的闭环",
+  "summary": "RLFactory 论文于 8 月 31 日提交，提出一个面向 LLM 多轮工具调用的可插拔强化学习后训练框架。它用异步调用器应对工具异构和接口问题，把工具与训练解耦，并支持规则、模型判断和工具验证三类奖励；通过给工具反馈加 observation marker，形成生成—解析—调用—更新闭环。在 Search-R1/Qwen3-4B 的 Natural Questions 实验中，论文报告测试得分 0.486、训练吞吐提升 6.8 倍。",
+  "body": "模型会写出一次工具调用，不代表它能在真实工作流里连续使用工具。接口格式可能不同，工具返回可能为空或报错，下一轮决策还要记住上一次调用究竟发生了什么。RLFactory 的问题意识，是把这些交互细节都放回训练闭环，而不是只在最后给一个答案分。\n\n框架提供异步调用器，处理工具异构、接口不稳定和多轮等待；工具层与训练层解耦，研究者可以替换工具而不重写整个训练流程。它还把奖励拆成三类：规则奖励、模型判断奖励和工具验证奖励，分别覆盖格式、质量和真实执行结果。\n\n一个关键设计是 observation marker。工具反馈不再只是普通文本，而被标记成环境观察，重新进入模型的状态。训练流程因此变成生成、解析、调用、读取反馈和更新策略的循环；模型学到的不是“写出像工具调用的字符串”，而是根据真实结果决定下一步。\n\n在 Search-R1 使用 Qwen3-4B、Natural Questions 的实验中，RLFactory 报告测试得分 0.486，高于类似训练设置下更大的 Qwen2.5-7B-Instruct-GRPO 的 0.473，训练吞吐提升 6.8 倍。这个比较依赖模型、工具、奖励和数据设置，不能直接推出小模型在所有工具任务上更强。\n\n对工程团队来说，奖励层的可替换性很实用。结构化工具可以用验证奖励，开放式回答需要规则和模型判断组合；每类奖励都要记录依据，避免评估者和执行器看到不一致的结果。\n\n工具调用训练也带来权限风险。异步调用器不应默认拥有生产凭据，失败重试要有次数和幂等边界，工具反馈要当作外部输入解析，不能因为模型在训练中学会调用就自动获得更大的执行范围。\n\nRLFactory 的价值，是把“会用工具”从提示技巧变成可观测的环境交互。只有反馈真正回到状态、奖励和下一步策略里，多轮 Agent 才有机会在工具出错时调整，而不是把错误一路传到最终答案。",
+  "publishedAt": "2025-08-31",
+  "eventDate": "2025-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/rlfactory-tool-use-20250831.svg",
+    "alt": "RLFactory 在生成、解析、调用、反馈和策略更新之间训练多轮工具使用",
+    "sourceUrl": "/images/news/rlfactory-tool-use-20250831.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "single-call-gap",
+      "title": "一次会调用，不等于多轮能完成",
+      "body": "工具接口、返回错误和上下文状态会在下一轮改变，单看最终答案无法训练这些交互能力。",
+      "kind": "narrative"
+    },
+    {
+      "id": "decoupled-architecture",
+      "title": "工具层和训练层先解耦",
+      "body": "异步调用器应对工具异构和等待，替换工具时不必重写全部训练流程。",
+      "kind": "technical"
+    },
+    {
+      "id": "reward-layer",
+      "title": "规则、模型判断和工具验证三类奖励",
+      "body": "不同奖励分别检查格式、质量和真实执行结果，形成可替换的评估层。",
+      "kind": "technical"
+    },
+    {
+      "id": "observation-marker",
+      "title": "把工具反馈标成环境观察",
+      "body": "observation marker 让反馈回到模型状态，训练闭环变成生成—解析—调用—更新。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-result",
+      "title": "NQ 得分 0.486，吞吐提升 6.8 倍",
+      "body": "Search-R1/Qwen3-4B 的结果高于类似设置下 Qwen2.5-7B-Instruct-GRPO 的 0.473；比较仍依赖任务和奖励设置。",
+      "kind": "comparison"
+    },
+    {
+      "id": "tool-boundary",
+      "title": "训练学会调用，不等于获得生产权限",
+      "body": "凭据、重试、幂等和反馈解析要独立设边界，异步调用器不能默认扩大执行范围。",
+      "kind": "boundary"
+    },
+    {
+      "id": "closed-loop-agent",
+      "title": "错误要回到下一步策略里",
+      "body": "多轮 Agent 的能力在于根据真实反馈调整，而不是把一次失败原样带到最终答案。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "RLFactory 怎样训练 LLM 在工具出错后继续做对？",
+    "question": "把工具反馈标记为环境观察，用多类奖励连接生成、调用和策略更新，并独立限制权限。",
+    "steps": [
+      {
+        "label": "统一调用接口",
+        "detail": "用异步调用器处理工具异构、接口错误和等待，保存请求与返回状态。",
+        "evidence": "asyncio-based asynchronous caller"
+      },
+      {
+        "label": "生成并解析调用",
+        "detail": "模型输出先经过结构化解析，检查工具、参数和重试边界。",
+        "evidence": "generate-parse-invoke-update workflow"
+      },
+      {
+        "label": "写回环境观察",
+        "detail": "把真实工具返回用 observation marker 放回状态，让下一轮看到发生了什么。",
+        "evidence": "observation markers from tool feedback"
+      },
+      {
+        "label": "组合奖励信号",
+        "detail": "按任务选择规则、模型判断和工具验证奖励，避免只奖励格式或表面回答。",
+        "evidence": "rule-based, model-judgment, and tool-verification signals"
+      },
+      {
+        "label": "限制执行权限",
+        "detail": "凭据、重试和幂等边界由独立策略控制，训练结果不自动转成生产权限。",
+        "evidence": "tool heterogeneity and interface issues"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.06980"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.06980",
+      "claim": "RLFactory 提供异步、解耦、带多类奖励的多轮工具调用强化学习后训练闭环。",
+      "excerpt": "A Plug-and-Play Reinforcement Learning Post-Training Framework for LLM Multi-Turn Tool-Use"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.06980",
+      "claim": "Search-R1/Qwen3-4B 在 NQ 得分 0.486，训练吞吐提升 6.8 倍。",
+      "excerpt": "0.486 test score ... increases training throughput by 6.8x"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.06980",
+  "sourceHash": "sha256:d4cf58f604f57004718349e235381424561e4dfefb62842e6dfd3e56c3710859",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多轮 Agent 的生成、调用、反馈和策略更新。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕异步调用器、工具反馈、奖励和接口边界展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留 NQ 得分、模型对照和吞吐评测条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 31 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.06980",
+      "claim": "arXiv 记录 RLFactory 于 2025 年 8 月 31 日提交，研究多轮工具调用的强化学习后训练。",
+      "excerpt": "Date: Sun Aug 31 ... RLFactory"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.06980",
+      "claim": "摘要给出多类奖励、observation marker、NQ 得分 0.486 和 6.8 倍吞吐。",
+      "excerpt": "observation markers ... 0.486 ... 6.8x"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对异步调用、工具/训练解耦、三类奖励、observation marker、NQ 对照和 6.8 倍吞吐；正文补充凭据、重试、幂等和权限边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 RLFactory 写成真实反馈驱动的多轮工具闭环，保留 NQ 和吞吐比较条件，并补上工具权限与重试边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-31-rlfactory-tool-use-20250831"
+}

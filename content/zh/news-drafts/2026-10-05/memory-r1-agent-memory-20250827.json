@@ -1,0 +1,199 @@
+{
+  "slug": "memory-r1-agent-memory-20250827",
+  "title": "Memory-R1：让 Agent 学会什么时候记、改、删和跳过",
+  "summary": "Memory-R1 论文于 8 月 27 日提交，针对外部记忆系统长期依赖固定规则的问题。它用两个专门 Agent 管理记忆：Memory Manager 学习 ADD、UPDATE、DELETE、NOOP 四种结构化操作，Answer Agent 先挑出相关条目再进行回答推理。作者用 PPO 和 GRPO 做结果驱动强化学习，只使用 152 个训练 QA 对，就在 LoCoMo、MSC、LongMemEval 三个基准和 3B–14B 多个模型规模上报告了跨问题类型的泛化。",
+  "body": "给 Agent 接一个记忆库，第一反应通常是“把对话都存下来”。但真正长期使用时，什么都存会让检索变慢，旧信息和新信息打架，个人偏好还可能在不该出现的任务里被带出来。Memory-R1 研究的重点，是让模型自己学会记忆操作，而不是把记忆当作一个永远只增不减的文本堆。\n\n它把记忆管理拆成两个角色。Memory Manager 负责决定一条记忆应该 ADD、UPDATE、DELETE，还是 NOOP；Answer Agent 则先从外部记忆里选出相关条目，再用这些条目参与回答。这样，记忆的维护和当前问题的推理有了不同职责，也更容易检查到底是存错了，还是取错了。\n\n四种操作的意义不只是方便实现。ADD 适合记录新的稳定事实，UPDATE 处理偏好或状态变化，DELETE 清理过期或不应保留的内容，NOOP 则承认不是每句话都值得进记忆。把“什么都存”改成“先做操作决策”，系统才有机会控制记忆的边界。\n\nMemory-R1 用结果驱动的强化学习训练这两个 Agent，使用 PPO 和 GRPO。它并没有依赖一个很大的人工操作标注集，论文说只用了 152 个训练 QA 对，却能在 LoCoMo、MSC 和 LongMemEval 上测试跨问题类型的表现。\n\n这里的“只用 152 个 QA 对”很容易被读成记忆管理已经解决。更准确的说法是，在作者的训练设置和这些 benchmark 上，模型学到了一套可迁移的操作策略。现实应用还要面对隐私、删除请求、多人共享、冲突事实和跨设备同步，这些都不能由一个 benchmark 分数代替。\n\n对产品来说，Memory Manager 的操作应该留下可审计记录：为什么新增、更新了哪一条、删除依据是什么、为什么选择 NOOP。用户还应该能查看、纠正和撤销记忆；当新信息与旧信息冲突时，系统要保留来源和时间，而不是静默覆盖。\n\nAnswer Agent 的预选也需要边界。相关不等于应该使用，尤其是个人偏好、健康信息和工作机密。检索时要结合任务权限、来源可信度和时间范围，回答里最好能说明哪些内容来自记忆，哪些是当前推断。\n\nMemory-R1 的启发是把长期记忆从“多存一点”变成“对每一次记忆变化负责”。Agent 真正拥有可用的记忆，不是它能回忆更多，而是它知道什么时候该记、该改、该删，以及什么时候应该什么都不做。",
+  "publishedAt": "2025-08-27",
+  "eventDate": "2025-08-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/memory-r1-agent-memory-20250827.svg",
+    "alt": "Memory-R1 由记忆管理 Agent 和回答 Agent 共同维护 ADD、UPDATE、DELETE、NOOP 操作",
+    "sourceUrl": "/images/news/memory-r1-agent-memory-20250827.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "store-everything-problem",
+      "title": "外部记忆不是越多越好",
+      "body": "全量保存会带来检索噪声、旧新冲突和不必要的个人信息暴露。长期 Agent 需要管理记忆，而不是只扩充记忆库。",
+      "kind": "narrative"
+    },
+    {
+      "id": "two-agent-design",
+      "title": "一个 Agent 管记忆，一个 Agent 用记忆",
+      "body": "Memory Manager 决定记什么，Answer Agent 先选相关条目再回答。维护和使用分开后，错误更容易定位。",
+      "kind": "technical"
+    },
+    {
+      "id": "four-operations",
+      "title": "ADD、UPDATE、DELETE、NOOP 都是必要动作",
+      "body": "新增稳定事实、更新变化状态、删除过期信息，以及明确跳过不值得保存的内容，共同构成记忆边界。",
+      "kind": "comparison"
+    },
+    {
+      "id": "small-training-set",
+      "title": "152 个训练 QA 对也能学出操作策略",
+      "body": "论文用 PPO 和 GRPO 做结果驱动强化学习，在 LoCoMo、MSC、LongMemEval 和 3B–14B 模型上报告跨问题类型泛化。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "跨 benchmark 泛化不等于现实记忆已解决",
+      "body": "隐私、删除请求、多人共享、冲突事实和跨设备同步，仍需在产品环境单独验收。",
+      "kind": "boundary"
+    },
+    {
+      "id": "audit-memory-changes",
+      "title": "每次记忆变化都要能解释",
+      "body": "记录新增、更新、删除和 NOOP 的原因、来源和时间，让用户能够查看、纠正和撤销。",
+      "kind": "example"
+    },
+    {
+      "id": "retrieval-permission",
+      "title": "相关记忆也不一定有权被使用",
+      "body": "回答 Agent 应结合任务权限、来源可信度和时间范围决定是否取用，并区分记忆事实和当前推断。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "怎样让 Agent 的长期记忆可控？",
+    "question": "把记忆操作、来源和使用权限分开，让每次变化都能被用户查看和撤销。",
+    "steps": [
+      {
+        "label": "先判断是否值得记",
+        "detail": "把稳定事实、短期状态、临时偏好和敏感信息分开，不能把所有对话默认写入长期记忆。",
+        "evidence": "lacking a learned mechanism for deciding what to store, update, or retrieve"
+      },
+      {
+        "label": "选择四种操作",
+        "detail": "让 Memory Manager 在 ADD、UPDATE、DELETE、NOOP 之间做结构化选择，并保留决策理由。",
+        "evidence": "structured operations, including ADD, UPDATE, DELETE, and NOOP"
+      },
+      {
+        "label": "保留来源和时间",
+        "detail": "更新或删除时记录原始来源、时间范围和冲突信息，避免静默覆盖造成错误记忆。",
+        "evidence": "actively manage and utilize external memory"
+      },
+      {
+        "label": "按权限检索",
+        "detail": "Answer Agent 选取记忆前检查任务、身份和敏感等级，相关不等于可以使用。",
+        "evidence": "Answer Agent that pre-selects and reasons over relevant entries"
+      },
+      {
+        "label": "允许用户撤销",
+        "detail": "让用户查看、纠正和删除自己的记忆，并在三个长期记忆基准之外做真实回放。",
+        "evidence": "LoCoMo, MSC, LongMemEval"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Memory-R1 作者组",
+    "url": "https://arxiv.org/abs/2508.19828"
+  },
+  "relatedSlugs": [
+    "memory",
+    "context",
+    "agent",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.19828",
+      "claim": "Memory-R1 用 Memory Manager 和 Answer Agent 分工管理与使用外部记忆，支持 ADD/UPDATE/DELETE/NOOP。",
+      "excerpt": "two specialized agents: a Memory Manager ... ADD, UPDATE, DELETE, and NOOP ... Answer Agent"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19828",
+      "claim": "论文称只用 152 个训练 QA 对，以 PPO/GRPO 在 LoCoMo、MSC、LongMemEval 和多个模型规模上泛化。",
+      "excerpt": "With only 152 training QA pairs ... PPO and GRPO ... LoCoMo, MSC, LongMemEval ... 3B-14B"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.19828",
+  "sourceHash": "sha256:12c97a15e86220c1251b24fd227db4b354aa592fe9e2281bf85fcda54cdf323b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕外部记忆的新增、更新、删除、跳过和审计展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "正文讨论记忆检索、旧新冲突和当前回答上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文区分 Memory Manager 与 Answer Agent 的职责。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文提到三个长期记忆 benchmark 和真实回放验收。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 27 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.19828",
+      "claim": "arXiv 记录 Memory-R1 于 2025 年 8 月 27 日提交，目标是用强化学习管理和使用外部记忆。",
+      "excerpt": "Date: Wed Aug 27 ... Enhancing Large Language Model Agents to Manage and Utilize Memories"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19828",
+      "claim": "摘要给出四种记忆操作、两个 Agent、152 个训练 QA 对、PPO/GRPO 和三个 benchmark。",
+      "excerpt": "ADD, UPDATE, DELETE, and NOOP ... With only 152 training QA pairs ... LoCoMo, MSC, LongMemEval"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对两个专门 Agent、四种记忆操作、152 QA、PPO/GRPO、三个 benchmark 和 3B–14B 泛化表述；正文明确区分论文基准与现实隐私、删除、共享和同步要求。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把长期记忆写成有操作、有来源、有权限的状态系统，保留 152 QA 与 benchmark 边界，并补上用户查看、纠正、撤销要求；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-27-memory-r1-agent-memory-20250827"
+}

@@ -1,0 +1,188 @@
+{
+  "slug": "learning-to-deliberate-mpdf-20250904",
+  "title": "Learning to Deliberate：让多 Agent 学会什么时候坚持、修正或让步",
+  "summary": "Learning to Deliberate 论文于 9 月 4 日提交，指出多 Agent LLM 系统常把协作写成固定协议，让 Agent 只执行外部编排而不利用自己的不确定性和信心。作者提出 Meta-Policy Deliberation Framework（MPDF），让 Agent 学习 Persist、Refine、Concede 三种元认知动作，并用 SoftRankPO 稳定强化学习训练；论文在五个数学和通用推理基准上，相比六种多 Agent 推理方法报告平均 4–5 个百分点的绝对准确率提升。",
+  "body": "多 Agent 推理系统通常先规定一套协作流程：谁先回答、谁来检查、什么时候汇总。固定流程容易实现，却把每个 Agent 当成只会照做的执行者。真正卡住时，Agent 也许已经知道自己的答案不稳，却没有一个正式动作可以表达“再想一遍”“请别人检查”或“这条路走不通”。\n\nLearning to Deliberate 把这件事称为元认知盲点。它不是继续增加一个总协调器，而是让 Agent 根据内部的信心和不确定性，学习下一步该怎样参与协作。作者提出 MPDF，让每个 Agent 在分布式策略下选择三类高层动作：Persist，继续推进当前思路；Refine，重新检查或修正；Concede，承认当前路线不可靠，把机会让给其他 Agent。\n\n这三个动作的价值不在名字，而在它们把“协作节奏”变成了可学习的决策。一个 Agent 可以在自己有把握时少打断别人，在证据互相冲突时主动请求修正，在继续搜索只会浪费 token 时选择让步。这样，协作协议不再由人提前写死，而是和任务结果、轨迹成本一起被训练。\n\n训练这一层策略并不轻松。传统 policy gradient 在这种多 Agent、离散高层动作和波动回报的组合里容易不稳定。论文为此提出 SoftRankPO：先按回报排序，再通过平滑的正态分位映射塑造 advantage，让策略更新不必过度追逐一次偶然的高分。这个算法解决的是训练信号的方差问题，不是保证每次协作都能找到正确答案。\n\n实验在五个数学和通用推理基准上进行。论文称，MPDF 与 SoftRankPO 相比六种当前的启发式和学习型多 Agent 推理算法，平均准确率提高 4–5 个百分点。这个数字属于作者的实验组合，仍然要看基准难度、模型规模、通信成本和每轮 token 预算；它支持“学习策略有用”的证据，不等于固定协议在所有任务上都应该被替换。\n\n把这种框架放进实际 Agent 系统，首先要把动作原因记下来：它为什么继续、哪条证据让它修正、何时判断应该让步。其次要给策略设置预算和停止条件，避免 Agent 以“再 refine 一次”为理由无限循环。高风险任务还应保留独立的授权和人工接管，不能把 Concede 当成安全审查的替代品。\n\n这篇论文最值得带走的不是三个英文动词，而是一个设计方向：多 Agent 的可靠性取决于它们能不能根据自己的状态改变协作方式。让策略学会停顿和让步，可能比继续堆叠固定角色更有效；但要证明它在生产中可靠，仍需跨任务回归、记录轨迹，并同时衡量准确率、延迟、token 消耗和错误扩散。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/learning-to-deliberate-mpdf-20250904.svg",
+    "alt": "MPDF 让多 Agent 根据不确定性在 Persist、Refine、Concede 之间选择",
+    "sourceUrl": "/images/news/learning-to-deliberate-mpdf-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "fixed-protocol",
+      "title": "固定协作协议把 Agent 变成被动执行者",
+      "body": "预先规定谁先答、谁来查和何时汇总，容易实现，却忽略了 Agent 自己的信心与不确定性。",
+      "kind": "narrative"
+    },
+    {
+      "id": "mpdf-actions",
+      "title": "MPDF 把协作节奏变成三种高层动作",
+      "body": "Persist 继续推进，Refine 重新检查，Concede 承认路线不稳并让出机会；动作由策略选择，不是人工硬编码。",
+      "kind": "technical"
+    },
+    {
+      "id": "soft-rankpo",
+      "title": "SoftRankPO 用平滑排序稳定训练信号",
+      "body": "算法按回报排序并塑造 advantage，减少离散动作和波动回报带来的策略更新不稳定。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-result",
+      "title": "五个推理基准上平均提升 4–5 个百分点",
+      "body": "论文相对六种启发式和学习型多 Agent 方法报告绝对准确率提升；数字仍受模型、预算和基准组合限制。",
+      "kind": "comparison"
+    },
+    {
+      "id": "state-aware",
+      "title": "什么时候继续，取决于证据和不确定性",
+      "body": "把继续、修正和让步的原因写进轨迹，才能分辨策略真的在协作，还是只是在延长对话。",
+      "kind": "example"
+    },
+    {
+      "id": "budget-stop",
+      "title": "元认知策略也要有预算和停止条件",
+      "body": "限制 refine 次数、通信轮数和 token 消耗，避免让步动作被误当成安全审查或无限循环的借口。",
+      "kind": "boundary"
+    },
+    {
+      "id": "production-metrics",
+      "title": "生产评估要同时看准确率、延迟和错误扩散",
+      "body": "学习型协作策略需要跨任务回归与人工接管，不能只凭一个基准分数替换固定流程。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "MPDF 怎样让多 Agent 学会调整协作节奏？",
+    "question": "让每个 Agent 依据自身状态选择继续、修正或让步，再用稳定的强化学习信号约束成本和停止条件。",
+    "steps": [
+      {
+        "label": "读取当前状态",
+        "detail": "保留 Agent 的答案、信心、不确定性和已消耗的通信/推理预算。",
+        "evidence": "internal cognitive states like uncertainty or confidence"
+      },
+      {
+        "label": "选择元认知动作",
+        "detail": "根据证据和状态在 Persist、Refine、Concede 中做分布式策略决策。",
+        "evidence": "Persist, Refine, and Concede"
+      },
+      {
+        "label": "稳定策略更新",
+        "detail": "用 SoftRankPO 按回报排序并平滑塑造 advantage，降低一次偶然回报造成的更新抖动。",
+        "evidence": "SoftRankPO and smooth normal quantiles"
+      },
+      {
+        "label": "比较协作效果",
+        "detail": "在数学和通用推理基准上比较准确率、轮数和 token 成本，不只看最终答案。",
+        "evidence": "five mathematical and general reasoning benchmarks"
+      },
+      {
+        "label": "设置停止与接管",
+        "detail": "超过预算或遇到高风险动作时停止循环，保留轨迹并把决定交给独立规则或人工。",
+        "evidence": "dynamic, deliberative strategies"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03817"
+  },
+  "relatedSlugs": [
+    "agent",
+    "llm",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03817",
+      "claim": "MPDF 让多 Agent 在 Persist、Refine、Concede 三种元认知动作中学习分布式策略，SoftRankPO 用平滑分位映射稳定训练。",
+      "excerpt": "Meta-Policy Deliberation Framework ... Persist, Refine, and Concede ... SoftRankPO"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03817",
+      "claim": "论文在五个数学和通用推理基准上，报告相对六种多 Agent 方法平均 4–5 个百分点的绝对准确率提升。",
+      "excerpt": "4-5% absolute gain in average accuracy across five ... benchmarks compared to six ... algorithms"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03817",
+  "sourceHash": "sha256:9242058ece22e9f8e0c18856a0f93aafc9b345b3fa7d77f6469a78c096d1455a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多 Agent 的协作协议、元认知动作、轨迹和人工接管。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文基于 LLM 多 Agent 推理系统解释 MPDF 和 SoftRankPO。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留五个数学/通用推理基准、准确率、token 成本和跨任务回归。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03817",
+      "claim": "arXiv 记录论文于 2025 年 9 月 4 日提交，主题是多 Agent LLM 的元策略协作。",
+      "excerpt": "Submitted on 4 Sep 2025 ... Learning to Deliberate"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03817",
+      "claim": "摘要给出 MPDF、三种元认知动作、SoftRankPO 和 4–5 个百分点的实验提升。",
+      "excerpt": "Persist, Refine, and Concede ... SoftRankPO ... 4-5% absolute gain"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 MPDF、Persist/Refine/Concede、SoftRankPO、五个推理基准和平均 4–5 个百分点绝对提升；正文补充策略原因、预算、停止条件、轨迹记录和人工接管边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把固定协议、元认知动作、SoftRankPO 和 4–5 个百分点实验结果与原摘要对应，未把基准提升扩写成普遍保证；补充 token/通信预算、停止条件、轨迹解释和人工接管边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-learning-to-deliberate-mpdf-20250904"
+}

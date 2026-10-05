@@ -59,7 +59,16 @@ export const terms = z.array(termSchema).parse([
 ]);
 export const publishedTermSlugs = z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1).parse(publishedTermSlugsSource);
 export const tools = z.array(toolSchema).parse(toolsSource);
-export const newsArticles = z.array(newsArticleSchema).min(1).parse(newsSource);
+const parsedNewsArticles = z.array(newsArticleSchema).min(1).parse(newsSource);
+
+// Example records are useful in draft/pipeline fixtures, but they are never part
+// of the public content collection. Keep this boundary here so every page,
+// sitemap entry, search result, and Xiaobei lookup shares the same filter.
+export const newsArticles = parsedNewsArticles.filter((article) => !article.isExample);
+
+if (!newsArticles.length) {
+  throw new Error("公开新闻至少需要一篇真实来源文章");
+}
 
 const categoryNames = new Set(taxonomy.map((item) => item.name));
 const duplicateSlugs = terms.filter(

@@ -1,0 +1,188 @@
+{
+  "slug": "prost-progressive-multiagent-slm-20250902",
+  "title": "ProST：让小模型多 Agent 逐步学会分工",
+  "summary": "ProST 论文于 9 月 2 日提交，比较不同规模小模型组成的单 Agent 与多 Agent 系统在 AppWorld 中的效果和效率。作者发现，小模型在长轨迹学习上容易失效，即使分配了专门角色也可能学不好全部子任务；ProST 用 progressive sub-task training，把新子任务按训练轮次逐步引入，论文报告各配置下的多 Agent 效果改善，并在 Pareto 分析中取得更好的效果—效率权衡。",
+  "body": "多 Agent 常被当作扩大模型能力的捷径：把复杂任务拆给几个小模型，看起来就能用较低成本完成大模型才做得好的工作。但任务一长，问题会从“每个 Agent 会不会自己的子任务”变成“它们能不能把一串子任务接起来”。ProST 先把这个效果与效率的取舍放到同一个实验里。\n\n作者在 AppWorld 中实例化不同规模的小模型，比较单 Agent 和多 Agent 系统。结果显示，小模型在长轨迹学习上容易受限；即使给它们分配专门角色，也不一定能学会所有子任务。角色名写在提示里，并不会自动带来稳定分工，错误可能在 Agent 之间互相传递，最后由调用次数和重试成本放大。\n\nProST 的方法是 progressive sub-task training：训练早期先让系统掌握较少的子任务，再在后续训练轮次逐步加入新的子任务。它类似实例级 curriculum learning，但关注的是一条多 Agent 轨迹中任务组合怎样变复杂。渐进引入的目的不是让模型永远停留在简单任务，而是避免一次把完整长链塞进学习过程，给每个新子任务留下可以定位的学习阶段。\n\n论文还用消融分析检查渐进策略的重要性，并报告它在不同配置下持续提高多 Agent 的有效性、降低子任务错误率。Pareto 分析显示，微调后的多 Agent 系统在效果和效率之间有更好的折中。这个结论支持一种更务实的路线：小模型不一定要在每个子任务上都变成通用模型，系统可以把有限能力放在明确边界内，再用编排补上长链。\n\n效果—效率的 Pareto 前沿仍然取决于怎么计成本。除了模型推理费用，还应计入 Agent 间消息、状态同步、失败重试、工具等待和人工接管。一个在离线 AppWorld 里得分更高的系统，如果在真实 API 上需要多两倍调用，未必更便宜；如果子任务分工不稳定，额外的 Agent 反而会增加排错难度。\n\n把 ProST 用到生产前，还要在未见过的任务、工具延迟、权限变化和长链恢复上复测。渐进训练可能让模型熟悉某一种子任务顺序，换了业务流程就会退化；多 Agent 还需要明确共享状态、冲突解决和终止条件。评测应同时记录每个子任务的错误类型、消息轮数和最终成功，而不是只看总任务是否完成。\n\nProST 的价值在于把“用小模型做多 Agent”从规模口号变成训练课程和成本曲线问题。先逐步学会分工，再看系统是否真的进入更好的 Pareto 区间；只有当子任务边界、编排开销和失败恢复都能被测量，多 Agent 才有理由成为小模型的效率方案。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/prost-progressive-multiagent-slm-20250902.svg",
+    "alt": "ProST 让小模型多 Agent 按训练阶段逐步加入子任务，改善效果与效率权衡",
+    "sourceUrl": "/images/news/prost-progressive-multiagent-slm-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "slm-long-trajectory",
+      "title": "小模型多 Agent 的难点在长轨迹",
+      "body": "角色拆分并不会自动带来稳定协作；长链中的子任务错误会沿消息和重试不断放大。",
+      "kind": "narrative"
+    },
+    {
+      "id": "appworld-comparison",
+      "title": "AppWorld 把单 Agent 和多 Agent 放在同一场比较",
+      "body": "论文按模型规模和系统配置比较效果与效率，观察小模型在长轨迹学习上的限制。",
+      "kind": "technical"
+    },
+    {
+      "id": "progressive-subtasks",
+      "title": "先学少量子任务，再逐步加复杂度",
+      "body": "ProST 用 progressive sub-task training 把新子任务按训练轮次引入，类似实例级课程学习。",
+      "kind": "technical"
+    },
+    {
+      "id": "pareto-tradeoff",
+      "title": "Pareto 分析看效果，也看效率",
+      "body": "消融结果显示渐进策略降低子任务错误率；微调后的多 Agent 系统在效果—效率之间有更好的折中。",
+      "kind": "comparison"
+    },
+    {
+      "id": "cost-accounting",
+      "title": "消息、重试和等待也属于成本",
+      "body": "离线任务得分更高不等于真实 API 更便宜，Agent 间同步、工具等待和人工接管都要计入。",
+      "kind": "boundary"
+    },
+    {
+      "id": "transfer-boundary",
+      "title": "换任务和权限后要重新测长链恢复",
+      "body": "渐进课程可能依赖固定子任务顺序；生产复测要覆盖新任务、工具延迟、权限变化和冲突解决。",
+      "kind": "example"
+    },
+    {
+      "id": "measured-division",
+      "title": "分工只有在错误和开销可测时才有意义",
+      "body": "记录每个子任务的错误类型、消息轮数和最终成功，才能判断多 Agent 是否真的成为小模型的效率方案。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "ProST 怎样让小模型逐步学会多 Agent 分工？",
+    "question": "先训练少量子任务，再逐轮加入新子任务，最后用效果与系统成本一起看是否值得。",
+    "steps": [
+      {
+        "label": "拆出子任务边界",
+        "detail": "把 AppWorld 长任务分成可观察的子任务和角色，记录每个阶段的输入、输出与错误。",
+        "evidence": "multi-agent systems with smaller language models"
+      },
+      {
+        "label": "从短课程开始",
+        "detail": "训练早期只引入一部分子任务，先让模型学会基本调用和交接，不一次压入完整长链。",
+        "evidence": "progressive sub-task training"
+      },
+      {
+        "label": "逐轮增加组合",
+        "detail": "在后续训练轮次加入新的子任务和更复杂的组合，保持每次新增内容可定位、可复盘。",
+        "evidence": "analogous to instance level curriculum learning"
+      },
+      {
+        "label": "看子任务错误率",
+        "detail": "用消融比较渐进训练与一次性训练，检查改进来自哪些子任务，而不是只看总成功率。",
+        "evidence": "reduce subtask error rates"
+      },
+      {
+        "label": "画出效果—效率前沿",
+        "detail": "把推理、消息、重试、工具等待和接管成本一起算，判断多 Agent 是否进入更好的 Pareto 区间。",
+        "evidence": "better effectiveness-efficiency trade-offs"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.04508"
+  },
+  "relatedSlugs": [
+    "agent",
+    "benchmark",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.04508",
+      "claim": "ProST 在 AppWorld 比较小模型单 Agent 与多 Agent 的效果和效率，发现长轨迹学习和角色专门化存在子任务限制。",
+      "excerpt": "difficulties with long-trajectory learning ... fail to learn all subtasks effectively"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04508",
+      "claim": "progressive sub-task training 逐步加入子任务，论文报告降低子任务错误率并改善多 Agent 的效果—效率权衡。",
+      "excerpt": "introduces new sub-tasks progressively ... reduce subtask error rates ... Pareto analysis"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.04508",
+  "sourceHash": "sha256:184566e44625025f6affe1252250667eaafee547db29c250cdf49b499ad2955c",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论小模型单 Agent、多 Agent、角色分工和消息编排。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.96,
+      "evidence": [
+        "正文保留 AppWorld 作为统一比较环境和长轨迹任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文按子任务错误率、最终成功和效果—效率 Pareto 权衡组织评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.04508",
+      "claim": "arXiv 记录 ProST 于 2025 年 9 月 2 日提交，研究小模型多 Agent 系统的训练和效率。",
+      "excerpt": "Published: 2025-09-02 ... ProST"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04508",
+      "claim": "摘要给出 AppWorld 比较、progressive sub-task training、消融和 Pareto 效果—效率结果。",
+      "excerpt": "progressive sub-task training ... effectiveness-efficiency trade-offs"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 AppWorld、长轨迹限制、角色专门化不足、progressive sub-task training、子任务错误率和 Pareto 分析；正文补充消息/重试/等待成本、未见任务、权限变化与长链恢复边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把小模型能力、渐进子任务课程和效果—效率 Pareto 拆开，补充消息/重试/工具等待成本与真实任务迁移边界，避免把多 Agent 数量写成自动收益；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-prost-progressive-multiagent-slm-20250902"
+}

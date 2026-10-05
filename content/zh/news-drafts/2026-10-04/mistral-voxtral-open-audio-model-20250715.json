@@ -1,0 +1,222 @@
+{
+  "slug": "mistral-voxtral-open-audio-model-20250715",
+  "title": "Mistral 发布 Voxtral：24B 云端、3B 本地的开放语音理解模型",
+  "summary": "Mistral 发布 Voxtral 语音理解模型家族：24B 面向生产级部署、3B 面向本地和边缘设备，Apache 2.0 开放权重，能力从转写延伸到音频问答、摘要和语音触发函数。",
+  "body": "7 月 15 日，Mistral 发布 Voxtral，这是它第一次把“语音理解”作为一组开放模型单独推出。官方给出两个尺寸：24B 版本面向生产级应用，3B 版本面向本地和边缘部署；两者都采用 Apache 2.0 许可，同时可以通过 Mistral API 使用。新闻的重点不只是又多了一个语音转写模型，而是把听懂音频、回答问题和触发后续动作放进同一条链路。\n\nVoxtral 的定位比传统 ASR（自动语音识别）多一步。它可以先把音频转成文字，也可以直接针对音频内容回答问题、生成结构化摘要。Mistral 说，32k token 上下文可处理最长约 30 分钟的转写，或约 40 分钟的理解任务；模型还支持自动识别多种语言，以及根据口头意图调用后端函数或 API。这里的“函数调用”不是模型自己获得了系统权限，而是应用开发者预先定义了可调用的动作。\n\n两种尺寸对应两种取舍。24B 需要更大的推理资源，更适合云端和生产服务；3B 可以下载到本地，便于在边缘设备或对数据有严格控制的环境中运行。Mistral 另提供面向转写的 Voxtral Mini Transcribe API，并在模型页和 Hugging Face 保留了 API、权重与部署入口。官方还说 Le Chat 的语音模式会在随后几周逐步覆盖用户，这属于产品 rollout，不能理解成当天所有账号都已可用。\n\nMistral 同时给出与 Whisper、GPT-4o mini Transcribe、Gemini 2.5 Flash 和 ElevenLabs Scribe 的 benchmark 对比。这些数字说明厂商选择了哪些任务和指标，但仍是 Mistral 自己的评测；不同语言、噪声、说话人和真实业务录音可能得到不同结果。文章因此把“官方声称的性能”与“已经在现实场景被独立验证”分开记录。\n\n这次发布的实际影响在于部署控制权。团队可以选择云端 API，也可以把较小模型放到自己的设备或网络里，先完成转写，再决定哪些摘要或函数调用可以进入业务系统。语音变成可执行输入后，权限、日志和人工确认会和模型本身一样重要。Voxtral 展示了开放语音模型的路线，但它并没有替应用自动承担这些治理工作。",
+  "publishedAt": "2025-07-15",
+  "eventDate": "2025-07-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mistral-voxtral-open-audio-model-20250715.svg",
+    "alt": "Mistral Voxtral 把语音从转写推向理解和行动，分为云端 24B 与本地 3B 两条路线",
+    "sourceUrl": "/images/news/mistral-voxtral-open-audio-model-20250715.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "two-sizes",
+      "title": "24B 和 3B 是两种部署取舍",
+      "body": "Mistral 把 24B 定位为生产规模，把 3B 定位为本地和边缘部署；开放许可让团队可以先按自己的算力和数据边界选择入口。",
+      "kind": "comparison"
+    },
+    {
+      "id": "beyond-transcription",
+      "title": "Voxtral 不只做转写",
+      "body": "音频问答、摘要、多语识别和从语音触发函数让模型进入“理解后行动”的链路，但可调用动作仍由应用预先定义。",
+      "kind": "technical"
+    },
+    {
+      "id": "context-window",
+      "title": "32k 上下文对应约 30 到 40 分钟音频",
+      "body": "官方把转写和理解分别给出约 30 分钟、40 分钟的上限；真实时长还会受到语言、音质和任务复杂度影响。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "benchmark 是厂商口径，不是现实场景保证",
+      "body": "Mistral 的对比覆盖多组公开任务，但文章不把“超过”写成所有语言、噪声和业务录音都必然更好。",
+      "kind": "boundary"
+    },
+    {
+      "id": "permission-chain",
+      "title": "语音变成动作后，权限和日志仍由应用负责",
+      "body": "函数调用可以把口头意图接到后端，但模型本身没有自动获得付款、写库或执行系统命令的权限。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一段语音怎样变成可核对的业务动作？",
+    "question": "先把听见、理解和执行拆开，才能看清模型的边界。",
+    "steps": [
+      {
+        "label": "接收音频",
+        "detail": "把录音、实时语音或上传文件交给 3B 本地模型或 24B 云端服务，并记录来源和时长。",
+        "evidence": "Mistral Voxtral model sizes"
+      },
+      {
+        "label": "转写内容",
+        "detail": "先生成文字或时间段，检查语言识别和专有名词是否正确。",
+        "evidence": "Voxtral transcription capability"
+      },
+      {
+        "label": "理解问题",
+        "detail": "让模型对音频提问、做摘要或提取结构化字段，而不是把每次输出都当成事实。",
+        "evidence": "Voxtral Q&A and summaries"
+      },
+      {
+        "label": "提出动作",
+        "detail": "如果要调用 API，应用把允许的函数和参数交给模型，模型只负责提出调用意图。",
+        "evidence": "Function calling from voice"
+      },
+      {
+        "label": "人工或规则确认",
+        "detail": "在写入系统、发送通知或产生费用前，依据权限和审计规则复核结果。",
+        "evidence": "Deployment boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Mistral AI",
+    "url": "https://mistral.ai/news/voxtral/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "api",
+    "tools",
+    "context",
+    "token"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://mistral.ai/news/voxtral/",
+      "claim": "Mistral 官方页面标注 2025 年 7 月 15 日，发布 Voxtral 24B 与 3B 两个语音理解模型，均采用 Apache 2.0 许可并提供 API。",
+      "excerpt": "Mistral AI, Voxtral, July 15, 2025."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/voxtral-small-25-07",
+      "claim": "Voxtral Small 模型页记录 32k 上下文、音频输入和按分钟计价的 API 入口；模型页注明发布日期为 2025 年 7 月 15 日。",
+      "excerpt": "Voxtral Small, July 15, 2025; 32k context; audio input."
+    },
+    {
+      "url": "https://huggingface.co/mistralai/Voxtral-Mini-3B-2507",
+      "claim": "Mistral 的 Hugging Face 模型入口提供本地权重下载路径；正文只把它作为可部署入口，不把模型卡 benchmark 当成独立复测。",
+      "excerpt": "Mistral AI, Voxtral Mini 3B 2507, model weights."
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.13264",
+      "claim": "Voxtral 研究论文提供模型训练和评测背景；文章将论文作为背景来源，而不是把论文发布日期替代产品发布日。",
+      "excerpt": "Voxtral technical report, arXiv:2507.13264."
+    }
+  ],
+  "canonicalUrl": "https://mistral.ai/news/voxtral/",
+  "sourceHash": "sha256:b19ba4e6ba24df65a7bb48810940ece45627516557b0069725adb1624f65eef1",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:00:25Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文把 Voxtral 放在开放语音理解模型的 LLM 能力链路中解释。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 API 与语音函数调用的连接边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释开发者预先定义的函数工具和语音触发动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 32k token 上下文对应的音频处理范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.9,
+      "evidence": [
+        "正文用 token 解释上下文长度与音频时长的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://mistral.ai/news/voxtral/",
+      "claim": "Mistral 官方页面标注 2025 年 7 月 15 日，发布 Voxtral 24B 与 3B 两个语音理解模型，均采用 Apache 2.0 许可并提供 API。",
+      "excerpt": "Mistral AI, Voxtral, July 15, 2025."
+    },
+    {
+      "url": "https://docs.mistral.ai/models/voxtral-small-25-07",
+      "claim": "Voxtral Small 模型页记录 32k 上下文、音频输入和按分钟计价的 API 入口；模型页注明发布日期为 2025 年 7 月 15 日。",
+      "excerpt": "Voxtral Small, July 15, 2025; 32k context; audio input."
+    },
+    {
+      "url": "https://huggingface.co/mistralai/Voxtral-Mini-3B-2507",
+      "claim": "Mistral 的 Hugging Face 模型入口提供本地权重下载路径；正文只把它作为可部署入口，不把模型卡 benchmark 当成独立复测。",
+      "excerpt": "Mistral AI, Voxtral Mini 3B 2507, model weights."
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.13264",
+      "claim": "Voxtral 研究论文提供模型训练和评测背景；文章将论文作为背景来源，而不是把论文发布日期替代产品发布日。",
+      "excerpt": "Voxtral technical report, arXiv:2507.13264."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "method": "source",
+    "notes": "已核对 Mistral 官方英文公告、模型文档、Hugging Face 入口和技术报告；正文区分开放许可、模型尺寸、官方 benchmark、API rollout 与应用侧权限。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "notes": "按 2025-07-15 事件日核对 Mistral 一手公告和模型入口；正文以产品新闻为主，论文只作背景，等待 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T15:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，七篇均按各自事件组织，未见批量模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-15，与官方发布、媒体报道、漏洞披露或论文讨论日期一致。",
+      "Mistral/Google/Thinking Machines/Discover/xAI/Meta/CoT 论文分别清楚区分公司产品与 benchmark、媒体/研究者报道、融资和内部数据、漏洞修复、论文建议与独立验证边界；Big Sleep 的阻断、Discover rollout、Grok prompt 修复、Meta 无滥用证据及 CoT 可监测性均未越界为普遍结论。",
+      "来源卡片、sections、explainer、SVG alt、词条联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：七篇事实、来源归属、公司口径和第三方/论文证据边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-15",
+  "fingerprint": "sha256:b19ba4e6ba24df65a7bb48810940ece45627516557b0069725adb1624f65eef1",
+  "promotedAt": "2026-10-04T17:29:52.933Z"
+}

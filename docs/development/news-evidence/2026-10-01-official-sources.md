@@ -6,7 +6,7 @@
 
 - 来源：[OpenAI — Introducing dots](https://openai.com/index/introducing-dots/)
 - 发布日期：2026-09-29
-- 草稿：`openai-dots-september-2026.json`
+- 草稿：`content/zh/news-drafts/2026-10-02/openai-dots-september-2026.json`
 - 记录事实：OpenAI 将 Dots 描述为可持续运行的代理，提供独立云端计算机和浏览器，可通过插件连接 4,000 多个应用，并在部分市场向 Pro、Business Premium 和 Enterprise 计划逐步开放。
 - 证据摘录：`Dots are remarkably capable, always-on agents built to handle everything.`
 - 关系：`agent-harness`、`agent-loop`、`tools`，均在草稿中标记为人工确认。

@@ -1,0 +1,183 @@
+{
+  "slug": "fujitsu-self-evolving-multi-ai-agents",
+  "title": "富士通公布多 AI 智能体持续更新机制，计划接入 AI Platform 与 Kozuchi",
+  "summary": "5 月 25 日，富士通公布可自我演进的多 AI 智能体技术，称系统能够根据执行结果、人类反馈和政策变化持续学习，并计划接入 AI Platform 与 Kozuchi，覆盖云、内网和边缘环境。公告说明了技术方向与部署计划，没有给出客户部署规模、长期收益或故障率，也不能单凭“自我演进”证明系统可以在所有任务中安全修改自身。",
+  "body": "5 月 25 日，富士通在官方页面公布一项多 AI 智能体技术。公司对外描述的重点，是让智能体在任务执行后继续吸收结果、人类反馈和政策变化，并把这套能力计划接入 AI Platform 和 Kozuchi，面向云、内网与边缘环境。现有证据支持“发布了技术方向和部署计划”，还不足以支持更大的产品结论。\n\n“自我演进”在这条公告里首先是一个更新机制：系统根据运行结果和外部约束调整后续策略或规格，而不是简单地重新训练一个模型。公告没有公开更新由哪个组件执行、哪些变化需要人工批准，也没有给出跨任务的稳定性指标。因此，阅读这条消息时，应把富士通的能力主张和已经独立验证的结果分开。\n\n如果要把这种机制接入真实流程，至少要留下旧版本、新版本、触发原因、评测结果和回滚点。候选更新应先在留出的任务集或沙箱中验证，再由负责人决定是否进入生产；涉及工具调用或写入操作时，还要把权限、日志和停机条件一起纳入版本记录。这些是落地时必须回答的问题，不是公告已经证明的能力。\n\n云、内网和边缘只是部署范围的描述，不能视为同一种运行条件。数据能否离开本地、网络中断时如何恢复、模型和工具版本是否一致，都可能改变更新结果。富士通当前没有公开这些环境下的故障率、回滚成功率或长期收益。\n\n相关词条可以帮助读者定位控制点：agent-loop 关注执行、观察和下一轮决策；state 记录更新处于候选、审批、执行还是回滚；event 则应为每次策略变化留下可追踪的触发记录。后续复核应寻找实际演示、版本差异、人工批准记录和失败恢复证据。",
+  "publishedAt": "2026-05-25",
+  "eventDate": "2026-05-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/fujitsu-self-evolving-multi-ai-agents.svg",
+    "alt": "富士通发布可自我演进的多 AI 智能体技术；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/fujitsu-self-evolving-multi-ai-agents.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "富士通这次公开了什么",
+      "body": "官方页面把这项工作描述为可自我演进的多 AI 智能体技术：系统可以依据执行结果、人类反馈和政策变化持续学习，后续计划接入 AI Platform 与 Kozuchi，并支持云、内网和边缘环境。文章能确认的是这次公开和计划范围，不能把计划写成客户已经完成部署。",
+      "kind": "narrative"
+    },
+    {
+      "id": "update-mechanism",
+      "title": "“持续学习”具体落在哪个环节",
+      "body": "公告强调的是运行后的反馈进入下一轮调整。它更接近策略、规格或工作流的持续更新，而不是一句“模型自己变强”就能概括的功能。页面没有公开更新组件、批准流程和评测数据，因而不能据此推断智能体可以在所有任务中安全修改自身。",
+      "kind": "technical"
+    },
+    {
+      "id": "control-loop",
+      "title": "上线前要把一次更新变成证据链",
+      "body": "一条可审计的更新记录至少应包含旧版本、新版本、触发原因、测试结果和回滚点。候选变化先在留出的任务集或沙箱中验证，再由负责人决定是否进入生产；如果智能体会调用工具或写入系统，还需要记录权限、日志和停机条件。这个流程是对落地风险的约束，不是富士通公告已经给出的实测结果。",
+      "kind": "example"
+    },
+    {
+      "id": "deployment",
+      "title": "云、内网与边缘不能直接互相替代",
+      "body": "同一套更新机制放到云、内网和边缘，面对的数据边界、网络可用性、模型版本和恢复方式并不相同。公告列出了这些部署方向，但没有披露各环境的故障率、回滚成功率、长期收益或客户规模，读者需要等待后续部署和评测材料。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "后续复核应寻找哪些记录",
+      "body": "agent-loop 可以用来检查执行、观察反馈和下一轮决策，state 用来标记候选、审批、执行或回滚，event 则应留下每次策略变化的触发记录。下一步应查看实际演示、版本差异、人工批准和失败恢复证据，再判断“自我演进”是否在具体任务中成立。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "从公告主张到一次可审计的策略更新",
+    "question": "富士通所说的“自我演进”怎样从一句技术描述变成可以复核的运行记录？",
+    "steps": [
+      {
+        "label": "先确认公告范围",
+        "detail": "核对 2026-05-25 的官方页面，确认公开的是多 AI 智能体技术，以及接入 AI Platform、Kozuchi 和云/内网/边缘的计划。",
+        "evidence": "https://global.fujitsu/en-global/pr/news/2026/05/25-01"
+      },
+      {
+        "label": "找出更新对象",
+        "detail": "分别记录任务结果、人类反馈和政策变化进入了哪一层：策略、规格、工作流还是模型本身；页面未披露的部分不能补写成已知事实。",
+        "evidence": "https://global.fujitsu/en-global/pr/news/2026/05/25-01"
+      },
+      {
+        "label": "检查版本控制",
+        "detail": "要求看到旧版本、新版本、触发原因、评测结果、人工批准和回滚点，尤其关注工具调用与生产写入。",
+        "evidence": "https://global.fujitsu/en-global/pr/news/2026/05/25-01"
+      },
+      {
+        "label": "再判断部署成效",
+        "detail": "把云、内网和边缘的故障恢复、权限边界和长期指标分开核验，不用发布计划替代客户部署或独立评测。",
+        "evidence": "https://global.fujitsu/en-global/pr/news/2026/05/25-01"
+      }
+    ]
+  },
+  "source": {
+    "name": "Fujitsu",
+    "url": "https://global.fujitsu/en-global/pr/news/2026/05/25-01"
+  },
+  "relatedSlugs": [
+    "agent-loop",
+    "agent",
+    "state",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://global.fujitsu/en-global/pr/news/2026/05/25-01",
+      "claim": "富士通称多智能体可依据结果、反馈和政策变化持续且安全学习",
+      "excerpt": "Fujitsu says its technology enables multi-AI agents to learn continuously and safely from outcomes, human feedback and policy changes."
+    },
+    {
+      "url": "https://global.fujitsu/en-global/pr/news/2026/05/25-01",
+      "claim": "技术计划支持云、内网与边缘部署",
+      "excerpt": "The release says the technology is intended for cloud, on-premises and edge environments."
+    }
+  ],
+  "canonicalUrl": "https://global.fujitsu/en-global/pr/news/2026/05/25-01",
+  "sourceHash": "sha256:12b350afa647c1333d3351e296fd097a7be124596b66d0231e35d77c0aa7989c",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“富士通发布可自我演进的多 AI 智能体技术”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“富士通发布可自我演进的多 AI 智能体技术”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "state",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“富士通发布可自我演进的多 AI 智能体技术”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“富士通发布可自我演进的多 AI 智能体技术”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://global.fujitsu/en-global/pr/news/2026/05/25-01",
+      "claim": "富士通称多智能体可依据结果、反馈和政策变化持续且安全学习",
+      "excerpt": "Fujitsu says its technology enables multi-AI agents to learn continuously and safely from outcomes, human feedback and policy changes."
+    },
+    {
+      "url": "https://global.fujitsu/en-global/pr/news/2026/05/25-01",
+      "claim": "技术计划支持云、内网与边缘部署",
+      "excerpt": "The release says the technology is intended for cloud, on-premises and edge environments."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文自然地区分 Fujitsu 公告中的公司主张与已验证结果，把执行结果、人类反馈和政策变化解释为待确认的策略/规格/工作流更新机制，没有把“自我演进”夸大为系统已能安全自主修改自身。AI Platform、Kozuchi、云/内网/边缘均明确为计划或部署范围；版本、评测、人工批准、权限、日志、停机和回滚边界完整。已将标题改为“持续更新机制”并标出接入计划，减少能力过度承诺。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将标题从“富士通发布可自我演进的多 AI 智能体技术”改为“富士通公布多 AI 智能体持续更新机制，计划接入 AI Platform 与 Kozuchi”，降低“自我演进”作为已验证自主能力的暗示。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-25",
+  "fingerprint": "sha256:12b350afa647c1333d3351e296fd097a7be124596b66d0231e35d77c0aa7989c",
+  "promotedAt": "2026-10-05T05:17:54.276Z"
+}

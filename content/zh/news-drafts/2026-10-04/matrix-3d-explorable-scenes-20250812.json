@@ -1,0 +1,212 @@
+{
+  "slug": "matrix-3d-explorable-scenes-20250812",
+  "title": "Skywork AI 发布 Matrix-3D：从文字或图片生成可探索的全景 3D 场景",
+  "summary": "8 月 12 日，Skywork AI 发布 Matrix-3D 的代码、技术报告和项目页。它把文字或图片先变成全景图和全景视频，再重建为可以 360°探索的 3D 场景，并允许使用预设或自定义相机轨迹。官方把它定位为大范围、可控制的场景生成系统；当天确认的是这条流水线和开源入口，不能把后续低显存脚本、5B 模型或演示效果倒填成首发能力。",
+  "body": "8 月 12 日，Skywork AI 在 Matrix-3D 仓库发布代码、技术报告和项目页。它要生成的不是一张只能从正面看的图片，而是一段覆盖全景的视觉内容，再把这段内容重建成可以移动视角的 3D 场景。输入可以是一段文字或一张图片，输出则沿着“全景图 → 全景视频 → 3D 场景”的链路展开。\n\n第一步是建立全景表示。项目把单张图片或文字描述扩展成覆盖四周的 panorama，随后生成沿相机运动变化的全景视频。这样做给了模型更大的空间范围，也带来一个必须面对的问题：画面在不同方向上能不能接得起来。普通图片只需要局部看起来合理，全景场景还要保持地面、墙面、天空和远处物体在 360°边界处连续。\n\n第二步是把视频变成能探索的场景。Matrix-3D 提供两种全景 3D 重建方法：一种偏向优化，追求更高的重建质量；另一种是 feed-forward 的前向推理路径，强调更快得到结果。项目页把它们放在速度和细节的权衡里，说明“生成出视频”和“得到可漫游的几何场景”是两个不同阶段，后者还要承担深度、遮挡和相机姿态的一致性。\n\n相机轨迹是这条流水线的控制入口。项目页展示 S-curve Trajectory、Straight Trajectory 和 Diagonal Right-Front 等相机路径，README 的命令示例则用 Straight Travel、S-curve Travel、Forward on the Right 这样的参数名，并允许用户给出 JSON 相机轨迹。轨迹可以决定相机怎样穿过场景，却不能保证每个新视角都有真实存在的几何结构；当全景视频里没有足够证据时，重建系统仍可能补出看似合理但无法验证的墙角、门后或远处物体。\n\n官方把 Matrix-3D 描述为支持大尺度、360°自由探索、文字和图片双输入以及可定制轨迹，并称模型具有较强的泛化能力。这些是项目方对系统的定位与展示结果，不能直接等同于真实世界测绘、建筑级几何精度或任何相机路径都能稳定运行。读者应把它看成一套从生成式视频走向可探索场景的研究管线，而不是已经替代摄影测量或游戏引擎的通用重建器。\n\n开源入口也有时间边界。固定到 8 月 12 日的 README commit 可以确认代码、技术报告和项目页在当天发布，并保留 MIT License；仓库后续又加入了低显存脚本、5B 模型和 Gradio demo，这些更新不能倒填进 8 月 12 日的首发范围。复现时应锁定同一个 commit，同时记录输入类型、全景视频分辨率、相机轨迹和重建方法，避免把后续便利功能混到原始结果里。\n\n这套流程和同日的 Matrix-Game 2.0 解决的是不同问题：Matrix-3D 从文字或图片开始，重点是生成可以沿轨迹探索的空间；Matrix-Game 从当前画面和键鼠动作开始，重点是连续生成下一帧。两者都使用“世界模型”语言，但一个首先需要验证几何和视角一致性，另一个首先需要验证动作响应和状态保持，不能因为项目同属 Skywork AI 就把指标互相替换。\n\n下一步的测试应从演示镜头退回到可测量的空间误差：比较不同方向的深度、边界接缝、遮挡恢复和轨迹回放，记录 3D 场景是否在长路径上漂移；再用同一输入分别走优化式和前向重建，比较耗时、显存、细节和失败模式。8 月 12 日确认的是一个开放的全景视频到 3D 场景流水线，能否成为可靠的可探索世界，还需要这些几何和轨迹证据。",
+  "publishedAt": "2025-08-12",
+  "eventDate": "2025-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/matrix-3d-explorable-scenes-20250812.svg",
+    "alt": "Matrix-3D 将文字或图片变成全景图、全景视频，再重建为可沿相机轨迹探索的 3D 场景；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/matrix-3d-explorable-scenes-20250812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 12 日公开的是代码、技术报告和项目页",
+      "body": "Skywork AI 的固定 README commit 记录 8/12 发布 Matrix-3D 的代码、技术报告和项目页，并采用 MIT License。后续低显存脚本、5B 模型和 Gradio demo 属于之后更新，不回填到首发日。",
+      "kind": "narrative"
+    },
+    {
+      "id": "pipeline",
+      "title": "文字或图片先变成全景图和全景视频",
+      "body": "Matrix-3D 用 panoramic representation 扩大视野：输入文字或图片后，先生成覆盖四周的全景图，再生成随着相机运动变化的全景视频。全景边界的连续性是普通单视角图片不必处理的约束。",
+      "kind": "technical"
+    },
+    {
+      "id": "reconstruction",
+      "title": "两条重建路径权衡速度与细节",
+      "body": "项目提供偏优化的高质量 3D 重建和 feed-forward 的快速重建，把视频生成与可漫游几何分成两个阶段。深度、遮挡和相机姿态的一致性仍需独立检查。",
+      "kind": "comparison"
+    },
+    {
+      "id": "trajectory",
+      "title": "预设和自定义相机轨迹控制探索方式",
+      "body": "项目页展示 S-curve Trajectory、Straight Trajectory、Diagonal Right-Front 等路径示例；README 的命令示例使用 Straight Travel、S-curve Travel、Forward on the Right 参数名，也允许提供 JSON 相机轨迹。轨迹决定相机怎样走，不保证未观测区域的几何一定真实。",
+      "kind": "example"
+    },
+    {
+      "id": "claims",
+      "title": "360°探索是作者定位，不是测绘精度承诺",
+      "body": "官方称系统支持大尺度场景、360°自由探索、文字/图片双输入和可定制轨迹，并强调泛化能力。这些说法应按项目展示阅读，不能外推为建筑级几何、真实世界测绘或任意路径稳定。",
+      "kind": "boundary"
+    },
+    {
+      "id": "time-bound",
+      "title": "事件日版本和后续仓库更新要分开",
+      "body": "8/12 的固定 commit 只确认代码、技术报告和项目页；8/25 的低显存脚本、8/29 的 Gradio demo、9/2 的 5B/低显存更新不属于当天首发证据。",
+      "kind": "comparison"
+    },
+    {
+      "id": "matrix-distinction",
+      "title": "Matrix-3D 和 Matrix-Game 的世界模型问题不同",
+      "body": "Matrix-3D 从文字/图片生成沿轨迹探索的空间，优先验证几何与视角一致性；Matrix-Game 从画面和键鼠动作生成下一帧，优先验证动作响应与状态保持。项目同属 Skywork AI，不代表指标可以互换。",
+      "kind": "comparison"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步测深度、接缝和长轨迹漂移",
+      "body": "固定输入和 commit，比较不同方向的深度、全景边界、遮挡恢复、轨迹回放和两种重建耗时/显存，记录 3D 场景在长路径上的失败模式。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一张图片怎样变成可以走进去的 3D 场景？",
+    "question": "把全景生成、视频运动、几何重建和相机轨迹拆开，才能看懂 Matrix-3D 的可探索边界。",
+    "steps": [
+      {
+        "label": "给出文字或图片",
+        "detail": "输入可以是文字提示或一张图片；先固定来源、分辨率和场景范围，避免不同输入被当成同一个任务。",
+        "evidence": "Text-to-scene / image-to-scene"
+      },
+      {
+        "label": "生成全景图",
+        "detail": "模型把单视角内容扩展成覆盖四周的 panoramic image，接下来要检查 360°边界是否连续。",
+        "evidence": "Panoramic representation"
+      },
+      {
+        "label": "生成全景视频",
+        "detail": "沿预设或自定义相机轨迹生成 panorama video，让场景在移动视角下保持可见的变化。",
+        "evidence": "Panoramic video generation"
+      },
+      {
+        "label": "重建 3D 场景",
+        "detail": "选择优化式或 feed-forward 重建，从视频得到可渲染的 3D 表示；速度和细节各有取舍。",
+        "evidence": "Two panoramic 3D reconstruction methods"
+      },
+      {
+        "label": "回放并测误差",
+        "detail": "沿长轨迹回放，检查深度、遮挡、接缝和漂移；看似连贯的画面仍可能包含无法验证的几何。",
+        "evidence": "Trajectory and geometry evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "Skywork AI",
+    "url": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md"
+  },
+  "relatedSlugs": [
+    "tools",
+    "data-pipeline",
+    "event",
+    "distributed-system"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md",
+      "claim": "Skywork AI 固定 2025-08-12 README commit 确认 Matrix-3D 代码、技术报告和项目页发布、MIT License 与后续更新的日期边界。",
+      "excerpt": "Aug 12, 2025: We release Matrix-3D, including code, technical report, and project page."
+    },
+    {
+      "url": "https://github.com/SkyworkAI/Matrix-3D",
+      "claim": "官方项目页说明 panoramic representation、文字/图片输入、360°探索、相机轨迹、两种 3D 重建路径和后续版本更新；文章按事件日分开使用这些信息。",
+      "excerpt": "Matrix-3D utilizes panoramic representation for wide-coverage omnidirectional explorable 3D world generation ... combines conditional video generation and panoramic 3D reconstruction."
+    }
+  ],
+  "canonicalUrl": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md",
+  "sourceHash": "sha256:5d298adc4ff6113ba69277d88ffc64f09366c4aa74b13e88e71de3d98268c6dc",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.88,
+      "evidence": [
+        "正文把相机轨迹、JSON 输入和生成/重建命令作为可检查的控制接口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.94,
+      "evidence": [
+        "正文拆开全景图、全景视频、3D 重建和轨迹回放的流水线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.91,
+      "evidence": [
+        "正文区分 8/12 固定 commit 发布与 8/25、8/29、9/2 后续仓库更新。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "distributed-system",
+      "score": 0.8,
+      "evidence": [
+        "正文把生成、重建、轨迹、显存和渲染阶段的资源边界分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md",
+      "claim": "固定 README commit 确认 Matrix-3D 在 2025-08-12 发布代码、技术报告和项目页，并采用 MIT License。",
+      "excerpt": "Aug 12, 2025: We release Matrix-3D, including code, technical report, and project page."
+    },
+    {
+      "url": "https://github.com/SkyworkAI/Matrix-3D",
+      "claim": "官方项目页说明 text/image→panorama video→3D scene、360°探索、轨迹控制和两种重建方式；当前页面的后续更新按日期排除。",
+      "excerpt": "Matrix-3D supports the generation of broader, more expansive scenes that allow for complete 360-degree free exploration."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Skywork AI 固定 2025-08-12 README commit与 Matrix-3D 官方项目页；正文区分文字/图片到全景图、全景视频和 3D 重建的流水线、相机轨迹、两种重建路径、360°作者定位与后续低显存/5B/Gradio 更新。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 Matrix-3D 写成全景生成、视频运动、几何重建和轨迹验证的空间流水线，固定事件日 commit，排除后续资源更新，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 和 publishedAt 均为 2025-08-12；canonicalUrl 固定到 README commit 565385ea8aff62bab3b8f564a38acd153f34f199，commit 时间为 2025-08-12 09:44:37Z，正文也明确代码、技术报告、项目页和 MIT License 的首发边界。",
+      "正文清楚拆出文字/图片→全景图→全景视频→3D 场景的流水线，并把项目页展示标签 S-curve Trajectory、Straight Trajectory、Diagonal Right-Front 与 README 命令参数 Straight Travel、S-curve Travel、Forward on the Right 分开，同时保留 JSON 自定义相机轨迹；没有把展示标签误写成同一组 API 名称或把轨迹控制写成真实几何保证。",
+      "优化式与 feed-forward 两条重建路径被写成速度与细节的权衡；官方“大尺度、360°、泛化能力”等定位保留为项目方表述，没有外推为建筑测绘、真实几何精度或任意路径稳定。",
+      "8/25 低显存脚本、8/29 Gradio、9/2 5B/低显存更新被明确排除在 8/12 首发之外；Matrix-3D 与 Matrix-Game 的输入、输出和主要验证问题也已区分。",
+      "文末和 explainer 都把深度、全景接缝、遮挡、轨迹回放、长路径漂移、耗时和显存列为后续验证项，没有把演示画面当成测绘或通用世界模型证据。",
+      "中文正文按事件组织，未见明显模板句；8 个 sections、agent-workflow explainer、tools/data-pipeline/event/distributed-system relations、hero SVG、两张官方 source/evidence 卡片、verification 和 schema 字段相互一致。"
+    ],
+    "notes": "针对轨迹命名修正复核通过：项目页的展示标签与 README 的命令参数名已明确分开，均指向相机轨迹控制但不是同一组 API 名称；JSON 轨迹支持、正文、trajectory section 和 hero/来源边界一致。此前首发日期、流水线、后续更新、Matrix-Game 差异及几何验证边界仍保持通过。",
+    "changes": [
+      "确认正文和 trajectory section 同时保留项目页展示标签 S-curve Trajectory/Straight Trajectory/Diagonal Right-Front 与 README 参数 Straight Travel/S-curve Travel/Forward on the Right，避免将两组命名混为一谈；其余正文与结构保持不变。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-12-matrix-3d",
+  "promotedAt": "2026-10-05T05:17:36.295Z"
+}

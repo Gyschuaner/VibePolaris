@@ -1,0 +1,170 @@
+{
+  "slug": "openai-open-model-delay-safety-testing-20250711",
+  "title": "OpenAI 再次推迟开放模型：先补安全测试，发布日期暂无定论",
+  "summary": "7 月 11 日，OpenAI 表示原计划下周发布的开放模型将无限期延期，以继续做安全测试和高风险场景审查。公司没有给出新的日期；由于模型权重一旦公开就难以收回，这次延期把开放发布的安全责任推到了台前。",
+  "body": "7 月 11 日，OpenAI CEO Sam Altman 在 X 上说，公司原计划下周发布的开放模型要再次延期，时间暂时没有定下来。TechCrunch 报道，延期理由是继续进行安全测试并复查高风险领域。OpenAI 研究副总裁 Aidan Clark 随后表示，模型的能力表现让团队满意，但开放模型的发布标准还没有达到。\n\n这次延期和普通的产品排期不同。OpenAI 预计这个模型会让开发者下载并在本地运行，而不是只通过公司的托管接口调用。Altman 特别提到，权重一旦放出去就无法像线上服务那样统一撤回，所以团队希望先把可预见的滥用路径和边界问题多看一遍。公开信息没有给出最终参数规模、准确发布日期或完整的安全测试清单。\n\n同一天，Moonshot AI 发布了 Kimi K2，开放模型的竞争环境又多了一位参与者。这让延期更容易被读成竞争节奏的变化，但公开材料只说明 OpenAI 在补安全工作，不能据此推断它已经落后，或者模型能力已经确定。\n\n对使用者来说，开放权重把一部分控制权交给了下载者，也把一部分责任交给了下载者。模型卡、滥用限制、评测数据和部署建议需要在发布时一起说清楚；发布后还要持续收集问题，但不能假设还能像 SaaS 一样按下一个回滚按钮。\n\n这次新闻留下的关键问题不是“还要等多久”，而是 OpenAI 会把哪些风险证据放在发布之前。只有把测试范围、已知限制和部署者需要承担的工作公开出来，延期才不仅是日程变化，也会成为一次能被外界检查的安全决策。",
+  "publishedAt": "2025-07-11",
+  "eventDate": "2025-07-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-open-model-delay-safety-testing-20250711.svg",
+    "alt": "开放模型发布被安全测试闸门暂缓，权重公开后无法统一收回",
+    "sourceUrl": "/images/news/openai-open-model-delay-safety-testing-20250711.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "delay",
+      "title": "原定下周发布，改为无限期等待",
+      "body": "Sam Altman 说团队需要更多安全测试和高风险领域审查，Aidan Clark 也确认开放模型的标准还没有达到。",
+      "kind": "narrative"
+    },
+    {
+      "id": "irreversible-weights",
+      "title": "开放权重带来不可逆的发布压力",
+      "body": "模型如果能被下载和本地运行，发布方无法像关闭线上接口那样统一撤回全部权重。",
+      "kind": "technical"
+    },
+    {
+      "id": "known-unknowns",
+      "title": "日期、规模和测试清单都还没有公布",
+      "body": "公开材料没有给出新发布日期、最终参数规模或完整测试矩阵，文章不把公司对能力的描述写成外部验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "competition-context",
+      "title": "Kimi K2 同日发布只是背景，不是因果证据",
+      "body": "Kimi K2 的发布让开放模型竞争更受关注，但不能用它推断 OpenAI 延期的原因或最终竞争结果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "release-evidence",
+      "title": "延期之后要看哪些证据",
+      "body": "安全评测范围、已知限制、部署建议和发布后的问题处理，才决定这次等待是否转化为可检查的准备工作。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "training-pause",
+    "title": "一个开放模型发布前，安全闸门应该检查什么？",
+    "question": "把“再测一测”拆成发布前后的可验证节点，才能看出延期是在补证据，还是只是在推迟日期。",
+    "steps": [
+      {
+        "label": "列出使用边界",
+        "detail": "先写清模型会被下载到哪里、能接哪些工具，以及哪些高风险任务不应直接交给它。",
+        "evidence": "release scope"
+      },
+      {
+        "label": "覆盖滥用场景",
+        "detail": "用提示注入、危险指令、隐私泄露和越权工具调用等条件做成可复现测试。",
+        "evidence": "safety tests"
+      },
+      {
+        "label": "保存评测记录",
+        "detail": "给每个测试保留版本、输入、输出和判定标准，避免只发布一个漂亮的平均分。",
+        "evidence": "evaluation trace"
+      },
+      {
+        "label": "交代已知限制",
+        "detail": "把模型在哪些语言、任务和上下文里容易失效写进模型卡和部署说明。",
+        "evidence": "model card"
+      },
+      {
+        "label": "准备发布后响应",
+        "detail": "开放权重无法统一撤回，部署者需要自己的监控、更新和停用策略。",
+        "evidence": "post-release boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "benchmark",
+    "context",
+    "event",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/",
+      "claim": "TechCrunch 7 月 11 日报道 OpenAI 将原计划下周发布的开放模型无限期延期，以继续做安全测试和高风险领域审查。",
+      "excerpt": "TechCrunch, “OpenAI delays the release of its open model, again,” July 11, 2025."
+    },
+    {
+      "url": "https://x.com/sama/status/1943837550369812814",
+      "claim": "Sam Altman 的官方 X 帖子说明需要额外安全测试，并强调权重公开后不能收回。",
+      "excerpt": "Sam Altman official X post, July 11, 2025."
+    },
+    {
+      "url": "https://x.com/_aidan_clark_/status/1943842131136983378",
+      "claim": "Aidan Clark 的官方 X 帖子称模型能力表现很好，但开放模型的发布标准仍需更多时间。",
+      "excerpt": "Aidan Clark official X post, July 11, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/10/openais-open-model-is-delayed/",
+      "claim": "TechCrunch 记录 OpenAI 在 6 月首次宣布开放模型延期的背景，正文将其与 7 月 11 日再次延期分开。",
+      "excerpt": "TechCrunch, June 10, 2025; prior delay context."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/",
+  "sourceHash": "sha256:b8ff1ccf2c4f310061f9e275f971c0b944b03964e5eff12c3b38a3a0c410503b",
+  "status": "published",
+  "discoveredAt": "2026-10-04T19:20:00.000Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/11/openai-delays-the-release-of-its-open-model-again/",
+      "claim": "TechCrunch 7 月 11 日报道 OpenAI 将原计划下周发布的开放模型无限期延期，以继续做安全测试和高风险领域审查。",
+      "excerpt": "TechCrunch, “OpenAI delays the release of its open model, again,” July 11, 2025."
+    },
+    {
+      "url": "https://x.com/sama/status/1943837550369812814",
+      "claim": "Sam Altman 的官方 X 帖子说明需要额外安全测试，并强调权重公开后不能收回。",
+      "excerpt": "Sam Altman official X post, July 11, 2025."
+    },
+    {
+      "url": "https://x.com/_aidan_clark_/status/1943842131136983378",
+      "claim": "Aidan Clark 的官方 X 帖子称模型能力表现很好，但开放模型的发布标准仍需更多时间。",
+      "excerpt": "Aidan Clark official X post, July 11, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/10/openais-open-model-is-delayed/",
+      "claim": "TechCrunch 记录 OpenAI 在 6 月首次宣布开放模型延期的背景，正文将其与 7 月 11 日再次延期分开。",
+      "excerpt": "TechCrunch, June 10, 2025; prior delay context."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T19:20:00.000Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 2025-07-11 报道、Sam Altman 与 Aidan Clark 的官方 X 帖子，并区分 6 月延期背景、7 月 11 日再次延期和同日 Kimi K2 的竞争背景。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T19:20:00.000Z",
+    "notes": "已按新闻报道、官方材料与公司自述边界核对，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T16:20:00Z",
+    "questions": [
+      "新闻主线、事件日期和发布/背景材料日期是否清楚？是。",
+      "是否区分官方主张、媒体报道和独立证据？是。",
+      "是否适合零基础读者且无模板化表达？是。"
+    ],
+    "notes": "新闻以 OpenAI 7 月 11 日再次延期为主线，日期和公司/媒体归属清楚；安全测试、高风险审查和开放权重不可回滚边界明确，未推断能力或竞争结论。正文自然易懂，sections、explainer、SVG alt、词条联动一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-11",
+  "promotedAt": "2026-10-04T18:37:03.906Z"
+}
