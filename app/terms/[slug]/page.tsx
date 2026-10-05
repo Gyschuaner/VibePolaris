@@ -103,6 +103,7 @@ import { CodeSplittingTermPage } from "@/components/terms/code-splitting-pages/c
 import { LazyLoadingTermPage } from "@/components/terms/lazy-loading-pages/lazy-loading-page";
 import { DockerfileTermPage } from "@/components/terms/dockerfile-pages/dockerfile-page";
 import { InfrastructureAsCodeTermPage } from "@/components/terms/infrastructure-as-code-pages/infrastructure-as-code-page";
+import { CdnTermPage } from "@/components/terms/cdn-pages/cdn-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -124,6 +125,7 @@ const articleTermPages = {
   'lazy-loading': LazyLoadingTermPage,
   dockerfile: DockerfileTermPage,
   'infrastructure-as-code': InfrastructureAsCodeTermPage,
+  cdn: CdnTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

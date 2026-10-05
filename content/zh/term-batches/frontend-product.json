@@ -1950,5 +1950,54 @@
       "container-image",
       "preview-deployment"
     ]
+  },
+  {
+    "zh": "内容分发网络",
+    "en": "Content Delivery Network",
+    "slug": "cdn",
+    "cat": "前端",
+    "say": "CDN 让内容在离用户更近的缓存里等待，但每次请求仍要经过命中与新鲜度判断。",
+    "aliases": [
+      "内容分发网络",
+      "边缘缓存",
+      "Content Delivery Network"
+    ],
+    "question": "同一个文件为什么有时从边缘返回，有时还要回源？",
+    "definition": "CDN 由分布在不同位置的缓存节点组成。请求先到较近的边缘节点，再按缓存键、响应头和新鲜度决定直接返回副本、向源站取回，还是使用验证器确认副本仍然有效。",
+    "boundary": "CDN 优化的是可缓存响应到用户的距离和回源次数，不替代源站、权限、数据一致性或发布策略；带用户身份的响应不能默认共享。",
+    "demoType": "request",
+    "demoTitle": "一个资源从边缘命中到版本更新",
+    "demoSteps": [
+      {
+        "label": "先查边缘",
+        "value": "GET /app.js → edge lookup",
+        "note": "请求先查缓存键，不代表一定命中。"
+      },
+      {
+        "label": "区分命中与回源",
+        "value": "HIT / MISS → origin",
+        "note": "命中且新鲜时直接返回，未命中才可能取回并写入副本。"
+      },
+      {
+        "label": "发布改变边界",
+        "value": "app.9a2.js 或选择性 purge",
+        "note": "新 URL 或明确清理让用户拿到可解释的版本。"
+      }
+    ],
+    "quizQuestion": "为什么给静态文件名加内容哈希通常比发布时清空全站缓存更稳？",
+    "quizOptions": [
+      "新版本使用新缓存键，旧副本可按策略自然过期",
+      "它会让所有用户都跳过源站",
+      "它能让带身份的响应自动安全共享"
+    ],
+    "correctText": "新 URL 把新版本和旧副本分开，减少大范围清理带来的冷缓存与回源压力。",
+    "wrongText": "版本化 URL 不会让所有请求消失，也不会替带身份内容解决共享缓存风险。",
+    "promptTitle": "检查一个 CDN 发布方案",
+    "prompt": "请按请求路径、缓存键、Cache-Control、ETag、带身份响应、MISS 回源、purge 粒度和带哈希资产逐项审查下面方案；写出旧版本、发布窗口、回滚和冷缓存压力的验收条件。",
+    "relatedSlugs": [
+      "cache-control",
+      "http-header",
+      "preview-deployment"
+    ]
   }
 ]

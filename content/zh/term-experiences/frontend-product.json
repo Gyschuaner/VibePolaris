@@ -17484,5 +17484,293 @@
         "note": "说明如何把重复的资源组合成可复用模块。"
       }
     ]
+  },
+  {
+    "slug": "cdn",
+    "lead": "同一个文件，为什么这次 HIT、下次却 MISS？",
+    "definition": "CDN 请求先到边缘缓存，再按缓存键和新鲜度决定直接返回、回源取回或重新验证；发布可以用新的资源 URL 或明确 purge 改变副本边界。",
+    "boundary": "边缘缓存不是权限系统，也不是永久存储。共享缓存的响应必须适合被不同用户复用，命中与源站成功也不能混为同一个指标。",
+    "sceneKind": "network",
+    "sceneTitle": "从边缘查找走到发布后的新缓存键",
+    "actionLabel": "换一个资源 URL",
+    "actors": [
+      {
+        "id": "browser",
+        "label": "浏览器",
+        "detail": "请求 /app.js 与响应头",
+        "icon": "browser",
+        "group": "请求"
+      },
+      {
+        "id": "edge",
+        "label": "边缘缓存",
+        "detail": "按缓存键保存和返回副本",
+        "icon": "cloud",
+        "group": "缓存"
+      },
+      {
+        "id": "origin",
+        "label": "源站",
+        "detail": "生成或验证真实响应",
+        "icon": "server",
+        "group": "源站"
+      },
+      {
+        "id": "headers",
+        "label": "响应头",
+        "detail": "Cache-Control · ETag · Age",
+        "icon": "file",
+        "group": "新鲜度"
+      },
+      {
+        "id": "key",
+        "label": "缓存键",
+        "detail": "URL 与影响缓存的请求维度",
+        "icon": "key",
+        "group": "匹配"
+      },
+      {
+        "id": "release",
+        "label": "发布动作",
+        "detail": "换 URL 或选择性 purge",
+        "icon": "git",
+        "group": "版本"
+      }
+    ],
+    "edges": [
+      {
+        "id": "browser-edge",
+        "from": "browser",
+        "to": "edge",
+        "label": "请求到边缘"
+      },
+      {
+        "id": "edge-key",
+        "from": "edge",
+        "to": "key",
+        "label": "查找缓存键"
+      },
+      {
+        "id": "edge-origin",
+        "from": "edge",
+        "to": "origin",
+        "label": "MISS 回源"
+      },
+      {
+        "id": "origin-headers",
+        "from": "origin",
+        "to": "headers",
+        "label": "返回规则"
+      },
+      {
+        "id": "headers-edge",
+        "from": "headers",
+        "to": "edge",
+        "label": "决定新鲜度"
+      },
+      {
+        "id": "release-key",
+        "from": "release",
+        "to": "key",
+        "label": "改变键或清理"
+      }
+    ],
+    "frames": [
+      {
+        "label": "请求到边缘",
+        "note": "浏览器把 /app.js 交给更近的节点；边缘还没有决定是否能直接返回。",
+        "activeIds": [
+          "browser",
+          "edge"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "origin",
+          "headers",
+          "key",
+          "release"
+        ],
+        "values": {
+          "browser": "GET /app.js",
+          "edge": "lookup"
+        },
+        "activeEdgeIds": [
+          "browser-edge"
+        ]
+      },
+      {
+        "label": "命中副本",
+        "note": "缓存键匹配且副本仍新鲜，边缘直接返回，源站没有被访问。",
+        "activeIds": [
+          "browser",
+          "edge",
+          "key"
+        ],
+        "doneIds": [
+          "browser"
+        ],
+        "mutedIds": [
+          "origin",
+          "release"
+        ],
+        "values": {
+          "key": "same URL",
+          "edge": "HIT · age 12s"
+        },
+        "activeEdgeIds": [
+          "edge-key"
+        ]
+      },
+      {
+        "label": "未命中回源",
+        "note": "边缘没有可用副本，向源站取回响应；能否保存仍由规则和响应头决定。",
+        "activeIds": [
+          "edge",
+          "origin",
+          "headers"
+        ],
+        "doneIds": [
+          "browser",
+          "key"
+        ],
+        "mutedIds": [
+          "release"
+        ],
+        "values": {
+          "edge": "MISS",
+          "origin": "200 + body",
+          "headers": "public · max-age"
+        },
+        "activeEdgeIds": [
+          "edge-origin",
+          "origin-headers"
+        ]
+      },
+      {
+        "label": "过期后再验证",
+        "note": "旧副本带 ETag 回源，源站回答 304 时可以确认内容没变而不重传正文。",
+        "activeIds": [
+          "edge",
+          "origin",
+          "headers"
+        ],
+        "doneIds": [
+          "browser",
+          "key"
+        ],
+        "mutedIds": [
+          "release"
+        ],
+        "values": {
+          "edge": "stale",
+          "origin": "304 Not Modified",
+          "headers": "ETag abc"
+        },
+        "activeEdgeIds": [
+          "edge-origin",
+          "origin-headers",
+          "headers-edge"
+        ]
+      },
+      {
+        "label": "发布新 URL",
+        "note": "资产带内容哈希后，新版本使用不同缓存键；第一次请求可能 MISS，之后建立新副本。",
+        "activeIds": [
+          "release",
+          "key",
+          "edge",
+          "browser"
+        ],
+        "doneIds": [
+          "origin",
+          "headers"
+        ],
+        "mutedIds": [],
+        "values": {
+          "release": "app.9a2.js",
+          "key": "new key",
+          "edge": "MISS → stored",
+          "browser": "new reference"
+        },
+        "activeEdgeIds": [
+          "release-key",
+          "browser-edge"
+        ]
+      },
+      {
+        "label": "选择性清理",
+        "note": "如果 HTML 或配置不能改 URL，就按路径或标签 purge；清理范围越大，冷缓存和回源压力越高。",
+        "activeIds": [
+          "release",
+          "edge",
+          "origin"
+        ],
+        "doneIds": [
+          "browser",
+          "key",
+          "headers"
+        ],
+        "mutedIds": [],
+        "values": {
+          "release": "purge /app.html",
+          "edge": "cold cache",
+          "origin": "traffic spike"
+        },
+        "activeEdgeIds": [
+          "edge-origin"
+        ]
+      }
+    ],
+    "insight": "CDN 的速度来自副本离用户更近，但可靠发布来自你能解释缓存键、新鲜度、回源和清理范围。",
+    "quiz": {
+      "question": "遇到 MISS 时，最准确的判断是什么？",
+      "options": [
+        {
+          "label": "这次没有可用的边缘副本，可能需要回源",
+          "correct": true
+        },
+        {
+          "label": "源站一定宕机了",
+          "correct": false
+        },
+        {
+          "label": "响应一定不能被缓存",
+          "correct": false
+        }
+      ],
+      "success": "对：MISS 只说明当前键没有可用副本，接下来还要看回源响应与缓存规则。",
+      "retry": "MISS 是缓存结果，不等于源站故障，也不自动说明响应禁止缓存。"
+    },
+    "prompt": {
+      "title": "把一次 CDN 请求走完整",
+      "text": "请为一个静态资产记录浏览器、缓存键、边缘状态、源站响应头、ETag/304、版本化 URL 和 purge 结果；分别写出 HIT、MISS、过期和回滚时用户拿到的版本。"
+    },
+    "sources": [
+      {
+        "url": "https://developers.cloudflare.com/cache/",
+        "label": "Cloudflare caching overview",
+        "note": "说明边缘缓存和命中/回源的基本路径。"
+      },
+      {
+        "url": "https://developers.cloudflare.com/cache/how-to/purge-cache/",
+        "label": "Cloudflare purge cache",
+        "note": "说明按范围清理缓存的方式与代价。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+        "label": "MDN HTTP caching",
+        "note": "说明缓存键、新鲜度和验证器。"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9111.html",
+        "label": "HTTP caching RFC 9111",
+        "note": "说明 HTTP 缓存语义和响应指令。"
+      },
+      {
+        "url": "https://web.dev/articles/http-cache",
+        "label": "web.dev HTTP cache",
+        "note": "说明版本化静态资产与缓存策略。"
+      }
+    ]
   }
 ]

@@ -999,5 +999,24 @@
       "container-image",
       "preview-deployment"
     ]
+  },
+  {
+    "slug": "cdn",
+    "mechanism": "CDN 在靠近用户的边缘节点保存可复用响应；请求先按缓存键查找副本，再依据新鲜度和验证器决定直接命中、回源取回或向源站再验证，发布时可以用 purge 或版本化 URL 改变缓存边界。",
+    "misconception": "CDN 不是每次都命中的更快源站，也不会自动判断内容是否适合共享。MISS、过期、304 和完整 200 是不同路径，带身份或实时数据的响应还可能不应该进入共享缓存。",
+    "demoSignature": "network: 6 frames; actors=浏览器/边缘缓存/源站/响应头/缓存键/发布动作; phases=到边缘→HIT→MISS 回源→TTL→ETag 304→版本键; action=换一个资产 URL",
+    "sourceUrls": [
+      "https://developers.cloudflare.com/cache/",
+      "https://developers.cloudflare.com/cache/how-to/purge-cache/",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+      "https://www.rfc-editor.org/rfc/rfc9111.html",
+      "https://web.dev/articles/http-cache"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "cache-control",
+      "http-header",
+      "preview-deployment"
+    ]
   }
 ]
