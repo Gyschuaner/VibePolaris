@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle, Cursor, DeviceMobile, Gear, Monitor, SpeakerSimpleSlash, WarningCircle } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "./MediaQueryConcept.module.css";
 
@@ -11,8 +11,16 @@ type MediaState = { narrow: boolean; noHover: boolean; reduced: boolean };
 export function MediaQueryLesson() {
   const scene = useScene(labels.length);
   const [state, setState] = useState<MediaState>({ narrow: false, noHover: false, reduced: false });
+  const previousStep = useRef(scene.step);
   const effective: MediaState = scene.step === 0 ? state : scene.step === 1 ? { narrow: true, noHover: false, reduced: false } : scene.step === 2 ? { narrow: false, noHover: true, reduced: false } : scene.step === 3 ? { narrow: false, noHover: false, reduced: true } : { narrow: true, noHover: true, reduced: true };
-  useEffect(() => { if (scene.step === 1) setState({ narrow: true, noHover: false, reduced: false }); if (scene.step === 2) setState({ narrow: false, noHover: true, reduced: false }); if (scene.step === 3) setState({ narrow: false, noHover: false, reduced: true }); if (scene.step === 4) setState({ narrow: true, noHover: true, reduced: true }); }, [scene.step]);
+  useEffect(() => {
+    if (scene.step === 0 && previousStep.current !== 0) setState({ narrow: false, noHover: false, reduced: false });
+    if (scene.step === 1) setState({ narrow: true, noHover: false, reduced: false });
+    if (scene.step === 2) setState({ narrow: false, noHover: true, reduced: false });
+    if (scene.step === 3) setState({ narrow: false, noHover: false, reduced: true });
+    if (scene.step === 4) setState({ narrow: true, noHover: true, reduced: true });
+    previousStep.current = scene.step;
+  }, [scene.step]);
   const conditions = [
     { id: "width", label: "窄视口", code: "width < 640px", active: effective.narrow, result: effective.narrow ? "改成单列" : "保持三列", icon: <DeviceMobile size={16} aria-hidden="true" /> },
     { id: "hover", label: "没有 hover", code: "hover: none", active: effective.noHover, result: effective.noHover ? "提示常驻" : "可悬停提示", icon: <Cursor size={16} aria-hidden="true" /> },
