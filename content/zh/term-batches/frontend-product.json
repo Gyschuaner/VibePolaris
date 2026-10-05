@@ -766,19 +766,54 @@
     ]
   },
   {
-    "zh": "定位", "en": "Positioning", "slug": "positioning", "cat": "前端",
-    "say": "position 决定元素留在普通文档流中，还是相对某个参照物移动或固定。",
-    "aliases": ["CSS 定位", "position", "绝对定位"],
-    "question": "角标为什么跑到了整个页面右上角，而不是卡片右上角？",
-    "definition": "CSS 定位通过 static、relative、absolute、fixed 和 sticky 控制元素的定位方式，并由包含块确定偏移参照。",
-    "boundary": "定位适合覆盖、固定和局部偏移，不应代替 Flex 或 Grid 完成常规页面排列。",
-    "demoType": "comparison", "demoTitle": "角标的参照物变化",
-    "demoSteps": [{"label":"父卡片未定位","value":"角标参照更外层包含块","note":"位置可能离开卡片。"},{"label":"父卡片 relative","value":"建立新的定位参照","note":"卡片仍留在普通流中。"},{"label":"角标 absolute","value":"top 与 right 相对卡片计算","note":"角标稳定贴在卡片右上角。"}],
-    "quizQuestion": "要让绝对定位的子元素参照卡片，应先给卡片设置什么？", "quizOptions": ["position: relative", "display: inline", "overflow: auto"],
-    "correctText": "relative 会让卡片成为绝对定位后代的常用包含块。", "wrongText": "display 和 overflow 不能直接建立所需的定位参照。",
-    "promptTitle": "检查浮层的定位参照", "prompt": "请检查下面角标或浮层的定位代码，指出它当前参照哪个包含块，并用最小改动让它固定在目标容器内。",
-    "relatedSlugs": ["box-model", "css", "css-grid"]
-  },
+  "zh": "定位",
+  "en": "CSS Positioning",
+  "slug": "positioning",
+  "cat": "前端",
+  "say": "CSS 定位先确定元素相对谁，再决定偏移和是否继续占据普通流空间。",
+  "aliases": [
+    "position",
+    "元素定位",
+    "定位上下文"
+  ],
+  "question": "同一个 top，为什么有时挪自己，有时贴住窗口？",
+  "definition": "CSS 定位通过 static、relative、absolute、fixed 和 sticky 选择定位方式，并由包含块和滚动边界决定偏移参照。",
+  "boundary": "position 不是布局系统的替代品；absolute 需要合适的 containing block，sticky 需要阈值与滚动空间。",
+  "demoType": "state",
+  "demoTitle": "同一张卡片的定位参照",
+  "demoSteps": [
+    {
+      "label": "留在普通流",
+      "value": "static / relative",
+      "note": "一个保留原位置，一个从原位置偏移。"
+    },
+    {
+      "label": "换包含块",
+      "value": "absolute → 最近定位祖先",
+      "note": "脱离普通流后，top/left 改为对容器计算。"
+    },
+    {
+      "label": "遇到滚动边界",
+      "value": "fixed / sticky",
+      "note": "一个相对视口，一个在滚动阈值处贴住容器。"
+    }
+  ],
+  "quizQuestion": "absolute 元素首先寻找什么？",
+  "quizOptions": [
+    "最近的定位祖先",
+    "最后一个兄弟元素",
+    "浏览器默认字号"
+  ],
+  "correctText": "它会寻找最近的、能建立包含块的祖先。",
+  "wrongText": "没有合适祖先时才会向外寻找包含块；兄弟元素和字号不决定参照。",
+  "promptTitle": "解释一张卡片为什么跑位",
+  "prompt": "请比较 relative、absolute、fixed 和 sticky：说明各自的参照系、普通流占位和边界条件，并指出给父容器加 position: relative 能解决哪一层问题。",
+  "relatedSlugs": [
+    "css",
+    "box-model",
+    "flexbox"
+  ]
+},
     {
     "zh": "断点",
     "en": "Breakpoint",

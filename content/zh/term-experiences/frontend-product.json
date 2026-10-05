@@ -4473,157 +4473,189 @@
     ]
   },
   {
-    "slug": "positioning",
-    "lead": "角标为什么跑到了整个页面右上角，而不是卡片右上角？",
-    "definition": "定位元素先确定 positioning scheme 和 containing block，再用 inset 属性计算偏移；absolute/fixed 会改变其在普通流中的参与方式。",
-    "boundary": "position:absolute 不是相对最近父元素，而是相对最近建立定位包含块的祖先；sticky 还受滚动容器约束。",
-    "sceneKind": "tree",
-    "sceneTitle": "绝对定位角标逐层寻找包含块",
-    "actionLabel": "切换父级定位",
-    "actors": [
-      {
-        "id": "viewport",
-        "label": "视口",
-        "detail": "最外层参考框",
-        "icon": "browser",
-        "group": "祖先"
-      },
-      {
-        "id": "page",
-        "label": "页面容器",
-        "detail": "position: static",
-        "icon": "layout",
-        "group": "祖先"
-      },
-      {
-        "id": "card",
-        "label": "商品卡片",
-        "detail": "position: relative",
-        "icon": "component",
-        "group": "祖先"
-      },
-      {
-        "id": "badge",
-        "label": "折扣角标",
-        "detail": "position: absolute",
-        "icon": "spark",
-        "group": "目标"
-      }
-    ],
-    "edges": [
-      {
-        "id": "viewport-page",
-        "from": "viewport",
-        "to": "page",
-        "label": "包含"
-      },
-      {
-        "id": "page-card",
-        "from": "page",
-        "to": "card",
-        "label": "包含"
-      },
-      {
-        "id": "card-badge",
-        "from": "card",
-        "to": "badge",
-        "label": "定位参照"
-      }
-    ],
-    "frames": [
-      {
-        "label": "从角标向上查找",
-        "note": "角标逐层检查祖先，页面容器是 static，继续向上。",
-        "activeIds": [
-          "badge",
-          "card",
-          "page"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "viewport"
-        ],
-        "values": {
-          "page": "不是定位祖先"
-        },
-        "activeEdgeIds": [
-          "page-card"
-        ]
-      },
-      {
-        "label": "卡片成为包含块",
-        "note": "卡片设置 relative 后停止查找，角标的 top/right 参照卡片边框盒。",
-        "activeIds": [
-          "card",
-          "badge"
-        ],
-        "doneIds": [
-          "page"
-        ],
-        "mutedIds": [
-          "viewport"
-        ],
-        "values": {
-          "badge": "卡片右上角"
-        },
-        "activeEdgeIds": [
-          "card-badge"
-        ]
-      },
-      {
-        "label": "移除 relative",
-        "note": "同样的 top/right 数值改为参照视口，角标飞到页面右上角。",
-        "activeIds": [
-          "viewport",
-          "card",
-          "badge"
-        ],
-        "doneIds": [
-          "page"
-        ],
-        "mutedIds": [],
-        "values": {
-          "card": "static",
-          "badge": "视口右上角"
-        },
-        "activeEdgeIds": [
-          "viewport-page",
-          "page-card"
-        ]
-      }
-    ],
-    "insight": "绝对定位数值本身不会说明位置，真正决定结果的是最近的定位包含块。",
-    "quiz": {
-      "question": "要让绝对定位的子元素参照卡片，应先给卡片设置什么？",
-      "options": [
-        {
-          "label": "position: relative",
-          "correct": true
-        },
-        {
-          "label": "display: inline",
-          "correct": false
-        },
-        {
-          "label": "overflow: auto",
-          "correct": false
-        }
+  "slug": "positioning",
+  "lead": "同一个 top，为什么有时挪自己，有时贴住窗口？",
+  "definition": "CSS 定位先决定元素采用哪种 positioning scheme，再确定它相对哪个 containing block 计算 inset 偏移；relative 保留原占位，absolute/fixed 通常脱离普通流，sticky 在滚动阈值处贴住边界。",
+  "boundary": "定位不是通用布局工具；absolute 没有合适祖先会向外寻找包含块，sticky 没有滚动空间或阈值也不会产生贴住效果。",
+  "sceneKind": "layers",
+  "sceneTitle": "五种定位方式寻找不同参照系",
+  "actionLabel": "切换定位方式",
+  "actors": [
+    {
+      "id": "container",
+      "label": "定位容器",
+      "detail": "position: relative",
+      "icon": "layout",
+      "group": "参照"
+    },
+    {
+      "id": "card",
+      "label": "提醒卡",
+      "detail": "top: 16px",
+      "icon": "file",
+      "group": "对象"
+    },
+    {
+      "id": "ancestor",
+      "label": "最近定位祖先",
+      "detail": "containing block",
+      "icon": "component",
+      "group": "参照"
+    },
+    {
+      "id": "viewport",
+      "label": "视口",
+      "detail": "fixed 的参照",
+      "icon": "browser",
+      "group": "参照"
+    },
+    {
+      "id": "scroll",
+      "label": "滚动边界",
+      "detail": "sticky threshold",
+      "icon": "network",
+      "group": "边界"
+    },
+    {
+      "id": "result",
+      "label": "当前结果",
+      "detail": "relative / absolute / fixed",
+      "icon": "spark",
+      "group": "结果"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "留在队伍里",
+      "note": "static 按文档顺序排队，偏移值不改变它的位置。",
+      "activeIds": [
+        "card",
+        "result"
       ],
-      "success": "relative 会让卡片成为绝对定位后代的常用包含块。",
-      "retry": "display 和 overflow 不能直接建立所需的定位参照。"
+      "doneIds": [],
+      "mutedIds": [
+        "container",
+        "ancestor",
+        "viewport",
+        "scroll"
+      ],
+      "values": {
+        "result": "普通流"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "检查浮层的定位参照",
-      "text": "请检查下面角标或浮层的定位代码，指出它当前参照哪个包含块，并用最小改动让它固定在目标容器内。"
+    {
+      "label": "保留原位置",
+      "note": "relative 从自己的原位置偏移，原来的空间仍然存在。",
+      "activeIds": [
+        "card",
+        "container",
+        "result"
+      ],
+      "doneIds": [
+        "card"
+      ],
+      "mutedIds": [
+        "ancestor",
+        "viewport",
+        "scroll"
+      ],
+      "values": {
+        "result": "自己的原位置"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": "寻找包含块",
+      "note": "absolute 脱离普通流，stage 容器成为 containing block。",
+      "activeIds": [
+        "card",
+        "container",
+        "ancestor",
+        "result"
+      ],
+      "doneIds": [
+        "card"
+      ],
+      "mutedIds": [
+        "viewport",
+        "scroll"
+      ],
+      "values": {
+        "result": "最近定位祖先"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "贴住视口边界",
+      "note": "fixed 以视口为参照，滚动普通内容时仍保持在窗口边界。",
+      "activeIds": [
+        "card",
+        "viewport",
+        "result"
+      ],
+      "doneIds": [
+        "card"
+      ],
+      "mutedIds": [
+        "container",
+        "ancestor",
+        "scroll"
+      ],
+      "values": {
+        "result": "视口"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "定位先决定参照系，再决定偏移和占位；relative、absolute、fixed、sticky 的差异来自参照和滚动边界，不是 top 数字本身。",
+  "quiz": {
+    "question": "absolute 元素首先寻找什么？",
+    "options": [
       {
-        "url": "https://www.w3.org/TR/css-position-3/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "最近的定位祖先",
+        "correct": true
+      },
+      {
+        "label": "最后一个兄弟元素",
+        "correct": false
+      },
+      {
+        "label": "浏览器默认字号",
+        "correct": false
       }
-    ]
+    ],
+    "success": "它会寻找最近的、能建立包含块的祖先。",
+    "retry": "没有合适祖先时才会继续向外寻找包含块。"
   },
+  "prompt": {
+    "title": "找出一张卡片的参照系",
+    "text": "请比较 relative、absolute、fixed 和 sticky：分别说明元素相对谁、是否保留普通流占位、需要什么滚动或包含块条件；指出本例中把 stage 改成 position: relative 后为何结果稳定。"
+  },
+  "sources": [
+    {
+      "url": "https://www.w3.org/TR/css-position-3/",
+      "label": "W3C · CSS Positioned Layout Module Level 3",
+      "note": "定位方案、包含块、普通流与 sticky 边界。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/position",
+      "label": "MDN · position CSS property",
+      "note": "static、relative、absolute、fixed、sticky 的定位行为。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Display/Containing_block",
+      "label": "MDN · Layout and the containing block",
+      "note": "绝对定位元素如何寻找最近的包含块。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/inset",
+      "label": "MDN · inset CSS property",
+      "note": "top/right/bottom/left 的简写和偏移边界。"
+    }
+  ]
+},
   {
     "slug": "breakpoint",
     "lead": "为什么导航还没到手机宽度就已经挤在一起了？",

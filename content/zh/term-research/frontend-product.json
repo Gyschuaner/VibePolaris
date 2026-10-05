@@ -325,14 +325,23 @@
     ]
   },
   {
-    "slug": "positioning",
-    "mechanism": "定位元素先确定 positioning scheme 和 containing block，再用 inset 属性计算偏移；absolute/fixed 会改变其在普通流中的参与方式。",
-    "misconception": "position:absolute 不是相对最近父元素，而是相对最近建立定位包含块的祖先；sticky 还受滚动容器约束。",
-    "demoSignature": "建议 4 帧：角标起初贴在页面右上角，用户依次点击祖先盒；成为 containing block 的盒子高亮，角标飞回卡片角；移除父级 relative，参考框扩到视口，top/right 数值不变但最终位置明显改变。",
-    "sourceUrls": ["https://www.w3.org/TR/css-position-3/"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["box-model", "css-grid", "css"]
-  },
+  "slug": "positioning",
+  "mechanism": "定位先选择 static、relative、absolute、fixed 或 sticky 的方案，再根据方案确定 containing block 和 inset 偏移；同时决定元素是否继续占据普通流空间。",
+  "misconception": "top/left 只是偏移，不决定参照系；absolute 找不到定位祖先会向外寻找包含块，sticky 也需要滚动容器、阈值和空间才能贴住。",
+  "demoSignature": "position: 4 frames; actors=容器/定位卡片/包含块/视口/滚动边界; phases=普通流→保留原位置→寻找包含块→贴住视口; action=切换定位方式并观察参照标签与占位变化",
+  "sourceUrls": [
+    "https://www.w3.org/TR/css-position-3/",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/position",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Display/Containing_block",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/inset"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "css",
+    "box-model",
+    "layout"
+  ]
+},
     {
     "slug": "breakpoint",
     "mechanism": "断点是 media feature 条件改变布局规则的临界值；应从内容第一次拥挤、溢出或操作距离失效的位置反推，并在失效前切换。",
