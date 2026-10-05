@@ -1018,5 +1018,24 @@
       "http-header",
       "preview-deployment"
     ]
+  },
+  {
+    "slug": "visual-regression-testing",
+    "mechanism": "视觉回归测试在受控的视口、浏览器和数据下生成候选截图，与已确认的 baseline 做像素或区域比较；阈值过滤微小渲染噪声，review 再决定差异是有意变化、需要修复还是需要调整测试环境。",
+    "misconception": "截图 diff 不是完整的功能测试，也不是把所有差异自动判成 bug。字体、DPR、动画、异步数据和浏览器版本会制造环境差异；更新 baseline 也不能跳过设计、无障碍和响应式审查。",
+    "demoSignature": "compare: 6 frames; actors=渲染环境/baseline/candidate/diff/reviewer/矩阵; phases=锁环境→保存参照→生成候选→计算差异→审查意图→窄屏与 reduced-motion; action=制造一次布局变化",
+    "sourceUrls": [
+      "https://playwright.dev/docs/test-snapshots",
+      "https://storybook.js.org/docs/writing-tests/visual-testing",
+      "https://webdriver.io/docs/visual-testing/",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio",
+      "https://www.chromatic.com/docs/"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "regression-test",
+      "e2e-test",
+      "usability-testing"
+    ]
   }
 ]

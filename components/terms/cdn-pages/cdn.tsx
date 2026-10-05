@@ -13,7 +13,7 @@ export function CdnLesson() {
   const isMiss = scene.step === 2;
   const isRevalidate = scene.step === 3;
   const isVersion = scene.step === 4;
-  const StatusIcon = isMiss || isRevalidate ? WarningCircle : isHit || isVersion ? CheckCircle : Gear;
+  const StatusIcon = isMiss ? WarningCircle : isRevalidate ? ArrowsClockwise : isHit || isVersion ? CheckCircle : Gear;
   const status = isRequest ? "先到边缘节点查找；请求还没有证明一定会命中。" : isHit ? "副本仍新鲜，边缘直接返回；源站少承担一次响应。" : isMiss ? "这次要回源；回源成功后是否缓存，还要看规则和响应头。" : isRevalidate ? "过期副本带验证器回源；304 可以省下正文传输，但仍产生一次验证请求。" : "版本化 URL 让新资源使用新缓存键，旧资源按策略自然过期或被选择性清理。";
   return <div ref={scene.ref} className={styles.cdnLab} role="region" aria-label="CDN 命中、回源、再验证和发布工作台">
     <div className={styles.cdnLabHeader}><span>把同一个资源请求走五遍</span><strong>{scene.step + 1} / {labels.length}</strong></div>

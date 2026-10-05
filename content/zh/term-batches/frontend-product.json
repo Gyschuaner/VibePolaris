@@ -1999,5 +1999,54 @@
       "http-header",
       "preview-deployment"
     ]
+  },
+  {
+    "zh": "视觉回归测试",
+    "en": "Visual Regression Testing",
+    "slug": "visual-regression-testing",
+    "cat": "前端",
+    "say": "用可重复的截图比较发现界面变化，再由 review 判断它是设计更新还是回归。",
+    "aliases": [
+      "视觉回归",
+      "截图回归测试",
+      "Visual Testing"
+    ],
+    "question": "按钮只挪了 8px，怎样让提交前的检查把它找出来？",
+    "definition": "视觉回归测试在受控环境中渲染页面，保存或读取 baseline，再将候选截图与参照比较，输出差异图和门禁结果。它补充功能、可访问性和端到端测试，不替代这些测试。",
+    "boundary": "截图只观察渲染结果，不能证明接口、键盘流程、权限或数据逻辑正确；浏览器、字体、DPR、动画和随机数据不稳定时，差异会先反映环境问题。",
+    "demoType": "comparison",
+    "demoTitle": "从同一条路径到可审查的 diff",
+    "demoSteps": [
+      {
+        "label": "锁定输入",
+        "value": "1280×800 · Chromium · font ready",
+        "note": "先固定视口、字体、数据和动画状态，避免噪声冒充变化。"
+      },
+      {
+        "label": "比较画面",
+        "value": "baseline ↔ candidate · 18 px changed",
+        "note": "差异图指出位置，阈值只过滤小幅渲染噪声。"
+      },
+      {
+        "label": "做出决定",
+        "value": "修复、批准更新或保留阻断",
+        "note": "把变化放回设计意图、无障碍和响应式边界再决定。"
+      }
+    ],
+    "quizQuestion": "为什么不能看到截图 diff 后直接更新 baseline？",
+    "quizOptions": [
+      "差异可能是回归、环境噪声或未经确认的设计变化",
+      "baseline 会自动修复 CSS",
+      "更新 baseline 会自动测试键盘流程"
+    ],
+    "correctText": "先确认差异的原因和意图，才能避免把真实回归保存成新的参照。",
+    "wrongText": "baseline 只是参照画面，不会自动修复实现，也不能替代功能和可访问性测试。",
+    "promptTitle": "设计一套可解释的视觉回归门禁",
+    "prompt": "请为下面页面定义 baseline、候选路径、视口与 DPR、字体和动画等待、差异阈值、窄屏/减少动态矩阵、review 责任和基线更新规则。列出哪些变化必须阻断，哪些变化需要说明后批准。",
+    "relatedSlugs": [
+      "regression-test",
+      "e2e-test",
+      "usability-testing"
+    ]
   }
 ]

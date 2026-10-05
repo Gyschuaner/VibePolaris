@@ -17772,5 +17772,285 @@
         "note": "说明版本化静态资产与缓存策略。"
       }
     ]
+  },
+  {
+    "slug": "visual-regression-testing",
+    "lead": "按钮只挪了 8px，怎样让提交前的检查把它找出来？",
+    "definition": "视觉回归测试把同一路径在受控环境中渲染成候选截图，与已确认的 baseline 比较，再由 review 处理差异。",
+    "boundary": "它只观察渲染结果；功能、键盘、数据、权限和性能仍需自己的测试。baseline 更新也必须保留意图和环境证据。",
+    "sceneKind": "compare",
+    "sceneTitle": "从可重复渲染到差异审查",
+    "actionLabel": "制造一次布局变化",
+    "actors": [
+      {
+        "id": "environment",
+        "label": "渲染环境",
+        "detail": "视口、浏览器、DPR、字体和动画",
+        "icon": "browser",
+        "group": "输入"
+      },
+      {
+        "id": "baseline",
+        "label": "baseline",
+        "detail": "被确认的参照截图",
+        "icon": "file",
+        "group": "参照"
+      },
+      {
+        "id": "candidate",
+        "label": "candidate",
+        "detail": "本次提交生成的截图",
+        "icon": "browser",
+        "group": "候选"
+      },
+      {
+        "id": "diff",
+        "label": "diff",
+        "detail": "像素或区域变化的证据",
+        "icon": "chart",
+        "group": "比较"
+      },
+      {
+        "id": "reviewer",
+        "label": "review",
+        "detail": "判断意图、风险和处理方式",
+        "icon": "user",
+        "group": "决定"
+      },
+      {
+        "id": "matrix",
+        "label": "测试矩阵",
+        "detail": "窄屏、DPR 和 reduced motion",
+        "icon": "git",
+        "group": "覆盖"
+      }
+    ],
+    "edges": [
+      {
+        "id": "environment-baseline",
+        "from": "environment",
+        "to": "baseline",
+        "label": "稳定后保存"
+      },
+      {
+        "id": "environment-candidate",
+        "from": "environment",
+        "to": "candidate",
+        "label": "同环境渲染"
+      },
+      {
+        "id": "baseline-diff",
+        "from": "baseline",
+        "to": "diff",
+        "label": "对齐比较"
+      },
+      {
+        "id": "candidate-diff",
+        "from": "candidate",
+        "to": "diff",
+        "label": "输出差异"
+      },
+      {
+        "id": "diff-review",
+        "from": "diff",
+        "to": "reviewer",
+        "label": "交给审查"
+      },
+      {
+        "id": "review-matrix",
+        "from": "reviewer",
+        "to": "matrix",
+        "label": "扩展边界"
+      }
+    ],
+    "frames": [
+      {
+        "label": "锁定渲染环境",
+        "note": "视口、字体、数据和动画先稳定下来，baseline 才有可比性。",
+        "activeIds": [
+          "environment"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "baseline",
+          "candidate",
+          "diff",
+          "reviewer",
+          "matrix"
+        ],
+        "values": {
+          "environment": "1280×800 · DPR 1 · font ready"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "保存 baseline",
+        "note": "把被确认的页面画面和提交关联起来，baseline 不是随手截图。",
+        "activeIds": [
+          "environment",
+          "baseline"
+        ],
+        "doneIds": [
+          "environment"
+        ],
+        "mutedIds": [
+          "candidate",
+          "diff",
+          "reviewer",
+          "matrix"
+        ],
+        "values": {
+          "baseline": "home.chromium.png",
+          "environment": "locked"
+        },
+        "activeEdgeIds": [
+          "environment-baseline"
+        ]
+      },
+      {
+        "label": "生成 candidate",
+        "note": "同一路径在同一环境下生成候选截图；此时还没有判断差异对错。",
+        "activeIds": [
+          "environment",
+          "candidate"
+        ],
+        "doneIds": [
+          "baseline"
+        ],
+        "mutedIds": [
+          "diff",
+          "reviewer",
+          "matrix"
+        ],
+        "values": {
+          "candidate": "PR 42 · captured",
+          "environment": "same inputs"
+        },
+        "activeEdgeIds": [
+          "environment-candidate"
+        ]
+      },
+      {
+        "label": "计算 diff",
+        "note": "baseline 与 candidate 对齐后，差异遮罩指出按钮位置改变了 18 个像素。",
+        "activeIds": [
+          "baseline",
+          "candidate",
+          "diff"
+        ],
+        "doneIds": [
+          "environment"
+        ],
+        "mutedIds": [
+          "reviewer",
+          "matrix"
+        ],
+        "values": {
+          "baseline": "reference",
+          "candidate": "18 px shift",
+          "diff": "mask ready"
+        },
+        "activeEdgeIds": [
+          "baseline-diff",
+          "candidate-diff"
+        ]
+      },
+      {
+        "label": "审查变化意图",
+        "note": "未知差异先阻断；确认是有意设计且功能、可访问性一起通过后，才允许更新参照。",
+        "activeIds": [
+          "diff",
+          "reviewer"
+        ],
+        "doneIds": [
+          "baseline",
+          "candidate"
+        ],
+        "mutedIds": [
+          "environment",
+          "matrix"
+        ],
+        "values": {
+          "diff": "button color + layout",
+          "reviewer": "fix or approve"
+        },
+        "activeEdgeIds": [
+          "diff-review"
+        ]
+      },
+      {
+        "label": "再跑真实矩阵",
+        "note": "窄屏、DPR 和 reduced motion 可能暴露桌面截图看不见的回归。",
+        "activeIds": [
+          "reviewer",
+          "matrix"
+        ],
+        "doneIds": [
+          "environment",
+          "baseline",
+          "candidate",
+          "diff"
+        ],
+        "mutedIds": [],
+        "values": {
+          "matrix": "390px · motion off",
+          "reviewer": "pass after review"
+        },
+        "activeEdgeIds": [
+          "review-matrix"
+        ]
+      }
+    ],
+    "insight": "视觉回归测试把“页面好像变了”变成一条能重放的证据链，但最后的产品判断仍在 diff 之外。",
+    "quiz": {
+      "question": "发现一处布局 diff 后，最合适的下一步是什么？",
+      "options": [
+        {
+          "label": "确认输入稳定，再审查变化意图和影响范围",
+          "correct": true
+        },
+        {
+          "label": "无条件更新 baseline",
+          "correct": false
+        },
+        {
+          "label": "只看差异像素，不跑功能测试",
+          "correct": false
+        }
+      ],
+      "success": "对：先排除环境噪声，再把差异放回设计、无障碍、响应式和功能证据里决定。",
+      "retry": "diff 是证据，不是批准；先确认环境和变化意图。"
+    },
+    "prompt": {
+      "title": "建立一条可解释的视觉回归流程",
+      "text": "请为一个页面写出环境锁定、baseline、candidate、diff、review、窄屏和 reduced-motion 矩阵；说明阈值、未知差异的门禁、基线更新理由和回滚方式。"
+    },
+    "sources": [
+      {
+        "url": "https://playwright.dev/docs/test-snapshots",
+        "label": "Playwright visual comparisons",
+        "note": "说明截图参照、候选和差异比较。"
+      },
+      {
+        "url": "https://storybook.js.org/docs/writing-tests/visual-testing",
+        "label": "Storybook visual testing",
+        "note": "说明组件视觉测试与 review 工作流。"
+      },
+      {
+        "url": "https://webdriver.io/docs/visual-testing/",
+        "label": "WebdriverIO visual testing",
+        "note": "说明视觉差异测试的工具化路径。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio",
+        "label": "MDN devicePixelRatio",
+        "note": "说明设备像素比会影响截图尺寸和渲染细节。"
+      },
+      {
+        "url": "https://www.chromatic.com/docs/",
+        "label": "Chromatic visual tests",
+        "note": "说明基线、变化审查和视觉发布门禁。"
+      }
+    ]
   }
 ]
