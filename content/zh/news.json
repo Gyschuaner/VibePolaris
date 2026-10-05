@@ -37902,6 +37902,831 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-claude-government-access-20250812",
+    "title": "Anthropic 向美国政府三大分支提供一年期 1 美元 Claude 方案",
+    "summary": "8 月 12 日，Anthropic 宣布把 Claude for Enterprise 和 Claude for Government 的一年期访问方案扩展到美国联邦行政、立法和司法三大分支，官方报价写为 1 美元。方案依托上周加入的 GSA schedule，并提供支持 FedRAMP High 工作负载的 Claude for Government。这个消息确认的是商业和采购入口，不等于所有机构已经部署、所有数据都能接入，官方也没有在当天公开每个组织的席位和使用额度。",
+    "body": "8 月 12 日，Anthropic 宣布把 Claude for Enterprise 和 Claude for Government 的访问方案扩展到美国政府的三个分支：联邦民事行政机构，以及立法和司法机构。官方把方案写成一年 1 美元，并称会提供技术支持，帮助机构把 AI 接进生产力和任务流程。新闻的核心是降低采购入口的价格和范围，不是宣布政府已经完成一轮统一部署。\n\n这项方案包含两条产品路径。Claude for Government 面向需要处理敏感但未分类政府数据的工作负载，Anthropic 称其满足 FedRAMP High；Claude for Enterprise 则是企业版入口。两者都可以获得持续更新的 frontier models，但“可以使用模型”与“机构批准哪些数据、谁能调用哪些工具”是两件事。官方给出的获取方式是符合条件的机构领导联系 Anthropic，材料没有把 1 美元解释成每个员工、每个请求或无限额度的统一价格。\n\n采购路径依托 General Services Administration（GSA）schedule。Anthropic 说，上周把 Claude 加入 GSA schedule 后，联邦机构的采购流程更容易推进；这说明产品有了一个政府采购入口，不等于每个部门已经签约，也不等于预算、信息安全评审、隐私审查和具体合同条款都被这条公告替代。真正落地仍要看机构的授权链、数据分类和实施范围。\n\n安全部分也需要按来源分层阅读。Anthropic 称 Claude for Government 的方案通过 FedRAMP High，可处理敏感但未分类数据，并可以通过 AWS、Google Cloud 和 Palantir 的既有安全基础设施访问，同时由机构控制数据。这里的“满足最高安全标准”和“保持完整的数据控制”是供应方公告中的能力与承诺；使用方仍需核对对应的授权边界、日志、保留策略、管理员权限和模型更新如何进入自己的环境。\n\n公告还列了几项已有使用案例：国防部曾通过 Chief Digital and Artificial Intelligence Office 选择 Claude，协议上限为 2 亿美元；Lawrence Livermore National Laboratory 有 1 万名科学家和研究人员日常使用 Claude；哥伦比亚特区卫生部门部署 Claude 帮居民获得多语言健康服务。这些例子用于说明 Anthropic 所称的政府采用背景，不能直接证明 1 美元方案覆盖同样的权限、数据和效果，也不能把合同上限写成已经花掉的金额。\n\n从治理角度看，低价只解决了采购门槛的一部分。机构还要确定哪些任务可以由模型完成、哪些工具需要二次批准，怎样记录提示、文件和输出，怎样处理跨部门数据，怎样在模型持续更新后重跑评测。尤其是能接入云基础设施并不自动意味着模型可以读取所有内部系统；身份、最小权限、人工确认和撤销路径仍应在工具层实现。\n\n“1 美元一年”容易成为标题，却不是完整的总成本。接入、迁移、权限管理、日志留存、培训、定制集成和人工复核都可能产生额外工作；公告当天也没有公开每个机构的额度、服务等级或合同样本。判断这项政策是否真正扩大政府使用，应继续追踪 GSA 合同、机构采购记录、实际工作负载、数据处理范围和独立安全评估，而不是只看报价。\n\n这则公告显示，Anthropic 正把模型能力从企业采购通道推进到政府三大分支，并用一年期低价降低试用门槛。后续要验证的是，哪些政府任务因此变快或变准，谁保留最终决定权，模型更新和工具调用如何被审计，以及低价期结束后服务能否在可控成本下继续。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-government-access-20250812.svg",
+      "alt": "Anthropic 的 Claude for Government 通过采购与安全入口连接美国政府三大分支，数据、权限和人工审批仍由机构治理；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/anthropic-claude-government-access-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "offer",
+        "title": "8 月 12 日宣布的是一年期 1 美元方案",
+        "body": "Anthropic 把 Claude for Enterprise 和 Claude for Government 的访问方案扩展到联邦行政、立法和司法三大分支，并称方案提供一年、报价 1 美元和技术支持。公告确认商业入口，不等于所有机构已经部署。",
+        "kind": "narrative"
+      },
+      {
+        "id": "products",
+        "title": "Government 和 Enterprise 是两条产品路径",
+        "body": "Claude for Government 面向敏感但未分类政府数据的工作负载，Anthropic 称其满足 FedRAMP High；Claude for Enterprise 是企业版入口。机构仍需自己确定数据、人员和工具的授权范围。",
+        "kind": "technical"
+      },
+      {
+        "id": "procurement",
+        "title": "GSA schedule 降低采购摩擦，不替代机构评审",
+        "body": "Anthropic 说 Claude 上周加入 GSA schedule，帮助联邦机构推进采购。采购入口不等于每个部门已经签约，预算、隐私、信息安全和具体合同条款仍要逐项完成。",
+        "kind": "comparison"
+      },
+      {
+        "id": "security",
+        "title": "安全承诺要和实际授权边界分开",
+        "body": "公告称方案可通过 AWS、Google Cloud 和 Palantir 的既有安全基础设施访问，并由机构控制数据。使用方仍需核对授权、日志、保留策略、管理员权限和模型更新的评测流程。",
+        "kind": "boundary"
+      },
+      {
+        "id": "examples",
+        "title": "已有案例不能当成新方案的效果证明",
+        "body": "Anthropic 列出国防部 2 亿美元协议上限、Lawrence Livermore 1 万名科学家使用和哥伦比亚特区卫生部门多语言服务部署。这些是公司给出的采用背景，不等于 1 美元方案已覆盖同样的权限、数据和结果。",
+        "kind": "example"
+      },
+      {
+        "id": "governance",
+        "title": "低价之后仍有一条完整治理链",
+        "body": "机构要规定可用任务、工具二次批准、提示和文件日志、跨部门数据范围、人工复核和撤销路径；云基础设施接入也不自动授予模型读取内部系统的权限。",
+        "kind": "technical"
+      },
+      {
+        "id": "total-cost",
+        "title": "1 美元不是完整的总成本",
+        "body": "接入、迁移、权限管理、日志、培训、定制集成和人工复核都会影响总成本。公告没有公开每个机构的席位、额度、服务等级或合同样本，后续应追踪采购记录和独立安全评估。",
+        "kind": "comparison"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步看真实任务和低价期之后",
+        "body": "继续核对 GSA 合同、机构采购记录、数据处理范围、模型更新审计和低价期结束后的续费条件，再判断这项方案是否真的扩大了政府 AI 的可用范围。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "政府 AI 方案怎样从 1 美元报价走到可审计的任务？",
+      "question": "把商业报价、采购入口、安全授权、工具权限和真实使用结果分开，才能判断这项政府 AI 计划是否落地。",
+      "steps": [
+        {
+          "label": "确认适用机构",
+          "detail": "先确认机构属于联邦行政、立法或司法分支，以及谁有资格联系供应方申请方案。",
+          "evidence": "Anthropic eligibility notice"
+        },
+        {
+          "label": "选产品路径",
+          "detail": "在 Claude for Government 与 Claude for Enterprise 之间明确数据类型、工作负载和持续更新范围。",
+          "evidence": "Government / Enterprise offer"
+        },
+        {
+          "label": "走采购入口",
+          "detail": "GSA schedule 可以减少采购摩擦，但预算、隐私审查、信息安全评估和合同条款仍要完成。",
+          "evidence": "GSA schedule reference"
+        },
+        {
+          "label": "锁定数据和工具",
+          "detail": "把敏感数据、管理员权限、可调用工具、日志和人工确认写进环境配置，不能因低价放宽最小权限。",
+          "evidence": "FedRAMP High / secure infrastructure claim"
+        },
+        {
+          "label": "验证真实结果",
+          "detail": "记录任务速度、错误、模型更新、人工复核和总成本，再比较低价期结束后的持续可行性。",
+          "evidence": "Procurement and outcome audit"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/offering-expanded-claude-access-across-all-three-branches-of-government"
+    },
+    "relatedSlugs": [
+      "authorization",
+      "tools",
+      "event",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/offering-expanded-claude-access-across-all-three-branches-of-government",
+        "claim": "Anthropic 官方公告标注 Aug 12, 2025，说明 Claude for Enterprise/Government 向美国联邦行政、立法、司法三分支提供一年期 1 美元方案，并提到 GSA schedule、FedRAMP High、技术支持和安全基础设施。",
+        "excerpt": "Offering expanded Claude access across all three branches of the U.S. government for $1 ... This package will be available for one year."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/offering-expanded-claude-access-across-all-three-branches-of-government",
+    "sourceHash": "sha256:b3f5f1149a831ae331d9f325fc2f70e651f53a06b8513d2aaedb8626edc282f8"
+  },
+  {
+    "slug": "claude-sonnet4-1m-context-20250812",
+    "title": "Anthropic 开放 Claude Sonnet 4 的 100 万 token 上下文公测",
+    "summary": "8 月 12 日，Anthropic 宣布 Claude Sonnet 4 的 API 上下文窗口扩大到 100 万 token，是此前的 5 倍，并进入 public beta。首发面向 Claude Developer Platform 的 Tier 4 和定制速率客户，同时支持 Amazon Bedrock；超过 20 万 token 的输入按更高价格计费，Vertex AI 是 8 月 26 日才补上。",
+    "body": "8 月 12 日，Anthropic 把 Claude Sonnet 4 的 API 上下文窗口提高到最多 100 万 token，并开始公测。官方举的使用场景包括一次装入大型代码库、合成成百上千份文档，以及让智能体在数百次工具调用之间保留更长的工作记录。这个更新改变的是一次请求可以带多少输入，不是模型突然获得了永久记忆，也不是 Claude 所有产品和计划当天都自动拥有 1M 上限。\n\n上下文窗口更像工作台的容量，而不是答案长度。开发者可以把源文件、测试、文档和工具定义放进同一个请求，让模型在同一份上下文里比较依赖关系；但输入越长，注意力、延迟和费用也会一起上升。把全部代码塞进去并不能保证模型真的抓住关键路径，重复、过期或相互矛盾的文件还可能让问题更难定位。\n\nAnthropic 为超过 20 万 token 的输入设置了另一档价格：当时公开的 API 价格是输入每百万 token 6 美元、输出 22.50 美元；不超过 20 万 token 则是 3 美元和 15 美元。官方还提到 prompt caching 可以减少重复前缀的延迟与成本，batch processing 另有折扣。价格档位说明了长上下文不是免费的容量升级，系统设计仍要在完整输入、检索分段、缓存和摘要之间做选择。\n\n可用范围也有明确门槛。8 月 12 日的 public beta 面向 Claude Developer Platform 的 Tier 4 和定制速率客户，发布说明同时写明 Amazon Bedrock 可用；官方页面后来补充 Google Cloud Vertex AI 是 8 月 26 日才上线。更广泛的开放要分批进行，因此不能把“API 支持 1M”理解成每个账号、每个平台或 Claude 消费者应用当天都能发送 100 万 token。\n\n长上下文给智能体带来的好处与风险同时放大。把工具说明、历史操作和当前文件放进一个窗口，可以减少频繁摘要造成的上下文丢失；但一旦外部文档夹带恶意指令、权限说明过期或工具结果越来越多，模型也可能把旧规则当成新要求。调用链需要保留来源、版本和授权范围，并在关键操作前重新确认，而不是只依赖窗口变大。\n\n这次更新的价值要用真实工作负载来测量。团队应比较 20 万和 100 万 token 的延迟、费用、检索准确率、跨文件引用和工具调用失败率，观察模型是否能在长上下文中找到关键差异，也要记录缓存命中和摘要策略带来的变化。8 月 12 日确认的是一个有资格门槛的 1M API 公测，至于它是否比精心设计的检索系统更可靠，需要用自己的代码库和文档来验证。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/claude-sonnet4-1m-context-20250812.svg",
+      "alt": "Claude Sonnet 4 的上下文窗口从较短文档扩展到 100 万 token，输入范围、费用、缓存和权限决定长任务是否可靠；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/claude-sonnet4-1m-context-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "8 月 12 日开放的是 API 1M 上下文公测",
+        "body": "Anthropic 宣布 Claude Sonnet 4 的 API 最多支持 100 万 token，是此前的 5 倍；首发面向 Claude Developer Platform 的 Tier 4/定制速率客户，Amazon Bedrock 同期支持，Vertex AI 到 8 月 26 日才补上。",
+        "kind": "narrative"
+      },
+      {
+        "id": "window-meaning",
+        "title": "上下文容量不是永久记忆，也不是输出长度",
+        "body": "1M 指一次请求可以放入的输入上下文，适合代码库、文档集和工具历史；它不会自动保存跨会话记忆，也不保证模型在长输入中找对关键内容。",
+        "kind": "technical"
+      },
+      {
+        "id": "pricing",
+        "title": "超过 20 万 token 进入更高价格档",
+        "body": "官方发布价格是 ≤200K 输入 3 美元/MTok、输出 15 美元/MTok；超过 200K 输入则是 6 美元和 22.50 美元。Prompt caching 与 batch processing 可以改变账单，但不消除长输入成本。",
+        "kind": "comparison"
+      },
+      {
+        "id": "eligibility",
+        "title": "公测资格和平台开放有门槛",
+        "body": "首发 public beta 面向 Tier 4 和定制速率客户，更广泛的开放分批推进；API、Bedrock、Vertex AI 和 Claude 应用的可用日期不能混为一谈。",
+        "kind": "boundary"
+      },
+      {
+        "id": "agent-risk",
+        "title": "长上下文也会携带更长的错误和旧规则",
+        "body": "工具说明、历史结果和外部文档进入同一窗口后，恶意指令、过期权限和冲突版本也更容易被模型带入下一步。来源、版本、授权和关键操作确认仍需保留。",
+        "kind": "technical"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步比较完整输入与检索分段",
+        "body": "用同一代码库或文档集比较 20 万与 100 万 token 的延迟、费用、引用准确率、缓存命中和工具失败率，才知道长窗口是否真的优于检索和摘要。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "100 万 token 的上下文到底改变了什么？",
+      "question": "把输入容量、价格、平台资格和长任务风险分开，才能判断 1M context 是否适合你的工作流。",
+      "steps": [
+        {
+          "label": "装入资料",
+          "detail": "把代码、文档、工具定义和历史结果放进一次请求；先检查是否有重复、过期或不应共享的内容。",
+          "evidence": "1M-token context window"
+        },
+        {
+          "label": "确认窗口",
+          "detail": "输入不超过 200K 与超过 200K 的价格档不同，1M 是最大上下文容量，不是模型必须读取的最优长度。",
+          "evidence": "Anthropic API pricing"
+        },
+        {
+          "label": "发起长任务",
+          "detail": "模型可以在更长的代码库或文档集中保持同一上下文，也可以连续调用工具；延迟和失败重试要单独记录。",
+          "evidence": "Long-context use cases"
+        },
+        {
+          "label": "检查引用",
+          "detail": "回答中的文件、版本和权限来源要能回链，避免模型把旧文档、隐藏指令或无权访问的内容混进结论。",
+          "evidence": "Source and authorization boundary"
+        },
+        {
+          "label": "比较成本",
+          "detail": "把完整上下文、检索分段、摘要和缓存放在同一测试里，比较费用、延迟和准确率后再选择架构。",
+          "evidence": "Prompt caching and batch processing"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic / Claude",
+      "url": "https://claude.com/blog/1m-context"
+    },
+    "relatedSlugs": [
+      "context-window",
+      "llm",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://claude.com/blog/1m-context",
+        "claim": "Anthropic 官方页面标注 August 12, 2025，宣布 Claude Sonnet 4 API 支持最多 1M tokens、5 倍提升、public beta、20 万 token 分档价格、prompt caching/batch processing 与 Tier 4/定制速率资格。",
+        "excerpt": "Claude Sonnet 4 now supports up to 1 million tokens of context—a 5x increase ... public beta ... Tier 4 and custom rate limits."
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/release-notes/overview",
+        "claim": "Anthropic 平台 release notes 记录 8 月 12 日 API 与 Amazon Bedrock 的 1M context beta；Google Cloud Vertex AI 的更新日期与博客中的 8 月 26 日补充分开。",
+        "excerpt": "August 12, 2025 — 1M context window beta support for Claude Sonnet 4."
+      }
+    ],
+    "canonicalUrl": "https://claude.com/blog/1m-context",
+    "sourceHash": "sha256:e40242a125a3a007e568391c6c01a45f034c0c6a85af4f49315a949a16ffe297"
+  },
+  {
+    "slug": "gamie-physician-oversight-20250812",
+    "title": "Google DeepMind 发布 g-AMIE：病史采集交给 AI，诊断决定留给医生复核",
+    "summary": "8 月 12 日，Google DeepMind 介绍 guardrailed-AMIE（g-AMIE）：它在对话中采集病史，但被护栏禁止向患者给出个性化医疗建议，再把摘要、鉴别诊断、管理计划和患者消息草稿交给监督医生（PCP）审阅。Google 在 60 个虚拟 OSCE 场景中报告了较高的问诊和记录评价；这些结果来自特定的异步监督流程，不能写成系统已经能独立看诊。",
+    "body": "8 月 12 日，Google DeepMind 介绍 guardrailed-AMIE，简称 g-AMIE。它不是把“医生”这个角色整体交给模型，而是把一次医疗对话拆成两段：模型负责询问病史、整理信息，主治医生负责查看鉴别诊断和管理计划，修改后再决定是否把消息发给患者。官方把 g-AMIE 称为用于病史采集的诊断 AI，同时明确设置护栏，禁止它直接给出针对个人的医疗建议。\n\n这条分工回应的是医疗 AI 最容易被混在一起的两个动作。病史采集是把症状、时间、既往情况和患者的疑问问完整；诊断和治疗计划则要结合证据承担临床责任。g-AMIE 的对话代理分三个阶段工作：先做一般询问，再围绕初步鉴别诊断补问，最后回应患者的问题。每次回答都要经过护栏代理检查，必要时改写，避免在对话中直接说“你得了什么病”或“你应该怎样治疗”。\n\n对话结束后，多智能体系统生成一份供医生看的材料。SOAP note（医疗记录常用的四段式格式）把患者主诉和病史放在 Subjective，把可观察资料放在 Objective，把鉴别诊断及理由放在 Assessment，把管理方案放在 Plan；系统还会另写一份给患者的消息草稿。这里的“生成管理计划”仍是供医生审阅的候选内容，不是已经授权执行的医嘱。\n\nGoogle 为这套流程做了一个 clinician cockpit，也就是给监督医生使用的工作台。医生可以在同一界面查看对话和 SOAP note，修改鉴别诊断、管理计划，再批准修改后的患者消息，或者决定需要一次后续问诊。这个设计把监督从实时陪同改成可以异步完成，但责任没有异步消失：最后批准什么、要求补充什么，以及什么时候升级给人，都由医生留下决定。\n\n官方用一项随机、盲法的虚拟 OSCE 来比较这套流程。60 个场景由标准化患者扮演者参与，g-AMIE 与在同一护栏下工作的基层医生、护士执业医师和医师助理/助理医师组进行病史采集，再由有经验的基层医生监督和修改记录，独立医生负责评分。Google 报告 g-AMIE 的病史采集、SOAP note 和患者消息得到更高评价，监督医生也更常接受它的消息；这描述的是一套为监督而设计的实验流程，不是对现实临床医生能力的总排名。\n\n结果里还有几处不能略过的摩擦。研究报告说 g-AMIE 的记录在少数案例中出现 confabulation，也就是把没有发生或没有被提供的内容写得像事实；发生率在这项实验里与受护栏约束的医生组相近，但记录更长，监督医生要花更多时间删减。访谈还显示，检查这些材料本身会带来认知负担。信息更全不自动等于审阅更轻松，过长的记录可能让真正需要确认的异常被埋住。\n\n这项工作也没有证明 g-AMIE 可以直接部署到真实诊所。作者提醒，医生对照组没有接受如何在这种护栏流程里工作的训练，60 个虚拟场景和患者扮演者也不能代表真实患者、罕见病和复杂沟通；如何判断一句话是否构成个性化医疗建议，也存在边界案例。真正接入时，还要测试漏问、错误摘要、过期指南、急症升级、医生修改时间，以及患者消息在发送前是否确实经过授权。\n\ng-AMIE 的意义在于给“人监督 AI”一个可以观察的接口：模型做前置采集，医生在诊断和沟通出口处承担责任。下一步不只是比较谁的分数更高，而是记录每一次医生改了什么、哪些风险被护栏拦住、哪些错误直到复核才被发现，以及异步监督是否真的让患者更快得到合适的后续服务。8 月 12 日确认的是一种可测试的协作流程，不是把医疗判断从医生手里移交给模型。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/gamie-physician-oversight-20250812.svg",
+      "alt": "g-AMIE 先在护栏内采集病史，再把 SOAP note 和患者消息草稿交给医生在工作台中复核；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/gamie-physician-oversight-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "8 月 12 日公开的是一套医生监督框架",
+        "body": "Google DeepMind 介绍 guardrailed-AMIE（g-AMIE），让系统在护栏内做病史采集，并把后续判断交给监督医生。配套论文 7 月 21 日已提交，新闻事件按 8 月 12 日官方博客记录。",
+        "kind": "narrative"
+      },
+      {
+        "id": "guardrail",
+        "title": "模型可以问病史，但不能给个性化医嘱",
+        "body": "对话代理先做一般询问，再围绕初步鉴别诊断补问，最后回应患者问题；护栏代理逐条检查并改写回答，禁止直接给出针对个人的诊断或管理建议。",
+        "kind": "technical"
+      },
+      {
+        "id": "soap-cockpit",
+        "title": "SOAP note 和 clinician cockpit 把责任留在医生端",
+        "body": "系统生成 Subjective、Objective、Assessment、Plan 四段式记录和患者消息草稿，监督医生在工作台里编辑鉴别诊断与管理计划，再批准消息或要求后续问诊。生成内容是候选材料，不是自动执行的医嘱。",
+        "kind": "example"
+      },
+      {
+        "id": "osce",
+        "title": "60 个虚拟场景测试的是异步监督流程",
+        "body": "随机、盲法虚拟 OSCE 让患者扮演者与 g-AMIE 或受同一护栏约束的医生组交互，再由监督基层医生编辑、独立医生评分。Google 报告 g-AMIE 的记录和消息评价较高，但场景与人员都不能代表全部临床。",
+        "kind": "comparison"
+      },
+      {
+        "id": "friction",
+        "title": "记录更完整，也可能更难审阅",
+        "body": "研究报告少数 SOAP note 出现 confabulation（把没有提供的内容写得像事实），并指出记录更长、监督医生需要更多删改，审阅本身有认知负担。更详细不等于更安全，异常信息仍需逐项核实。",
+        "kind": "boundary"
+      },
+      {
+        "id": "limits",
+        "title": "虚拟 OSCE 不能替代真实临床验证",
+        "body": "对照医生没有接受这种护栏工作流的专门训练，60 个场景和患者扮演者也不能覆盖真实患者分布、急症和复杂沟通。还要验证漏问、错误摘要、指南版本、升级条件和消息发送前的授权。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步追踪医生改动和患者后果",
+        "body": "部署前应记录医生改了什么、护栏拦住什么、哪些错误直到复核才发现，以及异步监督是否缩短了合适的后续服务时间。可测试的协作接口，才是这项工作的落点。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "clinical-alert",
+      "title": "g-AMIE 怎样把一场医疗对话交到医生手里？",
+      "question": "把病史采集、护栏检查、记录生成和医生批准分开，才能看清 AI 在医疗流程中的具体位置。",
+      "steps": [
+        {
+          "label": "询问病史",
+          "detail": "对话代理先收集症状、时间和既往情况，再根据初步鉴别诊断补问，最后回应患者的疑问。",
+          "evidence": "Google DeepMind：three-phase dialogue agent"
+        },
+        {
+          "label": "拦住个性化建议",
+          "detail": "护栏代理检查每个回答，必要时改写；g-AMIE 不在患者对话中直接给出针对个人的诊断或治疗计划。",
+          "evidence": "Google DeepMind：guardrail agent"
+        },
+        {
+          "label": "生成 SOAP note",
+          "detail": "系统把信息整理成 Subjective、Objective、Assessment、Plan，并另写患者消息草稿；鉴别诊断和管理计划仍需医生审阅。",
+          "evidence": "Google DeepMind：SOAP note agent"
+        },
+        {
+          "label": "医生打开 cockpit",
+          "detail": "监督基层医生查看对话和记录，编辑诊断与计划，决定批准消息，或要求一次后续问诊。",
+          "evidence": "Clinician cockpit / asynchronous oversight"
+        },
+        {
+          "label": "留下责任链",
+          "detail": "上线前要记录漏问、错误摘要、医生修改、升级条件和发送授权，让异步流程仍然可以追溯。",
+          "evidence": "Article test boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google DeepMind / Google Research",
+      "url": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "authorization",
+      "llm",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/",
+        "claim": "Google DeepMind 官方博客标注 August 12, 2025，介绍 g-AMIE 的护栏病史采集、多智能体 SOAP note、clinician cockpit、异步监督和 60 个虚拟 OSCE 场景。",
+        "excerpt": "We introduce guardrailed-AMIE (g-AMIE), a diagnostic AI designed for history-taking. g-AMIE operates with a guardrail that prohibits it from giving individualized medical advice."
+      },
+      {
+        "url": "https://arxiv.org/abs/2507.15743",
+        "claim": "配套论文于 2025-07-21 提交，说明 g-AMIE 如何在护栏内做病史采集，再将评估交给监督基层医生；论文同时提醒虚拟流程不能直接代表现实临床能力。",
+        "excerpt": "Submitted on 21 Jul 2025 ... g-AMIE, a multi-agent system that performs history taking within guardrails, abstaining from individualized medical advice."
+      }
+    ],
+    "canonicalUrl": "https://research.google/blog/enabling-physician-centered-oversight-for-amie/",
+    "sourceHash": "sha256:f809b0ec8a0274e4db8efba0ec78740e6833294c7f4b218ecea526f3ad5a74dc"
+  },
+  {
+    "slug": "matrix-3d-explorable-scenes-20250812",
+    "title": "Skywork AI 发布 Matrix-3D：从文字或图片生成可探索的全景 3D 场景",
+    "summary": "8 月 12 日，Skywork AI 发布 Matrix-3D 的代码、技术报告和项目页。它把文字或图片先变成全景图和全景视频，再重建为可以 360°探索的 3D 场景，并允许使用预设或自定义相机轨迹。官方把它定位为大范围、可控制的场景生成系统；当天确认的是这条流水线和开源入口，不能把后续低显存脚本、5B 模型或演示效果倒填成首发能力。",
+    "body": "8 月 12 日，Skywork AI 在 Matrix-3D 仓库发布代码、技术报告和项目页。它要生成的不是一张只能从正面看的图片，而是一段覆盖全景的视觉内容，再把这段内容重建成可以移动视角的 3D 场景。输入可以是一段文字或一张图片，输出则沿着“全景图 → 全景视频 → 3D 场景”的链路展开。\n\n第一步是建立全景表示。项目把单张图片或文字描述扩展成覆盖四周的 panorama，随后生成沿相机运动变化的全景视频。这样做给了模型更大的空间范围，也带来一个必须面对的问题：画面在不同方向上能不能接得起来。普通图片只需要局部看起来合理，全景场景还要保持地面、墙面、天空和远处物体在 360°边界处连续。\n\n第二步是把视频变成能探索的场景。Matrix-3D 提供两种全景 3D 重建方法：一种偏向优化，追求更高的重建质量；另一种是 feed-forward 的前向推理路径，强调更快得到结果。项目页把它们放在速度和细节的权衡里，说明“生成出视频”和“得到可漫游的几何场景”是两个不同阶段，后者还要承担深度、遮挡和相机姿态的一致性。\n\n相机轨迹是这条流水线的控制入口。项目页展示 S-curve Trajectory、Straight Trajectory 和 Diagonal Right-Front 等相机路径，README 的命令示例则用 Straight Travel、S-curve Travel、Forward on the Right 这样的参数名，并允许用户给出 JSON 相机轨迹。轨迹可以决定相机怎样穿过场景，却不能保证每个新视角都有真实存在的几何结构；当全景视频里没有足够证据时，重建系统仍可能补出看似合理但无法验证的墙角、门后或远处物体。\n\n官方把 Matrix-3D 描述为支持大尺度、360°自由探索、文字和图片双输入以及可定制轨迹，并称模型具有较强的泛化能力。这些是项目方对系统的定位与展示结果，不能直接等同于真实世界测绘、建筑级几何精度或任何相机路径都能稳定运行。读者应把它看成一套从生成式视频走向可探索场景的研究管线，而不是已经替代摄影测量或游戏引擎的通用重建器。\n\n开源入口也有时间边界。固定到 8 月 12 日的 README commit 可以确认代码、技术报告和项目页在当天发布，并保留 MIT License；仓库后续又加入了低显存脚本、5B 模型和 Gradio demo，这些更新不能倒填进 8 月 12 日的首发范围。复现时应锁定同一个 commit，同时记录输入类型、全景视频分辨率、相机轨迹和重建方法，避免把后续便利功能混到原始结果里。\n\n这套流程和同日的 Matrix-Game 2.0 解决的是不同问题：Matrix-3D 从文字或图片开始，重点是生成可以沿轨迹探索的空间；Matrix-Game 从当前画面和键鼠动作开始，重点是连续生成下一帧。两者都使用“世界模型”语言，但一个首先需要验证几何和视角一致性，另一个首先需要验证动作响应和状态保持，不能因为项目同属 Skywork AI 就把指标互相替换。\n\n下一步的测试应从演示镜头退回到可测量的空间误差：比较不同方向的深度、边界接缝、遮挡恢复和轨迹回放，记录 3D 场景是否在长路径上漂移；再用同一输入分别走优化式和前向重建，比较耗时、显存、细节和失败模式。8 月 12 日确认的是一个开放的全景视频到 3D 场景流水线，能否成为可靠的可探索世界，还需要这些几何和轨迹证据。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/matrix-3d-explorable-scenes-20250812.svg",
+      "alt": "Matrix-3D 将文字或图片变成全景图、全景视频，再重建为可沿相机轨迹探索的 3D 场景；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/matrix-3d-explorable-scenes-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "8 月 12 日公开的是代码、技术报告和项目页",
+        "body": "Skywork AI 的固定 README commit 记录 8/12 发布 Matrix-3D 的代码、技术报告和项目页，并采用 MIT License。后续低显存脚本、5B 模型和 Gradio demo 属于之后更新，不回填到首发日。",
+        "kind": "narrative"
+      },
+      {
+        "id": "pipeline",
+        "title": "文字或图片先变成全景图和全景视频",
+        "body": "Matrix-3D 用 panoramic representation 扩大视野：输入文字或图片后，先生成覆盖四周的全景图，再生成随着相机运动变化的全景视频。全景边界的连续性是普通单视角图片不必处理的约束。",
+        "kind": "technical"
+      },
+      {
+        "id": "reconstruction",
+        "title": "两条重建路径权衡速度与细节",
+        "body": "项目提供偏优化的高质量 3D 重建和 feed-forward 的快速重建，把视频生成与可漫游几何分成两个阶段。深度、遮挡和相机姿态的一致性仍需独立检查。",
+        "kind": "comparison"
+      },
+      {
+        "id": "trajectory",
+        "title": "预设和自定义相机轨迹控制探索方式",
+        "body": "项目页展示 S-curve Trajectory、Straight Trajectory、Diagonal Right-Front 等路径示例；README 的命令示例使用 Straight Travel、S-curve Travel、Forward on the Right 参数名，也允许提供 JSON 相机轨迹。轨迹决定相机怎样走，不保证未观测区域的几何一定真实。",
+        "kind": "example"
+      },
+      {
+        "id": "claims",
+        "title": "360°探索是作者定位，不是测绘精度承诺",
+        "body": "官方称系统支持大尺度场景、360°自由探索、文字/图片双输入和可定制轨迹，并强调泛化能力。这些说法应按项目展示阅读，不能外推为建筑级几何、真实世界测绘或任意路径稳定。",
+        "kind": "boundary"
+      },
+      {
+        "id": "time-bound",
+        "title": "事件日版本和后续仓库更新要分开",
+        "body": "8/12 的固定 commit 只确认代码、技术报告和项目页；8/25 的低显存脚本、8/29 的 Gradio demo、9/2 的 5B/低显存更新不属于当天首发证据。",
+        "kind": "comparison"
+      },
+      {
+        "id": "matrix-distinction",
+        "title": "Matrix-3D 和 Matrix-Game 的世界模型问题不同",
+        "body": "Matrix-3D 从文字/图片生成沿轨迹探索的空间，优先验证几何与视角一致性；Matrix-Game 从画面和键鼠动作生成下一帧，优先验证动作响应与状态保持。项目同属 Skywork AI，不代表指标可以互换。",
+        "kind": "comparison"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步测深度、接缝和长轨迹漂移",
+        "body": "固定输入和 commit，比较不同方向的深度、全景边界、遮挡恢复、轨迹回放和两种重建耗时/显存，记录 3D 场景在长路径上的失败模式。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一张图片怎样变成可以走进去的 3D 场景？",
+      "question": "把全景生成、视频运动、几何重建和相机轨迹拆开，才能看懂 Matrix-3D 的可探索边界。",
+      "steps": [
+        {
+          "label": "给出文字或图片",
+          "detail": "输入可以是文字提示或一张图片；先固定来源、分辨率和场景范围，避免不同输入被当成同一个任务。",
+          "evidence": "Text-to-scene / image-to-scene"
+        },
+        {
+          "label": "生成全景图",
+          "detail": "模型把单视角内容扩展成覆盖四周的 panoramic image，接下来要检查 360°边界是否连续。",
+          "evidence": "Panoramic representation"
+        },
+        {
+          "label": "生成全景视频",
+          "detail": "沿预设或自定义相机轨迹生成 panorama video，让场景在移动视角下保持可见的变化。",
+          "evidence": "Panoramic video generation"
+        },
+        {
+          "label": "重建 3D 场景",
+          "detail": "选择优化式或 feed-forward 重建，从视频得到可渲染的 3D 表示；速度和细节各有取舍。",
+          "evidence": "Two panoramic 3D reconstruction methods"
+        },
+        {
+          "label": "回放并测误差",
+          "detail": "沿长轨迹回放，检查深度、遮挡、接缝和漂移；看似连贯的画面仍可能包含无法验证的几何。",
+          "evidence": "Trajectory and geometry evaluation"
+        }
+      ]
+    },
+    "source": {
+      "name": "Skywork AI",
+      "url": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md"
+    },
+    "relatedSlugs": [
+      "tools",
+      "data-pipeline",
+      "event",
+      "distributed-system"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md",
+        "claim": "Skywork AI 固定 2025-08-12 README commit 确认 Matrix-3D 代码、技术报告和项目页发布、MIT License 与后续更新的日期边界。",
+        "excerpt": "Aug 12, 2025: We release Matrix-3D, including code, technical report, and project page."
+      },
+      {
+        "url": "https://github.com/SkyworkAI/Matrix-3D",
+        "claim": "官方项目页说明 panoramic representation、文字/图片输入、360°探索、相机轨迹、两种 3D 重建路径和后续版本更新；文章按事件日分开使用这些信息。",
+        "excerpt": "Matrix-3D utilizes panoramic representation for wide-coverage omnidirectional explorable 3D world generation ... combines conditional video generation and panoramic 3D reconstruction."
+      }
+    ],
+    "canonicalUrl": "https://github.com/SkyworkAI/Matrix-3D/blob/565385ea8aff62bab3b8f564a38acd153f34f199/README.md",
+    "sourceHash": "sha256:5d298adc4ff6113ba69277d88ffc64f09366c4aa74b13e88e71de3d98268c6dc"
+  },
+  {
+    "slug": "matrix-game-2-interactive-world-model-20250812",
+    "title": "Skywork AI 开源 Matrix-Game 2.0：让世界模型按键盘鼠标实时更新",
+    "summary": "8 月 12 日，Skywork AI 发布并开源 Matrix-Game 2.0，把鼠标和键盘的逐帧输入作为视频生成的交互条件。项目页称它用 Unreal Engine 与 GTA5 生产约 1200 小时交互数据，借助少步自回归扩散生成分钟级视频，目标速度为 25 FPS。这里的“世界模型”仍是作者在游戏场景和 benchmark 中的结果，不等于已经能稳定控制真实环境。",
+    "body": "8 月 12 日，Skywork AI 在 Matrix-Game 仓库里发布 Matrix-Game 2.0，并开放模型权重和代码。它要解决的问题不是“给一张图配一段更长的视频”，而是让视频模型在画面变化时接受新的动作输入：用户按下键盘、移动鼠标，下一帧应该沿着相应方向继续。项目把这种模型称为 interactive world foundation model，也就是把环境状态和动作之间的变化放进同一条生成循环里。\n\n输入方式是这次发布最值得看懂的部分。项目页介绍了一个 action injection module，把逐帧鼠标和键盘输入作为 interactive conditions；模型根据当前视觉内容和对应动作预测下一帧。这样一来，动作不必等到一段视频生成完才补进去，控制信号可以随着每帧更新。但“能接收按键”只说明接口存在，按键是否及时改变目标、相机是否稳定、连续操作会不会漂移，都要另行测量。\n\n这套能力建立在一条专门的数据生产链上。团队用 Unreal Engine 和 GTA5 场景生成约 1200 小时视频，并记录多种交互标注，再把这些数据用于训练世界模型。数据来自可控的游戏环境，优点是动作、画面和场景状态可以同步记录；局限也在这里：游戏里的碰撞规则、视角变化和任务分布与现实机器人、街景或开放世界并不相同，数据规模不能直接换算成现实环境覆盖率。\n\n在生成端，Matrix-Game 2.0 使用少步自回归扩散和面向因果的架构。前一帧的视觉内容与当前动作进入模型，模型只预测接下来的画面，循环继续下去。项目页称它可以在多种场景中生成分钟级视频，并以 25 FPS 的速度运行。这个数字描述的是项目方给出的生成演示和配置；真正用于交互时，还要把读取输入、渲染、网络和控制回路的延迟一起算进去，不能把离线生成速度直接当作可玩的实时控制。\n\n模型还去掉了文字分支，增加动作模块，让预测主要依赖视觉内容和动作。这个选择适合持续的按键控制，却也意味着系统需要从当前画面保持场景身份、物体位置和运动状态。只要某一帧把门、道路或角色的位置画错，后面的自回归链可能继续沿着错误状态生成；视频看起来连贯，不代表内部状态仍然与可操作的场景一致。\n\n项目页给出了 GameWorld Score 的对比表，并展示 Minecraft、GTA、TempleRun 等场景的视频。这样的结果可以回答“在作者选定的场景和指标里，画面质量、时序一致性和键鼠响应怎样”，不能直接回答“模型是否理解现实世界物理”或“玩家是否能在任何游戏里稳定完成任务”。还需要公开相同输入序列下的延迟、动作成功率、长时间漂移和失败恢复，才能把视频效果和控制能力分开。\n\n开源让这些问题有了复查入口：代码、权重、数据生产思路和场景展示都可以对照仓库版本阅读，项目采用 MIT License。复现时应固定 commit、模型配置和输入帧率，记录每个动作到画面变化的延迟；同时检查生成内容、游戏素材和下游应用是否各自满足许可要求。\n\nMatrix-Game 2.0 的新闻点是把“下一帧长什么样”和“用户刚刚按了什么”接到同一个循环里。接下来真正有价值的测试，不是再看一段更长的演示，而是让模型面对连续转向、遮挡、意外动作和场景切换，检查状态是否保持、控制是否可恢复、失败时能否把动作交还给人。8 月 12 日确认的是一个开放的交互世界模型原型，离可靠的通用环境控制还隔着一套可重复的实验。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/matrix-game-2-interactive-world-model-20250812.svg",
+      "alt": "Matrix-Game 2.0 将鼠标键盘动作注入逐帧视频生成循环，连续输出可交互场景；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/matrix-game-2-interactive-world-model-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "8 月 12 日公开的是 Matrix-Game 2.0",
+        "body": "Skywork AI 在官方仓库发布 Matrix-Game 2.0，定位为实时长视频生成的 interactive world foundation model，并开放模型权重与代码。README 的发布记录是 8/12，不能与后续滚动更新混为同一版本。",
+        "kind": "narrative"
+      },
+      {
+        "id": "action-input",
+        "title": "逐帧鼠标和键盘进入生成条件",
+        "body": "action injection module 把 frame-level mouse/keyboard inputs 作为交互条件，模型结合当前视觉内容预测下一帧。接口能接收动作，不等于连续控制没有延迟、漂移或错误。",
+        "kind": "technical"
+      },
+      {
+        "id": "data",
+        "title": "约 1200 小时数据来自 Unreal 与 GTA5",
+        "body": "团队用 Unreal Engine 和 GTA5 生产交互视频与标注，形成可同步记录动作和画面的数据链。游戏环境便于复查，但不能直接代表现实物理、真实机器人或开放世界的分布。",
+        "kind": "example"
+      },
+      {
+        "id": "generation",
+        "title": "少步自回归扩散追求 25 FPS",
+        "body": "项目页称模型采用 few-step autoregressive diffusion 与因果架构，能生成分钟级视频、达到 25 FPS。这个数字按作者给出的生成配置阅读，实际交互还要加上输入、渲染、网络和控制回路延迟。",
+        "kind": "technical"
+      },
+      {
+        "id": "state",
+        "title": "视频连贯不代表内部状态正确",
+        "body": "模型去掉文字分支、增加动作模块，主要从视觉内容和动作预测下一帧；一旦物体位置或场景关系在某帧漂移，自回归生成可能沿着错误状态继续。",
+        "kind": "boundary"
+      },
+      {
+        "id": "benchmark",
+        "title": "GameWorld Score 先按作者场景解读",
+        "body": "项目展示 Minecraft、GTA、TempleRun 等场景和 GameWorld Score 对比表，能说明指定数据、指标和版本下的表现，不能直接推出现实物理理解、任意游戏控制或长期稳定性。",
+        "kind": "comparison"
+      },
+      {
+        "id": "open-tests",
+        "title": "复现要固定版本并记录控制延迟",
+        "body": "开源复现应锁定 commit、模型配置与输入帧率，逐动作记录画面响应、长时漂移、失败恢复和人工接管；同时核对代码、权重与游戏素材的许可边界。",
+        "kind": "aside"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步看连续动作和状态恢复",
+        "body": "让模型面对连续转向、遮挡、意外动作和场景切换，检查状态是否保持、控制是否可恢复，以及失败时能否把动作交还给人。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "世界模型怎样把一次按键变成下一帧？",
+      "question": "把动作输入、视觉状态、逐帧生成和控制评测拆开，才能看懂 Matrix-Game 2.0 的交互边界。",
+      "steps": [
+        {
+          "label": "读取当前画面",
+          "detail": "模型先接收当前视觉内容，保留场景、角色和物体的状态线索；这一帧本身也可能含有错误或遮挡。",
+          "evidence": "Visual contents"
+        },
+        {
+          "label": "注入动作",
+          "detail": "鼠标和键盘的逐帧输入进入 action injection module，作为下一帧生成的交互条件。",
+          "evidence": "Frame-level mouse/keyboard inputs"
+        },
+        {
+          "label": "预测下一帧",
+          "detail": "少步自回归扩散根据画面与动作预测接下来的视觉结果，循环继续而不是一次性生成整段视频。",
+          "evidence": "Few-step autoregressive diffusion"
+        },
+        {
+          "label": "持续输出",
+          "detail": "项目方称可生成分钟级视频并达到 25 FPS；真实回路还要测量输入、渲染和网络延迟。",
+          "evidence": "25 FPS / minute-level videos"
+        },
+        {
+          "label": "检查状态与接管",
+          "detail": "用连续动作、遮挡和意外操作测试漂移与恢复，失败时保留停止、回退或人工接管的出口。",
+          "evidence": "State consistency and control recovery"
+        }
+      ]
+    },
+    "source": {
+      "name": "Skywork AI",
+      "url": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md"
+    },
+    "relatedSlugs": [
+      "tools",
+      "data-pipeline",
+      "event",
+      "distributed-system"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md",
+        "claim": "Skywork AI 官方 README 的固定 2025-08-12 commit 确认 Matrix-Game-2.0 的发布、实时长视频世界模型定位、模型权重和代码开放。",
+        "excerpt": "Aug 12, 2025: We released Matrix-Game-2.0. This is an interactive world foundation model for real-time long video generation."
+      },
+      {
+        "url": "https://matrix-game-v2.github.io/",
+        "claim": "官方项目页介绍约 1200 小时 Unreal/GTA5 交互数据、逐帧鼠标键盘动作条件、少步自回归扩散、分钟级视频和 25 FPS，并展示 GameWorld Score。",
+        "excerpt": "An action injection module that enables frame-level mouse and keyboard inputs as interactive conditions ... Matrix Game 2.0 can generate high-quality minute-level videos ... at ... 25 FPS."
+      }
+    ],
+    "canonicalUrl": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md",
+    "sourceHash": "sha256:e2628a5b2ca4d274220c31cb5c225122bd31ad288eb2049b1607c5376954104e"
+  },
+  {
+    "slug": "mistral-medium-31-release-20250812",
+    "title": "Mistral 更新 Medium 3.1：把多模态理解接进 128K 上下文和工具调用",
+    "summary": "8 月 12 日，Mistral 在模型页和 changelog 记录 Mistral Medium 3.1（mistral-medium-2508）发布。官方把它定位为 frontier-class 多模态模型，提供 128K 上下文，并列出 structured outputs、function calling、Document QnA、batching、Agents & Conversations 等能力。公开资料主要说明模型入口和功能面，没有把这次更新写成全新模型家族、开源权重或一组已独立复现的 benchmark。",
+    "body": "8 月 12 日，Mistral 发布 Mistral Medium 3.1，模型标识是 mistral-medium-2508。官方页面把它描述为 frontier-class multimodal model，并写着“improving tone and performance”；changelog 也把这条记录归类为模型发布。它更像 Medium 3 系列的一次版本更新：给开发者一个新的日期标签和模型入口，公开可用能力则集中在多模态输入、长上下文以及与工具和结构化输出的衔接上。\n\n模型页标注的上下文长度是 128K，并列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。需要把“页面列出支持”与“8 月 12 日新发明了这些 API”分开：资料确认的是 3.1 的可用功能面，没有提供每一项相对 Medium 3 的独立改进幅度，也没有在这两页给出一张可以复核的综合 benchmark 表。\n\n多模态能力的实际价值在于把文字、图片和文档放进同一个任务。Document QnA 可以让模型围绕文件提问，structured outputs 让结果按预先定义的 JSON 形状返回，function calling 则把模型的意图交给外部程序执行。三者串起来时，模型负责理解和生成候选参数，业务系统仍要验证字段、检查用户权限和决定是否真的调用工具，不能把“支持 function calling”当成模型已经获得操作数据库或发送请求的授权。\n\n128K 上下文也不是自动的长期记忆。它可以容纳更长的合同、代码库或多页图像说明，但输入越长，检索重点、费用、延迟和冲突版本越难管理。Prefix、batching 等能力可能改变重复前缀和批处理任务的成本结构，却不能替系统筛掉过期文档或隐藏在附件里的恶意指令。长上下文被装进请求之前，仍需做来源、版本、敏感字段和可共享范围的检查。\n\n从产品工程看，3.1 的功能组合更适合拿来搭一条可检查的流水线：先用文档问答提取证据，再用 structured outputs 固定字段，最后只把通过校验的参数交给 function calling。每一步都要保留原始文件、模型版本、提示、解析错误和工具返回值。对于 Agents & Conversations，还要另外记录会话状态怎样保存、哪些工具能够被调用，以及用户撤回授权后旧上下文是否仍能触发动作。\n\n这次更新的公开信息有一个明显边界：官方页面说明了 128K、功能列表和模型 ID，却没有给出训练数据、参数规模或不同模态任务的独立对比结果。模型方写的 tone 和 performance 改善，需要在自己的文档、图片、结构化输出和工具调用测试里验证；不能仅凭“frontier-class”这个定位就推断它在所有任务上领先。\n\nMistral Medium 3.1 的新闻点不在一个孤立的数字，而在模型版本与应用接口被放在同一张能力表里。下一步应固定模型 ID 和 API 版本，分别测多模态理解、长上下文引用、JSON 合法率、工具参数错误、越权调用和失败重试。这样才能知道它究竟为现有工作流减少了哪一段手工拼接，又把哪些风险交给了系统治理。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/mistral-medium-31-release-20250812.svg",
+      "alt": "Mistral Medium 3.1 将文字与文档输入接入 128K 上下文，再输出结构化结果或经过授权的工具调用；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/mistral-medium-31-release-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "8 月 12 日更新的是 Medium 3.1 模型入口",
+        "body": "Mistral 模型页和 changelog 同日记录 Mistral Medium 3.1（mistral-medium-2508）发布，页面定位为 frontier-class 多模态模型，并写明改进 tone 和 performance。公开资料没有把它描述成新的模型家族或开源权重首发。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capabilities",
+        "title": "128K 上下文旁边列着一整套应用接口",
+        "body": "模型页列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。功能列表说明支持面，不等于每项都在这一天首次推出或已经给出独立提升幅度。",
+        "kind": "technical"
+      },
+      {
+        "id": "multimodal-flow",
+        "title": "文档问答、结构化结果和工具调用可以串成流水线",
+        "body": "模型可从文档中提取信息，再按预定义 JSON 形状返回，最后把通过校验的参数交给外部工具。字段校验、用户权限、工具副作用和失败回滚仍由业务系统负责。",
+        "kind": "example"
+      },
+      {
+        "id": "context",
+        "title": "128K 是输入容量，不是长期记忆",
+        "body": "更长的合同、代码库和图片说明可以放进一次请求，但费用、延迟、重复信息、过期版本和提示注入也会随输入增长。Prefix 与 batching 能改变部分成本结构，不能替系统筛选可信内容。",
+        "kind": "boundary"
+      },
+      {
+        "id": "agent-governance",
+        "title": "Agents & Conversations 需要自己的授权和状态账本",
+        "body": "接入代理与会话接口时，要记录会话状态、可调用工具、用户授权和撤回后的行为；模型有 function calling 能力，不代表它自动获得访问数据库、发送消息或执行交易的权限。",
+        "kind": "technical"
+      },
+      {
+        "id": "evidence",
+        "title": "官方没有给出足够的独立 benchmark",
+        "body": "8/12 公开页面说明模型 ID、128K、功能面和定位，没有提供训练数据、参数规模或完整的跨模态对比表。所谓 tone 和 performance 改善，需要在固定版本和自己的任务集上复测。",
+        "kind": "comparison"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步测 JSON、引用和越权调用",
+        "body": "固定 mistral-medium-2508 与 API 版本，分别测多模态理解、长上下文引用、JSON 合法率、工具参数错误、越权调用和失败重试，才能知道更新减少了哪一段手工工作。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "Medium 3.1 怎样从文档走到一次可控的工具调用？",
+      "question": "把输入、上下文、结构化输出、权限校验和工具执行拆开，才能看清多模态模型的应用边界。",
+      "steps": [
+        {
+          "label": "放入文档",
+          "detail": "把文字、图片或文档放进请求，先确认来源、版本、敏感字段和允许共享的范围。",
+          "evidence": "Multimodal input / Document QnA"
+        },
+        {
+          "label": "保持上下文",
+          "detail": "128K 允许一次请求容纳更多材料，但长输入仍需去重、分层和标注版本，不能当作跨会话记忆。",
+          "evidence": "128K context"
+        },
+        {
+          "label": "固定结果形状",
+          "detail": "用 structured outputs 约束 JSON 字段，再由业务代码检查类型、必填项和证据引用。",
+          "evidence": "Structured Outputs"
+        },
+        {
+          "label": "校验工具参数",
+          "detail": "function calling 只产生待执行的调用意图；权限、参数范围和副作用要在外部系统再次检查。",
+          "evidence": "Function Calling / Built-In Tools"
+        },
+        {
+          "label": "记录状态和失败",
+          "detail": "保存模型版本、提示、解析错误、工具返回值和用户授权变化，失败时允许重试、回退或人工接管。",
+          "evidence": "Agents & Conversations"
+        }
+      ]
+    },
+    "source": {
+      "name": "Mistral AI",
+      "url": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08"
+    },
+    "relatedSlugs": [
+      "llm",
+      "tools",
+      "context-window",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08",
+        "claim": "Mistral 官方模型页标注 August 12, 2025，记录 Mistral Medium 3.1（mistral-medium-2508）、128K context、多模态定位及 structured outputs、function calling、Document QnA、Agents 等支持面。",
+        "excerpt": "Our frontier-class multimodal model released August 2025. Improving tone and performance. ... Context 128k."
+      },
+      {
+        "url": "https://docs.mistral.ai/resources/changelogs",
+        "claim": "Mistral 官方 changelog 在 August 12 条目记录 released Mistral Medium 3.1（mistral-medium-2508），作为发布日期交叉证据。",
+        "excerpt": "August 12: We released Mistral Medium 3.1 (mistral-medium-2508)."
+      }
+    ],
+    "canonicalUrl": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08",
+    "sourceHash": "sha256:768b794129a773c1478919d4e76f7e5e447ef65ed3b2ef7253c223c480d502e3"
+  },
+  {
+    "slug": "molmoact-action-reasoning-20250812",
+    "title": "Ai2 开源 MolmoAct：让机器人在三维空间里规划动作",
+    "summary": "8 月 12 日，Ai2 发布并开源 MolmoAct-7B，把机器人控制拆成深度感知、图像空间路径规划和低层动作解码三步。模型和数据入口先公开，训练与评测工件按 GitHub release notes 在之后分批补齐；官方还称其在 SimplerEnv 与 LIBERO 上取得领先结果，72.1% 和 86.6% 属于 Ai2 的 benchmark 口径，不能直接换算成真实机器人成功率。",
+    "body": "8 月 12 日，Allen Institute for AI（Ai2）发布 MolmoAct，并把模型、数据和使用入口公开出来。它试图解决机器人模型常见的一步跳跃：看到场景和指令后直接输出控制信号。MolmoAct 把中间的空间推理显式放出来，让模型先理解物体的深度关系，再在图像里画出一串路径点，最后把路径转换成机械臂、夹爪或末端执行器能执行的低层动作。\n\n这条链路由三个自回归阶段组成。第一步是深度感知 token，把距离和几何结构编码进模型的视觉输入；第二步是 image-space waypoints，用一组可编辑的图像坐标表示“先到哪里、再怎么走”；第三步才是 action decoding，根据机器人本身的运动学配置，把路径点还原成电机命令。这样做的好处是计划可以被人看见、修改或重新约束，代价是每个中间表示都可能出错，路径画得合理也不等于机械臂不会碰撞。\n\nMolmoAct-7B 的开放范围是这次发布的另一层重点。Ai2 说模型基于 Molmo 和 Open-X Embodiment 数据训练，同时发布了约 1 万条机器人轨迹组成的 MolmoAct 数据集，内容包含家庭场景里的整理、收纳等动作。GitHub 的 8 月 12 日 release notes 确认模型和数据入口已公开；训练流水线、评测脚本和实验支持在之后继续补齐，所以“完全开放”要按具体工件和时间点来读，不能把当天所有复现实验都想成一键完成。\n\nAi2 在发布博客中报告，MolmoAct 在 SimplerEnv 的分布外任务成功率为 72.1%，在 LIBERO 上的平均成功率为 86.6%，并称超过多家机构的模型。数字来自 Ai2 选择的模拟环境、任务、版本和对比设置；技术报告的早期版本还出现过不同的 SimplerEnv 口径，不能把不同版本的数字拼成一个排行榜。模拟器结果说明模型在特定任务上有潜力，不等于换到真实家庭、不同相机或陌生机械臂后仍然稳定。\n\n模型还提供一条更容易理解的控制方式：在发出动作命令前，把计划的轨迹叠加到输入图像上，用户可以用自然语言或手绘路径调整目标。对研究者来说，这为排查“模型为什么朝那里走”提供了可见接口；对部署者来说，它仍然只是预览，不能替代速度限制、碰撞检测、急停和人机隔离。一个可编辑的轨迹，如果没有安全层约束，仍可能把错误动作执行得更快。\n\nMolmoAct 的真正价值在于把“会看”“会规划”和“会动”放进一份可以检查的开放工件里。下一步需要复现模型在同一版本 benchmark 上的结果，再拿相同的语言指令、遮挡、陌生物体和不同机器人形态做真实测试，记录路径错误、恢复动作和人工接管次数。8 月 12 日确认的是一个开放的 Action Reasoning Model 和一条可见的空间推理链；它能否成为可靠的机器人基础模型，还要由这些失败记录来回答。",
+    "publishedAt": "2025-08-12",
+    "eventDate": "2025-08-12",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/molmoact-action-reasoning-20250812.svg",
+      "alt": "MolmoAct 将深度感知、图像空间路径点和低层动作连接起来，并在执行前显示可编辑轨迹；真实机器人仍需安全层；VibePolaris 自制 SVG。",
+      "sourceUrl": "/images/news/molmoact-action-reasoning-20250812.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "8 月 12 日公开的是一套可检查的动作推理工件",
+        "body": "Ai2 发布 MolmoAct-7B，并公开模型、数据和使用入口。论文 v1 在 8 月 11 日提交，但新闻事件以 8 月 12 日官方博客和模型/数据 release notes 为准；后续训练与评测代码仍有增量更新。",
+        "kind": "narrative"
+      },
+      {
+        "id": "three-stage",
+        "title": "深度感知、路径点、低层动作分成三步",
+        "body": "模型先用 depth-aware perception tokens 表示几何关系，再输出 image-space waypoints，最后按机器人运动学解码成末端执行器动作。中间计划可见、可编辑，也意味着每一层都需要单独验证。",
+        "kind": "technical"
+      },
+      {
+        "id": "open-artifacts",
+        "title": "约 1 万条机器人轨迹让训练链更可复查",
+        "body": "Ai2 公开 MolmoAct 数据集和模型入口，数据包含家庭场景的机器人 episode。GitHub 8/12 已确认模型与数据发布，训练复现、评测脚本等工件在之后继续补齐，不能把开放入口写成当天一键复现实验。",
+        "kind": "example"
+      },
+      {
+        "id": "benchmark",
+        "title": "72.1% 与 86.6% 是 Ai2 的 benchmark 口径",
+        "body": "官方博客报告 SimplerEnv 分布外任务成功率 72.1%、LIBERO 平均成功率 86.6%。这些数字依赖指定环境、任务、模型版本和对比设置；早期技术报告有不同的 SimplerEnv 口径，不能混成一个排行榜，也不能外推成真实家庭成功率。",
+        "kind": "comparison"
+      },
+      {
+        "id": "steerable",
+        "title": "轨迹可见让人能改计划，但不替代安全层",
+        "body": "MolmoAct 可以把预计路径叠加到图像上，也能接受手绘目标轨迹。可视化有助于人工纠正，但速度限制、碰撞检测、急停和人机隔离仍需在模型之外配置。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-tests",
+        "title": "下一步看陌生物体、形态迁移和接管次数",
+        "body": "复现同版本 benchmark，再测试遮挡、陌生物体、不同相机和机器人形态，记录路径错误、恢复动作和人工接管，才能判断开放模型能否进入真实工作流。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "机器人怎样把一句话变成一条可检查的动作链？",
+      "question": "把感知、空间计划、动作解码和安全接管拆开，才能看懂 MolmoAct 的 Action Reasoning Model。",
+      "steps": [
+        {
+          "label": "看懂空间",
+          "detail": "模型从图像和指令中提取带深度的视觉 token，估计物体之间的距离和几何关系。",
+          "evidence": "Depth-aware perception tokens"
+        },
+        {
+          "label": "画出路径点",
+          "detail": "它在图像空间中输出一串 waypoints，表示任务的中间目标；研究者或用户可以先检查这条轨迹。",
+          "evidence": "Image-space waypoints"
+        },
+        {
+          "label": "适配机器人",
+          "detail": "根据具体机器人的运动学配置，把路径点转换成末端执行器、夹爪或其他硬件的低层动作。",
+          "evidence": "Action decoding"
+        },
+        {
+          "label": "允许人修改",
+          "detail": "用户可以用自然语言或手绘目标路径改变计划，预览帮助发现明显方向错误，但不保证动作一定安全。",
+          "evidence": "Trajectory steering"
+        },
+        {
+          "label": "安全层接管",
+          "detail": "碰撞检测、速度限制、急停和人工接管独立于模型，轨迹通过检查后才允许进入真实硬件。",
+          "evidence": "Robot hardware safety boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Allen Institute for AI",
+      "url": "https://allenai.org/blog/molmoact"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "llm",
+      "event",
+      "distributed-system"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://allenai.org/blog/molmoact",
+        "claim": "Ai2 官方博客标注 August 12, 2025，介绍 MolmoAct 为首个 Action Reasoning Model，说明深度感知 token、image-space waypoints、低层动作解码、约 1 万条机器人 episode 和 SimplerEnv/LIBERO 结果。",
+        "excerpt": "We introduce a new class of models, called Action Reasoning Models ... depth-aware perception tokens ... waypoints ... low-level action commands."
+      },
+      {
+        "url": "https://github.com/allenai/molmoact",
+        "claim": "官方 GitHub release notes 在 2025/08/12 标出模型和数据发布，后续再补充评测和训练复现入口。",
+        "excerpt": "[2025/08/12] datasets/models have been released"
+      },
+      {
+        "url": "https://arxiv.org/abs/2508.07917",
+        "claim": "MolmoAct 技术报告 v1 于 2025-08-11 提交，摘要把三阶段感知/规划/控制与开放数据写成技术背景；新闻事件仍按 8/12 官方博客记录。",
+        "excerpt": "Submitted on 11 Aug 2025 ... structured three-stage pipeline ... release all model weights, training code, and datasets."
+      }
+    ],
+    "canonicalUrl": "https://allenai.org/blog/molmoact",
+    "sourceHash": "sha256:2902933fb57c51598fadfb15b7251bfde4b17586978b230e4227d25f7dceed39"
+  },
+  {
     "slug": "alibaba-wan22-i2v-flash-20250811",
     "title": "阿里云上线 Wan2.2-I2V-Flash，图片转视频进入更快的 API 入口",
     "summary": "阿里云 Model Studio 的生命周期记录把 Wan2.2-I2V-Flash 列为 2025 年 8 月 11 日在中国区上线的图片转视频模型，国际区记录为 8 月 15 日。它主打更快推理、稳定性、提示词遵循、文字/人像/产品一致性和镜头控制；这是 Wan2.2 家族的 Flash API 变体，不是 7 月 28 日整套 Wan2.2 发布的重复报道。",
