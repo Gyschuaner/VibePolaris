@@ -245,7 +245,25 @@
       "authorization"
     ]
   },
-  {"slug":"encryption-at-rest","mechanism":"静态数据加密在数据写入磁盘、备份或对象存储时用密钥转换密文，并在授权读取时解密；安全性取决于密钥隔离、轮换和访问控制。","misconception":"磁盘加密不能防住已获应用读取权限的攻击者，也不自动保护日志、备份和内存；密钥与密文同处且同权限会削弱隔离。","demoSignature":"6帧｜对象：数据库页、备份文件、KMS 密钥、应用身份、被盗磁盘与被盗应用凭证两种攻击卡｜交互：分别触发两种攻击并撤销 KMS grant｜变化：磁盘攻击只能见密文，应用凭证仍可请求解密，撤权后读取失败｜结果：0 条明文或 100 条明文的边界清楚显示。","sourceUrls":["https://csrc.nist.gov/pubs/sp/800/111/final","https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html"],"rewriteRisk":"高：不能宣称‘加密后数据就安全’，必须展示密钥与解密主体边界。","nearDuplicates":["encryption-in-transit","backup","hashing"]},
+  {
+  "slug": "encryption-at-rest",
+  "mechanism": "静态加密在存储层用数据密钥把保存对象转换为密文，再用独立的密钥加密密钥包住 DEK；真正的保护范围由存储副本、KMS 授权、应用身份和密钥生命周期共同决定。",
+  "misconception": "磁盘加密不是应用授权；被偷磁盘看不到明文，不代表仍有解密权限的应用身份也看不到；密文、wrapped DEK 与 KEK 同处会削弱分层。",
+  "demoSignature": "6帧｜对象：billing.db、backup、DEK、KMS/KEK、app grant、偷盘与冒用应用两张攻击卡、key v1/v2｜交互：写入、包 DEK、分别触发偷盘和应用身份、撤 grant、轮换｜变化：密文+无 grant=0 明文；应用 grant=100 条明文；撤权=0；新数据用 v2、旧备份仍认 v1｜结果：把存储介质保护和应用授权的边界同时画出来。",
+  "sourceUrls": [
+    "https://csrc.nist.gov/pubs/sp/800/111/final",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html",
+    "https://cloud.google.com/kms/docs/envelope-encryption",
+    "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+    "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final"
+  ],
+  "rewriteRisk": "高：必须把保存范围、DEK/KEK 分层、介质攻击、应用授权、密钥轮换和备份恢复写成一条可验证因果链，不能用一把锁代替完整边界。",
+  "nearDuplicates": [
+    "encryption-in-transit",
+    "backup",
+    "hashing"
+  ]
+},
   {"slug":"encryption-in-transit","mechanism":"传输中加密用 TLS 等协议在通信端点间提供机密性、完整性和对端身份验证；保护范围从握手建立的安全通道开始，到终止 TLS 的端点结束。","misconception":"HTTPS 不代表端到端穿过所有代理仍为密文；TLS 在负载均衡器终止后，后续链路需单独保护，证书校验失败也不能忽略。","demoSignature":"7帧｜对象：浏览器、CDN、负载均衡、应用三段链路及每段锁图标、抓包字节视图｜交互：逐段启用 TLS 并把 CDN→LB 改为明文｜变化：外部抓包保持密文，内部链路暴露 Authorization 字段｜结果：端到端保护段从 3/3 降到 2/3，风险节点被精确标红。","sourceUrls":["https://www.rfc-editor.org/rfc/rfc8446.html","https://www.rfc-editor.org/rfc/rfc9525.html","https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"],"rewriteRisk":"高：需明确 TLS 终止点和身份校验，不要与静态加密共用锁头动画。","nearDuplicates":["tls-handshake","encryption-at-rest","hostname"]}
 ,
   {

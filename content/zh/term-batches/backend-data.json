@@ -1645,14 +1645,55 @@
     ]
   },
   {
-    "zh": "静态加密", "en": "Encryption at Rest", "slug": "encryption-at-rest", "cat": "技术栈",
-    "say": "数据写入磁盘、备份或对象存储后，以密文形式保存。", "aliases": ["存储加密", "落盘加密", "静态数据加密"],
-    "question": "硬盘或备份文件被拿走时，怎样降低数据直接被读取的风险？", "definition": "静态加密保护存储介质上的数据，通常由磁盘、数据库、对象存储或应用层实现。", "boundary": "数据被已授权应用解密后仍可能泄露；密钥管理、访问控制和备份策略同样重要。",
-    "demoType": "lifecycle", "demoTitle": "数据落盘和读取时怎样变化",
-    "demoSteps": [{"label":"应用写入","value":"用户资料明文","note":"数据在受控进程中准备保存。"},{"label":"存储加密","value":"磁盘保存密文","note":"介质上不再保存可直接查看的业务明文。"},{"label":"授权读取","value":"密钥解密后返回","note":"访问日志记录主体和对象。"}],
-    "quizQuestion": "静态加密主要保护哪个阶段？", "quizOptions": ["数据保存在磁盘或备份时", "数据在网络传输时", "用户输入表单样式"], "correctText": "它关注存储介质上的数据。", "wrongText": "网络传输通常由 TLS 等机制保护，表单样式无关。",
-    "promptTitle": "审查静态加密", "prompt": "请检查数据库、文件、备份和日志的静态加密范围，以及密钥保存、轮换、授权和恢复流程。", "relatedSlugs": ["encryption-in-transit", "backup", "least-privilege"]
-  },
+  "zh": "静态加密",
+  "en": "Encryption at Rest",
+  "slug": "encryption-at-rest",
+  "cat": "技术栈",
+  "say": "让存储介质拿到的是密文，把能还原它的钥匙放到另一条授权链里。",
+  "aliases": [
+    "存储加密",
+    "落盘加密",
+    "静态数据加密"
+  ],
+  "question": "硬盘、数据库快照和备份被复制时，为什么看见密文还不够，还要追问谁拿着解密钥匙？",
+  "definition": "静态加密把保存中的数据转换为带完整性保护的密文，并用独立的密钥管理和授权链决定谁能在需要时还原。",
+  "boundary": "它降低存储介质泄露的直接影响，却不能保护已经被授权应用读出的明文、网络链路或同处一地的密钥；备份、快照、日志也要单独纳入范围。",
+  "demoType": "lifecycle",
+  "demoTitle": "一份账单怎样从明文落盘走到密钥轮换",
+  "demoSteps": [
+    {
+      "label": "写入密文",
+      "value": "100 rows → ciphertext + wrapped DEK",
+      "note": "数据由 DEK 加密，DEK 再由 KMS 中的 KEK 包住。"
+    },
+    {
+      "label": "模拟偷盘",
+      "value": "disk copy → 0 plaintext",
+      "note": "只有数据库和备份，没有 KMS grant，无法还原。"
+    },
+    {
+      "label": "撤回并轮换",
+      "value": "grant revoked · key v2",
+      "note": "应用解密被挡，新写入使用新版本，旧备份保留可恢复路径。"
+    }
+  ],
+  "quizQuestion": "应用身份被盗且仍有 KMS 解密权限时，静态加密能保证攻击者看不到明文吗？",
+  "quizOptions": [
+    "不能，应用已经在授权边界内拿到解密能力",
+    "能，只要数据库页保存的是密文",
+    "能，KMS 会自动识别所有被盗身份"
+  ],
+  "correctText": "静态加密挡住的是存储介质直接泄露；授权应用读出的明文需要另一层控制。",
+  "wrongText": "密文、wrapped DEK 和 KMS grant 是不同边界，不能把磁盘安全等同于应用安全。",
+  "promptTitle": "画出数据和钥匙的保存边界",
+  "prompt": "请列出数据库、备份、快照、日志、DEK、KEK、KMS grant、撤权和轮换的关系，并写出两种攻击各自能看到什么。",
+  "relatedSlugs": [
+    "encryption-in-transit",
+    "backup",
+    "hashing",
+    "least-privilege"
+  ]
+},
   {
     "zh": "传输加密", "en": "Encryption in Transit", "slug": "encryption-in-transit", "cat": "技术栈",
     "say": "数据在客户端、服务和数据库之间传输时使用加密连接。", "aliases": ["链路加密", "传输中加密", "In-Transit Encryption"],
