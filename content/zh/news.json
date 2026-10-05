@@ -37902,6 +37902,204 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "nvidia-dsx-ai-factories",
+    "title": "英伟达发布 DSX 平台，提供 AI 工厂建设蓝图",
+    "summary": "5 月 31 日，NVIDIA 发布 DSX（Data Center Scale）平台，把面向 AI 工厂的硬件、软件、参考设计和运营模块放进一套建设蓝图，并介绍开放软件模块、DSX MaxLPS 和开源 DSX OS。官方页面说明了平台组成和每兆瓦 token 性能等目标，没有独立证明不同部署都能达到目标，也没有替代运营方的负载和故障实测。",
+    "body": "5 月 31 日，NVIDIA 发布 DSX（Data Center Scale）平台，为建设 AI 工厂提供硬件、软件、参考设计和运营模块的组合蓝图。页面还介绍开放软件模块、DSX MaxLPS 和开源 DSX OS，并把每兆瓦 token 性能放进基础设施决策。事件是平台和 playbook 的发布，不是某个模型已经达到一项新性能。\n\nAI 工厂的建设需要同时处理算力、电力、网络、模型服务和运维。DSX 的产品主张，是让基础设施建设者在这些层面共享一套规划框架；但每个模块最终如何部署、怎样影响延迟和吞吐，仍然要看运营方的设备、负载和软件版本。\n\n可以把一次集群建设拆成四层：算力与功耗、网络连接、模型服务、故障与版本管理。容量或软件升级时，应记录 token/兆瓦、延迟、吞吐、网络利用率和恢复时间；如果只有产品名称或参考设计，没有实际部署记录，就不能推断整条链已经可靠。\n\nNVIDIA 官方页面支持平台组成、DSX MaxLPS、DSX OS 和目标指标的公开描述，没有独立证明每种部署都能达到目标性能，也没有提供不同负载、地区或客户环境的统一实测。目标指标是规划参考，不能直接当作运营结果。\n\n相关词条可以把基础设施问题落到具体控制点：agent 代表按步骤调用工具并推进任务的系统，execution-sandbox 限制文件、网络、进程和凭据范围，data-pipeline 追踪数据从采集、转换到服务写入的路径。后续应在小规模环境复现目标，再决定是否扩大部署。",
+    "publishedAt": "2026-05-31",
+    "eventDate": "2026-05-31",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nvidia-dsx-ai-factories.svg",
+      "alt": "英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/nvidia-dsx-ai-factories.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "platform",
+        "title": "DSX 把哪些内容放进同一套蓝图",
+        "body": "NVIDIA 5 月 31 日发布 DSX（Data Center Scale），组合面向 AI 工厂的硬件、软件、参考设计和运营模块，并介绍开放软件模块、DSX MaxLPS 和开源 DSX OS。页面把每兆瓦 token 性能列为基础设施决策的一项指标。",
+        "kind": "narrative"
+      },
+      {
+        "id": "factory",
+        "title": "AI 工厂同时面对五种运行条件",
+        "body": "算力、电力、网络、模型服务和运维会一起影响一座 AI 工厂。DSX 提供规划框架，但模块怎样落地、延迟和吞吐怎样变化，仍取决于运营方的设备、负载和软件版本。",
+        "kind": "technical"
+      },
+      {
+        "id": "measurement",
+        "title": "一次集群升级要留下哪些数据",
+        "body": "建设或升级时应记录 token/兆瓦、延迟、吞吐、网络利用率和恢复时间，并把容量、软件版本和故障处置对应起来。只有产品名称或参考设计，没有实际部署数据，不能推出整条链已经可靠。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "目标指标不是运营结果",
+        "body": "官方页面支持平台组成、DSX MaxLPS、DSX OS 和目标指标的公开描述，没有独立证明不同部署都能达到目标，也没有给出不同负载、地区或客户环境的统一实测。运营方仍需自己验证。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "三个词条帮助定位基础设施控制点",
+        "body": "agent 代表按步骤调用工具并推进任务的系统，execution-sandbox 限制文件、网络、进程和凭据，data-pipeline 追踪数据从采集、转换到服务写入的路径。它们说明工作负载如何被承载，不等于 DSX 自动解决权限和数据问题。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "在小规模集群里复现一次 DSX 目标指标",
+      "question": "产品页给出的 AI 工厂指标，怎样被转换成运营方可以重复测量的数据？",
+      "steps": [
+        {
+          "label": "固定硬件与软件版本",
+          "detail": "记录芯片、网络、数据管道、模型服务和 DSX 模块版本，避免环境变化掩盖结果。",
+          "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+        },
+        {
+          "label": "定义同一负载",
+          "detail": "使用固定模型、请求规模和数据流，测量 token/兆瓦、延迟、吞吐和网络利用率。",
+          "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+        },
+        {
+          "label": "制造一次变更",
+          "detail": "升级容量或软件版本，检查 agent 工作负载、execution-sandbox 和 data-pipeline 是否仍按预期运行。",
+          "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+        },
+        {
+          "label": "检查故障恢复",
+          "detail": "记录停止、降级、回滚和恢复时间，把目标指标与真实运营结果分开。",
+          "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+        }
+      ]
+    },
+    "source": {
+      "name": "NVIDIA",
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+    },
+    "relatedSlugs": [
+      "agent",
+      "execution-sandbox",
+      "data-pipeline"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+        "claim": "DSX 被描述为建设 AI 工厂的完整 playbook",
+        "excerpt": "DSX gives infrastructure builders a complete playbook to create AI factories."
+      },
+      {
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+        "claim": "平台包含开放模块与 DSX MaxLPS / DSX OS",
+        "excerpt": "NVIDIA describes open software modules, APIs, reference designs, DSX MaxLPS and open-source DSX OS."
+      }
+    ],
+    "canonicalUrl": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+    "sourceHash": "sha256:9c78607a0d6839fb473bdccf397988a17f0798bbf966db4374831600ce5751b2"
+  },
+  {
+    "slug": "tempus-lens-agentic-drug-development",
+    "title": "Tempus 发布下一代 Lens，串联肿瘤研发数据与智能体工作流",
+    "summary": "5 月 31 日，Tempus 发布下一代 Lens，把多模态真实世界数据、肿瘤基础模型、AI agents 和科研工作流放入一个药物研发平台，并称可查询超过 850 万条去标识患者记录。公告说明的是平台组成、数据规模和使用方式，不能推出某个候选药物已有临床疗效，也不能假设全部记录适用于每种研究。",
+    "body": "5 月 31 日，Tempus 发布下一代 Lens。公司把多模态真实世界数据、肿瘤基础模型、AI agents 和科研工作流放进同一个药物研发平台，并称平台可查询超过 850 万条去标识患者记录。新闻稿讲的是平台能力和数据规模，不是一个候选药物的临床结果。\n\nLens 试图把“查数据”“找亚组”和“设计试验”接成连续的研究流程。模型或智能体给出的结果只是研究起点，研究者仍要回到原始记录、数据版本、研究假设和入组标准，确认结果是否可解释、可重复，数据是否真的覆盖当前问题。\n\n在一项肿瘤试验设计中，研究者可以先查询符合条件的患者群体，再检查缺失值、偏差和排除规则，最后交由研究者和伦理流程确认。智能体提出的亚组不能直接成为医学决定，去标识也不等于所有隐私、授权和再识别风险已经消失。\n\nTempus 的官方页面支持平台组成和“超过 850 万条去标识患者记录”的公司口径，但没有证明数据都能用于每种研究，也没有证明 Lens 已带来临床疗效或监管结论。独立验证、数据治理和临床研究记录仍需要单独查看。\n\n相关词条对应研究链上的不同位置：agent 负责按步骤调用工具和推进任务，data-lineage 追踪记录来源、版本和处理步骤，data-validation 检查输入数据与研究结果的质量。后续应固定一个研究问题，记录查询、排除规则、输出和人工修改，再由另一组研究者重复检查。",
+    "publishedAt": "2026-05-31",
+    "eventDate": "2026-05-31",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/tempus-lens-agentic-drug-development.svg",
+      "alt": "Tempus 推出下一代 Lens，扩展肿瘤药物研发智能体平台；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/tempus-lens-agentic-drug-development.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "Lens 这次扩展了哪些研究能力",
+        "body": "Tempus 5 月 31 日发布下一代 Lens，把多模态真实世界数据、肿瘤基础模型、AI agents 和科研工作流组合到药物研发平台，并称可查询超过 850 万条去标识患者记录。公告确认的是平台与数据规模口径。",
+        "kind": "narrative"
+      },
+      {
+        "id": "workflow",
+        "title": "查数据、找亚组和设计试验怎样接起来",
+        "body": "平台尝试把查询、亚组发现和试验设计串成连续流程。模型或智能体的输出只是研究起点，研究者仍要回到原始记录、数据版本、研究假设和入组标准，确认结果可解释、可重复。",
+        "kind": "technical"
+      },
+      {
+        "id": "trial",
+        "title": "试验设计不能跳过偏差与伦理审查",
+        "body": "研究者可以先查询符合条件的患者群体，再检查缺失值、偏差和排除规则，最后交由研究者和伦理流程确认。智能体提出的亚组不能直接成为医学决定，去标识也不等于所有隐私和再识别风险已解决。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "数据规模和平台功能不能推出临床疗效",
+        "body": "官方页面支持平台组成和超过 850 万条去标识记录的公司口径，没有证明所有记录适用于每种研究，也没有证明 Lens 已带来临床疗效或监管结论。独立验证、数据治理和临床记录仍需另查。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "三个词条帮助追踪研究证据",
+        "body": "agent 推进研究任务，data-lineage 追踪记录来源、版本和处理步骤，data-validation 检查输入数据与研究结果的质量。只有这些记录能被重复检查，平台输出才具备可比较的研究价值。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "ai-biology",
+      "title": "把一个肿瘤研究问题走成可重复的 Lens 流程",
+      "question": "平台给出患者亚组后，研究者怎样确认结果来自合适的数据和研究假设？",
+      "steps": [
+        {
+          "label": "固定研究问题",
+          "detail": "写清疾病、入组条件、时间范围和需要回答的变量，避免让智能体自行扩大问题。",
+          "evidence": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/"
+        },
+        {
+          "label": "记录数据链",
+          "detail": "保存查询、数据版本、去标识方式和排除规则，用 data-lineage 追到每条结果的来源。",
+          "evidence": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/"
+        },
+        {
+          "label": "做质量与偏差检查",
+          "detail": "用 data-validation 检查缺失值、重复记录、偏差和样本覆盖，再判断亚组是否适合进入试验设计。",
+          "evidence": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/"
+        },
+        {
+          "label": "保留人工与伦理决定",
+          "detail": "由研究者和伦理流程审查输出，并让另一组研究者重复查询，不能把 agent 的亚组直接当作医学决定。",
+          "evidence": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/"
+        }
+      ]
+    },
+    "source": {
+      "name": "Tempus",
+      "url": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "data-lineage",
+      "data-validation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/",
+        "claim": "Lens 将真实世界数据、肿瘤基础模型和 AI agents 组合进研发工作流",
+        "excerpt": "Tempus says Lens integrates multimodal real-world data, foundation models and validated AI agents."
+      },
+      {
+        "url": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/",
+        "claim": "平台称可查询逾 850 万条去标识患者记录",
+        "excerpt": "The announcement says Lens can query more than 8.5 million de-identified patient records."
+      }
+    ],
+    "canonicalUrl": "https://www.tempus.com/news/pr/tempus-unveils-the-next-generation-of-lens-expanding-its-agentic-ai-platform-for-oncology-drug-development/",
+    "sourceHash": "sha256:0c39096b8c1b02e9e74bb5e94df257def292d6111e8804fa936420988c2cef1b"
+  },
+  {
     "slug": "cognizant-trizetto-unify-ai-agents",
     "title": "Cognizant 为 TriZetto Unify 开放面向 AI agent 的 headless API",
     "summary": "5 月 29 日，Cognizant 宣布 TriZetto Unify 提供面向 AI agent 的 headless API，首个公开场景是医疗 Electronic Prior Authorization，并称 Assistant 与 Autonomous Workflow Agents 已向客户推出。公告确认了接口开放和产品定位，不能据此推出所有保险方都已接入，或自动处理已经稳定减少等待和错误。",
