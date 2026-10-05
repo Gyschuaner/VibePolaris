@@ -4700,45 +4700,45 @@
   },
   {
     "slug": "media-query",
-    "lead": "同一个页面怎样在窄屏改为单列，同时尊重减少动画的系统设置？",
-    "definition": "用户代理持续评估 width、orientation、hover、prefers-reduced-motion 等媒体特征，条件真值变化时重新应用对应 CSS 规则。",
-    "boundary": "媒体查询不只检测屏幕宽度，也不直接创建布局；它只决定哪些样式规则参与计算。",
+    "lead": "为什么同一份页面会因为宽度、指针和动效偏好改变规则？",
+    "definition": "媒体查询把媒体特征组成条件；条件命中时让对应 CSS 声明参与层叠，条件失效时回到基础规则。",
+    "boundary": "它只决定哪些规则参与计算，不负责替你生成布局，也不应该复制另一份 HTML。",
     "sceneKind": "matrix",
-    "sceneTitle": "宽度、指针能力和动效偏好独立匹配规则",
+    "sceneTitle": "三个环境开关怎样叠加",
     "actionLabel": "改变一个媒体条件",
     "actors": [
       {
         "id": "width",
-        "label": "宽度条件",
-        "detail": "max-width: 640px",
+        "label": "视口宽度",
+        "detail": "860 → 560px",
         "icon": "layout",
         "group": "输入"
       },
       {
         "id": "pointer",
-        "label": "指针条件",
-        "detail": "hover: hover",
+        "label": "输入能力",
+        "detail": "hover / none",
         "icon": "user",
         "group": "输入"
       },
       {
         "id": "motion",
         "label": "动效偏好",
-        "detail": "prefers-reduced-motion",
+        "detail": "no-preference / reduce",
         "icon": "spark",
         "group": "输入"
       },
       {
         "id": "rules",
-        "label": "媒体规则矩阵",
-        "detail": "每项独立匹配",
+        "label": "@media 规则",
+        "detail": "三条声明各管一件事",
         "icon": "code",
         "group": "判断"
       },
       {
         "id": "page",
-        "label": "页面结果",
-        "detail": "列数、提示、动画",
+        "label": "同一页面",
+        "detail": "列数、提示、动效",
         "icon": "browser",
         "group": "输出"
       }
@@ -4748,31 +4748,31 @@
         "id": "width-rules",
         "from": "width",
         "to": "rules",
-        "label": "查询"
+        "label": "width 条件"
       },
       {
         "id": "pointer-rules",
         "from": "pointer",
         "to": "rules",
-        "label": "查询"
+        "label": "hover 条件"
       },
       {
         "id": "motion-rules",
         "from": "motion",
         "to": "rules",
-        "label": "查询"
+        "label": "偏好条件"
       },
       {
         "id": "rules-page",
         "from": "rules",
         "to": "page",
-        "label": "应用规则"
+        "label": "应用声明"
       }
     ],
     "frames": [
       {
-        "label": "桌面鼠标环境",
-        "note": "宽度条件不匹配，hover 匹配，页面保持三列并显示悬停提示。",
+        "label": "先用基础规则",
+        "note": "860px、有 hover、默认动效；页面三列，所有内容先按基础样式工作。",
         "activeIds": [
           "width",
           "pointer",
@@ -4784,18 +4784,17 @@
           "motion"
         ],
         "values": {
-          "rules": "宽度 false · hover true",
-          "page": "3 列 · 有 hover"
+          "width": "860px",
+          "rules": "0 条覆盖",
+          "page": "3 列 · hover 提示"
         },
         "activeEdgeIds": [
-          "width-rules",
-          "pointer-rules",
           "rules-page"
         ]
       },
       {
-        "label": "缩到窄屏",
-        "note": "宽度条件转为 true，页面改成单列；指针条件没有被宽度替代。",
+        "label": "宽度条件命中",
+        "note": "560px 触发窄宽度规则，列数变成一列；其他输入仍按自己的条件判断。",
         "activeIds": [
           "width",
           "rules",
@@ -4808,7 +4807,8 @@
           "motion"
         ],
         "values": {
-          "rules": "宽度 true",
+          "width": "560px · true",
+          "rules": "width 命中",
           "page": "1 列"
         },
         "activeEdgeIds": [
@@ -4817,8 +4817,8 @@
         ]
       },
       {
-        "label": "改用触摸输入",
-        "note": "指针条件变为 false，依赖 hover 才出现的提示改成可点击入口。",
+        "label": "悬停能力缺席",
+        "note": "没有 hover 时，关键信息不能只躲在鼠标经过后；提示改为可见入口。",
         "activeIds": [
           "pointer",
           "rules",
@@ -4831,8 +4831,9 @@
           "motion"
         ],
         "values": {
-          "rules": "hover false",
-          "page": "显示信息按钮"
+          "pointer": "hover: none",
+          "rules": "pointer 命中",
+          "page": "提示常驻"
         },
         "activeEdgeIds": [
           "pointer-rules",
@@ -4840,8 +4841,8 @@
         ]
       },
       {
-        "label": "开启减少动态",
-        "note": "动效查询命中，只取消大幅位移，单列和触摸入口保持原结果。",
+        "label": "尊重减少动效",
+        "note": "用户要求少动一点，规则收住非必要位移；列数和提示仍保留自己的结果。",
         "activeIds": [
           "motion",
           "rules",
@@ -4853,18 +4854,65 @@
         ],
         "mutedIds": [],
         "values": {
-          "rules": "reduced-motion true",
-          "page": "淡入替代位移"
+          "motion": "reduce",
+          "rules": "motion 命中",
+          "page": "静止反馈"
         },
         "activeEdgeIds": [
           "motion-rules",
           "rules-page"
         ]
+      },
+      {
+        "label": "三个条件一起命中",
+        "note": "窄宽度、无 hover、reduce 同时为真，三条声明叠加在同一份 HTML 上。",
+        "activeIds": [
+          "width",
+          "pointer",
+          "motion",
+          "rules",
+          "page"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "rules": "3 条命中",
+          "page": "1 列 · 常驻 · 静止"
+        },
+        "activeEdgeIds": [
+          "width-rules",
+          "pointer-rules",
+          "motion-rules",
+          "rules-page"
+        ]
+      },
+      {
+        "label": "宽度恢复，内容不换",
+        "note": "回到 860px 只撤掉宽度覆盖；无 hover 的输入能力仍保留自己的提示规则。",
+        "activeIds": [
+          "pointer",
+          "rules",
+          "page"
+        ],
+        "doneIds": [
+          "width"
+        ],
+        "mutedIds": [
+          "motion"
+        ],
+        "values": {
+          "width": "860px · false",
+          "page": "3 列 · 提示常驻"
+        },
+        "activeEdgeIds": [
+          "pointer-rules",
+          "rules-page"
+        ]
       }
     ],
-    "insight": "媒体查询能响应多种环境特征，宽度只是其中一类输入。",
+    "insight": "媒体查询是多个环境输入的条件开关：每条规则各管一件事，命中时叠加在同一份内容上。",
     "quiz": {
-      "question": "要响应用户的减少动画设置，应查询哪个特征？",
+      "question": "要让页面尊重用户的减少动画设置，应查询哪个媒体特征？",
       "options": [
         {
           "label": "prefers-reduced-motion",
@@ -4879,18 +4927,43 @@
           "correct": false
         }
       ],
-      "success": "prefers-reduced-motion 是对应的标准媒体特征。",
-      "retry": "另外两个名称不是标准媒体特征。"
+      "success": "prefers-reduced-motion 描述用户的动效偏好，命中后可以收住非必要运动。",
+      "retry": "媒体查询读取标准媒体特征；它不会从设备名称推断一个自创的动画参数。"
     },
     "prompt": {
-      "title": "补充响应式和减少动画规则",
-      "text": "请为下面组件补充两个媒体查询：窄于 640px 时改为单列；用户选择减少动态效果时取消大幅位移。保留原有内容和交互。"
+      "title": "逐个检查一组媒体规则",
+      "text": "请先写基础样式，再分别为窄宽度、无 hover 能力和 prefers-reduced-motion 补充媒体规则；说明每条规则只改什么，以及三个条件同时命中时是否仍保持同一份 HTML 和键盘顺序。"
     },
     "sources": [
       {
         "url": "https://www.w3.org/TR/mediaqueries-5/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "W3C · Media Queries Level 5",
+        "note": "定义媒体特征、逻辑条件与范围语法。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries",
+        "label": "MDN · Using media queries",
+        "note": "说明基础样式、媒体条件与响应式声明的关系。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media",
+        "label": "MDN · @media",
+        "note": "说明 @media at-rule 与逻辑组合。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+        "label": "MDN · prefers-reduced-motion",
+        "note": "说明用户减少动态效果的偏好条件。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover",
+        "label": "MDN · hover",
+        "note": "说明设备是否支持 hover 的输入能力条件。"
+      },
+      {
+        "url": "https://web.dev/learn/design/media-queries",
+        "label": "web.dev · Media queries",
+        "note": "说明多种媒体条件如何协作与保持渐进增强。"
       }
     ]
   },

@@ -335,12 +335,23 @@
   },
   {
     "slug": "media-query",
-    "mechanism": "用户代理持续评估 width、orientation、hover、prefers-reduced-motion 等媒体特征，条件真值变化时重新应用对应 CSS 规则。",
-    "misconception": "媒体查询不只检测屏幕宽度，也不直接创建布局；它只决定哪些样式规则参与计算。",
-    "demoSignature": "建议 5 帧：控制台有宽度、hover 能力、reduced-motion 三个输入；用户逐项切换，三张 @media 规则卡独立亮灭；页面列数、悬停提示和动画幅度分别变化，最后组合条件演示多项媒体特征同时成立。",
-    "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/"],
-    "rewriteRisk": "medium",
-    "nearDuplicates": ["breakpoint", "reduced-motion", "responsive"]
+    "mechanism": "媒体查询把 viewport、输入能力和用户偏好变成可组合的条件；条件命中时，已有 CSS 声明加入层叠，条件失效时回到基础规则。",
+    "misconception": "媒体查询不只等于屏幕宽度，也不负责替你排版；它只决定哪些 CSS 声明参与计算，布局仍由命中的属性完成。",
+    "demoSignature": "6帧｜对象：宽度、hover 能力、reduced-motion 与三条独立 @media 规则｜交互：860 基础→560 单列→无 hover 常驻提示→减少动效→三条件叠加→恢复宽度但保留无 hover｜变化：条件逐个命中、规则各管一件事、同一 HTML 不搬家｜结果：读者能看出媒体查询是环境开关，不是设备型号表。",
+    "sourceUrls": [
+      "https://www.w3.org/TR/mediaqueries-5/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover",
+      "https://web.dev/learn/design/media-queries"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "breakpoint",
+      "responsive",
+      "reduced-motion"
+    ]
   },
   {
     "slug": "event",

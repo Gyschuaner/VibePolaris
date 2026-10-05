@@ -759,18 +759,53 @@
     ]
   },
   {
-    "zh": "媒体查询", "en": "Media Query", "slug": "media-query", "cat": "前端",
-    "say": "媒体查询让 CSS 根据视口宽度、屏幕方向或用户偏好启用不同规则。",
-    "aliases": ["@media", "响应式规则", "media"],
-    "question": "同一个页面怎样在窄屏改为单列，同时尊重减少动画的系统设置？",
-    "definition": "媒体查询使用 @media 检查媒体特征，并在条件成立时应用其中的 CSS 声明。",
-    "boundary": "媒体查询负责条件切换；具体布局仍由 Grid、Flex 或其他 CSS 规则实现。",
-    "demoType": "branch", "demoTitle": "两类条件分别触发",
-    "demoSteps": [{"label":"检查宽度","value":"max-width: 640px","note":"窄屏分支改为单列。"},{"label":"检查用户偏好","value":"prefers-reduced-motion: reduce","note":"减少非必要位移和循环动画。"},{"label":"条件不成立","value":"保留基础样式","note":"默认规则继续生效。"}],
-    "quizQuestion": "要响应用户的减少动画设置，应查询哪个特征？", "quizOptions": ["prefers-reduced-motion", "screen-animation", "motion-speed"],
-    "correctText": "prefers-reduced-motion 是对应的标准媒体特征。", "wrongText": "另外两个名称不是标准媒体特征。",
-    "promptTitle": "补充响应式和减少动画规则", "prompt": "请为下面组件补充两个媒体查询：窄于 640px 时改为单列；用户选择减少动态效果时取消大幅位移。保留原有内容和交互。",
-    "relatedSlugs": ["breakpoint", "reduced-motion", "css-grid"]
+    "zh": "媒体查询",
+    "en": "Media Query",
+    "slug": "media-query",
+    "cat": "前端",
+    "say": "媒体查询让 CSS 先听见环境，再决定哪条规则加入计算。",
+    "aliases": [
+      "@media",
+      "响应式规则",
+      "media"
+    ],
+    "question": "为什么同一份页面会因为宽度、指针和动效偏好改变规则？",
+    "definition": "媒体查询用媒体特征组成条件；条件成立时应用其中的 CSS 声明，条件不成立时回到已有基础规则。",
+    "boundary": "媒体查询负责判断条件，不负责生成布局；列数、间距、提示和动效仍由 Grid、Flexbox 与具体 CSS 属性实现。",
+    "demoType": "branch",
+    "demoTitle": "三个环境开关怎样叠加",
+    "demoSteps": [
+      {
+        "label": "先看基础规则",
+        "value": "860px · hover · no-preference",
+        "note": "默认样式先接住页面，条件还没有改动结果。"
+      },
+      {
+        "label": "逐个命中条件",
+        "value": "560px / hover: none / reduce",
+        "note": "宽度、输入能力和用户偏好分别点亮自己的 CSS 规则。"
+      },
+      {
+        "label": "组合后仍是一份内容",
+        "value": "三条声明叠加",
+        "note": "列数、提示和动效各自改变，DOM 与阅读顺序保持不变。"
+      }
+    ],
+    "quizQuestion": "要让页面尊重用户的减少动画设置，应查询哪个媒体特征？",
+    "quizOptions": [
+      "prefers-reduced-motion",
+      "screen-animation",
+      "motion-speed"
+    ],
+    "correctText": "prefers-reduced-motion 是描述用户减少动态效果偏好的标准媒体特征。",
+    "wrongText": "另外两个名称不是标准媒体特征；媒体查询不会凭空猜一个动画速度。",
+    "promptTitle": "逐个检查一组媒体规则",
+    "prompt": "请先写基础样式，再分别为窄宽度、无 hover 能力和 prefers-reduced-motion 补充媒体规则；说明每条规则只改什么，以及三个条件同时命中时是否仍保持同一份 HTML 和键盘顺序。",
+    "relatedSlugs": [
+      "breakpoint",
+      "reduced-motion",
+      "css-grid"
+    ]
   },
   {
     "zh": "事件", "en": "Event", "slug": "event", "cat": "前端",
