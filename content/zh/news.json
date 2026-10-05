@@ -37902,6 +37902,876 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "aws-bedrock-automated-reasoning-guardrails-20250806",
+    "title": "AWS 让 Bedrock Guardrails 的 Automated Reasoning checks 正式可用",
+    "summary": "AWS 8 月 6 日宣布，Amazon Bedrock Guardrails 的 Automated Reasoning checks 正式可用。它用形式化验证把生成式 AI 输出与预先定义的业务规则和领域知识对照，检查正确性、政策合规和部分歧义；AWS 称在其指标下最高可达 99% 的正确回答检测准确率。这个能力需要先把规则写清楚，不能被理解为所有幻觉都能自动消除。",
+    "body": "8 月 6 日，AWS 宣布 Amazon Bedrock Guardrails 的 Automated Reasoning checks 正式可用。它做的事情很具体：根据预先定义的业务规则和领域知识检查生成式 AI 输出，用形式化验证判断答案是否符合这些规则，也提示可能存在的歧义。它不是再加一个“听起来更像真的”评分，而是要求组织先把什么算合规、什么算正确写出来。\n\nAWS 把这项能力和传统的随机抽样测试区分开。抽样可以告诉团队一批答案里有多少看起来没问题，Automated Reasoning checks 则试图在规则范围内给出数学上可推导的保证。这个差别对金融、医疗或政府流程有吸引力，因为组织往往需要在放行前留下可复核的依据；前提是业务规则本身足够明确，且模型输出能被转换成可以检查的命题。\n\n公告里最容易被单独引用的数字是“最高 99%”。AWS 的原文把它描述为检测正确回答的准确率，并将其归因于自己的评测口径。这个数字不能直接变成所有模型、所有语言和所有领域的幻觉率，也不能说明没有写进规则的错误会被发现。规则覆盖什么、歧义如何处理、失败后是拦截还是交给人工，都会改变最终结果。\n\nAutomated Reasoning checks 当天在美国弗吉尼亚北部、俄亥俄、俄勒冈，以及法兰克福、爱尔兰和巴黎区域正式提供，可通过 Bedrock 控制台和 Python SDK 使用；CloudFormation 支持还在后续计划中。对开发团队来说，真正的接入工作不是打开一个开关，而是整理政策、建立规则、为不确定结果安排人工复核，并在规则变化时重新验证。\n\n因此，这次发布把 Guardrails 从内容过滤进一步推向“按组织规则验证输出”。它能把一部分不可接受的答案变成可解释的拒绝或待审状态，却不能替代资料来源核查、模型评测和领域专家判断。规则写得越窄，能保证的范围越清楚；规则写得越宽，越需要明确哪些错误仍未覆盖。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/aws-bedrock-automated-reasoning-guardrails-20250806.svg",
+      "alt": "Bedrock Guardrails 将模型输出交给业务规则和形式化验证，再决定放行或人工复核",
+      "sourceUrl": "/images/news/aws-bedrock-automated-reasoning-guardrails-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "formal-check",
+        "title": "Guardrails 增加的是规则验证层",
+        "body": "Automated Reasoning checks 用形式化验证把模型输出与业务规则、领域知识对照，判断正确性、政策合规和部分歧义。它要求组织先把规则写成可以检查的条件，解决的是可验证范围内的输出审查。",
+        "kind": "narrative"
+      },
+      {
+        "id": "sampling-difference",
+        "title": "它和随机抽样测试的关注点不同",
+        "body": "抽样测试观察一批答案的表现，形式化检查则针对已经定义的规则给出可推导的保证。后者更适合需要放行依据的流程，但规则没有覆盖的错误仍然不会凭空出现。",
+        "kind": "comparison"
+      },
+      {
+        "id": "ninety-nine",
+        "title": "99% 是 AWS 的特定评测口径",
+        "body": "AWS 把“最高 99%”描述为检测正确回答的准确率，并将它归于自己的指标。这个数字不能外推为所有模型和领域的幻觉率，也不能替代独立评测、规则覆盖检查和人工复核。",
+        "kind": "boundary"
+      },
+      {
+        "id": "regions-access",
+        "title": "区域和接入方式已经明确",
+        "body": "正式版在美国弗吉尼亚北部、俄亥俄、俄勒冈，以及法兰克福、爱尔兰和巴黎提供，可从 Bedrock 控制台或 Python SDK 使用；CloudFormation 支持仍在后续计划中。",
+        "kind": "technical"
+      },
+      {
+        "id": "rule-maintenance",
+        "title": "真正的工作在规则维护和失败处理",
+        "body": "团队要整理政策、把领域知识写成规则，为不确定输出安排拦截或人工复核，并在业务规则变化时重新验证。打开检查功能本身不会完成这些治理工作。",
+        "kind": "example"
+      },
+      {
+        "id": "not-hallucination-cure",
+        "title": "不能把它写成所有幻觉的解药",
+        "body": "形式化验证可以保证一组明确规则里的条件，却不能自动发现没有写入规则的事实错误、来源问题或新型风险。能保证的范围越清楚，团队越容易知道还要在哪里补评测。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "一次输出怎样被规则验证后再交付？",
+      "question": "从业务政策到模型回答，哪些步骤把“合规”变成可检查的条件？",
+      "steps": [
+        {
+          "label": "写清业务规则",
+          "detail": "把允许的范围、禁止的内容、数字关系和例外情况写成能够判断真假的条件，避免只给一句模糊的政策口号。",
+          "evidence": "Automated Reasoning checks requires defined business rules and domain knowledge"
+        },
+        {
+          "label": "把规则接到 Guardrails",
+          "detail": "在 Bedrock Guardrails 中配置规则和适用场景，决定哪些模型输出需要检查、哪些结果可以直接继续。",
+          "evidence": "Amazon Bedrock Guardrails integration"
+        },
+        {
+          "label": "生成并验证输出",
+          "detail": "模型回答后，形式化验证检查它是否符合规则，并对无法判断或有歧义的内容标记出来。",
+          "evidence": "AWS formal verification and ambiguity detection description"
+        },
+        {
+          "label": "放行或交给人工",
+          "detail": "规则通过的结果可以继续，失败或不确定的结果进入拒绝、修改或人工复核流程，不能只显示一个分数。",
+          "evidence": "Guardrail enforcement boundary"
+        },
+        {
+          "label": "维护覆盖范围",
+          "detail": "业务规则、法规和模型都会变化，团队要定期补充例外、重新测试并记录哪些错误仍然超出验证范围。",
+          "evidence": "Ongoing policy and evaluation requirement"
+        }
+      ]
+    },
+    "source": {
+      "name": "Amazon Web Services",
+      "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/"
+    },
+    "relatedSlugs": [
+      "event",
+      "tools",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+        "claim": "AWS 8 月 6 日宣布 Automated Reasoning checks 在 Amazon Bedrock Guardrails 正式可用，用形式化验证检查生成式 AI 输出的准确性和政策合规。",
+        "excerpt": "AWS, August 6, 2025: Automated Reasoning checks are generally available in Amazon Bedrock Guardrails and use formal verification techniques."
+      },
+      {
+        "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+        "claim": "AWS 说明正式版覆盖六个区域、支持控制台和 Python SDK，并称最高 99% 的指标是检测正确回答的准确率；CloudFormation 支持随后提供。",
+        "excerpt": "AWS lists US and European regions, console and Python SDK access, up to 99% accuracy at detecting correct responses, and CloudFormation coming soon."
+      }
+    ],
+    "canonicalUrl": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+    "sourceHash": "sha256:9f4ba24444c573bf14f6fecac7010132deba49062517fc1230ba5fec8d7bbfcc"
+  },
+  {
+    "slug": "cohere-north-enterprise-ai-ga-20250806",
+    "title": "Cohere 发布 North，让企业在自有基础设施中部署 Agent",
+    "summary": "Cohere 8 月 6 日介绍 North 企业 AI 平台，让重视数据安全的企业可以在自有基础设施中部署 AI Agent 和自动化。它是平台和交付方式的推进，不是一个新基础模型；自有基础设施也不自动等于隔离、合规或安全效果已经被独立验证。",
+    "body": "8 月 6 日，Cohere 发布 North 企业 AI 平台。公司给出的主句很直接：优先考虑数据安全的企业，可以在自己的基础设施里部署 AI Agent 和自动化。North 因而更像一套企业交付平台，而不是又一个需要在公开聊天窗口里试用的模型名称。\n\n这条路线解决的是企业最常问的部署问题：模型和工作流要放在哪里，哪些数据可以被检索，谁能让 Agent 调用内部系统。把运行环境放回客户自己的基础设施，可以让组织把网络、身份、日志和数据边界纳入原有的 IT 控制；它也意味着企业要自己准备算力、升级、权限和故障处理，平台的“可部署”不会自动变成“部署得好”。\n\nNorth 的产品叙事把 Agent 与自动化放在一起。一个 Agent 可能需要读取内部资料、调用业务工具、生成结果并触发下一步动作；企业真正要审查的不是它能不能完成一次演示，而是它能访问哪些系统、每一步有没有记录、失败时是否停下来，以及人能不能接管。Cohere 将这些能力归入规模化企业部署，具体工作流仍取决于客户的数据和配置。\n\n“自有基础设施”也需要拆开读。它可以是组织管理的服务器、私有云或隔离环境，但不代表所有部署都天然满足行业合规、数据驻留或最小权限要求。组织还要确认模型调用是否出网、供应链如何更新、提示和输出怎样留档，以及供应商在故障和安全事件中的责任。\n\nNorth 的广泛发布把企业 Agent 的竞争从“谁的模型榜单更高”拉到“谁能在真实系统里运行”。接下来有价值的证据，是客户能否把一个明确的内部任务接入 North，给出可复核的成本、延迟、错误和权限记录；只有这些运行数据出现，平台的部署承诺才会变成可比较的结果。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/cohere-north-enterprise-ai-ga-20250806.svg",
+      "alt": "Cohere North 在企业自有基础设施中连接数据、工具和可接管的 Agent 工作流",
+      "sourceUrl": "/images/news/cohere-north-enterprise-ai-ga-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "platform-not-model",
+        "title": "North 是企业平台，不是新基础模型",
+        "body": "Cohere 把 North 定位为让企业在自己的基础设施中部署 Agent 和自动化的平台。事件的重点是交付方式、数据边界和工作流连接，不是发布一个新的基础模型榜单。",
+        "kind": "narrative"
+      },
+      {
+        "id": "infrastructure-control",
+        "title": "自有基础设施把控制权交回企业 IT",
+        "body": "组织可以把网络、身份、日志和数据边界接到原有控制中，同时要自己承担算力、升级、权限和故障处理。可部署的地点只是起点，实际控制还取决于配置。",
+        "kind": "technical"
+      },
+      {
+        "id": "agent-automation",
+        "title": "Agent 与自动化连在一条工作流里",
+        "body": "North 的产品叙事覆盖读取资料、调用业务工具、生成结果和触发下一步动作。企业需要逐步确认 Agent 能访问什么、每一步怎样留痕、失败时如何停下和由谁接管。",
+        "kind": "example"
+      },
+      {
+        "id": "deployment-boundary",
+        "title": "自有基础设施不等于自动合规",
+        "body": "服务器、私有云或隔离环境都可能属于自有基础设施，但不自动解决出网、数据驻留、供应链更新、最小权限和行业合规。部署形态必须和组织自己的审查清单一起看。",
+        "kind": "boundary"
+      },
+      {
+        "id": "workflow-evidence",
+        "title": "平台价值要靠运行记录证明",
+        "body": "真正可比较的证据包括一个具体任务的成本、延迟、错误率、权限调用和人工接管记录。Cohere 的规模化部署定位是产品主张，不能替代客户的独立验收。",
+        "kind": "comparison"
+      },
+      {
+        "id": "enterprise-choice",
+        "title": "企业先选能被审计的任务",
+        "body": "把内部问答、资料整理或工单分流等任务限定在清楚的数据和权限范围内，再决定是否扩大。先有可回滚的小流程，才能知道 Agent 的收益是否值得基础设施和治理成本。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "企业 Agent 怎样在自有基础设施里安全跑起来？",
+      "question": "从部署位置到一次具体动作，企业要把哪些边界接上？",
+      "steps": [
+        {
+          "label": "选一个有限任务",
+          "detail": "先从内部问答、资料整理或工单分流等任务开始，写清输入、输出、成功条件和不能触碰的数据。",
+          "evidence": "North enterprise AI positioning"
+        },
+        {
+          "label": "确定运行边界",
+          "detail": "确认 North 部署在哪类自有基础设施、哪些数据可以留在内网、哪些外部服务被允许访问。",
+          "evidence": "Cohere says North deploys within the enterprise’s own infrastructure"
+        },
+        {
+          "label": "限制 Agent 工具",
+          "detail": "为每个 Agent 配置最小权限和允许调用的业务工具，避免一次提示就能触发不必要的写入或外部动作。",
+          "evidence": "Agent and automation governance boundary"
+        },
+        {
+          "label": "记录每一步",
+          "detail": "保存提示、检索、工具调用、输出、错误和人工接管记录，让安全团队能重放一次任务。",
+          "evidence": "Enterprise audit and observability requirement"
+        },
+        {
+          "label": "小范围验收再扩大",
+          "detail": "比较成本、延迟、成功率和异常处理，设置回滚和停用路径，再决定是否把工作流交给更多用户。",
+          "evidence": "Post-deployment validation inferred from North’s scale-up positioning"
+        }
+      ]
+    },
+    "source": {
+      "name": "Cohere",
+      "url": "https://cohere.com/blog/north-ga"
+    },
+    "relatedSlugs": [
+      "agent",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://cohere.com/blog/north-ga",
+        "claim": "Cohere 8 月 6 日介绍 North 的企业 AI 平台，定位为让重视数据安全的企业在自有基础设施中部署 Agent 和自动化。",
+        "excerpt": "Cohere, August 6, 2025: North enables enterprises that prioritize data security to deploy AI agents and automations at scale within their own infrastructure."
+      }
+    ],
+    "canonicalUrl": "https://cohere.com/blog/north-ga",
+    "sourceHash": "sha256:442230c0a632957d83d0d1786133d8393110e40d29284ebf782a4ec8ec0e6037"
+  },
+  {
+    "slug": "google-ai-pro-students-guided-learning-20250806",
+    "title": "Google 向部分国家大学生免费开放 AI Pro，并推出 Guided Learning",
+    "summary": "Google 8 月 6 日宣布，符合条件的美国、日本、印度尼西亚、韩国和巴西大学生可免费使用 12 个月 Google AI Pro，并同步推出 Gemini 的 Guided Learning 模式。套餐把 Gemini 2.5 Pro、Deep Research、NotebookLM、Veo 3 和 Jules 配额放到学生入口；Google 还宣布未来三年向美国教育、AI 培训和研究投入 10 亿美元，覆盖范围和学习效果仍要按官方条件与后续证据阅读。",
+    "body": "8 月 6 日，Google 把一组原本分散的 AI 产品放进了学生入口：美国、日本、印度尼西亚、韩国和巴西 18 岁以上的大学生，可以申请 12 个月免费的 Google AI Pro。套餐包含 Gemini 2.5 Pro、Deep Research、NotebookLM、Veo 3、2TB 存储，以及更高的 Jules 异步编码 Agent 使用额度。它改变的是接触这些工具的门槛，不是所有国家的大学生从这一天起都自动获得同样的权限。\n\n同一份公告还推出 Guided Learning。它的交互方式不是学生问一个问题、系统直接交答案，而是先追问目标，再把复杂概念拆成步骤，配合图片、视频和互动练习帮助学生检查理解。Google 说，这个模式和学生、教师、研究人员及学习专家一起设计，底层仍使用 Gemini 2.5 Pro。对学习者来说，关键变化在于系统要参与解题过程；对教师来说，分享给学生的内容仍需要看课程目标、事实准确性和作业规则。\n\nGoogle 同日宣布未来三年投入 10 亿美元支持美国教育、AI 素养项目、研究和云计算资源，并设立 AI for Education Accelerator，为美国大学生提供免费 AI 培训和 Career Certificates。公告称已经有超过 100 所公立大学加入。资金和培训扩大了使用条件，但不等于已经证明学生的成绩、批判性思维或长期学习效果普遍提升。\n\n这次学生套餐也容易和前几天 NotebookLM 的年龄范围扩展混在一起。8 月 4 日的 NotebookLM 公告解决的是年轻用户访问产品的年龄范围和未成年人内容政策；8 月 6 日的 Google AI Pro 计划则是面向部分国家 18 岁以上大学生的订阅优惠，并把多种工具和 Guided Learning 放在同一入口。两个事件都涉及教育，产品条件和目标人群并不相同。\n\n免费计划真正能带来什么，要看学生怎样使用它：是让 Guided Learning 帮助自己拆解问题，还是把生成答案直接交上去；是用 Deep Research 查资料后回到原文，还是把引用当作结论本身。Google 给了更宽的入口，学习质量仍取决于课程规则、教师监督、学生的核查习惯和工具本身的错误率。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-ai-pro-students-guided-learning-20250806.svg",
+      "alt": "Google AI Pro 学生入口把 Gemini、Deep Research 和 Guided Learning 放进分步学习流程",
+      "sourceUrl": "/images/news/google-ai-pro-students-guided-learning-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "student-access",
+        "title": "免费入口有年龄和国家范围",
+        "body": "Google 说美国、日本、印度尼西亚、韩国和巴西 18 岁以上大学生可以申请 12 个月 AI Pro，套餐包含 Gemini 2.5 Pro、Deep Research、NotebookLM、Veo 3、2TB 存储和更高的 Jules 额度。它是有条件的订阅优惠，不是全球大学生自动获得的权益。",
+        "kind": "narrative"
+      },
+      {
+        "id": "guided-learning",
+        "title": "Guided Learning 把回答改成分步陪练",
+        "body": "Guided Learning 会通过提问、分步支持和多模态练习帮助学生处理数学题、论证、作文或考试准备。官方定位是促进理解和批判性思考，产品能力本身不能替代教师对课程目标和事实的判断。",
+        "kind": "example"
+      },
+      {
+        "id": "tool-bundle",
+        "title": "一个学生计划串起多个工具",
+        "body": "Gemini 2.5 Pro、Deep Research、NotebookLM、Veo 3 和 Jules 被放进同一套计划。它扩大了学生可以试用的工具面，也把不同产品的隐私、引用、视频生成和代码权限问题带进了同一个教育入口。",
+        "kind": "comparison"
+      },
+      {
+        "id": "education-funding",
+        "title": "10 亿美元是投入计划，不是学习效果数据",
+        "body": "Google 宣布未来三年为美国教育、AI 素养、研究和云计算投入 10 亿美元，并称已有超过 100 所公立大学加入 AI for Education Accelerator。资金规模说明推广方向，不能直接证明学习成绩或长期能力已经改善。",
+        "kind": "boundary"
+      },
+      {
+        "id": "notebooklm-date",
+        "title": "与 8 月 4 日 NotebookLM 年龄扩展分开",
+        "body": "8 月 4 日的 NotebookLM 公告关注年轻用户的年龄范围和未成年人内容政策；8 月 6 日是部分国家 18 岁以上大学生的 AI Pro 优惠和 Guided Learning 发布。两者同属教育场景，目标人群与产品条件不同。",
+        "kind": "comparison"
+      },
+      {
+        "id": "learning-practice",
+        "title": "学生如何使用比免费本身更关键",
+        "body": "如果学生用 Guided Learning 拆解问题、用 Deep Research 回看原文，工具可能成为练习伙伴；如果直接复制答案或引用，学习和诚信风险仍然存在。课程规则、教师监督和学生核查习惯决定实际效果。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "ai-ethics",
+      "title": "从“给答案”到“陪着学”需要哪些步骤？",
+      "question": "Guided Learning 怎样把一次提问变成可复核的学习过程？",
+      "steps": [
+        {
+          "label": "说明学习目标",
+          "detail": "先告诉系统想弄懂什么、已有哪一步基础，以及需要练习还是复习，避免把整道作业直接交给工具。",
+          "evidence": "Google Guided Learning product description"
+        },
+        {
+          "label": "拆成小问题",
+          "detail": "模式通过提问和分步提示把复杂数学题、论证或写作任务拆开，让学生先尝试再得到下一步支持。",
+          "evidence": "Google says Guided Learning uses questions and step-by-step support"
+        },
+        {
+          "label": "用多模态材料练习",
+          "detail": "图片、视频和互动测验可以用来展示概念或检查理解，但生成内容仍要和教材、课堂材料对照。",
+          "evidence": "Google multimodal responses and interactive quizzes"
+        },
+        {
+          "label": "回到原始来源",
+          "detail": "Deep Research 或 NotebookLM 给出资料时，学生应打开原文核对引用、时间和上下文，而不是把模型的摘要当成证据本身。",
+          "evidence": "Google Deep Research and NotebookLM access in the student plan"
+        },
+        {
+          "label": "按课程规则交付",
+          "detail": "最后确认课程是否允许 AI、哪些内容需要披露、哪些答案必须自己完成，并让教师或同伴复核关键结论。",
+          "evidence": "Education governance boundary inferred from the product launch"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google",
+      "url": "https://blog.google/products-and-platforms/products/gemini/google-ai-pro-students-learning/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "event",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/products-and-platforms/products/gemini/google-ai-pro-students-learning/",
+        "claim": "Google 8 月 6 日为美国、日本、印度尼西亚、韩国和巴西 18 岁以上大学生提供 12 个月 AI Pro，并列出 Gemini 2.5 Pro、Deep Research、NotebookLM、Veo 3、Jules 和 2TB 存储等权益。",
+        "excerpt": "Google, August 6, 2025: eligible college students in five countries can sign up for a free 12-month Google AI Pro plan."
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/education/guided-learning/",
+        "claim": "Google 同日推出 Guided Learning，以提问、分步支持、多模态响应和互动测验帮助学生理解概念。",
+        "excerpt": "Guided Learning in Gemini guides students with questions and step-by-step support instead of only providing answers."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/products-and-platforms/products/gemini/google-ai-pro-students-learning/",
+    "sourceHash": "sha256:19513147516875bc76fc814bae557972891f4abaebb9dd5e275e11bf44f03c0d"
+  },
+  {
+    "slug": "google-gemini-cli-github-actions-20250806",
+    "title": "Google 推出 Gemini CLI GitHub Actions 公测，把 Issue 与 PR 交给协作 Agent",
+    "summary": "Google 8 月 6 日推出 Gemini CLI GitHub Actions beta，将 6 月发布的开源 Gemini CLI 接到 GitHub 仓库的 Issue 和 Pull Request 事件。它提供 Issue 分流、PR review 和 @gemini-cli 按需协作三个开源工作流，并加入 Workload Identity Federation、命令 allowlist 与 OpenTelemetry；它仍是 beta，真正能执行什么取决于仓库权限、命令控制、额度和人工审阅。",
+    "body": "8 月 6 日，Google 把 Gemini CLI 从个人终端接到了团队协作的 GitHub。Gemini CLI GitHub Actions 进入 beta 后，新的 Issue 或 Pull Request 可以触发一个异步编码 Agent；开发者也可以在评论里写 @gemini-cli，把一个明确任务交给它。使用这一工作流需要 Gemini CLI 0.1.18 或更高版本。Google 将它描述为免费的 AI coding teammate，并称 Google AI Studio 提供免费配额；Vertex AI 和 Gemini Code Assist Standard/Enterprise 也支持，实际可用额度和身份方式仍按所接入的 Google 服务而定。\n\n首批工作流很具体：分析、标记和排序新 Issue；检查 Pull Request 的质量、风格和正确性；以及在 Issue 或 PR 中按需请求写测试、实现修改、提出替代方案或修复一个定义清楚的 bug。工作流是开源且可自定义的，团队可以把它当作仓库自动化的起点，而不是一套不可修改的黑箱。\n\n这次发布把安全控制放在产品入口里。符合条件的 Vertex AI 和 Gemini Code Assist Standard/Enterprise 用户可以用 Workload Identity Federation，减少长期 API key；命令 allowlist 可以逐条批准 Agent 能执行的 shell 命令；OpenTelemetry 则把动作、日志和指标送到组织自己的观测平台。它们降低了凭证泄漏和越权执行的风险，却不能替团队决定哪些命令安全、哪些文件可以写。\n\n“异步”让 Agent 可以在后台使用项目上下文工作，也让错误更容易在开发者不注意时进入分支。仓库维护者需要设定最小权限，检查它产生的代码和评论，把测试、依赖扫描与合并审批留在原有流程里。免费配额也不代表每次运行都有相同的延迟、上下文和模型能力。\n\n同一天的 Jules 是一个面向个人或项目任务的异步编码 Agent 公测转公开；Gemini CLI GitHub Actions 则围绕 Issue、PR 和评论触发协作工作流。两者都能辅助写代码，但一个强调任务本身，一个强调仓库事件和团队控制。对团队来说，值得先试的是一个可回滚、命令范围清楚的 Issue 或 PR 流程。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-gemini-cli-github-actions-20250806.svg",
+      "alt": "Gemini CLI GitHub Actions 从 Issue 或 Pull Request 触发 Agent，并经过命令白名单和日志观测",
+      "sourceUrl": "/images/news/google-gemini-cli-github-actions-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "github-trigger",
+        "title": "Gemini CLI 进入团队协作入口",
+        "body": "Gemini CLI GitHub Actions beta 把开源 CLI 接到 Issue、Pull Request 和评论事件，Agent 可以异步读取项目上下文并处理任务；使用要求是 Gemini CLI 0.1.18 或更高版本。它是团队工作流产品，不是 6 月 Gemini CLI 本体的重新发布。",
+        "kind": "narrative"
+      },
+      {
+        "id": "three-workflows",
+        "title": "首批三个工作流各自对应一个协作动作",
+        "body": "Issue triage 负责分析、标记和排序；PR review 给出质量、风格和正确性反馈；@gemini-cli 协作则让开发者按需请求写测试、实现修改或修复明确 bug。三个工作流开源且可自定义。",
+        "kind": "example"
+      },
+      {
+        "id": "identity-controls",
+        "title": "身份和命令控制被放进运行前",
+        "body": "Workload Identity Federation 减少长期 API key，command allowlist 让组织逐条批准 shell 命令，OpenTelemetry 把动作和指标送到观测系统。控制能减少风险，不能代替团队对每条命令和每个目录的判断。",
+        "kind": "technical"
+      },
+      {
+        "id": "beta-boundary",
+        "title": "Beta、额度和权限决定实际体验",
+        "body": "产品仍在 beta，Google AI Studio 提供免费配额，Vertex AI 和 Gemini Code Assist Standard/Enterprise 也支持，但各自有不同接入与额度条件。异步 Agent 可以修改代码或提出建议，仓库权限、命令范围、测试和合并审批仍由团队负责。",
+        "kind": "boundary"
+      },
+      {
+        "id": "jules-distinction",
+        "title": "与同日 Jules 的触发方式不同",
+        "body": "Jules 解决异步编码任务的公开使用；Gemini CLI GitHub Actions 解决仓库事件和评论触发的团队协作。两者都接触代码，触发方式、身份和审阅位置不同，不能把 Jules 的公测数字当成 Actions 的效果数据。",
+        "kind": "comparison"
+      },
+      {
+        "id": "safe-pilot",
+        "title": "先从可回滚的仓库流程试用",
+        "body": "团队可以先选择一个 Issue 分流或只读 PR review 流程，设置命令白名单和日志，再逐步开放写测试或改代码。每次运行都应保留 diff、测试结果和人工批准记录。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "一个 GitHub Agent 怎样从评论走到代码改动？",
+      "question": "触发、授权、执行和合并之间，哪些控制点不能省？",
+      "steps": [
+        {
+          "label": "触发仓库事件",
+          "detail": "新 Issue、Pull Request 或评论中的 @gemini-cli 触发工作流，先把任务范围固定在一个项目上下文里。",
+          "evidence": "Google GitHub Actions event triggers"
+        },
+        {
+          "label": "确认身份和权限",
+          "detail": "为 Agent 使用短期身份或 WIF，限制它能读写的仓库、分支、目录和外部资源。",
+          "evidence": "Workload Identity Federation and least-privilege controls"
+        },
+        {
+          "label": "执行允许的命令",
+          "detail": "用 command allowlist 控制 shell 调用，先从分析、标记或只读 review 开始，再考虑写文件和运行修复脚本。",
+          "evidence": "Google command allowlisting description"
+        },
+        {
+          "label": "记录动作和结果",
+          "detail": "通过 OpenTelemetry 保存 Agent 的命令、日志、指标、评论和生成的 diff，让团队能够复查一次运行。",
+          "evidence": "OpenTelemetry integration in Gemini CLI GitHub Actions"
+        },
+        {
+          "label": "人工审阅再合并",
+          "detail": "开发者检查代码、依赖、测试和安全影响，必要时回滚；Agent 的建议或改动不能绕过仓库的合并审批。",
+          "evidence": "Repository review and merge boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+        "claim": "Google 8 月 6 日推出 Gemini CLI GitHub Actions beta，向全球开放 Issue 分流、PR review 和 @gemini-cli 按需协作工作流。",
+        "excerpt": "Google, August 6, 2025: Gemini CLI GitHub Actions is in beta and available worldwide for issue triage, pull request reviews, and on-demand collaboration."
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+        "claim": "Google 说明 Google AI Studio 提供免费配额，Vertex AI 和 Gemini Code Assist Standard/Enterprise 也支持；同时提供 Workload Identity Federation、command allowlisting、OpenTelemetry，并要求 Gemini CLI 0.1.18 或更高版本。",
+        "excerpt": "The announcement offers free-of-charge Google AI Studio quotas, supports Vertex AI and Gemini Code Assist Standard and Enterprise, and describes WIF, granular command allowlisting, OpenTelemetry, and Gemini CLI 0.1.18 or later."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-github-actions/",
+    "sourceHash": "sha256:03f3d92e22f2db251abe9959871e2da309b802be2a1d5ad36032c6a37a7a7bdc"
+  },
+  {
+    "slug": "google-jules-public-beta-20250806",
+    "title": "Google Jules 结束公测，异步编码 Agent 向所有人开放",
+    "summary": "Google 8 月 6 日宣布 Jules 结束公测并正式开放。这个由 Gemini 2.5 驱动的异步编码 Agent 可以先为代码任务制定计划，再在仓库中工作；更新包括复用既有设置、GitHub Issues 集成和多模态支持。Google 称公测期间有数千名开发者完成数万项任务、公开分享超过 14 万项代码改进，这些数字属于公司自报，不能替代团队对代码质量和权限风险的验收。",
+    "body": "8 月 6 日，Google 宣布 Jules 结束公测，向所有人开放。Jules 的工作方式和即时聊天不太一样：开发者把一个代码任务交给它，它先用 Gemini 2.5 Pro 的推理能力形成计划，再在异步环境里处理仓库，等结果回来后由开发者查看改动。Google 同日还说，公测期间已经有数千名开发者完成数万项任务。\n\n这次公开发布带来的更新很具体。Jules 可以复用之前的环境设置，让后续任务少做一遍准备；它接入 GitHub Issues，也支持多模态输入。Google 还称，公测期间有超过 14 万项代码改进被公开分享。这个数字说明产品在真实开发者社区里被试用过，但它没有告诉我们改动是否都被合并、测试覆盖是否足够，或者任务难度如何分布。\n\n异步是 Jules 的核心体验。它不要求开发者一直盯着对话窗口，而是把计划、代码修改和结果放进一个稍后查看的任务里。这样的模式适合修复明确的 bug、补一个功能或先探索代码库，却也会放大权限问题：Agent 能读哪些文件、能不能执行命令、是否可以推送分支，必须在仓库和组织层面先设好。\n\nGoogle 为 Jules 设置了分层额度：有基础的 introductory access，AI Pro 用户获得 5 倍额度，AI Ultra 用户获得 20 倍额度，具体限制仍以 Jules 页面为准。额度提升解决的是可用次数和并行规模，不代表每次执行都更可靠。团队仍要看差异、跑测试、检查依赖和审阅它碰过的文件。\n\n同一天 Google 还发布了 Gemini CLI GitHub Actions beta，那是把 CLI 接到 Issue 和 Pull Request 事件上的另一条工作流。Jules 的公开发布解决的是异步编码 Agent 本身如何被更多开发者使用；两者都能改代码，却有不同的触发方式和权限边界。把一个产品的公测数字直接当成另一个产品的自动化能力，会误读这一天的变化。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-jules-public-beta-20250806.svg",
+      "alt": "Jules 先为代码任务制定计划，再异步修改仓库并等待开发者复核",
+      "sourceUrl": "/images/news/google-jules-public-beta-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "public-launch",
+        "title": "Jules 从公测走向公开使用",
+        "body": "Google 8 月 6 日宣布 Jules 正式开放，由 Gemini 2.5 驱动，面向异步编码任务。它的核心变化是更多开发者可以把仓库任务交给一个稍后返回结果的 Agent，而不是只在对话框里即时问答。",
+        "kind": "narrative"
+      },
+      {
+        "id": "beta-evidence",
+        "title": "公测数字说明使用规模，不说明质量",
+        "body": "Google 称公测期间有数千名开发者完成数万项任务，并公开分享超过 14 万项代码改进。这些是公司自报的采用数据，没有给出任务难度、合并率、测试覆盖和回滚率，不能直接变成编码成功率。",
+        "kind": "comparison"
+      },
+      {
+        "id": "async-task",
+        "title": "异步任务把计划和改动放到稍后复核",
+        "body": "Jules 先形成编码计划，再在仓库中工作，开发者之后查看差异和结果。复用既有设置、GitHub Issues 集成和多模态输入减少了准备步骤，但读写范围和命令权限仍由仓库配置决定。",
+        "kind": "technical"
+      },
+      {
+        "id": "usage-tiers",
+        "title": "5 倍和 20 倍额度改变规模，不改变验收责任",
+        "body": "Google 为 introductory access、AI Pro 和 AI Ultra 提供不同额度，AI Pro 是 5 倍、AI Ultra 是 20 倍。具体限制以 Jules 页面为准；更多任务次数不能替代差异审阅、测试和依赖检查。",
+        "kind": "comparison"
+      },
+      {
+        "id": "permission-boundary",
+        "title": "编码 Agent 仍要被限制在仓库边界内",
+        "body": "团队需要先决定 Jules 可以读取哪些文件、执行哪些命令、写入哪条分支以及能否推送。涉及部署、密钥和外部系统时，应保留人工批准、日志和回滚路径。",
+        "kind": "boundary"
+      },
+      {
+        "id": "cli-actions-distinction",
+        "title": "与同日 Gemini CLI GitHub Actions 分开理解",
+        "body": "Jules 是异步编码 Agent 的公开发布；Gemini CLI GitHub Actions beta 则把 CLI 接到 Issue、Pull Request 和评论触发的协作流程。两者都能辅助代码工作，触发方式与权限模型不同。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一个异步编码任务怎样从 Issue 走到可合并差异？",
+      "question": "Jules 的计划、执行和人工复核分别发生在哪里？",
+      "steps": [
+        {
+          "label": "限定任务和仓库",
+          "detail": "先给出明确的 bug、功能或探索目标，指定仓库、分支、允许读写的目录和不能触碰的秘密。",
+          "evidence": "Jules asynchronous coding agent workflow"
+        },
+        {
+          "label": "读取上下文并做计划",
+          "detail": "Jules 使用 Gemini 2.5 Pro 的推理能力理解代码上下文，列出准备修改的文件和验证步骤。",
+          "evidence": "Google describes Jules coding plans powered by Gemini 2.5 Pro"
+        },
+        {
+          "label": "异步执行改动",
+          "detail": "任务在后台进行，Agent 复用已有设置、读取 Issue 或多模态信息，并按计划修改代码。",
+          "evidence": "Reusable setups, GitHub Issues integration, and multimodal support"
+        },
+        {
+          "label": "检查差异和测试",
+          "detail": "开发者查看 diff、运行测试、检查依赖与安全影响，确认 Agent 没有越过任务范围。",
+          "evidence": "Human review boundary for coding agents"
+        },
+        {
+          "label": "决定合并或回滚",
+          "detail": "只有在验收通过后才合并或推送；发现错误就回滚任务、收紧权限并留下日志。",
+          "evidence": "Repository governance and rollback requirement"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "llm",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+        "claim": "Google 8 月 6 日宣布 Jules 结束公测，由 Gemini 2.5 驱动，并加入复用设置、GitHub Issues 集成和多模态支持。",
+        "excerpt": "Google, August 6, 2025: Jules is out of public beta, powered by Gemini 2.5, with reusable setups, GitHub Issues integration, and multimodal support."
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+        "claim": "Google 称公测期间有数千名开发者完成数万项任务，并公开分享超过 14 万项代码改进；AI Pro 与 Ultra 分别提供 5 倍和 20 倍额度。",
+        "excerpt": "Google reports thousands of developers, tens of thousands of tasks, over 140,000 public code improvements, and tiered usage limits."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/innovation-and-ai/models-and-research/google-labs/jules-now-available/",
+    "sourceHash": "sha256:0e640a26d85f2fb526228672fb021d4d10532c0465b6364dacad0da8cf0de457"
+  },
+  {
+    "slug": "google-search-ai-traffic-claim-20250806",
+    "title": "Google 回应 AI Search 流量争议：称总体点击稳定、质量点击略增",
+    "summary": "Google Search 负责人 Liz Reid 8 月 6 日发布文章，回应 AI Overviews 和 AI Mode 是否减少网站流量的争议。她表示 Google Search 向网站的总体自然点击量同比大体稳定，定义为用户没有快速返回的“质量点击”略有增加；这是一份 Google 自己的数据与解释，文章没有公开完整方法和原始数据，不能直接当作整个网络已经被独立证实的结论。",
+    "body": "8 月 6 日，Google Search 负责人 Liz Reid 罕见地把 AI Search 的流量问题写成了一篇数据说明。她的核心说法是：Google Search 发给网站的总体自然点击量同比相对稳定，质量点击还略有增加。Google 把“质量点击”定义为用户点击后没有很快返回的访问，认为这通常说明用户对页面更感兴趣。\n\n这份说明是在回应网站和第三方报告对 AI Overviews、AI Mode 的担忧。Google 的解释是，用户现在提出的问题更长、更复杂，搜索结果页也显示了更多链接；有些简单问题会被 AI 直接回答，用户没有继续点击，但需要深入了解、比较或购买的查询仍会把人带到网站。Google 还说，流量并没有均匀地留在每个站点，论坛、视频、播客和有第一手观点的内容可能得到更多点击，另一些站点则会下降。\n\n这里要把“公司数据”和“行业事实”分开。文章没有给出完整的样本、时间窗、搜索类型、站点分组、绝对点击量或原始数据，也没有让外部研究者复算“质量点击”的定义。Google 的说法可以说明它如何看待自家产品的影响，却不能单独证明所有网站都没有受到损失，也不能推翻每一份具体的第三方研究。\n\n对内容团队来说，单看自然点击已经不够。还要分别记录查询类型、展示位置、是否出现在 AI 摘要引用里、点击后停留、转化和直接访问；同样的总量可能掩盖不同站点、不同主题和不同用户意图之间的迁移。Google 也强调网站可以通过开放网络协议控制内容如何被 Search 突出或纳入，但这不等于每个站点都能决定 AI 摘要怎样呈现自己的内容。\n\n这篇文章不是一次新的模型发布，而是搜索平台在流量争议中的公开立场。它值得记录，是因为 AI Search 的价值交换正在被重新描述：Google 希望证明 AI 仍把用户送回网络，出版者则需要自己的日志、收入和引用数据来判断这句话在具体业务上是否成立。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-search-ai-traffic-claim-20250806.svg",
+      "alt": "Google AI Search 从查询到摘要再到网站点击，旁边标出质量点击的统计边界",
+      "sourceUrl": "/images/news/google-search-ai-traffic-claim-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "google-claim",
+        "title": "Google 的核心说法是总体点击稳定",
+        "body": "Google Search 负责人称总体自然点击量同比相对稳定，用户没有快速返回的质量点击略有增加。质量点击是 Google 自己定义的指标，文章应连同定义和归属一起阅读。",
+        "kind": "narrative"
+      },
+      {
+        "id": "search-behavior",
+        "title": "更长问题和更多链接是 Google 的解释",
+        "body": "Google 认为 AI Overviews 和 AI Mode 让用户提出更长、更复杂的问题，也在页面上显示更多链接。简单问题可能停在答案，研究、比较和购买类问题仍可能点击网站；流量因此会在不同站点之间重新分配。",
+        "kind": "example"
+      },
+      {
+        "id": "quality-click",
+        "title": "质量点击的定义很窄",
+        "body": "文章把质量点击定义为用户没有很快返回的访问，并把它当作兴趣信号。这不能直接表示阅读深度、订阅、购买或内容对用户真正有帮助，更不能替代站点自己的转化和收入数据。",
+        "kind": "technical"
+      },
+      {
+        "id": "evidence-boundary",
+        "title": "公开文章没有完整方法和原始数据",
+        "body": "Google 没有在这篇文章里公开完整样本、时间窗、站点分组、绝对点击量或可复算数据。因此它可以作为 Google 的公开立场和内部观察，不能单独变成整个网络的独立事实。",
+        "kind": "boundary"
+      },
+      {
+        "id": "publisher-metrics",
+        "title": "出版者需要把总量拆成自己的指标",
+        "body": "内容团队可以同时追踪查询类型、AI 摘要引用、自然点击、停留、转化、直接访问和收入，观察同一总量下哪些主题获益、哪些主题流失。总点击稳定并不代表每个站点的业务都稳定。",
+        "kind": "comparison"
+      },
+      {
+        "id": "web-control",
+        "title": "开放协议提供控制，不保证呈现结果",
+        "body": "Google 说网站可以用开放网络协议控制内容如何被 Search 突出或纳入，但站点仍不能单独决定 AI 摘要的上下文、引用位置和用户是否点击。控制入口与实际流量结果要分开评估。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "怎样判断 AI Search 是否真的把高质量访问送回网站？",
+      "question": "从 Google 的总体声明到站点自己的日志，中间需要补哪些指标？",
+      "steps": [
+        {
+          "label": "先固定查询范围",
+          "detail": "把品牌、导航、资讯、研究、比较和购买等查询分开，避免一个总平均数掩盖用户意图变化。",
+          "evidence": "Google’s discussion of longer and more complex queries"
+        },
+        {
+          "label": "记录 AI 展示位置",
+          "detail": "标记页面是否出现 AI Overviews、AI Mode 或引用链接，以及页面上的链接顺序和展示方式。",
+          "evidence": "Google Search AI features and prominent links"
+        },
+        {
+          "label": "区分点击质量",
+          "detail": "除了有没有快速返回，还要记录停留、滚动、订阅、购买、线索和直接访问，避免把单一代理指标当成业务价值。",
+          "evidence": "Google’s narrow quality-click definition"
+        },
+        {
+          "label": "按站点和主题比较",
+          "detail": "将论坛、视频、播客、第一手内容与不同主题站点分别比较，识别流量迁移而非只看全网平均。",
+          "evidence": "Google’s statement about traffic shifting among site types"
+        },
+        {
+          "label": "把公司声明当作一个样本",
+          "detail": "将 Google 的数据与自己的 Search Console、分析和收入记录、第三方研究交叉核对，写清时间窗和方法后再下结论。",
+          "evidence": "Evidence boundary from Google’s public article"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Search",
+      "url": "https://blog.google/products-and-platforms/products/search/ai-search-driving-more-queries-higher-quality-clicks/"
+    },
+    "relatedSlugs": [
+      "event",
+      "llm",
+      "data-quality"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.google/products-and-platforms/products/search/ai-search-driving-more-queries-higher-quality-clicks/",
+        "claim": "Google Search 负责人 8 月 6 日称总体自然点击量同比相对稳定，质量点击略有增加，并将质量点击定义为用户没有快速返回的访问。",
+        "excerpt": "Google Search, August 6, 2025: overall organic click volume is relatively stable year over year and average click quality has increased."
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/search/ai-search-driving-more-queries-higher-quality-clicks/",
+        "claim": "Google 将流量变化解释为查询变长、链接增多和站点之间的重新分配，并说明网站可以通过开放网络协议控制内容如何被突出或纳入 Search。",
+        "excerpt": "Google says AI Search leads to longer queries, more links, shifting traffic among sites, and respects open web controls for highlighting or inclusion."
+      }
+    ],
+    "canonicalUrl": "https://blog.google/products-and-platforms/products/search/ai-search-driving-more-queries-higher-quality-clicks/",
+    "sourceHash": "sha256:6e28a0cbb71e39a73f7dd9316cf48f03491075ccdcbfac5d9dcbdc6cfcbc628e"
+  },
+  {
+    "slug": "nsf-ai-cloud-testbeds-investment-20250806",
+    "title": "NSF 同日推进 AI 可编程云实验室与真实环境测试床",
+    "summary": "美国国家科学基金会（NSF）8 月 6 日公布两条相关的 AI 科研基础设施计划：一项提出最高 1 亿美元的全国 AI 可编程云实验室网络，另一项提供超过 200 万美元规划资助建设 AI-ready test beds。前者面向可远程编程的生物技术和材料科学实验室，后者把无线、农业、灾害响应和自动驾驶等系统放到真实环境评估；最高 1 亿美元仍取决于未来拨款，不能写成已经发出的预算。",
+    "body": "8 月 6 日，NSF 同时把两种 AI 基础设施摆上了日程。一份公告提出最高 1 亿美元的全国 AI-programmable cloud laboratories 资助机会，另一份公告宣布超过 200 万美元的 planning grants，用来建设能在真实环境中评估 AI 的 test beds。两项计划都在回答同一个问题：模型离开实验室之后，在哪里试、怎样测、谁来承担数据和设备的成本。\n\n可编程云实验室计划想建立一组可以远程访问、由用户编程的 AI-enabled 实验室，先把重点放在生物技术和材料科学。NSF 说，最多可支持 6 个奖项，每个每年最高 500 万美元、持续 4 年；这些设施可以让 AI 参与实验前的方案设计、实验中的传感器和条件控制，以及实验后的分析。公告同时写明，这项投入取决于未来拨款，所以“最高 1 亿美元”描述的是资助机会的上限，不是已经拨给某个机构的钱。总额上限和单个奖项上限不能简单相加，实际奖项数量和金额仍要看拨款与评审结果。\n\nAI-ready test beds 计划更接近现实世界的试验场。NSF 公布超过 200 万美元规划资助，并列出无线通信、精准农业、灾害响应和自动驾驶等项目。它们把传感器、车辆、农田、城市尺度网络或应急场景接进评估，让研究者观察 AI 在噪声、延迟、天气、人和设备相互作用下是否仍然可靠。这里的重点是把研究原型带到真实约束里，不是宣布这些系统已经完成部署。\n\n把两份公告合在一起看，可以看出 NSF 对“AI 基础设施”的理解已经超过算力中心：实验设备、数据采集、远程控制、评价指标和研究人员培训都要同时准备。可编程云实验室偏向可重复的科学实验，test beds 偏向复杂的现场条件；两者都需要安全边界、数据治理和失败后的人工接管。\n\n接下来应该观察的是资助是否真的转化为可访问的实验资源，以及项目能否公开任务、数据、错误和成本。基础设施计划为 AI 找到更接近现实的试验场，却不会自动保证科学发现更快、自动驾驶更安全或农业投入更少。能否复现和审计，才是这些公告之后的证据。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nsf-ai-cloud-testbeds-investment-20250806.svg",
+      "alt": "NSF 连接可编程云实验室与真实环境 AI 测试床，把模型带到生物、农业、灾害和交通场景",
+      "sourceUrl": "/images/news/nsf-ai-cloud-testbeds-investment-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "two-programs",
+        "title": "两条计划都在补 AI 离开实验室后的基础设施",
+        "body": "NSF 同日公布可编程云实验室资助机会和 AI-ready test beds 规划资助。前者偏向远程编程的科学实验，后者偏向无线、农业、灾害和自动驾驶等真实环境，合并记录可以看出基础设施的两种层次。",
+        "kind": "narrative"
+      },
+      {
+        "id": "programmable-labs",
+        "title": "云实验室把实验前中后都接入 AI",
+        "body": "NSF 计划支持最多 6 个奖项，每个每年最高 500 万美元、持续 4 年，初期关注生物技术和材料科学。实验前可辅助设计，实验中可读传感器和调整条件，实验后可分析数据；最高 1 亿美元仍是取决于未来拨款的资助机会，不能按 6 个满额奖项简单相加。",
+        "kind": "technical"
+      },
+      {
+        "id": "real-world-beds",
+        "title": "Test beds 把系统放回复杂现场",
+        "body": "超过 200 万美元规划资助支持无线通信、精准农业、灾害响应和自动驾驶等 AI-ready test beds。真实环境带来噪声、延迟、天气、人员和设备互动，能暴露受控数据集里看不到的可靠性问题。",
+        "kind": "example"
+      },
+      {
+        "id": "funding-boundary",
+        "title": "资助上限不等于预算已经落地",
+        "body": "可编程云实验室计划的 1 亿美元是机会规模，公告明确受未来拨款影响；test beds 公告则说明规划资助和项目方向。两者都需要后续奖项、设施和公开成果来证明实际投入。",
+        "kind": "boundary"
+      },
+      {
+        "id": "infrastructure-stack",
+        "title": "AI 基础设施还包括数据、评价和培训",
+        "body": "把模型放进实验室或测试床，还要准备传感器、数据采集、远程控制、评价指标、权限和研究人员培训。算力本身不能替代这些环节，现场失败也不能直接交给自动系统处理。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evidence-next",
+        "title": "下一步看资源是否可访问、结果是否可复现",
+        "body": "有价值的后续证据包括设施何时开放、任务和数据如何共享、错误与成本怎样记录，以及不同研究团队能否复现实验。计划公告为基础设施定方向，实际影响需要运行证据。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "AI 科研基础设施怎样把模型带到真实实验？",
+      "question": "从远程实验室到现场测试床，数据、控制和评价如何连成一条链？",
+      "steps": [
+        {
+          "label": "定义科学或现场任务",
+          "detail": "先明确要发现什么、改善什么或测试什么，写下成功指标、失败条件和需要人工判断的节点。",
+          "evidence": "NSF programmable cloud laboratories and AI-ready test beds goals"
+        },
+        {
+          "label": "连接设备和数据",
+          "detail": "把传感器、影像、实验设备、车辆或通信网络接入可记录的系统，注明数据来源、延迟和缺失情况。",
+          "evidence": "NSF examples across biotechnology, materials, wireless, agriculture, disaster response, and transportation"
+        },
+        {
+          "label": "让 AI 参与实验循环",
+          "detail": "AI 可以协助方案设计、实时监测、调整条件或分析结果，但每个动作都要有权限范围、停止条件和人工接管。",
+          "evidence": "NSF description of pre-experiment, during-experiment, and post-experiment AI use"
+        },
+        {
+          "label": "在真实约束中测试",
+          "detail": "把天气、噪声、网络延迟、人机互动和设备故障纳入测试，观察模型是否仍然稳定，而不是只复现理想数据集。",
+          "evidence": "AI-ready test beds real-world settings"
+        },
+        {
+          "label": "公开结果并复现",
+          "detail": "记录成本、错误、数据和版本，让不同团队能访问资源、复查实验并决定是否扩大或回滚。",
+          "evidence": "Infrastructure evidence boundary inferred from NSF funding announcements"
+        }
+      ]
+    },
+    "source": {
+      "name": "National Science Foundation",
+      "url": "https://www.nsf.gov/tip/updates/nsf-invest-new-national-network-ai-programmable-cloud"
+    },
+    "relatedSlugs": [
+      "event",
+      "tools",
+      "data-pipeline"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.nsf.gov/tip/updates/nsf-invest-new-national-network-ai-programmable-cloud",
+        "claim": "NSF 8 月 6 日公布最高 1 亿美元的 AI 可编程云实验室资助机会，计划最多 6 个奖项、每个每年最高 500 万美元、持续 4 年，初期关注生物技术和材料科学，并受未来拨款影响。",
+        "excerpt": "NSF, August 6, 2025: up to $100 million for a network of AI-programmable cloud laboratories, subject to future appropriations."
+      },
+      {
+        "url": "https://www.nsf.gov/news/nsf-invests-ai-ready-test-beds-accelerate-us-leadership",
+        "claim": "NSF 同日宣布超过 200 万美元规划资助建设 AI-ready test beds，覆盖无线、农业、灾害响应和自动驾驶等真实环境。",
+        "excerpt": "NSF, August 6, 2025: more than $2 million in planning grants for AI-ready test beds in real-world settings."
+      }
+    ],
+    "canonicalUrl": "https://www.nsf.gov/tip/updates/nsf-invest-new-national-network-ai-programmable-cloud",
+    "sourceHash": "sha256:1f573e07d6603c8b09dff2bfaae4250a1e3c6a27aedae3ca31db28dd702bd359"
+  },
+  {
+    "slug": "openai-gsa-onegov-chatgpt-enterprise-20250806",
+    "title": "OpenAI 与 GSA 推出 OneGov：联邦机构一年 1 美元使用 ChatGPT Enterprise",
+    "summary": "美国总务管理局（GSA）与 OpenAI 8 月 6 日宣布 OneGov 合作，参与的联邦机构可按每机构每年 1 美元获得 ChatGPT Enterprise，另外有 60 天高级模型、Deep Research 和 Advanced Voice 的使用安排。它把前一天的“进入 MAS 采购货架”推进到具体价格和政府合作条款，但低价不等于机构已经部署、数据自动获准或任务效果已经验证。",
+    "body": "8 月 6 日，GSA 与 OpenAI 宣布 OneGov 合作，为参与的美国联邦机构提供 ChatGPT Enterprise，价格是每个机构一年 1 美元。GSA 说，机构可以通过 Multiple Award Schedule（MAS）获取这项优惠；OpenAI 则把它描述为让整个联邦行政部门更容易接触企业版 ChatGPT。真正发生变化的是采购和接入条件，模型本身并没有因为这份协议变成一个新版本。\n\n协议还给出了一段试用式的使用安排：额外 60 天可以不限量使用高级模型和 Deep Research 等功能，政府员工也能加入专门的用户社区和培训。OpenAI 还提到 Advanced Voice、定制培训，以及由 Slalom 和 Boston Consulting Group 协助部署。这样的设计降低了第一次试用的预算门槛，也把培训、组织配置和后续推广一起放进了合作方案。\n\n安全部分需要按原文的主体来读。OpenAI 说 ChatGPT Enterprise 的业务数据，包括输入和输出，不会用于训练或改进模型，并称同样的保护措施适用于联邦使用。这是供应商对产品和数据处理方式的承诺；每个机构仍然要决定哪些数据能进入系统、谁可以访问、日志如何留存、输出怎样复核，以及是否需要额外的安全授权。1 美元的价格不能替机构完成这些判断。\n\n这项公告和 8 月 5 日 GSA 的消息相关，却不是同一件事。8 月 5 日的公告把 Claude、Gemini 和 ChatGPT 放进 MAS，解决的是产品进入联邦采购菜单的路径；8 月 6 日的 OneGov 合作给出了 OpenAI 的具体折扣、60 天功能安排和培训支持。把两天合并，会看不出采购资格和实际合同条款之间的区别。\n\nOneGov 的下一步证据要来自真正使用它的机构：试点覆盖哪些工作，敏感数据如何被隔离，Deep Research 的引用和错误怎样复核，试用期结束后是否继续付费。政府拿到的是一个很便宜的入口，公共服务得到的价值仍然要靠机构自己的治理和运行记录证明。",
+    "publishedAt": "2025-08-06",
+    "eventDate": "2025-08-06",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-gsa-onegov-chatgpt-enterprise-20250806.svg",
+      "alt": "OneGov 把 ChatGPT Enterprise 以一年 1 美元的采购入口交给联邦机构，后面仍有治理和复核",
+      "sourceUrl": "/images/news/openai-gsa-onegov-chatgpt-enterprise-20250806.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "onegov-price",
+        "title": "变化发生在合同价格和接入路径",
+        "body": "OneGov 让参与的联邦机构以每机构每年 1 美元获得 ChatGPT Enterprise，并通过 GSA 的 Multiple Award Schedule 取得优惠。它是采购与推广安排，不是模型版本更新或统一安全认证。",
+        "kind": "narrative"
+      },
+      {
+        "id": "trial-features",
+        "title": "额外 60 天把高级功能放进试用窗口",
+        "body": "OpenAI 和 GSA 说明额外 60 天可使用高级模型、Deep Research 和 Advanced Voice 等功能，同时提供政府用户社区和入门培训。每个机构怎样配置权限、选哪些任务试用，仍由机构决定。",
+        "kind": "comparison"
+      },
+      {
+        "id": "data-protection",
+        "title": "企业数据不用于训练是供应商承诺",
+        "body": "OpenAI 称 ChatGPT Enterprise 的业务输入和输出不用于训练或改进模型，并表示联邦使用沿用这一保护。机构还要补上数据分类、访问控制、日志留存、输出复核和安全授权，价格优惠不会自动覆盖这些工作。",
+        "kind": "boundary"
+      },
+      {
+        "id": "mas-vs-onegov",
+        "title": "8 月 5 日 MAS 入口与 8 月 6 日 OneGov 条款分开",
+        "body": "前一天的 GSA 公告把 Claude、Gemini 和 ChatGPT 纳入采购菜单，解决产品如何进入联邦采购；这一天的 OneGov 公告给出 OpenAI 的具体折扣、功能窗口和培训支持。两者有关联，事实层级不同。",
+        "kind": "comparison"
+      },
+      {
+        "id": "deployment-evidence",
+        "title": "真正的效果要等机构运行记录",
+        "body": "后续要观察试点覆盖的工作、敏感数据隔离、Deep Research 引用复核、错误处理和试用期后的续费决定。OneGov 降低了入口成本，不能替代公共部门自己的治理证据。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "一年 1 美元的政府 AI 合作怎样走到真实工作流？",
+      "question": "从 GSA 合同到机构上线，中间还要做哪些治理选择？",
+      "steps": [
+        {
+          "label": "确认参与资格",
+          "detail": "机构先确认是否参加 OneGov、适用哪份 MAS 合同和哪些 ChatGPT Enterprise 条款，不能把公告自动等同于全政府已经开通。",
+          "evidence": "GSA OneGov and MAS announcement"
+        },
+        {
+          "label": "选择试点任务",
+          "detail": "把文书、研究、客服或内部分析等任务列出来，标记会接触哪些敏感数据和必须人工复核的结果。",
+          "evidence": "Agency-specific deployment boundary"
+        },
+        {
+          "label": "配置数据和权限",
+          "detail": "设置账户、访问角色、数据分类、日志留存和供应商责任，确认企业数据保护承诺如何落到本机构环境。",
+          "evidence": "OpenAI ChatGPT Enterprise data-protection statement"
+        },
+        {
+          "label": "用高级功能试运行",
+          "detail": "在 60 天功能窗口中测试 Deep Research、Advanced Voice 或高级模型，记录准确性、引用、错误和成本，而不是只看首次体验。",
+          "evidence": "OpenAI and GSA additional 60-day feature access"
+        },
+        {
+          "label": "决定是否扩大",
+          "detail": "试点结束后根据安全事件、任务效果、用户反馈和预算决定续用、限制范围或退出，价格本身不能替代评估。",
+          "evidence": "Post-deployment governance boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "U.S. General Services Administration",
+      "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-announces-new-partnership-with-openai-delivering-deep-discount-to-chatgpt-08062025"
+    },
+    "relatedSlugs": [
+      "event",
+      "agent",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-announces-new-partnership-with-openai-delivering-deep-discount-to-chatgpt-08062025",
+        "claim": "GSA 8 月 6 日宣布 OneGov 合作，参与的联邦机构可以每机构每年 1 美元获得 ChatGPT Enterprise，并通过 MAS 获取优惠价格。",
+        "excerpt": "GSA, August 6, 2025: participating federal agencies can access ChatGPT Enterprise for $1 per agency for one year through the Multiple Award Schedule."
+      },
+      {
+        "url": "https://openai.com/index/providing-chatgpt-to-the-entire-us-federal-workforce/",
+        "claim": "OpenAI 同日说明额外 60 天高级模型和功能、培训、政府用户社区以及企业业务数据不用于训练或改进模型的产品承诺。",
+        "excerpt": "OpenAI, August 6, 2025: advanced models and features are available for an additional 60-day period, with training and enterprise data safeguards."
+      }
+    ],
+    "canonicalUrl": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-announces-new-partnership-with-openai-delivering-deep-discount-to-chatgpt-08062025",
+    "sourceHash": "sha256:08459ce04eabc47ad476eb53a371df867e4e384b5a25ef4d53951d80011e6e82"
+  },
+  {
     "slug": "anthropic-claude-opus-41-20250805",
     "title": "Anthropic 发布 Claude Opus 4.1，增量强化代码与 Agent 任务",
     "summary": "Anthropic 8 月 5 日发布 Claude Opus 4.1，把它定位为 Claude Opus 4 的升级版，重点改进真实代码、Agent 任务、推理、深度研究和数据分析。官方称其在 SWE-bench Verified 上达到 74.5%，并同步提供给付费 Claude、Claude Code、API、Amazon Bedrock 和 Vertex AI；这是增量版本，成绩和安全结论都应按官方评测条件阅读。",
