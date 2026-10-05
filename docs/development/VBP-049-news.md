@@ -29,6 +29,15 @@
 - 由于服务器磁盘达到 100%，仅清理未被容器使用的旧 `vibepolaris` 镜像标签，保留当前旧版本、新版本和上一个回滚镜像；清理后磁盘余量约 4.4 GB。
 
 
+### 2026-10-05 新闻视觉修正生产发布
+
+- PR [#350](https://github.com/Gyschuaner/VibePolaris/pull/350) 已合入 `main`，合并提交为 `4fee04f9e1e4a426ae37e58537ca9f9470613b07`；功能提交 `e2de070f`。
+- 生产镜像为 `vibepolaris:4fee04f9e1e4a426ae37e58537ca9f9470613b07`，发布目录为 `/opt/vibepolaris/releases/20261005T104610Z-4fee04f9`，`/opt/vibepolaris/current` 已切换，`vibepolaris-web-1` 为 `running / healthy`。
+- 新闻详情页只渲染标记为原始来源的头图；当前自制 SVG/插图保留追溯元数据但不再显示。星图节点移除日期文字，按日期分组的时间线继续保留。
+- 线上冒烟通过：`/`、`/news`、`/sitemap.xml` 和代表文章均 HTTP 200；站点地图包含 725 个 `/news/` URL；代表自制头图文章的 `news-hero` 图像区域数量为 0；Chrome 实测详情页和星图更新后的视觉结果。
+- 回滚备份为 `/opt/vibepolaris/backups/20261005T104610Z-from-2141e025`，旧镜像与 `xiaobei_data` 数据卷保留，未改动用户数据。DP deployment：`deploy-vbp049-news-visuals-prod-20261005`，对象 `bd3a252d-1ace-4b9d-a598-d95aa422fcae`，状态 `released`。
+
+
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
 - 目标提交：`7de944165ad88a03d7a9dea80f1708a452d507bf`；本机 `linux/amd64` 镜像构建、`news:validate`、`typecheck` 和定向 5 项测试、192 页构建均通过。
