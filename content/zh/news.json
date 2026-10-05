@@ -37902,6 +37902,304 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "google-ai-threat-defense",
+    "title": "Google Cloud 发布 AI Threat Defense，组合漏洞分析与修复能力",
+    "summary": "5 月 27 日，Google Cloud 发布 AI Threat Defense，介绍将 Gemini、Wiz、CodeMender 和 Mandiant 的能力组合到网络防御流程中，目标从发现单个漏洞延伸到预测攻击路径、排序风险和部署经过验证的修复。官方页面说明了产品能力与组件关系，没有给出跨行业的真实攻击阻断率，也不能证明每个环境都能自动修复。",
+    "body": "5 月 27 日，Google Cloud 发布 AI Threat Defense。官方介绍把 Gemini、Wiz、CodeMender 和 Mandiant 放进同一套网络防御流程，试图把工作从发现单个漏洞推进到预测攻击路径、排序风险，再部署经过验证的修复。这是产品与组件的组合说明，不是一项跨行业效果评估。\n\n这条链路的每一步都对应不同证据。攻击路径预测需要资产、漏洞和环境关系，风险排序需要明确优先级依据，修复部署则要证明补丁在目标环境中没有破坏业务。产品描述中的自动化能力，也不能替代这些中间记录。\n\n在测试服务器上，较稳妥的流程是先在沙箱里复现漏洞，再生成候选补丁和回归测试，由管理员确认后部署；测试失败、权限异常或结果不确定时停止并回滚。命令、修改、审批和恢复时间都应留在日志里，以便安全团队复盘一次自动化动作。\n\nGoogle Cloud 的官方页面支持产品能力和组件关系，没有给出不同云、行业或网络环境的攻击阻断率、误报率或自动修复覆盖范围。Gemini、Wiz、CodeMender 和 Mandiant 的组合也不能替代客户自己的权限设置、独立评测和事故演练。\n\n相关词条对应控制链的不同位置：agent 负责推进多步调用，execution-sandbox 隔离文件、网络、进程和凭据，data-validation 检查输入与修复结果，api 规定能提交什么、返回什么以及谁能调用。后续应在受限环境中逐项验证，先确认能安全停止和回滚，再谈规模化自动修复。",
+    "publishedAt": "2026-05-27",
+    "eventDate": "2026-05-27",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-ai-threat-defense.svg",
+      "alt": "Google Cloud 推出 AI Threat Defense 自主网络防御平台；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/google-ai-threat-defense.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "AI Threat Defense 组合了哪些能力",
+        "body": "Google Cloud 5 月 27 日发布 AI Threat Defense，介绍将 Gemini、Wiz、CodeMender 和 Mandiant 的能力放入网络防御流程，目标包括攻击路径预测、风险排序和经过验证的修复。官方页面说明了产品组成，不能单独证明实际阻断效果。",
+        "kind": "narrative"
+      },
+      {
+        "id": "chain",
+        "title": "从漏洞到修复，每一步都需要证据",
+        "body": "攻击路径预测依赖资产、漏洞和环境关系，风险排序需要明确优先级依据，修复部署还要证明补丁没有破坏业务。产品写“自主”不等于这些中间环节已经可见或可靠。",
+        "kind": "technical"
+      },
+      {
+        "id": "sandbox",
+        "title": "先在沙箱里让一次修复停得下来",
+        "body": "测试服务器可以先复现漏洞，再生成候选补丁并运行回归测试，由管理员确认后部署；测试失败、权限异常或结果不确定时应停止和回滚。命令、修改、审批与恢复时间都要留下日志。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "官方页面没有给出跨环境阻断率",
+        "body": "公告没有披露不同云、行业或网络环境的攻击阻断率、误报率和自动修复覆盖范围。四个组件的组合不能替代客户权限设置、独立评测和事故演练。",
+        "kind": "boundary"
+      },
+      {
+        "id": "controls",
+        "title": "四个词条落在四个控制点",
+        "body": "agent 推进多步调用，execution-sandbox 隔离文件、网络、进程和凭据，data-validation 检查输入与修复结果，api 规定调用边界和返回内容。先验证停止、审批与回滚，再评估扩大自动化范围。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "在测试服务器上检查一次自动修复是否可控",
+      "question": "产品声称可以从攻击路径走到验证修复时，怎样确认每一步都能被审查和撤回？",
+      "steps": [
+        {
+          "label": "建立受限环境",
+          "detail": "使用测试资产和 execution-sandbox，明确文件、网络、进程和凭据范围，不直接触碰生产系统。",
+          "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+        },
+        {
+          "label": "记录风险判断",
+          "detail": "分别保存漏洞复现、攻击路径预测和风险排序依据，检查输入数据是否完整且没有越权。",
+          "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+        },
+        {
+          "label": "验证候选修复",
+          "detail": "生成补丁后运行回归测试，由管理员确认部署；测试失败或结果不确定时停止。",
+          "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+        },
+        {
+          "label": "检查回滚证据",
+          "detail": "核对命令、修改、审批、恢复时间和回滚结果，确认一次自动化动作能被复盘和撤回。",
+          "evidence": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Cloud",
+      "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense"
+    },
+    "relatedSlugs": [
+      "agent",
+      "execution-sandbox",
+      "data-validation",
+      "api"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+        "claim": "Google 称攻击者用 AI 发现漏洞的速度正在加快",
+        "excerpt": "Google says attackers are using AI to find vulnerabilities at unprecedented speed."
+      },
+      {
+        "url": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+        "claim": "AI Threat Defense 结合 Gemini、Wiz、CodeMender 与 Mandiant",
+        "excerpt": "The platform combines Gemini, Wiz risk prioritization, CodeMender remediation and Mandiant expertise."
+      }
+    ],
+    "canonicalUrl": "https://cloud.google.com/blog/products/identity-security/introducing-google-ai-threat-defense",
+    "sourceHash": "sha256:d67c7671e362e201f9f52c5ebfaf848d2f56e3e059d6f21080daf9a7f3ea0f01"
+  },
+  {
+    "slug": "openai-election-safeguards-2026",
+    "title": "OpenAI 公布 2026 选举信息与安全计划",
+    "summary": "5 月 27 日，OpenAI 公布 2026 年全球选举信息与安全计划，分为可靠投票信息、网络防御、内容透明度和滥用监测四个方向，并提到在美国和巴西与 AP、Democracy Works 的合作。公告说明的是公司政策和合作安排，不能替代对选举信息准确率、政治偏见或滥用规模的独立审计。",
+    "body": "5 月 27 日，OpenAI 公布 2026 年全球选举信息与安全计划。公告把工作分成四个方向：提供投票和结果信息、抵御网络攻击、提示 AI 内容来源，以及监测和处理滥用；同时提到在美国和巴西与 AP、Democracy Works 合作。它是一份政策与合作安排的说明，不是一次独立效果评估。\n\n四个方向面对的是不同问题。投票信息要处理辖区和时间变化，网络防御要识别攻击与升级路径，内容透明度要说明内容如何产生，滥用监测则要记录发现、判断和处置过程。合作伙伴、产品功能和运营流程不能用一段宣传语互相替代。\n\n用户询问投票地点或选举结果时，系统至少要先确认国家、州或城市，再给出带时间的权威来源；如果来源冲突、过期或只覆盖部分辖区，应明确提示复核。引用链接能帮助追查来源，但不等于回答一定正确，也不能自动解决模型把不存在的信息补出来的问题。\n\n官方公告支持这些政策重点和合作关系，不支持“所有国家和语言都已上线同样保护”这样的结论。它也没有提供选举信息准确率、政治偏见、误报或滥用处置规模的独立审计。后续需要看实际上线国家、错误纠正、来源新鲜度和公开处置记录。\n\n相关词条对应的是核验链：citation 把结论指回来源位置，hallucination 用来标记超出或违背来源的内容，data-validation 检查时间、辖区和数据一致性。它们能帮助检查一个答案，不能代替平台的运营审计和外部监督。",
+    "publishedAt": "2026-05-27",
+    "eventDate": "2026-05-27",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-election-safeguards-2026.svg",
+      "alt": "OpenAI 发布 2026 全球选举信息与安全措施；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/openai-election-safeguards-2026.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "plan",
+        "title": "公告把选举安全分成四条线",
+        "body": "OpenAI 5 月 27 日公布的计划包括可靠投票与结果信息、网络防御、内容透明度和滥用监测，并提到在美国和巴西与 AP、Democracy Works 合作。四条线面对的问题不同，不能合并成一个“安全功能”。",
+        "kind": "narrative"
+      },
+      {
+        "id": "information",
+        "title": "投票信息先要对齐辖区和时间",
+        "body": "回答投票地点或结果时，系统应先确认国家、州或城市，再给出注明时间的权威来源；来源冲突、过期或覆盖不全时，应让用户复核。引用可以让人追查出处，但不会自动保证答案正确。",
+        "kind": "example"
+      },
+      {
+        "id": "operations",
+        "title": "合作关系不等于上线效果",
+        "body": "AP 和 Democracy Works 的合作说明了信息来源和服务协作方向，公告没有证明每个国家、语言和选举阶段都使用同样的保护，也没有给出准确率、政治偏见或滥用规模的独立数据。产品、伙伴和运营处置要分开核对。",
+        "kind": "boundary"
+      },
+      {
+        "id": "verification",
+        "title": "三种核验工具落在不同位置",
+        "body": "citation 用来回到来源，hallucination 用来识别超出或违背来源的回答，data-validation 用来核对日期、辖区和数据一致性。它们能改善读者复核，却不能替代平台监测、审计和外部监督。",
+        "kind": "comparison"
+      },
+      {
+        "id": "follow-up",
+        "title": "下一步看哪些可观察记录",
+        "body": "后续应抽查不同国家、语言和选举阶段，记录来源更新速度、错误纠正、引用可追溯性和滥用处置；还要区分“功能已经上线”和“准确率经过外部验证”。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "从一个选举问题追到来源和处置记录",
+      "question": "面对投票地点或结果问题，怎样判断回答来自可靠信息，而不是模型补写？",
+      "steps": [
+        {
+          "label": "先定位辖区",
+          "detail": "确认用户所在国家、州或城市，以及问题对应的选举阶段和日期。",
+          "evidence": "https://openai.com/index/election-safeguards-2026/"
+        },
+        {
+          "label": "检查引用来源",
+          "detail": "要求回答给出带时间的权威来源，核对链接是否覆盖该辖区、是否仍然有效。",
+          "evidence": "https://openai.com/index/election-safeguards-2026/"
+        },
+        {
+          "label": "标记不确定内容",
+          "detail": "把与来源不一致、缺少依据或已经过期的句子标为可能的 hallucination，要求重新核验。",
+          "evidence": "https://openai.com/index/election-safeguards-2026/"
+        },
+        {
+          "label": "追踪平台处置",
+          "detail": "在不同语言和地区抽查错误纠正、来源更新与滥用处置记录，不把合作公告当成完整效果审计。",
+          "evidence": "https://openai.com/index/election-safeguards-2026/"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/election-safeguards-2026/"
+    },
+    "relatedSlugs": [
+      "citation",
+      "hallucination",
+      "data-validation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/election-safeguards-2026/",
+        "claim": "OpenAI 将选举安全工作分为四个重点",
+        "excerpt": "OpenAI lists reliable voting information, cyber defense, content transparency and abuse monitoring as priorities."
+      },
+      {
+        "url": "https://openai.com/index/election-safeguards-2026/",
+        "claim": "公告提到美国和巴西与 AP、Democracy Works 合作",
+        "excerpt": "The post describes planned partnerships with AP and Democracy Works in the United States and Brazil."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/election-safeguards-2026/",
+    "sourceHash": "sha256:c0bf78c5303fa7b32ae806ad64b00073c53a53a0b667c89711b44b3f7727235d"
+  },
+  {
+    "slug": "youtube-ai-labels-auto-detection",
+    "title": "YouTube 调整 AI 内容标签位置，增加未申报内容检测信号",
+    "summary": "5 月 27 日，YouTube 公布逼真 AI 内容标签调整：长视频标签移到播放器下方，Shorts 使用覆盖层；平台还表示从 5 月起用内部信号识别未主动申报的显著 AI 使用。标签是来源提示，不是对每段内容的完美判定，公告没有给出覆盖率、误报率或对所有生成工具的检测能力。",
+    "body": "5 月 27 日，YouTube 公布逼真 AI 内容的标签调整。长视频的标签会更靠近播放器，Shorts 采用覆盖层；平台还表示从 2026 年 5 月起使用内部信号，识别创作者没有主动申报的显著 AI 使用。变化同时涉及展示位置和检测方式。\n\n创作者申报与平台检测是两条不同的路径。前者来自上传者提供的信息，后者由平台根据内部信号判断；两者最后都可能以标签形式呈现给观看者。标签提醒用户留意内容来源，却不等于平台已经证明视频真实、虚假、侵权或完全由 AI 生成。\n\n观看一段疑似合成的新闻视频时，先看标签和原始上传者，再核对事件的时间、地点和完整上下文。如果创作者认为被误标，还需要有申诉和更正入口；平台也应留下检测结论、标签变更和申诉处理记录，方便追查一次判断是怎样产生的。\n\nYouTube 的官方页面支持界面和检测方向，但没有提供覆盖率、误报率或对所有生成工具的识别能力。因此不能把“使用内部信号”理解成每段视频都能被准确识别，也不能据此断言版权、事实核查或上下文问题已经解决。\n\n相关词条可以帮助拆开这条链：data-validation 检查检测结果、时间和来源数据，hallucination 指摘要或判断超出证据，citation 把结论指回原始位置。后续应在不同语言、格式和申报状态下抽样，比较漏标、误标、申诉和纠正耗时。",
+    "publishedAt": "2026-05-27",
+    "eventDate": "2026-05-27",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/youtube-ai-labels-auto-detection.svg",
+      "alt": "YouTube 提升 AI 内容标签可见性并推出自动识别信号；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/youtube-ai-labels-auto-detection.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "change",
+        "title": "标签位置和检测方式一起调整",
+        "body": "YouTube 5 月 27 日公布，长视频标签移到播放器下方，Shorts 使用覆盖层；从 5 月起，平台还将使用内部信号识别未主动申报的显著 AI 使用。公告同时谈到用户看到哪里和平台怎样发现。",
+        "kind": "narrative"
+      },
+      {
+        "id": "paths",
+        "title": "创作者申报和平台检测不是同一件事",
+        "body": "申报来自上传者，检测来自平台内部信号，两条路径都可能最终显示为标签。标签只提供来源提示，不能单独证明视频真实、虚假、侵权或完全由 AI 生成。",
+        "kind": "technical"
+      },
+      {
+        "id": "viewer",
+        "title": "看到标签后还要核对原始上下文",
+        "body": "观看疑似合成的新闻视频时，可以先查看标签和原始上传者，再核对事件的时间、地点与完整上下文。误标需要申诉和更正入口，平台应保留检测结论、标签变更和处理记录。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "官方公告没有给出检测效果指标",
+        "body": "YouTube 说明了界面和检测方向，但没有公布覆盖率、误报率或对所有生成工具的识别能力。使用内部信号不等于每段视频都能被准确识别，也不等于版权和事实核查问题已经解决。",
+        "kind": "boundary"
+      },
+      {
+        "id": "audit",
+        "title": "三种词条帮助追踪一次标签判断",
+        "body": "data-validation 检查检测结果、时间和来源数据，hallucination 标出超出证据的摘要或判断，citation 把结论指回原始位置。后续可在不同语言、格式和申报状态下比较漏标、误标、申诉和纠正耗时。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "从上传到标签：一次 AI 内容判断怎样留下记录",
+      "question": "YouTube 把标签放得更显眼后，观看者怎样判断这只是提示，还是有可复核的检测依据？",
+      "steps": [
+        {
+          "label": "确认视频状态",
+          "detail": "先记录上传者是否主动申报、视频类型是长视频还是 Shorts，以及标签出现的位置。",
+          "evidence": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/"
+        },
+        {
+          "label": "分开两条来源",
+          "detail": "把创作者申报和平台内部检测信号分别记录，不把其中一条自动当作事实证明。",
+          "evidence": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/"
+        },
+        {
+          "label": "回到原始上下文",
+          "detail": "核对上传者、时间、地点和完整素材；对疑似误标的内容记录申诉和更正入口。",
+          "evidence": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/"
+        },
+        {
+          "label": "比较检测效果",
+          "detail": "在不同语言、格式和申报状态下抽样，追踪覆盖、误报、漏标、申诉结果和纠正耗时。",
+          "evidence": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/"
+        }
+      ]
+    },
+    "source": {
+      "name": "YouTube",
+      "url": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/"
+    },
+    "relatedSlugs": [
+      "data-validation",
+      "hallucination",
+      "citation"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/",
+        "claim": "YouTube 将长视频标签移到播放器下方、Shorts 使用覆盖层",
+        "excerpt": "YouTube says labels will appear below the player for long-form video and as an overlay on Shorts."
+      },
+      {
+        "url": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/",
+        "claim": "内部信号从 2026 年 5 月起检测逼真 AI 内容",
+        "excerpt": "YouTube says internal signals will help detect realistic AI-generated content beginning in May 2026."
+      }
+    ],
+    "canonicalUrl": "https://blog.youtube/news-and-events/improving-ai-labels-viewers-creators/",
+    "sourceHash": "sha256:3f92a19d04c60d8b68bc5f566b4bf4434857b36ef9364de26d2701085f9a374f"
+  },
+  {
     "slug": "alibaba-cloud-agentic-ai-ecosystem",
     "title": "阿里云在新加坡发布智能体 AI 生态，列出模型、工具与平台组合",
     "summary": "5 月 26 日，阿里云在新加坡发布面向全球客户的智能体 AI 生态，列出 Qwen3.7-Max、Skills/MCP 兼容门户、Qwen Cloud AI 原生平台和 JVS Agent Suite，并公布面向中小企业与学生的培训计划。新闻稿描述的是产品组合和生态安排，不能单凭发布内容证明已有 1000 多家企业稳定采用，也不能把 MCP 兼容直接等同于跨系统安全。",
