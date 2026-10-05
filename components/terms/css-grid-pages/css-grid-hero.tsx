@@ -21,7 +21,7 @@ export function CssGridHero() {
   const current = frames[scene.step];
   const items = letters.slice(0, current.count);
   const ResultIcon = current.stage === "DENSE" ? CheckCircle : current.stage === "IMPLICIT" ? WarningCircle : Ruler;
-  const canvasStyle = { "--grid-columns": current.columns, gridTemplateRows: `repeat(${current.rows}, minmax(42px, auto))` } as CSSProperties;
+  const canvasStyle = { "--grid-columns": current.columns, gridTemplateColumns: `repeat(${current.columns}, minmax(${current.stage === "MINMAX" ? "120px" : "0"}, 1fr))`, gridTemplateRows: `repeat(${current.rows}, minmax(42px, auto))` } as CSSProperties;
 
   return <figure ref={scene.ref} className={styles.gridHero} data-step={scene.step} aria-label="CSS Grid 如何建立轨道、放置项目并处理空格">
     <div className={styles.gridHeader}><span>先画轨道，再决定项目占哪些格</span><strong>{current.stage} · {current.width}</strong></div>

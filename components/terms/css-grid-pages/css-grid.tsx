@@ -29,7 +29,7 @@ export function CssGridLesson() {
   const columns = activeWidth === "wide" ? 3 : 2;
   const rows = 2;
   const items = useMemo(() => letters.slice(0, count), [count]);
-  const gridStyle = { "--grid-columns": columns, gridTemplateRows: `repeat(${rows}, minmax(42px, auto))` } as CSSProperties;
+  const gridStyle = { "--grid-columns": columns, gridTemplateColumns: `repeat(${columns}, minmax(${scene.step === 4 ? "120px" : "0"}, 1fr))`, gridTemplateRows: `repeat(${rows}, minmax(42px, auto))` } as CSSProperties;
   const status = scene.step === 0 ? "先画轨道，项目还没有位置。" : scene.step === 1 ? "普通 auto-placement 按文档顺序寻找下一个可用格。" : scene.step === 2 ? "跨列项目先占空间，后续卡片可能遇到暂时空着的格子。" : scene.step === 3 ? "dense 允许后出现的卡片回填空格，但视觉顺序可能和 DOM 顺序不同。" : "minmax 给轨道设下限；空间不够时减少列数，比把内容压成细条更诚实。";
   const StatusIcon = scene.step === 3 ? CheckCircle : scene.step === 4 ? WarningCircle : Ruler;
 
