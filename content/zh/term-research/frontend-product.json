@@ -464,12 +464,22 @@
   },
   {
     "slug": "lazy-loading",
-    "mechanism": "资源请求被推迟到视口接近、路由进入或用户操作发生时；占位尺寸在真实资源到达前维持布局。",
-    "misconception": "首屏关键资源不应一律懒加载，延迟 LCP 图片反而变慢；懒加载也必须处理失败和布局占位。",
-    "demoSignature": "建议 5 帧：长页上有视口和提前 300px 的观察线；用户滚动，图片卡越过观察线才进入网络瀑布，抵达视口前完成解码；关闭预留宽高后重播，后续文字被图片顶开，CLS 位移轨迹清楚标出。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading"],
+    "mechanism": "运行时根据资源距离视口或即将发生的使用动作决定何时请求；占位先保住尺寸，资源经历 deferred、loading、ready 或 error 状态。",
+    "misconception": "懒加载不等于把所有资源一律延后，也不保证精确的请求时刻；首屏内容和关键操作要按优先级正常到达，非首屏资源还要有失败回退。",
+    "demoSignature": "6帧｜对象：视口、观察阈值、占位盒、资源请求与失败回退｜交互：1200px 外→300px 内→相交请求→解码完成→失败重试→下一张继续等待｜变化：deferred/loading/ready/error、盒子尺寸稳定｜结果：读者能分清“触发请求”和“资源已经可用”。",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API",
+      "https://web.dev/articles/browser-level-image-lazy-loading",
+      "https://nextjs.org/docs/app/guides/lazy-loading",
+      "https://html.spec.whatwg.org/multipage/urls.html#lazy-loading-attributes"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["code-splitting", "loading-state", "visual-hierarchy"]
+    "nearDuplicates": [
+      "code-splitting",
+      "image",
+      "loading-state"
+    ]
   },
   {
     "slug": "hydration",

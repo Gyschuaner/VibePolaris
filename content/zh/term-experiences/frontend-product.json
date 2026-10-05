@@ -7012,175 +7012,258 @@
   },
   {
     "slug": "lazy-loading",
-    "lead": "长页面底部的几十张图片需要在打开页面时全部下载吗？",
-    "definition": "资源请求被推迟到视口接近、路由进入或用户操作发生时；占位尺寸在真实资源到达前维持布局。",
-    "boundary": "首屏关键资源不应一律懒加载，延迟 LCP 图片反而变慢；懒加载也必须处理失败和布局占位。",
+    "lead": "为什么图片还没进入视口，却已经占掉了网络和布局时间？",
+    "definition": "懒加载根据资源是否接近使用时机延后请求；占位先保留尺寸，资源再经历 loading、ready 或 error。",
+    "boundary": "它只改变获取时机，不应牺牲首屏优先级、布局稳定或失败后的可操作回退。",
     "sceneKind": "timeline",
-    "sceneTitle": "图片越过观察线后才进入网络瀑布",
-    "actionLabel": "向下滚动",
+    "sceneTitle": "一张资源从视口外走到 ready",
+    "actionLabel": "推进资源靠近视口",
     "actors": [
       {
         "id": "viewport",
-        "label": "视口",
-        "detail": "用户当前可见区域",
-        "icon": "browser",
-        "group": "页面"
-      },
-      {
-        "id": "threshold",
-        "label": "预加载观察线",
-        "detail": "视口前 300 px",
+        "label": "视口与距离",
+        "detail": "1200 → 0px",
         "icon": "layout",
-        "group": "页面"
+        "group": "条件"
       },
       {
-        "id": "image",
-        "label": "第 8 张图片",
-        "detail": "已预留 640×360",
-        "icon": "file",
-        "group": "资源"
+        "id": "observer",
+        "label": "观察阈值",
+        "detail": "intersection / rootMargin",
+        "icon": "search",
+        "group": "触发"
       },
       {
-        "id": "request",
-        "label": "图片请求",
-        "detail": "尚未开始",
-        "icon": "network",
+        "id": "placeholder",
+        "label": "占位盒",
+        "detail": "尺寸先保留",
+        "icon": "component",
+        "group": "布局"
+      },
+      {
+        "id": "resource",
+        "label": "图片资源",
+        "detail": "deferred → ready",
+        "icon": "package",
         "group": "网络"
       },
       {
-        "id": "text",
-        "label": "后续正文",
-        "detail": "位置应稳定",
-        "icon": "file",
-        "group": "页面"
+        "id": "result",
+        "label": "页面结果",
+        "detail": "替换或回退",
+        "icon": "browser",
+        "group": "反馈"
       }
     ],
     "edges": [
       {
-        "id": "threshold-request",
-        "from": "threshold",
-        "to": "request",
-        "label": "进入范围后触发"
+        "id": "viewport-observer",
+        "from": "viewport",
+        "to": "observer",
+        "label": "距离变化"
       },
       {
-        "id": "request-image",
-        "from": "request",
-        "to": "image",
-        "label": "下载与解码"
+        "id": "observer-resource",
+        "from": "observer",
+        "to": "resource",
+        "label": "触发请求"
+      },
+      {
+        "id": "placeholder-result",
+        "from": "placeholder",
+        "to": "result",
+        "label": "保住位置"
+      },
+      {
+        "id": "resource-result",
+        "from": "resource",
+        "to": "result",
+        "label": "ready / error"
       }
     ],
     "frames": [
       {
-        "label": "图片还很远",
-        "note": "打开长页时第 8 张图片不在观察线内，请求尚未出现，但页面已预留尺寸。",
+        "label": "先留一个盒子",
+        "note": "资源在视口外，观察条件未成立；占位盒先保住尺寸，图片暂不请求。",
         "activeIds": [
           "viewport",
-          "threshold",
-          "image"
+          "placeholder"
         ],
         "doneIds": [],
         "mutedIds": [
-          "request",
-          "text"
+          "observer",
+          "resource",
+          "result"
         ],
         "values": {
-          "request": "未开始",
-          "image": "占位 640×360"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "越过预加载线",
-        "note": "滚动后图片距离视口 300px，请求进入网络瀑布。",
-        "activeIds": [
-          "viewport",
-          "threshold",
-          "request"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "image",
-          "text"
-        ],
-        "values": {
-          "request": "loading"
+          "viewport": "1200px 外",
+          "placeholder": "预留尺寸"
         },
         "activeEdgeIds": [
-          "threshold-request"
+          "placeholder-result"
         ]
       },
       {
-        "label": "进入视口前完成",
-        "note": "图片下载并解码到预留框，正文位置没有变化。",
+        "label": "接近观察范围",
+        "note": "距离缩短到 300px，rootMargin 可以提前准备，但资源仍有自己的加载状态。",
         "activeIds": [
-          "request",
-          "image",
-          "text"
+          "viewport",
+          "observer",
+          "placeholder"
+        ],
+        "doneIds": [
+          "viewport"
+        ],
+        "mutedIds": [
+          "resource",
+          "result"
+        ],
+        "values": {
+          "viewport": "300px 内",
+          "observer": "near"
+        },
+        "activeEdgeIds": [
+          "viewport-observer",
+          "placeholder-result"
+        ]
+      },
+      {
+        "label": "相交后发请求",
+        "note": "目标与观察区域相交，观察器触发请求；占位继续留在原位置。",
+        "activeIds": [
+          "observer",
+          "placeholder",
+          "resource"
+        ],
+        "doneIds": [
+          "viewport"
+        ],
+        "mutedIds": [
+          "result"
+        ],
+        "values": {
+          "observer": "intersect",
+          "resource": "loading"
+        },
+        "activeEdgeIds": [
+          "observer-resource",
+          "placeholder-result"
+        ]
+      },
+      {
+        "label": "资源解码完成",
+        "note": "图片到达并解码，替换占位；盒子已经先安排好，下面的文字不用被推走。",
+        "activeIds": [
+          "resource",
+          "result"
         ],
         "doneIds": [
           "viewport",
-          "threshold",
-          "request"
+          "observer",
+          "placeholder"
         ],
         "mutedIds": [],
         "values": {
-          "image": "decoded",
-          "text": "位移 0"
+          "resource": "ready",
+          "result": "替换占位"
         },
         "activeEdgeIds": [
-          "request-image"
+          "resource-result"
         ]
       },
       {
-        "label": "取消尺寸的后果",
-        "note": "移除宽高后重播，图片加载完成时把正文向下推，位移轨迹变红。",
+        "label": "失败也有回退",
+        "note": "请求失败时显示替代内容并提供 retry，延迟策略没有吞掉错误反馈。",
         "activeIds": [
-          "image",
-          "text"
+          "resource",
+          "result"
         ],
         "doneIds": [
-          "request"
-        ],
-        "mutedIds": [
           "viewport",
-          "threshold"
+          "observer",
+          "placeholder"
         ],
+        "mutedIds": [],
         "values": {
-          "image": "无预留尺寸",
-          "text": "发生布局位移"
+          "resource": "error",
+          "result": "fallback / retry"
         },
-        "activeEdgeIds": []
+        "activeEdgeIds": [
+          "resource-result"
+        ]
+      },
+      {
+        "label": "下一张继续等待",
+        "note": "一张资源 ready 不代表整页都该请求；其他图片仍沿自己的距离和优先级前进。",
+        "activeIds": [
+          "viewport",
+          "observer",
+          "placeholder"
+        ],
+        "doneIds": [
+          "resource",
+          "result"
+        ],
+        "mutedIds": [],
+        "values": {
+          "viewport": "860px 外",
+          "resource": "下一张 deferred"
+        },
+        "activeEdgeIds": [
+          "viewport-observer",
+          "placeholder-result"
+        ]
       }
     ],
-    "insight": "懒加载决定资源何时请求，预留尺寸决定资源到达时页面是否跳动。",
+    "insight": "懒加载把“何时值得取”交给可见性或使用时机，同时让占位、失败和回退保持完整。",
     "quiz": {
-      "question": "首屏主图通常应怎样处理？",
+      "question": "下面哪项最适合做懒加载对象？",
       "options": [
         {
-          "label": "优先加载并预留尺寸",
+          "label": "首屏标题",
+          "correct": false
+        },
+        {
+          "label": "用户马上要点的主按钮",
+          "correct": false
+        },
+        {
+          "label": "视口外且优先级较低的图片",
           "correct": true
-        },
-        {
-          "label": "一律等用户滚动后加载",
-          "correct": false
-        },
-        {
-          "label": "删除宽高信息",
-          "correct": false
         }
       ],
-      "success": "首屏关键图需要及时加载，明确尺寸还能减少布局偏移。",
-      "retry": "延迟首屏主图或移除尺寸可能损害加载体验。"
+      "success": "视口外、优先级较低的图片可以等待接近使用时机再请求。",
+      "retry": "首屏内容和关键操作延迟后，等待会直接落到用户身上。"
     },
     "prompt": {
-      "title": "制定页面资源的懒加载规则",
-      "text": "请把下面图片和组件分为首屏关键资源与可延后资源。为可延后项选择原生懒加载、视口观察或动态导入，并补充占位尺寸和失败状态。"
+      "title": "为一组图片设计可恢复的懒加载",
+      "text": "请为视口外图片设计占位、触发阈值、loading、ready、error 和 retry 状态；说明哪些资源不应懒加载，并检查慢网络下的布局稳定和读屏反馈。"
     },
     "sources": [
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · Lazy loading",
+        "note": "说明按需延迟资源的策略和优先级。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API",
+        "label": "MDN · Intersection Observer API",
+        "note": "说明相交观察与 rootMargin 触发信号。"
+      },
+      {
+        "url": "https://web.dev/articles/browser-level-image-lazy-loading",
+        "label": "web.dev · Browser-level image lazy loading",
+        "note": "说明图片原生 loading=lazy 的适用边界。"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/guides/lazy-loading",
+        "label": "Next.js · Lazy Loading",
+        "note": "说明组件懒加载和 loading UI 的边界。"
+      },
+      {
+        "url": "https://html.spec.whatwg.org/multipage/urls.html#lazy-loading-attributes",
+        "label": "WHATWG · Lazy loading attributes",
+        "note": "说明 HTML lazy-loading 属性的用户代理行为。"
       }
     ]
   },

@@ -997,18 +997,53 @@
     ]
   },
   {
-    "zh": "懒加载", "en": "Lazy Loading", "slug": "lazy-loading", "cat": "前端",
-    "say": "懒加载把图片、组件或数据推迟到接近使用时再加载，减轻首屏负担。",
-    "aliases": ["延迟加载", "按需加载", "lazy"],
-    "question": "长页面底部的几十张图片需要在打开页面时全部下载吗？",
-    "definition": "懒加载根据视口、路由或用户操作延后资源请求。常见方式包括图片 loading=lazy、IntersectionObserver 和动态 import。",
-    "boundary": "首屏关键内容不适合一律懒加载，否则可能延迟最大内容绘制并造成布局跳动。",
-    "demoType": "request", "demoTitle": "图片接近视口时加载",
-    "demoSteps": [{"label":"页面打开","value":"保留图片尺寸占位","note":"视口外图片尚未请求。"},{"label":"向下滚动","value":"图片接近观察区域","note":"观察器触发资源加载。"},{"label":"下载完成","value":"真实图片替换占位","note":"预留尺寸避免页面跳动。"}],
-    "quizQuestion": "首屏主图通常应怎样处理？", "quizOptions": ["优先加载并预留尺寸", "一律等用户滚动后加载", "删除宽高信息"],
-    "correctText": "首屏关键图需要及时加载，明确尺寸还能减少布局偏移。", "wrongText": "延迟首屏主图或移除尺寸可能损害加载体验。",
-    "promptTitle": "制定页面资源的懒加载规则", "prompt": "请把下面图片和组件分为首屏关键资源与可延后资源。为可延后项选择原生懒加载、视口观察或动态导入，并补充占位尺寸和失败状态。",
-    "relatedSlugs": ["code-splitting", "loading-state", "visual-hierarchy"]
+    "zh": "懒加载",
+    "en": "Lazy Loading",
+    "slug": "lazy-loading",
+    "cat": "前端",
+    "say": "懒加载让资源等到接近使用时再来，同时把位置和等待状态留在页面上。",
+    "aliases": [
+      "延迟加载",
+      "按需加载",
+      "lazy load"
+    ],
+    "question": "为什么图片还没进入视口，却已经占掉了网络和布局时间？",
+    "definition": "懒加载根据可见性、距离或使用时机延后资源请求；资源到达前保留占位，之后处理 loading、ready、error 和回退。",
+    "boundary": "它优化的是资源获取时机，不是所有资源都该延后；首屏和关键操作需要按优先级正常加载。",
+    "demoType": "request",
+    "demoTitle": "资源从视口外走到 ready",
+    "demoSteps": [
+      {
+        "label": "视口外先等待",
+        "value": "1200px · deferred",
+        "note": "保留盒子和语义，暂不请求低优先级资源。"
+      },
+      {
+        "label": "相交后发请求",
+        "value": "0px · loading",
+        "note": "观察条件成立，网络请求和加载状态出现。"
+      },
+      {
+        "label": "成功或失败都落位",
+        "value": "ready / error · retry",
+        "note": "资源替换占位或显示替代路径，页面位置保持稳定。"
+      }
+    ],
+    "quizQuestion": "下面哪项最适合做懒加载对象？",
+    "quizOptions": [
+      "首屏标题",
+      "用户马上要点的主按钮",
+      "视口外且优先级较低的图片"
+    ],
+    "correctText": "视口外、优先级较低的图片可以等待接近使用时机再请求。",
+    "wrongText": "首屏内容和关键操作延迟后，等待会直接落到用户身上。",
+    "promptTitle": "为一组图片设计可恢复的懒加载",
+    "prompt": "请为视口外图片设计占位、触发阈值、loading、ready、error 和 retry 状态；说明哪些资源不应懒加载，并检查慢网络下的布局稳定和读屏反馈。",
+    "relatedSlugs": [
+      "code-splitting",
+      "container-image",
+      "loading-state"
+    ]
   },
   {
     "zh": "水合", "en": "Hydration", "slug": "hydration", "cat": "前端",
