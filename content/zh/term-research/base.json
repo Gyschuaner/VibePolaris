@@ -457,9 +457,9 @@
     "slug": "deploy",
     "mechanism": "部署把可追踪版本构建为制品，放入目标环境，完成配置、启动、健康检查、流量切换和回滚准备。",
     "misconception": "部署命令成功不等于服务可用；同一版本要在目标环境验证，流量和回滚要有证据。",
-    "demoSignature": "pipeline: 6 frames; actors=提交版本/构建/制品/生产环境/健康检查/访问流量/上一版制品; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=推进发布",
+    "demoSignature": "artifact-lane: 6 phases; actors=提交/构建/固定制品/目标环境/健康检查/生产流量/上一版; phases=锁定版本→构建制品→写入环境→实际验证→切换流量→准备回滚; action=逐段推进并调整流量拨盘",
     "sourceUrls": [
-      "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+      "https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts",
       "https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments",
       "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
       "https://sre.google/workbook/canarying-releases/"
@@ -608,7 +608,7 @@
     "slug": "user-flow",
     "mechanism": "用户流程把入口、用户动作、系统反馈、分支、恢复和结束状态连接起来，描述完成一个目标的完整路径。",
     "misconception": "用户流程不是把网站的页面列成一张清单，也不能只画成功路线；失败、取消、返回和恢复都影响任务完成。",
-    "demoSignature": "branch: 6 frames; actors=邮件入口/链接校验/新密码表单/链接过期/输入不一致/重设成功/继续原任务; phases=从邮件进入→检查链接→如果链接已过期→填写新密码→修正不一致→完成并返回; action=走下一节点",
+    "demoSignature": "recovery-map: 6 frames; actors=邮件入口/链接检查/过期分支/填写恢复/一致性修正/原任务; phases=从邮件进入→检查链接→发现过期→填写新密码→修正不一致→完成返回; action=推进并观察回退路径",
     "sourceUrls": [
       "https://www.gov.uk/service-manual/design/scoping-your-service",
       "https://www.gov.uk/service-manual/user-research/creating-an-experience-map",
@@ -627,7 +627,7 @@
     "slug": "wireframe",
     "mechanism": "线框图用低细节的框、文字和位置表达内容、层级、分组和主要操作，帮助团队在视觉定稿前讨论页面组织；纸笔、白板或文字草稿都能表达结构。",
     "misconception": "线框图关注页面结构，不是最终视觉。只凭线框里的占位内容，验证不了真实文案长度、数据密度、响应式变化、动效或技术可行性。",
-    "demoSignature": "transform: 5 frames; actors=内容清单/信息分组/视觉层级/操作位置/线框页面/最终视觉; phases=列出内容→建立分组→确定层级→放置操作→形成线框; action=增加一层结构",
+    "demoSignature": "peel: 5 layers; actors=内容清单/分组/层级/操作位置/低保真骨架; phases=列出内容→建立分组→确定层级→放置操作→形成线框; action=逐层揭开结构",
     "sourceUrls": [
       "https://www.gov.uk/service-manual/design/making-prototypes",
       "https://design-system.service.gov.uk/get-started/prototyping/",
@@ -646,7 +646,7 @@
     "slug": "ia",
     "mechanism": "信息架构用分类、层级、标签、命名、导航和交叉链接组织内容，让人能按自己的任务预测信息位置；同一篇内容可以保留一份正文，从多个入口被找到。",
     "misconception": "信息架构不只是画菜单。搜索词、同义标签和从不同任务进入同一内容的路径，也属于信息架构要安排的部分。",
-    "demoSignature": "tree: 5 frames; actors=300 篇文章/账单与订阅/账户与安全/取消订阅/搜索词/交叉入口; phases=盘点内容→建立分类→放置任务内容→补搜索语言→建立交叉入口; action=整理下一层",
+    "demoSignature": "spatial-zones: 5 states; actors=孤立内容卡/领域区/任务区/搜索语言/交叉入口; phases=盘点内容→建立分类→放置任务内容→补搜索语言→建立交叉入口; action=移动内容卡并补入口",
     "sourceUrls": [
       "https://www.w3.org/WAI/WCAG21/Understanding/headings-and-labels",
       "https://www.w3.org/WAI/curricula/designer-modules/navigation-design/",
@@ -665,7 +665,7 @@
     "slug": "prototype",
     "mechanism": "原型用页面、纸面流程、对话脚本或代码等可操作媒介模拟本轮要验证的行为，用于检查流程理解、交互反馈或产品假设。",
     "misconception": "原型可以基于线框或视觉稿制作，顺序取决于要验证的问题；它不等于生产实现，也不能证明性能、安全、数据一致性和完整技术方案已经成立。",
-    "demoSignature": "loop: 6 frames; actors=待验证假设/可点击原型/测试任务/观察记录/原型调整/产品决定; phases=限定假设→模拟关键状态→给出真实任务→观察行为→修改原型→形成决定; action=进行下一轮",
+    "demoSignature": "evidence-board: 6 phases; actors=假设/关键状态/真实任务/行为观察/原型修改/下一轮决定; phases=限定假设→模拟关键状态→给出真实任务→观察行为→修改原型→形成决定; action=回放一轮实验",
     "sourceUrls": [
       "https://www.gov.uk/service-manual/design/making-prototypes",
       "https://design-system.service.gov.uk/get-started/prototyping/",
@@ -704,7 +704,7 @@
     "slug": "a11y",
     "mechanism": "无障碍把信息结构、键盘操作、可见焦点、对比度、字段标签和错误反馈做成可感知、可操作、可理解的路径，并让辅助技术拿到同样的状态。",
     "misconception": "无障碍不是发布前补几个 ARIA 属性，也不是只检查颜色。原生语义、DOM 与 Tab 顺序、可见焦点、标签、错误文字和动效偏好要从设计与开发一起处理；ARIA 只描述角色，不会自动补上键盘行为。",
-    "demoSignature": "route: 6 frames; actors=跳到正文/邮箱输入/密码输入/错误提示/登录按钮/登录结果; phases=进入页面→到达邮箱→按顺序移动→收到错误→回到问题处→完成登录; action=依次按 Tab，必要时激活跳过链接",
+    "demoSignature": "focus-trace: 6 states; actors=跳过链接/邮箱/密码/错误/回到字段/登录结果; phases=进入页面→到达邮箱→按顺序移动→收到错误→回到问题处→完成登录; action=Tab与Shift+Tab并走通修复",
     "sourceUrls": [
       "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
       "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
