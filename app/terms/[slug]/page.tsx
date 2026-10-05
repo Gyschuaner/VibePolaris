@@ -116,6 +116,7 @@ import { SsgTermPage } from "@/components/terms/rendering-pages/ssg-page";
 import { RoutingTermPage } from "@/components/terms/rendering-pages/routing-page";
 import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-storage-page";
 import { ConversionRateTermPage, DesignTokenTermPage, FeedbackTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage, MockupTermPage, SitemapTermPage, UsabilityTestingTermPage, VisualHierarchyTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
+import { A11yTermPage, ClientServerTermPage, DeployTermPage, IaTermPage, LoadingStateTermPage, MicrointeractionTermPage, PrototypeTermPage, ReducedMotionTermPage, UserFlowTermPage, WireframeTermPage } from "@/components/terms/flow-redesign-pages/FlowRedesignPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -159,6 +160,16 @@ const articleTermPages = {
   'design-token': DesignTokenTermPage,
   'visual-hierarchy': VisualHierarchyTermPage,
   feedback: FeedbackTermPage,
+  'loading-state': LoadingStateTermPage,
+  microinteraction: MicrointeractionTermPage,
+  'reduced-motion': ReducedMotionTermPage,
+  'client-server': ClientServerTermPage,
+  deploy: DeployTermPage,
+  'user-flow': UserFlowTermPage,
+  wireframe: WireframeTermPage,
+  prototype: PrototypeTermPage,
+  ia: IaTermPage,
+  a11y: A11yTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

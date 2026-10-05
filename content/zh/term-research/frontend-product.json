@@ -967,8 +967,13 @@
     "slug": "loading-state",
     "mechanism": "异步操作开始后，界面根据等待范围与可估计程度选择局部禁用、内容占位、确定进度或不确定指示，并在结果到达时转换到内容、空或错误状态。",
     "misconception": "转圈不是通用答案；无限 spinner 会掩盖超时，内容占位也不适合所有短操作或结构未知的页面。",
-    "demoSignature": "建议 6 帧：同一列表延迟从 100ms 调到 8s；短等待不闪指示，中等待出现内容占位，长任务切为百分比；超时后指示停止并显示重试。",
-    "sourceUrls": ["https://www.nngroup.com/articles/progress-indicators/", "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/"],
+    "demoSignature": "budget: 4 frames; actors=等待刻度/列表占位/确定进度/超时出口; phases=100ms直达→2s守住结构→8s显示完成量→超过上限停止并重试; action=拖长同一请求",
+    "sourceUrls": [
+      "https://www.nngroup.com/articles/progress-indicators/",
+      "https://www.nngroup.com/articles/designing-for-waits-and-interruptions/",
+      "https://m3.material.io/components/progress-indicators/overview",
+      "https://developer.apple.com/design/human-interface-guidelines/progress-indicators"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["feedback", "async-await", "fetch-api"]
   },
@@ -976,8 +981,13 @@
     "slug": "microinteraction",
     "mechanism": "微交互由触发、规则、局部反馈和持续状态组成；系统触发或用户动作改变单一任务的状态，并把结果立即呈现在上下文中。",
     "misconception": "微交互不是小动画的同义词；没有状态或反馈含义的装饰运动不属于有效微交互。",
-    "demoSignature": "建议 5 帧：收藏心形从按下压缩、请求中描边旋转、成功填充并计数+1；模拟失败时逆向恢复并显示重试，减少动态模式改为颜色淡变。",
-    "sourceUrls": ["https://www.nngroup.com/articles/microinteractions/"],
+    "demoSignature": "recoil: 4 states; actors=收藏按钮/图标/计数/请求结果; phases=按下即时响应→成功确认→再次点击进入撤销→失败回到确认值; action=点击收藏并拨动撤销失败",
+    "sourceUrls": [
+      "https://www.nngroup.com/articles/microinteractions/",
+      "https://m3.material.io/styles/motion/overview",
+      "https://developer.apple.com/design/human-interface-guidelines/playing-haptics",
+      "https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["feedback", "event", "reduced-motion"]
   },
@@ -985,8 +995,13 @@
     "slug": "reduced-motion",
     "mechanism": "操作系统偏好通过 prefers-reduced-motion 暴露给 CSS；页面应替换非必要大幅位移、缩放和视差，同时保留状态反馈与必要进度。",
     "misconception": "不是把所有动画设为 duration:0，也不是只降低速度；快速大位移仍可能造成不适。",
-    "demoSignature": "建议 4 帧：同一页面切换左右对照；默认星点沿曲线移动并缩放，用户打开减少动态后轨迹收起，标题用短淡入替代，焦点和完成状态保持。",
-    "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion", "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html"],
+    "demoSignature": "motion-budget: 4 states; actors=同一页面切换/完整轨迹/原位淡入/焦点; phases=建立连续性→开启减少动态→替代为短淡入→结果和焦点一致; action=切换减少动态",
+    "sourceUrls": [
+      "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
+      "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+      "https://web.dev/articles/prefers-reduced-motion"
+    ],
     "rewriteRisk": "high",
     "nearDuplicates": ["microinteraction", "media-query", "a11y"]
   },
