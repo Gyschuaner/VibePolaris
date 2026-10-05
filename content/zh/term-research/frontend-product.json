@@ -268,15 +268,24 @@
     "css"
   ]
 },
-  {
-    "slug": "specificity",
-    "mechanism": "同一层叠来源中的选择器按 ID、类/属性/伪类、类型/伪元素三个列依次比较，而不是把所有字符简单相加。",
-    "misconception": "优先级不是 CSS 的全部权重，也不是选择器越长越高；:where() 甚至始终贡献零优先级。",
-    "demoSignature": "建议 4 帧：把 #app .button、.toolbar .button、main button 放入三列计分器；用户点击任一选择器，ID、类、元素三格分别计数；三组数值按位比较，胜者给按钮着色；补一个 !important 后提示它属于层叠而非权重。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["cascade", "css-selector", "css"]
-  },
+{
+  "slug": "specificity",
+  "mechanism": "同一来源、重要性和层里的候选规则，先按 ID、类/属性/伪类、元素/伪元素三列从左到右比较；:where() 归零，:is() 取参数中的最高值。",
+  "misconception": "优先级不是把选择器字符数相加，也不是规则越长就必胜；来源、层、重要性或作用域已经分出胜负时，三列还没有出场。",
+  "demoSignature": "selector: 4 frames; actors=当前选择器/三列分数/目标按钮/比较结果; phases=拆成三列→ID先胜→:where归零→:is取最高; action=切换一个选择器并观察胜出列",
+  "sourceUrls": [
+    "https://www.w3.org/TR/selectors-4/",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/:where",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/:is"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "cascade",
+    "css-selector",
+    "css"
+  ]
+},
     {
     "slug": "flexbox",
     "mechanism": "Flex 容器先沿主轴收集直接子项，计算 flex-basis 与正/负自由空间，再按 grow 或 shrink 分配；flex-wrap 开启后分成独立 flex line，交叉轴负责对齐。",

@@ -3844,142 +3844,198 @@
     }
   ]
 },
-  {
-    "slug": "specificity",
-    "lead": "为什么给元素加了一个类，样式还是覆盖不了旧规则？",
-    "definition": "同一层叠来源中的选择器按 ID、类/属性/伪类、类型/伪元素三个列依次比较，而不是把所有字符简单相加。",
-    "boundary": "优先级不是 CSS 的全部权重，也不是选择器越长越高；:where() 甚至始终贡献零优先级。",
-    "sceneKind": "matrix",
-    "sceneTitle": "三个选择器逐列比较优先级",
-    "actionLabel": "计算下一个选择器",
-    "actors": [
-      {
-        "id": "id-rule",
-        "label": "#app .button",
-        "detail": "ID + class",
-        "icon": "code",
-        "group": "候选"
-      },
-      {
-        "id": "class-rule",
-        "label": ".toolbar .button",
-        "detail": "2 个 class",
-        "icon": "code",
-        "group": "候选"
-      },
-      {
-        "id": "element-rule",
-        "label": "main button",
-        "detail": "2 个 element",
-        "icon": "code",
-        "group": "候选"
-      },
-      {
-        "id": "score",
-        "label": "优先级矩阵",
-        "detail": "ID / class / element",
-        "icon": "chart",
-        "group": "比较"
-      },
-      {
-        "id": "button",
-        "label": "目标按钮",
-        "detail": "三个规则均匹配",
-        "icon": "component",
-        "group": "结果"
-      }
-    ],
-    "edges": [],
-    "frames": [
-      {
-        "label": "分别计数",
-        "note": "每个选择器按 ID、类、元素三列落入矩阵，不把字符长度算进去。",
-        "activeIds": [
-          "id-rule",
-          "class-rule",
-          "element-rule",
-          "score"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "button"
-        ],
-        "values": {
-          "score": "(1,1,0) · (0,2,0) · (0,0,2)"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "从左向右比较",
-        "note": "第一列已经分出胜负，#app .button 胜出，不再累加后面的数字。",
-        "activeIds": [
-          "id-rule",
-          "score"
-        ],
-        "doneIds": [
-          "class-rule",
-          "element-rule"
-        ],
-        "mutedIds": [
-          "button"
-        ],
-        "values": {
-          "score": "1 > 0"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "结果落到按钮",
-        "note": "目标按钮采用 ID 规则的值；加入 !important 时另行提示它属于层叠阶段。",
-        "activeIds": [
-          "id-rule",
-          "button"
-        ],
-        "doneIds": [
-          "score"
-        ],
-        "mutedIds": [
-          "class-rule",
-          "element-rule"
-        ],
-        "values": {
-          "button": "采用 #app .button"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "优先级是同一层叠条件下的逐列比较，不是把选择器权重简单相加。",
-    "quiz": {
-      "question": "下面哪个选择器的优先级最高？",
-      "options": [
-        {
-          "label": "#app .button",
-          "correct": true
-        },
-        {
-          "label": ".toolbar .button",
-          "correct": false
-        },
-        {
-          "label": "main button",
-          "correct": false
-        }
+{
+  "slug": "specificity",
+  "lead": "为什么一个很长的选择器，还是赢不了一个 ID？",
+  "definition": "在相同来源、重要性和层的候选之间，浏览器把选择器拆成 ID、类/属性/伪类、元素/伪元素三列，按左到右比较；:where() 不增加分数，:is() 取参数中的最高值。",
+  "boundary": "优先级只负责层叠排序中的一关；规则没命中、已经输在来源或层，或进入 !important 比较区时，继续堆选择器不会改变结果。",
+  "sceneKind": "compare",
+  "sceneTitle": "选择器的三列分数怎样决定胜负",
+  "actionLabel": "选择一个选择器",
+  "actors": [
+    {
+      "id": "selector",
+      "label": "当前选择器",
+      "detail": "#settings .card",
+      "icon": "code",
+      "group": "输入"
+    },
+    {
+      "id": "id",
+      "label": "ID 列",
+      "detail": "1",
+      "icon": "code",
+      "group": "优先级"
+    },
+    {
+      "id": "class",
+      "label": "类列",
+      "detail": "1",
+      "icon": "layout",
+      "group": "优先级"
+    },
+    {
+      "id": "element",
+      "label": "元素列",
+      "detail": "0",
+      "icon": "file",
+      "group": "优先级"
+    },
+    {
+      "id": "where",
+      "label": ":where()",
+      "detail": "参数权重归零",
+      "icon": "shield",
+      "group": "伪类"
+    },
+    {
+      "id": "is",
+      "label": ":is()",
+      "detail": "取最高参数",
+      "icon": "component",
+      "group": "伪类"
+    },
+    {
+      "id": "result",
+      "label": "比较结果",
+      "detail": "ID 列先分出胜负",
+      "icon": "spark",
+      "group": "结果"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "先看三列",
+      "note": "把 .card 拆成 0-1-0；ID、类、元素分别占一列。",
+      "activeIds": [
+        "selector",
+        "id",
+        "class",
+        "element",
+        "result"
       ],
-      "success": "包含 id 的选择器优先级高于只含类或元素的选择器。",
-      "retry": "比较的不是字符长度，而是选择器各部分的类型和数量。"
+      "doneIds": [],
+      "mutedIds": [
+        "where",
+        "is"
+      ],
+      "values": {
+        "result": "0-1-0"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "降低选择器覆盖成本",
-      "text": "请列出下面 CSS 冲突中各选择器的优先级，找出不必要的高优先级写法，并改成容易维护的类选择器结构。"
+    {
+      "label": "ID 先胜",
+      "note": "#settings .card 是 1-1-0，左边的 ID 列已经比 0 大。",
+      "activeIds": [
+        "selector",
+        "id",
+        "result"
+      ],
+      "doneIds": [
+        "class",
+        "element"
+      ],
+      "mutedIds": [
+        "where",
+        "is"
+      ],
+      "values": {
+        "result": "1-1-0"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": ":where() 归零",
+      "note": ":where(#settings) .card 仍是 0-1-0。",
+      "activeIds": [
+        "selector",
+        "where",
+        "class",
+        "result"
+      ],
+      "doneIds": [
+        "id",
+        "element"
+      ],
+      "mutedIds": [
+        "is"
+      ],
+      "values": {
+        "result": "0-1-0"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": ":is() 取最高",
+      "note": ":is(#settings, .panel) .card 取 1-1-0，而不是把两个分支相加。",
+      "activeIds": [
+        "selector",
+        "is",
+        "id",
+        "result"
+      ],
+      "doneIds": [
+        "class",
+        "element"
+      ],
+      "mutedIds": [
+        "where"
+      ],
+      "values": {
+        "result": "1-1-0"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "优先级像三列成绩单：先比 ID，再比类，最后比元素；:where() 把参数归零，:is() 只取参数里最高的一项。",
+  "quiz": {
+    "question": "哪条选择器的优先级是 0-1-0？",
+    "options": [
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": ":where(#app) .card",
+        "correct": true
+      },
+      {
+        "label": "#app .card",
+        "correct": false
+      },
+      {
+        "label": ":is(#app, .panel) .card",
+        "correct": false
       }
-    ]
+    ],
+    "success": ":where() 本身不贡献优先级，外面的 .card 留下 0-1-0。",
+    "retry": ":is() 会取最高参数；ID 进入第一列后，会先于类列分出胜负。"
   },
+  "prompt": {
+    "title": "解释一条规则为什么被覆盖",
+    "text": "请把下面两条选择器拆成 ID-类-元素三列，先判断它们是否处在同一来源和层，再说明 :where() 或 :is() 会怎样改变分数；最后给出降低默认样式优先级的修复方式。"
+  },
+  "sources": [
+    {
+      "url": "https://www.w3.org/TR/selectors-4/",
+      "label": "W3C · Selectors Level 4",
+      "note": "选择器优先级三列、:is() 伪类和选择器比较规则。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
+      "label": "MDN · Specificity",
+      "note": "ID/类/元素三列、比较顺序和层叠前置条件。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/:where",
+      "label": "MDN · :where() CSS pseudo-class",
+      "note": ":where() 参数不贡献优先级，适合低优先级默认样式。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/:is",
+      "label": "MDN · :is() CSS pseudo-class",
+      "note": ":is() 从参数中取最高优先级，而不是把分支相加。"
+    }
+  ]
+},
   {
     "slug": "flexbox",
     "lead": "一排按钮怎样自动对齐，并在空间不足时换行？",
