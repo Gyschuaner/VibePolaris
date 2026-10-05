@@ -37902,6 +37902,206 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-acquires-stainless",
+    "title": "Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链",
+    "summary": "5 月 18 日，Anthropic 宣布收购 SDK 与 MCP 服务器工具公司 Stainless，并称 Stainless 已支持官方 SDK 生成和 MCP 工具链。交易把模型公司的工具连接能力向开发者基础设施延伸；公告没有披露交易条款，也没有证明所有连接器都安全、兼容或可回滚。",
+    "body": "5 月 18 日，Anthropic 宣布收购 Stainless。Stainless 的工作包括 SDK 生成和 MCP 服务器工具，Anthropic 把这笔交易放在 Claude 连接数据源和外部工具的开发者基础设施上。\n\n对开发者来说，SDK 和协议的价值在“最后一公里”：模型知道该调用什么还不够，接口还要处理认证、参数、错误、速率限制和版本。工具连接更方便，也要求团队把能读什么、能写什么和谁能批准写入说清楚。\n\n一个内部工具可以先声明可访问的数据和方法，再生成 SDK，在沙箱里测试。短期凭据只允许调用只读接口，发送、删除或写入动作要人工确认，并保留版本和撤销路径。mcp 负责连接，tools 承载动作，api 规定提交与返回，agent 负责多步推进。\n\nAnthropic 的公告确认了收购和产品方向，没有披露交易条款、客户接入或统一安全结果。协议兼容不等于权限正确，连接器可用也不等于已经适合生产。后续应查看 SDK、MCP 服务器范围、权限模型和安全修复。",
+    "publishedAt": "2026-05-18",
+    "eventDate": "2026-05-18",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-acquires-stainless.svg",
+      "alt": "Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/anthropic-acquires-stainless.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "deal",
+        "title": "Anthropic 收购的，是一段开发者工具链",
+        "body": "公告称 Anthropic 收购 Stainless，并指出它已经支持官方 SDK 生成和 MCP 服务器工具。交易的公开方向是让 Claude 更容易连接数据源和外部工具，具体交易条款没有披露。",
+        "kind": "narrative"
+      },
+      {
+        "id": "last-mile",
+        "title": "模型会调用，不等于工具能安全执行",
+        "body": "SDK 和协议还要处理认证、参数、错误、速率限制和版本。开发者需要明确工具能读取和写入什么、哪些动作需要审批、如何撤销。连接层是模型进入业务系统的最后一段。",
+        "kind": "technical"
+      },
+      {
+        "id": "sdk-test",
+        "title": "一个内部工具应先在沙箱里试",
+        "body": "先声明数据和方法，生成 SDK，在 execution-sandbox 中测试；短期凭据只调用只读接口，发送、删除和写入动作再请求人工确认。mcp、tools、api 和 agent 分别对应连接、动作、接口和任务编排。",
+        "kind": "example"
+      },
+      {
+        "id": "limits",
+        "title": "公告没有证明客户已经完成接入",
+        "body": "收购公告没有披露客户部署、交易条款或统一的安全与兼容性结果。协议兼容不等于权限正确，连接器可用也不等于适合生产。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next",
+        "title": "后续看 SDK 和安全文档怎样变化",
+        "body": "继续观察 SDK 版本、MCP 服务器范围、权限模型、错误处理和安全修复，才能判断收购是否改变开发者的实际工作。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "从 SDK 生成追到一次安全工具调用",
+      "question": "怎样判断工具链的兼容性已经达到可以上线的程度？",
+      "steps": [
+        {
+          "label": "声明工具边界",
+          "detail": "列出可读数据、可写字段、参数格式、认证方式和需要人工批准的动作。",
+          "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+        },
+        {
+          "label": "生成并隔离测试",
+          "detail": "使用 Stainless 生成的 SDK，在沙箱中用短期凭据调用只读接口，保存版本和输入输出。",
+          "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+        },
+        {
+          "label": "测试失败处理",
+          "detail": "模拟超时、权限拒绝和版本不兼容，确认工具不会把错误写入生产系统。",
+          "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+        },
+        {
+          "label": "检查撤销路径",
+          "detail": "撤销凭据或服务器权限，观察 agent 是否停止并留下审计记录，再决定扩大范围。",
+          "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+    },
+    "relatedSlugs": [
+      "mcp",
+      "tools",
+      "api",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+        "claim": "Anthropic 宣布收购 Stainless",
+        "excerpt": "Anthropic announces its acquisition of Stainless."
+      },
+      {
+        "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+        "claim": "Stainless 为官方 SDK 生成与 MCP 工具链提供支持",
+        "excerpt": "The post says Stainless has supported Anthropic’s official SDK generation and MCP server tooling."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+    "sourceHash": "sha256:9a04f5c87ede09928a444ce70e9e636f32aca37ef4e00c995121d1584a5d2366"
+  },
+  {
+    "slug": "hitachi-anthropic-lumada-partnership",
+    "title": "日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0",
+    "summary": "5 月 18 日，日立与 Anthropic 宣布战略合作，用前沿 AI 推进 Lumada 3.0。公告提到计划面向约 29 万名员工部署 AI、培养 10 万名 AI 人才，并设立初始 100 人的 Frontier AI Deployment Center；这些仍是合作目标和组织计划，不等于关键基础设施已经由模型安全控制。",
+    "body": "5 月 18 日，日立与 Anthropic 宣布战略合作，将把日立的 IT/OT 场景和 Anthropic 模型放进 Lumada 3.0，并涉及能源、交通、制造和金融等领域。公告还提到约 29 万名员工的部署计划、10 万名 AI 人才培养目标，以及一个初始 100 人的 Frontier AI Deployment Center。\n\n这些数字描述合作的组织规模，不是已经完成的采用人数。关键基础设施里的模型还要面对传感器数据、旧系统、权限和事故责任，模型给出建议与系统实际执行之间必须留出人工审批和回滚。\n\n以能源设备维护为例，模型可以读取获准的传感器和工单，生成检修建议；写入控制系统或改变调度前，由工程师确认，测试在隔离环境中完成，数据来源、状态和人工决定都留下记录。agent 推进任务，data-pipeline 追踪 IT/OT 数据，execution-sandbox 隔离执行，state 记录待审批、执行中和已回滚。\n\n日立和 Anthropic 的公告支持合作目标、人才计划和中心设想，没有证明模型已经安全控制任何关键设施，也不等于员工或人才计划已经完成。后续需要看试点场景、权限矩阵、事故演练、培训记录和生产系统证据。",
+    "publishedAt": "2026-05-18",
+    "eventDate": "2026-05-18",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/hitachi-anthropic-lumada-partnership.svg",
+      "alt": "日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/hitachi-anthropic-lumada-partnership.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "partnership",
+        "title": "公告公布了合作目标和组织安排",
+        "body": "日立与 Anthropic 计划用前沿 AI 推进 Lumada 3.0，涉及能源、交通、制造和金融。公告提到约 29 万名员工的部署目标、10 万名 AI 人才培养和初始 100 人的部署中心。",
+        "kind": "narrative"
+      },
+      {
+        "id": "critical-systems",
+        "title": "关键基础设施不能只看模型输出",
+        "body": "传感器、工单和旧系统都可能进入模型上下文，任何写入控制系统或改变调度的动作都需要工程师确认。数据来源、权限、状态和回滚要同时可追踪。",
+        "kind": "technical"
+      },
+      {
+        "id": "maintenance-example",
+        "title": "用设备维护看一次受控试点",
+        "body": "模型读取获准的传感器和工单，提出检修建议；工程师批准后才写入下一步系统，测试在 execution-sandbox 中进行。agent、data-pipeline 和 state 分别帮助推进任务、追踪数据和记录阶段。",
+        "kind": "example"
+      },
+      {
+        "id": "plan-boundary",
+        "title": "计划人数还不是采用证据",
+        "body": "官方公告没有证明模型已经安全控制关键基础设施，也没有证明 29 万名员工或 10 万名人才已经完成部署。合作目标、试点、培训和生产使用要分别记录。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next",
+        "title": "后续看试点和事故演练",
+        "body": "继续查看权限矩阵、培训完成率、生产系统证据和事故演练，确认模型在失败时能否被停止和回滚。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "把关键基础设施的 AI 合作拆成一次试点",
+      "question": "怎样判断一项合作已经从人数目标走到可审计的生产流程？",
+      "steps": [
+        {
+          "label": "选一个低风险场景",
+          "detail": "先从设备维护建议等只读任务开始，限定传感器、工单和历史数据的范围。",
+          "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+        },
+        {
+          "label": "限制写入动作",
+          "detail": "对控制系统、调度和工单状态设置工程师审批，明确谁能批准和谁能撤销。",
+          "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+        },
+        {
+          "label": "保存数据与状态",
+          "detail": "记录输入来源、模型建议、工具调用、人工决定和回滚状态，确保能复盘一次任务。",
+          "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+        },
+        {
+          "label": "进行事故演练",
+          "detail": "模拟错误建议、数据中断和权限撤销，确认生产系统在异常时可以安全停下。",
+          "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+        }
+      ]
+    },
+    "source": {
+      "name": "Hitachi / Anthropic",
+      "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "data-pipeline",
+      "execution-sandbox",
+      "state"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+        "claim": "日立与 Anthropic 将合作推进 Lumada 3.0",
+        "excerpt": "Hitachi and Anthropic announce a strategic partnership to strengthen Lumada 3.0 through frontier AI."
+      },
+      {
+        "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+        "claim": "计划部署约 29 万员工并培养 10 万 AI 人才",
+        "excerpt": "The release describes plans to deploy AI for about 290,000 employees and train 100,000 AI talents."
+      }
+    ],
+    "canonicalUrl": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+    "sourceHash": "sha256:8499cb8f5fe1ecf980446f03a618ad21316540ef755b02326061b2e9cacd2279"
+  },
+  {
     "slug": "chatgpt-personal-finances-plaid-us-pro",
     "title": "ChatGPT 开始向美国 Pro 用户推出个人财务体验",
     "summary": "5 月 15 日，OpenAI 开始向美国 Pro 用户推出个人财务体验。用户可以通过 Plaid 连接受支持的金融账户，在 ChatGPT 中查看支出、账单、订阅、净资产和投资信息；产品说明明确不会转账、支付、交易或报税。分类和解释仍需用户核对，也不能替代专业财务建议。",
