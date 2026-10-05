@@ -555,7 +555,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
                 else nodeElements.current.delete(node.slug);
               }} style={{ transform: nodeTransform(node.x, node.y) }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
                 <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" />
-                <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.eventDate))}</small>}</span>
+                <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong></span>
               </button>;
             })}
           </div>
