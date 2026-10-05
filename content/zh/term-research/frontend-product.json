@@ -980,5 +980,24 @@
       "build-tool",
       "dependency"
     ]
+  },
+  {
+    "slug": "infrastructure-as-code",
+    "mechanism": "Infrastructure as Code 把基础设施资源、依赖和参数写成配置；工具读取配置、当前 state 与提供商现实，先生成 plan，再在批准后调用 API 执行，并把资源映射记录回 state。",
+    "misconception": "IaC 不是把点击操作换成一串无脑脚本，也不保证 apply 一定安全。plan 只是执行前的变更预览，state 需要保护，远端手工修改会造成漂移，权限和秘密仍要单独治理。",
+    "demoSignature": "pipeline: 6 frames; actors=声明配置/plan/提供商/真实资源/state/操作人; phases=写目标→预览 diff→展开依赖→批准 apply→记录映射→发现漂移; action=改变一个副本数",
+    "sourceUrls": [
+      "https://developer.hashicorp.com/terraform/intro",
+      "https://developer.hashicorp.com/terraform/language/resources",
+      "https://developer.hashicorp.com/terraform/cli/commands/plan",
+      "https://developer.hashicorp.com/terraform/language/state",
+      "https://developer.hashicorp.com/terraform/language/modules"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "dockerfile",
+      "container-image",
+      "preview-deployment"
+    ]
   }
 ]

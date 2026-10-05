@@ -102,6 +102,7 @@ import { MediaQueryTermPage } from "@/components/terms/media-query-pages/media-q
 import { CodeSplittingTermPage } from "@/components/terms/code-splitting-pages/code-splitting-page";
 import { LazyLoadingTermPage } from "@/components/terms/lazy-loading-pages/lazy-loading-page";
 import { DockerfileTermPage } from "@/components/terms/dockerfile-pages/dockerfile-page";
+import { InfrastructureAsCodeTermPage } from "@/components/terms/infrastructure-as-code-pages/infrastructure-as-code-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -122,6 +123,7 @@ const articleTermPages = {
   'code-splitting': CodeSplittingTermPage,
   'lazy-loading': LazyLoadingTermPage,
   dockerfile: DockerfileTermPage,
+  'infrastructure-as-code': InfrastructureAsCodeTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

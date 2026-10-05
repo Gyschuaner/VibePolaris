@@ -1901,5 +1901,54 @@
       "build-tool",
       "dependency"
     ]
+  },
+  {
+    "zh": "基础设施即代码",
+    "en": "Infrastructure as Code",
+    "slug": "infrastructure-as-code",
+    "cat": "前端",
+    "say": "把基础设施的目标、差异和执行边界写进可审查的配置。",
+    "aliases": [
+      "IaC",
+      "基础设施代码化",
+      "声明式基础设施"
+    ],
+    "question": "点击控制台改了三台服务器，怎样让下一次变更仍然可复盘？",
+    "definition": "Infrastructure as Code 用配置描述网络、实例、权限和服务等基础设施的目标状态。工具把配置与当前 state 和提供商现实比较，先生成 plan，再由人或流水线批准 apply。",
+    "boundary": "IaC 管理的是基础设施的声明、比较和执行记录，不自动替代权限、秘密、备份、监控或事故处理；state 也不是可以公开提交的普通日志。",
+  "demoType": "lifecycle",
+    "demoTitle": "从一行副本数到可审查变更",
+    "demoSteps": [
+      {
+        "label": "写下目标",
+        "value": "replicas = 3",
+        "note": "文件表达希望得到的状态，保存时远端资源还没有改变。"
+      },
+      {
+        "label": "先看差异",
+        "value": "plan: +1 / ~1 / -0",
+        "note": "新增、修改和删除先被列成可阅读的候选动作。"
+      },
+      {
+        "label": "执行并留痕",
+        "value": "apply → provider → state",
+        "note": "批准后才执行，真实 ID 和结果回到 state 供下一次比较。"
+      }
+    ],
+    "quizQuestion": "为什么不能看到 plan 后就永远放心地 apply？",
+    "quizOptions": [
+      "计划生成后远端、权限或输入仍可能改变",
+      "plan 会自动删除所有资源",
+      "state 会替你批准每一次变更"
+    ],
+    "correctText": "plan 是某个时间点的预览；执行前仍要确认环境、账号、输入和删除影响。",
+    "wrongText": "plan 不会自动批准或删除资源，state 也只是记录映射，不能代替操作人的判断。",
+    "promptTitle": "审查一份基础设施变更",
+    "prompt": "请从下面 IaC 配置生成一份审查清单：列出资源、依赖、将新增/修改/删除的对象、state 存储和锁定方式、执行账号、秘密来源、回滚与漂移处理。把必须人工确认的边界单独写出。",
+    "relatedSlugs": [
+      "dockerfile",
+      "container-image",
+      "preview-deployment"
+    ]
   }
 ]

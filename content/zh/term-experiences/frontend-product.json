@@ -17202,5 +17202,287 @@
         "note": "说明怎样安排依赖与源码来减少无效重建。"
       }
     ]
+  },
+  {
+    "slug": "infrastructure-as-code",
+    "lead": "一行配置改了，云端到底会发生什么？",
+    "definition": "IaC 把期望状态交给工具比较：先读配置、state 和远端现实，再生成 plan；批准后才 apply，并记录资源映射。",
+    "boundary": "IaC 把基础设施变化变得可复盘，但不替你做权限判断、秘密保护或漂移处置。每次 apply 都有真实影响。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "声明、计划、执行和漂移的一条链",
+    "actionLabel": "改变副本数",
+    "actors": [
+      {
+        "id": "config",
+        "label": "配置",
+        "detail": "replicas = 3 的目标声明",
+        "icon": "code",
+        "group": "期望状态"
+      },
+      {
+        "id": "plan",
+        "label": "plan",
+        "detail": "新增、修改、删除的预览",
+        "icon": "git",
+        "group": "审查边界"
+      },
+      {
+        "id": "provider",
+        "label": "提供商",
+        "detail": "云 API 和当前资源现实",
+        "icon": "cloud",
+        "group": "执行对象"
+      },
+      {
+        "id": "resource",
+        "label": "真实资源",
+        "detail": "web.app · srv-42",
+        "icon": "server",
+        "group": "运行基础设施"
+      },
+      {
+        "id": "state",
+        "label": "state",
+        "detail": "配置地址到真实 ID 的映射",
+        "icon": "database",
+        "group": "记录"
+      },
+      {
+        "id": "operator",
+        "label": "操作人",
+        "detail": "确认环境、差异和删除影响",
+        "icon": "user",
+        "group": "决策"
+      }
+    ],
+    "edges": [
+      {
+        "id": "config-plan",
+        "from": "config",
+        "to": "plan",
+        "label": "生成预览"
+      },
+      {
+        "id": "state-plan",
+        "from": "state",
+        "to": "plan",
+        "label": "提供现状"
+      },
+      {
+        "id": "provider-plan",
+        "from": "provider",
+        "to": "plan",
+        "label": "读取现实"
+      },
+      {
+        "id": "operator-provider",
+        "from": "operator",
+        "to": "provider",
+        "label": "批准执行"
+      },
+      {
+        "id": "provider-resource",
+        "from": "provider",
+        "to": "resource",
+        "label": "调用 API"
+      },
+      {
+        "id": "resource-state",
+        "from": "resource",
+        "to": "state",
+        "label": "记录映射"
+      }
+    ],
+    "frames": [
+      {
+        "label": "写下目标状态",
+        "note": "配置只说希望有 3 个副本；这一刻没有 API 调用。",
+        "activeIds": [
+          "config"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "plan",
+          "provider",
+          "resource",
+          "state",
+          "operator"
+        ],
+        "values": {
+          "config": "replicas = 3"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "读取现状并生成 plan",
+        "note": "工具把配置、state 和提供商当前信息放在一起，得到可审查差异。",
+        "activeIds": [
+          "config",
+          "plan",
+          "state",
+          "provider"
+        ],
+        "doneIds": [
+          "config"
+        ],
+        "mutedIds": [
+          "resource"
+        ],
+        "values": {
+          "plan": "+1 / ~1 / -0",
+          "state": "srv-41",
+          "provider": "当前 2 replicas"
+        },
+        "activeEdgeIds": [
+          "config-plan",
+          "state-plan",
+          "provider-plan"
+        ]
+      },
+      {
+        "label": "操作人审查",
+        "note": "删除、权限、账号和环境要在跨过执行边界前被确认。",
+        "activeIds": [
+          "plan",
+          "operator"
+        ],
+        "doneIds": [
+          "config",
+          "state"
+        ],
+        "mutedIds": [
+          "resource"
+        ],
+        "values": {
+          "plan": "等待批准",
+          "operator": "确认 staging"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "批准并 apply",
+        "note": "只有批准后的计划才调用提供商 API；真实资源此时才改变。",
+        "activeIds": [
+          "operator",
+          "provider",
+          "resource"
+        ],
+        "doneIds": [
+          "config",
+          "plan"
+        ],
+        "mutedIds": [
+          "state"
+        ],
+        "values": {
+          "provider": "apply running",
+          "resource": "3 replicas"
+        },
+        "activeEdgeIds": [
+          "operator-provider",
+          "provider-resource"
+        ]
+      },
+      {
+        "label": "写回 state",
+        "note": "执行结果把配置地址与真实 ID 重新映射，下一次 plan 才有连续的上下文。",
+        "activeIds": [
+          "resource",
+          "state"
+        ],
+        "doneIds": [
+          "config",
+          "plan",
+          "provider"
+        ],
+        "mutedIds": [
+          "operator"
+        ],
+        "values": {
+          "resource": "web.app · srv-42",
+          "state": "mapping saved"
+        },
+        "activeEdgeIds": [
+          "resource-state"
+        ]
+      },
+      {
+        "label": "控制台造成漂移",
+        "note": "远端被手工改成 2 个副本，下一次 plan 先暴露差异，而不是静默覆盖。",
+        "activeIds": [
+          "config",
+          "plan",
+          "provider",
+          "resource",
+          "state"
+        ],
+        "doneIds": [
+          "operator"
+        ],
+        "mutedIds": [],
+        "values": {
+          "config": "3 replicas",
+          "resource": "2 replicas",
+          "plan": "drift detected",
+          "state": "last known: 3"
+        },
+        "activeEdgeIds": [
+          "config-plan",
+          "provider-plan",
+          "state-plan"
+        ]
+      }
+    ],
+    "insight": "IaC 最有价值的瞬间不是 apply 的绿勾，而是 apply 之前有人能看懂差异，apply 之后还能解释现实为何与声明不同。",
+    "quiz": {
+      "question": "控制台把副本数从 3 改成 2 后，下一步最合适做什么？",
+      "options": [
+        {
+          "label": "先生成并审查 plan，确认是否要纠正漂移",
+          "correct": true
+        },
+        {
+          "label": "不看差异直接 apply",
+          "correct": false
+        },
+        {
+          "label": "删除 state 让工具忘记这次变化",
+          "correct": false
+        }
+      ],
+      "success": "对：先把漂移变成可审查的差异，再决定写回配置、纠正现实或保留紧急修改。",
+      "retry": "漂移不是自动批准的修复；先看 plan 和修改原因。"
+    },
+    "prompt": {
+      "title": "把一次云端变更变成可复盘记录",
+      "text": "请从配置、plan、apply、state 和远端检查五个时间点整理这次基础设施变更；列出执行账号、删除影响、秘密来源、锁定与备份、漂移处理和回滚证据。"
+    },
+    "sources": [
+      {
+        "url": "https://developer.hashicorp.com/terraform/intro",
+        "label": "Terraform intro",
+        "note": "说明配置、计划和基础设施资源的整体工作方式。"
+      },
+      {
+        "url": "https://developer.hashicorp.com/terraform/language/resources",
+        "label": "Terraform resources",
+        "note": "说明资源、依赖和引用如何表达基础设施。"
+      },
+      {
+        "url": "https://developer.hashicorp.com/terraform/cli/commands/plan",
+        "label": "terraform plan",
+        "note": "说明执行前如何生成变更预览。"
+      },
+      {
+        "url": "https://developer.hashicorp.com/terraform/language/state",
+        "label": "Terraform state",
+        "note": "说明 state 怎样记录配置与真实资源的映射及其保护要求。"
+      },
+      {
+        "url": "https://developer.hashicorp.com/terraform/language/modules",
+        "label": "Terraform modules",
+        "note": "说明如何把重复的资源组合成可复用模块。"
+      }
+    ]
   }
 ]
