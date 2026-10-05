@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CheckCircle, Gauge, Ruler, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
@@ -21,9 +21,6 @@ export function BreakpointLesson() {
   const failed = width < 680;
   const switched = scene.step >= 3;
   const layout = switched ? width <= 360 ? "stack" : "compact" : failed ? "collision" : "fluid";
-  useEffect(() => {
-    if (scene.step === 3 && chosenWidth !== 840) setChosenWidth(840);
-  }, [chosenWidth, scene.step]);
   const style = { "--width-position": position(width), "--failure-position": position(680) } as CSSProperties;
   const status = scene.step === 0 ? (failed ? "这个宽度已经让内容开始挤压；先记录证据，再决定是否要切换规则。" : "先观察同一组件在不同宽度下的内容表现，不要先拿设备名当答案。") : scene.step === 1 ? "间距正在消失，但还没有坏；压力是寻找断点的线索，不是断点本身。" : scene.step === 2 ? "搜索和导航首次互相抢位置，这个失效点就是候选断点。" : scene.step === 3 ? "在第一次失效前切换，内容恢复可读；断点是规则改变的时刻。" : "小屏只保留必要动作；如果流体布局已经足够，就不要继续增加断点。";
   const StatusIcon = layout === "collision" ? WarningCircle : switched ? CheckCircle : Ruler;
