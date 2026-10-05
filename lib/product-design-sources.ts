@@ -48,3 +48,10 @@ export const sitemapSources = [
   source("GOV.UK", "Plan new GOV.UK content", "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/", ["sitemap-orphan", "sitemap-nav"]),
   source("Google Search Central", "What Is a Sitemap", "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview", ["sitemap-xml", "sitemap-boundary-text"]),
 ];
+
+export const designTokenSources = [
+  source("Design Tokens Community Group", "Design Tokens Technical Reports 2025.10", "https://www.designtokens.org/tr/2025.10/", ["token-definition", "token-reference"]),
+  source("Design Tokens Community Group", "Design Tokens Community Group", "https://www.designtokens.org/", ["token-interoperability", "token-semantic"]),
+  source("Android Developers", "Material Design 3 in Compose", "https://developer.android.com/develop/ui/compose/designsystems/material3", ["token-theme", "token-component"]),
+  source("Lightning Design System", "Design Tokens", "https://v1.lightningdesignsystem.com/design-tokens/", ["token-semantic", "token-boundary"]),
+];

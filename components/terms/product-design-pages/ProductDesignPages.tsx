@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { conversionRateSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
+import { conversionRateSources, designTokenSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources } from "@/lib/product-design-sources";
+import { ConversionRateLesson, DesignTokenLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -206,6 +206,36 @@ export function SitemapTermPage() {
       <p id="sitemap-xml" className="vp-citation-target">搜索引擎的 XML sitemap 是给爬虫发现 URL 的文件格式，和产品团队用来讨论栏目与页面归属的站点结构图不是一件东西。<Cite id="sitemap-xml" sources={sitemapSources} />前者解决抓取发现，后者解决人怎样理解和浏览内容。</p>
       <p id="sitemap-boundary-text" className="vp-citation-target">站点地图也不等于用户流程：用户可能从搜索结果直接进入详情，再去订单或帮助页面，顺序未必沿着父子树走。<Cite id="sitemap-boundary-text" sources={sitemapSources} />所以要验证任务路径，还需要用户流程、原型或真实导航测试。</p>
       <ArticleAside title="树画得漂亮，不代表入口好找"><p>拿一个真实问题来试：第一次来的用户能否猜到“优惠说明”属于哪个栏目？如果不能，优先改命名和入口关系，再考虑把树继续加深。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const designTokenSections: [string, string][] = [
+  ["design-token-definition", "先把设计决策命名，再让组件引用"],
+  ["design-token-theme", "主题切换只改映射"],
+  ["design-token-boundary", "令牌不是给每个外观值贴标签"],
+];
+
+function DesignTokenHero() {
+  return <figure className={styles.miniHero} aria-label="基础值通过语义令牌传到多个组件"><div className={styles.miniTop}><span>基础值 → 语义名 → 组件</span><strong>TOKEN · 08</strong></div><div className={styles.tokenMini}><div className={styles.tokenMiniNode}><small>基础</small><strong>moss-900</strong></div><div className={styles.tokenMiniArrow} aria-hidden="true">→</div><div className={styles.tokenMiniNode} data-kind="semantic"><small>用途</small><strong>color.action</strong></div><div className={styles.tokenMiniArrow} aria-hidden="true">→</div><div className={styles.tokenMiniNode} data-kind="component"><small>组件</small><strong>按钮 · 链接</strong></div><p className={styles.tokenMiniNote}>主题改变的是映射，组件不必各自找颜色。</p></div></figure>;
+}
+
+export function DesignTokenTermPage() {
+  return <Article slug="design-token" title="设计令牌" subtitle="Design Token · 把用途和具体值分开" sources={designTokenSources} sections={designTokenSections} hero={<DesignTokenHero />} intro={<>设计令牌把颜色、间距、字体等设计决策保存为可复用的名字和值，让设计工具和代码有机会共享同一套语言。<strong>关键不在于把色值改成变量名，而在于让组件引用“用途”并能被主题映射替换</strong>。</>}>
+    <ArticleSection id="design-token-definition" title="先把设计决策命名，再让组件引用">
+      <p id="token-definition" className="vp-citation-target">颜色、间距、字体比例都可以成为令牌，它们是设计系统里不可再拆的决策单位。<Cite id="token-definition" sources={designTokenSources} />名字应描述“文本、背景、操作”等用途，而不是某一张卡片或某一个页面的外观。</p>
+      <p id="token-reference" className="vp-citation-target">令牌可以通过引用形成基础值、语义值和组件使用之间的关系。<Cite id="token-reference" sources={designTokenSources} />当按钮和链接都引用 <code>color.action</code>，基础颜色改变时，关系图能告诉你哪些地方会一起更新。</p>
+      <DesignTokenLesson />
+    </ArticleSection>
+    <ArticleSection id="design-token-theme" title="主题切换只改映射">
+      <p id="token-theme" className="vp-citation-target">主题系统通常把组件需要的角色映射到当前主题的具体值，例如浅色把操作色指向 <code>moss-900</code>，深色再指向 <code>lime-500</code>。<Cite id="token-theme" sources={designTokenSources} />组件仍然读取同一个语义名，所以主题变化不会变成逐个组件改颜色。</p>
+      <p id="token-component" className="vp-citation-target">组件消费的是语义令牌，而不是“绿色 700”这样的基础色名。<Cite id="token-component" sources={designTokenSources} />这样同一套按钮可以在不同主题、平台或对比度要求下换用合适的基础值。</p>
+      <p id="token-interoperability" className="vp-citation-target">令牌格式的价值还在于让设计工具、代码库和平台之间交换同一套设计决策。<Cite id="token-interoperability" sources={designTokenSources} />共享格式不代表所有平台自动相同，但至少能减少每个团队各自重抄一份变量。</p>
+    </ArticleSection>
+    <ArticleSection id="design-token-boundary" title="令牌不是给每个外观值贴标签">
+      <p id="token-semantic" className="vp-citation-target">如果名称绑定了组件编号或页面位置，例如 <code>card3-gray</code>，它很快就无法表达新的使用场景。<Cite id="token-semantic" sources={designTokenSources} />语义层应该说明意图，组件层再决定如何消费它。</p>
+      <p id="token-boundary" className="vp-citation-target">把所有出现过的像素值都做成令牌，也会制造重复和噪音。<Cite id="token-boundary" sources={designTokenSources} />先合并真正重复的决策，再为会跨组件、主题或平台复用的值建立稳定关系。</p>
+      <ArticleAside title="主题能换色，不能替你修对比度"><p>切换映射后仍要检查文字、控件和状态的对比度。令牌让变化集中发生，却不自动证明每个组合都满足可读性要求。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }
