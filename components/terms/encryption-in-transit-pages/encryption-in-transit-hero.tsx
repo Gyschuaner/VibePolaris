@@ -10,7 +10,7 @@ const frames = [
   { label: "握手协商", segmentStates: ["handshake", "idle", "idle"], packet: "ClientHello · ServerHello", packetNote: "版本 / cipher / key share", result: "握手中", resultNote: "应用数据还不能抢跑。", tone: "neutral", stage: "NEGOTIATE" },
   { label: "三段都加密", segmentStates: ["secure", "secure", "secure"], packet: "GET /orders · TLS record", packetNote: "抓包只见 ciphertext", result: "200 · 3 / 3", resultNote: "三段链路各自有 TLS。", tone: "good", stage: "SECURE" },
   { label: "CDN 终止 TLS", segmentStates: ["secure", "clear", "secure"], packet: "Authorization: Bearer …", packetNote: "CDN → LB 可见", result: "200 · 2 / 3", resultNote: "外层有锁，不代表下一跳也有锁。", tone: "danger", stage: "LEAK" },
-  { label: "证书对不上", segmentStates: ["secure", "blocked", "secure"], packet: "GET /orders · 未发送", packetNote: "SAN ≠ orders.internal", result: "BLOCKED · 0 B", resultNote: "身份不匹配时停在握手。", tone: "danger", stage: "STOP" },
+  { label: "证书对不上", segmentStates: ["secure", "blocked", "idle"], packet: "GET /orders · 未发送", packetNote: "SAN ≠ lb.internal", result: "BLOCKED · 0 B", resultNote: "身份不匹配时停在握手。", tone: "danger", stage: "STOP" },
   { label: "重新建立下一跳", segmentStates: ["secure", "secure", "secure"], packet: "GET /orders · TLS record", packetNote: "抓包只见 ciphertext", result: "200 · 3 / 3", resultNote: "每段都验证身份，再让数据继续。", tone: "good", stage: "PASS" },
 ] as const;
 

@@ -19784,6 +19784,39 @@
         "label": "应用数据",
         "value": "0 B"
       }
+    },
+    {
+      "label": "修好证书后重建下一跳",
+      "note": "修正内部证书身份并重新握手，LB 到应用才重新出现受保护的记录层。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer",
+        "app",
+        "packet-view"
+      ],
+      "doneIds": [
+        "browser",
+        "cdn",
+        "load-balancer"
+      ],
+      "mutedIds": [
+        "auth-field"
+      ],
+      "values": {
+        "load-balancer": "SAN = lb.internal",
+        "packet-view": "TLS record · ciphertext",
+        "auth-field": "not visible"
+      },
+      "activeEdgeIds": [
+        "browser-cdn",
+        "cdn-lb",
+        "lb-app"
+      ],
+      "metric": {
+        "label": "安全跳点",
+        "value": "3 / 3"
+      }
     }
   ],
   "insight": "传输加密不是地址栏的一枚锁，而是每一段端点、身份和记录保护都能对上的路径。",

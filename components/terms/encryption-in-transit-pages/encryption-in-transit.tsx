@@ -20,6 +20,7 @@ function stateFor(scenario: Scenario, step: number, index: number) {
   if (step === 0) return "route";
   if (scenario === "plain-internal" && index === 1 && step >= 2) return "clear";
   if (scenario === "identity-fail" && index === 1 && step >= 1) return "blocked";
+  if (scenario === "identity-fail" && index > 1 && step >= 1) return "pending";
   return step >= 2 ? "secure" : index === 0 ? "handshake" : "pending";
 }
 
