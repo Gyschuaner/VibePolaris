@@ -41,3 +41,10 @@ export const mockupSources = [
   source("Figma Learn", "Guide to prototyping in Figma", "https://help.figma.com/hc/en-us/articles/360040314193-Guide-to-prototyping-in-Figma", ["mockup-prototype", "mockup-review"]),
   source("GOV.UK Service Manual", "Designing good government services", "https://www.gov.uk/service-manual/design/introduction-designing-government-services", ["mockup-review", "mockup-boundary-text"]),
 ];
+
+export const sitemapSources = [
+  source("W3C WAI", "Page Structure Tutorial", "https://www.w3.org/WAI/tutorials/page-structure/", ["sitemap-page-structure", "sitemap-hierarchy"]),
+  source("W3C WAI", "Make the Site Hierarchy Easy to Understand and Navigate", "https://www.w3.org/WAI/WCAG2/supplemental/patterns/o2p02-site-structure/", ["sitemap-hierarchy", "sitemap-nav"]),
+  source("GOV.UK", "Plan new GOV.UK content", "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/", ["sitemap-orphan", "sitemap-nav"]),
+  source("Google Search Central", "What Is a Sitemap", "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview", ["sitemap-xml", "sitemap-boundary-text"]),
+];

@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { conversionRateSources, focusManagementSources, funnelSources, iterationSources, mockupSources, usabilityTestingSources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
+import { conversionRateSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources } from "@/lib/product-design-sources";
+import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -177,6 +177,35 @@ export function MockupTermPage() {
       <p id="mockup-states" className="vp-citation-target">视觉稿通常只展示理想状态；加载、空结果、错误、禁用、窄屏和长文本需要单独列出并安排验证。<Cite id="mockup-states" sources={mockupSources} />状态清单不是额外装饰，而是告诉团队这张图没有覆盖哪些真实情况。</p>
       <p id="mockup-boundary-text" className="vp-citation-target">评审结论要写成“外观已确认、行为待验证、状态缺三项”这样的边界，而不是一句“设计完成”。<Cite id="mockup-boundary-text" sources={mockupSources} />这样进入开发或测试时，缺口仍然可见，不会被截图的精致程度掩盖。</p>
       <ArticleAside title="视觉稿通过，不等于产品通过"><p>它最多说明这一张画面如何呈现。真正上线前还要让用户走流程、让窄屏承受长内容、让错误发生一次，并确认每种状态都有可理解的下一步。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const sitemapSections: [string, string][] = [
+  ["sitemap-definition", "先把页面关系画出来"],
+  ["sitemap-navigation", "从层级挑出主导航入口"],
+  ["sitemap-boundary", "站点地图不是任务流程，也不是 XML 文件"],
+];
+
+function SitemapHero() {
+  return <figure className={styles.miniHero} aria-label="站点地图把页面从平铺列表组织成栏目层级"><div className={styles.miniTop}><span>页面先归属，再决定入口</span><strong>SITEMAP · 07</strong></div><div className={styles.sitemapMini}><div className={styles.sitemapMiniRoot}>网站根节点</div><div className={styles.sitemapMiniBranches}><div className={styles.sitemapMiniBranch}><small>一级栏目</small><strong>订单</strong></div><div className={styles.sitemapMiniBranch}><small>一级栏目</small><strong>账户</strong></div></div><p className={styles.sitemapMiniNote}>主导航只露出最重要的一级栏目，详情页留在树里。</p></div></figure>;
+}
+
+export function SitemapTermPage() {
+  return <Article slug="sitemap" title="站点地图" subtitle="Sitemap · 把页面放回它所属的任务里" sources={sitemapSources} sections={sitemapSections} hero={<SitemapHero />} intro={<>站点地图把页面、栏目和父子关系放在一张结构图里，让团队看见哪里太深、哪里没有入口、哪些名字不属于同一类。<strong>它描述信息架构，不规定用户必须沿着树一层层点击</strong>；真实任务可以从不同入口横跨多个栏目。</>}>
+    <ArticleSection id="sitemap-definition" title="先把页面关系画出来">
+      <p id="sitemap-page-structure" className="vp-citation-target">清楚的页面结构要让人知道内容在哪个区域、哪一级标题下面、怎样跳到重要部分。<Cite id="sitemap-page-structure" sources={sitemapSources} />把 12 个页面全部平铺在一行，只能证明页面存在，不能说明它们怎样被理解。</p>
+      <p id="sitemap-hierarchy" className="vp-citation-target">整理站点地图时，先按用户任务和内容主题划出逻辑类别，再把子页面放到能被猜到的父级下面。<Cite id="sitemap-hierarchy" sources={sitemapSources} />订单、退货和优惠说明可能属于同一组；账户资料、地址和安全设置则是另一组。</p>
+      <SitemapLesson />
+    </ArticleSection>
+    <ArticleSection id="sitemap-navigation" title="从层级挑出主导航入口">
+      <p id="sitemap-nav" className="vp-citation-target">主导航应该反映最重要的一级类别，子菜单也要让人知道它属于哪个上级。<Cite id="sitemap-nav" sources={sitemapSources} />不是每个详情页都要塞进主导航；导航是从结构里挑出的可见入口。</p>
+      <p id="sitemap-orphan" className="vp-citation-target">孤立页面不是“先放着”的小瑕疵：如果一个页面没有父级、主导航或相关页面链接，用户很难知道它该从哪里进入。<Cite id="sitemap-orphan" sources={sitemapSources} />先问它服务哪个任务，再决定归类、补入口或删除。</p>
+    </ArticleSection>
+    <ArticleSection id="sitemap-boundary" title="站点地图不是任务流程，也不是 XML 文件">
+      <p id="sitemap-xml" className="vp-citation-target">搜索引擎的 XML sitemap 是给爬虫发现 URL 的文件格式，和产品团队用来讨论栏目与页面归属的站点结构图不是一件东西。<Cite id="sitemap-xml" sources={sitemapSources} />前者解决抓取发现，后者解决人怎样理解和浏览内容。</p>
+      <p id="sitemap-boundary-text" className="vp-citation-target">站点地图也不等于用户流程：用户可能从搜索结果直接进入详情，再去订单或帮助页面，顺序未必沿着父子树走。<Cite id="sitemap-boundary-text" sources={sitemapSources} />所以要验证任务路径，还需要用户流程、原型或真实导航测试。</p>
+      <ArticleAside title="树画得漂亮，不代表入口好找"><p>拿一个真实问题来试：第一次来的用户能否猜到“优惠说明”属于哪个栏目？如果不能，优先改命名和入口关系，再考虑把树继续加深。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }
