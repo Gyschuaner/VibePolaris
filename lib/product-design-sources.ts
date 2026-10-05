@@ -20,3 +20,10 @@ export const conversionRateSources = [
   source("Amplitude", "Interpret funnel analysis", "https://amplitude.com/docs/analytics/charts/funnel-analysis/funnel-analysis-interpret", ["conversion-formula", "conversion-window"]),
   source("Google Analytics", "Funnel reports API", "https://developers.google.com/analytics/devguides/reporting/data/v1/funnels", ["conversion-steps", "conversion-window"]),
 ];
+
+export const funnelSources = [
+  source("Google Analytics", "Funnel reports API", "https://developers.google.com/analytics/devguides/reporting/data/v1/funnels", ["funnel-steps", "funnel-order"]),
+  source("Amplitude", "Interpret funnel analysis", "https://amplitude.com/docs/analytics/charts/funnel-analysis/funnel-analysis-interpret", ["funnel-window", "funnel-dropoff"]),
+  source("Amplitude", "Funnel Analysis FAQ", "https://amplitude.com/docs/analytics/charts/funnel-analysis/faq", ["funnel-order", "funnel-open"]),
+  source("Amplitude", "Build your first funnel", "https://amplitude.com/docs/quick-guides/build-your-first-funnel", ["funnel-route", "funnel-scope"]),
+];
