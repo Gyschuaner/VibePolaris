@@ -4752,5 +4752,468 @@
       "token",
       "context"
     ]
+  },
+  {
+    "zh": "Transformer",
+    "en": "Transformer",
+    "slug": "transformer",
+    "cat": "AI·Agent",
+    "say": "让一排 token 在层层计算里交换信息，再各自带着更丰富的表示继续前进。",
+    "aliases": [
+      "Transformer 架构",
+      "注意力架构",
+      "变换器"
+    ],
+    "question": "模型怎么知道一句话里哪个词和哪个词有关？",
+    "definition": "Transformer 是一种以注意力为核心的神经网络架构：输入位置先交换相关信息，再经过逐位置的前馈变换，多个这样的层可以连续堆叠。它输出的是供下游任务使用的表示或候选，不是自动核验过的事实。",
+    "boundary": "Transformer 不是一个具体模型名，也不是事实数据库；encoder、decoder、层数、头数、位置编码和训练目标都可能不同。能建立关系不等于关系一定正确，更不等于生成内容已经被外部证据核对。",
+    "demoType": "flow",
+    "demoTitle": "一排 token 怎样经过两次改写",
+    "demoSteps": [
+      {
+        "label": "摆好位置",
+        "value": "小猫 · 坐在 · 窗边 · 它 · 看见 · 雨",
+        "note": "先把 token 和顺序放进同一排，暂时不把高亮当成理解。"
+      },
+      {
+        "label": "交换信息",
+        "value": "它 ↔ 小猫；看见 ↔ 雨",
+        "note": "自注意力让位置取回相关线索，连线是教学示意，不是唯一解释。"
+      },
+      {
+        "label": "继续前进",
+        "value": "关系表示 → 下一层或任务头",
+        "note": "前馈、残差和更多层继续改写表示；结果仍需按任务核验。"
+      }
+    ],
+    "quizQuestion": "下面哪句话最准确地描述 Transformer？",
+    "quizOptions": [
+      "它让序列位置交换信息并逐层更新表示",
+      "它把所有事实存进一个可查询数据库",
+      "层数越多就一定不会出错"
+    ],
+    "correctText": "Transformer 的骨架是注意力、逐位置变换和层叠表示更新。",
+    "wrongText": "架构能改变表示和计算路径，却不能自动保证事实正确。",
+    "promptTitle": "拆解一个 Transformer 模型",
+    "prompt": "请分别列出模型使用的 encoder/decoder、位置编码、层数、注意力头、训练目标和输出头；再说明哪些结论有外部证据，哪些只来自模型表示。",
+    "relatedSlugs": [
+      "llm",
+      "tokenization",
+      "context-window",
+      "generative-ai"
+    ]
+  },
+  {
+    "zh": "注意力机制",
+    "en": "Attention",
+    "slug": "attention",
+    "cat": "AI·Agent",
+    "say": "根据当前查询，从一组可匹配的线索里取回加权后的信息。",
+    "aliases": [
+      "Attention",
+      "自注意力",
+      "多头注意力"
+    ],
+    "question": "模型为什么会把某些位置的信息混进当前结果？",
+    "definition": "注意力机制把当前位置的查询与一组 key 比较，得到权重，再按这些权重混合 value；当 query、key、value 来自同一序列时，通常称为自注意力。多头注意力会在多个表示子空间并行计算，再合并输出。",
+    "boundary": "注意力的权重是一次计算里的取数信号，不是人类可直接阅读的思维链或事实证明。mask、输入范围、投影参数和后续任务头都会改变结果；遮住证据后，注意力不能凭空补回缺失内容。",
+    "demoType": "flow",
+    "demoTitle": "一条查询怎样从键值货架取回信息",
+    "demoSteps": [
+      {
+        "label": "递出查询",
+        "value": "Query：查无糖饮品",
+        "note": "先说明当前要找什么；还没有比较或取回。"
+      },
+      {
+        "label": "比较键",
+        "value": "Key：无糖 / 含奶 / 含糖",
+        "note": "权重反映本轮匹配程度，不是“这张卡就是真答案”。"
+      },
+      {
+        "label": "混合值",
+        "value": "Value：规格与价格 → 定宽表示",
+        "note": "最终返回的是加权后的表示，仍要由后续层和证据完成判断。"
+      }
+    ],
+    "quizQuestion": "看到注意力热力图里一格更亮，最稳妥的理解是什么？",
+    "quizOptions": [
+      "这次计算更偏向取那一格的信息",
+      "模型已经证明那一格是事实答案",
+      "那一格一定是模型唯一的解释"
+    ],
+    "correctText": "亮度最多说明这次权重分配更偏向某个 key/value。",
+    "wrongText": "权重图不是事实核验，也不能单独还原完整原因。",
+    "promptTitle": "检查一层注意力",
+    "prompt": "请标出 Query、Key、Value、mask 和输出去向；解释权重如何改变取数，并列出需要外部证据核验的结论。",
+    "relatedSlugs": [
+      "transformer",
+      "llm",
+      "tokenization",
+      "context-window"
+    ]
+  },
+  {
+    "zh": "推理",
+    "en": "Inference",
+    "slug": "inference",
+    "cat": "AI·Agent",
+    "say": "模型已经训练好后，怎样把一次输入变成一段可以交付的结果？",
+    "aliases": [
+      "Inference",
+      "模型推理",
+      "运行推理"
+    ],
+    "question": "模型已经学会了，收到一句话后到底发生了什么？",
+    "definition": "推理是用已经保存的模型参数处理一次输入：先把输入整理并送进模型，再经过 prefill 和逐 token decode 生成结果，直到满足停止条件。它是一次运行，不会因为这次请求就把新知识写回训练权重。",
+    "boundary": "推理能把文字变成流畅输出，却不能替输入补上缺失证据，也不能保证事实正确。首 token 延迟、后续 token 速度、停止是否完整、模型是否处于 eval 状态，都要和答案质量分开检查。",
+    "demoType": "flow",
+    "demoTitle": "一条客服请求如何先整段读入，再逐 token 交付",
+    "demoSteps": [
+      {
+        "label": "整段 prefill",
+        "value": "输入一次读完；准备生成状态",
+        "note": "首 token 之前先处理已有上下文。"
+      },
+      {
+        "label": "逐 token decode",
+        "value": "先 · 核对 · 订单 · 条件",
+        "note": "每一步追加一个 token，流式返回不等于已经结束。"
+      },
+      {
+        "label": "判断停止",
+        "value": "结束标记 / 长度上限 / 取消 / 错误",
+        "note": "满足停止条件才算完成；缺凭证时要保留不确定。"
+      }
+    ],
+    "quizQuestion": "看到页面已经出现几个字，最稳妥的判断是什么？",
+    "quizOptions": [
+      "模型还在 decode，是否完成要看停止条件",
+      "模型已经训练出了新知识",
+      "文字越快就一定越正确"
+    ],
+    "correctText": "流式输出只证明已经有 token 返回；还要确认生成是否结束、输入证据是否够用。",
+    "wrongText": "推理速度、运行状态和事实正确性是不同的检查项。",
+    "promptTitle": "画出一次推理的检查链",
+    "prompt": "请标出请求输入、预处理、prefill、decode、停止条件和最终核验；再说明哪些状态属于一次运行，哪些不会写回模型权重。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "tokenization",
+      "context-window",
+      "streaming-output"
+    ]
+  },
+  {
+    "zh": "预训练",
+    "en": "Pretraining",
+    "slug": "pretraining",
+    "cat": "AI·Agent",
+    "say": "先用大量文本练习猜目标，再让参数沿着误差小步移动。",
+    "aliases": [
+      "预训练",
+      "Pre-training",
+      "模型预训练"
+    ],
+    "question": "模型为什么能从没有人工答案的文本里学到语言模式？",
+    "definition": "预训练把大规模数据切成训练样本，由数据本身构造下一个 token 或被遮住 token 等目标；模型计算损失并据此更新参数，形成后续任务可以复用的起点。",
+    "boundary": "预训练目标和语料决定模型先学到什么；较低训练损失不等于事实已经核验，预训练、微调和推理也属于不同阶段。",
+    "demoType": "lifecycle",
+    "demoTitle": "一张语料卡怎样变成一次参数更新",
+    "demoSteps": [
+      {
+        "label": "切开语料",
+        "value": "退款 · 需 · 在 · 七日内 · 申请",
+        "note": "先保留 token 的顺序与位置。"
+      },
+      {
+        "label": "生成目标",
+        "value": "目标 = 七日内",
+        "note": "目标可以由下一个 token 或被遮住的 token 构造。"
+      },
+      {
+        "label": "算损失并更新",
+        "value": "loss → gradient → W + 一小步",
+        "note": "损失提供更新信号，却不替你核验语料是否正确。"
+      }
+    ],
+    "quizQuestion": "为什么拿走目标标签后，预训练不能只靠“模型自己觉得像”继续更新？",
+    "quizOptions": [
+      "因为没有可比较的目标，损失无法定义",
+      "因为 token 一旦切开就不能再组成句子",
+      "因为预训练每次都必须人工写答案"
+    ],
+    "correctText": "对。自监督目标通常从输入构造，但仍需要这个目标才能计算误差和梯度。",
+    "wrongText": "再看一遍：自监督不是没有标签，而是标签来自数据本身；没有目标就没有可比较的损失。",
+    "promptTitle": "检查一次预训练样本",
+    "prompt": "记录语料切片、目标构造、logits、loss、参数更新和数据时效；分别说明 causal 与 masked 目标允许模型看到什么，并标记“低损失不等于事实”的边界。",
+    "relatedSlugs": [
+      "transformer",
+      "attention",
+      "fine-tuning",
+      "inference",
+      "tokenization",
+      "generative-ai"
+    ]
+  },
+  {
+    "zh": "KV Cache",
+    "en": "KV Cache",
+    "slug": "kv-cache",
+    "cat": "AI·Agent",
+    "say": "把注意力已经算过的 K/V 留在手边，下一步少重算一段前缀。",
+    "aliases": [
+      "KV 缓存",
+      "Key-Value Cache",
+      "键值缓存"
+    ],
+    "question": "模型每生成一个 token，为什么不用把前面的上下文从头再算一遍？",
+    "definition": "KV cache 保存注意力层对过去 token 计算出的 key/value 中间状态，后续 decode 只带新的 query，并按位置复用旧状态；服务还可以按 block、前缀和存储层管理这些缓存。",
+    "boundary": "缓存的是一次推理的中间状态，不是模型权重或答案；前缀、位置和运行条件变化会使命中失效，容量、淘汰、搬运也会改变延迟。",
+    "demoType": "lifecycle",
+    "demoTitle": "一段前缀怎样变成可复用的书签",
+    "demoSteps": [
+      {
+        "label": "读过前缀",
+        "value": "系统：你是客服。",
+        "note": "第一次仍要完成前缀的注意力计算。"
+      },
+      {
+        "label": "存下 K / V",
+        "value": "block 0 · block 1",
+        "note": "缓存按位置保存中间状态，不保存完整答案。"
+      },
+      {
+        "label": "只带新 Q",
+        "value": "Q = “请问” · 旧 K/V 命中",
+        "note": "相同前缀可以跳过一段重复计算；改一个词就要重新判断。"
+      }
+    ],
+    "quizQuestion": "为什么把“你是客服”改成“你是销售”后，不能继续复用原来的 KV cache？",
+    "quizOptions": [
+      "前缀内容变了，旧 K/V 不再代表这次请求的位置与上下文",
+      "KV cache 只保存模型权重，改文字不会影响它",
+      "只要两个句子意思相近，所有 block 都能直接复用"
+    ],
+    "correctText": "对。缓存命中依赖具体前缀和位置条件，相似不等于相同。",
+    "wrongText": "再看一遍：KV cache 是上下文中间状态，不是按大意模糊匹配的答案库。",
+    "promptTitle": "检查一次 KV cache 命中",
+    "prompt": "记录前缀 token、K/V block、当前 query、命中/未命中、GPU/CPU/disk 层级与淘汰；分别说明缓存节省了什么和没有证明什么。",
+    "relatedSlugs": [
+      "attention",
+      "inference",
+      "transformer",
+      "context-window",
+      "pretraining",
+      "streaming-output"
+    ]
+  },
+  {
+    "zh": "智能体工作流",
+    "en": "Agent Workflow",
+    "slug": "agent-workflow",
+    "cat": "AI·Agent",
+    "say": "把智能体放进一张有节点、有闸门、有出口的任务单。",
+    "aliases": [
+      "Agent Workflow",
+      "智能体流程",
+      "工作流编排"
+    ],
+    "question": "模型能自己决定下一步时，为什么还要画工作流？",
+    "definition": "智能体工作流把一次任务拆成可追踪的节点、状态和转移：应用先规定输入、权限、工具和验收出口，节点里的模型再处理自己负责的那一段。路由可以由代码写死，也可以让模型提出选择，但状态和副作用仍要由工作流承接。",
+    "boundary": "工作流能让“在哪一步、为什么停下、谁来接手”变得可见，却不能保证模型在节点里永远选对工具或写对内容。校验、回执、重试和人工接管要分别设计，不能被一句提示词替代。",
+    "demoType": "state",
+    "demoTitle": "一张退款任务单怎样沿节点推进",
+    "demoSteps": [
+      {
+        "label": "接收任务",
+        "value": "退款 A17 · ¥1,280",
+        "note": "先把请求、订单和当前状态登记下来，后面的节点才有可追踪的输入。"
+      },
+      {
+        "label": "经过闸门",
+        "value": "字段 / 权限 / 风险 → allow 或 blocked",
+        "note": "检查先于副作用；缺凭证时停在闸门，不把草稿写进订单。"
+      },
+      {
+        "label": "路由与验收",
+        "value": "代码路由或模型路由 → done / needs-human",
+        "note": "专家可以灵活处理局部问题，但只有满足验收条件才算完成。"
+      }
+    ],
+    "quizQuestion": "哪一种说法最准确地描述了智能体工作流？",
+    "quizOptions": [
+      "把节点、状态、权限和验收出口写成可追踪的任务路径",
+      "让多个模型自由聊天，最后把最长的回答当结果",
+      "只要写好系统提示词，就不需要工具检查和失败状态"
+    ],
+    "correctText": "对。工作流规定可观察的状态与出口，模型只在节点内部承担局部判断。",
+    "wrongText": "再看一遍：自由对话和一段提示词都不会自动产生权限、回执或可靠的终态。",
+    "promptTitle": "画出一条可验收的工作流",
+    "prompt": "请把任务画成节点和状态图：列出输入、路由拥有者、工具副作用、每道 guardrail、失败与重试状态、人工接管条件，以及什么证据才允许进入 done。",
+    "relatedSlugs": [
+      "agent-orchestration",
+      "agent-loop",
+      "handoff",
+      "guardrail",
+      "tool-approval",
+      "human-in-the-loop"
+    ]
+  },
+  {
+    "zh": "背压",
+    "en": "Backpressure",
+    "slug": "backpressure",
+    "cat": "AI·Agent",
+    "say": "下游接不住时，把容量信号传回上游，让生产先踩刹车。",
+    "aliases": [
+      "反压",
+      "流背压",
+      "Back Pressure"
+    ],
+    "question": "下游处理变慢时，为什么不能继续把任务塞进更大的队列？",
+    "definition": "背压是数据流中的一种节奏控制：下游报告自己还能接收多少，生产者据此暂停、减速或延后提交。它让缓冲区保持有界，把真正的瓶颈带回生产路径，而不是把无限堆积藏进内存。",
+    "boundary": "背压通常保留工作、牺牲吞吐；限流是预先设定请求额度，丢弃超额则直接放弃部分工作。三者都能缓解过载，却有不同的数据损失、等待和恢复代价。",
+    "demoType": "flow",
+    "demoTitle": "一条数据流怎样在满载时踩刹车",
+    "demoSteps": [
+      {
+        "label": "生产快",
+        "value": "上游 6 chunks/s → 下游 2 chunks/s",
+        "note": "速度差会先出现在缓冲区；队列不是凭空增加的处理能力。"
+      },
+      {
+        "label": "容量见顶",
+        "value": "buffer 4 / 4 → capacity = 0",
+        "note": "没有空槽时，继续提交只会扩大堆积和故障范围。"
+      },
+      {
+        "label": "压力回传",
+        "value": "暂停 / 减速，或明确丢弃超额",
+        "note": "背压保留数据但让吞吐下降；load shedding 保护服务却承认数据损失。"
+      }
+    ],
+    "quizQuestion": "背压最核心的动作是什么？",
+    "quizOptions": [
+      "让下游容量约束上游继续生产的速度",
+      "把所有等待任务无限放进内存队列",
+      "遇到慢请求就自动丢掉且不记录"
+    ],
+    "correctText": "对。背压让真正知道容量的接收侧参与决定生产节奏。",
+    "wrongText": "再看一遍：无限排队会把问题推迟，静默丢弃也不是背压本身。",
+    "promptTitle": "检查一条背压链路",
+    "prompt": "记录生产速率、消费速率、缓冲上限、容量信号、暂停时间、拒绝/丢弃数量和重试次数；再说明为什么选择保留、限流或丢弃，以及下游恢复的条件。",
+    "relatedSlugs": [
+      "queue",
+      "rate-limiting",
+      "retry",
+      "streaming-output",
+      "inference",
+      "agent-workflow"
+    ]
+  },
+  {
+    "zh": "死信队列",
+    "en": "Dead-Letter Queue",
+    "slug": "dead-letter-queue",
+    "cat": "AI·Agent",
+    "say": "把反复失败的消息隔离出来，留下证据，等人调查和决定重放。",
+    "aliases": [
+      "DLQ",
+      "死信",
+      "Dead Letter Queue"
+    ],
+    "question": "一条消息总是失败时，为什么不让它一直重试？",
+    "definition": "死信队列是主队列之外的隔离支路：消息在达到最大投递次数、无法确认或满足其他失败条件后被移入这里，保留消息本体和失败信息，等待调查、修复、重放或明确放弃。",
+    "boundary": "死信队列不等于垃圾桶，也不等于自动修复。它仍需保留期、权限、监控、幂等和重放策略；重放可能造成重复副作用、改变顺序，或把同一个根因再次送回死信区。",
+    "demoType": "branch",
+    "demoTitle": "坏消息怎样从重试支路进入死信区",
+    "demoSteps": [
+      {
+        "label": "重复失败",
+        "value": "bad-json · attempt 1 → 2 → 3",
+        "note": "暂时错误可以重试，但每次尝试都要留下次数和原因。"
+      },
+      {
+        "label": "隔离保留",
+        "value": "maxReceiveCount = 3 → DLQ",
+        "note": "移出主路径后，后面的正常消息可以继续，坏消息仍然可调查。"
+      },
+      {
+        "label": "调查出口",
+        "value": "修复 + 幂等检查 → redrive / 放弃",
+        "note": "重放是一次新的处理，不是把失败消息直接标成成功。"
+      }
+    ],
+    "quizQuestion": "死信队列最准确的作用是什么？",
+    "quizOptions": [
+      "隔离反复失败的消息并保留证据，等待明确的后续处理",
+      "把失败消息自动改成成功并从系统中删除",
+      "无条件保证重放后不会产生重复副作用"
+    ],
+    "correctText": "对。DLQ 缩小失败影响范围，调查和重放仍需要业务决定与证据。",
+    "wrongText": "再看一遍：隔离、修复、重放和幂等是不同动作，DLQ 不会自动替你完成它们。",
+    "promptTitle": "设计一条可运营的死信支路",
+    "prompt": "为消息写出确认时机、最大投递次数、退避、死信原因、保留期、告警、读取权限、修复和 redrive 条件；再检查重复副作用、顺序和幂等键。",
+    "relatedSlugs": [
+      "queue",
+      "retry",
+      "idempotency",
+      "rate-limiting",
+      "backpressure",
+      "agent-workflow"
+    ]
+  },
+  {
+    "zh": "最终一致性",
+    "en": "Eventual Consistency",
+    "slug": "eventual-consistency",
+    "cat": "AI·Agent",
+    "say": "写入先落在一个副本，其他副本稍后追上；这段时间里，读者可能看到旧值。",
+    "aliases": [
+      "Eventual Consistency",
+      "最终一致",
+      "副本收敛"
+    ],
+    "question": "明明收到保存成功，为什么下一次读取还可能是旧值？",
+    "definition": "最终一致性允许分布式副本暂时不同；只要之后没有新的更新，系统会在某个时间后逐步让读取结果收敛到最新状态。它把协调成本换成可接受的旧读窗口、延迟与可用性选择。",
+    "boundary": "eventual 不承诺立刻或固定秒数内收敛，也不自动解决并发写入冲突。不同查询、区域和读取方式可能有不同保证；关键状态要明确强读、事务、read-your-writes 或应用层冲突规则。",
+    "demoType": "state",
+    "demoTitle": "订单状态怎样从一个副本传到所有读者",
+    "demoSteps": [
+      {
+        "label": "先写一处",
+        "value": "A17: pending → paid",
+        "note": "主副本先返回成功；写入完成和全网最新是两件事。"
+      },
+      {
+        "label": "旧读窗口",
+        "value": "region B 仍返回 pending",
+        "note": "复制还在路上，旧值短暂可见；旧读不等于刚才的写入失败。"
+      },
+      {
+        "label": "最后收敛",
+        "value": "replicas = paid · 规则决定冲突",
+        "note": "没有新写入后副本会对齐；并发写入仍需要明确裁决。"
+      }
+    ],
+    "quizQuestion": "最终一致性最准确的描述是什么？",
+    "quizOptions": [
+      "副本可以暂时不同，但在没有新更新后逐步收敛",
+      "任何读取都必须立刻看到最新写入",
+      "系统会自动理解并解决所有并发写入冲突"
+    ],
+    "correctText": "对。最终一致性承诺的是收敛条件，不是每次读取立刻相同，也不是替业务决定冲突。",
+    "wrongText": "再看一遍：旧读窗口、收敛时间和冲突规则都需要单独设计，不能从“最终”两个字里自动推出来。",
+    "promptTitle": "给一次旧读画出边界",
+    "prompt": "选一个订单、库存或社交动态场景，写出主副本、复制延迟、读取路径和并发写入规则；说明用户可能看到什么旧值、何时需要强读或 read-your-writes，以及冲突如何留下证据并完成补偿。",
+    "relatedSlugs": [
+      "database",
+      "replication",
+      "cache",
+      "queue",
+      "idempotency",
+      "retry"
+    ]
   }
 ]

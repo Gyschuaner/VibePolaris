@@ -55,7 +55,7 @@ import { LoadBalancerTermPage, AuthTermPage, AuthorizationTermPage } from '@/com
 import { SessionTermPage, JwtTermPage, OAuthTermPage } from '@/components/terms/IdentityConceptPages';
 import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
-import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage, PromptInjectionTermPage, CompilerTermPage, InterpreterTermPage, TranspilerTermPage, BuildToolTermPage, BundlerTermPage, DevServerTermPage, HotReloadTermPage, HmrTermPage, DependencyTermPage, SemanticVersioningTermPage } from '@/components/terms/AiStackConceptPages';
+import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage, PromptInjectionTermPage, CompilerTermPage, InterpreterTermPage, TranspilerTermPage, BuildToolTermPage, BundlerTermPage, DevServerTermPage, HotReloadTermPage, HmrTermPage, DependencyTermPage, SemanticVersioningTermPage, TransformerTermPage, AttentionTermPage, InferenceTermPage, PretrainingTermPage, KvCacheTermPage, AgentWorkflowTermPage, BackpressureTermPage, DeadLetterQueueTermPage, EventualConsistencyTermPage } from '@/components/terms/AiStackConceptPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
 import { AcidTermPage, ColumnTermPage, NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
@@ -79,6 +79,22 @@ import { DnsRecordTermPage } from "@/components/terms/backend-boundary-pages/dns
 import { DnsResolverTermPage } from "@/components/terms/backend-boundary-pages/dns-resolver";
 import { CacheControlTermPage } from "@/components/terms/backend-boundary-pages/cache-control";
 import { MimeTypeTermPage } from "@/components/terms/backend-boundary-pages/mime-type";
+import { FeatureFlagTermPage } from "@/components/terms/feature-flag-pages/feature-flag-page";
+import { UnitTestTermPage } from "@/components/terms/unit-test-pages/unit-test-page";
+import { IntegrationTestTermPage } from "@/components/terms/integration-test-pages/integration-test-page";
+import { E2eTestTermPage } from "@/components/terms/e2e-test-pages/e2e-test-page";
+import { SmokeTestTermPage } from "@/components/terms/smoke-test-pages/smoke-test-page";
+import { RegressionTestTermPage } from "@/components/terms/regression-test-pages/regression-test-page";
+import { TestCaseTermPage } from "@/components/terms/test-case-pages/test-case-page";
+import { MockTermPage } from "@/components/terms/mock-pages/mock-page";
+import { AssertionTermPage } from "@/components/terms/assertion-pages/assertion-page";
+import { CodeCoverageTermPage } from "@/components/terms/code-coverage-pages/code-coverage-page";
+import { ApiTestingTermPage } from "@/components/terms/api-testing-pages/api-testing-page";
+import { LeastPrivilegeTermPage } from "@/components/terms/least-privilege-pages/least-privilege-page";
+import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
+import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
+import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
+import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -141,6 +157,15 @@ const articleTermPages = {
   hmr: HmrTermPage,
   dependency: DependencyTermPage,
   'semantic-versioning': SemanticVersioningTermPage,
+  transformer: TransformerTermPage,
+  attention: AttentionTermPage,
+  inference: InferenceTermPage,
+  pretraining: PretrainingTermPage,
+  "kv-cache": KvCacheTermPage,
+  "agent-workflow": AgentWorkflowTermPage,
+  backpressure: BackpressureTermPage,
+  "dead-letter-queue": DeadLetterQueueTermPage,
+  "eventual-consistency": EventualConsistencyTermPage,
   "repo-commit": RepoCommitTermPage,
   branch: BranchTermPage,
   "working-tree": WorkingTreeTermPage,
@@ -196,6 +221,22 @@ const articleTermPages = {
   "dns-resolver": DnsResolverTermPage,
   "cache-control": CacheControlTermPage,
   "mime-type": MimeTypeTermPage,
+  "feature-flag": FeatureFlagTermPage,
+  "unit-test": UnitTestTermPage,
+  "integration-test": IntegrationTestTermPage,
+  "e2e-test": E2eTestTermPage,
+  "smoke-test": SmokeTestTermPage,
+  "regression-test": RegressionTestTermPage,
+  "test-case": TestCaseTermPage,
+  "mock": MockTermPage,
+  "assertion": AssertionTermPage,
+  "code-coverage": CodeCoverageTermPage,
+  "api-testing": ApiTestingTermPage,
+  "least-privilege": LeastPrivilegeTermPage,
+  "hashing": HashingTermPage,
+  "input-validation": InputValidationTermPage,
+  "encryption-at-rest": EncryptionAtRestTermPage,
+  "encryption-in-transit": EncryptionInTransitTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,
