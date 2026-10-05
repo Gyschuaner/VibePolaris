@@ -105,6 +105,16 @@ import { DockerfileTermPage } from "@/components/terms/dockerfile-pages/dockerfi
 import { InfrastructureAsCodeTermPage } from "@/components/terms/infrastructure-as-code-pages/infrastructure-as-code-page";
 import { CdnTermPage } from "@/components/terms/cdn-pages/cdn-page";
 import { VisualRegressionTestingTermPage } from "@/components/terms/visual-regression-testing-pages/visual-regression-testing-page";
+import { CascadeTermPage } from "@/components/terms/cascade-pages/cascade-page";
+import { SpecificityTermPage } from "@/components/terms/specificity-pages/specificity-page";
+import { PositioningTermPage } from "@/components/terms/positioning-pages/positioning-page";
+import { ModuleTermPage } from "@/components/terms/module-pages/module-page";
+import { HydrationTermPage } from "@/components/terms/rendering-pages/hydration-page";
+import { CsrTermPage } from "@/components/terms/rendering-pages/csr-page";
+import { SsrTermPage } from "@/components/terms/rendering-pages/ssr-page";
+import { SsgTermPage } from "@/components/terms/rendering-pages/ssg-page";
+import { RoutingTermPage } from "@/components/terms/rendering-pages/routing-page";
+import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-storage-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -128,6 +138,16 @@ const articleTermPages = {
   'infrastructure-as-code': InfrastructureAsCodeTermPage,
   cdn: CdnTermPage,
   'visual-regression-testing': VisualRegressionTestingTermPage,
+  cascade: CascadeTermPage,
+  specificity: SpecificityTermPage,
+  positioning: PositioningTermPage,
+  module: ModuleTermPage,
+  hydration: HydrationTermPage,
+  csr: CsrTermPage,
+  ssr: SsrTermPage,
+  ssg: SsgTermPage,
+  routing: RoutingTermPage,
+  'local-storage': LocalStorageTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

@@ -249,24 +249,43 @@
     "rewriteRisk": "medium",
     "nearDuplicates": ["css", "positioning", "css-grid"]
   },
-  {
-    "slug": "cascade",
-    "mechanism": "浏览器先按来源和重要性筛选声明，再比较级联层、作用域邻近度、优先级和出现顺序，选出每个属性的级联值。",
-    "misconception": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
-    "demoSignature": "建议 5 帧：同一按钮收到 user-agent、作者层、layer、inline 四叠声明；用户逐个启用规则，候选先按来源与重要性分组，再按层、优先级、顺序淘汰；最终声明点亮，改层顺序后胜者随之变化。",
-    "sourceUrls": ["https://www.w3.org/TR/css-cascade-6/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["specificity", "css-selector", "css"]
-  },
-  {
-    "slug": "specificity",
-    "mechanism": "同一层叠来源中的选择器按 ID、类/属性/伪类、类型/伪元素三个列依次比较，而不是把所有字符简单相加。",
-    "misconception": "优先级不是 CSS 的全部权重，也不是选择器越长越高；:where() 甚至始终贡献零优先级。",
-    "demoSignature": "建议 4 帧：把 #app .button、.toolbar .button、main button 放入三列计分器；用户点击任一选择器，ID、类、元素三格分别计数；三组数值按位比较，胜者给按钮着色；补一个 !important 后提示它属于层叠而非权重。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["cascade", "css-selector", "css"]
-  },
+{
+  "slug": "cascade",
+  "mechanism": "浏览器先按来源和重要性筛选声明，再比较级联层、优先级、作用域邻近度和出现顺序，为同一属性留下一个级联值。",
+  "misconception": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
+  "demoSignature": "5 帧首图按来源→作者层→主题层→未分层→行内值逐步点亮；工作台可把普通候选逐张放入，切换 !important 后让普通区暂停、重要声明进入独立比较区，并支持重置回到第一张重新播放，显示当前 color 与每条声明的淘汰理由。",
+  "sourceUrls": [
+    "https://www.w3.org/TR/css-cascade-6/",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
+    "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Cascade_layers",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "specificity",
+    "css-selector",
+    "css"
+  ]
+},
+{
+  "slug": "specificity",
+  "mechanism": "同一来源、重要性和层里的候选规则，先按 ID、类/属性/伪类、元素/伪元素三列从左到右比较；:where() 归零，:is() 取参数中的最高值。",
+  "misconception": "优先级不是把选择器字符数相加，也不是规则越长就必胜；来源、层、重要性或作用域已经分出胜负时，三列还没有出场。",
+  "demoSignature": "selector: 4 frames; actors=当前选择器/三列分数/目标按钮/比较结果; phases=拆成三列→ID先胜→:where归零→:is取最高; action=切换一个选择器并观察胜出列",
+  "sourceUrls": [
+    "https://www.w3.org/TR/selectors-4/",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/:where",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/:is"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "cascade",
+    "css-selector",
+    "css"
+  ]
+},
     {
     "slug": "flexbox",
     "mechanism": "Flex 容器先沿主轴收集直接子项，计算 flex-basis 与正/负自由空间，再按 grow 或 shrink 分配；flex-wrap 开启后分成独立 flex line，交叉轴负责对齐。",
@@ -306,14 +325,23 @@
     ]
   },
   {
-    "slug": "positioning",
-    "mechanism": "定位元素先确定 positioning scheme 和 containing block，再用 inset 属性计算偏移；absolute/fixed 会改变其在普通流中的参与方式。",
-    "misconception": "position:absolute 不是相对最近父元素，而是相对最近建立定位包含块的祖先；sticky 还受滚动容器约束。",
-    "demoSignature": "建议 4 帧：角标起初贴在页面右上角，用户依次点击祖先盒；成为 containing block 的盒子高亮，角标飞回卡片角；移除父级 relative，参考框扩到视口，top/right 数值不变但最终位置明显改变。",
-    "sourceUrls": ["https://www.w3.org/TR/css-position-3/"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["box-model", "css-grid", "css"]
-  },
+  "slug": "positioning",
+  "mechanism": "定位先选择 static、relative、absolute、fixed 或 sticky 的方案，再根据方案确定 containing block 和 inset 偏移；同时决定元素是否继续占据普通流空间。",
+  "misconception": "top/left 只是偏移，不决定参照系；absolute 找不到定位祖先会向外寻找包含块，sticky 也需要滚动容器、阈值和空间才能贴住。",
+  "demoSignature": "position: 5 frames; actors=容器/定位卡片/包含块/视口/滚动边界; phases=普通流→保留原位置→寻找包含块→贴住视口→滚动阈值贴住; action=切换定位方式并观察参照标签与占位变化",
+  "sourceUrls": [
+    "https://www.w3.org/TR/css-position-3/",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/position",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Display/Containing_block",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/inset"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "css",
+    "box-model",
+    "layout"
+  ]
+},
     {
     "slug": "breakpoint",
     "mechanism": "断点是 media feature 条件改变布局规则的临界值；应从内容第一次拥挤、溢出或操作距离失效的位置反推，并在失效前切换。",
@@ -438,8 +466,8 @@
     "slug": "module",
     "mechanism": "模块加载器解析静态 import/export 形成依赖图，每个模块只求值一次，并用 live binding 连接导入与导出。",
     "misconception": "import 不是复制值，也不是简单把文件文本拼接；循环依赖可能暴露尚未初始化的 binding。",
-    "demoSignature": "建议 5 帧：三个文件先解析 export/import，再连成依赖图并按顺序 evaluate；用户修改导出变量，导入模块的 live binding 同步变化；切换为手工复制值的对照栏，旧值保持不动；循环依赖时未初始化节点另行标红。",
-    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webappapis.html#integration-with-the-javascript-module-system", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules"],
+    "demoSignature": "network: 5 frames; actors=三个模块文件/依赖图/求值顺序/live binding/初始化回路; phases=画出依赖→各自求值→接上绑定→结果回来→回路先停下; action=更新导出变量并切换循环依赖",
+    "sourceUrls": ["https://tc39.es/ecma262/#sec-modules", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export"],
     "rewriteRisk": "high",
     "nearDuplicates": ["javascript", "bundler", "code-splitting"]
   },
@@ -485,8 +513,8 @@
     "slug": "hydration",
     "mechanism": "客户端框架在服务器已有 HTML 上重建组件与状态对应关系、注册事件并校验首轮输出，通常复用 DOM 而非全部重建。",
     "misconception": "页面可见不等于已水合可交互；服务端与客户端首轮内容不同会产生 hydration mismatch。",
-    "demoSignature": "建议 5 帧：服务器 HTML 先落入页面，按钮可见但交互线为灰色；JS 下载并执行后，组件节点与事件逐个连接变绿；用户制造服务器与客户端时间不一致，文本节点闪动并标出 mismatch，改成稳定输入后连接正常。",
-    "sourceUrls": ["https://react.dev/reference/react-dom/client/hydrateRoot"],
+    "demoSignature": "network: 5 frames; actors=服务器 HTML/现有 DOM/客户端 JS/事件处理/不一致检查; phases=HTML 先可见→客户端匹配→事件接通→首屏不一致→输入稳定; action=切换首轮输入并连接事件",
+    "sourceUrls": ["https://react.dev/reference/react-dom/client/hydrateRoot", "https://react.dev/reference/react-dom/server/renderToPipeableStream", "https://nextjs.org/docs/messages/react-hydration-error"],
     "rewriteRisk": "high",
     "nearDuplicates": ["ssr", "csr", "module"]
   },
@@ -494,8 +522,8 @@
     "slug": "csr",
     "mechanism": "服务器返回页面壳和脚本，浏览器下载、解析、执行应用代码，再请求数据并生成主要 DOM；后续路由可在客户端更新。",
     "misconception": "CSR 不是没有服务器，也不是 SPA 的唯一特征；初始内容、SEO 和可交互时间取决于完整请求链。",
-    "demoSignature": "建议 5 帧：CSR 瀑布依次出现 HTML 壳、JS、API、DOM，页面预览在最后一步才填入内容；用户调高 CPU slowdown，解析 JS 的空白段被拉长；右侧 SSR 对照先出现文章正文，最终用两条刻度标出内容可见与可交互时间。",
-    "sourceUrls": ["https://react.dev/reference/react-dom/client/createRoot"],
+    "demoSignature": "timeline: 5 frames; actors=HTML 壳/JavaScript/数据接口/内容 DOM/可交互页面; phases=先收到空壳→下载并执行→脚本再取数→内容填入 DOM→内容可交互; action=推进浏览器请求链并切换 CPU 速度",
+    "sourceUrls": ["https://react.dev/reference/react-dom/client/createRoot", "https://developer.mozilla.org/en-US/docs/Glossary/CSR", "https://web.dev/articles/rendering-on-the-web"],
     "rewriteRisk": "high",
     "nearDuplicates": ["ssr", "hydration", "code-splitting"]
   },
@@ -503,8 +531,8 @@
     "slug": "ssr",
     "mechanism": "服务器为每个请求读取上下文与数据并生成 HTML 流或字符串，浏览器先呈现内容，再加载客户端代码完成交互。",
     "misconception": "SSR 不保证更快，也不自动减少客户端 JavaScript；慢数据依赖会推迟首字节。",
-    "demoSignature": "建议 5 帧：一次 SSR 请求被拆成 server data、render、HTML stream、hydrate；用户拖慢数据源，首字节与正文出现时间后移；打开流式边界时外壳先送达、慢内容后补；最终分别标记内容可见和按钮可用的时刻。",
-    "sourceUrls": ["https://react.dev/reference/react-dom/server/renderToPipeableStream"],
+    "demoSignature": "pipeline: 5 frames; actors=页面请求/服务端数据/服务端渲染/HTML 流/客户端接管; phases=请求带上下文→慢数据拖住→外壳先流出→客户端接管→两条时间线; action=增加数据延迟并打开流式边界",
+    "sourceUrls": ["https://react.dev/reference/react-dom/server/renderToPipeableStream", "https://nextjs.org/docs/app/building-your-application/rendering/server-components", "https://web.dev/articles/rendering-on-the-web"],
     "rewriteRisk": "high",
     "nearDuplicates": ["csr", "ssg", "hydration"]
   },
@@ -512,8 +540,8 @@
     "slug": "ssg",
     "mechanism": "构建阶段枚举页面路径、读取内容并产出静态 HTML；访问时 CDN/服务器直接返回既有文件，内容更新依赖重新构建或再生成。",
     "misconception": "SSG 不是“没有 JavaScript”的网站，也不适合必须按当前用户或每秒数据生成的页面。",
-    "demoSignature": "建议 4 帧：左侧内容文件从 v1 改成 v2，右侧 CDN 仍保存构建时生成的 v1 HTML；刷新页面结果不变；用户点击重新构建，产物版本戳更新并替换 CDN；下一次请求才显示 v2。",
-    "sourceUrls": ["https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation"],
+    "demoSignature": "timeline: 5 frames; actors=文档源文件/构建任务/静态 HTML/CDN/访问请求; phases=内容改成 v2→刷新仍拿旧文件→重新构建→发布到 CDN→下一次看到 v2; action=推进构建与发布",
+    "sourceUrls": ["https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation", "https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration", "https://web.dev/articles/rendering-on-the-web"],
     "rewriteRisk": "high",
     "nearDuplicates": ["ssr", "deploy", "cache"]
   },
@@ -521,8 +549,8 @@
     "slug": "routing",
     "mechanism": "路由器把 URL 的路径、参数和查询与规则表匹配，选择页面或处理器；客户端路由还通过 History API 改变地址而不整页刷新。",
     "misconception": "路由不等于导航菜单，也不负责用户授权；URL 匹配成功后仍需加载数据和校验权限。",
-    "demoSignature": "建议 5 帧：地址栏输入 /products/42?tab=stock，路径令牌逐段进入路由树，提取 route、id、query 后点亮商品页；用户改成未知路径时落到 404；关闭登录态后同一路径先进入鉴权分支，并保存返回地址。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/API/History_API", "https://nextjs.org/docs/app/building-your-application/routing"],
+    "demoSignature": "tree: 5 frames; actors=地址栏/路由树/参数结果/访问检查/目标页面/404; phases=拆出路径→读查询参数→检查访问→打开目标页→未知路径; action=切换 URL 分支并观察参数与回退",
+    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/API/History_API", "https://nextjs.org/docs/app/building-your-application/routing", "https://url.spec.whatwg.org/"],
     "rewriteRisk": "high",
     "nearDuplicates": ["user-flow", "ssr", "ssg"]
   },
@@ -550,8 +578,8 @@
     "slug": "local-storage",
     "mechanism": "浏览器按 origin 保存同步字符串键值，数据跨页面会话保留；同源其他文档的修改可触发 storage 事件。",
     "misconception": "localStorage 不是安全保险箱，也不是数据库；同步读写会阻塞主线程，且对象需序列化。",
-    "demoSignature": "建议 5 帧：两个同源标签页共享一个 localStorage 盒，A 写入 theme 后 B 收到 storage 事件并换色；把 B 切到不同 origin，盒子分裂且不再同步；直接存对象时值变成 [object Object]，点击 JSON 序列化后恢复结构。",
-    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webstorage.html"],
+    "demoSignature": "memory: 5 frames; actors=标签页 A/localStorage/标签页 B/另一来源/storage 事件; phases=按 origin 分盒→A 写入 theme→换到另一来源→值先变字符串→下次仍能恢复; action=切换 origin 与序列化方式",
+    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webstorage.html", "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage", "https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event"],
     "rewriteRisk": "high",
     "nearDuplicates": ["cookie", "design-token", "app-permission"]
   },
