@@ -55,6 +55,12 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(atlas, /CaretRight/);
   assert.match(atlas, /aria-label=\{detailOpen \? "收起新闻详情" : "展开新闻详情"\}/);
   assert.match(atlas, /news-atlas-timeline-item.*onClick=\{\(\) => selectArticle\(article\.slug\)\}/s);
+  assert.match(atlas, /rangePresets/);
+  assert.match(atlas, /article\.eventDate >= activeRange\.start && article\.eventDate <= activeRange\.end/);
+  assert.match(atlas, /timelineGroups/);
+  assert.match(atlas, /news-atlas-day/);
+  assert.match(atlas, /const denseGraph = nodes\.length > 180/);
+  assert.match(atlas, /const labelsNeedFocus = nodes\.length > 24/);
   assert.match(atlas, /if \(!visible \|\| !from \|\| !to\) return null/);
   assert.match(atlas, /selectedSlug === slug && detailOpen/);
   assert.match(atlas, /detailOpen && selected \? `news:\$\{selected\.slug\}`/);
@@ -66,6 +72,8 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(styles, /\.news-atlas-specks \{ z-index: 1; pointer-events: none; \}/);
   assert.match(styles, /\.news-atlas-world \{ position: absolute; z-index: 3;/);
   assert.match(styles, /\.news-atlas-world\.is-reframing \{ transition: transform \.55s/);
+  assert.match(styles, /\.news-atlas-dates \{ align-self: start;.*overflow-y: auto;/);
+  assert.match(styles, /\.news-atlas-map \{ align-self: start; height: clamp\(560px/);
   assert.doesNotMatch(styles, /\.news-atlas-timeline-list::before/);
   assert.doesNotMatch(styles, /\.news-atlas-connector/);
   assert.match(atlas, /Boolean\(selectedNodeSlug\) && showLines && connected/);
