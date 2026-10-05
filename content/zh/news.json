@@ -37902,6 +37902,512 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-search-result-content-blocks-ga-20250808",
+    "title": "Anthropic 宣布 Claude API 与 Vertex AI 的搜索结果内容块已移出 Beta",
+    "summary": "Anthropic 8 月 8 日宣布，Claude API 和 Vertex AI 的搜索结果内容块移出 Beta，RAG 工具返回的搜索结果可以带着来源信息进入 Claude，并生成自然引用；`search-results-2025-06-09` beta header 也不再必需。这个变化稳定了检索接口，却没有替团队核验来源、覆盖权限或保证每个回答都正确。",
+    "body": "8 月 8 日，Anthropic 在 Claude Platform release notes 中宣布，搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta。它不是新模型，也不是一个新的搜索引擎，而是工具把检索结果交给 Claude 时的一种正式接口：结果可以带着来源信息进入上下文，Claude 再在回答里生成自然引用。\n\n这项能力最初在 7 月 3 日以 Beta 形式发布。过去，做 RAG 的团队常常要把搜索结果重新包装成普通文本，再在提示词里要求模型记住标题、链接和出处。搜索结果内容块把这些信息作为结构化内容传进去，模型可以同时看到可读的片段和来源归属，引用链少了一层手工拼接。\n\n移出 Beta 的直接变化是接入方式：`search-results-2025-06-09` 这个 beta header 不再必需。对已经接入的团队来说，这减少了一个版本开关；对新项目来说，搜索结果内容块可以按正式 API 能力来设计。不过官方这条记录只点名 Claude API 和 Vertex AI，不能顺手推成所有 Claude 产品或所有托管平台都在同一天具备相同能力。\n\n“能引用”仍然不等于“答案已核验”。检索器可能漏掉关键文档，搜索片段可能过期，权限过滤也可能没有覆盖到每个来源。模型把链接放进回答，只说明它拿到了来源信息；团队还要检查来源是否支持对应结论、用户是否有权看到内容，以及没有结果或来源冲突时系统会怎么回答。\n\n对 RAG 应用来说，这次更新把重点从“怎样拼出引用”移向“怎样管理证据”。日志应保留查询、返回的来源、最终引用和权限判断；评估集要覆盖无结果、重复结果、过期页面和相互矛盾的材料。接口进入稳定阶段后，证据链的质量仍由检索、授权和复核共同决定。",
+    "publishedAt": "2025-08-08",
+    "eventDate": "2025-08-08",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-search-result-content-blocks-ga-20250808.svg",
+      "alt": "搜索结果内容块把检索片段、来源和 Claude 回答引用接到同一条 RAG 证据链",
+      "sourceUrl": "/images/news/anthropic-search-result-content-blocks-ga-20250808.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "api-stability",
+        "title": "这是 API 接口进入稳定阶段",
+        "body": "Anthropic 8 月 8 日宣布搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta。它更新的是工具结果进入模型上下文的方式，不是新模型发布或新的搜索服务。",
+        "kind": "narrative"
+      },
+      {
+        "id": "structured-results",
+        "title": "搜索结果和来源信息一起进入上下文",
+        "body": "工具可以返回带来源归属的搜索结果内容块，Claude 读取片段时也能看到标题、链接等证据线索。相比把结果手工拼成普通文本，结构化内容减少了一层引用信息的转录。",
+        "kind": "technical"
+      },
+      {
+        "id": "rag-history",
+        "title": "它把 7 月 3 日的 Beta 能力正式化",
+        "body": "7 月 3 日 Anthropic 首次以 Beta 方式开放搜索结果内容块，目标是让 RAG 应用使用自然引用并减少自建知识库的文档包装。8 月 8 日的变化是稳定化和去掉 Beta 接入门槛。",
+        "kind": "comparison"
+      },
+      {
+        "id": "header-scope",
+        "title": "Beta header 不再必需，但覆盖范围仍按平台看",
+        "body": "`search-results-2025-06-09` 不再需要发送。官方条目只列出 Claude API 和 Vertex AI，不能把这条记录扩写成所有 Claude 产品或所有托管平台同日获得相同能力。",
+        "kind": "boundary"
+      },
+      {
+        "id": "evidence-governance",
+        "title": "自动引用不替代来源、权限和冲突检查",
+        "body": "检索结果可能过期、缺页或相互矛盾，模型也可能把不充分的片段写成完整结论。应用仍要记录来源、过滤用户无权访问的内容，并在无结果或冲突时停下来说明。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一次带引用的 RAG 回答怎样走完证据链？",
+      "question": "搜索工具、内容块、模型和权限检查分别负责什么？",
+      "steps": [
+        {
+          "label": "提出查询",
+          "detail": "用户的问题先被转换成检索请求，并带上租户、文档和权限范围。",
+          "evidence": "RAG retrieval boundary"
+        },
+        {
+          "label": "返回内容块",
+          "detail": "搜索工具把相关片段和来源信息放进 search result content block，而不是只给模型一段无出处的文字。",
+          "evidence": "Anthropic search result content blocks"
+        },
+        {
+          "label": "生成带引用回答",
+          "detail": "Claude 根据片段回答，并在适合的位置保留来源引用；引用指向的是检索到的证据，不是模型凭空生成的链接。",
+          "evidence": "Anthropic says Claude can automatically cite search result sources"
+        },
+        {
+          "label": "检查证据和权限",
+          "detail": "应用核对引用是否真正支持结论、来源是否仍有效，以及用户是否有权查看对应内容。",
+          "evidence": "Citation and access-control governance boundary"
+        },
+        {
+          "label": "处理缺失或冲突",
+          "detail": "没有结果、结果过期或来源相互矛盾时，系统应说明不确定性、请求补充或交给人工复核。",
+          "evidence": "RAG failure handling boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    "relatedSlugs": [
+      "tools",
+      "agent",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://platform.claude.com/docs/en/release-notes/overview",
+        "claim": "Anthropic 8 月 8 日宣布搜索结果内容块在 Claude API 和 Vertex AI 上移出 Beta，并取消 beta header 要求。",
+        "excerpt": "Search result content blocks are out of beta on the Claude API and Vertex AI. The beta header `search-results-2025-06-09` is no longer required."
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/release-notes/overview",
+        "claim": "Anthropic 7 月 3 日以 Beta 发布搜索结果内容块，用于 RAG 自然引用和来源归属。",
+        "excerpt": "We've launched search result content blocks in beta, enabling natural citations for RAG applications ... Claude will automatically cite these sources in its responses."
+      }
+    ],
+    "canonicalUrl": "https://platform.claude.com/docs/en/release-notes/overview",
+    "sourceHash": "sha256:c0c6189f4600b745bef08c71c5c4f4d27cf1cd6ed28271bc8c5f88f75b1f4e5f"
+  },
+  {
+    "slug": "google-vertex-ai-gemini-fine-tuning-20250808",
+    "title": "Google Vertex AI 为 Gemini 2.5 Flash-Lite 与 Pro 增加监督微调支持",
+    "summary": "Google Cloud 8 月 8 日在 Vertex AI release notes 中写明，Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 现在支持监督微调。企业可以用带标签的样本把现有模型调整到更具体的任务和输出格式，但这不是新模型发布，也没有同时公布训练规模、价格、配额或效果提升；上线前仍要自己准备数据、评估结果并限制访问。",
+    "body": "8 月 8 日，Google Cloud 在 Vertex AI release notes 中加入一条平台能力更新：Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 现在支持监督微调。它们仍是原来的两个模型，变化在于团队可以提交带标签的示例，让模型针对一个定义清楚的任务调整输出方式。\n\n监督微调和在提示词里多写几条规则不是一回事。提示词是在每次调用时说明要求，微调则把一批输入和期望输出放进训练流程，让模型在之后的调用中更稳定地遵循某种格式或行为。比如固定分类标签、结构化摘要或一套内部客服表达，都可能适合先定义样本再评估，而不是把一长段说明反复塞进上下文。\n\n这条更新给了 Flash-Lite 和 Pro 同一条定制入口，却没有替团队做业务决策。样本是否覆盖真实输入、标签是否一致、训练后是否在边界案例上退化，都要由使用方验证。一个模型在测试集上更听话，也不代表它会自动掌握公司的权限、知识库或最新数据；需要实时信息时，仍然要通过检索、工具和访问控制来补齐。\n\n官方 release notes 没有在这一天公布训练数据量、任务耗时、价格、配额，也没有给出微调后准确率或成本变化。Vertex AI 的文档说明，监督微调适合有明确任务和标注数据的场景，但“支持”只说明平台可以启动这条流程，不等于每个团队都能得到同样的收益。\n\n对工程团队来说，值得先做的是把验收标准写在训练之前：哪些样本用于训练，哪些样本留作验证，错误时要回退到哪个基础模型，谁能读取数据和调用微调后的版本。模型定制把控制点从提示词推进到数据和权重，发布责任也随之从“会不会回答”扩展到“凭什么这样回答、出了错如何撤回”。",
+    "publishedAt": "2025-08-08",
+    "eventDate": "2025-08-08",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-vertex-ai-gemini-fine-tuning-20250808.svg",
+      "alt": "Vertex AI 用带标签样本把 Gemini 2.5 模型接入监督微调流程",
+      "sourceUrl": "/images/news/google-vertex-ai-gemini-fine-tuning-20250808.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "platform-update",
+        "title": "这是 Vertex AI 的能力更新，不是新模型发布",
+        "body": "Google Cloud 8 月 8 日写明 Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 支持监督微调。两个模型本身没有在这条 release note 中换代，变化是团队可以把带标签的数据接入定制流程。",
+        "kind": "narrative"
+      },
+      {
+        "id": "labeled-examples",
+        "title": "监督微调用样本教模型稳定完成一个任务",
+        "body": "输入和期望输出组成带标签样本，训练流程据此调整模型的行为。固定分类、结构化摘要和特定表达方式是常见的任务形态，前提是团队能把“正确答案”写清楚并持续维护。",
+        "kind": "technical"
+      },
+      {
+        "id": "prompt-versus-tuning",
+        "title": "它和写更长的提示词解决的是不同问题",
+        "body": "提示词在调用时提供规则，监督微调把规则和示例沉淀进定制模型。微调不能自动补上实时知识、工具权限或公司的业务流程；这些仍要靠检索、工具和访问控制。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evidence-boundary",
+        "title": "“支持”不等于已经证明效果更好",
+        "body": "8 月 8 日的 release note 没有公布训练规模、耗时、价格、配额、准确率或成本变化。平台能启动微调流程，和某个团队在真实数据上获得稳定收益，是两件需要分别验证的事。",
+        "kind": "boundary"
+      },
+      {
+        "id": "governance-loop",
+        "title": "数据、评估和回退要在上线前写清楚",
+        "body": "团队需要划分训练集与验证集，检查标签一致性和边界案例，限制数据与定制模型的访问，并保留回退到基础模型的路径。定制权重增加了可控性，也增加了审计和撤回责任。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "synthetic-data",
+      "title": "一批带标签样本怎样变成可验收的定制模型？",
+      "question": "从准备数据到决定上线，中间哪些步骤不能省？",
+      "steps": [
+        {
+          "label": "定义任务",
+          "detail": "先把输入、期望输出和不应回答的边界写清楚，确认这个问题适合用监督微调解决。",
+          "evidence": "Google describes supervised fine-tuning as suited to well-defined tasks with labeled data"
+        },
+        {
+          "label": "准备带标签样本",
+          "detail": "为每个输入配上可复核的目标输出，覆盖真实表达、难例和拒答情况，并记录数据来源与访问权限。",
+          "evidence": "Supervised fine-tuning uses labeled examples to adapt model behavior"
+        },
+        {
+          "label": "分出验证数据",
+          "detail": "把一部分样本留到训练后再测，避免只看模型记住训练样本的结果。",
+          "evidence": "Evaluation boundary for tuning jobs"
+        },
+        {
+          "label": "比较基础模型",
+          "detail": "用相同的验证集比较基础模型与微调版本，检查准确性、格式稳定性、拒答和边界案例。",
+          "evidence": "Tuned-model evaluation and validation metrics"
+        },
+        {
+          "label": "控制发布与回退",
+          "detail": "限制谁能调用定制模型，记录版本和数据集；出现回归时切回基础模型并保留审计记录。",
+          "evidence": "Model governance and rollback boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google Cloud",
+      "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes"
+    },
+    "relatedSlugs": [
+      "llm",
+      "tools",
+      "event",
+      "data-pipeline"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes",
+        "claim": "Google Cloud 8 月 8 日的 Vertex AI release note 写明 Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 支持监督微调。",
+        "excerpt": "August 08, 2025: Gemini 2.5 Flash-Lite and Gemini 2.5 Pro now support supervised fine-tuning."
+      },
+      {
+        "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning",
+        "claim": "Google 文档将监督微调定义为用带标签数据调整模型行为，并强调它适合任务明确、拥有标注数据的场景；本文用作概念解释，不把后续文档中的限制和价格倒推为 8 月 8 日公告内容。",
+        "excerpt": "Supervised fine-tuning is a good option when you have a well-defined task with available labeled data."
+      }
+    ],
+    "canonicalUrl": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes",
+    "sourceHash": "sha256:5d6c259b69c36e7caeac5b359da25f60a24af97e1b394947814601df33ab84a6"
+  },
+  {
+    "slug": "openai-chatgpt-agent-enterprise-edu-20250808",
+    "title": "OpenAI 将 ChatGPT 智能体扩展到 Enterprise 与 Edu 方案",
+    "summary": "OpenAI Enterprise/Edu release notes 记录，ChatGPT agent 从 7 月 17 日已开放的 Plus、Pro、Team 方案，扩展到 Enterprise 与 Edu。智能体可以代表用户浏览公开网站、处理上传文件、使用连接的第三方来源，并执行填表或编辑表格等线上任务，但 8 月 8 日的记录没有新增席位、地区或价格细节；组织真正要做的是权限、数据、审批和审计配置。",
+    "body": "8 月 8 日，OpenAI 在 Enterprise 与 Edu 的 release notes 中记录 ChatGPT agent 已向这两类方案开放。它是一次方案覆盖扩展，不是重新发布一个 Agent。7 月 17 日的条目已经说明，Plus、Pro 和 Team 用户可以让 ChatGPT 代为浏览公开网站、处理上传文件、使用连接的第三方来源，并完成填表或编辑表格等复杂线上任务。\n\n对企业和学校来说，变化首先发生在谁可以使用这套能力。一个能打开网页、读取文件并执行操作的 Agent，权限边界比普通问答更长：它可能看到用户本来不会逐项复制到聊天框的信息，也可能在外部网站留下提交、修改或预约记录。方案可用只说明入口打开，具体哪些账号、地区、连接器和动作能用，还要看组织设置和后续 rollout。\n\n8 月 8 日的官方条目只记录方案可用，没有列出新增价格、席位数量或地区清单，也没有说 Enterprise 与 Edu 获得了不同于 Plus、Pro、Team 的新工具。把这条消息理解成“更多组织可以开始配置和试用”更准确。学校和企业仍然要决定哪些资料允许 Agent 读取，哪些网站可以访问，哪些动作必须在提交前再次确认。\n\nAgent 的风险不只在回答错了一个事实。它可能选错网页、把旧文件当成新文件、在表格里改错一格，或者在用户没有意识到的情况下继续执行下一步。组织需要把浏览、文件、连接器和写入动作分开授权，给高影响操作设置确认点，并保留可以回看的运行记录。\n\n这次扩展的后续证据，应来自真实的 Enterprise 和 Edu 工作流：管理员如何配置，教师和员工能看到什么，系统在不确定时是否停下来询问，错误动作如何撤销。Agent 进入更多方案，意味着试点范围扩大，治理工作也一起扩大。",
+    "publishedAt": "2025-08-08",
+    "eventDate": "2025-08-08",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-chatgpt-agent-enterprise-edu-20250808.svg",
+      "alt": "ChatGPT agent 从个人方案扩展到 Enterprise 与 Edu，网页、文件和连接器动作仍需组织治理",
+      "sourceUrl": "/images/news/openai-chatgpt-agent-enterprise-edu-20250808.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "plan-expansion",
+        "title": "8 月 8 日变化是方案覆盖，不是新 Agent",
+        "body": "OpenAI Enterprise/Edu release notes 记录 ChatGPT agent 向 Enterprise 与 Edu 开放。浏览网站、处理文件、使用连接器和执行表格动作等能力在 7 月 17 日已经写入首发说明。",
+        "kind": "narrative"
+      },
+      {
+        "id": "action-surface",
+        "title": "Agent 读到的信息和留下的动作都更长",
+        "body": "Agent 可能读取公开网站、上传文件和连接器内容，也可能在外部网站填表或编辑表格。权限边界不只决定它知道什么，还决定它能替用户改变什么。",
+        "kind": "technical"
+      },
+      {
+        "id": "availability-boundary",
+        "title": "方案可用不等于每个账号马上拥有同样入口",
+        "body": "官方 8 月 8 日条目只写方案可用，没有给出新增席位、地区、价格或具体 rollout 清单。组织还要查看计划设置、连接器开关和管理员策略，不能把“可用”读成全员自动开通。",
+        "kind": "comparison"
+      },
+      {
+        "id": "approval-and-audit",
+        "title": "高影响动作要有确认点和运行记录",
+        "body": "浏览、文件读取、连接器访问和写入动作应分开授权，提交、修改或预约等动作在执行前需要确认，并留下可以回看的日志。",
+        "kind": "boundary"
+      },
+      {
+        "id": "enterprise-evidence",
+        "title": "真正的效果要看组织试点怎样运行",
+        "body": "后续应观察管理员配置、教师和员工能看到什么、系统何时停下来询问，以及错误动作怎样撤销。扩展到更多方案同时扩大了试点和治理范围。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "组织怎样给 ChatGPT agent 划出可执行的边界？",
+      "question": "从读取资料到改动外部系统，每一步应该由谁确认？",
+      "steps": [
+        {
+          "label": "配置方案与账号",
+          "detail": "管理员先确认 Enterprise 或 Edu 方案、地区和连接器是否开放，再决定哪些用户进入试点。",
+          "evidence": "OpenAI Enterprise and Edu release notes"
+        },
+        {
+          "label": "划分读取权限",
+          "detail": "把公开网站、上传文件和第三方连接器分开授权，明确哪些资料可以被 Agent 使用。",
+          "evidence": "ChatGPT agent July 17 capability description"
+        },
+        {
+          "label": "设置动作确认",
+          "detail": "浏览可以自动进行，填表、编辑表格、提交或预约等会改变外部系统的动作应在执行前停下来确认。",
+          "evidence": "Agent action boundary"
+        },
+        {
+          "label": "保留审计与撤销",
+          "detail": "记录 Agent 看过什么、调用了哪些工具、做了哪些修改，并准备人工接管和撤销路径。",
+          "evidence": "Enterprise governance requirement"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI Help Center",
+      "url": "https://help.openai.com/en/articles/10128477-chatgpt-enterprise-and-edu-release-notes"
+    },
+    "relatedSlugs": [
+      "agent",
+      "tools",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://help.openai.com/en/articles/10128477-chatgpt-enterprise-and-edu-release-notes",
+        "claim": "OpenAI Enterprise/Edu release notes 记录 2025 年 8 月 8 日 ChatGPT agent 已适用于 Enterprise 与 Edu 方案；该条目只说明方案扩展。",
+        "excerpt": "OpenAI Help Center, August 8, 2025: ChatGPT agent is now available for Enterprise and Edu plans; the entry records plan availability."
+      },
+      {
+        "url": "https://help.openai.com/en/articles/10128477-chatgpt-enterprise-and-edu-release-notes",
+        "claim": "同一页面回顾 7 月 17 日向 Plus、Pro、Team 开放的 Agent 能力，包括浏览公开网站、处理上传文件、连接第三方来源、填表和编辑表格；官方说明这些操作仍由用户掌控。",
+        "excerpt": "The July 17 entry describes complex online tasks across public websites, uploaded files, connected third-party sources, forms, and spreadsheets, while keeping the user in control."
+      }
+    ],
+    "canonicalUrl": "https://help.openai.com/en/articles/10128477-chatgpt-enterprise-and-edu-release-notes",
+    "sourceHash": "sha256:38e4a083a3ce9b651b88df04a6bb73fc8560f9fa53c47de9cd60a88e6554726f"
+  },
+  {
+    "slug": "softbank-foxconn-ohio-stargate-20250808",
+    "title": "SoftBank 据报道收购富士康俄亥俄工厂，拟服务 Stargate AI 基础设施",
+    "summary": "Bloomberg Law 8 月 8 日报道称，SoftBank 买下富士康在俄亥俄州的一座工厂，计划把它用于与 OpenAI、Oracle 相关的 Stargate AI 基础设施。报道说富士康此前以约 3.75 亿美元出售工厂，但 SoftBank 和富士康没有立即确认交易；工厂最终用途、时间表和是否会成为数据中心都不能当成已落地事实。",
+    "body": "8 月 8 日，Bloomberg Law 报道 SoftBank 买下富士康在俄亥俄州的一座工厂，计划借此推动与 OpenAI、Oracle 相关的 Stargate AI 基础设施。报道把这笔交易放在 AI 数据中心和服务器供应链的背景下，但 SoftBank 和富士康没有立即确认，工厂最终会承担什么用途也没有被双方公开说明。\n\n如果报道属实，它说明 Stargate 这类 AI 基础设施计划开始寻找具体的土地、厂房和供应链入口。AI 计算需求不只需要模型和 GPU，还需要电力、冷却、网络、机架组装、维护团队和地方许可。收购一座已有工业设施，可能缩短部分准备时间，却不能自动解决这些环节。\n\n报道还提到富士康此前以约 3.75 亿美元出售这座工厂，但买方当时没有公开。这个价格和 SoftBank 的买入关系属于报道中的交易背景，不应被读成双方已经公布了完整合同或投资金额。更不能从“拟服务 Stargate”直接推断工厂已经开始建设、已经安装服务器或已经获得电力接入。\n\n这条消息的证据层级和 8 月 7 日的 GPT-5、Azure Foundry 公告不同。前者是公司和政府直接发布的产品或平台事件，这次是媒体对潜在交易和基础设施计划的报道。对读者来说，最重要的不是先猜工厂会装多少 GPU，而是区分已报道、已确认和仍待确认的三层信息。\n\n后续可以观察交易文件、SoftBank 或富士康的正式声明、地方许可、电力和网络建设，以及 Stargate 的项目时间表。只有这些证据出现，俄亥俄工厂才会从一条基础设施报道变成可以评估的 AI 运行节点。",
+    "publishedAt": "2025-08-08",
+    "eventDate": "2025-08-08",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/softbank-foxconn-ohio-stargate-20250808.svg",
+      "alt": "SoftBank 据报道收购俄亥俄工厂，Stargate AI 基础设施仍等待交易与建设证据",
+      "sourceUrl": "/images/news/softbank-foxconn-ohio-stargate-20250808.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "reported-deal",
+        "title": "现在能确认的是一条媒体报道",
+        "body": "Bloomberg Law 8 月 8 日报道称 SoftBank 买下富士康俄亥俄工厂，并计划推动 Stargate AI 基础设施。SoftBank 和富士康没有立即确认，文章不把报道写成双方已公布的交易公告。",
+        "kind": "narrative"
+      },
+      {
+        "id": "infrastructure-stack",
+        "title": "AI 基础设施还需要电力、冷却和维护",
+        "body": "厂房只是入口，数据中心或服务器设施还要解决电力接入、冷却、网络、机架、供应链、地方许可和维护团队。买下一座工业设施不能自动完成这些工作。",
+        "kind": "technical"
+      },
+      {
+        "id": "price-boundary",
+        "title": "报道里的交易价格和用途都要保留来源边界",
+        "body": "报道提到富士康此前以约 3.75 亿美元出售工厂，但买方未公开。价格、买入关系、最终用途和 Stargate 时间表都不是双方已确认的完整合同信息。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evidence-level",
+        "title": "它和产品公告属于不同证据层级",
+        "body": "GPT-5 或 Azure Foundry 的公告由产品方直接发布，这次是媒体对潜在交易和基础设施计划的报道。应分开记录已报道、已确认和待确认的信息。",
+        "kind": "boundary"
+      },
+      {
+        "id": "follow-up-proof",
+        "title": "交易文件和地方建设记录才是下一步证据",
+        "body": "正式声明、交易文件、地方许可、电力和网络建设、服务器进场以及 Stargate 时间表，才能证明工厂是否真的成为 AI 运行节点。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "一座工厂怎样变成 AI 基础设施节点？",
+      "question": "从媒体报道到可以运行的计算设施，中间要看到哪些证据？",
+      "steps": [
+        {
+          "label": "核对交易",
+          "detail": "先看买方、卖方、交易文件和双方声明，区分媒体消息、未确认计划和已经完成的所有权变化。",
+          "evidence": "Bloomberg Law report and attribution boundary"
+        },
+        {
+          "label": "确认用途",
+          "detail": "确认设施是数据中心、服务器组装、供应链节点还是其他用途，不能从 Stargate 名称推断具体设计。",
+          "evidence": "Reported-use uncertainty"
+        },
+        {
+          "label": "检查建设条件",
+          "detail": "查看电力、冷却、网络、地方许可、设备交付和维护团队是否具备，厂房本身只是其中一项。",
+          "evidence": "AI infrastructure stack"
+        },
+        {
+          "label": "观察运行证据",
+          "detail": "只有服务器进场、项目时间表和可复核的运行信息出现后，才能评估它对 Stargate 或区域算力的实际作用。",
+          "evidence": "Infrastructure verification boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Bloomberg Law",
+      "url": "https://news.bloomberglaw.com/artificial-intelligence/softbank-buys-foxconns-ohio-plant-to-jumpstart-stargate-ai-push"
+    },
+    "relatedSlugs": [
+      "event",
+      "tools",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://news.bloomberglaw.com/artificial-intelligence/softbank-buys-foxconns-ohio-plant-to-jumpstart-stargate-ai-push",
+        "claim": "Bloomberg Law 8 月 8 日报道称 SoftBank 买下富士康俄亥俄工厂，拟推动与 OpenAI、Oracle 相关的 Stargate AI 基础设施；SoftBank 和富士康未立即确认。",
+        "excerpt": "Bloomberg Law, August 8, 2025: SoftBank reportedly bought Foxconn's Ohio plant to boost its Stargate AI push; the companies did not immediately confirm."
+      },
+      {
+        "url": "https://news.bloomberglaw.com/artificial-intelligence/softbank-buys-foxconns-ohio-plant-to-jumpstart-stargate-ai-push",
+        "claim": "报道提到富士康此前以约 3.75 亿美元出售工厂，但此前买方未公开；最终用途、建设时间表和数据中心部署仍待确认。",
+        "excerpt": "The report describes Foxconn's prior sale and leaves the final use, construction timetable, and data-center deployment subject to confirmation."
+      }
+    ],
+    "canonicalUrl": "https://news.bloomberglaw.com/artificial-intelligence/softbank-buys-foxconns-ohio-plant-to-jumpstart-stargate-ai-push",
+    "sourceHash": "sha256:d8431e518abd9d130757f814ccc882e3f98fb5900e31776b7c9f82c1d3f47ce0"
+  },
+  {
+    "slug": "soundhound-vision-ai-20250808",
+    "title": "SoundHound 推出 Vision AI，将实时视觉理解接入语音对话平台",
+    "summary": "SoundHound 8 月 8 日推出 Vision AI，把摄像头看到的内容接入 Polaris 语音识别、语言理解、Agent 编排和语音合成流程，试图让语音助手同时理解声音、语言和环境。官方列出免手排障、零售库存、车载发现和个性化点餐等场景，但没有公开独立准确率或客户部署数字，实际体验还取决于摄像头、网络、权限和现场噪声。",
+    "body": "8 月 8 日，SoundHound 推出 Vision AI，把视觉输入接到它原有的语音对话平台里。用户对着设备说话时，系统可以同时接收摄像头画面，再把画面线索交给 Polaris 的语音识别、语言理解、Agent 编排和语音合成链路。变化不在于多了一张图片，而在于语音 Agent 开始把“我听到了什么”和“我看到了什么”放在同一个任务里处理。\n\n官方给出的流程很像一条新的输入通道：声音先被识别成文本，视觉模块补充物体、状态或环境信息，语言理解和 Agent 编排决定下一步要查什么、问什么或执行什么，最后再用语音回应。这样的链路适合需要边看边说的场景，但每多一层处理，就多一处可能出错的地方。画面没拍全、用户指代不清、网络延迟或工具权限不足，都可能让对话走错。\n\nSoundHound 列出的例子包括免手设备排障、零售库存检查、车载环境中的商品发现，以及根据用户偏好完成个性化 drive-thru 点单。这些例子说明它想把视觉理解放进已有的语音入口，而不是单独做一个图片问答页面。具体产品能否工作，还要看摄像头位置、商品和设备的覆盖范围，以及系统在不确定时会不会停下来确认。\n\n这份官方公告没有给出独立的准确率、延迟或客户部署数据。Vision AI 的“实时”和“更自然”属于产品描述，不能直接等同于所有场景都能稳定识别。尤其在车载和点单等任务里，错误的物体或价格判断会直接影响用户决策，语音流畅并不能掩盖视觉判断的风险。\n\n这次发布值得关注的地方，是语音 Agent 的输入边界被扩大了。下一步要看的是产品如何征得摄像头同意、如何保存或删除画面、在画面和语音矛盾时优先相信谁，以及企业能否拿出真实工作流中的错误记录。视觉只是新的感知入口，任务是否安全完成仍然需要权限、工具和人工复核。",
+    "publishedAt": "2025-08-08",
+    "eventDate": "2025-08-08",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/soundhound-vision-ai-20250808.svg",
+      "alt": "SoundHound Vision AI 把摄像头视觉、语音理解和 Agent 编排接到同一条对话链路",
+      "sourceUrl": "/images/news/soundhound-vision-ai-20250808.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "vision-entry",
+        "title": "Vision AI 给语音 Agent 增加一条视觉输入",
+        "body": "SoundHound 把摄像头画面接入 Polaris 语音识别、语言理解、Agent 编排和语音合成流程。用户可以边看边说，系统再把声音和画面放在同一个任务里处理。",
+        "kind": "narrative"
+      },
+      {
+        "id": "orchestration-loop",
+        "title": "视觉线索要经过理解、编排和工具权限",
+        "body": "声音被识别成文本后，视觉模块补充物体或环境信息，语言理解和 Agent 编排决定下一步。画面不完整、指代不清、网络延迟或工具权限不足，都可能在这条链路上造成错误。",
+        "kind": "technical"
+      },
+      {
+        "id": "official-scenarios",
+        "title": "官方示例覆盖排障、库存、车载和点单",
+        "body": "SoundHound 列出免手设备排障、零售库存、车载发现和个性化 drive-thru 等场景。它们说明产品方向，不等于每个行业已经完成部署或验证。",
+        "kind": "comparison"
+      },
+      {
+        "id": "evidence-boundary",
+        "title": "实时和自然是产品描述，不是独立指标",
+        "body": "这份官方公告没有给出独立准确率、延迟或客户部署数字。Vision AI 的“实时”和“更自然”属于产品描述，不能直接等同于所有场景都能稳定识别。视觉识别在车载和点单任务里出现错误时，可能直接影响用户决策，需要用真实工作流测试。",
+        "kind": "boundary"
+      },
+      {
+        "id": "privacy-and-control",
+        "title": "摄像头同意与画面处理要进入 Agent 规则",
+        "body": "产品需要说明何时打开摄像头、画面保存多久、语音与画面冲突时如何处理，以及任务失败时谁来确认。新的感知入口不会自动完成权限和人工复核。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "语音 Agent 怎样同时听见和看见？",
+      "question": "从摄像头画面到语音回答，中间有哪些需要确认的步骤？",
+      "steps": [
+        {
+          "label": "取得同意",
+          "detail": "应用先说明何时使用摄像头和麦克风、画面是否保存，并让用户可以随时停止感知。",
+          "evidence": "Vision input consent boundary"
+        },
+        {
+          "label": "合并感知",
+          "detail": "Polaris 识别语音，视觉模块读取画面线索，系统把两种输入放进同一个任务上下文。",
+          "evidence": "SoundHound Vision AI announcement"
+        },
+        {
+          "label": "编排下一步",
+          "detail": "语言理解和 Agent 编排判断是否需要查询库存、检查设备或调用其他工具，并依据权限执行。",
+          "evidence": "SoundHound agent orchestration stack"
+        },
+        {
+          "label": "确认再回答",
+          "detail": "当画面不清楚、信息冲突或动作有风险时，系统应先追问或转人工，再用语音给出结果。",
+          "evidence": "Multimodal task verification boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "SoundHound",
+      "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform"
+    },
+    "relatedSlugs": [
+      "streaming-output",
+      "agent",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+        "claim": "SoundHound 8 月 8 日宣布 Vision AI，把实时视觉理解接入 Polaris 语音识别、语言理解、Agent 编排和语音合成平台。",
+        "excerpt": "SoundHound, August 8, 2025: Vision AI brings real-time visual understanding to its conversational AI platform and integrates with Polaris."
+      },
+      {
+        "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+        "claim": "SoundHound 列出的场景包括免手设备排障、零售库存、车载发现和个性化 drive-thru；这份官方公告没有给出独立准确率或客户部署数字。",
+        "excerpt": "The announcement lists hands-free troubleshooting, retail inventory, in-car discovery, and personalized drive-thru use cases, without independent accuracy or customer-deployment figures."
+      }
+    ],
+    "canonicalUrl": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+    "sourceHash": "sha256:1b458899518bf6fa32c867f73b5768b84f9306a99ddc6e64772f6ad734dc8b4f"
+  },
+  {
     "slug": "google-active-learning-data-reduction-20250807",
     "title": "Google Research 用主动学习将 LLM 微调样本从 10 万降至 500 以下",
     "summary": "Google Research 8 月 7 日介绍一套主动学习和高保真标签方法，在不安全广告分类实验中把训练样本从 10 万减少到 500 以下，并称生产观察中最多可少用几个数量级的数据。发布页标题里的“10,000x”是其概括，正文案例集中在特定分类任务和模型，不能直接外推成所有 LLM 微调都只需几百条样本。",
