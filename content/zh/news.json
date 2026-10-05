@@ -37902,6 +37902,128 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "qwen-image-edit-open-source-20250818",
+    "title": "Qwen-Image-Edit 开源：中文海报里的字也能按指令改",
+    "summary": "Qwen 官方仓库记录，Qwen-Image-Edit 于 2025 年 8 月 18 日开源；次日博客补充了模型说明。它基于 20B Qwen-Image，把输入图像同时送入 Qwen2.5-VL 和 VAE Encoder，分别承担视觉语义控制与外观控制，支持单图的语义编辑、局部外观编辑，以及中英文文字增删改。官方示例还展示了用框选和多轮链式编辑逐步纠正书法字符。公开权重降低了试用门槛，但博客中的 benchmark 和效果仍属于 Qwen 自己的发布口径。",
+    "body": "图片编辑模型真正难的地方，往往不是把画面变得更“像”，而是只改用户指定的那一处，其他内容还要保持住。Qwen 官方仓库在 8 月 18 日记录 Qwen-Image-Edit 开源，第二天的产品博客进一步解释了它怎样把已有的生成模型改造成单图编辑工具。\n\nQwen-Image-Edit 建立在 20B 的 Qwen-Image 之上。官方说明里，输入图像会同时进入 Qwen2.5-VL 和 VAE Encoder：前者负责理解图像里的语义关系，后者负责保留和控制外观。这个分工对应两种看起来相反的编辑需求——一类允许整体画面变化，只要人物、物体和风格保持一致；另一类只动一个局部，其他区域尽量不变。\n\n博客把前一类称为语义编辑，例如旋转物体、做风格转换或围绕一个角色继续创作；后一类是外观编辑，例如添加或删除元素、改衣服或背景，要求指定区域之外的画面保持稳定。把两类任务放到同一个入口里，用户不必先判断自己要调用哪一套编辑器，但系统仍需要知道“允许改多少”。\n\n文字编辑是这次发布特别强调的能力。Qwen 声称模型可以直接增删改图片中的中文和英文文字，同时尽量保留原来的字体、字号和风格。对于菜单、海报和截图来说，这比重新生成一张相似图片更接近实际工作：用户要改的是一个词、一行价格或一个字符，而不是把整个版面交给模型重新猜。\n\n官方博客还展示了一个很诚实的使用流程：书法图中的生僻字第一次没有被正确修正，使用者随后用框选把错误的偏旁圈出来，再让模型只处理这一小块，通过多轮链式编辑逐步得到正确结果。这里的重点不是“一次生成就完美”，而是让编辑任务可以拆成可观察、可回退的小步骤。\n\n开源并不等于所有团队都能零成本部署。20B 模型的显存、推理速度、权重许可和依赖版本都需要单独评估，官方仓库后来还提示早期编辑结果存在表现偏差，并建议使用提示改写来提高稳定性。Qwen 博客中的 SOTA benchmark 和示例展示了发布方的结果，不能替代自己的图片、字体、遮罩和长链路回归。\n\nQwen-Image-Edit 的实际价值，在于它把“改图”从一次性生成变成了可以逐步校正的工作流。团队若要把它接进内容生产，最好记录原图、每轮指令、局部范围和最终审核；这样出了错时能回到上一版，也能判断问题来自语义理解、外观保持还是文字渲染。",
+    "publishedAt": "2025-08-18",
+    "eventDate": "2025-08-18",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/qwen-image-edit-open-source-20250818.svg",
+      "alt": "Qwen-Image-Edit 将图像送入语义与外观两条控制路径，通过框选和多轮编辑修正海报文字",
+      "sourceUrl": "/images/news/qwen-image-edit-open-source-20250818.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "open-source-date",
+        "title": "8 月 18 日先发生的是开源，博客说明在次日补充",
+        "body": "Qwen-Image-Edit 的官方仓库将开源日期记为 2025 年 8 月 18 日；Qwen 产品博客页面显示 8 月 19 日，用于介绍模型结构、示例和使用入口。文章按仓库记录的开源日归档。",
+        "kind": "narrative"
+      },
+      {
+        "id": "two-control-paths",
+        "title": "Qwen2.5-VL 管语义，VAE Encoder 管外观",
+        "body": "官方说明把输入图像同时送入 Qwen2.5-VL 和 VAE Encoder，分别承担视觉语义控制与视觉外观控制，为“整体改变但保持角色”和“局部改变但保留其他区域”提供不同控制重点。",
+        "kind": "technical"
+      },
+      {
+        "id": "semantic-appearance",
+        "title": "语义编辑和外观编辑允许的变化不一样",
+        "body": "旋转物体、风格迁移和围绕角色创作属于语义编辑；增删元素、改背景或衣服属于外观编辑，通常要求未指定区域尽量不变。两类任务共用入口，验收标准仍应分开。",
+        "kind": "comparison"
+      },
+      {
+        "id": "text-editing",
+        "title": "中英文文字可以直接增删改",
+        "body": "Qwen 声称支持中文和英文文字编辑，并尽量保留原字体、字号和风格。它更接近改菜单、海报或截图中的一行字，而不是重新生成一张相似的版面。",
+        "kind": "example"
+      },
+      {
+        "id": "chained-correction",
+        "title": "框选和链式编辑让生僻字可以逐步修正",
+        "body": "官方示例中，生僻字第一次没有修对，使用者再框选错误偏旁，让模型只处理局部，通过多轮编辑逐步收敛。这种流程保留了回退和人工确认的位置。",
+        "kind": "technical"
+      },
+      {
+        "id": "deployment-boundary",
+        "title": "开源权重不等于部署与质量都没有门槛",
+        "body": "20B 模型的显存、推理速度、依赖版本和许可需要单独评估；官方后来提示早期表现偏差并建议提示改写。博客 benchmark 和示例属于发布方口径，不能替代自己的回归测试。",
+        "kind": "boundary"
+      },
+      {
+        "id": "edit-audit",
+        "title": "生产接入要保留每轮编辑的证据",
+        "body": "记录原图、指令、局部范围和版本，才能在文字变形、背景误改或语义漂移时回退，并判断问题来自哪条控制路径。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "一次可控的图片编辑怎样从整图走到局部纠错？",
+      "question": "用户只想改一个字或一个物体时，模型如何避免把整张图重新猜一遍？",
+      "steps": [
+        {
+          "label": "上传原图与指令",
+          "detail": "把原图、要改的内容和允许变化的范围写清楚，先区分是语义编辑还是外观编辑。",
+          "evidence": "Qwen-Image-Edit supports semantic and appearance editing"
+        },
+        {
+          "label": "提取语义关系",
+          "detail": "Qwen2.5-VL 负责理解物体、文字、位置和指令之间的关系，确定用户指的是哪一部分。",
+          "evidence": "Qwen2.5-VL is used for visual semantic control"
+        },
+        {
+          "label": "保持视觉外观",
+          "detail": "VAE Encoder 提供外观控制，让未指定区域、纹理和布局有机会保持稳定。",
+          "evidence": "The VAE Encoder is used for visual appearance control"
+        },
+        {
+          "label": "框选局部再编辑",
+          "detail": "若整步修改仍有错误，可以框选字符或局部区域，缩小下一轮的编辑范围。",
+          "evidence": "The official example uses bounding boxes for step-by-step correction"
+        },
+        {
+          "label": "比较版本后确认",
+          "detail": "保存每轮结果，检查文字、未指定区域和语义一致性，再决定是否进入发布或继续修正。",
+          "evidence": "Official examples demonstrate chained editing rather than one-shot perfection"
+        }
+      ]
+    },
+    "source": {
+      "name": "QwenLM GitHub 官方仓库",
+      "url": "https://github.com/QwenLM/Qwen-Image"
+    },
+    "relatedSlugs": [
+      "llm",
+      "tools",
+      "eval",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://github.com/QwenLM/Qwen-Image",
+        "claim": "Qwen 官方仓库记录 Qwen-Image-Edit 于 2025 年 8 月 18 日开源，并提供本地、Qwen Chat 与 HuggingFace Demo 入口。",
+        "excerpt": "2025.08.18: We’re excited to announce the open-sourcing of Qwen-Image-Edit"
+      },
+      {
+        "url": "https://qwenlm.github.io/blog/qwen-image-edit/",
+        "claim": "Qwen 博客说明模型基于 20B Qwen-Image，使用 Qwen2.5-VL 与 VAE Encoder，支持语义/外观编辑和中英文文字编辑。",
+        "excerpt": "Built upon our 20B Qwen-Image model ... supports bilingual (Chinese and English) text editing"
+      },
+      {
+        "url": "https://github.com/QwenLM/Qwen-Image",
+        "claim": "官方仓库的后续说明提示编辑结果可能出现表现偏差，并建议使用提示改写提高稳定性；本文将其作为部署边界而非 8/18 首发功能。",
+        "excerpt": "We have observed performance misalignments ... strongly recommend applying prompt rewriting"
+      }
+    ],
+    "canonicalUrl": "https://github.com/QwenLM/Qwen-Image",
+    "sourceHash": "sha256:70e4446dd4bfb52a4aff51086c9347b9b4418a9aa332efdde7b42a90121b0fd4"
+  },
+  {
     "slug": "anthropic-claude-end-harmful-conversations-20250815",
     "title": "Claude Opus 4/4.1 增加极端对话退出机制：最后手段结束消费端会话",
     "summary": "Anthropic 在 2025 年 8 月 15 日披露，Claude Opus 4 和 4.1 在消费端聊天界面获得结束少数会话的能力。触发条件是用户持续提出极端有害或辱骂请求、模型多次拒绝和重定向仍无法形成有效互动；模型只能把结束会话作为最后手段，且不用于用户可能即将自伤或伤人的情况。Anthropic 将这项能力视为 AI welfare 与对齐研究中的持续实验，不等于模型拥有自主权或已证明存在主观感受。",
