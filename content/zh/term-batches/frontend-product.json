@@ -597,33 +597,103 @@
     "promptTitle": "降低选择器覆盖成本", "prompt": "请列出下面 CSS 冲突中各选择器的优先级，找出不必要的高优先级写法，并改成容易维护的类选择器结构。",
     "relatedSlugs": ["cascade", "css-selector", "css"]
   },
-  {
-    "zh": "弹性布局", "en": "Flexbox", "slug": "flexbox", "cat": "前端",
-    "say": "Flexbox 擅长把一组元素沿一个主方向排列、对齐和分配剩余空间。",
-    "aliases": ["Flex", "弹性盒", "一维布局"],
-    "question": "一排按钮怎样自动对齐，并在空间不足时换行？",
-    "definition": "Flexbox 是一维布局模型。容器确定主轴和交叉轴，子项根据 flex、对齐和换行规则分配空间。",
-    "boundary": "Flexbox 主要解决单行或单列关系；同时严格控制多行多列时，Grid 通常更合适。",
-    "demoType": "flow", "demoTitle": "按钮组如何分配空间",
-    "demoSteps": [{"label":"建立 Flex 容器","value":"display: flex","note":"子项进入同一主轴。"},{"label":"分配剩余空间","value":"justify-content: space-between","note":"按钮之间的空白自动计算。"},{"label":"处理窄屏","value":"flex-wrap: wrap","note":"空间不足时允许换行。"}],
-    "quizQuestion": "要让一行元素在交叉轴居中，应使用什么？", "quizOptions": ["align-items: center", "justify-content: center", "text-align: center"],
-    "correctText": "align-items 控制 Flex 子项在交叉轴上的对齐。", "wrongText": "justify-content 控制主轴，text-align 主要影响行内内容。",
-    "promptTitle": "调整一组操作按钮的布局", "prompt": "请用 Flexbox 重写下面的按钮组：桌面端右对齐，按钮间距稳定，窄屏允许换行。说明主轴、交叉轴和每条属性的作用。",
-    "relatedSlugs": ["css-grid", "responsive", "breakpoint"]
+      {
+    "zh": "弹性布局",
+    "en": "Flexbox",
+    "slug": "flexbox",
+    "cat": "前端",
+    "say": "让一组东西沿一条主轴自己分配空间：宽了就伸，窄了就收，必要时再换行。",
+    "aliases": [
+      "Flex",
+      "弹性盒",
+      "一维布局"
+    ],
+    "question": "为什么一排按钮会自己挤开、换行，甚至把最后一个按钮推到最右边？",
+    "definition": "Flexbox 是 CSS 的一维布局模型。容器先确定主轴与交叉轴，项目以 flex-basis 为起点，再按正/负自由空间、grow、shrink、对齐和换行规则结算。",
+    "boundary": "Flexbox 一次处理一个方向；要让多行多列共享轨道、跨列或按行列同时对齐，优先看 CSS Grid。",
+    "demoType": "flow",
+    "demoTitle": "三个项目怎样分到同一条主轴",
+    "demoSteps": [
+      {
+        "label": "建立主轴",
+        "value": "display: flex",
+        "note": "直接子项进入同一条主轴，容器也确定了交叉轴。"
+      },
+      {
+        "label": "结算空间",
+        "value": "basis → grow / shrink",
+        "note": "先算基准与自由空间，再决定项目变宽还是变窄。"
+      },
+      {
+        "label": "选择边界",
+        "value": "wrap / column / Grid",
+        "note": "空间不足时明确换行或转向；需要二维轨道时交给 Grid。"
+      }
+    ],
+    "quizQuestion": "容器改成 flex-direction: column 后，哪个属性仍然负责沿主轴分配空白？",
+    "quizOptions": [
+      "justify-content",
+      "align-items",
+      "text-align"
+    ],
+    "correctText": "justify-content 跟着主轴走；主轴变成 column 后，它负责垂直方向的空白。",
+    "wrongText": "align-items 管交叉轴，text-align 管文字内容，二者都不会接管 Flex 主轴。",
+    "promptTitle": "让按钮组在变窄时给出可解释的结果",
+    "prompt": "请用 Flexbox 布置一组操作按钮：说明容器的主轴、每个项目的 flex-basis、grow/shrink 是否开启、300px 时是收缩还是换行，以及键盘顺序为什么不能只靠 order 修正。",
+    "relatedSlugs": [
+      "css-grid",
+      "breakpoint",
+      "media-query"
+    ]
   },
-  {
-    "zh": "网格布局", "en": "CSS Grid Layout", "slug": "css-grid", "cat": "前端",
-    "say": "Grid 先定义行和列，再把内容放进对应区域，适合同时控制两个方向。",
-    "aliases": ["Grid", "CSS 网格", "二维布局"],
-    "question": "卡片墙既要列宽一致，又要在窄屏自动减少列数，怎么写更稳？",
-    "definition": "CSS Grid 是二维布局模型。容器定义轨道、间距和区域，子项可以按行列位置或命名区域排列。",
-    "boundary": "Grid 适合整体行列关系；组件内部的一排图标或按钮仍可能更适合 Flexbox。",
-    "demoType": "state", "demoTitle": "卡片列数随宽度变化",
-    "demoSteps": [{"label":"宽容器","value":"repeat(3, 1fr)","note":"三列平均分配宽度。"},{"label":"使用自动填充","value":"repeat(auto-fit, minmax(16rem, 1fr))","note":"列数由可用宽度决定。"},{"label":"窄容器","value":"一列卡片","note":"卡片最小宽度得到保留。"}],
-    "quizQuestion": "要同时控制页面的行和列，优先考虑什么？", "quizOptions": ["CSS Grid", "float", "text-align"],
-    "correctText": "Grid 可以直接定义二维轨道和区域。", "wrongText": "float 和 text-align 不适合建立完整的二维页面结构。",
-    "promptTitle": "把固定卡片列改为自适应网格", "prompt": "请把下面固定三列布局改为 CSS Grid 自适应方案。卡片不得小于 16rem，容器变窄时自动减少列数，不依赖多个设备断点。",
-    "relatedSlugs": ["flexbox", "responsive", "media-query"]
+    {
+    "zh": "网格布局",
+    "en": "CSS Grid Layout",
+    "slug": "css-grid",
+    "cat": "前端",
+    "say": "先画出行和列，再让每张卡片占自己的格子；需要跨列、留洞或窄屏减列时，关系依然看得见。",
+    "aliases": [
+      "Grid",
+      "CSS 网格",
+      "二维布局"
+    ],
+    "question": "为什么一张卡片跨了两列，后面的卡片就像被“挤”到下一行？",
+    "definition": "CSS Grid 是二维布局模型。容器先定义行、列和轨道，项目再按显式位置或 auto-placement 进入 grid area；跨列、dense、隐式轨道和 minmax 都会参与最终结算。",
+    "boundary": "Grid 适合同时控制行与列、跨轨道和卡片墙；只有一排按钮或一列内部对齐时，Flexbox 的主轴模型通常更直接。",
+    "demoType": "flow",
+    "demoTitle": "卡片怎样占据一张二维座位表",
+    "demoSteps": [
+      {
+        "label": "先画行列轨道",
+        "value": "3 columns × 2 rows",
+        "note": "空间先存在，项目还没有位置。"
+      },
+      {
+        "label": "让项目跨轨道",
+        "value": "grid-column: span 2",
+        "note": "跨列会改变后续 auto-placement 能找到的空位。"
+      },
+      {
+        "label": "处理空格与窄屏",
+        "value": "row / dense / minmax",
+        "note": "dense 能回填洞，minmax 让窄屏减少列而不是压扁内容。"
+      }
+    ],
+    "quizQuestion": "哪种情况最适合用 CSS Grid？",
+    "quizOptions": [
+      "一排按钮沿主轴分配空白",
+      "卡片需要跨列并让多行共享轨道",
+      "只想让一段文字居中"
+    ],
+    "correctText": "同时需要行、列、跨轨道或多行对齐时，Grid 把二维关系写得更清楚。",
+    "wrongText": "一排按钮的主轴分配是 Flexbox 的强项，文字居中也不需要先建立网格。",
+    "promptTitle": "设计一面不会互相打架的卡片墙",
+    "prompt": "请用 CSS Grid 设计卡片墙：说明显式列轨道、跨列卡片、普通 row 与 dense 的取舍、隐式行如何产生，以及容器缩窄时如何用 minmax 保住最小可读宽度。",
+    "relatedSlugs": [
+      "flexbox",
+      "breakpoint",
+      "media-query"
+    ]
   },
   {
     "zh": "定位", "en": "Positioning", "slug": "positioning", "cat": "前端",
@@ -639,33 +709,103 @@
     "promptTitle": "检查浮层的定位参照", "prompt": "请检查下面角标或浮层的定位代码，指出它当前参照哪个包含块，并用最小改动让它固定在目标容器内。",
     "relatedSlugs": ["box-model", "css", "css-grid"]
   },
-  {
-    "zh": "断点", "en": "Breakpoint", "slug": "breakpoint", "cat": "前端",
-    "say": "断点是布局需要改变的宽度位置，应由内容是否放得下决定，而不是照抄设备型号。",
-    "aliases": ["响应式断点", "breakpoint", "屏幕宽度"],
-    "question": "三栏布局应该在多少像素时改成一栏？",
-    "definition": "断点是响应式规则开始或结束的条件值。开发者通常根据内容拥挤、换行或可读性变化选择断点。",
-    "boundary": "断点不是特定手机的永久尺寸，也不是越多越精确；过多断点会增加样式分支。",
-    "demoType": "state", "demoTitle": "内容怎样暴露断点",
-    "demoSteps": [{"label":"宽度充足","value":"三列内容完整显示","note":"当前布局无需调整。"},{"label":"逐步缩窄","value":"标题换行并挤压操作区","note":"内容开始出现可见问题。"},{"label":"设置断点","value":"改成单列或两列","note":"在问题出现前切换布局。"}],
-    "quizQuestion": "选择响应式断点的主要依据是什么？", "quizOptions": ["内容和布局开始失效的位置", "最新手机的屏幕宽度", "一个固定的断点清单"],
-    "correctText": "断点应回应当前内容的实际布局问题。", "wrongText": "设备尺寸可以参考，但不能替代对内容的观察。",
-    "promptTitle": "为页面确定必要断点", "prompt": "请根据下面组件在不同宽度下的表现，找出内容开始拥挤的区间，只保留必要断点，并说明每个断点具体改变哪条布局规则。",
-    "relatedSlugs": ["media-query", "responsive", "adaptive-layout"]
+    {
+    "zh": "断点",
+    "en": "Breakpoint",
+    "slug": "breakpoint",
+    "cat": "前端",
+    "say": "断点不是设备标签，而是内容第一次需要换规则的那条线。",
+    "aliases": [
+      "Breakpoint",
+      "响应式断点",
+      "布局切换点"
+    ],
+    "question": "为什么导航还没到手机宽度就已经挤在一起了？",
+    "definition": "断点是媒体条件改变布局规则的临界值。把内容从宽到窄观察，记录第一次难读、难点按或难操作的位置，在它之前切换布局。",
+    "boundary": "断点只改变样式规则，不复制一套移动端 HTML；能用流体布局、Grid、Flexbox 或 container query 解决时，不必增加媒体断点。",
+    "demoType": "branch",
+    "demoTitle": "内容压力如何画出一条断点",
+    "demoSteps": [
+      {
+        "label": "让内容先承受宽度",
+        "value": "1024 → 840px",
+        "note": "先观察间距与行长，设备名字还不是证据。"
+      },
+      {
+        "label": "记录第一次失效",
+        "value": "640px · overlap",
+        "note": "导航与搜索开始冲突，这才是候选断点的理由。"
+      },
+      {
+        "label": "在失效前改规则",
+        "value": "680px · compact",
+        "note": "提前切换布局，保持同一份内容与阅读顺序。"
+      }
+    ],
+    "quizQuestion": "下面哪种方式最适合决定一个导航断点？",
+    "quizOptions": [
+      "照搬常见手机宽度",
+      "把布局缩到内容第一次拥挤前并记录证据",
+      "每增加一个组件就加一个断点"
+    ],
+    "correctText": "让真实内容从宽到窄变化，在第一次难读或难操作之前切换规则。",
+    "wrongText": "设备尺寸会变化，断点数量也不应跟着组件数量无限增长。",
+    "promptTitle": "为导航找一个有证据的断点",
+    "prompt": "请从 360px 到 1024px 观察这组导航内容，记录第一次冲突的宽度，并说明为什么断点应放在它之前；同时判断是否能用流体布局或 container query 代替全局媒体查询。",
+    "relatedSlugs": [
+      "media-query",
+      "responsive",
+      "adaptive-layout"
+    ]
   },
   {
-    "zh": "媒体查询", "en": "Media Query", "slug": "media-query", "cat": "前端",
-    "say": "媒体查询让 CSS 根据视口宽度、屏幕方向或用户偏好启用不同规则。",
-    "aliases": ["@media", "响应式规则", "media"],
-    "question": "同一个页面怎样在窄屏改为单列，同时尊重减少动画的系统设置？",
-    "definition": "媒体查询使用 @media 检查媒体特征，并在条件成立时应用其中的 CSS 声明。",
-    "boundary": "媒体查询负责条件切换；具体布局仍由 Grid、Flex 或其他 CSS 规则实现。",
-    "demoType": "branch", "demoTitle": "两类条件分别触发",
-    "demoSteps": [{"label":"检查宽度","value":"max-width: 640px","note":"窄屏分支改为单列。"},{"label":"检查用户偏好","value":"prefers-reduced-motion: reduce","note":"减少非必要位移和循环动画。"},{"label":"条件不成立","value":"保留基础样式","note":"默认规则继续生效。"}],
-    "quizQuestion": "要响应用户的减少动画设置，应查询哪个特征？", "quizOptions": ["prefers-reduced-motion", "screen-animation", "motion-speed"],
-    "correctText": "prefers-reduced-motion 是对应的标准媒体特征。", "wrongText": "另外两个名称不是标准媒体特征。",
-    "promptTitle": "补充响应式和减少动画规则", "prompt": "请为下面组件补充两个媒体查询：窄于 640px 时改为单列；用户选择减少动态效果时取消大幅位移。保留原有内容和交互。",
-    "relatedSlugs": ["breakpoint", "reduced-motion", "css-grid"]
+    "zh": "媒体查询",
+    "en": "Media Query",
+    "slug": "media-query",
+    "cat": "前端",
+    "say": "媒体查询让 CSS 先听见环境，再决定哪条规则加入计算。",
+    "aliases": [
+      "@media",
+      "响应式规则",
+      "media"
+    ],
+    "question": "为什么同一份页面会因为宽度、指针和动效偏好改变规则？",
+    "definition": "媒体查询用媒体特征组成条件；条件成立时应用其中的 CSS 声明，条件不成立时回到已有基础规则。",
+    "boundary": "媒体查询负责判断条件，不负责生成布局；列数、间距、提示和动效仍由 Grid、Flexbox 与具体 CSS 属性实现。",
+    "demoType": "branch",
+    "demoTitle": "三个环境开关怎样叠加",
+    "demoSteps": [
+      {
+        "label": "先看基础规则",
+        "value": "860px · hover · no-preference",
+        "note": "默认样式先接住页面，条件还没有改动结果。"
+      },
+      {
+        "label": "逐个命中条件",
+        "value": "560px / hover: none / reduce",
+        "note": "宽度、输入能力和用户偏好分别点亮自己的 CSS 规则。"
+      },
+      {
+        "label": "组合后仍是一份内容",
+        "value": "三条声明叠加",
+        "note": "列数、提示和动效各自改变，DOM 与阅读顺序保持不变。"
+      }
+    ],
+    "quizQuestion": "要让页面尊重用户的减少动画设置，应查询哪个媒体特征？",
+    "quizOptions": [
+      "prefers-reduced-motion",
+      "screen-animation",
+      "motion-speed"
+    ],
+    "correctText": "prefers-reduced-motion 是描述用户减少动态效果偏好的标准媒体特征。",
+    "wrongText": "另外两个名称不是标准媒体特征；媒体查询不会凭空猜一个动画速度。",
+    "promptTitle": "逐个检查一组媒体规则",
+    "prompt": "请先写基础样式，再分别为窄宽度、无 hover 能力和 prefers-reduced-motion 补充媒体规则；说明每条规则只改什么，以及三个条件同时命中时是否仍保持同一份 HTML 和键盘顺序。",
+    "relatedSlugs": [
+      "breakpoint",
+      "reduced-motion",
+      "css-grid"
+    ]
   },
   {
     "zh": "事件", "en": "Event", "slug": "event", "cat": "前端",
@@ -808,32 +948,102 @@
     "relatedSlugs": ["javascript", "bundler", "code-splitting", "library"]
   },
   {
-    "zh": "代码分割", "en": "Code Splitting", "slug": "code-splitting", "cat": "前端",
-    "say": "代码分割把资源包拆成多个部分，只在进入对应页面或功能时加载所需代码。",
-    "aliases": ["拆包", "按路由加载", "动态导入"],
+    "zh": "代码分割",
+    "en": "Code Splitting",
+    "slug": "code-splitting",
+    "cat": "前端",
+    "say": "代码分割把下载时机推到真正的功能边界。",
+    "aliases": [
+      "拆包",
+      "按路由加载",
+      "动态导入"
+    ],
     "question": "用户只打开首页，为什么要先下载后台编辑器的全部代码？",
-    "definition": "代码分割由构建工具根据动态 import、路由或配置生成多个 chunk，减少初次加载需要下载和解析的 JavaScript。",
-    "boundary": "拆得过细会增加请求和调度开销；它也不能替代删除无用依赖或缩小资源本身。",
-    "demoType": "request", "demoTitle": "编辑器代码何时下载",
-    "demoSteps": [{"label":"打开首页","value":"加载基础资源包","note":"编辑器 chunk 暂不请求。"},{"label":"进入编辑页","value":"触发动态 import","note":"浏览器请求对应 chunk。"},{"label":"模块就绪","value":"渲染编辑器","note":"加载状态结束并显示功能。"}],
-    "quizQuestion": "按路由分割代码的主要直接效果是什么？", "quizOptions": ["减少初始页面需要加载的代码", "消除所有网络请求", "让所有模块同时执行"],
-    "correctText": "当前路由不需要的代码可以延后下载和解析。", "wrongText": "分割会产生额外资源请求，也不会让模块全部同时执行。",
-    "promptTitle": "选择合适的代码分割边界", "prompt": "请分析下面路由和依赖体积，找出适合动态导入的页面或重型功能。说明加载占位、失败重试和避免过度拆分的处理。",
-    "relatedSlugs": ["lazy-loading", "bundler", "routing"]
+    "definition": "代码分割由构建工具根据入口、路由或动态 import 生成多个 chunk；当前路径不需要的代码可以延后下载和解析。",
+    "boundary": "它改变下载和执行的时机，不会删除最终功能；拆得过细还会增加请求、调度、loading 和缓存协调成本。",
+    "demoType": "request",
+    "demoTitle": "首页与编辑器何时进入网络瀑布",
+    "demoSteps": [
+      {
+        "label": "首页先可用",
+        "value": "home.js · editor.js 未请求",
+        "note": "当前路径只加载基础入口，编辑器留在动态边界后。"
+      },
+      {
+        "label": "走到功能边界",
+        "value": "import() → editor.js",
+        "note": "用户真的打开编辑器，浏览器才发出 chunk 请求。"
+      },
+      {
+        "label": "模块到达并执行",
+        "value": "loading → ready → cache",
+        "note": "加载状态结束后功能挂上页面，再次打开可以复用缓存。"
+      }
+    ],
+    "quizQuestion": "按路由或功能边界做代码分割，最直接的收益是什么？",
+    "quizOptions": [
+      "减少当前页面初始需要加载的代码",
+      "消除所有网络请求",
+      "让所有模块同时执行"
+    ],
+    "correctText": "当前路径不需要的代码可以延后下载、解析和执行。",
+    "wrongText": "分割仍然会产生按需请求，也不会让模块在用户需要前全部执行。",
+    "promptTitle": "选择合适的代码分割边界",
+    "prompt": "请画出首页到重型编辑器的用户路径，判断哪些代码应留在首包，哪些可以用动态 import 延后；为 loading、失败重试、缓存命中和过度拆分写出验收条件。",
+    "relatedSlugs": [
+      "lazy-loading",
+      "bundler",
+      "routing"
+    ]
   },
   {
-    "zh": "懒加载", "en": "Lazy Loading", "slug": "lazy-loading", "cat": "前端",
-    "say": "懒加载把图片、组件或数据推迟到接近使用时再加载，减轻首屏负担。",
-    "aliases": ["延迟加载", "按需加载", "lazy"],
-    "question": "长页面底部的几十张图片需要在打开页面时全部下载吗？",
-    "definition": "懒加载根据视口、路由或用户操作延后资源请求。常见方式包括图片 loading=lazy、IntersectionObserver 和动态 import。",
-    "boundary": "首屏关键内容不适合一律懒加载，否则可能延迟最大内容绘制并造成布局跳动。",
-    "demoType": "request", "demoTitle": "图片接近视口时加载",
-    "demoSteps": [{"label":"页面打开","value":"保留图片尺寸占位","note":"视口外图片尚未请求。"},{"label":"向下滚动","value":"图片接近观察区域","note":"观察器触发资源加载。"},{"label":"下载完成","value":"真实图片替换占位","note":"预留尺寸避免页面跳动。"}],
-    "quizQuestion": "首屏主图通常应怎样处理？", "quizOptions": ["优先加载并预留尺寸", "一律等用户滚动后加载", "删除宽高信息"],
-    "correctText": "首屏关键图需要及时加载，明确尺寸还能减少布局偏移。", "wrongText": "延迟首屏主图或移除尺寸可能损害加载体验。",
-    "promptTitle": "制定页面资源的懒加载规则", "prompt": "请把下面图片和组件分为首屏关键资源与可延后资源。为可延后项选择原生懒加载、视口观察或动态导入，并补充占位尺寸和失败状态。",
-    "relatedSlugs": ["code-splitting", "loading-state", "visual-hierarchy"]
+    "zh": "懒加载",
+    "en": "Lazy Loading",
+    "slug": "lazy-loading",
+    "cat": "前端",
+    "say": "懒加载让资源等到接近使用时再来，同时把位置和等待状态留在页面上。",
+    "aliases": [
+      "延迟加载",
+      "按需加载",
+      "lazy load"
+    ],
+    "question": "为什么图片还没进入视口，却已经占掉了网络和布局时间？",
+    "definition": "懒加载根据可见性、距离或使用时机延后资源请求；资源到达前保留占位，之后处理 loading、ready、error 和回退。",
+    "boundary": "它优化的是资源获取时机，不是所有资源都该延后；首屏和关键操作需要按优先级正常加载。",
+    "demoType": "request",
+    "demoTitle": "资源从视口外走到 ready",
+    "demoSteps": [
+      {
+        "label": "视口外先等待",
+        "value": "1200px · deferred",
+        "note": "保留盒子和语义，暂不请求低优先级资源。"
+      },
+      {
+        "label": "相交后发请求",
+        "value": "0px · loading",
+        "note": "观察条件成立，网络请求和加载状态出现。"
+      },
+      {
+        "label": "成功或失败都落位",
+        "value": "ready / error · retry",
+        "note": "资源替换占位或显示替代路径，页面位置保持稳定。"
+      }
+    ],
+    "quizQuestion": "下面哪项最适合做懒加载对象？",
+    "quizOptions": [
+      "首屏标题",
+      "用户马上要点的主按钮",
+      "视口外且优先级较低的图片"
+    ],
+    "correctText": "视口外、优先级较低的图片可以等待接近使用时机再请求。",
+    "wrongText": "首屏内容和关键操作延迟后，等待会直接落到用户身上。",
+    "promptTitle": "为一组图片设计可恢复的懒加载",
+    "prompt": "请为视口外图片设计占位、触发阈值、loading、ready、error 和 retry 状态；说明哪些资源不应懒加载，并检查慢网络下的布局稳定和读屏反馈。",
+    "relatedSlugs": [
+      "code-splitting",
+      "container-image",
+      "loading-state"
+    ]
   },
   {
     "zh": "水合", "en": "Hydration", "slug": "hydration", "cat": "前端",
@@ -1642,5 +1852,201 @@
     "correctText": "稳定的淡入或即时切换可以保留反馈并降低不适。", "wrongText": "删除信息或加速动画都不能满足该偏好。",
     "promptTitle": "为页面动画提供减少动态版本", "prompt": "请检查下面动画中的大幅平移、缩放、视差和循环，使用 prefers-reduced-motion 提供淡入或即时状态替代，并保留操作成功、失败和焦点变化。",
     "relatedSlugs": ["microinteraction", "media-query", "a11y"]
+  },
+  {
+    "zh": "Dockerfile",
+    "en": "Dockerfile",
+    "slug": "dockerfile",
+    "cat": "前端",
+    "say": "Dockerfile 把基座、依赖、源码和运行时边界排成一条可复用的构建轨迹。",
+    "aliases": [
+      "Docker 构建文件",
+      "容器构建文件",
+      "镜像构建说明"
+    ],
+    "question": "为什么只改一个源文件，Docker 构建却还要重新安装依赖？",
+    "definition": "Dockerfile 是按顺序执行的构建指令集合。构建器把 FROM、COPY、RUN 等指令及其输入组成层，并根据输入变化决定哪些层可以复用；多阶段构建还能把编译工具留在 build 阶段。",
+    "boundary": "Dockerfile 描述镜像怎样构建，不是运行中的容器，也不等于完整的部署配置。缓存命中、context 范围、运行时权限和秘密管理仍要分别检查。",
+  "demoType": "lifecycle",
+    "demoTitle": "一行输入变化，哪一层需要重建",
+    "demoSteps": [
+      {
+        "label": "先排慢变化输入",
+        "value": "FROM → manifest → RUN install",
+        "note": "依赖清单放在源码前面，安装层才有机会跨源码改动复用。"
+      },
+      {
+        "label": "再放高频源码",
+        "value": "COPY src/ → source layer rebuild",
+        "note": "组件变动只重做后面的层，不把前面的安装一起推倒。"
+      },
+      {
+        "label": "最后收紧边界",
+        "value": "build stage → runtime + .dockerignore",
+        "note": "运行镜像只带产物，context 也先排除日志、依赖和本地秘密。"
+      }
+    ],
+    "quizQuestion": "想让改动一个组件时仍能复用依赖安装层，哪种顺序更合适？",
+    "quizOptions": [
+      "先复制依赖清单并安装，再复制源码",
+      "先复制整个仓库再安装依赖",
+      "每次构建都主动清空所有缓存"
+    ],
+    "correctText": "先把变化慢的 manifest 和安装步骤单独成层，源码变化时后面的层才会重建。",
+    "wrongText": "先复制整个仓库会让源码变化更早打掉缓存；主动清空缓存也会丢掉本来可以复用的结果。",
+    "promptTitle": "检查一个 Dockerfile 的重建边界",
+    "prompt": "请根据下面 Dockerfile 标出每条指令的输入、可能的缓存边界、源码改动和 lockfile 改动分别会重建什么；再检查多阶段 runtime、.dockerignore、非 root 用户和秘密是否被误写进镜像层。",
+    "relatedSlugs": [
+      "container-image",
+      "build-tool",
+      "dependency"
+    ]
+  },
+  {
+    "zh": "基础设施即代码",
+    "en": "Infrastructure as Code",
+    "slug": "infrastructure-as-code",
+    "cat": "前端",
+    "say": "把基础设施的目标、差异和执行边界写进可审查的配置。",
+    "aliases": [
+      "IaC",
+      "基础设施代码化",
+      "声明式基础设施"
+    ],
+    "question": "点击控制台改了三台服务器，怎样让下一次变更仍然可复盘？",
+    "definition": "Infrastructure as Code 用配置描述网络、实例、权限和服务等基础设施的目标状态。工具把配置与当前 state 和提供商现实比较，先生成 plan，再由人或流水线批准 apply。",
+    "boundary": "IaC 管理的是基础设施的声明、比较和执行记录，不自动替代权限、秘密、备份、监控或事故处理；state 也不是可以公开提交的普通日志。",
+  "demoType": "lifecycle",
+    "demoTitle": "从一行副本数到可审查变更",
+    "demoSteps": [
+      {
+        "label": "写下目标",
+        "value": "replicas = 3",
+        "note": "文件表达希望得到的状态，保存时远端资源还没有改变。"
+      },
+      {
+        "label": "先看差异",
+        "value": "plan: +1 / ~1 / -0",
+        "note": "新增、修改和删除先被列成可阅读的候选动作。"
+      },
+      {
+        "label": "执行并留痕",
+        "value": "apply → provider → state",
+        "note": "批准后才执行，真实 ID 和结果回到 state 供下一次比较。"
+      }
+    ],
+    "quizQuestion": "为什么不能看到 plan 后就永远放心地 apply？",
+    "quizOptions": [
+      "计划生成后远端、权限或输入仍可能改变",
+      "plan 会自动删除所有资源",
+      "state 会替你批准每一次变更"
+    ],
+    "correctText": "plan 是某个时间点的预览；执行前仍要确认环境、账号、输入和删除影响。",
+    "wrongText": "plan 不会自动批准或删除资源，state 也只是记录映射，不能代替操作人的判断。",
+    "promptTitle": "审查一份基础设施变更",
+    "prompt": "请从下面 IaC 配置生成一份审查清单：列出资源、依赖、将新增/修改/删除的对象、state 存储和锁定方式、执行账号、秘密来源、回滚与漂移处理。把必须人工确认的边界单独写出。",
+    "relatedSlugs": [
+      "dockerfile",
+      "container-image",
+      "preview-deployment"
+    ]
+  },
+  {
+    "zh": "内容分发网络",
+    "en": "Content Delivery Network",
+    "slug": "cdn",
+    "cat": "前端",
+    "say": "CDN 让内容在离用户更近的缓存里等待，但每次请求仍要经过命中与新鲜度判断。",
+    "aliases": [
+      "内容分发网络",
+      "边缘缓存",
+      "Content Delivery Network"
+    ],
+    "question": "同一个文件为什么有时从边缘返回，有时还要回源？",
+    "definition": "CDN 由分布在不同位置的缓存节点组成。请求先到较近的边缘节点，再按缓存键、响应头和新鲜度决定直接返回副本、向源站取回，还是使用验证器确认副本仍然有效。",
+    "boundary": "CDN 优化的是可缓存响应到用户的距离和回源次数，不替代源站、权限、数据一致性或发布策略；带用户身份的响应不能默认共享。",
+    "demoType": "request",
+    "demoTitle": "一个资源从边缘命中到版本更新",
+    "demoSteps": [
+      {
+        "label": "先查边缘",
+        "value": "GET /app.js → edge lookup",
+        "note": "请求先查缓存键，不代表一定命中。"
+      },
+      {
+        "label": "区分命中与回源",
+        "value": "HIT / MISS → origin",
+        "note": "命中且新鲜时直接返回，未命中才可能取回并写入副本。"
+      },
+      {
+        "label": "发布改变边界",
+        "value": "app.9a2.js 或选择性 purge",
+        "note": "新 URL 或明确清理让用户拿到可解释的版本。"
+      }
+    ],
+    "quizQuestion": "为什么给静态文件名加内容哈希通常比发布时清空全站缓存更稳？",
+    "quizOptions": [
+      "新版本使用新缓存键，旧副本可按策略自然过期",
+      "它会让所有用户都跳过源站",
+      "它能让带身份的响应自动安全共享"
+    ],
+    "correctText": "新 URL 把新版本和旧副本分开，减少大范围清理带来的冷缓存与回源压力。",
+    "wrongText": "版本化 URL 不会让所有请求消失，也不会替带身份内容解决共享缓存风险。",
+    "promptTitle": "检查一个 CDN 发布方案",
+    "prompt": "请按请求路径、缓存键、Cache-Control、ETag、带身份响应、MISS 回源、purge 粒度和带哈希资产逐项审查下面方案；写出旧版本、发布窗口、回滚和冷缓存压力的验收条件。",
+    "relatedSlugs": [
+      "cache-control",
+      "http-header",
+      "preview-deployment"
+    ]
+  },
+  {
+    "zh": "视觉回归测试",
+    "en": "Visual Regression Testing",
+    "slug": "visual-regression-testing",
+    "cat": "前端",
+    "say": "用可重复的截图比较发现界面变化，再由 review 判断它是设计更新还是回归。",
+    "aliases": [
+      "视觉回归",
+      "截图回归测试",
+      "Visual Testing"
+    ],
+    "question": "按钮只挪了 8px，怎样让提交前的检查把它找出来？",
+    "definition": "视觉回归测试在受控环境中渲染页面，保存或读取 baseline，再将候选截图与参照比较，输出差异图和门禁结果。它补充功能、可访问性和端到端测试，不替代这些测试。",
+    "boundary": "截图只观察渲染结果，不能证明接口、键盘流程、权限或数据逻辑正确；浏览器、字体、DPR、动画和随机数据不稳定时，差异会先反映环境问题。",
+    "demoType": "comparison",
+    "demoTitle": "从同一条路径到可审查的 diff",
+    "demoSteps": [
+      {
+        "label": "锁定输入",
+        "value": "1280×800 · Chromium · font ready",
+        "note": "先固定视口、字体、数据和动画状态，避免噪声冒充变化。"
+      },
+      {
+        "label": "比较画面",
+        "value": "baseline ↔ candidate · 18 px changed",
+        "note": "差异图指出位置，阈值只过滤小幅渲染噪声。"
+      },
+      {
+        "label": "做出决定",
+        "value": "修复、批准更新或保留阻断",
+        "note": "把变化放回设计意图、无障碍和响应式边界再决定。"
+      }
+    ],
+    "quizQuestion": "为什么不能看到截图 diff 后直接更新 baseline？",
+    "quizOptions": [
+      "差异可能是回归、环境噪声或未经确认的设计变化",
+      "baseline 会自动修复 CSS",
+      "更新 baseline 会自动测试键盘流程"
+    ],
+    "correctText": "先确认差异的原因和意图，才能避免把真实回归保存成新的参照。",
+    "wrongText": "baseline 只是参照画面，不会自动修复实现，也不能替代功能和可访问性测试。",
+    "promptTitle": "设计一套可解释的视觉回归门禁",
+    "prompt": "请为下面页面定义 baseline、候选路径、视口与 DPR、字体和动画等待、差异阈值、窄屏/减少动态矩阵、review 责任和基线更新规则。列出哪些变化必须阻断，哪些变化需要说明后批准。",
+    "relatedSlugs": [
+      "regression-test",
+      "e2e-test",
+      "usability-testing"
+    ]
   }
 ]

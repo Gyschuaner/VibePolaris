@@ -1,0 +1,93 @@
+.gridHero,
+.gridLab {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  border-radius: 24px;
+  background: radial-gradient(circle at 12% 0%, #e6efe9 0, #f7f1e5 48%, var(--paper) 90%);
+  color: var(--ink);
+}
+
+.gridHero { min-height: 560px; padding: 25px 24px 19px; }
+.gridLab { margin: 34px 0 12px; padding: 24px 22px 20px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 90%, #e5eee9), var(--paper)); }
+.gridHero::before,
+.gridLab::before { content: ""; position: absolute; inset: 15px; border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent); border-radius: 18px; pointer-events: none; }
+.gridHeader { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+.gridHeader strong { padding: 5px 9px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 10%, transparent); color: var(--ink); font: 600 11px ui-monospace, SFMono-Regular, monospace; }
+.gridBoard { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) 42px minmax(0, 1.6fr); gap: 13px; align-items: stretch; min-height: 285px; margin: 24px 0 15px; }
+.gridPanel { min-width: 0; padding: 15px 13px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--paper) 85%, #efe5d3); transition: transform .45s ease, border-color .35s ease, box-shadow .45s ease, background .35s ease; }
+.gridPanel[data-active="true"] { transform: translateY(-5px); border-color: var(--accent-text); box-shadow: 0 13px 24px color-mix(in srgb, var(--accent-text) 11%, transparent); }
+.gridLabel { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; }
+.gridLabel svg { color: var(--accent-text); }
+.gridPanel h3 { margin: 11px 0 6px; font-size: 15px; }
+.gridPanel small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.gridArrow { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--accent-text); font-size: 11px; text-align: center; }
+.gridArrow::before { content: ""; width: 1px; height: 86%; border-left: 1px dashed color-mix(in srgb, var(--accent-text) 30%, transparent); }
+.gridArrow span { position: absolute; top: 50%; transform: translateY(-50%); padding: 3px 2px; background: var(--paper); }
+.gridLedger { display: grid; gap: 8px; margin-top: 14px; padding: 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 7%, transparent); }
+.gridLedger div { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 7px; font: 10px ui-monospace, SFMono-Regular, monospace; color: var(--muted); }
+.gridLedger i { display: block; height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--accent-text), #93b6a3); transition: width .45s ease; }
+.gridLedger div[data-warn="true"] i { background: linear-gradient(90deg, #b86d5c, #e3b29f); }
+.gridCanvas { display: grid; grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); grid-auto-rows: minmax(42px, auto); grid-auto-flow: row; gap: 6px; min-height: 152px; padding: 9px; border: 1px dashed color-mix(in srgb, var(--ink) 25%, transparent); border-radius: 11px; background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--accent-text) 5%, transparent) 0 1px, transparent 1px 49px), color-mix(in srgb, var(--paper) 60%, transparent); transition: grid-template-columns .45s ease, background .3s ease; }
+.gridCanvas[data-dense="true"] { grid-auto-flow: dense; }
+.gridCard { display: flex; flex-direction: column; justify-content: space-between; min-width: 0; min-height: 43px; padding: 8px 8px; border-radius: 9px; background: #dcebe5; color: #24453c; box-shadow: inset 0 0 0 1px color-mix(in srgb, #24453c 8%, transparent); animation: gridCardIn .45s ease both; }
+.gridCard[data-card="b"] { background: #e9e1c9; color: #584a2b; }
+.gridCard[data-card="c"] { background: #e4dce9; color: #4e3c5d; }
+.gridCard[data-card="d"] { background: #e9dcd5; color: #624135; }
+.gridCard[data-card="e"] { background: #dce3ef; color: #334964; }
+.gridCard strong { font-size: 12px; font-weight: 650; }
+.gridCard code { margin-top: 7px; color: currentColor; opacity: .74; font: 10px ui-monospace, SFMono-Regular, monospace; }
+@keyframes gridCardIn { from { opacity: 0; transform: translateY(7px) scale(.97); } to { opacity: 1; transform: none; } }
+.gridNote { position: relative; display: flex; align-items: flex-start; gap: 8px; margin: 0 29px 14px; padding: 10px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.gridNote svg { flex: none; margin-top: 1px; color: var(--accent-text); }
+.gridMetrics { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.gridMetrics > div { display: grid; gap: 4px; padding: 10px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); }
+.gridMetrics span { color: var(--muted); font-size: 10px; }
+.gridMetrics strong { font-size: 13px; }
+.gridResult { position: relative; display: flex; align-items: flex-start; gap: 8px; min-height: 44px; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); font-size: 12px; line-height: 1.55; }
+.gridResult svg { flex: none; margin-top: 1px; color: var(--accent-text); }
+.gridHero figcaption { position: relative; max-width: 790px; margin-top: 15px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+.gridControls { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0 0; }
+.gridControl { border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 999px; padding: 7px 10px; background: var(--paper); color: var(--ink); font: inherit; font-size: 11px; cursor: pointer; }
+.gridControl[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); font-weight: 600; }
+.gridControl:hover { border-color: var(--accent-text); }
+.gridLabGrid { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) 40px minmax(0, 1.5fr); gap: 12px; align-items: stretch; margin-top: 17px; }
+.gridLabPanel { min-width: 0; padding: 14px 12px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 14px; background: var(--paper); transition: transform .4s ease, border-color .35s ease, box-shadow .4s ease; }
+.gridLabPanel[data-active="true"] { transform: translateY(-4px); border-color: var(--accent-text); box-shadow: 0 11px 20px color-mix(in srgb, var(--accent-text) 10%, transparent); }
+.gridLabPanel h3 { margin: 9px 0 6px; font-size: 14px; }
+.gridLabPanel small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.gridLabArrow { display: flex; align-items: center; justify-content: center; color: var(--accent-text); }
+.gridLabArrow svg { transition: transform .3s ease; }
+.gridLabSizing { display: grid; gap: 8px; margin-top: 13px; padding: 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 7%, transparent); }
+.gridLabSizing div { display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; align-items: center; gap: 7px; font: 10px ui-monospace, SFMono-Regular, monospace; color: var(--muted); }
+.gridLabSizing i { display: block; height: 7px; border-radius: 99px; background: var(--accent-text); transition: width .4s ease; }
+.gridLabSizing div[data-warn="true"] i { background: #b86d5c; }
+.gridLabStatus { position: relative; display: flex; align-items: flex-start; gap: 8px; margin: 15px 0 0; padding: 10px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 12px; line-height: 1.55; }
+.gridLabStatus svg { flex: none; color: var(--accent-text); }
+.gridLabMetrics { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.gridLabMetrics > div { display: grid; gap: 4px; padding: 9px 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); }
+.gridLabMetrics span { color: var(--muted); font-size: 10px; }
+.gridLabMetrics strong { font-size: 13px; }
+
+@media (max-width: 740px) {
+  .gridHero { min-height: 730px; padding: 21px 17px 18px; }
+  .gridBoard, .gridLabGrid { grid-template-columns: 1fr; gap: 9px; }
+  .gridArrow { height: 23px; flex-direction: row; }
+  .gridArrow::before { width: 72%; height: 1px; border-left: 0; border-top: 1px dashed color-mix(in srgb, var(--accent-text) 30%, transparent); }
+  .gridArrow span { top: auto; left: 50%; transform: translate(-50%, -50%); }
+  .gridLabArrow svg { transform: rotate(90deg); }
+  .gridNote { margin-inline: 0; }
+}
+
+@media (max-width: 430px) {
+  .gridHeader { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .gridMetrics, .gridLabMetrics { grid-template-columns: 1fr; }
+  .gridCanvas { min-height: 190px; }
+  .gridResult, .gridLabStatus { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gridPanel, .gridCanvas, .gridLabPanel, .gridLabSizing i, .gridCard, .gridArrow svg { transition: none; animation: none; }
+  .gridPanel[data-active="true"], .gridLabPanel[data-active="true"] { transform: none; }
+}
