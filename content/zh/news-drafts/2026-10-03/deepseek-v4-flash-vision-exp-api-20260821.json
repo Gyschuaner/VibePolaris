@@ -1,0 +1,238 @@
+{
+  "slug": "deepseek-v4-flash-vision-exp-api-20260821",
+  "title": "DeepSeek 发布 V4-Flash-Vision-Exp：实验性视觉模型上线 API，多模态代理指标要看清口径",
+  "summary": "DeepSeek 于 2026 年 8 月 21 日在 API 平台上线实验性 V4-Flash-Vision-Exp，支持文字与图像混合输入，并公布了多项代理和视觉基准。本文把 API 上线、厂商评测设置、图像接口边界与独立复测缺口分开。",
+  "body": "2026 年 8 月 21 日，DeepSeek 在 API 平台上线 V4-Flash-Vision-Exp。它是一个实验性多模态模型：调用者可以把文字和图片放进同一次请求，让模型先理解截图、图表或照片，再把结果交给后续的工具和代理流程。这里的“上线”指 API 可调用，不是所有产品端都同时换成了这个模型。\n\n官方更新日志把它和 V4-Flash 的关系说得很清楚：纯文字的 agent、推理和世界知识能力与 V4-Flash 持平；需要视觉理解的代理评测则声称有明显提升，接近 Opus-4.8。这个比较来自 DeepSeek 自己的基准，不是独立实验室的复测。官方还给出了 Terminal Bench、NL2Repo、Chartography 等分数，但分数本身不能告诉读者模型在真实图片、错误截图或复杂工作流里是否稳定。\n\n评测设置也值得单独看。DeepSeek 说公开 Code Agent 文本任务使用 DeepSeek Harness 极简模式、max effort（最高推理强度）、top-p 0.95 和 temperature 1.0（两个采样参数）；在 ApexBench 与 Agents’ Last Exam 中，文本模型会忽略其中的多模态元素。换句话说，榜单里有些数字测的是文字代理，有些数字才涉及视觉输入，不能把所有数字合并成“视觉模型全面领先”。\n\n对开发者来说，变化在接口边界。模型支持 Chat Completions、Messages 和 Responses，图片可以用 Base64、外部 URL 或 Files API（文件上传接口）传入；官方文档还给出图片 token 化和尺寸限制。一个看图后继续调用工具的代理，实际要处理图片权限、文件生命周期、上下文长度和失败重试，这些都不由“模型能看图”自动解决。\n\n因此，8 月 21 日可以确认的是一个实验性视觉 API 的公开上线，以及厂商公布的多模态代理基准。现在还不能据此断言它在所有视觉任务上接近 Opus-4.8，也不能把内部基准当作第三方排名。后续要看模型是否稳定、API 是否长期保留、图像数据怎样留存，以及外部开发者能否在相同输入和预算下复现这些结果。",
+  "publishedAt": "2026-08-21",
+  "eventDate": "2026-08-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepseek-v4-flash-vision-exp-api-20260821.svg",
+    "alt": "从文字与图片输入到多模态代理评测的 DeepSeek API 链路",
+    "sourceUrl": "/images/news/deepseek-v4-flash-vision-exp-api-20260821.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "当天发生的是 API 上线",
+      "body": "V4-Flash-Vision-Exp 作为实验性模型出现在 DeepSeek API 平台，可通过模型名调用；这不是所有产品端都已完成的统一换代。",
+      "kind": "narrative"
+    },
+    {
+      "id": "capability",
+      "title": "视觉能力和文字能力要分开",
+      "body": "官方称纯文字能力与 V4-Flash 持平，视觉理解代理评测明显提升；两种结论使用的任务和输入不同。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "榜单数字带着测试设置",
+      "body": "DeepSeek 公开了 Harness、max effort（最高推理强度）、top-p 和 temperature（采样参数）等条件，并说明部分榜单忽略多模态元素；这些数字属于厂商基准。",
+      "kind": "comparison"
+    },
+    {
+      "id": "api-workflow",
+      "title": "真正的工程变化在输入和工具链",
+      "body": "文字、图片、Files API（文件上传接口）、上下文长度和重试策略要一起设计；模型可以读图，不等于代理已经完成后续操作。",
+      "kind": "example"
+    },
+    {
+      "id": "what-to-watch",
+      "title": "后续需要外部复测",
+      "body": "实验模型的稳定性、留存规则、公开接口寿命和跨团队复现结果，才会决定这次发布的实际价值。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一张图片怎样进入代理工作流",
+    "question": "“支持视觉”到底改变了哪一段输入和工具链？",
+    "steps": [
+      {
+        "label": "准备输入",
+        "detail": "开发者把图片与文字问题一起提交；图片可以来自 Base64、URL 或 Files API（文件上传接口）。",
+        "evidence": "DeepSeek Vision guide"
+      },
+      {
+        "label": "模型理解",
+        "detail": "V4-Flash-Vision-Exp 先识别图像中的文字、结构或视觉线索，再生成回答。",
+        "evidence": "DeepSeek 2026-08-21 update"
+      },
+      {
+        "label": "继续行动",
+        "detail": "如果代理需要搜索、写代码或调用外部工具，仍要由应用层处理权限、上下文和失败重试。",
+        "evidence": "API workflow boundary"
+      },
+      {
+        "label": "核对结果",
+        "detail": "把视觉榜单与文字榜单分开读，并记录官方基准条件，等待外部团队复测。",
+        "evidence": "Benchmark caveat"
+      }
+    ]
+  },
+  "source": {
+    "name": "DeepSeek API Docs",
+    "url": "https://api-docs.deepseek.com/news/news260821/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "agent-loop",
+    "eval",
+    "benchmark",
+    "api",
+    "tools",
+    "token"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://api-docs.deepseek.com/updates/",
+      "claim": "DeepSeek API 更新日志标注 2026 年 8 月 21 日上线 V4-Flash-Vision-Exp，这是一个可通过指定模型名调用的实验性视觉理解模型。",
+      "excerpt": "Today, the new multimodal vision understanding model DeepSeek-V4-Flash-Vision-Exp is now available on the DeepSeek API platform. This is an experimental model."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/news/news260821/",
+      "claim": "DeepSeek 官方新闻页说明模型支持混合文本与图像输入、Chat Completions/Messages/Responses，并同步推出图像 Files API（文件上传接口）。",
+      "excerpt": "Supports mixed text + image input; images can be provided via base64, external URLs, or the Files API. Files API is now live."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/guides/vision/",
+      "claim": "DeepSeek 视觉指南说明图像输入方式、尺寸限制和计费 token 规则；之后的文档还保留了旧模型名的兼容路由说明。",
+      "excerpt": "The DeepSeek API accepts images alongside text; supported image formats include JPEG, PNG, GIF, and WebP, with documented image token limits."
+    }
+  ],
+  "canonicalUrl": "https://api-docs.deepseek.com/news/news260821/",
+  "sourceHash": "sha256:bed08bd410ec977f49f141036870f53378bde36df608272c73e81eabd899206a",
+  "status": "published",
+  "discoveredAt": "2026-10-03T07:55:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.91,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.95,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.9,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.8,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://api-docs.deepseek.com/updates/",
+      "claim": "DeepSeek API 更新日志标注 2026 年 8 月 21 日上线 V4-Flash-Vision-Exp，这是一个可通过指定模型名调用的实验性视觉理解模型。",
+      "excerpt": "Today, the new multimodal vision understanding model DeepSeek-V4-Flash-Vision-Exp is now available on the DeepSeek API platform. This is an experimental model."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/news/news260821/",
+      "claim": "DeepSeek 官方新闻页说明模型支持混合文本与图像输入、Chat Completions/Messages/Responses，并同步推出图像 Files API（文件上传接口）。",
+      "excerpt": "Supports mixed text + image input; images can be provided via base64, external URLs, or the Files API. Files API is now live."
+    },
+    {
+      "url": "https://api-docs.deepseek.com/guides/vision/",
+      "claim": "DeepSeek 视觉指南说明图像输入方式、尺寸限制和计费 token 规则；之后的文档还保留了旧模型名的兼容路由说明。",
+      "excerpt": "The DeepSeek API accepts images alongside text; supported image formats include JPEG, PNG, GIF, and WebP, with documented image token limits."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T07:55:00Z",
+    "method": "source",
+    "notes": "已核对 DeepSeek API 更新日志的 8 月 21 日日期、官方发布页与视觉指南；把厂商评测口径、接口能力和独立复测边界分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T08:10:00Z",
+    "notes": "已完成新闻事实、来源卡片、事件日、可追溯 SVG、词条联动与读者可读性复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T08:10:00Z",
+    "questions": [],
+    "notes": "复审确认事件主线、厂商基准与独立复测边界清楚；API 上线、视觉/文字任务、接口和评测链路对零基础读者可读，来源与 SVG 可追溯。",
+    "changes": [
+      "canonical/source 改为 2026-08-21 官方具体发布页",
+      "补充 max effort、top-p、temperature、Files API 白话解释"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-21",
+  "fingerprint": "sha256:bed08bd410ec977f49f141036870f53378bde36df608272c73e81eabd899206a",
+  "promotedAt": "2026-10-03T08:02:37.146Z"
+}

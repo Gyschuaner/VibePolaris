@@ -1,0 +1,183 @@
+{
+  "slug": "aws-bedrock-automated-reasoning-guardrails-20250806",
+  "title": "AWS 让 Bedrock Guardrails 的 Automated Reasoning checks 正式可用",
+  "summary": "AWS 8 月 6 日宣布，Amazon Bedrock Guardrails 的 Automated Reasoning checks 正式可用。它用形式化验证把生成式 AI 输出与预先定义的业务规则和领域知识对照，检查正确性、政策合规和部分歧义；AWS 称在其指标下最高可达 99% 的正确回答检测准确率。这个能力需要先把规则写清楚，不能被理解为所有幻觉都能自动消除。",
+  "body": "8 月 6 日，AWS 宣布 Amazon Bedrock Guardrails 的 Automated Reasoning checks 正式可用。它做的事情很具体：根据预先定义的业务规则和领域知识检查生成式 AI 输出，用形式化验证判断答案是否符合这些规则，也提示可能存在的歧义。它不是再加一个“听起来更像真的”评分，而是要求组织先把什么算合规、什么算正确写出来。\n\nAWS 把这项能力和传统的随机抽样测试区分开。抽样可以告诉团队一批答案里有多少看起来没问题，Automated Reasoning checks 则试图在规则范围内给出数学上可推导的保证。这个差别对金融、医疗或政府流程有吸引力，因为组织往往需要在放行前留下可复核的依据；前提是业务规则本身足够明确，且模型输出能被转换成可以检查的命题。\n\n公告里最容易被单独引用的数字是“最高 99%”。AWS 的原文把它描述为检测正确回答的准确率，并将其归因于自己的评测口径。这个数字不能直接变成所有模型、所有语言和所有领域的幻觉率，也不能说明没有写进规则的错误会被发现。规则覆盖什么、歧义如何处理、失败后是拦截还是交给人工，都会改变最终结果。\n\nAutomated Reasoning checks 当天在美国弗吉尼亚北部、俄亥俄、俄勒冈，以及法兰克福、爱尔兰和巴黎区域正式提供，可通过 Bedrock 控制台和 Python SDK 使用；CloudFormation 支持还在后续计划中。对开发团队来说，真正的接入工作不是打开一个开关，而是整理政策、建立规则、为不确定结果安排人工复核，并在规则变化时重新验证。\n\n因此，这次发布把 Guardrails 从内容过滤进一步推向“按组织规则验证输出”。它能把一部分不可接受的答案变成可解释的拒绝或待审状态，却不能替代资料来源核查、模型评测和领域专家判断。规则写得越窄，能保证的范围越清楚；规则写得越宽，越需要明确哪些错误仍未覆盖。",
+  "publishedAt": "2025-08-06",
+  "eventDate": "2025-08-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/aws-bedrock-automated-reasoning-guardrails-20250806.svg",
+    "alt": "Bedrock Guardrails 将模型输出交给业务规则和形式化验证，再决定放行或人工复核",
+    "sourceUrl": "/images/news/aws-bedrock-automated-reasoning-guardrails-20250806.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "formal-check",
+      "title": "Guardrails 增加的是规则验证层",
+      "body": "Automated Reasoning checks 用形式化验证把模型输出与业务规则、领域知识对照，判断正确性、政策合规和部分歧义。它要求组织先把规则写成可以检查的条件，解决的是可验证范围内的输出审查。",
+      "kind": "narrative"
+    },
+    {
+      "id": "sampling-difference",
+      "title": "它和随机抽样测试的关注点不同",
+      "body": "抽样测试观察一批答案的表现，形式化检查则针对已经定义的规则给出可推导的保证。后者更适合需要放行依据的流程，但规则没有覆盖的错误仍然不会凭空出现。",
+      "kind": "comparison"
+    },
+    {
+      "id": "ninety-nine",
+      "title": "99% 是 AWS 的特定评测口径",
+      "body": "AWS 把“最高 99%”描述为检测正确回答的准确率，并将它归于自己的指标。这个数字不能外推为所有模型和领域的幻觉率，也不能替代独立评测、规则覆盖检查和人工复核。",
+      "kind": "boundary"
+    },
+    {
+      "id": "regions-access",
+      "title": "区域和接入方式已经明确",
+      "body": "正式版在美国弗吉尼亚北部、俄亥俄、俄勒冈，以及法兰克福、爱尔兰和巴黎提供，可从 Bedrock 控制台或 Python SDK 使用；CloudFormation 支持仍在后续计划中。",
+      "kind": "technical"
+    },
+    {
+      "id": "rule-maintenance",
+      "title": "真正的工作在规则维护和失败处理",
+      "body": "团队要整理政策、把领域知识写成规则，为不确定输出安排拦截或人工复核，并在业务规则变化时重新验证。打开检查功能本身不会完成这些治理工作。",
+      "kind": "example"
+    },
+    {
+      "id": "not-hallucination-cure",
+      "title": "不能把它写成所有幻觉的解药",
+      "body": "形式化验证可以保证一组明确规则里的条件，却不能自动发现没有写入规则的事实错误、来源问题或新型风险。能保证的范围越清楚，团队越容易知道还要在哪里补评测。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "policy-governance",
+    "title": "一次输出怎样被规则验证后再交付？",
+    "question": "从业务政策到模型回答，哪些步骤把“合规”变成可检查的条件？",
+    "steps": [
+      {
+        "label": "写清业务规则",
+        "detail": "把允许的范围、禁止的内容、数字关系和例外情况写成能够判断真假的条件，避免只给一句模糊的政策口号。",
+        "evidence": "Automated Reasoning checks requires defined business rules and domain knowledge"
+      },
+      {
+        "label": "把规则接到 Guardrails",
+        "detail": "在 Bedrock Guardrails 中配置规则和适用场景，决定哪些模型输出需要检查、哪些结果可以直接继续。",
+        "evidence": "Amazon Bedrock Guardrails integration"
+      },
+      {
+        "label": "生成并验证输出",
+        "detail": "模型回答后，形式化验证检查它是否符合规则，并对无法判断或有歧义的内容标记出来。",
+        "evidence": "AWS formal verification and ambiguity detection description"
+      },
+      {
+        "label": "放行或交给人工",
+        "detail": "规则通过的结果可以继续，失败或不确定的结果进入拒绝、修改或人工复核流程，不能只显示一个分数。",
+        "evidence": "Guardrail enforcement boundary"
+      },
+      {
+        "label": "维护覆盖范围",
+        "detail": "业务规则、法规和模型都会变化，团队要定期补充例外、重新测试并记录哪些错误仍然超出验证范围。",
+        "evidence": "Ongoing policy and evaluation requirement"
+      }
+    ]
+  },
+  "source": {
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/"
+  },
+  "relatedSlugs": [
+    "event",
+    "tools",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+      "claim": "AWS 8 月 6 日宣布 Automated Reasoning checks 在 Amazon Bedrock Guardrails 正式可用，用形式化验证检查生成式 AI 输出的准确性和政策合规。",
+      "excerpt": "AWS, August 6, 2025: Automated Reasoning checks are generally available in Amazon Bedrock Guardrails and use formal verification techniques."
+    },
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+      "claim": "AWS 说明正式版覆盖六个区域、支持控制台和 Python SDK，并称最高 99% 的指标是检测正确回答的准确率；CloudFormation 支持随后提供。",
+      "excerpt": "AWS lists US and European regions, console and Python SDK access, up to 99% accuracy at detecting correct responses, and CloudFormation coming soon."
+    }
+  ],
+  "canonicalUrl": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+  "sourceHash": "sha256:9f4ba24444c573bf14f6fecac7010132deba49062517fc1230ba5fec8d7bbfcc",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.85,
+      "evidence": [
+        "正文记录 8 月 6 日 Automated Reasoning checks 正式可用这一产品事件和区域范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 Bedrock Guardrails、控制台、Python SDK、规则和 CloudFormation 支持。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.7,
+      "evidence": [
+        "正文说明生成式 AI 工作流中规则验证、拦截和人工复核的控制点。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/automated-reasoning-checks-amazon-bedrock-guardrails/",
+      "claim": "AWS official Automated Reasoning checks announcement dated August 6, 2025.",
+      "excerpt": "Automated Reasoning checks is now available in Amazon Bedrock Guardrails."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 AWS 8 月 6 日公告的正式可用日期、形式化验证、业务规则/领域知识、歧义检测、最高 99% 的公司评测口径、六个区域、控制台/Python SDK 和 CloudFormation 后续计划；正文明确规则覆盖和独立评测边界，没有写成所有幻觉均能消除。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 将 Automated Reasoning checks 写成规则、验证、放行和人工复核流程，保留 AWS 指标与规则覆盖边界，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-06；AWS 官方公告明确 Automated Reasoning checks 在 Amazon Bedrock Guardrails 正式可用。",
+      "正文准确解释形式化验证、业务规则/领域知识、正确性与政策合规检查以及歧义检测；“最高 99%”明确归为 AWS 自有评测口径，没有外推成所有模型或所有领域的幻觉率。",
+      "六个区域、Bedrock 控制台、Python SDK 和 CloudFormation coming soon 均与公告一致；规则覆盖、失败处理、人工复核和持续维护被写成接入责任，没有写成所有幻觉都能消除。",
+      "policy-governance explainer、sections、relatedSlugs、空 relatedArticleSlugs、sources/evidence、schema 与形式化验证主题 SVG 一致，中文改写后适合零基础读者。"
+    ],
+    "notes": "读者审阅通过：零基础读者能沿着规则定义—接入 Guardrails—形式化验证—放行或待审—维护覆盖范围理解能力边界，AWS 产品能力和组织治理责任分开。",
+    "changes": [
+      "将标题改为“让 Bedrock Guardrails 的 Automated Reasoning checks 正式可用”，更贴近官方标题和自然中文。",
+      "将“放到规则前面检查”改为“根据预先定义的业务规则和领域知识检查”，并收紧末段关于宽规则覆盖范围的句子。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-06-aws-reasoning",
+  "promotedAt": "2026-10-05T05:17:32.291Z"
+}

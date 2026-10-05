@@ -1,0 +1,143 @@
+{
+  "slug": "behavior-aligned-retriever-api-calls-20250820",
+  "title": "BAR 让 Agent 少做不必要的 API 调用",
+  "summary": "Behavior Aligned Retrieval（BAR）在 2025 年 8 月 20 日提交，处理工具型 LLM 的一个常见小错误：问题很像，应该采取的工具行为却相反。论文认为只按语义相似度检索示例，可能把“应该调用工具”的样例带给一个其实不需要调用的请求，或反过来。BAR 训练检索器学习与工具行为一致的相似度，但不替 LLM 预测调用标签；在多个检索骨干、14 个 LLM 和 3 个基准上，作者报告调用可靠性提高、不必要 API 调用减少。",
+  "body": "工具型 Agent 的成本，很多时候不是一次昂贵的推理，而是模型在不该调用时多调了一次 API，或者该查数据时没有调用。语义上相近的用户问题，可能对应完全相反的动作：一个问题是在问实时库存，另一个是在让模型解释已经给出的库存结果。BAR 这篇 8 月 20 日提交的论文，盯住的就是这一步判断。\n\n  常见做法是给模型检索几条相似示例，再让它参考示例决定是否调用工具。问题是“相似”通常按词面或语义距离计算，检索器会把主题相同的请求排在一起，却不关心它们的行为标签是否一致。对于工具决定来说，主题相同并不够；示例最好还要告诉模型，在什么条件下应该调用、在什么条件下应该停下来回答。\n\n  BAR 的做法是训练一个行为对齐的密集检索器。它把“语义接近”和“工具使用行为兼容”同时放进相似度里：如果两个请求谈的是同一个对象，但一个需要 API、一个不需要，检索器应该把它们分开。关键在于，BAR 不直接预测当前请求的调用标签，也不替 LLM 做最终决定，它只负责把更合适的示例放到上下文里。\n\n  论文把方法接到 BERT、Contriever 和基于 Qwen 的表征骨干上，再在 14 个 LLM 和 3 个基准上测试。作者报告，BAR 在这些组合里都提高了调用可靠性，并减少了不必要的 API 调用。摘要没有给出一个跨模型统一的节省比例，因此不能把这件事写成“所有 Agent 都能少调多少次”的承诺。\n\n  这个思路的好处，是改动点比较窄。团队不一定要重新训练主模型，也不需要把工具决定硬编码成一组规则；只要有一批带有正确工具行为的示例，就可以先改善模型看到的参考上下文。代价是，示例的标签必须可信，行为分布还要覆盖“调用、拒绝调用、调用后继续追问”等边界，否则检索器可能只是把旧错误稳定地送回来。\n\n  在生产里，调用决策还会受到权限、价格和实时性的影响。同一个请求，读接口可以自动调用，写接口可能要人工确认；同一个工具，低峰时可以调用，外部服务超时时则应退回解释或稍后重试。BAR 解决的是示例检索的行为一致性，不会自动解决授权、限流或工具返回值错误。\n\n  BAR 提醒我们，Agent 的上下文不只是“相关资料”，还包含行动的先例。检索器把哪几个例子放到模型面前，会改变模型如何理解“现在该做什么”。把语义相似度和行为相容性一起评估，可能是降低无效调用的一条务实路径；但最终上线仍要在自己的工具、权限和成本日志上重测。",
+  "publishedAt": "2025-08-20",
+  "eventDate": "2025-08-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/behavior-aligned-retriever-api-calls-20250820.svg",
+    "alt": "BAR 根据工具使用行为检索示例，再让 LLM 决定是否调用 API",
+    "sourceUrl": "/images/news/behavior-aligned-retriever-api-calls-20250820.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "tool-decision",
+      "title": "工具 Agent 的小错误会变成调用成本",
+      "body": "BAR 于 2025 年 8 月 20 日提交，研究工具型 LLM 在调用与不调用之间的判断。多调一次会增加成本，少调一次可能让回答失去实时数据；相似问题不一定对应相同动作。",
+      "kind": "narrative"
+    },
+    {
+      "id": "semantic-trap",
+      "title": "语义相似度看见主题，却看不见行为",
+      "body": "传统上下文示例检索会把词面或语义相近的请求放在一起，但同一主题下可能同时存在“需要调用”和“不需要调用”的问题。只看相关性，示例就可能悄悄误导模型。",
+      "kind": "technical"
+    },
+    {
+      "id": "behavior-alignment",
+      "title": "BAR 把工具行为兼容性加入检索相似度",
+      "body": "Behavior Aligned Retrieval 训练密集检索器，让语义接近且工具行为一致的示例更靠前；行为相反的请求即使主题相同，也应被分开。它不预测调用标签，只改善送入上下文的示例。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-evaluation",
+      "title": "多个骨干和 14 个 LLM 都报告可靠性提升",
+      "body": "作者把 BAR 接到 BERT、Contriever 和基于 Qwen 的表征骨干上，在 14 个 LLM 和 3 个基准上报告调用可靠性提高、不必要 API 调用减少。摘要没有给出跨模型统一的节省比例。",
+      "kind": "comparison"
+    },
+    {
+      "id": "narrow-change",
+      "title": "它改的是参考示例，不是主模型决策器",
+      "body": "BAR 不要求重新训练主模型，也不把调用标签硬编码成规则；它先调整模型看到的参考上下文，再把最终调用决定留给 LLM。示例标签和行为覆盖仍是系统质量的前提。",
+      "kind": "example"
+    },
+    {
+      "id": "production-constraints",
+      "title": "权限、价格和超时仍然需要独立控制",
+      "body": "读接口可以自动调用，写接口可能需要人工确认；服务超时、限流或高费用也会改变合适动作。行为对齐检索不能替代授权、重试和工具返回值校验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "logging-loop",
+      "title": "最终要在自己的调用日志上重测",
+      "body": "上线前要记录调用、拒绝调用、重复调用和工具失败的样本，检查检索器是否把旧错误稳定地送回上下文，并按实际成本评估节省是否成立。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次工具调用决定怎样从检索走到执行？",
+    "question": "先检索行为兼容的先例，再让模型结合当前权限和实时状态做决定。",
+    "steps": [
+      {
+        "label": "收集带行为的示例",
+        "detail": "为每条请求记录它是否需要工具、需要哪种调用以及调用后是否还要追问，避免只有主题文本没有行动结果。",
+        "evidence": "BAR learns behavior-aware similarity rather than semantic similarity alone"
+      },
+      {
+        "label": "按行为检索",
+        "detail": "让检索器把语义相关且工具行为兼容的示例放在前面，把主题相同但动作相反的示例分开。",
+        "evidence": "semantically close queries can require opposite tool-use behavior"
+      },
+      {
+        "label": "交给 LLM 判断",
+        "detail": "检索器只提供参考上下文，不替模型输出调用标签；模型仍需结合当前请求、权限和工具状态决定下一步。",
+        "evidence": "BAR does not predict invocation labels"
+      },
+      {
+        "label": "检查动作边界",
+        "detail": "在执行前区分读、写、外发和高费用工具，必要时停在人审、授权或限流节点。",
+        "evidence": "Tool-use reliability does not replace authorization or rate limits"
+      },
+      {
+        "label": "回看调用日志",
+        "detail": "比较必要调用、无效调用、漏调用和工具失败，确认检索改变的是可靠性与成本，而不是把错误换一种形式。",
+        "evidence": "BAR is evaluated across 14 LLMs and three benchmarks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Behavior Aligned Retriever 作者组",
+    "url": "https://arxiv.org/abs/2508.14323"
+  },
+  "relatedSlugs": ["retrieval", "function-calling", "api", "eval", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.14323",
+      "claim": "BAR 认为语义接近的请求可能需要相反的工具行为，并训练行为对齐的密集检索器选择示例。",
+      "excerpt": "Lexically close or semantically close queries can require opposite behavior ... behavior-aware similarity"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.14323",
+      "claim": "论文在多种检索骨干、14 个 LLM 和 3 个基准上报告调用可靠性提升并减少不必要 API 调用。",
+      "excerpt": "Applied to multiple retrieval backbones ... across 14 LLMs and 3 benchmarks"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.14323",
+  "sourceHash": "sha256:a3c5f756c102d9ec6a8150ac7778aeec6ffe7a28896dc7bce8c5fd0c0434c11e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "retrieval", "score": 0.99, "evidence": ["正文围绕示例检索、行为相似度和上下文构造展开。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "function-calling", "score": 0.98, "evidence": ["正文解释 LLM 在是否调用外部函数/API 之间的决策。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "api", "score": 0.93, "evidence": ["正文讨论不必要 API 调用、服务超时、费用和返回值校验。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "eval", "score": 0.91, "evidence": ["正文保留 14 个 LLM、3 个基准以及调用日志回归。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.82, "evidence": ["正文按论文首次提交日期归档 2025 年 8 月 20 日事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.14323",
+      "claim": "论文于 2025 年 8 月 20 日首次提交，摘要列出行为对齐检索、工具调用可靠性和减少不必要 API 调用。",
+      "excerpt": "Submitted on 20 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的语义相似度陷阱、BAR 行为对齐检索定义、是否预测调用标签的边界、多骨干/14 个 LLM/3 个基准实验主张；正文补充授权、限流、超时和调用日志的独立控制。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章用相反工具行为的例子解释 BAR 为什么不只看语义相似度，明确检索器不替 LLM 决策，也没有虚构统一节省比例；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-20-bar"
+}

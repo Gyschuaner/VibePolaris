@@ -1,0 +1,237 @@
+{
+  "slug": "perceptron-isaac-0-5-physical-ai-20260826",
+  "title": "Perceptron 发布 Isaac 0.5：把视频理解、空间推理和机器人动作放进一个开放权重模型",
+  "summary": "Perceptron 于 2026 年 8 月 26 日发布 Isaac 0.5，称这是一个 36B 稀疏模型，统一处理图像、视频、语言、机器人状态和历史动作，并输出文本、空间坐标、任务状态或机器人动作。公司还称模型使用约 100 万小时通用视频训练并以开放权重发布；这些指标和基准仍应按公司口径理解。",
+  "body": "8 月 26 日，Perceptron 在官方博客发布 Isaac 0.5，TechCrunch 同日从工业机器人角度报道了这家由前 Meta FAIR 研究人员创办的初创公司。Isaac 0.5 试图把视频感知、空间和具身推理、任务状态估计与机器人控制放在同一条多模态序列里：输入可以包括图像、视频、语言指令、机器人状态和先前动作，输出则可以是文字、归一化坐标、任务状态或动作。\n\n这和给机器人外挂一个聊天模型不同。机器人先要看见箱子或工位，理解空间关系，再判断下一步该拿什么、往哪里移动，最后生成离散或连续控制信号。Perceptron 介绍的 FAST 和 Flow 两条动作路径共享同一个感知与推理骨干：FAST 可以理解为把动作压成一串可预测的动作词，Flow 则生成连续的运动轨迹；这样设计的目标是让视觉理解和动作预测能互相提供信息，但真正上线还需要具体机器人、延迟、碰撞和人工接管测试。\n\n公司称 Isaac 0.5 使用约 100 万小时通用视频、第一人称视频和 UMI 运动数据训练，并以开放权重、代码和 LeRobot 集成发布。官方模型卡还列出 36B 稀疏参数、空间定位、任务进度和控制能力；TechCrunch 则提醒，训练数据来源没有完全公开，初创公司也仍在筹集新一轮资金。开放权重因此不等于数据血缘、硬件依赖和真实工厂表现都已经被独立验证。\n\nPerceptron 在自有评测中报告 ScreenSpot-Pro、LVIS Count、CARPK 等分数，并与 Qwen3-VL 进行比较；这些是公司使用其评测设置得到的结果，不是第三方复现实验。读者要把“模型能输出动作”和“机器人可以安全完成任务”分开：后者还需要闭环控制、故障恢复、速度、负载、环境变化和急停机制。\n\n这条新闻的重要性在于开放的物理 AI 模型开始把“看—想—动”放在一个可检查的接口中。它让研究者更容易下载权重、检查输入输出格式并进行适配，也把数据来源、许可证和安全责任暴露出来。8 月 26 日可以确认的是一个模型发布和产品路线，不能把公司自称的“领先”直接写成工业部署已经成功。",
+  "eventDate": "2026-08-26",
+  "publishedAt": "2026-08-26",
+  "hero": {
+    "url": "/images/news/perceptron-isaac-0-5-physical-ai-20260826.svg",
+    "alt": "摄像头视频经过共享感知骨干后输出空间理解、任务状态和机器人动作",
+    "sourceUrl": "/images/news/perceptron-isaac-0-5-physical-ai-20260826.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "模型发布的主线",
+      "body": "Isaac 0.5 把图像、视频、语言、机器人状态和历史动作组织成统一输入，再输出文字、坐标、任务状态或动作；它是物理 AI 模型发布，不是已经完成的工厂部署。",
+      "kind": "narrative"
+    },
+    {
+      "id": "shared-backbone",
+      "title": "为什么要共享一条骨干",
+      "body": "FAST 离散动作和 Flow 连续动作都读取同一感知与推理表示；前者像动作词表，后者像连续轨迹，目标是减少感知、推理、控制之间的断层；机器人仍需按自身形态和任务适配。",
+      "kind": "technical"
+    },
+    {
+      "id": "open-boundary",
+      "title": "开放权重开放了哪些东西",
+      "body": "官方提供模型卡、权重和代码入口，但训练数据来源、运行硬件、依赖版本和真实闭环表现仍有条件。开放权重让人能检查和改造模型，不自动代表数据和安全已经被第三方确认。",
+      "kind": "comparison"
+    },
+    {
+      "id": "safety",
+      "title": "从动作输出到安全运行",
+      "body": "公司基准展示的是评测设置下的结果；部署还要测延迟、碰撞、错误恢复、人工接管、急停和环境变化，不能把分数直接当成工厂安全证明。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "robot-safety",
+    "title": "机器人怎样从视频走到动作",
+    "question": "观察、空间理解和控制信号之间每一步都可能出错，读者可以沿着同一条数据流看清模型真正负责哪一段。",
+    "steps": [
+      {
+        "label": "观察输入",
+        "detail": "相机视频、语言指令、机器人状态和历史动作被编码成一条多模态序列。",
+        "evidence": "Perceptron Isaac 0.5 官方模型说明。"
+      },
+      {
+        "label": "共享表示",
+        "detail": "模型在同一骨干上做视觉理解、空间定位和任务进度判断。",
+        "evidence": "官方技术文章。"
+      },
+      {
+        "label": "动作解码",
+        "detail": "FAST 输出离散动作 token，Flow 输出连续动作轨迹，二者共享上游表示。",
+        "evidence": "Perceptron 技术说明。"
+      },
+      {
+        "label": "外部安全环",
+        "detail": "真实机器人还需要控制器、限位、急停和人工接管；模型分数不能替代闭环验证。",
+        "evidence": "部署边界是工程与安全要求。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Perceptron",
+    "url": "https://www.perceptron.inc/blog/introducing-isaac-0-5"
+  },
+  "sources": [
+    {
+      "url": "https://www.perceptron.inc/blog/introducing-isaac-0-5",
+      "claim": "Perceptron 发布 Isaac 0.5，描述其统一多模态输入、共享骨干、FAST/Flow 动作接口和开放权重。",
+      "excerpt": "Isaac 0.5 unifies images, video, time, robot state, and past actions into a single sequence jointly modeling across all modalities."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/26/ex-meta-scientists-want-to-bring-visual-ai-to-the-factory-floor/",
+      "claim": "TechCrunch 报道前 Meta FAIR 研究人员创办的 Perceptron、工业场景、约 100 万小时视频和开放权重发布。",
+      "excerpt": "Ex-Meta scientists want to bring visual AI to the factory floor."
+    },
+    {
+      "url": "https://huggingface.co/PerceptronAI/Isaac-0.5",
+      "claim": "Hugging Face 模型卡列出 36B 稀疏模型、输入输出接口和 Apache-2.0 模型卡信息。",
+      "excerpt": "Isaac 0.5 brings multimodal video understanding, embodied reasoning, spatial grounding, task-progress estimation, and robot control into one 36-billion-parameter sparse model."
+    }
+  ],
+  "canonicalUrl": "https://www.perceptron.inc/blog/introducing-isaac-0-5",
+  "sourceHash": "sha256:6ca952a2f1a14370301e4da09c7316adb82b128c8273d8ec55f1ede27bb0a8f4",
+  "isExample": false,
+  "relatedSlugs": [
+    "agent",
+    "llm",
+    "embedding",
+    "dataset-data",
+    "data-lineage",
+    "data-quality",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [
+    "caterpillar-ai-deployment-autonomous-mining-20260830"
+  ],
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 agent 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 llm 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "embedding",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 embedding 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 dataset-data 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-lineage 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-quality 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 execution-sandbox 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "caterpillar-ai-deployment-autonomous-mining-20260830",
+      "score": 0.78,
+      "evidence": [
+        "后续文章继续同一条事实时间线或相邻场景。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.perceptron.inc/blog/introducing-isaac-0-5",
+      "claim": "Perceptron 发布 Isaac 0.5，描述其统一多模态输入、共享骨干、FAST/Flow 动作接口和开放权重。",
+      "excerpt": "Isaac 0.5 unifies images, video, time, robot state, and past actions into a single sequence jointly modeling across all modalities."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/26/ex-meta-scientists-want-to-bring-visual-ai-to-the-factory-floor/",
+      "claim": "TechCrunch 报道前 Meta FAIR 研究人员创办的 Perceptron、工业场景、约 100 万小时视频和开放权重发布。",
+      "excerpt": "Ex-Meta scientists want to bring visual AI to the factory floor."
+    },
+    {
+      "url": "https://huggingface.co/PerceptronAI/Isaac-0.5",
+      "claim": "Hugging Face 模型卡列出 36B 稀疏模型、输入输出接口和 Apache-2.0 模型卡信息。",
+      "excerpt": "Isaac 0.5 brings multimodal video understanding, embodied reasoning, spatial grounding, task-progress estimation, and robot control into one 36-billion-parameter sparse model."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "method": "manual",
+    "notes": "人工核对官方页面/新闻报道的事件日期、发布日期、原始链接、公司口径和后续时间线；保留计划、报道、测试与正式公告之间的边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "notes": "文章按事件独立组织段落，AI 是新闻主线；没有把公司声明、媒体报道、估算、计划或测试写成独立确认事实。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "questions": [
+      "文章是否把 2026-08-26 的新闻主线与后续/背景信息分开？",
+      "官方来源、媒体报道、公司自述和未独立验证的数字是否明确归属？",
+      "零基础读者能否沿着正文、SVG 和讲解步骤理解事件机制，而不是只看到宣传性结论？",
+      "文章是否保留了部署、可用性、合同或安全结论的边界？"
+    ],
+    "notes": "复审通过：官方发布与 TechCrunch 归属清楚，36B 稀疏模型、约百万小时视频、开放权重和 benchmark 均保留公司口径及部署边界；已补充 FAST/Flow 的白话解释，观察→共享表征→动作→外部安全闭环与 SVG 一致。",
+    "changes": [
+      "补充 FAST/Flow 与动作 token 的白话解释。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-26",
+  "fingerprint": "sha256:6ca952a2f1a14370301e4da09c7316adb82b128c8273d8ec55f1ede27bb0a8f4",
+  "promotedAt": "2026-10-03T23:35:00Z"
+}

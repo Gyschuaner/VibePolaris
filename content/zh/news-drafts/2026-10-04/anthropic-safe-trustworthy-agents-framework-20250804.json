@@ -1,0 +1,208 @@
+{
+  "slug": "anthropic-safe-trustworthy-agents-framework-20250804",
+  "title": "Anthropic 把 Agent 安全写成五条原则：高风险动作前留审批权",
+  "summary": "Anthropic 在 2025 年 8 月 4 日发布一份“安全可信 Agent”早期框架，围绕人类控制、行为透明、价值对齐、跨任务隐私和工具交互安全提出开发原则。Claude Code 的默认只读与修改前审批是示例，MCP connector 也提供一次性或持久访问控制；这是一份可迭代的公司框架，不是统一认证标准，也不代表所有 Agent 已经符合。",
+  "body": "2025 年 8 月 4 日，Anthropic 发布《Our framework for developing safe and trustworthy agents》，把 Agent 的安全问题从一句“要负责任”拆成一组开发时要反复检查的原则。它先承认 Agent 和普通问答助手的区别：Agent 会自己规划步骤、调用工具，并在用户只给出一个目标后持续推进任务。能力越接近“替你做事”，人就越需要知道它要做什么、何时停下来。\n\n这份框架目前是早期版本，核心包括五个方向：让人类在关键动作前保有控制权；让 Agent 的计划和行为可见；让它的行动尽量符合人的真实意图；把不同任务之间的隐私隔开；保护 Agent 与工具、其他 Agent 交互时的数据和权限。Anthropic 说这些原则希望帮助形成行业共识，但也明确表示会随着实践继续修改。\n\n最具体的例子来自 Claude Code。它默认是只读的，可以分析初始化目录里的信息，但在修改代码或系统前要请求人类批准；对日常、低风险的工作，用户可以授予持久权限。这个设置把“自动化”拆成了两个问题：Agent 能不能自己走完步骤，以及它在什么动作上必须把方向盘交回给人。高风险的取消订阅、改变系统配置或发出外部操作，不应因为 Agent 觉得合理就自动完成。\n\n透明也不只是把一段最终答案展示给用户。Anthropic 以 Claude Code 的实时待办清单为例，让用户看到它准备做哪些事，并在过程中插话、改计划或停止执行。信息太少，人无法判断 Agent 是否走偏；信息太多，又会淹没真正需要关注的节点，所以透明度本身也要在产品里调试。\n\n跨任务记忆和工具调用带来另一层风险。Anthropic 提到，Agent 可能把一个部门的敏感信息带到另一个任务里；MCP connector 因此需要一次性或持久访问选择，企业管理员还能规定哪些连接器可以使用。权限、认证和数据隔离是部署方要补上的基础设施，不能靠模型“记得保密”来解决。\n\n最后是 prompt injection 和工具链攻击。攻击者可能把恶意指令伪装成完成任务所必需的步骤，诱导 Agent 忽略原目标、泄露信息或调用有风险的工具，也可能利用工具或子 Agent 的漏洞扩大影响。Anthropic 说 Claude 已使用分类器、威胁情报监控和审查过的 MCP 目录来降低风险，但这仍是持续防御措施，不是一次通过就结束的安全证明。\n\n因此，这份框架更像一张设计检查表，而不是一枚安全合格证。它给出了审批、可见性、权限、隔离和交互防护这些可落地的抓手，却没有给所有 Agent 规定统一阈值，也没有声称 Claude 或其他系统已经完全满足这些原则。真正的检验要看产品是否留下可审计的权限记录、用户能否在关键节点接管，以及这些控制在长任务和异常工具链里是否真的有效。",
+  "publishedAt": "2025-08-04",
+  "eventDate": "2025-08-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-safe-trustworthy-agents-framework-20250804.svg",
+    "alt": "Agent 先按权限规划任务，在高风险动作前把审批交还给人，并通过透明日志与工具隔离减少越权",
+    "sourceUrl": "/images/news/anthropic-safe-trustworthy-agents-framework-20250804.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "early-framework",
+      "title": "这是一份会继续迭代的早期框架",
+      "body": "Anthropic 把 Agent 安全拆成人类控制、透明、价值对齐、隐私和交互安全五个方向，并说明会随着开发和部署经验更新。它是开发指导，不是统一认证或法规。",
+      "kind": "narrative"
+    },
+    {
+      "id": "human-control",
+      "title": "高风险动作前，Agent 要把方向盘交回人",
+      "body": "Claude Code 默认只读，修改代码或系统前需要批准；用户可以给低风险的例行任务授予持久权限。权限设计决定了自动化能走多远，也决定了人什么时候能停下它。",
+      "kind": "example"
+    },
+    {
+      "id": "transparency",
+      "title": "实时计划比事后解释更能帮助接管",
+      "body": "Anthropic 以实时待办清单说明透明设计：用户可以看到下一步、追问理由、调整计划或停止执行。信息太少会看不出偏航，太多又会淹没真正的风险节点。",
+      "kind": "technical"
+    },
+    {
+      "id": "privacy",
+      "title": "跨任务记忆需要隔离和访问控制",
+      "body": "Agent 可能把一个任务或部门的敏感信息带到另一个上下文。MCP connector 提供一次性或持久访问选择，企业管理员还能限制连接器；权限、认证和数据分隔要由系统来执行。",
+      "kind": "boundary"
+    },
+    {
+      "id": "interaction-security",
+      "title": "Prompt injection 发生在工具链里",
+      "body": "恶意内容可能诱导 Agent 忽略原目标、泄露资料、调用不该用的工具，或利用工具与子 Agent 的漏洞扩大影响。分类器、威胁监控和审查目录是持续防御层，不等于所有工具调用都已被证明安全。",
+      "kind": "technical"
+    },
+    {
+      "id": "what-to-audit",
+      "title": "框架能落地到哪些可审计证据",
+      "body": "部署方应检查权限变更、审批节点、实时计划、连接器访问和异常停止是否留下记录。Anthropic 的原则提供检查方向，但没有替组织完成风险分级和审计。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一个 Agent 怎样在“自动做事”和“人能接管”之间保持平衡？",
+    "question": "把目标、计划、工具和审批拆开，才能看见真正的安全边界。",
+    "steps": [
+      {
+        "label": "给出目标",
+        "detail": "用户告诉 Agent 要完成什么，同时限定目录、数据、工具和不能触碰的系统。",
+        "evidence": "Anthropic safe and trustworthy agents framework"
+      },
+      {
+        "label": "展示计划",
+        "detail": "Agent 把准备执行的步骤和待办公开，用户可以追问、改计划或停止任务。",
+        "evidence": "Claude Code real-time to-do checklist"
+      },
+      {
+        "label": "按权限执行",
+        "detail": "低风险读取可以自动完成；修改代码、系统设置或外部资源时，运行时要求明确批准。",
+        "evidence": "Claude Code read-only default and approval flow"
+      },
+      {
+        "label": "隔离上下文",
+        "detail": "不同任务和连接器只拿到完成当前目标所需的信息，避免把敏感内容带到另一个部门或会话。",
+        "evidence": "MCP connector access controls and data segregation guidance"
+      },
+      {
+        "label": "拦截异常交互",
+        "detail": "分类器、威胁监控和工具目录帮助发现 prompt injection、工具或子 Agent 的越权请求，但仍要持续更新规则并保留人工接管。",
+        "evidence": "Anthropic interaction security principles"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "mcp",
+    "prompt"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents",
+      "claim": "Anthropic 于 2025-08-04 发布安全可信 Agent 的早期框架，覆盖人类控制、透明、价值对齐、跨任务隐私和工具交互安全，并以 Claude Code、MCP connector 和 prompt injection 说明原则。",
+      "excerpt": "Anthropic shares an early framework covering human control, transparency, value alignment, privacy across extended interactions, and securing agent interactions."
+    },
+    {
+      "url": "https://docs.anthropic.com/en/docs/claude-code/iam",
+      "claim": "Claude Code 文档提供权限模式和审批机制的产品背景；本文仍以 Anthropic 8 月 4 日框架中的描述为事件主线。",
+      "excerpt": "Claude Code permissions and approval controls provide a product example for the framework's human-control principle."
+    },
+    {
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "claim": "MCP 授权规范为一次性或持久访问、连接器授权和工具边界提供技术语境；它不等于 Anthropic 框架已经形成统一认证。",
+      "excerpt": "MCP authorization provides a technical context for connector access and user control."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents",
+  "sourceHash": "sha256:64cac4df0cad34a77085b9c3bbd1f28cf63b3cb9243522e16c7a2975b9c1acec",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "文章解释 Agent 的自主规划、工具调用和人类接管。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文把只读、修改前审批、一次性/持久访问作为权限边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.96,
+      "evidence": [
+        "MCP connector 的访问控制和审查目录是框架的具体例子。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.92,
+      "evidence": [
+        "文章说明 prompt injection 如何借工具链诱导 Agent 越权。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents",
+      "claim": "Anthropic 官方页面确认 8 月 4 日日期、早期框架定位、五个原则、Claude Code 审批、MCP connector 控制和 prompt injection 风险。",
+      "excerpt": "Anthropic, August 4, 2025."
+    },
+    {
+      "url": "https://docs.anthropic.com/en/docs/claude-code/iam",
+      "claim": "Claude Code 文档交叉核对权限与审批产品语境。",
+      "excerpt": "Claude Code permission modes and approval prompts."
+    },
+    {
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "claim": "MCP 规范交叉核对 connector 授权、访问令牌与工具边界术语。",
+      "excerpt": "MCP authorization specification."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Anthropic 官方框架的发布日期、五个安全原则、Claude Code 只读/审批例子、MCP connector 访问控制、数据隔离和 prompt injection 段落；以官方文档和 MCP 规范交叉解释术语，保留早期指导、非统一认证边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 改写为 Agent 安全原则与可审计控制的事件专属叙述，保留框架的早期/非认证边界，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "正文准确保留 Anthropic 2025-08-04 官方页面的早期框架定位和五个原则；没有写成统一认证、法规或所有 Agent 已经符合。",
+      "高风险动作前的人类控制、Claude Code 默认只读与修改前审批、例行任务的持久权限和实时待办清单均解释清楚；自动执行与人类接管的边界没有混写。",
+      "跨任务隐私、MCP connector 的一次性/持久访问、企业管理员连接器控制、权限/认证/数据隔离均有明确限制；prompt injection 以及工具和子 Agent 漏洞风险已在正文、section 和 explainer 中区分为持续防御问题。",
+      "eventDate 与 publishedAt 均为 2025-08-04；sources/evidence、relatedSlugs、空的 relatedArticleSlugs、sections 和 schema 字段齐全。事件 SVG 的计划可见、权限边界、高风险动作前审批和人类接管与正文一致。"
+    ],
+    "notes": "读者审阅通过：文章面向零基础读者，能沿着目标、计划、权限、隔离和异常交互复述安全框架，并区分 Anthropic 的公司指导与实际部署仍需验证的控制效果。",
+    "changes": [
+      "补充正文、interaction-security section 和 agent-safety explainer，明确工具或子 Agent 漏洞也可能扩大 prompt injection 与越权影响。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-04-anthropic-agents",
+  "promotedAt": "2026-10-05T05:17:30.959Z"
+}

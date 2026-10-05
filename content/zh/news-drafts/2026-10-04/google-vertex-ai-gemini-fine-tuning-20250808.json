@@ -1,0 +1,185 @@
+{
+  "slug": "google-vertex-ai-gemini-fine-tuning-20250808",
+  "title": "Google Vertex AI 为 Gemini 2.5 Flash-Lite 与 Pro 增加监督微调支持",
+  "summary": "Google Cloud 8 月 8 日在 Vertex AI release notes 中写明，Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 现在支持监督微调。企业可以用带标签的样本把现有模型调整到更具体的任务和输出格式，但这不是新模型发布，也没有同时公布训练规模、价格、配额或效果提升；上线前仍要自己准备数据、评估结果并限制访问。",
+  "body": "8 月 8 日，Google Cloud 在 Vertex AI release notes 中加入一条平台能力更新：Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 现在支持监督微调。它们仍是原来的两个模型，变化在于团队可以提交带标签的示例，让模型针对一个定义清楚的任务调整输出方式。\n\n监督微调和在提示词里多写几条规则不是一回事。提示词是在每次调用时说明要求，微调则把一批输入和期望输出放进训练流程，让模型在之后的调用中更稳定地遵循某种格式或行为。比如固定分类标签、结构化摘要或一套内部客服表达，都可能适合先定义样本再评估，而不是把一长段说明反复塞进上下文。\n\n这条更新给了 Flash-Lite 和 Pro 同一条定制入口，却没有替团队做业务决策。样本是否覆盖真实输入、标签是否一致、训练后是否在边界案例上退化，都要由使用方验证。一个模型在测试集上更听话，也不代表它会自动掌握公司的权限、知识库或最新数据；需要实时信息时，仍然要通过检索、工具和访问控制来补齐。\n\n官方 release notes 没有在这一天公布训练数据量、任务耗时、价格、配额，也没有给出微调后准确率或成本变化。Vertex AI 的文档说明，监督微调适合有明确任务和标注数据的场景，但“支持”只说明平台可以启动这条流程，不等于每个团队都能得到同样的收益。\n\n对工程团队来说，值得先做的是把验收标准写在训练之前：哪些样本用于训练，哪些样本留作验证，错误时要回退到哪个基础模型，谁能读取数据和调用微调后的版本。模型定制把控制点从提示词推进到数据和权重，发布责任也随之从“会不会回答”扩展到“凭什么这样回答、出了错如何撤回”。",
+  "publishedAt": "2025-08-08",
+  "eventDate": "2025-08-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-vertex-ai-gemini-fine-tuning-20250808.svg",
+    "alt": "Vertex AI 用带标签样本把 Gemini 2.5 模型接入监督微调流程",
+    "sourceUrl": "/images/news/google-vertex-ai-gemini-fine-tuning-20250808.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "platform-update",
+      "title": "这是 Vertex AI 的能力更新，不是新模型发布",
+      "body": "Google Cloud 8 月 8 日写明 Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 支持监督微调。两个模型本身没有在这条 release note 中换代，变化是团队可以把带标签的数据接入定制流程。",
+      "kind": "narrative"
+    },
+    {
+      "id": "labeled-examples",
+      "title": "监督微调用样本教模型稳定完成一个任务",
+      "body": "输入和期望输出组成带标签样本，训练流程据此调整模型的行为。固定分类、结构化摘要和特定表达方式是常见的任务形态，前提是团队能把“正确答案”写清楚并持续维护。",
+      "kind": "technical"
+    },
+    {
+      "id": "prompt-versus-tuning",
+      "title": "它和写更长的提示词解决的是不同问题",
+      "body": "提示词在调用时提供规则，监督微调把规则和示例沉淀进定制模型。微调不能自动补上实时知识、工具权限或公司的业务流程；这些仍要靠检索、工具和访问控制。",
+      "kind": "comparison"
+    },
+    {
+      "id": "evidence-boundary",
+      "title": "“支持”不等于已经证明效果更好",
+      "body": "8 月 8 日的 release note 没有公布训练规模、耗时、价格、配额、准确率或成本变化。平台能启动微调流程，和某个团队在真实数据上获得稳定收益，是两件需要分别验证的事。",
+      "kind": "boundary"
+    },
+    {
+      "id": "governance-loop",
+      "title": "数据、评估和回退要在上线前写清楚",
+      "body": "团队需要划分训练集与验证集，检查标签一致性和边界案例，限制数据与定制模型的访问，并保留回退到基础模型的路径。定制权重增加了可控性，也增加了审计和撤回责任。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "synthetic-data",
+    "title": "一批带标签样本怎样变成可验收的定制模型？",
+    "question": "从准备数据到决定上线，中间哪些步骤不能省？",
+    "steps": [
+      {
+        "label": "定义任务",
+        "detail": "先把输入、期望输出和不应回答的边界写清楚，确认这个问题适合用监督微调解决。",
+        "evidence": "Google describes supervised fine-tuning as suited to well-defined tasks with labeled data"
+      },
+      {
+        "label": "准备带标签样本",
+        "detail": "为每个输入配上可复核的目标输出，覆盖真实表达、难例和拒答情况，并记录数据来源与访问权限。",
+        "evidence": "Supervised fine-tuning uses labeled examples to adapt model behavior"
+      },
+      {
+        "label": "分出验证数据",
+        "detail": "把一部分样本留到训练后再测，避免只看模型记住训练样本的结果。",
+        "evidence": "Evaluation boundary for tuning jobs"
+      },
+      {
+        "label": "比较基础模型",
+        "detail": "用相同的验证集比较基础模型与微调版本，检查准确性、格式稳定性、拒答和边界案例。",
+        "evidence": "Tuned-model evaluation and validation metrics"
+      },
+      {
+        "label": "控制发布与回退",
+        "detail": "限制谁能调用定制模型，记录版本和数据集；出现回归时切回基础模型并保留审计记录。",
+        "evidence": "Model governance and rollback boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Cloud",
+    "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "event",
+    "data-pipeline"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes",
+      "claim": "Google Cloud 8 月 8 日的 Vertex AI release note 写明 Gemini 2.5 Flash-Lite 和 Gemini 2.5 Pro 支持监督微调。",
+      "excerpt": "August 08, 2025: Gemini 2.5 Flash-Lite and Gemini 2.5 Pro now support supervised fine-tuning."
+    },
+    {
+      "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning",
+      "claim": "Google 文档将监督微调定义为用带标签数据调整模型行为，并强调它适合任务明确、拥有标注数据的场景；本文用作概念解释，不把后续文档中的限制和价格倒推为 8 月 8 日公告内容。",
+      "excerpt": "Supervised fine-tuning is a good option when you have a well-defined task with available labeled data."
+    }
+  ],
+  "canonicalUrl": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes",
+  "sourceHash": "sha256:5d6c259b69c36e7caeac5b359da25f60a24af97e1b394947814601df33ab84a6",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.93,
+      "evidence": [
+        "正文解释 Gemini 2.5 模型如何通过监督微调适应具体任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.81,
+      "evidence": [
+        "正文区分微调模型与检索、工具和访问控制的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文记录 Vertex AI 8 月 8 日支持两款 Gemini 模型监督微调。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.88,
+      "evidence": [
+        "正文围绕标注数据、训练集、验证集和模型发布流程展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/release-notes",
+      "claim": "Vertex AI release notes dated August 8, 2025 record supervised fine-tuning support for Gemini 2.5 Flash-Lite and Gemini 2.5 Pro.",
+      "excerpt": "Gemini 2.5 Flash-Lite and Gemini 2.5 Pro now support supervised fine-tuning."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google Cloud Vertex AI release notes 的 2025 年 8 月 8 日条目，确认 Gemini 2.5 Flash-Lite 与 Gemini 2.5 Pro 支持监督微调；用 Google 文档解释带标签数据和任务定义，但没有把后续文档的限制、价格或当前支持列表倒推成当天公告内容。正文明确这是平台能力更新，不是模型发布，也未声称已公布效果、配额或成本变化。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 写成 Vertex AI 平台能力更新，围绕标注数据、提示词与微调的差异以及上线验收展开，避免把“支持监督微调”写成模型质量提升；等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-08，与 Vertex AI release notes 条目一致。",
+      "标题、正文和 platform-update section 准确表达 Gemini 2.5 Flash-Lite 与 Gemini 2.5 Pro 获得监督微调支持，这是平台能力更新，不是新模型发布或已证明的效果提升。",
+      "正文明确区分提示词与监督微调，并用 Google 文档支持“任务定义清楚、拥有带标签数据”的适用条件；训练规模、价格、配额、耗时和准确率/成本变化没有被写成 8 月 8 日已公布事实。",
+      "数据来源与标签、训练/验证集、基础模型对比、访问权限、版本记录和回退路径均被写成使用方的评估与治理责任；sections、synthetic-data explainer、source/evidence、verification、relatedSlugs、空 relatedArticleSlugs、hero SVG 和 newsDraftSchema 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能理解提示词、带标签样本、监督微调、验证集和回退之间的关系，未把平台支持误读为模型能力承诺。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-08-google-vertex-ai-gemini-fine-tuning",
+  "promotedAt": "2026-10-05T05:17:33.644Z"
+}

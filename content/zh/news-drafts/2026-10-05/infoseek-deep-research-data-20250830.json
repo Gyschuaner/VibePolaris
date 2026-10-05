@@ -1,0 +1,199 @@
+{
+  "slug": "infoseek-deep-research-data-20250830",
+  "title": "InfoSeek：用研究树合成更像深度研究的问题",
+  "summary": "InfoSeek 论文于 8 月 30 日提交，认为深度研究问题不是简单的单跳或多跳问答，而是需要沿层级结构拆解、检索和汇总的约束满足任务。它用双 Agent 从大规模网页递归构建 Research Tree，再把中间节点转成自然语言子问题，生成超过 5 万训练样本和带轨迹的测试集；在 BrowseComp-Plus 上，经过 InfoSeek 优化的 3B 模型超过更大的 32B 模型基线。",
+  "body": "“给我做一份深度研究”通常比“找一个事实”难得多。问题可能先要求确定一个对象，再比较它的历史、地点和相关人物，最后把多条证据合成一个有约束的答案。传统问答数据集往往把这些步骤摊平，模型即使猜中最终答案，也不一定真的走过中间的检索链。\n\nInfoSeek 把深度研究形式化为层级约束满足问题。一个大问题被组织成 Research Tree：根节点是最终目标，子节点是必须先查清的中间事实，边表示这些事实之间的依赖。答案不仅要正确，还要满足每一层约束，漏掉一个关键节点，后面的汇总就可能失去依据。\n\n数据生成使用双 Agent。一个 Agent 递归构建研究树，另一个把中间节点“模糊化”为自然语言子问题，再从网页中检索和验证。这样得到的训练数据不只是问题和答案，还保留中间步骤、检索标签和轨迹，方便训练模型学习如何拆问题、找证据和组合结果。\n\n论文报告，InfoSeek 生成超过 5 万训练样本和 curated test set；在 BrowseComp-Plus 上，优化后的 3B 模型超过更大的 32B 模型及轻量商用 API，并接近更强 API 的结果。这个比较展示了数据和轨迹的价值，但仍受训练配方、测试集、检索工具和模型版本影响，不能直接推导出“小模型普遍更强”。\n\n对深度研究 Agent 来说，Research Tree 还提供了一个可检查的计划。系统可以在开始搜索前列出子问题，完成一层后检查是否满足约束，再决定要不要扩展下一层。用户因此更容易发现报告到底缺了哪一块，而不是只在最终段落里看到一个无法解释的结论。\n\n树状数据也会带来新的偏差。网页本身可能重复、过时或互相引用；如果生成 Agent 把错误页面当成根证据，后续的子问题会一起被污染。实际使用时仍要做来源多样性、时间和引用回链检查，并为检索预算设上限。\n\nInfoSeek 的贡献不是把“研究”变成一个更长的提示，而是把研究过程拆成可训练、可追踪的层级结构。对希望做深度研究的产品，先把中间问题和证据依赖画出来，再谈模型规模，往往更容易知道系统究竟缺在哪一步。",
+  "publishedAt": "2025-08-30",
+  "eventDate": "2025-08-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/infoseek-deep-research-data-20250830.svg",
+    "alt": "InfoSeek 用 Research Tree 拆解深度研究问题并沿层级检索证据",
+    "sourceUrl": "/images/news/infoseek-deep-research-data-20250830.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "deep-research-gap",
+      "title": "深度研究不是把多跳问题拉长",
+      "body": "最终答案背后有层级依赖，漏掉一个中间事实，后面的比较和汇总就可能失去依据。",
+      "kind": "narrative"
+    },
+    {
+      "id": "research-tree",
+      "title": "用 Research Tree 表示中间约束",
+      "body": "根节点是最终目标，子节点是必须查清的事实，边表示检索和组合的依赖关系。",
+      "kind": "technical"
+    },
+    {
+      "id": "dual-agent-data",
+      "title": "双 Agent 递归构建训练轨迹",
+      "body": "一个 Agent 建树，另一个把节点变成自然语言子问题，并保存检索标签和中间步骤。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-result",
+      "title": "超过 5 万样本，3B 模型超过 32B 基线",
+      "body": "在 BrowseComp-Plus 上，InfoSeek 优化的 3B 模型超过更大模型和轻量 API；比较仍受配方和工具条件影响。",
+      "kind": "comparison"
+    },
+    {
+      "id": "inspectable-plan",
+      "title": "研究计划变成可检查的工作表",
+      "body": "Agent 可以逐层确认约束是否满足，用户也能定位报告缺的是哪个中间问题。",
+      "kind": "example"
+    },
+    {
+      "id": "source-bias",
+      "title": "树的根证据错了，后续会一起偏",
+      "body": "网页重复、过时和互相引用会污染研究树，实际部署要检查来源多样性、时间和引用回链。",
+      "kind": "boundary"
+    },
+    {
+      "id": "structure-before-scale",
+      "title": "先画清依赖，再谈模型大小",
+      "body": "可训练、可追踪的中间结构，帮助团队知道系统究竟缺在拆题、检索还是汇总。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "InfoSeek 怎样生成更像深度研究的数据？",
+    "question": "把最终问题拆成有依赖的 Research Tree，逐层生成、检索和验证子问题，再保留完整轨迹。",
+    "steps": [
+      {
+        "label": "定义最终约束",
+        "detail": "明确最终答案需要满足的对象、比较、时间或地点条件，形成研究树根节点。",
+        "evidence": "Deep Research tasks as Hierarchical Constraint Satisfaction Problems"
+      },
+      {
+        "label": "递归展开子问题",
+        "detail": "用中间节点表示必须先查清的事实，边记录它们对后续答案的依赖。",
+        "evidence": "recursively build a Research Tree"
+      },
+      {
+        "label": "模糊化成自然问题",
+        "detail": "将树上的节点转成真实用户会提出的子问题，避免数据只保留模板化符号。",
+        "evidence": "blurring intermediate nodes into valid sub-problems"
+      },
+      {
+        "label": "检索并保存轨迹",
+        "detail": "记录网页、检索标签和中间答案，让训练过程可回看、可验证。",
+        "evidence": "retrieval labels and reasoning trajectories"
+      },
+      {
+        "label": "逐层检查汇总",
+        "detail": "确认每层约束已满足后再合成最终答案，并为预算和来源质量设置边界。",
+        "evidence": "full hierarchy traversal and verifiable answers"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00375"
+  },
+  "relatedSlugs": [
+    "agent",
+    "rag",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00375",
+      "claim": "InfoSeek 将深度研究建模为层级约束满足问题，用双 Agent 递归构建 Research Tree 和自然语言子问题。",
+      "excerpt": "Open Data Synthesis For Deep Research ... Hierarchical Constraint Satisfaction Problems"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00375",
+      "claim": "论文生成超过 5 万训练样本，并在 BrowseComp-Plus 上报告 3B 模型超过更大基线的结果。",
+      "excerpt": "over 50K training examples ... 3B LLMs optimized with InfoSeek surpass much larger 32B models"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00375",
+  "sourceHash": "sha256:49cc8b787bef88c28a6f9ca65a77594e654ca6985a5a2ebed0604d06a662a660",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论双 Agent 构建研究树、生成子问题和保存轨迹。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.96,
+      "evidence": [
+        "正文围绕网页检索、来源和中间证据展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文保留 BrowseComp-Plus、模型规模和训练数据边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.97,
+      "evidence": [
+        "正文把超过 5 万训练样本和测试集作为研究基准资产说明。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 30 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00375",
+      "claim": "arXiv 记录 InfoSeek 于 2025 年 8 月 30 日提交，研究深度研究任务的数据合成。",
+      "excerpt": "Date: Sat Aug 30 ... Open Data Synthesis For Deep Research"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00375",
+      "claim": "摘要给出 Research Tree、5 万以上样本、BrowseComp-Plus 和 3B/32B 比较。",
+      "excerpt": "over 50K training examples ... BrowseComp-Plus ... 3B LLMs ... 32B models"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 HCSP 形式化、双 Agent Research Tree、5 万以上训练样本、BrowseComp-Plus 和模型规模比较；正文补充网页来源污染、检索预算和逐层校验边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 InfoSeek 的核心写成层级依赖和可追踪轨迹，保留 3B/32B 比较条件，避免把样本规模写成通用能力；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-30-infoseek-deep-research-data-20250830"
+}

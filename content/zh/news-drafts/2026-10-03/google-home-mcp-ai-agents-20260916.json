@@ -1,0 +1,220 @@
+{
+  "slug": "google-home-mcp-ai-agents-20260916",
+  "title": "Google Home 开放 Home MCP 早期访问：Claude、ChatGPT 等代理可读写家庭设备",
+  "summary": "Google Home 于 2026-09-16 开放 Home MCP 早期访问，让支持 MCP 的 AI 代理读取家庭事件历史、总结摄像头片段、控制 Nest 或 Matter 设备并生成自定义面板。连接需要 Google Cloud 项目、配置 MCP 并逐项授予权限，首轮面向美国部分 Google Home Premium Advanced 用户。",
+  "body": "2026-09-16，Google Home 在开发者社区宣布 Home MCP 早期访问。MCP 可以理解为一层“工具接口”：家庭设备和事件历史仍在 Google Home 一侧，支持 MCP 的代理通过这层接口提出读取或控制请求。Google 列出的兼容对象包括 Google Antigravity、Claude、Hermes、OpenClaw 等，TechCrunch 也把 ChatGPT 列入可用代理的例子。\n\n它能做的事比普通问答更靠近现实世界：跨摄像头整理“孩子回家后发生了什么”，总结门铃或室内摄像头片段，查询家庭活动，控制恒温器、灯泡等设备，甚至让代理用自然语言搭建家庭面板。系统覆盖 Nest 门铃、恒温器以及 Works with Google Home 或 Matter 设备。\n\n连接步骤本身就是这条新闻的重点。用户要先创建 Google Cloud 项目，配置 Home MCP，把配置交给自己选的代理；代理随后会要求登录和授权。也就是说，“代理能控制家里设备”不是打开一个聊天窗口就自动获得的默认能力，而是由用户把接口、账号和权限接起来。\n\n首轮并非全球开放。TechCrunch 报道称，Google 从当天开始向美国 Google Home Premium Advanced 订阅用户逐步开放，订阅价格为每月 20 美元；Google 没有确认其他订阅层级或市场的时间。早期访问还需要用户反馈，意味着稳定性、权限提示和误操作处理仍在测试。\n\nHome MCP 的意义在于把代理从“会回答”推进到“能在家庭环境执行动作”，同时把权限授予、设备范围和事件数据暴露放到可检查的连接流程里。它证明的是接口和早期接入已经出现，不是代理已经可靠地替每个家庭管理设备。",
+  "publishedAt": "2026-09-16",
+  "eventDate": "2026-09-16",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-home-mcp-ai-agents-20260916.svg",
+    "alt": "Google Home 开放 Home MCP 早期访问：Claude、ChatGPT 等代理可读写家庭设备",
+    "sourceUrl": "/images/news/google-home-mcp-ai-agents-20260916.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "interface",
+      "title": "MCP 是一条给代理用的工具接口",
+      "body": "Google Home 把设备和事件历史留在自己的生态里，再通过 MCP 暴露可调用的工具。代理获得的是经过接口定义的读取和控制能力，而不是无限制地进入家庭网络。",
+      "kind": "narrative"
+    },
+    {
+      "id": "capabilities",
+      "title": "它能读什么、改什么",
+      "body": "早期示例包括摄像头摘要、家庭活动查询、恒温器和灯泡控制，以及自定义家庭面板。能力范围取决于设备是否接入 Google Home 或 Matter。",
+      "kind": "technical"
+    },
+    {
+      "id": "permission",
+      "title": "连接流程把权限放回用户手里",
+      "body": "创建云项目、配置 MCP、登录并授权是必要步骤。每个代理都应在用户能看到的身份和权限范围内工作，不能把“能调用工具”理解成自动拥有所有设备权限。",
+      "kind": "comparison"
+    },
+    {
+      "id": "early-access",
+      "title": "早期访问不等于普遍可用",
+      "body": "首轮面向美国 Premium Advanced 订阅用户并逐步开放，其他层级和市场没有日期承诺。误触发、家庭成员权限和摄像头隐私仍需在真实使用中验证。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "AI 代理怎样从对话走到家庭设备？",
+    "question": "一条自然语言指令中，哪些步骤真正需要权限？",
+    "steps": [
+      {
+        "label": "连接 Home MCP",
+        "detail": "先让代理知道有哪些 Google Home 工具和设备，而不是直接把整个家庭网络交给它。",
+        "evidence": "Home MCP 早期访问"
+      },
+      {
+        "label": "登录授权",
+        "detail": "用户完成账号登录并授予读取事件或控制设备的权限。",
+        "evidence": "官方设置流程"
+      },
+      {
+        "label": "调用工具",
+        "detail": "代理把自然语言请求转换成摄像头查询、设备状态读取或控制动作。",
+        "evidence": "MCP 工具调用"
+      },
+      {
+        "label": "回看结果",
+        "detail": "检查代理读到了哪些家庭数据、执行了什么动作以及是否需要撤销权限。",
+        "evidence": "早期访问反馈边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Home & Nest Community",
+    "url": "https://support.google.com/googlehome/blog/467705013/introducing-home-mcp-enabling-your-agent?hl=en-au"
+  },
+  "relatedSlugs": [
+    "mcp",
+    "agent",
+    "authorization",
+    "tools",
+    "event",
+    "data-quality"
+  ],
+  "relatedArticleSlugs": [
+    "google-cc-family-agent-20260917",
+    "openai-dots-september-2026"
+  ],
+  "sources": [
+    {
+      "url": "https://support.google.com/googlehome/blog/467705013/introducing-home-mcp-enabling-your-agent?hl=en-au",
+      "claim": "Google Home 宣布 Home MCP 早期访问，支持代理读取家庭事件历史、分析摄像头和控制设备。",
+      "excerpt": "Google Home & Nest Community, Introducing Home MCP, 2026-09-16：兼容代理、设备范围和早期访问说明。"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/16/your-ai-agents-can-now-control-your-google-home-devices/",
+      "claim": "TechCrunch 交叉报道了配置 Google Cloud 项目、代理登录授权和美国 Premium Advanced 的分批开放范围。",
+      "excerpt": "TechCrunch, Your AI agents can now control your Google Home devices, 2026-09-16：设置流程、$20/月订阅和尚未确认的市场范围。"
+    }
+  ],
+  "canonicalUrl": "https://support.google.com/googlehome/blog/467705013/introducing-home-mcp-enabling-your-agent?hl=en-au",
+  "sourceHash": "sha256:049a646b89b6ada2e5145b602ee8ddd6973454e418b2357e225c157b337a0167",
+  "status": "published",
+  "discoveredAt": "2026-10-03T18:45:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.78,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.78,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.78,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.78,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.72,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.72,
+      "evidence": [
+        "正文明确解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-cc-family-agent-20260917",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的 AI 安全、代理或治理事件形成文章联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "openai-dots-september-2026",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的 AI 安全、代理或治理事件形成文章联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://support.google.com/googlehome/blog/467705013/introducing-home-mcp-enabling-your-agent?hl=en-au",
+      "claim": "Google Home 宣布 Home MCP 早期访问，支持代理读取家庭事件历史、分析摄像头和控制设备。",
+      "excerpt": "Google Home & Nest Community, Introducing Home MCP, 2026-09-16：兼容代理、设备范围和早期访问说明。"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/16/your-ai-agents-can-now-control-your-google-home-devices/",
+      "claim": "TechCrunch 交叉报道了配置 Google Cloud 项目、代理登录授权和美国 Premium Advanced 的分批开放范围。",
+      "excerpt": "TechCrunch, Your AI agents can now control your Google Home devices, 2026-09-16：设置流程、$20/月订阅和尚未确认的市场范围。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T18:45:00Z",
+    "method": "manual",
+    "notes": "核对 Google Home 官方社区公告和 TechCrunch；正文把 MCP 接口、用户授权、设备范围和早期开放条件分开，没有把预览写成所有地区可用。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T18:45:00Z",
+    "notes": "按 2026-09-16 的独立新闻事件手写正文和讲解，明确官方主张、媒体报道、测试范围与未落地部分。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T21:17:07Z",
+    "questions": [],
+    "notes": "Google Home 官方公告与 TechCrunch 交叉清楚；正文解释 MCP 接口、Cloud 配置、登录授权、设备范围和 Premium Advanced 早期访问，Explainer/SVG 对应。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-16",
+  "fingerprint": "sha256:049a646b89b6ada2e5145b602ee8ddd6973454e418b2357e225c157b337a0167",
+  "promotedAt": "2026-10-02T21:17:56.079Z"
+}

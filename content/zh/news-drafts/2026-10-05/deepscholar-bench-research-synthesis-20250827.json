@@ -1,0 +1,199 @@
+{
+  "slug": "deepscholar-bench-research-synthesis-20250827",
+  "title": "DeepScholar-Bench：研究型 Agent 不能只会搜到论文，还得把引用对上",
+  "summary": "DeepScholar-Bench 论文于 8 月 27 日提交，提出一个从实时论文网上取题、评测生成式研究综合的 live benchmark。它要求系统检索近期高质量 arXiv 论文，写出 related work，并同时衡量知识综合、检索质量和引用可验证性。作者评测开源系统、搜索 Agent、OpenAI DeepResearch 和参考管线，报告没有系统在三项指标的几何平均上超过 31%；基准代码和数据公开。",
+  "body": "研究型 Agent 的输出看起来常常很完整：有标题、有小节、有一串引用。但真正读 related work 的人会继续问，引用是否真的支持这句话，检索是否漏掉了关键工作，几篇论文之间的关系有没有被模型自己编出来。DeepScholar-Bench 试图把这些问题放进同一个实时评测。\n\n它没有用一套多年不变的问答题，而是从近期高质量 arXiv 论文中抽取查询和人工撰写的 related work 范例。系统要完成的不是一句事实问答，而是检索、综合、引用三件事连在一起的研究写作。\n\n基准的自动评测有三个维度：知识综合看系统能否把多篇工作组织成有意义的脉络；检索质量看找来的论文是否相关、覆盖是否足够；可验证性看引用能否支持对应的断言。把三者拆开很重要，因为一份报告可能写得很流畅，却引用了不相关的论文；也可能搜得很全，却没有把差异讲清楚。\n\n论文还发布 DeepScholar-ref，一条基于 LOTUS 的开放参考管线。它的价值不只是提供一个 baseline，也让大家知道一套可复跑的检索—综合流程长什么样，而不是只拿一个商业系统的最终分数做比较。\n\n评测结果显示，这个任务远没有饱和：没有系统在三项指标几何平均上超过 31%。这里的 31% 是该 benchmark 的综合结果，不是“研究型 Agent 只能完成 31% 的研究”，但它说明长篇、带引用的研究综合仍然有明显的检索和核查缺口。\n\n对使用者来说，引用可验证性应该成为结果页面的一等信息。报告里的每一个关键句子，都要能点回具体论文、页码或段落；如果模型只给出“相关论文列表”，却没有说明哪篇支持哪句话，人工审核仍然要从头开始。\n\n实时基准也有自己的难处。论文会更新，网页会变化，检索排序会变，模型可能见过旧版本。评测需要记录抓取时间、论文版本、查询和检索结果，才能解释一次分数变化来自系统变了，还是知识库变了。\n\nDeepScholar-Bench 的启发是，研究型 Agent 的“研究”不能只用写作流畅度验收。检索、综合、引用和可验证性必须同时过关，任何一项缺失，报告就可能变成漂亮但难以复核的二手叙述。",
+  "publishedAt": "2025-08-27",
+  "eventDate": "2025-08-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepscholar-bench-research-synthesis-20250827.svg",
+    "alt": "DeepScholar-Bench 将实时论文检索、知识综合和引用验证连成研究型 Agent 评测链",
+    "sourceUrl": "/images/news/deepscholar-bench-research-synthesis-20250827.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "research-synthesis-gap",
+      "title": "搜到论文不等于完成研究综合",
+      "body": "报告需要同时处理检索、论文关系、差异总结和引用支持。单看文字流畅度会漏掉关键工作和不匹配引用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "live-benchmark",
+      "title": "从近期 arXiv 论文动态取题",
+      "body": "DeepScholar-Bench 使用近期高质量 arXiv 论文的查询和人工 related work 范例，避免多年不变的静态题库。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-dimensions",
+      "title": "知识综合、检索质量、可验证性三项一起测",
+      "body": "综合看脉络，检索看相关性和覆盖，可验证性看引用是否支持断言。三项拆开后，报告的短板更容易定位。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reference-pipeline",
+      "title": "DeepScholar-ref 提供可复跑的开放参考",
+      "body": "基于 LOTUS 的参考管线让研究者看到一条可重现的检索—综合流程，不必只比较商业系统最终分数。",
+      "kind": "technical"
+    },
+    {
+      "id": "thirty-one-percent",
+      "title": "三项几何平均没有系统超过 31%",
+      "body": "论文结果说明该任务远未饱和；31% 是 benchmark 综合结果，不是研究型 Agent 的通用研究成功率。",
+      "kind": "boundary"
+    },
+    {
+      "id": "citation-contract",
+      "title": "每个关键句子都要能点回证据",
+      "body": "引用列表不够，报告中的断言应能回到论文、页码或段落，减少人工从头核查的成本。",
+      "kind": "example"
+    },
+    {
+      "id": "live-evaluation",
+      "title": "实时基准也要记录论文和抓取版本",
+      "body": "保存抓取时间、论文版本、查询与检索结果，解释分数变化来自系统更新还是知识库更新。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样验收一份研究型 Agent 报告？",
+    "question": "把检索、综合和引用验证拆成三道门，并保留每次实时检索的版本证据。",
+    "steps": [
+      {
+        "label": "固定研究问题",
+        "detail": "明确问题范围、时间窗口和期望的 related work 结构，避免结果被写作风格左右。",
+        "evidence": "generating a related work section by retrieving, synthesizing, and citing prior work"
+      },
+      {
+        "label": "检查检索覆盖",
+        "detail": "对照人工范例或领域清单，记录相关论文、遗漏、重复和版本变化。",
+        "evidence": "retrieval quality"
+      },
+      {
+        "label": "审阅综合脉络",
+        "detail": "看报告是否把方法、差异和发展关系讲清楚，而不是逐篇堆摘要。",
+        "evidence": "knowledge synthesis"
+      },
+      {
+        "label": "逐句核验引用",
+        "detail": "把关键断言回链到具体论文位置，标记引用只相关但不支持的句子。",
+        "evidence": "verifiability"
+      },
+      {
+        "label": "保存实时证据",
+        "detail": "保留查询、抓取时间、论文版本、检索结果和生成报告，保证分数可以复跑。",
+        "evidence": "live benchmark ... recent, high-quality ArXiv papers"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / DeepScholar-Bench 作者组",
+    "url": "https://arxiv.org/abs/2508.20033"
+  },
+  "relatedSlugs": [
+    "benchmark",
+    "eval",
+    "citation",
+    "grounding",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20033",
+      "claim": "DeepScholar-Bench 从近期 arXiv 论文生成实时查询，要求系统写 related work 并评估知识综合、检索质量和可验证性。",
+      "excerpt": "draws queries and human-written exemplars from recent, high-quality ArXiv papers ... three key dimensions"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20033",
+      "claim": "摘要报告没有系统在三项指标几何平均上超过 31%，并发布 DeepScholar-ref 参考管线。",
+      "excerpt": "no system surpasses a geometric mean of 31% ... DeepScholar-ref"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20033",
+  "sourceHash": "sha256:70ca043f74e305928fbc99abaa6f3aa4a16c111c164ea4cbf74bd49fae0a032b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕实时 benchmark、related work 范例和三项指标展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文拆分知识综合、检索质量、引用可验证性并给出验收方法。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.99,
+      "evidence": [
+        "正文要求关键断言回链到论文位置。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.95,
+      "evidence": [
+        "正文把报告句子与具体论文证据的对应作为核心。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 27 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20033",
+      "claim": "arXiv 记录 DeepScholar-Bench 于 2025 年 8 月 27 日提交，面向生成式研究综合的实时评测。",
+      "excerpt": "Date: Wed Aug 27 ... live benchmark and automated evaluation for generative research synthesis"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20033",
+      "claim": "论文评测三项维度，报告几何平均未超过 31%，并发布开放参考管线。",
+      "excerpt": "knowledge synthesis, retrieval quality, and verifiability ... no system surpasses a geometric mean of 31%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 live benchmark 来源、related work 任务、三项自动评测维度、31% 几何平均结果和 DeepScholar-ref；正文强调引用逐句回链与实时版本记录。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把研究型 Agent 的质量拆成检索、综合、引用和版本证据，保留 31% 的 benchmark 边界，没有把它写成通用研究成功率；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-27-deepscholar-bench-research-synthesis-20250827"
+}

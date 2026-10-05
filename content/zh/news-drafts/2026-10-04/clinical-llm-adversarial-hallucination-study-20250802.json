@@ -1,0 +1,179 @@
+{
+  "slug": "clinical-llm-adversarial-hallucination-study-20250802",
+  "title": "研究：临床提示里的虚构细节，会让多个 LLM 顺着错误继续作答",
+  "summary": "Communications Medicine 在 2025 年 8 月 2 日发表一项多模型研究：研究者构造了 300 个经医生核验的模拟病例，每个病例埋入一个虚构的检验、体征或疾病，测试 6 个 LLM 在 3 种条件下的 5400 次输出。默认提示下，模型总体有 65.9% 的输出复述或扩展了虚构细节；缓解提示把比例降到 44.2%，温度设为 0 没有显著改善。研究测试的是受控的对抗性模拟场景，不能直接当成真实诊疗错误率。",
+  "body": "8 月 2 日，Communications Medicine 发表一项关于临床决策支持的多模型研究。研究者制作了 300 个由医生核验的模拟病例，每个病例只埋入一个虚构细节：可能是不存在的化验、体征或疾病。每个病例又做成长、短两个版本，内容相同，只改变字数；6 个 LLM 在默认提示、专门的缓解提示和 temperature 设为 0 三种条件下运行，共得到 5400 次输出。\n\n论文把“幻觉”定义得很具体：如果模型复述、认可或继续解释那个被故意放进去的虚构细节，就算一次 hallucination；如果模型指出不确定、说找不到该术语，或干脆不使用它，则不算。这个定义测的是模型会不会顺着一个看起来像医学事实的错误继续推理，不是把所有不严谨的医疗回答都算进去。\n\n结果显示，默认提示下所有模型的总体复述率为 65.9%，加入要求模型只使用临床验证信息、遇到可疑内容要承认不确定性的缓解提示后，比例降到 44.2%。在 temperature 设为 0 的条件下，整体比例约为 66.5%，没有显著改善。默认条件里，GPT-4o 的比例约为 50% 到 53%，Distilled-DeepSeek 的比例最高，约为 80% 到 83%；对 GPT-4o 加入缓解提示后，研究报告的比例约降到 21% 到 25%。\n\n这组数字不能直接翻译成“模型在真实医院里有 65.9% 的错误率”。病例是合成的、场景是受控的，每个提示都主动埋入了一个虚构细节；研究只覆盖 6 个模型和特定的调用配置，也没有把真实患者、临床流程或医生如何介入纳入试验。它回答的是一个窄而危险的问题：当输入本身带着伪事实时，模型能不能停下来核对。\n\n研究给出的实际提醒也很有限但很清楚：提示词可以降低错误，却没有把风险降为零；把 temperature 调低也不是可靠的替代方案。临床使用还需要事实核验、检索来源、专业人员复核和清楚的升级路径。模型能否说“这个细节可能不存在”，只是安全链上的一环，不能替代整个决策流程。",
+  "publishedAt": "2025-08-02",
+  "eventDate": "2025-08-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/clinical-llm-adversarial-hallucination-study-20250802.svg",
+    "alt": "研究把虚构临床细节放进模拟病例，比较默认提示、缓解提示和 temperature 设为 0 时的 LLM 复述率；结果不是现实诊疗错误率。",
+    "sourceUrl": "/images/news/clinical-llm-adversarial-hallucination-study-20250802.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "study-design",
+      "title": "研究把一个虚构细节埋进每个模拟病例",
+      "body": "研究者制作了 300 个由医生核验的模拟病例，每个病例放入一个不存在的化验、体征或疾病，并做成长、短两个版本。6 个 LLM 在默认提示、缓解提示和 temperature 设为 0 三种条件下运行，合计 5400 次输出。",
+      "kind": "technical"
+    },
+    {
+      "id": "what-counted",
+      "title": "论文测的是“顺着错误继续说”",
+      "body": "只要模型复述、认可或扩展被植入的虚构细节，就被标成 hallucination；指出不确定、拒绝使用或忽略该细节则不算。这个定义针对对抗性提示，不等于所有医学事实错误。",
+      "kind": "narrative"
+    },
+    {
+      "id": "results",
+      "title": "缓解提示有效，但没有消除风险",
+      "body": "默认提示下总体比例为 65.9%，缓解提示后为 44.2%；temperature 设为 0 时约为 66.5%，没有显著改善。默认条件里 GPT-4o 约为 50% 到 53%，Distilled-DeepSeek 约为 80% 到 83%。",
+      "kind": "comparison"
+    },
+    {
+      "id": "limits",
+      "title": "模拟病例不能替代真实临床错误率",
+      "body": "病例是合成的，提示主动埋入伪事实，试验只覆盖 6 个模型和特定配置，也没有纳入真实患者、临床工作流或医生介入。65.9% 是本实验条件下的复述率，不是医院场景的概率。",
+      "kind": "boundary"
+    },
+    {
+      "id": "implication",
+      "title": "临床使用仍需要独立核验和人工升级",
+      "body": "提示工程能降低顺着错误作答的比例，但没有把风险降为零。检索来源、事实核对、专业人员复核和遇到不确定时的升级路径，仍是决策支持系统的必要环节。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "clinical-alert",
+    "title": "一个伪造的临床细节怎样诱导模型继续作答？",
+    "question": "把研究的输入、模型反应和缓解措施拆开，避免把模拟比例误读成现实诊疗概率。",
+    "steps": [
+      {
+        "label": "放入伪事实",
+        "detail": "研究者在由医生核验的模拟病例里放入一个不存在的化验、体征或疾病，其余医学内容保持一致。",
+        "evidence": "Communications Medicine, Methods"
+      },
+      {
+        "label": "观察模型是否接着说",
+        "detail": "模型如果把这个细节当成真实信息并继续解释，就被计为一次对抗性 hallucination。",
+        "evidence": "Communications Medicine, hallucination definition"
+      },
+      {
+        "label": "加入缓解提示",
+        "detail": "提示模型只使用经过临床验证的信息，遇到可疑术语要表达不确定；总体比例从 65.9% 降到 44.2%。",
+        "evidence": "Communications Medicine, Results"
+      },
+      {
+        "label": "保留人工核验",
+        "detail": "即使比例下降，模拟研究也没有证明真实临床已经安全；来源核对和专业人员复核仍必须留在流程里。",
+        "evidence": "Communications Medicine, Conclusions and study limitations"
+      }
+    ]
+  },
+  "source": {
+    "name": "Communications Medicine / Nature",
+    "url": "https://www.nature.com/articles/s43856-025-01021-3"
+  },
+  "relatedSlugs": [
+    "llm",
+    "hallucination",
+    "eval",
+    "benchmark"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.nature.com/articles/s43856-025-01021-3",
+      "claim": "论文测试 300 个医生核验的模拟病例、6 个 LLM 和 3 种条件，生成 5400 次输出；默认提示下总体虚构细节复述率为 65.9%，缓解提示降到 44.2%。",
+      "excerpt": "The study tested six LLMs on 300 physician-validated simulated vignettes, generating 5,400 outputs; mitigation reduced the overall rate from 65.9% to 44.2%."
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40753316/",
+      "claim": "PubMed 摘要确认研究使用模拟病例和 5400 次输出，并指出 temperature 0 没有显著降低错误。",
+      "excerpt": "The PubMed abstract describes the simulated vignettes, three conditions and 5,400 outputs, and reports no significant improvement from temperature 0."
+    }
+  ],
+  "canonicalUrl": "https://www.nature.com/articles/s43856-025-01021-3",
+  "sourceHash": "sha256:5c0c83644af54575ba1debd0adb8fea0e22f8c7441256fd60a824b966c94352b",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "研究直接比较 6 个大语言模型在同一临床提示条件下的输出。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.99,
+      "evidence": [
+        "全文把复述和扩展植入的虚构临床细节定义为 hallucination。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "研究用固定的模拟病例、提示条件和分类规则评估模型行为。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.84,
+      "evidence": [
+        "5400 次受控输出和模型间对比构成了可复核的基准测试。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.nature.com/articles/s43856-025-01021-3",
+      "claim": "论文在 2025 年 8 月 2 日正式发表，并报告默认提示、缓解提示与 temperature 0 的对照结果。",
+      "excerpt": "Communications Medicine lists the version of record as published on 02 August 2025 and reports the three-condition comparison."
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40753316/",
+      "claim": "摘要说明研究使用合成、开放数据，不涉及真实患者，并把结果限制在临床决策支持模拟场景。",
+      "excerpt": "The abstract describes physician-validated simulated vignettes and does not present the outputs as real-patient clinical outcomes."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Nature 正文、摘要与 PubMed 的发表日期、实验设计、65.9%/44.2%/66.5% 数字和 GPT-4o、Distilled-DeepSeek 对比；正文明确模拟场景、对抗性提示和不能外推至真实临床错误率。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "等待逐篇 reader-review；已按 write-like-me 与 humanizer-zh 把研究数字、实验定义和外推边界写开。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-02-clinical-hallucination",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文准确核对 Communications Medicine 2025-08-02 正式发表日期、300 个医生核验模拟病例、6 个 LLM、3 条件、5,400 次输出，以及 65.9%/44.2%/66.5% 结果和 GPT-4o、Distilled-DeepSeek 对比。temperature=0 的边界、hallucination 定义、人工核验与临床升级均说明清楚；全文明确对抗性模拟复述率不是真实临床错误率。sections、explainer、relatedSlugs、source/evidence、hero SVG 与 schema 均核对无误，hero 呈现植入伪事实、默认/缓解提示、人工核验和非真实临床率边界。",
+    "changes": []
+  }
+}

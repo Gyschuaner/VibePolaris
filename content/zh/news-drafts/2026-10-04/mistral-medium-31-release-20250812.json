@@ -1,0 +1,203 @@
+{
+  "slug": "mistral-medium-31-release-20250812",
+  "title": "Mistral 更新 Medium 3.1：把多模态理解接进 128K 上下文和工具调用",
+  "summary": "8 月 12 日，Mistral 在模型页和 changelog 记录 Mistral Medium 3.1（mistral-medium-2508）发布。官方把它定位为 frontier-class 多模态模型，提供 128K 上下文，并列出 structured outputs、function calling、Document QnA、batching、Agents & Conversations 等能力。公开资料主要说明模型入口和功能面，没有把这次更新写成全新模型家族、开源权重或一组已独立复现的 benchmark。",
+  "body": "8 月 12 日，Mistral 发布 Mistral Medium 3.1，模型标识是 mistral-medium-2508。官方页面把它描述为 frontier-class multimodal model，并写着“improving tone and performance”；changelog 也把这条记录归类为模型发布。它更像 Medium 3 系列的一次版本更新：给开发者一个新的日期标签和模型入口，公开可用能力则集中在多模态输入、长上下文以及与工具和结构化输出的衔接上。\n\n模型页标注的上下文长度是 128K，并列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。需要把“页面列出支持”与“8 月 12 日新发明了这些 API”分开：资料确认的是 3.1 的可用功能面，没有提供每一项相对 Medium 3 的独立改进幅度，也没有在这两页给出一张可以复核的综合 benchmark 表。\n\n多模态能力的实际价值在于把文字、图片和文档放进同一个任务。Document QnA 可以让模型围绕文件提问，structured outputs 让结果按预先定义的 JSON 形状返回，function calling 则把模型的意图交给外部程序执行。三者串起来时，模型负责理解和生成候选参数，业务系统仍要验证字段、检查用户权限和决定是否真的调用工具，不能把“支持 function calling”当成模型已经获得操作数据库或发送请求的授权。\n\n128K 上下文也不是自动的长期记忆。它可以容纳更长的合同、代码库或多页图像说明，但输入越长，检索重点、费用、延迟和冲突版本越难管理。Prefix、batching 等能力可能改变重复前缀和批处理任务的成本结构，却不能替系统筛掉过期文档或隐藏在附件里的恶意指令。长上下文被装进请求之前，仍需做来源、版本、敏感字段和可共享范围的检查。\n\n从产品工程看，3.1 的功能组合更适合拿来搭一条可检查的流水线：先用文档问答提取证据，再用 structured outputs 固定字段，最后只把通过校验的参数交给 function calling。每一步都要保留原始文件、模型版本、提示、解析错误和工具返回值。对于 Agents & Conversations，还要另外记录会话状态怎样保存、哪些工具能够被调用，以及用户撤回授权后旧上下文是否仍能触发动作。\n\n这次更新的公开信息有一个明显边界：官方页面说明了 128K、功能列表和模型 ID，却没有给出训练数据、参数规模或不同模态任务的独立对比结果。模型方写的 tone 和 performance 改善，需要在自己的文档、图片、结构化输出和工具调用测试里验证；不能仅凭“frontier-class”这个定位就推断它在所有任务上领先。\n\nMistral Medium 3.1 的新闻点不在一个孤立的数字，而在模型版本与应用接口被放在同一张能力表里。下一步应固定模型 ID 和 API 版本，分别测多模态理解、长上下文引用、JSON 合法率、工具参数错误、越权调用和失败重试。这样才能知道它究竟为现有工作流减少了哪一段手工拼接，又把哪些风险交给了系统治理。",
+  "publishedAt": "2025-08-12",
+  "eventDate": "2025-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mistral-medium-31-release-20250812.svg",
+    "alt": "Mistral Medium 3.1 将文字与文档输入接入 128K 上下文，再输出结构化结果或经过授权的工具调用；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/mistral-medium-31-release-20250812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 12 日更新的是 Medium 3.1 模型入口",
+      "body": "Mistral 模型页和 changelog 同日记录 Mistral Medium 3.1（mistral-medium-2508）发布，页面定位为 frontier-class 多模态模型，并写明改进 tone 和 performance。公开资料没有把它描述成新的模型家族或开源权重首发。",
+      "kind": "narrative"
+    },
+    {
+      "id": "capabilities",
+      "title": "128K 上下文旁边列着一整套应用接口",
+      "body": "模型页列出 structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools。功能列表说明支持面，不等于每项都在这一天首次推出或已经给出独立提升幅度。",
+      "kind": "technical"
+    },
+    {
+      "id": "multimodal-flow",
+      "title": "文档问答、结构化结果和工具调用可以串成流水线",
+      "body": "模型可从文档中提取信息，再按预定义 JSON 形状返回，最后把通过校验的参数交给外部工具。字段校验、用户权限、工具副作用和失败回滚仍由业务系统负责。",
+      "kind": "example"
+    },
+    {
+      "id": "context",
+      "title": "128K 是输入容量，不是长期记忆",
+      "body": "更长的合同、代码库和图片说明可以放进一次请求，但费用、延迟、重复信息、过期版本和提示注入也会随输入增长。Prefix 与 batching 能改变部分成本结构，不能替系统筛选可信内容。",
+      "kind": "boundary"
+    },
+    {
+      "id": "agent-governance",
+      "title": "Agents & Conversations 需要自己的授权和状态账本",
+      "body": "接入代理与会话接口时，要记录会话状态、可调用工具、用户授权和撤回后的行为；模型有 function calling 能力，不代表它自动获得访问数据库、发送消息或执行交易的权限。",
+      "kind": "technical"
+    },
+    {
+      "id": "evidence",
+      "title": "官方没有给出足够的独立 benchmark",
+      "body": "8/12 公开页面说明模型 ID、128K、功能面和定位，没有提供训练数据、参数规模或完整的跨模态对比表。所谓 tone 和 performance 改善，需要在固定版本和自己的任务集上复测。",
+      "kind": "comparison"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步测 JSON、引用和越权调用",
+      "body": "固定 mistral-medium-2508 与 API 版本，分别测多模态理解、长上下文引用、JSON 合法率、工具参数错误、越权调用和失败重试，才能知道更新减少了哪一段手工工作。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Medium 3.1 怎样从文档走到一次可控的工具调用？",
+    "question": "把输入、上下文、结构化输出、权限校验和工具执行拆开，才能看清多模态模型的应用边界。",
+    "steps": [
+      {
+        "label": "放入文档",
+        "detail": "把文字、图片或文档放进请求，先确认来源、版本、敏感字段和允许共享的范围。",
+        "evidence": "Multimodal input / Document QnA"
+      },
+      {
+        "label": "保持上下文",
+        "detail": "128K 允许一次请求容纳更多材料，但长输入仍需去重、分层和标注版本，不能当作跨会话记忆。",
+        "evidence": "128K context"
+      },
+      {
+        "label": "固定结果形状",
+        "detail": "用 structured outputs 约束 JSON 字段，再由业务代码检查类型、必填项和证据引用。",
+        "evidence": "Structured Outputs"
+      },
+      {
+        "label": "校验工具参数",
+        "detail": "function calling 只产生待执行的调用意图；权限、参数范围和副作用要在外部系统再次检查。",
+        "evidence": "Function Calling / Built-In Tools"
+      },
+      {
+        "label": "记录状态和失败",
+        "detail": "保存模型版本、提示、解析错误、工具返回值和用户授权变化，失败时允许重试、回退或人工接管。",
+        "evidence": "Agents & Conversations"
+      }
+    ]
+  },
+  "source": {
+    "name": "Mistral AI",
+    "url": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "context-window",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08",
+      "claim": "Mistral 官方模型页标注 August 12, 2025，记录 Mistral Medium 3.1（mistral-medium-2508）、128K context、多模态定位及 structured outputs、function calling、Document QnA、Agents 等支持面。",
+      "excerpt": "Our frontier-class multimodal model released August 2025. Improving tone and performance. ... Context 128k."
+    },
+    {
+      "url": "https://docs.mistral.ai/resources/changelogs",
+      "claim": "Mistral 官方 changelog 在 August 12 条目记录 released Mistral Medium 3.1（mistral-medium-2508），作为发布日期交叉证据。",
+      "excerpt": "August 12: We released Mistral Medium 3.1 (mistral-medium-2508)."
+    }
+  ],
+  "canonicalUrl": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08",
+  "sourceHash": "sha256:768b794129a773c1478919d4e76f7e5e447ef65ed3b2ef7253c223c480d502e3",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 Medium 3.1 的版本更新、多模态输入、128K 上下文与官方信息边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文把 structured outputs、function calling、built-in tools、Agents & Conversations 放进可校验的应用流水线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.93,
+      "evidence": [
+        "正文区分 128K 输入容量、跨会话记忆、长文档版本和成本/延迟风险。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8/12 模型页与 changelog 发布记录、功能支持面和后续独立复测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://docs.mistral.ai/models/mistral-medium-3-1-25-08",
+      "claim": "官方模型页确认日期、模型 ID、128K context、多模态定位和功能支持列表；文章没有把页面状态改写成独立 benchmark。",
+      "excerpt": "Mistral Medium 3.1 (mistral-medium-2508) — August 12, 2025 ... Context 128k."
+    },
+    {
+      "url": "https://docs.mistral.ai/resources/changelogs",
+      "claim": "官方 changelog 确认 8/12 released Mistral Medium 3.1，补足模型页的发布日期交叉证据。",
+      "excerpt": "We released Mistral Medium 3.1 (mistral-medium-2508)."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Mistral 8/12 模型页与 changelog；正文将 Medium 3.1 作为 Medium 3 系列版本更新，保留 128K、多模态、structured outputs、function calling、Document QnA、Agents 等官方支持面，未把它写成全新家族、开源权重或独立 benchmark 首发。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把 Medium 3.1 写成模型版本、应用接口和授权治理的组合更新，避免把功能列表夸写成当天全部新发或性能领先，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-12；Mistral 模型页标注 August 12, 2025，官方 changelog 同日记录 released Mistral Medium 3.1（mistral-medium-2508）。",
+      "正文把 mistral-medium-2508 写成 Medium 3 系列的版本更新，保留 frontier-class 多模态、128K、tone/performance 定位；没有扩写成全新模型家族、开源权重、参数规模或训练数据公告。",
+      "structured outputs、function calling、predicted outputs、Document QnA、prefix、batching、Agents & Conversations 和 built-in tools 均明确是模型页列出的支持面，没有冒充 8/12 当天首次推出或提供独立 benchmark 提升。",
+      "文章清楚区分多模态理解、长上下文输入与长期记忆，且把 JSON 字段校验、来源版本、提示注入、用户权限、工具副作用、越权调用、失败重试和撤回授权后的会话状态留给外部系统治理。",
+      "agent-workflow explainer、7 个 sections、llm/tools/context-window/event relations、事件特定 hero、模型页与 changelog sources/evidence、verification 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过：中文围绕“模型版本 → 功能列表 → 文档/结构化输出/工具流水线 → 权限与复测”展开，零基础读者能区分功能支持和授权执行、128K 输入容量和长期记忆，以及官方定位与独立评测之间的边界。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-12-mistral-medium-31",
+  "promotedAt": "2026-10-05T05:17:36.296Z"
+}

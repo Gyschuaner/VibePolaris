@@ -1,0 +1,240 @@
+{
+  "slug": "qwen-mt-plus-qwen3-translation-20250724",
+  "title": "Qwen-MT-Plus 升级到 Qwen3 架构：翻译模型开始把术语和格式当成产品能力",
+  "summary": "阿里云在 7 月 24 日更新 Qwen-MT-Plus：模型升级到 Qwen3 架构，支持 92 种语言，并把上下文理解、术语控制和格式保留列为重点能力。它仍是文本到文本的翻译 API，16K 上下文且不提供函数调用、网页搜索或持久化能力。",
+  "body": "7 月 24 日，阿里云 Model Studio 的新模型列表显示，Qwen-MT-Plus 完成了一次架构升级，改用 Qwen3，并继续作为 Qwen 系列的旗舰翻译模型提供服务。官方资料把它定位为多语言翻译模型，支持 92 种语言，重点强调上下文理解、术语控制和格式保留。这是一条 API 模型更新新闻，重点在翻译工作流能否更稳定地交付，而不是又一个通用聊天模型的参数竞赛。\n\n“支持 92 种语言”只说明覆盖范围，不能直接等同于每种语言的质量相同。阿里云的模型说明还给出了更具体的接口边界：输入和输出都是文本，最大输入长度为 8192 token，最大输出长度为 8192 token，上下文窗口为 16,384 token。页面同时标明它不支持函数调用、结构化输出、网页搜索、上下文缓存和微调。把这些限制写在产品说明里很重要，因为翻译服务的调用方式与一个能自主使用工具的 agent 并不一样。\n\n术语控制和格式保留解决的是翻译落地时最容易被忽略的问题。产品名、药品名、法律术语或内部缩写需要稳定地保留，Markdown、占位符、表格和代码片段也不能在翻译后散掉。它们并不会自动保证译文正确，但说明模型优化的目标从“句子像不像人写的”扩展到了“能不能放回原来的文档和流程”。实际使用仍要给术语表、语言对和领域样本做验收。\n\n阿里云称 Qwen3 架构带来更自然、更准确的翻译体验，这属于厂商产品定位。要判断它是否适合企业，还要看自己的语料：中英互译、长文档、混合语言、数字与单位、HTML 或 Markdown 标记，往往比公开的通用例句更能暴露问题。16K 上下文也不是无限长，超过接口限制的文档需要分段，并检查段落之间的专名和格式是否一致。\n\n这次发布的实际意义，是把翻译从一个“把句子换成另一种语言”的单点接口，往数据质量、术语管理和文档可回填的方向推进。它仍然是一款文本到文本的云端模型，没有函数调用或网页搜索能力；如果任务需要查资料、改数据库或自动发起下一步动作，就要在外层编排其他工具，并给每一步留下可核验记录。",
+  "publishedAt": "2025-07-24",
+  "eventDate": "2025-07-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen-mt-plus-qwen3-translation-20250724.svg",
+    "alt": "Qwen-MT-Plus 的翻译能力围绕语言覆盖、术语控制和格式保留展开，同时保留文本 API 的边界。",
+    "sourceUrl": "/images/news/qwen-mt-plus-qwen3-translation-20250724.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release-scope",
+      "title": "这是一次服务模型升级",
+      "body": "7 月 24 日，阿里云 Model Studio 将 Qwen-MT-Plus 列为新版本，升级到 Qwen3 架构并支持 92 种语言。它是翻译 API 的产品更新，不应和通用聊天模型发布混为一谈。",
+      "kind": "narrative"
+    },
+    {
+      "id": "interface-boundary",
+      "title": "接口能做什么，不能做什么",
+      "body": "模型输入和输出都是文本，最大输入与输出长度各为 8192 token，上下文窗口为 16,384 token。官方还明确列出不支持函数调用、结构化输出、网页搜索、上下文缓存和微调。",
+      "kind": "technical"
+    },
+    {
+      "id": "translation-quality",
+      "title": "术语和格式为什么是新闻重点",
+      "body": "企业翻译需要保留产品名、药品名、法律术语、占位符、表格和代码片段。术语控制与格式保留把验收目标从单句通顺推进到整份文档可回填，但不能代替领域样本审校。",
+      "kind": "comparison"
+    },
+    {
+      "id": "evaluation",
+      "title": "92 种语言不等于 92 种语言同样好",
+      "body": "语言覆盖是能力范围，质量还要在真实语料上验证。中英混排、数字单位、长文档和格式标签都可能暴露问题，厂商的“自然、准确”属于产品口径。",
+      "kind": "boundary"
+    },
+    {
+      "id": "orchestration",
+      "title": "需要动作时要在外层编排",
+      "body": "Qwen-MT-Plus 本身没有工具调用或网页搜索。如果翻译后还要查资料、写入系统或触发审批，需要在外围接入其他工具，并为每一步保存可核验记录。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "翻译 API 怎样进入可靠的文档流程？",
+    "question": "从语言覆盖到术语表、格式检查和外层工具，把一次翻译请求拆成可验收的步骤。",
+    "steps": [
+      {
+        "label": "选择语言与文档",
+        "detail": "先确认语言对、输入格式和文档长度，避免把 92 种语言误读成所有场景都同样稳定。",
+        "evidence": "Model Studio release and context limits"
+      },
+      {
+        "label": "约束术语和格式",
+        "detail": "把专名、占位符、Markdown、表格和代码片段列入验收样本，检查翻译后能否回填原文档。",
+        "evidence": "Official capability description"
+      },
+      {
+        "label": "验证实际语料",
+        "detail": "用领域数据比较准确性、一致性、长度和延迟，厂商宣传不能代替自己的评测集。",
+        "evidence": "Evaluation boundary"
+      },
+      {
+        "label": "把动作放到外层",
+        "detail": "查询、写库、审批和通知由外围工具完成，并记录每一步的输入、输出和授权。",
+        "evidence": "Function-calling and web-search unsupported"
+      }
+    ]
+  },
+  "source": {
+    "name": "Alibaba Cloud Model Studio",
+    "url": "https://www.alibabacloud.com/help/en/model-studio/qwen-mt-plus"
+  },
+  "relatedSlugs": [
+    "llm",
+    "context-window",
+    "tools",
+    "data-quality",
+    "data-lineage",
+    "eval",
+    "token",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
+      "claim": "阿里云 Model Studio 新模型列表将 qwen-mt-plus 标为 2025-07-24 发布，并说明它已升级到 Qwen3 架构、支持 92 种语言。",
+      "excerpt": "Alibaba Cloud Model Studio，新模型列表，2025-07-24 条目。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/qwen-mt-plus",
+      "claim": "官方模型说明写明 Qwen-MT-Plus 支持上下文理解、术语控制和格式保留，输入输出均为文本。",
+      "excerpt": "Alibaba Cloud Model Studio，qwen-mt-plus 模型说明。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/qwen-mt-plus",
+      "claim": "官方能力表标明不支持函数调用、结构化输出、网页搜索、上下文缓存和微调；上下文窗口为 16,384 token。",
+      "excerpt": "Alibaba Cloud Model Studio，Model Capabilities 与 Context Limits。"
+    }
+  ],
+  "canonicalUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen-mt-plus",
+  "sourceHash": "sha256:b4169ee6afe58c3240c9d2e45eff1d35fbcfde632bbb6a3d85ec657a60e256b9",
+  "status": "published",
+  "discoveredAt": "2026-10-04T14:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "文章把 Qwen-MT-Plus 定位为 Qwen3 架构的文本翻译模型，而不是泛用聊天产品。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.9,
+      "evidence": [
+        "文章解释 16,384 token 上下文窗口与长文档分段的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "文章用不支持函数调用和网页搜索说明翻译模型与工具编排的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.9,
+      "evidence": [
+        "文章把术语、格式、数字和混合语言作为真实语料验收点。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.9,
+      "evidence": [
+        "文章要求为翻译后的外层工具步骤保存可核验记录。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "文章区分厂商产品口径和企业自有语料评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.9,
+      "evidence": [
+        "文章用 token 说明输入、输出和上下文限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "文章以 2025-07-24 的 Model Studio 模型更新为事件起点。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/newly-released-models",
+      "claim": "阿里云 Model Studio 新模型列表将 qwen-mt-plus 标为 2025-07-24 发布，并说明它已升级到 Qwen3 架构、支持 92 种语言。",
+      "excerpt": "Alibaba Cloud Model Studio，新模型列表，2025-07-24 条目。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/qwen-mt-plus",
+      "claim": "官方模型说明写明 Qwen-MT-Plus 支持上下文理解、术语控制和格式保留，输入输出均为文本。",
+      "excerpt": "Alibaba Cloud Model Studio，qwen-mt-plus 模型说明。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/help/en/model-studio/qwen-mt-plus",
+      "claim": "官方能力表标明不支持函数调用、结构化输出、网页搜索、上下文缓存和微调；上下文窗口为 16,384 token。",
+      "excerpt": "Alibaba Cloud Model Studio，Model Capabilities 与 Context Limits。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T14:10:00Z",
+    "method": "source",
+    "notes": "核对阿里云 Model Studio 新模型列表和 Qwen-MT-Plus 官方模型说明；把 92 种语言与功能限制按官方口径呈现。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T14:10:00Z",
+    "notes": "按翻译产品新闻独立成稿，写清接口、质量验收和工具边界，等待读者审阅。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T12:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文没有批量模板感。",
+      "eventDate/publishedAt 均为 2025-07-24，与官方产品页或博客发布日期一致。",
+      "Qwen-MT-Plus 的 92 语言、16,384 context 和不支持 function calling/web search 边界准确；Web Guide 的 Search Labs、query fan-out、Web/All 标签计划和原文回退清楚；Google Research Africa 的 3,700 万美元、教育/洪水/建筑数据数字均标为公司项目口径，未写成已验证公共服务效果。",
+      "来源卡片、sections、explainer、SVG alt、词条联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：三篇事实、数字和实验/项目边界清楚，无需修改正文。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-24",
+  "fingerprint": "sha256:b4169ee6afe58c3240c9d2e45eff1d35fbcfde632bbb6a3d85ec657a60e256b9",
+  "promotedAt": "2026-10-04T09:55:37.535Z"
+}

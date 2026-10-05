@@ -15,6 +15,7 @@ export default function NewsPage() {
     slug: article.slug,
     title: article.title,
     summary: article.summary,
+    eventDate: article.eventDate,
     publishedAt: article.publishedAt,
     isExample: article.isExample,
     source: article.source,

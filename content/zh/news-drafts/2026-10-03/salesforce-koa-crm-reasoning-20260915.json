@@ -1,0 +1,253 @@
+{
+  "slug": "salesforce-koa-crm-reasoning-20260915",
+  "title": "Salesforce 与 NVIDIA 发布 Koa：把 CRM 推理模型放进 Agentforce 的信任边界",
+  "summary": "Salesforce 与 NVIDIA 于 2026-09-15 发布 Koa，这是面向 Agentforce 的 CRM 推理模型；公司称它用合成企业流程后训练 Nemotron，并在自家 CRM benchmark 中少三倍错误，但客户试点和外部复核仍在进行。",
+  "body": "Salesforce 在 2026-09-15 的 Dreamforce 公告里发布了 Koa，这是它为 Agentforce 打造的第一个 CRM 推理模型，底座来自 NVIDIA Nemotron。Koa 不是通用聊天模型的换名，而是把商机更新、案件路由、跟进安排这类企业动作作为模型要练习的对象。\n\nSalesforce 说，Koa 的后训练数据来自合成场景，模仿近 27 年 CRM 部署里积累的流程、政策和工具调用，不使用客户数据。场景覆盖 14 个以上行业，把角色、目标、步骤和动作顺序一起写进训练任务；公司还提到 SFT 和 GRPO 等后训练方法。这里的关键是训练材料把“回答得像”改成“按正确顺序完成一组动作”，但合成场景能否覆盖每个企业的例外流程，仍需要真实部署检验。\n\n在 Salesforce 自己的 CRM benchmark 中，Koa 被称为在 CRM 动作上达到或超过领先模型，错误数少三倍。这个比较来自 Salesforce 的测试套件和口径，新闻可以记录它提出了怎样的指标，不能把“少三倍”直接改写成所有企业都会得到同样结果。Koa 已在 Salesforce 内部使用，并进入 1-800Accountant、BCU、Engine、Formula 1、UChicago Medicine 和 Xero 等客户试点。\n\nSalesforce 还把模型控制面当成产品卖点：公司保留 Koa 的权重，后训练和推理在自己的信任边界内进行，并计划把 Nemotron 模型和加速计算带进 Missionforce 的私有云、气隙网络等受监管环境。它说没有客户数据跨过这条边界，但这仍是厂商公告中的承诺，实际部署要看合同、日志、访问控制和审计配置。\n\nKoa 的新闻意义是企业软件开始把“领域知识”直接塞进推理模型，并把模型选择、工具轨迹和数据边界一起卖给客户。它是否真的比通用模型更少犯错，要看公开 benchmark、客户试点和失败案例能否被外部复核，而不只是发布会上的一组数字。",
+  "publishedAt": "2026-09-15",
+  "eventDate": "2026-09-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/salesforce-koa-crm-reasoning-20260915.svg",
+    "alt": "CRM 任务从合成场景、工具调用、评测到受控部署的链路。",
+    "sourceUrl": "/images/news/salesforce-koa-crm-reasoning-20260915.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "domain-model",
+      "title": "Koa 把 CRM 动作当成推理对象",
+      "body": "模型训练目标不是写一段销售话术，而是理解商机、服务案件和跟进流程，并按顺序调用正确工具。领域模型的价值因此落在流程结构，而不只在语言流畅度。",
+      "kind": "narrative"
+    },
+    {
+      "id": "synthetic-scenarios",
+      "title": "合成场景模拟企业流程，不等于复制客户数据",
+      "body": "Salesforce 说训练使用跨行业的合成场景，不使用客户数据；这些场景用角色、任务、政策和动作序列描绘工作。覆盖面与真实组织的特殊例外仍需另测。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "“少三倍错误”是 Salesforce 自己的 benchmark 结果",
+      "body": "CRM benchmark 包含更新机会、路由案件和安排回访等任务。数字属于 Salesforce 测试口径，文章保留主张归属，避免把它写成独立实验室已经确认的普遍结论。",
+      "kind": "comparison"
+    },
+    {
+      "id": "trust-boundary",
+      "title": "权重和推理放在哪里，决定企业能否接入",
+      "body": "Salesforce 表示自己控制权重并在信任边界内完成后训练与推理，还把 Missionforce 延伸到私有云和气隙网络。客户仍需核对可用地区、试点阶段和审计责任。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "领域推理模型的“正确”怎样被拆成可测动作？",
+    "question": "从业务目标到工具调用，中间每一步都要有可检查的结果。",
+    "steps": [
+      {
+        "label": "定义业务任务",
+        "detail": "把更新商机、路由案件、安排跟进写成有起点、有权限和有结束条件的 CRM 任务。",
+        "evidence": "Salesforce CRM benchmark 任务"
+      },
+      {
+        "label": "生成流程场景",
+        "detail": "用合成角色和跨行业规则模拟可能出现的输入、决策和工具顺序，而不是导入客户原始记录。",
+        "evidence": "Koa 合成训练场景"
+      },
+      {
+        "label": "比较动作结果",
+        "detail": "检查模型是否选对工具、顺序和参数，再统计错误，而不只看答案文字是否自然。",
+        "evidence": "CRM 动作评测口径"
+      },
+      {
+        "label": "放进受控环境",
+        "detail": "在信任边界、审计和客户权限内试点，观察合成 benchmark 之外的异常和例外。",
+        "evidence": "Koa 客户试点与部署说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "Salesforce",
+    "url": "https://www.salesforce.com/news/press-releases/2026/09/15/koa-reasoning-model/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "tools",
+    "benchmark",
+    "eval",
+    "data-quality",
+    "authorization",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [
+    "salesforce-aiforce-interface-20260915",
+    "salesforce-missionforce-openai-20260916",
+    "openai-gpt6-sol-luna-20260922"
+  ],
+  "sources": [
+    {
+      "url": "https://www.salesforce.com/news/press-releases/2026/09/15/koa-reasoning-model/",
+      "claim": "Salesforce 与 NVIDIA 宣布 Koa，这是面向 Agentforce 的 CRM 推理模型，使用 Nemotron 3 Super 和企业 CRM 场景合成数据训练。",
+      "excerpt": "Salesforce, Announcing Koa: Salesforce’s First CRM Reasoning Model, Built on NVIDIA Nemotron, 2026-09-15：模型定位、合成场景、信任边界和客户试点。"
+    },
+    {
+      "url": "https://www.axios.com/2026/09/15/dreamforce-gathering-ai-slowdown",
+      "claim": "Axios 同日把 Koa 描述为在 Nemotron 上后训练、面向销售推理的 Dreamforce 产品之一，并把模型主张归于 Salesforce。",
+      "excerpt": "Axios, Dreamforce becomes ground zero for AI slowdown debate, 2026-09-15：Dreamforce 产品背景和 Salesforce 对 Koa 的解释。"
+    }
+  ],
+  "canonicalUrl": "https://www.salesforce.com/news/press-releases/2026/09/15/koa-reasoning-model/",
+  "sourceHash": "sha256:05a8cf43999614ee925f1d4dce24a12267b5f3988bd295009c2c04f0cab86d5b",
+  "status": "published",
+  "discoveredAt": "2026-10-03T20:15:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.84,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.84,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.82,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.76,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.76,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.7,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-aiforce-interface-20260915",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-missionforce-openai-20260916",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "openai-gpt6-sol-luna-20260922",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.salesforce.com/news/press-releases/2026/09/15/koa-reasoning-model/",
+      "claim": "Salesforce 与 NVIDIA 宣布 Koa，这是面向 Agentforce 的 CRM 推理模型，使用 Nemotron 3 Super 和企业 CRM 场景合成数据训练。",
+      "excerpt": "Salesforce, Announcing Koa: Salesforce’s First CRM Reasoning Model, Built on NVIDIA Nemotron, 2026-09-15：模型定位、合成场景、信任边界和客户试点。"
+    },
+    {
+      "url": "https://www.axios.com/2026/09/15/dreamforce-gathering-ai-slowdown",
+      "claim": "Axios 同日把 Koa 描述为在 Nemotron 上后训练、面向销售推理的 Dreamforce 产品之一，并把模型主张归于 Salesforce。",
+      "excerpt": "Axios, Dreamforce becomes ground zero for AI slowdown debate, 2026-09-15：Dreamforce 产品背景和 Salesforce 对 Koa 的解释。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "method": "manual",
+    "notes": "逐条核对官方公告或原始报道、事件日和发布日；正文把厂商主张、媒体观察、测试状态和后续计划分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "notes": "按 2026-09-15 的独立新闻事件逐篇手写；不把厂商基准、beta、预览、合作计划或观点争论写成已经普遍落地的能力。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T21:44:48Z",
+    "questions": [],
+    "notes": "Salesforce/NVIDIA 合作、CRM benchmark、合成训练数据、客户试点与信任边界清楚；正文明确“少三倍错误”是公司口径，未把客户试点或模型计划写成普遍效果。Explainer/SVG 对应。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-15",
+  "fingerprint": "sha256:05a8cf43999614ee925f1d4dce24a12267b5f3988bd295009c2c04f0cab86d5b",
+  "promotedAt": "2026-10-02T21:45:46.687Z"
+}

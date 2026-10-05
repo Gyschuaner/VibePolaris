@@ -1,0 +1,160 @@
+{
+  "slug": "openai-browser-report-20250709",
+  "title": "路透称 OpenAI 准备数周内发布 AI 浏览器：目前仍是报道中的产品计划",
+  "summary": "7 月 9 日，Reuters 被 TechCrunch 转述称 OpenAI 计划在未来数周推出 AI 浏览器，可能把 Operator 浏览 agent 放进浏览器，并让更多交互留在 ChatGPT 内。OpenAI 当天没有公布产品页面、上线日期或权限细节，因此这条新闻应读作未确认的计划，而不是产品发布。",
+  "body": "7 月 9 日，TechCrunch 转述 Reuters 报道，OpenAI 正计划在未来数周发布自己的 AI 浏览器。报道提到，浏览器可能把 OpenAI 的 Operator agent 作为关键能力，让用户在网页上完成一部分操作，同时把部分交互留在 ChatGPT 内，而不是每次都跳转到独立网站。\n\n这条消息最重要的事实边界是“计划”。与同日已经开始邀请式开放的 Perplexity Comet 不同，OpenAI 当天没有公开产品名称、下载地址、发布日期、支持平台或价格，也没有说明用户如何授权浏览器读取页面和账户。报道中的“可能集成 Operator”是知情报道的产品方向，不能写成已经上线的功能。\n\n为什么浏览器会成为大模型公司的下一块战场？因为浏览器同时拥有搜索入口、页面内容、登录状态和用户在不同网站之间的路径。聊天窗口可以回答问题，但浏览器更接近“看见页面后直接行动”。如果 OpenAI 的浏览器真的把 Operator 放进默认流程，它要处理的就不只是生成答案，还包括网页结构变化、验证码、付款和误操作。\n\n这也解释了为什么 Perplexity Comet 的发布会放大这条报道：两家公司都在争夺从“搜索一个答案”到“替用户完成任务”的入口。但竞争并不只看谁先发布，用户还需要知道数据是否被用于训练、哪些动作要二次确认、失败后如何撤销，以及网站是否能识别并限制自动化访问。\n\n在官方信息出现前，最稳妥的读法是把它记作浏览器计划的行业信号。后续要等 OpenAI 自己的公告、开发者文档和独立上手测试，才能判断它究竟是 ChatGPT 的新外壳，还是一套真正可控的网页 agent。",
+  "publishedAt": "2025-07-09",
+  "eventDate": "2025-07-09",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-browser-report-20250709.svg",
+    "alt": "OpenAI 被报道准备把 Operator 放进 AI 浏览器，产品细节仍待官方确认",
+    "sourceUrl": "/images/news/openai-browser-report-20250709.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "reported-plan",
+      "title": "报道的是计划，不是发布",
+      "body": "Reuters 的消息由 TechCrunch 转述，OpenAI 当天没有公开产品页、日期、价格或权限说明，因此不能把“数周内”写成确定上线日。",
+      "kind": "boundary"
+    },
+    {
+      "id": "operator",
+      "title": "Operator 可能成为浏览器里的执行层",
+      "body": "报道提到浏览器可能集成 Operator，让用户在网页里完成任务；这意味着需要同时处理页面理解、工具调用和动作确认。",
+      "kind": "technical"
+    },
+    {
+      "id": "context-race",
+      "title": "浏览器掌握的是连续上下文",
+      "body": "搜索入口、页面内容、登录状态和跨站路径集中在浏览器里，竞争重点因此从单次回答转向谁能安全地使用这些上下文。",
+      "kind": "narrative"
+    },
+    {
+      "id": "unknowns",
+      "title": "上线前还有一组不能跳过的问题",
+      "body": "数据训练用途、最小权限、付款与验证码处理、失败撤销和网站反自动化策略，都没有在 7 月 9 日报道中得到答案。",
+      "kind": "comparison"
+    },
+    {
+      "id": "watch-next",
+      "title": "需要官方文档和独立上手来验证",
+      "body": "产品公告只能确认是否发布，开发者文档和外部测试才会说明 agent 能做什么、会在哪些步骤停下来请求用户确认。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个 AI 浏览器从“看网页”到“替你行动”差几步？",
+    "question": "把媒体报道中的产品想象拆成可检查的能力，才能区分演示、计划和真实可用性。",
+    "steps": [
+      {
+        "label": "理解网页结构",
+        "detail": "模型先读页面文本、按钮和表单字段，知道哪些内容是信息、哪些内容会触发动作。",
+        "evidence": "page parsing"
+      },
+      {
+        "label": "保持任务上下文",
+        "detail": "保存用户目标和已经完成的步骤，避免跨页面后忘记日期、金额或收件人。",
+        "evidence": "context"
+      },
+      {
+        "label": "调用网页工具",
+        "detail": "打开标签页、填写表单和点击按钮都应记录具体工具调用，而不是只显示一句“已完成”。",
+        "evidence": "tools"
+      },
+      {
+        "label": "在关键步骤停住",
+        "detail": "发送、下单、付款和提交表单前要展示参数并请求确认。",
+        "evidence": "authorization"
+      },
+      {
+        "label": "失败后可恢复",
+        "detail": "页面改变或模型填错时，系统应能回退、重试或交给人，而不是把错误继续推进。",
+        "evidence": "agent loop"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/09/openai-is-reportedly-releasing-an-ai-browser-in-the-coming-weeks/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "context",
+    "authorization",
+    "api",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/09/openai-is-reportedly-releasing-an-ai-browser-in-the-coming-weeks/",
+      "claim": "TechCrunch 7 月 9 日转述 Reuters，称 OpenAI 计划在数周内发布 AI 浏览器，可能集成 Operator。",
+      "excerpt": "TechCrunch, “OpenAI is reportedly releasing an AI browser in the coming weeks,” July 9, 2025."
+    },
+    {
+      "url": "https://www.reuters.com/business/media-telecom/openai-release-web-browser-challenge-google-chrome-2025-07-09/",
+      "claim": "Reuters 原始报道链接保留为事件来源；文章将浏览器计划、Operator 可能集成和未确认边界分开记录。",
+      "excerpt": "Reuters, “OpenAI to release web browser to challenge Google Chrome,” July 9, 2025."
+    },
+    {
+      "url": "https://openai.com/index/operator/",
+      "claim": "OpenAI 的 Operator 页面用于解释被报道可能复用的浏览 agent 背景，不证明 7 月 9 日浏览器已经发布。",
+      "excerpt": "OpenAI, Operator product background."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/09/openai-is-reportedly-releasing-an-ai-browser-in-the-coming-weeks/",
+  "sourceHash": "sha256:0f23d91ec111311970084be35da91b2bd81ec7a26b53630772b0d79bb9918c79",
+  "status": "published",
+  "discoveredAt": "2026-10-05T01:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/09/openai-is-reportedly-releasing-an-ai-browser-in-the-coming-weeks/",
+      "claim": "TechCrunch 7 月 9 日转述 Reuters，称 OpenAI 计划在数周内发布 AI 浏览器，可能集成 Operator。",
+      "excerpt": "TechCrunch, “OpenAI is reportedly releasing an AI browser in the coming weeks,” July 9, 2025."
+    },
+    {
+      "url": "https://www.reuters.com/business/media-telecom/openai-release-web-browser-challenge-google-chrome-2025-07-09/",
+      "claim": "Reuters 原始报道链接保留为事件来源；文章将浏览器计划、Operator 可能集成和未确认边界分开记录。",
+      "excerpt": "Reuters, “OpenAI to release web browser to challenge Google Chrome,” July 9, 2025."
+    },
+    {
+      "url": "https://openai.com/index/operator/",
+      "claim": "OpenAI 的 Operator 页面用于解释被报道可能复用的浏览 agent 背景，不证明 7 月 9 日浏览器已经发布。",
+      "excerpt": "OpenAI, Operator product background."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T01:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日与发布日、官方/媒体原始链接及文章中的事实边界；公司统计、报道计划和独立证据已分别标注。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T01:20:00Z",
+    "notes": "已完成新闻来源核对，等待现有 reader-review 子智能体逐篇检查零基础可读性和 AI 味。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T17:00:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "来源归属、公司口径和计划/上线边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否通过？是。"
+    ],
+    "notes": "明确是 Reuters 经 TechCrunch 转述的数周内计划，OpenAI 未公布产品页、日期或权限；未把报道写成上线事实。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-09",
+  "promotedAt": "2026-10-04T19:19:20.376Z"
+}

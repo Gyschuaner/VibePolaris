@@ -1,0 +1,195 @@
+{
+  "slug": "openai-compliance-api-data-delays-20250621",
+  "title": "OpenAI Compliance API 从 6 月 21 日开始延迟：企业审计数据要等恢复链路",
+  "summary": "OpenAI 状态页把一次 Compliance API Data Delays 事件的起点记为 6 月 21 日，但首次公开调查更新出现在 6 月 23 日；6 月 29 日才标记完全恢复。它影响的是企业与教育工作区的合规日志链，不能直接写成普通 ChatGPT 对话中断，也不能从页面推断数据丢失。",
+  "body": "6 月 21 日，OpenAI 的 Compliance API 开始出现数据延迟。这个日期来自 OpenAI 状态页对事件起点的记录；它不是页面第一次更新的时间。状态页直到 6 月 23 日 22:01 才公开列出“调查中”，6 月 29 日 07:36 才标记所有受影响服务完全恢复。因此，这篇文章同时保留 eventDate=2025-06-21 与 publishedAt=2025-06-23：前者回答问题从什么时候开始，后者回答外部读者什么时候第一次看见公告。\n\n这条消息也不应该被写成一次普通的 ChatGPT 对话中断。状态页把 ChatGPT 列为受影响组件，但事件标题、更新内容和后续处理都指向 Compliance API 的数据延迟。页面没有说普通对话不可用，也没有公布有多少工作区受影响。对新闻读者来说，先把“服务入口还能不能用”和“合规数据有没有按时到达”分开，是理解这次事件的第一步。\n\nOpenAI 帮助中心把 Compliance Platform 定义为 Enterprise 和 Edu 工作区的审计与合规数据通道。它可以把工作区日志和元数据接到 eDiscovery、DLP 或 SIEM；其中既有用于审计的追加写入日志，也有按请求查询状态的 API。换句话说，延迟发生在企业用来留存、检索和分析工作区活动的那条数据链上，受影响的不只是某个按钮的响应速度，还可能是下游审计系统等待新记录的时间。\n\n官方时间线给出了一个少见但很有价值的细节：6 月 23 日先进入 Investigating，6 月 24 日称已施加缓解措施并观察恢复；6 月 26 日确认根因并开始实施修复，6 月 27 日仍在持续推进，6 月 28 日再次进入 Monitoring，6 月 29 日才发布 Resolved。这里的“恢复”只表示 OpenAI 状态页认为受影响服务恢复，页面没有提供根因的技术细节，也没有公开延迟量、受影响工作区数量、补发范围或每条记录的回放结果。\n\n这条边界很重要。我们可以确认事件起点、公开披露时间、处理阶段和最终状态，却不能从状态页推出“数据丢失”“所有企业都受影响”或“延迟期间的数据已经全部补回”。对于合规系统，恢复服务与完成对账是两个动作：前者让新请求重新走通，后者还要确认下游是否补齐了缺口、是否重复写入，以及时间戳和游标能否接上。\n\n如果你在维护这类接入，最直接的检查不是盯着一个绿色状态灯，而是为每个 workspace 记录最后成功游标、事件时间与摄取时间，给重复事件保留幂等键，再用独立的 reconciliation job 对比 OpenAI 侧与 SIEM、数据湖中的计数。这样即使上游只给出“已恢复”，团队也能说明哪些记录已经对上、哪些仍需追查。这正是“数据血缘”和“数据质量”两个词条在新闻里的落点：事件发生在哪里，和你能否证明数据后来完整到达，是两件需要分别回答的事。",
+  "publishedAt": "2025-06-23",
+  "eventDate": "2025-06-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-compliance-api-data-delays-20250621.svg",
+    "alt": "一条从事件起点到恢复状态的合规日志时间线，标出 Compliance API 的延迟与下游审计系统",
+    "sourceUrl": "/images/news/openai-compliance-api-data-delays-20250621.svg",
+    "license": "VibePolaris 自制插图 · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "incident-start",
+      "title": "事件起点和公开时间不是同一天",
+      "body": "OpenAI 状态页把问题起点记为 2025 年 6 月 21 日，但第一条公开调查更新出现在 6 月 23 日。本文用 eventDate 保存前者，用 publishedAt 保存后者，避免把“何时开始”与“何时被公告”混成一个日期。",
+      "kind": "narrative"
+    },
+    {
+      "id": "scope",
+      "title": "延迟发生在企业合规数据链",
+      "body": "Compliance Platform 面向 ChatGPT Enterprise 和 Edu 工作区，提供日志和元数据，并支持接入 eDiscovery、DLP、SIEM。它描述的是审计与安全数据的获取路径；状态页没有把这次事件写成普通 ChatGPT 对话全面不可用。",
+      "kind": "technical"
+    },
+    {
+      "id": "timeline",
+      "title": "从调查到恢复，官方留下了六个节点",
+      "body": "6 月 23 日调查，6 月 24 日观察缓解，6 月 26 日确认根因，6 月 27 日持续实施，6 月 28 日开始观察恢复，6 月 29 日标记完全恢复。时间线能说明处理进度，但不提供延迟量或补发明细。",
+      "kind": "narrative"
+    },
+    {
+      "id": "boundary",
+      "title": "“已恢复”不能自动推出“已补齐”",
+      "body": "状态页没有披露受影响工作区数量、延迟范围、缺失记录、重放任务或每个客户的修复结果。因此正文不把事件扩写成数据丢失，也不把最终状态误写成已完成客户侧对账。",
+      "kind": "boundary"
+    },
+    {
+      "id": "operations",
+      "title": "下游系统要自己保留可核对的证据",
+      "body": "为 workspace 保存最后成功游标、事件时间、摄取时间和幂等键，再做独立 reconciliation job，才能在上游恢复后确认记录没有漏写或重复写入。",
+      "kind": "technical"
+    },
+    {
+      "id": "watch",
+      "title": "后续看什么",
+      "body": "继续关注 OpenAI 是否发布更具体的事后说明、受影响数据的回放或合作方接入指引。当前公开材料足以确认事件时间线，但不足以回答每个客户的数据补偿或补发细节。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "一次合规日志延迟，企业到底要核对哪一层？",
+    "question": "把事件起点、公开更新时间、日志管线和恢复状态放到同一条时间线上。",
+    "steps": [
+      {
+        "label": "6 月 21 日 · 事件开始",
+        "detail": "状态页把 Compliance API 数据延迟的起点记在这一天；这就是 eventDate。",
+        "evidence": "The issue first began on June 21, 2025."
+      },
+      {
+        "label": "6 月 23 日 · 对外调查",
+        "detail": "OpenAI 首次在状态页公开说明正在调查；这是 publishedAt，而不是事件起点。",
+        "evidence": "We are investigating the issue for the listed services."
+      },
+      {
+        "label": "合规数据通道",
+        "detail": "Enterprise 和 Edu 工作区的日志、元数据会被下游 eDiscovery、DLP 或 SIEM 使用，延迟会沿着这条链传播。",
+        "evidence": "The Compliance Platform provides access to logs and metadata."
+      },
+      {
+        "label": "6 月 26–28 日 · 修复与观察",
+        "detail": "官方先确认根因，再持续实施缓解措施，并在 6 月 28 日开始观察恢复。",
+        "evidence": "We have identified the root cause ... implementing the mitigation."
+      },
+      {
+        "label": "恢复后 · 对账",
+        "detail": "状态页的 Resolved 代表服务恢复；客户仍应核对游标、计数和重复事件，确认自己的数据链真正闭合。",
+        "evidence": "All impacted services have now fully recovered."
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI Status",
+    "url": "https://status.openai.com/incidents/01JYFCZT19PRNXY3J2ETF30AMY"
+  },
+  "relatedSlugs": [
+    "api",
+    "data-lineage",
+    "data-quality",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://status.openai.com/incidents/01JYFCZT19PRNXY3J2ETF30AMY",
+      "claim": "OpenAI 状态页记录了事件起点、公开调查、根因确认、缓解和完全恢复的完整时间线。",
+      "excerpt": "The issue first began on June 21, 2025. All impacted services have now fully recovered."
+    },
+    {
+      "url": "https://help.openai.com/en/articles/9261474-compliance-api-for-enterprise-customers/",
+      "claim": "OpenAI 帮助中心说明 Compliance Platform 面向 Enterprise 和 Edu 工作区，并可把日志和元数据接到 eDiscovery、DLP 或 SIEM。",
+      "excerpt": "The Compliance Platform provides access to logs and metadata from your ChatGPT workspace that you can connect with your eDiscovery, DLP, or SIEM tools."
+    }
+  ],
+  "canonicalUrl": "https://status.openai.com/incidents/01JYFCZT19PRNXY3J2ETF30AMY",
+  "sourceHash": "sha256:4b81cd37671e7c7eea2a2858155bd54925c2294f999d7ce2275a25a3f62aed56",
+  "status": "published",
+  "discoveredAt": "2026-10-05T01:13:59Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.98,
+      "evidence": [
+        "事件对象是 OpenAI Compliance API，正文解释了 API 作为合规数据通道的角色。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.96,
+      "evidence": [
+        "正文用事件时间、游标、摄取时间和下游系统串起可追溯的数据链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.94,
+      "evidence": [
+        "正文把恢复后的补齐、重复写入和 reconciliation 作为数据质量检查。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文区分事件发生日、公开更新时间与恢复状态。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://status.openai.com/incidents/01JYFCZT19PRNXY3J2ETF30AMY",
+      "claim": "官方状态页把事件起点记为 2025 年 6 月 21 日，6 月 23 日首次公开调查，6 月 29 日完全恢复。",
+      "excerpt": "The issue first began on June 21, 2025."
+    },
+    {
+      "url": "https://help.openai.com/en/articles/9261474-compliance-api-for-enterprise-customers/",
+      "claim": "帮助中心说明 Compliance Platform 的 Enterprise/Edu 范围与 eDiscovery、DLP、SIEM 接入方式。",
+      "excerpt": "The Compliance Platform is available to ChatGPT Enterprise and Edu workspaces."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T01:13:59Z",
+    "method": "source",
+    "notes": "逐项核对 OpenAI Status 事件页的起点、更新阶段和恢复时间；用 OpenAI Help Center 说明合规平台范围与日志下游。正文没有从公开状态页推导数据丢失、客户数量或补发结果。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T01:20:23Z",
+    "notes": "reader-review 已通过：日期层次、事实边界、两张 OpenAI 引用卡片及中文可读性均清楚。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T01:20:23Z",
+    "questions": [
+      "是否清楚区分事件起点 6/21、首次公开更新 6/23 与 6/29 完全恢复？是。",
+      "是否把 Compliance API 数据延迟误写成普通 ChatGPT 中断或数据丢失？否。",
+      "OpenAI Status 与 Help Center 引用、中文可读性和新闻主线是否通过？是。"
+    ],
+    "notes": "新闻以 OpenAI Status 的 Compliance API Data Delays 事件为主线，帮助中心用于解释 Enterprise/Edu 合规日志链；没有从状态页推断数据丢失、补发完成或所有工作区受影响。正文自然、段落独立，适合零基础读者。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-21",
+  "promotedAt": "2026-10-05T01:21:08.223Z"
+}

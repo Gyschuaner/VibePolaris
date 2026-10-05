@@ -1,0 +1,162 @@
+{
+  "slug": "grok4-launch-20250709",
+  "title": "xAI 发布 Grok 4 与 Grok 4 Heavy：工具调用、实时搜索和 300 美元订阅同时上线",
+  "summary": "7 月 9 日，xAI 发布 Grok 4，并把更高计算量的 Grok 4 Heavy 放进新的 SuperGrok Heavy 订阅。官方介绍了实时搜索、X 搜索、代码解释器和多模态能力，也列出多项 benchmark 成绩；这些成绩和训练规模仍是公司口径，需要与独立评测分开看。",
+  "body": "7 月 9 日，xAI 在官方发布页宣布 Grok 4 上线。普通 Grok 4 面向 SuperGrok 和 X Premium+ 用户，并通过 xAI API 提供；同一天出现的 Grok 4 Heavy 则放在新的 SuperGrok Heavy 方案里，订阅价格是每月 300 美元。这里是两层产品：一个是可以直接使用的模型，一个是用更多推理计算换取更高上限的高价版本。\n\n这次发布把“模型会回答问题”推进到“模型会自己调用工具”。xAI 说 Grok 4 经过强化学习训练来使用代码解释器和网页浏览，在需要实时信息时可以自己生成搜索词，还能检索 X 上的内容。API 页面还写到 256,000 token 的上下文窗口、文本和视觉理解，以及从 X、网页和新闻来源取实时数据的 live search API。工具越多，模型能处理的任务越广，产品就越需要说明它实际读了哪些内容、拥有怎样的权限。\n\nGrok 4 Heavy 的差异不只是“同一个模型更快”。xAI 把它描述为并行考虑多种假设，再比较结果的多智能体式系统，代价是更长的等待时间和更高的计算成本。官方页称训练使用 Colossus 200,000 GPU 集群，并把训练效率提升 6 倍；这些是 xAI 对训练过程的介绍，不是外部机构对算力或效率的审计。\n\n发布页还列出 ARC-AGI-2、Humanity’s Last Exam、USAMO 等 benchmark 结果。分数能回答“在某套题目和某种工具条件下答对多少”，却不能直接回答模型在真实工作里是否可靠。尤其是带 Python 或互联网工具的成绩，需要把工具访问、题目版本和评测设置一起记录，否则不同产品之间并不是同一场考试。\n\n这条新闻的核心，是 xAI 同时把能力、工具和价格分层：普通用户得到 Grok 4，愿意付费的人购买更多推理预算和新功能的优先权，开发者则通过 API 接入。后续真正值得追踪的是独立评测、API 的失败处理和引用质量，以及高价 Heavy 模式是否在实际任务中带来足够可重复的改进。",
+  "publishedAt": "2025-07-09",
+  "eventDate": "2025-07-09",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/grok4-launch-20250709.svg",
+    "alt": "xAI 将 Grok 4、Grok 4 Heavy、实时搜索和工具调用放进不同产品层",
+    "sourceUrl": "/images/news/grok4-launch-20250709.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release-layers",
+      "title": "普通版和 Heavy 是两层产品",
+      "body": "Grok 4 面向 SuperGrok、Premium+ 和 API 用户；Grok 4 Heavy 通过每月 300 美元的 SuperGrok Heavy 提供，卖点是更多推理计算和多路结果比较。",
+      "kind": "comparison"
+    },
+    {
+      "id": "native-tools",
+      "title": "工具调用让模型接触实时世界",
+      "body": "官方介绍了代码解释器、网页搜索和 X 搜索，模型会为问题生成搜索词并组合检索结果；这也让来源、权限和失败处理成为产品的一部分。",
+      "kind": "technical"
+    },
+    {
+      "id": "training-claims",
+      "title": "训练规模和效率是公司披露",
+      "body": "200,000 GPU 集群、训练效率提升 6 倍等数字来自 xAI 的发布页，文章把它们当作公司口径，不写成独立审计结论。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark-reading",
+      "title": "benchmark 分数必须连同测试条件读",
+      "body": "ARC-AGI-2、Humanity’s Last Exam 和 USAMO 的成绩取决于题目版本、工具和计算预算，不能直接等同于日常工作可靠性。",
+      "kind": "narrative"
+    },
+    {
+      "id": "next-evidence",
+      "title": "真正的比较要等上线后的证据",
+      "body": "API 的引用质量、失败恢复、权限控制和独立复测，才会说明 Heavy 的额外推理预算是否值得它的价格。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一项模型成绩怎样变成可比较的证据？",
+    "question": "把模型、工具、题目和计算预算放在同一张记录里，才不会把营销分数误读成通用能力。",
+    "steps": [
+      {
+        "label": "固定题目版本",
+        "detail": "先记录 benchmark 的题目集、发布日期和是否为完整测试或子集。",
+        "evidence": "benchmark scope"
+      },
+      {
+        "label": "写清工具条件",
+        "detail": "注明是否允许 Python、网页搜索、X 搜索或其他外部工具，工具返回的内容也应保存。",
+        "evidence": "tool access"
+      },
+      {
+        "label": "区分模型层级",
+        "detail": "把 Grok 4 与 Grok 4 Heavy 分开统计，不把多路推理的结果和单模型结果混在一起。",
+        "evidence": "model variant"
+      },
+      {
+        "label": "记录计算预算",
+        "detail": "等待时间、并行候选数和推理 token 会改变成绩，比较时要把成本一起写出。",
+        "evidence": "test-time compute"
+      },
+      {
+        "label": "回到真实任务",
+        "detail": "用独立、可复现的工作样本检查引用、失败恢复和人类接管，而不只看排行榜。",
+        "evidence": "independent eval"
+      }
+    ]
+  },
+  "source": {
+    "name": "xAI",
+    "url": "https://x.ai/news/grok-4"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "tools",
+    "context",
+    "benchmark",
+    "eval",
+    "api",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://x.ai/news/grok-4",
+      "claim": "xAI 官方发布页标注 2025 年 7 月 9 日，宣布 Grok 4、Grok 4 Heavy、原生工具使用、实时搜索和 SuperGrok Heavy。",
+      "excerpt": "xAI, “Grok 4,” July 9, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/07/09/elon-musks-xai-launches-grok-4-alongside-a-300-monthly-subscription/",
+      "claim": "TechCrunch 报道 Grok 4 发布和每月 300 美元的 SuperGrok Heavy，并交叉记录了发布演示与 benchmark 口径。",
+      "excerpt": "TechCrunch, “Elon Musk’s xAI launches Grok 4 alongside a $300 monthly subscription,” July 9, 2025."
+    },
+    {
+      "url": "https://data.x.ai/2025-08-20-grok-4-model-card.pdf",
+      "claim": "xAI 后续模型卡提供 Grok 4 的部署和评测背景；文章只把它作为后续技术材料，不倒推 7 月 9 日发布时已经披露的内容。",
+      "excerpt": "xAI, Grok 4 Model Card, August 20, 2025."
+    }
+  ],
+  "canonicalUrl": "https://x.ai/news/grok-4",
+  "sourceHash": "sha256:c6d3e7bfa462aef2201bdff29ed7472fefb66eed1a8478ae51f05b63a54e3de3",
+  "status": "published",
+  "discoveredAt": "2026-10-05T01:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://x.ai/news/grok-4",
+      "claim": "xAI 官方发布页标注 2025 年 7 月 9 日，宣布 Grok 4、Grok 4 Heavy、原生工具使用、实时搜索和 SuperGrok Heavy。",
+      "excerpt": "xAI, “Grok 4,” July 9, 2025."
+    },
+    {
+      "url": "https://techcrunch.com/2025/07/09/elon-musks-xai-launches-grok-4-alongside-a-300-monthly-subscription/",
+      "claim": "TechCrunch 报道 Grok 4 发布和每月 300 美元的 SuperGrok Heavy，并交叉记录了发布演示与 benchmark 口径。",
+      "excerpt": "TechCrunch, “Elon Musk’s xAI launches Grok 4 alongside a $300 monthly subscription,” July 9, 2025."
+    },
+    {
+      "url": "https://data.x.ai/2025-08-20-grok-4-model-card.pdf",
+      "claim": "xAI 后续模型卡提供 Grok 4 的部署和评测背景；文章只把它作为后续技术材料，不倒推 7 月 9 日发布时已经披露的内容。",
+      "excerpt": "xAI, Grok 4 Model Card, August 20, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T01:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日与发布日、官方/媒体原始链接及文章中的事实边界；公司统计、报道计划和独立证据已分别标注。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T01:20:00Z",
+    "notes": "已完成新闻来源核对，等待现有 reader-review 子智能体逐篇检查零基础可读性和 AI 味。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T17:00:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "来源归属、公司口径和计划/上线边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否通过？是。"
+    ],
+    "notes": "主线、日期和官方口径清楚；Grok 4/Heavy 功能与订阅范围易懂，benchmark 和训练规模明确为公司数据，未混同独立评测。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-09",
+  "promotedAt": "2026-10-04T19:19:20.375Z"
+}

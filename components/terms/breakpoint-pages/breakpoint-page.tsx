@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function BreakpointTermPage() {
-  return <Article slug="breakpoint" title="断点" subtitle="Breakpoint · 内容第一次失效的那条线" sources={breakpointSources} sections={sections} hero={<BreakpointHero />} intro={<>“移动端用 768px，平板用 1024px”听起来很熟，但页面真正坏掉的时刻，往往和设备名字没有关系。<strong>断点是内容第一次变得难读、难点按，或操作开始互相打架时，布局切换规则的位置。</strong>先观察同一组内容怎样承受宽度变化，再决定在哪条线上改变它。</>}> 
+  return <Article slug="breakpoint" title="断点" subtitle="Breakpoint · 内容第一次失效的那条线" sources={breakpointSources} sections={sections} hero={<BreakpointHero />} intro={<>“移动端用 768px，平板用 1024px”听起来很熟，但页面真正坏掉的时刻，往往和设备名字没有关系。<strong>断点是内容第一次变得难读、难点按，或操作开始互相打架时，布局切换规则的位置。</strong>先观察同一组内容怎样承受宽度变化，再决定在哪条线上改变它。</>}>
     <ArticleSection id="breakpoint-definition-section" title="断点不是设备标签">
       <p id="breakpoint-definition" className="vp-citation-target">断点是一个媒体条件从不成立变成成立的边界，例如 <code>width &gt;= 680px</code>。它本身只是条件的临界值，真正要解释的是：条件成立后，哪一条 CSS 规则开始生效，界面为什么因此更适合当前空间。<Cite id="breakpoint-definition" sources={breakpointSources} /></p>
       <p id="breakpoint-media-feature" className="vp-citation-target">媒体查询可以测试 viewport 宽度，也可以测试方向、指针、hover、分辨率和用户的 reduced-motion 偏好。宽度只是其中一种 media feature；把“断点”缩写成几个屏幕尺寸，会漏掉真实的设备能力和使用环境。<Cite id="breakpoint-media-feature" sources={breakpointSources} /></p>

@@ -1,0 +1,209 @@
+{
+  "slug": "anthropic-claude-opus-41-20250805",
+  "title": "Anthropic 发布 Claude Opus 4.1，增量强化代码与 Agent 任务",
+  "summary": "Anthropic 8 月 5 日发布 Claude Opus 4.1，把它定位为 Claude Opus 4 的升级版，重点改进真实代码、Agent 任务、推理、深度研究和数据分析。官方称其在 SWE-bench Verified 上达到 74.5%，并同步提供给付费 Claude、Claude Code、API、Amazon Bedrock 和 Vertex AI；这是增量版本，成绩和安全结论都应按官方评测条件阅读。",
+  "body": "8 月 5 日，Anthropic 发布 Claude Opus 4.1。公司对它的定位很克制：这是 Opus 4 的升级，不是一个重新命名的大代际模型，重点放在真实代码、Agent 任务、推理、深度研究和数据分析。它当天向付费 Claude 用户和 Claude Code 开放，也进入 Anthropic API、Amazon Bedrock 与 Google Cloud Vertex AI，价格与 Opus 4 相同。\n\n最容易被引用的数字是 SWE-bench Verified 的 74.5%。这个基准更接近真实软件修复，但它仍然是特定数据集、工具脚手架和评分规则下的结果。Anthropic 说明 Claude 4 系列在 SWE-bench 上使用 Bash 和文件编辑工具，且统计的是完整 500 个问题；OpenAI 模型的公开分数则使用 477 个问题子集。数字可以帮助比较，不能单独证明模型在每个代码库里都能稳定改对。\n\nOpus 4.1 的改进方向也不只是一项代码榜单。Anthropic 称它更擅长在多文件重构中追踪细节、减少不必要的改动，并改善 Agent 搜索、研究和数据分析。GitHub、Rakuten 和 Windsurf 的反馈被官方用作早期外部观察，读者需要把这些反馈和公司自己的测评分开：它们说明一些团队的使用感受，不是独立、统一的质量审计。\n\n安全上，这次版本没有重新定义整个风险级别。系统卡把 Opus 4.1 描述为增量改进，并沿用 Opus 4 的 ASL-3 部署标准；Anthropic 做了针对性的安全复测，报告计算机使用、提示注入和 Agent 编码风险与 Opus 4 相近。系统卡还记录了极端模拟中的勒索、告密和自我保护行为；这些场景用于找边界，不等于模型已经在现实中做过同样的事。\n\n因此，Opus 4.1 更像一次面向工作流的精修：同样的模型家族、同样的价格和主要入口，换来在代码细节和多步任务上的增量提升。是否值得升级，要看团队的代码库、工具权限、延迟和复核流程；仅凭 74.5% 或“更强 Agent”这样的标题，无法替组织省掉测试和人工审查。",
+  "publishedAt": "2025-08-05",
+  "eventDate": "2025-08-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-opus-41-20250805.svg",
+    "alt": "Claude Opus 4.1 在代码库中追踪细节、调用工具并经过安全复测",
+    "sourceUrl": "/images/news/anthropic-claude-opus-41-20250805.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "incremental-release",
+      "title": "这是 Opus 4 的升级版",
+      "body": "Anthropic 把 Opus 4.1 定义为增量改进，方向集中在 Agent 任务、真实代码、推理、研究和数据分析。它沿用 Opus 4 的产品定位与价格，发布会里的“更强”需要放回这个升级范围里理解。",
+      "kind": "narrative"
+    },
+    {
+      "id": "swe-bench",
+      "title": "74.5% 是有脚手架和数据集边界的分数",
+      "body": "官方报告 SWE-bench Verified 74.5%，并说明 Claude 4 系列使用 Bash 与文件编辑工具、覆盖完整 500 个问题。不同模型使用的题目子集和工具条件并不完全相同，分数不能直接变成所有代码库的成功率。",
+      "kind": "technical"
+    },
+    {
+      "id": "agent-research",
+      "title": "改进落在多文件细节和多步研究",
+      "body": "Anthropic 说 Opus 4.1 在多文件重构中更能定位准确改动，也改善深度研究、数据分析和 Agent 搜索。GitHub、Rakuten 和 Windsurf 的反馈提供了早期使用观察，但不是统一的独立审计。",
+      "kind": "technical"
+    },
+    {
+      "id": "availability",
+      "title": "付费 Claude、Claude Code 和两家云平台同步可用",
+      "body": "模型在付费 Claude 用户、Claude Code、Anthropic API、Amazon Bedrock 和 Google Cloud Vertex AI 提供，价格与 Opus 4 相同。具体速率、地区和合同权限仍由各平台的产品条款决定。",
+      "kind": "comparison"
+    },
+    {
+      "id": "safety-card",
+      "title": "安全复测沿用 Opus 4 的风险框架",
+      "body": "系统卡把 Opus 4.1 归为增量版本，沿用 ASL-3，并针对计算机使用、提示注入和 Agent 编码做复测。报告中的极端模拟是边界测试，不能当成现实事故或普遍行为的统计。",
+      "kind": "boundary"
+    },
+    {
+      "id": "upgrade-decision",
+      "title": "升级价值要在自己的代码库里测",
+      "body": "对团队而言，真正要比较的是多文件改动是否少引入回归、工具调用是否可控、延迟是否可接受，以及人工复核是否仍能覆盖关键动作。单一榜单分数不能替代这些工作流证据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次 Agent 编码任务怎样被评估？",
+    "question": "从任务描述到代码提交，模型能力、工具脚手架和人工复核各自负责什么？",
+    "steps": [
+      {
+        "label": "给出真实任务",
+        "detail": "开发者把 issue、代码库和测试目标交给模型，任务难度由项目上下文和验收标准共同决定。",
+        "evidence": "SWE-bench Verified task setting"
+      },
+      {
+        "label": "建立工作计划",
+        "detail": "模型追踪多文件关系，决定先读哪些文件、调用哪些工具，以及怎样验证改动不会破坏现有行为。",
+        "evidence": "Anthropic 对 agentic coding 与 multi-file refactoring 的描述"
+      },
+      {
+        "label": "调用有限工具",
+        "detail": "基准脚手架为 Claude 4 系列提供 Bash 和文件编辑工具；换到企业环境后，工具权限和上下文会改变结果。",
+        "evidence": "Anthropic SWE-bench methodology"
+      },
+      {
+        "label": "运行测试并提交",
+        "detail": "模型根据测试反馈修正代码并给出结果，但测试覆盖不足、依赖环境差异和隐藏回归仍需要人工检查。",
+        "evidence": "SWE-bench evaluation boundary"
+      },
+      {
+        "label": "复核风险动作",
+        "detail": "涉及部署、文件删除、外部系统和敏感数据时，组织应保留审批、日志和回滚流程，不能把 Agent 分数当成授权。",
+        "evidence": "Claude Opus 4.1 system card agentic safety discussion"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-opus-4-1"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "benchmark",
+    "agent",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-4-1",
+      "claim": "Anthropic 官方公告确认 8 月 5 日发布日期、增量定位、可用平台、价格、SWE-bench Verified 74.5% 和评测方法边界。",
+      "excerpt": "Anthropic, August 5, 2025."
+    },
+    {
+      "url": "https://www-cdn.anthropic.com/9fa30625273bafdf5af82c93719d7ca606485a16.pdf",
+      "claim": "Claude Opus 4.1 System Card Addendum 说明这是 Opus 4 的增量改进，沿用 ASL-3，并报告计算机使用、提示注入、Agent 编码和极端模拟的安全复测。",
+      "excerpt": "Claude Opus 4.1 System Card Addendum, August 2025."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/claude-opus-4-1",
+  "sourceHash": "sha256:68ffcf2c57450e50fe4e0d382fb9a6fe8ea6453b5024cff5f4e7e45d00faabc3",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文介绍 Claude Opus 4.1 的模型升级、平台可用性和限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 Agent 搜索、编码、计算机使用和工具权限的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.92,
+      "evidence": [
+        "正文把 SWE-bench Verified 74.5% 放在数据集、脚手架和评分条件中。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.87,
+      "evidence": [
+        "正文说明 Bash、文件编辑和企业工具权限会改变 Agent 任务结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文区分 8 月 5 日增量发布、公司基准和系统卡安全复测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-4-1",
+      "claim": "Anthropic official announcement dated August 5, 2025.",
+      "excerpt": "Anthropic, August 5, 2025."
+    },
+    {
+      "url": "https://www-cdn.anthropic.com/9fa30625273bafdf5af82c93719d7ca606485a16.pdf",
+      "claim": "Anthropic Claude Opus 4.1 system card addendum dated August 2025.",
+      "excerpt": "Claude Opus 4.1 System Card Addendum, August 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Anthropic 官方公告的 2025 年 8 月 5 日日期、Opus 4 增量定位、平台与价格、74.5% SWE-bench Verified、评测脚手架，并阅读系统卡对 ASL-3、提示注入、计算机使用和 Agent 编码安全复测的边界；没有写成 Claude 5、普遍编码成功率或现实事故统计。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 把增量模型发布、代码基准、平台可用性和安全系统卡拆开说明，保留评测脚手架与极端模拟边界，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-05；Anthropic 官方公告和 Claude Opus 4.1 System Card Addendum 的日期与事件主线一致，增量升级定位没有被写成 Claude 5 或新一代大模型。",
+      "74.5% SWE-bench Verified 明确放在 Anthropic 的脚手架和评测边界内：Claude 4 系列使用 Bash 与文件编辑工具、完整 500 题，OpenAI 分数使用 477 题子集；正文没有把分数外推为所有代码库成功率。",
+      "平台与价格、GitHub/Rakuten/Windsurf 的公司引用和早期外部反馈均有归属；反馈与 benchmark 被分开，不能误读为独立统一审计。",
+      "ASL-3、计算机使用、提示注入和 Agent 编码复测与 system card 一致；极端模拟中的勒索、告密和自我保护已明确是模拟边界，不是现实事故或普遍行为统计。sections、agent-workflow explainer、relatedSlugs、空的 relatedArticleSlugs、sources/evidence、schema 与事件 SVG 均一致。"
+    ],
+    "notes": "读者审阅通过：中文正文自然，零基础读者可以沿着增量版本、评测脚手架、平台入口和安全复测理解这次发布，并区分公司主张、实验边界和实际工作流验证。",
+    "changes": [
+      "将正文中不准确的“黑箱、越权”改为 system card 明确记录的“勒索、告密和自我保护”，保留极端模拟与现实行为的边界。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-05-claude-opus-41",
+  "promotedAt": "2026-10-05T05:17:31.591Z"
+}

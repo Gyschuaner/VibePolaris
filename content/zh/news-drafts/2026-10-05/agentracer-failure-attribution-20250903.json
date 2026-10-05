@@ -1,0 +1,188 @@
+{
+  "slug": "agentracer-failure-attribution-20250903",
+  "title": "AgenTracer：找出多 Agent 长轨迹里到底是谁把任务带偏了",
+  "summary": "AgenTracer 论文于 9 月 3 日提交，针对多 Agent 系统长执行轨迹里难以定位责任步骤的问题，提出用反事实回放和程序化故障注入标注失败原因，构建 TracerTraj 数据集，并训练轻量 AgenTracer-8B 进行多粒度失败归因。论文称现有推理模型在该任务上的准确率通常低于 10%；AgenTracer-8B 在 Who&When 上最高超过 Gemini-2.5-Pro 和 Claude-4-Sonnet 18.18%，给 MetaGPT、MaAS 等系统提供反馈后，整体表现提升 4.8%—14.2%。",
+  "body": "多 Agent 系统出错时，最后的答案只是结果，真正的原因可能藏在几十轮调用里：一个 Agent 选错工具、另一个 Agent 误读返回值，编排器又把错误状态传给下游。把整条轨迹标成“失败”对排错没有帮助，团队需要知道是哪个角色、哪一步、哪类交接把任务带离了正确路径。AgenTracer 把这件事单独定义成 failure attribution。\n\n论文认为，现有推理模型在长轨迹归因上并不可靠，准确率通常低于 10%。这不是说系统完全不能解释，而是它很难在多个模型、工具调用和编排协议交织时，准确指出真正的诱因。自然语言复述“哪里看起来不对”，和确认“如果这一步没有发生，后面是否会恢复”是两种不同的判断。\n\nAgenTracer 用 counterfactual replay 和 programmed fault injection 生成训练信号。系统先在失败轨迹里注入受控故障或回放另一种分支，再观察哪一步改变了结果，把这些差异汇总成 TracerTraj 数据集。反事实不是凭空证明因果，它依赖注入点、回放环境和状态记录足够准确；但它至少把“看起来像原因”推进到了“改变这一步会发生什么”的可测问题。\n\n作者进一步训练 AgenTracer-8B，用多粒度强化学习诊断 Agent、步骤和轨迹层面的错误。摘要称它在 Who&When 基准上最高超过 Gemini-2.5-Pro 和 Claude-4-Sonnet 18.18%，并能为 MetaGPT、MaAS 等现成多 Agent 系统提供可行动反馈，使整体表现提升 4.8%—14.2%。归因器的角色是指出修正方向，不等于它已经替系统执行了所有修复。\n\n把这个框架放进生产，首先要保证日志足够细：每次工具请求、返回、状态写入、权限变化和 Agent 间消息都要有时间与版本。没有原始输入和环境快照，回放只是在重演一个不完整的故事；如果日志包含用户数据，还需要在训练和诊断前做访问控制与脱敏。\n\n故障注入也要有边界。模拟错误可以帮助覆盖工具超时、错误参数和消息丢失，但不能代表所有真实故障，尤其是外部服务偶发变化、权限撤回和人类接管。评测时应把归因准确率、提前发现时间、误指责任何步骤的代价和实际修复后的回归结果分开记录。\n\nAgenTracer 的价值，是把多 Agent 的“失败了”拆成一条可以反复追问的证据链：哪一步发生了什么、如果撤掉它会怎样、修正反馈后系统是否真的恢复。只有把归因和修复、回放和真实环境、解释和权限日志连起来，长轨迹才不再是一段只能看结局的黑箱。",
+  "publishedAt": "2025-09-03",
+  "eventDate": "2025-09-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/agentracer-failure-attribution-20250903.svg",
+    "alt": "AgenTracer 用反事实回放和故障注入定位多 Agent 长轨迹中的责任步骤",
+    "sourceUrl": "/images/news/agentracer-failure-attribution-20250903.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "long-trace-failure",
+      "title": "整条轨迹失败，不能说明哪一步错了",
+      "body": "多 Agent 的工具、状态和消息交织，最后答案只是结果；排错要定位具体 Agent、步骤和交接。",
+      "kind": "narrative"
+    },
+    {
+      "id": "failure-attribution",
+      "title": "AgenTracer 把责任定位单独拿出来测",
+      "body": "论文报告现有推理模型在长轨迹归因上的准确率通常低于 10%，说明解释和真正诱因并不是一回事。",
+      "kind": "technical"
+    },
+    {
+      "id": "counterfactual-replay",
+      "title": "反事实回放问：撤掉这一步会怎样",
+      "body": "程序化故障注入和回放分支观察结果变化，汇总成 TracerTraj；它依赖完整状态记录，不能凭空证明因果。",
+      "kind": "technical"
+    },
+    {
+      "id": "agentracer-model",
+      "title": "8B 归因器给现成系统提供反馈",
+      "body": "AgenTracer-8B 在 Who&When 上最高超过 Gemini-2.5-Pro 和 Claude-4-Sonnet 18.18%，反馈到 MetaGPT、MaAS 后整体提升 4.8%—14.2%。",
+      "kind": "comparison"
+    },
+    {
+      "id": "trace-provenance",
+      "title": "没有细日志，就没有可回放的证据",
+      "body": "工具请求、返回、状态写入、权限变化和 Agent 消息要带时间与版本；用户数据还要先做访问控制和脱敏。",
+      "kind": "example"
+    },
+    {
+      "id": "injection-boundary",
+      "title": "故障注入覆盖不了所有真实故障",
+      "body": "超时、错误参数和消息丢失可以模拟，外部服务变化、权限撤回和人类接管仍要单独回归。",
+      "kind": "boundary"
+    },
+    {
+      "id": "attribution-to-repair",
+      "title": "归因指出方向，不等于自动修好系统",
+      "body": "要同时记录归因准确率、发现时间、误指代价和修复后的回归结果，才能知道反馈是否真的让轨迹恢复。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "AgenTracer 怎样找出多 Agent 失败的责任步骤？",
+    "question": "先回放并注入受控故障，比较反事实结果，再把 Agent、步骤和轨迹层面的原因反馈给系统。",
+    "steps": [
+      {
+        "label": "保留完整执行轨迹",
+        "detail": "记录每个 Agent、工具请求与返回、状态写入、消息和权限变化，给回放提供同一环境。",
+        "evidence": "long execution traces"
+      },
+      {
+        "label": "注入受控故障",
+        "detail": "在候选步骤注入参数错误、工具失败或消息异常，构造可比较的反事实分支。",
+        "evidence": "programmed fault injection"
+      },
+      {
+        "label": "回放并比较结果",
+        "detail": "观察故障分支与原始分支的差异，判断哪个步骤改变了后续成功或失败。",
+        "evidence": "counterfactual replay"
+      },
+      {
+        "label": "训练多粒度归因器",
+        "detail": "让 AgenTracer-8B 同时判断责任 Agent、具体步骤和整条轨迹，避免只输出泛化解释。",
+        "evidence": "multi-granular reinforcement learning"
+      },
+      {
+        "label": "反馈到修复回归",
+        "detail": "把归因结果交给编排系统后，重新执行并记录恢复率、误指和权限边界，区分指出问题与解决问题。",
+        "evidence": "actionable feedback to MetaGPT and MaAS"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03312"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03312",
+      "claim": "AgenTracer 用反事实回放、程序化故障注入和 TracerTraj 数据集进行多 Agent 失败归因，并训练 AgenTracer-8B。",
+      "excerpt": "counterfactual replay and programmed fault injection ... TracerTraj ... AgenTracer-8B"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03312",
+      "claim": "摘要报告 Who&When 上最高超过 Gemini-2.5-Pro/Claude-4-Sonnet 18.18%，并使 MetaGPT、MaAS 等系统提升 4.8%—14.2%。",
+      "excerpt": "outperforms ... by up to 18.18% ... 4.8-14.2% performance gains"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03312",
+  "sourceHash": "sha256:8b3d8df0311035c2a5eff7dd10417fd5d185406c9dd877e0e0cdd1854d790c0e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多 Agent 角色、编排协议和失败轨迹。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.97,
+      "evidence": [
+        "正文把工具请求、返回和错误注入作为归因证据。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 Who&When、归因准确率、发现时间和修复回归指标。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 3 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03312",
+      "claim": "arXiv 记录 AgenTracer 于 2025 年 9 月 3 日提交，研究 LLM Agent 系统的失败归因。",
+      "excerpt": "Published: 2025-09-03 ... AgenTracer"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03312",
+      "claim": "摘要给出低于 10% 的现有归因准确率、反事实/故障注入、18.18% 与 4.8%—14.2% 结果。",
+      "excerpt": "accuracy generally below 10% ... up to 18.18% ... 4.8-14.2%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 failure attribution、counterfactual replay、fault injection、TracerTraj、AgenTracer-8B 和 Who&When/MetaGPT/MaAS 结果；正文补充日志 provenance、脱敏、故障覆盖、归因与修复边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把失败归因与自动修复分开，具体解释反事实回放、故障注入和多粒度反馈，并补上日志、隐私、真实故障与权限边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-03-agentracer-failure-attribution-20250903"
+}

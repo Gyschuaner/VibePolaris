@@ -1,0 +1,177 @@
+{
+  "slug": "prompt-injection-pdf-multiple-choice-20250816",
+  "title": "一张藏着提示的 PDF，就能让 LLM 在简单选择题上改答案",
+  "summary": "8 月 16 日提交的 arXiv 论文测试了一个很朴素的场景：把“3+2”这类基础算术题做成选择题或判断题，放进含有隐藏提示的 PDF，再让 LLM 负责判断。结果显示，即使问题本身几乎没有推理难度，文件里的提示注入仍可能操纵模型输出。论文把风险指向教育、同行评审和数据质量检查中的 LLM-as-a-judge 用法；文章同时把文档隔离、独立核对和人工抽查列为工程侧需要补上的控制。",
+  "body": "很多 LLM 评测和业务流程会把一份文档交给模型，请它判断答案是否正确、筛选内容或给出评分。8 月 16 日提交到 arXiv 的一篇论文没有从复杂推理开始，而是选了一个几乎不能怪到“题太难”的测试：把“3+2”之类的基础算术题放进选择题或判断题，再把隐藏提示注入 PDF 文件。\n\n攻击的关键不在算术，而在文件里混进了另一套指令。模型读取 PDF 时，可能把本来应该被当作内容的数据，误当成需要执行的命令。论文想回答的就是这个边界问题：当 LLM 被用作裁判时，一份看似普通的材料能不能改变它对一个简单答案的判断。\n\n作者报告，LLM 在这种极简单的任务上确实会受到隐藏提示注入影响。题目越简单，结果反而越容易让人警觉：如果模型连“内容”和“指令”之间的界线都守不住，换成教育作业、同行评审材料或数据质量记录时，不能只靠题目本身是否复杂来估计风险。\n\n这不是说每个 PDF 都会攻击模型，也不是说所有模型都会在同一位置出错。论文的实验设置、文件构造和所测模型决定了结论范围；摘要没有给出一个可以代表所有系统的统一成功率。更稳妥的读法是：只要文档内容能够影响模型的控制流，LLM-as-a-judge 就需要专门做提示注入测试。\n\n工程上，文档应被当作不可信输入，与系统指令、评分规则和工具权限分开传递。应用可以先提取题目和候选答案，再用独立流程核对结果；对高影响判断保留人工抽查或第二个不共享同一上下文的检查器。把 PDF 转成文本并不会自动消除注入，反而可能把隐藏内容更直接地送进模型。\n\n这篇论文的价值在于把安全问题压缩成一个很小的实验，让“模型能不能算对”与“模型会不会听错指令”分离开。部署评测裁判、文档审查或自动打分时，团队应分别测答案能力、指令隔离能力和被污染后的恢复路径，而不是用一项正常准确率替代安全验收。",
+  "publishedAt": "2025-08-16",
+  "eventDate": "2025-08-16",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/prompt-injection-pdf-multiple-choice-20250816.svg",
+    "alt": "含隐藏提示的 PDF 进入 LLM 裁判后，原本简单的选择题答案被提示注入影响",
+    "sourceUrl": "/images/news/prompt-injection-pdf-multiple-choice-20250816.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "simple-test",
+      "title": "作者故意从“3+2”这类简单题开始",
+      "body": "论文把基础算术做成选择题或判断题，再放进含隐藏提示的 PDF。题目简单，是为了把推理难度与指令注入造成的影响分开。",
+      "kind": "narrative"
+    },
+    {
+      "id": "content-command",
+      "title": "危险边界是内容被当成了命令",
+      "body": "文档本来应该是供模型读取的数据，隐藏提示却可能被模型当作要执行的指令。攻击操纵的是输入与控制之间的边界，不是算术能力。",
+      "kind": "technical"
+    },
+    {
+      "id": "judge-risk",
+      "title": "LLM-as-a-judge 在简单判断上也会被影响",
+      "body": "作者报告，LLM 在这些极简单的选择题和判断题上仍会受到 PDF 中提示注入的影响，教育、同行评审和数据质量检查因此需要专门做隔离测试。",
+      "kind": "example"
+    },
+    {
+      "id": "scope-boundary",
+      "title": "论文揭示风险，不提供所有模型的统一成功率",
+      "body": "结论取决于文件构造、实验任务和被测模型。它不能推出每个 PDF 或每个模型都会被同样方式操纵，摘要也没有给出可代表所有系统的单一成功率。",
+      "kind": "boundary"
+    },
+    {
+      "id": "separation-control",
+      "title": "文档内容、评分规则和权限要分开传递",
+      "body": "工程系统可以先提取题目与候选答案，再用独立流程核对；把文档作为不可信输入，并保留人工抽查或隔离检查器，不能只依赖一次上下文里的模型判断。",
+      "kind": "technical"
+    },
+    {
+      "id": "recovery-test",
+      "title": "验收要分别测答案能力和指令隔离能力",
+      "body": "正常准确率不能替代安全验收。团队应测试污染后的输出、恢复路径和高影响判断的复核机制，确认模型错听指令后系统还能停下来。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一份文档怎样测试提示注入边界？",
+    "question": "模型是在判断题目，还是在执行文档里混进来的另一条指令？",
+    "steps": [
+      {
+        "label": "准备简单题目",
+        "detail": "用基础算术、选择题或判断题建立一个答案清楚的基线，先测模型在干净输入上的判断。",
+        "evidence": "Basic arithmetic questions in multiple-choice or true-false format"
+      },
+      {
+        "label": "把题目放入 PDF",
+        "detail": "把题目和选项封装成模型日常会读取的文件，记录解析方式和输入边界。",
+        "evidence": "Questions are presented within PDF files"
+      },
+      {
+        "label": "加入隐藏提示",
+        "detail": "在文件内容中注入另一套指令，观察它是否能改变模型对原答案的判断。",
+        "evidence": "Hidden prompts are injected into the file"
+      },
+      {
+        "label": "比较输出变化",
+        "detail": "把干净文件与被注入文件的判断并列比较，记录答案、理由和是否执行了不属于题目的指令。",
+        "evidence": "The work evaluates robustness under prompt injection"
+      },
+      {
+        "label": "验证隔离与恢复",
+        "detail": "增加文档与控制指令的隔离、独立核对和人工抽查，再测模型是否能在污染后回到原任务。",
+        "evidence": "Engineering controls derived from the documented content-command boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Xuyang Guo 等",
+    "url": "https://arxiv.org/abs/2508.13214"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.13214",
+      "claim": "论文在 PDF 中嵌入隐藏提示，测试 LLM 对基础算术选择题和判断题的判断是否会被注入操纵。",
+      "excerpt": "basic arithmetic questions ... within PDF files, where hidden prompts are injected into the file"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.13214",
+      "claim": "论文报告 LLM 在这种简单场景下仍容易受到隐藏提示注入影响，并将风险指向 LLM-as-a-judge 应用。",
+      "excerpt": "LLMs are indeed vulnerable to such hidden prompt injection attacks, even in these trivial scenarios"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.13214",
+  "sourceHash": "sha256:bcebc7f9a1e5d70510757ec570f73c20e39c0b6f0ec88b7cf0ec955db4dbaf5b",
+  "status": "ready",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "论文直接测试大型语言模型读取 PDF 并进行判断的行为。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文围绕 LLM-as-a-judge、简单题基线和提示注入稳健性测试展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.82,
+      "evidence": [
+        "正文强调文档内容与控制指令、工具权限之间的隔离。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.72,
+      "evidence": [
+        "正文记录论文在 2025 年 8 月 16 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.13214",
+      "claim": "arXiv 页面标注论文于 2025 年 8 月 16 日首次提交，摘要给出 PDF 隐藏提示注入、基础算术题和 LLM-as-a-judge 风险。",
+      "excerpt": "Submitted on 16 Aug 2025 ... highlighting serious robustness risks for LLM-as-a-judge applications"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 2508.13214 首次提交日期与摘要；正文保留 PDF 隐藏提示、基础算术选择题/判断题和 LLM-as-a-judge 风险，并区分论文实验结论与文档隔离、独立核对等工程建议。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "主助手逐段复核完成：没有把隐藏提示写成所有 PDF 都会触发的漏洞，也没有编造统一攻击成功率；把论文观察与工程控制建议分开，保留内容/指令隔离和恢复验收。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-16-pdf-injection"
+}

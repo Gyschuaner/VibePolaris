@@ -1,0 +1,188 @@
+{
+  "slug": "verltool-agentic-rl-tools-20250901",
+  "title": "VerlTool：把多轮工具 Agent 的训练基础设施统一起来",
+  "summary": "VerlTool 论文于 9 月 1 日提交，提出面向工具增强 LLM 的统一 Agentic RL 框架。它与 VeRL 对齐，提供标准化工具 API，覆盖代码执行、搜索、SQL 和视觉处理；用异步 rollout 减少同步等待，并把多模态观察 token 纳入多轮轨迹。框架在数学、知识问答、SQL、视觉、网页搜索和软件工程六类任务上达到与专用系统相当的结果，代码已开源。",
+  "body": "工具 Agent 的研究经常卡在基础设施，而不是算法本身。每个项目都重新写一套工具调用、轨迹保存和异步执行，结果是一个方法只能在自己的任务上跑，换到搜索、SQL 或视觉任务就要重搭。VerlTool 想先把这层重复劳动收拢起来。\n\n它与 VeRL 对齐，提供统一的工具管理接口，支持代码执行、网页搜索、SQL 数据库和视觉处理等不同工具。模型看到的工具反馈可以是文字、图片或视频，统一进入多轮轨迹，而不是每个任务各自发明一套状态格式。\n\n另一个重点是 rollout 执行。多轮 Agent 里，有些轨迹正在等待工具返回，有些已经可以继续；如果所有样本同步推进，慢工具会拖住整个批次。VerlTool 通过异步执行减少这种等待，论文报告接近 2 倍的速度提升。\n\n作者在数学推理、知识问答、SQL 生成、视觉推理、网页搜索和软件工程六个领域评测，报告与专用系统相当的结果。这个结论说明统一接口没有明显牺牲任务表现，但不代表所有工具都能直接接入：工具 schema、返回质量和奖励设计仍需逐项适配。\n\n插件化架构把接入成本压到轻量 Python 定义。对研究团队来说，这意味着可以先把工具、观察和奖励接入同一运行框架，再比较不同 Agentic RL 方法；对生产系统来说，插件边界也需要安全审查，不能因为接入简单就跳过权限和数据隔离。\n\n多模态观察 token 让轨迹更接近真实工作流，却也让上下文和存储更复杂。图像、视频和工具日志需要版本、大小和保留策略，训练与回放时要能还原同一状态。\n\nVerlTool 的价值在于把多轮工具学习变成一块可复用的底座。基础设施统一后，研究者才更容易比较算法真正带来的收益，而不是比较谁先解决了异步调用和接口胶水。",
+  "publishedAt": "2025-09-01",
+  "eventDate": "2025-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/verltool-agentic-rl-tools-20250901.svg",
+    "alt": "VerlTool 用统一工具 API 和异步 rollout 支撑多模态多轮 Agentic RL",
+    "sourceUrl": "/images/news/verltool-agentic-rl-tools-20250901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "infra-fragmentation",
+      "title": "工具 Agent 常被胶水代码拖住",
+      "body": "每个项目重复实现调用、轨迹和异步执行，方法难以跨搜索、SQL、视觉和代码任务复用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "unified-apis",
+      "title": "先用标准 API 把工具放在一起",
+      "body": "VerlTool 覆盖代码执行、搜索、SQL 和视觉处理，让不同工具进入同一多轮轨迹。",
+      "kind": "technical"
+    },
+    {
+      "id": "multimodal-observation",
+      "title": "文字、图片和视频都能成为观察",
+      "body": "多模态反馈被统一表示为观察 token，模型可以在不同工具环境中沿轨迹继续决策。",
+      "kind": "technical"
+    },
+    {
+      "id": "async-rollout",
+      "title": "异步 rollout 减少同步等待",
+      "body": "不同轨迹按自己的工具返回进度推进，论文报告接近 2 倍速度提升。",
+      "kind": "comparison"
+    },
+    {
+      "id": "six-domains",
+      "title": "六类任务上达到专用系统相当水平",
+      "body": "数学、知识问答、SQL、视觉、网页搜索和软件工程的结果说明统一接口有可行性，仍需逐工具适配。",
+      "kind": "comparison"
+    },
+    {
+      "id": "plugin-boundary",
+      "title": "轻量插件不等于免审查",
+      "body": "工具接入仍需权限、数据隔离、schema 和返回质量检查，多模态轨迹还要能版本化回放。",
+      "kind": "boundary"
+    },
+    {
+      "id": "reusable-foundation",
+      "title": "把比较重点还给训练算法",
+      "body": "基础设施统一后，团队更容易区分 Agentic RL 的收益和接口胶水带来的差异。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "VerlTool 怎样把不同工具接进同一套 Agentic RL？",
+    "question": "统一工具 API、观察 token 和异步 rollout，再让插件定义具体工具和奖励边界。",
+    "steps": [
+      {
+        "label": "登记工具接口",
+        "detail": "为代码、搜索、SQL 和视觉工具定义统一输入、返回和错误格式。",
+        "evidence": "standardized APIs supporting diverse modalities"
+      },
+      {
+        "label": "记录多模态观察",
+        "detail": "将文字、图片、视频和工具日志标记为可回放的状态，保留版本与大小。",
+        "evidence": "multi-modal observation tokens"
+      },
+      {
+        "label": "异步推进轨迹",
+        "detail": "让等待工具的轨迹与已返回轨迹分开推进，减少批次被最慢工具阻塞。",
+        "evidence": "asynchronous rollout execution"
+      },
+      {
+        "label": "组合训练奖励",
+        "detail": "按任务接入规则、模型判断或工具验证信号，记录每个奖励的依据。",
+        "evidence": "comprehensive evaluation across 6 ARLT domains"
+      },
+      {
+        "label": "插件化复用",
+        "detail": "用轻量 Python 定义接入新工具，先审查权限和数据边界，再比较训练算法。",
+        "evidence": "modular plugin architecture"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.01055"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.01055",
+      "claim": "VerlTool 与 VeRL 对齐，提供统一工具管理、异步 rollout 和多模态观察 token。",
+      "excerpt": "VerlTool: Towards Holistic Agentic Reinforcement Learning with Tool Use"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01055",
+      "claim": "框架在六个工具 Agent 领域评测，异步 rollout 报告接近 2 倍速度提升。",
+      "excerpt": "near 2× speedup ... 6 ARLT domains"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.01055",
+  "sourceHash": "sha256:2685fb0ca7a8a586ee5870937b8981d8c961bc564eb471cc7f90b882f8ede3cd",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多轮工具 Agent 的训练轨迹和插件化基础设施。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文覆盖代码执行、搜索、SQL 和视觉工具的统一管理。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文保留六类任务和异步速度比较的评测条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 1 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.01055",
+      "claim": "arXiv 记录 VerlTool 于 2025 年 9 月 1 日提交，研究带工具的 Agentic RL 基础设施。",
+      "excerpt": "Date: Mon Sep 1 ... VerlTool"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01055",
+      "claim": "摘要给出统一 API、多模态观察、异步 rollout、六领域评测和速度提升。",
+      "excerpt": "unified tool management ... near 2× speedup ... 6 ARLT domains"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 VeRL 对齐、工具 API、多模态观察 token、异步 rollout、六领域评测和开源插件架构；正文补充版本化回放、权限和数据隔离。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 VerlTool 的价值放在统一基础设施、异步 rollout 和插件复用，避免与前日工具闭环文章重复，并补上多模态轨迹和权限边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-01-verltool-agentic-rl-tools-20250901"
+}

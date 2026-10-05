@@ -1,0 +1,227 @@
+{
+  "slug": "microsoft-mai-dxo-medical-superintelligence-20250630",
+  "title": "Microsoft 发布 MAI-DxO 医疗诊断研究：多模型会问问题，但还没有进入临床",
+  "summary": "6 月 30 日，Microsoft AI 发布 MAI-DxO 研究，称一个模拟“虚拟医生小组”的编排器在 304 个 NEJM 复杂病例上，最佳配置正确率达到 85.5%，并报告低于医生组的测试成本。结果属于研究基准，不是临床部署许可。",
+  "body": "6 月 30 日，Microsoft AI 发布了一项容易被标题带偏的医疗 AI 研究。公司介绍 MAI-DxO（Microsoft AI Diagnostic Orchestrator）时，称它不是一个只看一次输入就给答案的模型，而是一个会提出追问、选择检查、比较诊断并进行成本检查的“虚拟医生小组”。\n\n在 Microsoft 披露的实验里，系统用 304 个来自《新英格兰医学杂志》（NEJM）的复杂病例进行评测。最佳配置是 MAI-DxO 与 OpenAI o3 组合，正确率达到 85.5%；同一研究还比较了 21 名有 5 到 20 年经验的美国和英国医生，报告的平均准确率约为 20%。这些数字描述的是特定病例集合和测试设计，不能直接变成“AI 在医院四倍于医生”的普遍结论。\n\nMAI-DxO 的新意在编排层。它可以先提出鉴别诊断，再决定要问什么、订什么检查，拿到结果后继续更新判断。系统还允许设置成本约束，避免为了提高命中率而默认请求所有检查。换句话说，模型的能力不只看“知道多少”，还看它是否能在不确定时收集有价值的信息。\n\n但测试环境与真实临床仍然有距离。研究使用的是已经整理好的 NEJM 病例，医生比较组的工具和协作条件也有明确限制；患者不会在这套基准中承担等待、隐私、误诊或治疗延误的真实后果。Microsoft 自己也把 MAI-DxO 描述为研究演示，需要更多真实环境测试、监管和医疗机构治理。\n\n“成本更低”也要谨慎理解。研究里的成本是对检查选择和模型调用的统一估算，不等于任何国家医院的实际费用。保险、设备可用性、急诊时间、患者偏好和医生责任都可能改变成本—准确率的取舍。一个为了省检查而漏掉危重病的系统，不能只看平均数字。\n\n因此，6 月 30 日的新闻价值在于它把“多模型协作”和“逐步收集证据”放到医疗诊断的同一实验里，并公开了有冲击力的 benchmark 结果。它提醒我们，AI 医疗的下一步不只是更大的模型，还包括何时提问、选什么检查、如何留痕以及谁来对最终诊断负责。当前证据仍停留在研究阶段，读者不能把它当成个人诊疗工具或医生替代品。",
+  "publishedAt": "2025-06-30",
+  "eventDate": "2025-06-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/microsoft-mai-dxo-medical-superintelligence-20250630.svg",
+    "alt": "Microsoft MAI-DxO 从病例输入、多模型协作、选择检查到诊断与成本核验的研究流程",
+    "sourceUrl": "/images/news/microsoft-mai-dxo-medical-superintelligence-20250630.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "MAI-DxO 是一个诊断编排器",
+      "body": "它把多个模型、追问、检查选择和成本检查组织成逐步流程，而不是只返回一次答案。",
+      "kind": "narrative"
+    },
+    {
+      "id": "benchmark",
+      "title": "85.5% 和 20% 来自特定基准",
+      "body": "304 个 NEJM 病例与 21 名医生的比较是研究设置，不能直接外推到所有患者和医院。",
+      "kind": "comparison"
+    },
+    {
+      "id": "mechanism",
+      "title": "收集信息本身是能力的一部分",
+      "body": "系统可以选择下一项问题和检查，再根据结果更新判断，成本约束让“多问一次”也有代价。",
+      "kind": "technical"
+    },
+    {
+      "id": "limits",
+      "title": "研究演示不等于临床系统",
+      "body": "真实患者、医院流程、隐私、责任和监管条件没有被这条公告解决。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next",
+      "title": "下一步要看真实环境和治理",
+      "body": "需要外部验证、临床试验、审计记录和明确的医生责任，才能谈更广泛部署。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "clinical-alert",
+    "title": "MAI-DxO 如何把一次回答变成逐步诊断？",
+    "question": "先提出假设，再选择高价值信息，最后在责任边界内输出判断。",
+    "steps": [
+      {
+        "label": "读取病例",
+        "detail": "系统从病例描述开始，列出可能的疾病和不确定点。",
+        "evidence": "304 NEJM case records"
+      },
+      {
+        "label": "提出追问",
+        "detail": "它决定还需要哪些症状、病史或检查结果，而不是立即下结论。",
+        "evidence": "ask follow-up questions and order tests"
+      },
+      {
+        "label": "平衡成本",
+        "detail": "编排器在准确率和检查成本之间设置约束，避免无限制检查。",
+        "evidence": "configurable cost constraints"
+      },
+      {
+        "label": "核验诊断",
+        "detail": "系统汇总结果并检查推理，研究输出仍需医生和临床治理接手。",
+        "evidence": "research demonstration, not clinical deployment"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft AI 官方研究公告",
+    "url": "https://microsoft.ai/news/the-path-to-medical-superintelligence/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "eval",
+    "benchmark",
+    "event",
+    "data-lineage",
+    "auth"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://microsoft.ai/news/the-path-to-medical-superintelligence/",
+      "claim": "Microsoft AI 6 月 30 日发布 MAI-DxO 研究，称其在 304 个 NEJM 病例上的最佳配置正确率为 85.5%，并比较了 21 名医生的结果。",
+      "excerpt": "Microsoft AI, “The Path to Medical Superintelligence”, Jun 30, 2025."
+    },
+    {
+      "url": "https://arxiv.org/abs/2506.22405",
+      "claim": "研究原文介绍 Sequential Diagnosis Benchmark 和 MAI-DxO 的逐步问诊、检查选择、成本约束与诊断流程。",
+      "excerpt": "arXiv:2506.22405, “Sequential Diagnosis with Language Models”."
+    },
+    {
+      "url": "https://time.com/7299314/microsoft-ai-better-than-doctors-diagnosis/",
+      "claim": "TIME 7 月 2 日报道 Microsoft 的研究主张，并把 85% 对 20% 的比较限定在 NEJM 复杂病例测试环境。",
+      "excerpt": "TIME, “Microsoft’s AI Is Better Than Doctors at Diagnosing Disease”, Jul 2, 2025."
+    }
+  ],
+  "canonicalUrl": "https://microsoft.ai/news/the-path-to-medical-superintelligence/",
+  "sourceHash": "sha256:158b9f323cf81ad4ff9ab8aa8ac49ec2d7eeefdad6137998da2e6caaab5a45c7",
+  "status": "published",
+  "discoveredAt": "2026-10-05T10:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 agent 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 agent-harness 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.91,
+      "evidence": [
+        "正文解释 eval 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.88,
+      "evidence": [
+        "正文解释 benchmark 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.84,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.8,
+      "evidence": [
+        "正文解释 data-lineage 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.77,
+      "evidence": [
+        "正文解释 auth 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://microsoft.ai/news/the-path-to-medical-superintelligence/",
+      "claim": "Microsoft AI 6 月 30 日发布 MAI-DxO 研究，称其在 304 个 NEJM 病例上的最佳配置正确率为 85.5%，并比较了 21 名医生的结果。",
+      "excerpt": "Microsoft AI, “The Path to Medical Superintelligence”, Jun 30, 2025."
+    },
+    {
+      "url": "https://arxiv.org/abs/2506.22405",
+      "claim": "研究原文介绍 Sequential Diagnosis Benchmark 和 MAI-DxO 的逐步问诊、检查选择、成本约束与诊断流程。",
+      "excerpt": "arXiv:2506.22405, “Sequential Diagnosis with Language Models”."
+    },
+    {
+      "url": "https://time.com/7299314/microsoft-ai-better-than-doctors-diagnosis/",
+      "claim": "TIME 7 月 2 日报道 Microsoft 的研究主张，并把 85% 对 20% 的比较限定在 NEJM 复杂病例测试环境。",
+      "excerpt": "TIME, “Microsoft’s AI Is Better Than Doctors at Diagnosing Disease”, Jul 2, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日、来源发布日期、原始链接和公司/媒体口径；正文保留新闻事实与待验证主张的边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T21:37:41Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "304 个 NEJM 病例、85.5% 和医生对照限定于研究基准，未写成临床许可或普遍优势。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-30-microsoft-mai-dxo-medical-superintelligence-20250630",
+  "promotedAt": "2026-10-04T21:38:22.618Z"
+}

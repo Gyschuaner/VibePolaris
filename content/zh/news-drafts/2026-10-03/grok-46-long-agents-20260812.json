@@ -1,0 +1,153 @@
+{
+  "slug": "grok-46-long-agents-20260812",
+  "title": "xAI 发布 Grok 4.6：把长流程 Agent 任务放到产品中心",
+  "summary": "8 月 12 日，xAI 发布 Grok 4.6，强调让 Agent（能调用工具完成多步任务的模型）在研究、编码和交互式项目中持续工作更久。官方同时公布一组自报基准、API 价格和 Cursor、Grok Build 等接入渠道；这些数字来自 xAI 的页面，不能直接等同于所有生产任务的表现。",
+  "body": "8 月 12 日，xAI 发布 Grok 4.6。xAI 把重点放在长流程 Agent（能调用工具完成多步任务的模型）和更复杂的交互、视觉工作上。xAI 举的例子包括研究一个陌生主题、跨代码库工作，以及把一个想法做成可运行的应用或工作成果。\n\n“长流程”说的是任务会跨过多个步骤：模型要先理解目标，再选择工具、读取结果、继续下一步，并在中途发现问题时修正。对用户来说，这和一次提问后返回一段文字不同；它更接近一个需要保持上下文的工作循环。xAI 说 Grok 4.6 在较长轨迹中会增加自测和验证，但公告没有给出跨客户的失败率或返工率。\n\n训练部分也围绕这个方向展开。xAI 称，Grok 4.6 进行了比 Grok 4.5 更长的补充训练，使用经过筛选的模型生成数据、工程数据和新的优化器；随后让 Grok 4.5 重新生成监督微调（SFT，给模型示例答案来调整行为）轨迹，再用模型检查过滤问题轨迹，并在知识工作、通用编码和领域环境中进行代理强化学习。这是公司的训练说明，外部读者目前没有同等细节的独立复现。\n\n官方页面列出基准测试（benchmark，用固定任务比较模型表现），包括 AA Intelligence、GDPVal-AA、CursorBench、DeepSWE、FrontierCode 和 APEX 等项目。xAI 在其表中报告 Grok 4.6 在 AA Intelligence 上为 61，并称与 GPT-5.6 Sol 相同；其他项目的结果也按表格给出。页面明确提醒，竞争模型的数字来自各家系统卡或公开榜单，所以这组数据适合当作发布方口径，不能从一个综合分数推导出所有工程任务都会变快或变准。\n\nGrok 4.6 当天可在 Cursor、Grok Build 和 xAI API 使用，也接入 OpenRouter、Vercel、Cloudflare 等合作方。xAI 公布的起价是每百万输入 token（模型处理或计费的文本单位）2 美元、每百万输出 token 6 美元，快速版本价格翻倍；Cursor 和 Grok Build 首周提供两倍包含用量。实际成本仍取决于上下文长度、工具次数和失败重试，不能只按模型名称比较单价。\n\n因此，这条新闻确认的是一次面向长任务和开发工作流的模型发布。接下来更值得观察的，是用户能否在真实工作里复现官方评测、模型在工具调用失败时是否会停下来，以及所谓自测能否减少人工审查，而不是只看首周的试用额度。",
+  "publishedAt": "2026-08-12",
+  "eventDate": "2026-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/grok-46-long-agents-20260812.svg",
+    "alt": "Grok 4.6 从任务理解、工具调用、自测到人工验收的事件链路示意；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/grok-46-long-agents-20260812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这次发布把长任务放到前台",
+      "body": "xAI 将 Grok 4.6 的重点描述为长流程 Agent、交互式工作和视觉项目，场景从研究和编码延伸到把想法做成应用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agent-loop",
+      "title": "长流程 Agent 和普通问答差在哪",
+      "body": "它需要保持目标和中间结果，反复选择工具并继续执行；一次回答是否完成，不等于多步任务是否真正交付。",
+      "kind": "technical"
+    },
+    {
+      "id": "training",
+      "title": "训练细节是公司自己的解释",
+      "body": "xAI 提到补充训练、模型生成数据、SFT 轨迹和代理强化学习，但没有提供外部可复现的完整训练数据或独立审计。",
+      "kind": "boundary"
+    },
+    {
+      "id": "evals",
+      "title": "基准表能说明什么，不能说明什么",
+      "body": "官方报告 Grok 4.6 在多项代理编码和知识工作基准上取得高分；竞争数字来自开发者系统卡或公开榜单，仍需把任务定义、版本和评测条件放在一起看。",
+      "kind": "comparison"
+    },
+    {
+      "id": "access",
+      "title": "价格和入口已经公布",
+      "body": "模型可通过 Cursor、Grok Build、API 和合作平台使用，起价按输入与输出 token 分开计算，快速版本价格更高。",
+      "kind": "narrative"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次长流程 Agent 任务怎样推进？",
+    "question": "模型怎样从一个宽泛目标走到可以检查的工作成果？",
+    "steps": [
+      {
+        "label": "理解目标",
+        "detail": "先把研究、编码或应用构建目标拆成可执行的小步骤，保留任务上下文。",
+        "evidence": "xAI Grok 4.6 公告"
+      },
+      {
+        "label": "调用工具",
+        "detail": "在代码库、网页或其他工作环境中读取信息、执行动作，再把结果带回任务循环。",
+        "evidence": "xAI 对 agentic work 的描述"
+      },
+      {
+        "label": "自测与修正",
+        "detail": "xAI 称模型会在较长轨迹中自测和验证；这仍需要在真实任务中检查误报和漏报。",
+        "evidence": "xAI Grok 4.6 公告"
+      },
+      {
+        "label": "人工验收",
+        "detail": "最后要由使用者核对结果、权限、成本和可维护性，不能把模型自测当作交付证明。",
+        "evidence": "文章边界说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "xAI",
+    "url": "https://x.ai/news/grok-4-6"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "agent-loop",
+    "benchmark",
+    "token",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://x.ai/news/grok-4-6",
+      "claim": "xAI 于 2026-08-12 发布 Grok 4.6，重点是长流程 Agent 和交互、视觉工作。",
+      "excerpt": "Grok 4.6 builds on Grok 4.5 with a particular focus on long-running agents and more ambitious interactive and visual work."
+    },
+    {
+      "url": "https://x.ai/news/grok-4-6",
+      "claim": "xAI 说明 Grok 4.6 使用更长的补充训练、筛选后的模型生成数据和新的训练配方。",
+      "excerpt": "Grok 4.6 underwent a longer supplemental training run than Grok 4.5, with curated model-generated data for reasoning and advanced technical concepts, high-quality engineering data, and an improved optimizer and training recipe."
+    },
+    {
+      "url": "https://x.ai/news/grok-4-6",
+      "claim": "xAI 公布 Grok 4.6 的接入渠道和 API 价格。",
+      "excerpt": "Grok 4.6 is available today in Cursor and Grok Build ... Pricing starts at $2 per million input tokens and $6 per million output tokens."
+    }
+  ],
+  "canonicalUrl": "https://x.ai/news/grok-4-6",
+  "sourceHash": "sha256:66321e57ae7a50676743cff3c18b07d268b97e6c04ae727c87f41701b8e73dae",
+  "status": "published",
+  "discoveredAt": "2026-10-03T15:18:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://x.ai/news/grok-4-6",
+      "claim": "xAI 于 2026-08-12 发布 Grok 4.6，重点是长流程 Agent 和交互、视觉工作。",
+      "excerpt": "Grok 4.6 builds on Grok 4.5 with a particular focus on long-running agents and more ambitious interactive and visual work."
+    },
+    {
+      "url": "https://x.ai/news/grok-4-6",
+      "claim": "xAI 说明 Grok 4.6 使用更长的补充训练、筛选后的模型生成数据和新的训练配方。",
+      "excerpt": "Grok 4.6 underwent a longer supplemental training run than Grok 4.5, with curated model-generated data for reasoning and advanced technical concepts, high-quality engineering data, and an improved optimizer and training recipe."
+    },
+    {
+      "url": "https://x.ai/news/grok-4-6",
+      "claim": "xAI 公布 Grok 4.6 的接入渠道和 API 价格。",
+      "excerpt": "Grok 4.6 is available today in Cursor and Grok Build ... Pricing starts at $2 per million input tokens and $6 per million output tokens."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T15:18:00Z",
+    "method": "source",
+    "notes": "按事件发生日核对官方公告与可信新闻，区分公司自报数据、独立报道和可用性边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T15:18:00Z",
+    "notes": "按 write-like-me、humanizer-zh 与 concept-pages 要求做事实先行、去宣传腔和去模板化首轮审校。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "questions": [],
+    "notes": "二次及最终复审通过：零基础术语、中文表达、事实边界、来源卡片、日期、词条联动和事件差异化 SVG 均已核对。",
+    "changes": [
+      "按首轮意见补充术语解释、拆分引用卡片、修正归属和可用性边界，并按事件机制重做 SVG。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-12",
+  "promotedAt": "2026-10-03T16:16:22.992Z"
+}

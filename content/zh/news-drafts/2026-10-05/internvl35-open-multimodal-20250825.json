@@ -1,0 +1,194 @@
+{
+  "slug": "internvl35-open-multimodal-20250825",
+  "title": "InternVL3.5：开源多模态模型把推理、看图和部署一起重做",
+  "summary": "8 月 25 日提交的 InternVL3.5 技术论文，把开源多模态模型的升级拆成三件事：用 Cascade RL 让推理训练先稳定、再细化；用 Visual Resolution Router 按画面内容调整视觉 token 分辨率；用 Decoupled Vision-Language Deployment 把视觉编码器和语言模型分到不同 GPU。论文报告相对 InternVL3 整体推理最高提升 16.0%，推理速度最高提升 4.05 倍，并公开模型与代码；这些是论文基准中的上限结果，不等于每个任务和硬件都能复现。",
+  "body": "多模态模型的麻烦，往往不在“能不能看见图片”，而在看多少、怎么推理、以及一张图片进来以后 GPU 怎么分工。InternVL3.5 的论文没有只报一个更大的参数量，而是把这三层问题放在同一个版本里处理。\n\n第一层是训练。作者提出 Cascade Reinforcement Learning，先用离线强化学习让训练过程收敛得更稳，再用在线强化学习做更细的对齐。这个顺序的意义在于，把“先学会一套相对稳定的行为”和“根据新反馈修正细节”分开；论文摘要没有给出每个阶段各自贡献的独立消融数字，所以不能把 16.0% 全部归功于某一个阶段。\n\n第二层是视觉输入的分辨率。过去常见的做法是给所有图片准备近似固定的视觉 token 预算，清晰度和成本一起被锁死。Visual Resolution Router 试图根据当前图像和任务动态决定分辨率，在不明显牺牲效果的前提下少看一些不必要的细节，或者在细节真的重要时多保留一些视觉信息。\n\n第三层是部署。视觉编码器和语言模型不再必须挤在同一张 GPU 上，DvD 把两部分拆开，让视觉侧和语言侧分别承担更适合自己的计算。这样做的收益不是“模型突然更聪明”，而是把显存和吞吐的瓶颈拆开；实际速度还会受 GPU 型号、图片大小、批量和通信开销影响。\n\n论文给出的总结果很醒目：相对 InternVL3，InternVL3.5 在下游推理任务上最高有 16.0% 的整体提升，配合 ViR 和 DvD，推理速度最高达到 4.05 倍。这里的“最高”需要连同基准、配置和模型尺寸一起读。它不能直接翻译成所有图片问答都快四倍，也不能替代自己的业务数据测试。\n\n论文还提到最大的 InternVL3.5-241B-A28B 在开源多模态模型中覆盖了通用多模态、推理、文本和 Agent 任务，并加入 GUI 交互和具身 Agent 能力。对做产品的人来说，这意味着模型输出不只是一段描述，也可能要识别界面、选择动作，再把动作结果带回下一轮上下文；错误的代价也随之从“答错一句”变成“点错一个按钮”。\n\nInternVL3.5 的价值因此不只是排行榜上的一行分数。它把模型训练、视觉 token 预算和部署拓扑放在一条链上：训练决定模型会不会推理，路由决定每次推理看多少，部署决定这次推理是否负担得起。任何一个环节被单独优化，另外两个环节都可能把收益吃掉。\n\n如果要把这套思路带进实际系统，第一步不是直接换模型，而是记录每个请求的图片尺寸、视觉 token 数、路由选择、端到端延迟和错误类型。只有知道瓶颈出在看得太多、语言侧太慢，还是跨 GPU 通信太重，才知道该调路由、换部署，还是回到训练数据上。",
+  "publishedAt": "2025-08-25",
+  "eventDate": "2025-08-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/internvl35-open-multimodal-20250825.svg",
+    "alt": "InternVL3.5 将强化学习、视觉分辨率路由和分离部署连成一条多模态推理链",
+    "sourceUrl": "/images/news/internvl35-open-multimodal-20250825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "three-bottlenecks",
+      "title": "多模态升级不只换一个更大的模型",
+      "body": "InternVL3.5 同时处理训练稳定性、视觉 token 预算和部署拓扑。它把“会不会推理”“每次看多少”和“能不能跑得起”放在同一版本里。",
+      "kind": "narrative"
+    },
+    {
+      "id": "cascade-rl",
+      "title": "先稳定，再用在线反馈细调",
+      "body": "Cascade RL 先做离线强化学习，再做在线强化学习。论文把两阶段作为整体框架介绍，没有给出可以把总提升单独归因给某一步的消融数字。",
+      "kind": "technical"
+    },
+    {
+      "id": "visual-router",
+      "title": "图片不该每次都用同样的视觉预算",
+      "body": "Visual Resolution Router 按输入和任务动态调整视觉分辨率，目标是在不明显损失效果时减少 token，在细节重要时保留更多信息。",
+      "kind": "technical"
+    },
+    {
+      "id": "dvd-deployment",
+      "title": "把视觉侧和语言侧拆到不同 GPU",
+      "body": "DvD 将视觉编码器与语言模型分开部署，试图平衡两侧的计算负载。速度收益还要看硬件、通信、图片大小和批量，不能脱离配置理解。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-gains",
+      "title": "最高 16.0% 和 4.05 倍都要带着条件读",
+      "body": "论文报告相对 InternVL3 的整体推理最高提升 16.0%，推理速度最高 4.05 倍。它们是基准和配置下的上限结果，不是所有任务的固定倍率。",
+      "kind": "boundary"
+    },
+    {
+      "id": "agentic-capability",
+      "title": "从看图到点按，错误会改变系统状态",
+      "body": "241B-A28B 版本覆盖 GUI 交互和具身 Agent 任务。产品一旦让模型执行动作，评测就要关注点击、状态变化和回滚，而不只是文字答案。",
+      "kind": "example"
+    },
+    {
+      "id": "adoption-checklist",
+      "title": "先记录每次请求，再决定优化哪一层",
+      "body": "落地时应记录图片尺寸、视觉 token、路由选择、端到端延迟和错误类型，区分是看得太多、语言侧太慢，还是跨 GPU 通信成为瓶颈。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样判断多模态模型的加速来自哪里？",
+    "question": "把训练、视觉预算和部署路径分开记录，再看同一任务的准确率与延迟。",
+    "steps": [
+      {
+        "label": "固定同一批任务",
+        "detail": "先用同一组图片、问题和输出约束比较版本，避免把数据变化误当成模型提升。",
+        "evidence": "significant improvements on downstream reasoning tasks"
+      },
+      {
+        "label": "记录视觉预算",
+        "detail": "保存每次请求的分辨率、视觉 token 数和路由选择，观察模型是否在简单图片上少看、在细节任务上多看。",
+        "evidence": "Visual Resolution Router dynamically adjusts the resolution of visual tokens"
+      },
+      {
+        "label": "拆开两侧延迟",
+        "detail": "分别测视觉编码、语言生成、跨 GPU 通信和排队时间，不把端到端速度直接归给模型本身。",
+        "evidence": "Decoupled Vision-Language Deployment separates the vision encoder and language model across different GPUs"
+      },
+      {
+        "label": "核对输出质量",
+        "detail": "同时看视觉问答、推理、GUI 动作和错误恢复，不能只用一个总分判断是否适合业务。",
+        "evidence": "supports ... GUI interaction and embodied agency"
+      },
+      {
+        "label": "验证最坏路径",
+        "detail": "把大图、长上下文、批量请求和动作失败加入回放，确认“最高 4.05 倍”之外的长尾延迟和回滚行为。",
+        "evidence": "up to ... 4.05× inference speedup"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / InternVL3.5 作者组",
+    "url": "https://arxiv.org/abs/2508.18265"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "benchmark",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.18265",
+      "claim": "论文提出 Cascade RL、Visual Resolution Router 与 DvD 三项核心设计，并公开模型和代码。",
+      "excerpt": "A key innovation is the Cascade Reinforcement Learning ... Visual Resolution Router ... Decoupled Vision-Language Deployment"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18265",
+      "claim": "论文报告相对 InternVL3 整体推理最高提升 16.0%，推理速度最高提升 4.05 倍，最大模型覆盖多模态和 Agent 任务。",
+      "excerpt": "up to a +16.0% gain ... a 4.05× inference speedup ... supports ... GUI interaction and embodied agency"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.18265",
+  "sourceHash": "sha256:35b33a2dc9bd8daa0da8a0ad7a489d1c080471d6b83b3e34da24f1839c55b6d5",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕开源多模态模型、强化学习训练和语言模型部署展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论 GUI 交互、具身 Agent 和动作错误恢复。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.91,
+      "evidence": [
+        "正文解释论文基准、配置和“最高”结果的阅读边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文把推理质量、延迟、动作成功率和长尾回放作为评测对象。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 25 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.18265",
+      "claim": "arXiv 记录显示 InternVL3.5 于 2025 年 8 月 25 日提交，提出 Cascade RL、ViR 和 DvD。",
+      "excerpt": "Date: Mon Aug 25 ... We introduce InternVL 3.5"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "逐段核对论文摘要中的三项方法、16.0% 和 4.05 倍上限、241B-A28B、GUI/具身 Agent 与公开代码表述；正文明确区分基准结果、部署条件和产品落地验证。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：删去把最高指标写成固定收益的表述，补足视觉预算、跨 GPU 通信和动作回滚的读者关心点；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-25-internvl35-open-multimodal-20250825"
+}

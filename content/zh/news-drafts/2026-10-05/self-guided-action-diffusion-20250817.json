@@ -1,0 +1,177 @@
+{
+  "slug": "self-guided-action-diffusion-20250817",
+  "title": "机器人扩散策略在采样很紧时，怎样少走几步弯路？",
+  "summary": "8 月 17 日提交的 arXiv 论文提出 Self-Guided Action Diffusion：在扩散策略的每个采样步骤里，根据前一步已经做出的决策引导下一步的候选动作分布。作者把它作为双向解码的更省算力变体，在仿真任务中报告接近最优的表现；在严格采样预算下，动态任务成功率最高比现有方法高 70%。这个结果限定在论文的仿真设置和比较对象内，重点是降低推理搜索成本，不是已经完成真实机器人部署验证。",
+  "body": "扩散模型做机器人控制时，不是一次性吐出一个动作，而是从噪声开始逐步生成一段动作。为了让相邻动作连贯，研究者会在推理时多采样几条候选轨迹，再挑出表现更好的一条。候选越多，搜索越有机会找到好动作，计算量也越容易失控。\n\n8 月 17 日提交到 arXiv 的 Self-Guided Action Diffusion，针对的是这个推理阶段的矛盾。论文把已有的双向解码思路改得更轻：每个扩散步骤都参考此前的决策，用它来引导下一步的提议分布，而不是把所有动作候选都平等地展开。这样，搜索可以把算力花在更可能延续当前路线的方向上。\n\n作者在仿真任务中报告，这种 self-guidance 能以很低的推理开销接近最优表现；在采样预算很紧、任务动态变化更明显的情况下，成功率最高比所比较的现有方法高 70%。这个数字是相对实验结果，不是每个任务都提高 70%，也没有脱离论文的采样预算、环境和基线。\n\n它和重新训练一个更大的策略模型不是一回事。方法主要改变动作生成时怎样搜索候选，保留了扩散策略的主体；如果机器人感知错了、环境模型不准，或者执行器跟不上，搜索策略本身也不能补上这些误差。\n\n“接近最优”也需要看最优是怎么定义的。论文摘要给出的是仿真任务和成功率比较，真实机器人的摩擦、延迟、碰撞风险和传感器噪声都可能改变搜索的收益。部署前还需要测动作平滑、失败恢复以及采样次数变化带来的延迟，而不只看一条成功率曲线。\n\n这项工作对具身 Agent 的启发很直接：推理预算不是只能在“多想几次”和“少想几次”之间二选一，也可以让前面的选择帮助后面的搜索收缩范围。要把这个思路带进产品，团队应同时记录采样预算、决策路径和失败类型，确认节省的计算没有换来更隐蔽的动作抖动或安全边界退化。",
+  "publishedAt": "2025-08-17",
+  "eventDate": "2025-08-17",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/self-guided-action-diffusion-20250817.svg",
+    "alt": "机器人动作扩散采样根据前一步决策收缩候选分布，在紧采样预算下继续搜索",
+    "sourceUrl": "/images/news/self-guided-action-diffusion-20250817.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "search-cost",
+      "title": "动作候选越多，推理时搜索越贵",
+      "body": "扩散策略逐步生成动作片段，推理时多采样并比较候选可以提高找到好动作的机会，却也会快速增加计算和延迟。",
+      "kind": "narrative"
+    },
+    {
+      "id": "prior-guidance",
+      "title": "方法用此前的决策引导下一步候选分布",
+      "body": "Self-Guided Action Diffusion 在每个扩散步骤参考之前的决策，调整提议分布，把搜索集中到更可能保持连贯性的方向，作为双向解码的更省算力变体。",
+      "kind": "technical"
+    },
+    {
+      "id": "simulation-result",
+      "title": "仿真中接近最优，紧预算动态任务最高高 70%",
+      "body": "论文在仿真任务中报告接近最优的表现；在严格采样预算下，动态任务成功率最高比现有方法高 70%。这是作者比较中的最高相对结果，不是所有任务的固定增益。",
+      "kind": "example"
+    },
+    {
+      "id": "inference-not-training",
+      "title": "它优化的是推理搜索，不是重新训练一套机器人",
+      "body": "方法主要改变候选动作在采样阶段怎样被提出和筛选，扩散策略本身仍可能受到感知、环境模型和执行器误差影响。",
+      "kind": "comparison"
+    },
+    {
+      "id": "real-world-boundary",
+      "title": "仿真成功率不能代替真实执行验证",
+      "body": "真实机器人的摩擦、传感器噪声、控制延迟和碰撞风险都可能改变搜索收益。部署前应额外测动作平滑、失败恢复和端到端延迟。",
+      "kind": "boundary"
+    },
+    {
+      "id": "budget-audit",
+      "title": "省下的采样要用失败记录来验收",
+      "body": "团队需要同时记录采样预算、决策路径和失败类型，检查计算节省是否换来了动作抖动、恢复变慢或安全边界退化。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Self-Guided Action Diffusion 怎样把搜索预算花在更有希望的动作上？",
+    "question": "前一步动作已经选定后，下一步为什么不必从所有候选重新开始？",
+    "steps": [
+      {
+        "label": "提出动作片段",
+        "detail": "扩散策略从噪声开始生成一段可能让机器人完成任务的动作候选。",
+        "evidence": "Generative robot policies sample actions at inference time"
+      },
+      {
+        "label": "记录前一步决策",
+        "detail": "保留当前采样步骤已经做出的选择，把它作为下一步提议分布的参考。",
+        "evidence": "The proposal distribution is guided by the prior decision"
+      },
+      {
+        "label": "收缩候选范围",
+        "detail": "让下一步更多探索与当前路线连贯的候选，减少无差别扩展动作分支的开销。",
+        "evidence": "A more efficient variant of bidirectional decoding"
+      },
+      {
+        "label": "在预算内比较",
+        "detail": "固定采样预算，比较 self-guidance 与现有方法的成功率、平滑性和推理成本。",
+        "evidence": "Experiments report gains under a tight sampling budget"
+      },
+      {
+        "label": "检查执行边界",
+        "detail": "把仿真结果与真实感知、延迟、碰撞和失败恢复测试分开，确认省算力没有隐藏代价。",
+        "evidence": "The abstract reports simulation tasks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Rhea Malhotra 等",
+    "url": "https://arxiv.org/abs/2508.12189"
+  },
+  "relatedSlugs": [
+    "agent",
+    "benchmark",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12189",
+      "claim": "论文提出在每个扩散步骤根据此前决策引导动作提议分布，以较低推理成本替代更昂贵的双向解码搜索。",
+      "excerpt": "guide the proposal distribution at each diffusion step based on the prior decision"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12189",
+      "claim": "作者在仿真任务中报告，在严格采样预算下，动态任务成功率最高比现有方法高 70%。",
+      "excerpt": "under a tight sampling budget ... up to 70% higher success rates than existing counterparts"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12189",
+  "sourceHash": "sha256:a191825b59d0a9762bc366af42a0854653a60eb4bc45ec2fb8f5d43a984aad03",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.93,
+      "evidence": [
+        "正文讨论机器人策略在推理阶段搜索动作并根据决策调整候选。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.86,
+      "evidence": [
+        "正文比较仿真动态任务、采样预算和现有方法的成功率。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文要求把成功率、推理成本、平滑性和真实执行边界分开验收。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.72,
+      "evidence": [
+        "正文记录论文在 2025 年 8 月 17 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12189",
+      "claim": "arXiv 页面标注论文于 2025 年 8 月 17 日首次提交，摘要给出 self-guidance、仿真任务和紧采样预算下的成功率结果。",
+      "excerpt": "Submitted on 17 Aug 2025 ... under a tight sampling budget ... up to 70% higher success rates"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 2508.12189 首次提交日期与摘要；正文保留方法的推理阶段定位、前一步决策引导、仿真范围、严格采样预算和最高 70% 结果，未外推到真实机器人或所有任务。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把扩散策略、推理搜索和采样预算讲清楚，明确最高 70% 是仿真中的相对结果，补上真实执行、延迟和安全边界；没有把方法写成已经完成真实机器人部署。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-17-self-guided"
+}

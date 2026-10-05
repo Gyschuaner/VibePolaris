@@ -1,0 +1,210 @@
+{
+  "slug": "lmars-legal-citation-audit-20250831",
+  "title": "L-MARS：法律 Agent 不只要答对，还要证明引用真的支持它",
+  "summary": "L-MARS 论文于 8 月 31 日提交，提出一个带 Agentic Search 和引用忠实度审计的开放法律问答系统。它把回答拆成原子主张，逐条检查引用是否存在、是否真的支持所述规则，并让回答者和核验者使用不同模型家族。在 100 题法律考试审计中，严格引用 F1 从朴素 RAG 的 0.13 提升到 0.25，无引用率从 34% 降到 13%；后置 Faith-Search 把不可达引用率降到 1% 以下，但没有继续提高 F1。",
+  "body": "法律问答最危险的错误，不一定是最终选项错了。有时答案看起来合理，引用链接也能打开，但链接里的规则并不支持回答写出的那句话。只看多项选择题准确率，无法发现这种“答案对、依据不对”的问题。L-MARS 把引用本身当成需要审计的对象。\n\n系统先把回答拆成原子主张，再为每条主张检查引用是否存在、是否能支持具体规则。它使用多 Agent 搜索和一个负责证据判断的法官式循环，回答模型和核验模型来自不同模型家族，减少同一种偏差在两边同时出现。\n\n论文在分层抽样的 100 题律师资格考试审计上给出对照：严格引用 F1 从朴素 RAG 的 0.13 提升到 0.25，无引用率从 34% 降到 13%。这不是说法律答案已经可靠，而是说明“引用是否忠实”需要单独测量，而且多轮核验比只在末尾加一段参考文献更有用。\n\n作者还测试了 Faith-Search：在初稿之后专门重新检查并修复不可达引用，把不可达率降到 1% 以下，但 F1 没有超过多轮法官循环。这个差异很重要，链接能打开只是可达性，引用内容是否支持主张才是忠实度。\n\n对法律产品来说，审计记录应保留主张、来源段落、核验结果和模型分歧。回答中的每个规则都要能回到具体法条或判例，而不是只挂一个搜索结果页。遇到核验不确定的主张，系统应降级为待查，而不是用更流畅的语言掩盖缺口。\n\n不同模型交叉核验也有边界。核验者可能错读法条、忽略辖区和时间，或被回答者的表述带偏；因此高风险法律意见仍需要专业人员确认。模型分工能改善流程，不能替代法律责任。\n\nL-MARS 的提醒很朴素：法律 Agent 的可信度不止是“答案正确”，还包括“每个关键主张都有可核对的依据”。当引用审计被放进生成循环，系统才有机会在交付前发现看似完整的错误。",
+  "publishedAt": "2025-08-31",
+  "eventDate": "2025-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/lmars-legal-citation-audit-20250831.svg",
+    "alt": "L-MARS 将法律回答拆成原子主张并逐条审计引用是否支持规则",
+    "sourceUrl": "/images/news/lmars-legal-citation-audit-20250831.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "citation-risk",
+      "title": "链接能打开，不代表规则被支持",
+      "body": "法律回答可能选对结论，却引用了不支持该主张的来源；准确率单独看不出这个问题。",
+      "kind": "narrative"
+    },
+    {
+      "id": "atomic-claims",
+      "title": "先把回答拆成原子主张",
+      "body": "L-MARS 逐条检查主张、来源存在性和规则支持关系，而不是只看末尾有没有参考文献。",
+      "kind": "technical"
+    },
+    {
+      "id": "cross-model-judge",
+      "title": "回答者和核验者使用不同模型家族",
+      "body": "多 Agent 搜索和法官式循环把证据判断从生成步骤中拆出来，减少同一种偏差同时传递。",
+      "kind": "technical"
+    },
+    {
+      "id": "audit-result",
+      "title": "严格引用 F1 从 0.13 升到 0.25",
+      "body": "100 题法律考试审计中，无引用率从 34% 降到 13%；这是引用审计改进，不是法律可靠性的总保证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reachability-vs-faithfulness",
+      "title": "可达引用率低于 1%，F1 却没继续升",
+      "body": "Faith-Search 修复了打不开的链接，但没有超过多轮法官循环，说明可达性和引用忠实度是两件事。",
+      "kind": "boundary"
+    },
+    {
+      "id": "audit-record",
+      "title": "保存主张、段落和核验分歧",
+      "body": "每条规则都回到法条或判例，不能只留下搜索结果页；不确定主张应降级为待查。",
+      "kind": "example"
+    },
+    {
+      "id": "professional-review",
+      "title": "多模型分工不能替代法律责任",
+      "body": "辖区、时间和法条理解仍需专业人员确认，系统要保留分歧和复核入口。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "L-MARS 怎样检查法律引用真的支持回答？",
+    "question": "把回答拆成原子主张，逐条回到来源核验规则支持关系，再把分歧交给专业复核。",
+    "steps": [
+      {
+        "label": "拆出原子主张",
+        "detail": "把一段法律回答分成可以单独判断的规则、事实和结论，避免一句话掩盖多项断言。",
+        "evidence": "claim-by-claim citation-faithfulness audit"
+      },
+      {
+        "label": "检索并定位来源",
+        "detail": "为每条主张寻找具体法条、判例或其他可核查文本，记录来源位置。",
+        "evidence": "agentic search and evidence checks"
+      },
+      {
+        "label": "跨模型核验",
+        "detail": "让不同模型家族的回答者和核验者分别判断引用是否存在、是否支持主张。",
+        "evidence": "cross-provider judging"
+      },
+      {
+        "label": "修复可达引用",
+        "detail": "对打不开或无法访问的链接单独修复，但不要把链接可达当成内容忠实。",
+        "evidence": "Faith-Search post-draft reachability intervention"
+      },
+      {
+        "label": "专业人员复核",
+        "detail": "检查辖区、时间和分歧，确认高风险法律意见不由模型单独交付。",
+        "evidence": "100-question Bar Exam audit"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00761"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "citation",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00761",
+      "claim": "L-MARS 用多 Agent 搜索和法官式证据检查，把法律回答拆成原子主张逐条审计。",
+      "excerpt": "Legal Multi-Agent System with Agentic Search and Citation-Faithfulness Audit"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00761",
+      "claim": "100 题法律考试审计中严格引用 F1 从 0.13 到 0.25，无引用率从 34% 到 13%；Faith-Search 将不可达率降至 1% 以下但未提高 F1。",
+      "excerpt": "strict citation F1 from 0.13 ... 0.25 ... unreachable rate below 1%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00761",
+  "sourceHash": "sha256:45d4ebaa9c33d21cef2234a05a683ff63c5b74242a230978cdd13a28fa5a90ef",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多 Agent 搜索、回答者和核验者的协作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文把检索、来源定位和后置引用修复作为工具动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.99,
+      "evidence": [
+        "正文逐条检查引用存在性、可达性和支持关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.98,
+      "evidence": [
+        "正文要求法律规则回到具体法条或判例。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文保留 100 题审计、引用 F1 和无引用率指标。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 31 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00761",
+      "claim": "arXiv 记录 L-MARS 于 2025 年 8 月 31 日提交，研究法律 Agent 的引用忠实度审计。",
+      "excerpt": "Date: Sun Aug 31 ... Legal Multi-Agent System with Agentic Search"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00761",
+      "claim": "摘要给出 Bar Exam 审计、严格引用 F1、无引用率和 Faith-Search 结果。",
+      "excerpt": "strict citation F1 ... no-citation rate ... unreachable rate below 1%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对原子主张、跨模型核验、100 题法律考试审计、引用 F1、无引用率和 Faith-Search 可达性结果；正文明确区分可达引用与忠实引用，并补充专业复核边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 L-MARS 的核心写成逐条引用忠实度审计，区分可达性、F1 和法律责任，避免将流程改进写成法律保证；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-31-lmars-legal-citation-audit-20250831"
+}

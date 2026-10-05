@@ -1,0 +1,193 @@
+{
+  "slug": "camouflaged-jailbreak-benchmark-20250905",
+  "title": "被包装成正常问题的越狱：500 条样例测出 LLM 安全盲区",
+  "summary": "Behind the Mask 论文于 9 月 5 日提交，研究把恶意意图藏进看似正常的语言，测试传统关键词过滤为什么会漏掉这类越狱。作者发布了 500 条伪装越狱样例，其中 400 条有害、100 条良性，并从安全意识、技术可行性、保护措施、危害潜力、教育价值、内容质量和服从度七个维度评估模型。论文报告，模型面对良性输入时表现较好，遇到伪装越狱时安全表现明显下降；本文只保留评测与防御结论，不复现有害提示。",
+  "body": "很多安全过滤器先看输入里有没有明显的危险词。这个办法对直白请求有用，却难以处理意图被藏进正常语境的对话：表面是在做设计、解释或学习，真正的目标要到上下文连起来才会出现。模型理解能力越强，能处理的语义变化越多，防守也越不能只靠词表。\n\nBehind the Mask 论文把这类输入整理成一个专门的基准。数据集包含 500 条经过整理的样例，其中 400 条有害、100 条良性，覆盖高风险工程、电子、化学、流体、机器人以及生物和环境等场景。文章的价值在于给防守方一组可重复的压力测试，正文不需要展示样例本身，更不应把它们当成可复制的提示模板。\n\n评测框架没有只问“模型拒绝了吗”。作者从安全意识、技术可行性、实施保护、危害潜力、教育价值、内容质量和服从度七个维度观察回答，试图区分模型是否识别了风险、回答是否真的可执行，以及在拒绝和解释之间是否保持了合理边界。多维度记录也能减少只看一个分数带来的误判。\n\n论文报告了一个清楚的落差：模型面对良性输入时，安全和内容质量表现较高；遇到伪装越狱时，安全表现明显下降。这个结果说明过滤器可能识别了表面形式，却没有理解请求在完整上下文中的用途。它是基准上的研究发现，不能直接换算成某个产品的实际越狱率。\n\n研究讨论的风险还包括多轮对话和输入形式变化。恶意意图可能在几轮看似无害的交互中逐渐显现，单轮分类器因此会漏掉前后关系；针对一个模型有效的伪装也可能迁移到相近模型。防守需要把会话轨迹、工具权限和输出后果放在同一条评测链里，而不是只检查当前这一句。\n\n这套基准仍有边界。样例数量和风险类别有限，评审模型本身可能有偏差，七维评分也不一定等于真实世界危害；研究作者还把任务复杂度与恶意意图混淆、跨模型迁移和现实适用性列为限制。使用它做回归测试时，应把人工复核、版本变化和误报成本一并记录。\n\n工程上的改进方向很具体：先用语义和上下文判断替代单纯关键词，再对多轮会话做风险累积；涉及高风险工具时降低默认权限，要求结构化的理由和人工确认，并用良性对照检查误报。伪装越狱基准适合用来发现盲点，不适合公开传播有害内容。安全测试的输出应该是修复任务、覆盖范围和回归证据。",
+  "publishedAt": "2025-09-05",
+  "eventDate": "2025-09-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/camouflaged-jailbreak-benchmark-20250905.svg",
+    "alt": "伪装越狱基准比较良性输入与隐藏恶意意图时的 LLM 安全表现",
+    "sourceUrl": "/images/news/camouflaged-jailbreak-benchmark-20250905.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "keyword-blindspot",
+      "title": "关键词能拦住直白请求，却看不懂完整意图",
+      "body": "恶意目标被放进正常语境后，表面词汇可能没有明显异常，单轮过滤也看不到后续风险。",
+      "kind": "narrative"
+    },
+    {
+      "id": "benchmark-set",
+      "title": "500 条样例：400 条有害，100 条良性",
+      "body": "基准覆盖多个高风险场景，用于重复压力测试；文章不展示或复现其中的有害提示。",
+      "kind": "technical"
+    },
+    {
+      "id": "seven-dimensions",
+      "title": "安全评测不只看“拒绝还是回答”",
+      "body": "安全意识、技术可行性、保护措施、危害潜力、教育价值、内容质量和服从度共同描述回答。",
+      "kind": "comparison"
+    },
+    {
+      "id": "performance-gap",
+      "title": "良性输入稳定，伪装越狱时安全表现下降",
+      "body": "论文报告了两类输入之间的明显落差，结果属于基准发现，不能直接等同于产品越狱率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "multi-turn-context",
+      "title": "多轮上下文会让单句检测失去线索",
+      "body": "风险可能逐步累积，输入形式也可能变化；评测需要保留会话轨迹和模型/工具边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-limits",
+      "title": "数据集和评审模型都有适用范围",
+      "body": "样例规模、风险类别、评审偏差和现实迁移都会影响结论，使用时要记录误报成本和人工复核。",
+      "kind": "boundary"
+    },
+    {
+      "id": "defensive-loop",
+      "title": "把盲点转成修复和回归证据",
+      "body": "语义检测、会话级风险、最小权限、人工确认和良性对照共同组成防御测试闭环。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "怎样评测并防住伪装越狱？",
+    "question": "用安全基准覆盖隐藏意图，再结合会话上下文、权限和人工确认检查真实后果。",
+    "steps": [
+      {
+        "label": "建立安全对照",
+        "detail": "准备经过授权和脱敏的有害/良性标签，只在受控环境存放样例，不把提示公开成模板。",
+        "evidence": "400 harmful and 100 benign prompts"
+      },
+      {
+        "label": "看完整上下文",
+        "detail": "把多轮会话、输入形式和调用的工具一起记录，避免只给当前一句做分类。",
+        "evidence": "insufficient context awareness"
+      },
+      {
+        "label": "执行七维评估",
+        "detail": "分别记录安全意识、可行性、保护措施、危害潜力、教育价值、内容质量和服从度。",
+        "evidence": "seven dimensions"
+      },
+      {
+        "label": "限制真实权限",
+        "detail": "对高风险工具使用最小权限、输出过滤和人工确认，安全测试不触发真实系统动作。",
+        "evidence": "Implementation Safeguards"
+      },
+      {
+        "label": "回归并处理误报",
+        "detail": "用良性对照、版本矩阵和人工复核确认修复是否有效，同时记录漏报、误报和迁移风险。",
+        "evidence": "dataset size and real-world applicability limitations"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05471"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05471",
+      "claim": "论文提出 500 条伪装越狱样例，其中 400 条有害、100 条良性，并用七个维度评估 LLM 安全表现。",
+      "excerpt": "500 curated examples (400 harmful and 100 benign) ... seven dimensions"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05471",
+      "claim": "摘要报告模型面对良性输入时安全和内容质量较高，面对伪装越狱时表现和安全性明显下降。",
+      "excerpt": "high safety and content quality with benign inputs ... significant decline ... camouflaged jailbreak attempts"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.05471",
+      "claim": "正文将关键词检测、上下文不足、多轮交互和现实迁移列为现有防护的限制，并列出数据集和评审可靠性限制。",
+      "excerpt": "reliance on surface-level cues ... insufficient context awareness ... real-world applicability and transferability"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05471",
+  "sourceHash": "sha256:55b14520dc8831876bc69563be9dd7c3a37f6dfdba6fed08df613bb58b6e2ccb",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文分析 LLM 面对伪装意图和多轮上下文时的安全行为。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留 500 条基准、七维评估、良性对照、误报漏报和迁移边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "正文把授权测试、最小权限、人工确认和受控样例存放作为安全边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 5 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05471",
+      "claim": "arXiv 记录 Behind the Mask 论文于 2025 年 9 月 5 日提交，主题是伪装越狱基准。",
+      "excerpt": "Submitted on 5 Sep 2025 ... Behind the Mask: Benchmarking Camouflaged Jailbreaks"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.05471",
+      "claim": "正文给出 500 条数据构成、七维框架、上下文/关键词限制和现实迁移局限。",
+      "excerpt": "Camouflaged Jailbreak Prompts dataset ... seven dimensions ... limitations"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文提交日期、500 条样例的 400/100 构成、七维评估、良性/伪装输入差异及上下文/迁移限制；正文只保留防御和评测层面的信息，不复现危险提示或构造方法。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章只写基准规模、七维评测、良性/伪装输入表现和防御方向；删除任何有害样例、类别操作细节、构造流程或可复用提示，补充最小权限、人工确认、上下文评测和误报边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-05-camouflaged-jailbreak-benchmark-20250905"
+}

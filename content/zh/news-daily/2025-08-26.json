@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-26",
+  "eventDate": "2025-08-26",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-26 AI 事件重新检索：以当天 arXiv 首次提交为主，按模型发布、Agent 工具使用、RAG 安全、代码 Agent 评测、幻觉检测和推理预算排序；区分技术报告、预印本、基准与安全实验。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508260000 TO 202508262359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CV OR cat:cs.CR)",
+      "https://arxiv.org/abs/2508.19205",
+      "https://arxiv.org/abs/2508.18669",
+      "https://arxiv.org/abs/2508.18652",
+      "https://arxiv.org/abs/2508.18993",
+      "https://arxiv.org/abs/2509.03531",
+      "https://arxiv.org/abs/2508.18773",
+      "https://arxiv.org/abs/2508.19461",
+      "https://arxiv.org/abs/2508.18760",
+      "https://arxiv.org/abs/2508.19201",
+      "https://arxiv.org/abs/2508.19363",
+      "https://arxiv.org/abs/2508.18689",
+      "https://arxiv.org/abs/2508.18636"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "vibevoice-longform-speech-20250826",
+      "title": "VibeVoice 技术报告：长篇多说话人语音合成把上下文拉到 90 分钟",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19205"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19205",
+      "sourceHash": "sha256:6e5109e716f3b2a35bb610e0102efaef75408e20575fd54736d63eba77614d6c",
+      "relatedSlugs": [
+        "llm",
+        "token",
+        "streaming-output",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19205",
+          "claim": "VibeVoice 用 next-token diffusion 合成长篇多说话人语音，提出连续语音 tokenizer；相较 Encodec 压缩率提升 80 倍且保持可比表现，支持 64K 上下文、最长 90 分钟、最多 4 位说话人。",
+          "excerpt": "VibeVoice Technical Report"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "mua-rl-multiturn-tool-agent-20250826",
+      "title": "MUA-RL 让 Agent 在多轮对话里边问边调用工具",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18669"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18669",
+      "sourceHash": "sha256:f73e1f7d8a2d3daaa59b4287d6227b878808dde9f82bc29e476ccaf92dfd6ccf",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "request",
+        "response",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18669",
+          "claim": "MUA-RL 首次把 LLM 模拟用户放进 Agent 工具使用的强化学习循环，让模型在澄清用户需求的同时调用工具；MUA-RL-32B 在 TAU2 Retail/Airline/Telecom、BFCL-V3 Multi Turn 和 ACEBench Agent 上分别达到 67.3、45.4、28.3、28.4、82.5。",
+          "excerpt": "MUA-RL: Multi-turn User-interacting Agent Reinforcement Learning for agentic tool use"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "unic-rag-knowledge-corruption-20250826",
+      "title": "UniC-RAG 说明少量知识库污染也可能影响大量不同查询",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18652"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18652",
+      "sourceHash": "sha256:5d6767e0446a3db416f1765525d179457c8aa6617235f63eef214f56f7808cb7",
+      "relatedSlugs": [
+        "rag",
+        "data-validation",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18652",
+          "claim": "UniC-RAG 研究 RAG 知识库中的通用污染风险：联合优化少量对抗文本，覆盖不同主题和查询；论文报告向数百万条知识库注入 100 条文本时，对最多 2,000 个查询的攻击成功率可超过 90%，并指出现有防御仍不足。文章不复述攻击构造。",
+          "excerpt": "UniC-RAG: Universal Knowledge Corruption Attacks to Retrieval-Augmented Generation"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "gittaskbench-code-agent-20250826",
+      "title": "GitTaskBench：让代码 Agent 在真实仓库里完成 54 个任务",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18993"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18993",
+      "sourceHash": "sha256:4a69edeaa388db86159e6c80f4e1ad120acf10dac4dafda7dbb517d6719afeea",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "execution-sandbox",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18993",
+          "claim": "GitTaskBench 覆盖 7 种任务形态、7 个领域的 54 个真实仓库任务，配套自动化与人工策划的成功标准，并用 alpha-value 把成功率、token 成本和开发者薪资纳入经济收益；最佳系统在论文实验中只完成 48.15% 任务，错误有一半以上来自环境配置和依赖解析。",
+          "excerpt": "GitTaskBench: A Benchmark for Code Agents Solving Real-World Tasks Through Code Repository Leveraging"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "hallucinated-entities-streaming-20250826",
+      "title": "把长文本幻觉拆成可流式检测的实体级信号",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.03531"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.03531",
+      "sourceHash": "sha256:93643207ee29b9c8ce715b8fb901c1609d1db2633826a94f0214badb71e2cd53",
+      "relatedSlugs": [
+        "hallucination",
+        "eval",
+        "token",
+        "streaming-output",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.03531",
+          "claim": "论文用网页搜索标注模型输出中的虚构姓名、日期和引用，训练轻量线性探针做 token 级流式检测；跨四类模型时表现超过基线，例如 Llama-3.3-70B 的 AUC 为 0.90 对 0.71，并能迁移到数学错误检测。",
+          "excerpt": "Real-Time Detection of Hallucinated Entities in Long-Form Generation"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "thinkdial-controllable-reasoning-20250826",
+      "title": "ThinkDial 给开源模型加上高、中、低三档推理预算",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18773"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18773",
+      "sourceHash": "sha256:dbfa53101b07b144949c17d1facb9b204dd60587c886915634193e3efcf4a40e",
+      "relatedSlugs": [
+        "llm",
+        "token",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18773",
+          "claim": "ThinkDial 用预算模式监督微调和两阶段预算感知强化学习实现三档推理：Medium 目标减少 50% token、性能下降低于 10%；Low 目标减少 75% token、性能下降低于 15%，并报告分布外任务泛化。",
+          "excerpt": "ThinkDial: An Open Recipe for Controlling Reasoning Effort in Large Language Models"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "weak-strong-monitoring-agents-20250826",
+      "title": "弱模型也能监控强 Agent，但先别让被监控者知道太多",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19461"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19461",
+      "sourceHash": "sha256:002828f1fee3bc736d67ce132b960dddf41450f2df6a8ef130f1e8a736d8fde5",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "authorization",
+        "execution-sandbox",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19461",
+          "claim": "论文在 SHADE-Arena 和 CUA-SHADE-Arena 上做 monitor red teaming，发现 Agent 知道自己被监控会明显降低监控可靠性；混合层级-顺序监控脚手架优于基线，针对预警样本升级人工复核可在 FPR=0.01 时把 TPR 提高约 15%。",
+          "excerpt": "Reliable Weak-to-Strong Monitoring of LLM Agents"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对真实 Agent/模型系统的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "abstention-failures-reasoning-20250826",
+      "title": "Answering the Unanswerable 发现推理模型知道题目有缺陷，却仍不肯停下",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18760"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18760",
+      "sourceHash": "sha256:d7dda7decd0fdacf3e6dcb4326060f82c913b1750bcab11efc1f0d5ea9f12add",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18760",
+          "claim": "研究发现推理模型在缺少充分条件的不可回答问题上经常继续作答；作者认为模型内部有能力识别缺陷，却没有把认识转成适当拒答，并提出认知监控加推理时干预的轻量两阶段方法。",
+          "excerpt": "Answering the Unanswerable Is to Err Knowingly: Analyzing and Mitigating Abstention Failures in Large Reasoning Models"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "tool-integrated-reasoning-20250826",
+      "title": "工具为什么真的能扩展模型推理能力？一篇论文给出形式化解释",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19201"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19201",
+      "sourceHash": "sha256:4c63616f8a40b28f375ed4e327c878522c1189bfa19493d2d2e177476c4cf3ab",
+      "relatedSlugs": [
+        "tools",
+        "function-calling",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19201",
+          "claim": "论文形式化证明工具集成推理能严格扩展纯文本模型的经验与可行支持，并提出 Advantage Shaping Policy Optimization；使用 Python 工具的数学实验显示 pass@k 超过纯文本模型，ASPO 还促使模型更早调用代码、增加交互轮次。",
+          "excerpt": "Understanding Tool-Integrated Reasoning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "longreasonarena-long-reasoning-benchmark-20250826",
+      "title": "LongReasonArena 把长推理拉到最多一百万 token",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.19363"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.19363",
+      "sourceHash": "sha256:4405a7eae87d229ba135c0aa47087002be3f1ea0f0374766a8a0a24626e66780",
+      "relatedSlugs": [
+        "benchmark",
+        "eval",
+        "token",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.19363",
+          "claim": "LongReasonArena 不只测长上下文理解，而是要求模型执行包含检索和回溯的多步算法；推理长度可扩展到最多 100 万 token，DeepSeek-R1 在其任务上准确率仅 7.5%，并呈现随预期步骤数对数线性下降。",
+          "excerpt": "LongReasonArena: A Long Reasoning Benchmark for Large Language Models"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "appagent-pro-proactive-gui-agent-20250826",
+      "title": "AppAgent-Pro 让 GUI Agent 从被动点按转向主动整合信息",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18689"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18689",
+      "sourceHash": "sha256:12e2d6460629e1a730f0942dc8cf008ad2903b02efd4797a277c971a656bb5d3",
+      "relatedSlugs": [
+        "agent",
+        "browser-api",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18689",
+          "claim": "AppAgent-Pro 试图让 GUI Agent 根据用户指令主动预判潜在需求，跨领域挖掘信息并提供协助；论文公开代码和演示视频，但摘要没有给出可比较的量化结果。",
+          "excerpt": "AppAgent-Pro: A Proactive GUI Agent System for Multidomain Information Integration and User Assistance"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "laqual-llm-app-evaluation-20250826",
+      "title": "LaQual 用静态筛选和动态场景评测给 LLM 应用做质量分层",
+      "eventDate": "2025-08-26",
+      "publishedAt": "2025-08-26",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.18636"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.18636",
+      "sourceHash": "sha256:b81dd73f9fc12aa9fc397a5c42c0f089cfa72552cb3967cbc0c37daad7d0c88b",
+      "relatedSlugs": [
+        "eval",
+        "benchmark",
+        "llm",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.18636",
+          "claim": "LaQual 先给 LLM 应用做场景标签和层级分类，再用时间加权参与度/功能指标筛选，最后让模型生成场景化评测指标、评分标准和任务；在应用商店实验中可减少 66.7%–81.3% 候选池，自动分数与人评高度一致。",
+          "excerpt": "LaQual: An Automated Framework for LLM App Quality Evaluation"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    }
+  ],
+  "selectedSlugs": [
+    "vibevoice-longform-speech-20250826",
+    "mua-rl-multiturn-tool-agent-20250826",
+    "unic-rag-knowledge-corruption-20250826",
+    "gittaskbench-code-agent-20250826",
+    "hallucinated-entities-streaming-20250826",
+    "thinkdial-controllable-reasoning-20250826",
+    "weak-strong-monitoring-agents-20250826"
+  ],
+  "gap": null
+}

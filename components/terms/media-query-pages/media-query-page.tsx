@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function MediaQueryTermPage() {
-  return <Article slug="media-query" title="媒体查询" subtitle="Media Query · 让 CSS 先听见环境" sources={mediaQuerySources} sections={sections} hero={<MediaQueryHero />} intro={<>页面面对的不是一块永远不变的画布：窗口会收窄，指针可能不支持悬停，用户也可能要求少一点运动。<strong>媒体查询把这些环境信号写成条件，让对应的 CSS 声明加入或退出计算。</strong>它像一组开关，决定规则何时参与，真正的布局仍由 Grid、Flexbox 和普通 CSS 完成。</>}> 
+  return <Article slug="media-query" title="媒体查询" subtitle="Media Query · 让 CSS 先听见环境" sources={mediaQuerySources} sections={sections} hero={<MediaQueryHero />} intro={<>页面面对的不是一块永远不变的画布：窗口会收窄，指针可能不支持悬停，用户也可能要求少一点运动。<strong>媒体查询把这些环境信号写成条件，让对应的 CSS 声明加入或退出计算。</strong>它像一组开关，决定规则何时参与，真正的布局仍由 Grid、Flexbox 和普通 CSS 完成。</>}>
     <ArticleSection id="media-query-definition-section" title="它先问环境，再决定规则">
       <p id="mq-condition" className="vp-citation-target">媒体查询由媒体类型、媒体特征和逻辑条件组成。浏览器持续判断条件是否成立，成立时把块里的声明应用到当前文档；条件变成 false，声明就不再命中。<Cite id="mq-condition" sources={mediaQuerySources} /></p>
       <p id="mq-at-rule" className="vp-citation-target"><code>@media</code> 是写这组条件的 at-rule。它不创建新的组件，也不把页面复制成“桌面版”和“手机版”；它只给已有选择器加一层运行时门槛。<Cite id="mq-at-rule" sources={mediaQuerySources} /></p>

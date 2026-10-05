@@ -1,0 +1,190 @@
+{
+  "slug": "glm45v-open-multimodal-20250811",
+  "title": "智谱开源 GLM-4.5V 视觉推理模型，106B 总参数面向视觉与 GUI 任务",
+  "summary": "Z.ai 的 GLM-V 官方项目在 8 月 11 日宣布发布 GLM-4.5V，并同步开源可连接模型的桌面助手。模型基于 GLM-4.5-Air，官方标注 106B 总参数、12B 激活参数，覆盖图像、视频、文档理解、定位和 GUI 操作；42 项视觉语言基准的领先说法来自模型方，项目也列出纯文本问答、重复思考和计数识别等限制。",
+  "body": "8 月 11 日，Z.ai 在 GLM-V 项目中宣布发布 GLM-4.5V，并把一个可以连接模型的桌面助手一起开源。这个助手能读取屏幕截图或录屏，项目还提供安装包和源码入口；模型权重、推理代码和部署说明则通过 Hugging Face、ModelScope 以及 vLLM、SGLang 等工具提供。对开发者来说，变化不只是多了一个视觉模型，而是从“看一张图”走向了“看屏幕、读文档、定位对象，再参与 GUI 操作”。\n\nGLM-4.5V 建在 GLM-4.5-Air 上，官方模型卡写的是 1060 亿总参数、120 亿激活参数。总参数描述模型容量，激活参数描述一次推理实际调用的那部分专家；两者不能混着读。它覆盖图像、视频和长文档理解，也支持 grounding——根据文字描述给出图像中目标的位置——以及 GUI agent 场景。模型还提供 Thinking Mode 开关，让使用者在更快的直接回答和更深的推理之间做选择。\n\n桌面助手让“视觉理解”变成了权限问题。它要读取屏幕或录屏，才能知道窗口、图标和文档发生了什么；如果再往前一步执行点击、输入或网页操作，就需要更严格的本地路径、凭据和人工确认。官方项目提供的是调试和体验工具，不等于它已经安全地替用户操作所有应用，更不等于视觉定位结果在每个界面都可靠。\n\nZ.ai 在项目页称 GLM-4.5V 在同规模模型的 42 项公开视觉语言基准上达到领先表现。这是模型方选择的基准、版本和评测流程下的结果，不能直接翻译成任何图片、视频或办公软件任务都更好。模型卡也把纯文本问答、复杂提示下的重复思考、计数和识别特定人物列为仍需改进的问题；开源让社区可以复现和质疑这些边界，但不会自动替代独立评测。\n\n这次发布还需要和论文日期分开。相关技术论文在 7 月已经公开，8 月 11 日发生的是 GLM-4.5V 权重、代码和桌面助手入口的发布。把论文日期写成模型首发，或者把桌面助手写成一个新的通用智能体，都会错过这条新闻真正的增量：多模态模型开始把视觉推理、定位和电脑界面放进同一个可下载的开发入口。\n\n截至 8 月 11 日，能确认的是模型发布、开源入口、桌面助手和任务范围；不能确认的是 42 项基准能否在独立环境复现、屏幕操作在真实应用中是否稳定，以及用户给它的屏幕权限会不会带来新的数据泄露路径。后续要看社区的硬件占用、长视频和 GUI 任务复测，再判断它是一个好用的视觉基础模型，还是一套仍需大量工程护栏的实验性电脑操作工具。",
+  "publishedAt": "2025-08-11",
+  "eventDate": "2025-08-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/glm45v-open-multimodal-20250811.svg",
+    "alt": "GLM-4.5V 从图像、视频和文档输入走向定位与 GUI 操作，桌面助手把屏幕权限带进多模态推理；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/glm45v-open-multimodal-20250811.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 11 日发布的是模型和桌面助手入口",
+      "body": "Z.ai 宣布 GLM-4.5V，并开源连接模型的桌面助手；助手可以读取截图或录屏。相关论文 7 月已公开，8 月 11 日的增量是权重、代码和体验入口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "model-scale",
+      "title": "106B 总参数与 12B 激活参数要分开看",
+      "body": "GLM-4.5V 基于 GLM-4.5-Air，官方模型卡写 106B 总参数、12B 激活参数。前者描述 MoE 总容量，后者描述一次推理实际调用的专家规模，不能把 12B 写成模型总大小。",
+      "kind": "technical"
+    },
+    {
+      "id": "multimodal-tasks",
+      "title": "从图像理解扩展到视频、文档、定位和 GUI",
+      "body": "模型覆盖图像、视频、文档理解、grounding 和 GUI agent 任务，并提供 Thinking Mode 开关。任务范围更宽不等于每种界面和长视频都已稳定。",
+      "kind": "example"
+    },
+    {
+      "id": "screen-permission",
+      "title": "桌面助手把模型能力变成屏幕权限问题",
+      "body": "读取截图、录屏和窗口信息需要本地权限；如果进一步点击、输入或调用网页，就要加入凭据隔离、路径限制和人工确认。开源助手不等于已经安全地替用户操作所有应用。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark-limits",
+      "title": "42 项基准领先是模型方的评测说法",
+      "body": "Z.ai 称其在同规模模型的 42 项公开 VLM 基准上领先；这依赖版本、提示和评测流程。项目同时承认纯文本、重复思考、计数和特定人物识别仍有问题。",
+      "kind": "comparison"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看社区复现和真实 GUI 任务",
+      "body": "硬件占用、长视频、复杂文档、不同界面和屏幕隐私场景的独立复测，才能判断 GLM-4.5V 是可用基础模型，还是仍需大量护栏的实验性工具。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "视觉模型怎样从看懂屏幕走到 GUI 操作？",
+    "question": "把感知、定位、规划、执行和权限分开，才能看懂 GLM-4.5V 的桌面助手到底承担了哪一步。",
+    "steps": [
+      {
+        "label": "读取视觉输入",
+        "detail": "模型接收图片、视频、PDF、PPT 或屏幕截图，把文字、布局、图标和物体放进同一上下文。",
+        "evidence": "GLM-4.5V model card"
+      },
+      {
+        "label": "理解与定位",
+        "detail": "根据自然语言描述识别目标，并用 bounding box 等坐标标出位置；定位正确仍需在具体界面复核。",
+        "evidence": "Grounding examples"
+      },
+      {
+        "label": "切换推理深度",
+        "detail": "Thinking Mode 让用户在更快响应和更深推理之间做选择，增加的计算不等于结果必然正确。",
+        "evidence": "Thinking Mode switch"
+      },
+      {
+        "label": "生成 GUI 计划",
+        "detail": "桌面助手可以把屏幕信息交给模型，让它提出下一步操作；此时需要把计划和真正执行分开。",
+        "evidence": "Open-sourced desktop assistant"
+      },
+      {
+        "label": "在权限边界内执行",
+        "detail": "点击、输入、文件访问和凭据调用要有允许范围、日志和人工确认，模型能看见屏幕不等于它有权改变系统。",
+        "evidence": "GUI authorization boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Z.ai / Hugging Face",
+    "url": "https://github.com/zai-org/GLM-V"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/zai-org/GLM-V",
+      "claim": "Z.ai 官方 GLM-V 项目更新记录 2025 年 8 月 11 日发布 GLM-4.5V，并开源可捕获屏幕截图/录屏的桌面助手。",
+      "excerpt": "2025/08/11: We released GLM-4.5V ... We also open-sourced our handcrafted desktop assistant app for debugging."
+    },
+    {
+      "url": "https://huggingface.co/zai-org/GLM-4.5V",
+      "claim": "官方模型卡记录 GLM-4.5V 基于 GLM-4.5-Air（106B 总参数、12B 激活），覆盖图像、视频、文档、GUI 和 grounding，并列出限制。",
+      "excerpt": "GLM-4.5V is based on ... GLM-4.5-Air (106B parameters, 12B active)."
+    },
+    {
+      "url": "https://modelscope.cn/models/ZhipuAI/GLM-4.5V",
+      "claim": "ModelScope 官方镜像也将 GLM-4.5V 的发布和模型入口放在 8 月 11 日，作为权重可获取性的交叉来源。",
+      "excerpt": "GLM-4.5V model release and download entry dated 2025-08-11."
+    }
+  ],
+  "canonicalUrl": "https://github.com/zai-org/GLM-V",
+  "sourceHash": "sha256:0bf1ee4cf7f15c56ae1590bbb0d1c1ff23b5d6e342cf8110f0a8f29f3eea9221",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 GLM-4.5V 的视觉语言模型架构、参数规模、推理模式和多模态任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.93,
+      "evidence": [
+        "正文区分 7 月论文、8 月 11 日模型/桌面助手发布和后续社区复测事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.88,
+      "evidence": [
+        "正文与 explainer 解释 GUI agent 如何从屏幕感知、定位走向计划和权限受控执行。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/zai-org/GLM-V",
+      "claim": "官方仓库 8 月 11 日更新确认 GLM-4.5V 和桌面助手发布，且提供安装器、源码及截图/录屏能力说明。",
+      "excerpt": "We released GLM-4.5V ... open-sourced our handcrafted desktop assistant app for debugging."
+    },
+    {
+      "url": "https://huggingface.co/zai-org/GLM-4.5V",
+      "claim": "官方模型卡确认 106B 总参数、12B 激活、42 项公开 VLM 基准的模型方说法、GUI/grounding 任务与仍存在的纯文本、重复和计数限制。",
+      "excerpt": "The model ... covers image, video, and document understanding, as well as GUI agent operations."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Z.ai GLM-V 官方 GitHub 项目 2025/08/11 更新、Hugging Face 模型卡的 106B/12B 参数、任务范围、42 项基准口径、Thinking Mode 和限制，并用 ModelScope 入口交叉确认；正文把 7 月论文、模型权重/代码、桌面助手和 GUI 权限边界分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把 GLM-4.5V 写成视觉推理与 GUI 权限链，区分总参数/激活参数、官方 benchmark、模型限制、论文日期和 8 月 11 日发布，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-11；GLM-V GitHub 的 2025/08/11 更新是模型和桌面助手开源事件，7 月论文作为独立背景，日期界线清楚。",
+      "正文准确说明 GLM-4.5V 基于 GLM-4.5-Air，106B 为总参数、12B 为激活参数，并覆盖图像、视频、文档、grounding、GUI 和 Thinking Mode；桌面助手的截图/录屏入口与模型本身区分清楚。",
+      "42 项公开 VLM 基准的领先说法明确归因于 Z.ai/模型方选择的评测口径，同时保留纯文本、重复思考、计数和特定人物识别等限制，没有外推成所有任务领先。",
+      "GUI 段落和 agent-workflow explainer 把屏幕读取、计划与真实点击/输入拆开，强调本地路径、凭据、权限、日志和人工确认；llm/event/agent relations、hero SVG、sections、sources/evidence、verification、空 relatedArticleSlugs 与 schema 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者可以理解多模态输入、定位、思考模式、GUI 助手和执行权限之间的边界，没有把开源桌面助手写成可安全操作所有应用的通用代理。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-11-glm45v",
+  "promotedAt": "2026-10-05T05:17:35.592Z"
+}

@@ -1,0 +1,188 @@
+{
+  "slug": "promptsleuth-injection-detection-20250828",
+  "title": "PromptSleuth 不看注入长什么样，而看它想让模型做什么",
+  "summary": "PromptSleuth 论文于 8 月 28 日提交，提出用“语义意图不变性”识别 Prompt Injection。作者构建覆盖改写、混淆和多任务场景的新基准，指出只盯表面词形的防御容易在新变体上失效；PromptSleuth 改为判断输入是否试图让模型执行未授权任务，并在多个基准上报告优于现有防御、成本相近的结果。",
+  "body": "Prompt Injection 最麻烦的地方，不是它总有某几个固定词，而是同一个意图可以换很多说法。改写、混淆、夹进另一项任务之后，字面形式变了，输入仍可能在试图改变模型原本应该遵守的任务边界。PromptSleuth 的出发点，就是不要把检测器训练成一个只认外形的关键词筛子。\n\n论文把问题表述为语义意图不变性：如果几种写法虽然表面不同，却都在推动模型执行同一项未授权任务，那么检测结果应该保持一致。这个视角把重点从“这串字符像不像已知攻击”移到“模型被要求去完成什么”。\n\n为检验这一点，作者构建了覆盖改写、混淆和多任务注入的新基准。多任务场景尤其容易让边界变模糊：一段输入可能同时包含正常工作和一个额外请求，模型若只看整体相关性，就可能漏掉那项不该被执行的任务。把任务意图拆出来，才有机会在授权层做决定。\n\n论文报告，PromptSleuth 在多个基准上超过现有防御，同时保持相近成本。这里的“超过”需要结合具体数据集、攻击变体、阈值和误报权衡来读；成本相近也不代表在所有上下文长度、模型和部署方式下完全相同。它提供的是一种评测方向，而不是可直接照搬的安全保证。\n\n如果把这个思路放进 Agent，检测器可以先判断外部文本提出了哪些任务，再把任务与用户授权、系统策略和当前工具权限对照。通过检查不变量，系统可以把“换了写法但仍是同一意图”的输入归到一起，同时保留正常任务的上下文。\n\n但语义判断也会带来新的误差。一个真实用户可能会改写需求、引用一段不可信文本，或要求模型分析一条攻击样例；检测器需要区分“讨论这个任务”和“执行这个任务”。因此，PromptSleuth 不能替代授权层，命中后还要有清晰的阻断、降级或人工确认路径。\n\nPromptSleuth 的价值在于换了一个问题：防御不必猜下一种注入长什么样，而要持续检查输入想改变哪项任务。只要授权边界仍然可见，检测、评估和复盘就有机会围绕意图而不是围绕字符串展开。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/promptsleuth-injection-detection-20250828.svg",
+    "alt": "PromptSleuth 按语义意图而不是表面写法识别 Prompt Injection",
+    "sourceUrl": "/images/news/promptsleuth-injection-detection-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "surface-variation",
+      "title": "注入会换写法，意图却可能不变",
+      "body": "改写、混淆和多任务输入都能改变字面形式；只记住固定词形的检测器容易在新变体上失效。",
+      "kind": "narrative"
+    },
+    {
+      "id": "intent-invariance",
+      "title": "PromptSleuth 盯的是未授权任务",
+      "body": "如果多种写法都在推动模型执行同一项越权任务，检测结果就应该保持稳定，而不是随表面变化漂移。",
+      "kind": "technical"
+    },
+    {
+      "id": "new-benchmark",
+      "title": "基准覆盖改写、混淆和多任务",
+      "body": "这些场景把“正常工作”和“额外请求”放在同一输入里，逼检测器说明自己到底识别了什么。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-result",
+      "title": "多个基准上更强，成本相近",
+      "body": "论文报告 PromptSleuth 超过现有防御且保持相近成本，但结果仍要结合数据集、阈值和误报权衡理解。",
+      "kind": "comparison"
+    },
+    {
+      "id": "authorization-join",
+      "title": "意图判断要接上授权边界",
+      "body": "检测器先识别任务，再与用户授权、系统策略和工具权限对照，不能只给出一个孤立的风险分数。",
+      "kind": "example"
+    },
+    {
+      "id": "analysis-vs-execution",
+      "title": "讨论任务和执行任务不是一回事",
+      "body": "用户可能要求分析一段不可信文本；系统需要区分引用、解释和真正执行，命中后还要有阻断或确认路径。",
+      "kind": "boundary"
+    },
+    {
+      "id": "intent-centered-defense",
+      "title": "从猜字符串转向查任务边界",
+      "body": "只要授权关系可见，检测、评估和复盘就能围绕意图展开，而不必追逐每一种新写法。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "PromptSleuth 怎样识别换了写法的 Prompt Injection？",
+    "question": "保持对任务意图的判断稳定，再把识别结果交给授权层决定是否执行。",
+    "steps": [
+      {
+        "label": "抽取任务",
+        "detail": "先判断输入要求模型完成哪些任务，不急着根据固定词形贴标签。",
+        "evidence": "detecting prompt injection via semantic intent"
+      },
+      {
+        "label": "保持不变量",
+        "detail": "把改写、混淆或换顺序的表达放在一起比较，检查核心意图是否仍然相同。",
+        "evidence": "semantic intent invariance"
+      },
+      {
+        "label": "分开多任务",
+        "detail": "把正常工作和额外请求拆开，避免整体相关性掩盖不该执行的那一项。",
+        "evidence": "multi-task prompt injection benchmark"
+      },
+      {
+        "label": "对照授权",
+        "detail": "将识别出的任务与用户、系统和工具权限对照，决定允许、降级还是暂停。",
+        "evidence": "unauthorized task detection"
+      },
+      {
+        "label": "复核误报",
+        "detail": "区分分析一段文本和执行其中任务，并用多种变体评估漏报、误报与成本。",
+        "evidence": "paraphrase, obfuscation, and comparable-cost evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.20890"
+  },
+  "relatedSlugs": [
+    "prompt",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20890",
+      "claim": "PromptSleuth 以语义意图不变性检测 Prompt Injection，覆盖改写、混淆和多任务注入。",
+      "excerpt": "PromptSleuth: Detecting Prompt Injection via Semantic Intent Invariance"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20890",
+      "claim": "论文报告在多个基准上超过现有防御，同时保持相近成本。",
+      "excerpt": "outperforms existing defenses ... comparable cost"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20890",
+  "sourceHash": "sha256:4a320eb5d361d86909d2bbec571a01d73230f03bd7489f6c24e4a42efcb30f54",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 Prompt Injection 的改写、混淆和语义意图检测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.97,
+      "evidence": [
+        "正文把识别出的任务与用户、系统和工具授权边界对照。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文讨论新基准、误报漏报、阈值和成本的评估边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20890",
+      "claim": "arXiv 记录 PromptSleuth 于 2025 年 8 月 28 日提交，研究语义意图不变性的注入检测。",
+      "excerpt": "Date: Thu Aug 28 ... Semantic Intent Invariance"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20890",
+      "claim": "摘要覆盖改写、混淆、多任务注入，并报告相近成本下的防御效果。",
+      "excerpt": "paraphrase, obfuscation, multi-task prompt injection ... comparable cost"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对语义意图不变性、改写/混淆/多任务基准和相近成本结果；正文不复述攻击提示，补充分析与执行的区分及授权层边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：围绕任务意图而非攻击字符串展开，补上授权、误报和分析/执行边界，未提供可复用的注入载荷；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-promptsleuth-injection-detection-20250828"
+}

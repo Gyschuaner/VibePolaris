@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function LazyLoadingTermPage() {
-  return <Article slug="lazy-loading" title="懒加载" subtitle="Lazy Loading · 让资源等到值得出现的时候" sources={lazyLoadingSources} sections={sections} hero={<LazyLoadingHero />} intro={<>一张图片、一个视频或一块重型组件，可能在用户滑到之前很久都用不上。<strong>懒加载把请求推迟到资源接近使用时机，同时保留它应该占据的位置。</strong>它解决的是“何时取”，也要一起照顾占位、解码、失败、重试和可访问的替代内容。</>}> 
+  return <Article slug="lazy-loading" title="懒加载" subtitle="Lazy Loading · 让资源等到值得出现的时候" sources={lazyLoadingSources} sections={sections} hero={<LazyLoadingHero />} intro={<>一张图片、一个视频或一块重型组件，可能在用户滑到之前很久都用不上。<strong>懒加载把请求推迟到资源接近使用时机，同时保留它应该占据的位置。</strong>它解决的是“何时取”，也要一起照顾占位、解码、失败、重试和可访问的替代内容。</>}>
     <ArticleSection id="lazy-loading-definition-section" title="先保住位置，再推迟资源">
       <p id="lazy-strategy" className="vp-citation-target">懒加载是一种延迟获取资源的策略：初始页面先加载必要内容，低优先级或暂时不可见的资源等到接近使用时再取。它可以作用于图片、视频、脚本、组件或路由，但每一种资源的触发和失败成本都不同。<Cite id="lazy-strategy" sources={lazyLoadingSources} /></p>
       <p id="lazy-resource" className="vp-citation-target">懒加载不是把 <code>loading</code> 文字塞进页面就结束。资源需要一个稳定的盒子、明确的 loading、成功替换和失败回退；否则延迟会变成空白、布局跳动或用户不知道该等什么。<Cite id="lazy-resource" sources={lazyLoadingSources} /></p>

@@ -1,0 +1,212 @@
+{
+  "slug": "meta-ai-prompt-privacy-bug-fixed-20250715",
+  "title": "Meta AI 曾因可猜编号暴露他人 prompt：漏洞已修复，但“私聊”边界仍要靠授权检查",
+  "summary": "研究者发现 Meta AI 编辑 prompt 时生成的编号容易猜测，可能绕过授权读取他人的 prompt 和生成内容；Meta 称已于 2025 年 1 月修复，没有发现恶意滥用。",
+  "body": "7 月 15 日，TechCrunch 披露 Meta AI 曾有一个服务器端授权缺陷：登录用户在编辑自己的 prompt、重新生成文字或图片时，可以修改请求里的编号，读取其他用户的 prompt 和 AI 响应。研究者 Sandeep Hodkasia 说，编号容易猜测，攻击者可以用自动化方式枚举；Meta 表示已在 1 月 24 日部署修复，并没有发现被恶意利用的证据。\n\n这个漏洞不需要把模型“攻破”。问题出在后端收到编号后，没有再次确认提出请求的用户是否拥有对应内容。换句话说，模型生成什么不是这里的核心，真正失守的是“谁有权读取哪条记录”。对任何保存 prompt、附件或生成结果的 AI 产品来说，这层授权检查和模型本身一样重要。\n\n事件时间线也需要说清楚。研究者称他在 2024 年 12 月 26 日向 Meta 报告，Meta 随后修复并支付了 1 万美元漏洞赏金；TechCrunch 在 2025 年 7 月 15 日才公开报道。因而这是一条“已修复漏洞的公开披露”，不是 7 月 15 日仍在大规模泄露的证据。Meta 的“没有发现滥用”是公司调查结论，不能推导成所有历史访问都已被证明安全。\n\n这条新闻和 AI 产品常见的分享设计形成对照。用户可以把生成内容当成普通聊天，但后台可能把每次修改、版本和结果放进可被引用的对象里。一旦对象 ID 可以被猜到、而接口又只相信 ID，不核对账号关系，原本看似私人的内容就可能被跨用户读取。\n\n对使用者而言，修复公告不意味着应该把所有敏感信息随意放进任何 AI 聊天。团队仍应检查数据保留、访问控制、审计日志和漏洞披露流程；厂商则需要在功能上线前测试对象级授权，而不只是测试模型是否会给出危险回答。这个案例把“AI 安全”拉回了很具体的工程问题：每一条 prompt 和响应，究竟由谁可以读取。",
+  "publishedAt": "2025-07-15",
+  "eventDate": "2025-07-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meta-ai-prompt-privacy-bug-fixed-20250715.svg",
+    "alt": "Meta AI 的可猜编号绕过授权检查，修复后仍需关注 prompt 和生成内容的访问控制",
+    "sourceUrl": "/images/news/meta-ai-prompt-privacy-bug-fixed-20250715.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "bug-path",
+      "title": "漏洞路径是可猜编号加缺失授权检查",
+      "body": "研究者通过修改编辑请求里的对象编号读取了其他用户的 prompt 和响应，核心问题是后端没有确认访问者是否拥有该对象。",
+      "kind": "narrative"
+    },
+    {
+      "id": "fixed-before-report",
+      "title": "公开报道时漏洞已经修复",
+      "body": "Meta 称 1 月 24 日完成修复，7 月 15 日是公开披露日；文章不把它写成当天仍在持续的大规模泄露。",
+      "kind": "boundary"
+    },
+    {
+      "id": "company-claim",
+      "title": "“没有发现滥用”是 Meta 的调查结论",
+      "body": "厂商没有发现恶意利用不等于能够证明所有历史访问都安全，访问日志和审计范围仍决定结论强度。",
+      "kind": "comparison"
+    },
+    {
+      "id": "model-vs-backend",
+      "title": "AI 安全也包括普通后端工程",
+      "body": "模型输出安全之外，对 prompt、附件、版本和生成结果做对象级授权，是隐私边界的基础。",
+      "kind": "technical"
+    },
+    {
+      "id": "user-practice",
+      "title": "敏感内容仍应按数据权限管理",
+      "body": "用户和团队需要查看保留、访问、审计和漏洞披露流程，不能因为“聊天”界面看起来私密就跳过数据治理。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "一个 AI 私密内容漏洞怎样被发现和修复？",
+    "question": "沿着对象编号、账号关系和日志记录走一遍，就能看懂访问控制。",
+    "steps": [
+      {
+        "label": "创建对象",
+        "detail": "用户提交 prompt，服务端为版本、响应或图片生成对象编号，并保存归属账号。",
+        "evidence": "Meta AI prompt editing flow"
+      },
+      {
+        "label": "发送请求",
+        "detail": "客户端把编号发回服务端，服务端不能只相信编号本身。",
+        "evidence": "Server-side authorization"
+      },
+      {
+        "label": "核对归属",
+        "detail": "后端检查当前用户是否拥有对象、是否有共享权限，再返回内容。",
+        "evidence": "Access control boundary"
+      },
+      {
+        "label": "记录异常",
+        "detail": "漏洞研究者用不同编号观察响应差异，厂商应查看日志判断是否出现异常访问。",
+        "evidence": "Bug bounty disclosure"
+      },
+      {
+        "label": "修复与复测",
+        "detail": "补上授权检查、回归测试并保留披露时间线，同时把“未发现滥用”限定在调查范围内。",
+        "evidence": "Meta remediation statement"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/15/meta-fixes-bug-that-could-leak-users-ai-prompts-and-generated-content/"
+  },
+  "relatedSlugs": [
+    "api",
+    "auth",
+    "prompt",
+    "context",
+    "memory"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/15/meta-fixes-bug-that-could-leak-users-ai-prompts-and-generated-content/",
+      "claim": "TechCrunch 2025 年 7 月 15 日报道 Meta AI 一个服务器端授权缺陷可能让用户读取其他用户的 prompt 和生成响应；报道说 Meta 早在 2025 年 1 月修复。",
+      "excerpt": "TechCrunch, Meta fixes bug that could leak users’ AI prompts and generated content, July 15, 2025."
+    },
+    {
+      "url": "https://www.appsecure.co/",
+      "claim": "AppSecure 研究者 Sandeep Hodkasia 是漏洞披露者；正文将其作为研究者身份和漏洞赏金背景，不把公司网站当作 Meta 的确认。",
+      "excerpt": "AppSecure security research firm."
+    },
+    {
+      "url": "https://ai.meta.com/blog/meta-llama-3-meta-ai-responsibility/",
+      "claim": "Meta 的责任说明提供其 bug bounty 和模型安全背景；正文只用来解释公司已有的漏洞披露渠道。",
+      "excerpt": "Meta, Our responsible approach to Meta AI and Meta Llama 3."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/15/meta-fixes-bug-that-could-leak-users-ai-prompts-and-generated-content/",
+  "sourceHash": "sha256:75dbd3645b4b5e63ce0585765c2984a0748c9ec5a75dd933db2160c55ce6c979",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:00:25Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.9,
+      "evidence": [
+        "正文解释前端请求和服务端对象接口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.9,
+      "evidence": [
+        "正文把对象级授权检查作为核心安全边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.9,
+      "evidence": [
+        "正文说明 prompt 和生成响应可能被后端保存。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文把用户、对象编号和访问请求放进同一上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.9,
+      "evidence": [
+        "正文用保存的会话和生成版本解释数据保留风险。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/15/meta-fixes-bug-that-could-leak-users-ai-prompts-and-generated-content/",
+      "claim": "TechCrunch 2025 年 7 月 15 日报道 Meta AI 一个服务器端授权缺陷可能让用户读取其他用户的 prompt 和生成响应；报道说 Meta 早在 2025 年 1 月修复。",
+      "excerpt": "TechCrunch, Meta fixes bug that could leak users’ AI prompts and generated content, July 15, 2025."
+    },
+    {
+      "url": "https://www.appsecure.co/",
+      "claim": "AppSecure 研究者 Sandeep Hodkasia 是漏洞披露者；正文将其作为研究者身份和漏洞赏金背景，不把公司网站当作 Meta 的确认。",
+      "excerpt": "AppSecure security research firm."
+    },
+    {
+      "url": "https://ai.meta.com/blog/meta-llama-3-meta-ai-responsibility/",
+      "claim": "Meta 的责任说明提供其 bug bounty 和模型安全背景；正文只用来解释公司已有的漏洞披露渠道。",
+      "excerpt": "Meta, Our responsible approach to Meta AI and Meta Llama 3."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 披露、AppSecure 研究者背景和 Meta 责任说明；正文区分披露日、修复日、研究者发现、Meta 调查结论与未证实的历史访问范围。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "notes": "按 2025-07-15 事件日核对已修复的 Meta AI 隐私漏洞公开报道；正文以安全新闻为主，避免把“可能暴露”写成已确认的大规模泄露。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T15:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，七篇均按各自事件组织，未见批量模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-15，与官方发布、媒体报道、漏洞披露或论文讨论日期一致。",
+      "Mistral/Google/Thinking Machines/Discover/xAI/Meta/CoT 论文分别清楚区分公司产品与 benchmark、媒体/研究者报道、融资和内部数据、漏洞修复、论文建议与独立验证边界；Big Sleep 的阻断、Discover rollout、Grok prompt 修复、Meta 无滥用证据及 CoT 可监测性均未越界为普遍结论。",
+      "来源卡片、sections、explainer、SVG alt、词条联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：七篇事实、来源归属、公司口径和第三方/论文证据边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-15",
+  "fingerprint": "sha256:75dbd3645b4b5e63ce0585765c2984a0748c9ec5a75dd933db2160c55ce6c979",
+  "promotedAt": "2026-10-04T17:29:52.935Z"
+}

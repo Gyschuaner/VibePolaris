@@ -1,0 +1,194 @@
+{
+  "slug": "budgetthinker-budget-aware-reasoning-20250824",
+  "title": "BudgetThinker 让模型知道还剩多少“思考预算”",
+  "summary": "BudgetThinker 是一篇 2025 年 8 月 24 日提交的推理效率研究：它在推理过程中周期性插入控制 token，让模型持续知道剩余 token 预算，再用 SFT 和课程式 RL、长度感知奖励训练模型在准确率与预算遵守之间取平衡。论文在多个困难数学基准上称其在不同预算下优于强基线；文章将重点放在预算控制、质量回归和部署路由，不把“想得更短”写成普遍更好。",
+  "body": "推理模型的成本不只由模型大小决定，还由它愿意想多久决定。8 月 24 日提交的 BudgetThinker，尝试给这段隐藏的思考过程加一个运行时预算：模型每隔一段就收到控制 token，知道自己还剩多少 token 可以用。\n\n  这和简单截断输出不一样。硬截断是在模型已经超时后把尾巴切掉，BudgetThinker 则在推理过程中不断提醒模型预算，让它主动在剩余空间里分配步骤。对时间紧的问答、批量任务和边缘设备，这种控制比统一给每个问题一个很大的上限更容易做成本规划。\n\n  论文采用两阶段训练。先用监督微调让模型熟悉预算约束，再用课程式强化学习和长度感知奖励，让它同时追求答案质量和预算遵守。奖励不能只鼓励短，否则模型会学会少想；也不能只鼓励正确，否则预算只剩一个装饰。\n\n  作者在多个困难数学基准上报告，BudgetThinker 在不同推理预算下能比强基线更好地保持性能。摘要没有给出一组统一的准确率和 token 节省百分比，因此这里更适合把结果理解为“预算可控性的方向性证据”，接入自己的任务仍要重新找曲线。\n\n  一个实际部署问题是，预算并不等于质量。简单分类可能不需要长思考，复杂规划则可能在更短预算下丢掉关键验证；同一个任务还会因为输入长度、工具调用和重试次数改变总成本。预算路由应按任务风险、延迟和错误代价设，而不是把短回答自动视为更聪明。\n\n  控制 token 也要进入观测。系统需要记录目标预算、实际消耗、答案质量、提前停止原因和失败后的重试，确认模型不是只学会在 token 还没用完时匆忙收尾。对高风险动作，预算耗尽应触发暂停或人工复核，而不是静默放行。\n\n  BudgetThinker 的价值，在于把“思考多久”从模型内部偏好变成一个可配置、可评测的运行参数。它为成本与质量之间的路由提供了接口，却没有替团队决定每类任务应该花多少；那条曲线仍要用自己的错误账单来画。",
+  "publishedAt": "2025-08-24",
+  "eventDate": "2025-08-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/budgetthinker-budget-aware-reasoning-20250824.svg",
+    "alt": "BudgetThinker 用控制 token 让推理过程持续感知剩余预算",
+    "sourceUrl": "/images/news/budgetthinker-budget-aware-reasoning-20250824.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "reasoning-cost",
+      "title": "推理成本还取决于模型想多久",
+      "body": "推理模型在不同任务上会消耗不同长度的思考 token。BudgetThinker 试图让模型在运行中知道剩余预算，而不是超时后再硬截断。",
+      "kind": "narrative"
+    },
+    {
+      "id": "control-tokens",
+      "title": "控制 token 在推理中持续提醒预算",
+      "body": "方法周期性插入特殊 token，告知模型当前还剩多少推理空间，让它主动安排步骤和停止时机。",
+      "kind": "technical"
+    },
+    {
+      "id": "training",
+      "title": "SFT 加课程式 RL 学会预算约束",
+      "body": "两阶段训练先让模型熟悉预算，再用长度感知奖励同时优化准确率和预算遵守。只奖励短会损害质量，只奖励正确又无法控制成本。",
+      "kind": "technical"
+    },
+    {
+      "id": "math-results",
+      "title": "多个数学基准显示预算曲线更可控",
+      "body": "论文称在困难数学基准上，BudgetThinker 在不同预算下保持性能优于强基线；摘要没有给出统一百分比，生产收益需按任务重测。",
+      "kind": "comparison"
+    },
+    {
+      "id": "quality-cost",
+      "title": "短回答不自动等于更好回答",
+      "body": "预算应按任务风险、延迟和错误代价设置。输入长度、工具调用和重试会改变总成本，复杂规划不能只靠短预算。",
+      "kind": "boundary"
+    },
+    {
+      "id": "observability",
+      "title": "记录目标预算、消耗和提前停止原因",
+      "body": "观测要包括实际 token、答案质量、停止原因和重试；高风险动作耗尽预算时应暂停或人工复核，而不是静默放行。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "把思考时间变成可评测的路由参数",
+      "body": "BudgetThinker 提供成本与质量路由接口，却不能替团队决定每类任务该花多少。真实曲线要用自己的错误账单和延迟数据画出来。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样把推理预算接入任务路由？",
+    "question": "先让模型感知预算，再用质量、消耗和风险一起决定停止。",
+    "steps": [
+      {
+        "label": "定义预算单位",
+        "detail": "统一记录推理 token、工具调用、重试和总延迟，避免只给一个模糊的最大输出数。",
+        "evidence": "remaining token budget"
+      },
+      {
+        "label": "插入控制 token",
+        "detail": "在推理过程中周期性提示剩余预算，让模型在运行中调整步骤和停止时机。",
+        "evidence": "periodically inserts special control tokens during inference"
+      },
+      {
+        "label": "训练预算遵守",
+        "detail": "用 SFT 先熟悉预算，再用长度感知奖励平衡正确率与耗时。",
+        "evidence": "two-stage training pipeline ... length-aware reward function"
+      },
+      {
+        "label": "画质量曲线",
+        "detail": "在不同预算下测准确率、失败类型、延迟和成本，确认短预算没有隐藏回归。",
+        "evidence": "maintaining performance across a variety of reasoning budgets"
+      },
+      {
+        "label": "按风险分流",
+        "detail": "低风险任务可用短预算，高风险任务预算不足时暂停、升级或人工复核。",
+        "evidence": "practical for deployment in resource-constrained and real-time environments"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / BudgetThinker 作者组",
+    "url": "https://arxiv.org/abs/2508.17196"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "model-routing",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17196",
+      "claim": "BudgetThinker 用控制 token 告知模型剩余推理预算，并以 SFT 和课程式 RL、长度感知奖励训练预算遵守。",
+      "excerpt": "periodically inserts special control tokens ... remaining token budget ... SFT ... curriculum-based RL ... length-aware reward"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17196",
+      "claim": "论文称在多个困难数学基准上，模型在多种推理预算下保持性能并超过强基线。",
+      "excerpt": "surpasses strong baselines in maintaining performance across a variety of reasoning budgets"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17196",
+  "sourceHash": "sha256:1f33ff42054b10734850db564511a321981ab1c027d739c99c6bf0ad011ea528",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释推理模型、预算控制和数学基准。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕控制 token、剩余 token 和消耗观测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 0.94,
+      "evidence": [
+        "正文把预算和任务风险、延迟、成本路由连接起来。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文强调不同预算下的质量、失败、延迟和成本曲线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 24 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17196",
+      "claim": "arXiv 记录显示 BudgetThinker 于 2025 年 8 月 24 日提交，提出预算感知推理框架。",
+      "excerpt": "Date: Sun Aug 24 03:17:50 2025 ... budget-aware reasoning"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 BudgetThinker 摘要中的控制 token、两阶段 SFT/RL、长度感知奖励和数学基准结论；正文没有虚构统一百分比，补充预算、质量、风险和停止观测边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把预算感知与硬截断区分开，解释控制 token、训练阶段和质量曲线，没有把短预算写成普遍更好，并补充高风险耗尽时的暂停与人工复核；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-24-budgetthinker-budget-aware-reasoning"
+}

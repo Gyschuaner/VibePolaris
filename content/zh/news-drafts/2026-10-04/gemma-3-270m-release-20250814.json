@@ -1,0 +1,201 @@
+{
+  "slug": "gemma-3-270m-release-20250814",
+  "title": "Google 发布 Gemma 3 270M：把开放权重文本模型带到更小设备",
+  "summary": "Google 的 Gemma 发布记录显示，Gemma 3 在 2025 年 8 月 14 日新增 270M 尺寸。官方使用指南把它列为面向移动设备和单板计算机的 Text → Text 模型，输入上下文为 32K；模型卡还给出预训练和指令微调版本的基准结果。它降低的是本地部署的模型尺寸门槛，不等于小模型在所有任务上都能替代更大模型。",
+  "body": "8 月 14 日，Google 在 Gemma 发布记录里补上了 Gemma 3 的 270M 尺寸。Gemma 3 的 1B、4B、12B 和 27B 版本早在 3 月发布，这次新增的是同一系列更小的文本模型。对做本地推理的人来说，变化首先体现在设备：Google 的使用指南把 270M 列为 Text → Text，目标平台包括移动设备和单板计算机。\n\n“270M”说的是参数规模，不是模型能处理的任务数量。官方模型卡给 270M 版本配的是 32K 上下文窗口；4B、12B、27B 才是 128K 的尺寸。Gemma 3 家族的较大尺寸支持图像输入，但 270M 在官方入门表里是文本到文本，不能把全家族的多模态描述直接套到这一款上。\n\n模型卡还披露，270M 使用了约 6 万亿 tokens 的训练数据，知识截止时间为 2024 年 8 月；Gemma 3 的训练数据说明覆盖 140 多种语言，并包含代码、数学和图像等来源。这个数字可以帮助理解训练投入，却不能直接推出某个中文任务的效果。小模型是否好用，仍取决于提示、领域、量化、上下文长度和是否做过针对性微调。\n\n官方把 270M 的结果单独列在模型卡里。预训练版本在 HellaSwag、BoolQ、PIQA、TriviaQA、ARC-c、ARC-e 和 WinoGrande 上分别给出 40.9、61.4、67.7、15.4、29.0、57.7 和 52.0；指令微调版本则报告 HellaSwag 37.7、PIQA 66.2、ARC-c 28.2、WinoGrande 52.3、BIG-Bench Hard 26.7 和 IF Eval 51.2。两组使用的基准和 n-shot 设置并不完全相同，分数适合用来了解模型画像，不适合拼成一个总排名。\n\n这类模型的实际价值，通常在任务边界清楚的地方更容易看见：把短文本分类、摘要、格式转换或设备端的简单问答放在本地，减少一次网络往返，也让应用可以在离线或低带宽环境里工作。它的 32K 上下文也给了小应用一定的文档空间，但长上下文不等于长文档理解一定稳定，部署时仍应按自己的数据做回归评测。\n\n安全边界同样要单独看。Gemma 3 模型卡记录了内容安全、儿童安全和表征伤害等评估，也明确说安全测试只使用英文提示；模型可能产生错误、过时或带偏见的内容。参数变小不会自动消除这些问题，真正上线时仍要为输入过滤、输出检查、权限和日志设定自己的规则。\n\nGemma 3 270M 的意义，是把开放权重模型的“能不能放到设备上”向前推了一步。下一步不应只问它比哪个大模型分数高，而要先定义设备预算、任务格式和失败代价，再用同一套数据比较预训练版、指令版和微调版。",
+  "publishedAt": "2025-08-14",
+  "eventDate": "2025-08-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/gemma-3-270m-release-20250814.svg",
+    "alt": "Gemma 3 270M 开放权重文本模型从本地设备进入基准评估和受控应用",
+    "sourceUrl": "/images/news/gemma-3-270m-release-20250814.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "Gemma 3 在 8 月 14 日新增 270M 尺寸",
+      "body": "Google 的 Gemma 发布记录把 270M 标为 2025 年 8 月 14 日发布；1B、4B、12B 和 27B 尺寸此前已在 3 月发布。这是同一系列的尺寸扩展，重点是把开放权重模型带到更小的设备。",
+      "kind": "narrative"
+    },
+    {
+      "id": "model-boundary",
+      "title": "270M 在官方入门表里是 Text → Text",
+      "body": "Google 使用指南将 270M 归为 Gemma 3 core 的 Text → Text 版本，目标平台包括移动设备和单板计算机；它的上下文窗口为 32K。较大 Gemma 3 尺寸的图像能力不能直接套用到 270M。",
+      "kind": "technical"
+    },
+    {
+      "id": "training",
+      "title": "模型卡披露 6 万亿 tokens 和 2024 年 8 月知识截止",
+      "body": "Gemma 3 模型卡称 270M 使用约 6 万亿 tokens 训练，家族训练数据覆盖 140 多种语言并包含代码、数学和图像来源；知识截止时间为 2024 年 8 月。训练规模不能替代具体任务上的实测。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "官方把预训练版和指令版分开评测",
+      "body": "模型卡分别列出 270M PT 与 IT 的 HellaSwag、BoolQ、PIQA、TriviaQA、ARC、WinoGrande、BIG-Bench Hard 和 IF Eval 结果。n-shot 设置和测试任务并不完全相同，分数用于了解模型画像，不构成跨业务总排名。",
+      "kind": "comparison"
+    },
+    {
+      "id": "deployment",
+      "title": "小模型的优势在设备预算和任务边界",
+      "body": "本地短文本分类、摘要、格式转换或简单问答可以减少网络往返，并适合离线或低带宽场景；32K 上下文也不是长文档质量保证，仍需按自己的数据做回归评测。",
+      "kind": "example"
+    },
+    {
+      "id": "safety",
+      "title": "参数变小不会自动消除错误和偏见",
+      "body": "模型卡记录了内容安全、儿童安全和表征伤害评估，但安全测试只使用英文提示，并承认模型可能输出错误、过时或带偏见的内容。上线时仍需配置输入过滤、输出检查、权限和日志规则。",
+      "kind": "boundary"
+    },
+    {
+      "id": "takeaway",
+      "title": "先按设备和失败代价定义评测",
+      "body": "部署者应先明确设备预算、任务格式和失败代价，再在同一数据上比较预训练版、指令版和微调版，而不是只追逐一个更大的模型分数。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "270M 模型怎样从设备选择走到上线评估？",
+    "question": "小模型的价值要同时看运行位置、任务边界和失败代价。",
+    "steps": [
+      {
+        "label": "先看设备",
+        "detail": "把移动设备、单板计算机或本地服务器的内存、延迟和并发要求写清楚，再决定 270M 是否合适。",
+        "evidence": "Gemma 3 270M deployment table"
+      },
+      {
+        "label": "限定输入",
+        "detail": "270M 的官方上下文是 32K，入门表定位为 Text → Text；不要把较大尺寸的图像能力或 128K 上下文当作它的默认能力。",
+        "evidence": "Gemma 3 model card and get started guide"
+      },
+      {
+        "label": "分开版本",
+        "detail": "预训练版与指令微调版要分别测试；任务、n-shot 设置和输出格式保持一致，才知道差异来自哪里。",
+        "evidence": "Gemma 3 270M benchmark tables"
+      },
+      {
+        "label": "用真实数据回归",
+        "detail": "在自己的分类、摘要或格式转换样本上测准确率、延迟、内存和失败类型，不把模型卡分数换算成业务承诺。",
+        "evidence": "Benchmark boundary"
+      },
+      {
+        "label": "加上防护",
+        "detail": "上线前为输入过滤、输出检查、日志和权限设定规则；模型卡的安全评估只使用英文提示，不能覆盖全部应用场景。",
+        "evidence": "Gemma 3 safety evaluation and limitations"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google AI for Developers（Gemma 发布记录）",
+    "url": "https://ai.google.dev/gemma/docs/releases?hl=en"
+  },
+  "relatedSlugs": [
+    "llm",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://ai.google.dev/gemma/docs/releases?hl=en",
+      "claim": "Google AI for Developers 的 Gemma 发布记录将 Gemma 3 270M 标为 2025 年 8 月 14 日发布。",
+      "excerpt": "August 14, 2025 — Release of Gemma 3 in 270M size."
+    },
+    {
+      "url": "https://ai.google.dev/gemma/docs/core/model_card_3",
+      "claim": "Gemma 3 模型卡给出 270M 的上下文、训练数据、基准与安全限制；270M 的 PT/IT 结果被单列。",
+      "excerpt": "#### Gemma 3 270M ... Gemma 3 PT 270M ... Gemma 3 IT 270M"
+    },
+    {
+      "url": "https://ai.google.dev/gemma/docs/get_started",
+      "claim": "Google 使用指南将 270M 列为 Gemma 3 core 的 Text → Text 版本，目标平台包括移动设备和单板计算机。",
+      "excerpt": "270M | Gemma 3 (core) | Text ➔ Text | Mobile devices and single board computers"
+    }
+  ],
+  "canonicalUrl": "https://ai.google.dev/gemma/docs/releases?hl=en",
+  "sourceHash": "sha256:60637dedfcfb984c38b65a8d54177a380bee237df2be1cc7fe38dc6b0450903b",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 Gemma 3 270M 的开放权重文本模型定位、上下文和部署尺寸。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.95,
+      "evidence": [
+        "正文把 270M 的 PT/IT 基准和 n-shot 设置作为模型卡实验结果，并要求用真实任务回归。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文明确区分 8 月 14 日的尺寸发布、3 月已有尺寸和后续部署评估。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://ai.google.dev/gemma/docs/releases?hl=en",
+      "claim": "Gemma 发布记录确认 270M 尺寸的事件日期为 2025-08-14。",
+      "excerpt": "August 14, 2025 — Release of Gemma 3 in 270M size."
+    },
+    {
+      "url": "https://ai.google.dev/gemma/docs/core/model_card_3",
+      "claim": "Gemma 3 模型卡确认 270M 的 32K 上下文、6 万亿 tokens 训练说明、PT/IT 基准和英文安全评估限制。",
+      "excerpt": "the 270M with 6 trillion tokens ... 32K tokens for the 1B and 270M sizes ... A limitation of our evaluations was they included only English language prompts."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google Gemma 发布记录、Gemma 3 模型卡和官方使用指南；正文将 270M 的 Text → Text、32K、训练数据、PT/IT 基准与更大尺寸的图像能力分开，保留英文安全评估和业务回归边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 组织成尺寸发布、设备边界、模型卡基准和上线评估四个层次，避免把 270M 写成全家族多模态模型或用官方分数承诺业务效果，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "Gemma 发布记录确认 270M 尺寸于 2025-08-14 发布；3 月已有的 1B/4B/12B/27B 与本次尺寸新增被正文清楚分开。",
+      "270M 被准确写成 Text → Text、移动设备/单板计算机定位和 32K 上下文窗口；没有把较大尺寸的 128K 或图像输入能力套到 270M。",
+      "模型卡的约 6 万亿 tokens、知识截止时间、PT/IT 基准和 n-shot 边界均按官方模型卡口径呈现，分数未被拼成总排名或业务承诺。",
+      "Gemma 家族训练资料中的多语言、代码、数学和图像来源与 270M 的文本输入能力有区分；安全评估只用英文提示的限制和错误/过时/偏见输出风险均已保留。",
+      "source/canonical、模型卡和 get-started 证据卡片、benchmark explainer、sections、SVG 与 schema 一致，中文自然且未发现明显机械化句式。"
+    ],
+    "notes": "读者审阅通过。文章将 8/14 尺寸发布、270M 的文本模型边界、32K 上下文、模型卡基准和家族级安全限制分层说明，未把大尺寸多模态能力或模型卡分数扩写到 270M 的所有任务。",
+    "changes": [
+      "将标题中的“开放模型”改为“开放权重文本模型”，避免把开放权重误读成完整开源或通用多模态模型。",
+      "将正文和模型边界 section 的“输入和输出上下文/输入上下文”收紧为“32K 上下文窗口”，与模型卡的总上下文边界一致。",
+      "将 source/canonical 对齐到 8/14 Gemma 发布记录，模型卡和官方使用指南继续作为独立来源卡片。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-14-gemma-270m",
+  "promotedAt": "2026-10-05T05:17:37.595Z"
+}

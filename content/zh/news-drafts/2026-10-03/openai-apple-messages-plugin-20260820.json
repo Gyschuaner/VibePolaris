@@ -1,0 +1,218 @@
+{
+  "slug": "openai-apple-messages-plugin-20260820",
+  "title": "OpenAI 把 Apple Messages 接入 ChatGPT：代理能搜对话、代发消息，但权限边界更重要",
+  "summary": "OpenAI 于 2026 年 8 月 20 日把 Apple Messages 插件带到 ChatGPT Work 和 Codex 的 macOS 桌面体验。它能搜索 iMessage、SMS 与 RCS、生成草稿并代发消息，但权限、收件人确认和持续授权决定了这项代理能力的实际风险。",
+  "body": "2026 年 8 月 20 日，OpenAI 在 ChatGPT 更新日志中宣布，Apple Messages 插件开始进入 ChatGPT Work 和 Codex 的桌面体验。它可以在 Apple 芯片 Mac 上读取和搜索 iMessage、SMS 与 RCS 对话，帮用户整理上下文、起草回复，甚至通过 Messages 应用发送消息。这里的新闻重点是“代理获得了一个真实通信工具”，不是又增加了一个聊天窗口。\n\n这条能力有一条容易被忽略的运行边界：它只在 macOS 桌面版的 Codex 和 ChatGPT Work 中工作，普通 ChatGPT 对话、网页、移动端和 Codex CLI 都不在范围内。OpenAI 的插件文档还说明，消息插件运行在用户自己的 Mac 上，需要用户授予相应的 macOS 权限；它不是一个能从远程服务器直接操作你手机消息的入口。\n\n真正需要读懂的是发送动作怎么被授权。默认情况下，ChatGPT 在发出消息前会要求用户同时确认正文和收件人；用户也可以把某个聊天加入“始终允许发送”，让之后的发送跳过逐次确认。后一种设置方便，但会把最后一次人工检查也交给用户自己承担。若任务处在 Full access 等关闭审批提示的模式，官方文档还提示发送确认可能无法正常出现。\n\n因此，插件并没有替用户解决“这条消息该不该发”的判断。模型可以从一段很长的对话里找出时间、人物和待办事项，却可能误解语气、把引用的内容当成请求，或选错收件人。更复杂的风险来自对话里本来就可能包含诱导模型操作的文字：一条消息可以要求代理转发秘密，另一条消息可以伪装成用户的指令。权限、收件人和每次发送的审批，才是这条产品新闻真正的安全机制。\n\n截至 8 月 20 日，已确认的是 Apple Messages 插件在指定桌面场景可用，以及默认的逐次审批规则；没有证据表明 Apple 参与了插件开发，也没有证据表明所有账号、地区或工作区都会同时获得它。对普通用户来说，第一件要检查的不是“它能不能替我发”，而是插件能读哪些消息、哪些聊天被永久授权、管理员能否关闭，以及发送前是否还能看到完整的收件人和正文。",
+  "publishedAt": "2026-08-20",
+  "eventDate": "2026-08-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-apple-messages-plugin-20260820.svg",
+    "alt": "从消息检索、草稿生成、收件人确认到发送的 Apple Messages 权限链路",
+    "sourceUrl": "/images/news/openai-apple-messages-plugin-20260820.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这次上线的是一个真实通信工具",
+      "body": "Apple Messages 插件让 Codex 和 ChatGPT Work 在 Apple 芯片 Mac 上读取、搜索、起草并发送 iMessage、SMS 与 RCS；它不是普通聊天窗口的功能开关。",
+      "kind": "narrative"
+    },
+    {
+      "id": "surface",
+      "title": "运行位置和权限先决定范围",
+      "body": "插件运行在 macOS 桌面版的 Codex/Work 中，需要本机权限；网页、移动端、普通 ChatGPT 对话和 Codex CLI 不在这次支持范围内。",
+      "kind": "technical"
+    },
+    {
+      "id": "approval",
+      "title": "默认是每次发送前确认",
+      "body": "系统默认要求用户确认消息正文和收件人；“始终允许发送”可以省去确认，也会移除最后一道人工检查。",
+      "kind": "technical"
+    },
+    {
+      "id": "prompt-risk",
+      "title": "能读懂上下文不等于能替你做决定",
+      "body": "模型可能误解语气、选错收件人，也可能把消息中的诱导文字当作操作要求；权限、审批和撤销比“自动化”三个字更重要。",
+      "kind": "boundary"
+    },
+    {
+      "id": "watch",
+      "title": "后续看哪些控制真正可用",
+      "body": "要继续观察权限提示、工作区管理员控制、审计记录以及不同账号和地区的 rollout 条件。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一条消息怎样走到发送按钮",
+    "question": "为什么“能搜索消息”与“可以替你发消息”是两种不同风险？",
+    "steps": [
+      {
+        "label": "选定范围",
+        "detail": "用户在 Codex 或 ChatGPT Work 中安装 Apple Messages 插件，并授予 Mac 所需权限。",
+        "evidence": "OpenAI plugin docs"
+      },
+      {
+        "label": "读取上下文",
+        "detail": "代理在 Messages 中搜索 iMessage、SMS 或 RCS，提取联系人、时间和待办事项。",
+        "evidence": "OpenAI release notes"
+      },
+      {
+        "label": "生成草稿",
+        "detail": "模型根据对话提出回复，但草稿仍可能理解错语气或收件人。",
+        "evidence": "Article boundary"
+      },
+      {
+        "label": "确认发送",
+        "detail": "默认要求用户确认正文和收件人；持久授权会跳过这一步。",
+        "evidence": "OpenAI plugin docs"
+      },
+      {
+        "label": "撤销权限",
+        "detail": "用户或管理员可以移除聊天的持续发送授权或禁用插件。",
+        "evidence": "OpenAI plugin docs"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI ChatGPT plugin docs",
+    "url": "https://learn.chatgpt.com/docs/plugins?surface=app"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "authorization",
+    "tools",
+    "memory",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+      "claim": "OpenAI 的 2026 年 8 月 20 日更新日志宣布 Apple Messages 插件可在 Apple 芯片 Mac 的 ChatGPT 桌面应用中读取/搜索 iMessage、SMS、RCS，并准备或发送消息；默认要求用户确认消息和收件人。",
+      "excerpt": "On Apple silicon Macs, the Apple Messages plugin ... can read and search iMessage, SMS, and RCS conversations and prepare or send messages through Messages. By default, ChatGPT asks the user to approve the message and recipients before sending."
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/plugins?surface=app",
+      "claim": "OpenAI 插件文档说明 Apple Messages 只在 ChatGPT 桌面版 macOS 的 Codex/Work 中运行，发送默认逐次审批，持续授权和 Full access 模式会改变确认行为。",
+      "excerpt": "By default, ChatGPT sends messages only after you approve the message and its recipients ... Apple Messages runs on your Mac and is not directly available in ChatGPT on the web or mobile, Codex CLI, or the IDE extension."
+    },
+    {
+      "url": "https://www.macrumors.com/2026/08/20/chatgpt-imessages-mac/",
+      "claim": "MacRumors 交叉报道插件可以搜索、分析和起草消息，并记录了 Full Disk Access、联系人和自动化权限要求。",
+      "excerpt": "The Apple Messages plugin can be installed from the ChatGPT Plugins interface ... Sending a message requires user approval by default ... ChatGPT needs Full Disk Access in System Settings, as well as access to contact names and automation tools."
+    }
+  ],
+  "canonicalUrl": "https://learn.chatgpt.com/docs/plugins?surface=app",
+  "sourceHash": "sha256:5b045b0439b19ed013ddea42f426d63b43b36c8de20f1b7c6dde7327cc6e7d29",
+  "status": "published",
+  "discoveredAt": "2026-10-03T08:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.96,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.92,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.97,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.91,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.77,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.88,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+      "claim": "OpenAI 的 2026 年 8 月 20 日更新日志宣布 Apple Messages 插件可在 Apple 芯片 Mac 的 ChatGPT 桌面应用中读取/搜索 iMessage、SMS、RCS，并准备或发送消息；默认要求用户确认消息和收件人。",
+      "excerpt": "On Apple silicon Macs, the Apple Messages plugin ... can read and search iMessage, SMS, and RCS conversations and prepare or send messages through Messages. By default, ChatGPT asks the user to approve the message and recipients before sending."
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/plugins?surface=app",
+      "claim": "OpenAI 插件文档说明 Apple Messages 只在 ChatGPT 桌面版 macOS 的 Codex/Work 中运行，发送默认逐次审批，持续授权和 Full access 模式会改变确认行为。",
+      "excerpt": "By default, ChatGPT sends messages only after you approve the message and its recipients ... Apple Messages runs on your Mac and is not directly available in ChatGPT on the web or mobile, Codex CLI, or the IDE extension."
+    },
+    {
+      "url": "https://www.macrumors.com/2026/08/20/chatgpt-imessages-mac/",
+      "claim": "MacRumors 交叉报道插件可以搜索、分析和起草消息，并记录了 Full Disk Access、联系人和自动化权限要求。",
+      "excerpt": "The Apple Messages plugin can be installed from the ChatGPT Plugins interface ... Sending a message requires user approval by default ... ChatGPT needs Full Disk Access in System Settings, as well as access to contact names and automation tools."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T08:30:00Z",
+    "method": "source",
+    "notes": "已核对 OpenAI 8 月 20 日更新日志、官方插件文档和 MacRumors 交叉报道；区分可用表面、权限、默认审批与持久授权边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T08:40:25Z",
+    "notes": "已完成新闻事实、来源卡片、事件日、可追溯 SVG、词条联动与读者可读性复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T08:40:25Z",
+    "questions": [],
+    "notes": "复审确认 Apple Messages 接入范围、Mac 本地权限、默认逐次确认和持续授权边界清楚；官方更新、插件文档、媒体报道和 SVG 流程一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-20",
+  "fingerprint": "sha256:5b045b0439b19ed013ddea42f426d63b43b36c8de20f1b7c6dde7327cc6e7d29",
+  "promotedAt": "2026-10-03T08:45:20.304Z"
+}

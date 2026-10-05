@@ -1,0 +1,202 @@
+{
+  "slug": "openai-private-safety-processing-20260819",
+  "title": "OpenAI 预览 Private Safety Processing：不留原文，也能跨对话找滥用模式",
+  "summary": "OpenAI 于 8 月 19 日预览 Private Safety Processing，试图在 Zero Data Retention 约束下跨相关对话识别滥用信号。它仍在早期客户测试阶段，不能写成已经普遍上线。",
+  "body": "OpenAI 在 2026 年 8 月 19 日发布文章，预览 Private Safety Processing。它针对的是一个很具体的矛盾：企业希望模型服务不保留提示和输出，但某些滥用线索只有把多次交互放在一起才看得出来。OpenAI 的方案是让自动化系统在客户控制的基础设施上处理内容，只把很窄的风险信号返回给 OpenAI，而不是把原文交给人工审核。\n\n先理解 Zero Data Retention（ZDR）。对符合条件的 API 客户，OpenAI 承诺请求处理后不保留提示和模型响应，企业数据也不会在未选择加入时用于训练。旧的 ZDR 安全机制更像“一次请求一次检查”；Private Safety Processing 想把相关会话串起来，看出重复试探安全边界、跨账号协作或长任务越权等模式。\n\nOpenAI 说，客户内容可以留在客户控制的基础设施上；如果使用 OpenAI 提供的存储，内容由客户掌握的密钥加密，OpenAI 员工没有密钥。风险触发时，平台得到的是一个窄化信号，例如某类活动可能需要执行措施。客户可以在自己的系统里调查和申诉，也可以选择性地把相关材料分享给 OpenAI。\n\n这不是“隐私问题已经解决”。Private Safety Processing 在 8 月 19 日仍是早期客户测试，OpenAI 计划 9 月开始逐步推出并发布技术白皮书。并且法律要求保留、人工处理的 CSAM 等例外仍然存在。企业需要问清楚哪些数据留在哪里、谁掌握密钥、触发后会收到什么信号、如何保留审计记录，以及误报时怎样申诉。\n\n这项新闻值得关注，是因为它把安全监测从“模型供应商保存全部内容”改成“客户保留内容、供应商接收有限判断结果”的架构尝试。能否在真实多轮攻击中保持准确，还要等 rollout、技术细节和独立评估出现后再判断。",
+  "publishedAt": "2026-08-19",
+  "eventDate": "2026-08-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-private-safety-processing-20260819.svg",
+    "alt": "客户保留对话内容，系统识别跨会话风险并返回窄化信号",
+    "sourceUrl": "/images/news/openai-private-safety-processing-20260819.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "zdr",
+      "title": "ZDR 先解决的是“不要留原文”",
+      "body": "Zero Data Retention 要求符合条件的客户请求处理后不被 OpenAI 保留；它不等于完全不做安全检查。",
+      "kind": "narrative"
+    },
+    {
+      "id": "cross-session",
+      "title": "新预览把检查范围拉长",
+      "body": "Private Safety Processing 试图在多次相关交互之间找模式，例如反复试探护栏或长任务越权，而不是只看单次请求。",
+      "kind": "technical"
+    },
+    {
+      "id": "signal",
+      "title": "OpenAI 收到的是窄化信号",
+      "body": "风险触发后，OpenAI 看到的是活动类型等有限信号；客户内容仍由客户系统保留，调查和申诉主要在客户一侧进行。",
+      "kind": "technical"
+    },
+    {
+      "id": "keys",
+      "title": "密钥和例外仍需单独问清",
+      "body": "如果内容放在 OpenAI 基础设施上，官方说使用客户控制的密钥；CSAM 等法律例外仍可能需要保留和人工处理。",
+      "kind": "boundary"
+    },
+    {
+      "id": "preview",
+      "title": "预览不是全面可用",
+      "body": "截至事件日，功能还在早期客户测试，9 月 rollout 和技术白皮书属于后续计划。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "从单次检查到跨会话风险信号",
+    "question": "如果平台不保存原文，怎么发现分散在多轮对话里的滥用？",
+    "steps": [
+      {
+        "label": "客户发起请求",
+        "detail": "提示和响应在符合条件的 ZDR 环境中处理，默认不被 OpenAI 保留。",
+        "evidence": "OpenAI ZDR"
+      },
+      {
+        "label": "客户侧保留",
+        "detail": "内容留在客户控制的基础设施，或使用客户持有密钥加密的存储。",
+        "evidence": "OpenAI Private Safety Processing"
+      },
+      {
+        "label": "自动看模式",
+        "detail": "自动化系统把相关交互放在一起，寻找跨会话的异常模式。",
+        "evidence": "OpenAI preview"
+      },
+      {
+        "label": "返回窄信号",
+        "detail": "如果触发风险，OpenAI 收到有限活动信号；客户在自己的系统里调查和申诉。",
+        "evidence": "OpenAI preview"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/offering-zero-data-retention-for-frontier-models/"
+  },
+  "relatedSlugs": [
+    "authorization",
+    "data-lineage",
+    "agent-loop",
+    "event",
+    "eval"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/offering-zero-data-retention-for-frontier-models/",
+      "claim": "OpenAI 8 月 19 日预览 Private Safety Processing，目标是在不让 OpenAI 人员看到底层内容的情况下跨相关交互识别模式。",
+      "excerpt": "Today, we’re previewing Private Safety Processing, which is designed to identify patterns across related interactions without giving OpenAI personnel access to the underlying content."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections/",
+      "claim": "TechCrunch 解释了多会话监测与 Anthropic 数据保留政策的竞争语境，并记录 OpenAI 的选择性信号说法。",
+      "excerpt": "Private Safety Processing can analyze those multiple conversations for signs of abuse without human review of a user’s conversations."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/zero-data-retention",
+      "claim": "OpenAI 开发者文档提供 ZDR API 约束和适用条件的持续说明。",
+      "excerpt": "Zero Data Retention gives eligible API customers a clear promise about prompts and model responses after processing."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/offering-zero-data-retention-for-frontier-models/",
+  "sourceHash": "sha256:ba902c02c06e53abc887544060e31ee482a8debdd774d3336422c72d1a1df68e",
+  "status": "published",
+  "discoveredAt": "2026-10-03T09:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.94,
+      "evidence": [
+        "正文用白话解释 authorization 在本条新闻中的事实作用和限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.9199999999999999,
+      "evidence": [
+        "正文用白话解释 data-lineage 在本条新闻中的事实作用和限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.8999999999999999,
+      "evidence": [
+        "正文用白话解释 agent-loop 在本条新闻中的事实作用和限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8799999999999999,
+      "evidence": [
+        "正文用白话解释 event 在本条新闻中的事实作用和限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释 eval 在本条新闻中的事实作用和限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/offering-zero-data-retention-for-frontier-models/",
+      "claim": "OpenAI 8 月 19 日预览 Private Safety Processing，目标是在不让 OpenAI 人员看到底层内容的情况下跨相关交互识别模式。",
+      "excerpt": "Today, we’re previewing Private Safety Processing, which is designed to identify patterns across related interactions without giving OpenAI personnel access to the underlying content."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections/",
+      "claim": "TechCrunch 解释了多会话监测与 Anthropic 数据保留政策的竞争语境，并记录 OpenAI 的选择性信号说法。",
+      "excerpt": "Private Safety Processing can analyze those multiple conversations for signs of abuse without human review of a user’s conversations."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/zero-data-retention",
+      "claim": "OpenAI 开发者文档提供 ZDR API 约束和适用条件的持续说明。",
+      "excerpt": "Zero Data Retention gives eligible API customers a clear promise about prompts and model responses after processing."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T09:10:00Z",
+    "method": "source",
+    "notes": "已核对 OpenAI 8 月 19 日官方文章、开发者文档与 TechCrunch；区分预览、自动化信号、客户持钥和法律例外，不把“无人工查看”写成无安全处理。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T09:28:08Z",
+    "notes": "已完成新闻事实、来源卡片、事件日、可追溯 SVG、词条联动与唯一 reader-review 复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T09:28:08Z",
+    "questions": [],
+    "notes": "复审确认员工用字、ZDR/客户保留/窄化信号说明和 hero.alt 已修正；预览状态与隐私例外边界清楚。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-19",
+  "fingerprint": "sha256:ba902c02c06e53abc887544060e31ee482a8debdd774d3336422c72d1a1df68e",
+  "promotedAt": "2026-10-03T09:29:08.112Z"
+}

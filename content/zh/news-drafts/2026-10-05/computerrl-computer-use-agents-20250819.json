@@ -1,0 +1,188 @@
+{
+  "slug": "computerrl-computer-use-agents-20250819",
+  "title": "ComputerRL 把桌面 Agent 的训练搬进成千上万台虚拟电脑",
+  "summary": "8 月 19 日提交的 ComputerRL，针对桌面 Agent 同时要用程序化 API 和图形界面的问题，提出 API-GUI 统一范式，并搭建可并行运行数千个虚拟桌面的分布式在线强化学习基础设施。作者还用交替强化学习与监督微调的 Entropulse 缓解长训练中的熵坍塌，在 OSWorld 上报告 AutoGLM-OS-9B 48.9% 的准确率，并开源代码和 OfficeWorld benchmark。",
+  "body": "让 Agent 操作桌面，难点不只是看懂一个按钮。浏览器、文件管理器和企业软件有图形界面，系统又提供 API；Agent 如果只会其中一种，就很难稳定完成跨应用任务。8 月 19 日提交的 ComputerRL，先把这两条路径放进同一个 API-GUI 范式里，再解决训练规模的问题。\n\nAPI-GUI 的意思不是把 GUI 重新包装成 API，而是让 Agent 在同一套任务里选择程序化调用或直接操作界面。这样可以利用 API 的精确性，也保留人类软件必须通过点击、拖拽和视觉反馈才能完成的部分。\n\n训练端的瓶颈是环境。单台虚拟电脑跑一个长任务很慢，出错后还要重置。ComputerRL 搭建了可以调度数千个并行虚拟桌面的分布式在线强化学习基础设施，让 Agent 同时收集不同应用、不同状态和不同失败路径的数据。\n\n长时间做在线强化学习还会遇到熵坍塌：模型逐渐只走少数熟悉路径，探索能力变差。作者提出 Entropulse，在强化学习和监督微调之间交替，让训练过程重新获得一些行为多样性，再把有效轨迹带回策略学习。\n\n论文在 OSWorld 上评估由 GLM-4-9B-0414 和 GLM-4.1V-9B-Thinking 构建的 Agent，报告 AutoGLM-OS-9B 达到 48.9% 准确率，并称其取得新的基准最好结果；同时开源代码和 OfficeWorld benchmark。这个数字属于论文的模型、任务和执行器设置，不能直接代表所有桌面软件的成功率。\n\nComputerRL 的工程启发比一个分数更实在：桌面 Agent 需要统一的动作接口、可复用的虚拟环境和持续的失败回放。接入真实电脑前，仍要补足权限隔离、敏感信息遮蔽、窗口状态漂移、误点击恢复和人工接管，否则规模化训练只会更快地放大错误。",
+  "publishedAt": "2025-08-19",
+  "eventDate": "2025-08-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/computerrl-computer-use-agents-20250819.svg",
+    "alt": "ComputerRL 用 API-GUI 范式和并行虚拟桌面训练电脑操作 Agent",
+    "sourceUrl": "/images/news/computerrl-computer-use-agents-20250819.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "paper-event",
+      "title": "ComputerRL 同时训练 API 动作和 GUI 操作",
+      "body": "ComputerRL 于 2025 年 8 月 19 日提交 arXiv，针对桌面 Agent 在程序化 API 与图形界面之间切换的难题，提出 API-GUI 范式，并把端到端在线强化学习扩展到大规模虚拟桌面环境。",
+      "kind": "narrative"
+    },
+    {
+      "id": "api-gui",
+      "title": "精确的 API 和人类软件界面不必二选一",
+      "body": "Agent 可以在同一任务里使用 API 的结构化调用，也可以根据视觉反馈完成点击、拖拽和窗口操作。统一范式解决的是动作接口不一致，不代表模型已经理解所有软件。",
+      "kind": "comparison"
+    },
+    {
+      "id": "virtual-scale",
+      "title": "数千个并行虚拟桌面让失败轨迹也能被收集",
+      "body": "论文搭建分布式强化学习基础设施，调度数千个并行虚拟桌面，缓解单环境运行慢、重置成本高的问题。更多环境带来更多探索，也要求更严格的状态清理和日志管理。",
+      "kind": "technical"
+    },
+    {
+      "id": "entropulse",
+      "title": "Entropulse 用交替训练缓解长程熵坍塌",
+      "body": "作者在在线强化学习和监督微调之间交替训练，试图避免长训练把策略压缩到少数熟悉路径。监督轨迹帮助恢复行为多样性，强化学习再把有效路径变成策略改进。",
+      "kind": "technical"
+    },
+    {
+      "id": "osworld-result",
+      "title": "OSWorld 上报告 48.9%，代码和 OfficeWorld 同步开源",
+      "body": "作者在 OSWorld 上评估 GLM-4-9B-0414 和 GLM-4.1V-9B-Thinking，报告 AutoGLM-OS-9B 达到 48.9% 准确率并取得基准最好结果，同时发布代码和 OfficeWorld benchmark。",
+      "kind": "example"
+    },
+    {
+      "id": "desktop-boundary",
+      "title": "规模化训练前，真实桌面还要补上接管和恢复",
+      "body": "真实软件会出现权限弹窗、窗口状态漂移、敏感信息和误点击。上线前需要权限隔离、数据遮蔽、错误恢复和人工接管，论文 benchmark 分数不能替代这些验收。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "桌面 Agent 怎样从虚拟任务走到真实操作？",
+    "question": "当 Agent 既要调用 API 又要点击界面，训练系统怎样让它稳定探索而不重复犯错？",
+    "steps": [
+      {
+        "label": "准备虚拟桌面",
+        "detail": "为应用、文件和账号建立可重置环境，记录每个任务的初始状态和权限范围。",
+        "evidence": "ComputerRL orchestrates thousands of parallel virtual desktop environments"
+      },
+      {
+        "label": "统一 API 与 GUI 动作",
+        "detail": "让 Agent 在结构化 API、鼠标键盘和视觉反馈之间选择，并记录动作来源。",
+        "evidence": "The API-GUI paradigm unifies programmatic API calls and direct GUI interaction"
+      },
+      {
+        "label": "并行收集轨迹",
+        "detail": "让多个环境同时执行任务，保留成功、失败、重试和窗口状态变化，避免只训练单一路径。",
+        "evidence": "The distributed infrastructure supports large-scale online RL"
+      },
+      {
+        "label": "交替更新策略",
+        "detail": "在在线强化学习和监督微调之间交替，缓解长训练中的熵坍塌和探索变窄。",
+        "evidence": "Entropulse alternates reinforcement learning with supervised fine-tuning"
+      },
+      {
+        "label": "基准后再人工接管",
+        "detail": "先在 OSWorld、OfficeWorld 和自己的应用回归集上测，再给高风险窗口保留人工接管与恢复路径。",
+        "evidence": "The paper reports OSWorld results and releases OfficeWorld benchmark"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Hanyu Lai 等",
+    "url": "https://arxiv.org/abs/2508.14040"
+  },
+  "relatedSlugs": [
+    "agent",
+    "benchmark",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.14040",
+      "claim": "ComputerRL 用 API-GUI 范式统一程序化 API 和 GUI 操作，搭建可并行运行数千个虚拟桌面的分布式在线强化学习基础设施。",
+      "excerpt": "API-GUI paradigm ... distributed RL infrastructure capable of orchestrating thousands of parallel virtual desktop environments"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.14040",
+      "claim": "作者提出交替强化学习和监督微调的 Entropulse，并在 OSWorld 上报告 AutoGLM-OS-9B 48.9% 准确率；代码和 OfficeWorld benchmark 开源。",
+      "excerpt": "Entropulse ... AutoGLM-OS-9B achieves ... 48.9% ... code and the new OfficeWorld benchmark"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.14040",
+  "sourceHash": "sha256:8c0894c75d4fcfc4eff77b15ba8c7366eaec73a9c85e4e646a643a55b7ab9379",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕桌面操作 Agent 的动作接口、训练环境和人工接管展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.92,
+      "evidence": [
+        "正文保留 OSWorld、OfficeWorld 和 48.9% 结果，并限定为论文实验。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文把 API、GUI、鼠标键盘和虚拟桌面作为 Agent 的工具边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文强调基准、失败轨迹、状态清理和真实应用回归。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 19 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.14040",
+      "claim": "ComputerRL 于 2025 年 8 月 19 日提交，摘要给出 API-GUI、并行虚拟桌面、Entropulse、OSWorld 48.9% 及 OfficeWorld 开源。",
+      "excerpt": "Submitted on 19 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的 API-GUI 范式、数千虚拟桌面、Entropulse、OSWorld 48.9% 和 OfficeWorld 开源；正文把 benchmark 结果限定在论文设置，补充真实桌面权限、敏感信息和接管边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：按论文摘要保留 API-GUI、并行虚拟环境、Entropulse、OSWorld 48.9% 与 OfficeWorld，未把 benchmark 成绩外推到所有桌面软件；补足权限隔离、敏感信息遮蔽、错误恢复和人工接管。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-19-computerrl"
+}

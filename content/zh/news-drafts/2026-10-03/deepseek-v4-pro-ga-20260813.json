@@ -1,0 +1,141 @@
+{
+  "slug": "deepseek-v4-pro-ga-20260813",
+  "title": "DeepSeek 正式发布 V4 Pro：Agent 能力与 Responses API 同步更新",
+  "summary": "8 月 13 日，DeepSeek 在更新日志中确认 V4 Pro GA 已在 App、Web 和 API 上线，Reuters 也报道了这次正式发布。官方列出多项 Agent 评测提升，并加入原生 OpenAI Responses API 支持；这些分数仍是厂商自报结果，生产效果要结合任务和调用方式单独验证。",
+  "body": "DeepSeek 在 8 月 13 日的 API 更新日志中确认，V4 Pro 的 GA（正式可用版本）已经在 App、Web 和 API 上线。Reuters 同日报道了正式发布，并把它放在 DeepSeek 扩大产品和开发者业务的动作中。API 调用方式没有被整体改写，开发者按文档把模型名设为 deepseek-v4-pro 即可请求新版本。\n\n这次发布把重点放在 Agent（能调用工具完成多步任务的 AI 模型）上。DeepSeek 公布的结果包括 Terminal Bench 2.1 得分 87.9、DeepSWE 得分 62.7，以及其他工具使用和长流程测试。数字能说明公司希望模型承担更长的任务链，但它们来自 DeepSeek 自己的评测说明，测试提示、工具配置和对照模型会影响结果，不能直接当成所有项目的实际成功率。\n\nV4 Pro 还加入原生 OpenAI Responses API（支持多轮对话和工具调用的接口）支持。对已经使用这套接口的开发者来说，模型可以沿用熟悉的多步工具调用结构，不必为了试用 V4 Pro 另写一套协议。网页和 App 侧则提供了可调的推理工作量，让简单请求少花时间，复杂 Agent 任务再增加思考预算。\n\n这条新闻和 8 月 16 日的价格更新需要分开看。8 月 13 日确认的是模型 GA、接口和 Agent 能力；新的峰谷定价在后续公告中才给出生效时间。把两件事合写，会让读者误以为模型上线当天已经按新价格计费。\n\nV4 Pro 的意义落在使用方式的变化：开发者可以把它放进编排器、终端工具和代码代理，测试它在真实任务中能否少停顿、少返工。官方分数是选择模型的线索，日志、失败重试和总成本才是部署决定所需的证据。",
+  "publishedAt": "2026-08-13",
+  "eventDate": "2026-08-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepseek-v4-pro-ga-20260813.svg",
+    "alt": "DeepSeek 正式发布 V4 Pro：Agent 能力与 Responses API 同步更新 的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/deepseek-v4-pro-ga-20260813.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "ga-release",
+      "title": "这次确认的是 GA 上线",
+      "body": "DeepSeek 更新日志写明 V4 Pro 已在 App、Web 和 API 可用；这里的 GA 指正式可用版本。API 模型名为 deepseek-v4-pro，发布日与后续价格调整需要分别记录。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agent-scores",
+      "title": "评测分数说明产品方向",
+      "body": "官方列出 Terminal Bench 2.1、DeepSWE、AutomationBench 等 Agent（能调用工具完成多步任务的 AI 模型）评测结果。它们是 DeepSeek 的测试口径，不能替代独立复测或具体业务的成功率。",
+      "kind": "technical"
+    },
+    {
+      "id": "responses",
+      "title": "Responses API 减少了接入改造",
+      "body": "原生支持 OpenAI Responses API，意味着已经采用该协议的应用可以沿用消息、工具和多轮执行的组织方式，再把模型切换到 V4 Pro。",
+      "kind": "example"
+    },
+    {
+      "id": "reasoning",
+      "title": "推理工作量成为可调参数",
+      "body": "简单问题可以使用较低的推理工作量，复杂 Agent 任务再提高预算。这样做会影响速度、token 消耗和结果稳定性，需要在实际任务上测量。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "厂商分数与生产结果之间还有一段距离",
+      "body": "真实效果取决于提示、工具定义、上下文长度、失败重试和数据权限。选型时应保留调用日志，并把模型能力与 API 成本一起比较。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "模型发布后，Agent 调用链会改变什么？",
+    "question": "同一个任务换成 V4 Pro，应用需要重新写一遍吗？",
+    "steps": [
+      {
+        "label": "选择模型名",
+        "detail": "API 请求把模型设置为 deepseek-v4-pro，沿用 DeepSeek API 的基础接入方式。",
+        "evidence": "DeepSeek API 更新日志"
+      },
+      {
+        "label": "保留 Responses API",
+        "detail": "原生 Responses API 支持让已有的消息与工具调用结构可以继续使用。",
+        "evidence": "DeepSeek API 更新日志"
+      },
+      {
+        "label": "调整推理预算",
+        "detail": "简单任务使用较低预算，长流程或代码代理再提高推理工作量，速度和 token 成本随之变化。",
+        "evidence": "DeepSeek API 更新日志"
+      },
+      {
+        "label": "用真实任务复测",
+        "detail": "检查工具调用是否完成、失败是否需要重试，再把耗时和费用与旧模型比较。",
+        "evidence": "DeepSeek 官方评测说明"
+      }
+    ]
+  },
+  "source": {
+    "name": "Reuters（Investing.com）",
+    "url": "https://www.investing.com/news/economy-news/deepseek-releases-official-v4-pro-model-as-it-steps-up-expansion-4857986"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "tools",
+    "benchmark",
+    "api",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/news/news260813/",
+      "claim": "DeepSeek 官方中文更新说明记录 2026-08-13 V4 Pro 正式版在 App、网页端和 API 上线，并支持原生 Responses API。",
+      "excerpt": "DeepSeek-V4-Pro 正式版已同步在 APP、网页端和 API 更新上线。"
+    },
+    {
+      "url": "https://www.investing.com/news/economy-news/deepseek-releases-official-v4-pro-model-as-it-steps-up-expansion-4857986",
+      "claim": "Reuters 报道 DeepSeek 于 8 月 13 日正式发布 V4 Pro，并将其放在公司扩大业务的背景中。",
+      "excerpt": "DeepSeek releases official V4 Pro model as it steps up expansion"
+    }
+  ],
+  "canonicalUrl": "https://www.investing.com/news/economy-news/deepseek-releases-official-v4-pro-model-as-it-steps-up-expansion-4857986",
+  "sourceHash": "sha256:47ec99fad2c199f0f752df5021f793dd0872982fef49f492ef12295aa046fa81",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:32:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://api-docs.deepseek.com/zh-cn/news/news260813/",
+      "claim": "DeepSeek 官方中文更新说明记录 2026-08-13 V4 Pro 正式版在 App、网页端和 API 上线，并支持原生 Responses API。",
+      "excerpt": "DeepSeek-V4-Pro 正式版已同步在 APP、网页端和 API 更新上线。"
+    },
+    {
+      "url": "https://www.investing.com/news/economy-news/deepseek-releases-official-v4-pro-model-as-it-steps-up-expansion-4857986",
+      "claim": "Reuters 报道 DeepSeek 于 8 月 13 日正式发布 V4 Pro，并将其放在公司扩大业务的背景中。",
+      "excerpt": "DeepSeek releases official V4 Pro model as it steps up expansion"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:32:00Z",
+    "method": "source",
+    "notes": "按事件发生日核对官方公告与可信新闻，区分公司口径、新闻报道和尚未确认的部分。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:32:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 做事实先行、去宣传腔和去模板化审校；保留来源边界与公司自报数据。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T14:40:00Z",
+    "questions": [],
+    "notes": "GA、Agent、Responses API 已首次解释；官方评测与生产效果边界清楚，来源、日期、词条、解释器和 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-13",
+  "promotedAt": "2026-10-03T14:39:09.257Z"
+}

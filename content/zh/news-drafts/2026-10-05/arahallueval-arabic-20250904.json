@@ -1,0 +1,199 @@
+{
+  "slug": "arahallueval-arabic-20250904",
+  "title": "AraHalluEval：把阿拉伯语 LLM 幻觉拆成 12 个细指标",
+  "summary": "AraHalluEval 论文于 9 月 4 日提交，针对幻觉研究过度集中在英语的问题，首次系统评测阿拉伯语和多语 LLM 在生成式问答与摘要任务上的事实一致性和忠实性。研究覆盖 12 个模型（4 个阿拉伯语预训练模型、4 个多语模型、4 个推理模型），提出 12 个细粒度幻觉指标；结果显示，事实性幻觉在所有模型和任务中都比忠实性错误更常见，阿拉伯语模型 Allam 的幻觉率持续低于多语模型，并与推理模型表现相当。",
+  "body": "“这个回答有幻觉吗？”在英语里已经很难回答，换到阿拉伯语，问题会再多一层：语言资源、方言、知识覆盖和评测习惯都不同。只把英语基准翻译一下，可能测到的是翻译质量，未必是模型有没有忠实地使用证据。AraHalluEval 试图把这块空白变成可拆分、可比较的评测。\n\n研究覆盖两类常见生成任务：生成式问答和摘要。它评测 12 个 LLM，分成 4 个阿拉伯语预训练模型、4 个多语模型和 4 个推理模型，再为两类任务设计 12 个细粒度幻觉指标。这样做的好处，是不把“答错事实”和“没有忠实复述给定材料”混成一个总分；读者可以看到模型到底是在知识层面编造，还是在引用输入时走样。\n\n论文的主要发现很明确：在所有模型和任务中，事实性幻觉比忠实性错误更常见。事实性幻觉指模型说出了与可核对事实不符的内容；忠实性错误则更接近“输入材料明明写了 A，摘要却把它改成 B”。两者都需要修复，但防护手段不完全相同，前者需要更强的来源和不确定性处理，后者要检查模型怎样压缩和重述输入。\n\n模型分组也带来一个有用对照。论文报告，阿拉伯语预训练模型 Allam 持续呈现更低的幻觉率，并且在这组任务上与推理模型表现相当。这不意味着 Allam 在所有阿拉伯语任务、所有领域都更可靠，也不意味着“推理”这个标签本身会自动降低幻觉；结论只覆盖论文设计的任务和指标。\n\n细粒度指标还有一个工程意义：评测结果可以直接对应回归用例。比如问答模型需要单独测实体、数字、关系和范围是否被改变；摘要模型要检查是否加入输入没有支持的新事实、是否把不确定表述写成确定结论。指标越清楚，团队越容易知道要补数据、改提示、换检索，还是先把答案交给人工。\n\n多语模型的比较尤其需要保留语言和数据来源。阿拉伯语书写变体、领域术语、标注者背景和任务分布都会影响幻觉统计；不同模型的 tokenizer、预训练语料和推理预算也不一样。把 12 个指标压成一个排行榜，会掩盖这些差异。更稳妥的报告方式是给出分任务、分模型组和分错误类型的结果，并附上可复核样例。\n\nAraHalluEval 补齐的是评测视角，不是幻觉的终点答案。它提醒我们，语言覆盖范围扩大以后，可靠性也要跟着细化；只有把事实性、忠实性和语言特定的错误分开记录，模型的“会说”才不会被误认为“说得有根据”。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/arahallueval-arabic-20250904.svg",
+    "alt": "AraHalluEval 在阿拉伯语问答和摘要中拆分事实性与忠实性幻觉",
+    "sourceUrl": "/images/news/arahallueval-arabic-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "language-gap",
+      "title": "英语基准不能直接代表阿拉伯语幻觉",
+      "body": "语言资源、方言、知识覆盖和标注习惯都会改变评测结果，翻译题目不等于建立本地化基准。",
+      "kind": "narrative"
+    },
+    {
+      "id": "tasks-models",
+      "title": "两类任务、12 个模型组成对照",
+      "body": "AraHalluEval 覆盖生成式问答和摘要，比较 4 个阿拉伯语预训练、4 个多语和 4 个推理模型。",
+      "kind": "technical"
+    },
+    {
+      "id": "twelve-indicators",
+      "title": "12 个细指标把幻觉拆成可回归错误",
+      "body": "框架区分事实性幻觉与忠实性错误，避免一个总分掩盖模型是在编造事实还是改写输入。",
+      "kind": "comparison"
+    },
+    {
+      "id": "allam-result",
+      "title": "Allam 的幻觉率低于多语模型，并与推理模型相当",
+      "body": "这是论文任务与指标范围内的结果，不是跨领域、跨语言或所有模型版本的普遍排名。",
+      "kind": "example"
+    },
+    {
+      "id": "error-to-test",
+      "title": "指标可以直接变成问答和摘要回归用例",
+      "body": "实体、数字、关系、范围和不确定表述都能单独检查，结果更容易连接到数据、提示和检索修复。",
+      "kind": "technical"
+    },
+    {
+      "id": "language-boundary",
+      "title": "语言变体和模型配置要一起报告",
+      "body": "书写变体、领域术语、tokenizer、预训练语料和推理预算都会影响统计，排行榜不能替代分项结果。",
+      "kind": "boundary"
+    },
+    {
+      "id": "coverage",
+      "title": "补齐评测空白，不等于解决所有幻觉",
+      "body": "本地化、细粒度、可复核的错误记录，才让“会说”与“有根据”之间的差距变得可见。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "AraHalluEval 怎样把阿拉伯语幻觉拆开看？",
+    "question": "在问答和摘要中分别检查事实是否正确、输入是否被忠实使用，再按模型组和错误类型报告。",
+    "steps": [
+      {
+        "label": "准备本地化任务",
+        "detail": "收集阿拉伯语生成式问答和摘要样本，保留语言变体、领域和可核对事实。",
+        "evidence": "Arabic GQA and summarization tasks"
+      },
+      {
+        "label": "按模型组运行",
+        "detail": "比较 4 个阿拉伯语预训练、4 个多语和 4 个推理模型，记录版本与推理配置。",
+        "evidence": "12 LLMs across three groups"
+      },
+      {
+        "label": "标记 12 类错误",
+        "detail": "分别判断事实性幻觉和忠实性错误，保存实体、数字、关系、范围等可复核样例。",
+        "evidence": "12 fine-grained hallucination indicators"
+      },
+      {
+        "label": "分任务分析差异",
+        "detail": "对照问答与摘要，查看错误来自知识缺口、输入改写还是不确定表述被过度确定化。",
+        "evidence": "factual consistency and faithfulness"
+      },
+      {
+        "label": "转成回归与人工复核",
+        "detail": "把高频错误加入回归集，保留语言特定样例，必要时让母语者或领域人员复核。",
+        "evidence": "fine-grained hallucination evaluation framework"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.04656"
+  },
+  "relatedSlugs": [
+    "llm",
+    "hallucination",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.04656",
+      "claim": "AraHalluEval 评测阿拉伯语和多语 LLM 的生成式问答、摘要，并覆盖 12 个模型和 12 个细粒度幻觉指标。",
+      "excerpt": "first comprehensive hallucination evaluation ... two ... tasks ... total of 12 LLMs ... 12 fine-grained hallucination indicators"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04656",
+      "claim": "论文报告事实性幻觉在所有模型和任务中更常见，Allam 的幻觉率低于多语模型且与推理模型表现相当。",
+      "excerpt": "factual hallucinations are more prevalent ... Allam consistently demonstrates lower hallucination rates ... comparative performance with reasoning-based models"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.04656",
+  "sourceHash": "sha256:41851736034ba80a8ae1e3f619011fbc85310e289b2fbc9a6b805c587c9c655e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文比较阿拉伯语预训练、多语和推理 LLM 的幻觉表现。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.99,
+      "evidence": [
+        "正文以事实性幻觉、忠实性错误和 12 个细粒度指标组织评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留 GQA、摘要、模型分组、样例回归和人工复核的评测流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.98,
+      "evidence": [
+        "AraHalluEval 作为本地化幻觉评测框架和可复用基准被介绍。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.04656",
+      "claim": "arXiv 记录 AraHalluEval 于 2025 年 9 月 4 日提交，研究阿拉伯语 LLM 幻觉。",
+      "excerpt": "Submitted on 4 Sep 2025 ... AraHalluEval"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04656",
+      "claim": "摘要给出 12 个模型、12 个指标、事实性幻觉更常见及 Allam 对照结果。",
+      "excerpt": "12 LLMs ... 12 fine-grained hallucination indicators ... factual hallucinations ... Allam"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 AraHalluEval 的语言范围、GQA/摘要任务、12 个模型、12 个指标、事实性幻觉结论和 Allam 对照；正文补充语言变体、模型配置、分项报告和母语者复核边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把论文的 12 个模型、12 个指标、两类任务和 Allam 结果逐项对应，保留语言与任务范围限制；补充可复核样例、回归集、语言变体和人工复核边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-arahallueval-arabic-20250904"
+}

@@ -1,0 +1,197 @@
+{
+  "slug": "openai-gpt-live-realtime-voice-20260803",
+  "title": "OpenAI 公开 GPT-Live 工程细节：全双工语音把等待压到一轮网络往返",
+  "summary": "OpenAI 在 2026 年 8 月 3 日公开 GPT-Live 的连续语音工程，称第三代全双工系统可以在用户说话时继续听、说和调用工具。公司介绍了 WebRTC、WARP、Instant Connect 和异步推理路径，并称启动过程从六次网络往返降到一次；这些是 OpenAI 的工程说明，不等于公开了完整模型或 API。",
+  "body": "8 月 3 日，OpenAI 发布工程文章介绍 GPT-Live 的连续语音系统。它想解决的不是“把文字换成声音”，而是让模型在用户还没说完时继续听，在合适的时机插话、暂停、调用工具，再把结果自然地带回对话。OpenAI 将这套能力称为第三代全双工语音交互。\n\n传统语音助手常常把对话切成“用户说完—系统识别—模型回答—合成声音”四段，任何一步延迟都会让人感觉系统没有在听。GPT-Live 把语音流、模型推理和媒体传输拆成不同路径：实时路径负责保持声音连续，异步路径负责更深的推理和工具调用。这样，模型可以先保持对话节奏，再在结果准备好后补上更完整的回答。\n\nOpenAI 介绍的工程组件包括 WebRTC、内部 WARP 传输层和 Instant Connect。公司称，启动一次会话需要的网络往返从六次降到一次；这能减少第一次开口前的等待，但它是服务端架构的测量结果，不意味着所有网络、设备或地区都能得到同样延迟。文章还提到先在影子生产流量中测试，再逐步扩大。\n\n连续语音也会改变安全和可控性的设计。系统需要决定什么时候把背景声音算作输入，什么时候允许插话，工具调用正在进行时用户怎样取消，以及更深的异步推理结果回来后是否仍然符合当前话题。OpenAI 的文章主要讲工程路线，尚未把 GPT-Live API 的完整能力、价格和可用范围作为本次发布的一部分。\n\n这条新闻的实际意义在交互节奏：语音模型不再只是“等待一句完整指令再回答”，而是把理解、说话、推理和工具执行叠在同一段时间里。对开发者来说，真正要复现的不是一张延迟宣传图，而是中断、取消、弱网、权限和错误回传这些完整状态。",
+  "publishedAt": "2026-08-03",
+  "eventDate": "2026-08-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-gpt-live-realtime-voice-20260803.svg",
+    "alt": "OpenAI 公开 GPT-Live 工程细节：全双工语音把等待压到一轮网络往返 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/openai-gpt-live-realtime-voice-20260803.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "problem",
+      "title": "连续语音要解决的是等待和打断",
+      "body": "全双工系统允许模型在用户说话时继续听和处理，而不是等完整回合结束再开始下一步。",
+      "kind": "narrative"
+    },
+    {
+      "id": "architecture",
+      "title": "实时媒体和深度推理分成两条路径",
+      "body": "实时路径保持声音连续，异步路径处理更重的推理和工具调用，结果准备好后再回到对话。",
+      "kind": "technical"
+    },
+    {
+      "id": "latency",
+      "title": "六次往返降到一次是工程测量",
+      "body": "OpenAI 用 WebRTC、WARP 和 Instant Connect 减少启动网络往返；这个数字取决于服务和网络条件。",
+      "kind": "boundary"
+    },
+    {
+      "id": "interruptions",
+      "title": "全双工带来新的取消与权限问题",
+      "body": "插话、背景声、工具调用取消和异步结果过期，都要在产品层明确处理。",
+      "kind": "comparison"
+    },
+    {
+      "id": "availability",
+      "title": "工程文章没有公布完整 API 计划",
+      "body": "文章介绍系统重建和影子流量测试，不能据此推断全部 GPT-Live 能力已经对外开放。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "全双工语音怎样把一次对话拆成并行路径？",
+    "question": "把声音、模型推理和工具结果放在同一条时间线上，才能看懂连续交互的变化。",
+    "steps": [
+      {
+        "label": "声音持续进入",
+        "detail": "用户说话时，系统持续接收媒体流，而不是等一次完整录音结束。",
+        "evidence": "OpenAI engineering"
+      },
+      {
+        "label": "实时路径先保持节奏",
+        "detail": "低延迟路径负责听、说和判断是否插话，避免对话卡住。",
+        "evidence": "OpenAI engineering"
+      },
+      {
+        "label": "异步路径继续推理",
+        "detail": "更重的推理和工具调用在后台完成，结果随后回到当前话题。",
+        "evidence": "OpenAI engineering"
+      },
+      {
+        "label": "允许取消与复查",
+        "detail": "用户打断或权限变化时，工具调用和异步结果必须能停止或重新确认。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/continuous-voice-interaction-with-gpt-live/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent-loop",
+    "tools",
+    "event",
+    "context-window"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/continuous-voice-interaction-with-gpt-live/",
+      "claim": "OpenAI 介绍 GPT-Live 第三代全双工语音系统，支持同时听、说和处理交互。",
+      "excerpt": "GPT-Live is our third-generation full-duplex voice interaction system."
+    },
+    {
+      "url": "https://openai.com/index/continuous-voice-interaction-with-gpt-live/",
+      "claim": "OpenAI 介绍 WebRTC、WARP、Instant Connect 和实时/异步路径的工程改造。",
+      "excerpt": "We rebuilt inference, context, and media transport to reduce startup and interaction latency."
+    },
+    {
+      "url": "https://openai.com/index/continuous-voice-interaction-with-gpt-live/",
+      "claim": "OpenAI 称启动阶段网络往返从六次减少到一次，并通过影子生产流量测试。",
+      "excerpt": "Startup went from six network round trips to one in our shadow production tests."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/continuous-voice-interaction-with-gpt-live/",
+  "sourceHash": "sha256:7776105d4eab0bd6036f8c9d7f0fe718807a3b843534253e7c74b30b2224e9e9",
+  "status": "published",
+  "discoveredAt": "2026-10-04T10:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 llm 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent-loop 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 tools 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 context-window 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/continuous-voice-interaction-with-gpt-live/",
+      "claim": "GPT-Live 的文章是工程说明，不是完整产品价格或 API 发布公告。",
+      "excerpt": "We are continuing to develop GPT-Live and plan to bring these capabilities to the API in the future."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T10:30:00Z",
+    "method": "source",
+    "notes": "按官方公告、监管机构披露、政府文件和可信新闻核对事件日、报道日、发布状态与事实边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T10:30:00Z",
+    "notes": "逐篇手写正文，按 write-like-me 与 humanizer-zh 检查表达；区分官方事实、公司自述、监管披露、媒体报道和未确认信息。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T10:50:00Z",
+    "questions": [
+      "新闻主线优先于论文和技术背景，正文按事件组织段落并适合零基础读者。",
+      "eventDate 与 publishedAt 与原始公告、诉讼文件或媒体报道日期一致。",
+      "来源卡片保留原始链接，并区分官方事实、公司自述、媒体转述、监管材料和未确认信息。",
+      "sections、explainer 与 SVG 和正文一致，词条联动只使用正文解释过的概念。"
+    ],
+    "notes": "按工程文章说明连续语音、实时/异步路径和延迟测量，未推断完整 API 已开放。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-03",
+  "fingerprint": "sha256:d0082cb12c52f2a9348f700023d2e51aab4b2e8db8448c099eb07bd557c9d631",
+  "promotedAt": "2026-10-03T20:59:57.708Z"
+}

@@ -1,0 +1,155 @@
+{
+  "slug": "meta-muse-voice-transcribe-20260901",
+  "title": "Meta 发布 Muse Voice Transcribe：让实时语音成为代理的输入层",
+  "summary": "2026-09-01，Meta 发布 Muse Voice Transcribe，提供流式语音识别、多人说话人分离和端点判断，已接入 Meta Model API、Meta AI for Mac 与 Muse Code。25 种以上语言、80 毫秒音频块和长音频能力属于官方产品说明，真实口音、噪声和隐私表现仍需验证。",
+  "body": "Meta 在 2026 年 9 月 1 日发布 Muse Voice Transcribe，把 Muse Superintelligence Labs 的首个实时音频感知模型放进 Meta Model API、Meta AI for Mac 和 Muse Code。它不是又一个“把录音上传后再转文字”的批处理服务，而是围绕流式识别、多人说话人分离和实时端点判断设计，目标是在对话还没有结束时就把语音变成可用上下文。\n\n官方列出的能力包括 25 种以上验证语言、自然切换语言、关键词和上下文偏置、80 毫秒音频块、可调延迟、超过一小时的音频和 20 个以上说话人。对零基础读者来说，endpointing 就是判断“这一轮话说完了吗”，diarization 则是区分“现在是谁在说”。它们决定语音代理什么时候回应、把哪句话交给哪位参与者，而不只是转写是否正确。\n\nMeta 还把模型接进了产品入口：开发者可以通过 API 使用，Mac 端 Meta AI 可以实时处理语音，Muse Code 则能把语音作为编程输入。实时能力的代价是系统必须持续处理音频流、控制延迟并在识别不确定时保持谨慎。发布页的语言覆盖和延迟指标属于 Meta 的产品说明，不能直接等同于所有口音、噪声环境和多人会议都能达到同样效果。\n\n这条新闻的意义在于，AI 代理的“上下文”开始从文字扩展到持续的声音流。一个语音代理如果能知道谁在说话、什么时候轮到自己、哪些词需要优先识别，就可以参与会议、编码或辅助操作；但麦克风权限、录音保存、误识别和说话人身份也成为新的授权问题。实时并不意味着可以跳过用户提示或确认。\n\n因此，Muse Voice Transcribe 应读成感知层产品发布：它给代理和应用提供更快的输入，不等于 Meta 已经解决了语音隐私、方言、多人重叠和高风险指令。后续要看 API 的实际延迟、错误恢复和数据保留策略如何落地。",
+  "publishedAt": "2026-09-01",
+  "eventDate": "2026-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meta-muse-voice-transcribe-20260901.svg",
+    "alt": "实时音频流经过语言识别、说话人分离和端点判断，进入代理上下文与应用；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/meta-muse-voice-transcribe-20260901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "stream",
+      "title": "它处理的是持续音频流",
+      "body": "Muse Voice Transcribe 面向流式输入，不是等录音结束再批量处理；80 毫秒音频块和可调延迟服务于实时交互。",
+      "kind": "technical"
+    },
+    {
+      "id": "people",
+      "title": "两项词听起来复杂，其实很具体",
+      "body": "Diarization 是区分不同说话人，endpointing 是判断一轮话何时结束；两者决定代理何时回应、把哪句话归给谁。",
+      "kind": "narrative"
+    },
+    {
+      "id": "language",
+      "title": "语言和上下文偏置是产品边界",
+      "body": "Meta 称支持 25 种以上验证语言、自然 code-switching、关键词和上下文偏置；这些是发布说明，不代表所有口音和噪声环境都同样稳定。",
+      "kind": "comparison"
+    },
+    {
+      "id": "entry",
+      "title": "实时模型已经进入三个入口",
+      "body": "Meta Model API、Meta AI for Mac 和 Muse Code 都可以使用该感知模型，开发者要分别核对权限、费用和数据策略。",
+      "kind": "boundary"
+    },
+    {
+      "id": "privacy",
+      "title": "更快的输入也带来新的授权问题",
+      "body": "麦克风权限、录音保存、说话人身份和高风险语音指令需要单独控制；实时响应不等于可以省略用户提示。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "语音怎样成为代理可以使用的上下文？",
+    "question": "识别语言、区分说话人和判断轮次，才把一段声音变成可操作的输入。",
+    "steps": [
+      {
+        "label": "接收音频块",
+        "detail": "模型连续读取短音频块，先处理延迟和流式传输，而不是等待整段录音。",
+        "evidence": "Meta Voice Transcribe product description"
+      },
+      {
+        "label": "识别语言与文字",
+        "detail": "系统把语音转成文本，并根据关键词和上下文提高特定词的识别优先级。",
+        "evidence": "Meta multilingual and context biasing claims"
+      },
+      {
+        "label": "分开说话人",
+        "detail": "diarization 为不同说话人分配身份线索，避免把多人发言拼成一段。",
+        "evidence": "Meta real-time diarization description"
+      },
+      {
+        "label": "交给代理并请求确认",
+        "detail": "代理根据端点判断开始回应；涉及录音、外部动作或敏感信息时仍需用户授权。",
+        "evidence": "Product entry and privacy boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Meta AI Research",
+    "url": "https://research.meta.ai/blog/introducing-muse-voice-transcribe"
+  },
+  "relatedSlugs": [
+    "context",
+    "agent",
+    "llm",
+    "tools",
+    "data-quality",
+    "citation",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "meta-muse-spark-13-agentic-coding-20260902",
+    "google-gemini-38-flash-cyber-release-20260902"
+  ],
+  "sources": [
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-voice-transcribe",
+      "claim": "Meta 于 2026-09-01 发布 Muse Voice Transcribe，说明流式 ASR、实时 diarization、endpointing、25 种以上语言和产品入口。",
+      "excerpt": "Muse Voice Transcribe is Meta Superintelligence Labs’ first real-time audio perception model, with streaming ASR, real-time diarization and endpointing across 25+ languages."
+    },
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-voice-transcribe",
+      "claim": "官方说明模型可处理 80ms 音频块、超过一小时音频和 20 个以上说话人，并提供 keyword/context biasing。",
+      "excerpt": "The model uses 80ms audio chunks, supports more than an hour of audio and 20+ speakers, with keyword and context biasing."
+    },
+    {
+      "url": "https://www.axios.com/2026/09/01/meta-muse-voice-transcribe",
+      "claim": "Axios 交叉报道 Muse Voice Transcribe 进入 Meta Model API、Meta AI for Mac 与 Muse Code。",
+      "excerpt": "Meta debuts Muse Voice Transcribe for real-time audio perception across its API and product surfaces, September 1, 2026。"
+    }
+  ],
+  "canonicalUrl": "https://research.meta.ai/blog/introducing-muse-voice-transcribe",
+  "sourceHash": "sha256:b0fb333744ee591841ce76de59a8d459c8ac60090a62bb27c8b926d815d1b8b2",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-voice-transcribe",
+      "claim": "Meta 于 2026-09-01 发布 Muse Voice Transcribe，说明流式 ASR、实时 diarization、endpointing、25 种以上语言和产品入口。",
+      "excerpt": "Muse Voice Transcribe is Meta Superintelligence Labs’ first real-time audio perception model, with streaming ASR, real-time diarization and endpointing across 25+ languages."
+    },
+    {
+      "url": "https://research.meta.ai/blog/introducing-muse-voice-transcribe",
+      "claim": "官方说明模型可处理 80ms 音频块、超过一小时音频和 20 个以上说话人，并提供 keyword/context biasing。",
+      "excerpt": "The model uses 80ms audio chunks, supports more than an hour of audio and 20+ speakers, with keyword and context biasing."
+    },
+    {
+      "url": "https://www.axios.com/2026/09/01/meta-muse-voice-transcribe",
+      "claim": "Axios 交叉报道 Muse Voice Transcribe 进入 Meta Model API、Meta AI for Mac 与 Muse Code。",
+      "excerpt": "Meta debuts Muse Voice Transcribe for real-time audio perception across its API and product surfaces, September 1, 2026。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:00:00Z",
+    "method": "source",
+    "notes": "核对官方发布页与可信媒体交叉；把价格、护栏、企业数据控制和实时语音能力分别标为官方说明或公司评测。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:00:00Z",
+    "notes": "三篇分别记录模型/企业数据治理/实时语音产品新闻，未把公司指标写成独立验证。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T03:00:05Z",
+    "questions": [],
+    "notes": "通过。事件是 Muse Voice Transcribe 发布，实时流式识别、说话人分离、端点判断、入口与隐私边界分别解释；语言数、80 毫秒块和长音频是公司口径，未写成普遍语音效果。hero、SVG、解释器和相关 Muse 文章一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-01",
+  "promotedAt": "2026-10-03T03:01:53.370Z"
+}

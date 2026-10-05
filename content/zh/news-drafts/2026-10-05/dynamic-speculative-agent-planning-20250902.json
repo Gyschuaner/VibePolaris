@@ -1,0 +1,188 @@
+{
+  "slug": "dynamic-speculative-agent-planning-20250902",
+  "title": "Dynamic Speculative Planning：让 Agent 在速度和成本之间自己调档",
+  "summary": "Dynamic Speculative Planning 论文于 9 月 2 日提交，提出 DSP：一种异步在线强化学习框架，让 Agent 在执行时动态选择更激进或更保守的推测式规划，并用一个参数联合调节端到端延迟与美元成本。论文声称无需预先训练路由器即可实现无损加速；在两个标准 Agent 基准上，效率接近最快的无损加速方法，总成本降低 30%，不必要成本最多降低 60%。",
+  "body": "Agent 的延迟不只来自模型生成 token，还来自它要不要先规划几步、等待工具返回，或在结果不确定时重新计算。为了加速，系统常把一套固定的 speculative 策略提前训练好，但任务难度、工具延迟和用户对成本的容忍度每天都在变化。Dynamic Speculative Planning（DSP）试图把这个选择移到执行过程中。\n\n论文把现有加速路线的取舍总结得很直接：有的方法牺牲表现保速度，有的方法需要离线训练路由模块，有的方法为了加速反而增加运营成本，而且使用者很难指定自己更在意响应时间还是费用。DSP 的目标不是再给出一个固定的最快模式，而是把延迟和美元成本放进同一个可调的目标。\n\nDSP 采用异步在线强化学习，在 Agent 运行时学习哪些规划可以提前做、哪些情况应该收敛或等待反馈。摘要没有展开所有执行细节，但核心边界很清楚：系统在推测和真实动作之间要保持可区分，推测失败时能回到正确路径；“无损加速”指相对于比较的基线不牺牲任务表现，不是说任何任务都不会重算或出错。\n\n框架用一个参数让实践者在更快响应、更低费用和两者之间的点上调档。这个参数的价值在于把隐含的系统决策变成产品选择：客服可以在高峰时优先降低等待，批处理任务可以优先节省调用费。调档前后要记录实际延迟、接受的推测、取消的计划和最终任务结果，不能只看配置名字。\n\n论文在两个标准 Agent 基准上报告，DSP 的效率接近最快的无损加速方法，总成本降低 30%，不必要成本最多降低 60%。这些结果说明在线调节可能比固定路由器更会利用任务差异，但成本数字依赖基准的模型价格、并发和工具假设；换到网络抖动、付费 API 或有副作用的工具，收益需要重新核算。\n\n生产系统尤其要把“推测计划”和“外部动作”分开。提前生成一个下一步计划可以被取消，提前发送邮件、写数据库或下单却不能因为计划看起来合理就自动发生。只有经过授权的动作才能执行，推测过程中读取的上下文也要有范围，出现取消、超时或权限变化时应能停止并恢复。\n\nDSP 的启发是，Agent 加速不是单一的速度竞赛，而是一条带旋钮的运行策略。让系统在线学习怎样在延迟、费用和任务正确性之间移动，同时把推测、取消、授权和结果留下来，才能把“更快”变成可解释、可回退、可预算的生产能力。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/dynamic-speculative-agent-planning-20250902.svg",
+    "alt": "Dynamic Speculative Planning 用在线学习在 Agent 速度和成本之间动态调节",
+    "sourceUrl": "/images/news/dynamic-speculative-agent-planning-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "agent-latency-cost",
+      "title": "Agent 的等待来自模型、规划和工具",
+      "body": "固定的加速策略很难同时适应任务难度、工具延迟和不同用户对费用的容忍度。",
+      "kind": "narrative"
+    },
+    {
+      "id": "tradeoff-landscape",
+      "title": "更快、无损、便宜很少同时成立",
+      "body": "既有方法可能牺牲表现、依赖离线路由器或增加运营成本，使用者也难指定自己更在意什么。",
+      "kind": "technical"
+    },
+    {
+      "id": "dsp-online-rl",
+      "title": "DSP 把规划选择移到执行过程中",
+      "body": "异步在线强化学习动态学习哪些规划可以提前做、何时等待反馈；推测与真实动作保持可区分。",
+      "kind": "technical"
+    },
+    {
+      "id": "control-knob",
+      "title": "一个参数把速度和费用变成产品选择",
+      "body": "高峰请求可以优先低等待，批处理可以优先低费用；调档前后要记录接受、取消和结果。",
+      "kind": "example"
+    },
+    {
+      "id": "reported-cost",
+      "title": "总成本降 30%，不必要成本最多降 60%",
+      "body": "两个标准 Agent 基准上，论文报告效率接近最快的无损加速方法；成本数字仍依赖模型价格、并发和工具假设。",
+      "kind": "comparison"
+    },
+    {
+      "id": "side-effect-boundary",
+      "title": "可取消的推测不能提前执行副作用",
+      "body": "计划可以先生成再取消，发邮件、写数据库或下单仍需单独授权；超时和权限变化要能停止并恢复。",
+      "kind": "boundary"
+    },
+    {
+      "id": "budgeted-acceleration",
+      "title": "把更快变成可解释、可回退的预算策略",
+      "body": "记录推测、取消、授权和最终任务结果，才能知道 Agent 的加速是否真的值得付出系统复杂度。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "DSP 怎样让 Agent 在速度和成本之间调档？",
+    "question": "在执行过程中学习推测力度，用一个旋钮选择延迟、费用和正确性的组合，并隔离副作用。",
+    "steps": [
+      {
+        "label": "观察任务和工具状态",
+        "detail": "记录模型生成、规划深度、工具等待和任务结果，识别当前瓶颈是推理、网络还是重算。",
+        "evidence": "latency and inference cost challenges"
+      },
+      {
+        "label": "在线选择推测力度",
+        "detail": "异步策略决定哪些计划可以先算、哪些要等待真实反馈，并保留可取消的推测状态。",
+        "evidence": "asynchronous online reinforcement learning"
+      },
+      {
+        "label": "调节联合目标",
+        "detail": "用单一参数在更快响应、更低费用和中间点之间切换，把成本偏好暴露给产品配置。",
+        "evidence": "joint objective balancing latency against dollar cost"
+      },
+      {
+        "label": "只执行已授权动作",
+        "detail": "推测计划不能自动发送、写入或下单；外部副作用必须等待单独授权和状态确认。",
+        "evidence": "lossless acceleration with controlled execution"
+      },
+      {
+        "label": "按结果核算收益",
+        "detail": "比较端到端延迟、总成本、不必要成本、取消率和任务正确性，在真实工具负载下重新校准。",
+        "evidence": "30% total cost and up to 60% unnecessary cost reduction"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.01920"
+  },
+  "relatedSlugs": [
+    "agent",
+    "token",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.01920",
+      "claim": "DSP 是异步在线强化学习框架，把 Agent 端到端延迟和美元成本放进可调的联合目标，减少预部署路由准备。",
+      "excerpt": "Dynamic Speculative Planning ... asynchronous online reinforcement learning ... latency against dollar cost"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01920",
+      "claim": "论文在两个标准 Agent 基准上报告效率接近最快无损加速方法，总成本下降 30%，不必要成本最多下降 60%。",
+      "excerpt": "reducing total cost by 30% and unnecessary cost up to 60%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.01920",
+  "sourceHash": "sha256:2bf9ea66d024ac1c5c3c8dc78c9ef09907c4180c60bdb02d8a322f2cac929134",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 Agent 规划、工具等待、推测执行和任务结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.84,
+      "evidence": [
+        "正文把模型生成 token、推理工作量和费用作为加速成本的一部分。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留两个 Agent 基准、延迟、成本、取消率和任务正确性的比较边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.01920",
+      "claim": "arXiv 记录 Dynamic Speculative Planning 于 2025 年 9 月 2 日提交，研究 Agent 推测式规划的延迟和成本权衡。",
+      "excerpt": "Published: 2025-09-02 ... Dynamic Speculative Agent Planning"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01920",
+      "claim": "摘要给出异步在线强化学习、可调联合目标、无损加速和两个基准上的成本下降结果。",
+      "excerpt": "lossless acceleration ... single parameter ... 30% ... up to 60%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 DSP 异步在线 RL、延迟/美元成本联合目标、可调参数、无损加速及 30%/60% 成本摘要结果；正文补充推测与副作用隔离、真实 API 成本、取消恢复和授权边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把推测规划、延迟/费用旋钮、论文成本指标和生产副作用边界分开说明，避免把无损加速写成没有重算或错误；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-dynamic-speculative-agent-planning-20250902"
+}

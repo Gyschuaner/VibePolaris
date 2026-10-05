@@ -1,0 +1,188 @@
+{
+  "slug": "reviewer-counterfactual-eval-20250829",
+  "title": "自动审稿人看不出论文推理漏洞，反事实评测把问题暴露出来",
+  "summary": "一篇于 8 月 29 日提交的研究检查自动审稿人能否识别论文中的错误推理。作者提出反事实评测框架，在控制其他文本条件的情况下，只改变结果、解释和主张之间的逻辑一致性；测试发现，推理是否有漏洞并没有显著改变自动审稿人的评审输出。论文据此给出改进建议，并公开数据集和评测框架。",
+  "body": "自动审稿人最容易让人放心的时刻，是它写出一份结构完整、语气笃定的评审。但评审真正难的部分，不是把摘要改写得像审稿意见，而是发现论文的结果是否真的支持它的解释和主张。8 月 29 日提交的这项研究，专门把这个能力拿出来单测。\n\n作者提出一个反事实评测框架：保留论文表面的写作结构和主题，只对结果、解释与结论之间的逻辑关系做受控改变。这样，评测者可以比较“逻辑成立”和“逻辑有漏洞”的版本，避免模型只是因为文本更长、术语更多或语气更像论文就给出不同评价。\n\n测试对象包括多种自动审稿方案。结果并不是“模型每次都错”，而是更值得警惕：当研究逻辑被改坏时，自动审稿人的评审输出没有显著变化。也就是说，它们可能会指出格式、相关工作或表达问题，却没有稳定地把关键的因果跳跃、证据不足和结论过度外推当成主要缺陷。\n\n这类结果说明，审稿生成和推理核验是两种不同能力。模型可以写得像一位审稿人，却没有真正检查一条主张能否由结果推出。若评测只看评审文字是否完整、是否与人类平均意见相似，就会漏掉这个差距。\n\n反事实设计的价值，是把“看起来合理”变成可检验的对照。它要求评测者提前定义哪些逻辑关系发生了变化、哪些内容必须保持不变，再测输出是否随真正的缺陷同步变化。这种方法也适合检查论文助手、代码评审或事实核查系统。\n\n论文给出三条面向后续研究的建议，并公开数据集和框架。公开材料的意义不在于给自动审稿人一个固定答案，而在于让不同系统面对相同的逻辑对照，比较它们有没有看到同一个问题。\n\n在真实科研流程里，自动审稿人可以帮助整理材料、列出疑点和提出问题，但关键结论仍需要领域专家复核。一个好的评测，不是把人从流程里拿掉，而是先确认系统确实会对逻辑缺陷产生相应的反应，再决定它能承担哪一步。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/reviewer-counterfactual-eval-20250829.svg",
+    "alt": "反事实评测保持论文表面不变，只改变结果、解释和主张之间的逻辑关系",
+    "sourceUrl": "/images/news/reviewer-counterfactual-eval-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "review-surface",
+      "title": "写得像审稿，不等于检查了推理",
+      "body": "评审真正困难的部分，是判断结果能否支持解释与主张，而不是把意见写得完整。",
+      "kind": "narrative"
+    },
+    {
+      "id": "counterfactual-control",
+      "title": "反事实版本只改逻辑关系",
+      "body": "框架保持主题和表面结构，受控改变结果、解释与结论的一致性，避免模型被长度和术语带偏。",
+      "kind": "technical"
+    },
+    {
+      "id": "insensitive-output",
+      "title": "逻辑被改坏，输出却没有显著变化",
+      "body": "研究没有说模型每次都错，而是发现自动评审的整体输出未稳定跟随推理漏洞变化。",
+      "kind": "comparison"
+    },
+    {
+      "id": "capability-gap",
+      "title": "评审生成和推理核验是两种能力",
+      "body": "格式、相关工作和表达问题可能被看见，因果跳跃、证据不足和过度外推却需要专门检查。",
+      "kind": "technical"
+    },
+    {
+      "id": "reusable-eval",
+      "title": "把“看起来合理”变成可对照的测试",
+      "body": "提前固定不变项和逻辑变化项，观察系统是否会对真正缺陷作出相应反应。",
+      "kind": "example"
+    },
+    {
+      "id": "open-artifacts",
+      "title": "公开数据集，让比较可复现",
+      "body": "公开材料不是标准答案，而是让不同自动审稿方案面对相同逻辑对照。",
+      "kind": "aside"
+    },
+    {
+      "id": "expert-boundary",
+      "title": "关键科研判断仍需领域专家",
+      "body": "自动审稿人可以整理疑点和提出问题，但应先证明自己能识别逻辑缺陷，再决定承担哪一步。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样测试自动审稿人真的看懂了论文逻辑？",
+    "question": "构造只改变逻辑关系的反事实对照，检查评审输出是否会随真正的推理缺陷变化。",
+    "steps": [
+      {
+        "label": "固定论文表面",
+        "detail": "保持主题、写作结构和术语尽量不变，避免把长度或风格差异误当成能力差异。",
+        "evidence": "controlled counterfactual evaluation framework"
+      },
+      {
+        "label": "改变逻辑关系",
+        "detail": "分别构造结果支持解释、结果不支持解释等版本，让缺陷位置可追踪。",
+        "evidence": "internal consistency between results, interpretations, and claims"
+      },
+      {
+        "label": "运行自动评审",
+        "detail": "让不同审稿方案独立生成评审，保存它们指出的缺陷、理由和结论。",
+        "evidence": "fully automatic review generators"
+      },
+      {
+        "label": "比较输出变化",
+        "detail": "检查逻辑被破坏时评审是否同步改变，而不是只看文字是否像一份审稿意见。",
+        "evidence": "flaws in research logic have no significant effect on output reviews"
+      },
+      {
+        "label": "交给专家复核",
+        "detail": "把自动系统定位为整理疑点和提问工具，关键科研判断仍由领域专家确认。",
+        "evidence": "actionable recommendations for future work"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.21422"
+  },
+  "relatedSlugs": [
+    "eval",
+    "benchmark",
+    "llm",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.21422",
+      "claim": "论文提出反事实评测框架，控制论文表面条件、隔离结果与解释之间的逻辑能力。",
+      "excerpt": "A New Counterfactual Evaluation Framework ... detecting faulty research logic"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21422",
+      "claim": "测试发现研究逻辑漏洞没有显著改变自动审稿人的输出，并公开数据集和框架。",
+      "excerpt": "flaws in research logic have no significant effect on their output reviews"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.21422",
+  "sourceHash": "sha256:1e808298c6cbd0299f7cd0e61093e8a7402ffacc0bc54773187a8cf46e310d2f",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕反事实评测、逻辑缺陷和输出敏感性展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.96,
+      "evidence": [
+        "正文说明公开数据集和可复现的逻辑对照框架。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文讨论自动审稿方案和 LLM 的评审能力边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.21422",
+      "claim": "arXiv 记录该反事实评测研究于 2025 年 8 月 29 日提交，关注自动审稿人识别研究逻辑漏洞的能力。",
+      "excerpt": "Date: Fri Aug 29 ... Automatic Reviewers Fail to Detect Faulty Reasoning in Research Papers"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21422",
+      "claim": "摘要说明逻辑漏洞对自动审稿输出没有显著影响，并公开数据集和框架。",
+      "excerpt": "flaws in research logic have no significant effect ... release our counterfactual dataset and evaluation framework"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对反事实控制、结果/解释/主张的一致性测试、自动评审输出不敏感和公开数据集；正文把自动评审定位为疑点整理工具，保留领域专家边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把研究结论限定为对逻辑缺陷的不敏感，解释反事实评测为何有用，并保留专家复核边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-reviewer-counterfactual-eval-20250829"
+}

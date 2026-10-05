@@ -1,0 +1,199 @@
+{
+  "slug": "mobilerag-mobile-agent-20250904",
+  "title": "MobileRAG：给手机 Agent 补上检索、环境交互和记忆",
+  "summary": "MobileRAG 论文于 9 月 4 日提交，针对手机 Agent 在长序列操作中的三个缺口：过度依赖语言模型理解、遇到应用能力不足就中止、每次指令都要重新认识界面且无法吸取错误教训。框架把 InterRAG、LocalRAG、MemRAG 组合进手机任务流程，并发布 MobileRAG-Eval；论文称在需要外部知识的真实复杂任务上，相比现有方法提升 10.3%，同时用了更少的操作步骤。",
+  "body": "手机 Agent 最难的地方，往往不是点一下按钮，而是把一句自然语言变成一串不会走偏的动作：先找到正确入口，再判断页面是否真的完成，遇到应用没有提供某个功能时还要换路。只靠语言模型临场理解，容易漏步骤、误操作，也容易在一个应用答不上来时直接结束。\n\nMobileRAG 把这个问题拆成三个缺口。第一，Agent 需要从外部资料或当前设备内容里找到可用信息；第二，它要能够和环境继续交互，而不是把一个应用的限制当成任务的终点；第三，过去执行过什么、哪里出过错，应该能成为下一次的参考。论文因此没有只换一个模型，而是把检索增强放进手机 Agent 的工作流。\n\n框架包含 InterRAG、LocalRAG 和 MemRAG 三个模块。论文摘要没有把它们描述成一个万能记忆库，而是把不同来源的检索能力接到任务执行上：Agent 先识别用户意图，再补齐完成长序列操作所需的知识和上下文。这样做的核心变化，是让“下一步怎么点”不再完全依赖当前窗口里的一次猜测。\n\n为了测真实难度，作者发布 MobileRAG-Eval，任务包含大量需要外部知识的复杂手机操作。论文报告，MobileRAG 在这个基准上相对现有方法提升 10.3%，而且完成任务所需的操作步骤更少。这里的提升是论文实验条件下的相对结果，不代表每一类手机、应用或权限配置都会有同样表现；少走步骤也不等于每一步都更安全。\n\n落地时，检索结果不应直接变成点击指令。一个稳妥的流程是把外部内容、当前页面、历史轨迹和模型计划分开记录，执行前检查应用状态与权限，执行后再确认页面变化是否符合预期。涉及支付、删除、发消息或提交表单等不可逆动作时，仍需要明确授权和人工确认，不能因为 Agent 有了记忆就跳过这一步。\n\n记忆也有自己的风险。把上一次的错误操作存下来，可能让同一个错误在新界面里重复；把旧权限、旧商品状态或旧联系人当成当前事实，也会造成越权或误发。MemRAG 这类能力需要配合过期时间、来源和任务范围，记录“这条经验在什么条件下成立”，而不是只保留一句看起来有用的总结。\n\nMobileRAG 的价值，是把手机 Agent 从一次性对话推进到带检索和反馈的任务系统；它没有消除界面变化、权限限制和模型误判。真正上线前，还要在不同系统版本、网络状态、应用更新和异常中断下做回归，保存检索证据、操作轨迹和用户确认。Agent 能继续做事固然重要，但知道什么时候停下来并把控制权交还给人，同样是完成任务的一部分。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mobilerag-mobile-agent-20250904.svg",
+    "alt": "MobileRAG 将手机 Agent 的检索、环境交互和记忆接入长序列任务",
+    "sourceUrl": "/images/news/mobilerag-mobile-agent-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "mobile-agent-gaps",
+      "title": "手机 Agent 卡住，常常不只是模型不够聪明",
+      "body": "漏步骤、误操作、无法继续和每次重新识别界面，是长序列手机任务里的三个实际缺口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "rag-workflow",
+      "title": "MobileRAG 把检索放进任务执行流程",
+      "body": "InterRAG、LocalRAG、MemRAG 共同补充外部知识、设备内容和历史上下文，让下一步不只靠一次窗口理解。",
+      "kind": "technical"
+    },
+    {
+      "id": "mobilerag-eval",
+      "title": "MobileRAG-Eval 直接测复杂真实手机任务",
+      "body": "论文称需要外部知识的任务上相对现有方法提升 10.3%，并减少操作步骤；这是论文基准结果，不是所有设备的保证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "state-check",
+      "title": "检索内容不能直接变成点击指令",
+      "body": "执行前检查页面和权限，执行后确认状态变化；支付、删除、发消息等不可逆动作仍需授权。",
+      "kind": "boundary"
+    },
+    {
+      "id": "memory-scope",
+      "title": "记忆要带条件、来源和过期时间",
+      "body": "旧界面、旧权限和旧联系人可能让历史经验失效，MemRAG 类能力需要限制任务范围并保留来源。",
+      "kind": "example"
+    },
+    {
+      "id": "regression-mobile",
+      "title": "系统版本和应用更新会改变任务路径",
+      "body": "上线前要覆盖网络中断、应用更新和异常恢复，保存检索证据、操作轨迹和用户确认记录。",
+      "kind": "technical"
+    },
+    {
+      "id": "stop-control",
+      "title": "知道什么时候停下来也是完成任务",
+      "body": "检索增强提高连续操作能力，却不能替代权限边界、人工确认和把控制权交还给人的机制。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "MobileRAG 怎样让手机 Agent 少走弯路？",
+    "question": "先找齐任务需要的知识和上下文，再执行、确认和记忆，并把高风险动作留在授权边界内。",
+    "steps": [
+      {
+        "label": "识别任务与环境",
+        "detail": "解析用户目标，读取当前应用、页面状态和可用权限，先确认任务是否可执行。",
+        "evidence": "complex or repetitive mobile operations"
+      },
+      {
+        "label": "补充外部与本地信息",
+        "detail": "通过 InterRAG、LocalRAG、MemRAG 获取任务所需的知识、设备内容和历史上下文。",
+        "evidence": "InterRAG, LocalRAG, and MemRAG"
+      },
+      {
+        "label": "生成短而可检查的计划",
+        "detail": "把长序列操作拆成带前置条件的步骤，每一步都保留当前页面和预计结果。",
+        "evidence": "long-sequence mobile tasks"
+      },
+      {
+        "label": "执行后确认状态",
+        "detail": "动作完成后检查页面变化、错误提示和权限状态，异常时回退或请求用户接管。",
+        "evidence": "fewer operational steps on MobileRAG-Eval"
+      },
+      {
+        "label": "带条件保存经验",
+        "detail": "只保存来源清楚、仍然有效且属于当前任务范围的经验，并在下次执行前重新核对。",
+        "evidence": "mobile agents lack memory capabilities"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03891"
+  },
+  "relatedSlugs": [
+    "agent",
+    "rag",
+    "memory",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03891",
+      "claim": "MobileRAG 针对手机 Agent 的误操作、无法继续和缺少记忆问题，组合 InterRAG、LocalRAG、MemRAG。",
+      "excerpt": "misoperations or omitted steps ... lack interaction with the external environment ... lack memory capabilities ... InterRAG, LocalRAG, and MemRAG"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03891",
+      "claim": "MobileRAG-Eval 的复杂真实手机任务实验报告相对现有方法提升 10.3%，并使用更少操作步骤。",
+      "excerpt": "MobileRAG-Eval ... 10.3% improvement over state-of-the-art methods with fewer operational steps"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03891",
+  "sourceHash": "sha256:ea50801d02e4c53346644cc658780ed0e986fa7fa556a592e29d2f6bc2894c16",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论手机 Agent 的意图识别、长序列操作和异常接管。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文介绍 InterRAG、LocalRAG、MemRAG 和检索增强任务流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.98,
+      "evidence": [
+        "正文讨论手机 Agent 的历史经验、MemRAG、来源和过期范围。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.97,
+      "evidence": [
+        "正文保留 MobileRAG-Eval 复杂真实任务基准和 10.3% 对比结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03891",
+      "claim": "arXiv 记录 MobileRAG 于 2025 年 9 月 4 日提交，面向手机 Agent 长序列任务。",
+      "excerpt": "Submitted on 4 Sep 2025 ... MobileRAG: Enhancing Mobile Agent with Retrieval-Augmented Generation"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03891",
+      "claim": "摘要给出三个 RAG 模块、MobileRAG-Eval 和 10.3% 提升。",
+      "excerpt": "InterRAG, LocalRAG, and MemRAG ... MobileRAG-Eval ... 10.3% improvement"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 MobileRAG 提交日期、手机 Agent 的三类缺口、InterRAG/LocalRAG/MemRAG、MobileRAG-Eval 和 10.3% 对比结果；正文补充状态确认、权限授权、记忆范围和异常回退边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把手机 Agent 的检索、环境交互和记忆缺口与论文明确的三个模块、MobileRAG-Eval 和 10.3% 结果对应，避免把基准提升写成普遍保证；补充权限、不可逆动作和记忆过期边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-mobilerag-mobile-agent-20250904"
+}

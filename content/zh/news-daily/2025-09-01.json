@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-09-01",
+  "eventDate": "2025-09-01",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-09-01 AI 事件重新检索：以当天 arXiv 提交/版本更新为主，按工具 Agent 训练、RAG 解码、开放世界知识图谱、深度研究评测、校准拒答、记忆验证和多 Agent 网页安全排序；逐篇写作并复核。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202509010000 TO 202509012359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CR)",
+      "https://arxiv.org/abs/2509.01055",
+      "https://arxiv.org/abs/2509.01092",
+      "https://arxiv.org/abs/2509.01238",
+      "https://arxiv.org/abs/2509.01396",
+      "https://arxiv.org/abs/2509.01455",
+      "https://arxiv.org/abs/2509.01514",
+      "https://arxiv.org/abs/2509.01211",
+      "https://arxiv.org/abs/2509.01052",
+      "https://arxiv.org/abs/2509.01245",
+      "https://arxiv.org/abs/2509.01271",
+      "https://arxiv.org/abs/2509.01560",
+      "https://arxiv.org/abs/2509.01790"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "verltool-agentic-rl-tools-20250901",
+      "title": "VerlTool：把多轮工具 Agent 的训练基础设施统一起来",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01055"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01055",
+      "sourceHash": "sha256:2685fb0ca7a8a586ee5870937b8981d8c961bc564eb471cc7f90b882f8ede3cd",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01055",
+          "claim": "VerlTool 对齐 VeRL，统一代码执行、搜索、SQL 和视觉工具的管理，用异步 rollout 减少同步瓶颈并在六个工具 Agent 领域评测；插件架构只需轻量 Python 定义即可接入工具。",
+          "excerpt": "unified tool management ... asynchronous rollout ... 6 ARLT domains"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "refrag-efficient-rag-decoding-20250901",
+      "title": "REFRAG：RAG 解码不必把所有检索段落都塞进每一轮计算",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01092"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01092",
+      "sourceHash": "sha256:eaa2b8939ec42f5f84fdd768ec87afc6c1e33fec5df7b801d4787036023d3bdf",
+      "relatedSlugs": [
+        "rag",
+        "context-window",
+        "token",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01092",
+          "claim": "REFRAG 观察到 RAG 长上下文中很多检索段落与当前查询关系弱，提出压缩、感知和扩展的解码框架；报告首 token 时间加速 30.85 倍、上下文长度扩展 16 倍且不损失困惑度。",
+          "excerpt": "30.85 time-to-first-token acceleration ... extend context size by 16"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "anchorrag-open-world-20250901",
+      "title": "AnchorRAG：没有现成实体锚点，也能让多 Agent 并行探索知识图谱",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01238"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01238",
+      "sourceHash": "sha256:f029a9b359267ace14ce71f3b843d6e5293463eabba94b2f72e683ff63577def",
+      "relatedSlugs": [
+        "agent",
+        "rag",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01238",
+          "claim": "AnchorRAG 用预测 Agent 从用户查询动态找候选锚点，再让多个检索 Agent 并行多跳探索，监督 Agent 迭代安排检索并合成知识路径；在四个公开基准上提升开放世界 RAG。",
+          "excerpt": "predictor agent ... parallel multi-hop explorations ... four public benchmarks"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "deepresearch-arena-20250901",
+      "title": "DeepResearch Arena：用学术研讨会问题给研究 Agent 做一次真考试",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01396"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01396",
+      "sourceHash": "sha256:8f22a749e155cd1c2d3d5bf43dca851f59f5bccf8dcfa38a140275582456eb7a",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01396",
+          "claim": "DeepResearch Arena 从 200 多场学术研讨会生成超过 1 万个、覆盖 12 个学科的研究任务，保留任务灵感到题目形成的可追溯过程；评测显示当前研究 Agent 之间存在明显差距。",
+          "excerpt": "over 10,000 high-quality research tasks ... over 200 academic seminars ... 12 disciplines"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "unicr-trusted-uncertainty-20250901",
+      "title": "UniCR：把不确定性变成可校准的拒答预算",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01455"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01455",
+      "sourceHash": "sha256:b4732a049f119dbec9e23573c72cd4f32c0dab8899c98871033a086d5b1f6039",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "authorization",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01455",
+          "claim": "UniCR 融合序列似然、自一致性、检索兼容性和工具/验证器反馈，校准正确概率并按用户错误预算拒答；对长文还用原子事实性降低自信幻觉，支持黑箱模型和分布漂移。",
+          "excerpt": "evidence fusion to calibrated probability to risk-controlled decision"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "meve-memory-verification-20250901",
+      "title": "MeVe：RAG 先验证记忆，再决定哪些内容进入上下文",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01514"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01514",
+      "sourceHash": "sha256:48559d55b58f5447f72f7aba268b34ae71740cd3f8af4c1acd8960571cf54fc6",
+      "relatedSlugs": [
+        "rag",
+        "context",
+        "context-window",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01514",
+          "claim": "MeVe 将 RAG 拆成初始检索、相关性验证、回退检索、上下文优先级和 token 预算五个可审计阶段；在 Wikipedia 和 HotpotQA 上分别减少 57% 和 75% 上下文。",
+          "excerpt": "five-phase modular design ... 57% ... 75% reduction"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "web-fraud-multiagent-security-20250901",
+      "title": "网页链接也能成为多 Agent 系统的攻击面",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01211"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01211",
+      "sourceHash": "sha256:52135bac34d226572efba6cc86c994c8a671fa6c1b4cbb957e8f03f752a0e0b5",
+      "relatedSlugs": [
+        "agent",
+        "mcp",
+        "prompt",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01211",
+          "claim": "研究提出针对 LLM 多 Agent 系统的 Web Fraud Attacks，说明恶意链接结构会诱导系统信任错误目标；正文只讨论链接校验、来源隔离和授权防守，不复述攻击构造。",
+          "excerpt": "Web Fraud Attacks Against LLM-Driven Multi-Agent Systems"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按 Agent 工作流、证据/拒答边界、评测代表性和可核查性排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "flashadventure-gui-benchmark-20250901",
+      "title": "FlashAdventure：让 GUI Agent 记住线索，走完完整故事线",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01052"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01052",
+      "sourceHash": "sha256:da48adb672b853f6c311dc3ef2d7ed711fc60f91d5a2b660169054c7d8df373e",
+      "relatedSlugs": [
+        "agent",
+        "memory",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01052",
+          "claim": "FlashAdventure 用 34 个 Flash 冒险游戏评测 GUI Agent 是否能走完完整故事线，提出 CUA-as-a-Judge 和带长期线索记忆的 COAST；暂缓至后续篇幅。",
+          "excerpt": "34 Flash-based adventure games ... long-term clue memory"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "schedcp-agentic-os-20250901",
+      "title": "SchedCP：让 Agent 在验证后为 Linux 调度器合成策略",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01245"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01245",
+      "sourceHash": "sha256:210e45f23ec7c6af0afdce386a10b3e8e59c0720f8e3280f17eb4e08a133b0d2",
+      "relatedSlugs": [
+        "agent",
+        "mcp",
+        "execution-sandbox",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01245",
+          "claim": "SchedCP 用 MCP 把 Linux 调度器优化拆为目标推断、策略合成和执行验证，报告最高 1.79 倍性能与 13 倍成本改善；暂缓至后续篇幅。",
+          "excerpt": "up to 1.79x performance improvement ... 13x cost reduction"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "attack-investigation-llm-20250901",
+      "title": "用威胁知识库和 LLM 重建多阶段攻击链",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01271"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01271",
+      "sourceHash": "sha256:b7f423dc53d1636bdf70dbb3e9c53faf3f606b9ffad64feeacae27212ff79976",
+      "relatedSlugs": [
+        "agent",
+        "rag",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01271",
+          "claim": "威胁知识增强的 LLM 框架在 15 个攻击场景、430 万日志事件上迭代重建攻击链，报告 TPR 97.1%、FPR 0.2%；暂缓至后续篇幅。",
+          "excerpt": "15 attack scenarios ... 4.3M log events ... 97.1% TPR"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "in-n-out-api-graphs-20250901",
+      "title": "In-N-Out：把 API 文档变成工具 Agent 能检索的参数图",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01560"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01560",
+      "sourceHash": "sha256:e058c8c12007cd7282ffecbcc80d77342f269d6bc5f575dbbcb1fc0b96748c43",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "api",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01560",
+          "claim": "In-N-Out 用 API 依赖图帮助工具 Agent 识别调用顺序和参数关系，工具检索和多工具查询几乎翻倍；暂缓至后续篇幅。",
+          "excerpt": "parameter-level API graph ... nearly doubling"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "prompt-sensitivity-eval-20250901",
+      "title": "提示敏感性有多大，可能取决于你怎么评分",
+      "eventDate": "2025-09-01",
+      "publishedAt": "2025-09-01",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.01790"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.01790",
+      "sourceHash": "sha256:0c84e274a53a911af336891dd5785cd351b23ea15a1ef6ae43442f991025fe75",
+      "relatedSlugs": [
+        "llm",
+        "prompt",
+        "eval",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.01790",
+          "claim": "研究比较 7 个 LLM、6 个基准和 12 个提示模板，发现部分提示敏感性来自僵硬评分；LLM-as-a-Judge 可降低方差，但评估者自身也需校准；暂缓至后续篇幅。",
+          "excerpt": "7 LLMs ... 6 benchmarks ... 12 prompt templates"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    }
+  ],
+  "selectedSlugs": [
+    "verltool-agentic-rl-tools-20250901",
+    "refrag-efficient-rag-decoding-20250901",
+    "anchorrag-open-world-20250901",
+    "deepresearch-arena-20250901",
+    "unicr-trusted-uncertainty-20250901",
+    "meve-memory-verification-20250901",
+    "web-fraud-multiagent-security-20250901"
+  ],
+  "gap": null
+}

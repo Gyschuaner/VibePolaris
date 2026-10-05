@@ -1,0 +1,233 @@
+{
+  "slug": "kiro-spec-driven-ide-20250714",
+  "title": "AWS 推出 Kiro：把 AI 编程从“先生成再补文档”改成规格驱动流程",
+  "summary": "Kiro 以 specs、任务链和 hooks 组织 AI 编程，从需求澄清一路连接到代码与检查；产品处于预览阶段，权限、测试和上线责任仍由团队负责。",
+  "body": "7 月 14 日，Kiro 官方宣布这款新的 AI IDE 进入预览。它把“写一句提示就让模型生成代码”的体验，往前接上需求、设计、任务和检查这几步：先把模糊的想法写成可审阅的规格，再让代理按任务执行。Kiro 自己把这条路线称为 spec-driven development（规格驱动开发）。\n\nKiro 的 specs 不是一份模型内部看完就丢掉的提示词。官方演示中，一句“给商品加评论系统”会先被拆成用户故事和 EARS 格式的验收条件，随后生成技术设计、数据流图、接口、数据库结构和 API 端点，最后列出有依赖顺序的实现任务。读者可以先检查这些中间产物，再让代理逐项执行。这样做的价值是把模型的假设摆到桌面上，而不是等代码写完才发现需求理解错了。\n\nKiro 还提供 hooks。它们是事件驱动的自动化规则：保存 React 组件时更新测试文件，修改 API 时刷新文档，提交前扫描凭据泄露，都可以由一个 hook 触发后台代理任务。这里的“后台”不等于代理拥有无限权限；团队仍需要决定它能读哪些目录、能调用哪些工具，以及哪些结果必须人工确认。\n\nKiro 也支持 MCP、项目级 steering rules 和 agentic chat，并基于 Code OSS，预览版可在 Mac、Windows 和 Linux 上使用。官方同时写明预览期免费但有限制，需要排队或按入口申请。于是这次新闻应理解为一种开发流程和产品方向的公开亮相，而不是“AI 已经能独立交付任何生产系统”的证明。\n\n对团队来说，最值得观察的不是它会不会多生成一段代码，而是规格、任务、执行记录能否在代码变化后保持同步。规格写得越清楚，代理越容易被检查；但权限、测试、审计和上线责任仍然在开发团队手里。",
+  "publishedAt": "2025-07-14",
+  "eventDate": "2025-07-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/kiro-spec-driven-ide-20250714.svg",
+    "alt": "Kiro 用规格、任务和事件钩子把 AI 编程从原型连接到生产",
+    "sourceUrl": "/images/news/kiro-spec-driven-ide-20250714.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "spec-first",
+      "title": "先把提示词变成可审阅的规格",
+      "body": "Kiro 把一句功能描述拆成用户故事、验收条件、技术设计和任务列表，先让人检查“要做什么”，再让代理开始写代码。",
+      "kind": "comparison"
+    },
+    {
+      "id": "task-chain",
+      "title": "任务链让代理的每一步有出处",
+      "body": "任务会链接回需求和设计，并带上测试、加载状态、响应式和可访问性要求；它把遗漏暴露在实现之前。",
+      "kind": "technical"
+    },
+    {
+      "id": "hooks-events",
+      "title": "Hooks 把重复检查接到文件事件",
+      "body": "保存、创建或删除文件都可以触发后台任务，常见用法是更新测试、文档或安全扫描。",
+      "kind": "technical"
+    },
+    {
+      "id": "mcp-context",
+      "title": "MCP 和 steering rules 扩展项目上下文",
+      "body": "Kiro 支持把外部工具接入开发环境，也允许用规则约束代理如何理解项目；这些连接仍受项目权限和配置控制。",
+      "kind": "technical"
+    },
+    {
+      "id": "preview-boundary",
+      "title": "预览版展示路线，不等于生产保证",
+      "body": "当前是预览产品，功能、限制和可用范围会变化；规格和执行记录有帮助，但不能替代测试、代码审查和发布责任。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "从一句需求到可审阅的代码变更",
+    "question": "Kiro 把代理工作拆成哪些中间步骤，才能让人知道它在做什么？",
+    "steps": [
+      {
+        "label": "写下需求",
+        "detail": "用一句自然语言描述功能，但先不让代理直接改完整代码。",
+        "evidence": "Kiro specs"
+      },
+      {
+        "label": "生成验收条件",
+        "detail": "把用户故事和边界条件写成可检查的要求，让模糊处先暴露出来。",
+        "evidence": "EARS acceptance criteria"
+      },
+      {
+        "label": "形成技术设计",
+        "detail": "根据代码库和已批准的规格生成接口、数据流和结构设计。",
+        "evidence": "Kiro design specs"
+      },
+      {
+        "label": "拆分执行任务",
+        "detail": "按依赖顺序生成任务和测试要求，人可以逐项触发并查看 diff。",
+        "evidence": "Kiro task workflow"
+      },
+      {
+        "label": "事件后复核",
+        "detail": "用 hooks 做重复检查，最后仍由开发者审阅权限、测试和变更。",
+        "evidence": "Kiro hooks"
+      }
+    ]
+  },
+  "source": {
+    "name": "Kiro",
+    "url": "https://kiro.dev/blog/introducing-kiro/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "tools",
+    "context",
+    "mcp",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/blog/introducing-kiro/",
+      "claim": "Kiro 官方页面标注 2025 年 7 月 14 日，宣布 Kiro 是一款从原型到生产的 agentic IDE，并把 spec-driven development 作为核心定位。",
+      "excerpt": "Kiro, Introducing Kiro, July 14, 2025."
+    },
+    {
+      "url": "https://kiro.dev/docs/specs/",
+      "claim": "Kiro 文档保留 specs 的使用说明，支持把需求、设计和任务拆成可审阅的开发工件。",
+      "excerpt": "Kiro documentation, Specs."
+    },
+    {
+      "url": "https://kiro.dev/docs/hooks/",
+      "claim": "Kiro 文档说明 hooks 可以在保存、创建或删除文件等事件发生时触发后台代理任务。",
+      "excerpt": "Kiro documentation, Hooks."
+    },
+    {
+      "url": "https://kiro.dev/docs/mcp/",
+      "claim": "Kiro 文档说明其支持 MCP，用来连接项目外部的工具和服务。",
+      "excerpt": "Kiro documentation, MCP."
+    }
+  ],
+  "canonicalUrl": "https://kiro.dev/blog/introducing-kiro/",
+  "sourceHash": "sha256:cd92690ee962356950c5c59a161e865de77917ab63fbfea0aa4e0ccec2e45d3d",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:36:05Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 Kiro 如何让代理执行一组连续的软件开发任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.9,
+      "evidence": [
+        "正文把 specs、hooks 和执行记录作为代理工作边界来说明。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 MCP 和 hooks 如何连接外部工具或事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文说明 specs 保留需求与代码库上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.9,
+      "evidence": [
+        "正文明确提到 Kiro 的 MCP 支持。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 hooks 由保存和文件事件触发。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://kiro.dev/blog/introducing-kiro/",
+      "claim": "Kiro 官方页面标注 2025 年 7 月 14 日，宣布 Kiro 是一款从原型到生产的 agentic IDE，并把 spec-driven development 作为核心定位。",
+      "excerpt": "Kiro, Introducing Kiro, July 14, 2025."
+    },
+    {
+      "url": "https://kiro.dev/docs/specs/",
+      "claim": "Kiro 文档保留 specs 的使用说明，支持把需求、设计和任务拆成可审阅的开发工件。",
+      "excerpt": "Kiro documentation, Specs."
+    },
+    {
+      "url": "https://kiro.dev/docs/hooks/",
+      "claim": "Kiro 文档说明 hooks 可以在保存、创建或删除文件等事件发生时触发后台代理任务。",
+      "excerpt": "Kiro documentation, Hooks."
+    },
+    {
+      "url": "https://kiro.dev/docs/mcp/",
+      "claim": "Kiro 文档说明其支持 MCP，用来连接项目外部的工具和服务。",
+      "excerpt": "Kiro documentation, MCP."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:36:05Z",
+    "method": "source",
+    "notes": "已核对 Kiro 官方公告与 specs、hooks、MCP 文档；正文区分产品预览、流程能力和仍需人工承担的权限与上线责任。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T17:36:05Z",
+    "notes": "按 2025-07-14 事件日核对 Kiro 官方发布与文档，等待 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T15:00:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，六篇按各自事件组织，未见明显模板化或 AI 腔。",
+      "eventDate/publishedAt 均为 2025-07-14，与官方公告、社交媒体或媒体报道日期一致。",
+      "Kiro 预览、DoD 合同上限、Cognition/Windsurf 收购、H20 许可证申请、Meta 数据中心规划和 Grok companions 产品均区分计划/上限/测试/交付、公司口径和独立事实边界。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：六篇事实、来源归属和计划与已落地边界清楚。无需修改正文。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-14",
+  "fingerprint": "sha256:cd92690ee962356950c5c59a161e865de77917ab63fbfea0aa4e0ccec2e45d3d",
+  "promotedAt": "2026-10-04T17:48:26.259Z"
+}

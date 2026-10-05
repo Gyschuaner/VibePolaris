@@ -1,0 +1,224 @@
+{
+  "slug": "google-ai-mode-connected-apps-20260716",
+  "title": "Google AI Mode 开始连接应用：从回答问题走到把清单放进购物车",
+  "summary": "Google 于 2026 年 7 月 16 日宣布，美国用户的 Search AI Mode 开始逐步接入第三方应用。连接 Instacart 后可以把购物清单放进购物车并跳转结账，连接 Canva 可以查看模板，连接 YouTube Music 可以生成并保存播放列表。用户需要主动开启服务，首批合作并不等于搜索代理可以自由操作所有应用。",
+  "body": "7 月 16 日，Google 把“连接应用”从 Gemini 应用继续推到 Search 的 AI Mode。首批美国 rollout 的例子很具体：用户在规划烧烤时，可以让 AI Mode 把食材放进 Instacart 购物车并在其应用或网站完成结账；做传单时可以让 Canva 返回模板；想准备聚会音乐时，可以让 YouTube Music 生成并保存播放列表。\n\n这些动作和普通搜索的差别在于，答案不再停在文字里。AI Mode 先理解用户的目标，再调用已经连接的服务完成一段外部操作。对零基础读者来说，可以把它看成“搜索结果旁边多了一组经过授权的工具”，工具能做什么取决于合作方提供的接口，不能从“连接应用”推导出无限权限。\n\nGoogle 的表述反复强调 securely link 和用户主动开启。连接之前，用户需要选择要启用的服务；当前公告也只列出 Instacart、Canva 和 YouTube Music，更多合作方还在后续计划中。结账、保存播放列表等动作仍会回到合作应用或网站，说明 AI Mode 负责组织意图和调用，交易与账户责任仍在原服务一侧。\n\n这是一种很轻的代理化入口。它让人看到“工具调用”为什么比单纯的问答更有用，也让权限边界变得更现实：连接了哪个账户、允许执行哪一步、最后由谁确认，都会影响结果。即使 Google 使用了“securely”这样的产品语言，读者仍应把它理解成产品承诺，而不是独立安全审计结论。\n\n从新闻价值看，Google 并没有宣布一个全能的后台代理，而是先把少量高频动作接入搜索。这种小范围合作能否扩展到更多服务，取决于应用接口、授权与撤销机制，也取决于用户是否愿意让搜索入口替自己完成下一步。",
+  "publishedAt": "2026-07-16",
+  "eventDate": "2026-07-16",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-ai-mode-connected-apps-20260716.svg",
+    "alt": "Google AI Mode 开始连接应用：从回答问题走到把清单放进购物车 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/google-ai-mode-connected-apps-20260716.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-connected",
+      "title": "AI Mode 连接的不是“整个互联网”",
+      "body": "Google 先把少量合作应用接入 Search：Instacart 购物车、Canva 模板和 YouTube Music 播放列表是公告列出的首批例子。",
+      "kind": "narrative"
+    },
+    {
+      "id": "from-answer-to-action",
+      "title": "从答案到动作，中间多了一次工具调用",
+      "body": "AI Mode 负责理解目标并把信息传给已连接服务，结账和账号操作仍回到 Instacart 等原应用完成。",
+      "kind": "technical"
+    },
+    {
+      "id": "user-choice",
+      "title": "用户要先打开连接",
+      "body": "连接应用是用户主动开启的设置，不是搜索自动获得的隐形权限；连接了哪个账号决定了代理能看到什么。",
+      "kind": "boundary"
+    },
+    {
+      "id": "three-launch-examples",
+      "title": "三个例子对应三种外部动作",
+      "body": "购物是把条目写入购物车，设计是读取模板选项，音乐是生成并保存播放列表；它们不是同一种权限。",
+      "kind": "comparison"
+    },
+    {
+      "id": "rollout-boundary",
+      "title": "首发范围和安全说法都要保留原边界",
+      "body": "公告说功能从美国开始逐步 rollout，并称连接过程安全；这属于产品说明，不能当成第三方安全审计或全量开放的证明。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次“连接应用”的 AI Mode 请求怎样落到外部服务？",
+    "question": "把目标、授权、工具和确认拆开，才能看懂搜索代理实际替用户做了哪一步。",
+    "steps": [
+      {
+        "label": "说出目标",
+        "detail": "用户在 AI Mode 里描述购物、设计或音乐需求，模型先理解想完成的结果。",
+        "evidence": "Google Search Blog"
+      },
+      {
+        "label": "选择连接服务",
+        "detail": "用户主动启用 Instacart、Canva 或 YouTube Music 等服务，授权关系从这里开始。",
+        "evidence": "Google Search Blog"
+      },
+      {
+        "label": "调用对应工具",
+        "detail": "AI Mode 把结构化意图交给合作应用，只使用该应用公开支持的动作。",
+        "evidence": "Google Search Blog"
+      },
+      {
+        "label": "回到原应用确认",
+        "detail": "购物车、模板和播放列表在原服务中呈现，结账或保存等后续仍由原账号和界面负责。",
+        "evidence": "Google Search Blog"
+      },
+      {
+        "label": "检查范围",
+        "detail": "首发是美国逐步 rollout，更多应用和更高权限仍要等待后续公告。",
+        "evidence": "事实边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Blog / Search",
+    "url": "https://blog.google/products-and-platforms/products/search/connected-apps/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "authorization",
+    "context",
+    "event",
+    "citation"
+  ],
+  "relatedArticleSlugs": [
+    "google-home-mcp-ai-agents-20260916"
+  ],
+  "sources": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/connected-apps/",
+      "claim": "Google Search 7 月 16 日宣布 AI Mode 在美国逐步支持连接 Instacart、Canva 和 YouTube Music。",
+      "excerpt": "Starting to roll out this week in the U.S., you can securely link and interact with some of your go-to services right in AI Mode."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/16/googles-ai-mode-now-lets-you-link-and-interact-with-select-apps/",
+      "claim": "TechCrunch 同日报道首批应用和连接应用的产品背景。",
+      "excerpt": "At launch, supported apps include Instacart, Canva, and YouTube."
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+      "claim": "Google I/O 2026 的 Search 公告提供 Personal Intelligence、连接应用与用户选择控制的前序背景。",
+      "excerpt": "You’re always in control — you choose if and when you want to connect apps like Gmail and Google Photos."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/products-and-platforms/products/search/connected-apps/",
+  "sourceHash": "sha256:db0e4d8db0eccebf2bfd5c0d89354abf80e8fc245b09a9bc2fb17c856666421d",
+  "status": "published",
+  "discoveredAt": "2026-10-04T08:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文明确解释 agent 与本条新闻的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文明确解释 tools 与本条新闻的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.92,
+      "evidence": [
+        "正文明确解释 authorization 与本条新闻的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.92,
+      "evidence": [
+        "正文明确解释 context 与本条新闻的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.92,
+      "evidence": [
+        "正文明确解释 event 与本条新闻的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.92,
+      "evidence": [
+        "正文明确解释 citation 与本条新闻的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/connected-apps/",
+      "claim": "Google Search 7 月 16 日宣布 AI Mode 在美国逐步支持连接 Instacart、Canva 和 YouTube Music。",
+      "excerpt": "Starting to roll out this week in the U.S., you can securely link and interact with some of your go-to services right in AI Mode."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/16/googles-ai-mode-now-lets-you-link-and-interact-with-select-apps/",
+      "claim": "TechCrunch 同日报道首批应用和连接应用的产品背景。",
+      "excerpt": "At launch, supported apps include Instacart, Canva, and YouTube."
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+      "claim": "Google I/O 2026 的 Search 公告提供 Personal Intelligence、连接应用与用户选择控制的前序背景。",
+      "excerpt": "You’re always in control — you choose if and when you want to connect apps like Gmail and Google Photos."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T08:30:00Z",
+    "method": "source",
+    "notes": "以 Google Search 官方公告核对 rollout 地区、首批应用和用户主动连接；TechCrunch 只作交叉报道，正文没有把产品安全宣传写成独立审计结果。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T08:30:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 逐篇手写，先把官方事实、媒体转述与未落地计划分开，等待 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T07:50:00Z",
+    "questions": [
+      "新闻主线优先，正文按各自事件组织，适合零基础读者且未见模板套写或明显 AI 腔。",
+      "eventDate/publishedAt 均为 2026-07-16，且 rollout、计划、现场展示和公告日期边界清楚。",
+      "官方事实、厂商计划、媒体/第三方数据和未执行承诺已分层：DARPA 的人在回路、Google 的账号/年龄/地区限制、Meta 的人工复核与隐私边界、NVIDIA 的 140MW/配置规划、Databricks 的 term sheet/媒体融资额均未被越界表述。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：六篇新闻事实、数字口径、安全边界和不确定性表达清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-16",
+  "promotedAt": "2026-10-04T04:37:47.989Z"
+}

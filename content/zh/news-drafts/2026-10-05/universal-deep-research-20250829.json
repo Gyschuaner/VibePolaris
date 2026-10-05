@@ -1,0 +1,199 @@
+{
+  "slug": "universal-deep-research-20250829",
+  "title": "Universal Deep Research：研究 Agent 的策略可以由用户自己编排",
+  "summary": "Universal Deep Research（UDR）论文于 8 月 29 日提交，针对深度研究 Agent 往往把模型、工具和研究流程写死的问题，提出一个允许用户自定义研究策略的通用系统。用户可以为任意语言模型创建、编辑和细化策略，不需要额外训练或微调；论文用简洁、扩展和密集三种示例策略配合界面展示这种可编排性。",
+  "body": "深度研究 Agent 通常给人一种“按下按钮就开始”的体验，但按钮背后的研究策略往往已经被写死：先搜索几轮、再读网页、最后汇总。这样的流程容易上手，却不一定适合所有问题。查一个定义、做一份竞品表和准备一份带来源的长报告，需要的工具数量、检索深度和复核方式都不同。\n\nUniversal Deep Research 的出发点，是把研究策略从系统内部拿出来。用户可以创建、编辑和细化一套策略，再把它交给任意语言模型执行，不需要重新训练或微调模型。模型负责按策略完成任务，策略本身负责说明先做什么、何时继续搜索、怎样整理结果。\n\n论文给出三种示例：简洁策略追求快速回答，扩展策略增加更多检索与交叉检查，密集策略则允许更长的研究过程。重点不是哪种策略永远最好，而是用户可以根据问题的成本、时限和证据要求切换。一个研究流程因而不再是单一 Agent 的固定性格，而是一组可调整的工作参数。\n\n这种可编排性也让研究过程更容易解释。用户可以看到策略规定的搜索次数、工具选择、停止条件和输出格式，复盘时能知道报告为什么花了这么久、引用为什么只有这些。相比只给一个“研究完成”的按钮，策略文件更像一份可检查的工作说明。\n\n但把策略交给用户，不等于结果自动可靠。策略仍需要来源核对、冲突处理和引用回链；模型可以按照流程认真地搜索，也可能在错误网页上反复循环。工具权限、预算和超时要在策略之外设硬边界，避免一套密集策略无限调用外部服务。\n\n对团队协作来说，策略还可以版本化。研究者可以保存一套适合政策梳理的流程，产品团队维护另一套适合竞品追踪的流程，再用同一组评测问题比较它们的覆盖、成本和错误。没有这些记录，“可自定义”很容易变成每个人各自调提示词，难以复现。\n\nUDR 的价值不是承诺某个模型会自动完成所有研究，而是把研究 Agent 的流程控制权交给使用者。策略可见、可改、可复用之后，深度研究才更像一项可以讨论和改进的工作，而不是一个无法解释的黑箱按钮。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/universal-deep-research-20250829.svg",
+    "alt": "Universal Deep Research 让用户编辑不同强度的深度研究策略并交给模型执行",
+    "sourceUrl": "/images/news/universal-deep-research-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "fixed-research-loop",
+      "title": "研究 Agent 的流程常常被写死",
+      "body": "定义查询、竞品表和长报告需要不同的检索深度与复核方式，单一固定流程很难都合适。",
+      "kind": "narrative"
+    },
+    {
+      "id": "strategy-as-artifact",
+      "title": "UDR 把策略从系统里拿出来",
+      "body": "用户可以创建、编辑和细化研究策略，再交给任意语言模型执行，不需要重新训练或微调。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-intensities",
+      "title": "简洁、扩展、密集是三种起点",
+      "body": "三种示例策略对应不同的时间、证据和成本要求，重点是可切换和可改，而不是固定一种最好。",
+      "kind": "comparison"
+    },
+    {
+      "id": "visible-controls",
+      "title": "搜索次数和停止条件变得可见",
+      "body": "策略说明工具选择、预算、停止条件和输出格式，复盘时能解释研究为什么这样走。",
+      "kind": "example"
+    },
+    {
+      "id": "reliability-boundary",
+      "title": "可编排不等于结果自动可靠",
+      "body": "来源核对、冲突处理和引用回链仍需设计；工具权限、预算和超时要有硬边界。",
+      "kind": "boundary"
+    },
+    {
+      "id": "versioned-strategy",
+      "title": "把研究流程保存成可复用版本",
+      "body": "团队可以按政策、竞品或技术调研维护不同策略，用同一组问题比较覆盖、成本和错误。",
+      "kind": "technical"
+    },
+    {
+      "id": "control-back-to-user",
+      "title": "深度研究不再只有一个黑箱按钮",
+      "body": "策略可见、可改、可复用，用户才有机会讨论并改进 Agent 的工作方式。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样让深度研究 Agent 按不同问题换一套工作方法？",
+    "question": "把搜索、工具、停止和输出规则写成用户可编辑的策略，再交给模型执行并按同一组问题评估。",
+    "steps": [
+      {
+        "label": "定义研究目标",
+        "detail": "先写清要快速回答、广泛综述还是形成可引用的长报告，避免所有问题共用一条流程。",
+        "evidence": "custom deep research strategies"
+      },
+      {
+        "label": "配置研究步骤",
+        "detail": "安排检索深度、工具选择、交叉检查和输出格式，把隐含的 Agent 行为显式化。",
+        "evidence": "create, edit, and refine strategies"
+      },
+      {
+        "label": "选择执行模型",
+        "detail": "把策略交给任意语言模型执行，不把流程能力绑定到某个固定模型。",
+        "evidence": "bring your own model"
+      },
+      {
+        "label": "设定停止边界",
+        "detail": "提前限制预算、超时和工具权限，避免密集策略无限搜索或外发请求。",
+        "evidence": "minimal, expansive, and intensive strategies"
+      },
+      {
+        "label": "按同题复盘",
+        "detail": "用相同问题比较覆盖、引用、成本和错误，再版本化策略而不是只修改一次提示词。",
+        "evidence": "user-editable research workflow"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00244"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "prompt",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00244",
+      "claim": "UDR 允许用户为任意语言模型创建、编辑和细化自定义深度研究策略，不需要额外训练或微调。",
+      "excerpt": "Universal Deep Research: Bring Your Own Model and Strategy"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00244",
+      "claim": "论文提供简洁、扩展和密集三种示例策略及实验界面，展示研究流程可编排。",
+      "excerpt": "minimal, expansive, and intensive research strategies ... user interface"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00244",
+  "sourceHash": "sha256:c318d88a5a5ad0e667bd620668c9b8d2996c3d83044328fc08adde63af55a8e1",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论深度研究 Agent 的策略、工具和执行流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.97,
+      "evidence": [
+        "正文把检索深度、工具选择和外部服务调用作为可配置规则。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.94,
+      "evidence": [
+        "正文把策略从隐含提示和固定流程中抽离，形成可编辑工作说明。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.92,
+      "evidence": [
+        "正文要求用同题比较覆盖、引用、成本和错误，复盘策略版本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00244",
+      "claim": "arXiv 记录 Universal Deep Research 于 2025 年 8 月 29 日提交，研究用户可编辑的深度研究 Agent 策略。",
+      "excerpt": "Date: Fri Aug 29 ... Universal Deep Research: Bring Your Own Model and Strategy"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00244",
+      "claim": "摘要说明自定义策略不需要额外训练，并提供三种示例策略和界面。",
+      "excerpt": "without any need for additional training or finetuning ... minimal, expansive, and intensive"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 UDR 的用户可编辑策略、任意模型执行、无需训练/微调、三种示例策略和界面；正文补充引用回链、预算/超时/权限边界及版本化评测。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 UDR 的重点放在策略可见、可改和可复用，未虚构质量提升指标，并补充来源核对、预算和权限边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-universal-deep-research-20250829"
+}

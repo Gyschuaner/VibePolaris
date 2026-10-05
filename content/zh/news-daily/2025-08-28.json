@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-28",
+  "eventDate": "2025-08-28",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-28 AI 事件重新检索：以当天 arXiv 首次提交为主，按合规测试、MCP 工具 Agent、元数据污染、Agentic RL、越狱评测、提示注入防御和自适应监控排序；区分方法论文、技术报告、基准与安全实验。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508280000 TO 202508282359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CR)",
+      "https://arxiv.org/abs/2508.20325",
+      "https://arxiv.org/abs/2508.20453",
+      "https://arxiv.org/abs/2508.20412",
+      "https://arxiv.org/abs/2508.20722",
+      "https://arxiv.org/abs/2508.20848",
+      "https://arxiv.org/abs/2508.20890",
+      "https://arxiv.org/abs/2509.00115",
+      "https://arxiv.org/abs/2508.20333",
+      "https://arxiv.org/abs/2508.20368",
+      "https://arxiv.org/abs/2508.20408",
+      "https://arxiv.org/abs/2508.20729",
+      "https://arxiv.org/abs/2508.20973"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "guard-guideline-jailbreak-testing-20250828",
+      "title": "GUARD 把政府 AI 指南变成可执行的合规和越狱诊断测试",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20325"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20325",
+      "sourceHash": "sha256:178369001d357687c44d6741f87e9bc4014a34cf1c2d1849177798aabf10047b",
+      "relatedSlugs": [
+        "eval",
+        "prompt",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20325",
+          "claim": "GUARD 从政府发布的 AI 指南自动生成违反指南的问题，测试 8 个 LLM 在 3 套指南下的合规性；GUARD-JD 进一步用角色扮演和越狱诊断寻找可能绕过安全机制的场景，并能迁移到视觉语言模型。",
+          "excerpt": "GUARD: Guideline Upholding Test through Adaptive Role-play and Jailbreak Diagnostics for LLMs"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "mcpbench-tool-agents-20250828",
+      "title": "MCP-Bench：让工具 Agent 在 28 个真实 MCP Server 上做复杂任务",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20453"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20453",
+      "sourceHash": "sha256:986e717275a75c1693c2214b6236f8bdac82d6de242f5627bbd6c9f193722e9a",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "mcp",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20453",
+          "claim": "MCP-Bench 连接 28 个真实 MCP Server、250 个工具，覆盖金融、旅行、科学计算和学术搜索；任务考察模糊指令找工具、跨工具多跳规划、中间结果 grounding 和跨域编排，并从 schema、轨迹、任务完成三层评测 20 个模型。",
+          "excerpt": "MCP-Bench: Benchmarking Tool-Using LLM Agents with Complex Real-World Tasks via MCP Servers"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "mindguard-mcp-metadata-poisoning-20250828",
+      "title": "MindGuard 盯住工具调用决定，而不是等工具执行后才找异常",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20412"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20412",
+      "sourceHash": "sha256:57213df63baba1fac809112c4ec78e6c64f19597f72fb396548f830eadec1cf8",
+      "relatedSlugs": [
+        "agent",
+        "mcp",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20412",
+          "claim": "MindGuard 针对 MCP 工具元数据污染，跟踪调用决策来源，用 Decision Dependence Graph 做决策级异常分析；论文报告检测精度 94%–99%、归因准确率 95%–100%，处理时间低于 1 秒且不增加 token 成本。",
+          "excerpt": "MindGuard: Intrinsic Decision Inspection for Securing LLM Agents Against Metadata Poisoning"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "rstar2-agent-technical-report-20250828",
+      "title": "rStar2-Agent：14B 模型用 Agentic RL 学会先想清楚再调用 Python",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20722"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20722",
+      "sourceHash": "sha256:c0625b1f636f07972706437f6fe136d2891db41e3d6370e2a2922a125f2e3bb0",
+      "relatedSlugs": [
+        "llm",
+        "tools",
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20722",
+          "claim": "rStar2-Agent 是一个 14B 数学推理模型，通过 Agentic RL 学会在调用 Python 前先规划，并根据代码执行反馈探索、验证和修正；论文报告 AIME24 pass@1 80.6%、AIME25 69.8%，在 64 张 MI300X 上一周、510 个 RL 步骤完成训练，并称超过 DeepSeek-R1 671B。",
+          "excerpt": "rStar2-Agent: Agentic Reasoning Technical Report"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "jades-jailbreak-evaluation-20250828",
+      "title": "JADES 把越狱成功与否拆成多个子问题来判",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20848"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20848",
+      "sourceHash": "sha256:57ab74ed73a6c6815e6ae36ee213abc5125fa9cfdd234d26af7f644bef45d020",
+      "relatedSlugs": [
+        "eval",
+        "benchmark",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20848",
+          "claim": "JADES 将有害问题分解成加权子问题，分别评分后聚合，配合可选事实核查；在 400 对人工标注的 JailbreakQR 上与人类评审 98.5% 一致，并显示部分旧攻击成功率被高估。文章不复述攻击提示。",
+          "excerpt": "JADES: A Universal Framework for Jailbreak Assessment via Decompositional Scoring"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "promptsleuth-injection-detection-20250828",
+      "title": "PromptSleuth 不看注入长什么样，而看它想让模型做什么",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20890"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20890",
+      "sourceHash": "sha256:4a320eb5d361d86909d2bbec571a01d73230f03bd7489f6c24e4a42efcb30f54",
+      "relatedSlugs": [
+        "prompt",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20890",
+          "claim": "PromptSleuth 构建覆盖改写、混淆和多任务注入的新基准，指出旧防御在新威胁上会失效；它按任务级意图而非表面特征检测未授权任务，在多个基准上超过现有防御且保持相近成本。",
+          "excerpt": "PromptSleuth: Detecting Prompt Injection via Semantic Intent Invariance"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "adaptive-monitoring-agentic-ai-20250828",
+      "title": "AMDM 让 Agent 监控从静态阈值变成多维度自适应",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00115"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00115",
+      "sourceHash": "sha256:65079c5081c906dcf5055e170211edb2083a642f870dcbd3e3a0b8a1d37d5c06",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "authorization",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00115",
+          "claim": "这篇 Advanced 论文回顾 84 篇研究，发现 83% 报告能力指标、只有 30% 考虑人本或经济维度；提出 Adaptive Multi-Dimensional Monitoring，用指数加权阈值和 Mahalanobis 距离监控多轴异常，模拟中把检测延迟从 12.3 秒降至 5.6 秒、误报率从 4.5% 降至 0.9%。",
+          "excerpt": "Adaptive Monitoring and Real-World Evaluation of Agentic AI Systems"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天候选中优先级较高，兼具新颖性、可核查证据和对模型/Agent 安全与评测的直接启发；将按顺序逐篇写作并复核。"
+    },
+    {
+      "slug": "poison-once-bias-injection-20250828",
+      "title": "SAI 说明“拒答能力”也可能被污染成针对特定群体的偏见",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20333"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20333",
+      "sourceHash": "sha256:88a91c9c894a6361eaf6c2b860e7bc3f18c46eddbbf21ceea2d71782369afb6f",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "data-validation",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20333",
+          "claim": "研究提出 Subversive Alignment Injection，利用对齐后的拒答机制植入针对特定主题或群体的拒答；论文报告 1% 数据污染即可让 ChatDoctor 对特定族群医疗问题拒答，文章只讨论防守和评测边界。",
+          "excerpt": "Poison Once, Refuse Forever: Weaponizing Alignment for Injecting Bias in LLMs"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "ai-searchplanner-agentic-search-20250828",
+      "title": "AI-SearchPlanner 把搜索规划和最终回答拆开优化",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20368"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20368",
+      "sourceHash": "sha256:546c760cada9ce8a2dcd11e61d32cd622678f8dd1f55704d2c56663ad9b256ba",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20368",
+          "claim": "AI-SearchPlanner 用小型可训练模型负责搜索规划，把搜索计划器与冻结的回答模型解耦，并用双重奖励和 Pareto 优化兼顾信息质量与成本；在真实数据集上报告效果、效率和跨模型/领域泛化。",
+          "excerpt": "AI-SearchPlanner: Modular Agentic Search via Pareto-Optimal Multi-Objective Reinforcement Learning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "fact-retriever-robustness-20250828",
+      "title": "检索器的语义相似，不等于事实能力",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20408"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20408",
+      "sourceHash": "sha256:d938d737a83e99564de9a666cd66299f2794e93277faca7229254fa4b771fd56",
+      "relatedSlugs": [
+        "rag",
+        "eval",
+        "grounding",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20408",
+          "claim": "论文对 12 个 embedding checkpoint 与原始 LLM 做事实性对照，检索器准确率比基座绝对下降 12–43 个百分点；候选从 4 扩到 1,000 时最强检索器 top-1 从 33% 降到 26%，改写正确答案后超过三分之二预测翻错。",
+          "excerpt": "Fact or Facsimile? Evaluating the Factual Robustness of Modern Retrievers"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "re4-scientific-agent-20250828",
+      "title": "Re4 让科学计算 Agent 轮流重写、求解、审查和修改",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20729"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20729",
+      "sourceHash": "sha256:33feb2ddb1173d3b9958d2c89659d93abd446274ccae5b25f775e4e8a9eba9de",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "execution-sandbox",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20729",
+          "claim": "Re4 用 Consultant、Programmer、Reviewer 三个推理模型组成重写—求解—审查—修改链，在 PDE、病态线性系统和数据驱动物理问题上，报告代码无 bug 率提高、非物理解减少。",
+          "excerpt": "Re4: Scientific Computing Agent with Rewriting, Resolution, Review and Revision"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "proactiveeval-dialogue-agents-20250828",
+      "title": "ProactiveEval 把主动对话拆成目标规划和对话引导",
+      "eventDate": "2025-08-28",
+      "publishedAt": "2025-08-28",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2508.20973"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.20973",
+      "sourceHash": "sha256:ff01c64b21f53b138fbbc526425f272d029bd1644aabdfca71335ffbeebc7268",
+      "relatedSlugs": [
+        "agent",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.20973",
+          "claim": "ProactiveEval 将主动对话拆成目标规划和对话引导，生成 328 个覆盖 6 个领域的评测环境，比较 22 类 LLM，并分析推理能力对主动行为的影响。",
+          "excerpt": "ProactiveEval: A Unified Evaluation Framework for Proactive Dialogue Agents"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但受单日篇数控制，先保留为 deferred；不把未写文章混入已完成顺序。"
+    }
+  ],
+  "selectedSlugs": [
+    "guard-guideline-jailbreak-testing-20250828",
+    "mcpbench-tool-agents-20250828",
+    "mindguard-mcp-metadata-poisoning-20250828",
+    "rstar2-agent-technical-report-20250828",
+    "jades-jailbreak-evaluation-20250828",
+    "promptsleuth-injection-detection-20250828",
+    "adaptive-monitoring-agentic-ai-20250828"
+  ],
+  "gap": null
+}

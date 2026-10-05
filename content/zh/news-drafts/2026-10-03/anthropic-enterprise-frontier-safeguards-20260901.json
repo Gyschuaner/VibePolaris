@@ -1,0 +1,158 @@
+{
+  "slug": "anthropic-enterprise-frontier-safeguards-20260901",
+  "title": "Anthropic 推出 Enterprise Frontier Safeguards：把活动数据和滥用告警交给客户云端",
+  "summary": "2026-09-01，Anthropic 发布 Enterprise Frontier Safeguards，把活动数据写入客户自有云存储，并将滥用检测信号直接交给客户。方案覆盖 Claude Code、Enterprise、API 和多家云平台，但部署按阶段进行，云存储、告警处理和审计责任仍由企业承担。",
+  "body": "Anthropic 在 2026 年 9 月 1 日发布 Enterprise Frontier Safeguards（EFS），把企业最常见的矛盾放到产品中心：企业希望使用代理和代码工具，但又不希望把活动日志、客户资料和安全告警交给模型供应商长期保存。EFS 的方案是把零数据保留与滥用检测结合起来，活动数据写进客户自己的 AWS S3、Azure Blob 或 Google Cloud Storage，由客户管理密钥、权限和审计日志。\n\n这套设计不是“Anthropic 什么都看不见”。官方说，系统会分析安全信号并把告警直接发给客户，Anthropic 不对每条信号做人审；客户要承担云存储、读写和出口费用。这样做的好处是数据控制权更靠近企业，代价是企业要自己保管存储、配置访问策略、处理告警并承担审计责任。零数据保留描述的是保留方式，不是模型永远不会接触请求内容。\n\nEFS 计划在秋季分阶段推出，覆盖 Claude Code、Enterprise、API 以及 Bedrock、Google Agent Platform、Microsoft Foundry 等入口。Anthropic 说已经与 100 多家客户和云伙伴合作，但“合作”不是所有产品都已经完成同一功能的 GA。企业还要确认使用哪个入口、哪些事件写到自有云、谁可以读取、如何让安全团队复核和撤回。\n\n新闻的另一层是滥用检测责任转移。把活动信号直接交回客户，可以降低供应商长期保留业务数据的压力，却也让客户承担更大的运营工作：若告警没有接入工单、审批和事件响应，日志在自有云里并不会自动变成安全能力。对代理工作流尤其如此，工具调用、外部内容和权限变化必须能和一次告警对应起来。\n\n因此，EFS 是一项企业数据治理和安全运营产品新闻，而不是单纯的隐私营销。它把“数据不留在供应商那里”和“客户自己负责检测与响应”绑在一起；后续要看实际 rollout、云账单、审计接口和跨平台行为是否一致。",
+  "publishedAt": "2026-09-01",
+  "eventDate": "2026-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-enterprise-frontier-safeguards-20260901.svg",
+    "alt": "企业代理活动从模型服务进入客户自有云，形成存储、检测、告警、审计的控制链；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/anthropic-enterprise-frontier-safeguards-20260901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "problem",
+      "title": "企业想用代理，也想控制活动数据",
+      "body": "EFS 针对的是零数据保留、滥用检测和企业审计同时存在的要求；它不是把所有安全工作交给 Anthropic。",
+      "kind": "narrative"
+    },
+    {
+      "id": "storage",
+      "title": "活动数据写入客户自己的云",
+      "body": "AWS S3、Azure Blob 或 Google Cloud Storage 由客户管理密钥、权限和日志。客户获得控制权，也承担存储、读写和出口费用。",
+      "kind": "technical"
+    },
+    {
+      "id": "signals",
+      "title": "信号会回到客户，不等于自动有人处理",
+      "body": "Anthropic 说系统把检测信号直接发给客户且不做人工审查。企业要把它接入工单、审批和事件响应，才有可追踪的处置。",
+      "kind": "boundary"
+    },
+    {
+      "id": "rollout",
+      "title": "同一护栏会经过多个产品入口",
+      "body": "Claude Code、Enterprise、API、Bedrock、Google Agent Platform 和 Microsoft Foundry 的 rollout 分阶段进行，不能把公告写成所有入口当天 GA。",
+      "kind": "comparison"
+    },
+    {
+      "id": "ownership",
+      "title": "数据控制权和运营责任一起转移",
+      "body": "供应商少保留数据，客户就要自己维护访问策略、告警响应和审计链；这是一种责任重新分配。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "企业活动数据怎样从模型回到自己的云？",
+    "question": "存储、检测、告警和处置是四个环节，零数据保留只解决其中一部分。",
+    "steps": [
+      {
+        "label": "代理产生事件",
+        "detail": "模型、工具和工作流产生请求、响应和安全信号，企业要先明确哪些字段需要留存。",
+        "evidence": "Anthropic EFS data handling description"
+      },
+      {
+        "label": "写入客户云",
+        "detail": "活动数据存进客户控制的对象存储，密钥、权限和审计日志由客户管理。",
+        "evidence": "AWS S3, Azure Blob and Google Cloud Storage support"
+      },
+      {
+        "label": "检测并告警",
+        "detail": "系统分析信号后把告警交给企业，Anthropic 不对每条信号做人审。",
+        "evidence": "EFS misuse detection statement"
+      },
+      {
+        "label": "企业处置",
+        "detail": "安全团队把告警接入工单、审批和事件响应，才能决定停止代理、收回权限或修复配置。",
+        "evidence": "Operational responsibility boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/enterprise-frontier-safeguards"
+  },
+  "relatedSlugs": [
+    "data-lineage",
+    "authorization",
+    "agent",
+    "execution-sandbox",
+    "tools",
+    "data-quality",
+    "citation",
+    "context"
+  ],
+  "relatedArticleSlugs": [
+    "anthropic-fable-mythos-51-20260901",
+    "openai-misalignment-reporting-framework-20260916"
+  ],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/enterprise-frontier-safeguards",
+      "claim": "Anthropic 于 2026-09-01 发布 EFS，把零数据保留、客户云存储、滥用检测和企业审计放进同一方案。",
+      "excerpt": "Enterprise Frontier Safeguards combines zero data retention with abuse detection, storing activity data in customer-owned cloud storage and returning signals to the customer."
+    },
+    {
+      "url": "https://www.techradar.com/pro/fable-enterprise-user-data-wont-be-retained-by-anthropic-but-some-will-be-analyzed-due-to-substantial-evidence-of-ai-misuse",
+      "claim": "TechRadar 交叉报道企业数据不会由 Anthropic 长期保留，但部分信号仍会被分析以识别严重滥用。",
+      "excerpt": "Enterprise user data won’t be retained by Anthropic, but some will be analyzed due to substantial evidence of AI misuse."
+    },
+    {
+      "url": "https://www.anthropic.com/claude-fable-and-mythos-5-1",
+      "claim": "Fable/Mythos 发布页把企业数据治理与模型/入口分层放在同日产品变化中。",
+      "excerpt": "Enterprise controls include zero data retention and customer-controlled cloud data as part of the September 1 release context."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/enterprise-frontier-safeguards",
+  "sourceHash": "sha256:ac03e38e9bd11cbb3730c42848719c0b3b19dffe5dc1148700be28b28db75e69",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/enterprise-frontier-safeguards",
+      "claim": "Anthropic 于 2026-09-01 发布 EFS，把零数据保留、客户云存储、滥用检测和企业审计放进同一方案。",
+      "excerpt": "Enterprise Frontier Safeguards combines zero data retention with abuse detection, storing activity data in customer-owned cloud storage and returning signals to the customer."
+    },
+    {
+      "url": "https://www.techradar.com/pro/fable-enterprise-user-data-wont-be-retained-by-anthropic-but-some-will-be-analyzed-due-to-substantial-evidence-of-ai-misuse",
+      "claim": "TechRadar 交叉报道企业数据不会由 Anthropic 长期保留，但部分信号仍会被分析以识别严重滥用。",
+      "excerpt": "Enterprise user data won’t be retained by Anthropic, but some will be analyzed due to substantial evidence of AI misuse."
+    },
+    {
+      "url": "https://www.anthropic.com/claude-fable-and-mythos-5-1",
+      "claim": "Fable/Mythos 发布页把企业数据治理与模型/入口分层放在同日产品变化中。",
+      "excerpt": "Enterprise controls include zero data retention and customer-controlled cloud data as part of the September 1 release context."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:00:00Z",
+    "method": "source",
+    "notes": "核对官方发布页与可信媒体交叉；把价格、护栏、企业数据控制和实时语音能力分别标为官方说明或公司评测。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:00:00Z",
+    "notes": "三篇分别记录模型/企业数据治理/实时语音产品新闻，未把公司指标写成独立验证。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T03:00:05Z",
+    "questions": [],
+    "notes": "通过。EFS 发布、客户云存储、滥用信号回传、分阶段 rollout 和客户运营责任组织清楚；正文没有把零数据保留写成 Anthropic 完全看不见数据，SVG/解释器一致。",
+    "changes": [
+      "将标题改为“把活动数据和滥用告警交给客户云端”，避免暗示检测本身全部由客户云端完成。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-01",
+  "promotedAt": "2026-10-03T03:01:53.369Z"
+}

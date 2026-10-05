@@ -569,33 +569,103 @@
       "positioning"
     ]
   },
-  {
-    "zh": "层叠", "en": "Cascade", "slug": "cascade", "cat": "前端",
-    "say": "多条 CSS 规则同时命中时，浏览器按来源、重要性、优先级和顺序选出最终值。",
-    "aliases": ["CSS 层叠", "cascade", "样式覆盖"],
-    "question": "开发者工具里能看到规则，为什么它却被划掉了？",
-    "definition": "层叠是浏览器解决样式冲突的规则。它先比较声明来源和重要性，再比较选择器优先级，条件相同才看出现顺序。",
-    "boundary": "层叠处理的是同一属性的候选声明；继承用于把部分属性从父元素传给子元素，两者不是同一机制。",
-    "demoType": "branch", "demoTitle": "浏览器选择最终颜色",
-    "demoSteps": [{"label":"收集候选声明","value":"button、.primary、行内样式","note":"只保留能够匹配当前元素的规则。"},{"label":"比较层叠顺序","value":"来源与优先级逐级判断","note":"失败的声明被排除。"},{"label":"得到计算值","value":"color: #17351f","note":"开发者工具会标出获胜规则。"}],
-    "quizQuestion": "两个同等优先级的规则冲突时，通常哪条生效？", "quizOptions": ["样式表中靠后的规则", "选择器字数更多的规则", "属性值更长的规则"],
-    "correctText": "其他条件相同时，出现顺序靠后的声明生效。", "wrongText": "字数和属性值长度不参与层叠判断。",
-    "promptTitle": "解释一处样式覆盖", "prompt": "请按 CSS 层叠顺序分析下面几条声明，指出最终生效的值、每条未生效的原因，以及不增加 !important 的修复方式。",
-    "relatedSlugs": ["css-selector", "specificity", "css"]
-  },
-  {
-    "zh": "CSS 优先级", "en": "Specificity", "slug": "specificity", "cat": "前端",
-    "say": "当多条规则来源和重要性相同，选择器的具体程度决定谁更可能生效。",
-    "aliases": ["选择器优先级", "specificity", "CSS 权重"],
-    "question": "为什么给元素加了一个类，样式还是覆盖不了旧规则？",
-    "definition": "CSS 优先级根据选择器中的 id、类或属性、元素等部分计算比较。它只在层叠的对应阶段参与决定。",
-    "boundary": "优先级不是越高越好。长期堆叠 id、嵌套和 !important 会增加后续覆盖成本。",
-    "demoType": "comparison", "demoTitle": "三种选择器的比较",
-    "demoSteps": [{"label":"button","value":"元素选择器","note":"具体程度较低。"},{"label":".dialog .confirm","value":"两个类选择器","note":"比单个元素选择器更具体。"},{"label":"#checkout .confirm","value":"包含 id","note":"通常会覆盖前两条候选规则。"}],
-    "quizQuestion": "下面哪个选择器的优先级最高？", "quizOptions": ["#app .button", ".toolbar .button", "main button"],
-    "correctText": "包含 id 的选择器优先级高于只含类或元素的选择器。", "wrongText": "比较的不是字符长度，而是选择器各部分的类型和数量。",
-    "promptTitle": "降低选择器覆盖成本", "prompt": "请列出下面 CSS 冲突中各选择器的优先级，找出不必要的高优先级写法，并改成容易维护的类选择器结构。",
-    "relatedSlugs": ["cascade", "css-selector", "css"]
+{
+  "zh": "层叠",
+  "en": "Cascade",
+  "slug": "cascade",
+  "cat": "前端",
+  "say": "多条 CSS 规则同时命中时，浏览器按来源、重要性、优先级和顺序选出最终值。",
+  "aliases": [
+    "CSS 层叠",
+    "cascade",
+    "样式覆盖"
+  ],
+  "question": "开发者工具里能看到规则，为什么它却被划掉了？",
+  "definition": "层叠是浏览器解决样式冲突的规则：它先比较声明来源和重要性，再比较层、选择器优先级、作用域距离，条件都相同时才看出现顺序。",
+  "boundary": "层叠处理的是同一属性的候选声明；继承用于把部分属性从父元素传给子元素，两者不是同一机制。",
+  "demoType": "branch",
+  "demoTitle": "浏览器选择最终颜色",
+  "demoSteps": [
+    {
+      "label": "收集候选声明",
+      "value": "UA · base · theme · 未分层 · inline",
+      "note": "只保留能够匹配当前按钮的规则，并把每条声明的来源和所属层写出来。"
+    },
+    {
+      "label": "普通声明逐关筛",
+      "value": "来源 → 层 → 优先级 → 顺序",
+      "note": "每放入一张便签，就显示它在哪一关退出；未分层普通样式属于隐式最终层。"
+    },
+    {
+      "label": "切换 !important",
+      "value": "普通区暂停，重要区独立比较",
+      "note": "重要声明不会给选择器加分，而是进入另一场比较；切回普通模式并按重置，旧的 navy 结果会被清掉，重新从浏览器默认值开始。"
+    }
+  ],
+  "quizQuestion": "两个同等优先级的规则冲突时，通常哪条生效？",
+  "quizOptions": [
+    "样式表中靠后的规则",
+    "选择器字数更多的规则",
+    "属性值更长的规则"
+  ],
+  "correctText": "其他条件相同时，出现顺序靠后的声明生效。",
+  "wrongText": "字数和属性值长度不参与层叠判断。",
+  "promptTitle": "解释一处样式覆盖",
+  "prompt": "请按 CSS 层叠顺序分析下面几条声明，指出普通模式的最终生效值、每条未生效的原因；再切换到 !important，说明比较区为何改变，并给出不增加 !important 的修复方式。",
+  "relatedSlugs": [
+    "css-selector",
+    "specificity",
+    "css"
+  ]
+},
+    {
+    "zh": "CSS 优先级",
+    "en": "Specificity",
+    "slug": "specificity",
+    "cat": "前端",
+    "say": "同一层叠条件下，选择器按 ID、类/属性/伪类、元素/伪元素三列从左到右比较。",
+    "aliases": [
+      "选择器优先级",
+      "specificity",
+      "权重"
+    ],
+    "question": "为什么写得更长的选择器，还是赢不了一个 ID？",
+    "definition": "CSS 优先级把选择器拆成 ID、类或属性/伪类、元素或伪元素三列；它只在来源、重要性和层等前置条件相同时参与决定。",
+    "boundary": "优先级不等于字符长度，也不能越过未命中的规则、层叠层级或 !important 的比较顺序。",
+    "demoType": "comparison",
+    "demoTitle": "选择器的三列怎样比较",
+    "demoSteps": [
+      {
+        "label": "先拆成三列",
+        "value": ".card → 0-1-0",
+        "note": "ID、类和元素各有自己的列，先从左边比较。"
+      },
+      {
+        "label": "观察伪类差异",
+        "value": ":where() 归零 · :is() 取最高",
+        "note": "两个看起来相近的写法，优先级贡献不同。"
+      },
+      {
+        "label": "再查前置条件",
+        "value": "同层同来源后才比较 specificity",
+        "note": "如果规则已经输在层或来源，继续加 class 没有用。"
+      }
+    ],
+    "quizQuestion": "哪条选择器的优先级是 0-1-0？",
+    "quizOptions": [
+      ":where(#app) .card",
+      "#app .card",
+      ":is(#app, .panel) .card"
+    ],
+    "correctText": ":where() 参数不贡献优先级，外面的 .card 留下 0-1-0。",
+    "wrongText": "#app 进入 ID 列；:is() 会取最高参数，不能把它们当成 0-1-0。",
+    "promptTitle": "解释一条 CSS 覆盖",
+    "prompt": "请把两条选择器拆成 ID-类-元素三列，先检查来源、重要性和层，再说明 :where() 或 :is() 怎样影响结果，并提出不堆叠 ID 的修复。",
+    "relatedSlugs": [
+      "cascade",
+      "css-selector",
+      "css"
+    ]
   },
       {
     "zh": "弹性布局",
@@ -696,19 +766,54 @@
     ]
   },
   {
-    "zh": "定位", "en": "Positioning", "slug": "positioning", "cat": "前端",
-    "say": "position 决定元素留在普通文档流中，还是相对某个参照物移动或固定。",
-    "aliases": ["CSS 定位", "position", "绝对定位"],
-    "question": "角标为什么跑到了整个页面右上角，而不是卡片右上角？",
-    "definition": "CSS 定位通过 static、relative、absolute、fixed 和 sticky 控制元素的定位方式，并由包含块确定偏移参照。",
-    "boundary": "定位适合覆盖、固定和局部偏移，不应代替 Flex 或 Grid 完成常规页面排列。",
-    "demoType": "comparison", "demoTitle": "角标的参照物变化",
-    "demoSteps": [{"label":"父卡片未定位","value":"角标参照更外层包含块","note":"位置可能离开卡片。"},{"label":"父卡片 relative","value":"建立新的定位参照","note":"卡片仍留在普通流中。"},{"label":"角标 absolute","value":"top 与 right 相对卡片计算","note":"角标稳定贴在卡片右上角。"}],
-    "quizQuestion": "要让绝对定位的子元素参照卡片，应先给卡片设置什么？", "quizOptions": ["position: relative", "display: inline", "overflow: auto"],
-    "correctText": "relative 会让卡片成为绝对定位后代的常用包含块。", "wrongText": "display 和 overflow 不能直接建立所需的定位参照。",
-    "promptTitle": "检查浮层的定位参照", "prompt": "请检查下面角标或浮层的定位代码，指出它当前参照哪个包含块，并用最小改动让它固定在目标容器内。",
-    "relatedSlugs": ["box-model", "css", "css-grid"]
-  },
+  "zh": "定位",
+  "en": "CSS Positioning",
+  "slug": "positioning",
+  "cat": "前端",
+  "say": "CSS 定位先确定元素相对谁，再决定偏移和是否继续占据普通流空间。",
+  "aliases": [
+    "position",
+    "元素定位",
+    "定位上下文"
+  ],
+  "question": "同一个 top，为什么有时挪自己，有时贴住窗口？",
+  "definition": "CSS 定位通过 static、relative、absolute、fixed 和 sticky 选择定位方式，并由包含块和滚动边界决定偏移参照。",
+  "boundary": "position 不是布局系统的替代品；absolute 需要合适的 containing block，sticky 需要阈值与滚动空间。",
+  "demoType": "state",
+  "demoTitle": "同一张卡片的定位参照",
+  "demoSteps": [
+    {
+      "label": "留在普通流",
+      "value": "static / relative",
+      "note": "一个保留原位置，一个从原位置偏移。"
+    },
+    {
+      "label": "换包含块",
+      "value": "absolute → 最近定位祖先",
+      "note": "脱离普通流后，top/left 改为对容器计算。"
+    },
+    {
+      "label": "遇到滚动边界",
+      "value": "fixed / sticky",
+      "note": "一个相对视口，一个在滚动阈值处贴住容器。"
+    }
+  ],
+  "quizQuestion": "absolute 元素首先寻找什么？",
+  "quizOptions": [
+    "最近的定位祖先",
+    "最后一个兄弟元素",
+    "浏览器默认字号"
+  ],
+  "correctText": "它会寻找最近的、能建立包含块的祖先。",
+  "wrongText": "没有合适祖先时才会向外寻找包含块；兄弟元素和字号不决定参照。",
+  "promptTitle": "解释一张卡片为什么跑位",
+  "prompt": "请比较 relative、absolute、fixed 和 sticky：说明各自的参照系、普通流占位和边界条件，并指出给父容器加 position: relative 能解决哪一层问题。",
+  "relatedSlugs": [
+    "css",
+    "box-model",
+    "flexbox"
+  ]
+},
     {
     "zh": "断点",
     "en": "Breakpoint",
@@ -940,8 +1045,8 @@
     "question": "项目文件越来越大，怎样拆开代码又不把变量都放到全局？",
     "definition": "JavaScript 模块拥有独立作用域，用 export 暴露接口，用 import 引用其他模块。浏览器和构建工具都能分析这种依赖。",
     "boundary": "模块划分不能自动保证架构合理；循环依赖、过细拆分和不稳定接口仍需要设计。",
-    "demoType": "hierarchy", "demoTitle": "页面模块的依赖方向",
-    "demoSteps": [{"label":"工具模块","value":"export formatDate","note":"只公开稳定函数。"},{"label":"列表模块","value":"import formatDate","note":"依赖关系在文件开头可见。"},{"label":"页面入口","value":"import ItemList","note":"入口组合模块，不读取内部变量。"}],
+    "demoType": "flow", "demoTitle": "模块依赖、绑定与循环边界",
+    "demoSteps": [{"label":"先连依赖图","value":"import/export → graph","note":"模块先被链接，再按依赖顺序初始化。"},{"label":"更新导出绑定","value":"live binding → 新值","note":"导入方读取导出方当前绑定，不是复制一份旧值。"},{"label":"遇到初始化回路","value":"a.js ↔ b.js → TDZ","note":"循环要追初始化顺序，过早读取才会报错。"}],
     "quizQuestion": "模块中没有 export 的变量默认如何处理？", "quizOptions": ["只在当前模块作用域内可用", "自动成为 window 属性", "自动被所有文件共享"],
     "correctText": "模块有自己的作用域，未导出的声明不会成为公共接口。", "wrongText": "ES Module 不会把顶层声明自动挂到全局。",
     "promptTitle": "拆分一个过大的前端文件", "prompt": "请按数据请求、纯工具、界面组件和页面入口拆分下面文件。列出每个模块的公开接口，并检查是否形成循环依赖。",
@@ -1052,8 +1157,24 @@
     "question": "服务器已经返回了按钮，为什么 JavaScript 加载前点它没有反应？",
     "definition": "水合是客户端框架在现有服务器 HTML 上恢复组件树、状态和事件处理的过程，通常复用已有 DOM 而不是重新创建全部节点。",
     "boundary": "水合不是服务端渲染本身。服务器能输出 HTML，但交互通常仍要等相应客户端代码就绪。",
-    "demoType": "lifecycle", "demoTitle": "页面从可见到可交互",
-    "demoSteps": [{"label":"收到 HTML","value":"内容已经可见","note":"页面结构来自服务器输出。"},{"label":"加载客户端代码","value":"框架比对组件与 DOM","note":"状态和事件开始恢复。"},{"label":"水合完成","value":"按钮可以响应点击","note":"页面进入可交互状态。"}],
+    "demoType": "state", "demoTitle": "页面从可见到可交互",
+    "demoSteps": [
+  {
+    "label": "收到 HTML",
+    "value": "内容已经可见",
+    "note": "结构来自服务器输出。"
+  },
+  {
+    "label": "匹配现有节点",
+    "value": "DOM 与组件对上",
+    "note": "客户端开始恢复关系。"
+  },
+  {
+    "label": "事件接通",
+    "value": "按钮可以响应",
+    "note": "可见和可交互在这里分开。"
+  }
+],
     "quizQuestion": "水合主要补上了什么？", "quizOptions": ["客户端状态与事件处理", "服务器的数据库表", "CSS 文件的颜色值"],
     "correctText": "水合把客户端组件逻辑连接到已有 HTML。", "wrongText": "它不负责创建数据库，也不等于修改 CSS。",
     "promptTitle": "定位水合不一致", "prompt": "请比较下面服务端输出与客户端首次渲染，找出文本、时间、随机数或条件分支造成的不一致，并给出保持首屏结果一致的修改。",
@@ -1066,8 +1187,24 @@
     "question": "为什么页面先出现空壳，等脚本运行后才看到内容？",
     "definition": "客户端渲染把界面生成工作主要放在浏览器中。服务器通常返回基础 HTML 和脚本，脚本运行后读取数据并构建页面。",
     "boundary": "CSR 不等于完全没有服务器；接口、静态资源和应用文件仍通常由服务器提供。",
-    "demoType": "lifecycle", "demoTitle": "客户端页面的首次显示",
-    "demoSteps": [{"label":"返回页面壳","value":"基础 HTML 与脚本链接","note":"主要内容可能还未生成。"},{"label":"运行应用代码","value":"请求数据并创建组件","note":"设备性能影响等待时间。"},{"label":"更新 DOM","value":"页面内容可见并可交互","note":"后续导航常在客户端完成。"}],
+    "demoType": "flow", "demoTitle": "客户端首屏要走过的请求链",
+    "demoSteps": [
+  {
+    "label": "先收到空壳",
+    "value": "HTML + script",
+    "note": "主要内容还未生成。"
+  },
+  {
+    "label": "运行应用代码",
+    "value": "parse → run → API",
+    "note": "设备性能会拉长等待。"
+  },
+  {
+    "label": "内容填入 DOM",
+    "value": "content + handlers",
+    "note": "后续导航可以在客户端完成。"
+  }
+],
     "quizQuestion": "CSR 首屏速度容易受到哪项直接影响？", "quizOptions": ["客户端 JavaScript 的下载与执行", "Git 分支名称", "数据库表的命名"],
     "correctText": "浏览器必须取得并执行相应代码才能生成主要内容。", "wrongText": "分支名称和表名不会直接决定浏览器首次渲染时间。",
     "promptTitle": "检查客户端首屏等待", "prompt": "请列出下面 CSR 页面在显示主要内容前必须完成的请求和脚本工作，找出可删除、可并发或可延后的部分，并保留明确加载状态。",
@@ -1081,7 +1218,23 @@
     "definition": "服务端渲染在服务器接到请求后读取所需数据并生成 HTML。浏览器可先呈现内容，客户端代码随后负责水合和继续交互。",
     "boundary": "SSR 会增加服务器请求阶段的计算和数据依赖，不代表所有页面都更快，也不自动解决客户端脚本体积。",
     "demoType": "request", "demoTitle": "一次服务端页面请求",
-    "demoSteps": [{"label":"浏览器请求页面","value":"携带路径与会话信息","note":"服务器收到当前请求上下文。"},{"label":"服务器生成 HTML","value":"读取数据并渲染内容","note":"数据等待会影响响应时间。"},{"label":"浏览器显示并水合","value":"先呈现 HTML，再连接交互","note":"可见与可交互可能不是同一时刻。"}],
+    "demoSteps": [
+  {
+    "label": "浏览器带上下文",
+    "value": "path + session",
+    "note": "服务器收到当前请求。"
+  },
+  {
+    "label": "服务端生成 HTML",
+    "value": "data → render",
+    "note": "慢数据会推迟输出。"
+  },
+  {
+    "label": "先呈现再接管",
+    "value": "HTML → hydrate",
+    "note": "可见和可交互不是同一刻。"
+  }
+],
     "quizQuestion": "SSR 的 HTML 通常在何时生成？", "quizOptions": ["服务器处理页面请求时", "代码提交到 Git 时", "用户关闭页面后"],
     "correctText": "SSR 根据当前请求在服务器生成页面结果。", "wrongText": "提交代码和关闭页面不会触发常规 SSR 页面生成。",
     "promptTitle": "判断页面是否适合 SSR", "prompt": "请根据下面页面的数据时效、个性化程度、缓存条件和服务器成本，判断是否采用 SSR，并列出首屏数据失败时的返回策略。",
@@ -1094,8 +1247,24 @@
     "question": "文档内容一天更新一次，是否需要每个访问请求都重新生成页面？",
     "definition": "SSG 在构建阶段读取内容并生成静态 HTML 和资源文件，部署后由服务器或 CDN 直接返回。",
     "boundary": "SSG 的页面新鲜度受构建与发布节奏影响，不适合每次请求都必须读取实时或私有数据的内容。",
-    "demoType": "lifecycle", "demoTitle": "文档页从内容到访问",
-    "demoSteps": [{"label":"构建阶段","value":"读取 Markdown 与数据","note":"生成每个文档的 HTML。"},{"label":"部署阶段","value":"上传静态文件","note":"CDN 可以缓存并分发。"},{"label":"用户访问","value":"直接返回已有 HTML","note":"无需为每次访问重新渲染。"}],
+    "demoType": "lifecycle", "demoTitle": "文档从源文件到静态访问",
+    "demoSteps": [
+  {
+    "label": "构建阶段",
+    "value": "source → HTML",
+    "note": "读取内容并生成文件。"
+  },
+  {
+    "label": "部署阶段",
+    "value": "HTML → CDN",
+    "note": "分发已有静态产物。"
+  },
+  {
+    "label": "用户访问",
+    "value": "return existing file",
+    "note": "不为每次请求重渲染。"
+  }
+],
     "quizQuestion": "哪类页面通常适合 SSG？", "quizOptions": ["更新频率较低的公开文档", "每秒变化的私有交易页面", "必须读取当前会话的账户页"],
     "correctText": "公开且更新节奏可控的内容适合在构建时生成。", "wrongText": "强实时或强个性化页面通常不能只依赖构建时结果。",
     "promptTitle": "划分可静态生成的页面", "prompt": "请根据下面页面的数据来源、更新频率和访问权限，标出适合 SSG 的部分，并说明内容更新后如何触发重新构建。",
@@ -1108,8 +1277,24 @@
     "question": "用户打开 /products/42 时，应用怎样知道要显示哪一页？",
     "definition": "路由根据路径、参数和匹配规则选择页面或处理器。前端路由还能在不整页刷新的情况下更新地址和界面。",
     "boundary": "路由决定去哪里，不负责验证用户是否有权访问；权限检查需要独立执行。",
-    "demoType": "branch", "demoTitle": "URL 的匹配结果",
-    "demoSteps": [{"label":"固定路径","value":"/products","note":"显示产品列表。"},{"label":"动态参数","value":"/products/:id","note":"读取 id 并显示详情。"},{"label":"没有匹配","value":"404 页面","note":"给出明确返回入口。"}],
+    "demoType": "branch", "demoTitle": "URL 的匹配、鉴权与回退",
+    "demoSteps": [
+  {
+    "label": "拆路径和参数",
+    "value": "/products/:id",
+    "note": "先得到 id 与 query。"
+  },
+  {
+    "label": "检查访问",
+    "value": "allowed / returnTo",
+    "note": "匹配成功仍要判断权限。"
+  },
+  {
+    "label": "没有匹配",
+    "value": "404",
+    "note": "给出明确的回退入口。"
+  }
+],
     "quizQuestion": "路由参数 :id 通常来自哪里？", "quizOptions": ["URL 对应位置的路径片段", "CSS 类名", "浏览器字体设置"],
     "correctText": "动态路由会从 URL 中提取对应路径片段。", "wrongText": "样式和字体设置不提供业务路由参数。",
     "promptTitle": "检查一组路由规则", "prompt": "请按具体到宽泛的顺序检查下面路由，指出冲突、无法到达的分支和缺失的 404 处理，并列出每条 URL 会匹配哪个页面。",
@@ -1172,8 +1357,24 @@
     "question": "用户选择的主题怎样在下次打开网站时继续生效？",
     "definition": "localStorage 是同步的键值存储接口，值以字符串保存，并按源隔离。数据不会自动随请求发给服务器。",
     "boundary": "它不适合保存密码、访问令牌等敏感数据，也不能作为唯一持久存储；浏览器可能按配额限制或清理数据。",
-    "demoType": "lifecycle", "demoTitle": "主题偏好的保存与恢复",
-    "demoSteps": [{"label":"用户选择主题","value":"setItem('theme','dark')","note":"偏好写入当前源的存储。"},{"label":"重新打开页面","value":"getItem 读取字符串","note":"页面在初始化时恢复偏好。"},{"label":"用户重置","value":"removeItem 删除键","note":"回到站点默认主题。"}],
+    "demoType": "state", "demoTitle": "两个标签页怎样共享偏好",
+    "demoSteps": [
+  {
+    "label": "按 origin 分盒",
+    "value": "shop.example",
+    "note": "同源页面读同一份盒子。"
+  },
+  {
+    "label": "写入字符串",
+    "value": "theme=dark",
+    "note": "值不是对象本身。"
+  },
+  {
+    "label": "发出变化通知",
+    "value": "storage event",
+    "note": "其他同源页面收到更新。"
+  }
+],
     "quizQuestion": "localStorage 的值以什么形式保存？", "quizOptions": ["字符串", "任意 JavaScript 对象且无需转换", "服务器数据库行"],
     "correctText": "对象通常需要先序列化为字符串再存储。", "wrongText": "localStorage 不会直接保存对象，也不是服务器数据库。",
     "promptTitle": "为本地偏好补充可靠存储", "prompt": "请为下面主题设置加入 localStorage 保存与恢复，处理值不存在、JSON 解析失败和存储不可用，并避免保存账号敏感信息。",

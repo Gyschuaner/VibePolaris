@@ -1,0 +1,243 @@
+{
+  "slug": "nvidia-spacexai-vera-agentic-ai-20260824",
+  "title": "NVIDIA：SpaceXAI 计划部署 Vera CPU，支持 Grok 代理基础设施",
+  "summary": "NVIDIA 于 2026 年 8 月 24 日宣布 SpaceXAI 将部署 Vera CPU，支持 Grok 背后的代理工作负载，并计划把 Vera Rubin NVL72 延伸到首代 Starmind AI 卫星。公告称 Vera 有 88 个 Olympus 核、最高 1.2TB/s 内存带宽，在特定负载上比 x86 CPU 快至 1.8 倍；这些是 NVIDIA 产品口径，SpaceXAI 的部署仍是计划而非已交付结果。",
+  "body": "8 月 24 日，NVIDIA 宣布 SpaceXAI 将采用 Vera CPU，给 Grok 背后的代理基础设施提供计算能力。新闻的重点不是又一张 GPU，而是代理在两次模型调用之间还要执行代码、调用工具、处理数据、安排任务和运行模拟；这些步骤经常由 CPU 负责，CPU 太慢会让昂贵的 GPU 等待。\n\nNVIDIA 把 Vera 描述为“为 AI 代理设计的 CPU”：88 个自研 Olympus 核、LPDDR5X 高带宽内存，最高 1.2TB/s 带宽。公司称，在代理 AI、强化学习和数据处理等特定工作负载上，Vera 的任务完成速度最高可达 x86 CPU 的 1.8 倍。这个数字属于 NVIDIA 的产品比较，公告没有给出完整硬件配置、软件版本、测试脚本或第三方复测。\n\nSpaceXAI 的计划分两层。地面部分会用 Vera Rubin 平台扩展支撑 Grok 的 AI 基础设施，目标是向吉瓦级计算容量扩展；轨道部分则计划把优化后的 Vera Rubin NVL72 放进第一代 Starmind AI 卫星。轨道计算还要面对供电、散热、通信带宽、可靠性和发射集成，不能把“计划采用”写成卫星已经在太空运行。\n\n这条新闻解释了代理系统的一个常见误区：模型推理只是循环的一段。代理先得到模型输出，再访问工具、读数据库、执行脚本和整理结果，最后把新上下文交给模型。CPU、内存带宽、网络和调度若跟不上，增加 GPU 并不能自动缩短整个任务。\n\n8 月 24 日能确认的是一项芯片部署公告和从地面 AI 工厂延伸到轨道计算的路线图。后续要看 SpaceXAI 实际采购和交付、Vera 在真实代理任务中的吞吐和能耗，以及 Starmind 是否完成发射和在轨验证。",
+  "publishedAt": "2026-08-24",
+  "eventDate": "2026-08-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-spacexai-vera-agentic-ai-20260824.svg",
+    "alt": "模型调用之间的工具、代码、数据和调度工作由 Vera CPU 承担",
+    "sourceUrl": "/images/news/nvidia-spacexai-vera-agentic-ai-20260824.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "event",
+      "title": "公告确认了什么",
+      "body": "SpaceXAI 计划部署 NVIDIA Vera CPU，扩展 Grok 的地面代理基础设施，并计划将 Vera Rubin NVL72 用于 Starmind 卫星。",
+      "kind": "narrative"
+    },
+    {
+      "id": "bottleneck",
+      "title": "为什么代理不只需要 GPU",
+      "body": "代理会在模型调用之间执行工具、代码和数据处理；CPU、内存和网络速度会决定 GPU 是否一直有活可做。",
+      "kind": "technical"
+    },
+    {
+      "id": "numbers",
+      "title": "1.8 倍该怎样读",
+      "body": "这是 NVIDIA 对特定工作负载的产品口径，不是所有代理任务都能得到的通用加速保证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "orbit",
+      "title": "太空部分仍是路线图",
+      "body": "轨道计算要解决供电、散热、带宽、可靠性和发射集成；公告中的 Starmind 是计划，不是已完成部署。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "代理的一次任务为什么要经过 CPU",
+    "question": "把模型、工具、代码、数据和调度连成循环，读者会看到 GPU 之外的等待怎样拖慢整个任务。",
+    "steps": [
+      {
+        "label": "模型调用",
+        "detail": "模型先决定下一步，但回答本身还没有完成任务。",
+        "evidence": "代理工作流的第一段。"
+      },
+      {
+        "label": "工具与代码",
+        "detail": "代理调用 API、运行脚本或查询数据，这些工作依赖 CPU 和内存。",
+        "evidence": "NVIDIA 对 Vera 工作负载的描述。"
+      },
+      {
+        "label": "调度与通信",
+        "detail": "系统整理工具结果并把新上下文送回模型，网络和内存带宽会造成等待。",
+        "evidence": "AI 工厂的系统瓶颈。"
+      },
+      {
+        "label": "结果交付",
+        "detail": "只有模型和工具循环都完成，代理才把可用结果交给用户。",
+        "evidence": "事件特定的任务链。"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Investor Relations",
+    "url": "https://investor.nvidia.com/news/press-release-details/2026/SpaceXAI-Adopts-NVIDIA-Vera-CPU-to-Accelerate-Agentic-AI-at-Massive-Scale/default.aspx"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "server",
+    "data-pipeline",
+    "model-routing",
+    "execution-sandbox",
+    "tools"
+  ],
+  "relatedArticleSlugs": [
+    "nvidia-system-orchestration-beyond-gpu-20260829",
+    "aws-nvidia-2m-gpus-agentic-physical-ai-20260826"
+  ],
+  "sources": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/SpaceXAI-Adopts-NVIDIA-Vera-CPU-to-Accelerate-Agentic-AI-at-Massive-Scale/default.aspx",
+      "claim": "NVIDIA 宣布 SpaceXAI 将部署 Vera CPU、扩展 Grok 基础设施并计划建设 Starmind AI 卫星。",
+      "excerpt": "SpaceXAI will deploy NVIDIA Vera CPUs to accelerate the work behind its next generation of agentic AI workloads."
+    },
+    {
+      "url": "https://www.nvidia.com/en-us/data-center/vera-cpu/",
+      "claim": "NVIDIA 产品页说明 Vera 面向模型推理周边的工具调用、代码执行、数据处理、编排和模拟工作。",
+      "excerpt": "The CPU for AI agents."
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/big-tech/spacexai-will-deploy-standalone-nvidia-vera-cpus-for-groks-agentic-workloads",
+      "claim": "Tom’s Hardware 交叉报道地面 Vera Rubin 与轨道 Starmind 计划，并保留未来时间表边界。",
+      "excerpt": "SpaceXAI will deploy standalone Nvidia Vera CPUs for Grok’s agentic workloads."
+    }
+  ],
+  "canonicalUrl": "https://investor.nvidia.com/news/press-release-details/2026/SpaceXAI-Adopts-NVIDIA-Vera-CPU-to-Accelerate-Agentic-AI-at-Massive-Scale/default.aspx",
+  "sourceHash": "sha256:d3a881c2791b3ceb6aa15d5e66aa4412df75a5620f063de3cd06a575b49fc94d",
+  "status": "published",
+  "discoveredAt": "2026-10-03T02:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 agent 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 agent-loop 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "server",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 server 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-pipeline 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 model-routing 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 execution-sandbox 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 tools 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "nvidia-system-orchestration-beyond-gpu-20260829",
+      "score": 0.78,
+      "evidence": [
+        "后续或相邻文章补充同一事实时间线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "aws-nvidia-2m-gpus-agentic-physical-ai-20260826",
+      "score": 0.78,
+      "evidence": [
+        "后续或相邻文章补充同一事实时间线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/SpaceXAI-Adopts-NVIDIA-Vera-CPU-to-Accelerate-Agentic-AI-at-Massive-Scale/default.aspx",
+      "claim": "NVIDIA 宣布 SpaceXAI 将部署 Vera CPU、扩展 Grok 基础设施并计划建设 Starmind AI 卫星。",
+      "excerpt": "SpaceXAI will deploy NVIDIA Vera CPUs to accelerate the work behind its next generation of agentic AI workloads."
+    },
+    {
+      "url": "https://www.nvidia.com/en-us/data-center/vera-cpu/",
+      "claim": "NVIDIA 产品页说明 Vera 面向模型推理周边的工具调用、代码执行、数据处理、编排和模拟工作。",
+      "excerpt": "The CPU for AI agents."
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/big-tech/spacexai-will-deploy-standalone-nvidia-vera-cpus-for-groks-agentic-workloads",
+      "claim": "Tom’s Hardware 交叉报道地面 Vera Rubin 与轨道 Starmind 计划，并保留未来时间表边界。",
+      "excerpt": "SpaceXAI will deploy standalone Nvidia Vera CPUs for Grok’s agentic workloads."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T02:05:00Z",
+    "method": "manual",
+    "notes": "人工核对官方公告、监管申报或可信新闻；区分产品计划、公司基准、融资申报、合作方效果和 AP 个案，不将公司声明写成独立验证。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T03:00:00Z",
+    "notes": "新闻主线已由唯一 reader review 复核；正文区分已发生事实、来源自述、计划时态、个人判断和仍待验证的结果。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T03:00:00Z",
+    "questions": [],
+    "notes": "读者复审后将标题改为计划时态；正文、摘要、段落和 SVG 已明确地面与轨道均为计划，并将 1.8 倍归因于 NVIDIA 特定负载比较。",
+    "changes": [
+      "标题改为计划部署表述"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-24",
+  "fingerprint": "sha256:d3a881c2791b3ceb6aa15d5e66aa4412df75a5620f063de3cd06a575b49fc94d",
+  "promotedAt": "2026-10-03T06:40:18.488Z"
+}

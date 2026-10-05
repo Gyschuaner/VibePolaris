@@ -1,0 +1,199 @@
+{
+  "slug": "microsoft-azure-gpt-5-foundry-ga-20250807",
+  "title": "微软宣布 GPT-5 在 Azure AI Foundry 正式可用，并接入模型路由",
+  "summary": "微软 8 月 7 日宣布 GPT-5、mini、nano 和 chat 在 Azure AI Foundry 正式可用，并把模型路由放进企业开发者入口。Microsoft 还说明 GPT-5 将进入 Copilot、Microsoft 365、GitHub Copilot、VS Code 和 Copilot Studio。Azure 的价值在于把同一模型家族接到企业 API、权限和成本管理里；路由节省和产品效果仍然需要按具体工作负载验证。",
+  "body": "8 月 7 日，微软宣布 GPT-5 家族在 Azure AI Foundry 正式可用。开发者可以在同一个平台里接入 GPT-5、GPT-5 mini、GPT-5 nano 和 GPT-5 chat，再用 Azure 的工具和权限体系把模型接到应用、Agent 或内部工作流中。这是 GPT-5 发布后的重要分发节点，变化发生在企业入口和运行方式，不是微软重新发布了一个模型。\n\nAzure 这次把模型路由放在了很显眼的位置。路由器根据任务复杂度、性能和成本等目标选择模型，应用方可以把简单请求交给更轻的型号，把复杂任务交给更强的型号。这样做减少了业务方在每个接口里手写判断的工作，却也多了一层需要监控的系统行为：同一类请求是否稳定地走同一路径，路由改变后延迟和费用有没有跟着变化，都要靠调用记录回答。\n\n微软在 Foundry 页面列出的 GPT-5 主模型上下文上限为 272K，GPT-5 chat 为 128K；在 Copilot、Microsoft 365、GitHub Copilot、VS Code 和 Copilot Studio 等产品中，用户会从各自的产品入口接触到 GPT-5。不同入口的模型选择、账户权限、配额和上线节奏并不完全相同。比如 Microsoft 365 Copilot 先向持有相应许可证的用户开放，没有许可证的用户要等后续分批上线，不能看到“GPT-5 已接入”就推断每个租户当天都获得同样的能力。\n\n微软称模型路由最高可以节省 60% 的推理成本。这个数字属于厂商在特定路由策略和工作负载下的估算，实际结果会被输入长度、输出长度、缓存、重试和人工复核影响。企业如果只看单价，很容易忽略路由改变后请求次数、等待时间和失败重试的变化。\n\nAzure AI Foundry 的意义，最后要落在企业自己的运行记录上：哪些请求适合轻量模型，哪些任务必须固定到更强的模型，什么时候需要人工确认，调用日志如何和数据权限对齐。GPT-5 进入平台降低了接入门槛，平台并没有替企业完成模型选型和上线后的责任分配。",
+  "publishedAt": "2025-08-07",
+  "eventDate": "2025-08-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/microsoft-azure-gpt-5-foundry-ga-20250807.svg",
+    "alt": "GPT-5 家族进入 Azure AI Foundry，由模型路由连接企业应用、成本和权限",
+    "sourceUrl": "/images/news/microsoft-azure-gpt-5-foundry-ga-20250807.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "foundry-ga",
+      "title": "正式可用改变的是企业接入入口",
+      "body": "Azure AI Foundry 让 GPT-5、mini、nano 和 chat 进入同一企业开发者平台，应用可以沿用平台的身份、权限、日志和部署工具。它是分发与运行环境的变化，不等于新的基础模型版本。",
+      "kind": "narrative"
+    },
+    {
+      "id": "model-router",
+      "title": "路由器把模型选择变成平台行为",
+      "body": "微软描述的路由器会在任务复杂度、性能和成本之间做选择。它减少了业务代码里的手工判断，也让路由命中、延迟、重试和费用成为需要单独观测的运行指标。",
+      "kind": "technical"
+    },
+    {
+      "id": "product-surfaces",
+      "title": "Copilot 入口与 Azure API 不是同一套体验",
+      "body": "微软同时说明 GPT-5 将进入 Copilot、Microsoft 365、GitHub Copilot、VS Code 和 Copilot Studio。不同产品的账号、配额、权限和 rollout 节奏可能不同；例如 Microsoft 365 Copilot 先向持有许可证的用户开放，没有许可证的用户后续分批上线。Foundry 正式可用不代表每个租户立即获得相同功能。",
+      "kind": "comparison"
+    },
+    {
+      "id": "cost-claim",
+      "title": "最高 60% 的节省是厂商在条件下的估算",
+      "body": "微软称模型路由最高可节省 60% 推理成本；这是厂商在特定条件下的估算。实际账单还会受到上下文长度、输出长度、缓存、重试和人工复核影响，企业需要用自己的流量做前后对比。",
+      "kind": "boundary"
+    },
+    {
+      "id": "operations",
+      "title": "上线后仍要定义哪些任务能自动走轻量模型",
+      "body": "平台提供入口，企业还要定义模型选择、数据权限、人工确认、日志留存和失败处理。对关键任务固定模型或增加复核，可能比追求一次调用的最低价格更重要。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "企业请求怎样经过 Azure 的模型路由？",
+    "question": "同一个平台如何在能力、成本和治理之间做选择？",
+    "steps": [
+      {
+        "label": "接收请求",
+        "detail": "应用把任务、上下文和权限交给 Azure AI Foundry，并记录租户、数据分类和业务场景。",
+        "evidence": "Azure AI Foundry GPT-5 announcement"
+      },
+      {
+        "label": "评估复杂度",
+        "detail": "路由器根据任务需要在 GPT-5、mini、nano 或 chat 等路径之间选择，具体命中结果要以调用日志为准。",
+        "evidence": "Microsoft model router description"
+      },
+      {
+        "label": "执行与调用工具",
+        "detail": "选中的模型生成答案或调用应用授权的工具，平台同时产生延迟、token、错误和重试记录。",
+        "evidence": "Azure platform operation boundary"
+      },
+      {
+        "label": "按策略交付",
+        "detail": "应用依据数据权限、风险等级和人工确认规则决定展示、写入系统或转交人工，而不是把路由结果直接当作最终结论。",
+        "evidence": "Enterprise governance boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft Azure",
+    "url": "https://azure.microsoft.com/en-us/blog/gpt-5-in-azure-ai-foundry-the-future-of-ai-apps-and-agents-starts-here/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "agent",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://azure.microsoft.com/en-us/blog/gpt-5-in-azure-ai-foundry-the-future-of-ai-apps-and-agents-starts-here/",
+      "claim": "Microsoft Azure 8 月 7 日宣布 GPT-5、mini、nano 和 chat 在 Azure AI Foundry 正式可用，并介绍模型路由；页面还称特定条件下最高可节省 60% 推理成本。",
+      "excerpt": "Microsoft Azure, August 7, 2025: GPT-5 family models are generally available in Azure AI Foundry; its model router selects among models and Microsoft says it can save up to 60% in inference costs under stated conditions."
+    },
+    {
+      "url": "https://news.microsoft.com/source/features/ai/openai-gpt-5/",
+      "claim": "Microsoft 同日说明 GPT-5 开始进入 Copilot、Microsoft 365、GitHub Copilot、VS Code、Copilot Studio 和 Azure Foundry；各产品按自身入口和节奏 rollout。",
+      "excerpt": "Microsoft, August 7, 2025: GPT-5 starts reaching Copilot, Microsoft 365 Copilot, GitHub Copilot, VS Code, Copilot Studio, and Azure AI Foundry, with product-specific availability."
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/microsoft-365/blog/2025/08/07/available-today-gpt-5-in-microsoft-365-copilot/",
+      "claim": "Microsoft 365 Copilot 专页说明 GPT-5 于 8 月 7 日开始向有许可证用户 rollout，没有相应许可证的用户预计后续几周分批开放。",
+      "excerpt": "Microsoft 365 Copilot, August 7, 2025: GPT-5 is available today for licensed users as rollout begins; access for unlicensed users follows in the coming weeks."
+    }
+  ],
+  "canonicalUrl": "https://azure.microsoft.com/en-us/blog/gpt-5-in-azure-ai-foundry-the-future-of-ai-apps-and-agents-starts-here/",
+  "sourceHash": "sha256:63665192d378295436e2eb384a9df7dc4d107ad9328b734bde2bf216c6439386",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.97,
+      "evidence": [
+        "正文围绕 GPT-5、mini、nano 和 chat 模型家族展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文记录 GPT-5 于 8 月 7 日进入 Azure AI Foundry 正式可用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.83,
+      "evidence": [
+        "正文解释 Azure 平台如何把模型路由接入 Agent 和企业工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.77,
+      "evidence": [
+        "正文涉及 Azure AI Foundry 的 API、权限、日志和工具调用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://azure.microsoft.com/en-us/blog/gpt-5-in-azure-ai-foundry-the-future-of-ai-apps-and-agents-starts-here/",
+      "claim": "Microsoft Azure official GPT-5 in Azure AI Foundry announcement dated August 7, 2025.",
+      "excerpt": "GPT-5 in Azure AI Foundry: The future of AI apps and agents starts here"
+    },
+    {
+      "url": "https://news.microsoft.com/source/features/ai/openai-gpt-5/",
+      "claim": "Microsoft official downstream GPT-5 availability overview dated August 7, 2025.",
+      "excerpt": "OpenAI GPT-5 is coming to Microsoft products."
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/microsoft-365/blog/2025/08/07/available-today-gpt-5-in-microsoft-365-copilot/",
+      "claim": "Microsoft 365 Copilot 官方页面说明 2025 年 8 月 7 日先向有许可证用户开放 GPT-5，未持证用户后续几周分批获得访问。",
+      "excerpt": "GPT-5 is available today for licensed Microsoft 365 Copilot users; access for unlicensed users rolls out in the coming weeks."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Azure AI Foundry 8 月 7 日 GA 公告、GPT-5/mini/nano/chat、模型路由、GPT-5 主模型 272K 与 chat 128K 上下文和最高 60% 成本节省的厂商口径，并用 Microsoft News 与 Microsoft 365 Copilot 页面核对 Copilot/M365/GitHub Copilot/VS Code/Copilot Studio 的下游 rollout；正文区分平台分发、产品入口、许可证节奏和企业自行治理。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 Azure 事件写成企业接入与路由的具体变化，保留最高 60% 节省为厂商条件性估算，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-07；Azure、Microsoft News 和 Microsoft 365 Copilot 三份官方页面均为同日。",
+      "Azure AI Foundry GA、GPT-5/mini/nano/chat、model router 和 GPT-5 主模型 272K（chat 128K）上下文与官方页一致；Foundry 是 GPT-5 首发后的平台分发与企业运行入口，不被写成微软重新发布基础模型。",
+      "最高 60% 推理成本节省明确归为 Microsoft/Azure 在特定路由和工作负载下的厂商口径；没有外推成所有任务或所有企业的保证。",
+      "下游 rollout 已区分 Copilot/M365/GitHub Copilot/VS Code/Copilot Studio 的产品入口、许可证、配额和节奏；agent-workflow explainer、sections、relatedSlugs、空 relatedArticleSlugs、sources/evidence、verification、schema 与 Azure Foundry/router SVG 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能沿着平台接入—路由选择—产品 rollout—企业治理理解 GPT-5 在 Azure 的分发边界。",
+    "changes": [
+      "补充 Foundry 页面中 GPT-5 主模型 272K 与 GPT-5 chat 128K 的上下文区别。",
+      "以 Microsoft 365 Copilot 的许可证 rollout 为例，明确不同产品入口和权限/节奏不同。",
+      "同步在 Azure source、Microsoft News 和 Microsoft 365 source/evidence/verification 中保留 60% 节省和 rollout 的厂商口径。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-07-azure",
+  "promotedAt": "2026-10-05T05:17:33.005Z"
+}

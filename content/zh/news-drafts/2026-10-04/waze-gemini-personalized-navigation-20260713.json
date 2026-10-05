@@ -1,0 +1,235 @@
+{
+  "slug": "waze-gemini-personalized-navigation-20260713",
+  "title": "Waze 把 Gemini 放进导航：能说人话报路况，也要人工确认地图改动",
+  "summary": "Waze 7 月 13 日公布一组 AI 和个性化导航更新：摩托车模式用 AI 结合道路限制与风险提示，个性化路线参考历史行程，Gemini 支持自然语言目的地搜索和对话式地图更新。不同功能的地区和测试状态不同；地图建议仍由当地编辑核验，不等于自动驾驶或自动改图。",
+  "body": "Waze 7 月 13 日公布的更新，把“导航”拆成几种不同的 AI 任务：给摩托车找更合适的路、按个人习惯排序路线、用自然语言报告路况，以及在出发前用对话找到目的地。它们看起来都像“更聪明的地图”，但开放范围和负责的人并不一样。\n\n摩托车模式已经在阿根廷、巴西、哥伦比亚、菲律宾、马来西亚、墨西哥和秘鲁的 Android、iOS 提供。Waze 称该模式用 AI 纳入两轮车可通行的道路、限制和坑洼、减速带、窄桥等风险，并结合实时交通和摩托车编辑者维护的提醒。这里的 AI 是路线与风险信息的处理层，不能理解为车辆自己驾驶。\n\n个性化导航从 7 月 13 日起面向 Android 和 iOS 全球推送，参考用户过去的行程和当地交通模式。例如偏好高速路的人可能先看到高速路线；用户也可以在设置里关闭。它用的是个人历史这个上下文，便利来自“记得你过去怎么走”，代价是用户需要知道这种记忆是否会影响排序。\n\nGemini 的对话式报告先让用户用自然语言描述堵车、事故等情况，现在还可以建议地图更新，比如街道关闭或门牌号变化。Waze 会把建议交给当地地图编辑核实，首轮地图更新报告只在美国和巴西的 Android、iOS 开始推出。Gemini 目的地搜索则面向全球 Waze Beta 用户，用户可以问附近正在营业的咖啡店、停车场或价格较低的加油站，再用语音确认导航。\n\n因此这条新闻的边界很清楚：Waze 在增加“理解请求—读取上下文—给出路线—等待确认”的工具链，而不是把地图事实交给模型直接决定。路线推荐可以个性化，地图事实需要编辑核验；Beta、分地区上线和可关闭设置也提醒用户，功能名称相同不代表每个人都能用。",
+  "publishedAt": "2026-07-13",
+  "eventDate": "2026-07-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/waze-gemini-personalized-navigation-20260713.svg",
+    "alt": "Waze 把 Gemini 放进导航：能说人话报路况，也要人工确认地图改动 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/waze-gemini-personalized-navigation-20260713.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "motorcycle-mode",
+      "title": "摩托车模式把道路差异放进路线",
+      "body": "Waze 称模式会结合两轮车限制、实时交通和坑洼、减速带、窄桥等风险，并由摩托车地图编辑者持续更新提示。",
+      "kind": "technical"
+    },
+    {
+      "id": "personal-context",
+      "title": "路线排序开始参考你的历史",
+      "body": "个性化导航参考过去行程和当地交通模式，全球 Android、iOS 推送，用户可以关闭这项个性化。",
+      "kind": "narrative"
+    },
+    {
+      "id": "conversational-reports",
+      "title": "说出门牌变化，先交给地图编辑",
+      "body": "Gemini 对话式报告支持用自然语言建议道路关闭或地址变化；美国和巴西的用户先获得这项地图更新入口，编辑者会核验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "destination-search",
+      "title": "目的地搜索仍处在 Beta",
+      "body": "Waze Beta 用户可以用 Gemini 语音问开放式目的地问题，再确认是否导航；它不是所有正式版用户都默认拥有的功能。",
+      "kind": "comparison"
+    },
+    {
+      "id": "not-autonomous-driving",
+      "title": "更会对话不等于自动驾驶",
+      "body": "这些更新处理路线、报告和搜索，官方没有把它们描述成车辆控制；地图事实和账户动作仍保留用户或人工编辑的确认环节。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一次“帮我找路”请求经过哪些环节？",
+    "question": "导航代理要把用户意图、个人上下文和地图工具接起来，最后仍要由用户或编辑者确认关键动作。",
+    "steps": [
+      {
+        "label": "听懂问题",
+        "detail": "把语音或文字识别为找目的地、报路况或选择路线的请求。",
+        "evidence": "Waze / Gemini"
+      },
+      {
+        "label": "读取上下文",
+        "detail": "结合历史行程、交通模式和车辆类型，形成更适合当前用户的候选。",
+        "evidence": "Waze"
+      },
+      {
+        "label": "调用地图工具",
+        "detail": "查询路线、道路限制、风险提示或附近地点，把结果组织成可听懂的回答。",
+        "evidence": "产品功能说明"
+      },
+      {
+        "label": "用户确认",
+        "detail": "用户确认目的地后才开始导航；个性化排序也可以在设置中关闭。",
+        "evidence": "Waze"
+      },
+      {
+        "label": "人工复核",
+        "detail": "地图更新建议交给当地编辑核验，避免模型把一句话直接变成地图事实。",
+        "evidence": "Waze"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Blog / Waze",
+    "url": "https://blog.google/intl/es-419/actualizaciones-de-producto/comunicacion-y-conectividad/waze-lanza-nuevas-funciones-de-personalizacion-y-mas-actualizaciones-de-gemini/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "context",
+    "prompt",
+    "authorization",
+    "event",
+    "citation"
+  ],
+  "relatedArticleSlugs": [
+    "spotify-talk-ai-assistant-20260714"
+  ],
+  "sources": [
+    {
+      "url": "https://blog.google/intl/es-419/actualizaciones-de-producto/comunicacion-y-conectividad/waze-lanza-nuevas-funciones-de-personalizacion-y-mas-actualizaciones-de-gemini/",
+      "claim": "Waze 官方公布摩托车模式、个性化路线、Less Chatty、对话式报告和 Gemini 目的地搜索的可用范围。",
+      "excerpt": "Google Blog, “Waze lanza nuevas funciones de personalización y más actualizaciones de Gemini”, 2026-07-13."
+    },
+    {
+      "url": "https://support.google.com/waze/",
+      "claim": "Waze 帮助中心作为产品入口背景，功能可用性仍以官方更新公告和应用内实际开放为准。",
+      "excerpt": "Waze Help Center, product support index."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/13/waze-adds-more-gemini-features-to-its-navigation-app/",
+      "claim": "TechCrunch 对 Waze Gemini 功能作交叉报道；不替代 Google/Waze 的地区与测试状态说明。",
+      "excerpt": "TechCrunch, Waze Gemini feature coverage, 2026-07-13."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/intl/es-419/actualizaciones-de-producto/comunicacion-y-conectividad/waze-lanza-nuevas-funciones-de-personalizacion-y-mas-actualizaciones-de-gemini/",
+  "sourceHash": "sha256:dfa5e1a0cf82cbf57b9bbc043f654eef59e268bc1f80bbc9c536ce252155edda",
+  "status": "published",
+  "discoveredAt": "2026-10-04T11:45:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 agent 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 tools 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 context 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 prompt 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 authorization 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 event 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.92,
+      "evidence": [
+        "正文用零基础语言解释 citation 在这条新闻中的作用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/intl/es-419/actualizaciones-de-producto/comunicacion-y-conectividad/waze-lanza-nuevas-funciones-de-personalizacion-y-mas-actualizaciones-de-gemini/",
+      "claim": "Waze 官方公布摩托车模式、个性化路线、Less Chatty、对话式报告和 Gemini 目的地搜索的可用范围。",
+      "excerpt": "Google Blog, “Waze lanza nuevas funciones de personalización y más actualizaciones de Gemini”, 2026-07-13."
+    },
+    {
+      "url": "https://support.google.com/waze/",
+      "claim": "Waze 帮助中心作为产品入口背景，功能可用性仍以官方更新公告和应用内实际开放为准。",
+      "excerpt": "Waze Help Center, product support index."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/13/waze-adds-more-gemini-features-to-its-navigation-app/",
+      "claim": "TechCrunch 对 Waze Gemini 功能作交叉报道；不替代 Google/Waze 的地区与测试状态说明。",
+      "excerpt": "TechCrunch, Waze Gemini feature coverage, 2026-07-13."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T11:45:00Z",
+    "method": "source",
+    "notes": "逐条核对原始公告、帮助页和可信新闻报道；将公司口径、媒体观察、Beta/地区上线和未验证指标分开。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T11:45:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 手写，优先新闻事件和一手来源，保留计划、报道、地区上线与统计口径边界，等待 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T09:10:00Z",
+    "questions": [
+      "新闻主线优先，中文自然易懂，适合零基础读者，未见模板化或明显 AI 腔。",
+      "eventDate/publishedAt 均为 2026-07-13，与声明、产品更新和媒体观察日期一致。",
+      "官方口径、媒体观察、未来判断与未落地边界清楚：Stanford 公开信是议程而非预测/法律；Waze 区分 rollout、Beta、地区范围和人工地图核验；Claude 印度价格标为 TechCrunch 观察，价格、支付和 5.8% 使用量保留来源边界。",
+      "sections、explainer、SVG alt、词条和相关文章联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：三篇新闻事实、来源归属和未落地边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-13",
+  "promotedAt": "2026-10-04T05:53:34.860Z"
+}

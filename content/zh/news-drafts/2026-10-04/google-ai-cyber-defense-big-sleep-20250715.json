@@ -1,0 +1,232 @@
+{
+  "slug": "google-ai-cyber-defense-big-sleep-20250715",
+  "title": "Google 把 AI 代理放进漏洞发现流程：Big Sleep、Timesketch 和安全协作一起推进",
+  "summary": "Google 公布 Big Sleep 发现 SQLite 漏洞、Timesketch 接入 agentic 日志分析以及 CoSAI/AIxCC 合作；公告把 AI 视为防守者的放大器，漏洞阻断效果仍主要是公司口径。",
+  "body": "7 月 15 日，Google 发布一组面向网络防守的 AI 更新。最具体的一条是：Google DeepMind 与 Project Zero 的 Big Sleep 代理结合 Google Threat Intelligence，发现了 SQLite 的 CVE-2025-6965；Google 说，系统判断漏洞可能很快被利用，并在野外利用发生前切断了这条路径。与此同时，Google 预告把 Sec-Gemini 的 agentic 能力接入开源取证平台 Timesketch，还展示 FACADE 内部威胁检测和与 CoSAI、DARPA AIxCC 的合作。\n\nBig Sleep 解决的是安全团队“看得太慢”的问题。传统漏洞研究需要研究员读代码、构造输入、验证触发条件，再给维护者提交报告；代理可以连续搜索、运行测试并把线索串起来。Google 的公告把这件事描述为 AI 代理第一次直接阻断野外漏洞利用，但这是公司对自己系统的总结。公开资料可以核对漏洞编号和披露记录，却不能仅凭一篇公司公告证明“阻断”在所有环境都可重复。\n\nTimesketch 是另一种使用方式。它本来就是用于协作数字取证的时间线工具，Google 计划让 AI 先对大量日志做初步调查，再把可疑线索交给分析员。这里的关键词是“初步”：AI 适合把事件按时间、主机和行为聚类，是否构成入侵、哪些证据可采信、何时隔离系统，仍需要熟悉环境的人做判断。Google 同时强调 agent 的隐私、越界动作和人类监督问题，说明它没有把自动化调查等同于自动处置。\n\nFACADE 和 AIxCC 把范围扩到模型外部。FACADE 是 Google 内部用于处理大量安全事件的异常检测系统，AIxCC 则让团队用 AI 找到并修复开源软件漏洞。CoSAI 获得 Google 的 Secure AI Framework 数据，用于 agentic AI、网络防御和软件供应链工作流。它们更像基础设施和合作网络的推进，而不是一个今天就能直接下载的单一产品。\n\n这组新闻的价值在于把“AI 做安全”拆成了三个动作：找漏洞、读日志、协调生态。每一步都需要可追踪的证据和人工接管，尤其是高风险处置不能只依据模型生成的摘要。Google 把 Big Sleep 的成果当作信号，但真正能否降低漏洞暴露时间，还要看公开复现、维护者反馈和长期误报率。",
+  "publishedAt": "2025-07-15",
+  "eventDate": "2025-07-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-ai-cyber-defense-big-sleep-20250715.svg",
+    "alt": "Google 将 AI 代理接入漏洞发现、数字取证和人工安全复核三条防守路径",
+    "sourceUrl": "/images/news/google-ai-cyber-defense-big-sleep-20250715.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "big-sleep",
+      "title": "Big Sleep 把威胁情报接到漏洞研究",
+      "body": "Google 说 Big Sleep 根据 Threat Intelligence 发现 SQLite 的 CVE-2025-6965，并预测其可能被利用；漏洞编号可核对，提前阻断是公司披露。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agentic-forensics",
+      "title": "Timesketch 先做初步取证",
+      "body": "Sec-Gemini 将帮助分析员从大量日志中整理时间线和可疑行为，公告仍把它放在初步调查位置，没有授予 AI 自动定性和隔离权限。",
+      "kind": "technical"
+    },
+    {
+      "id": "fascade-and-aixcc",
+      "title": "FACADE 和 AIxCC 把防守推到生态层",
+      "body": "FACADE 关注内部威胁检测，AIxCC 让 AI 帮助找和修开源漏洞；它们是演示和合作计划，不是单一产品的普遍可用承诺。",
+      "kind": "comparison"
+    },
+    {
+      "id": "company-claim",
+      "title": "“第一次阻断”需要继续复核",
+      "body": "Google 的表述说明其系统如何被使用，但独立研究者还需要查看复现、误报和实际维护者反馈，才能判断效果能否外推。",
+      "kind": "boundary"
+    },
+    {
+      "id": "human-oversight",
+      "title": "高风险处置仍需要人接管",
+      "body": "漏洞是否真实、日志是否完整、何时隔离系统都涉及环境和责任判断；AI 摘要不能替代安全团队的权限和审计。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "AI 防守代理怎样从线索走到处置？",
+    "question": "把发现、验证、排序和行动拆开，才能知道自动化到底覆盖哪一层。",
+    "steps": [
+      {
+        "label": "接收线索",
+        "detail": "把威胁情报、代码变更或日志事件送入代理，保留原始时间和来源。",
+        "evidence": "Google Threat Intelligence"
+      },
+      {
+        "label": "寻找异常",
+        "detail": "代理扫描代码或日志，提出漏洞候选和可疑行为，不把候选直接当成确认事实。",
+        "evidence": "Big Sleep and Timesketch"
+      },
+      {
+        "label": "验证影响",
+        "detail": "安全人员检查是否能复现、影响哪些版本、是否已在野外被利用。",
+        "evidence": "CVE record and disclosure process"
+      },
+      {
+        "label": "排序处置",
+        "detail": "依据影响、利用可能性和业务环境排优先级，决定是否修补或隔离。",
+        "evidence": "Human oversight boundary"
+      },
+      {
+        "label": "留下证据",
+        "detail": "把模型线索、人工判断和最终动作写入时间线，便于复盘误报和漏报。",
+        "evidence": "Timesketch audit trail"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Blog",
+    "url": "https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "llm",
+    "context",
+    "auth"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/",
+      "claim": "Google 官方博客 2025 年 7 月 15 日公布 Big Sleep、Timesketch agentic 能力、FACADE 和 CoSAI/AIxCC 合作。",
+      "excerpt": "Google, A summer of security: empowering cyber defenders with AI, Jul 15, 2025."
+    },
+    {
+      "url": "https://www.sqlite.org/cves.html",
+      "claim": "Google 把 Big Sleep 发现的 SQLite 漏洞指向 CVE-2025-6965；CVE 页面用于核对漏洞编号，不把 Google 的“提前阻断”表述升级为独立复测结论。",
+      "excerpt": "SQLite CVE record, CVE-2025-6965."
+    },
+    {
+      "url": "https://googleprojectzero.blogspot.com/2024/11/project-naptime.html",
+      "claim": "Project Zero 的研究背景说明 Google 使用 AI 代理探索漏洞研究；本文只把它作为 Big Sleep 的前期背景。",
+      "excerpt": "Google Project Zero, Big Sleep/Project Naptime background."
+    },
+    {
+      "url": "https://research.google/pubs/securely-deploying-ai-agents/",
+      "claim": "Google 的研究材料说明部署 AI agent 时需要隐私、越界动作防护和人类监督；文章将这些当作公司提出的安全原则。",
+      "excerpt": "Google Research, secure deployment of AI agents."
+    },
+    {
+      "url": "https://timesketch.org/",
+      "claim": "Timesketch 是 Google 的开源协作数字取证平台，官方公告称将接入 Sec-Gemini 的 agentic 日志分析。",
+      "excerpt": "Timesketch open-source digital forensics platform."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/",
+  "sourceHash": "sha256:bba784b10e7fc37616603263422f3dd800ab14259c0e043a8b5ce4b49e37e3ce",
+  "status": "published",
+  "discoveredAt": "2026-10-04T17:00:25Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 Big Sleep 和 Timesketch 中 AI 代理的发现与初步调查角色。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释漏洞扫描、日志分析和取证工具链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文把 Sec-Gemini 放在安全分析模型链路中。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文解释安全事件的日志上下文和时间线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.9,
+      "evidence": [
+        "正文说明隔离、修补等高风险动作仍由有权限的人决定。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/",
+      "claim": "Google 官方博客 2025 年 7 月 15 日公布 Big Sleep、Timesketch agentic 能力、FACADE 和 CoSAI/AIxCC 合作。",
+      "excerpt": "Google, A summer of security: empowering cyber defenders with AI, Jul 15, 2025."
+    },
+    {
+      "url": "https://www.sqlite.org/cves.html",
+      "claim": "Google 把 Big Sleep 发现的 SQLite 漏洞指向 CVE-2025-6965；CVE 页面用于核对漏洞编号，不把 Google 的“提前阻断”表述升级为独立复测结论。",
+      "excerpt": "SQLite CVE record, CVE-2025-6965."
+    },
+    {
+      "url": "https://googleprojectzero.blogspot.com/2024/11/project-naptime.html",
+      "claim": "Project Zero 的研究背景说明 Google 使用 AI 代理探索漏洞研究；本文只把它作为 Big Sleep 的前期背景。",
+      "excerpt": "Google Project Zero, Big Sleep/Project Naptime background."
+    },
+    {
+      "url": "https://research.google/pubs/securely-deploying-ai-agents/",
+      "claim": "Google 的研究材料说明部署 AI agent 时需要隐私、越界动作防护和人类监督；文章将这些当作公司提出的安全原则。",
+      "excerpt": "Google Research, secure deployment of AI agents."
+    },
+    {
+      "url": "https://timesketch.org/",
+      "claim": "Timesketch 是 Google 的开源协作数字取证平台，官方公告称将接入 Sec-Gemini 的 agentic 日志分析。",
+      "excerpt": "Timesketch open-source digital forensics platform."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "method": "source",
+    "notes": "已核对 Google 7 月 15 日官方博客、SQLite CVE 页面、Project Zero 背景、Google Research 安全部署材料与 Timesketch；正文区分公司“提前阻断”表述、公开漏洞事实、演示/合作和人工监督。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T17:00:25Z",
+    "notes": "按 2025-07-15 事件日核对 Google 官方安全公告；正文以新闻事件和安全产品行为为主，未把公司口径写成独立验证。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T15:10:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，七篇均按各自事件组织，未见批量模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-15，与官方发布、媒体报道、漏洞披露或论文讨论日期一致。",
+      "Mistral/Google/Thinking Machines/Discover/xAI/Meta/CoT 论文分别清楚区分公司产品与 benchmark、媒体/研究者报道、融资和内部数据、漏洞修复、论文建议与独立验证边界；Big Sleep 的阻断、Discover rollout、Grok prompt 修复、Meta 无滥用证据及 CoT 可监测性均未越界为普遍结论。",
+      "来源卡片、sections、explainer、SVG alt、词条联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：七篇事实、来源归属、公司口径和第三方/论文证据边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-15",
+  "fingerprint": "sha256:bba784b10e7fc37616603263422f3dd800ab14259c0e043a8b5ce4b49e37e3ce",
+  "promotedAt": "2026-10-04T17:29:52.934Z"
+}

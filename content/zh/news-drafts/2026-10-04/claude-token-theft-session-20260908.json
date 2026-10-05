@@ -1,0 +1,165 @@
+{
+  "slug": "claude-token-theft-session-20260908",
+  "title": "Claude 订阅额度异常消耗：被盗会话密钥怎样变成可消耗的 token",
+  "summary": "TechCrunch 于 2026-09-08 报道，一名英国独立顾问发现自己未使用 Claude 时账户额度仍在下降；Anthropic 调查后称，在部分案例中信息窃取恶意软件盗走登录会话，再访问账户并消耗额度。报道还描述了会话密钥铸造未经授权 OAuth token、撤销授权和部分退款；这不是 Anthropic 已确认所有账户都受影响。",
+  "body": "TechCrunch 在 9 月 8 日报道，英国独立 AI 顾问 Grant De Swardt 发现 Claude Max 20x 账户在自己没有工作时持续消耗 token。关闭已连接的 Cowork、Dispatch 和本地任务后，额度仍从 45% 上升到 55%。Anthropic 暂停了他的付费账户、撤销会话和服务器端 Claude Code token，并退还剩余订阅费用的一部分。\n\nAnthropic 后来告诉他，调查发现一个被攻破的 Claude session key 被用来铸造未经授权的 Claude Code OAuth token。TechCrunch 还刊出了 Anthropic 发给其他用户的邮件：公司怀疑常见的信息窃取恶意软件从电脑中盗取登录会话，再用会话访问 Claude 账户、消耗额度。恶意软件可能来自感染的软件或广告，并不等同于 Claude 本身感染了用户设备。\n\n事件的关键不是“模型偷了 token”，而是订阅系统把会话、授权和用量绑定在一起：一旦攻击者拿到还有效的会话，就能让后台任务看起来像账户正常使用，额度和费用就变成受害者承担的资源。报告中的个案还反映出支持系统缺少逐项用量明细，用户很难第一时间判断是自己、定时任务还是第三方在消耗。\n\nTechCrunch 采访了多名用户，有人称额度在几分钟内从 0% 变到 49%，也有人收到 Anthropic 的提醒和授权撤销。它们是报道中的用户陈述与公司邮件，不是一个经过独立统计的整体发生率。Anthropic 没有向 De Swardt 提供完整的逐项用量说明，也未回答所有识别滥用的问题。\n\n对使用代理和代码工具的人，最实用的教训是把会话当成凭据：启用多因素认证、撤销不用的连接、避免在不可信电脑登录、监控 token 与 OAuth 授权变化，并要求服务商提供能定位到任务、时间和 IP 的用量日志。安全边界还需要平台方补上，而不应完全转嫁给订阅者。",
+  "publishedAt": "2026-09-08",
+  "eventDate": "2026-09-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/claude-token-theft-session-20260908.svg",
+    "alt": "TechCrunch 报道 Claude 订阅额度异常消耗：被盗会话可能变成可消耗的 token；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/claude-token-theft-session-20260908.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "case",
+      "title": "一个账户先出现异常用量",
+      "body": "报道中的顾问在停止本地与云端任务后，Claude token 仍持续增加。Anthropic 因此暂停账户、撤销会话并退还部分费用。",
+      "kind": "narrative"
+    },
+    {
+      "id": "session-key",
+      "title": "会话密钥可以铸造后续授权",
+      "body": "Anthropic 在部分案例中解释，被盗 session key 被用于生成未经授权的 Claude Code OAuth token。会话和 OAuth 都应当当作凭据管理。",
+      "kind": "technical"
+    },
+    {
+      "id": "infostealer",
+      "title": "恶意软件来自用户环境的可能性",
+      "body": "Anthropic 邮件称常见 infostealer 可盗取登录会话。报道没有证明所有受影响用户都感染同一种恶意软件，也没有说 Claude 服务本身被攻破。",
+      "kind": "boundary"
+    },
+    {
+      "id": "visibility",
+      "title": "缺少逐项用量放大了损失",
+      "body": "如果用户只能看到总额度，后台滥用可能持续很久才被发现。可审计的任务、时间和授权日志是订阅服务的一部分。",
+      "kind": "comparison"
+    },
+    {
+      "id": "response",
+      "title": "个人和平台各有一段责任",
+      "body": "用户要保护设备和会话，平台要提供撤销、异常检测、细粒度用量和及时支持，不能只把损失归因给用户。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "一枚被盗会话如何变成额度损失？",
+    "question": "从设备、会话、OAuth、任务到用量账单逐层定位，才能知道哪里该阻断。",
+    "steps": [
+      {
+        "label": "盗取会话",
+        "detail": "信息窃取恶意软件或外部服务拿到仍有效的登录会话数据。",
+        "evidence": "Anthropic email quoted by TechCrunch"
+      },
+      {
+        "label": "生成授权",
+        "detail": "攻击者用 session key 铸造 Claude Code OAuth token，获得后续调用能力。",
+        "evidence": "Compromised session key and OAuth tokens"
+      },
+      {
+        "label": "后台消耗",
+        "detail": "调用看起来像账户自身的任务，订阅 token 和额度持续下降。",
+        "evidence": "Controlled usage interval"
+      },
+      {
+        "label": "撤销与取证",
+        "detail": "平台撤销会话、退费并提供逐项日志，用户才能确认范围和恢复安全。",
+        "evidence": "Anthropic response and audit gap"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/"
+  },
+  "relatedSlugs": [
+    "auth",
+    "authorization",
+    "event",
+    "api",
+    "agent",
+    "tools",
+    "data-quality",
+    "context"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "TechCrunch 于 2026-09-08 报道一名用户在停止工作后仍发现 Claude 额度上升，Anthropic 暂停账户、撤销会话并部分退款。",
+      "excerpt": "Token consumption again increased while no work was running; Anthropic suspended the account, invalidated sessions and issued a partial refund."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "Anthropic 向 TechCrunch 描述，受影响案例中被攻破的 Claude session key 被用于铸造未经授权的 Claude Code OAuth token。",
+      "excerpt": "A compromised Claude session key was used to mint unauthorized Claude Code OAuth tokens."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "Anthropic 邮件称常见 infostealer 可盗取登录会话并消耗账户额度，恶意软件可能来自其他在线来源。",
+      "excerpt": "A bad actor was using common infostealer malware to steal Claude login sessions and consume usage."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "报道中的异常用量和用户数量来自个案与用户自报，不代表所有订阅账户的发生率。",
+      "excerpt": "Other users reported similar spikes, but the story does not establish a population-wide rate."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers",
+  "sourceHash": "sha256:b382c344d921c083eda2d029986e33b8eb2f7b4339fb437831c786e3b3bdab98",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "TechCrunch 于 2026-09-08 报道一名用户在停止工作后仍发现 Claude 额度上升，Anthropic 暂停账户、撤销会话并部分退款。",
+      "excerpt": "Token consumption again increased while no work was running; Anthropic suspended the account, invalidated sessions and issued a partial refund."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "Anthropic 向 TechCrunch 描述，受影响案例中被攻破的 Claude session key 被用于铸造未经授权的 Claude Code OAuth token。",
+      "excerpt": "A compromised Claude session key was used to mint unauthorized Claude Code OAuth tokens."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "Anthropic 邮件称常见 infostealer 可盗取登录会话并消耗账户额度，恶意软件可能来自其他在线来源。",
+      "excerpt": "A bad actor was using common infostealer malware to steal Claude login sessions and consume usage."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/hackers-are-stealing-claude-tokens-from-subscribers/",
+      "claim": "报道中的异常用量和用户数量来自个案与用户自报，不代表所有订阅账户的发生率。",
+      "excerpt": "Other users reported similar spikes, but the story does not establish a population-wide rate."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "method": "source",
+    "notes": "逐条核对原文日期和事件边界；把厂商自述、媒体报道、模型输出、融资口径和尚待独立核验的结论分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "notes": "按独立新闻事件成篇，明确区分已发生事实、公司主张、报道归属和后续需要验证的结果。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:20:10Z",
+    "questions": [],
+    "notes": "新闻主线是 TechCrunch 报道个案和 Anthropic 对部分案例的说明：被盗 session key 可能铸造未经授权的 OAuth token 并消耗订阅额度。正文区分用户自报、公司邮件与总体发生率，未把恶意软件写成 Claude 服务被攻破。标题、hero.alt 和 SVG accessible 文案改为“异常消耗/报道的会话盗用”，避免暗示所有账户已被确认盗用；其余联动和讲解一致。",
+    "changes": [
+      "将标题和 hero.alt 改为“订阅额度异常消耗”，并将 SVG title/desc 加入 reported/possible 限定。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-08",
+  "promotedAt": "2026-10-03T00:24:01.490Z"
+}

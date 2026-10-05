@@ -1,0 +1,178 @@
+{
+  "slug": "cloudflare-adaptive-intelligence-20260831",
+  "title": "Cloudflare 发布 Adaptive Intelligence：按实时流量生成短期机器人防护规则",
+  "summary": "Cloudflare 于 2026 年 8 月 31 日发布 Adaptive Intelligence，将持续检测引擎接入 Bot Management；公司称它从实时流量学习并生成短期规则，以提高自动化攻击者反复试探的成本，效果仍待独立验证。",
+  "body": "Cloudflare 在 2026 年 8 月 31 日发布 Adaptive Intelligence，把它接入 Bot Management，目标是让机器人防护根据实时流量持续变化。公司称系统会从全球网络每天超过一万亿次访问的元信号中学习，自动生成短期、针对性的规则；规则不断轮换，攻击者就难以长期研究同一个静态防线。\n\n官方新闻稿把它描述成“实时检测引擎”和“持续重写自己的防御”，并称能够同时观察不同时间尺度的行为，以识别慢速撞库和抓取。Cloudflare 的产品声明还包括：模型在实时流量上持续再训练、把新型 bot 框架和绕过技术写进检测引擎，以及结合浏览器会话信号与边缘遥测来区分自动化流量和真实用户。\n\n这些是 Cloudflare 对产品设计和预期效果的描述，不是独立评测结论。系统是否减少误拦截、短期规则多久轮换、哪些客户可用，仍需要后续文档或第三方数据。新闻的技术重点是把 bot 防护从定期更新改成不断适应的反馈回路。",
+  "publishedAt": "2026-08-31",
+  "eventDate": "2026-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cloudflare-adaptive-intelligence-20260831.svg",
+    "alt": "实时流量信号驱动短期规则不断轮换，代表 Adaptive Intelligence",
+    "sourceUrl": "/images/news/cloudflare-adaptive-intelligence-20260831.svg",
+    "license": "VibePolaris 自制插图 · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "engine",
+      "title": "它改变的是防护更新的节奏",
+      "body": "传统机器人防护常靠固定特征和周期更新：攻击者研究规则，防守方再发布补丁。Cloudflare 说 Adaptive Intelligence 直接从实时流量的元信号中学习，生成短期规则并快速轮换。这样，攻击者即使找到了某个绕过方法，也需要不断重新投入工程成本；但“让攻击更昂贵”是产品目标，不等于所有攻击都会被阻断。",
+      "kind": "narrative"
+    },
+    {
+      "id": "signals",
+      "title": "系统会看哪些行为线索",
+      "body": "公告提到两类线索：全球边缘网络看到的大规模流量模式，以及浏览器层面的会话行为。多个时间窗口一起分析，可以把慢速撞库、低频抓取等不明显的行为放在同一张图里。Cloudflare 还称会把新 bot 框架和绕过方式融入模型。本文只记录公司对信号来源的描述，没有把“超过一万亿次访问”解释成公开训练数据集。",
+      "kind": "technical"
+    },
+    {
+      "id": "rotation",
+      "title": "短期规则为什么要轮换",
+      "body": "如果一个规则长期不变，攻击者可以反复试探，逐渐画出防线边界。短期、定向规则把观察窗口缩短：它们针对正在发生的模式，之后自动失效或变化。这样做可能增加攻击者成本，也可能提高误拦截和运维复杂度；真实效果需要比较正常访客通过率、误报率和响应时间。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "“自适应”不是自动证明安全",
+      "body": "Cloudflare 的发布材料没有给出独立基准、误报率、客户分行业结果或完整规则生命周期。Adaptive Intelligence 是 Bot Management 的产品更新，读者不应把它写成一个已经战胜所有 AI 攻击的通用防火墙。最稳妥的表述是：公司宣布了一套持续学习和短期规则机制，试图缩小攻击者反复试探的收益。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "防护规则如何跟着攻击行为变化",
+    "question": "把流量信号、短期规则和真实用户区分开，才能理解 Adaptive Intelligence 的产品声明。",
+    "steps": [
+      {
+        "label": "观察实时流量",
+        "detail": "系统从全球请求和浏览器会话中提取自动化行为的元信号。",
+        "evidence": "Cloudflare 官方称每天分析超过一万亿次访问。"
+      },
+      {
+        "label": "生成短期规则",
+        "detail": "模型针对正在发生的攻击模式生成定向规则，不等待下一次固定版本更新。",
+        "evidence": "新闻稿描述 short-lived rules。"
+      },
+      {
+        "label": "轮换防线",
+        "detail": "规则持续变化，攻击者不能长期用同一套试探结果扩大规模。",
+        "evidence": "官方称 rotating rules prevents attackers from mapping defenses。"
+      },
+      {
+        "label": "保留真实用户",
+        "detail": "系统组合会话和边缘信号，目标是只拦自动化滥用；误拦截仍需测量。",
+        "evidence": "产品声明将 malicious intent 与 real humans 区分。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cloudflare",
+    "url": "https://www.cloudflare.net/news/news-details/2026/Cloudflare-Introduces-Adaptive-Intelligence-Reverses-the-Economics-of-Automated-Cyber-Attacks/default.aspx"
+  },
+  "relatedSlugs": [
+    "agent",
+    "execution-sandbox",
+    "data-validation"
+  ],
+  "relatedArticleSlugs": [
+    "crowdstrike-nvidia-safemind-20260901",
+    "air-security-context-firewall-20260901"
+  ],
+  "sources": [
+    {
+      "url": "https://www.cloudflare.net/news/news-details/2026/Cloudflare-Introduces-Adaptive-Intelligence-Reverses-the-Economics-of-Automated-Cyber-Attacks/default.aspx",
+      "claim": "Cloudflare 于 2026 年 8 月 31 日发布 Adaptive Intelligence，并将其接入 Bot Management。",
+      "excerpt": "Cloudflare ... today announced Adaptive Intelligence, a new continuous detection engine built directly into Cloudflare Bot Management."
+    },
+    {
+      "url": "https://www.cloudflare.net/news/news-details/2026/Cloudflare-Introduces-Adaptive-Intelligence-Reverses-the-Economics-of-Automated-Cyber-Attacks/default.aspx",
+      "claim": "公司称系统从实时流量学习并生成短期规则，持续应对 bot 框架和绕过技术。",
+      "excerpt": "The ML model retrains continuously on live traffic ... generating short-lived, hyper-targeted rules."
+    },
+    {
+      "url": "https://blog.cloudflare.com/introducing-adaptive-intelligence/",
+      "claim": "Cloudflare 产品博客说明 AI 降低了自动化攻击成本，防守方需要不断适应。",
+      "excerpt": "AI has simplified this further, making it even easier to set up complex configurations for attackers."
+    }
+  ],
+  "canonicalUrl": "https://www.cloudflare.net/news/news-details/2026/Cloudflare-Introduces-Adaptive-Intelligence-Reverses-the-Economics-of-Automated-Cyber-Attacks/default.aspx",
+  "sourceHash": "sha256:2042061dd6884ecf0136c7deb2d3409ad51f4e5fb957ae4d79fa8679e4ea4a5c",
+  "status": "published",
+  "discoveredAt": "2026-10-03T04:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文按该概念解释机制与边界"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.9,
+      "evidence": [
+        "正文按该概念解释机制与边界"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.9,
+      "evidence": [
+        "正文按该概念解释机制与边界"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.cloudflare.net/news/news-details/2026/Cloudflare-Introduces-Adaptive-Intelligence-Reverses-the-Economics-of-Automated-Cyber-Attacks/default.aspx",
+      "claim": "Cloudflare 于 2026 年 8 月 31 日发布 Adaptive Intelligence，并将其接入 Bot Management。",
+      "excerpt": "Cloudflare ... today announced Adaptive Intelligence, a new continuous detection engine built directly into Cloudflare Bot Management."
+    },
+    {
+      "url": "https://www.cloudflare.net/news/news-details/2026/Cloudflare-Introduces-Adaptive-Intelligence-Reverses-the-Economics-of-Automated-Cyber-Attacks/default.aspx",
+      "claim": "公司称系统从实时流量学习并生成短期规则，持续应对 bot 框架和绕过技术。",
+      "excerpt": "The ML model retrains continuously on live traffic ... generating short-lived, hyper-targeted rules."
+    },
+    {
+      "url": "https://blog.cloudflare.com/introducing-adaptive-intelligence/",
+      "claim": "Cloudflare 产品博客说明 AI 降低了自动化攻击成本，防守方需要不断适应。",
+      "excerpt": "AI has simplified this further, making it even easier to set up complex configurations for attackers."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T04:00:00Z",
+    "method": "manual",
+    "notes": "核对事件日期、原始链接、引用摘录和“计划/目标/产品声明”的限定语。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T04:00:00Z",
+    "notes": "按官方新闻稿和产品博客逐项核对；产品效果与合作目标均保留公司口径。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T03:15:11Z",
+    "questions": [],
+    "notes": "通过。Cloudflare 发布产品机制是主线，实时流量、短期规则和浏览器/边缘信号均归于公司说明；效果、误报率和客户结果保留为待验证，不写成通用防火墙。",
+    "changes": [
+      "将标题改为按实时流量生成短期规则，避免把产品目标写成已证明的防护效果。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "news-20260831-extra",
+  "promotedAt": "2026-10-03T03:16:48.951Z"
+}

@@ -1,0 +1,199 @@
+{
+  "slug": "satquest-verifier-reasoning-20250831",
+  "title": "SATQuest：用可验证的 SAT 任务拆开测 LLM 逻辑推理",
+  "summary": "SATQuest 论文于 8 月 31 日提交，提出一个用 SAT 求解器生成和核验 LLM 逻辑推理任务的评测框架。它从 CNF 实例生成多样问题，用 PySAT 客观检查答案，并沿实例、问题类型和问法三个维度拆分成绩。实验发现，模型在高复杂度任务和从熟悉数学符号迁移到机器或叙事格式时仍有缺口；用 SATQuest 奖励做强化微调可以提升目标任务，但跨格式稳健性仍然困难。",
+  "body": "逻辑推理评测常遇到两个问题：题目数量有限，模型可能记住模式；答案又常由语言模型或人工判断，分数不一定可复现。SATQuest 的做法，是把任务建立在可验证的 SAT 实例上，让答案是否满足约束由 PySAT 检查，而不是由另一个模型猜。\n\n框架从合取范式（CNF）实例生成多种问题。同一个实例可以问不同的问题类型，也可以用数学符号、机器描述或自然语言叙事表达。评测因此不只看模型会不会解某一题，还能区分实例难度、问题类型和表达格式带来的影响。\n\n实验结果显示，模型在复杂度更高的任务上存在持续缺口；当题目从熟悉的数学记法换成机器或故事格式时，跨格式迁移也会下降。这种差异很难用一个平均准确率说明，却能在三维切分里直接看到。\n\n作者还用 SATQuest 生成的可验证奖励做强化微调。目标任务表现明显提升，并能推广到更大的实例；但跨格式稳健性仍然困难。也就是说，模型可能学会解某种形式的逻辑题，却没有真正学会把同一约束迁移到另一种表达里。\n\n对训练和评测团队来说，验证器把“答案对不对”从主观判断变成可重复信号。随机化 CNF 生成还可以减少记忆风险，固定生成参数则方便不同模型在同一批实例上比较。\n\n验证器不是万能的。它能准确判断 SAT 约束是否满足，却不能单独解释模型为什么错，也不能保证题目覆盖了真实世界的逻辑分布。训练时如果只追求求解器奖励，模型可能专门适应形式而忽略表达和任务理解。\n\nSATQuest 的价值，是把逻辑推理评测从“看起来会推理”拉回可重现的判定。模型要在更难的实例和不同表达之间保持能力，才能说明它学到的是约束，而不只是题面。",
+  "publishedAt": "2025-08-31",
+  "eventDate": "2025-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/satquest-verifier-reasoning-20250831.svg",
+    "alt": "SATQuest 从 CNF 实例生成逻辑任务并用 PySAT 客观核验答案",
+    "sourceUrl": "/images/news/satquest-verifier-reasoning-20250831.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "subjective-reasoning",
+      "title": "逻辑分数不该只靠另一模型判断",
+      "body": "题目有限会带来记忆风险，开放式评审又可能漂移；SATQuest 把答案交给求解器核验。",
+      "kind": "narrative"
+    },
+    {
+      "id": "cnf-generation",
+      "title": "从 CNF 实例生成多样任务",
+      "body": "同一约束可以变成不同问题类型和表达格式，让评测拆开实例、问法与表述的影响。",
+      "kind": "technical"
+    },
+    {
+      "id": "pysat-verifier",
+      "title": "PySAT 直接检查答案是否满足约束",
+      "body": "验证器给出可重复的正确性信号，避免把语言流畅度当作逻辑正确。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-dimensions",
+      "title": "三维成绩揭示迁移缺口",
+      "body": "实验发现高复杂度任务和从数学符号到机器/叙事格式的迁移更难，平均准确率会掩盖这类差异。",
+      "kind": "comparison"
+    },
+    {
+      "id": "rl-reward",
+      "title": "可验证奖励能提升目标任务",
+      "body": "SATQuest 奖励用于强化微调后，目标任务和更大实例表现提升；跨格式稳健性仍未解决。",
+      "kind": "comparison"
+    },
+    {
+      "id": "verifier-boundary",
+      "title": "验证器能判对错，不能解释全部原因",
+      "body": "它不保证题目代表真实逻辑分布，训练也不能只追求求解器分数而忽略表达理解。",
+      "kind": "boundary"
+    },
+    {
+      "id": "constraint-transfer",
+      "title": "真正学到的是约束，还是题面？",
+      "body": "更难实例和不同表达都能保持能力，才说明模型学会了逻辑结构而不是记住形式。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "SATQuest 怎样把 LLM 逻辑推理变成可复现评测？",
+    "question": "用随机化 CNF 实例生成多种问法和表达，再由 PySAT 核验答案并按三维切分结果。",
+    "steps": [
+      {
+        "label": "生成 CNF 实例",
+        "detail": "随机化合取范式约束，减少题面记忆并控制实例复杂度。",
+        "evidence": "randomized CNF generation"
+      },
+      {
+        "label": "变化任务维度",
+        "detail": "分别改变实例、问题类型和问法格式，检查模型能力来自哪里。",
+        "evidence": "instance, problem type, and question format"
+      },
+      {
+        "label": "求解并核验",
+        "detail": "模型给出答案后由 PySAT 直接检查约束是否满足，得到客观奖励。",
+        "evidence": "checks answers objectively with PySAT"
+      },
+      {
+        "label": "拆分结果",
+        "detail": "比较高低复杂度和数学、机器、叙事格式，定位迁移与稳健性缺口。",
+        "evidence": "gaps on higher-complexity tasks and transfer"
+      },
+      {
+        "label": "训练后复测",
+        "detail": "用验证奖励做强化微调，再在新实例和跨格式任务上复测，避免只优化单一形式。",
+        "evidence": "reinforcement fine-tuning with SATQuest rewards"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00930"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "benchmark",
+    "grader",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00930",
+      "claim": "SATQuest 从 CNF 实例生成 SAT 逻辑任务，用 PySAT 客观核验，并按实例、问题类型和问法三维评测。",
+      "excerpt": "A Verifier for Logical Reasoning Evaluation and Reinforcement Fine-Tuning of LLMs"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00930",
+      "claim": "实验发现高复杂度和跨格式迁移存在缺口，验证奖励强化微调提升目标任务。",
+      "excerpt": "persistent gaps ... cross-format robustness remains challenging ... reinforcement fine-tuning"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00930",
+  "sourceHash": "sha256:56ddd9ce5cff62a23a27172fd4fa8fc644ab4319f32bf5a9dead23f17506bec4",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 LLM 的逻辑推理、强化微调和格式迁移。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕三维切分、复杂度和跨格式稳健性评测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.98,
+      "evidence": [
+        "正文介绍 SATQuest 的随机实例、任务生成和可复现比较。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grader",
+      "score": 0.95,
+      "evidence": [
+        "正文把 PySAT 验证器作为客观判定和训练奖励来源。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 31 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00930",
+      "claim": "arXiv 记录 SATQuest 于 2025 年 8 月 31 日提交，研究可验证的 LLM 逻辑推理评测。",
+      "excerpt": "Date: Sun Aug 31 ... SATQuest"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00930",
+      "claim": "摘要给出 CNF/PySAT、三维评测、高复杂度与跨格式缺口及强化微调结果。",
+      "excerpt": "PySAT ... three orthogonal dimensions ... cross-format robustness remains challenging"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 CNF 生成、PySAT 验证、实例/问题类型/问法三维评测、复杂度与跨格式缺口及强化奖励；正文补充验证器边界和训练后复测。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 SATQuest 写成可验证任务、三维拆评和跨格式迁移检查，保留验证器边界与强化微调条件；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-31-satquest-verifier-reasoning-20250831"
+}

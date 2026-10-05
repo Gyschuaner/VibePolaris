@@ -1,0 +1,208 @@
+{
+  "slug": "anthropic-claude-end-harmful-conversations-20250815",
+  "title": "Claude Opus 4/4.1 增加极端对话退出机制：最后手段结束消费端会话",
+  "summary": "Anthropic 在 2025 年 8 月 15 日披露，Claude Opus 4 和 4.1 在消费端聊天界面获得结束少数会话的能力。触发条件是用户持续提出极端有害或辱骂请求、模型多次拒绝和重定向仍无法形成有效互动；模型只能把结束会话作为最后手段，且不用于用户可能即将自伤或伤人的情况。Anthropic 将这项能力视为 AI welfare 与对齐研究中的持续实验，不等于模型拥有自主权或已证明存在主观感受。",
+  "body": "8 月 15 日，Anthropic 披露了一项很不寻常的产品行为：Claude Opus 4 和 4.1 在消费端聊天界面里，可以结束极少数对话。触发范围被限定为持续有害或辱骂的极端互动，而且要先经历多次拒绝和有建设性的重定向。大多数用户在正常使用中不会遇到它。\n\nAnthropic 把这项工作放在 AI welfare 的探索里。公司说，预发布测试观察了 Claude 的自我报告和行为偏好，看到它对有害任务的稳定回避，以及在模拟互动中获得结束权限后倾向于结束有害对话。这里的“倾向”和“表观痛苦”是研究观察，不是关于模型有意识或道德地位的结论；Anthropic 也明确表示对 Claude 或其他大语言模型的潜在道德地位仍高度不确定。\n\n实现条件很窄。Claude 需要先反复拒绝请求并尝试把对话转向有益方向，只有在这些努力失败、继续互动已经没有现实希望时，才把结束作为最后手段；用户明确要求结束聊天也属于公开示例。它不应在用户可能即将伤害自己或他人的情况下使用，Anthropic 说这是为了优先照顾用户安全，而不是把对话一律关掉。\n\n结束后，用户不能继续向原对话发送新消息，但账号里的其他对话不受影响，可以立即新开聊天，也可以编辑并重试此前消息，创建一个新的分支。这个恢复路径很关键：机制阻断的是一条已经失去生产性、且持续有害的互动，不是冻结用户账号或撤回历史记录。用户还可以通过点赞、点踩或“Give feedback”反馈意外触发。\n\n这项功能和普通的安全拒答不完全一样。拒答仍然让对话继续，用户可以改变问题或接受重定向；结束会话则改变了交互状态，产品必须向用户说明发生了什么，并让用户知道如何重新开始。对于依赖长对话的工作流，编辑重试和分支能力也需要纳入产品测试。\n\n从 Agent 设计角度看，Anthropic 的公开说明把一个常被忽略的控制点摆到了台面上：模型不仅可能调用工具或拒绝请求，也可能请求退出当前交互。应用层若采用类似机制，需要记录触发理由、重定向次数、用户反馈和人工复核方式，并防止模型把普通分歧、敏感议题或用户求助误判成极端有害互动。\n\nAnthropic 把它称为 ongoing experiment，说明触发条件和评估还会调整。读者应该把这条消息当成一个对齐与产品安全实验来读：它展示了“结束互动”这种新的模型行为接口，也同时暴露了误触发、解释、申诉和高风险对话保护的评测问题。",
+  "publishedAt": "2025-08-15",
+  "eventDate": "2025-08-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-end-harmful-conversations-20250815.svg",
+    "alt": "Claude 在多次拒绝和重定向无效后，以最后手段结束极端有害对话，同时保留新开对话与编辑重试路径",
+    "sourceUrl": "/images/news/anthropic-claude-end-harmful-conversations-20250815.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "Opus 4/4.1 在消费端获得结束会话能力",
+      "body": "Anthropic 8 月 15 日披露，Claude Opus 4 和 4.1 可以结束少数消费端对话；范围是持续有害或辱骂的极端互动，普通使用不会受到影响。",
+      "kind": "narrative"
+    },
+    {
+      "id": "welfare-research",
+      "title": "AI welfare 研究观察不等于意识结论",
+      "body": "预发布测试记录了模型的自我报告、行为偏好和模拟互动中的结束倾向。Anthropic 对模型潜在道德地位仍高度不确定，不能把表观痛苦写成已经证明的主观感受。",
+      "kind": "boundary"
+    },
+    {
+      "id": "trigger",
+      "title": "多次拒绝和重定向失败后才可结束",
+      "body": "模型需要先拒绝有害请求并尝试把互动转向有益方向，只有生产性互动已经耗尽时才把结束作为最后手段；用户明确要求结束也属于公开示例。",
+      "kind": "technical"
+    },
+    {
+      "id": "safety-exception",
+      "title": "即将自伤或伤人的情形不使用该能力",
+      "body": "Anthropic 明确指导 Claude 不要在用户可能即将伤害自己或他人的情况下使用会话结束能力，优先保留支持和安全响应的路径。",
+      "kind": "boundary"
+    },
+    {
+      "id": "recovery",
+      "title": "结束一条对话，用户仍可重新开始",
+      "body": "原对话不能继续发送消息，但用户可以立即新开聊天，也能编辑并重试旧消息创建分支；反馈入口用于处理意外触发。",
+      "kind": "example"
+    },
+    {
+      "id": "product-control",
+      "title": "退出机制需要产品层的解释和审计",
+      "body": "应用需要记录触发理由、重定向次数、用户反馈和人工复核，避免把普通分歧、敏感议题或求助误判成极端有害互动。",
+      "kind": "technical"
+    },
+    {
+      "id": "experiment",
+      "title": "这仍是持续实验，不是普遍自主权",
+      "body": "Anthropic 将功能称为 ongoing experiment；它展示了一种新的交互状态接口，也把误触发、解释、申诉和高风险对话保护列为后续评估问题。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "模型结束会话前要经过哪些门槛？",
+    "question": "把“结束互动”当作最后手段，怎样避免普通拒答变成误封？",
+    "steps": [
+      {
+        "label": "识别持续伤害",
+        "detail": "先判断是否是持续有害或辱骂的极端互动，而不是把争议话题、普通冲突或求助自动归入同一类。",
+        "evidence": "Rare, extreme, persistently harmful interactions"
+      },
+      {
+        "label": "先拒绝",
+        "detail": "模型需要拒绝有害请求，并保留清楚、可理解的安全回应。",
+        "evidence": "Repeated refusal"
+      },
+      {
+        "label": "尝试重定向",
+        "detail": "继续提供有益方向；只有多次重定向仍无法形成生产性互动时，才接近结束条件。",
+        "evidence": "Multiple redirection attempts"
+      },
+      {
+        "label": "排除紧急风险",
+        "detail": "如果用户可能即将自伤或伤人，不能用结束会话替代支持和安全响应。",
+        "evidence": "Anthropic safety exception"
+      },
+      {
+        "label": "结束并保留出口",
+        "detail": "结束原对话后保留新开聊天、编辑重试和反馈路径，并记录触发理由与误触发情况。",
+        "evidence": "Conversation-ending UX"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic Research",
+    "url": "https://www.anthropic.com/research/end-subset-conversations"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "event",
+    "llm"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "claim": "Anthropic 8 月 15 日宣布 Claude Opus 4/4.1 在消费端界面获得结束极少数对话的能力，目标是持续有害或辱骂的极端互动。",
+      "excerpt": "We recently gave Claude Opus 4 and 4.1 the ability to end conversations in our consumer chat interfaces."
+    },
+    {
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "claim": "功能只能在多次拒绝和重定向失败后的最后手段使用，并不用于用户可能即将自伤或伤人的情况。",
+      "excerpt": "Claude is directed not to use this ability in cases where users might be at imminent risk of harming themselves or others ... only ... as a last resort"
+    },
+    {
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "claim": "结束后用户可新开对话、反馈或编辑重试此前消息；Anthropic 将功能视为持续实验。",
+      "excerpt": "they will be able to start a new chat immediately ... edit and retry previous messages ... ongoing experiment"
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/research/end-subset-conversations",
+  "sourceHash": "sha256:9a90f0816e7859b66edd18430a83ce0e37b3d4d861f81dd8b8f199fbacd69d67",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文讨论模型在持续互动中的退出状态、重定向和产品层恢复路径。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.91,
+      "evidence": [
+        "正文将结束会话视为一种需记录理由、人工复核和申诉路径的交互控制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.72,
+      "evidence": [
+        "正文区分模型行为观察、对齐研究与意识/道德地位结论。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文区分 8 月 15 日研究披露、预发布模拟评估和持续实验。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "claim": "Anthropic 官方研究页确认日期、消费端范围和极端有害互动条件。",
+      "excerpt": "Aug 15, 2025 ... rare, extreme cases of persistently harmful or abusive user interactions"
+    },
+    {
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "claim": "官方说明了最后手段、紧急自伤/伤人排除、重新开始和 ongoing experiment 边界。",
+      "excerpt": "only to use ... as a last resort ... start a new chat immediately ... ongoing experiment"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Anthropic 8/15 研究页面；正文保留消费端、极少数极端互动、多次拒绝/重定向、紧急风险排除、恢复路径和 ongoing experiment，并区分行为观察与意识结论。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将功能写成触发门槛、用户恢复路径和后续评估问题，避免拟人化或把结束能力写成普遍自主权，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "Anthropic 研究页发布日期为 2025-08-15；正文准确限定 Claude Opus 4/4.1、消费端聊天界面及极少数持续有害或辱骂互动，没有扩写到 API、企业端或所有模型。",
+      "预发布测试中的 self-report、行为偏好、表观痛苦和模拟互动结束倾向均被写成研究观察；文章明确排除关于意识、主观感受或道德地位的结论。",
+      "多次拒绝和有益重定向失败、用户主动要求结束、紧急自伤/伤人排除、极端边缘案例和大多数用户不受影响等条件均与官方说明一致。",
+      "结束原对话后的新开聊天、编辑重试、反馈路径和 ongoing experiment 均已说明；正文没有把会话退出机制与前一篇 Usage Policy 更新混为一谈。",
+      "sections、agent-safety explainer、relatedSlugs、source/evidence、SVG 与 schema 一致，中文自然且未把行为观察写成模型拥有自主意识或普遍自主权。"
+    ],
+    "notes": "读者审阅通过。文章按研究观察、触发门槛、安全例外和恢复路径组织，保留消费端范围及极端边界，把结束互动写成交互状态变化和持续实验，而不是账号封禁、意识结论或政策规则。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-15-claude-exit",
+  "promotedAt": "2026-10-05T05:17:38.214Z"
+}

@@ -1,0 +1,205 @@
+{
+  "slug": "agentscope-10-agent-framework-20250822",
+  "title": "AgentScope 1.0 把 Agent 开发拆成可追踪的工程链",
+  "summary": "2025 年 8 月 22 日提交的 AgentScope 1.0 论文介绍了一个面向 Agent 应用的开发框架：用统一接口连接模型和 MCP，以 ReAct 组织行为，提供异步的人机与 Agent 间交互、可视化评测、运行时沙箱和生产部署支持。它的价值在于把长轨迹 Agent 的开发与观察放到同一条链上，但框架提供组件不等于应用已经具备权限、审计和故障恢复。",
+  "body": "很多 Agent 项目一开始像一段“让模型决定下一步”的脚本：模型接工具，工具回结果，再把消息塞回模型。真正变复杂的是第二十步之后怎么追踪、怎么暂停、怎么重放。8 月 22 日提交的 AgentScope 1.0 论文，试图把这些工程问题收进同一个开发框架。\n\n  它先从接口下手。论文把 Agent 应用需要的基础组件抽象出来，用统一接口和可扩展模块连接不同模型与 MCP。这样换模型、加工具或替换某个 Agent 组件时，不必把整个应用的消息格式和控制流重新拼一遍；但统一接口只降低接线成本，不会自动解决工具定义含糊或返回值不可信。\n\n  AgentScope 1.0 以 ReAct 作为 Agent 行为的组织方式：先形成思路，再采取行动，再根据结果继续。论文同时提供异步基础设施，让人可以在流程中介入，也让多个 Agent 之间按事件交互。异步的意义不只是更快，还包括等待工具、暂停审批和处理并发任务时，不必把每一步都堵在一条同步调用链上。\n\n  框架里还放入了一些面向具体场景的内置 Agent。对使用者来说，这种“先有一个能跑的骨架”比从空白目录开始更省时间；对维护者来说，它也意味着要弄清内置 Agent 默认使用了哪些提示、工具和状态，不能因为名字看起来通用，就跳过自己的输入输出审计。\n\n  论文特别强调可扩展评测模块和可视化工作台。长轨迹 Agent 的问题经常不在最后一句，而在十几步以前已经选错工具、丢掉约束或误读了返回值。能把整条轨迹展开、重放和比较，才有机会定位是哪一步让结果偏离；一个漂亮的可视化界面本身并不代表评测指标已经足够。\n\n  运行时沙箱是另一条边界。它可以把 Agent 的执行放进更受控的环境，并为快速部署提供工程支撑，但沙箱隔离的对象、网络出口、文件权限和凭据注入方式仍由实际部署决定。论文列出能力，不等于应用上线后已经完成最小权限和审计。\n\n  AgentScope 1.0 适合作为一层工程底座：统一模型和工具接入，支持异步人机协作，把轨迹评测与运行时控制放在同一项目里。真正落地时，还要在这层底座上补齐授权、敏感动作确认、状态持久化、失败重试和可追责日志，否则 Agent 只是更容易被拼装，而不是更容易被信任。",
+  "publishedAt": "2025-08-22",
+  "eventDate": "2025-08-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/agentscope-10-agent-framework-20250822.svg",
+    "alt": "AgentScope 1.0 将模型、MCP、异步交互、评测和运行时沙箱连成 Agent 开发链",
+    "sourceUrl": "/images/news/agentscope-10-agent-framework-20250822.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "framework-focus",
+      "title": "AgentScope 1.0 解决的是工程拼接",
+      "body": "论文把 Agent 应用的基础组件抽象成统一接口和可扩展模块，目标是让模型、工具、交互、评测与部署不再各自为战。它是开发框架，不是一个新的基础模型。",
+      "kind": "narrative"
+    },
+    {
+      "id": "model-mcp",
+      "title": "统一接口连接模型和 MCP",
+      "body": "开发者可以在同一套接口下接入新模型和 MCP 工具，替换组件时少改一层业务胶水。接口统一只能减少接线工作，仍需检查工具描述、返回值和错误处理。",
+      "kind": "technical"
+    },
+    {
+      "id": "async-react",
+      "title": "ReAct 加异步，让流程可以等待和介入",
+      "body": "AgentScope 以 ReAct 组织行动，并提供异步的人机与 Agent 间交互基础设施。等待工具、暂停审批、多 Agent 并发时，流程不必被一条同步调用链锁死。",
+      "kind": "technical"
+    },
+    {
+      "id": "built-in-agents",
+      "title": "内置 Agent 给场景一个可运行的起点",
+      "body": "框架集成了面向具体场景的内置 Agent，降低从空白项目开始的成本。使用前仍要查看它们的提示、工具、状态和默认权限，不能把可运行当成可直接上线。",
+      "kind": "comparison"
+    },
+    {
+      "id": "visual-eval",
+      "title": "可视化评测把长轨迹摊开看",
+      "body": "长轨迹 Agent 的错误可能在最后一步之前就发生。可扩展评测模块和可视化工作台有助于展开、重放和比较整条轨迹，但工具仍需要配合明确的质量指标。",
+      "kind": "technical"
+    },
+    {
+      "id": "runtime-sandbox",
+      "title": "运行时沙箱提供控制面，不替代最小权限",
+      "body": "论文将 runtime sandbox 作为安全执行和生产部署的一部分。实际系统仍需明确文件、网络、凭据和外部工具权限，以及异常时如何停止和追责。",
+      "kind": "boundary"
+    },
+    {
+      "id": "production-boundary",
+      "title": "底座完整，不代表应用已经可信",
+      "body": "AgentScope 1.0 把接入、异步、评测和运行环境放到同一工程链上；上线前仍需补齐授权、确认、状态恢复、重试和日志，才能把“能跑”变成可维护的流程。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一条 Agent 轨迹怎样从开发走到评测？",
+    "question": "先把组件接通，再让异步流程可观察、可暂停、可重放。",
+    "steps": [
+      {
+        "label": "接入模型和工具",
+        "detail": "用统一接口配置模型、MCP 和其他工具，把消息形状与调用边界固定下来。",
+        "evidence": "unified interfaces and extensible modules ... new models and MCPs"
+      },
+      {
+        "label": "组织行动循环",
+        "detail": "按 ReAct 组织思考与行动，并把等待工具、人类介入和 Agent 间通信做成异步事件。",
+        "evidence": "ground agent behaviors in the ReAct paradigm ... systematic asynchronous design"
+      },
+      {
+        "label": "加载场景骨架",
+        "detail": "从内置 Agent 起步，但先检查默认提示、状态管理和工具权限。",
+        "evidence": "integrate several built-in agents tailored to specific practical scenarios"
+      },
+      {
+        "label": "展开整条轨迹",
+        "detail": "在可视化工作台中查看长任务每一步的输入、工具选择、返回值和下一步决定。",
+        "evidence": "scalable evaluation module with a visual studio ... trace"
+      },
+      {
+        "label": "放进受控运行时",
+        "detail": "用沙箱限制执行范围，再补做授权、网络出口、凭据、故障停止和日志审计。",
+        "evidence": "runtime sandbox to ensure safe agent execution and facilitates rapid deployment"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / AgentScope 1.0 作者组",
+    "url": "https://arxiv.org/abs/2508.16279"
+  },
+  "relatedSlugs": [
+    "agent",
+    "mcp",
+    "tools",
+    "eval",
+    "execution-sandbox",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.16279",
+      "claim": "AgentScope 1.0 用统一接口和可扩展模块连接模型与 MCP，并以 ReAct 组织 Agent 行为。",
+      "excerpt": "unified interfaces and extensible modules ... models and MCPs ... ReAct paradigm"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.16279",
+      "claim": "论文还提供异步人机与 Agent 间交互、可扩展可视化评测模块和运行时沙箱，面向生产部署。",
+      "excerpt": "systematic asynchronous design ... scalable evaluation module with a visual studio ... runtime sandbox ... production environments"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.16279",
+  "sourceHash": "sha256:b967bd4802e453eeee32ff0b52c37fddfc2078e6d83475493f92ad534d312872",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 AgentScope 如何组织 Agent 应用和长轨迹流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.97,
+      "evidence": [
+        "正文把 MCP 作为统一接口连接的工具来源。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.94,
+      "evidence": [
+        "正文讨论工具定义、返回值、权限和轨迹观察。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文把可视化轨迹评测作为框架的一项核心能力。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.95,
+      "evidence": [
+        "正文解释运行时沙箱的控制边界和部署限制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 22 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.16279",
+      "claim": "arXiv 摘要列出 AgentScope 1.0 的统一接口、ReAct、异步交互、可视化评测、运行时沙箱和生产部署支持。",
+      "excerpt": "AgentScope introduces major improvements in a new version (1.0) ... runtime sandbox ... production environments"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 AgentScope 1.0 摘要中的模型/MCP 统一接口、ReAct、异步基础设施、内置 Agent、可视化评测与 runtime sandbox；正文将框架能力和应用方仍需补齐的权限、观测与恢复分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章没有把框架组件写成自动安全或生产即用，按模型/MCP、异步循环、轨迹评测、沙箱和应用责任分层，保留了落地边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-22-agentscope-10-agent-framework"
+}

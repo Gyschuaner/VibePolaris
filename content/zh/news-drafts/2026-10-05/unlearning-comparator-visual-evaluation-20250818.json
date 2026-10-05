@@ -1,0 +1,177 @@
+{
+  "slug": "unlearning-comparator-visual-evaluation-20250818",
+  "title": "机器遗忘不能只看一个分数：Unlearning Comparator 把差异画出来",
+  "summary": "8 月 18 日提交的 Unlearning Comparator 论文，做了一套面向机器遗忘的可视分析工具。它可以把两个模型在类别、样本和层级上的差异放到一起比较，并模拟成员推断攻击，辅助观察遗忘后的准确率、效率和隐私变化。可视化能帮人找到问题落在哪一层，但它不是“数据已被彻底删除”的自动证明。",
+  "body": "机器遗忘最容易被一个“忘掉了”带过：删掉训练数据后，模型的准确率有没有受影响？速度和资源开销变了多少？被要求遗忘的样本是否还留下了可识别的痕迹？8 月 18 日提交的 Unlearning Comparator，试图把这些问题放进同一套可视分析流程。\n\n论文的出发点是比较两个模型：一个作为原始或参照模型，一个作为执行过遗忘的模型。工具不只比较总体指标，还能下钻到类别、单个样本和网络层级，观察差异究竟从哪里出现。这样一来，“整体分数接近”并不意味着每类数据都同样接近。\n\n隐私部分通过模拟成员推断攻击来观察模型是否仍显露训练成员特征。这个视角很实用，因为遗忘的目标不只是让模型在被删类别上的准确率下降，还要降低攻击者从输出或表示里判断“这条数据见过没有”的机会。\n\n可视化把准确率、效率和隐私放在一起，提醒使用者这三件事可能互相牵制：遗忘做得更彻底，任务准确率可能下降；为了恢复准确率，新的训练又可能带来时间和资源成本；某个总体指标变好，也不代表隐私风险已经消失。\n\n这类工具的价值在于帮助研究者定位异常。可以先从模型总体差异开始，再查看具体类别和样本，最后观察层级变化，决定是遗忘算法、训练数据还是评测方法出了问题。它把“结果不一样”变成可追踪的证据链。\n\nUnlearning Comparator 仍是分析和比较工具，不会替团队自动完成数据删除或合规证明。成员推断攻击只是隐私风险的一种模拟，真实系统还要结合数据来源、访问权限、日志、再训练流程和法规要求，并保存遗忘前后的模型与评测记录。",
+  "publishedAt": "2025-08-18",
+  "eventDate": "2025-08-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/unlearning-comparator-visual-evaluation-20250818.svg",
+    "alt": "Unlearning Comparator 逐层比较遗忘前后模型，并用成员推断模拟检查隐私残留",
+    "sourceUrl": "/images/news/unlearning-comparator-visual-evaluation-20250818.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "paper-event",
+      "title": "Unlearning Comparator 把机器遗忘变成可下钻的比较任务",
+      "body": "Unlearning Comparator 于 2025 年 8 月 18 日提交 arXiv，提供面向机器遗忘的可视分析。它比较遗忘前后的两个模型，把整体差异继续拆到类别、样本和层级，而不是只显示一个最终分数。",
+      "kind": "narrative"
+    },
+    {
+      "id": "three-principles",
+      "title": "准确率、效率和隐私要放在同一张成绩单上",
+      "body": "论文把机器遗忘的准确率、效率和隐私视为需要同时观察的三项原则。遗忘越彻底不一定越好，恢复任务效果也可能带来额外训练成本或新的隐私残留。",
+      "kind": "comparison"
+    },
+    {
+      "id": "multi-level",
+      "title": "从总体差异一路下钻到类别、样本和层",
+      "body": "工具支持在类别级、实例级和层级比较两个模型。总体指标接近时，可以继续找出某一类样本或某几层表示里的异常变化，避免平均数掩盖局部问题。",
+      "kind": "technical"
+    },
+    {
+      "id": "membership-inference",
+      "title": "成员推断模拟用来观察隐私残留",
+      "body": "论文通过模拟成员推断攻击，观察模型是否仍暴露训练成员特征。它提供的是一种隐私检查视角，不能被解释成覆盖所有攻击者、输出渠道或合规要求。",
+      "kind": "example"
+    },
+    {
+      "id": "diagnostic-loop",
+      "title": "可视化的重点是定位问题，不是替人下结论",
+      "body": "研究者可以从总体指标开始，再查看类别、样本和层级，追踪差异来源，判断问题来自遗忘算法、训练数据还是评测设计。图表把比较过程变成可复查的证据链。",
+      "kind": "technical"
+    },
+    {
+      "id": "compliance-boundary",
+      "title": "看到差异不等于完成删除或合规证明",
+      "body": "成员推断只是隐私风险的一种模拟，工具本身不会删除数据，也不会自动出具合规结论。真实流程仍要保留数据来源、访问权限、模型版本、再训练和遗忘前后评测记录。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一次机器遗忘检查怎样从总分走到具体样本？",
+    "question": "当两个模型总体表现差不多时，怎样找出遗忘是否只在局部生效？",
+    "steps": [
+      {
+        "label": "保存参照模型",
+        "detail": "固定原始模型、遗忘后模型、数据版本和评测条件，先建立可比较的基线。",
+        "evidence": "The tool compares the behaviors of two models"
+      },
+      {
+        "label": "看总体三项指标",
+        "detail": "先对照准确率、效率与隐私相关结果，判断遗忘是否带来明显的整体代价。",
+        "evidence": "Accuracy, efficiency and privacy are the three comparison principles"
+      },
+      {
+        "label": "下钻类别与样本",
+        "detail": "把总体差异拆到类别和实例，寻找被遗忘数据、保留数据与边界样本之间的不同。",
+        "evidence": "The visual analytics supports class- and instance-level comparison"
+      },
+      {
+        "label": "检查层级变化",
+        "detail": "继续观察网络层级的表示变化，区分局部异常与整个模型都发生的漂移。",
+        "evidence": "The paper supports layer-level model comparison"
+      },
+      {
+        "label": "模拟成员推断",
+        "detail": "用成员推断攻击模拟检查残留风险，再把结果和数据来源、权限与合规流程一起审阅。",
+        "evidence": "The tool simulates membership inference attacks for privacy analysis"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Jaeung Lee 等",
+    "url": "https://arxiv.org/abs/2508.12730"
+  },
+  "relatedSlugs": [
+    "eval",
+    "benchmark",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12730",
+      "claim": "Unlearning Comparator 通过可视分析比较不同机器遗忘方法，支持按类别、样本和层级对比模型，并模拟成员推断攻击来评估隐私。",
+      "excerpt": "compare the behaviors of two models ... at class-, instance-, and layer-levels ... simulates membership inference attacks"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12730",
+      "claim": "论文将机器遗忘的准确率、效率和隐私作为需要同时观察的基本原则。",
+      "excerpt": "three fundamental principles in MU: accuracy, efficiency, and privacy"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12730",
+  "sourceHash": "sha256:a9528aef505aeb64a48a48fdec8edb3059eba423adbd73af1d37137a100cbbe4",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文围绕机器遗忘的多层级比较、三项原则和隐私模拟评测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.84,
+      "evidence": [
+        "正文将模型、数据、类别、实例和层级作为可复核的比较维度。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.8,
+      "evidence": [
+        "正文把数据来源、访问权限和合规记录放进遗忘审计边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.78,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 18 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12730",
+      "claim": "Unlearning Comparator 于 2025 年 8 月 18 日提交，摘要给出类别、样本、层级模型比较和成员推断攻击模拟，并强调准确率、效率与隐私。",
+      "excerpt": "simulates membership inference attacks"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的提交日期、可视分析、类别/样本/层级比较、成员推断模拟及准确率/效率/隐私三项原则；正文明确工具是分析入口，不把它写成删除或合规证明。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：按论文摘要保留可视分析、类别/样本/层级比较、成员推断模拟和三项原则，避免把可视化工具写成数据删除证明；补充数据来源、权限、模型版本和合规记录边界。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-18-unlearning-comparator"
+}
