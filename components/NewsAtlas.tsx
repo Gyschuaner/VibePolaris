@@ -39,6 +39,16 @@ const weekdayFormatter = new Intl.DateTimeFormat("zh-CN", { weekday: "short", ti
 const shortDateFormatter = new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", timeZone: "UTC" });
 const longDateFormatter = new Intl.DateTimeFormat("zh-CN", { dateStyle: "long", timeZone: "UTC" });
 
+const rangePresets = [
+  { key: "month", label: "近一个月", days: 30 },
+  { key: "quarter", label: "近三个月", days: 90 },
+  { key: "halfYear", label: "近半年", days: 183 },
+  { key: "year", label: "近一年", days: 365 },
+] as const;
+
+type RangePreset = typeof rangePresets[number]["key"] | "custom";
+type NewsDayGroup = { date: string; articles: NewsAtlasArticle[] };
+
 function utcDate(value: string) {
   return new Date(`${value}T00:00:00Z`);
 }
@@ -47,13 +57,19 @@ function dateKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-function timelineDays(latestDate: string) {
-  const latest = utcDate(latestDate);
-  return Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(latest);
-    date.setUTCDate(latest.getUTCDate() - (6 - index));
-    return dateKey(date);
-  });
+function shiftUtcDays(value: string, days: number) {
+  const date = utcDate(value);
+  date.setUTCDate(date.getUTCDate() - days);
+  return dateKey(date);
+}
+
+function rangeLabel(start: string, end: string) {
+  if (start.slice(0, 4) !== end.slice(0, 4)) return `${start.replaceAll("-", "/")} — ${end.replaceAll("-", "/")}`;
+  return `${shortDateFormatter.format(utcDate(start))} — ${shortDateFormatter.format(utcDate(end))}`;
+}
+
+function nodeTransform(x: number, y: number) {
+  return `translate(${x.toFixed(3)}px, ${y.toFixed(3)}px) translate(-50%, -50%)`;
 }
 
 function graphData(articles: NewsAtlasArticle[]) {
@@ -81,8 +97,8 @@ function graphData(articles: NewsAtlasArticle[]) {
       aliases: [],
       definition: article.summary,
       relatedSlugs: article.relatedArticleSlugs,
-      x: Math.cos(angle) * (118 + index * 46),
-      y: Math.sin(angle) * (102 + index * 28),
+      x: Math.cos(angle) * (118 + Math.sqrt(index) * 88),
+      y: Math.sin(angle) * (102 + Math.sqrt(index) * 58),
       degree: 0,
       kind: "article",
       articleSlug: article.slug,
@@ -112,11 +128,29 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     () => [...articles].sort((a, b) => b.eventDate.localeCompare(a.eventDate)),
     [articles],
   );
-  const days = useMemo(() => timelineDays(orderedArticles[0]?.eventDate ?? new Date().toISOString().slice(0, 10)), [orderedArticles]);
-  const timelineArticles = useMemo(() => orderedArticles.filter(article => days.includes(article.eventDate)), [days, orderedArticles]);
+  const latestDate = orderedArticles[0]?.eventDate ?? new Date().toISOString().slice(0, 10);
+  const earliestDate = orderedArticles.at(-1)?.eventDate ?? latestDate;
+  const [rangePreset, setRangePreset] = useState<RangePreset>("month");
+  const [customStart, setCustomStart] = useState(() => shiftUtcDays(latestDate, 30));
+  const [customEnd, setCustomEnd] = useState(latestDate);
+  const customRangeError = !customStart || !customEnd || customStart > customEnd;
+  const activeRange = useMemo(() => {
+    if (rangePreset === "custom" && !customRangeError) return { start: customStart, end: customEnd };
+    const preset = rangePresets.find(option => option.key === rangePreset);
+    return { start: shiftUtcDays(latestDate, preset?.days ?? 30), end: latestDate };
+  }, [customEnd, customRangeError, customStart, latestDate, rangePreset]);
+  const timelineArticles = useMemo(
+    () => orderedArticles.filter(article => article.eventDate >= activeRange.start && article.eventDate <= activeRange.end),
+    [activeRange, orderedArticles],
+  );
+  const timelineGroups = useMemo<NewsDayGroup[]>(() => {
+    const groups = new Map<string, NewsAtlasArticle[]>();
+    timelineArticles.forEach(article => groups.set(article.eventDate, [...(groups.get(article.eventDate) || []), article]));
+    return [...groups.entries()].map(([date, groupedArticles]) => ({ date, articles: groupedArticles }));
+  }, [timelineArticles]);
   const todayKey = new Date().toISOString().slice(0, 10);
-  const { nodes, edges } = useMemo(() => graphData(orderedArticles), [orderedArticles]);
-  const articleBySlug = useMemo(() => new Map(orderedArticles.map(article => [article.slug, article])), [orderedArticles]);
+  const { nodes, edges } = useMemo(() => graphData(timelineArticles), [timelineArticles]);
+  const articleBySlug = useMemo(() => new Map(timelineArticles.map(article => [article.slug, article])), [timelineArticles]);
   const [selectedSlug, setSelectedSlug] = useState("");
   const [hovered, setHovered] = useState("");
   const [showLines, setShowLines] = useState(true);
@@ -148,11 +182,20 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
   const selectedNodeSlugRef = useRef(selectedNodeSlug);
   const selectedNeighborsRef = useRef(selectedNeighbors);
   const labelOpacity = Math.max(0, Math.min(1, (view.scale - .74) / .4));
+  const labelsNeedFocus = nodes.length > 24;
 
   useEffect(() => {
     selectedNodeSlugRef.current = selectedNodeSlug;
     selectedNeighborsRef.current = selectedNeighbors;
   }, [selectedNeighbors, selectedNodeSlug]);
+
+  useEffect(() => {
+    if (selectedSlug && !articleBySlug.has(selectedSlug)) {
+      setSelectedSlug("");
+      setDetailOpen(false);
+      setHovered("");
+    }
+  }, [articleBySlug, selectedSlug]);
 
   useEffect(() => {
     if (!selectedSlug || !detailOpen || !ready || !window.matchMedia("(max-width: 700px)").matches) return;
@@ -166,7 +209,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const positions = new Map(moving.map(node => [node.slug, node]));
     for (const node of moving) {
       const element = nodeElements.current.get(node.slug);
-      if (element) element.style.transform = `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)`;
+      if (element) element.style.transform = nodeTransform(node.x, node.y);
     }
     for (const { element, source, target } of lineElements.current.values()) {
       const from = positions.get(source);
@@ -242,11 +285,12 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const engine = createGraphSimulation(nodes, edges);
     simulation.current = engine;
     engine.on("tick", paintPositions);
-    engine.alpha(.2);
+    const denseGraph = nodes.length > 180;
+    engine.alpha(denseGraph ? 0 : .2);
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncMotion = () => {
       reducedMotion.current = preference.matches;
-      if (preference.matches || document.hidden) engine.stop();
+      if (denseGraph || preference.matches || document.hidden) engine.stop();
       else if (engine.alpha() >= engine.alphaMin()) engine.restart();
     };
     syncMotion();
@@ -421,6 +465,21 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
         <div>
           <p className="news-kicker">NEWS</p>
           <h1>世界最近发生了什么</h1>
+          <div className="news-atlas-range" aria-label="新闻时间范围">
+            <div className="news-atlas-range-presets" role="group" aria-label="选择时间范围">
+              {rangePresets.map(option => <button key={option.key} className={`news-atlas-range-button${rangePreset === option.key ? " is-active" : ""}`} type="button" aria-pressed={rangePreset === option.key} onClick={() => setRangePreset(option.key)}>{option.label}</button>)}
+              <button className={`news-atlas-range-button${rangePreset === "custom" ? " is-active" : ""}`} type="button" aria-pressed={rangePreset === "custom"} onClick={() => setRangePreset("custom")}>自选时间</button>
+            </div>
+            {rangePreset === "custom" && <div className="news-atlas-range-custom">
+              <label>从 <input type="date" value={customStart} min={earliestDate} max={latestDate} onChange={event => setCustomStart(event.target.value)} /></label>
+              <span aria-hidden="true">—</span>
+              <label>到 <input type="date" value={customEnd} min={earliestDate} max={latestDate} onChange={event => setCustomEnd(event.target.value)} /></label>
+            </div>}
+            <p className={`news-atlas-range-status${rangePreset === "custom" && customRangeError ? " is-error" : ""}`}>
+              {rangePreset === "custom" && customRangeError ? "请选择有效的起止日期" : `${rangeLabel(activeRange.start, activeRange.end)} · ${timelineArticles.length} 篇`}
+              <span>按事件发生日筛选</span>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -431,19 +490,25 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
             <small>{timelineArticles.length} 篇</small>
           </div>
           <div className="news-atlas-timeline-list">
-            {timelineArticles.map(article => {
-              const isSelected = detailOpen && article.slug === selectedSlug;
-              const isToday = article.eventDate === todayKey;
-              const date = utcDate(article.eventDate);
-              return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>
-                <span className="news-atlas-timeline-marker" aria-hidden="true"><i /></span>
-                <span className="news-atlas-timeline-copy">
-                  <span className="news-atlas-timeline-date"><time dateTime={article.eventDate}>{shortDateFormatter.format(date)}</time>{isToday && <em>今天</em>}</span>
-                  <small>{weekdayFormatter.format(date)}</small>
-                  <strong>{article.title}</strong>
-                </span>
-              </button>;
-            })}
+            {timelineGroups.length ? timelineGroups.map(group => {
+              const date = utcDate(group.date);
+              const isToday = group.date === todayKey;
+              return <section className="news-atlas-day" key={group.date} aria-labelledby={`news-day-${group.date}`}>
+                <div className="news-atlas-day-heading">
+                  <div><time id={`news-day-${group.date}`} dateTime={group.date}>{longDateFormatter.format(date)}</time><small>{weekdayFormatter.format(date)}{isToday ? " · 今天" : ""}</small></div>
+                  <span>{group.articles.length} 篇</span>
+                </div>
+                <div className="news-atlas-day-list">
+                  {group.articles.map(article => {
+                    const isSelected = detailOpen && article.slug === selectedSlug;
+                    return <button className={`news-atlas-timeline-item${isSelected ? " is-selected" : ""}`} key={article.slug} type="button" aria-pressed={isSelected} onClick={() => selectArticle(article.slug)}>
+                      <span className="news-atlas-timeline-marker" aria-hidden="true"><i /></span>
+                      <span className="news-atlas-timeline-copy"><strong>{article.title}</strong></span>
+                    </button>;
+                  })}
+                </div>
+              </section>;
+            }) : <p className="news-atlas-empty">这个时间范围还没有已发布新闻。</p>}
           </div>
         </nav>
 
@@ -480,7 +545,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               const connected = selectedNeighbors.has(node.slug);
               const highlighted = node.slug === selectedNodeSlug || connected || node.slug === hovered;
               const hoveredConnected = hovered ? graphNeighbors(hovered, edges).has(node.slug) : false;
-              const named = node.kind === "article" || highlighted || hoveredConnected;
+              const named = !labelsNeedFocus || highlighted || hoveredConnected;
               const muted = Boolean(selectedNodeSlug) && !highlighted && !hoveredConnected;
               const starSize = node.slug === selectedNodeSlug ? 58 : 39;
               const label = article?.title;
@@ -488,7 +553,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.eventDate)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
                 if (element) nodeElements.current.set(node.slug, element);
                 else nodeElements.current.delete(node.slug);
-              }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
+              }} style={{ transform: nodeTransform(node.x, node.y) }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
                 <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" />
                 <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.eventDate))}</small>}</span>
               </button>;
