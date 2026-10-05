@@ -1,0 +1,209 @@
+{
+  "slug": "nist-ai-control-overlays-concept-paper-20250814",
+  "title": "NIST 想把 AI 安全控制做成可组合的 overlays",
+  "summary": "8 月 14 日，NIST 发布用于保护 AI 系统的 SP 800-53 Control Overlays 概念论文和拟议行动计划。它把生成式 AI、预测型 AI、单智能体、多智能体以及 AI 开发者列为首批用例，准备在现有安全控制上按场景补充和裁剪，而不是另起一套孤立清单。材料仍处于概念和征求反馈阶段，尚不是最终标准；第一批用例计划在 2026 财年初形成公开草案。",
+  "body": "8 月 14 日，NIST 发布了一份不太像“新框架发布会”的材料：SP 800-53 Control Overlays for Securing AI Systems 概念论文，以及配套的拟议行动计划。它没有宣布一套已经定稿的 AI 合规清单，而是在问一个更工程化的问题：组织已经有一套安全控制和流程，面对 AI 系统时，哪些地方需要按场景补上、改写或提高优先级？\n\n这条路线建立在 NIST 已有的安全基础上。SP 800-53 本来就是控制目录，很多组织已经有计划、实施和评估它的流程。NIST 提议在这些控制之上制作 overlays：为特定技术、系统、任务空间或运行环境选择控制，必要时修改参数并补充实现说明。这样做的好处是，AI 风险可以落到熟悉的访问控制、配置管理、身份认证、事件响应和资产保护流程里，而不是只停在一份原则宣言。\n\n概念论文先列出五类用例。第一类是使用生成式 AI 的助手或大语言模型，既包括内部部署、接入专有数据的 RAG，也包括第三方托管模型；第二类是使用和微调预测型 AI，关注训练、部署和维护三个阶段；第三类是单智能体，例子包括连接邮件、文件、日历和内部系统的企业 Copilot，以及通过 MCP 操作代码仓库的编码助手。第四类是多智能体，多个代理通过 MCP 或 A2A 协作，从报销单据抽取信息、按政策校验并路由付款。第五类直接面向 AI 开发者，关注模型权重、数据和其他关键资产的安全。\n\n这里的“overlay”不是把所有风险都压到同一个模板里。论文把训练与测试数据、模型权重、配置设置和部署基础设施都列为可能需要保护的组件，也强调每个用例要保护信息的机密性、完整性和可用性。一个连内部 CRM 的企业 Copilot，和一个在公共数据上训练的预测模型，权限、输入、更新和事故路径都不一样；控制层需要保留这种差异。\n\nNIST 还特意把这套工作与 AI RMF、生成式 AI 安全开发实践和对抗性机器学习攻击分类放在一起。Control Overlays 的目标更窄，主要是把安全控制变成可实现、可评估的场景指南；AI RMF 还覆盖有效性、可靠性、公平、隐私、透明度和可解释性等更广的可信性问题。两者可以一起用，但一份 overlay 不会自动替代完整的 AI 风险管理。\n\n多智能体用例在论文里被标为目前最不成熟的一类。NIST 的示例已经写到代理之间通过标准协议交换信息、根据提取内容做付款路由，但也承认采用还在早期，后续要随着实践和控制难点继续调整。这种写法比把 agent 当作普通 API 更诚实：安全边界会随着代理数量、协作方式和可执行动作一起变化。\n\n下一步不是立刻“认证通过”。NIST 正在征集用例是否代表真实采用、哪些地方存在缺口、应先开发哪类 overlay，以及还应加入哪些场景的反馈，并开设 Slack 社区。按行动计划，首个用例目标是在 2026 财年初形成公开征求意见草案，且计划一次推进一个用例。企业现在能做的是拿自己的系统对照这些用例，找出控制缺口，同时把这份材料当作正在形成的工作方向，而不是已经生效的标准或监管命令。",
+  "publishedAt": "2025-08-14",
+  "eventDate": "2025-08-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nist-ai-control-overlays-concept-paper-20250814.svg",
+    "alt": "NIST 提议把生成式 AI、预测型 AI、单/多智能体和开发者控制叠加到既有 SP 800-53 安全控制上；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/nist-ai-control-overlays-concept-paper-20250814.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "NIST 先发布概念论文和行动计划",
+      "body": "NIST 8 月 14 日发布 SP 800-53 Control Overlays for Securing AI Systems 概念论文和拟议行动计划，材料用于讨论下一步怎样为 AI 系统补充实现导向的安全控制。",
+      "kind": "narrative"
+    },
+    {
+      "id": "overlay",
+      "title": "Overlay 是在既有控制上按场景加层",
+      "body": "组织可以从 SP 800-53 控制目录中选择、修改和补充控制，为特定技术、任务和运行环境设置参数。这样 AI 安全能接入已有的访问、配置、身份和事件响应流程。",
+      "kind": "technical"
+    },
+    {
+      "id": "use-cases",
+      "title": "五类用例覆盖模型、代理和开发者",
+      "body": "首批用例包括生成式 AI 助手、预测型 AI、单智能体、多智能体和 AI 开发者控制。企业 Copilot、MCP 编码助手和多代理报销流程都被放进了讨论范围。",
+      "kind": "comparison"
+    },
+    {
+      "id": "assets",
+      "title": "控制对象不只是模型本身",
+      "body": "论文把训练与测试数据、模型权重、配置、部署基础设施和输出列为需要保护的资产，并按具体用例处理机密性、完整性和可用性。",
+      "kind": "technical"
+    },
+    {
+      "id": "relationship",
+      "title": "和 AI RMF 是互补关系",
+      "body": "Control Overlays 更聚焦安全控制的实现和评估；AI RMF 还覆盖有效性、可靠性、公平、隐私、透明度和可解释性等更广的可信性问题。Overlay 不能替代完整风险管理。",
+      "kind": "comparison"
+    },
+    {
+      "id": "multi-agent",
+      "title": "多智能体用例被标为最不成熟",
+      "body": "NIST 讨论多个代理通过 MCP 或 A2A 协作、提取信息并采取行动，但也说明该方向的采用和控制仍在演化。代理数量、协议和可执行动作会一起改变安全边界。",
+      "kind": "example"
+    },
+    {
+      "id": "status",
+      "title": "现在是征求反馈，不是最终标准",
+      "body": "NIST 正在收集用例代表性、优先级和缺口反馈，并计划在 2026 财年初按用例逐步发布公开草案。企业可以用它做差距分析，不能把概念论文当成已经生效的认证或监管要求。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "把自己的系统映射到用例和资产",
+      "body": "落地时先画出数据、权重、配置、工具和输出的边界，再区分单/多代理、第三方模型和内部部署，最后把访问、变更、监控、事件响应和人工接管证据挂回既有控制。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一层 AI 安全 overlay 怎样接到现有控制？",
+    "question": "先确认系统用例和资产，再把需要新增或调整的控制挂回组织已有的安全流程。",
+    "steps": [
+      {
+        "label": "先选实际用例",
+        "detail": "区分生成式助手、预测模型、单智能体、多智能体和开发者工作，不要用一个模板覆盖全部系统。",
+        "evidence": "Five proposed AI use cases"
+      },
+      {
+        "label": "画出关键资产",
+        "detail": "把训练/测试数据、模型权重、配置、部署基础设施、工具权限和输出分别列出来。",
+        "evidence": "AI system components and outputs"
+      },
+      {
+        "label": "从 SP 800-53 选控制",
+        "detail": "沿用组织已经熟悉的访问、身份、配置、监控和事件响应控制，再按 AI 场景修改参数或补充指导。",
+        "evidence": "SP 800-53 control overlays"
+      },
+      {
+        "label": "检查代理协作边界",
+        "detail": "对 MCP、A2A、工具调用和人工接管分别记录谁能读、写、更新和付款，尤其是多代理流程。",
+        "evidence": "Single and multi-agent scenarios"
+      },
+      {
+        "label": "用草案反馈校正",
+        "detail": "把差距、误报和未覆盖场景反馈给项目，再等待公开草案，别把概念论文当成定稿要求。",
+        "evidence": "NIST feedback and draft plan"
+      }
+    ]
+  },
+  "source": {
+    "name": "National Institute of Standards and Technology",
+    "url": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "authorization",
+    "data-pipeline",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper",
+      "claim": "NIST 官方页确认 2025-08-14 发布 Control Overlays 概念论文和拟议行动计划，覆盖生成式/预测型 AI、单/多智能体和 AI 开发者控制。",
+      "excerpt": "NIST has released a concept paper and proposed action plan for developing a series of NIST SP 800-53 Control Overlays for Securing AI Systems ... generative AI, predictive AI, single and multi-agent AI systems, and controls for AI developers."
+    },
+    {
+      "url": "https://csrc.nist.gov/csrc/media/Projects/cosais/documents/NIST-Overlays-SecuringAI-concept-paper.pdf",
+      "claim": "概念论文把 overlays 定义为可从 SP 800-53 选择、修改和补充的场景控制，并列出五类用例和后续公开草案计划。",
+      "excerpt": "Control overlays enable organizations and communities of interest to customize the controls ... NIST proposes an initial set of five use cases ... with the goal of issuing a public draft for comment in early FY26."
+    }
+  ],
+  "canonicalUrl": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper",
+  "sourceHash": "sha256:243c128fb9428ba73121ffbc4e5700a16db022f5746cd2f66b5b23bdce636bd4",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.97,
+      "evidence": [
+        "正文把单/多智能体、MCP/A2A、工具权限和人工接管纳入控制用例。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文将身份、访问、配置和可执行动作的控制映射到既有组织流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.86,
+      "evidence": [
+        "正文明确训练/测试数据、模型权重、配置、部署基础设施和输出都是需要保护的资产。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.89,
+      "evidence": [
+        "正文区分 8 月 14 日概念论文、后续反馈和 2026 财年初公开草案的时间边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.nist.gov/news-events/news/2025/08/nist-releases-control-overlays-securing-ai-systems-concept-paper",
+      "claim": "NIST 说明该项目要为 AI 系统开发一系列 SP 800-53 安全控制 overlays，并覆盖生成式、预测型、单/多智能体和开发者场景。",
+      "excerpt": "The concept paper outlines proposed AI use cases for the control overlays to manage cybersecurity risks in the use and development of AI systems."
+    },
+    {
+      "url": "https://csrc.nist.gov/csrc/media/Projects/cosais/documents/NIST-Overlays-SecuringAI-concept-paper.pdf",
+      "claim": "概念论文说明 overlays 不是完整企业控制集合，而是和既有组织控制、AI RMF 等配合使用的场景指南。",
+      "excerpt": "The overlays will not be a comprehensive set of controls for securing an enterprise and will assume that certain controls are already in place."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 NIST 官方新闻页与 Control Overlays 概念论文；正文保留概念/行动计划状态、五类用例、SP 800-53 与 AI RMF 的关系、多智能体成熟度和 2026 财年初公开草案计划，未写成最终标准或监管规则。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把 NIST 的控制工程路线写成可读的用例和资产映射，区分概念论文、征求反馈与最终标准，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-14-nist-overlays",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "NIST 官方新闻页与概念论文均把 2025-08-14 定为发布日；正文同时保留 2026 财年初公开草案这一后续时间点。",
+      "正文准确区分五类提议用例、SP 800-53 overlays 与 AI RMF 等资源的互补关系，没有把概念材料写成最终标准、认证或监管命令。",
+      "多智能体仍处于早期、控制需按场景调整的边界，以及训练/测试数据、模型权重、配置、部署基础设施和输出等资产范围，与来源卡片一致。",
+      "sections、explainer、relatedSlugs、source/evidence 与 SVG alt 均围绕 Control Overlays 事件组织，中文适合零基础读者且未发现明显模板化句式。"
+    ],
+    "notes": "读者审阅通过。文章把 NIST 的概念论文、拟议行动计划、反馈阶段和公开草案计划分层说明，五类用例及多智能体成熟度边界清楚；未把 overlays 写成已生效的标准、认证或监管要求。",
+    "changes": [
+      "将 hero alt 中的“将……叠加”改为“提议把……叠加”，明确 SVG 展示的是 NIST 的拟议路线，而非已经实施的控制。"
+    ]
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "slug": "openai-data-agent-chatgpt-work-20260910",
+  "title": "OpenAI 在 ChatGPT Work 推出 Data agent：从自然语言问题到仪表盘和获批动作",
+  "summary": "OpenAI 于 2026-09-10 发布 ChatGPT Work 的 Data agent，可连接 Redshift、BigQuery、Databricks、Snowflake、MongoDB 等数据源，利用语义层和业务定义生成分析与互动仪表盘。管理员可限制连接和角色，查询沿用表、行、列权限；执行 Slack、邮件等动作仍需批准。",
+  "body": "OpenAI 9 月 10 日发布 ChatGPT Work 的 Data agent，目标是让不写查询的人也能从企业数据得到答案、互动仪表盘和下一步动作。用户可以用自然语言追问“销售为何变慢”或“哪些客户续约有风险”，代理再去调查变化、展示证据并允许继续细化。\n\n连接范围覆盖 Amazon Redshift、Datadog、Google BigQuery、ClickHouse、Databricks、MongoDB、Snowflake 等，也能把 Google Drive 和 SharePoint 的文件纳入分析。OpenAI 特别强调语义层：组织的指标定义、业务术语、关系和自定义计算会参与解释，目的是让“收入”“活跃用户”这类词不再只按模型猜测。\n\n结果可以转成带图表的互动仪表盘，团队能够编辑、分享和刷新；Data agent 还可以在 Omni、Oracle BI、Power BI、Sigma、Tableau 和 ThoughtSpot 中工作。它能建议下一步并把结果发到 Slack 或邮件，或者在连接的工具里执行获得批准的动作。\n\n权限是这条链路的硬边界。OpenAI 说管理员选择可用的数据连接和角色，查询遵守连接账户的表、行和列限制。只要语义层、连接账号或 BI 工具的权限配置错误，语言模型的“看懂”也不能弥补越权。\n\nOpenAI 还公布了内部和 alpha 组织的使用情况：几乎所有产品团队成员、超过三分之二的 GTM 组织使用数据代理；NTT DATA、Thermo Fisher、ServiceTitan 等在 alpha 项目中试用。这些是 OpenAI 和参与组织的案例口径，不能替代独立生产效果或数据治理审计。",
+  "publishedAt": "2026-09-10",
+  "eventDate": "2026-09-10",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-data-agent-chatgpt-work-20260910.svg",
+    "alt": "OpenAI 在 ChatGPT Work 推出 Data agent：从自然语言问题到仪表盘和获批动作；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/openai-data-agent-chatgpt-work-20260910.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "natural-language-entry",
+      "title": "入口是问题，后台仍是数据工程",
+      "body": "Data agent 让用户从自然语言提问开始，但真正的答案依赖连接、业务定义、权限和数据质量。它把查询门槛降下来，没有消除指标口径冲突。",
+      "kind": "narrative"
+    },
+    {
+      "id": "semantic-layer",
+      "title": "语义层把业务词变成共享约定",
+      "body": "组织可以提供指标定义、自定义计算和数据关系，让“订单”“续约”或“活跃”有可复查的含义。这一步决定代理解释数据时是否和团队的报表一致。",
+      "kind": "technical"
+    },
+    {
+      "id": "dashboard-and-action",
+      "title": "结果可以继续走向仪表盘和动作",
+      "body": "代理先给出证据和分析，再生成互动仪表盘，甚至把发现发送到 Slack、邮件或执行获批动作。越靠近真实业务操作，越需要显式审批和可回滚设计。",
+      "kind": "example"
+    },
+    {
+      "id": "permission-boundary",
+      "title": "表、行、列权限仍由连接账户决定",
+      "body": "管理员决定哪些连接和角色可用，查询沿用账户既有的表、行、列限制。语言模型只能在允许的范围内检索，不能成为绕开数据权限的入口。",
+      "kind": "boundary"
+    },
+    {
+      "id": "adoption-claims",
+      "title": "内部采用率是案例，不是普遍保证",
+      "body": "OpenAI 说几乎所有产品团队、超过三分之二 GTM 团队在使用 Data agent，alpha 客户也分享了仪表盘案例。文章没有披露统一的错误率、成本和行业覆盖，应把这些数字留在公司自述范围。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一条受治理的数据分析链路",
+    "question": "从问题到行动，每一步都要说明数据从哪里来、谁能看、谁批准。",
+    "steps": [
+      {
+        "label": "提出问题",
+        "detail": "用户用自然语言描述业务变化，代理把问题映射到指标、时间范围和数据源。",
+        "evidence": "Data agent in ChatGPT Work"
+      },
+      {
+        "label": "带着语义检索",
+        "detail": "连接器读取数据，语义层提供指标定义和关系，结果带回证据而不只给一句结论。",
+        "evidence": "Semantic layers and trusted sources"
+      },
+      {
+        "label": "生成可视化",
+        "detail": "代理把分析变成交互仪表盘，团队可以编辑、分享和刷新。",
+        "evidence": "Interactive dashboards"
+      },
+      {
+        "label": "获批后行动",
+        "detail": "系统可以建议、通知或执行动作，但 Slack、邮件和业务工具里的改变应经过审批。",
+        "evidence": "Approved actions through connected tools"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/put-data-to-work/"
+  },
+  "relatedSlugs": [
+    "data-pipeline",
+    "data-ingestion",
+    "data-lineage",
+    "data-quality",
+    "authorization",
+    "database",
+    "data-validation",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "OpenAI 于 2026-09-10 发布 ChatGPT Work 的 Data agent，可把企业数据转成答案、互动仪表盘和获批动作。",
+      "excerpt": "Meet the new Data agent in ChatGPT Work: turn your company’s data into answers, interactive dashboards, and action, just by asking."
+    },
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "Data agent 支持 Redshift、Datadog、BigQuery、ClickHouse、Databricks、MongoDB、Snowflake、Google Drive 和 SharePoint 等来源。",
+      "excerpt": "The Data agent connects to approved data sources including Amazon Redshift... and more. It can also bring files and documents from Google Drive and SharePoint."
+    },
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "代理使用语义层、业务术语、指标定义和自定义计算解释企业数据。",
+      "excerpt": "It uses your organization’s business terms, metric definitions, custom calculations, and data relationships... semantic layers and trusted sources."
+    },
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "管理员决定连接和角色，查询执行表、行、列权限；动作可通过 Slack 或邮件分享并在批准后执行。",
+      "excerpt": "Queries enforce the connected account’s existing permissions, including table, row, and column restrictions... carry out the actions you approve."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/put-data-to-work",
+  "sourceHash": "sha256:d6dfffcd5c3893a6576bdc80f0b0821700d741657d7d25056260d7fecc5d35e7",
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:30:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "OpenAI 于 2026-09-10 发布 ChatGPT Work 的 Data agent，可把企业数据转成答案、互动仪表盘和获批动作。",
+      "excerpt": "Meet the new Data agent in ChatGPT Work: turn your company’s data into answers, interactive dashboards, and action, just by asking."
+    },
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "Data agent 支持 Redshift、Datadog、BigQuery、ClickHouse、Databricks、MongoDB、Snowflake、Google Drive 和 SharePoint 等来源。",
+      "excerpt": "The Data agent connects to approved data sources including Amazon Redshift... and more. It can also bring files and documents from Google Drive and SharePoint."
+    },
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "代理使用语义层、业务术语、指标定义和自定义计算解释企业数据。",
+      "excerpt": "It uses your organization’s business terms, metric definitions, custom calculations, and data relationships... semantic layers and trusted sources."
+    },
+    {
+      "url": "https://openai.com/index/put-data-to-work/",
+      "claim": "管理员决定连接和角色，查询执行表、行、列权限；动作可通过 Slack 或邮件分享并在批准后执行。",
+      "excerpt": "Queries enforce the connected account’s existing permissions, including table, row, and column restrictions... carry out the actions you approve."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:30:00Z",
+    "method": "source",
+    "notes": "逐条核对原文发布日期、事件边界与公司/媒体自述口径；把论文、公司评测和融资路线图明确标为相应来源口径。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:30:00Z",
+    "notes": "按新闻事件独立成篇，正文区分已发生事实、来源自述、评测结果与仍待验证的推断。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T23:25:27Z",
+    "questions": [],
+    "notes": "新闻主线是 ChatGPT Work 的 Data agent：从自然语言问题经语义层和受权限约束的数据连接生成答案、仪表盘和获批动作。正文明确表/行/列权限、Slack/邮件等动作需要批准，并将 OpenAI 内部采用率与 alpha 客户列为案例口径而非生产保证；日期、来源、词条、引用卡片、explainer 与 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-10",
+  "promotedAt": "2026-10-02T23:29:15.501Z"
+}

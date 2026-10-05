@@ -1,0 +1,157 @@
+{
+  "slug": "hiddenlayer-series-b-ai-security-20260902",
+  "title": "HiddenLayer 获 1 亿美元 B 轮：AI 安全融资开始围绕代理运行时和工具调用展开",
+  "summary": "AI 安全公司 HiddenLayer 于 2026-09-02 宣布 1 亿美元 Series B，由 Delta-v Capital 领投。公司称资金将用于代理运行时安全、Agent Harness Security 以及企业扩张；TechCrunch 交叉报道其 ARR（年度经常性收入）过去一年增长超过 10 倍，但具体收入和客户安全效果没有公开审计。",
+  "body": "9 月 2 日，奥斯汀 AI 安全公司 HiddenLayer 宣布完成 1 亿美元 Series B，Delta-v Capital 领投，Ten Eleven Ventures、Morgan Stanley、微软 M12 和 Booz Allen Ventures 等参与。公司表示，新资金会继续投入 Agentic Runtime Security，并扩展 Agent Harness Security，用于在运行时保护会写代码、调用工具和部署变更的自主编码代理。\n\nHiddenLayer 的产品边界也随融资公告变得更清楚：“运行时安全”指代理真正调用工具、写代码或部署变更时的检查；它不只扫描一个模型文件，还要观察模型、代理、工作流和它们使用的工具。公司把提示注入、代理操纵、恶意工具使用和开源模型供应链列为重点风险。TechCrunch 报道称，HiddenLayer 过去一年的 ARR 增长超过 10 倍，已经达到“数千万美元”区间，超过 90% 的增量来自新客户；这些数字来自 CEO Chris Sestito 的采访，不是经审计的财务披露。\n\n公司还称自己新增了 50 多个平台客户，覆盖金融、保险、政府、科技、医药、航空和国防情报等行业，并为一家每周有超过 7 亿用户的前沿模型提供商提供安全支持。由于客户名称和合同规模没有公开，读者不能仅凭这段自报数据推断某家模型公司已经采用，也不能把“超过 7 亿用户”理解成 HiddenLayer 产品直接保护了全部用户。\n\n这轮融资的新闻价值在于预算对象发生了变化：企业开始为代理上线后的可见性、身份和动作控制单独购买工具，而不只在训练前做模型扫描。Agent Harness Security 如果要成为开发流程的一部分，就必须回答谁批准工具调用、怎样阻断异常提交、日志保存多久、误报如何恢复。HiddenLayer 没有公布独立基准、事故拦截率或平均响应时间，融资只能说明投资人看好需求，不能证明产品已经解决这些问题。",
+  "publishedAt": "2026-09-02",
+  "eventDate": "2026-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/hiddenlayer-series-b-ai-security-20260902.svg",
+    "alt": "代理调用工具前后经过运行时检查：提示、模型、工具和代码提交被同一条安全审计链连接；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/hiddenlayer-series-b-ai-security-20260902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "round",
+      "title": "1 亿美元投向代理运行时",
+      "body": "Delta-v Capital 领投 Series B，HiddenLayer 说资金将加强 Agentic Runtime Security 和 Agent Harness Security。",
+      "kind": "narrative"
+    },
+    {
+      "id": "surface",
+      "title": "安全边界从模型扩展到工具链",
+      "body": "公司把提示注入、代理操纵、恶意工具使用和开源模型文件列为需要持续监控的攻击面。",
+      "kind": "technical"
+    },
+    {
+      "id": "metrics",
+      "title": "增长数字仍是公司与媒体口径",
+      "body": "ARR 超过 10 倍、数千万美元区间和 50 多个新客户来自 CEO 采访或公司公告，没有审计报表与独立验收。",
+      "kind": "boundary"
+    },
+    {
+      "id": "buyer",
+      "title": "企业买的是上线后的可见性",
+      "body": "当代理能改代码、调用外部工具或写入生产系统，安全团队需要身份、策略、日志和阻断能力。",
+      "kind": "comparison"
+    },
+    {
+      "id": "next",
+      "title": "看拦截率与误报恢复，而不只看融资",
+      "body": "后续应关注公开基准、真实事故、平均响应时间和误报恢复流程，才能判断产品护城河。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "代理运行时安全检查什么？",
+    "question": "把一次工具调用拆成身份、意图、动作和结果，能看出安全产品真正覆盖的环节。",
+    "steps": [
+      {
+        "label": "确认代理身份",
+        "detail": "记录哪个代理、哪个版本、代表哪位用户发起请求，并检查是否具备目标工具权限。",
+        "evidence": "HiddenLayer Agentic Runtime Security positioning"
+      },
+      {
+        "label": "检查输入与工具",
+        "detail": "识别提示注入、恶意代码或被篡改的模型文件，避免把不可信内容直接传给工具。",
+        "evidence": "TechCrunch interview, Sep 2, 2026"
+      },
+      {
+        "label": "批准高风险动作",
+        "detail": "代码提交、外发数据和生产变更应触发策略检查或人工批准，而不是默认放行。",
+        "evidence": "Agent Harness Security description"
+      },
+      {
+        "label": "保存结果与回滚",
+        "detail": "记录动作、输出和阻断原因，发生误报或异常时能恢复到已知状态。",
+        "evidence": "No public intercept-rate benchmark disclosed"
+      }
+    ]
+  },
+  "source": {
+    "name": "HiddenLayer",
+    "url": "https://www.hiddenlayer.com/news/hiddenlayer-100m-series-b-ai-security"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "execution-sandbox",
+    "authorization",
+    "data-quality",
+    "tools",
+    "citation"
+  ],
+  "relatedArticleSlugs": [
+    "google-fairwind-cyber-defense-program-20260902",
+    "openai-daybreak-frontline-defenders-20260903"
+  ],
+  "sources": [
+    {
+      "url": "https://www.hiddenlayer.com/news/hiddenlayer-100m-series-b-ai-security",
+      "claim": "HiddenLayer 于 2026-09-02 宣布 1 亿美元 B 轮，由 Delta-v Capital 领投，资金用于代理运行时与 Agent Harness 安全。",
+      "excerpt": "HiddenLayer today announced a $100 million Series B funding round led by Delta-v Capital."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/hiddenlayer-nabs-100m-as-enterprises-rush-to-secure-their-ai-deployments/",
+      "claim": "TechCrunch 报道 HiddenLayer ARR 过去一年增长超过 10 倍，进入数千万美元区间，并扩展到提示注入、代理操纵和恶意工具使用。",
+      "excerpt": "The startup says its annual recurring revenue grew more than 10x over the past year."
+    },
+    {
+      "url": "https://www.hiddenlayer.com/news/hiddenlayer-100m-series-b-ai-security",
+      "claim": "公司称新资金还将支持企业平台和自主编码代理安全，但没有公开独立拦截率或审计财务。",
+      "excerpt": "The company will use the funding to deepen its enterprise platform."
+    }
+  ],
+  "canonicalUrl": "https://www.hiddenlayer.com/news/hiddenlayer-100m-series-b-ai-security",
+  "sourceHash": "sha256:7bec5714f6b06e025499df5f2c1a0c85a1c1aa3dfaa3d7d116df750a31f52a2e",
+  "status": "published",
+  "discoveredAt": "2026-10-03T02:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://www.hiddenlayer.com/news/hiddenlayer-100m-series-b-ai-security",
+      "claim": "HiddenLayer 于 2026-09-02 宣布 1 亿美元 B 轮，由 Delta-v Capital 领投，资金用于代理运行时与 Agent Harness 安全。",
+      "excerpt": "HiddenLayer today announced a $100 million Series B funding round led by Delta-v Capital."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/hiddenlayer-nabs-100m-as-enterprises-rush-to-secure-their-ai-deployments/",
+      "claim": "TechCrunch 报道 HiddenLayer ARR 过去一年增长超过 10 倍，进入数千万美元区间，并扩展到提示注入、代理操纵和恶意工具使用。",
+      "excerpt": "The startup says its annual recurring revenue grew more than 10x over the past year."
+    },
+    {
+      "url": "https://www.hiddenlayer.com/news/hiddenlayer-100m-series-b-ai-security",
+      "claim": "公司称新资金还将支持企业平台和自主编码代理安全，但没有公开独立拦截率或审计财务。",
+      "excerpt": "The company will use the funding to deepen its enterprise platform."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T02:00:00Z",
+    "method": "source",
+    "notes": "以公司公告与独立商业媒体交叉核对；融资金额、估值、合作阶段和运营数据均标明来源口径，未把宣传目标写成已验证结果。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T02:00:00Z",
+    "notes": "模型首轮自判：结构化内容交由机械完整性检查后直发。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T02:28:34Z",
+    "questions": [],
+    "notes": "通过。9 月 2 日公司融资公告与 TechCrunch ARR 采访口径分开，未把客户/7 亿用户或融资写成独立安全效果；解释器、运行时安全链和 SVG 一致。",
+    "changes": [
+      "在摘要解释 ARR；正文首次解释“运行时安全”；SVG 将美元英文标签改为中文金额。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "news-backfill-20261003-20260902-industry",
+  "promotedAt": "2026-10-03T02:30:29.228Z"
+}

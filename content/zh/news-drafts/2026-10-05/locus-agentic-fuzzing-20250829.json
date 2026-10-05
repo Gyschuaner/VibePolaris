@@ -1,0 +1,199 @@
+{
+  "slug": "locus-agentic-fuzzing-20250829",
+  "title": "Locus：让 Agent 为模糊测试合成“通往漏洞”的中间路标",
+  "summary": "Locus 论文于 8 月 29 日提交，研究 Agent 如何帮助定向模糊测试。它让 Agent 使用程序分析工具合成有语义的中间谓词，把深层目标状态拆成可到达的路标，再通过符号执行确保这些谓词不会错误拒绝真正目标。论文在八个现有模糊测试器上报告平均 41.6 倍加速，并发现九个此前未修复的漏洞；这些结果属于研究评测，不等于生产系统自动安全。",
+  "body": "模糊测试的基本想法并不复杂：不断生成输入，让程序走到更多路径，看看哪里崩溃或违反了预期。难点在于，真正值得检查的状态可能藏在很深的分支里，随机输入很难知道自己离目标还有多远。只看分支距离，常常只能告诉你“还没到”，却说不清下一步应该往哪里走。\n\nLocus 的做法是让 Agent 合成中间谓词。可以把它理解成通往目标状态的路标：某个变量已经进入合理范围，某个对象经过了关键转换，或一组条件已经同时满足。谓词被插入模糊测试过程后，可以拒绝明显走偏的执行，也可以为搜索提供更有意义的覆盖反馈。\n\n这不是让模型凭经验写一条过滤规则就结束。Locus 让 Agent 结合程序分析工具反复生成和修改候选谓词，再用符号执行检查它们是否严格放宽了目标条件。这样做的底线是，谓词可以帮助排序和剪枝，却不能把本来能抵达目标的执行路径误删掉。\n\n论文在八个现有模糊测试器上评估，报告平均 41.6 倍的效率提升，并发现九个此前未修复的漏洞，其中三个已经获得带补丁的确认。数字很亮眼，但要注意它们依赖目标程序、目标状态、工具组合和基线设置；“发现漏洞”也不等于所有问题都能由 Agent 独立确认。\n\n对安全工程来说，Locus 的价值在于把“搜索方向”变成可检查的中间产物。每条谓词都可以记录生成依据、适用范围和符号执行结果，研究者能够知道某次加速来自真正有效的路标，还是来自更激进的剪枝。\n\n运行这类 Agent 时，分析工具和被测程序要放在隔离环境里，输入生成、执行和报告权限要分层。漏洞验证产生的样例只能用于受控复现和修复，不应直接进入生产系统或对外扫描。\n\nLocus 提醒我们，Agent 参与安全工具时，最重要的不是让它“更会猜”，而是让它产生可以被程序分析和人工复核的中间判断。路标越清楚，模糊测试的加速就越容易转化为可解释的工程收益。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/locus-agentic-fuzzing-20250829.svg",
+    "alt": "Locus 用 Agent 合成中间谓词，引导定向模糊测试抵达目标状态",
+    "sourceUrl": "/images/news/locus-agentic-fuzzing-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "deep-targets",
+      "title": "随机输入很难找到深层目标状态",
+      "body": "分支距离只能说明还差多远，不能告诉模糊测试下一步该往哪里走。",
+      "kind": "narrative"
+    },
+    {
+      "id": "intermediate-predicates",
+      "title": "Locus 给搜索过程加上中间路标",
+      "body": "Agent 合成有语义的谓词，描述变量、对象或状态已经走到哪一步，帮助剪枝和排序。",
+      "kind": "technical"
+    },
+    {
+      "id": "symbolic-guard",
+      "title": "符号执行守住“不误删目标路径”",
+      "body": "候选谓词经过程序分析检查，必须严格放宽目标条件，才能用于搜索引导。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-speedup",
+      "title": "八个模糊测试器平均加速 41.6 倍",
+      "body": "论文还报告发现九个此前未修复漏洞，其中三个获得带补丁确认；结果依赖目标程序和评测设置。",
+      "kind": "comparison"
+    },
+    {
+      "id": "auditable-milestones",
+      "title": "路标本身成为可复核的中间产物",
+      "body": "记录生成依据、适用范围和符号执行结果，才能知道加速来自有效引导还是过度剪枝。",
+      "kind": "example"
+    },
+    {
+      "id": "sandbox-boundary",
+      "title": "安全工具和被测程序要隔离运行",
+      "body": "输入、执行和报告权限需要分层；漏洞样例用于受控复现和修复，不直接进入生产或对外扫描。",
+      "kind": "boundary"
+    },
+    {
+      "id": "explainable-search",
+      "title": "让 Agent 产出可检查的判断",
+      "body": "安全 Agent 的工程价值不只在于猜得快，还在于每个搜索方向都能被工具和人复核。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Locus 怎样把模糊测试引向深层目标？",
+    "question": "让 Agent 提出可解释的中间谓词，用程序分析验证安全性，再把路标反馈给搜索器。",
+    "steps": [
+      {
+        "label": "描述目标状态",
+        "detail": "明确需要抵达的程序状态，避免把模糊测试目标写成模糊的“多跑几条路径”。",
+        "evidence": "target program states in directed fuzzing"
+      },
+      {
+        "label": "合成中间谓词",
+        "detail": "让 Agent 根据程序结构提出可观察的阶段性条件，作为接近目标的路标。",
+        "evidence": "synthesized semantically meaningful intermediate states"
+      },
+      {
+        "label": "交给程序分析",
+        "detail": "结合分析工具反复修改候选谓词，而不是只依赖模型生成的直觉规则。",
+        "evidence": "agentic framework with program analysis tools"
+      },
+      {
+        "label": "符号执行验边界",
+        "detail": "检查谓词严格放宽目标条件，避免把本来可达的目标路径错误剪掉。",
+        "evidence": "symbolic execution prevents false rejections"
+      },
+      {
+        "label": "隔离复现漏洞",
+        "detail": "在受控执行环境中验证发现并记录补丁状态，搜索器和生产权限保持分离。",
+        "evidence": "real-world vulnerability discovery and validation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.21302"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "execution-sandbox",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.21302",
+      "claim": "Locus 用 Agent 与程序分析工具合成并迭代修正中间谓词，通过符号执行避免错误拒绝目标状态。",
+      "excerpt": "Agentic Predicate Synthesis for Directed Fuzzing ... symbolic execution"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21302",
+      "claim": "论文在八个模糊测试器上报告平均 41.6 倍加速，并发现九个此前未修复漏洞。",
+      "excerpt": "average speedup of 41.6x ... nine previously unpatched bugs"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.21302",
+  "sourceHash": "sha256:95c305b321dc4aad6396c0ae811cb35e8bf3d597ca5a9c1c8b6ba678c3f7b978",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 Agent 合成中间谓词并参与模糊测试搜索。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.98,
+      "evidence": [
+        "正文把程序分析工具和符号执行作为 Agent 工作流的约束。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.95,
+      "evidence": [
+        "正文要求输入生成、被测程序执行和漏洞复现保持隔离。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文保留八个模糊测试器、41.6 倍加速和漏洞发现的评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.21302",
+      "claim": "arXiv 记录 Locus 于 2025 年 8 月 29 日提交，研究 Agent 合成定向模糊测试谓词。",
+      "excerpt": "Date: Fri Aug 29 ... Locus: Agentic Predicate Synthesis for Directed Fuzzing"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21302",
+      "claim": "摘要给出中间状态谓词、程序分析、符号执行、41.6 倍加速和漏洞发现结果。",
+      "excerpt": "semantically meaningful intermediate states ... 41.6x ... nine previously unpatched bugs"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对中间谓词、Agent 与程序分析工具、符号执行约束、八个模糊测试器和 41.6 倍结果；正文不展开漏洞利用步骤，补充隔离复现与权限边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 Locus 写成可验证的搜索路标方法，保留加速和漏洞发现的实验条件，避免提供利用细节，并补充执行隔离；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-locus-agentic-fuzzing-20250829"
+}

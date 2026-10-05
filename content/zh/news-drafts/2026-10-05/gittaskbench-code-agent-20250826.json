@@ -1,0 +1,188 @@
+{
+  "slug": "gittaskbench-code-agent-20250826",
+  "title": "GitTaskBench：代码 Agent 进了真实仓库，最先撞上的往往是环境和依赖",
+  "summary": "GitTaskBench 论文于 8 月 26 日提交，提出一个面向真实软件工作流的代码 Agent 基准：54 个任务，覆盖 7 种任务形态和 7 个领域，每个任务都绑定代码仓库、自动化检查和人工策划的成功标准。除了任务是否完成，论文还用 alpha-value 把成功率、token 成本和开发者平均薪资合成经济收益指标。实验中，OpenHands+Claude 3.7 最多完成 48.15% 任务，作者的错误分析显示一半以上失败来自环境设置和依赖解析等“琐碎”步骤。",
+  "body": "代码 Agent 的宣传通常从一段空白文件开始：给它需求，它写出一份代码。但真实开发很少从空白开始，更多时候是进入一个已有仓库，读懂目录、装好依赖、找到入口、改动多个文件，再跑测试和部署。GitTaskBench 试图把这条完整链路放进评测。\n\n它包含 54 个真实任务，覆盖 7 种任务形态和 7 个领域。每个任务都有对应代码仓库，以及自动化和人工策划的评测 harness，定义什么才算实际成功。这样测到的不是“模型生成了一段像代码的文本”，而是它能否在一个有历史、有约束、有环境的项目里留下可用的变化。\n\n论文还引入 alpha-value，把任务成功率、token 成本和开发者平均薪资结合起来，尝试估计 Agent 的经济价值。这个指标的好处是提醒团队：成功率高但 token 极贵的 Agent，未必比稍慢但更稳定的方案划算。它的限制也很明显，薪资、时间和任务价值的估计会随团队和地区变化，不能当成通用财务结论。\n\n实验结果并不轻松。论文给出的一个结果是 OpenHands+Claude 3.7 完成 48.15% 的任务；摘要还提到 RepoMaster+Claude 3.5 后续达到 62.96% 的新纪录。不同系统、模型和版本的配置并不一样，这些数字更适合用来说明任务仍然困难，而不是直接排一张永久榜单。\n\n更值得关注的是失败原因。超过一半的失败来自环境设置和依赖解析，这些事情对人类开发者很普通，却是 Agent 能否真正开始工作的门槛。它可能已经理解了需求，却因为版本不匹配、服务没启动或工作目录不对而无法完成。只看最终成功率，会把这些工程摩擦全部压扁成一个“模型不行”。\n\n这对代码 Agent 的产品设计有直接影响。环境准备、依赖锁定、权限、网络和超时要成为一等公民；每一步都应有可观察的状态和清晰的失败原因。Agent 还需要知道什么时候停止重试，什么时候请求人处理，而不是在错误环境里不断生成更多代码。\n\nGitTaskBench 的 alpha-value 也提醒我们把“开发者节省了多少时间”纳入验收，但不要让一个合成指标取代任务轨迹。实际评测要同时看测试通过、变更范围、回滚难度、token 成本和人工接管次数。一个只改一行就能修好的任务，和需要跨服务迁移的任务不应共用同一权重。\n\n代码 Agent 真正靠近生产，不是因为它能在演示里写出一段漂亮代码，而是它能进入一个陌生仓库，处理那些不起眼但决定成败的准备工作，并在失败时留下足够的轨迹让人接手。",
+  "publishedAt": "2025-08-26",
+  "eventDate": "2025-08-26",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/gittaskbench-code-agent-20250826.svg",
+    "alt": "GitTaskBench 将代码 Agent 放进真实仓库、环境设置、依赖解析和任务验收链路",
+    "sourceUrl": "/images/news/gittaskbench-code-agent-20250826.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "scratch-vs-repository",
+      "title": "真实开发从仓库开始，不从空白文件开始",
+      "body": "Agent 要读目录、装依赖、找到入口、改多个文件，再跑测试和部署。GitTaskBench 评测的是这条完整工作流。",
+      "kind": "narrative"
+    },
+    {
+      "id": "task-suite",
+      "title": "54 个任务覆盖七种形态和七个领域",
+      "body": "每项任务绑定代码仓库、自动化检查和人工策划的成功标准，结果不再只是看生成文本像不像代码。",
+      "kind": "technical"
+    },
+    {
+      "id": "alpha-value",
+      "title": "把成功率、token 和开发者薪资放进一个指标",
+      "body": "alpha-value 尝试估计经济收益，提醒团队同时看成本与成功；薪资和任务价值的估计仍然依赖具体组织，不能当成通用财务结论。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-frontier",
+      "title": "最好系统在论文实验中完成 48.15% 任务",
+      "body": "OpenHands+Claude 3.7 完成 48.15%，摘要还提到 RepoMaster+Claude 3.5 后续达 62.96%。系统、版本和配置不同，数字应作为难度信号阅读。",
+      "kind": "boundary"
+    },
+    {
+      "id": "environment-failures",
+      "title": "一半以上失败来自环境和依赖",
+      "body": "版本不匹配、服务未启动或工作目录错误，会让已经理解需求的 Agent 无法开始。环境准备应成为产品的一等能力。",
+      "kind": "example"
+    },
+    {
+      "id": "workflow-observability",
+      "title": "把准备工作和失败原因记录下来",
+      "body": "环境、依赖、权限、网络和超时都要有状态；Agent 还要知道何时停止重试、何时请求人处理。",
+      "kind": "technical"
+    },
+    {
+      "id": "acceptance-metrics",
+      "title": "不要让一个经济指标取代任务轨迹",
+      "body": "验收应同时看测试、变更范围、回滚难度、token 成本和人工接管次数，并按任务复杂度区分权重。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样评测代码 Agent 能不能在真实仓库里工作？",
+    "question": "把环境、依赖、改动、测试和接管都纳入任务轨迹，而不是只看最终代码。",
+    "steps": [
+      {
+        "label": "固定真实仓库",
+        "detail": "为每个任务保留可复现的仓库版本、入口和约束，避免把空白项目的表现外推到既有系统。",
+        "evidence": "54 realistic tasks across 7 modalities and 7 domains"
+      },
+      {
+        "label": "先验收环境",
+        "detail": "记录依赖安装、服务启动、权限和网络是否就绪，区分模型理解失败与工作区无法运行。",
+        "evidence": "over half of failures to ... environment setup and dependency resolution"
+      },
+      {
+        "label": "运行双重检查",
+        "detail": "用自动化测试确认行为，再用人工标准检查变更是否越界、是否破坏维护性。",
+        "evidence": "automated, human-curated evaluation harness"
+      },
+      {
+        "label": "计算真实成本",
+        "detail": "记录 token、等待、重试和人工接管，把成本放到成功率旁边，而不是只报通过比例。",
+        "evidence": "alpha-value metric ... task success rates, token cost, and average developer salaries"
+      },
+      {
+        "label": "回放失败轨迹",
+        "detail": "把超时、依赖冲突和错误重试单独分类，优先修复阻塞整个工作流的准备环节。",
+        "evidence": "Error analysis attributes over half of failures"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / GitTaskBench 作者组",
+    "url": "https://arxiv.org/abs/2508.18993"
+  },
+  "relatedSlugs": [
+    "agent",
+    "eval",
+    "execution-sandbox",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.18993",
+      "claim": "GitTaskBench 提供 54 个真实仓库任务，覆盖七种任务形态和七个领域，配套自动化与人工策划的验收。",
+      "excerpt": "54 realistic tasks across 7 modalities and 7 domains ... automated, human-curated evaluation harness"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18993",
+      "claim": "论文报告 OpenHands+Claude 3.7 完成 48.15%，并指出超过一半失败来自环境设置和依赖解析。",
+      "excerpt": "OpenHands+Claude 3.7 solves only 48.15% ... over half of failures ... environment setup and dependency resolution"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.18993",
+  "sourceHash": "sha256:4a69edeaa388db86159e6c80f4e1ad120acf10dac4dafda7dbb517d6719afeea",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论代码 Agent 在真实仓库中的完整工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕任务 harness、成功标准、轨迹和成本评测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.96,
+      "evidence": [
+        "正文强调工作区、依赖、权限、网络和可回滚执行环境。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 26 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.18993",
+      "claim": "arXiv 记录 GitTaskBench 于 2025 年 8 月 26 日提交，面向真实仓库代码 Agent 任务。",
+      "excerpt": "Date: Tue Aug 26 ... benchmark for code agents solving real-world tasks"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18993",
+      "claim": "摘要给出 48.15%/62.96% 的系统结果、alpha-value 指标和环境失败占比。",
+      "excerpt": "48.15% ... 62.96% ... alpha-value ... over half of failures"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 54 任务、七种形态/七领域、alpha-value、48.15%/62.96% 报告结果及环境/依赖失败分析；正文明确区分实验系统配置和真实团队成本，并把环境准备纳入 Agent 评测。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把代码 Agent 的失败拆成环境、依赖、任务改动与验收，保留论文数字的版本边界，没有用 alpha-value 替代轨迹证据；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-26-gittaskbench-code-agent-20250826"
+}

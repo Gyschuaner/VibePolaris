@@ -1,0 +1,205 @@
+{
+  "slug": "aegis-protocol-agent-security-20250822",
+  "title": "Aegis Protocol 把多智能体安全拆成身份、通信和政策证明",
+  "summary": "Aegis Protocol 是一篇 2025 年 8 月 22 日提交的自主 Agent 安全框架论文，提出三层设计：用 W3C DID 绑定不可伪造的 Agent 身份，用后量子密码保护通信完整性，再用 Halo2 零知识证明验证政策合规。论文在离散事件仿真中模拟 1000 个 Agent 和 20,000 次攻击试验，报告攻击成功率为 0%，政策证明生成延迟中位数为 2.79 秒；这些结果是基于仿真威胁模型的早期基线，不是现实生产系统的安全保证。",
+  "body": "当一个 Agent 只有自己在运行时，很多安全问题还能靠进程边界遮住；当多个 Agent 开始互相发消息、代替用户调用工具，问题就变成了“谁在说话、消息有没有被改、这次动作是否符合规则”。8 月 22 日提交的 Aegis Protocol，试图为这个开放的多 Agent 环境画出一套安全骨架。\n\n  它把安全拆成三层。第一层是身份：用 W3C Decentralized Identifiers，也就是 DID，让每个 Agent 有一个不应被冒充的身份。第二层是通信：用 NIST 标准化的后量子密码保护消息完整性。第三层是政策：用 Halo2 零知识证明验证 Agent 是否遵守既定规则，同时尽量不暴露政策判断所依赖的隐私信息。\n\n  三层分别回答三个不同问题。DID 让系统知道“是谁发的”，密码学签名和加密帮助确认“路上有没有被换掉”，零知识证明则试图说明“这次行为符合什么规则”。它们可以互相配合，却不能互相替代：身份是真的，不代表行为被授权；消息没被篡改，也不代表内容是对的。\n\n  论文还定义了一个扩展 Dolev-Yao 的对手模型，把控制流劫持、身份冒充和多 Agent 之间的级联失败纳入分析，并用 STRIDE 框架检查威胁类别。这个步骤的价值在于先把系统里的信任关系画出来，而不是等某个 Agent 做出危险动作后再追日志。\n\n  接着是数量实验。作者用离散事件仿真模拟 1000 个 Agent，跑了 20,000 次攻击试验，报告攻击成功率为 0%；对政策验证，仿真日志给出的证明生成延迟中位数是 2.79 秒。数字很醒目，但它们对应的是作者设定的协议、攻击者能力、网络和工作负载，不是已经部署在真实 Agent 网络里的观测。\n\n  2.79 秒也提示了工程取舍：如果每个敏感动作都要生成证明，延迟、证明大小、密钥管理和失败时的降级路径都要算进系统设计。把安全证明放到动作边界上，可能比事后分析更可靠，但也会让简单工具调用承担额外成本。\n\n  Aegis Protocol 的贡献更像一张安全架构图和一条可复现的仿真基线。它提醒我们，多 Agent 系统需要同时管理身份、消息和政策；但在真实环境中，还要继续验证密钥轮换、撤销、跨组织信任、网络故障和策略更新。论文中的 0% 不是终点，而是下一轮实测该从哪里开始的坐标。",
+  "publishedAt": "2025-08-22",
+  "eventDate": "2025-08-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/aegis-protocol-agent-security-20250822.svg",
+    "alt": "Aegis Protocol 用身份、通信完整性和政策证明保护多智能体协作",
+    "sourceUrl": "/images/news/aegis-protocol-agent-security-20250822.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "problem",
+      "title": "多 Agent 先要回答三个安全问题",
+      "body": "自主 Agent 互相通信并调用工具后，系统必须知道谁在发消息、消息是否被改、动作是否符合政策。Aegis Protocol 针对的是这种开放的多智能体环境。",
+      "kind": "narrative"
+    },
+    {
+      "id": "identity",
+      "title": "DID 绑定不可伪造的 Agent 身份",
+      "body": "第一层使用 W3C Decentralized Identifiers，让每个 Agent 有可验证的身份。它帮助系统确认消息来源，却不等于这个身份天然拥有执行权限。",
+      "kind": "technical"
+    },
+    {
+      "id": "communication",
+      "title": "后量子密码保护通信完整性",
+      "body": "第二层使用 NIST 标准化的后量子密码，目标是让 Agent 间的通信难以被伪造或篡改。消息安全和消息内容正确仍是两件事。",
+      "kind": "technical"
+    },
+    {
+      "id": "policy-proof",
+      "title": "Halo2 零知识证明验证政策合规",
+      "body": "第三层用 Halo2 零知识证明验证行为是否符合规则，并试图减少政策判断过程中的隐私暴露。证明合规不代表动作本身一定有业务价值。",
+      "kind": "comparison"
+    },
+    {
+      "id": "threat-model",
+      "title": "对手模型把控制流和级联失败放进来",
+      "body": "论文扩展 Dolev-Yao 对手模型，并用 STRIDE 检查控制流劫持、身份冒充和多 Agent 级联失败等风险，先把信任关系和攻击面写清楚。",
+      "kind": "boundary"
+    },
+    {
+      "id": "simulation",
+      "title": "0% 攻击成功率来自仿真基线",
+      "body": "离散事件仿真模拟 1000 个 Agent 和 20,000 次攻击试验，报告攻击成功率为 0%；政策证明生成延迟中位数为 2.79 秒。结果受协议、攻击者和工作负载设定约束。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "真实系统还要验证密钥、撤销和故障路径",
+      "body": "落地时要继续测密钥轮换、身份撤销、跨组织信任、网络故障和策略更新。论文提供了架构和早期基线，不能直接替代生产安全验证。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "多 Agent 动作怎样经过 Aegis 的三层检查？",
+    "question": "先确认身份，再保护消息，最后证明动作符合政策。",
+    "steps": [
+      {
+        "label": "确认身份",
+        "detail": "为每个 Agent 绑定可验证的 DID，先回答“这条消息是谁发的”。",
+        "evidence": "non-spoofable agent identity via W3C Decentralized Identifiers"
+      },
+      {
+        "label": "保护通信",
+        "detail": "用后量子密码保护消息完整性，阻止传输途中被冒用或篡改。",
+        "evidence": "communication integrity via NIST-standardized post-quantum cryptography"
+      },
+      {
+        "label": "提交政策证明",
+        "detail": "让 Agent 针对动作生成零知识证明，说明它满足约束而不暴露不必要的隐私内容。",
+        "evidence": "privacy-preserving policy compliance using the Halo2 zero-knowledge proof system"
+      },
+      {
+        "label": "模拟攻击",
+        "detail": "用扩展的 Dolev-Yao 对手模型和 STRIDE 检查控制流、身份和级联失败。",
+        "evidence": "adversary model extending Dolev-Yao ... validate ... STRIDE framework"
+      },
+      {
+        "label": "验证现实成本",
+        "detail": "把证明延迟、密钥轮换、撤销、故障降级和真实工具动作放进生产前回归。",
+        "evidence": "simulation-based and early-stage evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Aegis Protocol 作者组",
+    "url": "https://arxiv.org/abs/2508.19267"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "execution-sandbox",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.19267",
+      "claim": "Aegis Protocol 用 DID、后量子密码和 Halo2 零知识证明分别处理 Agent 身份、通信完整性和政策合规。",
+      "excerpt": "non-spoofable agent identity via W3C DIDs ... communication integrity via NIST-standardized PQC ... policy compliance using Halo2 ZKP"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19267",
+      "claim": "论文用离散事件仿真模拟 1000 个 Agent 和 20,000 次攻击，报告 0% 成功率，政策证明生成延迟中位数 2.79 秒，并明确评估是仿真早期基线。",
+      "excerpt": "model 1,000 agents ... 0 percent success rate across 20,000 attack trials ... median proof-generation latency of 2.79 seconds ... simulation-based and early-stage"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.19267",
+  "sourceHash": "sha256:7bbd7bd6a7df56bcf20631c75ccae3902ae55077e683c9d46b77e607de44285f",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多 Agent 身份、通信和政策验证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.96,
+      "evidence": [
+        "正文把政策合规与动作权限、身份真实性区分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.88,
+      "evidence": [
+        "正文讨论把安全检查放在 Agent 动作执行边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.88,
+      "evidence": [
+        "正文以工具调用和敏感动作说明协议的执行边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文解释对手模型、STRIDE 和仿真评估。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 22 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.19267",
+      "claim": "arXiv 摘要标注论文于 2025 年 8 月 22 日提交，提出 Aegis Protocol 并报告仿真安全基线。",
+      "excerpt": "Date: Fri Aug 22 06:18:57 2025 ... While the evaluation is simulation-based and early-stage"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文摘要中的 DID、PQC、Halo2 ZKP、扩展 Dolev-Yao、STRIDE、1000 Agent、20,000 次攻击、0% 成功率和 2.79 秒证明延迟；正文明确仿真结果不能直接外推到真实生产安全。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把身份、通信完整性、政策证明和仿真结果拆开，明确 0% 成功率的威胁模型边界，也补充了真实部署的密钥与故障问题；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-22-aegis-protocol-agent-security"
+}

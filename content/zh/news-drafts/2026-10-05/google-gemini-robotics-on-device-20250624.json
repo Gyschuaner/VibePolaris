@@ -1,0 +1,239 @@
+{
+  "slug": "google-gemini-robotics-on-device-20250624",
+  "title": "Gemini Robotics On-Device：把机器人的“看、说、动”搬到本地",
+  "summary": "6 月 24 日，Google DeepMind 发布 Gemini Robotics On-Device，一款面向双臂机器人的本地视觉—语言—动作模型。它针对延迟高、网络不稳定或没有网络的场景设计，并开放 SDK 给受信测试者；50 到 100 次示范、跨机器人适配和成功率数据都是官方评测，不等于已经可以在工厂里无人值守运行。",
+  "body": "6 月 24 日，Google DeepMind 发布 Gemini Robotics On-Device，把原本依赖云端的机器人模型缩成可以直接在机器人设备上运行的版本。它不是把一个聊天模型简单装进机器，而是让模型同时处理视觉、语言和动作：看见物体，理解人的指令，再给出机械臂下一步怎么动的动作。\n\n这类模型通常被称为 VLA，也就是视觉—语言—动作模型。云端模型的优势是算力和更新方便，本地模型的优势则是少一次网络往返。对需要在几百毫秒内响应、网络经常断开或数据不方便离开现场的机器人来说，本地推理能减少等待和连接依赖；代价是设备算力、模型更新和现场调试都要自己承担。\n\nGoogle 说，On-Device 版本面向双臂机器人，能在解拉链、折衣服、装配等任务中理解自然语言，并且支持微调。官方给出的快速适配路径是用大约 50 到 100 次示范把模型带到新任务上；这表示模型可以从示范中调整动作，不表示任何机器人拿到一段指令就能立刻完成复杂工作。\n\n适配范围也是这次发布的重点。模型最初在 ALOHA 机器人上训练，之后又被调整到 Franka FR3 双臂机器人和 Apptronik 的 Apollo 人形机器人。不同机器人的关节、相机位置和可用动作并不一样，能够迁移说明模型有一定泛化能力，但迁移过程仍需要训练、校准和安全测试。\n\n页面上的成功率图表来自 Google 自己的九项任务、七项快速适配任务和对照模型，且 Google 没有把它描述成独立第三方基准。安全部分也没有被省略：官方建议把模型接到低层安全控制器，分别测试语义安全和物理安全，并先通过受信测试者计划收集反馈。\n\n这条新闻真正改变的是机器人的部署边界：一部分“理解指令”的工作可以离开云端，靠近传感器和执行器。接下来要看的，是模型在更杂乱的现场能否稳定识别物体、出错时能否及时停机，以及 SDK 是否让开发者更容易留下动作日志和回滚路径，而不是只看一次演示视频。",
+  "publishedAt": "2025-06-24",
+  "eventDate": "2025-06-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-gemini-robotics-on-device-20250624.svg",
+    "alt": "Gemini Robotics On-Device 将视觉、语言和动作在机器人本地串起来，旁边保留安全控制与人工测试边界。",
+    "sourceUrl": "/images/news/google-gemini-robotics-on-device-20250624.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "这次发布的不是聊天模型缩小版",
+      "body": "Gemini Robotics On-Device 是面向双臂机器人的视觉—语言—动作模型，输入视觉和语言，输出可供机器人执行的动作。",
+      "kind": "narrative"
+    },
+    {
+      "id": "local",
+      "title": "本地运行解决的是延迟和断网",
+      "body": "动作不必每次往返云端，适合低延迟或网络不稳定的现场；设备算力、更新和现场维护则变成新的约束。",
+      "kind": "technical"
+    },
+    {
+      "id": "adapt",
+      "title": "50 到 100 次示范代表什么",
+      "body": "官方用示范微调新任务，展示快速适配潜力；它不是对所有机器人、物体和动作都能零样本工作的承诺。",
+      "kind": "boundary"
+    },
+    {
+      "id": "embodiment",
+      "title": "同一个模型要面对不同身体",
+      "body": "Google 让模型从 ALOHA 适配到 Franka FR3 与 Apollo，人形、双臂和相机布局的差异仍需要工程校准。",
+      "kind": "comparison"
+    },
+    {
+      "id": "safety",
+      "title": "动作模型必须接在安全控制器之后",
+      "body": "官方建议低层安全控制、语义和物理安全评测及红队测试，并先通过受信测试者计划开放。",
+      "kind": "example"
+    },
+    {
+      "id": "watch",
+      "title": "下一步看现场稳定性",
+      "body": "真实价值取决于杂乱环境中的成功率、失败停机、日志和回滚，而不只是厂商图表和演示。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "机器人怎样把一句话变成动作？",
+    "question": "把感知、理解、动作和安全控制分开，看到本地模型究竟接管了哪一段。",
+    "steps": [
+      {
+        "label": "看见现场",
+        "detail": "相机和传感器把物体、位置与当前状态交给模型。",
+        "evidence": "Google DeepMind VLA 说明"
+      },
+      {
+        "label": "理解指令",
+        "detail": "模型把自然语言和视觉状态合成一个任务目标，例如找到并拉开拉链。",
+        "evidence": "官方任务演示"
+      },
+      {
+        "label": "规划动作",
+        "detail": "视觉—语言—动作模型输出下一段可执行动作，而不是一段解释文字。",
+        "evidence": "Gemini Robotics On-Device 发布说明"
+      },
+      {
+        "label": "适配身体",
+        "detail": "不同机器人需要示范、微调和动作校准，模型并不会自动知道每个关节的限制。",
+        "evidence": "ALOHA、Franka、Apollo 适配说明"
+      },
+      {
+        "label": "安全执行",
+        "detail": "低层控制器、停止条件和人工测试决定动作是否真的被执行。",
+        "evidence": "Google 安全建议"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "context",
+    "agent",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "google-gemini-cli-open-source-20250625",
+    "google-workspace-veo3-gemini-connections-20250625"
+  ],
+  "sources": [
+    {
+      "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+      "claim": "Google DeepMind 于 2025 年 6 月 24 日发布 Gemini Robotics On-Device，并说明其本地运行、双臂机器人、快速适配和受信测试者范围。",
+      "excerpt": "Google DeepMind, “Gemini Robotics On-Device brings AI to local robotic devices”, June 24, 2025."
+    },
+    {
+      "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+      "claim": "官方称模型在 ALOHA 上训练后适配到 Franka FR3 与 Apollo，并以 50 到 100 次示范展示新任务适配。",
+      "excerpt": "The model was trained on ALOHA and further adapted to Franka FR3 and Apollo; as few as 50 to 100 demonstrations are described for new tasks."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/24/google-rolls-out-new-gemini-model-that-can-run-on-robots-locally/",
+      "claim": "TechCrunch 交叉报道本地机器人模型的离线运行、动作控制和 Google 的 benchmark 口径。",
+      "excerpt": "TechCrunch, “Google rolls out new Gemini model that can run on robots locally”, June 24, 2025."
+    }
+  ],
+  "canonicalUrl": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+  "sourceHash": "sha256:8df8b6a18acf48b250e50d2e8b9f37eed008cea4e73055b1754926ce8f83ddcb",
+  "status": "published",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 llm 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 context 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 agent 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 tools 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文针对 event 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-gemini-cli-open-source-20250625",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一工具/Agent 事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-workspace-veo3-gemini-connections-20250625",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一工具/Agent 事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+      "claim": "Google DeepMind 于 2025 年 6 月 24 日发布 Gemini Robotics On-Device，并说明其本地运行、双臂机器人、快速适配和受信测试者范围。",
+      "excerpt": "Google DeepMind, “Gemini Robotics On-Device brings AI to local robotic devices”, June 24, 2025."
+    },
+    {
+      "url": "https://deepmind.google/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/",
+      "claim": "官方称模型在 ALOHA 上训练后适配到 Franka FR3 与 Apollo，并以 50 到 100 次示范展示新任务适配。",
+      "excerpt": "The model was trained on ALOHA and further adapted to Franka FR3 and Apollo; as few as 50 to 100 demonstrations are described for new tasks."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/24/google-rolls-out-new-gemini-model-that-can-run-on-robots-locally/",
+      "claim": "TechCrunch 交叉报道本地机器人模型的离线运行、动作控制和 Google 的 benchmark 口径。",
+      "excerpt": "TechCrunch, “Google rolls out new Gemini model that can run on robots locally”, June 24, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "按 2025-06-24 的事件发生日核对官方公告/官方博客与可信媒体交叉来源；正文区分产品已发布、预览/路线图、公司主张和后续待验证边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐篇完成事实链、事件日、来源卡片、非模板段落、事件专属讲解、SVG alt 和词条联动检查，等待唯一 reader-review 子智能体复审。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T23:59:57Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "公司主张、评测与部署边界是否准确？是。",
+      "中文、独立结构、explainer/SVG alt/词条联动是否通过？是。"
+    ],
+    "notes": "Google DeepMind 发布本地 VLA 模型的新闻主线清楚，官方评测与跨机器人/工厂部署边界明确，中文和解释器适合零基础。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-24",
+  "promotedAt": "2026-10-05T00:03:32.841Z"
+}

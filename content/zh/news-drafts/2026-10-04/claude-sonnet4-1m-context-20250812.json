@@ -1,0 +1,198 @@
+{
+  "slug": "claude-sonnet4-1m-context-20250812",
+  "title": "Anthropic 开放 Claude Sonnet 4 的 100 万 token 上下文公测",
+  "summary": "8 月 12 日，Anthropic 宣布 Claude Sonnet 4 的 API 上下文窗口扩大到 100 万 token，是此前的 5 倍，并进入 public beta。首发面向 Claude Developer Platform 的 Tier 4 和定制速率客户，同时支持 Amazon Bedrock；超过 20 万 token 的输入按更高价格计费，Vertex AI 是 8 月 26 日才补上。",
+  "body": "8 月 12 日，Anthropic 把 Claude Sonnet 4 的 API 上下文窗口提高到最多 100 万 token，并开始公测。官方举的使用场景包括一次装入大型代码库、合成成百上千份文档，以及让智能体在数百次工具调用之间保留更长的工作记录。这个更新改变的是一次请求可以带多少输入，不是模型突然获得了永久记忆，也不是 Claude 所有产品和计划当天都自动拥有 1M 上限。\n\n上下文窗口更像工作台的容量，而不是答案长度。开发者可以把源文件、测试、文档和工具定义放进同一个请求，让模型在同一份上下文里比较依赖关系；但输入越长，注意力、延迟和费用也会一起上升。把全部代码塞进去并不能保证模型真的抓住关键路径，重复、过期或相互矛盾的文件还可能让问题更难定位。\n\nAnthropic 为超过 20 万 token 的输入设置了另一档价格：当时公开的 API 价格是输入每百万 token 6 美元、输出 22.50 美元；不超过 20 万 token 则是 3 美元和 15 美元。官方还提到 prompt caching 可以减少重复前缀的延迟与成本，batch processing 另有折扣。价格档位说明了长上下文不是免费的容量升级，系统设计仍要在完整输入、检索分段、缓存和摘要之间做选择。\n\n可用范围也有明确门槛。8 月 12 日的 public beta 面向 Claude Developer Platform 的 Tier 4 和定制速率客户，发布说明同时写明 Amazon Bedrock 可用；官方页面后来补充 Google Cloud Vertex AI 是 8 月 26 日才上线。更广泛的开放要分批进行，因此不能把“API 支持 1M”理解成每个账号、每个平台或 Claude 消费者应用当天都能发送 100 万 token。\n\n长上下文给智能体带来的好处与风险同时放大。把工具说明、历史操作和当前文件放进一个窗口，可以减少频繁摘要造成的上下文丢失；但一旦外部文档夹带恶意指令、权限说明过期或工具结果越来越多，模型也可能把旧规则当成新要求。调用链需要保留来源、版本和授权范围，并在关键操作前重新确认，而不是只依赖窗口变大。\n\n这次更新的价值要用真实工作负载来测量。团队应比较 20 万和 100 万 token 的延迟、费用、检索准确率、跨文件引用和工具调用失败率，观察模型是否能在长上下文中找到关键差异，也要记录缓存命中和摘要策略带来的变化。8 月 12 日确认的是一个有资格门槛的 1M API 公测，至于它是否比精心设计的检索系统更可靠，需要用自己的代码库和文档来验证。",
+  "publishedAt": "2025-08-12",
+  "eventDate": "2025-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/claude-sonnet4-1m-context-20250812.svg",
+    "alt": "Claude Sonnet 4 的上下文窗口从较短文档扩展到 100 万 token，输入范围、费用、缓存和权限决定长任务是否可靠；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/claude-sonnet4-1m-context-20250812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 12 日开放的是 API 1M 上下文公测",
+      "body": "Anthropic 宣布 Claude Sonnet 4 的 API 最多支持 100 万 token，是此前的 5 倍；首发面向 Claude Developer Platform 的 Tier 4/定制速率客户，Amazon Bedrock 同期支持，Vertex AI 到 8 月 26 日才补上。",
+      "kind": "narrative"
+    },
+    {
+      "id": "window-meaning",
+      "title": "上下文容量不是永久记忆，也不是输出长度",
+      "body": "1M 指一次请求可以放入的输入上下文，适合代码库、文档集和工具历史；它不会自动保存跨会话记忆，也不保证模型在长输入中找对关键内容。",
+      "kind": "technical"
+    },
+    {
+      "id": "pricing",
+      "title": "超过 20 万 token 进入更高价格档",
+      "body": "官方发布价格是 ≤200K 输入 3 美元/MTok、输出 15 美元/MTok；超过 200K 输入则是 6 美元和 22.50 美元。Prompt caching 与 batch processing 可以改变账单，但不消除长输入成本。",
+      "kind": "comparison"
+    },
+    {
+      "id": "eligibility",
+      "title": "公测资格和平台开放有门槛",
+      "body": "首发 public beta 面向 Tier 4 和定制速率客户，更广泛的开放分批推进；API、Bedrock、Vertex AI 和 Claude 应用的可用日期不能混为一谈。",
+      "kind": "boundary"
+    },
+    {
+      "id": "agent-risk",
+      "title": "长上下文也会携带更长的错误和旧规则",
+      "body": "工具说明、历史结果和外部文档进入同一窗口后，恶意指令、过期权限和冲突版本也更容易被模型带入下一步。来源、版本、授权和关键操作确认仍需保留。",
+      "kind": "technical"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步比较完整输入与检索分段",
+      "body": "用同一代码库或文档集比较 20 万与 100 万 token 的延迟、费用、引用准确率、缓存命中和工具失败率，才知道长窗口是否真的优于检索和摘要。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "100 万 token 的上下文到底改变了什么？",
+    "question": "把输入容量、价格、平台资格和长任务风险分开，才能判断 1M context 是否适合你的工作流。",
+    "steps": [
+      {
+        "label": "装入资料",
+        "detail": "把代码、文档、工具定义和历史结果放进一次请求；先检查是否有重复、过期或不应共享的内容。",
+        "evidence": "1M-token context window"
+      },
+      {
+        "label": "确认窗口",
+        "detail": "输入不超过 200K 与超过 200K 的价格档不同，1M 是最大上下文容量，不是模型必须读取的最优长度。",
+        "evidence": "Anthropic API pricing"
+      },
+      {
+        "label": "发起长任务",
+        "detail": "模型可以在更长的代码库或文档集中保持同一上下文，也可以连续调用工具；延迟和失败重试要单独记录。",
+        "evidence": "Long-context use cases"
+      },
+      {
+        "label": "检查引用",
+        "detail": "回答中的文件、版本和权限来源要能回链，避免模型把旧文档、隐藏指令或无权访问的内容混进结论。",
+        "evidence": "Source and authorization boundary"
+      },
+      {
+        "label": "比较成本",
+        "detail": "把完整上下文、检索分段、摘要和缓存放在同一测试里，比较费用、延迟和准确率后再选择架构。",
+        "evidence": "Prompt caching and batch processing"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic / Claude",
+    "url": "https://claude.com/blog/1m-context"
+  },
+  "relatedSlugs": [
+    "context-window",
+    "llm",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://claude.com/blog/1m-context",
+      "claim": "Anthropic 官方页面标注 August 12, 2025，宣布 Claude Sonnet 4 API 支持最多 1M tokens、5 倍提升、public beta、20 万 token 分档价格、prompt caching/batch processing 与 Tier 4/定制速率资格。",
+      "excerpt": "Claude Sonnet 4 now supports up to 1 million tokens of context—a 5x increase ... public beta ... Tier 4 and custom rate limits."
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "claim": "Anthropic 平台 release notes 记录 8 月 12 日 API 与 Amazon Bedrock 的 1M context beta；Google Cloud Vertex AI 的更新日期与博客中的 8 月 26 日补充分开。",
+      "excerpt": "August 12, 2025 — 1M context window beta support for Claude Sonnet 4."
+    }
+  ],
+  "canonicalUrl": "https://claude.com/blog/1m-context",
+  "sourceHash": "sha256:e40242a125a3a007e568391c6c01a45f034c0c6a85af4f49315a949a16ffe297",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 1M 输入上下文、20 万 token 价格分档、代码库/文档/工具历史和跨平台公测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 Claude Sonnet 4 模型、API 上下文容量、输入价格与长任务中的注意力和错误风险。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文与 explainer 讨论工具定义、数百次调用、来源/版本/权限和长上下文智能体工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.89,
+      "evidence": [
+        "正文区分 8/12 API/Bedrock 公测、8/26 Vertex AI 补充和更广泛分批开放。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://claude.com/blog/1m-context",
+      "claim": "官方博客确认 8/12 日期、1M/5x、API/Bedrock 公测、20 万 token 价格档、prompt caching/batch processing 和 Tier 4/定制速率。",
+      "excerpt": "Prompts ≤ 200K ... $3 / MTok ... Prompts > 200K ... $6 / MTok"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "claim": "平台 release notes 交叉确认 8/12 1M context beta 条目，支持 API/Bedrock 日期边界核对。",
+      "excerpt": "1M context window beta support for Claude Sonnet 4"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Anthropic 8/12 官方博客与平台 release notes；正文区分输入上下文与输出/记忆、20 万 token 价格分档、Tier 4/定制速率公测、API/Bedrock/Vertex AI 日期，并补充长上下文中来源、旧规则和恶意指令风险。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 1M context 写成容量、价格、资格与长任务治理的组合变化，避免写成所有用户当天可用或自动拥有长期记忆，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-12-claude-1m",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-12，与 Anthropic 官方博客日期一致；平台 release notes 同日确认 Claude API 与 Amazon Bedrock 的 1M context beta，8 月 26 日条目才记录 Vertex AI 可用和 API 限流提升。",
+      "正文和 sections 明确 1M 指一次请求可放入的输入上下文窗口，不是跨会话记忆、永久保存或输出长度，也没有把消费者应用当天自动获得 1M。",
+      "≤200K 与 >200K token 的输入/输出价格分别为 $3/$15 和 $6/$22.50 每 MTok，并保留 prompt caching、batch processing、Tier 4 与 custom rate limits 的资格和成本边界。",
+      "长上下文的代码库/文档/工具历史场景与来源版本、提示注入、过期权限、工具调用授权和关键操作重新确认写得清楚；没有把窗口增大写成检索准确率或事实核验保证。",
+      "benchmark explainer、6 个 sections、context-window/llm/tools/event relations、事件特定 hero、Anthropic 博客与平台 release notes sources/evidence、verification 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过：中文已将“可一旦”改为更自然的“但一旦”，零基础读者能区分输入容量、输出长度、跨会话记忆、价格档位和平台资格；API/Bedrock 的 8/12 公测与 Vertex AI 的 8/26 后续开放边界清楚。",
+    "changes": [
+      "将“可一旦外部文档夹带恶意指令”改为“但一旦外部文档夹带恶意指令”，修正连接词使句子更自然。"
+    ]
+  }
+}

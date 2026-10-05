@@ -1,0 +1,151 @@
+{
+  "slug": "aws-ai-agent-marketplace-20250710",
+  "title": "AWS 预告 AI agent marketplace：把可安装的 agents 放进云客户目录",
+  "summary": "7 月 10 日，TechCrunch 报道 AWS 计划在 7 月 15 日纽约 AWS Summit 推出 AI agent marketplace，并把 Anthropic 列为合作方之一。报道所依据的是知情人士，AWS 与 Anthropic 当时没有回应；这是一项发布计划，不是 7 月 10 日已经上线的市场。",
+  "body": "7 月 10 日，TechCrunch 报道 AWS 计划在下周的纽约 AWS Summit 推出 AI agent marketplace，时间指向 7 月 15 日，Anthropic 被列为合作方之一。报道引用两名知情人士，AWS 和 Anthropic 在文章发布时没有回应，所以这条新闻记录的是一项被媒体披露的发布计划，而不是当天已经可以使用的 AWS 产品。\n\n按报道描述，这个 marketplace 会让创业公司直接向 AWS 客户提供自己的 AI agents，企业客户则可以在一个目录里浏览、安装和按需求寻找 agent。它解决的不是模型训练，而是分发：现在很多 agent 被放在各自的产品里，企业要分别评估账号、权限、账单和数据处理方式。\n\n如果市场真的按这个方向推出，agent 的“安装”不会像安装一个普通插件那么简单。一个 agent 可能需要调用企业 API、访问文档、创建工单或修改数据库；目录需要告诉客户它会读什么、能做什么、由谁承担错误，并且在权限变化或服务停止时保留撤回路径。\n\nAWS 让 marketplace 成为入口，也会把供应商审核和平台责任放到台前。创业公司希望获得云客户，企业希望减少采购和集成成本，但这两件事都不能替代对提示注入、数据越权、工具调用失败和输出审计的检查。Anthropic 如果成为合作方，可能带来模型和 agent API 的结合，但报道没有确认具体的产品接口或商业条款。\n\n因此，7 月 10 日能确认的是“一个重要的云分发计划被报道”，而不是 AWS 已经证明这些 agents 在企业里可靠。真正值得观察的是市场上线后的供应商资料、安装权限、日志、计费和停用机制，以及客户能否把一个 agent 的行为追到具体版本和工具调用。",
+  "publishedAt": "2025-07-10",
+  "eventDate": "2025-07-10",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/aws-ai-agent-marketplace-20250710.svg",
+    "alt": "AWS 预告的 AI agent marketplace 把供应商、企业目录、工具权限和审计串到一起",
+    "sourceUrl": "/images/news/aws-ai-agent-marketplace-20250710.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "reported-plan",
+      "title": "这是发布计划，不是当天上线",
+      "body": "TechCrunch 指向 7 月 15 日 AWS Summit 的发布安排，AWS 与 Anthropic 在报道时未回应。",
+      "kind": "boundary"
+    },
+    {
+      "id": "marketplace",
+      "title": "目录解决的是 agent 的分发问题",
+      "body": "创业公司可以向 AWS 客户提供 agent，企业客户可以按需求浏览和安装，入口从单个产品转向云平台。",
+      "kind": "narrative"
+    },
+    {
+      "id": "permissions",
+      "title": "安装之后才是权限问题",
+      "body": "能读文档、调用 API、写入数据库和创建工单是不同能力，目录需要让客户看懂每一项授权。",
+      "kind": "technical"
+    },
+    {
+      "id": "platform-duty",
+      "title": "平台要承担供应商信息和停用路径",
+      "body": "供应商审核、日志、计费、版本和撤回机制会决定 marketplace 是目录还是新的黑盒。",
+      "kind": "comparison"
+    },
+    {
+      "id": "what-to-watch",
+      "title": "上线后再看是否形成可信市场",
+      "body": "当前没有公开的产品界面、商业条款或实测指标，后续证据比发布口号更重要。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "企业安装一个 AI agent 前，目录至少要展示什么？",
+    "question": "把“能做什么”翻译成权限和责任，才能避免把 agent 当成无害插件。",
+    "steps": [
+      {
+        "label": "列出工具",
+        "detail": "逐项写出 agent 会调用的 API、文件系统、数据库和外部网站。",
+        "evidence": "tools inventory"
+      },
+      {
+        "label": "标出数据范围",
+        "detail": "说明它会读哪些文档、保留多久、是否把内容发送给模型提供方。",
+        "evidence": "context boundary"
+      },
+      {
+        "label": "配置最小授权",
+        "detail": "安装时只授予完成任务所需的权限，并把高风险动作设置为需要确认。",
+        "evidence": "authorization"
+      },
+      {
+        "label": "保存调用记录",
+        "detail": "记录提示、版本、工具参数和结果，让企业可以解释一次错误是怎样发生的。",
+        "evidence": "audit log"
+      },
+      {
+        "label": "准备停用和迁移",
+        "detail": "供应商下线或 agent 失控时，企业要能撤销令牌、取回数据并恢复人工流程。",
+        "evidence": "rollback path"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "api",
+    "authorization",
+    "context",
+    "function-calling",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/",
+      "claim": "TechCrunch 7 月 10 日报道 AWS 计划在 7 月 15 日 AWS Summit 推出 AI agent marketplace，允许企业浏览和安装 agents，并称 Anthropic 是合作方之一。",
+      "excerpt": "TechCrunch, “AWS is launching an AI agent marketplace next week with Anthropic as a partner,” July 10, 2025."
+    },
+    {
+      "url": "https://aws.amazon.com/events/summits/new-york/",
+      "claim": "AWS New York Summit 官方活动页提供报道所指活动的时间背景；不把活动页当成 marketplace 已上线的确认。",
+      "excerpt": "AWS Summit New York event context."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/",
+  "sourceHash": "sha256:36a8bd909466e0f9645bd7f082e6bc7c9b5d0274419e8c821aec19cf2f54bca3",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/10/aws-is-launching-an-ai-agent-marketplace-next-week-with-anthropic-as-a-partner/",
+      "claim": "TechCrunch 7 月 10 日报道 AWS 计划在 7 月 15 日 AWS Summit 推出 AI agent marketplace，允许企业浏览和安装 agents，并称 Anthropic 是合作方之一。",
+      "excerpt": "TechCrunch, “AWS is launching an AI agent marketplace next week with Anthropic as a partner,” July 10, 2025."
+    },
+    {
+      "url": "https://aws.amazon.com/events/summits/new-york/",
+      "claim": "AWS New York Summit 官方活动页提供报道所指活动的时间背景；不把活动页当成 marketplace 已上线的确认。",
+      "excerpt": "AWS Summit New York event context."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:35:00.000Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 2025-07-10 报道，确认 AWS Summit 7 月 15 日计划、两名知情人士和 AWS/Anthropic 未回应的报道边界；正文没有把预告写成已经上线的产品。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T00:35:00.000Z",
+    "notes": "已按新闻报道、官方材料与监管文件核对，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T16:40:00Z",
+    "questions": [
+      "新闻主线与事件/发布日期是否清楚？是。",
+      "官方、媒体、监管和公司统计边界是否准确？是。",
+      "中文及 sections/explainer/SVG alt/词条联动是否适合零基础？是。"
+    ],
+    "notes": "正文把 AWS agent marketplace 明确写成 7 月 15 日计划，并标注 TechCrunch 知情人士消息及 AWS/Anthropic 未回应，没有写成 7 月 10 日已上线。中文、来源卡片、sections/explainer、SVG alt 和词条联动通过。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-10",
+  "promotedAt": "2026-10-04T18:50:16.935Z"
+}

@@ -1,0 +1,165 @@
+{
+  "slug": "meta-muse-personal-agent-20260908",
+  "title": "Meta 发布个人代理 Muse：专用云电脑与 Sentinel 管理外部动作",
+  "summary": "Meta 于 2026-09-08 发布个人 AI 代理 Muse，在美国 iOS、Android 和 muse.ai 推出。Muse 运行在专用 Muse Secure VM 中，可连接邮箱等服务、在后台推进任务；Meta 说独立的 Sentinel 负责网络出口和连接器权限，敏感动作需用户批准。安全边界来自公司设计说明和 bug bounty 计划，不是独立审计结论。",
+  "body": "Meta 在 9 月 8 日发布 Muse，把个人代理从“回答问题”推进到“代你做事”：用户可以让它处理邮件、预订旅行，也可以把长期目标拆成计划，让代理在后台继续推进。产品先在美国面向成年人推出，可通过 Muse 应用、网页或 WhatsApp 交互。\n\nMuse 的核心设计是一个专用云电脑。Meta 称每位用户都有隔离的 Secure VM，里面放代理、浏览器、文件和连接器；代理可以编译代码、运行技能、管理并行子代理和定时任务。用户决定连接哪些应用、给读权限还是写权限，也可以随时撤销。凭据由安全存储保存，代理本身不直接看到真实密码和支付信息。\n\n外部动作由另一个叫 Sentinel 的系统把关。Muse 提议发送邮件、调用连接器或访问网络，Sentinel 根据用户设置的策略决定允许、拒绝还是弹出审批；需要批准时，审批对话直接显示在客户端，而不是让模型自己说“我已经获得同意”。Meta 还说，授权可以是一次性、会话级、任务级或有时间限制的能力，并且会留下审计轨迹。\n\n这套设计的意义在于把“模型会不会听话”拆成多个安全层：运行环境隔离，连接器权限最小化，真实 token 在模型之外插入，网络出口由主机层控制。Meta 的安全文章也承认，代理仍可能犯错或遭遇提示注入，因此开放了最高 30 万美元的 bug bounty。所有这些是公司对架构和测试的描述，还需要外部研究者验证在真实连接器和恶意数据下是否成立。\n\n隐私方面，Meta 表示 Muse VM 中的数据不会进入广告系统，用户可以选择不把交互用于训练；今年晚些时候还计划推出只有用户持有密钥的 Confidential VM。可用范围、费用、连接器和后续加密方案仍会变化。读者真正应追问的是：撤销是否即时、审批是否覆盖所有写操作、审计轨迹能否导出，以及代理在被提示注入时能否保持权限边界。",
+  "publishedAt": "2026-09-08",
+  "eventDate": "2026-09-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meta-muse-personal-agent-20260908.svg",
+    "alt": "Meta 发布个人代理 Muse：专用云电脑与 Sentinel 管理外部动作；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/meta-muse-personal-agent-20260908.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "Muse 先做什么",
+      "body": "Muse 在美国推出个人代理入口，能够处理邮件、旅行和长期计划等任务。它是产品上线和架构说明，不是证明代理已经可靠完成所有工作。",
+      "kind": "narrative"
+    },
+    {
+      "id": "vm",
+      "title": "专用 VM 把代理和数据放在一起",
+      "body": "每位用户有隔离的云电脑，里面运行代理、浏览器、文件和连接器。用户决定连接范围，凭据由安全存储管理，代理不直接看到真实 token。",
+      "kind": "technical"
+    },
+    {
+      "id": "sentinel",
+      "title": "Sentinel 是外部权限裁判",
+      "body": "Muse 提议动作，Sentinel 根据策略允许、拒绝或请求用户批准；网络出口也经过它。这样把模型的意图与真正执行分开。",
+      "kind": "comparison"
+    },
+    {
+      "id": "limits",
+      "title": "公司架构说明仍需外部验证",
+      "body": "Meta 的红队、bug bounty、隔离和审批是公司自述的控制措施，不能自动等同于独立安全审计或长期事故数据。",
+      "kind": "boundary"
+    },
+    {
+      "id": "privacy",
+      "title": "隐私选项还在演进",
+      "body": "Meta 说交互不进入广告系统，用户可退出训练，并计划推出 Confidential VM。实际可用地区、连接器和加密范围要看后续版本。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "个人代理怎样把“我同意”变成一次可追踪动作？",
+    "question": "让代理提议、权限层判断、用户批准和网络执行各自留下记录。",
+    "steps": [
+      {
+        "label": "提出任务",
+        "detail": "用户给 Muse 一个目标，代理在隔离 VM 里规划并调用工具。",
+        "evidence": "Muse Secure VM"
+      },
+      {
+        "label": "请求外部动作",
+        "detail": "连接器把目标、范围和上下文交给 Sentinel，而不是让模型直接持有真实凭据。",
+        "evidence": "Sentinel connector flow"
+      },
+      {
+        "label": "决定权限",
+        "detail": "Sentinel 依据用户策略允许、拒绝或生成一次性/任务级审批。",
+        "evidence": "Meta Sentinel policy decisions"
+      },
+      {
+        "label": "执行并留痕",
+        "detail": "获批动作在网络边界执行，审计轨迹记录计划、批准和结果。",
+        "evidence": "Human-in-the-loop and audit trail"
+      }
+    ]
+  },
+  "source": {
+    "name": "Meta",
+    "url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "authorization",
+    "auth",
+    "context",
+    "tools",
+    "event",
+    "memory"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+      "claim": "Meta 于 2026-09-08 发布 Muse，称其运行在专用 Muse Secure VM 中，并能代用户处理日常任务。",
+      "excerpt": "Muse is a personal AI agent... runs on Muse Secure VM, a dedicated, secure computer with its own browser."
+    },
+    {
+      "url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+      "claim": "Meta 说用户控制连接器和权限，Muse 在发送邮件或购买等敏感动作前会询问，并提供完整审计轨迹。",
+      "excerpt": "Muse checks with the person before sensitive actions... People choose which apps Muse connects to... complete audit trail."
+    },
+    {
+      "url": "https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse",
+      "claim": "Meta 的安全说明称 Sentinel 是连接器和网络出口的唯一权限机构，代理不能覆盖它。",
+      "excerpt": "Sentinel is the sole permission authority for connector actions and for all egress over the network."
+    },
+    {
+      "url": "https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse",
+      "claim": "Meta 同日开放 Muse bug bounty，最高奖励 30 万美元，提示注入成功案例最高 13 万美元。",
+      "excerpt": "The program awards up to $300,000 for valid reports, including up to $130,000 for successful prompt injection attempts."
+    }
+  ],
+  "canonicalUrl": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent",
+  "sourceHash": "sha256:226ee17ee3947baeaf46fd0cbbbddb9732051a9ba628ffc19583ea2792d0a1ed",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+      "claim": "Meta 于 2026-09-08 发布 Muse，称其运行在专用 Muse Secure VM 中，并能代用户处理日常任务。",
+      "excerpt": "Muse is a personal AI agent... runs on Muse Secure VM, a dedicated, secure computer with its own browser."
+    },
+    {
+      "url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+      "claim": "Meta 说用户控制连接器和权限，Muse 在发送邮件或购买等敏感动作前会询问，并提供完整审计轨迹。",
+      "excerpt": "Muse checks with the person before sensitive actions... People choose which apps Muse connects to... complete audit trail."
+    },
+    {
+      "url": "https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse",
+      "claim": "Meta 的安全说明称 Sentinel 是连接器和网络出口的唯一权限机构，代理不能覆盖它。",
+      "excerpt": "Sentinel is the sole permission authority for connector actions and for all egress over the network."
+    },
+    {
+      "url": "https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse",
+      "claim": "Meta 同日开放 Muse bug bounty，最高奖励 30 万美元，提示注入成功案例最高 13 万美元。",
+      "excerpt": "The program awards up to $300,000 for valid reports, including up to $130,000 for successful prompt injection attempts."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "method": "source",
+    "notes": "逐条核对原文日期和事件边界；把厂商自述、媒体报道、模型输出、融资口径和尚待独立核验的结论分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "notes": "按独立新闻事件成篇，明确区分已发生事实、公司主张、报道归属和后续需要验证的结果。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:20:10Z",
+    "questions": [],
+    "notes": "新闻主线是 Meta 发布 Muse 个人代理及 Secure VM/Sentinel 架构。正文把公司设计说明、bug bounty 与独立审计区分，明确用户权限、审批、凭据和 Confidential VM 的范围；词条、引用卡片、explainer 与 SVG 一致。标题改为较准确的“Sentinel 管理外部动作”，避免把公司架构主张写成每次动作都绝对受控。",
+    "changes": [
+      "将标题和 hero.alt 的“负责每一次外部动作”改为“管理外部动作”，降低公司架构绝对化表述。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-08",
+  "promotedAt": "2026-10-03T00:24:01.489Z"
+}

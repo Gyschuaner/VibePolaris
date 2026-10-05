@@ -1,0 +1,177 @@
+{
+  "slug": "models-same-family-trust-equivalent-20250819",
+  "title": "同一家族的小模型，表现像也不等于值得互换",
+  "summary": "8 月 19 日提交的研究提醒，模型替换不能只看准确率：同一家族的大模型和小模型即使任务分数接近，可能仍然依赖不同输入特征，对置信度和真实正确率的对应关系也不同。论文提出 trust-equivalence 框架，从归因对齐和校准相似性两个维度比较模型，在 Llama-2、BERT 和 Vision Transformer 家族的实验中都观察到明显差异。",
+  "body": "线上系统经常会把同一家族的小模型当作大模型的“便宜替身”：分数差不多，应该就能直接换。但 8 月 19 日提交的一篇研究提醒，性能相近只回答了“答对多少”，没有回答“凭什么答对”和“错的时候有多自信”。\n\n论文提出 trust-equivalence 框架，从两个维度检查模型能否互换。第一是归因对齐：两个模型是否依赖相同的输入特征；第二是校准相似性：模型的置信度和实际正确率是否保持相似关系。前者关心决策依据，后者关心使用者能否继续相信原来的阈值。\n\n作者在 Llama-2 家族的自然语言推断和释义识别任务上，用 LIME 与 SHAP 估计输入特征归因，再用 top-K 特征的 Jaccard 系数比较对齐程度；校准则看 ECE、MCE、Brier 分数和可靠性图。实验还在 BERT 和 Vision Transformer 家族上做了验证。\n\n结果显示，同一家族模型之间的归因对齐通常较低，校准曲线也可能明显不同；模型大小与校准质量之间没有稳定关系。换句话说，小模型可能在测试集上答得差不多，却是沿着另一条特征路径做决定，线上遇到分布变化时风险也会不同。\n\n这对模型替换有一个直接影响：迁移时不能只复制原模型的置信度阈值、人工复核规则和解释文案。至少要重新测特征依赖、概率校准、边界样本和错误类型；涉及医疗、风控或权限决策时，还要检查模型在不同人群和场景上的失败方式。\n\n这篇论文的实验集中在分类任务和特定模型家族，归因工具本身也有解释局限。它没有给出一个适用于所有模型的信任分数，却把“能不能替换”从单一性能比较改成了需要显式验证的多维决策。",
+  "publishedAt": "2025-08-19",
+  "eventDate": "2025-08-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/models-same-family-trust-equivalent-20250819.svg",
+    "alt": "同一家族模型即使任务表现接近，也可能在特征归因和置信度校准上走不同路径",
+    "sourceUrl": "/images/news/models-same-family-trust-equivalent-20250819.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "replacement-event",
+      "title": "模型分数接近，不代表可以无条件替换",
+      "body": "这篇论文于 2025 年 8 月 19 日提交 arXiv，研究同一家族的大模型和小模型是否真的信任等价。它把替换问题从准确率扩展到决策依据和置信度行为。",
+      "kind": "narrative"
+    },
+    {
+      "id": "trust-dimensions",
+      "title": "先看模型凭什么判断，再看它有多自信",
+      "body": "trust-equivalence 框架关注归因对齐和校准相似性：两个模型是否依赖相同的输入特征，以及置信度是否和实际正确率保持相似关系。两项都不同，原有阈值和解释就不能直接搬过去。",
+      "kind": "comparison"
+    },
+    {
+      "id": "methods",
+      "title": "LIME、SHAP 和可靠性指标组成两套检查",
+      "body": "作者在 Llama-2 的自然语言推断和释义识别任务上，用 LIME、SHAP 与 top-K 特征的 Jaccard 系数测归因对齐；再用 ECE、MCE、Brier 分数和可靠性图观察校准。",
+      "kind": "technical"
+    },
+    {
+      "id": "findings",
+      "title": "同一家族的模型可能走不同特征路径",
+      "body": "实验显示模型间归因对齐通常较低，校准曲线也可能明显不同；模型大小与校准质量没有稳定关系。测试集分数接近，不能推出分布变化下的行为也接近。",
+      "kind": "example"
+    },
+    {
+      "id": "deployment-check",
+      "title": "替换时要重测阈值、边界样本和错误类型",
+      "body": "迁移模型时不能只复制原模型的置信度阈值、人工复核规则和解释文案。应重新检查特征依赖、概率校准、边界样本与不同人群场景的失败方式。",
+      "kind": "technical"
+    },
+    {
+      "id": "study-boundary",
+      "title": "它给的是验证维度，不是通用信任分数",
+      "body": "论文实验集中在分类任务和特定模型家族，归因方法本身也有限制。trust-equivalence 更适合作为模型替换前的检查清单，不能替代业务数据上的安全、偏差和权限验收。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一个小模型能不能接替大模型，要检查哪几层？",
+    "question": "如果两个模型的准确率差不多，为什么还要重新测解释和置信度？",
+    "steps": [
+      {
+        "label": "固定替换任务",
+        "detail": "锁定同一数据、标签、阈值和业务动作，先确认比较不是由任务定义变化造成的。",
+        "evidence": "The framework evaluates trust-equivalence within model families"
+      },
+      {
+        "label": "比较输入归因",
+        "detail": "用归因方法找出两个模型依赖的 top-K 特征，再看它们是否真的重合。",
+        "evidence": "Attribution alignment is measured with LIME, SHAP and Jaccard overlap"
+      },
+      {
+        "label": "检查置信度校准",
+        "detail": "比较 ECE、MCE、Brier 分数和可靠性图，确认同一个置信度阈值仍有相近含义。",
+        "evidence": "Calibration similarity uses ECE, MCE, Brier Score and reliability diagrams"
+      },
+      {
+        "label": "回放边界样本",
+        "detail": "单独看困难样本、不同人群和分布变化下的错误类型，不让平均分掩盖新的失败路径。",
+        "evidence": "The paper finds low attribution alignment and differing calibration profiles"
+      },
+      {
+        "label": "重新审批动作",
+        "detail": "医疗、风控和权限决策要重新确认阈值、人工复核和解释文案，再决定是否放量。",
+        "evidence": "Trust-equivalence cannot be assumed from performance alone"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Rohit Raj Rai 等",
+    "url": "https://arxiv.org/abs/2508.13533"
+  },
+  "relatedSlugs": [
+    "eval",
+    "benchmark",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.13533",
+      "claim": "论文提出 trust-equivalence 框架，从归因对齐和校准相似性两个维度评估同一家族模型能否互换。",
+      "excerpt": "attribution alignment ... calibration similarity"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.13533",
+      "claim": "在 Llama-2 两项文本分类任务及 BERT、Vision Transformer 家族的验证中，作者观察到归因对齐较低、校准曲线存在明显差异。",
+      "excerpt": "attribution alignment ... generally low ... Calibration profiles differ substantially"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.13533",
+  "sourceHash": "sha256:0037cbc1f99c0dde16ab02b8008a54812f8ded66fb10bf25031395897f52986a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文把模型替换拆成归因、校准、边界样本和错误类型的多维评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.88,
+      "evidence": [
+        "正文围绕模型家族、分类任务、归因方法和校准指标建立比较基线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.8,
+      "evidence": [
+        "正文将模型替换对医疗、风控和权限决策的阈值审批作为部署边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.78,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 19 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.13533",
+      "claim": "研究于 2025 年 8 月 19 日提交，摘要从归因对齐和校准相似性两维讨论同一家族模型的信任等价性。",
+      "excerpt": "Submitted on 19 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的 trust-equivalence 定义、Llama-2/BERT/ViT 验证、LIME/SHAP 归因与校准指标；正文没有把论文结果外推成通用替换规则，补充业务阈值和权限决策复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：准确区分性能相近、归因对齐和校准相似性，保留实验模型家族和方法边界；把结论转成替换前的检查清单，没有虚构通用信任分数或部署保证。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-19-trust-equivalence"
+}

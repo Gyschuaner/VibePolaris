@@ -1,0 +1,188 @@
+{
+  "slug": "world-model-implanting-embodied-20250904",
+  "title": "WorMI：把领域世界模型临时植入具身 Agent 做测试时适配",
+  "summary": "WorMI 论文于 9 月 4 日提交，试图让具身 Agent 面对新环境时少依赖重新训练。框架把大语言模型的推理能力与独立学习的领域世界模型在测试时组合，通过轨迹抽象表示检索相关模型，再用 world-wise compound attention 对齐中间表示；论文在 VirtualHome 和 ALFWorld 的未见领域上报告了优于多种 LLM 方法的零样本和少样本表现。",
+  "body": "具身 Agent 换一个房间、任务或交互规则，常见的办法是重新收集数据再训练。这样做稳妥，却慢而贵；更麻烦的是，模型可能只学会了旧环境里一组动作，到了新环境仍然把熟悉的路径当成答案。WorMI 选择了一条不同的路线：把环境知识拆成可以在测试时取用和移除的世界模型。\n\n这里的“植入”不是改写主模型参数，而是把一个独立学习的、与领域相关的世界模型临时接入具身 Agent。它负责描述某个环境里的状态变化和动作后果，语言模型仍然承担任务解释和推理。两者在测试时组合，目标是让 Agent 在不重新训练主策略的情况下适应未见领域。\n\n关键难题是从许多世界模型里找到当前任务真正需要的那一个。WorMI 使用基于原型的检索，根据轨迹的抽象表示匹配相关模型；这比只看一个文字任务名更接近“这个环境会怎样变化”。检索到多个模型时，world-wise compound attention 再把它们提供的知识和 Agent 策略的中间表示对齐，减少不同领域模型互相干扰。\n\n论文在 VirtualHome 和 ALFWorld 上评测 WorMI，覆盖未见环境的零样本和少样本设置，并报告优于多种基于 LLM 的方法。这个结果说明测试时组合有潜力改善跨域适配，但不能直接理解成“拿任何世界模型都能即插即用”。检索质量、轨迹抽象方式、环境模拟器和主策略的接口，都会影响最终表现。\n\n工程上，临时接入世界模型的最大好处是可回滚。每次任务可以记录用了哪个模型、依据哪段轨迹检索、哪些中间表示被对齐；如果新环境表现变差，可以移除该模型并回到基线策略。相比把所有领域数据一次性混进参数，这条证据链更容易定位问题，也更容易控制数据和权限范围。\n\n但测试时适配同样会带来新风险。错误世界模型会让 Agent 在熟悉的语言解释下做出不适合当前环境的动作；多个模型的预测不一致，也可能被注意力模块平滑成一个看似合理的结论。因此，适配层需要明确置信度、冲突处理和安全停止规则，不能把“检索到了模型”当成环境真实状态的证明。\n\nWorMI 的启发，是把具身智能的泛化问题从“把模型做得更大”拆成“能不能在需要时取对知识”。世界模型可插拔、可移除，确实有利于数据效率和跨域实验；要走向真实机器人，还需要对传感器误差、实时延迟、动作约束和领域错配做更严格的现场验证。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/world-model-implanting-embodied-20250904.svg",
+    "alt": "WorMI 在测试时检索并组合领域世界模型帮助具身 Agent 适应新环境",
+    "sourceUrl": "/images/news/world-model-implanting-embodied-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "adaptation-cost",
+      "title": "换环境就重训，慢而且不一定学到真正泛化",
+      "body": "具身 Agent 可能把旧环境的动作路径带进新场景，重新收集数据成为适配的主要成本。",
+      "kind": "narrative"
+    },
+    {
+      "id": "test-time-composition",
+      "title": "WorMI 在测试时临时接入领域世界模型",
+      "body": "世界模型独立学习、可植入也可移除，语言模型负责推理，主策略不必为每个新领域重新训练。",
+      "kind": "technical"
+    },
+    {
+      "id": "prototype-retrieval",
+      "title": "轨迹抽象表示帮助检索相关模型",
+      "body": "系统根据任务轨迹与世界模型原型匹配，避免只凭一个文字任务名决定环境知识。",
+      "kind": "technical"
+    },
+    {
+      "id": "compound-attention",
+      "title": "多个世界模型要先对齐再共同使用",
+      "body": "world-wise compound attention 把检索模型的知识与策略中间表示对齐，减少领域之间的干扰。",
+      "kind": "example"
+    },
+    {
+      "id": "virtualhome-alfworld",
+      "title": "VirtualHome 和 ALFWorld 上报告零样本、少样本优势",
+      "body": "论文在未见领域比较多种 LLM 方法；结果支持测试时组合的潜力，但依赖检索、模拟器和接口。",
+      "kind": "comparison"
+    },
+    {
+      "id": "mismatch-stop",
+      "title": "检索到世界模型，不等于证明它适合当前环境",
+      "body": "错误模型、冲突预测和实时延迟都可能把 Agent 带偏，需要置信度、冲突处理和安全停止规则。",
+      "kind": "boundary"
+    },
+    {
+      "id": "rollback-trace",
+      "title": "可植入也可移除，才方便定位适配问题",
+      "body": "保存模型来源、轨迹、对齐表示和回退策略，让测试时适配保持可解释、可回滚。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "WorMI 怎样在测试时给具身 Agent 补上环境知识？",
+    "question": "先从轨迹检索合适的世界模型，再对齐它与主策略的表示，异常时移除并回到基线。",
+    "steps": [
+      {
+        "label": "读取当前环境轨迹",
+        "detail": "记录任务目标、状态变化和动作后果，用抽象表示描述当前领域而不是只看文字名称。",
+        "evidence": "trajectory-based abstract representation matching"
+      },
+      {
+        "label": "检索领域世界模型",
+        "detail": "用原型匹配挑选一个或多个与当前环境相关的独立世界模型。",
+        "evidence": "prototype-based world model retrieval"
+      },
+      {
+        "label": "测试时组合",
+        "detail": "将检索到的模型临时接入 Agent，让语言模型推理与领域动态知识协同。",
+        "evidence": "test-time composition"
+      },
+      {
+        "label": "对齐中间表示",
+        "detail": "通过 world-wise compound attention 融合多个世界模型，并与策略表示保持接口一致。",
+        "evidence": "aligns intermediate representations"
+      },
+      {
+        "label": "验证与回滚",
+        "detail": "在未见领域检查零样本/少样本表现，记录冲突和延迟，必要时移除适配模型回到基线。",
+        "evidence": "VirtualHome and ALFWorld benchmarks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03956"
+  },
+  "relatedSlugs": [
+    "agent",
+    "eval",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03956",
+      "claim": "WorMI 把独立学习的领域世界模型与 LLM 推理在测试时组合，并支持植入和移除。",
+      "excerpt": "world model implanting ... combines ... large language models ... through test-time composition ... seamless implantation and removal"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03956",
+      "claim": "框架使用轨迹抽象表示检索和 world-wise compound attention，在 VirtualHome、ALFWorld 未见领域上评估。",
+      "excerpt": "trajectory-based abstract representation matching ... world-wise compound attention ... VirtualHome and ALFWorld"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03956",
+  "sourceHash": "sha256:1c84a2cdd5b4913b43112f8fd6f09d1ec74c2e60ce52326e3674cb337dd3fb9d",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论具身 Agent 的主策略、世界模型检索和测试时组合。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 VirtualHome、ALFWorld、未见领域和零样本/少样本评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.96,
+      "evidence": [
+        "正文把当前环境轨迹、领域知识和策略中间表示作为测试时上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03956",
+      "claim": "arXiv 记录 WorMI 于 2025 年 9 月 4 日提交，研究具身 Agent 的测试时跨域适配。",
+      "excerpt": "Submitted on 4 Sep 2025 ... World Model Implanting for Test-time Adaptation of Embodied Agents"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03956",
+      "claim": "摘要给出世界模型检索、中间表示对齐和 VirtualHome/ALFWorld 评测。",
+      "excerpt": "prototype-based world model retrieval ... world-wise compound attention ... VirtualHome and ALFWorld"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 WorMI 测试时世界模型组合、轨迹抽象检索、world-wise compound attention、VirtualHome/ALFWorld 和未见领域评测；正文补充接口、冲突、延迟、回滚与安全停止边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把“植入”解释为测试时临时组合而非改写主模型参数，保留检索、表示对齐和两项 benchmark，补充错配、冲突、延迟和回滚边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-world-model-implanting-embodied-20250904"
+}

@@ -1,0 +1,143 @@
+{
+  "slug": "osprey-safety-critical-agent-20250820",
+  "title": "Osprey 把 Agent 放进安全关键控制室，先审计划再碰硬件",
+  "summary": "Osprey 在 2025 年 8 月 20 日提交，讨论如何把 Agent 放进大型科学设施的安全关键控制系统。它用 plan-first 编排器生成包含依赖关系的完整执行计划，硬件动作前先交给人审；再用协调层保持数据类型一致、工具分类器压缩可用工具范围，并以 Advanced Light Source 的生产部署作为案例。论文的价值在于把“Agent 能否操作设备”改写成可审计划、受控工具和明确连接器的问题；生产级结论仍只属于作者案例。",
+  "body": "在聊天窗口里让 Agent 调一个工具，出错通常只是答案不对；在科学设施的控制室里，错误可能意味着设备停机、实验损坏，甚至需要人工介入恢复。Osprey 这篇 8 月 20 日提交的论文，讨论的正是这条更窄、更难的路：让 Agent 帮忙操作安全关键系统，但不要让一句自然语言直接变成硬件动作。\n\n  Osprey 的第一道闸门是 plan-first。Agent 不先执行第一步再边走边想，而是先生成包含依赖关系的完整计划，交给操作员审核，审核通过后才触碰硬件。这个顺序改变了人和模型的分工：人审的是一张可以讨论的执行图，模型负责把意图翻成步骤；如果计划本身不完整，系统应该停在门外，而不是靠下一次调用把风险补回来。\n\n  设施里的数据也不是干净的表格。不同控制系统可能使用不同类型和命名方式，历史数据量又可能很大。论文为此加入协调层，负责管理数据流、保持类型一致，并在需要时自动下采样。下采样能让上下文变短，却可能丢掉短时尖峰或异常变化；在安全关键场景里，系统必须把采样规则和原始数据入口留给人检查。\n\n  工具越多，模型越容易被无关描述淹没。Osprey 用一个分类器根据任务动态选择需要的工具，让提示保持紧凑。这个设计不是给工具授予更大权限，而是先缩小模型能看到的操作面。真正的安全边界仍在连接器、权限和执行前校验：看不到的工具不会自动变成安全工具，选中的工具也不应绕过硬件侧的限制。\n\n  论文给出的案例来自 Advanced Light Source，作者称 Osprey 已在数十万控制通道上管理实时运行，并展示语义通道映射和历史数据整合。这个规模说明系统面对的不是一台演示设备，但“production-ready”仍是论文对案例的判断，不等于所有控制系统都能直接接入。设施的协议、故障模式、人工值守和回滚流程，都会改变最终风险。\n\n  Osprey 还有一个容易被忽略的重点：连接器抽象和部署模式。Agent 不应该知道每个控制系统的内部细节，而应通过受约束的连接器读写；连接器要把数据类型、单位、权限和错误状态带出来，不能只提供一个“执行命令”的黑盒。这样做会增加前期工程量，却让计划审核、审计和回滚有了共同的语言。\n\n  这篇论文真正给工程团队的提醒，是把安全关键 Agent 拆成多个可以被拒绝的节点：意图是否清楚，计划是否完整，工具是否必要，数据是否足够，参数是否在范围内，硬件是否允许执行。任何一个节点无法解释，都应该停下来请人处理。Agent 的价值可以是减少查表和组合步骤，但最终动作必须仍然受计划、人审和设备约束共同控制。",
+  "publishedAt": "2025-08-20",
+  "eventDate": "2025-08-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/osprey-safety-critical-agent-20250820.svg",
+    "alt": "Osprey 在控制室里先生成 Agent 计划，经人工审核后再触碰硬件",
+    "sourceUrl": "/images/news/osprey-safety-critical-agent-20250820.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "control-room-problem",
+      "title": "安全关键控制室不能让一句话直达硬件",
+      "body": "Osprey 于 2025 年 8 月 20 日提交，面向大型科学设施的安全关键控制。它把 Agent 的自然语言接口放在计划、人工审核和连接器约束之后，避免模型的第一步调用直接改变设备状态。",
+      "kind": "narrative"
+    },
+    {
+      "id": "plan-first",
+      "title": "先生成完整计划，再让操作员审核",
+      "body": "plan-first 编排器会先生成包含依赖关系的执行计划，硬件动作前交给人审。人审对象是一张可讨论的执行图，而不是已经发生的动作；计划不完整时应停在门外。",
+      "kind": "technical"
+    },
+    {
+      "id": "data-coordination",
+      "title": "协调层处理类型、数据流和下采样",
+      "body": "控制系统的数据类型和命名可能不同，历史数据又会迅速膨胀。Osprey 的协调层保持类型一致，并在需要时下采样；但安全关键任务必须保留采样规则和原始数据入口，不能把压缩后的上下文当成完整事实。",
+      "kind": "technical"
+    },
+    {
+      "id": "tool-selection",
+      "title": "工具分类器缩小模型看到的操作面",
+      "body": "Osprey 根据任务动态选择需要的工具，让提示保持紧凑。工具筛选减少了无关描述，却不等于授予安全权限；连接器、参数校验和设备侧限制仍然是执行边界。",
+      "kind": "comparison"
+    },
+    {
+      "id": "als-case",
+      "title": "Advanced Light Source 是作者的生产部署案例",
+      "body": "论文以 Advanced Light Source 为案例，称 Osprey 管理数十万控制通道的实时运行，并展示语义通道映射和历史数据整合。这证明了案例规模，但不能直接推出所有控制系统都能无改造接入。",
+      "kind": "example"
+    },
+    {
+      "id": "connector-boundary",
+      "title": "连接器要把单位、权限和错误状态带出来",
+      "body": "Agent 不应直接操作每个控制系统的内部接口，而应通过受约束的连接器读写。连接器需要暴露数据类型、单位、权限和错误状态，才能支持计划审核、审计和回滚。",
+      "kind": "boundary"
+    },
+    {
+      "id": "gated-execution",
+      "title": "把每个不可解释的节点都设成停止点",
+      "body": "意图、计划、工具、数据、参数和硬件状态都应有可拒绝的检查点。Agent 可以减少查表和组合步骤，但最终动作仍需同时受计划、人审和设备约束控制。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一个安全关键 Agent 怎样从意图走到硬件动作？",
+    "question": "把自然语言拆成一串可审核的门，每一扇门都能在不确定时停下来。",
+    "steps": [
+      {
+        "label": "澄清意图",
+        "detail": "把操作员目标、设备范围、时间窗口和不可接受的结果写清楚，模糊目标不能直接进入执行计划。",
+        "evidence": "Osprey is designed around control-room operator intent"
+      },
+      {
+        "label": "生成依赖计划",
+        "detail": "让编排器先列出完整步骤、依赖和预期数据，计划缺步骤或无法解释时保持不可执行。",
+        "evidence": "plan-first orchestrator generates complete execution plans with dependencies"
+      },
+      {
+        "label": "筛选工具",
+        "detail": "按任务只暴露必要工具，减少无关上下文；工具筛选不替代权限校验和连接器限制。",
+        "evidence": "a classifier dynamically selects only the tools required"
+      },
+      {
+        "label": "人工审核",
+        "detail": "操作员检查参数、数据来源、单位、影响范围和回滚方案，确认后才允许计划进入执行阶段。",
+        "evidence": "human review before any hardware is touched"
+      },
+      {
+        "label": "受控执行",
+        "detail": "通过连接器执行并持续记录返回值、错误状态和硬件反馈；任何超出范围的结果都触发停止和人工处理。",
+        "evidence": "connector abstractions and deployment patterns across control systems"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Osprey 作者组",
+    "url": "https://arxiv.org/abs/2508.15066"
+  },
+  "relatedSlugs": ["agent", "authorization", "execution-sandbox", "tools", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.15066",
+      "claim": "Osprey 使用先规划后执行的编排器，在任何硬件动作前让人审核完整计划，并加入协调层、工具分类器与连接器抽象。",
+      "excerpt": "plan-first orchestrator ... human review before any hardware is touched ... coordination layer ... classifier ... connector abstractions"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.15066",
+      "claim": "论文以 Advanced Light Source 的生产部署为案例，称系统管理数十万控制通道的实时运行。",
+      "excerpt": "a production deployment at the Advanced Light Source ... hundreds of thousands of control channels"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.15066",
+  "sourceHash": "sha256:5c49264e12df96153dbf138301f109e63ac8c6d4f28afb0f6c8cddb4536a5b48",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "agent", "score": 0.99, "evidence": ["正文围绕安全关键设施中的 Agent 编排、工具选择和执行展开。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "authorization", "score": 0.97, "evidence": ["正文把人工审核、权限、参数范围和执行前确认作为安全门。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "execution-sandbox", "score": 0.86, "evidence": ["正文强调连接器、设备限制、错误状态和不可越过的执行边界。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "tools", "score": 0.9, "evidence": ["正文解释工具分类器、连接器和硬件操作工具的不同职责。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.82, "evidence": ["正文按论文首次提交日期归档 2025 年 8 月 20 日事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.15066",
+      "claim": "论文于 2025 年 8 月 20 日首次提交，摘要列出安全关键控制、计划先行、人审和 Advanced Light Source 案例。",
+      "excerpt": "Submitted on 20 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的 plan-first 编排器、数据协调、工具分类器、连接器抽象和 Advanced Light Source 案例；正文将“production-ready”限定为论文案例主张，并补充下采样、连接器和人工停止点的边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章以计划、人审、工具筛选和连接器为主线，强调安全关键动作的可拒绝节点和案例边界，避免把论文的生产部署表述扩写成普遍保证；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-20-osprey"
+}

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">CARRL 如何面对不可靠的传感器输入</title>
+  <desc id="desc">传感器读数扩展成可能状态区域，CARRL 在最坏情况下选择动作，并在测试中展示稳健与过度保守的边界。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#17243d"/><stop offset="1" stop-color="#123d45"/></linearGradient>
+    <linearGradient id="cyan" x1="0" x2="1"><stop stop-color="#67e8f9"/><stop offset="1" stop-color="#a7f3d0"/></linearGradient>
+    <linearGradient id="amber" x1="0" x2="1"><stop stop-color="#fbbf24"/><stop offset="1" stop-color="#fed7aa"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#071725" flood-opacity=".5"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a7f3d0"/></marker>
+  </defs>
+  <rect width="1200" height="620" rx="28" fill="url(#bg)"/>
+  <text x="72" y="76" fill="#fff" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="36" font-weight="700">CARRL：先算不确定，再决定怎么走</text>
+  <text x="74" y="114" fill="#c4d6e4" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">2021-03-08 · MIT News 报道强化学习的稳健决策实验</text>
+  <g filter="url(#shadow)">
+    <rect x="74" y="170" width="290" height="350" rx="24" fill="#1b3451" stroke="#4f6f91" stroke-width="2"/>
+    <rect x="430" y="170" width="330" height="350" rx="24" fill="#16414a" stroke="#67e8f9" stroke-width="3"/>
+    <rect x="826" y="170" width="300" height="350" rx="24" fill="#3e3042" stroke="#fbbf24" stroke-width="2"/>
+  </g>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle">
+    <text x="219" y="210" fill="#f8fafc" font-size="22" font-weight="700">一个读数</text>
+    <text x="219" y="241" fill="#b8ccdf" font-size="15">球的位置 / 另一辆车的位置</text>
+    <rect x="112" y="285" width="214" height="126" rx="18" fill="#2d5273"/>
+    <circle cx="219" cy="348" r="9" fill="#f8fafc"/>
+    <path d="M147 348h144M219 276v144" stroke="#8cc8e8" stroke-width="2" stroke-dasharray="7 8"/>
+    <text x="219" y="454" fill="#d9f4ff" font-size="16">测量可能偏了几像素</text>
+    <text x="595" y="210" fill="#f8fafc" font-size="22" font-weight="700">一片可能状态</text>
+    <text x="595" y="241" fill="#a7f3d0" font-size="15">把误差带进 Q value 计算</text>
+    <ellipse cx="595" cy="346" rx="130" ry="82" fill="#2e7375" opacity=".85" stroke="#a7f3d0" stroke-width="3" stroke-dasharray="8 8"/>
+    <circle cx="545" cy="328" r="8" fill="#c9fff2"/><circle cx="595" cy="346" r="8" fill="#c9fff2"/><circle cx="648" cy="366" r="8" fill="#c9fff2"/>
+    <path d="M511 468h168" stroke="#a7f3d0" stroke-width="5" stroke-linecap="round"/>
+    <text x="595" y="498" fill="#d6fff5" font-size="16">比较最坏情况下的回报</text>
+    <text x="976" y="210" fill="#fff" font-size="22" font-weight="700">动作与边界</text>
+    <path d="M900 350c36-58 81-58 117 0s81 58 116 0" fill="none" stroke="#a7f3d0" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="900" cy="350" r="11" fill="#67e8f9"/><circle cx="1017" cy="350" r="11" fill="#67e8f9"/>
+    <rect x="871" y="424" width="210" height="44" rx="22" fill="#75502d"/>
+    <text x="976" y="452" fill="#ffe9bb" font-size="15">更稳，也可能绕得太远</text>
+  </g>
+  <g fill="none" stroke="#a7f3d0" stroke-width="5" marker-end="url(#arrow)"><path d="M368 345h52"/><path d="M764 345h52"/></g>
+  <text x="74" y="570" fill="#9fb5cc" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16">示意图为 VibePolaris 自制，重画 MIT News 报道的可能状态、稳健动作与过度保守边界。</text>
+</svg>

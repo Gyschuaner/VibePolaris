@@ -1,0 +1,143 @@
+{
+  "slug": "semantic-energy-hallucination-detection-20250820",
+  "title": "Semantic Energy 从模型内部信号找幻觉",
+  "summary": "Semantic Energy 在 2025 年 8 月 20 日提交，试图改善大语言模型的幻觉检测。它认为语义熵依赖 softmax 之后的概率，遇到一些场景时抓不住模型本身的不确定性；新方法直接读取倒数第二层 logits，把语义聚类和受 Boltzmann 分布启发的能量信号结合起来。作者在多个基准上报告幻觉检测与不确定性估计改善，但摘要没有给出统一的跨任务提升百分比。它更适合作为路由、复核和拒答的风险信号，不是事实正确性的自动证明。",
+  "body": "模型的幻觉最难处理的地方，不是它说得磕巴，而是它可以说得非常顺。对用户来说，一段流畅回答看不出模型到底有多确定；对系统来说，如果没有一个风险信号，就很难决定什么时候继续生成，什么时候检索，什么时候把问题交给人。Semantic Energy 这篇 8 月 20 日提交的论文，把注意力放到了模型内部。\n\n  现有的一条路线是语义熵。它让模型对同一个问题采样多次，再看不同回答在语义上有多分散：如果回答互相矛盾，通常意味着模型不太确定。这个思路比只看一个 token 的概率更接近回答层面的不确定性，但论文指出，语义熵依赖 softmax 之后的概率，在一些场景里并不能反映模型真正的内部信心。\n\n  Semantic Energy 的变化点，是直接使用倒数第二层的 logits。logits 还没有经过最终 softmax，可以被看作模型在输出概率之前留下的内部打分。作者把这些信号与语义聚类结合，再用受 Boltzmann 分布启发的能量分布来构造不确定性指标。它不是把某一个低概率 token 直接判成幻觉，而是试图同时看回答之间的语义关系和模型内部的置信形状。\n\n  作者在多个基准上报告，Semantic Energy 改善了幻觉检测和不确定性估计。摘要没有给出一个统一的跨任务百分比，这一点反而提醒了读者：检测指标的好坏，取决于问题类型、采样策略、模型版本和错误定义。一个方法在知识问答上更容易区分自信与不确定，不代表它在代码、数学或开放式创作里也有同样表现。\n\n  如果把它放进产品，最自然的用法不是给每个回答贴“真”或“假”的标签，而是让它参与下一步路由。能量信号高时，可以触发检索、要求模型补充来源、降低回答的确定语气，或把高风险问题交给人工；信号低时，也不能跳过事实核验，因为模型可能对一个错误记忆非常自信。\n\n  这类内部信号还有工程限制。不同模型的 logits 尺度不一定可比，采样次数会影响语义聚类，系统还要处理长回答、截断和多语言问题。上线前需要在自己的错误集上校准阈值，并记录“信号高但回答正确”和“信号低但回答错误”的反例，否则路由器会把一个看似聪明的分数变成新的盲区。\n\n  Semantic Energy 的意义，不是发现了一个能替人核验的魔法分数，而是把“模型是否知道自己可能错”变成可以观察和评估的系统接口。幻觉处理应当把内部不确定性、外部证据、风险等级和人工确认接起来；其中任何一个信号都只能帮助决定下一步，不能单独承担事实责任。",
+  "publishedAt": "2025-08-20",
+  "eventDate": "2025-08-20",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/semantic-energy-hallucination-detection-20250820.svg",
+    "alt": "Semantic Energy 结合语义聚类与模型内部 logits，为幻觉检测提供不确定性信号",
+    "sourceUrl": "/images/news/semantic-energy-hallucination-detection-20250820.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "hallucination-problem",
+      "title": "流畅回答不代表模型知道自己在说什么",
+      "body": "Semantic Energy 于 2025 年 8 月 20 日提交，关注如何识别语言模型的幻觉。系统需要一个不确定性信号来决定何时检索、复核或转人工，但单次回答的流畅程度无法提供这个信号。",
+      "kind": "narrative"
+    },
+    {
+      "id": "semantic-entropy",
+      "title": "语义熵看多次回答，却可能错过内部信号",
+      "body": "语义熵通过多次采样并比较语义差异来估计不确定性，避免只看单个 token 的概率。论文指出，它依赖 softmax 后的概率，在一些场景里不一定能捕捉模型内在置信度。",
+      "kind": "comparison"
+    },
+    {
+      "id": "logit-energy",
+      "title": "Semantic Energy 直接读取倒数第二层 logits",
+      "body": "新方法把倒数第二层 logits、语义聚类和受 Boltzmann 分布启发的能量分布结合起来，试图同时观察回答之间的语义关系和模型在输出概率前的内部打分。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-improvement",
+      "title": "多个基准报告改善，但没有统一提升百分比",
+      "body": "作者报告 Semantic Energy 改善幻觉检测和不确定性估计。摘要没有给出跨任务统一的提升比例，因此结果仍要结合问题类型、采样策略、模型版本和错误定义理解。",
+      "kind": "boundary"
+    },
+    {
+      "id": "routing-use",
+      "title": "更适合作为路由信号，而不是真假标签",
+      "body": "能量信号高时，可以触发检索、要求补充来源、降低语气确定性或转人工；信号低也不能免除事实核验，因为模型可能对错误记忆保持高置信。",
+      "kind": "example"
+    },
+    {
+      "id": "calibration-limit",
+      "title": "logits 尺度、采样和语言都会改变阈值",
+      "body": "不同模型的 logits 尺度、采样次数、回答长度和语言分布可能不同。上线前应在自己的错误集上校准阈值，记录信号高但正确、信号低但错误的反例。",
+      "kind": "technical"
+    },
+    {
+      "id": "evidence-loop",
+      "title": "内部不确定性不能独自承担事实责任",
+      "body": "幻觉处理需要把内部信号、外部证据、风险等级和人工确认接起来。任何一个检测分数都只能帮助决定下一步，不能自动证明答案正确。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一个幻觉风险信号怎样进入回答流程？",
+    "question": "先估计模型有多不确定，再决定是否检索和复核，不把分数当成事实答案。",
+    "steps": [
+      {
+        "label": "采样回答",
+        "detail": "对同一问题获取需要的候选回答，记录采样参数和模型版本，避免把一次偶然输出误认为稳定置信度。",
+        "evidence": "Semantic entropy compares semantic diversity across sampled responses"
+      },
+      {
+        "label": "提取内部信号",
+        "detail": "读取倒数第二层 logits，与回答文本和语义聚类结果一起保存，避免只依赖最终 softmax 概率。",
+        "evidence": "Semantic Energy operates directly on penultimate-layer logits"
+      },
+      {
+        "label": "计算能量指标",
+        "detail": "将语义簇和能量分布合并成风险信号，先在标注错误集上检查它是否真的能区分错误类型。",
+        "evidence": "combining semantic clustering with a Boltzmann-inspired energy distribution"
+      },
+      {
+        "label": "触发下一步",
+        "detail": "高风险时触发检索、来源要求、降级回答或人工复核；低风险也保留必要的事实核验。",
+        "evidence": "downstream applications such as hallucination detection"
+      },
+      {
+        "label": "校准和回看",
+        "detail": "按模型、语言和任务校准阈值，持续记录高信号正确和低信号错误的反例，修正路由策略。",
+        "evidence": "Uncertainty estimation performance depends on benchmarks and model conditions"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Semantic Energy 作者组",
+    "url": "https://arxiv.org/abs/2508.14496"
+  },
+  "relatedSlugs": ["hallucination", "eval", "llm", "grounding", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.14496",
+      "claim": "Semantic Energy 直接使用倒数第二层 logits，并结合语义聚类与能量分布估计幻觉风险。",
+      "excerpt": "operating directly on logits of penultimate layer ... combining semantic clustering with a Boltzmann-inspired energy distribution"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.14496",
+      "claim": "论文在多个基准上报告改善幻觉检测和不确定性估计，但摘要没有给出统一跨任务提升比例。",
+      "excerpt": "Experiments across multiple benchmarks show that Semantic Energy significantly improves hallucination detection and uncertainty estimation"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.14496",
+  "sourceHash": "sha256:e456c4909683eae70151c8e0f1a528381f0b4904baff9f432013c9b5fd99f662",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "hallucination", "score": 0.99, "evidence": ["正文围绕幻觉检测、回答不确定性和风险路由展开。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "eval", "score": 0.94, "evidence": ["正文强调多个基准、错误集、阈值校准和反例回看。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "llm", "score": 0.96, "evidence": ["正文解释大语言模型 logits、softmax 和语义采样。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "grounding", "score": 0.91, "evidence": ["正文把不确定性信号与检索、来源和外部证据连接起来。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.82, "evidence": ["正文按论文首次提交日期归档 2025 年 8 月 20 日事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.14496",
+      "claim": "论文于 2025 年 8 月 20 日首次提交，摘要列出 Semantic Energy 的 logits、语义聚类和幻觉检测定位。",
+      "excerpt": "Submitted on 20 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的语义熵限制、倒数第二层 logits、语义聚类、Boltzmann 能量分布和多基准改善主张；正文明确检测信号不能替代事实核验，并补充模型/语言/采样阈值校准边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章区分语义熵、内部 logits、能量指标和产品路由动作，保留摘要未给统一百分比的事实，避免把风险分数写成真假证明；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-20-semantic-energy"
+}

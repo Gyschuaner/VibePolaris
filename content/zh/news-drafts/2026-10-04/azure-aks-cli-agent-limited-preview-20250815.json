@@ -1,0 +1,207 @@
+{
+  "slug": "azure-aks-cli-agent-limited-preview-20250815",
+  "title": "微软发布 AKS CLI Agent：把集群诊断放进带人工确认的终端",
+  "summary": "微软 AKS 工程团队在 2025 年 8 月 15 日公布 CLI Agent for AKS，目前只向一组有限用户提供 early access。它把 HolmesGPT agent 与 AKS-MCP Server 接到命令行，先处理网络/DNS、Pod 调度、节点健康和集群 CRUD 故障四类诊断；Agent 可以读取遥测、运行诊断并推荐动作，但集群变更仍需用户明确许可。",
+  "body": "8 月 15 日，微软 AKS 工程团队公布 CLI Agent for AKS，把面向 Kubernetes 的 Agent 放进终端。它目前是 limited preview，只向一组有限用户提供 early access；产品团队希望先围绕最常见、也最容易验证的集群故障收集反馈，再扩大范围。\n\n第一版没有试图覆盖所有 AKS 操作，而是聚焦四类问题：网络和 DNS、Pod 调度、节点健康，以及集群 CRUD 相关故障。用户可以在命令行里直接问“为什么某个 Pod 一直 Pending”或“为什么节点是 NotReady”，Agent 再把指标、日志、追踪和诊断工具的结果串起来，给出原因和下一步建议。\n\n它的底层组合由两个开源组件构成。HolmesGPT 负责根因分析、执行诊断工具并用自然语言整理结果；AKS-MCP Server 用标准化接口暴露 Kubernetes 与 Azure API、观测信号和诊断工具。这个分层让用户可以更换 AI 提供商、观测工具和自定义 runbook，模型不需要直接拥有整个集群的隐式权限。\n\n微软特意从 CLI 和人类在环开始。Agent 可以综合信息、运行诊断和推荐动作，但不会在没有明确用户权限的情况下修改集群；用户能看到运行了哪些工具、分析了哪些数据。官方把它描述为协助运维人员，而不是取代 Kubernetes operator，长期的自动修复愿景仍放在后续阶段。\n\n权限与数据路径也被写进设计。CLI 在用户机器上运行诊断和数据收集，通过 Azure CLI 身份继承用户的 RBAC 权限，只能访问授权资源；用户可以配置自己的 LLM，包括组织批准的 Azure OpenAI 或其他提供商。微软称诊断数据不会发送到或存储在 AKS 系统中，用户数据也不会因为使用自带模型而由微软保留。实际部署时仍要检查所选模型服务的日志、区域、保留策略和组织合规要求。\n\n工具扩展是这套设计的另一半。团队计划接入 Prometheus、Datadog、Dynatrace 等观测平台，也支持自定义 toolset 和 runbook plugin，并通过 MCP 接入 AppLens、Azure Monitor 或调试 Pod。工具越多，Agent 能看到和触碰的范围就越大，管理员应按任务拆分凭证、参数和审批，而不是给一个 CLI 长期绑定全权身份。\n\nAKS CLI Agent 的新闻价值在于它把“模型回答故障问题”变成一条可追踪的运维链路：输入来自集群遥测，推理通过 MCP 工具取得证据，建议留给人确认。由于它仍处于 limited preview，真正要验证的不是演示里能否说出原因，而是不同集群、权限和故障噪声下的诊断准确率、误操作率、延迟和审计完整性。",
+  "publishedAt": "2025-08-15",
+  "eventDate": "2025-08-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/azure-aks-cli-agent-limited-preview-20250815.svg",
+    "alt": "AKS CLI Agent 通过 HolmesGPT 和 AKS-MCP 读取遥测并给出诊断建议，集群变更仍需用户明确授权",
+    "sourceUrl": "/images/news/azure-aks-cli-agent-limited-preview-20250815.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "preview",
+      "title": "CLI Agent 先以 limited preview 处理集群诊断",
+      "body": "微软 AKS 工程博客 8 月 15 日公布 CLI Agent for AKS，目前只向一组有限用户提供 early access；首个目标是常见、可验证的运维诊断。",
+      "kind": "narrative"
+    },
+    {
+      "id": "problem-scope",
+      "title": "第一版聚焦四类 Kubernetes 故障",
+      "body": "网络/DNS、Pod 调度、节点健康和集群 CRUD 故障是当前重点，Agent 将指标、日志、追踪和工具结果组合成原因与建议。",
+      "kind": "example"
+    },
+    {
+      "id": "architecture",
+      "title": "HolmesGPT 做分析，AKS-MCP 暴露工具",
+      "body": "HolmesGPT 负责根因分析和自然语言总结，AKS-MCP 通过标准化接口连接 Kubernetes 与 Azure API、观测信号和诊断工具，用户可替换模型与观测平台。",
+      "kind": "technical"
+    },
+    {
+      "id": "human-loop",
+      "title": "Agent 给建议，集群变更仍需明确许可",
+      "body": "微软从 CLI 和 human-in-the-loop 开始，让用户看到运行的工具和分析的数据；没有明确权限时，Agent 不会修改集群，自动修复仍是后续愿景。",
+      "kind": "boundary"
+    },
+    {
+      "id": "identity-data",
+      "title": "本地运行和 Azure CLI 身份决定权限边界",
+      "body": "诊断和数据收集在用户机器上执行，沿用 Azure CLI 的 RBAC 身份，用户可配置自带 LLM；实际部署仍需检查模型服务日志、区域、保留和合规要求。",
+      "kind": "technical"
+    },
+    {
+      "id": "extension",
+      "title": "更多工具意味着更大的授权面",
+      "body": "Prometheus、Datadog、Dynatrace、自定义 runbook 和其他 MCP server 都可扩展能力；管理员应按任务拆分凭证、参数和审批，不给 CLI 长期绑定全权身份。",
+      "kind": "comparison"
+    },
+    {
+      "id": "validation",
+      "title": "preview 阶段要测误操作和审计完整性",
+      "body": "后续验收应关注不同集群、权限和噪声下的诊断准确率、误操作率、延迟和工具调用记录，而不只看演示能否说出一个原因。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "AKS CLI Agent 怎样把故障问题变成可审计建议？",
+    "question": "从一条终端提问到集群动作，中间哪些步骤仍由人掌控？",
+    "steps": [
+      {
+        "label": "提出故障问题",
+        "detail": "用户在 CLI 中描述 Node NotReady、DNS 失败、Pod Pending 或升级失败等具体现象。",
+        "evidence": "AKS CLI Agent examples"
+      },
+      {
+        "label": "读取授权遥测",
+        "detail": "CLI 使用用户 Azure 身份和 RBAC 权限访问指标、日志、追踪与诊断接口，只拿到被授权的资源。",
+        "evidence": "Azure CLI Auth and RBAC"
+      },
+      {
+        "label": "调用 MCP 工具",
+        "detail": "HolmesGPT 通过 AKS-MCP 调用 Kubernetes/Azure API、观测信号和诊断工具，并汇总证据。",
+        "evidence": "HolmesGPT + AKS-MCP architecture"
+      },
+      {
+        "label": "给出原因与建议",
+        "detail": "Agent 以自然语言说明可能根因、运行过的工具和建议动作，用户可以检查依据。",
+        "evidence": "Transparency and evidence"
+      },
+      {
+        "label": "人工决定动作",
+        "detail": "任何集群变更都需要明确用户许可；上线前还要审核 toolset、凭证、runbook、日志和模型服务保留策略。",
+        "evidence": "Human-in-the-loop and explicit permission"
+      }
+    ]
+  },
+  "source": {
+    "name": "Azure Kubernetes Service Engineering Blog",
+    "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "tools",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+      "claim": "微软 AKS 工程博客确认 2025 年 8 月 15 日公布 CLI Agent for AKS，当前向有限用户提供 early access，并聚焦四类诊断问题。",
+      "excerpt": "August 15, 2025 ... early access to a limited set of users ... networking/DNS, pod scheduling, node health, and cluster CRUD issues"
+    },
+    {
+      "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+      "claim": "CLI Agent 由 HolmesGPT 和 AKS-MCP 等开源组件构成，可接入 Kubernetes/Azure API、观测信号和诊断工具。",
+      "excerpt": "Built on open-source building blocks ... HolmesGPT ... AKS Model Context Protocol (MCP) server"
+    },
+    {
+      "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+      "claim": "微软明确从 human-in-the-loop CLI 开始，集群变更需要用户明确权限，并说明本地运行、Azure CLI 身份和自带模型。",
+      "excerpt": "No changes are made to the cluster without explicit user permissions ... Runs locally ... Uses Azure CLI Auth ... Bring Your Own AI"
+    }
+  ],
+  "canonicalUrl": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+  "sourceHash": "sha256:c8ba5c08a6734c81e07d0e46cebb9737a8f4c6e191e262de853aacdc11ae6e19",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.98,
+      "evidence": [
+        "正文把 HolmesGPT、AKS-MCP、runbook、工具调用和人工确认组织成运维 agent 工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文具体说明 MCP、Kubernetes/Azure API、观测平台和自定义 toolset 的工具边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.93,
+      "evidence": [
+        "正文强调 Azure CLI RBAC、显式用户许可、凭证拆分和审批。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文区分 8 月 15 日 limited preview、早期访问和后续自动修复愿景。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+      "claim": "微软官方博客确认 CLI Agent for AKS 的日期、limited preview、诊断范围和组件架构。",
+      "excerpt": "August 15, 2025 ... CLI Agent for AKS is a new AI-powered command-line experience"
+    },
+    {
+      "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+      "claim": "官方说明 human-in-the-loop、显式权限、本地运行、Azure CLI Auth 和自带模型。",
+      "excerpt": "The AKS Agentic CLI is designed to assist, not replace ... No changes are made to the cluster without explicit user permissions."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Azure Kubernetes Service Engineering Blog 8/15 文章；正文保留 limited preview、HolmesGPT/AKS-MCP、四类诊断、人类在环、RBAC、本地数据路径和扩展工具边界，没有把后续自动修复愿景写成当前能力。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 组织为故障范围、工具链、权限和验收证据，避免套用通用 Agent 段落或把 early access 写成 GA，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-15-aks-agent",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "Azure Kubernetes Service Engineering Blog 的发布日期为 2025-08-15，正文准确保留 limited preview/有限 early access，没有写成 GA 或普遍可用。",
+      "四类核心诊断是 networking/DNS、pod scheduling、node health 和 cluster CRUD issues/failures；一般 CloudOps、升级故障和未来扩展没有被误写为同一批已完成能力。",
+      "HolmesGPT 的根因分析/诊断工具执行与 AKS-MCP 的 Kubernetes/Azure API、观测信号和工具暴露边界清楚，工具扩展、Prometheus/Datadog/Dynatrace、runbook 和其他 MCP 仍保持配置/后续扩展口径。",
+      "官方 human-in-the-loop、显式用户权限、Azure CLI 身份/RBAC、本地诊断与数据收集、Bring Your Own AI 和模型服务日志/区域/保留责任均已区分；没有把 Azure 数据路径主张扩写成所有 LLM 服务保证。",
+      "正文和 SVG 明确自动修复只是长期愿景，sections、agent-workflow explainer、source/evidence、relatedSlugs 和 schema 一致，中文自然且未发现明显模板化句式。"
+    ],
+    "notes": "读者审阅通过。文章按预览范围、四类故障、HolmesGPT/AKS-MCP 架构、人类确认、权限/数据路径和扩展工具组织，保留官方自述与实际验证边界，没有把诊断建议写成自动修复。",
+    "changes": []
+  }
+}

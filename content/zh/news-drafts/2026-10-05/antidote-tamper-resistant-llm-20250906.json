@@ -1,0 +1,193 @@
+{
+  "slug": "antidote-tamper-resistant-llm-20250906",
+  "title": "AntiDote：开放权重模型的安全护栏，也要防参数级篡改",
+  "summary": "AntiDote 论文于 9 月 6 日提交，针对开放权重 LLM 的一个现实难题：拥有完整权重和架构访问权的人，可以通过后续微调削弱原有安全对齐。方法用辅助对抗超网络和防御模型组成双层优化过程，让模型在模拟权重篡改时学习保持安全行为。论文在 52 组红队测试上报告最高 27.4% 的鲁棒性提升，同时在 MMLU、HellaSwag 和 GSM8K 等能力基准上的性能下降低于 0.5%；这些结果属于论文实验条件，不是对任意开放模型的保证。",
+  "body": "开放权重模型把研究和部署的门槛降了下来，也把安全责任往使用者一侧推近。拿到权重的人可以检查、量化和继续训练模型，同样也可能通过后续训练改掉原来的拒答和安全偏好。只在发布时测一次安全性，无法回答“模型被改过之后还剩多少护栏”。\n\nAntiDote 把这个问题定义成参数级篡改鲁棒性。它假设对手能接触模型权重和架构，目标不是绕过一次提示过滤，而是让后续参数更新削弱安全对齐。这个威胁模型很强，适合用来压力测试防御，但也意味着论文结果不能直接代表普通用户或所有开源模型的实际风险。\n\n方法采用双层优化。训练过程中，一个辅助对抗超网络模拟可能的权重变化，防御模型则学习在这种变化下仍保持安全行为；两者交替更新，让防守不会只适应一组固定扰动。文章把这种训练看成对手和防守者共同变化的过程，而不是发布一个静态规则列表。\n\n论文在 10 个、规模从 0.6B 到 27B 的模型上做评估，用 52 组红队测试观察安全鲁棒性，并用 MMLU、HellaSwag、GSM8K 等能力基准检查通用能力。作者报告 AntiDote 相比篡改抵抗和遗忘基线最高提高 27.4% 的鲁棒性，能力基准性能下降低于 0.5%。这些数字仍依赖模型、数据、攻击集合和评估口径，不能读成“安全被证明”。\n\n一个值得关注的设计是把安全目标和能力保持拆开优化。防御阶段在受扰动模型上学习抵抗篡改，能力阶段则在干净模型上检查通用任务，避免为了拒绝更多内容而把正常任务一起做坏。这种折中让评估更容易看清：安全变化来自哪里，能力损失又发生在哪里。\n\n不过，抗篡改训练不能代替权重治理。部署方仍需验证模型文件来源、签名和版本，限制谁能写入权重，微调后重新跑安全与能力评测；对于会调用工具或接触真实数据的 Agent，还要保留运行时权限和人工审批。一个训练时更难被改坏的模型，仍然可能在错误的连接器或过大的权限下造成影响。\n\nAntiDote 的意义在于把“开放权重是否安全”从发布时属性变成持续评估问题。它展示了用自适应对手模拟参数篡改的研究路径，但实验覆盖有限，仍需要更多模型、语言、微调方式和真实供应链场景的复核。使用者应把它当作加固层，而不是跳过权重签名、访问控制和上线后监测的理由。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/antidote-tamper-resistant-llm-20250906.svg",
+    "alt": "AntiDote 用对抗训练让开放权重 LLM 在参数篡改后仍尽量保持安全对齐",
+    "sourceUrl": "/images/news/antidote-tamper-resistant-llm-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "open-weight-risk",
+      "title": "开放权重让能力和安全都能被继续改写",
+      "body": "权重可访问意味着研究更自由，也意味着后续微调可能削弱发布时的安全对齐。",
+      "kind": "narrative"
+    },
+    {
+      "id": "tamper-threat",
+      "title": "AntiDote 采用“完整权重访问”的强威胁模型",
+      "body": "论文把参数级篡改作为压力测试对象，结论只适用于明确的模型、数据和评估条件。",
+      "kind": "boundary"
+    },
+    {
+      "id": "bilevel-game",
+      "title": "对抗超网络和防御模型交替优化",
+      "body": "一个组件模拟权重变化，另一个学习保持安全行为，训练过程会随防守变化而更新。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation-result",
+      "title": "52 组红队测试上报告最高 27.4% 鲁棒性提升",
+      "body": "论文覆盖 10 个 0.6B 至 27B 模型，能力基准性能下降低于 0.5%，结果不能读成安全保证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "safety-utility",
+      "title": "安全目标和通用能力分开检查",
+      "body": "受扰动模型用于抗篡改训练，干净模型用于能力保持，便于观察拒答收益和正常任务损失。",
+      "kind": "technical"
+    },
+    {
+      "id": "weight-governance",
+      "title": "训练加固不能替代权重和权限治理",
+      "body": "仍需验证文件来源、签名和版本，限制写入者，微调后重新评估运行时权限和工具连接。",
+      "kind": "example"
+    },
+    {
+      "id": "research-boundary",
+      "title": "把 AntiDote 当作加固层，而不是发布证明",
+      "body": "更多模型、语言、微调方式和供应链场景仍需复核，部署后也要持续监测。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "怎样评估开放权重模型的抗篡改能力？",
+    "question": "用自适应对手模拟参数变化，同时分开测安全鲁棒性和通用能力，再把结果接入权重治理。",
+    "steps": [
+      {
+        "label": "定义强威胁模型",
+        "detail": "明确对手可接触哪些权重、架构和训练资源，避免把不同访问条件下的结果混在一起。",
+        "evidence": "full access to model weights and architecture"
+      },
+      {
+        "label": "训练自适应对手",
+        "detail": "用辅助超网络模拟不断变化的权重扰动，让防御模型学习保持安全偏好。",
+        "evidence": "bi-level optimization and adversarial hypernetwork"
+      },
+      {
+        "label": "交替更新防守",
+        "detail": "对手和防御者交替优化，避免只对一组静态扰动过拟合。",
+        "evidence": "adversary and defender co-evolve"
+      },
+      {
+        "label": "分别测安全和能力",
+        "detail": "用红队集合看安全鲁棒性，用通用基准看能力损失，报告模型规模和数据条件。",
+        "evidence": "52 red-teaming attacks and capability benchmarks"
+      },
+      {
+        "label": "接入权重治理",
+        "detail": "验证签名和版本、限制写入权限，微调或量化后重跑评测并保留运行时最小权限。",
+        "evidence": "open-weight model deployment"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.08000"
+  },
+  "relatedSlugs": [
+    "llm",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.08000",
+      "claim": "AntiDote 用双层优化和辅助对抗超网络训练开放权重 LLM 抵抗参数级篡改。",
+      "excerpt": "bi-level optimization procedure ... auxiliary adversary hypernetwork ... resistant to such tampering"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.08000",
+      "claim": "论文在 52 组红队测试上报告最高 27.4% 鲁棒性提升，能力基准性能下降低于 0.5%。",
+      "excerpt": "52 red-teaming attacks ... upto 27.4% more robust ... performance degradation of upto less than 0.5%"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.08000",
+      "claim": "正文说明评估覆盖 10 个 0.6B 至 27B 模型，并将安全目标与能力保持解耦。",
+      "excerpt": "10 models spanning from 0.6B to 27B ... decoupled capability loss"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.08000",
+  "sourceHash": "sha256:b5c345dd044a10c8dd94d68d9f34a004c39f36b1e95fab051dc21e0928bee76c",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文分析开放权重 LLM 的参数级篡改、安全对齐和能力保持。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.96,
+      "evidence": [
+        "正文保留权重写入权限、文件来源、签名、版本和运行时最小权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留 52 组红队、10 个模型、能力基准和安全/能力分开评估。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 6 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.08000",
+      "claim": "arXiv 记录 AntiDote 于 2025 年 9 月 6 日提交，研究开放权重 LLM 的抗篡改训练。",
+      "excerpt": "Submitted on 6 Sep 2025 ... AntiDote: Bi-level Adversarial Training for Tamper-Resistant LLMs"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.08000",
+      "claim": "摘要和正文给出双层优化、52 组红队、27.4% 鲁棒性提升、低于 0.5% 能力损失和 10 个模型规模范围。",
+      "excerpt": "52 red-teaming attacks ... 27.4% ... less than 0.5% ... 10 models spanning 0.6B to 27B"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对开放权重威胁模型、双层优化/对抗超网络、52 组红队、最高 27.4% 鲁棒性提升、能力基准低于 0.5% 性能下降及 10 个模型规模；正文删除恶意微调与攻击构造细节，补充权重签名、写入权限、运行时权限和持续评测边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留 AntiDote 的威胁模型、双层训练、52 组红队、27.4% 和低于 0.5% 结果，明确实验条件；不提供恶意 LoRA/微调配方或攻击步骤，补充权重治理、签名、版本、运行时权限和持续评估；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-antidote-tamper-resistant-llm-20250906"
+}

@@ -1,0 +1,194 @@
+{
+  "slug": "memento-memory-agent-adaptation-20250822",
+  "title": "Memento 让 Agent 用记忆变聪明，而不是反复微调模型",
+  "summary": "Memento 是一篇 2025 年 8 月 22 日提交的 Agent 研究：它把持续适应建模为 Memory-augmented MDP，用案例选择策略从情景记忆中挑选经验，再通过记忆重写和读取改进行动决策，不更新底层 LLM 参数。在深度研究任务上，论文报告 GAIA 验证集 87.88% Pass@3、测试集 79.40%，并称记忆在分布外任务带来 4.7 到 9.6 个百分点提升；这些结果仍依赖记忆质量、检索边界和评测设置。",
+  "body": "如果每次 Agent 遇到新任务都要重新微调底层模型，成本和等待时间很快就会把“持续学习”变成一句口号。8 月 22 日提交的 Memento，走的是另一条路：模型参数不动，把经验写进记忆，再让下一次决策学会挑哪条经验来用。\n\n  论文把这种方法形式化成 Memory-augmented Markov Decision Process。Agent 面对新状态时，不是从零开始生成下一步，而是由一个案例选择策略从情景记忆里找相关经历。记忆可以是可微的，也可以是非参数的；重点不在于把所有历史都塞进上下文，而在于选择对当前动作真的有帮助的片段。\n\n  Memento 有两个相互配合的操作：记忆重写和记忆读取。环境反馈回来后，系统可以把一次经历改写成更有用的案例；真正做决策时，再通过读取和选择把这些案例带回当前任务。这样更新的是“以后怎么选经验”的策略，不是 LLM 的权重，所以适合低成本、在线的连续适应。\n\n  作者把它实例化到深度研究任务。论文摘要报告，GAIA 验证集达到 87.88% 的 Pass@3，测试集为 79.40%；在 DeepResearcher 数据集上报告 66.6% F1 和 80.4% PM。对分布外任务，加入案例记忆带来 4.7 到 9.6 个百分点的绝对提升。数字来自论文自己的实现和数据集，不能直接换算成所有 Agent 的泛化能力。\n\n  “不微调”也意味着另一种维护成本。错误的案例可能被重复召回，过时的工具用法会变成坏习惯，多个任务之间还可能发生记忆污染。系统需要知道一条经验何时写入、谁能改写、如何标版本、怎样撤回，以及当检索不到可靠案例时是否退回一个更保守的策略。\n\n  记忆读取也不等于事实检索。一个过去成功的步骤，可能只在当时的权限、网页结构或数据分布下成立；如果 Agent 把它当成通用规则，在线适应就会变成在线积累偏差。案例应保留来源、时间、适用条件和结果，而不是只存一段看起来顺的答案。\n\n  Memento 提供了一个很实用的分层思路：把稳定的能力留在底层模型，把任务经验留在可更新的记忆，把选择经验的策略单独评估。这样可以少动模型参数，却不能少做记忆治理。真正上线前，要把案例写入、选择、失效和回滚都纳入 Agent 的回归链。",
+  "publishedAt": "2025-08-22",
+  "eventDate": "2025-08-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/memento-memory-agent-adaptation-20250822.svg",
+    "alt": "Memento 用案例记忆和选择策略让 Agent 持续适应，不更新底层模型权重",
+    "sourceUrl": "/images/news/memento-memory-agent-adaptation-20250822.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "adaptation-without-finetune",
+      "title": "持续适应不一定要改模型权重",
+      "body": "Memento 的目标是让 Agent 从反馈中持续变好，但不对底层 LLM 做梯度更新。它把更新对象移到记忆和案例选择策略上，降低在线适应的成本。",
+      "kind": "narrative"
+    },
+    {
+      "id": "memory-mdp",
+      "title": "记忆被写成决策过程的一部分",
+      "body": "论文把方法形式化成 Memory-augmented MDP，并用神经案例选择策略从情景记忆中挑选当前动作需要的经验。记忆不是把所有历史无差别塞回上下文。",
+      "kind": "technical"
+    },
+    {
+      "id": "rewrite-read",
+      "title": "重写负责更新，读取负责调用",
+      "body": "环境反馈可以触发记忆重写，决策时再通过读取和选择把案例带回当前任务。改变的是经验组织与选择，不是底层模型的参数。",
+      "kind": "technical"
+    },
+    {
+      "id": "deep-research-results",
+      "title": "深度研究任务给出一组具体结果",
+      "body": "论文报告 GAIA 验证集 87.88% Pass@3、测试集 79.40%，DeepResearcher 上 66.6% F1 和 80.4% PM；分布外任务的案例记忆带来 4.7–9.6 个百分点提升。",
+      "kind": "comparison"
+    },
+    {
+      "id": "memory-risk",
+      "title": "不微调，换来记忆污染和过期经验问题",
+      "body": "错误案例、过期工具用法和跨任务污染都会被重复召回。系统必须定义写入、改写、版本、撤回和无可靠案例时的降级路径。",
+      "kind": "boundary"
+    },
+    {
+      "id": "case-provenance",
+      "title": "成功经历不等于通用规则",
+      "body": "过去的步骤可能依赖当时的权限、网页结构和数据分布。案例要保留来源、时间、适用条件和结果，避免把一次成功误读成稳定事实。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment-loop",
+      "title": "把记忆生命周期纳入 Agent 回归",
+      "body": "上线前要分别评估案例写入、选择、失效和回滚，把经验层与模型层的质量变化分开记录。少改参数不等于少做治理。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Memento 怎样用一次经历影响下一次行动？",
+    "question": "先把反馈写成有条件的案例，再让选择策略决定是否调用。",
+    "steps": [
+      {
+        "label": "记录经历",
+        "detail": "保存任务状态、采取的动作、环境反馈和结果，给案例附上来源与时间。",
+        "evidence": "past experiences are stored in an episodic memory"
+      },
+      {
+        "label": "重写记忆",
+        "detail": "根据反馈把经历改写成更适合未来选择的案例，处理过时、错误和冲突信息。",
+        "evidence": "policy is continually updated through a memory rewriting mechanism"
+      },
+      {
+        "label": "选择案例",
+        "detail": "由神经案例选择策略判断当前状态应读取哪些经验，而不是无差别注入全部历史。",
+        "evidence": "neural case-selection policy to guide action decisions"
+      },
+      {
+        "label": "读取并行动",
+        "detail": "把相关案例带回当前决策，执行下一步后继续收集反馈。",
+        "evidence": "policy improvement is achieved through efficient memory reading"
+      },
+      {
+        "label": "回归和撤回",
+        "detail": "按任务分布、记忆版本和失败结果复测；一旦案例污染，需要能撤回或降级。",
+        "evidence": "case-based memory adds 4.7% to 9.6% absolute points on out-of-distribution tasks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Memento 作者组",
+    "url": "https://arxiv.org/abs/2508.16153"
+  },
+  "relatedSlugs": [
+    "agent",
+    "memory",
+    "context",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.16153",
+      "claim": "Memento 用 Memory-augmented MDP、神经案例选择策略、情景记忆和记忆重写/读取实现不更新底层 LLM 的在线适应。",
+      "excerpt": "memory-based online reinforcement learning ... Memory-augmented Markov Decision Process ... episodic memory ... memory rewriting ... retrieval"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.16153",
+      "claim": "论文报告 GAIA 验证集 87.88% Pass@3、测试集 79.40%，DeepResearcher 66.6% F1/80.4% PM，OOD 任务提升 4.7–9.6 个百分点。",
+      "excerpt": "87.88% Pass@3 ... 79.40% on the test set ... 66.6% F1 and 80.4% PM ... 4.7% to 9.6% absolute points"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.16153",
+  "sourceHash": "sha256:5faff87984c21a2a6095aea368dcaabdd8e7aba409501c8c0d10fecce0bec776",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 Memento 的 Agent 决策、在线适应和经验选择。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.99,
+      "evidence": [
+        "正文把情景记忆、记忆重写、读取和污染作为主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文区分案例记忆与把所有历史直接塞进上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文保留 GAIA、DeepResearcher 与 OOD 结果，并强调任务条件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 22 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.16153",
+      "claim": "arXiv 摘要标注论文于 2025 年 8 月 22 日提交，提出无需底层微调的记忆在线强化学习范式。",
+      "excerpt": "Submitted on 22 Aug 2025 ... eliminates the need for fine-tuning the underlying LLMs"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Memento 摘要中的 M-MDP、案例选择策略、情景记忆、重写/读取机制以及 GAIA、DeepResearcher、OOD 数字；正文明确经验记忆与上下文、事实检索和治理边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把“不更新底层模型”解释为更新记忆和选择策略，保留了论文基准数字与分布外边界，并补充记忆污染、来源、版本和回滚问题；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-22-memento-memory-agent-adaptation"
+}

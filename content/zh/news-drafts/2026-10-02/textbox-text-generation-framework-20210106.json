@@ -1,0 +1,171 @@
+{
+  "slug": "textbox-text-generation-framework-20210106",
+  "title": "TextBox 把文本生成模型、训练和评测拆成可复用模块",
+  "summary": "1 月 6 日提交的 TextBox 论文公开一个统一、模块化、可扩展的文本生成框架，收录 21 个模型和 9 个基准数据集，目标是让研究者更容易复现基线并加入新模型。",
+  "body": "1 月 6 日，Junyi Li 等作者提交 TextBox 论文。论文同时公开一个文本生成框架和它的模块划分：模型架构、推理、学习过程被拆成可以重用的组件。框架实现了 21 个文本生成模型，覆盖 9 个基准数据集和 VAE、GAN、预训练语言模型等类别。\n\n这类工具的新闻重点不在于“又有一个模型分数更高”，而在于复现实验的成本。研究者如果每换一个模型都要重写训练、推理和评测脚本，很难判断差异来自模型，还是来自工程实现。TextBox 试图把公共部分收拢起来，让新模型可以接入同一套接口，并用一致的数据集和指标比较。\n\n论文还说明框架基于 PyTorch，并以 Apache License 2.0 发布。开源框架降低了开始实验的门槛，却不会自动保证结果可比：数据预处理、超参数、随机种子和评测实现仍需要记录。",
+  "publishedAt": "2021-01-06",
+  "eventDate": "2021-01-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/textbox-text-generation-framework-20210106.svg",
+    "alt": "TextBox 把文本生成模型、训练和评测拆成可复用模块：VibePolaris 自制机制图",
+    "sourceUrl": "/images/news/textbox-text-generation-framework-20210106.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "TextBox 把什么交给研究者",
+      "body": "论文公开一个统一的文本生成框架，目标是支持多类任务和模型。作者把模型架构、推理和学习过程拆成可复用模块，研究者可以在相同骨架里换模型、换数据集或加入新的基线。",
+      "kind": "narrative"
+    },
+    {
+      "id": "coverage",
+      "title": "21 个模型和 9 个数据集意味着什么",
+      "body": "这些数量描述的是框架当前实现覆盖范围，不是所有文本生成方法的完整清单。它们让读者看到 TextBox 是一个用于横向实验的工具箱：同一套公共流程可以承载多种模型和数据集，便于复现、比较和扩展。",
+      "kind": "technical"
+    },
+    {
+      "id": "reproduction",
+      "title": "复现一次实验时谁负责什么",
+      "body": "研究者先选定数据集和任务，再选一个已实现模型。框架负责按约定准备数据、训练模型、运行推理并记录结果；研究者仍要确认配置、版本和评测指标与论文一致。若新模型需要不同输入，应该扩展模块而不是悄悄改动公共流程。 Apache License 2.0 方便代码被使用和修改，但可复现性仍需要完整配置、数据版本、随机性控制和清楚的指标解释；开源框架不能替研究者判断哪个结果适合生产。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一套框架怎样承载多种生成实验",
+    "question": "换模型时，哪些步骤可以复用，哪些结果仍要重新核对？",
+    "steps": [
+      {
+        "label": "任务",
+        "detail": "先固定文本生成任务、数据集和评价方式。",
+        "evidence": "TextBox 以多任务、多数据集为目标。"
+      },
+      {
+        "label": "模块",
+        "detail": "把架构、训练和推理接入同一套可扩展组件。",
+        "evidence": "论文强调 modularized and extensible framework。"
+      },
+      {
+        "label": "运行",
+        "detail": "框架用统一流程训练模型并生成结果。",
+        "evidence": "实现覆盖 21 个模型和 9 个基准数据集。"
+      },
+      {
+        "label": "复核",
+        "detail": "比较结果前检查配置、数据版本和指标是否一致。",
+        "evidence": "复用代码减少差异，不替代实验记录。"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / TextBox 论文",
+    "url": "https://arxiv.org/abs/2101.02046"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "benchmark",
+    "evaluation-dataset",
+    "structured-output"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2101.02046",
+      "claim": "论文公开 TextBox 框架，覆盖 21 个文本生成模型和 9 个基准数据集。",
+      "excerpt": "we implement 21 text generation models on 9 benchmark datasets"
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.02046",
+      "claim": "论文说明模块化设计用于复现实验和扩展新模型，并以 Apache License 2.0 发布。",
+      "excerpt": "released under Apache License 2.0 ... suitable for researchers and practitioners to quickly reproduce baseline models"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2101.02046",
+  "sourceHash": "sha256:626a8a443db0aa0cac447e5bc19d816147c4d256cd69f2a473d46ee04448f72a",
+  "status": "published",
+  "discoveredAt": "2026-10-02T08:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释llm相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释tools相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释benchmark相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "evaluation-dataset",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释evaluation-dataset相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "structured-output",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释structured-output相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2101.02046",
+      "claim": "论文公开 TextBox 框架，覆盖 21 个文本生成模型和 9 个基准数据集。",
+      "excerpt": "we implement 21 text generation models on 9 benchmark datasets"
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.02046",
+      "claim": "论文说明模块化设计用于复现实验和扩展新模型，并以 Apache License 2.0 发布。",
+      "excerpt": "released under Apache License 2.0 ... suitable for researchers and practitioners to quickly reproduce baseline models"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "method": "source",
+    "notes": "已打开并核对一手来源页面。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "notes": "来源、日期和结构字段已由本轮试跑核对。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-trial-20261002",
+  "promotedAt": "2026-10-01T18:41:02.636Z"
+}

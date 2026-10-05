@@ -1,0 +1,198 @@
+{
+  "slug": "openai-gpt-live-audio-provenance-20260731",
+  "title": "OpenAI 给 GPT-Live 音频加 SynthID 和验证 API：来源信号可查，真实性仍需判断",
+  "summary": "OpenAI 7 月 31 日更新 GPT-Live 与内容来源说明：通过 ChatGPT Voice 和 OpenAI API 生成的受支持音频加入 SynthID 水印，公共验证工具开始支持音频，开发者还可以调用验证 API。来源信号能帮助追踪生成链路，但不能单独证明录音内容真实或没有被后期编辑。",
+  "body": "7 月 31 日，OpenAI 更新了 GPT-Live 的产品页面，也更新了内容来源说明。公司称，ChatGPT Voice 和 OpenAI API 生成的受支持音频现在加入 SynthID 水印；公共验证工具可以检查受支持的音频文件，开发者和组织还可以通过 API 把验证步骤放进自己的工作流。GPT-Live 本身是在 7 月 8 日发布的语音模型，这次消息是它上线后的来源追踪更新。\n\n对普通用户来说，变化不是播放器多了一个按钮，而是音频在离开 OpenAI 产品后多了一种可检查的来源信号。水印相当于嵌在音频里的标记，验证工具负责寻找这个信号；OpenAI 同时把它放在 C2PA 等内容凭证的多层方案里。元数据可以携带创建和编辑上下文，水印则试图在文件被搬运、转码或重新上传后保留一部分可检测信息。\n\n这解决的是“它是否带有 OpenAI 生成来源”的问题，不能直接回答“录音里说的事情是否发生过”。如果文件被剪辑、转码或经过其他工具处理，来源信息可能丢失；反过来，即便检测到水印，也只说明它经历过相关生成流程，不代表每一句话、每个说话人或每个时间点都是真的。OpenAI 在内容来源页也明确写着，没有检测到信号时不能据此断定内容不是由 OpenAI 工具生成，因为标记可能被移除。\n\n把验证能力做成 API，意义在于它可以进入新闻审核、平台上传和企业归档，而不是只停留在一个人工打开的网页。接入方仍然要决定验证失败如何处理、是否保留原始文件、怎样把检测结果和编辑历史一并展示。来源验证是证据链的一层，不能替代事实核查、身份确认和对话上下文。\n\n因此，这次更新值得记住的不是“SynthID 能识别 AI 音频”这样一句口号，而是 OpenAI 把音频来源从产品内部带到了可调用的工作流中。它为后续审查提供了一个入口，同时也把标记丢失、内容被改写和误读验证结果的问题交给了使用这些系统的人。",
+  "publishedAt": "2026-07-31",
+  "eventDate": "2026-07-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-gpt-live-audio-provenance-20260731.svg",
+    "alt": "OpenAI 给 GPT-Live 音频加 SynthID 和验证 API：来源信号可查，真实性仍需判断 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/openai-gpt-live-audio-provenance-20260731.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "update",
+      "title": "7 月 31 日更新了什么",
+      "body": "受支持的 GPT-Live 音频加入 SynthID，公共工具支持音频验证，开发者可以调用 API 批量接入来源检查。",
+      "kind": "narrative"
+    },
+    {
+      "id": "layers",
+      "title": "水印和内容凭证各自承担一层工作",
+      "body": "C2PA 等元数据携带创建与编辑上下文，SynthID 提供另一种更耐传播的来源信号，两者组合才构成较完整的证据链。",
+      "kind": "technical"
+    },
+    {
+      "id": "boundary",
+      "title": "检测到来源不等于录音内容为真",
+      "body": "来源工具可以提示生成路径，却不能证明说话人身份、事件发生时间或录音没有被二次编辑。",
+      "kind": "boundary"
+    },
+    {
+      "id": "api",
+      "title": "验证 API 把检查放进审核流程",
+      "body": "新闻、平台和企业系统可以在上传、归档或分发时自动检查音频，并保留原始文件与检测结果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "failure",
+      "title": "检测失败也需要被正确解释",
+      "body": "水印和元数据可能在转码、剪辑或重新上传时丢失；没有信号不能直接推断音频不是 AI 生成。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "creator-ai",
+    "title": "音频来源验证到底能证明哪一层？",
+    "question": "把“来自哪里”“是否被改过”和“说的是否属实”分开，才能正确使用验证结果。",
+    "steps": [
+      {
+        "label": "生成时写入信号",
+        "detail": "受支持的 OpenAI 音频在生成环节加入 SynthID 水印，作为来源线索。",
+        "evidence": "OpenAI July 31 update"
+      },
+      {
+        "label": "文件携带上下文",
+        "detail": "内容凭证可以记录创建工具、编辑动作等元数据，帮助复原来源链。",
+        "evidence": "OpenAI provenance"
+      },
+      {
+        "label": "工具检查信号",
+        "detail": "公共工具或验证 API 检查音频中是否存在受支持的来源信号。",
+        "evidence": "OpenAI verification tool"
+      },
+      {
+        "label": "人工核对事实",
+        "detail": "检测结果仍要和身份、时间、原始文件及事件证据一起判断。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/introducing-gpt-live/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "context",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/introducing-gpt-live/",
+      "claim": "OpenAI 在 GPT-Live 页面更新说明，ChatGPT Voice 与 OpenAI API 生成的受支持音频加入 SynthID，验证工具支持音频且提供验证 API。",
+      "excerpt": "Supported audio generated with GPT-Live through ChatGPT Voice and the OpenAI API now includes SynthID watermarking."
+    },
+    {
+      "url": "https://openai.com/index/advancing-content-provenance/",
+      "claim": "OpenAI 的来源说明把 7 月 31 日音频更新放进 C2PA、SynthID 和公共验证工具的多层方案，并提醒检测信号并非万无一失。",
+      "excerpt": "No detection method is foolproof ... provenance signals can in some cases be stripped."
+    },
+    {
+      "url": "https://c2pa.org/specifications/specifications/2.2/index.html",
+      "claim": "C2PA 规范提供内容凭证与签名元数据的公开技术背景，帮助理解来源信息怎样随文件传播。",
+      "excerpt": "C2PA technical specifications describe a standard for content provenance and authenticity."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/introducing-gpt-live/",
+  "sourceHash": "sha256:dcfa4142ccf1a887d8af7687b6b9fae3ea25debc6c97f879517f4f8706548ea1",
+  "status": "published",
+  "discoveredAt": "2026-10-04T14:05:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 llm 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 tools 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 context 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 authorization 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/introducing-gpt-live/",
+      "claim": "按 OpenAI GPT-Live 页面 7 月 31 日更新、OpenAI 内容来源说明和 C2PA 公开规范核对水印、验证工具、API 与检测边界。",
+      "excerpt": "Supported audio generated with GPT-Live through ChatGPT Voice and the OpenAI API now includes SynthID watermarking."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T14:05:00Z",
+    "method": "source",
+    "notes": "按 OpenAI GPT-Live 页面 7 月 31 日更新、OpenAI 内容来源说明和 C2PA 公开规范核对水印、验证工具、API 与检测边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T14:05:00Z",
+    "notes": "逐篇手写新闻正文，按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 检查新闻主线、时间边界、来源卡片和去模板化表达。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T14:20:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间和事件叙述一致。",
+      "保留一手来源、可信报道和引用卡片，并标出公司自述、匿名信源和未独立核实的边界。",
+      "sections、explainer 与 SVG alt 和正文一致，词条联动只使用正文解释过的概念。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "区分 7 月 31 日更新与 7 月 8 日 GPT-Live 发布；没有把 SynthID、C2PA 或验证 API 写成真实性证明。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-31",
+  "fingerprint": "sha256:dcfa4142ccf1a887d8af7687b6b9fae3ea25debc6c97f879517f4f8706548ea1",
+  "promotedAt": "2026-10-03T22:17:30.306Z"
+}

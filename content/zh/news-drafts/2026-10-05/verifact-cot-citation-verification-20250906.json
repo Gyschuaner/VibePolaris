@@ -1,0 +1,193 @@
+{
+  "slug": "verifact-cot-citation-verification-20250906",
+  "title": "VeriFact-CoT：让 LLM 先核事实，再把引用接到答案",
+  "summary": "VeriFact-CoT 论文于 9 月 6 日提交，针对 LLM 写复杂事实性内容时容易出现的两件事：说得像真的，却没有可靠来源；给了引用，引用又没有真正支撑结论。方法把事实验证、反思和引用整合成多阶段自检流程，让模型检查中间推理和最终回答。论文面向科学研究、新闻报道和法律咨询等高保真场景，摘要声称准确性、可信度和可追溯性提升，但没有在摘要中给出可独立复核的数值，仍需外部评估。",
+  "body": "事实性写作的问题，通常不在句子够不够流畅，而在每个关键判断有没有证据。一个答案即使附上链接，也可能只是把来源放在句末；链接没有支撑这句话，读者仍然无法判断它是真是假。VeriFact-CoT 处理的正是事实核验和引用之间经常断开的这一步。\n\n论文于 9 月 6 日提交，目标是减少 LLM 在复杂、事实敏感内容里的幻觉，以及缺少可信引用来源的问题。作者把科学研究、新闻报道和法律咨询列为高保真场景，这些场景的共同点是：错误不只是“答得不够好”，还会影响读者接下来的判断。\n\n它没有把核验塞进一次生成。摘要给出的流程是“事实验证—反思—引用整合”：先检查要说的事实，再让模型回看并修正中间推理和最终回答，最后把可用来源接到对应内容上。分阶段的价值在于把“我说了什么”和“我凭什么这么说”拆开检查，方便发现引用只装饰、不支撑的情况。\n\n这也改变了评估方式。回答是否准确是一层，来源是否可信、是否真的支持对应主张又是另一层；引用数量多，不代表证据链更完整。一个来源可能可靠但没有覆盖全部结论，模型也可能在反思阶段改了说法，却忘了同步更新引用，所以核验和引用整合必须一起回归。\n\n论文摘要称该机制能提升客观准确性、可信度和可追溯性，但没有在摘要里给出具体提升幅度或统一测试集。这里应把它读成方法主张，而不是已经完成的独立验证；真正使用前还要知道检索来源从哪里来、事实核验由谁判定、引用覆盖率怎么计算。\n\n多阶段自检也不等于模型突然拥有了事实判断能力。如果证据库本身过时，验证器没有找到反例，或者多个来源复制同一个错误，流程可能只是把错误写得更有条理。科学、新闻和法律场景还各自有引用格式、时效和责任要求，不能共用一条未经审查的评分标准。\n\nVeriFact-CoT 值得关注的地方，是把生成、核验、反思和引用放进同一个可观察流程。部署时可以为每个主张保存证据、核验结果和最后采用的引用，分别统计事实正确率、引用支持率和人工驳回率；对高风险内容设置人工复核。这样，引用才是可追溯的证据接口，而不是回答末尾的装饰。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/verifact-cot-citation-verification-20250906.svg",
+    "alt": "VeriFact-CoT 通过事实验证、反思和引用整合提高 LLM 回答的可追溯性",
+    "sourceUrl": "/images/news/verifact-cot-citation-verification-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "citation-gap",
+      "title": "有链接，不代表结论真的有证据",
+      "body": "事实性回答需要同时检查主张、来源和两者之间的支撑关系。",
+      "kind": "narrative"
+    },
+    {
+      "id": "high-fidelity-scope",
+      "title": "科学、新闻和法律场景更在意可追溯性",
+      "body": "错误会影响后续判断，引用质量和事实准确性都要单独承担责任。",
+      "kind": "boundary"
+    },
+    {
+      "id": "multi-stage-check",
+      "title": "事实验证、反思、引用整合被拆成多阶段",
+      "body": "模型先检查事实，再回看中间推理和最终回答，最后把来源接到对应主张。",
+      "kind": "technical"
+    },
+    {
+      "id": "two-metrics",
+      "title": "回答准确和引用支持是两层指标",
+      "body": "可靠来源可能只覆盖部分结论，引用数量也不能代替对证据链的检查。",
+      "kind": "comparison"
+    },
+    {
+      "id": "claim-boundary",
+      "title": "摘要声称提升，但没有给出可复核的具体数值",
+      "body": "论文方法主张需要外部数据集、来源质量和引用覆盖率评估来确认。",
+      "kind": "boundary"
+    },
+    {
+      "id": "verification-risk",
+      "title": "验证器和证据库也可能一起犯错",
+      "body": "过时资料、重复错误或漏掉反例，会让自检流程把错误包装得更完整。",
+      "kind": "technical"
+    },
+    {
+      "id": "audit-trail",
+      "title": "把引用变成证据接口，而不是句末装饰",
+      "body": "为每个主张保留证据、核验结果和人工驳回记录，才能在高风险内容里追责和回归。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样让 LLM 的引用真正支撑回答？",
+    "question": "逐个检查事实主张，让模型反思并修正，再把经过核验的来源绑定到最终说法。",
+    "steps": [
+      {
+        "label": "拆出事实主张",
+        "detail": "把复杂回答拆成可以逐条核对的判断，避免一句话里混进多个未经验证的结论。",
+        "evidence": "fact-sensitive content"
+      },
+      {
+        "label": "先做事实验证",
+        "detail": "为每个主张寻找并检查来源，记录证据是否覆盖这句话的范围。",
+        "evidence": "fact verification"
+      },
+      {
+        "label": "反思中间推理",
+        "detail": "让模型回看推理和最终回答，发现冲突或证据不足时先修正说法。",
+        "evidence": "critically self-examine and revise intermediate reasoning steps"
+      },
+      {
+        "label": "整合对应引用",
+        "detail": "把通过检查的来源绑定到具体主张，而不是只在答案末尾堆一串链接。",
+        "evidence": "citation integration"
+      },
+      {
+        "label": "分开做质量评估",
+        "detail": "分别统计事实正确率、引用支持率和人工驳回率，并为高风险内容保留人工复核。",
+        "evidence": "accuracy, trustworthiness, and traceability"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05741"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "citation",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05741",
+      "claim": "VeriFact-CoT 通过事实验证、反思和引用整合的多阶段机制，处理 LLM 生成复杂事实性内容时的幻觉和可信引用缺失。",
+      "excerpt": "multi-stage mechanism of 'fact verification-reflection-citation integration'"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05741",
+      "claim": "摘要将科学研究、新闻报道和法律咨询列为高保真应用，并声称提升准确性、可信度和可追溯性；摘要未给出具体数值。",
+      "excerpt": "applications demanding high fidelity such as scientific research, news reporting, and legal consultation"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05741",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日首次提交。",
+      "excerpt": "Submitted on 6 Sep 2025"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05741",
+  "sourceHash": "sha256:af790faa3fe6e6625f8a1972e8f39e23a74bcfcccd28bb5326ce58eafc27e830",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文分析 LLM 在复杂事实性内容生成中的幻觉、反思和引用整合。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文提出分开评估事实准确率、引用支持率和人工驳回率。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.99,
+      "evidence": [
+        "正文将来源绑定到具体主张，讨论引用可信度、覆盖范围和可追溯性。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 VeriFact-CoT 论文于 2025 年 9 月 6 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05741",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日提交，研究 LLM 的事实准确性和引用生成。",
+      "excerpt": "Enhancing Factual Accuracy and Citation Generation in LLMs via Multi-Stage Self-Verification"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05741",
+      "claim": "摘要说明模型会自检和修正中间推理步骤与最终回答，再面向高保真应用提升可追溯性。",
+      "excerpt": "self-examine and revise their intermediate reasoning steps and final answers"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 首次提交日期、多阶段事实验证/反思/引用整合、目标应用和摘要中的方法主张；因摘要没有具体数值，正文没有编造提升幅度，补充来源质量、引用覆盖率、证据库时效和人工复核边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手完成初稿逐段复核：准确区分论文摘要的方法主张与独立验证，明确没有可引用的具体提升数值；把事实正确、引用支持和证据时效分开，补充高风险人工复核与审计字段；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-verifact-cot-citation-verification-20250906"
+}

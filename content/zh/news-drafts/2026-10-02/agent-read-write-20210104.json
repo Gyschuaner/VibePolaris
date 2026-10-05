@@ -1,0 +1,183 @@
+{
+  "slug": "agent-read-write-20210104",
+  "title": "研究者提出让智能体读论文、总结线索，再参与写作",
+  "summary": "1 月 4 日提交的 How to Train Your Agent to Read and Write 论文，把“读懂研究材料”和“写出新内容”放进一个智能体辅助流程。它先定义任务与数据，再讨论怎样让模型利用检索到的论文线索。",
+  "body": "1 月 4 日，Li Liu 等作者提交了 How to Train Your Agent to Read and Write。论文从一个熟悉的困难开始：研究者需要阅读大量论文，理解其中的假设和证据，再把线索组织成新的研究文本。对新研究者来说，这个过程尤其难，因为“读”“记”“找关系”和“写”不是一次生成就能完成的动作。\n\n作者提出训练一个智能体帮助人们阅读和总结论文，也探索让它发现和利用潜在知识线索来写出新的论文。标题里的 read and write 不是把模型变成自动作者的承诺，而是把输入材料、检索线索、摘要和后续写作放进一个可以观察的循环。读者应把它看成研究辅助流程，而不是无需核对的论文生产器。\n\n如果把一篇论文当成一组材料，智能体首先需要选择要读的内容，把它放进当前上下文；读完后保留与任务有关的线索，再决定下一步要检索、比较还是起草。任何一步引用错误或遗漏条件，都会影响后面的写作。因此，人仍要检查原文、证据和最终结论。",
+  "publishedAt": "2021-01-04",
+  "eventDate": "2021-01-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/agent-read-write-20210104.svg",
+    "alt": "研究者提出让智能体读论文、总结线索，再参与写作：VibePolaris 自制机制图",
+    "sourceUrl": "/images/news/agent-read-write-20210104.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "question",
+      "title": "论文想解决的读写断点",
+      "body": "阅读论文不是把全文变成几句摘要就结束。研究者要知道作者问了什么、用了哪些数据、结果能支持什么，并把这些线索带进下一次检索或写作。论文把这种连续工作描述为训练智能体辅助阅读和写作的目标。",
+      "kind": "narrative"
+    },
+    {
+      "id": "loop",
+      "title": "读和写怎样变成可观察的循环",
+      "body": "一次循环可以从任务问题开始：系统选出相关论文，取得正文或摘要，提取与问题有关的线索，再把这些线索送回下一步。写作阶段不是凭空生成，而是根据当前材料组织段落。若材料不足，循环应回到检索；若证据冲突，应该停下来交给人判断。",
+      "kind": "technical"
+    },
+    {
+      "id": "example",
+      "title": "用一篇论文试走一遍",
+      "body": "假设读者想比较两个问答评测。智能体先找出两篇原始论文，再记录任务、数据集和指标的差别。它可以先写一段带引用的草稿，但草稿里的每个数字仍要回到论文原文核对。自动化减少的是整理工作，不是把证据责任交给模型。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "读写能力不等于研究结论可靠",
+      "body": "模型能生成通顺的总结，也可能把相邻论文的结论混在一起。检索范围、上下文长度、引用定位和人工复核都会影响结果。论文提出的是研究方向与方法问题，不能把标题理解成已经解决了学术发现、原创性或作者责任。",
+      "kind": "boundary"
+    },
+    {
+      "id": "human-check",
+      "title": "循环的停止点需要人来确认",
+      "body": "当检索到的论文彼此冲突，或生成的段落缺少可定位的证据时，系统应该停止扩写并把问题交回读者。把停止条件写进流程，才能避免“写得更长”被误认为“证据更多”。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "从论文线索到草稿的一轮循环",
+    "question": "智能体怎样知道下一步该继续找材料，还是开始组织文字？",
+    "steps": [
+      {
+        "label": "任务",
+        "detail": "先明确要比较或解释的研究问题。",
+        "evidence": "论文以帮助人们阅读、总结和发现线索为动机。"
+      },
+      {
+        "label": "阅读",
+        "detail": "检索并读取与问题相关的论文片段，留下可追溯线索。",
+        "evidence": "材料必须进入本轮上下文，不能只记住标题。"
+      },
+      {
+        "label": "判断",
+        "detail": "根据证据是否足够，决定继续检索、比较还是起草。",
+        "evidence": "下一步选择依赖当前取得的线索。"
+      },
+      {
+        "label": "写作",
+        "detail": "把已核对的关系组织成段落，保留需要人工确认的空缺。",
+        "evidence": "读写辅助不替代原文核对和作者责任。"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / How to Train Your Agent to Read and Write 论文",
+    "url": "https://arxiv.org/abs/2101.00916"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "retrieval",
+    "llm",
+    "context"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2101.00916",
+      "claim": "论文的目标是训练智能体帮助人们阅读、总结论文并利用潜在知识线索。",
+      "excerpt": "train an intelligent agent to help people read and summarize papers, and perhaps even discover and exploit the potential knowledge clues to write novel papers"
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.00916",
+      "claim": "arXiv 页面记录论文 v1 于 2021 年 1 月 4 日提交。",
+      "excerpt": "Submitted on 4 Jan 2021"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2101.00916",
+  "sourceHash": "sha256:3d3fb66e8fabe3ef2c115b6a02697f3ca8429cf7bbff4021fbb8c93b8d328a39",
+  "status": "published",
+  "discoveredAt": "2026-10-02T08:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释agent相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释agent-loop相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "retrieval",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释retrieval相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释llm相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释context相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2101.00916",
+      "claim": "论文的目标是训练智能体帮助人们阅读、总结论文并利用潜在知识线索。",
+      "excerpt": "train an intelligent agent to help people read and summarize papers, and perhaps even discover and exploit the potential knowledge clues to write novel papers"
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.00916",
+      "claim": "arXiv 页面记录论文 v1 于 2021 年 1 月 4 日提交。",
+      "excerpt": "Submitted on 4 Jan 2021"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "method": "source",
+    "notes": "已打开并核对一手来源页面。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "notes": "来源、日期和结构字段已由本轮试跑核对。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-trial-20261002",
+  "promotedAt": "2026-10-01T18:41:02.635Z"
+}

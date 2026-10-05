@@ -1,0 +1,188 @@
+{
+  "slug": "drqa-reasoning-quota-20250825",
+  "title": "DRQA：简单题快一点，难题再把推理预算加回来",
+  "summary": "DRQA 论文于 8 月 25 日提交，针对推理模型常见的 overthinking：即使问题很简单，也会生成很长的思考链，消耗 token 和计算。作者观察到批量处理时，不同问题会争用资源，模型反而会给简单题压缩推理步骤；DRQA 用批量生成的偏好数据和强化学习，把这种“按难度分配预算”的行为迁移到单题推理。论文称它在多种数学和科学推理基准上减少 token 使用，同时维持或提升答案准确率，但摘要没有给出统一的节省比例。",
+  "body": "推理模型的成本，常常不是答案本身，而是它为了得到答案写下的那一长串中间过程。简单题也被迫走完整套思考链时，延迟、token 和算力都会被浪费；可如果一刀切缩短，又会把真正需要多步检查的难题一起剪掉。\n\nDRQA 关注的就是这条分界线。作者把 overthinking 定义为：模型在简单问题上生成没有必要的长推理。它不是说长答案一定错，而是说推理长度应该和问题难度有关系，不能因为模型拥有更大预算，就把每道题都当成竞赛题。\n\n论文的观察来自批处理。多个问题同时送入推理模型时，它们会隐含地争用有限计算资源，容易的问题会被更快处理，难的问题得到更多步骤。这个现象给了作者一个训练信号：如果把“批量时的取舍”整理成偏好数据，就可能教会模型在单题场景里也做类似分配。\n\nDRQA 的做法是先生成批量偏好数据，再用强化学习训练模型，让它偏好既准确又简洁的回答。核心不是设一个固定的最大思考长度，而是让模型学习在不同问题上调整配额：简单题少花一点，难题保留足够深度。\n\n论文在多种数学和科学推理基准上报告，DRQA 能减少 token 使用，同时维持、甚至在一些情况下提高答案准确率。摘要没有给出一条适用于所有基准的统一节省百分比，所以更稳妥的结论是方向成立，但实际节省要按任务和模型重新测。\n\n这种方法对 Agent 很有现实感。一个 Agent 同时处理几十个检索、代码或工具任务时，如果每个子问题都把推理预算用满，队列会变长，真正难的任务反而等不到资源。按难度分配不只是省钱，也是在给系统留出处理突发错误和重试的空间。\n\n当然，压缩推理也有代价。模型可能把必要的校验误判成“多余步骤”，或者用更短的文字掩盖不确定性。生产系统不应只看平均 token，而要按难度、错误类型、重试次数和最终状态分层比较；简单题变快但难题准确率下降，不能算真正的优化。\n\nDRQA 最有价值的地方，是把“推理长度”从模型的固定习惯变成可观察、可调节的资源分配问题。下一步是否能稳定迁移到长上下文、工具调用和多 Agent 场景，需要在更接近真实工作流的任务上验证。",
+  "publishedAt": "2025-08-25",
+  "eventDate": "2025-08-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/drqa-reasoning-quota-20250825.svg",
+    "alt": "DRQA 根据问题难度动态分配推理预算，让简单问题少用 token、难题保留深度",
+    "sourceUrl": "/images/news/drqa-reasoning-quota-20250825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "overthinking-cost",
+      "title": "推理模型把简单题想得太久",
+      "body": "Overthinking 不是“思考越多越错”，而是简单问题也被迫生成冗长思考，增加 token、延迟和计算成本。",
+      "kind": "narrative"
+    },
+    {
+      "id": "batch-observation",
+      "title": "批处理暴露了资源争用的线索",
+      "body": "多个问题同时进入模型时，它们会隐含争用有限计算资源；容易的问题会压缩步骤，难的问题得到更多预算。",
+      "kind": "technical"
+    },
+    {
+      "id": "preference-data",
+      "title": "把批量取舍变成偏好数据",
+      "body": "DRQA 用批量生成的偏好数据训练模型，让模型学习“准确且简洁”的回答，而不是设一个所有问题都一样的固定长度。",
+      "kind": "technical"
+    },
+    {
+      "id": "dynamic-quota",
+      "title": "简单题少花，难题保留检查深度",
+      "body": "动态配额的目标是让推理长度随问题难度变化：在容易问题上减少无效步骤，在复杂问题上保留必要的推导和校验。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-effect",
+      "title": "论文报告减少 token，同时维持或提高准确率",
+      "body": "在多种数学和科学推理基准上，DRQA 报告 token 使用下降且答案准确率保持或改善；摘要没有给出统一的节省比例。",
+      "kind": "boundary"
+    },
+    {
+      "id": "agent-queue",
+      "title": "预算分配也决定 Agent 队列的形状",
+      "body": "多任务 Agent 若让每个子问题都用满推理预算，队列会变长，重试和真正困难的任务会被挤压。",
+      "kind": "example"
+    },
+    {
+      "id": "failure-check",
+      "title": "平均 token 下降不等于系统变好",
+      "body": "还要按难度、错误类型、重试次数和最终状态分层检查，避免模型把必要校验误判成多余步骤。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样给推理任务分配合适的计算预算？",
+    "question": "先按问题难度观察质量曲线，再让模型动态调整，而不是全局硬截断。",
+    "steps": [
+      {
+        "label": "建立难度分层",
+        "detail": "用题型、历史错误、工具依赖和人工标注把简单、常规、困难任务分开，避免平均值掩盖长尾。",
+        "evidence": "generate concise answers for simple questions while retaining sufficient reasoning depth for more challenging ones"
+      },
+      {
+        "label": "记录推理配额",
+        "detail": "保存思考 token、总 token、延迟和重试，观察预算变化是否真的对应任务难度。",
+        "evidence": "dynamically allocate reasoning resources"
+      },
+      {
+        "label": "训练准确且简洁",
+        "detail": "用批量偏好数据让模型学习在不损失答案质量的前提下压缩无效步骤。",
+        "evidence": "batch-generated preference data and reinforcement learning"
+      },
+      {
+        "label": "给难题留余量",
+        "detail": "设置最低校验和可扩展上限，允许复杂问题继续推理，不让平均节省变成全局截断。",
+        "evidence": "retaining sufficient reasoning depth for more challenging ones"
+      },
+      {
+        "label": "按最终状态验收",
+        "detail": "在数学、科学、工具调用和多 Agent 队列中分别看准确率、失败恢复和资源占用。",
+        "evidence": "wide range of mathematical and scientific reasoning benchmarks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / DRQA 作者组",
+    "url": "https://arxiv.org/abs/2508.17803"
+  },
+  "relatedSlugs": [
+    "llm",
+    "token",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17803",
+      "claim": "DRQA 从批处理中的资源竞争现象出发，用批量偏好数据和强化学习控制单题推理长度。",
+      "excerpt": "transfers the benefits of resource competition from batch processing to single-question inference ... batch-generated preference data and reinforcement learning"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17803",
+      "claim": "论文报告在多种数学和科学基准上减少 token 使用，同时维持或提高准确率。",
+      "excerpt": "significantly reduces token usage while maintaining, and in many cases improving, answer accuracy"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17803",
+  "sourceHash": "sha256:d97bf59942503de02bc3befd7ac9a17cb3ccaa2d13ea0fc609d0897d809c4f44",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论推理模型、训练偏好和单题推理。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.99,
+      "evidence": [
+        "正文把 token、延迟和推理预算作为核心资源。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文要求按难度、错误类型、重试和最终状态分层评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 25 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17803",
+      "claim": "arXiv 摘要记录 DRQA 于 2025 年 8 月 25 日提交，目标是控制推理模型的 overthinking。",
+      "excerpt": "Date: Mon Aug 25 ... controlling overthinking in reasoning large language models"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17803",
+      "claim": "论文观察批处理中的资源竞争，并报告动态分配可减少 token、维持或提高准确率。",
+      "excerpt": "when processing multiple questions in batch mode ... dynamically compressing reasoning steps ... reduces token usage while maintaining ... accuracy"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文对 overthinking、批处理资源竞争、批量偏好数据、强化学习和数学/科学基准结论的摘要表述；正文没有补写统一节省百分比，强调按任务重新验证。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把动态预算解释成资源分配，保留“减少 token、维持或提高准确率”的原文边界，并补上 Agent 队列和难题保护的实用检查；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-25-drqa-reasoning-quota-20250825"
+}

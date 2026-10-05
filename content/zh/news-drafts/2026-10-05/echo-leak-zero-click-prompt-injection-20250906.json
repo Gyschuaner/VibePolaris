@@ -1,0 +1,204 @@
+{
+  "slug": "echo-leak-zero-click-prompt-injection-20250906",
+  "title": "EchoLeak：一次零点击提示注入暴露 Copilot 的信任边界",
+  "summary": "9 月 6 日提交的一篇论文复盘了 EchoLeak（CVE-2025-32711）：攻击者把恶意意图藏进外部内容，生产环境中的 Microsoft 365 Copilot 在没有用户点击的情况下被诱导跨越内容、模型和企业数据之间的边界。论文把它归因于多层信任假设叠加失效，并提出提示分隔、输入输出过滤、来源访问控制和严格内容安全策略等防御方向。本文只写事件影响与修复原则，不复现攻击链。",
+  "body": "企业 Copilot 同时能读邮件、理解文档和调用内部服务时，外部内容就不再只是“供模型参考的文字”。它可能携带模型看不见的指令，也可能影响下一步该访问什么数据。只要系统把内容和指令混在同一个上下文里，用户没有主动点击也可能触发后续动作。\n\nEchoLeak 论文复盘的是 Microsoft 365 Copilot 的 CVE-2025-32711 案例。论文报告，外部邮件可以在不要求用户交互的情况下影响 LLM 助手，并造成远程、未认证的数据外传风险。这里的重点不是某一种输入写法，而是一个生产系统如何让不可信内容穿过多个组件，最终获得超出原本权限的影响力。\n\n论文将问题拆成几层相互放大的信任假设：系统对外部内容的来源判断不够强，模型上下文没有把“数据”和“指令”明确分开，自动处理的内容又能继续触发链接、图片或代理服务。单个环节看起来像便利功能，组合起来却让防护分类器、内容清理和访问控制各自承担了它们没有能力承担的责任。\n\n修复思路首先是分隔提示和数据。邮件、网页、附件和检索结果应带有不可混淆的来源标记，模型只能把它们当作待分析内容；工具调用还要重新检查来源、目标和权限，不能因为一段内容被模型读到，就默认它能代表用户发出指令。输出同样需要经过策略检查，避免把内部结果直接带回外部通道。\n\n访问控制要落在每一次数据和工具请求上。来源访问控制可以记录某个答案引用了什么内容，最小权限则限制 Copilot 能读哪些邮箱、文件和连接器；涉及敏感数据时应要求用户确认或转人工。严格的内容安全策略还需要限制外部内容自动加载和跨服务代理，避免一个看似无害的预览动作扩大权限。\n\n这类系统不能只在上线前做一次红队测试。测试环境应覆盖外部邮件、共享文档、检索结果和多工具调用，记录模型看见的上下文、实际请求、权限判断和输出去向；发现异常时能撤销令牌、隔离连接器并追溯影响范围。测试应在不触发真实数据和真实动作的沙箱里完成，修复后再用同一组受控样例回归。\n\nEchoLeak 是一个具体案例，不能直接推导出所有 Copilot 都有同样漏洞；但它把一个容易被低估的事实摆到台面上：LLM 助手的安全边界由内容来源、模型上下文、工具权限和网络策略共同决定。把外部文本当成不可信输入，逐次验证权限并留下可审计记录，才是企业 Agent 能接触真实数据的前提。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/echo-leak-zero-click-prompt-injection-20250906.svg",
+    "alt": "EchoLeak 暴露外部内容穿过 LLM Copilot 信任边界时的零点击风险",
+    "sourceUrl": "/images/news/echo-leak-zero-click-prompt-injection-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "untrusted-content",
+      "title": "外部邮件进入 Copilot 后，不再只是文字",
+      "body": "邮件、文档和检索结果可能携带影响模型行为的内容，数据和指令混在一起就会形成信任边界。",
+      "kind": "narrative"
+    },
+    {
+      "id": "production-case",
+      "title": "EchoLeak 把零点击风险带进生产系统",
+      "body": "论文复盘 CVE-2025-32711，报告外部邮件在无用户交互时影响 Copilot 并造成数据外传风险。",
+      "kind": "technical"
+    },
+    {
+      "id": "trust-assumptions",
+      "title": "多个便利功能叠在一起，边界就会失守",
+      "body": "来源判断、上下文分隔、自动处理和代理访问不能互相替代，单点分类器也无法承担整条安全链。",
+      "kind": "comparison"
+    },
+    {
+      "id": "prompt-partition",
+      "title": "先把内容和指令分开",
+      "body": "为外部内容保留来源标记，模型只把它当作待分析数据；工具调用还要独立检查目标和权限。",
+      "kind": "boundary"
+    },
+    {
+      "id": "least-privilege",
+      "title": "每次数据请求都重新验证权限",
+      "body": "来源控制、最小权限、敏感操作确认和输出检查共同限制 Copilot 能读什么、能调用什么、能发到哪里。",
+      "kind": "technical"
+    },
+    {
+      "id": "sandbox-testing",
+      "title": "红队测试要在沙箱里覆盖整条链",
+      "body": "测试外部邮件、共享文档、检索和多工具调用，记录上下文、请求、权限和输出去向，修复后回归。",
+      "kind": "example"
+    },
+    {
+      "id": "case-boundary",
+      "title": "这是案例警报，不是所有 Copilot 的漏洞结论",
+      "body": "风险是否存在取决于具体内容来源、模型上下文、工具权限和网络策略，企业需要按自己的连接器重新验证。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-incident",
+    "title": "怎样阻断外部内容穿过 Copilot 的信任边界？",
+    "question": "把内容标成不可信数据，逐次验证工具权限，并在沙箱里记录和回归完整调用链。",
+    "steps": [
+      {
+        "label": "标记外部来源",
+        "detail": "邮件、网页、附件和检索结果进入上下文时保留来源和不可信状态，不允许它们直接充当系统指令。",
+        "evidence": "external and internal data sources"
+      },
+      {
+        "label": "分隔提示与数据",
+        "detail": "将用户指令、系统策略和外部内容放在可区分的上下文区域，输出前再次检查是否泄露内部信息。",
+        "evidence": "prompt partitioning"
+      },
+      {
+        "label": "逐次验证权限",
+        "detail": "每次读取文件、调用连接器或发送结果都检查目标、用户授权和数据敏感级别。",
+        "evidence": "provenance-based access control"
+      },
+      {
+        "label": "限制自动加载",
+        "detail": "对外部链接、图片、代理和跨服务访问设置严格策略，高风险动作需要确认或人工接管。",
+        "evidence": "strict content security policies"
+      },
+      {
+        "label": "沙箱测试并回归",
+        "detail": "在不触发真实数据的环境中覆盖邮件、文档、检索和工具调用，记录轨迹，修复后重复受控测试。",
+        "evidence": "continuous adversarial testing"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.10540"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "llm",
+    "prompt",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.10540",
+      "claim": "论文将 EchoLeak（CVE-2025-32711）描述为 Microsoft 365 Copilot 的生产环境零点击提示注入案例，并报告跨 LLM 信任边界的数据外传风险。",
+      "excerpt": "EchoLeak (CVE-2025-32711) ... zero-click prompt injection vulnerability in Microsoft 365 Copilot ... remote, unauthenticated data exfiltration"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.10540",
+      "claim": "论文提出提示分隔、输入输出过滤、来源访问控制、最小权限和严格内容安全策略等防御方向。",
+      "excerpt": "prompt partitioning, enhanced input/output filtering, provenance-based access control, and strict content security policies"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.10540",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日首次提交。",
+      "excerpt": "Submitted on 6 Sep 2025 ... EchoLeak"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.10540",
+  "sourceHash": "sha256:c0db9013ce591bcfb91de1f15360ab86909b03cd068dfec7e998f5dc3cdfaf00",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕企业 Copilot、外部内容、工具调用和调用链审计展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文保留来源访问控制、最小权限、敏感操作确认和逐次权限验证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文分析 LLM 上下文、数据/指令分隔和输出检查。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论提示分隔、外部内容和提示注入风险。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 6 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.10540",
+      "claim": "arXiv 记录 EchoLeak 论文于 2025 年 9 月 6 日提交，并以 CVE-2025-32711 为案例。",
+      "excerpt": "Submitted on 6 Sep 2025 ... EchoLeak (CVE-2025-32711)"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.10540",
+      "claim": "摘要给出零点击、生产 LLM 系统、数据外传和防御原则的案例结论。",
+      "excerpt": "zero-click prompt injection ... production LLM system ... data exfiltration ... least privilege"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 EchoLeak/CVE-2025-32711、Microsoft 365 Copilot、零点击、生产环境数据外传风险与提示分隔/来源控制/最小权限防御方向；正文删除具体绕过链、payload、代理细节和复现操作，只保留防守边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把论文的生产案例还原为内容来源、上下文分隔、工具权限和网络策略共同失效的问题；严格删去攻击链、payload 和可复现细节，补充沙箱、逐次授权、输出检查、撤销与回归边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-echo-leak-zero-click-prompt-injection-20250906"
+}

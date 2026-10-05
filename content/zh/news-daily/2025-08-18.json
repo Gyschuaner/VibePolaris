@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-18",
+  "eventDate": "2025-08-18",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-18 AI 事件重新检索：核对官方仓库、官方博客与 arXiv 首次提交，优先开放模型、MCP 安全与评测、Agent 系统调优和机器遗忘工具；区分 Qwen-Image-Edit 8/18 开源与 8/19 博客说明，排除滚动 release notes 重复事件。",
+    "sourceUrls": [
+      "https://github.com/QwenLM/Qwen-Image",
+      "https://qwenlm.github.io/blog/qwen-image-edit/",
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508180000%20TO%20202508182359]%20AND%20(cat:cs.AI%20OR%20cat:cs.CL%20OR%20cat:cs.LG%20OR%20cat:cs.MA%20OR%20cat:cs.RO)",
+      "https://arxiv.org/abs/2508.12538",
+      "https://arxiv.org/abs/2508.12566",
+      "https://arxiv.org/abs/2508.12551",
+      "https://arxiv.org/abs/2508.12730",
+      "https://arxiv.org/abs/2508.12535",
+      "https://arxiv.org/abs/2508.12629"
+    ],
+    "sourcePolicy": [
+      "official-announcement",
+      "official-blog",
+      "paper"
+    ],
+    "candidateCount": 7,
+    "primaryCandidateCount": 7,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "qwen-image-edit-open-source-20250818",
+      "title": "Qwen-Image-Edit 开源，支持单图语义与外观编辑",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "official-announcement",
+      "source": {
+        "name": "QwenLM GitHub 官方仓库",
+        "url": "https://github.com/QwenLM/Qwen-Image"
+      },
+      "canonicalUrl": "https://github.com/QwenLM/Qwen-Image",
+      "sourceHash": "sha256:70e4446dd4bfb52a4aff51086c9347b9b4418a9aa332efdde7b42a90121b0fd4",
+      "relatedSlugs": [
+        "llm",
+        "event",
+        "tools"
+      ],
+      "evidence": [
+        {
+          "url": "https://github.com/QwenLM/Qwen-Image",
+          "claim": "Qwen-Image 官方仓库的 News 记录 2025 年 8 月 18 日开源 Qwen-Image-Edit，并提供本地快速开始、Qwen Chat 和 HuggingFace Demo 入口。",
+          "excerpt": "2025.08.18: We’re excited to announce the open-sourcing of Qwen-Image-Edit"
+        },
+        {
+          "url": "https://qwenlm.github.io/blog/qwen-image-edit/",
+          "claim": "Qwen 官方博客介绍 Qwen-Image-Edit 基于 20B Qwen-Image，并同时使用 Qwen2.5-VL 与 VAE Encoder 处理语义和外观编辑；博客页面日期为 8 月 19 日。",
+          "excerpt": "Built upon our 20B Qwen-Image model ... simultaneously feeds the input image into Qwen2.5-VL and the VAE Encoder"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是当天清晰的开放模型事件；按官方仓库记录的开源日期归档，博客作为次日产品说明，不把 8/19 页面日期误写成首发日。"
+    },
+    {
+      "slug": "mcpxkit-mcp-security-toolkit-20250818",
+      "title": "MCPXKIT 把 MCP 攻击拆成 31 种方法",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Yongjian Guo 等",
+        "url": "https://arxiv.org/abs/2508.12538"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12538",
+      "sourceHash": "sha256:2135e17ccecef80a097b37da3d455c644ac5caea149868113112bca5235c19ee",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12538",
+          "claim": "MCPXKIT 将 MCP 攻击归纳为直接工具注入、间接工具注入、恶意用户攻击和 LLM 固有攻击四类，共实现 31 种攻击方法。",
+          "excerpt": "categorizes and implements 31 distinct attack methods under four key classifications"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12538",
+          "claim": "论文通过攻击实验观察到 Agent 盲目信任工具描述、文件攻击、共享上下文链式攻击，以及难以区分外部数据和可执行命令等问题。",
+          "excerpt": "agents' blind reliance on tool descriptions ... difficulty distinguishing external data from executable commands"
+        }
+      ],
+      "decision": "selected",
+      "reason": "MCP 已成为 Agent 接工具的重要接口，这篇论文把安全风险做成可运行的攻击分类和工具包；文章需把攻击实验写成研究结果，不提供可直接用于现实系统的攻击细节。"
+    },
+    {
+      "slug": "mcpgauge-tool-augmented-llm-evaluation-20250818",
+      "title": "MCPGAUGE 用 160 个提示测 LLM 接工具后到底有没有变好",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Wei Song 等",
+        "url": "https://arxiv.org/abs/2508.12566"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12566",
+      "sourceHash": "sha256:32b8a78af68625668f11ea890721261faa95c3201b7e845147e85b2800c0a9c1",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12566",
+          "claim": "MCPGAUGE 从主动调用工具、遵守工具指令、接入后的任务效果和额外开销四个维度评测 LLM-MCP 交互，包含 160 个提示和 25 个数据集。",
+          "excerpt": "a 160-prompt suite and 25 datasets ... proactivity, compliance, effectiveness, and overhead"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12566",
+          "claim": "论文评测 6 个商业 LLM、30 套 MCP 工具和一轮/两轮交互，约 20,000 次 API 调用，成本超过 6,000 美元。",
+          "excerpt": "six commercial LLMs, 30 MCP tool suites ... around 20,000 API calls and over USD 6,000"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它直接补上 MCP 工具增强的测量框架，与同日 MCPXKIT 的安全攻击视角互补；文章需保留四个维度和评测规模，不把 MCP 接入天然写成性能提升。"
+    },
+    {
+      "slug": "tuneagent-kernel-tuning-20250818",
+      "title": "TuneAgent 让 LLM Agent 用强化学习调 Linux 内核",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Hongyu Lin 等",
+        "url": "https://arxiv.org/abs/2508.12551"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12551",
+      "sourceHash": "sha256:220f6ca1547dd1e565ef74f4eeff92dfcdecb1113b2c966ede18b46b066caa1e",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12551",
+          "claim": "TuneAgent 把 Linux 内核参数空间建模为受约束强化学习环境，让 LLM Agent 探索配置并用结构化奖励同时考虑推理规范、配置正确性和性能。",
+          "excerpt": "formulates the kernel space as a constrained RL environment ... reasoning standardization, configuration correctness, and performance awareness"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12551",
+          "claim": "作者报告 TuneAgent 相比基线最高提升 5.6% 的相对整体性能，并保持较高配置有效性。",
+          "excerpt": "achieving up to 5.6% relative overall performance improvement while maintaining high configuration validity"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是 Agent 调用系统工具并受配置约束的具体案例；文章需强调作者实验、配置有效性和真实工作负载边界，不把 Agent 调参写成无需运维审批的自动改机。"
+    },
+    {
+      "slug": "unlearning-comparator-visual-evaluation-20250818",
+      "title": "Unlearning Comparator 把机器遗忘的准确率、效率和隐私放到一张图上",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Jaeung Lee 等",
+        "url": "https://arxiv.org/abs/2508.12730"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12730",
+      "sourceHash": "sha256:a9528aef505aeb64a48a48fdec8edb3059eba423adbd73af1d37137a100cbbe4",
+      "relatedSlugs": [
+        "eval",
+        "benchmark",
+        "authorization",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12730",
+          "claim": "Unlearning Comparator 通过可视分析比较不同机器遗忘方法，支持按类别、样本和层级对比模型，并模拟成员推断攻击来评估隐私。",
+          "excerpt": "compare the behaviors of two models ... at class-, instance-, and layer-levels ... simulates membership inference attacks"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.12730",
+          "claim": "论文将机器遗忘的准确率、效率和隐私作为需要同时观察的基本原则，并通过案例研究分析方法差异。",
+          "excerpt": "three fundamental principles in MU: accuracy, efficiency, and privacy"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把机器遗忘的验证从单个指标扩展到模型对比和隐私攻击模拟，和前一天的状态精确研究形成方法互补；文章需保留可视分析与案例研究边界。"
+    },
+    {
+      "slug": "corrsteer-sae-generation-steering-20250818",
+      "title": "CorrSteer 在生成时用稀疏自编码器特征做 LLM 引导",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Seonglae Cho 等",
+        "url": "https://arxiv.org/abs/2508.12535"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12535",
+      "sourceHash": "sha256:91b1bbab856465fae901615c4fdae3c529499454e9ec1af3f4932408992098b5",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12535",
+          "claim": "CorrSteer 在推理时根据生成 token 的正确性与 SAE 激活相关性选择特征并自动得到引导系数。",
+          "excerpt": "selects features by correlating sample correctness with SAE activations from generated tokens at inference time"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "论文同时覆盖 QA、偏见缓解、越狱防护和推理多个任务，范围较宽；先保留候选，优先完成 MCP 和模型开放事件。"
+    },
+    {
+      "slug": "flowmol3-molecular-generation-20250818",
+      "title": "FlowMol3 用轻量技巧改进 3D 小分子生成",
+      "eventDate": "2025-08-18",
+      "publishedAt": "2025-08-18",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Ian Dunn 等",
+        "url": "https://arxiv.org/abs/2508.12629"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12629",
+      "sourceHash": "sha256:0e7e1190d1d4283d154fcba0be192a10302e1121da7c174c273b7ebe0d9f921d",
+      "relatedSlugs": [
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12629",
+          "claim": "FlowMol3 是开源多模态 flow matching 模型，使用 self-conditioning、fake atoms 和训练时几何扰动改进全原子小分子生成。",
+          "excerpt": "three architecture-agnostic techniques ... self-conditioning, fake atoms, and train-time geometry distortion"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是窄领域的作者论文结果，和当天面向 Agent 工具、安全与开放模型的事件相比优先级较低，暂不拆出主稿。"
+    }
+  ],
+  "selectedSlugs": [
+    "qwen-image-edit-open-source-20250818",
+    "mcpxkit-mcp-security-toolkit-20250818",
+    "mcpgauge-tool-augmented-llm-evaluation-20250818",
+    "tuneagent-kernel-tuning-20250818",
+    "unlearning-comparator-visual-evaluation-20250818"
+  ],
+  "gap": null
+}

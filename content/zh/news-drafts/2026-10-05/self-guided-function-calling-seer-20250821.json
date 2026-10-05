@@ -1,0 +1,144 @@
+{
+  "slug": "self-guided-function-calling-seer-20250821",
+  "title": "SEER 让 Agent 从过去的成功轨迹里逐步找调用经验",
+  "summary": "SEER（Stepwise Experience Recall）在 2025 年 8 月 21 日提交，针对多步函数调用里工具选择、参数生成和调用链规划容易出错的问题。它不依赖一套静态手工示例库，而是把过去成功的调用轨迹持续加入经验池，按当前步骤做细粒度检索。论文在 ToolQA 上报告简单题平均提升 6.1%、困难题 4.7%，在 τ-bench 两个真实领域上使用 Qwen2.5-7B 与 72B 报告 7.44% 和 23.38% 的准确率提升；这些结果仍取决于经验池质量和 benchmark 任务。",
+  "body": "函数调用真正变难，往往不是模型不会写一个 JSON，而是它要连续做几件事：先选工具，再填参数，拿到结果后判断下一步，最后还要决定什么时候停。8 月 21 日提交的 SEER，把解决办法放在“记住过去怎样走完一条调用链”上。\n\n  现有系统通常手工挑几条示例放进 prompt，或者从一个整理好的案例库里检索。工具一多、任务一复杂，这套库就会迅速变得难维护：例子需要覆盖不同参数、错误恢复和多步顺序，还要跟着工具版本更新。SEER 不把库当成静态教材，而是把成功轨迹看成可以持续积累的经验。\n\n  它的 Stepwise Experience Recall 会在每一个调用步骤做细粒度检索。模型先根据当前任务找到相似的中间状态，再参考过去成功轨迹中的下一步，而不是把整条长案例一次性塞进上下文。新的成功轨迹可以继续加入经验池，让系统在任务增多时扩大覆盖范围。\n\n  论文在 ToolQA 上报告，SEER 对简单问题平均提升 6.1%，对困难问题提升 4.7%。作者还在包含两个真实领域的 τ-bench 上测试，使用 Qwen2.5-7B 和 Qwen2.5-72B 时，分别报告 7.44% 和 23.38% 的准确率提升。数字说明持续经验对这些任务有帮助，但没有说明线上经验池被错误轨迹污染后会发生什么。\n\n  经验池因此不能只收“最后答案正确”的轨迹。一次调用可能碰巧得到正确结果，却越过了权限、重复写入或泄露了敏感字段；如果这条轨迹被当成成功示例，系统下次会更稳定地复现问题。写入经验池前至少要同时检查工具权限、参数范围、外发行为、人工审批和最终状态。\n\n  经验也会过时。工具 schema 变了、接口返回字段变了、业务规则变了，旧轨迹就不再是好示范。生产系统需要给轨迹绑定工具版本、数据时间和验证结果，并支持过期、撤回和分区；“持续更新”不能变成一个没有清理入口的记忆垃圾场。\n\n  SEER 的价值在于把函数调用的学习位置从模型参数挪到可观察的经验层。团队可以在不重新训练主模型的情况下，逐步补充新的调用路径；但也必须把经验采集、审批、版本和回滚当成 Agent 的一部分。一个会记住过去的系统，首先要能记住哪些过去不该再做。",
+  "publishedAt": "2025-08-21",
+  "eventDate": "2025-08-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/self-guided-function-calling-seer-20250821.svg",
+    "alt": "SEER 从持续更新的成功经验池中逐步检索函数调用轨迹",
+    "sourceUrl": "/images/news/self-guided-function-calling-seer-20250821.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "multi-step-calling",
+      "title": "多步函数调用难在下一步，而不只是 JSON",
+      "body": "SEER 于 2025 年 8 月 21 日提交，面向工具选择、参数生成和调用链规划。Agent 需要在每次返回后判断下一步，直到任务完成或安全停止。",
+      "kind": "narrative"
+    },
+    {
+      "id": "static-library-limit",
+      "title": "静态手工示例库跟不上工具和任务变化",
+      "body": "示例需要覆盖参数、顺序、错误恢复和工具版本，任务一多就难维护。SEER 把过去成功的调用轨迹当成可持续增长的经验，而不是一次写死的 prompt 教材。",
+      "kind": "boundary"
+    },
+    {
+      "id": "stepwise-recall",
+      "title": "Stepwise Experience Recall 按当前步骤找下一步",
+      "body": "SEER 在每个调用步骤做细粒度检索，从过去轨迹中找到相似中间状态和下一动作。新的成功轨迹可以持续加入经验池，逐步扩大覆盖。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-gains",
+      "title": "ToolQA 和 τ-bench 都报告准确率提升",
+      "body": "ToolQA 上简单题平均提升 6.1%、困难题 4.7%；τ-bench 两个真实领域中，Qwen2.5-7B 与 72B 分别报告 7.44% 和 23.38% 提升。结果依赖经验池和 benchmark 条件。",
+      "kind": "comparison"
+    },
+    {
+      "id": "experience-quality",
+      "title": "成功结果不等于安全示例",
+      "body": "轨迹可能碰巧答对，却越过权限、重复写入或外发敏感字段。写入经验池前应检查权限、参数、外发和最终状态，不让错误被包装成“成功经验”。",
+      "kind": "technical"
+    },
+    {
+      "id": "versioned-memory",
+      "title": "经验池还要知道工具何时变化",
+      "body": "工具 schema、返回字段和业务规则更新后，旧轨迹可能过期。生产系统需要绑定工具版本与数据时间，提供过期、撤回、分区和回滚入口。",
+      "kind": "boundary"
+    },
+    {
+      "id": "memory-governance",
+      "title": "会记住过去的 Agent 也要学会忘掉坏经验",
+      "body": "SEER 把调用学习放到可观察的经验层，减少重新训练主模型的需要；同时必须把经验采集、审批、版本和回滚纳入 Agent 治理。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "一条函数调用经验怎样进入下一次任务？",
+    "question": "只有经过权限、结果和版本检查的成功轨迹，才值得被下一次检索。",
+    "steps": [
+      {
+        "label": "记录中间状态",
+        "detail": "保存任务目标、当前工具、参数、返回值和下一步判断，而不是只保存最终答案。",
+        "evidence": "SEER performs fine-grained, stepwise retrieval"
+      },
+      {
+        "label": "验证任务结果",
+        "detail": "检查数据是否真的更新、外部动作是否被批准、敏感字段是否被保护，再把轨迹标成可复用。",
+        "evidence": "past successful trajectories are incrementally added"
+      },
+      {
+        "label": "按步骤检索",
+        "detail": "当前调用前只取与中间状态和工具行为相关的经验，避免把整条长案例无差别塞进上下文。",
+        "evidence": "stepwise experience recall from a continually updated pool"
+      },
+      {
+        "label": "检查版本",
+        "detail": "确认经验使用的工具 schema、数据时间和权限仍然有效；过期轨迹进入隔离区而不是继续示范。",
+        "evidence": "Tool/API changes can invalidate prior trajectories"
+      },
+      {
+        "label": "回收坏经验",
+        "detail": "持续监控重复写入、越权和错误恢复，提供撤回与回滚，让经验池能忘掉不应复用的路径。",
+        "evidence": "Benchmark gains require experience-pool quality controls"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / SEER 作者组",
+    "url": "https://arxiv.org/abs/2508.15214"
+  },
+  "relatedSlugs": ["function-calling", "retrieval", "memory", "eval", "agent", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.15214",
+      "claim": "SEER 使用持续更新的经验池，按步骤检索过去成功的调用轨迹，避免依赖静态手工示例库。",
+      "excerpt": "fine-grained, stepwise retrieval from a continually updated experience pool ... past successful trajectories"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.15214",
+      "claim": "论文报告 ToolQA 和 τ-bench 上的具体准确率提升，包括 6.1%、4.7%、7.44% 和 23.38%。",
+      "excerpt": "average improvement of 6.1% ... 4.7% ... accuracy gains of 7.44% and 23.38%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.15214",
+  "sourceHash": "sha256:8d8c2fb478b6dd20fd56520162b59c03aaf9587b1ce1fc3454c636ee5dd7b851",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "function-calling", "score": 0.99, "evidence": ["正文围绕多步函数调用、工具选择和参数生成展开。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "retrieval", "score": 0.97, "evidence": ["正文解释经验池和按中间状态逐步检索调用轨迹。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "memory", "score": 0.95, "evidence": ["正文把持续更新、过期和回收轨迹当作 Agent 经验记忆治理。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "eval", "score": 0.93, "evidence": ["正文保留 ToolQA、τ-bench 和上线前轨迹验证。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "agent", "score": 0.96, "evidence": ["正文讨论 Agent 的连续工具链、经验复用和回滚。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.82, "evidence": ["正文按论文首次提交日期归档 2025 年 8 月 21 日事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.15214",
+      "claim": "论文于 2025 年 8 月 21 日首次提交，摘要列出 SEER 经验池、逐步检索和 ToolQA/τ-bench 实验。",
+      "excerpt": "Submitted on 21 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的多步函数调用问题、持续更新经验池、逐步检索、ToolQA 与 τ-bench 具体提升；正文补充经验质量、版本、权限和坏轨迹回收边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把基准提升与生产经验治理分开，明确成功轨迹仍需权限、版本和结果验证，避免把持续记忆写成自动安全；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-21-seer"
+}

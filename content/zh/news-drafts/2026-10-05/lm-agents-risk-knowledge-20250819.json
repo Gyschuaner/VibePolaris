@@ -1,0 +1,177 @@
+{
+  "slug": "lm-agents-risk-knowledge-20250819",
+  "title": "Agent 知道危险，但执行时未必会停手",
+  "summary": "8 月 19 日提交的研究发现，语言模型 Agent 能在问答里识别危险，却可能在真实执行轨迹中忽略同一风险，甚至继续调用工具。作者把安全拆成风险知识、轨迹识别和实际避免执行三个层次：知识题通过率超过 98%，进入轨迹识别后下降超过 23%，真正避免危险动作的通过率低于 26%。他们用抽象器和独立风险验证器把危险动作执行减少了 55.3%，但这仍是作者评测框架里的结果。",
+  "body": "问模型“这个动作危险吗”，得到一个正确的“是”，并不代表 Agent 在真正要执行时会停下来。8 月 19 日提交的一篇研究，专门检查了这段从安全知识到安全行为的距离，结论比普通的安全问答更不乐观。\n\n作者把 Agent 安全拆成三个逐步变难的层次：先看模型有没有相关风险知识，再看它能不能在执行轨迹里识别风险，最后看它是否真的避免执行危险动作。这样测，才能把“知道规则”和“按规则行动”分开。\n\n结果显示，模型在直接问答里的风险知识通过率超过 98%，但到了具体轨迹，识别能力下降超过 23%；当任务真的要求 Agent 做出动作时，避免危险执行的通过率低于 26%。这说明安全对齐可能停在了口头判断，尚未稳定传到工具调用和行动选择。\n\n论文还发现，换成更强的模型或增加推理计算，并不会自动消除这条断层。模型越能完成复杂任务，越可能在一长串看似合理的步骤里把风险判断放到后面，或者把早先说过的限制忘在行动之外。\n\n作者的补救方法是把风险检查从主 Agent 的行动链里拆出来：抽象器先把具体执行轨迹转换成更容易判断的描述，独立风险验证器再批评候选动作。论文报告，这套系统相对普通提示 Agent 将危险动作执行减少了 55.3%。它的启发是，关键动作不应只依赖同一个模型“自我提醒”。\n\n落地时可以把三层检查分别做成测试：先测规则知识，再把真实工具轨迹回放给模型，最后在隔离环境里观察它是否真的拒绝或停手。写入、删除、外发和权限提升等动作还需要独立策略、人工确认和可回滚执行器；研究结果提醒我们，安全问答通过不等于安全上线。",
+  "publishedAt": "2025-08-19",
+  "eventDate": "2025-08-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/lm-agents-risk-knowledge-20250819.svg",
+    "alt": "Agent 从风险知识到执行轨迹再到实际动作需要独立的风险验证器",
+    "sourceUrl": "/images/news/lm-agents-risk-knowledge-20250819.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "research-event",
+      "title": "安全问答答对了，不等于 Agent 会安全执行",
+      "body": "这篇论文于 2025 年 8 月 19 日提交 arXiv，研究语言模型 Agent 的风险知识能否传递到实际行动。作者把安全拆成知识、轨迹识别和避免执行三个层次，专门测量中间的断层。",
+      "kind": "narrative"
+    },
+    {
+      "id": "three-levels",
+      "title": "从知道风险到停下动作，难度逐层增加",
+      "body": "第一层问模型是否知道某类风险，第二层把风险放进具体执行轨迹，第三层看 Agent 是否真的拒绝或停止危险动作。三个结果不能用一个安全问答分数替代。",
+      "kind": "comparison"
+    },
+    {
+      "id": "performance-gap",
+      "title": "知识通过率超过 98%，避免执行却低于 26%",
+      "body": "作者报告风险知识题通过率超过 98%，进入轨迹识别后性能下降超过 23%，真正避免危险动作的通过率低于 26%。安全规则没有稳定传到工具调用和行动选择。",
+      "kind": "example"
+    },
+    {
+      "id": "scaling-limit",
+      "title": "更强模型和更多推理计算不会自动补上断层",
+      "body": "论文观察到，这种知识与执行之间的差距在更强模型和专门推理模型上仍然存在。复杂任务完成能力和安全行动能力是不同维度，不能只靠扩大模型或推理预算解决。",
+      "kind": "technical"
+    },
+    {
+      "id": "verifier",
+      "title": "抽象器加独立验证器，让风险检查离开主行动链",
+      "body": "作者先把具体执行轨迹抽象成更容易判断的描述，再用独立风险验证器批评候选动作。论文报告相对普通提示 Agent，危险动作执行减少了 55.3%；这个结果属于作者的评测设置。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment-boundary",
+      "title": "真正上线要测试动作，而不只是测试回答",
+      "body": "测试应覆盖风险知识、轨迹识别和隔离环境中的实际拒绝或停手。写入、删除、外发和权限提升还需要独立策略、人工确认与回滚执行器，不能把安全问答通过当作上线凭证。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一条危险动作怎样在执行前被拦住？",
+    "question": "模型已经说过“这很危险”，为什么还需要另一个验证器？",
+    "steps": [
+      {
+        "label": "测风险知识",
+        "detail": "先用直接问题确认模型知道规则，但只把结果当作知识层证据。",
+        "evidence": "The framework first evaluates knowledge about potential risks"
+      },
+      {
+        "label": "回放执行轨迹",
+        "detail": "把真实工具调用和上下文放回轨迹，观察模型能否定位风险出现在哪一步。",
+        "evidence": "The second dimension identifies risks in execution trajectories"
+      },
+      {
+        "label": "隔离执行候选",
+        "detail": "在无害沙箱里观察 Agent 是否真的拒绝、暂停或改走安全路径，不把文字承诺算成行为。",
+        "evidence": "The third dimension evaluates actual behaviors to avoid risky actions"
+      },
+      {
+        "label": "抽象轨迹",
+        "detail": "把具体路径转换成更短、更清楚的风险描述，减少模型被细节和上下文噪声带偏。",
+        "evidence": "The proposed system uses an abstractor for execution trajectories"
+      },
+      {
+        "label": "独立验证并放行",
+        "detail": "用独立风险验证器批评候选动作，只有通过策略、权限和人工确认的动作才进入真实执行。",
+        "evidence": "The risk verifier reduces risky action execution in the reported evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Yuzhi Tang 等",
+    "url": "https://arxiv.org/abs/2508.13465"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.13465",
+      "claim": "论文将 Agent 安全拆成风险知识、轨迹识别和实际避免执行三个维度，并观察到知识与执行之间存在明显落差。",
+      "excerpt": "three progressive dimensions: ... knowledge ... identify ... actual behaviors to avoid executing"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.13465",
+      "claim": "作者报告风险知识通过率超过 98%，轨迹识别性能下降超过 23%，避免执行危险动作的通过率低于 26%，验证器系统将危险动作执行减少 55.3%。",
+      "excerpt": "near-perfect risk knowledge (>98% pass rates) ... (<26% pass rates) ... reduction ... by 55.3%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.13465",
+  "sourceHash": "sha256:0b213f4134f1d019d2e297bf86d39948af4b1707e13e984bcad8dcb7077acf8a",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文关注语言模型 Agent 在工具轨迹和实际动作中的安全行为。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.93,
+      "evidence": [
+        "正文将写入、删除、外发和权限提升动作放在独立策略与人工确认边界内。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文将知识、轨迹和行动三层作为需要分别回归的评测维度。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 19 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.13465",
+      "claim": "论文于 2025 年 8 月 19 日提交，摘要给出知识、轨迹识别与实际行动三层安全评估及验证器结果。",
+      "excerpt": "Submitted on 19 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的三层安全框架、98%/23%/26% 结果和 55.3% 风险动作执行减少；正文避免复述危险命令，以轨迹回放、独立验证和隔离执行解释研究启发。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：将安全知识、轨迹识别和实际行动分成三层，准确保留论文中的阈值与验证器结果；用安全测试和独立审查表达方法启发，没有复述危险命令或提供可执行攻击步骤。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-19-risk-knowledge"
+}

@@ -1,0 +1,144 @@
+{
+  "slug": "deepseek-v31-hybrid-agent-api-20250821",
+  "title": "DeepSeek V3.1 把思考与不思考放进同一个 Agent API",
+  "summary": "DeepSeek 在 2025 年 8 月 21 日发布 V3.1，把 Think 与 Non-Think 两种推理模式放进同一模型：API 中 deepseek-reasoner 对应思考模式，deepseek-chat 对应非思考模式，两者都提供 128K 上下文。官方同时宣布支持 Anthropic API 格式，Beta API 提供 Strict Function Calling，并称通过后训练增强工具使用与多步 Agent 任务。它的变化不只是模型换代，而是让调用方可以按任务在延迟、思考预算和工具约束之间切换；性能提升仍应按自己的任务重新验证。",
+  "body": "8 月 21 日，DeepSeek 发布 V3.1，并把它称作走向 Agent 时代的第一步。最醒目的变化不是又多了一个模型名字，而是同一个模型同时提供 Think 和 Non-Think 两种模式：需要多花一点推理时间时走思考路径，追求响应速度时走非思考路径。\n\n  这两个模式在 API 里对应得很直接。deepseek-chat 走非思考模式，deepseek-reasoner 走思考模式；官方说两者都扩展到了 128K 上下文。对接入方来说，模式选择变成了路由问题：简单分类、短问答或对话可以优先低延迟，复杂规划和工具链任务再把更多预算留给思考。它不是让一次请求中途自动变快，而是让应用可以在入口处选择节奏。\n\n  V3.1 也把 Agent 接口向兼容性推进了一步。官方宣布支持 Anthropic API 格式，Beta API 支持 Strict Function Calling，让 Function 的输出满足预先定义的 schema。兼容格式可以降低迁移成本，但严格 schema 只约束结构，不会替应用判断工具是否必要、参数是否安全或调用结果是否可信。\n\n  DeepSeek 把后训练带来的变化描述为更强的工具使用和多步 Agent 任务能力，并称 V3.1-Think 比 DeepSeek-R1-0528 更快给出答案。这些是发布方的产品主张，适合用来理解它的设计方向，不应直接替代独立评测。真实服务还会受到提示、工具定义、并发、输出长度和重试策略影响。\n\n  模型本身也有更新。官方称 V3.1 Base 在 V3 上继续预训练了 8400 亿 tokens，用于延长上下文；同时更新 tokenizer 和 chat template，并提供 V3.1 Base 与 V3.1 的开源权重。对开发者来说，这意味着升级不只是换一个 endpoint，还要检查 tokenizer、模板、停止条件和工具消息格式是否仍与原来的解析器一致。\n\n  Think/Non-Think 的设计给 Agent 留了一层可操作的预算控制。一个搜索任务可以先用非思考模式整理问题，只有在证据冲突时再升级；一个写入系统的工具调用可以要求思考模式，并在严格 schema 之外增加权限和人工确认。模式选择应该和风险、延迟、费用一起记录，而不是把“思考”当成默认更正确的按钮。\n\n  DeepSeek V3.1 的核心变化因此可以写成一句工程话：同一个模型开始暴露两种推理节奏，并把 Agent 所需的 API 形状补齐。它让接入方更容易做路由和迁移，却没有替接入方解决授权、工具投毒、事实核验和失败回滚。真正上线前，仍要按任务分别测两种模式，并把函数调用的结构正确和动作正确分开验收。",
+  "publishedAt": "2025-08-21",
+  "eventDate": "2025-08-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/deepseek-v31-hybrid-agent-api-20250821.svg",
+    "alt": "DeepSeek V3.1 在同一模型中提供 Think 与 Non-Think 两种推理节奏和严格工具调用",
+    "sourceUrl": "/images/news/deepseek-v31-hybrid-agent-api-20250821.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release-event",
+      "title": "V3.1 把两种推理节奏放进同一模型",
+      "body": "DeepSeek 于 2025 年 8 月 21 日发布 V3.1，官方把 Think 与 Non-Think 称为混合推理架构。调用方可以按任务在更深思考和更快响应之间选择，而不是为每种节奏维护完全不同的模型入口。",
+      "kind": "narrative"
+    },
+    {
+      "id": "api-mapping",
+      "title": "deepseek-chat 与 deepseek-reasoner 对应两种模式",
+      "body": "官方 API 映射中，deepseek-chat 对应非思考模式，deepseek-reasoner 对应思考模式；两者都提供 128K 上下文。模式选择是入口路由，不代表请求会在中途自动切换。",
+      "kind": "technical"
+    },
+    {
+      "id": "strict-calling",
+      "title": "Anthropic API 兼容降低迁移成本，Strict Calling 只管结构",
+      "body": "V3.1 支持 Anthropic API 格式，Beta API 提供 Strict Function Calling，让 Function 输出满足定义好的 schema。它能减少解析摩擦，但不替应用判断工具是否必要、参数是否安全或返回值是否可信。",
+      "kind": "comparison"
+    },
+    {
+      "id": "agent-claim",
+      "title": "工具和多步 Agent 能力属于官方发布主张",
+      "body": "DeepSeek 称后训练增强了工具使用和多步 Agent 任务，并称 V3.1-Think 比 R1-0528 更快给出答案。真实服务还会受到提示、工具描述、并发、输出长度和重试策略影响，需用自己的任务回归。",
+      "kind": "boundary"
+    },
+    {
+      "id": "base-update",
+      "title": "8400 亿 tokens 继续预训练，也更新了模板和权重",
+      "body": "官方称 V3.1 Base 在 V3 上继续预训练 8400 亿 tokens，并更新 tokenizer 与 chat template，同时发布 V3.1 Base 和 V3.1 权重。升级时需检查模板、停止条件和工具消息解析，而不只是替换 endpoint。",
+      "kind": "technical"
+    },
+    {
+      "id": "routing-budget",
+      "title": "思考模式更像预算开关，不是正确性按钮",
+      "body": "简单任务可优先非思考模式，证据冲突或复杂规划再升级；高风险工具调用可以要求思考模式，但仍需额外的权限、人工确认和回滚。延迟、费用、风险与质量应一起记录。",
+      "kind": "example"
+    },
+    {
+      "id": "deployment-check",
+      "title": "结构正确和动作正确必须分开验收",
+      "body": "Strict Function Calling 能保证输出形状，却不能保证动作必要、权限合适或结果可信。上线前要分别测试两种模式，并把授权、工具投毒、事实核验和失败回滚纳入 Agent 回归。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "一次 V3.1 Agent 请求怎样选择推理节奏？",
+    "question": "先按任务风险和延迟选择模式，再把结构、权限和结果分别验收。",
+    "steps": [
+      {
+        "label": "判断任务预算",
+        "detail": "把短问答、检索整理、复杂规划和高风险写入分开，先定义每类任务的延迟、费用和错误代价。",
+        "evidence": "Think and Non-Think modes are exposed through one model"
+      },
+      {
+        "label": "选择入口",
+        "detail": "简单任务路由到 deepseek-chat，复杂任务路由到 deepseek-reasoner；两者都按 128K 上下文和自己的输出上限配置。",
+        "evidence": "deepseek-chat → non-thinking; deepseek-reasoner → thinking; 128K for both"
+      },
+      {
+        "label": "约束函数结构",
+        "detail": "用 Strict Function Calling 固定参数 schema，同时在应用侧检查工具必要性、权限范围和敏感字段。",
+        "evidence": "Strict Function Calling supported in Beta API"
+      },
+      {
+        "label": "检查执行结果",
+        "detail": "调用成功返回结构不代表业务动作正确；要检查数据来源、写入范围、外发对象和失败后的重试或回滚。",
+        "evidence": "Schema correctness does not establish action correctness"
+      },
+      {
+        "label": "按模式回归",
+        "detail": "同一题集分别跑 Think 与 Non-Think，记录准确率、首 token 延迟、总耗时、调用错误和成本，再决定默认路由。",
+        "evidence": "Official performance claims require task-specific validation"
+      }
+    ]
+  },
+  "source": {
+    "name": "DeepSeek 官方新闻",
+    "url": "https://deepseek.com/en/news/deepseek-v3-1/"
+  },
+  "relatedSlugs": ["llm", "function-calling", "model-routing", "token", "agent", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://deepseek.com/en/news/deepseek-v3-1/",
+      "claim": "DeepSeek V3.1 支持 Think 与 Non-Think 两种模式，API 中分别对应 deepseek-reasoner 与 deepseek-chat，两者均为 128K 上下文。",
+      "excerpt": "Hybrid inference: Think & Non-Think — one model, two modes ... 128K context for both"
+    },
+    {
+      "url": "https://deepseek.com/en/news/deepseek-v3-1/",
+      "claim": "官方宣布 Anthropic API 格式和 Beta Strict Function Calling，并称后训练增强工具使用与多步 Agent 任务。",
+      "excerpt": "Anthropic API format supported ... Strict Function Calling supported in Beta API ... Post-training boosts tool use and multi-step agent tasks"
+    }
+  ],
+  "canonicalUrl": "https://deepseek.com/en/news/deepseek-v3-1/",
+  "sourceHash": "sha256:ff10ea4df671173446ad380ed507c06b307a6173f1e1ebfcd3ddb19fd3dc045e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "llm", "score": 0.99, "evidence": ["正文解释 V3.1 的混合推理模型和上下文更新。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "function-calling", "score": 0.99, "evidence": ["正文把 Strict Function Calling 与工具结构验收作为发布重点。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "model-routing", "score": 0.96, "evidence": ["正文用 Think/Non-Think 说明按任务风险和延迟选择模型模式。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "token", "score": 0.88, "evidence": ["正文保留 8400 亿 tokens 继续预训练和 128K 上下文，并把它们放回部署条件。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "agent", "score": 0.97, "evidence": ["正文讨论工具使用、多步 Agent 任务和调用回归。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.86, "evidence": ["正文按 DeepSeek 8 月 21 日官方发布归档事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://deepseek.com/en/news/deepseek-v3-1/",
+      "claim": "DeepSeek 官方页面标注 News August 21, 2025，并列出 V3.1 的混合推理、Agent、API 和开源权重更新。",
+      "excerpt": "News August 21, 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 DeepSeek 官方英文发布页的日期、Think/Non-Think、chat/reasoner 映射、128K、Anthropic API 格式、Beta Strict Function Calling、8400 亿 tokens 继续预训练与官方 Agent 能力表述；正文明确把发布方主张与独立回归分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把模式路由、API 兼容、schema 约束、模型更新和部署回归拆开，保留官方性能主张的边界，没有把严格函数结构写成安全保证；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-21-deepseek-v31"
+}

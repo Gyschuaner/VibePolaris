@@ -1,0 +1,182 @@
+{
+  "slug": "anthropic-project-glasswing-update",
+  "title": "Anthropic 汇总 Project Glasswing 首月：合作方报告逾一万项高/严重漏洞",
+  "summary": "5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞，并列出 Cloudflare 约 2000 项、开源扫描估计 6202 项的案例。数字是 Anthropic 对合作项目的汇总，去重、严重性、修复率和误报率仍需独立核验。",
+  "body": "5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞。更新列出 Cloudflare 约 2000 项，以及开源扫描估计的 6202 项。\n\n总数只是安全流程的起点。一次发现要有漏洞编号、复现步骤和严重性判断，之后还要进入补丁、回归测试和重复扫描。去重方式不同，数字会变化；“高或严重”也需要知道由谁、按什么标准判定。\n\n以一个真实漏洞为例，系统先提出缺陷和复现路径，安全团队确认报告，开发者提交补丁，再用独立测试验证没有引入新的问题。benchmark 和 eval 可以比较固定任务与评分，data-validation 核对漏洞证据和修复结果，agent-loop 记录模型怎样根据反馈继续尝试。\n\nAnthropic 的页面支持合作项目和数字的公司汇总，不等于外部已经确认了一万项独立缺陷，也没有给出完整修复率或误报率。后续应抽取合作方报告、漏洞通告、补丁提交和重复扫描结果。",
+  "publishedAt": "2026-05-22",
+  "eventDate": "2026-05-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-project-glasswing-update.svg",
+    "alt": "Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/anthropic-project-glasswing-update.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "initial-update",
+      "title": "Glasswing 首月公布了哪些数字",
+      "body": "Anthropic 称约 50 个合作伙伴用 Claude Mythos Preview 发现超过一万项高或严重漏洞，并举出 Cloudflare 约 2000 项和开源扫描估计 6202 项的案例。这些数字来自项目方的首月汇总。",
+      "kind": "narrative"
+    },
+    {
+      "id": "finding-quality",
+      "title": "漏洞总数还要经过怎样的确认",
+      "body": "需要知道报告如何去重、严重性由谁判定、每个缺陷能否复现，以及是否进入补丁和回归测试。发现、修复和验证是不同阶段。",
+      "kind": "technical"
+    },
+    {
+      "id": "one-vulnerability",
+      "title": "沿着一个编号看修复是否成立",
+      "body": "系统提出缺陷和复现步骤，安全团队确认报告，开发者提交补丁，再用独立测试和重复扫描验证。benchmark、eval、data-validation 和 agent-loop 分别帮助比较任务、定义评分、核对证据和记录反馈循环。",
+      "kind": "example"
+    },
+    {
+      "id": "company-boundary",
+      "title": "一万项不是外部确认的独立缺陷数",
+      "body": "Anthropic 的页面没有给出完整去重方法、修复率或误报率，也不能证明所有代码库会得到相同结果。数字属于合作项目的公司汇总，不能直接当作第三方审计。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "后续看通告、补丁和重复扫描",
+      "body": "继续查看合作方公开的漏洞通告、报告编号、补丁提交、回归测试和重复扫描结果，判断发现是否形成了安全闭环。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "从“发现一万项”追到可复现和已修复",
+    "question": "怎样判断漏洞数量真的代表安全收益？",
+    "steps": [
+      {
+        "label": "拆分统计对象",
+        "detail": "确认总数包含哪些项目、版本和严重性等级，记录去重和估算方法。",
+        "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+      },
+      {
+        "label": "抽取报告编号",
+        "detail": "随机选择若干发现，检查是否有复现步骤、受影响版本和明确的报告编号。",
+        "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+      },
+      {
+        "label": "追踪修复证据",
+        "detail": "查看补丁提交、回归测试、漏洞通告和维护者确认，区分已报告与已修复。",
+        "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+      },
+      {
+        "label": "重复扫描和复盘",
+        "detail": "在相同代码和新版本上重跑，记录误报、重复发现和新缺陷，评价工具的长期价值。",
+        "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/research/glasswing-initial-update"
+  },
+  "relatedSlugs": [
+    "benchmark",
+    "eval",
+    "data-validation",
+    "agent-loop"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/research/glasswing-initial-update",
+      "claim": "Project Glasswing 合作伙伴称发现超过一万项高/严重漏洞",
+      "excerpt": "Anthropic says about 50 partners found more than 10,000 high or critical vulnerabilities with Claude Mythos Preview."
+    },
+    {
+      "url": "https://www.anthropic.com/research/glasswing-initial-update",
+      "claim": "更新列出 Cloudflare 2000 项与开源项目 6202 项的估计",
+      "excerpt": "The update cites 2,000 findings at Cloudflare and an estimate of 6,202 high or critical open-source findings."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/research/glasswing-initial-update",
+  "sourceHash": "sha256:2443638ac2bb4ac48df73983f2c9b5d178e094f5f9c7b12176a86d9611ee5db9",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/research/glasswing-initial-update",
+      "claim": "Project Glasswing 合作伙伴称发现超过一万项高/严重漏洞",
+      "excerpt": "Anthropic says about 50 partners found more than 10,000 high or critical vulnerabilities with Claude Mythos Preview."
+    },
+    {
+      "url": "https://www.anthropic.com/research/glasswing-initial-update",
+      "claim": "更新列出 Cloudflare 2000 项与开源项目 6202 项的估计",
+      "excerpt": "The update cites 2,000 findings at Cloudflare and an estimate of 6,202 high or critical open-source findings."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文把 Anthropic 的合作项目汇总、约 50 个伙伴、Cloudflare 约 2000 项和开源扫描估计 6202 项明确归属于项目方口径，没有把它们写成外部审计或一万项已去重独立缺陷。发现→编号/复现→严重性→补丁→回归测试→重复扫描的闭环具体易懂；已将标题从“AI 已发现”改为“合作方报告”，收紧主体和证据边界。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将标题从“Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞”改为“Anthropic 汇总 Project Glasswing 首月：合作方报告逾一万项高/严重漏洞”，避免把公司汇总直接写成 AI 独立发现事实。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-22",
+  "fingerprint": "sha256:2443638ac2bb4ac48df73983f2c9b5d178e094f5f9c7b12176a86d9611ee5db9"
+}

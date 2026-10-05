@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-21",
+  "eventDate": "2025-08-21",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-21 AI 事件重新检索：核对 DeepSeek V3.1 与 Google Search AI Mode 官方发布，并检索 arXiv 当日首次提交；优先混合推理与 Agent API、搜索 Agent、GUI 自动化、间接提示注入防御、函数调用经验、安全基准自动构建和生产环境能耗测量，区分官方实验/灰度范围与论文预印本结论。",
+    "sourceUrls": [
+      "https://deepseek.com/en/news/deepseek-v3-1/",
+      "https://blog.google/products-and-platforms/products/search/ai-mode-agentic-personalized/",
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508210000 TO 202508212359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO)",
+      "https://arxiv.org/abs/2508.15144",
+      "https://arxiv.org/abs/2508.15310",
+      "https://arxiv.org/abs/2508.15214",
+      "https://arxiv.org/abs/2508.15526",
+      "https://arxiv.org/abs/2508.15734",
+      "https://arxiv.org/abs/2508.15190",
+      "https://arxiv.org/abs/2508.15212",
+      "https://arxiv.org/abs/2508.16672",
+      "https://arxiv.org/abs/2508.15754",
+      "https://arxiv.org/abs/2509.00031"
+    ],
+    "sourcePolicy": ["official-announcement", "official-blog", "paper"],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "deepseek-v31-hybrid-agent-api-20250821",
+      "title": "DeepSeek V3.1 同时提供思考与非思考模式，强化 Agent API",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "official-announcement",
+      "source": {"name": "DeepSeek 官方新闻", "url": "https://deepseek.com/en/news/deepseek-v3-1/"},
+      "canonicalUrl": "https://deepseek.com/en/news/deepseek-v3-1/",
+      "sourceHash": "sha256:ff10ea4df671173446ad380ed507c06b307a6173f1e1ebfcd3ddb19fd3dc045e",
+      "relatedSlugs": ["llm", "function-calling", "model-routing", "token", "agent", "event"],
+      "evidence": [
+        {"url": "https://deepseek.com/en/news/deepseek-v3-1/", "claim": "DeepSeek V3.1 支持同一模型的 Think 与 Non-Think 两种模式，并把 deepseek-chat 与 deepseek-reasoner 分别映射到非思考和思考模式。", "excerpt": "Hybrid inference: Think & Non-Think — one model, two modes ... deepseek-chat → non-thinking mode ... deepseek-reasoner → thinking mode"},
+        {"url": "https://deepseek.com/en/news/deepseek-v3-1/", "claim": "官方称两种 API 模式均支持 128K 上下文，Beta API 支持 Strict Function Calling，并提供 Anthropic API 格式。", "excerpt": "128K context for both ... Anthropic API format supported ... Strict Function Calling supported in Beta API"}
+      ],
+      "decision": "selected",
+      "reason": "这是当天最重要的模型与 API 发布，混合推理、128K 上下文和严格函数调用直接改变 Agent 接入方式；文章会明确性能与 Agent 能力提升仍是官方口径。"
+    },
+    {
+      "slug": "google-search-ai-mode-agentic-20250821",
+      "title": "Google Search AI Mode 开始替用户跑预订流程",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "official-blog",
+      "source": {"name": "Google Search 官方博客", "url": "https://blog.google/products-and-platforms/products/search/ai-mode-agentic-personalized/"},
+      "canonicalUrl": "https://blog.google/products-and-platforms/products/search/ai-mode-agentic-personalized/",
+      "sourceHash": "sha256:a438ada012c2fc572edf50201fa5b53072157edce3d24165f460e497ef305c53",
+      "relatedSlugs": ["agent", "browser-api", "grounding", "authorization", "event"],
+      "evidence": [
+        {"url": "https://blog.google/products-and-platforms/products/search/ai-mode-agentic-personalized/", "claim": "Google 介绍 AI Mode 的 Agent 能力从餐厅预订开始，计划扩展到本地服务预约和活动门票；系统搜索多个预订平台并展示实时可用时段。", "excerpt": "We're starting to roll out today with finding restaurant reservations, and expanding soon to local service appointments and event tickets ... searching across multiple reservation platforms and websites"},
+        {"url": "https://blog.google/products-and-platforms/products/search/ai-mode-agentic-personalized/", "claim": "该 Agentic capabilities 实验面向美国 Google AI Ultra 用户在 Labs 中灰度，AI Mode 同时扩展到英语地区 180 多个新国家和地区。", "excerpt": "rolling out for Google AI Ultra subscribers in the U.S. through the ... experiment in Labs ... expanding AI Mode to over 180 new countries and territories in English"}
+      ],
+      "decision": "selected",
+      "reason": "它展示了搜索产品从给链接走向替用户跨网站找实时库存并把人带到最后确认步骤；文章会严格标注美国 Ultra/Labs 的灰度边界，不把它写成全面自动下单。"
+    },
+    {
+      "slug": "mobile-agent-v3-gui-automation-20250821",
+      "title": "Mobile-Agent-v3 把 GUI Agent 的训练搬进多系统虚拟环境",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / Mobile-Agent-v3 作者组", "url": "https://arxiv.org/abs/2508.15144"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15144",
+      "sourceHash": "sha256:1d97239cbc134528db883a81b04234a960b959bf383be9741cb0f6bcfc112968",
+      "relatedSlugs": ["agent", "browser-api", "benchmark", "eval", "tools", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15144", "claim": "论文介绍 GUI-Owl 基础 GUI Agent，并在桌面和移动十个 GUI 基准覆盖 grounding、问答、规划、决策和流程知识。", "excerpt": "state-of-the-art performance ... on ten GUI benchmarks across desktop and mobile environments, covering grounding, question answering, planning, decision-making, and procedural knowledge"},
+        {"url": "https://arxiv.org/abs/2508.15144", "claim": "Mobile-Agent-v3 把 AndroidWorld 得分从 GUI-Owl-7B 的 66.4 提升到 73.3，把 OSWorld 从 29.4 提升到 37.7；作者还开源了框架。", "excerpt": "improves performance to 73.3 on AndroidWorld and 37.7 on OSWorld ... open-sourced at https://github.com/X-PLUG/MobileAgent"}
+      ],
+      "decision": "selected",
+      "reason": "这是当天 GUI Agent 方向最完整的训练基础设施与 benchmark 事件，既有多操作系统环境，也有轨迹自生成和异步 RL；文章会把开源框架成绩限定在论文基准。"
+    },
+    {
+      "slug": "ipiguard-indirect-prompt-injection-20250821",
+      "title": "IPIGuard 用工具依赖图隔离间接提示注入",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / IPIGuard 作者组", "url": "https://arxiv.org/abs/2508.15310"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15310",
+      "sourceHash": "sha256:dd7ee4d5154d3a59944df963f43787d12e28850b85c9fd146d57a399c4bcde55",
+      "relatedSlugs": ["agent", "authorization", "execution-sandbox", "tools", "eval", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15310", "claim": "IPIGuard 针对工具返回的不可信数据可能携带间接提示注入，把 Agent 任务执行建模为在规划好的 Tool Dependency Graph 上遍历。", "excerpt": "tool responses may contain injected instructions ... models the agents' task execution process as a traversal over a planned Tool Dependency Graph"},
+        {"url": "https://arxiv.org/abs/2508.15310", "claim": "论文称通过把动作规划与外部数据交互解耦，可减少被注入指令触发的非预期工具调用，并在 AgentDojo 上评估。", "excerpt": "decoupling action planning from interaction with external data ... reduces unintended tool invocations ... Experiments on the AgentDojo benchmark"}
+      ],
+      "decision": "selected",
+      "reason": "它不是继续堆提示词防御，而是把工具依赖和动作规划做结构化隔离，直接回应真实 Agent 的外部数据攻击面；文章只解释防御思路，不展开攻击模板。"
+    },
+    {
+      "slug": "self-guided-function-calling-seer-20250821",
+      "title": "SEER 让 Agent 从过去的成功轨迹里逐步找调用经验",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / SEER 作者组", "url": "https://arxiv.org/abs/2508.15214"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15214",
+      "sourceHash": "sha256:8d8c2fb478b6dd20fd56520162b59c03aaf9587b1ce1fc3454c636ee5dd7b851",
+      "relatedSlugs": ["function-calling", "retrieval", "memory", "eval", "agent", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15214", "claim": "SEER 使用持续更新的经验池，对多步工具使用做细粒度的逐步检索，不再依赖静态手工示例库。", "excerpt": "Stepwise Experience Recall ... fine-grained, stepwise retrieval from a continually updated experience pool"},
+        {"url": "https://arxiv.org/abs/2508.15214", "claim": "论文在 ToolQA 上报告简单题平均提升 6.1%、困难题 4.7%，在 τ-bench 两个真实领域上用 Qwen2.5-7B 和 72B 报告 7.44% 与 23.38% 的准确率提升。", "excerpt": "average improvement of 6.1% on easy and 4.7% on hard questions ... accuracy gains of 7.44% and 23.38%"}
+      ],
+      "decision": "selected",
+      "reason": "它把工具调用经验从静态 prompt 示例变成会增长的轨迹池，和当天 DeepSeek 的 Agent API、Google 的搜索 Agent 形成方法侧补充；文章会区分基准提升和线上经验污染风险。"
+    },
+    {
+      "slug": "safetyflow-automated-safety-benchmark-20250821",
+      "title": "SafetyFlow 用七个 Agent 自动搭安全基准",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / SafetyFlow 作者组", "url": "https://arxiv.org/abs/2508.15526"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15526",
+      "sourceHash": "sha256:81b4c1d740975fb9054b4159e1184aba9bfa73ca2a7925bc92e03ed43d6b3d80",
+      "relatedSlugs": ["agent", "eval", "benchmark", "tools", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15526", "claim": "SafetyFlow 编排七个专门 Agent，自动构建安全基准，论文称四天内无需人工干预完成一套基准并控制过程和成本。", "excerpt": "orchestrating seven specialized agents ... build a comprehensive safety benchmark in only four days without any human intervention"},
+        {"url": "https://arxiv.org/abs/2508.15526", "claim": "SafetyFlowBench 含 23,446 条查询，作者用它评估 49 个先进 LLM，并报告低冗余和较强区分度。", "excerpt": "SafetyFlowBench contains 23,446 queries ... evaluate the safety of 49 advanced LLMs"}
+      ],
+      "decision": "selected",
+      "reason": "它把安全评测本身做成 Agent 工作流，解决人工编写成本高、重复多和难度有限的问题；文章会把自动生成基准的可扩展性与评测污染、人工责任边界一起写。"
+    },
+    {
+      "slug": "google-ai-serving-environment-impact-20250821",
+      "title": "Google 用生产数据测 Gemini 推理的能耗、碳和用水",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / Google Research 等", "url": "https://arxiv.org/abs/2508.15734"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15734",
+      "sourceHash": "sha256:d5e2011457b4e58b195f35662676927ca275f823a62e00e5886efabfbecf3ad3",
+      "relatedSlugs": ["llm", "eval", "data-quality", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15734", "claim": "论文在 Google 生产环境测量 Gemini AI Assistant 推理的全栈能耗、碳排和用水，包含加速器、主机、闲置容量和数据中心开销。", "excerpt": "measuring ... in a large-scale, AI production environment ... active AI accelerator power, host system energy, idle machine capacity, and data center energy overhead"},
+        {"url": "https://arxiv.org/abs/2508.15734", "claim": "作者报告 Gemini Apps 文本 prompt 的中位能耗为 0.24 Wh、用水 0.26 mL，并称一年间中位 prompt 的能耗降低 33 倍、碳足迹降低 44 倍；这些数字属于 Google 的测量口径。", "excerpt": "median Gemini Apps text prompt consumes 0.24 Wh ... 0.26 mL ... 33x reduction in energy consumption and a 44x reduction in carbon footprint"}
+      ],
+      "decision": "selected",
+      "reason": "这是当天少数把 AI 规模化服务的环境指标放到生产测量里的研究，能补上只谈模型能力而不谈推理代价的缺口；文章会明确数据来自 Google 基础设施和测量口径。"
+    },
+    {
+      "slug": "semtoken-semantic-tokenization-20250821",
+      "title": "SemToken 按语义密度重新分配 token 粒度",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / SemToken 作者组", "url": "https://arxiv.org/abs/2508.15190"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15190",
+      "sourceHash": "sha256:2f0170d5ab02cb8d0eba1c76bc043358eeec53c826dc6a549dbd44d547325357",
+      "relatedSlugs": ["token", "llm", "benchmark", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15190", "claim": "SemToken 用轻量编码器提取上下文语义表示，合并语义等价 token，并按语义密度分配不同粒度。", "excerpt": "extracts contextual semantic embeddings ... local semantic clustering to merge semantically equivalent tokens ... heterogeneous token granularity"},
+        {"url": "https://arxiv.org/abs/2508.15190", "claim": "论文在 WikiText-103 和 LongBench 上报告 token 数量最高减少 2.4 倍、速度提升 1.9 倍，困惑度与下游准确率基本无明显退化。", "excerpt": "up to 2.4x reduction in token count and 1.9x speedup, with negligible or no degradation"}
+      ],
+      "decision": "deferred",
+      "reason": "它与前一天 Nemotron 的推理效率主线相邻，先保留为长上下文优化备选，避免同日同时展开多个底层压缩方案。"
+    },
+    {
+      "slug": "spark-kv-cache-channel-pruning-20250821",
+      "title": "SparK 按查询剪枝 KV Cache 的通道维度",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / SparK 作者组", "url": "https://arxiv.org/abs/2508.15212"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15212",
+      "sourceHash": "sha256:9be57eb21c33eb615c282811cde02539bd62fd6dbb0c7b73559bcdd65a8b98f1",
+      "relatedSlugs": ["llm", "token", "benchmark", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15212", "claim": "SparK 是无需训练的 KV Cache 通道级非结构化稀疏方法，根据查询动态剪枝，并在注意力分数计算时恢复被剪条目。", "excerpt": "training-free plug-and-play method ... pruning KV at the channel level, while dynamically restoring the pruned entries"},
+        {"url": "https://arxiv.org/abs/2508.15212", "claim": "论文称相同序列长度下 KV 存储相比基于 eviction 的方法减少超过 30%，在 80% 剪枝率下性能退化低于 5%。", "excerpt": "reduces KV cache storage by over 30% ... even with an aggressive pruning ratio of 80% ... less degradation than 5%"}
+      ],
+      "decision": "deferred",
+      "reason": "同属长上下文推理效率，和 SemToken、前一天 Nemotron 的方法重叠；先记录来源，待效率专题再展开。"
+    },
+    {
+      "slug": "ai-model-risk-catalog-20250821",
+      "title": "AI Model Risk Catalog 发现开发者常漏报欺诈和操纵风险",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / AI Model Risk Catalog 作者组", "url": "https://arxiv.org/abs/2508.16672"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.16672",
+      "sourceHash": "sha256:61ee41ee8dfcaaea1b972e066b26fe87718cdbba6c847fa2e2381a88d6336fcd",
+      "relatedSlugs": ["eval", "data-quality", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.16672", "claim": "研究分析近 46 万份 Hugging Face 模型卡，提取约 3,000 个独特风险提及，建立 AI Model Risk Catalog，并与研究者风险库和真实事件库比较。", "excerpt": "analyzed nearly 460,000 AI model cards ... around 3,000 unique risk mentions ... AI Model Risk Catalog"},
+        {"url": "https://arxiv.org/abs/2508.16672", "claim": "摘要称开发者更常报告偏见和安全等技术风险，而对欺诈、操纵等人机互动和系统性风险关注不足。", "excerpt": "developers focused on technical issues ... Both groups paid little attention to fraud and manipulation"}
+      ],
+      "decision": "deferred",
+      "reason": "这是重要的治理研究，但当天已有 SafetyFlow 安全评测主线；先留作风险披露专题候选，避免两篇安全治理文章相互稀释。"
+    },
+    {
+      "slug": "tools-hurt-llm-reasoning-20250821",
+      "title": "工具证据并不总能帮模型，强信念时可能反而改错答案",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / CASE 作者组", "url": "https://arxiv.org/abs/2508.15754"},
+      "canonicalUrl": "https://arxiv.org/abs/2508.15754",
+      "sourceHash": "sha256:fb99d3fc96826af674f985c59b490e550c23e3f5f01aa3ee991ca83ff9066379",
+      "relatedSlugs": ["function-calling", "eval", "grounding", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2508.15754", "claim": "论文在 Python 和 Wikipedia 工具基准上发现，外部证据在初始信念较弱时帮助更稳定，但在强信念且原答案正确时可能把答案翻错。", "excerpt": "external evidence reliably helps when initial beliefs are weak, but can flip already-correct answers when those beliefs are strong"},
+        {"url": "https://arxiv.org/abs/2508.15754", "claim": "作者提出无标签 CASE 控制器，根据答案状态确定性选择无工具或工具轨迹，并报告超过已有基于置信度的仲裁基线。", "excerpt": "introduce CASE, a label-free controller that selects between no-tool and tool-assisted trajectories"}
+      ],
+      "decision": "deferred",
+      "reason": "与当天 SEER 和 DeepSeek 的工具调用主线相邻，但更适合在“工具证据与模型信念冲突”专题中展开；先保留完整来源。"
+    },
+    {
+      "slug": "on-device-quantization-aware-llm-20250821",
+      "title": "端到端量化感知训练把 LLM 部署成本放进训练阶段",
+      "eventDate": "2025-08-21",
+      "publishedAt": "2025-08-21",
+      "sourceType": "paper",
+      "source": {"name": "arXiv / On-Device Quantization 作者组", "url": "https://arxiv.org/abs/2509.00031"},
+      "canonicalUrl": "https://arxiv.org/abs/2509.00031",
+      "sourceHash": "sha256:9e8b3990098d323738929f38beaaafa1f376b7b1341be726cd2adba4769ec94c",
+      "relatedSlugs": ["llm", "token", "benchmark", "event"],
+      "evidence": [
+        {"url": "https://arxiv.org/abs/2509.00031", "claim": "论文提出面向设备端推理成本的端到端量化感知训练，把部署时的量化误差纳入训练目标。", "excerpt": "End-to-End On-Device Quantization-Aware Training for LLMs at Inference Cost"},
+        {"url": "https://arxiv.org/abs/2509.00031", "claim": "该记录虽出现在 8 月 21 日检索结果中，但 arXiv 标识为 2509.00031，事件日期存在月份编号和提交时间边界疑点，因此暂缓选择。", "excerpt": "arXiv identifier 2509.00031 requires date-boundary verification"}
+      ],
+      "decision": "deferred",
+      "reason": "编号与 8 月 21 日提交日期存在边界疑点，先不把它归入当天事件，避免日期误归档。"
+    }
+  ],
+  "selectedSlugs": [
+    "deepseek-v31-hybrid-agent-api-20250821",
+    "google-search-ai-mode-agentic-20250821",
+    "mobile-agent-v3-gui-automation-20250821",
+    "ipiguard-indirect-prompt-injection-20250821",
+    "self-guided-function-calling-seer-20250821",
+    "safetyflow-automated-safety-benchmark-20250821",
+    "google-ai-serving-environment-impact-20250821"
+  ],
+  "gap": null
+}

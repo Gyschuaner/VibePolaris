@@ -1,0 +1,199 @@
+{
+  "slug": "inquiremobile-human-assistance-20250827",
+  "title": "InquireMobile：手机 Agent 在关键一步先向人确认",
+  "summary": "InquireMobile 论文于 8 月 27 日提交，针对手机 Agent 过度追求全自动的问题：当模型看不懂界面、无法确定用户意图或即将触发高风险动作时，系统应主动请求人工帮助。作者先发布 InquireBench，覆盖安全交互与主动询问的 5 类、22 子类场景，称多数现有视觉语言手机 Agent 在这些场景上接近零分；InquireMobile 用两阶段训练和执行前交互推理，在基准上把询问成功率提高 46.8%，并取得最佳总体成功率。",
+  "body": "手机 Agent 看起来比文字 Agent 更接近现实：它能看屏幕、点按钮、输入内容。但屏幕上的一个按钮可能会改变账户、订单或隐私设置，模型如果在不确定时仍然坚持自动完成，能力越强，风险越大。\n\nInquireMobile 研究的核心不是让 Agent 更少问人，而是让它知道什么时候必须问。作者先做了 InquireBench，专门测试手机 Agent 的安全交互和主动询问，覆盖 5 类、22 个子类场景。摘要称，多数现有视觉语言手机 Agent 在这些场景上接近零分，说明“会点按”与“会请求帮助”是两种不同能力。\n\n论文提出两阶段训练和交互式执行前推理。执行前，Agent 先判断当前目标、界面状态和可能的风险；如果它无法确认下一步是否符合用户意图，就提出一个具体的确认问题，而不是把模糊理解直接变成点击。\n\n这和把所有动作都交给人审批不一样。审批太多，手机 Agent 只是把每一步都弹窗；询问也不是一句泛泛的“要继续吗”，而应该把真正的分歧说清楚，例如对象、金额、权限或要发送的内容。用户只需要确认会改变状态的那一部分。\n\n论文报告 InquireMobile 在 InquireBench 上把询问成功率提高 46.8%，并取得现有基线中最佳总体成功率。这个数字对应论文基准场景，不代表任何手机应用都能得到同样提升；真实系统还要看界面变化、网络延迟、登录状态和用户耐心。\n\n对产品来说，主动询问应当被当作一个策略动作，有自己的成本和验收。系统要记录 Agent 为什么停下、提出了什么问题、用户如何回答、回答后计划是否变化，以及最终动作是否成功。这样可以知道它是在真正减少风险，还是把不确定性简单推回用户。\n\n权限也要配合询问。用户确认一次不应自动授权所有后续动作，确认范围要绑定到对象、金额、目标应用和有效时间。涉及支付、删除、对外发送或隐私信息时，即使模型很有把握，也应让独立授权层重新检查。\n\nInquireMobile 的价值是把“不会做”与“知道该问”区分开。一个可靠的手机 Agent，不是永远不打扰用户，而是在会改变用户状态的地方及时停下来，问一个足够具体、用户能真正回答的问题。",
+  "publishedAt": "2025-08-27",
+  "eventDate": "2025-08-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/inquiremobile-human-assistance-20250827.svg",
+    "alt": "InquireMobile 让手机 Agent 在执行前判断风险并向用户请求具体确认",
+    "sourceUrl": "/images/news/inquiremobile-human-assistance-20250827.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "full-autonomy-risk",
+      "title": "会点按，不代表知道什么时候该停",
+      "body": "手机 Agent 面对账户、订单和隐私设置时，错误点击会直接改变状态。全自动不是唯一目标，关键是能否识别不确定。",
+      "kind": "narrative"
+    },
+    {
+      "id": "inquirebench",
+      "title": "InquireBench 覆盖五类、二十二子类场景",
+      "body": "基准专门测试安全交互与主动询问，作者称多数现有 VLM 手机 Agent 在这些场景上接近零分。",
+      "kind": "technical"
+    },
+    {
+      "id": "preaction-reasoning",
+      "title": "执行前先判断意图、界面和风险",
+      "body": "InquireMobile 用交互式 pre-action reasoning 判断下一步是否符合用户目标，必要时提出具体确认问题。",
+      "kind": "technical"
+    },
+    {
+      "id": "not-approve-everything",
+      "title": "主动询问不是每一步都弹窗",
+      "body": "好的问题应指出真正分歧，例如对象、金额、权限或要发送的内容；不会改变状态的步骤可以继续。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-improvement",
+      "title": "询问成功率提高 46.8%",
+      "body": "论文报告 InquireMobile 在 InquireBench 上的询问成功率提升 46.8%，并取得最佳总体成功率；真实应用还需适配界面和登录状态。",
+      "kind": "boundary"
+    },
+    {
+      "id": "trace-questions",
+      "title": "记录为什么问、问了什么、回答后做了什么",
+      "body": "把停下原因、澄清问题、用户回答、计划变化和最终动作放进轨迹，才能知道询问是否真正降低风险。",
+      "kind": "example"
+    },
+    {
+      "id": "scoped-authorization",
+      "title": "一次确认不应授权所有后续动作",
+      "body": "确认范围要绑定对象、金额、应用和有效时间；支付、删除、外发和隐私数据仍需独立授权检查。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "怎样让手机 Agent 在关键一步主动求助？",
+    "question": "把会改变状态的分歧说具体，让用户只确认真正需要授权的动作。",
+    "steps": [
+      {
+        "label": "识别状态变化",
+        "detail": "先标记支付、删除、外发、权限和隐私设置等不可逆或高风险动作，普通浏览不必同样升级。",
+        "evidence": "safe interaction and proactive inquiry with users"
+      },
+      {
+        "label": "做执行前判断",
+        "detail": "检查当前界面、用户目标和工具参数，确认下一步是否只有一种合理解释。",
+        "evidence": "interactive pre-action reasoning mechanism"
+      },
+      {
+        "label": "提出具体问题",
+        "detail": "把对象、金额、接收方或权限范围说清楚，避免只问“是否继续”。",
+        "evidence": "actively seeks human confirmation at critical decision points"
+      },
+      {
+        "label": "绑定确认范围",
+        "detail": "用户确认只覆盖当前动作、对象和有效时间，后续变化重新确认。",
+        "evidence": "potential safety risks when ... reasoning capabilities are insufficient"
+      },
+      {
+        "label": "评测询问质量",
+        "detail": "在五类、二十二子类场景中同时测该问时是否问、问题是否具体、回答后动作是否正确。",
+        "evidence": "InquireBench ... 5 categories and 22 sub-categories"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / InquireMobile 作者组",
+    "url": "https://arxiv.org/abs/2508.19679"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "request",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.19679",
+      "claim": "InquireBench 覆盖手机 Agent 安全交互和主动询问的 5 类、22 子类场景，多数现有 Agent 接近零分。",
+      "excerpt": "5 categories and 22 sub-categories ... most existing VLM-based agents demonstrate near-zero performance"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19679",
+      "claim": "InquireMobile 采用两阶段训练和执行前推理，询问成功率提升 46.8%，总体成功率最佳。",
+      "excerpt": "two-stage training strategy and an interactive pre-action reasoning mechanism ... 46.8% improvement"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.19679",
+  "sourceHash": "sha256:1347bec9a785c4a43cbf4162d1aa6f0480dba7576a62775101a69d1ccb1579da",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕视觉语言手机 Agent 的界面理解、动作和求助展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文要求用户确认范围绑定对象、金额、应用和有效时间。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "request",
+      "score": 0.99,
+      "evidence": [
+        "正文把主动询问、澄清问题和用户回答作为关键交互。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文区分询问成功率、总体成功率和真实界面回放。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 27 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.19679",
+      "claim": "arXiv 记录 InquireMobile 于 2025 年 8 月 27 日提交，研究手机 Agent 主动请求人工帮助。",
+      "excerpt": "Date: Wed Aug 27 ... Request Human Assistance"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.19679",
+      "claim": "摘要给出 InquireBench 规模、两阶段训练和询问成功率提升 46.8%。",
+      "excerpt": "5 categories and 22 sub-categories ... 46.8% improvement in inquiry success rate"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 InquireBench 的 5 类/22 子类、现有 Agent 接近零分、两阶段训练、执行前交互推理和 46.8% 询问成功率；正文补充 scoped authorization 和真实界面回放边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把主动询问写成状态风险判断和范围授权，避免把“求助”做成每一步弹窗，保留论文基准边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-27-inquiremobile-human-assistance-20250827"
+}

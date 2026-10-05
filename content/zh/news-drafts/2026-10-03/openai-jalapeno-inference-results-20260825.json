@@ -1,0 +1,239 @@
+{
+  "slug": "openai-jalapeno-inference-results-20260825",
+  "title": "OpenAI 公布 Jalapeño 首轮结果：推理芯片把每瓦吞吐和延迟放在同一张表上",
+  "summary": "OpenAI 于 2026 年 8 月 25 日公布自研 Jalapeño 推理芯片的首轮公开结果：在 SemiAnalysis 的 InferenceX 基准上，公司称它在 GPT‑OSS 120B、DeepSeek R1 和 Kimi K2.5 1T 上同时取得更高的每瓦吞吐和更低的端到端延迟。数字来自 OpenAI 选定的测试范围，不能直接当成独立的普遍性能结论；Jalapeño 目前首先服务 OpenAI 自己的推理需求。",
+  "body": "2026 年 8 月 25 日，OpenAI 发布 Jalapeño 首轮性能结果，这是它把自研推理芯片从路线图带到公开可比较数据的一步。公司称，Jalapeño 在 GPT‑OSS 120B、DeepSeek R1 670B 和 Kimi K2.5 1T 上，峰值吞吐每瓦比对照系统高 1.5 到 1.9 倍，端到端延迟约为对照系统的 1/1.7 至 1/3.6（即减少约 41%–72%）；在高互动负载下，性能最高可达 2.1 到 4.1 倍。这里的“公司称”很重要：这些数字是 OpenAI 对自己的芯片、软件、机架和对照系统进行的基准测试，不是第三方实验室已经复现的结论。\n\nOpenAI 选择的是 InferenceX，一个由 SemiAnalysis 发布、测量完整请求服务过程的公开基准。它不是只测芯片的理论峰值，而是把提示处理、逐 token 解码、内存和网络等待放进用户体验里。Jalapeño 的额定功率是 700 瓦，OpenAI 说测试负载下持续功率不超过 550 瓦；比较时又按各加速器公开的芯片功率做了归一化。读者需要把“每瓦完成多少工作”“一次回答等多久”和“整套系统用了多少电”分开，它们是相关但不同的指标。\n\n这次发布的技术重点也不只是换一块芯片。OpenAI 描述的设计同时考虑了芯片、内存、网络、服务软件和模型工作负载：提示预填充更依赖计算，生成阶段更受内存带宽和 KV cache（已处理上下文的缓存）访问影响，跨芯片通信还会制造等待。Jalapeño 试图把模型状态留在合适的位置，减少数据移动，让代理连续执行多步任务时不必在每一步都付出同样的延迟。\n\nOpenAI 还说，AI 参与了 Jalapeño 的电路探索、验证和编程接口设计，首轮芯片从初始设计到 tapeout（交付制造前的设计定版）用了九个月。这个说法说明公司把模型能力用于硬件开发，但并不等于 AI 自动完成了芯片设计，也没有公开所有面积、良率、成本和生产规模数据。Axios 的报道还指出，Jalapeño 首先用于 OpenAI 内部，OpenAI 当时没有计划把芯片直接卖给其他公司；它仍然需要外部加速器供应商来满足训练等其他需求。\n\n所以，8 月 25 日可以确认的是一组自研推理系统的公开基准和一条垂直整合路线，而不是“OpenAI 已经摆脱 NVIDIA”。下一步要看 Jalapeño 实际部署量、更多工作负载、成本、可靠性、制造和独立复测，才能判断每瓦优势是否会变成用户可感知的更低价格或更快代理。",
+  "eventDate": "2026-08-25",
+  "publishedAt": "2026-08-25",
+  "hero": {
+    "url": "/images/news/openai-jalapeno-inference-results-20260825.svg",
+    "alt": "Jalapeño 在吞吐每瓦和端到端延迟两个指标上的基准位置",
+    "sourceUrl": "/images/news/openai-jalapeno-inference-results-20260825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "event",
+      "title": "8 月 25 日公开了什么",
+      "body": "OpenAI 发布 Jalapeño 首轮结果，覆盖 GPT‑OSS 120B、DeepSeek R1 670B 和 Kimi K2.5 1T；这是公司基准发布，不是独立认证。",
+      "kind": "narrative"
+    },
+    {
+      "id": "metrics",
+      "title": "为什么要同时看吞吐和延迟",
+      "body": "每瓦吞吐衡量能源效率，端到端延迟衡量一次请求的等待时间；代理要连续调用多步，任何一项过慢都会放大总时长。",
+      "kind": "technical"
+    },
+    {
+      "id": "system",
+      "title": "芯片只是整套系统的一层",
+      "body": "OpenAI 把芯片、内存、网络、服务软件、KV cache 和模型工作负载一起设计，试图减少数据移动和通信等待。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "公开结果还没有证明什么",
+      "body": "测试范围、对照系统、功率口径、制造成本和实际部署量都需要继续核验；首轮数字不能直接推导普遍的价格或模型质量优势。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一张推理基准表怎样读",
+    "question": "把“做多少工作”“每瓦做多少工作”和“用户等多久”放在同一条流程上，就不会把单项领先读成所有场景都领先。",
+    "steps": [
+      {
+        "label": "请求进入",
+        "detail": "InferenceX 测量完整的 AI 请求服务过程，而不是只看理论算力。",
+        "evidence": "OpenAI 引用 SemiAnalysis 的公开基准。"
+      },
+      {
+        "label": "提示预填充",
+        "detail": "模型先处理输入，计算和内存访问决定第一段等待。",
+        "evidence": "OpenAI 对 prefill 的说明。"
+      },
+      {
+        "label": "逐 token 解码",
+        "detail": "生成阶段更依赖内存带宽、KV cache（已处理上下文的缓存）和跨芯片通信。",
+        "evidence": "Jalapeño 架构说明。"
+      },
+      {
+        "label": "比较结果",
+        "detail": "把吞吐、每瓦效率和端到端延迟分别看，再追问测试范围与独立复测。",
+        "evidence": "公司基准仍需外部验证。"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/jalapeno-first-results/"
+  },
+  "relatedSlugs": [
+    "benchmark",
+    "llm",
+    "model-routing",
+    "data-pipeline",
+    "server",
+    "data-quality"
+  ],
+  "relatedArticleSlugs": [
+    "aws-nvidia-2m-gpus-agentic-physical-ai-20260826",
+    "nvidia-system-orchestration-beyond-gpu-20260829"
+  ],
+  "sources": [
+    {
+      "url": "https://openai.com/index/jalapeno-first-results/",
+      "claim": "OpenAI 发布 Jalapeño 首轮结果，称在三个公开模型上同时取得更高每瓦吞吐和更低端到端延迟。",
+      "excerpt": "Across all three, Jalapeño delivered 1.5 to 1.9 times more AI work per watt at peak throughput and 1.7 to 3.6 times lower end-to-end latency than the comparison systems."
+    },
+    {
+      "url": "https://openai.com/index/the-full-stack-behind-abundant-intelligence/",
+      "claim": "OpenAI 说明 Jalapeño、数据中心、软件和产品属于同一套全栈基础设施策略，并提到 Project Camellia。",
+      "excerpt": "The full stack behind abundant intelligence."
+    },
+    {
+      "url": "https://www.axios.com/2026/08/25/openai-says-its-jalapeno-chip-offers-spicy-performance",
+      "claim": "Axios 交叉报道 OpenAI 基准、训练与推理边界以及芯片首先服务自身的计划。",
+      "excerpt": "OpenAI says its Jalapeño chip offers spicy performance."
+    }
+  ],
+  "isExample": false,
+  "canonicalUrl": "https://openai.com/index/jalapeno-first-results/",
+  "sourceHash": "sha256:66fef18279b4d787c8c4f8ff6e49e07c738a2c139f5a6db404d4e403b4e068a5",
+  "status": "published",
+  "discoveredAt": "2026-10-03T00:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 benchmark 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 llm 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 model-routing 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-pipeline 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "server",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 server 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-quality 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "aws-nvidia-2m-gpus-agentic-physical-ai-20260826",
+      "score": 0.78,
+      "evidence": [
+        "后续或相邻文章补充同一条事实时间线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "nvidia-system-orchestration-beyond-gpu-20260829",
+      "score": 0.78,
+      "evidence": [
+        "后续或相邻文章补充同一条事实时间线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/jalapeno-first-results/",
+      "claim": "OpenAI 发布 Jalapeño 首轮结果，称在三个公开模型上同时取得更高每瓦吞吐和更低端到端延迟。",
+      "excerpt": "Across all three, Jalapeño delivered 1.5 to 1.9 times more AI work per watt at peak throughput and 1.7 to 3.6 times lower end-to-end latency than the comparison systems."
+    },
+    {
+      "url": "https://openai.com/index/the-full-stack-behind-abundant-intelligence/",
+      "claim": "OpenAI 说明 Jalapeño、数据中心、软件和产品属于同一套全栈基础设施策略，并提到 Project Camellia。",
+      "excerpt": "The full stack behind abundant intelligence."
+    },
+    {
+      "url": "https://www.axios.com/2026/08/25/openai-says-its-jalapeno-chip-offers-spicy-performance",
+      "claim": "Axios 交叉报道 OpenAI 基准、训练与推理边界以及芯片首先服务自身的计划。",
+      "excerpt": "OpenAI says its Jalapeño chip offers spicy performance."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:35:00Z",
+    "method": "manual",
+    "notes": "人工核对官方页面、发布日期、原始链接、公司口径和后续边界；区分基准、调查、资助、预览、融资和记忆权限，不将厂商声明写成独立验证。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T00:35:00Z",
+    "notes": "正文按事件独立组织段落，保留新闻事实、公司口径、产品状态和未验证边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T01:30:00Z",
+    "questions": [
+      "文章是否把 2026-08-25 的新闻主线与后续/背景信息分开？",
+      "官方来源、媒体报道、公司自述和未独立验证的数字是否明确归属？",
+      "零基础读者能否沿着正文、SVG 和讲解步骤理解机制而不是只看到宣传性结论？",
+      "文章是否保留产品状态、评测、治理或权限边界？"
+    ],
+    "notes": "读者复审指出延迟倍数方向和 KV cache、tapeout 术语需要白话化；已改为相对延迟/减少比例，并补充两个术语解释。",
+    "changes": [
+      "明确“延迟约为对照系统的 1/1.7 至 1/3.6（减少约 41%–72%）”的方向",
+      "首次解释 KV cache 与 tapeout",
+      "保留公司基准和独立复测边界"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-25",
+  "fingerprint": "sha256:66fef18279b4d787c8c4f8ff6e49e07c738a2c139f5a6db404d4e403b4e068a5",
+  "promotedAt": "2026-10-03T00:35:00Z"
+}

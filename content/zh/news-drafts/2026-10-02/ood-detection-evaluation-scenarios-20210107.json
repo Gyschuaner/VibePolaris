@@ -1,0 +1,172 @@
+{
+  "slug": "ood-detection-evaluation-scenarios-20210107",
+  "title": "OOD 检测论文提醒：换一个场景，方法排名也可能换",
+  "summary": "1 月 7 日提交的研究重新检查图像分类中的分布外检测评测，把无关输入、新类别和域变化分成不同场景。作者发现数据集与任务场景会改变方法的相对表现。",
+  "body": "1 月 7 日，Engkarat Techapanurak 和 Takayuki Okatani 提交了关于分布外（OOD）检测的研究。图像分类器通常要判断图片属于哪个已知类别，但真实输入可能完全无关、来自一个没有见过的新类别，或者只是换了拍摄环境。系统在这些情况下应该知道“我没有足够把握”，而不是硬选一个熟悉类别。\n\n论文重新检查了 OOD 检测方法的评测方式。作者把实验分成无关输入检测、新类别检测和域变化检测三种场景，再在不同数据集与分类任务上比较代表性方法。结果显示，场景和数据集的改变会影响方法之间的相对表现。\n\n这条消息对工程团队的提醒很实际：一个基准上的第一名不一定在另一个风险场景仍然第一。部署前应该先定义系统会遇到哪种“陌生输入”，再选择接近真实分布的验证集。检测分数只是报警依据，后续还需要拒答、转人工或重新采集数据的产品路径。",
+  "publishedAt": "2021-01-07",
+  "eventDate": "2021-01-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/ood-detection-evaluation-scenarios-20210107.svg",
+    "alt": "OOD 检测论文提醒：换一个场景，方法排名也可能换：VibePolaris 自制机制图",
+    "sourceUrl": "/images/news/ood-detection-evaluation-scenarios-20210107.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "three-scenarios",
+      "title": "三种陌生输入不是一回事",
+      "body": "无关输入是照片根本不属于分类任务，新类别是输入属于一个此前没有标签的类别，域变化则可能仍是相同类别但来自不同设备、地点或风格。它们都会让模型面对分布变化，却需要不同的测试问题。",
+      "kind": "narrative"
+    },
+    {
+      "id": "evaluation",
+      "title": "为什么评测口径会改变结论",
+      "body": "如果只用一种数据集和一种任务，方法可能学会适应那个设置。论文把场景、数据集与分类任务组合起来比较，发现方法的相对表现会随组合变化。评测不只是给方法排序，也是在决定我们把哪种失败算得更重要。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "把检测结果接到产品流程",
+      "body": "相机应用可以先判断输入是否像训练数据。若检测到新类别，产品可以显示“需要确认”并保存样本；若只是轻微域变化，可以交给另一套校准规则。关键是把 OOD 分数连到可观察的处理动作，而不是把一个阈值写成“安全保证”。",
+      "kind": "example"
+    },
+    {
+      "id": "limits",
+      "title": "方法比较仍受实验设置限制",
+      "body": "论文结果来自它选择的代表性方法、数据集和三类场景。它不能直接告诉每个行业的最佳阈值，也不能替代对真实输入和错误代价的测试。使用者需要把自己的输入风险、拒答体验和人工处理能力一并纳入验收。",
+      "kind": "boundary"
+    },
+    {
+      "id": "acceptance",
+      "title": "上线前先写清楚错误代价",
+      "body": "同一个 OOD 分数，在相机应用里可能触发一次人工确认，在高风险流程里则可能必须拒绝请求。先定义漏放、误拒和人工处理的代价，再选择阈值和验收集，评测结果才有实际决策含义。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "同一个方法放进三个陌生输入场景",
+    "question": "为什么不能只看一张排行榜来选择 OOD 检测方法？",
+    "steps": [
+      {
+        "label": "已知",
+        "detail": "先在训练过的类别和数据分布上建立分类基线。",
+        "evidence": "OOD 检测依赖先定义什么算分布外。"
+      },
+      {
+        "label": "换场景",
+        "detail": "分别测试无关输入、新类别和域变化。",
+        "evidence": "论文明确比较三种应用场景。"
+      },
+      {
+        "label": "换数据",
+        "detail": "在多种数据集和分类任务上重复比较。",
+        "evidence": "作者报告数据集和任务会改变相对表现。"
+      },
+      {
+        "label": "接动作",
+        "detail": "把低置信结果交给拒答、转人工或重新采集流程。",
+        "evidence": "检测分数是产品处理的入口，不是安全结论。"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / OOD Detection 论文",
+    "url": "https://arxiv.org/abs/2101.02447"
+  },
+  "relatedSlugs": [
+    "eval",
+    "benchmark",
+    "evaluation-dataset",
+    "grounding"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2101.02447",
+      "claim": "论文把 OOD 检测分为无关输入、新类别和域变化三个场景。",
+      "excerpt": "three scenarios, i.e., irrelevant input detection, novel class detection, and domain shift detection"
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.02447",
+      "claim": "论文指出场景和数据集的差异会改变方法的相对表现。",
+      "excerpt": "differences in scenarios and datasets alter the relative performance among the methods"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2101.02447",
+  "sourceHash": "sha256:5daf581d50ec1b27e94b603c7be285df39d087758b645cca823a4af2c6315c81",
+  "status": "published",
+  "discoveredAt": "2026-10-02T08:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释eval相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释benchmark相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "evaluation-dataset",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释evaluation-dataset相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释grounding相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2101.02447",
+      "claim": "论文把 OOD 检测分为无关输入、新类别和域变化三个场景。",
+      "excerpt": "three scenarios, i.e., irrelevant input detection, novel class detection, and domain shift detection"
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.02447",
+      "claim": "论文指出场景和数据集的差异会改变方法的相对表现。",
+      "excerpt": "differences in scenarios and datasets alter the relative performance among the methods"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "method": "source",
+    "notes": "已打开并核对一手来源页面。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "notes": "来源、日期和结构字段已由本轮试跑核对。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-trial-20261002",
+  "promotedAt": "2026-10-01T18:41:02.636Z"
+}

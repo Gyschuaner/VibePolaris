@@ -1,0 +1,180 @@
+{
+  "slug": "microsoft-magenticlite-small-model-agent",
+  "title": "微软研究发布 MagenticLite 小模型高效智能体",
+  "summary": "5 月 21 日，Microsoft Research 介绍实验性 MagenticLite、MagenticBrain 和 Fara-1.5，展示小模型如何完成浏览器与本地文件工作流，并把人类审批放进执行链。研究页面讨论的是系统设计，不是通用产品承诺，也没有证明小模型在所有长流程中达到前沿模型水平。",
+  "body": "5 月 21 日，Microsoft Research 介绍实验性 MagenticLite、MagenticBrain 和 Fara-1.5，展示小模型如何完成浏览器和本地文件工作流，并把人类审批放进执行链。\n\n研究关注的不是单个模型分数，而是工具编排、任务分解和控制循环怎样补足模型能力。小模型可以提出下一步，但浏览器点击、文件读写、失败恢复和审批仍由工具层与权限策略约束。\n\n比如整理一个本地文件夹：系统先在 execution-sandbox 中读取允许目录，规划步骤，执行一次工具调用，再把结果交给人确认；写入、删除或外部提交前暂停。tools 承载浏览器、文件和 API，agent-loop 负责执行、观察反馈和再次决策，llm 仍是其中一层。\n\nMicrosoft Research 的页面是研究项目介绍，不是通用产品承诺，也没有证明小模型在所有长流程中达到前沿模型水平。复核时应固定任务、文件规模和工具权限，比较调用次数、人工接管、失败恢复、成本和完成率。",
+  "publishedAt": "2026-05-21",
+  "eventDate": "2026-05-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/microsoft-magenticlite-small-model-agent.svg",
+    "alt": "微软研究发布 MagenticLite 小模型高效智能体；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/microsoft-magenticlite-small-model-agent.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "research",
+      "title": "MagenticLite 研究了哪种智能体",
+      "body": "Microsoft Research 介绍 MagenticLite、MagenticBrain 和 Fara-1.5，展示小模型执行浏览器与本地文件任务，并把人类审批保留在流程中。页面没有把它描述成普遍可用的产品。",
+      "kind": "narrative"
+    },
+    {
+      "id": "system-design",
+      "title": "工具编排补上了哪些能力",
+      "body": "模型负责提出下一步，工具负责浏览器和文件操作，控制循环根据反馈继续或暂停，审批决定高风险动作能否执行。小模型的表现因此取决于整个系统，而不是模型参数一个数字。",
+      "kind": "technical"
+    },
+    {
+      "id": "file-task",
+      "title": "整理一个文件夹时，动作怎样被限制",
+      "body": "系统在 execution-sandbox 中读取允许目录，执行一次工具调用，再把结果交给人确认；写入、删除或外部提交前停止。tools、agent-loop 和 llm 分别对应外部动作、反馈循环和模型本体。",
+      "kind": "example"
+    },
+    {
+      "id": "research-boundary",
+      "title": "研究页面没有证明长流程普遍可靠",
+      "body": "页面不是通用产品承诺，也没有给出小模型在所有长流程、文件规模和权限设置下都达到前沿模型水平的证据。真实效果要靠跨任务评测。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next",
+      "title": "后续看代码和跨任务评测",
+      "body": "继续查看论文、代码和不同任务的成本、完成率、人工接管与失败恢复，判断系统设计是否稳定。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "在一个本地文件任务里观察小模型智能体",
+    "question": "怎样知道效率来自工具编排，而不是一次简单演示？",
+    "steps": [
+      {
+        "label": "固定文件和权限",
+        "detail": "准备相同规模的文件夹，限定可读写目录、网络和工具，记录使用的模型版本。",
+        "evidence": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/"
+      },
+      {
+        "label": "保存每次工具调用",
+        "detail": "记录浏览器、文件和 API 调用、参数、返回结果，以及何时请求人类确认。",
+        "evidence": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/"
+      },
+      {
+        "label": "统计失败与接管",
+        "detail": "比较完成率、调用次数、人工接管、错误恢复和实际成本，不只看最后文件是否整理好。",
+        "evidence": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/"
+      },
+      {
+        "label": "改变任务再测",
+        "detail": "更换文件规模、语言和长流程步骤，检查小模型能力是否仍然稳定。",
+        "evidence": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft Research",
+    "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "agent-loop",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/",
+      "claim": "MagenticLite 面向小模型的浏览器与本地文件智能体体验",
+      "excerpt": "Microsoft Research describes MagenticLite as an agentic experience optimized for small models with browser and local-file workflows."
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/",
+      "claim": "项目包含 MagenticBrain、Fara-1.5 和人类审批",
+      "excerpt": "The project page discusses MagenticBrain, Fara-1.5 and human approval in the workflow."
+    }
+  ],
+  "canonicalUrl": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/",
+  "sourceHash": "sha256:98de2e88c2649d8b72a0e18c725be1bb05b7fffe33d32486a4a9b5b42089adda",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“微软研究发布 MagenticLite 小模型高效智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“微软研究发布 MagenticLite 小模型高效智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“微软研究发布 MagenticLite 小模型高效智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“微软研究发布 MagenticLite 小模型高效智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/",
+      "claim": "MagenticLite 面向小模型的浏览器与本地文件智能体体验",
+      "excerpt": "Microsoft Research describes MagenticLite as an agentic experience optimized for small models with browser and local-file workflows."
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/",
+      "claim": "项目包含 MagenticBrain、Fara-1.5 和人类审批",
+      "excerpt": "The project page discusses MagenticBrain, Fara-1.5 and human approval in the workflow."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文明确这是 Microsoft Research 的实验性系统设计，区分 MagenticLite、MagenticBrain、Fara-1.5、小模型本体与工具编排，不把研究页面写成通用产品或前沿模型等效证明。本地文件示例具体说明沙箱、允许目录、工具调用、人工审批、写入/删除/外部提交暂停和失败恢复，零基础读者可理解。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-21",
+  "fingerprint": "sha256:98de2e88c2649d8b72a0e18c725be1bb05b7fffe33d32486a4a9b5b42089adda"
+}

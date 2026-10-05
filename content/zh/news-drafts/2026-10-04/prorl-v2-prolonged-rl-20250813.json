@@ -1,0 +1,206 @@
+{
+  "slug": "prorl-v2-prolonged-rl-20250813",
+  "title": "NVIDIA 发布 ProRL v2：1.5B 推理模型训练超过 3000 步",
+  "summary": "8 月 13 日，NVIDIA 发布 ProRL v2，研究长时间强化学习能否让 1.5B 推理模型越过通常的性能平台。官方报告在五个领域训练超过 3000 个 RL steps，并结合 PPO-Clip、REINFORCE++ baseline、Clip-Higher、Dynamic Sampling、可验证奖励、长度惩罚和 reference policy reset。数学、代码和 Reasoning Gym 的提升，以及 1.5B 模型的 state-of-the-art，均来自 NVIDIA 的实验口径，不能直接外推到更大模型或开放任务。",
+  "body": "8 月 13 日，NVIDIA 发布 ProRL v2，提出一个很实际的问题：推理模型做了几百步强化学习之后，真的只能停在一个平台，还是可以继续学？ProRL v2 把训练推进到 3000 步以上，在五个领域上观察 1.5B 推理模型还能不能持续提高。它关注的不是把模型参数做大，而是把同一个模型在可验证奖励下训练得更久。\n\n长时间 RL 的难点不只是算力账单。训练继续向前时，策略可能变得过于确定，探索减少；新策略和参考策略的 KL 距离可能突然变大；奖励全对或全错的题目又会给梯度带来很少信息。NVIDIA 把 ProRL v2 的差异写成一套稳定器组合：PPO-Clip 限制单次策略更新，REINFORCE++ baseline 做优势归一化，Clip-Higher 放宽上界以保留探索，Dynamic Sampling 丢弃没有区分度的题组。\n\n奖励本身也要能核查。ProRL v2 使用程序化、可验证的奖励，把数学、代码和推理任务的结果交给可检查的规则，而不是让一个漂移的奖励模型长期决定方向。它还加入 scheduled cosine length penalty，让输出长度在训练中周期性受到约束，试图同时保留正确率和更短的答案。奖励能被程序检查，仍不代表检查器覆盖了任务真正重要的能力；模型可能更会迎合可计算的指标，却没有学会开放问题里的判断。\n\n为了避免参考点变旧，ProRL v2 使用 KL regularization 和周期性 reference policy reset。官方描述的做法是每隔 200 到 500 个 RL steps，或在 KL 激增、验证停滞时，把参考策略重置为当前策略，同时不清空优化器状态。这样做让策略不会被早期参考模型拴住，也让长训练过程保留一个可比较的稳定锚点；代价是训练记录更复杂，任何一个 reset 都可能改变后续曲线的解释。\n\nNVIDIA 把 ProRL v2 3K 与基础模型 DeepSeek-R1-Distill-Qwen-1.5B、ProRL v1 2K 放在数学、代码生成和 Reasoning Gym 上比较。博客称 Pass@1、Pass@k 和分布外任务持续提升，且 v2 用 8K 训练上下文时仍超过使用 16K 上下文的早期设置。这里的“3K”是训练步数，“8K”是训练上下文长度，不能把它们读成模型可以稳定处理的通用上下文上限。\n\n这些结果仍要放回实验条件里。五个领域、程序化奖励、特定基座模型、训练上下文和 benchmark 共同定义了 ProRL v2 的成绩；NVIDIA 所说的 state-of-the-art 是作者对 1.5B reasoning models 的比较。长训练是否适合更大模型、开放式问题、工具调用或没有严格答案的任务，需要重新设计奖励、验证器和停止条件。\n\n这个实验说明，后训练不是把学习率调小再跑更久那么简单。要让 RL 越过平台，团队必须同时记录策略漂移、探索度、奖励覆盖、长度变化、checkpoint reset 和每个领域的失败类型。否则一条上涨的 benchmark 曲线可能只说明模型更会适应检查器，而不是推理边界真的扩展了。",
+  "publishedAt": "2025-08-13",
+  "eventDate": "2025-08-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/prorl-v2-prolonged-rl-20250813.svg",
+    "alt": "ProRL v2 通过可验证奖励、PPO-Clip、长度惩罚和 reference reset 把强化学习训练延长到 3000 步以上；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/prorl-v2-prolonged-rl-20250813.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 13 日发布的是 ProRL v2 长训练方案",
+      "body": "NVIDIA 技术博客宣布 ProRL v2，围绕 1.5B 推理模型研究超过 3000 个 RL steps 是否还能带来持续提升。基础模型、训练步数和评测领域都有明确实验边界。",
+      "kind": "narrative"
+    },
+    {
+      "id": "instability",
+      "title": "长时间 RL 会带来探索和策略稳定性问题",
+      "body": "几百步以后，策略可能熵坍塌、KL 距离飙升，奖励全对/全错的题组也难以提供有效梯度。ProRL v2 用 PPO-Clip、REINFORCE++ baseline、Clip-Higher 和 Dynamic Sampling 组合处理这些问题。",
+      "kind": "technical"
+    },
+    {
+      "id": "verifiable-rewards",
+      "title": "可验证奖励让每一步有可检查的依据",
+      "body": "数学、代码和推理任务的奖励由程序化规则判定，减少奖励模型漂移；scheduled cosine length penalty 周期性约束输出长度。可验证只说明指标能被检查，不保证指标覆盖开放任务的全部价值。",
+      "kind": "technical"
+    },
+    {
+      "id": "reference-reset",
+      "title": "Reference policy reset 给长训练保留稳定锚点",
+      "body": "KL regularization 把新策略与参考策略的距离纳入训练；官方称每 200–500 步或在 KL 激增、验证停滞时把参考策略重置为当前策略，同时不清空优化器状态。reset 时点会影响曲线解读。",
+      "kind": "example"
+    },
+    {
+      "id": "comparison",
+      "title": "3K steps、8K context 和 1.5B 是三种不同条件",
+      "body": "博客把 Base、ProRL v1 2K（16K context）和 ProRL v2 3K（8K context）放在数学、代码与 Reasoning Gym 上比较，并报告 Pass@1/Pass@k 与分布外提升。训练步数不是上下文上限，1.5B 结果也不能外推更大模型。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "state-of-the-art 只在作者实验口径内成立",
+      "body": "五个领域、程序化奖励、基座模型、上下文长度和 benchmark 一起定义了 ProRL v2 的成绩。更大模型、开放式问题、工具调用和没有严格答案的任务，需要重新设计奖励和验证器。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步记录奖励覆盖与 checkpoint 曲线",
+      "body": "复现实验时保存策略漂移、探索度、奖励覆盖、输出长度、reference reset 和各领域失败类型，判断上涨的分数究竟来自推理能力还是对检查器的适应。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "强化学习怎样在 3000 步以后继续学？",
+    "question": "把奖励、策略更新、参考模型和 benchmark 条件拆开，才能看懂 ProRL v2 的长训练实验。",
+    "steps": [
+      {
+        "label": "定义可验证奖励",
+        "detail": "为数学、代码和推理任务写出程序化检查器，先确认哪些答案能被稳定判定。",
+        "evidence": "Fully verifiable rewards"
+      },
+      {
+        "label": "限制策略跳跃",
+        "detail": "PPO-Clip 和 KL regularization 限制新策略一次改变太多，REINFORCE++ baseline 归一化优势信号。",
+        "evidence": "PPO-Clip / REINFORCE++"
+      },
+      {
+        "label": "保留探索样本",
+        "detail": "Clip-Higher 提高上界，Dynamic Sampling 丢掉全对或全错、无法提供区分度的题组。",
+        "evidence": "Clip-Higher / Dynamic Sampling"
+      },
+      {
+        "label": "周期性重置参考",
+        "detail": "每 200–500 步或遇到 KL 激增、验证停滞时重置 reference policy，保留优化器状态继续训练。",
+        "evidence": "Reference policy resets"
+      },
+      {
+        "label": "分条件看曲线",
+        "detail": "分别比较 2K/3K steps、16K/8K context、基础模型和各领域失败，不能只看一条平均分。",
+        "evidence": "ProRL v2 evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Research / Technical Blog",
+    "url": "https://developer.nvidia.com/blog/scaling-llm-reinforcement-learning-with-prolonged-training-using-prorl-v2"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "data-pipeline",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://developer.nvidia.com/blog/scaling-llm-reinforcement-learning-with-prolonged-training-using-prorl-v2",
+      "claim": "NVIDIA 8/13 技术博客宣布 ProRL v2，说明 3000+ RL steps、五个领域、1.5B 推理模型、PPO-Clip/REINFORCE++、Clip-Higher、Dynamic Sampling、可验证奖励、长度惩罚与 reference reset。",
+      "excerpt": "Over 3,000 RL steps across five distinct domains achieve new state-of-the-art performance among 1.5B reasoning models."
+    },
+    {
+      "url": "https://developer.nvidia.com/blog/scaling-llm-reinforcement-learning-with-prolonged-training-using-prorl-v2",
+      "claim": "博客给出 Base、ProRL v1 2K/16K context 与 ProRL v2 3K/8K context 的数学、代码和 Reasoning Gym 比较，并标出作者实验与持续训练边界。",
+      "excerpt": "ProRL v2 3K: 3,000 RL steps (trained with 8K context) ... the model is still undergoing continuous training."
+    }
+  ],
+  "canonicalUrl": "https://developer.nvidia.com/blog/scaling-llm-reinforcement-learning-with-prolonged-training-using-prorl-v2",
+  "sourceHash": "sha256:a564889bc9a32e921d3a7e0daae598ded455b4ded639b99320193caf165b03a3",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.97,
+      "evidence": [
+        "正文解释 ProRL v2 的 1.5B 推理模型、长时间强化学习和策略更新。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文区分数学、代码、Reasoning Gym、Pass@1/Pass@k 与作者 SOTA 口径。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.86,
+      "evidence": [
+        "正文把程序化奖励、Dynamic Sampling、长度惩罚和 checkpoint reset 作为训练数据/信号管线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文以 8/13 NVIDIA 博客为发布事件，保留 ProRL v1/v2 训练条件和后续复现边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://developer.nvidia.com/blog/scaling-llm-reinforcement-learning-with-prolonged-training-using-prorl-v2",
+      "claim": "NVIDIA 博客确认 ProRL v2 发布和 3000+ steps/五领域/1.5B 结果，均按作者实验口径记录。",
+      "excerpt": "Today, we’re excited to announce the release of ProRL v2."
+    },
+    {
+      "url": "https://developer.nvidia.com/blog/scaling-llm-reinforcement-learning-with-prolonged-training-using-prorl-v2",
+      "claim": "博客明确列出 2K/16K 与 3K/8K 训练条件、数学/代码/Reasoning Gym 结果和持续训练状态。",
+      "excerpt": "Base: DeepSeek-R1-Distill-Qwen-1.5B ... ProRL v2 3K ... trained with 8K context."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 NVIDIA 2025-08-13 Technical Blog；正文区分长训练动机、PPO-Clip/REINFORCE++/Clip-Higher/Dynamic Sampling、可验证奖励、长度惩罚、reference reset、1.5B/五领域/3000+ steps、2K/3K 与 16K/8K context、作者 benchmark 和更大/开放任务外推边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 ProRL v2 写成奖励、稳定器、参考策略和评测条件组成的长训练实验，保留 NVIDIA SOTA 归因与开放任务限制，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-13-prorl-v2",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 和 publishedAt 均为 2025-08-13，标题与摘要把范围收紧到 1.5B 推理模型；来源为 NVIDIA 同日 Technical Blog，没有把 3000+ steps 写成所有大模型的普遍结论。",
+      "正文准确区分 DeepSeek-R1-Distill-Qwen-1.5B 基座、ProRL v1 2K/16K context 与 ProRL v2 3K/8K context；训练步数没有被写成上下文上限。",
+      "PPO-Clip、REINFORCE++ baseline、Clip-Higher、Dynamic Sampling、程序化可验证奖励和 scheduled cosine length penalty 的作用分开说明，未把任何单一稳定器写成效果保证。",
+      "KL regularization 与 reference policy reset 的条件和边界清楚：每 200–500 steps 或 KL 激增/验证停滞时重置为当前策略，不清空优化器状态；reset 对曲线解释的影响也被保留。",
+      "数学、代码、Reasoning Gym 的 Pass@1/Pass@k 与分布外结果明确归因 NVIDIA 作者实验和 SOTA 口径；没有把模型方 benchmark 外推为通用推理提升。",
+      "标题、摘要和正文适合零基础读者，已减少“推到大模型”“启发是”“推到边缘”等泛化或机械表达；7 个 sections、benchmark explainer、llm/eval/data-pipeline/event relations、hero、sources/evidence、verification 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过。事实、日期、证据链和作者 benchmark 边界清楚；将标题收紧为 1.5B 推理模型范围，并把一处编辑性“启发是”和 section 中较夸张的“推到边缘”改为直接表述。正文保留 3K/8K 条件及 reference policy reset 的官方口径。",
+    "changes": [
+      "标题由“把大模型强化学习从几百步推到 3000 步以上”改为“1.5B 推理模型训练超过 3000 步”，避免扩大实验范围。",
+      "将结尾“ProRL v2 的启发是”改为“这个实验说明”，并将 section 标题“推到边缘”改为“带来探索和策略稳定性问题”，减少 AI 腔；此前“重置到当前最佳 checkpoint”已改为“重置为当前策略”。"
+    ]
+  }
+}

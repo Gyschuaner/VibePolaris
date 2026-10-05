@@ -1,0 +1,183 @@
+{
+  "slug": "andon-labs-mona-ai-run-stockholm-cafe",
+  "title": "斯德哥尔摩实验咖啡馆让 Gemini 驱动的 Mona 负责运营",
+  "summary": "5 月 11 日，Associated Press 报道斯德哥尔摩一家实验咖啡馆让 Gemini 驱动的 Mona 参与招聘、库存和部分运营，人类咖啡师仍负责制作与服务。报道记录了采购数量、记忆窗口和盈利判断等问题；这是单店试验，不是 AI 已能普遍经营咖啡馆的证明。",
+  "body": "5 月 11 日，Associated Press 报道斯德哥尔摩一家实验咖啡馆让 Gemini 驱动的 Mona 参与招聘、库存和部分运营，人类咖啡师继续负责制作和服务。\n\n这家店提供了一个少见的观察窗口：代理不再只回答问题，而要面对库存数量、采购价格、排班和顾客需求。实际运行很快暴露出记忆窗口和订单判断的问题；报道举例提到重复采购餐巾和手套。\n\n把一次补货拆开看，安全的流程可以让 Mona 读取库存和销售记录、提出采购数量，再由负责人确认后下单，收到货后更新状态。event-driven-architecture 让库存或订单事件触发流程，state 记录待采购、已批准和已完成，tools 承载具体操作；这些词解释系统怎么工作，不能替代经营者的判断。\n\nAP 的报道是单个试验的现场记录，不能说明 AI 已能普遍经营咖啡馆，也不能把某段时间的盈利写成稳定商业结果。招聘、利润和库存误差都需要更长周期的运营数据。\n\n后续观察应放在完整日志、采购审批、库存纠错和人工接管上。这样才能看出代理承担了哪一段工作，以及人类分工是否一直清楚。",
+  "publishedAt": "2026-05-11",
+  "eventDate": "2026-05-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/andon-labs-mona-ai-run-stockholm-cafe.svg",
+    "alt": "斯德哥尔摩实验咖啡馆让 Gemini 驱动的 Mona 负责运营；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/andon-labs-mona-ai-run-stockholm-cafe.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "experiment",
+      "title": "Mona 在咖啡馆里负责了什么",
+      "body": "AP 报道，Mona 由 Google Gemini 驱动，参与招聘、库存和部分运营；人类咖啡师仍制作饮品并服务顾客。事件是一个单店实验，范围先要按报道中的具体任务理解。",
+      "kind": "narrative"
+    },
+    {
+      "id": "memory-problem",
+      "title": "真实库存很快会暴露记忆问题",
+      "body": "报道提到异常采购和记忆窗口问题。代理可能根据不完整的状态重复订购餐巾或手套，说明“能调用工具”与“知道当前库存”之间还有数据同步和状态管理。",
+      "kind": "technical"
+    },
+    {
+      "id": "replenishment",
+      "title": "一次补货要经过谁的确认",
+      "body": "作为安全的补货流程，可以让 Mona 读取库存与销售记录、提出数量，负责人确认后再下单，收货后更新状态。event-driven-architecture 负责触发流程，state 保存当前阶段，tools 执行具体操作；采购批准仍应由经营者承担。",
+      "kind": "example"
+    },
+    {
+      "id": "business-boundary",
+      "title": "单店盈利不能代表商业化结果",
+      "body": "AP 的现场报道没有证明 AI 可以普遍经营咖啡馆，也没有给出足够长的收入、成本和人工投入数据。一次盈利或一次顺利采购，都不足以推出稳定的商业模式。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "后续看运营日志和人工接管",
+      "body": "继续查看采购审批、库存纠错、排班记录和更长试验周期，确认代理与人类的分工有没有在压力下改变。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "用一次补货看代理怎样进入真实经营",
+    "question": "怎样判断 AI 参与了咖啡馆运营，而不是只完成了一次演示？",
+    "steps": [
+      {
+        "label": "列清代理权限",
+        "detail": "记录 Mona 能读哪些库存和销售数据，能否直接下单，哪些动作必须由人确认。",
+        "evidence": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c"
+      },
+      {
+        "label": "跟踪状态变化",
+        "detail": "从缺货事件到采购建议、批准、收货和库存更新，保存每一步的时间和结果。",
+        "evidence": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c"
+      },
+      {
+        "label": "记录错误和修正",
+        "detail": "特别检查重复采购、记忆缺失和价格变化，确认人工如何纠正以及系统是否学到新的状态。",
+        "evidence": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c"
+      },
+      {
+        "label": "拉长观察周期",
+        "detail": "用收入、成本、人工投入和顾客服务记录判断效果，不把单次盈利写成普遍结论。",
+        "evidence": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c"
+      }
+    ]
+  },
+  "source": {
+    "name": "Associated Press",
+    "url": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c"
+  },
+  "relatedSlugs": [
+    "agent",
+    "event-driven-architecture",
+    "state",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c",
+      "claim": "Mona 由 Google Gemini 驱动并负责招聘、库存等运营",
+      "excerpt": "AP reports that Mona, powered by Google’s Gemini, oversees tasks such as hiring and inventory."
+    },
+    {
+      "url": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c",
+      "claim": "报道记录了大量餐巾和手套采购等记忆与流程问题",
+      "excerpt": "The report describes unusual orders and memory-window problems during the café experiment."
+    }
+  ],
+  "canonicalUrl": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c",
+  "sourceHash": "sha256:24b1bf1fe2a9073b9aa27806f8b67895004ea4befde36605764c8a143b5021d4",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“斯德哥尔摩实验咖啡馆让 Gemini 驱动的 Mona 负责运营”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event-driven-architecture",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“斯德哥尔摩实验咖啡馆让 Gemini 驱动的 Mona 负责运营”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "state",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“斯德哥尔摩实验咖啡馆让 Gemini 驱动的 Mona 负责运营”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“斯德哥尔摩实验咖啡馆让 Gemini 驱动的 Mona 负责运营”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c",
+      "claim": "Mona 由 Google Gemini 驱动并负责招聘、库存等运营",
+      "excerpt": "AP reports that Mona, powered by Google’s Gemini, oversees tasks such as hiring and inventory."
+    },
+    {
+      "url": "https://apnews.com/article/84a8f903fdaea94e76e80e16ec3d9e6c",
+      "claim": "报道记录了大量餐巾和手套采购等记忆与流程问题",
+      "excerpt": "The report describes unusual orders and memory-window problems during the café experiment."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文把 AP 对单店实验的现场记录与可推广结论分开，明确人类咖啡师仍负责制作和服务；库存重复采购与记忆窗口问题有具体例子，且未把一次采购或盈利判断写成普遍能力。已将补货步骤改成安全流程示例，避免把负责人确认误读为 AP 已证实的固定权限。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "为重复采购例子补充“报道举例提到”的来源边界。",
+      "将补货段落和对应 section 改为“安全的流程可以……”的示例表述，避免无来源断言 Mona 已拥有固定下单权限。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-11",
+  "fingerprint": "sha256:24b1bf1fe2a9073b9aa27806f8b67895004ea4befde36605764c8a143b5021d4"
+}

@@ -1,0 +1,218 @@
+{
+  "slug": "moondream-grounded-reasoning-20250623",
+  "title": "Moondream 更新视觉模型：先在图里定位，再回答位置关系",
+  "summary": "Moondream 6 月 23 日发布视觉模型更新，加入 grounded reasoning、改进目标检测，并通过更高效的 tokenizer 提升生成速度。公司还展示了 ScreenSpot 从 60.3 提升到 80.4 的内部结果；这些数字属于官方评测口径，正文把模型能力、实验模式和独立验证分开。",
+  "body": "6 月 23 日，视觉语言模型 Moondream 发布一次以“看清楚再回答”为中心的更新。它新增 grounded reasoning：遇到图表、计数或空间关系问题时，模型可以先定位图中的对象和位置，再组织答案，而不是只凭一眼的整体印象给出猜测。\n\n这个变化看起来像是模型多想了一会儿，实际改的是视觉问题的解题路径。数图里有几个瓶子时，系统可以把每个瓶子指出来；读一张表时，先找到相关行列，再做运算。对于零基础读者，可以把它理解为“回答前先在图片上画出证据点”，而不是直接把熟悉的词接在一起。\n\nMoondream 还改进了目标检测，针对相互靠近的物体和更细的属性做了处理。官方把训练中的强化学习、人工标注数据质量和 pointing 能力联系起来，但这些仍是开发团队的技术说明。模型在自己的样例上变得更好，不代表在所有摄像头、界面或真实环境中都同样稳定。\n\n速度方面，官方称新 tokenizer 让文本生成快了约 20%—40%，并把 ScreenSpot 结果从 60.3 提高到 80.4。读者需要同时看到两层信息：这是可以被复现的评测线索，也是公司选择的任务和设置；它不是一张对所有视觉模型的统一排行榜。\n\n值得注意的是，Moondream 仍把 reasoning 模式标为实验能力，简单任务可能继续使用普通查询以换取速度。它也明确说自己还不是独立的 computer-use agent，而是可以作为更大 Agent 的视觉工具。这种分工比把“视觉模型”直接写成“会操作电脑”更准确。\n\n这次更新的新闻价值，在于小模型视觉工具开始把“可解释的定位”当成产品能力。让模型指出它看见了什么，能帮助开发者发现数错、看错和猜测式回答；但最终是否足够可靠，还需要任务级测试、真实图像和失败样本共同回答。",
+  "publishedAt": "2025-06-23",
+  "eventDate": "2025-06-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/moondream-grounded-reasoning-20250623.svg",
+    "alt": "先定位，再回答：Moondream 把视觉推理的证据点放回图片里",
+    "sourceUrl": "/images/news/moondream-grounded-reasoning-20250623.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "grounding",
+      "title": "先在图片上找证据点",
+      "body": "Grounded reasoning 让模型先定位对象和空间关系，再生成答案。",
+      "kind": "technical"
+    },
+    {
+      "id": "detection",
+      "title": "相邻物体也要分开",
+      "body": "更新针对靠近物体、细粒度属性和目标框质量做了改进。",
+      "kind": "narrative"
+    },
+    {
+      "id": "training",
+      "title": "强化学习是开发路径",
+      "body": "官方描述用可评分任务和另一个模型评估开放式回答，但具体训练效果仍需独立复现。",
+      "kind": "comparison"
+    },
+    {
+      "id": "metrics",
+      "title": "速度和 benchmark 都有口径",
+      "body": "20%—40% 速度提升与 ScreenSpot 结果来自官方页面，要和任务设置一起阅读。",
+      "kind": "boundary"
+    },
+    {
+      "id": "not-agent",
+      "title": "视觉工具不等于电脑 Agent",
+      "body": "Moondream 可以给更大的 Agent 提供界面理解，但自己尚不是完整的行动系统。",
+      "kind": "example"
+    },
+    {
+      "id": "watch",
+      "title": "看失败样本而不是只看分数",
+      "body": "真实界面、摄像头角度、遮挡和计数错误，决定它是否能进入高风险流程。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "视觉模型怎样让回答更可检查？",
+    "question": "把“看图回答”拆成定位、推理和输出，看看分数背后少了哪一步。",
+    "steps": [
+      {
+        "label": "接收图片",
+        "detail": "模型看到图像、界面或图表，但这还不等于它理解了对象关系。",
+        "evidence": "视觉语言模型"
+      },
+      {
+        "label": "指出对象",
+        "detail": "先标出目标的位置、数量或属性，让回答有可回看的证据点。",
+        "evidence": "Grounded reasoning"
+      },
+      {
+        "label": "组织推理",
+        "detail": "针对计数、比较或图表问题，按小步骤组合视觉事实。",
+        "evidence": "Moondream 示例"
+      },
+      {
+        "label": "生成答案",
+        "detail": "把定位和推理结果转成文字或结构化输出，速度取决于任务模式。",
+        "evidence": "普通 / reasoning 模式"
+      },
+      {
+        "label": "检查限制",
+        "detail": "对比基准、真实图片和失败样本，避免把实验能力写成通用 Agent。",
+        "evidence": "官方边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Moondream",
+    "url": "https://moondream.ai/blog/moondream-2025-06-21-release"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "google-gemini-robotics-on-device-20250624",
+    "qwen-vlo-20250626"
+  ],
+  "sources": [
+    {
+      "url": "https://moondream.ai/blog/moondream-2025-06-21-release",
+      "claim": "Moondream 于 6 月 23 日发布 grounded reasoning、目标检测和 tokenizer 更新，并说明 reasoning 模式仍属实验。",
+      "excerpt": "Moondream, “Moondream Update: Grounded Reasoning, Better Detection, Faster Generation”, June 23, 2025."
+    },
+    {
+      "url": "https://moondream.ai/blog/moondream-2025-06-21-release",
+      "claim": "官方给出文本生成约 20%—40% 加速和 ScreenSpot 由 60.3 到 80.4 的结果，同时说明模型尚不是独立 computer-use agent。",
+      "excerpt": "The release notes report speed and ScreenSpot results and describe Moondream as a visual tool for larger agents."
+    }
+  ],
+  "canonicalUrl": "https://moondream.ai/blog/moondream-2025-06-21-release",
+  "sourceHash": "sha256:6eb284798e3276943f63bc493b55897cc1d19747055e2da4a0d44c93991d9a54",
+  "status": "published",
+  "discoveredAt": "2026-10-05T00:13:02Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.94,
+      "evidence": [
+        "正文解释了 llm 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了 tools 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了 context 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了 event 在本条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-gemini-robotics-on-device-20250624",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "qwen-vlo-20250626",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://moondream.ai/blog/moondream-2025-06-21-release",
+      "claim": "Moondream 于 6 月 23 日发布 grounded reasoning、目标检测和 tokenizer 更新，并说明 reasoning 模式仍属实验。",
+      "excerpt": "Moondream, “Moondream Update: Grounded Reasoning, Better Detection, Faster Generation”, June 23, 2025."
+    },
+    {
+      "url": "https://moondream.ai/blog/moondream-2025-06-21-release",
+      "claim": "官方给出文本生成约 20%—40% 加速和 ScreenSpot 由 60.3 到 80.4 的结果，同时说明模型尚不是独立 computer-use agent。",
+      "excerpt": "The release notes report speed and ScreenSpot results and describe Moondream as a visual tool for larger agents."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:13:02Z",
+    "method": "source",
+    "notes": "按 2025-06-23 事件发生日核对官方公告、法院命令和可信新闻报道；正文区分已发生事实、公司主张、媒体报道与后续待审边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:13:02Z",
+    "notes": "主助手逐篇完成事实链、事件日、来源卡片、独立段落、事件专属讲解、SVG alt 和词条联动检查，等待唯一 reader-review 子智能体复审。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T00:34:44Z",
+    "questions": [
+      "新闻主线、日期和来源归属是否清楚？是。",
+      "公司/法院/评测口径与事实边界是否准确？是。",
+      "中文、独立结构、explainer/SVG alt/词条联动是否通过？是。"
+    ],
+    "notes": "grounded reasoning 与 ScreenSpot 60.3→80.4 明确为官方评测，能力和独立验证边界清楚。 日期与事件/报道层次、更新后的 SVG title/desc 与正文均复核一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-23",
+  "promotedAt": "2026-10-05T00:29:06.110Z"
+}

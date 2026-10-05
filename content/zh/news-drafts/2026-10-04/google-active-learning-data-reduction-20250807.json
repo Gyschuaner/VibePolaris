@@ -1,0 +1,171 @@
+{
+  "slug": "google-active-learning-data-reduction-20250807",
+  "title": "Google Research 用主动学习将 LLM 微调样本从 10 万降至 500 以下",
+  "summary": "Google Research 8 月 7 日介绍一套主动学习和高保真标签方法，在不安全广告分类实验中把训练样本从 10 万减少到 500 以下，并称生产观察中最多可少用几个数量级的数据。发布页标题里的“10,000x”是其概括，正文案例集中在特定分类任务和模型，不能直接外推成所有 LLM 微调都只需几百条样本。",
+  "body": "8 月 7 日，Google Research 介绍了一套用主动学习减少训练数据的方法。它的出发点很实际：给一个分类任务准备十万条样本，并不代表这十万条都同样有用；如果模型能先找出最值得标注和复查的样本，团队就可以把人工精力放到更能改变决策边界的地方。\n\nGoogle Research 在不安全广告分类的实验中报告，训练样本从 10 万条降到 500 条以下，并在相应模型与任务设置中保持或改善与专家的对齐。主动学习的核心不是随便删数据，而是反复挑选信息量更高的例子，补充高质量标签，再看模型是否仍然能分清安全与不安全的边界。样本少了，标签错一个的影响反而可能更大。\n\n发布页标题写的是“减少 10,000 倍训练数据”，正文的实验更接近从 10 万降到不足 500，约是三个数量级；Google 还提到在生产观察中看到最多四个数量级的减少。这个差异需要保留，因为标题是传播性的概括，实验数字、生产观察和具体任务并不在同一个条件下。\n\n这套方法的价值不在于宣布今后所有 LLM 微调都只需要几百条样本。Google 的案例围绕广告安全分类、内部模型和特定标签体系展开，换成医疗、客服或代码任务后，重要样本怎么定义、错误代价有多大、标签由谁确认，都会变化。小数据集如果没有覆盖边界情况，模型可能只是更快地学会了偏差。\n\n对数据团队来说，值得借鉴的是一条工作顺序：先定义要避免的错误，再让模型帮助挑样本，随后由人检查高风险例子，最后用一批没有参与筛选的样本做验证。减少标注量是结果，不是起点；先把“哪些样本真正有用”说清楚，主动学习才有机会降低成本。",
+  "publishedAt": "2025-08-07",
+  "eventDate": "2025-08-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-active-learning-data-reduction-20250807.svg",
+    "alt": "主动学习从大样本池中挑出更有信息量的训练样本，再由人复核高风险边界",
+    "sourceUrl": "/images/news/google-active-learning-data-reduction-20250807.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "sample-selection",
+      "title": "主动学习先找更值得标注的样本",
+      "body": "方法不是把数据随机砍掉，而是反复挑选能改变分类边界的信息量更高的例子，再安排人工标注和复查。样本变少以后，单条标签的错误代价也会变大。",
+      "kind": "narrative"
+    },
+    {
+      "id": "high-fidelity-labels",
+      "title": "高保真标签决定小数据集能不能工作",
+      "body": "在不安全广告分类里，模型要学的是安全与不安全的边界。标签体系、复核人和边界样本的质量，比单纯统计样本数量更能决定结果是否可靠。",
+      "kind": "technical"
+    },
+    {
+      "id": "ten-thousand-boundary",
+      "title": "10,000x 是标题概括，实验条件要单独读",
+      "body": "发布页标题写 10,000x，正文实验是从 10 万条降到 500 条以下，生产观察又是最多四个数量级。它们对应不同场景，不能合并成所有任务都成立的比例。",
+      "kind": "comparison"
+    },
+    {
+      "id": "task-boundary",
+      "title": "广告安全分类的结果不能直接迁移到所有 LLM",
+      "body": "案例围绕特定模型、标签和分类任务展开。换成医疗、客服或代码数据后，信息量、错误代价和边界样本都要重新定义，小数据集也更容易漏掉少见情况。",
+      "kind": "boundary"
+    },
+    {
+      "id": "validation-loop",
+      "title": "先定义错误，再谈减少多少数据",
+      "body": "数据团队可以先列出必须避免的错误，让模型辅助挑样本，再由人检查高风险例子，最后用未参与筛选的样本做验证。减少标注量是流程运行后的结果。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "synthetic-data",
+    "title": "主动学习怎样把十万条样本缩到几百条？",
+    "question": "模型挑样本、人工贴标签和独立验证各自负责什么？",
+    "steps": [
+      {
+        "label": "定义错误边界",
+        "detail": "先说明哪些误报和漏报最危险，确定标签规则和必须覆盖的边界情况。",
+        "evidence": "Google Research high-fidelity labels framing"
+      },
+      {
+        "label": "从样本池挑例子",
+        "detail": "主动学习根据当前模型的不确定性或信息量挑选下一批样本，而不是平均抽取所有数据。",
+        "evidence": "Google Research active-learning approach"
+      },
+      {
+        "label": "人工复核高保真标签",
+        "detail": "人检查被选中的边界样本和标签一致性，再把结果用于下一轮训练；样本越少，复核质量越关键。",
+        "evidence": "High-fidelity labeling boundary"
+      },
+      {
+        "label": "用独立样本验收",
+        "detail": "最后用未参与筛选的样本测试漏报、误报和少见情况，确认数据减少没有换来看不见的盲区。",
+        "evidence": "Application-specific holdout evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Research",
+    "url": "https://research.google/blog/achieving-10000x-training-data-reduction-with-high-fidelity-labels/"
+  },
+  "relatedSlugs": [
+    "data-pipeline",
+    "event",
+    "benchmark"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://research.google/blog/achieving-10000x-training-data-reduction-with-high-fidelity-labels/",
+      "claim": "Google Research 8 月 7 日介绍主动学习与高保真标签方法，在不安全广告分类实验中把训练样本从 10 万减少到 500 以下。",
+      "excerpt": "Google Research, August 7, 2025: an active-learning approach reduced a 100,000-example training set to fewer than 500 in experiments."
+    },
+    {
+      "url": "https://research.google/blog/achieving-10000x-training-data-reduction-with-high-fidelity-labels/",
+      "claim": "发布页标题写 10,000x，正文还区分实验规模与生产观察的数量级，不能直接外推到所有 LLM 微调。",
+      "excerpt": "The post distinguishes its experiment from production observations and presents the 10,000x figure as a headline summary."
+    }
+  ],
+  "canonicalUrl": "https://research.google/blog/achieving-10000x-training-data-reduction-with-high-fidelity-labels/",
+  "sourceHash": "sha256:a527f7032c81803ed54daa36f41f151d5f74ce12d11164219b77d570b8bfa73c",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.96,
+      "evidence": [
+        "正文围绕样本选择、标签质量、主动学习和独立验证展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.94,
+      "evidence": [
+        "正文记录 Google Research 8 月 7 日公开工程方法。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.83,
+      "evidence": [
+        "正文区分实验、生产观察和标题数字，并要求独立样本验证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://research.google/blog/achieving-10000x-training-data-reduction-with-high-fidelity-labels/",
+      "claim": "Google Research official engineering post dated August 7, 2025.",
+      "excerpt": "Achieving 10,000x training data reduction with high-fidelity labels"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google Research 8 月 7 日技术博客的主动学习、高保真标签、10 万到 500 以下实验、生产观察数量级和不安全广告分类背景；正文明确发布页标题的“10,000x”与实验/生产观察是不同口径，限定为特定模型和任务设置，避免写成所有 LLM 的普适结论。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把文章写成数据筛选和标注流程的具体变化，保留任务边界和独立验证要求，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-07-active-learning",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-07，与 Google Research 官方技术博客日期一致。",
+      "正文和 sections 区分发布页标题的“10,000x”、不安全广告分类实验从 100,000 到少于 500 条，以及生产观察中最多四个数量级的减少；没有把三种口径合并成一个普遍比例。",
+      "实验结果被限定在 Google Research 的特定模型、任务和高保真专家标签设置，并保留标签质量、未参与筛选的独立样本与边界错误的验证要求。",
+      "正文、sections、synthetic-data explainer、source/evidence、verification、relatedSlugs、空 relatedArticleSlugs 和主动学习 SVG 与事实边界一致；没有写成所有 LLM 微调都只需几百条样本。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能理解主动学习如何挑选信息量更高的样本，也能区分标题概括、实验数字和生产观察。",
+    "changes": [
+      "将摘要改为“发布页标题里的 10,000x”，避免把来源标题误读为文章标题。",
+      "将实验结果改写为在相应模型与任务设置中保持或改善与专家的对齐，收紧普遍效果表述。"
+    ]
+  }
+}

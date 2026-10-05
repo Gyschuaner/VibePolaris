@@ -1,0 +1,227 @@
+{
+  "slug": "runway-media-router-20260723",
+  "title": "Runway 发布 Media Router：让视频、图像和音频模型按策略自动选择",
+  "summary": "7 月 23 日，Runway 将 Media Router 加入 Runway Dev，按请求模态和开发者设定的成本、质量、延迟偏好选择生成模型。API 支持 allow/deny 列表、按模态预算上限和 dryRun 预览；它解决的是模型选择与配置问题，不是跨模型质量的独立保证。",
+  "body": "7 月 23 日，Runway 发布 Media Router，把“该选哪一个生成模型”从开发者手工配置变成一个可保存的路由策略。它内置于 Runway Dev，可以根据请求是视频、图像还是音频，先筛掉不适用的模型，再按照用户设置的成本、质量或延迟偏好选择一个模型。Runway 把它称为生成式媒体领域的模型路由器，新闻重点是调用层的变化，而不是又训练了一个新模型。\n\n过去的做法是，应用在代码里写死模型名称：想要更高质量就换一个模型，想省钱或降低延迟再换回来。模型价格、能力和版本一变，开发者就需要更新规则。Media Router 把这段选择逻辑保存成配置，让应用调用“路由器”而不是直接绑定某个模型。对于同时处理视频、图像和音频的产品，这能减少入口分叉；但它不会替开发者定义什么叫“更好”，偏好仍需要通过业务指标来设定。\n\nRunway 的 API 文档把可控项写得更具体。开发者可以配置模型 allow/deny 列表、视频/图像/音频三个模态的 credit ceiling，并使用 dryRun 预览一次请求会选择哪个模型而不真正生成内容。这样做的意义是把成本上限、可用模型和预期路径写进系统配置，便于上线前检查；dryRun 只是路由预览，不是生成质量的保证，也不会替开发者验证版权、人物肖像或内容安全。\n\n路由器的“自动”需要谨慎理解。它可以按能力标签和策略选择模型，但同一个提示在不同模型、不同版本和不同随机种子下仍可能产生不同结果。视频质量、音频同步、风格一致性和失败重试需要各自的评测；如果应用只优化单位 credits，可能牺牲画面质量，如果只追求质量，延迟和预算又会失控。Runway 的发布稿是产品设计说明，不是跨模型的独立性能榜单。\n\n这条新闻也说明生成式媒体的工程瓶颈正在从“有没有模型”转向“怎么管理一组模型”。路由配置、预算上限、版本更新、回退策略和生成历史会成为数据管线的一部分。应用要记录每次请求的输入模态、选中的模型、花费、延迟和用户评价，才能知道自动路由是否真的比固定模型更好。\n\n截至发布日，Media Router 更像一层开发者基础设施，而不是面向所有消费者的统一入口。后续要看 Runway 是否公开路由决策的可解释字段、模型切换时的质量稳定性，以及其他媒体模型能否通过开放接口接入。路由器减少了手工维护，但它把选择责任从代码里的 if/else 转移到了配置、评测和审计上。",
+  "publishedAt": "2026-07-23",
+  "eventDate": "2026-07-23",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/runway-media-router-20260723.svg",
+    "alt": "Runway Media Router 按模态、成本、质量和延迟策略选择媒体模型；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/runway-media-router-20260723.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "Runway 发布的是选择层",
+      "body": "Media Router 负责在视频、图像和音频请求之间选择合适模型，不是一个新的基础模型。应用可以调用路由配置而不是写死单一模型名。",
+      "kind": "narrative"
+    },
+    {
+      "id": "policy",
+      "title": "成本、质量和延迟成为可配置偏好",
+      "body": "开发者为每个路由设置优化方向，再由系统在符合模态和能力条件的模型中做选择；“最好”取决于业务目标。",
+      "kind": "comparison"
+    },
+    {
+      "id": "controls",
+      "title": "allow/deny、credit ceiling 和 dryRun 是实际控制点",
+      "body": "允许/拒绝列表控制候选模型，credit ceiling 限制预算，dryRun 预览选择结果；这些控制不等于质量和内容安全验证。",
+      "kind": "technical"
+    },
+    {
+      "id": "metrics",
+      "title": "自动路由仍然需要自己的评测",
+      "body": "生成质量、延迟、失败率、版本变化和用户反馈要按模态分别记录，不能用一个成本数字判断所有输出。",
+      "kind": "boundary"
+    },
+    {
+      "id": "pipeline",
+      "title": "模型选择被放进生成数据管线",
+      "body": "请求、选中模型、费用、延迟和结果评价需要形成可追踪记录，应用才知道路由是否带来实际收益。",
+      "kind": "technical"
+    },
+    {
+      "id": "followup",
+      "title": "下一步看决策透明度和跨模型稳定性",
+      "body": "路由选择是否可解释、模型切换是否保持风格、外部模型如何接入，是这层基础设施能否长期使用的关键。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个媒体请求怎样被路由到模型？",
+    "question": "把模态筛选、策略选择、预算控制和结果记录分开，才能判断自动路由是否可靠。",
+    "steps": [
+      {
+        "label": "识别模态",
+        "detail": "先判断请求需要视频、图像还是音频，并排除不支持该模态的候选模型。",
+        "evidence": "Runway Media Router announcement"
+      },
+      {
+        "label": "应用偏好",
+        "detail": "按成本、质量或延迟等目标，以及 allow/deny 列表筛选可用模型。",
+        "evidence": "Runway API changelog"
+      },
+      {
+        "label": "预览预算",
+        "detail": "用 dryRun 查看路由结果，用 credit ceiling 限制各模态的花费。",
+        "evidence": "Runway Dev controls"
+      },
+      {
+        "label": "记录结果",
+        "detail": "把模型版本、延迟、费用和用户评价写回数据管线，持续比较选择效果。",
+        "evidence": "operational follow-up"
+      }
+    ]
+  },
+  "source": {
+    "name": "Runway",
+    "url": "https://runway.com/news/company-news/introducing-runway-media-router"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "data-pipeline",
+    "benchmark",
+    "event",
+    "agent"
+  ],
+  "relatedArticleSlugs": [
+    "anthropic-claude-voice-opus-sonnet-20260723",
+    "amd-helios-rack-scale-ai-20260723"
+  ],
+  "sources": [
+    {
+      "url": "https://runway.com/news/company-news/introducing-runway-media-router",
+      "claim": "Runway 7 月 23 日发布 Media Router，将模型路由加入 Runway Dev，按模态、模型能力和用户设定的成本、质量、延迟偏好自动选择视频、图像或音频模型。",
+      "excerpt": "Media Router automatically selects the best video, image or audio model for every request based on capabilities and cost, quality and latency preferences."
+    },
+    {
+      "url": "https://docs.dev.runwayml.com/api-details/api_changelog/",
+      "claim": "Runway Dev API 变更记录说明 7 月 23 日 Model Router 可用，支持配置允许/拒绝列表、按模态的 credit ceiling 和 dryRun 预览。",
+      "excerpt": "July 23rd, 2026 — Model Router is now available on Runway Dev; configure allow/deny lists, credit caps and dryRun."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/23/runway-bets-on-ai-model-routing-as-generative-media-gets-crowded/",
+      "claim": "TechCrunch 对 Runway 发布路由器做了独立报道，把它放在生成式媒体模型数量快速增加的竞争背景下。",
+      "excerpt": "Runway launches AI model router as generative media gets crowded."
+    }
+  ],
+  "canonicalUrl": "https://runway.com/news/company-news/introducing-runway-media-router",
+  "sourceHash": "sha256:9b7f3c4bd9a70361440525dade9760e34a598b8bec1a38011c178861d8481d38",
+  "status": "published",
+  "discoveredAt": "2026-10-04T21:35:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 llm 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 tools 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 data-pipeline 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 benchmark 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 event 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 agent 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://runway.com/news/company-news/introducing-runway-media-router",
+      "claim": "Runway 7 月 23 日发布 Media Router，将模型路由加入 Runway Dev，按模态、模型能力和用户设定的成本、质量、延迟偏好自动选择视频、图像或音频模型。",
+      "excerpt": "Media Router automatically selects the best video, image or audio model for every request based on capabilities and cost, quality and latency preferences."
+    },
+    {
+      "url": "https://docs.dev.runwayml.com/api-details/api_changelog/",
+      "claim": "Runway Dev API 变更记录说明 7 月 23 日 Model Router 可用，支持配置允许/拒绝列表、按模态的 credit ceiling 和 dryRun 预览。",
+      "excerpt": "July 23rd, 2026 — Model Router is now available on Runway Dev; configure allow/deny lists, credit caps and dryRun."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/23/runway-bets-on-ai-model-routing-as-generative-media-gets-crowded/",
+      "claim": "TechCrunch 对 Runway 发布路由器做了独立报道，把它放在生成式媒体模型数量快速增加的竞争背景下。",
+      "excerpt": "Runway launches AI model router as generative media gets crowded."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T21:35:00Z",
+    "method": "source",
+    "notes": "按新闻公开日、底层事件日、产品可用范围与公司口径分层核对；文章把数据处理、产品能力、媒体报道和仍待验证的效果分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T05:30:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 逐篇手写并完成 reader-review；产品范围、数据权限、性能数字与商业承诺保留来源归属。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T05:30:00Z",
+    "questions": [
+      "新闻主线优先，中文面向零基础读者，正文按事件组织而非论文综述或批量模板。",
+      "eventDate/publishedAt 均为 2026-07-23，rollout、产品更新和底层事件日期边界清楚。",
+      "官方公告、公司自述、媒体口径与未验证推断分层：健康数据权限和医疗边界、语音工具授权、模型路由配置均有明确限制；AMD/Etched 的性能、部署、订单、融资与估值数字均标注厂商或交易口径。",
+      "来源卡片、原始链接、sections、explainer、SVG alt 和词条联动与正文一致；未发现明显模板化或 AI 腔。"
+    ],
+    "notes": "读者审阅通过：新闻事实、数字口径和安全边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-23",
+  "fingerprint": "sha256:c4d427c33a1c407caa595f2b284559a0e29ef9fa8e15767755dfaa51859db921",
+  "promotedAt": "2026-10-04T02:18:29.764Z"
+}

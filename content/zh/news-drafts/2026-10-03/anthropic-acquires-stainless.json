@@ -1,0 +1,180 @@
+{
+  "slug": "anthropic-acquires-stainless",
+  "title": "Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链",
+  "summary": "5 月 18 日，Anthropic 宣布收购 SDK 与 MCP 服务器工具公司 Stainless，并称 Stainless 已支持官方 SDK 生成和 MCP 工具链。交易把模型公司的工具连接能力向开发者基础设施延伸；公告没有披露交易条款，也没有证明所有连接器都安全、兼容或可回滚。",
+  "body": "5 月 18 日，Anthropic 宣布收购 Stainless。Stainless 的工作包括 SDK 生成和 MCP 服务器工具，Anthropic 把这笔交易放在 Claude 连接数据源和外部工具的开发者基础设施上。\n\n对开发者来说，SDK 和协议的价值在“最后一公里”：模型知道该调用什么还不够，接口还要处理认证、参数、错误、速率限制和版本。工具连接更方便，也要求团队把能读什么、能写什么和谁能批准写入说清楚。\n\n一个内部工具可以先声明可访问的数据和方法，再生成 SDK，在沙箱里测试。短期凭据只允许调用只读接口，发送、删除或写入动作要人工确认，并保留版本和撤销路径。mcp 负责连接，tools 承载动作，api 规定提交与返回，agent 负责多步推进。\n\nAnthropic 的公告确认了收购和产品方向，没有披露交易条款、客户接入或统一安全结果。协议兼容不等于权限正确，连接器可用也不等于已经适合生产。后续应查看 SDK、MCP 服务器范围、权限模型和安全修复。",
+  "publishedAt": "2026-05-18",
+  "eventDate": "2026-05-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-acquires-stainless.svg",
+    "alt": "Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/anthropic-acquires-stainless.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "deal",
+      "title": "Anthropic 收购的，是一段开发者工具链",
+      "body": "公告称 Anthropic 收购 Stainless，并指出它已经支持官方 SDK 生成和 MCP 服务器工具。交易的公开方向是让 Claude 更容易连接数据源和外部工具，具体交易条款没有披露。",
+      "kind": "narrative"
+    },
+    {
+      "id": "last-mile",
+      "title": "模型会调用，不等于工具能安全执行",
+      "body": "SDK 和协议还要处理认证、参数、错误、速率限制和版本。开发者需要明确工具能读取和写入什么、哪些动作需要审批、如何撤销。连接层是模型进入业务系统的最后一段。",
+      "kind": "technical"
+    },
+    {
+      "id": "sdk-test",
+      "title": "一个内部工具应先在沙箱里试",
+      "body": "先声明数据和方法，生成 SDK，在 execution-sandbox 中测试；短期凭据只调用只读接口，发送、删除和写入动作再请求人工确认。mcp、tools、api 和 agent 分别对应连接、动作、接口和任务编排。",
+      "kind": "example"
+    },
+    {
+      "id": "limits",
+      "title": "公告没有证明客户已经完成接入",
+      "body": "收购公告没有披露客户部署、交易条款或统一的安全与兼容性结果。协议兼容不等于权限正确，连接器可用也不等于适合生产。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next",
+      "title": "后续看 SDK 和安全文档怎样变化",
+      "body": "继续观察 SDK 版本、MCP 服务器范围、权限模型、错误处理和安全修复，才能判断收购是否改变开发者的实际工作。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "从 SDK 生成追到一次安全工具调用",
+    "question": "怎样判断工具链的兼容性已经达到可以上线的程度？",
+    "steps": [
+      {
+        "label": "声明工具边界",
+        "detail": "列出可读数据、可写字段、参数格式、认证方式和需要人工批准的动作。",
+        "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+      },
+      {
+        "label": "生成并隔离测试",
+        "detail": "使用 Stainless 生成的 SDK，在沙箱中用短期凭据调用只读接口，保存版本和输入输出。",
+        "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+      },
+      {
+        "label": "测试失败处理",
+        "detail": "模拟超时、权限拒绝和版本不兼容，确认工具不会把错误写入生产系统。",
+        "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+      },
+      {
+        "label": "检查撤销路径",
+        "detail": "撤销凭据或服务器权限，观察 agent 是否停止并留下审计记录，再决定扩大范围。",
+        "evidence": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+  },
+  "relatedSlugs": [
+    "mcp",
+    "tools",
+    "api",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+      "claim": "Anthropic 宣布收购 Stainless",
+      "excerpt": "Anthropic announces its acquisition of Stainless."
+    },
+    {
+      "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+      "claim": "Stainless 为官方 SDK 生成与 MCP 工具链提供支持",
+      "excerpt": "The post says Stainless has supported Anthropic’s official SDK generation and MCP server tooling."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+  "sourceHash": "sha256:9a04f5c87ede09928a444ce70e9e636f32aca37ef4e00c995121d1584a5d2366",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 收购 Stainless，强化 SDK 与 MCP 工具链”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+      "claim": "Anthropic 宣布收购 Stainless",
+      "excerpt": "Anthropic announces its acquisition of Stainless."
+    },
+    {
+      "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+      "claim": "Stainless 为官方 SDK 生成与 MCP 工具链提供支持",
+      "excerpt": "The post says Stainless has supported Anthropic’s official SDK generation and MCP server tooling."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文把 Anthropic 已宣布收购 Stainless、公开提到的 SDK 生成/MCP 工具链方向，与未披露的交易条款、客户部署和统一安全结果分开。工具权限场景以内部工具安全测试示例呈现，明确只读凭据、人工审批、沙箱、版本和撤销路径，不把兼容性写成安全保证。中文对零基础读者清楚，eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-18",
+  "fingerprint": "sha256:9a04f5c87ede09928a444ce70e9e636f32aca37ef4e00c995121d1584a5d2366"
+}

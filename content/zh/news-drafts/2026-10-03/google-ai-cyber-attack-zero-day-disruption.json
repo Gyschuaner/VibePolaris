@@ -1,0 +1,172 @@
+{
+  "slug": "google-ai-cyber-attack-zero-day-disruption",
+  "title": "Google 称犯罪团伙首次用 AI 发现并尝试规模化利用未知漏洞",
+  "summary": "5 月 11 日，Associated Press 报道 Google 称，一犯罪团伙曾用 AI 发现并尝试规模化利用一个此前未知的数字漏洞。报道描述的是 Google 威胁情报团队打断的一次行动；攻击者身份、“首次”和漏洞影响范围仍需原始技术材料支持。",
+  "body": "5 月 11 日，Associated Press 报道 Google 称，一个犯罪团伙使用 AI 发现并尝试规模化利用此前未知的数字漏洞，Google 的威胁情报团队随后打断了这次行动。\n\n报道关注的是 AI 是否让漏洞搜寻、试探和复制攻击步骤变快。判断影响时，应把发现、利用尝试、阻断和归因分开。\n\n一次漏洞事件的防守顺序通常包括确认受影响版本、在隔离环境复现、阻断恶意请求、发布修复并观察恢复。模型找到线索，不等于攻击已经成功；Google 威胁情报团队称发现异常，也不自动说明所有下游系统都受到影响。\n\n目前的来源是 AP 对 Google 威胁情报的报道。报道不能单独证明攻击者身份，也不能把“首次”解释成整个行业此前从未发生过类似情况。execution-sandbox 可用于隔离复现，authorization 规定谁能执行阻断或上线修复，data-validation 用来检查漏洞证据、版本和修复结果。\n\n后续应查 Google 的技术报告、受影响软件的厂商通告、修复提交和独立归因，记录发现时间、利用时间与阻断时间。",
+  "publishedAt": "2026-05-11",
+  "eventDate": "2026-05-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-ai-cyber-attack-zero-day-disruption.svg",
+    "alt": "Google 称犯罪团伙首次用 AI 发现并尝试规模化利用未知漏洞；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/google-ai-cyber-attack-zero-day-disruption.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "reported-incident",
+      "title": "AP 报道了哪一次攻击尝试",
+      "body": "AP 转述 Google 称，一个犯罪团伙用 AI 发现并尝试规模化利用此前未知的漏洞，Google 方面打断了行动。报道确认的是威胁情报团队对这次事件的描述，攻击者和漏洞的完整技术细节仍未在这篇报道中展开。",
+      "kind": "narrative"
+    },
+    {
+      "id": "attack-chain",
+      "title": "发现漏洞、利用漏洞和成功入侵不是同一步",
+      "body": "需要分别问：模型是否找到可疑代码，攻击者是否尝试利用，目标系统是否真的被入侵，防守方何时阻断。把这些状态合并，会夸大事件影响，也会让“AI 发现”听起来像“AI 已攻破系统”。",
+      "kind": "technical"
+    },
+    {
+      "id": "defense-flow",
+      "title": "防守方要留下哪几种记录",
+      "body": "确认版本后，在 execution-sandbox 中复现，限制谁能执行阻断和上线修复，再用 data-validation 核对证据与修复结果。每个动作都应有时间和责任人；authorization 解决的是谁可以批准，而不是模型是否聪明。",
+      "kind": "example"
+    },
+    {
+      "id": "attribution",
+      "title": "“首次”和攻击者身份还不能直接下结论",
+      "body": "这篇消息来自 AP 对 Google 威胁情报的报道，不能单独证明攻击者身份，也不能证明整个行业此前没有类似事件。漏洞影响范围、利用是否成功和修复是否完整，都要等技术报告与厂商记录。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "下一步回到技术报告和修复记录",
+      "body": "继续查看受影响软件、补丁提交、厂商通告和独立归因，并把发现、利用、阻断和恢复的时间线分别记下。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "把一次 AI 漏洞事件拆成四个状态",
+    "question": "怎样避免把漏洞发现、攻击尝试和系统入侵混成一个结论？",
+    "steps": [
+      {
+        "label": "确认来源说法",
+        "detail": "记录 AP 转述的 Google 说法，暂不把攻击者身份和“首次”扩展到报道之外。",
+        "evidence": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4"
+      },
+      {
+        "label": "分别标记事件状态",
+        "detail": "为发现、利用尝试、实际入侵、阻断和恢复建立不同记录，保持时间顺序。",
+        "evidence": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4"
+      },
+      {
+        "label": "检查防守证据",
+        "detail": "在隔离环境复现漏洞，核对受影响版本、阻断规则和补丁提交。",
+        "evidence": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4"
+      },
+      {
+        "label": "等待独立归因",
+        "detail": "把 Google 的威胁情报、厂商通告和第三方分析分开，直到证据足够再判断规模和责任。",
+        "evidence": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4"
+      }
+    ]
+  },
+  "source": {
+    "name": "Associated Press",
+    "url": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4"
+  },
+  "relatedSlugs": [
+    "execution-sandbox",
+    "authorization",
+    "data-validation"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4",
+      "claim": "AP 报道 Google 阻断了利用未知漏洞的 AI 攻击尝试",
+      "excerpt": "AP reports Google disrupted a criminal group’s attempt to use AI to exploit a previously unknown vulnerability."
+    },
+    {
+      "url": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4",
+      "claim": "Google 将其描述为 AI 驱动漏洞发现与利用阶段",
+      "excerpt": "The report quotes Google describing an AI-driven vulnerability and exploitation phase."
+    }
+  ],
+  "canonicalUrl": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4",
+  "sourceHash": "sha256:2d216b41f94e863e970a69866f61149fa9d2b474adbc9ce2d4c88f281650e662",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google 称犯罪团伙首次用 AI 发现并尝试规模化利用未知漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google 称犯罪团伙首次用 AI 发现并尝试规模化利用未知漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google 称犯罪团伙首次用 AI 发现并尝试规模化利用未知漏洞”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4",
+      "claim": "AP 报道 Google 阻断了利用未知漏洞的 AI 攻击尝试",
+      "excerpt": "AP reports Google disrupted a criminal group’s attempt to use AI to exploit a previously unknown vulnerability."
+    },
+    {
+      "url": "https://apnews.com/article/926aea7f7dc5e0e61adce3273c55c6d4",
+      "claim": "Google 将其描述为 AI 驱动漏洞发现与利用阶段",
+      "excerpt": "The report quotes Google describing an AI-driven vulnerability and exploitation phase."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文明确区分 AP 对 Google 威胁情报的转述、漏洞发现、利用尝试、阻断与实际入侵，未把“首次”扩展为行业绝对结论，也没有补写攻击步骤或未经来源支持的攻击者和影响范围。已按零基础读者重写一处泛化铺垫并收紧“Google 发现异常”的归因。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs 与 JSON 结构核对无误。",
+    "changes": [
+      "将“Google 发现异常”改为“Google 威胁情报团队称发现异常”，明确事实来自 AP 对 Google 的转述。",
+      "删除关于模型一般用途的泛化铺垫，改为直接说明漏洞搜寻、试探、复制攻击步骤与事件状态的区别。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-11",
+  "fingerprint": "sha256:2d216b41f94e863e970a69866f61149fa9d2b474adbc9ce2d4c88f281650e662"
+}

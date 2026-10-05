@@ -1,0 +1,199 @@
+{
+  "slug": "scam2prompt-malicious-endpoints-20250902",
+  "title": "Scam2Prompt：把恶意诈骗端点变成可规模化的 LLM 安全审计",
+  "summary": "Scam2Prompt 论文于 9 月 2 日提交，提出一种自动化审计框架：从诈骗网站提取意图，再生成开发者风格的测试请求，检查生产 LLM 是否会生成恶意代码或诈骗链接。论文在 4 个模型上报告 4.24% 的恶意 URL 生成率，并构建包含 1,377 条提示的 Innoc2Scam-bench；对 2025 年发布的另外 7 个模型，报告的恶意代码生成率为 12.9%—47.3%。本文不复述攻击构造，只讨论安全评测、工具隔离和授权边界。",
+  "body": "很多团队会把“模型没有主动访问诈骗网站”当成安全前提，但模型可能在生成代码、脚本或配置时把恶意端点带进开发流程。它不需要直接替用户付款，单是让一个看似正常的示例包含可访问的钓鱼链接，就可能把风险交给复制代码、执行测试或部署服务的人。Scam2Prompt 关注的就是这条从网页内容到模型输出的供应链。\n\n论文提出的框架会先识别诈骗站点背后的意图，再把意图转成开发者风格的审计请求，观察模型会不会生成恶意 URL 或相关代码。这里的重点是批量测量模型是否会复现风险，而不是教模型怎样实施诈骗。本文不列出提示模板、站点特征或恶意代码，避免把审计材料变成可直接滥用的操作手册。\n\n作者在 4 个生产模型上报告，开发者风格的审计请求触发恶意 URL 生成的比例为 4.24%。为了测试风险是否能跨模型持续，研究还构建了 1,377 条 Innoc2Scam-bench 提示，并在 2025 年发布的另外 7 个生产模型上报告 12.9%—47.3% 的恶意代码生成率。数字说明防线可能存在系统性缺口，但它们依赖研究者的样本、判定标准和隔离环境，不能直接当作某个产品的线上发生率。\n\n更值得警惕的是，摘要称现有 guardrail 和基于 RAG 的 Agent 也没有完全阻止这种行为。RAG 可以带来更多资料，却不会自动把资料变成可信来源；如果检索结果含有恶意端点，模型可能把“网页里出现过”误读为“应该照着写”。安全边界必须延伸到来源筛查、URL 检测和工具执行层，而不是只在最终回答后做一次关键词扫描。\n\n开发环境应把模型生成的代码放进无外网或严格出站白名单的沙盒，禁止示例代码自动访问未知域名；URL 进入工具前要做规范化、信誉和域名检查，并把用户授权与模型建议分开。需要写入依赖、发送请求或修改部署配置时，系统应显示目标、权限和可撤回路径，保留原始输出与实际执行结果。\n\n做这类评测也要控制风险。研究样本应使用停用、仿真或内部隔离的端点，不把真实诈骗站点暴露给模型或测试人员；评分同时记录恶意输出、误报、拦截位置和恢复时间。只有在安全环境里验证“模型拒绝了什么、工具阻止了什么、人工能否及时接管”，结果才对生产流程有帮助。\n\nScam2Prompt 的贡献不是证明某个模型“天生有害”，而是给出一条可重复的审计思路：把外部恶意内容转成受控测试，测它能否穿过模型、检索、工具和部署的多层边界。面对会写代码的 LLM，最小权限、出站隔离、来源记录和持续红队评测应当和模型能力一起交付。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/scam2prompt-malicious-endpoints-20250902.svg",
+    "alt": "Scam2Prompt 在隔离环境中审计模型是否会生成恶意端点，并把风险拦在工具与部署边界外",
+    "sourceUrl": "/images/news/scam2prompt-malicious-endpoints-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "endpoint-supply-chain",
+      "title": "一个链接也能进入代码供应链",
+      "body": "模型生成的示例、脚本或配置若带入恶意端点，复制、测试和部署的人就可能替模型承担后果。",
+      "kind": "narrative"
+    },
+    {
+      "id": "auditing-framework",
+      "title": "Scam2Prompt 把站点意图转成受控测试",
+      "body": "框架自动提取诈骗意图并生成开发者风格审计请求，检查模型是否复现风险；本文不展示提示模板或恶意代码。",
+      "kind": "technical"
+    },
+    {
+      "id": "cross-model-rates",
+      "title": "4 个模型触发率 4.24%",
+      "body": "作者还构建 1,377 条 Innoc2Scam-bench 提示，在另外 7 个 2025 年模型上报告 12.9%—47.3% 的恶意代码生成率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "rag-not-firewall",
+      "title": "RAG 增加资料，不会自动增加可信度",
+      "body": "检索结果含有恶意端点时，模型可能把网页出现过误读成可以照写；防线必须延伸到来源和工具执行。",
+      "kind": "boundary"
+    },
+    {
+      "id": "sandbox-egress",
+      "title": "代码先进入无外网或白名单沙盒",
+      "body": "禁止示例自动访问未知域名，URL 进入工具前做规范化、信誉和域名检查，写入与外发动作单独授权。",
+      "kind": "technical"
+    },
+    {
+      "id": "safe-eval",
+      "title": "安全评测要测拦截位置和恢复时间",
+      "body": "使用停用、仿真或内部隔离端点，同时记录恶意输出、误报、工具阻断和人工接管，避免把真实诈骗扩散到测试环境。",
+      "kind": "example"
+    },
+    {
+      "id": "layered-defense",
+      "title": "模型、检索、工具和部署都要有边界",
+      "body": "Scam2Prompt 提供可重复的审计思路；最小权限、出站隔离、来源记录和持续评测应与模型能力一起交付。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "怎样安全审计 LLM 会不会生成恶意端点？",
+    "question": "把风险意图转成隔离测试，观察模型到工具再到部署的每一层是否真正拦截。",
+    "steps": [
+      {
+        "label": "准备隔离样本",
+        "detail": "用停用、仿真或内部端点表达风险意图，不把真实诈骗站点暴露给模型、工具或测试人员。",
+        "evidence": "Innoc2Scam-bench"
+      },
+      {
+        "label": "生成开发者风格测试",
+        "detail": "自动化框架把样本意图转成受控请求，只记录模型是否产生危险输出，不保存可滥用的构造细节。",
+        "evidence": "synthesizes developer-style prompts"
+      },
+      {
+        "label": "检查输出与来源",
+        "detail": "识别恶意 URL、可疑依赖和来源不明的代码，把模型输出与检索来源、用户授权分开。",
+        "evidence": "malicious URL generation"
+      },
+      {
+        "label": "在工具边界阻断",
+        "detail": "对代码执行、网络访问、写入配置和部署动作设置沙盒、出站白名单和最小权限。",
+        "evidence": "guardrails or RAG-based agents"
+      },
+      {
+        "label": "记录恢复并复测",
+        "detail": "统计拦截位置、误报、人工接管和恢复时间，在新模型、新来源和新工具版本上持续回归。",
+        "evidence": "large-scale auditing of production LLMs"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.02372"
+  },
+  "relatedSlugs": [
+    "llm",
+    "prompt",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.02372",
+      "claim": "Scam2Prompt 从诈骗站点意图生成开发者风格测试请求，在生产模型上审计恶意 URL 与代码生成风险。",
+      "excerpt": "identifies the underlying intent of a scam site and then synthesizes developer-style prompts"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02372",
+      "claim": "摘要报告 4 个模型 4.24% 触发率、1,377 条 Innoc2Scam-bench 提示，以及另外 7 个模型 12.9%—47.3% 的生成率；本文不复述攻击构造。",
+      "excerpt": "4.24% ... 1,377 prompts ... 12.9% to 47.3%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.02372",
+  "sourceHash": "sha256:3bb2abcf90b2148109e6b041ff0192470fd5bd3b0571713c8df4b829d828592c",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论生产 LLM 生成恶意 URL、代码和开发者示例的风险。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.98,
+      "evidence": [
+        "正文说明开发者风格审计请求如何用于受控安全测试，避免公开构造细节。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.98,
+      "evidence": [
+        "正文将 URL 访问、代码执行、外发和部署配置写入分别授权的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留跨模型审计、触发率、误报、拦截位置和恢复时间评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.02372",
+      "claim": "arXiv 记录 Scam2Prompt 于 2025 年 9 月 2 日提交，研究生产 LLM 的恶意诈骗端点审计。",
+      "excerpt": "Published: 2025-09-02 ... Scam2Prompt"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02372",
+      "claim": "摘要给出 4.24%、1,377 条提示和 12.9%—47.3% 跨模型结果；正文只保留防守与隔离建议。",
+      "excerpt": "malicious URL generation in 4.24% ... rates ranging from 12.9% to 47.3%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对自动化审计框架、4.24%/12.9%—47.3% 指标、1,377 条基准和 guardrail/RAG 防线不足的摘要主张；正文不复述攻击构造，补充停用端点、沙盒、出站白名单、授权与恢复评测。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：仅保留 Scam2Prompt 的审计方法和防守措施，删除可操作的诈骗提示、站点特征和恶意代码构造；明确区分论文触发率与线上发生率，补充隔离、最小权限、出站控制和人工接管；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-scam2prompt-malicious-endpoints-20250902"
+}

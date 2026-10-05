@@ -1,0 +1,219 @@
+{
+  "slug": "microsoft-project-perception-mai-cyber-20260727",
+  "title": "微软发布 Project Perception：把网络防御拆成红队、蓝队和行动代理",
+  "summary": "7 月 27 日，微软发布 Project Perception 代理式网络防御系统，并把自研 MAI-Cyber-1-Flash 放进 MDASH 多模型团队。微软称该组合在 CyberGym 的 any-crash 指标上达到 95.95%，成本比现有配置低约一半；这些是厂商评测与商业口径，不等于真实网络中的漏洞修复成功率。",
+  "body": "7 月 27 日，微软发布 Project Perception，把网络安全从“看见告警”改写成一套持续感知、判断并采取行动的代理系统。官方博客把它拆成三类角色：红队代理寻找可能的入侵路径，蓝队代理调查上下文并判断风险，连接到 Microsoft Security 产品的执行层再把结论变成修复动作。微软同时介绍了自研的 MAI-Cyber-1-Flash，并把它接入 MDASH 多模型代理团队。\n\n这套系统的设计重点不是让一个大模型包办所有安全任务。微软称 Project Perception 会根据任务的质量、可靠性、延迟和成本选择不同模型；漏洞扫描可以交给更小、更专门的模型，只有复杂问题才升级到更大的模型。这样做的好处是把大量重复分析的成本压下来，代价是系统必须记录每次模型选择、工具调用和权限变化，否则安全团队很难解释一个修复建议是怎么来的。\n\n微软公布的数字需要放回它自己的评测语境。公司称 MAI-Cyber-1-Flash 与 GPT-5.4 组合在 CyberGym 上达到 95.95% 的 any-crash 分数，并比当前 MDASH 配置节省接近 50% 的成本。any-crash 测的是能否找到会让被测代码崩溃的漏洞路径，不是现实攻击者的成功率，也不是补丁上线后风险已经消失的证明；数据集、工具权限和评分设置都会改变结果。\n\nProject Perception 还把“能不能行动”放在系统设计里。微软说代理可以在身份、端点、应用、数据、云和 AI 系统之间连接信号，并通过 actuators 触发保护措施，但同时强调人仍然要保持控制。自动生成修复建议和自动部署补丁不是同一件事，生产环境仍要有授权范围、测试环境、人工审批和回滚路径。\n\n微软计划从 8 月 3 日开始让 MAI-Cyber-1-Flash 进入公开预览。接下来更值得看的是实际客户能否复现基准结果、代理在误报或低置信度时是否会停下来，以及多模型选择和行动日志能否被安全团队独立审计。",
+  "publishedAt": "2026-07-27",
+  "eventDate": "2026-07-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/microsoft-project-perception-mai-cyber-20260727.svg",
+    "alt": "微软 Project Perception 将红队、蓝队、多模型与行动层接成防御链；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/microsoft-project-perception-mai-cyber-20260727.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "system",
+      "title": "Project Perception 是一套代理防御系统",
+      "body": "红队代理寻找入侵路径，蓝队代理调查上下文并排序风险，执行层把结论接回安全产品；它不是一个孤立的聊天机器人。",
+      "kind": "narrative"
+    },
+    {
+      "id": "models",
+      "title": "不同任务可以用不同模型",
+      "body": "微软按质量、可靠性、延迟和成本选择模型，把高频漏洞分析交给专用模型，复杂问题再调用更大模型。",
+      "kind": "technical"
+    },
+    {
+      "id": "score",
+      "title": "95.95% 是 any-crash 评测分数",
+      "body": "这个指标测能否找到让代码崩溃的漏洞路径，属于微软公布的 CyberGym 评测，不能直接当作真实攻击成功率或补丁有效率。",
+      "kind": "boundary"
+    },
+    {
+      "id": "action",
+      "title": "代理能行动，权限和回滚就必须在场",
+      "body": "生成修复建议、提交补丁和自动部署是不同动作，生产环境还要核对身份、审批、测试和回滚。",
+      "kind": "comparison"
+    },
+    {
+      "id": "preview",
+      "title": "公开预览才是下一道检验",
+      "body": "8 月 3 日的预览会把系统带到更多真实工作流，后续要看误报、低置信度处理和日志是否足够可审计。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个网络安全代理怎样从告警走到修复？",
+    "question": "模型能找到线索只是开始，系统还要把上下文、权限和动作串成一条能回放的链。",
+    "steps": [
+      {
+        "label": "收集信号",
+        "detail": "从身份、端点、应用、数据、云和 AI 系统汇总线索，先避免把孤立告警当成完整事件。",
+        "evidence": "Microsoft Project Perception"
+      },
+      {
+        "label": "红队找路径",
+        "detail": "专用代理尝试寻找可利用路径，记录使用的工具、数据和测试范围。",
+        "evidence": "Microsoft Security"
+      },
+      {
+        "label": "蓝队排风险",
+        "detail": "另一个代理结合业务上下文判断哪些问题值得优先处理，并说明不确定性。",
+        "evidence": "Microsoft Security"
+      },
+      {
+        "label": "执行并复核",
+        "detail": "修复动作经过授权、测试和人工复核后再落地，失败时能回滚并保留完整轨迹。",
+        "evidence": "agent control boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Microsoft Official Blog",
+    "url": "https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "tools",
+    "context",
+    "event",
+    "llm"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/",
+      "claim": "微软发布 Project Perception，说明红队、蓝队、执行层和多模型架构。",
+      "excerpt": "Project Perception ... brings together signals, context, models and specialized agents into a continuously learning system of defense."
+    },
+    {
+      "url": "https://news.microsoft.com/july-2026-security-news/",
+      "claim": "微软安全活动页面列出 MAI-Cyber-1-Flash 与 GPT-5.4 组合在 CyberGym 的 any-crash 成绩。",
+      "excerpt": "MDASH (MAI Cyber-1-Flash + GPT-5.4) delivers the highest CyberGym performance at 95.95%."
+    },
+    {
+      "url": "https://www.axios.com/2026/07/27/microsoft-unveils-new-cyber-model-and-agentic-security-tools-to-fight-hackers",
+      "claim": "Axios 报道微软将专用网络安全模型和代理式防御系统作为 AI 防御产品发布。",
+      "excerpt": "Microsoft introduced a new cyber-specific AI model and AI-powered security agents."
+    }
+  ],
+  "canonicalUrl": "https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/",
+  "sourceHash": "sha256:20e87dc7f1c2f0ee787c4579301874a06224866820a2b7165a6d53dda1e5586f",
+  "status": "published",
+  "discoveredAt": "2026-10-04T18:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 agent 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 agent-harness 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 tools 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 context 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 event 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 llm 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/",
+      "claim": "微软发布 Project Perception，说明红队、蓝队、执行层和多模型架构。",
+      "excerpt": "Project Perception ... brings together signals, context, models and specialized agents into a continuously learning system of defense."
+    },
+    {
+      "url": "https://news.microsoft.com/july-2026-security-news/",
+      "claim": "微软安全活动页面列出 MAI-Cyber-1-Flash 与 GPT-5.4 组合在 CyberGym 的 any-crash 成绩。",
+      "excerpt": "MDASH (MAI Cyber-1-Flash + GPT-5.4) delivers the highest CyberGym performance at 95.95%."
+    },
+    {
+      "url": "https://www.axios.com/2026/07/27/microsoft-unveils-new-cyber-model-and-agentic-security-tools-to-fight-hackers",
+      "claim": "Axios 报道微软将专用网络安全模型和代理式防御系统作为 AI 防御产品发布。",
+      "excerpt": "Microsoft introduced a new cyber-specific AI model and AI-powered security agents."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T18:10:00Z",
+    "method": "source",
+    "notes": "按事件日与发布日核对；官方公告、公司自述、媒体报道与未确认数字分别标注，保留引用卡片与词条联动。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T18:10:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 手写整理，检查新闻主线、日期、来源边界、读者解释、词条联动和 SVG 追溯信息。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T18:35:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间一致。",
+      "官方公告、公司/媒体口径和未确认数字分层，保留原始链接与引用卡片。",
+      "sections、explainer、SVG alt 与正文一致，词条联动真实。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "CyberGym 95.95% any-crash 与近 50% 成本节省明确为公司评测/配置口径，未写成现实攻击成功率；代理行动与人工控制边界清楚。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-27",
+  "fingerprint": "sha256:c7b72ed2c990315641ade40342b7889a71a01017d2a387255bd07c953bcd1be9",
+  "promotedAt": "2026-10-04T00:11:37.358Z"
+}

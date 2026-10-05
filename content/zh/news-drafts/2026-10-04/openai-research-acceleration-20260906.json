@@ -1,0 +1,156 @@
+{
+  "slug": "openai-research-acceleration-20260906",
+  "title": "OpenAI 称研究代理已能完成几天级任务：实验室把人类研究日拆成 3.1 个代理工作日",
+  "summary": "OpenAI 在 2026-09-06 公布内部研究自动化数据，称已经达到“自动化研究实习生”目标：在人的方向下完成原本需要熟练研究员几天的定义清晰任务。公司同时称，2026 年 8 月中旬研究组织累计使用量约为每个人类工作日对应 3.1 个代理工作日；这些是 OpenAI 自己的测量，不是独立生产力审计。",
+  "body": "9 月 6 日，OpenAI 发布《Research acceleration: The view inside OpenAI》，把一家前沿实验室如何使用编码代理写成了一条可以核对的内部进展消息。公司说，它已经达到去年设定的“9 月拥有自动化研究实习生”目标：系统能在人类研究员给出方向后，完成范围清楚、原本需要熟练研究员几天的研究任务。这个定义描述的是受监督的任务执行，不是一个可以自己决定研究议题的独立科学家。\n\nOpenAI 给出的最醒目数字是 3.1。按标准八小时工作日换算，截至 8 月中旬，研究组织的代理总运行时间约等于每个人类研究工作日对应 3.1 个代理工作日；中位研究员每天使用按公开 API 价格折算超过 600 美元的推理量，90 分位用户超过 7000 美元。数字来自公司的内部计量，不能直接等同于科学产出增长，也不能推断普通团队会得到相同比例的加速。\n\n这条新闻真正改变的是研究循环里的分工。代理可以写实验代码、补评测、排查研究基础设施、运行多个实验并整理结果；研究员仍然要提出问题、设定优先级、判断一个结果是否值得追、决定是否扩大训练或部署。OpenAI 还说，代理处理的任务正在变长、变复杂，研究人员同时运行四个以上代理的工作流也在增加，但高层规划仍只占很小一部分输出。\n\n因此，“3.1 个工作日”不能读成“研究进度提高 3.1 倍”。如果代码更快生成，瓶颈可能转移到算力、实验设计、数据质量、评测是否有效，以及把一个好想法接入主模型的工程步骤。OpenAI 自己也承认，容易计数的代码量和运行时长不一定代表研究进展；更直接的成功率指标更有价值，却更难定义和验证。\n\n公司把这项自动化和安全工作放在同一张路线图里：自动化研究可以帮助寻找对齐方法和防御系统，但更强的系统也可能更难监控。OpenAI 说它仍把人类放在研究优先级和扩展/暂停决定的位置，并承诺在无法充分防护时放慢或停止开发。对外部读者来说，下一步要看的是可复现实验、任务成功率的公开口径，以及人类审核如何在长链路代理工作中留下证据。",
+  "publishedAt": "2026-09-06",
+  "eventDate": "2026-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-research-acceleration-20260906.svg",
+    "alt": "研究员把任务交给多个编码代理，代理运行实验后把证据送回人工审核；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/openai-research-acceleration-20260906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "milestone",
+      "title": "“研究实习生”是一个有边界的定义",
+      "body": "OpenAI 说的里程碑是：在研究员给出方向时，代理可以独立完成范围清楚、原本需要几天的任务。它不包含自己决定研究议题、判断科学意义或替人承担最终责任。",
+      "kind": "narrative"
+    },
+    {
+      "id": "measurement",
+      "title": "3.1 代表代理运行时长，不是科研产出",
+      "body": "3.1 个代理工作日来自研究组织的运行时间换算；600 美元和 7000 美元是按 API 价格估算的推理使用量。它们是内部指标，不能当成独立审计后的效率结论。",
+      "kind": "boundary"
+    },
+    {
+      "id": "loop",
+      "title": "代理接手的是研究循环里的可执行步骤",
+      "body": "写代码、运行实验、排查基础设施和整理结果可以并行交给代理；问题选择、结果判断、是否扩大训练，仍由研究员决定。",
+      "kind": "technical"
+    },
+    {
+      "id": "bottleneck",
+      "title": "自动化会把瓶颈推向更难计量的地方",
+      "body": "代码量和运行时长容易统计，实验是否回答了正确问题、评测是否有效、结果能否复现则更难。未来速度不能只看代理调用次数。",
+      "kind": "comparison"
+    },
+    {
+      "id": "watch",
+      "title": "外部应继续追问证据链",
+      "body": "公开任务样例、成功率、失败样例和人类接管记录，才能判断“自动化研究”是否跨出了公司内部测量的范围。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一项研究任务如何在代理和人之间流动？",
+    "question": "把执行、判断和扩展决定分开，才能理解 3.1 个代理工作日到底加速了什么。",
+    "steps": [
+      {
+        "label": "人类定义问题",
+        "detail": "研究员给出目标、范围和可用工具，确定这次任务要回答什么。",
+        "evidence": "OpenAI 对 human direction 的定义"
+      },
+      {
+        "label": "代理执行实验",
+        "detail": "多个编码代理写代码、运行评测、排查环境并整理中间结果。",
+        "evidence": "OpenAI 内部工作流描述"
+      },
+      {
+        "label": "人类核对证据",
+        "detail": "研究员判断结果是否可靠、是否值得继续，不能把代码运行时间当成科学结论。",
+        "evidence": "OpenAI 对 metrics limitations 的说明"
+      },
+      {
+        "label": "决定扩大或暂停",
+        "detail": "训练规模、部署和安全处置仍由人做决定；风险升高时可以放慢或停止。",
+        "evidence": "OpenAI safety commitment"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/research-acceleration-view-inside-openai/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "agent-harness",
+    "tools",
+    "eval",
+    "benchmark",
+    "data-quality",
+    "context"
+  ],
+  "relatedArticleSlugs": [
+    "openai-agents-api-public-beta-20260910",
+    "openai-misalignment-reporting-framework-20260916"
+  ],
+  "sources": [
+    {
+      "url": "https://openai.com/index/research-acceleration-view-inside-openai/",
+      "claim": "OpenAI 于 2026-09-06 称已达到“自动化研究实习生”目标，系统可在人类方向下完成原本需要熟练研究员几天的定义清晰任务。",
+      "excerpt": "We have now reached the goal ... of having an automated research intern by September of this year. By “research intern,” we mean a system that can carry out well-defined research tasks under human direction, including tasks that would take a skilled researcher a few days."
+    },
+    {
+      "url": "https://openai.com/index/research-acceleration-view-inside-openai/",
+      "claim": "OpenAI 披露截至 2026 年 8 月中旬，研究组织约每个人类工作日使用 3.1 个代理工作日；中位用户按 API 价格折算每天超过 600 美元推理量。",
+      "excerpt": "As of mid-August, in total, the research organization uses 3.1 agent-workdays of effort for every workday of human labor. The median researcher ... was using more than $600 per day of inference at API prices."
+    },
+    {
+      "url": "https://www.techradar.com/pro/openai-says-it-has-built-an-automated-research-intern-to-carry-out-menial-tasks-and-its-only-just-getting-started",
+      "claim": "TechRadar 9 月 10 日跟进报道把这一披露概括为 OpenAI 按计划达到研究实习生里程碑，并指出完整自动化研究员目标是 2028 年 3 月。",
+      "excerpt": "OpenAI has confirmed its project to build a fully automated AI researcher is on schedule, hitting its September 2026 target of developing a “research intern”."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/research-acceleration-view-inside-openai",
+  "sourceHash": "sha256:965322e229a19ef789b518e2b6ce06473f4c19f127cdd1e1c741e4762f5075ff",
+  "status": "published",
+  "discoveredAt": "2026-10-04T03:00:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/research-acceleration-view-inside-openai/",
+      "claim": "OpenAI 于 2026-09-06 称已达到“自动化研究实习生”目标，系统可在人类方向下完成原本需要熟练研究员几天的定义清晰任务。",
+      "excerpt": "We have now reached the goal ... of having an automated research intern by September of this year. By “research intern,” we mean a system that can carry out well-defined research tasks under human direction, including tasks that would take a skilled researcher a few days."
+    },
+    {
+      "url": "https://openai.com/index/research-acceleration-view-inside-openai/",
+      "claim": "OpenAI 披露截至 2026 年 8 月中旬，研究组织约每个人类工作日使用 3.1 个代理工作日；中位用户按 API 价格折算每天超过 600 美元推理量。",
+      "excerpt": "As of mid-August, in total, the research organization uses 3.1 agent-workdays of effort for every workday of human labor. The median researcher ... was using more than $600 per day of inference at API prices."
+    },
+    {
+      "url": "https://www.techradar.com/pro/openai-says-it-has-built-an-automated-research-intern-to-carry-out-menial-tasks-and-its-only-just-getting-started",
+      "claim": "TechRadar 9 月 10 日跟进报道把这一披露概括为 OpenAI 按计划达到研究实习生里程碑，并指出完整自动化研究员目标是 2028 年 3 月。",
+      "excerpt": "OpenAI has confirmed its project to build a fully automated AI researcher is on schedule, hitting its September 2026 target of developing a “research intern”."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T03:00:00Z",
+    "method": "source",
+    "notes": "以 OpenAI 原文核对日期、里程碑定义和内部指标；TechRadar 仅作后续新闻交叉，不把公司内部测量写成独立审计。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T03:00:00Z",
+    "notes": "按公司公告、内部指标、后续媒体报道和可复现性边界分别组织正文。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:59:31Z",
+    "questions": [],
+    "notes": "新闻主线是 OpenAI 公布内部研究自动化进展。正文把“自动化研究实习生”限定为人类给方向下的定义清晰任务，把 3.1 个代理工作日、600/7000 美元推理量明确为公司内部计量，未写成科研产出或独立生产力审计；日期、官方/TechRadar 归属、词条、引用卡片、explainer 与 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-06",
+  "promotedAt": "2026-10-03T01:00:33.415Z"
+}

@@ -1,0 +1,210 @@
+{
+  "slug": "character-ai-talkingmachines-20250703",
+  "title": "Character.AI 公布 TalkingMachines：实时视频研究离产品还有多远？",
+  "summary": "Character.AI 7 月 3 日公布 TalkingMachines 研究：输入一张图和声音信号，生成实时、音频驱动、FaceTime 风格的视频。官方明确它还不是产品上线，训练规模和效果先按公司口径阅读。",
+  "body": "Character.AI 在 7 月 3 日的官方博客里介绍 TalkingMachines，一种能把图片和声音信号转换成实时、音频驱动视频的研究模型。输入可以是一张人物图片和一段声音，输出则是像视频通话一样会说话、会跟随声音变化的角色。它是当天的官方研究公告，不是一个已经向所有用户开放的产品发布。\n\n这个区别很重要。博客明确写着，团队正在把研究带回 Character.AI 平台，未来可能用于角色直播、FaceTime 式体验和视觉世界构建；“未来可能”不能被标题压缩成“现在已经能视频聊天”。同一篇文章还给出训练规模和工程细节：超过 150 万个筛选视频片段、约 256 张 H100 的三阶段训练，以及 CUDA stream overlap、KV cache 和 VAE 解码器拆分等优化。这些是公司对自己的训练与部署说明，不是外部复现实验。\n\n技术上，TalkingMachines 选择的是扩散 Transformer 和非对称知识蒸馏。可以把它理解为：先有一个质量较高但速度慢的双向视频模型，再把它蒸馏成更适合实时生成的模型。这样做的目标不是让每一帧都“理解”现实世界，而是在声音、人物外观和动作之间保持足够快的对应关系。实时性、画面稳定性、说话口型和不同角色身份的保持，仍需要更多公开评测。\n\n这条新闻也提醒读者不要把论文发布日期和产品公告混在一起。TalkingMachines 的论文在 6 月已经出现在 arXiv，Character.AI 在 7 月 3 日用官方博客把它解释成自己的研究路线和产品方向；事件日按官方公告归档。以后如果平台真正开放试用、公布水印和未成年人保护规则，应该按新的产品事件重新记录，而不是从这篇研究公告倒推已经上线。\n\n对普通读者来说，可以先记住一个简单边界：这次展示的是“从一张图和一段声音生成实时角色视频”的研究能力，离稳定、可控、获得授权的社交产品还有一段路。人物肖像、声音克隆、未成年人和误导性视频的许可问题，不会因为生成速度变快就自动消失。",
+  "publishedAt": "2025-07-03",
+  "eventDate": "2025-07-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/character-ai-talkingmachines-20250703.svg",
+    "alt": "一张人物图像和一段声音进入 TalkingMachines，实时视频研究仍停在产品之前",
+    "sourceUrl": "/images/news/character-ai-talkingmachines-20250703.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "official-demo",
+      "title": "官方公布的是研究模型，不是产品上线",
+      "body": "Character.AI 说 TalkingMachines 是研究里程碑，并明确写着还在准备未来的平台体验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "input-output",
+      "title": "一张图和一段声音，变成会说话的角色",
+      "body": "模型把图像外观、声音信号和视频动作接起来，目标是做出实时、音频驱动的 FaceTime 风格互动。",
+      "kind": "narrative"
+    },
+    {
+      "id": "training-claim",
+      "title": "训练规模是公司自述，不能当成独立评测",
+      "body": "150 万视频片段、约 256 张 H100 和部署优化来自官方博客，尚没有同等细节的外部复现。",
+      "kind": "technical"
+    },
+    {
+      "id": "research-product",
+      "title": "论文、博客和产品日期要分开",
+      "body": "论文较早公开，7 月 3 日是官方研究公告；真正开放试用、水印和安全规则要等新事件。",
+      "kind": "comparison"
+    },
+    {
+      "id": "consent",
+      "title": "实时不等于获得授权",
+      "body": "肖像、声音、未成年人和误导性视频的同意与平台限制仍要单独检查。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "creator-ai",
+    "title": "把实时角色视频拆成一条生成链",
+    "question": "从输入信号到实时画面，中间经过哪些工程环节，为什么研究演示还不能叫产品？",
+    "steps": [
+      {
+        "label": "准备图像与声音",
+        "detail": "一张角色图像提供外观，声音信号提供说话节奏和音频驱动线索。",
+        "evidence": "context"
+      },
+      {
+        "label": "蒸馏视频模型",
+        "detail": "用非对称知识蒸馏把高质量但缓慢的双向模型转成更适合实时生成的版本。",
+        "evidence": "llm"
+      },
+      {
+        "label": "同步动作与口型",
+        "detail": "模型需要在每一帧保持角色身份、面部动作和声音的对应关系。",
+        "evidence": "eval"
+      },
+      {
+        "label": "做部署优化",
+        "detail": "CUDA stream overlap、KV cache 和 VAE 解码器拆分降低等待，但仍要测稳定性和失败率。",
+        "evidence": "tools"
+      },
+      {
+        "label": "再谈产品安全",
+        "detail": "开放体验前还要处理肖像、声音、未成年人、水印和误导性使用。",
+        "evidence": "citation"
+      }
+    ]
+  },
+  "source": {
+    "name": "Character.AI",
+    "url": "https://blog.character.ai/character-ais-real-time-video-breakthrough/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "context",
+    "data-lineage",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.character.ai/character-ais-real-time-video-breakthrough/",
+      "claim": "Character.AI 官方博客 7 月 3 日介绍 TalkingMachines：用图像和声音信号生成实时、音频驱动、FaceTime 风格的视频互动。",
+      "excerpt": "Character.AI, “Character.AI’s Real-Time Video Breakthrough”, Jul 3, 2025."
+    },
+    {
+      "url": "https://arxiv.org/abs/2506.03099",
+      "claim": "TalkingMachines 论文原文说明其目标是把预训练视频模型转成实时、音频驱动的角色动画；论文日期早于官方博客，不另算成 7 月 3 日新闻。",
+      "excerpt": "arXiv:2506.03099, “TalkingMachines: Real-Time Audio-Driven FaceTime-Style Video via Autoregressive Diffusion Models”."
+    },
+    {
+      "url": "https://aaxwaz.github.io/TalkingMachines/",
+      "claim": "Character.AI 博客提供 TalkingMachines 演示入口，用于理解研究展示形式，不代表已上线产品。",
+      "excerpt": "TalkingMachines project demo linked from Character.AI announcement."
+    }
+  ],
+  "canonicalUrl": "https://blog.character.ai/character-ais-real-time-video-breakthrough/",
+  "sourceHash": "sha256:43e343c9b5d344300e7c455d106ad8f986ec084fb4f8b3cdc47b82d5da5a9e4d",
+  "status": "published",
+  "discoveredAt": "2026-10-05T07:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.95,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.character.ai/character-ais-real-time-video-breakthrough/",
+      "claim": "Character.AI 官方博客 7 月 3 日介绍 TalkingMachines：用图像和声音信号生成实时、音频驱动、FaceTime 风格的视频互动。",
+      "excerpt": "Character.AI, “Character.AI’s Real-Time Video Breakthrough”, Jul 3, 2025."
+    },
+    {
+      "url": "https://arxiv.org/abs/2506.03099",
+      "claim": "TalkingMachines 论文原文说明其目标是把预训练视频模型转成实时、音频驱动的角色动画；论文日期早于官方博客，不另算成 7 月 3 日新闻。",
+      "excerpt": "arXiv:2506.03099, “TalkingMachines: Real-Time Audio-Driven FaceTime-Style Video via Autoregressive Diffusion Models”."
+    },
+    {
+      "url": "https://aaxwaz.github.io/TalkingMachines/",
+      "claim": "Character.AI 博客提供 TalkingMachines 演示入口，用于理解研究展示形式，不代表已上线产品。",
+      "excerpt": "TalkingMachines project demo linked from Character.AI announcement."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T07:30:00Z",
+    "method": "source",
+    "notes": "已核对 Character.AI 官方博客、关联论文与演示入口；正文明确说明博客日期、论文日期差异和“研究不是产品上线”的边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T07:30:00Z",
+    "notes": "已完成新闻信源与日期核对，等待 reader-review 子智能体检查零基础可读性、新闻归属与事实边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T08:12:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "唯一 reader-review 子智能体逐篇审读通过：Character.AI 文章明确区分官方研究公告与产品上线，训练规模和效果保留为公司口径。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-03",
+  "promotedAt": "2026-10-04T20:42:39.362Z"
+}

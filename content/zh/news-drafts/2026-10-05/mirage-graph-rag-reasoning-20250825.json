@@ -1,0 +1,209 @@
+{
+  "slug": "mirage-graph-rag-reasoning-20250825",
+  "title": "MIRAGE：把医学检索推理拆成并行链，再逐条核对证据",
+  "summary": "MIRAGE 论文于 8 月 25 日提交，提出一种面向医学问答的检索增强推理框架：先把复杂问题拆成实体相关的子问题，再沿结构化医学知识图谱并行检索和多跳扩展，最后用跨链验证处理冲突。作者报告它在 GenMedGPT-5k、CMCQA 和 ExplainCPE 三个医学问答基准以及人工评测中超过 GPT-4o、Tree-of-Thought 变体和其他 RAG 基线，并能把事实性断言追溯到知识图谱链路。它仍是研究框架，不应直接当作临床决策系统。",
+  "body": "长问题接入 RAG 以后，常见的做法是一路检索、一路生成：模型找到一段文字，继续问下一步，再把新的结果接到原来的链上。链条越长，早期的一个错误就越可能被后面的步骤放大。MIRAGE 试图把这个过程拆开，让不同证据路径并行走，再在最后相互核对。\n\n它针对的是医学问答，因为医学问题既要求答案准确，也要求读者知道答案从哪里来。一个只有结论、没有证据链的回答，即使文字流畅，也很难让专业人士判断哪些是事实、哪些是模型补出来的连接。\n\nMIRAGE 的第一步是把复杂查询分解成实体相关的子问题。这样做的目的不是把一个问题机械切成几句，而是把药物、疾病、症状或关系明确到知识图谱里的节点，给后续检索一个可检查的锚点。\n\n第二步是沿图谱做邻居扩展和多跳遍历，建立多条推理链。与把所有文档平铺在上下文里相比，结构化路径能显示某个结论经过了哪些实体和关系；并行链也让系统有机会从不同路径找到互相支持或互相矛盾的证据。\n\n第三步是跨链验证。MIRAGE 不把第一条看起来合理的链当成答案，而是比较不同链的结果，尝试识别冲突，再整合成最终回答。这里的“验证”不是证明医学结论绝对正确，而是让系统能指出自己的事实来自哪条可追踪路径。\n\n论文报告，MIRAGE 在 GenMedGPT-5k、CMCQA 和 ExplainCPE 三个医学问答基准，以及人工评测中超过 GPT-4o、Tree-of-Thought 变体和其他检索增强基线。摘要没有给出各数据集的具体分数，因此这篇文章只保留相对结论，不把它改写成统一的提升百分比。\n\n它对普通知识库也有启发：检索不是“找一段最像的文字”就结束，复杂问题需要拆分、并行、冲突处理和引用回链。Graph RAG 的结构优势只有在权限、版本和来源维护得住时才成立；图谱本身过时或关系错误，路径越清晰，错误也可能被解释得越像真的。\n\n对于医疗场景，MIRAGE 更适合被看成研究型问答和证据整理组件。上线前要把知识库版本、实体映射、证据链、模型不确定性和人工复核入口都保留下来。模型可以帮助组织信息，但不能把基准上的胜出直接变成诊断或治疗建议。",
+  "publishedAt": "2025-08-25",
+  "eventDate": "2025-08-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mirage-graph-rag-reasoning-20250825.svg",
+    "alt": "MIRAGE 将医学问题拆成实体子问题，沿知识图谱并行检索并跨链核对",
+    "sourceUrl": "/images/news/mirage-graph-rag-reasoning-20250825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "linear-chain-risk",
+      "title": "一条检索链越长，早期错误越容易被放大",
+      "body": "传统检索增强推理常沿单一链路持续生成，前面的实体或证据错误会传到后续步骤。MIRAGE 选择并行探索多个路径。",
+      "kind": "narrative"
+    },
+    {
+      "id": "entity-decomposition",
+      "title": "先把问题锚定到实体和关系",
+      "body": "系统把复杂查询拆成实体相关子问题，让药物、疾病、症状或关系对应到知识图谱节点，后续检索因此有可检查的起点。",
+      "kind": "technical"
+    },
+    {
+      "id": "parallel-graph",
+      "title": "沿图谱邻居和多跳关系同时找证据",
+      "body": "MIRAGE 用邻居扩展和多跳遍历构造多条推理链，不把所有文本平铺在上下文里，让每条路径的实体和关系都能被看见。",
+      "kind": "technical"
+    },
+    {
+      "id": "cross-chain-check",
+      "title": "先比较路径，再整合回答",
+      "body": "跨链验证会对照不同路径的结果，识别互相支持或冲突的证据。它提高可追溯性，但不等于给医学结论提供绝对证明。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmarks",
+      "title": "三个医学问答基准和人工评测都超过基线",
+      "body": "论文报告在 GenMedGPT-5k、CMCQA、ExplainCPE 及人工评测中超过 GPT-4o、Tree-of-Thought 变体和其他 RAG 基线；摘要没有列出统一提升百分比。",
+      "kind": "boundary"
+    },
+    {
+      "id": "graph-quality",
+      "title": "图谱越清晰，错误关系也越容易被讲得像真的",
+      "body": "结构化路径的优势依赖实体映射、关系质量、版本维护和权限控制。过时或错误的图谱会让解释更清楚，却不一定更正确。",
+      "kind": "example"
+    },
+    {
+      "id": "clinical-boundary",
+      "title": "研究型证据整理不等于临床决策",
+      "body": "上线前要保留知识库版本、证据链、不确定性和人工复核入口；基准上的优于基线不能直接变成诊断或治疗建议。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "clinical-alert",
+    "title": "怎样让 Graph RAG 的回答可追溯？",
+    "question": "让每个关键断言都能回到实体、关系和来源链路，再由人判断它是否适合当前场景。",
+    "steps": [
+      {
+        "label": "拆分复杂问题",
+        "detail": "把一个长查询拆成实体明确的子问题，记录每个子问题的目标和依赖，避免一条链承载所有假设。",
+        "evidence": "decomposes complex queries into entity-grounded sub-questions"
+      },
+      {
+        "label": "走多条证据路径",
+        "detail": "通过邻居扩展和多跳遍历获得不同关系链，保留每条链经过的节点与版本。",
+        "evidence": "retrieves evidence adaptively via neighbor expansion and multi-hop traversal"
+      },
+      {
+        "label": "做跨链对照",
+        "detail": "比较路径之间的支持与冲突，不把最先检索到的结果直接当成事实。",
+        "evidence": "integrates answers using cross-chain verification to resolve contradictions"
+      },
+      {
+        "label": "回链每个断言",
+        "detail": "回答中的关键事实要链接到具体图谱链路和来源，让审核者能从结论回到证据。",
+        "evidence": "trace each factual claim to concrete chains within the knowledge graph"
+      },
+      {
+        "label": "保留人工边界",
+        "detail": "在医学等高风险场景保留知识库版本、模型不确定性和人工复核，不把 benchmark 胜出当成临床授权。",
+        "evidence": "well-suited for complex medical reasoning scenarios"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / MIRAGE 作者组",
+    "url": "https://arxiv.org/abs/2508.18260"
+  },
+  "relatedSlugs": [
+    "rag",
+    "citation",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.18260",
+      "claim": "MIRAGE 将复杂查询拆成实体子问题，沿医学知识图谱并行检索和多跳扩展，再做跨链验证。",
+      "excerpt": "decomposes complex queries into entity-grounded sub-questions ... executes parallel inference chains ... multi-hop traversal ... cross-chain verification"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18260",
+      "claim": "论文报告 MIRAGE 在三个医学问答基准和人工评测中超过 GPT-4o、Tree-of-Thought 变体与其他 RAG 基线，并提供事实链路追溯。",
+      "excerpt": "consistently outperforms GPT-4o, Tree-of-Thought variants ... generating explicit reasoning chains that trace each factual claim"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.18260",
+  "sourceHash": "sha256:5bd0fe70d4b4aa7b94b5213a6faa79836cbe5fe1f6882519fa1c5a32cf80f8f4",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕检索增强推理、知识图谱和医学问答展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.97,
+      "evidence": [
+        "正文讨论实体、关系、图谱路径和知识库版本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.98,
+      "evidence": [
+        "正文要求事实断言回链到知识图谱和来源。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.95,
+      "evidence": [
+        "正文把实体锚定、证据链和可追溯回答作为核心。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文区分三个基准、人工评测和真实临床使用边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 25 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.18260",
+      "claim": "arXiv 摘要记录 MIRAGE 于 2025 年 8 月 25 日提交，提出面向医学问答的并行图检索推理。",
+      "excerpt": "Date: Mon Aug 25 ... We propose MIRAGE"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18260",
+      "claim": "论文在三个医学问答基准和人工评测中超过 GPT-4o、Tree-of-Thought 变体和其他 RAG 基线，并追溯事实链路。",
+      "excerpt": "Experiments on three medical QA benchmarks ... consistently outperforms GPT-4o ... trace each factual claim"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文对实体子问题、并行链、多跳图检索、跨链验证、三个基准/人工评测和事实链路追溯的摘要表述；正文明确不把研究框架当成临床决策系统，也不补写摘要未给出的分数。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 MIRAGE 的方法拆成实体锚定、并行路径、冲突处理和回链证据，保留医学场景的人工边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-25-mirage-graph-rag-reasoning-20250825"
+}

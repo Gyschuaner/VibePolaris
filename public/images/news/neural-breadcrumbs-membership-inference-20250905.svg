@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<title id="title">Neural Breadcrumbs：从内部轨迹审计训练数据成员资格</title>
+<desc id="desc">候选序列经过模型层时产生隐藏状态和注意力轨迹，memTrace 将其汇总为审计信号，再用授权对照集校准。</desc>
+<defs>
+ <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#eef8f8"/><stop offset="1" stop-color="#fff3ee"/></linearGradient>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4f7e87"/></marker>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#243d45" flood-opacity=".14"/></filter>
+</defs>
+<rect width="1200" height="680" rx="32" fill="url(#bg)"/>
+<text x="68" y="76" fill="#214a55" font-size="35" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">别只看输出：模型内部也可能留下训练痕迹</text>
+<text x="70" y="114" fill="#68828a" font-size="19" font-family="Arial, 'Noto Sans CJK SC', sans-serif">候选序列 · 隐藏状态 · 注意力模式 · 授权审计</text>
+<g filter="url(#shadow)">
+ <rect x="66" y="176" width="230" height="316" rx="22" fill="#fff" stroke="#b6d8d5" stroke-width="2"/>
+ <text x="104" y="226" fill="#367c7d" font-size="22" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">候选序列</text>
+ <rect x="104" y="263" width="154" height="50" rx="10" fill="#ddf0ed"/><text x="181" y="295" text-anchor="middle" fill="#367c7d" font-size="17" font-family="Arial, 'Noto Sans CJK SC', sans-serif">成员？</text>
+ <rect x="104" y="331" width="154" height="50" rx="10" fill="#fce8e2"/><text x="181" y="363" text-anchor="middle" fill="#a4584e" font-size="17" font-family="Arial, 'Noto Sans CJK SC', sans-serif">非成员？</text>
+ <text x="181" y="431" text-anchor="middle" fill="#68828a" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">不只看最后答案</text>
+ </g>
+ <path d="M317 334 H370" stroke="#4f7e87" stroke-width="4" marker-end="url(#arrow)"/>
+<g filter="url(#shadow)">
+ <rect x="390" y="150" width="380" height="368" rx="22" fill="#fff" stroke="#b9afe2" stroke-width="2"/>
+ <text x="430" y="205" fill="#5d5198" font-size="22" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">Transformer 内部轨迹</text>
+ <path d="M432 277 C468 233 500 321 536 274 S603 234 642 285 S709 321 743 270" fill="none" stroke="#7b67bc" stroke-width="5"/>
+ <path d="M432 328 C474 355 502 288 541 336 S606 366 644 325 S707 292 743 344" fill="none" stroke="#6bb4aa" stroke-width="5"/>
+ <circle cx="500" cy="276" r="8" fill="#7b67bc"/><circle cx="605" cy="277" r="8" fill="#7b67bc"/><circle cx="694" cy="299" r="8" fill="#7b67bc"/>
+ <text x="430" y="396" fill="#716b92" font-size="17" font-family="Arial, 'Noto Sans CJK SC', sans-serif">隐藏状态 · 注意力 · 跨层变化</text>
+ <text x="430" y="436" fill="#716b92" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">汇总为“神经面包屑”特征</text>
+ <text x="430" y="474" fill="#716b92" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">内部信号 ≠ 可读记忆清单</text>
+ </g>
+ <path d="M790 334 H843" stroke="#4f7e87" stroke-width="4" marker-end="url(#arrow)"/>
+<g filter="url(#shadow)">
+ <rect x="863" y="176" width="272" height="316" rx="22" fill="#fff" stroke="#e2b49e" stroke-width="2"/>
+ <text x="901" y="226" fill="#a45d4e" font-size="22" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">授权审计</text>
+ <rect x="901" y="263" width="194" height="52" rx="11" fill="#fff0d9"/><text x="998" y="296" text-anchor="middle" fill="#8a6b36" font-size="17" font-family="Arial, 'Noto Sans CJK SC', sans-serif">对照集校准</text>
+ <rect x="901" y="335" width="194" height="52" rx="11" fill="#e4f1ff"/><text x="998" y="368" text-anchor="middle" fill="#356b9a" font-size="17" font-family="Arial, 'Noto Sans CJK SC', sans-serif">AUC 0.85</text>
+ <text x="998" y="433" text-anchor="middle" fill="#68828a" font-size="16" font-family="Arial, 'Noto Sans CJK SC', sans-serif">记录误报与权限</text>
+ </g>
+<text x="68" y="574" fill="#a45d4e" font-size="20" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-weight="700">输出看起来安全，不代表内部没有统计信号</text>
+<text x="68" y="613" fill="#68828a" font-size="18" font-family="Arial, 'Noto Sans CJK SC', sans-serif">AUC 是基准结果；一次分类不能断言某个人的数据已进入训练集。</text>
+</svg>

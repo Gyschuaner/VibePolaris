@@ -1,0 +1,199 @@
+{
+  "slug": "agent-context-observation-masking-20250829",
+  "title": "Agent 上下文管理的复杂度陷阱：简单遮蔽有时胜过 LLM 总结",
+  "summary": "《The Complexity Trap》于 8 月 29 日提交，比较软件工程 Agent 处理长上下文时的三种做法：保留原始历史、让 LLM 总结旧观察、直接遮蔽较早观察。作者在 SWE-agent 的 SWE-bench Verified 上用五种模型配置评测，发现简单观察遮蔽把成本降到原始 Agent 的一半，同时解决率相当或略高于 LLM 总结；一个混合方案又比两种方法分别省 7% 和 11%。",
+  "body": "Agent 做复杂任务时，会不断读文件、运行命令、看报错，再把这些观察塞回上下文。历史越长，模型每轮要处理的 token 越多，延迟和费用也跟着上升。于是很多工程团队第一反应是让另一个 LLM 把旧记录总结一下，再把摘要交给主 Agent。这个方案听起来聪明，却不一定值得它的复杂度。\n\n《The Complexity Trap》把问题拆成可比较的实验：保留完整历史、用 LLM 总结旧观察，以及直接把较早观察遮蔽掉。遮蔽不是删除所有状态，而是让 Agent 不再反复读取已经过时的环境输出，保留当前任务真正需要的上下文。\n\n作者在 SWE-agent 的 SWE-bench Verified 上使用五种模型配置，并在 OpenHands Agent 结构上做了初步泛化。结果显示，简单遮蔽的成本约为原始 Agent 的一半，同时解决率与 LLM 总结相当，有些配置还略高。也就是说，总结带来的语义压缩并没有稳定转化成更好的修复结果。\n\n论文还提出混合方案，在遮蔽与总结之间做选择，成本又比单独遮蔽低 7%，比单独总结低 11%。这不是“永远不要总结”的结论，而是提醒我们先问：旧观察是否真的需要被重新解释，还是只要不再占用上下文就够了。\n\n对工程实现而言，遮蔽策略需要知道什么不能隐藏。当前文件、最近一次失败、未完成的计划和用户明确约束通常要保留；已经被新状态覆盖的中间输出可以压缩、折叠或按需取回。关键是记录遮蔽规则和恢复入口，避免 Agent 因为看不到历史而重复做同一件事。\n\n成本下降也不等于可靠性自动上升。不同模型、任务长度和工具轨迹可能得出不同结果；SWE-bench 的修复任务也不能代表所有 Agent 场景。部署时应同时记录 token、延迟、解决率和重复操作，观察遮蔽是否让某类错误变多。\n\n这项研究把一个容易被包装成“需要更强模型”的问题，拉回到上下文管理的工程选择。先用简单、可审计的策略建立基线，再为确实需要语义压缩的地方增加 LLM 总结，系统往往更容易解释和维护。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/agent-context-observation-masking-20250829.svg",
+    "alt": "Agent 在完整历史、LLM 总结和观察遮蔽之间选择上下文管理策略",
+    "sourceUrl": "/images/news/agent-context-observation-masking-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "history-cost",
+      "title": "每轮都读旧观察，成本会不断累积",
+      "body": "文件、命令和报错被反复塞回上下文，历史变长后 token、延迟和费用一起上升。",
+      "kind": "narrative"
+    },
+    {
+      "id": "three-strategies",
+      "title": "完整保留、LLM 总结和直接遮蔽",
+      "body": "实验把三种上下文策略放在同一任务里比较，观察语义压缩是否真的带来解决率收益。",
+      "kind": "technical"
+    },
+    {
+      "id": "masking-result",
+      "title": "简单遮蔽把成本降到一半左右",
+      "body": "在 SWE-bench Verified 上，观察遮蔽的解决率与 LLM 总结相当，有些配置略高。",
+      "kind": "comparison"
+    },
+    {
+      "id": "hybrid-choice",
+      "title": "混合方案再省 7% 和 11%",
+      "body": "混合策略比单独遮蔽再低 7%，比单独总结低 11%；它不是反总结，而是先判断何时真的需要总结。",
+      "kind": "comparison"
+    },
+    {
+      "id": "what-to-keep",
+      "title": "当前状态和约束不能被一并隐藏",
+      "body": "当前文件、最近失败、未完成计划和用户要求通常要保留；被新状态覆盖的输出才适合折叠或按需取回。",
+      "kind": "example"
+    },
+    {
+      "id": "task-boundary",
+      "title": "SWE-bench 结果不代表所有 Agent",
+      "body": "模型、任务长度和工具轨迹会改变结论，部署时要同时观察解决率、重复操作、token 和延迟。",
+      "kind": "boundary"
+    },
+    {
+      "id": "simple-baseline",
+      "title": "先用可审计的简单策略建立基线",
+      "body": "当遮蔽已经够用时，不要为语义总结引入额外调用；确实需要压缩的部分再增加 LLM。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Agent 怎样在长上下文里少读一些、却不丢关键状态？",
+    "question": "先识别已经过时的观察并遮蔽，再对确实需要语义保留的部分使用总结，所有规则都可恢复和审计。",
+    "steps": [
+      {
+        "label": "记录观察来源",
+        "detail": "区分当前文件、命令输出、报错、计划和用户约束，知道每条上下文从哪里来。",
+        "evidence": "long and expensive context histories in tool-use agents"
+      },
+      {
+        "label": "标记过时状态",
+        "detail": "判断哪些观察已经被新状态覆盖，哪些仍然决定下一步操作。",
+        "evidence": "environment observation masking"
+      },
+      {
+        "label": "先做直接遮蔽",
+        "detail": "对过时观察停止重复注入，保留恢复入口，避免无必要的 LLM 总结调用。",
+        "evidence": "masking halves cost relative to raw agent"
+      },
+      {
+        "label": "按需语义总结",
+        "detail": "只有需要保留跨步骤关系时才总结，并记录摘要覆盖了哪些原始观察。",
+        "evidence": "LLM summarization compared with masking"
+      },
+      {
+        "label": "同时看成本和结果",
+        "detail": "把 token、延迟、解决率和重复操作一起评估，确认遮蔽没有制造新的失败类型。",
+        "evidence": "SWE-bench Verified and OpenHands evaluation"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.21433"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "context-window",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.21433",
+      "claim": "论文在 SWE-agent 上比较原始上下文、LLM 总结和观察遮蔽，并在五种模型配置及 OpenHands 上评估。",
+      "excerpt": "Simple Observation Masking ... compared to LLM summarization ... SWE-bench Verified"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21433",
+      "claim": "观察遮蔽将成本降至原始 Agent 的一半并保持相当解决率，混合方案比两种方法再降 7% 和 11%。",
+      "excerpt": "halves cost ... matching solve rate ... 7% and 11% lower costs"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.21433",
+  "sourceHash": "sha256:2d415406a16ff3afb7b428e4d6529d7dbb465c747f7de6796fbea5a447069635",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 SWE-agent、OpenHands 和工具历史管理。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕 Agent 反复读取文件、命令和报错的上下文历史展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.99,
+      "evidence": [
+        "正文把长上下文的 token、延迟和费用作为核心问题。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文保留 SWE-bench Verified、模型配置和成本/解决率比较。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.21433",
+      "claim": "arXiv 记录该上下文管理研究于 2025 年 8 月 29 日提交，比较观察遮蔽和 LLM 总结。",
+      "excerpt": "Date: Fri Aug 29 ... The Complexity Trap"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21433",
+      "claim": "摘要给出 SWE-bench Verified 结果、成本变化和混合策略。",
+      "excerpt": "halves cost ... matching, and sometimes slightly exceeding, the solve rate ... hybrid approach"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对观察遮蔽、LLM 总结、SWE-bench Verified、五种模型配置、OpenHands 初步泛化和成本变化；正文保留当前状态/用户约束、恢复入口及任务外推边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把复杂度陷阱写成策略比较而非反对总结，保留 SWE-bench 和成本结果的外推边界，并补上哪些状态不能遮蔽；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-agent-context-observation-masking-20250829"
+}

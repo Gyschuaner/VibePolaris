@@ -1,0 +1,182 @@
+{
+  "slug": "google-search-agentic-upgrade",
+  "title": "Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认，预告信息智能体",
+  "summary": "5 月 19 日，Google Search 宣布 AI Mode 升级到 Gemini 3.5 Flash，支持文本、图片、文件、视频和 Chrome 标签输入，并计划推出可在后台继续检索的信息智能体。官方页面描述的是产品计划和美国首发节奏，不能据此推断复杂任务已经可以无人监督完成。",
+  "body": "5 月 19 日，Google Search 宣布 AI Mode 升级到 Gemini 3.5 Flash，并扩展输入方式，支持文本、图片、文件、视频和 Chrome 标签。页面还介绍了一种信息智能体：用户先交代目标，系统可以在后续步骤继续检索和组织结果，首发计划先在美国夏季推出。\n\n这是一条 Search 产品更新，值得和 I/O 汇总页里的其他模型、开发工具分开读。默认模型处理输入，semantic-search 和 retrieval 找到候选信息，rag 把检索结果提供给生成模型，agent 再组织多步任务；每一层都可能影响最终答案。\n\n以比较一座城市的旅行方案为例，系统应展示使用了哪些来源、什么时候抓取、哪些信息仍待确认。只要任务涉及预订、跨服务写入或付款，就需要用户明确批准；后台运行不等于复杂任务可以脱离监督。\n\nGoogle 的页面没有给出所有地区、任务和来源组合的独立准确率，也没有保证信息智能体一直稳定运行。后续应抽查长任务、不同输入格式、来源新鲜度、任务中断和错误纠正。",
+  "publishedAt": "2026-05-19",
+  "eventDate": "2026-05-19",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-search-agentic-upgrade.svg",
+    "alt": "Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认并推出信息智能体；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/google-search-agentic-upgrade.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "search-update",
+      "title": "AI Mode 换了模型，也换了输入方式",
+      "body": "Google 说 AI Mode 升级到 Gemini 3.5 Flash，支持文本、图片、文件、视频和 Chrome 标签。页面同时介绍了可在后台继续检索的信息智能体，首发计划先覆盖美国夏季。",
+      "kind": "narrative"
+    },
+    {
+      "id": "search-chain",
+      "title": "一次搜索任务经过哪些环节",
+      "body": "默认模型理解输入，semantic-search 和 retrieval 找候选信息，rag 把结果放进上下文，agent 负责继续推进多步任务。来源显示、抓取时间和任务状态需要跟着每一步保留下来。",
+      "kind": "technical"
+    },
+    {
+      "id": "travel-example",
+      "title": "旅行比较任务应该怎样交给它",
+      "body": "系统可以整理航班、地点和评价，但要展示来源和抓取时间，提醒哪些条件还未确认。预订、付款或跨服务写入前，必须等待用户批准。",
+      "kind": "example"
+    },
+    {
+      "id": "release-boundary",
+      "title": "后台运行不等于无人监督",
+      "body": "官方页面是产品计划和首发节奏说明，没有提供所有地区、任务和来源组合的独立准确率，也没有证明复杂任务可以自动完成。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "后续看中断和纠错能否工作",
+      "body": "继续抽查长任务、不同输入格式、来源新鲜度和错误纠正，观察用户能否随时暂停或回到原始来源。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "沿着一个 Search 信息任务查看来源和审批",
+    "question": "当 Search 在后台继续检索时，怎样知道它用了什么资料、还差哪一步？",
+    "steps": [
+      {
+        "label": "固定任务目标",
+        "detail": "把要比较的条件、时间范围和可接受的来源写清楚，避免后台任务自行扩大范围。",
+        "evidence": "https://blog.google/products-and-platforms/products/search/search-io-2026/"
+      },
+      {
+        "label": "查看来源链",
+        "detail": "保存检索词、来源页面、抓取时间和生成回答之间的关系，不能只看最终摘要。",
+        "evidence": "https://blog.google/products-and-platforms/products/search/search-io-2026/"
+      },
+      {
+        "label": "标出待确认动作",
+        "detail": "将预订、付款、发送和跨服务写入列为需要用户批准的动作，限制 agent 的工具权限。",
+        "evidence": "https://blog.google/products-and-platforms/products/search/search-io-2026/"
+      },
+      {
+        "label": "测试暂停与恢复",
+        "detail": "中断长任务、替换一个来源或纠正条件，观察系统是否能更新结果并保留新的状态。",
+        "evidence": "https://blog.google/products-and-platforms/products/search/search-io-2026/"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Search",
+    "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/"
+  },
+  "relatedSlugs": [
+    "semantic-search",
+    "retrieval",
+    "rag",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+      "claim": "AI Mode 升级至 Gemini 3.5 Flash 并支持多种输入",
+      "excerpt": "Google says AI Mode moves to Gemini 3.5 Flash and accepts text, images, files, video and Chrome tabs."
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+      "claim": "Search 将推出可在后台运行的信息智能体",
+      "excerpt": "The post describes an information agent that can run in the background, initially in the U.S. this summer."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+  "sourceHash": "sha256:dd1c0c8a2e362d962546b6a22d1e0aef107cdc1f0d5d20119ae45acfea4280ec",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "semantic-search",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认并推出信息智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "retrieval",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认并推出信息智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认并推出信息智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认并推出信息智能体”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+      "claim": "AI Mode 升级至 Gemini 3.5 Flash 并支持多种输入",
+      "excerpt": "Google says AI Mode moves to Gemini 3.5 Flash and accepts text, images, files, video and Chrome tabs."
+    },
+    {
+      "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+      "claim": "Search 将推出可在后台运行的信息智能体",
+      "excerpt": "The post describes an information agent that can run in the background, initially in the U.S. this summer."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文清楚区分 AI Mode 默认模型升级、信息智能体的后台检索计划和美国夏季首发节奏，没有把预告写成全球已上线或复杂任务可无人监督完成。来源链、抓取时间、暂停/纠错和预订付款等需用户批准的动作均有说明；已将标题中的“推出信息智能体”改为“预告信息智能体”，避免误读为已全面发布。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将标题从“Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认并推出信息智能体”改为“Google Search 将 Gemini 3.5 Flash 设为 AI Mode 默认，预告信息智能体”，突出信息智能体仍按美国夏季计划推出。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-19",
+  "fingerprint": "sha256:dd1c0c8a2e362d962546b6a22d1e0aef107cdc1f0d5d20119ae45acfea4280ec"
+}

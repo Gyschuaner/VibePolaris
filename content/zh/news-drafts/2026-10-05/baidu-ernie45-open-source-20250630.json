@@ -1,0 +1,232 @@
+{
+  "slug": "baidu-ernie45-open-source-20250630",
+  "title": "百度开源文心 4.5 系列：从十个模型开始重做开放路线",
+  "summary": "6 月 30 日，百度 ERNIE Blog 宣布文心 4.5 系列正式开源，首批包含 10 款模型，覆盖文本、视觉、多模态和轻量规格；官方仓库同时给出 PaddlePaddle、PyTorch、ERNIEKit 与 Apache 2.0 许可信息。性能数字仍是百度自测口径。",
+  "body": "6 月 30 日，百度把文心 4.5 系列从“要开源”变成了“可以查看和下载的模型家族”。ERNIE Blog 的公告称，这一系列共有 10 款模型，既有混合专家（MoE）结构，也有 0.3B 级别的稠密小模型；最大模型的总参数量达到 424B，激活参数为 47B。这里的总参数和激活参数不是同一个数字：前者表示专家池的总规模，后者表示一次推理实际调用的部分。\n\n官方公告还列出视觉语言模型，支持文本、图像和视频理解，并区分“思考”和“非思考”模式。百度随后在官方 GitHub 仓库给出 ERNIEKit，覆盖下载、微调、LoRA、DPO、量化和 FastDeploy 推理示例。对开发者来说，新闻价值不只在模型名称，而在于从模型权重、训练工具到服务脚本，至少能看到一条自托管路线。\n\n“开源”仍然需要拆开看。官方仓库写明 ERNIE 4.5 模型使用 Apache License 2.0，允许商业使用但要遵守许可证条款；不同模型的权重、依赖、硬件需求和服务接口并不会因为同一个系列名称而自动相同。小模型更容易在本地尝试，大型 MoE 模型则需要更高的显存、并行和运维成本。\n\n百度在公告中列出大量 benchmark 结果，例如 300B-A47B-Base 在 28 个测试中的 22 个超过 DeepSeek-V3-671B-A37B-Base。这些数字来自百度自己的测试设置，读者需要同时看到数据集版本、提示词、采样方式和硬件条件，不能只凭一句“超过”判断所有任务都更好。官方仓库提供了复现入口，但独立复测仍是另一件事。\n\n这条新闻也回应了今年中国模型市场的开放竞争。Reuters 早在 2 月报道百度计划在 6 月 30 日转向开源，背景是 DeepSeek 让低成本、可部署的模型更受关注。计划兑现并不等于市场结果已经出现：下载量、真实部署、社区贡献和商业收入都要等后续数据。\n\n对普通读者来说，最实用的判断顺序是：先看具体是哪一款 ERNIE 4.5，再看许可是否允许自己的用途，然后核对显存与部署工具，最后才比较 benchmark。6 月 30 日的确定事实是模型家族公开和工具链出现，不是百度已经在所有场景击败了其他模型。",
+  "publishedAt": "2025-06-30",
+  "eventDate": "2025-06-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/baidu-ernie45-open-source-20250630.svg",
+    "alt": "百度文心 4.5 从十款模型、工具链、Apache 2.0 到本地部署的开源路径",
+    "sourceUrl": "/images/news/baidu-ernie45-open-source-20250630.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "十款模型把“系列”变成了可下载清单",
+      "body": "官方公告列出 MoE、视觉语言和轻量规格，最大模型和小模型承担的使用场景不同。",
+      "kind": "narrative"
+    },
+    {
+      "id": "architecture",
+      "title": "总参数和激活参数要分开",
+      "body": "MoE 模型可以拥有很大的专家池，但一次请求只调用其中一部分；这影响显存、吞吐和部署方式。",
+      "kind": "technical"
+    },
+    {
+      "id": "license",
+      "title": "Apache 2.0 给的是许可边界",
+      "body": "官方仓库标注 Apache 2.0，开发者仍要检查具体权重、依赖和第三方数据的使用条件。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmarks",
+      "title": "benchmark 是百度的测试结果",
+      "body": "“28 项中 22 项领先”属于厂商报告，需要数据集、提示词和独立复测才能形成更完整判断。",
+      "kind": "comparison"
+    },
+    {
+      "id": "deploy",
+      "title": "真正的门槛在部署和复现",
+      "body": "ERNIEKit、FastDeploy 和下载示例降低了入口，但大模型的硬件与运维成本仍然存在。",
+      "kind": "technical"
+    },
+    {
+      "id": "meaning",
+      "title": "开源路线的结果要等后续数据",
+      "body": "6 月 30 日确认了公开动作，下载、社区和生产采用不能从公告当天直接推出。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "看一个开源模型，先看哪几层？",
+    "question": "模型名称、许可、部署和 benchmark 是四件事，不能用一个数字代替。",
+    "steps": [
+      {
+        "label": "确认型号",
+        "detail": "先区分 424B-A47B、21B-A3B、视觉模型和 0.3B 小模型。",
+        "evidence": "ten models across MoE, multimodal and dense variants"
+      },
+      {
+        "label": "检查许可",
+        "detail": "确认 Apache 2.0 和实际依赖是否满足你的商业或研究用途。",
+        "evidence": "Apache License 2.0 in official repository"
+      },
+      {
+        "label": "估算部署",
+        "detail": "再看显存、并行、FastDeploy 或 ERNIEKit 是否能支撑你的硬件。",
+        "evidence": "official download and serving examples"
+      },
+      {
+        "label": "复核评测",
+        "detail": "最后比较数据集和复现条件，不把厂商数字写成普遍结论。",
+        "evidence": "Baidu-reported benchmark claims"
+      }
+    ]
+  },
+  "source": {
+    "name": "百度 ERNIE Blog",
+    "url": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "benchmark",
+    "eval",
+    "data-lineage",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/",
+      "claim": "百度 ERNIE Blog 6 月 30 日宣布文心 4.5 系列正式开源，共 10 款模型，覆盖 MoE、多模态和轻量模型。",
+      "excerpt": "百度 ERNIE Blog, “ERNIE 4.5 模型系列正式开源”, 2025 年 6 月 30 日。"
+    },
+    {
+      "url": "https://github.com/PaddlePaddle/ERNIE",
+      "claim": "百度官方 GitHub 仓库提供 ERNIE 4.5、ERNIEKit、下载与部署说明，并标注 Apache License 2.0。",
+      "excerpt": "PaddlePaddle/ERNIE official repository, Apache License 2.0."
+    },
+    {
+      "url": "https://huggingface.co/collections/baidu/ernie-45-6861cd4c9be84540645f35c9",
+      "claim": "Hugging Face 集合页提供百度 ERNIE 4.5 模型入口，作为可追溯的权重分发路径。",
+      "excerpt": "Baidu ERNIE 4.5 model collection on Hugging Face."
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/baidu-to-make-ernie-ai-model-opensource-from-end-of-june-3869567",
+      "claim": "Reuters 2 月报道百度计划从 6 月 30 日起开源 ERNIE 4.5；它用于解释策略转向背景，不替代 6 月 30 日正式开源公告。",
+      "excerpt": "Reuters, “China’s Baidu to make latest Ernie AI model open-source”, Feb 13, 2025."
+    }
+  ],
+  "canonicalUrl": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/",
+  "sourceHash": "sha256:b49600b7fd4c34812b024f3b00a5fef87d8be5c9d30b0ca9485fbdcef2e839cb",
+  "status": "published",
+  "discoveredAt": "2026-10-05T10:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 llm 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 benchmark 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.91,
+      "evidence": [
+        "正文解释 eval 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.88,
+      "evidence": [
+        "正文解释 data-lineage 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.84,
+      "evidence": [
+        "正文解释 tools 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文解释 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://ernie.baidu.com/blog/zh/posts/ernie4.5/",
+      "claim": "百度 ERNIE Blog 6 月 30 日宣布文心 4.5 系列正式开源，共 10 款模型，覆盖 MoE、多模态和轻量模型。",
+      "excerpt": "百度 ERNIE Blog, “ERNIE 4.5 模型系列正式开源”, 2025 年 6 月 30 日。"
+    },
+    {
+      "url": "https://github.com/PaddlePaddle/ERNIE",
+      "claim": "百度官方 GitHub 仓库提供 ERNIE 4.5、ERNIEKit、下载与部署说明，并标注 Apache License 2.0。",
+      "excerpt": "PaddlePaddle/ERNIE official repository, Apache License 2.0."
+    },
+    {
+      "url": "https://huggingface.co/collections/baidu/ernie-45-6861cd4c9be84540645f35c9",
+      "claim": "Hugging Face 集合页提供百度 ERNIE 4.5 模型入口，作为可追溯的权重分发路径。",
+      "excerpt": "Baidu ERNIE 4.5 model collection on Hugging Face."
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/baidu-to-make-ernie-ai-model-opensource-from-end-of-june-3869567",
+      "claim": "Reuters 2 月报道百度计划从 6 月 30 日起开源 ERNIE 4.5；它用于解释策略转向背景，不替代 6 月 30 日正式开源公告。",
+      "excerpt": "Reuters, “China’s Baidu to make latest Ernie AI model open-source”, Feb 13, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "method": "source",
+    "notes": "已核对事件日、来源发布日期、原始链接和公司/媒体口径；正文保留新闻事实与待验证主张的边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T10:20:00Z",
+    "notes": "主助手完成新闻事实链、日期边界和段落初审，等待 reader review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T21:37:41Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "模型、许可证、参数清楚，benchmark 标为百度自测，开源范围不越界。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-30-baidu-ernie45-open-source-20250630",
+  "promotedAt": "2026-10-04T21:38:22.617Z"
+}

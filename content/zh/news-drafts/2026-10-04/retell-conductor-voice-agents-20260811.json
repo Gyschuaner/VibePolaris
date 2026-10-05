@@ -1,0 +1,170 @@
+{
+  "slug": "retell-conductor-voice-agents-20260811",
+  "title": "Retell AI 推出 Conductor：先改、再测、再让语音 Agent 上线",
+  "summary": "8 月 11 日，Retell AI 发布 Conductor，一个面向语音 Agent 构建的协作工具。它把自然语言意图转成 Agent 配置，同时在图结构中展示改动、生成测试并沿用用户的角色权限；公司内部称它已写出 70% 的模拟测试，这个比例仍属于公司自报。",
+  "body": "Retell AI 在 8 月 11 日发布 Conductor，把“描述我想要的呼叫流程”变成构建语音 Agent 的入口。官方介绍里，Conductor 会在 Retell 内部创建、审查、测试和改进一个真实 Agent，并把每次改动展示出来，等使用者确认后再接近线上电话。它面对的是电话客服这种有状态、有工具、有转接和异常分支的系统，不是只生成一段对话文本。\n\nConductor 的一个关键设计是 graph-native review。普通代码助手可能给你一个 JSON 文件，使用者还要自己找出哪一处被改了；Conductor 把改动放回流程图中的节点，让人可以在上下文里接受或拒绝。这个设计把审查从“看最终文本”移到了“看行为链路”，更适合有多个提示、步骤、工具和设置的语音系统。\n\n权限也是产品叙事的一部分。Retell 称 Conductor 遵守细粒度的 RBAC，并继承当前用户的访问范围：看不到通话记录的人，Conductor 也不能替他看到；不能编辑 Agent 的人，Conductor 也不应替他编辑。它并没有消除权限配置，而是把权限作为构建过程的输入。真正上线前仍需要管理员确认数据范围和发布权限。\n\nRetell 还称 Conductor 会分析出错的通话、写出重现问题的测试，并根据结果更新 Agent。官方页面给出的内部指标是，它已经写出公司 70% 的模拟测试、完成一半内部 Agent 修改；这些数字没有给出任务样本、时间窗口或独立验证，不能外推到所有客服团队。\n\n语音 Agent 的难点包括延迟、轮流说话、打断、工具调用和异常转人工。一个看起来流畅的演示，可能在客户说“改地址但不要改账单”时走错分支。Conductor 选择把审查、测试和修正放在部署前后，方向上更接近软件工程的回归循环，但它仍然需要人来定义安全边界、检查测试是否覆盖关键场景。\n\n这条新闻值得关注的地方，是把 Agent 构建从“写提示词”拉回到“维护一套会接电话的系统”。后续需要看公开文档是否给出测试格式、回滚方式、审计记录和真实客户结果，才能判断这个协作层能否降低上线风险。",
+  "publishedAt": "2026-08-11",
+  "eventDate": "2026-08-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/retell-conductor-voice-agents-20260811.svg",
+    "alt": "Retell AI 推出 Conductor：先改、再测、再让语音 Agent 上线 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/retell-conductor-voice-agents-20260811.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "product",
+      "title": "它不是聊天机器人配置器",
+      "body": "Conductor 处理的是提示、步骤、工具和设置组成的语音 Agent，并把改动、测试和修正放进同一条流程。",
+      "kind": "narrative"
+    },
+    {
+      "id": "review",
+      "title": "把改动放回流程图里看",
+      "body": "graph-native review 让使用者在具体节点旁接受或拒绝改动，减少只看一份 JSON 或最终话术带来的盲区。",
+      "kind": "technical"
+    },
+    {
+      "id": "permission",
+      "title": "权限跟着操作者走",
+      "body": "Retell 称 Conductor 继承 RBAC；它不能替一个没有通话记录权限的人读取通话，也不能绕过编辑权限。",
+      "kind": "boundary"
+    },
+    {
+      "id": "tests",
+      "title": "公司内部指标要放在原位",
+      "body": "“写出 70% 模拟测试、完成一半 Agent 修改”是公司内部口径，页面没有给出样本和独立复核，不能当作行业效果。",
+      "kind": "comparison"
+    },
+    {
+      "id": "deploy",
+      "title": "语音系统仍需要人工放行",
+      "body": "延迟、打断、工具调用和转人工都要在真实电话中回归；能生成测试不等于测试覆盖了关键风险。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "一个语音 Agent 怎样从描述走到上线？",
+    "question": "为什么“说清楚需求”还不够，必须把改动和测试放出来？",
+    "steps": [
+      {
+        "label": "描述工作意图",
+        "detail": "使用者先说清楚客户、目标和边界，Conductor 把自然语言转成流程节点和工具设置。",
+        "evidence": "Retell Conductor 公告"
+      },
+      {
+        "label": "显示每个改动",
+        "detail": "系统把变化放回流程图，使用者可以逐项接受或拒绝，不用猜一份配置文件改了什么。",
+        "evidence": "graph-native review"
+      },
+      {
+        "label": "生成可复现测试",
+        "detail": "对失败通话写出测试样例，再跑一遍，检查延迟、分支、工具调用和转人工。",
+        "evidence": "Retell 对失败通话的描述"
+      },
+      {
+        "label": "按权限放行",
+        "detail": "只有具备相应权限的人才能编辑和发布；上线前仍要人工验收高风险场景。",
+        "evidence": "RBAC 说明与文章边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Retell AI",
+    "url": "https://www.retellai.com/blog/introducing-conductor"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "tools",
+    "authorization",
+    "eval",
+    "function-calling",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "grok-46-long-agents-20260812",
+    "gemini-connected-apps-20260812"
+  ],
+  "sources": [
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "Retell 说 Conductor 可以构建、审查、测试和改进真实语音 Agent。",
+      "excerpt": "builds, reviews, tests, and improves a real voice agent"
+    },
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "Conductor 将变更显示在流程上下文中，供使用者接受或拒绝。",
+      "excerpt": "surfaces every change right where it happens"
+    },
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "Retell 称 Conductor 继承使用者的访问权限。",
+      "excerpt": "It inherits the permissions of whoever is using it."
+    },
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "公司披露 Conductor 已写出 70% 的模拟测试。",
+      "excerpt": "Conductor has written 70% of our simulation tests"
+    }
+  ],
+  "canonicalUrl": "https://www.retellai.com/blog/introducing-conductor",
+  "sourceHash": "sha256:07c2865c88018592813a4f1e7fd16436caa0ad009cecc9b724e5077ba126ea57",
+  "status": "published",
+  "discoveredAt": "2026-10-04T02:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "Retell 说 Conductor 可以构建、审查、测试和改进真实语音 Agent。",
+      "excerpt": "builds, reviews, tests, and improves a real voice agent"
+    },
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "Conductor 将变更显示在流程上下文中，供使用者接受或拒绝。",
+      "excerpt": "surfaces every change right where it happens"
+    },
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "Retell 称 Conductor 继承使用者的访问权限。",
+      "excerpt": "It inherits the permissions of whoever is using it."
+    },
+    {
+      "url": "https://www.retellai.com/blog/introducing-conductor",
+      "claim": "公司披露 Conductor 已写出 70% 的模拟测试。",
+      "excerpt": "Conductor has written 70% of our simulation tests"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T02:20:00Z",
+    "method": "source",
+    "notes": "按事件发生日和来源公开日分别核对；公司自述、媒体报道和待验证指标已在正文中分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T02:20:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 要求完成首轮事实边界、白话解释和去模板化审校。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T03:00:00Z",
+    "questions": [
+      "正文以事件为先，面向零基础读者解释关键术语，并清楚区分公司自报指标、媒体报道与可验证事实。",
+      "eventDate 与 publishedAt 已按来源页面和事件发生日核对；Neuromorphic Labs 明确保留 8 月 11 日事件日与 8 月 12 日网页发布时间的差异。",
+      "来源、引用卡片与证据链完整，未把公司目标、内部指标或路线图写成已完成的行业结果。",
+      "词条与相关文章联动服务于理解且无明显错配，六篇均有对应 SVG 视觉稿。"
+    ],
+    "notes": "读者审阅通过：六篇稿件可由零基础读者复述新闻主旨，新闻事实、公司自述和待验证边界分层清楚。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-11",
+  "promotedAt": "2026-10-03T17:16:26.028Z"
+}

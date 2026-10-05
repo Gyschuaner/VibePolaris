@@ -1,0 +1,182 @@
+{
+  "slug": "openai-tanstack-npm-supply-chain-attack",
+  "title": "OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备",
+  "summary": "5 月 13 日，OpenAI 披露 TanStack npm 供应链攻击在 5 月 11 日 UTC 影响了两台员工设备，有限的内部凭据材料被外泄。OpenAI 表示尚未发现用户数据、生产系统、知识产权或已发布软件受到影响；这份披露是调查时点的范围说明，受影响依赖方仍需独立检查。",
+  "body": "5 月 13 日，OpenAI 披露 TanStack npm 供应链攻击在 5 月 11 日 UTC 影响了两台员工设备，有限的内部凭据材料被外泄。截至这份披露的调查时点，公司表示没有发现用户数据、生产系统、知识产权或已发布软件被改动的证据。\n\n供应链事故不能只看“有没有用户数据泄露”。需要分别查依赖包是否被篡改、哪些设备执行过它、凭据是否被使用，以及开发环境和生产环境之间有没有可达路径。一台员工设备受影响，不自动等于生产环境被入侵；“未发现”也不等于所有下游项目已经完成排查。\n\n把一次构建放进安全响应流程，团队应锁定依赖版本和哈希，在隔离环境安装，保留构建来源；异常出现后轮换凭据、阻断发布，并沿着仓库、流水线和下游项目继续检查。execution-sandbox 隔离依赖执行，data-lineage 追踪包、构建和发布来源，auth 管理凭据身份，authorization 规定谁能安装、发布、轮换或撤销。\n\nOpenAI 的公告支持调查时点和已知影响范围，不披露攻击者身份、所有下游软件状态或长期影响。因此，判断风险是否关闭还需要锁文件、构建日志、凭据轮换记录、依赖维护者通告和后续修复。",
+  "publishedAt": "2026-05-13",
+  "eventDate": "2026-05-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-tanstack-npm-supply-chain-attack.svg",
+    "alt": "OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/openai-tanstack-npm-supply-chain-attack.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "disclosure",
+      "title": "OpenAI 目前披露了哪一层影响",
+      "body": "公司称两台员工设备受影响，有限的内部凭据材料被外泄；同时表示未发现用户数据、生产系统、知识产权或已发布软件受到影响。这里的“未发现”是调查时点的结论，需和后续独立检查分开。",
+      "kind": "narrative"
+    },
+    {
+      "id": "supply-chain",
+      "title": "依赖包、设备和生产系统要分开查",
+      "body": "供应链响应至少要追踪包版本、执行过它的设备、使用过的凭据，以及开发环境通往生产环境的权限。员工设备受影响不等于生产系统已入侵，但也不能只看用户数据一项就结束排查。",
+      "kind": "technical"
+    },
+    {
+      "id": "build-response",
+      "title": "一次异常构建怎样被控制",
+      "body": "先锁定依赖版本和哈希，在 execution-sandbox 中复现并保存构建来源；随后轮换凭据、阻断发布、检查仓库和下游项目。data-lineage 追踪来源，auth 和 authorization 负责凭据与动作权限。",
+      "kind": "example"
+    },
+    {
+      "id": "known-unknowns",
+      "title": "调查公告没有回答长期影响",
+      "body": "公告没有披露攻击者身份、所有下游软件状态或长期影响，也不替受影响依赖方完成独立检查。后续要等锁文件、构建日志、凭据轮换和维护者通告。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-checks",
+      "title": "风险是否关闭，要看修复记录",
+      "body": "继续查看受影响包版本、修复公告、凭据轮换和下游项目确认，避免把一次公司披露当成整个生态已经安全。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "沿着依赖包追踪一次供应链事故",
+    "question": "怎样区分员工设备受影响、凭据外泄和生产系统被入侵？",
+    "steps": [
+      {
+        "label": "锁定依赖版本",
+        "detail": "保存 lockfile、包哈希和构建时间，确认哪些项目安装过受影响版本。",
+        "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+      },
+      {
+        "label": "列出执行设备",
+        "detail": "查哪些开发设备和 CI 任务实际运行过该包，比较它们能访问的仓库和网络。",
+        "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+      },
+      {
+        "label": "轮换并审计凭据",
+        "detail": "撤销可能暴露的密钥，检查使用记录和授权范围，保留处理时间。",
+        "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+      },
+      {
+        "label": "确认下游修复",
+        "detail": "查看生产系统、已发布软件和依赖维护者的独立通告，直到每一层都有记录。",
+        "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+  },
+  "relatedSlugs": [
+    "execution-sandbox",
+    "data-lineage",
+    "auth",
+    "authorization"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+      "claim": "OpenAI 称两台员工设备受影响、有限凭据材料被外泄",
+      "excerpt": "OpenAI says two employee devices were impacted and only limited credential material was exfiltrated."
+    },
+    {
+      "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+      "claim": "公司称未发现用户数据、生产系统或发布软件被改动",
+      "excerpt": "OpenAI says it found no evidence of user data, production systems, intellectual property or published software being affected."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+  "sourceHash": "sha256:7ee696609fe6b6c25708b464643aa4a5d3c22c13da0b7b28d529140a9f1b7c58",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+      "claim": "OpenAI 称两台员工设备受影响、有限凭据材料被外泄",
+      "excerpt": "OpenAI says two employee devices were impacted and only limited credential material was exfiltrated."
+    },
+    {
+      "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+      "claim": "公司称未发现用户数据、生产系统或发布软件被改动",
+      "excerpt": "OpenAI says it found no evidence of user data, production systems, intellectual property or published software being affected."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文明确把 5 月 11 日 UTC 的事件时间与 5 月 13 日披露时间分开，并将“未发现”限定为 OpenAI 披露时点的调查结论；没有把它写成所有下游项目均已排查或生产系统绝对安全。供应链响应按依赖版本、执行设备、凭据、构建、发布和下游项目展开，适合零基础读者理解。已补充调查时点措辞。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将“没有发现”明确改为“截至这份披露的调查时点，公司表示没有发现”，强化公告结论的时间边界。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-13",
+  "fingerprint": "sha256:7ee696609fe6b6c25708b464643aa4a5d3c22c13da0b7b28d529140a9f1b7c58"
+}

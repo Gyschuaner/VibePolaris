@@ -1,0 +1,236 @@
+{
+  "slug": "suno-data-breach-55m-20260721",
+  "title": "Suno 数据泄露暴露 5530 万条记录：AI 产品的账户、支付与训练数据要分开追查",
+  "summary": "7 月 21 日，TechCrunch 援引 Have I Been Pwned 报道，Suno 一次发生于 2025 年 11 月的入侵可能涉及超过 5530 万条个人信息，包含邮箱、姓名、地址、电话、购买记录和部分支付卡字段。Suno 仅确认发生过安全事件，完整影响范围和用户通知仍待公开。",
+  "body": "7 月 21 日，TechCrunch 报道 AI 音乐生成器 Suno 的一次数据泄露可能影响超过 5530 万人。Have I Been Pwned 对泄露数据做了整理，列出邮箱、姓名、地址、电话号码、购买记录和部分支付卡字段；它显示入侵发生在 2025 年 11 月，直到 2026 年 7 月 20 日才被加入数据库。这里的新闻发生日是公开规模的日期，底层入侵早了八个月。\n\n泄露字段和“完整银行卡被盗”是两件事。Have I Been Pwned 说 Stripe 记录中出现购买信息、卡片类型、到期时间和末四位等部分字段，同时说明 Suno 无法访问完整卡号。用户面对的直接风险更可能是钓鱼、账户接管和身份信息拼接，而不是凭这批数据直接复制一张完整银行卡。是否需要改密码、启用多因素认证，要看个人是否在 Suno 或其他服务复用了同一凭据。\n\nSuno 发言人确认公司在 2025 年 11 月经历过安全事件，但在 TechCrunch 发布时没有在网站上公开完整的泄露通知，也没有说明已通知哪些用户。文章因此把 5530 万写成 HIBP 对数据集的统计，把公司确认写成“发生过安全事件”，没有把每条记录都写成已验证的活跃用户，更没有替公司推断为什么延迟披露。\n\n这次泄露还把用户数据和训练数据问题放到了一起。404 Media 从被取得的源代码中看到，Suno 可能从 YouTube、Deezer、Genius 等网站抓取歌曲和歌词；唱片公司此前已经就训练素材提起诉讼。源代码和训练库线索能说明数据治理的范围，但它们不是对版权诉讼的裁判结果，也不能证明这批训练材料和 5530 万条用户记录来自同一个数据库。\n\n对 AI 产品来说，事故的影响面不只取决于模型有没有输出危险内容。账户系统、支付服务、训练数据管道和内部源代码同样会成为高价值目标，尤其是当用户数据与创作内容、企业接口或支付记录放在同一家公司时。安全通知、字段级加密、最小权限、日志留存和及时轮换凭据，决定用户能不能采取有效补救。\n\n截至 7 月 21 日，公开事实是 HIBP 发现了大规模数据集、Suno 承认发生过安全事件，外部媒体尚未拿到完整的官方事件报告。用户应把它当作一次需要核查的高风险泄露信号：检查是否复用密码、开启多因素认证、警惕冒充 Suno 的邮件，并等待公司说明受影响账号和补救范围。",
+  "publishedAt": "2026-07-21",
+  "eventDate": "2026-07-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/suno-data-breach-55m-20260721.svg",
+    "alt": "Suno 数据泄露时间线把用户账户、部分支付字段、训练数据源代码和公司通知责任分开；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/suno-data-breach-55m-20260721.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "scale",
+      "title": "5530 万是泄露数据集规模，不等于活跃用户数",
+      "body": "HIBP 记录超过 5530 万个受影响邮箱地址；新闻公开日是 7 月 21 日，入侵发生在 2025 年 11 月。",
+      "kind": "narrative"
+    },
+    {
+      "id": "fields",
+      "title": "部分支付卡字段不等于完整银行卡信息",
+      "body": "公开字段包括卡片类型、到期时间和末四位等购买记录；HIBP 说明 Suno 无法访问完整卡号，补救重点是账户和钓鱼风险。",
+      "kind": "boundary"
+    },
+    {
+      "id": "disclosure",
+      "title": "公司确认安全事件，但披露范围仍不完整",
+      "body": "Suno 发言人确认 2025 年 11 月发生过安全事件，报道当日没有找到完整的公开泄露通知或用户通知清单。",
+      "kind": "comparison"
+    },
+    {
+      "id": "training",
+      "title": "训练数据线索与用户数据库要分开",
+      "body": "404 Media 从源代码看到歌曲和歌词抓取线索，涉及版权诉讼背景；这不能直接证明训练材料与用户个人数据在同一数据表。",
+      "kind": "technical"
+    },
+    {
+      "id": "actions",
+      "title": "用户可以先做三件补救",
+      "body": "检查密码是否复用、开启多因素认证、警惕冒充 Suno 的邮件和付款请求；更具体的影响范围要等官方通知。",
+      "kind": "example"
+    },
+    {
+      "id": "followup",
+      "title": "后续要看字段验证和通知责任",
+      "body": "完整事件报告需要说明哪些账号、支付记录和源代码确实被访问，何时通知用户以及如何轮换凭据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "一次 AI 产品泄露怎样从数据集规模变成用户行动？",
+    "question": "先确认泄露字段和时间，再把账户、支付、训练数据与补救措施分开处理。",
+    "steps": [
+      {
+        "label": "确认时间线",
+        "detail": "区分 2025 年 11 月入侵、2026 年 7 月数据集被发现和 7 月 21 日新闻公开。",
+        "evidence": "HIBP breach overview"
+      },
+      {
+        "label": "列出字段",
+        "detail": "查看邮箱、电话、地址、购买记录和部分卡片字段，避免把它们夸大成完整卡号。",
+        "evidence": "Have I Been Pwned"
+      },
+      {
+        "label": "检查账户风险",
+        "detail": "如果密码复用，立即更换并开启多因素认证，同时防范钓鱼和冒名付款。",
+        "evidence": "user remediation guidance"
+      },
+      {
+        "label": "等待正式通知",
+        "detail": "关注 Suno 是否发布受影响账号、补救时间和监管通知，必要时按地区法律行使查询权。",
+        "evidence": "company incident report pending"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/07/21/ai-music-generator-suno-breach-affects-55m-users-per-have-i-been-pwned/"
+  },
+  "relatedSlugs": [
+    "data-pipeline",
+    "authorization",
+    "event",
+    "citation",
+    "llm",
+    "context"
+  ],
+  "relatedArticleSlugs": [
+    "suno-v6-warner-music-models-20260909"
+  ],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/07/21/ai-music-generator-suno-breach-affects-55m-users-per-have-i-been-pwned/",
+      "claim": "TechCrunch 7 月 21 日报道，Have I Been Pwned 从泄露数据中识别出超过 5530 万个 Suno 用户记录，包含姓名、地址、邮箱、电话、购买记录和部分支付卡信息；Suno 称 2025 年 11 月发生过安全事件，但没有公开披露完整数据泄露。",
+      "excerpt": "A cyberattack at Suno allowed a hacker to steal personal information from more than 55.3 million people."
+    },
+    {
+      "url": "https://haveibeenpwned.com/Breach/Suno",
+      "claim": "Have I Been Pwned 的数据泄露页面记录事件发生在 2025 年 11 月、2026 年 7 月 20 日加入数据库，受影响地址约 5530 万，并列出邮箱、电话、姓名、地址、购买和部分卡片字段。",
+      "excerpt": "55.3M affected addresses; breach occurred November 2025; added July 20, 2026."
+    },
+    {
+      "url": "https://www.404media.co/hack-reveals-suno-ai-music-generator-scraped-youtube-deezer-and-genius/",
+      "claim": "404 Media 7 月 15 日先报道黑客取得 Suno 源代码和训练库线索，涉及 YouTube、Deezer、Genius 等来源；这部分是训练数据与版权线索，不等同于用户数据库规模。",
+      "excerpt": "Hacked source code revealed scraping from YouTube, Deezer, and Genius."
+    },
+    {
+      "url": "https://www.suno.com/",
+      "claim": "Suno 官方网站是受影响服务的产品入口；截至报道时未找到对应的公开事件说明，文章将这一缺口明确写成未公开状态而非推定原因。",
+      "excerpt": "Suno AI music generation service."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/07/21/ai-music-generator-suno-breach-affects-55m-users-per-have-i-been-pwned/",
+  "sourceHash": "sha256:1c6d2bbe29b472b55d3ac61907f03e005f4e29106ac7f2110c35847579d88cf4",
+  "status": "published",
+  "discoveredAt": "2026-10-04T23:35:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 data-pipeline 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 authorization 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 event 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 citation 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 llm 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 context 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/07/21/ai-music-generator-suno-breach-affects-55m-users-per-have-i-been-pwned/",
+      "claim": "TechCrunch 7 月 21 日报道，Have I Been Pwned 从泄露数据中识别出超过 5530 万个 Suno 用户记录，包含姓名、地址、邮箱、电话、购买记录和部分支付卡信息；Suno 称 2025 年 11 月发生过安全事件，但没有公开披露完整数据泄露。",
+      "excerpt": "A cyberattack at Suno allowed a hacker to steal personal information from more than 55.3 million people."
+    },
+    {
+      "url": "https://haveibeenpwned.com/Breach/Suno",
+      "claim": "Have I Been Pwned 的数据泄露页面记录事件发生在 2025 年 11 月、2026 年 7 月 20 日加入数据库，受影响地址约 5530 万，并列出邮箱、电话、姓名、地址、购买和部分卡片字段。",
+      "excerpt": "55.3M affected addresses; breach occurred November 2025; added July 20, 2026."
+    },
+    {
+      "url": "https://www.404media.co/hack-reveals-suno-ai-music-generator-scraped-youtube-deezer-and-genius/",
+      "claim": "404 Media 7 月 15 日先报道黑客取得 Suno 源代码和训练库线索，涉及 YouTube、Deezer、Genius 等来源；这部分是训练数据与版权线索，不等同于用户数据库规模。",
+      "excerpt": "Hacked source code revealed scraping from YouTube, Deezer, and Genius."
+    },
+    {
+      "url": "https://www.suno.com/",
+      "claim": "Suno 官方网站是受影响服务的产品入口；截至报道时未找到对应的公开事件说明，文章将这一缺口明确写成未公开状态而非推定原因。",
+      "excerpt": "Suno AI music generation service."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T23:35:00Z",
+    "method": "source",
+    "notes": "按新闻公开日、底层事件日、官方口径、独立报道和待调查事实分层核对；正文把已确认事实、公司主张、媒体分析与仍待验证部分分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T23:35:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 逐篇手写；新闻事实先于技术背景，数字、能力和调查结论保留来源归属，等待 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T06:10:00Z",
+    "questions": [
+      "新闻主线优先，中文面向零基础读者，段落按事件组织且没有明显模板化表达。",
+      "eventDate/publishedAt 均为 2026-07-21，与官方发布、媒体报道和底层事件日期边界一致。",
+      "官方、媒体、第三方数据与不确定性边界清楚：OpenAI/Hugging Face 事件保留未公开细节；Google benchmark 和有限访问计划未泛化；美国制裁是审查/可能措施而非生效禁令；Suno 的 5530 万为 HIBP 数据集统计，不等于已验证活跃用户。",
+      "来源卡片、原始链接、sections、explainer、SVG alt 和词条联动均与正文一致。"
+    ],
+    "notes": "读者审阅通过：四篇新闻事实、数字归属和不确定性边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-21",
+  "fingerprint": "sha256:06651e323b63c8f66a6df2642b800f2a968b96c77ce042373e9714ea593ca72f",
+  "promotedAt": "2026-10-04T02:52:52.226Z"
+}

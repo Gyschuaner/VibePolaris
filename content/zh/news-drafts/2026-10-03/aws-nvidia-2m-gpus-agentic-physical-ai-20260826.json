@@ -1,0 +1,237 @@
+{
+  "slug": "aws-nvidia-2m-gpus-agentic-physical-ai-20260826",
+  "title": "AWS 与 NVIDIA 计划再部署 200 万块 GPU：代理和物理 AI 的基础设施押注",
+  "summary": "AWS 与 NVIDIA 于 2026 年 8 月 26 日宣布扩大战略合作，计划在 2027—2028 年向 AWS 全球基础设施部署 200 万块额外 NVIDIA GPU，并把 Vera CPU、网络、Nemotron 开放模型、向量索引和机器人纳入合作。公告描述的是计划与前瞻性承诺，不是已经上线的 200 万块 GPU。",
+  "body": "AWS 与 NVIDIA 在 2026 年 8 月 26 日宣布一项大规模合作扩展：双方计划在 2027—2028 年把 200 万块额外 NVIDIA GPU 部署到 AWS 全球基础设施，并把合作从 GPU 扩展到 CPU、网络、开放模型、数据处理和机器人。新闻标题里的“200 万”很醒目，但正文更需要读清它的时间和状态——这是未来两年的部署计划，不是当天已经可供客户使用的容量。\n\n公告把这次合作放在代理式 AI、科学发现、企业自动化和物理 AI 的共同需求下。除了 GPU，双方还计划引入 NVIDIA Vera CPU、NVLink Fusion 与高带宽内存，继续在 Bedrock 和 SageMaker 提供 Nemotron 开放模型，并用 cuDF、cuVS 加速数据处理和向量索引（按相似度找回资料片段的索引）。对一个 AI 应用来说，模型只是其中一层；训练、检索、网络、权限、监控和机器人控制都需要基础设施接住。\n\n政府场景也被写进公告：AWS 与 NVIDIA 计划为美国政府建设 AI 工厂，包含在安全 AWS 基础设施上提供 10 万块 GPU 的计划，并面向 Impact Level 6 及以上的联邦与国家安全工作负载。公告没有给出每个项目的采购合同、上线时间或实际交付证明，因而不能把这些数字当成已经完成的政府部署。\n\n这条合作新闻的技术变化，在于“整机采购”被描述成一条跨层栈路线。GPU 负责并行计算，CPU、互联和内存决定数据如何喂给它们，模型服务和向量索引决定应用能否把计算转成可用的代理动作，机器人则把结果带到物理世界。不同层由不同团队负责，任何一层的瓶颈都可能让“更多 GPU”无法自动变成更好的 AI 产品。\n\n同样要留意公告中的公司口径。AWS 和 NVIDIA 把需求增长、性能和部署速度写成前瞻性陈述，具体效果受供货、数据中心、电力、客户采用和安全合规影响。8 月 26 日能确认的是一项把算力与软件、网络和机器人一起规划的合作承诺；容量何时上线、由谁使用、单位成本是否下降，要等后续实例、合同和运营数据。",
+  "eventDate": "2026-08-26",
+  "publishedAt": "2026-08-26",
+  "hero": {
+    "url": "/images/news/aws-nvidia-2m-gpus-agentic-physical-ai-20260826.svg",
+    "alt": "GPU、CPU、网络、开放模型、向量索引和机器人组成的 AWS AI 基础设施栈",
+    "sourceUrl": "/images/news/aws-nvidia-2m-gpus-agentic-physical-ai-20260826.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement",
+      "title": "数字背后的时间窗口",
+      "body": "公告计划在 2027—2028 年部署 200 万块额外 NVIDIA GPU；它是容量建设承诺，不是 8 月 26 日当天已经交付的库存。",
+      "kind": "narrative"
+    },
+    {
+      "id": "stack",
+      "title": "合作从 GPU 扩展到整条栈",
+      "body": "Vera CPU、NVLink Fusion、网络、Nemotron、向量索引（按相似度找回资料片段）和机器人分别处理计算、传输、模型、数据和动作。AI 应用要跑稳，不能只看某一类芯片的数量。",
+      "kind": "technical"
+    },
+    {
+      "id": "government",
+      "title": "政府 AI 工厂仍是计划",
+      "body": "公告提到在安全 AWS 基础设施上规划 10 万块 GPU，面向联邦与国家安全工作负载，但没有给出每个合同、上线时间或交付证据。",
+      "kind": "boundary"
+    },
+    {
+      "id": "evidence",
+      "title": "下一步看什么证据",
+      "body": "实例上线、采购与数据中心文件、客户采用、性能和成本数据，才能验证这项合作是否把算力承诺变成可使用的代理和物理 AI 能力。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "200 万块 GPU 怎样变成代理动作",
+    "question": "从芯片数量向上追到模型和数据、向下追到权限与机器人，才能看到基础设施承诺中间缺了哪些步骤。",
+    "steps": [
+      {
+        "label": "计算层",
+        "detail": "GPU 和 Vera CPU 提供训练、推理和数据预处理所需的并行与通用计算。",
+        "evidence": "AWS/NVIDIA 8 月 26 日公告。"
+      },
+      {
+        "label": "连接与数据层",
+        "detail": "NVLink、EFA、cuDF、cuVS 和向量索引把数据送到模型，而不是让 GPU 单独工作。",
+        "evidence": "公告列出的合作项目。"
+      },
+      {
+        "label": "模型与服务层",
+        "detail": "Nemotron 进入 Bedrock/SageMaker，企业还需要权限、观测和部署控制把模型接入代理。",
+        "evidence": "AWS/NVIDIA 公告。"
+      },
+      {
+        "label": "物理与政府场景",
+        "detail": "机器人和政府 AI 工厂是目标应用；它们的可用性要等实例、合同、认证和实际运行数据。",
+        "evidence": "公告中的前瞻性计划。"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Investor Relations",
+    "url": "https://investor.nvidia.com/news/press-release-details/2026/AWS-and-NVIDIA-to-Deliver-2-Million-Additional-GPUs-and-Next-Generation-Infrastructure-for-Agentic-and-Physical-AI/default.aspx"
+  },
+  "sources": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/AWS-and-NVIDIA-to-Deliver-2-Million-Additional-GPUs-and-Next-Generation-Infrastructure-for-Agentic-and-Physical-AI/default.aspx",
+      "claim": "AWS 与 NVIDIA 计划在 2027—2028 年向 AWS 全球基础设施部署 200 万块额外 GPU，并扩展到 CPU、网络、开放模型、数据处理和机器人。",
+      "excerpt": "Deploy 2 million additional NVIDIA GPUs across AWS’s global infrastructure in 2027-2028."
+    },
+    {
+      "url": "https://press.aboutamazon.com/aws/2026/8/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+      "claim": "Amazon AWS 新闻中心同步发布双方扩大合作的公告，并把代理式 AI 和物理 AI 列为目标工作负载。",
+      "excerpt": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI."
+    },
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/AWS-and-NVIDIA-to-Deliver-2-Million-Additional-GPUs-and-Next-Generation-Infrastructure-for-Agentic-and-Physical-AI/default.aspx",
+      "claim": "公告同时把 10 万块安全 AWS GPU 的政府 AI 工厂写成合作计划，并保留前瞻性陈述风险。",
+      "excerpt": "AWS and NVIDIA plan to build AI factories for the U.S. government, including 100,000 GPUs on secure AWS infrastructure."
+    }
+  ],
+  "canonicalUrl": "https://investor.nvidia.com/news/press-release-details/2026/AWS-and-NVIDIA-to-Deliver-2-Million-Additional-GPUs-and-Next-Generation-Infrastructure-for-Agentic-and-Physical-AI/default.aspx",
+  "sourceHash": "sha256:be3bf3349742b148c945d8f12d24ec13dfdfdbc0e3c8af68599f22ade6f11d02",
+  "isExample": false,
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "data-pipeline",
+    "vector-database",
+    "model-routing",
+    "execution-sandbox"
+  ],
+  "relatedArticleSlugs": [
+    "nvidia-system-orchestration-beyond-gpu-20260829",
+    "caterpillar-ai-deployment-autonomous-mining-20260830"
+  ],
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 agent 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 tools 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-pipeline 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "vector-database",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 vector-database 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 model-routing 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 execution-sandbox 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "nvidia-system-orchestration-beyond-gpu-20260829",
+      "score": 0.78,
+      "evidence": [
+        "后续文章继续同一条事实时间线或相邻场景。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "caterpillar-ai-deployment-autonomous-mining-20260830",
+      "score": 0.78,
+      "evidence": [
+        "后续文章继续同一条事实时间线或相邻场景。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/AWS-and-NVIDIA-to-Deliver-2-Million-Additional-GPUs-and-Next-Generation-Infrastructure-for-Agentic-and-Physical-AI/default.aspx",
+      "claim": "AWS 与 NVIDIA 计划在 2027—2028 年向 AWS 全球基础设施部署 200 万块额外 GPU，并扩展到 CPU、网络、开放模型、数据处理和机器人。",
+      "excerpt": "Deploy 2 million additional NVIDIA GPUs across AWS’s global infrastructure in 2027-2028."
+    },
+    {
+      "url": "https://press.aboutamazon.com/aws/2026/8/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+      "claim": "Amazon AWS 新闻中心同步发布双方扩大合作的公告，并把代理式 AI 和物理 AI 列为目标工作负载。",
+      "excerpt": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI."
+    },
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/AWS-and-NVIDIA-to-Deliver-2-Million-Additional-GPUs-and-Next-Generation-Infrastructure-for-Agentic-and-Physical-AI/default.aspx",
+      "claim": "公告同时把 10 万块安全 AWS GPU 的政府 AI 工厂写成合作计划，并保留前瞻性陈述风险。",
+      "excerpt": "AWS and NVIDIA plan to build AI factories for the U.S. government, including 100,000 GPUs on secure AWS infrastructure."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "method": "manual",
+    "notes": "人工核对官方页面/新闻报道的事件日期、发布日期、原始链接、公司口径和后续时间线；保留计划、报道、测试与正式公告之间的边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "notes": "文章按事件独立组织段落，AI 是新闻主线；没有把公司声明、媒体报道、估算、计划或测试写成独立确认事实。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "questions": [
+      "文章是否把 2026-08-26 的新闻主线与后续/背景信息分开？",
+      "官方来源、媒体报道、公司自述和未独立验证的数字是否明确归属？",
+      "零基础读者能否沿着正文、SVG 和讲解步骤理解事件机制，而不是只看到宣传性结论？",
+      "文章是否保留了部署、可用性、合同或安全结论的边界？"
+    ],
+    "notes": "复审通过：200 万 GPU 明确为 2027–2028 计划，不是已交付容量；Vera、Nemotron、向量索引、IL6+ 政府计划及供电/安全约束边界清楚；已补充向量索引白话解释，动画一致。",
+    "changes": [
+      "补充“向量索引”的白话解释。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-26",
+  "fingerprint": "sha256:be3bf3349742b148c945d8f12d24ec13dfdfdbc0e3c8af68599f22ade6f11d02",
+  "promotedAt": "2026-10-03T23:35:00Z"
+}

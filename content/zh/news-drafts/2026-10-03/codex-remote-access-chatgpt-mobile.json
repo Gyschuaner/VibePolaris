@@ -1,0 +1,193 @@
+{
+  "slug": "codex-remote-access-chatgpt-mobile",
+  "title": "Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作",
+  "summary": "5 月 14 日，OpenAI Developer Community 公告介绍 Codex 在 ChatGPT 移动端的预览：用户可以从手机开始或继续线程、查看输出和审批动作，实际命令仍在连接的 Mac 主机上运行。公告没有证明所有账户、地区或网络环境都已支持。",
+  "body": "5 月 14 日，OpenAI Developer Community 介绍 Codex 在 ChatGPT 移动端的预览。用户可以从手机开始或继续线程、查看终端输出和 diff、审批动作；代码和命令仍在连接的 Mac 主机上执行。\n\n因此需要把控制面和执行面分开看。手机负责查看状态和发起控制，Mac 继续提供文件、终端、网络和本地凭据。移动端能看到一个任务，不代表它拥有主机之外的权限，也不会自动把本地环境搬到手机。\n\n作为一种安全测试，可以这样观察一次代码修复：手机显示待审的 diff，用户确认后，Mac 在受限环境运行测试；需要联网、写敏感目录或提交代码时，再单独确认。agent-harness 管理线程和工具循环，execution-sandbox 隔离执行，auth 处理登录和凭据，tools 承载终端与文件操作，context 传递历史状态。\n\n社区公告属于预览说明，不能证明所有账户、地区或主机都已开放，也没有证明断线、权限继承和远程审批在所有网络条件下稳定。后续应测试连接建立、断线恢复、主机端日志和高风险动作的确认。",
+  "publishedAt": "2026-05-14",
+  "eventDate": "2026-05-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/codex-remote-access-chatgpt-mobile.svg",
+    "alt": "Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/codex-remote-access-chatgpt-mobile.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "preview",
+      "title": "手机端新增的是控制入口",
+      "body": "公告介绍了从 ChatGPT 移动端开始或继续 Codex 线程、查看输出和审批动作的预览。Codex 仍在连接的 Mac 主机上运行，手机并不承担本地命令执行。",
+      "kind": "narrative"
+    },
+    {
+      "id": "control-execution",
+      "title": "控制面和执行面要分开",
+      "body": "手机可以看到线程、终端输出和 diff，Mac 继续提供文件、网络和凭据。agent-harness 管理任务，execution-sandbox 限制主机操作，auth 处理身份；移动端可见性不能被理解为额外权限。",
+      "kind": "technical"
+    },
+    {
+      "id": "code-review",
+      "title": "一次代码修复会怎样走完",
+      "body": "作为一种安全测试，用户可以在手机查看待审 diff，批准后由 Mac 在受限环境运行测试。联网、写敏感目录或提交代码时再请求确认，并保留主机端命令、输出和回滚记录。",
+      "kind": "example"
+    },
+    {
+      "id": "preview-limits",
+      "title": "预览公告没有覆盖所有运行条件",
+      "body": "社区说明不能证明所有账户、地区或主机都已支持，也没有给出断线恢复、权限继承和不同网络条件下的稳定性数据。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-checks",
+      "title": "实际接入先测断线和高风险动作",
+      "body": "后续应查看支持平台、连接状态、主机日志和审批记录，先用只读或沙箱权限，再决定是否开放写入和网络动作。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "从手机审批追到 Mac 主机上的真实动作",
+    "question": "怎样确认移动端看到的状态与主机实际执行保持一致？",
+    "steps": [
+      {
+        "label": "确认连接对象",
+        "detail": "在移动端核对当前线程、项目和连接的 Mac 主机，避免批准了错误的任务。",
+        "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+      },
+      {
+        "label": "查看待执行 diff",
+        "detail": "先读文件变更、命令和工具权限，确认手机显示的内容来自主机当前状态。",
+        "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+      },
+      {
+        "label": "测试审批和回退",
+        "detail": "对联网、写敏感目录和提交动作分别触发确认，检查拒绝、取消和回滚记录。",
+        "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+      },
+      {
+        "label": "模拟断线",
+        "detail": "观察主机保持或暂停任务的方式，以及恢复连接后移动端能否准确显示结果。",
+        "evidence": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI Developer Community",
+    "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "execution-sandbox",
+    "auth",
+    "tools",
+    "context"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+      "claim": "Codex 移动预览支持开始/继续线程、审批和查看输出",
+      "excerpt": "The OpenAI Developer Community announcement describes starting or continuing threads, reviewing outputs and approving actions from mobile."
+    },
+    {
+      "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+      "claim": "Codex 继续在连接的 Mac 主机上运行",
+      "excerpt": "The announcement says Codex keeps running on the connected Mac host."
+    }
+  ],
+  "canonicalUrl": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+  "sourceHash": "sha256:09d207f1a92a40c6dd29f512158ca128e484b9502519778c8b687ce01ed40547",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Codex 在 ChatGPT 移动端开放预览，可远程连接 Mac 主机工作”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+      "claim": "Codex 移动预览支持开始/继续线程、审批和查看输出",
+      "excerpt": "The OpenAI Developer Community announcement describes starting or continuing threads, reviewing outputs and approving actions from mobile."
+    },
+    {
+      "url": "https://community.openai.com/t/now-in-preview-codex-in-the-chatgpt-mobile-app/1380940",
+      "claim": "Codex 继续在连接的 Mac 主机上运行",
+      "excerpt": "The announcement says Codex keeps running on the connected Mac host."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文清楚区分移动端控制面与 Mac 主机执行面，说明文件、终端、网络和本地凭据仍在主机侧；预览范围限定为开始/继续线程、查看输出和审批动作，未外推为所有账户、地区、主机或网络条件均可用。断线恢复、权限继承和高风险动作均保留为需要测试的项目。已将代码修复段落明确为安全测试示例，避免把建议流程误读为公告承诺。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将代码修复与审批段落明确标为“安全测试”示例，区分预览公告已说明的能力和建议的验收流程。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-14",
+  "fingerprint": "sha256:09d207f1a92a40c6dd29f512158ca128e484b9502519778c8b687ce01ed40547"
+}

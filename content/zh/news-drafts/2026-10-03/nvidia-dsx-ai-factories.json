@@ -1,0 +1,169 @@
+{
+  "slug": "nvidia-dsx-ai-factories",
+  "title": "英伟达发布 DSX 平台，提供 AI 工厂建设蓝图",
+  "summary": "5 月 31 日，NVIDIA 发布 DSX（Data Center Scale）平台，把面向 AI 工厂的硬件、软件、参考设计和运营模块放进一套建设蓝图，并介绍开放软件模块、DSX MaxLPS 和开源 DSX OS。官方页面说明了平台组成和每兆瓦 token 性能等目标，没有独立证明不同部署都能达到目标，也没有替代运营方的负载和故障实测。",
+  "body": "5 月 31 日，NVIDIA 发布 DSX（Data Center Scale）平台，为建设 AI 工厂提供硬件、软件、参考设计和运营模块的组合蓝图。页面还介绍开放软件模块、DSX MaxLPS 和开源 DSX OS，并把每兆瓦 token 性能放进基础设施决策。事件是平台和 playbook 的发布，不是某个模型已经达到一项新性能。\n\nAI 工厂的建设需要同时处理算力、电力、网络、模型服务和运维。DSX 的产品主张，是让基础设施建设者在这些层面共享一套规划框架；但每个模块最终如何部署、怎样影响延迟和吞吐，仍然要看运营方的设备、负载和软件版本。\n\n可以把一次集群建设拆成四层：算力与功耗、网络连接、模型服务、故障与版本管理。容量或软件升级时，应记录 token/兆瓦、延迟、吞吐、网络利用率和恢复时间；如果只有产品名称或参考设计，没有实际部署记录，就不能推断整条链已经可靠。\n\nNVIDIA 官方页面支持平台组成、DSX MaxLPS、DSX OS 和目标指标的公开描述，没有独立证明每种部署都能达到目标性能，也没有提供不同负载、地区或客户环境的统一实测。目标指标是规划参考，不能直接当作运营结果。\n\n相关词条可以把基础设施问题落到具体控制点：agent 代表按步骤调用工具并推进任务的系统，execution-sandbox 限制文件、网络、进程和凭据范围，data-pipeline 追踪数据从采集、转换到服务写入的路径。后续应在小规模环境复现目标，再决定是否扩大部署。",
+  "publishedAt": "2026-05-31",
+  "eventDate": "2026-05-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-dsx-ai-factories.svg",
+    "alt": "英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/nvidia-dsx-ai-factories.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "platform",
+      "title": "DSX 把哪些内容放进同一套蓝图",
+      "body": "NVIDIA 5 月 31 日发布 DSX（Data Center Scale），组合面向 AI 工厂的硬件、软件、参考设计和运营模块，并介绍开放软件模块、DSX MaxLPS 和开源 DSX OS。页面把每兆瓦 token 性能列为基础设施决策的一项指标。",
+      "kind": "narrative"
+    },
+    {
+      "id": "factory",
+      "title": "AI 工厂同时面对五种运行条件",
+      "body": "算力、电力、网络、模型服务和运维会一起影响一座 AI 工厂。DSX 提供规划框架，但模块怎样落地、延迟和吞吐怎样变化，仍取决于运营方的设备、负载和软件版本。",
+      "kind": "technical"
+    },
+    {
+      "id": "measurement",
+      "title": "一次集群升级要留下哪些数据",
+      "body": "建设或升级时应记录 token/兆瓦、延迟、吞吐、网络利用率和恢复时间，并把容量、软件版本和故障处置对应起来。只有产品名称或参考设计，没有实际部署数据，不能推出整条链已经可靠。",
+      "kind": "example"
+    },
+    {
+      "id": "limits",
+      "title": "目标指标不是运营结果",
+      "body": "官方页面支持平台组成、DSX MaxLPS、DSX OS 和目标指标的公开描述，没有独立证明不同部署都能达到目标，也没有给出不同负载、地区或客户环境的统一实测。运营方仍需自己验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "terms",
+      "title": "三个词条帮助定位基础设施控制点",
+      "body": "agent 代表按步骤调用工具并推进任务的系统，execution-sandbox 限制文件、网络、进程和凭据，data-pipeline 追踪数据从采集、转换到服务写入的路径。它们说明工作负载如何被承载，不等于 DSX 自动解决权限和数据问题。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "在小规模集群里复现一次 DSX 目标指标",
+    "question": "产品页给出的 AI 工厂指标，怎样被转换成运营方可以重复测量的数据？",
+    "steps": [
+      {
+        "label": "固定硬件与软件版本",
+        "detail": "记录芯片、网络、数据管道、模型服务和 DSX 模块版本，避免环境变化掩盖结果。",
+        "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+      },
+      {
+        "label": "定义同一负载",
+        "detail": "使用固定模型、请求规模和数据流，测量 token/兆瓦、延迟、吞吐和网络利用率。",
+        "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+      },
+      {
+        "label": "制造一次变更",
+        "detail": "升级容量或软件版本，检查 agent 工作负载、execution-sandbox 和 data-pipeline 是否仍按预期运行。",
+        "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+      },
+      {
+        "label": "检查故障恢复",
+        "detail": "记录停止、降级、回滚和恢复时间，把目标指标与真实运营结果分开。",
+        "evidence": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA",
+    "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx"
+  },
+  "relatedSlugs": [
+    "agent",
+    "execution-sandbox",
+    "data-pipeline"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+      "claim": "DSX 被描述为建设 AI 工厂的完整 playbook",
+      "excerpt": "DSX gives infrastructure builders a complete playbook to create AI factories."
+    },
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+      "claim": "平台包含开放模块与 DSX MaxLPS / DSX OS",
+      "excerpt": "NVIDIA describes open software modules, APIs, reference designs, DSX MaxLPS and open-source DSX OS."
+    }
+  ],
+  "canonicalUrl": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+  "sourceHash": "sha256:9c78607a0d6839fb473bdccf397988a17f0798bbf966db4374831600ce5751b2",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“英伟达发布 DSX 平台，为 AI 工厂提供从芯片到运营的完整蓝图”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+      "claim": "DSX 被描述为建设 AI 工厂的完整 playbook",
+      "excerpt": "DSX gives infrastructure builders a complete playbook to create AI factories."
+    },
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-DSX-Gives-Infrastructure-Builders-the-Playbook-for-AI-Factories/default.aspx",
+      "claim": "平台包含开放模块与 DSX MaxLPS / DSX OS",
+      "excerpt": "NVIDIA describes open software modules, APIs, reference designs, DSX MaxLPS and open-source DSX OS."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文准确覆盖 NVIDIA DSX/Data Center Scale、AI factory playbook、开放软件模块、DSX MaxLPS、开源 DSX OS 和每兆瓦 token 目标，并明确这是平台蓝图与目标指标，不是客户部署实测。算力、电力、网络、模型服务和运维分层清楚；agent、execution-sandbox、data-pipeline、sections 和 explainer 均落到版本、负载、延迟、吞吐、故障与回滚记录。未写成所有部署都达标或平台自动解决权限/数据问题。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs 与 JSON 结构核对无误。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-31",
+  "fingerprint": "sha256:9c78607a0d6839fb473bdccf397988a17f0798bbf966db4374831600ce5751b2"
+}

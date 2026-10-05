@@ -1,0 +1,169 @@
+{
+  "slug": "openai-chatgpt-linux-preview-20260811",
+  "title": "OpenAI 把 ChatGPT、Work 和 Codex 带到 Linux 预览版",
+  "summary": "8 月 11 日，OpenAI 宣布 ChatGPT 桌面应用的 Linux 预览版，把 ChatGPT、ChatGPT Work 和 Codex 放在一个桌面入口。首批支持 Ubuntu 24.04/26.04、Debian 13、Fedora 43/44，以及 x64 和 ARM64；官方后续文档仍把它标为预览，浏览器操作可用，但控制其他桌面应用暂不支持。",
+  "body": "8 月 11 日，OpenAI 在官方开发者社区转发了 ChatGPT Linux 桌面应用的预览公告，随后 TechCrunch 等媒体报道了这次发布。它把 ChatGPT、ChatGPT Work 和 Codex 放到同一桌面应用里，面向需要在 Linux 上处理项目、文件和代码工作的用户。这里的新闻重点是入口和工作流到达了新的操作系统，并不是宣布一个新的基础模型。\n\n预览版列出的系统包括 Ubuntu 24.04 LTS、Ubuntu 26.04 LTS、Debian 13、Fedora 43 和 Fedora 44，提供 x64 与 ARM64 的 deb、rpm 包。支持清单是一个有边界的产品承诺，不能简单写成“所有 Linux 都能用”。官方文档后来补充了 Arch Linux 的安装说明，但文章按 8 月 11 日公告记录当时可见的首批支持范围。\n\n这个桌面入口对 Agent 工作流有实际影响。用户可以在项目中保留上下文，读取本地文件，让 Codex 继续处理代码，并在内置浏览器里执行网页任务。帮助中心的后续说明写明，Linux 应用支持浏览器操作，但目前不能控制其他桌面应用；这意味着桌面 Agent 的权限范围仍然比“接管整台电脑”窄。\n\n“本地文件”也不等于应用可以无条件读取整个磁盘。使用者需要选择项目和授权范围，应用还要受到操作系统文件权限、浏览器登录状态和工作区设置的限制。对开发者来说，Linux 预览版的价值更像把已有的 ChatGPT Work 与 Codex 工作台搬到常用环境里；对安全审查来说，关键是确认本地文件、浏览器会话和外部动作分别经过什么批准。\n\n这次发布也显示出桌面产品的竞争在向“连续工作”移动。聊天、项目、浏览器和代码助手如果共享上下文，用户少做几次复制粘贴；但上下文越连贯，误读文件、错用凭据和误操作的影响也越大。预览阶段把支持系统和暂不支持的控制范围写清楚，反而比“全能桌面 Agent”的宣传更有用。\n\n后续应关注 Linux 版本更新、项目与 Codex CLI 的同步、浏览器操作的审批提示，以及对其他桌面应用的控制是否会开放。对现在的用户，最稳妥的读法是：这是可试用的统一入口，功能边界仍在形成。",
+  "publishedAt": "2026-08-11",
+  "eventDate": "2026-08-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-chatgpt-linux-preview-20260811.svg",
+    "alt": "OpenAI 把 ChatGPT、Work 和 Codex 带到 Linux 预览版 的事件链示意图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/openai-chatgpt-linux-preview-20260811.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "这次发布解决的是入口问题",
+      "body": "ChatGPT、Work 和 Codex 在 Linux 桌面应用里汇合，重点是项目、文件、浏览器和代码工作的连续性，不是新的模型发布。",
+      "kind": "narrative"
+    },
+    {
+      "id": "support",
+      "title": "支持系统要按清单理解",
+      "body": "公告列出 Ubuntu 24.04/26.04、Debian 13、Fedora 43/44，以及 x64/ARM64 的 deb、rpm 包；预览版不是所有发行版的保证。",
+      "kind": "technical"
+    },
+    {
+      "id": "actions",
+      "title": "浏览器能操作，其他桌面应用暂时不能",
+      "body": "OpenAI 后续帮助文档把浏览器操作列为可用能力，同时说明控制其他桌面应用尚未支持，这给桌面 Agent 画出了边界。",
+      "kind": "boundary"
+    },
+    {
+      "id": "permissions",
+      "title": "连续上下文也带来权限问题",
+      "body": "项目文件、浏览器会话和工作区设置需要分别检查；能在同一入口看到内容，不代表应用可以无条件读取和修改所有本地资源。",
+      "kind": "comparison"
+    },
+    {
+      "id": "preview",
+      "title": "预览阶段应该看哪些变化",
+      "body": "更新频率、项目与 CLI 同步、审批提示和桌面控制范围，都会决定这个入口是否真的适合长期工作。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Linux 桌面 Agent 怎样把工作接起来？",
+    "question": "从文件到代码再到网页，哪些步骤需要明确授权？",
+    "steps": [
+      {
+        "label": "选择项目",
+        "detail": "用户先选择项目和允许使用的上下文，应用据此读取本地文件和已有对话。",
+        "evidence": "OpenAI Linux 预览说明"
+      },
+      {
+        "label": "调用工具",
+        "detail": "ChatGPT Work 或 Codex 根据任务调用文件、代码和内置浏览器工具，结果回到同一个工作流。",
+        "evidence": "OpenAI 官方产品描述"
+      },
+      {
+        "label": "检查边界",
+        "detail": "浏览器操作可用，但其他桌面应用控制尚未支持；操作系统权限和工作区设置仍然有效。",
+        "evidence": "OpenAI 帮助中心"
+      },
+      {
+        "label": "人工确认",
+        "detail": "涉及登录状态、外部提交或写入文件时，用户应核对目标、范围和结果，再继续下一步。",
+        "evidence": "文章权限边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI Developer Community",
+    "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "execution-sandbox",
+    "authorization",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "grok-46-long-agents-20260812",
+    "gemini-connected-apps-20260812"
+  ],
+  "sources": [
+    {
+      "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+      "claim": "OpenAI 官方社区在 8 月 11 日公布 Linux 桌面应用预览，包含 ChatGPT、Work 和 Codex。",
+      "excerpt": "ChatGPT desktop app for Linux is now available in preview"
+    },
+    {
+      "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+      "claim": "公告列出首批 Linux 发行版、架构和 deb/rpm 包。",
+      "excerpt": "Ubuntu 24.04 LTS and 26.04 LTS, Debian 13, Fedora 43 and 44"
+    },
+    {
+      "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+      "claim": "OpenAI 后续帮助中心说明 Linux 应用支持浏览器操作，但暂不支持控制其他桌面应用。",
+      "excerpt": "Browser actions are available in the Linux app; controlling other desktop apps is not yet supported."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/11/openai-launches-chatgpt-desktop-app-for-linux/",
+      "claim": "TechCrunch 交叉报道 Linux 预览版全球发布和支持范围。",
+      "excerpt": "The new app, which is being released in preview"
+    }
+  ],
+  "canonicalUrl": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+  "sourceHash": "sha256:ef6e31b77c28644dc2f143dee2cd1bb7f75f5b47656fc7cd89253af53212826c",
+  "status": "published",
+  "discoveredAt": "2026-10-04T02:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+      "claim": "OpenAI 官方社区在 8 月 11 日公布 Linux 桌面应用预览，包含 ChatGPT、Work 和 Codex。",
+      "excerpt": "ChatGPT desktop app for Linux is now available in preview"
+    },
+    {
+      "url": "https://community.openai.com/t/codex-in-chatgpt-desktop-app-for-linux-is-now-in-preview/1390027",
+      "claim": "公告列出首批 Linux 发行版、架构和 deb/rpm 包。",
+      "excerpt": "Ubuntu 24.04 LTS and 26.04 LTS, Debian 13, Fedora 43 and 44"
+    },
+    {
+      "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+      "claim": "OpenAI 后续帮助中心说明 Linux 应用支持浏览器操作，但暂不支持控制其他桌面应用。",
+      "excerpt": "Browser actions are available in the Linux app; controlling other desktop apps is not yet supported."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/11/openai-launches-chatgpt-desktop-app-for-linux/",
+      "claim": "TechCrunch 交叉报道 Linux 预览版全球发布和支持范围。",
+      "excerpt": "The new app, which is being released in preview"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T02:20:00Z",
+    "method": "source",
+    "notes": "按事件发生日和来源公开日分别核对；公司自述、媒体报道和待验证指标已在正文中分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T02:20:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 要求完成首轮事实边界、白话解释和去模板化审校。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T03:00:00Z",
+    "questions": [
+      "正文以事件为先，面向零基础读者解释关键术语，并清楚区分公司自报指标、媒体报道与可验证事实。",
+      "eventDate 与 publishedAt 已按来源页面和事件发生日核对；Neuromorphic Labs 明确保留 8 月 11 日事件日与 8 月 12 日网页发布时间的差异。",
+      "来源、引用卡片与证据链完整，未把公司目标、内部指标或路线图写成已完成的行业结果。",
+      "词条与相关文章联动服务于理解且无明显错配，六篇均有对应 SVG 视觉稿。"
+    ],
+    "notes": "读者审阅通过：六篇稿件可由零基础读者复述新闻主旨，新闻事实、公司自述和待验证边界分层清楚。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-11",
+  "promotedAt": "2026-10-03T17:16:26.029Z"
+}

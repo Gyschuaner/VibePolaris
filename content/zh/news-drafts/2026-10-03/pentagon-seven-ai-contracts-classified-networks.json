@@ -1,0 +1,178 @@
+{
+  "slug": "pentagon-seven-ai-contracts-classified-networks",
+  "title": "美国防部与七家科技公司达成协议，将 AI 接入机密网络",
+  "summary": "5 月 1 日，Associated Press 报道美国防部与 Google、Microsoft、AWS、NVIDIA、OpenAI、Reflection 和 SpaceX 达成协议，把 AI 资源接入机密计算网络。报道援引国防部说法，称用途包括复杂作战环境中的决策支持；协议名单、部署进度和实际效果仍需分别核对。",
+  "body": "2026 年 5 月 1 日，Associated Press 报道美国防部与 Google、Microsoft、AWS、NVIDIA、OpenAI、Reflection 和 SpaceX 达成协议，计划把 AI 资源接入机密计算网络。报道援引国防部说法，称用途包括复杂作战环境中的决策支持。\n\n机密网络增加了几道必须核对的控制：哪些数据能被读取，哪些人员和服务有权限，模型能否调用外部工具，日志由谁保存。公开网络里的产品演示不能回答这些问题，协议名称也不能代替部署说明。\n\nAP 没有说明七家公司分别接入哪套系统、获得什么权限或何时部署，也没有给出实际作战效果。报道未列出 Anthropic；这只能说明该篇报道的名单，不能推断未来安排一定排除它。\n\n放进一次机密分析任务，流程应先把数据送入获准的隔离环境，再限制模型或代理可读取的范围。输出交给有权限的人审阅，任何写入、外发或改变任务状态的动作都要留下记录；凭据要能撤销，任务也要能在执行前停止。\n\n目前可以确认的是协议和国防部描述的用途，不能确认系统已经在真实任务中稳定运行。后续如果公开合同文本、部署范围、测试指标或事故复盘，才能判断它具体改变了哪段工作，以及是否带来新的风险。",
+  "publishedAt": "2026-05-01",
+  "eventDate": "2026-05-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/pentagon-seven-ai-contracts-classified-networks.svg",
+    "alt": "美国防部与七家科技公司达成协议，将 AI 接入机密网络；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/pentagon-seven-ai-contracts-classified-networks.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "reported-action",
+      "title": "报道确认的，是一组协议",
+      "body": "AP 报道美国防部与七家科技公司达成协议，将 AI 资源用于机密计算网络；国防部把复杂作战环境中的决策支持列为目标。这里的事实来自媒体对政府说法的转述，不能写成每套系统都已经部署。",
+      "kind": "narrative"
+    },
+    {
+      "id": "classified-workflow",
+      "title": "机密网络里的难点不在演示速度",
+      "body": "进入机密环境后，数据从哪里来、谁能读取、模型是否能调用外部工具，都会成为任务的一部分。一个可审计的流程至少要有隔离区、授权人和可撤销凭据。execution-sandbox 解决运行环境的边界，authorization 解决批准动作的人，auth 解决人员和服务的身份；这三层都存在时，模型输出才有机会被纳入责任链。",
+      "kind": "technical"
+    },
+    {
+      "id": "agreement-boundary",
+      "title": "协议、部署和效果是三件事",
+      "body": "报道没有披露每家公司负责的系统、权限、部署时间或实际作战结果，因此不能由“达成协议”推出“已经改变作战决策”。报道未列出 Anthropic；这只能说明该篇报道的名单，不能推断未来安排。要判断进展，需要合同文本、试点范围、测试记录和监督安排。",
+      "kind": "boundary"
+    },
+    {
+      "id": "what-to-check",
+      "title": "下一步看谁能停下这条链路",
+      "body": "后续核对四件事：模型访问了哪些数据，高风险动作由谁批准，日志能否回看，出现误报或泄密时凭据和任务能否立即撤销。这些问题对应 agent、execution-sandbox、authorization 和 auth，也对应机密系统的基本控制点。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "policy-governance",
+    "title": "从一份协议读到真实部署，要经过哪些证据",
+    "question": "这条消息怎样区分政府目标、公司接入和已经发生的系统效果？",
+    "steps": [
+      {
+        "label": "先确认报道层级",
+        "detail": "AP 报道的是美国防部与七家公司达成协议，并引用国防部对用途的描述；它不是每家公司的部署报告。",
+        "evidence": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2"
+      },
+      {
+        "label": "把机密流程画出来",
+        "detail": "分别标出数据入口、隔离环境、可调用工具、人工审批和日志位置，避免用“接入 AI”概括整套系统。",
+        "evidence": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2"
+      },
+      {
+        "label": "核对名单之外的信息",
+        "detail": "寻找合同范围、上线时间、权限配置和测试指标；名单本身不能说明谁已经在真实任务中使用。",
+        "evidence": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2"
+      },
+      {
+        "label": "等待效果证据",
+        "detail": "只有部署记录、独立评估或事故复盘出现后，才能讨论它是否改善了决策或增加了新的风险。",
+        "evidence": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2"
+      }
+    ]
+  },
+  "source": {
+    "name": "Associated Press",
+    "url": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2"
+  },
+  "relatedSlugs": [
+    "agent",
+    "execution-sandbox",
+    "authorization",
+    "auth"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2",
+      "claim": "AP 报道国防部与七家科技公司达成机密网络协议",
+      "excerpt": "AP reports the Pentagon reached deals with seven technology companies to use AI in classified computer networks."
+    },
+    {
+      "url": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2",
+      "claim": "国防部称目标是增强复杂作战环境的决策",
+      "excerpt": "The report says the Pentagon described AI resources as supporting decision-making in complex operational environments."
+    }
+  ],
+  "canonicalUrl": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2",
+  "sourceHash": "sha256:2ee8214940b91db3f8408b183b7656140034bcb7682b780a495074f9b30c77cb",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“美国防部与七家科技公司达成协议，将 AI 接入机密网络”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“美国防部与七家科技公司达成协议，将 AI 接入机密网络”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“美国防部与七家科技公司达成协议，将 AI 接入机密网络”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“美国防部与七家科技公司达成协议，将 AI 接入机密网络”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2",
+      "claim": "AP 报道国防部与七家科技公司达成机密网络协议",
+      "excerpt": "AP reports the Pentagon reached deals with seven technology companies to use AI in classified computer networks."
+    },
+    {
+      "url": "https://apnews.com/article/060cecf836c4cebcf012a3ceb5333f2c2",
+      "claim": "国防部称目标是增强复杂作战环境的决策",
+      "excerpt": "The report says the Pentagon described AI resources as supporting decision-making in complex operational environments."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "通过。正文已用自然、直接的中文区分 AP 转述的国防部说法、协议安排、实际部署和作战效果；机密网络的数据、权限、审批、日志和撤销流程对零基础读者可理解，未把协议名单扩写成部署事实。schema 字段、来源卡片和词条联动一致。",
+    "changes": [
+      "删去机械的“这件事的分量”“这里最难的不是……而是……”等句式，改为直接陈述控制要求",
+      "改写协议边界和 Anthropic 名单说明，避免从报道缺失推导未来安排",
+      "保留 eventDate=2026-05-01、publishedAt=2026-05-01、canonicalUrl、sources 与 relatedSlugs，并核对 JSON 结构"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-01",
+  "fingerprint": "sha256:2ee8214940b91db3f8408b183b7656140034bcb7682b780a495074f9b30c77cb"
+}

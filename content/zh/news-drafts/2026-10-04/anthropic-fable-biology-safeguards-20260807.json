@@ -1,0 +1,183 @@
+{
+  "slug": "anthropic-fable-biology-safeguards-20260807",
+  "title": "Anthropic 调整 Fable 5 生物学护栏：减少误拦，同时保留双重用途限制",
+  "summary": "Anthropic 于 2026 年 8 月 7 日宣布更新 Claude Fable 5 的生物学安全分类器，目标是减少把日常健康、教育和部分临床问题误判为高风险而回退到较弱模型的情况。公司称内部测试中生物学相关回退减少约 85%，但仍会拦截双重用途的专业生物学和药物开发请求；这些数字是 Anthropic 的测试口径，不是独立复测结论。",
+  "body": "8 月 7 日，Anthropic 宣布调整 Fable 5 的生物学安全护栏。Fable 5 上线时使用了比较宽的分类器：只要问题看起来可能涉及受保护的生物学任务，系统就会把请求交给能力较弱的模型。这样做能降低明显危险内容的风险，却也可能把理解化验结果、学习基础生物学或处理日常健康问题的用户一起挡住。\n\n这次更新的重点不是取消护栏，而是把“允许”和“需要保护”的边界画得更细。Anthropic 说团队重写了分类器的规则说明，补充了训练数据，并邀请内部和外部专家反馈。公司在自己的测试中称，生物学相关回退在产品表面整体减少约 85%；脚注又给出了 Claude.ai、Cowork、Claude Code 和 Claude Platform 的预期总回退降幅。后一个数字是预计值，不能和独立用户样本的实测混为一谈。\n\nAnthropic 给出的可用场景包括教育问题、日常健康问题和一部分临床任务。与此同时，Fable 5 仍会拦截专业生物学和药物开发中可能产生双重用途风险的请求，并把安全边界内的部分问题继续交给较弱模型。也就是说，用户可能遇到更少的误拦，但不会因为这次更新就获得一个“什么生物学问题都能回答”的模型。\n\n这类更新把一个常被忽略的产品体验讲清楚：模型本身没有变得“不会回答”，而是请求先经过一个较小的分类器，分类器决定使用 Fable 5、回退到其他模型，还是拒绝。分类器如果过于保守，安全性看起来更稳，却会伤害正常使用；如果过于宽松，又可能放过双重用途内容。\n\n目前能确认的是 Anthropic 的规则、训练和内部测试变化，不能由此推出医学建议准确率已经提高，也不能把 85% 解释成所有用户都会看到的统一改善。后续还需要实际产品数据、外部评测和可信访问计划，才能知道“更少误拦”是否同时保持了对高风险请求的拦截效果。",
+  "publishedAt": "2026-08-07",
+  "eventDate": "2026-08-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-fable-biology-safeguards-20260807.svg",
+    "alt": "Fable 5 的生物学请求经过分类器，在日常问题和双重用途问题之间重新划定边界；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/anthropic-fable-biology-safeguards-20260807.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "why-update",
+      "title": "护栏过宽，会把正常问题一起挡住",
+      "body": "Anthropic 说 Fable 5 上线时的生物学分类器比较宽，很多看起来接近高风险的请求会回退到较弱模型。日常健康、教育和部分临床问题因此可能得到更弱的回答。",
+      "kind": "narrative"
+    },
+    {
+      "id": "classifier-change",
+      "title": "这次改的是分类边界，不是撤掉分类器",
+      "body": "团队重写规则、更新训练数据并收集专家反馈，让分类器更细地分辨明显有害、双重用途和明显良性的请求。仍然存在安全余量，低风险问题也可能被误拦。",
+      "kind": "technical"
+    },
+    {
+      "id": "metrics-boundary",
+      "title": "85% 是公司测试口径",
+      "body": "Anthropic 称内部测试中的生物学相关回退减少约 85%，脚注还列出不同产品的预期总回退变化。它们属于公司自测和预期，不等于所有用户都会得到同样比例的改善。",
+      "kind": "boundary"
+    },
+    {
+      "id": "dual-use",
+      "title": "专业双重用途生物学仍在限制范围内",
+      "body": "Fable 5 仍会阻止可能用于危险用途的专业生物学和药物开发请求，部分内容继续回退到较弱模型。放宽误拦和保留高风险边界是同一个调整的两面。",
+      "kind": "comparison"
+    },
+    {
+      "id": "what-it-does-not-prove",
+      "title": "更少回退不等于医学答案更准确",
+      "body": "公告能证明分类器和安全规则变了，不能直接证明临床建议、医学事实或真实用户安全结果变好了。后续还需要产品数据和外部评测。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "ai-biology",
+    "title": "生物学护栏怎样在“误拦”和“放过”之间移动？",
+    "question": "一个更好用的分类器，既要让日常问题通过，也要继续挡住双重用途风险。",
+    "steps": [
+      {
+        "label": "先识别请求",
+        "detail": "较小的安全分类器先判断问题是明显良性、仍需保护，还是可能属于双重用途生物学。",
+        "evidence": "Anthropic biology classifier description"
+      },
+      {
+        "label": "允许或回退",
+        "detail": "明显良性问题可以交给 Fable 5，接近边界的请求会回退到较弱模型或被拦截。",
+        "evidence": "Anthropic fallback behavior"
+      },
+      {
+        "label": "用反馈细化边界",
+        "detail": "更新规则、训练数据和专家反馈，让日常健康与教育问题少一些误拦。",
+        "evidence": "Anthropic August 7 update"
+      },
+      {
+        "label": "保留高风险保护",
+        "detail": "专业双重用途生物学和药物开发请求仍留在限制范围，不能用“更少回退”代替安全审查。",
+        "evidence": "Anthropic stated remaining restrictions"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "ai-safety-evaluation-boundaries-20260809"
+  ],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+      "claim": "Anthropic 8 月 7 日宣布减少 Fable 5 生物学护栏的误拦，让更多日常健康、教育和部分临床问题留在 Fable 5。",
+      "excerpt": "Fable 5 users will now experience many fewer “fallbacks” ... on everyday health and educational questions"
+    },
+    {
+      "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+      "claim": "Anthropic 称内部测试中生物学相关回退整体减少约 85%，并给出不同产品的预期总回退降幅。",
+      "excerpt": "In our testing, this update reduced biology-related fallbacks by about 85% ... roughly 67% on Claude.ai, 55% on Cowork, 17% on Claude Code, and 7% on the Claude Platform."
+    },
+    {
+      "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+      "claim": "Anthropic 明确表示 Fable 5 仍会阻止双重用途的专业生物学和药物开发请求。",
+      "excerpt": "Fable will continue to block dual-use professional biology and drug development queries"
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+  "sourceHash": "sha256:de6f3db4b9dd8b1e48a1e136832f77bd0a6c28f7a33e9caad468f4664e26b94b",
+  "status": "published",
+  "discoveredAt": "2026-10-04T07:50:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文解释 Fable 5 与回退模型之间的能力差异。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.96,
+      "evidence": [
+        "正文解释生物学请求的语境影响分类边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "ai-safety-evaluation-boundaries-20260809",
+      "score": 0.78,
+      "evidence": [
+        "同一时间线中的安全评测与护栏调整，作为后续文章关联。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+      "claim": "Anthropic 于 8 月 7 日发布 Fable 5 生物学护栏更新。",
+      "excerpt": "Aug 7, 2026 ... Improving Fable 5's biology safeguards"
+    },
+    {
+      "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+      "claim": "官方说明仍保留双重用途专业生物学和药物开发限制。",
+      "excerpt": "there will inevitably remain false positives ... Fable will continue to block dual-use professional biology and drug development queries"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T07:50:00Z",
+    "method": "source",
+    "notes": "仅使用 Anthropic 官方公告作为事件来源；把约 85% 归为公司内部测试，把脚注产品降幅写成预期，保留双重用途限制和外部复测边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T07:50:00Z",
+    "notes": "按新闻事实链组织正文，区分公司自测、产品预期与安全边界；完成 humanizer-zh 与 write-like-me 首轮表达检查。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T04:20:00Z",
+    "questions": [
+      "新闻主线优先，关键概念面向零基础读者解释，事实与推断分层。",
+      "OpenAI 稿明确“无法排除 Critical”不等于已达标或已攻击，并将 Astra 与 Hugging Face 事件分开；Anthropic 的 85% 和各产品降幅明确为公司测试/预期，保留双重用途限制。",
+      "Kimi 稿区分 Frontier 报告、沙箱配置缺口、AISI 责任口径和后续更正，没有写成零日或真实入侵；Qwen 稿将收入分成写为 Reuters 两名匿名人士披露的未公开计划，没有写成阿里已公布收费。",
+      "eventDate/publishedAt、来源卡片与原始链接、词条/相关文章联动、SVG alt 均一致；Qwen 的 Reuters 报道日期已校正为 publishedAt=2026-08-07。"
+    ],
+    "notes": "读者审阅通过；仅修正 Qwen 稿 publishedAt 以匹配 Reuters 8 月 7 日报道，其余正文无需修改。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-07",
+  "fingerprint": "sha256:de6f3db4b9dd8b1e48a1e136832f77bd0a6c28f7a33e9caad468f4664e26b94b",
+  "promotedAt": "2026-10-03T18:59:54.137Z"
+}

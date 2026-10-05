@@ -1,0 +1,184 @@
+{
+  "slug": "openai-gpt-5-5-instant-release",
+  "title": "OpenAI 发布 GPT-5.5 Instant 并替换 ChatGPT 默认模型",
+  "summary": "5 月 5 日，OpenAI 发布 GPT-5.5 Instant，并把 ChatGPT 默认模型从 GPT-5.3 Instant 切换到新版本，同时开放 API。OpenAI 称内部高风险提示评测中的幻觉声明减少 52.5%；这一数字的测试范围与真实使用效果需要分开看。",
+  "body": "5 月 5 日，OpenAI 发布 GPT-5.5 Instant，并把 ChatGPT 的默认模型从 GPT-5.3 Instant 切换到新版本。该模型也进入 API。对普通用户来说，版本变化可能发生在没有手动选择模型的情况下，因此默认路由本身就是这条新闻的一部分。\n\nOpenAI 还公布了一项内部结果：在高风险提示评测中，幻觉声明减少 52.5%。这个数字回答的是特定提示集里的相对变化，不能直接换算成所有领域的事实准确率。它也不说明模型在每个长对话、工具调用或资料不完整的场景中都会更可靠。\n\n如果要观察默认切换带来的实际影响，测试样本应固定下来。相同的问题、来源、工具权限和时间窗口分别交给旧默认模型、新默认模型以及手动指定的版本，然后记录错误类型、引用质量、延迟、token 消耗和人工修正。这样才能看出变化来自模型，还是来自调用路径。\n\nllm 指模型本体，hallucination 指回答超出了现有证据，benchmark 是固定任务和评分规则，model-routing 决定一次请求实际交给谁。这四个词分开后，发布页里的模型名称、内部评测和默认切换就不会被压成一个结论。\n\n目前能确认的是 OpenAI 的发布和自报评测结果。API 的账户与地区开放、独立测试、高风险错误以及是否能快速回滚，仍需要后续观察。",
+  "publishedAt": "2026-05-05",
+  "eventDate": "2026-05-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-gpt-5-5-instant-release.svg",
+    "alt": "OpenAI 发布 GPT-5.5 Instant 并替换 ChatGPT 默认模型；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/openai-gpt-5-5-instant-release.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "default-switch",
+      "title": "默认模型换了，用户可能不会察觉",
+      "body": "OpenAI 发布 GPT-5.5 Instant，同时将 ChatGPT 默认模型从 GPT-5.3 Instant 改为新版本，并提供 API。手动选择模型的用户可以主动比较；使用默认设置的用户，首先感受到的可能是回答速度、措辞和推理行为的变化。",
+      "kind": "narrative"
+    },
+    {
+      "id": "metric-scope",
+      "title": "52.5% 少了什么，取决于测试怎么做",
+      "body": "OpenAI 称，高风险提示评测中的幻觉声明减少 52.5%。这是内部评测里的相对数字，测试集、提示写法和判定标准都会影响结果。它不能直接表示所有行业问题的事实准确率，也不能代替对引用、拒答和工具调用的检查。",
+      "kind": "technical"
+    },
+    {
+      "id": "route-test",
+      "title": "真正的比较要把调用路径固定下来",
+      "body": "要评估默认切换，可以把同一批问题交给旧默认模型、新默认模型和手动指定的模型，保持来源、工具权限和时间窗口一致，再记录错误、延迟、token 和人工修正。model-routing 解释了系统实际调用哪个模型；路由发生变化时，单看模型名称不够。",
+      "kind": "example"
+    },
+    {
+      "id": "vocabulary",
+      "title": "四个词帮你读懂这次发布",
+      "body": "llm 是模型本体；hallucination 是缺少证据却给出确定说法；benchmark 是固定任务和评分规则；model-routing 是模型选择过程。发布页里的 52.5% 属于 benchmark 结果，默认模型变化属于 routing 变化，两者要分别验证。",
+      "kind": "aside"
+    },
+    {
+      "id": "open-questions",
+      "title": "还要等哪些外部证据",
+      "body": "官方页面没有给出所有地区的开放时间，也没有用独立评测证明高风险错误在现实任务中同幅度下降。后续应看 API 行为、不同领域的错误样本、引用质量和回滚记录，才能判断这次切换对日常使用的影响。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "把一次默认模型切换变成可比较的测试",
+    "question": "怎样知道回答变了，是模型变了，还是路由、工具和提示变了？",
+    "steps": [
+      {
+        "label": "保存同一批问题",
+        "detail": "固定问题、上下文、来源和工具权限，保留旧默认模型的输出，避免用不同样本比较。",
+        "evidence": "https://openai.com/index/gpt-5-5-instant/"
+      },
+      {
+        "label": "分别记录四类指标",
+        "detail": "把准确性、引用质量、响应时间和 token 消耗分开记，不能用一个总分代表全部体验。",
+        "evidence": "https://openai.com/index/gpt-5-5-instant/"
+      },
+      {
+        "label": "核对评测范围",
+        "detail": "将“高风险提示中的幻觉减少 52.5%”标记为 OpenAI 内部结果，查清提示集和判定方法。",
+        "evidence": "https://openai.com/index/gpt-5-5-instant/"
+      },
+      {
+        "label": "观察真实回退",
+        "detail": "在高风险任务中确认人工复核和版本回滚是否可用，再决定默认模型是否适合长期使用。",
+        "evidence": "https://openai.com/index/gpt-5-5-instant/"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/gpt-5-5-instant/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "hallucination",
+    "benchmark",
+    "model-routing"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/gpt-5-5-instant/",
+      "claim": "GPT-5.5 Instant 替换 ChatGPT 默认模型并进入 API",
+      "excerpt": "OpenAI says it is updating ChatGPT’s default model and releasing GPT-5.5 Instant in the API."
+    },
+    {
+      "url": "https://openai.com/index/gpt-5-5-instant/",
+      "claim": "内部高风险提示评测中的幻觉声明减少 52.5%",
+      "excerpt": "OpenAI reports 52.5% fewer hallucinated claims in its internal high-risk prompt evaluation."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/gpt-5-5-instant/",
+  "sourceHash": "sha256:13eb2228466003bd61c84e2a65a807f94d28edfec348c9c2ac3e103603d591f3",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 发布 GPT-5.5 Instant 并替换 ChatGPT 默认模型”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 发布 GPT-5.5 Instant 并替换 ChatGPT 默认模型”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 发布 GPT-5.5 Instant 并替换 ChatGPT 默认模型”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "model-routing",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“OpenAI 发布 GPT-5.5 Instant 并替换 ChatGPT 默认模型”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/gpt-5-5-instant/",
+      "claim": "GPT-5.5 Instant 替换 ChatGPT 默认模型并进入 API",
+      "excerpt": "OpenAI says it is updating ChatGPT’s default model and releasing GPT-5.5 Instant in the API."
+    },
+    {
+      "url": "https://openai.com/index/gpt-5-5-instant/",
+      "claim": "内部高风险提示评测中的幻觉声明减少 52.5%",
+      "excerpt": "OpenAI reports 52.5% fewer hallucinated claims in its internal high-risk prompt evaluation."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "通过。正文自然度良好，已清楚区分 GPT-5.5 Instant 模型、ChatGPT 默认路由和 OpenAI 内部高风险提示评测；52.5% 被限定为特定提示集的相对变化，没有外推为普遍事实准确率。零基础读者可以沿固定样本、工具权限、错误类型和回滚记录理解如何复核。",
+    "changes": [
+      "正文无需改写，保留现有 5 段结构和具体比较流程",
+      "核对 52.5% 来源卡片、默认模型替换与 API 发布主张",
+      "核对 eventDate、publishedAt、canonicalUrl、sources、relatedSlugs 及 JSON 结构"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-05",
+  "fingerprint": "sha256:13eb2228466003bd61c84e2a65a807f94d28edfec348c9c2ac3e103603d591f3"
+}

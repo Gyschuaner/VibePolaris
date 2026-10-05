@@ -1,0 +1,183 @@
+{
+  "slug": "anthropic-claude-small-business-connectors",
+  "title": "Anthropic 推出 Claude for Small Business，接入多种企业连接器",
+  "summary": "5 月 13 日，Anthropic 发布 Claude for Small Business，提供连接 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365 的连接器与现成工作流。发布页说明了产品范围和培训计划，没有证明所有账户已开放或跨服务写入默认安全。",
+  "body": "5 月 13 日，Anthropic 发布 Claude for Small Business，把 Claude 接到小企业常用的数据源和 SaaS 服务，发布页列出了 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365 等连接器，也提到培训与合作计划。\n\n连接这些系统后，问题就从“能不能回答”变成“能读哪些数据、能写哪些字段、谁批准动作”。配置不当时，连接器越多，权限扩散和错误传播的范围就可能越大，管理员需要先把读取、写入、共享和撤销分开配置。\n\n以客户工单为例，可以先让 Claude 只读知识库和 CRM，生成回复草稿；写回客户记录或发送邮件前要求人工确认，并保留连接器、字段和版本记录。mcp 连接模型与外部工具，tools 承载具体操作，api 规定调用和返回，agent 推进多步任务，这些概念都不替代管理员权限。\n\nAnthropic 的公告支持连接器和工作流的产品说明，不代表所有账户都同时开放，也没有给出跨服务写入的安全结果或客户成效。企业仍要用测试账户和最小权限验收。\n\n后续可观察开放范围、连接器字段、审计日志和失败后的人工处理。",
+  "publishedAt": "2026-05-13",
+  "eventDate": "2026-05-13",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-small-business-connectors.svg",
+    "alt": "Anthropic 推出 Claude for Small Business，接入多种企业连接器；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/anthropic-claude-small-business-connectors.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "product",
+      "title": "这次发布把 Claude 接到了哪些地方",
+      "body": "Anthropic 将 Claude for Small Business 描述为连接器和现成工作流的组合，列出 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace、Microsoft 365 等服务。它还配套培训与合作计划。",
+      "kind": "narrative"
+    },
+    {
+      "id": "permissions",
+      "title": "连接器带来的是权限问题",
+      "body": "模型进入企业系统后，需要先决定能读取哪些资料、能写入哪些字段、谁批准发送或修改，以及怎样撤销访问。连接器越多，管理员越需要按服务和成员设置最小权限。",
+      "kind": "technical"
+    },
+    {
+      "id": "ticket-flow",
+      "title": "客户工单适合从只读试点开始",
+      "body": "先让 Claude 读取知识库和 CRM，生成回复草稿；人工确认后再写回记录或发送邮件，并保存连接器、字段和版本。mcp 负责连接，tools 执行动作，api 规定调用方式，agent 组织多步流程。",
+      "kind": "example"
+    },
+    {
+      "id": "availability",
+      "title": "产品说明没有给出上线效果",
+      "body": "发布页没有证明所有账户已经开放，也没有说明跨服务写入在每个组织都默认安全。客户成效、数据隔离和失败回退都需要企业自己验收。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-checks",
+      "title": "先查权限，再扩大自动化范围",
+      "body": "后续应查看成员权限、连接器字段、审计日志和失败后的人工处理，先用测试账户验证，再决定是否允许写入。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "用一张工单检查企业连接器的权限",
+    "question": "当 Claude 能读写多个 SaaS 系统时，怎样知道哪些动作真的被允许？",
+    "steps": [
+      {
+        "label": "列出数据和动作",
+        "detail": "把每个连接器能读取的资料、能写入的字段和可发送的动作分别列出。",
+        "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+      },
+      {
+        "label": "设置测试账户",
+        "detail": "先用最小权限和只读模式跑一段工作流，记录模型引用的文件和返回的字段。",
+        "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+      },
+      {
+        "label": "加人工批准点",
+        "detail": "写回客户记录、发邮件或修改账务前，要求指定成员确认并留下审计记录。",
+        "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+      },
+      {
+        "label": "测试撤销和失败",
+        "detail": "撤销某个连接器权限，观察任务如何停止、回退和通知负责人，再决定扩大范围。",
+        "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-for-small-business"
+  },
+  "relatedSlugs": [
+    "mcp",
+    "tools",
+    "api",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/claude-for-small-business",
+      "claim": "Claude for Small Business 是连接器与 ready-to-run workflows 套件",
+      "excerpt": "Anthropic calls Claude for Small Business a package of connectors and ready-to-run workflows."
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-for-small-business",
+      "claim": "发布页列出 QuickBooks、PayPal、HubSpot 等连接器",
+      "excerpt": "The announcement lists connectors for QuickBooks, PayPal, HubSpot, Canva, DocuSign, Google Workspace and Microsoft 365."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/claude-for-small-business",
+  "sourceHash": "sha256:454a430eaa41a8b8e0d88c5964e125330f9d233577a610ee6f2c87fe92383aed",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 推出 Claude for Small Business，接入多种企业连接器”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 推出 Claude for Small Business，接入多种企业连接器”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 推出 Claude for Small Business，接入多种企业连接器”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“Anthropic 推出 Claude for Small Business，接入多种企业连接器”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/claude-for-small-business",
+      "claim": "Claude for Small Business 是连接器与 ready-to-run workflows 套件",
+      "excerpt": "Anthropic calls Claude for Small Business a package of connectors and ready-to-run workflows."
+    },
+    {
+      "url": "https://www.anthropic.com/news/claude-for-small-business",
+      "claim": "发布页列出 QuickBooks、PayPal、HubSpot 等连接器",
+      "excerpt": "The announcement lists connectors for QuickBooks, PayPal, HubSpot, Canva, DocuSign, Google Workspace and Microsoft 365."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文把 Anthropic 公告确认的产品范围、连接器名单与培训计划，与账户开放、跨服务写入安全和客户成效明确分开；客户工单段落用只读、草稿、人工确认和审计记录说明权限边界，没有把建议流程写成产品默认行为。已收紧一处关于连接器数量与风险的绝对表述。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将“权限扩散和错误传播的范围也越大”改为“配置不当时……就可能越大”，避免把连接器数量直接等同于风险结果。",
+      "将“模型进入这些系统后”改为“连接这些系统后”，避免把分析建议误读为公告已证明的运行状态。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-13",
+  "fingerprint": "sha256:454a430eaa41a8b8e0d88c5964e125330f9d233577a610ee6f2c87fe92383aed"
+}

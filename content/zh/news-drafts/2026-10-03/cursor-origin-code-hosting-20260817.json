@@ -1,0 +1,142 @@
+{
+  "slug": "cursor-origin-code-hosting-20260817",
+  "title": "Cursor 推出 Origin 代码托管：让代理、仓库和 PR 进入同一工作区",
+  "summary": "Cursor 于 2026 年 8 月 17 日把 Origin 以 early beta（早期测试版）形式推给付费计划，提供自托管仓库、代码浏览、Pull Request（代码合并请求，简称 PR）和 GitHub 同步，并把代理放到同一工作区。Origin 托管的仓库以 Origin 为事实来源，同步仓库仍以 GitHub 为准；这是一项产品发布，不等于所有代理能力已经可用。",
+  "body": "8 月 17 日，Cursor 发布 Origin Code Hosting，把代码托管、代码浏览和代理工作区放在同一个产品里。Origin 当天开始向付费计划以 early beta（早期测试版）形式开放，最先提供仓库、Pull Request（代码合并请求，简称 PR）、代码浏览和 GitHub 同步。这里的重点不是再做一个 GitHub 首页，而是把“代码在哪里、谁在审查、代理能看到什么”放到同一条工作流里。\n\nOrigin 托管的仓库有一个清晰的边界：Origin 是事实来源，推送直接落在 Origin，GitHub 不再参与这条仓库的写入路径。另一种路径是把现有 GitHub 仓库同步进 Cursor；这时 GitHub 仍是事实来源，Origin 只是实时镜像。两种模式的图标和设置会告诉用户仓库属于哪一种，避免把“看到了副本”误认为“已经迁移了主仓库”。\n\nPull Request 也被纳入这条链路。用户可以在 Origin 里查看提交、检查和文件差异，留言、审查并合并；同步仓库的评论会双向写回 GitHub。Cursor 还把代理放在仓库上下文里：它可以回答代码问题、修改文件、更新 PR 或推送分支。Vercel、Depot 和 Buildkite 的连接则把预览、构建与 CI（持续集成）接在仓库旁边。\n\n这个组合对 AI 编程工具很关键。代理如果只会生成补丁，团队还要在代码托管、审查、构建和发布之间来回搬运上下文；如果这些步骤连在一起，代理的输出才有机会被检查、回滚和复用。但“连在一起”不等于“自动合并”：权限、分支保护、审查责任和数据迁移仍然由团队决定，Origin 的 agent-native（为代理设计）功能也仍写成后续计划。\n\n因此，这条新闻更像是代码基础设施的入口之争。Cursor 先把仓库、PR 和代理放进一个界面，再试图让外部构建工具接入。接下来要看的不是功能列表有多长，而是迁移后的可导出性、企业权限模型、审计日志和在高风险仓库中如何保留人工确认。",
+  "publishedAt": "2026-08-17",
+  "eventDate": "2026-08-17",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/cursor-origin-code-hosting-20260817.svg",
+    "alt": "Cursor 推出 Origin 代码托管：让代理、仓库和 PR 进入同一工作区 的事件流程图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/cursor-origin-code-hosting-20260817.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "hosting",
+      "title": "Origin 托管仓库以 Origin 为事实来源",
+      "body": "新建仓库后，推送直接进入 Origin；GitHub 不再位于这条写入路径中。这个选择会改变备份、迁移和权限审计的责任边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "sync",
+      "title": "同步仓库仍把 GitHub 放在源头",
+      "body": "用户可以把 GitHub 仓库同步到 Origin，但 GitHub 继续是事实来源，Origin 镜像代码和 PR 状态，断开同步也由用户控制。",
+      "kind": "comparison"
+    },
+    {
+      "id": "review",
+      "title": "PR、检查和代理共享同一上下文",
+      "body": "代码差异、评论、检查结果和代理提问出现在同一个仓库空间，代理可以更新 PR 或推送分支，但合并仍需要权限规则。",
+      "kind": "narrative"
+    },
+    {
+      "id": "integrations",
+      "title": "预览和 CI 被接到仓库旁边",
+      "body": "Vercel、Depot、Buildkite 等连接把预览部署和构建流程接入 Origin；这能减少切换，却也把更多供应链权限交给平台。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "early beta 仍需要迁移和治理证据",
+      "body": "官方尚未用长期数据证明企业迁移、审计、导出或代理自动化在复杂仓库中的可靠性，agent-native 功能也仍在后续计划中。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个代理改动如何走到可审查的 PR？",
+    "question": "把代码事实来源、代理操作和人工审查拆开，才能看清 Origin 真正新增了哪一层。",
+    "steps": [
+      {
+        "label": "选择事实来源",
+        "detail": "新建 Origin 仓库时由 Origin 负责写入；同步 GitHub 仓库时仍由 GitHub 负责写入。",
+        "evidence": "Cursor Origin"
+      },
+      {
+        "label": "让代理读取上下文",
+        "detail": "代理可以在仓库里回答问题、修改文件或更新 PR，操作对象留在同一个代码空间。",
+        "evidence": "Cursor Origin"
+      },
+      {
+        "label": "把变更放进 PR",
+        "detail": "提交、检查、文件差异和评论组成可复查记录，团队可以先看证据再决定是否合并。",
+        "evidence": "Cursor Origin"
+      },
+      {
+        "label": "接入构建与预览",
+        "detail": "Vercel、Depot、Buildkite 等集成执行预览或 CI，结果回到同一条交付链。",
+        "evidence": "Cursor Origin"
+      }
+    ]
+  },
+  "source": {
+    "name": "Cursor",
+    "url": "https://cursor.com/changelog/origin-code-hosting"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "agent-loop",
+    "tools",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://cursor.com/changelog/origin-code-hosting",
+      "claim": "Cursor 于 8 月 17 日发布 Origin Code Hosting early beta，涵盖仓库、PR、代码浏览、GitHub 同步和代理入口。",
+      "excerpt": "Origin begins rolling out today in early beta on all paid plans. We're starting with the essentials, designed for agent scale: repos, pull requests, code browsing, and GitHub sync."
+    },
+    {
+      "url": "https://cursor.com/docs",
+      "claim": "Cursor 将 Origin 的文档入口与产品发布页相连，读者可继续核对具体权限和集成限制。",
+      "excerpt": "Learn more in our docs or get started today."
+    }
+  ],
+  "canonicalUrl": "https://cursor.com/changelog/origin-code-hosting",
+  "sourceHash": "sha256:d762a7d0062c5bc4c5868be6a49c38818485ef31bcf007aec1631a380d074ef4",
+  "status": "published",
+  "discoveredAt": "2026-10-03T11:09:06Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://cursor.com/changelog/origin-code-hosting",
+      "claim": "Cursor 于 8 月 17 日发布 Origin Code Hosting early beta，涵盖仓库、PR、代码浏览、GitHub 同步和代理入口。",
+      "excerpt": "Origin begins rolling out today in early beta on all paid plans. We're starting with the essentials, designed for agent scale: repos, pull requests, code browsing, and GitHub sync."
+    },
+    {
+      "url": "https://cursor.com/docs",
+      "claim": "Cursor 将 Origin 的文档入口与产品发布页相连，读者可继续核对具体权限和集成限制。",
+      "excerpt": "Learn more in our docs or get started today."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T11:09:06Z",
+    "method": "source",
+    "notes": "以官方公告、公司原文、监管/法院材料或可信新闻报道为主，保留事件发生日和公开数据边界；公司预测、跑率和宣传指标均按原口径标注。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T11:09:06Z",
+    "notes": "首轮人工整理完成，保留来源卡片、事件日期、限制条件和可读性审查入口。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T11:52:11Z",
+    "questions": [],
+    "notes": "补充 PR、early beta、CI 和 agent-native 的首次白话定义；正文、解释器与 SVG 流程一致。",
+    "changes": [
+      "补充 Pull Request、early beta、CI、agent-native 术语解释"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-17",
+  "promotedAt": "2026-10-03T11:55:45.156Z"
+}

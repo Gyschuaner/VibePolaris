@@ -1,0 +1,210 @@
+{
+  "slug": "mmsearch-plus-provenance-browsing-20250829",
+  "title": "MMSearch-Plus：让多模态浏览 Agent 必须追溯视觉证据",
+  "summary": "MMSearch-Plus 论文于 8 月 29 日提交，提出一个 311 题的多模态浏览 Agent 基准。题目要求 Agent 从图片中的细粒度线索出发，经过图文检索和交叉验证，推断图片之外的事件、日期或地点信息；评测还加入检索噪声。配套的 SoM 模块可以标记、裁剪局部并发起定向搜索，最强系统端到端准确率为 36.0%，SoM 在多种设置下最多提升 3.9 个百分点。",
+  "body": "多模态浏览 Agent 看见图片，不等于它真的用到了图片。很多题目只要做文本检索，或者凭网页标题和常识就能猜到答案，视觉输入只是装饰。MMSearch-Plus 试图把这个漏洞堵上：题目必须要求模型从细粒度视觉线索出发，再通过多轮图文搜索和交叉验证得到图片之外的事实。\n\n基准包含 311 个任务，答案可能涉及事件、日期和地点。Agent 需要先定位画面里的局部线索，再决定查什么；搜索结果带有噪声，不能把第一次命中的网页直接当成答案。这样的任务更接近真实浏览：视觉证据不完整，文本来源可能互相矛盾，最终结论要能说明“从哪里看到”和“怎样确认”。\n\n论文配套的 Set-of-Mark 模块让 Agent 在图片上放置标记、裁剪子区域，再发起定向图片或文本搜索。它把“看一眼整图”变成可复用的操作：先圈出招牌、日期或场景，再让检索围绕这块证据展开。这个过程也为来源记录提供了位置线索。\n\n结果并不轻松。最强系统端到端准确率为 36.0%，加入 SoM 后在多个设置下最多提升 3.9 个百分点。失败分析指出，Agent 常常找不到真正相关的网页，或把视觉上相似的事件混在一起。提升不是来自更会写答案，而是来自更准确地定位证据和核对来源。\n\n对产品团队来说，MMSearch-Plus 的启发是把“证据位置”纳入浏览轨迹。系统应保存使用了哪块图像、发起了哪些查询、哪些网页支持结论，以及在检索噪声下排除了什么。这样用户看到的不只是一个结果，还能知道 Agent 是否真的看过关键区域。\n\n36.0% 也提醒我们，多模态浏览仍是难题。基准任务强调视觉线索传播和跨来源验证，不能代表所有网页场景；SoM 的增益也依赖模型、工具和检索设置。上线前需要按自己的页面类型测量漏检、错配和无法回链的回答。\n\nMMSearch-Plus 把多模态 Agent 的“看见”改成一个可检查的动作链：定位、搜索、交叉验证、回链。真正的视觉能力，不是回答里多出现几个画面词，而是每个关键事实都能回到它所依据的图像和网页。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mmsearch-plus-provenance-browsing-20250829.svg",
+    "alt": "MMSearch-Plus 让多模态浏览 Agent 标记图像区域、检索并交叉验证来源",
+    "sourceUrl": "/images/news/mmsearch-plus-provenance-browsing-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "vision-in-loop",
+      "title": "图片在输入里，不代表真的参与推理",
+      "body": "如果文本检索和常识就能答题，视觉输入可能只是装饰；基准要求答案必须依赖细粒度画面线索。",
+      "kind": "narrative"
+    },
+    {
+      "id": "task-design",
+      "title": "311 个任务要求从画面走到画外事实",
+      "body": "Agent 要从局部线索出发，经过图文检索和交叉验证推断事件、日期或地点，并面对检索噪声。",
+      "kind": "technical"
+    },
+    {
+      "id": "som-operations",
+      "title": "SoM 把“看一眼”变成标记和裁剪",
+      "body": "Agent 可以圈出局部、裁剪子区域，再发起定向图片或文本搜索，留下证据位置。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-result",
+      "title": "最强系统端到端准确率 36.0%",
+      "body": "SoM 在多个设置下最多提升 3.9 个百分点；失败常来自找错网页或混淆视觉相似事件。",
+      "kind": "comparison"
+    },
+    {
+      "id": "provenance-trace",
+      "title": "把证据位置写进浏览轨迹",
+      "body": "保存使用的图像区域、查询、支持结论的网页和被排除的结果，用户才能检查 Agent 是否真的看过关键处。",
+      "kind": "example"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "基准增益不等于所有网页都能复制",
+      "body": "任务、模型、工具和检索设置都会改变结果，上线前要用自己的页面测漏检、错配和无法回链。",
+      "kind": "boundary"
+    },
+    {
+      "id": "visible-evidence",
+      "title": "多模态能力要落在证据链上",
+      "body": "定位、搜索、交叉验证和回链比回答里增加画面词更能证明视觉真的参与了判断。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "MMSearch-Plus 怎样检查浏览 Agent 真的用到了图片？",
+    "question": "要求 Agent 从可定位的视觉线索开始检索，在噪声中交叉验证，并把结论回链到图像和网页。",
+    "steps": [
+      {
+        "label": "定位视觉线索",
+        "detail": "在整张图中找出招牌、文字、日期或场景等能缩小搜索范围的局部证据。",
+        "evidence": "fine-grained visual cues"
+      },
+      {
+        "label": "标记并裁剪",
+        "detail": "用 Set-of-Mark 标记和裁剪区域，形成可复用的图片证据片段。",
+        "evidence": "place marks, crop subregions, and launch targeted searches"
+      },
+      {
+        "label": "发起图文检索",
+        "detail": "围绕局部线索进行图片和文本搜索，允许结果带有噪声和不完整匹配。",
+        "evidence": "iterative image-text retrieval under retrieval noise"
+      },
+      {
+        "label": "交叉验证来源",
+        "detail": "比较多个网页和视觉线索，排除看似相同但事件、日期或地点不同的结果。",
+        "evidence": "cross-validation and visually similar events"
+      },
+      {
+        "label": "输出可回链结论",
+        "detail": "把最终事实、图像位置、查询和网页来源一起保存，方便用户复核。",
+        "evidence": "provenance-aware search"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.21475"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "citation",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.21475",
+      "claim": "MMSearch-Plus 提供 311 个要求视觉线索传播、图文检索和交叉验证的多模态浏览任务。",
+      "excerpt": "311-task benchmark ... fine-grained visual cues ... iterative image-text retrieval"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21475",
+      "claim": "最强系统端到端准确率 36.0%，SoM 在多个设置下最多提升 3.9 个百分点。",
+      "excerpt": "36.0% end-to-end accuracy ... improvements up to +3.9 points"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.21475",
+  "sourceHash": "sha256:cabc7024a9ce96dae941bef3ad52ab879e2a63b750746f7751eee4968594b3f0",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多模态浏览 Agent 的定位、搜索和验证循环。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.97,
+      "evidence": [
+        "正文把标记、裁剪、图片搜索和文本搜索作为 Agent 工具动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.96,
+      "evidence": [
+        "正文要求记录网页来源、查询和图像证据位置。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.97,
+      "evidence": [
+        "正文把关键事实回链到图像和网页作为可靠性要求。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文使用 311 题、36.0% 准确率和 SoM 增益说明基准边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.21475",
+      "claim": "arXiv 记录 MMSearch-Plus 于 2025 年 8 月 29 日提交，研究来源感知的多模态浏览 Agent。",
+      "excerpt": "Date: Fri Aug 29 ... MMSearch-Plus: Benchmarking Provenance-Aware Search for Multimodal Browsing Agents"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21475",
+      "claim": "摘要给出 311 个任务、SoM 模块、36.0% 端到端准确率和最高 3.9 个百分点增益。",
+      "excerpt": "311-task benchmark ... strongest system achieves 36.0% ... up to +3.9 points"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 311 题、视觉线索传播、SoM 标记/裁剪/检索、36.0% 准确率和 3.9 个百分点增益；正文补充来源回链、检索噪声和基准外推边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 MMSearch-Plus 写成“定位—检索—交叉验证—回链”的证据链，保留 36.0% 和 SoM 增益的基准条件，避免把视觉词汇等同于视觉推理；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-mmsearch-plus-provenance-browsing-20250829"
+}

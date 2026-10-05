@@ -1,0 +1,188 @@
+{
+  "slug": "curse-of-knowledge-llm-judge-20250903",
+  "title": "Curse of Knowledge：评审上下文越复杂，LLM Judge 也可能越偏",
+  "summary": "一篇 9 月 3 日提交的论文构建 ComplexEval，专门测试 LLM Judge 在复杂评审上下文中的辅助信息诱导偏差。研究覆盖 12 个基础场景和 3 个高级场景，验证了 6 类此前少被系统讨论的偏差：所有受测模型都受到影响，任务越复杂偏差越明显，连 Large Reasoning Model 也出现反直觉的脆弱性。",
+  "body": "把模型当评审器，最容易被忽略的一步，是先问评审上下文是否改变了它的判断。简单题里，题目、答案和评分标准都很短，分数看起来像是在测答案本身；复杂任务里，评分器还要读多面 rubric、非结构化参考答案和细微的质量标准，辅助信息可能悄悄变成了“暗示”。\n\n这篇论文把问题叫作 Auxiliary Information Induced Biases，并用 ComplexEval 把它单独拿出来测。它不是再做一个“哪个 Judge 分数更高”的排行榜，而是把参考答案、标准和任务说明的呈现方式拆开，观察同一份待评答案在上下文变化后是否被不该影响的因素带偏。这样看的重点是评审信号是否稳定、能不能解释，而不是模型是否给出一个漂亮的总分。\n\n作者在 12 个基础场景和 3 个高级场景中系统验证了 6 类此前没有被充分研究的偏差。论文的结论不是某一模型偶尔失手，而是所有受测模型都明显受到这些偏差影响；任务越复杂，偏差幅度越大。复杂 rubric 越像一张信息密度很高的地图，Judge 越可能把“地图怎么画”误当成“答案走得对不对”。\n\n更反直觉的是，Large Reasoning Model 也没有天然免疫。多一步推理并不等于把评审对象和评审提示分得更干净；当上下文包含更多规则、参考材料和隐含标准时，推理能力可能让模型更充分地利用了这些线索，于是把偏差也推得更远。这是论文报告的脆弱性现象，不意味着所有推理模型在所有评测上都会更差。\n\n把这个结果放回日常评测，最实际的做法是保留评审上下文的版本和组成。每次改 rubric、增加参考答案或调整示例，都应记录前后版本，并用一组固定答案做成对回归；如果分数变化，只能说明提示和答案一起变了，就不能简单归因于模型能力。对复杂任务，还要把总分拆成可追溯的维度，让人能看到是哪条标准改变了判断。\n\nComplexEval 的边界也要保留。论文验证的是它设计的偏差场景，不能直接推出某个 Judge 在所有领域、所有语言和所有人工评审工作流中都会同样失真。可靠的做法是把 Judge 当作需要校准的测量工具：固定 rubric 与参考证据，抽取代表性样本做人审，检查分数与理由是否一致，再决定它能否进入自动门禁或发布流程。\n\n“知识诅咒”在这里不是模型知道得越多越好或越坏，而是评审者掌握的辅助信息可能反过来改变它看答案的方式。ComplexEval 提醒我们，评测系统除了测被评对象，也要测评审上下文本身；只有把上下文偏差记录、对照和复核，LLM Judge 的分数才有机会成为可验证的证据。",
+  "publishedAt": "2025-09-03",
+  "eventDate": "2025-09-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/curse-of-knowledge-llm-judge-20250903.svg",
+    "alt": "ComplexEval 对比不同评审上下文如何影响 LLM Judge 的判断稳定性",
+    "sourceUrl": "/images/news/curse-of-knowledge-llm-judge-20250903.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "judge-context",
+      "title": "评审器看到的上下文，也可能变成偏差来源",
+      "body": "复杂任务里的 rubric、参考答案和细微标准不只是背景信息；它们的呈现方式可能改变 Judge 对同一答案的判断。",
+      "kind": "narrative"
+    },
+    {
+      "id": "complexeval",
+      "title": "ComplexEval 把辅助信息诱导偏差单独拿出来测",
+      "body": "它用对照场景观察同一份答案在上下文变化后是否改变分数，关注评审信号能否稳定、解释和复现。",
+      "kind": "technical"
+    },
+    {
+      "id": "six-biases",
+      "title": "六类偏差在 12 个基础和 3 个高级场景中出现",
+      "body": "论文系统验证六类此前少被研究的偏差；所有受测模型都受影响，任务复杂度越高，偏差幅度越明显。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reasoning-paradox",
+      "title": "推理模型也可能更充分地利用了错误线索",
+      "body": "Large Reasoning Model 没有天然免疫，论文观察到它们在复杂上下文下出现反直觉脆弱性；这不是所有任务上的能力排名。",
+      "kind": "example"
+    },
+    {
+      "id": "versioned-rubric",
+      "title": "把 rubric、参考答案和示例当成有版本的输入",
+      "body": "固定答案做成对回归，记录上下文组成和版本，才能判断分数变化来自模型能力还是评审提示的改动。",
+      "kind": "technical"
+    },
+    {
+      "id": "human-calibration",
+      "title": "进入自动门禁前，先用人审校准 Judge",
+      "body": "拆分评分维度、抽取代表性样本、检查理由和分数是否一致，再决定评审器能否参与发布流程。",
+      "kind": "boundary"
+    },
+    {
+      "id": "measurement-tool",
+      "title": "LLM Judge 是测量工具，也需要被测量",
+      "body": "ComplexEval 只覆盖其设计的偏差场景；跨领域使用仍需记录上下文、做对照并保留人工复核证据。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样检查评审上下文有没有把 LLM Judge 带偏？",
+    "question": "固定答案和评分标准，逐项改变辅助信息，再用人审与版本记录判断分数变化来自哪里。",
+    "steps": [
+      {
+        "label": "固定待评答案",
+        "detail": "选一组覆盖正常、边界和错误情况的答案，先冻结文本与任务编号。",
+        "evidence": "same candidate answers"
+      },
+      {
+        "label": "拆出评审上下文",
+        "detail": "分别记录 rubric、参考答案、示例和任务说明，给每次组合生成可追踪版本。",
+        "evidence": "multi-faceted rubrics and references"
+      },
+      {
+        "label": "做对照评测",
+        "detail": "只改变一类辅助信息，比较同一答案的分数、理由和置信表达是否发生不该有的变化。",
+        "evidence": "ComplexEval controlled scenarios"
+      },
+      {
+        "label": "覆盖复杂场景",
+        "detail": "在基础和高级任务上重复检查，观察偏差是否随任务复杂度放大。",
+        "evidence": "12 basic and 3 advanced scenarios"
+      },
+      {
+        "label": "人审校准后再自动化",
+        "detail": "抽样复核理由与分数，保留分歧和版本记录，确认评审信号可解释后再接入门禁。",
+        "evidence": "accuracy and verifiability of evaluation signals"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03419"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03419",
+      "claim": "论文构建 ComplexEval，研究复杂评审上下文中的 Auxiliary Information Induced Biases，并在 12 个基础和 3 个高级场景验证 6 类偏差。",
+      "excerpt": "ComplexEval ... 6 previously unexplored biases across 12 basic and 3 advanced scenarios"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03419",
+      "claim": "摘要称所有受测模型都明显受到偏差影响，偏差随任务复杂度放大，Large Reasoning Model 也出现反直觉脆弱性。",
+      "excerpt": "all evaluated models exhibit significant susceptibility ... bias magnitude scaling with task complexity ... Large Reasoning Models show paradoxical vulnerability"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03419",
+  "sourceHash": "sha256:58f77449cced778715aaf1c12907be306bdc93561f384e10bb9905786d780114",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论把大语言模型作为评审器，以及 Large Reasoning Model 在复杂上下文下的脆弱性。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 ComplexEval、评审信号的稳定性、可解释性和人工校准展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.98,
+      "evidence": [
+        "ComplexEval 是用于系统暴露和量化评审偏差的挑战基准。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 3 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03419",
+      "claim": "arXiv 记录论文于 2025 年 9 月 3 日提交，主题是复杂评审上下文中的 LLM Judge。",
+      "excerpt": "Submitted on 3 Sep 2025 ... Curse of Knowledge"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03419",
+      "claim": "摘要给出 ComplexEval 的场景规模、六类偏差、复杂度放大效应和推理模型的反直觉脆弱性。",
+      "excerpt": "6 previously unexplored biases ... 12 basic and 3 advanced scenarios ... paradoxical vulnerability"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文提交日期、ComplexEval、6 类偏差、12+3 场景、复杂度放大效应和 Large Reasoning Model 脆弱性；正文补充版本化上下文、对照评测和人审校准边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留论文明确的 6 类偏差、12+3 场景、复杂度放大和推理模型脆弱性，不虚构偏差名称或百分比；补充 rubric 版本、对照评测和人审校准边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-03-curse-of-knowledge-llm-judge-20250903"
+}

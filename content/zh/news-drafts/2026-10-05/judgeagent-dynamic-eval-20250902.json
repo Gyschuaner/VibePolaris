@@ -1,0 +1,199 @@
+{
+  "slug": "judgeagent-dynamic-eval-20250902",
+  "title": "JudgeAgent：让评测题目跟着模型能力动态变化",
+  "summary": "JudgeAgent 论文于 9 月 2 日提交，针对静态基准知识覆盖有限、难度固定且容易被模型记住的问题，提出知识驱动的动态评测框架。它让 Agent 沿 context graph 系统遍历知识结构生成问题，再用难度自适应、多轮访谈机制继续追问，减少题目污染和难度错配；论文报告该框架能提供更全面的评测，并帮助模型迭代。",
+  "body": "静态基准的优点是容易复现，缺点也很明确：题目集合一旦固定，知识覆盖和难度就被锁在原地。模型可能因为见过题目、记住答案或学会题型而得分，评测者却很难知道它是否真的掌握了相关知识。JudgeAgent 试图把评测从一张固定试卷改成一场有结构的面试。\n\n框架先给 Agent 一张 context graph，让它沿着知识结构寻找可出题的节点和关系。题目不再只来自一份静态列表，而是从知识覆盖、相邻概念和未被触及的路径里生成。这样做的价值不是无限地产生难题，而是让评测者能知道这道题在知识图上的位置，避免只测到某几个热门节点。\n\n难度自适应解决的是另一件事。对一个已经答对基础问题的模型，系统可以继续追问相邻概念、改变条件或要求解释；对表现不稳定的模型，则需要回到能够区分错误原因的层级。多轮访谈让问题和后续问题形成一条证据链，比一次抽几道题更有机会画出模型的能力边界。\n\n这种动态出题也有新的记录要求。每次评测应保存图上的起点、生成规则、题目版本、模型回答和追问依据，否则不同模型面对的试卷不一致，分数就很难横向比较。题目生成器和评判器还要分开检查，避免系统为了拉开分差而不断制造含糊或超出知识图覆盖的问题。\n\n论文报告 JudgeAgent 能提高知识覆盖，缓解固定难度与数据污染，并帮助更有针对性地迭代模型。摘要没有给出一个可以脱离实现细节复用的统一提升数字，因此读者应把它理解为框架层的实验结论，而不是“动态评测必然更准”。实际效果仍取决于 context graph 的质量、生成题目的可解性和评判标准。\n\n产品团队若采用这类评测，最好把动态面试和固定回归集并行保留。固定集用于看版本是否退化，动态图用于发现新知识缺口；对每次追问记录模型在哪个概念、哪种条件或哪类证据上失误。这样，动态测试提供探索，固定测试提供可比性，两者不互相替代。\n\nJudgeAgent 的启发是，评测不必只有一个终点分数。让题目沿知识结构移动、让难度随回答调整，能更接近真实使用中的连续追问；但系统必须把出题路径、题目变化和评判理由留下来，否则“动态”只是不可复现的黑箱。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/judgeagent-dynamic-eval-20250902.svg",
+    "alt": "JudgeAgent 沿知识图生成题目并根据回答进行难度自适应的多轮评测",
+    "sourceUrl": "/images/news/judgeagent-dynamic-eval-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "static-benchmark-limit",
+      "title": "固定试卷容易把记忆当成能力",
+      "body": "静态题目集合限制知识覆盖和难度，模型还可能记住题目或题型，评测者却看不出能力边界。",
+      "kind": "narrative"
+    },
+    {
+      "id": "context-graph",
+      "title": "先沿 context graph 找到知识位置",
+      "body": "Agent 遍历概念和关系生成问题，让评测者知道题目覆盖了哪些节点、哪些路径还没有被触及。",
+      "kind": "technical"
+    },
+    {
+      "id": "adaptive-interview",
+      "title": "多轮访谈让问题跟着回答走",
+      "body": "答对基础问题后可以追问相邻概念或改变条件，表现不稳时则回到能区分错误原因的层级。",
+      "kind": "technical"
+    },
+    {
+      "id": "traceable-items",
+      "title": "动态题目也要保存生成链路",
+      "body": "记录起点、生成规则、题目版本、回答和追问依据，才能在不同模型间比较同一能力边界。",
+      "kind": "example"
+    },
+    {
+      "id": "reported-framework",
+      "title": "框架改善覆盖，不承诺统一提升数字",
+      "body": "论文报告更全面的评测和更有针对性的模型迭代，实际结果仍受图质量、题目可解性和评判标准影响。",
+      "kind": "comparison"
+    },
+    {
+      "id": "hybrid-regression",
+      "title": "动态图探索和固定集回归要并行",
+      "body": "固定集负责版本退化的可比性，动态面试负责发现新缺口；两者提供不同证据，不能互相替代。",
+      "kind": "boundary"
+    },
+    {
+      "id": "dynamic-blackbox",
+      "title": "动态不是不可复现的黑箱",
+      "body": "出题路径、题目变化和评判理由都要留档，才能让连续追问成为可审核的评测过程。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "JudgeAgent 怎样把固定试卷改成知识面试？",
+    "question": "沿知识图生成题目，根据模型回答调整难度，并把每次追问的依据留下来。",
+    "steps": [
+      {
+        "label": "定位知识节点",
+        "detail": "让 Agent 沿 context graph 选择概念、关系和未覆盖路径，记录题目的知识位置。",
+        "evidence": "agents equipped with context graphs"
+      },
+      {
+        "label": "生成首个问题",
+        "detail": "根据节点和关系形成可解、可判分的问题，保存题目版本与生成规则。",
+        "evidence": "knowledge-driven question generation"
+      },
+      {
+        "label": "读取回答状态",
+        "detail": "检查模型是否掌握基础概念，区分正确、猜中、解释不完整和证据不足。",
+        "evidence": "dynamic LLM evaluation"
+      },
+      {
+        "label": "自适应多轮追问",
+        "detail": "改变条件、追问相邻概念或回到诊断性层级，让难度匹配当前表现。",
+        "evidence": "difficulty-adaptive and multi-turn interview"
+      },
+      {
+        "label": "与固定集交叉复核",
+        "detail": "用固定回归集保持版本可比，用动态路径发现新缺口，并保存评判理由和模型迭代记录。",
+        "evidence": "facilitate more effective improvement"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.02097"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "benchmark",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.02097",
+      "claim": "JudgeAgent 用 context graph 遍历知识结构生成题目，并用难度自适应、多轮访谈缓解固定题目和数据污染。",
+      "excerpt": "knowledge-driven and dynamic evaluation ... context graphs ... difficulty-adaptive and multi-turn interview"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02097",
+      "claim": "论文报告该框架能提供更全面的知识评测并帮助模型迭代，代码公开；实际效果仍依赖图、题目和评判质量。",
+      "excerpt": "more comprehensive evaluations and facilitate effective model iterations"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.02097",
+  "sourceHash": "sha256:2a17972de74ee6f474c5398ad3ef5bd198334e2130cce37a54f40e229a854f74",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论出题 Agent、访谈 Agent 和模型迭代流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.95,
+      "evidence": [
+        "正文把 context graph 作为知识覆盖和出题路径的结构。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文比较静态基准、动态图评测和固定回归集。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕难度自适应、数据污染和能力边界评估。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.02097",
+      "claim": "arXiv 记录 JudgeAgent 于 2025 年 9 月 2 日提交，研究知识驱动的动态 LLM 评测。",
+      "excerpt": "Published: 2025-09-02 ... JudgeAgent"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02097",
+      "claim": "摘要给出 context graph、难度自适应、多轮访谈、缓解数据污染和难度错配的框架主张。",
+      "excerpt": "context graphs ... data contamination and difficulty mismatch ... multi-turn interview"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对静态基准限制、context graph 出题、难度自适应、多轮访谈和框架层评测结论；正文补充题目生成链路、动态/固定集并行、可解性和评判器边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：区分知识覆盖、难度自适应和题目可追溯三层，避免把动态评测写成更高分的保证，并保留固定回归集、图质量和评判一致性的边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-judgeagent-dynamic-eval-20250902"
+}

@@ -1,0 +1,200 @@
+{
+  "slug": "galaxea-g0-vla-20250811",
+  "title": "星海图发布 G0 双系统 VLA，计划开放真实场景机器人数据",
+  "summary": "8 月 11 日，星海图在世界机器人大会发布 G0 双系统全身智能 VLA，并宣布将面向具身智能开发者开放真实生活与工作场景的真机数据集。G0 用 VLM 做多模态任务规划、用 VLA 做细粒度动作执行；50 个环境、500 小时、150 多项任务等数字来自公司和媒体口径，数据集“将开放”也不等于当天已经完整下载。",
+  "body": "8 月 11 日，星海图在世界机器人大会发布端到端双系统全身智能模型 G0，并宣布将面向具身智能开发者开放一套在真实生活和工作场景采集的机器人数据。北京商报的报道给出了 50 个环境、500 小时数据、150 多项任务、1600 多种操作对象和 58 种操作技能等数字；这些是公司在发布时对数据规模的介绍，不是独立机构已经复核的排行榜。当天发生的是模型发布和开放计划，不能把“即将开源”写成数据集已经完整可下载。\n\nG0 的“双系统”指两条职责不同的链路。G0-VLM 读取人的指令和环境观察，先做多模态任务规划；G0-VLA 再把计划拆成机器人可以执行的细粒度动作。这样做是为了让“把桌上的东西收好”这类长任务不必由一个模型同时承担抽象规划和每一步关节控制，但两者之间的命令接口、状态同步和失败恢复也会成为新的工程边界。规划说得通，不等于机械臂在下一帧就能安全完成。\n\n官方项目页把训练写成三阶段课程：先用跨机器人形态的数据做预训练，再用同一机器人形态的数据继续训练，最后做任务特定的后训练。公开数据的介绍则强调 R1 Lite 这一统一平台、住宅、厨房、零售和办公室等场景，以及细粒度的子任务语言标注。统一形态有助于动作学习稳定下来，也意味着换成不同底盘、相机位置或机械臂后，模型可能需要重新适配，不能把一个平台上的成功直接当成通用机器人能力。\n\n新闻里的“开放世界”也有具体含义：数据来自人类生活和工作环境，而不是只在实验室里摆好的单一台面。真实场景会带来遮挡、光线变化、物体位置变化和不完整指令，模型需要在较长任务中持续观察并修正动作。不过，发布日公布的是采集范围和开放计划；项目页面上的论文在 8 月 30 日才提交，数据集和权重的后续入口也有自己的发布时间，不能用后来的论文图表反推 8 月 11 日已经完成全部验证。\n\nG0 的价值因此不在于又增加一个 VLA 缩写，而在于把规划模型、动作模型和真实世界数据放到同一条可检查的链路上。对于开发者，真正需要确认的是数据能否按许可取得、任务标注是否足够复现、G0-VLM 生成的命令怎样交给 G0-VLA，以及机器人遇到未见过的物体或失败动作时谁来接管。对真实部署而言，急停、碰撞检测、操作区域和人机共处规则仍然是独立的安全层。\n\n接下来要看三件事：数据集和权重何时以可复现的方式开放，50 个环境和 500 小时的统计如何对应到公开任务与测试集，以及双系统在长时任务、跨形态迁移和异常恢复上的独立结果。8 月 11 日的发布说明了一个方向——让机器人先理解任务，再执行动作——但是否足以支撑开放世界操作，要等数据、代码和现场失败记录真正被社区检验。",
+  "publishedAt": "2025-08-11",
+  "eventDate": "2025-08-11",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/galaxea-g0-vla-20250811.svg",
+    "alt": "G0 用 VLM 做任务规划，再由 VLA 将计划转成机器人动作；真实场景数据开放计划仍需等后续入口和复现；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/galaxea-g0-vla-20250811.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 11 日发布模型，也宣布数据开放计划",
+      "body": "星海图在世界机器人大会发布 G0，并宣布将面向具身智能开发者开放真实生活与工作场景的真机数据。50 个环境、500 小时等规模数字来自公司和媒体口径；“将开放”不等于发布日已经完整下载。",
+      "kind": "narrative"
+    },
+    {
+      "id": "dual-system",
+      "title": "VLM 规划，VLA 执行",
+      "body": "G0-VLM 处理人的指令和环境观察，生成任务计划；G0-VLA 接收计划并执行细粒度动作。分工降低单模型同时做长程规划和关节控制的压力，也把命令接口、状态同步和失败恢复变成必须验证的边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "curriculum",
+      "title": "三阶段训练从跨形态走向单一机器人",
+      "body": "官方项目页描述跨形态预训练、单形态预训练和任务特定后训练；统一的 R1 Lite 数据有利于学习稳定动作，但换底盘、相机或机械臂后仍可能需要适配。",
+      "kind": "technical"
+    },
+    {
+      "id": "open-world",
+      "title": "开放世界首先是数据采集环境的变化",
+      "body": "住宅、厨房、零售和办公室等人类环境带来遮挡、光照、物体变化和不完整指令。发布日只能确认采集范围与开放计划，8 月 30 日论文和后续数据入口不能倒填成当天已经完成的验证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "robot-safety",
+      "title": "动作模型之外还要有独立安全层",
+      "body": "规划正确不代表机械臂能安全执行；急停、碰撞检测、操作区域、人机共处和人工接管仍要在系统外明确配置，不能由模型自行决定。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看开放入口与长任务复现",
+      "body": "开发者需要确认数据和权重的许可与可复现性，再观察双系统在跨形态迁移、未见物体和异常恢复中的独立表现。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "robot-safety",
+    "title": "机器人怎样从一句话走到一个动作？",
+    "question": "把规划、动作、反馈和安全接管分开，才能看清 G0 双系统 VLA 的工作边界。",
+    "steps": [
+      {
+        "label": "理解任务",
+        "detail": "VLM 读取人的指令和摄像头观察，把“整理桌面”这类目标拆成可执行的子任务。",
+        "evidence": "G0-VLM task planner"
+      },
+      {
+        "label": "生成动作计划",
+        "detail": "规划器输出物体、顺序和动作条件；计划要能被下游 VLA 理解，不能只是一段自然语言描述。",
+        "evidence": "Dual-system VLA project page"
+      },
+      {
+        "label": "执行细粒度动作",
+        "detail": "G0-VLA 根据视觉状态和计划生成抓取、移动、放置等连续动作，实际效果取决于机器人形态和训练分布。",
+        "evidence": "G0-VLA execution module"
+      },
+      {
+        "label": "观察并修正",
+        "detail": "物体被遮挡、位置改变或动作失败时，系统需要重新观察并决定是否重规划，而不是沿着旧计划继续。",
+        "evidence": "Open-world environment boundary"
+      },
+      {
+        "label": "安全层接管",
+        "detail": "急停、碰撞检测、速度限制和人工接管独立于模型，任何规划都不能绕过这些限制。",
+        "evidence": "Robot safety boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Galaxea AI / 北京商报",
+    "url": "https://opengalaxea.github.io/GalaxeaVLA/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "event",
+    "distributed-system"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://finance.sina.com.cn/jjxw/2025-08-11/doc-infkrpnv9534880.shtml",
+      "claim": "北京商报 8 月 11 日报道星海图发布 G0 双系统全身智能 VLA，并宣布将开放真实生活与工作场景真机数据；50 个环境、500 小时、150 多项任务、1600 多种对象和 58 种技能为公司发布口径。",
+      "excerpt": "8月11日，星海图正式发布端到端双系统全身智能VLA模型星海图G0，同时宣布即将面向所有具身智能开发者开源首个开放场景高质量真机数据集。"
+    },
+    {
+      "url": "https://opengalaxea.github.io/GalaxeaVLA/",
+      "claim": "Galaxea 官方项目页说明 G0 由负责多模态规划的 VLM 和负责细粒度执行的 VLA 组成，并采用跨形态、单形态、任务后训练三阶段课程。",
+      "excerpt": "G0 is our dual-system VLA model ... a VLM for multimodal planning with a VLA model for fine-grained execution."
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00576",
+      "claim": "相关技术论文于 2025 年 8 月 30 日提交，晚于 8 月 11 日发布事件；论文进一步描述开放世界数据和双系统训练。",
+      "excerpt": "[Submitted on 30 Aug 2025] Galaxea Open-World Dataset and G0 Dual-System VLA Model"
+    },
+    {
+      "url": "https://huggingface.co/datasets/OpenGalaxea/Galaxea-Open-World-Dataset",
+      "claim": "后续数据集页面记录 500+ 小时真实移动操作数据、统一 R1-Lite 形态、双语子任务标注及 CC BY-NC-SA 4.0 许可；这些后续入口不作为 8 月 11 日已完成开放的依据。",
+      "excerpt": "500+ hours of real-world mobile manipulation data ... All data collected using one uniform robotic embodiment (R1-Lite)."
+    }
+  ],
+  "canonicalUrl": "https://opengalaxea.github.io/GalaxeaVLA/",
+  "sourceHash": "sha256:daea3b95359c31c73b9658756d25cdc27314ab9c16e09c9b2520ed01427e23a7",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文与 explainer 将 G0-VLM 的任务规划、G0-VLA 的动作执行和失败重规划拆成一条受约束的机器人工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8 月 11 日模型发布、开放计划、8 月 30 日论文和后续数据入口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "distributed-system",
+      "score": 0.86,
+      "evidence": [
+        "双系统把规划、执行、状态同步、反馈和安全接管分开，展示了机器人系统中的组件协作边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://finance.sina.com.cn/jjxw/2025-08-11/doc-infkrpnv9534880.shtml",
+      "claim": "8 月 11 日媒体报道确认 G0 发布和真机数据开放计划，并给出环境、时长、任务、对象、技能等规模数字。",
+      "excerpt": "同时宣布即将面向所有具身智能开发者开源首个开放场景高质量真机数据集。"
+    },
+    {
+      "url": "https://opengalaxea.github.io/GalaxeaVLA/",
+      "claim": "官方项目页确认 VLM 规划、VLA 执行、R1 Lite 平台与三阶段训练路线。",
+      "excerpt": "G0-VLM: Task Planner ... G0-VLA ... fine-grained execution"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00576",
+      "claim": "arXiv 记录 8 月 30 日论文提交，证明论文资料晚于 8 月 11 日新闻事件。",
+      "excerpt": "Submitted on 30 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对北京商报 8 月 11 日报道、Galaxea 官方项目页、arXiv 2509.00576 和后续 Hugging Face 数据集卡；正文将发布、开放计划、论文和后续数据入口分开，并把规模与性能数字归因于公司/媒体口径。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 写成规划/执行双系统与真实场景数据开放计划，避免将“即将开源”写成当天已完整开放，也保留机器人形态迁移、失败恢复和安全接管边界，等待逐篇 reader-review。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-11-galaxea-g0",
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-11；北京商报记录世界机器人大会的 G0 发布与“即将开源”数据计划，正文没有写成 8/11 当天已有完整可下载数据。",
+      "G0-VLM 的多模态任务规划、G0-VLA 的细粒度动作执行，以及命令接口、状态同步和失败恢复的工程边界说明清楚；规划结果没有被写成下一帧必然安全的机械动作。",
+      "跨形态预训练、单形态预训练、任务特定后训练和 R1 Lite 统一形态均来自官方项目/后续数据说明，文章没有把单一形态效果外推为通用机器人能力。",
+      "50 个环境、500 小时、150 多项任务、1600 多种对象和 58 种技能明确归因为公司发布/媒体口径，未被写成独立验证或公开排行榜；8/30 arXiv 论文与后续 Hugging Face 数据入口均单列来源，没有倒填为 8/11 的事实。",
+      "中文自然，没有明显机械化段落；robot-safety explainer、agent/event/distributed-system relations、hero SVG、sections、sources/evidence、verification、空 relatedArticleSlugs 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过：零基础读者能区分规划模型、动作模型、训练形态、开放计划、后续论文/数据入口和机器人安全接管边界。",
+    "changes": []
+  }
+}

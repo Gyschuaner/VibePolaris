@@ -1,0 +1,193 @@
+{
+  "slug": "docusign-iris-ai-agents",
+  "title": "DocuSign 发布 Iris AI 引擎与 Agent Studio，扩展合同自动化",
+  "summary": "5 月 21 日，DocuSign 发布 Iris AI 引擎和 Agent Studio，让智能体按公司标准审查协议、建议修改、请求审批并监控义务，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。公告说明了产品设计，不证明智能体能正确解释所有合同，也不允许自动建议绕过法务审批。",
+  "body": "5 月 21 日，DocuSign 发布 Iris AI 引擎和 Agent Studio。产品可以按公司标准审查协议、提出修改、请求审批和监控后续义务，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。\n\n这已经超出“把合同总结一下”。模型输出可能进入版本修改、审批和提醒流程，因此需要记录它引用了哪一段、提出了什么改变、谁批准了动作，以及何时触发了提醒。MCP 扩大了工具入口，也让身份、数据范围和撤销方式更重要。\n\n以一份供应合同为例，智能体先定位付款和续约条款，给出带依据的修改建议；法务确认后才写入新版本，之后系统按批准条款追踪义务。agent 推进任务，api 处理提交和查询，authorization 管理读写与审批，tools 执行具体业务操作。\n\nDocuSign 的公告没有证明智能体能正确解释所有合同，也没有说企业可以取消法务审批。跨模型连接不等于权限天然正确，企业仍要用测试合同和最小权限检查版本回退、审批日志和提醒错误。",
+  "publishedAt": "2026-05-21",
+  "eventDate": "2026-05-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/docusign-iris-ai-agents.svg",
+    "alt": "DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/docusign-iris-ai-agents.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "product",
+      "title": "Iris 和 Agent Studio 把合同工作往后推了一步",
+      "body": "DocuSign 介绍的能力包括审查协议、提出修改、请求审批和监控义务，并通过 MCP 连接 Claude、Gemini 和 ChatGPT。它处理的是合同工作流，不只是摘要。",
+      "kind": "narrative"
+    },
+    {
+      "id": "audit-trail",
+      "title": "合同修改要留下哪几种记录",
+      "body": "系统需要保留引用的条款、修改内容、批准人、版本和提醒时间。连接器扩展了工具入口，也需要明确身份、数据范围和撤销方式。",
+      "kind": "technical"
+    },
+    {
+      "id": "supply-contract",
+      "title": "一份供应合同可以怎样试运行",
+      "body": "智能体先找出付款和续约条款，提出带依据的建议；法务确认后才写入新版本，再按批准条款跟踪义务。agent、api、authorization 和 tools 分别对应任务、接口、权限和动作。",
+      "kind": "example"
+    },
+    {
+      "id": "legal-boundary",
+      "title": "自动建议仍不能替代法务批准",
+      "body": "公告没有证明智能体能正确解释所有合同，也没有允许自动建议绕过法务。跨模型连接不等于权限正确，企业要独立测试版本、审批和回退。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next",
+      "title": "后续看 Agent Studio 的审计和回退",
+      "body": "继续查看审批日志、权限继承、版本管理、提醒错误和失败恢复，确认一份合同从建议到执行的责任链。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "从一条合同建议追到一次经过批准的变更",
+    "question": "怎样判断智能体的修改建议仍在法务和版本控制之内？",
+    "steps": [
+      {
+        "label": "标出引用条款",
+        "detail": "保存模型引用的段落、原始合同版本和提出的修改，避免只留下最终文本。",
+        "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
+      },
+      {
+        "label": "设置批准人",
+        "detail": "为写入新版本、发出签署请求和改变义务提醒设置明确的 authorization。",
+        "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
+      },
+      {
+        "label": "记录工具调用",
+        "detail": "保存 MCP 连接、API 请求、返回状态和业务系统的实际变更。",
+        "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
+      },
+      {
+        "label": "测试回退和提醒",
+        "detail": "模拟拒绝、版本冲突和提醒错误，确认合同不会在没有人工决定时继续推进。",
+        "evidence": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
+      }
+    ]
+  },
+  "source": {
+    "name": "DocuSign",
+    "url": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work"
+  },
+  "relatedSlugs": [
+    "agent",
+    "mcp",
+    "api",
+    "authorization",
+    "tools"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work",
+      "claim": "Iris 与 Agent Studio 支持审查协议、建议修改和监控义务",
+      "excerpt": "DocuSign says its Iris engine and Agent Studio can review agreements, suggest edits and monitor obligations."
+    },
+    {
+      "url": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work",
+      "claim": "产品通过 MCP 连接 Claude、Gemini 和 ChatGPT",
+      "excerpt": "The announcement describes MCP connections to Claude, Gemini and ChatGPT."
+    }
+  ],
+  "canonicalUrl": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work",
+  "sourceHash": "sha256:4eb4a9fb427376f40d56da1323b8c937000b885a9c0df4d6a4d8ff4eb35ee003",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work",
+      "claim": "Iris 与 Agent Studio 支持审查协议、建议修改和监控义务",
+      "excerpt": "DocuSign says its Iris engine and Agent Studio can review agreements, suggest edits and monitor obligations."
+    },
+    {
+      "url": "https://www.docusign.com/company/news-center/docusign-unveils-ai-assistant-and-agents-to-power-the-next-era-of-agreement-work",
+      "claim": "产品通过 MCP 连接 Claude、Gemini 和 ChatGPT",
+      "excerpt": "The announcement describes MCP connections to Claude, Gemini and ChatGPT."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文准确区分 Iris AI 引擎、Agent Studio 与 MCP 连接的产品说明，并把合同引用、修改建议、法务审批、版本管理、义务提醒和回退记录串成可理解的流程。未把跨模型连接写成权限保证，也未允许智能体绕过法务。已修正标题中将 Iris 写成“协议”的用词，与正文和来源的 AI 引擎口径一致。eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": [
+      "将标题从“DocuSign 发布 Iris 协议 AI 助手与智能体，扩展合同自动化”改为“DocuSign 发布 Iris AI 引擎与 Agent Studio，扩展合同自动化”，修正 Iris 产品名称口径。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-21",
+  "fingerprint": "sha256:4eb4a9fb427376f40d56da1323b8c937000b885a9c0df4d6a4d8ff4eb35ee003"
+}

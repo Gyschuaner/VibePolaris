@@ -1,0 +1,199 @@
+{
+  "slug": "newsagent-journalistic-workflow-20250830",
+  "title": "NEWSAGENT：把新闻写作拆成检索、取舍和反复修改的 Agent 评测",
+  "summary": "NEWSAGENT 论文于 8 月 30 日提交，提出一个按新闻工作流评测 Agent 的基准。给定写作指令和不完整的一手材料，Agent 需要主动发现背景、设计检索词、选择叙事角度并反复修改稿件。基准包含 6,000 个真人核验样例；实验显示，Agent 能找到相关事实，但在规划和叙事整合上仍然吃力。",
+  "body": "新闻写作不是把已有材料压缩成几段话。记者拿到一份不完整的线索后，还要判断缺了什么背景、该查哪些词、哪些信息值得放进文章，以及新找到的事实怎样改变叙事。NEWSAGENT 的问题意识很直接：如果 Agent 只会检索和总结，它离真正的信息密集型工作还有多远？\n\n基准给 Agent 一条写作指令和部分一手材料，要求它自己发现缺口。它需要提出关键词查询，寻找历史背景，选择能够解释事件的叙事视角，最后生成并反复修改完整新闻稿。任务的重点不是把一个网页改写得更顺，而是主动决定下一步还要知道什么。\n\nNEWSAGENT 由 6,000 个真人核验样例构成，覆盖真实新闻工作中的材料和写作要求。作者用它比较开源和闭源模型以及常见 Agent 框架，拆开观察检索、规划、信息取舍和叙事整合等环节。这样的拆分比一个总分更有用，因为文章写得不对时，团队能知道问题发生在找不到事实，还是找到了却没有用对。\n\n实验给出的结论并不夸张：Agent 通常能检索到相关事实，却在规划和叙事整合上遇到困难。它可能搜到许多相关链接，却没有形成清晰的报道角度；也可能把背景、引语和新事实并排堆放，没说明它们怎样支持文章的主线。\n\n这项研究对日常写作很有启发。一个可靠的新闻 Agent 需要先列出待补背景和证据缺口，再搜索和写作；每一轮修改都要说明新增事实改变了哪一段，而不是把全文重新生成一次。引用和来源也应该跟着段落走，方便编辑核对。\n\n基准有自己的边界。真实新闻的来源质量、突发事件速度和编辑规范比样例更复杂，6,000 个样例也不覆盖所有领域。系统上线前仍要用实际选题测量时间、错误、遗漏和来源失配，并为未经核实的内容设置发布前检查。\n\nNEWSAGENT 的价值，是把“会写”拆成一组可以逐项审查的工作。Agent 如果要进入编辑流程，首先要证明自己会发现信息缺口、解释取舍并接受逐段修改，而不是只交出一篇看起来完整的稿子。",
+  "publishedAt": "2025-08-30",
+  "eventDate": "2025-08-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/newsagent-journalistic-workflow-20250830.svg",
+    "alt": "NEWSAGENT 将新闻写作拆成发现缺口、检索背景、选择角度和反复修改的工作流",
+    "sourceUrl": "/images/news/newsagent-journalistic-workflow-20250830.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "writing-not-summary",
+      "title": "新闻写作不是把材料改写顺",
+      "body": "缺背景、检索、取舍和叙事都需要主动判断，单纯摘要无法覆盖这条工作链。",
+      "kind": "narrative"
+    },
+    {
+      "id": "workflow-tasks",
+      "title": "Agent 要自己发现信息缺口",
+      "body": "给定写作指令和部分一手材料后，它要提出查询、补历史背景、选择视角并修改完整稿件。",
+      "kind": "technical"
+    },
+    {
+      "id": "human-verified-set",
+      "title": "6,000 个真人核验样例拆开看能力",
+      "body": "基准分别观察检索、规划、信息取舍和叙事整合，让失败不再只剩一个总分。",
+      "kind": "technical"
+    },
+    {
+      "id": "retrieval-vs-planning",
+      "title": "事实找得到，规划和整合仍吃力",
+      "body": "Agent 可能有相关链接，却没有形成清晰报道角度，或把背景和新事实简单堆在一起。",
+      "kind": "comparison"
+    },
+    {
+      "id": "editorial-loop",
+      "title": "每轮修改都要说明改变了什么",
+      "body": "先列证据缺口，再检索和写作；新增事实应能回到具体段落和来源，而不是整篇重新生成。",
+      "kind": "example"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "真实新闻比样例更快、更杂",
+      "body": "上线前仍要按实际选题测量遗漏、错误、来源失配和编辑时间，并设置发布前核验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "publishable-agent",
+      "title": "会写只是进入编辑流程的起点",
+      "body": "Agent 还要证明自己能发现缺口、解释取舍并接受逐段修改，文章完整不等于报道可靠。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "NEWSAGENT 怎样评测 Agent 会不会做一条完整报道？",
+    "question": "把新闻工作拆成发现缺口、检索背景、选择角度和反复修改，再分别检查每一步。",
+    "steps": [
+      {
+        "label": "给出不完整材料",
+        "detail": "提供写作指令和部分一手材料，让 Agent 必须判断还缺哪些背景，而不是直接摘要。",
+        "evidence": "writing instruction and partial firsthand materials"
+      },
+      {
+        "label": "主动发现缺口",
+        "detail": "列出需要核实的事实、历史背景和相关人物，形成可审查的检索计划。",
+        "evidence": "active discovery of missing background"
+      },
+      {
+        "label": "检索并选择角度",
+        "detail": "用关键词查询获取上下文，再解释为什么把某些事实放进文章主线。",
+        "evidence": "issue keyword-based queries and narrative perspectives"
+      },
+      {
+        "label": "生成并反复修改",
+        "detail": "按来源回链写稿，新增信息进入具体段落，避免只重写表面语气。",
+        "evidence": "iteratively revise drafts through journalistic functions"
+      },
+      {
+        "label": "编辑前逐段核验",
+        "detail": "检查来源、遗漏和叙事跳跃，确认 Agent 的结果可以被真人编辑接手。",
+        "evidence": "6k human-verified examples and real-world constraints"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00446"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00446",
+      "claim": "NEWSAGENT 用新闻工作流评测 Agent 如何检索原始材料、发现背景、选择视角和迭代写作。",
+      "excerpt": "Benchmarking Agentic Newswriting via Journalistic Workflows"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00446",
+      "claim": "基准包含 6,000 个真人核验样例，结果显示 Agent 在规划和叙事整合上仍有困难。",
+      "excerpt": "6k human-verified examples ... struggling with planning and narrative integration"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00446",
+  "sourceHash": "sha256:f589120874b86f9380a82fee4566a7f41862d788b7fcca5d52a148863f8f6def",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文把新闻写作拆成检索、规划、取舍和修改的 Agent 工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论关键词查询、网页检索和来源回链等工具动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕 6,000 个样例和分环节能力评测展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文明确介绍 NEWSAGENT 基准及其真人核验样例。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 30 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00446",
+      "claim": "arXiv 记录 NEWSAGENT 于 2025 年 8 月 30 日提交，研究信息密集型新闻写作 Agent。",
+      "excerpt": "Date: Sat Aug 30 ... Benchmarking Agentic Newswriting via Journalistic Workflows"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00446",
+      "claim": "摘要给出 6,000 个真人核验样例和规划/叙事整合的主要发现。",
+      "excerpt": "NEWSAGENT consists of 6k human-verified examples ... struggling with planning and narrative integration"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对新闻工作流、主动发现背景、6,000 个真人核验样例及规划/叙事整合结论；正文补充来源回链、编辑逐段核验和真实选题外推边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 NEWSAGENT 写成分环节新闻工作流评测，保留“检索强、规划和整合弱”的边界，并补上编辑核验要求；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-30-newsagent-journalistic-workflow-20250830"
+}

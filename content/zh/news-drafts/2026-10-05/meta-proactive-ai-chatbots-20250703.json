@@ -1,0 +1,210 @@
+{
+  "slug": "meta-proactive-ai-chatbots-20250703",
+  "title": "Meta 测试让 AI 先发消息：聊天机器人从“等你来问”变成主动跟进",
+  "summary": "TechCrunch 7 月 3 日报道并经 Meta 确认：Meta 正测试让 AI Studio 聊天机器人在用户先发起对话后主动跟进。测试设有时间、消息次数和停止条件，但当天没有公布完整年龄和关闭规则。",
+  "body": "7 月 3 日，TechCrunch 报道 Meta 正在测试一种更主动的聊天机器人：用户先在 Messenger、WhatsApp 或 Instagram 与 AI 角色聊过，机器人之后可以主动发一条跟进消息。Meta 向 TechCrunch 确认了这项测试。报道引用的示例是一个电影主题的 AI 角色先来询问用户最近喜欢哪些配乐；它听起来像普通社交消息，但发送者已经不再是人。\n\n测试设有边界。Meta 对 TechCrunch 表示，机器人只会在用户先发起对话、14 天内至少给它发过五条消息后发送一次跟进；如果用户不回复，机器人不会继续发。用户可以把自己创建的 AI 保持私密，也可以通过故事、链接或个人主页分享。它仍是测试，不是向所有账号开放的永久功能，报道也没有给出完整的地区、年龄或关闭开关说明。\n\n主动消息会改变用户对“我正在等待什么”的预期。传统聊天机器人是用户输入后才回答，主动跟进则需要保存上一段对话、判断什么时候打扰、选择语气和决定是否再次发送。这就把记忆、通知权限和用户同意放到同一个流程里。Meta 过去的 AI Studio 公告说明用户可以创建和分享 AI 角色，但 7 月 3 日的测试又增加了跨应用触达和“先发消息”的行为。\n\n风险也不能只看成一个体验问题。报道提到 Character.AI 面临与未成年人相关的诉讼，并记录了 Meta 给出的通用免责声明：AI 可能不准确或不合适，不应替代医疗、心理、金融或法律专业意见。Meta 没有在这篇报道中公布完整的年龄限制，也没有回答商业化、广告和长期 AI companion 计划。因而本文只记录“正在测试”和公司给出的条件，不把它写成安全方案已经解决。\n\n这条新闻真正改变的是默认方向：AI 不必等人敲下一句提示词，也可以根据旧对话重新出现在用户面前。对用户而言，最值得问的是自己能不能看到它记住了什么、为什么此刻发消息、如何关闭后续跟进；对产品方而言，主动性越强，越需要把授权、记忆、通知和失败反馈写成可检查的规则。",
+  "publishedAt": "2025-07-03",
+  "eventDate": "2025-07-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meta-proactive-ai-chatbots-20250703.svg",
+    "alt": "Meta AI 角色在用户先发起对话后主动发送一次跟进消息，记忆与授权成为产品边界",
+    "sourceUrl": "/images/news/meta-proactive-ai-chatbots-20250703.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "test-not-launch",
+      "title": "先把“测试”与“上线”分开",
+      "body": "Meta 向 TechCrunch 确认的是 follow-up messaging 测试，报道没有证明所有用户已经获得永久功能。",
+      "kind": "boundary"
+    },
+    {
+      "id": "conditions",
+      "title": "机器人不是随时都能打扰你",
+      "body": "用户先发起、14 天内至少五条消息、最多一次跟进且无人回复就停止，是报道给出的主要条件。",
+      "kind": "comparison"
+    },
+    {
+      "id": "memory",
+      "title": "主动发消息需要记住上下文",
+      "body": "产品要保存上一段对话、挑选时机和决定语气，记忆与通知权限因此进入同一条工作流。",
+      "kind": "technical"
+    },
+    {
+      "id": "safety",
+      "title": "免责声明不等于年龄和安全方案",
+      "body": "Meta 给出不准确、不适合及专业建议边界，但当天没有公布完整年龄限制或长期 companion 规则。",
+      "kind": "narrative"
+    },
+    {
+      "id": "user-control",
+      "title": "用户应该能回答三个问题",
+      "body": "它记住了什么、为什么现在联系我、怎样关闭后续消息，是主动式 AI 必须给出的控制线索。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "AI 先发消息，系统多了哪些判断？",
+    "question": "把一条主动跟进拆成记忆、时机、授权和停止条件，才能看清它和普通问答的区别。",
+    "steps": [
+      {
+        "label": "等待用户先发起",
+        "detail": "测试从用户主动与 AI 角色对话开始，避免机器人无缘无故向陌生人发消息。",
+        "evidence": "event"
+      },
+      {
+        "label": "读取有限上下文",
+        "detail": "系统要知道过去聊了什么、用户发送了几条消息，以及这段记忆是否仍被允许使用。",
+        "evidence": "context"
+      },
+      {
+        "label": "判断是否触达",
+        "detail": "在时间窗口、消息次数和通知权限内决定要不要跟进，而不是把每次沉默都当成邀请。",
+        "evidence": "auth"
+      },
+      {
+        "label": "发送并停止",
+        "detail": "按报道条件最多发送一次；用户不回复时停止，停止条件比“提高参与度”更重要。",
+        "evidence": "agent"
+      },
+      {
+        "label": "让用户复核控制",
+        "detail": "产品需要说明记忆、通知、年龄和关闭入口，才能让主动性不变成隐形打扰。",
+        "evidence": "memory"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "memory",
+    "context",
+    "auth",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/",
+      "claim": "TechCrunch 7 月 3 日报道 Meta 正在测试 AI Studio 聊天机器人主动跟进；Meta 向 TechCrunch 确认测试，并称机器人需在用户先发起对话、14 天内至少发送五条消息等条件下最多跟进一次。",
+      "excerpt": "TechCrunch, “Meta has found another way to keep you engaged: Chatbots that message you first”, Jul 3, 2025."
+    },
+    {
+      "url": "https://about.fb.com/news/2024/07/create-your-own-custom-ai-with-ai-studio/",
+      "claim": "Meta 2024 年官方介绍 AI Studio 允许用户创建、分享和发现可聊天的 AI 角色，用于补充产品背景，不证明 2025 年测试的所有条件。",
+      "excerpt": "Meta, “Create Your Own Custom AI With AI Studio”, Jul 29, 2024."
+    },
+    {
+      "url": "https://techcrunch.com/2025/07/03/",
+      "claim": "TechCrunch 7 月 3 日 AI 栏目把这次测试与 AI companion、用户参与和安全问题放在同日新闻语境中。",
+      "excerpt": "TechCrunch, July 3, 2025 AI coverage index."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/",
+  "sourceHash": "sha256:71f3163c9bb7fbe4d54af51b3ec059105a4af58408c1de8f75895b9f73a34739",
+  "status": "published",
+  "discoveredAt": "2026-10-05T07:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "auth",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文明确解释该词条与 2025-07-03 新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2025/07/03/meta-has-found-another-way-to-keep-you-engaged-chatbots-that-message-you-first/",
+      "claim": "TechCrunch 7 月 3 日报道 Meta 正在测试 AI Studio 聊天机器人主动跟进；Meta 向 TechCrunch 确认测试，并称机器人需在用户先发起对话、14 天内至少发送五条消息等条件下最多跟进一次。",
+      "excerpt": "TechCrunch, “Meta has found another way to keep you engaged: Chatbots that message you first”, Jul 3, 2025."
+    },
+    {
+      "url": "https://about.fb.com/news/2024/07/create-your-own-custom-ai-with-ai-studio/",
+      "claim": "Meta 2024 年官方介绍 AI Studio 允许用户创建、分享和发现可聊天的 AI 角色，用于补充产品背景，不证明 2025 年测试的所有条件。",
+      "excerpt": "Meta, “Create Your Own Custom AI With AI Studio”, Jul 29, 2024."
+    },
+    {
+      "url": "https://techcrunch.com/2025/07/03/",
+      "claim": "TechCrunch 7 月 3 日 AI 栏目把这次测试与 AI companion、用户参与和安全问题放在同日新闻语境中。",
+      "excerpt": "TechCrunch, July 3, 2025 AI coverage index."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T07:30:00Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 7 月 3 日报道、Meta AI Studio 官方背景页和同日栏目；正文明确标注 Meta 确认的是测试，保留年龄、商业化与完整控制规则未公布的边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-05T07:30:00Z",
+    "notes": "已完成新闻信源与日期核对，等待 reader-review 子智能体检查零基础可读性、新闻归属与事实边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-05T08:12:00Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "官方、媒体、研究公告、测试和公司自述的事实边界是否准确？是。",
+      "中文、sections/explainer、SVG alt 和词条联动是否适合零基础读者？是。"
+    ],
+    "notes": "唯一 reader-review 子智能体逐篇审读通过：Meta 文章保留 Meta/TechCrunch 归属及 14 天、5 条、单次跟进限制，没有写成普及功能。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-03",
+  "promotedAt": "2026-10-04T20:42:39.363Z"
+}

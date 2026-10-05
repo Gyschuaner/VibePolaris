@@ -1,0 +1,180 @@
+{
+  "slug": "hitachi-anthropic-lumada-partnership",
+  "title": "日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0",
+  "summary": "5 月 18 日，日立与 Anthropic 宣布战略合作，用前沿 AI 推进 Lumada 3.0。公告提到计划面向约 29 万名员工部署 AI、培养 10 万名 AI 人才，并设立初始 100 人的 Frontier AI Deployment Center；这些仍是合作目标和组织计划，不等于关键基础设施已经由模型安全控制。",
+  "body": "5 月 18 日，日立与 Anthropic 宣布战略合作，将把日立的 IT/OT 场景和 Anthropic 模型放进 Lumada 3.0，并涉及能源、交通、制造和金融等领域。公告还提到约 29 万名员工的部署计划、10 万名 AI 人才培养目标，以及一个初始 100 人的 Frontier AI Deployment Center。\n\n这些数字描述合作的组织规模，不是已经完成的采用人数。关键基础设施里的模型还要面对传感器数据、旧系统、权限和事故责任，模型给出建议与系统实际执行之间必须留出人工审批和回滚。\n\n以能源设备维护为例，模型可以读取获准的传感器和工单，生成检修建议；写入控制系统或改变调度前，由工程师确认，测试在隔离环境中完成，数据来源、状态和人工决定都留下记录。agent 推进任务，data-pipeline 追踪 IT/OT 数据，execution-sandbox 隔离执行，state 记录待审批、执行中和已回滚。\n\n日立和 Anthropic 的公告支持合作目标、人才计划和中心设想，没有证明模型已经安全控制任何关键设施，也不等于员工或人才计划已经完成。后续需要看试点场景、权限矩阵、事故演练、培训记录和生产系统证据。",
+  "publishedAt": "2026-05-18",
+  "eventDate": "2026-05-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/hitachi-anthropic-lumada-partnership.svg",
+    "alt": "日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0；VibePolaris 自制事件示意图",
+    "sourceUrl": "/images/news/hitachi-anthropic-lumada-partnership.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "partnership",
+      "title": "公告公布了合作目标和组织安排",
+      "body": "日立与 Anthropic 计划用前沿 AI 推进 Lumada 3.0，涉及能源、交通、制造和金融。公告提到约 29 万名员工的部署目标、10 万名 AI 人才培养和初始 100 人的部署中心。",
+      "kind": "narrative"
+    },
+    {
+      "id": "critical-systems",
+      "title": "关键基础设施不能只看模型输出",
+      "body": "传感器、工单和旧系统都可能进入模型上下文，任何写入控制系统或改变调度的动作都需要工程师确认。数据来源、权限、状态和回滚要同时可追踪。",
+      "kind": "technical"
+    },
+    {
+      "id": "maintenance-example",
+      "title": "用设备维护看一次受控试点",
+      "body": "模型读取获准的传感器和工单，提出检修建议；工程师批准后才写入下一步系统，测试在 execution-sandbox 中进行。agent、data-pipeline 和 state 分别帮助推进任务、追踪数据和记录阶段。",
+      "kind": "example"
+    },
+    {
+      "id": "plan-boundary",
+      "title": "计划人数还不是采用证据",
+      "body": "官方公告没有证明模型已经安全控制关键基础设施，也没有证明 29 万名员工或 10 万名人才已经完成部署。合作目标、试点、培训和生产使用要分别记录。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next",
+      "title": "后续看试点和事故演练",
+      "body": "继续查看权限矩阵、培训完成率、生产系统证据和事故演练，确认模型在失败时能否被停止和回滚。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "把关键基础设施的 AI 合作拆成一次试点",
+    "question": "怎样判断一项合作已经从人数目标走到可审计的生产流程？",
+    "steps": [
+      {
+        "label": "选一个低风险场景",
+        "detail": "先从设备维护建议等只读任务开始，限定传感器、工单和历史数据的范围。",
+        "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+      },
+      {
+        "label": "限制写入动作",
+        "detail": "对控制系统、调度和工单状态设置工程师审批，明确谁能批准和谁能撤销。",
+        "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+      },
+      {
+        "label": "保存数据与状态",
+        "detail": "记录输入来源、模型建议、工具调用、人工决定和回滚状态，确保能复盘一次任务。",
+        "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+      },
+      {
+        "label": "进行事故演练",
+        "detail": "模拟错误建议、数据中断和权限撤销，确认生产系统在异常时可以安全停下。",
+        "evidence": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+      }
+    ]
+  },
+  "source": {
+    "name": "Hitachi / Anthropic",
+    "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "data-pipeline",
+    "execution-sandbox",
+    "state"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+      "claim": "日立与 Anthropic 将合作推进 Lumada 3.0",
+      "excerpt": "Hitachi and Anthropic announce a strategic partnership to strengthen Lumada 3.0 through frontier AI."
+    },
+    {
+      "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+      "claim": "计划部署约 29 万员工并培养 10 万 AI 人才",
+      "excerpt": "The release describes plans to deploy AI for about 290,000 employees and train 100,000 AI talents."
+    }
+  ],
+  "canonicalUrl": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+  "sourceHash": "sha256:8499cb8f5fe1ecf980446f03a618ad21316540ef755b02326061b2e9cacd2279",
+  "status": "needs-review",
+  "discoveredAt": "2026-10-03T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "state",
+      "score": 0.85,
+      "evidence": [
+        "正文用该词条解释“日立与 Anthropic 合作，以前沿 AI 推进 Lumada 3.0”的事实边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+      "claim": "日立与 Anthropic 将合作推进 Lumada 3.0",
+      "excerpt": "Hitachi and Anthropic announce a strategic partnership to strengthen Lumada 3.0 through frontier AI."
+    },
+    {
+      "url": "https://www.hitachi.com/en-us/press/hitachi-announces-strategic-partnership-with-anthropic-to-strengthen-lumada-3-0-through-frontier-ai/",
+      "claim": "计划部署约 29 万员工并培养 10 万 AI 人才",
+      "excerpt": "The release describes plans to deploy AI for about 290,000 employees and train 100,000 AI talents."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "method": "source",
+    "notes": "逐日重新检索并打开原始来源，日期、来源类型、引用卡片和事实边界已复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-03T00:00:00Z",
+    "notes": "等待唯一 reader-review 子智能体复核后再提升。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文清楚区分日立与 Anthropic 的合作目标、29 万名员工部署计划、10 万名 AI 人才目标和初始 100 人中心设想，与已经完成的采用或关键基础设施实际控制。设备维护段落以只读建议、工程师审批、隔离测试、状态记录和回滚为受控示例，没有把公告写成生产部署证据。中文对零基础读者清楚，eventDate/publishedAt、canonicalUrl、sources、relatedSlugs、sections、explainer 与 JSON 结构核对无误。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-05-18",
+  "fingerprint": "sha256:8499cb8f5fe1ecf980446f03a618ad21316540ef755b02326061b2e9cacd2279"
+}

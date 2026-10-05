@@ -1,0 +1,193 @@
+{
+  "slug": "profilingagent-adaptive-optimization-20250906",
+  "title": "ProfilingAgent：按真实瓶颈决定剪枝和量化",
+  "summary": "ProfilingAgent 论文于 9 月 6 日提交，把模型压缩从统一启发式改成由 profiling 数据驱动的分层决策。一个模块化多 Agent 系统同时读取静态指标（MAC、参数量）和运行时信号（延迟、内存），为结构化剪枝与后训练动态量化制定架构相关策略；论文在 ImageNet-1K、CIFAR-10 和 CIFAR-100 上报告最高 74% 内存节省、低于 0.5% 精度损失和 1.74 倍推理加速，结果依赖具体模型和硬件条件。",
+  "body": "模型压缩经常从一个看似合理的假设开始：每一层都用同一套剪枝比例或量化规则，系统就会更小、更快。但真实瓶颈并不平均，有的层占内存，有的层拖慢延迟，还有的层一动就影响精度。ProfilingAgent 关心的不是“压多少”，而是先找出模型在当前环境里到底卡在哪里。\n\n论文把 profiling 分成两类信号。MAC 和参数量描述静态计算与规模，延迟和内存则来自实际运行；单看前一类，可能会把理论上计算量大的层误判成真正的部署瓶颈。ProfilingAgent 让 LLM 读取这些信号，再把它们转成逐层的压缩决定。\n\n系统采用模块化的多 Agent 设计，负责结构化剪枝和后训练动态量化。剪枝改变模型结构，量化则在训练完成后用更低精度表示权重或激活；两者不必对所有层一刀切，而是针对架构和 profile 结果做不同组合。文章的重点是把这段判断接进自动化流程，而不是发明一种新的单独压缩算子。\n\n作者在 ImageNet-1K、CIFAR-10 和 CIFAR-100 上测试 ResNet-101、ViT-B/16、Swin-B 和 DeiT-B/16。剪枝在 ImageNet-1K 上大约掉 1% 精度，在较小数据集上 ViT-B/16 反而报告约 2% 的提升；动态量化最高节省 74% 内存，精度损失低于 0.5%，推理速度最高达到 1.74 倍。这里的“最高”来自不同模型和任务组合，不能当成所有设备都能复现的固定比例。\n\n论文还用 GPT-4o 和 GPT-4-Turbo 做比较，观察到 LLM 的推理质量会影响迭代剪枝。模型如果误读 profile 或把不同目标混在一起，自动化只会更快地做出错误决策；这也是为什么系统需要记录每轮依据、保留基线，并在真实设备上重新测延迟和内存。\n\n从工程角度看，ProfilingAgent 把压缩流程拆成可以核对的几个问题：目标是省内存、降延迟还是保精度，信号是静态估算还是运行时测量，哪一层被改了，改完是否真的改善了目标。这样做比“统一剪枝 20%”更容易解释，也更容易发现压缩收益只是换了一个瓶颈。\n\n它仍然不是自动部署的通行证。profile 会随着硬件、批大小、编译器和输入分布变化，模型在数据集上的精度也不能替代线上质量指标。部署前应固定测量环境，保存压缩配置和回滚版本，把内存、延迟、能耗和任务质量一起做回归；Agent 负责提出架构相关方案，人和基准负责决定是否上线。",
+  "publishedAt": "2025-09-06",
+  "eventDate": "2025-09-06",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/profilingagent-adaptive-optimization-20250906.svg",
+    "alt": "ProfilingAgent 根据静态和运行时 profiling 信号为模型选择剪枝与动态量化策略",
+    "sourceUrl": "/images/news/profilingagent-adaptive-optimization-20250906.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "uniform-heuristic",
+      "title": "每层用同一条压缩规则，常常压不到真实瓶颈",
+      "body": "模型的计算、内存和延迟开销并不平均，统一比例可能把收益换成新的损失。",
+      "kind": "narrative"
+    },
+    {
+      "id": "profile-signals",
+      "title": "静态指标和运行时信号要一起看",
+      "body": "MAC、参数量说明规模，延迟和内存说明设备上的实际代价，单一指标容易误判。",
+      "kind": "comparison"
+    },
+    {
+      "id": "agentic-compression",
+      "title": "多 Agent 为不同架构制定逐层方案",
+      "body": "ProfilingAgent 把结构化剪枝和后训练动态量化接入自动化流程，不对所有层一刀切。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark-result",
+      "title": "最高节省 74% 内存，精度损失低于 0.5%",
+      "body": "论文还报告最高 1.74 倍推理加速，以及不同模型和数据集上的精度变化。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reasoning-quality",
+      "title": "LLM 推理质量会影响迭代剪枝结果",
+      "body": "GPT-4o 与 GPT-4-Turbo 的比较提醒我们：自动化读错 profiling 信号，压缩就会更快地走偏。",
+      "kind": "boundary"
+    },
+    {
+      "id": "traceable-decision",
+      "title": "每次压缩决定都应能回答“为什么改这一层”",
+      "body": "把目标、信号、配置和回归结果记录下来，才能判断收益是否只是转移了瓶颈。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment-boundary",
+      "title": "论文结果不能替代真实硬件上的上线回归",
+      "body": "硬件、批大小、编译器和输入分布都会改变 profile，部署仍需固定环境、保留回滚和任务质量指标。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "ProfilingAgent 怎样按瓶颈压缩模型？",
+    "question": "先收集静态与运行时 profile，再按架构逐层选择剪枝或量化，最后在真实目标上回归速度、内存和质量。",
+    "steps": [
+      {
+        "label": "收集静态信号",
+        "detail": "记录每层 MAC 和参数量，先知道理论计算与规模分布。",
+        "evidence": "MACs and parameter counts"
+      },
+      {
+        "label": "测量运行时瓶颈",
+        "detail": "在目标环境测延迟和内存，让压缩目标与实际设备联系起来。",
+        "evidence": "latency and memory"
+      },
+      {
+        "label": "制定逐层策略",
+        "detail": "让多 Agent 根据架构和 profile 选择结构化剪枝、动态量化或两者组合。",
+        "evidence": "architecture-specific strategies"
+      },
+      {
+        "label": "记录迭代依据",
+        "detail": "每轮保留被修改的层、目标和基线，发现 LLM 误判时可以回滚。",
+        "evidence": "iterative pruning"
+      },
+      {
+        "label": "在目标设备回归",
+        "detail": "同时测内存、延迟、能耗和任务质量，确认压缩收益没有转移成新的线上瓶颈。",
+        "evidence": "inference speedups and accuracy"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05584"
+  },
+  "relatedSlugs": [
+    "agent",
+    "llm",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05584",
+      "claim": "ProfilingAgent 用 LLM 驱动的模块化多 Agent 系统读取静态 MAC/参数量与动态延迟/内存信号，制定架构相关的剪枝与量化策略。",
+      "excerpt": "modular multi-agent system reasons over static metrics (MACs, parameter counts) and dynamic signals (latency, memory)"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05584",
+      "claim": "论文在 ImageNet-1K、CIFAR-10、CIFAR-100 和多种视觉骨干上报告最高 74% 内存节省、低于 0.5% 精度损失和 1.74 倍推理加速。",
+      "excerpt": "up to 74% memory savings with <0.5% accuracy loss ... up to 1.74 times faster"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05584",
+      "claim": "arXiv 记录该论文于 2025 年 9 月 6 日首次提交，并比较 GPT-4o 与 GPT-4-Turbo 对迭代剪枝推理质量的影响。",
+      "excerpt": "Submitted on 6 Sep 2025 ... Comparative studies with GPT-4o and GPT-4-Turbo"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05584",
+  "sourceHash": "sha256:6b08bc0c2e495c492c48d8e3f98ed22379baa62ec52c9fa6346ebf4ec49537a5",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文分析模块化多 Agent 如何读取 profile 并提出逐层压缩策略。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文说明 LLM 推理质量会影响迭代剪枝的判断。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文记录三套数据集、多个视觉骨干和精度/内存/速度回归边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 ProfilingAgent 论文于 2025 年 9 月 6 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05584",
+      "claim": "arXiv 记录 ProfilingAgent 于 2025 年 9 月 6 日提交，研究 profiling 指导的 Agent 模型优化。",
+      "excerpt": "ProfilingAgent: Profiling-Guided Agentic Reasoning for Adaptive Model Optimization"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05584",
+      "claim": "摘要给出结构化剪枝、后训练动态量化、视觉数据集、模型骨干及内存/速度/精度结果。",
+      "excerpt": "structured pruning and post-training dynamic quantization ... ImageNet-1K, CIFAR-10, and CIFAR-100"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 首次提交日期、静态 MAC/参数量、动态延迟/内存、多 Agent 压缩、四类视觉骨干、74% 内存节省、低于 0.5% 精度损失和 1.74 倍推理加速；正文将数字限定在论文模型/数据集条件，补充目标硬件回归、回滚和任务质量边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手完成初稿逐段复核：把 ProfilingAgent 写成按 profile 做架构相关决策的研究系统，准确区分剪枝、动态量化和两类信号；保留 74%/0.5%/1.74 倍实验边界，补充硬件、批大小、编译器、回滚和线上质量约束；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-06-profilingagent-adaptive-optimization-20250906"
+}

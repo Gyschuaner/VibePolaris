@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-16",
+  "eventDate": "2025-08-16",
+  "searchedAt": "2026-10-04T00:00:00Z",
+  "search": {
+    "query": "2025-08-16 AI 事件重新检索：核对官方公告、官方博客与 arXiv 首次提交，优先模型评测、Agent 科学工具和安全研究；排除 8/14–8/15 已记录事件、滚动 release notes 与日期边界错误。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508160000%20TO%20202508162359]%20AND%20(cat:cs.AI%20OR%20cat:cs.CL%20OR%20cat:cs.LG%20OR%20cat:cs.MA)",
+      "https://arxiv.org/abs/2508.11847",
+      "https://arxiv.org/abs/2508.11860",
+      "https://arxiv.org/abs/2508.12072",
+      "https://arxiv.org/abs/2508.13214",
+      "https://arxiv.org/abs/2508.12140",
+      "https://arxiv.org/abs/2508.11894"
+    ],
+    "sourcePolicy": [
+      "official-announcement",
+      "official-blog",
+      "paper",
+      "news-report"
+    ],
+    "candidateCount": 6,
+    "primaryCandidateCount": 6,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "llm-ranking-preference-robustness-20250816",
+      "title": "研究发现：删掉极少量偏好数据也可能改变顶级 LLM 排名",
+      "eventDate": "2025-08-16",
+      "publishedAt": "2025-08-16",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Jenny Y. Huang 等",
+        "url": "https://arxiv.org/abs/2508.11847"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.11847",
+      "sourceHash": "sha256:32e47b172460e57ae99a7d2d5a863b54230724fd4013f3bf8e9bdbe611d75243",
+      "relatedSlugs": [
+        "benchmark",
+        "eval",
+        "llm",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.11847",
+          "claim": "论文提出用最坏情况删除少量偏好数据来检查 LLM 排名稳健性，并报告 Chatbot Arena 中删除约 0.003% 人类偏好可能改变榜首。",
+          "excerpt": "dropping just 0.003% of human preferences can change the top-ranked model on Chatbot Arena"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它直接检验常用 LLM 排名是否对少量偏好样本过敏，影响模型评测、排行榜解读和数据审计；文章需保留论文实验与因果边界。"
+    },
+    {
+      "slug": "larc-constrained-retrosynthesis-agent-20250816",
+      "title": "LARC 用 Agent 约束逆合成路线规划，48 个任务成功率 72.9%",
+      "eventDate": "2025-08-16",
+      "publishedAt": "2025-08-16",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Frazier N. Baker 等",
+        "url": "https://arxiv.org/abs/2508.11860"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.11860",
+      "sourceHash": "sha256:f1ed3e977ad53e912acaa06383b3eb251f2cbe57e4dd43f945358bc561e862f2",
+      "relatedSlugs": [
+        "agent-harness",
+        "eval",
+        "llm",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.11860",
+          "claim": "LARC 将 Agent-as-a-Judge 的约束评估放进逆合成规划，在 48 个、3 类约束任务上报告 72.9% 成功率。",
+          "excerpt": "We rigorously evaluate LARC on ... 48 constrained retrosynthesis planning tasks across 3 constraint types. LARC achieves a 72.9% success rate"
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是把工具调用、约束检查和科学规划放到同一 Agent 闭环的代表性论文；文章需把“接近专家”限定为作者实验口径，不写成可直接用于药物研发。"
+    },
+    {
+      "slug": "intent-ft-jailbreak-mitigation-20250816",
+      "title": "Intent-FT 用意图识别缓解 LLM 越狱攻击",
+      "eventDate": "2025-08-16",
+      "publishedAt": "2025-08-16",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Wei Jie Yeo 等",
+        "url": "https://arxiv.org/abs/2508.12072"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12072",
+      "sourceHash": "sha256:93d891e0755ebb30ced75a95d4cbcbc0d622a086051053c2193433ca0369bfd6",
+      "relatedSlugs": [
+        "authorization",
+        "agent-harness",
+        "benchmark",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12072",
+          "claim": "论文提出 Intent-FT，在多类参数化和非参数化攻击上评估，并称所有测试攻击的成功率均未超过 50%。",
+          "excerpt": "no single attack exceeding a 50% success rate"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把安全防御从关键词拒答转向意图判断，并同时报告有害性、效用和过度拒答；适合解释防御实验与生产安全保证的差别。"
+    },
+    {
+      "slug": "prompt-injection-pdf-multiple-choice-20250816",
+      "title": "研究显示：隐藏在 PDF 中的提示注入可骗过简单题目评测",
+      "eventDate": "2025-08-16",
+      "publishedAt": "2025-08-16",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Xuyang Guo 等",
+        "url": "https://arxiv.org/abs/2508.13214"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.13214",
+      "sourceHash": "sha256:bcebc7f9a1e5d70510757ec570f73c20e39c0b6f0ec88b7cf0ec955db4dbaf5b",
+      "relatedSlugs": [
+        "authorization",
+        "agent-harness",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.13214",
+          "claim": "论文在 PDF 内嵌隐藏提示的多选题和判断题中测试提示注入，报告即使简单算术问题也可能被操纵。",
+          "excerpt": "hidden prompt injection attacks ... even in these trivial scenarios"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把提示注入风险放到文档评测这一常见 Agent 输入里，提醒读者内容与指令边界不能靠题目难度判断；文章需说明实验范围。"
+    },
+    {
+      "slug": "medical-thinking-budget-efficiency-20250816",
+      "title": "医疗推理论文比较思考预算与准确率的效率区间",
+      "eventDate": "2025-08-16",
+      "publishedAt": "2025-08-16",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Ziqian Bi 等",
+        "url": "https://arxiv.org/abs/2508.12140"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12140",
+      "sourceHash": "sha256:4d336b79b2c4f2aba37a734d5a209fc95e471fdf219526610bed09ca7473a7db",
+      "relatedSlugs": [
+        "eval",
+        "llm",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.12140",
+          "claim": "论文在 15 个医疗数据集上比较 Qwen3 与 DeepSeek-R1 的思考预算，报告不同 token 预算区间的准确率与成本权衡。",
+          "excerpt": "evaluated ... across 15 medical datasets ... thinking budgets ranging from zero to unlimited tokens"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "属于高风险医疗评测，论文摘要给出效率区间但缺少当天独立发布背景；暂不与已选安全/Agent 论文并列写稿，保留候选供后续专题复核。"
+    },
+    {
+      "slug": "quarkmed-foundation-model-report-20250816",
+      "title": "QuarkMed 医疗基础模型技术报告",
+      "eventDate": "2025-08-16",
+      "publishedAt": "2025-08-16",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / QuarkMed 团队",
+        "url": "https://arxiv.org/abs/2508.11894"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.11894",
+      "sourceHash": "sha256:e19163886259b9cd24269d631737fdfd7cf2ad1cfab5eabf901c9f21e3bab87b",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.11894",
+          "claim": "技术报告描述 QuarkMed 的医疗数据处理、RAG 和强化学习管线，并报告中国医师资格考试约 70% 准确率。",
+          "excerpt": "The model achieved 70% accuracy on the Chinese Medical Licensing Examination"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "主要结论来自团队技术报告和产品自述，需独立核对模型版本、数据切分和真实部署范围；先不作为 8/16 主线。"
+    }
+  ],
+  "selectedSlugs": [
+    "llm-ranking-preference-robustness-20250816",
+    "larc-constrained-retrosynthesis-agent-20250816",
+    "intent-ft-jailbreak-mitigation-20250816",
+    "prompt-injection-pdf-multiple-choice-20250816"
+  ],
+  "gap": null
+}
