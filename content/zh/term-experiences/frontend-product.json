@@ -6756,16 +6756,16 @@
   {
     "slug": "code-splitting",
     "lead": "用户只打开首页，为什么要先下载后台编辑器的全部代码？",
-    "definition": "构建器把动态 import 或入口边界切成独立 chunk，运行时只在代码路径命中时请求并执行相应模块。",
-    "boundary": "拆包不等于删除代码；分得过细会增加请求、加载状态和缓存协调成本。",
+    "definition": "构建器按入口或动态 import 切出异步 chunk；运行时只有走到对应功能边界，才请求并执行那部分代码。",
+    "boundary": "代码分割改变下载时机，不等于删除代码；过细的 chunk 会把成本转成更多请求和等待。",
     "sceneKind": "assembly",
     "sceneTitle": "首页与编辑器代码在两个加载边界上到达",
     "actionLabel": "打开编辑器",
     "actors": [
       {
         "id": "html",
-        "label": "首页文档",
-        "detail": "入口资源",
+        "label": "首页入口",
+        "detail": "基础文档与脚本",
         "icon": "browser",
         "group": "首屏"
       },
@@ -6778,8 +6778,8 @@
       },
       {
         "id": "boundary",
-        "label": "编辑器边界",
-        "detail": "动态 import",
+        "label": "动态边界",
+        "detail": "import()",
         "icon": "code",
         "group": "交互"
       },
@@ -6793,7 +6793,7 @@
       {
         "id": "network",
         "label": "网络瀑布",
-        "detail": "请求时机与耗时",
+        "detail": "请求、执行与缓存",
         "icon": "network",
         "group": "观察"
       }
@@ -6809,70 +6809,72 @@
         "id": "home-boundary",
         "from": "home",
         "to": "boundary",
-        "label": "渲染入口"
+        "label": "保留入口"
       },
       {
         "id": "boundary-editor",
         "from": "boundary",
         "to": "editor",
-        "label": "点击后请求"
+        "label": "需要时请求"
       },
       {
         "id": "editor-network",
         "from": "editor",
         "to": "network",
-        "label": "记录下载"
+        "label": "记录时机"
       }
     ],
     "frames": [
       {
-        "label": "首屏只取首页代码",
-        "note": "打开网站时 home.js 进入瀑布，editor.js 保持未请求。",
+        "label": "整包先到",
+        "note": "首页和编辑器一起进入网络瀑布，用户为尚未使用的功能先付下载成本。",
         "activeIds": [
           "html",
           "home",
+          "editor",
           "network"
         ],
         "doneIds": [
           "html"
         ],
         "mutedIds": [
-          "boundary",
-          "editor"
+          "boundary"
         ],
         "values": {
-          "home": "82 KB（示例）",
-          "editor": "未请求"
+          "home": "116 KB",
+          "editor": "420 KB · 首屏一起下载",
+          "network": "1 个大包"
         },
         "activeEdgeIds": [
-          "html-home"
+          "html-home",
+          "editor-network"
         ]
       },
       {
-        "label": "首页先可操作",
-        "note": "home.js 执行后首页按钮可用，编辑器边界只保留加载入口。",
+        "label": "画出路由边界",
+        "note": "首页保留自己的入口，editor.js 变成等待用户动作的异步资源。",
         "activeIds": [
           "home",
           "boundary"
         ],
         "doneIds": [
-          "html",
-          "home"
+          "html"
         ],
         "mutedIds": [
           "editor",
           "network"
         ],
         "values": {
-          "boundary": "等待点击"
+          "home": "82 KB",
+          "boundary": "等待入口"
         },
         "activeEdgeIds": [
           "home-boundary"
         ]
       },
       {
-        "label": "点击才下载编辑器",
-        "note": "用户打开编辑器，动态 import 发起第二个请求并显示局部占位。",
+        "label": "点击才请求",
+        "note": "用户打开编辑器，动态 import 发出第二个请求并显示局部 loading。",
         "activeIds": [
           "boundary",
           "editor",
@@ -6884,7 +6886,8 @@
         ],
         "mutedIds": [],
         "values": {
-          "editor": "loading · 420 KB（示例）"
+          "editor": "loading · 420 KB",
+          "network": "2 个请求"
         },
         "activeEdgeIds": [
           "boundary-editor",
@@ -6892,8 +6895,8 @@
         ]
       },
       {
-        "label": "分割过碎对照",
-        "note": "把编辑器拆成二十个小包后，请求数明显增加，首包虽小但交互等待没有继续下降。",
+        "label": "模块执行完成",
+        "note": "chunk 到达并执行，编辑器变成可用状态；请求完成不是唯一终点。",
         "activeIds": [
           "editor",
           "network"
@@ -6905,23 +6908,62 @@
         ],
         "mutedIds": [],
         "values": {
-          "network": "20 requests（示例）"
+          "editor": "ready · 已执行",
+          "network": "2 个请求"
         },
         "activeEdgeIds": [
           "editor-network"
+        ]
+      },
+      {
+        "label": "拆得太碎",
+        "note": "二十个小包让首包更轻，却增加请求与调度；点击后的等待没有凭空消失。",
+        "activeIds": [
+          "editor",
+          "network"
         ],
-        "metric": {
-          "label": "示例请求数",
-          "value": "20"
-        }
+        "doneIds": [
+          "html",
+          "home",
+          "boundary"
+        ],
+        "mutedIds": [],
+        "values": {
+          "editor": "20 × 24 KB",
+          "network": "20 个请求"
+        },
+        "activeEdgeIds": [
+          "editor-network"
+        ]
+      },
+      {
+        "label": "再次打开命中缓存",
+        "note": "合适的边界可以复用缓存；第二次打开编辑器不必重新穿过网络。",
+        "activeIds": [
+          "editor",
+          "network"
+        ],
+        "doneIds": [
+          "html",
+          "home",
+          "boundary"
+        ],
+        "mutedIds": [],
+        "values": {
+          "editor": "cache hit",
+          "network": "0 个网络请求"
+        },
+        "activeEdgeIds": [
+          "editor-network"
+        ]
       }
     ],
-    "insight": "代码分割把下载成本推迟到真正需要的边界，但过度拆分会把成本变成更多请求和等待。",
+    "insight": "代码分割把下载成本推迟到真正需要的边界，但过度拆分会把成本换成更多请求和第一次交互等待。",
     "quiz": {
-      "question": "按路由分割代码的主要直接效果是什么？",
+      "question": "按路由或功能边界做代码分割，最直接的收益是什么？",
       "options": [
         {
-          "label": "减少初始页面需要加载的代码",
+          "label": "减少当前页面初始需要加载的代码",
           "correct": true
         },
         {
@@ -6933,18 +6975,38 @@
           "correct": false
         }
       ],
-      "success": "当前路由不需要的代码可以延后下载和解析。",
-      "retry": "分割会产生额外资源请求，也不会让模块全部同时执行。"
+      "success": "当前路径不需要的代码可以延后下载、解析和执行。",
+      "retry": "分割仍会产生按需请求，过度拆分也会增加调度成本。"
     },
     "prompt": {
       "title": "选择合适的代码分割边界",
-      "text": "请分析下面路由和依赖体积，找出适合动态导入的页面或重型功能。说明加载占位、失败重试和避免过度拆分的处理。"
+      "text": "请画出首页到重型编辑器的用户路径，判断哪些代码应留在首包，哪些可以用动态 import 延后；为 loading、失败重试、缓存命中和过度拆分写出验收条件。"
     },
     "sources": [
       {
         "url": "https://webpack.js.org/guides/code-splitting/",
-        "label": "webpack Documentation",
-        "note": "打包过程与配置行为"
+        "label": "webpack · Code Splitting",
+        "note": "说明入口、动态 import 与 chunk 边界。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
+        "label": "MDN · import()",
+        "note": "说明动态导入返回 Promise 并延后模块请求。"
+      },
+      {
+        "url": "https://web.dev/articles/reduce-javascript-payloads-with-code-splitting",
+        "label": "web.dev · Reduce JavaScript payloads with code splitting",
+        "note": "说明减少初始 JavaScript payload 与按需加载。"
+      },
+      {
+        "url": "https://nextjs.org/docs/app/guides/lazy-loading",
+        "label": "Next.js · Lazy Loading",
+        "note": "说明框架对动态导入和 loading UI 的处理。"
+      },
+      {
+        "url": "https://web.dev/articles/optimize-long-tasks",
+        "label": "web.dev · The performance impact of JavaScript",
+        "note": "说明 JavaScript 解析、编译和执行的主线程成本。"
       }
     ]
   },

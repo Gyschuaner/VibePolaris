@@ -948,18 +948,53 @@
     "relatedSlugs": ["javascript", "bundler", "code-splitting", "library"]
   },
   {
-    "zh": "代码分割", "en": "Code Splitting", "slug": "code-splitting", "cat": "前端",
-    "say": "代码分割把资源包拆成多个部分，只在进入对应页面或功能时加载所需代码。",
-    "aliases": ["拆包", "按路由加载", "动态导入"],
+    "zh": "代码分割",
+    "en": "Code Splitting",
+    "slug": "code-splitting",
+    "cat": "前端",
+    "say": "代码分割把下载时机推到真正的功能边界。",
+    "aliases": [
+      "拆包",
+      "按路由加载",
+      "动态导入"
+    ],
     "question": "用户只打开首页，为什么要先下载后台编辑器的全部代码？",
-    "definition": "代码分割由构建工具根据动态 import、路由或配置生成多个 chunk，减少初次加载需要下载和解析的 JavaScript。",
-    "boundary": "拆得过细会增加请求和调度开销；它也不能替代删除无用依赖或缩小资源本身。",
-    "demoType": "request", "demoTitle": "编辑器代码何时下载",
-    "demoSteps": [{"label":"打开首页","value":"加载基础资源包","note":"编辑器 chunk 暂不请求。"},{"label":"进入编辑页","value":"触发动态 import","note":"浏览器请求对应 chunk。"},{"label":"模块就绪","value":"渲染编辑器","note":"加载状态结束并显示功能。"}],
-    "quizQuestion": "按路由分割代码的主要直接效果是什么？", "quizOptions": ["减少初始页面需要加载的代码", "消除所有网络请求", "让所有模块同时执行"],
-    "correctText": "当前路由不需要的代码可以延后下载和解析。", "wrongText": "分割会产生额外资源请求，也不会让模块全部同时执行。",
-    "promptTitle": "选择合适的代码分割边界", "prompt": "请分析下面路由和依赖体积，找出适合动态导入的页面或重型功能。说明加载占位、失败重试和避免过度拆分的处理。",
-    "relatedSlugs": ["lazy-loading", "bundler", "routing"]
+    "definition": "代码分割由构建工具根据入口、路由或动态 import 生成多个 chunk；当前路径不需要的代码可以延后下载和解析。",
+    "boundary": "它改变下载和执行的时机，不会删除最终功能；拆得过细还会增加请求、调度、loading 和缓存协调成本。",
+    "demoType": "request",
+    "demoTitle": "首页与编辑器何时进入网络瀑布",
+    "demoSteps": [
+      {
+        "label": "首页先可用",
+        "value": "home.js · editor.js 未请求",
+        "note": "当前路径只加载基础入口，编辑器留在动态边界后。"
+      },
+      {
+        "label": "走到功能边界",
+        "value": "import() → editor.js",
+        "note": "用户真的打开编辑器，浏览器才发出 chunk 请求。"
+      },
+      {
+        "label": "模块到达并执行",
+        "value": "loading → ready → cache",
+        "note": "加载状态结束后功能挂上页面，再次打开可以复用缓存。"
+      }
+    ],
+    "quizQuestion": "按路由或功能边界做代码分割，最直接的收益是什么？",
+    "quizOptions": [
+      "减少当前页面初始需要加载的代码",
+      "消除所有网络请求",
+      "让所有模块同时执行"
+    ],
+    "correctText": "当前路径不需要的代码可以延后下载、解析和执行。",
+    "wrongText": "分割仍然会产生按需请求，也不会让模块在用户需要前全部执行。",
+    "promptTitle": "选择合适的代码分割边界",
+    "prompt": "请画出首页到重型编辑器的用户路径，判断哪些代码应留在首包，哪些可以用动态 import 延后；为 loading、失败重试、缓存命中和过度拆分写出验收条件。",
+    "relatedSlugs": [
+      "lazy-loading",
+      "bundler",
+      "routing"
+    ]
   },
   {
     "zh": "懒加载", "en": "Lazy Loading", "slug": "lazy-loading", "cat": "前端",

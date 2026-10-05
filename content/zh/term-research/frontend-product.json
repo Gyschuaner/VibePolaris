@@ -445,12 +445,22 @@
   },
   {
     "slug": "code-splitting",
-    "mechanism": "构建器把动态 import 或入口边界切成独立 chunk，运行时只在代码路径命中时请求并执行相应模块。",
-    "misconception": "拆包不等于删除代码；分得过细会增加请求、加载状态和缓存协调成本。",
-    "demoSignature": "建议 5 帧：网络瀑布首次只出现 home.js，页面首页随即可用；用户点击编辑器，editor.js 才从路由边界下载并挂载；拖动分包粒度滑块，首包大小、请求数、点击后的等待三项指标同步变化，展示过粗与过碎两端代价。",
-    "sourceUrls": ["https://webpack.js.org/guides/code-splitting/"],
+    "mechanism": "构建器按入口、路由或动态 import 画出异步边界，把代码变成可独立请求的 chunk；用户走到边界后才下载并执行对应模块。",
+    "misconception": "代码分割不会删除代码，也不保证 chunk 越多越快；过度拆分会增加请求、调度和第一次交互的等待。",
+    "demoSignature": "6帧｜对象：首页入口、editor.js、动态边界、网络瀑布与缓存｜交互：整包先到→画出路由边界→点击才请求→模块执行→拆得太碎→再次打开命中缓存｜变化：下载时机、请求数、loading/ready、缓存状态｜结果：读者能看到分割优化的是时机与路径，而不是把代码变没。",
+    "sourceUrls": [
+      "https://webpack.js.org/guides/code-splitting/",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
+      "https://web.dev/articles/reduce-javascript-payloads-with-code-splitting",
+      "https://nextjs.org/docs/app/guides/lazy-loading",
+      "https://web.dev/articles/optimize-long-tasks"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["lazy-loading", "bundler", "routing"]
+    "nearDuplicates": [
+      "lazy-loading",
+      "bundler",
+      "routing"
+    ]
   },
   {
     "slug": "lazy-loading",

@@ -99,6 +99,7 @@ import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
 import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
 import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoint-page";
 import { MediaQueryTermPage } from "@/components/terms/media-query-pages/media-query-page";
+import { CodeSplittingTermPage } from "@/components/terms/code-splitting-pages/code-splitting-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -116,6 +117,7 @@ const articleTermPages = {
   'css-grid': CssGridTermPage,
   breakpoint: BreakpointTermPage,
   'media-query': MediaQueryTermPage,
+  'code-splitting': CodeSplittingTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,
