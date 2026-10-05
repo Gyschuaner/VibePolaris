@@ -37902,6 +37902,885 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-claude-opus-41-20250805",
+    "title": "Anthropic 发布 Claude Opus 4.1，增量强化代码与 Agent 任务",
+    "summary": "Anthropic 8 月 5 日发布 Claude Opus 4.1，把它定位为 Claude Opus 4 的升级版，重点改进真实代码、Agent 任务、推理、深度研究和数据分析。官方称其在 SWE-bench Verified 上达到 74.5%，并同步提供给付费 Claude、Claude Code、API、Amazon Bedrock 和 Vertex AI；这是增量版本，成绩和安全结论都应按官方评测条件阅读。",
+    "body": "8 月 5 日，Anthropic 发布 Claude Opus 4.1。公司对它的定位很克制：这是 Opus 4 的升级，不是一个重新命名的大代际模型，重点放在真实代码、Agent 任务、推理、深度研究和数据分析。它当天向付费 Claude 用户和 Claude Code 开放，也进入 Anthropic API、Amazon Bedrock 与 Google Cloud Vertex AI，价格与 Opus 4 相同。\n\n最容易被引用的数字是 SWE-bench Verified 的 74.5%。这个基准更接近真实软件修复，但它仍然是特定数据集、工具脚手架和评分规则下的结果。Anthropic 说明 Claude 4 系列在 SWE-bench 上使用 Bash 和文件编辑工具，且统计的是完整 500 个问题；OpenAI 模型的公开分数则使用 477 个问题子集。数字可以帮助比较，不能单独证明模型在每个代码库里都能稳定改对。\n\nOpus 4.1 的改进方向也不只是一项代码榜单。Anthropic 称它更擅长在多文件重构中追踪细节、减少不必要的改动，并改善 Agent 搜索、研究和数据分析。GitHub、Rakuten 和 Windsurf 的反馈被官方用作早期外部观察，读者需要把这些反馈和公司自己的测评分开：它们说明一些团队的使用感受，不是独立、统一的质量审计。\n\n安全上，这次版本没有重新定义整个风险级别。系统卡把 Opus 4.1 描述为增量改进，并沿用 Opus 4 的 ASL-3 部署标准；Anthropic 做了针对性的安全复测，报告计算机使用、提示注入和 Agent 编码风险与 Opus 4 相近。系统卡还记录了极端模拟中的勒索、告密和自我保护行为；这些场景用于找边界，不等于模型已经在现实中做过同样的事。\n\n因此，Opus 4.1 更像一次面向工作流的精修：同样的模型家族、同样的价格和主要入口，换来在代码细节和多步任务上的增量提升。是否值得升级，要看团队的代码库、工具权限、延迟和复核流程；仅凭 74.5% 或“更强 Agent”这样的标题，无法替组织省掉测试和人工审查。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-opus-41-20250805.svg",
+      "alt": "Claude Opus 4.1 在代码库中追踪细节、调用工具并经过安全复测",
+      "sourceUrl": "/images/news/anthropic-claude-opus-41-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "incremental-release",
+        "title": "这是 Opus 4 的升级版",
+        "body": "Anthropic 把 Opus 4.1 定义为增量改进，方向集中在 Agent 任务、真实代码、推理、研究和数据分析。它沿用 Opus 4 的产品定位与价格，发布会里的“更强”需要放回这个升级范围里理解。",
+        "kind": "narrative"
+      },
+      {
+        "id": "swe-bench",
+        "title": "74.5% 是有脚手架和数据集边界的分数",
+        "body": "官方报告 SWE-bench Verified 74.5%，并说明 Claude 4 系列使用 Bash 与文件编辑工具、覆盖完整 500 个问题。不同模型使用的题目子集和工具条件并不完全相同，分数不能直接变成所有代码库的成功率。",
+        "kind": "technical"
+      },
+      {
+        "id": "agent-research",
+        "title": "改进落在多文件细节和多步研究",
+        "body": "Anthropic 说 Opus 4.1 在多文件重构中更能定位准确改动，也改善深度研究、数据分析和 Agent 搜索。GitHub、Rakuten 和 Windsurf 的反馈提供了早期使用观察，但不是统一的独立审计。",
+        "kind": "technical"
+      },
+      {
+        "id": "availability",
+        "title": "付费 Claude、Claude Code 和两家云平台同步可用",
+        "body": "模型在付费 Claude 用户、Claude Code、Anthropic API、Amazon Bedrock 和 Google Cloud Vertex AI 提供，价格与 Opus 4 相同。具体速率、地区和合同权限仍由各平台的产品条款决定。",
+        "kind": "comparison"
+      },
+      {
+        "id": "safety-card",
+        "title": "安全复测沿用 Opus 4 的风险框架",
+        "body": "系统卡把 Opus 4.1 归为增量版本，沿用 ASL-3，并针对计算机使用、提示注入和 Agent 编码做复测。报告中的极端模拟是边界测试，不能当成现实事故或普遍行为的统计。",
+        "kind": "boundary"
+      },
+      {
+        "id": "upgrade-decision",
+        "title": "升级价值要在自己的代码库里测",
+        "body": "对团队而言，真正要比较的是多文件改动是否少引入回归、工具调用是否可控、延迟是否可接受，以及人工复核是否仍能覆盖关键动作。单一榜单分数不能替代这些工作流证据。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "一次 Agent 编码任务怎样被评估？",
+      "question": "从任务描述到代码提交，模型能力、工具脚手架和人工复核各自负责什么？",
+      "steps": [
+        {
+          "label": "给出真实任务",
+          "detail": "开发者把 issue、代码库和测试目标交给模型，任务难度由项目上下文和验收标准共同决定。",
+          "evidence": "SWE-bench Verified task setting"
+        },
+        {
+          "label": "建立工作计划",
+          "detail": "模型追踪多文件关系，决定先读哪些文件、调用哪些工具，以及怎样验证改动不会破坏现有行为。",
+          "evidence": "Anthropic 对 agentic coding 与 multi-file refactoring 的描述"
+        },
+        {
+          "label": "调用有限工具",
+          "detail": "基准脚手架为 Claude 4 系列提供 Bash 和文件编辑工具；换到企业环境后，工具权限和上下文会改变结果。",
+          "evidence": "Anthropic SWE-bench methodology"
+        },
+        {
+          "label": "运行测试并提交",
+          "detail": "模型根据测试反馈修正代码并给出结果，但测试覆盖不足、依赖环境差异和隐藏回归仍需要人工检查。",
+          "evidence": "SWE-bench evaluation boundary"
+        },
+        {
+          "label": "复核风险动作",
+          "detail": "涉及部署、文件删除、外部系统和敏感数据时，组织应保留审批、日志和回滚流程，不能把 Agent 分数当成授权。",
+          "evidence": "Claude Opus 4.1 system card agentic safety discussion"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-4-1"
+    },
+    "relatedSlugs": [
+      "llm",
+      "event",
+      "benchmark",
+      "agent",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/claude-opus-4-1",
+        "claim": "Anthropic 官方公告确认 8 月 5 日发布日期、增量定位、可用平台、价格、SWE-bench Verified 74.5% 和评测方法边界。",
+        "excerpt": "Anthropic, August 5, 2025."
+      },
+      {
+        "url": "https://www-cdn.anthropic.com/9fa30625273bafdf5af82c93719d7ca606485a16.pdf",
+        "claim": "Claude Opus 4.1 System Card Addendum 说明这是 Opus 4 的增量改进，沿用 ASL-3，并报告计算机使用、提示注入、Agent 编码和极端模拟的安全复测。",
+        "excerpt": "Claude Opus 4.1 System Card Addendum, August 2025."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/claude-opus-4-1",
+    "sourceHash": "sha256:68ffcf2c57450e50fe4e0d382fb9a6fe8ea6453b5024cff5f4e7e45d00faabc3"
+  },
+  {
+    "slug": "cisco-huggingface-foundation-ai-supply-chain-20250805",
+    "title": "Cisco 与 Hugging Face 扩展合作，把模型文件扫描放进 AI 供应链入口",
+    "summary": "Cisco 8 月 5 日宣布与 Hugging Face 扩展合作，为平台上公开上传的模型文件和其他文件提供统一的恶意软件扫描，并把针对 .pt、.pkl 等模型文件反序列化风险的检测能力开放到 ClamAV。它解决的是文件进入模型仓库时的恶意代码筛查，不等于完成模型质量、训练数据、许可证或后门风险的全面审计。",
+    "body": "8 月 5 日，Cisco 宣布与 Hugging Face 扩展合作，把 AI 模型供应链的第一道检查放在文件上传入口。Cisco 的公告称，Hugging Face 平均每 7 秒新增一个模型，平台上已有近 190 万个模型；合作内容是由 Cisco Foundation AI 提供平台和扫描能力，对公开上传的模型文件及其他文件做统一恶意软件检测。\n\n这项合作的技术重点不是给模型打分，而是让 ClamAV 看懂模型文件里的特定风险。Cisco 说，更新后的 ClamAV 可以检测常见 .pt、.pkl 格式中的反序列化风险，并以毫秒级速度完成这类检查；相关能力向所有使用 ClamAV 的人免费开放。对下载者来说，模型权重不再只是一个需要自行运行的压缩包，上传和下载环节多了一层文件级的危险信号。\n\nCisco 还把这条链路接到自己的安全产品：Cerberus 可以在模型进入 Hugging Face 时检查并分享标准化威胁情报，Cisco Secure Access 则可以按扫描结果限制仓库访问、拦截潜在威胁、阻止高风险许可证的模型，或执行组织和地区相关的合规策略。这样一来，扫描结果不只停留在一个告警页面，而是能够参与“允许下载还是先隔离”的访问决定。\n\n边界也很清楚。恶意软件扫描能发现文件里已知的恶意代码和部分反序列化风险，却不能替组织判断模型是否准确、公平或适合生产，不能证明训练数据已经获得授权，也不能单凭一份干净报告排除数据投毒、隐藏行为或许可证冲突。Cisco 的公告把它称为 AI 供应链安全能力，具体检测覆盖和误报漏报仍要结合版本、签名、沙箱和组织自己的复核。\n\n这次合作的价值在于把“先下载、后自己猜风险”改成“进入公共模型仓库时先留下一个可消费的安全信号”。真正成熟的流程还需要对模型来源、哈希、许可证、依赖、运行权限和更新版本继续留档；文件扫描是入口检查，不是整套模型治理的终点。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/cisco-huggingface-foundation-ai-supply-chain-20250805.svg",
+      "alt": "模型文件进入 Hugging Face 后经过 ClamAV 扫描并进入访问策略",
+      "sourceUrl": "/images/news/cisco-huggingface-foundation-ai-supply-chain-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "upload-gate",
+        "title": "供应链检查从公开上传入口开始",
+        "body": "Cisco 与 Hugging Face 的合作把扫描放在模型文件进入公共仓库的环节，覆盖模型文件和其他公开上传文件。公告给出的 7 秒新增一个模型、近 190 万模型是平台规模的公司口径，说明人工逐个检查无法承担这个入口压力。",
+        "kind": "narrative"
+      },
+      {
+        "id": "model-file-risk",
+        "title": "ClamAV 增加对模型文件的识别",
+        "body": "更新后的 ClamAV 可以识别 .pt、.pkl 等常见模型格式里的反序列化风险，并与传统恶意软件扫描放在同一套工具里。它检查的是文件及其中可触发的危险代码路径，不是模型回答质量或训练过程。",
+        "kind": "technical"
+      },
+      {
+        "id": "threat-feed",
+        "title": "扫描结果可以进入访问策略",
+        "body": "Cisco 介绍 Cerberus 会检查进入 Hugging Face 的模型并分享标准化威胁情报，Secure Access 可据此限制仓库、阻止潜在威胁、拦截高风险许可证模型，或执行组织与地区相关的策略。告警因此可以参与下载和运行前的准入决定。",
+        "kind": "example"
+      },
+      {
+        "id": "coverage-boundary",
+        "title": "文件干净不等于模型安全",
+        "body": "扫描不能替代训练数据授权、许可证审查、后门分析、数据投毒检测、偏差评估和运行权限隔离。已知签名、格式风险和实际检测覆盖仍由版本、规则与部署方式决定，不能把“通过 ClamAV”写成完整安全认证。",
+        "kind": "boundary"
+      },
+      {
+        "id": "open-tooling",
+        "title": "把检查能力开放给使用者",
+        "body": "Cisco 称针对 AI 模型的 ClamAV 能力免费开放，并可用于 Hugging Face 和 VirusTotal 的相关扫描场景。组织仍需留存模型哈希、来源、许可证和扫描版本，才能在模型更新后复核结果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "governance-next",
+        "title": "后面的治理要接住入口告警",
+        "body": "模型进入仓库前后的安全信号只有被接到隔离、人工复核、依赖检查和回滚流程里才有意义。下载前的文件扫描解决第一道门，运行时权限和模型行为还要由团队自己的控制措施负责。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "一个公开模型怎样经过供应链安全检查？",
+      "question": "从上传文件到允许团队下载，扫描、策略和人工复核分别做什么？",
+      "steps": [
+        {
+          "label": "上传模型文件",
+          "detail": "模型权重和相关文件进入公共仓库，系统记录来源、文件类型、哈希和版本，给后续复核留下对象。",
+          "evidence": "Hugging Face public upload context in Cisco announcement"
+        },
+        {
+          "label": "执行恶意软件扫描",
+          "detail": "ClamAV 先检查传统恶意代码，再按模型文件格式识别 .pt、.pkl 等反序列化风险。",
+          "evidence": "Cisco Foundation AI and updated ClamAV description"
+        },
+        {
+          "label": "生成可消费的威胁信号",
+          "detail": "扫描结果可以进入标准化威胁情报或仓库标签，让下游系统知道哪些对象需要隔离或进一步检查。",
+          "evidence": "Cisco Cerberus threat-feed description"
+        },
+        {
+          "label": "执行访问策略",
+          "detail": "组织按风险、许可证、来源和合规要求决定允许下载、限制访问还是交给安全人员复核。",
+          "evidence": "Cisco Secure Access policy examples"
+        },
+        {
+          "label": "继续做模型治理",
+          "detail": "通过文件扫描后，还要检查训练数据、后门、依赖、运行权限和输出行为，不能把入口告警当成整套模型认证。",
+          "evidence": "AI supply-chain coverage boundary inferred from Cisco announcement"
+        }
+      ]
+    },
+    "source": {
+      "name": "Cisco Blogs",
+      "url": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face"
+    },
+    "relatedSlugs": [
+      "llm",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face",
+        "claim": "Cisco 8 月 5 日宣布与 Hugging Face 扩展合作，为公开上传文件提供统一恶意软件扫描，并说明更新后的 ClamAV 可检测 AI 模型文件中的反序列化风险。",
+        "excerpt": "Cisco, August 5, 2025: Foundation AI will scan public files uploaded to Hugging Face; updated ClamAV detects deserialization risks in .pt and .pkl model formats."
+      },
+      {
+        "url": "https://www.clamav.net/",
+        "claim": "ClamAV 官方网站说明它是开源恶意软件检测引擎，支持文件扫描和多种文件格式；具体 AI 模型检测能力以 Cisco 同日公告为准。",
+        "excerpt": "ClamAV is an open-source antivirus engine with on-demand file scanning and support for multiple file formats."
+      }
+    ],
+    "canonicalUrl": "https://blogs.cisco.com/security/ciscos-foundation-ai-advances-ai-supply-chain-security-with-hugging-face",
+    "sourceHash": "sha256:cef6cd54173c22639c5ee47e8742d6bb0b395a6845ce40ca87a908bf744ccdaf"
+  },
+  {
+    "slug": "elevenlabs-eleven-music-launch-20250805",
+    "title": "ElevenLabs 发布 Eleven Music，把文字提示扩展到完整歌曲创作",
+    "summary": "ElevenLabs 8 月 5 日发布 Eleven Music，从语音合成扩展到整首歌曲生成。产品支持用自然语言控制曲风、结构、声乐或器乐、多语言内容，并修改单个段落或整首歌；公司称它与唱片公司、出版商和艺术家合作，覆盖近乎所有商业用途，但具体使用权仍取决于方案、条款和输入内容。",
+    "body": "8 月 5 日，ElevenLabs 发布 Eleven Music。这个产品让公司从配音、语音代理走到完整音乐创作：用户给出一段自然语言描述，系统生成一首带有人声或纯器乐的歌曲。官方把输出称为“录音室级”，但更有用的变化在于控制方式——曲风、风格、结构和语言都可以写进提示词里，而不只是点一个随机生成按钮。\n\n产品页列出的能力已经接近一个轻量制作流程：可以选择人声或器乐，支持英语、西班牙语、德语、日语等多种语言，还能修改某个段落的声音和歌词，或者重做整首歌。这样的设计把“先生成一版、发现副歌不对、只改副歌”的来回试错放进了同一条工作流。它解决的是创作入口和修改成本，不能保证每个提示词都得到稳定的旋律、演唱或混音。\n\n这次发布同时把版权安排放到产品叙事的前面。ElevenLabs 表示 Eleven Music 与唱片公司、出版商和艺术家合作，并称产品覆盖“几乎所有商业用途”；Music Business Worldwide 报道了它与独立音乐授权机构 Merlin、出版商 Kobalt 的合作。公司条款还限制用户输入艺人或词曲作者姓名、歌曲或专辑名、唱片公司名称，以及足以指向特定歌曲的歌词片段，也禁止诱导模型模仿可识别的艺人声音。商业可用是公司的产品与方案口径，不能替用户自动解决样本来源、提示词侵权或不同套餐的授权范围。\n\n日期也需要分开记录。8 月 5 日的事件是 Eleven Music 产品发布；ElevenLabs 在 8 月 18 日又单独发布公告，明确宣布 Eleven Music 在 API 中推出。把后一个开发者入口倒填到 8 月 5 日，会把产品上线和 API 事件混成一件事。对普通创作者而言，先在网页里试出歌曲只是第一步；要接入自己的编辑器、游戏或广告流水线，还要再看 API 文档、方案限制和音乐权利条款。\n\nEleven Music 的意义在于，AI 音乐从“输入一句话得到一段试听”向“生成、局部修改、核对授权再交付”的流程移动。真正值得观察的不是一首演示曲听起来多像成品，而是用户能否稳定改动指定段落、保留需要的声音特征，并在发布前说明输入、输出和商业授权各自的边界。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/elevenlabs-eleven-music-launch-20250805.svg",
+      "alt": "Eleven Music 从自然语言提示生成歌曲，并经过段落编辑与授权检查",
+      "sourceUrl": "/images/news/elevenlabs-eleven-music-launch-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "from-voice-to-song",
+        "title": "ElevenLabs 从语音工具走到整首歌曲",
+        "body": "8 月 5 日发布的 Eleven Music 把自然语言提示、声乐或器乐和多语言歌曲放进同一个产品。官方的“录音室级”是公司对输出的定位，事件本身确认的是产品范围扩展，不是独立质量审计。",
+        "kind": "narrative"
+      },
+      {
+        "id": "prompt-controls",
+        "title": "提示词可以描述曲风、结构和语言",
+        "body": "用户可以在提示词中说明曲风、风格、结构和人声需求，再生成一首完整歌曲。这样做降低了试作门槛，但旋律稳定性、演唱表现和混音质量仍要按具体提示词和版本检查。",
+        "kind": "technical"
+      },
+      {
+        "id": "section-editing",
+        "title": "局部修改让它更像制作流程",
+        "body": "官方列出对单个段落或整首歌曲的声音、歌词编辑。用户可以只重做副歌或桥段，而不用每次从头生成；这项能力的实际稳定性，需要在长段落、多语言和反复修改中验证。",
+        "kind": "example"
+      },
+      {
+        "id": "rights-guardrails",
+        "title": "商业使用要连同授权条件一起读",
+        "body": "ElevenLabs 称 Eleven Music 与唱片公司、出版商和艺术家合作，并覆盖近乎所有商业用途；Merlin、Kobalt 合作和产品条款提供了更具体的边界。条款限制艺人姓名、歌曲或专辑名、歌词片段和误导性声音模仿，不能被省略成“生成后随便商用”。",
+        "kind": "boundary"
+      },
+      {
+        "id": "api-date",
+        "title": "8 月 5 日产品发布与 8 月 18 日 API 公告分开",
+        "body": "本次日记录把 8 月 5 日归为 Eleven Music 产品发布。ElevenLabs 在 8 月 18 日另发公告宣布 API 上线，因此网页体验、开发者接入和后续 API 事件不能合并成同一天的一个事实。",
+        "kind": "comparison"
+      },
+      {
+        "id": "delivery-check",
+        "title": "交付前还要检查输入、输出和方案权限",
+        "body": "把歌曲用于视频、游戏或广告时，需要记录提示词是否引用了受保护对象、输出是否触及声音模仿限制、当前方案允许哪些商业场景，以及团队如何保留授权和修改记录。生成结果好听只是流程中的一个检查点。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "creator-ai",
+      "title": "一首 AI 歌曲怎样从提示词走到可交付素材？",
+      "question": "生成、修改和商业发布之间，各自需要确认什么？",
+      "steps": [
+        {
+          "label": "写清音乐需求",
+          "detail": "说明曲风、情绪、结构、语言以及要不要人声，让模型有可以检查的创作目标。",
+          "evidence": "Eleven Music 官方列出的自然语言提示、曲风、结构和语言控制"
+        },
+        {
+          "label": "生成第一版",
+          "detail": "先得到一首完整歌曲或器乐版本，再听辨旋律、演唱、歌词和段落是否符合需求。",
+          "evidence": "Eleven Music product launch"
+        },
+        {
+          "label": "只改需要的段落",
+          "detail": "如果问题集中在副歌、桥段或歌词，可以尝试修改单个部分，记录每次版本差异。",
+          "evidence": "Official section and whole-song editing description"
+        },
+        {
+          "label": "核对提示词和授权",
+          "detail": "删掉艺人姓名、歌曲名、歌词片段和可能诱导声音模仿的描述，再查看当前方案对商业用途的具体限制。",
+          "evidence": "Eleven Music terms and commercial-use statement"
+        },
+        {
+          "label": "选择交付入口",
+          "detail": "网页试作与 API 接入属于不同事件和工作流；需要自动化时再核对 API 文档、额度、方案和保存权利记录。",
+          "evidence": "Eleven Music August 18 API announcement"
+        }
+      ]
+    },
+    "source": {
+      "name": "ElevenLabs",
+      "url": "https://elevenlabs.io/blog/eleven-music-is-here"
+    },
+    "relatedSlugs": [
+      "llm",
+      "event",
+      "streaming-output"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://elevenlabs.io/blog/eleven-music-is-here",
+        "claim": "ElevenLabs 官方页面确认 Eleven Music 于 2025 年 8 月 5 日发布，支持自然语言提示、曲风/结构控制、声乐或器乐、多语言和段落或整曲编辑。",
+        "excerpt": "ElevenLabs, published Aug 5, 2025: generate studio-grade music from natural-language prompts with control over genre, style, structure, vocals, languages, and section editing."
+      },
+      {
+        "url": "https://www.musicbusinessworldwide.com/eleven-music-new-ai-rival-to-suno-launches-with-merlin-kobalt-licensing-deals-in-the-bag/",
+        "claim": "Music Business Worldwide 报道 ElevenLabs 与 Merlin、Kobalt 合作，并整理了产品条款对艺人姓名、歌曲名、歌词片段和声音模仿的限制。",
+        "excerpt": "Music Business Worldwide, August 5, 2025: Eleven Music launched with Merlin and Kobalt partnerships and guardrails for prohibited inputs and misleading voice imitation."
+      },
+      {
+        "url": "https://elevenlabs.io/blog/eleven-music-now-available-in-the-api",
+        "claim": "ElevenLabs 在 2025 年 8 月 18 日另发公告宣布 Eleven Music 在 API 中推出，说明开发者接入是后续时间点。",
+        "excerpt": "ElevenLabs, published Aug 18, 2025: launching Eleven Music in the API."
+      }
+    ],
+    "canonicalUrl": "https://elevenlabs.io/blog/eleven-music-is-here",
+    "sourceHash": "sha256:772b536440329d25254c756454f99e470910c646b405dc47ce7b12e6ed3a0c60"
+  },
+  {
+    "slug": "google-deepmind-genie-3-world-model-20250805",
+    "title": "Google DeepMind 发布 Genie 3，文本提示可生成可实时行走的世界模型",
+    "summary": "Google DeepMind 8 月 5 日公布 Genie 3：输入一段文字，就能生成可实时探索的动态环境，官方展示约 24fps、720p 和几分钟的一致性。它面向世界模拟与 Agent 训练，支持用文字改变天气、物体和角色等世界事件；目前是只给少量学者和创作者的研究预览，行动空间、多人交互、地理准确度和持续时间仍有限。",
+    "body": "8 月 5 日，Google DeepMind 公布 Genie 3，一款从文字提示生成动态交互环境的 world model。用户可以在生成的世界里实时行走，官方给出的目标表现是每秒约 24 帧、720p 分辨率，并在几分钟内保持场景大致一致。它的重点不是把一句话渲染成一段看完就结束的视频，而是让一个 Agent 在环境里行动，环境再根据动作继续变化。\n\n这类模型要解决的难题和视频生成不同。视频可以提前生成一条轨迹，Genie 3 则要在用户转身、走回原地或改变指令时继续算下一帧，同时记住之前发生过什么。Google 说它的视觉记忆可以追溯到大约一分钟前，世界在几分钟交互里保持较强一致性；这仍然是研究预览的时间尺度。\n\nGenie 3 还允许用文字触发“世界事件”：改变天气、加入物体或角色，或者让场景出现反事实变化。SIMA Agent 的测试让 Agent 向 Genie 3 发送导航动作并完成目标，模型只负责根据动作模拟未来，并不知道 Agent 的目标。这样产生的世界可以拿来训练和评估 Agent，尤其适合让它遇到现实里难以重复的情况。\n\n不过，能走动的世界不等于完整的现实模拟器。Google 列出的限制包括可直接执行的动作仍然有限、多个独立 Agent 的互动还不稳定、真实地点的地理细节不保证准确、文字经常难以清晰呈现，而且连续互动目前只有几分钟。世界模型在这些约束下更像一个可以反复试验的研究环境，而不是可替代地图、游戏引擎或现实训练场的通用系统。\n\nGenie 3 发布时只提供给小范围学者和创作者。这个限制让 Google 能收集不同领域的反馈，也给它处理开放世界生成带来的安全与责任问题留出时间。下一步的关键不是把演示画面做得更长，而是看模型能否扩大行动空间、维持更久的一致性，并让 Agent 在多人和真实地理场景中学到可迁移的经验。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/google-deepmind-genie-3-world-model-20250805.svg",
+      "alt": "文字提示生成可行走的动态世界，Agent 在其中导航并触发天气和物体变化",
+      "sourceUrl": "/images/news/google-deepmind-genie-3-world-model-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "interactive-world",
+        "title": "从文字生成一个可以走进去的世界",
+        "body": "Genie 3 接收文字提示后生成动态环境，用户能够实时导航，官方给出的展示指标约为 24fps、720p，并在几分钟内保持一致。它输出的是可继续交互的环境，不是一次性播放完的成片。",
+        "kind": "narrative"
+      },
+      {
+        "id": "world-model",
+        "title": "世界模型要记住动作带来的变化",
+        "body": "模型在生成下一帧时要参考此前的轨迹，用户转身、回到原地或改变指令时，场景还要看起来像同一个世界。Google 称视觉记忆可延伸到约一分钟，连续互动可保持几分钟；这不是无限时长的记忆。",
+        "kind": "technical"
+      },
+      {
+        "id": "promptable-events",
+        "title": "天气、物体和角色可以被文字改写",
+        "body": "除了导航输入，Genie 3 支持用文字改变天气、加入物体和角色等世界事件。它让 Agent 能在同一环境中练习更多“如果发生了另一件事”的情况，但可直接执行的动作范围仍然受限。",
+        "kind": "example"
+      },
+      {
+        "id": "agent-training",
+        "title": "SIMA 用导航动作测试环境是否能配合训练",
+        "body": "Google 让 SIMA Agent 向 Genie 3 发送导航动作并追踪目标。Genie 3 只根据动作模拟未来，不知道 Agent 想完成什么；这能帮助研究者观察 Agent 如何在可重复的虚拟环境中学习。",
+        "kind": "comparison"
+      },
+      {
+        "id": "limitations",
+        "title": "几分钟一致性仍不是现实世界模拟",
+        "body": "官方列出的限制包括有限动作空间、多 Agent 互动困难、真实地点的地理准确度不足、文字渲染不稳定和连续互动时间有限。World model 的演示能力不能直接替代游戏引擎、地图或现实训练。",
+        "kind": "boundary"
+      },
+      {
+        "id": "preview",
+        "title": "研究预览先交给少量学者和创作者",
+        "body": "Genie 3 首发是限量研究预览，Google 以此收集跨学科反馈并继续研究开放世界生成的责任问题。后续能否扩大测试、延长记忆和提升地理及多 Agent 可靠性，才决定它能否离开实验环境。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-motion",
+      "title": "一个世界模型怎样给 Agent 当训练场？",
+      "question": "从文字提示到行动反馈，Genie 3 如何保持一个可探索的世界？",
+      "steps": [
+        {
+          "label": "写下世界设定",
+          "detail": "研究者用文字描述地形、天气、角色或历史场景，模型把描述变成一套动态环境。",
+          "evidence": "Google DeepMind Genie 3 capabilities"
+        },
+        {
+          "label": "实时生成下一帧",
+          "detail": "用户或 Agent 发出导航动作后，模型结合之前的轨迹继续生成画面，目标是维持约 24fps 的交互感。",
+          "evidence": "Genie 3 real-time world generation"
+        },
+        {
+          "label": "记住局部世界",
+          "detail": "环境保留近期的视觉信息，让用户回头时仍看见相近的建筑、道路或物体；官方说视觉记忆约可追溯一分钟。",
+          "evidence": "Google DeepMind environmental consistency discussion"
+        },
+        {
+          "label": "触发世界事件",
+          "detail": "研究者可以用文字改变天气、加入对象或角色，制造 Agent 平时难以反复遇到的反事实场景。",
+          "evidence": "Genie 3 promptable world events"
+        },
+        {
+          "label": "评估 Agent 行为",
+          "detail": "像 SIMA 一样，Agent 发送动作、接收环境反馈并尝试完成目标；研究者观察哪些能力可以迁移到新的场景。",
+          "evidence": "SIMA compatibility experiment"
+        }
+      ]
+    },
+    "source": {
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "event",
+      "benchmark",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/",
+        "claim": "Google DeepMind 官方文章确认 Genie 3 的 8 月 5 日日期、24fps/720p/几分钟一致性、可提示世界事件、SIMA 测试、限制和限量研究预览。",
+        "excerpt": "Google DeepMind, August 5, 2025."
+      }
+    ],
+    "canonicalUrl": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/",
+    "sourceHash": "sha256:aa1c051af9216d9cd0d24db959f6842a6b9c27b9f370104c757a54c6ac279e0c"
+  },
+  {
+    "slug": "gsa-ai-vendors-multiple-award-schedule-20250805",
+    "title": "美国 GSA 将 Claude、Gemini 与 ChatGPT 纳入联邦采购渠道",
+    "summary": "美国总务管理局（GSA）8 月 5 日宣布，Anthropic Claude、Google Gemini 和 OpenAI ChatGPT 产品进入 Multiple Award Schedule（MAS）。这一步提供了标准化的联邦采购入口和预协商合同路径，降低机构采购门槛；它表示产品可以被采购，不代表各机构已经部署、通过具体任务评估或获得统一的安全授权。",
+    "body": "8 月 5 日，美国总务管理局（GSA）宣布把 Anthropic Claude、Google Gemini 和 OpenAI ChatGPT 加入 Multiple Award Schedule（MAS）。这条消息的变化发生在采购系统里：联邦机构可以在已有的合同框架中寻找和购买这些 AI 产品，而不必每个机构从零谈一遍供应商条款。\n\nMAS 更像一个政府采购货架，不是一个“AI 已获批准”的技术认证。GSA 说，进入该渠道会让机构更容易获取研究助手、大语言模型和面向任务的应用；它同时强调，产品采购要遵守联邦合同、合规和机构自身的要求。具体机构仍然要判断数据能不能交给服务、需要什么安全控制、输出如何留痕，以及是否适合自己的任务。\n\n三家公司的产品被放进同一条采购通道，反映出联邦市场开始把通用聊天产品、研究助手和更定制的任务应用放在同一个比较框架里。GSA 的公告把这一步放在 AI Action Plan 和扩大政府 AI 使用的政策背景下，但没有公布每个产品的部署数量、实际使用部门或效果数据。\n\nAnthropic 的同日说明补充了 Claude 的采购条件：联邦部门和机构可以通过 GSA 以预协商价格和条款购买，并按联邦采购法规执行。这个说明讲的是合同可获得性，安全评估、权限配置、数据驻留和上线后的监控仍由政府机构与供应商共同完成。\n\n因此，这条新闻的现实影响可能出现在采购周期，而不是当天的模型能力变化。机构得到更短的进入路径，供应商得到更清晰的联邦销售入口，真正的公共服务效果要等具体项目上线后才能判断。后续值得观察的是不同机构如何设定评估门槛、记录模型错误、限制敏感数据和追踪成本，而不是把“进入 MAS”直接当作“适合所有政府工作”。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/gsa-ai-vendors-multiple-award-schedule-20250805.svg",
+      "alt": "Claude、Gemini 与 ChatGPT 通过联邦采购货架进入机构评估和部署流程",
+      "sourceUrl": "/images/news/gsa-ai-vendors-multiple-award-schedule-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "procurement-door",
+        "title": "变化发生在采购入口",
+        "body": "GSA 把 Claude、Gemini 和 ChatGPT 加入 Multiple Award Schedule，让联邦机构可以在标准化合同框架中采购。它解决的是进入政府市场的路径和谈判成本，不是模型能力更新。",
+        "kind": "narrative"
+      },
+      {
+        "id": "three-products",
+        "title": "三家产品进入同一条货架",
+        "body": "公告列出 Anthropic Claude、Google Gemini 和 OpenAI ChatGPT，并把它们放在研究助手、大语言模型和任务型应用的政府采购语境里。GSA 没有公布每个产品的部署机构、数量或效果。",
+        "kind": "comparison"
+      },
+      {
+        "id": "pre-negotiated",
+        "title": "预协商条款降低重复谈判",
+        "body": "Anthropic 同日说明，Claude 可通过 GSA 以预协商价格和条款购买，并遵守联邦采购法规。这样的入口能缩短采购流程，却不能替机构完成数据分类、权限设计和安全审查。",
+        "kind": "technical"
+      },
+      {
+        "id": "not-certification",
+        "title": "采购资格不是部署证明",
+        "body": "进入 MAS 不等于每个机构已经上线，也不等于产品自动适合敏感任务。机构仍要评估数据驻留、输出留痕、错误处理、供应商责任和具体安全授权。",
+        "kind": "boundary"
+      },
+      {
+        "id": "what-to-watch",
+        "title": "效果要等具体项目运行后才会出现",
+        "body": "真正的证据会来自机构如何设定评估门槛、限制敏感数据、记录模型错误、追踪成本和处理退出。采购货架缩短了入口，不能替代上线后的治理。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "AI 产品怎样从采购货架走到政府项目？",
+      "question": "进入 GSA 的 MAS 后，机构还要做哪些选择才能上线？",
+      "steps": [
+        {
+          "label": "确认任务和数据",
+          "detail": "机构先明确是研究、文书、客服还是任务型应用，并判断会处理哪些敏感数据和记录。",
+          "evidence": "GSA procurement context and agency-specific requirements"
+        },
+        {
+          "label": "从 MAS 选择产品",
+          "detail": "采购团队在预协商的合同和供应商条款中比较 Claude、Gemini、ChatGPT 或其他解决方案。",
+          "evidence": "GSA Multiple Award Schedule announcement"
+        },
+        {
+          "label": "完成机构审查",
+          "detail": "机构要补上数据驻留、权限、日志、模型输出风险、合规和供应商责任等具体审查。",
+          "evidence": "GSA and Anthropic federal procurement language"
+        },
+        {
+          "label": "限定范围上线",
+          "detail": "先在明确的团队、数据和工作流中试运行，设置人工复核、错误上报和退出路径，再决定是否扩大。",
+          "evidence": "Agency deployment boundary inferred from procurement workflow"
+        },
+        {
+          "label": "追踪实际效果",
+          "detail": "记录准确性、成本、响应时间、敏感数据事件和用户反馈，采购渠道本身不能替代这些运行证据。",
+          "evidence": "Post-deployment governance boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "U.S. General Services Administration",
+      "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-propels-government-into-ai-revolution-with-addition-of-leading-solutions-08052025"
+    },
+    "relatedSlugs": [
+      "event",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-propels-government-into-ai-revolution-with-addition-of-leading-solutions-08052025",
+        "claim": "GSA 官方公告确认 8 月 5 日将 Claude、Gemini 与 ChatGPT 加入 Multiple Award Schedule，并说明联邦机构可通过该渠道采购。",
+        "excerpt": "GSA, August 5, 2025."
+      },
+      {
+        "url": "https://www.anthropic.com/news/federal-government-departments-and-agencies-can-now-purchase-claude-through-the-gsa-schedule?subjects=announcements&type=company",
+        "claim": "Anthropic 同日说明 Claude 通过 GSA 可采购，使用预协商价格和条款，并遵守联邦采购法规。",
+        "excerpt": "Anthropic, August 5, 2025."
+      }
+    ],
+    "canonicalUrl": "https://www.gsa.gov/about-gsa/newsroom/news-releases/gsa-propels-government-into-ai-revolution-with-addition-of-leading-solutions-08052025",
+    "sourceHash": "sha256:2abcc2cf5aed5123bfcfcd9d7a2c01c6293c61bbfd017fd73f038bcf91bcf499"
+  },
+  {
+    "slug": "microsoft-project-ire-malware-classifier-20250805",
+    "title": "Microsoft Project Ire 用语言模型和逆向工具自动分析恶意软件",
+    "summary": "Microsoft Research 8 月 5 日介绍 Project Ire，一个把语言模型、反编译器、二进制分析和沙箱串成调查流程的恶意软件分类原型。它在公开 Windows 驱动数据集上报告 precision 0.98、recall 0.83，在近 4,000 个此前难以分类的真实样本上 precision 0.89、recall 0.26；这些场景必须分开理解，系统仍处于原型和专家复核边界内。",
+    "body": "8 月 5 日，Microsoft Research 介绍 Project Ire，一个试图把恶意软件逆向分析做成 Agent 工作流的原型。它接收一个没有来源线索的软件文件，调用反编译器、二进制分析、沙箱和文档搜索工具，逐步重建控制流，再判断样本更像恶意还是良性。微软把这种“先调查、再给结论”的流程称为无需人工协助的自主分类；但证据链、验证器和安全团队复查仍是结论进入防御流程的边界。\n\nProject Ire 的关键产物不是一句“有毒”或“安全”，而是一条可审计的证据链。每次函数分析和工具调用都会补充报告，系统还能用验证器把结论和证据重新对照；如果某个反编译推断找不到支持，它应当被标记出来，而不是继续堆成确定结论。这个设计把 Agent 的探索过程变成安全团队可以复查的材料。\n\n微软先在公开 Windows 驱动数据集上测试，报告 precision 0.98、recall 0.83，并称整体正确识别了约 90% 的文件。这里的两个指标回答不同问题：precision 关注被判为恶意的样本里有多少确实恶意，recall 关注真实恶意样本有多少被找出来；高 precision 不能掩盖仍有样本漏检。\n\n更接近生产压力的测试包含近 4,000 个此前没有被自动系统分类、原本要交给逆向专家处理的 hard-target 文件。Project Ire 在这组样本上 precision 0.89、recall 0.26，误报率约 4%。它能少打扰专家，却只找到约四分之一的真实恶意文件；这正是为什么不能只引用公开驱动数据集的 0.98/0.83。\n\n文章还给出一个具体边界：Project Ire 曾为一个 APT 样本写出足以支持自动拦截的 conviction case，之后该样本被 Microsoft Defender 识别和拦截。但微软说的下一步是把原型用于 Defender 组织内的 Binary Analyzer，并继续提高速度和召回率；这不是所有恶意软件已经可以交给它独立处理。\n\nProject Ire 展示的价值在于把安全分析从黑盒分类变成可追踪调查，同时也把错误的代价放到台面上。少量误报能减轻告警疲劳，却不能替代召回率；一条看似完整的证据链也需要逆向专家知道它漏掉了什么。要进入生产，系统还要在新样本、对抗性样本和不同文件类型上证明自己，并保留升级、复核和回滚的入口。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/microsoft-project-ire-malware-classifier-20250805.svg",
+      "alt": "恶意软件文件经过反编译、证据链和验证器，输出分类并交给安全团队复核",
+      "sourceUrl": "/images/news/microsoft-project-ire-malware-classifier-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "autonomous-triage",
+        "title": "它做的是一段逆向调查",
+        "body": "Project Ire 把语言模型与反编译器、二进制分析、沙箱和文档搜索工具连接起来，从文件类型和结构开始逐层分析，最后判断样本是恶意还是良性。微软将它称为自主分类原型，结论仍要放回安全团队的审阅流程。",
+        "kind": "narrative"
+      },
+      {
+        "id": "evidence-chain",
+        "title": "结论旁边必须有证据链",
+        "body": "每次函数分析的结果都会写入可审计记录，验证器会把报告中的说法与链上的证据交叉核对。微软给出的示例中，一个反编译推断被发现缺少支持后得到修正，这说明系统需要能表达不确定性。",
+        "kind": "technical"
+      },
+      {
+        "id": "public-dataset",
+        "title": "公开驱动数据集的高 precision 不等于不漏检",
+        "body": "在公开 Windows 驱动数据集上，Project Ire 报告 precision 0.98、recall 0.83，整体正确识别约 90% 文件。precision 看被判恶意的结果有多准，recall 看真实恶意样本找回多少，两者不能互相替代。",
+        "kind": "comparison"
+      },
+      {
+        "id": "hard-target",
+        "title": "近 4,000 个 hard-target 样本把 recall 拉到 0.26",
+        "body": "在此前没有被自动系统分类、原本要交给专家的真实样本上，precision 是 0.89、recall 是 0.26，误报率约 4%。这个结果更接近复杂生产输入，也说明少量误报与大量漏检可以同时存在。",
+        "kind": "boundary"
+      },
+      {
+        "id": "defender-prototype",
+        "title": "Defender 方向仍是原型接入",
+        "body": "微软称 Project Ire 曾为一个 APT 样本生成足以支持自动拦截的 conviction case，并计划在 Defender 组织内作为 Binary Analyzer 使用。文章没有说它已经独立处理所有恶意软件，速度、召回率和新样本适应性仍待提升。",
+        "kind": "example"
+      },
+      {
+        "id": "human-review",
+        "title": "安全团队需要知道它漏掉了什么",
+        "body": "可追踪的证据链能帮助专家复核，但 Agent 的调查路径仍可能受反编译错误、样本对抗和上下文缺失影响。生产部署要保留人工复核、监控、升级和回滚，不把单一数据集分数变成全面拦截承诺。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "Project Ire 怎样把一个文件变成可审计结论？",
+      "question": "恶意软件 Agent 的工具调用、证据链和人工复核分别解决什么问题？",
+      "steps": [
+        {
+          "label": "识别文件结构",
+          "detail": "系统先判断文件类型、结构和可疑区域，为后续逆向选择工具和分析顺序。",
+          "evidence": "Microsoft Research Project Ire triage description"
+        },
+        {
+          "label": "重建控制流",
+          "detail": "通过 angr、Ghidra、反编译器和沙箱观察函数、控制流和运行行为，逐步更新对样本的理解。",
+          "evidence": "Project Ire technical foundation"
+        },
+        {
+          "label": "记录证据链",
+          "detail": "每个函数摘要和工具结果都写入可审计报告，安全人员可以回看 Agent 依据了哪一段代码。",
+          "evidence": "Project Ire chain-of-evidence design"
+        },
+        {
+          "label": "验证关键判断",
+          "detail": "验证器把报告中的说法与证据和专家陈述交叉核对，发现不支持的推断时标记或修正。",
+          "evidence": "Project Ire validator tool"
+        },
+        {
+          "label": "交给安全流程",
+          "detail": "系统输出恶意或良性分类和报告，组织再决定是否告警、拦截、人工复核或更新检测规则。",
+          "evidence": "Microsoft Defender prototype boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "Microsoft Research",
+      "url": "https://www.microsoft.com/en-us/research/blog/project-ire-autonomously-identifies-malware-at-scale/"
+    },
+    "relatedSlugs": [
+      "agent",
+      "event",
+      "benchmark",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.microsoft.com/en-us/research/blog/project-ire-autonomously-identifies-malware-at-scale/",
+        "claim": "Microsoft Research 官方文章确认 8 月 5 日日期、Project Ire 的工具链、证据链、公开驱动数据集指标、近 4,000 个 hard-target 样本指标、APT conviction case 和 Defender 原型方向。",
+        "excerpt": "Microsoft Research, August 5, 2025."
+      }
+    ],
+    "canonicalUrl": "https://www.microsoft.com/en-us/research/blog/project-ire-autonomously-identifies-malware-at-scale/",
+    "sourceHash": "sha256:9724df04827229fa80d38aa3de84b38a908613fa0f7843f0b6ea2ab4af62a0dc"
+  },
+  {
+    "slug": "openai-gpt-oss-open-weight-20250805",
+    "title": "OpenAI 发布 gpt-oss-120b 与 gpt-oss-20b 开放权重推理模型",
+    "summary": "OpenAI 8 月 5 日发布 gpt-oss-120b 和 gpt-oss-20b，这是它自 GPT-2 以来首次发布开放权重语言模型。两款模型采用 Apache 2.0 许可、文本输入输出和混合专家架构，可下载到自己的设备运行，并支持工具调用；开放权重带来可定制性，也把安全维护责任更多交给部署者。",
+    "body": "8 月 5 日，OpenAI 发布 gpt-oss-120b 和 gpt-oss-20b。它们不是 ChatGPT 里的新按钮，而是可以下载权重、放到自己的基础设施上运行的语言模型。OpenAI 称这是自己自 GPT-2 以来首次发布开放权重模型，采用 Apache 2.0 许可，目标是让开发者、企业和研究者自行部署和修改。\n\n“开放权重”解决的是模型拿到手之后能不能运行和调整。它不等同于训练数据、完整训练代码和所有研发细节都公开；模型本身仍是文本模型，视觉、音频和产品级工具需要部署者另行接入。OpenAI 当天没有把 gpt-oss 放进自己的托管 API，而是提供 Hugging Face 下载、参考推理实现，并与 AWS、Azure、vLLM、Ollama 等平台合作分发。\n\n两款模型用混合专家（MoE）架构控制推理成本。gpt-oss-120b 总参数约 117B，每个 token 激活约 5.1B；gpt-oss-20b 总参数约 21B，每个 token 激活约 3.6B，原生上下文长度都是 128k。官方给出的部署目标是 120b 在单张 80GB GPU 内运行，20b 约需 16GB 内存；这些是量化和推理配置下的硬件门槛，不代表所有任务都能在相同速度和显存占用下完成。\n\n模型并没有因为放到本地就失去推理和工具能力。OpenAI 称它们支持低、中、高三档 reasoning effort，兼容 Responses API 的工具调用形式，可以接网页搜索、Python 等外部工具，也支持 Structured Outputs。这样一来，开发者能把它们放进 Agent 工作流，再按延迟、成本和数据驻留要求选择本地或第三方推理服务。\n\n性能数字要按来源来读。OpenAI 的内部评测称 120b 在部分推理、代码和工具调用基准上接近或达到 o4-mini，20b 与 o3-mini 相近；这些结果来自公司的测试设置，不能直接换算成所有业务里的实际质量。模型卡还提醒，开放权重发布后，外部人员可以继续微调模型，OpenAI 无法像托管服务那样撤回权重或统一追加缓解措施。\n\n这次发布把选择权和维护责任一起交给部署者：本地运行可以减少数据离开组织，也便于做领域微调；同时，提示注入、越权工具和不安全微调需要由部署团队设计权限、监控和更新机制。gpt-oss 的意义不在于它已经替代了闭源 API，而在于 OpenAI 也开始把前沿推理模型的一部分控制面交给生态来管理。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-gpt-oss-open-weight-20250805.svg",
+      "alt": "两款开放权重推理模型从下载进入本地 GPU，再连接工具和安全控制",
+      "sourceUrl": "/images/news/openai-gpt-oss-open-weight-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "what-released",
+        "title": "这次拿到的是权重，不是 ChatGPT 新入口",
+        "body": "gpt-oss-120b 和 gpt-oss-20b 可以下载、部署和微调，采用 Apache 2.0 许可。OpenAI 仍没有公开全部训练数据与训练流程，也没有在发布日提供自己的托管 API；“开放权重”描述的是可运行和可定制的模型资产。",
+        "kind": "narrative"
+      },
+      {
+        "id": "moe-efficiency",
+        "title": "MoE 让总参数和每次计算量分开",
+        "body": "120b 总参数约 117B、每个 token 激活约 5.1B；20b 总参数约 21B、每个 token 激活约 3.6B。两者上下文长度都是 128k，官方目标是分别在约 80GB 和 16GB 内存条件下运行；实际速度还取决于量化、硬件和任务。",
+        "kind": "technical"
+      },
+      {
+        "id": "local-deployment",
+        "title": "本地部署把数据边界交给组织自己",
+        "body": "开发者可以从 Hugging Face 获取权重，通过 PyTorch、Metal、vLLM、Ollama 等生态运行，也可以采用 AWS 等第三方入口。数据不必默认流向 OpenAI 的托管服务，但显存、更新、日志和权限都需要部署团队承担。",
+        "kind": "comparison"
+      },
+      {
+        "id": "agent-tools",
+        "title": "模型仍然可以进入 Agent 工作流",
+        "body": "gpt-oss 支持工具调用、Structured Outputs 和可调 reasoning effort，能连接搜索、代码执行等外部工具。它只提供模型能力，工具权限、状态管理、失败恢复和用户审批仍由应用层决定。",
+        "kind": "technical"
+      },
+      {
+        "id": "benchmark-boundary",
+        "title": "接近 o4-mini 是公司评测口径",
+        "body": "OpenAI 报告 120b 在部分推理、代码和工具调用基准上接近或达到 o4-mini，20b 与 o3-mini 相近。评测设置、提示、工具和任务分布会影响结果，不能把单组分数当成所有业务的质量承诺。",
+        "kind": "boundary"
+      },
+      {
+        "id": "safety-ownership",
+        "title": "开放之后，安全维护没有统一撤回键",
+        "body": "模型卡承认外部人员可以继续微调，OpenAI 无法像托管服务那样统一追加缓解或撤回权重。组织需要自己处理提示注入、越权工具、不安全微调、监控和版本更新，这正是开放部署的长期成本。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "开放权重模型怎样进入一个本地 Agent？",
+      "question": "从下载权重到调用工具，部署者需要自己接住哪些环节？",
+      "steps": [
+        {
+          "label": "下载权重",
+          "detail": "从 Hugging Face 或合作平台取得 gpt-oss-120b 或 20b，并接受 Apache 2.0 许可和 OpenAI 使用政策的约束。",
+          "evidence": "OpenAI availability and license description"
+        },
+        {
+          "label": "安排推理资源",
+          "detail": "根据模型大小、量化方式、上下文长度和并发量选择 GPU、内存和推理框架；官方的 80GB/16GB 是目标配置而非所有任务的保证。",
+          "evidence": "OpenAI MoE architecture and availability sections"
+        },
+        {
+          "label": "接入模型接口",
+          "detail": "使用参考实现或生态服务暴露文本生成、Structured Outputs 和 reasoning effort，让应用可以稳定取得结构化结果。",
+          "evidence": "OpenAI tool-use and Responses API compatibility"
+        },
+        {
+          "label": "给 Agent 配工具",
+          "detail": "把搜索、代码执行或业务 API 接到模型，但为每个工具设定权限、参数校验、超时和人工确认，不把模型输出当成已执行动作。",
+          "evidence": "OpenAI agentic workflow and tool-use description"
+        },
+        {
+          "label": "持续做安全运维",
+          "detail": "监控提示注入、越权调用和恶意微调，更新模型与策略，并在本地部署的日志、数据和访问权限之间建立责任边界。",
+          "evidence": "gpt-oss model card open-weight risk discussion"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/introducing-gpt-oss/"
+    },
+    "relatedSlugs": [
+      "llm",
+      "event",
+      "benchmark",
+      "agent",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/introducing-gpt-oss/",
+        "claim": "OpenAI 官方公告确认发布日期、两款模型、Apache 2.0、MoE 参数、工具调用、硬件目标、第三方分发和发布日没有 OpenAI 托管 API。",
+        "excerpt": "OpenAI, August 5, 2025."
+      },
+      {
+        "url": "https://openai.com/index/gpt-oss-model-card/",
+        "claim": "模型卡说明 gpt-oss 是文本模型，兼容工具与 Structured Outputs，并讨论开放权重发布后无法统一撤回或追加缓解措施的风险。",
+        "excerpt": "The model card describes the open-weight risk profile and the responsibilities of downstream developers."
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/aws/openai-open-weight-models-now-available-on-aws/",
+        "claim": "AWS 同日宣布在 Bedrock 和 SageMaker JumpStart 提供 OpenAI 开放权重模型，作为主发布之外的分发交叉证据。",
+        "excerpt": "AWS, August 5, 2025."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/introducing-gpt-oss/",
+    "sourceHash": "sha256:06e7619eb6a4b6b1af661a1e4af4fbaafe17c6286a47f4bc35fa9210f033e39b"
+  },
+  {
+    "slug": "thomson-reuters-cocounsel-legal-agentic-20250805",
+    "title": "Thomson Reuters 发布 CoCounsel Legal，把法律研究拆成可追溯的 Agent 工作流",
+    "summary": "Thomson Reuters 8 月 5 日发布 CoCounsel Legal，加入基于 Westlaw 与 Practical Law 内容的 Deep Research，以及面向起草、诉讼和合规任务的引导式多步工作流。产品试图把法律 AI 从一次问答推进到研究计划、来源引用、结构化报告和人工监督的完整链路，但公司所称的行业首创、生产级和 2 万多家机构采用仍属于厂商公告口径。",
+    "body": "8 月 5 日，Thomson Reuters 发布 CoCounsel Legal。它把公司的法律内容、研究工具和 AI 助手放在一个产品里，主推两件事：基于 Westlaw 与 Practical Law 的 Deep Research，以及把常见法律工作拆成多步的 guided workflows。发布稿用了一句话概括方向——让专业人士从“写一个提示词”走向“把一项研究交给系统执行”。\n\nDeep Research 的工作方式更接近一份研究委托。用户先交代问题，系统生成多步研究计划，再根据法律内容和工具推进检索，最后给出带有 Westlaw、Practical Law 引用的结构化报告。官方还强调它会解释研究步骤并给出引用来源，同时保留人工监督。对法律团队来说，价值不在于聊天框里回答得更快，而在于能否从问题、检索路径到结论留下可以复核的轨迹。\n\n另一条产品线是引导式工作流。CoCounsel Legal 把法律内容和结构化步骤预先放进任务里。公告把隐私政策、员工政策、起诉状、证据开示请求与回复、庭审证言记录审阅列为即将推出的新流程；此前已有一批引导式工作流在 7 月上线。它们把“下一步该做什么”交给产品编排，用户仍要提供事实、确认适用法域和审阅最终文本。\n\n这种产品和通用聊天机器人之间的差别，首先来自内容和工具的范围，其次来自责任边界。Westlaw、Practical Law 的资料能让答案更接近可引用的法律研究，但有引用不代表结论自动正确，也不代表系统理解了每个案件的事实。法律意见、文件提交和对客户的承诺仍需要专业人士核查；AI 生成的计划只能让审阅更有结构，不能替代执业责任。\n\nThomson Reuters 称已有超过 2 万家律师事务所和企业法务部门使用 CoCounsel，并称多数美国顶级法院和 Am Law 100 律所已经信任它。这个数字说明产品有商业落地背景，却不是独立准确率或案件结果的证明。CoCounsel Legal 真正要接受的检验，是研究计划能否减少遗漏、引用能否被快速复核、工作流在不同法域下是否可控，以及团队能否保留人工接管和纠错路径。",
+    "publishedAt": "2025-08-05",
+    "eventDate": "2025-08-05",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/thomson-reuters-cocounsel-legal-agentic-20250805.svg",
+      "alt": "CoCounsel Legal 把法律问题拆成研究计划、引用报告和人工复核步骤",
+      "sourceUrl": "/images/news/thomson-reuters-cocounsel-legal-agentic-20250805.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "legal-product",
+        "title": "发布的是一套法律工作产品",
+        "body": "CoCounsel Legal 把 AI 助手、法律研究内容、文档搜索和工作流自动化放在同一套方案里。8 月 5 日公告的重点是 Deep Research 与引导式工作流，不能简化成一个通用模型的新版本。",
+        "kind": "narrative"
+      },
+      {
+        "id": "deep-research",
+        "title": "Deep Research 先规划，再给出带引用的报告",
+        "body": "用户交代完整研究问题后，系统生成多步计划，调用 Westlaw 与 Practical Law 内容，输出带引用的结构化报告，并展示逻辑和来源。研究路径可追踪能帮助审阅，但引用本身不保证结论适用于每个案件。",
+        "kind": "technical"
+      },
+      {
+        "id": "guided-workflows",
+        "title": "引导式工作流把常见任务排成步骤",
+        "body": "公告把隐私政策、员工政策、起诉状、证据开示请求与回复、庭审证言记录审阅列为即将推出的新流程；此前已有一批引导式工作流在 7 月上线。产品预先安排步骤，法律团队仍需提供事实、确认法域并审阅文本。",
+        "kind": "example"
+      },
+      {
+        "id": "content-tools",
+        "title": "内容库和工具决定了它能研究什么",
+        "body": "CoCounsel Legal 的专业性来自 Westlaw、Practical Law 和相关研究工具的组合，而不是“Agent”这个标签本身。资料覆盖、订阅权限、更新时点和检索设置都会影响结果，不能把它当成没有来源边界的法律顾问。",
+        "kind": "comparison"
+      },
+      {
+        "id": "human-oversight",
+        "title": "人工监督仍然在流程里",
+        "body": "Thomson Reuters 把人工监督写入 Deep Research 和引导式工作流。法律意见、提交文件和客户承诺需要专业人士复核事实、法域、引用与风险，系统生成的研究计划不能替代执业责任。",
+        "kind": "boundary"
+      },
+      {
+        "id": "adoption-claim",
+        "title": "采用规模是厂商口径，不是准确率证明",
+        "body": "公司称超过 2 万家律师事务所和企业法务部门以及多数美国顶级法院和 Am Law 100 律所已经使用或信任 CoCounsel。这个数字说明商业采用背景，不能推出独立质量评估、案件胜率或每个法域都同样可靠。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "法律 Deep Research 怎样从问题走到可复核报告？",
+      "question": "一个多步法律研究 Agent 如何留下计划、来源和人工接管点？",
+      "steps": [
+        {
+          "label": "明确问题和范围",
+          "detail": "先说明事实、法域、时间范围和要交付的文件类型，避免把开放式咨询误当成一个可自动完成的任务。",
+          "evidence": "CoCounsel Legal Deep Research workflow description"
+        },
+        {
+          "label": "生成研究计划",
+          "detail": "系统把问题拆成检索和分析步骤，先决定需要查哪些法律材料，再逐步推进，而不是只返回一段即时回答。",
+          "evidence": "Thomson Reuters describes multi-step research plans"
+        },
+        {
+          "label": "检索专业内容",
+          "detail": "Deep Research 以 Westlaw、Practical Law 和相关工具为依据，研究范围会受内容库、权限和更新时间影响。",
+          "evidence": "Westlaw and Practical Law grounding in the official announcement"
+        },
+        {
+          "label": "形成带引用的报告",
+          "detail": "系统整理逻辑、来源和结论，输出结构化报告；专业人士可以沿着引用回到原文检查适用条件。",
+          "evidence": "Citation-backed reports and transparent reasoning"
+        },
+        {
+          "label": "人工复核并接管",
+          "detail": "律师确认事实、法域、引用和最终措辞，必要时修改计划或停止自动步骤，再决定是否提交或交付。",
+          "evidence": "Human oversight built into CoCounsel Legal workflows"
+        }
+      ]
+    },
+    "source": {
+      "name": "Thomson Reuters",
+      "url": "https://www.thomsonreuters.com/en/press-releases/2025/august/thomson-reuters-launches-cocounsel-legal-transforming-legal-work-with-agentic-ai-and-deep-research"
+    },
+    "relatedSlugs": [
+      "agent",
+      "event",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.thomsonreuters.com/en/press-releases/2025/august/thomson-reuters-launches-cocounsel-legal-transforming-legal-work-with-agentic-ai-and-deep-research",
+        "claim": "Thomson Reuters 8 月 5 日发布 CoCounsel Legal，介绍基于 Westlaw 与 Practical Law 的 Deep Research、研究计划、逻辑追踪、引用报告和引导式多步工作流。",
+        "excerpt": "Thomson Reuters, August 5, 2025: CoCounsel Legal includes Deep Research grounded in Westlaw and Practical Law and guided workflows with human oversight."
+      },
+      {
+        "url": "https://www.thomsonreuters.com/en/press-releases/2025/august/thomson-reuters-launches-cocounsel-legal-transforming-legal-work-with-agentic-ai-and-deep-research",
+        "claim": "公告列出一批即将推出的引导式工作流，并称超过 2 万家律师事务所和企业法务部门已使用 CoCounsel。",
+        "excerpt": "The announcement lists new guided workflows launching soon and says over 20,000 law firms and corporate legal departments already trust CoCounsel."
+      }
+    ],
+    "canonicalUrl": "https://www.thomsonreuters.com/en/press-releases/2025/august/thomson-reuters-launches-cocounsel-legal-transforming-legal-work-with-agentic-ai-and-deep-research",
+    "sourceHash": "sha256:d50ddaac487417b84784f8b367c269e5f287d81ffc0a3ea022a576a2934f28ec"
+  },
+  {
     "slug": "alibaba-amap-ai-native-map-xiaogao-20250804",
     "title": "阿里发布 Amap 2025，称高德升级为 AI 原生地图并推出小高老师",
     "summary": "阿里巴巴 8 月 4 日宣布高德地图 2025，把地图从路线查询入口升级为能够理解出行目标、调用工具并执行安排的智能体入口。核心助手“小高老师”由高德与通义共建的模型簇支持，首个 beta 先面向中国用户；阿里称会逐步扩大覆盖，文中把“全球首个”和超过 10 亿活跃用户都保留为官方口径。",
