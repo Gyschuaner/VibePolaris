@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowsClockwise, CheckCircle, Ruler, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "./FlexboxConcept.module.css";
@@ -18,14 +18,19 @@ export function FlexboxLesson() {
   const scene = useScene(labels.length);
   const [width, setWidth] = useState<WidthMode>("wide");
   const [wrap, setWrap] = useState(false);
-  const widthPx = width === "wide" ? 480 : 300;
+  const forcedWidth = scene.step === 2 ? "wide" : scene.step === 3 || (scene.step === 4 && wrap) ? "narrow" : width;
+  const activeWidth = forcedWidth;
+  useEffect(() => {
+    if ((scene.step === 2 && width !== "wide") || ((scene.step === 3 || (scene.step === 4 && wrap)) && width !== "narrow")) setWidth(forcedWidth);
+  }, [forcedWidth, scene.step, width, wrap]);
+  const widthPx = activeWidth === "wide" ? 480 : 300;
   const sizes = useMemo(() => {
-    if (scene.step === 2) return width === "wide" ? [150, 180, 150] : [100, 100, 100];
-    if (scene.step === 3) return width === "wide" ? [120, 120, 120] : [100, 100, 100];
+    if (scene.step === 2) return activeWidth === "wide" ? [150, 180, 150] : [100, 100, 100];
+    if (scene.step === 3) return [100, 100, 100];
     if (scene.step === 4 && wrap) return [112, 112, 112];
     return [120, 120, 120];
-  }, [scene.step, width, wrap]);
-  const free = scene.step === 3 && width === "narrow" ? "−60px → 0" : scene.step === 2 && width === "wide" ? "+120px → 0" : `${widthPx - 360 >= 0 ? "+" : "−"}${Math.abs(widthPx - 360)}px`;
+  }, [activeWidth, scene.step, wrap]);
+  const free = scene.step === 3 ? "−60px → 0" : scene.step === 2 && activeWidth === "wide" ? "+120px → 0" : `${widthPx - 360 >= 0 ? "+" : "−"}${Math.abs(widthPx - 360)}px`;
   const wrapped = scene.step === 4 && wrap;
   const status = scene.step === 0 ? "项目刚排入主轴，还没有分配余量。" : scene.step === 1 ? "先把正空间或负空间算清楚，才能解释项目为什么变宽或变窄。" : scene.step === 2 ? "grow 是比例，不是固定像素；B 拿两份，所以它比 A、C 多一份。" : scene.step === 3 ? "负空间被 shrink 收回；如果禁止缩小或遇到 min-content，仍可能溢出。" : wrapped ? "wrap 开启后，项目进入不同 flex line；每一行各自结算，不会自动对齐成网格。" : "先打开允许换行，才能把空间不足变成多行，而不是继续挤压或溢出。";
   const StatusIcon = scene.step === 3 ? WarningCircle : scene.step === 4 && wrapped ? CheckCircle : Ruler;
@@ -34,8 +39,8 @@ export function FlexboxLesson() {
     <div className={styles.flexHeader}><span>改一个条件，看项目怎样重新结算</span><strong>{scene.step + 1} / {labels.length}</strong></div>
     <SceneControls scene={scene} labels={labels} />
     <div className={styles.flexControls} role="group" aria-label="调整 Flexbox 条件">
-      <button type="button" className={styles.flexControl} aria-pressed={width === "wide"} onClick={() => { setWidth("wide"); scene.seek(0); }}>容器 480px</button>
-      <button type="button" className={styles.flexControl} aria-pressed={width === "narrow"} onClick={() => { setWidth("narrow"); scene.seek(0); }}>容器 300px</button>
+      <button type="button" className={styles.flexControl} aria-pressed={activeWidth === "wide"} onClick={() => { setWidth("wide"); scene.seek(0); }}>容器 480px</button>
+      <button type="button" className={styles.flexControl} aria-pressed={activeWidth === "narrow"} onClick={() => { setWidth("narrow"); scene.seek(0); }}>容器 300px</button>
       <button type="button" className={styles.flexControl} aria-pressed={wrap} onClick={() => { setWrap(value => !value); scene.seek(0); }}>{wrap ? "关闭换行" : "允许换行"}</button>
     </div>
     <div className={styles.flexLabGrid}>
@@ -44,7 +49,7 @@ export function FlexboxLesson() {
         <h3>{widthPx}px 的主轴</h3>
         <div className={styles.flexLabSizing}>
           <div><span>base</span><i style={{ width: "54%" }} /><b>120×3</b></div>
-          <div data-negative={width === "narrow"}><span>free</span><i style={{ width: `${Math.min(100, Math.abs(widthPx - 360) / 2)}%` }} /><b>{free}</b></div>
+          <div data-negative={activeWidth === "narrow"}><span>free</span><i style={{ width: `${Math.min(100, Math.abs(widthPx - 360) / 2)}%` }} /><b>{free}</b></div>
         </div>
         <small>Flexbox 先看项目的基准尺寸和容器的可用主轴空间。</small>
       </div>
