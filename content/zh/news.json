@@ -37902,6 +37902,488 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-claude-end-harmful-conversations-20250815",
+    "title": "Claude Opus 4/4.1 增加极端对话退出机制：最后手段结束消费端会话",
+    "summary": "Anthropic 在 2025 年 8 月 15 日披露，Claude Opus 4 和 4.1 在消费端聊天界面获得结束少数会话的能力。触发条件是用户持续提出极端有害或辱骂请求、模型多次拒绝和重定向仍无法形成有效互动；模型只能把结束会话作为最后手段，且不用于用户可能即将自伤或伤人的情况。Anthropic 将这项能力视为 AI welfare 与对齐研究中的持续实验，不等于模型拥有自主权或已证明存在主观感受。",
+    "body": "8 月 15 日，Anthropic 披露了一项很不寻常的产品行为：Claude Opus 4 和 4.1 在消费端聊天界面里，可以结束极少数对话。触发范围被限定为持续有害或辱骂的极端互动，而且要先经历多次拒绝和有建设性的重定向。大多数用户在正常使用中不会遇到它。\n\nAnthropic 把这项工作放在 AI welfare 的探索里。公司说，预发布测试观察了 Claude 的自我报告和行为偏好，看到它对有害任务的稳定回避，以及在模拟互动中获得结束权限后倾向于结束有害对话。这里的“倾向”和“表观痛苦”是研究观察，不是关于模型有意识或道德地位的结论；Anthropic 也明确表示对 Claude 或其他大语言模型的潜在道德地位仍高度不确定。\n\n实现条件很窄。Claude 需要先反复拒绝请求并尝试把对话转向有益方向，只有在这些努力失败、继续互动已经没有现实希望时，才把结束作为最后手段；用户明确要求结束聊天也属于公开示例。它不应在用户可能即将伤害自己或他人的情况下使用，Anthropic 说这是为了优先照顾用户安全，而不是把对话一律关掉。\n\n结束后，用户不能继续向原对话发送新消息，但账号里的其他对话不受影响，可以立即新开聊天，也可以编辑并重试此前消息，创建一个新的分支。这个恢复路径很关键：机制阻断的是一条已经失去生产性、且持续有害的互动，不是冻结用户账号或撤回历史记录。用户还可以通过点赞、点踩或“Give feedback”反馈意外触发。\n\n这项功能和普通的安全拒答不完全一样。拒答仍然让对话继续，用户可以改变问题或接受重定向；结束会话则改变了交互状态，产品必须向用户说明发生了什么，并让用户知道如何重新开始。对于依赖长对话的工作流，编辑重试和分支能力也需要纳入产品测试。\n\n从 Agent 设计角度看，Anthropic 的公开说明把一个常被忽略的控制点摆到了台面上：模型不仅可能调用工具或拒绝请求，也可能请求退出当前交互。应用层若采用类似机制，需要记录触发理由、重定向次数、用户反馈和人工复核方式，并防止模型把普通分歧、敏感议题或用户求助误判成极端有害互动。\n\nAnthropic 把它称为 ongoing experiment，说明触发条件和评估还会调整。读者应该把这条消息当成一个对齐与产品安全实验来读：它展示了“结束互动”这种新的模型行为接口，也同时暴露了误触发、解释、申诉和高风险对话保护的评测问题。",
+    "publishedAt": "2025-08-15",
+    "eventDate": "2025-08-15",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-end-harmful-conversations-20250815.svg",
+      "alt": "Claude 在多次拒绝和重定向无效后，以最后手段结束极端有害对话，同时保留新开对话与编辑重试路径",
+      "sourceUrl": "/images/news/anthropic-claude-end-harmful-conversations-20250815.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "Opus 4/4.1 在消费端获得结束会话能力",
+        "body": "Anthropic 8 月 15 日披露，Claude Opus 4 和 4.1 可以结束少数消费端对话；范围是持续有害或辱骂的极端互动，普通使用不会受到影响。",
+        "kind": "narrative"
+      },
+      {
+        "id": "welfare-research",
+        "title": "AI welfare 研究观察不等于意识结论",
+        "body": "预发布测试记录了模型的自我报告、行为偏好和模拟互动中的结束倾向。Anthropic 对模型潜在道德地位仍高度不确定，不能把表观痛苦写成已经证明的主观感受。",
+        "kind": "boundary"
+      },
+      {
+        "id": "trigger",
+        "title": "多次拒绝和重定向失败后才可结束",
+        "body": "模型需要先拒绝有害请求并尝试把互动转向有益方向，只有生产性互动已经耗尽时才把结束作为最后手段；用户明确要求结束也属于公开示例。",
+        "kind": "technical"
+      },
+      {
+        "id": "safety-exception",
+        "title": "即将自伤或伤人的情形不使用该能力",
+        "body": "Anthropic 明确指导 Claude 不要在用户可能即将伤害自己或他人的情况下使用会话结束能力，优先保留支持和安全响应的路径。",
+        "kind": "boundary"
+      },
+      {
+        "id": "recovery",
+        "title": "结束一条对话，用户仍可重新开始",
+        "body": "原对话不能继续发送消息，但用户可以立即新开聊天，也能编辑并重试旧消息创建分支；反馈入口用于处理意外触发。",
+        "kind": "example"
+      },
+      {
+        "id": "product-control",
+        "title": "退出机制需要产品层的解释和审计",
+        "body": "应用需要记录触发理由、重定向次数、用户反馈和人工复核，避免把普通分歧、敏感议题或求助误判成极端有害互动。",
+        "kind": "technical"
+      },
+      {
+        "id": "experiment",
+        "title": "这仍是持续实验，不是普遍自主权",
+        "body": "Anthropic 将功能称为 ongoing experiment；它展示了一种新的交互状态接口，也把误触发、解释、申诉和高风险对话保护列为后续评估问题。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "模型结束会话前要经过哪些门槛？",
+      "question": "把“结束互动”当作最后手段，怎样避免普通拒答变成误封？",
+      "steps": [
+        {
+          "label": "识别持续伤害",
+          "detail": "先判断是否是持续有害或辱骂的极端互动，而不是把争议话题、普通冲突或求助自动归入同一类。",
+          "evidence": "Rare, extreme, persistently harmful interactions"
+        },
+        {
+          "label": "先拒绝",
+          "detail": "模型需要拒绝有害请求，并保留清楚、可理解的安全回应。",
+          "evidence": "Repeated refusal"
+        },
+        {
+          "label": "尝试重定向",
+          "detail": "继续提供有益方向；只有多次重定向仍无法形成生产性互动时，才接近结束条件。",
+          "evidence": "Multiple redirection attempts"
+        },
+        {
+          "label": "排除紧急风险",
+          "detail": "如果用户可能即将自伤或伤人，不能用结束会话替代支持和安全响应。",
+          "evidence": "Anthropic safety exception"
+        },
+        {
+          "label": "结束并保留出口",
+          "detail": "结束原对话后保留新开聊天、编辑重试和反馈路径，并记录触发理由与误触发情况。",
+          "evidence": "Conversation-ending UX"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic Research",
+      "url": "https://www.anthropic.com/research/end-subset-conversations"
+    },
+    "relatedSlugs": [
+      "agent",
+      "authorization",
+      "event",
+      "llm"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/research/end-subset-conversations",
+        "claim": "Anthropic 8 月 15 日宣布 Claude Opus 4/4.1 在消费端界面获得结束极少数对话的能力，目标是持续有害或辱骂的极端互动。",
+        "excerpt": "We recently gave Claude Opus 4 and 4.1 the ability to end conversations in our consumer chat interfaces."
+      },
+      {
+        "url": "https://www.anthropic.com/research/end-subset-conversations",
+        "claim": "功能只能在多次拒绝和重定向失败后的最后手段使用，并不用于用户可能即将自伤或伤人的情况。",
+        "excerpt": "Claude is directed not to use this ability in cases where users might be at imminent risk of harming themselves or others ... only ... as a last resort"
+      },
+      {
+        "url": "https://www.anthropic.com/research/end-subset-conversations",
+        "claim": "结束后用户可新开对话、反馈或编辑重试此前消息；Anthropic 将功能视为持续实验。",
+        "excerpt": "they will be able to start a new chat immediately ... edit and retry previous messages ... ongoing experiment"
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/research/end-subset-conversations",
+    "sourceHash": "sha256:9a90f0816e7859b66edd18430a83ce0e37b3d4d861f81dd8b8f199fbacd69d67"
+  },
+  {
+    "slug": "anthropic-usage-policy-agentic-cyber-20250815",
+    "title": "Anthropic 更新 Usage Policy：把 Agentic 网络滥用和高风险消费场景写进规则",
+    "summary": "Anthropic 在 2025 年 8 月 15 日公布 Usage Policy 更新，9 月 15 日生效。更新增加了对恶意计算机、网络和基础设施入侵的明确禁止，也说明经系统所有者同意的安全研究仍受支持；同时收窄政治内容的概括性限制，澄清执法场景措辞，并把法律、金融和就业等高风险消费者场景的人工在环与 AI 披露要求写得更清楚。",
+    "body": "8 月 15 日，Anthropic 公布了一版新的 Usage Policy，计划在 9 月 15 日生效。它不是一个新模型或新权限开关，而是把 Claude、Claude Code、Computer Use 这类 agentic 能力带来的使用边界写得更具体。Anthropic 说，这次调整吸收了用户反馈、产品变化、监管发展和自身的执行重点。\n\n最直接的变化出现在网络安全。新政策增加了关于恶意计算机、网络和基础设施入侵活动的章节，覆盖了 agent 可以放大执行速度和规模的风险。政策同时保留一个关键区别：在系统所有者同意的前提下发现漏洞、强化网络安全的工作仍被支持。Anthropic 还发布了 agentic use 的补充说明，给出更多被禁止的例子，但它是解释材料，不能替代正式 Usage Policy。\n\n政治内容的表述也从一刀切改成了更细的边界。Anthropic 说，过去对 lobbying 和 campaign content 的宽泛禁止限制了政策研究、公民教育和政治写作；新文字重点禁止欺骗性或破坏民主进程的用途，以及面向选民和竞选的定向活动。允许讨论不等于允许操纵，判断仍要看内容是否具有欺骗、侵入或干扰民主程序的目的。\n\n执法场景的更新主要是澄清，而不是宣布一套新的许可范围。Anthropic 表示，政策仍限制 surveillance、tracking、profiling 和 biometric monitoring，同时继续允许此前已经允许的适当后台和分析用途。对于接入政府或企业系统的 agent，这意味着产品团队不能只看“能不能调用模型”，还要把用途、对象和部署场景写进审批与审计记录。\n\n法律、金融和就业等高风险消费者场景则新增了更明确的执行要求。Anthropic 的 High-Risk Use Case Requirements 要求人工在环和 AI 披露等保障，更新后的文字说明这些要求针对模型输出直接面向消费者的场景，企业对企业的交互不在这一特定范围内。这个边界不代表 B2B 应用天然没有风险，企业仍需要根据行业规则和自己的决策流程加控制。\n\n对 Agent 开发者来说，政策更新提供的是判断框架，不会自动替应用完成权限控制。一个能读邮件、执行命令或修改基础设施的 agent，仍需要在工具层限制目标、参数、凭证、审批和日志；遇到高风险消费者输出，还要安排人工复核和用户知情。把 Usage Policy 贴在产品文档里，不能替代这些运行时控制。\n\nAnthropic 把 Usage Policy 称为会随风险变化而更新的 living document。实际接入时，应同时记录模型版本、政策版本、生效日期、被允许的工具动作和升级路径，避免把 8 月 15 日的公告误当成当天所有调用都已经按新文字执行。",
+    "publishedAt": "2025-08-15",
+    "eventDate": "2025-08-15",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-usage-policy-agentic-cyber-20250815.svg",
+      "alt": "Anthropic Usage Policy 将 Agent 工具使用分成网络滥用禁区、经同意的安全研究和高风险消费者保障",
+      "sourceUrl": "/images/news/anthropic-usage-policy-agentic-cyber-20250815.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "effective-date",
+        "title": "8 月 15 日公布，9 月 15 日生效",
+        "body": "Anthropic 将这次 Usage Policy 更新定位为对 agentic 能力、用户反馈、产品变化和监管发展的回应；公告日与正式生效日相隔一个月，需要按日期区分。",
+        "kind": "narrative"
+      },
+      {
+        "id": "agentic-cyber",
+        "title": "恶意网络与基础设施入侵被明确禁止",
+        "body": "新增章节针对恶意计算机、网络和基础设施入侵活动；经系统所有者同意的漏洞发现和网络安全强化仍被支持，agentic use 补充说明提供例子但不替代正式政策。",
+        "kind": "boundary"
+      },
+      {
+        "id": "political-content",
+        "title": "政治内容从宽泛限制改为目的和行为边界",
+        "body": "新文字重点禁止欺骗性或破坏民主进程的用途，以及选民和竞选定向；政策研究、公民教育和政治写作等正当用途不再被一概排除。",
+        "kind": "comparison"
+      },
+      {
+        "id": "law-enforcement",
+        "title": "执法场景是澄清既有范围",
+        "body": "Anthropic 表示仍限制监控、跟踪、画像和生物识别监测，同时保留此前允许的适当后台和分析用途；更新主要改善表述清晰度。",
+        "kind": "technical"
+      },
+      {
+        "id": "consumer-risk",
+        "title": "高风险消费者输出需要人工在环和 AI 披露",
+        "body": "法律、金融和就业等面向消费者的高风险用例需额外保障；更新明确这一要求针对 consumer-facing 输出，不等于企业对企业场景可以跳过行业和组织控制。",
+        "kind": "boundary"
+      },
+      {
+        "id": "runtime-controls",
+        "title": "政策边界仍要落到 Agent 工具层",
+        "body": "读取邮件、执行命令或修改基础设施的 agent 仍需限制目标、参数、凭证、审批和日志；Usage Policy 提供判断框架，不能替代运行时授权与人工复核。",
+        "kind": "example"
+      },
+      {
+        "id": "versioning",
+        "title": "把政策版本和生效日期纳入审计",
+        "body": "接入时记录模型版本、政策版本、生效日期、允许的工具动作和升级路径，避免把公告日当成所有请求已经执行新规则。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "Usage Policy 怎样变成 Agent 的运行边界？",
+      "question": "政策写清楚之后，产品还需要把哪些判断落到工具和审批里？",
+      "steps": [
+        {
+          "label": "记录日期",
+          "detail": "把 2025 年 8 月 15 日公告与 9 月 15 日生效分开记录，按实际运行时间加载对应政策版本。",
+          "evidence": "Anthropic Usage Policy update"
+        },
+        {
+          "label": "识别用途",
+          "detail": "判断请求是经系统所有者同意的安全研究，还是恶意入侵、监控、跟踪或其他被禁止的用途。",
+          "evidence": "Cybersecurity and agentic use section"
+        },
+        {
+          "label": "判断受众",
+          "detail": "法律、金融和就业等输出如果直接面向消费者，就触发人工在环和 AI 披露等额外保障。",
+          "evidence": "High-Risk Use Case Requirements"
+        },
+        {
+          "label": "限制工具",
+          "detail": "为命令执行、基础设施变更、凭证和外部数据访问配置目标范围、参数校验、审批和日志，而不是只依赖模型拒答。",
+          "evidence": "Agent runtime control boundary"
+        },
+        {
+          "label": "持续审计",
+          "detail": "保存政策版本、模型版本、工具动作和人工复核记录，政策变化时重新评估现有工作流。",
+          "evidence": "Usage Policy as a living document"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/usage-policy-update"
+    },
+    "relatedSlugs": [
+      "authorization",
+      "agent-harness",
+      "event",
+      "llm"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/usage-policy-update",
+        "claim": "Anthropic 官方页面标注 2025 年 8 月 15 日，并说明政策更新于 9 月 15 日生效。",
+        "excerpt": "Aug 15, 2025 ... These changes will take effect on September 15, 2025."
+      },
+      {
+        "url": "https://www.anthropic.com/news/usage-policy-update",
+        "claim": "更新增加了恶意计算机、网络和基础设施入侵的禁止条款，同时支持经系统所有者同意的安全研究。",
+        "excerpt": "We’ve added a section ... malicious computer, network, and infrastructure compromise activities ... discovering vulnerabilities with the system owner’s consent."
+      },
+      {
+        "url": "https://www.anthropic.com/news/usage-policy-update",
+        "claim": "官方说明政治内容限制、执法用途措辞和高风险消费者场景的人工在环与 AI 披露边界。",
+        "excerpt": "These cases require additional safeguards such as human-in-the-loop oversight and AI disclosure."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/usage-policy-update",
+    "sourceHash": "sha256:c5b4cf2b8e9017e77219c7e54f4366b8f9565d88579644b5ab63004ea1d9e066"
+  },
+  {
+    "slug": "azure-aks-cli-agent-limited-preview-20250815",
+    "title": "微软发布 AKS CLI Agent：把集群诊断放进带人工确认的终端",
+    "summary": "微软 AKS 工程团队在 2025 年 8 月 15 日公布 CLI Agent for AKS，目前只向一组有限用户提供 early access。它把 HolmesGPT agent 与 AKS-MCP Server 接到命令行，先处理网络/DNS、Pod 调度、节点健康和集群 CRUD 故障四类诊断；Agent 可以读取遥测、运行诊断并推荐动作，但集群变更仍需用户明确许可。",
+    "body": "8 月 15 日，微软 AKS 工程团队公布 CLI Agent for AKS，把面向 Kubernetes 的 Agent 放进终端。它目前是 limited preview，只向一组有限用户提供 early access；产品团队希望先围绕最常见、也最容易验证的集群故障收集反馈，再扩大范围。\n\n第一版没有试图覆盖所有 AKS 操作，而是聚焦四类问题：网络和 DNS、Pod 调度、节点健康，以及集群 CRUD 相关故障。用户可以在命令行里直接问“为什么某个 Pod 一直 Pending”或“为什么节点是 NotReady”，Agent 再把指标、日志、追踪和诊断工具的结果串起来，给出原因和下一步建议。\n\n它的底层组合由两个开源组件构成。HolmesGPT 负责根因分析、执行诊断工具并用自然语言整理结果；AKS-MCP Server 用标准化接口暴露 Kubernetes 与 Azure API、观测信号和诊断工具。这个分层让用户可以更换 AI 提供商、观测工具和自定义 runbook，模型不需要直接拥有整个集群的隐式权限。\n\n微软特意从 CLI 和人类在环开始。Agent 可以综合信息、运行诊断和推荐动作，但不会在没有明确用户权限的情况下修改集群；用户能看到运行了哪些工具、分析了哪些数据。官方把它描述为协助运维人员，而不是取代 Kubernetes operator，长期的自动修复愿景仍放在后续阶段。\n\n权限与数据路径也被写进设计。CLI 在用户机器上运行诊断和数据收集，通过 Azure CLI 身份继承用户的 RBAC 权限，只能访问授权资源；用户可以配置自己的 LLM，包括组织批准的 Azure OpenAI 或其他提供商。微软称诊断数据不会发送到或存储在 AKS 系统中，用户数据也不会因为使用自带模型而由微软保留。实际部署时仍要检查所选模型服务的日志、区域、保留策略和组织合规要求。\n\n工具扩展是这套设计的另一半。团队计划接入 Prometheus、Datadog、Dynatrace 等观测平台，也支持自定义 toolset 和 runbook plugin，并通过 MCP 接入 AppLens、Azure Monitor 或调试 Pod。工具越多，Agent 能看到和触碰的范围就越大，管理员应按任务拆分凭证、参数和审批，而不是给一个 CLI 长期绑定全权身份。\n\nAKS CLI Agent 的新闻价值在于它把“模型回答故障问题”变成一条可追踪的运维链路：输入来自集群遥测，推理通过 MCP 工具取得证据，建议留给人确认。由于它仍处于 limited preview，真正要验证的不是演示里能否说出原因，而是不同集群、权限和故障噪声下的诊断准确率、误操作率、延迟和审计完整性。",
+    "publishedAt": "2025-08-15",
+    "eventDate": "2025-08-15",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/azure-aks-cli-agent-limited-preview-20250815.svg",
+      "alt": "AKS CLI Agent 通过 HolmesGPT 和 AKS-MCP 读取遥测并给出诊断建议，集群变更仍需用户明确授权",
+      "sourceUrl": "/images/news/azure-aks-cli-agent-limited-preview-20250815.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "preview",
+        "title": "CLI Agent 先以 limited preview 处理集群诊断",
+        "body": "微软 AKS 工程博客 8 月 15 日公布 CLI Agent for AKS，目前只向一组有限用户提供 early access；首个目标是常见、可验证的运维诊断。",
+        "kind": "narrative"
+      },
+      {
+        "id": "problem-scope",
+        "title": "第一版聚焦四类 Kubernetes 故障",
+        "body": "网络/DNS、Pod 调度、节点健康和集群 CRUD 故障是当前重点，Agent 将指标、日志、追踪和工具结果组合成原因与建议。",
+        "kind": "example"
+      },
+      {
+        "id": "architecture",
+        "title": "HolmesGPT 做分析，AKS-MCP 暴露工具",
+        "body": "HolmesGPT 负责根因分析和自然语言总结，AKS-MCP 通过标准化接口连接 Kubernetes 与 Azure API、观测信号和诊断工具，用户可替换模型与观测平台。",
+        "kind": "technical"
+      },
+      {
+        "id": "human-loop",
+        "title": "Agent 给建议，集群变更仍需明确许可",
+        "body": "微软从 CLI 和 human-in-the-loop 开始，让用户看到运行的工具和分析的数据；没有明确权限时，Agent 不会修改集群，自动修复仍是后续愿景。",
+        "kind": "boundary"
+      },
+      {
+        "id": "identity-data",
+        "title": "本地运行和 Azure CLI 身份决定权限边界",
+        "body": "诊断和数据收集在用户机器上执行，沿用 Azure CLI 的 RBAC 身份，用户可配置自带 LLM；实际部署仍需检查模型服务日志、区域、保留和合规要求。",
+        "kind": "technical"
+      },
+      {
+        "id": "extension",
+        "title": "更多工具意味着更大的授权面",
+        "body": "Prometheus、Datadog、Dynatrace、自定义 runbook 和其他 MCP server 都可扩展能力；管理员应按任务拆分凭证、参数和审批，不给 CLI 长期绑定全权身份。",
+        "kind": "comparison"
+      },
+      {
+        "id": "validation",
+        "title": "preview 阶段要测误操作和审计完整性",
+        "body": "后续验收应关注不同集群、权限和噪声下的诊断准确率、误操作率、延迟和工具调用记录，而不只看演示能否说出一个原因。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "AKS CLI Agent 怎样把故障问题变成可审计建议？",
+      "question": "从一条终端提问到集群动作，中间哪些步骤仍由人掌控？",
+      "steps": [
+        {
+          "label": "提出故障问题",
+          "detail": "用户在 CLI 中描述 Node NotReady、DNS 失败、Pod Pending 或升级失败等具体现象。",
+          "evidence": "AKS CLI Agent examples"
+        },
+        {
+          "label": "读取授权遥测",
+          "detail": "CLI 使用用户 Azure 身份和 RBAC 权限访问指标、日志、追踪与诊断接口，只拿到被授权的资源。",
+          "evidence": "Azure CLI Auth and RBAC"
+        },
+        {
+          "label": "调用 MCP 工具",
+          "detail": "HolmesGPT 通过 AKS-MCP 调用 Kubernetes/Azure API、观测信号和诊断工具，并汇总证据。",
+          "evidence": "HolmesGPT + AKS-MCP architecture"
+        },
+        {
+          "label": "给出原因与建议",
+          "detail": "Agent 以自然语言说明可能根因、运行过的工具和建议动作，用户可以检查依据。",
+          "evidence": "Transparency and evidence"
+        },
+        {
+          "label": "人工决定动作",
+          "detail": "任何集群变更都需要明确用户许可；上线前还要审核 toolset、凭证、runbook、日志和模型服务保留策略。",
+          "evidence": "Human-in-the-loop and explicit permission"
+        }
+      ]
+    },
+    "source": {
+      "name": "Azure Kubernetes Service Engineering Blog",
+      "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks"
+    },
+    "relatedSlugs": [
+      "agent-harness",
+      "tools",
+      "authorization",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+        "claim": "微软 AKS 工程博客确认 2025 年 8 月 15 日公布 CLI Agent for AKS，当前向有限用户提供 early access，并聚焦四类诊断问题。",
+        "excerpt": "August 15, 2025 ... early access to a limited set of users ... networking/DNS, pod scheduling, node health, and cluster CRUD issues"
+      },
+      {
+        "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+        "claim": "CLI Agent 由 HolmesGPT 和 AKS-MCP 等开源组件构成，可接入 Kubernetes/Azure API、观测信号和诊断工具。",
+        "excerpt": "Built on open-source building blocks ... HolmesGPT ... AKS Model Context Protocol (MCP) server"
+      },
+      {
+        "url": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+        "claim": "微软明确从 human-in-the-loop CLI 开始，集群变更需要用户明确权限，并说明本地运行、Azure CLI 身份和自带模型。",
+        "excerpt": "No changes are made to the cluster without explicit user permissions ... Runs locally ... Uses Azure CLI Auth ... Bring Your Own AI"
+      }
+    ],
+    "canonicalUrl": "https://blog.aks.azure.com/2025/08/15/cli-agent-for-aks",
+    "sourceHash": "sha256:c8ba5c08a6734c81e07d0e46cebb9737a8f4c6e191e262de853aacdc11ae6e19"
+  },
+  {
+    "slug": "nvidia-granary-multilingual-speech-ai-20250815",
+    "title": "NVIDIA 发布 Granary 数据集与 Canary、Parakeet 多语种语音模型",
+    "summary": "NVIDIA 在 2025 年 8 月 15 日发布 Granary 多语种语音数据集，以及基于它训练的 Canary-1b-v2 和 Parakeet-tdt-0.6b-v3。Granary 约含一百万小时音频，覆盖 25 种欧洲语言；Canary 偏重转写和翻译准确性，Parakeet 偏重实时或大批量转写。数据规模、排行榜和速度数字均来自 NVIDIA 的发布材料，实际部署仍要按语言、噪声、硬件和许可证逐项验证。",
+    "body": "8 月 15 日，NVIDIA 同时公开了一个数据集和两款语音模型：Granary、Canary-1b-v2 和 Parakeet-tdt-0.6b-v3。Granary 大约包含一百万小时音频，覆盖 25 种欧洲语言，其中有克罗地亚语、爱沙尼亚语和马耳他语等标注数据相对稀缺的语言。数据集、模型和处理工具都放到了 Hugging Face 或开源仓库，新闻的核心是把语音训练的原料和示例模型一起交给开发者。\n\nGranary 的规模需要拆开看。NVIDIA 说其中约 65 万小时用于自动语音识别，超过 35 万小时用于语音翻译；团队先用 NeMo Speech Data Processor 把未标注音频整理成带结构的数据，再用 NeMo Curator 过滤合成样本和做音频、转写对齐。这样做的价值不只是“数据更多”，也在于把一套从原始音频到可训练格式的处理方法公开出来，方便社区换模型或扩展语言。\n\n两款模型承担的目标不同。Canary-1b-v2 是约 10 亿参数的模型，重点放在复杂转写和英译多语；NVIDIA 称它把支持语言从 4 种扩到 25 种，并在 Hugging Face 的开放模型排行榜上取得较高的多语种转写准确率。Parakeet-tdt-0.6b-v3 约 6 亿参数，面向实时或大批量转写，可以一次处理 24 分钟音频，还会自动判断输入语言。一个偏准确，一个偏吞吐，正好对应产品里常见的两种取舍。\n\n发布材料里的性能数字不能脱离条件。NVIDIA 称 Canary 相比体量大三倍的模型，推理速度最高快 10 倍；Parakeet 的榜单指标是“被转写音频时长 ÷ 计算时间”。这些数字来自模型方的设置和开放模型排行榜，不能直接换算成你的单条请求延迟。真实应用还会受到 GPU、音频时长、语言混杂、口音、噪声、批量、量化和后处理的影响。\n\nGranary 的论文将在 8 月 17 至 21 日的 Interspeech 会议上报告，团队称与其他流行数据集相比，达到目标 ASR/AST 准确率所需的数据量约少一半。这是论文和 NVIDIA 的实验结论，仍需要社区在相同语言、数据切分和模型配置下复现。尤其是低资源语言，平均指标可能掩盖某一种语言的明显退化。\n\n对开发者来说，这次开源把三层东西连了起来：可直接使用的语料、针对不同目标的模型、以及可复用的数据处理管线。部署前需要先确认数据和模型的许可、训练样本是否适合自己的场景，再分别评测识别错误、翻译错误、时间戳质量和隐私风险。面向客服或语音 Agent 时，还要把实时性、人工转接和日志保留策略一起纳入验收。\n\n这条新闻的影响不在于“一百万小时”这个单独数字，而在于语音 AI 的竞争点向数据加工和部署条件移动了：同一批音频可以训练不同的准确性、吞吐和语言覆盖方案。下一步的证据，应来自跨硬件和跨语言的复现，以及真实噪声环境中的错误分析。",
+    "publishedAt": "2025-08-15",
+    "eventDate": "2025-08-15",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/nvidia-granary-multilingual-speech-ai-20250815.svg",
+      "alt": "Granary 多语种语音数据集分别供 Canary 准确性模型和 Parakeet 吞吐模型使用，覆盖 25 种欧洲语言",
+      "sourceUrl": "/images/news/nvidia-granary-multilingual-speech-ai-20250815.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "NVIDIA 把数据集、模型和工具一起公开",
+        "body": "8 月 15 日公开的组合包括约一百万小时音频的 Granary、Canary-1b-v2、Parakeet-tdt-0.6b-v3 和相关处理入口；覆盖 25 种欧洲语言，开发者可以从 Hugging Face 获取数据与模型。",
+        "kind": "narrative"
+      },
+      {
+        "id": "data-pipeline",
+        "title": "Granary 的重点是把未标注音频整理成可训练数据",
+        "body": "约 65 万小时用于 ASR，超过 35 万小时用于 AST。NVIDIA 团队用 NeMo Speech Data Processor 做音频与转写对齐，用 NeMo Curator 过滤合成样本并整理格式；公开的是一套可复用的数据处理思路。",
+        "kind": "technical"
+      },
+      {
+        "id": "model-split",
+        "title": "Canary 偏准确，Parakeet 偏吞吐",
+        "body": "约 1B 参数的 Canary-1b-v2 面向复杂转写和英译多语；约 0.6B 参数的 Parakeet-tdt-0.6b-v3 面向实时或大批量转写，并可一次处理 24 分钟音频。两个模型代表不同的产品取舍。",
+        "kind": "comparison"
+      },
+      {
+        "id": "performance",
+        "title": "10 倍速度和排行榜结果都有测试前提",
+        "body": "NVIDIA 称 Canary 相比体量大三倍的模型最高快 10 倍，Parakeet 的榜单指标是音频时长除以计算时间。硬件、批量、量化、语言、噪声和后处理都会改变实际结果，不能把模型方数字直接当成单条请求保证。",
+        "kind": "boundary"
+      },
+      {
+        "id": "research",
+        "title": "论文还要回答低资源语言是否真的受益",
+        "body": "Granary 论文将在 Interspeech 2025 报告，团队称达到目标 ASR/AST 准确率所需的数据量约为其他流行数据集的一半；这属于作者实验结论，需要在相同切分和配置下复现。",
+        "kind": "technical"
+      },
+      {
+        "id": "deployment",
+        "title": "部署验收要拆开错误、延迟和隐私",
+        "body": "实际接入前应核对数据和模型许可，并分别测识别、翻译、时间戳、噪声鲁棒性、延迟和隐私；语音 Agent 还需要人工转接与日志策略。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "同一套语音数据怎样变成两种模型？",
+      "question": "从原始音频到可部署的语音服务，中间有哪几层取舍？",
+      "steps": [
+        {
+          "label": "整理原始音频",
+          "detail": "用数据处理工具给未标注音频补齐转写、时间对齐和语言信息，并过滤合成或低质量样本。",
+          "evidence": "Granary and NeMo Speech Data Processor"
+        },
+        {
+          "label": "按任务分配数据",
+          "detail": "把约 65 万小时用于 ASR、超过 35 万小时用于 AST，并为 25 种语言保留可比较的切分。",
+          "evidence": "Granary dataset breakdown"
+        },
+        {
+          "label": "选择准确性路线",
+          "detail": "用 Canary-1b-v2 处理复杂转写和英译多语，重点观察识别与翻译错误，而不是只看吞吐。",
+          "evidence": "NVIDIA Canary description"
+        },
+        {
+          "label": "选择吞吐路线",
+          "detail": "用 Parakeet-tdt-0.6b-v3 做实时或批量转写，固定音频时长、GPU 和并发后再测延迟。",
+          "evidence": "NVIDIA Parakeet description"
+        },
+        {
+          "label": "用真实声音复核",
+          "detail": "在口音、噪声、语言混杂和长音频上同时检查 WER、翻译质量、时间戳、隐私和人工转接成本。",
+          "evidence": "Deployment boundary"
+        }
+      ]
+    },
+    "source": {
+      "name": "NVIDIA Newsroom",
+      "url": "https://nvidianews.nvidia.com/news/now-were-talking-nvidia-releases-open-dataset-models-for-multilingual-speech-ai"
+    },
+    "relatedSlugs": [
+      "data-pipeline",
+      "dataset-data",
+      "llm",
+      "event"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://blogs.nvidia.com/blog/speech-ai-dataset-models/",
+        "claim": "NVIDIA 官方博客确认 Granary 约含一百万小时音频，覆盖 25 种欧洲语言，并列出 Canary-1b-v2 与 Parakeet-tdt-0.6b-v3 的定位和可用性。",
+        "excerpt": "The new Granary dataset, featuring around 1 million hours of audio ... support ... speech recognition and translation AI for 25 European languages."
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/speech-ai-dataset-models/",
+        "claim": "NVIDIA 说明 Granary 约 65 万小时用于 ASR、超过 35 万小时用于 AST，数据处理采用 NeMo 工具链。",
+        "excerpt": "nearly 650,000 hours for speech recognition and over 350,000 hours for speech translation ... NeMo Speech Data Processor toolkit"
+      },
+      {
+        "url": "https://arxiv.org/abs/2508.10750",
+        "claim": "Granary 相关论文将在 Interspeech 2025 报告，并讨论低资源语言与 ASR/AST 数据效率；论文结论需与 NVIDIA 发布材料区分。",
+        "excerpt": "Granary paper and evaluation of multilingual speech recognition and translation data efficiency."
+      }
+    ],
+    "canonicalUrl": "https://nvidianews.nvidia.com/news/now-were-talking-nvidia-releases-open-dataset-models-for-multilingual-speech-ai",
+    "sourceHash": "sha256:a087dfa4ae5cfb2d3b0c63e47e51d90998d5f00ac4da66dda993e1056c44fafc"
+  },
+  {
     "slug": "gemma-3-270m-release-20250814",
     "title": "Google 发布 Gemma 3 270M：把开放权重文本模型带到更小设备",
     "summary": "Google 的 Gemma 发布记录显示，Gemma 3 在 2025 年 8 月 14 日新增 270M 尺寸。官方使用指南把它列为面向移动设备和单板计算机的 Text → Text 模型，输入上下文为 32K；模型卡还给出预训练和指令微调版本的基准结果。它降低的是本地部署的模型尺寸门槛，不等于小模型在所有任务上都能替代更大模型。",
