@@ -597,19 +597,54 @@
     "promptTitle": "降低选择器覆盖成本", "prompt": "请列出下面 CSS 冲突中各选择器的优先级，找出不必要的高优先级写法，并改成容易维护的类选择器结构。",
     "relatedSlugs": ["cascade", "css-selector", "css"]
   },
-  {
-    "zh": "弹性布局", "en": "Flexbox", "slug": "flexbox", "cat": "前端",
-    "say": "Flexbox 擅长把一组元素沿一个主方向排列、对齐和分配剩余空间。",
-    "aliases": ["Flex", "弹性盒", "一维布局"],
-    "question": "一排按钮怎样自动对齐，并在空间不足时换行？",
-    "definition": "Flexbox 是一维布局模型。容器确定主轴和交叉轴，子项根据 flex、对齐和换行规则分配空间。",
-    "boundary": "Flexbox 主要解决单行或单列关系；同时严格控制多行多列时，Grid 通常更合适。",
-    "demoType": "flow", "demoTitle": "按钮组如何分配空间",
-    "demoSteps": [{"label":"建立 Flex 容器","value":"display: flex","note":"子项进入同一主轴。"},{"label":"分配剩余空间","value":"justify-content: space-between","note":"按钮之间的空白自动计算。"},{"label":"处理窄屏","value":"flex-wrap: wrap","note":"空间不足时允许换行。"}],
-    "quizQuestion": "要让一行元素在交叉轴居中，应使用什么？", "quizOptions": ["align-items: center", "justify-content: center", "text-align: center"],
-    "correctText": "align-items 控制 Flex 子项在交叉轴上的对齐。", "wrongText": "justify-content 控制主轴，text-align 主要影响行内内容。",
-    "promptTitle": "调整一组操作按钮的布局", "prompt": "请用 Flexbox 重写下面的按钮组：桌面端右对齐，按钮间距稳定，窄屏允许换行。说明主轴、交叉轴和每条属性的作用。",
-    "relatedSlugs": ["css-grid", "responsive", "breakpoint"]
+      {
+    "zh": "弹性布局",
+    "en": "Flexbox",
+    "slug": "flexbox",
+    "cat": "前端",
+    "say": "让一组东西沿一条主轴自己分配空间：宽了就伸，窄了就收，必要时再换行。",
+    "aliases": [
+      "Flex",
+      "弹性盒",
+      "一维布局"
+    ],
+    "question": "为什么一排按钮会自己挤开、换行，甚至把最后一个按钮推到最右边？",
+    "definition": "Flexbox 是 CSS 的一维布局模型。容器先确定主轴与交叉轴，项目以 flex-basis 为起点，再按正/负自由空间、grow、shrink、对齐和换行规则结算。",
+    "boundary": "Flexbox 一次处理一个方向；要让多行多列共享轨道、跨列或按行列同时对齐，优先看 CSS Grid。",
+    "demoType": "flow",
+    "demoTitle": "三个项目怎样分到同一条主轴",
+    "demoSteps": [
+      {
+        "label": "建立主轴",
+        "value": "display: flex",
+        "note": "直接子项进入同一条主轴，容器也确定了交叉轴。"
+      },
+      {
+        "label": "结算空间",
+        "value": "basis → grow / shrink",
+        "note": "先算基准与自由空间，再决定项目变宽还是变窄。"
+      },
+      {
+        "label": "选择边界",
+        "value": "wrap / column / Grid",
+        "note": "空间不足时明确换行或转向；需要二维轨道时交给 Grid。"
+      }
+    ],
+    "quizQuestion": "容器改成 flex-direction: column 后，哪个属性仍然负责沿主轴分配空白？",
+    "quizOptions": [
+      "justify-content",
+      "align-items",
+      "text-align"
+    ],
+    "correctText": "justify-content 跟着主轴走；主轴变成 column 后，它负责垂直方向的空白。",
+    "wrongText": "align-items 管交叉轴，text-align 管文字内容，二者都不会接管 Flex 主轴。",
+    "promptTitle": "让按钮组在变窄时给出可解释的结果",
+    "prompt": "请用 Flexbox 布置一组操作按钮：说明容器的主轴、每个项目的 flex-basis、grow/shrink 是否开启、300px 时是收缩还是换行，以及键盘顺序为什么不能只靠 order 修正。",
+    "relatedSlugs": [
+      "css-grid",
+      "breakpoint",
+      "media-query"
+    ]
   },
   {
     "zh": "网格布局", "en": "CSS Grid Layout", "slug": "css-grid", "cat": "前端",

@@ -95,6 +95,7 @@ import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
 import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
+import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -108,6 +109,7 @@ const articleTermPages = {
   webview: WebviewTermPage,
   'css-selector': CssSelectorTermPage,
   'box-model': BoxModelTermPage,
+  flexbox: FlexboxTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

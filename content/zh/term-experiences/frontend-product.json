@@ -3906,19 +3906,19 @@
       }
     ]
   },
-  {
+    {
     "slug": "flexbox",
     "lead": "一排按钮怎样自动对齐，并在空间不足时换行？",
-    "definition": "Flex 容器沿主轴收集项目，计算 flex base size 与剩余空间，再按 grow/shrink 分配并在交叉轴对齐。",
-    "boundary": "justify-content 不固定等于水平对齐，方向由 flex-direction 决定；Flex 也不是二维网格。",
+    "definition": "Flexbox 是一维布局模型：浏览器先沿主轴计算项目的基准尺寸与自由空间，再按 grow、shrink、对齐和换行规则给出结果。",
+    "boundary": "它适合组件内部的一排或一列关系；需要多行多列共享轨道、跨列或严格对齐时，CSS Grid 更直接。",
     "sceneKind": "spectrum",
     "sceneTitle": "剩余空间在三个弹性项目之间怎样分配",
-    "actionLabel": "拖动容器宽度",
+    "actionLabel": "逐步改变容器宽度、换行和主轴",
     "actors": [
       {
         "id": "container",
         "label": "Flex 容器",
-        "detail": "主轴宽度可变",
+        "detail": "主轴长度可变",
         "icon": "layout",
         "group": "容器"
       },
@@ -3955,7 +3955,7 @@
     "frames": [
       {
         "label": "基准尺寸排入主轴",
-        "note": "三个项目各按 120px 放入容器，自由空间先计算为 120px。",
+        "note": "三个项目各按 120px 放入 480px 容器，自由空间先记为 +120px，还没有项目拿走它。",
         "activeIds": [
           "container",
           "a",
@@ -3967,13 +3967,16 @@
         "mutedIds": [],
         "values": {
           "container": "480 px",
+          "a": "120 px",
+          "b": "120 px",
+          "c": "120 px",
           "space": "+120 px"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "按 grow 分配",
-        "note": "自由空间按 1:2:1 分走，B 比 A、C 多得到一份。",
+        "label": "把 grow 写成比例",
+        "note": "A、B、C 的 grow 变成 1:2:1；这一步只写下分配份额，还没有凭空制造宽度。",
         "activeIds": [
           "a",
           "b",
@@ -3985,15 +3988,37 @@
         ],
         "mutedIds": [],
         "values": {
-          "a": "150 px",
-          "b": "180 px",
-          "c": "150 px"
+          "space": "+120 px",
+          "a": "grow 1",
+          "b": "grow 2",
+          "c": "grow 1"
         },
         "activeEdgeIds": []
       },
       {
-        "label": "容器缩窄",
-        "note": "拖到 300px 后出现负空间，三个项目按 shrink 与基准尺寸共同压缩。",
+        "label": "正空间落到项目",
+        "note": "120px 余量切成四份，A 和 C 各拿一份，B 拿两份，最后得到 150/180/150px。",
+        "activeIds": [
+          "a",
+          "b",
+          "c"
+        ],
+        "doneIds": [
+          "container",
+          "space"
+        ],
+        "mutedIds": [],
+        "values": {
+          "a": "150 px",
+          "b": "180 px",
+          "c": "150 px",
+          "space": "0 px"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "容器缩窄，出现负空间",
+        "note": "容器变成 300px，项目总基准多出 60px；shrink 开始收回负空间，但最小内容仍可能阻止继续变窄。",
         "activeIds": [
           "container",
           "a",
@@ -4004,6 +4029,7 @@
         "doneIds": [],
         "mutedIds": [],
         "values": {
+          "container": "300 px",
           "space": "-60 px",
           "a": "100 px",
           "b": "100 px",
@@ -4012,8 +4038,30 @@
         "activeEdgeIds": []
       },
       {
-        "label": "主轴转向",
-        "note": "切为 column，分配规则不变，但自由空间改在垂直方向显示。",
+        "label": "换行创建另一条 line",
+        "note": "打开 flex-wrap 后，A、B 先占第一行，C 落到第二行；两行各自结算，不会自动共享列轨道。",
+        "activeIds": [
+          "container",
+          "a",
+          "b",
+          "c"
+        ],
+        "doneIds": [
+          "space"
+        ],
+        "mutedIds": [],
+        "values": {
+          "container": "300 px",
+          "space": "2 flex lines",
+          "a": "112 px",
+          "b": "112 px",
+          "c": "112 px"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "主轴转到纵向",
+        "note": "切成 column 后，规则没有消失，只是自由空间沿垂直主轴分配；justify-content 也跟着转向。",
         "activeIds": [
           "container",
           "space"
@@ -4026,40 +4074,63 @@
         "mutedIds": [],
         "values": {
           "container": "flex-direction: column",
-          "space": "垂直主轴"
+          "space": "垂直主轴",
+          "a": "54 px",
+          "b": "54 px",
+          "c": "54 px"
         },
         "activeEdgeIds": []
       }
     ],
-    "insight": "Flexbox 先在主轴上算自由空间，再按 grow 或 shrink 把它分给项目。",
+    "insight": "Flexbox 先在主轴上算自由空间，再按 grow 或 shrink 把它分给项目；wrap 与 column 改变的是分组或方向，不是把它变成二维网格。",
     "quiz": {
-      "question": "要让一行元素在交叉轴居中，应使用什么？",
+      "question": "容器改成 flex-direction: column 后，哪个属性仍然负责沿主轴分配空白？",
       "options": [
         {
-          "label": "align-items: center",
+          "label": "justify-content",
           "correct": true
         },
         {
-          "label": "justify-content: center",
+          "label": "align-items",
           "correct": false
         },
         {
-          "label": "text-align: center",
+          "label": "text-align",
           "correct": false
         }
       ],
-      "success": "align-items 控制 Flex 子项在交叉轴上的对齐。",
-      "retry": "justify-content 控制主轴，text-align 主要影响行内内容。"
+      "success": "justify-content 跟着主轴走；主轴转到垂直方向后，它仍负责那条轴上的空白。",
+      "retry": "align-items 负责交叉轴，text-align 负责文字内容，先确认当前主轴再选属性。"
     },
     "prompt": {
-      "title": "调整一组操作按钮的布局",
-      "text": "请用 Flexbox 重写下面的按钮组：桌面端右对齐，按钮间距稳定，窄屏允许换行。说明主轴、交叉轴和每条属性的作用。"
+      "title": "让按钮组在变窄时给出可解释的结果",
+      "text": "请用 Flexbox 布置一组操作按钮：说明主轴、flex-basis、grow/shrink、300px 时是收缩还是换行，以及为什么不能只靠 order 修正键盘顺序。"
     },
     "sources": [
       {
         "url": "https://www.w3.org/TR/css-flexbox-1/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "W3C CSS Flexible Box Layout Module Level 1",
+        "note": "定义 flex 容器、项目、自由空间与分配算法。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Basic_concepts",
+        "label": "MDN · Basic concepts of flexbox",
+        "note": "说明一维模型、主轴/交叉轴、默认行为与对齐。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Controlling_flex_item_ratios",
+        "label": "MDN · Controlling flex item ratios",
+        "note": "解释 basis、正/负自由空间以及 grow/shrink 比例。"
+      },
+      {
+        "url": "https://web.dev/learn/css/flexbox/",
+        "label": "web.dev · Flexbox",
+        "note": "补充换行边界、书写方向与视觉顺序的可访问性限制。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/flex",
+        "label": "MDN · flex CSS property",
+        "note": "核对 shorthand 与 initial/auto/none 的含义。"
       }
     ]
   },

@@ -267,14 +267,24 @@
     "rewriteRisk": "high",
     "nearDuplicates": ["cascade", "css-selector", "css"]
   },
-  {
+    {
     "slug": "flexbox",
-    "mechanism": "Flex 容器沿主轴收集项目，计算 flex base size 与剩余空间，再按 grow/shrink 分配并在交叉轴对齐。",
-    "misconception": "justify-content 不固定等于水平对齐，方向由 flex-direction 决定；Flex 也不是二维网格。",
-    "demoSignature": "建议 5 帧：三个项目在可拖宽的 flex 容器中显示 base、grow、shrink；扩宽时剩余空间化成彩色条并按比例分配，缩窄时负空间反向压缩；切换 row/column，主轴箭头旋转且同一套分配过程重播。",
-    "sourceUrls": ["https://www.w3.org/TR/css-flexbox-1/"],
+    "mechanism": "Flex 容器先沿主轴收集直接子项，计算 flex-basis 与正/负自由空间，再按 grow 或 shrink 分配；flex-wrap 开启后分成独立 flex line，交叉轴负责对齐。",
+    "misconception": "Flexbox 一次处理一个方向；justify-content 跟着主轴走，换行后的多行不会像 Grid 一样共享列轨道，视觉 order 也不会改 DOM 与键盘顺序。",
+    "demoSignature": "6帧｜对象：480/300px 主轴、A/B/C 三个项目、basis/grow/shrink/free-space 账本、wrap 与 column 分支｜交互：推进基准→比例→grow→负空间→换行→主轴转向，并在工作台切换容器宽度与 wrap｜变化：+120px→1:2:1→150/180/150→-60px 收缩→两条 flex line→垂直主轴｜结果：读者能把项目尺寸变化归因于主轴空间结算，而不是记“万能居中口诀”。",
+    "sourceUrls": [
+      "https://www.w3.org/TR/css-flexbox-1/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Basic_concepts",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Controlling_flex_item_ratios",
+      "https://web.dev/learn/css/flexbox/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/flex"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["css-grid", "responsive", "box-model"]
+    "nearDuplicates": [
+      "css-grid",
+      "breakpoint",
+      "box-model"
+    ]
   },
   {
     "slug": "css-grid",
