@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { conversionRateSources, focusManagementSources, funnelSources, iterationSources, usabilityTestingSources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
+import { conversionRateSources, focusManagementSources, funnelSources, iterationSources, mockupSources, usabilityTestingSources } from "@/lib/product-design-sources";
+import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -148,6 +148,35 @@ export function UsabilityTestingTermPage() {
       <p id="usability-analysis" className="vp-citation-target">每轮结束后尽快把笔记、录音和观察整理成共同认可的发现，再决定下一步要修什么或继续验证什么。<Cite id="usability-analysis" sources={usabilityTestingSources} />把“3 人都在月份筛选处停顿”写成现象，把“筛选器标签让人误解”写成待验证的解释，两者不能混在同一句里。</p>
       <p id="usability-boundary" className="vp-citation-target">少量参与者擅长暴露具体可用性问题，不足以直接估算所有用户中有多少人会失败。<Cite id="usability-boundary" sources={usabilityTestingSources} />要回答比例或版本差异，还需要合适的量化数据、更多样本或实验设计。</p>
       <ArticleAside title="把“成功”拆开记录"><p>完成任务只是一个结果。是否绕路、是否需要提示、是否读懂了状态、是否能在下一次独立完成，都会影响你对界面问题的判断。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const mockupSections: [string, string][] = [
+  ["mockup-definition", "先确认结构，再确认外观"],
+  ["mockup-validation", "静态画面和交互原型各自回答什么"],
+  ["mockup-boundary", "把缺失状态写出来，别让一张图冒充产品"],
+];
+
+function MockupHero() {
+  return <figure className={styles.miniHero} aria-label="线框确认结构，视觉稿确认外观，原型验证行为"><div className={styles.miniTop}><span>从结构到外观，再到行为</span><strong>MOCKUP · 06</strong></div><div className={styles.mockupMini}><div className={styles.mockupMiniLayer} data-level="wireframe"><small>01</small><strong>线框<br />结构</strong></div><div className={styles.mockupMiniLayer} data-level="mockup"><small>02</small><strong>视觉稿<br />外观</strong></div><div className={styles.mockupMiniLayer} data-level="prototype"><small>03</small><strong>原型<br />行为</strong></div><p className={styles.mockupMiniNote}>越靠后，能被验证的东西越多，也越不能只看一张静态图。</p></div></figure>;
+}
+
+export function MockupTermPage() {
+  return <Article slug="mockup" title="视觉稿" subtitle="Mockup · 把外观说清楚，但别冒充交互" sources={mockupSources} sections={mockupSections} hero={<MockupHero />} intro={<>视觉稿把已经确定的结构换成具体的字体、颜色、图像和间距，让团队可以讨论“看起来是否对”。<strong>它是外观的证据，不是点击后的行为证据</strong>；加载、错误、响应式和返回路径还需要状态清单或原型继续补上。</>}>
+    <ArticleSection id="mockup-definition" title="先确认结构，再确认外观">
+      <p id="mockup-structure" className="vp-citation-target">线框图先把页面当作一张地图：有哪些信息、哪个操作放在哪里、读者按什么顺序理解。<Cite id="mockup-structure" sources={mockupSources} />结构没站稳就急着调颜色，评审很容易被阴影和图片带走。</p>
+      <p id="mockup-visual" className="vp-citation-target">视觉稿在这张地图上补入字体、色彩、真实内容和视觉层级，用来对齐外观与品牌表达。<Cite id="mockup-visual" sources={mockupSources} />它可以让团队发现字重不够、对比不清或间距失衡，却不能证明按钮已经能工作。</p>
+      <MockupLesson />
+    </ArticleSection>
+    <ArticleSection id="mockup-validation" title="静态画面和交互原型各自回答什么">
+      <p id="mockup-prototype" className="vp-citation-target">原型把画面连接成可操作的路径，才有机会检查点击后去了哪里、返回是否合理、任务是否能完成。<Cite id="mockup-prototype" sources={mockupSources} />所以“按钮看起来像按钮”是视觉稿结论，“点击后进入下一步并能返回”是原型结论。</p>
+      <p id="mockup-review" className="vp-citation-target">原型的保真度应该服务于当下的问题：纸笔草图适合快速讨论，接近真实界面的代码或交互原型更适合验证真实操作。<Cite id="mockup-review" sources={mockupSources} />不要为了看起来完整，把还没有验证的行为藏在一张漂亮的静态图里。</p>
+    </ArticleSection>
+    <ArticleSection id="mockup-boundary" title="把缺失状态写出来，别让一张图冒充产品">
+      <p id="mockup-states" className="vp-citation-target">视觉稿通常只展示理想状态；加载、空结果、错误、禁用、窄屏和长文本需要单独列出并安排验证。<Cite id="mockup-states" sources={mockupSources} />状态清单不是额外装饰，而是告诉团队这张图没有覆盖哪些真实情况。</p>
+      <p id="mockup-boundary-text" className="vp-citation-target">评审结论要写成“外观已确认、行为待验证、状态缺三项”这样的边界，而不是一句“设计完成”。<Cite id="mockup-boundary-text" sources={mockupSources} />这样进入开发或测试时，缺口仍然可见，不会被截图的精致程度掩盖。</p>
+      <ArticleAside title="视觉稿通过，不等于产品通过"><p>它最多说明这一张画面如何呈现。真正上线前还要让用户走流程、让窄屏承受长内容、让错误发生一次，并确认每种状态都有可理解的下一步。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }

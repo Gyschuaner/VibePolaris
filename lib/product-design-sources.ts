@@ -34,3 +34,10 @@ export const usabilityTestingSources = [
   source("GOV.UK Service Manual", "Analyse a research session", "https://www.gov.uk/service-manual/user-research/analyse-a-research-session", ["usability-analysis"]),
   source("Nielsen Norman Group", "Task Scenarios for Usability Testing", "https://www.nngroup.com/articles/task-scenarios-usability-testing/", ["usability-task", "usability-boundary"]),
 ];
+
+export const mockupSources = [
+  source("Figma", "Wireframe vs. mock-up: what’s the difference?", "https://www.figma.com/resource-library/wireframe-vs-mockup/", ["mockup-structure", "mockup-visual"]),
+  source("GOV.UK Service Manual", "Making prototypes", "https://www.gov.uk/service-manual/design/making-prototypes", ["mockup-prototype", "mockup-states"]),
+  source("Figma Learn", "Guide to prototyping in Figma", "https://help.figma.com/hc/en-us/articles/360040314193-Guide-to-prototyping-in-Figma", ["mockup-prototype", "mockup-review"]),
+  source("GOV.UK Service Manual", "Designing good government services", "https://www.gov.uk/service-manual/design/introduction-designing-government-services", ["mockup-review", "mockup-boundary-text"]),
+];
