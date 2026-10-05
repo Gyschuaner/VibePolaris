@@ -466,8 +466,8 @@
     "slug": "module",
     "mechanism": "模块加载器解析静态 import/export 形成依赖图，每个模块只求值一次，并用 live binding 连接导入与导出。",
     "misconception": "import 不是复制值，也不是简单把文件文本拼接；循环依赖可能暴露尚未初始化的 binding。",
-    "demoSignature": "建议 5 帧：三个文件先解析 export/import，再连成依赖图并按顺序 evaluate；用户修改导出变量，导入模块的 live binding 同步变化；切换为手工复制值的对照栏，旧值保持不动；循环依赖时未初始化节点另行标红。",
-    "sourceUrls": ["https://html.spec.whatwg.org/multipage/webappapis.html#integration-with-the-javascript-module-system", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules"],
+    "demoSignature": "network: 5 frames; actors=三个模块文件/依赖图/求值顺序/live binding/初始化回路; phases=画出依赖→各自求值→接上绑定→结果回来→回路先停下; action=更新导出变量并切换循环依赖",
+    "sourceUrls": ["https://tc39.es/ecma262/#sec-modules", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export"],
     "rewriteRisk": "high",
     "nearDuplicates": ["javascript", "bundler", "code-splitting"]
   },

@@ -108,6 +108,7 @@ import { VisualRegressionTestingTermPage } from "@/components/terms/visual-regre
 import { CascadeTermPage } from "@/components/terms/cascade-pages/cascade-page";
 import { SpecificityTermPage } from "@/components/terms/specificity-pages/specificity-page";
 import { PositioningTermPage } from "@/components/terms/positioning-pages/positioning-page";
+import { ModuleTermPage } from "@/components/terms/module-pages/module-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -134,6 +135,7 @@ const articleTermPages = {
   cascade: CascadeTermPage,
   specificity: SpecificityTermPage,
   positioning: PositioningTermPage,
+  module: ModuleTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

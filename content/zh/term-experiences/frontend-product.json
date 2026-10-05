@@ -6781,6 +6781,13 @@
         "detail": "读取 live binding",
         "icon": "component",
         "group": "结果"
+      },
+      {
+        "id": "cycle",
+        "label": "初始化回路",
+        "detail": "a.js ↔ b.js · TDZ",
+        "icon": "network",
+        "group": "边界"
       }
     ],
     "edges": [
@@ -6807,6 +6814,12 @@
         "from": "app",
         "to": "view",
         "label": "渲染"
+      },
+      {
+        "id": "app-button",
+        "from": "app",
+        "to": "button",
+        "label": "循环依赖"
       }
     ],
     "frames": [
@@ -6897,8 +6910,32 @@
           "config": "theme=dark"
         },
         "activeEdgeIds": []
-      }
-    ],
+    },
+    {
+      "label": "回路先停下",
+      "note": "a.js 与 b.js 形成循环；如果顶层初始化先读取尚未完成的绑定，就会落入 TDZ。",
+      "activeIds": [
+        "loader",
+        "button",
+        "app",
+        "cycle"
+      ],
+      "doneIds": [
+        "loader"
+      ],
+      "mutedIds": [
+        "config",
+        "view"
+      ],
+      "values": {
+        "cycle": "ReferenceError · TDZ"
+      },
+      "activeEdgeIds": [
+        "button-app",
+        "app-button"
+      ]
+    }
+  ],
     "insight": "模块先建立依赖和作用域，ES import 读取的是导出绑定，而不是一次性的全局值复制。",
     "quiz": {
       "question": "模块中没有 export 的变量默认如何处理？",
@@ -6925,14 +6962,24 @@
     },
     "sources": [
       {
-        "url": "https://html.spec.whatwg.org/multipage/webappapis.html#integration-with-the-javascript-module-system",
-        "label": "WHATWG · HTML Standard",
-        "note": "HTML 标准语义"
+        "url": "https://tc39.es/ecma262/#sec-modules",
+        "label": "ECMA International · ECMAScript Modules",
+        "note": "模块记录、依赖链接、求值和 live binding 的语言语义。"
       },
       {
         "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "MDN · JavaScript modules",
+        "note": "模块作用域、import/export 边界和浏览器模块用法。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import",
+        "label": "MDN · import statement",
+        "note": "静态导入声明、导入绑定和循环关系的使用边界。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export",
+        "label": "MDN · export statement",
+        "note": "导出名称、默认导出与模块公开接口。"
       }
     ]
   },
