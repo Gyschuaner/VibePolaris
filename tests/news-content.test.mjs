@@ -38,6 +38,7 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.match(detailPage, /generateStaticParams/);
   assert.match(detailPage, /getPublishedTerm/);
   assert.match(detailPage, /news-hero/);
+  assert.match(detailPage, /article\.hero && !article\.hero\.license\.startsWith\("VibePolaris 自制"\)/);
   assert.match(detailPage, /来源引用/);
   assert.match(detailPage, /article\.sources\.map/);
   assert.match(detailPage, /article\.sections!\.map/);
@@ -78,4 +79,5 @@ test("新闻内容模型与最小栏目路由保持可追踪", async () => {
   assert.doesNotMatch(styles, /\.news-atlas-connector/);
   assert.match(atlas, /Boolean\(selectedNodeSlug\) && showLines && connected/);
   assert.match(styles, /\.news-atlas-article-node \.news-atlas-node-copy \{ position: absolute;/);
+  assert.doesNotMatch(atlas, /<small>\{shortDateFormatter\.format\(utcDate\(article\.eventDate\)\)\}<\/small>/);
 });

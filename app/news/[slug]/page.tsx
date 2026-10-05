@@ -55,15 +55,15 @@ export default async function NewsDetailPage({ params }: NewsPageProps) {
                   <h1>{article.title}</h1>
                   <p className="news-summary">{article.summary}</p>
                   <div className="news-detail-meta"><time dateTime={article.eventDate}>事件：{formatDate(article.eventDate)}</time><span>来源发布：{formatDate(article.publishedAt)}</span><span>来源：{article.source.name}</span></div>
-                  <figure className="news-hero">
+                  {article.hero && !article.hero.license.startsWith("VibePolaris 自制") && <figure className="news-hero">
                     {/* eslint-disable-next-line @next/next/no-img-element -- News hero URLs are validated by the content contract and may be local or official assets. */}
-                    <img src={article.hero!.url} alt={article.hero!.alt} loading="eager" />
+                    <img src={article.hero.url} alt={article.hero.alt} loading="eager" />
                     <figcaption>
                       <span>头图</span>
-                      <a href={article.hero!.sourceUrl} target="_blank" rel="noreferrer">{article.hero!.credit ?? "图片来源"}</a>
-                      <span>{article.hero!.license}</span>
+                      <a href={article.hero.sourceUrl} target="_blank" rel="noreferrer">{article.hero.credit ?? "图片来源"}</a>
+                      <span>{article.hero.license}</span>
                     </figcaption>
-                  </figure>
+                  </figure>}
                 </header>
                 <section className="vp-chapter news-lede" id="overview"><div className="vp-chapter-content"><div className="news-prose"><Markdown remarkPlugins={[remarkGfm]} skipHtml>{article.body}</Markdown></div></div></section>
                 <section className="vp-chapter news-explainer-section" id="explainer"><div className="vp-chapter-content"><NewsExplainer data={article.explainer!} /></div></section>
