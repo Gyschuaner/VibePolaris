@@ -95,6 +95,16 @@ import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
 import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
+import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
+import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
+import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoint-page";
+import { MediaQueryTermPage } from "@/components/terms/media-query-pages/media-query-page";
+import { CodeSplittingTermPage } from "@/components/terms/code-splitting-pages/code-splitting-page";
+import { LazyLoadingTermPage } from "@/components/terms/lazy-loading-pages/lazy-loading-page";
+import { DockerfileTermPage } from "@/components/terms/dockerfile-pages/dockerfile-page";
+import { InfrastructureAsCodeTermPage } from "@/components/terms/infrastructure-as-code-pages/infrastructure-as-code-page";
+import { CdnTermPage } from "@/components/terms/cdn-pages/cdn-page";
+import { VisualRegressionTestingTermPage } from "@/components/terms/visual-regression-testing-pages/visual-regression-testing-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -108,6 +118,16 @@ const articleTermPages = {
   webview: WebviewTermPage,
   'css-selector': CssSelectorTermPage,
   'box-model': BoxModelTermPage,
+  flexbox: FlexboxTermPage,
+  'css-grid': CssGridTermPage,
+  breakpoint: BreakpointTermPage,
+  'media-query': MediaQueryTermPage,
+  'code-splitting': CodeSplittingTermPage,
+  'lazy-loading': LazyLoadingTermPage,
+  dockerfile: DockerfileTermPage,
+  'infrastructure-as-code': InfrastructureAsCodeTermPage,
+  cdn: CdnTermPage,
+  'visual-regression-testing': VisualRegressionTestingTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,
