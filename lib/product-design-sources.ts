@@ -55,3 +55,17 @@ export const designTokenSources = [
   source("Android Developers", "Material Design 3 in Compose", "https://developer.android.com/develop/ui/compose/designsystems/material3", ["token-theme", "token-component"]),
   source("Lightning Design System", "Design Tokens", "https://v1.lightningdesignsystem.com/design-tokens/", ["token-semantic", "token-boundary"]),
 ];
+
+export const visualHierarchySources = [
+  source("Nielsen Norman Group", "Visual Hierarchy in UX: Definition", "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/", ["hierarchy-attention", "hierarchy-contrast", "hierarchy-boundary"]),
+  source("W3C", "Understanding Success Criterion 2.4.6: Headings and Labels", "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html", ["hierarchy-headings", "hierarchy-structure"]),
+  source("W3C WAI", "Headings · Page Structure Tutorial", "https://www.w3.org/WAI/tutorials/page-structure/headings/", ["hierarchy-headings", "hierarchy-structure"]),
+  source("Android Developers", "Material Design 3 in Compose", "https://developer.android.com/develop/ui/compose/designsystems/material3", ["hierarchy-type-scale", "hierarchy-responsive", "hierarchy-contrast"]),
+];
+
+export const feedbackSources = [
+  source("Nielsen Norman Group", "Visibility of System Status", "https://www.nngroup.com/articles/visibility-system-status/", ["feedback-visibility", "feedback-local", "feedback-toast"]),
+  source("W3C", "Understanding Status Messages", "https://www.w3.org/WAI/WCAG21/Understanding/status-messages", ["feedback-status", "feedback-progress", "feedback-reduced"]),
+  source("WAI-ARIA Authoring Practices", "Alert Pattern", "https://www.w3.org/WAI/ARIA/apg/patterns/alert/", ["feedback-status", "feedback-failure"]),
+  source("GOV.UK", "Error messages", "https://design-system.service.gov.uk/components/error-message/", ["feedback-failure", "feedback-toast"]),
+];

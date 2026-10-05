@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { conversionRateSources, designTokenSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, DesignTokenLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
+import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
+import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FocusManagementLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -11,7 +11,7 @@ const focusSections: [string, string][] = [
 ];
 
 function FocusManagementHero() {
-  return <figure className={styles.miniHero} aria-label="焦点从触发按钮移动到对话框，再回到原位置"><div className={styles.miniTop}><span>焦点跟着任务移动</span><strong>FOCUS · 01</strong></div><div className={styles.focusMini}><div className={styles.focusPane}><small>背景页面</small><span>打开设置</span><span className={styles.focusFakeButton}>触发</span></div><div className={styles.focusPane} data-dialog="true"><small>前景对话框</small><span>输入 → 保存</span><span className={styles.focusFakeButton}>返回原位</span></div></div><p className={styles.miniCaption}>打开时进入当前任务，关闭后回到触发点。</p></figure>;
+  return <figure className={styles.miniHero} aria-label="焦点环在打开设置与保存之间移动，关闭后回到触发按钮"><div className={styles.miniTop}><span>焦点环绕当前任务</span><strong>FOCUS · 01</strong></div><div className={styles.focusSignature}><div className={styles.focusSignatureSurface}><span className={styles.focusSignatureTrigger}>打开设置</span><span className={styles.focusSignatureDialog}>保存</span><i aria-hidden="true" /></div><small>进入对话框 → 完成 → 回到触发点</small></div></figure>;
 }
 
 export function FocusManagementTermPage() {
@@ -41,7 +41,7 @@ const iterationSections: [string, string][] = [
 ];
 
 function IterationHero() {
-  return <figure className={styles.miniHero} aria-label="迭代把增量交付、证据和下一轮决定连起来"><div className={styles.miniTop}><span>交付一小块，读结果，再决定</span><strong>ITERATE · 02</strong></div><div className={styles.iterationMini}><div className={styles.iterationStep}><i /><strong>交付</strong><small>可运行增量</small></div><div className={styles.iterationStep}><i /><strong>观察</strong><small>真实任务证据</small></div><div className={styles.iterationStep}><i /><strong>调整</strong><small>下一轮范围</small></div></div><p className={styles.miniCaption}>每轮改变的是范围和决定，目标仍由证据校准。</p></figure>;
+  return <figure className={styles.miniHero} aria-label="一枚证据指针在交付、观察和调整之间改变下一轮范围"><div className={styles.miniTop}><span>证据把指针拨向下一轮</span><strong>ITERATE · 02</strong></div><div className={styles.iterationSignature}><div className={styles.iterationDial}><i /><span data-phase="ship">交付</span><span data-phase="observe">观察</span><span data-phase="adjust">调整</span></div><small>不是绕圈忙碌，而是每次带着新证据回来。</small></div></figure>;
 }
 
 export function IterationTermPage() {
@@ -70,7 +70,7 @@ const conversionRateSections: [string, string][] = [
 ];
 
 function ConversionRateHero() {
-  return <figure className={styles.miniHero} aria-label="转化率由完成用户除以起点用户得到"><div className={styles.miniTop}><span>同一个起点，不同完成事件</span><strong>RATE · 03</strong></div><div className={styles.conversionMini}><div className={styles.conversionMiniCard}><small>起点</small><strong>1000</strong><span>users</span></div><div className={styles.conversionMiniArrow} aria-hidden="true">÷</div><div className={styles.conversionMiniCard}><small>完成</small><strong>120</strong><span>24h · 12%</span></div></div><p className={styles.miniCaption}>数字前先写口径：谁进入、谁完成、何时完成。</p></figure>;
+  return <figure className={styles.miniHero} aria-label="同一批用户的外圈起点与内圈完成者形成转化率"><div className={styles.miniTop}><span>完成者在起点人群里留下印记</span><strong>RATE · 03</strong></div><div className={styles.conversionSignature}><div className={styles.conversionRings}><i data-ring="outer" /><i data-ring="inner" /><strong>120</strong><small>/ 1000 · 12%</small></div><span>换完成事件，内圈就会改变。</span></div></figure>;
 }
 
 export function ConversionRateTermPage() {
@@ -100,7 +100,7 @@ const funnelSections: [string, string][] = [
 ];
 
 function FunnelHero() {
-  return <figure className={styles.miniHero} aria-label="漏斗按顺序筛掉用户并显示每一步人数"><div className={styles.miniTop}><span>同一批用户，经过三道闸门</span><strong>FUNNEL · 04</strong></div><div className={styles.funnelMini}><div className={styles.funnelMiniRow}><span>到达</span><div className={styles.funnelMiniTrack}><div className={styles.funnelMiniBar} style={{ width: "100%" }} /></div><strong>1000</strong></div><div className={styles.funnelMiniRow}><span>填写</span><div className={styles.funnelMiniTrack}><div className={styles.funnelMiniBar} style={{ width: "42%" }} /></div><strong>420</strong></div><div className={styles.funnelMiniRow}><span>验证</span><div className={styles.funnelMiniTrack}><div className={styles.funnelMiniBar} style={{ width: "12%" }} /></div><strong>120</strong></div></div><p className={styles.funnelMiniNote}>它能标出哪一关掉人，不能替你猜出为什么。</p></figure>;
+  return <figure className={styles.miniHero} aria-label="一群小点穿过三道筛网，每道筛网留下不同人数"><div className={styles.miniTop}><span>筛网留下掉落位置</span><strong>FUNNEL · 04</strong></div><div className={styles.funnelSignature}><div className={styles.funnelSieve}><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><i className={styles.funnelParticle} /><b data-gate="one" /><b data-gate="two" /><b data-gate="three" /></div><span>能定位哪一关，不能凭人数猜原因。</span></div></figure>;
 }
 
 export function FunnelTermPage() {
@@ -130,7 +130,7 @@ const usabilityTestingSections: [string, string][] = [
 ];
 
 function UsabilityTestingHero() {
-  return <figure className={styles.miniHero} aria-label="可用性测试让参与者独立完成目标，主持人观察并记录"><div className={styles.miniTop}><span>给目标，留出自己寻找的空间</span><strong>TEST · 05</strong></div><div className={styles.usabilityMini}><div className={styles.usabilityMiniCard}><small>参与者</small><strong>我要退回不合适的商品</strong></div><div className={styles.usabilityMiniArrow} aria-hidden="true">→</div><div className={styles.usabilityMiniCard}><small>主持人</small><strong>观察停顿，先不指路</strong></div><p className={styles.usabilityMiniNote}>答案要从行为里长出来，不要写进任务卡。</p></div></figure>;
+  return <figure className={styles.miniHero} aria-label="热区和视线轨迹显示参与者在任务中哪里停顿"><div className={styles.miniTop}><span>让视线留下热区</span><strong>TEST · 05</strong></div><div className={styles.usabilitySignature}><div className={styles.usabilityViewport}><span data-hot="low">订单</span><span data-hot="high">退货</span><span data-hot="mid">筛选</span><i aria-hidden="true" /></div><small>主持人记录停顿，不把答案塞进任务卡。</small></div></figure>;
 }
 
 export function UsabilityTestingTermPage() {
@@ -159,7 +159,7 @@ const mockupSections: [string, string][] = [
 ];
 
 function MockupHero() {
-  return <figure className={styles.miniHero} aria-label="线框确认结构，视觉稿确认外观，原型验证行为"><div className={styles.miniTop}><span>从结构到外观，再到行为</span><strong>MOCKUP · 06</strong></div><div className={styles.mockupMini}><div className={styles.mockupMiniLayer} data-level="wireframe"><small>01</small><strong>线框<br />结构</strong></div><div className={styles.mockupMiniLayer} data-level="mockup"><small>02</small><strong>视觉稿<br />外观</strong></div><div className={styles.mockupMiniLayer} data-level="prototype"><small>03</small><strong>原型<br />行为</strong></div><p className={styles.mockupMiniNote}>越靠后，能被验证的东西越多，也越不能只看一张静态图。</p></div></figure>;
+  return <figure className={styles.miniHero} aria-label="三张半透明稿纸叠在一起，最上层揭示当前能验证的内容"><div className={styles.miniTop}><span>揭开一层，问题就换了</span><strong>MOCKUP · 06</strong></div><div className={styles.mockupSignature}><div className={styles.mockupSheets}><i data-sheet="wireframe">结构</i><i data-sheet="visual">外观</i><i data-sheet="prototype">行为</i></div><small>静态稿能说明外观，不能替交互作证。</small></div></figure>;
 }
 
 export function MockupTermPage() {
@@ -188,7 +188,7 @@ const sitemapSections: [string, string][] = [
 ];
 
 function SitemapHero() {
-  return <figure className={styles.miniHero} aria-label="站点地图把页面从平铺列表组织成栏目层级"><div className={styles.miniTop}><span>页面先归属，再决定入口</span><strong>SITEMAP · 07</strong></div><div className={styles.sitemapMini}><div className={styles.sitemapMiniRoot}>网站根节点</div><div className={styles.sitemapMiniBranches}><div className={styles.sitemapMiniBranch}><small>一级栏目</small><strong>订单</strong></div><div className={styles.sitemapMiniBranch}><small>一级栏目</small><strong>账户</strong></div></div><p className={styles.sitemapMiniNote}>主导航只露出最重要的一级栏目，详情页留在树里。</p></div></figure>;
+  return <figure className={styles.miniHero} aria-label="孤立页面像磁针一样吸附到最合适的栏目，导航只保留一级入口"><div className={styles.miniTop}><span>孤立页面寻找归属</span><strong>SITEMAP · 07</strong></div><div className={styles.sitemapSignature}><div className={styles.sitemapOrbit}><i data-node="root">网站</i><i data-node="orders">订单</i><i data-node="account">账户</i><i data-node="orphan">优惠</i></div><small>先找任务归属，再决定入口。</small></div></figure>;
 }
 
 export function SitemapTermPage() {
@@ -217,7 +217,7 @@ const designTokenSections: [string, string][] = [
 ];
 
 function DesignTokenHero() {
-  return <figure className={styles.miniHero} aria-label="基础值通过语义令牌传到多个组件"><div className={styles.miniTop}><span>基础值 → 语义名 → 组件</span><strong>TOKEN · 08</strong></div><div className={styles.tokenMini}><div className={styles.tokenMiniNode}><small>基础</small><strong>moss-900</strong></div><div className={styles.tokenMiniArrow} aria-hidden="true">→</div><div className={styles.tokenMiniNode} data-kind="semantic"><small>用途</small><strong>color.action</strong></div><div className={styles.tokenMiniArrow} aria-hidden="true">→</div><div className={styles.tokenMiniNode} data-kind="component"><small>组件</small><strong>按钮 · 链接</strong></div><p className={styles.tokenMiniNote}>主题改变的是映射，组件不必各自找颜色。</p></div></figure>;
+  return <figure className={styles.miniHero} aria-label="主题颜色从语义中心像水波一样扩散到按钮和链接"><div className={styles.miniTop}><span>换主题，颜色从中心扩散</span><strong>TOKEN · 08</strong></div><div className={styles.tokenSignature}><div className={styles.tokenRipple}><span>color.action</span><i data-component="button">按钮</i><i data-component="link">链接</i><b aria-hidden="true" /></div><small>组件引用用途，水波替换具体外观。</small></div></figure>;
 }
 
 export function DesignTokenTermPage() {
@@ -236,6 +236,66 @@ export function DesignTokenTermPage() {
       <p id="token-semantic" className="vp-citation-target">如果名称绑定了组件编号或页面位置，例如 <code>card3-gray</code>，它很快就无法表达新的使用场景。<Cite id="token-semantic" sources={designTokenSources} />语义层应该说明意图，组件层再决定如何消费它。</p>
       <p id="token-boundary" className="vp-citation-target">把所有出现过的像素值都做成令牌，也会制造重复和噪音。<Cite id="token-boundary" sources={designTokenSources} />先合并真正重复的决策，再为会跨组件、主题或平台复用的值建立稳定关系。</p>
       <ArticleAside title="主题能换色，不能替你修对比度"><p>切换映射后仍要检查文字、控件和状态的对比度。令牌让变化集中发生，却不自动证明每个组合都满足可读性要求。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const visualHierarchySections: [string, string][] = [
+  ["visual-hierarchy-definition", "先让页面回答：第一眼该看什么"],
+  ["visual-hierarchy-order", "层级要把阅读顺序交代清楚"],
+  ["visual-hierarchy-boundary", "层级不能替结构做决定"],
+];
+
+function VisualHierarchyHero() {
+  return <figure className={styles.miniHero} aria-label="聚光镜扫过同一张申请卡，显示标题、内容和提交动作的注意顺序"><div className={styles.miniTop}><span>聚光镜寻找第一眼</span><strong>HIERARCHY · 09</strong></div><div className={styles.hierarchySpotlight}><div className={styles.hierarchySpotlightCard}><div data-focus="title"><small>任务</small><strong>提交报销申请</strong></div><div data-focus="amount"><small>金额</small><strong>¥1,280</strong></div><p data-focus="detail">月底前上传发票</p><span className={styles.hierarchySpotlightButton} data-focus="action" aria-hidden="true">提交</span><i className={styles.hierarchySpotlightLens} aria-hidden="true" /></div><span className={styles.hierarchySpotlightReadout}>光斑停在主要任务</span></div></figure>;
+}
+
+export function VisualHierarchyTermPage() {
+  return <Article slug="visual-hierarchy" title="视觉层级" subtitle="Visual Hierarchy · 让页面告诉用户先看什么" sources={visualHierarchySources} sections={visualHierarchySections} hero={<VisualHierarchyHero />} intro={<>当标题、金额、说明和按钮都在喊“先看我”，用户就得自己做排序。<strong>视觉层级用大小、字重、对比、位置、分组和留白，把主要任务排在辅助信息前面</strong>；它改变的是注意顺序，不是把内容凭空变重要。</>}>
+    <ArticleSection id="visual-hierarchy-definition" title="先让页面回答：第一眼该看什么">
+      <p id="hierarchy-attention" className="vp-citation-target">视觉层级是把页面元素按预期重要性组织起来，让眼睛有一个可以开始、继续和停下来的路线。<Cite id="hierarchy-attention" sources={visualHierarchySources} />如果所有卡片同样大、同样深、同样挤在一起，用户并不是“看得更完整”，而是在几处焦点之间来回试探。</p>
+      <p id="hierarchy-contrast" className="vp-citation-target">颜色本身没有固定的“重要色”，真正起作用的是它和周围背景、邻近元素之间的对比；字号和字重也一样，只有放在同一页面的相对关系里才会产生顺序。<Cite id="hierarchy-contrast" sources={visualHierarchySources} />所以先写清用户要完成的任务，再决定哪一个信息应该更近、更大或更安静。</p>
+      <VisualHierarchyLesson />
+    </ArticleSection>
+    <ArticleSection id="visual-hierarchy-order" title="层级要把阅读顺序交代清楚">
+      <p id="hierarchy-headings" className="vp-citation-target">标题不是装饰性的“大字”。W3C 建议用描述准确、层级有关系的标题组织内容，让读者能预测每一段讲什么，也能从目录或辅助技术直接跳到需要的部分。<Cite id="hierarchy-headings" sources={visualHierarchySources} />视觉上的大小变化应当和这份内容结构相互支持，不能让一个低层小节看起来像整页主标题。</p>
+      <p id="hierarchy-structure" className="vp-citation-target">在申请报销的例子里，页面标题先说明当前任务，金额和条件帮助用户判断，提交按钮在判断完成后接住动作。<Cite id="hierarchy-structure" sources={visualHierarchySources} />这不是规定所有页面必须从上到下排成三行，而是让视觉位置和真实任务的先后不要互相打架。</p>
+      <p id="hierarchy-type-scale" className="vp-citation-target">Material 3 把 display、headline、title、body、label 作为语义化文字角色，并提供一组有层次的尺寸，而不是鼓励每个文本都独立挑一个字号。<Cite id="hierarchy-type-scale" sources={visualHierarchySources} />项目可以只选其中一部分，但应让“标题”“正文”“控件标签”这几个角色稳定可复用。</p>
+    </ArticleSection>
+    <ArticleSection id="visual-hierarchy-boundary" title="层级不能替结构做决定">
+      <p id="hierarchy-boundary" className="vp-citation-target">把所有内容加粗、加大、加高饱和度，只会让竞争更强；给一个没有清楚任务归属的页面套上漂亮字重，也不能告诉用户下一步该做什么。<Cite id="hierarchy-boundary" sources={visualHierarchySources} />先修标题、分组和内容顺序，再用视觉差异把这个决定表现出来。</p>
+      <p id="hierarchy-responsive" className="vp-citation-target">窄屏时可以把两列改成单列、把按钮放到内容末尾，但主要任务的优先级不应因为屏幕变窄就倒置。<Cite id="hierarchy-responsive" sources={visualHierarchySources} />每次响应式重排后，都要用最长标题、最长说明和真实操作走一遍，确认辅助信息没有挤走主要动作。</p>
+      <ArticleAside title="用遮住标题的方式检查一次"><p>先把页面标题和文字标签遮住，只看位置、大小差异、留白和控件关系。如果仍能猜到“先看什么、接着做什么”，层级可能在工作；如果只能靠说明文字补救，先回到信息结构。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const feedbackSections: [string, string][] = [
+  ["feedback-definition", "先让用户知道：系统听见了吗"],
+  ["feedback-states", "处理中、成功和失败要分别说话"],
+  ["feedback-boundary", "反馈应该留在任务旁边"],
+];
+
+function FeedbackHero() {
+  return <figure className={styles.miniHero} aria-label="一张保存卡片从待保存变成已保存或保留输入的失败状态"><div className={styles.miniTop}><span>结果留在原位置</span><strong>FEEDBACK · 10</strong></div><div className={styles.feedbackSignature}><div className={styles.feedbackStamp}><span>邮箱修改</span><strong><span>待保存</span><span aria-hidden="true">已保存</span></strong><i aria-hidden="true" /></div><small>成功给证据，失败给下一步。</small></div></figure>;
+}
+
+export function FeedbackTermPage() {
+  return <Article slug="feedback" title="反馈" subtitle="Feedback · 让系统状态被看见" sources={feedbackSources} sections={feedbackSections} hero={<FeedbackHero />} intro={<>用户按下“保存”之后，真正想知道的不是页面有没有播放一段动画，而是这次操作有没有被接住、现在还要等多久、失败后能不能继续。<strong>反馈把系统状态翻译成用户当下能采取行动的信号</strong>：可以是原位置的文字变化、按钮状态、进度、声音或触觉。</>}>
+    <ArticleSection id="feedback-definition" title="先让用户知道：系统听见了吗">
+      <p id="feedback-visibility" className="vp-citation-target">系统状态可见，用户才不必靠猜测判断一次点击是否生效。<Cite id="feedback-visibility" sources={feedbackSources} />保存按钮进入处理中、暂时避免重复提交，就是“已收到”的证据；它和最终保存成功仍是两个不同阶段。</p>
+      <p id="feedback-local" className="vp-citation-target">反馈最好贴着发生变化的对象出现。<Cite id="feedback-local" sources={feedbackSources} />编辑邮箱的表单旁边写“已保存 14:32”，比在页面角落闪过一条 Toast 更容易让用户把结果和刚才的输入对应起来。</p>
+      <FeedbackLesson />
+    </ArticleSection>
+    <ArticleSection id="feedback-states" title="处理中、成功和失败要分别说话">
+      <p id="feedback-progress" className="vp-citation-target">处理中应该说明动作已经开始，并在必要时锁住会造成重复的控件；完成后要让结果落地，失败则要明确说出内容是否保留以及下一步是什么。<Cite id="feedback-progress" sources={feedbackSources} />同一个“保存中”文案不能同时承担成功和失败的解释。</p>
+      <p id="feedback-status" className="vp-citation-target">WAI-ARIA 的状态消息用于通知用户发生了什么，而不必把焦点强行抢走。<Cite id="feedback-status" sources={feedbackSources} />成功消息可以被辅助技术读出；错误消息还要告诉用户怎样修复或重试，而不是只留下一个颜色变红的图标。</p>
+      <p id="feedback-failure" className="vp-citation-target">失败时保留已经输入的内容，能让用户从当前任务继续。<Cite id="feedback-failure" sources={feedbackSources} />若请求失败是暂时性的，重试入口应和错误说明一起出现；若是字段错误，则应把提示放在对应字段附近。</p>
+    </ArticleSection>
+    <ArticleSection id="feedback-boundary" title="反馈应该留在任务旁边">
+      <p id="feedback-toast" className="vp-citation-target">Toast 适合补充短暂、非关键的状态，不适合承载用户必须记住的结果。<Cite id="feedback-toast" sources={feedbackSources} />如果用户需要据此决定下一步，就把结果保留在原界面，并给出可操作的出口。</p>
+      <p id="feedback-reduced" className="vp-citation-target">反馈的含义不能只靠动效、颜色或声音。<Cite id="feedback-reduced" sources={feedbackSources} />即使关闭动画或使用辅助技术，按钮文字、状态消息和错误说明也应继续表达“发生了什么、接下来怎么办”。</p>
+      <ArticleAside title="先写状态，再选表现形式"><p>把空闲、处理中、成功、失败和重试分别写出来，再决定用按钮文字、局部提示、进度、声音还是触觉。这样动效是在解释状态，而不是替状态本身。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }
