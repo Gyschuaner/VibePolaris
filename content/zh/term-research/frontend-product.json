@@ -961,5 +961,24 @@
     "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion", "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html"],
     "rewriteRisk": "high",
     "nearDuplicates": ["microinteraction", "media-query", "a11y"]
+  },
+  {
+    "slug": "dockerfile",
+    "mechanism": "Dockerfile 是按顺序执行的构建指令集合：FROM 选基座，COPY/ADD 把 context 中的输入带进来，RUN 产生中间结果，后续指令再从前一层继续；构建器用指令和输入计算缓存，最终把层组合成镜像。",
+    "misconception": "Dockerfile 不是一份每次都从零执行的 shell 脚本，也不等于正在运行的容器。源码改动、依赖清单改动和构建工具改动会让不同层失效；多阶段构建和 .dockerignore 还分别控制运行时边界与发送给构建器的输入。",
+    "demoSignature": "layers: 6 frames; actors=Dockerfile/构建上下文/缓存层/runtime 镜像/构建阶段; phases=FROM 基座→依赖清单→安装层命中→源码层重建→多阶段裁剪→context 过滤; action=改变一个输入",
+    "sourceUrls": [
+      "https://docs.docker.com/reference/dockerfile/",
+      "https://docs.docker.com/build/cache/",
+      "https://docs.docker.com/build/building/multi-stage/",
+      "https://docs.docker.com/build/concepts/context/",
+      "https://docs.docker.com/build/cache/optimize/"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "container-image",
+      "build-tool",
+      "dependency"
+    ]
   }
 ]

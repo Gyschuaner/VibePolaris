@@ -16944,5 +16944,263 @@
         "note": "Web 标准与无障碍要求"
       }
     ]
+  },
+  {
+    "slug": "dockerfile",
+    "lead": "只改一个组件，为什么依赖安装也跟着重跑？",
+    "definition": "Dockerfile 把构建输入按顺序变成镜像层；每层的输入决定缓存能否复用，多阶段和 context 规则再决定最终运行时带走什么。",
+    "boundary": "Dockerfile 是镜像的构建轨迹，不是运行中的容器。缓存命中不代表内容安全，镜像变小也不代表权限、秘密和来源已经处理好。",
+    "sceneKind": "layers",
+    "sceneTitle": "从指令顺序到可复用的镜像层",
+    "actionLabel": "改变一个输入",
+    "actors": [
+      {
+        "id": "dockerfile",
+        "label": "Dockerfile",
+        "detail": "FROM · COPY · RUN 的有序指令",
+        "icon": "code",
+        "group": "构建描述"
+      },
+      {
+        "id": "context",
+        "label": "build context",
+        "detail": "发送给构建器的输入集合",
+        "icon": "file",
+        "group": "输入边界"
+      },
+      {
+        "id": "cache",
+        "label": "缓存层",
+        "detail": "由指令与输入共同决定是否复用",
+        "icon": "memory",
+        "group": "构建结果"
+      },
+      {
+        "id": "build",
+        "label": "build 阶段",
+        "detail": "编译器与开发依赖所在的舞台",
+        "icon": "gear",
+        "group": "中间产物"
+      },
+      {
+        "id": "runtime",
+        "label": "runtime 镜像",
+        "detail": "只带运行所需文件的最终镜像",
+        "icon": "package",
+        "group": "交付产物"
+      }
+    ],
+    "edges": [
+      {
+        "id": "file-context",
+        "from": "dockerfile",
+        "to": "context",
+        "label": "读取输入"
+      },
+      {
+        "id": "context-cache",
+        "from": "context",
+        "to": "cache",
+        "label": "计算缓存键"
+      },
+      {
+        "id": "cache-build",
+        "from": "cache",
+        "to": "build",
+        "label": "复用或重建"
+      },
+      {
+        "id": "build-runtime",
+        "from": "build",
+        "to": "runtime",
+        "label": "复制产物"
+      }
+    ],
+    "frames": [
+      {
+        "label": "先确定基座",
+        "note": "FROM 建立第一层；后面的 COPY 和 RUN 都在这个基座上继续。",
+        "activeIds": [
+          "dockerfile"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "context",
+          "cache",
+          "build",
+          "runtime"
+        ],
+        "values": {
+          "dockerfile": "FROM node:22",
+          "cache": "等待输入"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "依赖清单先进入",
+        "note": "只把 package.json 和 lockfile 带进来，源码还没有影响安装层。",
+        "activeIds": [
+          "dockerfile",
+          "context"
+        ],
+        "doneIds": [
+          "dockerfile"
+        ],
+        "mutedIds": [
+          "build",
+          "runtime"
+        ],
+        "values": {
+          "context": "manifest · 4 KB",
+          "cache": "新层"
+        },
+        "activeEdgeIds": [
+          "file-context"
+        ]
+      },
+      {
+        "label": "安装层命中",
+        "note": "manifest 没变，RUN npm ci 可以复用已有结果；构建器不必重新下载依赖。",
+        "activeIds": [
+          "context",
+          "cache"
+        ],
+        "doneIds": [
+          "dockerfile"
+        ],
+        "mutedIds": [
+          "runtime"
+        ],
+        "values": {
+          "context": "lockfile unchanged",
+          "cache": "cache hit · deps"
+        },
+        "activeEdgeIds": [
+          "context-cache"
+        ]
+      },
+      {
+        "label": "源码改变，后层重建",
+        "note": "src/App.tsx 变化让源码层重跑，但前面的依赖层仍然命中。",
+        "activeIds": [
+          "dockerfile",
+          "context",
+          "cache",
+          "build"
+        ],
+        "doneIds": [
+          "dockerfile",
+          "context",
+          "cache"
+        ],
+        "mutedIds": [
+          "runtime"
+        ],
+        "values": {
+          "context": "src/App.tsx changed",
+          "cache": "deps hit · source miss",
+          "build": "rebuild source layer"
+        },
+        "activeEdgeIds": [
+          "file-context",
+          "context-cache",
+          "cache-build"
+        ]
+      },
+      {
+        "label": "build 与 runtime 分开",
+        "note": "编译器留在 build 阶段，最终只复制 dist；运行时不必带走整套工具链。",
+        "activeIds": [
+          "build",
+          "runtime"
+        ],
+        "doneIds": [
+          "dockerfile",
+          "cache"
+        ],
+        "mutedIds": [
+          "context"
+        ],
+        "values": {
+          "build": "toolchain discarded",
+          "runtime": "dist only"
+        },
+        "activeEdgeIds": [
+          "build-runtime"
+        ]
+      },
+      {
+        "label": "context 先过滤",
+        "note": ".dockerignore 排除 node_modules、日志和本地秘密，构建器收到的输入更小，也更容易审查。",
+        "activeIds": [
+          "dockerfile",
+          "context",
+          "runtime"
+        ],
+        "doneIds": [
+          "cache",
+          "build"
+        ],
+        "mutedIds": [],
+        "values": {
+          "context": "filtered inputs",
+          "runtime": "smaller boundary"
+        },
+        "activeEdgeIds": [
+          "file-context"
+        ]
+      }
+    ],
+    "insight": "看 Dockerfile 时，别只问“最后生成了什么镜像”；先找每一层读取了什么输入、哪里会失效、哪些工具应该在 runtime 之前被丢掉。",
+    "quiz": {
+      "question": "改变 package-lock.json 后，最合理的预期是什么？",
+      "options": [
+        {
+          "label": "依赖安装层需要重新计算",
+          "correct": true
+        },
+        {
+          "label": "只有运行容器的端口会变化",
+          "correct": false
+        },
+        {
+          "label": "源码层和依赖层永远都能直接复用",
+          "correct": false
+        }
+      ],
+      "success": "对：lockfile 是安装步骤的输入，变化后应重新计算依赖层。",
+      "retry": "再看安装层的输入：源码文件与 lockfile 不是同一类变化。"
+    },
+    "prompt": {
+      "title": "审查一份 Dockerfile",
+      "text": "请按指令顺序标出基座、依赖、源码、runtime 和 context 边界；模拟改动一个源码文件与 lockfile 后的缓存结果，并列出不应进入最终镜像或构建 context 的文件。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.docker.com/reference/dockerfile/",
+        "label": "Dockerfile reference",
+        "note": "说明 Dockerfile 指令与构建语义。"
+      },
+      {
+        "url": "https://docs.docker.com/build/cache/",
+        "label": "Build cache",
+        "note": "说明缓存如何依赖构建步骤和输入。"
+      },
+      {
+        "url": "https://docs.docker.com/build/building/multi-stage/",
+        "label": "Multi-stage builds",
+        "note": "说明 build 与 runtime 阶段的复制边界。"
+      },
+      {
+        "url": "https://docs.docker.com/build/concepts/context/",
+        "label": "Build context",
+        "note": "说明构建器能读取哪些输入。"
+      },
+      {
+        "url": "https://docs.docker.com/build/cache/optimize/",
+        "label": "Optimize cache usage",
+        "note": "说明怎样安排依赖与源码来减少无效重建。"
+      }
+    ]
   }
 ]

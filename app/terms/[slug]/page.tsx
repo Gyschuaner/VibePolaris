@@ -101,6 +101,7 @@ import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoi
 import { MediaQueryTermPage } from "@/components/terms/media-query-pages/media-query-page";
 import { CodeSplittingTermPage } from "@/components/terms/code-splitting-pages/code-splitting-page";
 import { LazyLoadingTermPage } from "@/components/terms/lazy-loading-pages/lazy-loading-page";
+import { DockerfileTermPage } from "@/components/terms/dockerfile-pages/dockerfile-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -120,6 +121,7 @@ const articleTermPages = {
   'media-query': MediaQueryTermPage,
   'code-splitting': CodeSplittingTermPage,
   'lazy-loading': LazyLoadingTermPage,
+  dockerfile: DockerfileTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

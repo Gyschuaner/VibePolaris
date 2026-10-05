@@ -1852,5 +1852,54 @@
     "correctText": "稳定的淡入或即时切换可以保留反馈并降低不适。", "wrongText": "删除信息或加速动画都不能满足该偏好。",
     "promptTitle": "为页面动画提供减少动态版本", "prompt": "请检查下面动画中的大幅平移、缩放、视差和循环，使用 prefers-reduced-motion 提供淡入或即时状态替代，并保留操作成功、失败和焦点变化。",
     "relatedSlugs": ["microinteraction", "media-query", "a11y"]
+  },
+  {
+    "zh": "Dockerfile",
+    "en": "Dockerfile",
+    "slug": "dockerfile",
+    "cat": "前端",
+    "say": "Dockerfile 把基座、依赖、源码和运行时边界排成一条可复用的构建轨迹。",
+    "aliases": [
+      "Docker 构建文件",
+      "容器构建文件",
+      "镜像构建说明"
+    ],
+    "question": "为什么只改一个源文件，Docker 构建却还要重新安装依赖？",
+    "definition": "Dockerfile 是按顺序执行的构建指令集合。构建器把 FROM、COPY、RUN 等指令及其输入组成层，并根据输入变化决定哪些层可以复用；多阶段构建还能把编译工具留在 build 阶段。",
+    "boundary": "Dockerfile 描述镜像怎样构建，不是运行中的容器，也不等于完整的部署配置。缓存命中、context 范围、运行时权限和秘密管理仍要分别检查。",
+  "demoType": "lifecycle",
+    "demoTitle": "一行输入变化，哪一层需要重建",
+    "demoSteps": [
+      {
+        "label": "先排慢变化输入",
+        "value": "FROM → manifest → RUN install",
+        "note": "依赖清单放在源码前面，安装层才有机会跨源码改动复用。"
+      },
+      {
+        "label": "再放高频源码",
+        "value": "COPY src/ → source layer rebuild",
+        "note": "组件变动只重做后面的层，不把前面的安装一起推倒。"
+      },
+      {
+        "label": "最后收紧边界",
+        "value": "build stage → runtime + .dockerignore",
+        "note": "运行镜像只带产物，context 也先排除日志、依赖和本地秘密。"
+      }
+    ],
+    "quizQuestion": "想让改动一个组件时仍能复用依赖安装层，哪种顺序更合适？",
+    "quizOptions": [
+      "先复制依赖清单并安装，再复制源码",
+      "先复制整个仓库再安装依赖",
+      "每次构建都主动清空所有缓存"
+    ],
+    "correctText": "先把变化慢的 manifest 和安装步骤单独成层，源码变化时后面的层才会重建。",
+    "wrongText": "先复制整个仓库会让源码变化更早打掉缓存；主动清空缓存也会丢掉本来可以复用的结果。",
+    "promptTitle": "检查一个 Dockerfile 的重建边界",
+    "prompt": "请根据下面 Dockerfile 标出每条指令的输入、可能的缓存边界、源码改动和 lockfile 改动分别会重建什么；再检查多阶段 runtime、.dockerignore、非 root 用户和秘密是否被误写进镜像层。",
+    "relatedSlugs": [
+      "container-image",
+      "build-tool",
+      "dependency"
+    ]
   }
 ]
