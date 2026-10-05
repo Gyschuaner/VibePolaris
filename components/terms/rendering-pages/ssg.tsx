@@ -8,7 +8,6 @@ type Stage = "edited" | "built" | "published";
 
 export function SsgLesson() {
   const [stage, setStage] = useState<Stage>("edited");
-  const version = stage === "edited" ? "v1" : "v2";
   return <div className={styles.lab} role="region" aria-label="静态生成构建和发布演示">
     <div className={styles.labHeader}><div><span>读者任务</span><strong>改源文件，再决定何时重新构建</strong></div><button type="button" onClick={() => setStage("edited")} aria-label="重置静态生成演示"><ArrowCounterClockwise size={17} /></button></div>
     <div className={styles.choiceRow} role="group" aria-label="推进静态生成流程"><button type="button" aria-pressed={stage === "edited"} onClick={() => setStage("edited")}>改内容</button><button type="button" aria-pressed={stage === "built"} onClick={() => setStage("built")}>重新构建</button><button type="button" aria-pressed={stage === "published"} onClick={() => setStage("published")}>发布 CDN</button></div>

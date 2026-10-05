@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, CheckCircle, Clock, Database, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, CheckCircle, Clock, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import styles from "./RenderingConcept.module.css";
 
