@@ -10749,8 +10749,8 @@
     "definition": "依赖清单声明直接依赖允许的版本范围；锁文件记录包管理器解析后的确切版本、传递依赖（也叫间接依赖）和完整依赖树，安装命令可以复用这份结果。",
     "boundary": "它不替代依赖清单，也不保证包本身安全、安装脚本无害，或平台相关的包在不同系统上装出相同产物。依赖更新仍要自己改清单，让包管理器重新生成锁文件，再跑测试。",
     "sceneKind": "contract",
-    "sceneTitle": "从版本范围到可复现的依赖树",
-    "actionLabel": "选择安装路径",
+    "sceneTitle": "锁文件封存一次解析",
+    "actionLabel": "切换锁文件",
     "actors": [
       {
         "id": "manifest",
@@ -10948,8 +10948,8 @@
     "definition": "单体仓库把多个应用或包放在同一仓库中，统一管理脚本、依赖和变更。相关改动可以作为一次提交保存，再根据应用或包之间的依赖图决定哪些项目需要重新构建。",
     "boundary": "它说的是代码仓库的组织方式，不等于单体架构。单体架构通常把整个系统作为一个单元来运行和部署；一个 monorepo 里仍可以有多个独立服务。",
     "sceneKind": "network",
-    "sceneTitle": "一次改动沿包依赖图传播",
-    "actionLabel": "点击改动文件",
+    "sceneTitle": "依赖影响范围",
+    "actionLabel": "选择改动包",
     "actors": [
       {
         "id": "repo",
@@ -11146,8 +11146,8 @@
     "definition": "环境变量是进程可以按名称读取的键值对。父环境在启动新进程时会复制一份给它，应用再读取这份配置；父环境后来改变，也不会自动传进已经在运行的进程。",
     "boundary": "服务端可以让秘密管理系统把凭据注入进程，但环境变量本身不是密钥库。前端构建时的变量可能被写进浏览器资源，敏感值还要控制谁能读到它：日志和构建产物都可能把它带出去。",
     "sceneKind": "layers",
-    "sceneTitle": "父环境变化与进程配置快照",
-    "actionLabel": "修改变量并重启",
+    "sceneTitle": "进程配置快照",
+    "actionLabel": "改值并重启",
     "actors": [
       {
         "id": "shell",
@@ -11351,8 +11351,8 @@
     "definition": "构建工具会生成源映射，把生成代码的文件、行列位置对应到原始源码的位置。生成文件末尾的 sourceMappingURL 注释会告诉调试器 map 在哪里；调试器读取后，可以在原始文件上显示错误并设置断点。",
     "boundary": "源映射不会修复错误，也不改变正在运行的程序。map 文件可能包含源码文件名、路径甚至源码内容；发布前可以随站点公开、只上传给错误监控服务，或者干脆不发布。",
     "sceneKind": "matrix",
-    "sceneTitle": "从生成位置回到原始语句",
-    "actionLabel": "点击堆栈坐标",
+    "sceneTitle": "坐标透镜回到源码",
+    "actionLabel": "切换 map",
     "actors": [
       {
         "id": "generated",
@@ -11531,8 +11531,8 @@
     "definition": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等问题；部分诊断可以自动修复，CI 或提交钩子也可以把严重问题设为门槛。",
     "boundary": "它只检查规则能描述的源码模式，不执行完整业务流程，所以不能替代测试和运行时监控。它能发现什么取决于启用了哪些规则：关闭规则只是停止相应报告。",
     "sceneKind": "tree",
-    "sceneTitle": "规则如何沿语法树产生诊断",
-    "actionLabel": "启停一条规则",
+    "sceneTitle": "规则扫描留下诊断",
+    "actionLabel": "启停规则",
     "actors": [
       {
         "id": "code",
@@ -11736,8 +11736,8 @@
     "definition": "格式化器先读取代码结构，再按固定选项重新打印源码。它主要改变缩进、空白、换行和引号等外观，目标是保留程序含义，让代码审查少看排版差异。",
     "boundary": "它不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或配置有变化时仍要跑测试，不能把“通常不改含义”当成绝对保证。",
     "sceneKind": "transform",
-    "sceneTitle": "代码结构不变，排版按规则重印",
-    "actionLabel": "调整行宽规则",
+    "sceneTitle": "折行标尺保持结构",
+    "actionLabel": "拖动行宽",
     "actors": [
       {
         "id": "before",
@@ -11933,8 +11933,8 @@
     "definition": "表达式是可以求值并产生一个值的代码片段；这个值可以接着用在赋值、函数调用或条件判断里。语句负责组织动作和控制流程，里面可以包含表达式，但语句本身不一定有可用返回值。",
     "boundary": "表达式也可能有副作用，例如赋值会改变状态，函数调用也可能带来副作用。求值是按语言规则计算结果；执行一条语句时，除了求值还可能要走控制流程。示例里的 * 和 × 只是同一个乘法运算的两种写法。",
     "sceneKind": "tree",
-    "sceneTitle": "表达式树怎样从叶子求到根",
-    "actionLabel": "修改叶子值",
+    "sceneTitle": "值树自下而上求值",
+    "actionLabel": "修改叶值",
     "actors": [
       {
         "id": "price",
@@ -12137,8 +12137,8 @@
     "definition": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用都会建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
     "boundary": "函数不一定有返回值，也不一定是纯函数。它可能修改或读取函数外的状态，或执行 I/O（读写文件、网络等），所以传入相同的实参，不一定每次都得到相同的结果。",
     "sceneKind": "timeline",
-    "sceneTitle": "一次函数调用怎样进出局部环境",
-    "actionLabel": "进入下一步",
+    "sceneTitle": "调用帧进出函数",
+    "actionLabel": "切换外部状态",
     "actors": [
       {
         "id": "caller",
@@ -12339,8 +12339,8 @@
     "definition": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
     "boundary": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
     "sceneKind": "assembly",
-    "sceneTitle": "一次调用怎样绑定参数",
-    "actionLabel": "省略或交换实参",
+    "sceneTitle": "实参落入命名槽位",
+    "actionLabel": "选择调用形式",
     "actors": [
       {
         "id": "definition",
@@ -12567,8 +12567,8 @@
     "definition": "return 把值交给调用方；调用方可以保存、继续运算或忽略它。",
     "boundary": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
     "sceneKind": "route",
-    "sceneTitle": "日志输出与返回通道分叉",
-    "actionLabel": "删除 return",
+    "sceneTitle": "日志与返回双通道",
+    "actionLabel": "保留或删除 return",
     "actors": [
       {
         "id": "call",
@@ -12751,6 +12751,11 @@
         "url": "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
         "label": "ECMAScript 规范 · Return Statement",
         "note": "规定 JavaScript return 语句的执行语义。"
+      },
+      {
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/console",
+        "label": "MDN · Console API",
+        "note": "说明 console.log 把消息写入开发者控制台，属于观察输出，不是函数返回通道。"
       },
       {
         "url": "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
