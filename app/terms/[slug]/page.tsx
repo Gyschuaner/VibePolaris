@@ -115,7 +115,7 @@ import { SsrTermPage } from "@/components/terms/rendering-pages/ssr-page";
 import { SsgTermPage } from "@/components/terms/rendering-pages/ssg-page";
 import { RoutingTermPage } from "@/components/terms/rendering-pages/routing-page";
 import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-storage-page";
-import { ConversionRateTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
+import { ConversionRateTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage, UsabilityTestingTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -153,6 +153,7 @@ const articleTermPages = {
   iteration: IterationTermPage,
   'conversion-rate': ConversionRateTermPage,
   funnel: FunnelTermPage,
+  'usability-testing': UsabilityTestingTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

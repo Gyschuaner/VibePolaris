@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { conversionRateSources, focusManagementSources, funnelSources, iterationSources } from "@/lib/product-design-sources";
-import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson } from "./ProductDesignLessons";
+import { conversionRateSources, focusManagementSources, funnelSources, iterationSources, usabilityTestingSources } from "@/lib/product-design-sources";
+import { ConversionRateLesson, FocusManagementLesson, FunnelLesson, IterationLesson, UsabilityTestingLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -119,6 +119,35 @@ export function FunnelTermPage() {
       <p id="funnel-window" className="vp-citation-target">完成窗口规定用户从进入漏斗到完成全部步骤最长可以等多久。<Cite id="funnel-window" sources={funnelSources} />把 30 分钟改成 10 分钟，会让等待更久的人暂时落在漏斗外，人数下降不必然表示体验变差。</p>
       <p id="funnel-open" className="vp-citation-target">发现某一步掉得多之后，下一步是补证据：看失败日志、观察真实任务，或针对一个具体改动做实验。<Cite id="funnel-open" sources={funnelSources} />直接删除步骤或把掉落归因于颜色，都是把定位结果误当成原因。</p>
       <ArticleAside title="先保留口径，再比较版本"><p>比较两个版本时，起点用户、步骤顺序、开放/封闭模式、去重单位和完成窗口都要一致。只要规则换了，图表上的“上升”或“下降”就可能只是测量方式变了。</p></ArticleAside>
+    </ArticleSection>
+  </Article>;
+}
+
+const usabilityTestingSections: [string, string][] = [
+  ["usability-testing-definition", "任务给目标，不给操作答案"],
+  ["usability-testing-observation", "主持人把停顿和提示都留下"],
+  ["usability-testing-boundary", "一次测试发现问题，不替全体用户下结论"],
+];
+
+function UsabilityTestingHero() {
+  return <figure className={styles.miniHero} aria-label="可用性测试让参与者独立完成目标，主持人观察并记录"><div className={styles.miniTop}><span>给目标，留出自己寻找的空间</span><strong>TEST · 05</strong></div><div className={styles.usabilityMini}><div className={styles.usabilityMiniCard}><small>参与者</small><strong>我要退回不合适的商品</strong></div><div className={styles.usabilityMiniArrow} aria-hidden="true">→</div><div className={styles.usabilityMiniCard}><small>主持人</small><strong>观察停顿，先不指路</strong></div><p className={styles.usabilityMiniNote}>答案要从行为里长出来，不要写进任务卡。</p></div></figure>;
+}
+
+export function UsabilityTestingTermPage() {
+  return <Article slug="usability-testing" title="可用性测试" subtitle="Usability Testing · 看用户怎样完成真实任务" sources={usabilityTestingSources} sections={usabilityTestingSections} hero={<UsabilityTestingHero />} intro={<>可用性测试不是请用户评价“喜不喜欢”，而是给一个可信的目标，看他能不能靠自己的理解完成。<strong>研究者要记录用户做了什么、在哪里停顿、何时需要帮助</strong>；测试的是服务，不是把参与者判对错。</>}>
+    <ArticleSection id="usability-testing-definition" title="任务给目标，不给操作答案">
+      <p id="usability-task" className="vp-citation-target">好的任务像真实生活中的一句请求：说明想达成什么，不透露按钮名称、菜单位置或正确路径。<Cite id="usability-task" sources={usabilityTestingSources} />“退回一件尺码不合适的商品”让参与者自己寻找入口，“点击订单详情里的售后按钮”则提前教了答案。</p>
+      <p id="usability-plan" className="vp-citation-target">开始测试前，先写研究问题、目标用户、任务和完成标准，再决定每轮要观察哪一段服务。<Cite id="usability-plan" sources={usabilityTestingSources} />这样主持人记录的是能帮助决策的证据，而不是一堆没有上下文的意见。</p>
+      <UsabilityTestingLesson />
+    </ArticleSection>
+    <ArticleSection id="usability-testing-observation" title="主持人把停顿和提示都留下">
+      <p id="usability-observe" className="vp-citation-target">主持人应该让参与者边做边说，自己主要观察、倾听和记下发生了什么。<Cite id="usability-observe" sources={usabilityTestingSources} />参与者回看订单两次、在筛选器停住、说“我不知道从哪开始”，都比一句“这里不好用”更接近可修复的问题。</p>
+      <p id="usability-prompt" className="vp-citation-target">用户完全卡住时可以按事先写好的规则给最小提示，但提示本身也要记录。<Cite id="usability-prompt" sources={usabilityTestingSources} />提示之后仍然完成，不代表入口天然清楚；它说明这次任务在主持人的帮助下完成了。</p>
+    </ArticleSection>
+    <ArticleSection id="usability-testing-boundary" title="一次测试发现问题，不替全体用户下结论">
+      <p id="usability-analysis" className="vp-citation-target">每轮结束后尽快把笔记、录音和观察整理成共同认可的发现，再决定下一步要修什么或继续验证什么。<Cite id="usability-analysis" sources={usabilityTestingSources} />把“3 人都在月份筛选处停顿”写成现象，把“筛选器标签让人误解”写成待验证的解释，两者不能混在同一句里。</p>
+      <p id="usability-boundary" className="vp-citation-target">少量参与者擅长暴露具体可用性问题，不足以直接估算所有用户中有多少人会失败。<Cite id="usability-boundary" sources={usabilityTestingSources} />要回答比例或版本差异，还需要合适的量化数据、更多样本或实验设计。</p>
+      <ArticleAside title="把“成功”拆开记录"><p>完成任务只是一个结果。是否绕路、是否需要提示、是否读懂了状态、是否能在下一次独立完成，都会影响你对界面问题的判断。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }

@@ -27,3 +27,10 @@ export const funnelSources = [
   source("Amplitude", "Funnel Analysis FAQ", "https://amplitude.com/docs/analytics/charts/funnel-analysis/faq", ["funnel-order", "funnel-open"]),
   source("Amplitude", "Build your first funnel", "https://amplitude.com/docs/quick-guides/build-your-first-funnel", ["funnel-route", "funnel-scope"]),
 ];
+
+export const usabilityTestingSources = [
+  source("GOV.UK Service Manual", "Using moderated usability testing", "https://www.gov.uk/service-manual/user-research/using-moderated-usability-testing", ["usability-task", "usability-observe", "usability-prompt"]),
+  source("GOV.UK Service Manual", "Plan user research for your service", "https://www.gov.uk/service-manual/user-research/plan-user-research-for-your-service", ["usability-plan", "usability-boundary"]),
+  source("GOV.UK Service Manual", "Analyse a research session", "https://www.gov.uk/service-manual/user-research/analyse-a-research-session", ["usability-analysis"]),
+  source("Nielsen Norman Group", "Task Scenarios for Usability Testing", "https://www.nngroup.com/articles/task-scenarios-usability-testing/", ["usability-task", "usability-boundary"]),
+];
