@@ -249,15 +249,25 @@
     "rewriteRisk": "medium",
     "nearDuplicates": ["css", "positioning", "css-grid"]
   },
-  {
-    "slug": "cascade",
-    "mechanism": "浏览器先按来源和重要性筛选声明，再比较级联层、作用域邻近度、优先级和出现顺序，选出每个属性的级联值。",
-    "misconception": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
-    "demoSignature": "建议 5 帧：同一按钮收到 user-agent、作者层、layer、inline 四叠声明；用户逐个启用规则，候选先按来源与重要性分组，再按层、优先级、顺序淘汰；最终声明点亮，改层顺序后胜者随之变化。",
-    "sourceUrls": ["https://www.w3.org/TR/css-cascade-6/", "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade"],
-    "rewriteRisk": "high",
-    "nearDuplicates": ["specificity", "css-selector", "css"]
-  },
+{
+  "slug": "cascade",
+  "mechanism": "浏览器先按来源和重要性筛选声明，再比较级联层、优先级、作用域邻近度和出现顺序，为同一属性留下一个级联值。",
+  "misconception": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
+  "demoSignature": "5 帧首图按来源→作者层→主题层→未分层→行内值逐步点亮；工作台可把普通候选逐张放入，切换 !important 后让普通区暂停、重要声明进入独立比较区，并支持重置回到第一张重新播放，显示当前 color 与每条声明的淘汰理由。",
+  "sourceUrls": [
+    "https://www.w3.org/TR/css-cascade-6/",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
+    "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Cascade_layers",
+    "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important"
+  ],
+  "rewriteRisk": "high",
+  "nearDuplicates": [
+    "specificity",
+    "css-selector",
+    "css"
+  ]
+},
   {
     "slug": "specificity",
     "mechanism": "同一层叠来源中的选择器按 ID、类/属性/伪类、类型/伪元素三个列依次比较，而不是把所有字符简单相加。",

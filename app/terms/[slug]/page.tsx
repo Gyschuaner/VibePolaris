@@ -105,6 +105,7 @@ import { DockerfileTermPage } from "@/components/terms/dockerfile-pages/dockerfi
 import { InfrastructureAsCodeTermPage } from "@/components/terms/infrastructure-as-code-pages/infrastructure-as-code-page";
 import { CdnTermPage } from "@/components/terms/cdn-pages/cdn-page";
 import { VisualRegressionTestingTermPage } from "@/components/terms/visual-regression-testing-pages/visual-regression-testing-page";
+import { CascadeTermPage } from "@/components/terms/cascade-pages/cascade-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -128,6 +129,7 @@ const articleTermPages = {
   'infrastructure-as-code': InfrastructureAsCodeTermPage,
   cdn: CdnTermPage,
   'visual-regression-testing': VisualRegressionTestingTermPage,
+  cascade: CascadeTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

@@ -569,20 +569,55 @@
       "positioning"
     ]
   },
-  {
-    "zh": "层叠", "en": "Cascade", "slug": "cascade", "cat": "前端",
-    "say": "多条 CSS 规则同时命中时，浏览器按来源、重要性、优先级和顺序选出最终值。",
-    "aliases": ["CSS 层叠", "cascade", "样式覆盖"],
-    "question": "开发者工具里能看到规则，为什么它却被划掉了？",
-    "definition": "层叠是浏览器解决样式冲突的规则。它先比较声明来源和重要性，再比较选择器优先级，条件相同才看出现顺序。",
-    "boundary": "层叠处理的是同一属性的候选声明；继承用于把部分属性从父元素传给子元素，两者不是同一机制。",
-    "demoType": "branch", "demoTitle": "浏览器选择最终颜色",
-    "demoSteps": [{"label":"收集候选声明","value":"button、.primary、行内样式","note":"只保留能够匹配当前元素的规则。"},{"label":"比较层叠顺序","value":"来源与优先级逐级判断","note":"失败的声明被排除。"},{"label":"得到计算值","value":"color: #17351f","note":"开发者工具会标出获胜规则。"}],
-    "quizQuestion": "两个同等优先级的规则冲突时，通常哪条生效？", "quizOptions": ["样式表中靠后的规则", "选择器字数更多的规则", "属性值更长的规则"],
-    "correctText": "其他条件相同时，出现顺序靠后的声明生效。", "wrongText": "字数和属性值长度不参与层叠判断。",
-    "promptTitle": "解释一处样式覆盖", "prompt": "请按 CSS 层叠顺序分析下面几条声明，指出最终生效的值、每条未生效的原因，以及不增加 !important 的修复方式。",
-    "relatedSlugs": ["css-selector", "specificity", "css"]
-  },
+{
+  "zh": "层叠",
+  "en": "Cascade",
+  "slug": "cascade",
+  "cat": "前端",
+  "say": "多条 CSS 规则同时命中时，浏览器按来源、重要性、优先级和顺序选出最终值。",
+  "aliases": [
+    "CSS 层叠",
+    "cascade",
+    "样式覆盖"
+  ],
+  "question": "开发者工具里能看到规则，为什么它却被划掉了？",
+  "definition": "层叠是浏览器解决样式冲突的规则：它先比较声明来源和重要性，再比较层、选择器优先级、作用域距离，条件都相同时才看出现顺序。",
+  "boundary": "层叠处理的是同一属性的候选声明；继承用于把部分属性从父元素传给子元素，两者不是同一机制。",
+  "demoType": "branch",
+  "demoTitle": "浏览器选择最终颜色",
+  "demoSteps": [
+    {
+      "label": "收集候选声明",
+      "value": "UA · base · theme · 未分层 · inline",
+      "note": "只保留能够匹配当前按钮的规则，并把每条声明的来源和所属层写出来。"
+    },
+    {
+      "label": "普通声明逐关筛",
+      "value": "来源 → 层 → 优先级 → 顺序",
+      "note": "每放入一张便签，就显示它在哪一关退出；未分层普通样式属于隐式最终层。"
+    },
+    {
+      "label": "切换 !important",
+      "value": "普通区暂停，重要区独立比较",
+      "note": "重要声明不会给选择器加分，而是进入另一场比较；切回普通模式并按重置，旧的 navy 结果会被清掉，重新从浏览器默认值开始。"
+    }
+  ],
+  "quizQuestion": "两个同等优先级的规则冲突时，通常哪条生效？",
+  "quizOptions": [
+    "样式表中靠后的规则",
+    "选择器字数更多的规则",
+    "属性值更长的规则"
+  ],
+  "correctText": "其他条件相同时，出现顺序靠后的声明生效。",
+  "wrongText": "字数和属性值长度不参与层叠判断。",
+  "promptTitle": "解释一处样式覆盖",
+  "prompt": "请按 CSS 层叠顺序分析下面几条声明，指出普通模式的最终生效值、每条未生效的原因；再切换到 !important，说明比较区为何改变，并给出不增加 !important 的修复方式。",
+  "relatedSlugs": [
+    "css-selector",
+    "specificity",
+    "css"
+  ]
+},
   {
     "zh": "CSS 优先级", "en": "Specificity", "slug": "specificity", "cat": "前端",
     "say": "当多条规则来源和重要性相同，选择器的具体程度决定谁更可能生效。",

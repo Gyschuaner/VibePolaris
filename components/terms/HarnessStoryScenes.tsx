@@ -50,8 +50,8 @@ const requestSteps = [
   { title: "模型根据日志继续判断", caption: "模型看到日志，决定接着查看 app.py。", active: "model", path: "M 480 200 Q 235 260 170 95", code: 'read_file("app.py")' },
 ];
 
-export function SceneControls({ scene, labels }: { scene: ReturnType<typeof useScene>; labels: string[] }) {
-  return <div className={styles.sceneControls}>
+export function SceneControls({ scene, labels, compact = false }: { scene: ReturnType<typeof useScene>; labels: string[]; compact?: boolean }) {
+  return <div className={`${styles.sceneControls} ${compact ? styles.sceneControlsCompact : ""}`}>
     <button type="button" className={styles.play} aria-pressed={scene.playing} onClick={scene.toggle} aria-label={scene.playing ? "暂停原理演示" : scene.step === labels.length - 1 ? "重播原理演示" : "播放原理演示"}>
       {scene.playing ? <Pause size={17} weight="fill" /> : scene.step === labels.length - 1 ? <ArrowCounterClockwise size={17} /> : <Play size={17} weight="fill" />}
       {scene.playing ? "暂停" : scene.step === labels.length - 1 ? "再看一次" : "看它运转"}

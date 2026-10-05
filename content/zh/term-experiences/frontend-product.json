@@ -3609,167 +3609,241 @@
       }
     ]
   },
-  {
-    "slug": "cascade",
-    "lead": "开发者工具里能看到规则，为什么它却被划掉了？",
-    "definition": "浏览器先按来源和重要性筛选声明，再比较级联层、作用域邻近度、优先级和出现顺序，选出每个属性的级联值。",
-    "boundary": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
-    "sceneKind": "layers",
-    "sceneTitle": "四层声明如何筛出最终颜色",
-    "actionLabel": "加入下一条声明",
-    "actors": [
-      {
-        "id": "ua",
-        "label": "浏览器默认",
-        "detail": "button { color: black }",
-        "icon": "browser",
-        "group": "来源"
-      },
-      {
-        "id": "author",
-        "label": "作者样式",
-        "detail": "@layer base",
-        "icon": "code",
-        "group": "来源"
-      },
-      {
-        "id": "theme",
-        "label": "主题层",
-        "detail": "@layer theme",
-        "icon": "component",
-        "group": "来源"
-      },
-      {
-        "id": "inline",
-        "label": "行内样式",
-        "detail": "style=…",
-        "icon": "file",
-        "group": "来源"
-      },
-      {
-        "id": "winner",
-        "label": "最终值",
-        "detail": "color",
-        "icon": "spark",
-        "group": "结果"
-      }
-    ],
-    "edges": [],
-    "frames": [
-      {
-        "label": "默认值先上场",
-        "note": "只有浏览器默认声明时，按钮文字为黑色。",
-        "activeIds": [
-          "ua",
-          "winner"
-        ],
-        "doneIds": [
-          "ua"
-        ],
-        "mutedIds": [
-          "author",
-          "theme",
-          "inline"
-        ],
-        "values": {
-          "winner": "black"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "作者来源胜出",
-        "note": "加入作者样式后，来源优先级更高，默认声明被划掉。",
-        "activeIds": [
-          "author",
-          "winner"
-        ],
-        "doneIds": [
-          "ua"
-        ],
-        "mutedIds": [
-          "theme",
-          "inline"
-        ],
-        "values": {
-          "winner": "forestgreen"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "层顺序再比较",
-        "note": "theme 层排在 base 之后，即使选择器更简单也覆盖前一层。",
-        "activeIds": [
-          "author",
-          "theme",
-          "winner"
-        ],
-        "doneIds": [
-          "ua"
-        ],
-        "mutedIds": [
-          "inline"
-        ],
-        "values": {
-          "winner": "olive"
-        },
-        "activeEdgeIds": []
-      },
-      {
-        "label": "行内值进入",
-        "note": "普通行内声明继续胜出；打开作者 !important 后，比较会回到重要声明层。",
-        "activeIds": [
-          "inline",
-          "winner"
-        ],
-        "doneIds": [
-          "ua",
-          "author",
-          "theme"
-        ],
-        "mutedIds": [],
-        "values": {
-          "winner": "tomato"
-        },
-        "activeEdgeIds": []
-      }
-    ],
-    "insight": "层叠先比较来源和重要性，再看层、优先级与先后顺序，不能只数选择器。",
-    "quiz": {
-      "question": "两个同等优先级的规则冲突时，通常哪条生效？",
-      "options": [
-        {
-          "label": "样式表中靠后的规则",
-          "correct": true
-        },
-        {
-          "label": "选择器字数更多的规则",
-          "correct": false
-        },
-        {
-          "label": "属性值更长的规则",
-          "correct": false
-        }
+{
+  "slug": "cascade",
+  "lead": "开发者工具里能看到规则，为什么它却被划掉了？",
+  "definition": "浏览器先按来源和重要性筛选声明，再比较级联层、优先级、作用域邻近度和出现顺序，为同一属性留下一个级联值。",
+  "boundary": "层叠不是“后写覆盖前写”的单一规则；后写只在前面条件都相等时才决定结果。",
+  "sceneKind": "layers",
+  "sceneTitle": "来源、层与重要性怎样筛出最终颜色",
+  "actionLabel": "加入下一张便签",
+  "actors": [
+    {
+      "id": "ua",
+      "label": "浏览器默认",
+      "detail": "button { color: black }",
+      "icon": "browser",
+      "group": "来源"
+    },
+    {
+      "id": "author",
+      "label": "base 层",
+      "detail": "@layer base",
+      "icon": "code",
+      "group": "层"
+    },
+    {
+      "id": "theme",
+      "label": "theme 层",
+      "detail": "@layer theme",
+      "icon": "component",
+      "group": "层"
+    },
+    {
+      "id": "plain",
+      "label": "未分层样式",
+      "detail": ".button { color: tomato }",
+      "icon": "file",
+      "group": "作者"
+    },
+    {
+      "id": "inline",
+      "label": "行内样式",
+      "detail": "style=\"color: plum\"",
+      "icon": "file",
+      "group": "作者"
+    },
+    {
+      "id": "important",
+      "label": "重要声明",
+      "detail": "color: navy !important",
+      "icon": "key",
+      "group": "重要性"
+    },
+    {
+      "id": "winner",
+      "label": "最终值",
+      "detail": "computed color",
+      "icon": "spark",
+      "group": "结果"
+    }
+  ],
+  "edges": [],
+  "frames": [
+    {
+      "label": "来源先分组",
+      "note": "只有浏览器默认声明时，按钮文字为黑色；其他便签还没有进入比较。",
+      "activeIds": [
+        "ua",
+        "winner"
       ],
-      "success": "其他条件相同时，出现顺序靠后的声明生效。",
-      "retry": "字数和属性值长度不参与层叠判断。"
+      "doneIds": [
+        "ua"
+      ],
+      "mutedIds": [
+        "author",
+        "theme",
+        "inline",
+        "important"
+      ],
+      "values": {
+        "winner": "black"
+      },
+      "activeEdgeIds": []
     },
-    "prompt": {
-      "title": "解释一处样式覆盖",
-      "text": "请按 CSS 层叠顺序分析下面几条声明，指出最终生效的值、每条未生效的原因，以及不增加 !important 的修复方式。"
+    {
+      "label": "作者层进入",
+      "note": "base 层来自作者普通样式，浏览器默认声明先退出。",
+      "activeIds": [
+        "author",
+        "winner"
+      ],
+      "doneIds": [
+        "ua"
+      ],
+      "mutedIds": [
+        "theme",
+        "inline",
+        "important"
+      ],
+      "values": {
+        "winner": "seagreen"
+      },
+      "activeEdgeIds": []
     },
-    "sources": [
+    {
+      "label": "后来层胜出",
+      "note": "theme 层后来创建，先在层这一关淘汰 base；选择器优先级还没有出场。",
+      "activeIds": [
+        "theme",
+        "winner"
+      ],
+      "doneIds": [
+        "ua",
+        "author"
+      ],
+      "mutedIds": [
+        "inline",
+        "important"
+      ],
+      "values": {
+        "winner": "olive"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "普通行内值落定",
+      "note": "未分层和行内普通声明继续加入，行内值在作者样式表之后留下 plum。",
+      "activeIds": [
+        "inline",
+        "winner"
+      ],
+      "doneIds": [
+        "ua",
+        "author",
+        "theme"
+      ],
+      "mutedIds": [
+        "important"
+      ],
+      "values": {
+        "winner": "plum"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "重要区重新比较",
+      "note": "切换 !important 后普通区暂停，重要声明进入独立比较区并把结果改成 navy。",
+      "activeIds": [
+        "important",
+        "winner"
+      ],
+      "doneIds": [
+        "ua",
+        "author",
+        "theme",
+        "inline"
+      ],
+      "mutedIds": [],
+      "values": {
+        "winner": "navy"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "重置普通模式",
+      "note": "重置会清掉重要区的结果，回到浏览器默认值；旧的 navy 不会冒充新一轮结果。",
+      "activeIds": [
+        "ua",
+        "winner"
+      ],
+      "doneIds": [
+        "ua"
+      ],
+      "mutedIds": [
+        "author",
+        "theme",
+        "inline",
+        "important"
+      ],
+      "values": {
+        "winner": "black"
+      },
+      "activeEdgeIds": []
+    }
+  ],
+  "insight": "层叠先比较来源与重要性，再看层、优先级、作用域和顺序；!important 会进入独立的比较区，不能把它当成选择器加分。",
+  "quiz": {
+    "question": "两个同等优先级的规则冲突时，通常哪条生效？",
+    "options": [
       {
-        "url": "https://www.w3.org/TR/css-cascade-6/",
-        "label": "W3C Specification",
-        "note": "Web 标准与无障碍要求"
+        "label": "样式表中靠后的规则",
+        "correct": true
       },
       {
-        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade",
-        "label": "MDN Web Docs",
-        "note": "浏览器行为与常见用法"
+        "label": "选择器字数更多的规则",
+        "correct": false
+      },
+      {
+        "label": "属性值更长的规则",
+        "correct": false
       }
-    ]
+    ],
+    "success": "其他条件相同时，出现顺序靠后的声明生效。",
+    "retry": "字数和属性值长度不参与层叠判断。"
   },
+  "prompt": {
+    "title": "解释一处样式覆盖",
+    "text": "请按 CSS 层叠顺序分析下面几条声明，指出普通模式的最终值、每条未生效的原因，再切换到 !important 说明比较区为何改变，并给出不增加 !important 的修复方式。"
+  },
+  "sources": [
+    {
+      "url": "https://www.w3.org/TR/css-cascade-6/",
+      "label": "W3C · CSS Cascading and Inheritance Level 6",
+      "note": "层叠排序、来源、重要性、层、作用域与出现顺序。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction",
+      "label": "MDN · Introduction to the CSS cascade",
+      "note": "来源类型、未分层样式和普通层顺序。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Specificity",
+      "label": "MDN · Specificity",
+      "note": "同一来源与层内的三列优先级和相同优先级的顺序。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Cascade_layers",
+      "label": "MDN · Cascade layers",
+      "note": "@layer 的创建顺序、普通与重要层顺序。"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important",
+      "label": "MDN · !important CSS keyword",
+      "note": "重要声明、行内声明和用户重要样式的边界。"
+    }
+  ]
+},
   {
     "slug": "specificity",
     "lead": "为什么给元素加了一个类，样式还是覆盖不了旧规则？",
