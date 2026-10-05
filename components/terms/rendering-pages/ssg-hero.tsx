@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle, Cloud, FileCode, Gear, Package, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle, Clock, Cloud, FileCode, Gear, Package, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "../HarnessStoryScenes";
 import styles from "./RenderingConcept.module.css";
 
@@ -15,7 +15,7 @@ const frames = [
 export function SsgHero() {
   const scene = useScene(frames.length);
   const current = frames[scene.step];
-  const ResultIcon = current.tone === "stale" || current.tone === "edit" ? WarningCircle : CheckCircle;
+  const ResultIcon = current.tone === "stale" || current.tone === "edit" ? WarningCircle : current.tone === "publish" ? Clock : CheckCircle;
   return <figure ref={scene.ref} className={styles.hero} data-scene={current.tone} aria-label="静态生成从内容变更到发布的过程">
     <div className={styles.heroTop}><span>文件改了，网页何时跟上</span><strong>SSG · {String(scene.step + 1).padStart(2, "0")}</strong></div>
     <SceneControls scene={scene} labels={frames.map(frame => frame.label)} compact />
