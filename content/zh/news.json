@@ -37902,6 +37902,303 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-claude-opus-4-8",
+    "title": "Anthropic 发布 Claude Opus 4.8，加入 fast mode 与动态工作流",
+    "summary": "5 月 28 日，Anthropic 发布 Claude Opus 4.8，称模型当天可用且价格不变，并介绍 fast mode 与 Claude Code dynamic workflows。发布页把编码、推理、专业知识和 agentic skills 放在同一组能力说明中；其中的基准结果来自 Anthropic 自己的评测，不能直接当成所有代码库或智能体任务的成功率，价格不变也不等于总成本不变。",
+    "body": "5 月 28 日，Anthropic 发布 Claude Opus 4.8，称模型当天可用且价格不变，同时介绍 fast mode 和 Claude Code dynamic workflows。变化涉及模型版本、响应速度和编码工作流入口，不只是一次权重更新。\n\n发布页把 coding、reasoning、professional knowledge 和 agentic skills 放在一组评测与产品说明里。使用者需要分开问四个问题：模型在固定任务上的分数怎样，fast mode 的速度和质量如何，Claude Code 会调用哪些工具，实际请求的费用和等待时间是多少。\n\n在一个固定代码仓库里比较新旧版本时，应保持提示、测试集、工具权限和人工审查条件一致，记录错误类型、工具调用、耗时、token 和回滚次数。这样测到的是完整任务链，而不是只看一张基准表；仓库规模、依赖质量和权限设置仍会改变结果。\n\nAnthropic 的官方页面支持当日可用、价格不变以及编码、推理等评测说明。基准结果属于公司评测口径，不能直接推出所有项目的成功率；单价不变也不能推出总成本不变，因为调用次数、token、等待时间和人工修复都会影响账单。\n\n相关词条分别对应不同层：llm 是模型本体，benchmark 是固定任务和评分规则，agent-loop 是执行、观察反馈并决定下一步的循环。后续应补充独立评测、真实错误类型和受限权限下的代码任务数据，再判断这次更新是否带来稳定收益。",
+    "publishedAt": "2026-05-28",
+    "eventDate": "2026-05-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-opus-4-8.svg",
+      "alt": "Anthropic 发布 Claude Opus 4.8，强化编码与智能体任务；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/anthropic-claude-opus-4-8.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "Opus 4.8 这次发布了什么",
+        "body": "Anthropic 5 月 28 日发布 Claude Opus 4.8，称当天可用且价格不变，并介绍 fast mode 与 Claude Code dynamic workflows。发布内容同时覆盖模型、速度和工作流入口。",
+        "kind": "narrative"
+      },
+      {
+        "id": "capabilities",
+        "title": "能力分数、速度和工作流要分开测",
+        "body": "页面把 coding、reasoning、professional knowledge 和 agentic skills 放在同一组说明中。使用者仍需分别确认固定任务分数、fast mode 的速度与质量，以及 Claude Code 会调用哪些工具。",
+        "kind": "technical"
+      },
+      {
+        "id": "repo-test",
+        "title": "在一个固定仓库里比较完整任务链",
+        "body": "保持提示、测试集、工具权限和人工审查条件一致，记录错误类型、工具调用、耗时、token 和回滚次数。仓库规模、依赖质量和权限设置会改变结果，单次演示或基准表不能替代项目验收。",
+        "kind": "example"
+      },
+      {
+        "id": "cost",
+        "title": "价格不变不等于总成本不变",
+        "body": "官方页面支持当日可用、价格不变和公司评测说明。调用次数、token、等待时间和人工修复都会影响实际成本，基准结果也不能直接推出所有代码库或智能体任务的成功率。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "三个词条分别解释哪一层",
+        "body": "llm 是模型本体，benchmark 是固定任务与评分规则，agent-loop 是执行、观察反馈和下一步决策的循环。它们帮助区分模型能力、比较方法和真实工作流。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "benchmark",
+      "title": "用同一个代码仓库比较 Opus 4.8 的真实变化",
+      "question": "官方基准、fast mode 和动态工作流怎样被放进一次可复核的代码任务？",
+      "steps": [
+        {
+          "label": "固定测试条件",
+          "detail": "保留同一代码仓库、提示、测试集、工具权限和人工审查规则，避免把环境变化误算成模型提升。",
+          "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+        },
+        {
+          "label": "分开记录四类结果",
+          "detail": "分别记录基准分数、响应速度、工具调用和人工修复量，不把 agent-loop 的完整任务结果压缩成一个分数。",
+          "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+        },
+        {
+          "label": "核对成本",
+          "detail": "统计 token、调用次数、等待时间和失败重试；单价不变时，总账单仍可能因为工作流变化而改变。",
+          "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+        },
+        {
+          "label": "对照独立证据",
+          "detail": "把 Anthropic 的评测与独立评测、真实错误类型和受限权限下的代码任务结果比较。",
+          "evidence": "https://www.anthropic.com/news/claude-opus-4-8"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-4-8"
+    },
+    "relatedSlugs": [
+      "llm",
+      "benchmark",
+      "agent-loop"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/claude-opus-4-8",
+        "claim": "Claude Opus 4.8 当日可用且价格不变",
+        "excerpt": "Anthropic says Claude Opus 4.8 is available today with unchanged pricing."
+      },
+      {
+        "url": "https://www.anthropic.com/news/claude-opus-4-8",
+        "claim": "发布页强调 coding、agentic skills、reasoning 等改进",
+        "excerpt": "The launch highlights improvements in coding, agentic skills, reasoning and professional knowledge benchmarks."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/claude-opus-4-8",
+    "sourceHash": "sha256:3d808cbc9469ab7e93cd0c0a2c3716ce88e0153465edbdf0a97736db00a3f57b"
+  },
+  {
+    "slug": "anthropic-series-h-65b",
+    "title": "Anthropic 宣布 650 亿美元 H 轮融资，投后估值 9650 亿美元",
+    "summary": "5 月 28 日，Anthropic 宣布完成 650 亿美元 Series H 融资，投后估值 9650 亿美元，并在公告中把融资与 AWS、Google、SpaceX 的算力协议、产品部署和长期研究联系起来。融资额、估值和公司自报的收入运行率都属于公告口径，不能直接推出利润、现金流、模型质量或客户留存。",
+    "body": "5 月 28 日，Anthropic 宣布完成 650 亿美元 Series H 融资，投后估值为 9650 亿美元。公告还把这笔融资与 AWS、Google、SpaceX 的算力协议、产品部署和长期研究放在一起讨论。事件本身是融资公告，不是模型基准发布。\n\n阅读这条消息时，可以把它拆成三层：融资和估值是资本事实，算力协议是供给承诺，Claude 等模型服务则是把容量转成产品和 API。三层之间存在计划关系，但融资到账不等于 GPU 已部署，容量承诺也不等于服务质量已经提高。\n\n一条可核验的扩张链，应能从融资文件追到容量合同、实际部署、客户使用和收入记录。公司公告中的收入运行率是自报运营指标，不能代替审计财务数据；同样，估值反映投资交易条件，不是模型能力或客户满意度的评分。\n\n后续核验应为每个数字标记证据来源和状态：融资是宣布、交割还是已入账，容量是签约还是已上线，产品收入来自哪一段时间。只有这些状态分开记录，才知道资本是否真的转成了可用供给。\n\n相关词条帮助解释供给怎样变成服务：llm 是模型本体，model-routing 说明系统按任务、成本或风险选择模型和调用路径，token 是输入输出计量单位，会影响费用和速度。它们不能替代融资文件、部署记录和独立财务验证。",
+    "publishedAt": "2026-05-28",
+    "eventDate": "2026-05-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-series-h-65b.svg",
+      "alt": "Anthropic 完成 650 亿美元 H 轮融资，投后估值 9650 亿美元；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/anthropic-series-h-65b.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "financing",
+        "title": "融资公告确认了哪些数字",
+        "body": "Anthropic 5 月 28 日宣布 650 亿美元 Series H，投后估值为 9650 亿美元，并把融资与算力、产品和研究计划联系起来。这里确认的是公告中的融资与估值口径，不能把它写成模型性能数据。",
+        "kind": "narrative"
+      },
+      {
+        "id": "three-layers",
+        "title": "资本、算力和模型服务要分开看",
+        "body": "融资和估值属于资本事实，AWS、Google、SpaceX 的容量协议属于供给承诺，模型服务则要经过部署、调用和客户使用才能产生业务结果。融资到账不等于 GPU 已上线，容量承诺也不等于服务质量已经提高。",
+        "kind": "technical"
+      },
+      {
+        "id": "evidence-chain",
+        "title": "一条扩张链要能追到实际部署",
+        "body": "核验时应从融资文件追到容量合同、实际部署、客户使用和收入记录，并把宣布、签约、交割和入账分别标记。公司公告中的收入运行率是自报运营指标，不能替代审计财务数据。",
+        "kind": "example"
+      },
+      {
+        "id": "valuation",
+        "title": "估值和运行率不能直接推出经营结果",
+        "body": "投后估值反映投资交易条件，收入运行率反映公司自报的运营口径；两者都不能单独推出利润、现金流、模型质量或客户留存。后续需要独立财务、部署和客户证据。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "三个词条解释供给怎样变成服务",
+        "body": "llm 是模型本体，model-routing 说明系统如何按任务、成本或风险选择模型与调用路径，token 是输入输出的计量单位，会影响费用和速度。词条能解释技术链条，不能替代融资和部署记录。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "把融资新闻追到一条可核验的供给链",
+      "question": "650 亿美元融资怎样被区分成资本、算力、产品和收入四种不同证据？",
+      "steps": [
+        {
+          "label": "先确认交易状态",
+          "detail": "核对 2026-05-28 公告中的融资金额和投后估值，并标记交易处于宣布、签约、交割还是入账。",
+          "evidence": "https://www.anthropic.com/news/series-h"
+        },
+        {
+          "label": "查算力承诺",
+          "detail": "分别查看 AWS、Google、SpaceX 容量协议的签约内容、交付时间和实际上线状态，不把协议直接写成可用 GPU。",
+          "evidence": "https://www.anthropic.com/news/series-h"
+        },
+        {
+          "label": "追产品使用",
+          "detail": "寻找产品部署、客户调用、服务延迟和收入记录，确认容量是否真的进入模型服务。",
+          "evidence": "https://www.anthropic.com/news/series-h"
+        },
+        {
+          "label": "保留自报边界",
+          "detail": "把收入运行率和估值标为公司公告口径，等待审计财务和独立客户证据再判断经营结果。",
+          "evidence": "https://www.anthropic.com/news/series-h"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/series-h"
+    },
+    "relatedSlugs": [
+      "llm",
+      "model-routing",
+      "token"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/series-h",
+        "claim": "Anthropic 公布 650 亿美元 H 轮与 9650 亿美元投后估值",
+        "excerpt": "Anthropic announced a $65 billion Series H at a $965 billion post-money valuation."
+      },
+      {
+        "url": "https://www.anthropic.com/news/series-h",
+        "claim": "公告提到与 AWS、Google、SpaceX 的算力协议",
+        "excerpt": "The announcement describes capacity agreements with AWS, Google and SpaceX."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/series-h",
+    "sourceHash": "sha256:34933ac65fd4e01f4dcd0e122b20f79fabc6115cd22a2dd65dac1f595c941730"
+  },
+  {
+    "slug": "ibm-redhat-project-lightwell",
+    "title": "IBM 与 Red Hat 承诺 50 亿美元，用 AI 验证开源补丁",
+    "summary": "5 月 28 日，IBM 与 Red Hat 宣布 Project Lightwell，称将投入 50 亿美元、组织两万多名工程师，并用 AI 验证和测试开源补丁，连接大型金融机构等企业试点。新闻稿说明的是投入、组织和计划，不能证明 AI 已发现所有缺陷、所有补丁都能安全自动合并，或试点已经在各机构稳定运行。",
+    "body": "5 月 28 日，IBM 与 Red Hat 宣布 Project Lightwell。新闻稿称项目将投入 50 亿美元、组织两万多名工程师，并用 AI 验证和测试开源补丁，面向银行和支付机构等高要求环境。这里发生的是投入、组织和试点计划的公布，不是漏洞已经被全部解决。\n\n开源补丁从提交到生产，通常要经过问题复现、测试、风险判断、签名、审批和回滚准备。AI 可以协助其中的复现、测试或排序，但每一步的输入和输出都需要能够追查，维护者仍要对生产风险负责。\n\n以准备进入银行系统的补丁为例，系统应先在隔离环境中复现问题，运行回归测试，生成可审计的测试结果，再由维护者批准并签名发布。测试失败、权限异常或结果不确定时，应停止并回退；如果没有这条记录链，就无法判断工具是否真的降低了维护风险。\n\nIBM 和 Red Hat 的官方页面支持 50 亿美元、工程师组织和企业试点的公司口径。它没有证明 AI 已经发现所有缺陷、所有补丁都能安全自动合并，也没有提供试点在不同金融机构中的稳定性、误报率或生产结果。\n\n相关词条分别对应流程中的控制点：data-validation 检查补丁输入和测试结果，execution-sandbox 限制文件、网络、进程和凭据范围，eval 规定样本、评分和错误类型。后续应查看试点工具、公开评测、修复证据和补丁进入生产的记录。",
+    "publishedAt": "2026-05-28",
+    "eventDate": "2026-05-28",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/ibm-redhat-project-lightwell.svg",
+      "alt": "IBM 与 Red Hat 承诺 50 亿美元建设 AI 驱动的开源软件安全清算层；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/ibm-redhat-project-lightwell.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "project",
+        "title": "Project Lightwell 公布了什么",
+        "body": "IBM 与 Red Hat 5 月 28 日宣布 Project Lightwell，称将投入 50 亿美元、组织两万多名工程师，并用 AI 验证和测试开源补丁，连接银行和支付机构等企业试点。新闻稿确认的是计划和投入。",
+        "kind": "narrative"
+      },
+      {
+        "id": "patch-chain",
+        "title": "补丁进入生产前要经过哪些环节",
+        "body": "从提交到上线，补丁需要复现问题、运行测试、评估风险、签名、审批并准备回滚。AI 可以协助部分环节，但不能把维护者的生产责任压缩成一个自动合并动作。",
+        "kind": "technical"
+      },
+      {
+        "id": "bank-case",
+        "title": "在高要求环境里先验证再签名",
+        "body": "准备进入银行系统的补丁应先在隔离环境中复现，运行回归测试并保留可审计结果，由维护者批准和签名后再发布。测试失败、权限异常或结果不确定时，流程必须能停止和回退。",
+        "kind": "example"
+      },
+      {
+        "id": "evidence",
+        "title": "投入金额不能代替生产证据",
+        "body": "官方页面支持 50 亿美元、工程师组织和企业试点的公司口径，没有证明 AI 已发现所有缺陷、所有补丁都能安全自动合并，也没有给出各金融机构的稳定性、误报率和生产结果。",
+        "kind": "boundary"
+      },
+      {
+        "id": "controls",
+        "title": "三个词条对应三道验证门",
+        "body": "data-validation 检查补丁输入和测试结果，execution-sandbox 限制文件、网络、进程和凭据，eval 规定样本、评分和错误类型。后续应把这三道门对应到试点工具、公开评测和生产记录。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "一枚开源补丁怎样走到可回滚的生产发布",
+      "question": "Project Lightwell 所说的 AI 验证，怎样被拆成维护者可以检查的证据链？",
+      "steps": [
+        {
+          "label": "隔离并复现问题",
+          "detail": "在 execution-sandbox 中使用测试资产重现漏洞，限制文件、网络、进程和凭据范围。",
+          "evidence": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1"
+        },
+        {
+          "label": "运行回归测试",
+          "detail": "用固定样本和错误类型记录测试结果，检查输入与输出是否经过 data-validation。",
+          "evidence": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1"
+        },
+        {
+          "label": "人工签名审批",
+          "detail": "维护者查看评测和风险说明，确认补丁、版本和发布范围后签名。",
+          "evidence": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1"
+        },
+        {
+          "label": "验证回退记录",
+          "detail": "测试失败、权限异常或生产问题出现时停止并回滚，保留时间、命令和恢复结果，供后续 eval 和复盘。",
+          "evidence": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1"
+        }
+      ]
+    },
+    "source": {
+      "name": "IBM / Red Hat",
+      "url": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1"
+    },
+    "relatedSlugs": [
+      "data-validation",
+      "execution-sandbox",
+      "eval"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1",
+        "claim": "Project Lightwell 计划投入 50 亿美元",
+        "excerpt": "IBM and Red Hat announce a $5 billion commitment for Project Lightwell."
+      },
+      {
+        "url": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1",
+        "claim": "项目将用 AI 验证、测试开源补丁并连接企业试点",
+        "excerpt": "The release describes AI-powered validation and testing of open-source patches with large financial institutions."
+      }
+    ],
+    "canonicalUrl": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era?asPDF=1",
+    "sourceHash": "sha256:e30bbc602a1dec4b8014df95cf4c2c9b4c7e0c259f704acea24563f6326aafe8"
+  },
+  {
     "slug": "google-ai-threat-defense",
     "title": "Google Cloud 发布 AI Threat Defense，组合漏洞分析与修复能力",
     "summary": "5 月 27 日，Google Cloud 发布 AI Threat Defense，介绍将 Gemini、Wiz、CodeMender 和 Mandiant 的能力组合到网络防御流程中，目标从发现单个漏洞延伸到预测攻击路径、排序风险和部署经过验证的修复。官方页面说明了产品能力与组件关系，没有给出跨行业的真实攻击阻断率，也不能证明每个环境都能自动修复。",
