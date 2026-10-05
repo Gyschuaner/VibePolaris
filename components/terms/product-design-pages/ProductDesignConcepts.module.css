@@ -1,0 +1,27 @@
+.miniHero,.lesson{position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--paper) 86%,#e5eee4),var(--paper));color:var(--ink)}
+.miniHero{min-height:184px;padding:14px 15px 12px;max-width:390px;margin-left:auto}
+.miniHero::before,.lesson::before{content:"";position:absolute;inset:8px;border:1px solid color-mix(in srgb,var(--accent-text) 15%,transparent);border-radius:11px;pointer-events:none}
+.miniTop,.lessonTop{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:10px;letter-spacing:.03em}
+.miniTop strong{font:600 9px ui-monospace,SFMono-Regular,monospace;color:var(--accent-text)}
+.focusMini{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:center;margin-top:23px;padding:0 4px}
+.focusMini::after{content:"";position:absolute;left:23%;top:50%;width:12px;height:12px;border:2px solid var(--accent-text);border-radius:4px;transform:translate(-50%,-50%);animation:focusMove 3s ease-in-out infinite}
+.focusPane{display:grid;gap:7px;min-height:78px;padding:12px 10px;border:1px solid var(--hairline);border-radius:10px;background:color-mix(in srgb,var(--surface) 72%,transparent)}
+.focusPane small{font:9px ui-monospace,SFMono-Regular,monospace;color:var(--muted)}
+.focusPane span{font-size:12px;font-weight:600}
+.focusFakeButton{width:max-content;border:1px solid var(--accent-text);border-radius:6px;padding:5px 8px;background:var(--paper);color:var(--accent-text);font-size:10px}
+.focusBackground .focusFakeButton{border-color:var(--hairline);color:var(--ink)}
+.focusPane[data-dialog=true]{background:color-mix(in srgb,var(--accent-text) 9%,var(--surface));}
+.miniCaption{position:relative;margin:10px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+.lesson{margin:28px 0 16px;padding:20px 20px 18px;background:linear-gradient(145deg,color-mix(in srgb,var(--paper) 92%,#e5eee4),var(--paper))}
+.lessonTop{align-items:flex-start}.lessonTop>div{display:grid;gap:5px}.lessonTop span{font-size:11px;color:var(--muted)}.lessonTop strong{font-size:16px;font-weight:600;letter-spacing:0}
+.reset{display:grid;place-items:center;width:32px;height:32px;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:50%;background:var(--paper);color:var(--accent-text);cursor:pointer}
+.lessonControls{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin:17px 0 14px}.lessonControls button{border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:999px;padding:8px 11px;background:var(--paper);color:var(--muted);font:inherit;font-size:12px;cursor:pointer}.lessonControls button:hover,.lessonControls button[aria-pressed=true]{border-color:var(--accent-text);background:color-mix(in srgb,var(--accent-text) 10%,var(--paper));color:var(--ink)}
+.lessonTop[data-inert=true],.lessonControls[data-inert=true],.focusBackground[data-inert=true]{pointer-events:none}
+.focusStage{position:relative;display:grid;grid-template-columns:minmax(120px,.9fr) 24px minmax(150px,1.1fr);gap:10px;align-items:center;padding:14px 0 8px}
+.focusBackground,.focusDialog{display:grid;gap:8px;padding:14px 12px;border:1px solid var(--hairline);border-radius:12px;background:color-mix(in srgb,var(--surface) 67%,transparent);min-height:124px}.focusBackground small,.focusDialog small{font-size:10px;color:var(--muted)}.focusBackground button,.focusDialog button{width:max-content;border:1px solid var(--hairline);border-radius:7px;padding:7px 9px;background:var(--paper);color:var(--ink);font:inherit;font-size:12px;cursor:pointer}.focusDialog{border-color:var(--accent-text);background:color-mix(in srgb,var(--accent-text) 8%,var(--surface))}.focusDialog[aria-hidden=true]{opacity:.42}.focusDialog button[data-focused=true],.focusBackground button[data-focused=true]{outline:2px solid var(--accent-text);outline-offset:3px}.focusArrow{display:grid;place-items:center;color:var(--accent-text);font-size:18px}.focusState{position:relative;display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:10px 11px;border-radius:9px;background:color-mix(in srgb,var(--accent-text) 8%,transparent);color:var(--muted);font-size:12px;line-height:1.6}.focusState strong{color:var(--ink)}
+.lesson :global(button):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@keyframes focusMove{0%,25%{left:23%;opacity:1}45%,75%{left:70%;opacity:1}100%{left:23%;opacity:1}}
+@media(max-width:1100px){.miniHero{max-width:none}.article .hero{grid-template-columns:minmax(0,1fr) minmax(230px,.9fr);gap:20px}}
+@media(max-width:760px){.miniHero{margin:0;max-width:none}.focusStage{grid-template-columns:1fr;gap:8px}.focusArrow{transform:rotate(90deg)}.focusDialog{min-height:105px}}
+@media(max-width:600px){.article :global(.vp-hero){padding:24px 0 20px}.article .hero{gap:12px}.lesson{padding:18px 15px 16px}.lessonTop strong{font-size:14px}.lessonControls{gap:6px}.lessonControls button{padding:7px 9px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.focusMini::after{animation:none;left:70%}.lesson *{transition:none!important;animation:none!important}}

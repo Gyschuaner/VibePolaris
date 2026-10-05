@@ -115,6 +115,7 @@ import { SsrTermPage } from "@/components/terms/rendering-pages/ssr-page";
 import { SsgTermPage } from "@/components/terms/rendering-pages/ssg-page";
 import { RoutingTermPage } from "@/components/terms/rendering-pages/routing-page";
 import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-storage-page";
+import { FocusManagementTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -148,6 +149,7 @@ const articleTermPages = {
   ssg: SsgTermPage,
   routing: RoutingTermPage,
   'local-storage': LocalStorageTermPage,
+  'focus-management': FocusManagementTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,
