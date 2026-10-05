@@ -1,0 +1,188 @@
+{
+  "slug": "benchmark-robustness-llm-20250904",
+  "title": "基准题换种说法，LLM 排名稳但绝对分数会掉",
+  "summary": "一篇 9 月 4 日提交的研究重新检查 benchmark 分数能否代表真实输入下的能力。作者对六个常见基准的全部题目生成多种改写，测试 34 个不同规模和能力的 LLM。结果显示，模型排名在改写后相对稳定，但绝对效果显著下降；固定原文措辞得到的高分，可能没有覆盖用户真实表达里的语言变化。",
+  "body": "很多模型评测把题目原样放进基准，得到一个清楚的分数和排名。这个协议适合做可重复比较，却有一个容易被忽略的前提：用户会像基准作者一样提问。现实里，同一个问题会换语序、换词、加上下文，甚至带着口语和不完整信息出现。题目意思没变，模型的分数却可能先变。\n\n这项研究没有换掉基准任务，而是对六个常见 benchmark 的全部题目生成多种 paraphrase，再测试 34 个不同规模和能力的 LLM。这样做把“答对原题”与“对表达变化保持能力”拆开来：如果同一个知识点只因为措辞改变就失分，问题就不再只是模型有没有知识，而是评测协议有没有测到真实使用场景。\n\n结果很有意思，也不适合被简化成“排名全乱了”。改写后，模型之间的相对排名仍然大体稳定；但绝对效果显著下降。换句话说，基准可以告诉我们谁在这组模型里相对更强，却可能高估了大家在用户自然表达下的绝对能力。一个高分模型仍可能在换一种问法时频繁漏掉约束、误读指代或错过关键条件。\n\n这对 benchmark 使用方式有直接影响。论文题目、版本、改写规则和生成质量都应被保存，不能把 paraphrase 当成随手换同义词。好的改写要保持问题目标、答案空间和难度大致一致，否则下降可能来自任务被改难了；同时也要检查改写有没有引入歧义、文化差异或额外线索。\n\n部署前，团队可以给每个核心能力配一组等义表达：原题、口语版、短版、不同顺序的约束、带上下文的追问。报告结果时，把原题分数和改写后的分布放在一起，并记录模型大小、推理预算、system prompt 和 tokenizer。这样看到分数下降，才能判断是语言变化、上下文长度，还是模型真的缺少相关能力。\n\n排名稳定也不能当作“没问题”的证明。产品选择往往有最低可接受线，而不是只关心谁排第一；如果所有模型在自然表达下都一起掉分，排名看起来稳定，用户仍然会遇到大量失败。对于医疗、法律、代码和工具调用等高风险场景，改写测试还应覆盖否定、数字、边界条件和多轮上下文，并保留人工审阅样例。\n\n这篇研究把 benchmark 从一张排行榜拉回测量工具。固定措辞的分数仍有价值，但它只回答“在这套题面下谁更强”；要回答“用户换种说法还能不能用”，就要把语言变化当成评测维度。高分不是终点，能否在等义输入下保持能力，才更接近部署时的可靠性。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/benchmark-robustness-llm-20250904.svg",
+    "alt": "基准题保持语义但改变措辞后，LLM 排名和绝对分数的变化",
+    "sourceUrl": "/images/news/benchmark-robustness-llm-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "fixed-wording",
+      "title": "原题分数默认用户会像作者一样提问",
+      "body": "现实输入会换语序、词汇和上下文；题目意思没变，模型能力却可能被表达方式拉低。",
+      "kind": "narrative"
+    },
+    {
+      "id": "paraphrase-study",
+      "title": "六个基准的全部题目都做了等义改写",
+      "body": "研究测试 34 个不同规模和能力的 LLM，把原题能力与语言变化下的鲁棒性分开。",
+      "kind": "technical"
+    },
+    {
+      "id": "ranking-vs-score",
+      "title": "排名大体稳定，绝对效果显著下降",
+      "body": "模型相对强弱没有完全打乱，但固定措辞的高分可能高估用户自然表达下的绝对能力。",
+      "kind": "comparison"
+    },
+    {
+      "id": "paraphrase-quality",
+      "title": "改写必须保持目标、答案空间和难度",
+      "body": "需要保存题目版本、改写规则和生成质量，排除歧义或额外线索造成的假下降。",
+      "kind": "example"
+    },
+    {
+      "id": "deployment-set",
+      "title": "为核心能力准备一组等义表达",
+      "body": "原题、口语版、约束换序和带上下文追问一起回归，结果要记录 prompt、tokenizer 和推理预算。",
+      "kind": "technical"
+    },
+    {
+      "id": "high-stakes",
+      "title": "高风险场景要专门覆盖否定、数字和边界条件",
+      "body": "排名稳定不能替代最低可接受线；医疗、法律、代码和工具调用需要人工审阅失败样例。",
+      "kind": "boundary"
+    },
+    {
+      "id": "measurement-tool",
+      "title": "Benchmark 是测量工具，不是一张万能排行榜",
+      "body": "原题分数回答“这套题面下谁更强”，改写鲁棒性才更接近用户换种说法后的可用性。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样测 LLM 能不能听懂用户的另一种说法？",
+    "question": "固定题目语义，系统改变表达方式，再报告原题与改写题的分布，而不是只看一个最高分。",
+    "steps": [
+      {
+        "label": "冻结原题与答案空间",
+        "detail": "保存六个 benchmark 的题目、答案、版本和能力标签，明确什么变化仍属于等义改写。",
+        "evidence": "six common benchmarks"
+      },
+      {
+        "label": "生成并审查改写",
+        "detail": "制作多种自然表达，检查目标、难度、答案空间和语言文化线索没有被意外改变。",
+        "evidence": "various paraphrases of all questions"
+      },
+      {
+        "label": "运行 34 个模型",
+        "detail": "记录模型规模、版本、system prompt、tokenizer 和推理预算，保持比较条件一致。",
+        "evidence": "34 state-of-the-art LLMs"
+      },
+      {
+        "label": "同时报告排名与绝对效果",
+        "detail": "对照相对排名是否变化，并查看改写后分数的整体下降和分布尾部。",
+        "evidence": "rankings remain relatively stable ... absolute effectiveness scores decline"
+      },
+      {
+        "label": "接入部署回归",
+        "detail": "把否定、数字、约束换序和多轮上下文纳入高风险用例，失败样例交给人工复核。",
+        "evidence": "robustness-aware benchmarks for practical deployment"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.04013"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.04013",
+      "claim": "研究对六个常见基准的全部题目生成多种改写，并比较 34 个不同规模和能力的 LLM。",
+      "excerpt": "generate various paraphrases of all the questions across six different common benchmarks ... 34 state-of-the-art LLMs"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04013",
+      "claim": "摘要报告改写后排名相对稳定但绝对效果显著下降，提示固定基准分数不能充分代表真实输入鲁棒性。",
+      "excerpt": "LLM rankings remain relatively stable ... absolute effectiveness scores change, and decline significantly ... high benchmark scores may not fully capture robustness"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.04013",
+  "sourceHash": "sha256:f0c36e28c4515bb04d541d7e9d03a7fcc40cdcc3ea8f85301bdbc3ed32b03157",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文比较 34 个 LLM 在原题和改写题上的绝对效果与排名。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 benchmark 改写、部署回归和高风险评测协议展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.99,
+      "evidence": [
+        "正文以六个常见基准、题目版本和改写规则解释 benchmark 的测量边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.04013",
+      "claim": "arXiv 记录研究于 2025 年 9 月 4 日提交，主题是 benchmark 评测对语言变化的鲁棒性。",
+      "excerpt": "Submitted on 4 Sep 2025 ... On Robustness and Reliability of Benchmark-Based Evaluation of LLMs"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04013",
+      "claim": "摘要给出六个基准、34 个模型、排名稳定和绝对效果下降的结论。",
+      "excerpt": "six different common benchmarks ... 34 state-of-the-art LLMs ... rankings remain relatively stable ... decline significantly"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对六个 benchmark、34 个 LLM、改写题设置、排名稳定和绝对效果下降结论；正文补充改写质量、版本记录、高风险回归与人工审阅边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：明确区分排名稳定与绝对分数下降，不虚构下降百分比；保留六个基准、34 个模型和改写协议，并补充改写质量、部署回归、否定/数字边界和人工审阅；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-benchmark-robustness-llm-20250904"
+}

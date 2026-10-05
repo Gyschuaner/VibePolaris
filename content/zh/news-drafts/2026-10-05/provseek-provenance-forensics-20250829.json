@@ -1,0 +1,221 @@
+{
+  "slug": "provseek-provenance-forensics-20250829",
+  "title": "PROVSEEK：让 Agent 沿着系统来源链做威胁取证",
+  "summary": "PROVSEEK 论文于 8 月 29 日提交，提出一个用 LLM Agent 做来源驱动威胁取证的框架。它把威胁报告、系统 provenance 数据和专用工具链接在一起，由多个角色 Agent 生成查询、补充上下文、验证证据并形成结构化摘要。在 DARPA 数据集上，论文报告情报提取上下文精确率/召回率提升 34%，威胁检测精确率/召回率提升 22%/29%；数据库扩大 50 倍时，token 使用量增至 1.42 倍、延迟增至 1.63 倍。",
+  "body": "威胁取证最难的地方，往往不是“有没有一条可疑日志”，而是要把分散在系统来源记录、威胁报告和时间顺序里的线索拼成一条能复核的解释。只让模型读一段摘要，容易遗漏证据之间的关系；只让检索器返回相似文本，又可能把相似当成因果。PROVSEEK 试图把这两件事放进同一条取证工作流。\n\n它从 provenance 数据出发。这里的来源记录可以描述进程、文件、网络连接以及它们之间的关系；Agent 不只搜索关键词，而是根据当前假设生成更精确的上下文查询，再把查询结果和威胁报告放回下一轮判断。这样，取证不是一次检索，而是“提出假设—找证据—更新假设”的循环。\n\n框架还把不同职责拆给多个角色 Agent：有的负责解析来源查询，有的补充威胁情报，有的检查证据是否支持当前结论，最后再合成结构化、可追溯的调查摘要。它使用 RAG 和行为模型做过滤，但关键事实仍应指向具体来源记录，不能把模型写出的连贯叙述当作证据本身。\n\n论文在公开 DARPA 数据集上报告了明显提升：情报提取的上下文精确率/召回率提升 34%，威胁检测相对基线的精确率/召回率提升 22%/29%。这些结果说明迭代查询和来源融合有价值，但指标依赖数据集、标注和基线；生产环境的日志质量、权限范围和事件分布都可能不同。\n\n规模实验也给出一个更现实的提醒：数据库扩大 50 倍时，token 使用量增至 1.42 倍，延迟增至 1.63 倍。增长没有和数据库一样快，却仍然会影响成本和响应时间。系统需要限制查询范围、缓存稳定上下文，并在高风险结论前保留人工复核。\n\nPROVSEEK 的输出应该被当成调查线索和证据索引，而不是自动处置命令。查询工具要有只读权限和审计记录，Agent 生成的结论要能回链到原始 provenance 事件；隔离环境里的试探也不能直接触发封禁、删除或外发。\n\n这项工作把 Agent 的优势放在“会继续追问”上，同时把可信度放回来源链上。对安全团队而言，值得复用的不是某个提示词，而是让每个判断都留下查询、证据、反驳和下一步的记录，方便人类接手并纠正。",
+  "publishedAt": "2025-08-29",
+  "eventDate": "2025-08-29",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/provseek-provenance-forensics-20250829.svg",
+    "alt": "PROVSEEK 沿着系统 provenance 数据迭代查询并输出可复核的威胁取证摘要",
+    "sourceUrl": "/images/news/provseek-provenance-forensics-20250829.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "evidence-chain",
+      "title": "取证不是找一条“最像”的日志",
+      "body": "威胁判断需要把系统来源记录、威胁报告和时间关系连起来；相似文本不能替代证据链。",
+      "kind": "narrative"
+    },
+    {
+      "id": "provenance-query",
+      "title": "让 Agent 沿着 provenance 继续追问",
+      "body": "Agent 根据当前假设生成上下文查询，把进程、文件、网络和其他来源关系放回下一轮判断。",
+      "kind": "technical"
+    },
+    {
+      "id": "role-agents",
+      "title": "不同角色负责不同段取证工作",
+      "body": "查询、情报补充、证据核验和摘要合成被拆开，降低一个模型同时猜测和下结论的风险。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-metrics",
+      "title": "情报提取上下文精确率/召回率提升 34%",
+      "body": "论文还报告威胁检测精确率/召回率提升 22%/29%；这些结果需要结合 DARPA 数据集和基线理解。",
+      "kind": "comparison"
+    },
+    {
+      "id": "scaling-cost",
+      "title": "数据库扩大 50 倍，延迟增至 1.63 倍",
+      "body": "token 使用量增至 1.42 倍，说明迭代查询有规模成本；缓存、限界和按风险分级是部署必需品。",
+      "kind": "boundary"
+    },
+    {
+      "id": "evidence-backlink",
+      "title": "结论必须回链到原始事件",
+      "body": "结构化摘要应保留查询、证据和反驳路径，不能把模型写出的连贯叙述当作事实来源。",
+      "kind": "example"
+    },
+    {
+      "id": "read-only-control",
+      "title": "取证 Agent 不应直接处置系统",
+      "body": "查询工具优先只读、全程审计；封禁、删除和外发仍由独立授权与人工复核决定。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "PROVSEEK 怎样把来源数据变成可复核的取证线索？",
+    "question": "让 Agent 反复提出查询、验证证据和更新假设，同时把每个结论绑定回原始 provenance 事件。",
+    "steps": [
+      {
+        "label": "登记来源事件",
+        "detail": "把进程、文件、网络关系和时间信息作为可查询的 provenance 记录保存。",
+        "evidence": "provenance data for threat investigation"
+      },
+      {
+        "label": "生成上下文查询",
+        "detail": "根据当前取证假设动态生成精确查询，而不是只做一次关键词检索。",
+        "evidence": "context-aware queries"
+      },
+      {
+        "label": "融合威胁情报",
+        "detail": "把公开威胁报告与系统来源结果对照，补充背景但不替代本地证据。",
+        "evidence": "threat reports fused with system provenance data"
+      },
+      {
+        "label": "迭代验证假设",
+        "detail": "用行为模型和角色 Agent 检查支持与反驳证据，必要时继续追问或收窄范围。",
+        "evidence": "adaptive multi-step analysis and evidence verification"
+      },
+      {
+        "label": "回链并分级处置",
+        "detail": "输出结构化摘要和证据索引；高风险动作交给独立授权、审计与人工复核。",
+        "evidence": "ground-truth verifiable forensic summaries"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.21323"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "rag",
+    "grounding",
+    "citation",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.21323",
+      "claim": "PROVSEEK 用来源数据、威胁报告和多角色 Agent 进行迭代取证并生成结构化摘要。",
+      "excerpt": "LLM-powered agentic framework for automated provenance-driven forensic analysis"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21323",
+      "claim": "论文在 DARPA 数据集上报告情报提取提升 34%、威胁检测精确率/召回率提升 22%/29%，并给出规模增长成本。",
+      "excerpt": "34% improvement ... 22%/29% higher precision/recall ... 1.42x token usage and 1.63x latency"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.21323",
+  "sourceHash": "sha256:2ed5afa79f2abcd238f201b2495e67ad102564881a80bcd941e0bb083b2fde2e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多角色 Agent 的取证查询、验证和摘要合成。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.98,
+      "evidence": [
+        "正文把来源查询、情报检索和审计工具作为取证工作流组成部分。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.94,
+      "evidence": [
+        "正文说明 PROVSEEK 用 RAG 融合威胁报告和来源记录。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.97,
+      "evidence": [
+        "正文要求每个结论回链到原始 provenance 事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.93,
+      "evidence": [
+        "正文把查询、证据和反驳路径保留为可复核索引。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文保留 DARPA 数据集指标和规模实验边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 29 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.21323",
+      "claim": "arXiv 记录 PROVSEEK 于 2025 年 8 月 29 日提交，研究来源驱动的 Agent 威胁取证。",
+      "excerpt": "Date: Fri Aug 29 ... LLM-driven Provenance Forensics for Threat Investigation and Detection"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.21323",
+      "claim": "摘要给出多角色 Agent、RAG、行为过滤、DARPA 评测及规模成本结果。",
+      "excerpt": "contextual precision/recall ... threat detection ... 1.42x token usage ... 1.63x latency"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 provenance 查询、威胁情报融合、多角色 Agent、DARPA 指标和规模成本；正文明确把输出定位为可追溯的调查线索，并补充只读权限、审计和独立处置边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 PROVSEEK 的价值落在来源链和迭代取证上，保留论文指标与规模成本边界，避免把调查摘要写成自动处置命令；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-29-provseek-provenance-forensics-20250829"
+}

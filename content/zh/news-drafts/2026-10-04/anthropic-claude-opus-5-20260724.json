@@ -1,0 +1,236 @@
+{
+  "slug": "anthropic-claude-opus-5-20260724",
+  "title": "Anthropic 发布 Claude Opus 5：旗舰能力进入日常价位",
+  "summary": "7 月 24 日，Anthropic 发布 Claude Opus 5，标准价格为每百万输入 token 5 美元、每百万输出 token 25 美元，与 Opus 4.8 相同；官方文档记录其支持 1M token 上下文和 128k 最大输出。Anthropic 的评测与安全判断均保留为公司口径，独立复测和真实工作流成本仍待验证。",
+  "body": "7 月 24 日，Anthropic 宣布 Claude Opus 5 当天开放使用。它的新闻价值不只是“又发布了一个更大的模型”，而是 Anthropic 把一款定位接近旗舰的 Opus 模型放进了日常订阅和 API 价格带：官方给出的标准价格是每百万输入 token 5 美元、每百万输出 token 25 美元，与前一代 Opus 4.8 相同。模型在 Claude、API 以及 Amazon Bedrock 等平台陆续可用，具体限额仍由各个平台的产品条款决定。\n\n产品规格也把这次升级的方向说得很清楚。Claude 平台文档记录 Opus 5 的发布日期为 7 月 24 日，支持 100 万 token 的上下文窗口、最高 12.8 万 token 的输出，并可以通过 claude-opus-5 这个 API 模型标识调用。上下文窗口解决的是“能不能把一整段代码库、长文档或多轮工作放进一次任务”的问题，不等于模型会自动读懂所有内容；输入组织、检索质量和输出成本仍然会影响结果。\n\n性能部分需要把“官方说法”和“独立证据”分开。Anthropic 称 Opus 5 在 Frontier-Bench、GDPval-AA 等编码和知识工作评测上达到公司所称的新高，并接近另一款 Fable 5 的前沿智能、价格却低一半。这里的“新高”来自 Anthropic 发布的评测图表，测试集、提示方式和评分程序都由公司设定；它可以说明厂商希望用户关注哪些任务，却不能单独证明 Opus 5 在所有真实工作中都更好。后续还需要独立复测、不同努力等级下的成本比较，以及长上下文任务的失败率。\n\n安全说明同样是发布的一部分。Anthropic 表示 Opus 5 在网络安全任务上仍落后于 Mythos 5，因此没有把它描述成所有风险领域都达到最高能力的模型。公司还说，它没有把 Opus 5 认定为推进高风险双用途能力的前沿模型，并为较窄的网络安全场景增加分类器和回退机制；此前会被 Fable 5 拦截的部分生物学请求，会改为转向 Opus 5 处理。这些是部署边界和公司安全判断，不是外部机构对风险的认证。\n\n对开发者来说，真正的变化是“能力、上下文和价格”同时往下压到更容易持续使用的区间。相同的标价如果带来更少的重复调用、更长的单次上下文或更高的代码任务成功率，才会转化为实际成本下降；如果任务需要多次重试、人工复核或更高的输出上限，账面单价就不能代表总成本。模型进入 Bedrock 也会让企业把它放进现有的权限、日志和数据隔离体系，但平台可用并不等于组织已经完成这些控制。\n\n截至发布日，最值得继续追踪的是三件事：独立评测是否能复现 Anthropic 的性能排序，1M 上下文在真实代码库和长文档中是否保持稳定，以及安全分类器、回退模型和 API 审计在高风险任务上的误报与漏报。Opus 5 的发布把“更强模型”变成了一组可测的产品承诺，接下来要看的就是这些承诺在不同工作流里能否兑现。",
+  "publishedAt": "2026-07-24",
+  "eventDate": "2026-07-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/anthropic-claude-opus-5-20260724.svg",
+    "alt": "Claude Opus 5 的发布把模型、长上下文、价格和安全边界放进同一张证据卡；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/anthropic-claude-opus-5-20260724.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "7 月 24 日，Opus 5 进入可用状态",
+      "body": "Anthropic 的产品公告和 Claude 发布说明都把 7 月 24 日列为上线日。API、Claude 产品和 Bedrock 的可用范围不同，不能把某一个入口的开放直接理解为所有地区、所有套餐都拥有同样额度。",
+      "kind": "narrative"
+    },
+    {
+      "id": "price",
+      "title": "价格没有变，模型的使用区间变了",
+      "body": "标准价格为每百万输入 token 5 美元、每百万输出 token 25 美元，与 Opus 4.8 相同。只有把重试、缓存、批处理和人工复核一起算进去，才知道任务总成本是否下降。",
+      "kind": "boundary"
+    },
+    {
+      "id": "context",
+      "title": "100 万 token 上下文解决的是装载量",
+      "body": "官方文档给出 1M token 上下文和 128k 最大输出。它允许一次任务装入更多材料，但不自动保证检索顺序、引用、工具调用和长程推理都可靠。",
+      "kind": "technical"
+    },
+    {
+      "id": "benchmark",
+      "title": "Frontier-Bench 和 GDPval-AA 是厂商评测证据",
+      "body": "Anthropic 称 Opus 5 在编码和知识工作评测上达到公司所称的新高；文章保留评测名称和归属，不把宣传性排序写成独立实验结论。",
+      "kind": "narrative"
+    },
+    {
+      "id": "safety",
+      "title": "安全边界被写进发布稿",
+      "body": "Anthropic 说 Opus 5 在网络安全能力上落后于 Mythos 5，并描述分类器、回退机制与生物学请求路由。它是部署策略，需要后续测试验证实际的误报和漏报。",
+      "kind": "narrative"
+    },
+    {
+      "id": "followup",
+      "title": "接下来要看真实工作流的总成本",
+      "body": "独立复测、长上下文失败率、工具调用成功率、API 限额和安全控制的日志，决定这次发布是否真的改变开发者的日常选择。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一款模型的“更强、更便宜”该怎样拆开看？",
+    "question": "把性能、上下文和价格放在同一张证据表里，避免用一个榜单数字代替真实工作流。",
+    "steps": [
+      {
+        "label": "先看厂商测什么",
+        "detail": "Frontier-Bench、GDPval-AA 等评测先说明公司选择了哪些任务和评分方式。",
+        "evidence": "Anthropic launch post"
+      },
+      {
+        "label": "再看独立复测",
+        "detail": "比较同一提示、同一工具权限和同一失败标准，才能判断排序是否可迁移。",
+        "evidence": "independent evaluation still pending"
+      },
+      {
+        "label": "把上下文换成任务",
+        "detail": "1M token 只有在代码库、长文档或多轮资料确实需要一次装入时才产生价值。",
+        "evidence": "Claude Platform model overview"
+      },
+      {
+        "label": "最后算总成本",
+        "detail": "输入输出、缓存、重试、人工检查与 API 限额一起计算，才是一个 agent 工作流的成本。",
+        "evidence": "pricing and platform limits"
+      }
+    ]
+  },
+  "source": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-opus-5"
+  },
+  "relatedSlugs": [
+    "llm",
+    "benchmark",
+    "context-window",
+    "token",
+    "agent"
+  ],
+  "relatedArticleSlugs": [
+    "open-weights-american-ai-leadership-20260724",
+    "openai-huggingface-reuters-investigation-20260724"
+  ],
+  "sources": [
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-5",
+      "claim": "Anthropic 于 2026 年 7 月 24 日宣布 Claude Opus 5 当天可用，并称其在 Frontier-Bench、GDPval-AA 等编码与知识工作评测上达到公司所称的新水平。",
+      "excerpt": "Claude Opus 5 is available today; on coding and knowledge work evaluations like Frontier-Bench and GDPval-AA, Opus 5 is the new state-of-the-art."
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/models/opus-5/overview",
+      "claim": "Claude 平台文档记录 Opus 5 的发布日期为 2026 年 7 月 24 日，标准模型支持 1M token 上下文、128k 最大输出，API 模型标识为 claude-opus-5。",
+      "excerpt": "Released July 24, 2026; Claude Opus 5 supports a 1M token context window and up to 128k max output tokens."
+    },
+    {
+      "url": "https://support.claude.com/en/articles/12138966-release-notes",
+      "claim": "Claude 官方发布说明把 7 月 24 日列为 Opus 5 发布日，并说明它是面向日常使用的新 Opus 型号。",
+      "excerpt": "July 24, 2026 — Claude Opus 5 launch."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/24/anthropic-launches-opus-5/",
+      "claim": "TechCrunch 对发布日的独立报道交叉说明了模型上市、定价和 Anthropic 的定位，但性能数字仍应视为厂商评测口径。",
+      "excerpt": "Anthropic launches Opus 5, a model positioned as a more capable and efficient daily-use option."
+    },
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/2026/07/claude-opus-5-aws/",
+      "claim": "AWS 官方说明 Opus 5 进入 Amazon Bedrock 的可用模型范围，说明发布不只停留在 Anthropic 自有产品。",
+      "excerpt": "Claude Opus 5 is available through Amazon Bedrock."
+    }
+  ],
+  "canonicalUrl": "https://www.anthropic.com/news/claude-opus-5",
+  "sourceHash": "sha256:a955a6311e5fdc5625d4a8c271d32caccb0cc6635154c6a3a8ec3c893b9d069c",
+  "status": "published",
+  "discoveredAt": "2026-10-04T20:45:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 llm 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.9,
+      "evidence": [
+        "正文解释 benchmark 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 context-window 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "token",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 token 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.82,
+      "evidence": [
+        "正文解释 agent 与这条新闻的关系"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.anthropic.com/news/claude-opus-5",
+      "claim": "Anthropic 于 2026 年 7 月 24 日宣布 Claude Opus 5 当天可用，并称其在 Frontier-Bench、GDPval-AA 等编码与知识工作评测上达到公司所称的新水平。",
+      "excerpt": "Claude Opus 5 is available today; on coding and knowledge work evaluations like Frontier-Bench and GDPval-AA, Opus 5 is the new state-of-the-art."
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/models/opus-5/overview",
+      "claim": "Claude 平台文档记录 Opus 5 的发布日期为 2026 年 7 月 24 日，标准模型支持 1M token 上下文、128k 最大输出，API 模型标识为 claude-opus-5。",
+      "excerpt": "Released July 24, 2026; Claude Opus 5 supports a 1M token context window and up to 128k max output tokens."
+    },
+    {
+      "url": "https://support.claude.com/en/articles/12138966-release-notes",
+      "claim": "Claude 官方发布说明把 7 月 24 日列为 Opus 5 发布日，并说明它是面向日常使用的新 Opus 型号。",
+      "excerpt": "July 24, 2026 — Claude Opus 5 launch."
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/24/anthropic-launches-opus-5/",
+      "claim": "TechCrunch 对发布日的独立报道交叉说明了模型上市、定价和 Anthropic 的定位，但性能数字仍应视为厂商评测口径。",
+      "excerpt": "Anthropic launches Opus 5, a model positioned as a more capable and efficient daily-use option."
+    },
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/2026/07/claude-opus-5-aws/",
+      "claim": "AWS 官方说明 Opus 5 进入 Amazon Bedrock 的可用模型范围，说明发布不只停留在 Anthropic 自有产品。",
+      "excerpt": "Claude Opus 5 is available through Amazon Bedrock."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T20:45:00Z",
+    "method": "source",
+    "notes": "按新闻公开日、底层事件日期、官方口径和独立报道分层核对；文章把企业主张、媒体调查和仍待验证的部分分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T05:00:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 逐篇手写并完成 reader-review；新闻事实先于技术背景，数字、评测和安全边界保留来源归属。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T05:00:00Z",
+    "questions": [
+      "新闻主线优先，中文面向零基础读者，正文按事件组织而非论文综述或模板批量段落。",
+      "eventDate/publishedAt 均为 2026-07-24，并与原始公告、媒体报道时间一致。",
+      "官方口径、媒体调查、推断和未完成复核边界清楚：Opus 5 评测与安全判断属于 Anthropic 自述；开放权重是产业政策联署而非法律；Reuters 对 OpenAI 事件的匿名信源与已确认事实分层。",
+      "数字、价格、能力和安全边界均未被写成外部认证；sections、explainer、SVG alt 与正文一致，词条联动指向正文实际解释概念。"
+    ],
+    "notes": "读者审阅通过：新闻事实、来源归属和未证实边界清楚，未发现需要修改的中文可读性或事实边界问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-24",
+  "fingerprint": "sha256:e758c3e5a4ef30898a25ae6acca8b46e77749fbe35e5fcd53084bc2ca7dbc55d",
+  "promotedAt": "2026-10-04T02:00:43.764Z"
+}

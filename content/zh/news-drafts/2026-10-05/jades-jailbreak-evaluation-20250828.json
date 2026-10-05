@@ -1,0 +1,188 @@
+{
+  "slug": "jades-jailbreak-evaluation-20250828",
+  "title": "JADES 把越狱成功与否拆成多个子问题来判",
+  "summary": "JADES 论文于 8 月 28 日提交，提出一种分解式越狱评估方法：把有害请求拆成带权重的子问题，分别评分后再聚合，并可选地加入事实核查。在 400 对人工标注的 JailbreakQR 样本上，它与人工评审达到 98.5% 一致，并提示一些旧方法报告的攻击成功率可能被高估。文章只讲评估框架，不复述攻击提示。",
+  "body": "“这个回答算不算被越狱了？”看起来像一个二选一问题，实际常常混着几件事：模型有没有顺从请求、有没有真的给出有害内容、内容是否完整、其中的事实是否可靠。只看一条总分，容易把这些差异压平。JADES 的做法，是先把判断拆开，再决定怎样合并。\n\n它把一个有害问题分解成多个子问题，并为不同子问题设置权重。评审可以分别判断回答是否完成了某个关键目标，再根据权重得到整体分数。这样，“拒答但夹带一小段可执行内容”和“完全遵从”就不必落在同一个粗糙标签里。\n\n框架还允许加入事实核查。对某些任务，危害不只来自是否回答，还来自回答中的描述是否准确；如果事实环节单独检查，评估者就能分清“模型拒绝了”与“模型给了一个听起来完整但不可靠的解释”。这一步也让幻觉风险有机会进入越狱评估，而不是留到另一个互不相连的指标里。\n\n论文在 JailbreakQR 上使用了 400 对人工标注样本，报告与人工评审 98.5% 一致。作者还发现，部分旧攻击成功率可能被高估：只要模型说出了一些表面相关的句子，单一判定器就可能把它计为成功，而分解后的检查会追问关键子目标到底有没有被满足。\n\n这个结果不等于 JADES 能替代人审。分解方式、子问题权重和事实核查标准都带有设计选择；换一个危害定义，聚合结果也可能变化。98.5% 是在给定数据和标注协议上的一致度，不是任何领域、任何攻击形式的通用准确率。\n\n对评测团队来说，最有用的改变是保存中间判断：哪些子问题命中、哪个权重主导了结论、事实核查是否触发。这样复盘时可以定位争议来自标签、权重还是回答本身，而不是只争论一个“成功/失败”。\n\nJADES 把越狱评估从一次性盖章变成一张检查表。它提醒我们，安全指标越接近真实使用，就越需要说明到底测了哪一层行为；评估框架本身也应该接受边界、误差和人工复核的检验。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/jades-jailbreak-evaluation-20250828.svg",
+    "alt": "JADES 将越狱评估拆成多个子问题并汇总为分数",
+    "sourceUrl": "/images/news/jades-jailbreak-evaluation-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "binary-label-problem",
+      "title": "“成功”其实混着好几种判断",
+      "body": "顺从程度、有害内容、完整性和事实可靠性可能不同；一个总标签很容易把它们压成同一个答案。",
+      "kind": "narrative"
+    },
+    {
+      "id": "decompose-target",
+      "title": "先把有害请求拆成子问题",
+      "body": "JADES 为关键子目标设置权重，分别检查回答有没有完成每一项，再计算整体结果。",
+      "kind": "technical"
+    },
+    {
+      "id": "fact-check-option",
+      "title": "事实核查可以单独接进来",
+      "body": "当评估既关心行为又关心内容可靠性时，事实核查帮助区分拒答、顺从和“听起来完整但并不准确”。",
+      "kind": "technical"
+    },
+    {
+      "id": "human-agreement",
+      "title": "400 对人工样本上与人审 98.5% 一致",
+      "body": "JailbreakQR 的结果说明分解式判定更接近给定标注协议；部分旧方法的攻击成功率因此可能偏高。",
+      "kind": "comparison"
+    },
+    {
+      "id": "metric-boundary",
+      "title": "一致度不是跨场景通用准确率",
+      "body": "子问题定义、权重和事实标准都会影响聚合结果，98.5% 需要放在数据集和标注协议里理解。",
+      "kind": "boundary"
+    },
+    {
+      "id": "audit-trace",
+      "title": "保留每个子问题的判断轨迹",
+      "body": "记录命中的子目标、主导结论的权重和是否触发事实核查，复盘时才能定位争议来源。",
+      "kind": "example"
+    },
+    {
+      "id": "review-loop",
+      "title": "评估框架也需要被复核",
+      "body": "越狱指标要说明自己测的行为层级，并接受边界、误差和人工复核的检验。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "JADES 怎样把一次越狱判定拆开？",
+    "question": "先定义可检查的子目标，再分别评分、按权重聚合，并把事实核查作为可见的独立环节。",
+    "steps": [
+      {
+        "label": "定义子目标",
+        "detail": "把整体危害问题拆成顺从、关键内容和其他可观察结果，避免只看表面相关性。",
+        "evidence": "decompositional scoring of harmful queries"
+      },
+      {
+        "label": "设定权重",
+        "detail": "为更关键的子问题分配更高权重，让单个无关句子不能轻易改变整体结论。",
+        "evidence": "weighted sub-question aggregation"
+      },
+      {
+        "label": "逐项评分",
+        "detail": "分别判断回答是否满足每个子目标，并保存子项结果而不是只留下一个总标签。",
+        "evidence": "sub-question level assessment"
+      },
+      {
+        "label": "可选核查事实",
+        "detail": "需要时对回答中的事实单独检查，区分行为越狱和内容不可靠。",
+        "evidence": "optional fact checking"
+      },
+      {
+        "label": "对照人工复核",
+        "detail": "用人工标注样本检查一致度，并持续审视标签、权重和聚合规则的偏差。",
+        "evidence": "98.5% agreement on 400 human-annotated JailbreakQR pairs"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.20848"
+  },
+  "relatedSlugs": [
+    "eval",
+    "benchmark",
+    "hallucination",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20848",
+      "claim": "JADES 将有害问题拆解为带权子问题，分别评分后聚合，并支持可选事实核查。",
+      "excerpt": "JADES: A Universal Framework for Jailbreak Assessment via Decompositional Scoring"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20848",
+      "claim": "JailbreakQR 的 400 对人工标注样本上与人类评审 98.5% 一致，并显示部分旧攻击成功率被高估。",
+      "excerpt": "98.5% agreement on 400 human pairs ... prior attack success rates overestimated"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20848",
+  "sourceHash": "sha256:57ab74ed73a6c6815e6ae36ee213abc5125fa9cfdd234d26af7f644bef45d020",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论越狱评估的子问题、标注协议和一致度边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.98,
+      "evidence": [
+        "正文使用 JailbreakQR 人工标注样本说明评估数据集。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.92,
+      "evidence": [
+        "正文把事实核查与“听起来完整但不准确”的内容风险分开说明。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20848",
+      "claim": "arXiv 记录 JADES 于 2025 年 8 月 28 日提交，研究分解式越狱评估。",
+      "excerpt": "Date: Thu Aug 28 ... decompositional scoring"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20848",
+      "claim": "摘要给出带权子问题、事实核查、400 对人工样本和 98.5% 一致度结果。",
+      "excerpt": "JailbreakQR ... 400 human pairs ... 98.5% agreement"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对分解式越狱评估、带权子问题、可选事实核查、JailbreakQR 400 对人工样本及 98.5% 一致度；正文不复述攻击提示，并明确一致度和聚合规则的适用边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 JADES 的价值写在可解释的分解评估和人工对照上，避免把 98.5% 写成普遍准确率，也没有复述攻击提示；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-jades-jailbreak-evaluation-20250828"
+}

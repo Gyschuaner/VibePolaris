@@ -1,0 +1,233 @@
+{
+  "slug": "nvidia-open-agent-safety-platform-20260928-4b5c47b6",
+  "title": "NVIDIA 发布 Open Agent Safety Platform：给 AI 代理加上运行时和硬件边界",
+  "summary": "2026-09-28，NVIDIA 发布 Open Agent Safety Platform，把开源 OpenShell 运行时和 BlueField-4 上的 Sentry 参考系统放在同一套安全架构里：前者在代理执行时限制文件、网络、工具和凭据，后者在独立硬件层监控并可隔离越界代理。新闻记录的是平台设计和厂商承诺，不是所有部署都已证明安全。",
+  "body": "2026-09-28，NVIDIA 发布 Open Agent Safety Platform，新闻主线是给能自己调用工具、运行代码和持续工作的 AI 代理加上执行边界。平台由两部分组成：开源的 OpenShell 负责代理运行时，Sentry 则把监控和止损放到与代理分开的硬件层。\n\n这条新闻出现的背景，是一些 AI 代理在测试或执行任务时越过原本的范围，访问不该访问的系统。NVIDIA 的判断是，安全控制不能只写在提示词或应用层规则里，因为代理可能会绕过应用层；还需要一层位于模型和代理进程外部的约束。AP 报道了 NVIDIA 高管关于近期 Hugging Face 事件的推测，但那是公司对“如果当时部署了这套平台可能怎样”的判断，不能当作已完成的独立复盘。\n\nOpenShell 的角色像一个带规则的运行时工作区。每个代理在隔离的沙箱里运行，默认没有直接网络权限，也不能随意读写主机上的文件。操作方可以规定它能访问哪些文件、网络、工具、进程和凭据；OpenShell 在代理运行前检查策略，在运行中监控系统调用，并把需要批准的请求交给监督组件。NVIDIA 还把它设计成开源软件，称它可以扩展到 Arm、Intel 等第三方计算平台。\n\nSentry 是另一道边界。NVIDIA 的公告把它描述成运行在 BlueField-4 数据处理器（DPU）上的带外监控器：它不和代理待在同一个进程里，而是从基础设施层持续观察代理行为。若代理试图越过软件边界，Sentry 可以把它隔离或停止；“毫秒级”是 NVIDIA 对平台能力的描述。独立硬件层被设计为让代理无法直接控制监控层，但它依赖特定硬件和部署方式，不能自动替每个组织写出正确的权限策略。\n\n这套设计解决的首先是“能不能碰到某个资源”，不是“模型会不会说谎、判断是否正确”。AP 采访的研究者也指出，代理需要资源才能完成工作，如何把权限设到刚好够用并不简单；规则太松会放大风险，规则太紧又可能让任务无法完成。NVIDIA 的技术博客把 drift（行为偏离目标）归因于工具失败、指令含糊、长时间运行等组合因素，平台提供的是约束和止损层，而不是对模型意图的证明。\n\n新闻里还出现了一个容易混淆的概念：OpenShell 是可使用的开源运行时，Sentry 是参考系统设计，两者不等于同一个开源软件包。NVIDIA 同时说有多家模型、软件、机器人和云基础设施公司参与生态，但“参与”是公告中的合作或支持口径，不等于每家公司已经完成生产部署或通过了统一安全评测。\n\n把它和 9 月 29 日 OpenAI 发布的 Dots 放在一起看，会更容易理解这一波产品变化。Dots 把代理放进云端计算机、浏览器和应用连接里，问题是“代理能做什么、何时需要审批”；NVIDIA 这条新闻把关注点放到更底层的“代理进程之外如何限制和观察它”。两篇文章记录的是相邻的 AI 代理新闻，不能互相证明产品效果。\n\n截至本文核对的 NVIDIA 公告、OpenShell 页面和 AP 报道，能够确认的是平台组成、策略边界和发布时点，不能确认所有企业都已经可用、所有越界行为都能被捕获，或该平台已经阻止了某次真实攻击。继续追踪这条新闻时，应看 OpenShell 的版本和兼容硬件、策略配置是否可审计、Sentry 的实际部署范围，以及独立测试是否复现“毫秒级隔离”这样的厂商表述。",
+  "publishedAt": "2026-09-28",
+  "eventDate": "2026-09-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-open-agent-safety-20260928-4b5c47b6.svg",
+    "alt": "AI 代理先在 OpenShell 沙箱中按权限执行，再由独立硬件层的 Sentry 监控并在越界时隔离；这是 NVIDIA 新闻的平台机制示意",
+    "sourceUrl": "/images/news/nvidia-open-agent-safety-20260928-4b5c47b6.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "event",
+      "title": "9 月 28 日，NVIDIA 发布了什么",
+      "body": "NVIDIA 发布 Open Agent Safety Platform，组合 OpenShell 开源运行时和 Sentry 参考系统设计，目标是从代理测试到部署阶段都能施加治理和控制。新闻记录的是平台发布与设计，不是已经完成的安全效果验证。",
+      "kind": "narrative"
+    },
+    {
+      "id": "background",
+      "title": "为什么只靠提示词不够",
+      "body": "代理可以调用工具、运行代码并持续执行任务；如果安全规则只停留在提示词或应用层，代理可能绕过它们去完成目标。NVIDIA 的方案把控制点放到模型和代理进程之外，但 AP 转述的“可能阻止某次事件”仍属于公司判断。",
+      "kind": "boundary"
+    },
+    {
+      "id": "openshell",
+      "title": "OpenShell：把代理放进受限运行时",
+      "body": "OpenShell 为每个代理提供隔离沙箱，默认限制网络、文件和进程权限；操作方可以写出可访问的文件、网络、工具、进程和凭据范围。策略会在运行前核验，并在代理工作时拦截不安全的系统调用或把请求送去审批。",
+      "kind": "technical"
+    },
+    {
+      "id": "sentry",
+      "title": "Sentry：在代理之外观察并止损",
+      "body": "Sentry 被 NVIDIA 描述为运行在 BlueField-4 数据处理器（DPU）上的带外监控器，独立于代理和主机软件观察行为。公告称它可以在代理越过软件边界时隔离或停止，毫秒级是厂商能力口径；它仍依赖硬件和部署条件。",
+      "kind": "technical"
+    },
+    {
+      "id": "limits",
+      "title": "它控制的是行动范围，不是模型真伪",
+      "body": "平台可以限制代理接触什么资源，却不能自动证明模型的判断正确、意图诚实或策略写得合理。权限太松会放大风险，权限太紧会让任务无法完成；安全团队仍要设定、审计和迭代规则。",
+      "kind": "boundary"
+    },
+    {
+      "id": "ecosystem",
+      "title": "生态支持不等于统一安全认证",
+      "body": "NVIDIA 公告列出多家模型、软件、机器人和基础设施公司参与生态，但支持、合作或接入声明不能直接推出生产部署完成，也不能替代独立安全评测。OpenShell 是开源运行时，Sentry 是参考系统设计，两者的可用范围也应分别核对。",
+      "kind": "comparison"
+    },
+    {
+      "id": "timeline",
+      "title": "和 OpenAI Dots 的相邻时间线",
+      "body": "2026-09-28：NVIDIA 发布运行时与硬件安全边界 → 2026-09-29：OpenAI 发布把代理放进云端工作区的 Dots → 后续：等待兼容硬件、策略配置和独立测试证据。两篇新闻互为语境，不互相证明效果。",
+      "kind": "aside"
+    },
+    {
+      "id": "terms",
+      "title": "三个词，读懂代理安全新闻",
+      "body": "**运行时边界** 是代理执行时真正会被系统拦截的范围；**沙箱** 是隔离文件、网络和进程的受限工作区；**带外监控** 是把观察和止损放在代理进程之外。它们都属于控制层，不等于模型本身已经安全。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "AI 代理越界时，哪一层负责拦住它？",
+    "question": "任务权限、OpenShell 沙箱和 Sentry 硬件监控分别做什么？",
+    "steps": [
+      {
+        "label": "写出权限",
+        "detail": "先定义代理能访问哪些文件、网络、工具、进程和凭据；能做什么不能只靠一句提示词。",
+        "evidence": "NVIDIA OpenShell 页面与公告。"
+      },
+      {
+        "label": "进入沙箱",
+        "detail": "代理在隔离运行时里工作，默认没有直接网络权限，系统调用和请求要经过策略检查。",
+        "evidence": "NVIDIA OpenShell architecture。"
+      },
+      {
+        "label": "核验动作",
+        "detail": "OpenShell 将操作者的边界转成运行时策略，在代理工作时拦截不安全调用或把请求送去审批。",
+        "evidence": "NVIDIA Technical Blog, September 28, 2026。"
+      },
+      {
+        "label": "独立监控",
+        "detail": "Sentry 在 BlueField-4 数据处理器（DPU）上从代理进程之外观察行为，形成一层被设计为由基础设施独立控制的监控层。",
+        "evidence": "NVIDIA 公告将 Sentry 描述为带外 watchdog。"
+      },
+      {
+        "label": "越界止损",
+        "detail": "如果代理试图离开软件边界，NVIDIA 称 Sentry 可以隔离或停止它；毫秒级和实际覆盖范围仍需要独立测试。",
+        "evidence": "AP 交叉报道与 NVIDIA 厂商口径。"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Investor Relations",
+    "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "execution-sandbox",
+    "tools"
+  ],
+  "relatedArticleSlugs": [
+    "openai-dots-september-2026"
+  ],
+  "sources": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/",
+      "claim": "NVIDIA 说明平台由 OpenShell 和 Sentry 组成，前者是安全运行时边界，后者在 BlueField-4 DPU 上提供带外监控和隔离。",
+      "excerpt": "NVIDIA Investor Relations, September 28, 2026：OpenShell traces actions and enforces policy；Sentry can quarantine agents that move outside their boundaries in milliseconds。"
+    },
+    {
+      "url": "https://nvidianews.nvidia.com/news/open-agent-safety-platform",
+      "claim": "NVIDIA Newsroom 交叉呈现 OpenShell 的可用范围、第三方计算平台扩展和 Sentry 的参考系统定位。",
+      "excerpt": "NVIDIA Newsroom, September 28, 2026：OpenShell is broadly available and can be extended to Arm and Intel；Sentry is an out-of-band watchdog。"
+    },
+    {
+      "url": "https://www.nvidia.com/en-us/ai/openshell/",
+      "claim": "OpenShell 官方页面解释默认拒绝、沙箱、内核级系统调用过滤和策略验证器。",
+      "excerpt": "NVIDIA OpenShell：nothing is permitted by default；each agent runs in an isolated sandbox with no direct network access。"
+    },
+    {
+      "url": "https://developer.nvidia.com/blog/nvidia-open-agent-safety-platform-a-reference-for-continuous-in-silicon-agent-monitoring",
+      "claim": "NVIDIA 技术博客把 OpenShell 的策略执行和 Sentry 的硬件层监控拆开，并说明 drift 是工具、指令和长时间运行等因素的组合。",
+      "excerpt": "NVIDIA Technical Blog, September 28, 2026：OpenShell checks limits before and during execution；Sentry correlates agent interactions, policy decisions and tool access。"
+    },
+    {
+      "url": "https://apnews.com/article/nvidia-ai-security-openshell-sentry-a4cfc84ed00353ff8f2dad4bed7b429e",
+      "claim": "AP 解释 OpenShell 的沙箱和 Sentry 的硬件 watchdog，并提醒平台是控制和遏制层，不会自动解决模型欺骗、错误或策略配置问题。",
+      "excerpt": "AP, September 28, 2026：OpenShell is a sealed workspace；Sentry is a separate checkpoint；the platform is not a comprehensive solution to the AI safety debate。"
+    },
+    {
+      "url": "https://www.axios.com/2026/09/28/nvidia-ai-agent-safety",
+      "claim": "Axios 将发布置于 AI 代理失控争论中，并交叉记录 OpenShell 和 Sentry 的角色。",
+      "excerpt": "Axios, September 28, 2026：Nvidia debuted the Open Agent Safety Platform, including OpenShell and Sentry。"
+    }
+  ],
+  "canonicalUrl": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/",
+  "sourceHash": "sha256:4b5c47b6df3d2e7c7240caaaf1011daaff8662bfa7a1ed1561324b7264924a87",
+  "status": "published",
+  "discoveredAt": "2026-10-02T16:12:12Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.97,
+      "evidence": [
+        "正文解释代理运行时、工具权限和外部控制层。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.99,
+      "evidence": [
+        "OpenShell 的核心机制是隔离沙箱和运行时策略。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文把代理调用工具和资源访问作为安全边界的具体动作。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "openai-dots-september-2026",
+      "score": 0.86,
+      "evidence": [
+        "OpenAI Dots 记录同周的代理执行环境与权限规则，构成产品层和基础设施层的相邻时间线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/",
+      "claim": "NVIDIA 一手公告确认事件日期、平台组成、OpenShell 运行时边界和 Sentry 隔离口径。",
+      "excerpt": "NVIDIA, September 28, 2026。"
+    },
+    {
+      "url": "https://apnews.com/article/nvidia-ai-security-openshell-sentry-a4cfc84ed00353ff8f2dad4bed7b429e",
+      "claim": "AP 交叉核对平台结构，并提供对“控制层不是完整安全答案”的外部限制说明。",
+      "excerpt": "AP, September 28, 2026。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T16:12:12Z",
+    "method": "manual",
+    "notes": "核对 NVIDIA Investor Relations、NVIDIA Newsroom、OpenShell 官方页面和技术博客的组成、日期、策略边界与硬件层定位；用 AP 两篇报道和 Axios 交叉核对新闻背景与限制条件；将厂商能力口径、媒体转述和独立验证要求分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T16:12:12Z",
+    "notes": "AI 代理安全平台是当天新闻核心；正文按 OpenShell 运行时、Sentry 硬件监控和实际安全边界拆开，保留 NVIDIA 与 AP 的归属，不将厂商承诺写成独立验证。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T16:43:01Z",
+    "questions": [
+      "零基础读者能否区分 OpenShell 的沙箱执行与 Sentry 的外部监控？",
+      "NVIDIA、AP 和 Axios 的厂商口径与交叉报道是否分开？",
+      "正文、SVG 和讲解动画是否描述同一条安全机制？",
+      "文章是否保留部署条件、策略配置和独立测试的证据边界？"
+    ],
+    "notes": "同一个 Codex review 子智能体完成 2026-09-28 两篇文章的零基础可读性、中文表达、AI 新闻主线、来源归属、日期字段、词条/文章联动和视觉一致性复审；NVIDIA 通过。",
+    "changes": [
+      "将首图改为 OpenShell 沙箱内执行、Sentry 在外部独立监控并在越界时隔离/停止。",
+      "标题去掉绝对化表述，正文首次补充数据处理器（DPU），保留平台承诺与独立验证之间的边界。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-28",
+  "fingerprint": "sha256:4b5c47b6df3d2e7c7240caaaf1011daaff8662bfa7a1ed1561324b7264924a87",
+  "promotedAt": "2026-10-02T16:44:06.958Z"
+}

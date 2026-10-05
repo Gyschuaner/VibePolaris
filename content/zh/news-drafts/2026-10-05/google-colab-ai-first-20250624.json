@@ -1,0 +1,239 @@
+{
+  "slug": "google-colab-ai-first-20250624",
+  "title": "Google Colab 的 AI-first 体验向所有人开放：数据科学 Agent 开始写进 Notebook",
+  "summary": "6 月 24 日，Google 宣布 AI-first Colab 从小范围试用扩展到所有 Colab 用户。新体验包含迭代式问答、下一代 Data Science Agent 和自然语言代码转换，Agent 可以计划、执行代码、解释结果并展示发现；它仍运行在用户的 Notebook 和数据权限里，生成的代码与分析必须由人检查。",
+  "body": "6 月 24 日，Google Developers Blog 宣布 AI-first Colab 向所有 Colab 用户开放。此前这套体验只给一小批用户试用，现在在新建或已有 Notebook 的底部工具栏里可以看到 Gemini 图标。对数据科学初学者来说，变化不是多了一个聊天框，而是模型开始参与数据清理、代码运行和结果解释。\n\nGoogle 把这套体验拆成三个部分：迭代式提问、Data Science Agent 和自然语言代码转换。用户可以先问一个库怎么用，遇到报错后让系统给出 diff，再描述想做的改动让 Colab 重构相关代码。每一步都发生在 Notebook 的上下文里，因此输入的代码、数据和运行状态比普通问答更重要。\n\nData Science Agent 的流程更接近一个小型工作循环：先创建分析计划，再执行代码，读取结果，解释发现，最后把结果呈现出来。官方同时强调用户可以给反馈并保持控制。这个“可以自动运行”不等于“可以自动相信”，因为数据清理、特征选择和统计结论都可能被错误的单元格带偏。\n\nColab 的优势是把代码、输出和图表放在一个可复现的文档里，AI 生成的步骤也更容易被看到。风险是 Notebook 经常含有访问令牌、私有数据或会改变外部资源的代码。使用时应把凭证隔离，先在小样本上运行，查看 diff 和输出，再决定是否执行会写文件、调用外部 API 或产生费用的单元格。\n\n官方页面里的“显著提升效率”是产品团队的描述，不是独立实验结论。它展示的是可用功能和早期用户的使用方式，而不是对所有数据集、编程语言或模型任务的成功率承诺。真正有用的判断标准，是同一个任务在有人审阅的情况下是否少走弯路，失败时能否知道哪一步出了问题。\n\nAI-first Colab 让 Notebook 从静态记录变成可以对话和执行的工作空间。后续要看 Data Science Agent 的权限细节、运行环境隔离、费用提示和共享 Notebook 的审计能力；这决定它是一个好用的编程搭档，还是一段难以追责的自动脚本。",
+  "publishedAt": "2025-06-24",
+  "eventDate": "2025-06-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-colab-ai-first-20250624.svg",
+    "alt": "Google Colab 的数据科学 Agent 在 Notebook 中经历提问、计划、执行、图表和人工检查。",
+    "sourceUrl": "/images/news/google-colab-ai-first-20250624.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "rollout",
+      "title": "这次变化是从试用到开放",
+      "body": "AI-first Colab 从小范围试用扩展到所有用户，入口在 Notebook 底部的 Gemini 图标。",
+      "kind": "narrative"
+    },
+    {
+      "id": "features",
+      "title": "三个功能连成一个工作循环",
+      "body": "迭代式提问、Data Science Agent 和自然语言代码转换分别覆盖解释、执行和修改。",
+      "kind": "technical"
+    },
+    {
+      "id": "agent",
+      "title": "Data Science Agent 会计划、执行和解释",
+      "body": "官方描述它可以创建计划、运行代码、读取结果并展示发现，同时允许用户反馈。",
+      "kind": "comparison"
+    },
+    {
+      "id": "permissions",
+      "title": "Notebook 上下文也是权限边界",
+      "body": "数据、代码、运行状态和凭证会一起影响模型能够看到和执行的内容。",
+      "kind": "boundary"
+    },
+    {
+      "id": "review",
+      "title": "自动生成仍要看 diff 和输出",
+      "body": "清理、特征选择和统计结果可能出错；隔离凭证、小样本运行和人工审阅要留在流程里。",
+      "kind": "example"
+    },
+    {
+      "id": "watch",
+      "title": "后续观察执行环境和审计",
+      "body": "Agent 的权限、费用提示、共享 Notebook 审计和失败定位比“能不能写代码”更关键。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "Colab 里的数据科学 Agent 怎样工作？",
+    "question": "从问题到结果逐步拆开，看到自动执行和人工控制如何共存。",
+    "steps": [
+      {
+        "label": "提出问题",
+        "detail": "用户在 Notebook 里描述要清理、分析或可视化的数据任务。",
+        "evidence": "Google Colab 官方公告"
+      },
+      {
+        "label": "生成计划",
+        "detail": "Data Science Agent 把目标拆成代码和分析步骤，并让用户看到计划。",
+        "evidence": "官方 DSA 能力说明"
+      },
+      {
+        "label": "执行单元格",
+        "detail": "Agent 在当前运行环境里执行代码，读取数据和中间输出。",
+        "evidence": "Colab AI 工作流"
+      },
+      {
+        "label": "解释结果",
+        "detail": "系统把表格、图表和运行结果组织成自然语言发现。",
+        "evidence": "官方用户场景"
+      },
+      {
+        "label": "人工复核",
+        "detail": "检查数据处理、代码 diff、统计假设和凭证范围，再决定是否继续。",
+        "evidence": "Notebook 可复现与安全边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google Developers Blog",
+    "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "context",
+    "llm",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "google-gemini-cli-open-source-20250625",
+    "google-photos-ask-photos-search-20250626"
+  ],
+  "sources": [
+    {
+      "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+      "claim": "Google 于 2025 年 6 月 24 日宣布 AI-first Colab 向所有用户开放，此前先在小范围试用。",
+      "excerpt": "Google Developers Blog, “Supercharge your notebooks: The new AI-first Google Colab is now available to everyone”, June 24, 2025."
+    },
+    {
+      "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+      "claim": "官方列出迭代式提问、Data Science Agent 的计划/执行/推理/展示流程，以及自然语言代码转换。",
+      "excerpt": "The announcement lists Iterative Querying, the Next-Generation Data Science Agent and Effortless Code Transformation."
+    },
+    {
+      "url": "https://colab.research.google.com/",
+      "claim": "官方入口说明从新建或已有 Notebook 的底部 Gemini 图标开始使用；具体账号可用性仍以产品界面为准。",
+      "excerpt": "Google Colab product entry point, accessed through the Notebook toolbar."
+    }
+  ],
+  "canonicalUrl": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+  "sourceHash": "sha256:5b01e32a01ef53cb935f444e529a6bbff8efce15c01dad401c23232a67bf1b61",
+  "status": "published",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 agent 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 tools 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 context 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.92,
+      "evidence": [
+        "正文针对 llm 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文针对 event 解释这条新闻中的具体边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-gemini-cli-open-source-20250625",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一工具/Agent 事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-photos-ask-photos-search-20250626",
+      "score": 0.82,
+      "evidence": [
+        "相邻日期或同一工具/Agent 事实链提供可追溯上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+      "claim": "Google 于 2025 年 6 月 24 日宣布 AI-first Colab 向所有用户开放，此前先在小范围试用。",
+      "excerpt": "Google Developers Blog, “Supercharge your notebooks: The new AI-first Google Colab is now available to everyone”, June 24, 2025."
+    },
+    {
+      "url": "https://developers.googleblog.com/en/new-ai-first-google-colab-now-available-to-everyone/",
+      "claim": "官方列出迭代式提问、Data Science Agent 的计划/执行/推理/展示流程，以及自然语言代码转换。",
+      "excerpt": "The announcement lists Iterative Querying, the Next-Generation Data Science Agent and Effortless Code Transformation."
+    },
+    {
+      "url": "https://colab.research.google.com/",
+      "claim": "官方入口说明从新建或已有 Notebook 的底部 Gemini 图标开始使用；具体账号可用性仍以产品界面为准。",
+      "excerpt": "Google Colab product entry point, accessed through the Notebook toolbar."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "按 2025-06-24 的事件发生日核对官方公告/官方博客与可信媒体交叉来源；正文区分产品已发布、预览/路线图、公司主张和后续待验证边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐篇完成事实链、事件日、来源卡片、非模板段落、事件专属讲解、SVG alt 和词条联动检查，等待唯一 reader-review 子智能体复审。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T23:59:57Z",
+    "questions": [
+      "新闻主线与 eventDate/publishedAt 是否清楚？是。",
+      "公司主张、评测与部署边界是否准确？是。",
+      "中文、独立结构、explainer/SVG alt/词条联动是否通过？是。"
+    ],
+    "notes": "AI-first Colab 从小范围扩展到所有用户的事实清楚，代码执行、数据权限和人工检查边界明确。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-24",
+  "promotedAt": "2026-10-05T00:03:32.842Z"
+}

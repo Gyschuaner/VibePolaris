@@ -1,0 +1,194 @@
+{
+  "slug": "querybandits-hallucination-rewrite-20250822",
+  "title": "QueryBandits 先改写问题，再决定怎样回答",
+  "summary": "QueryBandits 是一篇 2025 年 8 月 22 日提交的幻觉缓解研究：它从输入查询的 17 个语言特征估计幻觉倾向，用上下文赌博机选择 paraphrase、expand 等改写策略，再把改写后的问题交给模型。在 13 个问答基准、每个数据集 1,050 个扰动问题上，Thompson Sampling 版本相对不改写基线的胜率为 87.5%，并超过静态 paraphrase/expand；论文同时发现静态改写有时会让结果更差，因此没有一种策略适合所有问题。",
+  "body": "很多幻觉防线是在答案生成后才开始：找引用、做事实核验、把可疑句子过滤掉。8 月 22 日提交的 QueryBandits，把干预提前到问题进入模型之前：先判断这个问题可能在哪种表达下更容易出错，再选择一套改写方式。\n\n  论文把查询改写看成一个上下文赌博机。它从输入中提取 17 个语言特征，用奖励模型估计不同写法的幻觉倾向，再在 paraphrase、expand 等策略之间选择。这里的“上下文”不是聊天记忆，而是当前问题的语言形状；策略要根据问题变化，而不是全站固定一个提示词。\n\n  实验覆盖 13 个问答基准，每个数据集使用 1,050 个经过词面扰动的问题。这样的设置是在考验改写器能不能在问题表达变化时保持判断，而不是只记住某一套原题。它也说明结果和数据集、扰动方式及奖励定义绑定，不能直接当成所有开放式对话的准确率。\n\n  论文报告，采用 Thompson Sampling 的上下文 QueryBandit 相对“不改写”基线取得 87.5% 的胜率，并且相对静态 paraphrase 和 expand 提示分别高出 42.6% 和 60.3%。这些比较支持一个直觉：面对不同问题，先选择策略比无差别地把每个问题都改写一遍更有机会减少错误。\n\n  但改写不是越多越好。研究发现，一些静态改写策略的累计遗憾高于不改写基线，换句话说，固定的“请改写后再答”提示有时会把原本清楚的问题变坏。它还发现没有一条策略在所有问题上都最优，改写器需要保留“不改写”这个选项。\n\n  真正接入时，改写会增加一次决策和可能的 token 成本，也可能改变用户原本的限定条件。系统要记录原问题、改写版本、选择的策略和最终结果，遇到专有名词、数字、否定条件或高风险请求时，先检查改写有没有丢信息，再决定是否放行。\n\n  QueryBandits 的启发不是“给模型多加一层提示词”，而是把提问阶段也纳入可靠性控制：按问题特征选择是否改写、怎么改写，再用同一套题集复盘。它能减少一部分由表达触发的幻觉，却不能替代来源检索、引用核对和答案后的事实验证。",
+  "publishedAt": "2025-08-22",
+  "eventDate": "2025-08-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/querybandits-hallucination-rewrite-20250822.svg",
+    "alt": "QueryBandits 根据问题特征选择改写策略来缓解幻觉",
+    "sourceUrl": "/images/news/querybandits-hallucination-rewrite-20250822.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "before-generation",
+      "title": "把幻觉干预提前到问题进入模型之前",
+      "body": "QueryBandits 不先过滤答案，而是先判断输入问题的表达是否容易触发幻觉，再选择是否改写和怎样改写。它把提问阶段也纳入可靠性控制。",
+      "kind": "narrative"
+    },
+    {
+      "id": "contextual-bandit",
+      "title": "17 个语言特征决定改写策略",
+      "body": "论文把查询改写建模为上下文赌博机，从输入的 17 个语言特征估计幻觉倾向，在 paraphrase、expand 等策略之间选择。这里的上下文指当前问题的语言形状。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation-setting",
+      "title": "13 个问答基准，每个 1050 个扰动问题",
+      "body": "实验覆盖 13 个 QA 基准，每个数据集使用 1,050 个经过词面扰动的问题。结果与数据集、扰动方式和奖励定义绑定，不能直接当成所有对话的准确率。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-win",
+      "title": "Thompson Sampling 相对不改写胜率 87.5%",
+      "body": "论文报告上下文 QueryBandit 相对不改写基线的胜率为 87.5%，并超过静态 paraphrase 和 expand 提示。比较说明按问题选策略比固定改写更有机会减少表达触发的错误。",
+      "kind": "comparison"
+    },
+    {
+      "id": "static-risk",
+      "title": "固定改写有时比不改写更糟",
+      "body": "一些静态改写策略的累计遗憾高于不改写基线，说明“所有问题都先改写”会损失原始限定条件。没有单一策略适用于所有问题，不改写必须是可选项。",
+      "kind": "boundary"
+    },
+    {
+      "id": "integration-cost",
+      "title": "改写层也会带来成本和信息损失",
+      "body": "改写会增加一次决策和 token 成本，还可能丢掉专有名词、数字、否定或风险边界。接入时要记录原问题、改写版本、策略和最终结果。",
+      "kind": "technical"
+    },
+    {
+      "id": "reliability-loop",
+      "title": "它补的是生成前控制，不是事实核验终点",
+      "body": "QueryBandits 可以减少一部分由表达触发的幻觉，但仍需要来源检索、引用核对和答案后验证。最小回归应包含不改写、动态改写和静态改写三条路径。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一次查询怎样选择改写策略？",
+    "question": "先看问题的语言特征，再在改写与不改写之间做可回放的选择。",
+    "steps": [
+      {
+        "label": "保留原问题",
+        "detail": "保存用户原始措辞，尤其是专名、数字、否定和范围条件，作为最终对照。",
+        "evidence": "query rewrite intervention is applied to the input query"
+      },
+      {
+        "label": "提取特征",
+        "detail": "从当前问题提取 17 个语言特征，估计不同表达可能带来的幻觉倾向。",
+        "evidence": "sensitivities of 17 linguistic features of the input query"
+      },
+      {
+        "label": "选择策略",
+        "detail": "用上下文赌博机在不改写、paraphrase、expand 等候选中选择当前回报更高的一条。",
+        "evidence": "bandit framework that designs rewrite strategies to maximize a reward model"
+      },
+      {
+        "label": "生成并记录",
+        "detail": "把选中的版本交给模型，同时记录原问题、改写文本、策略和回答结果。",
+        "evidence": "forward-pass mechanisms, bypassing retraining or gradient-based adaptation"
+      },
+      {
+        "label": "检查是否值得改写",
+        "detail": "按题集比较动态、静态和不改写路径；若改写丢失限定条件，应回退原问题并继续做事实核验。",
+        "evidence": "static rewrites can worsen hallucination ... no single rewrite strategy optimal for all queries"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / QueryBandits 作者组",
+    "url": "https://arxiv.org/abs/2508.16697"
+  },
+  "relatedSlugs": [
+    "hallucination",
+    "eval",
+    "prompt",
+    "data-validation",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.16697",
+      "claim": "QueryBandits 根据 17 个语言特征估计幻觉倾向，用上下文赌博机选择查询改写策略。",
+      "excerpt": "bandit framework ... 17 linguistic features ... reward model ... hallucination propensity"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.16697",
+      "claim": "在 13 个 QA 基准、每个 1050 个扰动问题上，Thompson Sampling 相对不改写胜率 87.5%，静态改写可能增加累计遗憾。",
+      "excerpt": "13 diverse QA benchmarks ... 87.5% win rate ... static rewrites can worsen hallucination"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.16697",
+  "sourceHash": "sha256:1a7f0f5de313d06dc08415099db60ff7d6175e3426cae2609d73b7ccab5dde67",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.99,
+      "evidence": [
+        "正文解释查询改写如何在生成前降低幻觉倾向。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 13 个 QA 基准、扰动问题和动态/静态比较。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论 paraphrase、expand 和输入改写。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.88,
+      "evidence": [
+        "正文把改写后的回答仍放回来源检索、引用核对和事实验证。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 22 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.16697",
+      "claim": "arXiv 摘要列出 QueryBandits 的 17 特征、13 个 QA 基准、87.5% 胜率和静态改写风险。",
+      "excerpt": "17 linguistic features ... 13 diverse QA benchmarks ... 87.5% win rate ... static rewrites can worsen hallucination"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 QueryBandits 摘要中的 17 个特征、13 个 QA 基准、每数据集 1050 个扰动问题、87.5% 胜率、42.6%/60.3% 静态比较和无单一最优策略；正文保留原问题、改写成本与事实核验边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把 87.5% 胜率限定在论文基准与扰动设置，解释静态改写可能变差、改写会丢条件和增加成本，并保留不改写与事实核验路径；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-22-querybandits-hallucination-rewrite"
+}

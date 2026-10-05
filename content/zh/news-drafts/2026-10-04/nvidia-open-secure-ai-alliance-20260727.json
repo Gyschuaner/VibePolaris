@@ -1,0 +1,219 @@
+{
+  "slug": "nvidia-open-secure-ai-alliance-20260727",
+  "title": "NVIDIA 拉起 Open Secure AI Alliance：把代理安全工具放到可检查的开放栈里",
+  "summary": "7 月 27 日，NVIDIA 与云计算、网络安全、企业软件和开源组织宣布成立 Open Secure AI Alliance，计划共享用于软件与 AI 代理安全的开放模型、工具、评测和响应技术。NVIDIA 还开源 NOOA 代理框架；开放工具能增加可检查性，但不会自动替代权限、审计和人工治理。",
+  "body": "7 月 27 日，NVIDIA 宣布与一批云计算、网络安全、企业软件和开源组织成立 Open Secure AI Alliance。联盟的主张是，AI 代理的防御不能只依赖少数封闭系统；身份、权限、代理 Harness、护栏、日志和评测都应该有可检查、可改进的开放工具。NVIDIA 把这件事放在近期代理越过测试边界的安全事件之后，强调防御者在需要快速取证时必须能检查和运行自己的工具。\n\n联盟的首批工作不是发布一个新的通用模型，而是拼一套开放防御栈。NVIDIA 表示会贡献开放模型、权重、数据和代理 Harness 研究，并把 NVIDIA Labs Object-Oriented Agent（NOOA）框架放到 GitHub。NOOA 的目标是让 Harness 更容易接入模型，对代理动作进行测试、追踪、审计和治理；其他成员还会在身份、隔离、安全模型格式、多模型扫描和安全编码流程上贡献。\n\n“开放”在这里指的是工具和接口更容易被研究、运行和修改，不是所有模型权重都必须公开，也不是开放项目默认安全。一个能被检查的代理仍然可能拥有过大的权限、连接真实系统或留下不完整日志。联盟的技术路线要真正有用，还需要明确的威胁模型、独立评测、维护责任和漏洞响应流程。\n\nNVIDIA 同时呼吁政策制定者把开放模型、开放 Harness 和安全工具当作防御资产，而不是只当成风险源。这是一项行业倡议，不是监管机构批准的标准；联盟成员的参与也不代表各家公司已经采用同一套控制。读者可以把它理解成一场基础设施层的组织动员，观察它能否产出可复现的工具和真实的修复结果。\n\n后续值得追踪三件事：NOOA 以及其他项目是否持续维护，参与者能否在多家模型和云环境中复现评测，出现漏洞时是否有公开响应和撤回机制。代理安全的效果最终要落到动作权限、隔离、可追踪和可停止，而不是停留在“开放”这个标签。",
+  "publishedAt": "2026-07-27",
+  "eventDate": "2026-07-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-open-secure-ai-alliance-20260727.svg",
+    "alt": "Open Secure AI Alliance 从身份与权限延伸到 Harness、日志、评测和漏洞响应的开放防御栈；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/nvidia-open-secure-ai-alliance-20260727.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "alliance",
+      "title": "联盟要做的是共享防御基础层",
+      "body": "参与者计划共同开发和分享开放模型、工具、评测与漏洞响应技术，覆盖软件和代理的完整栈。",
+      "kind": "narrative"
+    },
+    {
+      "id": "nooa",
+      "title": "NOOA 把代理 Harness 放到研究台上",
+      "body": "NVIDIA 的 NOOA 项目让 Harness 更容易接入模型，测试、追踪、审计和治理代理行为。",
+      "kind": "technical"
+    },
+    {
+      "id": "open",
+      "title": "开放工具不等于默认安全",
+      "body": "工具可检查并不意味着权限最小、网络隔离、日志完整或动作可停止；这些控制仍需部署者负责。",
+      "kind": "boundary"
+    },
+    {
+      "id": "policy",
+      "title": "“防御资产”是政策倡议，不是法规",
+      "body": "NVIDIA 呼吁政策制定者保护开放防御能力，但联盟本身没有执法权，也没有替成员制定统一合规标准。",
+      "kind": "comparison"
+    },
+    {
+      "id": "watch",
+      "title": "最终要看能否修好真实问题",
+      "body": "持续维护、独立评测、多模型复现和公开漏洞响应，才会证明开放防御栈不只是组织名单。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "代理安全的开放防御栈要覆盖哪几层？",
+    "question": "模型之外的身份、工具和日志决定代理能否被检查与停止。",
+    "steps": [
+      {
+        "label": "身份与权限",
+        "detail": "明确哪个代理在什么上下文里调用哪个工具，先把最小权限写进运行规则。",
+        "evidence": "Open Secure AI Alliance"
+      },
+      {
+        "label": "Harness 与隔离",
+        "detail": "用可检查的 Harness 连接模型与工具，把网络、文件和凭据限制在授权范围。",
+        "evidence": "NVIDIA NOOA"
+      },
+      {
+        "label": "日志与评测",
+        "detail": "保存提示、工具调用、结果和失败轨迹，让独立团队能复现越界或误报。",
+        "evidence": "open defense stack"
+      },
+      {
+        "label": "修复与响应",
+        "detail": "发现漏洞后明确谁维护、怎样发布修复、何时撤回，并验证修复没有引入新的路径。",
+        "evidence": "vulnerability response boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA Blog",
+    "url": "https://blogs.nvidia.com/blog/open-secure-ai-alliance/?nvid=nv-csfg-990052"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "tools",
+    "authorization",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blogs.nvidia.com/blog/open-secure-ai-alliance/?nvid=nv-csfg-990052",
+      "claim": "NVIDIA 宣布 Open Secure AI Alliance，提出共享开放技术和工具保护软件与 AI 代理。",
+      "excerpt": "The Open Secure AI Alliance ... will work to remediate and disclose vulnerabilities using open technologies."
+    },
+    {
+      "url": "https://github.com/NVIDIA-NeMo/labs-OO-Agents",
+      "claim": "NVIDIA 的 NOOA 项目在 GitHub 提供开放的对象化代理框架，便于研究代理 Harness 与行为接口。",
+      "excerpt": "NVIDIA-labs Object Oriented Agents (NOOA) is a model-agnostic Python framework designed to support reliable AI agent development."
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/openai-google-and-anthropic-absent-from-nvidia-led-open-secure-ai-alliance",
+      "claim": "媒体报道联盟成员覆盖多家基础设施和安全公司，并将其与代理越界事件后的开放防御讨论联系起来。",
+      "excerpt": "A coalition of over 30 tech industry leaders ... has formed the Open Secure AI Alliance."
+    }
+  ],
+  "canonicalUrl": "https://blogs.nvidia.com/blog/open-secure-ai-alliance/?nvid=nv-csfg-990052",
+  "sourceHash": "sha256:d3f4adda825add7a08ca1f3494f23fa264fb0230bde378c9249c4a3223a58283",
+  "status": "published",
+  "discoveredAt": "2026-10-04T18:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 agent 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 agent-harness 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 tools 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 authorization 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 context 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 event 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blogs.nvidia.com/blog/open-secure-ai-alliance/?nvid=nv-csfg-990052",
+      "claim": "NVIDIA 宣布 Open Secure AI Alliance，提出共享开放技术和工具保护软件与 AI 代理。",
+      "excerpt": "The Open Secure AI Alliance ... will work to remediate and disclose vulnerabilities using open technologies."
+    },
+    {
+      "url": "https://github.com/NVIDIA/nooa",
+      "claim": "NVIDIA 说明 NOOA 是用于代理 Harness 的开放研究框架，帮助测试、追踪、审计和治理代理行为。",
+      "excerpt": "Object-Oriented Agent research framework for building and evaluating agent harnesses."
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/openai-google-and-anthropic-absent-from-nvidia-led-open-secure-ai-alliance",
+      "claim": "媒体报道联盟成员覆盖多家基础设施和安全公司，并将其与代理越界事件后的开放防御讨论联系起来。",
+      "excerpt": "A coalition of over 30 tech industry leaders ... has formed the Open Secure AI Alliance."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T18:10:00Z",
+    "method": "source",
+    "notes": "按事件日与发布日核对；官方公告、公司自述、媒体报道与未确认数字分别标注，保留引用卡片与词条联动。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T18:10:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 手写整理，检查新闻主线、日期、来源边界、读者解释、词条联动和 SVG 追溯信息。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T18:35:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间一致。",
+      "官方公告、公司/媒体口径和未确认数字分层，保留原始链接与引用卡片。",
+      "sections、explainer、SVG alt 与正文一致，词条联动真实。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "联盟倡议、NOOA 开放工具与监管标准边界明确，未把参与写成统一采用或默认安全。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-27",
+  "fingerprint": "sha256:5b148dae4866d9d1c5753ebf6ea66f0adec4fa2e1c03a9fcb561bda05cb72cfc",
+  "promotedAt": "2026-10-04T00:11:37.362Z"
+}

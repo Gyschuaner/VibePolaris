@@ -1,0 +1,147 @@
+{
+  "slug": "warp-factories-20260818",
+  "title": "Warp 发布 Warp Factories：把软件工厂做成可自托管的代理基础设施",
+  "summary": "Warp 于 2026-08-18 发布 Warp Factories 的封闭测试，把“分诊—规格—实现—审查—验证”的软件工厂流程包装成可由企业部署和定制的基础设施。公司强调可使用任意模型和 harness（代理运行约束/工具框架）、用自己的数据做评估，并保留数据、推理和算力控制权；产品仍是 closed beta，Warp 声称内部约 30% 的任务已由工厂自动化，但没有公布独立生产率或缺陷率数据。",
+  "body": "2026 年 8 月 18 日，Warp 发布 Warp Factories，把企业如何运行编码代理的问题从“每个工程师装一个工具”推进到“为整个团队搭一条自动化生产线”。产品以基础设施而不是单一 AI 队友的形式提供，面向的流程包括分诊、规格说明、实现、审查、验证和上线后的监控。\n\nWarp 的卖点是开放和可控。公司称企业可以使用任意模型和任意 harness（代理运行约束/工具框架），在自己的代码和数据上运行评估与基准，并把 agent 对话、记忆和评估结果留在自有环境里。基础设施可以由 Warp 托管，也可以带到客户自己的推理、主机和数据存储中；官方把这种选择称为 AI sovereignty（模型和数据由企业自己控制）。产品目前只在 closed beta，符合条件的组织可以申请 1 万美元的试用额度。\n\n这套设计针对的是交互式编码代理的两个痛点。第一，团队很难长期衡量代理带来的成本、吞吐和质量变化；第二，每个代理都拥有开发者电脑上的一组权限，技能和 MCP（连接器标准）配置分散，产生的过程数据又容易丢失。Warp Factories 试图把代理放进云端，设置统一的治理、记忆和评估入口，让人工只在关键决策点介入。\n\nWarp 说自己目前约 30% 的任务通过工厂自动化，并预期比例继续提高。这是公司内部的运营口径，不是跨公司或第三方验证的生产率结论。真正的难点在于工厂是否能把失败任务、权限边界和回滚动作都记录下来：如果代理生成了看似正确但无法维护的代码，自动化流程不能只把 PR（代码合并请求）数量当成成功指标。\n\n因此，Warp Factories 更像一套让企业自己定义“代理如何工作”的控制面，而不是又一个聊天窗口。后续应观察它是否公开工厂定义格式、评估数据、权限模型和失败处理方式，以及 closed beta 客户能否把它接进现有 CI/CD（持续集成/持续交付）、代码审查和合规流程。",
+  "publishedAt": "2026-08-18",
+  "eventDate": "2026-08-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/warp-factories-20260818.svg",
+    "alt": "代理依次分诊、规格、实现、审查和验证，过程数据回到评估闭环；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/warp-factories-20260818.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "factory",
+      "title": "把软件开发流程（SDLC）变成一条代理循环",
+      "body": "Warp Factories 把分诊、规格、实现、审查、验证和监控串成可反复运行的云端工作流，人工在关键节点保留决策权。",
+      "kind": "narrative"
+    },
+    {
+      "id": "control",
+      "title": "企业可以自带模型、主机和数据",
+      "body": "公司强调任意模型、任意 harness 和自有数据评估，并允许客户保留推理、计算和代理产物的控制权。",
+      "kind": "technical"
+    },
+    {
+      "id": "eval",
+      "title": "评估要跟着任务结果走",
+      "body": "不能只看代理生成多少 PR；还要比较成本、质量、回滚和维护负担，才能知道工厂是否真的提高了投入产出比（ROI）。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "closed beta 和 30% 都是当前口径",
+      "body": "产品仍在封闭测试，约 30% 任务自动化来自 Warp 内部说法，没有公开客户样本或独立生产率数据。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "代理软件工厂怎样闭环？",
+    "question": "把一个任务从分诊推进到验证，再回收评估和记忆，读者可以看到代理基础设施和聊天工具的区别。",
+    "steps": [
+      {
+        "label": "分诊与规格",
+        "detail": "工厂先把需求分类并生成可执行规格，决定哪些任务适合交给代理。",
+        "evidence": "Warp Factories workflow"
+      },
+      {
+        "label": "实现与工具调用",
+        "detail": "云端代理在受控环境中编写代码、调用工具并保留过程记录，开发者可以在关键节点介入。",
+        "evidence": "Warp product description"
+      },
+      {
+        "label": "审查与验证",
+        "detail": "生成的改动要经过代码审查、测试和验证，失败时应把任务退回而不是静默合并。",
+        "evidence": "Warp workflow phases"
+      },
+      {
+        "label": "用评估改进工厂",
+        "detail": "把成本、质量、记忆和失败案例回收进评估记录（evals），才能决定是否扩大自动化范围。",
+        "evidence": "Warp ROI and evals claims"
+      }
+    ]
+  },
+  "source": {
+    "name": "Warp",
+    "url": "https://www.warp.dev/blog/open-infrastructure-for-building-a-software-factory"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "agent-loop",
+    "tools",
+    "eval",
+    "data-lineage",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.warp.dev/blog/open-infrastructure-for-building-a-software-factory",
+      "claim": "Warp 于 2026-08-18 发布 Warp Factories，强调可自定义、任意模型和自有数据的云端软件工厂。",
+      "excerpt": "Warp Factories allow engineering organizations to deploy their own cloud software factories on open, flexible infrastructure."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development/",
+      "claim": "TechCrunch 交叉报道 Warp 将分诊、规格、实现、审查和验证等软件开发阶段交给代理基础设施。",
+      "excerpt": "Warp Factories gives companies a simple environment for deploying agents and a roadmap for how to use them."
+    },
+    {
+      "url": "https://www.warp.dev/factories/request-access",
+      "claim": "Warp 的申请页面显示产品处于 early/closed beta，需要申请访问。",
+      "excerpt": "Request Early Access — Warp Factories."
+    }
+  ],
+  "canonicalUrl": "https://www.warp.dev/blog/open-infrastructure-for-building-a-software-factory",
+  "sourceHash": "sha256:db999034e3166535e82d0a07447e0a35e80d0c9be44f3d5ae29bab79d4202004",
+  "status": "published",
+  "discoveredAt": "2026-10-03T09:45:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://www.warp.dev/blog/open-infrastructure-for-building-a-software-factory",
+      "claim": "Warp 于 2026-08-18 发布 Warp Factories，强调可自定义、任意模型和自有数据的云端软件工厂。",
+      "excerpt": "Warp Factories allow engineering organizations to deploy their own cloud software factories on open, flexible infrastructure."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development/",
+      "claim": "TechCrunch 交叉报道 Warp 将分诊、规格、实现、审查和验证等软件开发阶段交给代理基础设施。",
+      "excerpt": "Warp Factories gives companies a simple environment for deploying agents and a roadmap for how to use them."
+    },
+    {
+      "url": "https://www.warp.dev/factories/request-access",
+      "claim": "Warp 的申请页面显示产品处于 early/closed beta，需要申请访问。",
+      "excerpt": "Request Early Access — Warp Factories."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T09:45:00Z",
+    "method": "source",
+    "notes": "以官方公告或监管文件为主，并用可信新闻报道核对发布日期、事件边界和公司口径；未把计划、估算或宣传数字写成已验证效果。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T09:45:00Z",
+    "notes": "首轮结构和来源机械检查通过，等待 reader-review 复核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T10:52:27Z",
+    "questions": [],
+    "notes": "通过。harness、AI sovereignty、MCP、PR、CI/CD、SDLC、ROI、evals 和四阶段 SVG 已用白话解释。",
+    "changes": [
+      "补充 harness、AI sovereignty、MCP、PR、CI/CD、SDLC、ROI、evals 的中文解释；SVG 补齐审查节点。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "news-backfill-20261003-20260818",
+  "promotedAt": "2026-10-03T10:53:33.770Z"
+}

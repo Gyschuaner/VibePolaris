@@ -1,0 +1,222 @@
+{
+  "slug": "github-copilot-mcp-ide-ga-20250814",
+  "title": "GitHub Copilot 在 JetBrains、Eclipse、Xcode 正式支持 MCP",
+  "summary": "8 月 14 日，GitHub 宣布 Copilot 在 JetBrains、Eclipse 和 Xcode 中的 Model Context Protocol（MCP）支持正式可用。开发者可以把本地或远程 MCP server 接入 IDE，让 agent mode 调用外部工具和数据；官方示例包括用 PAT 或 OAuth 连接 GitHub MCP、创建 issue、查看仓库历史和搜索 GitHub。组织与企业的 MCP policy 默认关闭，需要管理员显式开启，并且用户需要有效 Copilot license。",
+  "body": "8 月 14 日，GitHub 宣布 Copilot 在 JetBrains、Eclipse 和 Xcode 中的 MCP 支持正式可用。这里的“正式”指 IDE 集成进入 GA：开发者可以在这些编辑器里连接符合 MCP 规范的本地或远程 server，再由 agent mode 调用它们提供的工具。它不是 Remote GitHub MCP Server 本身在这一天变成 GA；后者的 GA 公告在 9 月 4 日，属于另一个日期边界。\n\nMCP 改变的是 Copilot 能看到和操作的范围。一个只在编辑器里补全代码的助手，可以通过 server 访问外部数据和动作；GitHub 给出的示例是用 PAT 或 OAuth 配置远程 GitHub MCP server，然后创建 issue、查看仓库历史或搜索 GitHub。工具能不能被调用，取决于 server 暴露的接口、凭证和当前会话的授权，不是“接入 MCP”四个字自动带来的能力。\n\n对组织和企业来说，默认值更值得关注。GitHub 说 Copilot policy 里的 MCP servers 开关默认关闭，必须由组织或企业管理员启用；使用者还需要有效的 Copilot license。管理员打开总开关后，仍要继续确认允许哪些 server、凭证由谁持有、工具能写入什么资源，以及 agent mode 是否需要每次人工确认。\n\n本地和远程 server 的风险形状也不同。本地 server 可能接触开发机文件、终端和内部网络，远程 server 则把数据和凭证交给另一个运行环境；两者都可能把“读”升级为“写”。如果一个工具可以创建 issue、修改代码或触发工作流，权限、审计、撤销和失败恢复都应当先于自动执行配置。\n\n这次 GA 还说明 MCP 的工具生态开始从单一演示走向日常开发流程，但能力边界仍由具体 server 决定。连接 GitHub MCP 不会自动获得全部 GitHub 权限，也不会让 Copilot 知道外部系统里所有数据；PAT、OAuth scope、仓库权限和 server 的实现共同决定实际可达范围。\n\n它和前一天 GitHub Remote MCP Server 增加公共仓库 secret scanning 的更新可以放在一起看：一个扩大工具接入面，一个在特定调用路径上检查密钥。两者都不能替代最小权限、令牌轮换、数据分类和提示注入测试。对组织来说，MCP policy、server allowlist 和每项工具的授权记录应该是同一套控制面的不同部分。\n\n验证这项 GA 最好从一个无敏感数据的仓库开始。记录 IDE、Copilot license、MCP policy、server 版本、认证方式和工具权限，分别测试读取、创建和失败回滚，再确认管理员关闭策略后调用是否真的停止。只有当这些边界在本地和远程 server 上都能复现，团队才知道自己启用的是一项集成能力，还是无意中打开了一条新的数据通道。",
+  "publishedAt": "2025-08-14",
+  "eventDate": "2025-08-14",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/github-copilot-mcp-ide-ga-20250814.svg",
+    "alt": "GitHub Copilot 在三种 IDE 中连接本地或远程 MCP server，并由管理员策略控制工具权限；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/github-copilot-mcp-ide-ga-20250814.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "GA 指的是三种 IDE 的 Copilot 集成",
+      "body": "GitHub 8 月 14 日宣布 JetBrains、Eclipse 和 Xcode 的 Copilot MCP 支持正式可用。它是 IDE 集成的 GA，不是 Remote GitHub MCP Server 本身的 GA；后者的官方 GA 日期是 9 月 4 日。",
+      "kind": "narrative"
+    },
+    {
+      "id": "connection",
+      "title": "本地和远程 MCP server 都能接入",
+      "body": "符合 MCP 规范的 server 可以向 Copilot 提供外部工具和数据，agent mode 再按任务调用。GitHub 示例包括用 PAT 或 OAuth 连接 GitHub MCP、创建 issue、查看仓库历史和搜索 GitHub。",
+      "kind": "technical"
+    },
+    {
+      "id": "policy",
+      "title": "组织和企业默认关闭 MCP policy",
+      "body": "MCP servers policy 默认关闭，必须由组织或企业管理员启用；使用者还需要有效 Copilot license。总开关打开后，server allowlist、凭证和工具写权限仍需单独核对。",
+      "kind": "boundary"
+    },
+    {
+      "id": "auth",
+      "title": "认证方式决定工具能触达什么",
+      "body": "PAT、OAuth scope、仓库权限和 server 实现共同决定实际可达范围。连接 GitHub MCP 不会自动获得全部 GitHub 权限，读工具也可能因为组合调用而接近写操作的风险。",
+      "kind": "technical"
+    },
+    {
+      "id": "local-remote",
+      "title": "本地与远程的风险形状不同",
+      "body": "本地 server 可能接触开发机文件、终端和内部网络，远程 server 则引入新的运行环境和数据边界。创建 issue、改代码或触发工作流前，应有审计、撤销和人工确认。",
+      "kind": "comparison"
+    },
+    {
+      "id": "security",
+      "title": "接入面扩大要和安全控制一起看",
+      "body": "它与前一天的 Remote MCP secret scanning 更新形成对照：一个扩大工具接入面，一个检查特定调用中的密钥。两者都不能替代最小权限、轮换、数据分类和提示注入测试。",
+      "kind": "example"
+    },
+    {
+      "id": "verification",
+      "title": "用策略关闭和失败回滚验证边界",
+      "body": "从无敏感数据仓库开始，记录 IDE、license、policy、server 版本、认证方式和工具权限，分别测试读、写、关闭策略和失败回滚，确认本地与远程路径是否一致。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "IDE 里的 Copilot 怎样调用一个 MCP 工具？",
+    "question": "把管理员策略、认证、server 和具体工具拆开，才能看清一次 agent action 到底经过了哪些授权。",
+    "steps": [
+      {
+        "label": "管理员打开策略",
+        "detail": "组织或企业管理员先在 Copilot policy 中启用 MCP servers，默认状态是关闭。",
+        "evidence": "MCP policy disabled by default"
+      },
+      {
+        "label": "配置本地或远程 server",
+        "detail": "在 JetBrains、Eclipse 或 Xcode 中安装插件并连接符合 MCP 规范的 server，记录版本和运行位置。",
+        "evidence": "Local and remote MCP servers"
+      },
+      {
+        "label": "绑定认证与权限",
+        "detail": "选择 PAT 或 OAuth，核对 scope、仓库权限和 server 暴露的读写工具，不把 license 当成资源授权。",
+        "evidence": "PAT/OAuth and repository actions"
+      },
+      {
+        "label": "让 agent mode 调工具",
+        "detail": "Copilot 根据任务调用创建 issue、查看历史或搜索等工具，执行前后保留输入、返回和人工确认记录。",
+        "evidence": "Agent mode tool use"
+      },
+      {
+        "label": "验证撤销与回滚",
+        "detail": "关闭 policy、撤销 token 或模拟失败，确认工具停止、数据不越界，写操作可以恢复。",
+        "evidence": "Policy and failure-path test"
+      }
+    ]
+  },
+  "source": {
+    "name": "GitHub Changelog",
+    "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "authorization",
+    "tools",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "github-mcp-secret-scanning-20250813"
+  ],
+  "sources": [
+    {
+      "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+      "claim": "GitHub 2025-08-14 变更日志确认 Copilot 的 MCP 支持在 JetBrains、Eclipse 和 Xcode 正式可用，可连接本地或远程 MCP server。",
+      "excerpt": "Model Context Protocol (MCP) support with GitHub Copilot is now generally available for JetBrains, Eclipse, and Xcode ... you can connect Copilot to both local and remote MCP servers."
+    },
+    {
+      "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+      "claim": "GitHub 示例包含 PAT/OAuth、创建 issue、查看仓库历史和搜索 GitHub；组织/企业 MCP policy 默认关闭且需有效 Copilot license。",
+      "excerpt": "You can set up a remote GitHub MCP server using PAT or OAuth authentication ... creating issues, checking repo history, and searching GitHub. The MCP policy is disabled by default ... valid Copilot license."
+    },
+    {
+      "url": "https://github.blog/changelog/2025-08-13-github-mcp-server-secret-scanning-push-protection-and-more/",
+      "claim": "前一天的 GitHub MCP 更新作为相关背景，说明公共仓库远程 MCP 工具调用的密钥扫描与默认阻断是另一个事件。",
+      "excerpt": "The remote GitHub MCP server now scans all of its tool call inputs in public repositories. If an exposed secret is detected, the call is blocked by default."
+    },
+    {
+      "url": "https://github.blog/changelog/2025-09-04-remote-github-mcp-server-is-now-generally-available/",
+      "claim": "Remote GitHub MCP Server 自身的正式可用公告在 2025-09-04，与 8 月 14 日三种 IDE 的 Copilot MCP 集成 GA 是不同事件。",
+      "excerpt": "Remote GitHub MCP Server is now generally available."
+    }
+  ],
+  "canonicalUrl": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+  "sourceHash": "sha256:8dc126f7ed71db20b5364fa0599250f6bc762e4af1fa0a5cdd39344b5bbe73fe",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.98,
+      "evidence": [
+        "正文把 IDE、MCP server、agent mode 和工具执行放进完整代理工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.98,
+      "evidence": [
+        "正文区分管理员 policy、PAT/OAuth、scope、仓库权限和具体工具写权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文围绕 MCP 暴露工具、issue/历史/搜索调用、读写和失败回滚展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.91,
+      "evidence": [
+        "正文区分 8/14 IDE MCP GA 与 9/4 Remote GitHub MCP Server GA，并关联 8/13 安全更新。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+      "claim": "GitHub 官方变更日志确认三种 IDE 的 Copilot MCP 支持正式可用，支持本地和远程 server，并可由 agent mode 调用工具。",
+      "excerpt": "MCP support with GitHub Copilot is now generally available for JetBrains, Eclipse, and Xcode ... Once connected, agent mode can leverage tools exposed by these servers."
+    },
+    {
+      "url": "https://github.blog/changelog/2025-08-14-model-context-protocol-mcp-support-for-jetbrains-eclipse-and-xcode-is-now-generally-available/",
+      "claim": "组织/企业 MCP policy 默认关闭，管理员需启用，用户需要有效 Copilot license。",
+      "excerpt": "For organization and enterprise administrators, access to MCP is regulated by the MCP servers in Copilot policy. The MCP policy is disabled by default ... valid Copilot license."
+    },
+    {
+      "url": "https://github.blog/changelog/2025-09-04-remote-github-mcp-server-is-now-generally-available/",
+      "claim": "GitHub 9 月 4 日才宣布 Remote GitHub MCP Server GA，不能把该事件日期倒填到 8 月 14 日的 IDE 集成更新。",
+      "excerpt": "Remote GitHub MCP Server is now generally available."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 GitHub 2025-08-14 官方变更日志及 2025-09-04 Remote GitHub MCP Server GA 公告；正文限定 JetBrains/Eclipse/Xcode 的 Copilot MCP 集成 GA，保留本地/远程 server、agent mode、PAT/OAuth、管理员默认关闭 policy、Copilot license 和与 8/13 secret scanning 的事件边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 把 MCP GA 写成授权、工具和失败路径的 IDE 工作流，避免与 Remote Server GA 混淆，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "GitHub 8/14 变更日志的事件范围是 JetBrains、Eclipse 和 Xcode 的 Copilot MCP 集成 GA；正文与 section 没有把它写成 Remote GitHub MCP Server 总体 GA。",
+      "Remote GitHub MCP Server 的 9/4 GA 公告已作为独立来源卡片加入，8/13 secret scanning 仍作为相关但不同事件保留。",
+      "本地/远程 server、agent mode、PAT/OAuth 示例、组织/企业 MCP policy 默认关闭、管理员启用和 Copilot license 的证据边界清楚；正文明确 license 不等于仓库或工具资源授权。",
+      "sections、agent-workflow explainer、relatedArticleSlugs、source/evidence 与 SVG 均一致，中文适合零基础读者，未发现明显机械化句式或权限夸大。"
+    ],
+    "notes": "读者审阅通过。文章将 8/14 IDE 集成 GA、9/4 Remote GitHub MCP Server GA 和 8/13 secret scanning 分开，解释管理员 policy、认证 scope、仓库权限与具体工具写权限的层级，没有把 Copilot license 写成资源授权或安全认证。",
+    "changes": [
+      "在正文和 release section 补充 Remote GitHub MCP Server 的官方 GA 日期为 9 月 4 日，强化日期边界。",
+      "新增 9/4 GitHub 官方变更日志 source/evidence 卡片，支持与 8/14 IDE 集成的区分。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-14-github-mcp-ide-ga",
+  "promotedAt": "2026-10-05T05:17:37.595Z"
+}

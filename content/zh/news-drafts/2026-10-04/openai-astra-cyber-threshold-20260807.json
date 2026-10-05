@@ -1,0 +1,189 @@
+{
+  "slug": "openai-astra-cyber-threshold-20260807",
+  "title": "OpenAI 暂缓 Astra 部分内部活动：评测无法排除“关键”网络安全能力",
+  "summary": "OpenAI 于 2026 年 8 月 7 日表示，近期对尚未发布的 Astra 模型进行的内部评测和专家评估，暂时无法排除其达到 Preparedness Framework 中“关键”网络安全能力阈值。公司因此暂停不符合加强控制条件的部分内部活动，增加隔离环境、网络与工具限制、权重保护和全程监控；这是一项风险预警和开发约束，不是 Astra 已经达到该阈值或已经公开可用的证明。",
+  "body": "8 月 7 日，OpenAI 发布了一篇关于 Astra 的安全说明。Astra 是尚未发布的模型，公司说近期内部评测显示它在 Agent 式编码和网络安全方面有明显进步；结合专家评估，OpenAI 暂时无法排除它达到自己 Preparedness Framework 中“关键”网络安全能力的可能。这里的措辞很重要：公司是在报告尚未完成的评估结论和应对动作，不是在宣布 Astra 已经达到这个等级。\n\n在 OpenAI 的定义里，“关键”阈值不是一次比赛分数，而是模型可能在没有人工介入的情况下，为许多经过加固的真实关键系统发现并开发各等级零日漏洞，或从很高层次的目标出发，设计并执行完整的新型网络攻击策略。OpenAI 说此前的 GPT-5.6-Sol 被评为 High，而不是 Critical；Astra 的初步结果还没有给出一个可以让外部读者复算的完整分数。\n\n公司列出的动作更像开发流程上的闸门。Astra 后续活动要使用更严格的隔离测试环境、受限网络和工具访问、模型权重保护与加密、额外监控和沙箱执行；不满足这些条件的内部活动会暂停。OpenAI 还说，Astra 的训练和评测等 Agent 应用已经启用普遍监控，用来识别高风险动作并触发中断和安全响应。\n\n这件事不要和 7 月公开的 Hugging Face 事件混在一起。OpenAI 明确写着 Astra 没有参与那次事件；本篇公告说的是另一个尚未发布的模型在内部能力评估中触发了更高的安全准备要求。它也没有给出 Astra 的发布时间、可用范围或第三方独立复测结果。\n\n对读者来说，新闻价值在于开发条件正在成为发布流程的一部分：模型越能使用网络和工具，实验环境、监控与权重保护就越不能靠默认设置。至于 Astra 是否最终会被归入 Critical、何时公开，以及外部测试能否复现公司判断，都需要后续评测和正式发布信息来回答。",
+  "publishedAt": "2026-08-07",
+  "eventDate": "2026-08-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-astra-cyber-threshold-20260807.svg",
+    "alt": "Astra 评测经过网络和工具限制、隔离环境与监控闸门；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/openai-astra-cyber-threshold-20260807.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "announcement-boundary",
+      "title": "公告说的是“无法排除”，不是已经定级",
+      "body": "OpenAI 的初步评测和专家判断让公司无法排除 Astra 达到 Critical 的可能，但它仍在继续评测。新闻应记录这个判断和由此触发的控制，不把风险门槛写成已经完成的认证。",
+      "kind": "narrative"
+    },
+    {
+      "id": "critical-definition",
+      "title": "Critical 阈值描述的是端到端能力",
+      "body": "框架把 Critical 定义为模型能在许多加固的真实关键系统上独立开发零日漏洞，或从高层目标执行新型完整攻击策略。它是能力定义，不是一条已经发生的攻击记录。",
+      "kind": "technical"
+    },
+    {
+      "id": "development-gates",
+      "title": "更强的模型要配更窄的实验边界",
+      "body": "OpenAI 列出的控制包括隔离测试、受限网络和工具、权重加密、沙箱与监控，并暂停尚未满足这些条件的部分内部活动。控制措施本身就是这次公告的主要动作。",
+      "kind": "comparison"
+    },
+    {
+      "id": "separate-incident",
+      "title": "Astra 与 Hugging Face 事件是两条线",
+      "body": "OpenAI 明确说 Astra 没有参与 Hugging Face 事件。前者是尚未发布模型的内部能力预警，后者是更早公开的评测事故，不能合并成一个故事。",
+      "kind": "boundary"
+    },
+    {
+      "id": "what-is-unknown",
+      "title": "发布时间和外部复测还没有答案",
+      "body": "公告没有给出 Astra 何时发布、是否最终达到 Critical、第三方能否复现，以及模型在真实部署中会获得哪些网络和工具权限。后续正式系统卡或独立评测才会补上这些信息。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "一个网络安全能力阈值怎样变成发布闸门？",
+    "question": "先把能力评估、实验环境和发布决定拆开，才知道一条安全公告真正改变了什么。",
+    "steps": [
+      {
+        "label": "测量能力",
+        "detail": "用内部任务和专家评估观察模型能否把编码、漏洞分析和攻击策略串成较长的行动链。",
+        "evidence": "OpenAI preliminary Astra evaluations"
+      },
+      {
+        "label": "标记阈值",
+        "detail": "Preparedness Framework 把可能独立开发零日漏洞或执行新型端到端攻击的能力归到 Critical 定义。",
+        "evidence": "OpenAI Preparedness Framework definition"
+      },
+      {
+        "label": "收紧实验边界",
+        "detail": "隔离环境、受限网络与工具、权重保护、沙箱和监控共同限制模型能接触的真实资源。",
+        "evidence": "OpenAI listed security controls"
+      },
+      {
+        "label": "再决定是否推进",
+        "detail": "不满足控制要求的内部活动暂停；是否对外发布还要等后续评测、系统卡和正式产品说明。",
+        "evidence": "OpenAI pause and follow-up testing statement"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "execution-sandbox",
+    "tools",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "ai-safety-evaluation-boundaries-20260809"
+  ],
+  "sources": [
+    {
+      "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
+      "claim": "OpenAI 8 月 7 日说 Astra 的初步内部评测和专家评估暂时无法排除 Critical 网络安全能力。",
+      "excerpt": "we cannot rule out critical cyber capabilities under our Preparedness Framework"
+    },
+    {
+      "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
+      "claim": "OpenAI 对 Critical 的定义包括在许多加固真实关键系统上开发零日漏洞，或从高层目标执行新型端到端攻击。",
+      "excerpt": "identify and develop functional zero-day exploits ... or ... execute end-to-end novel strategies for cyberattacks"
+    },
+    {
+      "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
+      "claim": "OpenAI 列出隔离环境、受限网络和工具、权重保护、监控和暂停不满足要求的 Astra 内部活动。",
+      "excerpt": "We are pausing internal activities involving Astra that do not yet meet these strengthened security control requirements."
+    },
+    {
+      "url": "https://openai.com/index/hugging-face-incident-and-the-road-ahead/",
+      "claim": "后续官方说明将 Hugging Face 事件与 Astra 的内部能力评估区分开，本篇保留为时间线背景。",
+      "excerpt": "during internal cybersecurity evaluations, OpenAI models circumvented controls ... and compromised parts of ... Hugging Face’s systems"
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
+  "sourceHash": "sha256:3d39bd00d7ec152bed639d87541ce2f6097d0243d0ba2e387ea84f2404f30290",
+  "status": "published",
+  "discoveredAt": "2026-10-04T07:50:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.99,
+      "evidence": [
+        "正文解释隔离环境、沙箱和受限工具如何成为发布控制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.97,
+      "evidence": [
+        "正文解释 Astra 的 Agent 式编码和网络工具行动链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "ai-safety-evaluation-boundaries-20260809",
+      "score": 0.86,
+      "evidence": [
+        "8 月 9 日文章记录跨机构评测边界问题，作为后续时间线关联。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
+      "claim": "OpenAI 8 月 7 日公开 Astra 评测和 Critical 预警。",
+      "excerpt": "August 7, 2026 ... preliminary evaluations indicate ... cannot rule out Critical capability level"
+    },
+    {
+      "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
+      "claim": "OpenAI 暂停不满足加强安全控制条件的 Astra 内部活动。",
+      "excerpt": "We are pausing internal activities involving Astra"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T07:50:00Z",
+    "method": "source",
+    "notes": "逐句核对 OpenAI 官方 8 月 7 日公告；把 Critical 写成框架定义和初步风险判断，明确 Astra 尚未发布且与 Hugging Face 事件分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T07:50:00Z",
+    "notes": "按新闻主线手写正文，避免把公司自评写成外部认证，完成 humanizer-zh 与 write-like-me 首轮表达检查。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T04:20:00Z",
+    "questions": [
+      "新闻主线优先，关键概念面向零基础读者解释，事实与推断分层。",
+      "OpenAI 稿明确“无法排除 Critical”不等于已达标或已攻击，并将 Astra 与 Hugging Face 事件分开；Anthropic 的 85% 和各产品降幅明确为公司测试/预期，保留双重用途限制。",
+      "Kimi 稿区分 Frontier 报告、沙箱配置缺口、AISI 责任口径和后续更正，没有写成零日或真实入侵；Qwen 稿将收入分成写为 Reuters 两名匿名人士披露的未公开计划，没有写成阿里已公布收费。",
+      "eventDate/publishedAt、来源卡片与原始链接、词条/相关文章联动、SVG alt 均一致；Qwen 的 Reuters 报道日期已校正为 publishedAt=2026-08-07。"
+    ],
+    "notes": "读者审阅通过；仅修正 Qwen 稿 publishedAt 以匹配 Reuters 8 月 7 日报道，其余正文无需修改。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-07",
+  "fingerprint": "sha256:3d39bd00d7ec152bed639d87541ce2f6097d0243d0ba2e387ea84f2404f30290",
+  "promotedAt": "2026-10-03T18:59:49.100Z"
+}

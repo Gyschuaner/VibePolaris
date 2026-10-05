@@ -1,0 +1,188 @@
+{
+  "slug": "mcpgauge-tool-augmented-llm-evaluation-20250818",
+  "title": "MCPGAUGE 给 Agent 接工具做了一张四项体检表",
+  "summary": "8 月 18 日提交的 MCPGAUGE 论文，试图把“LLM 接上 MCP 后到底有没有变好”拆成四个可测维度：主动调用工具、遵守工具指令、任务效果和额外开销。它用 160 个提示、25 个数据集、6 个商业模型和 30 套 MCP 工具做实验，约 2 万次 API 调用、成本超过 6000 美元。这个规模更像一套可复用的测量框架，而不是接入 MCP 后必然提升的证明。",
+  "body": "给大模型接工具，最容易被一句“它现在会调用 API 了”带过。但会调用不等于调用得对，也不等于任务结果更好。8 月 18 日提交的 MCPGAUGE，专门把 LLM 和 MCP 工具之间的互动拆成一套可以比较的测量问题。\n\n论文选择了四个维度。第一是主动性：模型在需要外部信息时会不会主动发起合适的调用；第二是遵从性：调用时是否按工具的参数和约束执行；第三是有效性：工具真的接进来后，任务结果有没有改善；第四是开销：多了多少轮交互、时间、token 和 API 成本。\n\n这四项放在一起很重要。只看有效性，可能把一次偶然的正确答案算成工具增强；只看调用率，又可能奖励了过度调用。一个更可靠的 Agent，应该在需要时调用、按规则调用，并且把新增的成本换成可观察的任务收益。\n\nMCPGAUGE 的评测集包含 160 个提示和 25 个数据集，覆盖知识理解、推理和代码等任务。论文还比较了 6 个商业 LLM 和 30 套 MCP 工具，设置一轮和两轮交互，累计大约 2 万次 API 调用，报告成本超过 6000 美元。这个规模说明，工具增强评测本身就需要被当成实验工程来管理。\n\n这套框架适合回答“同一个模型接上不同工具后发生了什么”，也适合比较不同模型在相同工具约束下的调用行为。团队可以先固定任务和工具，再分别记录是否调用、参数是否合规、答案质量和额外开销，避免把模型换了、工具换了、提示也换了之后的结果混在一起。\n\nMCPGAUGE 仍是一篇论文里的评测设计，数据集、商业模型版本、工具套件和成本都会影响结果。它不能替代真实业务的延迟、权限、失败恢复和数据合规检查；它更实际的用法，是把“接工具后变聪明了吗”改写成四个可复核的指标，并在自己的工作负载上重复测一遍。",
+  "publishedAt": "2025-08-18",
+  "eventDate": "2025-08-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/mcpgauge-tool-augmented-llm-evaluation-20250818.svg",
+    "alt": "MCPGAUGE 从主动性、遵从性、有效性和开销四个维度评估 Agent 工具调用",
+    "sourceUrl": "/images/news/mcpgauge-tool-augmented-llm-evaluation-20250818.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "paper-event",
+      "title": "MCPGAUGE 先问清楚：接工具后究竟变好了什么",
+      "body": "MCPGAUGE 于 2025 年 8 月 18 日提交 arXiv，关注 LLM 与 MCP 工具的互动质量。它把“会不会调用工具”扩展成主动性、遵从性、有效性和开销四项评测，而不是只报一个调用成功率。",
+      "kind": "narrative"
+    },
+    {
+      "id": "four-dimensions",
+      "title": "主动调用、遵守约束、任务收益和成本要一起看",
+      "body": "模型需要在该调用时主动调用，在调用时遵守工具参数和约束，还要让任务结果真正改善；与此同时，新增的轮次、token、时间和 API 费用也应被记录。四项指标放在一起，才能看出工具增强是否划算。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-scale",
+      "title": "160 个提示和 25 个数据集覆盖三类任务",
+      "body": "论文构造了 160 个提示和 25 个数据集，覆盖知识理解、推理与代码任务。它试图让工具调用行为不只在一个演示问题上成立，而能在不同任务类型中被重复比较。",
+      "kind": "technical"
+    },
+    {
+      "id": "models-tools",
+      "title": "6 个商业模型和 30 套 MCP 工具组成交叉实验",
+      "body": "评测比较 6 个商业 LLM 与 30 套 MCP 工具，并设置一轮和两轮交互。这样的组合能观察模型和工具套件之间的适配差异，但也意味着实验变量必须被清楚记录。",
+      "kind": "example"
+    },
+    {
+      "id": "cost-engineering",
+      "title": "两万次 API 调用说明评测本身也是工程项目",
+      "body": "论文报告约 20,000 次 API 调用，成本超过 6,000 美元。工具增强评测不能只准备提示词，还要管理调用预算、重试、版本和日志，否则不同轮次的结果很难复核。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation-boundary",
+      "title": "框架可以复用，结论仍要回到自己的工作负载",
+      "body": "数据集、商业模型版本、工具套件和价格都会改变结果。实际接入还要补测延迟、权限、失败恢复与合规，把 MCPGAUGE 当作四项指标的起点，而不是业务上线的替代验收。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "把一次工具调用拆成四张成绩单",
+    "question": "当模型接上 MCP 后，怎样判断新增的调用真的换来了任务收益？",
+    "steps": [
+      {
+        "label": "固定任务与工具",
+        "detail": "先锁定一组提示、数据集、模型版本和 MCP 工具，避免比较时同时改变多个变量。",
+        "evidence": "MCPGAUGE evaluates LLM-MCP interaction across datasets and tool suites"
+      },
+      {
+        "label": "记录是否主动调用",
+        "detail": "在需要外部信息的任务里观察模型是否主动选择工具，也记录不必要的调用。",
+        "evidence": "Proactivity is one of the four evaluation dimensions"
+      },
+      {
+        "label": "检查参数与规则",
+        "detail": "核对工具选择、参数格式、调用顺序和返回值处理是否符合工具约束。",
+        "evidence": "Compliance is one of the four evaluation dimensions"
+      },
+      {
+        "label": "比较任务结果",
+        "detail": "把接工具前后的答案质量、代码正确性或知识覆盖放在同一任务上比较，不把调用成功当成效果提升。",
+        "evidence": "Effectiveness is measured alongside proactivity and compliance"
+      },
+      {
+        "label": "结算新增开销",
+        "detail": "汇总轮次、token、延迟和 API 费用，再决定工具增强的收益是否值得这笔成本。",
+        "evidence": "Overhead is the fourth MCPGAUGE dimension"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Wei Song 等",
+    "url": "https://arxiv.org/abs/2508.12566"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "benchmark",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12566",
+      "claim": "MCPGAUGE 从主动调用工具、遵守工具指令、接入后的任务效果和额外开销四个维度评测 LLM-MCP 交互，包含 160 个提示和 25 个数据集。",
+      "excerpt": "a 160-prompt suite and 25 datasets ... proactivity, compliance, effectiveness, and overhead"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12566",
+      "claim": "论文评测 6 个商业 LLM、30 套 MCP 工具和一轮/两轮交互，约 20,000 次 API 调用，成本超过 6,000 美元。",
+      "excerpt": "six commercial LLMs, 30 MCP tool suites ... around 20,000 API calls and over USD 6,000"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12566",
+  "sourceHash": "sha256:32b8a78af68625668f11ea890721261faa95c3201b7e845147e85b2800c0a9c1",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文围绕 LLM 与 MCP 工具交互中的主动调用、合规调用和任务收益展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.92,
+      "evidence": [
+        "正文将 MCP 工具套件、参数约束和工具调用成本作为主要评测对象。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.9,
+      "evidence": [
+        "论文提供 160 个提示、25 个数据集和跨模型工具套件的评测框架。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文把工具增强拆成主动性、遵从性、有效性和开销四项可复核指标。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 18 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12566",
+      "claim": "MCPGAUGE 于 2025 年 8 月 18 日提交，摘要给出四项评测维度、160 个提示、25 个数据集、6 个商业模型、30 套工具、约 2 万次调用和超过 6000 美元成本。",
+      "excerpt": "a 160-prompt suite and 25 datasets"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的提交日期、四项指标、评测规模和调用成本；正文没有把框架规模写成业务性能结论，并明确数据集、模型版本、工具套件与成本边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留 MCPGAUGE 的四项指标和实验规模，避免虚构论文未给出的性能排名；把约 2 万次调用与超过 6000 美元写成评测工程成本，并补充业务延迟、权限和合规边界。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-18-mcpgauge"
+}

@@ -1,0 +1,188 @@
+{
+  "slug": "rag-adversarial-evidence-health-20250904",
+  "title": "健康 RAG 遇到恶意证据会怎样？一项受控评测给出答案",
+  "summary": "一篇 9 月 4 日提交的研究把 RAG 的“有来源就更可靠”假设放进健康问答场景检验。作者控制检索文档的组成（有益、有害、对抗性）和用户提问的 framing（保持一致、中性、不一致），比较模型输出与事实答案的对齐程度。结果显示，对抗性文档会显著拉低一致性；检索池里同时保留有益证据时，系统鲁棒性可以得到保留。",
+  "body": "RAG 解决幻觉的直觉很简单：先找证据，再让语言模型根据证据回答。但在健康问答里，检索到一段文字并不等于得到一条可靠事实。如果证据本身带有误导，模型可能把它当成依据，回答看起来更有出处，实际却离事实更远。\n\n这项研究没有把问题写成一次性的攻击演示，而是做了受控评测。作者选取常见健康问题，改变检索文档的类型和组合，再改变用户提问的 framing，观察模型输出和 ground-truth 答案之间的对齐如何变化。这样可以把“模型不可靠”拆成两个环节：哪类证据进入了上下文，以及用户是怎样把问题问出来的。\n\n实验里的文档分为 helpful、harmful 和 adversarial 三类。对抗性材料的风险不只是内容错误，还在于它明确试图推动错误信息；当这类材料占据检索上下文，模型容易把检索到的文本复述成健康建议。论文报告，对抗性文档会显著降低输出与事实答案的对齐。\n\n结果也留下了一个有用的缓冲条件：检索池里同时有有益证据时，鲁棒性可以被保留。这里不能简单理解为“多放几篇文档就安全”。关键在于有益证据能否被检索到、是否足够清楚、模型能否比较冲突来源，以及系统有没有把来源质量和医学共识交给独立规则检查。\n\n把研究结论变成系统设计，第一步是把检索当作安全边界，而不是无条件信任的前置步骤。来源应记录发布机构、更新时间、证据等级和适用人群；冲突文档不能只按相似度排序后拼接给模型。对于药物、诊断、剂量或急症问题，应优先返回权威渠道和就医建议，必要时直接拒绝自动给出个体化结论。\n\n用户 framing 也会影响结果。相同事实如果被问成“我已经确定某疗法有效，帮我证明”，可能把模型推向确认式回答；如果系统只优化回答流畅度，就会掩盖证据冲突。安全的 RAG 流程需要让模型显式列出证据、矛盾和不确定性，并在高风险问题上让专业人员复核，而不是用一条看似完整的引用替代判断。\n\n这篇论文的结论属于健康问答的受控实验，不能直接换算成每个模型或每种检索器的现实风险概率。它真正提供的是一组回归问题：当检索池混入低质或对抗性内容时，回答与事实答案的距离会不会扩大？有益证据能否压住冲突？上线前把这些问题固定进测试集，RAG 才可能从“会引用”走向“知道什么时候不该相信”。",
+  "publishedAt": "2025-09-04",
+  "eventDate": "2025-09-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/rag-adversarial-evidence-health-20250904.svg",
+    "alt": "健康 RAG 对比有益、对抗性检索证据对回答一致性的影响",
+    "sourceUrl": "/images/news/rag-adversarial-evidence-health-20250904.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "retrieval-trust",
+      "title": "有检索来源，不等于来源本身可靠",
+      "body": "健康 RAG 可能把误导性证据带进上下文，让回答看起来更有出处，却更偏离事实。",
+      "kind": "narrative"
+    },
+    {
+      "id": "controlled-eval",
+      "title": "研究把文档组成和提问 framing 分开控制",
+      "body": "常见健康问题在不同文档类型、组合和用户问法下重复测试，比较输出与事实答案的对齐。",
+      "kind": "technical"
+    },
+    {
+      "id": "adversarial-drop",
+      "title": "对抗性文档会显著拉低一致性",
+      "body": "论文报告有害或对抗性材料进入检索上下文后，模型更可能复述错误信息；本文只讨论防护。",
+      "kind": "comparison"
+    },
+    {
+      "id": "helpful-buffer",
+      "title": "有益证据在检索池里能保留部分鲁棒性",
+      "body": "缓冲效果取决于证据是否被检索到、来源是否清楚以及系统能否处理冲突，不能简化为文档越多越安全。",
+      "kind": "example"
+    },
+    {
+      "id": "source-safeguards",
+      "title": "来源质量和适用范围要在检索层记录",
+      "body": "机构、更新时间、证据等级和适用人群应成为排序与过滤条件，冲突文档不能只按相似度拼接。",
+      "kind": "technical"
+    },
+    {
+      "id": "high-stakes",
+      "title": "剂量、诊断和急症问题需要独立复核",
+      "body": "高风险健康问答应优先权威渠道和就医建议，必要时拒绝个体化结论并保留专业人员接管。",
+      "kind": "boundary"
+    },
+    {
+      "id": "regression-questions",
+      "title": "把“什么时候不该相信”固定进回归集",
+      "body": "持续检查检索混入低质内容时的事实对齐和冲突处理，才能知道 RAG 是否真的变得更稳。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样评估健康 RAG 能不能抵抗错误证据？",
+    "question": "固定健康问题，分别改变证据组成和提问方式，再检查答案、引用与事实答案是否一致。",
+    "steps": [
+      {
+        "label": "准备有事实答案的问题",
+        "detail": "选择常见健康问题并准备可复核的 ground-truth，标记哪些内容需要专业人员判断。",
+        "evidence": "common health questions and evidence-based ground truth"
+      },
+      {
+        "label": "组合不同检索文档",
+        "detail": "在检索池中分别放入 helpful、harmful、adversarial 文档，记录来源与排序位置。",
+        "evidence": "helpful, harmful, and adversarial documents"
+      },
+      {
+        "label": "改变提问 framing",
+        "detail": "用一致、中性和不一致的用户问法重复测试，区分检索影响与问题表达影响。",
+        "evidence": "consistent, neutral, and inconsistent framing"
+      },
+      {
+        "label": "比较事实对齐",
+        "detail": "检查回答是否复述错误证据、是否指出冲突，以及与 ground-truth 的一致程度。",
+        "evidence": "alignment between model outputs and ground-truth answers"
+      },
+      {
+        "label": "加上检索与人工护栏",
+        "detail": "优先权威来源，标注不确定性和适用人群，高风险场景交给专业人员复核。",
+        "evidence": "retrieval safeguards in high-stakes domains"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03787"
+  },
+  "relatedSlugs": [
+    "rag",
+    "hallucination",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03787",
+      "claim": "研究在健康问答中控制有益、有害、对抗性检索文档，以及一致、中性、不一致的用户提问 framing。",
+      "excerpt": "varying both the type and composition of the retrieved documents ... helpful, harmful, and adversarial ... consistent, neutral, and inconsistent"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03787",
+      "claim": "摘要报告对抗性文档显著降低事实对齐，而检索池同时含有有益证据时鲁棒性可以保留。",
+      "excerpt": "adversarial documents substantially degrade alignment ... robustness can be preserved when helpful evidence is also present"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03787",
+  "sourceHash": "sha256:4ec6a45a35fe2bc2052333476842f5abd657e6137c53f315bf72a24e0e31eb0d",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕检索增强生成、文档池组成和检索层安全护栏展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.98,
+      "evidence": [
+        "正文讨论错误证据如何让模型复述误导信息，以及与事实答案的对齐。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留受控实验、ground-truth、文档组合和问题 framing 的回归评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 4 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03787",
+      "claim": "arXiv 记录研究于 2025 年 9 月 4 日提交，聚焦健康领域 RAG 的证据鲁棒性。",
+      "excerpt": "Submitted on 4 Sep 2025 ... Evaluating the Robustness of Retrieval-Augmented Generation to Adversarial Evidence in the Health Domain"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03787",
+      "claim": "摘要给出对抗性文档降低对齐、有益证据保留鲁棒性的受控实验结论。",
+      "excerpt": "adversarial documents substantially degrade alignment ... retrieval safeguards"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对健康 RAG 受控实验、三类检索文档、三种用户 framing、对抗性文档降低对齐及有益证据保留鲁棒性的结论；正文补充来源质量、冲突处理、专业复核和高风险边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：只保留论文的健康领域受控评测和证据组成结论，避免把对抗性材料写成可操作攻击方法；补充权威来源、冲突证据、专业复核和个体化建议边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-04-rag-adversarial-evidence-health-20250904"
+}

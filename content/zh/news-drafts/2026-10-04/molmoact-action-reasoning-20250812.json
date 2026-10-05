@@ -1,0 +1,209 @@
+{
+  "slug": "molmoact-action-reasoning-20250812",
+  "title": "Ai2 开源 MolmoAct：让机器人在三维空间里规划动作",
+  "summary": "8 月 12 日，Ai2 发布并开源 MolmoAct-7B，把机器人控制拆成深度感知、图像空间路径规划和低层动作解码三步。模型和数据入口先公开，训练与评测工件按 GitHub release notes 在之后分批补齐；官方还称其在 SimplerEnv 与 LIBERO 上取得领先结果，72.1% 和 86.6% 属于 Ai2 的 benchmark 口径，不能直接换算成真实机器人成功率。",
+  "body": "8 月 12 日，Allen Institute for AI（Ai2）发布 MolmoAct，并把模型、数据和使用入口公开出来。它试图解决机器人模型常见的一步跳跃：看到场景和指令后直接输出控制信号。MolmoAct 把中间的空间推理显式放出来，让模型先理解物体的深度关系，再在图像里画出一串路径点，最后把路径转换成机械臂、夹爪或末端执行器能执行的低层动作。\n\n这条链路由三个自回归阶段组成。第一步是深度感知 token，把距离和几何结构编码进模型的视觉输入；第二步是 image-space waypoints，用一组可编辑的图像坐标表示“先到哪里、再怎么走”；第三步才是 action decoding，根据机器人本身的运动学配置，把路径点还原成电机命令。这样做的好处是计划可以被人看见、修改或重新约束，代价是每个中间表示都可能出错，路径画得合理也不等于机械臂不会碰撞。\n\nMolmoAct-7B 的开放范围是这次发布的另一层重点。Ai2 说模型基于 Molmo 和 Open-X Embodiment 数据训练，同时发布了约 1 万条机器人轨迹组成的 MolmoAct 数据集，内容包含家庭场景里的整理、收纳等动作。GitHub 的 8 月 12 日 release notes 确认模型和数据入口已公开；训练流水线、评测脚本和实验支持在之后继续补齐，所以“完全开放”要按具体工件和时间点来读，不能把当天所有复现实验都想成一键完成。\n\nAi2 在发布博客中报告，MolmoAct 在 SimplerEnv 的分布外任务成功率为 72.1%，在 LIBERO 上的平均成功率为 86.6%，并称超过多家机构的模型。数字来自 Ai2 选择的模拟环境、任务、版本和对比设置；技术报告的早期版本还出现过不同的 SimplerEnv 口径，不能把不同版本的数字拼成一个排行榜。模拟器结果说明模型在特定任务上有潜力，不等于换到真实家庭、不同相机或陌生机械臂后仍然稳定。\n\n模型还提供一条更容易理解的控制方式：在发出动作命令前，把计划的轨迹叠加到输入图像上，用户可以用自然语言或手绘路径调整目标。对研究者来说，这为排查“模型为什么朝那里走”提供了可见接口；对部署者来说，它仍然只是预览，不能替代速度限制、碰撞检测、急停和人机隔离。一个可编辑的轨迹，如果没有安全层约束，仍可能把错误动作执行得更快。\n\nMolmoAct 的真正价值在于把“会看”“会规划”和“会动”放进一份可以检查的开放工件里。下一步需要复现模型在同一版本 benchmark 上的结果，再拿相同的语言指令、遮挡、陌生物体和不同机器人形态做真实测试，记录路径错误、恢复动作和人工接管次数。8 月 12 日确认的是一个开放的 Action Reasoning Model 和一条可见的空间推理链；它能否成为可靠的机器人基础模型，还要由这些失败记录来回答。",
+  "publishedAt": "2025-08-12",
+  "eventDate": "2025-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/molmoact-action-reasoning-20250812.svg",
+    "alt": "MolmoAct 将深度感知、图像空间路径点和低层动作连接起来，并在执行前显示可编辑轨迹；真实机器人仍需安全层；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/molmoact-action-reasoning-20250812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 12 日公开的是一套可检查的动作推理工件",
+      "body": "Ai2 发布 MolmoAct-7B，并公开模型、数据和使用入口。论文 v1 在 8 月 11 日提交，但新闻事件以 8 月 12 日官方博客和模型/数据 release notes 为准；后续训练与评测代码仍有增量更新。",
+      "kind": "narrative"
+    },
+    {
+      "id": "three-stage",
+      "title": "深度感知、路径点、低层动作分成三步",
+      "body": "模型先用 depth-aware perception tokens 表示几何关系，再输出 image-space waypoints，最后按机器人运动学解码成末端执行器动作。中间计划可见、可编辑，也意味着每一层都需要单独验证。",
+      "kind": "technical"
+    },
+    {
+      "id": "open-artifacts",
+      "title": "约 1 万条机器人轨迹让训练链更可复查",
+      "body": "Ai2 公开 MolmoAct 数据集和模型入口，数据包含家庭场景的机器人 episode。GitHub 8/12 已确认模型与数据发布，训练复现、评测脚本等工件在之后继续补齐，不能把开放入口写成当天一键复现实验。",
+      "kind": "example"
+    },
+    {
+      "id": "benchmark",
+      "title": "72.1% 与 86.6% 是 Ai2 的 benchmark 口径",
+      "body": "官方博客报告 SimplerEnv 分布外任务成功率 72.1%、LIBERO 平均成功率 86.6%。这些数字依赖指定环境、任务、模型版本和对比设置；早期技术报告有不同的 SimplerEnv 口径，不能混成一个排行榜，也不能外推成真实家庭成功率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "steerable",
+      "title": "轨迹可见让人能改计划，但不替代安全层",
+      "body": "MolmoAct 可以把预计路径叠加到图像上，也能接受手绘目标轨迹。可视化有助于人工纠正，但速度限制、碰撞检测、急停和人机隔离仍需在模型之外配置。",
+      "kind": "boundary"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看陌生物体、形态迁移和接管次数",
+      "body": "复现同版本 benchmark，再测试遮挡、陌生物体、不同相机和机器人形态，记录路径错误、恢复动作和人工接管，才能判断开放模型能否进入真实工作流。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "机器人怎样把一句话变成一条可检查的动作链？",
+    "question": "把感知、空间计划、动作解码和安全接管拆开，才能看懂 MolmoAct 的 Action Reasoning Model。",
+    "steps": [
+      {
+        "label": "看懂空间",
+        "detail": "模型从图像和指令中提取带深度的视觉 token，估计物体之间的距离和几何关系。",
+        "evidence": "Depth-aware perception tokens"
+      },
+      {
+        "label": "画出路径点",
+        "detail": "它在图像空间中输出一串 waypoints，表示任务的中间目标；研究者或用户可以先检查这条轨迹。",
+        "evidence": "Image-space waypoints"
+      },
+      {
+        "label": "适配机器人",
+        "detail": "根据具体机器人的运动学配置，把路径点转换成末端执行器、夹爪或其他硬件的低层动作。",
+        "evidence": "Action decoding"
+      },
+      {
+        "label": "允许人修改",
+        "detail": "用户可以用自然语言或手绘目标路径改变计划，预览帮助发现明显方向错误，但不保证动作一定安全。",
+        "evidence": "Trajectory steering"
+      },
+      {
+        "label": "安全层接管",
+        "detail": "碰撞检测、速度限制、急停和人工接管独立于模型，轨迹通过检查后才允许进入真实硬件。",
+        "evidence": "Robot hardware safety boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "Allen Institute for AI",
+    "url": "https://allenai.org/blog/molmoact"
+  },
+  "relatedSlugs": [
+    "agent-harness",
+    "llm",
+    "event",
+    "distributed-system"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://allenai.org/blog/molmoact",
+      "claim": "Ai2 官方博客标注 August 12, 2025，介绍 MolmoAct 为首个 Action Reasoning Model，说明深度感知 token、image-space waypoints、低层动作解码、约 1 万条机器人 episode 和 SimplerEnv/LIBERO 结果。",
+      "excerpt": "We introduce a new class of models, called Action Reasoning Models ... depth-aware perception tokens ... waypoints ... low-level action commands."
+    },
+    {
+      "url": "https://github.com/allenai/molmoact",
+      "claim": "官方 GitHub release notes 在 2025/08/12 标出模型和数据发布，后续再补充评测和训练复现入口。",
+      "excerpt": "[2025/08/12] datasets/models have been released"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.07917",
+      "claim": "MolmoAct 技术报告 v1 于 2025-08-11 提交，摘要把三阶段感知/规划/控制与开放数据写成技术背景；新闻事件仍按 8/12 官方博客记录。",
+      "excerpt": "Submitted on 11 Aug 2025 ... structured three-stage pipeline ... release all model weights, training code, and datasets."
+    }
+  ],
+  "canonicalUrl": "https://allenai.org/blog/molmoact",
+  "sourceHash": "sha256:2902933fb57c51598fadfb15b7251bfde4b17586978b230e4227d25f7dceed39",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent-harness",
+      "score": 0.93,
+      "evidence": [
+        "正文与 explainer 将 MolmoAct 的感知、路径规划、动作解码和安全接管拆成可检查的机器人工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.84,
+      "evidence": [
+        "正文解释 MolmoAct 基于视觉语言模型、深度 token 和 Action Reasoning Model 的参数/推理入口。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8/12 官方发布、8/11 论文提交、8/12 模型/数据 release notes 和后续代码补齐。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "distributed-system",
+      "score": 0.82,
+      "evidence": [
+        "文章把模型中间表示、机器人运动学配置、真实硬件和外部安全层的协作边界拆开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://allenai.org/blog/molmoact",
+      "claim": "Ai2 发布 MolmoAct 并报告 72.1% SimplerEnv OOD、86.6% LIBERO；这些数字属于 Ai2 的 benchmark 条件。",
+      "excerpt": "MolmoAct achieved ... 72.1% ... SimplerEnv ... average success rate of 86.6% ... LIBERO."
+    },
+    {
+      "url": "https://github.com/allenai/molmoact",
+      "claim": "GitHub release notes 确认 8/12 模型和数据公开，训练/评测代码后来分批补齐，文章不把开放入口写成一键复现。",
+      "excerpt": "[2025/08/12] datasets/models have been released"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.07917",
+      "claim": "技术报告 v1 的 8/11 提交日期与 8/12 博客发布日期分开记录，并保留不同版本 SimplerEnv 口径的时间边界。",
+      "excerpt": "[v1] Mon, 11 Aug 2025 12:32:45 UTC"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Ai2 8/12 官方博客、MolmoAct GitHub 8/12 模型/数据 release notes 和 arXiv 2508.07917；正文区分事件日期、论文提交、三阶段 Action Reasoning Model、开放工件、Ai2 benchmark 口径和真实机器人安全边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 MolmoAct 写成可检查的空间推理链，区分官方 benchmark、论文版本、开放工件时间和真实硬件安全层，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-12，与 Ai2 官方博客日期一致；arXiv 2508.07917 v1 的提交时间是 8 月 11 日，GitHub 的模型/数据 release notes 是 8 月 12 日，正文和 sections 没有把三者混成同一事件。",
+      "正文准确解释 Action Reasoning Model 的三阶段：depth-aware perception tokens 表示深度和几何，image-space waypoints 表示可编辑的中间路径，最后按具体机器人运动学解码为低层动作；中间轨迹可见不等于硬件动作安全。",
+      "MolmoAct-7B 与约 1 万条 robot episodes 的开放范围有来源，摘要已明确模型和数据入口先公开、训练与评测工件按 GitHub 后续 release notes 分批补齐，没有写成 8 月 12 日所有训练/评测代码一键齐全。",
+      "72.1% SimplerEnv OOD 与 86.6% LIBERO 平均成功率均归因于 Ai2 的 benchmark 条件，并保留技术报告早期不同 SimplerEnv 口径和模拟结果不能外推真实机器人的边界。",
+      "轨迹可视化、自然语言/手绘 steerability、速度限制、碰撞检测、急停和人机隔离被分开说明；agent-workflow explainer、6 个 sections、agent-harness/llm/event/distributed-system relations、事件特定 hero、sources/evidence、verification 与 schema 一致。"
+    ],
+    "notes": "读者审阅通过：中文叙述围绕“感知 → 空间路径 → 低层动作 → 安全接管”展开，零基础读者能区分论文提交日、官方发布日、开放工件节奏和 Ai2 benchmark 口径；没有把模拟成绩或轨迹预览写成真实机器人可靠性保证。",
+    "changes": [
+      "将摘要中的“模型、数据和主要训练入口公开”改为“模型和数据入口先公开；训练与评测工件按 GitHub release notes 在之后分批补齐”，避免把 8 月 12 日开放范围写得过满。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-12-molmoact",
+  "promotedAt": "2026-10-05T05:17:36.296Z"
+}

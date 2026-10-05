@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-31",
+  "eventDate": "2025-08-31",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-31 AI 事件重新检索：以当天 arXiv 提交/版本更新为主，按法律引用审计、事实分解、多模态搜索、讨好型幻觉、代码安全、工具调用训练和可验证逻辑评测排序；逐篇写作并复核。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202508310000 TO 202508312359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.MA OR cat:cs.RO OR cat:cs.CR)",
+      "https://arxiv.org/abs/2509.00761",
+      "https://arxiv.org/abs/2509.00765",
+      "https://arxiv.org/abs/2509.00798",
+      "https://arxiv.org/abs/2509.00869",
+      "https://arxiv.org/abs/2509.00882",
+      "https://arxiv.org/abs/2509.06980",
+      "https://arxiv.org/abs/2509.00930",
+      "https://arxiv.org/abs/2509.00641",
+      "https://arxiv.org/abs/2509.00647",
+      "https://arxiv.org/abs/2509.04483",
+      "https://arxiv.org/abs/2509.00877",
+      "https://arxiv.org/abs/2509.00971"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "lmars-legal-citation-audit-20250831",
+      "title": "L-MARS：法律 Agent 不只要答对，还要证明引用真的支持它",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00761"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00761",
+      "sourceHash": "sha256:45d4ebaa9c33d21cef2234a05a683ff63c5b74242a230978cdd13a28fa5a90ef",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "citation",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00761",
+          "claim": "L-MARS 用多 Agent 检索和法官式证据检查，对答案的原子主张逐条核对引用；100 题法律考试审计中，严格引用 F1 从 0.13 提升到 0.25，无引用率从 34% 降到 13%，Faith-Search 将不可达引用率降到 1% 以下。",
+          "excerpt": "strict citation F1 from 0.13 ... to 0.25 ... unreachable rate below 1%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "fides-fact-decomposition-20250831",
+      "title": "FIDES：把长答案拆成事实，再回头找证据修正",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00765"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00765",
+      "sourceHash": "sha256:bd095d0c1bee755cc4470b0b0419b12a8e360de887a12eda76063dcd1d38f751",
+      "relatedSlugs": [
+        "llm",
+        "rag",
+        "citation",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00765",
+          "claim": "FIDES 将长答案拆成子事实，用检索证据对冲突子事实进行修订，再按原句聚合证据；在六个数据集上比现有方法平均高出 14% 以上。",
+          "excerpt": "faithful fact decomposition and evidence aggregation ... over 14%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "pmsr-multimodal-search-20250831",
+      "title": "PMSR：多模态问答先累积证据，再逐步修正搜索方向",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00798"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00798",
+      "sourceHash": "sha256:d8ebbc3b63f9c51b09218c965c8419350913d9bdf0110115fe0263e1e7cda554",
+      "relatedSlugs": [
+        "agent",
+        "rag",
+        "grounding",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00798",
+          "claim": "PMSR 为知识密集型视觉问答构建逐步搜索轨迹，用最新记录和历史轨迹生成双范围查询，将检索证据合成为紧凑记录，并在六个基准上提升检索召回和端到端准确率。",
+          "excerpt": "Progressive Multimodal Search and Reasoning ... six diverse benchmarks"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "fawning-hallucination-mitigation-20250831",
+      "title": "模型为什么会迎合错误前提？CCD 试着压低这种讨好型幻觉",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00869"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00869",
+      "sourceHash": "sha256:5e2416080b1ccb44fe8b2460d6c215281cc7f992560008d4bd223b4fefba09d6",
+      "relatedSlugs": [
+        "llm",
+        "hallucination",
+        "prompt",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00869",
+          "claim": "研究分析模型迎合误导前提的 fawning hallucinations，并提出不需要额外训练的 collaborative contrastive decoding，通过对比诱导输入和中性输入降低对误导信息的依赖、提升事实性。",
+          "excerpt": "fawning hallucinations ... collaborative contrastive decoding ... without additional training"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "vulsolver-constraint-security-20250831",
+      "title": "VULSOLVER：让 LLM 用约束求解辅助代码漏洞检测",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00882"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00882",
+      "sourceHash": "sha256:00ef0995c92e601402bda4e484d0882a25202b1cd808776f38ab63cb85a98fd2",
+      "relatedSlugs": [
+        "llm",
+        "tools",
+        "execution-sandbox",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00882",
+          "claim": "VULSOLVER 将漏洞检测建模为约束求解，结合 SAST 和 LLM 语义推理；在 OWASP Benchmark 的 1,023 个样本上报告 97.85% 准确率、97.97% F1 和 100% 召回，并在开源项目中发现 15 个高严重度问题。",
+          "excerpt": "constraint-solving ... OWASP Benchmark ... 97.85% accuracy ... 15 previously unknown"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "rlfactory-tool-use-20250831",
+      "title": "RLFactory：把多轮工具调用变成可训练、可验证的闭环",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.06980"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.06980",
+      "sourceHash": "sha256:d4cf58f604f57004718349e235381424561e4dfefb62842e6dfd3e56c3710859",
+      "relatedSlugs": [
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.06980",
+          "claim": "RLFactory 提供多轮工具调用的可插拔强化学习后训练框架，用异步调用、解耦工具/训练和规则、模型判断、工具验证三类奖励闭环；在 Search-R1/Qwen3-4B 上 NQ 得分 0.486，训练吞吐提升 6.8 倍。",
+          "excerpt": "multi-turn tool use ... 0.486 ... 6.8x"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "satquest-verifier-reasoning-20250831",
+      "title": "SATQuest：用可验证的 SAT 任务拆开测 LLM 逻辑推理",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00930"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00930",
+      "sourceHash": "sha256:56ddd9ce5cff62a23a27172fd4fa8fc644ab4319f32bf5a9dead23f17506bec4",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "benchmark",
+        "grader",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00930",
+          "claim": "SATQuest 从 CNF 实例生成 SAT 逻辑任务，用 PySAT 客观核验答案，并按实例、问题类型和问法三维拆评；研究发现模型在高复杂度和跨格式迁移上仍有缺口，SATQuest 奖励可用于强化微调。",
+          "excerpt": "verifier ... PySAT ... three orthogonal dimensions ... cross-format robustness"
+        }
+      ],
+      "decision": "selected",
+      "reason": "当天重新检索候选中，按证据可核验性、对 Agent 工作流/可靠性边界的直接价值和读者理解优先排序；先完成已选篇目，再进入 deferred。"
+    },
+    {
+      "slug": "amcr-copyright-risk-20250831",
+      "title": "AMCR：生成模型的版权风险要从提示一路查到输出",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00641"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00641",
+      "sourceHash": "sha256:3bfe318b5f6edf695186f07a40cbf12eaa4c121f6a940e7979d2c74e5ca6cbc9",
+      "relatedSlugs": [
+        "prompt",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00641",
+          "claim": "AMCR 研究生成模型的隐性版权风险，组合提示重构、注意力相似度检测和生成中自适应缓解；暂缓至后续篇幅。",
+          "excerpt": "Assessing and Mitigating Copyright Risks ... attention-based similarity"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "llm-hypz-hardware-vuln-20250831",
+      "title": "LLM-HyPZ：从海量 CVE 里整理硬件漏洞主题",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00647"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00647",
+      "sourceHash": "sha256:744556ceecc397eb0c9f47b3ed92c2d05f1d4631f3acd7e856ba0e409c322deb",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "data-quality",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00647",
+          "claim": "LLM-HyPZ 从 114,836 条 CVE 中筛出 1,742 条硬件漏洞并归纳五个主题，帮助 MITRE CWE MIHW 2025 缩小专家检索范围；暂缓至后续篇幅。",
+          "excerpt": "114,836 entries ... 1,742 hardware-related vulnerabilities"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "decmetrics-claim-decomposition-20250831",
+      "title": "DecMetrics：先评估事实分解质量，再谈自动核查",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.04483"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.04483",
+      "sourceHash": "sha256:97b0e5fb4b301e08246cc60dcd24ee799c92c1eeab5b943c2a3d38eff839772f",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "benchmark",
+        "hallucination",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.04483",
+          "claim": "DecMetrics 用完整性、正确性和语义熵三个指标评估事实分解出的原子主张质量，并把指标作为奖励优化轻量分解模型；暂缓至后续篇幅。",
+          "excerpt": "COMPLETENESS, CORRECTNESS, and SEMANTIC ENTROPY"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "evinote-rag-evidence-notes-20250831",
+      "title": "EviNote-RAG：先写证据笔记，再生成最终回答",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00877"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00877",
+      "sourceHash": "sha256:d15db511993ebb963479586694f46097fb5095bd6b105f1104fe5a61c6dad0cf",
+      "relatedSlugs": [
+        "rag",
+        "grounding",
+        "citation",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00877",
+          "claim": "EviNote-RAG 先生成支持答案的证据笔记，标记关键信息和不确定性，再生成回答并用蕴含奖励检查笔记是否足以支持结论；暂缓至后续篇幅。",
+          "excerpt": "retrieve-note-answer workflow ... Supportive-Evidence Notes"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    },
+    {
+      "slug": "corethink-symbolic-reasoning-20250831",
+      "title": "CoreThink：给长任务 Agent 加一层符号推理",
+      "eventDate": "2025-08-31",
+      "publishedAt": "2025-08-31",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.00971"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.00971",
+      "sourceHash": "sha256:67a14e4032f649d2f408d97415fb22ca30592bda7f7add98dd3a0d788aadc573",
+      "relatedSlugs": [
+        "llm",
+        "agent",
+        "tools",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.00971",
+          "claim": "CoreThink 提出 General Symbolics 推理层，面向工具调用、代码生成和规划等长任务，并报告多个基准结果；暂缓至后续篇幅。",
+          "excerpt": "General Symbolics ... tool-calling, code generation, and planning"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "当天已检索到，但按单日篇数控制暂缓；保留候选和证据，不把未写文章混入已完成顺序。"
+    }
+  ],
+  "selectedSlugs": [
+    "lmars-legal-citation-audit-20250831",
+    "fides-fact-decomposition-20250831",
+    "pmsr-multimodal-search-20250831",
+    "fawning-hallucination-mitigation-20250831",
+    "vulsolver-constraint-security-20250831",
+    "rlfactory-tool-use-20250831",
+    "satquest-verifier-reasoning-20250831"
+  ],
+  "gap": null
+}

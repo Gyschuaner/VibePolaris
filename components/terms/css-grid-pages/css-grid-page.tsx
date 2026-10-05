@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function CssGridTermPage() {
-  return <Article slug="css-grid" title="网格布局" subtitle="CSS Grid · 让行、列和跨度一起结算" sources={cssGridSources} sections={sections} hero={<CssGridHero />} intro={<>做一面卡片墙时，真正麻烦的不是“把东西摆成几列”，而是卡片有的要跨两列、有的内容更长，手机上还要少一列。<strong>CSS Grid 先建立行和列的轨道，再按项目的放置方式、跨度和轨道尺寸把二维空间结算出来。</strong>它让你能看见一张座位表，而不是继续给 Flexbox 添更多补丁。</>}> 
+  return <Article slug="css-grid" title="网格布局" subtitle="CSS Grid · 让行、列和跨度一起结算" sources={cssGridSources} sections={sections} hero={<CssGridHero />} intro={<>做一面卡片墙时，真正麻烦的不是“把东西摆成几列”，而是卡片有的要跨两列、有的内容更长，手机上还要少一列。<strong>CSS Grid 先建立行和列的轨道，再按项目的放置方式、跨度和轨道尺寸把二维空间结算出来。</strong>它让你能看见一张座位表，而不是继续给 Flexbox 添更多补丁。</>}>
     <ArticleSection id="css-grid-definition-section" title="先把两条轴同时放进视野">
       <p id="grid-two-dimensional" className="vp-citation-target">CSS Grid 是二维布局模型：列负责 inline 方向，行负责 block 方向，项目最终占据的是一个由两条轴共同确定的 grid area。Flexbox 更像沿一条主轴排队，Grid 则先把座位表画出来，再决定谁坐哪一格。<Cite id="grid-two-dimensional" sources={cssGridSources} /></p>
       <p id="grid-container" className="vp-citation-target">给父元素写 <code>display: grid</code> 后，它的直接子元素才成为 grid items。嵌套得很深的孙元素不会自动跨过父元素参与这张网格；如果要共享轨道，需要显式结构或 subgrid，而不是以为所有后代都能“看见线”。<Cite id="grid-container" sources={cssGridSources} /></p>

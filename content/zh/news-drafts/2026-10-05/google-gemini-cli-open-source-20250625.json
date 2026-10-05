@@ -1,0 +1,227 @@
+{
+  "slug": "google-gemini-cli-open-source-20250625",
+  "title": "Google 发布 Gemini CLI：开源 Agent 进入终端，但命令执行仍要由人把关",
+  "summary": "6 月 25 日，Google 发布 Gemini CLI 预览版，把 Gemini 2.5 Pro 接进终端并开源为 Apache 2.0 项目。个人 Google 账号可免费使用，官方给出 100 万 token 上下文、每分钟 60 次请求和每天 1000 次请求的预览额度；它能读写文件、执行命令、接入搜索与 MCP，但这些能力仍受终端权限和人工审阅约束。",
+  "body": "6 月 25 日，Google 在官方博客宣布 Gemini CLI。它是一款开源的命令行 AI Agent，把 Gemini 直接放进开发者每天使用的终端里；官方定位不只限于写代码，还包括问题排查、内容生成、深度研究和任务管理。对读者来说，变化不在于又多了一个聊天窗口，而在于模型的回答可以继续进入文件、命令和脚本组成的工作环境。\n\nGemini CLI 的预览版可以理解代码和文件、提出修改、执行命令并根据结果继续排查。它还支持用 Google Search 为提示补充外部网页，用 Model Context Protocol（MCP）和扩展接入其他工具，并能以非交互方式被脚本调用。这使它更像一条“提示—调用工具—读取结果—再行动”的循环，而不是只把代码片段复制到终端。\n\nGoogle 为个人账号给出的免费额度很具体：可访问 Gemini 2.5 Pro、1 million token 上下文窗口，每分钟最多 60 次模型请求、每天最多 1000 次请求。需要更大规模并行任务或指定模型的开发者，可以提供 AI Studio 或 Vertex AI key，或者使用 Gemini Code Assist Standard/Enterprise。额度是预览期的产品条件，不是对每次执行速度和结果质量的保证。\n\n它的开源部分同样值得单独看。Google 把代码以 Apache 2.0 许可公开，开发者可以检查实现、报告问题、提交改动，也能把 Gemini CLI 与 Gemini Code Assist 的 VS Code 工作流接在一起。开源降低了审阅和扩展的门槛，却没有自动替团队回答“哪些命令允许执行”“哪些密钥能进入上下文”这类权限问题。\n\n终端 Agent 的风险来自它能做什么，而不只是它会不会答错。如果工作目录里有环境变量、凭证或客户数据，文件读取和命令执行就会把错误提示升级成真实副作用。团队应该让它在隔离目录里工作，先设命令白名单，保留日志和 diff，把测试、依赖扫描与合并审批留在人类流程中；个人试用也应从可回滚的小任务开始。\n\n这条新闻的意义，是 Google 把模型能力、工具接口和开发者权限放进了同一个开源产品里。它可能让终端工作更快，也会让“模型建议”和“模型已经改变了环境”之间的边界更容易被忽略。后续要看的不是每天能发多少请求，而是 Gemini CLI 的扩展生态、安全修复和真实仓库中的可审阅程度。",
+  "publishedAt": "2025-06-25",
+  "eventDate": "2025-06-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-gemini-cli-open-source-20250625.svg",
+    "alt": "Gemini CLI 把自然语言提示接到终端、文件与命令工具，并在最后保留人工复核；这是工作流示意，不是自动上线承诺。",
+    "sourceUrl": "/images/news/google-gemini-cli-open-source-20250625.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "Google 这次发布的到底是什么",
+      "body": "Gemini CLI 是预览中的开源命令行 AI Agent，能在终端里完成代码理解、文件操作、命令执行、问题排查和任务管理。它不是一个只输出文本的聊天页面。",
+      "kind": "narrative"
+    },
+    {
+      "id": "loop",
+      "title": "终端里的 Agent 多了一步什么",
+      "body": "模型可以读取环境、调用搜索或 MCP 工具、执行命令，再根据结果继续处理；因此每一步都需要比普通问答更明确的权限和回滚边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "limits",
+      "title": "免费额度和一百万 token 要怎样读",
+      "body": "官方给出 60 次/分钟、1000 次/天和 1M 上下文等预览条件；这些是访问额度，不等于所有任务都有相同的可靠性、延迟或成本。",
+      "kind": "boundary"
+    },
+    {
+      "id": "open",
+      "title": "开源让什么变得可检查",
+      "body": "Apache 2.0 代码可以被审阅、报告问题和扩展，开发者能看见部分实现；它不会替组织定义安全命令、密钥范围和人工审批流程。",
+      "kind": "technical"
+    },
+    {
+      "id": "risk",
+      "title": "为什么命令执行要留在人类流程里",
+      "body": "终端里可能存在密钥、个人数据和生产配置。隔离目录、命令白名单、日志、测试和 diff 审阅，决定 Agent 失败时能否回到安全状态。",
+      "kind": "example"
+    },
+    {
+      "id": "watch",
+      "title": "后续观察点是扩展和修复",
+      "body": "真正的产品成熟度要看扩展生态、安全修复、配额变化，以及真实仓库中每次改动是否可见、可测、可回滚。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "终端 Agent 怎样从一句话走到一次改动？",
+    "question": "把提示、上下文、工具、命令和复核拆开，看到“能执行”与“应执行”的差别。",
+    "steps": [
+      {
+        "label": "提出任务",
+        "detail": "开发者用自然语言描述要查找、修改或排查的目标。",
+        "evidence": "Google Gemini CLI 官方博客，2025-06-25"
+      },
+      {
+        "label": "读取上下文",
+        "detail": "CLI 把允许访问的文件、仓库和提示交给 Gemini；上下文范围先由环境权限决定。",
+        "evidence": "官方能力说明"
+      },
+      {
+        "label": "调用工具",
+        "detail": "Agent 可以使用搜索、MCP、扩展或内置终端工具继续工作。",
+        "evidence": "官方工具清单"
+      },
+      {
+        "label": "执行并反馈",
+        "detail": "命令结果回到模型，模型可能提出下一步；每个副作用都应留下日志。",
+        "evidence": "预览版命令执行边界"
+      },
+      {
+        "label": "人工验收",
+        "detail": "检查 diff、运行测试并决定是否合并，不能把预览额度当成自动批准。",
+        "evidence": "工程实践边界"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google",
+    "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-open-source-ai-agent/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "qwen-vlo-20250626"
+  ],
+  "sources": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-open-source-ai-agent/",
+      "claim": "Google 于 2025 年 6 月 25 日发布预览中的开源 Gemini CLI，支持代码、问题排查、内容生成、搜索、MCP 和任务自动化。",
+      "excerpt": "Google, “Google announces Gemini CLI: your open-source AI agent”, Jun 25, 2025."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-open-source-ai-agent/",
+      "claim": "官方给出 Gemini 2.5 Pro、1M token 上下文，以及个人账号每分钟 60 次、每天 1000 次免费请求的预览额度。",
+      "excerpt": "The free license gets access to Gemini 2.5 Pro and its 1 million token context window; 60 requests per minute and 1,000 per day."
+    },
+    {
+      "url": "https://github.com/google-gemini/gemini-cli",
+      "claim": "Google 将 Gemini CLI 代码公开在 GitHub，并以 Apache 2.0 许可发布。",
+      "excerpt": "Google Gemini CLI repository, Apache-2.0 license."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/25/google-unveils-gemini-cli-an-open-source-ai-tool-for-terminals/",
+      "claim": "TechCrunch 于 6 月 25 日报道 Gemini CLI 的终端入口、开源属性和 Agent 定位。",
+      "excerpt": "TechCrunch, Jun 25, 2025."
+    }
+  ],
+  "canonicalUrl": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-open-source-ai-agent/",
+  "sourceHash": "sha256:d63726716591e2b28844b62ab57ad6d9634105703c59aa9da25d25afe67581de",
+  "status": "published",
+  "discoveredAt": "2026-10-05T14:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 agent 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 tools 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 context 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文用这条新闻解释 event 的边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "qwen-vlo-20250626",
+      "score": 0.84,
+      "evidence": [
+        "相邻日期或同一事实链的 AI 新闻提供上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-open-source-ai-agent/",
+      "claim": "Google 于 2025 年 6 月 25 日发布预览中的开源 Gemini CLI，支持代码、问题排查、内容生成、搜索、MCP 和任务自动化。",
+      "excerpt": "Google, “Google announces Gemini CLI: your open-source AI agent”, Jun 25, 2025."
+    },
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-cli-open-source-ai-agent/",
+      "claim": "官方给出 Gemini 2.5 Pro、1M token 上下文，以及个人账号每分钟 60 次、每天 1000 次免费请求的预览额度。",
+      "excerpt": "The free license gets access to Gemini 2.5 Pro and its 1 million token context window; 60 requests per minute and 1,000 per day."
+    },
+    {
+      "url": "https://github.com/google-gemini/gemini-cli",
+      "claim": "Google 将 Gemini CLI 代码公开在 GitHub，并以 Apache 2.0 许可发布。",
+      "excerpt": "Google Gemini CLI repository, Apache-2.0 license."
+    },
+    {
+      "url": "https://techcrunch.com/2025/06/25/google-unveils-gemini-cli-an-open-source-ai-tool-for-terminals/",
+      "claim": "TechCrunch 于 6 月 25 日报道 Gemini CLI 的终端入口、开源属性和 Agent 定位。",
+      "excerpt": "TechCrunch, Jun 25, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "method": "source",
+    "notes": "按 2025-06-25 的事件发生日核对官方公告、法院文件或当日新闻首发；正文区分公司主张、媒体报道、法院裁判与尚未完成的后续。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "notes": "新闻事实链、事件日、来源卡片、零基础读者可读性与词条联动完成首轮检查，等待唯一 reader-review 子智能体复审。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T18:00:00Z",
+    "questions": [
+      "新闻主线、事件日与报道日边界是否清楚？是。",
+      "来源和公司/法院/研究主张是否有归属？是。",
+      "零基础可读性、独立结构及 explainer/SVG/词条联动是否通过？是。"
+    ],
+    "notes": "Google Gemini CLI 预览新闻主线清楚，开源、额度与终端执行/人工审阅边界适合零基础。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-06-25",
+  "promotedAt": "2026-10-04T23:29:46.005Z"
+}

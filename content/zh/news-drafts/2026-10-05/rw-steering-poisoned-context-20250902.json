@@ -1,0 +1,199 @@
+{
+  "slug": "rw-steering-poisoned-context-20250902",
+  "title": "RW-Steering：混合上下文里，少量不当信息也会带偏模型",
+  "summary": "RW-Steering 论文于 9 月 2 日提交，研究模型面对相关信息与不当信息混合上下文时为什么会被少量干扰带偏。作者构建 Poisoned Context Testbed，用 Rescorla-Wagner 学习模型刻画上下文信号竞争，并提出两阶段微调方法 RW-Steering，让模型学会识别和忽略不当信号；论文报告最佳模型在测试集上将响应质量提高 39.8%，且能适应不同比例的混合内容。",
+  "body": "把外部资料塞进上下文，通常是为了让模型少猜一点。但真实上下文很少干净：检索结果、历史消息、网页片段和用户补充可能同时出现，其中夹着与问题不相干、甚至会误导回答的内容。RW-Steering 研究的不是“有没有上下文”，而是模型会怎样在彼此竞争的信号之间分配注意力。\n\n作者构建 Poisoned Context Testbed，把查询和包含相关、不当信息的真实场景上下文配对，再用改写的 Rescorla-Wagner 模型描述不同信号怎样影响输出。实验观察到一个反直觉倾向：模型有时更容易吸收上下文里占比更小的信息。少量不当内容因此可能造成比数量更大的影响，尤其在系统把“出现在上下文里”误当成“值得信任”时。\n\nRW-Steering 是一个两阶段微调方案。第一阶段让模型在混合上下文里识别哪些信号不应主导答案，第二阶段把这种判断稳定到不同的比例和组合中。它不是在推理时再套一个关键词黑名单，而是试图改变模型对竞争上下文的内部取舍。这样做的代价是需要训练数据和评测，且模型必须学会区分“少量但关键的反例”和“少量但不当的噪声”。\n\n论文报告最佳微调模型的响应质量提高 39.8%，并扭转了原本不利的行为曲线；作者还说它在不同不当内容比例下保持较好的泛化。这个数字应放在测试集和定义好的质量指标里理解，不能直接推成所有检索系统都能提升 39.8%。尤其在法律、医疗或安全场景，少数异常证据有时恰恰是决定结论的关键信号。\n\n对 RAG 和 Agent 来说，RW-Steering 提醒我们把上下文质量当成模型行为的一部分来测。除了最终答案，还要构造相关/不当比例变化、冲突证据、顺序变化和来源可信度变化的测试，观察模型是否会忽略小比例的真实警告，或被小比例的伪信息牵着走。每个被采纳的片段都应能回到来源和授权范围。\n\n这套方案也不是替代检索和权限控制的万能护栏。微调后的模型可能在一种污染模式上表现稳定，换到新的领域、语言、格式或对话历史就失效；模型如果看不到上下文 provenance，也很难知道哪段内容有资格影响外部动作。过滤、来源核验、隔离和人工确认仍要在模型之外保留。\n\nRW-Steering 的贡献，是把“上下文里混进一点坏东西”从直觉担忧变成可测的行为曲线。模型不是简单按数量投票，工程团队需要同时训练它识别信号、限制数据流入、记录证据和在冲突时停下来。上下文工程做得好，不只是加更多资料，而是让每一段资料的作用都能被解释。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/rw-steering-poisoned-context-20250902.svg",
+    "alt": "RW-Steering 让模型在混合上下文中识别并忽略不当信号",
+    "sourceUrl": "/images/news/rw-steering-poisoned-context-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "mixed-context",
+      "title": "上下文很长，不代表上下文可信",
+      "body": "检索结果、历史消息和网页片段可能把相关、不相干和误导信息混在一起；模型要处理的是信号竞争。",
+      "kind": "narrative"
+    },
+    {
+      "id": "poisoned-testbed",
+      "title": "Poisoned Context Testbed 把混合场景摆出来",
+      "body": "作者用相关与不当信息配对的真实场景测试模型，再用改写的 Rescorla-Wagner 模型刻画信号如何影响输出。",
+      "kind": "technical"
+    },
+    {
+      "id": "minority-signal",
+      "title": "少量不当信息有时影响更大",
+      "body": "论文观察到模型容易吸收上下文里占比更小的信号；数量少不等于影响小，也不等于一定应该被忽略。",
+      "kind": "comparison"
+    },
+    {
+      "id": "rw-steering",
+      "title": "两阶段微调让模型学习识别不当信号",
+      "body": "RW-Steering 试图把混合上下文中的判断稳定到不同比例和组合，而不是只靠推理时关键词过滤。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-gain",
+      "title": "论文报告响应质量提高 39.8%",
+      "body": "最佳模型在测试集上扭转了不利行为曲线，但这个数字不能直接推广到所有检索系统和高风险领域。",
+      "kind": "comparison"
+    },
+    {
+      "id": "rare-evidence",
+      "title": "少量内容也可能是关键反例",
+      "body": "法律、医疗和安全场景要测试模型是否误删真实警告；微调不能代替来源、provenance、隔离和权限控制。",
+      "kind": "boundary"
+    },
+    {
+      "id": "explainable-context",
+      "title": "每段上下文都要说明它为何能影响答案",
+      "body": "上下文工程的目标不是堆更多资料，而是让来源、比例、作用和冲突都能被解释并在必要时停下。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "RW-Steering 怎样处理被污染的混合上下文？",
+    "question": "先测出模型怎样吸收竞争信号，再训练它识别不当内容，同时保留来源和权限边界。",
+    "steps": [
+      {
+        "label": "混合相关与不当内容",
+        "detail": "把查询放进包含有效资料、无关片段和误导信号的上下文，观察模型是否按数量或位置做错误取舍。",
+        "evidence": "Poisoned Context Testbed"
+      },
+      {
+        "label": "画出信号行为曲线",
+        "detail": "用 Rescorla-Wagner 改写模型描述不同上下文信号对输出的影响，找出少量内容被过度吸收的区间。",
+        "evidence": "adapted Rescorla-Wagner model"
+      },
+      {
+        "label": "训练识别不当信号",
+        "detail": "第一阶段让模型区分哪些内容不应主导回答，不把“出现了”直接等同于“可信”。",
+        "evidence": "two-stage finetuning-based approach"
+      },
+      {
+        "label": "跨比例复测泛化",
+        "detail": "改变不当信息比例、顺序和组合，确认模型没有只记住某一种污染模板。",
+        "evidence": "generalizes across varying proportions"
+      },
+      {
+        "label": "保留外部防线",
+        "detail": "同时核验来源、记录 provenance、隔离网页和工具，并在冲突时限制外部动作或请求人工确认。",
+        "evidence": "real-world context reliability risks"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.04500"
+  },
+  "relatedSlugs": [
+    "llm",
+    "context",
+    "hallucination",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.04500",
+      "claim": "论文用 Poisoned Context Testbed 和 Rescorla-Wagner 改写模型研究混合上下文，观察到少量不当信息可能显著损害回答质量。",
+      "excerpt": "real-world contexts often mix relevant information with disproportionate inappropriate content ... less prevalent in the context"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04500",
+      "claim": "RW-Steering 采用两阶段微调，摘要报告最佳模型响应质量提高 39.8% 并适应不同比例的混合内容。",
+      "excerpt": "two-stage finetuning-based approach ... improves response quality by 39.8% ... varying proportions"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.04500",
+  "sourceHash": "sha256:cafa61bc2675171c746c8f53d0b0805a004582bf24405b6178a74d2740b5a63c",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论大语言模型在混合上下文中的信号取舍。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕相关、不当和冲突上下文的混合与控制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.89,
+      "evidence": [
+        "正文把错误上下文采纳与自信错误、证据冲突的风险联系起来。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文保留污染测试集、行为曲线、39.8% 结果和跨比例复测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.04500",
+      "claim": "arXiv 记录 RW-Steering 论文于 2025 年 9 月 2 日提交，研究混合上下文中的模型可靠性。",
+      "excerpt": "Published: 2025-09-02 ... Context Engineering for Trustworthiness"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.04500",
+      "claim": "摘要给出 Poisoned Context Testbed、Rescorla-Wagner 建模、两阶段微调和 39.8% 响应质量提升。",
+      "excerpt": "Poisoned Context Testbed ... RW-Steering ... improves response quality by 39.8%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对混合上下文、Poisoned Context Testbed、Rescorla-Wagner 行为曲线、两阶段 RW-Steering 和 39.8% 摘要结果；正文补充少量真实反例、跨域泛化、provenance、隔离和权限边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把少量不当信号的行为机制、两阶段微调和 39.8% 结果分开说明，明确少量内容也可能是关键反例，并保留来源、隔离和权限防线；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-rw-steering-poisoned-context-20250902"
+}

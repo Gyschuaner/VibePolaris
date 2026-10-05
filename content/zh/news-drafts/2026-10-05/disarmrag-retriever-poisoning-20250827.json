@@ -1,0 +1,199 @@
+{
+  "slug": "disarmrag-retriever-poisoning-20250827",
+  "title": "DisarmRAG：当攻击目标从知识库转到检索器，自我纠错也可能失效",
+  "summary": "DisarmRAG 论文于 8 月 27 日提交，研究 RAG 在真实部署里一个容易被忽略的变化：模型本来会尝试自我纠错，但如果攻击者影响了 retriever，就可能把压制自我纠错的内容送进上下文。论文提出一种以检索器为中心的污染范式，在 6 个模型和 3 个问答基准上报告超过 90% 的成功率，并测试多种检测防御。本文不复述攻击负载或优化步骤，只解释为什么检索器、索引写入和来源校验需要独立防护。",
+  "body": "很多 RAG 防守把注意力放在知识库文本：过滤脏内容、限制写入、检查文档来源。这些都重要，但 DisarmRAG 论文指出，真正决定模型看到什么的还有 retriever。即使模型有一定自我纠错能力，只要检索路径被改变，错误内容就可能以“上下文证据”的身份出现。\n\n作者观察到，现实部署里的模型通常会尝试自我修正，这会削弱一些只在理想化设置里成立的知识库污染攻击。DisarmRAG 的研究问题因此变成：如果攻击者不是只改一段知识，而是影响检索器把什么送进上下文，能不能连自我纠错一起压制？\n\n论文把攻击目标从知识库文本转到 retriever，并描述了向上下文注入反自我纠错指令的范式。这里最值得工程团队关注的不是具体负载，而是信任链发生了移动：检索器不再是一个“只负责找相似文本”的无害组件，而是决定模型将相信什么的门。\n\n在 6 个大语言模型和 3 个问答基准上，论文报告成功率超过 90%，并进一步测试了多种检测防御。这个数字属于论文实验和方法设定，不能直接当成每个生产 RAG 的攻击概率；它说明的是，只审核知识库内容而不审核检索逻辑，防线可能缺一块。\n\n防守需要把检索器当成有权限的代码和模型来管。索引构建、检索排序、重排和上下文拼接都要有版本、来源和审计；关键回答不能只显示最终文本，还应记录召回了哪些文档、排序为何变化、哪些内容被截断或改写。\n\n对高风险工作流，检索结果最好经过独立完整性检查和多来源交叉验证。模型说“我已经自我纠错”不够，因为自我纠错本身也在看同一份上下文。涉及工具调用、写入和外部请求时，应要求来源门槛和独立授权，不能让检索内容直接改变执行权限。\n\n检测也不能只看答案是否有明显异常。检索器被污染后，可能出现一批查询同时召回相似来源、排序突然改变，或模型在不同问题上重复同一套不该出现的指令。把索引日志、查询日志和答案轨迹联起来，才能找到共同入口。\n\nDisarmRAG 的提醒和前一天的 UniC-RAG 相互呼应：RAG 的安全边界不只在文本里，也在检索器、排序、上下文和权限之间。真正可靠的系统，要让每一层都能被审计、被替换、被回滚。",
+  "publishedAt": "2025-08-27",
+  "eventDate": "2025-08-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/disarmrag-retriever-poisoning-20250827.svg",
+    "alt": "DisarmRAG 将 RAG 污染风险指向 retriever、上下文和自我纠错链路",
+    "sourceUrl": "/images/news/disarmrag-retriever-poisoning-20250827.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "self-correction-gap",
+      "title": "模型会纠错，也可能被同一上下文带偏",
+      "body": "现实 RAG 中模型常会尝试自我修正，这削弱了一些理想化攻击；如果检索器把压制纠错的内容送进上下文，问题又会改变。",
+      "kind": "narrative"
+    },
+    {
+      "id": "retriever-target",
+      "title": "攻击目标从文档转到检索器",
+      "body": "DisarmRAG 关注 retriever 如何决定哪些内容进入上下文，把它从相似度组件提升为需要独立审计的信任边界。",
+      "kind": "technical"
+    },
+    {
+      "id": "anti-correction",
+      "title": "上下文可能带入压制自我纠错的指令",
+      "body": "论文研究向模型上下文注入反自我纠错内容的范式；本文不复述攻击负载或优化步骤，只保留安全模型。",
+      "kind": "boundary"
+    },
+    {
+      "id": "reported-results",
+      "title": "六个模型、三个基准上成功率超过 90%",
+      "body": "这是论文实验设置下的结果，不是所有生产 RAG 的固定攻击概率；它说明只审核知识库而不审核检索逻辑会留下空缺。",
+      "kind": "comparison"
+    },
+    {
+      "id": "retrieval-audit",
+      "title": "索引、排序和拼接都要有版本与审计",
+      "body": "记录召回文档、排序变化、截断和改写，才能知道模型为什么看到这段上下文。",
+      "kind": "technical"
+    },
+    {
+      "id": "independent-authorization",
+      "title": "检索结果不能直接改变工具权限",
+      "body": "高风险回答应有多来源和完整性检查；工具调用、写入和外部请求还要经过独立授权。",
+      "kind": "example"
+    },
+    {
+      "id": "shared-signal",
+      "title": "从一批异常查询找共同入口",
+      "body": "同时观察索引日志、查询日志和答案轨迹，发现相似来源、异常排序或重复指令后及时下线与回滚。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "怎样守住 RAG 的检索器边界？",
+    "question": "把 retriever、上下文和执行权限分开审计，不让一次排序变化直接变成系统动作。",
+    "steps": [
+      {
+        "label": "锁定检索版本",
+        "detail": "给索引、嵌入、排序、重排和上下文模板记录版本与变更人，发现异常时可以回滚。",
+        "evidence": "poisoning the knowledge base ... retriever-centric poisoning"
+      },
+      {
+        "label": "保存召回证据",
+        "detail": "每次回答记录文档、排名、截断和改写，避免只保留最终文本。",
+        "evidence": "inject arbitrary anti-SCA instructions into the context provided to LLMs"
+      },
+      {
+        "label": "做多来源校验",
+        "detail": "对关键事实和高风险任务要求来源一致、版本可信和内容完整，模型自我纠错不能替代独立校验。",
+        "evidence": "LLMs exhibit a strong self-correction ability"
+      },
+      {
+        "label": "隔离执行权限",
+        "detail": "检索到的内容可以影响回答，但不能单独授予工具、写入或外部请求权限。",
+        "evidence": "real-world deployment"
+      },
+      {
+        "label": "回放异常群组",
+        "detail": "对一批同时出现相似错误的查询追溯共同召回来源和排序变化，并准备下线与回滚。",
+        "evidence": "success rates exceeding 90% ... detection defenses"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / DisarmRAG 作者组",
+    "url": "https://arxiv.org/abs/2508.20083"
+  },
+  "relatedSlugs": [
+    "rag",
+    "authorization",
+    "data-validation",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20083",
+      "claim": "DisarmRAG 将 RAG 污染目标从知识库文本转到 retriever，研究如何压制模型自我纠错。",
+      "excerpt": "introduce DisarmRAG, a novel poisoning paradigm that focuses on the retriever ... suppressing the SCA"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20083",
+      "claim": "论文在 6 个模型、3 个 QA 基准上报告超过 90% 成功率，并测试检测防御。",
+      "excerpt": "evaluate DisarmRAG across six LLMs and three QA benchmarks ... success rates exceeding 90%"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20083",
+  "sourceHash": "sha256:cc99f4c4a3da6beb19defcefa56661a5095370592f6c1f7a360a8dd2a57e381c",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 RAG、知识库、retriever 和上下文链路展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.99,
+      "evidence": [
+        "正文强调检索内容不能直接改变工具、写入和外部请求权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.98,
+      "evidence": [
+        "正文要求来源、版本、完整性、索引日志和回滚。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论六模型、三基准、检测防御和异常回放。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 27 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20083",
+      "claim": "arXiv 记录 DisarmRAG 于 2025 年 8 月 27 日提交，研究以 retriever 为中心的 RAG 污染。",
+      "excerpt": "Date: Wed Aug 27 ... Retriever-Centric Poisoning"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20083",
+      "claim": "摘要报告跨 6 个模型、3 个 QA 基准超过 90% 成功率，并评估检测防御。",
+      "excerpt": "across six LLMs and three QA benchmarks ... success rates exceeding 90%"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文对自我纠错、retriever 中心污染、反自我纠错上下文、6 模型/3 基准/超过 90% 和检测防御的摘要表述；正文避免攻击负载与优化细节，转为版本审计、来源校验和权限隔离。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：没有复述可执行的检索器攻击步骤，把安全边界落在索引版本、召回证据、独立授权和异常回滚，并保留实验条件；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-27-disarmrag-retriever-poisoning-20250827"
+}

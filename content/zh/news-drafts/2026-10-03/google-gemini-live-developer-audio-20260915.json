@@ -1,0 +1,253 @@
+{
+  "slug": "google-gemini-live-developer-audio-20260915",
+  "title": "Google 将 Gemini 3.8 Live 推给开发者：语音代理可边说边调用工具",
+  "summary": "Google 于 2026-09-15 发布 Gemini 3.8 Live、Extended Thinking 和 3.5 Transcribe，开发者可从 Gemini API 与 Google AI Studio 构建实时语音代理；异步工具调用、视觉上下文和转写能力仍需在各自的权限与测试条件下验证。",
+  "body": "2026-09-15，Google 把一组新的实时音频模型推给开发者：Gemini 3.8 Live、Gemini 3.8 Live Extended Thinking，以及专门做语音转文字的 Gemini 3.5 Transcribe。入口是 Gemini API 和 Google AI Studio，新闻重点不是又多了一个聊天模型，而是语音对话可以在持续播报时调用工具、读取视觉输入并继续保持会话。\n\nGemini 3.8 Live 面向“边说边做”的语音代理。Google 列出的能力包括异步函数调用、视觉上下文、对确认码和技术数据的字母数字识别，以及把实时音频和结构化数据增量合并。Extended Thinking 版本可以在后台处理多步推理，同时让用户听到正在进行的解释；Google 把它描述为减少传统级联架构的一种方式，具体效果仍取决于开发者如何编排会话、工具和错误处理。\n\n这次发布也把语音转写从实时对话里单独拆出来。Gemini 3.5 Transcribe 支持 85 多种语言、自动处理中途切换语言、最多 1,000 个词的自定义词汇，以及带时间戳和说话人标记的音频转写。Google 给出的流式和非流式 WER 数字、97 多语言覆盖和 Artificial Analysis 排名都是厂商页面引用的指标，不能直接当成跨场景独立评测结论。\n\nGoogle 同时给了价格和接入合作方：Live API 音频输入按分钟计费，输出另计，Agora、LiveKit、LangChain、Pipecat、Vercel 等负责媒体流基础设施。开发者真正要解决的仍是授权、打断、工具失败和敏感音频留存。模型能在说话时发起调用，不等于它可以绕过产品自己的权限或在没有确认的情况下替用户完成外部动作。\n\n因此，这条新闻更像是语音代理的工程入口变宽了，而不是“语音 AGI 已经完成”。可观察的后续问题是：异步工具返回期间如何保持事实一致、视觉输入和音频转写怎样进入同一个上下文，以及价格和配额在不同地区与账户层级如何变化。",
+  "publishedAt": "2026-09-15",
+  "eventDate": "2026-09-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-gemini-live-developer-audio-20260915.svg",
+    "alt": "实时音频、后台推理、工具调用和结构化结果组成一条语音代理链路。",
+    "sourceUrl": "/images/news/google-gemini-live-developer-audio-20260915.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "一次发布，三种音频职责",
+      "body": "3.8 Live 负责实时语音对话与行动，Extended Thinking 负责更长的后台推理，3.5 Transcribe 负责低延迟、高精度转写。把它们分开看，才能知道一个产品到底依赖哪一层。",
+      "kind": "narrative"
+    },
+    {
+      "id": "tool-calls",
+      "title": "语音还在流动，工具已经开始执行",
+      "body": "异步函数调用允许代理在继续输出音频时请求 API 或工具；这会缩短等待，却把授权、超时、重试和“动作已完成还是只发起了”带进对话设计。",
+      "kind": "technical"
+    },
+    {
+      "id": "language-data",
+      "title": "语言覆盖和转写数字要看统计口径",
+      "body": "Google 页面给出 97 多种语言的 Live 支持、85 多种语言的 Transcribe 支持和 WER 数字。它们是厂商发布信息，测试集、地区和真实噪声条件仍需单独核对。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "实时不等于自动获得外部权限",
+      "body": "模型可以持续说话并发起调用，但真正能否读数据、改记录或下单，仍由 API 权限、用户确认和应用自己的安全边界决定。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个语音代理怎样从一句话走到可检查的动作？",
+    "question": "把“听见、思考、调用、回报”分开，才能看清哪里需要权限。",
+    "steps": [
+      {
+        "label": "听见并保留会话",
+        "detail": "Live 模型接收连续音频，也可以把视觉输入和此前对话放进同一个实时上下文。",
+        "evidence": "Google Live 模型能力说明"
+      },
+      {
+        "label": "判断是否需要工具",
+        "detail": "遇到查订单、查库存或计算这类任务时，代理生成结构化的函数调用，而不是只给一句自然语言。",
+        "evidence": "异步 function calling"
+      },
+      {
+        "label": "后台执行并继续说",
+        "detail": "工具在后台返回期间，模型可以继续播报；应用必须处理超时、拒绝和重复调用。",
+        "evidence": "Google 对异步调用的描述"
+      },
+      {
+        "label": "把结果交还给人",
+        "detail": "只有在权限校验和工具确认后，才把结构化结果合回对话；“正在调用”不能写成“已经完成”。",
+        "evidence": "工程边界与权限设计"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google DeepMind / Google AI",
+    "url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "tools",
+    "function-calling",
+    "streaming-output",
+    "api",
+    "context",
+    "eval"
+  ],
+  "relatedArticleSlugs": [
+    "google-home-mcp-ai-agents-20260916",
+    "qwen38-omni-flash-20260918",
+    "google-gemini-call-for-me-20260924-f450f8a8"
+  ],
+  "sources": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/",
+      "claim": "Google 于 2026-09-15 宣布 Gemini 3.8 Live、3.8 Live Extended Thinking 和 Gemini 3.5 Transcribe 通过 Gemini API 与 Google AI Studio 提供给开发者。",
+      "excerpt": "Google DeepMind, Build real-time voice applications with Gemini 3.8 Live and 3.5 Transcribe, 2026-09-15：列出模型、API/AI Studio 入口和实时语音能力。"
+    },
+    {
+      "url": "https://ai.google.dev/gemini-api/docs/live",
+      "claim": "Google Live API 文档把实时音频、工具调用和会话连接列为开发者集成面，具体配额与可用性以文档为准。",
+      "excerpt": "Google AI for Developers, Live API documentation：实时会话与工具调用的接口背景，不替代公告中的产品日期。"
+    }
+  ],
+  "canonicalUrl": "https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/",
+  "sourceHash": "sha256:9ac7b06b4a79ae03b6bc5470031fab47e97a47eacea79b97b7e42902f29bce73",
+  "status": "published",
+  "discoveredAt": "2026-10-03T20:15:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.84,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "function-calling",
+      "score": 0.83,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "streaming-output",
+      "score": 0.82,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.8,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.78,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.72,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-home-mcp-ai-agents-20260916",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "qwen38-omni-flash-20260918",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "google-gemini-call-for-me-20260924-f450f8a8",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/",
+      "claim": "Google 于 2026-09-15 宣布 Gemini 3.8 Live、3.8 Live Extended Thinking 和 Gemini 3.5 Transcribe 通过 Gemini API 与 Google AI Studio 提供给开发者。",
+      "excerpt": "Google DeepMind, Build real-time voice applications with Gemini 3.8 Live and 3.5 Transcribe, 2026-09-15：列出模型、API/AI Studio 入口和实时语音能力。"
+    },
+    {
+      "url": "https://ai.google.dev/gemini-api/docs/live",
+      "claim": "Google Live API 文档把实时音频、工具调用和会话连接列为开发者集成面，具体配额与可用性以文档为准。",
+      "excerpt": "Google AI for Developers, Live API documentation：实时会话与工具调用的接口背景，不替代公告中的产品日期。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "method": "manual",
+    "notes": "逐条核对官方公告或原始报道、事件日和发布日；正文把厂商主张、媒体观察、测试状态和后续计划分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "notes": "按 2026-09-15 的独立新闻事件逐篇手写；不把厂商基准、beta、预览、合作计划或观点争论写成已经普遍落地的能力。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T21:44:48Z",
+    "questions": [],
+    "notes": "Google 官方发布、API/AI Studio 入口和多种模型职责清楚；正文把厂商 WER/语言覆盖/排名与独立评测分开，也明确工具授权、失败处理和实时调用不等于自动外部行动。Explainer/SVG 对应。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-15",
+  "fingerprint": "sha256:9ac7b06b4a79ae03b6bc5470031fab47e97a47eacea79b97b7e42902f29bce73",
+  "promotedAt": "2026-10-02T21:45:46.686Z"
+}

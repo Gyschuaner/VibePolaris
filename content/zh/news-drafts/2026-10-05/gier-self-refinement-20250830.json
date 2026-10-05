@@ -1,0 +1,199 @@
+{
+  "slug": "gier-self-refinement-20250830",
+  "title": "GIER：让模型按“推理缺口”自我修订，而不只套提示模板",
+  "summary": "GIER 论文于 8 月 30 日提交，提出 Gap-driven Iterative Enhancement of Responses：用自然语言描述回答中的推理缺口，让模型先自我批评，再按缺口迭代修订。论文在 SciFact、PrivacyQA 和 e-SNLI 三类需要推理的任务上，用四个模型测试，报告理由质量、grounding 和推理对齐提升，同时没有降低任务准确率。",
+  "body": "让模型“再想一遍”常常不够具体。没有明确标准时，第二次回答可能只是换一种说法，原来的跳步、证据不足或结论过度仍然留着。GIER 的切入点，是把改进要求从一套固定提示模板换成对当前回答缺口的自然语言描述。\n\n它把回答生成和检查拆成两个循环：先得到初稿，再识别概念上的推理缺口，最后让模型围绕这些缺口进行批评和修订。缺口不一定是某个固定错误标签，也可以是“这一步没有说明证据怎样支持结论”“这个解释把相关性写成了因果”等具体要求。\n\n论文在 SciFact、PrivacyQA 和 e-SNLI 上评测，使用 GPT-4.1、GPT-4o Mini、Gemini 1.5 Pro 和 Llama 3.3 70B。结果显示，GIER 提升了理由质量、grounding 和推理对齐，同时没有降低任务准确率。这里的“提升”仍是在给定任务和模型上的比较，不能直接等同于任何回答都能自我纠错。\n\n这套方法与“多给几个示例”不同。示例告诉模型某些答案长什么样，推理缺口则告诉它当前答案哪里还没有完成。前者适合固定格式，后者更适合处理不同问题里出现的不同论证漏洞，但也要求缺口描述本身足够清楚。\n\n工程上，缺口描述可以来自规则、评审者或领域模板。关键是把每轮修改前后的差异保存下来，检查模型是否真的补上了证据关系，还是只把段落写得更流畅。对需要来源的回答，grounding 检查应回到具体材料，而不是由模型自己宣布“已经有依据”。\n\n自我修订也有成本。每多一轮批评和重写，就多一次调用和延迟；如果缺口描述互相冲突，模型还可能在准确性和完整性之间来回摆动。部署前要为轮数、预算和停止条件设边界，并用独立评测确认修订没有引入新错误。\n\nGIER 的意义，是把“反思”从一种模糊的风格要求变成可描述、可比较的改进目标。模型不必永远写更长的答案，而要说明自己补了哪一个缺口、依据在哪里，以及什么时候已经足够。",
+  "publishedAt": "2025-08-30",
+  "eventDate": "2025-08-30",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/gier-self-refinement-20250830.svg",
+    "alt": "GIER 识别回答中的推理缺口并驱动模型批评和迭代修订",
+    "sourceUrl": "/images/news/gier-self-refinement-20250830.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "generic-reflection",
+      "title": "“再想一遍”不保证补上漏洞",
+      "body": "没有明确标准时，第二次回答可能只是换说法，跳步、证据不足和过度推断仍会保留。",
+      "kind": "narrative"
+    },
+    {
+      "id": "gap-description",
+      "title": "GIER 先描述当前回答缺了什么",
+      "body": "缺口可以是证据关系、因果边界或解释步骤，不必被固定成一组模板标签。",
+      "kind": "technical"
+    },
+    {
+      "id": "critique-revision-loop",
+      "title": "批评和修订围绕缺口循环",
+      "body": "模型先识别概念性缺口，再按缺口修改初稿，检查目标从“更像示例”变成“补上这一步”。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-tasks",
+      "title": "三类任务上理由质量和 grounding 提升",
+      "body": "SciFact、PrivacyQA、e-SNLI 的四模型实验报告推理对齐提升，同时没有降低任务准确率。",
+      "kind": "comparison"
+    },
+    {
+      "id": "diff-trace",
+      "title": "每轮差异要能被复核",
+      "body": "保存修改前后内容，检查模型是否真的补了证据关系，而不是只让段落更顺。",
+      "kind": "example"
+    },
+    {
+      "id": "iteration-cost",
+      "title": "反思轮数也有预算和停止条件",
+      "body": "多一轮批评就多一次调用；缺口冲突时可能来回摆动，部署要用独立评测检查新错误。",
+      "kind": "boundary"
+    },
+    {
+      "id": "enough-answer",
+      "title": "反思不是把答案写得更长",
+      "body": "好的修订应说明补了哪个缺口、依据在哪里，以及什么时候已经足够。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "GIER 怎样让模型真正补上回答里的推理缺口？",
+    "question": "先用自然语言描述当前缺口，再让模型围绕缺口批评、修订和独立核验，而不是重复套模板。",
+    "steps": [
+      {
+        "label": "生成初稿",
+        "detail": "先回答任务并保存来源、假设和需要检查的论证步骤。",
+        "evidence": "iterative enhancement of LLM outputs"
+      },
+      {
+        "label": "描述推理缺口",
+        "detail": "指出证据如何支持结论、因果是否越界或解释是否跳步，不只给一个总分。",
+        "evidence": "natural language descriptions of reasoning gaps"
+      },
+      {
+        "label": "围绕缺口批评",
+        "detail": "让模型解释初稿哪些地方没有满足缺口要求，保留可复核的批评记录。",
+        "evidence": "self-reflection based on conceptual quality criteria"
+      },
+      {
+        "label": "定向修订",
+        "detail": "只改与缺口相关的论证、证据和表述，避免为了流畅而改变正确内容。",
+        "evidence": "iteratively critique and refine responses"
+      },
+      {
+        "label": "独立检查停止",
+        "detail": "比较准确率、grounding 和新错误，达到标准或触及预算就停止迭代。",
+        "evidence": "improves rationale quality and grounding without degrading accuracy"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00325"
+  },
+  "relatedSlugs": [
+    "llm",
+    "prompt",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00325",
+      "claim": "GIER 用自然语言描述推理缺口，驱动模型自我批评和迭代修订。",
+      "excerpt": "GIER: Gap-Driven Self-Refinement for Large Language Models"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00325",
+      "claim": "在 SciFact、PrivacyQA、e-SNLI 和四个模型上，GIER 提升理由质量、grounding 和推理对齐且不降低准确率。",
+      "excerpt": "improves rationale quality, grounding, and reasoning alignment without degrading task accuracy"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00325",
+  "sourceHash": "sha256:88dccda1a055e588970ad0078f97ccd7b73186dae62d1a98bf1b947592afe6f4",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论四个 LLM 在三类推理任务上的自我修订。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.96,
+      "evidence": [
+        "正文比较推理缺口描述与固定提示模板的差异。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.97,
+      "evidence": [
+        "正文要求修订后的论证回到具体材料和证据关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留三类任务、四个模型和准确率边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 30 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00325",
+      "claim": "arXiv 记录 GIER 于 2025 年 8 月 30 日提交，研究基于推理缺口的自我修订。",
+      "excerpt": "Date: Sat Aug 30 ... GIER: Gap-Driven Self-Refinement"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00325",
+      "claim": "摘要给出 SciFact、PrivacyQA、e-SNLI、四个模型和准确率/grounding 结果。",
+      "excerpt": "Across three reasoning-intensive tasks ... four LLMs ... without degrading task accuracy"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对推理缺口描述、自我批评/修订循环、三类任务、四个模型及准确率和 grounding 结果；正文补充修改差异、轮数预算和独立停止条件。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 GIER 的反思写成针对缺口的定向修订，保留任务/模型实验边界，避免把自我批评写成自动事实核验；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-30-gier-self-refinement-20250830"
+}

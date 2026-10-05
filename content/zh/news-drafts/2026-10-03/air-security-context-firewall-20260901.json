@@ -1,0 +1,204 @@
+{
+  "slug": "air-security-context-firewall-20260901",
+  "title": "AIR Security 结束 stealth（隐身状态）并获 5,000 万美元：把 AI 代理的上下文当成新防火墙边界",
+  "summary": "AIR Security 于 2026 年 9 月 1 日宣布结束 stealth（隐身状态）；TechCrunch 与 Ctech 报道公司完成两轮共 5,000 万美元融资。其产品主张在网页、插件、Skills、MCP 和企业数据进入代理上下文前先过滤不可信内容，金额与研究数字均保留公司或媒体口径。",
+  "body": "AIR Security 在 2026 年 9 月 1 日宣布结束 stealth（隐身状态），并披露已完成两轮共 5,000 万美元融资。TechCrunch 报道称，第一轮 1,000 万美元由 Sequoia 领投，第二轮 4,000 万美元由 Greenoaks 领投；AIR 官方文章确认了出 stealth、投资方和“保护代理上下文”的产品方向，但没有在原文披露轮次金额。\n\nAIR 把产品称作 AI agent 的 context firewall：在提示、网页内容、内部数据、插件、skills 或 MCP（让代理调用外部工具的接口）服务器进入代理上下文之前先检查，发现不可信或未批准组件就阻断、追踪依赖关系并撤销。公司和 Ctech 的报道还引用了一项公司研究：17,800 多个公开 add-ons、约 670 万次安装依赖不可信外部指令；这组数字是 AIR 的研究口径，不是独立审计。\n\n这条新闻的核心变化是把代理安全从“代理拿到哪些权限”推进到“代理读到了什么”。权限控制仍然重要，但一个有权限的代理如果被恶意内容影响，风险会沿上下文进入决策链。",
+  "publishedAt": "2026-09-01",
+  "eventDate": "2026-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/air-security-context-firewall-20260901.svg",
+    "alt": "一堵防火墙把网页、插件和内部数据过滤后送入 AI 代理上下文",
+    "sourceUrl": "/images/news/air-security-context-firewall-20260901.svg",
+    "license": "VibePolaris 自制插图 · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "funding",
+      "title": "先把融资事实和公司说法分开",
+      "body": "AIR 官方文章确认 9 月 1 日从 stealth 公开亮相，并列出 Sequoia、Greenoaks、Swish、Netz 和 TTP 等投资方。TechCrunch 和 Ctech 进一步报道融资总额为 5,000 万美元，拆成 1,000 万美元和 4,000 万美元两轮。本文将金额归于媒体对 AIR 的报道，因为官方出 stealth 文章本身没有写出每轮金额。融资说明的是资本和产品阶段，不等于已经证明产品在所有企业环境有效。",
+      "kind": "narrative"
+    },
+    {
+      "id": "context",
+      "title": "context firewall 过滤的是什么",
+      "body": "AIR 的设计把代理上下文当成一道输入边界。它要发现组织里运行的代理，持续检查代理使用的 skills、插件、MCP 服务器和外部来源，并在内容进入模型上下文前过滤恶意指令、不可信信息或被攻陷的工具。官方用“先把水过滤干净”作比喻。这个位置与传统只在代理执行动作时拦截不同，但两者可以同时存在：输入过滤减少被影响的机会，运行时权限限制降低即使被影响后的破坏范围。",
+      "kind": "technical"
+    },
+    {
+      "id": "research",
+      "title": "17,800 个 add-ons 意味着什么",
+      "body": "Ctech 报道引用 AIR 的研究，称其发现超过 17,800 个公开 AI add-ons、约 670 万次安装依赖不可信外部指令，并发现冒充 Anthropic 或 OpenAI 的 Skills。它们是公司研究结果，文章没有提供完整数据集、抽样方法或独立复核。读者可以把数字当成一个供应链风险信号：代理接入的每个扩展都可能携带指令、代码或外部依赖；不能把它直接当成“17,800 个组件都已被证明恶意”。",
+      "kind": "example"
+    },
+    {
+      "id": "workflow",
+      "title": "从发现到撤销的一条工作流",
+      "body": "一个企业管理员可能先看到 AIR 发现某个代理依赖一个未批准的 MCP 服务器，随后查看哪些工作流使用它、检查来源与行为、把它加入阻断名单，再让系统在组织范围撤销依赖。AIR 还描述了预审 add-on 的 marketplace。这里的价值在于把安全动作连接起来：资产发现、评估、决策和撤销，而不是只给一个风险分数。实际阻断规则、支持的代理平台和客户覆盖范围仍需产品文档确认。",
+      "kind": "comparison"
+    },
+    {
+      "id": "boundary",
+      "title": "“保护上下文”并不等于代理已经安全",
+      "body": "如果恶意内容来自已批准的网站、内部数据或合法工具返回值，过滤器仍需要正确理解语义；过滤器自身也可能误拦截业务信息。AIR 把重点放在 pre-runtime prevention，但官方文章没有公布误报率、检测覆盖和客户成效。融资金额和公司对 AI security 市场规模的预测也属于企业或媒体口径，不能写成行业已经达成的事实。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "恶意指令怎样在到达代理前被拦下",
+    "question": "先看输入经过哪几道检查，再看代理是否有权限执行动作。",
+    "steps": [
+      {
+        "label": "代理接收来源",
+        "detail": "网页、文件、内部数据和插件把内容送进工作流；其中可能混有隐藏指令或被篡改的工具。",
+        "evidence": "AIR 官方将 unvetted add-ons、websites 和企业数据列为外部威胁。"
+      },
+      {
+        "label": "上下文预过滤",
+        "detail": "AIR 的 firewall 在内容进入代理上下文前检查来源与指令，试图阻断不可信项。",
+        "evidence": "官方称其核心是 pre-runtime protection。"
+      },
+      {
+        "label": "追踪依赖",
+        "detail": "发现恶意或未批准 add-on 后，管理员可以查看哪些代理和工作流依赖它。",
+        "evidence": "TechCrunch/Ctech 报道 AIR 可 trace agents and workflows。"
+      },
+      {
+        "label": "撤销或放行",
+        "detail": "通过阻断、撤销或采用预审 marketplace 组件，企业再决定哪些内容可以进入代理。",
+        "evidence": "AIR 官方称可 block untrusted inputs 并提供 vetted add-ons。"
+      }
+    ]
+  },
+  "source": {
+    "name": "AIR Security",
+    "url": "https://www.air.security/blog-posts/out-of-stealth"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "authorization",
+    "data-validation"
+  ],
+  "relatedArticleSlugs": [
+    "anthropic-enterprise-frontier-safeguards-20260901"
+  ],
+  "sources": [
+    {
+      "url": "https://www.air.security/blog-posts/out-of-stealth",
+      "claim": "AIR 于 2026 年 9 月 1 日宣布走出 stealth，并将产品定位为保护代理上下文的 firewall。",
+      "excerpt": "AIR is coming out of stealth ... a firewall for the context AI agents operate in."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/01/air-raises-50m-to-help-companies-vet-the-skills-and-add-ons-ai-agents-use/",
+      "claim": "TechCrunch 报道 AIR 通过两轮 seed 融资共筹得 5,000 万美元，并说明领投方和产品能力。",
+      "excerpt": "It’s now coming out of stealth with $50 million raised across two seed rounds."
+    },
+    {
+      "url": "https://www.calcalistech.com/ctechnews/article/r13apdnugg",
+      "claim": "Ctech 报道 AIR 的融资、context firewall 设计和公司关于 17,800 个 add-ons 的研究。",
+      "excerpt": "AIR has developed a real-time firewall designed to protect the information entering an AI agent’s context."
+    },
+    {
+      "url": "https://www.air.security/blog-posts/out-of-stealth",
+      "claim": "AIR 官方将威胁来源归为未审查 add-ons、网站和动态企业数据，并主张先过滤再进入上下文。",
+      "excerpt": "The threats reaching an agent come from the outside: unvetted add-ons, untrusted websites, and dynamic internal enterprise data."
+    }
+  ],
+  "canonicalUrl": "https://www.air.security/blog-posts/out-of-stealth",
+  "sourceHash": "sha256:59e7582e641198ec388387c9115157a658a2d9b2c5bd19d4c275c7a84697936e",
+  "status": "published",
+  "discoveredAt": "2026-10-03T03:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文讨论agent"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文讨论context"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文讨论authorization"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.9,
+      "evidence": [
+        "正文讨论data-validation"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.air.security/blog-posts/out-of-stealth",
+      "claim": "AIR 于 2026 年 9 月 1 日宣布走出 stealth，并将产品定位为保护代理上下文的 firewall。",
+      "excerpt": "AIR is coming out of stealth ... a firewall for the context AI agents operate in."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/01/air-raises-50m-to-help-companies-vet-the-skills-and-add-ons-ai-agents-use/",
+      "claim": "TechCrunch 报道 AIR 通过两轮 seed 融资共筹得 5,000 万美元，并说明领投方和产品能力。",
+      "excerpt": "It’s now coming out of stealth with $50 million raised across two seed rounds."
+    },
+    {
+      "url": "https://www.calcalistech.com/ctechnews/article/r13apdnugg",
+      "claim": "Ctech 报道 AIR 的融资、context firewall 设计和公司关于 17,800 个 add-ons 的研究。",
+      "excerpt": "AIR has developed a real-time firewall designed to protect the information entering an AI agent’s context."
+    },
+    {
+      "url": "https://www.air.security/blog-posts/out-of-stealth",
+      "claim": "AIR 官方将威胁来源归为未审查 add-ons、网站和动态企业数据，并主张先过滤再进入上下文。",
+      "excerpt": "The threats reaching an agent come from the outside: unvetted add-ons, untrusted websites, and dynamic internal enterprise data."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T03:00:00Z",
+    "method": "manual",
+    "notes": "逐项核对事件日期、发布来源、金额/评测限定和文章中的归因。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T03:00:00Z",
+    "notes": "新闻事实按官方公告和媒体交叉来源核对；公司内部评测、客户情况和预测均保留来源口径。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T03:00:05Z",
+    "questions": [],
+    "notes": "通过。AIR 结束隐身和融资披露是事件，融资轮次归于媒体报道、研究数字归于公司口径；context firewall 的输入过滤、依赖追踪和撤销流程与 SVG/解释器一致，未把 add-on 数字写成已证实恶意组件。",
+    "changes": [
+      "把 stealth 解释为隐身状态；补充 MCP 是让代理调用外部工具的接口。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "news-20260901-security-business",
+  "promotedAt": "2026-10-03T03:01:53.370Z"
+}

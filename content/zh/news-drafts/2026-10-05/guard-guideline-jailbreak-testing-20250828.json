@@ -1,0 +1,188 @@
+{
+  "slug": "guard-guideline-jailbreak-testing-20250828",
+  "title": "GUARD：把“遵守 AI 指南”变成一套真的能问的问题",
+  "summary": "GUARD 论文于 8 月 28 日提交，解决一个常见落差：政府和机构的 AI 指南通常写得很高层，开发者却不知道如何把它们变成可执行的测试。GUARD 从指南自动生成违反规则的问题，检查模型回答是否越界；对没有直接越界的回答，GUARD-JD 再用自适应角色扮演和越狱诊断寻找可能绕过安全机制的场景。作者在 8 个 LLM、3 套政府指南上验证，并报告方法可迁移到视觉语言模型。",
+  "body": "“模型要安全”“系统要公平”“应用要负责任”这些要求很重要，但如果最后只停在原则层，测试人员仍然不知道下一步该问什么。GUARD 论文做的事情，是把指南中的高层要求翻译成一组能够直接交给模型的问题，并把回答和规则逐条对照。\n\n它的第一步是从政府发布的 AI 指南自动生成违反指南的问题。测试不只问模型“你是否安全”，而是构造具体场景，看模型是否给出与规则冲突的回答；如果直接违反，GUARD 就报告不一致之处。\n\n但安全测试还有另一层难点：模型可能在常规问题上表现合规，却在换一种说法、角色或上下文后绕过机制。GUARD-JD 处理的就是这部分，它把 jailbreak 诊断加入测试，生成能诱发潜在违规回答的场景，寻找内置安全机制可能没有覆盖的角落。\n\n论文在 8 个模型上验证，包括开源模型和 GPT-3.5、GPT-4、GPT-4o、Claude-3.7，并使用 3 套政府指南。它还把 GUARD-JD 迁移到 MiniGPT-v2 和 Gemini-1.5，说明这套测试思路不必绑定某一种文本模型。\n\nGUARD 的价值不在于给出一个永远正确的安全分数，而在于让合规要求有了可追踪的测试对象。每条规则可以对应一组问题、模型回答、违规类型和复现条件；版本更新后重新跑一遍，团队能看到是规则变了、模型变了，还是测试覆盖扩大了。\n\n自动生成测试也有风险。如果生成器只会重复熟悉的违规模式，报告看起来很完整，实际上仍然漏掉了真实世界的变体。指南本身也可能含义模糊，自动转写时必须保留原文、生成逻辑和人工复核入口，不能让模型自己成为唯一裁判。\n\n对产品团队，比较实用的做法是把指南测试接入发布流程：规则变更时更新测试集，模型和提示变更时跑回归，发现直接违规和潜在绕过时分别处理。高风险场景还要把结果交给领域负责人，而不是只看自动报告中的通过比例。\n\nGUARD 把“安全合规”从一句口号变成了一条测试链：原始指南、具体问题、模型回答、违规判定和复核记录。真正可用的安全，不是宣称模型遵守了规则，而是能够持续发现它在哪些场景里没有遵守。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/guard-guideline-jailbreak-testing-20250828.svg",
+    "alt": "GUARD 将政府 AI 指南翻译成违规问题、越狱诊断和合规报告",
+    "sourceUrl": "/images/news/guard-guideline-jailbreak-testing-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "guideline-gap",
+      "title": "高层原则需要落到具体问题",
+      "body": "“安全、公平、负责”如果没有对应场景，测试人员无法知道该问什么。GUARD 从指南生成可执行的违规问题。",
+      "kind": "narrative"
+    },
+    {
+      "id": "guideline-questions",
+      "title": "先测回答是否直接违反规则",
+      "body": "系统根据政府指南构造问题，再把模型回答与规则逐条对照，直接报告不一致。",
+      "kind": "technical"
+    },
+    {
+      "id": "jailbreak-diagnostics",
+      "title": "合规回答也要检查能否被绕过",
+      "body": "GUARD-JD 用角色扮演和越狱诊断寻找潜在绕过场景，测试安全机制在换说法、角色和上下文后是否仍然有效。",
+      "kind": "technical"
+    },
+    {
+      "id": "model-coverage",
+      "title": "八个模型、三套指南和视觉语言迁移",
+      "body": "论文验证 Vicuna、LongChat、Llama、GPT、Claude 等 8 个模型，在 3 套政府指南上测试，并迁移到 MiniGPT-v2 和 Gemini-1.5。",
+      "kind": "comparison"
+    },
+    {
+      "id": "traceable-report",
+      "title": "每条规则都要有问题、回答和复核记录",
+      "body": "合规报告应保留原始指南、生成逻辑、违规类型和复现条件，便于版本更新后回归。",
+      "kind": "example"
+    },
+    {
+      "id": "generator-boundary",
+      "title": "自动生成不等于覆盖真实风险",
+      "body": "测试生成器可能重复熟悉模式，指南也可能含义模糊；要保留人工复核和领域负责人入口。",
+      "kind": "boundary"
+    },
+    {
+      "id": "release-loop",
+      "title": "把指南测试接进模型发布流程",
+      "body": "规则变更、模型变更和提示变更都触发回归；直接违规和潜在绕过分开处理，不只看一个通过比例。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "ai-regulation",
+    "title": "怎样把 AI 指南变成可持续的合规测试？",
+    "question": "保留规则来源，把每条要求转成场景问题，再用回归和人工复核维持覆盖。",
+    "steps": [
+      {
+        "label": "保存原始规则",
+        "detail": "记录政府指南的版本、条款和适用范围，不让自动生成器成为唯一的规则来源。",
+        "evidence": "government-issued guidelines"
+      },
+      {
+        "label": "生成违规场景",
+        "detail": "把每条高层要求翻译成具体任务、角色和输出约束，观察模型是否直接违反。",
+        "evidence": "automated generation of guideline-violating questions"
+      },
+      {
+        "label": "做绕过诊断",
+        "detail": "对表面合规的回答改变说法、角色和上下文，寻找可能绕过安全机制的情况。",
+        "evidence": "GUARD-JD ... jailbreaks to diagnostics"
+      },
+      {
+        "label": "输出可追溯报告",
+        "detail": "保存问题、回答、规则、违规类型和复现条件，方便开发者修复和回归。",
+        "evidence": "culminates in a compliance report"
+      },
+      {
+        "label": "跨模型复测",
+        "detail": "在不同模型和视觉语言系统上重跑，避免把一个模型的通过误当成规则普遍满足。",
+        "evidence": "validated ... on eight LLMs ... transfer ... to vision-language models"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / GUARD 作者组",
+    "url": "https://arxiv.org/abs/2508.20325"
+  },
+  "relatedSlugs": [
+    "eval",
+    "prompt",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20325",
+      "claim": "GUARD 从政府 AI 指南生成违反指南的问题，并将回答与规则对照形成合规报告。",
+      "excerpt": "automated generation of guideline-violating questions ... reports inconsistencies ... compliance report"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20325",
+      "claim": "GUARD 在 8 个 LLM、3 套政府指南上验证，GUARD-JD 可迁移到视觉语言模型。",
+      "excerpt": "validated ... on eight LLMs ... three government-issued guidelines ... transfer ... to vision-language models"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20325",
+  "sourceHash": "sha256:178369001d357687c44d6741f87e9bc4014a34cf1c2d1849177798aabf10047b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕规则问题、违规判定、回归和合规报告展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.96,
+      "evidence": [
+        "正文讨论场景问题、角色、上下文和模型回答。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.93,
+      "evidence": [
+        "正文提到 8 个模型、3 套指南和跨模型复测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20325",
+      "claim": "arXiv 记录 GUARD 于 2025 年 8 月 28 日提交，目标是将指南转成可执行 LLM 合规测试。",
+      "excerpt": "Date: Thu Aug 28 ... Guideline Upholding Test"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20325",
+      "claim": "摘要说明 GUARD-JD 用越狱诊断寻找绕过安全机制的场景，并完成合规报告。",
+      "excerpt": "jailbreaks to diagnostics ... identifying potential scenarios that could bypass built-in safety mechanisms"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对指南自动转问题、直接违规检测、GUARD-JD、8 模型/3 指南和视觉语言迁移；正文把自动生成、越狱诊断、人工复核和发布回归分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把政策要求落到问题、违规判定和回归报告，避免把测试框架写成安全保证，也不复述越狱提示；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-guard-guideline-jailbreak-testing-20250828"
+}

@@ -1,0 +1,199 @@
+{
+  "slug": "rstar2-agent-technical-report-20250828",
+  "title": "rStar2-Agent：14B 模型用 Agentic RL 学会先想清楚再调用 Python",
+  "summary": "rStar2-Agent 的技术报告于 8 月 28 日提交。它把 14B 数学模型放进一个会规划、调用 Python、读取执行结果并反思修正的 Agent 循环里，再用 Agentic RL 训练这套过程。报告在 AIME24 上给出 80.6% 的 pass@1、在 AIME25 上给出 69.8%，并称在 64 张 MI300X 上用一周、510 个 RL 步骤完成训练；这些数字需要结合题目、采样和训练设置理解。",
+  "body": "数学推理模型常被描述成“更会想”，但真正决定答案质量的，往往是它能不能把想法变成可检查的步骤。rStar2-Agent 的技术报告把这个问题拆开：模型先规划，再决定是否调用 Python，拿到执行结果后继续探索、验证和修正。Python 在这里不是外挂计算器，而是 Agent 循环里可以被观察和复用的一块工作台。\n\n这套方法的关键变化，是训练目标不再只看最后答案。一次轨迹里可能有多个候选计划、代码片段和中间结果；模型要学会在不确定时继续搜寻，在发现执行结果不对时回退。Agentic RL 让这些“下一步该做什么”的选择进入优化过程，训练对象因而包含了调用工具的时机和方式。\n\n从使用者角度看，循环大致是：读题、提出计划、生成 Python、执行、读取输出、检查是否支持原推理，然后决定继续、改写或提交。每一轮都留下比纯文本更明确的反馈。错误不只是“答案错了”，还可能是代码没有覆盖边界、验证条件不足，或计划已经偏离题目。\n\n报告给出的结果很抓眼：AIME24 pass@1 为 80.6%，AIME25 为 69.8%；作者还报告在 64 张 AMD MI300X 上用一周完成 510 个 RL 步骤，并声称超过了 671B 的 DeepSeek-R1。这里要把“超过”放回报告的评测设置里看：题目版本、提示、采样次数、工具权限和训练数据都会影响比较，不能把单组数字直接换算成普遍能力。\n\n它对 Agent 工程的启发不在于“每个模型都要接 Python”，而在于把工具调用当成推理过程的一部分来训练和评估。一个可复现的系统应记录计划、代码、执行输出和最终判断，让评测者能区分模型不会做、工具没给出结果，还是模型没有使用结果。\n\n同时，工具反馈也会带来新的边界。Python 执行环境需要资源限制、文件隔离和超时；模型不能因为拿到了一个看似合理的输出就跳过独立校验。对生产系统来说，执行器返回的内容应当被当作不可信输入，再经过结构化解析和权限检查。\n\nrStar2-Agent 让“推理”看起来更像一条可观测的工作流：计划不是隐藏在模型内部的一句结论，工具也不是最后才接上的补丁。下一步真正需要回答的是，这种循环在不同题型、不同执行器和更长任务上是否仍然稳定，而不是只看一次竞赛榜单上的最高分。",
+  "publishedAt": "2025-08-28",
+  "eventDate": "2025-08-28",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/rstar2-agent-technical-report-20250828.svg",
+    "alt": "rStar2-Agent 在规划、Python 执行和反思之间循环推进数学推理",
+    "sourceUrl": "/images/news/rstar2-agent-technical-report-20250828.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "from-answer-to-loop",
+      "title": "把“会推理”拆成一条可观察的循环",
+      "body": "rStar2-Agent 不只生成最终答案，而是让模型规划、调用 Python、读取结果，再决定继续探索还是修正。工具调用时机也进入训练对象。",
+      "kind": "narrative"
+    },
+    {
+      "id": "agentic-rl",
+      "title": "Agentic RL 训练的是下一步怎么走",
+      "body": "候选计划、代码片段和中间结果组成一条轨迹；强化学习优化的不只是末端答案，也包括搜索、验证和回退的选择。",
+      "kind": "technical"
+    },
+    {
+      "id": "python-workbench",
+      "title": "Python 是工作台，不是外挂按钮",
+      "body": "模型可以用代码计算、检查边界并读取执行反馈；执行结果会改变后续计划，形成“生成—执行—反思”的闭环。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-scores",
+      "title": "AIME24 80.6%，AIME25 69.8%",
+      "body": "报告还称在 64 张 MI300X 上用一周完成 510 个 RL 步骤，并超过 DeepSeek-R1 671B；这些比较必须结合题目、采样和训练设置解读。",
+      "kind": "comparison"
+    },
+    {
+      "id": "observable-traces",
+      "title": "把计划、代码和输出一起留下",
+      "body": "记录完整轨迹，才能区分模型不会做、执行器没有返回结果，还是模型没有利用工具反馈。",
+      "kind": "example"
+    },
+    {
+      "id": "executor-boundary",
+      "title": "执行器返回的内容仍然是不可信输入",
+      "body": "Python 环境需要隔离、资源限制和超时；输出还要经过结构化解析与权限检查，不能因为结果看似合理就跳过校验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "beyond-leaderboard",
+      "title": "真正的考验是长任务和换环境",
+      "body": "竞赛题上的高分是起点，系统还要在不同题型、执行器和更长工作流中保持可复现、可追踪和稳定。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "模型怎样学会在调用 Python 前后反复检查？",
+    "question": "把工具调用纳入推理轨迹，用执行反馈推动计划更新，再用独立约束保证执行器安全。",
+    "steps": [
+      {
+        "label": "提出计划",
+        "detail": "模型先把题目拆成可推进的步骤，并判断哪一步需要计算或验证。",
+        "evidence": "planning before invoking Python"
+      },
+      {
+        "label": "生成代码",
+        "detail": "把当前计划翻译成 Python 操作，保留输入、假设和需要检查的边界。",
+        "evidence": "Python-based planning and execution"
+      },
+      {
+        "label": "读取反馈",
+        "detail": "执行器返回结果后，模型判断结果是否支持原计划，而不是直接把输出当成答案。",
+        "evidence": "execution feedback for exploration and verification"
+      },
+      {
+        "label": "反思修正",
+        "detail": "发现代码、假设或覆盖范围有问题时，回退到计划阶段并尝试新的轨迹。",
+        "evidence": "reflection and correction in the agentic loop"
+      },
+      {
+        "label": "独立校验",
+        "detail": "提交前检查执行环境、资源边界和最终结论，避免工具输出替代真正的验证。",
+        "evidence": "resource limits and verification remain outside the model"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2508.20722"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "agent",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.20722",
+      "claim": "rStar2-Agent 是 14B 数学推理模型，通过 Agentic RL 学习规划、调用 Python、读取执行反馈和反思修正。",
+      "excerpt": "Agentic Reasoning Technical Report ... Python-based planning, reflection, and execution"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20722",
+      "claim": "报告给出 AIME24 80.6%、AIME25 69.8%，并报告 64 张 MI300X、一周和 510 个 RL 步骤的训练设置。",
+      "excerpt": "AIME24 pass@1 80.6% ... AIME25 69.8% ... 64 MI300X GPUs ... 510 RL steps per week"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.20722",
+  "sourceHash": "sha256:c0625b1f636f07972706437f6fe136d2891db41e3d6370e2a2922a125f2e3bb0",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文围绕 14B 数学推理模型、训练设置和评测结果展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文把 Python 执行器作为推理工作流中的工具反馈来源。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 Agentic RL 的规划、执行、反思循环。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留 AIME 分数及其评测设置边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 28 日技术报告提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.20722",
+      "claim": "arXiv 记录 rStar2-Agent 于 2025 年 8 月 28 日提交，研究 14B Agentic RL 数学推理模型。",
+      "excerpt": "Date: Thu Aug 28 ... rStar2-Agent: Agentic Reasoning Technical Report"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.20722",
+      "claim": "摘要给出规划、Python 执行、反思循环及 AIME24/AIME25 与训练资源结果。",
+      "excerpt": "80.6% on AIME24 ... 69.8% on AIME25 ... 64 MI300X GPUs ... 510 RL steps"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 14B 模型、Agentic RL、Python 规划/执行/反思循环、AIME24/AIME25 指标和 MI300X 训练设置；正文明确说明榜单比较依赖评测条件，并补充执行器隔离、资源限制和独立校验。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 Agentic RL 写成可观察的规划—执行—反思循环，保留 AIME 与训练资源的比较边界，补充执行器安全；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-28-rstar2-agent-technical-report-20250828"
+}

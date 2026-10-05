@@ -1,0 +1,163 @@
+{
+  "slug": "openai-quantum-codex-experiments-20260908",
+  "title": "GPT-5.6 Sol 连接量子实验室：代理先做校准，噪声信号仍要研究者接手",
+  "summary": "OpenAI 于 2026-09-08 分享 MIT EQuS 研究生 Beatriz Yankelevich 使用 GPT-5.6 Sol 和 Codex 操作超导量子比特校准的案例。代理在清晰的六量子比特测量流程中可以选择参数、运行实验和分析结果；信号弱或含噪时仍需经验研究者指导。",
+  "body": "OpenAI 在 9 月 8 日发布一篇应用案例，介绍 MIT Engineering Quantum Systems Group 的研究生 Beatriz Yankelevich 如何把 GPT-5.6 Sol 接到实验室软件，用 Codex 代理运行超导量子比特的例行测量。量子芯片冷却到接近绝对零度后，研究者通过软件发出微波脉冲、读取返回信号，再逐步校准频率、脉冲和量子态保持时间。\n\n这个流程适合测试代理，因为每次测量的结果会决定下一次测量：如果共振频率变了，就要调整参数；如果信号清晰，可以继续跑标准步骤；如果信号异常，就要停下来判断是不是硬件、噪声或实验设计出了问题。Yankelevich 给 Codex 提供测量技能和芯片设计目标，让模型选择参数、操作设备、分析数据，并决定是细化测量还是保存结果。\n\n在一块尚未校准的六量子比特芯片上，OpenAI 说 GPT-5.6 Sol 在信号清晰时可以较少人工介入地完成标准测量，找出跃迁频率、校准控制和读取脉冲，并估计量子信息能保持多久。实验室随后把代理用于过夜或研究者在洁净室工作时的例行任务。\n\n边界同样重要：当信号弱或噪声大时，代理花更久寻找参数，有时需要经验研究者指导。研究者可能仍比当前模型更快找到最佳设置。OpenAI 的案例因此不是“AI 独立做量子研究”，而是把重复的测量、分析和代码修改交给代理，人类把时间集中在实验设计、解释和下一步计划上。\n\n这条新闻展示的是“模型—实验软件—真实设备”连接后的工作分配变化。真正需要后续验证的是不同芯片、不同实验室和异常状态下的可靠性，以及权限、急停、日志和校准错误是否有独立的安全边界。",
+  "publishedAt": "2026-09-08",
+  "eventDate": "2026-09-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-quantum-codex-experiments-20260908.svg",
+    "alt": "GPT-5.6 Sol 连接量子实验室：代理先做校准，噪声信号仍要研究者接手；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/openai-quantum-codex-experiments-20260908.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "case",
+      "title": "代理进入了真实实验循环",
+      "body": "Codex 连接实验室软件，运行测量、分析结果并决定下一步参数。它处理的是有技能说明和设计目标的校准流程。",
+      "kind": "narrative"
+    },
+    {
+      "id": "qubit",
+      "title": "校准为什么需要连续反馈",
+      "body": "频率、脉冲和保持时间的测量互相依赖，每个结果都会改变下一步。代理要把输出当成新输入，而不是一次性生成报告。",
+      "kind": "technical"
+    },
+    {
+      "id": "clear-signals",
+      "title": "清晰信号时自动化更顺利",
+      "body": "在标准流程和信号清楚时，GPT-5.6 Sol 可以少量人工干预完成校准测量。节省的是监控和重复操作时间。",
+      "kind": "example"
+    },
+    {
+      "id": "noisy-signals",
+      "title": "弱信号暴露了当前边界",
+      "body": "信号弱或含噪时，代理需要更久寻找参数并接受研究者指导。物理解释和异常处理仍然依赖经验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "safety",
+      "title": "真实设备需要权限和急停",
+      "body": "模型能写代码和调用实验软件，不代表它应拥有无限权限。日志、范围限制、人工复核和急停是把案例带进实验室的前提。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "量子校准中的代理如何和研究者配合？",
+    "question": "把测量、分析、下一步选择和异常接管放在循环里，才能看懂自动化的边界。",
+    "steps": [
+      {
+        "label": "读取实验状态",
+        "detail": "代理获得芯片设计目标、当前测量结果和可用的实验技能。",
+        "evidence": "EQuS measurement-specific skills"
+      },
+      {
+        "label": "运行一次测量",
+        "detail": "Codex 调用实验室软件，控制仪器并收集返回信号。",
+        "evidence": "Lab software connection"
+      },
+      {
+        "label": "分析并调整",
+        "detail": "模型估计频率、脉冲和保持时间，决定细化测量或保存结果。",
+        "evidence": "Interdependent calibration measurements"
+      },
+      {
+        "label": "异常时交接",
+        "detail": "弱信号和物理异常交给经验研究者判断，设备权限和急停不能省略。",
+        "evidence": "OpenAI reports guidance needed for noisy signals"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/codex-quantum-computing-experiments/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-harness",
+    "tools",
+    "api",
+    "eval",
+    "event",
+    "context",
+    "llm"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "OpenAI 于 2026-09-08 介绍 MIT EQuS 研究者用 GPT-5.6 Sol 和 Codex 连接实验室软件，运行和优化量子芯片例行测量。",
+      "excerpt": "Connecting GPT-5.6 Sol to laboratory software to run and refine routine measurements on quantum chips."
+    },
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "代理在未校准六量子比特芯片上选择测量参数、操作硬件、分析结果并决定细化或保存。",
+      "excerpt": "GPT-5.6 Sol chose measurement parameters, operated the hardware, analyzed the resulting data, and then refined or saved the result."
+    },
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "信号清晰时代理可以少量人工介入完成标准测量，弱或含噪时则需要经验研究者指导。",
+      "excerpt": "When the signals were clear... little researcher intervention; weak or noisy signals sometimes needed guidance."
+    },
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "这是 OpenAI 分享的实验室案例，不是对所有量子实验和代理系统的独立性能保证。",
+      "excerpt": "The case suggests agents can handle defined workflows, while ambiguous physical results remain a challenge."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/codex-quantum-computing-experiments",
+  "sourceHash": "sha256:7e8902ed699ea37e0ffd29620aa5f992d8f1d89e791d06d8c324429c9bec5bf1",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:20:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "OpenAI 于 2026-09-08 介绍 MIT EQuS 研究者用 GPT-5.6 Sol 和 Codex 连接实验室软件，运行和优化量子芯片例行测量。",
+      "excerpt": "Connecting GPT-5.6 Sol to laboratory software to run and refine routine measurements on quantum chips."
+    },
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "代理在未校准六量子比特芯片上选择测量参数、操作硬件、分析结果并决定细化或保存。",
+      "excerpt": "GPT-5.6 Sol chose measurement parameters, operated the hardware, analyzed the resulting data, and then refined or saved the result."
+    },
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "信号清晰时代理可以少量人工介入完成标准测量，弱或含噪时则需要经验研究者指导。",
+      "excerpt": "When the signals were clear... little researcher intervention; weak or noisy signals sometimes needed guidance."
+    },
+    {
+      "url": "https://openai.com/index/codex-quantum-computing-experiments/",
+      "claim": "这是 OpenAI 分享的实验室案例，不是对所有量子实验和代理系统的独立性能保证。",
+      "excerpt": "The case suggests agents can handle defined workflows, while ambiguous physical results remain a challenge."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "method": "source",
+    "notes": "逐条核对原文日期和事件边界；把厂商自述、媒体报道、模型输出、融资口径和尚待独立核验的结论分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T00:20:00Z",
+    "notes": "按独立新闻事件成篇，明确区分已发生事实、公司主张、报道归属和后续需要验证的结果。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T00:20:10Z",
+    "questions": [],
+    "notes": "新闻主线是 OpenAI 分享 MIT EQuS 量子芯片校准应用案例。正文清楚区分标准流程中的少量人工介入与弱/含噪信号下的研究者接管，没有把单一实验室案例写成量子科研自动化普遍性能；日期、官方来源、词条、引用卡片、explainer 与 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-08",
+  "promotedAt": "2026-10-03T00:24:01.489Z"
+}

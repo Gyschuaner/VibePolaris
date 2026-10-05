@@ -1,0 +1,169 @@
+{
+  "slug": "openai-chatgpt-searchable-chats-removed-20250801",
+  "title": "OpenAI 下线可被搜索引擎发现的 ChatGPT 分享功能",
+  "summary": "8 月 1 日，TechRadar 报道 OpenAI 下线了一个允许用户把公开分享的 ChatGPT 对话设为可被 Google 等搜索引擎发现的功能，并开始请求去索引此前出现的页面。该功能需要用户主动勾选公开分享，事件涉及分享权限和搜索索引范围，不能写成所有私聊泄露或发生了外部入侵。",
+  "body": "8 月 1 日，TechRadar 报道 OpenAI 下线了 ChatGPT 中一个允许公开分享对话被搜索引擎发现的功能。文章称，OpenAI 首席信息安全官在前一天宣布撤回，功能随后被关闭，并开始与搜索引擎处理此前已经出现的索引页面。\n\n这项功能的关键不是普通分享链接，而是分享菜单里的“让此链接可被发现”选项。用户需要先选择一段对话，再主动打开可被搜索的设置；一旦打开，内容的可见范围就从知道链接的人扩展到了搜索引擎用户。这个权限后果没有被所有用户充分理解，才让原本想分享示例的对话暴露在更大的检索范围中。\n\n媒体报道提到，已被发现的页面中有求职评估、心理健康披露、犯罪陈述和公司代码等敏感内容。它们说明公开索引可能承载什么风险，不代表所有 ChatGPT 对话都被公开，也不代表没有主动分享的私聊自动进入搜索结果。\n\nOpenAI 的撤回和去索引行动可以降低继续扩散，但搜索引擎缓存、转存和其他网页副本不会因为开关关闭就立刻消失。报道没有把事件描述为一次系统入侵；更准确的说法是，产品提供了一个把公开分享扩大到搜索发现范围的实验，随后因隐私风险被撤回。\n\n相关词条帮助读者定位责任链：authorization 记录谁批准了公开和可搜索，data-lineage 追踪对话从分享链接到索引页面的传播路径，event 则记录启用、撤回、去索引和删除等状态。后续应检查自己曾分享的链接、搜索缓存和撤回结果，而不是只依赖功能下线的提示。",
+  "publishedAt": "2025-08-01",
+  "eventDate": "2025-08-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-chatgpt-searchable-chats-removed-20250801.svg",
+    "alt": "ChatGPT 分享权限从公开链接扩展到搜索索引，再被撤回和去索引的事件链示意图；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/openai-chatgpt-searchable-chats-removed-20250801.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "rollback",
+      "title": "OpenAI 撤回了哪项功能",
+      "body": "TechRadar 8 月 1 日报道称，OpenAI 下线了允许公开分享的 ChatGPT 对话被 Google 等搜索引擎发现的功能，并开始处理此前的索引页面。这里的事件动作是功能撤回和去索引，不是一次模型发布。",
+      "kind": "narrative"
+    },
+    {
+      "id": "permission",
+      "title": "普通分享和搜索发现是两种范围",
+      "body": "用户需要先选定对话并主动打开“让此链接可被发现”选项。普通分享是把链接交给知道它的人，搜索发现则把内容交给更广泛的搜索用户；开关的存在不代表所有人都理解了这个范围变化。",
+      "kind": "technical"
+    },
+    {
+      "id": "exposure",
+      "title": "已出现的敏感页面说明了风险类型",
+      "body": "报道提到求职评估、心理健康披露、犯罪陈述和公司代码等被发现的例子。它们说明公开索引可能承载什么信息，不能推出所有对话都公开，也不能推出没有主动分享的私聊自动进入搜索结果。",
+      "kind": "example"
+    },
+    {
+      "id": "limits",
+      "title": "下线不等于副本立即消失",
+      "body": "撤回功能并请求搜索引擎去索引可以阻止继续扩大范围，但缓存、转存和其他网页副本可能继续存在。报道没有把事件写成系统入侵，更准确的边界是一次扩大公开分享范围的产品实验因隐私风险被撤回。",
+      "kind": "boundary"
+    },
+    {
+      "id": "follow-up",
+      "title": "复核时要追踪权限和传播路径",
+      "body": "authorization 记录谁批准公开和可搜索，data-lineage 追踪分享链接到索引页面的传播路径，event 记录启用、撤回、去索引和删除。用户应检查旧链接、搜索缓存和撤回结果。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "一段 ChatGPT 对话怎样从分享链接进入搜索结果",
+    "question": "功能下线后，怎样判断自己的公开对话是否还留在搜索引擎或缓存中？",
+    "steps": [
+      {
+        "label": "回忆分享设置",
+        "detail": "列出曾经分享的对话，确认是否主动开启过“让此链接可被发现”，不要把普通分享和搜索发现混为一谈。",
+        "evidence": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare"
+      },
+      {
+        "label": "检查搜索结果",
+        "detail": "用对话中的独特短语和站点限定词检查搜索页面，记录 URL、摘要和缓存时间。",
+        "evidence": "https://searchengineland.com/chatgpt-kills-google-indexable-chats-459874"
+      },
+      {
+        "label": "撤回并请求去索引",
+        "detail": "关闭或删除可公开链接，并按平台提供的流程请求搜索引擎移除已经收录的页面。",
+        "evidence": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare"
+      },
+      {
+        "label": "检查副本",
+        "detail": "再次搜索转存、引用和缓存，确认撤回后是否仍有可访问副本，保留必要的处理记录。",
+        "evidence": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechRadar",
+    "url": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare"
+  },
+  "relatedSlugs": [
+    "authorization",
+    "data-lineage",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare",
+      "claim": "TechRadar 报道 OpenAI 下线了允许公开分享对话被搜索引擎发现的功能，并开始处理已有索引。",
+      "excerpt": "OpenAI has removed the ChatGPT feature allowing people to search through public conversations with a search engine; the company also began scrubbing search engine indexes."
+    },
+    {
+      "url": "https://searchengineland.com/chatgpt-kills-google-indexable-chats-459874",
+      "claim": "Search Engine Land 报道该实验功能因隐私担忧被撤回，范围限于用户主动设为可发现的公开对话。",
+      "excerpt": "OpenAI removed a feature that allowed users to make individual chats discoverable by search engines; it required users to opt in."
+    }
+  ],
+  "canonicalUrl": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare",
+  "sourceHash": "sha256:2f20a94f3e406a57b999f1cc6eb628ed947fe7f7b0a92f4eae1621310ce4ea35",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.95,
+      "evidence": [
+        "文章把公开和搜索发现作为用户授权范围来解释。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-lineage",
+      "score": 0.9,
+      "evidence": [
+        "文章追踪分享链接到搜索索引和副本的传播。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "文章区分启用、撤回、去索引和删除状态。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.techradar.com/ai-platforms-assistants/chatgpt/openai-pulls-chat-sharing-tool-after-google-search-privacy-scare",
+      "claim": "TechRadar 报道 OpenAI 下线了允许公开分享对话被搜索引擎发现的功能，并开始处理已有索引。",
+      "excerpt": "OpenAI has removed the ChatGPT feature allowing people to search through public conversations with a search engine; the company also began scrubbing search engine indexes."
+    },
+    {
+      "url": "https://searchengineland.com/chatgpt-kills-google-indexable-chats-459874",
+      "claim": "Search Engine Land 报道该实验功能因隐私担忧被撤回，范围限于用户主动设为可发现的公开对话。",
+      "excerpt": "OpenAI removed a feature that allowed users to make individual chats discoverable by search engines; it required users to opt in."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "重新打开 TechRadar 和 Search Engine Land 报道，核对功能需主动勾选、8 月 1 日下线/去索引和非全量私聊泄露边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "等待逐篇 reader-review；已按 write-like-me 与 humanizer-zh 区分分享权限、搜索索引和入侵边界。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [],
+    "notes": "复核通过：正文保留 TechRadar/Search Engine Land 报道层级，明确区分普通分享链接、用户主动勾选的“可被发现”公开范围、搜索索引/缓存/转存副本与未主动分享的私聊。没有写成所有私聊泄露或外部入侵；撤回、去索引、缓存检查和传播路径均有清楚说明。authorization、data-lineage、event、sections、explainer、schema 与 hero SVG 均核对无误，SVG 对应主动公开→搜索索引→敏感内容风险→撤回去索引→副本检查链路。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-01-openai-chatgpt-searchable-chats",
+  "promotedAt": "2026-10-05T05:17:29.709Z"
+}

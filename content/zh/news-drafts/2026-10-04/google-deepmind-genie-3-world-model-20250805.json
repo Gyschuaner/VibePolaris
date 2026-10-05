@@ -1,0 +1,186 @@
+{
+  "slug": "google-deepmind-genie-3-world-model-20250805",
+  "title": "Google DeepMind 发布 Genie 3，文本提示可生成可实时行走的世界模型",
+  "summary": "Google DeepMind 8 月 5 日公布 Genie 3：输入一段文字，就能生成可实时探索的动态环境，官方展示约 24fps、720p 和几分钟的一致性。它面向世界模拟与 Agent 训练，支持用文字改变天气、物体和角色等世界事件；目前是只给少量学者和创作者的研究预览，行动空间、多人交互、地理准确度和持续时间仍有限。",
+  "body": "8 月 5 日，Google DeepMind 公布 Genie 3，一款从文字提示生成动态交互环境的 world model。用户可以在生成的世界里实时行走，官方给出的目标表现是每秒约 24 帧、720p 分辨率，并在几分钟内保持场景大致一致。它的重点不是把一句话渲染成一段看完就结束的视频，而是让一个 Agent 在环境里行动，环境再根据动作继续变化。\n\n这类模型要解决的难题和视频生成不同。视频可以提前生成一条轨迹，Genie 3 则要在用户转身、走回原地或改变指令时继续算下一帧，同时记住之前发生过什么。Google 说它的视觉记忆可以追溯到大约一分钟前，世界在几分钟交互里保持较强一致性；这仍然是研究预览的时间尺度。\n\nGenie 3 还允许用文字触发“世界事件”：改变天气、加入物体或角色，或者让场景出现反事实变化。SIMA Agent 的测试让 Agent 向 Genie 3 发送导航动作并完成目标，模型只负责根据动作模拟未来，并不知道 Agent 的目标。这样产生的世界可以拿来训练和评估 Agent，尤其适合让它遇到现实里难以重复的情况。\n\n不过，能走动的世界不等于完整的现实模拟器。Google 列出的限制包括可直接执行的动作仍然有限、多个独立 Agent 的互动还不稳定、真实地点的地理细节不保证准确、文字经常难以清晰呈现，而且连续互动目前只有几分钟。世界模型在这些约束下更像一个可以反复试验的研究环境，而不是可替代地图、游戏引擎或现实训练场的通用系统。\n\nGenie 3 发布时只提供给小范围学者和创作者。这个限制让 Google 能收集不同领域的反馈，也给它处理开放世界生成带来的安全与责任问题留出时间。下一步的关键不是把演示画面做得更长，而是看模型能否扩大行动空间、维持更久的一致性，并让 Agent 在多人和真实地理场景中学到可迁移的经验。",
+  "publishedAt": "2025-08-05",
+  "eventDate": "2025-08-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/google-deepmind-genie-3-world-model-20250805.svg",
+    "alt": "文字提示生成可行走的动态世界，Agent 在其中导航并触发天气和物体变化",
+    "sourceUrl": "/images/news/google-deepmind-genie-3-world-model-20250805.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "interactive-world",
+      "title": "从文字生成一个可以走进去的世界",
+      "body": "Genie 3 接收文字提示后生成动态环境，用户能够实时导航，官方给出的展示指标约为 24fps、720p，并在几分钟内保持一致。它输出的是可继续交互的环境，不是一次性播放完的成片。",
+      "kind": "narrative"
+    },
+    {
+      "id": "world-model",
+      "title": "世界模型要记住动作带来的变化",
+      "body": "模型在生成下一帧时要参考此前的轨迹，用户转身、回到原地或改变指令时，场景还要看起来像同一个世界。Google 称视觉记忆可延伸到约一分钟，连续互动可保持几分钟；这不是无限时长的记忆。",
+      "kind": "technical"
+    },
+    {
+      "id": "promptable-events",
+      "title": "天气、物体和角色可以被文字改写",
+      "body": "除了导航输入，Genie 3 支持用文字改变天气、加入物体和角色等世界事件。它让 Agent 能在同一环境中练习更多“如果发生了另一件事”的情况，但可直接执行的动作范围仍然受限。",
+      "kind": "example"
+    },
+    {
+      "id": "agent-training",
+      "title": "SIMA 用导航动作测试环境是否能配合训练",
+      "body": "Google 让 SIMA Agent 向 Genie 3 发送导航动作并追踪目标。Genie 3 只根据动作模拟未来，不知道 Agent 想完成什么；这能帮助研究者观察 Agent 如何在可重复的虚拟环境中学习。",
+      "kind": "comparison"
+    },
+    {
+      "id": "limitations",
+      "title": "几分钟一致性仍不是现实世界模拟",
+      "body": "官方列出的限制包括有限动作空间、多 Agent 互动困难、真实地点的地理准确度不足、文字渲染不稳定和连续互动时间有限。World model 的演示能力不能直接替代游戏引擎、地图或现实训练。",
+      "kind": "boundary"
+    },
+    {
+      "id": "preview",
+      "title": "研究预览先交给少量学者和创作者",
+      "body": "Genie 3 首发是限量研究预览，Google 以此收集跨学科反馈并继续研究开放世界生成的责任问题。后续能否扩大测试、延长记忆和提升地理及多 Agent 可靠性，才决定它能否离开实验环境。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一个世界模型怎样给 Agent 当训练场？",
+    "question": "从文字提示到行动反馈，Genie 3 如何保持一个可探索的世界？",
+    "steps": [
+      {
+        "label": "写下世界设定",
+        "detail": "研究者用文字描述地形、天气、角色或历史场景，模型把描述变成一套动态环境。",
+        "evidence": "Google DeepMind Genie 3 capabilities"
+      },
+      {
+        "label": "实时生成下一帧",
+        "detail": "用户或 Agent 发出导航动作后，模型结合之前的轨迹继续生成画面，目标是维持约 24fps 的交互感。",
+        "evidence": "Genie 3 real-time world generation"
+      },
+      {
+        "label": "记住局部世界",
+        "detail": "环境保留近期的视觉信息，让用户回头时仍看见相近的建筑、道路或物体；官方说视觉记忆约可追溯一分钟。",
+        "evidence": "Google DeepMind environmental consistency discussion"
+      },
+      {
+        "label": "触发世界事件",
+        "detail": "研究者可以用文字改变天气、加入对象或角色，制造 Agent 平时难以反复遇到的反事实场景。",
+        "evidence": "Genie 3 promptable world events"
+      },
+      {
+        "label": "评估 Agent 行为",
+        "detail": "像 SIMA 一样，Agent 发送动作、接收环境反馈并尝试完成目标；研究者观察哪些能力可以迁移到新的场景。",
+        "evidence": "SIMA compatibility experiment"
+      }
+    ]
+  },
+  "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "benchmark",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/",
+      "claim": "Google DeepMind 官方文章确认 Genie 3 的 8 月 5 日日期、24fps/720p/几分钟一致性、可提示世界事件、SIMA 测试、限制和限量研究预览。",
+      "excerpt": "Google DeepMind, August 5, 2025."
+    }
+  ],
+  "canonicalUrl": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/",
+  "sourceHash": "sha256:aa1c051af9216d9cd0d24db959f6842a6b9c27b9f370104c757a54c6ac279e0c",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.84,
+      "evidence": [
+        "正文解释文本提示如何驱动动态世界生成。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文说明 SIMA 如何向 Genie 3 发送导航动作并在环境中学习。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.79,
+      "evidence": [
+        "正文把 24fps、720p 和几分钟一致性作为官方展示指标，并保留研究预览边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.83,
+      "evidence": [
+        "正文区分 8 月 5 日研究发布、限量预览和仍待验证的扩展能力。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/",
+      "claim": "Google DeepMind official announcement dated August 5, 2025.",
+      "excerpt": "Google DeepMind, August 5, 2025."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Google DeepMind 官方文章的 2025 年 8 月 5 日日期、文本提示、24fps、720p、几分钟一致性、promptable world events、SIMA 导航测试、动作空间/多 Agent/地理/文字/时长限制和少量学者与创作者研究预览；没有写成普通视频生成器、AGI 或可替代现实模拟器。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "已按 write-like-me 与 humanizer-zh 以一次 Agent 在虚拟世界中的行动链组织正文，区分 world model、视频生成、研究预览和官方限制，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-05，唯一主来源为 Google DeepMind 官方文章；正文把 Genie 3 归为 world model，并用实时动作、环境记忆和反馈区分普通一次性视频生成。",
+      "24fps、720p 和几分钟一致性被明确归为官方展示能力；约一分钟视觉记忆与几分钟持续互动分开表述，没有外推为无限时长或现实世界精确模拟。",
+      "promptable world events（天气、物体和角色变化）与 Agent 直接动作边界已分开；SIMA 只发送导航动作，Genie 3 模拟未来且不知道 Agent 目标，正文没有把测试写成通用训练效果证明。",
+      "有限动作空间、多 Agent 交互、真实地点地理准确度、文字渲染和持续时间限制均被保留；限量研究预览只面向少量学者与创作者。data-motion explainer、sections、relatedSlugs、空的 relatedArticleSlugs、sources/evidence、schema 和事件 SVG 一致。"
+    ],
+    "notes": "读者审阅通过：中文正文自然，零基础读者可以理解世界模型如何根据动作继续生成环境，也能区分演示能力、Agent 研究用途和官方列出的限制。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-05-genie-3",
+  "promotedAt": "2026-10-05T05:17:31.592Z"
+}

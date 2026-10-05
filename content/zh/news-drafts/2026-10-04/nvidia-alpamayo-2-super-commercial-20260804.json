@@ -1,0 +1,202 @@
+{
+  "slug": "nvidia-alpamayo-2-super-commercial-20260804",
+  "title": "NVIDIA 开放 Alpamayo 2 Super 商用许可：把自动驾驶推理从云端带到车端",
+  "summary": "NVIDIA 于 2026 年 8 月 4 日宣布 Alpamayo 2 Super 可按 OpenMDW-1.1 许可商用，并把它定位为面向机器人出租车和自动驾驶的开放推理模型。模型一次输出轨迹、因果链、动作意图、自动标注和视觉问答，NVIDIA 的 benchmark 结果需与真实道路安全验证分开看。",
+  "body": "8 月 4 日，NVIDIA 宣布 Alpamayo 2 Super 面向机器人出租车和自动驾驶车辆开放商用。它不是只输出“前方有车”的感知模型，而是试图把场景理解、因果推理、轨迹规划和训练数据标注放进一个基础模型。\n\n这次发布最实际的变化是许可。Alpamayo 2 Super 在 Hugging Face 上以 OpenMDW-1.1 发布，许可覆盖微调、派生模型和商业再分发。NVIDIA 说此前 Alpamayo 系列更偏研究用途，现在整个系列都可以商用。对车企和供应商来说，这意味着可以把自己的车队数据和驾驶策略放进适配流程，保留基础设施控制权；它不等于模型已经通过某个地区的道路监管认证。\n\n模型每次驾驶情境会输出五类结果：车辆计划轨迹、解释决策的因果链、让车让行/变道/停车等意图、用于训练验证的自动标注，以及把答案对应到相机区域的视觉问答。把“观察到什么”和“决定做什么”连在一起，方便开发者检查和批评模型，但可解释轨迹仍然需要和真实传感器、控制器以及安全冗余一起验证。\n\nNVIDIA 称 Alpamayo 2 Super 在 LingoQA 和公司评测的自动驾驶 benchmark 中领先，并报告相比 Qwen2.5-VL 72B、Gemini 2.5 Pro 和 GPT-4o 的分差。这些数字属于 NVIDIA 测试，不能直接等同于在不同城市、天气、传感器配置和边缘硬件上的驾驶安全表现。自动驾驶的长尾风险也不会因为模型多输出一段因果文字就消失。\n\nAlpamayo 2 Super 的路线是“云端大模型生成推理与训练材料，车端小模型做实时推理”。NVIDIA 说它可以生成推理轨迹、合成训练数据和教师输出，再把结果蒸馏给更高效的模型。这个工作流让开放模型更接近实际研发，但从下载模型到上车仍隔着数据质量、仿真、道路测试、监管和故障安全等环节。",
+  "publishedAt": "2026-08-04",
+  "eventDate": "2026-08-04",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/nvidia-alpamayo-2-super-commercial-20260804.svg",
+    "alt": "NVIDIA 开放 Alpamayo 2 Super 商用许可：把自动驾驶推理从云端带到车端 的事件关系图；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/nvidia-alpamayo-2-super-commercial-20260804.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "commercial-license",
+      "title": "商用许可是这次发布的第一变化",
+      "body": "OpenMDW-1.1 允许微调、派生模型和商业再分发，减少车企使用开放模型时的许可障碍。",
+      "kind": "narrative"
+    },
+    {
+      "id": "five-outputs",
+      "title": "模型同时输出轨迹、因果链和训练标注",
+      "body": "五类输出把规划、意图、解释、自动标注和视觉问答连起来，但仍要由完整车辆系统验证。",
+      "kind": "technical"
+    },
+    {
+      "id": "cloud-to-car",
+      "title": "云端推理和车端实时模型分工",
+      "body": "云端模型可以生成教师输出和合成训练数据，再把能力蒸馏到更高效的车端模型。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "NVIDIA benchmark 不等于道路安全认证",
+      "body": "公司测试中的 LingoQA 分数和对比差值需要与真实城市、天气、传感器和监管验证分开。",
+      "kind": "boundary"
+    },
+    {
+      "id": "inspectable",
+      "title": "可检查的决策是工程工具",
+      "body": "因果链和视觉 grounding 让开发者能追问模型看到了什么，但仍不能替代冗余控制和故障安全。",
+      "kind": "technical"
+    }
+  ],
+  "explainer": {
+    "variant": "robot-safety",
+    "title": "自动驾驶模型怎样从“会推理”走到“可上车”？",
+    "question": "为什么开放权重、因果链和 benchmark 仍然不能直接等于道路安全？",
+    "steps": [
+      {
+        "label": "读取全景相机",
+        "detail": "模型融合前后左右摄像头，先理解车道、并线、路口和其他参与者。",
+        "evidence": "NVIDIA Alpamayo 2 Super"
+      },
+      {
+        "label": "输出行动计划",
+        "detail": "模型给出轨迹和让行、变道、停车等 meta-action，并记录因果链。",
+        "evidence": "NVIDIA official blog"
+      },
+      {
+        "label": "生成训练材料",
+        "detail": "因果链、视觉问答和自动标注可以帮助训练更高效的专用模型。",
+        "evidence": "NVIDIA official blog"
+      },
+      {
+        "label": "车端验证与监管",
+        "detail": "蒸馏后的模型仍要经过仿真、道路测试、故障安全和监管流程，benchmark 不能替代这些步骤。",
+        "evidence": "editorial boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "NVIDIA",
+    "url": "https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "benchmark",
+    "event",
+    "tools",
+    "dataset-data"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/",
+      "claim": "NVIDIA 宣布 Alpamayo 2 Super 按 OpenMDW-1.1 开放商用，支持微调、派生模型和商业再分发。",
+      "excerpt": "Alpamayo 2 Super is available on Hugging Face under OpenMDW-1.1."
+    },
+    {
+      "url": "https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/",
+      "claim": "NVIDIA 描述模型的五类输出，包括轨迹、因果链、meta-action、自动标注和视觉问答。",
+      "excerpt": "For each driving situation, Alpamayo 2 Super can produce five tightly coupled outputs."
+    },
+    {
+      "url": "https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/",
+      "claim": "NVIDIA 说明 benchmark 和云端蒸馏路线，但这些是公司评测与产品路线表述。",
+      "excerpt": "Alpamayo 2 Super ranks first on LingoQA ... in NVIDIA testing."
+    },
+    {
+      "url": "https://huggingface.co/nvidia/Alpamayo-2-Super",
+      "claim": "Hugging Face 模型页提供 Alpamayo 2 Super 的权重和运行入口。",
+      "excerpt": "NVIDIA Alpamayo 2 Super"
+    }
+  ],
+  "canonicalUrl": "https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/",
+  "sourceHash": "sha256:ce3bad456877ab133d41ace33bbae2573b049ae0e2d5fe3c2b6e191fc863976b",
+  "status": "published",
+  "discoveredAt": "2026-10-04T09:35:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 agent 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 benchmark 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 event 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 tools 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.96,
+      "evidence": [
+        "正文解释新闻中的 dataset-data 关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/",
+      "claim": "NVIDIA 将开放模型定位为云端教师和车端模型的研发组件。",
+      "excerpt": "The model supports cloud-to-car workflows."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T09:35:00Z",
+    "method": "source",
+    "notes": "按官方公告、监管机构披露、政府文件和可信新闻核对事件日、报道日、发布状态与事实边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T09:35:00Z",
+    "notes": "逐篇手写正文，按 write-like-me 与 humanizer-zh 检查表达；区分政策草案、公司自述、监管披露、媒体报道和已完成事实。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T09:45:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件组织段落并适合零基础读者。",
+      "eventDate 与 publishedAt 与原始公告或媒体报道日期一致。",
+      "来源卡片保留原始链接，并区分官方事实、媒体转述、公司自述和未确认信息。",
+      "SVG/讲解与正文一致，词条联动只使用正文解释过的公开词条。"
+    ],
+    "notes": "读者复审通过：商用许可、OpenMDW-1.1、车端/云端路线清楚；性能 benchmark 标为 NVIDIA 测试，未写成监管认证或驾驶安全保证。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-04",
+  "fingerprint": "sha256:c88c0cbce812cef7c0d11b653734adc036dda3439c90fe85c064c785a2674fa1",
+  "promotedAt": "2026-10-03T20:31:11.515Z"
+}

@@ -1,0 +1,162 @@
+{
+  "slug": "apple-reference-image-provenance-20260909",
+  "title": "Apple 试图让 iPhone 照片带上来源证明：Reference Image 把拍摄数据接入图像链路",
+  "summary": "TechCrunch 于 2026-09-09 报道 Apple Reference Image：iPhone 18 Pro 相机会捕捉带签名的传感器数据，Private Cloud Compute 再把它处理成 Photos 中不可篡改的图像版本，并计划提供 API、支持 SynthID。它能增加来源证据，不等于自动判定每张图片真实，也不能阻止截图、二次拍摄或后期编辑。",
+  "body": "TechCrunch 在 9 月 9 日报道了 Apple 在秋季产品发布中介绍的 Reference Image。设想是由 iPhone 18 Pro 相机捕捉带签名的传感器数据，随后交给 Private Cloud Compute 处理，在 Photos 中形成一个不可篡改的图像版本。用户可以用它比较不同版本，开发者也能通过 API 读取相关信息。\n\n这条产品新闻和“给 AI 图片打标签”不完全一样。Reference Image 更像一条来源链：相机产生传感器记录，系统把记录与图像绑定，再让应用显示或验证它。Apple 还说会支持 SynthID，这意味着不同的来源标记机制可能在同一张图上并存。它提升的是“这份文件从哪里来”的可检查性，不是对画面内容做事实判断。\n\nPrivate Cloud Compute 被放在中间，是为了在处理需要云端能力时保留隐私边界。报道提到，原始传感器数据不会以普通照片的方式长期存储，系统会输出可验证的图像结果。具体加密、密钥轮换和第三方验证方式，需要等开发者文档和安全审计才能完全判断。\n\n这类来源证明也有明显局限。图片可以被截屏、翻拍、裁剪，旧照片也可能没有传感器签名；拥有签名只能说明文件经过某条设备链路，不代表画面中的人物、地点或事件真实。任何新闻编辑仍需把图像证明和现场证人、时间线、原始文件、反向搜索放在一起。\n\n因此，Reference Image 的新闻价值是把“照片是不是 AI 生成”转成一个更具体的数据验证问题：设备能否提供可验证来源，平台能否保留它，编辑和用户能否看懂它。后续要看 API 是否被广泛采用，以及没有来源证明的图片会不会被错误地当成假图。",
+  "publishedAt": "2026-09-09",
+  "eventDate": "2026-09-09",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/apple-reference-image-provenance-20260909.svg",
+    "alt": "Apple 试图让 iPhone 照片带上来源证明：Reference Image 把拍摄数据接入图像链路；VibePolaris 自制可追溯示意图。",
+    "sourceUrl": "/images/news/apple-reference-image-provenance-20260909.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "feature",
+      "title": "Reference Image 记录的是来源链",
+      "body": "相机捕捉签名传感器数据，云端处理后把它和 Photos 中的图像版本绑定。产品目标是增加可检查的来源信息。",
+      "kind": "narrative"
+    },
+    {
+      "id": "not-truth",
+      "title": "来源证明不等于内容真实性",
+      "body": "签名能说明文件经过某条设备链路，不能证明人物、地点或事件真实，也不能覆盖没有签名的旧照片。",
+      "kind": "boundary"
+    },
+    {
+      "id": "private-cloud",
+      "title": "Private Cloud Compute 放在隐私和验证之间",
+      "body": "Apple 说处理会经过 Private Cloud Compute，并输出可验证结果。加密、密钥管理和第三方审计仍需开发者文档来确认。",
+      "kind": "technical"
+    },
+    {
+      "id": "apis",
+      "title": "API 决定它能否走出 Photos",
+      "body": "如果平台和编辑工具能读取来源信息，证明才可能进入发布流程；如果只有一个应用能看见，社会效果会很有限。",
+      "kind": "comparison"
+    },
+    {
+      "id": "failure-modes",
+      "title": "截图和翻拍会打断链路",
+      "body": "截屏、二次拍摄、裁剪和后期编辑都可能让原始来源消失。编辑需要把来源卡片和其他证据放在一起。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一张照片的来源证明怎样被验证？",
+    "question": "把拍摄、签名、处理、展示和人工核查连起来，才能理解 provenance 的作用。",
+    "steps": [
+      {
+        "label": "捕捉传感器记录",
+        "detail": "相机在拍摄时产生带签名的设备和传感器数据。",
+        "evidence": "Apple Reference Image report"
+      },
+      {
+        "label": "绑定图像版本",
+        "detail": "Private Cloud Compute 处理记录，形成 Photos 中可验证的图像版本。",
+        "evidence": "Private Cloud Compute workflow"
+      },
+      {
+        "label": "通过 API 读取",
+        "detail": "应用和平台读取来源卡片，让编辑知道文件是否来自这条链路。",
+        "evidence": "Developer API reporting"
+      },
+      {
+        "label": "结合现场证据",
+        "detail": "签名不判断画面真伪，仍需时间线、原始文件和人工核查。",
+        "evidence": "Provenance is not truth"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/"
+  },
+  "relatedSlugs": [
+    "data-lineage",
+    "data-validation",
+    "data-quality",
+    "api",
+    "auth",
+    "context",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "claim": "TechCrunch 于 2026-09-09 报道 Apple Reference Image，称 iPhone 18 Pro 会捕捉带签名的传感器数据并形成可验证图像版本。",
+      "excerpt": "Apple has a new way to prove your iPhone photos aren’t AI slop, using signed sensor data and Reference Image."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "claim": "报道说 Private Cloud Compute 参与把传感器记录处理成 Photos 中不可篡改的图像，并计划提供 API。",
+      "excerpt": "Private Cloud Compute turns the capture into an immutable image in Photos, with APIs for developers."
+    },
+    {
+      "url": "https://www.apple.com/newsroom/2026/09/introducing-apple-watch-series-12-with-the-all-new-health-sensing-system/",
+      "claim": "Apple 同日产品公告将 Reference Image 与新设备的 Secure Exclave、端到端保护等隐私硬件叙事放在一起。",
+      "excerpt": "Apple describes Secure Exclave and privacy protections for new device intelligence features."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "claim": "来源证明只表示文件经过一条设备链路，不能自动证明画面中的人物、地点或事件真实。",
+      "excerpt": "A provenance signal can attest to how a file was captured, but it is not a truth detector."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop",
+  "sourceHash": "sha256:ec91137c8b84f047a230e9018e3da286b746c90a429399574cafb808e57ebd85",
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:55:00Z",
+  "relationSuggestions": [],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "claim": "TechCrunch 于 2026-09-09 报道 Apple Reference Image，称 iPhone 18 Pro 会捕捉带签名的传感器数据并形成可验证图像版本。",
+      "excerpt": "Apple has a new way to prove your iPhone photos aren’t AI slop, using signed sensor data and Reference Image."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "claim": "报道说 Private Cloud Compute 参与把传感器记录处理成 Photos 中不可篡改的图像，并计划提供 API。",
+      "excerpt": "Private Cloud Compute turns the capture into an immutable image in Photos, with APIs for developers."
+    },
+    {
+      "url": "https://www.apple.com/newsroom/2026/09/introducing-apple-watch-series-12-with-the-all-new-health-sensing-system/",
+      "claim": "Apple 同日产品公告将 Reference Image 与新设备的 Secure Exclave、端到端保护等隐私硬件叙事放在一起。",
+      "excerpt": "Apple describes Secure Exclave and privacy protections for new device intelligence features."
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "claim": "来源证明只表示文件经过一条设备链路，不能自动证明画面中的人物、地点或事件真实。",
+      "excerpt": "A provenance signal can attest to how a file was captured, but it is not a truth detector."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:55:00Z",
+    "method": "source",
+    "notes": "逐条核对原文发布日期、事件边界和来源口径；把公司自述、媒体报道、调查动作与条件模型明确分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:55:00Z",
+    "notes": "按独立新闻事件成篇，正文区分已发生事实、来源自述、个人判断和仍待验证的结果。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T23:52:43Z",
+    "questions": [],
+    "notes": "新闻主线是 TechCrunch 报道 Apple Reference Image 的来源证明链路。正文把签名传感器数据、Private Cloud Compute、API 与 SynthID 作为报道/产品设想，并明确来源证明不等于内容真实性，截图、翻拍和后期编辑会中断链路；日期、来源卡片、词条、explainer 与 SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-09",
+  "promotedAt": "2026-10-02T23:54:59.715Z"
+}

@@ -17,6 +17,7 @@ function fixture() {
     title: "示例",
     summary: "示例摘要",
     body: "示例正文",
+    eventDate: "2026-09-29",
     publishedAt: "2026-09-29",
     isExample: true,
     source: { name: "VibePolaris", url: "/about" },
@@ -28,8 +29,12 @@ function fixture() {
     title: "已核对的更新",
     summary: "事实核对后的摘要",
     body: "事实核对后的正文",
+    eventDate: "2026-09-30",
     publishedAt: "2026-09-30",
     isExample: false,
+    hero: { url: "/images/news/test.svg", alt: "测试头图", sourceUrl: "/images/news/test.svg", license: "VibePolaris 自制插图" },
+    sections: [{ id: "happened", title: "发生了什么", body: "事件正文" }, { id: "read", title: "怎样理解", body: "解释正文", kind: "aside" }],
+    explainer: { variant: "secure-memory", title: "怎样读", question: "先看流程。", steps: [{ label: "设备", detail: "设备持钥。" }, { label: "云端", detail: "云端处理。" }] },
     source: { name: "Example Source", url: "https://example.com/article" },
     canonicalUrl: "https://example.com/article?utm_source=test",
     sourceHash: `sha256:${"a".repeat(64)}`,
@@ -38,6 +43,9 @@ function fixture() {
     relatedSlugs: ["grounding"],
     relationSuggestions: [{ kind: "term", slug: "grounding", score: 0.9, evidence: ["标题命中"], method: "lexical", status: "confirmed" }],
     relatedArticleSlugs: [],
+    sources: [{ url: "https://example.com/article", claim: "可核验事实", excerpt: "来源摘录" }],
+    modelReview: { decision: "publish", checkedAt: "2026-09-30T12:00:00Z" },
+    mechanicalErrors: [],
   }));
   return { repository, draftPath };
 }

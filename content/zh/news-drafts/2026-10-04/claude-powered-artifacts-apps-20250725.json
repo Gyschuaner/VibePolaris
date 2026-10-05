@@ -1,0 +1,250 @@
+{
+  "slug": "claude-powered-artifacts-apps-20250725",
+  "title": "Claude 把 Artifacts 变成可分享的 AI 应用：写完代码就能托管",
+  "summary": "Anthropic 在 7 月 25 日把 Claude Artifacts 推向“可分享应用”方向：Claude 能生成真实代码、调用自身 API、处理文件并生成 React 界面，访客用自己的 Claude 账号承担用量。首发 beta 仍没有外部 API 和持久化存储，链接分享不等于获得无限权限。",
+  "body": "7 月 25 日，Anthropic 宣布 Claude 可以在 Artifacts 中直接构建、托管和分享交互式 AI 应用。变化的重点不是多了一个聊天按钮，而是 Claude 生成的代码可以调用 Claude，把原本一次性的内容草稿变成别人打开链接就能使用的小应用。\n\nAnthropic 给出的运行方式很具体：使用者用自己的 Claude 账号登录，产生的 API 使用量计入自己的订阅，应用创建者不为访客调用付费，也不需要替访客管理 API key。对分享者来说，这解决了“应用一旦公开，谁来承担模型调用费用和密钥安全”的一大块摩擦；对使用者来说，登录和订阅资格则成为使用应用的前置条件。\n\nArtifacts 可以写真实代码，处理文件并生成 React 界面。官方举的例子包括会记住对话的游戏角色、根据学习水平调整内容的学习工具、上传 CSV 后用自然语言追问的数据分析应用，以及串联多次 Claude 调用的 agent workflow。Claude 还可以根据反馈调试和修改自己的代码，应用完成后通过链接分享，不必另行搭建部署流程。\n\n这并不等于一个没有边界的应用平台。发布说明把当时的 beta 限定为 Free、Pro 和 Max 计划，并列出几个限制：暂不支持外部 API 调用，没有持久化存储，只能使用文本补全 API。也就是说，应用可以在 Claude 这个运行环境里组织交互和模型调用，却不能因此自动获得数据库、第三方服务或长期保存用户资料的权限。页面后来记录了 7 月 31 日向 Team 和 Enterprise 扩展的更新，那是后续变化，不应倒填到 7 月 25 日的初始范围。\n\n这条新闻值得关注的地方，是“生成一个结果”与“交付一个可使用的工具”之间的距离被缩短了。真正要评估的仍是应用代码做了什么、用户授权了什么、数据在哪里处理，以及达到使用限制后会发生什么。链接能分享，不代表应用拥有外部世界的权限；模型会写代码，也不代表每段代码都该直接运行。",
+  "publishedAt": "2025-07-25",
+  "eventDate": "2025-07-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/claude-powered-artifacts-apps-20250725.svg",
+    "alt": "Claude Artifacts 从一次性内容走向可分享应用，代码、Claude 调用和用户授权仍在同一边界内。",
+    "sourceUrl": "/images/news/claude-powered-artifacts-apps-20250725.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "product-shift",
+      "title": "Artifacts 变成了什么",
+      "body": "Anthropic 在 7 月 25 日宣布，Claude 可以在 Artifacts 中构建、托管和分享交互式 AI 应用。生成的代码可以调用 Claude，因此产物不再只是一次性文本或界面预览。",
+      "kind": "narrative"
+    },
+    {
+      "id": "account-economics",
+      "title": "分享时谁承担模型用量",
+      "body": "访客用自己的 Claude 账号认证，API 使用量计入自己的订阅；创建者不为访客调用付费，也无需管理 API key。这把账号授权和成本边界直接放进了产品流程。",
+      "kind": "comparison"
+    },
+    {
+      "id": "code-and-interfaces",
+      "title": "它能做哪些应用",
+      "body": "Claude 可以写真实代码、处理文件并生成 React 界面。官方举例包括会记住对话的游戏角色、个性化学习工具、CSV 数据分析和串联多次 Claude 调用的 agent workflow。",
+      "kind": "technical"
+    },
+    {
+      "id": "limits",
+      "title": "首发 beta 仍有明确限制",
+      "body": "当时的 beta 面向 Free、Pro 和 Max 计划，暂不支持外部 API，没有持久化存储，只能使用文本补全 API。7 月 31 日向 Team 和 Enterprise 扩展是后续更新，不能倒填为首发范围。",
+      "kind": "boundary"
+    },
+    {
+      "id": "permission-check",
+      "title": "能分享不等于能做任何事",
+      "body": "应用能否访问数据、调用服务、保存结果，仍取决于平台提供的权限和用户授权。评估这项产品时，应该先看代码、数据处理、用量限制和停止路径，再看分享链接有多方便。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "creator-ai",
+    "title": "从一句描述到可分享应用，中间发生了什么？",
+    "question": "把代码生成、模型调用、账号授权和平台限制拆开，理解 Claude Artifacts 的产品变化。",
+    "steps": [
+      {
+        "label": "描述想做的工具",
+        "detail": "用户先用自然语言说明应用目标，Claude 根据反馈生成并修改真实代码。",
+        "evidence": "Getting started"
+      },
+      {
+        "label": "把 Claude 接进界面",
+        "detail": "Artifact 内的代码可以调用 Claude，处理文本或上传文件并把结果呈现为交互界面。",
+        "evidence": "Build and host Claude-powered apps"
+      },
+      {
+        "label": "分享链接并认证",
+        "detail": "访客通过自己的 Claude 账号使用应用，调用量计入自己的订阅，不把创建者的 API key 暴露出去。",
+        "evidence": "Authentication and usage economics"
+      },
+      {
+        "label": "检查平台边界",
+        "detail": "外部 API、持久化存储和可用计划仍受 beta 限制；分享完成后仍要验证数据和权限。",
+        "evidence": "Current limitations"
+      }
+    ]
+  },
+  "source": {
+    "name": "Claude by Anthropic",
+    "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "authorization",
+    "context",
+    "component",
+    "llm",
+    "event",
+    "citation"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "Anthropic 官方博客在 2025 年 7 月 25 日宣布，可在 Claude 中构建、托管并分享交互式 AI 应用。",
+      "excerpt": "Claude by Anthropic，Product announcements，July 25, 2025。"
+    },
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "官方说明访客使用自己的 Claude 账号认证，API 使用量计入其订阅，创建者无需为访客用量付费，也不需要管理 API keys。",
+      "excerpt": "Build and host Claude-powered apps 段落。"
+    },
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "官方说明 Artifacts 可以处理文件、生成 React 界面和调用 Claude；当时的限制包括暂不支持外部 API、没有持久化存储、仅支持文本补全 API。",
+      "excerpt": "What you can do 与 Current limitations 段落。"
+    },
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "页面记录 7 月 31 日才向 Team 和 Enterprise 计划开放，是 7 月 25 日 beta 范围之后的更新。",
+      "excerpt": "页面顶部 Update: Now available on Team and Enterprise plans (July 31, 2025)。"
+    }
+  ],
+  "canonicalUrl": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+  "sourceHash": "sha256:1ea0b7446db3eaa48f016d0e9732d694fb2df3d6411c442ed77d8a05cb54a890",
+  "status": "published",
+  "discoveredAt": "2026-10-04T13:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "文章用 agent workflow 说明 Artifacts 可以组织多次 Claude 调用完成复杂任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "文章把外部 API 暂不可用与 Claude 内部调用能力区分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "文章解释访客账号认证、订阅用量和 API key 管理的授权边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "文章说明上传文件和交互应用如何把用户输入带入 Claude 的处理上下文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "component",
+      "score": 0.9,
+      "evidence": [
+        "文章以 React 界面和可分享 Artifact 说明代码组件如何组成应用。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.9,
+      "evidence": [
+        "文章把应用体验背后的 Claude 调用与一般界面生成区分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "文章以 Anthropic 2025-07-25 产品公告为时间轴起点，并标出 7 月 31 日后续扩展。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.9,
+      "evidence": [
+        "文章保留 Anthropic 官方产品说明作为可追溯引用卡片。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "Anthropic 官方博客在 2025 年 7 月 25 日宣布，可在 Claude 中构建、托管并分享交互式 AI 应用。",
+      "excerpt": "Claude by Anthropic，Product announcements，July 25, 2025。"
+    },
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "官方说明访客使用自己的 Claude 账号认证，API 使用量计入其订阅，创建者无需为访客用量付费，也不需要管理 API keys。",
+      "excerpt": "Build and host Claude-powered apps 段落。"
+    },
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "官方说明 Artifacts 可以处理文件、生成 React 界面和调用 Claude；当时的限制包括暂不支持外部 API、没有持久化存储、仅支持文本补全 API。",
+      "excerpt": "What you can do 与 Current limitations 段落。"
+    },
+    {
+      "url": "https://claude.com/blog/claude-powered-artifacts?asuniq=345a540b",
+      "claim": "页面记录 7 月 31 日才向 Team 和 Enterprise 计划开放，是 7 月 25 日 beta 范围之后的更新。",
+      "excerpt": "页面顶部 Update: Now available on Team and Enterprise plans (July 31, 2025)。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T13:30:00Z",
+    "method": "source",
+    "notes": "核对 Anthropic 官方博客正文、首发 beta 计划范围与限制，并把 7 月 31 日 Team/Enterprise 更新留作后续日期边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T13:30:00Z",
+    "notes": "按产品公告独立成稿，区分可分享应用、账号用量、权限与首发限制，等待读者审阅。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T11:50:00Z",
+    "questions": [
+      "新闻主线清楚，中文适合零基础读者，正文没有论文堆砌或明显模板化表达。",
+      "eventDate/publishedAt 均为 2025-07-25，与对应官方发布日期一致。",
+      "Qwen 的 235B 总参数、22B 激活、262,144 token 和 MMLU/GPQA/AIME/LiveCodeBench/BFCL 分数均保留官方模型卡/评测口径，明确需要独立复测；Claude Artifacts 的 7/25 beta 范围、账号用量、外部 API/持久化限制与 7/31 Team/Enterprise 扩展边界清楚。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：两篇新闻事实、数字归属、beta 范围与独立验证边界清楚，无需修改正文。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-25",
+  "fingerprint": "sha256:1ea0b7446db3eaa48f016d0e9732d694fb2df3d6411c442ed77d8a05cb54a890",
+  "promotedAt": "2026-10-04T09:39:08.491Z"
+}

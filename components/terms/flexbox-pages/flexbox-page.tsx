@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function FlexboxTermPage() {
-  return <Article slug="flexbox" title="弹性布局" subtitle="Flexbox · 让同一条主轴自己分配空间" sources={flexboxSources} sections={sections} hero={<FlexboxHero />} intro={<>一排按钮、头像和操作项，宽度总在变：桌面上想留出呼吸感，手机上又不能把字挤成一条缝。<strong>Flexbox 先沿一条主轴算出项目的基准尺寸和剩余空间，再按 grow、shrink、对齐和换行规则重新安排它们。</strong>它解决的是“一维的一组东西怎样相处”，不是把所有页面都变成可伸缩的魔法盒。</>}> 
+  return <Article slug="flexbox" title="弹性布局" subtitle="Flexbox · 让同一条主轴自己分配空间" sources={flexboxSources} sections={sections} hero={<FlexboxHero />} intro={<>一排按钮、头像和操作项，宽度总在变：桌面上想留出呼吸感，手机上又不能把字挤成一条缝。<strong>Flexbox 先沿一条主轴算出项目的基准尺寸和剩余空间，再按 grow、shrink、对齐和换行规则重新安排它们。</strong>它解决的是“一维的一组东西怎样相处”，不是把所有页面都变成可伸缩的魔法盒。</>}>
     <ArticleSection id="flexbox-definition-section" title="先把一维说清楚">
       <p id="flex-definition" className="vp-citation-target">Flexbox 是 CSS 的一维布局模型。这里的“一维”不是说页面只能有一行，而是一次只沿一个方向结算：可以是一条横向主轴，也可以是一条纵向主轴；另一条方向叫交叉轴，用来做对齐。<Cite id="flex-definition" sources={flexboxSources} /></p>
       <p id="flex-axes" className="vp-citation-target">容器的 <code>flex-direction</code> 决定主轴。设成 <code>row</code>，项目沿行方向排；设成 <code>column</code>，同一套“放进去、算空间、再分配”的逻辑会转到列方向。于是 <code>justify-content</code> 不是永远等于“水平对齐”，它只负责主轴；交叉轴通常看 <code>align-items</code>。<Cite id="flex-axes" sources={flexboxSources} /></p>

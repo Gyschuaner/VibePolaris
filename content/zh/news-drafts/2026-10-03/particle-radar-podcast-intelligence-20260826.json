@@ -1,0 +1,234 @@
+{
+  "slug": "particle-radar-podcast-intelligence-20260826",
+  "title": "Particle 推出 Radar：把播客里的语音、人物和时间点交给 AI 代理检索",
+  "summary": "Particle 于 2026 年 8 月 26 日发布 Radar 播客搜索产品：把 13 万多个播客转录并加上说话人、实体和时间戳元数据，每天新增约 2 万集，还通过 API 和 MCP 让 AI 代理调用音频情报。它解决的是“代理看不见音频”的检索问题，不是自动判断内容真伪。",
+  "body": "8 月 26 日，Particle 在自己的 Podcast Intelligence Blog 发布 Radar，TechCrunch 同日报道。Radar 把播客音频转成可搜索的文字和结构化元数据：用户可以按人物、公司、产品、主题、关键词或语义查找具体出现的位置，也可以订阅 Slack、邮件或 webhook 提醒。Particle 称其索引超过 13 万个播客，每天新增约 2 万集；这些规模数字属于公司产品介绍，需要和独立使用效果分开看。\n\nRadar 的核心不是“又一个摘要器”，而是把音频变成代理能够调用的检索层。播客原本可以被网页搜索找到标题和简介，却很难直接知道某个人在第几分钟说了什么。Radar 提供说话人标签、实体识别、时间戳片段和上下文，AI 代理可以通过 API 或 MCP 查询，再把相关片段交给人或其他工具复核。\n\n这会改变哪些工作？记者可以追踪嘉宾在多个节目中的说法，研究人员可以观察一个概念何时开始扩散，投资和品牌团队可以监测公司或赞助商的出现。提醒系统还可以把“出现一次”和“跨多个节目突然增加”分开。无论场景是什么，用户仍需要回到原始音频或逐字稿，确认转录、说话人和语境没有误判。\n\n产品还包含广告和赞助情报、主题趋势、听众评价以及可播放的时间戳片段。商业版提供更细的品牌适配、政治偏向分析和受众估计等功能；这些是产品能力列表，不代表它们已经成为公认的测量标准。Radar 的 API/MCP 入口也意味着权限、速率、版权和数据留存会成为工程问题。\n\n8 月 26 日的新闻重点是“音频成为代理可用的数据层”。它与文本搜索不是替代关系：转录只是把声音变成可索引对象，理解还需要实体、时间、说话人和上下文，最终判断仍然要让人能追溯到原始片段。未来 Particle 扩展到 YouTube 视频和新闻音频的计划，也应按后续产品事实单独记录。",
+  "eventDate": "2026-08-26",
+  "publishedAt": "2026-08-26",
+  "hero": {
+    "url": "/images/news/particle-radar-podcast-intelligence-20260826.svg",
+    "alt": "播客波形经过转录、实体索引和时间戳后通过 API 与 MCP 交给 AI 代理",
+    "sourceUrl": "/images/news/particle-radar-podcast-intelligence-20260826.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "launch",
+      "title": "Radar 在 8 月 26 日发布了什么",
+      "body": "Particle 同日发布产品页，TechCrunch 介绍其把播客转录为带说话人、实体和时间戳的数据，并提供搜索、提醒、片段、API 和 MCP。",
+      "kind": "narrative"
+    },
+    {
+      "id": "audio-layer",
+      "title": "为什么代理需要音频索引",
+      "body": "传统网页搜索多半只看节目标题和简介；Radar 把某个人在第几分钟说了什么变成可检索结果，让代理能调用音频而不是只看到文本网页。",
+      "kind": "technical"
+    },
+    {
+      "id": "human-check",
+      "title": "检索结果仍需回到原声",
+      "body": "转录、说话人识别和实体标注可能出错，提醒也可能脱离语境。时间戳和片段提供了追溯入口，却不能替用户判断观点是否真实。",
+      "kind": "boundary"
+    },
+    {
+      "id": "api",
+      "title": "从产品到数据基础设施",
+      "body": "API/MCP 让其他代理接入音频情报，也带来权限、速率、版权、留存和下游引用的问题；这些边界要在接入时单独设计。",
+      "kind": "comparison"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "让 AI 代理听见一段播客",
+    "question": "把波形变成带时间点的可调用对象，代理才知道要查哪一段、为什么要把它交给人复核。",
+    "steps": [
+      {
+        "label": "收录音频",
+        "detail": "Radar 持续收录播客并生成转录，Particle 称索引超过 13 万个播客。",
+        "evidence": "Particle Radar 产品页。"
+      },
+      {
+        "label": "标注实体和时间",
+        "detail": "系统给说话人、公司、人物和主题加元数据，并保留出现的时间点。",
+        "evidence": "Particle/TechCrunch。"
+      },
+      {
+        "label": "代理查询",
+        "detail": "代理通过 API 或 MCP 按实体、语义或关键词找到相关片段和上下文。",
+        "evidence": "Particle 产品页。"
+      },
+      {
+        "label": "人回听核验",
+        "detail": "用户打开时间戳片段或原始音频，检查转录与语境后再引用或采取行动。",
+        "evidence": "产品可追溯设计，不等于自动事实判断。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Particle Podcast Intelligence Blog",
+    "url": "https://particle.pro/blog"
+  },
+  "sources": [
+    {
+      "url": "https://particle.pro/blog",
+      "claim": "Particle 官方产品页介绍 Radar 的 13 万+播客转录、实体/说话人标注、提醒以及 API/MCP 接入。",
+      "excerpt": "Everything in Radar is agent-ready, available via API and MCP via Particle’s Podcast Intelligence platform."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/26/radar-makes-podcasts-searchable-and-usable-by-ai-agents/",
+      "claim": "TechCrunch 采访 Particle CEO，交叉报道 13 万个播客、每天约 2 万集、时间戳片段和定价。",
+      "excerpt": "Radar makes podcasts searchable — and usable by AI agents."
+    },
+    {
+      "url": "https://particle.pro/blog",
+      "claim": "Particle 产品页说明 Radar 让播客按人物、公司、品牌、产品和主题搜索，并支持 Slack、邮件和 webhook 提醒。",
+      "excerpt": "Search across transcripts from 130,000+ podcasts, follow the topics and people that matter to you, and receive alerts."
+    }
+  ],
+  "canonicalUrl": "https://particle.pro/blog",
+  "sourceHash": "sha256:d30db75dc2baa382cf46ce5cce03293dc908311f7d02b177dc60af2d0c3d5de3",
+  "isExample": false,
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "mcp",
+    "api",
+    "full-text-search",
+    "semantic-search",
+    "citation",
+    "data-quality"
+  ],
+  "relatedArticleSlugs": [],
+  "status": "published",
+  "discoveredAt": "2026-10-03T23:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 agent 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.95,
+      "evidence": [
+        "正文直接解释 tools 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 mcp 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 api 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "full-text-search",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 full-text-search 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "semantic-search",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 semantic-search 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 citation 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.82,
+      "evidence": [
+        "正文直接解释 data-quality 所代表的机制或边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://particle.pro/blog",
+      "claim": "Particle 官方产品页介绍 Radar 的 13 万+播客转录、实体/说话人标注、提醒以及 API/MCP 接入。",
+      "excerpt": "Everything in Radar is agent-ready, available via API and MCP via Particle’s Podcast Intelligence platform."
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/26/radar-makes-podcasts-searchable-and-usable-by-ai-agents/",
+      "claim": "TechCrunch 采访 Particle CEO，交叉报道 13 万个播客、每天约 2 万集、时间戳片段和定价。",
+      "excerpt": "Radar makes podcasts searchable — and usable by AI agents."
+    },
+    {
+      "url": "https://particle.pro/blog",
+      "claim": "Particle 产品页说明 Radar 让播客按人物、公司、品牌、产品和主题搜索，并支持 Slack、邮件和 webhook 提醒。",
+      "excerpt": "Search across transcripts from 130,000+ podcasts, follow the topics and people that matter to you, and receive alerts."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "method": "manual",
+    "notes": "人工核对官方页面/新闻报道的事件日期、发布日期、原始链接、公司口径和后续时间线；保留计划、报道、测试与正式公告之间的边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "notes": "文章按事件独立组织段落，AI 是新闻主线；没有把公司声明、媒体报道、估算、计划或测试写成独立确认事实。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T23:35:00Z",
+    "questions": [
+      "文章是否把 2026-08-26 的新闻主线与后续/背景信息分开？",
+      "官方来源、媒体报道、公司自述和未独立验证的数字是否明确归属？",
+      "零基础读者能否沿着正文、SVG 和讲解步骤理解事件机制，而不是只看到宣传性结论？",
+      "文章是否保留了部署、可用性、合同或安全结论的边界？"
+    ],
+    "notes": "复审通过：Radar 发布、13 万+播客与每日新增量归 Particle/TechCrunch，API/MCP 与人工回听限制写清，未宣称自动判断真值；无文章联动但词条关系有依据，SVG 一致。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-26",
+  "fingerprint": "sha256:d30db75dc2baa382cf46ce5cce03293dc908311f7d02b177dc60af2d0c3d5de3",
+  "promotedAt": "2026-10-03T23:35:00Z"
+}

@@ -1,0 +1,193 @@
+{
+  "slug": "direct-scoring-nlg-evaluators-20250905",
+  "title": "NLG 评审器也可以给绝对分：把 pairwise 比较搬进阈值评测",
+  "summary": "Direct-Scoring 论文于 9 月 5 日提交，尝试解决自动评审器的一个实际问题：pairwise 比较更接近人的判断，却只能说 A 比 B 好，难以直接按绝对分数筛选摘要。作者先为同一任务合成不同质量等级的参考摘要，再让评审模型把待评摘要逐一与这些参考比较，并把 Better、Worse、Similar 的概率汇总成分数。在 SummEval、TopicalChat 和 HANNA 上，论文报告的轴平均样本级相关性变化分别为 +0.03、-0.03 和 +0.05。",
+  "body": "让大语言模型给摘要、对话或故事打分，最后通常要落到一个产品决定：是否过线、是否进入人工复核、哪个版本可以上线。直接要求模型输出 1 到 5 分很方便，却不一定稳定；让模型比较两份文本往往更容易判断，但只有相对顺序，缺少能用于阈值的绝对尺度。\n\nDirect-Scoring 的思路是先造出一把可重复的“尺子”。给定任务、原文和一个质量维度，方法让 LLM 生成从低到高的合成摘要，再在测试时把待评摘要分别与这些参考比较。参考摘要不是要冒充真人答案，而是把“什么叫更好”分成一组可观察的锚点。\n\n论文采用五个等级作为示例：先生成最差和最好的一端，再递归补出中间质量的摘要。评审模型不直接回答目标摘要是几分，而是针对每个锚点判断 Better、Worse 或 Similar，并使用这些比较概率加权得到最终分数。这样仍保留了 pairwise 判断的形式，却得到一个可以用于阈值和排序的数值。\n\n作者在三个元评测基准上检查样本级相关性：SummEval 的摘要任务、TopicalChat 的对话任务和 HANNA 的故事生成任务。相对当前表现最好的 pairwise 评审器，方法在 SummEval 的轴平均相关性高 0.03，在 TopicalChat 低 0.03，在 HANNA 高 0.05。结果说明它在不同任务上的表现接近比较式评审器，并非每个维度都占优。\n\n这个方案的好处是把“能不能过线”重新放回评测流程。团队可以为一致性、流畅性、相关性等维度设置参考锚点，再把分数用于筛选和抽样复核；合成摘要还可以作为数据发布，帮助别人重复实验。但锚点本身由模型生成，参考质量、生成模型、评分提示和概率校准都会改变尺子的刻度。\n\n论文也报告了成本和选择上的限制。生成更多参考样本通常能提高表现，使用更强的评审模型也可能有帮助；方法仍需要额外的生成与比较调用，不适合把每个分数当成零成本真值。三个基准覆盖摘要、对话和故事，换到医疗、法律或中文长文时，仍应重新做人工校准。\n\nDirect-Scoring 更像评测基础设施的一个折中：用合成参考保留比较判断的稳定性，再把结果转换成可操作的分数。落地时应同时保留人工样本、锚点版本、评审模型和阈值变更记录，检查误杀和漏放；一个看起来精确的数字，只有在任务定义和人工标准都稳定时才有意义。",
+  "publishedAt": "2025-09-05",
+  "eventDate": "2025-09-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/direct-scoring-nlg-evaluators-20250905.svg",
+    "alt": "Direct-Scoring 用不同质量等级的合成摘要作为锚点，把 pairwise 判断转换成绝对分数",
+    "sourceUrl": "/images/news/direct-scoring-nlg-evaluators-20250905.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "threshold-problem",
+      "title": "相对比较好用，但产品还需要过线分数",
+      "body": "Pairwise 评审能回答哪份文本更好，却难以直接支持阈值筛选和单样本分数。",
+      "kind": "narrative"
+    },
+    {
+      "id": "synthetic-scale",
+      "title": "先生成一组不同质量的合成参考",
+      "body": "方法从最差和最好开始，递归生成中间等级，把抽象质量维度变成一排可比较的锚点。",
+      "kind": "technical"
+    },
+    {
+      "id": "probability-score",
+      "title": "Better、Worse、Similar 概率汇成一个分数",
+      "body": "待评摘要逐一与参考摘要比较，模型的比较概率经过加权，得到可排序和设阈值的结果。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-benchmarks",
+      "title": "三个基准上接近比较式评审器",
+      "body": "SummEval +0.03、TopicalChat −0.03、HANNA +0.05，都是轴平均的样本级相关性变化。",
+      "kind": "comparison"
+    },
+    {
+      "id": "calibration-cost",
+      "title": "锚点质量和评审调用会改变刻度",
+      "body": "生成模型、提示、参考数量和概率校准都会影响分数，合成参考不能自动成为人工真值。",
+      "kind": "boundary"
+    },
+    {
+      "id": "domain-transfer",
+      "title": "换任务后仍要做人工校准",
+      "body": "摘要、对话和故事的结果不能直接外推到医疗、法律或中文长文，阈值应随任务重新验证。",
+      "kind": "aside"
+    },
+    {
+      "id": "evaluation-record",
+      "title": "把分数和它的尺子一起保存",
+      "body": "记录锚点版本、评审模型、人工样本、阈值变化和误杀漏放，才能知道一次分数变化意味着什么。",
+      "kind": "example"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样把 pairwise 评审变成可用的绝对分数？",
+    "question": "先生成质量锚点，再比较待评文本与锚点的相对关系，最后校准阈值和人工标准。",
+    "steps": [
+      {
+        "label": "定义任务和维度",
+        "detail": "明确是摘要、对话还是故事，并固定一致性、流畅性或相关性等质量维度。",
+        "evidence": "task, context, and quality dimension"
+      },
+      {
+        "label": "生成质量锚点",
+        "detail": "从最低和最高质量开始，再补出中间等级，检查等级之间是否真的单调。",
+        "evidence": "synthetic summaries of varying quality levels"
+      },
+      {
+        "label": "逐一做比较",
+        "detail": "让评审模型判断待评文本相对每个锚点是 Better、Worse 还是 Similar。",
+        "evidence": "Better, Worse, Similar"
+      },
+      {
+        "label": "汇总成分数",
+        "detail": "把各等级的比较概率加权，得到单样本分数，并与人工判断做样本级相关性对照。",
+        "evidence": "weighted average of scores"
+      },
+      {
+        "label": "校准阈值和成本",
+        "detail": "记录锚点、模型、调用量和误杀漏放，换任务或语言时重新用人工样本验证。",
+        "evidence": "SummEval, TopicalChat, and HANNA"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05440"
+  },
+  "relatedSlugs": [
+    "llm",
+    "eval",
+    "benchmark",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05440",
+      "claim": "Direct-Scoring 用合成摘要在测试时提供 pairwise 机器排序，让直接评分方法兼顾相对判断和绝对阈值。",
+      "excerpt": "direct-scoring method which uses synthetic summaries to act as pairwise machine rankings at test time"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05440",
+      "claim": "论文在 SummEval、TopicalChat、HANNA 上报告轴平均样本级相关性变化 +0.03、−0.03、+0.05。",
+      "excerpt": "SummEval (+0.03), TopicalChat (-0.03), and HANNA (+0.05)"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.05440",
+      "claim": "方法先生成不同质量的合成上下文示例，再用 Better/Worse/Similar 概率加权得到分数；生成和评审成本、任务迁移是限制。",
+      "excerpt": "creation of synthetic in-context examples ... probability ... Better, Worse, Similar ... computational cost"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05440",
+  "sourceHash": "sha256:23ed2a045abce26b930bda3e1e27fc59c62773d8e8529dad92bd4acdc9bfac63",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 LLM 作为摘要、对话和故事生成的自动评审器。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.99,
+      "evidence": [
+        "正文保留样本级相关性、人工校准、阈值、误杀漏放和评测记录。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.97,
+      "evidence": [
+        "正文对应 SummEval、TopicalChat 和 HANNA 三个元评测基准及结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 5 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05440",
+      "claim": "arXiv 记录论文于 2025 年 9 月 5 日提交，主题是直接打分 NLG 评审器的 pairwise 比较方法。",
+      "excerpt": "Submitted on 5 Sep 2025 ... Direct-Scoring NLG Evaluators Can Use Pairwise Comparisons Too"
+    },
+    {
+      "url": "https://arxiv.org/html/2509.05440",
+      "claim": "正文说明五级合成参考、Better/Worse/Similar 概率、三个基准和方法成本限制。",
+      "excerpt": "generate summaries with ... quality-levels ... Better, Worse, Similar ... computational cost"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对合成摘要锚点、Better/Worse/Similar 比较概率、SummEval/TopicalChat/HANNA 及 +0.03/−0.03/+0.05 结果；正文补充人工校准、锚点版本、调用成本和跨任务边界。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把方法讲成可理解的“合成质量锚点—pairwise 比较—加权分数”流程，保留三个基准的精确变化；明确样本级相关性不是人工真值，补充生成成本、任务迁移和阈值记录；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-05-direct-scoring-nlg-evaluators-20250905"
+}

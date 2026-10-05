@@ -1,6 +1,8 @@
 # 新闻草稿交接目录
 
-云端采集程序把每条待审核新闻写成一个 JSON 文件，路径固定为：
+按事件发生日的候选检索和空档日记录见 [`content/zh/news-daily/`](../news-daily/)。先在按天记录中核对一手来源和 `eventDate`/`publishedAt`，再把选中候选交给本目录的完整文章草稿。
+
+云端采集程序把每条候选新闻写成一个 JSON 文件，路径固定为：
 
 ```text
 content/zh/news-drafts/YYYY-MM-DD/<slug>.json
@@ -22,13 +24,13 @@ node --experimental-strip-types scripts/news-catalog.mjs > /tmp/vbp-news-catalog
 npm run news:validate
 ```
 
-校验通过、完成事实核对并把 `status` 改为 `needs-review` 后，仓库自动只提升满足发布门槛的草稿；人工仍可在 feature 分支上预览提升结果：
+模型完成首轮自判、字段校验通过并把 `status` 写为 `ready` 后，仓库会在同一轮 workflow 自动提升草稿；模型暂缓或机械字段不完整的记录保持 `needs-review`。人工仍可在 feature 分支上预览提升结果：
 
 ```bash
 npm run news:publish -- content/zh/news-drafts/2026-09-30/example-slug.json
 ```
 
-只有明确加入 `--approve` 才会写入 `content/zh/news.json`；原草稿会保留为 `status: "published"` 的审计记录。`news:auto-publish` 只接受同时满足以下条件的候选：至少一条 HTTPS 证据、`verification.status=verified`、`riskLevel=routine`、至少一个已确认公开词条且所有关系建议已确认。重大消息、证据不足、关系未确认或风险不确定的候选保留 `needs-review`，不会自动公开。
+只有明确加入 `--approve` 才会写入 `content/zh/news.json`；这是分支文件写入保护，不是额外的内容审查。原草稿会保留为 `status: "published"` 的审计记录。`news:auto-publish` 只接受 `modelReview.decision=publish` 且 `mechanicalErrors` 为空的 `ready` 候选，并检查 canonical URL、sourceHash、结构版式、头图来源/许可、可用链接、去重、非空正文和已发布关系。模型暂缓或机械校验失败的候选保留 `needs-review`。
 
 CI 会在隔离的 `news-auto/<run-id>` 分支上运行上述命令，构建 Docker 候选并检查新闻页、详情 sitemap 与 Xiaobei 邀请制状态，然后创建面向 `dev` 的 PR；是否合并由仓库保护规则决定。这个入口不直接写 `main`、`dev`，也不负责生产 SSH 部署。
 
@@ -40,6 +42,17 @@ CI 会在隔离的 `news-auto/<run-id>` 分支上运行上述命令，构建 Doc
   "title": "文章标题",
   "summary": "经过核对的摘要",
   "body": "经过核对的正文",
+  "hero": { "url": "/images/news/source.svg", "alt": "头图替代文本", "sourceUrl": "/images/news/source.svg", "license": "图片来源与许可说明" },
+  "sections": [
+    { "id": "release", "title": "这次更新发生了什么", "kind": "narrative", "body": "按文章需要组织的详细解释。" },
+    { "id": "boundary", "title": "怎样理解它的边界", "kind": "boundary", "body": "把官方事实、例子和限制放在同一条叙事里。" }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "把机制走一遍",
+    "question": "读者想知道的一个具体问题。",
+    "steps": [{ "label": "输入", "detail": "第一步发生什么。" }, { "label": "结果", "detail": "下一步怎样变化。" }]
+  },
   "publishedAt": "2026-09-30",
   "isExample": false,
   "source": { "name": "来源名称", "url": "https://example.com/article" },
@@ -58,7 +71,10 @@ CI 会在隔离的 `news-auto/<run-id>` 分支上运行上述命令，构建 Doc
       "status": "confirmed"
     }
   ],
-  "relatedArticleSlugs": []
+  "relatedArticleSlugs": [],
+  "sources": [{ "url": "https://example.com/article", "claim": "可核验事实", "excerpt": "来源摘录" }],
+  "modelReview": { "decision": "publish", "checkedAt": "2026-09-30T12:00:00Z" },
+  "mechanicalErrors": []
 }
 ```
 
@@ -79,6 +95,17 @@ CI 会在隔离的 `news-auto/<run-id>` 分支上运行上述命令，构建 Doc
       "title": "经过核对的标题",
       "summary": "经过核对的摘要",
       "body": "正文 Markdown",
+      "hero": { "url": "/images/news/source.svg", "alt": "头图替代文本", "sourceUrl": "/images/news/source.svg", "license": "图片来源与许可说明" },
+      "sections": [
+        { "id": "release", "title": "这次更新发生了什么", "kind": "narrative", "body": "按文章需要组织的详细解释。" },
+        { "id": "boundary", "title": "怎样理解它的边界", "kind": "boundary", "body": "把官方事实、例子和限制放在同一条叙事里。" }
+      ],
+      "explainer": {
+        "variant": "benchmark",
+        "title": "把机制走一遍",
+        "question": "读者想知道的一个具体问题。",
+        "steps": [{ "label": "输入", "detail": "第一步发生什么。" }, { "label": "结果", "detail": "下一步怎样变化。" }]
+      },
       "publishedAt": "2026-10-01",
       "source": { "name": "官方来源", "url": "https://example.com/article" },
       "canonicalUrl": "https://example.com/article",
@@ -89,10 +116,11 @@ CI 会在隔离的 `news-auto/<run-id>` 分支上运行上述命令，构建 Doc
         { "url": "https://example.com/article", "claim": "可核验事实", "excerpt": "来源原文短摘录" }
       ],
       "verification": { "status": "verified", "checkedAt": "2026-10-01T12:00:00Z", "method": "dots" },
-      "riskLevel": "routine"
+      "riskLevel": "routine",
+      "modelReview": { "decision": "publish", "checkedAt": "2026-10-01T12:00:00Z" }
     }
   ]
 }
 ```
 
-`npm run news:ingest -- <JSON 路径|->` 会按 `canonicalUrl` 和 `sourceHash` 幂等去重，并将每篇候选写入 `content/zh/news-drafts/<generatedAt 的 UTC 日期>/<slug>.json`。来源清单、事实核对、正文和关系建议由 Dots 负责；仓库只接受 HTTPS、结构化证据和已公开的词条 slug。`isExample` 不能由云端设置为真实内容的示例标记。
+`npm run news:ingest -- <JSON 路径|->` 会按 `canonicalUrl` 和 `sourceHash` 幂等去重，并将每篇候选写入 `content/zh/news-drafts/<generatedAt 的 UTC 日期>/<slug>.json`。来源清单、事实核对、正文、结构化版式和模型首轮自判由 Dots 负责；仓库只接受 HTTPS、头图来源/许可、有效链接、非空正文和已公开的关系目标。`isExample` 不能由云端设置为真实内容的示例标记。

@@ -1,0 +1,211 @@
+{
+  "slug": "matrix-game-2-interactive-world-model-20250812",
+  "title": "Skywork AI 开源 Matrix-Game 2.0：让世界模型按键盘鼠标实时更新",
+  "summary": "8 月 12 日，Skywork AI 发布并开源 Matrix-Game 2.0，把鼠标和键盘的逐帧输入作为视频生成的交互条件。项目页称它用 Unreal Engine 与 GTA5 生产约 1200 小时交互数据，借助少步自回归扩散生成分钟级视频，目标速度为 25 FPS。这里的“世界模型”仍是作者在游戏场景和 benchmark 中的结果，不等于已经能稳定控制真实环境。",
+  "body": "8 月 12 日，Skywork AI 在 Matrix-Game 仓库里发布 Matrix-Game 2.0，并开放模型权重和代码。它要解决的问题不是“给一张图配一段更长的视频”，而是让视频模型在画面变化时接受新的动作输入：用户按下键盘、移动鼠标，下一帧应该沿着相应方向继续。项目把这种模型称为 interactive world foundation model，也就是把环境状态和动作之间的变化放进同一条生成循环里。\n\n输入方式是这次发布最值得看懂的部分。项目页介绍了一个 action injection module，把逐帧鼠标和键盘输入作为 interactive conditions；模型根据当前视觉内容和对应动作预测下一帧。这样一来，动作不必等到一段视频生成完才补进去，控制信号可以随着每帧更新。但“能接收按键”只说明接口存在，按键是否及时改变目标、相机是否稳定、连续操作会不会漂移，都要另行测量。\n\n这套能力建立在一条专门的数据生产链上。团队用 Unreal Engine 和 GTA5 场景生成约 1200 小时视频，并记录多种交互标注，再把这些数据用于训练世界模型。数据来自可控的游戏环境，优点是动作、画面和场景状态可以同步记录；局限也在这里：游戏里的碰撞规则、视角变化和任务分布与现实机器人、街景或开放世界并不相同，数据规模不能直接换算成现实环境覆盖率。\n\n在生成端，Matrix-Game 2.0 使用少步自回归扩散和面向因果的架构。前一帧的视觉内容与当前动作进入模型，模型只预测接下来的画面，循环继续下去。项目页称它可以在多种场景中生成分钟级视频，并以 25 FPS 的速度运行。这个数字描述的是项目方给出的生成演示和配置；真正用于交互时，还要把读取输入、渲染、网络和控制回路的延迟一起算进去，不能把离线生成速度直接当作可玩的实时控制。\n\n模型还去掉了文字分支，增加动作模块，让预测主要依赖视觉内容和动作。这个选择适合持续的按键控制，却也意味着系统需要从当前画面保持场景身份、物体位置和运动状态。只要某一帧把门、道路或角色的位置画错，后面的自回归链可能继续沿着错误状态生成；视频看起来连贯，不代表内部状态仍然与可操作的场景一致。\n\n项目页给出了 GameWorld Score 的对比表，并展示 Minecraft、GTA、TempleRun 等场景的视频。这样的结果可以回答“在作者选定的场景和指标里，画面质量、时序一致性和键鼠响应怎样”，不能直接回答“模型是否理解现实世界物理”或“玩家是否能在任何游戏里稳定完成任务”。还需要公开相同输入序列下的延迟、动作成功率、长时间漂移和失败恢复，才能把视频效果和控制能力分开。\n\n开源让这些问题有了复查入口：代码、权重、数据生产思路和场景展示都可以对照仓库版本阅读，项目采用 MIT License。复现时应固定 commit、模型配置和输入帧率，记录每个动作到画面变化的延迟；同时检查生成内容、游戏素材和下游应用是否各自满足许可要求。\n\nMatrix-Game 2.0 的新闻点是把“下一帧长什么样”和“用户刚刚按了什么”接到同一个循环里。接下来真正有价值的测试，不是再看一段更长的演示，而是让模型面对连续转向、遮挡、意外动作和场景切换，检查状态是否保持、控制是否可恢复、失败时能否把动作交还给人。8 月 12 日确认的是一个开放的交互世界模型原型，离可靠的通用环境控制还隔着一套可重复的实验。",
+  "publishedAt": "2025-08-12",
+  "eventDate": "2025-08-12",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/matrix-game-2-interactive-world-model-20250812.svg",
+    "alt": "Matrix-Game 2.0 将鼠标键盘动作注入逐帧视频生成循环，连续输出可交互场景；VibePolaris 自制 SVG。",
+    "sourceUrl": "/images/news/matrix-game-2-interactive-world-model-20250812.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "8 月 12 日公开的是 Matrix-Game 2.0",
+      "body": "Skywork AI 在官方仓库发布 Matrix-Game 2.0，定位为实时长视频生成的 interactive world foundation model，并开放模型权重与代码。README 的发布记录是 8/12，不能与后续滚动更新混为同一版本。",
+      "kind": "narrative"
+    },
+    {
+      "id": "action-input",
+      "title": "逐帧鼠标和键盘进入生成条件",
+      "body": "action injection module 把 frame-level mouse/keyboard inputs 作为交互条件，模型结合当前视觉内容预测下一帧。接口能接收动作，不等于连续控制没有延迟、漂移或错误。",
+      "kind": "technical"
+    },
+    {
+      "id": "data",
+      "title": "约 1200 小时数据来自 Unreal 与 GTA5",
+      "body": "团队用 Unreal Engine 和 GTA5 生产交互视频与标注，形成可同步记录动作和画面的数据链。游戏环境便于复查，但不能直接代表现实物理、真实机器人或开放世界的分布。",
+      "kind": "example"
+    },
+    {
+      "id": "generation",
+      "title": "少步自回归扩散追求 25 FPS",
+      "body": "项目页称模型采用 few-step autoregressive diffusion 与因果架构，能生成分钟级视频、达到 25 FPS。这个数字按作者给出的生成配置阅读，实际交互还要加上输入、渲染、网络和控制回路延迟。",
+      "kind": "technical"
+    },
+    {
+      "id": "state",
+      "title": "视频连贯不代表内部状态正确",
+      "body": "模型去掉文字分支、增加动作模块，主要从视觉内容和动作预测下一帧；一旦物体位置或场景关系在某帧漂移，自回归生成可能沿着错误状态继续。",
+      "kind": "boundary"
+    },
+    {
+      "id": "benchmark",
+      "title": "GameWorld Score 先按作者场景解读",
+      "body": "项目展示 Minecraft、GTA、TempleRun 等场景和 GameWorld Score 对比表，能说明指定数据、指标和版本下的表现，不能直接推出现实物理理解、任意游戏控制或长期稳定性。",
+      "kind": "comparison"
+    },
+    {
+      "id": "open-tests",
+      "title": "复现要固定版本并记录控制延迟",
+      "body": "开源复现应锁定 commit、模型配置与输入帧率，逐动作记录画面响应、长时漂移、失败恢复和人工接管；同时核对代码、权重与游戏素材的许可边界。",
+      "kind": "aside"
+    },
+    {
+      "id": "next-tests",
+      "title": "下一步看连续动作和状态恢复",
+      "body": "让模型面对连续转向、遮挡、意外动作和场景切换，检查状态是否保持、控制是否可恢复，以及失败时能否把动作交还给人。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "世界模型怎样把一次按键变成下一帧？",
+    "question": "把动作输入、视觉状态、逐帧生成和控制评测拆开，才能看懂 Matrix-Game 2.0 的交互边界。",
+    "steps": [
+      {
+        "label": "读取当前画面",
+        "detail": "模型先接收当前视觉内容，保留场景、角色和物体的状态线索；这一帧本身也可能含有错误或遮挡。",
+        "evidence": "Visual contents"
+      },
+      {
+        "label": "注入动作",
+        "detail": "鼠标和键盘的逐帧输入进入 action injection module，作为下一帧生成的交互条件。",
+        "evidence": "Frame-level mouse/keyboard inputs"
+      },
+      {
+        "label": "预测下一帧",
+        "detail": "少步自回归扩散根据画面与动作预测接下来的视觉结果，循环继续而不是一次性生成整段视频。",
+        "evidence": "Few-step autoregressive diffusion"
+      },
+      {
+        "label": "持续输出",
+        "detail": "项目方称可生成分钟级视频并达到 25 FPS；真实回路还要测量输入、渲染和网络延迟。",
+        "evidence": "25 FPS / minute-level videos"
+      },
+      {
+        "label": "检查状态与接管",
+        "detail": "用连续动作、遮挡和意外操作测试漂移与恢复，失败时保留停止、回退或人工接管的出口。",
+        "evidence": "State consistency and control recovery"
+      }
+    ]
+  },
+  "source": {
+    "name": "Skywork AI",
+    "url": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md"
+  },
+  "relatedSlugs": [
+    "tools",
+    "data-pipeline",
+    "event",
+    "distributed-system"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md",
+      "claim": "Skywork AI 官方 README 的固定 2025-08-12 commit 确认 Matrix-Game-2.0 的发布、实时长视频世界模型定位、模型权重和代码开放。",
+      "excerpt": "Aug 12, 2025: We released Matrix-Game-2.0. This is an interactive world foundation model for real-time long video generation."
+    },
+    {
+      "url": "https://matrix-game-v2.github.io/",
+      "claim": "官方项目页介绍约 1200 小时 Unreal/GTA5 交互数据、逐帧鼠标键盘动作条件、少步自回归扩散、分钟级视频和 25 FPS，并展示 GameWorld Score。",
+      "excerpt": "An action injection module that enables frame-level mouse and keyboard inputs as interactive conditions ... Matrix Game 2.0 can generate high-quality minute-level videos ... at ... 25 FPS."
+    }
+  ],
+  "canonicalUrl": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md",
+  "sourceHash": "sha256:e2628a5b2ca4d274220c31cb5c225122bd31ad288eb2049b1607c5376954104e",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文把鼠标键盘逐帧输入、动作注入模块和控制回路作为模型的工具接口来解释。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.95,
+      "evidence": [
+        "正文拆开 Unreal/GTA5 数据生产、交互标注、模型训练与复现版本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文区分 8/12 README 发布记录、项目页技术说明和后续版本更新。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "distributed-system",
+      "score": 0.83,
+      "evidence": [
+        "正文把输入、生成、渲染、网络和控制回路的延迟边界分开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://github.com/SkyworkAI/Matrix-Game/blob/cde966d358d38de9d1f7d2150342c4970213d40e/README.md",
+      "claim": "固定 commit 的 README 确认 Matrix-Game-2.0 的 8/12 发布、实时长视频世界模型定位、模型权重和代码开放。",
+      "excerpt": "We released Matrix-Game-2.0 ... interactive world foundation model for real-time long video generation."
+    },
+    {
+      "url": "https://matrix-game-v2.github.io/",
+      "claim": "项目页确认动作注入、数据生产管线、少步自回归扩散、分钟级视频与 25 FPS，并提供 GameWorld Score 场景对比。",
+      "excerpt": "A few-step distillation based on the causal architecture for real-time and streaming video generation."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 Skywork AI 固定 2025-08-12 README commit、Matrix-Game 2.0 官方项目页；正文区分 8/12 发布事件、动作注入模块、Unreal/GTA5 约 1200 小时数据、少步自回归扩散、25 FPS/分钟级作者口径、GameWorld Score 与现实控制稳定性。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 将 Matrix-Game 2.0 写成动作输入、视觉状态、逐帧生成和控制评测的连续流程，区分作者 benchmark 与现实环境能力，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-12；固定 README commit cde966d358d38de9d1f7d2150342c4970213d40e 的发布记录明确写着 Aug 12, 2025，正文没有用后续仓库更新覆盖事件日版本。",
+      "正文准确解释 Matrix-Game 2.0 的 interactive world foundation model 定位和 action injection module：逐帧 mouse/keyboard inputs 作为交互条件，模型结合视觉状态预测下一帧；去掉 text branch、增加 action modules 的边界也清楚。",
+      "Unreal Engine 与 GTA5 约 1200 小时交互数据、few-step autoregressive diffusion、因果架构、分钟级视频和 25 FPS 均标为项目页/作者配置口径，没有把离线或演示速度写成真实可玩控制保证。",
+      "GameWorld Score、Minecraft、GTA、TempleRun 被限定为作者选定的场景、数据、版本和指标，未外推到现实物理、任意游戏控制或长期稳定性；长时状态漂移、输入/渲染/网络/控制回路延迟、失败恢复均有说明。",
+      "README 的 MIT License 与代码/权重/数据生产思路的复现边界被保留；agent-workflow explainer、8 个 sections、tools/data-pipeline/event/distributed-system relations、事件特定 hero、sources/evidence、verification 和 schema 一致。"
+    ],
+    "notes": "读者审阅通过：中文围绕“动作输入 → 视觉状态 → 逐帧生成 → 控制评测”展开，零基础读者能区分作者的游戏场景实验、25 FPS 生成口径与真实环境控制；没有把世界模型写成理解现实物理或通用游戏代理。 结构收尾复核通过：sources 仅保留固定 8/12 README commit 与项目页两个唯一来源，evidence 各自对应，canonicalUrl 仍指向固定 commit，verification 与正文口径一致。",
+    "changes": [
+      "确认删除重复的固定 README source card 后，来源数量、evidence、verification、canonicalUrl 和 schema 仍一致。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-12-matrix-game",
+  "promotedAt": "2026-10-05T05:17:36.296Z"
+}

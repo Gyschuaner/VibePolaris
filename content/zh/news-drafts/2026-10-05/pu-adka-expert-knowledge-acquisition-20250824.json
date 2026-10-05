@@ -1,0 +1,205 @@
+{
+  "slug": "pu-adka-expert-knowledge-acquisition-20250824",
+  "title": "PU-ADKA 在固定预算里挑选最值得咨询的领域专家",
+  "summary": "PU-ADKA 是一篇 2025 年 8 月 24 日提交的专业知识获取研究，面向药物发现和罕见病等领域，让 LLM 在固定预算下从专家团队中主动选择咨询对象，同时考虑专家的可用性、知识边界和咨询成本。研究用 PubMed 模拟训练，并通过受控专家互动和真实药物开发团队部署验证，还发布 CKAD 基准；它减少的是“问谁、问多少次”的成本，不替代专家对高风险结论的最终责任。",
+  "body": "通用模型遇到罕见病、药物发现或专门实验流程时，最缺的往往不是再多一段通用资料，而是一次问对人。8 月 24 日提交的 PU-ADKA，试着让 LLM 在固定预算里主动选择应该咨询哪位领域专家。\n\n  传统做法通常是把专家意见一次性写进训练数据，或者让所有问题都走同一条咨询流程。PU-ADKA 把专家咨询看成一个有成本的选择问题：每位专家能回答什么、什么时候有空、一次咨询要花多少，都要进入决策。模型不是默认问最权威的人，而是在当前问题下挑更合适的知识边界。\n\n  研究者用 PubMed 数据做模拟训练，再通过受控的专家互动和真实药物开发团队部署来验证方法，并发布 CKAD 基准数据集。这样的组合比只在静态问答题上比较更接近实际，但真实团队的领域、预算和责任分工仍可能不同。\n\n  这种主动获取的价值，在于把有限的专家时间花在模型最不确定、也最可能影响结果的地方。简单事实可以由模型和资料库处理，涉及药物机制、罕见病证据或实验取舍的问题，再升级给拥有对应边界的专家。预算不只是钱，也包括专家注意力、响应时间和敏感数据暴露。\n\n  选择专家并不等于把决定交给 Agent。高风险结论还要保留专家审阅、证据来源和冲突记录；模型必须知道“我不知道”时应该停止，而不是为了省一次咨询把不相干的专家意见拼成确定答案。\n\n  系统还要保护咨询过程本身。向专家发送的问题可能包含患者、实验或商业机密，需要最小化字段、控制访问和保留审计。专家的可用性和知识边界也会变化，过期的选择策略要能回滚，不能把一次成功咨询固化成永远正确的路由。\n\n  PU-ADKA 提供的不是一个“AI 替专家”的故事，而是一条更细的协作路径：模型先识别缺口，再按预算挑选合适的人，吸收意见后保留证据和责任链。专业场景越敏感，主动咨询越需要和授权、隐私、版本及人工签核一起设计。",
+  "publishedAt": "2025-08-24",
+  "eventDate": "2025-08-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/pu-adka-expert-knowledge-acquisition-20250824.svg",
+    "alt": "PU-ADKA 在预算、专家边界和问题不确定性之间选择咨询路径",
+    "sourceUrl": "/images/news/pu-adka-expert-knowledge-acquisition-20250824.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "expert-gap",
+      "title": "专业领域缺的常常是问对人",
+      "body": "药物发现和罕见病任务需要超出通用知识的判断。PU-ADKA 让 LLM 在固定预算下选择应该咨询哪位专家。",
+      "kind": "narrative"
+    },
+    {
+      "id": "selection-problem",
+      "title": "可用性、知识边界和成本一起决策",
+      "body": "系统不默认问最权威的人，而是根据当前问题考虑专家能回答什么、何时可用以及一次咨询的成本。",
+      "kind": "technical"
+    },
+    {
+      "id": "validation",
+      "title": "PubMed 模拟加真实药物团队部署",
+      "body": "研究用 PubMed 数据模拟训练，再用受控专家互动和真实药物开发团队部署验证，并发布 CKAD 知识获取基准。",
+      "kind": "comparison"
+    },
+    {
+      "id": "budget-value",
+      "title": "把专家时间花在最不确定的缺口上",
+      "body": "简单事实可以由模型和资料库处理；涉及机制、罕见病证据或实验取舍的问题，再升级给有对应知识边界的专家。",
+      "kind": "technical"
+    },
+    {
+      "id": "responsibility",
+      "title": "挑选专家不等于把决定交给 Agent",
+      "body": "高风险结论仍需专家审阅、证据来源和冲突记录。模型发现自己没有可靠知识时，应停止或升级，而不是拼出确定答案。",
+      "kind": "boundary"
+    },
+    {
+      "id": "privacy",
+      "title": "咨询过程也携带敏感数据",
+      "body": "问题可能包含患者、实验或商业机密，需要字段最小化、访问控制、审计和可回滚的路由版本。专家可用性与边界也会变化。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "把主动咨询做成有责任链的协作",
+      "body": "模型识别知识缺口，按预算选择合适专家，吸收意见并保留证据和责任链。敏感领域要同时设计授权、隐私、版本和人工签核。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "固定预算下怎样选择一次专家咨询？",
+    "question": "先识别知识缺口，再按专家边界、可用性和成本选择并记录结果。",
+    "steps": [
+      {
+        "label": "识别缺口",
+        "detail": "判断当前问题缺的是通用事实、领域证据还是需要做取舍的专业判断。",
+        "evidence": "struggle in highly specialized and cost-sensitive domains"
+      },
+      {
+        "label": "列出专家边界",
+        "detail": "为每位专家记录能回答的主题、证据范围、可用时间和数据访问条件。",
+        "evidence": "expert availability, knowledge boundaries, and consultation costs"
+      },
+      {
+        "label": "计算咨询价值",
+        "detail": "在固定预算内选择最可能减少当前不确定性的专家和问题粒度。",
+        "evidence": "actively engaging domain experts within a fixed budget"
+      },
+      {
+        "label": "保留原始证据",
+        "detail": "记录问题、专家回答、来源和冲突，不把一次建议压缩成没有出处的结论。",
+        "evidence": "controlled expert interactions and real-world deployment"
+      },
+      {
+        "label": "人工签核和回滚",
+        "detail": "高风险结论由专业人员确认；专家边界或策略变化时，能停用旧路由并回放影响。",
+        "evidence": "real-world deployment with a drug development team"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / PU-ADKA 作者组",
+    "url": "https://arxiv.org/abs/2508.17202"
+  },
+  "relatedSlugs": [
+    "llm",
+    "agent",
+    "eval",
+    "data-quality",
+    "authorization",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17202",
+      "claim": "PU-ADKA 在固定预算下根据专家可用性、知识边界和咨询成本主动选择领域专家，面向药物发现和罕见病等专业领域。",
+      "excerpt": "actively engaging domain experts within a fixed budget ... availability, knowledge boundaries, and consultation costs"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17202",
+      "claim": "研究通过 PubMed 模拟、受控专家互动和真实药物开发团队部署验证，并发布 CKAD 基准。",
+      "excerpt": "simulations on PubMed data ... controlled expert interactions and real-world deployment with a drug development team ... CKAD"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17202",
+  "sourceHash": "sha256:e77015b2113917489bef80e005d3d28db3a0b1632f1a68fc8bb7028790d34978",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.97,
+      "evidence": [
+        "正文解释专业领域 LLM、专家知识边界和咨询成本。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.98,
+      "evidence": [
+        "正文把主动专家选择、升级和责任链作为 Agent 协作流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文保留 PubMed 模拟、受控互动、真实部署和 CKAD 基准。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.92,
+      "evidence": [
+        "正文讨论专家证据、来源、冲突、版本和知识边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.94,
+      "evidence": [
+        "正文讨论敏感字段、访问控制、人工签核和高风险责任。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 24 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17202",
+      "claim": "arXiv 记录显示 PU-ADKA 于 2025 年 8 月 24 日提交，研究固定预算下的主动领域知识获取。",
+      "excerpt": "Date: Sun Aug 24 03:34:40 2025 ... cost-effective LLM domain knowledge acquisition"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 PU-ADKA 摘要中的专家可用性/知识边界/成本、PubMed 模拟、受控互动、真实药物团队部署和 CKAD 基准；正文把主动咨询与最终责任、隐私、版本和人工签核分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章没有把主动专家选择写成替代专家，保留了固定预算、知识边界、真实部署和 CKAD 证据，并补充敏感数据、冲突记录、责任链和回滚要求；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-24-pu-adka-expert-knowledge-acquisition"
+}

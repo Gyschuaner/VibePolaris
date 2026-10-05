@@ -1,0 +1,219 @@
+{
+  "slug": "claude-shared-chats-search-index-20260727",
+  "title": "Claude 分享链接被 Google 搜到：一个“公开链接”如何变成隐私事故",
+  "summary": "7 月 27 日，TechCrunch 报道用户通过 Google 搜索运算符找到了大量 Claude 分享聊天和 Artifacts，部分页面据报道包含健康记录、公司文件和未成年人联系方式。Anthropic 表示分享链接在被公开发布后才可能被搜索引擎发现，随后测试已不再返回结果；暴露范围和完整成因仍未独立确认。",
+  "body": "7 月 27 日，TechCrunch 报道一些 Claude 分享聊天和 Artifacts 被 Google 等搜索引擎收录。事件从 Reddit 用户用 “site:claude.ai/share” 搜索开始，媒体随后看到一批公开页面，报道提到其中可能包含健康记录、公司内部文件、儿童姓名和电话号码。TechCrunch 下午再次测试时已经找不到结果，说明收录状态可能被处理过，但这不能反推出曾经暴露的页面数量。\n\n关键在于“分享链接”的语义。Claude 的界面提示，任何拿到链接的人都可以查看该聊天快照；用户把链接贴到论坛、社交媒体或其他可被爬取的位置后，它就不再是只给某个朋友看的私下传递。Anthropic 对 TechCrunch 说，私下发送的链接不会因为存在一个公共聊天目录而自动出现在搜索里，页面是否可见与用户是否主动创建并传播公开链接有关。\n\n这仍然是一个值得重视的隐私事件，因为用户可能没有意识到“知道链接的人可见”会在公开发布后变成搜索引擎可发现。Google 也对媒体表示，搜索引擎不会决定哪些页面在网上公开，站点所有者可以通过控制项决定是否允许抓取或索引。换句话说，风险链条同时包含产品默认提示、用户分享行为、外部网站传播和搜索引擎收录。\n\n截至报道日，没有证据表明攻击者绕过 Claude 账户权限读取了从未分享的私人聊天；媒体看到的是分享快照或 Artifacts。Anthropic 的隐私帮助页提供了查看分享记录、取消分享和把可见性改回私有的入口。用户需要逐个检查曾经创建的公开链接，敏感内容在分享前也应先脱敏。\n\n这件事提醒人们，AI 产品的“隐私”不只由模型训练政策决定，还由链接、索引、缓存和撤回机制组成。后续应关注 Anthropic 是否调整分享提示、默认的可索引策略和历史链接撤回方式，以及搜索结果消失后是否会有完整的影响说明。",
+  "publishedAt": "2026-07-27",
+  "eventDate": "2026-07-27",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/claude-shared-chats-search-index-20260727.svg",
+    "alt": "Claude 分享链接从创建、公开传播到搜索引擎收录的隐私风险链；VibePolaris 自制可追溯 SVG。",
+    "sourceUrl": "/images/news/claude-shared-chats-search-index-20260727.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "discovery",
+      "title": "事件从一个搜索运算符开始",
+      "body": "用户发现 site:claude.ai/share 能搜到公开页面，媒体随后看到包含敏感内容的聊天和 Artifacts；完整数量没有被确认。",
+      "kind": "narrative"
+    },
+    {
+      "id": "share",
+      "title": "“任何拿到链接的人可见”是关键边界",
+      "body": "分享聊天会创建一个快照链接，公开发布后可能被论坛、社交网络或搜索引擎发现；它不等同于账户权限被绕过。",
+      "kind": "comparison"
+    },
+    {
+      "id": "index",
+      "title": "产品、外部传播和搜索引擎共同组成风险链",
+      "body": "Anthropic 强调链接需要被公开传播才可能被发现，Google 表示站点所有者可以控制抓取和索引；三个环节都影响暴露范围。",
+      "kind": "technical"
+    },
+    {
+      "id": "response",
+      "title": "报道日看到的是可能的公开快照",
+      "body": "健康记录、内部文件和儿童联系方式来自媒体看到的样本，完整影响范围与是否仍可访问都需要单独核验。",
+      "kind": "boundary"
+    },
+    {
+      "id": "action",
+      "title": "用户现在可以检查分享记录",
+      "body": "通过 Claude 隐私设置查看共享聊天并取消分享，敏感内容在创建公开链接前先脱敏；后续还要看产品是否改变默认策略。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "一段 Claude 对话怎样从分享链接走到搜索结果？",
+    "question": "把每个公开动作拆开，才能知道应在哪一环停止传播或撤回。",
+    "steps": [
+      {
+        "label": "创建快照",
+        "detail": "用户点击分享后，聊天和已有 Artifacts 被放进一个可通过链接查看的快照。",
+        "evidence": "Anthropic Privacy Center"
+      },
+      {
+        "label": "传播链接",
+        "detail": "链接被贴到论坛、社交媒体或公开文档后，搜索引擎就可能发现它。",
+        "evidence": "TechCrunch report"
+      },
+      {
+        "label": "抓取与索引",
+        "detail": "搜索引擎根据站点控制和页面可见性决定是否收录，结果可能被缓存或再次传播。",
+        "evidence": "Google statement via TechCrunch"
+      },
+      {
+        "label": "撤回与核查",
+        "detail": "用户检查分享记录、取消分享并确认敏感页面是否仍能访问，同时等待产品方说明影响范围。",
+        "evidence": "Anthropic Privacy Center"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/07/27/psa-your-claude-shared-chats-and-artifacts-may-have-ended-up-on-google/"
+  },
+  "relatedSlugs": [
+    "context",
+    "memory",
+    "authorization",
+    "event",
+    "tools",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/07/27/psa-your-claude-shared-chats-and-artifacts-may-have-ended-up-on-google/",
+      "claim": "TechCrunch 报道 Claude 分享聊天和 Artifacts 曾可通过 Google 搜索发现，部分样本包含敏感信息，随后测试不再返回结果。",
+      "excerpt": "An untold number of Claude chats and Artifacts ... were found publicly searchable on Google."
+    },
+    {
+      "url": "https://privacy.anthropic.com/en/articles/10593882-sharing-and-unsharing-chats",
+      "claim": "Anthropic 隐私中心说明分享快照、取消分享和管理分享记录的步骤。",
+      "excerpt": "Once a chat has been shared, anyone with the link can view the chat snapshot."
+    },
+    {
+      "url": "https://developers.google.com/search/docs/crawling-indexing/overview",
+      "claim": "Google Search 文档说明网站所有者可以通过抓取和索引控制影响页面是否进入搜索。",
+      "excerpt": "Learn how Google Search crawls, indexes, and serves web pages."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/07/27/psa-your-claude-shared-chats-and-artifacts-may-have-ended-up-on-google/",
+  "sourceHash": "sha256:a5e64f8f82b84c1bdbe9115537da28496649b505a2b4399471f3fa5b7477caad",
+  "status": "published",
+  "discoveredAt": "2026-10-04T18:10:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 context 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "memory",
+      "score": 0.95,
+      "evidence": [
+        "正文解释 memory 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 authorization 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 event 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 tools 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.86,
+      "evidence": [
+        "正文解释 agent 相关概念"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/07/27/psa-your-claude-shared-chats-and-artifacts-may-have-ended-up-on-google/",
+      "claim": "TechCrunch 报道 Claude 分享聊天和 Artifacts 曾可通过 Google 搜索发现，部分样本包含敏感信息，随后测试不再返回结果。",
+      "excerpt": "An untold number of Claude chats and Artifacts ... were found publicly searchable on Google."
+    },
+    {
+      "url": "https://privacy.anthropic.com/en/articles/10593882-sharing-and-unsharing-chats",
+      "claim": "Anthropic 隐私中心说明分享快照、取消分享和管理分享记录的步骤。",
+      "excerpt": "Once a chat has been shared, anyone with the link can view the chat snapshot."
+    },
+    {
+      "url": "https://developers.google.com/search/docs/crawling-indexing/overview",
+      "claim": "Google Search 文档说明网站所有者可以通过抓取和索引控制影响页面是否进入搜索。",
+      "excerpt": "Learn how Google Search crawls, indexes, and serves web pages."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T18:10:00Z",
+    "method": "source",
+    "notes": "按事件日与发布日核对；官方公告、公司自述、媒体报道与未确认数字分别标注，保留引用卡片与词条联动。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-04T18:10:00Z",
+    "notes": "按 vibepolaris-concept-pages、humanizer-zh 与 write-like-me 手写整理，检查新闻主线、日期、来源边界、读者解释、词条联动和 SVG 追溯信息。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T18:35:00Z",
+    "questions": [
+      "新闻主线优先于技术背景，正文按事件独立组织且适合零基础读者。",
+      "eventDate 与 publishedAt 与来源公开时间一致。",
+      "官方公告、公司/媒体口径和未确认数字分层，保留原始链接与引用卡片。",
+      "sections、explainer、SVG alt 与正文一致，词条联动真实。",
+      "中文表达自然，未出现明显模板化或 AI 腔。"
+    ],
+    "notes": "TechCrunch、Anthropic 与 Google 口径清楚，分享快照与未分享私人聊天分开，未夸大暴露数量；隐私风险链可读。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-07-27",
+  "fingerprint": "sha256:fbafdbd6799d2275dba18ee75f45b93f04b8a831ad6b3b39142cd6a40aa72122",
+  "promotedAt": "2026-10-04T00:11:37.363Z"
+}

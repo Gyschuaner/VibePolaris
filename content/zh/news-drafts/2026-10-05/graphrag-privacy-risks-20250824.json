@@ -1,0 +1,194 @@
+{
+  "slug": "graphrag-privacy-risks-20250824",
+  "title": "Graph RAG 少泄露原文，不代表少泄露关系",
+  "summary": "一篇 2025 年 8 月 24 日提交的研究测试了 Graph RAG 的数据提取风险：系统可能减少原始文本泄露，却更容易暴露实体及其关系等结构化信息。论文把风险从“模型会不会背出一句话”扩展到“攻击者能不能拼出知识图谱”，并讨论防御方向；文章将重点放在图结构、权限和审计边界，不展开可滥用的提取步骤。",
+  "body": "把文档切成节点和关系，通常是为了让 RAG 更会做多跳回答。但结构变清楚之后，泄露的形状也会改变。8 月 24 日提交的一篇研究提醒：Graph RAG 可能减少原始文本被逐字说出的风险，却让实体和关系更容易被拼出来。\n\n  研究者针对 Graph RAG 设计了数据提取测试，分别观察系统会不会泄露原始文本，以及会不会泄露实体、关系等结构化信息。这里的风险不只是一段秘密句子被复述，还包括谁和谁有关、某个实体处于什么网络位置、哪些节点经常一起出现。\n\n  论文发现一个不太直观的取舍：图结构帮助系统组织更连贯的答案，却也给了外部请求一个更清晰的重建目标。原文泄露变少，可能只是因为系统不直接输出整段文本；如果每次回答都透露一个实体和一条关系，积累起来仍然可能还原出敏感网络。\n\n  这对权限设计有直接影响。文档级 ACL 只说明用户能不能读某份材料，不一定覆盖“从多份材料拼出的关系”是否也能看见。图节点、边、属性和聚合结果需要分别考虑，尤其是跨部门、医疗、客户和供应链数据。\n\n  防御不能只靠把回答写得更模糊。查询范围、关系深度、结果数量、频率和跨请求关联都应记录；高敏感节点可以在图层做最小暴露，必要时对关系做分级或脱敏。系统还要能追踪一次回答用了哪些节点和边，方便发现长期的小量泄露。\n\n  这篇论文没有给出一个适用于所有 Graph RAG 的安全分数，它提供的是风险面和防御问题。真实系统还要按图谱的敏感性、访问模型、更新流程和对手能力重新测试，不能因为“原文没有被背出来”就宣布隐私安全。\n\n  Graph RAG 的新提醒是：知识结构本身也是数据。做 RAG 评测时，除了检查回答是否有依据，还要问模型和接口有没有把实体关系暴露到超出授权的范围；图越有用，越需要把关系级权限和长期审计做细。",
+  "publishedAt": "2025-08-24",
+  "eventDate": "2025-08-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/graphrag-privacy-risks-20250824.svg",
+    "alt": "Graph RAG 在减少原文泄露的同时可能暴露实体关系结构",
+    "sourceUrl": "/images/news/graphrag-privacy-risks-20250824.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "new-surface",
+      "title": "图结构把隐私风险换了一种形状",
+      "body": "Graph RAG 的节点和关系让多跳回答更连贯，也让外部请求有机会重建实体网络。隐私不能只看有没有逐字输出原文。",
+      "kind": "narrative"
+    },
+    {
+      "id": "extraction-targets",
+      "title": "原始文本和实体关系要分开测",
+      "body": "研究分别测试原始文本、实体和关系的泄露。即使没有一句完整秘密被复述，多次暴露节点和边也可能拼出敏感结构。",
+      "kind": "technical"
+    },
+    {
+      "id": "tradeoff",
+      "title": "少泄露原文，可能更易泄露结构化信息",
+      "body": "论文发现 Graph RAG 可能降低 raw text leakage，却显著更容易暴露结构化实体和关系。这是图组织能力带来的新取舍。",
+      "kind": "comparison"
+    },
+    {
+      "id": "authorization",
+      "title": "文档权限不自动覆盖关系权限",
+      "body": "用户能读多份文档，不代表可以看到从这些文档拼出的关系。节点、边、属性和聚合结果需要分别定义最小授权。",
+      "kind": "boundary"
+    },
+    {
+      "id": "defense",
+      "title": "限制深度、范围和关联，记录每次图访问",
+      "body": "查询范围、关系深度、结果数量、频率和跨请求关联都应纳入控制；高敏感节点可分级、脱敏，并记录回答使用过的节点和边。",
+      "kind": "technical"
+    },
+    {
+      "id": "evaluation",
+      "title": "没有一个通用分数能替代真实重测",
+      "body": "论文提供风险面和防御问题，而不是所有 Graph RAG 的统一安全分数。真实系统需按图谱、访问模型、更新流程和对手能力重新验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "takeaway",
+      "title": "知识结构本身也是需要保护的数据",
+      "body": "RAG 评测要同时检查答案依据和关系是否越过授权边界。图越有用，关系级权限和长期审计越重要。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "data-leak",
+    "title": "Graph RAG 的隐私检查要看哪些东西？",
+    "question": "把节点、边、属性和跨请求关联分别纳入授权与审计。",
+    "steps": [
+      {
+        "label": "列出图对象",
+        "detail": "明确哪些节点、关系、属性和聚合结果属于敏感数据，不把整个图当成同一种权限。",
+        "evidence": "structured data, such as entities and their relationships"
+      },
+      {
+        "label": "分开测泄露",
+        "detail": "分别测试原始文本是否被复述，以及实体关系是否能被逐步拼出。",
+        "evidence": "data extraction vulnerabilities ... raw text and structured data"
+      },
+      {
+        "label": "限制查询面",
+        "detail": "按用户和任务限制关系深度、节点范围、结果数量、频率和跨请求关联。",
+        "evidence": "potential defense mechanisms to mitigate these novel attack surfaces"
+      },
+      {
+        "label": "记录图访问",
+        "detail": "保存回答用过的节点、边和版本，发现长期小量暴露时可以回放。",
+        "evidence": "building more secure systems"
+      },
+      {
+        "label": "重新验证",
+        "detail": "按真实图谱、更新流程和权限模型回归，不能用“没有背出原文”代替隐私评估。",
+        "evidence": "foundational analysis of the unique privacy challenges in Graph RAG"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Graph RAG Privacy 作者组",
+    "url": "https://arxiv.org/abs/2508.17222"
+  },
+  "relatedSlugs": [
+    "rag",
+    "authorization",
+    "data-validation",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17222",
+      "claim": "研究测试 Graph RAG 是否泄露原始文本以及实体和关系等结构化信息。",
+      "excerpt": "data extraction vulnerabilities ... leaking both raw text and structured data, such as entities and their relationships"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17222",
+      "claim": "论文发现 Graph RAG 可能降低原文泄露，却更容易提取结构化实体关系，并讨论防御方向。",
+      "excerpt": "may reduce raw text leakage, ... significantly more vulnerable to the extraction of structured entity and relationship information"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17222",
+  "sourceHash": "sha256:e92860d2b80a48243d96783b0ef39555a15783087ede8ff2b19207916f50554f",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 Graph RAG 的图结构、检索和回答流程。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.98,
+      "evidence": [
+        "正文把节点、边、属性和聚合结果放回关系级权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-validation",
+      "score": 0.93,
+      "evidence": [
+        "正文讨论图谱更新、节点边版本和长期关联审计。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.97,
+      "evidence": [
+        "正文把原文泄露与结构化关系泄露分成不同评测对象。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 24 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17222",
+      "claim": "arXiv 记录显示研究于 2025 年 8 月 24 日提交，分析 Graph RAG 的数据提取和隐私风险。",
+      "excerpt": "Date: Sun Aug 24 06:19:44 2025 ... unique privacy challenges in Graph RAG"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文摘要中的原始文本与实体关系提取对象、原文泄露/结构化泄露取舍和防御讨论；正文不展开攻击步骤，补充关系级授权、查询范围、版本和长期审计边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把 Graph RAG 的结构化隐私面与原文背诵区分开，未复述数据提取攻击细节，明确文档权限不等于关系权限，并给出节点/边级控制与审计边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-24-graphrag-privacy-risks"
+}

@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-09-07",
+  "eventDate": "2025-09-07",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-09-07 AI 事件重新检索：调用 arXiv API submittedDate 精确日期查询，筛选 cs.AI/cs.CL/cs.LG/cs.RO/cs.CR/cs.MA；从 129 条当天结果中按首次提交、主题相关性、方法清晰度和与既有文章的差异筛选 16 个候选，再按重要性逐篇写作。",
+    "sourceUrls": [
+      "https://export.arxiv.org/api/query?search_query=submittedDate:[202509070000 TO 202509072359] AND (cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.RO OR cat:cs.CR OR cat:cs.MA)&start=0&max_results=200&sortBy=submittedDate&sortOrder=ascending",
+      "https://arxiv.org/abs/2509.05941",
+      "https://arxiv.org/abs/2509.05878",
+      "https://arxiv.org/abs/2509.06239",
+      "https://arxiv.org/abs/2509.06174",
+      "https://arxiv.org/abs/2509.05882",
+      "https://arxiv.org/abs/2509.05933",
+      "https://arxiv.org/abs/2509.05883",
+      "https://arxiv.org/abs/2509.06235",
+      "https://arxiv.org/abs/2509.07017",
+      "https://arxiv.org/abs/2509.06216",
+      "https://arxiv.org/abs/2509.05921",
+      "https://arxiv.org/abs/2509.05874",
+      "https://arxiv.org/abs/2509.06164",
+      "https://arxiv.org/abs/2509.05915",
+      "https://arxiv.org/abs/2509.10546",
+      "https://arxiv.org/abs/2509.09708"
+    ],
+    "sourcePolicy": [
+      "paper"
+    ],
+    "candidateCount": 16,
+    "primaryCandidateCount": 16,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "code2mcp-repository-to-mcp-20250907",
+      "title": "Code2MCP：把代码仓库自动变成 MCP 服务",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05941"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05941",
+      "sourceHash": "sha256:080ceaaa2d0cec5f10b8f0127178445f679e1f719c0370b74162ab4a90dca598",
+      "relatedSlugs": ["mcp", "agent", "tools", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05941",
+          "claim": "Code2MCP 用多 Agent 工作流分析 GitHub 仓库、设置环境、设计工具函数并生成 MCP 服务，还用自纠错循环提高可靠性。",
+          "excerpt": "automatically transforms a GitHub repository into a functional MCP service ... multi-agent workflow ... self-correcting loop"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它处理 MCP 生态里常被跳过的供给侧问题：怎样把现有代码库变成可调用工具；论文明确了分析、环境、工具设计和自纠错的完整链路。"
+    },
+    {
+      "slug": "medfacteval-clinical-summaries-20250907",
+      "title": "MedFactEval：用临床关键事实评估生成式病历摘要",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05878"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05878",
+      "sourceHash": "sha256:9063d80380f4f84035fc44d6026e7b841ab681b1a57f28a1f990d492cebb138f",
+      "relatedSlugs": ["llm", "eval", "citation", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05878",
+          "claim": "MedFactEval 让临床人员定义高显著性关键事实，再用多 LLM Jury 评估摘要是否包含这些事实；MedAgentBrief 提供多步骤出院摘要生成流程。",
+          "excerpt": "clinicians define high-salience key facts ... an LLM Jury ... multi-step workflow designed to generate high-quality, factual discharge summaries"
+        }
+      ],
+      "decision": "selected",
+      "reason": "临床摘要的事实性是落地瓶颈，论文把医生定义的关键事实、可规模化评测和生成流程放在同一工作流里，且有专家小组对照。"
+    },
+    {
+      "slug": "proof2silicon-verified-hardware-20250907",
+      "title": "Proof2Silicon：先让代码通过形式验证，再生成硬件",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.06239"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.06239",
+      "sourceHash": "sha256:00aaf08877f8ccbdaa9963fa6adfd9b161409bfc8c0ddb959ffb936e76848350",
+      "relatedSlugs": ["llm", "agent", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.06239",
+          "claim": "Proof2Silicon 将 verifier-driven RL 提示修复、已验证 Dafny 程序到高层 C 的转换和 Vivado HLS RTL 生成串成端到端流程；论文在 100 任务基准上报告最高 72% 硬件综合成功率。",
+          "excerpt": "verifier-driven RL agent ... verified Dafny programs ... Vivado HLS ... 100-task benchmark ... up to 72%"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把 LLM 代码生成的“能写出来”推进到“形式验证通过后再进入硬件综合”，对安全关键和硬件场景的边界很清楚。"
+    },
+    {
+      "slug": "edit-reasoning-trimming-20250907",
+      "title": "EDIT：让推理模型学会删掉多余的思考链",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.06174"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.06174",
+      "sourceHash": "sha256:a428001b73ddc7178d04a344a193eb8d4127f15d897f550d2f7b15e220ace7ac",
+      "relatedSlugs": ["llm", "context", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.06174",
+          "claim": "EDIT 在测试时引导大型推理模型寻找更短的正确推理路径，联合跟踪长度与答案分布，在正确性和简洁性之间做约束选择。",
+          "excerpt": "Efficient Dynamic Inference Trimming ... identify the shortest correct reasoning paths ... jointly tracking length and answer distributions"
+        }
+      ],
+      "decision": "selected",
+      "reason": "推理模型的过度思考会增加成本并降低可读性，EDIT 把测试时缩短路径作为单独目标，讨论效率与正确性的实际折中。"
+    },
+    {
+      "slug": "collaborate-deliberate-evaluate-20250907",
+      "title": "多 Agent 协作里，模型对齐会改变群体决策轨迹",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05882"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05882",
+      "sourceHash": "sha256:87e69d4be7e9e310f951f9fa98c53f34f1f9b2b1eb41b21e43f4392c6f2c974b",
+      "relatedSlugs": ["agent", "llm", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05882",
+          "claim": "论文用多轮多方协作模拟研究不同对齐方法如何影响干预 Agent、信念对齐和协调结果，并指出长时协作不能直接套用单用户设定。",
+          "excerpt": "multi-turn, multi-party collaborations ... belief alignment, and coordination ... long-horizon multi-party interactions"
+        }
+      ],
+      "decision": "selected",
+      "reason": "研究把对齐从单轮用户问答拉到群体协作轨迹，直接测量干预 Agent 如何影响协调和正确任务结果，补上多 Agent 评估的时间维度。"
+    },
+    {
+      "slug": "mapagent-geospatial-tools-20250907",
+      "title": "MapAgent：让地图工具按层级分工，而不是挤在一个 Agent 里",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05933"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05933",
+      "sourceHash": "sha256:dd2a503aba6607495ecfe626f166d89e40ccb39a75aafe1f67536acd5bc718b4",
+      "relatedSlugs": ["agent", "tools", "api", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05933",
+          "claim": "MapAgent 把规划和执行解耦，由高层规划器拆分子目标，再把地图 API 交给专门的 map-tool agent 并行协调；论文在四个地理空间基准上评估。",
+          "excerpt": "decouples planning from execution ... dedicated map-tool agent ... four diverse geospatial benchmarks"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它用地图任务说明工具很多时为什么需要层级路由：规划、API 编排和答案生成不必都塞给同一个 Agent。"
+    },
+    {
+      "slug": "multimodal-prompt-injection-defenses-20250907",
+      "title": "多模态提示注入：图像也会成为 LLM 的不可信输入",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05883"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05883",
+      "sourceHash": "sha256:8e00cb29ff959512640fa2890177e0d92632a0297a73893d976b99def2791cb4",
+      "relatedSlugs": ["llm", "prompt", "authorization", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05883",
+          "claim": "论文将直接注入、间接外部注入、图像注入和提示泄露分成四类，对八个商业模型做防护评估，并指出仅靠内置防护不足。",
+          "excerpt": "direct injection, indirect (external) injection, image-based injection, and prompt leakage ... eight commercial models"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把提示注入从纯文本扩展到图像和外部内容，正文只保留威胁分类、评估结论和输入规范化等防御方向，不复现攻击样例。"
+    },
+    {
+      "slug": "pillagerbench-competitive-agents-20250907",
+      "title": "PillagerBench：在竞争性 Minecraft 团队环境里评估 Agent",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.06235"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.06235",
+      "sourceHash": "sha256:1552db0babbb6c020a9a7fde5d897de11789b272838f0c653a9471f2d428c319",
+      "relatedSlugs": ["agent", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.06235",
+          "claim": "PillagerBench 提供实时竞争性 Minecraft 团队环境、扩展 API、多轮测试和规则对手，用来评估 LLM 多 Agent 团队协作。",
+          "excerpt": "real-time competitive team-vs-team scenarios in Minecraft ... multi-round testing ... rule-based built-in opponents"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "评测环境有趣且可复现，但优先级低于当天直接影响 Agent 工具、临床事实性和形式化验证的研究。"
+    },
+    {
+      "slug": "spectral-nsr-symbolic-reasoning-20250907",
+      "title": "Spectral NSR：把逻辑规则放进图谱频域推理",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.07017"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.07017",
+      "sourceHash": "sha256:e4b9f6e171844b4bbab601c2bba2e879c38afdf20976dd53b2e3d44d926a9905",
+      "relatedSlugs": ["llm", "eval", "context", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.07017",
+          "claim": "Spectral NSR 用图信号处理和拉普拉斯特征结构把逻辑规则写成频谱模板，在 ProofWriter 和 CLUTRR 等推理基准上比较准确率、鲁棒性和可解释性。",
+          "excerpt": "embeds logical rules as spectral templates ... ProofWriter and CLUTRR"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "方法跨度大、扩展项很多，适合后续单独解释神经符号和频谱推理，不在本日优先写作队列。"
+    },
+    {
+      "slug": "agentic-software-engineering-roadmap-20250907",
+      "title": "Agentic Software Engineering：把软件工程拆成人和 Agent 两套工作台",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.06216"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.06216",
+      "sourceHash": "sha256:2692d0a8d4d6cef7c107378176ca22358a458858706c5056f3a777366e25b54a",
+      "relatedSlugs": ["agent", "tools", "context", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.06216",
+          "claim": "SASE 研究路线把 Agent Command Environment 和 Agent Execution Environment 分开，讨论 Agent 发起的人类回调、交接和可审查的软件工程活动。",
+          "excerpt": "Agent Command Environment (ACE) ... Agent Execution Environment (AEE) ... human callbacks and handovers"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "这是路线图和概念框架，适合结合项目协作流程另写，今天先让实验性系统和可量化评测占据篇幅。"
+    },
+    {
+      "slug": "dataset-ownership-llm-20250907",
+      "title": "Dataset Ownership：给 LLM 时代的数据版权保护做技术分类",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05921"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05921",
+      "sourceHash": "sha256:b122cfe2d9e95b1c31c23d9037167b41a970406e45717f0796a3097b506b5481",
+      "relatedSlugs": ["dataset-data", "authorization", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05921",
+          "claim": "综述把数据版权保护分为非侵入、最小侵入和最大侵入三类，并讨论在不透明或去中心化环境里验证数据所有权的限制。",
+          "excerpt": "non-intrusive ... minimally-intrusive ... maximally-intrusive methods"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "版权和数据治理重要，但当天已有更直接的 MCP、临床评测和提示注入事件，暂缓以保持日内主题密度。"
+    },
+    {
+      "slug": "sparse-reference-selection-20250907",
+      "title": "Sparse Reference Selection：用强化学习挑更值得读的论文",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05874"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05874",
+      "sourceHash": "sha256:457ef37a2ed113f83b011d37835f2537e4a0e4172bc36cff3adc3a20ec4f3242",
+      "relatedSlugs": ["eval", "rag", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05874",
+          "claim": "论文用深度强化学习在只看标题和摘要、参考文献稀疏的条件下挑选论文，以支持药物—基因关系发现。",
+          "excerpt": "sparse reference selection ... drug--gene relation discovery ... titles and abstracts"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "研究问题清楚，但应用范围较窄，优先级低于当天能直接改变 Agent 工作流的系统。"
+    },
+    {
+      "slug": "europarlvote-llm-bias-20250907",
+      "title": "EuroParlVote：用投票结果检验 LLM 的性别与政治偏差",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.06164"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.06164",
+      "sourceHash": "sha256:7281307fc09def96374e158d47ad289fb01c9098d6b793ad68300abe9bfce773",
+      "relatedSlugs": ["llm", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.06164",
+          "claim": "EuroParlVote 把欧洲议会发言、点名投票和议员元数据连起来，评估 LLM 的性别分类与投票预测偏差。",
+          "excerpt": "European Parliament debate speeches ... roll-call vote outcomes ... gender classification and vote prediction"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "偏差评测具有长期价值，但需要更谨慎地解释政治语境和数据标签，暂留待后续逐篇处理。"
+    },
+    {
+      "slug": "early-exit-llm-inference-20250907",
+      "title": "Early Exit：自适应推理为什么会拖慢批量吞吐",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.05915"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.05915",
+      "sourceHash": "sha256:85c0d583ecec5573179f1648bffda680969c0b672d5efc5f1143a10f605533c2",
+      "relatedSlugs": ["llm", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.05915",
+          "claim": "论文分析按 token 动态提前退出可能在批量推理中制造同步开销，并提出并行解码、参数共享和轻量路由器的统一效率框架。",
+          "excerpt": "per-token dynamism ... system-level bottlenecks ... lightweight routers"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "推理效率问题重要，但内容更像长篇论文工作的总览，先处理当天更具事件辨识度的系统和基准。"
+    },
+    {
+      "slug": "cort-financial-risk-redteam-20250907",
+      "title": "CoRT：金融场景的风险隐藏式多轮红队评估",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.10546"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.10546",
+      "sourceHash": "sha256:0a077c683b423703522e31d915b740ec1b29cec1fd6818b9c442f7541e138c64",
+      "relatedSlugs": ["llm", "eval", "authorization", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.10546",
+          "claim": "CoRT 研究金融领域表面看似正常、但可能诱导违规回答的多轮红队风险，并构建六类风险的 FinRisk-Bench；正文暂不复现攻击提示或成功率细节。",
+          "excerpt": "controllable black-box multi-turn risk-concealed red-teaming ... six financial risk categories"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "安全价值明确，但论文摘要包含高攻击成功率和迭代攻击组件，先不在本日正文展开可操作攻击研究。"
+    },
+    {
+      "slug": "llm-refusal-sae-20250907",
+      "title": "Beyond I’m Sorry：用稀疏特征拆解 LLM 的拒答行为",
+      "eventDate": "2025-09-07",
+      "publishedAt": "2025-09-07",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / 作者组",
+        "url": "https://arxiv.org/abs/2509.09708"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2509.09708",
+      "sourceHash": "sha256:34dd7b94405f763e7a6c4169755d0c9be5710631f1687044c243ca281288813f",
+      "relatedSlugs": ["llm", "eval", "event"],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.09708",
+          "claim": "论文用稀疏自编码器研究 Gemma-2-2B-IT 与 LLaMA-3.1-8B-IT 的拒答机制，关注哪些残差流特征与拒答翻转相关。",
+          "excerpt": "study two public instruction-tuned models ... sparse autoencoders ... refusal"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "拒答机制研究与安全有关，但摘要涉及可改变拒答行为的内部特征实验，先保留为候选，不在本日写作中展开。"
+    }
+  ],
+  "selectedSlugs": [
+    "code2mcp-repository-to-mcp-20250907",
+    "medfacteval-clinical-summaries-20250907",
+    "proof2silicon-verified-hardware-20250907",
+    "edit-reasoning-trimming-20250907",
+    "collaborate-deliberate-evaluate-20250907",
+    "mapagent-geospatial-tools-20250907",
+    "multimodal-prompt-injection-defenses-20250907"
+  ],
+  "gap": null
+}

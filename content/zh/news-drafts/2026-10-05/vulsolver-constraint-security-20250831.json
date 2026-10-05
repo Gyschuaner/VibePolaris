@@ -1,0 +1,199 @@
+{
+  "slug": "vulsolver-constraint-security-20250831",
+  "title": "VULSOLVER：让 LLM 用约束求解辅助代码漏洞检测",
+  "summary": "VULSOLVER 论文于 8 月 31 日提交，针对纯规则或纯 LLM 漏洞检测在长上下文、输出稳定性和幻觉上的问题，把检测任务建模为约束求解，并结合 SAST 与 LLM 的语义推理。在 OWASP Benchmark 的 1,023 个标注样本上，论文报告准确率 97.85%、F1 97.97% 和召回率 100%；在开源项目评测中发现 15 个此前未知的高严重度漏洞。",
+  "body": "代码漏洞检测有两个常见极端：规则写得太死，遇到变体就漏掉；模型理解得很灵活，却可能因为长上下文或语言生成不稳定而报出不存在的问题。VULSOLVER 试图把两种能力放在一张更严格的约束表里。\n\n它把漏洞检测建模为约束求解问题。系统先用 SAST 提取控制流、数据流和规则信号，再让 LLM 帮助解释代码语义、补充条件和组织候选约束。最终判断不是一句“看起来危险”，而是要看这些约束能否同时成立。\n\n这种设计让模型的角色更像语义分析员，而不是唯一裁判。若某个候选漏洞缺少必要的前置条件，约束求解可以拒绝它；如果规则没有覆盖一段复杂的数据流，模型提供的语义线索又能帮助扩大检查范围。两者的边界仍要记录清楚，方便工程师复核。\n\n在 OWASP Benchmark 的 1,023 个标注样本上，论文报告准确率 97.85%、F1 97.97% 和 100% 召回；在多个开源项目中，VULSOLVER 还发现 15 个此前未知的高严重度漏洞。高指标和新发现都需要结合项目、标签和验证方式解读，不能直接当成所有代码库的漏洞保证。\n\n落地时，漏洞候选要经过可复现的测试、版本定位和人工确认。LLM 生成的约束、SAST 结果和最终报告都应留在审计轨迹中，不能因为模型给出高置信度就自动修改代码或发布漏洞信息。\n\n工具权限也要隔离。分析器可以在沙箱里读取构建产物和测试样例，验证过程不要默认拥有生产凭据；涉及真实系统的复现应经过授权，并限制网络、文件和执行范围。\n\nVULSOLVER 的启发是把“模型懂代码”接到“条件必须同时满足”上。安全检测要的是可解释的证据链：哪里触发规则、哪些约束成立、还有哪一步需要人确认，而不是一个看起来很高的总分。",
+  "publishedAt": "2025-08-31",
+  "eventDate": "2025-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/vulsolver-constraint-security-20250831.svg",
+    "alt": "VULSOLVER 将 SAST 信号、LLM 语义和约束求解结合进行漏洞检测",
+    "sourceUrl": "/images/news/vulsolver-constraint-security-20250831.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "rule-model-gap",
+      "title": "规则会漏，纯模型会漂",
+      "body": "固定匹配难以覆盖变体，LLM 又可能受长上下文和生成不稳定影响，二者都需要可检查约束。",
+      "kind": "narrative"
+    },
+    {
+      "id": "constraint-form",
+      "title": "把漏洞判断写成约束求解",
+      "body": "SAST 提供控制流和数据流信号，LLM 补充代码语义，最终判断要求必要条件同时成立。",
+      "kind": "technical"
+    },
+    {
+      "id": "division-of-labor",
+      "title": "模型做语义分析，不独占裁判权",
+      "body": "缺少前置条件的候选可以被约束拒绝，规则覆盖不足的路径则由语义线索帮助扩展。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-metrics",
+      "title": "OWASP Benchmark 上召回率 100%",
+      "body": "1,023 个样本上的准确率为 97.85%、F1 为 97.97%；开源项目中发现 15 个高严重度漏洞，仍需结合验证条件解读。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reproducible-findings",
+      "title": "候选漏洞要能复现和定位",
+      "body": "保存约束、SAST 结果、版本和测试证据，人工确认后再决定修复或披露。",
+      "kind": "example"
+    },
+    {
+      "id": "sandbox-boundary",
+      "title": "分析器和生产凭据必须隔离",
+      "body": "沙箱限制文件、网络和执行权限，真实系统复现要有授权，模型不能直接修改生产代码。",
+      "kind": "boundary"
+    },
+    {
+      "id": "evidence-chain",
+      "title": "安全检测需要条件链，不只是总分",
+      "body": "工程师应看到触发规则、成立约束和待确认步骤，才能判断结果是否值得信任。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "VULSOLVER 怎样让 LLM 参与漏洞检测而不独自下结论？",
+    "question": "用 SAST 提取程序信号，让 LLM 补充语义约束，再由求解和复现检查条件是否同时成立。",
+    "steps": [
+      {
+        "label": "提取程序信号",
+        "detail": "从控制流、数据流和已有规则中得到可验证的候选条件。",
+        "evidence": "static application security testing integration"
+      },
+      {
+        "label": "补充语义约束",
+        "detail": "让 LLM 解释变量、调用和前置条件，生成可进入求解器的语义信息。",
+        "evidence": "LLM semantic reasoning in constraint solving"
+      },
+      {
+        "label": "检查条件合取",
+        "detail": "判断漏洞所需条件是否同时满足，过滤缺少关键前置条件的候选。",
+        "evidence": "modeling vulnerability detection as a constraint-solving problem"
+      },
+      {
+        "label": "隔离复现验证",
+        "detail": "在沙箱中用测试输入复现，记录版本和结果，不触碰生产凭据。",
+        "evidence": "OWASP Benchmark and open-source project evaluation"
+      },
+      {
+        "label": "人工确认处置",
+        "detail": "工程师复核高严重度结果后再修复或披露，保留完整审计轨迹。",
+        "evidence": "previously unknown high-severity vulnerabilities"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00882"
+  },
+  "relatedSlugs": [
+    "llm",
+    "tools",
+    "execution-sandbox",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00882",
+      "claim": "VULSOLVER 将漏洞检测建模为约束求解，结合 SAST 与 LLM 语义推理。",
+      "excerpt": "Vulnerability Detection via LLM-Driven Constraint Solving"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00882",
+      "claim": "在 OWASP Benchmark 1,023 个样本上报告 97.85% 准确率、97.97% F1、100% 召回，并在开源项目中发现 15 个高严重度漏洞。",
+      "excerpt": "1,023 labeled samples ... 97.85% accuracy ... 100% recall ... 15 previously unknown"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00882",
+  "sourceHash": "sha256:00ef0995c92e601402bda4e484d0882a25202b1cd808776f38ab63cb85a98fd2",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论 LLM 语义推理、长上下文和代码漏洞检测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.97,
+      "evidence": [
+        "正文把 SAST、约束求解和复现工具作为检测链组成部分。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "execution-sandbox",
+      "score": 0.97,
+      "evidence": [
+        "正文要求漏洞复现限制文件、网络和执行权限。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 OWASP Benchmark 样本、准确率/F1/召回率和项目发现结果。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 31 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00882",
+      "claim": "arXiv 记录 VULSOLVER 于 2025 年 8 月 31 日提交，研究 LLM 驱动的约束求解漏洞检测。",
+      "excerpt": "Date: Sun Aug 31 ... VULSOLVER"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00882",
+      "claim": "摘要给出 OWASP Benchmark 指标和开源项目高严重度漏洞结果。",
+      "excerpt": "97.85% accuracy ... 97.97% F1-score ... 100% recall ... 15 previously unknown"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对约束求解、SAST/LLM 协作、OWASP Benchmark 1,023 样本指标和 15 个高严重度发现；正文补充沙箱、人工复现和生产凭据隔离。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 VULSOLVER 写成规则、语义和约束求解的证据链，保留数据集和漏洞验证边界，补上沙箱与人工确认，不展开漏洞利用细节；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-31-vulsolver-constraint-security-20250831"
+}

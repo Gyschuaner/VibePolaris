@@ -1,0 +1,264 @@
+{
+  "slug": "salesforce-aiforce-interface-20260915",
+  "title": "Salesforce 发布 AIforce：让 Claude、Slack 和 Lightning 直接调用企业上下文",
+  "summary": "Salesforce 于 2026-09-15 发布 AIforce，把 Salesforce 的数据、工作流、业务逻辑、权限和治理带到 Claude、Slack、Lightning 等 AI 界面；Claudeforce、Slackforce 和 Agentforce Coworker 的入口与可用性不同，仍需按客户协议和权限审计。",
+  "body": "Salesforce 在 2026-09-15 宣布 AIforce，把它称为一个“实时界面层”：用户不必先打开 CRM，再沿着固定菜单找记录，而是可以在 Claude、Slack、Lightning 或其他接入点里直接提问、更新记录和触发工作流。这个产品方向的重点不是再做一个聊天窗口，而是把企业原有的上下文和动作入口搬到模型所在的地方。\n\nAIforce 试图带过去的内容比一张数据表多。Salesforce 列出了 Data 360 的统一上下文、Customer 360 的语义和业务规则、Agentforce 的代理，再加上权限、安全和治理。每次请求仍走 Salesforce 的权限与业务规则，动作也回到 Salesforce 执行；公司称模型提供方采用 Zero Data Retention，企业数据只用于回答当前问题而不保留。\n\n首批入口各有不同。Claudeforce 把预构建的 MCP server 和 37 个销售技能放进 Claude，并先以 beta 面向所有客户；Slackforce 把 Salesforce 的实时上下文带入会话、Slackbot 和协作界面；Agentforce Coworker 则留在 Lightning 里，调用已经部署的 Agentforce 代理。Salesforce 还提供 MCP、API、插件和 skills，让开发者自己拼出界面。\n\n这是一种从“应用界面”到“代理界面”的迁移，但它没有自动解决权限误配和错误动作。既有 Salesforce 权限能否覆盖每个新接口，管理员如何审计由自然语言触发的更新，模型供应商的零保留承诺是否与客户合同一致，都需要在真实组织里逐项验证。Salesforce 也提示定价、区域和可用性会随客户协议变化。\n\n因此，AIforce 的新闻价值在于它把企业软件的上下文、动作和治理一起包装成可被外部代理调用的层。读者判断它是否有用时，应先问“代理拿到什么权限、动作从哪里回写、失败如何撤销”，再看发布会里“任何界面都能工作”的叙述。",
+  "publishedAt": "2026-09-15",
+  "eventDate": "2026-09-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/salesforce-aiforce-interface-20260915.svg",
+    "alt": "AIforce 把企业上下文、权限和动作从固定 CRM 界面接到多个 AI 入口。",
+    "sourceUrl": "/images/news/salesforce-aiforce-interface-20260915.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "interface-layer",
+      "title": "AIforce 改的是入口，不只是聊天外观",
+      "body": "用户可以在 Claude、Slack 或 Lightning 里提问、读记录和触发工作流；真正变化是企业上下文与动作不再被固定 CRM 页面独占。",
+      "kind": "narrative"
+    },
+    {
+      "id": "governed-actions",
+      "title": "每一次代理动作仍要穿过 Salesforce 的规则",
+      "body": "Salesforce 表示请求遵守既有权限和业务规则，动作回到平台执行。这个设计把治理放回系统记录，但需要管理员验证自然语言请求与细粒度权限是否匹配。",
+      "kind": "technical"
+    },
+    {
+      "id": "launch-surface",
+      "title": "Claudeforce、Slackforce 和 Coworker 不是同一个入口",
+      "body": "Claudeforce 偏向外部 AI 对话的 MCP 连接，Slackforce 偏向多人协作上下文，Agentforce Coworker 留在 Lightning 内部。三者的可用性和操作范围不能混写。",
+      "kind": "comparison"
+    },
+    {
+      "id": "retention",
+      "title": "Zero Data Retention 是公司承诺，仍要看合同和日志",
+      "body": "Salesforce 称业务数据不由模型提供方保留，定价和地区以客户协议为准。企业还要核对审计、撤销、供应商边界和 beta 入口。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个外部 AI 界面怎样调用企业系统？",
+    "question": "把上下文、权限和回写路径画出来，代理就不再像一个凭空行动的黑盒。",
+    "steps": [
+      {
+        "label": "提出自然语言请求",
+        "detail": "员工在 Claude、Slack 或 Lightning 中说出问题或想完成的动作。",
+        "evidence": "AIforce 首批入口"
+      },
+      {
+        "label": "读取受控上下文",
+        "detail": "系统把 Data 360、业务逻辑、语义和会话上下文按用户权限提供给代理。",
+        "evidence": "Salesforce trusted context"
+      },
+      {
+        "label": "选择技能或工具",
+        "detail": "代理通过 MCP、API、插件或 skills 找到可用动作，不能凭空创造权限。",
+        "evidence": "Headless Toolkit"
+      },
+      {
+        "label": "回写并留下审计线索",
+        "detail": "动作回到 Salesforce 的业务规则中执行；是否成功、谁授权、如何撤销都应由组织留档。",
+        "evidence": "既有权限与业务规则"
+      }
+    ]
+  },
+  "source": {
+    "name": "Salesforce",
+    "url": "https://www.salesforce.com/news/stories/aiforce-announcement/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "authorization",
+    "mcp",
+    "tools",
+    "api",
+    "state",
+    "data-quality"
+  ],
+  "relatedArticleSlugs": [
+    "salesforce-koa-crm-reasoning-20260915",
+    "salesforce-aws-enterprise-ai-20260915",
+    "claude-projects-redesigned-20260917",
+    "salesforce-missionforce-openai-20260916"
+  ],
+  "sources": [
+    {
+      "url": "https://www.salesforce.com/news/stories/aiforce-announcement/",
+      "claim": "Salesforce 于 2026-09-15 发布 AIforce，把 Salesforce 的数据、工作流、业务逻辑、权限和治理带到 Claude、Slack、Lightning 等 AI 界面。",
+      "excerpt": "Salesforce, Salesforce Unveils AIforce, 2026-09-15：AIforce 的 live interface layer、MCP/API/skills、Claudeforce、Slackforce 与 Agentforce Coworker。"
+    },
+    {
+      "url": "https://www.axios.com/2026/09/15/dreamforce-gathering-ai-slowdown",
+      "claim": "Axios 同日交叉报道 AIforce 的核心方向是让用户通过 AI 代理访问 Salesforce 数据，并强调仍受现有权限和业务规则约束。",
+      "excerpt": "Axios, Dreamforce becomes ground zero for AI slowdown debate, 2026-09-15：AIforce 产品背景和权限边界。"
+    }
+  ],
+  "canonicalUrl": "https://www.salesforce.com/news/stories/aiforce-announcement/",
+  "sourceHash": "sha256:6c117d8f6ddda38d1e558ecf7bfac2f1350ee634c46ee19c5ee53eadf1942bc0",
+  "status": "published",
+  "discoveredAt": "2026-10-03T20:15:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.88,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.82,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "state",
+      "score": 0.74,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.74,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-koa-crm-reasoning-20260915",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-aws-enterprise-ai-20260915",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "claude-projects-redesigned-20260917",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-missionforce-openai-20260916",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.salesforce.com/news/stories/aiforce-announcement/",
+      "claim": "Salesforce 于 2026-09-15 发布 AIforce，把 Salesforce 的数据、工作流、业务逻辑、权限和治理带到 Claude、Slack、Lightning 等 AI 界面。",
+      "excerpt": "Salesforce, Salesforce Unveils AIforce, 2026-09-15：AIforce 的 live interface layer、MCP/API/skills、Claudeforce、Slackforce 与 Agentforce Coworker。"
+    },
+    {
+      "url": "https://www.axios.com/2026/09/15/dreamforce-gathering-ai-slowdown",
+      "claim": "Axios 同日交叉报道 AIforce 的核心方向是让用户通过 AI 代理访问 Salesforce 数据，并强调仍受现有权限和业务规则约束。",
+      "excerpt": "Axios, Dreamforce becomes ground zero for AI slowdown debate, 2026-09-15：AIforce 产品背景和权限边界。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "method": "manual",
+    "notes": "逐条核对官方公告或原始报道、事件日和发布日；正文把厂商主张、媒体观察、测试状态和后续计划分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "notes": "按 2026-09-15 的独立新闻事件逐篇手写；不把厂商基准、beta、预览、合作计划或观点争论写成已经普遍落地的能力。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T21:44:48Z",
+    "questions": [],
+    "notes": "Salesforce 官方与 Axios 归属清楚；正文拆开 AIforce、Claudeforce/Slackforce/Coworker、权限、Zero Data Retention 和 beta/协议边界，未把外部代理写成超级管理员。Explainer/SVG 对应。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-15",
+  "fingerprint": "sha256:6c117d8f6ddda38d1e558ecf7bfac2f1350ee634c46ee19c5ee53eadf1942bc0",
+  "promotedAt": "2026-10-02T21:45:46.687Z"
+}

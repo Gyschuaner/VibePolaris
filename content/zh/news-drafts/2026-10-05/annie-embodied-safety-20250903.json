@@ -1,0 +1,188 @@
+{
+  "slug": "annie-embodied-safety-20250903",
+  "title": "ANNIE：具身 Agent 的视觉扰动可能直接变成危险动作",
+  "summary": "ANNIE 论文于 9 月 3 日提交，把具身 AI 的安全问题从“模型答错”推进到“机器人做出什么动作”。研究依据人机交互的 ISO 标准，把违反物理约束的行为分成 critical、dangerous、risky 三类，发布含 9 个安全关键场景和 2,400 段视频—动作序列的 ANNIEBench；论文报告代表性 EAI 模型在各类安全场景上的攻击成功率都超过 50%，并用实体机器人实验验证影响。本文只讨论防御与评测，不复现攻击方法。",
+  "body": "当语言模型输出一段错误文字，影响通常还停在屏幕上；当视觉—语言—动作模型接到机器人，错误的感知可能沿着控制链变成加速、转向或靠近。ANNIE 关注的正是这一段转换：传感器输入被改变后，具身 Agent 是否仍能守住距离、速度和碰撞边界。\n\n论文认为，传统机器学习里的准确率或分类鲁棒性不够描述物理安全。对人机共处的机器人来说，一次动作要先问它有没有进入危险区域、是否超出允许速度、是否破坏了分离距离。ANNIE 按 ISO 人机交互标准整理出 critical、dangerous、risky 三类安全违规，把“答错”改写成可以观察和分级的物理后果。\n\n为让这些判断可以被复现，作者发布 ANNIEBench，包含 9 个安全关键场景和 2,400 段视频—动作序列。评测不只看模型认不认识画面，还看它在长时任务里怎样把视觉输入接到动作。摘要报告，在代表性具身模型上，三类安全场景的攻击成功率都超过 50%；这是论文实验条件下的结果，不应被读成任何机器人在现实环境中的固定概率。\n\nANNIE 还提出了 ANNIE-Attack，用任务感知的方式把长时目标拆成逐帧的扰动，并在实体机器人上验证影响。这里需要把概念和操作分开：对防守方有用的是知道攻击面存在、知道它可能跨越多帧累积，不是照着论文去构造扰动或复现实验。生产系统不应把外部视频、相机帧或传感器流当作天然可信的指令来源。\n\n安全边界要在动作执行前后都存在。输入侧可以做传感器完整性检查、时间戳和跨模态一致性校验；规划侧要把人与障碍物的最小距离、速度上限、碰撞边界和急停条件写成独立约束；执行侧要允许安全控制器覆盖模型动作，并对高风险动作要求授权或人工确认。把约束只写在提示词里，无法替代硬性的限速、隔离和断电路径。\n\nANNIEBench 适合做回归基线，但不会自动覆盖一台机器人的全部风险。不同相机、机械结构、控制频率、场地和人群密度都会改变后果；现实验证还涉及传感器故障、延迟、遮挡和网络中断。每次模型、策略或硬件改变，都应重新跑关键场景，保存视频、动作日志、策略版本和安全控制器的接管记录。\n\nANNIE 的提醒很直接：具身 Agent 的安全不是模型分数旁边的一列指标，而是整个感知—决策—执行链共同承担的约束。只有把风险分类、独立急停、授权边界、隔离环境和现场人工复核连在一起，机器人在看不清、听不懂或遇到异常输入时才有机会停下来，而不是把不确定性继续传给现实世界。",
+  "publishedAt": "2025-09-03",
+  "eventDate": "2025-09-03",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/annie-embodied-safety-20250903.svg",
+    "alt": "ANNIE 评估视觉输入到机器人动作之间的物理安全边界",
+    "sourceUrl": "/images/news/annie-embodied-safety-20250903.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "physical-consequence",
+      "title": "视觉输入的错误可能越过屏幕进入动作",
+      "body": "具身 Agent 把感知接到控制，距离、速度和碰撞边界因此成为必须单独验证的安全约束。",
+      "kind": "narrative"
+    },
+    {
+      "id": "iso-taxonomy",
+      "title": "ANNIE 用物理后果把安全违规分成三类",
+      "body": "依据人机交互 ISO 标准，critical、dangerous、risky 分别描述不同程度的物理约束破坏。",
+      "kind": "technical"
+    },
+    {
+      "id": "anniebench",
+      "title": "9 个场景和 2,400 段视频—动作序列组成 ANNIEBench",
+      "body": "基准同时观察模型的视觉理解和动作选择；论文报告三类安全场景的攻击成功率都超过 50%。",
+      "kind": "comparison"
+    },
+    {
+      "id": "attack-surface",
+      "title": "长时任务会让安全风险跨帧累积",
+      "body": "ANNIE-Attack 是论文提出的研究框架；本文只保留攻击面和防守问题，不给出扰动构造或复现实验步骤。",
+      "kind": "boundary"
+    },
+    {
+      "id": "hard-constraints",
+      "title": "距离、速度和急停要成为模型外的硬约束",
+      "body": "传感器完整性、跨模态校验、安全控制器、动作授权和人工确认共同组成执行前后的防线。",
+      "kind": "technical"
+    },
+    {
+      "id": "regression",
+      "title": "换模型、相机或场地后都要重新做回归",
+      "body": "记录视频、动作日志、策略版本和安全控制器接管，才能把基准分数和真实风险联系起来。",
+      "kind": "example"
+    },
+    {
+      "id": "stop-path",
+      "title": "不确定时能停下来，比继续完成任务更重要",
+      "body": "具身安全覆盖感知、决策、执行和现场复核；单靠提示词无法替代独立急停、隔离和授权边界。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-safety",
+    "title": "如何把具身 Agent 的安全评测接到动作执行？",
+    "question": "先把物理违规分级，再用受控场景验证感知—决策—执行链，并让独立安全控制器拥有最终覆盖权。",
+    "steps": [
+      {
+        "label": "定义物理安全边界",
+        "detail": "把最小分离距离、速度上限、碰撞边界和急停条件写成可观测约束。",
+        "evidence": "ISO-grounded physical constraints"
+      },
+      {
+        "label": "覆盖安全关键场景",
+        "detail": "用 ANNIEBench 的 9 类场景和视频—动作序列建立回归集，区分 critical、dangerous、risky。",
+        "evidence": "9 safety-critical scenarios and 2,400 video-action sequences"
+      },
+      {
+        "label": "检查感知到动作的链路",
+        "detail": "记录输入完整性、策略版本、动作序列和控制器接管，观察异常输入是否跨帧累积成危险动作。",
+        "evidence": "vision-language-action embodied systems"
+      },
+      {
+        "label": "在隔离环境做验证",
+        "detail": "先在仿真或受控场地复核，禁止把研究框架中的攻击概念直接带入真实生产设备。",
+        "evidence": "physical robot experiments"
+      },
+      {
+        "label": "让安全控制器最后说不",
+        "detail": "对高风险动作要求授权或人工确认，独立限速、急停和断电路径覆盖模型输出。",
+        "evidence": "security-driven defenses"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.03383"
+  },
+  "relatedSlugs": [
+    "agent",
+    "authorization",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.03383",
+      "claim": "ANNIE 依据 ISO 人机交互标准，把具身安全违规分成 critical、dangerous、risky，并发布含 9 个安全关键场景和 2,400 段视频—动作序列的 ANNIEBench。",
+      "excerpt": "taxonomy of safety violations ... ANNIEBench ... nine safety-critical scenarios with 2,400 video-action sequences"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03383",
+      "claim": "论文摘要报告代表性具身模型在所有安全类别上的攻击成功率超过 50%，并以实体机器人实验验证影响。",
+      "excerpt": "attack success rates exceeding 50% across all safety categories ... physical robot experiments"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.03383",
+  "sourceHash": "sha256:bc9311000dde50b9c7a71f9dc009ecfec82b12941d55db533ee000c8cf399504",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论把视觉—语言—动作模型接入机器人后的感知、决策和执行链。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.98,
+      "evidence": [
+        "正文要求高风险动作经过授权或人工确认，并由独立安全控制器覆盖模型输出。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "ANNIEBench 用 9 个安全关键场景和视频—动作序列评测具身安全。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 3 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.03383",
+      "claim": "arXiv 记录 ANNIE 于 2025 年 9 月 3 日提交，研究视觉—语言—动作模型驱动的具身安全。",
+      "excerpt": "Submitted on 3 Sep 2025 ... ANNIE: Be Careful of Your Robots"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.03383",
+      "claim": "摘要给出 ISO 安全分类、ANNIEBench 场景规模、攻击成功率和实体机器人验证。",
+      "excerpt": "ISO standards ... nine safety-critical scenarios ... exceeding 50% ... physical robot experiments"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 ANNIE 提交日期、ISO 物理安全分类、ANNIEBench 9 个场景和 2,400 段视频—动作序列、超过 50% 的论文实验结果及实体机器人验证；正文只讨论防御、授权、隔离和独立安全控制器，不复现攻击构造。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留论文明确的物理安全分类、ANNIEBench 规模和实验结果，严格删除攻击构造细节，补充传感器完整性、距离/速度/碰撞约束、授权、急停、隔离和人工复核；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-03-annie-embodied-safety-20250903"
+}

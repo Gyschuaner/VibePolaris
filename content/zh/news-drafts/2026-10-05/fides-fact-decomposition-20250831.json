@@ -1,0 +1,210 @@
+{
+  "slug": "fides-fact-decomposition-20250831",
+  "title": "FIDES：把长答案拆成事实，再回头找证据修正",
+  "summary": "FIDES 论文于 8 月 31 日提交，提出面向有引用问答的事实分解和证据聚合框架。它先把长答案拆成带上下文的子事实，再用这些子事实检索相关证据；若证据与子事实冲突，就修订子事实，最后按原句重新聚合。论文还提出 Attr_auto-P 评估证据精度，并在六个数据集上报告相对现有方法平均提升超过 14%。",
+  "body": "长答案的引用问题，常常不是“完全没有来源”，而是一个句子里塞了好几个事实，检索器只找到其中一半。系统随后把一段不完整证据当成整句的依据，读者很难知道到底哪一部分被支持。FIDES 的思路，是先把长句拆开，再让证据逐条对齐。\n\n框架名为 faithful context enhanced fact decomposition and evidence aggregation。它不只按句号切分，而是结合上下文把回答拆成更小的子事实；每个子事实都成为检索目标，帮助检索器寻找对应证据。这样，复杂回答中的时间、对象、因果和数量可以分别被检查。\n\n如果证据和子事实冲突，FIDES 会修订相关子事实，而不是继续把矛盾内容拼回原答案。最后，证据按照原始句子重新聚合，保留回答的整体结构，同时让每个关键片段都有对应来源。\n\n作者在六个数据集上评测，并提出 Attr_auto-P 衡量自动分解后证据的精度。论文报告 FIDES 相比现有方法平均提升超过 14%，但这个结果仍依赖数据集、检索器和分解模型；高分说明流程有效，不等于任何长答案都能自动得到完整引用。\n\n对 RAG 系统来说，事实分解还可以作为生成后的回查层。系统可以列出每条子事实、支持它的证据和冲突情况，编辑或用户先看不确定项，再决定是否继续检索。比起把所有网页原文塞进上下文，这种中间表示也更容易控制噪声。\n\n分解同样可能出错：如果模型把一个整体事实拆得过细，子事实之间的关系会丢失；如果拆得过粗，检索仍然只能支持一部分。部署时要保留原句、子事实和证据的对应关系，并用独立样本检查分解是否改变了原意。\n\nFIDES 提醒我们，引用不是写作末尾的装饰，而是需要参与回答形成的结构。先把“这句话到底声称了什么”说清楚，再去找证据，RAG 才有机会从相关文本拼接走向可核验的事实链。",
+  "publishedAt": "2025-08-31",
+  "eventDate": "2025-08-31",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/fides-fact-decomposition-20250831.svg",
+    "alt": "FIDES 把长答案拆成子事实，检索证据并在冲突时修订后重新聚合",
+    "sourceUrl": "/images/news/fides-fact-decomposition-20250831.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "citation-fragment",
+      "title": "一句话可能装着好几个事实",
+      "body": "检索器找到其中一半证据时，整句看似有引用，实际却没有完全被支持。",
+      "kind": "narrative"
+    },
+    {
+      "id": "fact-decompose",
+      "title": "先把长答案拆成子事实",
+      "body": "FIDES 结合上下文拆解时间、对象、因果和数量，再为每个子事实生成检索目标。",
+      "kind": "technical"
+    },
+    {
+      "id": "conflict-revise",
+      "title": "证据冲突时先修订，不强行拼接",
+      "body": "如果检索结果与子事实不一致，系统更新相关事实，再按原句结构重新聚合。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-gain",
+      "title": "六个数据集上平均提升超过 14%",
+      "body": "Attr_auto-P 用来评估证据精度；结果仍受数据集、检索器和分解模型影响。",
+      "kind": "comparison"
+    },
+    {
+      "id": "intermediate-view",
+      "title": "子事实成为 RAG 的回查层",
+      "body": "用户可以看到每条主张、支持证据和冲突项，先处理不确定部分，而不是阅读所有原始网页。",
+      "kind": "example"
+    },
+    {
+      "id": "granularity-risk",
+      "title": "拆得太细或太粗都会丢关系",
+      "body": "部署要保留原句—子事实—证据对应，并用独立样本检查分解有没有改变原意。",
+      "kind": "boundary"
+    },
+    {
+      "id": "citation-structure",
+      "title": "引用要参与回答形成，而不是末尾装饰",
+      "body": "先说清一句话声称了什么，再找能支持它的证据，事实链才容易复核。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "FIDES 怎样让长答案的每个事实都能找到依据？",
+    "question": "把长句拆成上下文相关的子事实，逐项检索、冲突修订，再按原句聚合证据。",
+    "steps": [
+      {
+        "label": "保留原句结构",
+        "detail": "记录答案中的句子、主张和上下文，避免分解后丢失事实之间的关系。",
+        "evidence": "faithful context enhanced fact decomposition"
+      },
+      {
+        "label": "生成子事实",
+        "detail": "把时间、对象、因果和数量等可核查内容拆成检索目标。",
+        "evidence": "decompose long-form answers into sub-facts"
+      },
+      {
+        "label": "检索相关证据",
+        "detail": "用子事实查询来源，保存支持、缺失和冲突的片段。",
+        "evidence": "retrieve related evidence snippets"
+      },
+      {
+        "label": "冲突时修订",
+        "detail": "证据不支持原子主张时更新子事实，不把矛盾内容直接塞回答案。",
+        "evidence": "revise sub-facts when retrieved evidence conflicts"
+      },
+      {
+        "label": "聚合并评估",
+        "detail": "按原句重新组织证据，用 Attr_auto-P 和独立抽样检查引用精度与原意保持。",
+        "evidence": "evidence aggregation and Attr_auto-P"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.00765"
+  },
+  "relatedSlugs": [
+    "llm",
+    "rag",
+    "citation",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.00765",
+      "claim": "FIDES 进行上下文增强的事实分解、证据检索、冲突修订和聚合。",
+      "excerpt": "faithful context enhanced fact decomposition and evidence aggregation"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00765",
+      "claim": "论文在六个数据集上评测，提出 Attr_auto-P，平均超过现有方法 14%。",
+      "excerpt": "six datasets ... Attr_auto-P ... over 14% in average"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.00765",
+  "sourceHash": "sha256:bd095d0c1bee755cc4470b0b0419b12a8e360de887a12eda76063dcd1d38f751",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.98,
+      "evidence": [
+        "正文讨论长答案拆解、子事实修订和模型评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕子事实检索、证据片段和 RAG 回查层展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.98,
+      "evidence": [
+        "正文要求每条子事实与具体来源对齐。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.98,
+      "evidence": [
+        "正文把证据冲突和原意保持作为 grounding 检查。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.96,
+      "evidence": [
+        "正文保留六个数据集、Attr_auto-P 和平均提升边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 31 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.00765",
+      "claim": "arXiv 记录 FIDES 于 2025 年 8 月 31 日提交，研究事实分解和证据聚合。",
+      "excerpt": "Date: Sun Aug 31 ... Decomposing and Revising What Language Models Generate"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.00765",
+      "claim": "摘要给出子事实冲突修订、Attr_auto-P 和六数据集平均提升结果。",
+      "excerpt": "sub-facts ... revised accordingly ... over 14% in average"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对事实分解、子事实检索、冲突修订、证据聚合、Attr_auto-P 和六数据集结果；正文补充分解粒度、原意保持和 RAG 回查层边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 FIDES 写成原句—子事实—证据的可追踪链，保留 14% 结果和数据集边界，并说明拆解粒度风险；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-31-fides-fact-decomposition-20250831"
+}

@@ -1,0 +1,189 @@
+{
+  "slug": "openai-gpt-5-launch-20250807",
+  "title": "GPT-5 正式发布：ChatGPT 默认换成统一快答与推理系统",
+  "summary": "OpenAI 8 月 7 日发布 GPT-5，把快速回答模型、深度推理模型和实时路由器组合成一个系统，并让 ChatGPT 默认使用 GPT-5 系列。开发者同日拿到 GPT-5、mini、nano、400K 上下文和新的推理控制项，但官方评测数字仍是公司在特定设置下的结果，模型升级不能替代应用自己的回归测试。",
+  "body": "8 月 7 日，OpenAI 正式发布 GPT-5。对 ChatGPT 用户来说，最直观的变化是默认模型换成了 GPT-5 系列，原来需要在不同模型之间做的选择，被放进了一个统一入口里。OpenAI 同时表示，GPT-5 会根据问题的复杂程度在快速回答和更深的推理之间切换。\n\n这次发布的重点不只是模型名字变了。OpenAI 把系统拆成快模型、推理模型和实时路由器：前者处理日常问题，后者花更多时间处理复杂任务，路由器负责判断什么时候需要哪一种。用户因此少了一步手动选择，产品也多了一层需要观察的判断过程。路由器会不会选对、等待时间是否能接受、同一个问题是否每次都走同一路径，都会影响实际体验。\n\n开发者页面把这套发布拆成 GPT-5、GPT-5 mini 和 GPT-5 nano，并提供 400K 上下文窗口（最多 272K 输入，加上 128K 推理与输出）、verbosity、minimal reasoning 和自定义工具等控制项。OpenAI 公布的 API 价格分别是：GPT-5 每百万输入 token 1.25 美元、输出 10 美元；mini 为 0.25/2 美元；nano 为 0.05/0.40 美元。具体成本还取决于上下文长度、输出量和应用是否真的需要更深的推理。模型有了更长的上下文，不代表应用可以省掉检索、权限和结果校验。\n\nOpenAI 还用自己的评测说明 GPT-5 的改进：在开启联网的对比中，它称事实错误率比 GPT-4o 低约 45%，比 o3 低约 80%。这些数字来自 OpenAI 设定的任务、模型版本和评测方法，适合用来理解公司的发布重点，不能直接当成所有场景都会复现的结论。代码、研究、客服或内部知识库各自有不同的失败方式，应用方仍然要用自己的数据做测试。\n\n因此，GPT-5 的产品变化有两层。一层是 ChatGPT 把模型选择变成默认的系统行为，另一层是 API 把模型尺寸、推理深度和工具控制交给开发者。真正需要跟踪的不是发布当天的分数，而是路由在真实任务中的选择、延迟和成本，长上下文是否带来可验证的收益，以及旧应用迁移后哪些输出需要重新审核。",
+  "publishedAt": "2025-08-07",
+  "eventDate": "2025-08-07",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/openai-gpt-5-launch-20250807.svg",
+    "alt": "GPT-5 将快速回答、深度推理和实时路由放进同一个系统",
+    "sourceUrl": "/images/news/openai-gpt-5-launch-20250807.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "default-system",
+      "title": "ChatGPT 先把模型选择藏进默认入口",
+      "body": "GPT-5 发布后，ChatGPT 默认使用 GPT-5 系列，用户不必先判断当前问题应该交给哪个模型。这个变化减少了选择成本，同时把模型选择变成产品内部的路由行为。",
+      "kind": "narrative"
+    },
+    {
+      "id": "router-boundary",
+      "title": "路由器负责判断，判断本身也需要被观察",
+      "body": "OpenAI 描述的系统由快模型、推理模型和实时路由器组成。路由器可能根据问题复杂度选择不同路径，但官方没有因此承诺每次都选到最优模型；延迟、费用和答案稳定性仍要在实际任务里观察。",
+      "kind": "technical"
+    },
+    {
+      "id": "developer-models",
+      "title": "API 把统一发布拆成 GPT-5、mini 和 nano",
+      "body": "开发者可使用 GPT-5、GPT-5 mini 和 GPT-5 nano，并设置 verbosity、minimal reasoning、自定义工具和 400K 上下文（最多 272K 输入，加上 128K 推理与输出）。三款模型的输入/输出价格分别为每百万 token 1.25/10 美元、0.25/2 美元和 0.05/0.40 美元；实际账单还受调用方式和输出长度影响。",
+      "kind": "comparison"
+    },
+    {
+      "id": "benchmark-boundary",
+      "title": "官方评测数字要连同测试条件一起读",
+      "body": "OpenAI 称 GPT-5 在联网对比中比 GPT-4o 少约 45% 的事实错误、比 o3 少约 80%。这些是供应商在自身设置下报告的结果，不能替代应用方针对业务数据、工具调用和人工复核的测试。",
+      "kind": "boundary"
+    },
+    {
+      "id": "migration-check",
+      "title": "迁移成本落在应用自己的回归测试里",
+      "body": "旧应用接入 GPT-5 后，需要重新观察路由选择、响应延迟、token 成本、长上下文收益和工具权限。模型升级改变了输入输出的分布，原有的提示、阈值和人工审核规则不一定仍然合适。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "ChatGPT 的“统一系统”怎样选择处理路径？",
+    "question": "一次 ChatGPT 请求怎样经过路由器，再交给适合的模型？",
+    "steps": [
+      {
+        "label": "提出任务",
+        "detail": "在 ChatGPT 中，用户或应用提交问题、上下文和工具权限，系统先接收完整请求，而不是让用户手动选择模型；API 使用 GPT-5、mini、nano 时则由开发者选择模型与参数。",
+        "evidence": "OpenAI GPT-5 system description"
+      },
+      {
+        "label": "路由判断",
+        "detail": "实时路由器根据任务复杂度等信号选择快速回答或更深推理的路径；这一步的准确性和等待时间需要在真实流量中验证。",
+        "evidence": "OpenAI GPT-5 unified system"
+      },
+      {
+        "label": "模型处理",
+        "detail": "选中的模型生成答案，或按应用授权调用自定义工具；GPT-5、mini 和 nano 面向不同的成本与能力取舍。",
+        "evidence": "OpenAI GPT-5 for developers"
+      },
+      {
+        "label": "应用复核",
+        "detail": "应用检查引用、权限、格式和关键事实，再决定是否展示、写入系统或交给人工处理。模型分数不能代替这一层。",
+        "evidence": "Application-specific evaluation boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "OpenAI",
+    "url": "https://openai.com/index/introducing-gpt-5/"
+  },
+  "relatedSlugs": [
+    "llm",
+    "event",
+    "benchmark",
+    "agent"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://openai.com/index/introducing-gpt-5/",
+      "claim": "OpenAI 8 月 7 日发布 GPT-5，并描述由快模型、推理模型和实时路由器组成的统一系统，以及 ChatGPT 的默认切换。",
+      "excerpt": "OpenAI, August 7, 2025: GPT-5 is a unified system combining a fast model, a deeper reasoning model, and a real-time router, and becomes the default in ChatGPT."
+    },
+    {
+      "url": "https://openai.com/index/introducing-gpt-5-for-developers/",
+      "claim": "OpenAI 同日介绍 GPT-5、mini、nano、400K 上下文（272K 输入加 128K 推理/输出）、verbosity、minimal reasoning、自定义工具和三款模型的 API 价格。",
+      "excerpt": "OpenAI, August 7, 2025: GPT-5, GPT-5 mini, and GPT-5 nano support a 400K context window, new controls, custom tools, and prices of $1.25/$10, $0.25/$2, and $0.05/$0.40 per 1M input/output tokens."
+    }
+  ],
+  "canonicalUrl": "https://openai.com/index/introducing-gpt-5/",
+  "sourceHash": "sha256:2fc58f1df8e8246fa7135b32ef34df20b05b3039ff41e8be9c3ab21ce25b4e35",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 GPT-5、mini、nano 和推理模型展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.98,
+      "evidence": [
+        "正文记录 OpenAI 8 月 7 日正式发布 GPT-5 和 ChatGPT 默认切换。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.89,
+      "evidence": [
+        "正文解释 OpenAI 的联网事实错误率对比及其自报边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.74,
+      "evidence": [
+        "正文和 explainer 涉及模型路由、工具调用与应用工作流。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://openai.com/index/introducing-gpt-5/",
+      "claim": "OpenAI official GPT-5 launch page dated August 7, 2025.",
+      "excerpt": "Introducing GPT-5"
+    },
+    {
+      "url": "https://openai.com/index/introducing-gpt-5-for-developers/",
+      "claim": "OpenAI official developer announcement dated August 7, 2025.",
+      "excerpt": "Introducing GPT-5 for developers"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 OpenAI 两个 8 月 7 日官方页面的统一系统、ChatGPT 默认切换、GPT-5/mini/nano、400K 上下文（272K 输入加 128K 推理/输出）、verbosity、minimal reasoning、自定义工具和三款模型 API 价格；正文把联网事实错误率写为 OpenAI 自报，并明确 ChatGPT 路由与 API 模型选择的边界，保留应用方回归测试要求。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 写成事件特有的模型选择和路由叙事，避免把官方评测数字写成普遍结论；等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-07；两份 OpenAI 官方页面均为 8 月 7 日，分别支撑 ChatGPT 统一系统/默认切换和开发者 API 发布。",
+      "正文准确区分 ChatGPT 的快模型、GPT-5 thinking 与实时路由器，以及 API 的 GPT-5、mini、nano 和参数控制；400K 上下文补充为 272K 输入加 128K 推理/输出，没有把 API 写成暴露 ChatGPT 路由器。",
+      "三款模型的 API 价格已完整列出：GPT-5 1.25/10、mini 0.25/2、nano 0.05/0.40 美元每百万输入/输出 token；verbosity、minimal reasoning 和 custom tools 与开发者页一致。",
+      "联网事实错误率较 GPT-4o 约少 45%、较 o3 约少 80% 明确归为 OpenAI 自报，并保留设置、任务和应用回归测试边界；benchmark explainer、sections、relatedSlugs、空 relatedArticleSlugs、sources/evidence、schema 与 GPT-5 主题 SVG 一致。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能分清 ChatGPT 的自动路由、API 的模型与参数选择、公司评测数字和应用自己的验收责任。",
+    "changes": [
+      "补齐 GPT-5、mini、nano 三款 API 价格和 400K 上下文的 272K 输入/128K 推理与输出构成。",
+      "将正文“API 把路由交给开发者”改为“API 把模型尺寸、推理深度和工具控制交给开发者”，并把 explainer 明确限定为 ChatGPT 路由，避免混淆 ChatGPT 系统与 API 模型。",
+      "同步更新来源和验证说明。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-07-gpt-5",
+  "promotedAt": "2026-10-05T05:17:33.005Z"
+}

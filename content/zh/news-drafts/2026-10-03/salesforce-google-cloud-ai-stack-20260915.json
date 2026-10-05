@@ -1,0 +1,253 @@
+{
+  "slug": "salesforce-google-cloud-ai-stack-20260915",
+  "title": "Salesforce 与 Google Cloud 把 Hyperforce、Gemini Enterprise 和 Agentforce 接到同一条 AI 栈",
+  "summary": "Salesforce 与 Google Cloud 于 2026-09-15 扩大战略合作：部分 Hyperforce 工作负载计划迁到 Google Cloud，Gemini Enterprise 通过 MCP 访问 Salesforce 能力，Agentforce、Tableau 和 Commerce Cloud 的联动则按不同预览与 GA 时间表推进。",
+  "body": "Salesforce 与 Google Cloud 在 2026-09-15 宣布把基础设施、企业代理和数据服务进一步接到同一条 AI 栈上。公告的三条线分别是：把 Salesforce 的 Hyperforce 工作负载运行在 Google Cloud；让 Gemini Enterprise 直接访问 Salesforce 的 headless 能力；以及把 Gemini 模型、Agentforce、Tableau 和 Commerce Cloud 的上下文组合起来。\n\n基础设施一侧，Salesforce 说 Hyperforce on Google Cloud 已经承载生产流量，计划从 2026 年第四季度开始把美国部分客户迁移过去。这个表述要和全面可用分开：北美 GA、区域扩展、数据共享和连接器都有自己的时间表，迁移是否影响合规、性能和灾备，也要看具体客户配置。\n\n代理一侧，Salesforce 的 headless architecture 通过 MCP 把数千项 Salesforce 能力提供给 Gemini Enterprise。企业可以让 Gemini 查询销售管道、客户摘要和服务案件，Tableau 的 MCP 还负责行级安全和语义模型；同时，Agentforce 可以调用 Gemini 模型处理跨平台的推理和动作。模型拿到的是业务上下文和受控动作，不是一个绕过 CRM 的超级管理员账号。\n\n这次合作还把消费者入口写进了公告。Salesforce 说 Commerce Cloud 将让商家在 Google Search、AI Mode 和 Gemini 应用中展示商品，并通过 Universal Commerce Protocol 直接结账；部分目录接入已可用，UCP 结账和连接器则有后续时间点。对于电商团队，AI 导购能否正确理解库存、付款、合规和退货规则，比“能在聊天里买东西”更关键。\n\n所以，这条新闻不是一个新模型发布，而是一套跨云基础设施与代理互操作的商业承诺。真正值得追踪的是 Hyperforce 迁移、私有预览连接器、数据零拷贝扩展和 UCP 结账在不同地区的落地，以及失败时谁负责回滚和审计。",
+  "publishedAt": "2026-09-15",
+  "eventDate": "2026-09-15",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/salesforce-google-cloud-ai-stack-20260915.svg",
+    "alt": "Hyperforce、Gemini Enterprise、MCP、Agentforce 和 Commerce Cloud 的跨云连接。",
+    "sourceUrl": "/images/news/salesforce-google-cloud-ai-stack-20260915.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "infrastructure",
+      "title": "先变的是承载 Salesforce 的云",
+      "body": "Hyperforce 已在 Google Cloud 处理生产流量，部分美国客户计划从第四季度开始迁移；这改变底层基础设施，不代表所有客户同日切换。",
+      "kind": "narrative"
+    },
+    {
+      "id": "headless-mcp",
+      "title": "Headless architecture 把业务能力交给代理",
+      "body": "Gemini Enterprise 可以通过 MCP 读取 Salesforce 数据和能力，Tableau MCP 继续带上行级安全与语义模型。代理能做什么取决于公开的技能和权限。",
+      "kind": "technical"
+    },
+    {
+      "id": "commerce",
+      "title": "Commerce Cloud 把发现和结账往 AI 界面推",
+      "body": "Google Search、AI Mode 和 Gemini 应用将承接商品发现与 UCP 结账，目录、支付、订单和合规仍由原有电商基础设施负责。",
+      "kind": "comparison"
+    },
+    {
+      "id": "rollout",
+      "title": "合作公告中的每条能力都有自己的时间表",
+      "body": "Hyperforce、Federated Connector、Agentforce Sales Agent、Data 360 和 UCP 的 GA/预览日期不同，文章保留分阶段状态，避免把合作愿景写成全面上线。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "data-motion",
+    "title": "跨云代理怎样在不丢业务语义的前提下工作？",
+    "question": "基础设施、数据语义和动作权限必须同时对齐。",
+    "steps": [
+      {
+        "label": "确定承载位置",
+        "detail": "Salesforce 工作负载在 Hyperforce 和 Google Cloud 的基础设施上运行，区域和迁移阶段由客户协议决定。",
+        "evidence": "Hyperforce on Google Cloud"
+      },
+      {
+        "label": "暴露业务能力",
+        "detail": "headless architecture 通过 MCP 把 Salesforce 的数据、流程和动作提供给 Gemini Enterprise。",
+        "evidence": "Salesforce MCP headless layer"
+      },
+      {
+        "label": "带上语义与行级权限",
+        "detail": "Tableau 和 Data 360 提供可解释的指标、上下文和访问边界，避免代理只看到一堆无标签的记录。",
+        "evidence": "Tableau MCP 与 Data 360"
+      },
+      {
+        "label": "执行并回写",
+        "detail": "Agentforce、Commerce Cloud 或 UCP 在既有系统里执行动作，结账和迁移仍按地区、预览和 GA 时间表推进。",
+        "evidence": "可用性表"
+      }
+    ]
+  },
+  "source": {
+    "name": "Salesforce / Google Cloud",
+    "url": "https://www.salesforce.com/news/stories/salesforce-google-cloud-unify-infrastructure-and-agents/"
+  },
+  "relatedSlugs": [
+    "mcp",
+    "agent",
+    "context",
+    "data-pipeline",
+    "authorization",
+    "tools",
+    "api",
+    "event"
+  ],
+  "relatedArticleSlugs": [
+    "salesforce-aiforce-interface-20260915",
+    "salesforce-aws-enterprise-ai-20260915",
+    "salesforce-missionforce-openai-20260916"
+  ],
+  "sources": [
+    {
+      "url": "https://www.salesforce.com/news/stories/salesforce-google-cloud-unify-infrastructure-and-agents/",
+      "claim": "Salesforce 与 Google Cloud 于 2026-09-15 扩大战略合作，把 Hyperforce 迁到 Google Cloud，并让 Gemini Enterprise、Agentforce、Tableau 和 Salesforce headless architecture 共享数据与代理能力。",
+      "excerpt": "Salesforce, Salesforce and Google Cloud Unify Infrastructure and Agents for One Connected AI Stack, 2026-09-15：Hyperforce、Gemini Enterprise、MCP、Commerce Cloud 和分阶段可用性。"
+    },
+    {
+      "url": "https://www.salesforce.com/news/dreamforce-26-media-resources/?bc=OTH",
+      "claim": "Salesforce Dreamforce 2026 媒体资源页把该合作列为 9 月 15 日发布的正式新闻条目，并链接原始公告。",
+      "excerpt": "Salesforce Dreamforce 26 media resources：按发布日期列出 Google Cloud / Salesforce AI stack 公告。"
+    }
+  ],
+  "canonicalUrl": "https://www.salesforce.com/news/stories/salesforce-google-cloud-unify-infrastructure-and-agents/",
+  "sourceHash": "sha256:6a11764bcb399756f957e4c02725e3e7a9f08234006833de37f7535da85d4032",
+  "status": "published",
+  "discoveredAt": "2026-10-03T20:15:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "mcp",
+      "score": 0.9,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.88,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.88,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-pipeline",
+      "score": 0.84,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.82,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.82,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "api",
+      "score": 0.78,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.72,
+      "evidence": [
+        "正文用白话解释该词条与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-aiforce-interface-20260915",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-aws-enterprise-ai-20260915",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "salesforce-missionforce-openai-20260916",
+      "score": 0.82,
+      "evidence": [
+        "同一时间线中的产品、基础设施或治理事件形成可追踪联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.salesforce.com/news/stories/salesforce-google-cloud-unify-infrastructure-and-agents/",
+      "claim": "Salesforce 与 Google Cloud 于 2026-09-15 扩大战略合作，把 Hyperforce 迁到 Google Cloud，并让 Gemini Enterprise、Agentforce、Tableau 和 Salesforce headless architecture 共享数据与代理能力。",
+      "excerpt": "Salesforce, Salesforce and Google Cloud Unify Infrastructure and Agents for One Connected AI Stack, 2026-09-15：Hyperforce、Gemini Enterprise、MCP、Commerce Cloud 和分阶段可用性。"
+    },
+    {
+      "url": "https://www.salesforce.com/news/dreamforce-26-media-resources/?bc=OTH",
+      "claim": "Salesforce Dreamforce 2026 媒体资源页把该合作列为 9 月 15 日发布的正式新闻条目，并链接原始公告。",
+      "excerpt": "Salesforce Dreamforce 26 media resources：按发布日期列出 Google Cloud / Salesforce AI stack 公告。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "method": "manual",
+    "notes": "逐条核对官方公告或原始报道、事件日和发布日；正文把厂商主张、媒体观察、测试状态和后续计划分开。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T20:15:00Z",
+    "notes": "按 2026-09-15 的独立新闻事件逐篇手写；不把厂商基准、beta、预览、合作计划或观点争论写成已经普遍落地的能力。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T21:44:48Z",
+    "questions": [],
+    "notes": "Salesforce/Google Cloud 官方归属清楚；正文保留 Hyperforce 迁移、MCP、Commerce/UCP 及不同 GA/预览时间表，未把规划与区域可用性写成同日完成。Explainer/SVG 对应。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-15",
+  "fingerprint": "sha256:6a11764bcb399756f957e4c02725e3e7a9f08234006833de37f7535da85d4032",
+  "promotedAt": "2026-10-02T21:45:46.688Z"
+}

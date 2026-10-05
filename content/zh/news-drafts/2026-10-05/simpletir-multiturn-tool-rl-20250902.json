@@ -1,0 +1,188 @@
+{
+  "slug": "simpletir-multiturn-tool-rl-20250902",
+  "title": "SimpleTIR：先清掉空转轨迹，再稳定多轮工具推理训练",
+  "summary": "SimpleTIR 论文于 9 月 2 日提交，针对多轮工具推理用强化学习训练时容易因外部反馈发生分布漂移、训练崩溃的问题，提出一个即插即用的稳定化方法。它识别既没有代码块也没有最终答案的 void turns，并在策略更新时过滤含有这类空转回合的轨迹，以阻断高幅度有害梯度；论文从 Qwen2.5-7B 基座出发，把 AIME24 得分从文本基线 22.1 提高到 50.5。",
+  "body": "工具增强推理真正难的地方，不是模型会不会调用一次搜索或执行器，而是它能不能连续多轮使用工具、读懂反馈，再决定下一步。强化学习把这种过程拉长以后，外部工具返回的内容会改变后续 token 的分布；一次偏离如果没有被及时处理，后面每一轮都可能放大它。SimpleTIR 把训练不稳定的原因落到了一个很具体的轨迹现象上。\n\n论文把问题描述为 distributional drift：工具反馈让模型开始生成训练分布里概率很低的 token，连续多轮后形成梯度范数爆炸，策略更新被极少数坏轨迹拖偏。这个解释比“多轮 RL 很难”更可操作，因为它告诉训练者要去看哪些回合、哪些反馈和哪些梯度，而不是只盯最终得分。\n\nSimpleTIR 的核心规则很简单：如果一个中间回合既没有产生代码块，也没有给出最终答案，就把它标成 void turn；含有这类空转回合的轨迹不参加策略更新。过滤不是把失败轨迹从日志里抹掉，而是避免它们用异常大的梯度影响下一轮学习。工程上仍应保留这些轨迹，检查它们到底是模型没决定好、工具返回不清楚，还是任务本来需要先澄清。\n\n作者把方法做成不依赖监督微调的 plug-and-play 算法。按论文摘要，模型因此有机会自己发现自我修正和交叉验证等更复杂的推理方式，而不是只模仿一批写好的工具轨迹。这个优点也带来要求：训练者要能解释哪些轨迹被过滤、过滤比例怎样变化，以及模型是否只是更快结束而不是更好地使用工具。\n\n在数学推理基准上，论文报告从 Qwen2.5-7B 文本基线的 AIME24 22.1 提高到 50.5，并称取得当时的最好结果。这个比较说明过滤空转轨迹可能帮助长链训练，但不能直接推导到搜索、数据库或真实业务工具；不同工具的返回格式、延迟和错误率会产生不同的漂移。\n\n接入实际工具时，void turn 也可能是安全的停顿。例如模型正在等待人工确认、需要重新授权，或故意不继续执行高风险动作。系统不能把所有“没有代码或最终答案”的回合都当成无价值，应结合工具状态、授权状态和任务阶段判断；过滤器本身也要评测误删和过早结束。\n\nSimpleTIR 的启发在于，训练稳定性可以从轨迹卫生开始处理。把空转、异常反馈和高幅度梯度单独记录，策略更新只吸收能解释的行为，再用任务结果验证模型是否真的学会了多轮工具协作。一个更会用工具的 Agent，不应只是少犯一次格式错误，而要在每一轮都知道自己是否真的推进了任务。",
+  "publishedAt": "2025-09-02",
+  "eventDate": "2025-09-02",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/simpletir-multiturn-tool-rl-20250902.svg",
+    "alt": "SimpleTIR 过滤多轮工具推理中的空转回合，稳定强化学习训练轨迹",
+    "sourceUrl": "/images/news/simpletir-multiturn-tool-rl-20250902.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "multiturn-drift",
+      "title": "工具反馈会把后续 token 推离训练分布",
+      "body": "多轮 TIR 中，外部反馈改变下一步生成分布，低概率 token 叠加后可能让梯度范数爆炸。",
+      "kind": "narrative"
+    },
+    {
+      "id": "void-turn",
+      "title": "void turn：既没工具产物，也没最终答案",
+      "body": "SimpleTIR 把没有代码块、没有最终答案的中间回合标记出来，作为训练轨迹的稳定性信号。",
+      "kind": "technical"
+    },
+    {
+      "id": "trajectory-filter",
+      "title": "过滤更新，不等于删除失败日志",
+      "body": "含空转回合的轨迹不参加策略更新，但仍应留档，检查是模型犹豫、工具返回不清楚还是任务需要澄清。",
+      "kind": "technical"
+    },
+    {
+      "id": "plug-play-rl",
+      "title": "即插即用，不依赖监督微调",
+      "body": "论文声称方法能让模型发现自我修正和交叉验证模式，但仍要监控过滤比例和过早结束。",
+      "kind": "comparison"
+    },
+    {
+      "id": "aime-result",
+      "title": "Qwen2.5-7B 的 AIME24 从 22.1 到 50.5",
+      "body": "数学基准上的结果说明空转过滤可能帮助长链训练，不能直接推到搜索、数据库或业务工具。",
+      "kind": "comparison"
+    },
+    {
+      "id": "safe-pauses",
+      "title": "有些停顿是授权和安全流程的一部分",
+      "body": "等待人工确认、重新授权或高风险动作暂停也可能没有代码和最终答案，过滤器要结合工具状态判断，避免误删。",
+      "kind": "boundary"
+    },
+    {
+      "id": "trajectory-hygiene",
+      "title": "先把每一轮是否真的推进任务记录下来",
+      "body": "空转、异常反馈和高幅度梯度都应单独留档，再用最终任务结果验证模型是否学会多轮协作。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "SimpleTIR 怎样让多轮工具训练不再被空转拖垮？",
+    "question": "先识别没有产物的回合，再把它们从策略更新中隔离，同时保留日志和安全停顿。",
+    "steps": [
+      {
+        "label": "记录每轮工具反馈",
+        "detail": "保存模型输出、工具返回、代码块、最终答案和授权状态，先看轨迹在哪里开始偏离。",
+        "evidence": "multi-turn tool-integrated reasoning"
+      },
+      {
+        "label": "标记 void turn",
+        "detail": "如果中间回合既没有代码块也没有最终答案，就标记为待检查的空转，而不是直接当成正常进展。",
+        "evidence": "turns that yield neither a code block nor a final answer"
+      },
+      {
+        "label": "隔离策略更新",
+        "detail": "含空转的轨迹不参与 policy update，避免低概率 token 造成高幅度有害梯度。",
+        "evidence": "filter out trajectories ... harmful, high-magnitude gradients"
+      },
+      {
+        "label": "保留失败原因",
+        "detail": "检查空转来自模型犹豫、工具错误、等待授权还是任务澄清，避免把安全停顿误当成噪声。",
+        "evidence": "distributional drift from external tool feedback"
+      },
+      {
+        "label": "按任务结果复测",
+        "detail": "在数学和真实工具任务上同时看正确率、终止时机、调用质量和过早结束，验证训练确实改善协作。",
+        "evidence": "AIME24 22.1 to 50.5"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.02479"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.02479",
+      "claim": "SimpleTIR 将多轮工具推理训练的不稳定归因于外部反馈造成的分布漂移和空转回合，并过滤这类轨迹的策略更新。",
+      "excerpt": "distributional drift from external tool feedback ... void turns ... stabilizing the learning dynamics"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02479",
+      "claim": "论文从 Qwen2.5-7B 文本基线出发，报告 AIME24 从 22.1 提高到 50.5，并称无需监督微调即可发现自我修正和交叉验证模式。",
+      "excerpt": "elevating the AIME24 score from ... 22.1 to 50.5 ... avoiding the constraints of supervised fine-tuning"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.02479",
+  "sourceHash": "sha256:46bf6c34d350ac6024e02ea4b2ed1fe8925577d532e97480c8c313fc4e411cb7",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论多轮工具 Agent 的轨迹、策略更新和终止。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕外部工具反馈、代码块和工具状态展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文保留 AIME24、训练稳定性、终止时机和任务结果评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 2 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.02479",
+      "claim": "arXiv 记录 SimpleTIR 于 2025 年 9 月 2 日提交，研究多轮工具集成推理的强化学习稳定性。",
+      "excerpt": "Published: 2025-09-02 ... SimpleTIR"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.02479",
+      "claim": "摘要给出 void turn 过滤、分布漂移/梯度爆炸机制、AIME24 22.1 到 50.5 和无需监督微调的主张。",
+      "excerpt": "void turns ... catastrophic gradient norm explosions ... 22.1 to 50.5"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 void turns、外部反馈分布漂移、梯度爆炸、即插即用训练和 AIME24 22.1→50.5 摘要结果；正文补充失败日志保留、安全停顿、误删和跨工具泛化边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把空转回合、策略更新、训练结果和安全停顿分别解释，避免将过滤等同于删除失败轨迹，并明确 AIME24 结果不能直接外推到所有工具；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-02-simpletir-multiturn-tool-rl-20250902"
+}

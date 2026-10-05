@@ -1,0 +1,177 @@
+{
+  "slug": "tuneagent-kernel-tuning-20250818",
+  "title": "TuneAgent 让 LLM Agent 在约束里调 Linux 内核",
+  "summary": "8 月 18 日提交的 TuneAgent 论文，把 Linux 内核参数空间建模成受约束强化学习环境，让 LLM Agent 在配置有效的前提下探索性能改动。方法用结构化奖励同时看推理规范、配置正确性和性能，并采用两阶段训练。作者报告在其实验中最高带来 5.6% 的相对整体性能提升，同时保持较高配置有效性；这仍需要回到具体内核版本、硬件和工作负载上复核。",
+  "body": "调 Linux 内核不是把几个数字调大就结束了。参数之间有依赖关系，某个组合可能无法启动，或者在一个工作负载上变快、换一类负载就变慢。8 月 18 日提交的 TuneAgent，试图让 LLM Agent 在这些约束里自动寻找更好的配置。\n\n论文把内核配置空间写成一个受约束的强化学习环境。Agent 不只是给出一段建议，而是要在可行的参数组合里探索、修改和评估；无效配置会成为搜索过程里的真实代价。这种建模把“会解释参数”与“能提出可运行改动”分开了。\n\nTuneAgent 的奖励不是只看最后的 benchmark 分数。作者把推理规范、配置正确性和性能放进结构化奖励，并用两阶段训练先稳定 Agent 的配置行为，再让它在性能目标上继续探索。这样做的核心，是避免为了追一个高分反复生成无法应用的配置。\n\n作者报告 TuneAgent 在实验中最高取得 5.6% 的相对整体性能提升，同时保持较高的配置有效性。这个数字属于论文自己的实验设置，不能直接理解为所有 Linux 服务器都能获得同样收益；内核版本、编译选项、硬件和负载变化都可能改变结果。\n\n如果把这类 Agent 接进运维流程，更稳妥的角色是“提出候选配置并安排验证”。先保存当前内核和参数快照，再在隔离环境或可回滚节点上应用候选，跑固定的性能与稳定性测试，最后由负责人决定是否推广。Agent 可以缩短搜索时间，但不应绕过启动保护、变更审批和回滚路径。\n\nTuneAgent 的启发不在于让模型直接接管内核，而在于把一个高维、带硬约束的系统调优问题变成可记录的探索循环。真正部署前，还需要补足故障恢复、长期稳定性、能源成本和不同业务负载上的回归证据。",
+  "publishedAt": "2025-08-18",
+  "eventDate": "2025-08-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/tuneagent-kernel-tuning-20250818.svg",
+    "alt": "TuneAgent 在 Linux 内核参数约束中提出候选配置并通过性能验证回环",
+    "sourceUrl": "/images/news/tuneagent-kernel-tuning-20250818.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "paper-event",
+      "title": "TuneAgent 把内核调参写成了受约束的探索问题",
+      "body": "TuneAgent 于 2025 年 8 月 18 日提交 arXiv，目标是让 LLM Agent 在 Linux 内核配置空间里自动探索。论文把参数依赖、配置有效性和性能评估放进同一个强化学习环境，而不是只让模型生成一份调参建议。",
+      "kind": "narrative"
+    },
+    {
+      "id": "constraint-space",
+      "title": "先保证配置能用，再谈性能高不高",
+      "body": "内核参数存在依赖和互斥关系，某些组合可能无法启动或无法通过编译。TuneAgent 将这些条件建模成搜索约束，让无效配置在训练和评估中暴露出来。",
+      "kind": "technical"
+    },
+    {
+      "id": "structured-reward",
+      "title": "结构化奖励同时看推理、正确性和性能",
+      "body": "作者没有只用一个 benchmark 分数奖励 Agent，而是同时考虑推理规范、配置正确性与性能。这样可以减少模型为了追求局部高分而持续提出无法应用的组合。",
+      "kind": "comparison"
+    },
+    {
+      "id": "two-stage-training",
+      "title": "两阶段训练先稳定配置行为，再探索性能",
+      "body": "TuneAgent 采用两阶段训练：先让 Agent 学会产生符合约束的精确配置，再在可行空间里继续寻找性能改进。顺序上的分离降低了“有效”和“更快”互相干扰的程度。",
+      "kind": "technical"
+    },
+    {
+      "id": "reported-gain",
+      "title": "最高 5.6% 是作者实验里的相对整体提升",
+      "body": "论文报告 TuneAgent 相比基线最高提升 5.6% 的相对整体性能，并保持较高配置有效性。这个结果受内核版本、硬件、编译选项和工作负载影响，不能直接外推成通用服务器收益。",
+      "kind": "example"
+    },
+    {
+      "id": "ops-boundary",
+      "title": "落地时让 Agent 提候选，运维流程负责放行",
+      "body": "更稳妥的接入方式是保存快照，在隔离环境或可回滚节点上应用候选配置，跑固定测试后再审批推广。启动保护、变更记录和回滚路径仍应由系统和负责人掌握。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "一个内核参数候选怎样走完安全验证？",
+    "question": "当 Agent 想让系统更快时，怎样避免它把机器调到不可用？",
+    "steps": [
+      {
+        "label": "保存当前快照",
+        "detail": "记录内核版本、编译选项、硬件、工作负载和当前配置，保证每次实验都能回到同一基线。",
+        "evidence": "TuneAgent evaluates kernel configuration in a constrained environment"
+      },
+      {
+        "label": "提出可行配置",
+        "detail": "让 Agent 只在依赖和互斥条件允许的空间里修改参数，先排除无法编译或无法启动的组合。",
+        "evidence": "The method formulates kernel tuning as constrained reinforcement learning"
+      },
+      {
+        "label": "检查配置正确性",
+        "detail": "把配置格式、依赖关系和启动结果作为独立检查，不用性能分数替代有效性判断。",
+        "evidence": "Structured rewards include configuration correctness"
+      },
+      {
+        "label": "运行固定基准",
+        "detail": "在同一硬件和工作负载上测吞吐、延迟与稳定性，再把结果回传给探索循环。",
+        "evidence": "The paper reports performance improvements within its evaluation setup"
+      },
+      {
+        "label": "审批或回滚",
+        "detail": "只有通过测试的候选才进入人工审批；异常时用快照恢复，不让 Agent 绕过变更控制。",
+        "evidence": "Reported gains require validation beyond the paper's setup"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Hongyu Lin 等",
+    "url": "https://arxiv.org/abs/2508.12551"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12551",
+      "claim": "TuneAgent 把 Linux 内核参数空间建模为受约束强化学习环境，让 LLM Agent 探索配置并用结构化奖励同时考虑推理规范、配置正确性和性能。",
+      "excerpt": "formulates the kernel space as a constrained RL environment ... reasoning standardization, configuration correctness, and performance awareness"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12551",
+      "claim": "作者报告 TuneAgent 相比基线最高提升 5.6% 的相对整体性能，并保持较高配置有效性。",
+      "excerpt": "achieving up to 5.6% relative overall performance improvement while maintaining high configuration validity"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12551",
+  "sourceHash": "sha256:220f6ca1547dd1e565ef74f4eeff92dfcdecb1113b2c966ede18b46b066caa1e",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.95,
+      "evidence": [
+        "正文介绍 LLM Agent 在受约束的 Linux 内核配置空间里探索。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.82,
+      "evidence": [
+        "正文将内核配置、基准测试和回滚节点作为 Agent 的系统工具边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文区分配置有效性、性能基准与业务工作负载回归。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.8,
+      "evidence": [
+        "正文按 arXiv 首次提交日期归档 2025 年 8 月 18 日事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12551",
+      "claim": "TuneAgent 于 2025 年 8 月 18 日提交，摘要给出受约束强化学习、结构化奖励、两阶段训练及最高 5.6% 相对整体性能提升。",
+      "excerpt": "up to 5.6% relative overall performance improvement"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的提交日期、受约束 RL 环境、结构化奖励、两阶段训练、配置有效性和 5.6% 相对整体提升；正文明确说明这是作者实验结果，部署仍需按硬件与工作负载复核。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：区分受约束搜索、结构化奖励、两阶段训练和作者实验中的 5.6% 相对提升，没有把调参 Agent 写成可直接接管生产内核；补充快照、隔离、审批与回滚边界。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-18-tuneagent"
+}

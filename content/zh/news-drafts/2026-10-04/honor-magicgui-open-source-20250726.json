@@ -1,0 +1,229 @@
+{
+  "slug": "honor-magicgui-open-source-20250726",
+  "title": "荣耀发布并开源 MagicGUI：让手机智能体从看懂屏幕到执行动作",
+  "summary": "7 月 26 日 WAIC 期间，荣耀发布并开源 7B 规模的 MagicGUI GUI 模型，面向屏幕感知、任务规划和手机操作。荣耀称其在 Magic V5 常用操控场景中达到 91.5% 准确率，并由 YOYO 在用户授权范围内完成跨应用操作；这些数字和安全认证属于厂商披露，实际效果仍要看公开模型、测试集和真实设备验证。",
+  "body": "7 月 26 日世界人工智能大会期间，荣耀发布并开源 MagicGUI。它不是一个面向普通聊天的通用模型，而是专门处理手机界面：先从屏幕上看出按钮、文字和页面状态，再把用户的话拆成一串操作。荣耀把它称为 7B 规模的多模态感知大模型，并把模型接到 Magic V5 的 YOYO 智能体上。\n\n这类模型要解决的难点，不是“知道答案”，而是知道下一步该点哪里。荣耀介绍的训练路线包括继续预训练和强化微调，还加入空间增强的复合奖励函数和 DF-GRPO 强化学习算法。结果需要同时处理视觉定位、页面理解问答、单步操作和动作序列拆解。对用户来说，理想流程是说一句话，系统先识别当前界面，再规划动作，执行后根据页面反馈决定是否继续。\n\n荣耀给出了一组很具体的数字：在 Magic V5 常用场景的手机操控中，MagicGUI 准确率达到 91.5%，比同类开源模型高 16.4%；公司还称它在四类任务的内部和行业开源榜单中领先。这些是发布方的对比评测，文章可以记录，但不能把它们当成跨设备、跨应用的通用结论。要判断模型是否真的稳，还要看到公开测试集、设备型号、应用版本、失败样本和人工接管比例。\n\n在产品演示里，YOYO 可以在用户授权范围内调用高德、滴滴等应用完成打开、改地址、选车型、下单或取消订单，也能搜索页面、查看订单和购物车。荣耀强调遇到指令错误或操作无法完成时会主动停止，允许人工接管。这一段的关键不是“手机可以自动打车”，而是权限边界：跨应用动作需要用户授权，涉及下单、付款或提交时仍应有清晰确认，模型能够停下来也比盲目继续更重要。\n\n荣耀还把 MagicGUI 面向全球软硬件开发者开源，并称 Magic V5 首发搭载。官方新闻稿同时提到隐私保护方法和多项认证，但认证、权限申请和实际数据处理方式仍要回到产品说明与模型仓库逐项核对。MagicGUI 的新闻价值在于，它把 GUI 智能体从“会回答”推向“看屏幕、计划和执行”，而真正决定它能否进入日常手机操作的，是可复现评测、授权设计和失败时的人工接管。",
+  "publishedAt": "2025-07-28",
+  "eventDate": "2025-07-26",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/honor-magicgui-open-source-20250726.svg",
+    "alt": "MagicGUI 让手机智能体先理解屏幕，再规划和执行动作，遇到问题可以停下交给人。",
+    "sourceUrl": "/images/news/honor-magicgui-open-source-20250726.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "gui-model",
+      "title": "这不是普通聊天模型，而是屏幕操作模型",
+      "body": "MagicGUI 面向手机 GUI：识别按钮、文字和页面状态，再把用户目标拆成动作序列。它关注的是“下一步在界面上做什么”，而不是只生成一段答案。",
+      "kind": "narrative"
+    },
+    {
+      "id": "train-and-eval",
+      "title": "训练和评测都围绕动作展开",
+      "body": "荣耀介绍了继续预训练、强化微调、空间增强奖励和 DF-GRPO，并按视觉定位、页面理解、单步操作、动作序列拆解来评测。模型是否稳定，要结合设备、应用版本和失败样本看。",
+      "kind": "technical"
+    },
+    {
+      "id": "yoyo-actions",
+      "title": "YOYO 的跨应用操作需要授权",
+      "body": "官方示例包含打开应用、修改地址、选择车型、下单或取消订单，前提是用户授权。高影响动作仍需要明确确认，模型遇到错误能停止并交回人工，才构成可控的操作闭环。",
+      "kind": "example"
+    },
+    {
+      "id": "open-source-claims",
+      "title": "开源和性能数字要分别核验",
+      "body": "荣耀宣布向全球软硬件开发者开源，并披露 91.5% 准确率和对比领先；这些是公司评测与新闻稿口径。公开模型、测试集、跨应用表现和隐私实现，仍是后续要查的证据。",
+      "kind": "comparison"
+    },
+    {
+      "id": "handoff",
+      "title": "真正的产品边界在失败时是否让人接管",
+      "body": "自动化执行不是越多越好。遇到指令含糊、页面变化、登录或付款时，系统能否暂停、解释当前动作并让人接管，比演示中完成一次任务更能说明可靠性。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "手机智能体怎样把一句话变成一次操作？",
+    "question": "沿着看屏幕、规划、调用应用和人工接管四步，理解 MagicGUI 的能力与权限边界。",
+    "steps": [
+      {
+        "label": "读取屏幕上下文",
+        "detail": "模型识别当前页面的文字、控件和状态，先知道自己面对的是什么界面。",
+        "evidence": "MagicGUI GUI perception positioning"
+      },
+      {
+        "label": "拆解用户目标",
+        "detail": "把“帮我打车”这类目标拆成打开应用、填地址、选车型等可检查的动作序列。",
+        "evidence": "荣耀新闻稿，自动执行规划"
+      },
+      {
+        "label": "在授权范围内执行",
+        "detail": "动作通过手机应用完成，涉及账号、订单和支付时必须遵守用户授权与确认。",
+        "evidence": "YOYO examples in Honor release"
+      },
+      {
+        "label": "出错就停并交回人工",
+        "detail": "页面变化或指令错误时，暂停并让人接管比继续猜测更安全；这也是 GUI agent 的可验证边界。",
+        "evidence": "Honor release, stop and handoff"
+      }
+    ]
+  },
+  "source": {
+    "name": "荣耀终端股份有限公司 · 美通社",
+    "url": "https://www.prnasia.com/story/497877-1.shtml"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context",
+    "tools",
+    "authorization",
+    "eval",
+    "citation",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.prnasia.com/story/497877-1.shtml",
+      "claim": "荣耀终端公司新闻稿确认 MagicGUI 以 7B 规模面向全球软硬件开发者开源，定位于多模态屏幕感知和自动执行规划，并由 YOYO 在 Magic V5 首发搭载。",
+      "excerpt": "荣耀终端股份有限公司 via PR Newswire Asia, 2025-07-28; event during WAIC on July 26."
+    },
+    {
+      "url": "https://www.prnasia.com/story/497877-1.shtml",
+      "claim": "新闻稿披露继续预训练与强化微调、91.5% 常用操控准确率和四类任务对比，但这些数字属于荣耀自己的评测口径。",
+      "excerpt": "同上，技术创新突破段落。"
+    },
+    {
+      "url": "https://club.honor.com/cn/thread-29578903-1-1.html",
+      "claim": "荣耀官方社区记录 WAIC 首日发布 MagicGUI 并宣布开源，补充终端生态与人工接管的产品语境。",
+      "excerpt": "Honor Club, 2025-07-26 post."
+    }
+  ],
+  "canonicalUrl": "https://www.prnasia.com/story/497877-1.shtml",
+  "sourceHash": "sha256:a7515b606f84e9c97a7c333d4c196ee4184c2f269a1348a25120331c4b4067ed",
+  "status": "published",
+  "discoveredAt": "2026-10-04T12:30:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "authorization",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "citation",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.9,
+      "evidence": [
+        "正文解释了该词条与 MagicGUI 手机 GUI 智能体新闻主线的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.prnasia.com/story/497877-1.shtml",
+      "claim": "荣耀终端公司新闻稿确认 MagicGUI 以 7B 规模面向全球软硬件开发者开源，定位于多模态屏幕感知和自动执行规划，并由 YOYO 在 Magic V5 首发搭载。",
+      "excerpt": "荣耀终端股份有限公司 via PR Newswire Asia, 2025-07-28; event during WAIC on July 26."
+    },
+    {
+      "url": "https://www.prnasia.com/story/497877-1.shtml",
+      "claim": "新闻稿披露继续预训练与强化微调、91.5% 常用操控准确率和四类任务对比，但这些数字属于荣耀自己的评测口径。",
+      "excerpt": "同上，技术创新突破段落。"
+    },
+    {
+      "url": "https://club.honor.com/cn/thread-29578903-1-1.html",
+      "claim": "荣耀官方社区记录 WAIC 首日发布 MagicGUI 并宣布开源，补充终端生态与人工接管的产品语境。",
+      "excerpt": "Honor Club, 2025-07-26 post."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T12:30:00Z",
+    "method": "source",
+    "notes": "核对荣耀公司新闻稿和荣耀官方社区；把厂商准确率、开源范围、跨应用授权和人工接管边界分开。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T12:30:00Z",
+    "notes": "按 GUI 智能体新闻事实链逐篇手写，明确公司评测数字和权限边界，等待 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T11:30:00Z",
+    "questions": [
+      "新闻主线清楚，中文自然、适合零基础读者，未见批量模板表达。",
+      "日期与来源边界清楚：WAIC 治理行动计划和合作组织是 7/26 倡议，不是已成立监管机构；MagicGUI eventDate=7/26、publishedAt=7/28；夸克眼镜 eventDate=7/26、publishedAt=7/28，区分现场预览和官方后续路线。",
+      "荣耀准确率、相对提升、授权和人工接管均保留厂商评测与产品承诺边界；阿里眼镜功能、年内上市和 Qwen 规模数字未写成已上市/已验证事实。",
+      "来源卡片、sections、explainer、SVG alt、词条和相关文章联动与正文一致。"
+    ],
+    "notes": "读者审阅通过：治理倡议、厂商性能数字和产品预览边界清楚，未发现需要修改正文的问题。",
+    "changes": []
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-07-26",
+  "fingerprint": "sha256:a7515b606f84e9c97a7c333d4c196ee4184c2f269a1348a25120331c4b4067ed",
+  "promotedAt": "2026-10-04T09:05:39.217Z"
+}

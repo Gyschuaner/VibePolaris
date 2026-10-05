@@ -1,0 +1,236 @@
+{
+  "slug": "inherent-faraday-research-agent-replication-20260822",
+  "title": "Inherent 的 Faraday 宣称科研复现超过大模型：27B 代理仍等独立复测",
+  "summary": "TechCrunch 于 2026 年 8 月 22 日报道，DeepMind 校友创办的 Inherent 称其 Faraday 代理在科研论文复现任务上超过 Claude Opus 4.8 和 GPT-5.5。公司公开材料描述了 310 个任务、长时程强化学习和编码工具，但这些结果仍是公司基准，不能直接等同于独立实验室的结论。",
+  "body": "2026 年 8 月 22 日，TechCrunch 报道伦敦 AI 实验室 Inherent 发布了名为 Faraday 的科研代理。公司称这个 270 亿参数的 Qwen3.6 系列模型，在不预先看到答案的情况下复现论文结果时，超过了 Anthropic 的 Claude Opus 4.8 和 OpenAI 的 GPT-5.5。新闻的重点不是“一个更大的模型又刷新分数”，而是一个较小的模型如何借助长时程训练和工具完成连续实验。\n\nInherent 8 月 14 日的官方研究说明给出了测试框架：Replica 初始包含来自 100 篇机器学习和 AI for science 论文的 310 个任务，代理要在有限时间和算力下复现论文中的图表，而且不能直接读取原始图。官方还说 Faraday 通过长时程强化学习训练，把编码代理作为工具，并试图学习“研究品味”——也就是决定哪些实验值得做、怎样设计实验。\n\n这个结果需要把“复现什么”与“超过谁”拆开看。公司描述的任务是复现既有研究结果，不是已经发现了新科学结论；官方基准还使用了 Claude Code 和 Codex 作为基线的工具环境，思考强度也被设为 extra high（尽可能多做推理和试验的配置）。因而 27B 参数只说明核心模型大小，不能直接推导出整个系统的成本、速度或在别的科研领域的表现。\n\nFaraday 的设计也说明代理能力不只来自模型本身：它要先读懂论文，再提出假设、写代码、运行实验、看结果、修改方案，最后把证据整理回来。这个循环把模型、工具、状态和评测连接在一起；如果某一步的权限、算力预算或评分器变化，结果也可能变化。Inherent 的官方页面把“研究品味”作为训练目标，但第三方还需要检查任务选择、评分器、基线配置和失败案例。\n\n因此，8 月 22 日确认的是一家公司和一家媒体共同披露的基准结果，以及一条值得追踪的科研代理路线。它不是独立复现报告，也不能证明 Faraday 已经能稳定替代研究人员。后续应关注 Replica 任务和代码是否开放、外部团队能否在相同预算下复测、代理是否能处理论文之外的真实问题，以及所谓“品味”能否通过人工专家评估而不是单一评分器验证。",
+  "publishedAt": "2026-08-22",
+  "eventDate": "2026-08-22",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/inherent-faraday-research-agent-replication-20260822.svg",
+    "alt": "从论文复现任务、编码工具到 Faraday 基准边界的科研代理链路",
+    "sourceUrl": "/images/news/inherent-faraday-research-agent-replication-20260822.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "news-event",
+      "title": "媒体报道的是 Faraday 的公开亮相",
+      "body": "TechCrunch 8 月 22 日报道 Inherent 的 Faraday 代理和其科研复现基准；公司称它超过 Claude Opus 4.8 与 GPT-5.5。",
+      "kind": "narrative"
+    },
+    {
+      "id": "replica-suite",
+      "title": "Replica 把科研任务变成连续实验",
+      "body": "官方研究页描述 310 个来自 100 篇论文的任务，要求在有限时间和算力下复现图表，且不能读取原图；这比只问模型一个答案更接近实验工作流。",
+      "kind": "technical"
+    },
+    {
+      "id": "system-boundary",
+      "title": "27B 参数不等于整个系统只有 27B",
+      "body": "Faraday 还依赖长时程强化学习（多轮行动后再根据结果奖励）、编码工具、运行环境、预算和评分器；官方基线也在 Claude Code 与 Codex 工具环境中执行。",
+      "kind": "comparison"
+    },
+    {
+      "id": "research-taste",
+      "title": "“研究品味”是待验证的训练目标",
+      "body": "Inherent 把选择实验和设计实验的能力称为 research taste，但公司基准仍需要外部团队检查任务选择、评分器、失败案例和跨领域泛化。",
+      "kind": "aside"
+    },
+    {
+      "id": "boundary",
+      "title": "公司基准不能直接变成普遍结论",
+      "body": "公开材料没有证明 Faraday 能发现新科学、替代研究人员或在其他领域稳定超过所有代理；当前最可靠的结论是值得复测的一条工程路线。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一个科研代理怎样把论文变成可复核实验",
+    "question": "沿着任务、工具、实验和评分四步看，读者能知道“超过基线”到底意味着什么。",
+    "steps": [
+      {
+        "label": "读取任务",
+        "detail": "代理从论文和有限资源约束出发，目标是复现一个没有原图答案的结果。",
+        "evidence": "Inherent Replica 介绍"
+      },
+      {
+        "label": "调用工具",
+        "detail": "Faraday 用编码代理写代码、运行实验和处理结果；“长时程强化学习”让它在多轮行动之后再根据结果获得奖励，工具调用是系统的一部分。",
+        "evidence": "Inherent 官方研究页"
+      },
+      {
+        "label": "反复试验",
+        "detail": "代理根据假设和实验反馈调整方案，这个长循环决定“研究品味”是否真的有用。",
+        "evidence": "官方 long-horizon RL 描述"
+      },
+      {
+        "label": "比较证据",
+        "detail": "结果与 Claude Opus 4.8、GPT-5.5 等基线比较，但公司基准仍需外部复测。",
+        "evidence": "TechCrunch 与 Replica 基准"
+      }
+    ]
+  },
+  "source": {
+    "name": "TechCrunch",
+    "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research/"
+  },
+  "relatedSlugs": [
+    "agent",
+    "agent-loop",
+    "llm",
+    "eval",
+    "benchmark",
+    "tools",
+    "dataset-data"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research/",
+      "claim": "TechCrunch 于 2026 年 8 月 22 日报道 Inherent 的 Faraday 代理，称其在科研论文复现任务上超过 Claude Opus 4.8 与 GPT-5.5。",
+      "excerpt": "Inherent says its AI agent, Faraday, has outperformed larger models at independently reproducing the findings of published scientific papers."
+    },
+    {
+      "url": "https://inherentlabs.ai/research/training-to-replicate",
+      "claim": "Inherent 官方研究页称 Faraday 是 270 亿参数的 AI Scientist agent，使用长时程强化学习和编码代理工具。",
+      "excerpt": "We introduce Faraday, a 27B-parameter “AI Scientist” agent ... Trained via long-horizon RL with coding agents as a tool."
+    },
+    {
+      "url": "https://inherentlabs.ai/research/training-to-replicate",
+      "claim": "官方页面说明 Replica 初始包含来自 100 篇机器学习和 AI for science 论文的 310 个复现任务，并限制时间和算力。",
+      "excerpt": "Each task requires an agent to replicate a figure from a research paper with a limited time and compute budget, and without access to the original plot."
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.13331",
+      "claim": "与官方研究页链接的论文是该训练和评测方法的背景材料；本文不把论文发布日期当成 8 月 22 日新闻事件。",
+      "excerpt": "The paper linked from Inherent’s research page documents the training and replication setup that underlies the company’s reported benchmark."
+    }
+  ],
+  "canonicalUrl": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research/",
+  "sourceHash": "sha256:96a111c82353f84796fa57b7af93c99c28f8e777178e71cf508dab7ad1abfb87",
+  "status": "published",
+  "discoveredAt": "2026-10-03T07:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent-loop",
+      "score": 0.93,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.88,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.92,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.95,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.86,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "dataset-data",
+      "score": 0.76,
+      "evidence": [
+        "正文用白话解释该词条在本条新闻中的作用和边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research/",
+      "claim": "TechCrunch 于 2026 年 8 月 22 日报道 Inherent 的 Faraday 代理，称其在科研论文复现任务上超过 Claude Opus 4.8 与 GPT-5.5。",
+      "excerpt": "Inherent says its AI agent, Faraday, has outperformed larger models at independently reproducing the findings of published scientific papers."
+    },
+    {
+      "url": "https://inherentlabs.ai/research/training-to-replicate",
+      "claim": "Inherent 官方研究页称 Faraday 是 270 亿参数的 AI Scientist agent，使用长时程强化学习和编码代理工具。",
+      "excerpt": "We introduce Faraday, a 27B-parameter “AI Scientist” agent ... Trained via long-horizon RL with coding agents as a tool."
+    },
+    {
+      "url": "https://inherentlabs.ai/research/training-to-replicate",
+      "claim": "官方页面说明 Replica 初始包含来自 100 篇机器学习和 AI for science 论文的 310 个复现任务，并限制时间和算力。",
+      "excerpt": "Each task requires an agent to replicate a figure from a research paper with a limited time and compute budget, and without access to the original plot."
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.13331",
+      "claim": "与官方研究页链接的论文是该训练和评测方法的背景材料；本文不把论文发布日期当成 8 月 22 日新闻事件。",
+      "excerpt": "The paper linked from Inherent’s research page documents the training and replication setup that underlies the company’s reported benchmark."
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T07:20:00Z",
+    "method": "source",
+    "notes": "已核对 TechCrunch 8 月 22 日新闻、Inherent 8 月 14 日官方研究页和其链接的论文；将公司基准、工具环境、论文背景与独立复测边界分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T07:27:53Z",
+    "notes": "唯一 reader review 已通过；正文把公司基准与独立复测分开，论文只作为新闻背景，可进入发布审核。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-03T07:27:53Z",
+    "questions": [],
+    "notes": "新闻主线是 TechCrunch 8 月 22 日报道 Inherent Faraday 的科研复现基准。正文区分媒体新闻、8 月 14 日官方研究说明和论文背景，明确 310/100 任务、27B、工具环境与独立复测边界；补充“长时程强化学习”和 extra high 的白话解释，引用卡片、词条、explainer 与 SVG 一致。",
+    "changes": [
+      "补充“长时程强化学习”和 extra high 的白话解释"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-08-22",
+  "fingerprint": "sha256:96a111c82353f84796fa57b7af93c99c28f8e777178e71cf508dab7ad1abfb87",
+  "promotedAt": "2026-10-03T07:30:14.112Z"
+}

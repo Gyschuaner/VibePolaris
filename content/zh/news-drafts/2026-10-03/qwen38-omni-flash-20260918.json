@@ -1,0 +1,238 @@
+{
+  "slug": "qwen38-omni-flash-20260918",
+  "title": "Qwen3.8-Omni-Flash 发布：文本、图像、音频、视频和 1M 上下文进入代理工作流",
+  "summary": "2026-09-18，Qwen 发布 Qwen3.8-Omni-Flash 原生全模态模型，并在千问平台提供文本、图像、音频、视频输入和 1M token（约一百万个模型计数的文本片段）上下文；官方还发布实时音视频版本、Qwen-MM-Plugins 与 Qwen-Live-Harness 实时交互框架。评测和价格数字仍是官方口径。",
+  "body": "2026-09-18，Qwen 发布 Qwen3.8-Omni-Flash，把文本、图像、音频和视频输入放进同一条代理工作流。官方称该模型支持 1M token（约一百万个模型计数的文本片段）上下文，并把目标从“理解多模态内容”推进到规划任务、调用工具和完成创作；发布页还同时介绍实时音视频版本、插件框架和实时交互 harness（把模型接入音视频工具的工作框架）。\n\n这次发布的新闻重点不是“又一个能看图的模型”，而是把音视频作为代理的工作材料。一个视频可以先被理解，再被摘要、剪辑或转换成可复用的技能；实时版本则面向边听边回应、保留上下文并调用工具的场景。Qwen 还发布 Omni Skill Creator，试图从演示中提取 SOP（标准操作步骤）、工具使用和决策标准，生成可以复用的 agent skill（代理技能）。\n\n官方给出多项评测和价格变化：29 项评估平均分比上一代提高超过 25%，音频输入价格下降超过 98%，音视频输入价格下降超过 93%。这些数字描述的是 Qwen 的评测集、计价方式和对比模型，不能直接当作所有场景都更快、更便宜或更准确；尤其是长视频、实时对话和工具调用仍需要用户在自己的数据和延迟要求下复测。\n\nQwen3.8-Omni-Flash 也把“模型”和“代理系统”绑在一起：模型负责听、看、理解和规划，插件与实时 harness 负责工具、记忆和协作。是否适合生产，要继续核对 API 限制、长上下文成本、实时稳定性、音视频隐私和许可证，而不是只看一张评测表。",
+  "publishedAt": "2026-09-18",
+  "eventDate": "2026-09-18",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/qwen38-omni-flash-20260918.svg",
+    "alt": "全模态模型怎样变成音视频代理？",
+    "sourceUrl": "/images/news/qwen38-omni-flash-20260918.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "release",
+      "title": "原生全模态进入代理输入层",
+      "body": "Qwen3.8-Omni-Flash 同时接受文本、图像、音频和视频，官方定位是让代理理解、规划、调用工具并完成工作。",
+      "kind": "narrative"
+    },
+    {
+      "id": "context",
+      "title": "1M token 解决的是长材料组织",
+      "body": "1M token（约一百万个模型计数的文本片段）可以容纳更长的音视频转写、脚本和任务上下文，但实际可用长度、延迟和费用仍取决于 API 与工作流。",
+      "kind": "technical"
+    },
+    {
+      "id": "skills",
+      "title": "从演示提取可复用技能",
+      "body": "Omni Skill Creator 尝试从演示中提取 SOP（标准操作步骤）、工具用法和决策标准，形成可以分享和评估的 agent skill（代理技能）。",
+      "kind": "comparison"
+    },
+    {
+      "id": "numbers",
+      "title": "评测和价格要留在官方口径内",
+      "body": "平均提升、价格下降和具体 benchmark 数字来自 Qwen 官方材料；对比模型、输入类型和计价单位决定了这些数字能否迁移到实际项目。",
+      "kind": "boundary"
+    },
+    {
+      "id": "workflow",
+      "title": "模型之外还有一套系统",
+      "body": "插件、实时 harness、记忆和工具编排共同决定代理是否可用，单独更换模型不等于整条音视频工作流已经稳定。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "全模态模型怎样变成音视频代理？",
+    "question": "把感知、长上下文、技能和工具分开，才能看清 Qwen3.8-Omni-Flash 的工作边界。",
+    "steps": [
+      {
+        "label": "输入音视频",
+        "detail": "文本、图像、音频和视频进入同一个模型上下文。",
+        "evidence": "Qwen 官方发布页。"
+      },
+      {
+        "label": "保留上下文",
+        "detail": "1M token（约一百万个模型计数的文本片段）为长材料、转写和任务计划提供更大窗口。",
+        "evidence": "Qwen 官方规格。"
+      },
+      {
+        "label": "提取技能",
+        "detail": "演示可以被整理为 SOP（标准操作步骤）、工具用法和决策标准。",
+        "evidence": "Omni Skill Creator 说明。"
+      },
+      {
+        "label": "调用工具",
+        "detail": "插件与实时 harness 负责把理解结果接入代理工作流，价格和稳定性仍需复测。",
+        "evidence": "Qwen-MM-Plugins 与 Qwen-Live-Harness。"
+      }
+    ]
+  },
+  "source": {
+    "name": "Qwen",
+    "url": "https://qwen.ai/blog?id=qwen3.8-omni-flash"
+  },
+  "relatedSlugs": [
+    "agent",
+    "context-window",
+    "tools",
+    "event",
+    "benchmark",
+    "data-quality"
+  ],
+  "relatedArticleSlugs": [
+    "qwen-image-21-open-source-20260920",
+    "stepfun-step5-preview-20260920"
+  ],
+  "sources": [
+    {
+      "url": "https://qwen.ai/blog?id=qwen3.8-omni-flash",
+      "claim": "Qwen 发布 Qwen3.8-Omni-Flash，支持文本、图像、音频、视频输入、1M token 上下文和代理工作流。",
+      "excerpt": "Qwen, Qwen3.8-Omni-Flash: Omni Senses. Agentic Delivery, 2026-09-18。"
+    },
+    {
+      "url": "https://qwen.ai/blog?id=qwen3.8-omni-flash",
+      "claim": "官方介绍 Omni Skill Creator、实时音视频版本、Qwen-MM-Plugins 和 Qwen-Live-Harness。",
+      "excerpt": "同一官方发布页的 Omni Skill Creator 与 Real-Time Audio-Visual Interaction 段落。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/blog/qwen3-8-omni-flash-omni-senses--agentic-delivery-_603580",
+      "claim": "阿里云社区转载 Qwen 官方发布信息，交叉记录全模态输入和代理化音视频方向。",
+      "excerpt": "Alibaba Cloud Community, Qwen3.8-Omni-Flash, 2026-09-18。"
+    }
+  ],
+  "canonicalUrl": "https://qwen.ai/blog?id=qwen3.8-omni-flash",
+  "sourceHash": "sha256:e22969ddb9d1c65622deef088914f63b6a6448c620e793f91650493898357c38",
+  "status": "published",
+  "discoveredAt": "2026-10-03T14:20:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.76,
+      "evidence": [
+        "正文解释了 agent 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.76,
+      "evidence": [
+        "正文解释了 context-window 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.76,
+      "evidence": [
+        "正文解释了 tools 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.76,
+      "evidence": [
+        "正文解释了 event 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.76,
+      "evidence": [
+        "正文解释了 benchmark 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "data-quality",
+      "score": 0.76,
+      "evidence": [
+        "正文解释了 data-quality 与本事件的关系。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "qwen-image-21-open-source-20260920",
+      "score": 0.82,
+      "evidence": [
+        "同一周的 AI 安全、治理或代理事件构成时间线联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "article",
+      "slug": "stepfun-step5-preview-20260920",
+      "score": 0.82,
+      "evidence": [
+        "同一周的 AI 安全、治理或代理事件构成时间线联动。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://qwen.ai/blog?id=qwen3.8-omni-flash",
+      "claim": "Qwen 发布 Qwen3.8-Omni-Flash，支持文本、图像、音频、视频输入、1M token 上下文和代理工作流。",
+      "excerpt": "Qwen, Qwen3.8-Omni-Flash: Omni Senses. Agentic Delivery, 2026-09-18。"
+    },
+    {
+      "url": "https://qwen.ai/blog?id=qwen3.8-omni-flash",
+      "claim": "官方介绍 Omni Skill Creator、实时音视频版本、Qwen-MM-Plugins 和 Qwen-Live-Harness。",
+      "excerpt": "同一官方发布页的 Omni Skill Creator 与 Real-Time Audio-Visual Interaction 段落。"
+    },
+    {
+      "url": "https://www.alibabacloud.com/blog/qwen3-8-omni-flash-omni-senses--agentic-delivery-_603580",
+      "claim": "阿里云社区转载 Qwen 官方发布信息，交叉记录全模态输入和代理化音视频方向。",
+      "excerpt": "Alibaba Cloud Community, Qwen3.8-Omni-Flash, 2026-09-18。"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-03T14:35:00Z",
+    "method": "manual",
+    "notes": "核对 Qwen 官方发布页与阿里云交叉页：把官方 benchmark/价格口径和可迁移的生产结论分开，没有将论文或演示当作独立验证。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-03T14:35:00Z",
+    "notes": "按当天事实链组织，不把公司声明、媒体报道或政策建议写成已经验证的能力、法律结论或全面部署。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-02T20:45:47Z",
+    "questions": [],
+    "notes": "Qwen 官方发布、评测/价格口径和阿里云交叉来源清楚；补充了 1M token、SOP、agent skill 和实时 harness 的白话解释。正文把模型、插件、实时框架和生产稳定性分开，Explainer/SVG 对应。",
+    "changes": [
+      "补充 1M token、SOP、agent skill 和实时 harness 的零基础解释；未改变事实主张或 sourceHash/fingerprint。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2026-09-18",
+  "fingerprint": "sha256:e22969ddb9d1c65622deef088914f63b6a6448c620e793f91650493898357c38",
+  "promotedAt": "2026-10-02T20:46:25.896Z"
+}

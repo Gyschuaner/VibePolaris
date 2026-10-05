@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 1,
+  "runId": "vbp-049-news-backfill-news-2025-08-20",
+  "eventDate": "2025-08-20",
+  "searchedAt": "2026-10-05T00:00:00Z",
+  "search": {
+    "query": "2025-08-20 AI 事件重新检索：核对 Google Pixel 10 官方发布，并检索 arXiv 当日首次提交；优先消费级端侧 AI、推理模型、真实 MCP 工具评测、生产级 Agent 安全、工具调用可靠性与幻觉检测，区分论文预印本与官方产品宣传，剔除 8 月 21 日跨日发布。",
+    "sourceUrls": [
+      "https://blog.google/intl/en-in/products/hardware/powerful-and-proactive-pixel-10-phones-are-here/",
+      "https://export.arxiv.org/api/query?id_list=2508.14444,2508.14704,2508.15066,2508.15068,2508.14323,2508.14496,2508.14727,2508.14390,2508.15050,2508.14880,2508.14460"
+    ],
+    "sourcePolicy": [
+      "official-blog",
+      "paper"
+    ],
+    "candidateCount": 12,
+    "primaryCandidateCount": 12,
+    "deduplicatedCount": 0
+  },
+  "candidates": [
+    {
+      "slug": "pixel-10-ai-phone-20250820",
+      "title": "Google 发布 Pixel 10 系列，把 Gemini Nano 与 Tensor G5 放进手机",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "official-blog",
+      "source": {
+        "name": "Google Blog",
+        "url": "https://blog.google/intl/en-in/products/hardware/powerful-and-proactive-pixel-10-phones-are-here/"
+      },
+      "canonicalUrl": "https://blog.google/intl/en-in/products/hardware/powerful-and-proactive-pixel-10-phones-are-here/",
+      "sourceHash": "sha256:69090edfc4d85dfebadef80064a7b013dd5a0be76bb7782dccf4002f320204d2",
+      "relatedSlugs": [
+        "llm",
+        "context",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://blog.google/intl/en-in/products/hardware/powerful-and-proactive-pixel-10-phones-are-here/",
+          "claim": "Google 于 2025 年 8 月 20 日介绍 Pixel 10、Pixel 10 Pro 和 Pixel 10 Pro XL，搭载 Tensor G5 与新 Gemini Nano 模型。",
+          "excerpt": "Today we introduced our 10th generation of phones: Pixel 10, Pixel 10 Pro and Pixel 10 Pro XL. Powered by the all-new Google Tensor G5 chip and our newest Gemini Nano model"
+        },
+        {
+          "url": "https://blog.google/intl/en-in/products/hardware/powerful-and-proactive-pixel-10-phones-are-here/",
+          "claim": "官方将 Magic Cue 描述为跨 Messages 和 Phone 等应用提供主动信息与操作建议的手机端能力，并强调在用户许可下运行。",
+          "excerpt": "With your permission, Tensor G5 and the latest version of Gemini Nano work together to run Magic Cue privately and securely on your phone."
+        }
+      ],
+      "decision": "selected",
+      "reason": "这是当天最明确的消费级端侧 AI 产品事件，既有新芯片和本地模型，也有 Magic Cue、Camera Coach 等具体交互；文章会把厂商功能描述和已证实效果分开。"
+    },
+    {
+      "slug": "nvidia-nemotron-nano2-20250820",
+      "title": "NVIDIA 发布 Nemotron Nano 2，用混合 Mamba-Transformer 压低推理成本",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / NVIDIA 等",
+        "url": "https://arxiv.org/abs/2508.14444"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14444",
+      "sourceHash": "sha256:a3a1a7283529717f91a041b60e50b9e8cb34858c381ec7947d3325a172d4e494",
+      "relatedSlugs": [
+        "llm",
+        "model-routing",
+        "benchmark",
+        "token",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14444",
+          "claim": "Nemotron-Nano-9B-v2 采用以 Mamba-2 替换多数自注意力层的混合架构，面向长思考轨迹提升吞吐。",
+          "excerpt": "the majority of the self-attention layers ... are replaced with Mamba-2 layers, to achieve improved inference speed when generating the long thinking traces needed for reasoning"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14444",
+          "claim": "论文报告在 8k 输入、16k 输出的推理设置中，相比 Qwen3-8B 等同规模模型最高可实现 6 倍推理吞吐，并发布多个 checkpoint 和大部分训练数据。",
+          "excerpt": "up to 6x higher inference throughput ... We are releasing Nemotron-Nano-9B-v2 ... checkpoints along with the majority of our pre- and post-training datasets"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把端侧或资源受限推理的竞争点落到架构、压缩和吞吐的组合，而不是只报一个模型分数；文章会明确吞吐数字依赖输入输出长度和硬件设置。"
+    },
+    {
+      "slug": "mcp-universe-real-server-benchmark-20250820",
+      "title": "MCP-Universe 用真实 Server 测 Agent，SOTA 模型也没过半",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / MCP-Universe 作者组",
+        "url": "https://arxiv.org/abs/2508.14704"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14704",
+      "sourceHash": "sha256:27829855fa3aa69412c26cc82c067563ee8ac74c7c85345a2984b0db1d1426de",
+      "relatedSlugs": [
+        "mcp",
+        "agent",
+        "benchmark",
+        "eval",
+        "tools",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14704",
+          "claim": "MCP-Universe 覆盖导航、代码仓库、金融分析、3D 设计、浏览器自动化和网页搜索 6 个领域，接入 11 个真实 MCP Server。",
+          "excerpt": "6 core domains spanning 11 different MCP servers: Location Navigation, Repository Management, Financial Analysis, 3D Design, Browser Automation, and Web Searching"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14704",
+          "claim": "论文报告 GPT-5、Grok-4 和 Claude-4.0-Sonnet 在该基准上的得分分别为 43.72%、33.33% 和 29.44%，并指出长上下文与陌生工具使用是主要挑战。",
+          "excerpt": "GPT-5 (43.72%), Grok-4 (33.33%) and Claude-4.0-Sonnet (29.44%) ... long-context challenge ... unknown-tools challenge"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它把 MCP 评测从简化函数调用推进到真实 Server、长链路和陌生工具，直接回答 Agent 在现实工具生态里到底能不能工作；结果会限定在论文版本和任务设置。"
+    },
+    {
+      "slug": "osprey-safety-critical-agent-20250820",
+      "title": "Osprey 把 Agent 放进安全关键控制室，先审计划再碰硬件",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Osprey 作者组",
+        "url": "https://arxiv.org/abs/2508.15066"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.15066",
+      "sourceHash": "sha256:5c49264e12df96153dbf138301f109e63ac8c6d4f28afb0f6c8cddb4536a5b48",
+      "relatedSlugs": [
+        "agent",
+        "authorization",
+        "execution-sandbox",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.15066",
+          "claim": "Osprey 用先规划后执行的编排器生成包含依赖关系的完整计划，在任何硬件动作前交给人审。",
+          "excerpt": "a plan-first orchestrator that generates complete execution plans, including all dependencies, for human review before any hardware is touched"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.15066",
+          "claim": "论文以 Advanced Light Source 的生产部署为案例，称系统在数十万控制通道上管理实时运行；这里的生产级结论来自作者案例，不能外推到所有设施。",
+          "excerpt": "a production deployment at the Advanced Light Source, where Osprey manages real-time operations across hundreds of thousands of control channels"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它提供了安全关键 Agent 的具体控制面：计划、人审、数据类型、工具筛选和连接器；文章会把作者的部署案例与普遍可用性分开。"
+    },
+    {
+      "slug": "s3lora-safe-agent-adaptation-20250820",
+      "title": "S3LoRA 只看 LoRA 更新，也能找出 Agent 适配后的安全风险",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / S3LoRA 作者组",
+        "url": "https://arxiv.org/abs/2508.15068"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.15068",
+      "sourceHash": "sha256:553e7ea22a1dd3b16a7b798ce25a8c7951965006bfe6bf3bff19faf60bbbe4e5",
+      "relatedSlugs": [
+        "llm",
+        "agent",
+        "execution-sandbox",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.15068",
+          "claim": "S3LoRA 面向 LoRA 适配可能破坏模型安全对齐的问题，只检查微调权重更新，不要求同时拿到基础模型和指令模型 checkpoint。",
+          "excerpt": "a lightweight, data-free, and model-independent framework ... inspecting only the fine-tuned weight updates"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.15068",
+          "claim": "作者用 MAS-SVD 分析更新结构，再用 Spectral Sharpness Index 找出尖锐且可能不安全的层并做事后剪枝；实验称安全指标提升同时保持或改善效用。",
+          "excerpt": "introduce Magnitude-Aware Spherically Normalized SVD ... Spectral Sharpness Index ... pruned post-hoc to reduce risk without sacrificing task performance"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它针对实际团队常遇到的“只有适配后模型、拿不到完整基座”场景，给出可部署的事后安全检查思路；文章不会把实验指标写成通用安全保证。"
+    },
+    {
+      "slug": "behavior-aligned-retriever-api-calls-20250820",
+      "title": "BAR 让 Agent 少做不必要的 API 调用",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Behavior Aligned Retriever 作者组",
+        "url": "https://arxiv.org/abs/2508.14323"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14323",
+      "sourceHash": "sha256:a3c5f756c102d9ec6a8150ac7778aeec6ffe7a28896dc7bce8c5fd0c0434c11e",
+      "relatedSlugs": [
+        "retrieval",
+        "function-calling",
+        "api",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14323",
+          "claim": "论文指出，语义相近的请求可能需要相反的工具调用行为，单靠语义相似度检索示例会把模型带偏。",
+          "excerpt": "Lexically close or semantically close queries can require opposite behavior, so the retrieved examples may be behaviorally inconsistent"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14323",
+          "claim": "BAR 训练检索器学习与工具使用行为一致的相似度，在 14 个 LLM 和 3 个基准上报告调用可靠性提升并减少不必要 API 调用。",
+          "excerpt": "Applied to multiple retrieval backbones ... BAR consistently improves invocation reliability and reduces unnecessary API calls across 14 LLMs and 3 benchmarks"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它切中工具型 Agent 的成本和可靠性问题，改的是示例检索而不是强行替换模型决策；文章会保留“最终决定仍由 LLM 做”的边界。"
+    },
+    {
+      "slug": "semantic-energy-hallucination-detection-20250820",
+      "title": "Semantic Energy 从模型内部信号找幻觉",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Semantic Energy 作者组",
+        "url": "https://arxiv.org/abs/2508.14496"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14496",
+      "sourceHash": "sha256:e456c4909683eae70151c8e0f1a528381f0b4904baff9f432013c9b5fd99f662",
+      "relatedSlugs": [
+        "hallucination",
+        "eval",
+        "llm",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14496",
+          "claim": "Semantic Energy 直接使用倒数第二层 logits 的内在置信度，把语义聚类与受 Boltzmann 分布启发的能量信号结合起来。",
+          "excerpt": "operating directly on logits of penultimate layer ... combining semantic clustering with a Boltzmann-inspired energy distribution"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14496",
+          "claim": "作者报告该方法在多个基准上改善幻觉检测和不确定性估计；摘要没有给出统一的跨任务提升百分比。",
+          "excerpt": "Experiments across multiple benchmarks show that Semantic Energy significantly improves hallucination detection and uncertainty estimation"
+        }
+      ],
+      "decision": "selected",
+      "reason": "它为幻觉检测提供了比表面熵更贴近模型内部状态的方向，适合连接到事实核验和拒答策略；由于摘要未给统一增益，文章不虚构具体百分比。"
+    },
+    {
+      "slug": "ai-generated-code-quality-security-20250820",
+      "title": "AI 生成代码通过测试，也可能留下安全漏洞",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / AI-generated code quality study",
+        "url": "https://arxiv.org/abs/2508.14727"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14727",
+      "sourceHash": "sha256:27d6765ede40e6da7d73ffb60e2c6e3bd8c5ac6f028dd21efaab0dd343869ac5",
+      "relatedSlugs": [
+        "benchmark",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14727",
+          "claim": "研究对 4,442 份 Java 编程作业做 SonarQube 静态分析，比较 Claude Sonnet 4、Claude 3.7、GPT-4o、Llama 3.2 90B 和 OpenCoder 8B。",
+          "excerpt": "tested ... output from 4,442 Java coding assignments through comprehensive static analysis using SonarQube"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14727",
+          "claim": "摘要报告功能测试通过率与代码整体质量和安全问题数量没有直接相关，观察到硬编码密码和路径遍历等严重问题。",
+          "excerpt": "no direct correlation between ... Pass@1 ... and the overall quality and security ... hard-coded passwords and path traversal vulnerabilities"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "问题重要，但当天已有多个 Agent 可靠性与安全主线；先留作备选，避免把相邻的评测文章挤成同一批。"
+    },
+    {
+      "slug": "rehearse-confidence-calibration-20250820",
+      "title": "REHEARSE 用过去的置信度反馈校准下一次回答",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / REHEARSE 作者组",
+        "url": "https://arxiv.org/abs/2508.14390"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14390",
+      "sourceHash": "sha256:fde78014c6352f5b7b0d2ba07fc3a5ba6ed98a00f4fb05b81897beba828dfb83",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14390",
+          "claim": "REHEARSE 在无需训练的情况下，把严格 proper scoring rule 下的历史置信度反馈总结成轨迹前缀，供下一题使用。",
+          "excerpt": "a training-free method ... receives feedback on prior confidence decisions ... summarized in a post-game trajectory prefix"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14390",
+          "claim": "论文在 4 个 LLM、3 个基准和 5 个随机种子上报告平均 ECE 相比未校准基线降低 58%。",
+          "excerpt": "reducing average ECE by 58% relative to the uncalibrated baseline"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "与当天其他可靠性论文主题接近，先留作备选，待主线文章完成后再判断是否需要补写。"
+    },
+    {
+      "slug": "dont-think-twice-confidence-calibration-20250820",
+      "title": "过度思考可能让模型更自信，却没有更准",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / Don't Think Twice 作者组",
+        "url": "https://arxiv.org/abs/2508.15050"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.15050",
+      "sourceHash": "sha256:bc38c567553e50f387ad30aece888bfd4521112299f475ffc0096836c9788894",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "grounding",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.15050",
+          "claim": "论文在 ClimateX 并扩展到人类健康和地球健康问题上评估推理预算对置信度判断的影响。",
+          "excerpt": "using the ClimateX dataset ... and expanding it to human and planetary health"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.15050",
+          "claim": "作者报告增加推理预算会持续损害校准，而检索增强生成达到 89.3% 的置信度评估准确率。",
+          "excerpt": "increasing reasoning budgets consistently impairs ... search-augmented generation ... achieving 89.3% accuracy"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "与 REHEARSE 和 Semantic Energy 同属置信度可靠性主线，先保留，避免同日连续三篇讲校准而稀释读者注意力。"
+    },
+    {
+      "slug": "medresearcher-r1-medical-deep-research-20250820",
+      "title": "MedResearcher-R1 为医学深研 Agent 构造长链轨迹",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / MedResearcher-R1 作者组",
+        "url": "https://arxiv.org/abs/2508.14880"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14880",
+      "sourceHash": "sha256:33575d3be1961f69c40d5260d5d9694247c46a8d046446bd80c29cb0ba263985",
+      "relatedSlugs": [
+        "agent",
+        "rag",
+        "retrieval",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14880",
+          "claim": "MedResearcher-R1 用医学知识图谱长链生成多跳问答，再接入私有医学检索引擎与通用工具训练深研 Agent。",
+          "excerpt": "extracting the longest chains from subgraphs around rare medical entities ... integrate a custom-built private medical retrieval engine"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14880",
+          "claim": "作者生成 2,100 多条轨迹，覆盖 12 个医学专科，平均每条包含 4.2 次工具交互，并报告在医学基准上达到新的最佳结果。",
+          "excerpt": "2100+ diverse trajectories across 12 medical specialties ... each averaging 4.2 tool interactions ... new state-of-the-art results"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "医学深研值得单独展开，但需要更谨慎地区分基准成绩、临床可用性和安全边界；先不与当天的通用 Agent 文章并列。"
+    },
+    {
+      "slug": "dupo-self-verification-20250820",
+      "title": "DuPO 用双向重建给 LLM 自验证信号",
+      "eventDate": "2025-08-20",
+      "publishedAt": "2025-08-20",
+      "sourceType": "paper",
+      "source": {
+        "name": "arXiv / DuPO 作者组",
+        "url": "https://arxiv.org/abs/2508.14460"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.14460",
+      "sourceHash": "sha256:6dd24dce07936071ecb91d16f1d0f82fc79b5fcdf06fd6e0cc48a84f5fac3e06",
+      "relatedSlugs": [
+        "llm",
+        "eval",
+        "event"
+      ],
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.14460",
+          "claim": "DuPO 把原任务输入拆成已知和未知部分，用模型输出与已知信息重建未知部分，以重建质量作为无标注反馈。",
+          "excerpt": "decomposes a primal task's input into known and unknown components ... reconstruction ... serves as a self-supervised reward"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.14460",
+          "claim": "作者报告翻译平均提升 2.13 COMET，三个数学挑战基准平均提升 6.4 个百分点，推理时重排提升 9.3 个百分点。",
+          "excerpt": "enhances the average translation quality by 2.13 COMET ... mathematical reasoning accuracy ... 6.4 points ... 9.3 points as an inference-time reranker"
+        }
+      ],
+      "decision": "deferred",
+      "reason": "方法有意思，但更偏训练框架，优先级低于当天直接影响 Agent 部署和工具调用的事件；先保留候选记录。"
+    }
+  ],
+  "selectedSlugs": [
+    "pixel-10-ai-phone-20250820",
+    "nvidia-nemotron-nano2-20250820",
+    "mcp-universe-real-server-benchmark-20250820",
+    "osprey-safety-critical-agent-20250820",
+    "s3lora-safe-agent-adaptation-20250820",
+    "behavior-aligned-retriever-api-calls-20250820",
+    "semantic-energy-hallucination-detection-20250820"
+  ],
+  "gap": null
+}

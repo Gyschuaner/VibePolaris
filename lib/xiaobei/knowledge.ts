@@ -9,7 +9,7 @@ export const platformGuide = `VibePolaris（Vibe指北）是技术概念词典�
 主题入口可调整背景及主题色。新闻星历只包含已发布并经过人工确认的站内新闻，草稿和外部实时内容不在小北的知识范围内。小北是内部邀请码激活的全站悬浮星星，每码每天100积分，每日北京时间零点恢复。
 小北右上角可以新建对话或打开历史，切回旧对话可继续聊。历史按邀请码与当前浏览器隔离，刷新后可恢复；换浏览器或清除网站Cookie不能找回原历史，同码不同使用者不共享对话。`;
 export const catalog = publishedTerms.map(t => `${t.slug}：${t.zh} ${t.en}`).join("\n");
-export const newsCatalog = newsArticles.map(article => `${article.publishedAt} ${article.title}：${article.summary}`).join("\n");
+export const newsCatalog = newsArticles.map(article => `${article.eventDate} ${article.title}（来源发布 ${article.publishedAt}）：${article.summary}`).join("\n");
 export const toolDefinitions = [
   { type: "function", function: { name: "search_terms", description: "搜索已发布的技术词条，返回摘要及可读取的slug。可换用词名、同义词或短关键词。", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"], additionalProperties: false } } },
   { type: "function", function: { name: "read_term", description: "读取已发布词条的实际正文。按字符offset分页；truncated时可用nextOffset继续。", parameters: { type: "object", properties: { slug: { type: "string" }, offset: { type: "integer", minimum: 0 } }, required: ["slug"], additionalProperties: false } } },
@@ -46,14 +46,15 @@ export function searchNews(query: string) {
       .filter((term): term is NonNullable<typeof term> => Boolean(term))
       .map(term => `${term.zh} ${term.en} ${term.slug} ${term.aliases.join(" ")}`)
       .join(" ");
-    const names = `${article.title} ${article.source.name} ${article.publishedAt} ${related}`.toLowerCase();
+    const names = `${article.title} ${article.source.name} ${article.eventDate} ${article.publishedAt} ${related}`.toLowerCase();
     const full = `${names} ${article.summary} ${article.body}`.toLowerCase();
     const score = words.reduce((total, word) => total + (names.includes(word) ? 3 : full.includes(word) ? 1 : 0), 0);
     return { article, score };
-  }).filter(item => item.score > 0).sort((a, b) => b.score - a.score || b.article.publishedAt.localeCompare(a.article.publishedAt)).slice(0, 8).map(({ article }) => ({
+  }).filter(item => item.score > 0).sort((a, b) => b.score - a.score || b.article.eventDate.localeCompare(a.article.eventDate) || b.article.publishedAt.localeCompare(a.article.publishedAt)).slice(0, 8).map(({ article }) => ({
     slug: article.slug,
     title: article.title,
     summary: article.summary,
+    eventDate: article.eventDate,
     publishedAt: article.publishedAt,
     source: article.source,
     relatedSlugs: article.relatedSlugs,
@@ -72,6 +73,7 @@ export function readNews(slug: string, offset = 0) {
     title: article.title,
     summary: article.summary,
     url: `/news/${article.slug}`,
+    eventDate: article.eventDate,
     publishedAt: article.publishedAt,
     source: article.source,
     relatedSlugs: article.relatedSlugs,

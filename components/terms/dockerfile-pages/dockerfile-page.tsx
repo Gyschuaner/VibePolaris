@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function DockerfileTermPage() {
-  return <Article slug="dockerfile" title="Dockerfile" subtitle="Dockerfile · 把构建顺序写成可复用的层" sources={dockerfileSources} sections={sections} hero={<DockerfileHero />} intro={<>Dockerfile 看起来像一串 shell 命令，真正留下来的却是镜像层、缓存键和运行时边界。<strong>每个指令都会读取输入并留下结果，顺序决定下一次构建能复用什么。</strong>写它是在安排一条构建轨迹：依赖、源码、产物和 context 各自应该站在哪一层。</>}> 
+  return <Article slug="dockerfile" title="Dockerfile" subtitle="Dockerfile · 把构建顺序写成可复用的层" sources={dockerfileSources} sections={sections} hero={<DockerfileHero />} intro={<>Dockerfile 看起来像一串 shell 命令，真正留下来的却是镜像层、缓存键和运行时边界。<strong>每个指令都会读取输入并留下结果，顺序决定下一次构建能复用什么。</strong>写它是在安排一条构建轨迹：依赖、源码、产物和 context 各自应该站在哪一层。</>}>
     <ArticleSection id="dockerfile-definition-section" title="每行指令都在改变构建输入">
       <p id="docker-instruction" className="vp-citation-target">Dockerfile 由 <code>FROM</code>、<code>COPY</code>、<code>RUN</code>、<code>ENV</code>、<code>CMD</code> 等指令组成。构建器按顺序读取它们，每一步都以之前的结果作为输入，最后形成可运行的镜像。<Cite id="docker-instruction" sources={dockerfileSources} /></p>
       <p id="docker-layer" className="vp-citation-target">把每行想成一层会让缓存和变化变得可见：依赖安装层不应该因为一个源码文件变动就失效，源码复制层也不该被误当成“整个镜像重新从零开始”。<Cite id="docker-layer" sources={dockerfileSources} /></p>

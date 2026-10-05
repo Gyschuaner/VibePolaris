@@ -1,0 +1,210 @@
+{
+  "slug": "meve-memory-verification-20250901",
+  "title": "MeVe：RAG 先验证记忆，再决定哪些内容进入上下文",
+  "summary": "MeVe 论文于 9 月 1 日提交，针对 RAG 只做一次 top-k 语义搜索、容易把无关或重复内容塞进上下文的问题，提出五阶段的记忆验证与上下文控制架构：初始检索、相关性验证、回退检索、上下文优先级和 token 预算。论文在英文 Wikipedia 子集和 HotpotQA 的知识密集型问答上报告，上下文量分别减少 57% 和 75%，并强调每个阶段都能独立审计和调参。",
+  "body": "很多 RAG 系统把 top-k 当成一个足够完整的检索答案：先找几段最相似的文本，再把它们全部放进提示词。这个做法很快，却把两个问题混在了一起——相似不代表真的有用，没排进前几名也不代表没有必要的证据。无关段落会挤占 token，重复段落会让模型反复读同一件事，真正缺失的证据却没人负责补回来。\n\nMeVe 把这段流程拆成五个可以单独检查的阶段。第一轮仍然做初始检索，但它不直接把结果交给模型；系统先验证每条记忆与当前问题的相关性，再决定哪些内容值得进入组合阶段。这里的“记忆”可以理解为检索到的候选证据，不是一个已经被确认的事实库。\n\n如果验证发现证据不够，MeVe 会触发回退检索，扩大或改变搜索路径，而不是把低质量结果硬塞进去。随后，系统按任务需要给候选内容排优先级，再执行 token 预算，把有限的上下文空间留给更能支撑回答的片段。五个阶段各自留下中间结果，调试时可以知道问题出在召回、验证、回退、排序还是预算，而不是只看到最后一句答案。\n\n论文把这种结构称为 Memory Verification and smart context composition。它的价值不在于多加一个过滤器，而是把“哪些知识可以被模型看到”变成一条可审计的决策链。对需要引用的问答，系统还应保留候选原文、验证理由、被淘汰的原因和最终使用位置，否则上下文变短了，证据责任却没有变清楚。\n\n在英文 Wikipedia 子集上，MeVe 报告上下文量减少 57%；在更复杂的 HotpotQA 上减少 75%。这两个数字说明验证和优先级可以显著减少输入冗余，但减少 token 不是准确率的同义词。若验证器把关键但措辞不相似的证据判成无关，回答会更短，却可能少了决定结论的那一步。\n\nMeVe 当前是 proof of concept，评测集中在知识密集型问答和英语资料。换成中文、多模态文档、实时网页或带权限的企业知识库后，验证器成本、检索延迟、来源时效和访问控制都要重新测。回退检索也不能无限尝试，必须有预算、停止条件以及证据不足时的拒答路径。\n\nMeVe 给 RAG 的提醒是：上下文控制不是最后一刻删掉几段文字，而是从检索开始就不断问“这条记忆是否值得继续占用预算”。当验证、回退、排序和 token 预算都能单独调整，系统才有机会同时做到更省上下文、更容易排错，也更接近可核查的事实支持。",
+  "publishedAt": "2025-09-01",
+  "eventDate": "2025-09-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/meve-memory-verification-20250901.svg",
+    "alt": "MeVe 用五个可审计阶段验证检索记忆并控制进入上下文的 token 预算",
+    "sourceUrl": "/images/news/meve-memory-verification-20250901.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "topk-problem",
+      "title": "top-k 相似不等于真的有用",
+      "body": "一次语义搜索会把无关、重复或缺失关键证据的段落一起交给模型，token 被占用却没有人解释为什么。",
+      "kind": "narrative"
+    },
+    {
+      "id": "memory-verification",
+      "title": "先验证候选记忆，再组合上下文",
+      "body": "MeVe 将检索到的内容视作候选证据，逐条检查与当前问题的相关性，不把它们直接当成已确认事实。",
+      "kind": "technical"
+    },
+    {
+      "id": "fallback-retrieval",
+      "title": "证据不够时回退检索",
+      "body": "验证失败不会只留下更短的答案，系统可以改变或扩大检索路径，并记录什么时候触发回退。",
+      "kind": "technical"
+    },
+    {
+      "id": "context-priority",
+      "title": "优先级决定哪些片段留下",
+      "body": "通过任务相关性和证据价值排序，再把候选交给上下文组合，避免重复内容占据同一块预算。",
+      "kind": "comparison"
+    },
+    {
+      "id": "token-budget",
+      "title": "Wikipedia 减少 57%，HotpotQA 减少 75%",
+      "body": "论文在两个知识密集型问答数据集上报告上下文量下降，但 token 减少不等于准确率自动提高。",
+      "kind": "comparison"
+    },
+    {
+      "id": "verification-boundary",
+      "title": "验证器漏掉关键证据会变成短而错",
+      "body": "英语问答 proof of concept 的结果不能直接推广到中文、实时网页或企业知识库；还要测延迟、时效、权限和拒答。",
+      "kind": "boundary"
+    },
+    {
+      "id": "auditable-memory",
+      "title": "每次取舍都要能回到原文",
+      "body": "候选、验证理由、淘汰原因和最终使用位置都应留档，让上下文变短的同时保留事实支持责任。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "secure-memory",
+    "title": "MeVe 怎样决定哪些检索内容进入上下文？",
+    "question": "先验证候选证据，不足时回退检索，再按任务优先级和 token 预算组合可追溯上下文。",
+    "steps": [
+      {
+        "label": "初始检索候选",
+        "detail": "用常规语义搜索找出可能相关的段落，但把它们标成待验证记忆，不直接作为最终上下文。",
+        "evidence": "initial retrieval"
+      },
+      {
+        "label": "验证相关性",
+        "detail": "检查每条候选是否真的回答当前问题、是否重复或缺少关键条件，并记录判断理由。",
+        "evidence": "relevance verification"
+      },
+      {
+        "label": "不足时回退检索",
+        "detail": "若证据不够，改变查询或扩大搜索范围；达到成本或停止条件时明确返回证据不足。",
+        "evidence": "fallback retrieval"
+      },
+      {
+        "label": "安排上下文优先级",
+        "detail": "按任务需要、来源支持和信息增量排序，避免相同内容反复占用组合空间。",
+        "evidence": "context prioritization"
+      },
+      {
+        "label": "执行 token 预算",
+        "detail": "在有限窗口内组合片段，保留原文位置、验证结果和淘汰原因，方便回答后审计。",
+        "evidence": "token budgeting"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.01514"
+  },
+  "relatedSlugs": [
+    "rag",
+    "context",
+    "context-window",
+    "grounding",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.01514",
+      "claim": "MeVe 将 RAG 拆为初始检索、相关性验证、回退检索、上下文优先级和 token 预算五个可审计阶段。",
+      "excerpt": "five-phase modular design ... initial retrieval, relevance verification, fallback retrieval, context prioritization, and token budgeting"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01514",
+      "claim": "论文在英文 Wikipedia 子集和 HotpotQA 上报告上下文量分别减少 57% 和 75%，并以 proof of concept 形式发布参考实现。",
+      "excerpt": "57% reduction on the Wikipedia dataset and a 75% reduction on ... HotpotQA ... proof of concept"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.01514",
+  "sourceHash": "sha256:48559d55b58f5447f72f7aba268b34ae71740cd3f8af4c1acd8960571cf54fc6",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕 RAG 的 top-k 检索、验证和上下文组合。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.98,
+      "evidence": [
+        "正文讨论候选证据怎样进入模型上下文并保留可追溯理由。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context-window",
+      "score": 0.98,
+      "evidence": [
+        "正文把上下文长度、窗口空间和 token 预算作为核心约束。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "grounding",
+      "score": 0.97,
+      "evidence": [
+        "正文要求检索片段与回答事实支持关系可回到原文。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文保留 Wikipedia、HotpotQA 和上下文减少比例的评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 9 月 1 日论文提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.01514",
+      "claim": "arXiv 记录 MeVe 于 2025 年 9 月 1 日提交，研究记忆验证和上下文控制。",
+      "excerpt": "Published: 2025-09-01 ... MeVe: A Modular System for Memory Verification and Effective Context Control"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.01514",
+      "claim": "摘要给出五阶段结构、proof of concept 实现及 Wikipedia/HotpotQA 上下文减少结果。",
+      "excerpt": "five-phase modular design ... 57% ... 75% reduction"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 top-k 冗余问题、五阶段模块、Wikipedia 57% 和 HotpotQA 75% 上下文减少、proof of concept 评测；正文补充验证器漏检、跨语言/实时资料、权限、成本和停止条件边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：把 MeVe 与单纯截断区分开，明确五阶段各自职责和可审计中间结果，区分上下文减少与准确率，补充验证器漏检、资料域变化、权限与停止条件边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-01-meve-memory-verification-20250901"
+}

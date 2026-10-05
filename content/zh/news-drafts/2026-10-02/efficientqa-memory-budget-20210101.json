@@ -1,0 +1,161 @@
+{
+  "slug": "efficientqa-memory-budget-20210101",
+  "title": "EfficientQA 把开放域问答的答案和内存预算放在一起评测",
+  "summary": "1 月 1 日公开的 EfficientQA 竞赛总结，记录了参赛系统怎样在回答开放问题的同时受限于严格的磁盘内存预算。它把“答对多少”和“需要带多少资料或参数”放到同一个工程问题里。",
+  "body": "2021 年 1 月 1 日，Sewon Min 等作者把 NeurIPS 2020 EfficientQA 竞赛的系统、分析和经验整理成论文，提交到 arXiv。竞赛面对的是开放域问答：系统收到一个自然语言问题，要从大范围资料中找到线索，再给出自然语言答案。论文标题里虽然有“竞赛总结”，真正值得读者留意的是它把答案质量和存储预算放进了同一张成绩单。\n\n参赛者不能无限制地把资料副本或模型参数放进磁盘。这个约束会改变方案选择：把更多检索语料存下来，可能让系统更容易找回事实；把容量用在模型参数上，可能换来另一种泛化能力。系统的准确率因此不能脱离资源条件单独比较。论文回顾了参赛方案，也分析了系统预测，借此讨论开放域问答怎样设计更有信息量的评测。\n\n对第一次接触问答系统的读者，可以把它想成一次带行李限额的查资料任务。问题先进入检索步骤，候选资料再进入模型，模型生成答案；每一步都在消耗可用上下文或存储空间。限制不是答案生成之后才出现的附注，而是从系统设计一开始就影响取舍。",
+  "publishedAt": "2021-01-01",
+  "eventDate": "2021-01-01",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/efficientqa-memory-budget-20210101.svg",
+    "alt": "EfficientQA 把开放域问答的答案和内存预算放在一起评测：VibePolaris 自制机制图",
+    "sourceUrl": "/images/news/efficientqa-memory-budget-20210101.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "what-happened",
+      "title": "这篇论文记录了什么事件",
+      "body": "论文回顾的是 NeurIPS 2020 EfficientQA 竞赛。参赛系统要完成开放域问答，同时遵守严格的磁盘内存预算。作者整理了竞赛动机、组织方式、优秀方案和预测分析，重点不在发布一个新的通用模型，而在于让不同系统的资源与效果可以被放在一起观察。",
+      "kind": "narrative"
+    },
+    {
+      "id": "tradeoff",
+      "title": "资料副本和模型参数怎样互相牵制",
+      "body": "一个问答系统可以把容量花在检索语料，也可以把更多容量花在学习到的参数上。前者可能带来更丰富的可查资料，后者可能带来更紧凑的模式表示。竞赛的预算把这两个方向拉到同一约束下，所以“更高分”需要连同使用了多少存储来理解。",
+      "kind": "technical"
+    },
+    {
+      "id": "reader-example",
+      "title": "把它换成一次查资料",
+      "body": "假设你要回答一条产品规则，手边只能保留有限页纸。你可以保留更多原文片段，也可以把常见规则整理成一张索引表。遇到新问题时，两种选择的查找速度和遗漏风险不同。这个类比只表达资源取舍；真实系统还要处理检索质量、模型误答和引用是否对应等问题。",
+      "kind": "example"
+    },
+    {
+      "id": "boundary",
+      "title": "评测分数不能直接变成日常成功率",
+      "body": "论文讨论的是竞赛设置下的系统预测和资源限制。它不能直接证明某个方案在所有知识库、语言或业务问题上都更可靠。把答案是否正确、证据是否找对、预算是否满足分开记录，才能知道一次失败发生在哪一层。",
+      "kind": "boundary"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "答案怎样经过一条有预算的检索链",
+    "question": "同样的问题，为什么换一种资料和参数分配就可能得到不同结果？",
+    "steps": [
+      {
+        "label": "问题",
+        "detail": "先把自然语言问题交给开放域问答系统。",
+        "evidence": "论文将任务定义为输入问题、返回自然语言答案。"
+      },
+      {
+        "label": "取舍",
+        "detail": "系统在有限磁盘预算里分配检索语料与模型参数。",
+        "evidence": "竞赛约束让资源分配成为方案的一部分。"
+      },
+      {
+        "label": "答案",
+        "detail": "模型根据取回的线索生成回答，再用评测检查效果。",
+        "evidence": "系统预测和评测结果需要连同预算一起读。"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / EfficientQA 论文",
+    "url": "https://arxiv.org/abs/2101.00133"
+  },
+  "relatedSlugs": [
+    "retrieval",
+    "benchmark",
+    "evaluation-dataset",
+    "context"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2101.00133",
+      "claim": "论文说明 EfficientQA 面向开放域问答，并要求系统遵守严格的磁盘内存预算。",
+      "excerpt": "The competition focused on open-domain question answering ... while also satisfying strict on-disk memory budgets."
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.00133",
+      "claim": "论文回顾参赛方案并分析系统预测，用来讨论开放域问答评测。",
+      "excerpt": "we describe the motivation and organization of the competition, review the best submissions, and analyze system predictions"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2101.00133",
+  "sourceHash": "sha256:dd691d1da5ddaa962b3f15fade41b4e5d360003ca6b2df8774a5b2a7deeb0958",
+  "status": "published",
+  "discoveredAt": "2026-10-02T08:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "retrieval",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释retrieval相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "benchmark",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释benchmark相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "evaluation-dataset",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释evaluation-dataset相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "context",
+      "score": 0.94,
+      "evidence": [
+        "文章正文明确解释context相关机制。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2101.00133",
+      "claim": "论文说明 EfficientQA 面向开放域问答，并要求系统遵守严格的磁盘内存预算。",
+      "excerpt": "The competition focused on open-domain question answering ... while also satisfying strict on-disk memory budgets."
+    },
+    {
+      "url": "https://arxiv.org/abs/2101.00133",
+      "claim": "论文回顾参赛方案并分析系统预测，用来讨论开放域问答评测。",
+      "excerpt": "we describe the motivation and organization of the competition, review the best submissions, and analyze system predictions"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "method": "source",
+    "notes": "已打开并核对一手来源页面。"
+  },
+  "riskLevel": "routine",
+  "publishDecision": "auto",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-02T08:00:00Z",
+    "notes": "来源、日期和结构字段已由本轮试跑核对。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-trial-20261002",
+  "promotedAt": "2026-10-01T18:41:02.635Z"
+}

@@ -1,0 +1,177 @@
+{
+  "slug": "vlaps-model-based-search-vla-20250817",
+  "title": "VLAPS 给 VLA 接上环境模型搜索：最高提升 67 个百分点",
+  "summary": "8 月 17 日提交的 arXiv 论文提出 VLAPS（Vision-Language-Action Planning & Search），把预训练 VLA 策略提供的动作先验接入改进版蒙特卡洛树搜索，再用目标环境模型在推理阶段探索动作。作者在语言指定的机器人任务上报告，相比只跟随 VLA 动作预测的基线，成功率最高提升 67 个百分点。这个结果属于论文的任务、环境模型和比较设置，重点是让 VLA 在部署前多做一层可控搜索，不代表模型已经能在未知真实环境中安全规划。",
+  "body": "预训练的视觉—语言—动作模型（VLA）可以把图像和指令直接转换成机器人动作，但一旦遇到训练分布之外的情况，动作可能变得脆弱，甚至出现不安全的失败。8 月 17 日提交到 arXiv 的 VLAPS，选择在推理阶段给这类模型加一层搜索，而不是重新训练一个更大的 VLA。\n\nVLAPS 的全称是 Vision-Language-Action Planning & Search。它让 VLA 先提供动作先验，再用目标环境的模型运行改进版蒙特卡洛树搜索（MCTS），在多个可能的动作序列之间试探。VLA 仍负责把语言和视觉信息转成有用的方向，搜索模块负责在这个方向附近展开、比较和回看。\n\n这个组合解决的是一个很具体的推理问题：直接采用 VLA 的下一步预测很快，却可能错过需要几步之后才能看出好坏的路线；完全不带先验地搜索，又会面对太大的动作空间。论文把 VLA 的抽象和动作先验放进搜索，让环境模型帮助筛掉一部分明显不合适的分支，同时把测试时使用的计算量当作可以控制的旋钮。\n\n作者在语言指定的机器人任务上报告，VLAPS 在所有实验中都超过只使用 VLA 的基线，成功率最高提升 67 个百分点。这里的“最高”需要和任务、环境模型以及基线一起读；它不是所有机器人任务的平均提升，也不意味着真实世界的环境模型足够准确。\n\n方法的边界也很清楚。搜索只能在环境模型能够模拟的范围内比较动作，模型没有覆盖的物体、延迟和碰撞后果，仍可能让规划结果失效。搜索增加的推理步骤还会带来时间和计算成本，系统要在“多看几步”和“及时行动”之间找到合适的预算。\n\nVLAPS 给具身系统的启示，是把模型的直觉和规划器的试错放在同一个推理环节里。部署时可以记录 VLA 的先验、搜索访问过的分支、最终动作和失败原因；这样当成功率下降时，团队能判断是视觉理解错了、环境模型错了，还是搜索预算不够，而不是把所有问题都归因于基础模型。",
+  "publishedAt": "2025-08-17",
+  "eventDate": "2025-08-17",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/vlaps-model-based-search-vla-20250817.svg",
+    "alt": "VLA 动作先验进入环境模型中的蒙特卡洛树搜索，多个动作分支比较后再执行",
+    "sourceUrl": "/images/news/vlaps-model-based-search-vla-20250817.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "vla-brittle",
+      "title": "VLA 直接预测动作，在分布外场景可能很脆弱",
+      "body": "预训练 VLA 把视觉、语言和动作连接起来，但零样本遇到陌生情况时可能产生不稳定或不安全行为。问题不只在理解指令，也在于下一步动作是否值得立刻执行。",
+      "kind": "narrative"
+    },
+    {
+      "id": "vla-prior",
+      "title": "VLAPS 让 VLA 提供方向，让搜索负责比较",
+      "body": "VLA 产生动作先验，改进版蒙特卡洛树搜索则在目标环境模型中展开候选动作。两者结合，避免完全照搬一次预测，也避免在没有方向的巨大空间里盲搜。",
+      "kind": "technical"
+    },
+    {
+      "id": "task-result",
+      "title": "语言指定任务中，成功率最高提升 67 个百分点",
+      "body": "论文报告 VLAPS 在语言指定的机器人任务上超过 VLA-only 基线，最高提升 67 个百分点。这个数字由具体任务、环境模型和比较设置决定，不是所有任务的平均提升。",
+      "kind": "example"
+    },
+    {
+      "id": "compute-control",
+      "title": "搜索把测试时计算量变成可调参数",
+      "body": "系统可以控制搜索深度、访问分支数量和推理预算，在行动及时性与多看几步之间做取舍；搜索更深不代表一定更安全。",
+      "kind": "comparison"
+    },
+    {
+      "id": "world-model-limit",
+      "title": "环境模型覆盖不到的后果仍会漏掉",
+      "body": "搜索只能比较环境模型能够模拟的动作。陌生物体、感知错误、执行延迟和碰撞后果可能让规划结果失效，真实部署需要独立安全验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "traceable-planning",
+      "title": "记录搜索轨迹，才能知道失败发生在哪一层",
+      "body": "保存 VLA 先验、访问过的分支、最终动作和失败原因，能帮助团队区分视觉理解、环境模型和搜索预算的问题，让机器人规划变得可审计。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "VLAPS 怎样把 VLA 预测变成可搜索的动作计划？",
+    "question": "模型给出一个动作方向后，系统如何比较几步之后的不同结果？",
+    "steps": [
+      {
+        "label": "读取视觉与指令",
+        "detail": "VLA 根据当前场景和语言任务产生动作先验，告诉搜索器哪些方向更值得尝试。",
+        "evidence": "Action priors are defined by the VLA policy"
+      },
+      {
+        "label": "展开动作分支",
+        "detail": "把候选动作放进目标环境模型，沿着不同分支模拟几步之后可能发生的状态变化。",
+        "evidence": "Modified MCTS runs using a model of the target environment"
+      },
+      {
+        "label": "比较未来状态",
+        "detail": "用搜索结果和任务目标比较分支，保留更有希望的路线，避免只执行 VLA 的第一步预测。",
+        "evidence": "Model-based search improves language-conditioned robotic tasks"
+      },
+      {
+        "label": "控制测试时预算",
+        "detail": "调整搜索深度、分支数量和时间预算，在行动延迟与规划质量之间做取舍。",
+        "evidence": "VLAPS controls test-time compute in VLA models"
+      },
+      {
+        "label": "执行并记录原因",
+        "detail": "执行选出的动作，同时保存先验、搜索路径和失败类型，下一轮才能知道问题来自哪一层。",
+        "evidence": "The deployment boundary requires independent verification"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Cyrus Neary 等",
+    "url": "https://arxiv.org/abs/2508.12211"
+  },
+  "relatedSlugs": [
+    "agent",
+    "tools",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.12211",
+      "claim": "VLAPS 将 VLA 动作先验接入改进的蒙特卡洛树搜索，并使用目标环境模型在推理阶段探索语言指定任务。",
+      "excerpt": "biases a modified Monte Carlo Tree Search (MCTS) algorithm ... using action priors defined by the VLA policy"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.12211",
+      "claim": "论文报告在语言指定的机器人任务中，相比 VLA-only 基线成功率最高提升 67 个百分点。",
+      "excerpt": "Across all experiments ... increasing success rates by as much as 67 percentage points"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.12211",
+  "sourceHash": "sha256:435fa155311bdb49d3ec602745ca2277c442e5f72811020adc5afae321271e04",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.96,
+      "evidence": [
+        "正文讨论 VLA、环境模型和搜索器协作完成机器人动作规划。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "tools",
+      "score": 0.87,
+      "evidence": [
+        "环境模型和蒙特卡洛树搜索被作为推理时的规划工具接入 VLA。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.94,
+      "evidence": [
+        "正文保留语言指定任务、VLA-only 基线和最高 67 个百分点的评测边界。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.72,
+      "evidence": [
+        "正文记录论文在 2025 年 8 月 17 日首次提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.12211",
+      "claim": "arXiv 页面标注论文于 2025 年 8 月 17 日首次提交，摘要给出 VLAPS 的 VLA 先验、环境模型搜索和最高成功率增益。",
+      "excerpt": "Submitted on 17 Aug 2025 ... increasing success rates by as much as 67 percentage points"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 2508.12211 首次提交日期与摘要；正文保留 VLA 动作先验、改进版 MCTS、目标环境模型、语言指定任务和最高 67 个百分点结果，未外推到未知真实环境。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：解释了 VLA 预测与模型搜索的分工，保留任务和环境模型边界，将 67 个百分点限定为论文最高相对结果；补充了延迟、模型覆盖与失败追踪要求。未派子智能体，按用户要求由主助手完成 reader 视角复核。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-17-vlaps"
+}

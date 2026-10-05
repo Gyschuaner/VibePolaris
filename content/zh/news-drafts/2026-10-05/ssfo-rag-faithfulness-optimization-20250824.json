@@ -1,0 +1,194 @@
+{
+  "slug": "ssfo-rag-faithfulness-optimization-20250824",
+  "title": "SSFO 让 RAG 学着更多听上下文，少凭参数编答案",
+  "summary": "SSFO 是一篇 2025 年 8 月 24 日提交的 RAG 忠实度研究：它对比模型在有上下文和无上下文时的输出，自动构造偏好数据，再用 DPO 对齐模型，让概率质量从参数驱动的 token 转向与上下文一致的 token。论文称该方法不需要人工标注或额外推理阶段，在多个基于上下文的问答数据集上达到最先进忠实度，同时保持跨语言泛化和一般指令跟随；忠实度、答案正确和检索上下文可信仍是三个不同问题。",
+  "body": "RAG 接入了外部材料，却不代表模型真的在听材料。它可能把检索上下文放在输入里，回答时仍沿用参数里的旧知识。8 月 24 日提交的 SSFO，尝试在训练阶段直接观察这两种状态的差别：同一个问题，有上下文和没有上下文时，模型分别会说什么。\n\n  SSFO 用这两种输出构造偏好对。若有上下文的回答更忠实，就把它和无上下文回答放进对比，再用 DPO 训练模型倾向上下文对齐的版本。这个过程不需要为每条回答额外写人工标签，也不增加一次在线推理阶段，把忠实度对齐的成本放到了训练期。\n\n  论文把背后的变化称为 likelihood displacement：模型把一部分原本由参数记忆支持的 token 概率，转移到更符合当前上下文的 token。这个解释有助于理解方法，但它不是“上下文永远正确”的证明；如果检索材料本身过时或被污染，模型更忠实地跟随它也可能更危险。\n\n  作者称 SSFO 在多个基于上下文的问答数据集上达到最先进忠实度，还能跨语言泛化，并保留一般指令跟随能力。摘要没有给出统一的一组百分比，因此这里更适合把它看成训练方法的方向性结果，而不是可以直接复制的生产提升率。\n\n  忠实度也不等于答案正确。模型可能准确复述一段错误材料，也可能因为上下文缺少关键证据而给出谨慎但不完整的答案。评测至少要把“是否引用了给定上下文”“答案是否符合事实”“上下文本身是否可信”三个问题分开。\n\n  这套方法还有一个工程条件：有上下文和无上下文的输出必须在可比设置下生成，偏好对不能把长度、风格或语言差异误当成忠实度。检索器、切片、语言和领域变化都可能改变训练信号，跨语言泛化需要自己的题集确认。\n\n  SSFO 的启发是把“模型有没有用上检索材料”变成可训练的行为，而不是只在答案后面加一个引用格式。但训练阶段的忠实度仍需和知识库更新、引用核验、冲突处理一起维护；模型更听上下文之后，团队更要确保上下文值得听。",
+  "publishedAt": "2025-08-24",
+  "eventDate": "2025-08-24",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/ssfo-rag-faithfulness-optimization-20250824.svg",
+    "alt": "SSFO 对比有无上下文的回答，让 RAG 模型更倾向上下文一致的 token",
+    "sourceUrl": "/images/news/ssfo-rag-faithfulness-optimization-20250824.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "faithfulness-gap",
+      "title": "接入上下文，不等于真的使用上下文",
+      "body": "RAG 模型可能继续依赖参数里的旧知识。SSFO 直接比较同一问题在有上下文和无上下文时的输出，寻找忠实度差异。",
+      "kind": "narrative"
+    },
+    {
+      "id": "preference-pairs",
+      "title": "有/无上下文输出自动组成偏好对",
+      "body": "当有上下文的回答更忠实时，SSFO 把它与无上下文回答组成偏好数据，再用 DPO 让模型偏向上下文对齐版本，不需要逐条人工标签。",
+      "kind": "technical"
+    },
+    {
+      "id": "likelihood-displacement",
+      "title": "概率质量从参数记忆移向上下文 token",
+      "body": "论文用 likelihood displacement 描述模型如何把一部分参数驱动的 token 概率转向当前上下文一致的 token。这个机制不保证上下文本身正确。",
+      "kind": "comparison"
+    },
+    {
+      "id": "reported-results",
+      "title": "多个上下文问答数据集达到最先进忠实度",
+      "body": "摘要称 SSFO 在多个数据集上达到 state-of-the-art faithfulness，并具备跨语言泛化和一般指令跟随能力；没有给出统一百分比，生产收益需另测。",
+      "kind": "technical"
+    },
+    {
+      "id": "three-questions",
+      "title": "忠实、正确、可信要分开评估",
+      "body": "模型可能忠实复述错误材料，也可能因证据不足而谨慎。评测要分别检查是否使用上下文、答案是否正确、上下文是否可信。",
+      "kind": "boundary"
+    },
+    {
+      "id": "training-signal",
+      "title": "偏好对必须排除长度和风格混淆",
+      "body": "有/无上下文输出要在可比设置下生成，避免把长度、语言和表达风格差异误当成忠实度。领域、切片和检索变化都要回归。",
+      "kind": "technical"
+    },
+    {
+      "id": "deployment",
+      "title": "模型更听上下文后，团队更要保护上下文",
+      "body": "SSFO 把忠实度变成训练行为，却不能替代知识库更新、引用核验和冲突处理。上下文越有影响力，来源治理越重要。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "SSFO 怎样把 RAG 忠实度变成训练信号？",
+    "question": "先对比有无上下文的回答，再让模型偏向更符合当前证据的版本。",
+    "steps": [
+      {
+        "label": "生成两份回答",
+        "detail": "对同一问题分别提供上下文和不提供上下文，在相同解码与长度设置下生成输出。",
+        "evidence": "contrasting the model's outputs generated with and without the context"
+      },
+      {
+        "label": "构造偏好对",
+        "detail": "把更忠实的上下文对齐回答和另一版本组成偏好对，记录数据来源和领域。",
+        "evidence": "constructs preference data pairs"
+      },
+      {
+        "label": "DPO 对齐",
+        "detail": "用 DPO 训练模型提高上下文一致 token 的概率，不增加在线检索或额外推理阶段。",
+        "evidence": "Leveraging Direct Preference Optimization ... without ... additional inference burden"
+      },
+      {
+        "label": "检查迁移",
+        "detail": "在跨语言、不同领域和一般指令任务上验证，避免忠实度提升换来通用能力下降。",
+        "evidence": "strong generalization ... preserving general instruction-following capabilities"
+      },
+      {
+        "label": "拆分上线指标",
+        "detail": "分别监控上下文使用、答案事实、来源质量和冲突处理，发现检索污染时及时停用或回滚训练信号。",
+        "evidence": "faithfulness hallucination remains a critical challenge"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / SSFO 作者组",
+    "url": "https://arxiv.org/abs/2508.17225"
+  },
+  "relatedSlugs": [
+    "rag",
+    "hallucination",
+    "eval",
+    "prompt",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.17225",
+      "claim": "SSFO 对比有上下文和无上下文的输出构造偏好数据，用 DPO 对齐 RAG 忠实度，无需人工标注或额外在线推理。",
+      "excerpt": "constructs preference data pairs by contrasting ... with and without the context ... without incurring labeling costs or additional inference burden"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.17225",
+      "claim": "论文称 SSFO 在多个上下文问答数据集上达到最先进忠实度，具备跨语言泛化并保留一般指令跟随。",
+      "excerpt": "state-of-the-art faithfulness ... strong generalization, improving cross-lingual faithfulness and preserving general instruction-following capabilities"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.17225",
+  "sourceHash": "sha256:3b4dd0128a326504529d8d348a7524f61da042ae673a0dbf592c11634908fd66",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "rag",
+      "score": 0.99,
+      "evidence": [
+        "正文解释 RAG 上下文、检索材料和上下文对齐。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "hallucination",
+      "score": 0.95,
+      "evidence": [
+        "正文讨论 faithfulness hallucination 与参数记忆造成的偏离。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文把忠实、正确和上下文可信拆成三类评测。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.86,
+      "evidence": [
+        "正文解释有/无上下文输入和生成设置的可比性。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文按论文 2025 年 8 月 24 日首次提交归档事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.17225",
+      "claim": "arXiv 记录显示 SSFO 于 2025 年 8 月 24 日提交，提出自监督 RAG 忠实度优化。",
+      "excerpt": "Date: Sun Aug 24 06:58:29 2025 ... Self-Supervised Faithfulness Optimization"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 SSFO 摘要中的有/无上下文偏好对、DPO、likelihood displacement、无标注/无额外推理负担、跨语言泛化和一般指令跟随；正文区分忠实度、事实正确与上下文可信。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章把训练信号、likelihood displacement、论文的定性结果和生产边界拆开，没有把忠实度等同答案正确，也强调上下文污染、数据可比性和来源治理；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-24-ssfo-rag-faithfulness-optimization"
+}

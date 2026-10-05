@@ -1,0 +1,177 @@
+{
+  "slug": "webprober-ai-web-testing-20250905",
+  "title": "WebProber：让 Agent 像用户一样逛网站，找出传统测试漏掉的可用性问题",
+  "summary": "WebProber 论文于 9 月 5 日提交，把网站测试从代码覆盖和负载指标推进到“用户会不会顺利完成任务”。原型 Agent 从 URL 出发自主探索页面，模拟真实交互，寻找 bug 与可用性问题并生成可读报告；在 120 个学术个人网站的案例中发现 29 个可用性问题，其中许多传统工具没有发现。",
+  "body": "传统网站测试很擅长回答“代码走过哪些分支”“接口能承受多少请求”，却不一定知道用户能不能找到入口、看懂提示，或在页面跳转后仍然知道自己下一步该做什么。很多可用性问题没有明显的异常堆栈，只有一个真正的人尝试完成任务时才会出现。\n\nWebProber 把网站测试对象换成了交互过程。给它一个 URL，Agent 自主探索页面，模拟点击、输入和导航，再把发现的 bug 与可用性问题写成人能读懂的报告。论文把这种方法放在真实网站案例里考察，而不是只在一个人工构造的玩具页面上演示。\n\n案例包含 120 个学术个人网站。WebProber 共发现 29 个可用性问题，其中许多是传统工具没有报出来的。这个数字更像一次能力边界展示，而不是“每 4 个网站就有一个问题”的普遍估计：样本属于学术个人网站，网站结构、任务脚本和判定标准都会影响结果。\n\nAgent 的优势在于它可以把页面当作一个连续环境来读。它不只查 HTML 是否符合规则，还能观察一个动作之后页面怎样反馈，再决定下一步去哪里。对用户而言，这更接近“我能不能找到报名入口”“错误信息是不是把我挡在原地”一类问题；对开发者而言，报告最好能附上复现路径、截图、页面版本和实际影响，避免把主观偏好写成缺陷。\n\n但自主探索也有权限边界。测试前要得到网站所有者授权，限定域名、路径、请求频率和可执行动作；默认优先只读，不提交表单、不发送消息、不触发购买或删除。Agent 如果遇到登录、个人数据或外部跳转，应停下来请求人工确认，而不是把“像用户”理解成可以代替用户做任何事。\n\n评估 WebProber 时，不能只数它报出了多少问题。误报会消耗开发者时间，漏报则可能让团队产生虚假的安全感；报告还要区分可访问性、导航、反馈、内容和功能错误，并让人工复核样例。传统静态检查、端到端脚本和 Agent 探索各自覆盖不同盲区，组合起来比互相替代更现实。\n\nWebProber 的意义，是让 Agent 成为用户体验测试的一双额外眼睛。它目前仍是原型和有限案例研究，不能替代真实用户研究、无障碍审计或安全测试；但当网站越来越像动态应用，能沿着页面状态走完一段任务、解释哪里让人迷路，本身就已经是测试工具的重要升级。",
+  "publishedAt": "2025-09-05",
+  "eventDate": "2025-09-05",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/webprober-ai-web-testing-20250905.svg",
+    "alt": "WebProber Agent 从 URL 出发模拟用户路径并生成可读的可用性问题报告",
+    "sourceUrl": "/images/news/webprober-ai-web-testing-20250905.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "coverage-gap",
+      "title": "代码覆盖率看不到用户在哪里迷路",
+      "body": "入口难找、提示难懂和跳转丢状态，往往只有连续完成任务时才会暴露。",
+      "kind": "narrative"
+    },
+    {
+      "id": "webprober-loop",
+      "title": "WebProber 从 URL 出发走完整段交互",
+      "body": "Agent 自主探索页面、模拟点击输入和导航，再把 bug 与可用性问题写成可读报告。",
+      "kind": "technical"
+    },
+    {
+      "id": "case-study",
+      "title": "120 个学术个人网站发现 29 个问题",
+      "body": "其中许多传统工具没有发现；数字来自论文案例，不是所有网站的缺陷率估计。",
+      "kind": "comparison"
+    },
+    {
+      "id": "human-report",
+      "title": "报告要回答“用户怎样被卡住”",
+      "body": "复现路径、页面版本、截图和实际影响比一句“体验不好”更容易进入修复流程。",
+      "kind": "example"
+    },
+    {
+      "id": "authorization",
+      "title": "像用户一样测试，不等于可以代替用户操作",
+      "body": "测试需授权、限域名和频率，默认只读；登录、提交、购买和删除都要停下确认。",
+      "kind": "boundary"
+    },
+    {
+      "id": "false-positive",
+      "title": "问题数量之外，还要看误报和漏报",
+      "body": "静态检查、端到端脚本、Agent 探索和人工研究覆盖不同盲区，不能用单一数字替代整体质量。",
+      "kind": "technical"
+    },
+    {
+      "id": "prototype-limit",
+      "title": "原型案例不能替代无障碍审计和真实用户研究",
+      "body": "WebProber 展示了交互式测试的方向，生产使用仍需扩大样本、复核标准并保留安全边界。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agent-workflow",
+    "title": "WebProber 怎样像用户一样发现可用性问题？",
+    "question": "在授权范围内从 URL 开始探索页面，沿着状态变化执行只读交互，再把问题写成可复现报告。",
+    "steps": [
+      {
+        "label": "限定测试范围",
+        "detail": "取得网站所有者授权，设置域名、路径、频率和禁止动作，默认只读。",
+        "evidence": "given a URL ... real user interactions"
+      },
+      {
+        "label": "建立任务与页面状态",
+        "detail": "从用户目标出发记录入口、页面反馈、跳转和可见控件，不把单页规则当成完整体验。",
+        "evidence": "complex user behaviors"
+      },
+      {
+        "label": "自主探索路径",
+        "detail": "模拟点击、输入和导航，观察每一步结果，遇到登录或外部跳转就暂停。",
+        "evidence": "autonomously explores the website"
+      },
+      {
+        "label": "归纳问题并复现",
+        "detail": "区分 bug、导航、反馈和内容问题，保存页面版本、路径、截图和影响。",
+        "evidence": "identifying bugs and usability issues"
+      },
+      {
+        "label": "人工复核后入修复流",
+        "detail": "检查误报、漏报和无障碍影响，把可复现问题与静态/端到端测试一起回归。",
+        "evidence": "human-readable report"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / 作者组",
+    "url": "https://arxiv.org/abs/2509.05197"
+  },
+  "relatedSlugs": [
+    "agent",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2509.05197",
+      "claim": "WebProber 是从 URL 出发自主探索网站、模拟真实交互并生成可读报告的 Agent 测试框架。",
+      "excerpt": "WebProber ... autonomously explores the website, simulating real user interactions ... human-readable report"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05197",
+      "claim": "案例研究覆盖 120 个学术个人网站，发现 29 个可用性问题，许多传统工具未发现。",
+      "excerpt": "120 academic personal websites ... uncovered 29 usability issues ... missed by traditional tools"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2509.05197",
+  "sourceHash": "sha256:e81c657f5144db05648281d78df239502dd28d9e85c82aa47d4d5b23e6d7575b",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.99,
+      "evidence": [
+        "正文围绕自主探索页面、模拟用户交互和状态跟踪的 Agent 展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.98,
+      "evidence": [
+        "正文保留 120 个网站、29 个问题、误报/漏报和人工复核的测试评估。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录论文于 2025 年 9 月 5 日提交这一事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2509.05197",
+      "claim": "arXiv 记录 WebProber 于 2025 年 9 月 5 日提交，研究 Agent 化的网站可用性测试。",
+      "excerpt": "Submitted on 5 Sep 2025 ... AI Agents for Web Testing"
+    },
+    {
+      "url": "https://arxiv.org/abs/2509.05197",
+      "claim": "摘要给出自主探索、120 个学术个人网站和 29 个问题的案例结果。",
+      "excerpt": "autonomously explores ... 120 academic personal websites ... 29 usability issues"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 WebProber 提交日期、URL 驱动的自主探索、120 个学术个人网站和 29 个可用性问题；正文补充授权、只读、人工复核、误报/漏报和原型边界。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：保留论文的 Agent 探索方式、案例规模和问题数量，明确样本不是普遍缺陷率；补充授权、只读、登录/提交动作、误报漏报和人工复核边界；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-09-05-webprober-ai-web-testing-20250905"
+}

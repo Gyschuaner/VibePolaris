@@ -1,0 +1,199 @@
+{
+  "slug": "hermes4-open-reasoning-model-20250825",
+  "title": "Hermes 4：把“会推理”和“会听指令”放进同一套公开模型里",
+  "summary": "Hermes 4 技术报告于 8 月 25 日提交，介绍一组混合推理模型：既能输出结构化、多轮的推理过程，也保留广泛的指令跟随能力。报告把数据整理、合成、训练和评测中的工程难点写在一起，并公开全部模型权重，方便研究者复现、比较和继续训练。摘要没有给出各项基准的具体分数，因此这篇文章把重点放在模型定位、公开程度和评测读法上，而不替它补写排行榜结论。",
+  "body": "很多模型报告只给出最后一张榜单，读者很难知道模型是怎么被训练出来的。Hermes 4 的技术报告选择把过程摊开：从数据整理开始，到合成、训练和评测，再到行为层面的观察，试图说明一组混合推理模型是怎样形成的。\n\n“混合”在这里不是把两个模型简单拼起来。报告把结构化、多轮推理和广泛指令跟随放在同一个家族里。前者适合需要分步检查的任务，后者更接近普通用户的对话、改写和格式要求。两种能力如果只看一个总分，很容易掩盖它们之间的取舍。\n\n这类模型的难点首先在数据。推理轨迹需要有足够的中间结构，指令数据又要覆盖不同语气、格式和任务边界；合成数据可以扩充覆盖面，却也可能把同一种错误重复很多遍。报告把数据整理和合成单列出来，至少提醒读者：最终行为不是只由模型架构决定的。\n\n训练之后还要问，模型是不是在正确的地方使用推理。一个简单的格式转换不需要很长的过程，一个约束多、容易出错的问题则需要检查和回看。如果模型对所有问题都展开冗长思考，成本会升高；如果为了省 token 过早收缩，结果又可能不稳。Hermes 4 的技术路线把这种张力交给训练和评测共同处理。\n\n报告覆盖数学推理、代码、知识、理解和对齐基准，也加入定性的行为分析。定量结果可以说明模型在某一套数据上答对多少，定性观察则能发现它是否遵守格式、是否会在多轮对话里改变约束、是否把不确定答案说得过于肯定。两者缺一，模型表现就只剩下一个不完整的数字。\n\nHermes 4 最容易被忽略的部分，是它公开了全部模型权重。公开权重让外部研究者能够用自己的提示、评测集和部署条件检查模型，也能追踪一个问题究竟来自训练数据、推理设置还是后处理。它同时意味着使用者要自己承担权重来源、许可证、算力和安全配置的审查，公开不等于自动适合生产。\n\n这份摘要没有给出具体分数，也没有声称在每个基准上领先。因此更稳妥的读法是：Hermes 4 提供了一个可检查的混合推理模型家族和一套完整报告，至于它在你的代码库、语言、工具链和延迟约束下是否值得替换，仍要靠独立回放。\n\n做评测时，可以把同一个任务拆成三张表：任务结果、推理行为和部署账单。结果表看答案，行为表看模型是否遵守约束、是否能在被指出错误后修正，账单表看 token、延迟和显存。这样才不会因为模型“看起来更会思考”，就忽略它在简单任务上变慢，或者在长对话里悄悄丢掉条件。",
+  "publishedAt": "2025-08-25",
+  "eventDate": "2025-08-25",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/hermes4-open-reasoning-model-20250825.svg",
+    "alt": "Hermes 4 将结构化多轮推理、指令跟随、评测和公开权重放在同一模型家族中",
+    "sourceUrl": "/images/news/hermes4-open-reasoning-model-20250825.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "hybrid-positioning",
+      "title": "混合推理不是两个模型简单拼接",
+      "body": "Hermes 4 把结构化、多轮推理和广泛指令跟随放进同一模型家族。读者要同时看它能否分步检查，也要看它能否准确执行普通格式和语气要求。",
+      "kind": "narrative"
+    },
+    {
+      "id": "data-curation",
+      "title": "行为从数据整理开始形成",
+      "body": "报告把数据整理和合成单列出来。推理轨迹要有中间结构，指令数据要覆盖任务边界；合成数据能扩大覆盖，也可能重复同一种错误。",
+      "kind": "technical"
+    },
+    {
+      "id": "reasoning-cost",
+      "title": "简单任务不该被迫写成长思考",
+      "body": "推理有深度和成本的取舍。对简单转换过度展开会增加 token，对复杂约束过早收缩又可能漏掉检查步骤。",
+      "kind": "comparison"
+    },
+    {
+      "id": "evaluation-surface",
+      "title": "数学、代码、知识和对齐要分开看",
+      "body": "技术报告覆盖多个能力维度，并补充定性行为分析。总分不能说明模型是否遵守多轮约束、是否会修正错误，定性观察也不能替代可重复的基准。",
+      "kind": "technical"
+    },
+    {
+      "id": "open-weights",
+      "title": "公开权重让外部复核成为可能",
+      "body": "全部权重公开后，研究者可以使用自己的提示、评测集和部署条件检查模型；使用者仍要自行审核许可证、权重来源、算力和安全设置。",
+      "kind": "example"
+    },
+    {
+      "id": "evidence-boundary",
+      "title": "摘要没有给出具体分数，就不要替它补排行榜",
+      "body": "目前可确认的是模型定位、报告范围和公开权重。是否在某个业务场景领先，必须用独立回放和同一配置验证。",
+      "kind": "boundary"
+    },
+    {
+      "id": "deployment-review",
+      "title": "把结果、行为和账单放进三张表",
+      "body": "落地评测同时记录任务答案、约束遵守与修正能力，以及 token、延迟和显存，避免把“更会思考”直接等同于“更适合生产”。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "怎样评估一个混合推理模型？",
+    "question": "同一任务同时看答案、推理行为和资源账单，才能看见能力与成本的交换。",
+    "steps": [
+      {
+        "label": "先分任务难度",
+        "detail": "把格式转换、知识问答、代码调试和多约束问题分开，避免用一类任务代表整个模型。",
+        "evidence": "mathematical reasoning, coding, knowledge, comprehension, and alignment benchmarks"
+      },
+      {
+        "label": "检查指令保持",
+        "detail": "在多轮对话里重复测试格式、语气和禁止条件，看模型是否在推理过程中丢掉用户约束。",
+        "evidence": "broad instruction-following ability"
+      },
+      {
+        "label": "观察推理长度",
+        "detail": "记录简单题和难题的推理 token、最终延迟与答案质量，确认模型是否会把同一预算平均撒给所有问题。",
+        "evidence": "structured, multi-turn reasoning"
+      },
+      {
+        "label": "做定性回放",
+        "detail": "保留出错、被纠正和再次回答的轨迹，检查模型如何处理不确定性与约束变化。",
+        "evidence": "qualitative behavioral analysis"
+      },
+      {
+        "label": "核对公开条件",
+        "detail": "用公开权重、固定版本和明确硬件复现实验，同时记录许可证与安全配置，不把“可下载”当成“可直接上线”。",
+        "evidence": "all model weights are published publicly"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / Hermes 4 作者组",
+    "url": "https://arxiv.org/abs/2508.18255"
+  },
+  "relatedSlugs": [
+    "llm",
+    "prompt",
+    "structured-output",
+    "eval",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.18255",
+      "claim": "Hermes 4 是结合结构化多轮推理和广泛指令跟随的混合模型家族，报告覆盖数据、训练和评测。",
+      "excerpt": "a family of hybrid reasoning models that combine structured, multi-turn reasoning with broad instruction-following ability"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18255",
+      "claim": "报告覆盖数学、代码、知识、理解和对齐，并公开全部模型权重。",
+      "excerpt": "evaluate across mathematical reasoning, coding, knowledge, comprehension, and alignment benchmarks ... all model weights are published publicly"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.18255",
+  "sourceHash": "sha256:9f9355b97e1277248976d3c6b2af53c23bc528ff1373775535bdc8e62c3aba90",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "llm",
+      "score": 0.99,
+      "evidence": [
+        "正文讨论混合推理模型、训练流程和公开权重。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "prompt",
+      "score": 0.9,
+      "evidence": [
+        "正文把指令跟随、格式、语气和约束保持作为评测面。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "structured-output",
+      "score": 0.91,
+      "evidence": [
+        "正文讨论结构化、多轮推理和格式要求。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "eval",
+      "score": 0.95,
+      "evidence": [
+        "正文把多类基准、定性回放和独立验证作为主线。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.82,
+      "evidence": [
+        "正文记录 2025 年 8 月 25 日技术报告提交事件。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.18255",
+      "claim": "arXiv 摘要记录 Hermes 4 于 2025 年 8 月 25 日提交，定位为混合推理模型家族。",
+      "excerpt": "Date: Mon Aug 25 ... We present Hermes 4"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.18255",
+      "claim": "报告说明公开模型权重，并覆盖数学、代码、知识、理解和对齐评测。",
+      "excerpt": "all model weights are published publicly ... mathematical reasoning, coding, knowledge, comprehension, and alignment benchmarks"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对论文摘要中的混合模型定位、数据整理/合成/训练/评测范围、五类能力评测和公开权重；正文没有补写摘要未提供的具体基准分数，并把公开权重与生产适用性分开。"
+  },
+  "riskLevel": "uncertain",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章刻意不把技术报告写成排行榜新闻，补充了推理成本、公开权重审查和三张评测表；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-25-hermes4-open-reasoning-model-20250825"
+}

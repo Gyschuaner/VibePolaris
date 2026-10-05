@@ -1,0 +1,172 @@
+{
+  "slug": "soundhound-vision-ai-20250808",
+  "title": "SoundHound 推出 Vision AI，将实时视觉理解接入语音对话平台",
+  "summary": "SoundHound 8 月 8 日推出 Vision AI，把摄像头看到的内容接入 Polaris 语音识别、语言理解、Agent 编排和语音合成流程，试图让语音助手同时理解声音、语言和环境。官方列出免手排障、零售库存、车载发现和个性化点餐等场景，但没有公开独立准确率或客户部署数字，实际体验还取决于摄像头、网络、权限和现场噪声。",
+  "body": "8 月 8 日，SoundHound 推出 Vision AI，把视觉输入接到它原有的语音对话平台里。用户对着设备说话时，系统可以同时接收摄像头画面，再把画面线索交给 Polaris 的语音识别、语言理解、Agent 编排和语音合成链路。变化不在于多了一张图片，而在于语音 Agent 开始把“我听到了什么”和“我看到了什么”放在同一个任务里处理。\n\n官方给出的流程很像一条新的输入通道：声音先被识别成文本，视觉模块补充物体、状态或环境信息，语言理解和 Agent 编排决定下一步要查什么、问什么或执行什么，最后再用语音回应。这样的链路适合需要边看边说的场景，但每多一层处理，就多一处可能出错的地方。画面没拍全、用户指代不清、网络延迟或工具权限不足，都可能让对话走错。\n\nSoundHound 列出的例子包括免手设备排障、零售库存检查、车载环境中的商品发现，以及根据用户偏好完成个性化 drive-thru 点单。这些例子说明它想把视觉理解放进已有的语音入口，而不是单独做一个图片问答页面。具体产品能否工作，还要看摄像头位置、商品和设备的覆盖范围，以及系统在不确定时会不会停下来确认。\n\n这份官方公告没有给出独立的准确率、延迟或客户部署数据。Vision AI 的“实时”和“更自然”属于产品描述，不能直接等同于所有场景都能稳定识别。尤其在车载和点单等任务里，错误的物体或价格判断会直接影响用户决策，语音流畅并不能掩盖视觉判断的风险。\n\n这次发布值得关注的地方，是语音 Agent 的输入边界被扩大了。下一步要看的是产品如何征得摄像头同意、如何保存或删除画面、在画面和语音矛盾时优先相信谁，以及企业能否拿出真实工作流中的错误记录。视觉只是新的感知入口，任务是否安全完成仍然需要权限、工具和人工复核。",
+  "publishedAt": "2025-08-08",
+  "eventDate": "2025-08-08",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/soundhound-vision-ai-20250808.svg",
+    "alt": "SoundHound Vision AI 把摄像头视觉、语音理解和 Agent 编排接到同一条对话链路",
+    "sourceUrl": "/images/news/soundhound-vision-ai-20250808.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "vision-entry",
+      "title": "Vision AI 给语音 Agent 增加一条视觉输入",
+      "body": "SoundHound 把摄像头画面接入 Polaris 语音识别、语言理解、Agent 编排和语音合成流程。用户可以边看边说，系统再把声音和画面放在同一个任务里处理。",
+      "kind": "narrative"
+    },
+    {
+      "id": "orchestration-loop",
+      "title": "视觉线索要经过理解、编排和工具权限",
+      "body": "声音被识别成文本后，视觉模块补充物体或环境信息，语言理解和 Agent 编排决定下一步。画面不完整、指代不清、网络延迟或工具权限不足，都可能在这条链路上造成错误。",
+      "kind": "technical"
+    },
+    {
+      "id": "official-scenarios",
+      "title": "官方示例覆盖排障、库存、车载和点单",
+      "body": "SoundHound 列出免手设备排障、零售库存、车载发现和个性化 drive-thru 等场景。它们说明产品方向，不等于每个行业已经完成部署或验证。",
+      "kind": "comparison"
+    },
+    {
+      "id": "evidence-boundary",
+      "title": "实时和自然是产品描述，不是独立指标",
+      "body": "这份官方公告没有给出独立准确率、延迟或客户部署数字。Vision AI 的“实时”和“更自然”属于产品描述，不能直接等同于所有场景都能稳定识别。视觉识别在车载和点单任务里出现错误时，可能直接影响用户决策，需要用真实工作流测试。",
+      "kind": "boundary"
+    },
+    {
+      "id": "privacy-and-control",
+      "title": "摄像头同意与画面处理要进入 Agent 规则",
+      "body": "产品需要说明何时打开摄像头、画面保存多久、语音与画面冲突时如何处理，以及任务失败时谁来确认。新的感知入口不会自动完成权限和人工复核。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "agentic-calling",
+    "title": "语音 Agent 怎样同时听见和看见？",
+    "question": "从摄像头画面到语音回答，中间有哪些需要确认的步骤？",
+    "steps": [
+      {
+        "label": "取得同意",
+        "detail": "应用先说明何时使用摄像头和麦克风、画面是否保存，并让用户可以随时停止感知。",
+        "evidence": "Vision input consent boundary"
+      },
+      {
+        "label": "合并感知",
+        "detail": "Polaris 识别语音，视觉模块读取画面线索，系统把两种输入放进同一个任务上下文。",
+        "evidence": "SoundHound Vision AI announcement"
+      },
+      {
+        "label": "编排下一步",
+        "detail": "语言理解和 Agent 编排判断是否需要查询库存、检查设备或调用其他工具，并依据权限执行。",
+        "evidence": "SoundHound agent orchestration stack"
+      },
+      {
+        "label": "确认再回答",
+        "detail": "当画面不清楚、信息冲突或动作有风险时，系统应先追问或转人工，再用语音给出结果。",
+        "evidence": "Multimodal task verification boundary"
+      }
+    ]
+  },
+  "source": {
+    "name": "SoundHound",
+    "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform"
+  },
+  "relatedSlugs": [
+    "streaming-output",
+    "agent",
+    "event"
+  ],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+      "claim": "SoundHound 8 月 8 日宣布 Vision AI，把实时视觉理解接入 Polaris 语音识别、语言理解、Agent 编排和语音合成平台。",
+      "excerpt": "SoundHound, August 8, 2025: Vision AI brings real-time visual understanding to its conversational AI platform and integrates with Polaris."
+    },
+    {
+      "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+      "claim": "SoundHound 列出的场景包括免手设备排障、零售库存、车载发现和个性化 drive-thru；这份官方公告没有给出独立准确率或客户部署数字。",
+      "excerpt": "The announcement lists hands-free troubleshooting, retail inventory, in-car discovery, and personalized drive-thru use cases, without independent accuracy or customer-deployment figures."
+    }
+  ],
+  "canonicalUrl": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+  "sourceHash": "sha256:1b458899518bf6fa32c867f73b5768b84f9306a99ddc6e64772f6ad734dc8b4f",
+  "status": "published",
+  "discoveredAt": "2026-10-04T00:00:00Z",
+  "relationSuggestions": [
+    {
+      "kind": "term",
+      "slug": "streaming-output",
+      "score": 0.91,
+      "evidence": [
+        "正文围绕实时视觉、语音识别和语音合成展开。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "agent",
+      "score": 0.94,
+      "evidence": [
+        "正文解释 Polaris、Agent 编排和工具权限怎样处理多模态任务。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    },
+    {
+      "kind": "term",
+      "slug": "event",
+      "score": 0.95,
+      "evidence": [
+        "正文记录 SoundHound 8 月 8 日发布 Vision AI。"
+      ],
+      "method": "manual",
+      "status": "confirmed"
+    }
+  ],
+  "evidence": [
+    {
+      "url": "https://www.soundhound.com/newsroom/soundhound-launches-vision-ai-bringing-real-time-visual-understanding-to-its-conversational-ai-platform",
+      "claim": "SoundHound official Vision AI announcement dated August 8, 2025.",
+      "excerpt": "SoundHound launches Vision AI, bringing real-time visual understanding to its conversational AI platform"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "method": "source",
+    "notes": "核对 SoundHound 8 月 8 日官方公告中的 Vision AI、Polaris ASR/NLU/agent orchestration/TTS 组件、视觉与语音融合及排障/库存/车载/drive-thru 场景；正文没有把官方场景描述写成独立准确率或客户部署证据，并补充摄像头同意、隐私、权限和人工复核边界。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "hold",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "notes": "按 write-like-me 与 humanizer-zh 写成视觉接入语音 Agent 的具体产品链路，避免重复基础模型模板，保留官方场景与未公开指标边界，等待逐篇 reader-review。"
+  },
+  "readerReview": {
+    "reviewer": "codex-subagent-reader",
+    "decision": "passed",
+    "checkedAt": "2026-10-04T00:00:00Z",
+    "questions": [
+      "eventDate 与 publishedAt 均为 2025-08-08，与 SoundHound 官方公告日期一致。",
+      "正文准确描述 Vision AI 将摄像头视觉接入 Polaris ASR、NLU、Agent orchestration 和 TTS，且把免手排障、零售库存、车载发现和个性化 drive-thru 明确标为官方列举的场景，而非已验证的客户部署。",
+      "官方公告没有提供独立准确率、延迟或客户部署数字；“实时”“更自然”和场景列表没有被外推成普遍性能保证。",
+      "正文、sections、agentic-calling explainer、source/evidence、verification、relatedSlugs、空 relatedArticleSlugs、hero SVG 和 schema 保留摄像头同意、隐私、工具权限、冲突处理和人工复核边界。"
+    ],
+    "notes": "读者审阅通过：中文自然，零基础读者能沿着看见—合并感知—编排工具—确认回应理解视觉与语音 Agent 的链路及其权限边界。",
+    "changes": [
+      "将准确率/部署证据限定为“这份官方公告没有提供”，避免把单一来源的缺失写成全行业结论。",
+      "同步更新 evidence-boundary section 和 verification，保留官方场景与独立验证之间的差异。"
+    ]
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-08-soundhound",
+  "promotedAt": "2026-10-05T05:17:33.644Z"
+}

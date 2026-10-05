@@ -1,0 +1,143 @@
+{
+  "slug": "safetyflow-automated-safety-benchmark-20250821",
+  "title": "SafetyFlow 用七个 Agent 自动搭安全基准",
+  "summary": "SafetyFlow 在 2025 年 8 月 21 日提交，试图把安全基准的构建从大量人工整理变成一条 Agent 工作流。系统编排七个专门 Agent，在四天内自动生成 SafetyFlowBench；数据集包含 23,446 条查询，作者用它评估 49 个先进 LLM，并报告低冗余和较强区分度。它解决的是安全题库扩展和流程成本，不等于自动消除了偏差、评测污染或人工责任；安全基准仍需要人定义风险范围、审查高风险样例和确认评分标准。",
+  "body": "安全评测常常卡在题库，而不是卡在模型调用。手工写一条危险请求、检查它是否重复、判断难度和标注风险，都需要懂领域的人反复处理。8 月 21 日提交的 SafetyFlow，把这些工作拆成一条由多个 Agent 协作的流水线，试着让安全基准本身也能规模化生产。\n\n  论文称，SafetyFlow 编排七个专门 Agent，用工具完成题目生成、筛选、去重和评估，四天内构建出一套综合安全基准，过程中不需要人工逐条编写。它还强调过程和成本可控，并把人类专业知识嵌入自动化管线。这里的“没有人工干预”更适合理解为逐条题目不靠人手推进，不是风险定义和最终责任从系统里消失。\n\n  产出的 SafetyFlowBench 包含 23,446 条查询，作者称其冗余较低、区分度较强，再用它评估 49 个先进 LLM。规模扩大以后，题目之间的相似性、语言和文化偏差、危险内容的分布都会变成新的质量问题；一个自动管线可以更快地制造题目，也可以更快地把同一种错误假设复制很多遍。\n\n  Agent 化的价值在于把每个环节拆开。生成 Agent 可以提出候选，审查 Agent 可以找重复或越界，评分 Agent 可以按规则检查答案，成本控制 Agent 可以记录调用预算。不同角色之间如果共享同一个不透明的判断，系统看起来是多 Agent，实际仍只有一个未经审查的标准。流水线需要让每一步的输入、输出和拒绝理由都可追踪。\n\n  安全基准还有一个特殊难点：题目本身可能泄露危险细节。论文摘要没有展开攻击模板，文章也不复述它们；对使用者来说，更重要的是把高风险样例放在隔离环境，限制模型和工具的网络权限，并对题库的可见范围做分级。自动生成并不意味着题目可以直接复制到生产系统。\n\n  SafetyFlow 的结果适合用来提高评测覆盖率和迭代速度，但不能替代人对风险模型的选择。团队需要先决定要测的是拒答、越权、数据外发、偏见还是事实错误，再决定哪些 Agent 可以生成和筛选题目，哪些结果必须由人复核。否则，题库的“低冗余”可能只是把真实世界的风险删掉了。\n\n  这篇论文的启发，是安全评测也应该有版本、来源和回归记录。基准每次扩展都要留下生成路径、评分规则、人工抽检和模型版本；当一个模型分数变化时，团队才能判断是模型真的变了，还是题库和评测器先变了。七个 Agent 可以加快流水线，但最后要对安全定义负责的仍然是人。",
+  "publishedAt": "2025-08-21",
+  "eventDate": "2025-08-21",
+  "isExample": false,
+  "hero": {
+    "url": "/images/news/safetyflow-automated-safety-benchmark-20250821.svg",
+    "alt": "SafetyFlow 用七个专门 Agent 自动生成安全基准并评估模型",
+    "sourceUrl": "/images/news/safetyflow-automated-safety-benchmark-20250821.svg",
+    "license": "VibePolaris 自制 SVG · CC BY 4.0",
+    "credit": "VibePolaris"
+  },
+  "sections": [
+    {
+      "id": "benchmark-bottleneck",
+      "title": "安全评测常常先卡在题库和人工整理",
+      "body": "SafetyFlow 于 2025 年 8 月 21 日提交，关注安全基准的生成、去重和评分成本。它把题目构建本身做成 Agent 工作流，而不是继续依赖一批静态手工样例。",
+      "kind": "narrative"
+    },
+    {
+      "id": "seven-agents",
+      "title": "七个专门 Agent 在四天内编排出一套基准",
+      "body": "论文称 SafetyFlow 在四天内自动构建综合安全基准，逐条题目不需要人工推进，并用工具控制流程和成本。人类专业知识被嵌入管线，但风险定义和最终责任没有因此自动消失。",
+      "kind": "technical"
+    },
+    {
+      "id": "dataset-scale",
+      "title": "SafetyFlowBench 含 23,446 条查询，覆盖 49 个模型评估",
+      "body": "作者称 SafetyFlowBench 低冗余、区分度较强，并用它评估 49 个先进 LLM。规模越大，题目相似性、语言文化偏差和危险内容分布越需要单独审查。",
+      "kind": "comparison"
+    },
+    {
+      "id": "agent-roles",
+      "title": "生成、审查、评分和成本控制要留下边界",
+      "body": "不同 Agent 可以分别提出候选、找重复或越界、按规则评分和记录预算；如果角色共享一个不透明判断，所谓多 Agent 仍可能只有一套未经审查的标准。每一步的输入、输出和拒绝理由都应可追踪。",
+      "kind": "technical"
+    },
+    {
+      "id": "safety-content",
+      "title": "自动生成题目不等于可以把危险细节直接公开",
+      "body": "安全题库需要隔离环境、网络限制和分级可见范围。论文摘要没有展开攻击模板，生产团队也不应把自动生成的高风险样例直接复制到真实权限系统。",
+      "kind": "boundary"
+    },
+    {
+      "id": "human-definition",
+      "title": "人仍然要决定到底在测什么风险",
+      "body": "拒答、越权、数据外发、偏见和事实错误需要不同题型和评分规则。团队应先定义风险模型，再决定哪些 Agent 负责生成和筛选，哪些结果必须人工抽检。",
+      "kind": "example"
+    },
+    {
+      "id": "benchmark-version",
+      "title": "基准也要有版本、来源和回归记录",
+      "body": "每次扩展都应留下生成路径、评分规则、人工抽检和模型版本。模型分数变化时，才能判断是模型变了，还是题库和评测器先变了。",
+      "kind": "aside"
+    }
+  ],
+  "explainer": {
+    "variant": "benchmark",
+    "title": "一套自动安全基准怎样保持可审计？",
+    "question": "让 Agent 加快题库生产，让人定义风险、抽检样例和承担最终判断。",
+    "steps": [
+      {
+        "label": "定义风险范围",
+        "detail": "先明确要测拒答、越权、外发、偏见还是事实错误，为每类风险写出可观察的终态和评分规则。",
+        "evidence": "Safety benchmarks require reliable evaluation of model vulnerabilities"
+      },
+      {
+        "label": "生成候选题",
+        "detail": "让生成 Agent 提出多样候选，但把网络和工具权限隔离，危险内容按级别保存和访问。",
+        "evidence": "seven specialized agents orchestrate the benchmark construction"
+      },
+      {
+        "label": "去重和审查",
+        "detail": "用独立步骤检查语义重复、题目难度、语言偏差和超出风险范围的样例，并保留拒绝理由。",
+        "evidence": "SafetyFlow targets redundancy and difficulty limitations"
+      },
+      {
+        "label": "人工抽检",
+        "detail": "随机抽检和高风险抽检由人完成，确认自动评分器没有把危险、偏见或错误答案误标成安全。",
+        "evidence": "human expertise is integrated into the automatic pipeline"
+      },
+      {
+        "label": "冻结版本",
+        "detail": "给题库、评分器、生成路径和模型版本打标签，再用 49 个模型或自己的回归集比较变化。",
+        "evidence": "SafetyFlowBench contains 23,446 queries and evaluates 49 LLMs"
+      }
+    ]
+  },
+  "source": {
+    "name": "arXiv / SafetyFlow 作者组",
+    "url": "https://arxiv.org/abs/2508.15526"
+  },
+  "relatedSlugs": ["agent", "eval", "benchmark", "tools", "event"],
+  "relatedArticleSlugs": [],
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2508.15526",
+      "claim": "SafetyFlow 编排七个专门 Agent，四天内自动构建安全基准，并将流程和成本控制纳入管线。",
+      "excerpt": "orchestrating seven specialized agents ... in only four days without any human intervention ... process and cost controllability"
+    },
+    {
+      "url": "https://arxiv.org/abs/2508.15526",
+      "claim": "SafetyFlowBench 含 23,446 条查询，作者用其评估 49 个先进 LLM，并报告低冗余和区分度。",
+      "excerpt": "SafetyFlowBench contains 23,446 queries ... evaluate the safety of 49 advanced LLMs"
+    }
+  ],
+  "canonicalUrl": "https://arxiv.org/abs/2508.15526",
+  "sourceHash": "sha256:81b4c1d740975fb9054b4159e1184aba9bfa73ca2a7925bc92e03ed43d6b3d80",
+  "status": "ready",
+  "discoveredAt": "2026-10-05T00:00:00Z",
+  "relationSuggestions": [
+    {"kind": "term", "slug": "agent", "score": 0.99, "evidence": ["正文围绕七个专门 Agent 的安全题库生成、审查和评分流程展开。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "eval", "score": 0.99, "evidence": ["正文把题目生成、评分规则、人工抽检和模型评估作为安全评测链。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "benchmark", "score": 0.99, "evidence": ["正文保留 SafetyFlowBench 规模、冗余、区分度和 49 个模型评估。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "tools", "score": 0.88, "evidence": ["正文讨论 Agent 使用工具生成、筛选、去重和成本控制。"], "method": "manual", "status": "confirmed"},
+    {"kind": "term", "slug": "event", "score": 0.83, "evidence": ["正文按论文首次提交日期归档 2025 年 8 月 21 日事件。"], "method": "manual", "status": "confirmed"}
+  ],
+  "evidence": [
+    {
+      "url": "https://arxiv.org/abs/2508.15526",
+      "claim": "论文于 2025 年 8 月 21 日首次提交，摘要列出七 Agent 安全基准构建、23,446 条查询和 49 个模型评估。",
+      "excerpt": "Submitted on 21 Aug 2025"
+    }
+  ],
+  "verification": {
+    "status": "verified",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "method": "source",
+    "notes": "核对 arXiv 摘要中的七 Agent、四天、SafetyFlowBench 23,446 条查询、49 个 LLM、低冗余/区分度和人类专业知识嵌入；正文明确自动化不替代风险定义、人工抽检和版本治理。"
+  },
+  "riskLevel": "major",
+  "publishDecision": "review",
+  "modelReview": {
+    "decision": "publish",
+    "checkedAt": "2026-10-05T00:00:00Z",
+    "notes": "主助手逐段复核完成：文章将自动生成、质量控制、危险题目隔离和人类风险定义分层说明，没有把四天构建写成安全评测已自动可靠；按用户要求未派子智能体，由主助手完成 reader 视角自审。"
+  },
+  "mechanicalErrors": [],
+  "runId": "vbp-049-news-backfill-news-2025-08-21-safetyflow"
+}
