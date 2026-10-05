@@ -37902,6 +37902,199 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "chatgpt-trusted-contact-safety",
+    "title": "ChatGPT 推出可选 Trusted Contact 自杀风险联络人功能",
+    "summary": "5 月 7 日，OpenAI 开始推出可选 Trusted Contact 功能，成年个人账户用户可以指定一位信任的成年人；当系统和受训审核者判断存在严重自伤风险时，联系人可能收到有限通知。通知不含完整对话，功能也不替代急救或危机支持。",
+    "body": "5 月 7 日，OpenAI 宣布在 ChatGPT 中推出可选 Trusted Contact。成年个人账户用户可以指定一位信任的成年人；如果系统和受训审核者判断存在严重自伤风险，联系人可能收到有限通知。\n\n这项功能把安全处理延伸到对话之外。通知前会经过风险检测和人工复核，联系人由用户设置，也可以修改或移除；通知只提供必要的风险提示，不发送完整聊天记录。\n\n一个高风险对话的处理顺序因此很重要：系统先发现信号，再判断是否达到严重风险门槛，审核人员复核后才触发通知。authorization 记录用户是否同意这种联系，state 记录检测、复核、通知和撤销到了哪一步，context 让审核人员知道风险判断依赖哪些对话背景。\n\n官方说明没有承诺检测和人工判断永远准确，也没有把该功能定义为急救服务。企业工作区不在同一范围，地区和账户的开放情况也可能不同。遇到现实中的紧急危险，仍应联系当地急救或危机支持资源。\n\n后续值得观察的是通知时效、误报处理、用户撤销是否生效，以及联系人收到的内容是否足够而不过度暴露隐私。这些实际运行记录，比“增加了一个安全联系人”更能说明功能的边界。",
+    "publishedAt": "2026-05-07",
+    "eventDate": "2026-05-07",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/chatgpt-trusted-contact-safety.svg",
+      "alt": "ChatGPT 推出可选 Trusted Contact 自杀风险联络人功能；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/chatgpt-trusted-contact-safety.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "feature",
+        "title": "Trusted Contact 把谁加入了安全流程",
+        "body": "成年个人账户用户可以预先指定一位信任的成年人。若系统和受训审核者判断存在严重自伤风险，该联系人可能收到有限通知；用户可以编辑或移除设置。通知不包含完整聊天记录。",
+        "kind": "narrative"
+      },
+      {
+        "id": "review-chain",
+        "title": "通知不会由一句模型回复直接触发",
+        "body": "公开流程包含风险检测、严重程度判断和受训人员复核。只有复核结果达到相应门槛，系统才会按用户设置联系指定的人。authorization 记录同意，state 记录每一步状态，context 说明判断所依赖的对话背景。",
+        "kind": "technical"
+      },
+      {
+        "id": "boundary",
+        "title": "安全提醒仍有明确的能力边界",
+        "body": "OpenAI 没有保证检测、通知或人工判断完全准确，也没有把 Trusted Contact 定义成急救服务。企业工作区不在这项说明的范围内，账户和地区开放也可能不同。现实中的紧急危险需要当地急救或危机支持资源。",
+        "kind": "boundary"
+      },
+      {
+        "id": "questions",
+        "title": "上线后最该看四个运行数据",
+        "body": "后续应看风险复核用了多久，误报如何处理，用户撤销后是否停止通知，以及联系人实际收到哪些信息。功能是否可控，要由这些记录来回答。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "clinical-alert",
+      "title": "从风险信号到联系人通知，中间发生了什么",
+      "question": "怎样区分模型发现信号、人工复核和现实世界支持？",
+      "steps": [
+        {
+          "label": "确认用户设置",
+          "detail": "先检查账户是否为成年个人账户，以及用户是否主动指定、修改或移除了联系人。",
+          "evidence": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/"
+        },
+        {
+          "label": "记录风险判断",
+          "detail": "把自动检测、严重程度门槛和受训人员复核分开记录，不把一次模型回复当成最终结论。",
+          "evidence": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/"
+        },
+        {
+          "label": "核对通知内容",
+          "detail": "确认联系人只收到必要的风险提示，聊天记录不会被完整转发。",
+          "evidence": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/"
+        },
+        {
+          "label": "保留现实支持入口",
+          "detail": "将产品流程和当地急救或危机支持资源分开，观察地区开放与误报处理。",
+          "evidence": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/"
+    },
+    "relatedSlugs": [
+      "authorization",
+      "state",
+      "context"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/",
+        "claim": "Trusted Contact 允许成年人指定一位可被通知的联系人",
+        "excerpt": "OpenAI describes an optional feature allowing adults to nominate a trusted contact."
+      },
+      {
+        "url": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/",
+        "claim": "严重安全担忧会经过训练人员复核，通知不含聊天记录",
+        "excerpt": "The post says trained reviewers assess serious concerns and notifications do not include chat details or transcripts."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/introducing-trusted-contact-in-chatgpt/",
+    "sourceHash": "sha256:881fc457b90e5cab36146db908dac0292b693365acc946f4be2c132d18c3d616"
+  },
+  {
+    "slug": "openai-realtime-2-translate-whisper-api",
+    "title": "OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper",
+    "summary": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper，把实时对话、语音翻译和流式转写拆成三类能力。官方还公布了语言覆盖信息；不同口音、噪声和网络条件下的效果仍需端到端测试。",
+    "body": "5 月 7 日，OpenAI 在 API 中推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper。三个名字对应三段工作：实时对话推理、跨语言翻译和流式转写。开发者可以按需求组合，而不必把识别、翻译和响应交给同一个接口。\n\n拆开之后，系统的责任也更清楚。Realtime-Whisper 负责把声音变成文字，Realtime-Translate 处理语言转换，GPT-Realtime-2 负责理解上下文和生成回应；音频何时结束、用户是否打断、下一步能否调用工具，都要在接口层处理。\n\n多语客服是一个容易看出差别的场景。转写错一个姓名，翻译就会把错误继续传下去；翻译看似正确，实时代理仍可能因为上下文缺失而调用错工具。高风险操作应先显示转写和翻译结果，必要时交给人工确认。\n\n官方页面称 Realtime-Translate 可处理 70 多种输入语言并输出 13 种语言，但没有证明所有口音、噪声和网络环境下都能保持相同的准确率或延迟。api 规定请求和返回，streaming-output 处理连续音频或文字，llm 负责语言推理，function-calling 连接外部系统；把这些层分开，才知道一次失败发生在哪里。\n\n后续测试应同时记录识别、翻译、响应、打断和工具调用的表现。一个组件的好成绩不能替代整条语音链的验证。",
+    "publishedAt": "2026-05-07",
+    "eventDate": "2026-05-07",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-realtime-2-translate-whisper-api.svg",
+      "alt": "OpenAI API 推出 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/openai-realtime-2-translate-whisper-api.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "three-models",
+        "title": "三个模型，各自接住一段声音工作",
+        "body": "OpenAI 把 GPT-Realtime-2、Realtime-Translate 和 Realtime-Whisper 放进 API，分别面向实时对话、语音翻译和流式转写。官方称 Realtime-Translate 支持 70 多种输入语言和 13 种输出语言；语言数量和接口可用性属于产品说明。",
+        "kind": "narrative"
+      },
+      {
+        "id": "pipeline",
+        "title": "从一句话到一次回复，中间经过什么",
+        "body": "声音先被转写，必要时再翻译，随后交给模型理解上下文和生成回应；用户打断、音频流结束和工具调用也需要接口协同。streaming-output 处理连续输入和输出，function-calling 才把回答接到外部系统。",
+        "kind": "technical"
+      },
+      {
+        "id": "support-case",
+        "title": "多语客服最容易暴露链路问题",
+        "body": "一个姓名或订单号被转错，错误就可能进入翻译和工具调用。可以在高风险动作前展示转写与翻译，要求客服确认后再写入业务系统。这样的测试比单看某一个模型的识别分数更接近真实使用。",
+        "kind": "example"
+      },
+      {
+        "id": "scope",
+        "title": "语言覆盖不等于所有环境都可靠",
+        "body": "官方页面没有给出每种口音、噪声和网络条件下的独立准确率，也没有保证每个模型组合都适合生产。api、llm 和 function-calling 的定义能帮助定位故障，却不能代替端到端验证。",
+        "kind": "boundary"
+      },
+      {
+        "id": "test-list",
+        "title": "后续要分别测五个环节",
+        "body": "实际接入时，应分别记录转写、翻译、响应、打断和工具调用的延迟与错误，再看整条链是否满足业务要求。任何一个环节都可能需要人工接管。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agentic-calling",
+      "title": "把实时语音 API 画成一条可测试的链",
+      "question": "当语音代理出错时，怎样知道问题来自转写、翻译、推理还是工具调用？",
+      "steps": [
+        {
+          "label": "先固定音频样本",
+          "detail": "准备不同口音、噪声和网络条件的录音，记录语言、说话速度和打断位置。",
+          "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
+        },
+        {
+          "label": "逐段检查输出",
+          "detail": "分别保存转写文本、翻译文本、模型回应和工具参数，不只记录最后一句答案。",
+          "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
+        },
+        {
+          "label": "给高风险动作加确认",
+          "detail": "涉及订单、账户或其他外部系统时，先把文字结果交给人确认，再允许 function-calling 写入。",
+          "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
+        },
+        {
+          "label": "计算端到端体验",
+          "detail": "把每一段的延迟、错误和恢复时间加起来，再判断组合是否适合实际服务。",
+          "evidence": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/"
+    },
+    "relatedSlugs": [
+      "api",
+      "streaming-output",
+      "llm",
+      "function-calling"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/",
+        "claim": "OpenAI 在 API 中介绍三款音频模型",
+        "excerpt": "OpenAI says it is introducing three audio models in the API."
+      },
+      {
+        "url": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/",
+        "claim": "Realtime-Translate 支持 70 多种输入语言与 13 种输出语言",
+        "excerpt": "The post says Realtime-Translate handles speech from 70+ input languages into 13 output languages."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/",
+    "sourceHash": "sha256:1ae3e43fa47e13215781a6baac72d7db4a69c0c9dff498a48b242494f83b6811"
+  },
+  {
     "slug": "anthropic-spacex-colossus-compute-deal",
     "title": "Anthropic 与 SpaceX 达成 Colossus 1 算力协议，Claude 使用上调",
     "summary": "5 月 6 日，Anthropic 宣布将使用 SpaceX Colossus 1 数据中心的全部算力，协议新增超过 300MW 和 22 万张 NVIDIA GPU，并提高部分 Claude 计划的使用限额。公告说明的是容量安排；GPU 是否按期上线、用户能否获得稳定吞吐，还需看部署和服务数据。",
