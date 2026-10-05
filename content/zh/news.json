@@ -37902,6 +37902,205 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "alibaba-cloud-agentic-ai-ecosystem",
+    "title": "阿里云在新加坡发布智能体 AI 生态，列出模型、工具与平台组合",
+    "summary": "5 月 26 日，阿里云在新加坡发布面向全球客户的智能体 AI 生态，列出 Qwen3.7-Max、Skills/MCP 兼容门户、Qwen Cloud AI 原生平台和 JVS Agent Suite，并公布面向中小企业与学生的培训计划。新闻稿描述的是产品组合和生态安排，不能单凭发布内容证明已有 1000 多家企业稳定采用，也不能把 MCP 兼容直接等同于跨系统安全。",
+    "body": "5 月 26 日，阿里云在新加坡发布面向全球客户的智能体 AI 生态。新闻稿把 Qwen3.7-Max、Skills/MCP 兼容门户、Qwen Cloud AI 原生平台和 JVS Agent Suite 放在同一组产品介绍中，同时公布面向中小企业与学生的培训和合作安排。它记录的是一套产品与生态组合，不是独立的客户成效评估。\n\n这套组合可以按职责拆开看：模型负责生成和推理，Skills/MCP 负责接入工具与数据，云平台承载部署和运营，JVS Agent Suite 面向智能体应用编排。把这些名称放在一起，说明阿里云希望覆盖从开发到上线的链路；每一层的权限、数据隔离和可观测性仍要单独验证。\n\n例如企业客服智能体接入知识库和工单系统时，团队需要先限定可读写范围，再决定哪些调用只读、哪些操作需要人工确认，并记录请求、工具返回和失败回退。MCP 规定连接方式，不能自动替应用方决定数据能否跨系统流转，也不能替代 API 权限审计。\n\n新闻稿还提到新加坡计划帮助 1000 多家中小企业和学生获得相关技能。这个数字描述的是培训和生态目标，不能直接推出已经有同等数量的企业稳定使用产品，更不能推出所有地区都已开放相同能力。客户案例、部署时长、故障记录和连接器权限文档需要另行核对。\n\n相关词条对应的是一条真实的控制链：agent 执行多步任务，mcp 负责模型与外部工具之间的协议连接，api 规定调用边界，tools 则是搜索、文件、数据库或业务动作本身。后续应从只读场景开始，逐项检查调用记录、状态变化和写入审批，再判断这套生态在具体企业流程中的可用性。",
+    "publishedAt": "2026-05-26",
+    "eventDate": "2026-05-26",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/alibaba-cloud-agentic-ai-ecosystem.svg",
+      "alt": "阿里云在新加坡发布面向全球客户的智能体 AI 全栈生态；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/alibaba-cloud-agentic-ai-ecosystem.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "release",
+        "title": "发布会列出了哪些组成部分",
+        "body": "阿里云 5 月 26 日在新加坡公布面向全球客户的智能体 AI 生态，产品清单包括 Qwen3.7-Max、Skills/MCP 兼容门户、Qwen Cloud AI 原生平台和 JVS Agent Suite，并配套中小企业与学生培训计划。新闻稿可以确认这些公开安排，不能把它们写成客户已经完成部署。",
+        "kind": "narrative"
+      },
+      {
+        "id": "layers",
+        "title": "模型、连接和平台各自负责什么",
+        "body": "模型处理生成与推理，Skills/MCP 负责连接外部工具和数据，云平台承担部署与运营，JVS Agent Suite 面向智能体应用编排。组合式发布说明阿里云试图覆盖从开发到上线的链路，但每一层的权限、数据隔离和可观测性仍需要单独检查。",
+        "kind": "technical"
+      },
+      {
+        "id": "workflow",
+        "title": "接入企业系统时先限制工具动作",
+        "body": "以客服流程为例，智能体接入知识库和工单系统前，应先限定可读写范围，把查询、创建工单和关闭工单分开授权，并记录每次请求、工具返回和人工确认。MCP 解决连接协议，不替应用方决定数据能否跨系统流转，API 权限也不能省略。",
+        "kind": "example"
+      },
+      {
+        "id": "adoption",
+        "title": "培训目标不等于客户采用结果",
+        "body": "公告提到新加坡计划帮助 1000 多家中小企业和学生获得相关技能。这个数字对应培训和生态目标，不能直接推出已有同等数量的企业稳定使用，也不能推出所有地区开放了同样的产品能力。客户案例、部署时长、故障记录和连接器权限文档仍需后续核验。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "四个词条落在同一条控制链上",
+        "body": "agent 执行多步任务，mcp 负责模型与外部工具之间的协议连接，api 规定谁能调用什么以及返回什么，tools 则是搜索、文件、数据库或业务操作等外部能力。把这四层分开，才能判断问题来自模型、连接器还是业务权限。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "从生态清单到一次受控的工具调用",
+      "question": "阿里云把模型、协议和平台放在一起发布后，企业怎样判断每一层是否真的可用？",
+      "steps": [
+        {
+          "label": "先核对发布内容",
+          "detail": "确认 2026-05-26 的新加坡发布列出 Qwen3.7-Max、Skills/MCP 门户、Qwen Cloud、JVS Agent Suite，以及面向中小企业和学生的培训安排。",
+          "evidence": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1"
+        },
+        {
+          "label": "按职责拆开产品",
+          "detail": "分别记录模型、协议、平台和应用编排各自承担的任务，避免把“全栈”当作一个无法审计的整体。",
+          "evidence": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1"
+        },
+        {
+          "label": "从只读连接开始",
+          "detail": "给知识库和工单系统设置最小权限，记录每次 API/MCP 调用、工具返回、状态变化和人工确认，再考虑写入动作。",
+          "evidence": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1"
+        },
+        {
+          "label": "核验采用与安全",
+          "detail": "把培训目标、客户案例、部署规模、故障记录和权限文档分开查证，不用 1000 多家培训目标替代稳定采用或跨系统安全结论。",
+          "evidence": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1"
+        }
+      ]
+    },
+    "source": {
+      "name": "Alibaba Cloud",
+      "url": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1"
+    },
+    "relatedSlugs": [
+      "agent",
+      "mcp",
+      "api",
+      "tools"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1",
+        "claim": "阿里云发布 Qwen3.7-Max、Skills/MCP 门户、Qwen Cloud 与 JVS Agent Suite",
+        "excerpt": "Alibaba Cloud lists Qwen3.7-Max, a Skills/MCP-compatible portal, Qwen Cloud and JVS Agent Suite."
+      },
+      {
+        "url": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1",
+        "claim": "新加坡计划帮助 1000 多家中小企业和学生获得相关技能",
+        "excerpt": "The announcement describes a Singapore program targeting more than 1,000 SMEs and students."
+      }
+    ],
+    "canonicalUrl": "https://www.alibabacloud.com/en/press-room/alibaba-cloud-unveil-advanced-agentic-ai-ecosystem?_p_lc=1",
+    "sourceHash": "sha256:ce1ebce639098ce5a2c18a3aa9973b3420fb74b8973095947101b34a04f800a4"
+  },
+  {
+    "slug": "anthropic-responsible-scaling-policy-3-3",
+    "title": "Anthropic 更新负责任扩展政策 v3.3，修订风险阈值",
+    "summary": "5 月 26 日，Anthropic 的负责任扩展政策页面记录 v3.3 更新，修订新型化学与生物风险阈值，并进一步说明常规版本周期之外的风险更新方法。它是公司内部治理框架的修订，不是新模型发布、外部监管标准或能力基准；页面也没有证明这些阈值在真实部署中一定能阻断风险。",
+    "body": "5 月 26 日，Anthropic 的负责任扩展政策页面记录 v3.3 更新。此次修订涉及新型化学与生物风险阈值，并补充了 off-cycle 更新方法，也就是在常规版本节奏之外如何重新判断风险。事件本身是治理文件更新，不是新模型发布。\n\n阈值的作用，是在风险评估达到某个条件时触发额外评估、缓解措施或发布决策。页面没有把每一次触发对应的内部执行记录全部公开，因此不能只看到阈值文字就判断某个模型已经通过或被阻止。要理解这次更新，需把风险类别、触发条件、评估方法和决策责任分开看。\n\n放进一次模型发布流程，顺序应当是先按风险类别安排评估和红队测试，再判断是否触发阈值，记录缓解措施、批准人和例外处理；如果发布后出现新信息，off-cycle 机制应说明谁可以重新评估、依据什么证据以及如何留下版本记录。政策只有能对应这些记录，才会成为可执行的门槛。\n\n这份页面表达的是 Anthropic 自己的治理框架。它不能替代外部监管要求、独立评测或客户的风险控制，也没有给出每个阈值在真实部署中阻断风险的成功率。政策修订的意义要靠后续公开评估、发布记录和事故复盘来检验。\n\n相关词条分别落在不同位置：llm 是被评估的模型本体，eval 是围绕任务、样本和错误展开的评估过程，benchmark 是固定任务和评分规则，适合比较但不能单独决定是否发布。复核 v3.3 时，应对照上一版本查找阈值、触发条件、例外和缓解要求是否真的改变了工程决策。",
+    "publishedAt": "2026-05-26",
+    "eventDate": "2026-05-26",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-responsible-scaling-policy-3-3.svg",
+      "alt": "Anthropic 更新负责任扩展政策 v3.3；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/anthropic-responsible-scaling-policy-3-3.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "change",
+        "title": "v3.3 改了哪两处",
+        "body": "Anthropic 的政策页面记录 5 月 26 日 v3.3 更新：修订新型化学与生物风险阈值，并说明常规版本周期之外的风险更新方法。这里发生的是治理文件修订，不是新模型发布或能力分数变化。",
+        "kind": "narrative"
+      },
+      {
+        "id": "threshold",
+        "title": "阈值是决策触发点，不是成绩单",
+        "body": "阈值用于判断何时需要额外评估、缓解或调整发布决定。页面没有公开每一次触发的内部记录，因此不能从政策文字推出某个模型已经通过、被阻止或在真实环境中一定安全。阅读时要把风险类别、触发条件、评估方法和责任人分开。",
+        "kind": "technical"
+      },
+      {
+        "id": "off-cycle",
+        "title": "常规发布周期之外如何重新判断",
+        "body": "如果模型发布后出现新风险信息，off-cycle 方法应明确谁可以启动复评、需要哪些证据、哪些缓解措施必须落地，以及如何记录例外和版本变化。一次完整的记录应能让后来的人看出触发原因、批准人和最终处置。",
+        "kind": "example"
+      },
+      {
+        "id": "scope",
+        "title": "这份政策能证明到哪里",
+        "body": "页面提供的是 Anthropic 的公司治理框架，不能替代监管要求、独立评测或客户自己的风险控制，也没有证明每个阈值在真实部署中都能阻断风险。修订是否产生实际效果，要看后续公开评估、发布记录和事故复盘。",
+        "kind": "boundary"
+      },
+      {
+        "id": "terms",
+        "title": "模型、评估和基准各自扮演什么角色",
+        "body": "llm 指被评估的模型本体，eval 关注任务、样本、评分和错误，benchmark 使用固定任务与评分规则来比较结果。三者可以为阈值判断提供证据，但没有一个词本身等于发布批准。",
+        "kind": "comparison"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "从 v3.3 条文追到一次发布决策",
+      "question": "看到风险阈值和 off-cycle 更新方法后，怎样判断政策是否真的改变了工程决策？",
+      "steps": [
+        {
+          "label": "确认修订范围",
+          "detail": "核对 2026-05-26 的政策页面，确认 v3.3 涉及新型化学与生物风险阈值，以及常规版本周期之外的更新方法。",
+          "evidence": "https://www.anthropic.com/responsible-scaling-policy"
+        },
+        {
+          "label": "拆开触发条件",
+          "detail": "分别记录风险类别、阈值、评估证据、缓解措施、批准责任和例外处理，避免把“安全”当成一个没有上下文的结论。",
+          "evidence": "https://www.anthropic.com/responsible-scaling-policy"
+        },
+        {
+          "label": "追踪一次 off-cycle 复评",
+          "detail": "寻找新信息出现后谁启动复评、采用什么评估、是否调整发布决定，以及版本记录和批准证据在哪里。",
+          "evidence": "https://www.anthropic.com/responsible-scaling-policy"
+        },
+        {
+          "label": "对照外部证据",
+          "detail": "把政策文字与公开评估、发布记录和事故复盘比较，确认公司治理框架没有被误读成监管标准或模型能力分数。",
+          "evidence": "https://www.anthropic.com/responsible-scaling-policy"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/responsible-scaling-policy"
+    },
+    "relatedSlugs": [
+      "llm",
+      "eval",
+      "benchmark"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/responsible-scaling-policy",
+        "claim": "政策页面记录 v3.3 于 5 月 26 日更新",
+        "excerpt": "Anthropic’s policy page records a v3.3 update on May 26, 2026."
+      },
+      {
+        "url": "https://www.anthropic.com/responsible-scaling-policy",
+        "claim": "更新修订化学/生物风险阈值并细化 off-cycle 更新方法",
+        "excerpt": "The update revises thresholds for novel chemical and biological risks and clarifies off-cycle updates."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/responsible-scaling-policy",
+    "sourceHash": "sha256:0bc25f4982ec2e148a453d03ef7f0383bcec1100ac681a0b68890f933079d5ca"
+  },
+  {
     "slug": "fujitsu-self-evolving-multi-ai-agents",
     "title": "富士通公布多 AI 智能体持续更新机制，计划接入 AI Platform 与 Kozuchi",
     "summary": "5 月 25 日，富士通公布可自我演进的多 AI 智能体技术，称系统能够根据执行结果、人类反馈和政策变化持续学习，并计划接入 AI Platform 与 Kozuchi，覆盖云、内网和边缘环境。公告说明了技术方向与部署计划，没有给出客户部署规模、长期收益或故障率，也不能单凭“自我演进”证明系统可以在所有任务中安全修改自身。",
