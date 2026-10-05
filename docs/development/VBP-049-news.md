@@ -20,6 +20,15 @@
 - 完成校验：`npm run news:validate` 通过（725 published / 869 drafts / 144 pending，274 条逐日记录，17 个空档日）；定向新闻测试 6/6 通过；`npm run typecheck` 通过；`npm run build` 通过并生成 1,041 个静态页面。
 
 
+### 2026-10-05 725 篇新闻生产发布
+
+- 生产 PR：[#346](https://github.com/Gyschuaner/VibePolaris/pull/346) 将新闻内容合入 `main`，合入提交为 `0d84b1bea86476a09c6261eb4f0ac8f66d2d3370`；[#347](https://github.com/Gyschuaner/VibePolaris/pull/347) 修复 Compose 健康检查的 Node 进程收尾问题，合入提交为 `e5ac37690c73dd073ba807fb7afda0bd36115968`。
+- 生产镜像为 `vibepolaris:0d84b1be8647`，在本机构建为 `linux/amd64`；镜像内通过 `news:validate` 确认 725 篇已发布文章。生产目录为 `/opt/vibepolaris/releases/20261005T054334Z-0d84b1be`，`/opt/vibepolaris/current` 已原子切换到该目录，容器 `vibepolaris-web-1` 为 `running / healthy`。
+- 切换前线上版本为 `vibepolaris:96ff6ca508e46182bc1f14874da1edfdf6901e9a`，目录 `/opt/vibepolaris/releases/20261005T035024Z-96ff6ca5`；回滚备份为 `/opt/vibepolaris/backups/20261005T054334Z-from-96ff6ca5`，旧 release、旧镜像和 `xiaobei_data` 数据卷均保留，未改动数据库数据。
+- 线上冒烟通过：`https://vibe.chuansgu.top/`、`/news`、`/sitemap.xml` 和代表文章均 HTTP 200；站点地图包含 725 个 `/news/` URL；Chrome 实测 News 列表与详情页可渲染，详情页显示事件日、来源引用、SVG 头图、词条关联和讲解内容。
+- 由于服务器磁盘达到 100%，仅清理未被容器使用的旧 `vibepolaris` 镜像标签，保留当前旧版本、新版本和上一个回滚镜像；清理后磁盘余量约 4.4 GB。
+
+
 ### 2026-10-02 腾讯云部署尝试（已回滚）
 
 - 目标提交：`7de944165ad88a03d7a9dea80f1708a452d507bf`；本机 `linux/amd64` 镜像构建、`news:validate`、`typecheck` 和定向 5 项测试、192 页构建均通过。
