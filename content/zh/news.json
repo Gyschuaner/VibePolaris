@@ -37902,6 +37902,106 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-project-glasswing-update",
+    "title": "Anthropic 汇总 Project Glasswing 首月：合作方报告逾一万项高/严重漏洞",
+    "summary": "5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞，并列出 Cloudflare 约 2000 项、开源扫描估计 6202 项的案例。数字是 Anthropic 对合作项目的汇总，去重、严重性、修复率和误报率仍需独立核验。",
+    "body": "5 月 22 日，Anthropic 公布 Project Glasswing 首月更新，称约 50 个合作伙伴用 Claude Mythos Preview 在关键软件中发现超过一万项高或严重漏洞。更新列出 Cloudflare 约 2000 项，以及开源扫描估计的 6202 项。\n\n总数只是安全流程的起点。一次发现要有漏洞编号、复现步骤和严重性判断，之后还要进入补丁、回归测试和重复扫描。去重方式不同，数字会变化；“高或严重”也需要知道由谁、按什么标准判定。\n\n以一个真实漏洞为例，系统先提出缺陷和复现路径，安全团队确认报告，开发者提交补丁，再用独立测试验证没有引入新的问题。benchmark 和 eval 可以比较固定任务与评分，data-validation 核对漏洞证据和修复结果，agent-loop 记录模型怎样根据反馈继续尝试。\n\nAnthropic 的页面支持合作项目和数字的公司汇总，不等于外部已经确认了一万项独立缺陷，也没有给出完整修复率或误报率。后续应抽取合作方报告、漏洞通告、补丁提交和重复扫描结果。",
+    "publishedAt": "2026-05-22",
+    "eventDate": "2026-05-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-project-glasswing-update.svg",
+      "alt": "Anthropic 公布 Project Glasswing 首月结果，AI 已发现逾一万项高/严重漏洞；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/anthropic-project-glasswing-update.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "initial-update",
+        "title": "Glasswing 首月公布了哪些数字",
+        "body": "Anthropic 称约 50 个合作伙伴用 Claude Mythos Preview 发现超过一万项高或严重漏洞，并举出 Cloudflare 约 2000 项和开源扫描估计 6202 项的案例。这些数字来自项目方的首月汇总。",
+        "kind": "narrative"
+      },
+      {
+        "id": "finding-quality",
+        "title": "漏洞总数还要经过怎样的确认",
+        "body": "需要知道报告如何去重、严重性由谁判定、每个缺陷能否复现，以及是否进入补丁和回归测试。发现、修复和验证是不同阶段。",
+        "kind": "technical"
+      },
+      {
+        "id": "one-vulnerability",
+        "title": "沿着一个编号看修复是否成立",
+        "body": "系统提出缺陷和复现步骤，安全团队确认报告，开发者提交补丁，再用独立测试和重复扫描验证。benchmark、eval、data-validation 和 agent-loop 分别帮助比较任务、定义评分、核对证据和记录反馈循环。",
+        "kind": "example"
+      },
+      {
+        "id": "company-boundary",
+        "title": "一万项不是外部确认的独立缺陷数",
+        "body": "Anthropic 的页面没有给出完整去重方法、修复率或误报率，也不能证明所有代码库会得到相同结果。数字属于合作项目的公司汇总，不能直接当作第三方审计。",
+        "kind": "boundary"
+      },
+      {
+        "id": "follow-up",
+        "title": "后续看通告、补丁和重复扫描",
+        "body": "继续查看合作方公开的漏洞通告、报告编号、补丁提交、回归测试和重复扫描结果，判断发现是否形成了安全闭环。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-safety",
+      "title": "从“发现一万项”追到可复现和已修复",
+      "question": "怎样判断漏洞数量真的代表安全收益？",
+      "steps": [
+        {
+          "label": "拆分统计对象",
+          "detail": "确认总数包含哪些项目、版本和严重性等级，记录去重和估算方法。",
+          "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+        },
+        {
+          "label": "抽取报告编号",
+          "detail": "随机选择若干发现，检查是否有复现步骤、受影响版本和明确的报告编号。",
+          "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+        },
+        {
+          "label": "追踪修复证据",
+          "detail": "查看补丁提交、回归测试、漏洞通告和维护者确认，区分已报告与已修复。",
+          "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+        },
+        {
+          "label": "重复扫描和复盘",
+          "detail": "在相同代码和新版本上重跑，记录误报、重复发现和新缺陷，评价工具的长期价值。",
+          "evidence": "https://www.anthropic.com/research/glasswing-initial-update"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/research/glasswing-initial-update"
+    },
+    "relatedSlugs": [
+      "benchmark",
+      "eval",
+      "data-validation",
+      "agent-loop"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/research/glasswing-initial-update",
+        "claim": "Project Glasswing 合作伙伴称发现超过一万项高/严重漏洞",
+        "excerpt": "Anthropic says about 50 partners found more than 10,000 high or critical vulnerabilities with Claude Mythos Preview."
+      },
+      {
+        "url": "https://www.anthropic.com/research/glasswing-initial-update",
+        "claim": "更新列出 Cloudflare 2000 项与开源项目 6202 项的估计",
+        "excerpt": "The update cites 2,000 findings at Cloudflare and an estimate of 6,202 high or critical open-source findings."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/research/glasswing-initial-update",
+    "sourceHash": "sha256:2443638ac2bb4ac48df73983f2c9b5d178e094f5f9c7b12176a86d9611ee5db9"
+  },
+  {
     "slug": "asean-us-ai-ministerial",
     "title": "东盟与美国举行 AI 部长级会议，启动发展与治理合作",
     "summary": "5 月 20 日，东盟与美国在新加坡举行 AI 部长级会议；ASEAN 页面于 5 月 22 日发布公告。议题包括研发、治理、基础设施、芯片与算力、网络安全和可信供应链。公告记录的是合作议程，不等于已签署有约束力的规则或各方立场已经统一。",
@@ -38000,6 +38100,105 @@
     ],
     "canonicalUrl": "https://asean.org/asean-and-the-u-s-convened-the-ai-ministerial-to-deepen-cooperation-on-ai-development-and-governance/",
     "sourceHash": "sha256:04953acb528168c6897b0b73c35ae22c5d2fa0fef3b2918532a1a7ecf16d48d3"
+  },
+  {
+    "slug": "canada-guide-agentic-ai-government",
+    "title": "加拿大政府发布联邦机构使用智能体 AI 指南",
+    "summary": "5 月 22 日，加拿大政府页面列出《Guide on the Use of Agentic Artificial Intelligence》，为联邦机构补充风险导向的使用、保障和监测实践。指南把能调用工具、影响流程和持续运行的智能体作为治理对象；它不是所有机构已经完成合规，也不是商业产品安全认证。",
+    "body": "5 月 22 日，加拿大政府页面列出《Guide on the Use of Agentic Artificial Intelligence》，为联邦机构补充风险导向的使用、保障和监测实践。\n\n指南把智能体和只生成文本的工具分开：智能体可能调用工具、影响流程、持续运行，因此机构要为具体流程设定风险评估、最小权限、人工监督、日志和停机条件。治理对象从一段回答扩展到一条会改变状态的工作流。\n\n以处理申请为例，系统可以读取获准数据并提出下一步，但写入档案、发出决定或调用外部服务前，需要检查权限和人工批准；异常时停止，保留日志并能回滚。agent 说明系统怎样推进任务，authorization 说明谁能读写、提交、批准或撤销，execution-sandbox 限制执行范围。\n\n政府页面是指南和进度记录，不是所有联邦机构已经完成合规，也不是对商业产品的安全认证。它没有提供统一错误率或事故下降数据，具体实施仍要看每个机构的责任人、审查周期和高风险场景记录。",
+    "publishedAt": "2026-05-22",
+    "eventDate": "2026-05-22",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/canada-guide-agentic-ai-government.svg",
+      "alt": "加拿大政府发布联邦机构使用智能体 AI 指南；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/canada-guide-agentic-ai-government.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "guide",
+        "title": "指南把智能体纳入了哪类治理",
+        "body": "加拿大政府页面列出一份面向联邦机构的智能体 AI 使用指南，强调风险导向的使用、保障和监测。它针对的是能调用工具、影响流程并持续运行的系统。",
+        "kind": "narrative"
+      },
+      {
+        "id": "controls",
+        "title": "治理要落到权限和停机条件",
+        "body": "机构需要为具体流程设定风险评估、最小权限、人工监督、日志和停机条件。agent、authorization 和 execution-sandbox 分别帮助理解任务推进、动作审批和运行隔离。",
+        "kind": "technical"
+      },
+      {
+        "id": "application-flow",
+        "title": "处理一份申请时，哪些动作要停下来",
+        "body": "系统可以读取获准数据并提出下一步；写入档案、发出决定或调用外部服务前，检查权限并请求人工批准。异常时停止，保留日志，必要时回滚。",
+        "kind": "example"
+      },
+      {
+        "id": "implementation-boundary",
+        "title": "发布指南不等于机构已经合规",
+        "body": "进度页面没有证明所有联邦机构已经完成实施，也不是商业产品安全认证。它没有统一错误率或事故下降数据，机构责任人和审查周期仍需分别核对。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next",
+        "title": "后续看机构如何留下实施记录",
+        "body": "继续阅读指南正文和各机构的风险分类、批准流程、日志、停机演练与责任人记录，尤其关注高风险场景。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "把政府智能体指南落到一份申请流程",
+      "question": "怎样知道机构真的把风险评估、权限和人工监督用起来了？",
+      "steps": [
+        {
+          "label": "给流程分风险",
+          "detail": "列出智能体读取的数据、可调用的工具、会改变的状态和可能影响的人，再确定风险等级。",
+          "evidence": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html"
+        },
+        {
+          "label": "设置最小权限",
+          "detail": "限制读写范围，明确谁能批准提交、发出决定、调用外部服务和撤销任务。",
+          "evidence": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html"
+        },
+        {
+          "label": "保留监督和日志",
+          "detail": "为高风险动作设置人工确认，保存输入、工具调用、决定和停止原因。",
+          "evidence": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html"
+        },
+        {
+          "label": "做一次停机演练",
+          "detail": "模拟错误输出、权限撤销和外部服务失败，检查能否停止、回滚并通知责任人。",
+          "evidence": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html"
+        }
+      ]
+    },
+    "source": {
+      "name": "Government of Canada",
+      "url": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html"
+    },
+    "relatedSlugs": [
+      "agent",
+      "authorization",
+      "execution-sandbox"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html",
+        "claim": "加拿大政府页面记录 5 月 22 日发布智能体 AI 使用指南",
+        "excerpt": "The Government of Canada page lists a Guide on the Use of Agentic Artificial Intelligence published on May 22, 2026."
+      },
+      {
+        "url": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html",
+        "claim": "指南提供风险导向治理、保障和监测实践",
+        "excerpt": "The page describes risk-based governance, safeguards and monitoring practices for federal use."
+      }
+    ],
+    "canonicalUrl": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/advancing-ai/progress.html",
+    "sourceHash": "sha256:129a6064078ccc0cec94d9e7d5e68b3400017445034bd7344fe86a5052db5ae7"
   },
   {
     "slug": "bing-ai-image-search",
