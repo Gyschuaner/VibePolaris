@@ -97,6 +97,7 @@ import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-
 import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
 import { FlexboxTermPage } from "@/components/terms/flexbox-pages/flexbox-page";
 import { CssGridTermPage } from "@/components/terms/css-grid-pages/css-grid-page";
+import { BreakpointTermPage } from "@/components/terms/breakpoint-pages/breakpoint-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -112,6 +113,7 @@ const articleTermPages = {
   'box-model': BoxModelTermPage,
   flexbox: FlexboxTermPage,
   'css-grid': CssGridTermPage,
+  breakpoint: BreakpointTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,

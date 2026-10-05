@@ -709,19 +709,54 @@
     "promptTitle": "检查浮层的定位参照", "prompt": "请检查下面角标或浮层的定位代码，指出它当前参照哪个包含块，并用最小改动让它固定在目标容器内。",
     "relatedSlugs": ["box-model", "css", "css-grid"]
   },
-  {
-    "zh": "断点", "en": "Breakpoint", "slug": "breakpoint", "cat": "前端",
-    "say": "断点是布局需要改变的宽度位置，应由内容是否放得下决定，而不是照抄设备型号。",
-    "aliases": ["响应式断点", "breakpoint", "屏幕宽度"],
-    "question": "三栏布局应该在多少像素时改成一栏？",
-    "definition": "断点是响应式规则开始或结束的条件值。开发者通常根据内容拥挤、换行或可读性变化选择断点。",
-    "boundary": "断点不是特定手机的永久尺寸，也不是越多越精确；过多断点会增加样式分支。",
-    "demoType": "state", "demoTitle": "内容怎样暴露断点",
-    "demoSteps": [{"label":"宽度充足","value":"三列内容完整显示","note":"当前布局无需调整。"},{"label":"逐步缩窄","value":"标题换行并挤压操作区","note":"内容开始出现可见问题。"},{"label":"设置断点","value":"改成单列或两列","note":"在问题出现前切换布局。"}],
-    "quizQuestion": "选择响应式断点的主要依据是什么？", "quizOptions": ["内容和布局开始失效的位置", "最新手机的屏幕宽度", "一个固定的断点清单"],
-    "correctText": "断点应回应当前内容的实际布局问题。", "wrongText": "设备尺寸可以参考，但不能替代对内容的观察。",
-    "promptTitle": "为页面确定必要断点", "prompt": "请根据下面组件在不同宽度下的表现，找出内容开始拥挤的区间，只保留必要断点，并说明每个断点具体改变哪条布局规则。",
-    "relatedSlugs": ["media-query", "responsive", "adaptive-layout"]
+    {
+    "zh": "断点",
+    "en": "Breakpoint",
+    "slug": "breakpoint",
+    "cat": "前端",
+    "say": "断点不是设备标签，而是内容第一次需要换规则的那条线。",
+    "aliases": [
+      "Breakpoint",
+      "响应式断点",
+      "布局切换点"
+    ],
+    "question": "为什么导航还没到手机宽度就已经挤在一起了？",
+    "definition": "断点是媒体条件改变布局规则的临界值。把内容从宽到窄观察，记录第一次难读、难点按或难操作的位置，在它之前切换布局。",
+    "boundary": "断点只改变样式规则，不复制一套移动端 HTML；能用流体布局、Grid、Flexbox 或 container query 解决时，不必增加媒体断点。",
+    "demoType": "branch",
+    "demoTitle": "内容压力如何画出一条断点",
+    "demoSteps": [
+      {
+        "label": "让内容先承受宽度",
+        "value": "1024 → 840px",
+        "note": "先观察间距与行长，设备名字还不是证据。"
+      },
+      {
+        "label": "记录第一次失效",
+        "value": "640px · overlap",
+        "note": "导航与搜索开始冲突，这才是候选断点的理由。"
+      },
+      {
+        "label": "在失效前改规则",
+        "value": "680px · compact",
+        "note": "提前切换布局，保持同一份内容与阅读顺序。"
+      }
+    ],
+    "quizQuestion": "下面哪种方式最适合决定一个导航断点？",
+    "quizOptions": [
+      "照搬常见手机宽度",
+      "把布局缩到内容第一次拥挤前并记录证据",
+      "每增加一个组件就加一个断点"
+    ],
+    "correctText": "让真实内容从宽到窄变化，在第一次难读或难操作之前切换规则。",
+    "wrongText": "设备尺寸会变化，断点数量也不应跟着组件数量无限增长。",
+    "promptTitle": "为导航找一个有证据的断点",
+    "prompt": "请从 360px 到 1024px 观察这组导航内容，记录第一次冲突的宽度，并说明为什么断点应放在它之前；同时判断是否能用流体布局或 container query 代替全局媒体查询。",
+    "relatedSlugs": [
+      "media-query",
+      "responsive",
+      "adaptive-layout"
+    ]
   },
   {
     "zh": "媒体查询", "en": "Media Query", "slug": "media-query", "cat": "前端",

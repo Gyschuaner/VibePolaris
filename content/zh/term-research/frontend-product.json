@@ -314,14 +314,24 @@
     "rewriteRisk": "high",
     "nearDuplicates": ["box-model", "css-grid", "css"]
   },
-  {
+    {
     "slug": "breakpoint",
-    "mechanism": "断点是媒体条件改变布局规则的临界值，通常通过连续缩放观察内容首次拥挤、溢出或操作距离失效的位置确定。",
-    "misconception": "不是 iPhone/Android 型号表，也不是 640/768/1024 三个固定答案。",
-    "demoSignature": "建议 5 帧：拖动页面宽度，标题换行、按钮相撞、卡片小于可读宽度依次出现红色故障标记；用户在首个故障前一像素钉下断点；新布局规则接管后标记消失，断点来源是内容变化而非设备型号。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"],
+    "mechanism": "断点是 media feature 条件改变布局规则的临界值；应从内容第一次拥挤、溢出或操作距离失效的位置反推，并在失效前切换。",
+    "misconception": "断点不是 iPhone/Android 型号表，也不是一套固定的 640/768/1024 答案；宽度只是媒体特征之一，组件还可能应看自己的容器。",
+    "demoSignature": "6帧｜对象：导航、搜索、操作项、内容压力尺与 680px 候选线｜交互：1024 舒展→840 紧张→640 首次冲突→680 提前切换→520 紧凑菜单→360 单列动作｜变化：内容先失效、规则后切换、同一 HTML 保持不变｜结果：读者能从内容证据决定断点，而不是按设备名字抄数字。",
+    "sourceUrls": [
+      "https://web.dev/articles/responsive-web-design-basics",
+      "https://web.dev/learn/design/media-queries",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries",
+      "https://www.w3.org/TR/mediaqueries-5/"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["media-query", "responsive", "adaptive-layout"]
+    "nearDuplicates": [
+      "media-query",
+      "responsive",
+      "adaptive-layout"
+    ]
   },
   {
     "slug": "media-query",

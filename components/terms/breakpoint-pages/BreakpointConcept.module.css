@@ -1,0 +1,107 @@
+.breakpointHero,
+.breakpointLab {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  border-radius: 24px;
+  background: radial-gradient(circle at 82% 0%, #e9eee2 0, #f7f1e5 48%, var(--paper) 90%);
+  color: var(--ink);
+}
+
+.breakpointHero { min-height: 550px; padding: 25px 24px 19px; }
+.breakpointLab { margin: 34px 0 12px; padding: 24px 22px 20px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 90%, #e5eee9), var(--paper)); }
+.breakpointHero::before,
+.breakpointLab::before { content: ""; position: absolute; inset: 15px; border: 1px solid color-mix(in srgb, var(--accent-text) 17%, transparent); border-radius: 18px; pointer-events: none; }
+.breakpointHeader { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+.breakpointHeader strong { padding: 5px 9px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 10%, transparent); color: var(--ink); font: 600 11px ui-monospace, SFMono-Regular, monospace; }
+.breakpointBoard { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) 42px minmax(0, 1.25fr); gap: 13px; align-items: stretch; min-height: 270px; margin: 24px 0 15px; }
+.breakpointPanel { min-width: 0; padding: 15px 13px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--paper) 85%, #efe5d3); transition: transform .45s ease, border-color .35s ease, box-shadow .45s ease, background .35s ease; }
+.breakpointPanel[data-active="true"] { transform: translateY(-5px); border-color: var(--accent-text); box-shadow: 0 13px 24px color-mix(in srgb, var(--accent-text) 11%, transparent); }
+.breakpointLabel { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; }
+.breakpointLabel svg { color: var(--accent-text); }
+.breakpointPanel h3 { margin: 11px 0 6px; font-size: 15px; }
+.breakpointPanel small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.breakpointArrow { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--accent-text); font-size: 11px; text-align: center; }
+.breakpointArrow::before { content: ""; width: 1px; height: 86%; border-left: 1px dashed color-mix(in srgb, var(--accent-text) 30%, transparent); }
+.breakpointArrow span { position: absolute; top: 50%; transform: translateY(-50%); padding: 3px 2px; background: var(--paper); }
+.breakpointGauge { position: relative; margin: 18px 0 8px; padding: 19px 0 23px; }
+.breakpointGaugeLine { position: absolute; left: 0; right: 0; top: 38px; height: 4px; border-radius: 99px; background: linear-gradient(90deg, #b86d5c 0 42%, #c8a467 42% 57%, var(--accent-text) 57% 100%); }
+.breakpointGaugeLine::after { content: ""; position: absolute; top: -7px; left: var(--failure-position); width: 2px; height: 18px; background: var(--ink); transition: left .45s ease; }
+.breakpointGaugeMarker { position: absolute; top: 25px; left: var(--width-position); width: 28px; height: 28px; border: 2px solid var(--ink); border-radius: 50%; background: var(--paper); transform: translateX(-50%); transition: left .45s ease, background .35s ease, border-color .35s ease; }
+.breakpointGaugeMarker[data-failed="true"] { border-color: #b86d5c; background: #f1dcd3; }
+.breakpointGaugeLabels { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; }
+.breakpointGaugeReadout { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 14px; }
+.breakpointGaugeReadout span { color: var(--muted); font-size: 11px; }
+.breakpointGaugeReadout strong { font-size: 22px; font-weight: 600; }
+.breakpointGaugeReadout code { color: var(--accent-text); font: 11px ui-monospace, SFMono-Regular, monospace; }
+.breakpointPreview { display: grid; gap: 9px; margin-top: 15px; padding: 11px; border: 1px dashed color-mix(in srgb, var(--ink) 23%, transparent); border-radius: 11px; background: color-mix(in srgb, var(--paper) 60%, transparent); }
+.breakpointPreviewTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+.breakpointPreviewTop strong { color: var(--ink); font: 600 10px ui-monospace, SFMono-Regular, monospace; }
+.breakpointPreviewNav { display: grid; grid-template-columns: minmax(42px, 1fr) repeat(3, minmax(0, auto)) minmax(55px, .8fr); align-items: center; gap: 6px; min-width: 0; }
+.breakpointPreviewNav span { height: 9px; border-radius: 99px; background: color-mix(in srgb, var(--accent-text) 28%, transparent); }
+.breakpointPreviewNav span:first-child { background: var(--accent-text); }
+.breakpointPreviewNav span:last-child { background: #c8a467; }
+.breakpointPreview[data-failed="true"] .breakpointPreviewNav { grid-template-columns: 42px repeat(3, minmax(0, 1fr)); }
+.breakpointPreview[data-failed="true"] span:last-child { grid-column: 1 / -1; width: 72%; }
+.breakpointPreview[data-switched="true"] .breakpointPreviewNav { grid-template-columns: 42px minmax(0, 1fr) 40px; }
+.breakpointPreview[data-switched="true"] span:nth-child(3), .breakpointPreview[data-switched="true"] span:nth-child(4) { display: none; }
+.breakpointPreview[data-switched="true"] span:last-child { width: auto; }
+.breakpointNote { position: relative; display: flex; align-items: flex-start; gap: 8px; margin: 0 29px 14px; padding: 10px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.breakpointNote svg { flex: none; margin-top: 1px; color: var(--accent-text); }
+.breakpointMetrics { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.breakpointMetrics > div { display: grid; gap: 4px; padding: 10px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); }
+.breakpointMetrics span { color: var(--muted); font-size: 10px; }
+.breakpointMetrics strong { font-size: 13px; }
+.breakpointResult { position: relative; display: flex; align-items: flex-start; gap: 8px; min-height: 44px; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); font-size: 12px; line-height: 1.55; }
+.breakpointResult svg { flex: none; margin-top: 1px; color: var(--accent-text); }
+.breakpointHero figcaption { position: relative; max-width: 790px; margin-top: 15px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+.breakpointControls { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0 0; }
+.breakpointControl { border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 999px; padding: 7px 10px; background: var(--paper); color: var(--ink); font: inherit; font-size: 11px; cursor: pointer; }
+.breakpointControl[aria-pressed="true"] { border-color: var(--accent-text); background: color-mix(in srgb, var(--accent-text) 10%, var(--paper)); font-weight: 600; }
+.breakpointControl:hover { border-color: var(--accent-text); }
+.breakpointLabGrid { position: relative; display: grid; grid-template-columns: minmax(0, .95fr) 40px minmax(0, 1.45fr); gap: 12px; align-items: stretch; margin-top: 17px; }
+.breakpointLabPanel { min-width: 0; padding: 14px 12px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 14px; background: var(--paper); transition: transform .4s ease, border-color .35s ease, box-shadow .4s ease; }
+.breakpointLabPanel[data-active="true"] { transform: translateY(-4px); border-color: var(--accent-text); box-shadow: 0 11px 20px color-mix(in srgb, var(--accent-text) 10%, transparent); }
+.breakpointLabPanel h3 { margin: 9px 0 6px; font-size: 14px; }
+.breakpointLabPanel small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.breakpointLabArrow { display: flex; align-items: center; justify-content: center; color: var(--accent-text); }
+.breakpointLabArrow svg { transition: transform .3s ease; }
+.breakpointLabGauge { position: relative; height: 68px; margin: 10px 3px 0; }
+.breakpointLabGauge::before { content: ""; position: absolute; left: 0; right: 0; top: 29px; height: 4px; border-radius: 99px; background: linear-gradient(90deg, #b86d5c 0 42%, #c8a467 42% 57%, var(--accent-text) 57% 100%); }
+.breakpointLabGauge::after { content: ""; position: absolute; left: var(--failure-position); top: 21px; width: 2px; height: 20px; background: var(--ink); }
+.breakpointLabDot { position: absolute; left: var(--width-position); top: 17px; width: 28px; height: 28px; border: 2px solid var(--ink); border-radius: 50%; background: var(--paper); transform: translateX(-50%); transition: left .4s ease, background .3s ease; }
+.breakpointLabDot[data-failed="true"] { background: #f1dcd3; border-color: #b86d5c; }
+.breakpointLabTicks { display: flex; justify-content: space-between; color: var(--muted); font: 10px ui-monospace, monospace; }
+.breakpointLabPreview { display: grid; gap: 9px; margin-top: 11px; padding: 13px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 7%, transparent); }
+.breakpointLabPreview > div { display: flex; align-items: center; justify-content: space-between; gap: 9px; font-size: 11px; }
+.breakpointLabPreview span { color: var(--muted); }
+.breakpointLabPreview strong { font-size: 12px; }
+.breakpointLabStatus { position: relative; display: flex; align-items: flex-start; gap: 8px; margin: 15px 0 0; padding: 10px 11px; border-radius: 10px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); color: var(--muted); font-size: 12px; line-height: 1.55; }
+.breakpointLabStatus svg { flex: none; color: var(--accent-text); }
+.breakpointLabMetrics { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.breakpointLabMetrics > div { display: grid; gap: 4px; padding: 9px 10px; border-radius: 9px; background: color-mix(in srgb, var(--accent-text) 8%, transparent); }
+.breakpointLabMetrics span { color: var(--muted); font-size: 10px; }
+.breakpointLabMetrics strong { font-size: 13px; }
+
+@media (max-width: 740px) {
+  .breakpointHero { min-height: 720px; padding: 21px 17px 18px; }
+  .breakpointBoard, .breakpointLabGrid { grid-template-columns: 1fr; gap: 9px; }
+  .breakpointArrow { height: 23px; flex-direction: row; }
+  .breakpointArrow::before { width: 72%; height: 1px; border-left: 0; border-top: 1px dashed color-mix(in srgb, var(--accent-text) 30%, transparent); }
+  .breakpointArrow span { top: auto; left: 50%; transform: translate(-50%, -50%); }
+  .breakpointLabArrow svg { transform: rotate(90deg); }
+  .breakpointNote { margin-inline: 0; }
+}
+
+@media (max-width: 430px) {
+  .breakpointHeader { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .breakpointMetrics, .breakpointLabMetrics { grid-template-columns: 1fr; }
+  .breakpointPreviewNav { gap: 4px; }
+  .breakpointResult, .breakpointLabStatus { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breakpointPanel, .breakpointGaugeLine::after, .breakpointGaugeMarker, .breakpointLabPanel, .breakpointLabDot, .breakpointPreview, .breakpointLabArrow svg { transition: none; }
+  .breakpointPanel[data-active="true"], .breakpointLabPanel[data-active="true"] { transform: none; }
+}
