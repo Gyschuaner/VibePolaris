@@ -68,6 +68,10 @@ function rangeLabel(start: string, end: string) {
   return `${shortDateFormatter.format(utcDate(start))} — ${shortDateFormatter.format(utcDate(end))}`;
 }
 
+function nodeTransform(x: number, y: number) {
+  return `translate(${x.toFixed(3)}px, ${y.toFixed(3)}px) translate(-50%, -50%)`;
+}
+
 function graphData(articles: NewsAtlasArticle[]) {
   const nodes: NewsGraphNode[] = [];
   const edges: GraphEdge[] = [];
@@ -205,7 +209,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
     const positions = new Map(moving.map(node => [node.slug, node]));
     for (const node of moving) {
       const element = nodeElements.current.get(node.slug);
-      if (element) element.style.transform = `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)`;
+      if (element) element.style.transform = nodeTransform(node.x, node.y);
     }
     for (const { element, source, target } of lineElements.current.values()) {
       const from = positions.get(source);
@@ -549,7 +553,7 @@ export function NewsAtlas({ articles }: { articles: NewsAtlasArticle[] }) {
               return <button className={classes} key={node.slug} type="button" data-news-node={node.slug} aria-label={`${article ? shortDateFormatter.format(utcDate(article.eventDate)) : ""}：${label}`} aria-pressed={node.slug === selectedNodeSlug} aria-expanded={node.slug === selectedNodeSlug && detailOpen} ref={element => {
                 if (element) nodeElements.current.set(node.slug, element);
                 else nodeElements.current.delete(node.slug);
-              }} style={{ transform: `translate(${node.x}px, ${node.y}px) translate(-50%, -50%)` }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
+              }} style={{ transform: nodeTransform(node.x, node.y) }} onFocus={() => setHovered(node.slug)} onBlur={() => setHovered("")} onClick={event => { if (article && event.detail === 0) selectArticle(article.slug); }}>
                 <span className="brand-star-only news-atlas-node-star" style={{ width: starSize, height: starSize }} aria-hidden="true" />
                 <span className="news-atlas-node-copy"><strong className="news-atlas-node-label" style={{ opacity: named ? 1 : labelOpacity }}>{label}</strong>{article && <small>{shortDateFormatter.format(utcDate(article.eventDate))}</small>}</span>
               </button>;
