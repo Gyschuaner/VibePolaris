@@ -1,0 +1,130 @@
+.heroTool{position:relative;display:grid;align-content:center;gap:9px;min-height:142px;color:var(--ink);font-size:11px}
+.heroTool small{color:var(--muted);font:9px ui-monospace,SFMono-Regular,monospace;letter-spacing:.04em}
+.heroTool strong{font-size:12px;font-weight:600}
+.toolLabel{color:var(--accent-text);font:10px ui-monospace,SFMono-Regular,monospace}
+
+/* lockfile: a range is resolved once, then sealed and copied. */
+.lockfileHero{grid-template-columns:1fr 58px 1fr;align-items:center;gap:8px}
+.lockRange,.lockCandidates,.lockMachines{display:grid;gap:5px;padding:10px 8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:9px;background:color-mix(in srgb,var(--surface) 62%,transparent)}
+.lockRange{animation:lockRange 3.2s ease-in-out 1 both}
+.lockCandidates{animation:lockCandidates 3.2s ease-in-out 1 both}
+.lockCandidates i{display:block;height:6px;border-radius:99px;background:color-mix(in srgb,var(--ink) 17%,transparent)}
+.lockCandidates i:first-of-type{background:var(--accent-text);animation:lockPick 3.2s ease-in-out 1 both}
+.lockSeal{position:relative;display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--accent-text);border-radius:12px;background:var(--tint);color:var(--accent-text);animation:lockSeal 3.2s ease-in-out 1 both}
+.lockSeal::before{content:"";position:absolute;inset:8px;border:1px dashed currentColor;border-radius:6px}
+.lockMachines{grid-template-columns:1fr 1fr;gap:4px;padding:8px;animation:lockMachines 3.2s ease-in-out 1 both}
+.lockMachines b{display:block;padding:6px 3px;border-radius:5px;background:var(--paper);font:9px ui-monospace,monospace;text-align:center}
+
+/* monorepo: a changed shared package magnetizes only its dependants. */
+.repoHero{min-height:142px}
+.repoOrbit{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;align-items:center;min-height:110px;padding:11px 5px;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:12px;background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--accent-text) 12%,transparent),transparent 47%)}
+.repoOrbit::before{content:"repo";position:absolute;left:50%;top:50%;display:grid;place-items:center;width:45px;height:45px;border:1px solid var(--accent-text);border-radius:50%;background:var(--paper);color:var(--accent-text);font:9px ui-monospace,monospace;transform:translate(-50%,-50%)}
+.repoNode{position:relative;z-index:1;display:grid;gap:4px;padding:8px 6px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);text-align:center;animation:repoNode 3.3s ease-in-out 1 both}
+.repoNode:nth-child(1){animation-delay:.1s}.repoNode:nth-child(2){animation-delay:.25s}.repoNode:nth-child(3){animation-delay:.4s}
+.repoNode[data-dep="true"]{border-color:var(--accent-text)}
+.repoPulse{position:absolute;z-index:2;left:35%;top:45%;width:9px;height:9px;border-radius:50%;background:var(--accent-text);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent-text) 15%,transparent);animation:repoPulse 3.3s ease-in-out 1 both}
+.repoImpact{justify-self:end;color:var(--accent-text);font:10px ui-monospace,monospace}
+
+/* environment-variable: process snapshots do not retroactively update. */
+.envHero{gap:11px}
+.envParent{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);font:10px ui-monospace,monospace}
+.envParent strong{color:var(--accent-text);font:12px ui-monospace,monospace;animation:envFlip 3.1s ease-in-out 1 both}
+.envProcesses{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.envProcess{display:grid;gap:5px;padding:9px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:9px;background:color-mix(in srgb,var(--surface) 62%,transparent);animation:envProcess 3.1s ease-in-out 1 both}
+.envProcess:nth-child(2){animation-delay:.4s;border-color:var(--accent-text)}
+.envStamp{justify-self:end;color:var(--accent-text);font:9px ui-monospace,monospace;animation:envStamp 3.1s ease-in-out 1 both}
+
+/* source-map: a coordinate is read through a lens and becomes a source location. */
+.mapHero{grid-template-columns:minmax(0,1fr) 38px minmax(0,1fr);align-items:center;gap:8px}
+.mapCode,.mapSource{display:grid;gap:5px;padding:10px 8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);font:10px/1.45 ui-monospace,monospace}
+.mapCode b,.mapSource b{padding:4px 5px;border-radius:4px;background:var(--tint);color:var(--accent-text);font-weight:500;animation:mapHighlight 3.2s ease-in-out 1 both}
+.mapLens{position:relative;display:grid;place-items:center;width:34px;height:54px;border:1px solid var(--accent-text);border-radius:50%;color:var(--accent-text);animation:mapLens 3.2s ease-in-out 1 both}
+.mapLens::after{content:"";position:absolute;right:-6px;bottom:3px;width:13px;border-top:1px solid var(--accent-text);transform:rotate(42deg)}
+.mapPin{justify-self:end;color:var(--accent-text);font:9px ui-monospace,monospace;animation:mapPin 3.2s ease-in-out 1 both}
+
+/* linter: rules scan syntax, then leave distinct findings. */
+.lintHero{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:center;gap:10px}
+.lintCode{display:grid;gap:5px;padding:9px 8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);font:9px/1.5 ui-monospace,monospace}
+.lintLine{display:flex;justify-content:space-between;gap:7px;padding:2px 4px;border-radius:4px;animation:lintMark 3.3s ease-in-out 1 both}.lintLine:nth-child(2){animation-delay:.4s}
+.lintLine b{color:#a55c54;font-weight:500}.lintScan{display:grid;gap:7px;padding:10px;border:1px dashed var(--accent-text);border-radius:9px;background:var(--tint);animation:lintScan 3.3s ease-in-out 1 both}.lintRule{display:flex;justify-content:space-between;gap:6px;font:9px ui-monospace,monospace;color:var(--muted);animation:lintRule 3.3s ease-in-out 1 both}.lintRule:nth-child(2){animation-delay:.35s}.lintRule strong{color:var(--accent-text);font:10px ui-monospace,monospace}.lintCount{justify-self:end;color:#a55c54;font:10px ui-monospace,monospace;animation:lintRule 3.3s ease-in-out .7s 1 both}
+
+/* formatter: the ruler changes line breaks while the token count stays. */
+.formatHero{gap:10px}
+.formatRuler{display:flex;justify-content:space-between;align-items:end;height:18px;padding:0 2px;color:var(--muted);font:8px ui-monospace,monospace;border-bottom:1px solid color-mix(in srgb,var(--ink) 22%,transparent)}
+.formatRuler i{display:block;width:2px;height:8px;background:var(--accent-text);animation:formatRuler 3.2s ease-in-out 1 both}
+.formatCode{position:relative;display:grid;gap:5px;min-height:32px;padding:8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);font:10px/1.4 ui-monospace,monospace}.formatCode span{display:block;white-space:pre-wrap}.formatOneLine{animation:formatOneLine 3.2s ease-in-out 1 both}.formatWrapped{position:absolute;inset:8px;opacity:0;animation:formatWrapped 3.2s ease-in-out 1 both}.formatMeta{display:flex;justify-content:space-between;color:var(--accent-text);font:9px ui-monospace,monospace}
+
+/* expression: leaves bloom into a value tree. */
+.expressionHero{position:relative;grid-template-columns:1fr 1fr;align-items:center;gap:8px}
+.exprTree{position:relative;display:grid;gap:5px;padding:9px 8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:9px;background:var(--paper);font:10px ui-monospace,monospace;text-align:center}.exprLeaves{display:flex;justify-content:space-around;gap:5px}.exprLeaves b,.exprRoot{padding:5px 6px;border-radius:5px;background:var(--tint);color:var(--accent-text);font-weight:500}.exprBranches{display:flex;justify-content:center;gap:20px;color:var(--muted);animation:exprBranches 3.4s ease-in-out 1 both}.exprRoot{justify-self:center;animation:exprBloom 3.4s ease-in-out 1 both}.exprLeaves b{animation:exprLeaf 3.4s ease-in-out 1 both}.exprLeaves b:nth-child(2){animation-delay:.18s}.exprLeaves b:nth-child(3){animation-delay:.36s}.exprValue{justify-self:end;align-self:end;color:var(--accent-text);font:11px ui-monospace,monospace;animation:exprValue 3.4s ease-in-out 1 both}
+
+/* function: arguments descend into a frame, then the frame returns a token. */
+.functionHero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr) 52px;align-items:center;gap:7px}
+.functionCaller,.functionFrame{display:grid;gap:5px;padding:9px 8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper)}.functionCaller{animation:functionCall 3.4s ease-in-out 1 both}.functionFrame{border-color:var(--accent-text);background:var(--tint);animation:functionFrame 3.4s ease-in-out 1 both}.functionFrame code,.functionReturn{color:var(--accent-text);font:10px ui-monospace,monospace}.functionStack{display:grid;justify-items:center;gap:5px;color:var(--muted);font:9px ui-monospace,monospace}.functionStack i{display:block;width:24px;height:38px;border:1px solid var(--accent-text);border-radius:4px;background:linear-gradient(to top,var(--accent-text) 0 55%,transparent 55%);animation:functionStack 3.4s ease-in-out 1 both}.functionStackBefore{position:absolute;animation:functionStackBefore 3.4s ease-in-out 1 both}.functionStackAfter{animation:functionStackAfter 3.4s ease-in-out 1 both}.functionReturn{grid-column:2 / 4;justify-self:center;animation:functionReturn 3.4s ease-in-out 1 both}
+
+/* parameter: values slide into named slots; a swap remains visibly wrong. */
+.parameterHero{display:grid;gap:9px}
+.parameterDefinition{justify-self:center;padding:7px 10px;border:1px solid var(--accent-text);border-radius:999px;background:var(--tint);font:10px ui-monospace,monospace;color:var(--accent-text)}
+.parameterSlots,.parameterArgs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.parameterSlot,.parameterArg{display:flex;justify-content:space-between;gap:6px;padding:8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:7px;background:var(--paper);font:10px ui-monospace,monospace}.parameterSlot{animation:paramSlot 3.2s ease-in-out 1 both}.parameterSlot:nth-child(2){animation-delay:.3s}.parameterSlot b{animation:paramValue 3.2s ease-in-out 1 both}.parameterSlot:nth-child(2) b{animation-delay:.3s}.parameterArg{color:var(--muted);animation:paramArg 3.2s ease-in-out 1 both}.parameterWarning{justify-self:end;color:#a55c54;font:9px ui-monospace,monospace;animation:paramWarning 3.2s ease-in-out 1 both}
+
+/* return-value: a result splits into visible logging and a gated return lane. */
+.returnHero{grid-template-columns:1fr 52px 1fr;align-items:center;gap:8px}
+.returnFunction,.returnResult{display:grid;gap:5px;padding:9px 8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper)}.returnFunction{animation:returnCompute 3.3s ease-in-out 1 both}.returnResult{border-color:var(--accent-text);background:var(--tint);animation:returnReceive 3.3s ease-in-out 1 both}.returnFork{position:relative;display:grid;gap:12px;justify-items:center;color:var(--accent-text);font:9px ui-monospace,monospace}.returnFork::before,.returnFork::after{content:"";position:absolute;left:0;width:46px;border-top:1px solid var(--accent-text);transform-origin:left center}.returnFork::before{top:21px;transform:rotate(-28deg);animation:returnConsole 3.3s ease-in-out 1 both}.returnFork::after{top:29px;transform:rotate(28deg);animation:returnGate 3.3s ease-in-out 1 both}.returnFork i{display:block;width:11px;height:11px;border-radius:50%;background:var(--accent-text);animation:returnDot 3.3s ease-in-out 1 both}.returnChannels{position:absolute;top:0;display:grid;gap:22px;transform:translateX(39px);color:var(--muted);font:8px ui-monospace,monospace;animation:returnChannels 3.3s ease-in-out 1 both}.returnChannels b{color:#a55c54;font-weight:500}.returnChannels b:last-child{color:var(--accent-text)}
+
+/* Shared lower interactive labs. */
+.toolLesson{position:relative;display:grid;gap:12px;margin:26px 0 20px;padding:17px 16px 15px;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--paper) 86%,#e5eee4),var(--paper));color:var(--ink);overflow:hidden}.toolLesson::before{content:"";position:absolute;inset:8px;border:1px solid color-mix(in srgb,var(--accent-text) 15%,transparent);border-radius:11px;pointer-events:none}.toolLessonTop{position:relative;display:flex;justify-content:space-between;gap:12px;align-items:start}.toolLessonTop span{display:block;margin-bottom:5px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}.toolLessonTop strong{font-size:16px;font-weight:600}.toolReset{display:grid;place-items:center;width:30px;height:30px;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:50%;background:transparent;color:var(--muted);cursor:pointer}.toolReset:hover{color:var(--accent-text);border-color:var(--accent-text)}.toolButtons{position:relative;display:flex;flex-wrap:wrap;gap:6px}.toolButtons button{border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:999px;background:transparent;color:var(--muted);padding:7px 10px;font-size:11px;cursor:pointer}.toolButtons button:hover,.toolButtons button[aria-pressed="true"]{border-color:var(--accent-text);background:var(--tint);color:var(--accent-text)}.toolStatus{position:relative;display:grid;gap:4px;padding:11px 12px;border-left:3px solid var(--accent-text);background:color-mix(in srgb,var(--surface) 60%,transparent);font-size:12px;line-height:1.55}.toolStatus strong{font-size:14px}.toolStatus span{color:var(--muted)}
+.lockLab,.repoLab,.envLab,.mapLab,.lintLab,.formatLab,.exprLab,.functionLab,.parameterLab,.returnLab{position:relative;min-height:126px;padding:12px;border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);border-radius:11px;background:color-mix(in srgb,var(--surface) 57%,transparent)}
+.lockLab{display:grid;grid-template-columns:1fr 70px 1fr;gap:9px;align-items:center}.lockLab>div{display:grid;gap:6px}.lockLab b{font:11px ui-monospace,monospace}.lockLab output{color:var(--accent-text);font:10px ui-monospace,monospace}.lockLab .lockLabSeal{display:grid;place-items:center;height:58px;border:1px solid var(--accent-text);border-radius:14px;background:var(--tint);color:var(--accent-text);font:10px ui-monospace,monospace}
+.repoLab{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end}.repoLab button,.repoLab .repoCard{min-height:68px;padding:8px;border:1px solid color-mix(in srgb,var(--ink) 17%,transparent);border-radius:8px;background:var(--paper);font-size:11px}.repoLab button{cursor:pointer}.repoLab button[data-active="true"],.repoLab .repoCard[data-active="true"]{border-color:var(--accent-text);background:var(--tint)}.repoLab strong,.repoLab small{display:block}.repoLab small{margin-top:5px;color:var(--muted);font:9px ui-monospace,monospace}
+.envLab{display:grid;grid-template-columns:1fr 1fr;gap:9px}.envLab label{display:grid;gap:5px;padding:9px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);font-size:11px}.envLab input{accent-color:var(--accent-text)}.envLab output{color:var(--accent-text);font:12px ui-monospace,monospace}
+.mapLab{display:grid;grid-template-columns:1fr 1fr;gap:9px}.mapLab button{display:grid;gap:5px;text-align:left;padding:10px;border:1px solid color-mix(in srgb,var(--ink) 17%,transparent);border-radius:8px;background:var(--paper);cursor:pointer}.mapLab button[data-active="true"]{border-color:var(--accent-text);background:var(--tint)}.mapLab code{font:10px ui-monospace,monospace}.mapLab strong{font-size:12px}
+.lintLab{display:grid;gap:8px}.lintLab label{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:7px;background:var(--paper);font-size:11px}.lintLab input{accent-color:var(--accent-text)}.lintLab output{color:#a55c54;font:11px ui-monospace,monospace}
+.formatLab{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}.formatLab input{width:100%;accent-color:var(--accent-text)}.formatLab code{display:block;margin-top:8px;padding:8px;border-radius:7px;background:var(--paper);font:10px/1.5 ui-monospace,monospace;white-space:pre-wrap}.formatLab output{color:var(--accent-text);font:11px ui-monospace,monospace}
+.exprLab{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}.exprLab input{width:100%;accent-color:var(--accent-text)}.exprLab output{display:block;margin-top:8px;padding:10px;border-radius:8px;background:var(--tint);color:var(--accent-text);font:14px ui-monospace,monospace}
+.functionLab{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:center}.functionLab button{padding:10px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);color:var(--ink);cursor:pointer}.functionLab button[data-active="true"]{border-color:var(--accent-text);background:var(--tint)}.functionFrameLab{display:grid;gap:4px;min-height:68px;padding:9px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper);font:10px/1.45 ui-monospace,monospace;transition:background .2s,border-color .2s,transform .2s}.functionFrameLab[data-open="true"]{border-color:var(--accent-text);background:var(--tint);transform:translateY(-3px)}.functionFrameLab small{color:var(--muted)}.functionLab output{padding:10px;border-left:3px solid var(--accent-text);background:var(--paper);font:10px/1.5 ui-monospace,monospace}
+.parameterLab{display:grid;gap:8px}.parameterLab code{padding:8px;border-radius:7px;background:var(--paper);font:10px ui-monospace,monospace}.parameterBinding{display:grid;grid-template-columns:1fr 1fr;gap:8px}.parameterBindingSlot{display:flex;justify-content:space-between;gap:6px;padding:8px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:7px;background:var(--paper);font:10px ui-monospace,monospace}.parameterBindingSlot[data-warning="true"]{border-color:#a55c54;background:color-mix(in srgb,#a55c54 8%,var(--paper))}.parameterBindingSlot strong{color:var(--accent-text)}.parameterBindingSlot[data-warning="true"] strong{color:#a55c54}.parameterLab output{color:var(--accent-text);font:11px ui-monospace,monospace}
+.returnLab{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:center}.returnLab button,.returnLog{padding:10px;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);border-radius:8px;background:var(--paper)}.returnLab button{cursor:pointer}.returnLab button[data-active="true"]{border-color:var(--accent-text);background:var(--tint)}.returnLog{color:var(--muted);font:10px/1.55 ui-monospace,monospace}.returnLog small{color:var(--accent-text)}.returnLab output{padding:10px;background:var(--paper);font:10px/1.55 ui-monospace,monospace}
+
+@keyframes lockRange{0%,15%{transform:translateX(-3px);opacity:.6}50%,100%{transform:translateX(0);opacity:1}}
+@keyframes lockCandidates{0%,18%{opacity:0}48%,100%{opacity:1}}
+@keyframes lockPick{0%,30%{width:45%}65%,100%{width:100%}}
+@keyframes lockSeal{0%,34%{transform:scale(.75);opacity:0}66%,100%{transform:scale(1);opacity:1}}
+@keyframes lockMachines{0%,48%{opacity:0}78%,100%{opacity:1}}
+@keyframes repoNode{0%,12%{transform:translateY(2px);opacity:0}55%,100%{transform:translateY(0);opacity:1}}
+@keyframes repoPulse{0%,20%{left:30%;opacity:0}44%{left:49%;opacity:1}72%,100%{left:69%;opacity:.15}}
+@keyframes envFlip{0%,22%{transform:translateY(0);color:var(--accent-text)}58%,100%{transform:translateY(-1px);color:#a55c54}}
+@keyframes envProcess{0%,20%{transform:translateY(4px);opacity:0}52%,100%{transform:translateY(0);opacity:1}}
+@keyframes envStamp{0%,45%{opacity:0;transform:translateX(-5px)}75%,100%{opacity:1;transform:translateX(0)}}
+@keyframes mapHighlight{0%,22%{background:transparent;color:var(--ink);opacity:.25}55%,100%{background:var(--tint);color:var(--accent-text);opacity:1}}
+@keyframes mapLens{0%,20%{transform:translateX(-5px) rotate(-8deg);opacity:0}68%,100%{transform:translateX(4px) rotate(8deg);opacity:1}}
+@keyframes mapPin{0%,60%{opacity:0;transform:translateY(4px)}84%,100%{opacity:1;transform:translateY(0)}}
+@keyframes lintMark{0%,28%{background:transparent}62%,100%{background:color-mix(in srgb,#a55c54 11%,transparent)}}
+@keyframes lintScan{0%,20%{transform:scale(.97);opacity:0}65%,100%{transform:scale(1);opacity:1}}
+@keyframes lintRule{0%,35%{opacity:0;transform:translateX(-5px)}72%,100%{opacity:1;transform:translateX(0)}}
+@keyframes formatRuler{0%,15%{transform:translateX(0)}65%,100%{transform:translateX(18px)}}
+@keyframes formatOneLine{0%,28%{opacity:1;transform:translateY(0)}68%,100%{opacity:0;transform:translateY(-4px)}}
+@keyframes formatWrapped{0%,35%{opacity:0;transform:translateY(4px)}74%,100%{opacity:1;transform:translateY(0)}}
+@keyframes exprLeaf{0%,20%{transform:translateY(3px);opacity:.45}60%,100%{transform:translateY(0);opacity:1}}
+@keyframes exprBranches{0%,36%{opacity:0}70%,100%{opacity:1}}
+@keyframes exprBloom{0%,42%{transform:scale(.75);opacity:0}75%,100%{transform:scale(1);opacity:1}}
+@keyframes exprValue{0%,58%{opacity:0;transform:translateX(-4px)}82%,100%{opacity:1;transform:translateX(0)}}
+@keyframes functionCall{0%,18%{transform:translateX(0)}54%,100%{transform:translateX(5px)}}
+@keyframes functionFrame{0%,25%{transform:translateY(6px);opacity:0}65%,100%{transform:translateY(0);opacity:1}}
+@keyframes functionStack{0%,24%{background:linear-gradient(to top,var(--accent-text) 0 0%,transparent 0)}58%,100%{background:linear-gradient(to top,var(--accent-text) 0 55%,transparent 55%)}}
+@keyframes functionStackBefore{0%,48%{opacity:1}72%,100%{opacity:0}}
+@keyframes functionStackAfter{0%,48%{opacity:0}72%,100%{opacity:1}}
+@keyframes functionReturn{0%,55%{opacity:0;transform:translateY(5px)}82%,100%{opacity:1;transform:translateY(0)}}
+@keyframes paramSlot{0%,18%{background:var(--paper)}60%,100%{background:var(--tint)}}
+@keyframes paramValue{0%,30%{opacity:0;transform:translateY(4px)}72%,100%{opacity:1;transform:translateY(0)}}
+@keyframes paramArg{0%,25%{transform:translateY(4px);opacity:.45}68%,100%{transform:translateY(0);opacity:1}}
+@keyframes paramWarning{0%,55%{opacity:0}82%,100%{opacity:1}}
+@keyframes returnCompute{0%,22%{transform:translateX(-3px);opacity:.55}62%,100%{transform:translateX(0);opacity:1}}
+@keyframes returnReceive{0%,62%{opacity:0;transform:translateX(4px)}88%,100%{opacity:1;transform:translateX(0)}}
+@keyframes returnConsole{0%,45%{opacity:.2}74%,100%{opacity:1}}
+@keyframes returnGate{0%,60%{opacity:.15}84%,100%{opacity:1}}
+@keyframes returnDot{0%,38%{transform:scale(.5);opacity:.35}70%,100%{transform:scale(1);opacity:1}}
+@keyframes returnChannels{0%,55%{opacity:0}82%,100%{opacity:1}}
+
+@media(max-width:760px){.lockfileHero,.mapHero,.functionHero,.returnHero{grid-template-columns:1fr;gap:7px}.lockSeal{justify-self:center}.lockMachines{grid-template-columns:1fr 1fr}.repoOrbit{min-height:128px}.lintHero{grid-template-columns:1fr}.exprValue{justify-self:start}.functionReturn{grid-column:auto}.returnFork{min-height:26px}.returnFork::before{left:39%;transform:rotate(18deg)}.returnFork::after{left:53%;transform:rotate(-18deg)}.returnChannels{top:4px;right:4px;transform:none}.toolLesson{padding:15px 13px 13px}.lockLab,.envLab,.mapLab,.formatLab,.exprLab,.functionLab,.returnLab{grid-template-columns:1fr}.repoLab{grid-template-columns:1fr}.repoLab button{min-height:48px}.parameterSlots,.parameterArgs{gap:6px}}
+
+@media(prefers-reduced-motion:reduce){.heroTool *, .toolLesson *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}

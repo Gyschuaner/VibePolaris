@@ -117,6 +117,7 @@ import { RoutingTermPage } from "@/components/terms/rendering-pages/routing-page
 import { LocalStorageTermPage } from "@/components/terms/rendering-pages/local-storage-page";
 import { ConversionRateTermPage, DesignTokenTermPage, FeedbackTermPage, FocusManagementTermPage, FunnelTermPage, IterationTermPage, MockupTermPage, SitemapTermPage, UsabilityTestingTermPage, VisualHierarchyTermPage } from "@/components/terms/product-design-pages/ProductDesignPages";
 import { A11yTermPage, ClientServerTermPage, DeployTermPage, IaTermPage, LoadingStateTermPage, MicrointeractionTermPage, PrototypeTermPage, ReducedMotionTermPage, UserFlowTermPage, WireframeTermPage } from "@/components/terms/flow-redesign-pages/FlowRedesignPages";
+import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -170,6 +171,16 @@ const articleTermPages = {
   prototype: PrototypeTermPage,
   ia: IaTermPage,
   a11y: A11yTermPage,
+  lockfile: LockfileTermPage,
+  monorepo: MonorepoTermPage,
+  'environment-variable': EnvironmentVariableTermPage,
+  'source-map': SourceMapTermPage,
+  linter: LinterTermPage,
+  formatter: FormatterTermPage,
+  expression: ExpressionTermPage,
+  function: FunctionTermPage,
+  parameter: ParameterTermPage,
+  'return-value': ReturnValueTermPage,
   'container-image': ContainerImageTermPage,
   'service-discovery': ServiceDiscoveryTermPage,
   observability: ObservabilityTermPage,
