@@ -9,6 +9,7 @@ const frames = [
   { label: "保留原位置", mode: "relative", title: "relative", ref: "自己的原位置", note: "卡片从原位置偏移，但它留下的空间仍然在。" },
   { label: "寻找包含块", mode: "absolute", title: "absolute", ref: "最近的 positioned ancestor", note: "卡片脱离普通流，top/left 改为相对最近的定位祖先。" },
   { label: "贴住视口边界", mode: "fixed", title: "fixed", ref: "视口", note: "卡片相对视口定位；滚动页面时，它不会跟着普通内容走。" },
+  { label: "到阈值才贴住", mode: "sticky", title: "sticky", ref: "滚动容器边界", note: "卡片先占普通流空间，滚动到 inset 阈值后才贴住容器。" },
 ];
 
 export function PositioningHero() {

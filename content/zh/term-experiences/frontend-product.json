@@ -4477,7 +4477,7 @@
   "lead": "同一个 top，为什么有时挪自己，有时贴住窗口？",
   "definition": "CSS 定位先决定元素采用哪种 positioning scheme，再确定它相对哪个 containing block 计算 inset 偏移；relative 保留原占位，absolute/fixed 通常脱离普通流，sticky 在滚动阈值处贴住边界。",
   "boundary": "定位不是通用布局工具；absolute 没有合适祖先会向外寻找包含块，sticky 没有滚动空间或阈值也不会产生贴住效果。",
-  "sceneKind": "layers",
+  "sceneKind": "timeline",
   "sceneTitle": "五种定位方式寻找不同参照系",
   "actionLabel": "切换定位方式",
   "actors": [
@@ -4519,7 +4519,7 @@
     {
       "id": "result",
       "label": "当前结果",
-      "detail": "relative / absolute / fixed",
+      "detail": "static / relative / absolute / fixed / sticky",
       "icon": "spark",
       "group": "结果"
     }
@@ -4605,6 +4605,27 @@
       ],
       "values": {
         "result": "视口"
+      },
+      "activeEdgeIds": []
+    },
+    {
+      "label": "到阈值才贴住",
+      "note": "sticky 先在普通流中保留占位，滚动到 inset 阈值后才贴住滚动容器边界。",
+      "activeIds": [
+        "card",
+        "scroll",
+        "result"
+      ],
+      "doneIds": [
+        "card"
+      ],
+      "mutedIds": [
+        "container",
+        "ancestor",
+        "viewport"
+      ],
+      "values": {
+        "result": "滚动容器边界"
       },
       "activeEdgeIds": []
     }
