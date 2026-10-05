@@ -952,7 +952,7 @@
     "slug": "lockfile",
     "mechanism": "依赖清单声明允许的版本范围，锁文件记录包管理器解析后的确切版本、传递依赖和完整依赖树，安装命令可以复用这份结果。",
     "misconception": "清单和锁文件承担不同职责：清单描述想要的范围，锁文件描述这次实际选中的树；锁文件不等于安全审计，也不锁定脚本和平台差异。",
-    "demoSignature": "输入：package.json 声明 A ^1.2.0；中间：解析器从包仓库候选选 A1.3.1，并展开 B2.0.4；输出：锁文件记录完整树，另一台机器按它装出同一组包，删除或清单不同步后会重新解析，结果可能漂移。可视化：四帧展示范围、解析、写入、复现；交互：切换清单/锁文件路径观察结果。",
+    "demoSignature": "sealed-dependency-tree: 4 frames; objects=version range, registry candidates, lock capsule, two install machines; phases=range allows→resolver picks exact tree→capsule seals result→second machine reproduces; action=toggle lock presence and compare drift.",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json",
       "https://docs.npmjs.com/cli/v11/commands/npm-ci",
@@ -969,7 +969,7 @@
     "slug": "monorepo",
     "mechanism": "单体仓库把多个应用、共享包或服务放在同一代码仓库，统一管理脚本、依赖和变更，再用应用或包之间的依赖图决定受影响的构建与测试项目。",
     "misconception": "一个仓库和一个部署单元是两个维度：monorepo 可以包含多个独立服务，影响范围由依赖图决定，而不是由目录是否相邻决定。",
-    "demoSignature": "输入：同一仓库中的 web、ui、api；中间：web 依赖 ui 而 api 不依赖 ui，修改 ui 后影响集合从 1/3 变成 web+ui 的 2/3；输出：相关项目进入重建，api 跳过。可视化：四帧展示仓库容器、依赖边和影响集合；交互：点击包改动查看受影响项目。",
+    "demoSignature": "dependency-impact-orbit: 4 frames; objects=repo ring, ui package, web app, api service, affected set; phases=one repo→ui change→upstream propagation→api stays outside; action=select changed package and observe rebuild set.",
     "sourceUrls": [
       "https://docs.npmjs.com/cli/v11/using-npm/workspaces",
       "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/#workspaces",
@@ -986,7 +986,7 @@
     "slug": "environment-variable",
     "mechanism": "环境变量是进程可以按名称读取的键值对；父环境在启动新进程时复制一份配置，应用从自己的环境副本读取，父环境后续改变不会自动刷新既有进程。",
     "misconception": "环境变量不是天然安全的密钥库：服务端可由秘密管理系统注入凭据，但前端构建变量可能进入浏览器资源，暴露面取决于读取进程和产物。",
-    "demoSignature": "输入：shell 或容器以 APP_MODE=dev 创建进程；中间：进程读取并保留 dev，父环境改为 prod，旧进程仍为 dev；输出：重新启动的新进程读取 prod，旧/新结果并存。可视化：四帧展示父环境到进程的配置快照；交互：修改变量并比较重启与不重启。",
+    "demoSignature": "process-snapshot: 4 frames; objects=parent environment, old process, changed value, restarted process; phases=start with dev→parent becomes prod→new process reads prod→old and new snapshots coexist; action=change value then restart or leave old process running.",
     "sourceUrls": [
       "https://nodejs.org/api/process.html#processenv",
       "https://vite.dev/guide/env-and-mode",
@@ -1000,7 +1000,7 @@
     "slug": "source-map",
     "mechanism": "构建工具生成源映射，把生成代码的文件、行列位置对应到原始源码的位置；生成文件通过 sourceMappingURL 指向 map，浏览器调试器读取后可在原始文件上显示错误和设置断点。",
     "misconception": "源映射只提供位置对照，不会修复错误或改变正在运行的程序；map 可能包含源码路径和内容，公开发布需要单独评估。",
-    "demoSignature": "输入：生成文件 bundle.js 的 1:240；中间：sourceMappingURL 指向本次构建的 map，调试器命中映射条目；输出：跳到 src/app.ts 的 18:7，浏览器仍执行生成代码。可视化：四帧展示生成位置、map 查询、源位置和调试器高亮；交互：点击堆栈坐标在两边同步高亮。",
+    "demoSignature": "coordinate-lens: 4 frames; objects=generated bundle coordinate, sourceMappingURL, map lens, original source coordinate; phases=stack reports 1:240→map lookup→18:7 restored→debugger highlights source while bundle executes; action=toggle map availability.",
     "sourceUrls": [
       "https://tc39.es/ecma426/",
       "https://www.typescriptlang.org/tsconfig/sourceMap.html",
@@ -1017,7 +1017,7 @@
     "slug": "linter",
     "mechanism": "代码检查器先把源码解析成带位置的语法树，再按规则报告未使用变量、可疑条件等源码模式；部分诊断可自动修复，CI 或提交钩子可按严重级别设置门槛。",
     "misconception": "linter 不是格式化器，也不能证明业务逻辑正确；它能发现什么取决于规则集，关闭规则只会停止相应报告。",
-    "demoSignature": "输入：12 行源码含未使用变量 total 和 if(true)；中间：源码解析为带位置的语法树，两个规则分别命中第 3、7 行；输出：2 条诊断，关闭未使用变量规则后剩 1 条，格式化器只负责排版。可视化：四帧展示解析、规则命中和报告汇总；交互：逐条启停规则观察诊断变化。",
+    "demoSignature": "rule-scanner: 4 frames; objects=source lines, syntax structure, unused-variable rule, constant-condition rule, diagnostics; phases=read code→parse positions→rules mark lines→disable one rule and keep the other; action=toggle individual rule.",
     "sourceUrls": [
       "https://eslint.org/docs/latest/use/core-concepts/",
       "https://eslint.org/docs/latest/use/configure/rules",
@@ -1034,7 +1034,7 @@
     "slug": "formatter",
     "mechanism": "格式化器先读取代码结构，再按固定选项重新打印源码，主要改变缩进、空白、换行和引号等外观，目标是保留程序含义并减少审查排版差异。",
     "misconception": "格式化器不判断业务逻辑，也不等于 linter：linter 可以包含排版规则，但还会按其他规则报告潜在问题。格式化器、插件或解析器变化仍需要差异检查和测试。",
-    "demoSignature": "输入：一行 92 字符的 5 项数组；中间：读取结构，行宽设为 80 时触发重排，输出 4 行且元素数量与顺序不变；输出：差异主要是排版，但仍需测试验证。可视化：四帧展示输入、结构、重排与验证；交互：调整行宽查看换行变化。",
+    "demoSignature": "folding-ruler: 4 frames; objects=one-line array, width ruler, wrapped lines, item count; phases=read structure→set width→fold lines→verify five items remain; action=drag width and compare layout.",
     "sourceUrls": [
       "https://prettier.io/docs/en/why-prettier",
       "https://prettier.io/docs/en/options.html",
@@ -1050,7 +1050,7 @@
     "slug": "expression",
     "mechanism": "表达式是可以求值并产生一个值的代码片段；它能嵌入赋值、函数调用或条件判断，语句则组织动作和控制流程。求值顺序与副作用由语言规则决定。",
     "misconception": "有运算符不代表就是完整语句；表达式强调求值结果，语句本身不一定有可用返回值，打印输出也不等于函数返回值。",
-    "demoSignature": "输入：(price * 2) + tax，其中 price=10、tax=3；中间：把表达式看成树，叶子取值，10*2→20，再 20+3→23；输出：把 price 换成 12 后这次求值得到 27。可视化：四帧的表达式树自叶向根点亮；交互：改单个叶值看上层重算，并标注 * 与 × 是同一乘法。",
+    "demoSignature": "value-tree-bloom: 4 frames; objects=price/tax/constant leaves, multiply node, add root, result; phases=read leaves→multiply→add→replace price and recompute; action=change one leaf value.",
     "sourceUrls": [
       "https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html",
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
@@ -1067,7 +1067,7 @@
     "slug": "function",
     "mechanism": "函数定义的是一种可调用的行为：定义时写参数，调用时传入实参；每次调用建立一个局部调用帧，只在这一次执行中使用，函数体运行后可以把返回值交回调用处。",
     "misconception": "函数不只是可复用代码块，也不保证纯度或固定返回值；它可能读取或修改外部状态、执行 I/O，局部参数只属于本次调用。",
-    "demoSignature": "输入：total = calculate(20, 3)，函数参数为 price、count；中间：调用帧绑定 price=20、count=3，函数体求 price×count=60；输出：返回 60 给 total，调用帧弹出，栈深度 0→1→0。可视化：四帧展示调用、局部绑定、执行、返回；交互：切换读取外部状态的版本比较相同参数的结果。",
+    "demoSignature": "call-frame-elevator: 4 frames; objects=caller, argument bindings, local frame, stack meter, return token; phases=call→push frame→evaluate locally→return and pop; action=toggle pure calculation versus external-state read.",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
       "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
@@ -1085,7 +1085,7 @@
     "slug": "parameter",
     "mechanism": "函数定义时，参数（形参）是接收数据的名称；函数调用时，实参是这一次提供的具体值。语言会按位置、名称或默认值等规则完成绑定；缺少必填的实参或多给了实参时，是否报错取决于具体语言和函数定义。",
     "misconception": "参数不是类型或范围检查，也不保证值符合业务含义；缺失、默认值、多给的实参和非法值如何处理，要看具体语言的规定、函数定义声明接收哪些值，以及函数自己会不会再检查这些值。",
-    "demoSignature": "输入：定义 discount(price, rate=0.2)，调用 discount(100,0.2)；中间：price←100、rate←0.2，两个实参按位置落入调用帧；变化：调用 discount(100) 时 rate 使用默认值，改成 discount(0.2,100) 时绑定顺序也交换；输出：函数收到的值可能不符合业务含义。可视化：建议5帧展示定义、提供实参、按位置绑定、使用默认值、交换顺序；交互：省略或交换实参观察绑定结果。",
+    "demoSignature": "slot-binding: 5 frames; objects=function definition, two argument chips, price/rate slots, default marker; phases=declare slots→provide args→bind by position→use rate default→swap args and expose semantic error; action=choose full/default/swapped call.",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
       "https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html",
@@ -1102,10 +1102,11 @@
     "slug": "return-value",
     "mechanism": "执行 return 后，当前这次函数调用会结束，并把一个值交回调用方；调用方可以保存、继续运算或忽略它。",
     "misconception": "打印只显示信息；函数内部直接改外部状态是另一条路径。以 JavaScript 为例，没有显式 return 时调用结果是 undefined；其他语言按各自规则处理。",
-    "demoSignature": "输入：调用方执行 result = double(4)，函数内部先把 4×2 算成 8；中间：console.log 显示 8 但 result 仍未收到返回值，执行 return 8；输出：8 沿返回通道交给调用方。可视化：4 帧分别表现函数求值、日志支路、返回通道和调用方接收；交互：删除 return 观察 JavaScript 调用结果变为 undefined。",
+    "demoSignature": "split-output-channel: 4 frames; objects=function result, console branch, return gate, caller variable; phases=compute→log visibly→open return channel→caller receives or gets undefined without return; action=toggle return statement.",
     "sourceUrls": [
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return",
       "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-return-statement",
+      "https://developer.mozilla.org/en-US/docs/Web/API/console",
       "https://docs.python.org/3/reference/simple_stmts.html#the-return-statement",
       "https://www.typescriptlang.org/docs/handbook/2/functions.html"
     ],
