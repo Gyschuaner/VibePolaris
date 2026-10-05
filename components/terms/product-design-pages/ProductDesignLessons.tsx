@@ -48,3 +48,15 @@ export function FocusManagementLesson() {
     <div className={styles.focusState} role="status"><Cursor size={16} aria-hidden="true" /><span><strong>当前焦点：{focusLabel}</strong><br />{status}</span></div>
   </div>;
 }
+
+export function IterationLesson() {
+  const [round, setRound] = useState(0);
+  const cards = [
+    ["本轮增量", "手动 CSV", "先验证筛选和失败提示。"],
+    ["使用证据", "字段缺失 2 / 5", "真实任务暴露了下一处缺口。"],
+    ["下一轮决定", "补字段，暂缓定时", "先解决证据指出的问题。"],
+    ["稳定后扩展", "验证定时报表", "基础导出稳定后再验证新需求。"],
+  ];
+  const current = cards[round];
+  return <div className={styles.lesson} role="region" aria-label="迭代增量与证据演示"><div className={styles.lessonTop}><div><span>读者任务</span><strong>看一轮结果怎样改变下一轮</strong></div><button className={styles.reset} type="button" onClick={() => setRound(0)} aria-label="重置迭代演示"><ArrowCounterClockwise size={16} /></button></div><div className={styles.lessonControls} role="group" aria-label="迭代步骤"><button type="button" aria-pressed={round === 0} onClick={() => setRound(0)}>交付一块</button><button type="button" aria-pressed={round === 1} onClick={() => setRound(1)}>读使用证据</button><button type="button" aria-pressed={round === 2} onClick={() => setRound(2)}>决定下一轮</button><button type="button" aria-pressed={round === 3} onClick={() => setRound(3)}>稳定后扩展</button></div><div className={styles.iterationBoard}><div className={styles.iterationCard} data-active={round === 0}><small>ROUND 01</small><strong>手动 CSV</strong><p>固定字段和失败提示，交给真实任务试用。</p></div><div className={styles.iterationArrow} aria-hidden="true"><ArrowRight size={18} /></div><div className={styles.iterationCard} data-active={round > 0}><small>{current[0]}</small><strong>{current[1]}</strong><p>{current[2]}</p></div></div><div className={styles.iterationDecision} role="status"><strong>{round === 0 ? "先交付，再收集证据" : round === 1 ? "证据进入下一轮" : round === 2 ? "先修缺口，再决定是否扩展" : "稳定后才值得验证新需求"}</strong><br />{round === 0 ? "一轮要有可运行结果，不能只留下待办清单。" : round === 1 ? "把失败位置写成下一轮的范围，别把猜测当结论。" : round === 2 ? "先把字段问题解决，定时报表仍然只是待验证的假设。" : "迭代不是无限加功能；当目标已达成或证据不支持继续，就停下来。"}</div></div>;
+}

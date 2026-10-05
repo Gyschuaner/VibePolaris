@@ -1,7 +1,7 @@
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
-import { focusManagementSources } from "@/lib/product-design-sources";
-import { FocusManagementLesson } from "./ProductDesignLessons";
+import { focusManagementSources, iterationSources } from "@/lib/product-design-sources";
+import { FocusManagementLesson, IterationLesson } from "./ProductDesignLessons";
 import styles from "./ProductDesignConcepts.module.css";
 
 const focusSections: [string, string][] = [
@@ -30,6 +30,35 @@ export function FocusManagementTermPage() {
       <p id="focus-visible" className="vp-citation-target">读者需要看见当前焦点。<Cite id="focus-visible" sources={focusManagementSources} />清除浏览器默认轮廓后，应提供足够明显的替代样式；颜色不能是唯一线索，边框、底色或形状也要在主题切换后保持可辨认。</p>
       <p>排查焦点问题时，可以先用键盘走一遍：入口是否按预期出现？打开弹层后有没有跳到背景？连续 Tab 能否完成任务？关闭后是否回到原来的触发点？这些问题比“页面看起来有没有焦点圈”更接近真实使用。</p>
       <p>焦点管理不是给所有元素加 <code>tabindex</code>。优先使用原生按钮、链接和表单控件；只有需要脚本把焦点送到一个非交互容器时，才考虑 <code>tabindex=-1</code>，并为这次移动写清楚原因。</p>
+    </ArticleSection>
+  </Article>;
+}
+
+const iterationSections: [string, string][] = [
+  ["iteration-definition", "先把目标切成可验证的一块"],
+  ["iteration-evidence", "结果要回到下一轮"],
+  ["iteration-boundary", "迭代也需要停止条件"],
+];
+
+function IterationHero() {
+  return <figure className={styles.miniHero} aria-label="迭代把增量交付、证据和下一轮决定连起来"><div className={styles.miniTop}><span>交付一小块，读结果，再决定</span><strong>ITERATE · 02</strong></div><div className={styles.iterationMini}><div className={styles.iterationStep}><i /><strong>交付</strong><small>可运行增量</small></div><div className={styles.iterationStep}><i /><strong>观察</strong><small>真实任务证据</small></div><div className={styles.iterationStep}><i /><strong>调整</strong><small>下一轮范围</small></div></div><p className={styles.miniCaption}>每轮改变的是范围和决定，目标仍由证据校准。</p></figure>;
+}
+
+export function IterationTermPage() {
+  return <Article slug="iteration" title="迭代" subtitle="Iteration · 用一轮结果决定下一轮" sources={iterationSources} sections={iterationSections} hero={<IterationHero />} intro={<>“等全部做完再看”会把错误藏到最后。<strong>迭代是在有限范围内交付可运行结果，再用真实使用、验收或数据决定下一步</strong>；它切的是风险和学习路径，不是把任务随意切成几段。</>}>
+    <ArticleSection id="iteration-definition" title="先把目标切成可验证的一块">
+      <p id="iteration-service" className="vp-citation-target">服务不会在第一次发布后就自动完成，早些交付一块能工作的范围，才能尽早看到真实用户卡在哪里。<Cite id="iteration-service" sources={iterationSources} />一轮开始前先写清本轮要解决的任务、包含哪些范围，以及什么结果算完成。</p>
+      <p id="iteration-increment" className="vp-citation-target">Scrum 把每轮产生的可用结果叫作 Increment；它必须满足团队约定的完成标准，才能成为下一次检查的对象。<Cite id="iteration-increment" sources={iterationSources} />所以“把代码拆成三个分支”不等于完成三轮迭代，分支里还得有读者能验证的行为。</p>
+    </ArticleSection>
+    <ArticleSection id="iteration-evidence" title="结果要回到下一轮">
+      <p id="iteration-research" className="vp-citation-target">研究也可以一轮一轮做：先用小范围任务确认问题，再根据观察到的停顿、失败或遗漏调整下一轮。<Cite id="iteration-research" sources={iterationSources} />这比项目末尾才安排一次“大而全”的验证更容易把问题留在可修改的范围里。</p>
+      <IterationLesson />
+      <p id="iteration-inspect" className="vp-citation-target">检查结果不是装饰性的复盘。<Cite id="iteration-inspect" sources={iterationSources} />如果用户能完成目标，就可以保留这一块；如果只在某个字段失败，就把下一轮收窄到这个缺口；如果证据不支持原假设，也应允许停止。</p>
+    </ArticleSection>
+    <ArticleSection id="iteration-boundary" title="迭代也需要停止条件">
+      <p id="iteration-loop" className="vp-citation-target">迭代循环的终点不是“总有下一个版本”，而是本轮目标达到、风险已经可接受，或继续投入不再有新的证据。<Cite id="iteration-loop" sources={iterationSources} />每轮都把基本错误处理推给未来，只是在延期，不是在迭代。</p>
+      <p id="iteration-success" className="vp-citation-target">先定义成功的观察方式，才能知道下一轮要改什么。<Cite id="iteration-success" sources={iterationSources} />例如“能导出”还不够，至少要说明哪些字段、失败如何提示、用户是否能在规定时间内完成。</p>
+      <ArticleAside title="没有证据时，不要把忙碌当成迭代"><p>改了颜色、换了按钮文案、又开了一张任务卡，都可能只是活动。只有当范围、结果和下一步决定之间有可追溯的证据，读者才知道这一轮学到了什么。</p></ArticleAside>
     </ArticleSection>
   </Article>;
 }
