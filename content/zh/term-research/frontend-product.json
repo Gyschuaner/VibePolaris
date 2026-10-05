@@ -267,23 +267,43 @@
     "rewriteRisk": "high",
     "nearDuplicates": ["cascade", "css-selector", "css"]
   },
-  {
+    {
     "slug": "flexbox",
-    "mechanism": "Flex 容器沿主轴收集项目，计算 flex base size 与剩余空间，再按 grow/shrink 分配并在交叉轴对齐。",
-    "misconception": "justify-content 不固定等于水平对齐，方向由 flex-direction 决定；Flex 也不是二维网格。",
-    "demoSignature": "建议 5 帧：三个项目在可拖宽的 flex 容器中显示 base、grow、shrink；扩宽时剩余空间化成彩色条并按比例分配，缩窄时负空间反向压缩；切换 row/column，主轴箭头旋转且同一套分配过程重播。",
-    "sourceUrls": ["https://www.w3.org/TR/css-flexbox-1/"],
+    "mechanism": "Flex 容器先沿主轴收集直接子项，计算 flex-basis 与正/负自由空间，再按 grow 或 shrink 分配；flex-wrap 开启后分成独立 flex line，交叉轴负责对齐。",
+    "misconception": "Flexbox 一次处理一个方向；justify-content 跟着主轴走，换行后的多行不会像 Grid 一样共享列轨道，视觉 order 也不会改 DOM 与键盘顺序。",
+    "demoSignature": "6帧｜对象：480/300px 主轴、A/B/C 三个项目、basis/grow/shrink/free-space 账本、wrap 与 column 分支｜交互：推进基准→比例→grow→负空间→换行→主轴转向，并在工作台切换容器宽度与 wrap｜变化：+120px→1:2:1→150/180/150→-60px 收缩→两条 flex line→垂直主轴｜结果：读者能把项目尺寸变化归因于主轴空间结算，而不是记“万能居中口诀”。",
+    "sourceUrls": [
+      "https://www.w3.org/TR/css-flexbox-1/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Basic_concepts",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Controlling_flex_item_ratios",
+      "https://web.dev/learn/css/flexbox/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/flex"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["css-grid", "responsive", "box-model"]
+    "nearDuplicates": [
+      "css-grid",
+      "breakpoint",
+      "box-model"
+    ]
   },
-  {
+    {
     "slug": "css-grid",
-    "mechanism": "Grid 先生成显式与隐式轨道，再按放置算法安排项目，并通过 fr、minmax 和对齐规则分配行列空间。",
-    "misconception": "Grid 不是固定 12 列系统，也不等于把 Flex 换成二维；自动放置和隐式轨道会影响结果。",
-    "demoSignature": "建议 5 帧：轨道线先画出 3×2 网格，用户把五张不同跨度卡片拖入；普通 auto-flow 留下空洞，打开 dense 后后续小卡回填；再缩窄容器，minmax 触发列数减少，卡片按轨道重新排布。",
-    "sourceUrls": ["https://www.w3.org/TR/css-grid-2/"],
+    "mechanism": "Grid 先建立显式的行列轨道，再按项目的放置顺序与跨度结算 grid area；轨道不足时生成隐式轨道，minmax/fr 再决定每条轨道如何分享空间。",
+    "misconception": "Grid 不是固定 12 列模板，也不是把 Flexbox 换成二维版；auto-placement、跨轨道、dense、隐式轨道和轨道下限都会改变结果。",
+    "demoSignature": "6帧｜对象：3×2 轨道、跨两列的 A/B、普通 row 的空格、dense 回填、隐式第三行、minmax 窄屏两列｜交互：逐帧建立轨道→放置→跨列→dense→新增卡片→缩窄容器｜变化：空格出现并回填、显式行变成 2+1 auto、3 列变 2 列｜结果：读者能把卡片位置归因于轨道与放置算法，而不是背“12 列万能模板”。",
+    "sourceUrls": [
+      "https://www.w3.org/TR/css-grid-2/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Basic_concepts",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Auto-placement",
+      "https://web.dev/learn/css/grid?hl=en",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["flexbox", "responsive", "positioning"]
+    "nearDuplicates": [
+      "flexbox",
+      "breakpoint",
+      "positioning"
+    ]
   },
   {
     "slug": "positioning",
@@ -294,23 +314,44 @@
     "rewriteRisk": "high",
     "nearDuplicates": ["box-model", "css-grid", "css"]
   },
-  {
+    {
     "slug": "breakpoint",
-    "mechanism": "断点是媒体条件改变布局规则的临界值，通常通过连续缩放观察内容首次拥挤、溢出或操作距离失效的位置确定。",
-    "misconception": "不是 iPhone/Android 型号表，也不是 640/768/1024 三个固定答案。",
-    "demoSignature": "建议 5 帧：拖动页面宽度，标题换行、按钮相撞、卡片小于可读宽度依次出现红色故障标记；用户在首个故障前一像素钉下断点；新布局规则接管后标记消失，断点来源是内容变化而非设备型号。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"],
+    "mechanism": "断点是 media feature 条件改变布局规则的临界值；应从内容第一次拥挤、溢出或操作距离失效的位置反推，并在失效前切换。",
+    "misconception": "断点不是 iPhone/Android 型号表，也不是一套固定的 640/768/1024 答案；宽度只是媒体特征之一，组件还可能应看自己的容器。",
+    "demoSignature": "6帧｜对象：导航、搜索、操作项、内容压力尺与 680px 候选线｜交互：1024 舒展→840 紧张→640 首次冲突→680 提前切换→520 紧凑菜单→360 单列动作｜变化：内容先失效、规则后切换、同一 HTML 保持不变｜结果：读者能从内容证据决定断点，而不是按设备名字抄数字。",
+    "sourceUrls": [
+      "https://web.dev/articles/responsive-web-design-basics",
+      "https://web.dev/learn/design/media-queries",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries",
+      "https://www.w3.org/TR/mediaqueries-5/"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["media-query", "responsive", "adaptive-layout"]
+    "nearDuplicates": [
+      "media-query",
+      "responsive",
+      "adaptive-layout"
+    ]
   },
   {
     "slug": "media-query",
-    "mechanism": "用户代理持续评估 width、orientation、hover、prefers-reduced-motion 等媒体特征，条件真值变化时重新应用对应 CSS 规则。",
-    "misconception": "媒体查询不只检测屏幕宽度，也不直接创建布局；它只决定哪些样式规则参与计算。",
-    "demoSignature": "建议 5 帧：控制台有宽度、hover 能力、reduced-motion 三个输入；用户逐项切换，三张 @media 规则卡独立亮灭；页面列数、悬停提示和动画幅度分别变化，最后组合条件演示多项媒体特征同时成立。",
-    "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/"],
-    "rewriteRisk": "medium",
-    "nearDuplicates": ["breakpoint", "reduced-motion", "responsive"]
+    "mechanism": "媒体查询把 viewport、输入能力和用户偏好变成可组合的条件；条件命中时，已有 CSS 声明加入层叠，条件失效时回到基础规则。",
+    "misconception": "媒体查询不只等于屏幕宽度，也不负责替你排版；它只决定哪些 CSS 声明参与计算，布局仍由命中的属性完成。",
+    "demoSignature": "6帧｜对象：宽度、hover 能力、reduced-motion 与三条独立 @media 规则｜交互：860 基础→560 单列→无 hover 常驻提示→减少动效→三条件叠加→恢复宽度但保留无 hover｜变化：条件逐个命中、规则各管一件事、同一 HTML 不搬家｜结果：读者能看出媒体查询是环境开关，不是设备型号表。",
+    "sourceUrls": [
+      "https://www.w3.org/TR/mediaqueries-5/",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover",
+      "https://web.dev/learn/design/media-queries"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "breakpoint",
+      "responsive",
+      "reduced-motion"
+    ]
   },
   {
     "slug": "event",
@@ -404,21 +445,41 @@
   },
   {
     "slug": "code-splitting",
-    "mechanism": "构建器把动态 import 或入口边界切成独立 chunk，运行时只在代码路径命中时请求并执行相应模块。",
-    "misconception": "拆包不等于删除代码；分得过细会增加请求、加载状态和缓存协调成本。",
-    "demoSignature": "建议 5 帧：网络瀑布首次只出现 home.js，页面首页随即可用；用户点击编辑器，editor.js 才从路由边界下载并挂载；拖动分包粒度滑块，首包大小、请求数、点击后的等待三项指标同步变化，展示过粗与过碎两端代价。",
-    "sourceUrls": ["https://webpack.js.org/guides/code-splitting/"],
+    "mechanism": "构建器按入口、路由或动态 import 画出异步边界，把代码变成可独立请求的 chunk；用户走到边界后才下载并执行对应模块。",
+    "misconception": "代码分割不会删除代码，也不保证 chunk 越多越快；过度拆分会增加请求、调度和第一次交互的等待。",
+    "demoSignature": "6帧｜对象：首页入口、editor.js、动态边界、网络瀑布与缓存｜交互：整包先到→画出路由边界→点击才请求→模块执行→拆得太碎→再次打开命中缓存｜变化：下载时机、请求数、loading/ready、缓存状态｜结果：读者能看到分割优化的是时机与路径，而不是把代码变没。",
+    "sourceUrls": [
+      "https://webpack.js.org/guides/code-splitting/",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import",
+      "https://web.dev/articles/reduce-javascript-payloads-with-code-splitting",
+      "https://nextjs.org/docs/app/guides/lazy-loading",
+      "https://web.dev/articles/optimize-long-tasks"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["lazy-loading", "bundler", "routing"]
+    "nearDuplicates": [
+      "lazy-loading",
+      "bundler",
+      "routing"
+    ]
   },
   {
     "slug": "lazy-loading",
-    "mechanism": "资源请求被推迟到视口接近、路由进入或用户操作发生时；占位尺寸在真实资源到达前维持布局。",
-    "misconception": "首屏关键资源不应一律懒加载，延迟 LCP 图片反而变慢；懒加载也必须处理失败和布局占位。",
-    "demoSignature": "建议 5 帧：长页上有视口和提前 300px 的观察线；用户滚动，图片卡越过观察线才进入网络瀑布，抵达视口前完成解码；关闭预留宽高后重播，后续文字被图片顶开，CLS 位移轨迹清楚标出。",
-    "sourceUrls": ["https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading"],
+    "mechanism": "运行时根据资源距离视口或即将发生的使用动作决定何时请求；占位先保住尺寸，资源经历 deferred、loading、ready 或 error 状态。",
+    "misconception": "懒加载不等于把所有资源一律延后，也不保证精确的请求时刻；首屏内容和关键操作要按优先级正常到达，非首屏资源还要有失败回退。",
+    "demoSignature": "6帧｜对象：视口、观察阈值、占位盒、资源请求与失败回退｜交互：1200px 外→300px 内→相交请求→解码完成→失败重试→下一张继续等待｜变化：deferred/loading/ready/error、盒子尺寸稳定｜结果：读者能分清“触发请求”和“资源已经可用”。",
+    "sourceUrls": [
+      "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API",
+      "https://web.dev/articles/browser-level-image-lazy-loading",
+      "https://nextjs.org/docs/app/guides/lazy-loading",
+      "https://html.spec.whatwg.org/multipage/urls.html#lazy-loading-attributes"
+    ],
     "rewriteRisk": "high",
-    "nearDuplicates": ["code-splitting", "loading-state", "visual-hierarchy"]
+    "nearDuplicates": [
+      "code-splitting",
+      "image",
+      "loading-state"
+    ]
   },
   {
     "slug": "hydration",
@@ -900,5 +961,81 @@
     "sourceUrls": ["https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion", "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html"],
     "rewriteRisk": "high",
     "nearDuplicates": ["microinteraction", "media-query", "a11y"]
+  },
+  {
+    "slug": "dockerfile",
+    "mechanism": "Dockerfile 是按顺序执行的构建指令集合：FROM 选基座，COPY/ADD 把 context 中的输入带进来，RUN 产生中间结果，后续指令再从前一层继续；构建器用指令和输入计算缓存，最终把层组合成镜像。",
+    "misconception": "Dockerfile 不是一份每次都从零执行的 shell 脚本，也不等于正在运行的容器。源码改动、依赖清单改动和构建工具改动会让不同层失效；多阶段构建和 .dockerignore 还分别控制运行时边界与发送给构建器的输入。",
+    "demoSignature": "layers: 6 frames; actors=Dockerfile/构建上下文/缓存层/runtime 镜像/构建阶段; phases=FROM 基座→依赖清单→安装层命中→源码层重建→多阶段裁剪→context 过滤; action=改变一个输入",
+    "sourceUrls": [
+      "https://docs.docker.com/reference/dockerfile/",
+      "https://docs.docker.com/build/cache/",
+      "https://docs.docker.com/build/building/multi-stage/",
+      "https://docs.docker.com/build/concepts/context/",
+      "https://docs.docker.com/build/cache/optimize/"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "container-image",
+      "build-tool",
+      "dependency"
+    ]
+  },
+  {
+    "slug": "infrastructure-as-code",
+    "mechanism": "Infrastructure as Code 把基础设施资源、依赖和参数写成配置；工具读取配置、当前 state 与提供商现实，先生成 plan，再在批准后调用 API 执行，并把资源映射记录回 state。",
+    "misconception": "IaC 不是把点击操作换成一串无脑脚本，也不保证 apply 一定安全。plan 只是执行前的变更预览，state 需要保护，远端手工修改会造成漂移，权限和秘密仍要单独治理。",
+    "demoSignature": "pipeline: 6 frames; actors=声明配置/plan/提供商/真实资源/state/操作人; phases=写目标→预览 diff→展开依赖→批准 apply→记录映射→发现漂移; action=改变一个副本数",
+    "sourceUrls": [
+      "https://developer.hashicorp.com/terraform/intro",
+      "https://developer.hashicorp.com/terraform/language/resources",
+      "https://developer.hashicorp.com/terraform/cli/commands/plan",
+      "https://developer.hashicorp.com/terraform/language/state",
+      "https://developer.hashicorp.com/terraform/language/modules"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "dockerfile",
+      "container-image",
+      "preview-deployment"
+    ]
+  },
+  {
+    "slug": "cdn",
+    "mechanism": "CDN 在靠近用户的边缘节点保存可复用响应；请求先按缓存键查找副本，再依据新鲜度和验证器决定直接命中、回源取回或向源站再验证，发布时可以用 purge 或版本化 URL 改变缓存边界。",
+    "misconception": "CDN 不是每次都命中的更快源站，也不会自动判断内容是否适合共享。MISS、过期、304 和完整 200 是不同路径，带身份或实时数据的响应还可能不应该进入共享缓存。",
+    "demoSignature": "network: 6 frames; actors=浏览器/边缘缓存/源站/响应头/缓存键/发布动作; phases=到边缘→HIT→MISS 回源→TTL→ETag 304→版本键; action=换一个资产 URL",
+    "sourceUrls": [
+      "https://developers.cloudflare.com/cache/",
+      "https://developers.cloudflare.com/cache/how-to/purge-cache/",
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+      "https://www.rfc-editor.org/rfc/rfc9111.html",
+      "https://web.dev/articles/http-cache"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "cache-control",
+      "http-header",
+      "preview-deployment"
+    ]
+  },
+  {
+    "slug": "visual-regression-testing",
+    "mechanism": "视觉回归测试在受控的视口、浏览器和数据下生成候选截图，与已确认的 baseline 做像素或区域比较；阈值过滤微小渲染噪声，review 再决定差异是有意变化、需要修复还是需要调整测试环境。",
+    "misconception": "截图 diff 不是完整的功能测试，也不是把所有差异自动判成 bug。字体、DPR、动画、异步数据和浏览器版本会制造环境差异；更新 baseline 也不能跳过设计、无障碍和响应式审查。",
+    "demoSignature": "compare: 6 frames; actors=渲染环境/baseline/candidate/diff/reviewer/矩阵; phases=锁环境→保存参照→生成候选→计算差异→审查意图→窄屏与 reduced-motion; action=制造一次布局变化",
+    "sourceUrls": [
+      "https://playwright.dev/docs/test-snapshots",
+      "https://storybook.js.org/docs/writing-tests/visual-testing",
+      "https://webdriver.io/docs/visual-testing/",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio",
+      "https://www.chromatic.com/docs/"
+    ],
+    "rewriteRisk": "high",
+    "nearDuplicates": [
+      "regression-test",
+      "e2e-test",
+      "usability-testing"
+    ]
   }
 ]
