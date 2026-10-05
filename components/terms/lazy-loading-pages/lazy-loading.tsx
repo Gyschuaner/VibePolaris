@@ -35,7 +35,7 @@ export function LazyLoadingLesson() {
       <div className={styles.lazyLoadingLabPanel} data-active={isLoading || isReady || isError}>
         <div className={styles.lazyLoadingLabel}><ImageSquare size={16} aria-hidden="true" /><span>资源结果</span></div>
         <h3>{isFar || isNear ? "占位保留" : isLoading ? "loading" : isReady ? "ready" : "error · retry"}</h3>
-        <div className={styles.lazyLoadingLabRows}><div className={styles.lazyLoadingLabRow} data-active={isLoading}><code>network</code><strong>{isLoading ? "请求中" : isFar || isNear ? "未请求" : "完成"}</strong></div><div className={styles.lazyLoadingLabRow} data-active={isReady}><code>decode</code><strong>{isReady ? "完成" : "等待"}</strong></div><div className={styles.lazyLoadingLabRow} data-active={isError}><code>fallback</code><strong>{isError ? "可重试" : "—"}</strong></div></div>
+        <div className={styles.lazyLoadingLabRows}><div className={styles.lazyLoadingLabRow} data-active={isLoading || isError}><code>network</code><strong>{isError ? "失败" : isLoading ? "请求中" : isFar || isNear ? "未请求" : "完成"}</strong></div><div className={styles.lazyLoadingLabRow} data-active={isReady}><code>decode</code><strong>{isReady ? "完成" : "等待"}</strong></div><div className={styles.lazyLoadingLabRow} data-active={isError}><code>fallback</code><strong>{isError ? "可重试" : "—"}</strong></div></div>
         <small>资源换入原位置，失败回到明确的替代路径；页面不应该因为延迟而丢掉语义。</small>
       </div>
     </div>
