@@ -47,6 +47,15 @@ import { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
 import { HmrTermPage } from "./ai-stack-pages/hmr";
 import { DependencyTermPage } from "./ai-stack-pages/dependency";
 import { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
+import { TransformerTermPage } from "./ai-stack-pages/transformer";
+import { AttentionTermPage } from "./ai-stack-pages/attention";
+import { InferenceTermPage } from "./ai-stack-pages/inference";
+import { PretrainingTermPage } from "./ai-stack-pages/pretraining";
+import { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
+import { AgentWorkflowTermPage } from "./ai-stack-pages/agent-workflow";
+import { BackpressureTermPage } from "./ai-stack-pages/backpressure";
+import { DeadLetterQueueTermPage } from "./ai-stack-pages/dead-letter-queue";
+import { EventualConsistencyTermPage } from "./ai-stack-pages/eventual-consistency";
 export { ContainerImageTermPage } from "./ai-stack-pages/container-image";
 export { ServiceDiscoveryTermPage } from "./ai-stack-pages/service-discovery";
 export { ObservabilityTermPage } from "./ai-stack-pages/observability";
@@ -96,6 +105,15 @@ export { HotReloadTermPage } from "./ai-stack-pages/hot-reload";
 export { HmrTermPage } from "./ai-stack-pages/hmr";
 export { DependencyTermPage } from "./ai-stack-pages/dependency";
 export { SemanticVersioningTermPage } from "./ai-stack-pages/semantic-versioning";
+export { TransformerTermPage } from "./ai-stack-pages/transformer";
+export { AttentionTermPage } from "./ai-stack-pages/attention";
+export { InferenceTermPage } from "./ai-stack-pages/inference";
+export { PretrainingTermPage } from "./ai-stack-pages/pretraining";
+export { KvCacheTermPage } from "./ai-stack-pages/kv-cache";
+export { AgentWorkflowTermPage } from "./ai-stack-pages/agent-workflow";
+export { BackpressureTermPage } from "./ai-stack-pages/backpressure";
+export { DeadLetterQueueTermPage } from "./ai-stack-pages/dead-letter-queue";
+export { EventualConsistencyTermPage } from "./ai-stack-pages/eventual-consistency";
 
 export const aiStackArticlePages = {
   "container-image": ContainerImageTermPage,
@@ -147,4 +165,13 @@ export const aiStackArticlePages = {
   hmr: HmrTermPage,
   dependency: DependencyTermPage,
   "semantic-versioning": SemanticVersioningTermPage,
+  transformer: TransformerTermPage,
+  attention: AttentionTermPage,
+  inference: InferenceTermPage,
+  pretraining: PretrainingTermPage,
+  "kv-cache": KvCacheTermPage,
+  "agent-workflow": AgentWorkflowTermPage,
+  backpressure: BackpressureTermPage,
+  "dead-letter-queue": DeadLetterQueueTermPage,
+  "eventual-consistency": EventualConsistencyTermPage,
 } as const;

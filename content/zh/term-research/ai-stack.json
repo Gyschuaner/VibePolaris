@@ -1677,5 +1677,194 @@
       "token",
       "context"
     ]
+  },
+  {
+    "slug": "transformer",
+    "mechanism": "Transformer 让序列位置通过多头自注意力交换信息，再用逐位置前馈网络、残差连接和层归一化连续更新表示；多层堆叠后交给具体任务头读取。",
+    "misconception": "“Transformer”是计算架构家族，不是一个固定模型或事实数据库；注意力高亮、层数和生成流畅度都不能单独证明答案正确。",
+    "demoSignature": "句子“小猫坐在窗边，它看见雨”先以六张 token 卡保留位置，再高亮“它↔小猫、看见↔雨”，随后显示逐位置的角色/动作/场景表示；切换为小狗或拿掉主语，关系与边界提示同步变化。",
+    "sourceUrls": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.TransformerEncoder.html",
+      "https://huggingface.co/docs/transformers/main/en/index",
+      "https://huggingface.co/docs/hub/en/transformers"
+    ],
+    "rewriteRisk": "先把“位置交换信息—逐位置改写—层层堆叠”讲成可观察动作，再拆开 encoder、decoder、权重和任务头；避免把注意力图当成思维链或事实证明。",
+    "nearDuplicates": [
+      "attention",
+      "llm",
+      "context-window",
+      "tokenization"
+    ]
+  },
+  {
+    "slug": "attention",
+    "mechanism": "注意力用 Query 与 Key 的兼容性产生权重，再对 Value 做加权汇总；多头在不同投影子空间并行取数，最后把结果拼接并投影。",
+    "misconception": "注意力权重是计算中的取数信号，不是模型思维链、因果解释或事实证明；mask 和缺失 key 会直接改变可见范围。",
+    "demoSignature": "点单场景中 Query“查无糖饮品”进入菜单 Key/Value 货架，比较三张卡的权重，再按两个 head 分别看口味和价格；遮掉“无糖”键后显示没有证据可取回。",
+    "sourceUrls": [
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/queries-keys-values.html",
+      "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+      "https://arxiv.org/abs/1706.03762",
+      "https://docs.pytorch.org/docs/stable/generated/torch.nn.modules.activation.MultiheadAttention.html",
+      "https://www.tensorflow.org/api_docs/python/tf/keras/layers/MultiHeadAttention"
+    ],
+    "rewriteRisk": "用 Q/K/V 的真实信息流组织正文，明确权重、mask、head 和输出的边界；避免把热力图写成解释器或事实证据。",
+    "nearDuplicates": [
+      "transformer",
+      "context-window",
+      "tokenization"
+    ]
+  },
+  {
+    "slug": "inference",
+    "mechanism": "推理用固定权重接收一次输入，经过预处理与前向计算；对生成模型，先完成 prefill，再逐 token decode，直到结束标记、长度上限、取消或错误等停止条件。",
+    "misconception": "推理不是训练的别名，也不是“模型已经知道答案”的证明；流式输出、首 token 速度和 eval 状态都需要单独检查，缺失输入不会被计算自动补齐。",
+    "demoSignature": "客服请求“说明订单 A17 的退款条件”进入输入台；中间先显示整段 prefill，再显示逐 token decode 与首 token/间隔节奏；切换为缺订单号或忘记 eval() 时显示未完成核验分支。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/pipeline_tutorial",
+      "https://huggingface.co/docs/transformers/main_classes/pipelines",
+      "https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html",
+      "https://docs.nvidia.com/dynamo/v1.2.0/design-docs/disaggregated-serving",
+      "https://docs.nvidia.com/tensorrt-llm/index.html?ncid=no-ncid"
+    ],
+    "rewriteRisk": "先把一次请求中输入、预处理、prefill、decode 和停止条件讲成可观察的阶段，再说明权重只读、eval 与事实核验边界；避免把速度或流畅度写成正确性。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "streaming-output",
+      "context-window"
+    ]
+  },
+  {
+    "slug": "pretraining",
+    "mechanism": "预训练从大规模语料切出 token，依据自回归或掩码等目标计算预测损失，再通过梯度更新参数；反复 batch 后形成可供微调和推理复用的模型起点。",
+    "misconception": "自监督不是没有目标，低训练损失也不是事实证明；预训练目标、数据时效和语料偏差会一起进入参数，预训练、微调和推理必须分开。",
+    "demoSignature": "校对台把“退款需在七日内申请”切成 token；切换下一个 token/掩码目标，显示目标、预测分布、cross-entropy loss 和参数刻度小步移动；拿走标签或混入过时规则时保留无损失/低损失但不可靠的分支。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/en/tasks/language_modeling",
+      "https://docs.pytorch.org/docs/2.9/generated/torch.nn.CrossEntropyLoss.html",
+      "https://arxiv.org/abs/1810.04805",
+      "https://github.com/google-research/bert/blob/master/README.md",
+      "https://arxiv.org/abs/2005.14165"
+    ],
+    "rewriteRisk": "正文要把自监督目标、损失、梯度和参数更新讲出中间步骤，同时明确语料时效、目标边界和预训练与微调/推理的区别，避免把“读过很多文本”写成背诵事实。",
+    "nearDuplicates": [
+      "transformer",
+      "attention",
+      "fine-tuning",
+      "inference",
+      "language-model"
+    ]
+  },
+  {
+    "slug": "kv-cache",
+    "mechanism": "KV cache 保存自回归注意力对过去 token 计算出的 key/value 状态；后续 decode 带来新 query，服务可以按相同前缀和 token blocks 取回旧状态，并在容量不足时驱逐或跨 GPU/CPU/disk 层级搬运。",
+    "misconception": "KV cache 不是答案库、模型权重或事实记忆；命中依赖具体前缀、位置与运行条件，容量、block、量化、offload 和路由会改变性能收益。",
+    "demoSignature": "前缀“系统：你是客服。用户：”第一次写入 K/V 抽屉；下一步只带新的 Q 并命中第一 block；切换“你是销售”或塞满 GPU 时显示未命中、淘汰和重新计算。",
+    "sourceUrls": [
+      "https://huggingface.co/docs/transformers/en/cache_explanation",
+      "https://huggingface.co/docs/transformers/kv_cache",
+      "https://docs.vllm.ai/en/latest/design/paged_attention/",
+      "https://docs.nvidia.com/dynamo/dev/reference/glossary",
+      "https://docs.nvidia.com/dynamo/latest/kubernetes/kv-cache-offloading/overview"
+    ],
+    "rewriteRisk": "正文要把 K/V 中间状态、新 Q、prefix overlap、block 管理和分层容量写出因果关系，明确缓存只优化推理计算，避免把命中写成答案正确或跨请求共享事实。",
+    "nearDuplicates": [
+      "attention",
+      "inference",
+      "transformer",
+      "context-window",
+      "prompt-caching"
+    ]
+  },
+  {
+    "slug": "agent-workflow",
+    "mechanism": "智能体工作流把请求、校验、路由、执行和验收写成显式节点与状态转移；路由可以由代码决定，也可以让模型提出选择，但 guardrail、工具权限和终态由应用继续承接。",
+    "misconception": "工作流不是把多个模型串成聊天链，也不是一段系统提示词；它不能消除节点内的模型不确定性，必须把 blocked、retry、needs-human 与 done 分开记录。",
+    "demoSignature": "退款单 A17 沿请求→闸门→路由→账单专家→验收五帧推进；切换代码路由/模型路由只改变“谁提出下一步”，切换校验通过/失败则分别进入 done 或 blocked，动画保留工具副作用尚未发生的边界。",
+    "sourceUrls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://openai.github.io/openai-agents-python/quickstart/",
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://openai.github.io/openai-agents-python/handoffs/"
+    ],
+    "rewriteRisk": "正文要用一张可追踪的状态图讲清节点、路由拥有者、guardrail、handoff 和终态，区分代码编排与模型编排；避免把多智能体链、提示词或 trace 误写成可靠性保证。",
+    "nearDuplicates": [
+      "agent-orchestration",
+      "agent-loop",
+      "plan-and-execute",
+      "handoff",
+      "guardrail"
+    ]
+  },
+  {
+    "slug": "backpressure",
+    "mechanism": "背压让下游把可用容量或 demand 反向传给上游；生产者在有额度时继续提交，缓冲接近上限时暂停或减速，容量恢复后再排空。",
+    "misconception": "背压不是无限缓存、限流或静默丢弃；它通常用等待和吞吐换有界资源。生产者不尊重信号、下游不恢复或重试反复注入时，背压也会进入停滞或新的堆积。",
+    "demoSignature": "生产者 6 chunks/s 经 4 格 buffer 送往 2 chunks/s 消费者；五帧展示水位上涨、capacity=0、压力回传、下游排空和监控记录；工作台切换“传回压力/丢弃超额”呈现 paused 与 shed 的数据代价。",
+    "sourceUrls": [
+      "https://www.reactive-streams.org/",
+      "https://docs.ray.io/en/latest/data/data-internals.html",
+      "https://docs.ray.io/en/latest/data/monitoring-your-workload.html",
+      "https://docs.cloud.google.com/architecture/framework/reliability/graceful-degradation",
+      "https://aws.amazon.com/builders-library/avoiding-overload-in-distributed-systems-by-putting-the-smaller-service-in-control/",
+      "https://docs.cloud.google.com/tasks/docs/manage-cloud-task-scaling"
+    ],
+    "rewriteRisk": "正文要把数据方向与容量信号方向画反向，写清有界缓冲、demand、暂停、恢复和 load shedding 的区别；避免把任何排队、限流或失败重试都称为背压。",
+    "nearDuplicates": [
+      "queue",
+      "rate-limiting",
+      "retry",
+      "streaming-output",
+      "inference",
+      "agent-workflow"
+    ]
+  },
+  {
+    "slug": "dead-letter-queue",
+    "mechanism": "死信队列在消息超过最大投递次数、无法确认或满足失败条件后，把消息从主队列移到隔离支路；DLQ 保留消息本体、原因、次数与时间，后续由调查者决定修复、redrive 或放弃。",
+    "misconception": "DLQ 不是垃圾桶、成功标记或自动修复器；它不替业务解决幂等、顺序、权限、保留期和重复副作用，redrive 也可能把根因再次送回死信区。",
+    "demoSignature": "bad-json 从主队列进入消费者，经历 attempt 1/2/3 后走 branch 进入 DLQ；五帧展示主路径继续、原因保留、调查证据和修复后 redrive；工作台切换正常/坏消息与只调查/修复重放，分别得到 acked、quarantined、fixed→redrive。",
+    "sourceUrls": [
+      "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+      "https://docs.cloud.google.com/pubsub/docs/handling-failures",
+      "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues",
+      "https://docs.aws.amazon.com/sns/latest/dg/sns-dead-letter-queues.html",
+      "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-message-loss-and-duplicates"
+    ],
+    "rewriteRisk": "正文要把 retry、dead-letter、inspect 和 redrive 分成四个动作，写清保留期、失败原因、重复/顺序和权限边界；避免把“进入 DLQ”写成处理成功或自动丢弃。",
+    "nearDuplicates": [
+      "queue",
+      "retry",
+      "idempotency",
+      "data-ingestion",
+      "backpressure",
+      "rate-limiting"
+    ]
+  },
+  {
+    "slug": "eventual-consistency",
+    "mechanism": "最终一致性允许一个副本先接住写入，其他副本通过异步复制随后追上；在没有新更新后，读取结果逐步收敛到最后一次写入。读取路径还要明确旧读、强读或 read-your-writes 的保证，并为并发写入规定版本、顺序或人工裁决。",
+    "misconception": "最终一致不等于立刻一致、固定秒数内一致或自动解决业务冲突；读到旧值不直接证明写入失败，副本最终相同也不证明 paid 与 cancelled 的业务规则正确。",
+    "demoSignature": "订单 A17 从写入者经主副本进入异步读副本；五帧展示一处写成功、复制延迟、旧读、并发冲突和规则收敛，工作台切换任一副本/同区强读与单地/两地写入，让读值、成本和冲突责任同时变化。",
+    "sourceUrls": [
+      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html",
+      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables_HowItWorks.html",
+      "https://docs.cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore?hl=en",
+      "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels",
+      "https://learn.microsoft.com/en-us/azure/architecture/guide/design-principles/minimize-coordination"
+    ],
+    "rewriteRisk": "正文要把写入提交、异步复制、旧读、强读适用范围和并发冲突分开叙述，说明没有固定收敛秒数且需要应用层规则；避免把 stale read 写成数据丢失、把 last-writer-wins 写成业务正确，或把所有查询都归为同一种一致性。",
+    "nearDuplicates": [
+      "database",
+      "replication",
+      "cache",
+      "queue",
+      "idempotency",
+      "retry"
+    ]
   }
 ]

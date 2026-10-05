@@ -15620,11 +15620,11 @@
       }
     ]
   },
-  {
+      {
     "slug": "unit-test",
     "lead": "折扣函数只有十几行，为什么还要固定时钟，并专门测试 -1、0、100 和 101？",
     "definition": "单元测试在受控环境中验证一个较小可执行单元的外部行为，通常隔离慢、昂贵或不确定的依赖。",
-    "boundary": "单元不一定等于一个函数，Mock 也不是越多越好。若测试内部实现而非可观察结果，正常重构也会造成无意义失败。",
+    "boundary": "单元不一定等于一个函数，Mock 也不是越多越好；若测试内部实现而非可观察结果，正常重构也会造成无意义失败。",
     "sceneKind": "matrix",
     "sceneTitle": "边界输入与时钟依赖的可重复检查",
     "actionLabel": "切换输入或时钟来源",
@@ -15693,22 +15693,45 @@
     ],
     "frames": [
       {
-        "label": "先运行四个边界输入",
+        "label": "先把四个输入摆上桌",
         "note": "0、100 和 101 分别落在门槛两侧，-1 应明确拒绝。",
+        "activeIds": [
+          "input-cases",
+          "discount-unit"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "real-clock",
+          "fixed-clock",
+          "unit-results"
+        ],
+        "values": {
+          "input-cases": "-1 / 0 / 100 / 101",
+          "unit-results": "尚未运行"
+        },
+        "activeEdgeIds": [
+          "inputs-unit"
+        ],
+        "metric": {
+          "label": "测试准备",
+          "value": "4 cases"
+        }
+      },
+      {
+        "label": "只调用这一个规则单元",
+        "note": "测试不启动数据库和网络，只把输入交给 priceAfterDiscount。",
         "activeIds": [
           "input-cases",
           "discount-unit",
           "unit-results"
         ],
-        "doneIds": [
-          "unit-results"
-        ],
+        "doneIds": [],
         "mutedIds": [
           "real-clock",
           "fixed-clock"
         ],
         "values": {
-          "input-cases": "-1 / 0 / 100 / 101",
+          "input-cases": "逐项调用",
           "unit-results": "RangeError / 0 / 90 / 90.9"
         },
         "activeEdgeIds": [
@@ -15716,13 +15739,13 @@
           "unit-results-edge"
         ],
         "metric": {
-          "label": "用例结果",
-          "value": "4/4 可判定"
+          "label": "执行范围",
+          "value": "1 unit"
         }
       },
       {
-        "label": "真实时钟让节日规则抖动",
-        "note": "同一输入在活动日和普通日得到不同结果，测试依赖运行日期。",
+        "label": "真实时钟让规则开始抖动",
+        "note": "同一输入在活动日和普通日可能得到不同结果，测试依赖运行日期。",
         "activeIds": [
           "real-clock",
           "discount-unit",
@@ -15740,7 +15763,11 @@
         "activeEdgeIds": [
           "real-unit",
           "unit-results-edge"
-        ]
+        ],
+        "metric": {
+          "label": "重复运行",
+          "value": "不稳定"
+        }
       },
       {
         "label": "注入固定时钟恢复重复性",
@@ -15754,7 +15781,8 @@
           "unit-results"
         ],
         "mutedIds": [
-          "real-clock"
+          "real-clock",
+          "input-cases"
         ],
         "values": {
           "fixed-clock": "2026-08-31",
@@ -15763,7 +15791,11 @@
         "activeEdgeIds": [
           "fixed-unit",
           "unit-results-edge"
-        ]
+        ],
+        "metric": {
+          "label": "重复运行",
+          "value": "稳定"
+        }
       },
       {
         "label": "重构内部变量仍保持通过",
@@ -15777,7 +15809,9 @@
           "unit-results"
         ],
         "mutedIds": [
-          "real-clock"
+          "real-clock",
+          "fixed-clock",
+          "input-cases"
         ],
         "values": {
           "discount-unit": "rule table implementation",
@@ -15785,7 +15819,11 @@
         },
         "activeEdgeIds": [
           "unit-results-edge"
-        ]
+        ],
+        "metric": {
+          "label": "断言对象",
+          "value": "行为契约"
+        }
       }
     ],
     "insight": "好的单元测试固定不确定依赖，盯住边界行为，不绑死内部写法。",
@@ -15814,24 +15852,44 @@
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://martinfowler.com/bliki/UnitTest.html",
+        "label": "Martin Fowler · Unit Test",
+        "note": "单元边界、隔离风格与反馈速度"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+        "label": "Microsoft Learn · Unit testing best practices",
+        "note": "快、隔离、可重复、自检查与 AAA"
       },
       {
         "url": "https://jestjs.io/docs/getting-started",
-        "label": "Jest Documentation",
-        "note": "测试替身与断言行为"
+        "label": "Jest · Getting Started",
+        "note": "最小函数、输入输出与测试运行"
+      },
+      {
+        "url": "https://jestjs.io/docs/expect",
+        "label": "Jest · Expect",
+        "note": "matcher 如何比较可观察结果"
+      },
+      {
+        "url": "https://jestjs.io/docs/mock-functions",
+        "label": "Jest · Mock Functions",
+        "note": "受控替身与调用记录"
+      },
+      {
+        "url": "https://jestjs.io/docs/asynchronous",
+        "label": "Jest · Testing Asynchronous Code",
+        "note": "异步结果的完成边界"
       }
     ]
   },
-  {
+    {
     "slug": "integration-test",
-    "lead": "订单接口返回 500 时，怎样证明数据库真的回滚了，而不是 Mock 说它回滚了？",
+    "lead": "订单接口返回 500 时，怎样证明数据库真的回滚了，而不是 Mock 只告诉你它回滚了？",
     "definition": "集成测试让多个真实组件或系统边界共同参与，验证协议、数据格式、事务和错误处理是否彼此兼容。",
-    "boundary": "集成测试不要求启动整套产品；关键是明确哪些边界使用真实实现，哪些外部依赖仍由替身控制。",
+    "boundary": "集成测试不要求启动整套产品；关键是说清哪些边界使用真实实现，哪些外部依赖只负责稳定地制造故障。",
     "sceneKind": "assembly",
-    "sceneTitle": "真实数据库与支付替身共同验证回滚",
+    "sceneTitle": "真实数据库与受控支付故障共同验证回滚",
     "actionLabel": "提交订单或注入支付失败",
     "actors": [
       {
@@ -15911,8 +15969,8 @@
     ],
     "frames": [
       {
-        "label": "测试环境只替换外部支付",
-        "note": "订单服务和 PostgreSQL 使用真实代码与事务，支付边界可稳定制造故障。",
+        "label": "测试宿主接上真实数据库",
+        "note": "订单服务和 PostgreSQL 使用真实代码与事务，支付边界暂时由替身控制。",
         "activeIds": [
           "order-service",
           "postgres-test",
@@ -15931,11 +15989,39 @@
         "activeEdgeIds": [
           "service-db",
           "service-payment"
-        ]
+        ],
+        "metric": {
+          "label": "真实边界",
+          "value": "service + DB"
+        }
       },
       {
-        "label": "请求先写订单再调用支付",
-        "note": "未提交事务内可见一条订单和一条 outbox 记录。",
+        "label": "请求穿过 HTTP 入口",
+        "note": "客户端发送 POST /orders，路由、校验和序列化都进入测试范围。",
+        "activeIds": [
+          "order-request",
+          "order-service"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "orders-table",
+          "integration-result"
+        ],
+        "values": {
+          "order-request": "POST /orders",
+          "order-service": "request accepted"
+        },
+        "activeEdgeIds": [
+          "request-service"
+        ],
+        "metric": {
+          "label": "请求阶段",
+          "value": "HTTP"
+        }
+      },
+      {
+        "label": "服务打开真实事务",
+        "note": "订单服务写入订单和 outbox，再调用支付边界；数据库里的中间状态可以被观察。",
         "activeIds": [
           "order-request",
           "order-service",
@@ -15955,11 +16041,15 @@
           "request-service",
           "service-db",
           "service-payment"
-        ]
+        ],
+        "metric": {
+          "label": "事务状态",
+          "value": "open"
+        }
       },
       {
-        "label": "支付 500 触发真实回滚",
-        "note": "服务返回错误，PostgreSQL 撤销同一事务内两次写入。",
+        "label": "支付 500 触发回滚",
+        "note": "外部故障被控制，服务返回错误并撤销同一事务内的两次写入。",
         "activeIds": [
           "payment-fake",
           "order-service",
@@ -15979,11 +16069,15 @@
         "activeEdgeIds": [
           "service-payment",
           "service-db"
-        ]
+        ],
+        "metric": {
+          "label": "事务结果",
+          "value": "rollback"
+        }
       },
       {
-        "label": "数据库查询给出最终证据",
-        "note": "响应为一次 502，orders 与 outbox 都保持 0 行。",
+        "label": "两侧证据同时对上",
+        "note": "响应为 502，orders 与 outbox 都保持 0 行；这比“服务返回错误”多了一层真实状态证据。",
         "activeIds": [
           "orders-table",
           "integration-result"
@@ -16035,57 +16129,72 @@
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://martinfowler.com/bliki/IntegrationTest.html",
+        "label": "Martin Fowler · Integration Test",
+        "note": "窄/宽集成范围与真实边界"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0",
+        "label": "Microsoft Learn · Integration tests in ASP.NET Core",
+        "note": "测试宿主、客户端、请求和基础设施"
       },
       {
         "url": "https://playwright.dev/docs/api-testing",
-        "label": "Playwright API Testing",
-        "note": "浏览器测试与自动等待"
+        "label": "Playwright · API testing",
+        "note": "通过真实 HTTP API 发送请求"
+      },
+      {
+        "url": "https://playwright.dev/docs/api/class-apiresponseassertions",
+        "label": "Playwright · APIResponseAssertions",
+        "note": "响应状态断言"
+      },
+      {
+        "url": "https://testing.googleblog.com/2021/06/how-much-testing-is-enough.html",
+        "label": "Google Testing Blog · How Much Testing is Enough?",
+        "note": "单元、集成和端到端范围"
       }
     ]
   },
   {
     "slug": "e2e-test",
-    "lead": "页面显示“支付成功”就算流程通过了吗？数据库、回调和邮件中任何一层没发生都不行。",
-    "definition": "端到端测试从用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径及其系统级结果。",
-    "boundary": "E2E 不等于把所有测试搬进浏览器。它覆盖面大、定位成本高，不能替代更快的单元和集成测试。",
+    "lead": "页面亮出“支付成功”就算完成了吗？数据库、回调和邮件中任何一层没发生，这条旅程都还没有抵达终点。",
+    "definition": "端到端测试从接近真实的用户入口穿过部署后的关键组件，验证完整业务路径及其系统级结果。",
+    "boundary": "E2E 不是把所有测试搬进浏览器；它覆盖面大、定位成本高，应该只守住少量最重要的用户旅程。",
     "sceneKind": "route",
-    "sceneTitle": "一笔订单从点击到邮件的跨层验收",
+    "sceneTitle": "一笔订单从确认按钮走到跨层验收",
     "actionLabel": "下单并推进付款回调",
     "actors": [
       {
         "id": "shopper-browser",
         "label": "浏览器",
-        "detail": "订单页",
+        "detail": "u-42 · 新会话",
         "icon": "browser",
         "group": "用户入口"
       },
       {
         "id": "shop-frontend",
         "label": "前端",
-        "detail": "pending",
+        "detail": "订单页 · pending",
         "icon": "layout",
         "group": "应用"
       },
       {
         "id": "order-api",
         "label": "订单 API",
-        "detail": "id=42",
+        "detail": "POST /orders",
         "icon": "server",
         "group": "应用"
       },
       {
         "id": "order-db",
         "label": "订单数据库",
-        "detail": "status=pending",
+        "detail": "orders=0",
         "icon": "database",
-        "group": "状态"
+        "group": "系统事实"
       },
       {
         "id": "payment-callback",
-        "label": "支付回调",
+        "label": "付款回调",
         "detail": "waiting",
         "icon": "message",
         "group": "外部事件"
@@ -16103,7 +16212,7 @@
         "id": "browser-ui",
         "from": "shopper-browser",
         "to": "shop-frontend",
-        "label": "点击下单"
+        "label": "点击确认订单"
       },
       {
         "id": "ui-api",
@@ -16115,7 +16224,7 @@
         "id": "api-db",
         "from": "order-api",
         "to": "order-db",
-        "label": "创建订单"
+        "label": "创建 pending"
       },
       {
         "id": "callback-api",
@@ -16127,7 +16236,7 @@
         "id": "api-mail",
         "from": "order-api",
         "to": "mail-sandbox",
-        "label": "发送确认"
+        "label": "发送确认信"
       },
       {
         "id": "api-ui",
@@ -16138,8 +16247,30 @@
     ],
     "frames": [
       {
-        "label": "浏览器发起真实下单",
-        "note": "页面输入商品和地址，前端向部署后的 API 发请求。",
+        "label": "隔离一条干净旅程",
+        "note": "测试创建独立会话和用户 u-42，订单表从 0 行开始。",
+        "activeIds": [
+          "shopper-browser",
+          "order-db"
+        ],
+        "doneIds": [
+          "shopper-browser"
+        ],
+        "mutedIds": [
+          "shop-frontend",
+          "order-api",
+          "payment-callback",
+          "mail-sandbox"
+        ],
+        "values": {
+          "shopper-browser": "fresh · u-42",
+          "order-db": "orders = 0"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "真实点击确认订单",
+        "note": "浏览器点击可见按钮，前端向部署后的 API 发出 POST /orders。",
         "activeIds": [
           "shopper-browser",
           "shop-frontend",
@@ -16163,8 +16294,8 @@
         ]
       },
       {
-        "label": "数据库先保存 pending",
-        "note": "创建响应之后，后端状态可直接查询为 pending。",
+        "label": "订单先保存 pending",
+        "note": "创建响应之后，数据库和页面都能观察到等待付款的状态。",
         "activeIds": [
           "order-api",
           "order-db",
@@ -16174,6 +16305,7 @@
           "order-db"
         ],
         "mutedIds": [
+          "shopper-browser",
           "payment-callback",
           "mail-sandbox"
         ],
@@ -16187,8 +16319,8 @@
         ]
       },
       {
-        "label": "付款回调推进系统状态",
-        "note": "测试模拟签名有效的 payment.paid，订单由 pending 变成 paid。",
+        "label": "付款回调推进状态",
+        "note": "测试送来带有效签名的 payment.paid，订单由 pending 变成 paid。",
         "activeIds": [
           "payment-callback",
           "order-api",
@@ -16200,6 +16332,7 @@
         ],
         "mutedIds": [
           "shopper-browser",
+          "shop-frontend",
           "mail-sandbox"
         ],
         "values": {
@@ -16212,8 +16345,8 @@
         ]
       },
       {
-        "label": "用户界面和邮件同时落定",
-        "note": "页面刷新为已支付，邮件沙箱收到一封订单 42 的确认信。",
+        "label": "页面和邮件落地",
+        "note": "前端刷新为 paid，邮件沙箱收到订单 42 的确认信。",
         "activeIds": [
           "order-api",
           "shop-frontend",
@@ -16235,63 +16368,106 @@
         "activeEdgeIds": [
           "api-ui",
           "api-mail"
+        ]
+      },
+      {
+        "label": "把三层事实放在一起",
+        "note": "UI、数据库和外部回执都对上才通过；任一层先破坏就停在那个位置。",
+        "activeIds": [
+          "shopper-browser",
+          "order-db",
+          "mail-sandbox"
+        ],
+        "doneIds": [
+          "shopper-browser",
+          "order-db",
+          "mail-sandbox"
+        ],
+        "mutedIds": [
+          "shop-frontend",
+          "order-api",
+          "payment-callback"
+        ],
+        "values": {
+          "shopper-browser": "paid",
+          "order-db": "status=paid",
+          "mail-sandbox": "1 mail"
+        },
+        "activeEdgeIds": [
+          "api-ui",
+          "api-mail"
         ],
         "metric": {
           "label": "最终不变量",
-          "value": "DB=paid · 邮件=1"
+          "value": "UI=paid · DB=paid · mail=1"
         }
       }
     ],
-    "insight": "端到端完成条件要落到跨层不变量，不能只看最后一张页面。",
+    "insight": "端到端完成条件要落到跨层不变量，不能只看最后一张页面；失败时停在第一个不一致的位置。",
     "quiz": {
-      "question": "页面显示 paid，但数据库仍是 pending，E2E 应怎样判定？",
+      "question": "页面显示 paid，但邮件沙箱是 0 封，E2E 应怎样判定？",
       "options": [
         {
-          "label": "失败，跨层最终状态不一致",
+          "label": "失败，最终用户结果不完整",
           "correct": true
         },
         {
-          "label": "通过，页面文字优先于系统状态",
+          "label": "通过，页面文字优先",
           "correct": false
         },
         {
-          "label": "忽略数据库并多截一张图",
+          "label": "忽略邮件并继续截图",
           "correct": false
         }
       ],
-      "success": "端到端测试必须核对完整路径的系统级结果。",
-      "retry": "把用户看到的结果与后端事实放在一起判断。"
+      "success": "用户旅程的系统级结果没有闭合，不能把一个观察点当成终点。",
+      "retry": "把页面、数据库和外部回执放到同一张验收单上。"
     },
     "prompt": {
-      "title": "定义关键流程的端到端不变量",
-      "text": "请从真实入口开始，列出每个跨层状态、外部回调、最终数据库记录和用户可见结果，并标明在哪个不变量破坏时停止。"
+      "title": "定义关键旅程的端到端不变量",
+      "text": "请从真实入口开始，列出独立数据、每个跨层状态、外部回调、最终数据库记录和用户可见结果，并标明第一个不变量破坏时如何停止。"
     },
     "sources": [
       {
-        "url": "https://playwright.dev/docs/intro",
-        "label": "Playwright Documentation",
-        "note": "浏览器测试与自动等待"
+        "url": "https://playwright.dev/docs/best-practices",
+        "label": "Playwright · Best Practices",
+        "note": "用户可见行为、隔离和稳定定位"
       },
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://playwright.dev/docs/actionability",
+        "label": "Playwright · Auto-waiting",
+        "note": "动作前检查与自动重试断言"
+      },
+      {
+        "url": "https://playwright.dev/docs/intro",
+        "label": "Playwright · Introduction",
+        "note": "浏览器端到端测试工具链"
+      },
+      {
+        "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
+        "label": "Martin Fowler · The Practical Test Pyramid",
+        "note": "E2E 覆盖、成本与脆弱性"
+      },
+      {
+        "url": "https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html",
+        "label": "Google Testing Blog · Just Say No to More End-to-End Tests",
+        "note": "少量 E2E 与更快测试层的平衡"
       }
     ]
   },
   {
     "slug": "smoke-test",
-    "lead": "新版本部署后，是先跑 120 个回归用例，还是用四个检查在两分钟内决定要不要继续？",
+    "lead": "新版本部署后，是先跑 120 个回归用例，还是用四盏关键灯在几分钟内决定要不要继续？",
     "definition": "冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件。",
-    "boundary": "冒烟通过只说明核心路径没有明显失效，不代表系统质量完整，也不能替代回归、性能或安全测试。",
+    "boundary": "冒烟通过只说明基础路径没有明显失效，不代表系统质量完整，也不能替代回归、性能或安全测试。",
     "sceneKind": "branch",
     "sceneTitle": "部署后的四盏检查灯决定是否放行",
     "actionLabel": "部署并执行冒烟检查",
     "actors": [
       {
         "id": "build-commit",
-        "label": "commit abc123",
-        "detail": "刚部署",
+        "label": "commit 9f31",
+        "detail": "候选构建",
         "icon": "git",
         "group": "构建"
       },
@@ -16300,35 +16476,35 @@
         "label": "Health",
         "detail": "waiting",
         "icon": "server",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "login-check",
         "label": "Login",
         "detail": "waiting",
         "icon": "key",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "order-check",
         "label": "Create order",
         "detail": "waiting",
         "icon": "package",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "payment-check",
         "label": "Payment",
         "detail": "waiting",
         "icon": "network",
-        "group": "检查"
+        "group": "关键检查"
       },
       {
         "id": "regression-suite",
         "label": "完整回归",
-        "detail": "120 tests",
+        "detail": "120 tests · locked",
         "icon": "network",
-        "group": "后续"
+        "group": "后续阶段"
       }
     ],
     "edges": [
@@ -16360,13 +16536,13 @@
         "id": "payment-regression",
         "from": "payment-check",
         "to": "regression-suite",
-        "label": "全部通过才启动"
+        "label": "全绿才解锁"
       }
     ],
     "frames": [
       {
-        "label": "部署完成先不启动完整回归",
-        "note": "abc123 进入候选状态，120 个较慢用例保持等待。",
+        "label": "候选构建抵达闸门",
+        "note": "9f31 已部署，完整回归保持 locked，先等待少量高价值检查。",
         "activeIds": [
           "build-commit",
           "health-check"
@@ -16382,72 +16558,98 @@
         ],
         "values": {
           "build-commit": "deployed",
-          "regression-suite": "not started"
+          "regression-suite": "locked · 120"
         },
         "activeEdgeIds": [
           "build-health"
         ]
       },
       {
-        "label": "前三个关键检查通过",
-        "note": "健康接口、登录和创建订单依次变绿。",
+        "label": "健康检查先亮灯",
+        "note": "/healthz 返回 200，进程和基础依赖有响应。",
         "activeIds": [
           "health-check",
-          "login-check",
-          "order-check"
+          "login-check"
         ],
         "doneIds": [
-          "health-check",
-          "login-check",
-          "order-check"
+          "health-check"
         ],
         "mutedIds": [
+          "order-check",
           "payment-check",
           "regression-suite"
         ],
         "values": {
           "health-check": "200",
-          "login-check": "pass",
-          "order-check": "201"
+          "regression-suite": "not started"
         },
         "activeEdgeIds": [
-          "health-login",
-          "login-order",
-          "order-payment"
+          "health-login"
         ]
       },
       {
-        "label": "支付检查收到 502",
-        "note": "核心付款路径失败，构建立即标记 rejected。",
+        "label": "核心入口依次通过",
+        "note": "登录、创建订单和最小支付路径都给出可观察的成功结果。",
+        "activeIds": [
+          "login-check",
+          "order-check",
+          "payment-check"
+        ],
+        "doneIds": [
+          "login-check",
+          "order-check",
+          "payment-check"
+        ],
+        "mutedIds": [
+          "regression-suite"
+        ],
+        "values": {
+          "login-check": "pass",
+          "order-check": "201",
+          "payment-check": "pass"
+        },
+        "activeEdgeIds": [
+          "login-order",
+          "order-payment",
+          "payment-regression"
+        ]
+      },
+      {
+        "label": "支付失败立即关闸",
+        "note": "Payment 返回 502，候选构建标记 rejected，完整回归不启动。",
         "activeIds": [
           "payment-check",
-          "build-commit"
+          "build-commit",
+          "regression-suite"
         ],
         "doneIds": [],
         "mutedIds": [
           "health-check",
           "login-check",
-          "order-check",
-          "regression-suite"
+          "order-check"
         ],
         "values": {
           "payment-check": "502",
-          "build-commit": "rejected"
+          "build-commit": "rejected",
+          "regression-suite": "not started"
         },
         "activeEdgeIds": [],
         "metric": {
-          "label": "冒烟结果",
-          "value": "3/4"
+          "label": "冒烟结论",
+          "value": "STOP · payment"
         }
       },
       {
-        "label": "完整回归保持未启动",
-        "note": "无需花 28 分钟证明更多功能也受坏环境影响。",
+        "label": "修复后才解锁大套件",
+        "note": "重新部署并通过四盏灯，120 个回归检查才进入队列。",
         "activeIds": [
-          "regression-suite",
-          "build-commit"
+          "build-commit",
+          "regression-suite"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "build-commit",
+          "regression-suite"
+        ],
         "mutedIds": [
           "health-check",
           "login-check",
@@ -16455,22 +16657,24 @@
           "payment-check"
         ],
         "values": {
-          "regression-suite": "skipped",
-          "build-commit": "fix required"
+          "build-commit": "accepted",
+          "regression-suite": "queued · 120"
         },
-        "activeEdgeIds": [],
+        "activeEdgeIds": [
+          "payment-regression"
+        ],
         "metric": {
-          "label": "节省时间",
-          "value": "28 min"
+          "label": "放行结论",
+          "value": "PROCEED · 120 queued"
         }
       }
     ],
-    "insight": "冒烟测试的任务是尽早淘汰明显不可用的构建，不是给系统盖全面合格章。",
+    "insight": "冒烟测试的任务是尽早淘汰明显不可用的构建，不是给系统盖全面合格章；失败时要阻止后续成本并留下下一步。",
     "quiz": {
       "question": "支付冒烟失败后，完整回归应怎样处理？",
       "options": [
         {
-          "label": "先停止并修复基础阻塞，再运行完整回归",
+          "label": "先停止并修复候选构建，再重新冒烟",
           "correct": true
         },
         {
@@ -16482,243 +16686,138 @@
           "correct": false
         }
       ],
-      "success": "关键路径失败时继续跑大套件通常只会延迟反馈。",
-      "retry": "冒烟测试回答的是“是否值得继续测”。"
+      "success": "关键路径失败时继续跑大套件只会延迟反馈，先修复闸门上的红灯。",
+      "retry": "冒烟测试回答的是“是否值得继续测”，不是“系统没有任何缺陷”。"
     },
     "prompt": {
       "title": "挑选部署后的冒烟路径",
-      "text": "请选出 3–6 个能覆盖进程、身份和核心交易的检查，规定失败即停止的条件、最大耗时和后续完整测试入口。"
+      "text": "请选出 3–6 个能覆盖进程、身份和核心交易的检查，规定失败即停止的条件、最大耗时、构建版本和后续完整测试入口。"
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://learn.microsoft.com/en-us/biztalk/technical-guides/automating-the-build-process",
+        "label": "Microsoft Learn · Automating the Build Process",
+        "note": "BVT、Smoke Tests 与构建验证边界"
+      },
+      {
+        "url": "https://docs.gitlab.com/development/testing_guide/testing_strategy/",
+        "label": "GitLab Docs · GitLab Testing Strategy",
+        "note": "fail fast、渐进测试与阻塞职责"
+      },
+      {
+        "url": "https://docs.gitlab.com/development/testing_guide/smoke/",
+        "label": "GitLab Docs · Smoke Tests",
+        "note": "基本功能覆盖与 health check 子集"
+      },
+      {
+        "url": "https://www.martinfowler.com/articles/originalContinuousIntegration.html",
+        "label": "Martin Fowler · Continuous Integration",
+        "note": "成功构建、启动应用和简单测试"
+      },
+      {
+        "url": "https://docs.gitlab.com/ci/pipelines/",
+        "label": "GitLab Docs · CI/CD pipelines",
+        "note": "stage 顺序与失败早停"
       }
     ]
   },
   {
     "slug": "regression-test",
     "lead": "只改了认证中间件，为什么要重跑订单和后台权限，却不必把全部 32 个测试都跑一遍？",
-    "definition": "回归测试在代码、配置或依赖变更后，重新验证原本不应改变的既有行为；范围应依据影响、风险和历史缺陷选择。",
+    "definition": "回归测试在代码、配置或依赖变更后，重新验证原本不应改变的既有行为；范围从影响关系出发，再由业务风险和历史缺陷补全。",
     "boundary": "回归不是只重测修复点，也不是每次机械运行全部测试。范围过窄会漏影响，过宽会拖慢反馈。",
-    "sceneKind": "network",
-    "sceneTitle": "从一处代码改动展开受影响测试集",
-    "actionLabel": "选择变更并调整风险阈值",
+    "sceneKind": "tree",
+    "sceneTitle": "一处鉴权改动如何展开成一组有理由的回归测试",
+    "actionLabel": "选择回归范围",
     "actors": [
-      {
-        "id": "auth-change",
-        "label": "auth middleware",
-        "detail": "changed",
-        "icon": "git",
-        "group": "变更"
-      },
-      {
-        "id": "call-graph",
-        "label": "调用关系",
-        "detail": "5 modules",
-        "icon": "network",
-        "group": "影响"
-      },
-      {
-        "id": "direct-tests",
-        "label": "直接测试",
-        "detail": "4",
-        "icon": "code",
-        "group": "测试集"
-      },
-      {
-        "id": "integration-tests",
-        "label": "集成测试",
-        "detail": "7",
-        "icon": "database",
-        "group": "测试集"
-      },
-      {
-        "id": "security-tests",
-        "label": "安全回归",
-        "detail": "3",
-        "icon": "shield",
-        "group": "测试集"
-      },
-      {
-        "id": "all-tests",
-        "label": "全部测试",
-        "detail": "32",
-        "icon": "network",
-        "group": "候选"
-      },
-      {
-        "id": "regression-result",
-        "label": "选中结果",
-        "detail": "14 tests",
-        "icon": "chart",
-        "group": "结果"
-      }
+      { "id": "auth-change", "label": "auth middleware", "detail": "commit 8c42 · changed", "icon": "git", "group": "变更" },
+      { "id": "login", "label": "登录", "detail": "direct · 4", "icon": "user", "group": "直接影响" },
+      { "id": "session", "label": "会话", "detail": "shared dependency", "icon": "key", "group": "共享依赖" },
+      { "id": "order", "label": "订单", "detail": "integration · 7", "icon": "package", "group": "跨模块" },
+      { "id": "admin", "label": "后台权限", "detail": "history · 3", "icon": "shield", "group": "历史风险" },
+      { "id": "all-tests", "label": "全部测试", "detail": "32", "icon": "network", "group": "基准对照" },
+      { "id": "regression-result", "label": "选中结果", "detail": "14 / 32", "icon": "chart", "group": "回归集" }
     ],
     "edges": [
-      {
-        "id": "change-graph",
-        "from": "auth-change",
-        "to": "call-graph",
-        "label": "分析引用"
-      },
-      {
-        "id": "graph-direct",
-        "from": "call-graph",
-        "to": "direct-tests",
-        "label": "直接影响"
-      },
-      {
-        "id": "graph-integration",
-        "from": "call-graph",
-        "to": "integration-tests",
-        "label": "跨模块影响"
-      },
-      {
-        "id": "change-security",
-        "from": "auth-change",
-        "to": "security-tests",
-        "label": "高风险规则"
-      },
-      {
-        "id": "sets-result",
-        "from": "integration-tests",
-        "to": "regression-result",
-        "label": "合并去重"
-      }
+      { "id": "change-login", "from": "auth-change", "to": "login", "label": "直接引用" },
+      { "id": "change-session", "from": "auth-change", "to": "session", "label": "共享规则" },
+      { "id": "session-order", "from": "session", "to": "order", "label": "跨模块影响" },
+      { "id": "change-admin", "from": "auth-change", "to": "admin", "label": "历史风险补集" },
+      { "id": "sets-result", "from": "order", "to": "regression-result", "label": "合并去重" },
+      { "id": "all-result", "from": "all-tests", "to": "regression-result", "label": "周期性校准" }
     ],
     "frames": [
       {
-        "label": "从变更节点展开调用关系",
-        "note": "认证中间件被登录、订单、后台和 API 客户端共同引用。",
-        "activeIds": [
-          "auth-change",
-          "call-graph"
-        ],
-        "doneIds": [
-          "call-graph"
-        ],
-        "mutedIds": [
-          "direct-tests",
-          "integration-tests",
-          "security-tests",
-          "all-tests",
-          "regression-result"
-        ],
-        "values": {
-          "call-graph": "login · order · admin · API · session"
-        },
-        "activeEdgeIds": [
-          "change-graph"
-        ]
-      },
-      {
-        "label": "先选直接与集成测试",
-        "note": "4 个直接测试和 7 个跨模块测试进入候选。",
-        "activeIds": [
-          "call-graph",
-          "direct-tests",
-          "integration-tests"
-        ],
-        "doneIds": [
-          "direct-tests",
-          "integration-tests"
-        ],
-        "mutedIds": [
-          "security-tests",
-          "all-tests",
-          "regression-result"
-        ],
-        "values": {
-          "direct-tests": "4 selected",
-          "integration-tests": "7 selected"
-        },
-        "activeEdgeIds": [
-          "graph-direct",
-          "graph-integration"
-        ]
-      },
-      {
-        "label": "高风险变更补入安全回归",
-        "note": "鉴权改动触发 3 个历史越权用例，无需依赖代码覆盖命中。",
-        "activeIds": [
-          "auth-change",
-          "security-tests",
-          "regression-result"
-        ],
-        "doneIds": [
-          "security-tests",
-          "regression-result"
-        ],
-        "mutedIds": [
-          "all-tests"
-        ],
-        "values": {
-          "security-tests": "3 selected",
-          "regression-result": "14 unique tests"
-        },
-        "activeEdgeIds": [
-          "change-security",
-          "sets-result"
-        ],
-        "metric": {
-          "label": "入选范围",
-          "value": "14 / 32"
-        }
-      },
-      {
-        "label": "旧权限用例暴露回归",
-        "note": "admin-list-as-editor 原本应返回 403，现在错误返回 200。",
-        "activeIds": [
-          "security-tests",
-          "regression-result"
-        ],
+        "label": "先圈出提交差异",
+        "note": "auth middleware 的权限判断发生变化，回归分析从这条差异开始。",
+        "activeIds": ["auth-change"],
         "doneIds": [],
-        "mutedIds": [
-          "auth-change",
-          "call-graph",
-          "direct-tests",
-          "integration-tests",
-          "all-tests"
-        ],
-        "values": {
-          "security-tests": "1 failed",
-          "regression-result": "blocked · expected 403 got 200"
-        },
+        "mutedIds": ["login", "session", "order", "admin", "all-tests", "regression-result"],
+        "values": { "auth-change": "commit 8c42" },
         "activeEdgeIds": []
+      },
+      {
+        "label": "沿共享依赖展开",
+        "note": "登录、会话和订单进入候选；范围不再只等于改动文件本身。",
+        "activeIds": ["auth-change", "login", "session", "order"],
+        "doneIds": ["login", "session", "order"],
+        "mutedIds": ["admin", "all-tests", "regression-result"],
+        "values": { "login": "4 direct", "order": "7 integration" },
+        "activeEdgeIds": ["change-login", "change-session", "session-order"],
+        "metric": { "label": "影响候选", "value": "11 / 32" }
+      },
+      {
+        "label": "把历史风险补进来",
+        "note": "后台编辑器曾经出现过越权缺陷，即使不在调用图上也要重新验证。",
+        "activeIds": ["auth-change", "admin"],
+        "doneIds": ["admin"],
+        "mutedIds": ["login", "session", "order", "all-tests", "regression-result"],
+        "values": { "admin": "3 security", "regression-result": "14 unique" },
+        "activeEdgeIds": ["change-admin", "sets-result"],
+        "metric": { "label": "入选范围", "value": "14 / 32" }
+      },
+      {
+        "label": "合并重复并留下依据",
+        "note": "直接、集成和安全测试合并去重；全量测试保留为周期性校准。",
+        "activeIds": ["regression-result", "all-tests"],
+        "doneIds": ["regression-result"],
+        "mutedIds": ["auth-change", "login", "session", "order", "admin"],
+        "values": { "regression-result": "14 selected", "all-tests": "32 baseline" },
+        "activeEdgeIds": ["sets-result", "all-result"],
+        "metric": { "label": "执行预算", "value": "14 + periodic 32" }
+      },
+      {
+        "label": "旧权限行为暴露倒退",
+        "note": "admin-list-as-editor 原本应返回 403，现在错误返回 200；测试把第一处不一致留在现场。",
+        "activeIds": ["admin", "regression-result"],
+        "doneIds": [],
+        "mutedIds": ["auth-change", "login", "session", "order", "all-tests"],
+        "values": { "admin": "FAIL · expected 403 got 200", "regression-result": "blocked" },
+        "activeEdgeIds": [],
+        "metric": { "label": "回归结论", "value": "修复并保留用例" }
       }
     ],
     "insight": "回归范围来自影响与风险，不是从“只测改动”或“全量都跑”二选一。",
     "quiz": {
       "question": "认证中间件改动为何要补入历史越权用例？",
       "options": [
-        {
-          "label": "鉴权属于高风险区域，旧缺陷场景能防止行为倒退",
-          "correct": true
-        },
-        {
-          "label": "所有测试标题都包含 auth",
-          "correct": false
-        },
-        {
-          "label": "因为单元测试一定不能运行",
-          "correct": false
-        }
+        { "label": "鉴权属于高风险区域，旧缺陷场景能防止行为倒退", "correct": true },
+        { "label": "所有测试标题都包含 auth", "correct": false },
+        { "label": "因为单元测试一定不能运行", "correct": false }
       ],
-      "success": "风险和缺陷历史可以补足纯调用关系看不到的范围。",
+      "success": "调用关系告诉你可能波及哪里，历史缺陷告诉你哪里值得额外再推一次。",
       "retry": "除了代码引用，还要看业务风险与旧缺陷。"
     },
     "prompt": {
       "title": "为一次变更选择回归范围",
-      "text": "请从改动文件、调用关系、数据契约、风险等级和历史缺陷五处列出候选测试，说明纳入或排除理由。"
+      "text": "请从改动文件、调用关系、业务风险、数据契约和历史缺陷五处列出候选测试，说明纳入或排除理由。"
     },
     "sources": [
-      {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
-      }
+      { "url": "https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-test-types", "label": "Microsoft Learn · Types of tests", "note": "变更后验证、影响范围与业务优先级" },
+      { "url": "https://learn.microsoft.com/en-us/azure/well-architected/operational-excellence/testing", "label": "Microsoft Learn · Architecture strategies for testing", "note": "风险优先、回归套件维护与周期安排" },
+      { "url": "https://learn.microsoft.com/en-us/azure/devops/pipelines/test/test-impact-analysis?view=azure-devops", "label": "Microsoft Learn · Test Impact Analysis", "note": "自动选集、安全回退与全量校准" },
+      { "url": "https://docs.gitlab.com/development/testing_guide/testing_strategy/", "label": "GitLab Docs · Testing Strategy", "note": "快速反馈、owner、阻塞责任与测试维护" },
+      { "url": "https://www.martinfowler.com/articles/sensors-for-coding-agents.html", "label": "Martin Fowler · Maintainability sensors", "note": "回归传感器、旧行为与覆盖率边界" }
     ]
   },
   {
@@ -16852,25 +16951,44 @@
         ]
       },
       {
-        "label": "写出协议操作与三个预期",
-        "note": "发送一次重置请求；应返回 410，令牌未消费，邮件仍为 0 封。",
+        "label": "写出协议操作",
+        "note": "把一次重置请求写成明确动作：POST /password/reset，只执行 1 次。",
         "activeIds": [
-          "case-action",
+          "case-action"
+        ],
+        "doneIds": [
+          "case-action"
+        ],
+        "mutedIds": [
+          "case-draft",
+          "case-observations",
+          "case-result"
+        ],
+        "values": {
+          "case-action": "POST /password/reset · 1 次"
+        },
+        "activeEdgeIds": [
+          "input-action"
+        ]
+      },
+      {
+        "label": "拆出三张回执",
+        "note": "预期落在 HTTP、数据库和邮件三个观察点：410、未消费、0 封。",
+        "activeIds": [
           "case-observations"
         ],
         "doneIds": [
-          "case-action",
           "case-observations"
         ],
         "mutedIds": [
-          "case-draft"
+          "case-draft",
+          "case-result"
         ],
         "values": {
           "case-action": "POST /password/reset",
           "case-observations": "410 · consumed=false · mail=0"
         },
         "activeEdgeIds": [
-          "input-action",
           "action-observe"
         ]
       },
@@ -16926,9 +17044,29 @@
     },
     "sources": [
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-planning",
+        "label": "Microsoft Learn · Create a test plan",
+        "note": "前置、步骤、预期与结果记录"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/devops/test/overview?source=recommendations&view=azure-devops",
+        "label": "Microsoft Learn · Azure Test Plans",
+        "note": "测试步骤、预期和需求追踪"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html",
+        "label": "OWASP · Forgot Password Cheat Sheet",
+        "note": "令牌失效与密码找回副作用"
+      },
+      {
+        "url": "https://docs.gitlab.com/development/testing_guide/best_practices/",
+        "label": "GitLab Docs · Testing best practices",
+        "note": "干净环境、清理和场景断言"
+      },
+      {
+        "url": "https://playwright.dev/docs/test-assertions",
+        "label": "Playwright · Assertions",
+        "note": "异步观察与自动重试"
       }
     ]
   },
@@ -17018,6 +17156,26 @@
     ],
     "frames": [
       {
+        "label": "先把真实支付隔离",
+        "note": "Checkout 只依赖 PaymentGateway；真实网络和扣款留在更大范围的测试里。",
+        "activeIds": [
+          "checkout",
+          "payment-mock",
+          "payment-fake"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "old-flow",
+          "new-flow",
+          "behavior-result"
+        ],
+        "values": {
+          "payment-mock": "controlled return",
+          "payment-fake": "local contract"
+        },
+        "activeEdgeIds": []
+      },
+      {
         "label": "旧实现只调用一次 charge",
         "note": "Mock 预期 charge(amount) 恰好一次，Fake 只要求最终支付契约成立。",
         "activeIds": [
@@ -17026,7 +17184,9 @@
           "payment-mock",
           "payment-fake"
         ],
-        "doneIds": [],
+        "doneIds": [
+          "old-flow"
+        ],
         "mutedIds": [
           "new-flow",
           "behavior-result"
@@ -17134,244 +17294,308 @@
     },
     "sources": [
       {
-        "url": "https://jestjs.io/docs/mock-functions",
-        "label": "Jest Mock Functions",
-        "note": "测试替身与断言行为"
+        "url": "https://martinfowler.com/bliki/TestDouble.html",
+        "label": "Martin Fowler · Test Double",
+        "note": "Mock、Stub、Spy 与 Fake 的角色边界"
       },
       {
-        "url": "https://playwright.dev/docs/mock",
-        "label": "Playwright Mock APIs",
-        "note": "浏览器测试与自动等待"
+        "url": "https://jestjs.io/docs/mock-function-api",
+        "label": "Jest · Mock Functions",
+        "note": "控制返回值与记录调用"
+      },
+      {
+        "url": "https://vitest.dev/guide/mocking.html",
+        "label": "Vitest · Mocking",
+        "note": "替换函数、模块与清理状态"
+      },
+      {
+        "url": "https://martinfowler.com/articles/mocksArentStubs.html",
+        "label": "Martin Fowler · Mocks Aren't Stubs",
+        "note": "状态验证、行为验证与重构耦合"
+      },
+      {
+        "url": "https://testing.googleblog.com/2024/02/increase-test-fidelity-by-avoiding-mocks.html",
+        "label": "Google Testing Blog · Increase Test Fidelity",
+        "note": "真实实现、Fake 与 Mock 的真实度取舍"
       }
     ]
   },
   {
     "slug": "assertion",
-    "lead": "按钮最终都会出现，为什么 sleep(1000) 经常误报失败，而 toBeVisible 能在 1.5 秒后稳定通过？",
-    "definition": "断言把实际可观察值与明确期望比较，并在失败时提供差异；异步断言还需在有限时间内等待条件成立。",
-    "boundary": "断言越多不代表测试越强。检查内部变量或依赖固定延时，会增加脆弱性却不一定验证业务结果。",
-    "sceneKind": "contract",
-    "sceneTitle": "固定等待与条件等待的竞速",
-    "actionLabel": "调整响应延迟并重跑",
+    "lead": "保存按钮最终会出现，为什么 sleep(1000) 经常误报失败，而 toBeVisible 能在 1.5 秒后稳定通过？",
+    "definition": "断言把实际可观察值与明确期望比较，并在失败时提供差异；异步断言还需在有限期限内等待条件成立。",
+    "boundary": "断言只验证写出的条件。内部变量、固定等待或无关的多重检查，可能让测试通过却没有证明用户看到的结果。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "一条保存回执在两个观察时钟之间分岔",
+    "actionLabel": "调整回执延迟并重放",
     "actors": [
       {
-        "id": "async-button",
-        "label": "保存完成按钮",
-        "detail": "响应后显示",
+        "id": "save-action",
+        "label": "保存按钮",
+        "detail": "click · 只执行一次",
         "icon": "component",
-        "group": "观察对象"
+        "group": "动作"
+      },
+      {
+        "id": "api-response",
+        "label": "异步回执",
+        "detail": "200ms → 1.5s",
+        "icon": "network",
+        "group": "事实"
       },
       {
         "id": "fixed-sleep",
         "label": "sleep(1000)",
-        "detail": "到点即检查",
+        "detail": "固定取样",
         "icon": "clock",
-        "group": "断言轨道"
+        "group": "观察者"
       },
       {
-        "id": "auto-assert",
+        "id": "web-assert",
         "label": "toBeVisible",
-        "detail": "最长 5s",
+        "detail": "期限内重试",
         "icon": "search",
-        "group": "断言轨道"
+        "group": "观察者"
       },
       {
-        "id": "api-delay",
-        "label": "响应延迟",
-        "detail": "200 ms",
-        "icon": "network",
-        "group": "环境"
-      },
-      {
-        "id": "fixed-result",
-        "label": "固定等待结果",
-        "detail": "waiting",
+        "id": "hidden-state",
+        "label": "按钮 hidden",
+        "detail": "回执未到",
         "icon": "shield",
-        "group": "结果"
+        "group": "状态"
       },
       {
-        "id": "auto-result",
-        "label": "条件等待结果",
-        "detail": "waiting",
+        "id": "visible-state",
+        "label": "按钮 visible",
+        "detail": "目标已成立",
         "icon": "shield",
-        "group": "结果"
+        "group": "状态"
+      },
+      {
+        "id": "diff-report",
+        "label": "Expected / Received",
+        "detail": "留下下一步",
+        "icon": "file",
+        "group": "证据"
       }
     ],
     "edges": [
       {
-        "id": "delay-button",
-        "from": "api-delay",
-        "to": "async-button",
-        "label": "响应后显示"
+        "id": "click-response",
+        "from": "save-action",
+        "to": "api-response",
+        "label": "发起请求"
       },
       {
-        "id": "sleep-check",
+        "id": "response-hidden",
+        "from": "api-response",
+        "to": "hidden-state",
+        "label": "尚未更新"
+      },
+      {
+        "id": "response-visible",
+        "from": "api-response",
+        "to": "visible-state",
+        "label": "状态改变"
+      },
+      {
+        "id": "fixed-read",
         "from": "fixed-sleep",
-        "to": "async-button",
-        "label": "1s 时读取"
+        "to": "hidden-state",
+        "label": "1s 读取"
       },
       {
-        "id": "auto-check",
-        "from": "auto-assert",
-        "to": "async-button",
-        "label": "持续轮询"
+        "id": "condition-read",
+        "from": "web-assert",
+        "to": "visible-state",
+        "label": "条件成立"
       },
       {
-        "id": "button-fixed",
-        "from": "async-button",
-        "to": "fixed-result",
-        "label": "布尔值"
-      },
-      {
-        "id": "button-auto",
-        "from": "async-button",
-        "to": "auto-result",
-        "label": "条件满足"
+        "id": "failure-diff",
+        "from": "hidden-state",
+        "to": "diff-report",
+        "label": "Expected ≠ Received"
       }
     ],
     "frames": [
       {
-        "label": "200 ms 延迟时两条轨道都通过",
-        "note": "按钮早于固定 1 秒出现，差异暂时被快环境掩盖。",
+        "label": "点击保存，两个观察者都在等",
+        "note": "动作只发生一次；响应和按钮状态还没有抵达最终位置。",
         "activeIds": [
-          "api-delay",
-          "async-button",
+          "save-action",
+          "api-response",
           "fixed-sleep",
-          "auto-assert",
-          "fixed-result",
-          "auto-result"
+          "web-assert",
+          "hidden-state"
+        ],
+        "doneIds": [],
+        "mutedIds": [],
+        "values": {
+          "api-response": "pending",
+          "hidden-state": "hidden",
+          "fixed-sleep": "waiting",
+          "web-assert": "waiting"
+        },
+        "activeEdgeIds": [
+          "click-response",
+          "response-hidden"
+        ]
+      },
+      {
+        "label": "200ms 到达，两条轨道都通过",
+        "note": "快环境让固定等待暂时看起来可靠，但它仍然没有绑定状态。",
+        "activeIds": [
+          "api-response",
+          "fixed-sleep",
+          "web-assert",
+          "visible-state"
         ],
         "doneIds": [
-          "fixed-result",
-          "auto-result"
+          "visible-state"
         ],
         "mutedIds": [],
         "values": {
-          "api-delay": "200ms",
-          "fixed-result": "PASS @1s",
-          "auto-result": "PASS @0.2s"
+          "api-response": "arrived @0.2s",
+          "fixed-sleep": "PASS @1s",
+          "web-assert": "PASS @0.2s"
         },
         "activeEdgeIds": [
-          "delay-button",
-          "sleep-check",
-          "auto-check",
-          "button-fixed",
-          "button-auto"
+          "response-visible",
+          "fixed-read",
+          "condition-read"
         ]
       },
       {
-        "label": "把响应调慢到 1500 ms",
-        "note": "业务最终状态不变，只是按钮晚半秒出现。",
+        "label": "把回执调慢到 1.5 秒",
+        "note": "最终状态没有变，只是固定取样点落在事实之前。",
         "activeIds": [
-          "api-delay",
-          "async-button"
+          "api-response",
+          "fixed-sleep",
+          "web-assert",
+          "hidden-state"
         ],
         "doneIds": [],
         "mutedIds": [
-          "fixed-result",
-          "auto-result"
+          "visible-state",
+          "diff-report"
         ],
         "values": {
-          "api-delay": "1500ms",
-          "async-button": "hidden until 1.5s"
+          "api-response": "arrives @1.5s",
+          "fixed-sleep": "reads @1s",
+          "web-assert": "deadline 5s"
         },
         "activeEdgeIds": [
-          "delay-button"
+          "response-hidden"
         ]
       },
       {
-        "label": "固定等待在 1 秒误失败",
-        "note": "sleep 结束时条件尚未成立，测试没有继续观察。",
+        "label": "固定等待在 1 秒提前失败",
+        "note": "sleep 结束时按钮仍 hidden；红灯描述的是观察时机，不是业务结论。",
         "activeIds": [
           "fixed-sleep",
-          "async-button",
-          "fixed-result"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "auto-assert",
-          "auto-result"
-        ],
-        "values": {
-          "fixed-result": "FAIL @1.0s",
-          "async-button": "appears @1.5s"
-        },
-        "activeEdgeIds": [
-          "sleep-check",
-          "button-fixed"
-        ]
-      },
-      {
-        "label": "条件等待在 1.5 秒通过",
-        "note": "toBeVisible 在上限内重试，到真实条件出现后立即完成。",
-        "activeIds": [
-          "auto-assert",
-          "async-button",
-          "auto-result"
+          "hidden-state",
+          "diff-report"
         ],
         "doneIds": [
-          "auto-result"
+          "diff-report"
+        ],
+        "mutedIds": [
+          "web-assert",
+          "visible-state"
+        ],
+        "values": {
+          "fixed-sleep": "FAIL @1s",
+          "diff-report": "Expected visible · Received hidden"
+        },
+        "activeEdgeIds": [
+          "fixed-read",
+          "failure-diff"
+        ]
+      },
+      {
+        "label": "条件断言在 1.5 秒读到 visible",
+        "note": "目标状态出现后立即比较；同一回执让条件轨道通过。",
+        "activeIds": [
+          "web-assert",
+          "visible-state",
+          "diff-report"
+        ],
+        "doneIds": [
+          "visible-state",
+          "diff-report"
         ],
         "mutedIds": [
           "fixed-sleep",
-          "fixed-result"
+          "hidden-state"
         ],
         "values": {
-          "auto-result": "PASS @1.5s",
-          "auto-assert": "deadline 5s"
+          "web-assert": "PASS @1.5s",
+          "visible-state": "visible",
+          "diff-report": "Expected = Received"
         },
         "activeEdgeIds": [
-          "auto-check",
-          "button-auto"
-        ],
-        "metric": {
-          "label": "同一最终状态",
-          "value": "visible"
-        }
+          "response-visible",
+          "condition-read"
+        ]
       }
     ],
-    "insight": "断言要等待真实条件，而不是猜系统应该在第几毫秒完成。",
+    "insight": "断言要等事实抵达，再比较可观察条件；时间是上限，不是结果本身。",
     "quiz": {
-      "question": "为什么 toBeVisible 比 sleep(1000)+检查更稳定？",
+      "question": "响应变慢时，哪条断言更能表达保存是否完成？",
       "options": [
         {
-          "label": "它在期限内等待目标条件成立",
+          "label": "在期限内等待按钮变为 visible",
           "correct": true
         },
         {
-          "label": "它会永久忽略失败",
+          "label": "永远 sleep 1000ms 后读取一次",
           "correct": false
         },
         {
-          "label": "它让服务器固定在 200 ms 返回",
+          "label": "只检查内部 saving 标志",
           "correct": false
         }
       ],
-      "success": "条件等待把同步点绑定到可观察状态。",
-      "retry": "比较固定时间点与状态成立时点。"
+      "success": "把同步点绑在目标状态上，失败才会说明实际差异。",
+      "retry": "先找出 Expected、Received 和允许等待的上限。"
     },
     "prompt": {
-      "title": "把脆弱断言改成状态断言",
-      "text": "请列出真正的业务观察点、允许等待上限和失败差异，移除固定 sleep 与非必要的内部变量检查。"
+      "title": "把脆弱断言改成行为证据",
+      "text": "请写出动作、可观察目标、等待上限与失败差异，再把固定 sleep 和实现细节检查拆掉或改到合适的测试层。"
     },
     "sources": [
       {
-        "url": "https://playwright.dev/docs/test-assertions",
-        "label": "Playwright Assertions",
-        "note": "浏览器测试与自动等待"
+        "url": "https://playwright.dev/docs/api/class-playwrightassertions",
+        "label": "Playwright · Assertions",
+        "note": "web-first 断言会重取目标并在期限内重试"
       },
       {
         "url": "https://jestjs.io/docs/expect",
-        "label": "Jest Expect",
-        "note": "测试替身与断言行为"
+        "label": "Jest · Expect",
+        "note": "matcher、Promise 断言与失败差异"
+      },
+      {
+        "url": "https://testing-library.com/docs/dom-testing-library/api-async/",
+        "label": "Testing Library · Async Methods",
+        "note": "findBy、waitFor 与消失等待"
+      },
+      {
+        "url": "https://docs.cypress.io/app/core-concepts/retry-ability",
+        "label": "Cypress · Retry-ability",
+        "note": "查询、断言和动作的重试边界"
+      },
+      {
+        "url": "https://playwright.dev/docs/test-timeouts",
+        "label": "Playwright · Timeouts",
+        "note": "expect timeout 与测试 timeout 的区别"
       }
     ]
   },
   {
     "slug": "code-coverage",
-    "lead": "一条测试已经让行覆盖率变成 100%，为什么四种条件组合里还有三种从没跑过？",
-    "definition": "代码覆盖率统计测试执行触达的语句、分支、函数或条件，用来发现尚未运行的代码区域。",
-    "boundary": "高覆盖率不能证明断言有效，也不能替代需求、并发和集成验证；不同覆盖维度回答的问题不同。",
+    "lead": "一条成功测试已经让行覆盖率变成 100%，为什么四种条件组合里还有三种从没跑过？",
+    "definition": "代码覆盖率统计测试执行触达的语句、分支、函数或条件，用来发现尚未运行的代码路径；断言才判断路径结果是否符合行为契约。",
+    "boundary": "高覆盖率不能证明断言有效，也不能替代需求、并发和集成验证；行、分支和组合追踪分别回答不同问题。",
     "sceneKind": "matrix",
     "sceneTitle": "一行条件背后的四格真值表",
     "actionLabel": "补充下一种输入组合",
@@ -17416,7 +17640,7 @@
         "label": "未验证成人",
         "detail": "应拒绝",
         "icon": "shield",
-        "group": "缺陷"
+        "group": "风险"
       }
     ],
     "edges": [
@@ -17453,10 +17677,31 @@
     ],
     "frames": [
       {
-        "label": "只运行成人且已验证",
-        "note": "20,true 走过整行代码并返回允许。",
+        "label": "先把一行拆成四格",
+        "note": "年龄和验证状态各有真/假，四种输入组合才是可以逐格追踪的路径。",
         "activeIds": [
           "access-condition",
+          "truth-matrix"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "line-meter",
+          "branch-meter",
+          "condition-meter",
+          "hidden-bug"
+        ],
+        "values": {
+          "access-condition": "age ≥ 18 && verified",
+          "truth-matrix": "TT · TF · FT · FF"
+        },
+        "activeEdgeIds": [
+          "condition-matrix"
+        ]
+      },
+      {
+        "label": "只运行成人且已验证",
+        "note": "20,true 走过整行代码，行覆盖已经亮起，但另外三格还没有执行记录。",
+        "activeIds": [
           "truth-matrix",
           "line-meter",
           "branch-meter",
@@ -17482,8 +17727,8 @@
         ]
       },
       {
-        "label": "100% 行覆盖仍留下三格空白",
-        "note": "TF、FT、FF 没有运行，报告无法说明这些组合是否正确。",
+        "label": "把空白翻译成风险",
+        "note": "报告显示行覆盖 100%，但 TF、FT、FF 仍是问号；下一步不是重读百分比，而是补有意义的输入。",
         "activeIds": [
           "truth-matrix",
           "line-meter",
@@ -17491,7 +17736,8 @@
         ],
         "doneIds": [],
         "mutedIds": [
-          "hidden-bug"
+          "hidden-bug",
+          "branch-meter"
         ],
         "values": {
           "truth-matrix": "TT ✓ · TF ? · FT ? · FF ?",
@@ -17503,8 +17749,8 @@
         ]
       },
       {
-        "label": "补充 TF 暴露授权缺陷",
-        "note": "20,false 本应拒绝，实际实现错误允许了未验证成人。",
+        "label": "补 TF，缺陷露头",
+        "note": "20,false 本应拒绝，实际实现却放行；覆盖率把路径带到灯下，行为断言把它判红。",
         "activeIds": [
           "truth-matrix",
           "hidden-bug",
@@ -17518,6 +17764,7 @@
           "line-meter"
         ],
         "values": {
+          "truth-matrix": "TT ✓ · TF ✕ · FT ? · FF ?",
           "hidden-bug": "expected deny · got allow",
           "condition-meter": "2/4"
         },
@@ -17529,7 +17776,7 @@
       },
       {
         "label": "四种组合都执行并断言",
-        "note": "修复后补齐 FT 与 FF；指标帮助定位空白，断言才判断行为。",
+        "note": "补齐 FT 与 FF，每条路径都写下 allow/deny 期待；数字回到证据链里。",
         "activeIds": [
           "truth-matrix",
           "branch-meter",
@@ -17538,7 +17785,8 @@
         ],
         "doneIds": [
           "branch-meter",
-          "condition-meter"
+          "condition-meter",
+          "hidden-bug"
         ],
         "mutedIds": [
           "line-meter"
@@ -17547,7 +17795,7 @@
           "truth-matrix": "4/4 checked",
           "branch-meter": "100%",
           "condition-meter": "4/4",
-          "hidden-bug": "fixed"
+          "hidden-bug": "fixed · 4 assertions"
         },
         "activeEdgeIds": [
           "matrix-branch",
@@ -17576,79 +17824,94 @@
           "correct": false
         }
       ],
-      "success": "覆盖维度不同，能暴露的未测区域也不同。",
-      "retry": "把复合条件展开成真值表。"
+      "success": "覆盖维度不同，能暴露的未测区域也不同；断言负责判断结果。",
+      "retry": "把复合条件展开成真值表，再问每格期待什么。"
     },
     "prompt": {
       "title": "解释覆盖率报告里的空白",
-      "text": "请同时查看语句、分支和复合条件，列出未执行路径及对应风险；为高风险路径补有意义的断言，而不是只追百分比。"
+      "text": "请先确认报告统计范围，再同时查看语句、分支和复合条件，列出未执行路径及对应风险；为高风险路径补有意义的行为断言，而不是只追百分比。"
     },
     "sources": [
       {
-        "url": "https://jestjs.io/docs/configuration#collectcoverage-boolean",
-        "label": "Jest Coverage Configuration",
-        "note": "测试替身与断言行为"
+        "url": "https://istanbul.js.org/",
+        "label": "Istanbul · How Istanbul works",
+        "note": "JavaScript 插桩与行计数器"
       },
       {
-        "url": "https://glossary.istqb.org/en_US/search",
-        "label": "ISTQB Glossary",
-        "note": "测试术语与范围定义"
+        "url": "https://jestjs.io/docs/configuration#collectcoverage-boolean",
+        "label": "Jest · Configuring Jest",
+        "note": "收集范围与覆盖率门槛"
+      },
+      {
+        "url": "https://www.jacoco.org/jacoco/trunk/doc/counters.html",
+        "label": "JaCoCo · Coverage Counters",
+        "note": "行、指令、分支和复杂度维度"
+      },
+      {
+        "url": "https://vitest.dev/guide/coverage.html",
+        "label": "Vitest · Coverage",
+        "note": "V8/Istanbul provider 与报告范围"
+      },
+      {
+        "url": "https://clang.llvm.org/docs/SourceBasedCodeCoverage.html",
+        "label": "LLVM · Source-based Code Coverage",
+        "note": "插桩、运行、报告与 MC/DC"
       }
     ]
   },
   {
     "slug": "api-testing",
-    "lead": "POST /orders 返回 201 就算通过了吗？重复请求多写一行，或用户 B 能操作用户 A 的订单，都说明接口仍有问题。",
-    "definition": "API 测试直接构造协议请求，检查状态、字段、模式、授权、服务端副作用和故障恢复。",
-    "boundary": "只断言 200 或响应体不够；API 测试不覆盖浏览器交互，也不能替代生产监控。",
+    "lead": "订单接口返回 201 就算通过了吗？网络重试可能多写一行，换个身份也可能读走别人的订单。",
+    "definition": "API 测试直接构造协议请求，检查状态码、响应字段、服务端副作用、重复请求和访问权限。",
+    "boundary": "它可以绕过浏览器检查服务边界，但不能替代页面交互、生产监控或所有集成环境差异。",
     "sceneKind": "contract",
-    "sceneTitle": "合法、重复与越权请求的双侧核对",
-    "actionLabel": "发送下一组 API 请求",
+    "sceneTitle": "两本账核对一次接口请求",
+    "actionLabel": "发送下一组请求",
     "actors": [
       {
-        "id": "order-api-test",
-        "label": "POST /orders",
-        "detail": "三组请求",
+        "id": "api-request",
+        "label": "请求包",
+        "detail": "method + path + body",
         "icon": "message",
-        "group": "请求"
+        "group": "输入"
       },
       {
-        "id": "api-response-panel",
-        "label": "响应",
-        "detail": "status + schema",
+        "id": "api-contract",
+        "label": "响应契约",
+        "detail": "201 · schema",
         "icon": "code",
         "group": "协议"
       },
       {
-        "id": "api-orders-db",
-        "label": "orders 表",
+        "id": "api-state",
+        "label": "orders 状态",
         "detail": "0 rows",
         "icon": "database",
         "group": "副作用"
       },
       {
-        "id": "idem-header",
+        "id": "api-key",
         "label": "Idempotency-Key",
         "detail": "order-42",
         "icon": "key",
-        "group": "控制"
+        "group": "重试"
       },
       {
-        "id": "user-a",
+        "id": "api-user-a",
         "label": "用户 A",
         "detail": "owner",
         "icon": "user",
         "group": "身份"
       },
       {
-        "id": "user-b",
+        "id": "api-user-b",
         "label": "用户 B",
-        "detail": "other tenant",
+        "detail": "other owner",
         "icon": "user",
         "group": "身份"
       },
       {
-        "id": "api-test-result",
+        "id": "api-verdict",
         "label": "联合断言",
         "detail": "response + state",
         "icon": "shield",
@@ -17657,155 +17920,210 @@
     ],
     "edges": [
       {
-        "id": "request-response",
-        "from": "order-api-test",
-        "to": "api-response-panel",
-        "label": "发送"
+        "id": "request-contract",
+        "from": "api-request",
+        "to": "api-contract",
+        "label": "收回执"
       },
       {
-        "id": "request-db",
-        "from": "order-api-test",
-        "to": "api-orders-db",
-        "label": "产生写入"
+        "id": "request-state",
+        "from": "api-request",
+        "to": "api-state",
+        "label": "留下状态"
       },
       {
-        "id": "idem-request",
-        "from": "idem-header",
-        "to": "order-api-test",
-        "label": "重复标识"
+        "id": "key-retry",
+        "from": "api-key",
+        "to": "api-request",
+        "label": "标记同一意图"
       },
       {
-        "id": "a-request",
-        "from": "user-a",
-        "to": "order-api-test",
-        "label": "授权请求"
+        "id": "user-a-request",
+        "from": "api-user-a",
+        "to": "api-request",
+        "label": "授权创建"
       },
       {
-        "id": "b-request",
-        "from": "user-b",
-        "to": "order-api-test",
-        "label": "越权请求"
+        "id": "user-b-request",
+        "from": "api-user-b",
+        "to": "api-request",
+        "label": "尝试读取"
       },
       {
-        "id": "response-result",
-        "from": "api-response-panel",
-        "to": "api-test-result",
+        "id": "contract-verdict",
+        "from": "api-contract",
+        "to": "api-verdict",
         "label": "协议断言"
       },
       {
-        "id": "db-result",
-        "from": "api-orders-db",
-        "to": "api-test-result",
+        "id": "state-verdict",
+        "from": "api-state",
+        "to": "api-verdict",
         "label": "状态断言"
       }
     ],
     "frames": [
       {
-        "label": "用户 A 首次创建订单",
-        "note": "合法 body 与令牌得到 201，schema 含 orderId，数据库新增一行。",
+        "label": "先写两本账的期待",
+        "note": "成功响应要有 201 和 orderId，服务端要从 0 行变成 1 行；两边都写进测试。",
         "activeIds": [
-          "user-a",
-          "order-api-test",
-          "api-response-panel",
-          "api-orders-db",
-          "api-test-result"
+          "api-request",
+          "api-contract",
+          "api-state",
+          "api-verdict"
         ],
-        "doneIds": [
-          "api-test-result"
-        ],
+        "doneIds": [],
         "mutedIds": [
-          "idem-header",
-          "user-b"
+          "api-key",
+          "api-user-a",
+          "api-user-b"
         ],
         "values": {
-          "api-response-panel": "201 · orderId:string",
-          "api-orders-db": "1 row",
-          "api-test-result": "PASS"
+          "api-contract": "201 + orderId:string",
+          "api-state": "0 → 1 row"
         },
         "activeEdgeIds": [
-          "a-request",
-          "request-response",
-          "request-db",
-          "response-result",
-          "db-result"
+          "request-contract",
+          "request-state",
+          "contract-verdict",
+          "state-verdict"
         ]
       },
       {
-        "label": "相同幂等键再次发送",
-        "note": "响应返回同一 orderId，数据库仍只有一行。",
+        "label": "用户 A 首次创建",
+        "note": "合法 body 与令牌得到 201，响应带回订单号，状态账本新增一行。",
         "activeIds": [
-          "idem-header",
-          "order-api-test",
-          "api-response-panel",
-          "api-orders-db",
-          "api-test-result"
+          "api-user-a",
+          "api-request",
+          "api-contract",
+          "api-state"
         ],
         "doneIds": [
-          "api-test-result"
+          "api-contract",
+          "api-state"
         ],
         "mutedIds": [
-          "user-b"
+          "api-key",
+          "api-user-b"
         ],
         "values": {
-          "api-response-panel": "200 · same orderId",
-          "api-orders-db": "still 1 row"
+          "api-contract": "201 · orderId:ord-42",
+          "api-state": "1 row"
         },
         "activeEdgeIds": [
-          "idem-request",
-          "request-response",
-          "response-result",
-          "db-result"
+          "user-a-request",
+          "request-contract",
+          "request-state"
         ]
       },
       {
-        "label": "用户 B 尝试读取订单",
-        "note": "ID 格式完全合法，但主体不是资源所有者，应在授权层返回 403。",
+        "label": "把回执和状态放在一起",
+        "note": "状态码与字段形状通过还不够，后置条件要证明订单确实出现且数量正确。",
         "activeIds": [
-          "user-b",
-          "order-api-test",
-          "api-response-panel",
-          "api-orders-db"
+          "api-contract",
+          "api-state",
+          "api-verdict"
         ],
         "doneIds": [
-          "api-response-panel"
+          "api-verdict"
         ],
         "mutedIds": [
-          "user-a",
-          "idem-header"
+          "api-user-a",
+          "api-user-b",
+          "api-key"
         ],
         "values": {
-          "api-response-panel": "403",
-          "api-orders-db": "unchanged"
+          "api-contract": "schema ✓",
+          "api-state": "1 row",
+          "api-verdict": "PASS · 2 ledgers"
         },
         "activeEdgeIds": [
-          "b-request",
-          "request-response",
-          "db-result"
+          "contract-verdict",
+          "state-verdict"
         ]
       },
       {
-        "label": "任一侧不一致都判失败",
-        "note": "状态码、响应 schema 与数据库副作用被合成同一测试结论。",
+        "label": "同一个幂等键重试",
+        "note": "连接失败后重发同一意图，响应回到原订单，状态账本仍只有一行。",
         "activeIds": [
-          "api-response-panel",
-          "api-orders-db",
-          "api-test-result"
+          "api-key",
+          "api-request",
+          "api-contract",
+          "api-state",
+          "api-verdict"
         ],
         "doneIds": [
-          "api-test-result"
+          "api-verdict"
         ],
         "mutedIds": [
-          "user-a",
-          "user-b",
-          "idem-header"
+          "api-user-b"
         ],
         "values": {
-          "api-test-result": "3 scenarios · 7 assertions",
-          "api-orders-db": "final 1 row"
+          "api-contract": "200 · same orderId",
+          "api-state": "still 1 row",
+          "api-verdict": "PASS · idempotent retry"
         },
         "activeEdgeIds": [
-          "response-result",
-          "db-result"
+          "key-retry",
+          "request-contract",
+          "request-state",
+          "contract-verdict",
+          "state-verdict"
+        ]
+      },
+      {
+        "label": "用户 B 换身份读取",
+        "note": "订单编号格式合法，但 B 不是所有者；示例契约返回 403，订单状态不变。",
+        "activeIds": [
+          "api-user-b",
+          "api-request",
+          "api-contract",
+          "api-state"
+        ],
+        "doneIds": [
+          "api-contract",
+          "api-state"
+        ],
+        "mutedIds": [
+          "api-user-a",
+          "api-key"
+        ],
+        "values": {
+          "api-contract": "403 · access denied",
+          "api-state": "still 1 row"
+        },
+        "activeEdgeIds": [
+          "user-b-request",
+          "request-contract",
+          "request-state"
+        ]
+      },
+      {
+        "label": "三组请求合并判断",
+        "note": "成功、同键重试与换身份读取各有响应和状态期待；任一侧不一致都判失败。",
+        "activeIds": [
+          "api-contract",
+          "api-state",
+          "api-verdict"
+        ],
+        "doneIds": [
+          "api-contract",
+          "api-state",
+          "api-verdict"
+        ],
+        "mutedIds": [
+          "api-user-a",
+          "api-user-b",
+          "api-key"
+        ],
+        "values": {
+          "api-contract": "201 · 200 · 403",
+          "api-state": "final 1 row",
+          "api-verdict": "PASS · 3 scenarios"
+        },
+        "activeEdgeIds": [
+          "contract-verdict",
+          "state-verdict"
         ],
         "metric": {
           "label": "最终订单数",
@@ -17813,318 +18131,463 @@
         }
       }
     ],
-    "insight": "接口正确性要同时看协议回复和系统状态，尤其是重复与越权请求。",
+    "insight": "接口测试要让协议回执和服务端状态互相作证，重复与越权请求尤其不能省。",
     "quiz": {
-      "question": "重复创建返回 200，但数据库多了一行，应怎样判定？",
+      "question": "同键重试返回 200，但 orders 表从 1 行变成 2 行，应怎样判定？",
       "options": [
         {
-          "label": "失败，幂等副作用不符合预期",
+          "label": "失败，重复请求留下了错误副作用",
           "correct": true
         },
         {
-          "label": "通过，只要状态码不是 500",
+          "label": "通过，只要状态码是 2xx",
           "correct": false
         },
         {
-          "label": "忽略数据库，因为它不属于 API",
+          "label": "忽略状态表，因为 API 只看响应",
           "correct": false
         }
       ],
-      "success": "协议看起来正常，仍可能留下错误副作用。",
-      "retry": "把响应和服务端状态并排核对。"
+      "success": "状态码和副作用必须表达同一个接口契约。",
+      "retry": "把同一幂等键的响应和订单行数并排核对。"
     },
     "prompt": {
-      "title": "扩展一条 API 测试",
-      "text": "请为正常、边界、重复和越权请求分别写出方法、路径、身份、body、响应 schema、状态码和持久化副作用。"
+      "title": "补一组 API 测试",
+      "text": "请为正常创建、同键重试、同键换参数和换身份读取写出方法、路径、身份、响应 schema、状态码与服务端状态期待。"
     },
     "sources": [
       {
         "url": "https://playwright.dev/docs/api-testing",
-        "label": "Playwright API Testing",
-        "note": "浏览器测试与自动等待"
+        "label": "Playwright · API testing",
+        "note": "直接请求与服务端后置条件"
       },
       {
-        "url": "https://owasp.org/www-project-web-security-testing-guide/",
-        "label": "OWASP Web Security Testing Guide",
-        "note": "安全风险与验证方法"
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "IETF · RFC 9110 HTTP Semantics",
+        "note": "状态码与幂等方法"
+      },
+      {
+        "url": "https://spec.openapis.org/oas/v3.1.0.html",
+        "label": "OpenAPI · Specification 3.1.0",
+        "note": "响应对象与 schema"
+      },
+      {
+        "url": "https://api-security.owasp.org/editions/2023/en/0x11-t10/",
+        "label": "OWASP · API Security Risks 2023",
+        "note": "对象级授权边界"
+      },
+      {
+        "url": "https://docs.stripe.com/api/idempotent_requests",
+        "label": "Stripe · Idempotent requests",
+        "note": "同键重试的具体服务约定"
       }
     ]
   },
   {
-    "slug": "least-privilege",
-    "lead": "发布机器人只需要读代码、写一个版本，为什么给组织管理员会多出九条无关攻击路径？",
-    "definition": "最小权限要求主体只获得完成当前任务所需的动作、资源范围和时间窗口，并在用途结束后撤回。",
-    "boundary": "最小权限不等于一律只读，也不是一次配置永久有效。服务账号、临时管理员和跨租户访问都要定期复核。",
-    "sceneKind": "matrix",
-    "sceneTitle": "发布任务在动作、资源和时间三维收窄",
-    "actionLabel": "扩大或收窄授权",
-    "actors": [
-      {
-        "id": "deploy-bot",
-        "label": "deploy-bot",
-        "detail": "发布任务",
-        "icon": "robot",
-        "group": "主体"
-      },
-      {
-        "id": "repo-read",
-        "label": "读取仓库",
-        "detail": "repo:vibep",
-        "icon": "git",
-        "group": "权限"
-      },
-      {
-        "id": "release-write",
-        "label": "写入版本",
-        "detail": "release:v42",
-        "icon": "package",
-        "group": "权限"
-      },
-      {
-        "id": "org-admin",
-        "label": "组织管理员",
-        "detail": "9 类额外动作",
-        "icon": "key",
-        "group": "过量权限"
-      },
-      {
-        "id": "time-lease",
-        "label": "临时租约",
-        "detail": "30 min",
-        "icon": "clock",
-        "group": "期限"
-      },
-      {
-        "id": "audit-log",
-        "label": "审计记录",
-        "detail": "等待动作",
-        "icon": "file",
-        "group": "证据"
-      }
-    ],
-    "edges": [
-      {
-        "id": "bot-read",
-        "from": "deploy-bot",
-        "to": "repo-read",
-        "label": "需要"
-      },
-      {
-        "id": "bot-release",
-        "from": "deploy-bot",
-        "to": "release-write",
-        "label": "需要"
-      },
-      {
-        "id": "bot-admin",
-        "from": "deploy-bot",
-        "to": "org-admin",
-        "label": "不需要"
-      },
-      {
-        "id": "lease-bot",
-        "from": "time-lease",
-        "to": "deploy-bot",
-        "label": "到期撤回"
-      },
-      {
-        "id": "bot-audit",
-        "from": "deploy-bot",
-        "to": "audit-log",
-        "label": "记录操作"
-      }
-    ],
-    "frames": [
-      {
-        "label": "只读仓库还不能完成发布",
-        "note": "机器人能取得构建产物，但写 release 时明确被拒绝。",
-        "activeIds": [
-          "deploy-bot",
-          "repo-read",
-          "release-write",
-          "audit-log"
-        ],
-        "doneIds": [
-          "repo-read"
-        ],
-        "mutedIds": [
-          "org-admin",
-          "time-lease"
-        ],
-        "values": {
-          "repo-read": "allowed",
-          "release-write": "denied",
-          "audit-log": "missing release:write"
-        },
-        "activeEdgeIds": [
-          "bot-read",
-          "bot-release",
-          "bot-audit"
-        ]
-      },
-      {
-        "label": "只补一个发布范围",
-        "note": "授权 release:v42 的 write，不开放成员、密钥和其他仓库管理。",
-        "activeIds": [
-          "deploy-bot",
-          "release-write",
-          "time-lease"
-        ],
-        "doneIds": [
-          "release-write"
-        ],
-        "mutedIds": [
-          "org-admin"
-        ],
-        "values": {
-          "release-write": "allowed for v42",
-          "time-lease": "30:00 remaining"
-        },
-        "activeEdgeIds": [
-          "bot-release",
-          "lease-bot"
-        ]
-      },
-      {
-        "label": "管理员权限扩大无关路径",
-        "note": "切换为 org admin 后，删成员、改密钥等九类动作同时可用，却与发布无关。",
-        "activeIds": [
-          "deploy-bot",
-          "org-admin",
-          "audit-log"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "repo-read",
-          "release-write"
-        ],
-        "values": {
-          "org-admin": "9 unnecessary actions",
-          "audit-log": "risk expanded"
-        },
-        "activeEdgeIds": [
-          "bot-admin",
-          "bot-audit"
-        ],
-        "metric": {
-          "label": "无关权限",
-          "value": "9"
-        }
-      },
-      {
-        "label": "发布完成后租约自动失效",
-        "note": "30 分钟到期，release:write 被撤回；只保留审计事实。",
-        "activeIds": [
-          "time-lease",
-          "deploy-bot",
-          "release-write",
-          "audit-log"
-        ],
-        "doneIds": [
-          "time-lease",
-          "audit-log"
-        ],
-        "mutedIds": [
-          "org-admin"
-        ],
-        "values": {
-          "time-lease": "expired",
-          "release-write": "denied",
-          "audit-log": "v42 published"
-        },
-        "activeEdgeIds": [
-          "lease-bot",
-          "bot-audit"
-        ]
-      }
-    ],
-    "insight": "最小权限要回答谁、对什么、能做什么、能做多久，而不是笼统地说“权限少一点”。",
-    "quiz": {
-      "question": "机器人缺少 release:write 时，最合适的补权方式是什么？",
-      "options": [
-        {
-          "label": "只给目标版本的临时写权限",
-          "correct": true
-        },
-        {
-          "label": "永久授予组织管理员",
-          "correct": false
-        },
-        {
-          "label": "关闭所有授权检查",
-          "correct": false
-        }
+  "slug": "least-privilege",
+  "lead": "发布机器人只需要读代码、写一个版本，为什么给组织管理员会多出九条无关攻击路径？",
+  "definition": "最小权限要求主体只获得完成当前任务所需的动作、资源范围和时间窗口，并在用途结束后撤回。",
+  "boundary": "最小权限不等于一律只读，也不是一次配置永久有效。服务账号、临时管理员和跨租户访问都要定期复核。",
+  "sceneKind": "layers",
+  "sceneTitle": "发布任务怎样沿动作、资源和时间三层收窄",
+  "actionLabel": "收窄或试穿这把钥匙",
+  "actors": [
+    {
+      "id": "deploy-bot",
+      "label": "deploy-bot",
+      "detail": "发布任务",
+      "icon": "robot",
+      "group": "主体"
+    },
+    {
+      "id": "release-task",
+      "label": "发布 Vibe v2.4",
+      "detail": "build → publish",
+      "icon": "package",
+      "group": "任务"
+    },
+    {
+      "id": "repo-read",
+      "label": "读取仓库",
+      "detail": "repo/Vibe",
+      "icon": "git",
+      "group": "必要动作"
+    },
+    {
+      "id": "release-write",
+      "label": "写入 release",
+      "detail": "release:v2.4",
+      "icon": "package",
+      "group": "必要动作"
+    },
+    {
+      "id": "org-admin",
+      "label": "组织管理员",
+      "detail": "org/* · 9 条无关路径",
+      "icon": "key",
+      "group": "过量权限"
+    },
+    {
+      "id": "production-delete",
+      "label": "删除生产数据",
+      "detail": "越界动作",
+      "icon": "shield",
+      "group": "越界尝试"
+    },
+    {
+      "id": "time-lease",
+      "label": "临时租约",
+      "detail": "30 min",
+      "icon": "clock",
+      "group": "时间"
+    },
+    {
+      "id": "audit-log",
+      "label": "审计记录",
+      "detail": "发布与拒绝都留痕",
+      "icon": "file",
+      "group": "证据"
+    }
+  ],
+  "edges": [
+    {
+      "id": "bot-task",
+      "from": "deploy-bot",
+      "to": "release-task",
+      "label": "执行"
+    },
+    {
+      "id": "task-read",
+      "from": "release-task",
+      "to": "repo-read",
+      "label": "需要"
+    },
+    {
+      "id": "task-write",
+      "from": "release-task",
+      "to": "release-write",
+      "label": "需要"
+    },
+    {
+      "id": "task-admin",
+      "from": "release-task",
+      "to": "org-admin",
+      "label": "不需要"
+    },
+    {
+      "id": "lease-write",
+      "from": "time-lease",
+      "to": "release-write",
+      "label": "限制"
+    },
+    {
+      "id": "task-delete",
+      "from": "release-task",
+      "to": "production-delete",
+      "label": "拒绝"
+    },
+    {
+      "id": "task-audit",
+      "from": "release-task",
+      "to": "audit-log",
+      "label": "记录"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先把任务写成动作",
+      "note": "发布 Vibe v2.4 需要读构建输入、写 release；还没有理由拿组织管理员。",
+      "activeIds": [
+        "deploy-bot",
+        "release-task"
       ],
-      "success": "动作、资源和期限都可以精确收窄。",
-      "retry": "先写出完成任务所缺的最小动作。"
+      "doneIds": [
+        "release-task"
+      ],
+      "mutedIds": [
+        "repo-read",
+        "release-write",
+        "org-admin",
+        "production-delete",
+        "time-lease",
+        "audit-log"
+      ],
+      "values": {
+        "release-task": "read build → write release",
+        "org-admin": "unneeded"
+      },
+      "activeEdgeIds": [
+        "bot-task"
+      ]
     },
-    "prompt": {
-      "title": "收窄一个服务身份的权限",
-      "text": "请列出主体、任务、必要动作、资源范围、租约期限和撤回条件，并用审计日志验证没有使用额外权限。"
+    {
+      "label": "管理员钥匙把无关门一起打开",
+      "note": "org/* 让读成员、改密钥、删生产都可达；这是方便的角色，不是任务需求。",
+      "activeIds": [
+        "deploy-bot",
+        "release-task",
+        "org-admin",
+        "production-delete",
+        "audit-log"
+      ],
+      "doneIds": [
+        "org-admin"
+      ],
+      "mutedIds": [
+        "repo-read",
+        "release-write",
+        "time-lease"
+      ],
+      "values": {
+        "org-admin": "9 extra paths",
+        "audit-log": "risk expanded"
+      },
+      "metric": {
+        "label": "无关路径",
+        "value": "9"
+      },
+      "activeEdgeIds": [
+        "bot-task",
+        "task-admin",
+        "task-delete",
+        "task-audit"
+      ]
     },
-    "sources": [
+    {
+      "label": "只留下两把刚好够用",
+      "note": "read repo/Vibe 加 write release:v2.4 让发布走通，管理员钥匙退出授权集合。",
+      "activeIds": [
+        "deploy-bot",
+        "release-task",
+        "repo-read",
+        "release-write",
+        "audit-log"
+      ],
+      "doneIds": [
+        "repo-read",
+        "release-write"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "production-delete",
+        "time-lease"
+      ],
+      "values": {
+        "repo-read": "allowed",
+        "release-write": "allowed",
+        "org-admin": "removed"
+      },
+      "activeEdgeIds": [
+        "bot-task",
+        "task-read",
+        "task-write",
+        "task-audit"
+      ]
+    },
+    {
+      "label": "把 write 锁进资源和窗口",
+      "note": "同一个动作加上 repo/Vibe 与 30 分钟租约，授权上限随范围和时间收窄。",
+      "activeIds": [
+        "deploy-bot",
+        "repo-read",
+        "release-write",
+        "time-lease",
+        "audit-log"
+      ],
+      "doneIds": [
+        "repo-read",
+        "release-write",
+        "time-lease"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "production-delete"
+      ],
+      "values": {
+        "repo-read": "repo/Vibe",
+        "release-write": "30 min",
+        "time-lease": "30:00"
+      },
+      "activeEdgeIds": [
+        "task-read",
+        "task-write",
+        "lease-write",
+        "task-audit"
+      ]
+    },
+    {
+      "label": "试一次真正的越界动作",
+      "note": "发布权限通过，delete production 被服务端策略拒绝；不是把按钮藏起来就算完成。",
+      "activeIds": [
+        "deploy-bot",
+        "release-write",
+        "production-delete",
+        "audit-log"
+      ],
+      "doneIds": [
+        "release-write",
+        "audit-log"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "repo-read",
+        "time-lease"
+      ],
+      "values": {
+        "release-write": "allowed",
+        "production-delete": "DENY",
+        "audit-log": "denied attempt"
+      },
+      "activeEdgeIds": [
+        "task-write",
+        "task-delete",
+        "task-audit"
+      ]
+    },
+    {
+      "label": "到期之后重新申请",
+      "note": "租约过期，release:write 自动收回；审计记录留下发布事实，下一次任务要重新申请。",
+      "activeIds": [
+        "time-lease",
+        "release-write",
+        "audit-log"
+      ],
+      "doneIds": [
+        "time-lease",
+        "audit-log"
+      ],
+      "mutedIds": [
+        "org-admin",
+        "repo-read",
+        "production-delete"
+      ],
+      "values": {
+        "time-lease": "expired",
+        "release-write": "revoked",
+        "audit-log": "v2.4 published"
+      },
+      "activeEdgeIds": [
+        "lease-write",
+        "task-audit"
+      ]
+    }
+  ],
+  "insight": "最小权限要回答谁、为了什么任务、对哪个资源做什么动作、在什么条件下能做多久；角色名只是入口，不是证据。",
+  "quiz": {
+    "question": "deploy-bot 缺少 release:write 时，哪一个补权最小？",
+    "options": [
       {
-        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
-        "label": "OWASP Authorization Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "只给 release:v2.4 的临时写权限",
+        "correct": true
       },
       {
-        "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
-        "label": "NIST SP 800-207",
-        "note": "安全要求与风险边界"
+        "label": "永久授予组织管理员",
+        "correct": false
+      },
+      {
+        "label": "把授权检查关掉",
+        "correct": false
       }
-    ]
+    ],
+    "success": "动作、资源、时间和越界检查都收窄了，发布可以通过。",
+    "retry": "先把这次任务真正缺的动作写出来，再给它加资源和期限。"
   },
+  "prompt": {
+    "title": "收窄一个服务身份的钥匙",
+    "text": "请列出主体、任务、必要动作、资源范围、条件、租约期限和撤回条件，并用一次允许、一次越界拒绝和一次到期复核验证边界。"
+  },
+  "sources": [
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "label": "OWASP · Authorization Cheat Sheet",
+      "note": "最小权限、默认拒绝与权限膨胀"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+      "label": "AWS · IAM best practices",
+      "note": "动作、资源、条件与 Access Analyzer"
+    },
+    {
+      "url": "https://cloud.google.com/iam/docs/using-iam-securely",
+      "label": "Google Cloud · Use IAM securely",
+      "note": "最小范围、服务账号与临时提升"
+    },
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+      "label": "NIST · SP 800-207",
+      "note": "每次请求都验证，不把网络位置当信任"
+    },
+    {
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+      "label": "Kubernetes · Using RBAC Authorization",
+      "note": "Role 范围与加法规则"
+    }
+  ]
+},
   {
     "slug": "hashing",
-    "lead": "两个人用了同一个密码，为什么带盐 Argon2id 的保存值不同，而且服务器仍能验证登录？",
-    "definition": "密码学哈希把任意长度输入映射为固定长度摘要；密码存储还要使用随机盐和成本可调的专用 KDF，让批量猜测更昂贵。",
-    "boundary": "哈希不是可逆加密。普通 SHA-256 不适合直接存密码；缺盐或成本过低时，攻击者仍可快速猜测。",
+    "lead": "同一份发布包只改一个字符，摘要会怎样变化？密码又为什么要换成另一条更慢的路线？",
+    "definition": "哈希把输入压成可重复计算的固定长度摘要；文件校验关心摘要是否相同，密码验证还要加盐、调成本并在登录时重算。",
+    "boundary": "摘要不是密文，不能拿来还原原文；用于密码时，快速无盐哈希会留下批量猜测和账号关联的缺口。",
     "sceneKind": "compare",
-    "sceneTitle": "无盐快速哈希与带盐密码 KDF 的猜测成本",
-    "actionLabel": "切换方案并运行一秒猜测",
+    "sceneTitle": "一张指纹怎样分出文件校验与密码验证",
+    "actionLabel": "推进下一次计算",
     "actors": [
       {
         "id": "password-a",
         "label": "用户 A 密码",
-        "detail": "same-password",
+        "detail": "salt A · same-password",
         "icon": "key",
-        "group": "输入"
+        "group": "密码"
       },
       {
         "id": "password-b",
         "label": "用户 B 密码",
-        "detail": "same-password",
+        "detail": "salt B · same-password",
         "icon": "key",
-        "group": "输入"
+        "group": "密码"
       },
       {
         "id": "sha-track",
         "label": "SHA-256",
-        "detail": "无盐",
+        "detail": "固定长度 · 快",
         "icon": "gear",
-        "group": "方案"
+        "group": "通用哈希"
       },
       {
         "id": "argon-track",
         "label": "Argon2id",
-        "detail": "随机盐 · 内存成本",
+        "detail": "memory-hard · m/t/p",
         "icon": "memory",
-        "group": "方案"
+        "group": "密码 KDF"
       },
       {
         "id": "hash-store",
         "label": "密码记录",
         "detail": "salt + hash + params",
         "icon": "database",
-        "group": "存储"
+        "group": "保存"
       },
       {
         "id": "guess-counter",
-        "label": "猜测计数器",
-        "detail": "0 / s",
+        "label": "猜测成本",
+        "detail": "快 vs memory-hard",
         "icon": "chart",
         "group": "攻击视角"
+      },
+      {
+        "id": "release-file",
+        "label": "release.tar",
+        "detail": "可信清单里的文件",
+        "icon": "file",
+        "group": "文件"
+      },
+      {
+        "id": "verify-result",
+        "label": "比较结果",
+        "detail": "match / reject",
+        "icon": "shield",
+        "group": "验证"
       }
     ],
     "edges": [
@@ -18144,13 +18607,13 @@
         "id": "a-argon",
         "from": "password-a",
         "to": "argon-track",
-        "label": "salt A"
+        "label": "带盐计算"
       },
       {
         "id": "b-argon",
         "from": "password-b",
         "to": "argon-track",
-        "label": "salt B"
+        "label": "带盐计算"
       },
       {
         "id": "argon-store",
@@ -18163,15 +18626,26 @@
         "from": "sha-track",
         "to": "guess-counter",
         "label": "尝试速率"
+      },
+      {
+        "id": "file-sha",
+        "from": "release-file",
+        "to": "sha-track",
+        "label": "计算指纹"
+      },
+      {
+        "id": "argon-compare",
+        "from": "argon-track",
+        "to": "verify-result",
+        "label": "比较"
       }
     ],
     "frames": [
       {
-        "label": "无盐 SHA-256 产生相同摘要",
-        "note": "相同密码直接进入同一函数，两条记录可被一眼关联。",
+        "label": "同一文件得到同一指纹",
+        "note": "release.tar 经过 SHA-256，结果可以写进发布清单供下载方再次计算。",
         "activeIds": [
-          "password-a",
-          "password-b",
+          "release-file",
           "sha-track",
           "hash-store"
         ],
@@ -18179,21 +18653,51 @@
           "sha-track"
         ],
         "mutedIds": [
+          "password-a",
+          "password-b",
           "argon-track",
+          "verify-result",
           "guess-counter"
         ],
         "values": {
-          "sha-track": "digest 9f86… ×2",
-          "hash-store": "same digest"
+          "release-file": "release.tar",
+          "sha-track": "3a1c…9f",
+          "hash-store": "manifest digest"
         },
         "activeEdgeIds": [
-          "a-sha",
-          "b-sha"
+          "file-sha"
         ]
       },
       {
-        "label": "随机盐让保存值不同",
-        "note": "每个账号生成独立盐，Argon2id 同时保存参数供以后验证。",
+        "label": "只改一个字符，摘要就换了",
+        "note": "release.tar! 走同一个函数，得到另一串结果；摘要不负责告诉你改了哪一位。",
+        "activeIds": [
+          "release-file",
+          "sha-track",
+          "hash-store"
+        ],
+        "doneIds": [
+          "sha-track"
+        ],
+        "mutedIds": [
+          "password-a",
+          "password-b",
+          "argon-track",
+          "verify-result",
+          "guess-counter"
+        ],
+        "values": {
+          "release-file": "release.tar!",
+          "sha-track": "c72b…14",
+          "hash-store": "digest mismatch"
+        },
+        "activeEdgeIds": [
+          "file-sha"
+        ]
+      },
+      {
+        "label": "盐把相同密码分开",
+        "note": "用户 A 和 B 即使选了同一个密码，也各自带着随机盐进入密码 KDF。",
         "activeIds": [
           "password-a",
           "password-b",
@@ -18201,15 +18705,20 @@
           "hash-store"
         ],
         "doneIds": [
-          "hash-store"
+          "password-a",
+          "password-b"
         ],
         "mutedIds": [
+          "release-file",
           "sha-track",
+          "verify-result",
           "guess-counter"
         ],
         "values": {
-          "argon-track": "salt A ≠ salt B",
-          "hash-store": "two different hashes"
+          "password-a": "same input · salt A",
+          "password-b": "same input · salt B",
+          "argon-track": "two outputs",
+          "hash-store": "two records"
         },
         "activeEdgeIds": [
           "a-argon",
@@ -18218,33 +18727,8 @@
         ]
       },
       {
-        "label": "登录时重算而不是解密",
-        "note": "服务器取出该账号的盐和参数，对候选密码重算并恒定时间比较。",
-        "activeIds": [
-          "password-a",
-          "argon-track",
-          "hash-store"
-        ],
-        "doneIds": [
-          "argon-track"
-        ],
-        "mutedIds": [
-          "password-b",
-          "sha-track",
-          "guess-counter"
-        ],
-        "values": {
-          "argon-track": "recomputed match",
-          "hash-store": "verified=true"
-        },
-        "activeEdgeIds": [
-          "a-argon",
-          "argon-store"
-        ]
-      },
-      {
-        "label": "一秒猜测显示成本差异",
-        "note": "快速哈希可尝试百万级候选，内存困难 KDF 把单机速率压到受配置限制。",
+        "label": "成本让猜测变贵",
+        "note": "SHA-256 可以高速批量尝试；Argon2id 把内存、遍数和并行度纳入每次计算。",
         "activeIds": [
           "sha-track",
           "argon-track",
@@ -18254,106 +18738,193 @@
           "guess-counter"
         ],
         "mutedIds": [
+          "release-file",
           "password-a",
           "password-b",
-          "hash-store"
+          "hash-store",
+          "verify-result"
         ],
         "values": {
-          "guess-counter": "SHA: 4.8M/s · Argon2id: 18/s"
+          "sha-track": "fast",
+          "argon-track": "memory-hard",
+          "guess-counter": "per-guess cost"
         },
         "activeEdgeIds": [
           "tracks-counter"
+        ]
+      },
+      {
+        "label": "登录时重算而不是解密",
+        "note": "服务器取出记录里的盐和参数，对候选密码重算，再把结果交给比较器。",
+        "activeIds": [
+          "password-a",
+          "argon-track",
+          "hash-store",
+          "verify-result"
         ],
-        "metric": {
-          "label": "同一时间窗口",
-          "value": "1 s"
-        }
+        "doneIds": [
+          "argon-track",
+          "verify-result"
+        ],
+        "mutedIds": [
+          "release-file",
+          "password-b",
+          "sha-track",
+          "guess-counter"
+        ],
+        "values": {
+          "password-a": "candidate",
+          "argon-track": "recomputed",
+          "hash-store": "salt + hash + params",
+          "verify-result": "match"
+        },
+        "activeEdgeIds": [
+          "a-argon",
+          "argon-compare"
+        ]
+      },
+      {
+        "label": "摘要对不上，先停下安装",
+        "note": "重新计算的文件摘要与可信清单不一致，完整性检查能阻止继续使用，却不能还原原文件。",
+        "activeIds": [
+          "release-file",
+          "sha-track",
+          "hash-store",
+          "verify-result"
+        ],
+        "doneIds": [
+          "verify-result"
+        ],
+        "mutedIds": [
+          "password-a",
+          "password-b",
+          "argon-track",
+          "guess-counter"
+        ],
+        "values": {
+          "release-file": "local file",
+          "sha-track": "digest ≠ manifest",
+          "hash-store": "stop install",
+          "verify-result": "reject"
+        },
+        "activeEdgeIds": [
+          "file-sha"
+        ]
       }
     ],
-    "insight": "密码哈希的目标不是“藏住字符串”，而是让每次猜测都有可控成本且无法批量复用。",
+    "insight": "摘要是比较工具；密码验证要再加上盐、成本、版本和重算流程，不能把两种用途塞进同一个“哈希很安全”的结论。",
     "quiz": {
-      "question": "为什么不能直接用无盐 SHA-256 保存密码？",
+      "question": "直接用无盐 SHA-256 保存密码，最先暴露哪两个问题？",
       "options": [
         {
-          "label": "计算太快且相同密码产生相同摘要，利于批量猜测",
+          "label": "相同密码可关联，而且每秒能试很多候选",
           "correct": true
         },
         {
-          "label": "SHA-256 会自动公开密码原文",
+          "label": "摘要会自动变回密码原文",
           "correct": false
         },
         {
-          "label": "哈希摘要必须可以解密",
+          "label": "文件完整性清单会变成可逆压缩包",
           "correct": false
         }
       ],
-      "success": "密码存储需要随机盐和专用、成本可调的 KDF。",
-      "retry": "比较攻击者每秒能尝试多少候选。"
+      "success": "文件校验和密码验证各自有正确的算法边界。",
+      "retry": "先问用途，再看盐、成本与验证记录。"
     },
     "prompt": {
-      "title": "审查密码保存方案",
-      "text": "请列出 KDF、盐长度、时间与内存参数、参数升级方式和验证流程；不要记录密码原文，也不要把可逆加密当密码哈希。"
+      "title": "为一份输入选择哈希用途",
+      "text": "请判断这是完整性比较、密码验证还是需要取回原文的存储，分别列出摘要、盐、成本、版本和失败后的动作。"
     },
     "sources": [
       {
-        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
-        "label": "OWASP Password Storage Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "url": "https://csrc.nist.gov/glossary/term/hash_function",
+        "label": "NIST CSRC · Hash function",
+        "note": "固定长度、单向性与抗碰撞"
       },
       {
         "url": "https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
-        "label": "NIST FIPS 180-4",
-        "note": "安全要求与风险边界"
+        "label": "NIST · FIPS 180-4",
+        "note": "摘要用于检测消息变化"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+        "label": "OWASP · Password Storage",
+        "note": "盐、慢哈希与密码/加密边界"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9106.html",
+        "label": "IETF CFRG · RFC 9106",
+        "note": "Argon2 的内存成本与参数"
+      },
+      {
+        "url": "https://pages.nist.gov/800-63-4/sp800-63b.html",
+        "label": "NIST · SP 800-63B-4",
+        "note": "密码验证器的盐、成本与版本记录"
       }
     ]
   },
   {
     "slug": "input-validation",
-    "lead": "前端已经拦住 age=-1，为什么攻击者绕过页面后，服务端仍要做 400 与 403 两道不同判断？",
-    "definition": "输入校验在信任边界按允许规则检查外部数据的语法和语义，并在服务端再次执行。",
-    "boundary": "校验不能替代授权、参数化查询或输出编码。格式合法的 accountId 仍可能指向他人的资源。",
-    "sceneKind": "layers",
-    "sceneTitle": "语法、语义与授权三道独立关口",
-    "actionLabel": "绕过前端并更换输入",
+    "lead": "账单页面已经把日期标绿，为什么服务端还要把格式、日期顺序、查询字段和账号归属分开检查？",
+    "definition": "输入校验在信任边界先解析外部数据，再按结构、类型、格式和业务语义规则拒绝不合格值。",
+    "boundary": "校验不能替代参数化查询、输出编码或授权；合法 UUID 只说明值可解释，不代表当前主体能读取对应对象。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "四道门决定查询能不能开始",
+    "actionLabel": "逐门推进请求",
     "actors": [
       {
         "id": "client-form",
         "label": "浏览器表单",
-        "detail": "可绕过",
+        "detail": "绿灯可绕过",
         "icon": "browser",
-        "group": "客户端"
+        "group": "外部"
       },
       {
-        "id": "api-boundary",
-        "label": "API Schema",
-        "detail": "类型与格式",
+        "id": "request-parser",
+        "label": "请求解析器",
+        "detail": "限制大小与深度",
+        "icon": "code",
+        "group": "结构"
+      },
+      {
+        "id": "schema-gate",
+        "label": "结构规则",
+        "detail": "type · required · fields",
         "icon": "layout",
-        "group": "服务端校验"
+        "group": "结构"
       },
       {
-        "id": "semantic-rule",
+        "id": "semantic-gate",
         "label": "语义规则",
-        "detail": "1 ≤ age ≤ 120",
-        "icon": "shield",
-        "group": "服务端校验"
+        "detail": "endAt ≥ startAt",
+        "icon": "code",
+        "group": "语义"
+      },
+      {
+        "id": "query-map",
+        "label": "查询允许列表",
+        "detail": "createdAt → created_at",
+        "icon": "layout",
+        "group": "查询"
       },
       {
         "id": "authz-gate",
-        "label": "授权检查",
+        "label": "对象授权",
         "detail": "subject owns account",
         "icon": "key",
         "group": "授权"
       },
       {
-        "id": "query-handler",
-        "label": "业务查询",
+        "id": "database",
+        "label": "账单查询",
         "detail": "尚未执行",
         "icon": "database",
-        "group": "处理"
+        "group": "副作用"
       },
       {
         "id": "request-result",
-        "label": "请求结果",
+        "label": "HTTP 结果",
         "detail": "waiting",
         "icon": "message",
         "group": "输出"
@@ -18361,147 +18932,230 @@
     ],
     "edges": [
       {
-        "id": "form-schema",
+        "id": "client-parser",
         "from": "client-form",
-        "to": "api-boundary",
-        "label": "直接请求"
+        "to": "request-parser",
+        "label": "直接发请求"
+      },
+      {
+        "id": "parser-schema",
+        "from": "request-parser",
+        "to": "schema-gate",
+        "label": "解析完成"
       },
       {
         "id": "schema-semantic",
-        "from": "api-boundary",
-        "to": "semantic-rule",
-        "label": "格式通过"
+        "from": "schema-gate",
+        "to": "semantic-gate",
+        "label": "结构通过"
       },
       {
-        "id": "semantic-authz",
-        "from": "semantic-rule",
+        "id": "semantic-map",
+        "from": "semantic-gate",
+        "to": "query-map",
+        "label": "日期成立"
+      },
+      {
+        "id": "map-authz",
+        "from": "query-map",
         "to": "authz-gate",
-        "label": "值通过"
+        "label": "入口固定"
       },
       {
-        "id": "authz-query",
+        "id": "authz-db",
         "from": "authz-gate",
-        "to": "query-handler",
+        "to": "database",
         "label": "主体允许"
       },
       {
-        "id": "gates-result",
+        "id": "db-result",
+        "from": "database",
+        "to": "request-result",
+        "label": "返回账单"
+      },
+      {
+        "id": "authz-result",
         "from": "authz-gate",
         "to": "request-result",
-        "label": "返回结果"
+        "label": "拒绝结果"
       }
     ],
     "frames": [
       {
-        "label": "绕过前端发送 age=-1",
-        "note": "浏览器提示不是安全边界，原始请求仍能直接到 API。",
+        "label": "页面绿灯，服务端还没信任",
+        "note": "浏览器的校验可以改善体验，但请求仍能绕过页面直接抵达 API。",
         "activeIds": [
           "client-form",
-          "api-boundary",
-          "semantic-rule",
+          "request-parser",
+          "request-result"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "schema-gate",
+          "semantic-gate",
+          "query-map",
+          "authz-gate",
+          "database"
+        ],
+        "values": {
+          "client-form": "format looks okay",
+          "request-parser": "raw JSON",
+          "request-result": "waiting"
+        },
+        "activeEdgeIds": [
+          "client-parser"
+        ]
+      },
+      {
+        "label": "解析与结构规则通过",
+        "note": "服务器先限制解析资源，再确认字段类型、必填字段和未知字段的处理方式。",
+        "activeIds": [
+          "request-parser",
+          "schema-gate"
+        ],
+        "doneIds": [
+          "client-form"
+        ],
+        "mutedIds": [
+          "semantic-gate",
+          "query-map",
+          "authz-gate",
+          "database",
+          "request-result"
+        ],
+        "values": {
+          "request-parser": "JSON parsed",
+          "schema-gate": "type ✓ · required ✓"
+        },
+        "activeEdgeIds": [
+          "client-parser",
+          "parser-schema"
+        ]
+      },
+      {
+        "label": "日期关系不成立，停在语义门",
+        "note": "两个日期都能解析，但 endAt 早于 startAt；查询没有被执行。",
+        "activeIds": [
+          "semantic-gate",
           "request-result"
         ],
         "doneIds": [
-          "semantic-rule"
+          "client-form",
+          "request-parser",
+          "schema-gate"
         ],
         "mutedIds": [
+          "query-map",
           "authz-gate",
-          "query-handler"
+          "database"
         ],
         "values": {
-          "client-form": "validation bypassed",
-          "api-boundary": "number parsed",
-          "semantic-rule": "-1 < 1",
-          "request-result": "400 RANGE"
+          "semantic-gate": "endAt < startAt",
+          "request-result": "422 · 0 query"
         },
         "activeEdgeIds": [
-          "form-schema",
           "schema-semantic"
-        ]
-      },
-      {
-        "label": "畸形邮箱在结构层返回 400",
-        "note": "字符串类型虽正确，但不满足系统允许的邮箱格式。",
-        "activeIds": [
-          "api-boundary",
-          "request-result"
-        ],
-        "doneIds": [
-          "api-boundary"
-        ],
-        "mutedIds": [
-          "semantic-rule",
-          "authz-gate",
-          "query-handler"
-        ],
-        "values": {
-          "api-boundary": "email invalid",
-          "request-result": "400 FORMAT"
-        },
-        "activeEdgeIds": [
-          "form-schema"
-        ]
-      },
-      {
-        "label": "他人 accountId 通过格式校验",
-        "note": "UUID 与范围全部合法，所以请求继续进入授权，而不是被误判为坏输入。",
-        "activeIds": [
-          "api-boundary",
-          "semantic-rule",
-          "authz-gate"
-        ],
-        "doneIds": [
-          "api-boundary",
-          "semantic-rule"
-        ],
-        "mutedIds": [
-          "query-handler"
-        ],
-        "values": {
-          "api-boundary": "valid UUID",
-          "semantic-rule": "valid value",
-          "authz-gate": "owner mismatch"
-        },
-        "activeEdgeIds": [
-          "schema-semantic",
-          "semantic-authz"
-        ]
-      },
-      {
-        "label": "授权层以 403 阻止业务查询",
-        "note": "格式合法不代表主体有权访问；数据库查询没有执行。",
-        "activeIds": [
-          "authz-gate",
-          "query-handler",
-          "request-result"
-        ],
-        "doneIds": [
-          "authz-gate"
-        ],
-        "mutedIds": [
-          "client-form",
-          "api-boundary",
-          "semantic-rule"
-        ],
-        "values": {
-          "request-result": "403 FORBIDDEN",
-          "query-handler": "not executed"
-        },
-        "activeEdgeIds": [
-          "gates-result"
         ],
         "metric": {
           "label": "数据库查询",
-          "value": "0"
+          "value": "0 次"
+        }
+      },
+      {
+        "label": "修正日期，排序只能走映射",
+        "note": "createdAt 是公开输入值，created_at 才是代码里允许的列名；两者之间由固定表连接。",
+        "activeIds": [
+          "query-map"
+        ],
+        "doneIds": [
+          "client-form",
+          "request-parser",
+          "schema-gate",
+          "semantic-gate"
+        ],
+        "mutedIds": [
+          "authz-gate",
+          "database",
+          "request-result"
+        ],
+        "values": {
+          "query-map": "createdAt → created_at",
+          "request-result": "query ready"
+        },
+        "activeEdgeIds": [
+          "schema-semantic",
+          "semantic-map"
+        ]
+      },
+      {
+        "label": "账号格式合法，归属不匹配",
+        "note": "acct-lee 是合法 UUID，但它属于别的主体；授权层返回拒绝，数据库仍保持 0 次查询。",
+        "activeIds": [
+          "authz-gate",
+          "request-result"
+        ],
+        "doneIds": [
+          "client-form",
+          "request-parser",
+          "schema-gate",
+          "semantic-gate",
+          "query-map"
+        ],
+        "mutedIds": [
+          "database"
+        ],
+        "values": {
+          "authz-gate": "acct-lee ≠ 阿青",
+          "request-result": "403 · 0 query"
+        },
+        "activeEdgeIds": [
+          "semantic-map",
+          "map-authz",
+          "authz-result"
+        ],
+        "metric": {
+          "label": "数据库查询",
+          "value": "0 次"
+        }
+      },
+      {
+        "label": "换成自己的账号才交付",
+        "note": "结构、语义、查询入口和对象归属都通过后，查询才返回账单。",
+        "activeIds": [
+          "authz-gate",
+          "database",
+          "request-result"
+        ],
+        "doneIds": [
+          "client-form",
+          "request-parser",
+          "schema-gate",
+          "semantic-gate",
+          "query-map"
+        ],
+        "mutedIds": [],
+        "values": {
+          "authz-gate": "acct-ash = 阿青",
+          "database": "1 SELECT",
+          "request-result": "200 · 12 rows"
+        },
+        "activeEdgeIds": [
+          "map-authz",
+          "authz-db",
+          "db-result"
+        ],
+        "metric": {
+          "label": "数据库查询",
+          "value": "1 次"
         }
       }
     ],
-    "insight": "输入校验负责数据能不能被解释，授权负责这个主体能不能做这件事。",
+    "insight": "输入校验负责让数据可被安全解释；授权负责判断这个主体能不能访问这个对象。",
     "quiz": {
-      "question": "合法 UUID 指向他人账号时，应该在哪一层阻断？",
+      "question": "合法 UUID 指向别人的账号时，应该在哪一层阻断？",
       "options": [
         {
-          "label": "授权层返回 403",
+          "label": "授权层返回 403，或按产品契约隐藏成 404",
           "correct": true
         },
         {
@@ -18509,495 +19163,968 @@
           "correct": false
         },
         {
-          "label": "前端把输入框隐藏即可",
+          "label": "前端把输入框隐藏起来即可",
           "correct": false
         }
       ],
-      "success": "语法有效与访问允许是两项独立判断。",
-      "retry": "先问“值是否合法”，再问“主体是否有权”。"
+      "success": "语法有效、语义成立与访问允许是三项独立判断。",
+      "retry": "先问“值能不能被解释”，再问“主体有没有权”。"
     },
     "prompt": {
       "title": "拆分接口的输入与权限边界",
-      "text": "请分别写出客户端提示、服务端格式规则、业务范围规则和授权条件，并为每道关口定义状态码、错误码和不会发生的副作用。"
+      "text": "请分别写出解析限制、服务端结构规则、跨字段语义、查询允许列表和授权条件，并为每道门定义状态码、错误码及不会发生的副作用。"
     },
     "sources": [
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
-        "label": "OWASP Input Validation Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "OWASP · Input Validation",
+        "note": "结构、语义、解析限制与客户端边界"
+      },
+      {
+        "url": "https://json-schema.org/draft/2020-12/json-schema-validation",
+        "label": "JSON Schema · Validation 2020-12",
+        "note": "结构断言与 format 的实现语义"
       },
       {
         "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
-        "label": "OWASP Authorization Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "label": "OWASP · Authorization",
+        "note": "主体、对象与每次请求的授权关系"
+      },
+      {
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html",
+        "label": "OWASP · Injection Prevention",
+        "note": "参数化接口与查询字段允许列表"
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "label": "IETF · RFC 9110",
+        "note": "400、403 与 422 的 HTTP 语义"
       }
     ]
   },
   {
-    "slug": "encryption-at-rest",
-    "lead": "硬盘被偷时看不到明文，为什么盗来的应用凭证却还能读出 100 条记录？",
-    "definition": "静态加密在数据写入磁盘、备份或对象存储时用密钥转成密文，并由获准身份在读取时请求解密。",
-    "boundary": "静态加密主要防介质泄露，不能阻止已经获得应用读取权限的主体。日志、备份、内存和密钥管理仍需单独保护。",
-    "sceneKind": "branch",
-    "sceneTitle": "被盗磁盘与被盗应用凭证的两条攻击路径",
-    "actionLabel": "切换攻击路径或撤销密钥授权",
+  "slug": "encryption-at-rest",
+  "lead": "硬盘被偷时只拿到密文，为什么盗来的应用凭证却还能读出 100 条记录？",
+  "definition": "静态加密在数据写入磁盘、备份或对象存储时用密钥转成密文，并由获准身份在读取时请求解密。",
+  "boundary": "静态加密主要防介质泄露，不能阻止已经获得应用读取权限的主体；日志、备份、内存和密钥管理仍需单独保护。",
+  "sceneKind": "transform",
+  "sceneTitle": "一笔账单怎样从明文变成密文，再按钥匙还原",
+  "actionLabel": "推进一次加密路径",
+  "actors": [
+    {
+      "id": "storage-data",
+      "label": "数据库与备份",
+      "detail": "100 rows",
+      "icon": "database",
+      "group": "保存对象"
+    },
+    {
+      "id": "data-key",
+      "label": "DEK",
+      "detail": "数据加密密钥",
+      "icon": "key",
+      "group": "数据密钥"
+    },
+    {
+      "id": "wrapped-key",
+      "label": "wrapped DEK",
+      "detail": "靠近密文保存",
+      "icon": "package",
+      "group": "保存对象"
+    },
+    {
+      "id": "kms-key",
+      "label": "KMS / KEK",
+      "detail": "中心密钥服务",
+      "icon": "shield",
+      "group": "密钥边界"
+    },
+    {
+      "id": "app-identity",
+      "label": "应用身份",
+      "detail": "请求读取",
+      "icon": "gear",
+      "group": "授权主体"
+    },
+    {
+      "id": "disk-copy",
+      "label": "被复制的磁盘",
+      "detail": "离线拿走",
+      "icon": "file",
+      "group": "攻击路径"
+    },
+    {
+      "id": "plaintext-result",
+      "label": "读取结果",
+      "detail": "明文行数",
+      "icon": "message",
+      "group": "可观察结果"
+    },
+    {
+      "id": "key-version",
+      "label": "密钥版本",
+      "detail": "v1 → v2",
+      "icon": "clock",
+      "group": "生命周期"
+    }
+  ],
+  "edges": [
+    {
+      "id": "data-key",
+      "from": "storage-data",
+      "to": "data-key",
+      "label": "生成 DEK"
+    },
+    {
+      "id": "wrap-key",
+      "from": "data-key",
+      "to": "wrapped-key",
+      "label": "被 KEK 包住"
+    },
+    {
+      "id": "kms-wrap",
+      "from": "wrapped-key",
+      "to": "kms-key",
+      "label": "KMS 管理 KEK"
+    },
+    {
+      "id": "data-store",
+      "from": "data-key",
+      "to": "storage-data",
+      "label": "加密后落盘"
+    },
+    {
+      "id": "disk-copy",
+      "from": "storage-data",
+      "to": "disk-copy",
+      "label": "复制介质"
+    },
+    {
+      "id": "app-kms",
+      "from": "app-identity",
+      "to": "kms-key",
+      "label": "请求解密"
+    },
+    {
+      "id": "kms-result",
+      "from": "kms-key",
+      "to": "plaintext-result",
+      "label": "解开 DEK"
+    },
+    {
+      "id": "data-result",
+      "from": "storage-data",
+      "to": "plaintext-result",
+      "label": "还原数据"
+    },
+    {
+      "id": "rotate-version",
+      "from": "storage-data",
+      "to": "key-version",
+      "label": "记录版本"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先看保存对象",
+      "note": "账单还没有经过加密，数据库页仍有明文；DEK 还没进入密钥链。",
+      "activeIds": [
+        "storage-data"
+      ],
+      "doneIds": [],
+      "mutedIds": [
+        "data-key",
+        "wrapped-key",
+        "kms-key",
+        "app-identity",
+        "disk-copy",
+        "plaintext-result",
+        "key-version"
+      ],
+      "values": {
+        "storage-data": "billing.db · plaintext",
+        "data-key": "待生成"
+      },
+      "activeEdgeIds": [],
+      "metric": {
+        "label": "存储状态",
+        "value": "plaintext"
+      }
+    },
+    {
+      "label": "DEK 被 KEK 包住",
+      "note": "DEK 加密数据，KMS 中的 KEK 只负责包住 DEK；两把钥匙各有自己的位置。",
+      "activeIds": [
+        "data-key",
+        "wrapped-key",
+        "kms-key"
+      ],
+      "doneIds": [
+        "storage-data"
+      ],
+      "mutedIds": [
+        "app-identity",
+        "disk-copy",
+        "plaintext-result",
+        "key-version"
+      ],
+      "values": {
+        "data-key": "encrypt rows",
+        "wrapped-key": "wrapped DEK",
+        "kms-key": "KEK in KMS"
+      },
+      "activeEdgeIds": [
+        "wrap-key",
+        "kms-wrap"
+      ]
+    },
+    {
+      "label": "偷盘只能拿到密文",
+      "note": "离线复制包含数据库和备份，却没有 KMS grant，解密路径在钥匙服务前就断了。",
+      "activeIds": [
+        "storage-data",
+        "disk-copy",
+        "plaintext-result"
+      ],
+      "doneIds": [
+        "data-key",
+        "wrapped-key"
+      ],
+      "mutedIds": [
+        "kms-key",
+        "app-identity",
+        "key-version"
+      ],
+      "values": {
+        "storage-data": "ciphertext + backup",
+        "disk-copy": "copied offline",
+        "plaintext-result": "0 rows"
+      },
+      "activeEdgeIds": [
+        "data-store",
+        "disk-copy"
+      ],
+      "metric": {
+        "label": "明文暴露",
+        "value": "0 rows"
+      }
+    },
+    {
+      "label": "应用 grant 仍能解密",
+      "note": "应用身份仍有权限时，静态加密不会阻止它沿合法路径取回明文。",
+      "activeIds": [
+        "app-identity",
+        "kms-key",
+        "plaintext-result"
+      ],
+      "doneIds": [
+        "storage-data",
+        "data-key",
+        "wrapped-key"
+      ],
+      "mutedIds": [
+        "disk-copy",
+        "key-version"
+      ],
+      "values": {
+        "app-identity": "grant = allow",
+        "kms-key": "unwrap DEK",
+        "plaintext-result": "100 rows"
+      },
+      "activeEdgeIds": [
+        "app-kms",
+        "kms-result",
+        "data-result"
+      ],
+      "metric": {
+        "label": "明文暴露",
+        "value": "100 rows"
+      }
+    },
+    {
+      "label": "撤回 grant 后读取停住",
+      "note": "密文仍在，但 KMS 不再为该应用解开 DEK；失败位置是授权边界。",
+      "activeIds": [
+        "app-identity",
+        "kms-key",
+        "plaintext-result"
+      ],
+      "doneIds": [
+        "storage-data",
+        "data-key",
+        "wrapped-key"
+      ],
+      "mutedIds": [
+        "disk-copy",
+        "key-version"
+      ],
+      "values": {
+        "app-identity": "grant = revoked",
+        "kms-key": "AccessDenied",
+        "plaintext-result": "0 rows"
+      },
+      "activeEdgeIds": [
+        "app-kms"
+      ],
+      "metric": {
+        "label": "撤权后明文",
+        "value": "0 rows"
+      }
+    },
+    {
+      "label": "新写入改用 v2",
+      "note": "轮换不会让旧备份凭空消失：新数据用 v2，恢复旧备份仍需按记录找到 v1。",
+      "activeIds": [
+        "storage-data",
+        "key-version",
+        "kms-key"
+      ],
+      "doneIds": [
+        "data-key",
+        "wrapped-key"
+      ],
+      "mutedIds": [
+        "app-identity",
+        "disk-copy",
+        "plaintext-result"
+      ],
+      "values": {
+        "storage-data": "new rows · ciphertext",
+        "key-version": "v2 active · v1 backup",
+        "kms-key": "old v1 retained"
+      },
+      "activeEdgeIds": [
+        "rotate-version",
+        "kms-wrap"
+      ],
+      "metric": {
+        "label": "写入版本",
+        "value": "v2"
+      }
+    }
+  ],
+  "insight": "静态加密保护的是存储介质边界，应用身份和密钥授权决定谁仍能看到明文；轮换还要让旧备份找得到正确版本。",
+  "quiz": {
+    "question": "应用身份被盗但仍持有 KMS 解密权限时，静态加密能保证看不到明文吗？",
+    "options": [
+      {
+        "label": "不能，应用已经在授权边界内拿到解密能力",
+        "correct": true
+      },
+      {
+        "label": "能，只要数据库页保存的是密文",
+        "correct": false
+      },
+      {
+        "label": "能，KMS 会自动识别所有被盗身份",
+        "correct": false
+      }
+    ],
+    "success": "对。静态加密挡住的是介质直接泄露，授权应用读出的明文要靠另外的访问控制和审计。",
+    "retry": "先问攻击者拿到的是存储副本，还是仍有权限的应用身份。"
+  },
+  "prompt": {
+    "title": "审查静态加密的实际保护面",
+    "text": "请列出数据库、对象、日志和备份的加密位置、DEK/KEK 的控制边界、KMS 授权主体、密钥版本和撤权方式，再分别演练介质丢失与凭证泄露。"
+  },
+  "sources": [
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/111/final",
+      "label": "NIST SP 800-111 · Storage encryption",
+      "note": "存储层次、设备类型与威胁边界"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html",
+      "label": "OWASP · Cryptographic Storage",
+      "note": "认证加密、密钥隔离与轮换"
+    },
+    {
+      "url": "https://cloud.google.com/kms/docs/envelope-encryption",
+      "label": "Google Cloud · Envelope encryption",
+      "note": "DEK/KEK 包装、写入与读取流程"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+      "label": "AWS KMS · Key concepts",
+      "note": "KMS 层级、授权与密钥生命周期"
+    },
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+      "label": "NIST SP 800-57 · Key management",
+      "note": "密钥生成、保护、轮换与退役"
+    }
+  ]
+},
+  {
+  "slug": "encryption-in-transit",
+  "lead": "浏览器地址栏有锁，为什么 CDN 到负载均衡器之间仍可能泄露 Authorization？",
+  "definition": "传输加密用 TLS 在每一对端点之间提供机密性、完整性和身份验证；代理终止后，下一跳要重新建立自己的安全通道。",
+  "boundary": "HTTPS 不保证穿过所有代理后仍为密文。证书主机名、TLS 版本、内部链路和终止后的应用日志必须分别检查。",
+  "sceneKind": "network",
+  "sceneTitle": "同一条订单请求在三段链路分别怎样被保护",
+  "actionLabel": "推进一次链路审查",
+  "actors": [
+    {
+      "id": "browser",
+      "label": "浏览器",
+      "detail": "orders.example",
+      "icon": "browser",
+      "group": "端点"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "detail": "TLS termination",
+      "icon": "cloud",
+      "group": "代理"
+    },
+    {
+      "id": "load-balancer",
+      "label": "负载均衡",
+      "detail": "lb.internal",
+      "icon": "network",
+      "group": "代理"
+    },
+    {
+      "id": "app",
+      "label": "订单应用",
+      "detail": "orders-api",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "packet-view",
+      "label": "抓包视图",
+      "detail": "ciphertext / clear",
+      "icon": "search",
+      "group": "观察"
+    },
+    {
+      "id": "auth-field",
+      "label": "Authorization",
+      "detail": "Bearer …",
+      "icon": "key",
+      "group": "敏感字段"
+    }
+  ],
+  "edges": [
+    {
+      "id": "browser-cdn",
+      "from": "browser",
+      "to": "cdn",
+      "label": "TLS A"
+    },
+    {
+      "id": "cdn-lb",
+      "from": "cdn",
+      "to": "load-balancer",
+      "label": "TLS B"
+    },
+    {
+      "id": "lb-app",
+      "from": "load-balancer",
+      "to": "app",
+      "label": "TLS C"
+    },
+    {
+      "id": "cdn-packet",
+      "from": "cdn",
+      "to": "packet-view",
+      "label": "选择抓包点"
+    },
+    {
+      "id": "auth-lb",
+      "from": "auth-field",
+      "to": "load-balancer",
+      "label": "随请求出现"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先标出三个跳点",
+      "note": "浏览器、CDN、负载均衡和应用不是一个端点；每条边都要单独检查。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer",
+        "app"
+      ],
+      "doneIds": [],
+      "mutedIds": [
+        "packet-view",
+        "auth-field"
+      ],
+      "values": {
+        "browser": "orders.example",
+        "cdn": "edge-1",
+        "load-balancer": "lb.internal",
+        "app": "orders-api"
+      },
+      "activeEdgeIds": [
+        "browser-cdn",
+        "cdn-lb",
+        "lb-app"
+      ],
+      "metric": {
+        "label": "待审查链路",
+        "value": "3 hops"
+      }
+    },
+    {
+      "label": "先验证服务身份",
+      "note": "浏览器期待 orders.example，证书身份要在主机名匹配后才允许应用数据继续。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer"
+      ],
+      "doneIds": [
+        "browser"
+      ],
+      "mutedIds": [
+        "app",
+        "packet-view",
+        "auth-field"
+      ],
+      "values": {
+        "browser": "reference=orders.example",
+        "cdn": "SAN valid",
+        "load-balancer": "等待下一跳"
+      },
+      "activeEdgeIds": [
+        "browser-cdn"
+      ]
+    },
+    {
+      "label": "三段都保持 TLS",
+      "note": "三条边都有记录层保护，抓包视图只显示密文，Authorization 没有出现在网络中。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer",
+        "app",
+        "packet-view"
+      ],
+      "doneIds": [
+        "browser",
+        "cdn",
+        "load-balancer"
+      ],
+      "mutedIds": [
+        "auth-field"
+      ],
+      "values": {
+        "packet-view": "TLS record · ciphertext",
+        "auth-field": "not visible"
+      },
+      "activeEdgeIds": [
+        "browser-cdn",
+        "cdn-lb",
+        "lb-app"
+      ],
+      "metric": {
+        "label": "安全跳点",
+        "value": "3 / 3"
+      }
+    },
+    {
+      "label": "CDN 到 LB 回退 HTTP",
+      "note": "外层 TLS 仍在，但 CDN 解密后以明文转发；内部抓包可以读到 Authorization。",
+      "activeIds": [
+        "cdn",
+        "load-balancer",
+        "packet-view",
+        "auth-field"
+      ],
+      "doneIds": [
+        "browser"
+      ],
+      "mutedIds": [
+        "app"
+      ],
+      "values": {
+        "cdn": "TLS terminated",
+        "load-balancer": "HTTP clear",
+        "packet-view": "Authorization visible",
+        "auth-field": "Bearer …"
+      },
+      "activeEdgeIds": [
+        "cdn-lb",
+        "cdn-packet",
+        "auth-lb"
+      ],
+      "metric": {
+        "label": "安全跳点",
+        "value": "2 / 3"
+      }
+    },
+    {
+      "label": "内部证书主机名不匹配",
+      "note": "证书链即使可信，SAN 不是 lb.internal 也不能把这次连接当成目标服务。",
+      "activeIds": [
+        "cdn",
+        "load-balancer",
+        "packet-view"
+      ],
+      "doneIds": [
+        "browser"
+      ],
+      "mutedIds": [
+        "app",
+        "auth-field"
+      ],
+      "values": {
+        "load-balancer": "SAN ≠ lb.internal",
+        "packet-view": "0 B · blocked"
+      },
+      "activeEdgeIds": [
+        "cdn-lb"
+      ],
+      "metric": {
+        "label": "应用数据",
+        "value": "0 B"
+      }
+    },
+    {
+      "label": "修好证书后重建下一跳",
+      "note": "修正内部证书身份并重新握手，LB 到应用才重新出现受保护的记录层。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer",
+        "app",
+        "packet-view"
+      ],
+      "doneIds": [
+        "browser",
+        "cdn",
+        "load-balancer"
+      ],
+      "mutedIds": [
+        "auth-field"
+      ],
+      "values": {
+        "load-balancer": "SAN = lb.internal",
+        "packet-view": "TLS record · ciphertext",
+        "auth-field": "not visible"
+      },
+      "activeEdgeIds": [
+        "browser-cdn",
+        "cdn-lb",
+        "lb-app"
+      ],
+      "metric": {
+        "label": "安全跳点",
+        "value": "3 / 3"
+      }
+    }
+  ],
+  "insight": "传输加密不是地址栏的一枚锁，而是每一段端点、身份和记录保护都能对上的路径。",
+  "quiz": {
+    "question": "内部 TLS 证书链可信，但 SAN 不匹配 lb.internal，下一步应该怎样？",
+    "options": [
+      {
+        "label": "停止握手，不发送订单请求",
+        "correct": true
+      },
+      {
+        "label": "忽略主机名，先用密文请求试试",
+        "correct": false
+      },
+      {
+        "label": "把 Authorization 改成哈希后继续 HTTP",
+        "correct": false
+      }
+    ],
+    "success": "对。身份没有对上时，继续加密只是在保护未知对端；先修证书或目标配置。",
+    "retry": "把“证书能验签”和“证书属于这台服务”分成两次检查。"
+  },
+  "prompt": {
+    "title": "把一条 HTTPS 链路拆成可验收的跳点",
+    "text": "请画出每个代理和服务之间的边，标注 TLS 终止、证书身份、协商版本、抓包可见内容、Cookie Secure、HTTP 回退和 0-RTT 是否允许。"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
+      "label": "RFC 8446 · TLS 1.3",
+      "note": "安全通道、握手与记录层"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
+      "label": "RFC 9525 · Service Identity in TLS",
+      "note": "reference identity 与 subjectAltName"
+    },
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/52/r2/final",
+      "label": "NIST SP 800-52 Rev. 2",
+      "note": "TLS 版本、证书与配置指导"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
+      "label": "OWASP · Transport Layer Security",
+      "note": "全站 TLS、终止点与应用护栏"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security",
+      "label": "MDN · Transport Layer Security",
+      "note": "浏览器握手、中间人与端点边界"
+    }
+  ]
+}
+,
+  {
+    "slug": "feature-flag",
+    "lead": "代码已经进生产，谁有权先看到新结算页？",
+    "definition": "功能开关把同一构建里的旧路径和新路径交给运行时评估：请求带上稳定上下文，规则返回一个变体，应用记录结果并按指标继续扩大或回退。",
+    "boundary": "开关只负责选择和暴露，不负责授权、数据撤销或质量证明。没有默认值、稳定 targeting key、监控和清理计划时，flag 会变成另一层不可见的分支风险。",
+    "sceneKind": "contract",
+    "sceneTitle": "一条 flag 评估怎样决定请求走哪边",
+    "actionLabel": "逐步推进部署、上下文、分批、观测和止损",
     "actors": [
       {
-        "id": "app-identity",
-        "label": "应用身份",
-        "detail": "kms grant active",
-        "icon": "server",
-        "group": "访问主体"
-      },
-      {
-        "id": "kms-key",
-        "label": "KMS 密钥",
-        "detail": "key-17",
-        "icon": "key",
-        "group": "密钥"
-      },
-      {
-        "id": "database-pages",
-        "label": "数据库页",
-        "detail": "encrypted",
-        "icon": "database",
-        "group": "静态数据"
-      },
-      {
-        "id": "backup-object",
-        "label": "备份文件",
-        "detail": "encrypted",
-        "icon": "file",
-        "group": "静态数据"
-      },
-      {
-        "id": "stolen-disk",
-        "label": "被盗磁盘",
-        "detail": "离线读取",
+        "id": "build",
+        "label": "生产构建",
+        "detail": "v42 · old + new path",
         "icon": "package",
-        "group": "攻击"
+        "group": "部署"
       },
       {
-        "id": "stolen-credential",
-        "label": "被盗应用凭证",
-        "detail": "在线请求",
+        "id": "flag-store",
+        "label": "开关配置",
+        "detail": "checkout.new · ON / OFF",
+        "icon": "gear",
+        "group": "规则"
+      },
+      {
+        "id": "context",
+        "label": "评估上下文",
+        "detail": "targetingKey · user-li",
         "icon": "user",
-        "group": "攻击"
+        "group": "请求"
+      },
+      {
+        "id": "router",
+        "label": "变体选择",
+        "detail": "old / new / fallback",
+        "icon": "code",
+        "group": "决策"
+      },
+      {
+        "id": "metrics",
+        "label": "指标与回退",
+        "detail": "error rate · kill switch",
+        "icon": "chart",
+        "group": "证据"
       }
     ],
     "edges": [
       {
-        "id": "app-key",
-        "from": "app-identity",
-        "to": "kms-key",
-        "label": "请求解密"
+        "id": "build-router",
+        "from": "build",
+        "to": "router",
+        "label": "提供两条路径"
       },
       {
-        "id": "key-db",
-        "from": "kms-key",
-        "to": "database-pages",
-        "label": "数据密钥"
+        "id": "flag-router",
+        "from": "flag-store",
+        "to": "router",
+        "label": "读取 flag"
       },
       {
-        "id": "key-backup",
-        "from": "kms-key",
-        "to": "backup-object",
-        "label": "数据密钥"
+        "id": "context-router",
+        "from": "context",
+        "to": "router",
+        "label": "提供上下文"
       },
       {
-        "id": "disk-db",
-        "from": "stolen-disk",
-        "to": "database-pages",
-        "label": "读取介质"
+        "id": "router-metrics",
+        "from": "router",
+        "to": "metrics",
+        "label": "记录变体与指标"
       },
       {
-        "id": "credential-app",
-        "from": "stolen-credential",
-        "to": "app-identity",
-        "label": "冒用身份"
+        "id": "metrics-flag",
+        "from": "metrics",
+        "to": "flag-store",
+        "label": "扩大 / 关闭"
+      },
+      {
+        "id": "flag-build",
+        "from": "flag-store",
+        "to": "build",
+        "label": "不改已部署版本"
       }
     ],
     "frames": [
       {
-        "label": "写盘与备份都保存密文",
-        "note": "应用经 KMS 获得数据密钥，介质上不出现可直接读取的业务明文。",
+        "label": "同一版本先部署",
+        "note": "v42 同时包含旧路径和新路径；这一步只改变代码可用，不改变用户暴露。",
         "activeIds": [
-          "app-identity",
-          "kms-key",
-          "database-pages",
-          "backup-object"
-        ],
-        "doneIds": [
-          "database-pages",
-          "backup-object"
-        ],
-        "mutedIds": [
-          "stolen-disk",
-          "stolen-credential"
-        ],
-        "values": {
-          "database-pages": "ciphertext",
-          "backup-object": "ciphertext",
-          "kms-key": "grant app-identity"
-        },
-        "activeEdgeIds": [
-          "app-key",
-          "key-db",
-          "key-backup"
-        ]
-      },
-      {
-        "label": "被盗磁盘只能暴露密文",
-        "note": "离线攻击者拿不到 KMS 权限，扫描 100 条页记录仍无法还原内容。",
-        "activeIds": [
-          "stolen-disk",
-          "database-pages"
+          "build"
         ],
         "doneIds": [],
         "mutedIds": [
-          "app-identity",
-          "kms-key",
-          "stolen-credential"
+          "flag-store",
+          "context",
+          "router",
+          "metrics"
         ],
         "values": {
-          "database-pages": "ciphertext only",
-          "stolen-disk": "plaintext rows 0"
+          "build": "v42 · old + new"
         },
-        "activeEdgeIds": [
-          "disk-db"
-        ],
-        "metric": {
-          "label": "明文暴露",
-          "value": "0 rows"
-        }
+        "activeEdgeIds": []
       },
       {
-        "label": "被盗凭证可走合法解密路径",
-        "note": "凭证仍拥有 grant，攻击者借应用身份读取并解密 100 条记录。",
+        "label": "请求带着上下文来",
+        "note": "用户的 targetingKey 与 flag 配置一起进入评估；没有稳定键时，分组无法可靠复现。",
         "activeIds": [
-          "stolen-credential",
-          "app-identity",
-          "kms-key",
-          "database-pages"
+          "context",
+          "flag-store",
+          "router"
         ],
         "doneIds": [
-          "stolen-credential"
+          "build"
         ],
         "mutedIds": [
-          "stolen-disk",
-          "backup-object"
+          "metrics"
         ],
         "values": {
-          "stolen-credential": "grant accepted",
-          "database-pages": "100 rows decrypted"
+          "context": "user-li",
+          "flag-store": "checkout.new = ON",
+          "router": "evaluating"
         },
         "activeEdgeIds": [
-          "credential-app",
-          "app-key",
-          "key-db"
-        ],
-        "metric": {
-          "label": "明文暴露",
-          "value": "100 rows"
-        }
+          "flag-router",
+          "context-router"
+        ]
       },
       {
-        "label": "撤销 grant 后在线读取也失败",
-        "note": "KMS 拒绝该身份，密文未变；审计记录指出被撤销的主体。",
+        "label": "只开放一小群",
+        "note": "规则把内部用户或 10% cohort 送到新路径，其他请求仍返回旧路径。",
         "activeIds": [
-          "app-identity",
-          "kms-key",
-          "database-pages"
+          "router",
+          "context"
         ],
         "doneIds": [
-          "kms-key"
+          "build",
+          "flag-store"
         ],
         "mutedIds": [
-          "stolen-disk",
-          "backup-object"
+          "metrics"
         ],
         "values": {
-          "kms-key": "AccessDenied",
-          "database-pages": "still encrypted",
-          "app-identity": "grant revoked"
+          "router": "new · 10% cohort",
+          "context": "stable assignment"
         },
         "activeEdgeIds": [
-          "app-key"
+          "build-router",
+          "context-router"
+        ]
+      },
+      {
+        "label": "指标决定下一步",
+        "note": "变体结果和错误率一起记录；比例扩大前，先确认新路径没有把问题藏到平均值里。",
+        "activeIds": [
+          "metrics",
+          "router"
+        ],
+        "doneIds": [
+          "build",
+          "flag-store",
+          "context"
+        ],
+        "mutedIds": [],
+        "values": {
+          "router": "new / old",
+          "metrics": "error rate · 0.4%"
+        },
+        "activeEdgeIds": [
+          "router-metrics"
+        ]
+      },
+      {
+        "label": "开关把新路径关掉",
+        "note": "发现回归时将 flag 设为 OFF，所有请求回到旧路径；构建仍在，数据副作用另需补偿。",
+        "activeIds": [
+          "metrics",
+          "flag-store",
+          "router"
+        ],
+        "doneIds": [
+          "build",
+          "context"
+        ],
+        "mutedIds": [],
+        "values": {
+          "metrics": "regression → kill",
+          "flag-store": "OFF",
+          "router": "fallback → old"
+        },
+        "activeEdgeIds": [
+          "metrics-flag",
+          "flag-build"
         ]
       }
     ],
-    "insight": "静态加密保护的是存储介质边界，应用身份和密钥授权决定谁仍能看到明文。",
+    "insight": "功能开关把“代码已部署”“谁能看到”“指标是否健康”和“怎样止损”拆成可追踪的决定；它给发布留出手刹，也把每个未清理的分支变成长期维护成本。",
     "quiz": {
-      "question": "为什么磁盘加密挡不住被盗应用凭证？",
+      "question": "新结算页出现回归时，关闭 feature flag 能直接完成什么？",
       "options": [
         {
-          "label": "凭证可沿获准路径请求解密",
+          "label": "让后续请求回到旧路径，快速降低新功能暴露",
           "correct": true
         },
         {
-          "label": "磁盘加密会自动公开 KMS 密钥",
+          "label": "撤销已经写入数据库的订单和副作用",
           "correct": false
         },
         {
-          "label": "应用永远不需要读取数据",
-          "correct": false
-        }
-      ],
-      "success": "介质保护与应用访问控制解决的是不同攻击路径。",
-      "retry": "找到密文在哪个身份手里被合法解开。"
-    },
-    "prompt": {
-      "title": "审查静态加密的实际保护面",
-      "text": "请列出数据库、对象、日志和备份的加密位置、KMS 授权主体、密钥轮换和撤权方式，并分别演练介质丢失与凭证泄露。"
-    },
-    "sources": [
-      {
-        "url": "https://csrc.nist.gov/pubs/sp/800/111/final",
-        "label": "NIST SP 800-111",
-        "note": "安全要求与风险边界"
-      },
-      {
-        "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
-        "label": "AWS KMS Concepts",
-        "note": "云服务行为与配置约束"
-      }
-    ]
-  },
-  {
-    "slug": "encryption-in-transit",
-    "lead": "浏览器地址栏有锁，为什么 CDN 到负载均衡器之间仍可能泄露 Authorization？",
-    "definition": "传输加密用 TLS 等协议在两个通信端点之间提供机密性、完整性和身份验证；保护范围止于 TLS 终止点。",
-    "boundary": "HTTPS 不保证穿过所有代理后仍保持密文。证书校验、内部链路和终止后的应用日志需要分别处理。",
-    "sceneKind": "layers",
-    "sceneTitle": "三段链路上的 TLS 终止点与明文字段",
-    "actionLabel": "逐段启用或关闭 TLS",
-    "actors": [
-      {
-        "id": "tls-browser",
-        "label": "浏览器",
-        "detail": "验证 cdn.example",
-        "icon": "browser",
-        "group": "端点"
-      },
-      {
-        "id": "tls-cdn",
-        "label": "CDN",
-        "detail": "TLS termination 1",
-        "icon": "cloud",
-        "group": "代理"
-      },
-      {
-        "id": "tls-lb",
-        "label": "负载均衡器",
-        "detail": "TLS termination 2",
-        "icon": "network",
-        "group": "代理"
-      },
-      {
-        "id": "tls-app",
-        "label": "应用",
-        "detail": "最终端点",
-        "icon": "server",
-        "group": "服务"
-      },
-      {
-        "id": "packet-view",
-        "label": "抓包视图",
-        "detail": "ciphertext",
-        "icon": "search",
-        "group": "观察"
-      },
-      {
-        "id": "auth-field",
-        "label": "Authorization",
-        "detail": "Bearer …",
-        "icon": "key",
-        "group": "敏感字段"
-      }
-    ],
-    "edges": [
-      {
-        "id": "browser-cdn",
-        "from": "tls-browser",
-        "to": "tls-cdn",
-        "label": "TLS A"
-      },
-      {
-        "id": "cdn-lb",
-        "from": "tls-cdn",
-        "to": "tls-lb",
-        "label": "TLS B"
-      },
-      {
-        "id": "lb-app",
-        "from": "tls-lb",
-        "to": "tls-app",
-        "label": "TLS C"
-      },
-      {
-        "id": "links-packet",
-        "from": "tls-cdn",
-        "to": "packet-view",
-        "label": "选择链路"
-      },
-      {
-        "id": "auth-links",
-        "from": "auth-field",
-        "to": "tls-lb",
-        "label": "随请求传输"
-      }
-    ],
-    "frames": [
-      {
-        "label": "三段链路都建立 TLS",
-        "note": "浏览器→CDN、CDN→LB、LB→应用分别协商并验证对端。",
-        "activeIds": [
-          "tls-browser",
-          "tls-cdn",
-          "tls-lb",
-          "tls-app"
-        ],
-        "doneIds": [
-          "tls-cdn",
-          "tls-lb",
-          "tls-app"
-        ],
-        "mutedIds": [
-          "packet-view",
-          "auth-field"
-        ],
-        "values": {
-          "tls-browser": "TLS A secure",
-          "tls-cdn": "TLS B secure",
-          "tls-lb": "TLS C secure"
-        },
-        "activeEdgeIds": [
-          "browser-cdn",
-          "cdn-lb",
-          "lb-app"
-        ],
-        "metric": {
-          "label": "加密链路",
-          "value": "3 / 3"
-        }
-      },
-      {
-        "label": "外部抓包只见 TLS 记录",
-        "note": "浏览器到 CDN 的中间网络看不到 Authorization 明文。",
-        "activeIds": [
-          "tls-browser",
-          "tls-cdn",
-          "packet-view",
-          "auth-field"
-        ],
-        "doneIds": [
-          "packet-view"
-        ],
-        "mutedIds": [
-          "tls-lb",
-          "tls-app"
-        ],
-        "values": {
-          "packet-view": "17 03 03 … ciphertext",
-          "auth-field": "not visible"
-        },
-        "activeEdgeIds": [
-          "browser-cdn",
-          "links-packet"
-        ]
-      },
-      {
-        "label": "把 CDN→LB 改为 HTTP",
-        "note": "CDN 解密后以明文转发；外部段仍有锁，但内部抓包能看到令牌。",
-        "activeIds": [
-          "tls-cdn",
-          "tls-lb",
-          "packet-view",
-          "auth-field"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "tls-browser",
-          "tls-app"
-        ],
-        "values": {
-          "tls-cdn": "HTTP to LB",
-          "packet-view": "Authorization: Bearer …",
-          "auth-field": "visible internally"
-        },
-        "activeEdgeIds": [
-          "cdn-lb",
-          "links-packet",
-          "auth-links"
-        ],
-        "metric": {
-          "label": "加密链路",
-          "value": "2 / 3"
-        }
-      },
-      {
-        "label": "恢复 TLS B 并校验 LB 身份",
-        "note": "CDN 不只加密，还验证负载均衡器证书覆盖内部主机名。",
-        "activeIds": [
-          "tls-cdn",
-          "tls-lb",
-          "packet-view"
-        ],
-        "doneIds": [
-          "tls-lb"
-        ],
-        "mutedIds": [
-          "auth-field"
-        ],
-        "values": {
-          "tls-lb": "SAN valid · TLS B",
-          "packet-view": "ciphertext"
-        },
-        "activeEdgeIds": [
-          "cdn-lb",
-          "links-packet"
-        ]
-      }
-    ],
-    "insight": "传输加密要逐段检查端点和身份；地址栏的锁只证明浏览器到第一个 TLS 端点。",
-    "quiz": {
-      "question": "CDN 终止 TLS 后以 HTTP 转发到 LB，会发生什么？",
-      "options": [
-        {
-          "label": "内部链路上的请求字段可能以明文出现",
-          "correct": true
-        },
-        {
-          "label": "浏览器的 TLS 会自动延伸到应用",
-          "correct": false
-        },
-        {
-          "label": "Authorization 字段会自动被哈希",
+          "label": "替用户完成身份授权并绕过后端检查",
           "correct": false
         }
       ],
-      "success": "每次 TLS 终止都会结束一段保护，需要为下一跳重新建立安全通道。",
-      "retry": "沿请求路径标出每个解密和重新加密的位置。"
+      "success": "对。关闭 flag 是暴露层的止损动作；数据补偿、权限检查和根因修复仍要沿各自的流程处理。",
+      "retry": "区分“后续请求走哪条路径”和“过去已经发生什么”：flag 能控制前者，不能自动撤销后者。"
     },
     "prompt": {
-      "title": "画出传输加密的终止点",
-      "text": "请列出客户端、CDN、网关、负载均衡和应用之间的每段协议、证书身份与明文出现位置，并逐段验证抓包结果。"
+      "title": "把一个 flag 写成可维护的契约",
+      "text": "为 flag 写出 key、默认值、上下文键、目标 cohort、观测指标、kill switch、负责人和清理日期；再画出评估失败、无权限、回归和数据副作用的处理出口。"
     },
     "sources": [
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
-        "label": "RFC 8446 · TLS 1.3",
-        "note": "协议定义与报文语义"
+        "url": "https://martinfowler.com/articles/feature-toggles.html",
+        "label": "Martin Fowler · Feature Toggles",
+        "note": "部署与发布解耦、开关分类和清理成本"
       },
       {
-        "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
-        "label": "RFC 9525 · Service Identity",
-        "note": "协议定义与报文语义"
+        "url": "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management",
+        "label": "Azure App Configuration · Feature management",
+        "note": "Switch、Rollout、Experiment 与运行时管理"
       },
       {
-        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
-        "label": "OWASP TLS Cheat Sheet",
-        "note": "攻击面与防护检查"
+        "url": "https://openfeature.dev/specification/sections/evaluation-context/",
+        "label": "OpenFeature · Evaluation Context",
+        "note": "targeting key、上下文字段和合并优先级"
+      },
+      {
+        "url": "https://launchdarkly.com/docs/home/flags/target-rules",
+        "label": "LaunchDarkly · Targeting rules",
+        "note": "条件、变体和百分比分批"
+      },
+      {
+        "url": "https://openfeature.dev/specification/sections/flag-evaluation/",
+        "label": "OpenFeature · Flag Evaluation API",
+        "note": "类型化评估、provider 与默认值"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-feature-flags.html",
+        "label": "AWS AppConfig · Feature flags",
+        "note": "布尔与多变体 flag、上下文规则和属性约束"
+      },
+      {
+        "url": "https://launchdarkly.com/docs/home/flags/killswitch",
+        "label": "LaunchDarkly · Kill switch flags",
+        "note": "紧急关闭非核心功能和第三方依赖"
       }
     ]
   }

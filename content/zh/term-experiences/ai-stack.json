@@ -19054,5 +19054,2075 @@
         "note": "评测对象、运行和结果记录"
       }
     ]
+  },
+  {
+    "slug": "transformer",
+    "lead": "一句话里，“它”为什么会回看前面的“小猫”？",
+    "definition": "Transformer 把 token 和位置信息送进重复的计算块；每个块先让位置交换相关信息，再在每个位置上做相同形状的前馈变换，输出下一层可以继续使用的表示。",
+    "boundary": "演示里的连线和强度是可视化线索，不是模型唯一的解释；换模型、输入、遮罩或任务头，实际关系和输出都会变化。",
+    "sceneKind": "layers",
+    "sceneTitle": "六张 token 卡怎样长出关系",
+    "actionLabel": "换一个主语",
+    "actors": [
+      {
+        "id": "tokens",
+        "label": "token 一排",
+        "detail": "小猫 · 坐在 · 窗边 · 它 · 看见 · 雨",
+        "icon": "layout",
+        "group": "输入"
+      },
+      {
+        "id": "attention",
+        "label": "自注意力",
+        "detail": "它 ↔ 小猫；看见 ↔ 雨",
+        "icon": "search",
+        "group": "交换"
+      },
+      {
+        "id": "ffn",
+        "label": "前馈与残差",
+        "detail": "角色 · 动作 · 场景",
+        "icon": "gear",
+        "group": "改写"
+      },
+      {
+        "id": "stack",
+        "label": "下一层表示",
+        "detail": "保留位置，继续组合线索",
+        "icon": "package",
+        "group": "输出"
+      }
+    ],
+    "edges": [
+      {
+        "id": "tokens-attention",
+        "from": "tokens",
+        "to": "attention",
+        "label": "取回相关位置"
+      },
+      {
+        "id": "attention-ffn",
+        "from": "attention",
+        "to": "ffn",
+        "label": "把关系交给局部变换"
+      },
+      {
+        "id": "ffn-stack",
+        "from": "ffn",
+        "to": "stack",
+        "label": "送往下一层"
+      }
+    ],
+    "frames": [
+      {
+        "label": "摆好 token",
+        "note": "每张卡先带着自己的位置，关系还没有被高亮。",
+        "activeIds": [
+          "tokens"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "attention",
+          "ffn",
+          "stack"
+        ],
+        "values": {
+          "tokens": "6 个位置"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "交换信息",
+        "note": "自注意力从同一序列取回相关线索；演示连线不等于唯一解释。",
+        "activeIds": [
+          "attention"
+        ],
+        "doneIds": [
+          "tokens"
+        ],
+        "mutedIds": [
+          "ffn",
+          "stack"
+        ],
+        "values": {
+          "attention": "它 ↔ 小猫"
+        },
+        "activeEdgeIds": [
+          "tokens-attention"
+        ]
+      },
+      {
+        "label": "各自改写",
+        "note": "前馈网络在每个位置复用同一形状的变换，残差保留原表示的路。",
+        "activeIds": [
+          "ffn"
+        ],
+        "doneIds": [
+          "tokens",
+          "attention"
+        ],
+        "mutedIds": [
+          "stack"
+        ],
+        "values": {
+          "ffn": "角色 / 动作 / 场景"
+        },
+        "activeEdgeIds": [
+          "attention-ffn"
+        ]
+      },
+      {
+        "label": "继续堆叠",
+        "note": "一层的输出成为下一层输入，仍然需要任务头和外部证据完成最后判断。",
+        "activeIds": [
+          "stack"
+        ],
+        "doneIds": [
+          "tokens",
+          "attention",
+          "ffn"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stack": "下一层"
+        },
+        "activeEdgeIds": [
+          "ffn-stack"
+        ]
+      }
+    ],
+    "insight": "Transformer 的强项是让序列位置在多层计算中反复交换并改写表示；架构本身不负责事实核验。",
+    "quiz": {
+      "question": "拿掉句子的主语后，演示为什么不再给“它”指定对象？",
+      "options": [
+        {
+          "label": "可供注意力取回的线索少了",
+          "correct": true
+        },
+        {
+          "label": "Transformer 自动把空白填成真相",
+          "correct": false
+        },
+        {
+          "label": "层数会替代缺失的输入",
+          "correct": false
+        }
+      ],
+      "success": "关系需要输入中的线索；缺失证据时应保留不确定性。",
+      "retry": "注意力能重组已有表示，不能凭空制造不存在的主语。"
+    },
+    "prompt": {
+      "title": "检查一层 Transformer",
+      "text": "请把输入位置、自注意力、前馈网络、残差/归一化、层数和任务头逐项列出，并标明演示线索与事实证据的边界。"
+    },
+    "sources": [
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "注意力架构的原始论文"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html",
+        "label": "Dive into Deep Learning · The Transformer Architecture",
+        "note": "编码器层、前馈、残差、解码器遮罩"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.TransformerEncoder.html",
+        "label": "PyTorch · TransformerEncoder",
+        "note": "编码器层堆叠和顺序前向"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main/en/index",
+        "label": "Hugging Face · Transformers",
+        "note": "模型定义、训练和推理生态"
+      },
+      {
+        "url": "https://huggingface.co/docs/hub/en/transformers",
+        "label": "Hugging Face Hub · Using transformers",
+        "note": "配置蓝图与权重文件"
+      }
+    ]
+  },
+  {
+    "slug": "attention",
+    "lead": "同一张菜单里，为什么“查无糖”和“查最低价格”会取回不同内容？",
+    "definition": "注意力让一个 Query 和多张 Key 卡比较，再按权重取回对应 Value；多头会在不同表示子空间中并行计算，最后合并输出。",
+    "boundary": "演示中的高、中、低和口味/价格 head 是教学信号，不是每个真实模型的固定解释；mask 会减少可见证据，权重仍不等于事实。",
+    "sceneKind": "matrix",
+    "sceneTitle": "一条查询如何从菜单货架取回信息",
+    "actionLabel": "换查询条件",
+    "actors": [
+      {
+        "id": "query",
+        "label": "Query",
+        "detail": "查无糖饮品 / 查最低价格",
+        "icon": "key",
+        "group": "输入"
+      },
+      {
+        "id": "keys",
+        "label": "Keys",
+        "detail": "无糖 · 含奶 · 含糖",
+        "icon": "search",
+        "group": "比较"
+      },
+      {
+        "id": "values",
+        "label": "Values",
+        "detail": "规格与价格",
+        "icon": "file",
+        "group": "取回"
+      },
+      {
+        "id": "heads",
+        "label": "多头",
+        "detail": "口味头 · 价格头",
+        "icon": "brain",
+        "group": "并行"
+      },
+      {
+        "id": "output",
+        "label": "输出表示",
+        "detail": "加权混合后的定宽向量",
+        "icon": "chart",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "query-keys",
+        "from": "query",
+        "to": "keys",
+        "label": "比较兼容性"
+      },
+      {
+        "id": "keys-values",
+        "from": "keys",
+        "to": "values",
+        "label": "按权重取回"
+      },
+      {
+        "id": "values-heads",
+        "from": "values",
+        "to": "heads",
+        "label": "投影到不同子空间"
+      },
+      {
+        "id": "heads-output",
+        "from": "heads",
+        "to": "output",
+        "label": "拼接并投影"
+      }
+    ],
+    "frames": [
+      {
+        "label": "递出查询",
+        "note": "Query 先表达当前要找什么，菜单卡片还没有被取回。",
+        "activeIds": [
+          "query"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "keys",
+          "values",
+          "heads",
+          "output"
+        ],
+        "values": {
+          "query": "查无糖饮品"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "比较键",
+        "note": "Key 负责比较，权重是这一步的数值信号。",
+        "activeIds": [
+          "keys"
+        ],
+        "doneIds": [
+          "query"
+        ],
+        "mutedIds": [
+          "values",
+          "heads",
+          "output"
+        ],
+        "values": {
+          "keys": "无糖 高 / 含奶 中 / 含糖 低"
+        },
+        "activeEdgeIds": [
+          "query-keys"
+        ]
+      },
+      {
+        "label": "取回值",
+        "note": "按权重混合 Value，不把菜单原文整张复制进输出。",
+        "activeIds": [
+          "values"
+        ],
+        "doneIds": [
+          "query",
+          "keys"
+        ],
+        "mutedIds": [
+          "heads",
+          "output"
+        ],
+        "values": {
+          "values": "规格 + 价格"
+        },
+        "activeEdgeIds": [
+          "keys-values"
+        ]
+      },
+      {
+        "label": "多头合并",
+        "note": "不同投影子空间并行计算，最后把 head 输出合并。",
+        "activeIds": [
+          "heads",
+          "output"
+        ],
+        "doneIds": [
+          "query",
+          "keys",
+          "values"
+        ],
+        "mutedIds": [],
+        "values": {
+          "heads": "口味 / 价格",
+          "output": "定宽表示"
+        },
+        "activeEdgeIds": [
+          "values-heads",
+          "heads-output"
+        ]
+      }
+    ],
+    "insight": "注意力是可微的取数与混合机制；它能改变表示，却不能让缺失证据自动变成事实。",
+    "quiz": {
+      "question": "遮掉“无糖”这张 key 后，为什么不能要求注意力仍取回无糖证据？",
+      "options": [
+        {
+          "label": "可见的 key/value 里已经没有这条线索",
+          "correct": true
+        },
+        {
+          "label": "softmax 会自动联网补资料",
+          "correct": false
+        },
+        {
+          "label": "多头会把缺失输入变成真实菜单",
+          "correct": false
+        }
+      ],
+      "success": "mask 改变了可见范围，权重只能在剩余卡片里重新分配。",
+      "retry": "先看 mask 后的可见 key/value 集合，再看权重如何归一化。"
+    },
+    "prompt": {
+      "title": "拆开一次注意力计算",
+      "text": "请标注 Query、Key、Value、mask、权重和输出投影；说明哪些是本轮计算结果，哪些仍需要外部来源核验。"
+    },
+    "sources": [
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/queries-keys-values.html",
+        "label": "Dive into Deep Learning · Queries, Keys, and Values",
+        "note": "查询、键、值与加权汇总"
+      },
+      {
+        "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html",
+        "label": "Dive into Deep Learning · Multi-Head Attention",
+        "note": "多头投影、并行与拼接"
+      },
+      {
+        "url": "https://arxiv.org/abs/1706.03762",
+        "label": "Vaswani et al. · Attention Is All You Need",
+        "note": "缩放点积注意力与原始架构"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.modules.activation.MultiheadAttention.html",
+        "label": "PyTorch · MultiheadAttention",
+        "note": "Q/K/V、mask 与参考实现"
+      },
+      {
+        "url": "https://www.tensorflow.org/api_docs/python/tf/keras/layers/MultiHeadAttention",
+        "label": "TensorFlow · MultiHeadAttention",
+        "note": "self-attention 条件与固定宽度输出"
+      }
+    ]
+  },
+  {
+    "slug": "inference",
+    "lead": "模型已经训练好后，一次客服请求怎样从整段输入走到逐 token 的回答？",
+    "definition": "推理用已保存的参数处理当前输入。生成式模型通常先做 prefill，再做 decode，把输出逐步交付，直到满足停止条件。",
+    "boundary": "一次推理不会更新训练权重；输入少了凭证，速度快也不能补事实；inference_mode 与 eval() 也不是同一件事。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "一次请求的两种节奏",
+    "actionLabel": "切换输入或运行状态",
+    "actors": [
+      {
+        "id": "request",
+        "label": "Request",
+        "detail": "订单 A17 与退款问题",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "prefill",
+        "label": "Prefill",
+        "detail": "整段前缀一次读入",
+        "icon": "memory",
+        "group": "准备"
+      },
+      {
+        "id": "decode",
+        "label": "Decode",
+        "detail": "一个 token 一个 token",
+        "icon": "brain",
+        "group": "生成"
+      },
+      {
+        "id": "weights",
+        "label": "Weights",
+        "detail": "已保存参数 · 只读",
+        "icon": "shield",
+        "group": "运行条件"
+      },
+      {
+        "id": "stream",
+        "label": "Stream",
+        "detail": "首 token 后陆续返回",
+        "icon": "network",
+        "group": "输出"
+      },
+      {
+        "id": "stop",
+        "label": "Stop",
+        "detail": "结束 / 上限 / 取消 / 错误",
+        "icon": "clock",
+        "group": "终点"
+      }
+    ],
+    "edges": [
+      {
+        "id": "request-prefill",
+        "from": "request",
+        "to": "prefill",
+        "label": "整理并读入"
+      },
+      {
+        "id": "prefill-decode",
+        "from": "prefill",
+        "to": "decode",
+        "label": "交给下一 token"
+      },
+      {
+        "id": "weights-decode",
+        "from": "weights",
+        "to": "decode",
+        "label": "提供固定参数"
+      },
+      {
+        "id": "decode-stream",
+        "from": "decode",
+        "to": "stream",
+        "label": "逐步交付"
+      },
+      {
+        "id": "stream-stop",
+        "from": "stream",
+        "to": "stop",
+        "label": "检查是否结束"
+      }
+    ],
+    "frames": [
+      {
+        "label": "放入请求",
+        "note": "当前输入先到达运行入口，订单号仍在请求里。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "prefill",
+          "decode",
+          "stream",
+          "stop"
+        ],
+        "values": {
+          "request": "订单 A17 · 退款条件"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "整段 prefill",
+        "note": "prefill 先处理已有上下文，为后续生成准备中间状态。",
+        "activeIds": [
+          "prefill",
+          "weights"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "decode",
+          "stream",
+          "stop"
+        ],
+        "values": {
+          "prefill": "前缀已读入",
+          "weights": "更新 0 次"
+        },
+        "activeEdgeIds": [
+          "request-prefill",
+          "weights-decode"
+        ]
+      },
+      {
+        "label": "逐 token decode",
+        "note": "decode 根据当前上下文追加 token，首 token 后可以流式返回。",
+        "activeIds": [
+          "decode",
+          "stream"
+        ],
+        "doneIds": [
+          "request",
+          "prefill",
+          "weights"
+        ],
+        "mutedIds": [
+          "stop"
+        ],
+        "values": {
+          "decode": "先 → 核对 → 订单",
+          "stream": "首 token 已返回"
+        },
+        "activeEdgeIds": [
+          "prefill-decode",
+          "decode-stream"
+        ]
+      },
+      {
+        "label": "判断停止",
+        "note": "只有结束标记、长度上限、取消或错误等条件成立，才结束本次输出。",
+        "activeIds": [
+          "stop"
+        ],
+        "doneIds": [
+          "request",
+          "prefill",
+          "weights",
+          "decode",
+          "stream"
+        ],
+        "mutedIds": [],
+        "values": {
+          "stop": "完成或保留未完成"
+        },
+        "activeEdgeIds": [
+          "stream-stop"
+        ]
+      }
+    ],
+    "insight": "推理是一次有阶段和停止条件的运行：prefill 读入已有上下文，decode 逐步生成，权重保持只读，最终结果还要单独核验。",
+    "quiz": {
+      "question": "页面出现几个 token 后，为什么还不能马上说“推理完成”？",
+      "options": [
+        {
+          "label": "decode 可能仍在继续，停止条件尚未满足",
+          "correct": true
+        },
+        {
+          "label": "只要首 token 出现就会写回训练权重",
+          "correct": false
+        },
+        {
+          "label": "流式文字会自动补齐缺失订单号",
+          "correct": false
+        }
+      ],
+      "success": "首 token 只是输出开始；要看结束条件和输入证据是否都满足。",
+      "retry": "先区分 prefill、decode 和停止，再检查这次请求是否缺关键材料。"
+    },
+    "prompt": {
+      "title": "检查一次模型推理",
+      "text": "请按输入、预处理、prefill、decode、停止和核验顺序记录证据；标出首 token、逐 token 间隔、权重更新和缺证据分支。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/pipeline_tutorial",
+        "label": "Hugging Face · Pipeline tutorial",
+        "note": "推理 API、设备、批处理与半精度"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/main_classes/pipelines",
+        "label": "Hugging Face · Pipelines API",
+        "note": "输入、模型、后处理与生成输出"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html",
+        "label": "PyTorch · inference_mode",
+        "note": "关闭 autograd 开销与 eval 边界"
+      },
+      {
+        "url": "https://docs.nvidia.com/dynamo/v1.2.0/design-docs/disaggregated-serving",
+        "label": "NVIDIA Dynamo · Disaggregated Serving",
+        "note": "prefill/decode 阶段与 KV cache 交接"
+      },
+      {
+        "url": "https://docs.nvidia.com/tensorrt-llm/index.html?ncid=no-ncid",
+        "label": "NVIDIA · TensorRT-LLM",
+        "note": "面向 GPU 推理的优化 engine 与 runtime"
+      }
+    ]
+  },
+  {
+    "slug": "pretraining",
+    "lead": "模型怎样把没有人工答案册的文本变成一次次可计算的练习？",
+    "definition": "预训练从语料构造目标，比较预测与目标的损失，再按梯度更新参数；下一批样本继续检验这次移动是否有用。",
+    "boundary": "训练目标可能贴合过时、重复或有偏的语料；低 loss 只说明贴合目标，不能证明事实正确，也不能把预训练当成微调或推理。",
+    "sceneKind": "assembly",
+    "sceneTitle": "把一张语料卡装配成一次更新",
+    "actionLabel": "切换目标、标签和语料时效",
+    "actors": [
+      {
+        "id": "corpus",
+        "label": "Corpus",
+        "detail": "退款需在七日内申请",
+        "icon": "file",
+        "group": "材料"
+      },
+      {
+        "id": "target",
+        "label": "Target",
+        "detail": "下一个或被遮住的 token",
+        "icon": "search",
+        "group": "目标"
+      },
+      {
+        "id": "loss",
+        "label": "Loss",
+        "detail": "预测与目标的交叉熵",
+        "icon": "chart",
+        "group": "比较"
+      },
+      {
+        "id": "weights",
+        "label": "Weights",
+        "detail": "沿梯度移动一小步",
+        "icon": "gear",
+        "group": "参数"
+      },
+      {
+        "id": "check",
+        "label": "Check",
+        "detail": "独立评估与事实核验",
+        "icon": "shield",
+        "group": "边界"
+      }
+    ],
+    "edges": [
+      {
+        "id": "corpus-target",
+        "from": "corpus",
+        "to": "target",
+        "label": "从文本构造"
+      },
+      {
+        "id": "target-loss",
+        "from": "target",
+        "to": "loss",
+        "label": "和预测比较"
+      },
+      {
+        "id": "loss-weights",
+        "from": "loss",
+        "to": "weights",
+        "label": "提供更新信号"
+      },
+      {
+        "id": "weights-corpus",
+        "from": "weights",
+        "to": "corpus",
+        "label": "进入下一批练习"
+      },
+      {
+        "id": "weights-check",
+        "from": "weights",
+        "to": "check",
+        "label": "独立检查"
+      }
+    ],
+    "frames": [
+      {
+        "label": "摆上语料",
+        "note": "一行文本先被切成有顺序的 token，参数还没有变化。",
+        "activeIds": [
+          "corpus"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "target",
+          "loss",
+          "weights",
+          "check"
+        ],
+        "values": {
+          "corpus": "退款 · 需 · 在 · 七日内 · 申请"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "生成目标",
+        "note": "从输入结构生成一个可比较的目标；自监督仍然需要目标。",
+        "activeIds": [
+          "corpus",
+          "target"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "loss",
+          "weights",
+          "check"
+        ],
+        "values": {
+          "corpus": "token 序列",
+          "target": "目标 = 七日内"
+        },
+        "activeEdgeIds": [
+          "corpus-target"
+        ]
+      },
+      {
+        "label": "计算损失",
+        "note": "模型给出分布，loss 把它与目标的差距变成数值。",
+        "activeIds": [
+          "target",
+          "loss"
+        ],
+        "doneIds": [
+          "corpus"
+        ],
+        "mutedIds": [
+          "weights",
+          "check"
+        ],
+        "values": {
+          "target": "目标已对齐",
+          "loss": "cross-entropy = 0.48"
+        },
+        "activeEdgeIds": [
+          "target-loss"
+        ]
+      },
+      {
+        "label": "更新参数",
+        "note": "梯度让参数向降低当前损失的方向移动一小步，然后等待下一批样本。",
+        "activeIds": [
+          "weights"
+        ],
+        "doneIds": [
+          "corpus",
+          "target",
+          "loss"
+        ],
+        "mutedIds": [
+          "check"
+        ],
+        "values": {
+          "weights": "更新 1 次"
+        },
+        "activeEdgeIds": [
+          "loss-weights",
+          "weights-corpus"
+        ]
+      },
+      {
+        "label": "检查边界",
+        "note": "最后还要问语料是否过时、目标是否代表真实需求，并用独立评估核验。",
+        "activeIds": [
+          "check"
+        ],
+        "doneIds": [
+          "corpus",
+          "target",
+          "loss",
+          "weights"
+        ],
+        "mutedIds": [],
+        "values": {
+          "check": "低 loss ≠ 事实证明"
+        },
+        "activeEdgeIds": [
+          "weights-check"
+        ]
+      }
+    ],
+    "insight": "预训练是一条装配线：语料提供目标，损失提供信号，参数获得小步更新；每一环都可能把数据的范围和偏差带进最终能力。",
+    "quiz": {
+      "question": "训练损失变小，最准确的解释是什么？",
+      "options": [
+        {
+          "label": "模型更贴合当前训练目标，但还需要独立评估和事实核验",
+          "correct": true
+        },
+        {
+          "label": "模型已经知道训练语料之外的事实",
+          "correct": false
+        },
+        {
+          "label": "模型已经完成推理，不会再受输入影响",
+          "correct": false
+        }
+      ],
+      "success": "对，loss 描述的是目标上的误差；能否迁移和是否真实要另外检查。",
+      "retry": "把训练目标、模型参数和事实证据分开：loss 变小不等于世界被核验。"
+    },
+    "prompt": {
+      "title": "拆开一轮预训练",
+      "text": "请按语料、目标、预测、损失、参数更新、独立评估记录证据；再切换 causal/masked 目标，说明可见范围和失败分支。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/en/tasks/language_modeling",
+        "label": "Hugging Face · Causal language modeling",
+        "note": "下一个 token、labels 与训练流程"
+      },
+      {
+        "url": "https://docs.pytorch.org/docs/2.9/generated/torch.nn.CrossEntropyLoss.html",
+        "label": "PyTorch · CrossEntropyLoss",
+        "note": "logits、目标类别与损失"
+      },
+      {
+        "url": "https://arxiv.org/abs/1810.04805",
+        "label": "BERT · Pre-training of Deep Bidirectional Transformers",
+        "note": "掩码语言模型与预训练/微调"
+      },
+      {
+        "url": "https://github.com/google-research/bert/blob/master/README.md",
+        "label": "Google Research · BERT README",
+        "note": "语料、训练成本与复用"
+      },
+      {
+        "url": "https://arxiv.org/abs/2005.14165",
+        "label": "GPT-3 论文 · Language Models are Few-Shot Learners",
+        "note": "大规模语料、few-shot 与数据边界"
+      }
+    ]
+  },
+  {
+    "slug": "kv-cache",
+    "lead": "前缀已经算过的 K/V，怎样在下一步生成和下一条请求里继续派上用场？",
+    "definition": "KV cache 把过去 token 的注意力中间状态按位置保存起来；新 query 到来时可按 block 取回相同前缀，容量不足时再驱逐或搬到更慢层级。",
+    "boundary": "缓存命中不等于答案正确。只改一个 token、换模型或位置条件，旧状态就可能失效；GPU、CPU、disk 的容量和搬运成本也会改变收益。",
+    "sceneKind": "memory",
+    "sceneTitle": "给前缀留一套可复用的书签",
+    "actionLabel": "切换前缀、容量与命中条件",
+    "actors": [
+      {
+        "id": "prompt",
+        "label": "Prefix",
+        "detail": "系统：你是客服。",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "cache",
+        "label": "KV Cache",
+        "detail": "按 token 保存 K / V blocks",
+        "icon": "memory",
+        "group": "中间状态"
+      },
+      {
+        "id": "query",
+        "label": "New Q",
+        "detail": "本轮新 token 的查询",
+        "icon": "brain",
+        "group": "当前步骤"
+      },
+      {
+        "id": "router",
+        "label": "KV Router",
+        "detail": "寻找 cache overlap",
+        "icon": "network",
+        "group": "调度"
+      },
+      {
+        "id": "tier",
+        "label": "Memory Tiers",
+        "detail": "GPU → CPU → disk",
+        "icon": "database",
+        "group": "容量边界"
+      }
+    ],
+    "edges": [
+      {
+        "id": "prompt-cache",
+        "from": "prompt",
+        "to": "cache",
+        "label": "写入 K / V"
+      },
+      {
+        "id": "cache-query",
+        "from": "cache",
+        "to": "query",
+        "label": "取回旧状态"
+      },
+      {
+        "id": "router-cache",
+        "from": "router",
+        "to": "cache",
+        "label": "寻找相同前缀"
+      },
+      {
+        "id": "cache-tier",
+        "from": "cache",
+        "to": "tier",
+        "label": "空间不足时搬运"
+      },
+      {
+        "id": "query-router",
+        "from": "query",
+        "to": "router",
+        "label": "带着本轮前缀查找"
+      }
+    ],
+    "frames": [
+      {
+        "label": "送入前缀",
+        "note": "第一遍仍然要计算前缀，缓存还没有任何 block。",
+        "activeIds": [
+          "prompt"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "cache",
+          "query",
+          "router",
+          "tier"
+        ],
+        "values": {
+          "prompt": "系统：你是客服。"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "写入 K / V",
+        "note": "注意力状态按位置放进 block，准备被后续 decode 取回。",
+        "activeIds": [
+          "cache"
+        ],
+        "doneIds": [
+          "prompt"
+        ],
+        "mutedIds": [
+          "query",
+          "router",
+          "tier"
+        ],
+        "values": {
+          "cache": "block 0 / block 1"
+        },
+        "activeEdgeIds": [
+          "prompt-cache"
+        ]
+      },
+      {
+        "label": "带新 Q",
+        "note": "当前 token 只带来新的 query，旧 K / V 保持可复用。",
+        "activeIds": [
+          "query",
+          "cache"
+        ],
+        "doneIds": [
+          "prompt"
+        ],
+        "mutedIds": [
+          "router",
+          "tier"
+        ],
+        "values": {
+          "query": "Q = 请问",
+          "cache": "旧 K / V 可读"
+        },
+        "activeEdgeIds": [
+          "cache-query"
+        ]
+      },
+      {
+        "label": "前缀命中",
+        "note": "路由器优先寻找已有 prefix overlap，命中后少做一段重复计算。",
+        "activeIds": [
+          "router",
+          "cache"
+        ],
+        "doneIds": [
+          "prompt",
+          "query"
+        ],
+        "mutedIds": [
+          "tier"
+        ],
+        "values": {
+          "router": "命中同一前缀",
+          "cache": "复用 block 0"
+        },
+        "activeEdgeIds": [
+          "router-cache",
+          "query-router"
+        ]
+      },
+      {
+        "label": "容量边界",
+        "note": "GPU 空间有限，缓存可能被驱逐或搬到 CPU / disk；取回成本要单独测量。",
+        "activeIds": [
+          "tier"
+        ],
+        "doneIds": [
+          "prompt",
+          "cache",
+          "query",
+          "router"
+        ],
+        "mutedIds": [],
+        "values": {
+          "tier": "GPU 满 → CPU / disk"
+        },
+        "activeEdgeIds": [
+          "cache-tier"
+        ]
+      }
+    ],
+    "insight": "KV cache 是按位置保存的中间工作内存：相同前缀可以少算一次，变化的前缀、有限容量和远端搬运会让命中失效或收益变小。",
+    "quiz": {
+      "question": "KV cache 命中后，最准确的变化是什么？",
+      "options": [
+        {
+          "label": "减少一段已完成的注意力计算，但不改变模型权重或事实核验",
+          "correct": true
+        },
+        {
+          "label": "把上一次请求的完整答案直接复制给当前用户",
+          "correct": false
+        },
+        {
+          "label": "让模型自动获得训练数据里没有的新知识",
+          "correct": false
+        }
+      ],
+      "success": "对，命中优化的是重复计算和数据位置；答案质量仍要单独检查。",
+      "retry": "把缓存内容和模型答案分开：缓存保存 K/V 中间状态，不保存一份可直接发送的结论。"
+    },
+    "prompt": {
+      "title": "拆开一次 KV cache 命中",
+      "text": "请按前缀、K/V blocks、新 Q、命中条件、缓存层级和驱逐记录证据；再改一个 token，说明为什么必须重新计算。"
+    },
+    "sources": [
+      {
+        "url": "https://huggingface.co/docs/transformers/en/cache_explanation",
+        "label": "Hugging Face · Caching",
+        "note": "旧 token 的 K/V 与推理复用"
+      },
+      {
+        "url": "https://huggingface.co/docs/transformers/kv_cache",
+        "label": "Hugging Face · Cache strategies",
+        "note": "动态、静态、量化与前缀缓存"
+      },
+      {
+        "url": "https://docs.vllm.ai/en/latest/design/paged_attention/",
+        "label": "vLLM · Paged Attention",
+        "note": "按 token block 管理 KV cache"
+      },
+      {
+        "url": "https://docs.nvidia.com/dynamo/dev/reference/glossary",
+        "label": "NVIDIA Dynamo · Glossary",
+        "note": "KV cache 与 KV-aware routing"
+      },
+      {
+        "url": "https://docs.nvidia.com/dynamo/latest/kubernetes/kv-cache-offloading/overview",
+        "label": "NVIDIA Dynamo · KV Cache Offloading",
+        "note": "GPU/CPU/disk 分层与前缀复用"
+      }
+    ]
+  },
+  {
+    "slug": "agent-workflow",
+    "lead": "一次退款请求怎样从“收到”走到“可以交付”，又怎样在风险处停下来？",
+    "definition": "工作流把智能体任务写成显式节点和状态：接收、校验、路由、执行、验收，每一步都有输入、下一步和终态。节点里的模型可以帮忙判断，但应用要保留对权限、工具副作用和完成证据的控制。",
+    "boundary": "有了状态图仍不代表模型可靠。模型可能选错专家、漏掉字段或生成不完整草稿；只有校验、回执和明确的 done、blocked、retry、needs-human 才能把这些情况留在系统里。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "一张退款任务单的状态与闸门",
+    "actionLabel": "逐步推进、切换路由与验收结果",
+    "actors": [
+      {
+        "id": "request",
+        "label": "请求单",
+        "detail": "订单 A17 · ¥1,280",
+        "icon": "file",
+        "group": "输入"
+      },
+      {
+        "id": "gate",
+        "label": "校验闸门",
+        "detail": "字段、权限、风险",
+        "icon": "shield",
+        "group": "控制"
+      },
+      {
+        "id": "router",
+        "label": "路由器",
+        "detail": "规则或模型选择下一节点",
+        "icon": "code",
+        "group": "编排"
+      },
+      {
+        "id": "specialist",
+        "label": "账单专家",
+        "detail": "工具调用或局部判断",
+        "icon": "brain",
+        "group": "执行"
+      },
+      {
+        "id": "review",
+        "label": "验收出口",
+        "detail": "done / blocked / needs-human",
+        "icon": "shield",
+        "group": "结果"
+      }
+    ],
+    "edges": [
+      {
+        "id": "request-gate",
+        "from": "request",
+        "to": "gate",
+        "label": "提交检查"
+      },
+      {
+        "id": "gate-router",
+        "from": "gate",
+        "to": "router",
+        "label": "通过后路由"
+      },
+      {
+        "id": "router-specialist",
+        "from": "router",
+        "to": "specialist",
+        "label": "交给专家"
+      },
+      {
+        "id": "specialist-review",
+        "from": "specialist",
+        "to": "review",
+        "label": "送验收"
+      },
+      {
+        "id": "gate-review",
+        "from": "gate",
+        "to": "review",
+        "label": "失败 → blocked"
+      },
+      {
+        "id": "review-specialist",
+        "from": "review",
+        "to": "specialist",
+        "label": "retry / 补证据"
+      }
+    ],
+    "frames": [
+      {
+        "label": "收到请求",
+        "note": "请求单先登记订单、金额和当前状态；没有输入就没有可以追踪的后续节点。",
+        "activeIds": [
+          "request"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "gate",
+          "router",
+          "specialist",
+          "review"
+        ],
+        "values": {
+          "request": "received · A17 / ¥1,280"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "闸门检查",
+        "note": "字段、权限和风险检查先于工具副作用；缺凭证时沿失败边进入 blocked。",
+        "activeIds": [
+          "gate"
+        ],
+        "doneIds": [
+          "request"
+        ],
+        "mutedIds": [
+          "router",
+          "specialist",
+          "review"
+        ],
+        "values": {
+          "gate": "checking · 3 条条件"
+        },
+        "activeEdgeIds": [
+          "request-gate"
+        ]
+      },
+      {
+        "label": "选择路线",
+        "note": "通过后，下一步可以由代码按金额规则决定，也可以由模型提出专家选择。",
+        "activeIds": [
+          "router"
+        ],
+        "doneIds": [
+          "request",
+          "gate"
+        ],
+        "mutedIds": [
+          "specialist",
+          "review"
+        ],
+        "values": {
+          "router": "code → billing"
+        },
+        "activeEdgeIds": [
+          "gate-router"
+        ]
+      },
+      {
+        "label": "执行局部任务",
+        "note": "账单专家只处理自己的节点；它的草稿还没有资格直接改写订单。",
+        "activeIds": [
+          "specialist"
+        ],
+        "doneIds": [
+          "request",
+          "gate",
+          "router"
+        ],
+        "mutedIds": [
+          "review"
+        ],
+        "values": {
+          "specialist": "draft · waiting proof"
+        },
+        "activeEdgeIds": [
+          "router-specialist"
+        ]
+      },
+      {
+        "label": "验收或停下",
+        "note": "证据齐全才进入 done；失败、重试和人工接管都要留下明确的终态记录。",
+        "activeIds": [
+          "review"
+        ],
+        "doneIds": [
+          "request",
+          "gate",
+          "router",
+          "specialist"
+        ],
+        "mutedIds": [],
+        "values": {
+          "review": "done / blocked / needs-human"
+        },
+        "activeEdgeIds": [
+          "specialist-review"
+        ]
+      }
+    ],
+    "insight": "工作流不替模型做每一个判断，而是把判断放进有边界的节点：谁能继续、谁能调用工具、什么证据算完成，都留在状态图上。",
+    "quiz": {
+      "question": "为什么“校验失败”应该是工作流里的一个状态？",
+      "options": [
+        {
+          "label": "因为系统需要记录停在哪里，并阻止未验证的副作用继续发生",
+          "correct": true
+        },
+        {
+          "label": "因为失败状态可以自动把模型草稿当成最终答案",
+          "correct": false
+        },
+        {
+          "label": "因为只要有状态图，节点里的模型就不会再犯错",
+          "correct": false
+        }
+      ],
+      "success": "对。blocked 让失败可追踪，也把订单写入这类副作用挡在验收之后。",
+      "retry": "想想闸门的职责：它要留下失败证据并阻止继续执行，不是把失败藏起来。"
+    },
+    "prompt": {
+      "title": "拆开一次智能体工作流",
+      "text": "请列出请求、校验、路由、执行、验收五个节点；为每个节点写输入、权限、工具副作用、成功状态、失败状态和回执，再指出哪些转移由代码决定、哪些只由模型提出。"
+    },
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "label": "Anthropic · Building effective agents",
+        "note": "区分 workflow 与 agent 的路径控制和灵活性"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/multi_agent/",
+        "label": "OpenAI Agents SDK · Multi-agent orchestration",
+        "note": "代码编排、模型编排、agents as tools 与 handoffs"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/quickstart/",
+        "label": "OpenAI Agents SDK · Quickstart",
+        "note": "Runner 执行 agent、工具和 handoff，并记录 trace"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/guardrails/",
+        "label": "OpenAI Agents SDK · Guardrails",
+        "note": "输入、输出和工具闸门的不同边界"
+      },
+      {
+        "url": "https://openai.github.io/openai-agents-python/handoffs/",
+        "label": "OpenAI Agents SDK · Handoffs",
+        "note": "转交控制权、过滤历史和传递 metadata"
+      }
+    ]
+  },
+  {
+    "slug": "backpressure",
+    "lead": "上游一直加速、下游已经喘不过气时，哪一端有权让流量停下来？",
+    "definition": "背压把下游的可用容量变成回传信号：当缓冲区接近上限，生产者暂停或减少提交；容量恢复后，再继续发送。它是一种跨异步边界的节奏协议，不是把队列无限做大的缓存技巧。",
+    "boundary": "背压会让等待变长或吞吐下降，但通常不主动删除工作；丢弃超额、限流和重试都有自己的代价。若生产者不尊重信号、消费者永不恢复或重试反复注入，背压也会演变成停滞或新的堆积。",
+    "sceneKind": "pipeline",
+    "sceneTitle": "容量信号怎样逆着数据流传回去",
+    "actionLabel": "逐步推进生产、缓冲、回传和恢复",
+    "actors": [
+      {
+        "id": "producer",
+        "label": "生产者",
+        "detail": "每秒产生 6 个 chunk",
+        "icon": "cloud",
+        "group": "上游"
+      },
+      {
+        "id": "buffer",
+        "label": "有界缓冲",
+        "detail": "最多容纳 4 个 chunk",
+        "icon": "memory",
+        "group": "边界"
+      },
+      {
+        "id": "consumer",
+        "label": "消费者",
+        "detail": "每秒只能处理 2 个",
+        "icon": "brain",
+        "group": "下游"
+      },
+      {
+        "id": "signal",
+        "label": "容量信号",
+        "detail": "允许继续 / 暂停提交",
+        "icon": "network",
+        "group": "回传"
+      },
+      {
+        "id": "monitor",
+        "label": "运行监控",
+        "detail": "等待、堆积、丢弃、恢复",
+        "icon": "chart",
+        "group": "证据"
+      }
+    ],
+    "edges": [
+      {
+        "id": "producer-buffer",
+        "from": "producer",
+        "to": "buffer",
+        "label": "推送 chunk"
+      },
+      {
+        "id": "buffer-consumer",
+        "from": "buffer",
+        "to": "consumer",
+        "label": "按容量交付"
+      },
+      {
+        "id": "consumer-signal",
+        "from": "consumer",
+        "to": "signal",
+        "label": "报告可用容量"
+      },
+      {
+        "id": "signal-producer",
+        "from": "signal",
+        "to": "producer",
+        "label": "暂停 / 继续"
+      },
+      {
+        "id": "buffer-monitor",
+        "from": "buffer",
+        "to": "monitor",
+        "label": "记录水位"
+      },
+      {
+        "id": "consumer-monitor",
+        "from": "consumer",
+        "to": "monitor",
+        "label": "记录处理率"
+      }
+    ],
+    "frames": [
+      {
+        "label": "数据开始流动",
+        "note": "生产者把 chunk 送入有界缓冲；下游还没有触发压力，流量暂时顺畅。",
+        "activeIds": [
+          "producer",
+          "buffer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "consumer",
+          "signal",
+          "monitor"
+        ],
+        "values": {
+          "producer": "6 chunks/s",
+          "buffer": "2 / 4"
+        },
+        "activeEdgeIds": [
+          "producer-buffer"
+        ]
+      },
+      {
+        "label": "缓冲接近上限",
+        "note": "消费者处理较慢，槽位从 2 / 4 涨到 4 / 4；再推送就会把堆积藏到别处。",
+        "activeIds": [
+          "buffer",
+          "consumer"
+        ],
+        "doneIds": [
+          "producer"
+        ],
+        "mutedIds": [
+          "signal",
+          "monitor"
+        ],
+        "values": {
+          "buffer": "4 / 4 · full",
+          "consumer": "2 chunks/s"
+        },
+        "activeEdgeIds": [
+          "buffer-consumer"
+        ]
+      },
+      {
+        "label": "压力信号回传",
+        "note": "下游把 capacity = 0 传回生产者；生产者暂停新任务，数据没有被悄悄改写。",
+        "activeIds": [
+          "signal",
+          "producer"
+        ],
+        "doneIds": [
+          "buffer",
+          "consumer"
+        ],
+        "mutedIds": [
+          "monitor"
+        ],
+        "values": {
+          "signal": "capacity = 0",
+          "producer": "paused"
+        },
+        "activeEdgeIds": [
+          "consumer-signal",
+          "signal-producer"
+        ]
+      },
+      {
+        "label": "下游开始排空",
+        "note": "消费者接走一项后出现空槽，生产者才获得新的额度；队列仍保持有界。",
+        "activeIds": [
+          "consumer",
+          "buffer"
+        ],
+        "doneIds": [
+          "producer",
+          "signal"
+        ],
+        "mutedIds": [
+          "monitor"
+        ],
+        "values": {
+          "consumer": "draining",
+          "buffer": "1 / 4"
+        },
+        "activeEdgeIds": [
+          "buffer-consumer"
+        ]
+      },
+      {
+        "label": "记录恢复结果",
+        "note": "把等待、吞吐和是否丢弃分开记录，才能判断系统是真的恢复还是只是把工作丢了。",
+        "activeIds": [
+          "monitor"
+        ],
+        "doneIds": [
+          "producer",
+          "buffer",
+          "consumer",
+          "signal"
+        ],
+        "mutedIds": [],
+        "values": {
+          "monitor": "wait / drop / recovery"
+        },
+        "activeEdgeIds": [
+          "buffer-monitor",
+          "consumer-monitor"
+        ]
+      }
+    ],
+    "insight": "背压不是把队列藏深一点，而是让最接近容量的下游把节奏传回上游；有了这条回路，缓冲才会有上限，恢复才有证据。",
+    "quiz": {
+      "question": "下游处理变慢且缓冲已满时，哪项最符合背压？",
+      "options": [
+        {
+          "label": "回传可用容量，让生产者暂停或减速，容量回来后再继续",
+          "correct": true
+        },
+        {
+          "label": "无条件扩大内存队列，把所有新任务先存起来",
+          "correct": false
+        },
+        {
+          "label": "静默丢掉超额任务，并把它们记成已处理",
+          "correct": false
+        }
+      ],
+      "success": "对。背压保留了生产节奏和容量之间的关系，恢复后才知道哪些工作真正被接住。",
+      "retry": "想想信号的方向：容量从下游传回上游；无限排队和静默丢弃分别是别的取舍。"
+    },
+    "prompt": {
+      "title": "把一次背压事件拆开",
+      "text": "请沿生产者→缓冲→消费者画出数据边，再画一条相反方向的容量信号；记录队列上限、等待、丢弃、重试和恢复条件，并说明每项代价。"
+    },
+    "sources": [
+      {
+        "url": "https://www.reactive-streams.org/",
+        "label": "Reactive Streams · Back pressure",
+        "note": "异步边界、有界队列和需求调节"
+      },
+      {
+        "url": "https://docs.ray.io/en/latest/data/data-internals.html",
+        "label": "Ray Data · Internals",
+        "note": "缓冲达到容量后停止继续启动任务"
+      },
+      {
+        "url": "https://docs.ray.io/en/latest/data/monitoring-your-workload.html",
+        "label": "Ray Data · Monitoring",
+        "note": "背压时间、输入输出队列和处理率指标"
+      },
+      {
+        "url": "https://docs.cloud.google.com/architecture/framework/reliability/graceful-degradation",
+        "label": "Google Cloud · Graceful degradation",
+        "note": "限流、尽早丢弃和部分错误处理"
+      },
+      {
+        "url": "https://aws.amazon.com/builders-library/avoiding-overload-in-distributed-systems-by-putting-the-smaller-service-in-control/",
+        "label": "AWS Builders’ Library · Avoiding overload",
+        "note": "由容量更小的接收侧控制交互速度"
+      },
+      {
+        "url": "https://docs.cloud.google.com/tasks/docs/manage-cloud-task-scaling",
+        "label": "Google Cloud Tasks · Manage scaling risks",
+        "note": "突发派发、积压恢复和渐进增速"
+      }
+    ]
+  },
+  {
+    "slug": "dead-letter-queue",
+    "lead": "一条消息一直失败时，怎样让它停在可调查的地方，而不是拖住整条队列？",
+    "definition": "死信队列是失败消息的隔离支路：主队列按投递次数或失败条件把消息移出，DLQ 保留消息本体、失败理由和时间，运维或应用再决定调查、修复、重放或放弃。",
+    "boundary": "DLQ 不会自动修复消息，也不保证重放安全。消息可能过期、重复投递或破坏 FIFO 顺序；没有保留期、权限、告警和幂等设计，隔离只是把问题藏得更深。",
+    "sceneKind": "branch",
+    "sceneTitle": "失败消息的重试、隔离与重放出口",
+    "actionLabel": "逐步推进尝试、死信和调查决定",
+    "actors": [
+      {
+        "id": "message",
+        "label": "消息",
+        "detail": "bad-json / order-184",
+        "icon": "message",
+        "group": "输入"
+      },
+      {
+        "id": "source-queue",
+        "label": "主队列",
+        "detail": "等待消费者确认",
+        "icon": "queue",
+        "group": "主路径"
+      },
+      {
+        "id": "consumer",
+        "label": "消费者",
+        "detail": "处理并 ack",
+        "icon": "robot",
+        "group": "执行"
+      },
+      {
+        "id": "dead-letter",
+        "label": "DLQ",
+        "detail": "保留失败消息和原因",
+        "icon": "memory",
+        "group": "隔离"
+      },
+      {
+        "id": "operator",
+        "label": "调查者",
+        "detail": "修复、redrive 或放弃",
+        "icon": "search",
+        "group": "出口"
+      }
+    ],
+    "edges": [
+      {
+        "id": "message-source",
+        "from": "message",
+        "to": "source-queue",
+        "label": "入队"
+      },
+      {
+        "id": "source-consumer",
+        "from": "source-queue",
+        "to": "consumer",
+        "label": "投递"
+      },
+      {
+        "id": "consumer-source",
+        "from": "consumer",
+        "to": "source-queue",
+        "label": "失败 → 重试"
+      },
+      {
+        "id": "source-dead",
+        "from": "source-queue",
+        "to": "dead-letter",
+        "label": "超过上限 → 隔离"
+      },
+      {
+        "id": "dead-operator",
+        "from": "dead-letter",
+        "to": "operator",
+        "label": "查看原因"
+      },
+      {
+        "id": "operator-source",
+        "from": "operator",
+        "to": "source-queue",
+        "label": "修复后 redrive"
+      }
+    ],
+    "frames": [
+      {
+        "label": "第一次投递",
+        "note": "消息从主队列交给消费者；成功才 ack，失败则回到可重试状态。",
+        "activeIds": [
+          "message",
+          "source-queue",
+          "consumer"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "dead-letter",
+          "operator"
+        ],
+        "values": {
+          "message": "bad-json",
+          "source-queue": "ready",
+          "consumer": "attempt 1"
+        },
+        "activeEdgeIds": [
+          "message-source",
+          "source-consumer"
+        ]
+      },
+      {
+        "label": "失败再试",
+        "note": "同一个坏输入重复触发同一个错误；次数和原因必须被记录。",
+        "activeIds": [
+          "consumer",
+          "source-queue"
+        ],
+        "doneIds": [
+          "message"
+        ],
+        "mutedIds": [
+          "dead-letter",
+          "operator"
+        ],
+        "values": {
+          "consumer": "attempt 2 → fail",
+          "source-queue": "retry in 5s"
+        },
+        "activeEdgeIds": [
+          "consumer-source"
+        ]
+      },
+      {
+        "label": "转入死信",
+        "note": "达到 maxReceiveCount 后离开主路径，后面的正常消息不会一直被它挡住。",
+        "activeIds": [
+          "source-queue",
+          "dead-letter"
+        ],
+        "doneIds": [
+          "message",
+          "consumer"
+        ],
+        "mutedIds": [
+          "operator"
+        ],
+        "values": {
+          "source-queue": "next-order continues",
+          "dead-letter": "attempt 3 · malformed payload"
+        },
+        "activeEdgeIds": [
+          "source-dead"
+        ]
+      },
+      {
+        "label": "查看证据",
+        "note": "调查者读取原消息、失败理由、次数和时间；查看不是确认成功。",
+        "activeIds": [
+          "dead-letter",
+          "operator"
+        ],
+        "doneIds": [
+          "message",
+          "source-queue",
+          "consumer"
+        ],
+        "mutedIds": [],
+        "values": {
+          "dead-letter": "retained",
+          "operator": "inspect reason"
+        },
+        "activeEdgeIds": [
+          "dead-operator"
+        ]
+      },
+      {
+        "label": "修复后出口",
+        "note": "修复根因并检查幂等后才可 redrive；否则消息可能再次回到 DLQ。",
+        "activeIds": [
+          "operator",
+          "source-queue"
+        ],
+        "doneIds": [
+          "message",
+          "consumer",
+          "dead-letter"
+        ],
+        "mutedIds": [],
+        "values": {
+          "operator": "fix + approve",
+          "source-queue": "redrive / discard"
+        },
+        "activeEdgeIds": [
+          "operator-source"
+        ]
+      }
+    ],
+    "insight": "DLQ 把“反复失败”从主路径拿出来，却把决定权留给调查者：原消息、失败原因和次数要能被看见，重放才不会变成另一种盲目重试。",
+    "quiz": {
+      "question": "重放死信消息前最应该先确认什么？",
+      "options": [
+        {
+          "label": "根因已修复，权限、顺序和重复副作用都有处理方案",
+          "correct": true
+        },
+        {
+          "label": "只要 DLQ 里有消息，就立刻全部搬回主队列",
+          "correct": false
+        },
+        {
+          "label": "重放会自动把之前产生的业务副作用撤销",
+          "correct": false
+        }
+      ],
+      "success": "对。redrive 重新进入处理路径，不会自动撤销旧副作用，也不会替你修复根因。",
+      "retry": "把调查、修复、幂等和顺序放在 redrive 之前；搬运本身不是安全证明。"
+    },
+    "prompt": {
+      "title": "拆开一次死信处理",
+      "text": "请记录消息本体、投递次数、失败理由、保留期、告警、读取权限和顺序约束；再分别写出 inspect、fix、redrive、discard 的审批与幂等条件。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+        "label": "Amazon SQS · Dead-letter queues",
+        "note": "最大接收次数、redrive、保留期与 FIFO 顺序边界"
+      },
+      {
+        "url": "https://docs.cloud.google.com/pubsub/docs/handling-failures",
+        "label": "Google Pub/Sub · Dead-letter topics",
+        "note": "无法确认的消息转到失败主题"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues",
+        "label": "Azure Service Bus · Dead-letter queues",
+        "note": "secondary subqueue、失败原因和手动清理"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-dead-letter-queues.html",
+        "label": "Amazon SNS · Dead-letter queues",
+        "note": "失败消息的分析与重新处理"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-message-loss-and-duplicates",
+        "label": "Azure Service Bus · Loss and duplicates",
+        "note": "peek-lock、receive-and-delete 与重复/丢失取舍"
+      }
+    ]
+  },
+  {
+    "slug": "eventual-consistency",
+    "lead": "保存按钮已经亮绿灯，为什么另一个地区还看见 pending？",
+    "definition": "最终一致性让一个副本先接住写入，其他副本随后复制；在收敛前，读取路径可能返回旧值。系统还必须为并发写入规定版本、顺序或人工裁决。",
+    "boundary": "最终一致性没有固定的立即生效时间，也不保证默认解决业务冲突。读取保证跟区域、查询和服务能力有关；关键状态要单独设计强读、read-your-writes、事务或补偿路径。",
+    "sceneKind": "layers",
+    "sceneTitle": "一次保存怎样穿过副本时间差",
+    "actionLabel": "逐层推进写入、复制、读取、冲突与收敛",
+    "actors": [
+      {
+        "id": "writer",
+        "label": "写入者",
+        "detail": "订单 A17 · pending → paid",
+        "icon": "user",
+        "group": "触发"
+      },
+      {
+        "id": "primary",
+        "label": "主副本 · region A",
+        "detail": "先返回 200 OK",
+        "icon": "database",
+        "group": "写入"
+      },
+      {
+        "id": "replica",
+        "label": "读副本 · region B",
+        "detail": "异步追上主副本",
+        "icon": "cloud",
+        "group": "复制"
+      },
+      {
+        "id": "reader",
+        "label": "读取路径",
+        "detail": "任一副本 / 同区强读",
+        "icon": "search",
+        "group": "体验"
+      },
+      {
+        "id": "rule",
+        "label": "冲突规则",
+        "detail": "版本、顺序或人工裁决",
+        "icon": "git",
+        "group": "边界"
+      }
+    ],
+    "edges": [
+      {
+        "id": "writer-primary",
+        "from": "writer",
+        "to": "primary",
+        "label": "提交 paid"
+      },
+      {
+        "id": "primary-replica",
+        "from": "primary",
+        "to": "replica",
+        "label": "异步复制"
+      },
+      {
+        "id": "replica-reader",
+        "from": "replica",
+        "to": "reader",
+        "label": "返回当前值"
+      },
+      {
+        "id": "primary-reader",
+        "from": "primary",
+        "to": "reader",
+        "label": "同区强读路径"
+      },
+      {
+        "id": "replica-rule",
+        "from": "replica",
+        "to": "rule",
+        "label": "并发版本冲突"
+      },
+      {
+        "id": "rule-replica",
+        "from": "rule",
+        "to": "replica",
+        "label": "裁决后收敛"
+      }
+    ],
+    "frames": [
+      {
+        "label": "一处先写成功",
+        "note": "写入者把订单改成 paid；主副本返回成功，读副本还没有被要求立刻相同。",
+        "activeIds": [
+          "writer",
+          "primary"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "replica",
+          "reader",
+          "rule"
+        ],
+        "values": {
+          "writer": "A17 → paid",
+          "primary": "200 OK"
+        },
+        "activeEdgeIds": [
+          "writer-primary"
+        ]
+      },
+      {
+        "label": "复制还在路上",
+        "note": "更新沿异步边界传播；主副本已经是 paid，读副本仍可能保留 pending。",
+        "activeIds": [
+          "primary",
+          "replica"
+        ],
+        "doneIds": [
+          "writer"
+        ],
+        "mutedIds": [
+          "reader",
+          "rule"
+        ],
+        "values": {
+          "primary": "paid",
+          "replica": "pending · lag"
+        },
+        "activeEdgeIds": [
+          "primary-replica"
+        ]
+      },
+      {
+        "label": "一次旧读出现",
+        "note": "读取路径落到尚未追上的副本，用户看到 pending；这不是把写入失败重新命名。",
+        "activeIds": [
+          "replica",
+          "reader"
+        ],
+        "doneIds": [
+          "writer",
+          "primary"
+        ],
+        "mutedIds": [
+          "rule"
+        ],
+        "values": {
+          "replica": "pending",
+          "reader": "旧读 · pending"
+        },
+        "activeEdgeIds": [
+          "replica-reader"
+        ]
+      },
+      {
+        "label": "并发写入撞上",
+        "note": "另一地区同时写入 cancelled；副本最终相同之前，系统必须把冲突交给一条能解释的规则。",
+        "activeIds": [
+          "replica",
+          "rule"
+        ],
+        "doneIds": [
+          "writer",
+          "primary",
+          "reader"
+        ],
+        "mutedIds": [],
+        "values": {
+          "replica": "paid ↔ cancelled",
+          "rule": "last writer wins · 示例"
+        },
+        "activeEdgeIds": [
+          "replica-rule"
+        ]
+      },
+      {
+        "label": "副本最终收敛",
+        "note": "没有新的更新后，规则让副本和读取路径落到同一个可追踪结果；若业务不能接受覆盖，冲突应转到应用层。",
+        "activeIds": [
+          "rule",
+          "replica",
+          "reader"
+        ],
+        "doneIds": [
+          "writer",
+          "primary"
+        ],
+        "mutedIds": [],
+        "values": {
+          "rule": "decision recorded",
+          "replica": "paid · converged",
+          "reader": "最新 / 规则已知"
+        },
+        "activeEdgeIds": [
+          "rule-replica",
+          "replica-reader"
+        ]
+      }
+    ],
+    "insight": "最终一致性把“写入成功”“读到什么”和“副本何时对齐”拆成三件事：允许它们错开，换来低延迟与高可用；代价是旧读窗口和冲突规则必须被产品看见。",
+    "quiz": {
+      "question": "动画里 region B 还返回 pending 时，最准确的解释是什么？",
+      "options": [
+        {
+          "label": "写入可能已在主副本成功，但读副本尚未收敛",
+          "correct": true
+        },
+        {
+          "label": "只要读到旧值，就能证明主副本的写入失败",
+          "correct": false
+        },
+        {
+          "label": "最终一致性会自动判断 paid 和 cancelled 哪个更符合业务",
+          "correct": false
+        }
+      ],
+      "success": "对。旧读说明读取路径还没追上写入；接下来要决定怎样读、何时等待，以及冲突由谁裁决。",
+      "retry": "把写入、复制、读取和冲突分开看：旧读不是写入失败，最终收敛也不是业务规则。"
+    },
+    "prompt": {
+      "title": "画出一次最终一致的旧读",
+      "text": "选一个订单、库存或社交动态，标出写入副本、读副本、旧读窗口和并发写入；写出用户看到的提示、read-your-writes 或强读策略，以及冲突裁决和补偿证据。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html",
+        "label": "Amazon DynamoDB · Read consistency",
+        "note": "默认最终一致读取、strongly consistent read 的适用范围"
+      },
+      {
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables_HowItWorks.html",
+        "label": "Amazon DynamoDB · Global tables",
+        "note": "跨区域异步复制、最终一致与并发更新裁决"
+      },
+      {
+        "url": "https://docs.cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore?hl=en",
+        "label": "Google Cloud · Strong and eventual consistency",
+        "note": "没有新更新后读取逐步看到最后写入，不同查询形状有不同保证"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels",
+        "label": "Microsoft Azure · Cosmos DB consistency levels",
+        "note": "旧读、副本滞后与不同一致性级别的产品取舍"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/design-principles/minimize-coordination",
+        "label": "Microsoft Azure · Minimize coordination",
+        "note": "减少分布式协调并用补偿动作处理异步边界"
+      }
+    ]
   }
 ]

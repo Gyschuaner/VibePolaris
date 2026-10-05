@@ -87,19 +87,225 @@
   {"slug":"data-validation","mechanism":"数据校验把实际数据与结构、范围、跨字段或集合规则比较，产生通过、拒绝、隔离或告警；规则应说明失败记录如何处置。","misconception":"通过类型检查不等于数据有效；end_at 晚于 start_at、国家与邮编匹配、集合唯一性都不是单字段类型能表达。","demoSignature":"7帧｜对象：6 条预约记录、schema/range/cross-field/unique 四层筛网、quarantine 区｜交互：逐层开启规则并编辑 end_at｜变化：记录在具体规则处停下，修复后重新进入｜结果：2 条通过、3 条隔离、1 条告警，原因码逐条可见。","sourceUrls":["https://www.w3.org/TR/vocab-dqv/","https://docs.greatexpectations.io/docs/core/introduction/"],"rewriteRisk":"高：与 input-validation 的信任边界不同，这里强调数据资产规则与处置。","nearDuplicates":["input-validation","data-quality","database-schema"]},
   {"slug":"stream-processing","mechanism":"流处理持续消费无界事件，依据事件时间、处理时间、水位线和状态计算增量结果；迟到事件与重复投递要求显式策略。","misconception":"流处理不是每来一条立即输出且永不修改；窗口结果可能因迟到数据更新，exactly-once 也只在定义好的状态与输出边界内成立。","demoSignature":"7帧｜对象：事件时间 10:01–10:05 的乱序订单、2 分钟窗口、水位线、窗口总额｜交互：拖动一条 10:01 事件到 10:04 才到达并调 lateness 0→3 分钟｜变化：事件被丢弃或回补旧窗口｜结果：窗口总额 120 保持或修正为 170，并显示 revision=2。","sourceUrls":["https://spark.apache.org/docs/latest/streaming/index.html","https://kafka.apache.org/documentation/#design"],"rewriteRisk":"高：必须表现事件时间、水位线和结果修订，不能只画不断滚动的数据点。","nearDuplicates":["batch-processing","queue","idempotency"]},
   {"slug":"data-lineage","mechanism":"数据血缘记录实体、活动与主体之间的生成、使用和派生关系，使某个输出能追溯到输入、规则版本和运行实例。","misconception":"血缘不是一张静态架构图，也不等于日志；若没有列级映射、版本和运行证据，就无法回答某个数值为何变化。","demoSignature":"6帧｜对象：revenue_report.total、orders.amount、refunds.amount、job v17、run-42 的可展开图｜交互：点击报告单元格 6840 并回溯｜变化：图只展开实际参与该值的列、规则与运行｜结果：定位到 v17 汇率规则和 23 条源记录，可反向预览改列影响 3 个报表。","sourceUrls":["https://www.w3.org/TR/prov-o/"],"rewriteRisk":"高：需要实例级证据与影响分析，避免把 pipeline DAG 当血缘。","nearDuplicates":["data-pipeline","data-transformation","dataset-data"]},
-  {"slug":"unit-test","mechanism":"单元测试在受控环境中验证一个小型可执行单元的行为，通常隔离慢或不确定依赖，并用输入与可观察输出判定。","misconception":"单元不一定等于一个函数，也不是 mock 越多越好；测试实现细节会让重构导致无意义失败。","demoSignature":"5帧｜对象：priceAfterDiscount 函数、边界输入 -1/0/100/101、依赖时钟接口、断言列表｜交互：拖动输入并切换真实时钟/固定时钟｜变化：只在 0–100 通过，固定时钟消除日期抖动｜结果：4 个用例中 3 pass、1 明确抛 RangeError。","sourceUrls":["https://glossary.istqb.org/en_US/search","https://jestjs.io/docs/getting-started"],"rewriteRisk":"中：需说明隔离目的和可观察行为，不能只写‘测试一个函数’。","nearDuplicates":["integration-test","mock","assertion"]},
-  {"slug":"integration-test","mechanism":"集成测试验证多个组件或系统边界协作时的数据格式、协议、事务和错误处理，测试范围可从数据库适配器到跨服务契约。","misconception":"集成测试不等于必须启动完整系统，也不是单元测试数量更多；核心是让真实边界参与并发现接口假设不一致。","demoSignature":"6帧｜对象：order service、真实 PostgreSQL、假的支付服务、事务表｜交互：发送同一订单两次并让支付返回 500｜变化：SQL 真正写入/回滚，fake 只控制外部故障｜结果：订单表仍 0 行、outbox 0 行、收到一次错误响应。","sourceUrls":["https://glossary.istqb.org/en_US/search","https://playwright.dev/docs/api-testing"],"rewriteRisk":"中：要明确哪些依赖真实、哪些替身，避免与 E2E 模糊。","nearDuplicates":["unit-test","e2e-test","mock"]},
-  {"slug":"e2e-test","mechanism":"端到端测试从用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径和系统级结果；覆盖面高但定位和维护成本也高。","misconception":"E2E 不是把所有测试都搬到浏览器，也不能替代单元与集成测试；依赖网络、数据和第三方会增加不稳定。","demoSignature":"7帧｜对象：浏览器、前端、API、数据库、邮件沙箱、订单状态时间轴｜交互：点击下单并完成付款回调｜变化：UI 从 pending 到 paid，数据库与邮件状态逐层产生｜结果：订单 id=42、DB=paid、邮件 1 封；任一层失败时停在首个不变量破坏处。","sourceUrls":["https://playwright.dev/docs/intro","https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需以真实跨层结果定义完成，不要只展示自动点按钮。","nearDuplicates":["integration-test","smoke-test","test-case"]},
-  {"slug":"smoke-test","mechanism":"冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件，通常在部署后先运行。","misconception":"冒烟测试不是随便点几下，也不证明系统质量完整；它只回答关键路径是否明显失效。","demoSignature":"4帧｜对象：部署 commit abc123、health、login、create-order、payment 四个检查灯｜交互：点击 deploy 后自动执行并在 payment 注入 502｜变化：前三项绿、第四项红，后续 120 个回归用例保持未启动｜结果：3/4 通过，构建标记 rejected，节省 28 分钟。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"低：边界清楚，但要防止把‘快速’误写成‘覆盖全面’。","nearDuplicates":["e2e-test","regression-test","server"]},
-  {"slug":"regression-test","mechanism":"回归测试在代码、配置或依赖变更后重新验证未应改变的既有行为；选择范围应依据变更影响、风险和历史缺陷。","misconception":"回归不是每次盲跑全部测试，也不是只重测修复点；过窄会漏影响，过宽会拖慢反馈。","demoSignature":"6帧｜对象：修改 auth middleware 的代码节点、调用图、32 个测试、风险热力图｜交互：点击变更文件并调风险阈值｜变化：直接测试 4 个、受影响集成测试 7 个、安全回归 3 个被选中｜结果：14/32 入选，捕获一个旧权限用例失败。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：需让‘选择哪些旧测试’成为演示核心，不和普通测试重复。","nearDuplicates":["smoke-test","code-coverage","test-case"]},
-  {"slug":"test-case","mechanism":"测试用例把前置条件、输入、操作和预期结果写成可重复判定的检查；好的用例围绕风险和可观察结果，而非照抄实现步骤。","misconception":"用例标题不是用例，‘功能正常’也不是可验证预期；缺少数据和状态前提会让不同人得到不同结论。","demoSignature":"5帧｜对象：密码重置用例编辑器、token=expired、user=active、POST 路径、DB/email 观察区｜交互：逐项补齐缺失字段再运行｜变化：模糊的‘应失败’变成 410、token 未消费、邮件 0 封三项断言｜结果：用例从不可判定变成 3/3 可复现。","sourceUrls":["https://glossary.istqb.org/en_US/search"],"rewriteRisk":"中：避免套 Given-When-Then 空壳，数据与结果必须具体。","nearDuplicates":["assertion","regression-test","e2e-test"]},
-  {"slug":"mock","mechanism":"Mock 是可配置的测试替身，用来记录交互并返回受控结果；它适合隔离昂贵或不确定依赖，但会引入对接口实现的假设。","misconception":"Mock 不等于任何假数据，也不是所有依赖都该替换；过度验证调用次数会把测试绑死在实现细节上。","demoSignature":"6帧｜对象：checkout、payment client、真实 fake server 与 mock 两种替身、调用日志｜交互：把实现从单次 charge 改为先 authorize 后 capture｜变化：行为结果仍成功，但旧 mock 的 once 断言失败；fake server 仍通过｜结果：对比‘行为契约稳定’与‘交互细节脆弱’。","sourceUrls":["https://jestjs.io/docs/mock-functions","https://playwright.dev/docs/mock"],"rewriteRisk":"中：需区分 mock、stub、fake 的用途，至少说明交互验证风险。","nearDuplicates":["unit-test","integration-test","assertion"]},
-  {"slug":"assertion","mechanism":"断言把实际可观察值与明确期望比较，失败时提供差异；应选择能表达业务结果且等待方式稳定的断言。","misconception":"断言越多不等于测试越强，检查内部变量或固定延时会制造脆弱性；一个失败应尽量指向单一原因。","demoSignature":"5帧｜对象：异步状态按钮、toBeVisible 自动等待、sleep(1000)+布尔比较两条轨道｜交互：把响应延迟从 200ms 调到 1500ms｜变化：固定 sleep 轨道在 1s 误失败，自动重试轨道 1.5s 后通过｜结果：同一 UI 最终 visible，稳定性 60%→100%。","sourceUrls":["https://playwright.dev/docs/test-assertions","https://jestjs.io/docs/expect"],"rewriteRisk":"中：要展示观察点和等待语义，不只写 expected/actual。","nearDuplicates":["test-case","unit-test","api-testing"]},
-  {"slug":"code-coverage","mechanism":"代码覆盖率统计测试执行触达的语句、分支、函数或条件；它说明哪些代码没被运行，不直接证明已触达代码行为正确。","misconception":"100% 覆盖不等于没有缺陷，单看行覆盖会漏掉条件组合和错误路径。","demoSignature":"6帧｜对象：if (age>=18 && verified) 四格真值表、行/分支/MC/DC 三种仪表｜交互：先运行 age=20,verified=true，再补三个组合｜变化：行覆盖首次即 100%，分支与条件覆盖逐步上升｜结果：首次仍漏 3/4 组合，完整后才暴露未验证成人错误。","sourceUrls":["https://jestjs.io/docs/configuration#collectcoverage-boolean","https://glossary.istqb.org/en_US/search"],"rewriteRisk":"高：必须反驳百分比质量替代论，并区分覆盖维度。","nearDuplicates":["unit-test","regression-test","test-case"]},
-  {"slug":"api-testing","mechanism":"API 测试直接构造协议请求并检查状态、字段、模式、授权、副作用和错误恢复；既可验证单接口，也可跨调用维护上下文。","misconception":"只断言 200 不是 API 测试，响应体正确也不代表数据库副作用、权限或幂等性正确。","demoSignature":"7帧｜对象：POST /orders、响应 schema、DB 查询、重复 Idempotency-Key、用户 A/B｜交互：发送合法、重复、越权三组请求｜变化：响应与服务端状态并排更新｜结果：201+1 行、200+仍 1 行、403+0 新行，任何一侧不符即失败。","sourceUrls":["https://playwright.dev/docs/api-testing","https://owasp.org/www-project-web-security-testing-guide/"],"rewriteRisk":"中：要包含协议结果和系统副作用，避免沦为状态码演示。","nearDuplicates":["integration-test","request","response"]},
-  {"slug":"least-privilege","mechanism":"最小权限按主体完成当前任务所必需的资源、动作、范围和时限授予权限，并定期审查权限膨胀；默认拒绝是常见配套策略。","misconception":"最小权限不是都给只读，也不是一次配置永久有效；临时管理员、服务账号和跨租户访问都要限制范围与期限。","demoSignature":"6帧｜对象：deploy-bot、read repo、write release、admin org 三种权限、30 分钟租约与审计日志｜交互：执行发布任务并拖大授权范围｜变化：缺权限时只补 write release，授予 admin 后攻击路径从 1 个扩到 9 个｜结果：最小集合完成任务，租约到期自动撤回。","sourceUrls":["https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html","https://csrc.nist.gov/pubs/sp/800/207/final"],"rewriteRisk":"高：需从动作、资源、时间三维展示，不要写成口号。","nearDuplicates":["authorization","rbac","firewall"]},
-  {"slug":"hashing","mechanism":"密码学哈希把任意长度输入映射为固定长度摘要，目标包括抗原像和抗碰撞；密码存储还必须使用带盐、成本可调的专用 KDF。","misconception":"哈希不是可逆加密，普通 SHA-256 也不适合直接存密码；相同无盐密码会产生相同摘要并被批量猜测。","demoSignature":"7帧｜对象：两个相同 password、随机 salt、SHA-256 与 Argon2id 两条计算轨、攻击计数器｜交互：切换无盐 SHA-256/带盐 Argon2id 并启动 1 秒猜测｜变化：摘要由相同变不同，尝试速率从百万级降到受内存限制｜结果：显示 hashes/s、盐值和验证成功但无法‘解密’。","sourceUrls":["https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html","https://csrc.nist.gov/pubs/fips/180-4/upd1/final"],"rewriteRisk":"高：必须分开通用哈希、密码 KDF 与加密，算法建议需按权威来源。","nearDuplicates":["encryption-at-rest","auth","input-validation"]},
-  {"slug":"input-validation","mechanism":"输入校验在信任边界处按允许列表检查语法与语义，并在服务端再次执行；它缩小非法状态，但不能替代参数化查询、输出编码和授权。","misconception":"前端校验不是安全控制，黑名单也拦不住所有变体；通过格式校验的对象仍可能越权。","demoSignature":"7帧｜对象：age、email、accountId 三字段，浏览器校验、API schema、授权三道独立门｜交互：绕过前端直接发 age=-1、畸形 email、他人 accountId｜变化：前两项在服务端 400，合法格式的他人 ID 继续到授权并 403｜结果：显示校验与授权各自阻断的请求。","sourceUrls":["https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html","https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html"],"rewriteRisk":"高：与 data-validation 和 authorization 的边界必须通过不同失败码呈现。","nearDuplicates":["data-validation","request-body","authorization"]},
-  {"slug":"encryption-at-rest","mechanism":"静态数据加密在数据写入磁盘、备份或对象存储时用密钥转换密文，并在授权读取时解密；安全性取决于密钥隔离、轮换和访问控制。","misconception":"磁盘加密不能防住已获应用读取权限的攻击者，也不自动保护日志、备份和内存；密钥与密文同处且同权限会削弱隔离。","demoSignature":"6帧｜对象：数据库页、备份文件、KMS 密钥、应用身份、被盗磁盘与被盗应用凭证两种攻击卡｜交互：分别触发两种攻击并撤销 KMS grant｜变化：磁盘攻击只能见密文，应用凭证仍可请求解密，撤权后读取失败｜结果：0 条明文或 100 条明文的边界清楚显示。","sourceUrls":["https://csrc.nist.gov/pubs/sp/800/111/final","https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html"],"rewriteRisk":"高：不能宣称‘加密后数据就安全’，必须展示密钥与解密主体边界。","nearDuplicates":["encryption-in-transit","backup","hashing"]},
-  {"slug":"encryption-in-transit","mechanism":"传输中加密用 TLS 等协议在通信端点间提供机密性、完整性和对端身份验证；保护范围从握手建立的安全通道开始，到终止 TLS 的端点结束。","misconception":"HTTPS 不代表端到端穿过所有代理仍为密文；TLS 在负载均衡器终止后，后续链路需单独保护，证书校验失败也不能忽略。","demoSignature":"7帧｜对象：浏览器、CDN、负载均衡、应用三段链路及每段锁图标、抓包字节视图｜交互：逐段启用 TLS 并把 CDN→LB 改为明文｜变化：外部抓包保持密文，内部链路暴露 Authorization 字段｜结果：端到端保护段从 3/3 降到 2/3，风险节点被精确标红。","sourceUrls":["https://www.rfc-editor.org/rfc/rfc8446.html","https://www.rfc-editor.org/rfc/rfc9525.html","https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"],"rewriteRisk":"高：需明确 TLS 终止点和身份校验，不要与静态加密共用锁头动画。","nearDuplicates":["tls-handshake","encryption-at-rest","hostname"]}
+    {
+    "slug": "unit-test",
+    "mechanism": "单元测试在受控环境中验证一个小型可执行单元的外部行为，通常隔离慢或不确定依赖，并用输入、返回值或预期错误判定。",
+    "misconception": "单元不一定等于一个函数，也不是 mock 越多越好；测试私有实现会让无害重构变成无意义失败，高覆盖率也不等于行为正确。",
+    "demoSignature": "5帧｜对象：priceAfterDiscount 函数、边界输入 -1/0/100/101、真实与固定时钟、断言结果｜交互：切换输入并切换真实时钟/固定时钟与行为/私有断言｜变化：边界结果可判定，固定时钟消除日期抖动，内部改写仍保持行为通过｜结果：4 个用例可重复，失败指向输入、依赖或错误断言。",
+    "sourceUrls": [
+      "https://martinfowler.com/bliki/UnitTest.html",
+      "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+      "https://jestjs.io/docs/getting-started",
+      "https://jestjs.io/docs/expect",
+      "https://jestjs.io/docs/mock-functions",
+      "https://jestjs.io/docs/asynchronous"
+    ],
+    "rewriteRisk": "中：需说明单元边界和隔离目的，展示依赖控制与可观察断言，不能只写‘测试一个函数’或把覆盖率当质量证明。",
+    "nearDuplicates": [
+      "integration-test",
+      "mock",
+      "assertion"
+    ]
+  },
+    {
+    "slug": "integration-test",
+    "mechanism": "集成测试让两个或更多组件在受控测试宿主中交换真实协议、数据或状态，并以响应、数据库行、消息或事务结果共同判定协作是否正确。",
+    "misconception": "集成测试不等于必须启动完整系统，也不是单元测试数量更多；它要让真实边界参与，同时明确哪些外部依赖只是受控替身。",
+    "demoSignature": "5帧｜对象：HTTP client、Order Service、真实 PostgreSQL、支付故障替身、orders/outbox 观察区｜交互：切换真实数据库/Mock 仓储和支付成功/500｜变化：真实事务在成功时提交、失败时回滚，Mock 分支只显示调用协议｜结果：response 与真实 rows 同时给出可证明或证据不足的结论。",
+    "sourceUrls": [
+      "https://martinfowler.com/bliki/IntegrationTest.html",
+      "https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0",
+      "https://playwright.dev/docs/api-testing",
+      "https://playwright.dev/docs/api/class-apiresponseassertions",
+      "https://testing.googleblog.com/2021/06/how-much-testing-is-enough.html"
+    ],
+    "rewriteRisk": "中：要明确真实组件和受控替身的边界，展示响应与持久化状态的双重证据，避免把集成测试写成 API 状态码检查或完整 E2E。",
+    "nearDuplicates": [
+      "unit-test",
+      "e2e-test",
+      "mock"
+    ]
+  },
+  {
+    "slug": "e2e-test",
+    "mechanism": "端到端测试从真实用户或外部调用方入口穿过部署后的关键组件，验证完整业务路径和跨层最终结果；覆盖面高但运行、定位和维护成本也高。",
+    "misconception": "E2E 不是把所有测试都搬进浏览器，也不是页面亮绿灯就算通过；隔离数据、稳定等待和跨层不变量缺一不可。",
+    "demoSignature": "6帧｜对象：浏览器、前端、订单 API、数据库、付款回调、邮件沙箱｜交互：选择完整旅程或丢失邮件并逐帧推进｜变化：UI 从 pending 到 paid，DB 和邮件逐层落地｜结果：UI=paid、DB=paid、mail=1 才 PASS；页面成功但 mail=0 时停在首个不变量破坏处。",
+    "sourceUrls": [
+      "https://playwright.dev/docs/best-practices",
+      "https://playwright.dev/docs/actionability",
+      "https://playwright.dev/docs/intro",
+      "https://martinfowler.com/articles/practical-test-pyramid.html",
+      "https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html"
+    ],
+    "rewriteRisk": "中：必须把完成定义落到跨层结果和失败位置，避免写成自动点按钮或只检查页面文字。",
+    "nearDuplicates": [
+      "integration-test",
+      "smoke-test",
+      "test-case"
+    ]
+  },
+  {
+    "slug": "smoke-test",
+    "mechanism": "冒烟测试用少量高价值检查快速判断一个部署后的构建或环境是否具备继续测试的基本条件；它以早停和放行为结果，不承担完整质量覆盖。",
+    "misconception": "冒烟测试不是随便点几下，也不是绿色就代表系统没有缺陷；它要选关键入口、明确阻塞动作，并把更多组合留给后续测试层。",
+    "demoSignature": "5帧｜对象：候选 commit、Health/Login/Create order/Payment 四盏灯、120 个回归队列｜交互：选择全部通过或在健康/登录/支付注入失败并逐帧推进｜变化：检查灯依次点亮，红灯关闭闸门，绿灯解锁回归｜结果：STOP 或 PROCEED 明确决定下一阶段。",
+    "sourceUrls": [
+      "https://learn.microsoft.com/en-us/biztalk/technical-guides/automating-the-build-process",
+      "https://docs.gitlab.com/development/testing_guide/testing_strategy/",
+      "https://docs.gitlab.com/development/testing_guide/smoke/",
+      "https://www.martinfowler.com/articles/originalContinuousIntegration.html",
+      "https://docs.gitlab.com/ci/pipelines/"
+    ],
+    "rewriteRisk": "中：必须把少量关键检查、失败早停和后续解锁写清，避免把冒烟说成全面回归或随意点检。",
+    "nearDuplicates": [
+      "e2e-test",
+      "regression-test",
+      "server"
+    ]
+  },
+  {"slug":"regression-test","mechanism":"回归测试在代码、配置或依赖变更后重新验证不应改变的既有行为；先沿影响关系缩小候选，再用业务风险、历史缺陷和周期性全量校准补足范围。","misconception":"回归不是每次盲跑全部测试，也不是只重测修复点；影响图可能漏掉历史高风险，覆盖率数字也不能代替行为验证。","demoSignature":"5帧｜对象：auth middleware 差异、调用树、登录/会话/订单、历史越权用例、14/32 测试抽屉｜交互：选择只看影响、补历史风险或全量校准并逐帧推进｜变化：11 个影响候选扩为 14 个风险集，旧 403 被错误 200 捕获｜结果：范围有来路，失败有下一步。","sourceUrls":["https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-test-types","https://learn.microsoft.com/en-us/azure/well-architected/operational-excellence/testing","https://learn.microsoft.com/en-us/azure/devops/pipelines/test/test-impact-analysis?view=azure-devops","https://docs.gitlab.com/development/testing_guide/testing_strategy/","https://www.martinfowler.com/articles/sensors-for-coding-agents.html"],"rewriteRisk":"高：必须把影响分析、风险补集、全量校准和旧行为倒退放在同一条因果链上，避免写成普通测试流程。","nearDuplicates":["smoke-test","code-coverage","test-case"]},
+  {"slug":"test-case","mechanism":"测试用例把一个已知起点、一次明确动作和可观察预期连成可重复判定的路径；它保护的是风险和行为契约，不是某段实现步骤。","misconception":"用例标题不是用例，‘功能正常’也不是预期；没有固定数据、清理方式或副作用观察点，测试结果无法归因。","demoSignature":"5帧｜对象：密码重置用例编辑器、user=u-42、token=expired、POST /password/reset、HTTP/DB/Mail 回执｜交互：补起点、动作、三项预期后清理重跑｜变化：‘应该失败’落成 410、consumed=false、mail=0｜结果：同一风险两次都得到 3/3 PASS。","sourceUrls":["https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-planning","https://learn.microsoft.com/en-us/azure/devops/test/overview?source=recommendations&view=azure-devops","https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html","https://docs.gitlab.com/development/testing_guide/best_practices/","https://playwright.dev/docs/test-assertions"],"rewriteRisk":"高：必须从密码重置的前置、动作、协议结果和副作用写出一条独立因果链，不能退回 Given-When-Then 空壳。","nearDuplicates":["assertion","regression-test","e2e-test"]},
+  {"slug":"mock","mechanism":"Mock 是替代生产依赖的可编程测试替身：它能控制返回值并记录调用，适合隔离昂贵、缓慢或难以触发的分支，但可能把实现细节伪装成行为契约。","misconception":"Mock 不等于 Stub、Spy 或 Fake，也不是依赖越多越好；业务结果不变时，旧调用期待变红可能只是测试绑住了重构前的形状。","demoSignature":"5帧｜对象：Checkout、PaymentGateway、Payment Mock/Fake、charge→authorize+capture、order=paid 与调用日志｜交互：切换最终行为/调用细节断言和 Mock/Fake，再逐帧重构｜变化：order=paid 保持，charge×1 的旧期待先红｜结果：看见隔离速度、调用证据与真实度之间的边界。","sourceUrls":["https://martinfowler.com/bliki/TestDouble.html","https://jestjs.io/docs/mock-function-api","https://vitest.dev/guide/mocking.html","https://martinfowler.com/articles/mocksArentStubs.html","https://testing.googleblog.com/2024/02/increase-test-fidelity-by-avoiding-mocks.html"],"rewriteRisk":"高：必须从支付重构的具体信号区分 Mock、Fake、Stub/Spy、行为验证与交互验证，不能写成泛泛的‘隔离依赖’。","nearDuplicates":["unit-test","integration-test","assertion"]},
+  {
+    "slug": "assertion",
+    "mechanism": "断言把代码产生的实际值与明确期望比较；异步断言在有限期限内重新观察目标，条件成立时通过，超时则提供差异。",
+    "misconception": "断言不是“代码没崩”也不是越多越强。固定 sleep 会在事实到达前做决定，内部变量可能绿了但用户结果仍坏；动作和查询的重试边界也不同。",
+    "demoSignature": "5帧｜对象：保存按钮、响应时间线、sleep(1000) 与 toBeVisible 两条观察轨道、hidden→visible 回执｜交互：把响应从 200ms 调到 1500ms/4s并逐帧推进｜变化：固定时刻在 1s 提前失败，条件断言在期限内重读到 visible｜结果：同一业务状态保持不变，红灯明确来自取样太早。",
+    "sourceUrls": [
+      "https://playwright.dev/docs/api/class-playwrightassertions",
+      "https://jestjs.io/docs/expect",
+      "https://testing-library.com/docs/dom-testing-library/api-async/",
+      "https://docs.cypress.io/app/core-concepts/retry-ability",
+      "https://playwright.dev/docs/test-timeouts"
+    ],
+    "rewriteRisk": "高：必须把实际值、期待、等待上限和失败差异写在同一条异步因果链上，不能退回 expected/actual 空壳。",
+    "nearDuplicates": [
+      "test-case",
+      "unit-test",
+      "api-testing"
+    ]
+  },
+  {"slug":"code-coverage","mechanism":"代码覆盖率用运行时计数记录测试触达的语句、行、分支、函数或条件组合；它绘出执行地图，不直接证明已触达代码的行为正确。","misconception":"100% 行覆盖不等于没有缺陷；一行复合条件可能只跑过成功组合，报告范围、覆盖维度和断言质量也会改变数字的含义。","demoSignature":"5帧｜对象：age ≥ 18 && verified 代码行、TT/TF/FT/FF 四格、行/分支/条件三种仪表｜交互：先跑 TT，再补 TF、FT、FF，并切换行/分支/条件镜头与‘百分比/行为证据’完成标准｜变化：行覆盖先到 100%，TF 暴露未验证成人被放行，四格都有断言后才形成完整证据｜结果：覆盖率指出空白，断言判断行为。","sourceUrls":["https://istanbul.js.org/","https://jestjs.io/docs/configuration#collectcoverage-boolean","https://www.jacoco.org/jacoco/trunk/doc/counters.html","https://vitest.dev/guide/coverage.html","https://clang.llvm.org/docs/SourceBasedCodeCoverage.html"],"rewriteRisk":"高：必须把执行计数、覆盖维度、报告范围和行为断言串成一条具体因果链，不能把百分比写成质量证明。","nearDuplicates":["unit-test","regression-test","test-case"]},
+  {"slug":"api-testing","mechanism":"API 测试直接构造协议请求，把状态码、响应字段、服务端副作用、重复请求和身份权限放在同一条可复核的证据链里。","misconception":"回 200 或 201 只说明一张协议回执；它不自动证明字段形状、订单行数、重试语义或对象级授权都正确。","demoSignature":"6帧｜对象：POST /orders 请求包、OpenAPI 响应契约、orders 状态账本、Idempotency-Key、用户 A/B｜交互：先写期待，再创建、查状态、同键重试、换身份读取并合并断言｜变化：201+1 行、同键 200+仍 1 行、B 403+状态不变｜结果：响应与服务端状态互相作证。","sourceUrls":["https://playwright.dev/docs/api-testing","https://www.rfc-editor.org/rfc/rfc9110.html","https://spec.openapis.org/oas/v3.1.0.html","https://api-security.owasp.org/editions/2023/en/0x11-t10/","https://docs.stripe.com/api/idempotent_requests"],"rewriteRisk":"高：必须让协议、状态、重试和授权各自有可观察证据，不能退回只看状态码的请求动画。","nearDuplicates":["integration-test","request","response"]},
+  {
+  "slug": "least-privilege",
+  "mechanism": "最小权限不是一个“只读”开关，而是把主体、动作、资源、条件和有效期逐项对齐到当前任务；默认拒绝、请求级检查和定期复核让这组边界持续有效。",
+  "misconception": "把一个服务账号塞进管理员角色并不等于任务更可靠；它可能顺手读到别的仓库、改组织密钥或删除生产对象。权限越窄也不能替代认证、审计和漏洞修复。",
+  "demoSignature": "6帧｜对象：deploy-bot、发布 Vibe v2.4、repo/Vibe、release:v2.4、org/*、delete production、30 分钟租约｜交互：先写任务，再收窄动作、资源和时间，最后试一次越界并等租约到期｜变化：管理员的 9 条无关路径收回，发布动作通过，删除生产被拒，租约过期后 write 也撤销｜结果：任务有路可走，额外的门没有被顺手打开。",
+  "sourceUrls": [
+    "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "https://cloud.google.com/iam/docs/using-iam-securely",
+    "https://csrc.nist.gov/pubs/sp/800/207/final",
+    "https://kubernetes.io/docs/reference/access-authn-authz/rbac/"
+  ],
+  "rewriteRisk": "高：要把动作、资源、条件、时限、默认拒绝和权限复核串成一次具体任务，不能只换一段“少给权限”的口号。",
+  "nearDuplicates": [
+    "authorization",
+    "rbac",
+    "firewall"
+  ]
+},
+  {
+  "slug": "hashing",
+  "mechanism": "哈希函数把任意长度输入映射到固定长度摘要；摘要可用于完整性比较，密码验证则需要把随机盐、成本因子和专用 KDF 一起纳入每个账号的记录，并在登录时重算。",
+  "misconception": "哈希不是把文本加密后等着解密，也不是“算法越快越好”。通用 SHA-256 适合快速做指纹，却会让攻击者快速批量试密码；缺盐还会让相同密码产生相同保存值。",
+  "demoSignature": "6帧｜对象：release.tar、改过一个字符的 release.tar!、SHA-256、用户 A/B 的盐、Argon2id、算法参数和登录候选｜交互：先比较文件摘要，再给密码加盐、调成本，最后取记录重算｜变化：摘要由 3a1c…9f 换成 c72b…14；相同密码因盐分成两份；直接 SHA 路线标为易批量猜｜结果：文件校验和密码验证各自停在正确的边界。",
+  "sourceUrls": [
+    "https://csrc.nist.gov/glossary/term/hash_function",
+    "https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+    "https://www.rfc-editor.org/rfc/rfc9106.html",
+    "https://pages.nist.gov/800-63-4/sp800-63b.html"
+  ],
+  "rewriteRisk": "高：必须把通用摘要、文件完整性、密码 KDF、盐和成本拆开讲，并明确摘要不能还原原文。",
+  "nearDuplicates": [
+    "encryption-at-rest",
+    "auth",
+    "input-validation"
+  ]
+},
+  {
+    "slug": "input-validation",
+    "mechanism": "输入校验在信任边界先安全解析外部数据，再分别检查结构、类型、格式和跨字段语义；通过后仍要把值交给参数化或允许列表入口，并由授权层判断主体与对象的关系。",
+    "misconception": "前端绿灯不构成安全边界，格式合法也不等于业务语义成立，更不等于当前主体有权读取对象；拦几个‘危险字符’也不能代替参数化查询。",
+    "demoSignature": "6帧｜对象：账单请求、浏览器提示、JSON schema、日期关系、sort 允许列表、对象归属、查询结果｜交互：逐门推进同一请求，并在日期错误与归属不匹配处分支｜变化：前端可绕过，结构先通过，endAt < startAt 停在 422，createdAt 映射为 created_at，acct-lee 在授权层 403，自己的账号才得到 12 行｜结果：把可解释、可执行和可访问分成三条证据链。",
+    "sourceUrls": [
+      "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
+      "https://json-schema.org/draft/2020-12/json-schema-validation",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+      "https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html",
+      "https://www.rfc-editor.org/rfc/rfc9110.html"
+    ],
+    "rewriteRisk": "高：必须把解析限制、结构与语义、允许列表与参数化、对象级授权和 400/422/403 的边界拆开，不能退回‘检查输入是否安全’的空话。",
+    "nearDuplicates": [
+      "data-validation",
+      "request-body",
+      "authorization"
+    ]
+  },
+  {
+  "slug": "encryption-at-rest",
+  "mechanism": "静态加密在存储层用数据密钥把保存对象转换为密文，再用独立的密钥加密密钥包住 DEK；真正的保护范围由存储副本、KMS 授权、应用身份和密钥生命周期共同决定。",
+  "misconception": "磁盘加密不是应用授权；被偷磁盘看不到明文，不代表仍有解密权限的应用身份也看不到；密文、wrapped DEK 与 KEK 同处会削弱分层。",
+  "demoSignature": "6帧｜对象：billing.db、backup、DEK、KMS/KEK、app grant、偷盘与冒用应用两张攻击卡、key v1/v2｜交互：写入、包 DEK、分别触发偷盘和应用身份、撤 grant、轮换｜变化：密文+无 grant=0 明文；应用 grant=100 条明文；撤权=0；新数据用 v2、旧备份仍认 v1｜结果：把存储介质保护和应用授权的边界同时画出来。",
+  "sourceUrls": [
+    "https://csrc.nist.gov/pubs/sp/800/111/final",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html",
+    "https://cloud.google.com/kms/docs/envelope-encryption",
+    "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+    "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final"
+  ],
+  "rewriteRisk": "高：必须把保存范围、DEK/KEK 分层、介质攻击、应用授权、密钥轮换和备份恢复写成一条可验证因果链，不能用一把锁代替完整边界。",
+  "nearDuplicates": [
+    "encryption-in-transit",
+    "backup",
+    "hashing"
+  ]
+},
+  {
+  "slug": "encryption-in-transit",
+  "mechanism": "传输中加密用 TLS 在每一对通信端点之间协商协议与密钥、验证服务身份，并用记录层保护后续应用数据；代理终止 TLS 后，下一跳需要自己的协议和证书边界。",
+  "misconception": "浏览器有 HTTPS 小锁不代表整条服务链路都保持密文；证书签名可信不等于主机名匹配，TLS 终止后的内部 HTTP 也不会因为外层加密自动获得保护。",
+  "demoSignature": "6帧｜对象：浏览器、CDN、负载均衡、应用、三段链路、Authorization、抓包视图、SAN 身份｜交互：推进待出发、握手、3/3 TLS、CDN 终止导致内部明文、SAN mismatch 阻断、恢复下一跳｜变化：ciphertext→Authorization 可见→0 B blocked→ciphertext；结果：逐段画出 TLS 的真实保护范围。",
+  "sourceUrls": [
+    "https://www.rfc-editor.org/rfc/rfc8446.html",
+    "https://www.rfc-editor.org/rfc/rfc9525.html",
+    "https://csrc.nist.gov/pubs/sp/800/52/r2/final",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
+    "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security"
+  ],
+  "rewriteRisk": "高：必须把 TLS 的端点、握手、身份、记录层、代理终止、内部明文、版本配置和 0-RTT 重放边界写成一条可观察因果链，不能复用静态加密的存储锁。",
+  "nearDuplicates": [
+    "tls-handshake",
+    "encryption-at-rest",
+    "hostname"
+  ]
+}
+,
+  {
+    "slug": "feature-flag",
+    "mechanism": "功能开关把同一构建中的多条代码路径交给运行时评估：请求提供稳定上下文，规则返回旧路径、新路径或变体；应用记录评估结果与指标，再决定扩大、暂停或关闭暴露。",
+    "misconception": "flag 不是部署按钮、权限校验、数据回滚或质量证明；关闭它只影响后续暴露，不能撤销已经发生的副作用。评估失败要有默认值，长期不清理的开关会增加维护和验证成本。",
+    "demoSignature": "v42 同时包含 old/new checkout；五帧展示部署、上下文评估、10% cohort、指标观测和 kill switch 回退，工作台切换内部/10%/全量、模拟回归与立即关闭，始终保持版本不变但改变暴露路径。",
+    "sourceUrls": [
+      "https://martinfowler.com/articles/feature-toggles.html",
+      "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management",
+      "https://openfeature.dev/specification/sections/evaluation-context/",
+      "https://launchdarkly.com/docs/home/flags/target-rules",
+      "https://openfeature.dev/specification/sections/flag-evaluation/",
+      "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-feature-flags.html",
+      "https://launchdarkly.com/docs/home/flags/killswitch"
+    ],
+    "rewriteRisk": "正文要把部署、评估、分组、观测和回退分开，解释稳定上下文键、默认值、变体和清理责任；避免把 flag 当成权限、数据撤销或自动正确性，把 kill switch 写成会抹掉历史副作用。",
+    "nearDuplicates": [
+      "rollback",
+      "preview-deployment",
+      "observability",
+      "authorization",
+      "rate-limiting",
+      "api-gateway"
+    ]
+  }
 ]

@@ -1163,139 +1163,638 @@
     "quizQuestion": "数据血缘最适合回答哪个问题？", "quizOptions": ["这个指标由哪些数据和任务生成", "按钮应该用什么颜色", "用户密码是什么"], "correctText": "血缘连接来源、处理和输出。", "wrongText": "界面颜色和密码不属于数据血缘用途。",
     "promptTitle": "补充数据血缘", "prompt": "请为这个指标列出源表字段、转换任务、中间表和最终消费者，并标明负责人和更新时间。", "relatedSlugs": ["data-pipeline", "data-transformation", "dataset-data"]
   },
-  {
-    "zh": "单元测试", "en": "Unit Test", "slug": "unit-test", "cat": "技术栈",
-    "say": "单独验证一个函数、类或小模块在给定输入下是否得到预期结果。", "aliases": ["Unit Test", "函数测试", "模块测试"],
-    "question": "金额计算函数改了以后，怎样快速确认边界条件没坏？", "definition": "单元测试隔离较小代码单元，控制输入和依赖，并对输出或行为作断言。", "boundary": "单元测试不能证明多个真实系统协作正常，集成和端到端场景仍需其他测试。",
-    "demoType": "branch", "demoTitle": "折扣函数怎样覆盖三个分支",
-    "demoSteps": [{"label":"普通订单","value":"100 → 100","note":"未达到门槛时金额不变。"},{"label":"达到门槛","value":"200 → 180","note":"满足规则后应用九折。"},{"label":"无效输入","value":"-1 → error","note":"负金额被明确拒绝。"}],
-    "quizQuestion": "单元测试最适合验证什么？", "quizOptions": ["一个函数的输入输出和边界", "整套生产网络是否可用", "所有浏览器真实登录流程"], "correctText": "单元测试聚焦小范围逻辑。", "wrongText": "真实网络和完整流程需要集成或端到端测试。",
-    "promptTitle": "补充单元测试", "prompt": "请为这个函数列出正常、边界、异常和依赖失败用例，并写出可读的断言。", "relatedSlugs": ["assertion", "mock", "integration-test", "test-case"]
+      {
+    "zh": "单元测试",
+    "en": "Unit Test",
+    "slug": "unit-test",
+    "cat": "技术栈",
+    "say": "把一小段规则关进可重复的小实验室，只喂它准备好的输入，再检查看得见的结果。",
+    "aliases": [
+      "Unit Test",
+      "函数测试",
+      "模块测试"
+    ],
+    "question": "金额计算函数改了以后，怎样在几百毫秒内知道边界有没有坏？",
+    "definition": "单元测试隔离一个较小的代码单元，控制输入和外部依赖，并对返回值、错误或可观察行为作自动断言。",
+    "boundary": "它回答一个小单元是否符合自己的行为契约，不能证明数据库、网络和完整业务流程已经协作正常。",
+    "demoType": "branch",
+    "demoTitle": "折扣规则怎样经过准备、调用和断言",
+    "demoSteps": [
+      {
+        "label": "Arrange",
+        "value": "-1 · 0 · 100 · 101",
+        "note": "把门槛两侧和异常输入写成四个可判定样本。"
+      },
+      {
+        "label": "Act",
+        "value": "priceAfterDiscount(input)",
+        "note": "只运行被测规则，时间依赖由测试提供。"
+      },
+      {
+        "label": "Assert",
+        "value": "3 value · 1 error",
+        "note": "比较外部结果，不把测试绑在私有变量上。"
+      }
+    ],
+    "quizQuestion": "单元测试最适合验证什么？",
+    "quizOptions": [
+      "一个小单元的输入、输出和边界行为",
+      "整套生产网络是否可用",
+      "所有浏览器真实登录流程"
+    ],
+    "correctText": "单元测试聚焦小范围、可重复的行为契约。",
+    "wrongText": "真实网络和完整流程需要集成或端到端测试，不能由单元测试代替。",
+    "promptTitle": "把一段规则放进测试实验室",
+    "prompt": "请先写出被测单元的行为契约，再列正常、边界、异常和依赖失败用例；说明时间、随机数或网络怎样被控制，并避免断言私有实现。",
+    "relatedSlugs": [
+      "assertion",
+      "mock",
+      "integration-test",
+      "test-case"
+    ]
+  },
+    {
+    "zh": "集成测试",
+    "en": "Integration Test",
+    "slug": "integration-test",
+    "cat": "技术栈",
+    "say": "把两个或更多真实组件接回一小段现场，检查它们交换请求、数据和状态时是否仍然守约。",
+    "aliases": [
+      "Integration Test",
+      "模块集成测试",
+      "接口集成测试"
+    ],
+    "question": "代码单测都通过，为什么一连上数据库，订单还是会在事务边界上摔倒？",
+    "definition": "集成测试让多个组件或系统边界共同参与，验证协议、数据格式、配置、事务和副作用是否彼此兼容。",
+    "boundary": "它可以只覆盖一小段真实协作，也可以扩大到多个服务；但它不等于完整用户旅程，也不能替代端到端测试。",
+    "demoType": "flow",
+    "demoTitle": "订单请求怎样穿过服务、数据库和支付边界",
+    "demoSteps": [
+      {
+        "label": "准备现场",
+        "value": "test host + real DB",
+        "note": "测试宿主和 schema 从已知状态开始，支付故障由测试控制。"
+      },
+      {
+        "label": "发出请求",
+        "value": "POST /orders",
+        "note": "请求经过路由、校验、事务和持久化，而不是直呼一个函数。"
+      },
+      {
+        "label": "核对证据",
+        "value": "502 + orders 0",
+        "note": "响应与真实数据库状态同时成立，才能证明这次回滚。"
+      }
+    ],
+    "quizQuestion": "哪项更适合集成测试？",
+    "quizOptions": [
+      "接口写入真实数据库后能否按预期提交或回滚",
+      "纯函数 2+2 的结果",
+      "设计稿字体大小"
+    ],
+    "correctText": "这里验证接口、数据库和事务边界怎样协作。",
+    "wrongText": "纯函数适合单元测试，视觉检查和完整用户旅程属于其他测试层。",
+    "promptTitle": "设计一条有真实证据的集成测试",
+    "prompt": "请列出真实参与的组件、测试宿主和种子数据，写出请求、成功与失败响应、持久化状态以及清理方式；明确哪些外部依赖只是受控替身。",
+    "relatedSlugs": [
+      "unit-test",
+      "e2e-test",
+      "api-testing",
+      "mock"
+    ]
   },
   {
-    "zh": "集成测试", "en": "Integration Test", "slug": "integration-test", "cat": "技术栈",
-    "say": "验证多个模块或真实依赖连接后能否按约定协作。", "aliases": ["Integration Test", "模块集成测试", "接口集成测试"],
-    "question": "代码单测都通过，为什么连上数据库后仍然报错？", "definition": "集成测试检查组件之间的接口、数据格式、配置和副作用。", "boundary": "集成测试范围通常大于单元测试，但不一定覆盖用户完整操作和生产环境。",
-    "demoType": "flow", "demoTitle": "创建订单怎样跨三个模块验证",
-    "demoSteps": [{"label":"调用接口","value":"POST /orders","note":"测试发送真实 JSON 请求。"},{"label":"写入数据库","value":"orders +1","note":"服务执行校验和持久化。"},{"label":"读取确认","value":"GET /orders/908","note":"返回字段与数据库记录一致。"}],
-    "quizQuestion": "哪项更适合集成测试？", "quizOptions": ["接口写入数据库后能被读取", "纯函数 2+2 的结果", "设计稿字体大小"], "correctText": "这里验证接口和数据库协作。", "wrongText": "纯函数适合单元测试，字体检查属于视觉验收。",
-    "promptTitle": "设计集成测试", "prompt": "请列出这条业务链涉及的真实依赖、准备数据、调用步骤、结果校验和清理方式。", "relatedSlugs": ["unit-test", "e2e-test", "api-testing", "mock"]
+    "zh": "端到端测试",
+    "en": "End-to-End Test",
+    "slug": "e2e-test",
+    "cat": "技术栈",
+    "say": "从用户入口走完一条关键旅程，再把页面和系统事实放在一起验收。",
+    "aliases": [
+      "E2E 测试",
+      "全链路测试",
+      "端到端"
+    ],
+    "question": "页面显示“支付成功”，为什么还要查数据库和邮件？",
+    "definition": "端到端测试从接近真实的用户或外部调用方入口出发，穿过部署后的关键组件，验证完整业务路径和系统级结果。",
+    "boundary": "E2E 覆盖面大、运行和定位成本高，适合守住少量关键旅程；它不能替代更快的单元和集成测试。",
+    "demoType": "flow",
+    "demoTitle": "一笔订单怎样从点击走到跨层验收",
+    "demoSteps": [
+      {
+        "label": "隔离并点击",
+        "value": "u-42 → 201",
+        "note": "从干净会话点击可见按钮，订单先落成 pending。"
+      },
+      {
+        "label": "状态穿过系统",
+        "value": "callback → DB=paid",
+        "note": "有效付款回调推进服务端状态，页面读取到 paid。"
+      },
+      {
+        "label": "跨层验收",
+        "value": "UI=paid · mail=1",
+        "note": "页面、数据库和邮件都对上才通过；第一处不一致立即停下。"
+      }
+    ],
+    "quizQuestion": "端到端测试最值得守住什么？",
+    "quizOptions": [
+      "少量关键用户旅程的系统级结果",
+      "每个函数的所有分支",
+      "数据库所有内部实现"
+    ],
+    "correctText": "它回答的是用户能否完成一件重要的事，以及系统是否留下完整结果。",
+    "wrongText": "函数分支适合单元测试，组件接缝适合集成测试；E2E 不该吞掉所有低层检查。",
+    "promptTitle": "定义一条跨层不变量",
+    "prompt": "请从真实用户入口开始，写出独立数据、关键等待、页面结果、服务端状态和外部回执；标明第一个不变量破坏时如何停止并留下证据。",
+    "relatedSlugs": [
+      "integration-test",
+      "smoke-test",
+      "test-case"
+    ]
   },
   {
-    "zh": "端到端测试", "en": "End-to-End Test", "slug": "e2e-test", "cat": "技术栈",
-    "say": "从用户入口操作到最终结果，验证整条系统链路。", "aliases": ["E2E 测试", "全链路测试", "端到端"],
-    "question": "注册、收邮件、登录这一整套流程怎样自动验证？", "definition": "端到端测试以接近真实使用的方式跨越界面、接口、服务和存储验证关键流程。", "boundary": "端到端测试覆盖面大但运行慢且易受环境影响，不应替代所有低层测试。",
-    "demoType": "flow", "demoTitle": "注册流程怎样完成全链路检查",
-    "demoSteps": [{"label":"填写提交","value":"name + email","note":"浏览器真实触发注册请求。"},{"label":"服务处理","value":"用户创建 + 邮件入队","note":"后端和消息系统产生记录。"},{"label":"用户确认","value":"登录成功","note":"测试读取邮件链接并完成登录。"}],
-    "quizQuestion": "端到端测试最适合保护什么？", "quizOptions": ["少量关键用户流程", "每个函数的所有分支", "数据库所有内部实现"], "correctText": "关键流程值得承担较高运行成本。", "wrongText": "函数分支更适合单元测试，也不应绑定数据库全部内部细节。",
-    "promptTitle": "设计端到端测试", "prompt": "请为这个关键用户流程设计稳定的入口、数据准备、等待条件、结果断言和失败截图。", "relatedSlugs": ["integration-test", "smoke-test", "test-case"]
-  },
-  {
-    "zh": "冒烟测试", "en": "Smoke Test", "slug": "smoke-test", "cat": "技术栈",
-    "say": "发布后用少量检查确认系统能启动，关键入口没有直接失效。", "aliases": ["Smoke Test", "基础可用性检查", "发布冒烟"],
-    "question": "刚部署完成，应该优先检查哪些功能？", "definition": "冒烟测试快速覆盖系统最基础、最关键的可用路径，用于决定是否继续深入测试。", "boundary": "冒烟通过只说明基础路径可用，不能代替完整回归和性能检查。",
-    "demoType": "lifecycle", "demoTitle": "一次部署后的三项冒烟",
-    "demoSteps": [{"label":"健康接口","value":"/health = 200","note":"应用进程和基础依赖可响应。"},{"label":"关键页面","value":"首页可打开","note":"静态资源和服务端渲染正常。"},{"label":"核心操作","value":"登录成功","note":"最重要的身份链路可用。"}],
-    "quizQuestion": "冒烟测试通过后能说明什么？", "quizOptions": ["关键基础路径没有立即失败", "系统没有任何缺陷", "所有性能指标达标"], "correctText": "冒烟是快速基础检查。", "wrongText": "更广泛的功能和性能仍需后续验证。",
-    "promptTitle": "制定发布冒烟", "prompt": "请按服务启动、关键页面、核心接口和关键业务操作设计十分钟内可完成的冒烟清单。", "relatedSlugs": ["regression-test", "e2e-test", "server"]
+    "zh": "冒烟测试",
+    "en": "Smoke Test",
+    "slug": "smoke-test",
+    "cat": "技术栈",
+    "say": "部署后用几条关键检查判断构建是否值得继续测。",
+    "aliases": [
+      "Smoke Test",
+      "基础可用性检查",
+      "发布冒烟"
+    ],
+    "question": "刚部署的版本，为什么不先跑完整回归？",
+    "definition": "冒烟测试用少量高价值检查快速判断一个构建或环境是否具备继续测试的基本条件。",
+    "boundary": "冒烟通过只说明关键入口没有立即失效，不代表系统质量完整；失败则应先关闸修复，再投入更大的测试套件。",
+    "demoType": "flow",
+    "demoTitle": "四盏关键灯怎样决定是否放行",
+    "demoSteps": [
+      {
+        "label": "部署候选",
+        "value": "commit 9f31",
+        "note": "先把候选构建放到闸门前，完整回归保持锁定。"
+      },
+      {
+        "label": "点亮关键路径",
+        "value": "health · login · order · payment",
+        "note": "少量检查覆盖进程、身份和核心业务，任何一盏失败都要能阻止后续。"
+      },
+      {
+        "label": "决定继续或停止",
+        "value": "PROCEED / STOP",
+        "note": "全绿才解锁 120 个回归用例；红灯留下失败检查和下一步。"
+      }
+    ],
+    "quizQuestion": "支付冒烟失败后，完整回归应该怎样处理？",
+    "quizOptions": [
+      "先停止并修复候选构建",
+      "把失败项改成可选继续发布",
+      "只看前三项通过就放行"
+    ],
+    "correctText": "冒烟测试回答的是“是否值得继续测”，失败应尽早阻止更大成本。",
+    "wrongText": "冒烟通过不是全面合格章，失败也不能被绿色片段或可选开关掩盖。",
+    "promptTitle": "设计发布闸门",
+    "prompt": "请为这个部署挑选 3–6 条最能代表环境可用性的检查，写明最大耗时、失败阻塞动作、版本和环境证据，以及通过后解锁的下一阶段。",
+    "relatedSlugs": [
+      "regression-test",
+      "e2e-test",
+      "server"
+    ]
   },
   {
     "zh": "回归测试", "en": "Regression Test", "slug": "regression-test", "cat": "技术栈",
-    "say": "代码修改后重新检查原有功能，确认变更没有带来新的故障。", "aliases": ["Regression Test", "回归验证", "防回归测试"],
-    "question": "只修了优惠券，为什么还要测结算和退款？", "definition": "回归测试重复执行与变更相关的已有用例，以发现意外影响。", "boundary": "回归范围应基于影响分析和风险，不等于每次机械执行全部测试。",
-    "demoType": "flow", "demoTitle": "优惠券改动怎样确定回归范围",
-    "demoSteps": [{"label":"识别改动","value":"折扣计算模块","note":"变更会影响订单最终金额。"},{"label":"展开依赖","value":"结算 · 支付 · 退款","note":"三个流程读取同一金额字段。"},{"label":"执行回归","value":"18 个相关用例","note":"通过后记录覆盖范围和结果。"}],
-    "quizQuestion": "回归测试范围主要依据什么？", "quizOptions": ["变更影响和功能风险", "随机挑选页面", "只看代码行数"], "correctText": "依赖关系和失败后果决定重点。", "wrongText": "随机选择和行数都不能代表真实影响。",
-    "promptTitle": "制定回归范围", "prompt": "请根据这次代码变更列出直接功能、共享依赖、数据迁移和关键历史缺陷的回归用例。", "relatedSlugs": ["smoke-test", "test-case", "code-coverage"]
+    "say": "代码、配置或依赖改动后，重新验证原本应该成立的行为。", "aliases": ["Regression Test", "回归验证", "防回归测试"],
+    "question": "只改了认证中间件，为什么订单和后台权限也要重测？", "definition": "回归测试从本次变更出发，沿影响关系和风险历史选择旧行为，用实际结果检查它们有没有倒退。", "boundary": "回归不是只测修复点，也不是每次机械跑完全量；范围过窄会漏风险，过宽会拖慢反馈。",
+    "demoType": "request", "demoTitle": "一处鉴权改动怎样展开回归范围",
+    "demoSteps": [{"label":"摆出差异","value":"auth middleware · commit 8c42","note":"先确认这次真正改变了哪条规则。"},{"label":"追共享依赖","value":"登录 · 会话 · 订单 · 后台","note":"调用关系把直接和跨模块测试带进候选。"},{"label":"补历史风险","value":"14 / 32 · 403→200","note":"越权旧缺陷不在调用图里，也要留下验证。"}],
+    "quizQuestion": "认证中间件改动为何要补入历史越权用例？", "quizOptions": ["鉴权是高风险区域，旧缺陷能防止行为倒退", "所有测试标题都包含 auth", "因为单元测试一定不能运行"], "correctText": "影响关系告诉你可能波及哪里，风险历史告诉你哪里曾经出过事。", "wrongText": "行数、标题和盲跑全量都不能替代有依据的范围判断。",
+    "promptTitle": "为一次变更选择回归范围", "prompt": "请从改动文件、调用关系、业务风险、数据契约和历史缺陷五处列出候选测试，说明纳入或排除理由。", "relatedSlugs": ["smoke-test", "test-case", "code-coverage"]
   },
   {
     "zh": "测试用例", "en": "Test Case", "slug": "test-case", "cat": "技术栈",
-    "say": "写清前置条件、操作、输入和预期结果的一次可重复检查。", "aliases": ["Test Case", "测试场景", "用例"],
-    "question": "“测一下登录”为什么每个人测出的结果都不一样？", "definition": "测试用例描述一个具体场景的准备条件、执行步骤、输入和可判定预期。", "boundary": "用例不是笼统任务清单；预期结果必须能观察和判断。",
-    "demoType": "flow", "demoTitle": "模糊要求怎样变成可执行用例",
-    "demoSteps": [{"label":"准备条件","value":"账号已注册且未锁定","note":"测试从同一状态开始。"},{"label":"执行操作","value":"输入正确密码并提交","note":"步骤和输入可复现。"},{"label":"判断结果","value":"进入工作台且会话创建","note":"页面和服务端状态都可核对。"}],
-    "quizQuestion": "好的测试用例需要怎样的预期结果？", "quizOptions": ["具体且可观察", "只写“应该正常”", "完全不写结果"], "correctText": "可观察结果才能判定通过或失败。", "wrongText": "“正常”过于含糊，缺失结果也无法判定。",
-    "promptTitle": "编写测试用例", "prompt": "请把这个需求改写为正常、边界、权限和失败场景的测试用例，每条包含前置、步骤和可观察预期。", "relatedSlugs": ["assertion", "regression-test", "e2e-test"]
+    "say": "把一个具体起点、一次明确动作和几项可观察结果写成能重跑的判断。", "aliases": ["Test Case", "测试场景", "用例"],
+    "question": "“密码重置应该失败”为什么还不能交给别人执行？", "definition": "测试用例把前置状态、输入、操作和可判定预期连成一条可重复检查的路径。", "boundary": "标题和“功能正常”都不是完整用例；没有固定起点或可观察结果，就无法归因和判定。",
+    "demoType": "request", "demoTitle": "把一句“应该失败”拆成三张回执",
+    "demoSteps": [{"label":"固定起点","value":"user=u-42 · token=expired","note":"账号状态和令牌年龄先写死，第二次才能从同一扇门开始。"},{"label":"发送动作","value":"POST /password/reset · 1 次","note":"操作、路径、输入和次数都能照着执行。"},{"label":"观察并重跑","value":"410 · consumed=false · mail=0","note":"三类证据对上，清理后再次执行仍是 3/3 PASS。"}],
+    "quizQuestion": "“过期令牌应失败”还缺哪类信息？", "quizOptions": ["具体操作、状态码和服务端副作用预期", "更多形容词描述失败严重程度", "把标题改成英文"], "correctText": "协议结果和状态副作用让失败可判定。", "wrongText": "把“失败”拆成可以观察、可以复现的事实。",
+    "promptTitle": "把模糊检查改成测试用例", "prompt": "请把这条风险写成一条可复现用例：补齐前置状态、精确输入、执行动作、清理方式，以及界面、协议和持久化层的可判定预期。", "relatedSlugs": ["assertion", "regression-test", "e2e-test"]
   },
   {
     "zh": "模拟对象", "en": "Mock", "slug": "mock", "cat": "技术栈",
-    "say": "在测试中替代真实依赖，并检查代码怎样调用它。", "aliases": ["Mock", "测试模拟", "模拟依赖"],
-    "question": "测试付款逻辑时，必须真的请求支付平台吗？", "definition": "模拟对象按测试设定返回结果，并记录交互，用于隔离外部依赖和验证调用行为。", "boundary": "Mock 行为由测试编写者定义，可能与真实服务不一致，关键集成仍需真实依赖验证。",
-    "demoType": "branch", "demoTitle": "付款服务的两个模拟结果",
-    "demoSteps": [{"label":"设置成功","value":"charge → paid","note":"订单状态应更新为已支付。"},{"label":"设置拒绝","value":"charge → declined","note":"订单保持未支付并返回原因。"},{"label":"检查调用","value":"charge 调用 1 次","note":"断言金额和幂等键正确传入。"}],
-    "quizQuestion": "Mock 最适合验证什么？", "quizOptions": ["代码如何调用一个受控依赖", "第三方生产服务绝对可用", "真实网络延迟"], "correctText": "Mock 提供可控返回并记录调用。", "wrongText": "它不能证明真实服务和网络行为。",
-    "promptTitle": "设计测试模拟", "prompt": "请指出哪些依赖需要 mock，定义成功、失败和超时返回，并保留至少一项真实集成测试。", "relatedSlugs": ["unit-test", "test-case", "assertion", "integration-test"]
+    "say": "用一块可编程的替身隔离昂贵依赖，同时记录被测代码怎样与它协作。", "aliases": ["Mock", "测试模拟", "模拟依赖"],
+    "question": "支付从 charge 重构成 authorize + capture，订单没变，为什么旧测试却先红了？", "definition": "模拟对象替代真实依赖，按测试设定返回结果并记录交互；它能隔离和控场，却不等于真实服务。", "boundary": "Mock 不是所有假数据的统称；调用期待可能绑住实现细节，关键协议仍需 Fake、契约或集成测试补回真实度。",
+    "demoType": "comparison", "demoTitle": "业务结果与调用细节面对同一次支付重构",
+    "demoSteps": [{"label":"隔离支付","value":"PaymentGateway → Mock / Fake","note":"把真实网络和扣款留在系统边界外，先让结账逻辑可控。"},{"label":"重构调用","value":"charge → authorize + capture","note":"内部从一次调用拆成两步，订单对外仍应是 paid。"},{"label":"审查信号","value":"order=paid · charge×0","note":"业务结果可能通过，旧 Mock 的调用期待却可能只是在保护旧实现。"}],
+    "quizQuestion": "Mock 变红时，第一步应该先看什么？", "quizOptions": ["它断言的是业务契约还是实现细节", "立刻删除所有测试", "把真实支付平台接进每次单测"], "correctText": "先把最终行为和调用期待分开，才能判断红灯是否真的代表缺陷。", "wrongText": "Mock 的红灯提供线索，但不自动等于业务行为坏了。",
+    "promptTitle": "审查一次测试替身", "prompt": "请列出这个替身控制的回执、记录的交互和它保护的业务风险；把非契约性的调用断言改为行为或协议断言，并说明应在哪一层补真实度。", "relatedSlugs": ["unit-test", "test-case", "assertion", "integration-test"]
   },
   {
-    "zh": "断言", "en": "Assertion", "slug": "assertion", "cat": "技术栈",
-    "say": "把实际结果和预期条件比较，不符合时让测试明确失败。", "aliases": ["Assert", "预期检查", "测试断言"],
-    "question": "测试代码跑完没有报错，就算验证成功了吗？", "definition": "断言是测试中的可判定条件，用来验证值、状态、输出或交互是否符合预期。", "boundary": "断言只验证写出的条件；遗漏关键条件时，测试通过也可能没有意义。",
-    "demoType": "state", "demoTitle": "保存操作怎样通过三项断言",
-    "demoSteps": [{"label":"执行保存","value":"POST /notes","note":"接口返回 201。"},{"label":"检查结果","value":"id 存在 · title 相同","note":"响应字段符合约定。"},{"label":"检查副作用","value":"数据库增加 1 行","note":"持久化结果与响应一致。"}],
-    "quizQuestion": "哪种断言更有价值？", "quizOptions": ["检查明确业务结果和副作用", "只检查代码没有崩溃", "永远断言 true"], "correctText": "关键结果和副作用能证明行为符合需求。", "wrongText": "没有崩溃或固定为 true 都无法验证业务正确性。",
-    "promptTitle": "改进测试断言", "prompt": "请审查这些测试的断言是否覆盖返回值、状态变化和副作用，并删除与实现细节过度绑定的检查。", "relatedSlugs": ["test-case", "unit-test", "mock"]
+    "zh": "断言",
+    "en": "Assertion",
+    "slug": "assertion",
+    "cat": "技术栈",
+    "say": "把实际值、状态或副作用和一条明确期待对上，失败时留下可行动差异。",
+    "aliases": [
+      "Assert",
+      "预期检查",
+      "测试断言"
+    ],
+    "question": "保存按钮最终会出现，为什么 sleep(1000) 还会误报失败？",
+    "definition": "断言把代码产生的实际值与明确期望比较；异步断言还要在有限期限内等待条件成立，并把差异交给执行者。",
+    "boundary": "断言只保护写下的条件；固定等待、内部变量或堆叠无关检查，可能让测试看似通过却没有保护用户真正关心的结果。",
+    "demoType": "comparison",
+    "demoTitle": "同一个保存回执，固定等待与条件等待的分岔",
+    "demoSteps": [
+      {
+        "label": "点击保存",
+        "value": "button.click() · 只执行 1 次",
+        "note": "动作改变系统状态，不能靠重试动作掩盖重复副作用。"
+      },
+      {
+        "label": "调慢回执",
+        "value": "响应 200ms → 1.5s",
+        "note": "业务最终仍是 visible，只改变事实何时抵达。"
+      },
+      {
+        "label": "比较两条观察",
+        "value": "sleep(1000) · toBeVisible()",
+        "note": "固定时刻可能先红，条件断言在期限内等到同一个目标状态。"
+      }
+    ],
+    "quizQuestion": "为什么 toBeVisible 比 sleep(1000) 更能说明保存是否完成？",
+    "quizOptions": [
+      "它在期限内等待目标状态并比较实际值",
+      "它把所有失败都忽略",
+      "它让接口永远在 200ms 返回"
+    ],
+    "correctText": "断言应该绑定可观察条件，并把等待上限写清楚。",
+    "wrongText": "固定时间点或无条件绿色都不能代替一次有证据的比较。",
+    "promptTitle": "把猜时间改成可观察断言",
+    "prompt": "请列出这个动作真正改变的状态、可观察的实际值、允许等待上限和失败差异；移除固定 sleep 与没有业务意义的内部变量检查。",
+    "relatedSlugs": [
+      "test-case",
+      "unit-test",
+      "mock"
+    ]
   },
   {
-    "zh": "测试覆盖率", "en": "Code Coverage", "slug": "code-coverage", "cat": "技术栈",
-    "say": "统计测试运行时执行过哪些代码行、分支、函数或语句。", "aliases": ["Code Coverage", "代码覆盖率", "测试覆盖"],
-    "question": "覆盖率 100% 就能说明代码没有缺陷吗？", "definition": "测试覆盖率衡量测试执行触达的代码结构，用于发现尚未运行的区域。", "boundary": "高覆盖率不等于断言有效，也不能证明需求、并发和集成行为都正确。",
-    "demoType": "state", "demoTitle": "新增边界用例怎样改变分支覆盖",
-    "demoSteps": [{"label":"原有测试","value":"2 / 4 分支","note":"成功路径和普通失败已执行。"},{"label":"发现空白","value":"超时 · 重试耗尽","note":"报告标出两个未执行分支。"},{"label":"补充用例","value":"4 / 4 分支","note":"新用例触发并断言两种边界结果。"}],
-    "quizQuestion": "覆盖率报告最适合用来做什么？", "quizOptions": ["发现测试未触达的代码区域", "证明系统没有任何缺陷", "替代需求评审"], "correctText": "覆盖率提示空白，但仍需判断测试质量。", "wrongText": "覆盖率无法单独证明无缺陷，也不能替代需求判断。",
-    "promptTitle": "分析覆盖率空白", "prompt": "请查看行、分支和函数覆盖率，结合业务风险选择需要补测的路径，不以百分比本身作为完成标准。", "relatedSlugs": ["unit-test", "regression-test", "test-case"]
+    "zh": "测试覆盖率",
+    "en": "Code Coverage",
+    "slug": "code-coverage",
+    "cat": "技术栈",
+    "say": "把测试实际走过的语句、分支和条件组合标出来，帮你找到还没有证据的代码路径。",
+    "aliases": [
+      "Code Coverage",
+      "代码覆盖率",
+      "测试覆盖"
+    ],
+    "question": "一条成功测试把行覆盖率点到 100%，为什么未验证的成人仍可能被放行？",
+    "definition": "测试覆盖率记录测试执行触达了哪些代码结构；它适合发现空白，不直接证明已经触达的行为正确。",
+    "boundary": "高覆盖率不等于断言有效，也不能替代需求、并发、集成和真实依赖验证；行、分支和组合追踪回答的问题也不同。",
+    "demoType": "branch",
+    "demoTitle": "把复合条件拆成四格，找出行覆盖漏掉的路径",
+    "demoSteps": [
+      {
+        "label": "展开条件",
+        "value": "age ≥ 18 && verified",
+        "note": "一行判断拆成 TT · TF · FT · FF 四种输入。"
+      },
+      {
+        "label": "只跑成功",
+        "value": "行 100% · 条件 1/4",
+        "note": "20,true 点亮整行，三格仍没有执行记录。"
+      },
+      {
+        "label": "追到缺陷并补齐",
+        "value": "TF → 4 / 4 组合",
+        "note": "20,false 暴露错误后，补齐四格并为每条路径写下断言。"
+      }
+    ],
+    "quizQuestion": "行覆盖率 100% 后，为什么还要展开条件组合？",
+    "quizOptions": [
+      "同一行可能包含多条尚未触发的逻辑路径",
+      "行覆盖只统计空白行",
+      "100% 表示测试已经失败"
+    ],
+    "correctText": "覆盖维度不同，能暴露的未测区域也不同；断言才判断结果是否正确。",
+    "wrongText": "覆盖率提示执行空白，不能单独证明没有缺陷。",
+    "promptTitle": "把覆盖率空白变成测试",
+    "prompt": "请确认报告统计范围，分别查看行、分支和条件覆盖，列出与业务风险相连的未执行路径，并为每条路径补可观察的行为断言。",
+    "relatedSlugs": [
+      "unit-test",
+      "regression-test",
+      "test-case"
+    ]
   },
   {
     "zh": "API 测试", "en": "API Testing", "slug": "api-testing", "cat": "技术栈",
-    "say": "直接调用接口，验证状态码、数据结构、权限和副作用。", "aliases": ["接口测试", "API Test", "HTTP 测试"],
-    "question": "不打开浏览器，怎样确认创建订单接口工作正常？", "definition": "API 测试从协议层发送请求，并检查响应和系统状态是否符合接口约定。", "boundary": "API 测试不验证用户界面和浏览器交互，也不能替代生产监控。",
-    "demoType": "request", "demoTitle": "创建接口怎样被完整检查",
-    "demoSteps": [{"label":"发送请求","value":"POST /orders","note":"携带有效令牌和商品数据。"},{"label":"检查响应","value":"201 · orderId","note":"状态码和字段类型符合约定。"},{"label":"检查副作用","value":"库存 -1 · 订单 +1","note":"数据库变化与返回结果一致。"}],
-    "quizQuestion": "API 测试除了响应体还应检查什么？", "quizOptions": ["状态码、响应头和关键副作用", "页面字体是否好看", "设计稿图层名称"], "correctText": "协议和持久化结果都可能影响接口正确性。", "wrongText": "视觉和设计图层不属于 API 协议测试。",
-    "promptTitle": "设计 API 测试", "prompt": "请为这个接口补充正常、参数错误、未认证、无权限、冲突和服务失败测试，并检查副作用。", "relatedSlugs": ["request", "response", "status-code", "integration-test"]
+    "say": "让一次接口请求同时接受协议、状态和权限的检查。", "aliases": ["接口测试", "API Test", "HTTP 测试"],
+    "question": "订单接口回了 201，怎样知道它真的创建了一笔、重试不会多写、用户 B 也读不到？", "definition": "API 测试直接构造协议请求，检查响应状态、字段形状、服务端副作用、重复请求和访问权限。", "boundary": "API 测试可以绕过浏览器检查服务边界，但不能替代页面交互验证、生产监控或所有集成环境差异。",
+    "demoType": "request", "demoTitle": "接口回执和服务端状态怎样互相作证",
+    "demoSteps": [{"label":"创建并核对","value":"201 + orderId · 1 row","note":"响应有订单号，服务端只新增一行。"},{"label":"同键重试","value":"200 · same orderId","note":"网络失败后重发，不应再造一笔订单。"},{"label":"换身份","value":"403 · 1 row","note":"用户 B 被挡在数据前，状态没有被改写。"}],
+    "quizQuestion": "创建订单接口第二次返回 200，但订单表多了一行，测试应该怎样判？", "quizOptions": ["失败，响应和副作用没有说同一件事", "通过，只要没有返回 500", "忽略订单表，只看响应体"], "correctText": "API 测试要把协议回执和服务端状态放在同一条断言里。", "wrongText": "状态码、字段、重复语义和权限都可能是接口契约的一部分。",
+    "promptTitle": "补一条 API 测试", "prompt": "请为正常创建、同键重试、参数错误和换身份读取分别写出方法、路径、身份、body、响应 schema、状态码与可观察副作用。", "relatedSlugs": ["request", "response", "status-code", "integration-test"]
   },
   {
-    "zh": "最小权限", "en": "Least Privilege", "slug": "least-privilege", "cat": "技术栈",
-    "say": "只授予完成当前任务所需的最少权限，并限制作用范围和时间。", "aliases": ["最小权限原则", "Least Privilege", "权限收敛"],
-    "question": "只读报表程序需要数据库删除权限吗？", "definition": "最小权限原则要求用户、服务和密钥只获得必要操作所需的权限。", "boundary": "最小权限能缩小误用和泄露影响，但不能替代认证、监控和修复漏洞。",
-    "demoType": "comparison", "demoTitle": "报表账号收窄权限前后",
-    "demoSteps": [{"label":"原权限","value":"SELECT · UPDATE · DELETE","note":"账号可修改和删除生产数据。"},{"label":"核对用途","value":"只读取销售视图","note":"运行记录没有写操作需求。"},{"label":"收窄权限","value":"SELECT sales_view","note":"误操作时无法改写底层表。"}],
-    "quizQuestion": "只读服务账号通常需要什么数据库权限？", "quizOptions": ["只授予所需对象的读取权限", "授予管理员权限", "允许删除全部表"], "correctText": "权限应与实际任务相匹配。", "wrongText": "管理员和删除权限扩大了不必要的风险。",
-    "promptTitle": "审查最小权限", "prompt": "请按主体、资源、动作、环境和有效期审查这些权限，列出可删除或缩小范围的授权。", "relatedSlugs": ["authorization", "rbac", "api-key", "firewall"]
+  "zh": "最小权限",
+  "en": "Least Privilege",
+  "slug": "least-privilege",
+  "cat": "技术栈",
+  "say": "给发布机器人刚好够用的钥匙：能读哪份代码、写哪条 release、用到什么时候，都要说清。",
+  "aliases": [
+    "最小权限原则",
+    "Least Privilege",
+    "权限收敛"
+  ],
+  "question": "发布机器人只写一个 release，为什么还要拿组织管理员？",
+  "definition": "最小权限把授权收窄到当前任务必需的主体、动作、资源范围与时限，并在任务结束后审查和收回。",
+  "boundary": "它降低误用和泄露的影响范围，却不能代替身份认证、请求级授权检查、审计和漏洞修复。",
+  "demoType": "hierarchy",
+  "demoTitle": "一把组织钥匙为什么会多开九扇门",
+  "demoSteps": [
+    {
+      "label": "写下任务",
+      "value": "发布 v2.4 · read + write",
+      "note": "先把真正动作写出来，不从角色名开局。"
+    },
+    {
+      "label": "收窄范围",
+      "value": "repo/Vibe · release:v2.4",
+      "note": "同一个 write 只落在目标仓库和这次版本。"
+    },
+    {
+      "label": "封住越界",
+      "value": "delete production · DENY",
+      "note": "能发布不等于能删生产，30 分钟后租约自动失效。"
+    }
+  ],
+  "quizQuestion": "发布机器人缺少 release:write 时，最合适的补权方式是什么？",
+  "quizOptions": [
+    "只给目标版本的临时写权限",
+    "永久授予组织管理员",
+    "关闭所有授权检查"
+  ],
+  "correctText": "先补完成这次发布所缺的那一个动作，再锁定资源范围和期限。",
+  "wrongText": "整套管理员角色把成员、密钥和生产数据也带进来了，任务没有需要这些门。",
+  "promptTitle": "把一个服务身份的钥匙缩到刚好够用",
+  "prompt": "请按主体、任务、动作、资源范围、条件、租约期限和撤回条件审查这组授权，并列出每项保留或收窄的理由。",
+  "relatedSlugs": [
+    "authorization",
+    "rbac",
+    "api-key",
+    "firewall"
+  ]
+},
+  {
+  "zh": "哈希",
+  "en": "Hashing",
+  "slug": "hashing",
+  "cat": "技术栈",
+  "say": "把输入压成一张可比对的指纹；到了密码场景，还要给每个账号加盐、给每次猜测加成本。",
+  "aliases": [
+    "散列",
+    "Hash",
+    "摘要算法"
+  ],
+  "question": "下载的发布包只改了一个字符，为什么摘要会完全换一张脸？保存密码时又为什么不能直接用最快的 SHA-256？",
+  "definition": "哈希函数把任意长度输入映射为固定长度摘要，常用于完整性比较；密码验证需要在此基础上使用带盐、成本可调的专用密码哈希方案。",
+  "boundary": "哈希不是可逆加密，摘要对不上时只能重新获取可信输入；快速通用哈希、缺盐或成本过低，也不能当密码存储方案。",
+  "demoType": "comparison",
+  "demoTitle": "同一枚指纹怎样从文件校验走到密码验证",
+  "demoSteps": [
+    {
+      "label": "先看文件",
+      "value": "release.tar → 3a1c…9f",
+      "note": "同一输入得到同一摘要，用清单核对有没有变。"
+    },
+    {
+      "label": "改一个字",
+      "value": "release.tar! → c72b…14",
+      "note": "只动一个字符也会得到另一串摘要，不能从摘要倒推文件。"
+    },
+    {
+      "label": "存密码",
+      "value": "salt + Argon2id + params",
+      "note": "盐让保存值分开，成本让离线猜测变贵，登录时重算比较。"
+    }
+  ],
+  "quizQuestion": "密码记录里最少还应该跟着什么，才能按原方案验证？",
+  "quizOptions": [
+    "每个账号的盐、哈希结果和算法成本参数",
+    "把密码原文加密后一起存",
+    "只存一个全站通用 SHA-256 摘要"
+  ],
+  "correctText": "盐、结果和成本参数一起保存，服务器才能在登录时重算同一条路线。",
+  "wrongText": "可逆密文和无盐快速摘要都没有解决离线猜测与批量关联的边界。",
+  "promptTitle": "检查一份哈希方案",
+  "prompt": "请先判断用途是文件完整性还是密码验证，再检查算法、盐、成本参数、版本化记录、重算流程和对不上时的处理。",
+  "relatedSlugs": [
+    "encryption-at-rest",
+    "auth",
+    "database"
+  ]
+},
+  {
+    "zh": "输入校验",
+    "en": "Input Validation",
+    "slug": "input-validation",
+    "cat": "技术栈",
+    "say": "先把外部数据读成可判断的值，再让它靠近业务。",
+    "aliases": [
+      "输入验证",
+      "参数校验",
+      "Validation"
+    ],
+    "question": "账单页面已经把日期标绿，为什么服务端还要把格式、日期顺序、查询字段和账号归属分开检查？",
+    "definition": "输入校验在信任边界先解析外部数据，再按结构、类型、格式和业务语义规则拒绝不合格值；它让后续逻辑只接收约定范围内的数据。",
+    "boundary": "它不能替代参数化查询、上下文输出编码或对象级授权；合法 UUID 只说明值可解释，不说明当前主体能访问对应对象。",
+    "demoType": "branch",
+    "demoTitle": "同一份账单请求怎样在四道门前停下或继续",
+    "demoSteps": [
+      {
+        "label": "先解析请求",
+        "value": "JSON → schema · 4 fields",
+        "note": "大小、结构、类型和必填字段先过服务端边界。"
+      },
+      {
+        "label": "检查日期含义",
+        "value": "endAt < startAt → 422",
+        "note": "两个日期都能解析，先后关系仍可能不成立。"
+      },
+      {
+        "label": "固定查询入口",
+        "value": "createdAt → created_at",
+        "note": "允许列表决定能用哪一列，用户值不会拼成 SQL。"
+      }
+    ],
+    "quizQuestion": "accountId 的 UUID 格式合法，但它属于别人时，应该哪一层阻断？",
+    "quizOptions": [
+      "授权层返回 403 或产品约定的隐藏式 404",
+      "格式层把 UUID 说成非法",
+      "只要前端没有显示这个账号就算通过"
+    ],
+    "correctText": "校验先确认值能被安全解释，授权再确认当前主体能否访问它。",
+    "wrongText": "页面限制、格式正确和对象归属是三件事，不能让前端或 UUID 校验代替授权。",
+    "promptTitle": "给一条接口画出输入边界",
+    "prompt": "请列出解析限制、字段结构、业务语义、查询允许列表、授权条件和每道门失败时不会发生的副作用。",
+    "relatedSlugs": [
+      "request-body",
+      "data-validation",
+      "authorization",
+      "api-testing"
+    ]
   },
   {
-    "zh": "哈希", "en": "Hashing", "slug": "hashing", "cat": "技术栈",
-    "say": "把输入计算成固定长度摘要，用于完整性检查或密码验证等场景。", "aliases": ["散列", "Hash", "摘要算法"],
-    "question": "保存密码时，为什么不应该把原文直接存进数据库？", "definition": "哈希函数把任意长度输入映射为固定长度输出，设计用途不同的算法具有不同安全属性。", "boundary": "哈希通常不可直接还原，但弱算法、低成本参数或缺少盐仍可能被猜解；它也不是加密。",
-    "demoType": "state", "demoTitle": "密码怎样验证而不保存原文",
-    "demoSteps": [{"label":"注册输入","value":"user password","note":"服务生成随机盐并计算密码哈希。"},{"label":"保存记录","value":"salt + hash","note":"数据库不保存密码原文。"},{"label":"登录验证","value":"同参数重算并比较","note":"相同密码得到可比较结果。"}],
-    "quizQuestion": "密码哈希为什么要使用随机盐？", "quizOptions": ["让相同密码产生不同存储结果", "让密码可以直接解密", "让网页加载更快"], "correctText": "随机盐增加预计算和批量猜解的成本。", "wrongText": "盐不会让哈希可解密，也与网页速度无关。",
-    "promptTitle": "检查密码哈希", "prompt": "请检查密码存储使用的专用算法、随机盐、成本参数、升级策略和日志处理，避免保存或输出密码原文。", "relatedSlugs": ["auth", "database", "encryption-at-rest"]
-  },
+  "zh": "静态加密",
+  "en": "Encryption at Rest",
+  "slug": "encryption-at-rest",
+  "cat": "技术栈",
+  "say": "让存储介质拿到的是密文，把能还原它的钥匙放到另一条授权链里。",
+  "aliases": [
+    "存储加密",
+    "落盘加密",
+    "静态数据加密"
+  ],
+  "question": "硬盘、数据库快照和备份被复制时，为什么看见密文还不够，还要追问谁拿着解密钥匙？",
+  "definition": "静态加密把保存中的数据转换为带完整性保护的密文，并用独立的密钥管理和授权链决定谁能在需要时还原。",
+  "boundary": "它降低存储介质泄露的直接影响，却不能保护已经被授权应用读出的明文、网络链路或同处一地的密钥；备份、快照、日志也要单独纳入范围。",
+  "demoType": "lifecycle",
+  "demoTitle": "一份账单怎样从明文落盘走到密钥轮换",
+  "demoSteps": [
+    {
+      "label": "写入密文",
+      "value": "100 rows → ciphertext + wrapped DEK",
+      "note": "数据由 DEK 加密，DEK 再由 KMS 中的 KEK 包住。"
+    },
+    {
+      "label": "模拟偷盘",
+      "value": "disk copy → 0 plaintext",
+      "note": "只有数据库和备份，没有 KMS grant，无法还原。"
+    },
+    {
+      "label": "撤回并轮换",
+      "value": "grant revoked · key v2",
+      "note": "应用解密被挡，新写入使用新版本，旧备份保留可恢复路径。"
+    }
+  ],
+  "quizQuestion": "应用身份被盗且仍有 KMS 解密权限时，静态加密能保证攻击者看不到明文吗？",
+  "quizOptions": [
+    "不能，应用已经在授权边界内拿到解密能力",
+    "能，只要数据库页保存的是密文",
+    "能，KMS 会自动识别所有被盗身份"
+  ],
+  "correctText": "静态加密挡住的是存储介质直接泄露；授权应用读出的明文需要另一层控制。",
+  "wrongText": "密文、wrapped DEK 和 KMS grant 是不同边界，不能把磁盘安全等同于应用安全。",
+  "promptTitle": "画出数据和钥匙的保存边界",
+  "prompt": "请列出数据库、备份、快照、日志、DEK、KEK、KMS grant、撤权和轮换的关系，并写出两种攻击各自能看到什么。",
+  "relatedSlugs": [
+    "encryption-in-transit",
+    "backup",
+    "hashing",
+    "least-privilege"
+  ]
+},
   {
-    "zh": "输入校验", "en": "Input Validation", "slug": "input-validation", "cat": "技术栈",
-    "say": "在数据进入业务逻辑前，检查类型、格式、长度、范围和允许值。", "aliases": ["输入验证", "参数校验", "Validation"],
-    "question": "前端已经限制了输入长度，后端还需要再检查吗？", "definition": "输入校验把外部数据与明确规则比较，不符合规则时拒绝或返回可处理的错误。", "boundary": "输入校验不能替代授权和上下文转义；客户端校验也不能替代服务端校验。",
-    "demoType": "branch", "demoTitle": "分页参数怎样被接受或拒绝",
-    "demoSteps": [{"label":"收到参数","value":"limit = 10000","note":"外部输入进入接口边界。"},{"label":"执行规则","value":"1 ≤ limit ≤ 100","note":"当前值超过允许上限。"},{"label":"拒绝处理","value":"400 · limit 超出范围","note":"查询没有进入数据库。"}],
-    "quizQuestion": "服务端为什么仍需校验前端提交的数据？", "quizOptions": ["客户端限制可以被绕过", "前端会自动修复后端", "校验只影响页面颜色"], "correctText": "请求可以脱离页面直接发送，服务端必须守住自己的输入边界。", "wrongText": "前端不能替服务端执行可信校验，页面颜色也与参数合法性无关。",
-    "promptTitle": "设计输入校验", "prompt": "请为这个接口的路径、查询、请求头和请求体定义类型、格式、长度、范围与错误响应。", "relatedSlugs": ["request-body", "data-validation", "api-testing", "authorization"]
-  },
+  "zh": "传输加密",
+  "en": "Encryption in Transit",
+  "slug": "encryption-in-transit",
+  "cat": "技术栈",
+  "say": "把路上的内容交给正确的端点，途中每一跳都用 TLS 护住并验证对方是谁。",
+  "aliases": [
+    "传输中加密",
+    "链路加密",
+    "TLS 保护"
+  ],
+  "question": "浏览器地址栏有锁，为什么 CDN 到负载均衡器之间仍可能把 Authorization 暴露出来？",
+  "definition": "传输中加密用 TLS 等协议在通信端点之间提供机密性、完整性和服务端身份验证；保护范围止于每一段 TLS 终止点。",
+  "boundary": "它只保护端点之间的传输通道，不负责端点内部的明文、业务授权、静态存储或下一跳是否重新加密；证书和协议配置也必须单独验收。",
+  "demoType": "request",
+  "demoTitle": "一笔订单怎样经过三段 TLS 路径",
+  "demoSteps": [
+    {
+      "label": "先画出跳点",
+      "value": "Browser → CDN → LB → App",
+      "note": "每个代理都可能终止一次 TLS，不能把它们折叠成一条线。"
+    },
+    {
+      "label": "观察抓包",
+      "value": "3 / 3 TLS · ciphertext",
+      "note": "三段都建立并验证后，旁观者看不到 Authorization 内容。"
+    },
+    {
+      "label": "故障分支",
+      "value": "HTTP 明文 / SAN mismatch",
+      "note": "内部回退或证书身份错误时，分别出现泄露或阻断。"
+    }
+  ],
+  "quizQuestion": "CDN 已经终止 TLS，却用 HTTP 转发到负载均衡器，最准确的判断是什么？",
+  "quizOptions": [
+    "内部链路可能看到 Authorization 明文，需要为下一跳重新建立 TLS",
+    "浏览器的 HTTPS 会自动覆盖 CDN 后的所有链路",
+    "只要地址栏有锁，证书主机名就不必再检查"
+  ],
+  "correctText": "TLS 保护一对端点；终止后到下一跳的连接要单独建立并验证。",
+  "wrongText": "外部链路加密不能替内部链路背书，地址栏也不能代替每一段证书和协议检查。",
+  "promptTitle": "做一次逐跳 TLS 审查",
+  "prompt": "请列出浏览器、CDN、网关、负载均衡和应用之间的每一段协议、证书身份、TLS 终止点、抓包可见内容、失败动作和是否允许 0-RTT。",
+  "relatedSlugs": [
+    "tls-handshake",
+    "encryption-at-rest",
+    "hostname",
+    "reverse-proxy"
+  ]
+}
+,
   {
-    "zh": "静态加密", "en": "Encryption at Rest", "slug": "encryption-at-rest", "cat": "技术栈",
-    "say": "数据写入磁盘、备份或对象存储后，以密文形式保存。", "aliases": ["存储加密", "落盘加密", "静态数据加密"],
-    "question": "硬盘或备份文件被拿走时，怎样降低数据直接被读取的风险？", "definition": "静态加密保护存储介质上的数据，通常由磁盘、数据库、对象存储或应用层实现。", "boundary": "数据被已授权应用解密后仍可能泄露；密钥管理、访问控制和备份策略同样重要。",
-    "demoType": "lifecycle", "demoTitle": "数据落盘和读取时怎样变化",
-    "demoSteps": [{"label":"应用写入","value":"用户资料明文","note":"数据在受控进程中准备保存。"},{"label":"存储加密","value":"磁盘保存密文","note":"介质上不再保存可直接查看的业务明文。"},{"label":"授权读取","value":"密钥解密后返回","note":"访问日志记录主体和对象。"}],
-    "quizQuestion": "静态加密主要保护哪个阶段？", "quizOptions": ["数据保存在磁盘或备份时", "数据在网络传输时", "用户输入表单样式"], "correctText": "它关注存储介质上的数据。", "wrongText": "网络传输通常由 TLS 等机制保护，表单样式无关。",
-    "promptTitle": "审查静态加密", "prompt": "请检查数据库、文件、备份和日志的静态加密范围，以及密钥保存、轮换、授权和恢复流程。", "relatedSlugs": ["encryption-in-transit", "backup", "least-privilege"]
-  },
-  {
-    "zh": "传输加密", "en": "Encryption in Transit", "slug": "encryption-in-transit", "cat": "技术栈",
-    "say": "数据在客户端、服务和数据库之间传输时使用加密连接。", "aliases": ["链路加密", "传输中加密", "In-Transit Encryption"],
-    "question": "登录信息经过公共网络时，怎样降低被直接读取或篡改的风险？", "definition": "传输加密使用 TLS 等协议保护通信内容的机密性和完整性，并验证通信端身份。", "boundary": "传输加密只保护链路；端点被攻破、证书配置错误或应用泄露仍需其他控制。",
-    "demoType": "flow", "demoTitle": "登录请求怎样通过加密链路",
-    "demoSteps": [{"label":"建立连接","value":"TLS 握手","note":"浏览器验证证书并协商会话密钥。"},{"label":"发送请求","value":"密文数据包","note":"网络中间节点看不到请求明文。"},{"label":"服务解密","value":"受控进程读取","note":"服务端记录访问并校验登录数据。"}],
-    "quizQuestion": "HTTPS 主要保护数据的哪个阶段？", "quizOptions": ["浏览器与服务器之间传输时", "数据库磁盘长期保存时", "开发者写代码时"], "correctText": "HTTPS 使用 TLS 保护网络链路。", "wrongText": "磁盘存储需要静态加密，写代码本身不是 HTTPS 的保护阶段。",
-    "promptTitle": "审查传输加密", "prompt": "请列出客户端、网关、服务和数据库之间的每段连接，检查 TLS、证书验证、协议版本和明文回退。", "relatedSlugs": ["tls-handshake", "encryption-at-rest", "hostname"]
+    "zh": "功能开关",
+    "en": "Feature Flag",
+    "slug": "feature-flag",
+    "cat": "后端",
+    "say": "把新旧行为放进同一份构建，用运行时开关决定谁先看到哪条路径。",
+    "aliases": [
+      "Feature Toggle",
+      "特性开关",
+      "功能旗标"
+    ],
+    "question": "代码已经部署了，为什么用户还看不到新功能？",
+    "definition": "功能开关在运行时读取一个 flag 和请求上下文，选择旧路径、新路径或某个变体。它把代码部署与功能暴露分开，让团队可以先给内部用户或小比例 cohort 使用，再根据指标扩大、暂停或关闭。",
+    "boundary": "开关控制的是功能暴露，不是身份授权、数据回滚或自动质量证明。评估失败要有明确默认路径；长期不清理的 flag 会增加每条代码路径的维护和验证成本，分组还要使用稳定的上下文键。",
+    "demoType": "comparison",
+    "demoTitle": "同一个版本怎样只让一部分请求走新路径",
+    "demoSteps": [
+      {
+        "label": "先部署",
+        "value": "v42 = old path + new path",
+        "note": "代码先进入生产，默认仍可把请求留在旧路径。"
+      },
+      {
+        "label": "小范围",
+        "value": "targetingKey → 10% cohort → new path",
+        "note": "评估上下文决定谁看到变体；稳定分组才能比较指标。"
+      },
+      {
+        "label": "发现回归",
+        "value": "error rate ↑ → flag OFF → old path",
+        "note": "关闭暴露能快速止损，但不会撤销已经发生的数据副作用。"
+      }
+    ],
+    "quizQuestion": "功能开关最准确地改变了什么？",
+    "quizOptions": [
+      "运行时对功能路径的暴露范围",
+      "用户是否拥有访问敏感数据的权限",
+      "已经写入数据库的数据是否自动回滚"
+    ],
+    "correctText": "对。功能开关让应用在运行时选择暴露哪条路径，部署、授权和数据补偿仍是不同责任。",
+    "wrongText": "再看一遍：flag 改变的是路径选择和暴露范围，不会自动授予权限，也不会抹掉已发生的副作用。",
+    "promptTitle": "为一次分批发布写开关契约",
+    "prompt": "写出 flag key、默认值、评估上下文、目标 cohort、成功指标、回退信号、负责人和清理日期；再说明评估服务不可用、用户无权限或新路径已经产生副作用时分别走哪条路径。",
+    "relatedSlugs": [
+      "rollback",
+      "preview-deployment",
+      "observability",
+      "authorization",
+      "rate-limiting",
+      "api-gateway"
+    ]
   }
 ]
