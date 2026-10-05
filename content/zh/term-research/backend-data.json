@@ -264,7 +264,25 @@
     "hashing"
   ]
 },
-  {"slug":"encryption-in-transit","mechanism":"传输中加密用 TLS 等协议在通信端点间提供机密性、完整性和对端身份验证；保护范围从握手建立的安全通道开始，到终止 TLS 的端点结束。","misconception":"HTTPS 不代表端到端穿过所有代理仍为密文；TLS 在负载均衡器终止后，后续链路需单独保护，证书校验失败也不能忽略。","demoSignature":"7帧｜对象：浏览器、CDN、负载均衡、应用三段链路及每段锁图标、抓包字节视图｜交互：逐段启用 TLS 并把 CDN→LB 改为明文｜变化：外部抓包保持密文，内部链路暴露 Authorization 字段｜结果：端到端保护段从 3/3 降到 2/3，风险节点被精确标红。","sourceUrls":["https://www.rfc-editor.org/rfc/rfc8446.html","https://www.rfc-editor.org/rfc/rfc9525.html","https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"],"rewriteRisk":"高：需明确 TLS 终止点和身份校验，不要与静态加密共用锁头动画。","nearDuplicates":["tls-handshake","encryption-at-rest","hostname"]}
+  {
+  "slug": "encryption-in-transit",
+  "mechanism": "传输中加密用 TLS 在每一对通信端点之间协商协议与密钥、验证服务身份，并用记录层保护后续应用数据；代理终止 TLS 后，下一跳需要自己的协议和证书边界。",
+  "misconception": "浏览器有 HTTPS 小锁不代表整条服务链路都保持密文；证书签名可信不等于主机名匹配，TLS 终止后的内部 HTTP 也不会因为外层加密自动获得保护。",
+  "demoSignature": "6帧｜对象：浏览器、CDN、负载均衡、应用、三段链路、Authorization、抓包视图、SAN 身份｜交互：推进待出发、握手、3/3 TLS、CDN 终止导致内部明文、SAN mismatch 阻断、恢复下一跳｜变化：ciphertext→Authorization 可见→0 B blocked→ciphertext；结果：逐段画出 TLS 的真实保护范围。",
+  "sourceUrls": [
+    "https://www.rfc-editor.org/rfc/rfc8446.html",
+    "https://www.rfc-editor.org/rfc/rfc9525.html",
+    "https://csrc.nist.gov/pubs/sp/800/52/r2/final",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
+    "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security"
+  ],
+  "rewriteRisk": "高：必须把 TLS 的端点、握手、身份、记录层、代理终止、内部明文、版本配置和 0-RTT 重放边界写成一条可观察因果链，不能复用静态加密的存储锁。",
+  "nearDuplicates": [
+    "tls-handshake",
+    "encryption-at-rest",
+    "hostname"
+  ]
+}
 ,
   {
     "slug": "feature-flag",

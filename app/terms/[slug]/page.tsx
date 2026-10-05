@@ -94,6 +94,7 @@ import { LeastPrivilegeTermPage } from "@/components/terms/least-privilege-pages
 import { HashingTermPage } from "@/components/terms/hashing-pages/hashing-page";
 import { InputValidationTermPage } from "@/components/terms/input-validation-pages/input-validation-page";
 import { EncryptionAtRestTermPage } from "@/components/terms/encryption-at-rest-pages/encryption-at-rest-page";
+import { EncryptionInTransitTermPage } from "@/components/terms/encryption-in-transit-pages/encryption-in-transit-page";
 
 const articleTermPages = {
   skill: SkillTermPage,
@@ -235,6 +236,7 @@ const articleTermPages = {
   "hashing": HashingTermPage,
   "input-validation": InputValidationTermPage,
   "encryption-at-rest": EncryptionAtRestTermPage,
+  "encryption-in-transit": EncryptionInTransitTermPage,
   session: SessionTermPage,
   jwt: JwtTermPage,
   oauth: OAuthTermPage,

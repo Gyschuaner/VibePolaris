@@ -1695,14 +1695,55 @@
   ]
 },
   {
-    "zh": "传输加密", "en": "Encryption in Transit", "slug": "encryption-in-transit", "cat": "技术栈",
-    "say": "数据在客户端、服务和数据库之间传输时使用加密连接。", "aliases": ["链路加密", "传输中加密", "In-Transit Encryption"],
-    "question": "登录信息经过公共网络时，怎样降低被直接读取或篡改的风险？", "definition": "传输加密使用 TLS 等协议保护通信内容的机密性和完整性，并验证通信端身份。", "boundary": "传输加密只保护链路；端点被攻破、证书配置错误或应用泄露仍需其他控制。",
-    "demoType": "flow", "demoTitle": "登录请求怎样通过加密链路",
-    "demoSteps": [{"label":"建立连接","value":"TLS 握手","note":"浏览器验证证书并协商会话密钥。"},{"label":"发送请求","value":"密文数据包","note":"网络中间节点看不到请求明文。"},{"label":"服务解密","value":"受控进程读取","note":"服务端记录访问并校验登录数据。"}],
-    "quizQuestion": "HTTPS 主要保护数据的哪个阶段？", "quizOptions": ["浏览器与服务器之间传输时", "数据库磁盘长期保存时", "开发者写代码时"], "correctText": "HTTPS 使用 TLS 保护网络链路。", "wrongText": "磁盘存储需要静态加密，写代码本身不是 HTTPS 的保护阶段。",
-    "promptTitle": "审查传输加密", "prompt": "请列出客户端、网关、服务和数据库之间的每段连接，检查 TLS、证书验证、协议版本和明文回退。", "relatedSlugs": ["tls-handshake", "encryption-at-rest", "hostname"]
-  }
+  "zh": "传输加密",
+  "en": "Encryption in Transit",
+  "slug": "encryption-in-transit",
+  "cat": "技术栈",
+  "say": "把路上的内容交给正确的端点，途中每一跳都用 TLS 护住并验证对方是谁。",
+  "aliases": [
+    "传输中加密",
+    "链路加密",
+    "TLS 保护"
+  ],
+  "question": "浏览器地址栏有锁，为什么 CDN 到负载均衡器之间仍可能把 Authorization 暴露出来？",
+  "definition": "传输中加密用 TLS 等协议在通信端点之间提供机密性、完整性和服务端身份验证；保护范围止于每一段 TLS 终止点。",
+  "boundary": "它只保护端点之间的传输通道，不负责端点内部的明文、业务授权、静态存储或下一跳是否重新加密；证书和协议配置也必须单独验收。",
+  "demoType": "request",
+  "demoTitle": "一笔订单怎样经过三段 TLS 路径",
+  "demoSteps": [
+    {
+      "label": "先画出跳点",
+      "value": "Browser → CDN → LB → App",
+      "note": "每个代理都可能终止一次 TLS，不能把它们折叠成一条线。"
+    },
+    {
+      "label": "观察抓包",
+      "value": "3 / 3 TLS · ciphertext",
+      "note": "三段都建立并验证后，旁观者看不到 Authorization 内容。"
+    },
+    {
+      "label": "故障分支",
+      "value": "HTTP 明文 / SAN mismatch",
+      "note": "内部回退或证书身份错误时，分别出现泄露或阻断。"
+    }
+  ],
+  "quizQuestion": "CDN 已经终止 TLS，却用 HTTP 转发到负载均衡器，最准确的判断是什么？",
+  "quizOptions": [
+    "内部链路可能看到 Authorization 明文，需要为下一跳重新建立 TLS",
+    "浏览器的 HTTPS 会自动覆盖 CDN 后的所有链路",
+    "只要地址栏有锁，证书主机名就不必再检查"
+  ],
+  "correctText": "TLS 保护一对端点；终止后到下一跳的连接要单独建立并验证。",
+  "wrongText": "外部链路加密不能替内部链路背书，地址栏也不能代替每一段证书和协议检查。",
+  "promptTitle": "做一次逐跳 TLS 审查",
+  "prompt": "请列出浏览器、CDN、网关、负载均衡和应用之间的每一段协议、证书身份、TLS 终止点、抓包可见内容、失败动作和是否允许 0-RTT。",
+  "relatedSlugs": [
+    "tls-handshake",
+    "encryption-at-rest",
+    "hostname",
+    "reverse-proxy"
+  ]
+}
 ,
   {
     "zh": "功能开关",

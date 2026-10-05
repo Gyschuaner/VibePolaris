@@ -19556,243 +19556,288 @@
   ]
 },
   {
-    "slug": "encryption-in-transit",
-    "lead": "浏览器地址栏有锁，为什么 CDN 到负载均衡器之间仍可能泄露 Authorization？",
-    "definition": "传输加密用 TLS 等协议在两个通信端点之间提供机密性、完整性和身份验证；保护范围止于 TLS 终止点。",
-    "boundary": "HTTPS 不保证穿过所有代理后仍保持密文。证书校验、内部链路和终止后的应用日志需要分别处理。",
-    "sceneKind": "layers",
-    "sceneTitle": "三段链路上的 TLS 终止点与明文字段",
-    "actionLabel": "逐段启用或关闭 TLS",
-    "actors": [
-      {
-        "id": "tls-browser",
-        "label": "浏览器",
-        "detail": "验证 cdn.example",
-        "icon": "browser",
-        "group": "端点"
-      },
-      {
-        "id": "tls-cdn",
-        "label": "CDN",
-        "detail": "TLS termination 1",
-        "icon": "cloud",
-        "group": "代理"
-      },
-      {
-        "id": "tls-lb",
-        "label": "负载均衡器",
-        "detail": "TLS termination 2",
-        "icon": "network",
-        "group": "代理"
-      },
-      {
-        "id": "tls-app",
-        "label": "应用",
-        "detail": "最终端点",
-        "icon": "server",
-        "group": "服务"
-      },
-      {
-        "id": "packet-view",
-        "label": "抓包视图",
-        "detail": "ciphertext",
-        "icon": "search",
-        "group": "观察"
-      },
-      {
-        "id": "auth-field",
-        "label": "Authorization",
-        "detail": "Bearer …",
-        "icon": "key",
-        "group": "敏感字段"
-      }
-    ],
-    "edges": [
-      {
-        "id": "browser-cdn",
-        "from": "tls-browser",
-        "to": "tls-cdn",
-        "label": "TLS A"
-      },
-      {
-        "id": "cdn-lb",
-        "from": "tls-cdn",
-        "to": "tls-lb",
-        "label": "TLS B"
-      },
-      {
-        "id": "lb-app",
-        "from": "tls-lb",
-        "to": "tls-app",
-        "label": "TLS C"
-      },
-      {
-        "id": "links-packet",
-        "from": "tls-cdn",
-        "to": "packet-view",
-        "label": "选择链路"
-      },
-      {
-        "id": "auth-links",
-        "from": "auth-field",
-        "to": "tls-lb",
-        "label": "随请求传输"
-      }
-    ],
-    "frames": [
-      {
-        "label": "三段链路都建立 TLS",
-        "note": "浏览器→CDN、CDN→LB、LB→应用分别协商并验证对端。",
-        "activeIds": [
-          "tls-browser",
-          "tls-cdn",
-          "tls-lb",
-          "tls-app"
-        ],
-        "doneIds": [
-          "tls-cdn",
-          "tls-lb",
-          "tls-app"
-        ],
-        "mutedIds": [
-          "packet-view",
-          "auth-field"
-        ],
-        "values": {
-          "tls-browser": "TLS A secure",
-          "tls-cdn": "TLS B secure",
-          "tls-lb": "TLS C secure"
-        },
-        "activeEdgeIds": [
-          "browser-cdn",
-          "cdn-lb",
-          "lb-app"
-        ],
-        "metric": {
-          "label": "加密链路",
-          "value": "3 / 3"
-        }
-      },
-      {
-        "label": "外部抓包只见 TLS 记录",
-        "note": "浏览器到 CDN 的中间网络看不到 Authorization 明文。",
-        "activeIds": [
-          "tls-browser",
-          "tls-cdn",
-          "packet-view",
-          "auth-field"
-        ],
-        "doneIds": [
-          "packet-view"
-        ],
-        "mutedIds": [
-          "tls-lb",
-          "tls-app"
-        ],
-        "values": {
-          "packet-view": "17 03 03 … ciphertext",
-          "auth-field": "not visible"
-        },
-        "activeEdgeIds": [
-          "browser-cdn",
-          "links-packet"
-        ]
-      },
-      {
-        "label": "把 CDN→LB 改为 HTTP",
-        "note": "CDN 解密后以明文转发；外部段仍有锁，但内部抓包能看到令牌。",
-        "activeIds": [
-          "tls-cdn",
-          "tls-lb",
-          "packet-view",
-          "auth-field"
-        ],
-        "doneIds": [],
-        "mutedIds": [
-          "tls-browser",
-          "tls-app"
-        ],
-        "values": {
-          "tls-cdn": "HTTP to LB",
-          "packet-view": "Authorization: Bearer …",
-          "auth-field": "visible internally"
-        },
-        "activeEdgeIds": [
-          "cdn-lb",
-          "links-packet",
-          "auth-links"
-        ],
-        "metric": {
-          "label": "加密链路",
-          "value": "2 / 3"
-        }
-      },
-      {
-        "label": "恢复 TLS B 并校验 LB 身份",
-        "note": "CDN 不只加密，还验证负载均衡器证书覆盖内部主机名。",
-        "activeIds": [
-          "tls-cdn",
-          "tls-lb",
-          "packet-view"
-        ],
-        "doneIds": [
-          "tls-lb"
-        ],
-        "mutedIds": [
-          "auth-field"
-        ],
-        "values": {
-          "tls-lb": "SAN valid · TLS B",
-          "packet-view": "ciphertext"
-        },
-        "activeEdgeIds": [
-          "cdn-lb",
-          "links-packet"
-        ]
-      }
-    ],
-    "insight": "传输加密要逐段检查端点和身份；地址栏的锁只证明浏览器到第一个 TLS 端点。",
-    "quiz": {
-      "question": "CDN 终止 TLS 后以 HTTP 转发到 LB，会发生什么？",
-      "options": [
-        {
-          "label": "内部链路上的请求字段可能以明文出现",
-          "correct": true
-        },
-        {
-          "label": "浏览器的 TLS 会自动延伸到应用",
-          "correct": false
-        },
-        {
-          "label": "Authorization 字段会自动被哈希",
-          "correct": false
-        }
+  "slug": "encryption-in-transit",
+  "lead": "浏览器地址栏有锁，为什么 CDN 到负载均衡器之间仍可能泄露 Authorization？",
+  "definition": "传输加密用 TLS 在每一对端点之间提供机密性、完整性和身份验证；代理终止后，下一跳要重新建立自己的安全通道。",
+  "boundary": "HTTPS 不保证穿过所有代理后仍为密文。证书主机名、TLS 版本、内部链路和终止后的应用日志必须分别检查。",
+  "sceneKind": "network",
+  "sceneTitle": "同一条订单请求在三段链路分别怎样被保护",
+  "actionLabel": "推进一次链路审查",
+  "actors": [
+    {
+      "id": "browser",
+      "label": "浏览器",
+      "detail": "orders.example",
+      "icon": "browser",
+      "group": "端点"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "detail": "TLS termination",
+      "icon": "cloud",
+      "group": "代理"
+    },
+    {
+      "id": "load-balancer",
+      "label": "负载均衡",
+      "detail": "lb.internal",
+      "icon": "network",
+      "group": "代理"
+    },
+    {
+      "id": "app",
+      "label": "订单应用",
+      "detail": "orders-api",
+      "icon": "server",
+      "group": "端点"
+    },
+    {
+      "id": "packet-view",
+      "label": "抓包视图",
+      "detail": "ciphertext / clear",
+      "icon": "search",
+      "group": "观察"
+    },
+    {
+      "id": "auth-field",
+      "label": "Authorization",
+      "detail": "Bearer …",
+      "icon": "key",
+      "group": "敏感字段"
+    }
+  ],
+  "edges": [
+    {
+      "id": "browser-cdn",
+      "from": "browser",
+      "to": "cdn",
+      "label": "TLS A"
+    },
+    {
+      "id": "cdn-lb",
+      "from": "cdn",
+      "to": "load-balancer",
+      "label": "TLS B"
+    },
+    {
+      "id": "lb-app",
+      "from": "load-balancer",
+      "to": "app",
+      "label": "TLS C"
+    },
+    {
+      "id": "cdn-packet",
+      "from": "cdn",
+      "to": "packet-view",
+      "label": "选择抓包点"
+    },
+    {
+      "id": "auth-lb",
+      "from": "auth-field",
+      "to": "load-balancer",
+      "label": "随请求出现"
+    }
+  ],
+  "frames": [
+    {
+      "label": "先标出三个跳点",
+      "note": "浏览器、CDN、负载均衡和应用不是一个端点；每条边都要单独检查。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer",
+        "app"
       ],
-      "success": "每次 TLS 终止都会结束一段保护，需要为下一跳重新建立安全通道。",
-      "retry": "沿请求路径标出每个解密和重新加密的位置。"
-    },
-    "prompt": {
-      "title": "画出传输加密的终止点",
-      "text": "请列出客户端、CDN、网关、负载均衡和应用之间的每段协议、证书身份与明文出现位置，并逐段验证抓包结果。"
-    },
-    "sources": [
-      {
-        "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
-        "label": "RFC 8446 · TLS 1.3",
-        "note": "协议定义与报文语义"
+      "doneIds": [],
+      "mutedIds": [
+        "packet-view",
+        "auth-field"
+      ],
+      "values": {
+        "browser": "orders.example",
+        "cdn": "edge-1",
+        "load-balancer": "lb.internal",
+        "app": "orders-api"
       },
-      {
-        "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
-        "label": "RFC 9525 · Service Identity",
-        "note": "协议定义与报文语义"
-      },
-      {
-        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
-        "label": "OWASP TLS Cheat Sheet",
-        "note": "攻击面与防护检查"
+      "activeEdgeIds": [
+        "browser-cdn",
+        "cdn-lb",
+        "lb-app"
+      ],
+      "metric": {
+        "label": "待审查链路",
+        "value": "3 hops"
       }
-    ]
-  }
+    },
+    {
+      "label": "先验证服务身份",
+      "note": "浏览器期待 orders.example，证书身份要在主机名匹配后才允许应用数据继续。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer"
+      ],
+      "doneIds": [
+        "browser"
+      ],
+      "mutedIds": [
+        "app",
+        "packet-view",
+        "auth-field"
+      ],
+      "values": {
+        "browser": "reference=orders.example",
+        "cdn": "SAN valid",
+        "load-balancer": "等待下一跳"
+      },
+      "activeEdgeIds": [
+        "browser-cdn"
+      ]
+    },
+    {
+      "label": "三段都保持 TLS",
+      "note": "三条边都有记录层保护，抓包视图只显示密文，Authorization 没有出现在网络中。",
+      "activeIds": [
+        "browser",
+        "cdn",
+        "load-balancer",
+        "app",
+        "packet-view"
+      ],
+      "doneIds": [
+        "browser",
+        "cdn",
+        "load-balancer"
+      ],
+      "mutedIds": [
+        "auth-field"
+      ],
+      "values": {
+        "packet-view": "TLS record · ciphertext",
+        "auth-field": "not visible"
+      },
+      "activeEdgeIds": [
+        "browser-cdn",
+        "cdn-lb",
+        "lb-app"
+      ],
+      "metric": {
+        "label": "安全跳点",
+        "value": "3 / 3"
+      }
+    },
+    {
+      "label": "CDN 到 LB 回退 HTTP",
+      "note": "外层 TLS 仍在，但 CDN 解密后以明文转发；内部抓包可以读到 Authorization。",
+      "activeIds": [
+        "cdn",
+        "load-balancer",
+        "packet-view",
+        "auth-field"
+      ],
+      "doneIds": [
+        "browser"
+      ],
+      "mutedIds": [
+        "app"
+      ],
+      "values": {
+        "cdn": "TLS terminated",
+        "load-balancer": "HTTP clear",
+        "packet-view": "Authorization visible",
+        "auth-field": "Bearer …"
+      },
+      "activeEdgeIds": [
+        "cdn-lb",
+        "cdn-packet",
+        "auth-lb"
+      ],
+      "metric": {
+        "label": "安全跳点",
+        "value": "2 / 3"
+      }
+    },
+    {
+      "label": "内部证书主机名不匹配",
+      "note": "证书链即使可信，SAN 不是 lb.internal 也不能把这次连接当成目标服务。",
+      "activeIds": [
+        "cdn",
+        "load-balancer",
+        "packet-view"
+      ],
+      "doneIds": [
+        "browser"
+      ],
+      "mutedIds": [
+        "app",
+        "auth-field"
+      ],
+      "values": {
+        "load-balancer": "SAN ≠ lb.internal",
+        "packet-view": "0 B · blocked"
+      },
+      "activeEdgeIds": [
+        "cdn-lb"
+      ],
+      "metric": {
+        "label": "应用数据",
+        "value": "0 B"
+      }
+    }
+  ],
+  "insight": "传输加密不是地址栏的一枚锁，而是每一段端点、身份和记录保护都能对上的路径。",
+  "quiz": {
+    "question": "内部 TLS 证书链可信，但 SAN 不匹配 lb.internal，下一步应该怎样？",
+    "options": [
+      {
+        "label": "停止握手，不发送订单请求",
+        "correct": true
+      },
+      {
+        "label": "忽略主机名，先用密文请求试试",
+        "correct": false
+      },
+      {
+        "label": "把 Authorization 改成哈希后继续 HTTP",
+        "correct": false
+      }
+    ],
+    "success": "对。身份没有对上时，继续加密只是在保护未知对端；先修证书或目标配置。",
+    "retry": "把“证书能验签”和“证书属于这台服务”分成两次检查。"
+  },
+  "prompt": {
+    "title": "把一条 HTTPS 链路拆成可验收的跳点",
+    "text": "请画出每个代理和服务之间的边，标注 TLS 终止、证书身份、协商版本、抓包可见内容、Cookie Secure、HTTP 回退和 0-RTT 是否允许。"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
+      "label": "RFC 8446 · TLS 1.3",
+      "note": "安全通道、握手与记录层"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9525.html",
+      "label": "RFC 9525 · Service Identity in TLS",
+      "note": "reference identity 与 subjectAltName"
+    },
+    {
+      "url": "https://csrc.nist.gov/pubs/sp/800/52/r2/final",
+      "label": "NIST SP 800-52 Rev. 2",
+      "note": "TLS 版本、证书与配置指导"
+    },
+    {
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html",
+      "label": "OWASP · Transport Layer Security",
+      "note": "全站 TLS、终止点与应用护栏"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security",
+      "label": "MDN · Transport Layer Security",
+      "note": "浏览器握手、中间人与端点边界"
+    }
+  ]
+}
 ,
   {
     "slug": "feature-flag",
