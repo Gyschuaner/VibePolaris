@@ -37902,6 +37902,393 @@
     "sourceHash": "sha256:04e664f4297e03f14afb13b34b51e1f9d3a1592adedc3529dea3224e79a7508c"
   },
   {
+    "slug": "anthropic-claude-small-business-connectors",
+    "title": "Anthropic 推出 Claude for Small Business，接入多种企业连接器",
+    "summary": "5 月 13 日，Anthropic 发布 Claude for Small Business，提供连接 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365 的连接器与现成工作流。发布页说明了产品范围和培训计划，没有证明所有账户已开放或跨服务写入默认安全。",
+    "body": "5 月 13 日，Anthropic 发布 Claude for Small Business，把 Claude 接到小企业常用的数据源和 SaaS 服务，发布页列出了 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace 和 Microsoft 365 等连接器，也提到培训与合作计划。\n\n连接这些系统后，问题就从“能不能回答”变成“能读哪些数据、能写哪些字段、谁批准动作”。配置不当时，连接器越多，权限扩散和错误传播的范围就可能越大，管理员需要先把读取、写入、共享和撤销分开配置。\n\n以客户工单为例，可以先让 Claude 只读知识库和 CRM，生成回复草稿；写回客户记录或发送邮件前要求人工确认，并保留连接器、字段和版本记录。mcp 连接模型与外部工具，tools 承载具体操作，api 规定调用和返回，agent 推进多步任务，这些概念都不替代管理员权限。\n\nAnthropic 的公告支持连接器和工作流的产品说明，不代表所有账户都同时开放，也没有给出跨服务写入的安全结果或客户成效。企业仍要用测试账户和最小权限验收。\n\n后续可观察开放范围、连接器字段、审计日志和失败后的人工处理。",
+    "publishedAt": "2026-05-13",
+    "eventDate": "2026-05-13",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/anthropic-claude-small-business-connectors.svg",
+      "alt": "Anthropic 推出 Claude for Small Business，接入多种企业连接器；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/anthropic-claude-small-business-connectors.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "product",
+        "title": "这次发布把 Claude 接到了哪些地方",
+        "body": "Anthropic 将 Claude for Small Business 描述为连接器和现成工作流的组合，列出 QuickBooks、PayPal、HubSpot、Canva、DocuSign、Google Workspace、Microsoft 365 等服务。它还配套培训与合作计划。",
+        "kind": "narrative"
+      },
+      {
+        "id": "permissions",
+        "title": "连接器带来的是权限问题",
+        "body": "模型进入企业系统后，需要先决定能读取哪些资料、能写入哪些字段、谁批准发送或修改，以及怎样撤销访问。连接器越多，管理员越需要按服务和成员设置最小权限。",
+        "kind": "technical"
+      },
+      {
+        "id": "ticket-flow",
+        "title": "客户工单适合从只读试点开始",
+        "body": "先让 Claude 读取知识库和 CRM，生成回复草稿；人工确认后再写回记录或发送邮件，并保存连接器、字段和版本。mcp 负责连接，tools 执行动作，api 规定调用方式，agent 组织多步流程。",
+        "kind": "example"
+      },
+      {
+        "id": "availability",
+        "title": "产品说明没有给出上线效果",
+        "body": "发布页没有证明所有账户已经开放，也没有说明跨服务写入在每个组织都默认安全。客户成效、数据隔离和失败回退都需要企业自己验收。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-checks",
+        "title": "先查权限，再扩大自动化范围",
+        "body": "后续应查看成员权限、连接器字段、审计日志和失败后的人工处理，先用测试账户验证，再决定是否允许写入。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "agent-workflow",
+      "title": "用一张工单检查企业连接器的权限",
+      "question": "当 Claude 能读写多个 SaaS 系统时，怎样知道哪些动作真的被允许？",
+      "steps": [
+        {
+          "label": "列出数据和动作",
+          "detail": "把每个连接器能读取的资料、能写入的字段和可发送的动作分别列出。",
+          "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+        },
+        {
+          "label": "设置测试账户",
+          "detail": "先用最小权限和只读模式跑一段工作流，记录模型引用的文件和返回的字段。",
+          "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+        },
+        {
+          "label": "加人工批准点",
+          "detail": "写回客户记录、发邮件或修改账务前，要求指定成员确认并留下审计记录。",
+          "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+        },
+        {
+          "label": "测试撤销和失败",
+          "detail": "撤销某个连接器权限，观察任务如何停止、回退和通知负责人，再决定扩大范围。",
+          "evidence": "https://www.anthropic.com/news/claude-for-small-business"
+        }
+      ]
+    },
+    "source": {
+      "name": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-for-small-business"
+    },
+    "relatedSlugs": [
+      "mcp",
+      "tools",
+      "api",
+      "agent"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.anthropic.com/news/claude-for-small-business",
+        "claim": "Claude for Small Business 是连接器与 ready-to-run workflows 套件",
+        "excerpt": "Anthropic calls Claude for Small Business a package of connectors and ready-to-run workflows."
+      },
+      {
+        "url": "https://www.anthropic.com/news/claude-for-small-business",
+        "claim": "发布页列出 QuickBooks、PayPal、HubSpot 等连接器",
+        "excerpt": "The announcement lists connectors for QuickBooks, PayPal, HubSpot, Canva, DocuSign, Google Workspace and Microsoft 365."
+      }
+    ],
+    "canonicalUrl": "https://www.anthropic.com/news/claude-for-small-business",
+    "sourceHash": "sha256:454a430eaa41a8b8e0d88c5964e125330f9d233577a610ee6f2c87fe92383aed"
+  },
+  {
+    "slug": "apple-eu-dma-ai-rival-access",
+    "title": "苹果反对欧盟要求 Google 向 AI 竞争对手开放 Android 能力的草案",
+    "summary": "5 月 13 日，Reuters 报道苹果反对欧委会一份草案，草案拟要求 Google 向 AI 竞争服务开放与 Android 应用交互的系统能力。争议仍在政策和技术方案阶段，不是最终规则，也不等于 Google 已经开放具体接口。",
+    "body": "5 月 13 日，Reuters 报道苹果反对欧委会一份草案。草案拟要求 Google 向 AI 竞争服务开放与 Android 应用交互的系统能力，苹果认为这可能带来隐私、安全和可靠性风险。\n\n争议的中心是平台要开放什么，以及开放后由谁承担责任。一个 AI 助手如果能调用系统功能，需要有明确的接口、用户授权、身份认证和撤销机制；监管要求解决竞争问题，平台则会担心数据和安全边界。\n\n这些问题现在还停留在草案和回应之间。authorization 说明谁可以访问系统能力，api 说明可调用的功能和返回的数据，auth 处理应用、用户和平台的身份。它们可以帮助理解技术方案，但不能代替 DMA 正式文件。\n\n当前可核对的证据是一篇 Reuters 报道（页面由 Investing.com 刊载），不是欧委会草案或苹果原始文件；报道没有给出最终技术规格、兼容性测试、隐私安排或安全评估，也没有说明 Google 已经开放了 Android 接口。因此不能从一方反对草案，直接推导开放一定有害或一定会发生。\n\n后续要看欧委会最终措施、平台提交的接口方案、隐私测试和申诉程序，确认开放范围和责任分配。",
+    "publishedAt": "2026-05-13",
+    "eventDate": "2026-05-13",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/apple-eu-dma-ai-rival-access.svg",
+      "alt": "苹果反对欧盟要求 Google 向 AI 竞争对手开放 Android 能力的草案；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/apple-eu-dma-ai-rival-access.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "proposal",
+        "title": "草案想让 AI 服务接触 Android 能力",
+        "body": "Reuters 报道，欧委会草案涉及让竞争 AI 服务与 Android 应用交互；苹果对此提出隐私、安全和可靠性方面的担忧。草案内容和苹果回应是目前能确认的两层信息。",
+        "kind": "narrative"
+      },
+      {
+        "id": "access-model",
+        "title": "争议落在“开放到哪一层”",
+        "body": "如果 AI 助手可以调用系统功能，就要说明接口、用户授权、身份认证、数据范围和撤销方式。authorization、api 和 auth 分别对应这些控制点，技术上可行不等于监管上已经决定。",
+        "kind": "technical"
+      },
+      {
+        "id": "policy-status",
+        "title": "现在还没有一套已生效的接口方案",
+        "body": "当前可核对的是 Reuters 对草案与苹果回应的报道，未附最终技术规格、兼容性测试、隐私安排或安全评估，也没有说明 Google 已完成开放。苹果的反对意见不能单独证明草案一定会通过，或者开放一定有害。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-documents",
+        "title": "后续看欧委会文件和平台测试",
+        "body": "要判断影响，需要等最终措施、Google 的技术方案、隐私测试和申诉流程，分别核对开放范围和责任如何分配。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "把 Android 互操作争议拆成四份文件",
+      "question": "怎样从一方的政策回应读到最终接口和安全责任？",
+      "steps": [
+        {
+          "label": "确认当前状态",
+          "detail": "把报道标为欧委会草案与苹果回应，暂不写成最终规则或已开放接口。",
+          "evidence": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861"
+        },
+        {
+          "label": "列出技术要求",
+          "detail": "逐项写出可调用的功能、用户授权、身份认证、数据范围和撤销方式。",
+          "evidence": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861"
+        },
+        {
+          "label": "比较双方文件",
+          "detail": "分别阅读欧委会草案、苹果意见和 Google 后续方案，区分事实、担忧和技术承诺。",
+          "evidence": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861"
+        },
+        {
+          "label": "等待最终决定",
+          "detail": "以欧委会正式措施、隐私测试和申诉程序确认开放范围与责任，而不是用一篇报道代替。",
+          "evidence": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861"
+        }
+      ]
+    },
+    "source": {
+      "name": "Reuters",
+      "url": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861"
+    },
+    "relatedSlugs": [
+      "authorization",
+      "api",
+      "auth"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861",
+        "claim": "苹果警告草案会带来隐私、安全和安全性风险",
+        "excerpt": "Reuters reports Apple warned the proposed measures pose privacy, security and safety risks."
+      },
+      {
+        "url": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861",
+        "claim": "争议涉及让竞争 AI 服务与 Android 应用交互",
+        "excerpt": "The report describes proposed access for rival AI services to interact with Android apps."
+      }
+    ],
+    "canonicalUrl": "https://www.investing.com/news/stock-market-news/apple-criticises-eu-measures-to-help-ai-rivals-access-google-services-4684861",
+    "sourceHash": "sha256:58a16146c7404bd49ddbb14487181fddb172d33b70969d7e390b5b798de5056b"
+  },
+  {
+    "slug": "eu-coreper-digital-omnibus-ai-agreement",
+    "title": "欧盟成员国大使确认 AI 法《Digital Omnibus》临时协议",
+    "summary": "5 月 13 日，欧盟成员国大使在 Coreper 层确认 AI 法《Digital Omnibus》的临时协议，并授权主席团向欧洲议会确认。它是立法程序中的一个节点，后面仍有议会审议、理事会批准、公布和实施日期，尚未等同于最终法律生效。",
+    "body": "5 月 13 日，欧盟成员国大使组成的 Coreper 确认了 AI 法《Digital Omnibus》的临时协议。理事会文件同时说明，主席团可以向欧洲议会确认这份协议，并推进后续立法步骤。\n\nCoreper 的确认代表成员国政府在临时文本上形成了程序性共识。它没有把文本直接变成生效法律，也不等于企业当天就承担一套新的义务。后续还要看欧洲议会和理事会的正式动作、官方公报以及具体实施日期；正式公布后的生效日与开始适用日也可能不同，要以最终文本和公报为准。\n\n读这类消息，最容易混淆的是“达成协议”和“法律生效”。可以把状态依次记为临时协议、议会审议、理事会批准、正式公布和实施。每一步都可能改变文本、适用对象或时间表。data-lineage 用来追踪法规版本和实施文件，authorization 则帮助理解哪一个机构在程序中有权作出下一步决定。\n\n这份文件确认的是程序安排，不是对所有 AI 产品的合规结论。agent、execution-sandbox 等词条可以帮助读者理解未来可能涉及的系统和控制，但法律义务仍以最终文本和实施指南为准。\n\n后续应比较临时协议与最终文本，标出条款变化、适用范围、生效日期和执法机构。",
+    "publishedAt": "2026-05-13",
+    "eventDate": "2026-05-13",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/eu-coreper-digital-omnibus-ai-agreement.svg",
+      "alt": "欧盟成员国大使确认 AI 法《Digital Omnibus》临时协议；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/eu-coreper-digital-omnibus-ai-agreement.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "coreper",
+        "title": "5 月 13 日确认的是临时协议",
+        "body": "理事会文件记录，Coreper 认可了《Digital Omnibus》的临时协议，并授权主席团向欧洲议会确认。这是成员国代表在程序中的一次确认，文本仍要走后续立法环节。",
+        "kind": "narrative"
+      },
+      {
+        "id": "legislative-status",
+        "title": "协议、通过和生效各有一个日期",
+        "body": "临时协议之后还有欧洲议会审议、理事会批准、官方公报和实施日期。期间可能发生文本修改；法律生效日和实际开始适用日也要分别核对，不能把大使确认写成已执行的规则。",
+        "kind": "technical"
+      },
+      {
+        "id": "trace-documents",
+        "title": "读法规要沿着版本走",
+        "body": "data-lineage 可以记录临时文本、议会文件、理事会决定和实施指南的出处；authorization 对应各机构在程序中的权限。agent 和 execution-sandbox 只是帮助理解未来可能受约束的系统，不能替代法律文本。",
+        "kind": "example"
+      },
+      {
+        "id": "what-remains",
+        "title": "下一步等正式文本和实施日期",
+        "body": "目前可以确认的是程序节点和下一步安排。要判断具体义务，需查看最终通过的文本、官方公报、适用对象和实施指南。",
+        "kind": "boundary"
+      }
+    ],
+    "explainer": {
+      "variant": "policy-governance",
+      "title": "跟踪一项欧盟 AI 法规从协议到生效",
+      "question": "怎样知道 Coreper 的确认离企业实际承担义务还有多远？",
+      "steps": [
+        {
+          "label": "固定当前状态",
+          "detail": "把 5 月 13 日标为 Coreper 确认临时协议，并保留理事会文件版本和日期。",
+          "evidence": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf"
+        },
+        {
+          "label": "追踪后续机构",
+          "detail": "依次查欧洲议会审议、理事会批准和主席团确认，记录文本是否改动。",
+          "evidence": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf"
+        },
+        {
+          "label": "等待正式公布",
+          "detail": "以官方公报和实施日期为准，确认哪些条款、哪些系统和哪些地区实际适用。",
+          "evidence": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf"
+        },
+        {
+          "label": "再看实施指南",
+          "detail": "把最终文本和实施指南放在一起，才能判断企业需要怎样调整产品和流程。",
+          "evidence": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf"
+        }
+      ]
+    },
+    "source": {
+      "name": "Council of the European Union",
+      "url": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf"
+    },
+    "relatedSlugs": [
+      "agent",
+      "authorization",
+      "data-lineage",
+      "execution-sandbox"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf",
+        "claim": "Coreper 于 5 月 13 日认可临时协议",
+        "excerpt": "The Council document says the Permanent Representatives Committee endorsed the provisional agreement on May 13, 2026."
+      },
+      {
+        "url": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf",
+        "claim": "文件授权向欧洲议会确认并安排后续通过",
+        "excerpt": "The document describes authorizing the presidency to confirm the agreement and the next legislative steps."
+      }
+    ],
+    "canonicalUrl": "https://data.consilium.europa.eu/doc/document/ST-9834-2026-INIT/en/pdf",
+    "sourceHash": "sha256:50fa48f3df25aa445a45be5abe24793dde178ad8e0d211e7e95890e863a95d1f"
+  },
+  {
+    "slug": "openai-tanstack-npm-supply-chain-attack",
+    "title": "OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备",
+    "summary": "5 月 13 日，OpenAI 披露 TanStack npm 供应链攻击在 5 月 11 日 UTC 影响了两台员工设备，有限的内部凭据材料被外泄。OpenAI 表示尚未发现用户数据、生产系统、知识产权或已发布软件受到影响；这份披露是调查时点的范围说明，受影响依赖方仍需独立检查。",
+    "body": "5 月 13 日，OpenAI 披露 TanStack npm 供应链攻击在 5 月 11 日 UTC 影响了两台员工设备，有限的内部凭据材料被外泄。截至这份披露的调查时点，公司表示没有发现用户数据、生产系统、知识产权或已发布软件被改动的证据。\n\n供应链事故不能只看“有没有用户数据泄露”。需要分别查依赖包是否被篡改、哪些设备执行过它、凭据是否被使用，以及开发环境和生产环境之间有没有可达路径。一台员工设备受影响，不自动等于生产环境被入侵；“未发现”也不等于所有下游项目已经完成排查。\n\n把一次构建放进安全响应流程，团队应锁定依赖版本和哈希，在隔离环境安装，保留构建来源；异常出现后轮换凭据、阻断发布，并沿着仓库、流水线和下游项目继续检查。execution-sandbox 隔离依赖执行，data-lineage 追踪包、构建和发布来源，auth 管理凭据身份，authorization 规定谁能安装、发布、轮换或撤销。\n\nOpenAI 的公告支持调查时点和已知影响范围，不披露攻击者身份、所有下游软件状态或长期影响。因此，判断风险是否关闭还需要锁文件、构建日志、凭据轮换记录、依赖维护者通告和后续修复。",
+    "publishedAt": "2026-05-13",
+    "eventDate": "2026-05-13",
+    "isExample": false,
+    "hero": {
+      "url": "/images/news/openai-tanstack-npm-supply-chain-attack.svg",
+      "alt": "OpenAI 披露 TanStack npm 供应链攻击影响两名员工设备；VibePolaris 自制事件示意图",
+      "sourceUrl": "/images/news/openai-tanstack-npm-supply-chain-attack.svg",
+      "license": "VibePolaris 自制 SVG · CC BY 4.0",
+      "credit": "VibePolaris"
+    },
+    "sections": [
+      {
+        "id": "disclosure",
+        "title": "OpenAI 目前披露了哪一层影响",
+        "body": "公司称两台员工设备受影响，有限的内部凭据材料被外泄；同时表示未发现用户数据、生产系统、知识产权或已发布软件受到影响。这里的“未发现”是调查时点的结论，需和后续独立检查分开。",
+        "kind": "narrative"
+      },
+      {
+        "id": "supply-chain",
+        "title": "依赖包、设备和生产系统要分开查",
+        "body": "供应链响应至少要追踪包版本、执行过它的设备、使用过的凭据，以及开发环境通往生产环境的权限。员工设备受影响不等于生产系统已入侵，但也不能只看用户数据一项就结束排查。",
+        "kind": "technical"
+      },
+      {
+        "id": "build-response",
+        "title": "一次异常构建怎样被控制",
+        "body": "先锁定依赖版本和哈希，在 execution-sandbox 中复现并保存构建来源；随后轮换凭据、阻断发布、检查仓库和下游项目。data-lineage 追踪来源，auth 和 authorization 负责凭据与动作权限。",
+        "kind": "example"
+      },
+      {
+        "id": "known-unknowns",
+        "title": "调查公告没有回答长期影响",
+        "body": "公告没有披露攻击者身份、所有下游软件状态或长期影响，也不替受影响依赖方完成独立检查。后续要等锁文件、构建日志、凭据轮换和维护者通告。",
+        "kind": "boundary"
+      },
+      {
+        "id": "next-checks",
+        "title": "风险是否关闭，要看修复记录",
+        "body": "继续查看受影响包版本、修复公告、凭据轮换和下游项目确认，避免把一次公司披露当成整个生态已经安全。",
+        "kind": "aside"
+      }
+    ],
+    "explainer": {
+      "variant": "data-leak",
+      "title": "沿着依赖包追踪一次供应链事故",
+      "question": "怎样区分员工设备受影响、凭据外泄和生产系统被入侵？",
+      "steps": [
+        {
+          "label": "锁定依赖版本",
+          "detail": "保存 lockfile、包哈希和构建时间，确认哪些项目安装过受影响版本。",
+          "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+        },
+        {
+          "label": "列出执行设备",
+          "detail": "查哪些开发设备和 CI 任务实际运行过该包，比较它们能访问的仓库和网络。",
+          "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+        },
+        {
+          "label": "轮换并审计凭据",
+          "detail": "撤销可能暴露的密钥，检查使用记录和授权范围，保留处理时间。",
+          "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+        },
+        {
+          "label": "确认下游修复",
+          "detail": "查看生产系统、已发布软件和依赖维护者的独立通告，直到每一层都有记录。",
+          "evidence": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+        }
+      ]
+    },
+    "source": {
+      "name": "OpenAI",
+      "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/"
+    },
+    "relatedSlugs": [
+      "execution-sandbox",
+      "data-lineage",
+      "auth",
+      "authorization"
+    ],
+    "relatedArticleSlugs": [],
+    "sources": [
+      {
+        "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+        "claim": "OpenAI 称两台员工设备受影响、有限凭据材料被外泄",
+        "excerpt": "OpenAI says two employee devices were impacted and only limited credential material was exfiltrated."
+      },
+      {
+        "url": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+        "claim": "公司称未发现用户数据、生产系统或发布软件被改动",
+        "excerpt": "OpenAI says it found no evidence of user data, production systems, intellectual property or published software being affected."
+      }
+    ],
+    "canonicalUrl": "https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/",
+    "sourceHash": "sha256:7ee696609fe6b6c25708b464643aa4a5d3c22c13da0b7b28d529140a9f1b7c58"
+  },
+  {
     "slug": "chatgpt-more-web-images-free-users",
     "title": "ChatGPT 向免费用户扩大回答中的网页图片展示",
     "summary": "5 月 12 日，OpenAI 更新说明称，ChatGPT 免费用户将在回答中看到更多来自网页的内联图片，先在 Web 和 iOS 的 5.5-Instant 回答中 rollout，并可打开原图查看来源。功能说明没有保证每个回答都有图片，也没有保证图片与文字上下文始终准确。",
