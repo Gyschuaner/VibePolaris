@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, Gear, GitCommit, GitBranch, Graph, Handshake, ListMagnifyingGlass, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Bug, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, Gear, GitCommit, GitBranch, Graph, GridFour, Handshake, ListMagnifyingGlass, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -173,6 +173,34 @@ export function AssertionSignatureHero() {
         <div className={styles.expectedRows}><div><span>Expected</span><code>{target === "visible" ? "visible" : 'text="保存完成"'}</code></div><div><span>Received</span><code>{done ? target === "visible" ? "visible" : 'text="保存完成"' : "hidden"}</code></div></div>
         <div className={styles.timeoutTag}><Clock size={14} aria-hidden="true" />{failed ? "5s · timeout" : scene.step >= 2 ? "条件已满足" : "5s 上限"}</div>
       </div>
+    </div>
+  </SignatureFrame>;
+}
+
+const coverageSteps = ["铺开条件", "跑一条成功路", "看见亮行", "补上盲分支"];
+
+export function CodeCoverageSignatureHero() {
+  const scene = useScene(coverageSteps.length);
+  const [coverBranch, setCoverBranch] = useState(true);
+  const branchFound = scene.step >= 3 && coverBranch;
+  const failed = scene.step === 3 && !coverBranch;
+  const choose = (next: boolean) => { setCoverBranch(next); scene.seek(0); };
+  const cells = [["T", "T", "20 岁 · 已验证"], ["T", "F", "20 岁 · 未验证"], ["F", "T", "17 岁 · 已验证"], ["F", "F", "17 岁 · 未验证"]];
+  const status = failed
+    ? { icon: Bug, title: "盲分支放行了风险", detail: "行已经亮着，但 verified=false 没有被行为断言拦住", danger: true }
+    : scene.step === 3
+      ? { icon: CheckCircle, title: "覆盖地图补齐", detail: "TF 路径被执行，接下来仍要检查拒绝结果" }
+      : { icon: scene.step < 2 ? GridFour : scene.step === 2 ? Check : Bug, title: coverageSteps[scene.step], detail: scene.step === 0 ? "一行判断拆成四种输入组合" : scene.step === 1 ? "一次成功输入只点亮一格" : "执行过不等于行为正确" };
+  return <SignatureFrame scene={scene} label="代码覆盖率把一个复合条件拆成可见输入组合和行为盲区" eyebrow="地图告诉你走过哪里，不替你判定对错" meta="line ≠ branch ≠ behavior" steps={coverageSteps} status={status} caption="覆盖率是测试执行留下的地图。它能指出没走过的路径，真正的业务结论仍要由断言和风险来决定。" controls={<div className={styles.choiceRow} role="group" aria-label="选择是否补上未验证分支"><button type="button" aria-pressed={coverBranch} onClick={() => choose(true)}>补 TF 分支</button><button type="button" aria-pressed={!coverBranch} onClick={() => choose(false)}>只跑 TT</button></div>}>
+    <div className={styles.coverageBoard} data-branch={coverBranch} data-failed={failed}>
+      <div className={styles.coverageCode} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><Code size={16} aria-hidden="true" />一行判断</span><code><b>if</b> (age &gt;= 18<br />&nbsp;&nbsp;&amp;&amp; verified)</code><small>行覆盖只问：这行有没有被执行。</small></div>
+      <div className={styles.coverageGridWrap}>
+        <div className={styles.coverageGridTitle}><span><GridFour size={16} aria-hidden="true" />条件棋盘</span><code>{scene.step < 1 ? "0 / 4" : branchFound ? "2 / 4" : "1 / 4"}</code></div>
+        <div className={styles.coverageGrid}>{cells.map(([age, verified, label], index) => { const on = scene.step >= 1 && (index === 0 || (index === 1 && branchFound)); return <div key={label} className={styles.coverageCell} data-on={on} data-hole={index === 1 && failed}><span>{age}{verified}</span><small>{label}</small>{on ? <Check size={14} aria-hidden="true" /> : index === 1 && failed ? <Bug size={14} aria-hidden="true" /> : null}</div>; })}</div>
+        <small className={styles.gridNote}>{scene.step < 1 ? "先看见隐藏的组合" : branchFound ? "行亮了，TF 也被走到" : "行亮了，TF 仍是空白"}</small>
+      </div>
+      <div className={styles.coverageReport} data-danger={failed}>
+        <span className={styles.label}><ChartLineUp size={16} aria-hidden="true" />报告</span><div className={styles.coverageMetric}><span>行</span><strong>{scene.step >= 1 ? "100%" : "—"}</strong></div><div className={styles.coverageMetric}><span>分支</span><strong>{scene.step < 1 ? "—" : branchFound ? "100%" : "50%"}</strong></div><div className={styles.coverageProof}>{failed ? "行为断言：应拒绝，却被放行" : branchFound ? "下一步：断言结果和副作用" : "空白本身就是下一道题"}</div></div>
     </div>
   </SignatureFrame>;
 }

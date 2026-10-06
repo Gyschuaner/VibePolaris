@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { codeCoverageSources } from "@/lib/code-coverage-sources";
-import { CodeCoverageHero } from "./code-coverage-hero";
+import { CodeCoverageSignatureHero as CodeCoverageHero } from "../TestSecuritySignatureHeroes";
 import { CodeCoverageLesson } from "./code-coverage";
 
 const sections: [string, string][] = [
