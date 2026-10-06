@@ -39,6 +39,25 @@
 .routeTargets > div small { grid-column: 2; }
 .routeTargets > div[data-active="true"] { opacity: 1; border-color: var(--accent-text); background: var(--tint); transform: translateX(-4px); }
 
+.manifestToggles { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.manifestToggles button { padding: 5px 8px; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 999px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
+.manifestToggles button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.manifestBoard { display: grid; grid-template-columns: 1fr 1.45fr .85fr; align-items: center; min-height: 166px; gap: 8px; }
+.manifestFile, .manifestSystem { display: grid; align-content: center; gap: 6px; min-height: 130px; padding: 12px; border-radius: 15px; background: color-mix(in srgb, var(--paper) 76%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+.manifestFile svg, .manifestSystem svg { color: var(--accent-text); }
+.manifestFile strong { font-size: 14px; }
+.manifestFile span, .manifestFile b, .manifestSystem span { color: var(--muted); font-size: 9px; }
+.manifestFile b { color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.manifestPorts { display: grid; gap: 6px; }
+.manifestPorts > div { display: grid; grid-template-columns: .7fr 1fr auto; gap: 7px; align-items: center; padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent); border-radius: 9px; background: color-mix(in srgb, var(--surface) 72%, transparent); transition: .35s; }
+.manifestPorts span, .manifestPorts i { color: var(--muted); font-size: 9px; }
+.manifestPorts strong { font-size: 10px; }
+.manifestPorts i { font-style: normal; color: var(--accent-text); }
+.manifestPorts > div[data-missing="true"] { border-color: #a55c54; background: #f3d8d0; }
+.manifestPorts > div[data-missing="true"] i { color: #a55c54; }
+.manifestSystem { background: color-mix(in srgb, #e6efdf 68%, var(--surface)); }
+.manifestSystem strong { color: var(--accent-text); font-size: 11px; line-height: 1.35; }
+
 @media (max-width: 760px) {
   .hero { padding: 12px; border-radius: 17px; }
   .canvas { min-height: 0; }
@@ -49,6 +68,9 @@
   .deepLinkBoard { grid-template-columns: 1fr; min-height: 0; }
   .routeTargets { grid-template-columns: repeat(3, 1fr); }
   .routeTargets > div { min-height: 72px; }
+  .manifestBoard { grid-template-columns: 1fr; min-height: 0; }
+  .manifestFile, .manifestSystem { min-height: 82px; }
+  .manifestToggles { justify-content: flex-start; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
