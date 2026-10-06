@@ -8,11 +8,19 @@ import type { ChatMessage, ContextUsage, ConversationDetail, ConversationSummary
 import { Transcript, ContextMeter } from "./Transcript";
 import { XiaobeiStar } from "./XiaobeiStar";
 
+const HISTORY_REQUEST_TIMEOUT = 12_000;
 async function readHistory<T>(query = ""): Promise<T> {
-  const response = await fetch(`/api/xiaobei/conversations${query}`, { cache: "no-store" });
-  const data = await response.json();
-  if (!response.ok) throw Object.assign(new Error(data.error || "暂时无法加载对话。"), { status: response.status });
-  return data;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), HISTORY_REQUEST_TIMEOUT);
+  try {
+    const response = await fetch(`/api/xiaobei/conversations${query}`, { cache: "no-store", signal: controller.signal });
+    const data = await response.json();
+    if (!response.ok) throw Object.assign(new Error(data.error || "暂时无法加载对话。"), { status: response.status });
+    return data;
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error("历史对话加载超时，请重试。");
+    throw error;
+  } finally { clearTimeout(timeout); }
 }
 function historyTime(timestamp: number) {
   const date = new Date(timestamp);
@@ -94,18 +102,24 @@ export function Xiaobei({ termNames, newsNames }: { termNames: Record<string, st
     if (!owner || loadedScope.current === owner) return;
     loadedScope.current = owner; setLoading(true);
     try {
-      const items = await loadHistory();
-      if (scopeRef.current !== owner) return;
       let saved: string | null = null;
       try { saved = localStorage.getItem(`vp-xiaobei-current:${owner}`); } catch { /* Use the most recent conversation. */ }
-      const id = saved ?? items[0]?.id;
-      if (id) {
-        try { await loadConversation(id); }
-        catch (error) {
-          if ((error as { status?: number }).status !== 404) throw error;
-          if (items[0]) await loadConversation(items[0].id);
-          else remember("");
-        }
+      // The selected conversation and the list are independent requests. Start
+      // both together so reopening an existing chat does not pay two network
+      // round trips before showing its content.
+      let selectedError: unknown = null;
+      const selectedRequest = saved
+        ? loadConversation(saved).catch(error => { selectedError = error; })
+        : null;
+      const items = await loadHistory();
+      if (scopeRef.current !== owner) return;
+      if (selectedRequest) await selectedRequest;
+      if (selectedError) {
+        if ((selectedError as { status?: number }).status !== 404) throw selectedError;
+        if (items[0]) await loadConversation(items[0].id);
+        else remember("");
+      } else if (!saved && items[0]) {
+        await loadConversation(items[0].id);
       }
     } catch (error) {
       if (scopeRef.current === owner) { loadedScope.current = ""; setError(error instanceof Error ? error.message : "暂时无法加载历史对话。"); }

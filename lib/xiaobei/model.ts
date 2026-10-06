@@ -40,8 +40,11 @@ export async function callModel(options: {
   const input = options.projectedTokens ?? estimateTokens({ messages, tools: options.tools });
   const wantedOutput = CONTEXT_WINDOW - input;
   if (wantedOutput < 256) throw new XiaobeiError("本次上下文已接近 256K，无法容纳回答。会话已保留，可减少内容或新建对话。", 413);
-  // UTF-8 bytes conservatively reserve billable input; cache discounts settle afterwards.
-  const inputBound = Buffer.byteLength(JSON.stringify({ messages, tools: options.tools }), "utf8") + messages.length * 32 + 1024;
+  // Reserve in token units. Treating UTF-8 bytes as tokens made pending
+  // balances look roughly three times smaller for Chinese input; the final
+  // settlement already uses the provider's token usage.
+  const serializedBytes = Buffer.byteLength(JSON.stringify({ messages, tools: options.tools }), "utf8");
+  const inputBound = Math.max(input, Math.ceil(serializedBytes / 3)) + messages.length * 32 + 1024;
   const reservation = store.reserve(identity, run, inputBound, wantedOutput);
   let dispatched = false;
   let usage: Usage | null = null;

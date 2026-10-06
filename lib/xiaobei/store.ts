@@ -152,13 +152,14 @@ export class XiaobeiStore {
     return state;
   }
   getConversation(identity: HistoryIdentity, id: string, now = Date.now()): ConversationDetail {
-    return this.transaction(() => {
-      this.checkIdentity(identity, now);
-      const row = this.conversationRow(identity, id, now);
-      if (!row) throw new XiaobeiError("找不到这段对话。", 404);
-      const state = this.recoverConversation(row);
-      return { ...this.conversationSummary(row), messages: state.messages, context: state.context };
-    });
+    // History reads are frequent while a remote run is streaming. A write
+    // transaction here makes every poll compete with the agent's checkpoints;
+    // recovery itself performs one conditional update only when a lease expired.
+    this.checkIdentity(identity, now);
+    const row = this.conversationRow(identity, id, now);
+    if (!row) throw new XiaobeiError("找不到这段对话。", 404);
+    const state = this.recoverConversation(row);
+    return { ...this.conversationSummary(row), messages: state.messages, context: state.context };
   }
   beginConversation(identity: HistoryIdentity, id: string, run: string, text: string, page: string, continuing: boolean, now = Date.now()): ConversationState {
     return this.transaction(() => {

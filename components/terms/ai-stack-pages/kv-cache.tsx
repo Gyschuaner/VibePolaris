@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { kvCacheSources } from "@/lib/ai-stack-concept-sources/kv-cache";
-import { KvCacheHero } from "../ai-stack-lessons/kv-cache-hero";
+import { KvCacheSignatureHero } from "../AiStackSignatureHeroes";
 import { KvCacheLesson } from "../ai-stack-lessons/kv-cache";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function KvCacheTermPage() {
-  return <Article slug="kv-cache" title="KV Cache" subtitle="KV Cache · 保存注意力中间状态，减少生成时的重复计算" sources={kvCacheSources} sections={sections} hero={<KvCacheHero />} intro={<>模型逐 token 生成时，前面那一大段上下文不会突然变成废纸。KV cache 把注意力已经算出的 key 和 value 留在手边，下一步只带新的 query 来取。它像一套有位置的书签：能让重复计算少一点，却不负责记住模型权重，也不负责证明答案正确。</>}>
+  return <Article slug="kv-cache" title="KV Cache" subtitle="KV Cache · 保存注意力中间状态，减少生成时的重复计算" sources={kvCacheSources} sections={sections} hero={<KvCacheSignatureHero />} intro={<>模型逐 token 生成时，前面那一大段上下文不会突然变成废纸。KV cache 把注意力已经算出的 key 和 value 留在手边，下一步只带新的 query 来取。它像一套有位置的书签：能让重复计算少一点，却不负责记住模型权重，也不负责证明答案正确。</>}>
     <ArticleSection id="kv-cache-prefix" title="先把一段前缀放进抽屉">
       <p>第一次处理一段对话前缀时，模型要为每一层注意力计算相关的中间状态。下一 token 到来后，如果每次都从第一格重新算，前面已经做过的乘法会反复出现。KV cache 的出发点很朴素：把仍然会用到的 K 和 V 放在可以按位置取回的抽屉里。</p>
       <p id="kv-cache-recompute" className="vp-citation-target">Hugging Face 的 caching 说明用自回归生成解释了这份重复工作：预测更靠后的 token 时，旧上下文对应的注意力计算会再次参与；缓存此前 token 的 key/value，就能在后续步骤复用，而不用重新计算那一段。<Cite id="kv-cache-recompute" sources={kvCacheSources} /></p>
