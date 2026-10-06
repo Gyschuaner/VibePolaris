@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, ClipboardText, Eye, GitCommit, GitBranch, Graph, PaperPlaneTilt, ShieldWarning, TestTube, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, ClipboardText, Code, Database, Eye, Gear, GitCommit, GitBranch, Graph, Handshake, ListMagnifyingGlass, PaperPlaneTilt, Robot, ShieldWarning, TestTube, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -103,6 +103,43 @@ export function TestCaseSignatureHero() {
         <div className={styles.assertionList}><span>HTTP <strong>{runnable ? "410" : "—"}</strong></span><span>token <strong>{runnable ? "未消费" : "—"}</strong></span><span>邮件 <strong>{runnable ? "0 封" : "—"}</strong></span></div>
         <div className={styles.evidenceSeal} data-danger={failed}>{failed ? "NOT RUNNABLE" : scene.step === 4 && precise ? "PASS ×2" : "尚未判定"}</div>
         <small>{failed ? "预期缺口挡在执行前" : scene.step === 4 && precise ? "清理后仍能得到同一结论" : "结果要落在系统真的会留下的事实"}</small>
+      </div>
+    </div>
+  </SignatureFrame>;
+}
+
+const mockSteps = ["接上支付", "控制回执", "记下调用", "替换实现"];
+
+export function MockSignatureHero() {
+  const scene = useScene(mockSteps.length);
+  const [oracle, setOracle] = useState<"behavior" | "interaction">("behavior");
+  const [double, setDouble] = useState<"mock" | "fake">("mock");
+  const final = scene.step === mockSteps.length - 1;
+  const stale = final && oracle === "interaction" && double === "mock";
+  const unsupported = final && oracle === "interaction" && double === "fake";
+  const choose = (next: () => void) => { next(); scene.seek(0); };
+  const status = stale
+    ? { icon: WarningCircle, title: "旧交互失配", detail: "Mock 还在等待 charge ×1，业务结果本身仍是 paid", danger: true }
+    : unsupported
+      ? { icon: Eye, title: "没有调用回执", detail: "Fake 跑过契约，但不能回答 charge 是否被调用" }
+      : { icon: scene.step === 0 ? Handshake : scene.step === 1 ? Robot : scene.step === 2 ? ListMagnifyingGlass : CheckCircle, title: mockSteps[scene.step], detail: scene.step < 2 ? "隔离真实支付，把难触发结果先变得可控" : "把业务结果和协作细节分别放在证据里" };
+  return <SignatureFrame scene={scene} label="Mock 通过可控替身隔离支付依赖并记录调用边界" eyebrow="替身是接缝，不是另一套真实支付" meta="isolate ≠ imitate" steps={mockSteps} status={status} caption="Mock 让测试稳定碰到拒绝、超时等分支；它留下的调用记录有用，但不自动等于业务契约。" controls={<div className={styles.choiceGrid} role="group" aria-label="选择测试观察方式和替身"><div><span>测试看什么</span><button type="button" aria-pressed={oracle === "behavior"} onClick={() => choose(() => setOracle("behavior"))}>订单结果</button><button type="button" aria-pressed={oracle === "interaction"} onClick={() => choose(() => setOracle("interaction"))}>调用细节</button></div><div><span>依赖替身</span><button type="button" aria-pressed={double === "mock"} onClick={() => choose(() => setDouble("mock"))}>Mock · 记调用</button><button type="button" aria-pressed={double === "fake"} onClick={() => choose(() => setDouble("fake"))}>Fake · 跑契约</button></div></div>}>
+    <div className={styles.mockBoard} data-double={double} data-stale={stale} data-incomplete={unsupported}>
+      <div className={styles.mockSocket} data-active={scene.step === 0} data-done={scene.step > 0}>
+        <span className={styles.label}><Code size={16} aria-hidden="true" />被测对象</span><strong>Checkout</strong><code>pay(order, card)</code><small>{scene.step < 1 ? "PaymentGateway 还在边界外" : "只观察订单最终处于什么状态"}</small>
+      </div>
+      <div className={styles.plug} aria-hidden="true"><span /><ArrowRight size={18} /></div>
+      <div className={styles.mockReplacement} data-active={scene.step >= 0 && scene.step <= 2}>
+        <span className={styles.label}><Robot size={16} aria-hidden="true" />{double === "mock" ? "Mock" : "Fake"} · 替身</span><strong>{double === "mock" ? "Payment Mock" : "Payment Fake"}</strong>
+        <div className={styles.mockReceipt}><span>回执</span><b>{scene.step >= 1 ? "declined → paid" : "等待"}</b></div><div className={styles.mockReceipt}><span>{double === "mock" ? "调用" : "契约"}</span><b>{scene.step >= 2 ? (double === "mock" ? "已记录" : "已执行") : "—"}</b></div>
+      </div>
+      <div className={styles.plug} aria-hidden="true"><span /><ArrowRight size={18} /></div>
+      <div className={styles.mockImplementation} data-active={scene.step >= 2} data-done={scene.step > 2}>
+        <span className={styles.label}><Gear size={16} aria-hidden="true" />内部实现</span><strong>{scene.step >= 3 ? "authorize → capture" : "charge()"}</strong><code>{scene.step >= 3 ? "2 calls · same outcome" : "1 call · old shape"}</code><small>{scene.step >= 3 ? "实现拆开，订单不变" : "旧期待可能锁住了形状"}</small>
+      </div>
+      <div className={styles.plug} aria-hidden="true"><span /><ArrowRight size={18} /></div>
+      <div className={styles.mockVerdict} data-active={final} data-danger={stale} data-incomplete={unsupported}>
+        <span className={styles.label}>{stale ? <WarningCircle size={16} aria-hidden="true" /> : unsupported ? <Eye size={16} aria-hidden="true" /> : <Database size={16} aria-hidden="true" />}测试信号</span><strong>{stale ? "FAIL · charge ×0" : unsupported ? "N/A · no log" : final ? "PASS · order=paid" : "等待"}</strong><small>{stale ? "旧调用名红了，不能直接推断业务坏了" : unsupported ? "Fake 没有 Mock 的调用期待" : final ? (double === "fake" ? "真实度回到更高一层" : "受控依赖让分支稳定" ) : "先让替身完成它的工作"}</small>
       </div>
     </div>
   </SignatureFrame>;
