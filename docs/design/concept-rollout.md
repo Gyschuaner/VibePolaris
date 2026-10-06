@@ -56,7 +56,7 @@
 | 057 | 数据接入、数据管道、数据转换、数据验证、数据血缘、流处理、单元测试、集成测试、端到端测试、冒烟测试 | VBP-087 · [数据流与测试边界机制矩阵](VBP-087-mechanism-matrix.md) · 十条逐条重做、review、dev 集成及生产统一发布 |
 | 058 | 回归测试、测试用例、模拟对象、断言、测试覆盖率、API 测试、最小权限、哈希、输入校验、静态加密 | VBP-088 · [测试证据与安全边界机制矩阵](VBP-088-mechanism-matrix.md) · 十条逐条重做、review、dev 集成及生产统一发布 |
 | 059 | 运行时、包管理、TypeScript、MVP、用户流程、线框图、信息架构、原型、设计系统、无障碍 | VBP-089 · [产品与技术基础词条机制差异表](VBP-089-mechanism-matrix.md) · 十条逐条重做、唯一 reviewer 已 PASS，生产已发布 |
-| 060 | 语义化 HTML、深度链接、应用清单、仿真器、代码签名、手势、触觉反馈、触控目标、离线优先、自适应布局 | VBP-090 · [前端与交互机制差异表](VBP-090-mechanism-matrix.md) · 十条逐条重做、唯一 reviewer 已 PASS，待统一生产发布 |
+| 060 | 语义化 HTML、深度链接、应用清单、仿真器、代码签名、手势、触觉反馈、触控目标、离线优先、自适应布局 | VBP-090 · [前端与交互机制差异表](VBP-090-mechanism-matrix.md) · 十条逐条重做、唯一 reviewer 已 PASS，生产已发布 |
 
 后续按全站目标继续选择未处理词条，数量以用户当次明确要求为准，仍需先检查现状和一手资料。当前新流程已完成 175 页，另有 9 页历史基准；其余 117 页待处理，新增候选不计入完成数。
 
@@ -130,16 +130,16 @@
 | prototype | 原型 | 产品与设计 | VBP-089 · 生产已发布 |
 | design-system | 设计系统 | 产品与设计 | VBP-089 · 生产已发布 |
 | a11y | 无障碍 | 产品与设计 | VBP-089 · 生产已发布 |
-| semantic-html | 语义化 HTML | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| deep-link | 深度链接 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| app-manifest | 应用清单 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| emulator | 仿真器 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| code-signing | 代码签名 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| gesture | 手势 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| haptic-feedback | 触觉反馈 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| touch-target | 触控目标 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| offline-first | 离线优先 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
-| adaptive-layout | 自适应布局 | 前端 | VBP-090 · 本批逐条 review 通过，待统一生产发布 |
+| semantic-html | 语义化 HTML | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| deep-link | 深度链接 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| app-manifest | 应用清单 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| emulator | 仿真器 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| code-signing | 代码签名 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| gesture | 手势 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| haptic-feedback | 触觉反馈 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| touch-target | 触控目标 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| offline-first | 离线优先 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
+| adaptive-layout | 自适应布局 | 前端 | VBP-090 · 十条逐条 review 通过，生产已发布 |
 | safe-area | 安全区域 | 前端 | 待处理 |
 | app-lifecycle | 应用生命周期 | 前端 | 待处理 |
 | app-permission | 应用权限 | 前端 | 待处理 |
