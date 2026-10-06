@@ -5,6 +5,7 @@ import { BenchmarkLesson, GraderLesson, EvalDatasetLesson, EvaluationRunLesson, 
 import { benchmarkSources, graderSources, evalDatasetSources, evaluationRunSources, gradingRubricSources, regressionEvaluationSources, safetyEvaluationSources, costEvaluationSources, latencyEvaluationSources, humanGraderSources, modelGraderSources, passFailGraderSources, contextOverflowSources } from '@/lib/assessment-sources';
 import base from './EventConcepts.module.css';
 import s from './AssessmentConcepts.module.css';
+import { ContextOverflowSignatureHero, ModelGraderSignatureHero, RegressionEvaluationSignatureHero } from './AiStackSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function BenchmarkTermPage() {
@@ -166,7 +167,7 @@ export function RegressionEvaluationTermPage() {
   return <ConceptArticle slug="regression-evaluation" title="回归评测" subtitle="Regression Evaluation · 改动后检查原来通过的能力是否退回" sources={regressionEvaluationSources}
     sections={[['regression-definition', '先把“回退”说清楚'], ['regression-diff', '逐项比较基线和候选'], ['regression-gate', '关键失败可以阻断发布'], ['regression-boundary', '题集和证据的边界']]}
     intro={<>回归评测用一套固定任务比较旧版本和新版本，专门找出“以前做对、现在做错”的变化。新版本总分变高，只能说明某些题的结果变好；它不能自动证明原来的关键行为都还在。</>}
-    hero={<ConceptHero slug="regression-evaluation" label="同一题集上比较基线与候选：总通过数增加，但关键行为回退时仍然阻断"><div className={s.regressionHero}><div className={s.regressionHeroHeader}><span>suite-v1 · 20 条任务</span><span>关键失败 <strong>1</strong></span></div><div className={s.regressionHeroCompare}><div><span>基线 · agent-B</span><strong>17/20</strong><small>关键项全通过</small></div><b aria-hidden="true">→</b><div data-regression="true"><span>候选 · agent-C</span><strong>18/20</strong><small>refund-condition 失败</small></div></div><div className={s.regressionHeroGate}><span>发布门槛</span><strong>阻断</strong><small>关键失败必须为 0</small></div></div></ConceptHero>}>
+    hero={<RegressionEvaluationSignatureHero/>}>
     <ArticleSection id="regression-definition" title="先把“回退”说清楚"><Legacy slug="regression-evaluation" names={['question', 'definition']}/>
       <p id="regression-definition-detail" className="vp-citation-target"><strong>回归评测是在相同题集、输入约定和评分规则下，把基线版本与候选版本逐项对照。</strong>OpenAI 的评测指南把评测对象、数据集、评分器和运行结果作为可追溯的记录；这里的“回归”特指改动后原先通过的行为变成失败，而不是所有新失败都自动叫回归。<Cite id="regression-definition-detail"/></p>
       <p id="regression-record-detail" className="vp-citation-target">因此，至少要保留题集版本、基线和候选版本、每条任务的结果，以及哪些任务属于关键行为。<strong>只保存“17/20 变成 18/20”会丢掉最需要查的那一条。</strong>如果基线本身没有稳定记录，就无法知道候选到底是回退，还是两次运行的条件不同。<Cite id="regression-record-detail"/></p>
@@ -316,7 +317,7 @@ export function ModelGraderTermPage() {
   return <ConceptArticle slug="model-grader" title="模型评分器" subtitle="Model Grader · 批量评分与人工校准" sources={modelGraderSources}
     sections={[['model-definition', '模型评分不是第二个真理来源'], ['model-protocol', '先固定输入和输出格式'], ['model-calibration', '用人工参考发现系统性偏差'], ['model-boundary', '证据不足时返回未评分']]}
     intro={<>模型评分器把待评输出、评分规则和必要参考交给另一个模型，让它按结构化格式给出分数、理由或未评分状态。它可以批量处理开放回答，但必须用人工参考样本检查偏差，不能把模型的分数当成客观事实。</>}
-    hero={<ConceptHero slug="model-grader" label="模型评分 4/5、人工参考 3/5；5 条校准样本中高估 2 条，证据不足时返回未评分"><div className={s.modelHero}><div className={s.modelHeroHeader}><span>量表 · 准确 / 完整 / 风险</span><span>输出 <strong>JSON</strong></span></div><div className={s.modelHeroCompare}><div><span>模型评分器</span><strong>4/5</strong></div><b>↔</b><div data-bias="true"><span>人工参考</span><strong>3/5</strong></div></div><div className={s.modelHeroGate}><span>5 条校准样本</span><strong>高估 2 条</strong><small>证据不足 → unscored</small></div></div></ConceptHero>}>
+    hero={<ModelGraderSignatureHero/>}>
     <ArticleSection id="model-definition" title="模型评分不是第二个真理来源"><Legacy slug="model-grader" names={['question', 'definition']}/>
       <p id="model-definition-detail" className="vp-citation-target"><strong>模型评分器让一个模型按照评分规则检查另一个输出，并返回分数、理由或通过状态。</strong>OpenAI 的 graders 文档把模型评分列为评分器的一种，结果仍然需要和任务判据、人工参考一起解释。评分器可以提高批量检查速度，却不会因为“也是模型”就自动客观。<Cite id="model-definition-detail"/></p>
       <p>被评模型和评分模型可以相同，也可以不同；无论怎样，评分模型都可能偏爱某种语气、回答长度或自己的答案。看到 4/5 只能说明它在这条规则和这条样本上给了 4/5，不能直接推出回答真实正确，更不能替代文件、工具或支付状态等外部证据。</p>
@@ -378,7 +379,7 @@ export function ContextOverflowTermPage() {
   return <ConceptArticle slug="context-overflow" title="上下文溢出" subtitle="Context Overflow · 先算预算，再决定保留什么" sources={contextOverflowSources}
     sections={[['context-overflow-definition', '窗口算的是整轮预算'], ['context-overflow-overflow', '超限先停，不要重复原请求'], ['context-overflow-recovery', '压缩后要验证保留了什么'], ['context-overflow-boundary', '能装下不等于用得好']]}
     intro={<>上下文溢出发生在一次请求需要的令牌超过模型窗口：系统指令、历史消息、工具结果和预计输出都占预算。处理它不是把旧内容无限塞回去，而是先找出哪些事实必须留下，再用压缩、检索或分段让下一轮可检查、可继续。</>}
-    hero={<ConceptHero slug="context-overflow" label="26k 请求超过 24k 窗口；压缩目标、决策和未完成动作后回到 11k"><div className={s.contextOverflowHero}><div className={s.contextHeroCard} data-overflow="true"><span>原始请求</span><strong>26k</strong><small>超过窗口 24k</small></div><ArrowRight size={22} aria-hidden="true"/><div className={s.contextHeroCard}><span>压缩后</span><strong>11k</strong><small>保留目标与待办</small></div><p className={s.contextHeroNote}>先保留高信号事实，再让下一轮继续</p></div></ConceptHero>}>
+    hero={<ContextOverflowSignatureHero/>}>
     <ArticleSection id="context-overflow-definition" title="窗口算的是整轮预算"><Legacy slug="context-overflow" names={['question', 'definition-anchor']}/>
       <p id="context-overflow-definition-detail" className="vp-citation-target"><strong>上下文窗口是模型本轮生成时可以参考的全部令牌空间，也包括它将要生成的输出。</strong>Claude 文档明确把系统提示、消息、工具结果、图片、文档、工具定义和输出都算进窗口；窗口大小不是只给用户文字预留的容量。<Cite id="context-overflow-definition-detail"/></p>
       <p>因此要先把一轮请求拆成几块：系统规则、当前问题、历史、工具结果、预计输出。每块都可能随对话增长。把“还有多少字能发”当成预算，会漏掉工具定义、图片和模型输出，直到服务端在发送或生成过程中拒绝请求。</p>

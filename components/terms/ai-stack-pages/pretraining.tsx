@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { pretrainingSources } from "@/lib/ai-stack-concept-sources/pretraining";
-import { PretrainingHero } from "../ai-stack-lessons/pretraining-hero";
+import { PretrainingSignatureHero } from "../AiStackSignatureHeroes";
 import { PretrainingLesson } from "../ai-stack-lessons/pretraining-hero";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function PretrainingTermPage() {
-  return <Article slug="pretraining" title="预训练" subtitle="Pretraining · 用大量数据反复练习并更新模型参数" sources={pretrainingSources} sections={sections} hero={<PretrainingHero />} intro={<>预训练不是把整本互联网塞进模型的“背诵按钮”。它更像一间很大的校对室：文本先被切成一格一格的 token，数据从自身构造出要猜的目标，模型交卷，损失把猜测和目标的差距量出来，参数再沿着这个信号挪一小步。真正要小心的是，模型学到的是训练目标和语料里的规律，不是自动盖章过的事实。</>}>
+  return <Article slug="pretraining" title="预训练" subtitle="Pretraining · 用大量数据反复练习并更新模型参数" sources={pretrainingSources} sections={sections} hero={<PretrainingSignatureHero />} intro={<>预训练不是把整本互联网塞进模型的“背诵按钮”。它更像一间很大的校对室：文本先被切成一格一格的 token，数据从自身构造出要猜的目标，模型交卷，损失把猜测和目标的差距量出来，参数再沿着这个信号挪一小步。真正要小心的是，模型学到的是训练目标和语料里的规律，不是自动盖章过的事实。</>}>
     <ArticleSection id="pretraining-practice" title="先给模型一沓练习题">
       <p>想象一张没有标准答案册的练习卡：“退款需在七日内申请”。系统可以把它切成 token，让前面的片段去猜下一个 token；“七日内”就同时是输入序列里的下一格，也是这道题的目标。这样，海量文本不需要人工给每一行另写标签，文本本身就能提供练习目标。</p>
       <p id="pretraining-causal" className="vp-citation-target">Hugging Face 将这种训练目标称为 causal language modeling：模型只看目标左边已经出现的 token，预测下一个 token；训练时把输入复制成 labels，再由数据整理器完成错位。所谓“自监督”不是没有目标，而是目标从原始文本的结构里构造出来。<Cite id="pretraining-causal" sources={pretrainingSources} /></p>

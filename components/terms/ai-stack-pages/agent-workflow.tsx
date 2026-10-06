@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { agentWorkflowSources } from "@/lib/ai-stack-concept-sources/agent-workflow";
-import { AgentWorkflowHero } from "../ai-stack-lessons/agent-workflow-hero";
+import { AgentWorkflowSignatureHero } from "../AiStackSignatureHeroes";
 import { AgentWorkflowLesson } from "../ai-stack-lessons/agent-workflow";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function AgentWorkflowTermPage() {
-  return <Article slug="agent-workflow" title="智能体工作流" subtitle="Agent Workflow · 用显式节点和状态把智能体任务推进到可验收出口" sources={agentWorkflowSources} sections={sections} hero={<AgentWorkflowHero />} intro={<>“工作流”不是把几个智能体连成一排就结束了。它是一张能追踪的状态图：请求从哪里进来，经过哪道检查，交给哪个节点，失败时停在哪里，什么证据才允许进入 done。节点里的模型可以灵活，外层的出口必须说得清。</>}>
+  return <Article slug="agent-workflow" title="智能体工作流" subtitle="Agent Workflow · 用显式节点和状态把智能体任务推进到可验收出口" sources={agentWorkflowSources} sections={sections} hero={<AgentWorkflowSignatureHero />} intro={<>“工作流”不是把几个智能体连成一排就结束了。它是一张能追踪的状态图：请求从哪里进来，经过哪道检查，交给哪个节点，失败时停在哪里，什么证据才允许进入 done。节点里的模型可以灵活，外层的出口必须说得清。</>}>
     <ArticleSection id="agent-workflow-map" title="先把工作流画成一张状态图">
       <p>以退款申请为例，系统可以先接收订单和金额，再做字段、权限与风险检查，然后交给账单专家生成建议，最后经过人工或规则验收。每一步都应该能回答“现在在哪个节点、带着什么输入、下一步由谁决定”。这份状态不是给模型看的漂亮图，而是应用在失败、恢复和审计时要依赖的记录。</p>
       <p id="workflow-distinction" className="vp-citation-target">Anthropic 把 workflow 与 agent 分开：workflow 通过预先定义的代码路径编排模型和工具，agent 则让模型动态决定过程与工具使用。工作流的价值是对已知任务提供可预测的路径；它不要求每个节点都变成一个完全自主的智能体。<Cite id="workflow-distinction" sources={agentWorkflowSources} /></p>
