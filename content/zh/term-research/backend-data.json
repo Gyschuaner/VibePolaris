@@ -307,5 +307,23 @@
       "rate-limiting",
       "api-gateway"
     ]
+  },
+  {
+    "slug": "circuit-breaker",
+    "mechanism": "熔断器在闭合、打开和半开之间转换：失败计数达到条件后快速拒绝，冷却后用有限探针判断恢复。",
+    "misconception": "熔断器不是重试器、健康修复器或永久封禁；打开只改变后续调用路径，阈值和探针仍需按依赖行为配置。",
+    "demoSignature": "4帧｜对象：调用方、熔断器、支付服务、恢复探针｜交互：推进正常→失败累积→OPEN→HALF-OPEN，并切换依赖健康/故障｜变化：请求从到达 503 变成 0 个打到故障依赖，探针成功才恢复｜结果：保护、冷却和恢复证据分开。",
+    "sourceUrls": [
+      "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+      "https://martinfowler.com/bliki/CircuitBreaker.html",
+      "https://resilience4j.readme.io/docs/circuitbreaker",
+      "https://www.pollydocs.org/strategies/circuit-breaker.html"
+    ],
+    "rewriteRisk": "高：必须展示状态转换、失败阈值、冷却、半开探针和快速失败，不能写成“服务挂了就重试”。",
+    "nearDuplicates": [
+      "retry",
+      "timeout",
+      "api-gateway"
+    ]
   }
 ]

@@ -20164,5 +20164,200 @@
         "note": "紧急关闭非核心功能和第三方依赖"
       }
     ]
+  },
+  {
+    "slug": "circuit-breaker",
+    "lead": "依赖服务已经挂了，为什么还要继续发请求？",
+    "definition": "熔断器在连续失败达到条件后打开，让后续调用快速失败；冷却后进入半开，只放少量探针确认依赖是否恢复。",
+    "boundary": "它是调用方的保护机制，不会修复依赖，也不能替代超时、重试、限流和降级。",
+    "sceneKind": "state-machine",
+    "sceneTitle": "闭合、打开、半开怎样保护一次调用",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "caller",
+        "label": "调用方",
+        "detail": "订单服务",
+        "icon": "server",
+        "group": "请求"
+      },
+      {
+        "id": "breaker",
+        "label": "熔断器",
+        "detail": "CLOSED",
+        "icon": "shield",
+        "group": "保护"
+      },
+      {
+        "id": "dependency",
+        "label": "支付服务",
+        "detail": "503",
+        "icon": "database",
+        "group": "依赖"
+      },
+      {
+        "id": "probe",
+        "label": "恢复探针",
+        "detail": "只放一个",
+        "icon": "search",
+        "group": "恢复"
+      }
+    ],
+    "edges": [
+      {
+        "id": "caller-breaker",
+        "from": "caller",
+        "to": "breaker",
+        "label": "请求先过闸"
+      },
+      {
+        "id": "breaker-dependency",
+        "from": "breaker",
+        "to": "dependency",
+        "label": "允许调用"
+      },
+      {
+        "id": "breaker-probe",
+        "from": "breaker",
+        "to": "probe",
+        "label": "半开试探"
+      }
+    ],
+    "frames": [
+      {
+        "label": "闭合放行",
+        "note": "依赖健康时，请求穿过熔断器到达支付服务。",
+        "activeIds": [
+          "caller",
+          "breaker",
+          "dependency"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "probe"
+        ],
+        "values": {
+          "breaker": "CLOSED",
+          "dependency": "200"
+        },
+        "activeEdgeIds": [
+          "caller-breaker",
+          "breaker-dependency"
+        ]
+      },
+      {
+        "label": "失败累积",
+        "note": "连续超时和 503 被计数，但还没有把所有调用切断。",
+        "activeIds": [
+          "breaker",
+          "dependency"
+        ],
+        "doneIds": [
+          "caller"
+        ],
+        "mutedIds": [
+          "probe"
+        ],
+        "values": {
+          "breaker": "2 failures",
+          "dependency": "503"
+        },
+        "activeEdgeIds": [
+          "breaker-dependency"
+        ]
+      },
+      {
+        "label": "打开快速拒绝",
+        "note": "熔断器停止把请求送给故障依赖，调用方立即得到可处理的失败。",
+        "activeIds": [
+          "caller",
+          "breaker"
+        ],
+        "doneIds": [
+          "dependency"
+        ],
+        "mutedIds": [
+          "probe"
+        ],
+        "values": {
+          "breaker": "OPEN",
+          "caller": "fast fail"
+        },
+        "activeEdgeIds": [
+          "caller-breaker"
+        ]
+      },
+      {
+        "label": "半开探针",
+        "note": "冷却后只放一个探针；成功才允许恢复闭合，失败则继续打开。",
+        "activeIds": [
+          "probe",
+          "breaker"
+        ],
+        "doneIds": [
+          "caller"
+        ],
+        "mutedIds": [
+          "dependency"
+        ],
+        "values": {
+          "probe": "probe → 200",
+          "breaker": "HALF-OPEN"
+        },
+        "activeEdgeIds": [
+          "breaker-probe"
+        ],
+        "metric": {
+          "label": "到达故障依赖的请求",
+          "value": "0"
+        }
+      }
+    ],
+    "insight": "熔断器把失败扩散改成可观察的快速拒绝和少量恢复探针。",
+    "quiz": {
+      "question": "支付依赖连续超时后，熔断器打开意味着什么？",
+      "options": [
+        {
+          "label": "后续请求先快速失败，冷却后再放少量探针",
+          "correct": true
+        },
+        {
+          "label": "支付服务已经被自动修复",
+          "correct": false
+        },
+        {
+          "label": "所有请求都会被无限重试",
+          "correct": false
+        }
+      ],
+      "success": "打开保护调用路径，恢复需要半开探针证据。",
+      "retry": "先区分保护调用方、修复依赖和重试的责任。"
+    },
+    "prompt": {
+      "title": "写清依赖故障的熔断策略",
+      "text": "请为一次外部服务调用定义超时、失败计数、打开阈值、冷却、探针、降级结果和恢复后的限流。"
+    },
+    "sources": [
+      {
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+        "label": "Microsoft Azure · Circuit Breaker pattern",
+        "note": "状态、冷却与恢复探针"
+      },
+      {
+        "url": "https://martinfowler.com/bliki/CircuitBreaker.html",
+        "label": "Martin Fowler · CircuitBreaker",
+        "note": "快速失败与闭合恢复"
+      },
+      {
+        "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+        "label": "Resilience4j · CircuitBreaker",
+        "note": "失败率与状态转换"
+      },
+      {
+        "url": "https://www.pollydocs.org/strategies/circuit-breaker.html",
+        "label": "Polly · Circuit Breaker",
+        "note": "半开探针与策略边界"
+      }
+    ]
   }
 ]
