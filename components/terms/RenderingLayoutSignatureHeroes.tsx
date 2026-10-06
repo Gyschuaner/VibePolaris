@@ -56,13 +56,18 @@ export function FlexboxSignatureHero() {
   const scene = useScene(flexLabels.length);
   const step = scene.step;
   const sizes = step === 2 ? [31, 38, 31] : step === 3 ? [27, 27, 27] : step === 4 ? [44, 44, 44] : [29, 29, 29];
+  const flexStyle = (index: number): CSSProperties => step === 2
+    ? { flexGrow: index === 1 ? 2 : 1, flexShrink: 1, flexBasis: "24%" }
+    : step === 3
+      ? { flexGrow: 0, flexShrink: 1, flexBasis: "42%" }
+      : { flexGrow: 0, flexShrink: 0, flexBasis: "29%" };
   return <SignatureFrame scene={scene} title="一条弹性尺怎样结算空间" labels={flexLabels} caption={flexCaptions[step]}>
     <div className={styles.flexSignature} data-step={step} data-axis={step === 5 ? "column" : "row"}>
       <div className={styles.flexRuler}><span>主轴</span><i /><b>{step === 3 ? "−60px" : step === 1 || step === 2 ? "+120px" : step === 5 ? "480px 高度" : "480px"}</b></div>
-      <div className={styles.flexTrack} style={{ "--a": `${sizes[0]}%`, "--b": `${sizes[1]}%`, "--c": `${sizes[2]}%` } as CSSProperties}>
+      <div className={styles.flexTrack}>
         <div className={styles.flexFree} data-negative={step === 3}><span>{step === 3 ? "负空间" : step >= 2 ? "已分完" : "自由空间"}</span></div>
         <div className={styles.flexItems}>
-          {sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 1 ? "b" : "other"}><strong>{String.fromCharCode(65 + index)}</strong><small>{step === 2 ? `${index === 1 ? 2 : 1} 份` : step === 4 ? "line" : `${Math.round(size * 4.8)}px`}</small></div>)}
+          {sizes.map((size, index) => <div key={index} className={styles.flexItem} data-item={index === 1 ? "b" : "other"} style={flexStyle(index)}><strong>{String.fromCharCode(65 + index)}</strong><small>{step === 2 ? `${index === 1 ? 2 : 1} 份` : step === 4 ? "line" : `${Math.round(size * 4.8)}px`}</small></div>)}
         </div>
       </div>
       <div className={styles.flexAxisMark}><ArrowDown size={16} /><span>{step === 5 ? "主轴 ↓" : step === 4 ? "line 1 / line 2" : "主轴 →"}</span></div>
@@ -156,8 +161,8 @@ export function MediaQuerySignatureHero() {
   const [hover, setHover] = useState(true);
   const step = scene.step;
   const narrow = step >= 1;
-  const noHover = step >= 2 || !hover;
-  const quiet = step >= 3 || reduced;
+  const noHover = step === 0 ? false : step >= 2 || !hover;
+  const quiet = step === 0 ? false : step >= 3 || reduced;
   return <SignatureFrame scene={scene} title="环境信号怎样让 CSS 规则入场" labels={mediaLabels} caption={mediaCaptions[step]}>
     <div className={styles.mediaSignature} data-narrow={narrow} data-no-hover={noHover} data-quiet={quiet}>
       <div className={styles.mediaSignals} role="group" aria-label="调整环境信号"><button type="button" aria-pressed={narrow} onClick={() => scene.seek(1)}>width</button><button type="button" aria-pressed={!noHover} onClick={() => { setHover(value => !value); scene.seek(2); }}>hover</button><button type="button" aria-pressed={quiet} onClick={() => { setReduced(value => !value); scene.seek(3); }}>motion</button></div>
@@ -181,14 +186,15 @@ export function ModuleSignatureHero() {
   const scene = useScene(moduleLabels.length);
   const [mode, setMode] = useState<"live" | "copy">("live");
   const step = scene.step;
-  const live = mode === "live" && step >= 2 && step < 4;
+  const effectiveMode = step === 0 ? "live" : mode;
+  const live = effectiveMode === "live" && step >= 2 && step < 4;
   const cycle = step === 4;
   const choose = (next: "live" | "copy") => { setMode(next); scene.seek(next === "copy" ? 3 : 0); };
   return <SignatureFrame scene={scene} title="模块之间连的是能力，还是一张副本" labels={moduleLabels} caption={moduleCaptions[step]}>
-    <div className={styles.moduleSignature} data-mode={mode} data-cycle={cycle} data-live={live}>
-      <div className={styles.moduleGraph}><div className={styles.moduleNode}><Code size={16} /><strong>settings.js</strong><small>{step >= 2 && !cycle ? "locale = zh-CN" : "locale = en-US"}</small></div><div className={styles.moduleWire}><LinkSimple size={17} /><span>{mode === "live" ? "binding" : "snapshot"}</span></div><div className={styles.moduleNode}><GitBranch size={16} /><strong>greeting.js</strong><small>import &#123; locale &#125;</small></div><ArrowRight size={17} className={styles.moduleArrow} /><div className={styles.moduleOutput}><span>entry.js</span><strong>{cycle ? "ReferenceError" : live ? "输出：zh-CN" : "输出：en-US"}</strong></div></div>
-      <div className={styles.moduleControls} role="group" aria-label="选择模块绑定"><button type="button" aria-pressed={mode === "live"} onClick={() => choose("live")}>live binding</button><button type="button" aria-pressed={mode === "copy"} onClick={() => choose("copy")}>复制快照</button><button type="button" aria-pressed={cycle} onClick={() => scene.seek(4)}><WarningCircle size={13} />模拟循环</button></div>
-      <div className={styles.moduleProof} role="status">{cycle ? <><XCircle size={16} /><strong>TDZ · 读取太早</strong><span>先完成初始化，或把读取放进函数调用。</span></> : step < 2 ? <><TreeStructure size={16} /><strong>同一张依赖图</strong><span>模块求值后保留自己的边界。</span></> : <><CheckCircle size={16} /><strong>{mode === "live" ? "调用方跟着导出" : "调用方留在旧快照"}</strong><span>{mode === "live" ? "导入连接到当前绑定" : "普通变量不会自动回写"}</span></>}</div>
+    <div className={styles.moduleSignature} data-mode={effectiveMode} data-cycle={cycle} data-live={live}>
+      <div className={styles.moduleGraph}><div className={styles.moduleNode}><Code size={16} /><strong>settings.js</strong><small>{step >= 2 && !cycle ? "locale = zh-CN" : "locale = en-US"}</small></div><div className={styles.moduleWire}><LinkSimple size={17} /><span>{effectiveMode === "live" ? "binding" : "snapshot"}</span></div><div className={styles.moduleNode}><GitBranch size={16} /><strong>greeting.js</strong><small>import &#123; locale &#125;</small></div><ArrowRight size={17} className={styles.moduleArrow} /><div className={styles.moduleOutput}><span>entry.js</span><strong>{cycle ? "ReferenceError" : live ? "输出：zh-CN" : "输出：en-US"}</strong></div></div>
+      <div className={styles.moduleControls} role="group" aria-label="选择模块绑定"><button type="button" aria-pressed={effectiveMode === "live"} onClick={() => choose("live")}>live binding</button><button type="button" aria-pressed={effectiveMode === "copy"} onClick={() => choose("copy")}>复制快照</button><button type="button" aria-pressed={cycle} onClick={() => scene.seek(4)}><WarningCircle size={13} />模拟循环</button></div>
+      <div className={styles.moduleProof} role="status">{cycle ? <><XCircle size={16} /><strong>TDZ · 读取太早</strong><span>先完成初始化，或把读取放进函数调用。</span></> : step < 2 ? <><TreeStructure size={16} /><strong>同一张依赖图</strong><span>模块求值后保留自己的边界。</span></> : <><CheckCircle size={16} /><strong>{effectiveMode === "live" ? "调用方跟着导出" : "调用方留在旧快照"}</strong><span>{effectiveMode === "live" ? "导入连接到当前绑定" : "普通变量不会自动回写"}</span></>}</div>
     </div>
   </SignatureFrame>;
 }
@@ -233,7 +239,7 @@ export function LazyLoadingSignatureHero() {
   const failed = step === 4;
   return <SignatureFrame scene={scene} title="视口窗口怎样决定资源值不值得取" labels={lazyLabels} caption={lazyCaptions[step]}>
     <div className={styles.lazySignature} data-step={step}>
-      <div className={styles.lazyViewport}><div className={styles.lazyViewportTop}><Eye size={15} />viewport window</div><div className={styles.lazyWindow}><div className={styles.lazySlot} data-state={step >= 2 ? failed ? "error" : step === 3 ? "ready" : "loading" : "reserved"}><div className={styles.lazyArtwork}>{failed ? <WarningCircle size={22} /> : step === 3 ? <CheckCircle size={22} /> : <Stack size={22} />}</div><strong>{failed ? "加载失败" : step === 3 ? "图片已到" : step >= 2 ? "请求中" : "预留 16:9"}</strong><small>{failed ? "重新尝试" : "尺寸先锁住"}</small></div><div className={styles.lazySlotGhost}>下一张 · 仍在远处</div></div></div>
+      <div className={styles.lazyViewport}><div className={styles.lazyViewportTop}><Eye size={15} />viewport window</div><div className={styles.lazyWindow}><div className={styles.lazySlot} data-state={step >= 2 ? failed ? "error" : step === 3 ? "ready" : "loading" : "reserved"}><div className={styles.lazyArtwork}>{failed ? <WarningCircle size={22} /> : step === 3 ? <CheckCircle size={22} /> : <Stack size={22} />}</div><strong>{failed ? "加载失败" : step === 3 ? "图片已到" : step >= 2 ? "请求中" : "预留 16:9"}</strong>{failed ? <button type="button" className={styles.lazyRetry} onClick={() => scene.seek(2)}>重试加载</button> : <small>尺寸先锁住</small>}</div><div className={styles.lazySlotGhost}>下一张 · 仍在远处</div></div></div>
       <div className={styles.lazyTrack}><i style={{ transform: `translateX(${step * 20}%)` }} /><span>远处</span><span>接近</span><span>相交</span><span>ready</span></div>
       <div className={styles.lazyProof} role="status"><SpinnerGap size={16} /><strong>{failed ? "error · retry" : step === 3 ? "ready · 原位替换" : step >= 2 ? "loading · 槽位保留" : "deferred · 未请求"}</strong><span>{step === 1 ? "rootMargin 提前准备" : "观察器只负责触发信号"}</span></div>
     </div>
