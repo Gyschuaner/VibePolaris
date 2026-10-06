@@ -21569,5 +21569,194 @@
         "note": "减少分布式协调并用补偿动作处理异步边界"
       }
     ]
+  },
+  {
+    "slug": "context-compaction",
+    "lead": "对话太长时，为什么不能把前面全部塞给模型？",
+    "definition": "上下文压缩把旧历史、工具记录或中间草稿缩成较短表示，腾出窗口空间，同时保留会影响当前任务的目标、证据和未完成动作。",
+    "boundary": "摘要有损，可能漏掉细节和否定条件；它不是完整归档，也不保证模型自动知道哪些信息最重要。",
+    "sceneKind": "memory",
+    "sceneTitle": "有限窗口怎样留下可继续执行的状态",
+    "actionLabel": "推进一个阶段",
+    "actors": [
+      {
+        "id": "context",
+        "label": "上下文托盘",
+        "detail": "24k tokens",
+        "icon": "memory",
+        "group": "容量"
+      },
+      {
+        "id": "history",
+        "label": "旧对话",
+        "detail": "14k tokens",
+        "icon": "message",
+        "group": "历史"
+      },
+      {
+        "id": "evidence",
+        "label": "关键证据",
+        "detail": "订单号与约束",
+        "icon": "file",
+        "group": "保留"
+      },
+      {
+        "id": "task",
+        "label": "未完成动作",
+        "detail": "等待发送退款请求",
+        "icon": "gear",
+        "group": "任务"
+      }
+    ],
+    "edges": [
+      {
+        "id": "history-context",
+        "from": "history",
+        "to": "context",
+        "label": "占用窗口"
+      },
+      {
+        "id": "evidence-context",
+        "from": "evidence",
+        "to": "context",
+        "label": "标记保留"
+      },
+      {
+        "id": "task-context",
+        "from": "task",
+        "to": "context",
+        "label": "必须继续"
+      }
+    ],
+    "frames": [
+      {
+        "label": "材料装入窗口",
+        "note": "系统目标、旧对话和工具回执一起占用有限托盘。",
+        "activeIds": [
+          "context",
+          "history"
+        ],
+        "doneIds": [],
+        "mutedIds": [
+          "evidence",
+          "task"
+        ],
+        "values": {
+          "context": "8k / 24k"
+        },
+        "activeEdgeIds": [
+          "history-context"
+        ]
+      },
+      {
+        "label": "容量被顶住",
+        "note": "继续把所有原文塞进来会越过窗口，最新任务可能还没位置。",
+        "activeIds": [
+          "context"
+        ],
+        "doneIds": [
+          "history"
+        ],
+        "mutedIds": [
+          "evidence",
+          "task"
+        ],
+        "values": {
+          "context": "26k / 24k · overflow"
+        },
+        "activeEdgeIds": []
+      },
+      {
+        "label": "标记不可丢信息",
+        "note": "先标出目标、关键证据和未完成动作，再决定哪些旧材料可以缩短。",
+        "activeIds": [
+          "evidence",
+          "task"
+        ],
+        "doneIds": [
+          "context"
+        ],
+        "mutedIds": [
+          "history"
+        ],
+        "values": {
+          "evidence": "订单 A17 · 7 日",
+          "task": "发送退款请求"
+        },
+        "activeEdgeIds": [
+          "evidence-context",
+          "task-context"
+        ]
+      },
+      {
+        "label": "压缩并重新核对",
+        "note": "旧对话变成摘要，关键状态仍可继续使用；需要细节时要能回查原文。",
+        "activeIds": [
+          "context"
+        ],
+        "doneIds": [
+          "history",
+          "evidence",
+          "task"
+        ],
+        "mutedIds": [],
+        "values": {
+          "context": "11k / 24k · ready"
+        },
+        "activeEdgeIds": [
+          "history-context"
+        ],
+        "metric": {
+          "label": "必须保留",
+          "value": "目标 + 证据 + 动作"
+        }
+      }
+    ],
+    "insight": "压缩的单位不是“随便删消息”，而是保留能让任务继续的状态。",
+    "quiz": {
+      "question": "上下文快溢出时，哪项做法更可靠？",
+      "options": [
+        {
+          "label": "先标出目标、关键证据和未完成动作，再压缩旧材料",
+          "correct": true
+        },
+        {
+          "label": "无条件删除最早的一半消息",
+          "correct": false
+        },
+        {
+          "label": "只保留最后一条消息，其他都不需要",
+          "correct": false
+        }
+      ],
+      "success": "先定义任务边界，摘要才知道什么不能丢。",
+      "retry": "先区分容量管理、完整归档和任务状态。"
+    },
+    "prompt": {
+      "title": "为长对话写压缩清单",
+      "text": "请把对话分成目标、事实、证据、决策、未完成动作和可回查原文，定义压缩后必须重新核对的字段。"
+    },
+    "sources": [
+      {
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+        "label": "Anthropic · Context windows",
+        "note": "上下文容量与长对话边界"
+      },
+      {
+        "url": "https://docs.langchain.com/oss/python/langchain/short-term-memory",
+        "label": "LangChain · Short-term memory",
+        "note": "状态保留与消息管理"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/semantic-kernel/concepts/ai-services/chat-completion/chat-history",
+        "label": "Semantic Kernel · Chat history",
+        "note": "历史记录与上下文管理"
+      },
+      {
+        "url": "https://platform.openai.com/docs/guides/prompt-caching",
+        "label": "OpenAI · Prompt caching",
+        "note": "重复上下文与缓存边界"
+      }
+    ]
   }
 ]

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Circuitry, Clock, Database, FileCode, Keyboard, Lightning, Package, ShieldCheck, Timer, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Brain, Circuitry, Clock, Database, FileCode, Keyboard, Lightning, Package, ShieldCheck, Stack, Timer, WarningCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./Vbp096ExpansionHeroes.module.css";
@@ -65,5 +65,17 @@ export function DataContractSignatureHero() {
     <div className={styles.contractBoard}><div className={styles.schemaCard}><FileCode size={20} /><span>生产者 · v{scene.step >= 2 ? "2" : "1"}</span><strong>{scene.step >= 2 ? breaking ? "user_id" : "email + locale" : "email"}</strong><small>{scene.step >= 2 ? breaking ? "email 被移除" : "旧字段仍保留" : "契约已发布"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.consumerCard}><Package size={20} /><span>消费者</span><strong>{scene.step >= 1 ? "读取 email" : "等待数据"}</strong><small>{scene.step >= 3 && breaking ? "读取失败" : "字段仍可用"}</small></div><div className={styles.contractGate} data-danger={breaking && scene.step === 3}>{breaking && scene.step === 3 ? <WarningCircle size={20} /> : <ShieldCheck size={20} />}<strong>{scene.step < 3 ? "检查中" : breaking ? "BLOCK" : "PASS"}</strong><small>{scene.step === 3 ? breaking ? "必须迁移或双写" : "允许兼容发布" : "对照生产契约"}</small></div></div>
     <div className={styles.status} role="status"><strong>{scene.step === 0 ? "先冻结双方共同语言" : scene.step === 1 ? "消费者依赖旧字段" : scene.step === 2 ? "新版本正在提出变化" : breaking ? "改名不是无害重构" : "新增可选字段可向后兼容"}</strong><span>{breaking ? "契约让破坏性变化在发布前暴露。" : "兼容性来自保留旧语义和明确默认值。"}</span></div>
     <figcaption>数据契约把“生产者能发什么”和“消费者能读什么”写成可检查的约定，变化先经过兼容性闸门。</figcaption>
+  </figure>;
+}
+
+export function ContextCompactionSignatureHero() {
+  const scene = useScene(4);
+  const compacted = scene.step >= 3;
+  return <figure ref={scene.ref} className={styles.frame} data-kind="compaction" data-step={scene.step} aria-label="上下文压缩保留目标和未完成动作，释放有限容量">
+    <Header eyebrow="上下文满了，先决定什么不能丢" meta={compacted ? "11k / 24k" : scene.step >= 1 ? "26k / 24k" : "8k / 24k"} />
+    <SceneControls scene={scene} labels={["装入对话", "顶到容量线", "标记关键事实", "压缩再核对"]} />
+    <div className={styles.contextBoard}><div className={styles.contextTray}><span>有限托盘</span><div className={styles.contextPieces}>{["系统目标", "旧对话", "工具回执", "未完成动作"].map((item, index) => <b key={item} data-kept={index === 0 || index === 3 || (compacted && index === 2)} data-muted={compacted && index === 1}>{compacted && index === 1 ? "旧对话摘要" : item}</b>)}</div><div className={styles.capacity}><i><b data-fill={scene.step >= 1 ? "full" : compacted ? "half" : "low"} /></i><strong>{compacted ? "11k" : scene.step >= 1 ? "26k" : "8k"} / 24k</strong></div></div><div className={styles.contextAction} data-danger={scene.step === 2}><Stack size={23} /><strong>{scene.step < 2 ? "继续装入" : scene.step === 2 ? "先标记不能丢的东西" : "压缩旧对话"}</strong><small>{scene.step === 2 ? "目标 · 证据 · 未完成动作" : compacted ? "摘要留下可继续执行的状态" : "输出位置也要留空间"}</small></div><div className={styles.contextResult} data-good={compacted}><CheckCircle size={19} /><span>{compacted ? "任务边界仍然可见" : "还没有重新核对"}</span></div></div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "每一段材料都占容量" : scene.step === 1 ? "溢出不是模型突然失忆" : scene.step === 2 ? "压缩前先标记保留物" : "释放空间后重新核对"}</strong><span>{compacted ? "摘要只能保留被明确选中的目标、证据和动作。" : "不要把所有历史都当成同等重要。"}</span></div>
+    <figcaption>上下文压缩不是随便删文字，而是先划出任务边界，再缩短旧材料并检查关键状态有没有留下。</figcaption>
   </figure>;
 }
