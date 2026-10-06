@@ -1,0 +1,34 @@
+.hero { position: relative; overflow: hidden; display: grid; gap: 10px; max-width: 760px; margin: 0 auto; padding: 14px 16px 15px; border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 21px; background: color-mix(in srgb, var(--surface) 72%, transparent); box-shadow: 0 14px 38px color-mix(in srgb, var(--ink) 7%, transparent); }
+.hero::before { position: absolute; inset: -60px auto auto 12%; width: 180px; height: 150px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--brand-star) 20%, transparent), transparent 68%); content: ""; pointer-events: none; }
+.canvas { position: relative; min-height: 190px; }
+.caption { display: grid; grid-template-columns: 26px 1fr; gap: 9px; align-items: start; min-height: 43px; }
+.caption > span { color: var(--accent-text); font: 700 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .08em; }
+.caption > div { color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+.semanticBoard { display: grid; grid-template-columns: 1fr 28px 1.25fr; align-items: center; min-height: 185px; gap: 8px; }
+.semanticSource, .semanticAssistive { display: grid; align-content: center; gap: 7px; min-height: 132px; padding: 14px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.semanticSource span, .semanticAssistive span, .treeHeader span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.semanticSource code { color: var(--accent-text); font: 700 17px ui-monospace, SFMono-Regular, monospace; }
+.semanticSource small { color: var(--muted); font-size: 10px; }
+.semanticSource svg, .semanticAssistive svg { color: var(--accent-text); }
+.semanticArrow { color: var(--brand-star); justify-self: center; }
+.semanticTree { display: grid; align-content: center; gap: 7px; min-height: 170px; padding: 11px; border-radius: 16px; background: color-mix(in srgb, var(--accent-text) 5%, var(--surface)); }
+.treeHeader { display: flex; align-items: center; gap: 7px; color: var(--accent-text); }
+.treeRoot { justify-self: center; padding: 6px 13px; border: 1px solid color-mix(in srgb, var(--accent-text) 28%, transparent); border-radius: 9px; background: var(--tint); color: var(--accent-text); font: 700 10px ui-monospace, SFMono-Regular, monospace; }
+.treeBranches { display: flex; justify-content: space-around; height: 14px; padding: 0 28px; border-top: 1px solid color-mix(in srgb, var(--accent-text) 35%, transparent); }
+.treeBranches i { width: 1px; height: 14px; background: color-mix(in srgb, var(--accent-text) 35%, transparent); }
+.semanticAssistive { min-height: 54px; grid-template-columns: auto 1fr auto; align-items: center; padding: 9px 11px; background: color-mix(in srgb, #e6efdf 66%, var(--surface)); transition: opacity .35s, transform .35s, border-color .35s; }
+.semanticAssistive strong { display: block; margin-top: 3px; color: var(--accent-text); font-size: 11px; }
+.semanticAssistive.isMuted { opacity: .48; transform: translateY(3px); }
+
+@media (max-width: 760px) {
+  .hero { padding: 12px; border-radius: 17px; }
+  .canvas { min-height: 0; }
+  .semanticBoard { grid-template-columns: 1fr; min-height: 0; }
+  .semanticArrow { transform: rotate(90deg); justify-self: center; }
+  .semanticSource, .semanticTree { min-height: 82px; }
+  .treeBranches { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
