@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, Package, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, Package, Pause, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -164,6 +164,27 @@ export function WireframeSignatureHero() {
     <div className={styles.wireframeBoard} data-visual={visual} data-step={scene.step}>
       <div className={styles.wireCanvas}><span className={styles.wireGrid} aria-hidden="true" /><div className={styles.wireBlock} data-slot="title"><small>标题</small><strong>订单详情</strong></div><div className={styles.wireBlock} data-slot="body"><small>内容</small><span>金额 · 条件 · 状态</span></div><div className={styles.wireBlock} data-slot="action"><small>操作</small><b>确认退款</b></div><div className={styles.wirePaint} aria-hidden="true" /></div>
       <div className={styles.wireRuler}><Layout size={20} /><span>结构刻度</span><strong>{scene.step >= 2 ? "标题 → 判断 → 操作" : "等待内容块"}</strong><small>{visual ? "颜色已进入" : "颜色暂不参与"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function PrototypeSignatureHero() {
+  const scene = useScene(4);
+  const [observation, setObservation] = useState<"pause" | "smooth">("pause");
+  const labels = ["写下假设", "交给任务", "留下停顿", "决定下一轮"];
+  const current = [
+    { title: "先写一个可观察的猜测", detail: "用户能找到邀请码吗？", icon: Target },
+    { title: "把真实任务交给假版本", detail: "加入朋友空间", icon: ArrowRight },
+    { title: observation === "pause" ? "停顿是证据，不是噪音" : "顺利完成也只是一条观察", detail: observation === "pause" ? "2/3 在入口回看" : "3/3 完成", icon: observation === "pause" ? Pause : CheckCircle },
+    { title: observation === "pause" ? "改入口，再测一轮" : "还要决定下一步证据", detail: observation === "pause" ? "把疑问带回设计" : "性能与真实后端尚未验证", icon: observation === "pause" ? WarningCircle : CheckCircle },
+  ][scene.step];
+
+  return <Frame ariaLabel="原型把一个假设交给真实任务，再把停顿变成下一轮证据" className={styles.prototype} eyebrow="原型不是成品缩小版，是一台观察机器" meta="hypothesis · task · evidence" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="原型只需要实现本轮要观察的行为；完成任务不等于上线，停顿、回看和错误路径才会告诉下一轮该改哪里。">
+    <div className={styles.prototypeControls} role="group" aria-label="选择测试观察结果"><button type="button" aria-pressed={observation === "pause"} onClick={() => { setObservation("pause"); scene.seek(3); }}><Pause size={15} />记录停顿</button><button type="button" aria-pressed={observation === "smooth"} onClick={() => { setObservation("smooth"); scene.seek(3); }}><CheckCircle size={15} />顺利完成</button></div>
+    <div className={styles.prototypeBoard} data-observation={observation} data-step={scene.step}>
+      <div className={styles.prototypeHypothesis}><Target size={21} /><span>假设卡</span><strong>邀请码找得到吗？</strong><small>这轮只验证入口理解</small></div>
+      <div className={styles.prototypeFilm}><span>任务胶片</span><div className={styles.filmFrames}><b data-seen={scene.step >= 1}>进入空间</b><b data-seen={scene.step >= 1}>找邀请码</b><b data-seen={scene.step >= 2} data-pause={observation === "pause"}>加入成功</b></div><small>{scene.step < 2 ? "观察中" : observation === "pause" ? "回看入口" : "完成任务"}</small></div>
+      <div className={styles.prototypeEvidence}><span>观察台</span><strong>{observation === "pause" && scene.step >= 2 ? "2 / 3" : scene.step >= 2 ? "3 / 3" : "—"}</strong><small>{observation === "pause" && scene.step >= 2 ? "入口处停顿" : scene.step >= 2 ? "未发现停顿" : "等待测试"}</small></div>
     </div>
   </Frame>;
 }

@@ -27,7 +27,7 @@ import {
   WireframeLesson,
 } from "./FlowRedesignLessons";
 import { SignatureHeroRuntime } from "./SignatureHeroRuntime";
-import { UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
+import { PrototypeSignatureHero, UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
 import styles from "./FlowRedesignConcepts.module.css";
 
 type HeroKind = "loading" | "micro" | "motion" | "client" | "deploy" | "flow" | "wireframe" | "prototype" | "ia" | "a11y";
@@ -152,7 +152,7 @@ export function WireframeTermPage() {
 
 const prototypeSections: [string, string][] = [["prototype-definition-section", "原型先限定要验证的假设"], ["prototype-task-section", "把真实任务交给可操作的假版本"], ["prototype-evidence-section", "观察改变下一轮，而不是宣布上线"]];
 export function PrototypeTermPage() {
-  return <Article slug="prototype" title="原型" subtitle="Prototype · 把猜测换成一次可观察的操作" sources={prototypeSources} sections={prototypeSections} hero={<SignatureHero kind="prototype" />} intro={<>原型不是“先做一个像成品的东西”。<strong>它只实现本轮要验证的行为，把一个假设交给真实任务，再把观察结果带回下一轮</strong>，从而用较小的成本发现理解断点。</>}>
+  return <Article slug="prototype" title="原型" subtitle="Prototype · 把猜测换成一次可观察的操作" sources={prototypeSources} sections={prototypeSections} hero={<PrototypeSignatureHero />} intro={<>原型不是“先做一个像成品的东西”。<strong>它只实现本轮要验证的行为，把一个假设交给真实任务，再把观察结果带回下一轮</strong>，从而用较小的成本发现理解断点。</>}>
     <ArticleSection id="prototype-definition-section" title="原型先限定要验证的假设"><p id="prototype-definition" className="vp-citation-target">可以用纸、页面、对话脚本或代码做原型，媒介取决于要观察的行为。<Cite id="prototype-definition" sources={prototypeSources} />先写“用户是否能找到邀请码”这类可观察的判断，再决定需要哪些页面和状态。</p><p id="prototype-task" className="vp-citation-target">原型只需覆盖完成目标所必需的入口、输入、错误和结果；账号验证、邮件发送和真实支付可以明确标成模拟。<Cite id="prototype-task" sources={prototypeSources} />下面每次推进一格，实验板上的对象会从假设变成证据，而不是从低保真换成高保真。</p><PrototypeLesson /></ArticleSection>
     <ArticleSection id="prototype-evidence-section" title="观察改变下一轮，而不是宣布上线"><p id="prototype-evidence" className="vp-citation-target">让参与者带着真实任务走，不要在任务里提示按钮名称；停顿、回看和错误路径都是本轮证据。<Cite id="prototype-evidence" sources={prototypeSources} />原型好不好看不等于任务是否被理解。</p><p id="prototype-decision" className="vp-citation-target">观察结果应该形成下一轮修改或停止的决定。<Cite id="prototype-decision" sources={prototypeSources} />即使三个人完成了任务，也不能据此证明性能、安全、数据一致性和完整技术方案。</p><ArticleAside title="给原型写一张边界卡"><p>卡片上写清：本轮假设、参与者任务、要观察的行为、哪些部分是假数据，以及什么证据会让你保留、修改或放弃这个方向。</p></ArticleAside></ArticleSection>
   </Article>;
