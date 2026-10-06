@@ -57,7 +57,7 @@ export function DataPipelineSignatureHero() {
   const scene = useScene(pipelineSteps.length);
   const [quarantine, setQuarantine] = useState(false);
   const step = scene.step;
-  const validated = step >= 3 || (quarantine && step >= 2);
+  const validated = quarantine && step >= 2;
   const archived = step >= 1;
   const aggregated = validated && step >= 3;
   const published = aggregated && step >= 3;
@@ -73,7 +73,7 @@ export function DataPipelineSignatureHero() {
       <div className={styles.pipelineSnapshot}><MapPin size={17} /><span>输入快照</span><strong>s1 · 4 条</strong><small>run-42 固定读取</small></div>
       <div className={styles.pipelineBranches}>
         <div className={styles.pipelineBranch} data-done={archived}><Archive size={17} /><span>原始归档</span><small>{archived ? "4 条已留存" : "等待读取"}</small></div>
-        <div className={styles.pipelineBranch} data-done={validated} data-danger={step === 2 && !quarantine}><Funnel size={17} /><span>校验 q{quarantine ? "2" : "1"}</span><small>{step === 2 && !quarantine ? "r2 缺书目编号" : validated ? "3 条通过 · 1 条隔离" : "等待规则"}</small></div>
+        <div className={styles.pipelineBranch} data-done={validated} data-danger={step >= 2 && !quarantine}><Funnel size={17} /><span>校验 q{quarantine ? "2" : "1"}</span><small>{step >= 2 && !quarantine ? "r2 缺书目编号" : validated ? "3 条通过 · 1 条隔离" : "等待规则"}</small></div>
       </div>
       <div className={styles.pipelineDownstream}><div data-done={aggregated} data-muted={!validated}><Database size={17} /><span>汇总</span><small>{aggregated ? "42 = 3" : "被校验挡住"}</small></div><div data-done={published} data-muted={!aggregated}><CheckCircle size={17} /><span>发布报表</span><small>{published ? "run-42 · s1 / q2" : "保持 v0"}</small></div></div>
     </div>
