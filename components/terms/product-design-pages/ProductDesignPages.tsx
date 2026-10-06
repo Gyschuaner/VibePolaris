@@ -2,7 +2,7 @@ import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
-import { ConversionRateHero, FunnelHero, IterationHero, UsabilityTestingHero } from "./mechanism-heroes";
+import { ConversionRateHero, FunnelHero, IterationHero, MockupHero, UsabilityTestingHero } from "./mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -135,16 +135,11 @@ const mockupSections: [string, string][] = [
   ["mockup-boundary", "把缺失状态写出来，别让一张图冒充产品"],
 ];
 
-function MockupHero() {
-  return <figure className={styles.miniHero} aria-label="三张半透明稿纸叠在一起，最上层揭示当前能验证的内容"><div className={styles.miniTop}><span>揭开一层，问题就换了</span><strong>MOCKUP · 06</strong></div><div className={styles.mockupSignature}><div className={styles.mockupSheets}><i data-sheet="wireframe">结构</i><i data-sheet="visual">外观</i><i data-sheet="prototype">行为</i></div><small>静态稿能说明外观，不能替交互作证。</small></div></figure>;
-}
-
 export function MockupTermPage() {
   return <Article slug="mockup" title="视觉稿" subtitle="Mockup · 把外观说清楚，但别冒充交互" sources={mockupSources} sections={mockupSections} hero={<MockupHero />} intro={<>视觉稿把已经确定的结构换成具体的字体、颜色、图像和间距，让团队可以讨论“看起来是否对”。<strong>它是外观的证据，不是点击后的行为证据</strong>；加载、错误、响应式和返回路径还需要状态清单或原型继续补上。</>}>
     <ArticleSection id="mockup-definition" title="先确认结构，再确认外观">
       <p id="mockup-structure" className="vp-citation-target">线框图先把页面当作一张地图：有哪些信息、哪个操作放在哪里、读者按什么顺序理解。<Cite id="mockup-structure" sources={mockupSources} />结构没站稳就急着调颜色，评审很容易被阴影和图片带走。</p>
       <p id="mockup-visual" className="vp-citation-target">视觉稿在这张地图上补入字体、色彩、真实内容和视觉层级，用来对齐外观与品牌表达。<Cite id="mockup-visual" sources={mockupSources} />它可以让团队发现字重不够、对比不清或间距失衡，却不能证明按钮已经能工作。</p>
-      <MockupLesson />
     </ArticleSection>
     <ArticleSection id="mockup-validation" title="静态画面和交互原型各自回答什么">
       <p id="mockup-prototype" className="vp-citation-target">原型把画面连接成可操作的路径，才有机会检查点击后去了哪里、返回是否合理、任务是否能完成。<Cite id="mockup-prototype" sources={mockupSources} />所以“按钮看起来像按钮”是视觉稿结论，“点击后进入下一步并能返回”是原型结论。</p>
