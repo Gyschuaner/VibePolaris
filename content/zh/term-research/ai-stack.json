@@ -1936,5 +1936,23 @@
       "json-schema",
       "function-calling"
     ]
+  },
+  {
+    "slug": "latency-budget",
+    "mechanism": "延迟预算把端到端目标拆成阶段份额，用分段测量和尾延迟指标定位超预算原因，再决定优化、并行、降级或改变体验目标。",
+    "misconception": "预算不是平均响应时间、单个服务 SLA 或加载动画；它不保证每次请求一样快，必须说明 p95/p99、重试和用户感知边界。",
+    "demoSignature": "4帧｜对象：800ms 总账、DNS/TLS、队列、模型｜交互：切换模型 280/560ms 并推进分配→计时→慢段→取舍｜变化：570ms 变 850ms，模型条变红，结果要求优化或重新定义体验｜证据：每段时间份额与总预算同屏。",
+    "sourceUrls": [
+      "https://sre.google/sre-book/handling-overload/",
+      "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+      "https://opentelemetry.io/docs/specs/semconv/http/http-metrics/",
+      "https://cloud.google.com/architecture/framework/performance-optimization"
+    ],
+    "rewriteRisk": "高：必须把端到端目标、分段测量、尾延迟、重试放大和产品取舍连起来，不能只展示一个毫秒数字。",
+    "nearDuplicates": [
+      "timeout",
+      "inference",
+      "loading-state"
+    ]
   }
 ]

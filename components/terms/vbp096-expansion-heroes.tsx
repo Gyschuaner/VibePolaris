@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Brain, Circuitry, Clock, Database, FileCode, Keyboard, Lightning, Package, ShieldCheck, Stack, Timer, WarningCircle, Wrench } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, Brain, Circuitry, Clock, Database, FileCode, Gauge, Keyboard, Lightning, Package, ShieldCheck, Stack, Timer, WarningCircle, Wrench } from "@phosphor-icons/react";
 import { useState } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./Vbp096ExpansionHeroes.module.css";
@@ -90,5 +90,21 @@ export function ToolSchemaSignatureHero() {
     <div className={styles.toolBoard}><div className={styles.toolCall}><Brain size={21} /><span>模型提议</span><code>get_weather(city: {invalid ? "?" : '"上海"'})</code><small>{scene.step >= 1 ? "结构化参数" : "草稿"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.validator} data-active={scene.step >= 1} data-danger={invalid && scene.step >= 2}><ShieldCheck size={21} /><span>schema validator</span><strong>{scene.step < 2 ? "等待检查" : invalid ? "缺少 city" : "通过"}</strong><small>{scene.step >= 1 ? "type=string · required" : "先读契约"}</small></div><ArrowRight size={20} className={styles.boardArrow} /><div className={styles.toolExecution} data-good={scene.step === 3 && !invalid} data-danger={scene.step === 3 && invalid}><Wrench size={21} /><span>工具</span><strong>{scene.step < 3 ? "未执行" : invalid ? "拒绝调用" : "返回 24°C"}</strong><small>{scene.step === 3 && invalid ? "不会把猜测传给外部系统" : "副作用在闸门之后"}</small></div></div>
     <div className={styles.status} role="status"><strong>{scene.step === 0 ? "请求还只是提议" : scene.step === 1 ? "schema 说明形状" : scene.step === 2 ? invalid ? "校验发现缺少参数" : "参数满足契约" : invalid ? "拒绝比错误执行更安全" : "工具得到可执行输入"}</strong><span>{invalid ? "schema 不能证明业务授权，但能先挡住结构错误。" : "结构校验通过后仍要检查权限、超时和外部结果。"}</span></div>
     <figcaption>工具 schema 把模型输出变成可检查的调用请求；它约束参数形状，不代替授权和业务判断。</figcaption>
+  </figure>;
+}
+
+export function LatencyBudgetSignatureHero() {
+  const scene = useScene(4);
+  const [slowModel, setSlowModel] = useState(false);
+  const model = slowModel ? 560 : 280;
+  const total = 80 + 120 + 90 + model;
+  const over = total > 800;
+  return <figure ref={scene.ref} className={styles.frame} data-kind="latency" data-step={scene.step} aria-label="延迟预算把一次请求拆成可观测的时间份额">
+    <Header eyebrow="用户等的是一次完整结果，不是某个环节的借口" meta={`${total} / 800 ms`} />
+    <SceneControls scene={scene} labels={["分配预算", "逐段计时", "出现慢段", "决定取舍"]} />
+    <div className={styles.controls} role="group" aria-label="切换模型延迟"><button type="button" aria-pressed={!slowModel} onClick={() => { setSlowModel(false); scene.seek(0); }}><Lightning size={15} />模型 280ms</button><button type="button" aria-pressed={slowModel} onClick={() => { setSlowModel(true); scene.seek(0); }}><Clock size={15} />模型 560ms</button></div>
+    <div className={styles.latencyBoard}><div className={styles.budgetRail}>{[["DNS",80],["TLS",120],["队列",90],["模型",model]].map(([label,value]) => <div key={String(label)} data-active={scene.step >= 1} data-slow={label === "模型" && slowModel}><span>{label}</span><b style={{ width: `${Math.min(100, Number(value) / 8)}%` }} /><strong>{value}ms</strong></div>)}</div><div className={styles.budgetMeter} data-over={over && scene.step >= 2}><Gauge size={22} /><span>总预算</span><strong>{total}ms</strong><small>{over && scene.step >= 2 ? "超出 800ms" : scene.step >= 1 ? "还有余量" : "先分配"}</small></div><div className={styles.latencyDecision} data-danger={over && scene.step === 3}><Timer size={19} /><span>{scene.step < 3 ? "等待完整测量" : over ? "必须减少一段或改变目标" : "预算内，可交付"}</span></div></div>
+    <div className={styles.status} role="status"><strong>{scene.step === 0 ? "先写下用户可感知的总预算" : scene.step === 1 ? "每段时间都要有归属" : scene.step === 2 ? slowModel ? "模型段吃掉了余量" : "仍在预算内" : over ? "超时是设计信号" : "各段合计仍可交付"}</strong><span>{over ? "不能只优化最显眼的一段，要看完整请求路径。" : "预算让取舍可以被讨论和复盘。"}</span></div>
+    <figcaption>延迟预算把“感觉慢”拆成 DNS、TLS、排队和模型等可计时的份额，超预算时才能知道该牺牲什么。</figcaption>
   </figure>;
 }
