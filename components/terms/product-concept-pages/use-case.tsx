@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { UseCaseLesson } from "../product-concept-lessons/use-case";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { UseCaseHero } from "./mechanism-heroes";
 import { useCaseSources } from "@/lib/product-concept-sources/use-case";
 
 const sections: [string, string][] = [
@@ -16,14 +16,13 @@ export function UseCaseTermPage() {
     subtitle="Use Case · 把参与者目标和系统结果连成一条路径"
     sources={useCaseSources}
     sections={sections}
-    hero={<GitHero contextLabel="先看一次退款" contextTitle="订单 · 退款申请" trigger="“用户可以退款”需要覆盖哪些正常和异常情况？" change="参与者 → 条件 → 路径结果" proof="每条分支都能说明状态是否改变" />}
+    hero={<UseCaseHero />}
     intro={<>使用场景（Use Case）围绕一个参与者目标，说明他在什么条件下触发系统、系统如何推进主流程，以及替代或失败路径如何结束。它帮助团队讨论系统行为和结果，不是逐像素画面，也不等于一整段跨服务的用户旅程。</>}
   >
     <ArticleSection id="use-case-goal" title="从参与者目标开始">
       <p id="use-case-goal-detail" className="vp-citation-target">先写参与者要完成的目标，再决定哪些系统行为属于这个用例。退款用例的目标是让购买者处理一笔符合条件的订单，不是“点击退款按钮”或“调用某个 API”；这样才能检验界面、服务和外部支付方是否共同完成了用户结果。<Cite id="use-case-goal-detail" sources={useCaseSources} /></p>
       <p id="use-case-actor-detail" className="vp-citation-target">参与者可以是人，也可以是与系统交互的外部角色或服务。要写清谁触发、谁提供信息、谁接收结果，避免把“页面”“数据库”等内部部件误当成用户角色。<Cite id="use-case-actor-detail" sources={useCaseSources} /></p>
       <p id="use-case-journey-detail" className="vp-citation-target">一个 Use Case 只展开一段可讨论的交互；它仍要放回更大的用户旅程，确认前后步骤、其他团队和线下渠道怎样衔接。完整旅程里可能还有查订单、联系支持和到账确认，不能因为这一段有结果就假设整个问题已解决。<Cite id="use-case-journey-detail" sources={useCaseSources} /></p>
-      <UseCaseLesson />
     </ArticleSection>
 
     <ArticleSection id="use-case-structure" title="把条件、步骤和状态写全">
