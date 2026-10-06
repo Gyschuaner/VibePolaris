@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Browser, CheckCircle, Code, GitBranch, HardDrives, LockKey, Package, WarningCircle } from "@phosphor-icons/react";
+import { ArrowDown, ArrowRight, Browser, CheckCircle, Code, FileText, GitBranch, HardDrives, LockKey, Package, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -77,6 +77,31 @@ export function PackageSignatureHero() {
       <div className={styles.packageManifest}><span>package.json</span><code>A: ^1.2.0</code><small>允许范围</small></div>
       <div className={styles.packageTree}><span className={styles.treeLabel}>依赖树</span><div className={styles.treeRoot}>A <small>1.2.0</small></div><div className={styles.treeBranches}><b>B <small>2.0.1</small></b><b>color-utils <small>{resolution === "lock" ? "1.4.2" : "1.5.0"}</small></b></div><i className={styles.treeLine} aria-hidden="true" /></div>
       <div className={styles.packageLock} data-visible={scene.step >= 2 && resolution === "lock"}><LockKey size={20} /><strong>{resolution === "lock" ? "package-lock" : "再解析"}</strong><small>{scene.step >= 2 && resolution === "lock" ? "exact + integrity" : "没有精确印记"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function TypeScriptSignatureHero() {
+  const scene = useScene(4);
+  const [payload, setPayload] = useState<"valid" | "unknown">("unknown");
+  const labels = ["收到未知值", "压过类型尺", "编译通过", "运行时再验"];
+  const current = [
+    { title: "外部数据没有类型承诺", detail: "payload: unknown", icon: FileText },
+    { title: "类型尺要求先缩窄", detail: "typeof payload === 'object'", icon: ShieldCheck },
+    { title: "静态检查通过", detail: "编译器只检查写出来的路径", icon: CheckCircle },
+    { title: payload === "valid" ? "运行时形状匹配" : "运行时仍可能撞墙", detail: payload === "valid" ? "name 是字符串" : "name 实际是数字", icon: payload === "valid" ? CheckCircle : WarningCircle },
+  ][scene.step];
+
+  return <Frame ariaLabel="TypeScript 的静态类型检查与运行时输入校验是两道不同的门" className={styles.typescript} eyebrow="类型尺能提前看见一部分错误" meta="static check ≠ runtime proof" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="TypeScript 的类型在编译检查里发挥作用；来自网络、文件或用户的值仍要在运行时验证，类型通过不等于数据已经可信。">
+    <div className={styles.typescriptControls} role="group" aria-label="选择运行时输入形状">
+      <button type="button" aria-pressed={payload === "unknown"} onClick={() => { setPayload("unknown"); scene.seek(3); }}><WarningCircle size={15} />未校验 JSON</button>
+      <button type="button" aria-pressed={payload === "valid"} onClick={() => { setPayload("valid"); scene.seek(3); }}><CheckCircle size={15} />通过运行时校验</button>
+    </div>
+    <div className={styles.typescriptBoard} data-payload={payload} data-step={scene.step}>
+      <div className={styles.typeSource}><span>源代码</span><code><b>type</b> Profile = &#123; name: string &#125;</code><code>const p: Profile = payload</code><small>编译器看到的约束</small></div>
+      <ArrowDown className={styles.typeArrow} size={19} aria-hidden="true" />
+      <div className={styles.typeRuntime}><div className={styles.typeRuntimeHead}><FileText size={19} /><strong>真实输入</strong></div><code>&#123; name: {payload === "valid" ? '"Lin"' : "42"} &#125;</code><div className={styles.typeGate}><ShieldCheck size={14} /><span>{scene.step < 3 ? "尚未校验" : payload === "valid" ? "shape ok" : "shape mismatch"}</span></div></div>
+      <div className={styles.typeBadge} data-visible={scene.step >= 2}>{scene.step >= 2 ? "类型尺已移开" : "类型尺"}</div>
     </div>
   </Frame>;
 }
