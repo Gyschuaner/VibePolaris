@@ -2,7 +2,7 @@ import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
-import { IterationHero } from "./mechanism-heroes";
+import { ConversionRateHero, IterationHero } from "./mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -61,10 +61,6 @@ const conversionRateSections: [string, string][] = [
   ["conversion-rate-boundary", "百分比离不开时间窗和去重"],
 ];
 
-function ConversionRateHero() {
-  return <figure className={styles.miniHero} aria-label="同一批用户的外圈起点与内圈完成者形成转化率"><div className={styles.miniTop}><span>完成者在起点人群里留下印记</span><strong>RATE · 03</strong></div><div className={styles.conversionSignature}><div className={styles.conversionRings}><i data-ring="outer" /><i data-ring="inner" /><strong>120</strong><small>/ 1000 · 12%</small></div><span>换完成事件，内圈就会改变。</span></div></figure>;
-}
-
 export function ConversionRateTermPage() {
   return <Article slug="conversion-rate" title="转化率" subtitle="Conversion Rate · 先固定口径，再读百分比" sources={conversionRateSources} sections={conversionRateSections} hero={<ConversionRateHero />} intro={<>“1000 人进来，120 人完成”看起来只需要做一道除法。<strong>真正决定转化率的是分母、完成事件、去重方式和时间窗</strong>；其中任何一项变化，百分比就不再是同一个指标。</>}>
     <ArticleSection id="conversion-rate-definition" title="先把起点和完成事件说清楚">
@@ -73,7 +69,6 @@ export function ConversionRateTermPage() {
     </ArticleSection>
     <ArticleSection id="conversion-rate-formula" title="同一批用户，分子换了，结果就换了">
       <p id="conversion-formula" className="vp-citation-target">用户级转化率可以写成“在规定窗口内完成全部步骤的独立用户 ÷ 进入第一步的独立用户”。<Cite id="conversion-formula" sources={conversionRateSources} />用提交表单做完成事件，180 ÷ 1000 得到 18%；换成验证邮箱，120 ÷ 1000 就变成 12%。</p>
-      <ConversionRateLesson />
       <p id="conversion-steps" className="vp-citation-target">漏斗报告会按有序步骤筛选用户，分母和每一步的完成人数都依赖这些步骤定义。<Cite id="conversion-steps" sources={conversionRateSources} />所以“注册按钮点击量 ÷ 页面访问量”只有在两者单位、用户集合和窗口都对齐时，才可以称为一项可比的转化率。</p>
     </ArticleSection>
     <ArticleSection id="conversion-rate-boundary" title="百分比离不开时间窗和去重">
