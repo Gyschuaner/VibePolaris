@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, GitCommit, GitBranch, Graph, ShieldWarning, TestTube, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, ClipboardText, Eye, GitCommit, GitBranch, Graph, PaperPlaneTilt, ShieldWarning, TestTube, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -68,6 +68,41 @@ export function RegressionTestSignatureHero() {
         <strong>{scene.step < 2 ? "等待运行" : failed ? "403 → 200" : includeHistory ? "14 / 32" : "11 / 32"}</strong>
         <code>{scene.step < 2 ? "PENDING" : failed ? "STOP · 修权限" : includeHistory ? "impact + history" : "impact only"}</code>
         <small>{scene.step < 2 ? "选集还没有跑" : failed ? "绿色不能盖住这处倒退" : "范围仍可追溯"}</small>
+      </div>
+    </div>
+  </SignatureFrame>;
+}
+
+const caseSteps = ["留下模糊句", "固定起点", "写出动作", "对齐证据", "清理重跑"];
+
+export function TestCaseSignatureHero() {
+  const scene = useScene(caseSteps.length);
+  const [precise, setPrecise] = useState(true);
+  const runnable = precise && scene.step >= 3;
+  const failed = !precise && scene.step === caseSteps.length - 1;
+  const choose = (next: boolean) => { setPrecise(next); scene.seek(0); };
+  const status = failed
+    ? { icon: WarningCircle, title: "无法判定", detail: "只写“应该失败”，执行者没有可比较的预期", danger: true }
+    : scene.step === 4
+      ? { icon: CheckCircle, title: "同一条判断可重跑", detail: "HTTP 410、令牌未消费、邮件 0 封，两次都对上" }
+    : { icon: scene.step < 2 ? ClipboardText : scene.step === 2 ? PaperPlaneTilt : Eye, title: caseSteps[scene.step], detail: scene.step === 0 ? "标题只指出风险，还不能直接执行" : "每一格都在把现场变成可观察事实" };
+  return <SignatureFrame scene={scene} label="测试用例从模糊要求长出固定起点、动作和可观察证据" eyebrow="一张执行单，要让别人接得住" meta="arrange → act → observe → repeat" steps={caseSteps} status={status} caption="测试用例不是把风险写得更像一句口号，而是把起点、动作、预期和清理写到下一次仍能复原。" controls={<div className={styles.choiceRow} role="group" aria-label="选择用例写法"><button type="button" aria-pressed={precise} onClick={() => choose(true)}>补齐可判定预期</button><button type="button" aria-pressed={!precise} onClick={() => choose(false)}>只写“应该失败”</button></div>}>
+    <div className={styles.caseBoard} data-precise={precise} data-runnable={runnable} data-failed={failed}>
+      <div className={styles.caseSheet} data-active={scene.step === 0} data-done={scene.step > 0}>
+        <span className={styles.label}><ClipboardText size={16} aria-hidden="true" />草稿</span>
+        <strong>密码重置</strong>
+        <code>{precise ? "expired token → reject" : "password reset should fail"}</code>
+        <span className={styles.paperLine} /><span className={styles.paperLine} /><small>{scene.step === 0 ? "风险句还没有起跑线" : "标题留下，细节继续补"}</small>
+      </div>
+      <div className={styles.caseColumn}>
+        <div className={styles.caseCell} data-active={scene.step === 1} data-done={scene.step > 1}><span className={styles.label}><UserCircle size={15} aria-hidden="true" />起点</span><strong>u-42 · active</strong><code>{scene.step >= 1 ? "token=expired · -10m" : "token=？"}</code></div>
+        <div className={styles.caseCell} data-active={scene.step === 2} data-done={scene.step > 2}><span className={styles.label}><PaperPlaneTilt size={15} aria-hidden="true" />动作</span><strong>POST /password/reset</strong><code>{scene.step >= 2 ? "只发送 1 次" : "等待请求"}</code></div>
+      </div>
+      <div className={styles.caseEvidence} data-active={scene.step >= 3} data-danger={failed}>
+        <span className={styles.label}>{failed ? <WarningCircle size={16} aria-hidden="true" /> : runnable ? <CheckCircle size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}证据</span>
+        <div className={styles.assertionList}><span>HTTP <strong>{runnable ? "410" : "—"}</strong></span><span>token <strong>{runnable ? "未消费" : "—"}</strong></span><span>邮件 <strong>{runnable ? "0 封" : "—"}</strong></span></div>
+        <div className={styles.evidenceSeal} data-danger={failed}>{failed ? "NOT RUNNABLE" : scene.step === 4 && precise ? "PASS ×2" : "尚未判定"}</div>
+        <small>{failed ? "预期缺口挡在执行前" : scene.step === 4 && precise ? "清理后仍能得到同一结论" : "结果要落在系统真的会留下的事实"}</small>
       </div>
     </div>
   </SignatureFrame>;
