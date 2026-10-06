@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Browser, CheckCircle, Code, DeviceMobile, Eye, FileCode, Gear, GitBranch, Key } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, DeviceMobile, Eye, FileCode, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -73,6 +73,19 @@ export function AppManifestSignatureHero() {
         <div data-missing={missing === "link"}><span>链接</span><strong>/orders/*</strong><i>{missing === "link" ? "不匹配" : "可处理"}</i></div>
       </div>
       <div className={styles.manifestSystem}><DeviceMobile size={25} /><span>系统结果</span><strong>{scene.step === 0 ? "按声明启动" : missing === "entry" ? "没有入口" : missing === "permission" ? "运行时需另行请求" : missing === "link" ? "回退网页" : "读取声明"}</strong></div>
+    </div>
+  </HeroShell>;
+}
+
+const emulatorLabels = ["覆盖配置", "复现条件", "真机校验"];
+export function EmulatorSignatureHero() {
+  const scene = useScene(emulatorLabels.length);
+  return <HeroShell scene={scene} title="同一构建如何在仿真器和真机之间分工" labels={emulatorLabels} className={styles.emulatorHero}>
+    <div className={styles.emulatorBuild}><Package size={20} /><span>同一构建</span><code>build 42</code><Check size={17} /></div>
+    <div className={styles.emulatorBoard} data-step={scene.step}>
+      <div className={styles.deviceCard}><div className={styles.deviceTop}><Monitor size={20} /><span>仿真器</span></div><div className={styles.deviceScreen}><div className={styles.signal}><MapPinLine size={18} /><span>{scene.step > 0 ? "位置已注入" : "可配置"}</span></div><div className={styles.signal}><ArrowsClockwise size={18} /><span>{scene.step > 0 ? "网络可重复" : "网络场景"}</span></div></div><small>功能与异常可重复</small></div>
+      <div className={styles.checkSpine}><span /><span /><span /></div>
+      <div className={`${styles.deviceCard} ${styles.physicalDevice}`}><div className={styles.deviceTop}><DeviceMobile size={20} /><span>真机</span></div><div className={styles.deviceScreen}><div className={styles.signal}><Gauge size={18} /><span>{scene.step === 2 ? "功耗实测" : "待确认"}</span></div><div className={styles.signal}><Lightning size={18} /><span>{scene.step === 2 ? "触觉实测" : "硬件差异"}</span></div></div><small>{scene.step === 2 ? "硬件证据已补齐" : "硬件项不能假定"}</small></div>
     </div>
   </HeroShell>;
 }

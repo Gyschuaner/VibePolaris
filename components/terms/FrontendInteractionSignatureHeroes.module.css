@@ -58,6 +58,20 @@
 .manifestSystem { background: color-mix(in srgb, #e6efdf 68%, var(--surface)); }
 .manifestSystem strong { color: var(--accent-text); font-size: 11px; line-height: 1.35; }
 
+.emulatorBuild { display: flex; align-items: center; gap: 7px; width: fit-content; margin: 0 auto 9px; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--accent-text) 24%, transparent); border-radius: 999px; background: var(--tint); color: var(--accent-text); font-size: 10px; }
+.emulatorBuild code { font: 700 10px ui-monospace, SFMono-Regular, monospace; }
+.emulatorBoard { display: grid; grid-template-columns: 1fr 58px 1fr; align-items: center; min-height: 150px; gap: 8px; }
+.deviceCard { display: grid; align-content: center; gap: 7px; min-height: 135px; padding: 12px; border: 1px solid color-mix(in srgb, var(--accent-text) 24%, transparent); border-radius: 18px; background: color-mix(in srgb, var(--surface) 62%, transparent); transition: transform .4s, border-color .35s; }
+.deviceCard.physicalDevice { border-color: color-mix(in srgb, var(--brand-star) 43%, transparent); background: color-mix(in srgb, #f3eadc 65%, var(--surface)); }
+.deviceTop { display: flex; align-items: center; gap: 7px; color: var(--accent-text); font-size: 12px; font-weight: 700; }
+.deviceScreen { display: grid; gap: 5px; padding: 8px; border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 10px; background: var(--paper); }
+.signal { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 9px; }.signal svg { color: var(--accent-text); }
+.deviceCard small { color: var(--muted); font-size: 9px; }
+.checkSpine { display: grid; justify-items: center; gap: 5px; }.checkSpine span { width: 9px; height: 9px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent-text) 52%, transparent); background: var(--tint); transition: transform .3s, background .3s; }
+.emulatorBoard[data-step="1"] .deviceCard:first-child, .emulatorBoard[data-step="2"] .deviceCard:first-child { transform: translateY(-4px); border-color: var(--accent-text); }
+.emulatorBoard[data-step="2"] .physicalDevice { transform: translateY(-4px); border-color: var(--accent-text); }
+.emulatorBoard[data-step="1"] .checkSpine span:nth-child(-n+2), .emulatorBoard[data-step="2"] .checkSpine span { background: var(--accent-text); transform: scale(1.18); }
+
 @media (max-width: 760px) {
   .hero { padding: 12px; border-radius: 17px; }
   .canvas { min-height: 0; }
@@ -71,6 +85,9 @@
   .manifestBoard { grid-template-columns: 1fr; min-height: 0; }
   .manifestFile, .manifestSystem { min-height: 82px; }
   .manifestToggles { justify-content: flex-start; }
+  .emulatorBoard { grid-template-columns: 1fr; min-height: 0; }
+  .checkSpine { grid-template-columns: repeat(3, 1fr); grid-auto-flow: column; min-height: 14px; }
+  .deviceCard { min-height: 82px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
