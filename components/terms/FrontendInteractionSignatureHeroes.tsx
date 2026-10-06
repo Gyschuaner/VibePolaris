@@ -138,21 +138,25 @@ export function HapticFeedbackSignatureHero() {
 }
 
 const touchLabels = ["只按图标命中", "扩大不可见热区", "重放相同落点", "发现边界相撞"];
-const touchPoints = [["12%", "24%"], ["40%", "70%"], ["63%", "31%"], ["82%", "72%"], ["28%", "46%"], ["56%", "82%"], ["73%", "56%"], ["18%", "78%"], ["90%", "38%"], ["46%", "18%"]];
+const touchPoints = [[91, 71], [95, 75], [100, 79], [76, 64], [112, 68], [83, 92], [104, 95], [72, 80], [113, 93], [127, 105]];
 export function TouchTargetSignatureHero() {
   const scene = useScene(touchLabels.length);
-  const target = { left: 55, top: 50 };
-  const neighborLeft = scene.step === 3 ? 55 : 72;
-  const radius = scene.step === 0 ? 26 : 48;
-  const hits = touchPoints.map(([left, top]) => {
-    const dx = Number.parseFloat(left) - target.left;
-    const dy = Number.parseFloat(top) - target.top;
-    return Math.hypot(dx, dy) <= radius;
-  });
+  const size = scene.step === 0 ? 16 : 48;
+  const box = { x: 95 - size / 2, y: 75 - size / 2, size };
+  const neighborX = scene.step === 3 ? 133 : 151;
+  const hits = touchPoints.map(([x, y]) => x >= box.x && x <= box.x + size && y >= box.y && y <= box.y + size);
+  const overlap = box.x + size > neighborX - 24;
   return <HeroShell scene={scene} title="图标、热区和相邻间距如何共同决定命中" labels={touchLabels} className={styles.touchHero}>
     <div className={styles.touchBoard} data-step={scene.step}>
-      <div className={styles.touchStage}><div className={styles.touchTarget} style={{ left: `${target.left}%`, top: `${target.top}%` }}><span className={styles.touchHitbox} /><Cube size={18} /><b>图标</b></div><div className={styles.touchNeighbor} style={{ left: `${neighborLeft}%`, top: "50%" }}><Cube size={16} /><span>邻居</span></div>{touchPoints.map(([left, top], index) => <i className={styles.touchPoint} style={{ left, top }} key={`${left}-${top}`} data-hit={hits[index]} />)}</div>
-      <div className={styles.touchReadout}><Target size={23} /><span>同一组十个落点</span><strong>{scene.step < 3 ? `命中 ${hits.filter(Boolean).length} / 10` : "两块热区相撞"}</strong><small>{scene.step === 0 ? "可见像素决定命中" : scene.step === 1 ? "容器内边距扩大热区" : scene.step === 2 ? "重放输入检查漏点" : "邻居靠近后，边界开始重叠"}</small></div>
+      <svg className={styles.touchStage} viewBox="0 0 240 150" role="img" aria-label={`${size} × ${size} 的示例热区，十个落点中 ${hits.filter(Boolean).length} 个命中${overlap ? "，与邻居热区重叠" : ""}`}>
+        <rect className={styles.touchNeighborHitbox} x={neighborX - 24} y={51} width={48} height={48} rx={5} data-overlap={overlap} />
+        <rect className={styles.touchHitbox} x={box.x} y={box.y} width={size} height={size} rx={3} data-overlap={overlap} />
+        <path className={styles.touchIcon} d="M 88 75 H 102 M 95 68 V 82" />
+        <path className={styles.touchIcon} d={`M ${neighborX - 7} 75 H ${neighborX + 7}`} />
+        <text x={95} y={46}>图标</text><text x={neighborX} y={46}>邻居</text>
+        {touchPoints.map(([x, y], index) => <circle className={styles.touchPoint} cx={x} cy={y} r={2.2} key={`${x}-${y}`} data-hit={hits[index]} />)}
+      </svg>
+      <div className={styles.touchReadout}><Target size={23} /><span>同一组十个落点</span><strong>{overlap ? "两块热区相撞" : `命中 ${hits.filter(Boolean).length} / 10`}</strong><small>{scene.step === 0 ? "热区与图标同样大" : scene.step === 1 ? "图标不变，热区扩大" : scene.step === 2 ? "重放输入检查漏点" : "邻居靠近后，边界开始重叠"}</small></div>
     </div>
   </HeroShell>;
 }
