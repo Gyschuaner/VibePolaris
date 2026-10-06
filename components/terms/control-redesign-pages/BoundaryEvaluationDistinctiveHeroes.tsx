@@ -8,23 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function RubricHero() {
-  return <HeroShell kind="rubric" label="同一个回答被量表的三把尺子逐格照亮，事实和风险通过，条件缺失留下二分之一的证据">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <rect className={styles.rubricAnswer} x="17" y="53" width="150" height="42" rx="8" />
-      <text className={styles.mechanismText} x="92" y="78" textAnchor="middle" style={textStyle}>审核后，三个工作日到账</text>
-      <path className={styles.rubricBeam} d="M178 34 V113" />
-      <g className={styles.rubricRule}>
-        <rect x="192" y="28" width="120" height="24" rx="5"/><text x="252" y="44" textAnchor="middle" style={textStyle}>事实 ✓</text>
-        <rect x="192" y="61" width="120" height="24" rx="5"/><text x="252" y="77" textAnchor="middle" style={textStyle}>条件 ?</text>
-        <rect x="192" y="94" width="120" height="24" rx="5"/><text x="252" y="110" textAnchor="middle" style={textStyle}>风险 ✓</text>
-      </g>
-      <g className={styles.mechanismRubricScore}><circle cx="171" cy="127" r="16"/><text x="171" y="131" textAnchor="middle" style={textStyle}>2/3</text></g>
-      <text className={styles.mechanismCaption} x="92" y="116" textAnchor="middle" style={textStyle}>逐项证据</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function HumanGraderHero() {
   return <HeroShell kind="humanGrader" label="两位评审先在各自的刻度尺上独立落点，分歧被送进第三人的校准框并留下三分">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">

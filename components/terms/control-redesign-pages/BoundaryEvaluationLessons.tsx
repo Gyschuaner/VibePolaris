@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function RubricLesson() {
-  const [sample, setSample] = useState<"complete" | "missing" | "overclaim">("complete");
-  const values = { complete: ["事实 ✓ · 条件 ✓ · 风险 ✓", "3 / 3", "可复核"], missing: ["事实 ✓ · 条件 ✕ · 风险 ✓", "2 / 3", "回到缺失条件"], overclaim: ["事实 ? · 条件 ✕ · 风险 ✕", "0 / 3", "没有支持证据"] } as const;
-  return <LessonShell eyebrow="量表把一句印象拆成逐项证据" title="评分规则试算"><div className={styles.lessonControls}><button type="button" aria-pressed={sample === "complete"} onClick={() => setSample("complete")}>保留条件</button><button type="button" aria-pressed={sample === "missing"} onClick={() => setSample("missing")}>漏掉条件</button><button type="button" aria-pressed={sample === "overclaim"} onClick={() => setSample("overclaim")}>越界承诺</button><button type="button" onClick={() => setSample("complete")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>回答</span><code>{sample === "complete" ? "审核后，三个工作日到账" : sample === "missing" ? "三个工作日到账" : "马上到账且一定免费"}</code><em>同一题</em></div><div className={styles.labRow}><span>逐项</span><code>{values[sample][0]}</code><em>维度不合并</em></div><div className={styles.labRow}><span>总分</span><code>{values[sample][1]}</code><em>{values[sample][2]}</em></div></div></LessonShell>;
-}
-
 export function HumanGraderLesson() {
   const [caseType, setCaseType] = useState<"agree" | "split" | "missing">("agree");
   const values = { agree: ["甲 4/5 · 乙 4/5", "一致", "保留共同理由"], split: ["甲 4/5 · 乙 2/5", "第三人 3/5", "写回校准样例"], missing: ["甲 unscored · 乙 unscored", "等待证据", "不塞进通过率"] } as const;

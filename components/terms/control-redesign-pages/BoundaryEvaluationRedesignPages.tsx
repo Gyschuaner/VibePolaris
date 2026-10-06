@@ -14,7 +14,6 @@ import {
 } from "@/lib/boundary-evaluation-redesign-sources";
 import {
   HumanGraderLesson,
-  RubricLesson,
 } from "./BoundaryEvaluationLessons";
 import { BoundaryLesson, BoundaryHero } from "./PermissionBoundaryAnimation";
 import { XssHero, XssLesson } from "./XssAnimation";
@@ -24,9 +23,9 @@ import { SafetyEvaluationHero, SafetyEvaluationLesson } from "./SafetyEvaluation
 import { CostEvaluationHero, CostEvaluationLesson } from "./CostEvaluationAnimation";
 import { LatencyEvaluationHero, LatencyEvaluationLesson } from "./LatencyEvaluationAnimation";
 import { PassFailHero, PassFailLesson } from "./PassFailAnimation";
+import { RubricHero, RubricLesson } from "./RubricAnimation";
 import {
   HumanGraderHero,
-  RubricHero,
 } from "./BoundaryEvaluationDistinctiveHeroes";
 
 function PermissionCite({ id }: { id: string }) { return <Cite id={id} sources={permissionBoundarySources}/>; }
