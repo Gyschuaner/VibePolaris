@@ -49,7 +49,11 @@
 ## 发布状态
 
 - 当前分支：`feat/VBP-089-product-concept-signatures`，从更新后的 `origin/main` (`a0edb5c9`) 创建；当前本地 HEAD 为 `f6f1e7e5`。
-- 当前阶段：十条本地实现与 review 已完成，rollout 台账已登记为“待批次发布”；代码尚未合入 dev/main，也尚未部署生产。
+- 当前阶段：十条本地实现与 review 已完成，并按十条合批进入 dev/main；rollout 台账已登记为“生产已发布”。
+- dev PR [#379](https://github.com/Gyschuaner/VibePolaris/pull/379) 已合入，合并提交为 `75ef004f730f9f68e572acb0c1b5b955cb169487`；合并树与已验证本地预览一致。
+- main PR [#380](https://github.com/Gyschuaner/VibePolaris/pull/380) 已合入，生产源提交为 `22d8e21778e5bcb0b25d8eb60a67c016adacf744`。生产镜像为 `vibepolaris:22d8e21778e5bcb0b25d8eb60a67c016adacf744`，发布目录为 `/opt/vibepolaris/releases/20261006T190052Z-22d8e217`，`vibepolaris-web-1` 为 `running/healthy`。
+- 切换前生产 release、镜像和 Compose 备份保存在 `/opt/vibepolaris/backups/20261006T190052Z-from-0720cb21`；新 release 的 `rollback.sh` 可用旧镜像和旧 release 恢复服务，`vibepolaris_xiaobei_data` 数据卷未改动。
+- 生产机 HTTPS 冒烟 `/`、`/news`、`/about`、`/sitemap.xml` 以及十条 VBP-089 词条均返回 200。当前客户端到公网 HTTPS 仍间歇性 `ERR_CONNECTION_CLOSED`，因此没有把本机浏览器访问生产写成通过；本地真实浏览器验收和生产机 HTTPS 路由结果分别如实保留。
 - DP requirement list 在本次查询仍因 TLS `UNEXPECTED_EOF_WHILE_READING` 无法连接；未创建或伪造 VBP-089 需求、测试计划或部署记录。平台恢复后按 CLI 补录，并以返回的真实 ID 更新本记录。
 - 生产发布沿用 [VBP-047 发布说明](../development/VBP-047-production.md)：本机构建 `linux/amd64` 镜像，保留当前 release、Compose 与 `vibepolaris_xiaobei_data`，原子切换 `current`，完成 HTTPS、健康状态、根路径、新闻和十条词条冒烟后记录真实 release、镜像和回滚路径。
 - `D:/Obsidian/gysnote` 在当前 Mac 环境不存在，本批未写入 Obsidian。
