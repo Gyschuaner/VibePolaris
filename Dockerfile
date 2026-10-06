@@ -2,7 +2,8 @@ FROM node:22-alpine AS deps
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install --no-audit --no-fund
+RUN --mount=type=secret,id=proxy_ca,required=true \
+    NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm install --no-audit --no-fund
 
 FROM node:22-alpine AS builder
 
