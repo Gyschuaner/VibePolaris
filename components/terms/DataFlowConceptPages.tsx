@@ -1,17 +1,17 @@
-import { Archive, FileText, CurrencyCircleDollar, Funnel } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { IngestionLesson, TransformationLesson, ValidationLesson } from './DataFlowConceptLessons';
 import { ingestionSources, transformationSources, validationSources } from '@/lib/dataflow-sources';
 import base from './EventConcepts.module.css';
 import s from './DataFlowConcepts.module.css';
+import { DataIngestionSignatureHero, DataTransformationSignatureHero, DataValidationSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function IngestionTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={ingestionSources}/>;
   return <ConceptArticle slug="data-ingestion" title="数据接入" sources={ingestionSources} sections={[["entry", "把来源数据接进来"], ["position", "读到哪里，保存到哪里"], ["restart", "重启后可能再次读取"], ["reconcile", "接进来以后，还要核对"]]}
     intro={<>图书馆的借阅记录不断增加，报表系统要把新增记录接进原始层。原始层是接入后先保存来源记录和原始值的地方。接入要回答两个问题：哪些记录已经写入，下一次从哪里继续。读到一条记录，与确认它已经可靠保存，是不同的进度；接入完成也不等于后面的验证、转换和汇总都已完成。</>}
-    hero={<ConceptHero slug="data-ingestion" label="读到记录并写入原始层，确认位置才可前移"><div className={s.ingestionHero}><div className={s.heroLog}><FileText size={25}/><code>1 · loan-1</code><code>2 · loan-2</code></div><div className={s.heroDestination}><Archive size={25}/><strong>原始层</strong><span>等待接入</span></div><div className={s.heroCursor}>写入完成之后，还要保存确认位置</div></div></ConceptHero>}>
+    hero={<DataIngestionSignatureHero />}>
     <ArticleSection id="entry" title="把来源数据接进来"><Legacy slug="data-ingestion" names={["question", "definition"]}/>
       <p id="ingestion-entry" className="vp-citation-target"><strong>数据接入把数据库、文件、API 或事件流中的数据收集到目标系统，供后续存储与处理。</strong>AWS 将它描述为数据进入处理流程的入口，也区分批量、流式与微批方式。有的接入系统会附带基础检查或预处理；本文只讲来源读取与目标保存这两步，清洗、汇总、发布属于数据管道里的其他环节，这里不展开。这里把原始层当作数据接入后的第一个去处：先保留来源记录和原始值，后面的转换、验证与汇总再从这里读取。<Cite id="ingestion-entry"/></p>
       <div className={base.contrast}><div><h3>数据接入</h3><p>从借阅来源拿到记录，保存事件身份（用来认出同一条记录的标识）与原始值，并记录读取位置。</p></div><div><h3>数据管道</h3><p>把接入、验证、转换、统计和发布连接成完整流程。接入做完，只代表整个流程里的一步结束。</p></div></div>
@@ -41,7 +41,7 @@ export function TransformationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={transformationSources}/>;
   return <ConceptArticle slug="data-transformation" title="数据转换" sources={transformationSources} sections={[["rules", "让字段遵循同一套规则"], ["units", "数字之外，还要知道单位"], ["precision", "精度与舍入要先约定"], ["grain", "汇总会改变一行的含义"]]}
     intro={<>本例有四条借阅费用：A 写成 ¥12.30、B 写成 CNY 12.30，输入约定它们都是 CNY 元；C 写成 1230 分，输入约定它是 CNY 分；D 只写 1230，单位还没有确认。报表不能把这四种输入直接相加：如果把符号和单位都丢掉，A、B、C 会被当成 12.30、12.30、1230，直接加成 1254.60；但按已知约定，它们应合成 3690 分，D 还不能进入合计。数据转换用明确的规则统一表示，同时保留原始值，避免把不确定的信息悄悄变成一个确定数字。</>}
-    hero={<ConceptHero slug="data-transformation" label="先确认单位，再统一为 CNY 整数分"><div className={s.transformHero}><div className={s.heroOriginal}><CurrencyCircleDollar size={25}/><code>A · ¥12.30</code><code>B · CNY 12.30</code><code>C · 1230 分</code></div><div className={s.heroStamp}><span>输出约定</span><strong>等待执行</strong><span>整数分 · CNY</span></div></div></ConceptHero>}>
+    hero={<DataTransformationSignatureHero />}>
     <ArticleSection id="rules" title="让字段遵循同一套规则"><Legacy slug="data-transformation" names={["question", "definition"]}/>
       <p id="transform-definition" className="vp-citation-target"><strong>数据转换按照明确规则，改变数据的表示、字段结构、值或统计粒度，让它适合后续使用。</strong>这里说的“表示”变化，是现实中对应的金额没有变，只是写法或单位换了，例如把 12.30 元写成 1230 分；“字段结构”是字段怎样拆分、合并或改名；“值”变化，是业务规则让现实含义也变了，例如按税率从不含税金额算出含税金额；“统计粒度”是一行数据代表一条记录，还是一组记录的合计。<Cite id="transform-definition"/></p>
       <p>例如拆出日期、统一金额单位，或者按书目汇总借阅次数。dbt 是一个数据建模工具：它把写在 SQL（查询数据的语言）文件里的 SELECT 当作 model，运行时可以按配置把结果建立成视图或表；它只是实现转换的一种工具，转换本身不限定使用 dbt。<Cite id="transform-definition"/></p>
@@ -72,7 +72,7 @@ export function ValidationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={validationSources}/>;
   return <ConceptArticle slug="data-validation" title="数据验证" sources={validationSources} sections={[["contract", "把要求写成可检查的规则"], ["check", "逐条解释验证结果"], ["report", "报告要指向具体字段"], ["boundary", "通过规则，不代表全部真实"]]}
     intro={<>一份导入资料里，年龄是 −2、城市写成 ??，或者年龄看起来是 24，却以字符串保存。数据验证按约定逐项检查，把符合要求的记录与需要处理的记录分开，也让失败有一个能追查的理由。</>}
-    hero={<ConceptHero slug="data-validation" label="整数年龄和字符串年龄会得到不同的检查，失败的字段会留下可读的原因"><div className={s.validationHero}><div className={s.heroGrid}><div><code>age: 24</code><span>整数 ✓</span></div><div><code>age: −2</code><span>范围 ×</span></div><div><code>city: ??</code><span>城市 ×</span></div><div><code>age: &quot;24&quot;</code><span>类型 ×</span></div></div><div className={s.heroBeam}/><div className={s.heroReport}><Funnel size={16}/> 1 条通过 · 3 条待处理</div></div></ConceptHero>}>
+    hero={<DataValidationSignatureHero />}>
     <ArticleSection id="contract" title="把要求写成可检查的规则"><Legacy slug="data-validation" names={["question", "definition"]}/>
       <p id="validation-contract" className="vp-citation-target"><strong>数据验证按约定检查输入，给出通过或失败的结果与原因。</strong>这里的“输入”可以是一条记录，也可以是一批记录。规则可以约束类型、必填、范围、格式及字段关系。JSON Schema 是一种把规则写成配置的格式：`properties` 列出字段及各自的检查方式，`required` 列出必须出现的字段；配置里写了一个字段，不等于它一定要出现。例如 `nickname` 可以列在 `properties` 里但不列入 `required`，没有 nickname 时不一定失败；`required` 里的字段缺失，才按这条规则失败。字段缺失是输入里没有这个字段，`null` 则是字段存在但没有值，二者要按业务约定分别处理。本页的 `??` 是实际写入的字符串值，不是缺失字段或 `null`；固定演示没有放入缺失或 `null` 记录。要求必须明确，验证器才能检查。<Cite id="validation-contract"/></p>
       <p id="validation-levels" className="vp-citation-target">OWASP 把验证分成语法和语义两层：语法层检查单个字段是否符合可接受的格式，语义层检查它在业务关系中是否合理，例如开始日期是否早于结束日期。<strong>数字写得合法、字段关系合理，是两种检查。</strong>它们都依赖业务要求；正则表达式最多检查一段文字的形状，不能代替范围或字段关系判断。<Cite id="validation-levels"/></p>
