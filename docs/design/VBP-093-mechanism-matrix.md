@@ -18,3 +18,14 @@
 ## 资料核对
 
 本批每条至少保留四份实际打开的公开资料，并把论断绑定到段落 ID。已打开的原始资料包括 React、Next.js、web.dev、WHATWG、MDN、W3C WAI、Vercel、Netlify、Kubernetes、Amazon ECS、Git、GOV.UK Service Manual、Scrum Guide 和 Design Council；各条具体 URL 仍以对应 `lib/*-sources.ts` 为准。
+
+## 发布记录
+
+- 实现分支：`feat/VBP-093-next-concept-signatures`，从 `origin/main` 的 `3d10e2bb` 创建；十条逐条提交，最后状态修复提交为 `295d8d8`。
+- 唯一 review 子智能体逐条结论：`ssr`、`ssg`、`routing`、`local-storage`、`focus-management`、`preview-deployment`、`rollback`、`user-story`、`problem-statement`、`target-user` 全部 PASS。review 发现的来源台账、重播状态泄漏、target-user 分镜漂移和焦点 Tab 顺序问题均已修复。
+- 来源与台账：十条的 helper/research/experience URL 逐条同序，数量为 `4/4/4/4/4/4/6/4/4/4`；Cite targets 无 missing、orphan、duplicate。
+- 验证：`npm run typecheck`、`npm run audit:terms`、`npm run build` 通过；audit 结果为 322 条、322 个唯一场景、`sourceCoverage=322`、重复/相邻重复/近重复均为 0；build 生成 1064 页。CUA 桌面和 390px 移动视口均检查了十条路由的唯一 H1、无横向溢出和控制台错误；步进、重播状态、焦点对话框背景控件 `tabIndex=-1` 均实测通过。
+- 合并：feature→dev PR #403，merge SHA `fdb62eee56eeae89d777c8e1cd051b21b5f80d68`；dev→main PR #404，merge SHA `09a7245840d7cfe1bdd694618314ed251d3fbf91`。
+- 生产镜像：从 main SHA `09a7245840d7cfe1bdd694618314ed251d3fbf91` 的独立 worktree 构建 `vibepolaris:09a7245840d7cfe1bdd694618314ed251d3fbf91`，manifest digest 为 `sha256:96603288c637463e9d4b8e535aaa7289af70ee5c093bf6da0dc94987e012e471`。
+- 生产发布：`/opt/vibepolaris/releases/20261007T060000Z-09a72458` 已切为 `/opt/vibepolaris/current`，`vibepolaris-web-1` 使用新镜像并保持 `healthy`。服务器容器和服务器公网入口对十条新路由均返回 HTTP 200。回滚脚本保留上一稳定 release `/opt/vibepolaris/releases/20261006T212659Z-428c1fca-corrected` 的 image tag `428c1fca4870bf94ae9b940918b9c7064b6413a4`；更早的安全回滚目标仍为 `/opt/vibepolaris/releases/20261006T203945Z-1d37bf09`。
+- 限制：本机直连公网域名时出现一次 `SSL_ERROR_SYSCALL`，因此公网冒烟以服务器本机结果为准；DP CLI 当前仍因 TLS EOF 无法重新查询，本次未伪造 DP 写入。
