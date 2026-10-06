@@ -2,6 +2,7 @@ import { Article, Cite } from "../AiStackConceptPageShared";
 import { ArticleAside, ArticleSection } from "../ConceptArticle";
 import { conversionRateSources, designTokenSources, feedbackSources, focusManagementSources, funnelSources, iterationSources, mockupSources, sitemapSources, usabilityTestingSources, visualHierarchySources } from "@/lib/product-design-sources";
 import { ConversionRateLesson, DesignTokenLesson, FeedbackLesson, FunnelLesson, IterationLesson, MockupLesson, SitemapLesson, UsabilityTestingLesson, VisualHierarchyLesson } from "./ProductDesignLessons";
+import { IterationHero } from "./mechanism-heroes";
 import { FocusManagementHero } from "./focus-management-hero";
 import styles from "./ProductDesignConcepts.module.css";
 
@@ -36,10 +37,6 @@ const iterationSections: [string, string][] = [
   ["iteration-boundary", "迭代也需要停止条件"],
 ];
 
-function IterationHero() {
-  return <figure className={styles.miniHero} aria-label="一枚证据指针在交付、观察和调整之间改变下一轮范围"><div className={styles.miniTop}><span>证据把指针拨向下一轮</span><strong>ITERATE · 02</strong></div><div className={styles.iterationSignature}><div className={styles.iterationDial}><i /><span data-phase="ship">交付</span><span data-phase="observe">观察</span><span data-phase="adjust">调整</span></div><small>不是绕圈忙碌，而是每次带着新证据回来。</small></div></figure>;
-}
-
 export function IterationTermPage() {
   return <Article slug="iteration" title="迭代" subtitle="Iteration · 用一轮结果决定下一轮" sources={iterationSources} sections={iterationSections} hero={<IterationHero />} intro={<>“等全部做完再看”会把错误藏到最后。<strong>迭代是在有限范围内交付可运行结果，再用真实使用、验收或数据决定下一步</strong>；它切的是风险和学习路径，不是把任务随意切成几段。</>}>
     <ArticleSection id="iteration-definition" title="先把目标切成可验证的一块">
@@ -48,7 +45,6 @@ export function IterationTermPage() {
     </ArticleSection>
     <ArticleSection id="iteration-evidence" title="结果要回到下一轮">
       <p id="iteration-research" className="vp-citation-target">研究也可以一轮一轮做：先用小范围任务确认问题，再根据观察到的停顿、失败或遗漏调整下一轮。<Cite id="iteration-research" sources={iterationSources} />这比项目末尾才安排一次“大而全”的验证更容易把问题留在可修改的范围里。</p>
-      <IterationLesson />
       <p id="iteration-inspect" className="vp-citation-target">检查结果不是装饰性的复盘。<Cite id="iteration-inspect" sources={iterationSources} />如果用户能完成目标，就可以保留这一块；如果只在某个字段失败，就把下一轮收窄到这个缺口；如果证据不支持原假设，也应允许停止。</p>
     </ArticleSection>
     <ArticleSection id="iteration-boundary" title="迭代也需要停止条件">
