@@ -30,7 +30,7 @@ const conversionCaptions = [
   "先圈出进入注册页的独立用户；分母一变，后面的百分比就不再可比。",
   "验证邮箱是完成事件，120 个完成者落在 1000 个起点用户里。",
   "如果把提交表单当完成事件，分子变成 180，指标会变成 18%。",
-  "再写清去重方式和等待窗口，12% 才有可以复查的口径。",
+  "把窗口缩成一小时，只记到 90 个及时验证者，得到 9%；这和 24 小时不是同一口径。",
 ];
 
 export function ConversionRateHero() {
@@ -38,34 +38,36 @@ export function ConversionRateHero() {
   const step = scene.step;
   const recorded = step >= 1;
   const submitted = step === 2;
-  const numerator = submitted ? 180 : recorded ? 120 : 0;
-  const percent = submitted ? 18 : recorded ? 12 : 0;
+  const fixedWindow = step >= 3;
+  const numerator = fixedWindow ? 90 : submitted ? 180 : recorded ? 120 : 0;
+  const percent = fixedWindow ? 9 : submitted ? 18 : recorded ? 12 : 0;
   return <MechanismFrame scene={scene} title="转化率怎样让分母、事件和窗口现形" labels={conversionLabels} caption={conversionCaptions[step]}>
     <div className={styles.conversionScene}>
       <div className={styles.conversionRingsLarge} data-submitted={submitted}><i /><i /><strong>{recorded ? numerator : "—"}</strong><small>/ 1000 · {recorded ? `${percent}%` : "待记录"}</small></div>
-      <div className={styles.conversionLedger}><div className={styles.conversionLedgerHead}><ClipboardText size={15} /><span>MEASUREMENT LEDGER</span></div><div><small>起点</small><strong>首次到达注册页</strong></div><div><small>完成</small><strong>{step >= 2 ? "提交表单" : step >= 1 ? "验证邮箱" : "待记录"}</strong></div><div><small>窗口 / 单位</small><strong>{step >= 3 ? "24h · 独立用户" : "待固定"}</strong></div></div>
+      <div className={styles.conversionLedger}><div className={styles.conversionLedgerHead}><ClipboardText size={15} /><span>MEASUREMENT LEDGER</span></div><div><small>起点</small><strong>首次到达注册页</strong></div><div><small>完成</small><strong>{step >= 2 ? "提交表单" : step >= 1 ? "验证邮箱" : "待记录"}</strong></div><div><small>窗口 / 单位</small><strong>{step >= 3 ? "1h · 独立用户" : "待固定"}</strong></div></div>
       <div className={styles.conversionProof} role="status"><Target size={15} /><span>{step === 2 ? "换完成事件，内圈就变大" : step >= 3 ? "口径固定后才可比较版本" : "百分比先别脱离上下文"}</span></div>
     </div>
   </MechanismFrame>;
 }
 
-const funnelLabels = ["写出路径", "经过第一关", "找到掉落", "补证据"];
+const funnelLabels = ["写出路径", "经过第一关", "找到掉落", "打开漏斗", "缩短窗口"];
 const funnelCaptions = [
   "漏斗先写一条已知路径：到达注册页、填写表单、验证邮箱。",
   "同一批 1000 个起点用户进入第一道筛网，只有完成事件的人继续留下。",
-  "420 人停在填写后只能定位位置；人数本身不能解释为什么离开。",
-  "再用日志、访谈或实验查原因，不要直接把掉落归因给某个颜色。",
+  "420 人进入填写，120 人完成验证；掉落位置可见，人数本身不能解释为什么离开。",
+  "打开漏斗后，从填写表单直接进入的 30 人也会被计入，第二步变成 450。",
+  "窗口缩成 10 分钟后，及时验证只剩 80；这是规则变化，仍要用证据查原因。",
 ];
 
 export function FunnelHero() {
   const scene = useScene(funnelLabels.length);
   const step = scene.step;
-  const counts = [1000, step >= 1 ? 420 : 0, step >= 2 ? 180 : 0];
+  const counts = [1000, step >= 3 ? 450 : step >= 1 ? 420 : 0, step >= 4 ? 80 : step >= 2 ? 120 : 0];
   return <MechanismFrame scene={scene} title="漏斗怎样只定位流失位置" labels={funnelLabels} caption={funnelCaptions[step]}>
     <div className={styles.funnelScene}>
-      <div className={styles.funnelGates}><div className={styles.funnelGate} data-active={step >= 0}><span>到达注册页</span><strong>{counts[0]}</strong><small>起点</small></div><div className={styles.funnelGate} data-active={step >= 1}><span>填写表单</span><strong>{counts[1] || "—"}</strong><small>{step >= 2 ? "掉落 580" : "下一步"}</small></div><div className={styles.funnelGate} data-active={step >= 2}><span>验证邮箱</span><strong>{counts[2] || "—"}</strong><small>{step >= 3 ? "等待原因" : "完成"}</small></div></div>
+      <div className={styles.funnelGates}><div className={styles.funnelGate} data-active={step >= 0}><span>到达注册页</span><strong>{counts[0]}</strong><small>起点</small></div><div className={styles.funnelGate} data-active={step >= 1}><span>填写表单</span><strong>{counts[1] || "—"}</strong><small>{step >= 2 ? (step >= 3 ? "开放 · 450" : "掉落 580") : "下一步"}</small></div><div className={styles.funnelGate} data-active={step >= 2}><span>验证邮箱</span><strong>{counts[2] || "—"}</strong><small>{step >= 4 ? "10 min" : step >= 3 ? "30 min" : "完成"}</small></div></div>
       <div className={styles.funnelParticles} aria-hidden="true">{Array.from({length: 12}, (_, i) => <i key={i} data-on={step >= (i % 3 === 0 ? 0 : i % 3 === 1 ? 1 : 2)} />)}</div>
-      <div className={styles.funnelProof} role="status"><Funnel size={15} /><span>{step >= 3 ? "位置已知，原因还要补证据" : "漏斗回答哪一关，不替你解释原因"}</span></div>
+      <div className={styles.funnelProof} role="status"><Funnel size={15} /><span>{step >= 2 ? "位置已知，规则变化也要和原因分开" : "漏斗回答哪一关，不替你解释原因"}</span></div>
     </div>
   </MechanismFrame>;
 }
