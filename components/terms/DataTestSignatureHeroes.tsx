@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Database, FileText, Funnel, GitBranch, MapPin, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Cube, CurrencyCircleDollar, Database, FileText, Funnel, GitBranch, MapPin, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -76,6 +76,32 @@ export function DataPipelineSignatureHero() {
         <div className={styles.pipelineBranch} data-done={validated} data-danger={step === 2 && !quarantine}><Funnel size={17} /><span>校验 q{quarantine ? "2" : "1"}</span><small>{step === 2 && !quarantine ? "r2 缺书目编号" : validated ? "3 条通过 · 1 条隔离" : "等待规则"}</small></div>
       </div>
       <div className={styles.pipelineDownstream}><div data-done={aggregated} data-muted={!validated}><Database size={17} /><span>汇总</span><small>{aggregated ? "42 = 3" : "被校验挡住"}</small></div><div data-done={published} data-muted={!aggregated}><CheckCircle size={17} /><span>发布报表</span><small>{published ? "run-42 · s1 / q2" : "保持 v0"}</small></div></div>
+    </div>
+  </Frame>;
+}
+
+const transformationSteps = ["读原值", "辨单位", "统一表示", "挡住未知"];
+
+export function DataTransformationSignatureHero() {
+  const scene = useScene(transformationSteps.length);
+  const [resolveUnknown, setResolveUnknown] = useState(false);
+  const step = scene.step;
+  const known = resolveUnknown || step < 3;
+  const converted = step >= 2;
+  const result = step === 0
+    ? { icon: CurrencyCircleDollar, title: "先把原值摊开", detail: "符号、单位和小数位都还是来源事实" }
+    : step === 1
+      ? { icon: Scales, title: "单位先说清楚", detail: "A/B 是 CNY 元，C 是 CNY 分，D 仍未知" }
+      : step === 2
+        ? { icon: CheckCircle, title: "输出同一种表示", detail: "已知金额转成 CNY 整数分，原值仍保留" }
+        : known
+          ? { icon: CheckCircle, title: "单位补齐后才入账", detail: "D 的 1230 现在按 CNY 分进入合计" }
+          : { icon: WarningCircle, title: "未知单位停在待处理", detail: "D 不会被悄悄当成元或分", danger: true };
+  return <Frame label="数据转换先识别单位和精度，再把金额统一成整数分；未知单位停在待处理" eyebrow="换表示，不偷换含义" meta="raw → rule v2 → cents" scene={scene} steps={transformationSteps} result={result} caption="转换改变的是表示：A、B、C 可以得到同一种 CNY 整数分，D 没有单位就不能凭空确定。原始值和规则版本一起留下，下一次才能解释这个数字怎样来的。" controls={<div className={styles.inlineControls} role="group" aria-label="数据转换未知单位策略"><button type="button" aria-pressed={resolveUnknown} onClick={() => { setResolveUnknown(value => !value); scene.seek(3); }}><Cube size={15} />{resolveUnknown ? "撤回 D 的单位" : "确认 D = CNY 分"}</button></div>}>
+    <div className={styles.transformBoard} data-converted={converted} data-resolved={resolveUnknown}>
+      <div className={styles.transformInputs}><span>来源原值</span>{[{ id: "A", raw: "¥12.30", unit: "CNY 元" }, { id: "B", raw: "CNY 12.30", unit: "CNY 元" }, { id: "C", raw: "1230", unit: "CNY 分" }, { id: "D", raw: "1230", unit: resolveUnknown ? "CNY 分" : "未知单位" }].map(row => <div key={row.id} data-unknown={row.id === "D" && !resolveUnknown}><code>{row.id}</code><strong>{row.raw}</strong><small>{step >= 1 ? row.unit : "待识别"}</small></div>)}</div>
+      <div className={styles.transformRule}><div><Scales size={18} /><span>规则 v2</span></div><strong>元 × 100 → 分</strong><small>{step >= 2 ? "保留 2 位小数" : "等待单位"}</small></div>
+      <div className={styles.transformOutputs}><span>统一输出</span><div className={styles.transformTotal}><strong>{converted ? resolveUnknown ? "4920" : "3690" : "—"}</strong><small>CNY cents</small></div><div className={styles.transformProof}><span>A/B/C</span><code>{converted ? "1230 + 1230 + 1230" : "未计算"}</code></div><div className={styles.transformProof} data-unknown={!resolveUnknown}><span>D</span><code>{resolveUnknown ? "1230 · 已确认" : "? · 暂不合计"}</code></div></div>
     </div>
   </Frame>;
 }

@@ -1,11 +1,11 @@
-import { CurrencyCircleDollar, Funnel } from '@phosphor-icons/react/dist/ssr';
+import { Funnel } from '@phosphor-icons/react/dist/ssr';
 import { ConceptArticle, ArticleSection, ArticleAside, ArticleCitation, ConceptTerm } from './ConceptArticle';
 import { ConceptHero } from './ConceptHero';
 import { IngestionLesson, TransformationLesson, ValidationLesson } from './DataFlowConceptLessons';
 import { ingestionSources, transformationSources, validationSources } from '@/lib/dataflow-sources';
 import base from './EventConcepts.module.css';
 import s from './DataFlowConcepts.module.css';
-import { DataIngestionSignatureHero } from './DataTestSignatureHeroes';
+import { DataIngestionSignatureHero, DataTransformationSignatureHero } from './DataTestSignatureHeroes';
 function Legacy({ slug, names }: { slug: string; names: string[] }) { return <>{names.map(name => <span key={name} id={`${slug}-${name}`} className={base.anchor} aria-hidden="true"/>)}</>; }
 
 export function IngestionTermPage() {
@@ -42,7 +42,7 @@ export function TransformationTermPage() {
   const Cite = ({ id }: { id: string }) => <ArticleCitation id={id} sources={transformationSources}/>;
   return <ConceptArticle slug="data-transformation" title="数据转换" sources={transformationSources} sections={[["rules", "让字段遵循同一套规则"], ["units", "数字之外，还要知道单位"], ["precision", "精度与舍入要先约定"], ["grain", "汇总会改变一行的含义"]]}
     intro={<>本例有四条借阅费用：A 写成 ¥12.30、B 写成 CNY 12.30，输入约定它们都是 CNY 元；C 写成 1230 分，输入约定它是 CNY 分；D 只写 1230，单位还没有确认。报表不能把这四种输入直接相加：如果把符号和单位都丢掉，A、B、C 会被当成 12.30、12.30、1230，直接加成 1254.60；但按已知约定，它们应合成 3690 分，D 还不能进入合计。数据转换用明确的规则统一表示，同时保留原始值，避免把不确定的信息悄悄变成一个确定数字。</>}
-    hero={<ConceptHero slug="data-transformation" label="先确认单位，再统一为 CNY 整数分"><div className={s.transformHero}><div className={s.heroOriginal}><CurrencyCircleDollar size={25}/><code>A · ¥12.30</code><code>B · CNY 12.30</code><code>C · 1230 分</code></div><div className={s.heroStamp}><span>输出约定</span><strong>等待执行</strong><span>整数分 · CNY</span></div></div></ConceptHero>}>
+    hero={<DataTransformationSignatureHero />}>
     <ArticleSection id="rules" title="让字段遵循同一套规则"><Legacy slug="data-transformation" names={["question", "definition"]}/>
       <p id="transform-definition" className="vp-citation-target"><strong>数据转换按照明确规则，改变数据的表示、字段结构、值或统计粒度，让它适合后续使用。</strong>这里说的“表示”变化，是现实中对应的金额没有变，只是写法或单位换了，例如把 12.30 元写成 1230 分；“字段结构”是字段怎样拆分、合并或改名；“值”变化，是业务规则让现实含义也变了，例如按税率从不含税金额算出含税金额；“统计粒度”是一行数据代表一条记录，还是一组记录的合计。<Cite id="transform-definition"/></p>
       <p>例如拆出日期、统一金额单位，或者按书目汇总借阅次数。dbt 是一个数据建模工具：它把写在 SQL（查询数据的语言）文件里的 SELECT 当作 model，运行时可以按配置把结果建立成视图或表；它只是实现转换的一种工具，转换本身不限定使用 dbt。<Cite id="transform-definition"/></p>
