@@ -16,3 +16,9 @@
 | `smoke-test` | 为什么先跑少量检查再跑完整回归？ | 候选构建、四盏关键灯和锁住的回归队列；选择失败灯 | 任一关键灯失败即 STOP，后续套件保持未启动；全绿才解锁 | Microsoft、GitLab、Fowler |
 
 资料均已从现有研究台账核对；本批只在确实改变正文论断时补来源，不用链接数量代替阅读。正文沿用现有稳定锚点，首图实现放在 `DataTestSignatureHeroes.tsx` 与同名 CSS 中，主体 Lesson 保留各页已有的交互和失败分支。
+
+## 实施与验收记录
+
+- 十条首图按词条逐条提交，最终批次提交为 `c222153b`；数据管道额外修正了严格 q1 与 q2 的终态语义。
+- 唯一 reviewer `/root/ai_stack_review` 已复审 PASS；q1 保持阻断，q2 才进入汇总和发布。
+- DP 测试计划 `9f617203-1782-4e4c-9caf-e94ceddbf1db` 的三项必需用例全部通过：机制审查、桌面/390px 浏览器验收、typecheck/build/audit/diff 检查。
