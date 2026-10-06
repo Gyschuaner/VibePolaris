@@ -30,7 +30,7 @@ export function SafeAreaSignatureHero() {
       </div>
       <div className={styles.safeProof} role="status">
         {scene.step < 2 ? <WarningCircle size={18} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}
-        <div><strong>{scene.step < 2 ? "危险边界仍可能碰到内容" : "关键内容跟着 inset 移动"}</strong><span>{scene.step === 3 ? "横屏后，左右边距重新取值" : scene.step === 0 ? "只铺背景，不代表控件安全" : `当前安全距离 ${inset}px`}</span></div>
+        <div><strong>{scene.step < 2 ? "危险边界仍可能碰到内容" : "关键内容跟着 inset 移动"}</strong><span>{scene.step === 3 ? "横屏后，左右边距重新取值" : scene.step === 0 ? "只铺背景，不代表控件安全" : `演示 inset：${inset}px`}</span></div>
       </div>
       <ArrowsOutCardinal className={styles.safeRotate} size={18} aria-hidden="true" />
     </div>
@@ -115,7 +115,7 @@ export function CrossPlatformSignatureHero() {
   const resetBoundary = (next: CrossBoundary) => { setBoundary(next); scene.seek(0); };
   return <HeroShell scene={scene} title="跨平台开发怎样共享规则而保留平台差异" labels={crossPlatformLabels} className={styles.platformHero}>
     <div className={styles.crossBoard} data-step={scene.step} data-boundary={boundary}>
-      <div className={styles.crossChoice} role="group" aria-label="选择共享边界"><span>共享边界</span><button type="button" aria-pressed={!leaky} onClick={() => resetBoundary("clean")}>清楚</button><button type="button" aria-pressed={leaky} onClick={() => resetBoundary("leaky")}>越界</button></div>
+      <div className={styles.crossChoice} role="group" aria-label="选择共享边界"><span>共享边界</span><button type="button" aria-pressed={!leaky} onClick={() => resetBoundary("clean")}>清晰</button><button type="button" aria-pressed={leaky} onClick={() => resetBoundary("leaky")}>越界</button></div>
       <div className={styles.crossCore}><Code size={21} /><span>共享核心</span><strong>{leaky ? "订单 + 相机权限" : "订单计算规则"}</strong><small>{leaky ? "把平台细节带进来" : "输入相同，规则相同"}</small></div>
       <div className={styles.crossSplit}><GitBranch size={18} /><span>{scene.step < 1 ? "等待分工" : "适配器分开"}</span><i /><i /></div>
       <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>iOS 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
