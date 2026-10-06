@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { inputValidationSources } from "@/lib/input-validation-sources";
-import { InputValidationHero } from "./input-validation-hero";
+import { InputValidationSignatureHero as InputValidationHero } from "../TestSecuritySignatureHeroes";
 import { InputValidationLesson } from "./input-validation";
 
 const sections: [string, string][] = [

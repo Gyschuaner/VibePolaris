@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, FileCode, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, Hash, ListMagnifyingGlass, LockKey, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, CalendarBlank, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, FileCode, Funnel, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, Hash, ListMagnifyingGlass, LockKey, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -278,6 +278,28 @@ export function HashingSignatureHero() {
       <div className={styles.hashArrow} aria-hidden="true"><ArrowRight size={20} /><span>SHA-256</span></div>
       <div className={styles.hashDigest} data-active={scene.step >= 1} data-danger={mismatch}><span className={styles.label}><Hash size={16} aria-hidden="true" />固定长度摘要</span><div className={styles.digestStrip}>{digest.map((part, index) => <code key={`${part}-${index}`} data-shift={changed && index === digest.length - 1}>{part}</code>)}</div><div className={styles.hashCompare}>{scene.step < 2 ? "尚未比较" : mismatch ? "manifest ≠ local" : "manifest = local"}</div><small>{mismatch ? "摘要只能告诉你不同，不能把原文变回来" : "输入再长，摘要长度仍固定"}</small></div>
       <div className={styles.hashBoundary}><span className={styles.label}><LockKey size={16} aria-hidden="true" />另一个边界</span><strong>password KDF</strong><small>盐、成本和算法版本要随记录保存；需要原文时才使用加密。</small></div>
+    </div>
+  </SignatureFrame>;
+}
+
+const validationSteps = ["读进请求", "比较关系", "停在边界", "修正继续"];
+
+export function InputValidationSignatureHero() {
+  const scene = useScene(validationSteps.length);
+  const [validRange, setValidRange] = useState(false);
+  const invalid = !validRange && scene.step >= 2;
+  const accepted = validRange && scene.step === 3;
+  const choose = (next: boolean) => { setValidRange(next); scene.seek(0); };
+  const status = invalid
+    ? { icon: WarningCircle, title: "请求在业务动作前停下", detail: "日期可解析，但 startAt 晚于 endAt；示例返回 422", danger: true }
+    : accepted
+      ? { icon: CheckCircle, title: "关系成立，才允许继续", detail: "校验通过；查询尚未替代授权判断" }
+      : { icon: scene.step < 1 ? Funnel : scene.step === 1 ? Scales : Check, title: validationSteps[scene.step], detail: scene.step === 0 ? "先把网络输入变成服务器能判断的值" : "语法和语义是两道不同的门" };
+  return <SignatureFrame scene={scene} label="输入校验先解析日期，再检查先后关系并在查询前拒绝错误区间" eyebrow="格式读懂了，业务关系还要再问一次" meta="parse → relate → accept" steps={validationSteps} status={status} caption="输入校验负责把外部数据变成可判断的值；它不替代参数化查询，也不替代对象授权。" controls={<div className={styles.choiceRow} role="group" aria-label="选择日期区间"><button type="button" aria-pressed={!validRange} onClick={() => choose(false)}>逆序 · 422</button><button type="button" aria-pressed={validRange} onClick={() => choose(true)}>修正结束日期</button></div>}>
+    <div className={styles.validationBoard} data-invalid={invalid} data-accepted={accepted}>
+      <div className={styles.datePayload} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><CalendarBlank size={16} aria-hidden="true" />外部输入</span><div className={styles.dateRow}><span>startAt</span><code>2026-10-05</code></div><div className={styles.dateRow} data-invalid={!validRange}><span>endAt</span><code>{validRange ? "2026-10-07" : "2026-10-04"}</code></div><small>两项都是日期，不等于区间成立。</small></div>
+      <div className={styles.validationRuler} data-active={scene.step === 1} data-invalid={invalid}><span className={styles.label}><Scales size={16} aria-hidden="true" />关系尺</span><div className={styles.dateAxis}><i /><i /><i /><b data-position={validRange ? "end" : "start"}>endAt</b><b>startAt</b></div><div className={styles.rangeRule}>{scene.step < 1 ? "等待比较" : validRange ? "startAt < endAt" : "startAt > endAt"}</div><small>{validRange ? "可以进入下一层" : "语义关系不成立"}</small></div>
+      <div className={styles.validationResult} data-active={scene.step >= 2} data-danger={invalid} data-success={accepted}><span className={styles.label}>{invalid ? <WarningCircle size={16} aria-hidden="true" /> : accepted ? <CheckCircle size={16} aria-hidden="true" /> : <Funnel size={16} aria-hidden="true" />}结果</span><strong>{invalid ? "422" : accepted ? "READY" : "—"}</strong><code>{invalid ? "Unprocessable Content" : accepted ? "query may continue" : "not checked"}</code><div className={styles.queryGate}><span>查询次数</span><b>{invalid ? "0" : accepted ? "1" : "—"}</b></div><small>{invalid ? "停在校验边界，授权尚未开始" : accepted ? "下一个问题是这个账号能不能看" : "先等关系尺给出结论"}</small></div>
     </div>
   </SignatureFrame>;
 }
