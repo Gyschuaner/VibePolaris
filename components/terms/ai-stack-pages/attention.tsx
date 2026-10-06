@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { attentionSources } from "@/lib/ai-stack-concept-sources/attention";
-import { AttentionHero } from "../ai-stack-lessons/attention-hero";
+import { AttentionSignatureHero } from "../AiStackSignatureHeroes";
 import { AttentionLesson } from "../ai-stack-lessons/attention";
 
 const sections: [string, string][] = [
@@ -12,7 +12,7 @@ const sections: [string, string][] = [
 ];
 
 export function AttentionTermPage() {
-  return <Article slug="attention" title="注意力机制" subtitle="Attention · 按查询从键值里取回一份加权表示" sources={attentionSources} sections={sections} hero={<AttentionHero />} intro={<>注意力不是模型里一盏会自己解释原因的聚光灯。它是一种取数动作：当前位置带着查询，和一组 key 比较，再按得到的权重把 value 混合回来。读懂它，要盯住三件事：谁在问、拿什么匹配、最后取回什么。</>}>
+  return <Article slug="attention" title="注意力机制" subtitle="Attention · 按查询从键值里取回一份加权表示" sources={attentionSources} sections={sections} hero={<AttentionSignatureHero />} intro={<>注意力不是模型里一盏会自己解释原因的聚光灯。它是一种取数动作：当前位置带着查询，和一组 key 比较，再按得到的权重把 value 混合回来。读懂它，要盯住三件事：谁在问、拿什么匹配、最后取回什么。</>}>
     <ArticleSection id="attention-question" title="先把查询、键和值摆上桌">
       <p>想象你在点单：问题是“我想找无糖饮品”。菜单上每一行都有可匹配的标签和实际内容。注意力把这三件事分开：<strong>Query</strong> 是当前要找什么，<strong>Key</strong> 是拿来比较的线索，<strong>Value</strong> 是匹配后真正带回去的内容。</p>
       <p id="attention-qkv" className="vp-citation-target">在注意力的抽象里，查询和 key 先经过兼容性函数得到权重，再对 value 做加权求和；同一条查询换一组 key-value，得到的结果也会变化。这个结构像一次可微的检索动作，但它不是把数据库原文直接复制到答案里。<Cite id="attention-qkv" sources={attentionSources} /></p>
