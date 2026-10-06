@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, Cursor, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, Cube, Cursor, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, Target, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -128,6 +128,18 @@ export function HapticFeedbackSignatureHero() {
       <div className={styles.hapticMode}><Lightning size={23} /><span>平台模式</span><b>{scene.step === 0 ? "selection" : scene.step === 1 ? "notification.success" : scene.step === 2 ? "notification.warning" : "无可用模式"}</b></div>
       <div className={styles.hapticActuator}><div className={styles.pulseRings}><i /><i /><i /></div><DeviceMobile size={26} /><span>设备执行器</span><b>{scene.step === 3 ? "不播放" : "短促触感"}</b></div>
       <div className={styles.hapticFallback}><Eye size={19} /><SpeakerHigh size={19} /><div><span>同时保留</span><strong>{scene.step === 3 ? "文字 + 视觉" : "文字 + 视觉 + 可选声音"}</strong></div></div>
+    </div>
+  </HeroShell>;
+}
+
+const touchLabels = ["只按图标命中", "扩大不可见热区", "重放相同落点", "发现边界相撞"];
+const touchPoints = [["12%", "24%"], ["40%", "70%"], ["63%", "31%"], ["82%", "72%"], ["28%", "46%"], ["56%", "82%"], ["73%", "56%"], ["18%", "78%"], ["90%", "38%"], ["46%", "18%"]];
+export function TouchTargetSignatureHero() {
+  const scene = useScene(touchLabels.length);
+  return <HeroShell scene={scene} title="图标、热区和相邻间距如何共同决定命中" labels={touchLabels} className={styles.touchHero}>
+    <div className={styles.touchBoard} data-step={scene.step}>
+      <div className={styles.touchStage}><div className={styles.touchTarget}><span className={styles.touchHitbox} /><Cube size={18} /><b>图标</b></div><div className={styles.touchNeighbor}><Cube size={16} /><span>邻居</span></div>{touchPoints.map(([left, top], index) => <i className={styles.touchPoint} style={{ left, top }} key={`${left}-${top}`} data-hit={scene.step === 0 ? index < 3 : scene.step < 3 ? index < 9 : index === 2 || index === 6} />)}</div>
+      <div className={styles.touchReadout}><Target size={23} /><span>同一组十个落点</span><strong>{scene.step === 0 ? "命中 3 / 10" : scene.step < 3 ? "命中 9 / 10" : "两块热区相撞"}</strong><small>{scene.step === 0 ? "可见像素决定命中" : scene.step === 1 ? "容器内边距扩大热区" : scene.step === 2 ? "重放输入检查漏点" : "间距不足会误触"}</small></div>
     </div>
   </HeroShell>;
 }
