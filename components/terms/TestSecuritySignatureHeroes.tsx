@@ -229,3 +229,29 @@ export function ApiTestingSignatureHero() {
     </div>
   </SignatureFrame>;
 }
+
+const leastSteps = ["发出任务票", "完成发布", "撞到越界", "租约到期"];
+
+export function LeastPrivilegeSignatureHero() {
+  const scene = useScene(leastSteps.length);
+  const [scope, setScope] = useState<"narrow" | "admin">("narrow");
+  const overreach = scene.step >= 2 && scope === "admin";
+  const denied = scene.step >= 2 && scope === "narrow";
+  const expired = scene.step === 3;
+  const choose = (next: "narrow" | "admin") => { setScope(next); scene.seek(0); };
+  const status = expired
+    ? { icon: Clock, title: "租约已到期", detail: "上一轮钥匙不能继续借用，必须重新申请" }
+    : overreach
+      ? { icon: WarningCircle, title: "范围过宽", detail: "组织管理员可以删 production，但这不是发布任务所需", danger: true }
+      : denied
+        ? { icon: ShieldCheck, title: "越界被拒", detail: "发布仍可完成，delete production 没有匹配的允许规则" }
+        : { icon: scene.step === 0 ? Key : scene.step === 1 ? CheckCircle : ShieldCheck, title: leastSteps[scene.step], detail: scene.step === 0 ? "先写任务，再把钥匙剪到最小" : "动作、资源和时间一起构成边界" };
+  return <SignatureFrame scene={scene} label="最小权限把发布任务收进动作、资源和时间窗口" eyebrow="一把钥匙只开这次要开的门" meta="action · resource · time" steps={leastSteps} status={status} caption="最小权限不是让任务无法完成，而是把完成任务需要的动作、资源范围和有效时间写清楚，并在越界时默认拒绝。" controls={<div className={styles.choiceRow} role="group" aria-label="选择授权范围"><button type="button" aria-pressed={scope === "narrow"} onClick={() => choose("narrow")}>repo/Vibe · 发布票</button><button type="button" aria-pressed={scope === "admin"} onClick={() => choose("admin")}>组织管理员</button></div>}>
+    <div className={styles.privilegeBoard} data-scope={scope} data-denied={denied} data-overreach={overreach} data-expired={expired}>
+      <div className={styles.permissionTicket} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><Key size={16} aria-hidden="true" />授权票</span><strong>{scope === "narrow" ? "release-bot" : "org-admin"}</strong><div className={styles.ticketRows}><span>动作 <b>{scope === "narrow" ? "read + write" : "*"}</b></span><span>资源 <b>{scope === "narrow" ? "repo/Vibe" : "组织全部"}</b></span><span>期限 <b>30 min</b></span></div></div>
+      <div className={styles.permissionDoor} data-active={scene.step === 1} data-done={scene.step > 1}><span className={styles.label}><GitBranch size={16} aria-hidden="true" />发布门</span><strong>release/v1.4</strong><code>{scene.step >= 1 ? "write · allowed" : "waiting"}</code><small>完成发布确实需要写入这一条分支。</small></div>
+      <div className={styles.permissionWall} data-active={scene.step >= 2} data-danger={overreach} data-blocked={denied}><span className={styles.label}>{denied ? <ShieldCheck size={16} aria-hidden="true" /> : <WarningCircle size={16} aria-hidden="true" />}越界门</span><strong>delete production</strong><div className={styles.wallResult}>{scene.step < 2 ? "尚未尝试" : overreach ? "ALLOWED · too wide" : "DENIED · default"}</div><small>{scene.step < 2 ? "发布成功也不会自动打开这里" : overreach ? "能做不等于任务需要" : "没有规则就不放行"}</small></div>
+      <div className={styles.leaseMeter} data-active={expired}><span className={styles.label}><Clock size={16} aria-hidden="true" />租约</span><div className={styles.leaseBar}><i data-on={scene.step < 3} /><i data-on={scene.step < 3} /><i data-on={scene.step < 3} /><i data-on={scene.step < 3} /></div><strong>{expired ? "expired" : scene.step >= 1 ? "18 min left" : "30 min"}</strong><small>{expired ? "重新申请，不继承旧钥匙" : "时间也是权限的一部分"}</small></div>
+    </div>
+  </SignatureFrame>;
+}

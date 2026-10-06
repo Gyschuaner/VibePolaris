@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { leastPrivilegeSources } from "@/lib/least-privilege-sources";
-import { LeastPrivilegeHero } from "./least-privilege-hero";
+import { LeastPrivilegeSignatureHero as LeastPrivilegeHero } from "../TestSecuritySignatureHeroes";
 import { LeastPrivilegeLesson } from "./least-privilege";
 
 const sections: [string, string][] = [
