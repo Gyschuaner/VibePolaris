@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, DeviceMobile, Eye, FileCode, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Code, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -86,6 +86,20 @@ export function EmulatorSignatureHero() {
       <div className={styles.deviceCard}><div className={styles.deviceTop}><Monitor size={20} /><span>仿真器</span></div><div className={styles.deviceScreen}><div className={styles.signal}><MapPinLine size={18} /><span>{scene.step > 0 ? "位置已注入" : "可配置"}</span></div><div className={styles.signal}><ArrowsClockwise size={18} /><span>{scene.step > 0 ? "网络可重复" : "网络场景"}</span></div></div><small>功能与异常可重复</small></div>
       <div className={styles.checkSpine}><span /><span /><span /></div>
       <div className={`${styles.deviceCard} ${styles.physicalDevice}`}><div className={styles.deviceTop}><DeviceMobile size={20} /><span>真机</span></div><div className={styles.deviceScreen}><div className={styles.signal}><Gauge size={18} /><span>{scene.step === 2 ? "功耗实测" : "待确认"}</span></div><div className={styles.signal}><Lightning size={18} /><span>{scene.step === 2 ? "触觉实测" : "硬件差异"}</span></div></div><small>{scene.step === 2 ? "硬件证据已补齐" : "硬件项不能假定"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const signingLabels = ["生成摘要", "私钥签名", "设备验签", "篡改拒绝"];
+export function CodeSigningSignatureHero() {
+  const scene = useScene(signingLabels.length);
+  return <HeroShell scene={scene} title="代码签名如何让篡改留下证据" labels={signingLabels} className={styles.signingHero}>
+    <div className={styles.signingBoard} data-step={scene.step}>
+      <div className={styles.packageCard}><Package size={24} /><strong>APK</strong><span>同一份构建产物</span><div className={styles.byteStrip}>{["A1", "C4", "7E", "09", "F2", "4B"].map((byte, index) => <b key={byte} data-changed={scene.step === 3 && index === 3}>{scene.step === 3 && index === 3 ? "00" : byte}</b>)}</div></div>
+      <ArrowRight className={styles.signingArrow} size={22} aria-hidden="true" />
+      <div className={styles.signatureColumn}><div className={styles.digest}><Fingerprint size={21} /><span>摘要</span><code>{scene.step === 0 ? "sha256 · 等待" : "sha256 · 已固定"}</code></div><div className={styles.keySeal}><Key size={21} /><span>私钥</span><b>{scene.step > 0 ? "已签名" : "未使用"}</b></div></div>
+      <ArrowRight className={styles.signingArrow} size={22} aria-hidden="true" />
+      <div className={`${styles.verifyCard} ${scene.step === 3 ? styles.isRejected : ""}`}><ShieldCheck size={24} /><span>设备验签</span><strong>{scene.step < 2 ? "尚未验证" : scene.step === 2 ? "验证通过" : "拒绝安装"}</strong>{scene.step === 3 ? <WarningCircle size={18} /> : scene.step === 2 ? <CheckCircle size={18} /> : null}</div>
     </div>
   </HeroShell>;
 }

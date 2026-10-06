@@ -72,6 +72,14 @@
 .emulatorBoard[data-step="2"] .physicalDevice { transform: translateY(-4px); border-color: var(--accent-text); }
 .emulatorBoard[data-step="1"] .checkSpine span:nth-child(-n+2), .emulatorBoard[data-step="2"] .checkSpine span { background: var(--accent-text); transform: scale(1.18); }
 
+.signingBoard { display: grid; grid-template-columns: 1.1fr 22px .85fr 22px .85fr; align-items: center; min-height: 160px; gap: 8px; }
+.packageCard, .digest, .keySeal, .verifyCard { display: grid; align-content: center; gap: 6px; min-height: 122px; padding: 11px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.packageCard svg, .digest svg, .keySeal svg, .verifyCard svg { color: var(--accent-text); }
+.packageCard strong { font-size: 14px; }
+.packageCard span, .digest span, .keySeal span, .verifyCard span { color: var(--muted); font-size: 9px; }
+.byteStrip { display: flex; gap: 3px; flex-wrap: wrap; }.byteStrip b { padding: 4px 5px; border-radius: 5px; background: color-mix(in srgb, var(--accent-text) 9%, transparent); color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }.byteStrip b[data-changed="true"] { background: #f3d8d0; color: #a55c54; }
+.signingArrow { color: var(--brand-star); justify-self: center; }.signatureColumn { display: grid; gap: 6px; }.digest, .keySeal { min-height: 58px; grid-template-columns: auto 1fr; align-items: center; }.digest code { grid-column: 2; color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; }.keySeal b { grid-column: 2; color: var(--accent-text); font-size: 10px; }.verifyCard { background: color-mix(in srgb, #e6efdf 66%, var(--surface)); }.verifyCard strong { color: var(--accent-text); font-size: 11px; }.verifyCard.isRejected { border-color: #a55c54; background: #f3d8d0; }.verifyCard.isRejected svg, .verifyCard.isRejected strong { color: #a55c54; }
+
 @media (max-width: 760px) {
   .hero { padding: 12px; border-radius: 17px; }
   .canvas { min-height: 0; }
@@ -88,6 +96,10 @@
   .emulatorBoard { grid-template-columns: 1fr; min-height: 0; }
   .checkSpine { grid-template-columns: repeat(3, 1fr); grid-auto-flow: column; min-height: 14px; }
   .deviceCard { min-height: 82px; }
+  .signingBoard { grid-template-columns: 1fr; gap: 6px; }
+  .signingArrow { transform: rotate(90deg); }
+  .signatureColumn { grid-template-columns: 1fr 1fr; }
+  .packageCard, .verifyCard { min-height: 82px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero *, .hero *::before, .hero *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
