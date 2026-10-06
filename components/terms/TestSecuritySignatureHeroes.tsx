@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, ClipboardText, Code, Database, Eye, Gear, GitCommit, GitBranch, Graph, Handshake, ListMagnifyingGlass, PaperPlaneTilt, Robot, ShieldWarning, TestTube, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowRight, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, Gear, GitCommit, GitBranch, Graph, Handshake, ListMagnifyingGlass, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -140,6 +140,38 @@ export function MockSignatureHero() {
       <div className={styles.plug} aria-hidden="true"><span /><ArrowRight size={18} /></div>
       <div className={styles.mockVerdict} data-active={final} data-danger={stale} data-incomplete={unsupported}>
         <span className={styles.label}>{stale ? <WarningCircle size={16} aria-hidden="true" /> : unsupported ? <Eye size={16} aria-hidden="true" /> : <Database size={16} aria-hidden="true" />}测试信号</span><strong>{stale ? "FAIL · charge ×0" : unsupported ? "N/A · no log" : final ? "PASS · order=paid" : "等待"}</strong><small>{stale ? "旧调用名红了，不能直接推断业务坏了" : unsupported ? "Fake 没有 Mock 的调用期待" : final ? (double === "fake" ? "真实度回到更高一层" : "受控依赖让分支稳定" ) : "先让替身完成它的工作"}</small>
+      </div>
+    </div>
+  </SignatureFrame>;
+}
+
+const assertionSteps = ["只做一次动作", "对准观察点", "等它变真", "留下差异"];
+
+export function AssertionSignatureHero() {
+  const scene = useScene(assertionSteps.length);
+  const [target, setTarget] = useState<"visible" | "text">("visible");
+  const done = scene.step >= 2;
+  const match = done && target === "visible";
+  const failed = scene.step === 3 && !match;
+  const choose = (next: "visible" | "text") => { setTarget(next); scene.seek(0); };
+  const status = failed
+    ? { icon: WarningCircle, title: "观察点不成立", detail: "Expected：按钮可见；Received：仍隐藏，超时后停止", danger: true }
+    : scene.step === 3
+      ? { icon: CheckCircle, title: "断言贴住了事实", detail: target === "visible" ? "Expected 与 Received 在可见性上对齐" : "文本内容有了，但这次要保护的是按钮是否出现" }
+      : { icon: scene.step === 0 ? ArrowCounterClockwise : scene.step === 1 ? MagnifyingGlass : Timer, title: assertionSteps[scene.step], detail: scene.step === 0 ? "点击保存只发生一次，不能靠重试动作掩盖副作用" : scene.step === 1 ? "镜头只盯一个能回答问题的观察点" : "等待条件，不猜一段固定睡眠时间" };
+  return <SignatureFrame scene={scene} label="断言只执行一次动作，再在有限时间内观察真正的完成条件" eyebrow="先改变一次，再反复观察结果" meta="act once · observe until true" steps={assertionSteps} status={status} caption="好的断言把动作和观察分开：动作不重复，查询可以在时限内重试，失败时能说清期待、实际和等待边界。" controls={<div className={styles.choiceRow} role="group" aria-label="选择断言观察点"><button type="button" aria-pressed={target === "visible"} onClick={() => choose("visible")}>按钮可见</button><button type="button" aria-pressed={target === "text"} onClick={() => choose("text")}>只看文本</button></div>}>
+    <div className={styles.assertionBoard} data-target={target} data-failed={failed}>
+      <div className={styles.actionDial} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><ArrowCounterClockwise size={16} aria-hidden="true" />动作</span><strong>保存设置</strong><div className={styles.tapMark}><i />1 次</div><small>动作不重试，避免重复写入。</small></div>
+      <div className={styles.assertionLens} data-active={scene.step === 1 || scene.step === 2}>
+        <div className={styles.lensRing}><MagnifyingGlass size={22} aria-hidden="true" /><span>{scene.step < 1 ? "等待聚焦" : target === "visible" ? "toBeVisible" : "toHaveText"}</span></div>
+        <div className={styles.timeTicks}><i data-on={scene.step >= 1} /><i data-on={scene.step >= 2} /><i data-on={scene.step >= 3} /></div>
+        <small>{scene.step < 2 ? "目标尚未稳定" : "每次重新取得目标"}</small>
+      </div>
+      <div className={styles.assertionTarget} data-active={done} data-danger={failed}>
+        <span className={styles.label}><Scales size={16} aria-hidden="true" />观察结果</span>
+        <div className={styles.targetButton} data-visible={done}><span>保存完成</span>{done && <Check size={17} aria-hidden="true" />}</div>
+        <div className={styles.expectedRows}><div><span>Expected</span><code>{target === "visible" ? "visible" : 'text="保存完成"'}</code></div><div><span>Received</span><code>{done ? target === "visible" ? "visible" : 'text="保存完成"' : "hidden"}</code></div></div>
+        <div className={styles.timeoutTag}><Clock size={14} aria-hidden="true" />{failed ? "5s · timeout" : scene.step >= 2 ? "条件已满足" : "5s 上限"}</div>
       </div>
     </div>
   </SignatureFrame>;
