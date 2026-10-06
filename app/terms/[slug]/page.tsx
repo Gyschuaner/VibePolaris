@@ -57,6 +57,7 @@ import { SkillTermPage } from '@/components/terms/SkillConceptPages';
 import { AdaptiveLayoutTermPage, AppLifecycleTermPage, AppPermissionTermPage, BoxModelTermPage, CrossPlatformDevelopmentTermPage, CssSelectorTermPage, OfflineFirstTermPage, PushNotificationTermPage, SafeAreaTermPage, WebviewTermPage } from '@/components/terms/MobileCssConceptPages';
 import { ContainerImageTermPage, DependencyScanningTermPage, ObservabilityTermPage, PermissionBoundaryTermPage, SastTermPage, SecretScanningTermPage, ServiceDiscoveryTermPage, ThreatModelingTermPage, ToolApprovalTermPage, XssTermPage, ToolChoiceTermPage, ToolResultTermPage, PlanAndExecuteTermPage, AgentOrchestrationTermPage, HandoffTermPage, SubagentTermPage, HumanInTheLoopTermPage, GuardrailTermPage, ModerationTermPage, FineTuningTermPage, ContextWindowTermPage, AgentLoopTermPage, AgentMemoryTermPage, WorkingMemoryTermPage, ExecutionSandboxTermPage, EmbeddingTermPage, VectorStoreTermPage, RetrievalTermPage, ChunkingTermPage, RerankingTermPage, GenerativeAiTermPage, MultimodalTermPage, ReasoningModelTermPage, SystemPromptTermPage, FewShotPromptingTermPage, ZeroShotPromptingTermPage, TemperatureTermPage, TokenizationTermPage, PromptInjectionTermPage, CompilerTermPage, InterpreterTermPage, TranspilerTermPage, BuildToolTermPage, BundlerTermPage, DevServerTermPage, HotReloadTermPage, HmrTermPage, DependencyTermPage, SemanticVersioningTermPage, TransformerTermPage, AttentionTermPage, InferenceTermPage, PretrainingTermPage, KvCacheTermPage, AgentWorkflowTermPage, BackpressureTermPage, DeadLetterQueueTermPage, EventualConsistencyTermPage } from '@/components/terms/AiStackConceptPages';
 import { ContainerTermPage, InfrastructureContainerImageTermPage, InfrastructureServiceDiscoveryTermPage, InfrastructureObservabilityTermPage, InfrastructureSastTermPage, InfrastructureSecretScanningTermPage, InfrastructureDependencyScanningTermPage, InfrastructureThreatModelingTermPage, InfrastructureToolApprovalTermPage, InfrastructureEvaluationDatasetTermPage } from '@/components/terms/control-redesign-pages/InfrastructureRedesignPages';
+import { BoundaryPermissionTermPage, BoundaryXssTermPage, BoundarySkillTermPage, BoundaryEvaluationRunTermPage, BoundarySafetyEvaluationTermPage, BoundaryCostEvaluationTermPage, BoundaryLatencyEvaluationTermPage, BoundaryPassFailGraderTermPage, BoundaryGradingRubricTermPage, BoundaryHumanGraderTermPage } from '@/components/terms/control-redesign-pages/BoundaryEvaluationRedesignPages';
 import { BranchTermPage, CheckoutSwitchTermPage, CdTermPage, CiTermPage, CloneTermPage, CodeReviewTermPage as GitCodeReviewTermPage, DiffTermPage, FetchTermPage as GitFetchTermPage, MergeConflictTermPage, MergeTermPage, PreviewDeploymentTermPage, PullRequestTermPage as GitPullRequestTermPage, PullTermPage, PushTermPage, RebaseTermPage as GitRebaseTermPage, RemoteTermPage, RepoCommitTermPage, RevertTermPage as GitRevertTermPage, RollbackTermPage, StashTermPage as GitStashTermPage, StagingAreaTermPage, WorkingTreeTermPage } from "@/components/terms/GitConceptPages";
 import { AcceptanceCriteriaTermPage, PriorityTermPage, ProblemStatementTermPage, RoadmapTermPage, ScopeTermPage, TargetUserTermPage, UseCaseTermPage, UserStoryTermPage } from "@/components/terms/ProductConceptPages";
 import { AcidTermPage, ColumnTermPage, NosqlTermPage, RelationalDatabaseTermPage, RowTermPage } from "@/components/terms/BackendNetworkTermPages";
@@ -122,7 +123,6 @@ import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, Fun
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
 const articleTermPages = {
-  skill: SkillTermPage,
   'offline-first': OfflineFirstTermPage,
   'adaptive-layout': AdaptiveLayoutTermPage,
   'safe-area': SafeAreaTermPage,
@@ -199,8 +199,6 @@ const articleTermPages = {
   'dependency-scanning': InfrastructureDependencyScanningTermPage,
   'threat-modeling': InfrastructureThreatModelingTermPage,
   'tool-approval': InfrastructureToolApprovalTermPage,
-  'permission-boundary': PermissionBoundaryTermPage,
-  xss: XssTermPage,
   'tool-choice': ToolChoiceTermPage,
   'tool-result': ToolResultTermPage,
   'plan-and-execute': PlanAndExecuteTermPage,
@@ -338,15 +336,18 @@ const articleTermPages = {
   benchmark: BenchmarkTermPage,
   grader: GraderTermPage,
   'evaluation-dataset': InfrastructureEvaluationDatasetTermPage,
-  'evaluation-run': EvaluationRunTermPage,
-  'grading-rubric': GradingRubricTermPage,
+  'permission-boundary': BoundaryPermissionTermPage,
+  xss: BoundaryXssTermPage,
+  skill: BoundarySkillTermPage,
+  'evaluation-run': BoundaryEvaluationRunTermPage,
+  'safety-evaluation': BoundarySafetyEvaluationTermPage,
+  'cost-evaluation': BoundaryCostEvaluationTermPage,
+  'latency-evaluation': BoundaryLatencyEvaluationTermPage,
+  'pass-fail-grader': BoundaryPassFailGraderTermPage,
+  'grading-rubric': BoundaryGradingRubricTermPage,
+  'human-grader': BoundaryHumanGraderTermPage,
   'regression-evaluation': RegressionEvaluationTermPage,
-  'safety-evaluation': SafetyEvaluationTermPage,
-  'cost-evaluation': CostEvaluationTermPage,
-  'latency-evaluation': LatencyEvaluationTermPage,
-  'human-grader': HumanGraderTermPage,
   'model-grader': ModelGraderTermPage,
-  'pass-fail-grader': PassFailGraderTermPage,
   'context-overflow': ContextOverflowTermPage,
   grounding: GroundingTermPage,
   hallucination: HallucinationTermPage,
