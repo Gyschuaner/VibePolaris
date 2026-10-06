@@ -140,10 +140,18 @@ const touchLabels = ["只按图标命中", "扩大不可见热区", "重放相�
 const touchPoints = [["12%", "24%"], ["40%", "70%"], ["63%", "31%"], ["82%", "72%"], ["28%", "46%"], ["56%", "82%"], ["73%", "56%"], ["18%", "78%"], ["90%", "38%"], ["46%", "18%"]];
 export function TouchTargetSignatureHero() {
   const scene = useScene(touchLabels.length);
+  const target = { left: 55, top: 50 };
+  const neighborLeft = scene.step === 3 ? 55 : 72;
+  const radius = scene.step === 0 ? 22 : 52;
+  const hits = touchPoints.map(([left, top]) => {
+    const dx = Number.parseFloat(left) - target.left;
+    const dy = Number.parseFloat(top) - target.top;
+    return Math.hypot(dx, dy) <= radius;
+  });
   return <HeroShell scene={scene} title="图标、热区和相邻间距如何共同决定命中" labels={touchLabels} className={styles.touchHero}>
     <div className={styles.touchBoard} data-step={scene.step}>
-      <div className={styles.touchStage}><div className={styles.touchTarget}><span className={styles.touchHitbox} /><Cube size={18} /><b>图标</b></div><div className={styles.touchNeighbor}><Cube size={16} /><span>邻居</span></div>{touchPoints.map(([left, top], index) => <i className={styles.touchPoint} style={{ left, top }} key={`${left}-${top}`} data-hit={scene.step === 0 ? index < 3 : scene.step < 3 ? index < 9 : index === 2 || index === 6} />)}</div>
-      <div className={styles.touchReadout}><Target size={23} /><span>同一组十个落点</span><strong>{scene.step === 0 ? "命中 3 / 10" : scene.step < 3 ? "命中 9 / 10" : "两块热区相撞"}</strong><small>{scene.step === 0 ? "可见像素决定命中" : scene.step === 1 ? "容器内边距扩大热区" : scene.step === 2 ? "重放输入检查漏点" : "间距不足会误触"}</small></div>
+      <div className={styles.touchStage}><div className={styles.touchTarget} style={{ left: `${target.left}%`, top: `${target.top}%` }}><span className={styles.touchHitbox} /><Cube size={18} /><b>图标</b></div><div className={styles.touchNeighbor} style={{ left: `${neighborLeft}%`, top: "50%" }}><Cube size={16} /><span>邻居</span></div>{touchPoints.map(([left, top], index) => <i className={styles.touchPoint} style={{ left, top }} key={`${left}-${top}`} data-hit={hits[index]} />)}</div>
+      <div className={styles.touchReadout}><Target size={23} /><span>同一组十个落点</span><strong>{scene.step < 3 ? `命中 ${hits.filter(Boolean).length} / 10` : "两块热区相撞"}</strong><small>{scene.step === 0 ? "可见像素决定命中" : scene.step === 1 ? "容器内边距扩大热区" : scene.step === 2 ? "重放输入检查漏点" : "邻居靠近后，边界开始重叠"}</small></div>
     </div>
   </HeroShell>;
 }
@@ -154,7 +162,7 @@ export function OfflineFirstSignatureHero() {
   return <HeroShell scene={scene} title="离线编辑怎样先落本地再处理同步冲突" labels={offlineLabels} className={styles.offlineHero}>
     <div className={styles.offlineBoard} data-step={scene.step}>
       <div className={styles.noteCard}><span>编辑器</span><strong>周报</strong><small>{scene.step === 0 ? "断网 · 本地已保存" : "标题改动已追踪"}</small><Code size={18} /></div>
-      <div className={styles.localStack}><Database size={21} /><span>本地数据</span><b>{scene.step > 0 ? "已持久化" : "写入中"}</b><i /></div>
+      <div className={styles.localStack}><Database size={21} /><span>本地数据</span><b>已持久化</b><i /></div>
       <div className={styles.outboxTile}><Stack size={21} /><span>待同步队列</span><b>{scene.step === 0 ? "尚未入队" : scene.step === 1 ? "操作 7 · 待上传" : scene.step === 2 ? "上传中" : "0 条待同步"}</b></div>
       <div className={styles.serverTile}><Cloud size={22} /><span>服务器</span><b>{scene.step < 2 ? "v12" : scene.step === 2 ? "v13 · 冲突" : "v14 · 已确认"}</b></div>
       <div className={styles.conflictTile} data-visible={scene.step === 3}><GitBranch size={20} /><span>冲突选择</span><b>{scene.step === 3 ? "保留本地标题" : "等待比较"}</b></div>
@@ -165,12 +173,14 @@ export function OfflineFirstSignatureHero() {
 const adaptiveLabels = ["窄屏单任务", "中宽保留上下文", "宽屏改成侧栏", "焦点仍在原任务"];
 export function AdaptiveLayoutSignatureHero() {
   const scene = useScene(adaptiveLabels.length);
+  const [completed, setCompleted] = useState(false);
+  const reset = () => setCompleted(false);
   const widths = ["390", "720", "1000", "1000"];
-  return <HeroShell scene={scene} title="窗口变宽时怎样重排关系并保留任务" labels={adaptiveLabels} className={styles.adaptiveHero}>
+  return <HeroShell scene={scene} title="窗口变宽时怎样重排关系并保留任务" labels={adaptiveLabels} onReplay={reset} className={styles.adaptiveHero}>
     <div className={styles.adaptiveBoard} data-step={scene.step}>
       <div className={styles.windowBar}><Layout size={19} /><span>应用窗口</span><strong>{widths[scene.step]} · 教学示例</strong><input aria-label="拖宽窗口" type="range" min="0" max="3" value={scene.step} onChange={(event) => scene.seek(Number(event.currentTarget.value))} /></div>
-      <div className={styles.adaptiveWindow}><div className={styles.adaptiveNav}><span>导航</span><i /><i /><i /></div>{scene.step < 1 ? null : <div className={styles.adaptiveList}><span>任务列表</span><b>任务 8</b><i>任务 7</i><i>任务 9</i></div>}<div className={styles.adaptiveDetail}><span>任务详情</span><strong>任务 8</strong><p>订单资料仍在这里</p><button type="button" aria-label="任务 8 完成" data-focused={scene.step === 0 || scene.step === 3}><Check size={15} />完成</button></div></div>
-      <div className={styles.adaptiveProof}><Target size={18} /><span>{scene.step === 0 || scene.step === 3 ? "焦点：任务 8 · 完成" : "选中：任务 8"}</span><CheckCircle size={18} /></div>
+      <div className={styles.adaptiveWindow}><div className={styles.adaptiveNav}><span>导航</span><i /><i /><i /></div>{scene.step < 1 ? null : <div className={styles.adaptiveList}><span>任务列表</span><b>任务 8</b><i>任务 7</i><i>任务 9</i></div>}<div className={styles.adaptiveDetail}><span>任务详情</span><strong>任务 8</strong><p>订单资料仍在这里</p><button type="button" aria-label="任务 8 完成" aria-pressed={completed} data-focused={scene.step === 0 || scene.step === 3} onClick={() => setCompleted(true)}><Check size={15} />{completed ? "已完成" : "完成"}</button></div></div>
+      <div className={styles.adaptiveProof}><Target size={18} /><span>{completed ? "焦点：任务 8 · 已完成" : scene.step === 0 || scene.step === 3 ? "焦点：任务 8 · 完成" : "选中：任务 8"}</span><CheckCircle size={18} /></div>
     </div>
   </HeroShell>;
 }
