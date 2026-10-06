@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { hydrationSources } from "@/lib/hydration-sources";
-import { HydrationHero } from "./hydration-hero";
-import { HydrationLesson } from "./hydration";
+import { HydrationSignatureHero as HydrationHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["hydration-definition-section", "先有 HTML，不代表已经能点"],
@@ -15,7 +14,6 @@ export function HydrationTermPage() {
     <ArticleSection id="hydration-definition-section" title="先有 HTML，不代表已经能点">
       <p id="hydration-server" className="vp-citation-target">服务端先输出 HTML，浏览器可以马上把标题、列表或按钮画出来。<Cite id="hydration-server" sources={hydrationSources} />这一步只说明内容已经到达，不说明客户端组件的状态和事件已经恢复。</p>
       <p id="hydration-events" className="vp-citation-target">客户端脚本到达后，框架会在现有 DOM 上恢复组件关系并注册事件。<Cite id="hydration-events" sources={hydrationSources} />所以一个按钮可能已经可见，却要再等一段时间才会响应点击。</p>
-      <HydrationLesson />
     </ArticleSection>
     <ArticleSection id="hydration-match-section" title="水合先匹配已有节点">
       <p id="hydration-match" className="vp-citation-target">水合的核心是把客户端组件和服务器已经输出的节点对应起来，尽量复用现有 DOM，而不是把页面当成空白画布从头创建。<Cite id="hydration-match" sources={hydrationSources} />演示里“结构一致”只是匹配通过，接下来仍要完成事件连接。</p>
