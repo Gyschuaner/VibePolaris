@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, FileText, GitBranch, Gauge, HardDrives, LockKey, Package, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, Package, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -144,6 +144,26 @@ export function UserFlowSignatureHero() {
       <div className={styles.flowTicket}><Envelope size={20} /><span>入口票据</span><strong>找回账号</strong><small>邮件链接</small></div>
       <div className={styles.flowTurn}><div className={styles.flowGate}><span>{branch === "expired" ? "过期" : "有效"}</span><b>{branch === "expired" ? "重新发送" : "保存新密码"}</b></div><i className={styles.flowArc} aria-hidden="true" /><ArrowRight size={19} aria-hidden="true" /></div>
       <div className={styles.flowHome}><span>恢复点</span><strong>{branch === "expired" ? "继续输入" : "账号已恢复"}</strong><small>{branch === "expired" ? "原任务仍在" : "完成状态"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function WireframeSignatureHero() {
+  const scene = useScene(4);
+  const [visual, setVisual] = useState(false);
+  const labels = ["遮住装饰", "摆内容块", "校对层级", "停在低保真"];
+  const current = [
+    { title: "先把视觉噪音盖住", detail: "只讨论结构和任务", icon: Layout },
+    { title: "内容块占住真实位置", detail: "标题 · 金额 · 操作", icon: FileText },
+    { title: "层级决定阅读顺序", detail: "先看什么，下一步在哪里", icon: CheckCircle },
+    { title: visual ? "颜色抢回了讨论" : "结构证据足够，先停在低保真", detail: visual ? "视觉稿不能替结构验收" : "尚未承诺动效与响应式", icon: visual ? WarningCircle : CheckCircle },
+  ][scene.step];
+
+  return <Frame ariaLabel="线框图用低细节骨架验证内容层级和操作位置" className={styles.wireframe} eyebrow="先让页面站得住，再决定它长什么样" meta="content · hierarchy · action" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="线框图的低保真是一个讨论工具：它暴露内容、分组和操作的位置，却不替真实文案、响应式和动效做承诺。">
+    <div className={styles.wireframeControls} role="group" aria-label="切换是否显示视觉装饰"><button type="button" aria-pressed={!visual} onClick={() => { setVisual(false); scene.seek(3); }}><Layout size={15} />只看结构</button><button type="button" aria-pressed={visual} onClick={() => { setVisual(true); scene.seek(3); }}><Eye size={15} />打开视觉稿</button></div>
+    <div className={styles.wireframeBoard} data-visual={visual} data-step={scene.step}>
+      <div className={styles.wireCanvas}><span className={styles.wireGrid} aria-hidden="true" /><div className={styles.wireBlock} data-slot="title"><small>标题</small><strong>订单详情</strong></div><div className={styles.wireBlock} data-slot="body"><small>内容</small><span>金额 · 条件 · 状态</span></div><div className={styles.wireBlock} data-slot="action"><small>操作</small><b>确认退款</b></div><div className={styles.wirePaint} aria-hidden="true" /></div>
+      <div className={styles.wireRuler}><Layout size={20} /><span>结构刻度</span><strong>{scene.step >= 2 ? "标题 → 判断 → 操作" : "等待内容块"}</strong><small>{visual ? "颜色已进入" : "颜色暂不参与"}</small></div>
     </div>
   </Frame>;
 }

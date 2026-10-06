@@ -27,7 +27,7 @@ import {
   WireframeLesson,
 } from "./FlowRedesignLessons";
 import { SignatureHeroRuntime } from "./SignatureHeroRuntime";
-import { UserFlowSignatureHero } from "../ProductCoreSignatureHeroes";
+import { UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
 import styles from "./FlowRedesignConcepts.module.css";
 
 type HeroKind = "loading" | "micro" | "motion" | "client" | "deploy" | "flow" | "wireframe" | "prototype" | "ia" | "a11y";
@@ -144,7 +144,7 @@ export function UserFlowTermPage() {
 
 const wireSections: [string, string][] = [["wireframe-structure-section", "线框先把结构从视觉里剥出来"], ["wireframe-content-section", "内容、分组和操作要一起占位"], ["wireframe-boundary-section", "低保真不替真实验证负责"]];
 export function WireframeTermPage() {
-  return <Article slug="wireframe" title="线框图" subtitle="Wireframe · 先让页面站得住" sources={wireframeSources} sections={wireSections} hero={<SignatureHero kind="wireframe" />} intro={<>线框图不是一张没上色的成品截图。<strong>它把内容、分组、层级和主要操作留在低细节的骨架里</strong>，让团队在字体和颜色还没抢走注意力之前，先讨论页面到底怎样组织。</>}>
+  return <Article slug="wireframe" title="线框图" subtitle="Wireframe · 先让页面站得住" sources={wireframeSources} sections={wireSections} hero={<WireframeSignatureHero />} intro={<>线框图不是一张没上色的成品截图。<strong>它把内容、分组、层级和主要操作留在低细节的骨架里</strong>，让团队在字体和颜色还没抢走注意力之前，先讨论页面到底怎样组织。</>}>
     <ArticleSection id="wireframe-structure-section" title="线框先把结构从视觉里剥出来"><p id="wireframe-structure" className="vp-citation-target">框、文字和位置足以讨论信息关系：标题是否先出现，金额和条件是否被分到同一任务里，主要操作是否靠近判断完成的位置。<Cite id="wireframe-structure" sources={wireframeSources} />线框的价值正是把这些决定暴露出来，而不是提前用视觉效果掩盖。</p><p id="wireframe-content" className="vp-citation-target">内容不是最后才填的假文字；字段名称、最长标题和真实状态会改变结构。<Cite id="wireframe-content" sources={wireframeSources} />演示把内容、分组、层级和操作当成可以揭开的四层，帮助读者知道当前稿子能证明什么。</p><WireframeLesson /></ArticleSection>
     <ArticleSection id="wireframe-boundary-section" title="低保真不替真实验证负责"><p id="wireframe-boundary" className="vp-citation-target">线框无法单独证明真实文案长度、数据密度、响应式变化、动效和技术可行性。<Cite id="wireframe-boundary" sources={wireframeSources} />当这些问题成为本轮风险，就要把结构交给原型、代码或真实内容继续验证。</p><ArticleAside title="评审线框时先问结构问题"><p>遮住颜色和图片，只问三件事：用户先看到什么？相关内容是否在同一组？完成任务的操作在哪里？如果讨论很快滑向“这个颜色好不好看”，说明视觉稿来得太早。</p></ArticleAside></ArticleSection>
   </Article>;
