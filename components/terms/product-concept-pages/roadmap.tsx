@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { RoadmapLesson } from "../product-concept-lessons/roadmap";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { RoadmapHero } from "./mechanism-heroes";
 import { roadmapSources } from "@/lib/product-concept-sources/roadmap";
 
 const sections: [string, string][] = [
@@ -16,13 +16,12 @@ export function RoadmapTermPage() {
     subtitle="Roadmap · 按目标和阶段说明产品接下来解决什么"
     sources={roadmapSources}
     sections={sections}
-    hero={<GitHero contextLabel="先看产品要改变什么" contextTitle="降低首次配置失败率" trigger="路线图应该是一张固定功能日期表，还是会随证据调整的计划？" change="用户价值 → 阶段结果 → 依赖与复盘" proof="远期保留假设，近期明确下一步" />}
+    hero={<RoadmapHero />}
     intro={<>路线图把产品或服务接下来要为用户带来的价值、阶段性目标和主要依赖放在一个可沟通的方向框架里。它帮助团队理解现在的工作怎样通向更远的目标，也让不确定的远期判断保持可调整；它不是把每个任务排成精确日期的 backlog。</>}
   >
     <ArticleSection id="roadmap-vision" title="先把用户价值放在前面">
       <p id="roadmap-vision-detail" className="vp-citation-target">路线图先回答“我们要为用户改变什么”，再说明会经过哪些阶段。比如“降低首次配置失败率”是一个可以观察的方向；只写“Q3 做诊断页、Q4 做引导页”会让功能日期遮住真正要解决的问题。<Cite id="roadmap-vision-detail" sources={roadmapSources} /></p>
       <p id="roadmap-level-detail" className="vp-citation-target">计划的详细程度要跟时间距离匹配：近期工作可以写到下一步结果和依赖，远期只保留目标、假设和大致阶段。这样团队能协调投入，又不会把还没有证据的方案误读成承诺。<Cite id="roadmap-level-detail" sources={roadmapSources} /></p>
-      <RoadmapLesson />
     </ArticleSection>
 
     <ArticleSection id="roadmap-stage" title="把方向拆成阶段结果">
