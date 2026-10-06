@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Funnel, GitBranch, ListChecks, MagnifyingGlass, MapPin, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, Broadcast, CheckCircle, Clock, Cube, CurrencyCircleDollar, Database, FileText, FlowArrow, Funnel, GitBranch, ListChecks, MagnifyingGlass, MapPin, Pulse, Scales, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -155,6 +155,31 @@ export function DataLineageSignatureHero() {
       <div className={styles.lineageSource}><span>来源快照 s1</span><div data-active={showColumns}><code>amount</code><strong>1200 · 800</strong></div><div data-active={showColumns}><code>discount</code><strong>200 · 0</strong></div><small>{showColumns ? "两列进入规则 v2" : "点击结果展开"}</small></div>
       <div className={styles.lineageMiddle}><div className={styles.lineageResult}><span>daily.total</span><strong>1800</strong><small>CNY cents · v2</small></div><div className={styles.lineageRun}><GitBranch size={15} /><code>run-43</code><span>sum(amount − discount)</span></div></div>
       <div className={styles.lineageImpact}>{showImpact ? <><span>下游影响</span><div><FlowArrow size={16} /><code>monthly.total</code><small>需要复查</small></div><div><FlowArrow size={16} /><code>finance.dashboard</code><small>依赖日合计</small></div></> : <><span>关系待展开</span><div className={styles.lineageHint}><MapPin size={16} /><small>{step >= 3 ? "点击‘查看下游影响’" : "先走到字段层"}</small></div></>}</div>
+    </div>
+  </Frame>;
+}
+
+const streamSteps = ["收到 t2", "水位到 10", "晚到 t4", "决定结果"];
+
+export function StreamProcessingSignatureHero() {
+  const scene = useScene(streamSteps.length);
+  const [latePolicy, setLatePolicy] = useState<"side" | "revise">("side");
+  const step = scene.step;
+  const t4Arrived = step >= 2;
+  const watermark = step === 0 ? "—" : step < 3 ? "10" : "20";
+  const revised = latePolicy === "revise" && step >= 3;
+  const result = step === 0
+    ? { icon: Broadcast, title: "先按事件时间记账", detail: "t2 进入 [0,10)，不是按收到顺序猜窗口" }
+    : step === 1
+      ? { icon: Clock, title: "水位推进，窗口准备关门", detail: "[0,10) 可以先输出 1 次，t4 还没出现" }
+      : step === 2
+        ? { icon: WarningCircle, title: "t4 到得太晚", detail: latePolicy === "side" ? "送进旁路，已发布窗口不被悄悄改写" : "保留窗口状态，等待修订", danger: true }
+        : { icon: revised ? CheckCircle : Pulse, title: revised ? "窗口发布修订版" : "旁路留下待复核事件", detail: revised ? "[0,10) 从 1 次更新到 2 次" : "[0,10)=1 · late side=t4" };
+  return <Frame label="流处理用事件时间和水位决定窗口何时输出，晚到事件按策略旁路或修订" eyebrow="记录带着发生时间到来" meta="event time → watermark → window" scene={scene} steps={streamSteps} result={result} caption="水位是在事件时间尺子上向前推进的信号，不是把机器时钟拨快。它决定窗口何时可以给出结果；晚到数据是否旁路、补写还是触发修订，必须由业务策略明确。" controls={<div className={styles.inlineControls} role="group" aria-label="晚到事件处理策略"><button type="button" aria-pressed={latePolicy === "revise"} onClick={() => { setLatePolicy(policy => policy === "side" ? "revise" : "side"); scene.seek(2); }}><Pulse size={15} />{latePolicy === "side" ? "改为窗口修订" : "改为晚到旁路"}</button></div>}>
+    <div className={styles.streamBoard} data-policy={latePolicy} data-step={step}>
+      <div className={styles.streamArrivals}><div className={styles.streamArrivalHeader}><Broadcast size={17} /><span>到达顺序</span></div>{[{ id: "t2", time: 2 }, { id: "t12", time: 12 }, { id: "t4", time: 4 }].map((event, index) => <div key={event.id} data-arrived={index === 0 ? step >= 0 : index === 1 ? step >= 1 : t4Arrived} data-late={event.id === "t4" && t4Arrived}><code>{event.id}</code><span>发生时刻 {event.time}</span><small>{event.id === "t4" && t4Arrived ? "晚到" : index === 1 && step < 1 ? "等待" : "已到"}</small></div>)}</div>
+      <div className={styles.streamMeter}><span>watermark</span><strong>{watermark}</strong><div className={styles.streamTicks}><i data-on={step >= 1} /><i data-on={step >= 3} /></div><small>{step >= 1 ? "第一窗口可结算" : "还在等事件"}</small></div>
+      <div className={styles.streamWindows}><div data-closed={step >= 1}><span>[0, 10)</span><strong>{revised ? "2 次" : step >= 1 ? "1 次" : "—"}</strong><small>{revised ? "修订版" : step >= 1 ? "已输出" : "开放"}</small></div><div data-closed={step >= 3}><span>[10, 20)</span><strong>{step >= 3 ? "1 次" : "—"}</strong><small>{step >= 3 ? "已输出" : "等待水位"}</small></div><div className={styles.streamLate} data-visible={t4Arrived}><WarningCircle size={15} /><span>{latePolicy === "side" ? "late side · t4" : "reopen · t4"}</span></div></div>
     </div>
   </Frame>;
 }
