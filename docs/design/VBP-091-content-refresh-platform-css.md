@@ -44,3 +44,4 @@
 - 生产 release 为 `/opt/vibepolaris/releases/20261006T203945Z-1d37bf09`，`/opt/vibepolaris/current` 已原子切换到该目录；切换前备份为 `/opt/vibepolaris/backups/20261006T203945Z-from-b5f2cb26`。`vibepolaris-web-1` 为 `running/healthy`，`rollback.sh` 指向上一版 `b5f2cb26` release 与镜像，`xiaobei_data` 数据卷未改动。
 - 生产冒烟通过：`/`、`/news`、`/about`、`/sitemap.xml` 及十条 VBP-091 词条路由均返回 200；安全区域首图包含“背景先铺到边缘”，权限首图包含“拍照上传”。
 - 回滚方式：执行当前 release 的 `rollback.sh`，恢复 `/opt/vibepolaris/releases/20261006T195650Z-b5f2cb26` 并将 `current` 指回上一版；保留新版本产生的数据，不覆盖 `vibepolaris_xiaobei_data`。
+- DP 需求与部署批次查询在本轮仍因 CLI TLS `UNEXPECTED_EOF_WHILE_READING` 无法连接，未创建或伪造 DP 对象；平台恢复后再用 `dp` 补录真实需求、review、测试和发布记录。
