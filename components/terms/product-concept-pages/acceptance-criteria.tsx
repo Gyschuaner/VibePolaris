@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { AcceptanceCriteriaLesson } from "../product-concept-lessons/acceptance-criteria";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { AcceptanceCriteriaHero } from "./mechanism-heroes";
 import { acceptanceCriteriaSources } from "@/lib/product-concept-sources/acceptance-criteria";
 
 const sections: [string, string][] = [
@@ -16,13 +16,12 @@ export function AcceptanceCriteriaTermPage() {
     subtitle="Acceptance Criteria · 把需求变成可检查的完成结果"
     sources={acceptanceCriteriaSources}
     sections={sections}
-    hero={<GitHero contextLabel="先检查登录结果" contextTitle="未登录用户 · 设置页" trigger="“登录功能已经做好”应由哪些具体结果判断？" change="模糊评价 → Given/When/Then → 可观察边界" proof="正常、错误与权限结果都能检查" />}
+    hero={<AcceptanceCriteriaHero />}
     intro={<>验收标准把一项需求的完成边界写成可以执行和观察的结果：在什么条件下，谁做了什么，系统应让用户或外部系统看到什么。它连接用户故事、实现和测试，不是内部步骤清单，也不是“体验良好”这样的主观评价。</>}
   >
     <ArticleSection id="acceptance-purpose" title="从用户结果定义完成">
       <p id="acceptance-purpose-detail" className="vp-citation-target">先从用户故事里的目标写结果，再问“完成时用户能知道什么、做成什么”。验收标准是一份检查清单，用来确认服务是否完成工作并满足用户需要；它应能追溯到故事和支持这项判断的证据。<Cite id="acceptance-purpose-detail" sources={acceptanceCriteriaSources} /></p>
       <p id="acceptance-boundary-detail" className="vp-citation-target">验收标准描述产品应表现出的行为和结果，不规定一定要用哪个组件、接口或数据库实现。实现可以变化，只要用户目标和约定结果仍然成立；如果目标本身改变，应回到需求重新讨论，而不是悄悄改验收句子。<Cite id="acceptance-boundary-detail" sources={acceptanceCriteriaSources} /></p>
-      <AcceptanceCriteriaLesson />
     </ArticleSection>
 
     <ArticleSection id="acceptance-shape" title="给定条件、动作和结果">
