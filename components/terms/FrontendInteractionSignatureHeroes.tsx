@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Cloud, Code, Cube, Cursor, Database, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, Stack, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight, ArrowsClockwise, Browser, Check, CheckCircle, Cloud, Code, Cube, Cursor, Database, DeviceMobile, Eye, FileCode, Fingerprint, Gear, Gauge, GitBranch, Key, Layout, Lightning, MapPinLine, Monitor, Package, Ruler, ShieldCheck, SpeakerHigh, Stack, Target, WarningCircle } from "@phosphor-icons/react";
 import { useScene, SceneControls } from "./HarnessStoryScenes";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -154,6 +154,19 @@ export function OfflineFirstSignatureHero() {
       <div className={styles.outboxTile}><Stack size={21} /><span>待同步队列</span><b>{scene.step === 0 ? "尚未入队" : scene.step === 1 ? "操作 7 · 待上传" : scene.step === 2 ? "上传中" : "0 条待同步"}</b></div>
       <div className={styles.serverTile}><Cloud size={22} /><span>服务器</span><b>{scene.step < 2 ? "v12" : scene.step === 2 ? "v13 · 冲突" : "v14 · 已确认"}</b></div>
       <div className={styles.conflictTile} data-visible={scene.step === 3}><GitBranch size={20} /><span>冲突选择</span><b>{scene.step === 3 ? "保留本地标题" : "等待比较"}</b></div>
+    </div>
+  </HeroShell>;
+}
+
+const adaptiveLabels = ["窄屏单任务", "中宽保留上下文", "宽屏改成侧栏", "焦点仍在原任务"];
+export function AdaptiveLayoutSignatureHero() {
+  const scene = useScene(adaptiveLabels.length);
+  const widths = ["390", "720", "1000", "1000"];
+  return <HeroShell scene={scene} title="窗口变宽时怎样重排关系并保留任务" labels={adaptiveLabels} className={styles.adaptiveHero}>
+    <div className={styles.adaptiveBoard} data-step={scene.step}>
+      <div className={styles.windowBar}><Layout size={19} /><span>应用窗口</span><strong>{widths[scene.step]} · 教学示例</strong><input aria-label="拖宽窗口" type="range" min="0" max="3" value={scene.step} onChange={(event) => scene.seek(Number(event.currentTarget.value))} /></div>
+      <div className={styles.adaptiveWindow}><div className={styles.adaptiveNav}><span>导航</span><i /><i /><i /></div>{scene.step < 1 ? null : <div className={styles.adaptiveList}><span>任务列表</span><b>任务 8</b><i>任务 7</i><i>任务 9</i></div>}<div className={styles.adaptiveDetail}><span>任务详情</span><strong>任务 8</strong><p>订单资料仍在这里</p><button type="button" aria-label="任务 8 完成" data-focused={scene.step === 0 || scene.step === 3}><Check size={15} />完成</button></div></div>
+      <div className={styles.adaptiveProof}><Target size={18} /><span>{scene.step === 0 || scene.step === 3 ? "焦点：任务 8 · 完成" : "选中：任务 8"}</span><CheckCircle size={18} /></div>
     </div>
   </HeroShell>;
 }
