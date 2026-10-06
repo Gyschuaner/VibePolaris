@@ -189,7 +189,7 @@ export function CodeCoverageSignatureHero() {
   const status = failed
     ? { icon: Bug, title: "盲分支放行了风险", detail: "行已经亮着，但 verified=false 没有被行为断言拦住", danger: true }
     : scene.step === 3
-      ? { icon: CheckCircle, title: "覆盖地图补齐", detail: "TF 路径被执行，接下来仍要检查拒绝结果" }
+      ? { icon: CheckCircle, title: "TF 已补，地图仍有空格", detail: "这一路被执行，其他输入组合仍要按业务风险决定" }
       : { icon: scene.step < 2 ? GridFour : scene.step === 2 ? Check : Bug, title: coverageSteps[scene.step], detail: scene.step === 0 ? "一行判断拆成四种输入组合" : scene.step === 1 ? "一次成功输入只点亮一格" : "执行过不等于行为正确" };
   return <SignatureFrame scene={scene} label="代码覆盖率把一个复合条件拆成可见输入组合和行为盲区" eyebrow="地图告诉你走过哪里，不替你判定对错" meta="line ≠ branch ≠ behavior" steps={coverageSteps} status={status} caption="覆盖率是测试执行留下的地图。它能指出没走过的路径，真正的业务结论仍要由断言和风险来决定。" controls={<div className={styles.choiceRow} role="group" aria-label="选择是否补上未验证分支"><button type="button" aria-pressed={coverBranch} onClick={() => choose(true)}>补 TF 分支</button><button type="button" aria-pressed={!coverBranch} onClick={() => choose(false)}>只跑 TT</button></div>}>
     <div className={styles.coverageBoard} data-branch={coverBranch} data-failed={failed}>
