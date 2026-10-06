@@ -48,5 +48,6 @@
 - 生产提交：`428c1fca4870bf94ae9b940918b9c7064b6413a4`；镜像 digest：`sha256:2256dbd18203d33a68d4bf70063c834261b99b56d7883146129bdfbfb44b1264`。
 - 当前 release：`/opt/vibepolaris/releases/20261006T212659Z-428c1fca-corrected`；`/opt/vibepolaris/current` 已原子切换到该目录；`vibepolaris-web-1` 为 `running / healthy`。
 - 生产冒烟：十条词条路由从生产容器内和公网入口均返回 HTTP 200；本地网络直连公网域名曾出现 TLS `SSL_ERROR_SYSCALL`，改从生产机复核后完成验证。
-- 回滚：安全回滚目标为 `/opt/vibepolaris/releases/20261006T203945Z-1d37bf09`，镜像 `vibepolaris:1d37bf092bf405450d77e88440fc47d696dbe8f1`；回滚脚本位于当前 release，持久化 `xiaobei_data` 数据卷未改动。此前误用含未提交 VBP-064 工作区构建的临时 release `/opt/vibepolaris/releases/20261006T211848Z-428c1fca` 已被替换并保留审计备份，未作为本批交付物。
+- 回滚：安全回滚目标为 `/opt/vibepolaris/releases/20261006T203945Z-1d37bf09`，镜像 `vibepolaris:1d37bf092bf405450d77e88440fc47d696dbe8f1`；当前 release 的脚本显式传入纯 tag，并通过 shell 语法检查，持久化 `xiaobei_data` 数据卷未改动。
+- 构建核对更正：首次 release `/opt/vibepolaris/releases/20261006T211848Z-428c1fca` 曾因运行镜像里没有 TSX 源码而被误判来源有误。运行镜像只复制 `.next` 产物，缺少源码是预期行为；直接读取生成 HTML 后确认两份镜像均包含 VBP-092 首图，特色首图 JS/CSS 的 SHA-256 完全一致（JS `f2ce6e8822ae07973b2155c410f7c5b28d4e1ceb65712ae65018b438354923e6`；CSS `39756b33d69fb4be79fb79ebc8f354d13f115e3a5eda10184e87b61e1b706854`）。没有证据支持“未提交 VBP-064 内容上线”的判断；第一次镜像以 `vibepolaris:vbp092-firstbuild-20261006T211848` 保留。
 - DP CLI 当前仍受 TLS EOF 阻塞，不能伪造状态或绕过 CLI；Obsidian 路径在本机不存在。
