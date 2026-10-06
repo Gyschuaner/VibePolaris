@@ -25,11 +25,11 @@ export function IterationHero() {
   </MechanismFrame>;
 }
 
-const conversionLabels = ["固定起点", "记录完成", "换分子", "固定窗口"];
+const conversionLabels = ["固定起点", "记录提交", "换完成事件", "固定窗口"];
 const conversionCaptions = [
   "先圈出进入注册页的独立用户；分母一变，后面的百分比就不再可比。",
-  "验证邮箱是完成事件，120 个完成者落在 1000 个起点用户里。",
-  "如果把提交表单当完成事件，分子变成 180，指标会变成 18%。",
+  "把提交表单定为完成事件，180 个完成者落在 1000 个起点用户里，得到 18%。",
+  "改成验证邮箱后，完成条件更严格，分子变成 120，指标变为 12%。",
   "把窗口缩成一小时，只记到 90 个及时验证者，得到 9%；这和 24 小时不是同一口径。",
 ];
 
@@ -37,15 +37,15 @@ export function ConversionRateHero() {
   const scene = useScene(conversionLabels.length);
   const step = scene.step;
   const recorded = step >= 1;
-  const submitted = step === 2;
+  const submitted = step === 1;
   const fixedWindow = step >= 3;
-  const numerator = fixedWindow ? 90 : submitted ? 180 : recorded ? 120 : 0;
-  const percent = fixedWindow ? 9 : submitted ? 18 : recorded ? 12 : 0;
+  const numerator = fixedWindow ? 90 : submitted ? 180 : step >= 2 ? 120 : 0;
+  const percent = fixedWindow ? 9 : submitted ? 18 : step >= 2 ? 12 : 0;
   return <MechanismFrame scene={scene} title="转化率怎样让分母、事件和窗口现形" labels={conversionLabels} caption={conversionCaptions[step]}>
     <div className={styles.conversionScene}>
       <div className={styles.conversionRingsLarge} data-submitted={submitted}><i /><i /><strong>{recorded ? numerator : "—"}</strong><small>/ 1000 · {recorded ? `${percent}%` : "待记录"}</small></div>
-      <div className={styles.conversionLedger}><div className={styles.conversionLedgerHead}><ClipboardText size={15} /><span>MEASUREMENT LEDGER</span></div><div><small>起点</small><strong>首次到达注册页</strong></div><div><small>完成</small><strong>{step >= 2 ? "提交表单" : step >= 1 ? "验证邮箱" : "待记录"}</strong></div><div><small>窗口 / 单位</small><strong>{step >= 3 ? "1h · 独立用户" : "待固定"}</strong></div></div>
-      <div className={styles.conversionProof} role="status"><Target size={15} /><span>{step === 2 ? "换完成事件，内圈就变大" : step >= 3 ? "口径固定后才可比较版本" : "百分比先别脱离上下文"}</span></div>
+      <div className={styles.conversionLedger}><div className={styles.conversionLedgerHead}><ClipboardText size={15} /><span>MEASUREMENT LEDGER</span></div><div><small>起点</small><strong>首次到达注册页</strong></div><div><small>完成</small><strong>{step >= 2 ? "验证邮箱" : step >= 1 ? "提交表单" : "待记录"}</strong></div><div><small>窗口 / 单位</small><strong>{step >= 3 ? "1h · 独立用户" : "待固定"}</strong></div></div>
+      <div className={styles.conversionProof} role="status"><Target size={15} /><span>{step === 1 ? "先把提交定义成完成事件" : step === 2 ? "换成更严格的验证事件，内圈缩小" : step >= 3 ? "口径固定后才可比较版本" : "百分比先别脱离上下文"}</span></div>
     </div>
   </MechanismFrame>;
 }
