@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { ProblemStatementLesson } from "../product-concept-lessons/problem-statement";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { ProblemStatementHero } from "./problem-statement-hero";
 import { problemStatementSources } from "@/lib/product-concept-sources/problem-statement";
 
 const sections: [string, string][] = [
@@ -16,14 +16,13 @@ export function ProblemStatementTermPage() {
     subtitle="Problem Statement · 把事实与影响写成可解决的问题"
     sources={problemStatementSources}
     sections={sections}
-    hero={<GitHero contextLabel="先把方案放回问题" contextTitle="客服 · 查历史订单" trigger="“我们需要做一个智能搜索”是问题，还是已经选定的方案？" change="方案句 → 事实证据 → 问题边界" proof="问题写清后，多个方案才能比较" />}
+    hero={<ProblemStatementHero />}
     intro={<>问题陈述把一个真实的人在真实场景里遇到的阻碍写清楚，并说明它造成了什么影响。它让团队先对要解决的事情形成共识，再比较不同方案；问题本身不是功能规格，也不是把“痛点”换一种说法。</>}
   >
     <ArticleSection id="problem-statement-evidence" title="从用户事实开始，不从功能名开始">
       <p id="problem-statement-evidence-detail" className="vp-citation-target">问题陈述要从用户正在努力完成的事情开始。客服查历史订单时要完成的是“尽快确认订单状态”，不是“使用智能搜索”；访谈、观察、搜索日志和服务数据可以帮助确认实际行为，单句“大家很痛苦”只能先当作待验证的判断。<Cite id="problem-statement-evidence" sources={problemStatementSources} /></p>
       <p id="problem-statement-solution-detail" className="vp-citation-target">发现阶段经常有人直接带来一个预设方案，例如“做一个互动地图”或“做一个 AI 搜索”。先把这句话改写成要解决的问题，拆开其中的假设，再去研究用户和环境，才能避免在没有证据时把答案当成目标。<Cite id="problem-statement-solution" sources={problemStatementSources} /></p>
       <p id="problem-statement-context-detail" className="vp-citation-target">不要只截取用户点按钮的几秒：还要看他之前怎样找到入口、之后要把结果交给谁、有没有其他渠道或限制。问题陈述里的“场景”不是背景故事，而是决定阻碍是否真实、影响是否重要的上下文。<Cite id="problem-statement-context" sources={problemStatementSources} /></p>
-      <ProblemStatementLesson />
     </ArticleSection>
 
     <ArticleSection id="problem-statement-structure" title="把场景、阻碍和影响连起来">

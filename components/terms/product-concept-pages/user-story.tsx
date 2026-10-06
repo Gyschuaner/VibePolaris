@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { UserStoryLesson } from "../product-concept-lessons/user-story";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { UserStoryHero } from "./user-story-hero";
 import { userStorySources } from "@/lib/product-concept-sources/user-story";
 
 const sections: [string, string][] = [
@@ -16,14 +16,13 @@ export function UserStoryTermPage() {
     subtitle="User Story · 把用户目标切成可验证的工作项"
     sources={userStorySources}
     sections={sections}
-    hero={<GitHero contextLabel="先从需要开始" contextTitle="财务人员 · 月度账单" trigger="“增加导出按钮”到底服务谁，又解决什么任务？" change="角色 → 目标 → 验收结果" proof="每个结果都能检查；方案细节留给后续讨论" />}
+    hero={<UserStoryHero />}
     intro={<>用户故事用使用者的语言描述一项可交付的需求：谁要完成什么，以及这样做要得到什么结果。它把研究得到的需要连接到实现和测试，但不把一张格式化句子当成证据，也不代替完整的设计和业务规则。</>}
   >
     <ArticleSection id="user-story-need" title="从有证据的用户需要开始">
       <p id="user-story-evidence" className="vp-citation-target">“增加导出按钮”先停在方案层：它没有说明谁遇到什么任务，也没有证据证明按钮能改善结果。用户需要应来自访谈、观察、搜索日志或已有数据；没有来自用户的意见只能先当作待验证的假设。<Cite id="user-story-evidence" sources={userStorySources} /></p>
       <p id="user-story-need-detail" className="vp-citation-target">好的需要通常用用户能认出的词来写，先描述要完成的事情和原因，再决定是否需要补充角色、触发条件或限制。这样写出的目标能跨越一个具体界面，避免把“需要提醒”过早缩成“需要邮件”。<Cite id="user-story-need-detail" sources={userStorySources} /></p>
       <p id="user-story-traceability" className="vp-citation-target">用户需要通常更宽、更稳定；用户故事则把其中一段具体工作切成团队能交付的大小，并保留它对应的需要。沿着这条关系回看，团队才知道一个故事完成后到底帮助了哪个用户结果。<Cite id="user-story-traceability" sources={userStorySources} /></p>
-      <UserStoryLesson />
     </ArticleSection>
 
     <ArticleSection id="user-story-shape" title="角色、任务和目标要写全">

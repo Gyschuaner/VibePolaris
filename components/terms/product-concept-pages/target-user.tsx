@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { TargetUserLesson } from "../product-concept-lessons/target-user";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { TargetUserHero } from "./target-user-hero";
 import { targetUserSources } from "@/lib/product-concept-sources/target-user";
 
 const sections: [string, string][] = [
@@ -16,14 +16,13 @@ export function TargetUserTermPage() {
     subtitle="Target User · 把服务对象按任务和限制说清楚"
     sources={targetUserSources}
     sections={sections}
-    hero={<GitHero contextLabel="先看任务差异" contextTitle="导出账单 · 两种工作" trigger="“所有人都能用”为什么仍不足以指导产品设计？" change="人口标签 → 任务分组 → 本期范围" proof="同一功能对不同任务有不同价值" />}
+    hero={<TargetUserHero />}
     intro={<>目标用户是当前版本优先服务的人：由共同任务、频率、权限和使用环境划出可解释的范围。它帮助团队判断先研究谁、先解决什么，以及哪些需求要明确留到后续，而不是凭人口标签虚构一个完整人物。</>}
   >
     <ArticleSection id="target-user-evidence" title="从任务和证据开始">
       <p id="target-user-evidence-detail" className="vp-citation-target">先问用户正在努力完成什么、现在通过什么渠道完成、哪里遇到阻碍，再决定本期要服务谁。访谈、观察、分析数据和已有反馈可以互相印证；只有团队自己的猜测时，应把它标成待验证假设。<Cite id="target-user-evidence-detail" sources={targetUserSources} /></p>
       <p id="target-user-profile-detail" className="vp-citation-target">用户画像或用户档案的作用，是把行为和需要相近的人归成一组，方便团队讨论共同约束。它不是为每个人补写姓名、性格和生活故事，也不能用一个好听的群组名称掩盖任务没有说清。<Cite id="target-user-profile-detail" sources={targetUserSources} /></p>
       <p id="target-user-research-detail" className="vp-citation-target">研究对象要覆盖真实或可能使用服务的人，并根据任务、问题情境、访问方式和经验设定招募条件。这样得到的目标组才有证据来源，而不是只挑最容易联系的一小撮人。<Cite id="target-user-research-detail" sources={targetUserSources} /></p>
-      <TargetUserLesson />
     </ArticleSection>
 
     <ArticleSection id="target-user-context" title="把频率、能力和环境写出来">
