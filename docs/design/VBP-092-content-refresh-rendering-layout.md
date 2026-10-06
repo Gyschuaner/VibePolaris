@@ -17,16 +17,16 @@
 
 | 顺序 | slug | 机制与正文接点 | 实现提交 | review / 浏览器 | 状态 |
 | --- | --- | --- | --- | --- | --- |
-| 1 | flexbox | 主轴自由空间、grow/shrink、wrap、axis；`flex-free-space` / `flex-grow-ratio` | `6184e076` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
-| 2 | css-grid | 轨道、跨列、sparse/dense、implicit track；`grid-span` / `grid-dense` | `84740bc7` | 唯一 reviewer PASS；sparse/dense 实际回填 | 待统一发布 |
-| 3 | positioning | containing block、占位、viewport、sticky threshold；`position-containing-block` / `position-sticky` | `6fc4537d` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
-| 4 | breakpoint | 内容压力线先于断点；`breakpoint-content` / `breakpoint-failure` | `578a71d5` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
-| 5 | media-query | width、hover、motion 信号分别命中规则；`mq-condition` / `mq-combine` | `e6cf6155` | 唯一 reviewer PASS；首步重置已验证 | 待统一发布 |
-| 6 | module | live binding、复制快照、TDZ；`module-live` / `module-cycle` | `f3a53024` | 唯一 reviewer PASS；首步 live binding 重置已验证 | 待统一发布 |
-| 7 | code-splitting | 动态入口、chunk 请求、缓存、过度拆分；`split-boundary` / `split-granularity` | `dc745744` | 唯一 reviewer PASS；桌面与 390px CUA | 待统一发布 |
-| 8 | lazy-loading | viewport window、预留尺寸、ready/error；`lazy-intersection` / `lazy-loading-attribute` | `a4d450b3` | 唯一 reviewer PASS；失败态重试已验证 | 待统一发布 |
-| 9 | hydration | server HTML、客户端匹配、事件接管、mismatch；`hydration-match` / `hydration-mismatch` | `de043a82` | 唯一 reviewer PASS；4 来源同序 | 待统一发布 |
-| 10 | csr | shell、脚本、数据、DOM、交互；`csr-shell` / `csr-data` | `925a0940` | 唯一 reviewer PASS；4 来源同序 | 待统一发布 |
+| 1 | flexbox | 主轴自由空间、grow/shrink、wrap、axis；`flex-free-space` / `flex-grow-ratio` | `6184e076` | 唯一 reviewer PASS；桌面与 390px CUA | 生产已发布 |
+| 2 | css-grid | 轨道、跨列、sparse/dense、implicit track；`grid-span` / `grid-dense` | `84740bc7` | 唯一 reviewer PASS；sparse/dense 实际回填 | 生产已发布 |
+| 3 | positioning | containing block、占位、viewport、sticky threshold；`position-containing-block` / `position-sticky` | `6fc4537d` | 唯一 reviewer PASS；桌面与 390px CUA | 生产已发布 |
+| 4 | breakpoint | 内容压力线先于断点；`breakpoint-content` / `breakpoint-failure` | `578a71d5` | 唯一 reviewer PASS；桌面与 390px CUA | 生产已发布 |
+| 5 | media-query | width、hover、motion 信号分别命中规则；`mq-condition` / `mq-combine` | `e6cf6155` | 唯一 reviewer PASS；首步重置已验证 | 生产已发布 |
+| 6 | module | live binding、复制快照、TDZ；`module-live` / `module-cycle` | `f3a53024` | 唯一 reviewer PASS；首步 live binding 重置已验证 | 生产已发布 |
+| 7 | code-splitting | 动态入口、chunk 请求、缓存、过度拆分；`split-boundary` / `split-granularity` | `dc745744` | 唯一 reviewer PASS；桌面与 390px CUA | 生产已发布 |
+| 8 | lazy-loading | viewport window、预留尺寸、ready/error；`lazy-intersection` / `lazy-loading-attribute` | `a4d450b3` | 唯一 reviewer PASS；失败态重试已验证 | 生产已发布 |
+| 9 | hydration | server HTML、客户端匹配、事件接管、mismatch；`hydration-match` / `hydration-mismatch` | `de043a82` | 唯一 reviewer PASS；4 来源同序 | 生产已发布 |
+| 10 | csr | shell、脚本、数据、DOM、交互；`csr-shell` / `csr-data` | `925a0940` | 唯一 reviewer PASS；4 来源同序 | 生产已发布 |
 
 ## 资料核对
 
@@ -42,4 +42,11 @@
 
 ## 发布记录
 
-十条独立提交、唯一 reviewer PASS、真实浏览器验收和构建均已完成；公开清单原已包含这十个 slug，本批统一发布代码与演示更新。生产提交、镜像 digest、release、健康检查和回滚路径在发布后补齐；DP CLI 当前仍受 TLS EOF 阻塞，不能伪造状态或绕过 CLI。
+十条独立提交、唯一 reviewer PASS、真实浏览器验收和构建均已完成；公开清单原已包含这十个 slug，本批统一发布代码与演示更新。
+
+- 代码合入：PR #397（feature → `dev`，merge `cda4e2bb76a49e20e64ad6cd642a5e3f75c2cf32`）；PR #398（`dev` → `main`，merge `428c1fca4870bf94ae9b940918b9c7064b6413a4）。
+- 生产提交：`428c1fca4870bf94ae9b940918b9c7064b6413a4`；镜像 digest：`sha256:2256dbd18203d33a68d4bf70063c834261b99b56d7883146129bdfbfb44b1264`。
+- 当前 release：`/opt/vibepolaris/releases/20261006T212659Z-428c1fca-corrected`；`/opt/vibepolaris/current` 已原子切换到该目录；`vibepolaris-web-1` 为 `running / healthy`。
+- 生产冒烟：十条词条路由从生产容器内和公网入口均返回 HTTP 200；本地网络直连公网域名曾出现 TLS `SSL_ERROR_SYSCALL`，改从生产机复核后完成验证。
+- 回滚：安全回滚目标为 `/opt/vibepolaris/releases/20261006T203945Z-1d37bf09`，镜像 `vibepolaris:1d37bf092bf405450d77e88440fc47d696dbe8f1`；回滚脚本位于当前 release，持久化 `xiaobei_data` 数据卷未改动。此前误用含未提交 VBP-064 工作区构建的临时 release `/opt/vibepolaris/releases/20261006T211848Z-428c1fca` 已被替换并保留审计备份，未作为本批交付物。
+- DP CLI 当前仍受 TLS EOF 阻塞，不能伪造状态或绕过 CLI；Obsidian 路径在本机不存在。
