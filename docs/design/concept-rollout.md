@@ -152,11 +152,11 @@
 | box-model | 盒模型 | 前端 | VBP-091 · 逐条实现、reviewer PASS，生产已发布 |
 | cascade | 层叠 | 前端 | VBP-091 · 逐条实现、reviewer PASS，生产已发布 |
 | specificity | CSS 优先级 | 前端 | VBP-091 · 逐条实现、reviewer PASS，生产已发布 |
-| flexbox | 弹性布局 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| css-grid | 网格布局 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| positioning | 定位 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| breakpoint | 断点 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| media-query | 媒体查询 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
+| flexbox | 弹性布局 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| css-grid | 网格布局 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| positioning | 定位 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| breakpoint | 断点 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| media-query | 媒体查询 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
 | event | 事件 | 前端 | 003 · 本地验收及 review 通过 |
 | event-bubbling | 事件冒泡 | 前端 | 003 · 本地验收及 review 通过 |
 | props | 属性参数 | 前端 | 002 · 本地验收及 review 通过 |
@@ -166,11 +166,11 @@
 | fetch-api | Fetch API | 前端 | 004 · 本地验收及 review 通过 |
 | promise | Promise | 前端 | 004 · 本地验收及 review 通过 |
 | async-await | 异步等待 | 前端 | 004 · 本地验收及 review 通过 |
-| module | 模块 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| code-splitting | 代码分割 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| lazy-loading | 懒加载 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| hydration | 水合 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
-| csr | 客户端渲染 | 前端 | VBP-092 · 本地特色演示已接入，待逐条 review 与统一发布 |
+| module | 模块 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| code-splitting | 代码分割 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| lazy-loading | 懒加载 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| hydration | 水合 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
+| csr | 客户端渲染 | 前端 | VBP-092 · 逐条实现、reviewer PASS，生产已发布 |
 | ssr | 服务端渲染 | 前端 | 待处理 |
 | ssg | 静态站点生成 | 前端 | 待处理 |
 | routing | 路由 | 前端 | 待处理 |
