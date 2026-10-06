@@ -2,7 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
-import { AppLifecycleSignatureHero, AppPermissionSignatureHero, CrossPlatformSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
+import { AppLifecycleSignatureHero, AppPermissionSignatureHero, CrossPlatformSignatureHero, PushNotificationSignatureHero, SafeAreaSignatureHero, WebviewSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -232,7 +232,7 @@ export function CrossPlatformDevelopmentTermPage() {
 }
 
 export function WebviewTermPage() {
-  return <ConceptArticle slug="webview" title="WebView" subtitle="内嵌网页容器" hero={<MobileHero trigger="网页请求分享订单" change="网页消息 → 宿主校验 → 原生调用" proof="未知来源不会执行原生分享" />} sections={webviewSections} sources={webviewSources} intro={<>WebView 是原生应用里由系统网页引擎提供的页面容器。<strong>网页负责展示和发起受限请求，宿主应用负责导航、权限、存储和消息桥的安全边界。</strong></>}>
+  return <ConceptArticle slug="webview" title="WebView" subtitle="内嵌网页容器" hero={<WebviewSignatureHero />} sections={webviewSections} sources={webviewSources} intro={<>WebView 是原生应用里由系统网页引擎提供的页面容器。<strong>网页负责展示和发起受限请求，宿主应用负责导航、权限、存储和消息桥的安全边界。</strong></>}>
     <ArticleSection id="webview-task" title="在原生应用里打开网页">
       <p>你要在购物 App 里展示帮助中心，同时允许用户从帮助页点击“分享本订单”。最省事的做法可能是在原生页面里嵌入一个网页，但这会带来两个问题：网页能看到什么，网页能调用哪些原生能力。</p>
       <p id="webview-container-source" className="vp-citation-target">Android WebView 和 Apple WKWebView 都提供了在原生应用中加载网页的容器。宿主可以控制导航、Cookie、下载和与原生代码的通信；它们不是把完整浏览器无条件搬进应用。<Cite id="webview-container-source" sources={webviewSources} /></p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowRight, ArrowsOutCardinal, ArrowCounterClockwise, Bell, Browser, Camera, CheckCircle, Clock, Cloud, Code, Database, DeviceMobile, FileArrowUp, Gear, GitBranch, Key, LockSimple, MapPinLine, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { HeroShell } from "./FrontendInteractionSignatureHeroes";
@@ -121,6 +121,25 @@ export function CrossPlatformSignatureHero() {
       <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>iOS 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
       <div className={styles.crossPlatform}><DeviceMobile size={21} /><span>Android 适配器</span><strong>{leaky ? "权限写死" : "相机 · 通知"}</strong><small>{scene.step < 2 ? "等待规则" : "调用系统能力"}</small></div>
       <div className={styles.crossProof} role="status"><span>观察共享结果</span><strong>{scene.step < 3 ? "两端还没有完成一次动作" : leaky ? "改一个平台权限，可能牵动共享核心" : "业务规则保持一致，平台能力各自负责"}</strong><small>{scene.step === 0 ? "先把能共用的部分留在中心" : scene.step === 1 ? "差异在边界处分流" : scene.step === 2 ? "两端可以有不同系统 API" : "共享代码量不是唯一目标，边界更重要"}</small></div>
+    </div>
+  </HeroShell>;
+}
+
+const webviewLabels = ["网页发出请求", "宿主检查来源", "校验方法和参数", "允许或拒绝原生动作"];
+type WebviewOrigin = "trusted" | "unknown";
+
+export function WebviewSignatureHero() {
+  const scene = useScene(webviewLabels.length);
+  const [origin, setOrigin] = useState<WebviewOrigin>("trusted");
+  const unknown = origin === "unknown";
+  const resetOrigin = (next: WebviewOrigin) => { setOrigin(next); scene.seek(0); };
+  return <HeroShell scene={scene} title="WebView 消息桥怎样把网页请求关在宿主边界内" labels={webviewLabels} className={styles.platformHero}>
+    <div className={styles.webviewBoard} data-step={scene.step} data-origin={origin}>
+      <div className={styles.webviewChoice} role="group" aria-label="选择网页来源"><span>页面来源</span><button type="button" aria-pressed={!unknown} onClick={() => resetOrigin("trusted")}>受信</button><button type="button" aria-pressed={unknown} onClick={() => resetOrigin("unknown")}>未知</button></div>
+      <div className={styles.webviewPage}><Browser size={22} /><span>WebView 页面</span><strong>分享订单 42</strong><small>{unknown ? "https://陌生站点" : "https://shop.example"}</small><code>postMessage({`{ method: "share" }`})</code></div>
+      <div className={styles.webviewBridge}><ShieldCheck size={21} /><span>宿主消息桥</span><strong>{scene.step < 1 ? "等待消息" : scene.step === 1 ? "检查 origin" : scene.step === 2 ? "校验 method + payload" : unknown ? "拒绝" : "允许"}</strong><small>{scene.step < 2 ? "网页不能直接调用原生 API" : "把请求翻译成有限能力"}</small><i /></div>
+      <div className={styles.webviewNative}><DeviceMobile size={22} /><span>原生能力</span><strong>{scene.step === 3 && !unknown ? "系统分享面板" : "尚未打开"}</strong><small>{unknown && scene.step === 3 ? "来源不在白名单" : "只接收通过校验的请求"}</small>{scene.step === 3 ? (unknown ? <LockSimple size={18} /> : <CheckCircle size={18} />) : null}</div>
+      <div className={styles.webviewProof} role="status"><span>宿主的证据</span><strong>{scene.step < 3 ? "原生动作还没有发生" : unknown ? "未知页面被挡在消息桥外" : "原生分享已被明确允许"}</strong><small>{scene.step === 0 ? "先看到网页请求，再谈是否执行" : scene.step === 1 ? "来源是权限边界的一部分" : scene.step === 2 ? "方法名和参数也需要白名单" : "网页展示与原生执行各负其责"}</small></div>
     </div>
   </HeroShell>;
 }
