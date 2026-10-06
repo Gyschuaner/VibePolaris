@@ -13,7 +13,6 @@ import {
   xssRedesignSources,
 } from "@/lib/boundary-evaluation-redesign-sources";
 import {
-  CostEvaluationLesson,
   HumanGraderLesson,
   LatencyEvaluationLesson,
   PassFailLesson,
@@ -24,8 +23,8 @@ import { XssHero, XssLesson } from "./XssAnimation";
 import { SkillHero, SkillLesson } from "./SkillAnimation";
 import { EvaluationRunHero, EvaluationRunLesson } from "./EvaluationRunAnimation";
 import { SafetyEvaluationHero, SafetyEvaluationLesson } from "./SafetyEvaluationAnimation";
+import { CostEvaluationHero, CostEvaluationLesson } from "./CostEvaluationAnimation";
 import {
-  CostEvaluationHero,
   HumanGraderHero,
   LatencyEvaluationHero,
   PassFailHero,

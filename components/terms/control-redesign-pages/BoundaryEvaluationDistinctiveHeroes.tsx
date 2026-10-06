@@ -8,27 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function CostEvaluationHero() {
-  return <HeroShell kind="costEval" label="成本评测让不同方案把令牌硬币投入同一个预算槽，质量分数另行保留">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <path className={styles.costRail} d="M25 48 H242 M25 102 H242" />
-      <text className={styles.mechanismText} x="17" y="42" textAnchor="end" style={textStyle}>A</text>
-      <text className={styles.mechanismText} x="17" y="96" textAnchor="end" style={textStyle}>B</text>
-      <g className={styles.costQuality}>
-        <circle cx="42" cy="28" r="3" /><circle cx="53" cy="28" r="3" /><circle cx="64" cy="28" r="3" /><text x="79" y="32" style={textStyle}>17 / 20</text>
-      </g>
-      <g className={styles.costQuality}>
-        <circle cx="42" cy="132" r="3" /><circle cx="53" cy="132" r="3" /><circle cx="64" cy="132" r="3" /><text x="79" y="136" style={textStyle}>18 / 20</text>
-      </g>
-      <g className={styles.costCoinsA}><circle cx="90" cy="48" r="8"/><circle cx="116" cy="48" r="8"/><circle cx="142" cy="48" r="8"/></g>
-      <g className={styles.costCoinsB}><circle cx="90" cy="102" r="8"/><circle cx="116" cy="102" r="8"/><circle cx="142" cy="102" r="8"/><circle cx="168" cy="102" r="8"/></g>
-      <path className={styles.costBudget} d="M244 28 v94 M244 28 h25 M244 122 h25" />
-      <text className={styles.costBudgetText} x="284" y="70" textAnchor="middle" style={textStyle}>¥1.00</text>
-      <text className={styles.costOverText} x="284" y="115" textAnchor="middle" style={textStyle}>B ¥1.16</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function LatencyEvaluationHero() {
   return <HeroShell kind="latencyEval" label="一个请求的光点先到达首字，再穿过工具等待，最后落在完成线；更晚的尾部单独标出">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">

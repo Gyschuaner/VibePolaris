@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function CostEvaluationLesson() {
-  const [variant, setVariant] = useState<"a" | "b" | "cache">("a");
-  const values = { a: ["17 / 20", "¥0.42", "预算内"], b: ["18 / 20", "¥1.16", "超预算"], cache: ["18 / 20", "¥0.82", "条件不同"] } as const;
-  return <LessonShell eyebrow="单价要放回一次完整任务的质量和消耗" title="成本与质量同屏"><div className={styles.lessonControls}><button type="button" aria-pressed={variant === "a"} onClick={() => setVariant("a")}>方案 A</button><button type="button" aria-pressed={variant === "b"} onClick={() => setVariant("b")}>方案 B · 冷缓存</button><button type="button" aria-pressed={variant === "cache"} onClick={() => setVariant("cache")}>方案 B · 命中缓存</button><button type="button" onClick={() => setVariant("a")}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>质量</span><code>{values[variant][0]}</code><em>20 条固定题</em></div><div className={styles.labRow}><span>成本</span><code>{values[variant][1]}</code><em>{variant === "b" ? "含重试" : variant === "cache" ? "缓存命中" : "一次工具调用"}</em></div><div className={styles.labRow}><span>结论</span><code>{values[variant][2]}</code><em>{variant === "cache" ? "先统一条件" : "预算 ¥1.00"}</em></div></div></LessonShell>;
-}
-
 export function LatencyEvaluationLesson() {
   const [state, setState] = useState<"normal" | "tail" | "timeout">("normal");
   const values = { normal: ["420ms", "1.8s", "3.4s", "p95 3.8s"], tail: ["420ms", "1.8s", "3.4s", "p95 4.8s"], timeout: ["420ms", "5.0s 超时", "未完成", "不纳入完成分布"] } as const;
