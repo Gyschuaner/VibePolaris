@@ -2,7 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
-import { AppLifecycleSignatureHero, SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
+import { AppLifecycleSignatureHero, AppPermissionSignatureHero, SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -145,7 +145,7 @@ export function AppLifecycleTermPage() {
 }
 
 export function AppPermissionTermPage() {
-  return <ConceptArticle slug="app-permission" title="App permission" subtitle="应用权限" hero={<MobileHero trigger="用户点击拍照上传" change="用途说明 → 系统决定" proof="允许打开相机，拒绝仍有文件上传" />} sections={permissionSections} sources={appPermissionSources} intro={<>应用权限决定某项能力能不能代表用户访问相机、麦克风、位置或通知。<strong>好的权限流程从具体任务开始，在需要时解释用途，让系统作决定，并为拒绝准备可用的替代路径。</strong></>}>
+  return <ConceptArticle slug="app-permission" title="App permission" subtitle="应用权限" hero={<AppPermissionSignatureHero />} sections={permissionSections} sources={appPermissionSources} intro={<>应用权限决定某项能力能不能代表用户访问相机、麦克风、位置或通知。<strong>好的权限流程从具体任务开始，在需要时解释用途，让系统作决定，并为拒绝准备可用的替代路径。</strong></>}>
     <ArticleSection id="permission-task" title="相机权限应该何时出现">
       <p>你在订单页点击“拍照上传发票”。如果应用一打开就弹出相机权限，用户还不知道为什么需要；如果点击拍照后没有任何解释，系统弹窗也会显得突然。权限请求应该跟着当前任务出现。</p>
       <p id="permission-timing" className="vp-citation-target">权限最佳实践通常建议在用户触发相关功能时请求，并在系统对话框之前解释用途。这样用户可以把“允许相机”与刚刚选择的拍照任务联系起来，而不是在启动时面对一串没有上下文的询问。<Cite id="permission-timing" sources={appPermissionSources} /></p>
