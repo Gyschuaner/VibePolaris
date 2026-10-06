@@ -23,5 +23,5 @@
 
 - 实现分支：`feat/VBP-094-product-design`，从 `origin/main` `3b478aa1ce500e695d81ba9ab51720ab565f9c92` 创建；十条词条逐条提交。
 - 验证：`npm run typecheck`、`npm run audit:terms`、`npm run build` 已通过；build 生成 1064 页。CUA 已逐页推进十个演示到各自末步（漏斗包含开放模式与 10 分钟窗口），视觉稿点击后进入成功状态并可重置；390px 视口十页无横向溢出，控制台无错误。来源台账已与研究底稿和 helper 顺序对齐。
-- 发布：待唯一 review 子智能体完成逐条复核后，统一合入 dev/main 并部署生产。
+- 发布：唯一 reviewer 已对最新提交 PASS；PR #407 已合入 `dev`（merge `6aef9d79cfe8da7c12662c7afa96607f41b3e726`），PR #408 已合入 `main`（merge `44169351bb0a91a39c02df8438d7f036e13ee12e`）。镜像 `vibepolaris:44169351bb0a91a39c02df8438d7f036e13ee12e`（amd64，digest `sha256:b57de044e9608a44c20f3ca78d86c0bfa8ec84e4cbcaaa7df4eb70bcfbf8d711`）已部署到 `/opt/vibepolaris/releases/20261006T223657Z-44169351`；容器健康，十条生产路由服务器端冒烟均返回 HTTP 200，当前指针已切换到该 release。上一版 `20261007T060000Z-09a72458` 和镜像 `09a7245840d7cfe1bdd694618314ed251d3fbf91` 保留为回滚点。
 - 限制：DP CLI 当前因 TLS EOF 无法重新查询，本批不伪造 DP 写入；本地浏览器验证以本地 dev server 为准，生产冒烟将在部署后由服务器本机执行。
