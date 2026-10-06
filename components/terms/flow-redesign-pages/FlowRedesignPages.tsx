@@ -27,7 +27,7 @@ import {
   WireframeLesson,
 } from "./FlowRedesignLessons";
 import { SignatureHeroRuntime } from "./SignatureHeroRuntime";
-import { IaSignatureHero, PrototypeSignatureHero, UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
+import { A11ySignatureHero, IaSignatureHero, PrototypeSignatureHero, UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
 import styles from "./FlowRedesignConcepts.module.css";
 
 type HeroKind = "loading" | "micro" | "motion" | "client" | "deploy" | "flow" | "wireframe" | "prototype" | "ia" | "a11y";
@@ -168,7 +168,7 @@ export function IaTermPage() {
 
 const a11ySections: [string, string][] = [["a11y-focus-section", "焦点是一条可见的路"], ["a11y-order-section", "键盘顺序和错误恢复要接得上"], ["a11y-boundary-section", "ARIA 不是自动补丁"]];
 export function A11yTermPage() {
-  return <Article slug="a11y" title="无障碍" subtitle="Accessibility · 让每个人都能走完任务" sources={a11ySources} sections={a11ySections} hero={<SignatureHero kind="a11y" />} intro={<>不用鼠标、看不到颜色或需要读屏时，用户仍然要能完成登录、发现错误并继续。<strong>无障碍把结构、键盘、焦点、标签、对比度和反馈串成可感知、可操作、可恢复的路径</strong>，不是发布前临时加几条 ARIA。</>}>
+  return <Article slug="a11y" title="无障碍" subtitle="Accessibility · 让每个人都能走完任务" sources={a11ySources} sections={a11ySections} hero={<A11ySignatureHero />} intro={<>不用鼠标、看不到颜色或需要读屏时，用户仍然要能完成登录、发现错误并继续。<strong>无障碍把结构、键盘、焦点、标签、对比度和反馈串成可感知、可操作、可恢复的路径</strong>，不是发布前临时加几条 ARIA。</>}>
     <ArticleSection id="a11y-focus-section" title="焦点是一条可见的路"><p id="a11y-focus" className="vp-citation-target">键盘用户需要知道当前控件在哪里、下一步会到哪里；可见焦点和合理的 Tab 顺序把这条路画出来。<Cite id="a11y-focus" sources={a11ySources} />演示里的焦点环不是装饰，它随着任务从跳过链接走到字段和按钮。</p><p id="a11y-order" className="vp-citation-target">表单标签、必填状态和输入类型要让辅助技术拿到与视觉用户同样的关系。<Cite id="a11y-order" sources={a11ySources} />出现错误后，路径不能把人丢回页面开头，而应把焦点和提示带回问题处。</p><A11yLesson /></ArticleSection>
     <ArticleSection id="a11y-boundary-section" title="ARIA 不是自动补丁"><p id="a11y-error" className="vp-citation-target">错误需要指出字段并用文字说明修复方式，颜色可以补充但不能独自承担含义。<Cite id="a11y-error" sources={a11ySources} />成功、失败和状态变化也要通过可读的消息让辅助技术获得。</p><p id="a11y-button" className="vp-citation-target">给 div 加上 `role=button` 只做出语义承诺，不会自动提供焦点、Enter/Space 行为、按下状态和焦点去向。<Cite id="a11y-button" sources={a11ySources} />能用原生 button，就不要把浏览器已经做好的行为重新造一遍。</p><ArticleAside title="用键盘完成一次真实任务"><p>从进入页面开始只用 Tab、Shift+Tab、Enter 和 Space；记录无法到达、无法理解或无法恢复的节点，再用读屏视角核对名称、状态和错误。</p></ArticleAside></ArticleSection>
   </Article>;

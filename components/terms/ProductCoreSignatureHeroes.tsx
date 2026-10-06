@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, MagnifyingGlass, Package, Pause, Scissors, ShareNetwork, ShieldCheck, Stack, Tag, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Key, Layout, LockKey, MagnifyingGlass, Package, Pause, Scissors, ShareNetwork, ShieldCheck, Stack, Tag, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -227,6 +227,27 @@ export function DesignSystemSignatureHero() {
       <div className={styles.dsToken}><span>token</span><code>--action-color</code><strong>{token === "brand" ? "苔绿" : "深蓝"}</strong><small>一个决定，多个使用处</small></div>
       <div className={styles.dsLoom}><span>组件织片</span><div className={styles.dsThreads}><b data-on={scene.step >= 1}>Button / primary</b><b data-on={scene.step >= 1}>Button / quiet</b></div><div className={styles.dsInstances}><i data-on={scene.step >= 2}>保存</i><i data-on={scene.step >= 2}>继续</i></div></div>
       <div className={styles.dsGovernance}><GitBranch size={19} /><span>治理记录</span><strong>{scene.step >= 3 ? "v2 · 已迁移" : "待记录"}</strong><small>{scene.step >= 3 ? "旧 token → 新 token" : "谁能改、怎样发布"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function A11ySignatureHero() {
+  const scene = useScene(4);
+  const [outcome, setOutcome] = useState<"error" | "success">("error");
+  const labels = ["进入页面", "沿 Tab 走", "提交表单", "回到结果"];
+  const current = [
+    { title: "焦点从可跳过链接开始", detail: "键盘用户知道现在在哪", icon: Key },
+    { title: "每个控件都有顺序和名称", detail: "邮箱 → 密码 → 提交", icon: ShieldCheck },
+    { title: outcome === "error" ? "错误不能只变红" : "成功也要有可读结果", detail: outcome === "error" ? "邮箱需要修正" : "账号已登录", icon: outcome === "error" ? WarningCircle : CheckCircle },
+    { title: outcome === "error" ? "焦点回到问题处" : "焦点落到确认结果", detail: outcome === "error" ? "提示与字段相邻" : "状态被读到", icon: CheckCircle },
+  ][scene.step];
+
+  return <Frame ariaLabel="无障碍让焦点、名称、错误和结果沿同一条可操作路径保持可见" className={styles.a11y} eyebrow="无障碍是一条能被走完、读懂、修正的路" meta="focus · name · recovery" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="ARIA 只是语义工具之一；真正的无障碍还要让结构、键盘顺序、可见焦点、文字错误和恢复位置彼此接得上。">
+    <div className={styles.a11yControls} role="group" aria-label="选择表单结果"><button type="button" aria-pressed={outcome === "error"} onClick={() => { setOutcome("error"); scene.seek(2); }}><WarningCircle size={15} />出现错误</button><button type="button" aria-pressed={outcome === "success"} onClick={() => { setOutcome("success"); scene.seek(2); }}><CheckCircle size={15} />提交成功</button></div>
+    <div className={styles.a11yBoard} data-outcome={outcome} data-step={scene.step}>
+      <div className={styles.a11yKeyring}><Key size={20} /><span>Tab 顺序</span><b>{scene.step === 0 ? "跳过" : scene.step === 1 ? "邮箱 → 密码" : scene.step >= 2 ? "提交 → 结果" : "—"}</b><small>焦点可见，名称可读</small></div>
+      <div className={styles.a11yFields}><div data-focus={scene.step === 0}>跳过链接</div><div data-focus={scene.step === 1 || outcome === "error" && scene.step >= 3} data-error={outcome === "error" && scene.step >= 2}>邮箱 <small>{outcome === "error" && scene.step >= 2 ? "需要修正" : "name@example.com"}</small></div><div data-focus={scene.step === 1}>密码 <small>••••••</small></div><div data-focus={outcome === "success" && scene.step >= 3}>提交</div></div>
+      <div className={styles.a11yFeedback}><span>反馈</span><strong>{outcome === "error" && scene.step >= 2 ? "邮箱格式不正确" : outcome === "success" && scene.step >= 3 ? "登录成功" : "等待结果"}</strong><small>{outcome === "error" && scene.step >= 2 ? "焦点回到邮箱，错误文字贴近字段" : outcome === "success" && scene.step >= 3 ? "结果有名称，不靠颜色单独表达" : "尚未提交"}</small></div>
     </div>
   </Frame>;
 }
