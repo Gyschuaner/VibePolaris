@@ -1,0 +1,55 @@
+.hero { display: grid; gap: 11px; min-height: 230px; padding: 16px 17px 14px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 18px; background: linear-gradient(145deg, color-mix(in srgb, var(--paper) 84%, #e9eee4), var(--paper)); overflow: hidden; color: var(--ink); }
+.heroTop { display: flex; justify-content: space-between; gap: 10px; align-items: center; color: var(--muted); font: 10px ui-monospace, SFMono-Regular, monospace; letter-spacing: .05em; }
+.heroTop strong { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent-text) 11%, transparent); color: var(--ink); font-size: 9px; }
+.stage { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.3fr) minmax(0, .9fr); gap: 6px; align-items: center; min-height: 128px; }
+.consumer, .contractBoard, .change { position: relative; display: grid; gap: 6px; align-content: center; min-width: 0; min-height: 92px; padding: 9px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--paper) 70%, transparent); }
+.consumer span, .change span, .contractBoard > span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.consumer strong { font-size: 13px; overflow-wrap: anywhere; }
+.consumer small, .change small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+.consumer::after, .change::before { position: absolute; top: 50%; width: 12px; height: 1px; background: color-mix(in srgb, var(--accent-text) 65%, transparent); content: ""; }
+.consumer::after { right: -12px; }
+.change::before { left: -12px; }
+.contractBoard { z-index: 1; gap: 7px; border-color: color-mix(in srgb, var(--accent-text) 42%, transparent); box-shadow: 0 10px 20px color-mix(in srgb, var(--accent-text) 10%, transparent); transition: border-color .35s, box-shadow .35s; }
+.contractBoard[data-phase="breaking"] { border-color: color-mix(in srgb, #a8584e 55%, transparent); box-shadow: 0 10px 20px color-mix(in srgb, #a8584e 11%, transparent); }
+.contractBoard[data-phase="migration"] { border-color: color-mix(in srgb, #b18442 58%, transparent); box-shadow: 0 10px 20px color-mix(in srgb, #b18442 11%, transparent); }
+.fieldRows { display: grid; gap: 5px; }
+.field { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 6px 7px; border-radius: 7px; background: color-mix(in srgb, var(--ink) 5%, transparent); transition: opacity .35s, transform .35s, background .35s; }
+.field code { font: 600 11px ui-monospace, SFMono-Regular, monospace; }
+.field small { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; }
+.field[data-optional="true"] { background: color-mix(in srgb, var(--accent-text) 11%, transparent); }
+.field[data-legacy="true"] { color: var(--muted); text-decoration: line-through; opacity: .65; }
+.change { border-style: dashed; transition: border-color .35s, background .35s, transform .35s; }
+.change[data-phase="additive"] { border-color: color-mix(in srgb, var(--accent-text) 50%, transparent); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); }
+.change[data-phase="breaking"] { border-color: color-mix(in srgb, #a8584e 55%, transparent); background: color-mix(in srgb, #a8584e 7%, var(--paper)); }
+.change[data-phase="migration"] { border-color: color-mix(in srgb, #b18442 60%, transparent); background: color-mix(in srgb, #b18442 8%, var(--paper)); }
+.change strong { font: 700 11px ui-monospace, SFMono-Regular, monospace; overflow-wrap: anywhere; }
+.verdict { position: absolute; right: 8px; bottom: -8px; padding: 4px 7px; border-radius: 999px; background: var(--paper); color: var(--accent-text); font: 9px ui-monospace, SFMono-Regular, monospace; box-shadow: 0 3px 10px color-mix(in srgb, var(--ink) 9%, transparent); }
+.change[data-phase="breaking"] .verdict { color: #93473f; }
+.change[data-phase="migration"] .verdict { color: #8a682d; }
+.controls { display: flex; flex-wrap: wrap; gap: 5px; }
+.controls button { display: inline-flex; align-items: center; gap: 4px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 999px; padding: 5px 8px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.controls button:hover, .controls button[aria-pressed="true"] { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.caption { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.lab { display: grid; gap: 11px; margin: 24px 0 20px; padding: 15px; border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--paper) 82%, #e9eee4); }
+.labHeader { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.labHeader span { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; letter-spacing: .08em; }
+.labHeader strong { font-size: 14px; }
+.scenario { display: flex; flex-wrap: wrap; gap: 6px; }
+.scenario button, .labActions button { border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent); border-radius: 999px; padding: 6px 9px; background: transparent; color: var(--muted); font: inherit; font-size: 10px; cursor: pointer; }
+.scenario button:hover, .scenario button[aria-pressed="true"], .labActions button:hover { border-color: var(--accent-text); background: var(--tint); color: var(--accent-text); }
+.contractRows { display: grid; gap: 7px; }
+.contractRow { display: grid; grid-template-columns: 78px 1fr auto; gap: 8px; align-items: center; padding: 9px 10px; border-radius: 9px; background: var(--paper); }
+.contractRow span { color: var(--muted); font-size: 10px; }
+.contractRow code { font: 600 11px ui-monospace, SFMono-Regular, monospace; }
+.contractRow em { color: var(--muted); font: 9px ui-monospace, SFMono-Regular, monospace; font-style: normal; }
+.contractRow[data-proposed="true"] { border-left: 3px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 8%, var(--paper)); }
+.contractRow[data-proposed="true"][data-breaking="true"] { border-left-color: #a8584e; background: color-mix(in srgb, #a8584e 8%, var(--paper)); }
+.migrationToggle { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; }
+.migrationToggle input { accent-color: var(--accent-text); }
+.labStatus { display: grid; gap: 3px; padding: 9px 10px; border-left: 2px solid var(--accent-text); background: color-mix(in srgb, var(--accent-text) 7%, transparent); font-size: 11px; line-height: 1.45; }
+.labStatus[data-blocked="true"] { border-left-color: #a8584e; background: color-mix(in srgb, #a8584e 8%, transparent); }
+.labStatus[data-migration="true"] { border-left-color: #b18442; background: color-mix(in srgb, #b18442 8%, transparent); }
+.labStatus span { color: var(--muted); }
+.labActions { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 600px) { .hero { min-height: 300px; } .stage { grid-template-columns: 1fr; gap: 7px; padding: 4px 0 10px; } .consumer, .contractBoard, .change { min-height: 58px; } .consumer::after, .change::before { top: auto; right: auto; bottom: -8px; left: 50%; width: 1px; height: 8px; } .consumer::after { left: 50%; } .change::before { left: 50%; } .contractRow { grid-template-columns: 65px 1fr; } .contractRow em { grid-column: 2; } }
+@media (prefers-reduced-motion: reduce) { .contractBoard, .field, .change { transition: none; } }

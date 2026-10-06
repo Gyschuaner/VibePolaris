@@ -122,6 +122,7 @@ import { A11yTermPage, ClientServerTermPage, DeployTermPage, IaTermPage, Loading
 import { DebounceTermPage } from "@/components/terms/DebounceConceptPage";
 import { OptimisticUpdateTermPage } from "@/components/terms/OptimisticUpdateConceptPage";
 import { CircuitBreakerTermPage } from "@/components/terms/CircuitBreakerConceptPage";
+import { DataContractTermPage } from "@/components/terms/DataContractConceptPage";
 import { EnvironmentVariableTermPage, ExpressionTermPage, FormatterTermPage, FunctionTermPage, LinterTermPage, LockfileTermPage, MonorepoTermPage, ParameterTermPage, ReturnValueTermPage, SourceMapTermPage } from "@/components/terms/toolchain-redesign-pages/ToolchainRedesignPages";
 import { ArrayTermPage, ConditionalBranchTermPage, ControlClientServerTermPage, DistributedSystemTermPage, EventDrivenArchitectureTermPage, LoopTermPage, MicroservicesTermPage, MonolithTermPage, ObjectTermPage, ServerlessTermPage } from "@/components/terms/control-redesign-pages/ControlRedesignPages";
 
@@ -172,6 +173,7 @@ const articleTermPages = {
   debounce: DebounceTermPage,
   'optimistic-update': OptimisticUpdateTermPage,
   'circuit-breaker': CircuitBreakerTermPage,
+  'data-contract': DataContractTermPage,
   'client-server': ControlClientServerTermPage,
   'conditional-branch': ConditionalBranchTermPage,
   loop: LoopTermPage,
