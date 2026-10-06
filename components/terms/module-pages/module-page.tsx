@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { moduleSources } from "@/lib/module-sources";
-import { ModuleHero } from "./module-hero";
-import { ModuleLesson } from "./module";
+import { ModuleSignatureHero as ModuleHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["module-definition-section", "文件边界先把职责分开"],
@@ -16,8 +15,7 @@ export function ModuleTermPage() {
     <ArticleSection id="module-definition-section" title="文件边界先把职责分开">
       <p id="module-boundary" className="vp-citation-target">模块拥有自己的顶层作用域：文件里的变量默认只在文件内可见，只有显式 <code>export</code> 的名称才成为对外接口，另一个文件通过 <code>import</code> 请求它。模块边界让调用者依赖接口，而不是依赖每一行内部实现。<Cite id="module-boundary" sources={moduleSources} /></p>
       <p id="module-import" className="vp-citation-target"><code>import &#123; format &#125; from &quot;./format.js&quot;</code> 不是把 format.js 的文本复制到当前位置，而是声明“entry.js 需要这个模块导出的名称”。浏览器或构建工具可以提前分析这条静态关系。<Cite id="module-import" sources={moduleSources} /></p>
-      <p>下面的演示把 settings.js、greeting.js 和 entry.js 放在同一张小图里。先切换 live binding 与复制快照，再修改一次 locale，差别会出现在最后一张卡上。</p>
-      <ModuleLesson />
+      <p>首图演示把 settings.js、greeting.js 和 entry.js 放在同一张小图里。先切换 live binding 与复制快照，再修改一次 locale，差别会出现在最后一张卡上。</p>
     </ArticleSection>
     <ArticleSection id="module-graph-section" title="import 画出一张依赖图">
       <p id="module-graph" className="vp-citation-target">静态 import/export 让模块形成一张依赖图：entry.js 依赖 greeting.js，greeting.js 又依赖 settings.js。模块加载器会先处理依赖，再初始化依赖它的模块；同一个模块被多处引用时，仍然对应同一个模块记录。<Cite id="module-graph" sources={moduleSources} /></p>

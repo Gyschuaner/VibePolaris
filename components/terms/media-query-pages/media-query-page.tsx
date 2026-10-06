@@ -1,8 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { mediaQuerySources } from "@/lib/media-query-sources";
-import { MediaQueryHero } from "./media-query-hero";
-import { MediaQueryLesson } from "./media-query";
+import { MediaQuerySignatureHero as MediaQueryHero } from "../RenderingLayoutSignatureHeroes";
 
 const sections: [string, string][] = [
   ["media-query-definition-section", "它先问环境，再决定规则"],
@@ -17,7 +16,6 @@ export function MediaQueryTermPage() {
       <p id="mq-condition" className="vp-citation-target">媒体查询由媒体类型、媒体特征和逻辑条件组成。浏览器持续判断条件是否成立，成立时把块里的声明应用到当前文档；条件变成 false，声明就不再命中。<Cite id="mq-condition" sources={mediaQuerySources} /></p>
       <p id="mq-at-rule" className="vp-citation-target"><code>@media</code> 是写这组条件的 at-rule。它不创建新的组件，也不把页面复制成“桌面版”和“手机版”；它只给已有选择器加一层运行时门槛。<Cite id="mq-at-rule" sources={mediaQuerySources} /></p>
       <p id="mq-fallback" className="vp-citation-target">更稳的写法是先写能工作的基础样式，再让媒体查询改动少数真正需要变化的属性。这样条件不成立时仍有可读的默认结果，条件切换也不会让内容突然消失。<Cite id="mq-fallback" sources={mediaQuerySources} /></p>
-      <MediaQueryLesson />
     </ArticleSection>
 
     <ArticleSection id="media-query-feature-section" title="宽度只是其中一个输入">
