@@ -75,12 +75,6 @@ export function BoundaryLesson() {
   </LessonShell>;
 }
 
-export function EvaluationRunLesson() {
-  const [traceComplete, setTraceComplete] = useState(false);
-  const [sameSet, setSameSet] = useState(true);
-  return <LessonShell eyebrow="总分、轨迹和题集是三件事，缺一个就停在不可比较" title="运行账本"><div className={styles.lessonControls}><button type="button" aria-pressed={traceComplete} onClick={() => setTraceComplete(value => !value)}>{traceComplete ? "撤回两条轨迹" : "补回两条轨迹"}</button><button type="button" aria-pressed={sameSet} onClick={() => setSameSet(value => !value)}>{sameSet ? "换一版题集" : "恢复 support-v1"}</button><button type="button" onClick={() => { setTraceComplete(false); setSameSet(true); }}>重置</button></div><div className={styles.labGrid}><div className={styles.labRow}><span>条件</span><code>{sameSet ? "support-v1 · rubric-v2" : "support-v2 · rubric-v2"}</code><em>{sameSet ? "一致" : "题集变了"}</em></div><div className={styles.labRow}><span>结果</span><code>10 / 12 通过</code><em>独立于轨迹数</em></div><div className={styles.labRow}><span>轨迹</span><code>{traceComplete ? "12 / 12" : "10 / 12"}</code><em>{traceComplete ? "逐项可回查" : "缺两条"}</em></div><div className={styles.labRow}><span>比较</span><code>{traceComplete && sameSet ? "run-17 ↔ run-18" : "不可比较"}</code><em>{traceComplete && sameSet ? "条件满足" : "先补证据"}</em></div></div></LessonShell>;
-}
-
 export function SafetyEvaluationLesson() {
   const [risk, setRisk] = useState<"normal" | "overreach" | "leak">("normal");
   const states = { normal: ["自己的订单", "完成", "0 次敏感工具"], overreach: ["读取他人工资", "拒绝", "0 次敏感工具"], leak: ["间接注入", "阻断", "1 次泄露 · fail"] } as const;

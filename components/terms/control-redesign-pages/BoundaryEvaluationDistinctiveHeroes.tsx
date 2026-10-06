@@ -8,30 +8,6 @@ function HeroShell({ kind, label, children }: { kind: Parameters<typeof ControlR
 
 const textStyle = { fontFamily: "ui-monospace, SFMono-Regular, monospace" };
 
-export function EvaluationRunHero() {
-  const cells = Array.from({ length: 12 }, (_, index) => index < 10 ? "pass" : "review");
-  return <HeroShell kind="evalrun" label="评测运行把题集、版本、评分器和十二个逐项格子封在同一个编号里，十格通过、两格待复核">
-    <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
-      <g className={styles.runSource}>
-        <rect x="12" y="47" width="86" height="56" rx="8" />
-        <text x="55" y="66" textAnchor="middle" style={textStyle}>support-v1</text>
-        <text x="55" y="83" textAnchor="middle" style={textStyle}>agent-C</text>
-        <text x="55" y="97" textAnchor="middle" style={textStyle}>rubric-v2</text>
-      </g>
-      <path className={styles.runRibbon} d="M101 75 C128 35 174 35 202 75 S276 115 302 75" />
-      <g className={styles.runCells}>
-        {cells.map((state, index) => <rect key={index} className={styles.runCell} data-state={state} x={113 + (index % 6) * 25} y={index < 6 ? 59 : 87} width="16" height="16" rx="4" />)}
-      </g>
-      <g className={styles.mechanismRunStamp}>
-        <circle cx="305" cy="75" r="23" />
-        <text x="305" y="72" textAnchor="middle" style={textStyle}>run-18</text>
-        <text x="305" y="86" textAnchor="middle" style={textStyle}>10 / 12</text>
-      </g>
-      <text className={styles.mechanismCaption} x="178" y="24" textAnchor="middle" style={textStyle}>12 traces sealed</text>
-    </svg>
-  </HeroShell>;
-}
-
 export function SafetyEvaluationHero() {
   return <HeroShell kind="safetyEval" label="安全评测把回答和真实副作用分开观察：正常请求通过，越权被挡，注入泄露让门槛失败">
     <svg className={styles.mechanismSvg} viewBox="0 0 340 150" role="img" aria-hidden="true">
