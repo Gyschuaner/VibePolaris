@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowRight, Browser, CheckCircle, Code, FileText, GitBranch, Gauge, HardDrives, LockKey, Package, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, FileText, GitBranch, Gauge, HardDrives, LockKey, Package, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -123,6 +123,27 @@ export function MvpSignatureHero() {
       <div className={styles.mvpTarget}><Target size={22} /><span>本轮假设</span><strong>邀请码能找到</strong><small>判断：用户是否完成关键任务</small></div>
       <div className={styles.mvpChips} aria-label="功能筹码">{["入口", "邀请码", "支付", "分享", "多语言"].map((item, index) => <span key={item} data-keep={index < 2 && scene.step >= 1} data-extra={index > 1}>{item}</span>)}</div>
       <div className={styles.mvpEvidence}><span>证据槽</span><strong>{scope === "minimum" && scene.step >= 3 ? "3 / 3" : "—"}</strong><small>{scope === "minimum" && scene.step >= 3 ? "找到邀请码" : "等待可观察结果"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function UserFlowSignatureHero() {
+  const scene = useScene(4);
+  const [branch, setBranch] = useState<"success" | "expired">("expired");
+  const labels = ["发出任务票", "打开入口", "遇到分支", "回到任务"];
+  const current = [
+    { title: "任务从一个真实入口开始", detail: "找回账号 · 邮件链接", icon: Envelope },
+    { title: "入口把人带到当前任务", detail: "输入新密码", icon: ArrowRight },
+    { title: branch === "expired" ? "票据过期，不把人丢在门外" : "票据有效，任务继续", detail: branch === "expired" ? "重新发送 → 原任务" : "验证通过 → 保存", icon: branch === "expired" ? Clock : CheckCircle },
+    { title: branch === "expired" ? "恢复点保留了原任务" : "成功也要落到明确结果", detail: branch === "expired" ? "邮箱字段仍在" : "账号已恢复", icon: branch === "expired" ? ArrowCounterClockwise : CheckCircle },
+  ][scene.step];
+
+  return <Frame ariaLabel="用户流程把入口、分支和恢复点接成一条可回来的任务" className={styles.userFlow} eyebrow="画的是任务怎样回来，不是页面怎样排队" meta="entry · branch · recovery" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="用户流程要把失败也接回目标；过期链接是一次分支，重新发送后仍应回到原来的任务，而不是回到无关首页。">
+    <div className={styles.userFlowControls} role="group" aria-label="选择用户流程分支"><button type="button" aria-pressed={branch === "expired"} onClick={() => { setBranch("expired"); scene.seek(2); }}><Clock size={15} />链接过期</button><button type="button" aria-pressed={branch === "success"} onClick={() => { setBranch("success"); scene.seek(2); }}><CheckCircle size={15} />链接有效</button></div>
+    <div className={styles.userFlowBoard} data-branch={branch} data-step={scene.step}>
+      <div className={styles.flowTicket}><Envelope size={20} /><span>入口票据</span><strong>找回账号</strong><small>邮件链接</small></div>
+      <div className={styles.flowTurn}><div className={styles.flowGate}><span>{branch === "expired" ? "过期" : "有效"}</span><b>{branch === "expired" ? "重新发送" : "保存新密码"}</b></div><i className={styles.flowArc} aria-hidden="true" /><ArrowRight size={19} aria-hidden="true" /></div>
+      <div className={styles.flowHome}><span>恢复点</span><strong>{branch === "expired" ? "继续输入" : "账号已恢复"}</strong><small>{branch === "expired" ? "原任务仍在" : "完成状态"}</small></div>
     </div>
   </Frame>;
 }
