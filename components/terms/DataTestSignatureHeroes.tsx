@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, FileText, GitBranch, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowDown, ArrowRight, ArrowsClockwise, CheckCircle, Database, FileText, Funnel, GitBranch, MapPin, ShieldCheck, TreeStructure, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./DataTestSignatureHeroes.module.css";
 
@@ -47,6 +47,35 @@ export function DataIngestionSignatureHero() {
       <div className={styles.ingestionArrow} aria-hidden="true"><span /><ArrowDown size={21} /></div>
       <div className={styles.ingestionRaw}><span>原始层</span><div className={styles.rawRows}><b data-visible={step >= 2}>loan-1</b><b data-visible={step >= 2}>loan-2</b><b data-visible={step >= 3}>loan-3</b></div><small>{replayed ? "重复 ID 被挡住" : step >= 2 ? "原值保留" : "等待写入"}</small></div>
       <div className={styles.ingestionCheckpoint}><div><GitBranch size={18} /><span>checkpoint</span></div><strong>{replayed ? "2 · 重放" : step >= 3 ? "2 · 已确认" : step >= 2 ? "0 · 未保存" : "—"}</strong><small>{replayed ? "从位置 2 继续读" : step >= 3 ? "下一批从 3 开始" : "写入还没获得确认"}</small></div>
+    </div>
+  </Frame>;
+}
+
+const pipelineSteps = ["锁定快照", "并行前置", "下游被挡", "只重跑受影响"];
+
+export function DataPipelineSignatureHero() {
+  const scene = useScene(pipelineSteps.length);
+  const [quarantine, setQuarantine] = useState(false);
+  const step = scene.step;
+  const validated = step >= 3 || (quarantine && step >= 2);
+  const archived = step >= 1;
+  const aggregated = validated && step >= 3;
+  const published = aggregated && step >= 3;
+  const result = step === 0
+    ? { icon: MapPin, title: "先钉住输入", detail: "run-42 只读取快照 s1，不追着最新数据跑" }
+    : step === 1
+      ? { icon: TreeStructure, title: "两条前置各走各的", detail: "校验失败不会抹掉原始归档" }
+      : !quarantine
+        ? { icon: WarningCircle, title: "q1 把下游挡住", detail: "汇总与发布都没有拿到可用前置", danger: true }
+        : { icon: CheckCircle, title: "q2 隔离后再发布", detail: "3 条参与汇总，1 条带着原因留在隔离区" };
+  return <Frame label="数据管道把同一批输入分给独立前置，失败只阻断依赖它的下游" eyebrow="一批输入，多个依赖，单次发布" meta="snapshot → DAG → publish" scene={scene} steps={pipelineSteps} result={result} caption="这张图关注的是依赖关系：归档只要读到快照就能完成，汇总必须等校验通过，发布还要等汇总和归档同时完成。换规则重跑时，输入快照仍是 s1。" controls={<div className={styles.inlineControls} role="group" aria-label="数据管道校验策略"><button type="button" aria-pressed={quarantine} onClick={() => { setQuarantine(value => !value); scene.seek(2); }}><ShieldCheck size={15} />{quarantine ? "切回严格 q1" : "允许隔离 q2"}</button></div>}>
+    <div className={styles.pipelineBoard} data-quarantine={quarantine} data-step={step}>
+      <div className={styles.pipelineSnapshot}><MapPin size={17} /><span>输入快照</span><strong>s1 · 4 条</strong><small>run-42 固定读取</small></div>
+      <div className={styles.pipelineBranches}>
+        <div className={styles.pipelineBranch} data-done={archived}><Archive size={17} /><span>原始归档</span><small>{archived ? "4 条已留存" : "等待读取"}</small></div>
+        <div className={styles.pipelineBranch} data-done={validated} data-danger={step === 2 && !quarantine}><Funnel size={17} /><span>校验 q{quarantine ? "2" : "1"}</span><small>{step === 2 && !quarantine ? "r2 缺书目编号" : validated ? "3 条通过 · 1 条隔离" : "等待规则"}</small></div>
+      </div>
+      <div className={styles.pipelineDownstream}><div data-done={aggregated} data-muted={!validated}><Database size={17} /><span>汇总</span><small>{aggregated ? "42 = 3" : "被校验挡住"}</small></div><div data-done={published} data-muted={!aggregated}><CheckCircle size={17} /><span>发布报表</span><small>{published ? "run-42 · s1 / q2" : "保持 v0"}</small></div></div>
     </div>
   </Frame>;
 }
