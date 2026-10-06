@@ -27,7 +27,7 @@ import {
   WireframeLesson,
 } from "./FlowRedesignLessons";
 import { SignatureHeroRuntime } from "./SignatureHeroRuntime";
-import { PrototypeSignatureHero, UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
+import { IaSignatureHero, PrototypeSignatureHero, UserFlowSignatureHero, WireframeSignatureHero } from "../ProductCoreSignatureHeroes";
 import styles from "./FlowRedesignConcepts.module.css";
 
 type HeroKind = "loading" | "micro" | "motion" | "client" | "deploy" | "flow" | "wireframe" | "prototype" | "ia" | "a11y";
@@ -160,7 +160,7 @@ export function PrototypeTermPage() {
 
 const iaSections: [string, string][] = [["ia-zones-section", "信息架构是给任务分区"], ["ia-labels-section", "名称和搜索词是入口的一部分"], ["ia-boundary-section", "多入口不等于复制多份正文"]];
 export function IaTermPage() {
-  return <Article slug="ia" title="信息架构" subtitle="Information Architecture · 让内容有可预测的去处" sources={iaSources} sections={iaSections} hero={<SignatureHero kind="ia" />} intro={<>当用户说“我要换 API 密钥”时，他不一定知道团队把文章放在哪个菜单。<strong>信息架构用分类、命名、标签、搜索和交叉入口，帮人预测下一步去哪里找</strong>，而不是把组织结构原样搬进导航。</>}>
+  return <Article slug="ia" title="信息架构" subtitle="Information Architecture · 让内容有可预测的去处" sources={iaSources} sections={iaSections} hero={<IaSignatureHero />} intro={<>当用户说“我要换 API 密钥”时，他不一定知道团队把文章放在哪个菜单。<strong>信息架构用分类、命名、标签、搜索和交叉入口，帮人预测下一步去哪里找</strong>，而不是把组织结构原样搬进导航。</>}>
     <ArticleSection id="ia-zones-section" title="信息架构是给任务分区"><p id="ia-zones" className="vp-citation-target">整理内容前先盘点用户真实任务，再决定哪些内容属于同一片空间。<Cite id="ia-zones" sources={iaSources} />演示中的“API 密钥”先作为孤立卡片出现，随后进入领域区，再补出用户用任务语言进入的入口。</p><p id="ia-labels" className="vp-citation-target">菜单、目录、搜索、站点地图和页面标题共同告诉用户内容怎样被组织。<Cite id="ia-labels" sources={iaSources} />分类只解决“放在哪里”，命名还要解决“我会用什么词找它”。</p><IaLesson /></ArticleSection>
     <ArticleSection id="ia-boundary-section" title="多入口不等于复制多份正文"><p id="ia-search" className="vp-citation-target">同一篇文章可以从“账户安全”“连接服务”和搜索词进入，只维护一份正文，避免不同入口逐渐说出不同结论。<Cite id="ia-search" sources={iaSources} />交叉链接是关系的表达，不是重复内容的借口。</p><p id="ia-boundary" className="vp-citation-target">内部团队、技术栈和文件夹只是维护视角，不能替用户任务做唯一导航。<Cite id="ia-boundary" sources={iaSources} />如果一个页面长期孤零零地漂着，先问它服务哪个任务，再决定归属或删除。</p><ArticleAside title="用五个真实查找任务验收"><p>从客服记录、搜索日志或访谈里拿五个用户说法，逐个检查他们会先去哪里、会不会被标签拦住、是否能在不复制正文的情况下找到同一内容。</p></ArticleAside></ArticleSection>
   </Article>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, Package, Pause, Scissors, ShieldCheck, Target, WarningCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, ArrowDown, ArrowRight, Browser, CheckCircle, Clock, Code, Envelope, Eye, FileText, GitBranch, Gauge, HardDrives, Layout, LockKey, MagnifyingGlass, Package, Pause, Scissors, ShareNetwork, ShieldCheck, Tag, Target, WarningCircle } from "@phosphor-icons/react";
 import { useState, type ReactNode } from "react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./ProductCoreSignatureHeroes.module.css";
@@ -185,6 +185,27 @@ export function PrototypeSignatureHero() {
       <div className={styles.prototypeHypothesis}><Target size={21} /><span>假设卡</span><strong>邀请码找得到吗？</strong><small>这轮只验证入口理解</small></div>
       <div className={styles.prototypeFilm}><span>任务胶片</span><div className={styles.filmFrames}><b data-seen={scene.step >= 1}>进入空间</b><b data-seen={scene.step >= 1}>找邀请码</b><b data-seen={scene.step >= 2} data-pause={observation === "pause"}>加入成功</b></div><small>{scene.step < 2 ? "观察中" : observation === "pause" ? "回看入口" : "完成任务"}</small></div>
       <div className={styles.prototypeEvidence}><span>观察台</span><strong>{observation === "pause" && scene.step >= 2 ? "2 / 3" : scene.step >= 2 ? "3 / 3" : "—"}</strong><small>{observation === "pause" && scene.step >= 2 ? "入口处停顿" : scene.step >= 2 ? "未发现停顿" : "等待测试"}</small></div>
+    </div>
+  </Frame>;
+}
+
+export function IaSignatureHero() {
+  const scene = useScene(4);
+  const [entry, setEntry] = useState<"task" | "team">("task");
+  const labels = ["孤立内容", "贴任务词", "找到入口", "复用正文"];
+  const current = [
+    { title: "一张内容卡还没有去处", detail: "API 密钥 · 单一正文", icon: FileText },
+    { title: "先贴用户会说的词", detail: "换 API 密钥", icon: Tag },
+    { title: entry === "task" ? "任务入口能找到它" : "团队目录不一定是任务入口", detail: entry === "task" ? "搜索 → 账户安全" : "开发工具 → 迷路", icon: entry === "task" ? CheckCircle : WarningCircle },
+    { title: "多入口指向同一份正文", detail: "不复制、不分叉", icon: ShareNetwork },
+  ][scene.step];
+
+  return <Frame ariaLabel="信息架构把内容卡和用户任务词连接成可预测入口" className={styles.ia} eyebrow="先听用户怎么找，再决定内容放哪" meta="task words · labels · one source" labels={labels} scene={scene} result={{ icon: current.icon, title: current.title, detail: current.detail }} caption="信息架构组织的是用户要完成的任务；同一篇内容可以有多个入口，但正文只维护一份，避免不同菜单说出不同结论。">
+    <div className={styles.iaControls} role="group" aria-label="选择入口语言"><button type="button" aria-pressed={entry === "task"} onClick={() => { setEntry("task"); scene.seek(2); }}><Tag size={15} />用户任务词</button><button type="button" aria-pressed={entry === "team"} onClick={() => { setEntry("team"); scene.seek(2); }}><ShareNetwork size={15} />团队目录词</button></div>
+    <div className={styles.iaBoard} data-entry={entry} data-step={scene.step}>
+      <div className={styles.iaCard}><FileText size={20} /><span>一份正文</span><strong>API 密钥</strong><small>只维护这一张卡</small></div>
+      <div className={styles.iaTags}><span>领域</span><b data-active={scene.step >= 1}>账户安全</b><b data-active={entry === "task" && scene.step >= 1}>换 API 密钥</b><b data-active={entry === "team" && scene.step >= 2}>开发工具</b></div>
+      <div className={styles.iaSearch}><MagnifyingGlass size={18} /><code>{entry === "task" ? "换 API 密钥" : "开发工具"}</code><small>{scene.step >= 2 ? entry === "task" ? "找到 → API 密钥" : "结果太宽，需补任务词" : "等待入口"}</small></div>
     </div>
   </Frame>;
 }
