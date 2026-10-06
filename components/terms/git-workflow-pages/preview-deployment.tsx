@@ -1,6 +1,6 @@
 import { ArticleSection } from "../ConceptArticle";
-import { GitArticle, Cite, GitHero } from "../GitConceptPageShared";
-import { PreviewDeploymentLesson } from "../git-workflow-lessons/preview-deployment";
+import { GitArticle, Cite } from "../GitConceptPageShared";
+import { PreviewDeploymentHero } from "./preview-deployment-hero";
 import { previewDeploymentSources } from "@/lib/git-concept-sources/preview-deployment";
 
 const sections: [string, string][] = [
@@ -16,13 +16,12 @@ export function PreviewDeploymentTermPage() {
     subtitle="Preview Deployment · 合并前先让真实提交在临时环境里可访问"
     sources={previewDeploymentSources}
     sections={sections}
-    hero={<GitHero contextLabel="先锁定提交" contextTitle="PR #18 · F4" trigger="代码还没合并，设计和产品怎样先看到当前页面？" change="PR → build F4 → preview URL" proof="F4 预览；M9 生产不变" />}
+    hero={<PreviewDeploymentHero />}
     intro={<>预览部署把一个已经推送的分支或拉取请求提交，构建到一个独立的临时地址。评审者可以直接打开页面、跑一遍关键交互，再把意见和检查结果留在同一个 PR 里；合并前的体验因此有了和提交对应的运行证据。</>}
   >
     <ArticleSection id="preview-trigger" title="先把一个提交放进临时环境">
       <p id="preview-trigger-event" className="vp-citation-target">常见的预览部署由非生产分支的 push、拉取请求或手动命令触发。平台读取这次事件指向的提交，创建一次非生产构建；事件只是让构建排队，构建尚未完成时不能把它说成“预览已通过”。<Cite id="preview-trigger-event" sources={previewDeploymentSources} /></p>
       <p id="preview-isolation" className="vp-citation-target">临时环境应有自己的环境变量、测试数据和第三方连接。预览需要验证页面和交互时，可以连接沙箱服务；把支付、邮件或生产数据库凭据原样带进来，会让“合并前检查”变成一次未经授权的真实操作。<Cite id="preview-isolation" sources={previewDeploymentSources} /></p>
-      <PreviewDeploymentLesson />
     </ArticleSection>
 
     <ArticleSection id="preview-url" title="评审者怎样确认自己看到的版本">
