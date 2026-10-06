@@ -16,3 +16,10 @@
 | encryption-at-rest：偷了盘和拿到应用身份有何差别？ | 数据库/备份密文与边界外 KMS → 选择持有介质或有 grant 的身份 → 介质副本仍密文，有授权的应用读入明文 → 撤权阻止新解密，已读内存不倒退 | 存储抽屉、包裹的 DEK 和外置钥匙仓；切换攻击者持有的东西 | ear-dek-kek、ear-separation、ear-kek-boundary |
 
 动画只承担机制可见证据；解释留在正文。每条先实现正确状态，再加入有限位移、翻转、填充或形变。每条单独提交；完成十条后交唯一 reviewer，完成构建与桌面/390px 浏览器验收再批量发布。暂无真实目标读者参与，模型审读不记为读者验证。
+
+## 实施记录
+
+- 十条首图已逐条接入 `TestSecuritySignatureHeroes.tsx`，每条分别保留自己的对象、切换条件和失败证据；原有正文 Lesson 与 Cite 锚点未移除。
+- 独立提交顺序：`e33a5b51` regression-test、`3a3ebab4` test-case、`dc329408` mock、`9c67cb1e` assertion、`a71bb402` code-coverage、`08c331de` api-testing、`61d64e56` least-privilege、`143bb888` hashing、`d2a83e3b` input-validation、`05fc098b` encryption-at-rest；时序修正为 `70148b2a`。
+- 文档与机制矩阵提交为 `779b2b56`。类型检查、结构审计和生产构建已通过；十条本地生产构建路由均返回 200，桌面浏览器推进交互均产生状态变化，1280px 无横向溢出。
+- 内置浏览器当前没有可用的 390px viewport 能力，窄屏只完成 CSS 结构审查，未把未执行的窄屏实测写成通过；唯一 reviewer 复核待回收。
