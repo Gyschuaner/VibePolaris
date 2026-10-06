@@ -2,7 +2,7 @@ import { ArticleAside, ArticleCitation, ArticleSection, ConceptArticle, ConceptT
 import { MechanismHero } from "./ConceptHero";
 import { MobileConceptLesson } from "./MobileConceptLessons";
 import { AdaptiveLayoutSignatureHero, OfflineFirstSignatureHero } from "./FrontendInteractionSignatureHeroes";
-import { SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
+import { AppLifecycleSignatureHero, SafeAreaSignatureHero } from "./PlatformCssSignatureHeroes";
 import { adaptiveLayoutSources, appLifecycleSources, appPermissionSources, boxModelSources, crossPlatformSources, cssSelectorSources, offlineFirstSources, pushNotificationSources, safeAreaSources, webviewSources } from "@/lib/mobile-css-concept-sources";
 import styles from "./ConceptArticle.module.css";
 import { ArrowRight, Bell, Browser, CheckCircle, Cloud, Code, Database, FileText, GitBranch, Layout, ShieldCheck, Stack, TreeStructure, User } from "@phosphor-icons/react/dist/ssr";
@@ -116,7 +116,7 @@ export function SafeAreaTermPage() {
 }
 
 export function AppLifecycleTermPage() {
-  return <ConceptArticle slug="app-lifecycle" title="App lifecycle" subtitle="应用生命周期" hero={<MobileHero trigger="用户切到后台" change="前台 → 后台 → 可能被回收" proof="重新打开只能从已持久化草稿尝试恢复" />} sections={lifecycleSections} sources={appLifecycleSources} intro={<>应用生命周期描述运行环境如何让页面或应用经历创建、可见、后台、冻结、销毁和重新创建。<strong>它帮助你安排保存、暂停和恢复，但不承诺每一个“即将离开”的事件都会发生。</strong></>}>
+  return <ConceptArticle slug="app-lifecycle" title="App lifecycle" subtitle="应用生命周期" hero={<AppLifecycleSignatureHero />} sections={lifecycleSections} sources={appLifecycleSources} intro={<>应用生命周期描述运行环境如何让页面或应用经历创建、可见、后台、冻结、销毁和重新创建。<strong>它帮助你安排保存、暂停和恢复，但不承诺每一个“即将离开”的事件都会发生。</strong></>}>
     <ArticleSection id="lifecycle-task" title="离开页面前的草稿">
       <p>你在手机上写发布说明，切到聊天应用复制一段链接，回来时页面被重新打开，刚写的内容只剩标题。你可能以为“切后台时保存一下”就够了，但系统可能在后台直接回收进程，页面没有机会执行最后一步。</p>
       <p id="lifecycle-states-source" className="vp-citation-target">Android Activity 生命周期把创建、开始、恢复、暂停、停止和销毁等阶段区分开来；浏览器也会通过可见性、冻结和恢复事件表达页面是否继续参与工作。不同平台的事件名称不同，共同点是运行环境会改变，应用要据此调整资源和状态。<Cite id="lifecycle-states-source" sources={appLifecycleSources} /></p>
