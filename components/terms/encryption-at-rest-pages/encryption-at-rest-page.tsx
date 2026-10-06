@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { encryptionAtRestSources } from "@/lib/encryption-at-rest-sources";
-import { EncryptionAtRestHero } from "./encryption-at-rest-hero";
+import { EncryptionAtRestSignatureHero as EncryptionAtRestHero } from "../TestSecuritySignatureHeroes";
 import { EncryptionAtRestLesson } from "./encryption-at-rest";
 
 const sections: [string, string][] = [

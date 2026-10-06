@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { assertionSources } from "@/lib/assertion-sources";
-import { AssertionHero } from "./assertion-hero";
+import { AssertionSignatureHero as AssertionHero } from "../TestSecuritySignatureHeroes";
 import { AssertionLesson } from "./assertion";
 
 const sections: [string, string][] = [

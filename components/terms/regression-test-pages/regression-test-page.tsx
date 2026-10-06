@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { regressionTestSources } from "@/lib/regression-test-sources";
-import { RegressionTestHero } from "./regression-test-hero";
+import { RegressionTestSignatureHero as RegressionTestHero } from "../TestSecuritySignatureHeroes";
 import { RegressionTestLesson } from "./regression-test";
 
 const sections: [string, string][] = [

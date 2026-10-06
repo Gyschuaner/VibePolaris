@@ -1,7 +1,7 @@
 import { ArticleSection } from "../ConceptArticle";
 import { Article, Cite } from "../AiStackConceptPageShared";
 import { hashingSources } from "@/lib/hashing-sources";
-import { HashingHero } from "./hashing-hero";
+import { HashingSignatureHero as HashingHero } from "../TestSecuritySignatureHeroes";
 import { HashingLesson } from "./hashing";
 
 const sections: [string, string][] = [
