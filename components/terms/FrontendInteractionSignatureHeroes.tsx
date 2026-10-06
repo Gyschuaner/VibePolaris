@@ -35,22 +35,26 @@ export function SemanticHtmlSignatureHero() {
   </HeroShell>;
 }
 
-const deepLinkLabels = ["系统先匹配", "已登录直达", "登录后续走", "网页回退"];
 type DeepLinkBranch = "direct" | "login" | "fallback";
+const deepLinkSteps: Record<DeepLinkBranch, string[]> = {
+  direct: ["系统先匹配", "交给应用", "读出订单号", "打开订单 42"],
+  login: ["系统先匹配", "先到登录页", "登录后保留目标", "继续订单 42"],
+  fallback: ["系统先匹配", "没有可用应用", "保留原网址", "打开订单网页"],
+};
 export function DeepLinkSignatureHero() {
-  const scene = useScene(deepLinkLabels.length);
+  const scene = useScene(4);
   const [branch, setBranch] = useState<DeepLinkBranch>("direct");
   const labels: Record<DeepLinkBranch, string> = { direct: "已登录", login: "未登录", fallback: "未安装" };
   const reset = () => setBranch("direct");
-  return <HeroShell scene={scene} title="一条链接如何决定应用入口" labels={deepLinkLabels} onReplay={reset} className={styles.routeHero}>
+  return <HeroShell scene={scene} title="一条链接如何决定应用入口" labels={deepLinkSteps[branch]} onReplay={reset} className={styles.routeHero}>
     <div className={styles.branchTabs} role="group" aria-label="选择链接环境">{(Object.keys(labels) as DeepLinkBranch[]).map((key) => <button key={key} type="button" aria-pressed={branch === key} onClick={() => { setBranch(key); scene.seek(0); }}>{labels[key]}</button>)}</div>
     <div className={styles.deepLinkBoard} data-step={scene.step} data-branch={branch}>
       <div className={styles.linkTicket}><Browser size={23} /><span>活动链接</span><code>/orders/42</code></div>
-      <div className={styles.routeGate}><Gear size={24} /><strong>系统匹配</strong><small>域名 · 路径 · 会话</small><span className={styles.routePulse} /></div>
+      <div className={styles.routeGate}><Gear size={24} /><strong>{scene.step === 0 ? "系统匹配" : branch === "fallback" ? "交回浏览器" : "交给应用"}</strong><small>域名 · 路径</small><span className={styles.routePulse} /></div>
       <div className={styles.routeTargets}>
-        <div data-active={branch === "direct" && scene.step > 0}><CheckCircle size={19} /><span>订单 42</span><small>应用内目标</small></div>
-        <div data-active={branch === "login" && scene.step > 1}><Key size={19} /><span>登录页</span><small>保留 returnTo</small></div>
-        <div data-active={branch === "fallback" && scene.step > 2}><ArrowRight size={19} /><span>网页回退</span><small>应用未安装</small></div>
+        <div data-active={branch !== "fallback" && (scene.step === 3 || branch === "direct" && scene.step === 2)}><CheckCircle size={19} /><span>订单 42</span><small>{scene.step === 3 && branch !== "fallback" ? "应用内页面已打开" : "目标 id=42"}</small></div>
+        <div data-active={branch === "login" && scene.step > 0 && scene.step < 3}><Key size={19} /><span>登录页</span><small>returnTo=/orders/42</small>{branch === "login" && scene.step > 0 && scene.step < 3 ? <button type="button" onClick={() => scene.seek(3)}>登录并继续</button> : null}</div>
+        <div data-active={branch === "fallback" && scene.step === 3}><ArrowRight size={19} /><span>网页回退</span><small>{branch === "fallback" && scene.step === 3 ? "订单网页已打开" : "原网址仍可访问"}</small></div>
       </div>
     </div>
   </HeroShell>;
