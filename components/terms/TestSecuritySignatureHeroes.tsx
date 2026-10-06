@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, CalendarBlank, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, FileCode, Funnel, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, Hash, ListMagnifyingGlass, LockKey, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
+import { Archive, ArrowCounterClockwise, ArrowRight, ArrowsClockwise, Bug, CalendarBlank, ChartLineUp, Check, CheckCircle, ClipboardText, Clock, Code, Database, Eye, FileCode, Funnel, Gear, GitCommit, GitBranch, Globe, Graph, GridFour, Handshake, HardDrives, Hash, Key, ListMagnifyingGlass, LockKey, MagnifyingGlass, PaperPlaneTilt, Robot, Scales, ShieldCheck, ShieldWarning, TestTube, Timer, UserCircle, WarningCircle } from "@phosphor-icons/react";
 import { SceneControls, useScene } from "./HarnessStoryScenes";
 import styles from "./TestSecuritySignatureHeroes.module.css";
 
@@ -300,6 +300,31 @@ export function InputValidationSignatureHero() {
       <div className={styles.datePayload} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><CalendarBlank size={16} aria-hidden="true" />外部输入</span><div className={styles.dateRow}><span>startAt</span><code>2026-10-05</code></div><div className={styles.dateRow} data-invalid={!validRange}><span>endAt</span><code>{validRange ? "2026-10-07" : "2026-10-04"}</code></div><small>两项都是日期，不等于区间成立。</small></div>
       <div className={styles.validationRuler} data-active={scene.step === 1} data-invalid={invalid}><span className={styles.label}><Scales size={16} aria-hidden="true" />关系尺</span><div className={styles.dateAxis}><i /><i /><i /><b data-position={validRange ? "end" : "start"}>endAt</b><b>startAt</b></div><div className={styles.rangeRule}>{scene.step < 1 ? "等待比较" : validRange ? "startAt < endAt" : "startAt > endAt"}</div><small>{validRange ? "可以进入下一层" : "语义关系不成立"}</small></div>
       <div className={styles.validationResult} data-active={scene.step >= 2} data-danger={invalid} data-success={accepted}><span className={styles.label}>{invalid ? <WarningCircle size={16} aria-hidden="true" /> : accepted ? <CheckCircle size={16} aria-hidden="true" /> : <Funnel size={16} aria-hidden="true" />}结果</span><strong>{invalid ? "422" : accepted ? "READY" : "—"}</strong><code>{invalid ? "Unprocessable Content" : accepted ? "query may continue" : "not checked"}</code><div className={styles.queryGate}><span>查询次数</span><b>{invalid ? "0" : accepted ? "1" : "—"}</b></div><small>{invalid ? "停在校验边界，授权尚未开始" : accepted ? "下一个问题是这个账号能不能看" : "先等关系尺给出结论"}</small></div>
+    </div>
+  </SignatureFrame>;
+}
+
+const restSteps = ["落进存储", "包住 DEK", "辨认攻击者", "撤销 grant"];
+
+export function EncryptionAtRestSignatureHero() {
+  const scene = useScene(restSteps.length);
+  const [attacker, setAttacker] = useState<"disk" | "app">("disk");
+  const revoked = scene.step === 3;
+  const canDecrypt = attacker === "app" && !revoked;
+  const choose = (next: "disk" | "app") => { setAttacker(next); scene.seek(0); };
+  const status = revoked
+    ? { icon: ShieldCheck, title: "grant 已撤销", detail: attacker === "app" ? "新的解密请求停在 KMS，存储中的密文仍保留" : "介质副本从头到尾都没有拿到 KEK" }
+    : canDecrypt
+      ? { icon: WarningCircle, title: "应用身份能读明文", detail: "静态加密挡住了介质泄露，却不能代替应用授权", danger: true }
+      : scene.step >= 2
+        ? { icon: CheckCircle, title: "介质只拿到密文", detail: "没有 KMS grant，备份副本不能直接还原账单" }
+        : { icon: scene.step === 0 ? HardDrives : scene.step === 1 ? Archive : Key, title: restSteps[scene.step], detail: scene.step === 0 ? "数据库、快照和备份都是保存中的副本" : "数据密钥和密钥加密密钥各有自己的边界" };
+  return <SignatureFrame scene={scene} label="静态加密区分存储介质泄露与有应用解密权限的身份" eyebrow="密文在存储里，钥匙在另一道边界" meta="ciphertext · DEK · KMS grant" steps={restSteps} status={status} caption="静态加密保护落盘、快照和备份里的内容；真正的边界还取决于 DEK、KEK、应用身份和撤权生命周期。" controls={<div className={styles.choiceRow} role="group" aria-label="选择攻击者持有什么"><button type="button" aria-pressed={attacker === "disk"} onClick={() => choose("disk")}>偷走磁盘 / 备份</button><button type="button" aria-pressed={attacker === "app"} onClick={() => choose("app")}>拿到应用身份</button></div>}>
+    <div className={styles.restBoard} data-attacker={attacker} data-revoked={revoked} data-decrypted={canDecrypt}>
+      <div className={styles.restStorage} data-active={scene.step === 0} data-done={scene.step > 0}><span className={styles.label}><HardDrives size={16} aria-hidden="true" />保存副本</span><strong>billing.db</strong><div className={styles.storageFile}><Archive size={17} aria-hidden="true" /><code>ciphertext<br />snapshot-42</code></div><small>{attacker === "disk" ? "拿到介质，先看到的是密文" : "应用从存储取回密文"}</small></div>
+      <div className={styles.restEnvelope} data-active={scene.step === 1} data-done={scene.step > 1}><span className={styles.label}><LockKey size={16} aria-hidden="true" />包裹关系</span><div className={styles.envelopeStack}><span>账单密文</span><b>wrapped DEK</b><small>KEK 不跟着数据走</small></div><small>数据密钥负责数据，KMS 负责把它包起来。</small></div>
+      <div className={styles.restKms} data-active={scene.step >= 2} data-danger={revoked}><span className={styles.label}><Key size={16} aria-hidden="true" />KMS grant</span><strong>{revoked ? "REVOKED" : "service/billing"}</strong><code>{revoked ? "decrypt · denied" : "decrypt · allowed"}</code><small>{revoked ? "新的读取到此停止" : "应用身份可以请求解开 DEK"}</small></div>
+      <div className={styles.restView} data-active={scene.step >= 2} data-danger={canDecrypt} data-blocked={revoked && attacker === "app"}><span className={styles.label}>{canDecrypt ? <WarningCircle size={16} aria-hidden="true" /> : <ShieldCheck size={16} aria-hidden="true" />}攻击结果</span><strong>{attacker === "disk" ? "密文" : revoked ? "DENIED" : "明文"}</strong><div className={styles.viewProof}>{attacker === "disk" ? "没有 KEK，无法还原" : revoked ? "grant 撤回后不能新解密" : "应用身份带着解密能力"}</div><small>{attacker === "disk" ? "静态加密在这里生效" : canDecrypt ? "授权边界仍然重要" : "存储副本没有被改写"}</small></div>
     </div>
   </SignatureFrame>;
 }
